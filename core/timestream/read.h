@@ -328,10 +328,10 @@ struct BeammapData {
                 j = j + 100;
             }
 
-            ndetectors = 4000;
+            //ndetectors = 4000;
             //end commenting for 4000 detectors
 
-            //data.scans = data.scans_temp; //temporary,  uncomment this and comment above block for normal reading of file
+            data.scans = data.scans_temp; //temporary,  uncomment this and comment above block for normal reading of file
             data.scans_temp.resize(0,0);
 
             // meta data

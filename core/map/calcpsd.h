@@ -1,11 +1,8 @@
-#pragma once calcpsd
+#pragma once
 
 //----------------------------- o ---------------------------------------
 
 /// calculates the 1d map psd
-/** Calculate the 1d map psd using the same method and normalization
-    as used in aztec_idl_utilities.
-**/
 bool Map::calcMapPsd(double covCut) {
   // make sure we've got up to date coverage cut indices
   coverageCut = covCut;
@@ -30,7 +27,6 @@ bool Map::calcMapPsd(double covCut) {
   }
 
   // we will do the fft using fftw
-  // intially written with the inefficient way to make bookkeeping simpler
   // here is the memory allocation and the plan setup
   fftw_complex *in;
   fftw_complex *out;
@@ -191,50 +187,6 @@ bool Map::calcMapPsd(double covCut) {
 
   psd2d = pmfq;
   psd2dFreq = qmap;
-  // write the results into the netcdf file
-  if (mapFile.length() > 0) {
-#pragma omp critical(dataio)
-    {
-      NcFile ncfid = NcFile(mapFile.c_str(), NcFile::Write);
-
-      // create dimension
-      string psdDimName = "npsd_";
-      psdDimName.append(mapName);
-      NcDim *psdDim = ncfid.add_dim(psdDimName.c_str(), nn);
-
-      // define psd variables
-      string psdVarName = "psd_";
-      string psdFreqName = "psdFreq_";
-      psdVarName.append(mapName);
-      psdFreqName.append(mapName);
-      NcVar *psdVar = ncfid.add_var(psdVarName.c_str(), ncDouble, psdDim);
-      NcVar *psdFreqVar = ncfid.add_var(psdFreqName.c_str(), ncDouble, psdDim);
-
-      // put in the values
-      psdVar->put(&psd[0], nn);
-      psdFreqVar->put(&psdFreq[0], nn);
-
-      // add an attribute to the frequency values to remind us of the units
-      psdFreqVar->add_att("units", "1/radians");
-
-      psdDimName = "nxpsd_2d";
-      NcDim *psdDim2d_x = ncfid.add_dim(psdDimName.c_str(), nx - 1);
-      psdDimName = "nypsd_2d";
-      NcDim *psdDim2d_y = ncfid.add_dim(psdDimName.c_str(), ny - 1);
-
-      psdVarName = "psd_2d";
-      psdFreqName = "psdFreq_2d";
-
-      NcVar *psdVar2d =
-          ncfid.add_var(psdVarName.c_str(), ncDouble, psdDim2d_x, psdDim2d_y);
-      NcVar *psdFreqVar2d =
-          ncfid.add_var(psdFreqName.c_str(), ncDouble, psdDim2d_x, psdDim2d_y);
-
-      psdVar2d->put(&psd2d[0][0], (nx - 1), (ny - 1));
-      psdFreqVar2d->put(&psd2dFreq[0][0], (nx - 1), (ny - 1));
-      ncfid.close();
-    }
-  }
 
   return 1;
 }

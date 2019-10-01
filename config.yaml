@@ -11,7 +11,7 @@ proc.rtc.filter.flow: 0.0
 proc.rtc.filter.fhigh: 8.0
 proc.rtc.filter.agibbs: 50.0
 proc.rtc.filter.nterms: 32
-proc.rtc.downsample.downsamplefactor: 4
+proc.rtc.downsample.downsamplefactor: 1
 proc.ptc.pcaclean.neigToCut: 3
 proc.ptc.pcaclean.cutStd: 0.0
 proc.rtc.despike: 1
@@ -22,7 +22,7 @@ noisemaps: 5
 iterationcutoff: 0.05
 iterationcap: 1
 proc.rtc.cores: 1
-proc.ptc.cores: 2
+proc.ptc.cores: 1
 proc.map.cores: 1
 output_filepath: "/Users/mmccrackan/Documents/toltec/lali_map.nc"
 

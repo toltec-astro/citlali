@@ -3,18 +3,14 @@
 namespace mapmaking{
 
 template <typename DerivedA, typename DerivedB, typename DerivedC>//, typename DerivedB>
-void generatemaps(PTCData &ptc,
-                 pointing &telescope_data,
+void generatemaps(PTCData &ptc, pointing &telescope_data,
                  double mgrid_0, double mgrid_1, const double samplerate,
                  DerivedA &mapstruct, Eigen::DenseBase<DerivedB> &offsets,
                  const double &tmpwts, const int &NNoiseMapsPerObs,
                  Eigen::DenseBase<DerivedC> &sn,
                  const int dsf){
 
-    int ndet = ptc.scans.cols();
-
-    //boost::random::mt19937 rng;
-    //boost::random::uniform_int_distribution<> rands(-1,1);
+    Eigen::Index ndet = ptc.scans.cols();
 
     //std::mutex farm_mutex;
 
@@ -23,16 +19,13 @@ void generatemaps(PTCData &ptc,
       weight->image, rowCoordsPhys, colCoordsPhys);
     }*/
 
-    //put together the maps
-    //Eigen::Tensor<double, 1> sn(NNoiseMapsPerObs);
-    //sn.setConstant(1);
 
     Eigen::Index si = ptc.scanindex(0);
     Eigen::Index ei = ptc.scanindex(1);
 
     for(Eigen::Index i=0;i<ndet;i++){
         {
-            //logging::scoped_timeit timer("loops");
+        //logging::scoped_timeit timer("loops");
         Eigen::VectorXd lat, lon;
         internal::getPointing(telescope_data, lat, lon, offsets, i, si, ei, dsf);
         for(int s=0;s<ptc.scans.rows();s++){
@@ -64,7 +57,7 @@ void generatemaps(PTCData &ptc,
                   if (atmTemplate)
                           ha = tmpwt[i][k]*a->detectors[di[i]].atmTemplate[j];
                 */
-                  /*if(hx != hx || hk != hk){
+                if(hx != hx || hk != hk){
                       //cerr << "NaN detected on file: "<<ap->getMapFile() << endl;
                       //cerr << "tmpwt: " << tmpwt[i][k] << endl;
                       //cerr << "det: " << a->detectors[di[i]].hValues[j] << endl;
@@ -74,7 +67,7 @@ void generatemaps(PTCData &ptc,
 
                       SPDLOG_INFO("  s = {}",s);
                       exit(1);
-                  }*/
+                }
 
               //signal map
               {
@@ -96,7 +89,7 @@ void generatemaps(PTCData &ptc,
                   //std::scoped_lock lock(farm_mutex);
                  // logging::scoped_timeit timer("noisemaps");
                   //mapstruct.noisemaps(kk,irow*mapstruct.ncols+icol) += sn(kk)*hx;
-                  mapstruct.noisemaps(kk,irow,icol) = mapstruct.noisemaps(kk,irow,icol) + sn(kk)*hx;
+                  mapstruct.noisemaps(kk,irow,icol) = mapstruct.noisemaps(kk,irow,icol) + sn(kk,irow*mapstruct.ncols+icol)*hx;
                   }
               }
 

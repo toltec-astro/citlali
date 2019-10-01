@@ -169,7 +169,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
             }
         }
 
-
         mapResult br;
         brs.push_back(std::move(br));
 
@@ -193,15 +192,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
         brs.back().mapstruct.NNoiseMapsPerObs = NNoiseMapsPerObs;
 
         auto dsf = config->get_typed<int>("proc.rtc.downsample.downsamplefactor");
-
-        boost::random::mt19937 rng;
-        boost::random::uniform_int_distribution<> rands(0,1);
-
-        Eigen::MatrixXi noisemaps = Eigen::MatrixXi::Zero(NNoiseMapsPerObs,1).unaryExpr([&](float dummy){return rands(rng);});
-
-        noisemaps = (2.*(noisemaps.template cast<double>().array() - 0.5)).template cast<int>();
-
-        SPDLOG_INFO("noisemaps {}",noisemaps);
 
         Eigen::MatrixXd offsets(2,ndet);
         offsets.setZero();
@@ -434,9 +424,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
                 -7.17151341041,
                 2.76412325287;
 
-        //offsets.row(0) = offsets.row(0).array() - offsets(0,16);
-        //offsets.row(1) = offsets.row(1).array() - offsets(1,16);
-
         int n = config->get_typed<int>("proc.rtc.cores");
         int n2 = config->get_typed<int>("proc.ptc.cores");
         int n3 = config->get_typed<int>("proc.map.cores");
@@ -480,7 +467,14 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
          brs.back().pp.resize(6,ndet);
          brs.back().pp.setOnes();
 
-        grppi::pipeline(grppiex::dyn_ex("omp"), [&]() -> std::optional<RTCData<LaliDataKind::SolvedTimeStream>> {
+         boost::random::mt19937 rng;
+         boost::random::uniform_int_distribution<> rands(0,1);
+
+         Eigen::MatrixXi noisemaps = Eigen::MatrixXi::Zero(NNoiseMapsPerObs,brs.back().mapstruct.npixels).unaryExpr([&](float dummy){return rands(rng);});
+
+         noisemaps = (2.*(noisemaps.template cast<double>().array() - 0.5)).template cast<int>();
+
+        grppi::pipeline(grppiex::dyn_ex("seq"), [&]() -> std::optional<RTCData<LaliDataKind::SolvedTimeStream>> {
 
             //scan index variable
             static auto x = 0;
@@ -515,7 +509,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
                 rtcs.back().scanindex.data = bds.back().scanindex.col(x);
 
                 //rtcs.back().scanindex.data = bds.back().scanindex.col(0); //temp
-
                 //rtcs.back().scanindex.data.row(1) = rtcs.back().scanindex.data.row(0).array() + scanlength;
                 //rtcs.back().scanindex.data.row(3) = rtcs.back().scanindex.data.row(2).array() + scanlength;
 
