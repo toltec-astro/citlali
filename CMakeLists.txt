@@ -2,3 +2,48 @@ cmake_minimum_required(VERSION 3.12)
 project(citlali LANGUAGES CXX)
 include("${CMAKE_CURRENT_SOURCE_DIR}/common_utils/cmake/CommonSettings.cmake")
 
+find_package(OpenMP REQUIRED)
+find_package(NetCDF REQUIRED COMPONENTS CXX4)
+find_package(Yaml REQUIRED)
+include(FileSystem)
+include(SpdlogAndFmt)
+include(Boost)
+include(SharedMemory)
+include(Grppi)
+include(Eigen3)
+include(Ceres)
+include(Tclap)
+include(Spectra)
+if (VERBOSE)
+    print_target_properties(Boost::boost)
+    print_target_properties(Eigen3::Eigen)
+    print_target_properties(ceres::ceres)
+    print_target_properties(tclap::tclap)
+    print_target_properties(Spectra::Spectra)
+endif()
+
+# lali_core
+add_library(citlali_core INTERFACE)
+target_include_directories(citlali_core INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_link_libraries(citlali_core
+    INTERFACE
+        spdlog::spdlog
+        fmt::fmt
+        Boost::boost
+        Eigen3::Eigen
+        ceres::ceres
+        grppi::grppi
+    )
+
+# executables
+add_executable(lali)
+target_sources(lali PRIVATE src/lali.cpp)
+target_link_libraries(lali PRIVATE citlali_core)
+
+target_link_libraries(lali PRIVATE
+    citlali_core
+    tclap
+    spectra
+    Boost::program_options
+    ${NETCDF_LIBRARIES}
+    ${YAML_LIBRARIES})
