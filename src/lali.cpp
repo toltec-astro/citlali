@@ -437,9 +437,9 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
         //offsets.row(0) = offsets.row(0).array() - offsets(0,16);
         //offsets.row(1) = offsets.row(1).array() - offsets(1,16);
 
-        int n = 1;
-        int n2 = 1;
-        int n3 = 1;
+        int n = config->get_typed<int>("proc.rtc.cores");
+        int n2 = config->get_typed<int>("proc.ptc.cores");
+        int n3 = config->get_typed<int>("proc.map.cores");
 
         brs.back().mapstruct.pixelsize = pixelsize;
 
@@ -480,7 +480,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
          brs.back().pp.resize(6,ndet);
          brs.back().pp.setOnes();
 
-        grppi::pipeline(grppiex::dyn_ex("seq"), [&]() -> std::optional<RTCData<LaliDataKind::SolvedTimeStream>> {
+        grppi::pipeline(grppiex::dyn_ex("omp"), [&]() -> std::optional<RTCData<LaliDataKind::SolvedTimeStream>> {
 
             //scan index variable
             static auto x = 0;

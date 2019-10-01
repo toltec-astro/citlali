@@ -21,5 +21,8 @@ proc.ptc.cleanpca: 1
 noisemaps: 5
 iterationcutoff: 0.05
 iterationcap: 1
+proc.rtc.cores: 1
+proc.ptc.cores: 2
+proc.map.cores: 1
 output_filepath: "/Users/mmccrackan/Documents/toltec/lali_map.nc"
 
