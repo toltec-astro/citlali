@@ -8,14 +8,13 @@
 #include "../common_utils/src/utils/logging.h"
 #include "../common_utils/src/utils/nddata/nddata.h"
 
-
 namespace timestream {
 
 // clang-format off
 BITMASK_(LaliDataKind, int,        0xFFFF,
-         VnaSweep                = 1 << 0,
-         TargetSweep             = 1 << 1,
-         Sweep                   = VnaSweep | TargetSweep,
+         RTC                     = 1 << 0,
+         PTC                     = 1 << 1,
+         Sweep                   = RTC | PTC,
          RawTimeStream           = 1 << 4,
          SolvedTimeStream        = 1 << 5,
          TimeStream              = RawTimeStream | SolvedTimeStream,
@@ -23,10 +22,10 @@ BITMASK_(LaliDataKind, int,        0xFFFF,
          );
 // clang-format on
 
-/// @brief Kids data class.
+/// @brief RTC data class.
 template <LaliDataKind kind_ = LaliDataKind::Any, typename = void>
 struct RTCData;
-} // namespace kids
+} // namespace timestream
 
 namespace std {
 
@@ -72,15 +71,8 @@ namespace timestream {
 
 namespace internal {
 
-using RMatrixXd =
-    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
-using RMatrixXi =
-    Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
-
 template <typename Derived> struct impl_traits {
     using meta_t = config::Config;
-    define_has_member_traits(Derived, tones);
-    define_has_member_traits(Derived, sweeps);
     define_has_member_traits(Derived, fs);
     define_has_member_traits(Derived, iqs);
     define_has_member_traits(Derived, eiqs);
@@ -101,7 +93,6 @@ template <LaliDataKind kind_> struct RTCDataBase<RTCData<kind_>> {
 } // namespace internal
 
 // WCS objects
-
 struct DetectorAxis : wcs::Axis<DetectorAxis, wcs::CoordsKind::Column>,
                   nddata::LabeledData<DetectorAxis> {
     DetectorAxis() = default;
@@ -116,20 +107,20 @@ struct DetectorAxis : wcs::Axis<DetectorAxis, wcs::CoordsKind::Column>,
 struct TimeAxis : wcs::Axis<TimeAxis, wcs::CoordsKind::Row>,
                   nddata::LabeledData<TimeAxis> {
     TimeAxis() = default;
-    TimeAxis(Eigen::MatrixXi data_, nddata::LabelMapper<TimeAxis> col_labels_)
+    TimeAxis(Eigen::MatrixXd data_, nddata::LabelMapper<TimeAxis> col_labels_)
         : data{std::move(data_)}, col_labels{std::move(col_labels_)} {}
-    std::string_view name{"detector"};
-    Eigen::MatrixXi data;
+    std::string_view name{"time"};
+    Eigen::MatrixXd data;
     nddata::LabelMapper<TimeAxis> col_labels;
 };
 
 struct TimeStreamFrame : wcs::Frame2D<TimeStreamFrame, TimeAxis, DetectorAxis> {
     TimeAxis time_axis;
-    DetectorAxis tone_axis;
+    DetectorAxis detector_axis;
 
     // Frame2D impl
     const TimeAxis &row_axis() const { return time_axis; }
-    const DetectorAxis &col_axis() const { return tone_axis; }
+    const DetectorAxis &col_axis() const { return detector_axis; }
 };
 
 // Data objects
@@ -147,15 +138,6 @@ struct TimeStream : internal::RTCDataBase<Derived>,
 };
 
 template <>
-struct RTCData<LaliDataKind::RawTimeStream>
-    : TimeStream<RTCData<LaliDataKind::RawTimeStream>> {
-    using Base = TimeStream<RTCData<LaliDataKind::RawTimeStream>>;
-    // NDData impl
-    Base::data_t<internal::RMatrixXd> is;
-    Base::data_t<internal::RMatrixXd> qs;
-};
-
-template <>
 struct RTCData<LaliDataKind::SolvedTimeStream>
     : TimeStream<RTCData<LaliDataKind::SolvedTimeStream>> {
     using Base = TimeStream<RTCData<LaliDataKind::SolvedTimeStream>>;
@@ -164,6 +146,7 @@ struct RTCData<LaliDataKind::SolvedTimeStream>
     Base::data_t<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> flags;
     Base::data_t<Eigen::Matrix<Eigen::Index,Eigen::Dynamic,1>> scanindex;
 };
+
 
 /// @brief Kids data class of runtime variant kind.
 template <LaliDataKind kind_>
@@ -234,11 +217,10 @@ struct formatter<timestream::RTCData<kind_>>
                 }
             }
             case 'l': {
-                it =
-                    format_to(it, "kind={} meta={}", kind, data.meta.pformat());
+                it = format_to(it, "kind={} meta={}", kind, data.meta.pformat());
                 bool sep = false;
-                if constexpr (data_traits::has_tones::value) {
-                    it = format_member(it, "tones", data.tones(), &sep);
+                if constexpr (data_traits::has_detectors::value) {
+                    it = format_member(it, "detectors", data.detectors(), &sep);
                 }
                 if constexpr (data_traits::has_sweeps::value) {
                     it = format_member(it, "sweeps", data.sweeps(), &sep);

@@ -2,10 +2,10 @@
 #include <boost/program_options.hpp> // po::options_description, po::variables_map, ...
 #include <boost/property_tree/ptree.hpp> // pt::ptree
 #include <boost/random.hpp>
-
+#include <boost/random/random_device.hpp>
 #include <Eigen/Dense>
-
 #include <grppi/grppi.h>
+#include <yaml-cpp/yaml.h>
 #include <iostream>
 #include <fstream>
 
@@ -22,10 +22,7 @@
 #include "../core/map/mapmaking.h"
 #include "../core/timestream/mapresult.h"
 #include "../core/map/map.h"
-
 #include "../core/timestream/rtcdata.h"
-
-#include <yaml-cpp/yaml.h>
 
 // namespaces
 namespace po = boost::program_options;
@@ -50,7 +47,6 @@ void po2pt(po::variables_map &in, pt::ptree &out) {
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
 {
-
    logging::scoped_timeit timer("lali");
 
     using config::Config;
@@ -126,15 +122,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
             }
         }
 
-        //SPDLOG_INFO("use config: {}", config->pprint());
-        //auto ex_name = config->get_typed<std::string>("pipeline.ex_policy");
-        SPDLOG_INFO("available grppi execution modes:");
-        //for (const auto &name : grppiex::) {
-        //    SPDLOG_INFO("  {}", name);
-        //}
-
-        //SPDLOG_INFO("use grppi execution mode: {}", ex_name);
-
         using aztec::BeammapData;
         using aztec::mapResult;
         using aztec::DataIOError;
@@ -156,6 +143,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
         std::vector<mapResult> brs;
 
         std::mutex farm_mutex;
+        std::mutex random_mutex;
 
         static auto it = input_files.begin();
 
@@ -180,6 +168,10 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
         std::vector<int> detvec_in(ndet);
         std::iota(detvec_in.begin(), detvec_in.end(), 0);
         std::vector<int> detvec_out(ndet);
+
+        auto ex_name = config->get_typed<std::string>("pipeline_ex_policy");
+
+        SPDLOG_INFO("use grppi execution mode: {}", ex_name);
 
         //get config parameters for map generation
         auto pixelsize = config->get_typed<double>("pixel_size");
@@ -467,28 +459,22 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
          brs.back().pp.resize(6,ndet);
          brs.back().pp.setOnes();
 
-         boost::random::mt19937 rng;
+         boost::random_device rd;
+         boost::random::mt19937 rng(rd);
          boost::random::uniform_int_distribution<> rands(0,1);
 
-         Eigen::MatrixXi noisemaps = Eigen::MatrixXi::Zero(NNoiseMapsPerObs,brs.back().mapstruct.npixels).unaryExpr([&](float dummy){return rands(rng);});
-
-         noisemaps = (2.*(noisemaps.template cast<double>().array() - 0.5)).template cast<int>();
-
-        grppi::pipeline(grppiex::dyn_ex("seq"), [&]() -> std::optional<RTCData<LaliDataKind::SolvedTimeStream>> {
+         grppi::pipeline(grppiex::dyn_ex(ex_name), [&]() -> std::optional<RTCData<LaliDataKind::SolvedTimeStream>> {
 
             //scan index variable
             static auto x = 0;
             Eigen::Index scanlength = 0;
             int sdet = 0;
             Eigen::Index si = 0;
-            int ns = 0;
-
-            ns = bds.back().meta.template get_typed<int>("nscans");
 
             //ns = 180; //temp
 
-            while (x != ns){
-                SPDLOG_INFO("On scan {}/{}",x+1,ns);
+            while (x != nscans){
+                SPDLOG_INFO("On scan {}/{}",x+1,nscans);
                 RTCData<LaliDataKind::SolvedTimeStream> rtc;
                 //Put RTC at the end of the rtcs vector
                 rtcs.push_back(rtc);
@@ -567,6 +553,16 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
 
         grppi::farm(n3,[&](auto in) {
             double tmpwt = mapmaking::internal::calcScanWeight(in.scans, in.flags, samplerate);
+            //boost::random::mt19937 rng;
+            //boost::random::uniform_int_distribution<> rands(0,1);
+
+            Eigen::MatrixXi noisemaps;
+            {
+            std::scoped_lock lock(random_mutex);
+            noisemaps = Eigen::MatrixXi::Zero(NNoiseMapsPerObs,1).unaryExpr([&](int dummy){return rands(rng);});
+            noisemaps = (2.*(noisemaps.template cast<double>().array() - 0.5)).template cast<int>();
+            }
+
             {
             logging::scoped_timeit timer("generatemaps");
             mapmaking::generatemaps(in,bds.back().telescope_data, mgrid_0, mgrid_1,
@@ -577,8 +573,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
         double wt;
 
         double atmpix=0;
-        for(int i=0;i<brs.back().mapstruct.nrows;i++){
-            for(int j=0;j<brs.back().mapstruct.ncols;j++){
+        for(Eigen::Index i=0;i<brs.back().mapstruct.nrows;i++){
+            for(Eigen::Index j=0;j<brs.back().mapstruct.ncols;j++){
                 wt = brs.back().mapstruct.wtt(i,j);
                 if(wt != 0.){
                   //if (atmTemplate)
@@ -586,17 +582,17 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
                   //brs.back().mapstruct.signal(i,j) = -(brs.back().mapstruct.signal(i,j)-atmpix)/wt;
                   brs.back().mapstruct.signal(i,j) = -(brs.back().mapstruct.signal(i,j))/wt;
                   //brs.back().mapstruct.wtt(i,j) = wt;
-                  brs.back().mapstruct.kernel(i,j) = -(brs.back().mapstruct.kernel(i,j))/wt;
+                  brs.back().mapstruct.kernel(i,j) = (brs.back().mapstruct.kernel(i,j))/wt;
                   //brs.back().mapstruct.kernel(i,j) = wt;
 
-                  for(int kk=0;kk<NNoiseMapsPerObs;kk++){
+                  for(Eigen::Index kk=0;kk<NNoiseMapsPerObs;kk++){
                       brs.back().mapstruct.noisemaps(kk,i,j) = brs.back().mapstruct.noisemaps(kk,i,j)/wt;
                   }
                 }
                 else{
                   brs.back().mapstruct.signal(i,j) = 0.;
                   brs.back().mapstruct.kernel(i,j) = 0.;
-                  for(int kk=0;kk<NNoiseMapsPerObs;kk++){
+                  for(Eigen::Index kk=0;kk<NNoiseMapsPerObs;kk++){
                       brs.back().mapstruct.noisemaps(kk,i,j) = 0.;
                   }
                 }

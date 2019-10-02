@@ -12,6 +12,8 @@
 #include <boost/math/constants/constants.hpp>
 #include <cmath>
 
+#include "../../common_utils/src/utils/algorithm/ei_stats.h"
+
 // Arcseconds in 360 degrees
 #define ASEC_CIRC 1296000.0
 // rad per arcsecond
@@ -136,16 +138,9 @@ void physToAbs(double &pra, double &pdec, double &cra, double &cdec,
 template <typename DerivedA>
 void latlonPhysToIndex(double &lat, double &lon, Eigen::Index &irow, Eigen::Index &icol,
                       DerivedA &mapstruct){
-
     double ps = mapstruct.pixelsize*RAD_ASEC;
-
-  //irow = floor((ra - rowCoordsPhys[0]) / pixelsize);
-  //icol = floor((dec - colCoordsPhys[0]) / pixelsize);
-
-  // alternate definition
-
-  irow = lat / ps + (mapstruct.nrows + 1.) / 2.;
-  icol = lon / ps + (mapstruct.ncols + 1.) / 2.;
+    irow = lat / ps + (mapstruct.nrows + 1.) / 2.;
+    icol = lon / ps + (mapstruct.ncols + 1.) / 2.;
 }
 
 template <typename DerivedA>
@@ -229,27 +224,19 @@ DerivedA calculateWeights(std::vector<PTCData> &ptcs, const int samplerate){
         }
     }
 
-      Eigen::VectorXd tmpwts = Eigen::Map<Eigen::VectorXd> (tmpwt.data(),nscans*ndet);
-
-      std::sort(tmpwts.data(), tmpwts.data() + tmpwts.size());
-      Eigen::Index indx = ((tmpwts.size()-1)/2 + (tmpwts.size())/2)/2;
-
-      double medweight = tmpwts(indx);
-      //SPDLOG_INFO("medweight {}",medweight);
+      Eigen::Map<Eigen::VectorXd> tmpwts (tmpwt.data(),nscans*ndet);
+      double medweight = alg::median(tmpwts);
 
       for(Eigen::Index i=0;i<nscans;i++){
           for(Eigen::Index j=0;j<ndet;j++){
             if(tmpwt(j,i) > 2.* medweight){
-                //cerr<<"Bad weight on scan: "<< i << " bolometer " << j << endl;
                 tmpwt(j,i) = medweight / 2.0;
             }
           }
       }
     return tmpwt;
 }
-
 } //namespace internal
-
 
 template <typename DerivedA, typename DerivedC>//, typename DerivedB>
 void mapgen(std::vector<PTCData> &ptcs,
@@ -274,14 +261,9 @@ void mapgen(std::vector<PTCData> &ptcs,
         Eigen::Index si = ptcs[j].scanindex(0);
         Eigen::Index ei = ptcs[j].scanindex(1);
 
-        //auto wtvec =  ptcs[j].scans.col(det);
-        //auto wtvec_flag = ptcs[j].flags.col(det);
-
-        //double tmpwt = internal::calcScanWeight(wtvec, wtvec_flag, samplerate);
-
         for (Eigen::Index k=si;k<ei;k++) {
-            if(ptcs[j].flags(s,det)){//scan_flags(s,i)){
-                double hx = ptcs[j].scans(s,det)*tmpwts(det,j);//scan_mat(s,i);
+            if(ptcs[j].flags(s,det)){
+                double hx = ptcs[j].scans(s,det)*tmpwts(det,j);
                 Eigen::Index irow = 0;
                 Eigen::Index icol = 0;
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Eigen/Dense>
-#include <iostream>
 
 #include "../../common_utils/src/utils/algorithm/mlinterp/mlinterp.hpp"
 

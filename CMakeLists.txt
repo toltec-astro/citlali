@@ -3,8 +3,8 @@ project(citlali LANGUAGES CXX)
 include("${CMAKE_CURRENT_SOURCE_DIR}/common_utils/cmake/CommonSettings.cmake")
 
 find_package(OpenMP REQUIRED)
-find_package(NetCDF REQUIRED COMPONENTS CXX4)
-find_package(Yaml REQUIRED)
+#find_package(NetCDF REQUIRED COMPONENTS CXX4)
+include(NetCDFCXX4)
 include(FileSystem)
 include(SpdlogAndFmt)
 include(Boost)
@@ -14,12 +14,15 @@ include(Eigen3)
 include(Ceres)
 include(Tclap)
 include(Spectra)
+include(Yaml)
 if (VERBOSE)
+    print_target_properties(NetCDF::NetCDFCXX4)
     print_target_properties(Boost::boost)
     print_target_properties(Eigen3::Eigen)
     print_target_properties(ceres::ceres)
     print_target_properties(tclap::tclap)
     print_target_properties(Spectra::Spectra)
+    print_target_properties(yaml::yaml)
 endif()
 
 # lali_core
@@ -27,12 +30,14 @@ add_library(citlali_core INTERFACE)
 target_include_directories(citlali_core INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_link_libraries(citlali_core
     INTERFACE
+        NetCDF::NetCDFCXX4
         spdlog::spdlog
         fmt::fmt
         Boost::boost
         Eigen3::Eigen
         ceres::ceres
         grppi::grppi
+        yaml::yaml
     )
 
 # executables
@@ -45,5 +50,5 @@ target_link_libraries(lali PRIVATE
     tclap
     spectra
     Boost::program_options
-    ${NETCDF_LIBRARIES}
-    ${YAML_LIBRARIES})
+    Boost::random
+    )

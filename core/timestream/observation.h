@@ -3,9 +3,6 @@
 #include <Eigen/Dense>
 #include <iostream>
 
-//#include <lali/dataset.h>
-//#include <optional>
-
 #include <boost/math/constants/constants.hpp>
 
 #include "../../common_utils/src/utils/algorithm/mlinterp/mlinterp.hpp"

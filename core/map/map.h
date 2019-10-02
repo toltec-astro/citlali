@@ -89,7 +89,7 @@ void generatemaps(PTCData &ptc, pointing &telescope_data,
                   //std::scoped_lock lock(farm_mutex);
                  // logging::scoped_timeit timer("noisemaps");
                   //mapstruct.noisemaps(kk,irow*mapstruct.ncols+icol) += sn(kk)*hx;
-                  mapstruct.noisemaps(kk,irow,icol) = mapstruct.noisemaps(kk,irow,icol) + sn(kk,irow*mapstruct.ncols+icol)*hx;
+                  mapstruct.noisemaps(kk,irow,icol) = mapstruct.noisemaps(kk,irow,icol) + sn(kk)*hx;
                   }
               }
 

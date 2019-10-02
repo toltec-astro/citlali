@@ -63,7 +63,7 @@ void pcaclean2(
         Eigen::MatrixXd pcaCorr(ndetectors, ndetectors);
 
         //det.resize(npts, ndetectors);
-        ker.resize(npts, ndetectors);
+        //ker.resize(npts, ndetectors);
         flg.resize(npts, ndetectors);
 
         Eigen::RowVectorXd scan_means = scans.derived().colwise().mean();
