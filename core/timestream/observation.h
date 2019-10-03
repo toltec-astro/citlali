@@ -254,7 +254,7 @@ void obs(Eigen::DenseBase<DerivedA> &scanindex, pointing &telescope_data,
     Eigen::Matrix<int,Eigen::Dynamic,1> holdint(npts);
     holdint = telescope_data["Hold"].cast<int>();
 
-    SPDLOG_INFO("hold {}", logging::pprint(telescope_data["Hold"]));
+    SPDLOG_INFO("hold {}", telescope_data["Hold"]);
 
     //the telescope is turning at end of scan when hold&8=1
     for(Eigen::Index i=0;i<npts;i++) {

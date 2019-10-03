@@ -78,25 +78,25 @@ struct nc_pprint {
             case netCDF::NcType::ncType::nc_SHORT: {
                 std::vector<int16_t> buf(len);
                 att.getValues(buf.data());
-                os << " = " << logging::pprint(buf);
+                os << " = " << buf;
                 break;
             }
             case netCDF::NcType::ncType::nc_INT: {
                 std::vector<int32_t> buf(len);
                 att.getValues(buf.data());
-                os << "=" << logging::pprint(buf);
+                os << "=" << buf;
                 break;
             }
             case netCDF::NcType::ncType::nc_FLOAT: {
                 std::vector<float> buf(len);
                 att.getValues(buf.data());
-                os << "=" << logging::pprint(buf);
+                os << "=" << buf;
                 break;
             }
             case netCDF::NcType::ncType::nc_DOUBLE: {
                 std::vector<double> buf(len);
                 att.getValues(buf.data());
-                os << "=" << logging::pprint(buf);
+                os << "=" << buf;
                 break;
             }
             default: {
@@ -260,15 +260,15 @@ struct BeammapData {
 
             data.telescope_data["Hold"].resize(npts);
             vars.find("Data.AztecBackend.Hold")->second.getVar(data.telescope_data["Hold"].data());
-            SPDLOG_INFO("hold {}", logging::pprint(data.telescope_data["Hold"]));
+            SPDLOG_INFO("hold {}", data.telescope_data["Hold"]);
 
             data.telescope_data["TelUtc"].resize(npts);
             vars.find("Data.AztecBackend.TelUtc")->second.getVar(data.telescope_data["TelUtc"].data());
-            SPDLOG_INFO("TelUtc {}", logging::pprint(data.telescope_data["TelUtc"]));
+            SPDLOG_INFO("TelUtc {}", data.telescope_data["TelUtc"]);
 
             data.telescope_data["AztecUtc"].resize(npts);
             vars.find("Data.AztecBackend.AztecUtc")->second.getVar(data.telescope_data["AztecUtc"].data());
-            SPDLOG_INFO("AztecUtc {}", logging::pprint(data.telescope_data["AztecUtc"]));
+            SPDLOG_INFO("AztecUtc {}", data.telescope_data["AztecUtc"]);
 
             /*data.telescope_data["SourceRaAct"].resize(npts);
             vars.find("Data.AztecBackend.SourceRaAct")->second.getVar(data.telescope_data["SourceRaAct"].data());
@@ -280,39 +280,39 @@ struct BeammapData {
 
             data.telescope_data["TelAzAct"].resize(npts);
             vars.find("Data.AztecBackend.TelAzAct")->second.getVar(data.telescope_data["TelAzAct"].data());
-            SPDLOG_INFO("TelAzAct{}", logging::pprint(data.telescope_data["TelAzAct"]));
+            SPDLOG_INFO("TelAzAct{}", data.telescope_data["TelAzAct"]);
 
             data.telescope_data["TelElAct"].resize(npts);
             vars.find("Data.AztecBackend.TelElAct")->second.getVar(data.telescope_data["TelElAct"].data());
-            SPDLOG_INFO("TelElAct{}", logging::pprint(data.telescope_data["TelElAct"]));
+            SPDLOG_INFO("TelElAct{}", data.telescope_data["TelElAct"]);
 
             data.telescope_data["TelAzDes"].resize(npts);
             vars.find("Data.AztecBackend.TelAzDes")->second.getVar(data.telescope_data["TelAzDes"].data());
-            SPDLOG_INFO("TelAzDes{}", logging::pprint(data.telescope_data["TelAzDes"]));
+            SPDLOG_INFO("TelAzDes{}", data.telescope_data["TelAzDes"]);
 
             data.telescope_data["TelElDes"].resize(npts);
             vars.find("Data.AztecBackend.TelElDes")->second.getVar(data.telescope_data["TelElDes"].data());
-            SPDLOG_INFO("TelElDes{}", logging::pprint(data.telescope_data["TelElDes"]));
+            SPDLOG_INFO("TelElDes{}", data.telescope_data["TelElDes"]);
 
             data.telescope_data["TelAzCor"].resize(npts);
             vars.find("Data.AztecBackend.TelAzCor")->second.getVar(data.telescope_data["TelAzCor"].data());
-            SPDLOG_INFO("TelAzCor{}", logging::pprint(data.telescope_data["TelAzCor"]));
+            SPDLOG_INFO("TelAzCor{}", data.telescope_data["TelAzCor"]);
 
             data.telescope_data["TelElCor"].resize(npts);
             vars.find("Data.AztecBackend.TelElCor")->second.getVar(data.telescope_data["TelElCor"].data());
-            SPDLOG_INFO("TelElCor{}", logging::pprint(data.telescope_data["TelElCor"]));
+            SPDLOG_INFO("TelElCor{}", data.telescope_data["TelElCor"]);
 
             data.telescope_data["SourceAz"].resize(npts);
             vars.find("Data.AztecBackend.SourceAz")->second.getVar(data.telescope_data["SourceAz"].data());
-            SPDLOG_INFO("SourceAz{}", logging::pprint(data.telescope_data["SourceAz"]));
+            SPDLOG_INFO("SourceAz{}", data.telescope_data["SourceAz"]);
 
             data.telescope_data["SourceEl"].resize(npts);
             vars.find("Data.AztecBackend.SourceEl")->second.getVar(data.telescope_data["SourceEl"].data());
-            SPDLOG_INFO("SourceEl{}", logging::pprint(data.telescope_data["SourceEl"]));
+            SPDLOG_INFO("SourceEl{}", data.telescope_data["SourceEl"]);
 
             data.telescope_data["ParAng"].resize(npts);
             vars.find("Data.AztecBackend.ParAng")->second.getVar(data.telescope_data["ParAng"].data());
-            SPDLOG_INFO("ParAng{}", logging::pprint(data.telescope_data["ParAng"]));
+            SPDLOG_INFO("ParAng{}", data.telescope_data["ParAng"]);
 
             data.telescope_data["ParAng"] = pi-data.telescope_data["ParAng"].array();
 
@@ -340,8 +340,8 @@ struct BeammapData {
             data.meta.set("npts", npts);
             data.meta.set("ndetectors", ndetectors);
             data.meta.set("nscans", nscans);
-            SPDLOG_INFO("scans{}", logging::pprint(data.scans));
-            SPDLOG_INFO("scanindex{}", logging::pprint(data.scanindex));
+            SPDLOG_INFO("scans{}", data.scans);
+            SPDLOG_INFO("scanindex{}", data.scanindex);
             SPDLOG_INFO("nscans {}", nscans);
 
 
