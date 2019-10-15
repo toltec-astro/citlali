@@ -2,3 +2,7 @@
 	path = common_utils
 	url = https://github.com/toltec-astro/common_utils
 	branch = kids_dev
+[submodule "kids"]
+	path = kids
+	url = https://github.com/toltec-astro/kids_sweep_fit.git
+	branch = develop
