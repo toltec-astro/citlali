@@ -1,6 +1,6 @@
 # version header
 include(gitversion)
-GenVersionHeader(${CMAKE_CURRENT_BINARY_DIR}/citlali)
+GenVersionHeader(${CMAKE_CURRENT_BINARY_DIR} citlali)
 
 # citlali
 add_library(citlali_core STATIC)
@@ -13,6 +13,7 @@ target_link_libraries(citlali_core
     PUBLIC
         cmake_utils::spdlog_and_fmt
         NetCDF::NetCDFCXX4
+        utils::gitversion
     )
 
 add_executable(citlali_mpi)
