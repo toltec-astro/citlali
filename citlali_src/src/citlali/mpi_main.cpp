@@ -2,14 +2,14 @@
 #include <chrono>
 #include <cstdlib>
 #include <exception>
-#include <kids/toltec/toltec.h>
+// #include <kids/toltec/toltec.h>
 #include <thread>
 #include <utils/config.h>
 #include <utils/container.h>
 #include <utils/formatter/matrix.h>
 #include <utils/formatter/ptr.h>
 #include <utils/grppiex.h>
-#include <utils/mpi_utils.h>
+#include <utils/mpi.h>
 #include <yaml-cpp/yaml.h>
 
 /**
@@ -106,11 +106,44 @@ struct YamlConfig {
     using storage_t = YAML::Node;
     YamlConfig() = default;
     explicit YamlConfig(storage_t node) : m_node(std::move(node)) {}
-    std::string to_str() const { return fmt::format("{}", m_node); }
-    static auto from_str(std::string s) { return YamlConfig(YAML::Load(s)); }
+    std::string dump_to_str() const { return fmt::format("{}", m_node); }
+    static auto load_from_str(std::string s) {
+        return YamlConfig(YAML::Load(s));
+    }
     friend std::ostream &operator<<(std::ostream &os,
                                     const YamlConfig &config) {
-        return os << config.to_str();
+        return os << config.dump_to_str();
+    }
+
+    template <typename T> auto get_typed(const key_t &key) const {
+        return m_node[key].as<T>(key);
+    }
+    template <typename T> auto get_typed(const key_t &key, T &&defval) const {
+        decltype(auto) node = m_node[key];
+        if (node.IsDefined() && !node.IsNull()) {
+            return node.as<T>(key);
+        }
+        return FWD(defval);
+    }
+
+    auto get_str(const key_t &key) const { return get_typed<std::string>(key); }
+    auto get_str(const key_t &key, const std::string &defval) const {
+        return get_typed<std::string>(key, std::string(defval));
+    }
+
+    decltype(auto) operator[](const key_t &key) const { return m_node[key]; }
+
+    bool has(const key_t &key) const { return m_node[key].IsDefined(); }
+    template <typename T> bool has_typed(const key_t &key) const {
+        if (!has(key)) {
+            return false;
+        }
+        try {
+            get_typed<T>(key);
+        } catch (YAML::BadConversion) {
+            return false;
+        }
+        return true;
     }
 
 private:
@@ -134,7 +167,7 @@ public:
     template <typename... Args> ConfigMixin(Args &&... args) {
         set_config(FWD(args)...);
     }
-    constexpr const auto &config() const { return m_config; }
+    const config_t &config() { return m_config; }
     void set_config(config_t config, bool validate = true) {
         if (validate) {
             if constexpr (derived_has_validate_config::value) {
@@ -156,215 +189,271 @@ public:
     }
 };
 
+/// @brief Interface base class
+template <typename Derived, typename IO_> struct InterfaceBase {
+    using IO = IO_;
+    IO io;
+};
+
+/// @ brief Interface to TolTEC detector network
+struct ToltecInterface : InterfaceBase<ToltecInterface, int> {
+    using Base = InterfaceBase<ToltecInterface, int>;
+};
+
+/// @ brief Interface to HWP
+struct HwpInterface : InterfaceBase<HwpInterface, int> {
+    using Base = InterfaceBase<HwpInterface, int>;
+};
+
+/// @ brief Interface to LMT
+struct LmtInterface : InterfaceBase<LmtInterface, int> {
+    using Base = InterfaceBase<LmtInterface, int>;
+};
+
+/**
+ * @brief The InterfaceRegistry struct
+ * This is a helper class to access the actual interface implementation.
+ */
+struct InterfaceRegistry {
+    enum class Interface;
+
+    // dispatcher helper
+    template <typename Case, typename... Rest> struct dispatcher_impl {
+        template <Interface interface>
+        using io_t = meta::switch_t<interface, Case, Rest...>;
+        using variant_t =
+            std::variant<typename Case::type, typename Rest::type...>;
+    };
+    /////////////////////////////////////////////
+    // Register interface classes here
+    META_ENUM(Interface, int, Toltec, Hwp, Lmt);
+    using dispatcher =
+        dispatcher_impl<meta::case_t<Interface::Toltec, ToltecInterface>,
+                        meta::case_t<Interface::Hwp, HwpInterface>,
+                        meta::case_t<Interface::Lmt, LmtInterface>>;
+    /////////////////////////////////////////////
+    template <Interface interface> using io_t = dispatcher::io_t<interface>;
+    using variant_t = dispatcher::variant_t;
+};
+
 /**
  * @brief The Coordinator struct
  * This wraps around the config object and provides
- * high level methods in various ways to setup the runtime.
+ * high level methods in various ways to setup the MPI runtime
+ * with node-local and cross-node environment.
  */
 struct Coordinator : ConfigMixin<Coordinator> {
     using config_t = ConfigMixin::config_t;
-    Coordinator(const mxx::comm &comm_)
-        : ConfigMixin<Coordinator>{}, comm(comm_) {}
-    const mxx::comm &comm;
-    constexpr auto master_rank() { return 0; }
-    constexpr auto is_master() { return comm.rank() == master_rank(); }
-    constexpr auto worker_index() {
-        if (is_master()) {
-            return -1;
-        }
-        return comm.rank() - ((comm.rank() > master_rank()) ? 1 : 0);
+    using comm_t = mpi_utils::comm;
+    using index_t = int;
+    constexpr static index_t not_a_worker = -1;
+
+    Coordinator(const comm_t &comm_, const comm_t &comm_local_)
+        : ConfigMixin<Coordinator>{}, comm(comm_), comm_local(comm_local_) {}
+    const comm_t &comm;       // This is all, including cross-node
+    const comm_t &comm_local; // node-local comm
+
+    constexpr auto n_nodes() const { return comm.n_nodes(); }
+    constexpr auto node_index() const { return comm.node_index(); }
+    const auto &node_name() const { return comm.node_name(); }
+
+    // global mpi context
+    constexpr auto rank() const { return comm.rank(); }
+    constexpr auto master_rank() const { return 0; }
+    constexpr auto is_master() const { return rank() == master_rank(); }
+
+    // local mpi context
+    constexpr auto rank_local() const { return comm_local.rank(); }
+    constexpr auto master_rank_local() const { return 0; }
+    constexpr auto is_master_local() const {
+        return rank_local() == master_rank_local();
     }
-    constexpr auto n_workers() { return comm.size() - 1; }
+    constexpr auto worker_index_local() const {
+        if (is_master_local()) {
+            return not_a_worker;
+        }
+        return rank_local() - ((rank_local() > master_rank_local()) ? 1 : 0);
+    }
+    constexpr auto n_workers_local() const { return comm_local.size() - 1; }
+
     /**
      * Sync the config.
+     * This is done to the global comm.
      */
     auto &sync() {
-        {
-            // config
-            std::string c{};
-            int s{0};
-            if (is_master()) {
-                c = config().to_str();
-                s = meta::size_cast<int>(c.size());
-            }
-            MPI_Bcast(&s, 1, MPI_INT, master_rank(), comm);
-            if (!is_master()) {
-                c.resize(SIZET(s));
-            }
-            MPI_Bcast(const_cast<char *>(c.data()), s, MPI_CHAR, master_rank(),
-                      comm);
-            if (is_master()) {
-                SPDLOG_TRACE("config:\n{}", config());
-            } else {
-                // here we just disable the validation since it is already done
-                set_config(config_t::from_str(c), false);
-                SPDLOG_TRACE("synced config from master");
-            }
+
+        auto config_str = comm.bcast_str(
+            master_rank(), [&]() { return config().dump_to_str(); });
+
+        if (is_master()) {
+            SPDLOG_TRACE("config:\n{}", config());
+        } else {
+            // here we just disable the validation since it is already done
+            set_config(config_t::load_from_str(config_str), false);
+            SPDLOG_TRACE("synced config from master");
         }
         comm.barrier();
-        return *this;
-    }
-    /**
-     * @brief Initialize the coordinator
-     */
-    auto &initialize() {
+        // collect inputs
         const auto &inputs = collect_inputs();
         SPDLOG_TRACE("inputs: {}", inputs);
         return *this;
     }
 
-    /// @brief Interface base class
-    template <typename Derived, typename IO_> struct InterfaceBase {
-        using IO = IO_;
-        IO io;
-    };
-
-    /// @ brief Interface to TolTEC detector network
-    struct ToltecInterface : InterfaceBase<ToltecInterface, int> {
-        using Base = InterfaceBase<ToltecInterface, int>;
-    };
-
-    /// @ brief Interface to HWP
-    struct HwpInterface : InterfaceBase<HwpInterface, int> {
-        using Base = InterfaceBase<HwpInterface, int>;
-    };
-
-    /// @ brief Interface to LMT
-    struct LmtInterface : InterfaceBase<LmtInterface, int> {
-        using Base = InterfaceBase<LmtInterface, int>;
-    };
-
     /**
-     * @brief The InterfaceRegistry struct
-     * This is a helper class to access the actual interface implementation.
+     * @brief The Observation struct
+     * This represents a single observation that contains a set of data items
      */
-    struct InterfaceRegistry {
-        enum class Interface;
-
-        // dispatcher
-        template <typename Case, typename... Rest> struct dispatcher_impl {
-            template <Interface interface>
-            using io_t = meta::switch_t<interface, Case, Rest...>;
-            using variant_t =
-                std::variant<typename Case::type, typename Rest::type...>;
-        };
-        // Register interface classes here
-        META_ENUM(Interface, int, Toltec, Hwp, Lmt);
-        using dispatcher =
-            dispatcher_impl<meta::case_t<Interface::Toltec, ToltecInterface>,
-                            meta::case_t<Interface::Hwp, HwpInterface>,
-                            meta::case_t<Interface::Lmt, LmtInterface>>;
-        template <Interface interface> using io_t = dispatcher::io_t<interface>;
-        using variant_t = dispatcher::variant_t;
-    };
-
-    struct RawData : ConfigMixin<RawData> {
-        RawData(const config_t &config_)
-            : ConfigMixin<RawData>{config_},
-              interface(config()["interface"].template as<std::string>()),
-              filepath(config()["filepath"].template as<std::string>()) {
-            // initalize io
-            meta::switch_invoke<InterfaceRegistry::InterfaceKind>(
-                [&](auto interfacekind_) {
-                    constexpr auto interfacekind = DECAY(interfacekind_)::value;
-                    io = InterfaceRegistry::template io_t<interfacekind>();
-                },
-                interface_kind());
-            std::string interface{};
-            std::string filepath{};
-            friend std::ostream &operator<<(std::ostream &os,
-                                            const InputData &d) {
-                return os << fmt::format("InputData(interface={} filepath={})",
-                                         d.interface, d.filepath);
-            }
-        };
-
+    struct Observation : ConfigMixin<Observation> {
         /**
-         * @brief The InputData struct
-         * This holds informatation for an input data object
+         * @brief The DataItem struct
+         * This represent a single data item that belongs to a particular
+         * observation
          */
-        struct Input {
-            using InputData(const config_t &config_)
-                : m_config(config_),
-                  interface(config()["interface"].template as<std::string>()),
-                  filepath(config()["filepath"].template as<std::string>()) {
+        struct DataItem : ConfigMixin<DataItem> {
+
+            DataItem(config_t config_)
+                : ConfigMixin<DataItem>{std::move(config_)},
+                  interface(config().get_str("interface")),
+                  filepath(config().get_str("filepath")) {
                 // initalize io
-                meta::switch_invoke<InterfaceRegistry::InterfaceKind>(
-                    [&](auto interfacekind_) {
-                        constexpr auto interfacekind =
-                            DECAY(interfacekind_)::value;
-                        io = InterfaceRegistry::template io_t<interfacekind>();
-                    },
-                    interface_kind());
+                //                 meta::switch_invoke<InterfaceRegistry::InterfaceKind>(
+                //                     [&](auto interfacekind_) {
+                //                         constexpr auto interfacekind =
+                //                             DECAY(interfacekind_)::value;
+                //                         io = InterfaceRegistry::template
+                //                         io_t<interfacekind>();
+                //                     },
+                //                     interface_kind());
             }
             std::string interface{};
             std::string filepath{};
             friend std::ostream &operator<<(std::ostream &os,
-                                            const InputData &d) {
-                return os << fmt::format("InputData(interface={} filepath={})",
+                                            const DataItem &d) {
+                return os << fmt::format("DataItem(interface={} filepath={})",
                                          d.interface, d.filepath);
             }
-            using io_t = typename InterfaceRegistry::IO_variant;
-            io_t io;
-            static bool validate_config(const config_t &config) {
-                std::vector<std::string> required_keys{"interface", "filepath"};
-                std::vector<std::string> optioanl_keys{};
-                std::sstream report;
-                for (auto &it = config.begin(); it != config.end(); ++it) {
-                }
-                SPDLOG_DEBUG("", report);
-                return config.;
-            }
-            config_t m_config;
-            constexpr const auto &config() const { return m_config; }
-        };
-
-        // io_buffer
-        using io_buffer_data_t = double;
-        std::size_t io_buffer_size() { return 4000 * 4880 * 10; }
-
-    private:
-        using input_t = InputData;
-        // this is all the inputs
-        std::vector<input_t> m_inputs;
-
-        // collect input data
-        const std::vector<input_t> &collect_inputs() {
-            m_inputs.clear();
-            if (is_master()) {
-                // master does not get data.
-            } else {
-                // distribute inputs through out worker ranks as round robin
-                auto index = worker_index();
-                SPDLOG_TRACE("get input data for worker={} rank={}", index,
-                             comm.rank());
-                std::vector<input_t> results;
-                auto c = config()["io"]["inputs"];
-                assert(c.IsSequence());
-                for (std::size_t i = 0; i < c.size(); i++) {
-                    if (index == (meta::size_cast<int>(i) % n_workers())) {
-                        results.emplace_back(c[i]);
+            InterfaceRegistry::variant_t io;
+            static auto validate_config(const config_t &config)
+                -> std::optional<std::string> {
+                std::vector<std::string> missing_keys;
+                for (const auto &key : {"interface", "filepath"}) {
+                    if (!config.has(key)) {
+                        missing_keys.push_back(key);
                     }
                 }
-                m_inputs = std::move(results);
+                if (missing_keys.empty()) {
+                    return std::nullopt;
+                }
+                return fmt::format("missing keys={}", missing_keys);
             }
-            return m_inputs;
+        };
+        Observation(config_t config_)
+            : ConfigMixin<Observation>{config_}, name{config().get_str(
+                                                     "name", "unnamed")} {
+            // initialize the data_items
+            //             auto node = config()["data_items"];
+            //             assert(node.IsSequence());
+            //             for (std::size_t i = 0; i < node.size(); ++i) {
+            //                 data_items.emplace_back(config_t(node[i]));
+            //             }
+        }
+        std::string name;
+        // std::vector<DataItem> data_items{};
+        static auto validate_config(const config_t &config)
+            -> std::optional<std::string> {
+            if (config.has("data_items")) {
+                return std::nullopt;
+            }
+            return fmt::format("missing key={}", "data_items");
+        }
+        friend std::ostream &operator<<(std::ostream &os,
+                                        const Observation &obs) {
+            return os << fmt::format("Observation(name={})", obs.name);
         }
     };
+
+    // io_buffer
+    using io_buffer_data_t = double;
+    std::size_t io_buffer_size() { return 4000 * 4880 * 10; }
+
+    constexpr auto n_inputs() const { return m_inputs.size(); }
+
+private:
+    using input_t = Observation;
+    using payload_t = Observation::DataItem;
+    // this is all the inputs
+    std::vector<input_t> m_inputs;
+    // this is the current payload
+    std::vector<payload_t> m_payloads;
+
+    // collect input data
+    const std::vector<input_t> &collect_inputs() {
+        m_inputs.clear();
+        // this is run for all processes so that everyone has the necessary info
+        // to collect payloads
+        auto index = node_index();
+        SPDLOG_TRACE("get input data for node={} name={}", index, node_name());
+        std::vector<input_t> results;
+        auto c = config()["io"]["inputs"];
+        assert(c.IsSequence());
+        for (std::size_t i = 0; i < c.size(); i++) {
+            if (index == (meta::size_cast<int>(i) % n_nodes())) {
+                results.emplace_back(config_t{c[i]});
+            }
+        }
+        m_inputs = std::move(results);
+
+        if (is_master_local()) {
+            // report number of obs to process
+            SPDLOG_DEBUG("collected n_inputs={} on node={} name={}",
+                         m_inputs.size(), index, node_name());
+        }
+        return m_inputs;
+    }
+
+public:
+    // collect payload
+    const std::vector<payload_t> &collect_payloads(std::size_t input_index) {
+        m_payloads.clear();
+        if (is_master_local()) {
+            // master local does not get payload
+        } else {
+            // construct payload
+            // distribute inputs through out worker ranks
+            auto index = worker_index_local();
+            SPDLOG_TRACE("get payload for worker={} local_rank={}", index,
+                         rank_local());
+            std::vector<payload_t> results;
+            auto c = m_inputs[input_index].config()["data_items"];
+            assert(c.IsSequence());
+            for (std::size_t i = 0; i < c.size(); i++) {
+                if (index == (meta::size_cast<int>(i) % n_workers_local())) {
+                    results.emplace_back(config_t{c[i]});
+                }
+            }
+            m_payloads = std::move(results);
+            SPDLOG_DEBUG("collected n_payloads={} on worker={} local_rank{} "
+                         "node={} name={}",
+                         m_payloads.size(), index, rank_local(), node_index(),
+                         node_name());
+        }
+        return m_payloads;
+    }
+};
 
 int main(int argc, char **argv) {
 
     mpi_utils::env mpi_env(argc, argv); // RAII MPI env
     mpi_env.set_exception_on_error();
-    mxx::comm comm; // MPI_COMM_WORLD
+    mpi_utils::comm comm; // MPI_COMM_WORLD
     MPI_Win win;    // window object
     mpi_utils::logging_init(comm);
-    mpi_utils::pprint_node_ranks(comm, 0, [&](const auto &node_ranks) {
+    mpi_utils::pprint_node_ranks(0, comm, [&](const auto &node_ranks) {
         SPDLOG_INFO("{}", mpi_env);
         SPDLOG_INFO("{}", node_ranks);
     });
 
-    auto comm_shm = comm.split_shared();
+    mpi_utils::comm comm_shm{comm.split_shared()};
     {
         // check if shm comm is valid.
         const auto master_rank = 0;
@@ -389,7 +478,8 @@ int main(int argc, char **argv) {
 
     // io config
     using coordinator_t = Coordinator;
-    coordinator_t co{comm_shm};
+    coordinator_t co{comm, comm_shm};
+    using config_t = coordinator_t::config_t;
     if (co.is_master()) {
         const char *test_config{
             R"(---
@@ -398,7 +488,7 @@ description: |-
 io:
     inputs:
       - name: obs1
-        files:
+        data_items:
           - interface: toltec0
             filepath: "toltec0.nc"
           - interface: toltec1
@@ -410,7 +500,7 @@ io:
           - interface: hwp 
             filepath: "hwp.nc"
       - name: obs2
-        files:
+        data_items:
           - interface: toltec0
             filepath: "toltec0.nc"
           - interface: toltec1
@@ -442,19 +532,19 @@ io:
                     unit: The unit of said value, e.g., sample, second, etc.
 )"};
         SPDLOG_TRACE("yaml config in:\n{}", test_config);
-        co.set_config(YAML::Load(test_config));
-        // validate the cofnig
-        coordinator_t::InputData::validate(config);
-        lali::RTCProc::validate(config);
-
-        rtcproc = RTCProc(config);
-        rtcproc.process_chunk()
+        co.set_config(config_t::load_from_str(test_config));
         /// VALIDATE_CONFIG(config, )
         /// for all types that consumes config.
     }
 
     // make sure all ranks have access to the config.
-    co.sync().initialize();
+    co.sync();
+    auto n_obs = co.n_inputs();
+    for (std::size_t i = 0; i < n_obs; ++i) {
+        const auto &payloads = co.collect_payloads(i);
+        SPDLOG_TRACE("payloads: {}", payloads);
+    }
+
     MPI_Abort(comm, 0);
     // coordinator settings
 
@@ -474,9 +564,9 @@ io:
     auto io_buffer =
         mpi_utils::Span<coordinator_t::io_buffer_data_t>::allocate_shared(
             co.master_rank(), co.io_buffer_size(), comm_shm, &win);
-    auto coor =
-        mpi_utils::Span<coordinator_t::io_buffer_data_t>::allocate_shared(
-            co.master_rank(), co.io_buffer_size(), comm_shm, &win);
+    //     auto coor =
+    //         mpi_utils::Span<coordinator_t::io_buffer_data_t>::allocate_shared(
+    //             co.master_rank(), co.io_buffer_size(), comm_shm, &win);
 
     if (co.is_master()) {
         auto ex = grppiex::Mode::omp;
