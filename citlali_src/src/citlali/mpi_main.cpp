@@ -12,76 +12,92 @@
 #include <utils/mpi.h>
 #include <yaml-cpp/yaml.h>
 
+namespace predefs {
+
+// we need to be careful about the int type used here as
+// we may have very large array in the memory.
+
+// check eigen index type
+static_assert(std::is_same_v<std::ptrdiff_t, Eigen::Index>,
+              "UNEXPECTED EIGEN INDEX TYPE");
+using index_t = std::ptrdiff_t;
+using shape_t = Eigen::Matrix<index_t, 2, 1>;
+using data_t = double;
+} // namespace predefs
+
 /**
  * @brief The BlockAccessor struct
  * This provides methods to access array in block notions
  */
-template <typename Array, auto ndims_ = 2> struct BlockAccessor {
+template <typename Array, auto n_dims_ = 2> struct BlockAccessor {
     using array_t = Array;
-    using index_t = Eigen::Index;
+    using index_t = predefs::index_t;
     using bins_t = Eigen::Matrix<index_t, 2, Eigen::Dynamic>;
-    constexpr static const index_t ndims = ndims_;
-    static_assert(ndims > 0, "NDIMS HAS TO BE POSITIVE");
-    static_assert(ndims <= 2, "NDIMS > 2 IS NOT IMPLEMENTED");
+    constexpr static const index_t n_dims = n_dims_;
+    static_assert(n_dims > 0, "NDIMS HAS TO BE POSITIVE");
+    static_assert(n_dims <= 2, "NDIMS > 2 IS NOT IMPLEMENTED");
     constexpr static const index_t left = 0;
     constexpr static const index_t right = 1;
     BlockAccessor(array_t array_) : array(std::move(array_)) {}
     array_t array;
-    std::array<bins_t, ndims> all_bins;
+    std::array<bins_t, n_dims> all_bins;
     /**
      * @brief Return the bins for dim.
      */
-    template <auto dim> constexpr auto bins() -> decltype(auto) {
+    template <index_t dim> constexpr auto bins() -> decltype(auto) {
         return all_bins[dim];
     }
     /**
      * @brief Return the number of bins for dim.
      */
-    template <auto dim> constexpr index_t nbins() const {
+    template <index_t dim> constexpr index_t n_bins() const {
         return bins<dim>().cols();
     }
     /**
      * @brief Set bins with bin matrix of shape (2, nbins).
      */
-    template <auto dim> void set_bins(bins_t bins_) {
+    template <index_t dim> void set_bins(bins_t bins_) {
         bins<dim>() = std::move(bins_);
     }
     /**
      * @brief Set bins with vector of pairs of (left, right).
      */
-    template <auto dim>
+    template <index_t dim>
     void set_bins(const std::vector<std::pair<index_t, index_t>> &bins_) {
         set_bins(eigen_utils::tomat(bins_));
     }
     /**
      * @brief Set bins with vector of bin edges of size (nbins + 1).
      */
-    template <auto dim> void set_bins(const std::vector<index_t> &bin_edges) {
-        static_assert(dim > 0 && dim < ndims, "INVAID DIM");
+    template <index_t dim>
+    void set_bins(const std::vector<index_t> &bin_edges) {
+        static_assert(dim > 0 && dim < n_dims, "INVAID DIM");
         auto edges = eigen_utils::asvec(bin_edges);
-        auto nbins = edges.size() - 1;
-        bins<dim>().resize(2, nbins);
-        bins<dim>().row(left) = edges.head(nbins);
-        bins<dim>().row(right) = edges.tail(nbins);
+        index_t n_bins = edges.size() - 1;
+        bins<dim>().resize(2, n_bins);
+        bins<dim>().row(left) = edges.head(n_bins);
+        bins<dim>().row(right) = edges.tail(n_bins);
     }
 
     /**
      * @brief Returns number of blocks
      */
-    constexpr index_t nblocks() const {
+    constexpr index_t n_blocks() const {
         return std::reduce(all_bins.begin(), all_bins.end(), 1,
                            [](const auto &lhs, const auto &rhs) {
                                return lhs.cols() * rhs.cols();
                            });
     }
-    template <REQUIRES_V_(ndims == 1)> auto block(index_t i) {
+    template <index_t n_dims__ = n_dims, REQUIRES_V(n_dims__ == 1)>
+    auto block(index_t i) {
         constexpr decltype(auto) bins_ = bins<0>();
         assert(i < bins_.cols());
         auto i0 = bins_.coeff(left, i);
         auto ni = bins_.coeff(right, i) - i0;
         return array.segment(i0, ni);
     }
-    template <REQUIRES_V_(ndims == 2)> auto block(index_t i, index_t j) {
+    template <index_t n_dims__ = n_dims, REQUIRES_V(n_dims__ == 2)>
+    auto block(index_t i, index_t j) {
         constexpr decltype(auto) ibins = bins<0>();
         assert(i < ibins.cols());
         auto i0 = ibins.coeff(left, i);
@@ -91,8 +107,12 @@ template <typename Array, auto ndims_ = 2> struct BlockAccessor {
         assert(j < jbins.cols());
         auto j0 = jbins.coeff(left, j);
         auto nj = jbins.coeff(right, j) - j0;
-
         return array.block(i0, j0, ni, nj);
+    }
+
+    friend std::ostream &operator<<(std::ostream &os, const BlockAccessor &b) {
+        return os << fmt::format("BlockAccessor(array{} all_bins={})", b.array,
+                                 b.all_bins);
     }
 };
 
@@ -245,13 +265,17 @@ struct InterfaceRegistry {
 struct Coordinator : ConfigMixin<Coordinator> {
     using config_t = ConfigMixin::config_t;
     using comm_t = mpi_utils::comm;
-    using index_t = int;
+    using index_t = predefs::index_t;
+    using shape_t = predefs::shape_t;
     constexpr static index_t not_a_worker = -1;
 
-    Coordinator(const comm_t &comm_, const comm_t &comm_local_)
-        : ConfigMixin<Coordinator>{}, comm(comm_), comm_local(comm_local_) {}
+    Coordinator(const comm_t &comm_, const comm_t &comm_local_,
+                MPI_Win &win_local_)
+        : ConfigMixin<Coordinator>{}, comm(comm_), comm_local(comm_local_),
+          win_local(win_local_) {}
     const comm_t &comm;       // This is all, including cross-node
     const comm_t &comm_local; // node-local comm
+    MPI_Win &win_local;       // window object for local shm
 
     constexpr auto n_nodes() const { return comm.n_nodes(); }
     constexpr auto node_index() const { return comm.node_index(); }
@@ -272,7 +296,8 @@ struct Coordinator : ConfigMixin<Coordinator> {
         if (is_master_local()) {
             return not_a_worker;
         }
-        return rank_local() - ((rank_local() > master_rank_local()) ? 1 : 0);
+        return rank_local() -
+            ((rank_local() > master_rank_local()) ? index_t(1) : 0);
     }
     constexpr auto n_workers_local() const { return comm_local.size() - 1; }
 
@@ -280,7 +305,7 @@ struct Coordinator : ConfigMixin<Coordinator> {
      * Sync the config.
      * This is done to the global comm.
      */
-    auto &sync() {
+    void sync() {
 
         auto config_str = comm.bcast_str(
             master_rank(), [&]() { return config().dump_to_str(); });
@@ -295,8 +320,9 @@ struct Coordinator : ConfigMixin<Coordinator> {
         comm.barrier();
         // collect inputs
         const auto &inputs = collect_inputs();
-        SPDLOG_TRACE("inputs: {}", inputs);
-        return *this;
+        if (is_master_local()) {
+            SPDLOG_TRACE("inputs: {}", inputs);
+        }
     }
 
     /**
@@ -346,6 +372,12 @@ struct Coordinator : ConfigMixin<Coordinator> {
                 }
                 return fmt::format("missing keys={}", missing_keys);
             }
+            index_t buffer_size() const { return 4880 * 500; }
+            shape_t buffer_shape() const {
+                shape_t s;
+                s << 4880, 500;
+                return s;
+            }
         };
         Observation(config_t config_)
             : ConfigMixin<Observation>{config_}, name{config().get_str(
@@ -373,7 +405,7 @@ struct Coordinator : ConfigMixin<Coordinator> {
     };
 
     // io_buffer
-    using io_buffer_data_t = double;
+    using payloads_buffer_data_t = predefs::data_t;
     std::size_t io_buffer_size() { return 4000 * 4880 * 10; }
 
     constexpr auto n_inputs() const { return m_inputs.size(); }
@@ -397,7 +429,7 @@ private:
         auto c = config()["io"]["inputs"];
         assert(c.IsSequence());
         for (std::size_t i = 0; i < c.size(); i++) {
-            if (index == (meta::size_cast<int>(i) % n_nodes())) {
+            if (index == (meta::size_cast<decltype(index)>(i) % n_nodes())) {
                 results.emplace_back(config_t{c[i]});
             }
         }
@@ -421,13 +453,14 @@ public:
             // construct payload
             // distribute inputs through out worker ranks
             auto index = worker_index_local();
-            SPDLOG_TRACE("get payload for worker={} local_rank={}", index,
-                         rank_local());
+            SPDLOG_TRACE("get payload for input={} worker={} local_rank={}",
+                         m_inputs.at(input_index), index, rank_local());
             std::vector<payload_t> results;
-            auto c = m_inputs[input_index].config()["data_items"];
+            auto c = m_inputs.at(input_index).config()["data_items"];
             assert(c.IsSequence());
             for (std::size_t i = 0; i < c.size(); i++) {
-                if (index == (meta::size_cast<int>(i) % n_workers_local())) {
+                if (index ==
+                    (meta::size_cast<decltype(index)>(i) % n_workers_local())) {
                     results.emplace_back(config_t{c[i]});
                 }
             }
@@ -439,6 +472,48 @@ public:
         }
         return m_payloads;
     }
+
+    using payloads_buffer_t = mpi_utils::Span<payloads_buffer_data_t, index_t>;
+    using payloads_buffer_accessor_t =
+        BlockAccessor<payloads_buffer_t::mat_t, 2>;
+    auto allocate_payloads_buffer() {
+        // get total size of current payloads, and allocate the shm
+        // compute payloads buffer size for each node
+        shape_t total_buffer_shape = shape_t::Zero();
+        auto shape_concat = [](const auto &lhs, const auto &rhs) {
+            shape_t r;
+            // concat columns
+            r(0) = std::max(lhs(0), rhs(0));
+            r(1) = lhs(1) + rhs(1);
+            return r;
+        };
+        {
+            shape_t buffer_shape = std::transform_reduce(
+                m_payloads.begin(), m_payloads.end(), shape_t::Zero().eval(),
+                shape_concat,
+                [](const auto &v) -> shape_t { return v.buffer_shape(); });
+            SPDLOG_TRACE("payloads buffer size={} worker_index={}",
+                         buffer_shape, worker_index_local());
+            {
+                // shape concat
+                MPI_Allreduce(&buffer_shape(0), &total_buffer_shape(0), 1,
+                              MPI_UTILS_DECLTYPE(buffer_shape(0)), MPI_MAX,
+                              comm_local);
+                MPI_Allreduce(&buffer_shape(1), &total_buffer_shape(1), 1,
+                              MPI_UTILS_DECLTYPE(buffer_shape(1)), MPI_SUM,
+                              comm_local);
+            }
+        }
+        if (is_master_local()) {
+            SPDLOG_TRACE("total payloads buffer shape={}", total_buffer_shape);
+        }
+        // allocate memory and initialize accessor
+        auto buffer = payloads_buffer_t::allocate_shared(
+            master_rank_local(), total_buffer_shape.prod(), comm_local,
+            &win_local);
+        return payloads_buffer_accessor_t{
+            buffer.asmat(total_buffer_shape(0), total_buffer_shape(1))};
+    }
 };
 
 int main(int argc, char **argv) {
@@ -446,7 +521,6 @@ int main(int argc, char **argv) {
     mpi_utils::env mpi_env(argc, argv); // RAII MPI env
     mpi_env.set_exception_on_error();
     mpi_utils::comm comm; // MPI_COMM_WORLD
-    MPI_Win win;    // window object
     mpi_utils::logging_init(comm);
     mpi_utils::pprint_node_ranks(0, comm, [&](const auto &node_ranks) {
         SPDLOG_INFO("{}", mpi_env);
@@ -478,8 +552,11 @@ int main(int argc, char **argv) {
 
     // io config
     using coordinator_t = Coordinator;
-    coordinator_t co{comm, comm_shm};
+    using index_t = coordinator_t::index_t;
     using config_t = coordinator_t::config_t;
+
+    MPI_Win win_shm;
+    coordinator_t co{comm, comm_shm, win_shm};
     if (co.is_master()) {
         const char *test_config{
             R"(---
@@ -543,9 +620,16 @@ io:
     for (std::size_t i = 0; i < n_obs; ++i) {
         const auto &payloads = co.collect_payloads(i);
         SPDLOG_TRACE("payloads: {}", payloads);
+        auto buffer = co.allocate_payloads_buffer();
+        if (co.is_master_local()) {
+            buffer.array(0) = 100;
+        }
+        MPI_Win_sync(win_shm);
+        SPDLOG_TRACE("payloads buffer {}", buffer);
+        co.comm.barrier();
+        MPI_Abort(comm, 0);
     }
 
-    MPI_Abort(comm, 0);
     // coordinator settings
 
     int arg{0};
@@ -561,9 +645,6 @@ io:
     }
 
     // intialize the shared memory buffer for io
-    auto io_buffer =
-        mpi_utils::Span<coordinator_t::io_buffer_data_t>::allocate_shared(
-            co.master_rank(), co.io_buffer_size(), comm_shm, &win);
     //     auto coor =
     //         mpi_utils::Span<coordinator_t::io_buffer_data_t>::allocate_shared(
     //             co.master_rank(), co.io_buffer_size(), comm_shm, &win);
@@ -577,9 +658,9 @@ io:
                 static int rtc = 0;
                 // returns upon each recieved rtc
                 std::this_thread::sleep_for(std::chrono::seconds(arg));
-                MPI_Win_sync(win);
-                SPDLOG_TRACE("io_buffer{}",
-                             io_buffer.asvec().head(comm.size()));
+                MPI_Win_sync(win_shm);
+                //  SPDLOG_TRACE("io_buffer{}",
+                //              io_buffer.asvec().head(comm.size()));
                 return ++rtc;
             },
             [&](int rtc) {
@@ -591,9 +672,9 @@ io:
         std::this_thread::sleep_for(std::chrono::seconds(arg));
         SPDLOG_TRACE("reading rtc={} done", 0);
         auto rank = comm_shm.rank();
-        io_buffer.data[rank] = rank;
-        MPI_Win_sync(win);
+        // io_buffer.data[rank] = rank;
+        MPI_Win_sync(win_shm);
     }
-    MPI_Win_free(&win);
+    MPI_Win_free(&win_shm);
     return EXIT_SUCCESS;
 }
