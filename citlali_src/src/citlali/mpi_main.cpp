@@ -476,10 +476,12 @@ public:
     using payloads_buffer_t = mpi_utils::Span<payloads_buffer_data_t, index_t>;
     using payloads_buffer_accessor_t =
         BlockAccessor<payloads_buffer_t::mat_t, 2>;
+    constexpr static auto payloads_buffer_time_axis = 0;
+    constexpr static auto payloads_buffer_interface_axis = 1;
     auto allocate_payloads_buffer() {
         // get total size of current payloads, and allocate the shm
         // compute payloads buffer size for each node
-        shape_t total_buffer_shape = shape_t::Zero();
+        shape_t buffer_shape_all = shape_t::Zero();
         auto shape_concat = [](const auto &lhs, const auto &rhs) {
             shape_t r;
             // concat columns
@@ -496,23 +498,26 @@ public:
                          buffer_shape, worker_index_local());
             {
                 // shape concat
-                MPI_Allreduce(&buffer_shape(0), &total_buffer_shape(0), 1,
+                MPI_Allreduce(&buffer_shape(0), &buffer_shape_all(0), 1,
                               MPI_UTILS_DECLTYPE(buffer_shape(0)), MPI_MAX,
                               comm_local);
-                MPI_Allreduce(&buffer_shape(1), &total_buffer_shape(1), 1,
+                MPI_Allreduce(&buffer_shape(1), &buffer_shape_all(1), 1,
                               MPI_UTILS_DECLTYPE(buffer_shape(1)), MPI_SUM,
                               comm_local);
             }
         }
         if (is_master_local()) {
-            SPDLOG_TRACE("total payloads buffer shape={}", total_buffer_shape);
+            SPDLOG_TRACE("payloads buffer shape all {}", buffer_shape_all);
         }
         // allocate memory and initialize accessor
-        auto buffer = payloads_buffer_t::allocate_shared(
-            master_rank_local(), total_buffer_shape.prod(), comm_local,
-            &win_local);
-        return payloads_buffer_accessor_t{
-            buffer.asmat(total_buffer_shape(0), total_buffer_shape(1))};
+        auto mem = payloads_buffer_t::allocate_shared(master_rank_local(),
+                                                      buffer_shape_all.prod(),
+                                                      comm_local, &win_local);
+        payloads_buffer_accessor_t buffer{mem.asmat(buffer_shape_all)};
+        // set up row bins. This is done according to the
+        // buffer.set_bins<payloads_buffer_time_axis>();
+        std::map<index_t, index_t> map_playload_to_block{};
+        return buffer;
     }
 };
 
@@ -576,6 +581,11 @@ io:
             filepath: "lmt.nc"
           - interface: hwp 
             filepath: "hwp.nc"
+        cal_items:
+          - name: beammap
+            filepath: "beammap.nc"
+          - name: detector_maskk
+            indices: [::10]
       - name: obs2
         data_items:
           - interface: toltec0
@@ -588,6 +598,11 @@ io:
             filepath: "lmt.nc"
           - interface: hwp 
             filepath: "hwp.nc"
+        cal_items:
+          - name: beammap
+            filepath: "beammap.nc"
+          - name: detector_maskk
+            indices: [::10]
     time_chunking:
         enabled: yes
         method:
@@ -607,6 +622,8 @@ io:
                 description: |-
                     value: The length of the time chunk.
                     unit: The unit of said value, e.g., sample, second, etc.
+reduce:
+    map_making:
 )"};
         SPDLOG_TRACE("yaml config in:\n{}", test_config);
         co.set_config(config_t::load_from_str(test_config));
@@ -649,7 +666,12 @@ io:
     //         mpi_utils::Span<coordinator_t::io_buffer_data_t>::allocate_shared(
     //             co.master_rank(), co.io_buffer_size(), comm_shm, &win);
 
-    if (co.is_master()) {
+    if (co.is_master_local()) {
+        //
+        // using citlali_co_t = int;
+        // citlali_co_t cco(co.config());
+        // allocate all buffers map, coadded map. per map product.
+        // cco.allocate_buffers(telescope_data);
         auto ex = grppiex::Mode::omp;
         SPDLOG_TRACE("use grppi ex {}", ex);
         grppi::pipeline(
@@ -664,6 +686,7 @@ io:
                 return ++rtc;
             },
             [&](int rtc) {
+                // cco.process(rtc);
                 SPDLOG_TRACE("processing rtc={}", rtc);
                 std::this_thread::sleep_for(std::chrono::seconds(arg));
             });

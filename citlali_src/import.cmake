@@ -14,16 +14,12 @@ target_sources(citlali_core
     PRIVATE
         src/citlali/citlali.cpp
         )
-
+target_include_directories(citlali_core PUBLIC "src")
 target_link_libraries(citlali_core
     PUBLIC
         cmake_utils::spdlog_and_fmt
+        cmake_utils::gitversion
         NetCDF::NetCDFCXX4
-        utils::gitversion
-    )
-target_include_directories(citlali_core
-    PUBLIC
-        src
     )
 option(CITLALI_BUILD_MPI "Build mpi exec" ON)
 if (CITLALI_BUILD_MPI)

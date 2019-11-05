@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(citlali LANGUAGES CXX)
+project(citlali LANGUAGES C CXX)
 include("${CMAKE_CURRENT_SOURCE_DIR}/common_utils/cmake/CommonSettings.cmake")
 
 set(KIDS_BUILD_GUI OFF CACHE BOOL "" FORCE)
