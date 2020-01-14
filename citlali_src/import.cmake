@@ -40,7 +40,7 @@ if (CITLALI_BUILD_MPI)
         mxx::mxx
         grppi::grppi
         Eigen3::Eigen
-        yaml::yaml
+        yaml-cpp::yaml-cpp
         )
 endif()
 # optional targets
