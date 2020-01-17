@@ -80,8 +80,8 @@ public:
          downsample(inner_scans, inner_flags, in.scanindex.data, out.scans.data, out.flags.data, out.scanindex.data, dsf);
      }
 
-     out.scans.data = inner_scans;
-     out.flags.data = inner_flags;
+     //out.scans.data = inner_scans;
+     //out.flags.data = inner_flags;
      out.kernelscans.data.resize(out.scans.data.rows(),out.scans.data.cols());
      out.kernelscans.data.setZero();
      out.scanindex.data.noalias() = in.scanindex.data;
@@ -109,6 +109,8 @@ void PTCProc::process(TCData<LaliDataKind::PTC> &in, TCData<LaliDataKind::PTC> &
         out.scans.data = in.scans.data;
         out.kernelscans.data = in.kernelscans.data;
     }
+
+    //Copy flags and scan indices over to output PTCData
     out.flags.data.noalias() = in.flags.data;
     out.scanindex.data.noalias() = in.scanindex.data;
 }

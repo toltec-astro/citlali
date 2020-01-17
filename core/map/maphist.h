@@ -2,6 +2,8 @@
 
 namespace mapmaking {
 
+
+//Structure to hold map histogram results and output them to a netcdf file
 struct maphiststruct {
     Eigen::VectorXd histBins;
     Eigen::VectorXd histVals;
@@ -74,7 +76,10 @@ std::tuple<Eigen::VectorXd,Eigen::VectorXd> calcMapHistogram(Derived &mapstruct,
       //     im(i,j) = mapstruct.signal(cutXRange[0] + i,cutYRange[0] + j);
   //}
 
+  //Create a map to the eigen signal tensor
    Eigen::Map<Eigen::MatrixXd> signal_matrix(mapstruct.signal.data(),mapstruct.signal.dimension(0),mapstruct.signal.dimension(1));
+
+   //Get the desire region
    auto im = signal_matrix.block(cutXRange[0],cutYRange[0],nx,ny);
 
   // do the histogram

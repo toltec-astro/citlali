@@ -23,12 +23,15 @@ void generate_scimaps(TCData<LaliDataKind::PTC> &ptc, pointing &telescope_data,
       weight->image, rowCoordsPhys, colCoordsPhys);
     }*/
 
+    //to be removed
     Eigen::Index si = ptc.scanindex.data(0);
     Eigen::Index ei = ptc.scanindex.data(1);
 
+    //Loop throught detectors since we are parallized by scan
     for(Eigen::Index i=0;i<ndet;i++){
         {
         //logging::scoped_timeit timer("loops");
+        //get pointing for each scan
         Eigen::VectorXd lat, lon;
         getPointing(telescope_data, lat, lon, offsets, i, si, ei, dsf);
         for(int s=0;s<ptc.scans.data.rows();s++){
@@ -36,6 +39,7 @@ void generate_scimaps(TCData<LaliDataKind::PTC> &ptc, pointing &telescope_data,
                 //get the row and column index corresponding to the ra and dec
                 Eigen::Index irow = 0;
                 Eigen::Index icol = 0;
+                //get pixel row and column index in matrix.
                 latlonPhysToIndex(lat[s], lon[s], irow, icol, mapstruct);
 
                 //weight map
@@ -52,7 +56,6 @@ void generate_scimaps(TCData<LaliDataKind::PTC> &ptc, pointing &telescope_data,
                 mapstruct.inttime(irow,icol) += 1./samplerate;
                 }
 
-                //check for NaN
                 double hx = ptc.scans.data(s,i)*tmpwts[i];
                 double hk = ptc.kernelscans.data(s,i)*tmpwts[i];
 
@@ -60,6 +63,8 @@ void generate_scimaps(TCData<LaliDataKind::PTC> &ptc, pointing &telescope_data,
                   if (atmTemplate)
                           ha = tmpwt[i][k]*a->detectors[di[i]].atmTemplate[j];
                 */
+
+                //check for NaNs
                 if(hx != hx || hk != hk){
                       //cerr << "NaN detected on file: "<<ap->getMapFile() << endl;
                       //cerr << "tmpwt: " << tmpwt[i][k] << endl;

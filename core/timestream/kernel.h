@@ -13,13 +13,12 @@ void makeKernelTimestream(Eigen::DenseBase<DerivedA> &scans,
 
   Eigen::VectorXd dist = (lat.derived().array().square() + lon.derived().array().square()).sqrt();
 
-  //now run through the distances and generate a signal.  If the
-  //source is more than 3 beam sigmas away, call it 0.
   double sigma = (beamSigAz+beamSigEl)/2./3600./360.*pi;
 
   scans = (-0.5*(dist/sigma).array().pow(2)).exp();
 
-  for(int i=0;i<dist.size();i++){
+  //If the source is more than 3 beam sigmas away, call it 0.
+    for(int i=0;i<dist.size();i++){
     if(dist(i) > 3.*sigma){
       scans(i) = 0;
     }

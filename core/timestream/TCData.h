@@ -18,7 +18,7 @@ BITMASK_(LaliDataKind, int,        0xFFFF,
          );
 // clang-format on
 
-/// @brief RTC data class.
+/// @brief TC data class.
 template <LaliDataKind kind_ = LaliDataKind::Any, typename = void>
 struct TCData;
 } // namespace timestream

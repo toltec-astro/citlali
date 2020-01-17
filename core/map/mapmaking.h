@@ -26,6 +26,8 @@ using namespace std;
 using timestream::TCData;
 using timestream::LaliDataKind;
 
+
+//This structure holds the Maps as Eigen tensors.
 namespace mapmaking{
 
 class MapStruct
@@ -53,6 +55,9 @@ public:
     void resize(Eigen::Index ndet);
 };
 
+
+//Simple function to resize each matrix after the dimensions and number of rows/cols has
+//been determined
 void MapStruct::resize(Eigen::Index ndet){
 
     signal.resize(nrows,ncols);
@@ -72,6 +77,7 @@ void MapStruct::resize(Eigen::Index ndet){
 
 namespace internal {
 
+//Convert from physical coordinates to absolute coordinates.
 void physToAbs(double &pra, double &pdec, double &cra, double &cdec,
            double &ara, double &adec){
     double rho = sqrt(pow(pra,2)+pow(pdec,2));
@@ -92,6 +98,8 @@ void physToAbs(double &pra, double &pdec, double &cra, double &cdec,
       ara = cra + atan(a2);
     }
 }
+
+//Get the number of rows and columns from map dimensions
 template <typename DerivedA>
 void getRowCol(DerivedA &mapstruct, double mgrid_0, double mgrid_1,
                        double x_max_act, double x_min_act, double y_max_act, double y_min_act){
@@ -139,6 +147,8 @@ void getRowCol(DerivedA &mapstruct, double mgrid_0, double mgrid_1,
         }*/
 }
 
+
+//Determine the weight of a scan ignoring bad flags
 template <typename DerivedA, typename DerivedB>
 double calcScanWeight(const Eigen::DenseBase<DerivedA> &scans, const Eigen::DenseBase<DerivedB> &flags, const double samplerate){
 
@@ -158,6 +168,8 @@ double calcScanWeight(const Eigen::DenseBase<DerivedA> &scans, const Eigen::Dens
       return 1.0/pow(tmp,2.0);
 }
 
+
+//loop through all scans and get the weights.
 template<typename DerivedA>
 DerivedA calculateWeights(std::vector<TCData<LaliDataKind::PTC>> &ptcs, const int samplerate){
     Eigen::Index ndet = ptcs[0].scans.data.cols();
@@ -188,6 +200,8 @@ DerivedA calculateWeights(std::vector<TCData<LaliDataKind::PTC>> &ptcs, const in
 }
 } //namespace internal
 
+
+//Beammap generation code
 template <typename DerivedA, typename DerivedC>//, typename DerivedB>
 void mapgen(std::vector<TCData<LaliDataKind::PTC>> &ptcs,
                  pointing &telescope_data,
@@ -197,28 +211,36 @@ void mapgen(std::vector<TCData<LaliDataKind::PTC>> &ptcs,
 
     //MapStruct map;
 
+    //pixel size
     double ps = mapstruct.pixelsize*RAD_ASEC;
 
     Eigen::Index nscans = ptcs.size();
     Eigen::VectorXd lat, lon;
+
+    //Matrix for how many times each pixel was visited
     Eigen::MatrixXi nValues(mapstruct.nrows,mapstruct.ncols);
     nValues.setZero();
 
+    //get the pointing
     getPointing(telescope_data, lat, lon, offsets);
 
+    //loop through scans
     for (Eigen::Index j = 0; j < nscans; j++) {
         Eigen::Index s = 0;
         Eigen::Index si = ptcs[j].scanindex.data(0);
         Eigen::Index ei = ptcs[j].scanindex.data(1);
 
+        //Loop through each element in scan
         for (Eigen::Index k=si;k<ei;k++) {
             if(ptcs[j].flags.data(s,det)){
                 double hx = ptcs[j].scans.data(s,det)*tmpwts(det,j);
                 Eigen::Index irow = 0;
                 Eigen::Index icol = 0;
 
+                //get row and col index
                 latlonPhysToIndex(lat[k], lon[k], irow, icol, mapstruct);
 
+                //Populate that pixel
                 mapstruct.signal(det,irow,icol) += hx;
                 mapstruct.wtt(det,irow,icol) += tmpwts(det,j);
 
@@ -228,6 +250,8 @@ void mapgen(std::vector<TCData<LaliDataKind::PTC>> &ptcs,
         } //per scan loop
     } //scan loop
 
+
+    //Now we loop through again and normalize by the weight matrix.
     for(Eigen::Index irow = 0; irow < mapstruct.nrows; irow++)
         for(Eigen::Index icol = 0; icol < mapstruct.ncols; icol++){
             if(nValues(irow,icol) != 0)

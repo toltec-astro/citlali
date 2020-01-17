@@ -24,32 +24,41 @@ using namespace mapmaking;
 
 namespace lali{
 
+/**
+ * @brief This class holds and carries out most of science map making steps. It takes a
+ * yaml config class as input. It includes a setup function to create the map buffers
+ * and other variables and a process function to run the actual pipeline.
+ */
 class laliclass {
 public:
     laliclass(std::shared_ptr<YamlConfig> config_): config(std::move(config_)) {}
     std::shared_ptr<YamlConfig> config;
 
+    //Random generator for noise maps
     boost::random_device rd;
     boost::random::mt19937 rng{rd};
     boost::random::uniform_int_distribution<> rands{0,1};
 
+    //data class to hold raw data (will be removed)
     BeammapData bd;
-    std::vector<TCData<LaliDataKind::RTC>> rtcs;
-    std::vector<TCData<LaliDataKind::PTC>> ptcs;
-    std::vector<mapResult> brs;
 
+    //Mutexes to prevent race conditions
     std::mutex farm_mutex;
     std::mutex random_mutex;
 
+    //Holds the map result
     mapResult br;
 
     double samplerate;
-
     int dsf;
 
+    //Matricies for offsets
     Eigen::MatrixXd offsets;
 
+    //Number of nodes for each stage
     int n, n2, n3;
+
+    //number of detectors and number of scans for later stages
     int ndet, nscans;
 
     auto getfiles();
@@ -58,6 +67,7 @@ public:
 
 };
 
+//This function sets up variables from the config file and gets things like the offsets
 auto laliclass::setup() {
     double pixelsize = config->get_typed<double>("pixel_size");
     double mgrid_0 = config->get_typed<double>("mgrid0");
@@ -75,6 +85,7 @@ auto laliclass::setup() {
     ndet = bd.meta.template get_typed<int>("ndetectors");
     nscans = bd.meta.template get_typed<int>("nscans");
 
+    //Setting up map buffer
     br.mapstruct.NNoiseMapsPerObs = NNoiseMapsPerObs;
     br.mapstruct.pixelsize = pixelsize;
     br.mapstruct.mgrid_0 = mgrid_0;
@@ -90,6 +101,7 @@ auto laliclass::setup() {
     offsets.resize(2,ndet);
     offsets.setZero();
 
+    //Just hard coded for now for simplicity
     offsets.row(0) << -46.7880,
         -22.1615,
         -27.5385,
@@ -342,6 +354,7 @@ auto laliclass::setup() {
     //MapStruct class function to resize map tensors.
     br.mapstruct.resize(ndet);
 
+    //Set up noisemap matrices (move to inside mapstruct.resize()
     br.mapstruct.noisemaps.resize(br.mapstruct.NNoiseMapsPerObs,br.mapstruct.nrows,br.mapstruct.ncols);
     br.mapstruct.noisemaps.setZero();
 
@@ -350,6 +363,7 @@ auto laliclass::setup() {
     br.pp.setOnes();
 }
 
+//This function runs the actual pipeline
 auto laliclass::process(){
     ndet = bd.meta.get_typed<int>("ndetectors");
     nscans = bd.meta.get_typed<int>("nscans");
@@ -367,9 +381,11 @@ auto laliclass::process(){
             rtcproc.process(in,out);
             }
 
+            //Sizes for the kernel
             Eigen::VectorXd beamSigAz(ndet);
             Eigen::VectorXd beamSigEl(ndet);
 
+            //Hard coded for now
             beamSigAz.setConstant(4);
             beamSigEl.setConstant(4);
 
@@ -378,9 +394,12 @@ auto laliclass::process(){
             for(Eigen::Index det=0;det<ndet;det++) {
                 Eigen::VectorXd lat, lon;
 
+                //Map to kernel scan so no copying
                 Eigen::Map<Eigen::VectorXd> scans(out.kernelscans.data.col(det).data(),out.kernelscans.data.rows());
 
+                //Need to get pointing for each scan
                 mapmaking::getPointing(bd.telescope_data, lat, lon, offsets, det, out.scanindex.data(0), out.scanindex.data(1),dsf);
+                //Make the kernel scan
                 timestream::makeKernelTimestream(scans,lat,lon,beamSigAz[det],beamSigEl[det]);
             }
             }
@@ -388,44 +407,45 @@ auto laliclass::process(){
          }),
 
         grppi::farm(n2,[&](auto in) -> TCData<LaliDataKind::PTC> {
+            //Create a TCData with PTC kind to hold output
             TCData<LaliDataKind::PTC> out;
             PTCProc ptcproc(config);
             {
             logging::scoped_timeit timer("PTCProc");
+            //Run PCA clean
             ptcproc.process(in,out);
             }
-
-            //Push the PTCs into a vector; scoped_lock is required to prevent racing condition
-            {
-                std::scoped_lock lock(farm_mutex);
-                //ptcs.push_back(out);
-            }
-
         return out;
         }),
 
         grppi::farm(n3,[&](auto in) {
             Eigen::VectorXd tmpwt(in.scans.data.cols());
+            //Need to loop through detectors since we are parallelized on scans
             for(int i=0; i<in.scans.data.cols();i++)
+                //Generate weight matrix
                 tmpwt[i] = mapmaking::internal::calcScanWeight(in.scans.data.col(i), in.flags.data.col(i), samplerate);
             SPDLOG_INFO(tmpwt);
             //boost::random::mt19937 rng;
             //boost::random::uniform_int_distribution<> rands(0,1);
 
+            //Random matrix for noisemaps
             Eigen::MatrixXi noisemaps;
             {
+             //Do this in a scoped lock to prevent parallelization problems with random number generator
             std::scoped_lock lock(random_mutex);
             noisemaps = Eigen::MatrixXi::Zero(br.mapstruct.NNoiseMapsPerObs,1).unaryExpr([&](int dummy){return rands(rng);});
             noisemaps = (2.*(noisemaps.template cast<double>().array() - 0.5)).template cast<int>();
             }
 
             {
+            //Make the actual science maps
             logging::scoped_timeit timer("generate_scimaps");
             mapmaking::generate_scimaps(in,bd.telescope_data, br.mapstruct.mgrid_0, br.mapstruct.mgrid_1,
                                     samplerate, br.mapstruct, offsets, tmpwt, br.mapstruct.NNoiseMapsPerObs, noisemaps, dsf);
             }
            }));
 
+    //We need to return the actual pipeline here so it will run when the function is called in another pipeline.
     return process;
 }
 }

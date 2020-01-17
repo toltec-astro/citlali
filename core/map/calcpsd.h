@@ -8,6 +8,8 @@ enum FFTdirection2 {
     backward2 = 1
 };
 
+
+//This function does a 2D FFT since its not supported in Eigen
 template<FFTdirection2 direc, typename DerivedA>
 Eigen::VectorXcd fft2w2(Eigen::DenseBase<DerivedA> &vecIn, int nx, int ny){
     const int nRows = nx;//matIn.rows();
@@ -17,6 +19,7 @@ Eigen::VectorXcd fft2w2(Eigen::DenseBase<DerivedA> &vecIn, int nx, int ny){
 
     Eigen::MatrixXcd matIn(nRows,nCols);
 
+    //Keep in for loop for now to ensure matrix is filled in correct order.
     for(int i =0;i<nx;i++){
         for(int j=0;j<ny;j++)
             matIn(i,j) = vecIn(ny*i+j);
@@ -27,6 +30,7 @@ Eigen::VectorXcd fft2w2(Eigen::DenseBase<DerivedA> &vecIn, int nx, int ny){
     fft.SetFlag(Eigen::FFT<double>::Unscaled);
     Eigen::MatrixXcd matOut(nRows, nCols);
 
+    //Loop through rows and do 1D FFT
     for (int k = 0; k < nRows; ++k) {
         Eigen::VectorXcd tmpOut(nCols);
         if constexpr(direc == forward2){
@@ -38,6 +42,7 @@ Eigen::VectorXcd fft2w2(Eigen::DenseBase<DerivedA> &vecIn, int nx, int ny){
         matOut.row(k) = tmpOut;
     }
 
+    //Loop through columns and do 1D FFT
     for (int k = 0; k < nCols; ++k) {
         Eigen::VectorXcd tmpOut(nRows);
         if constexpr(direc == forward2){
@@ -52,6 +57,7 @@ Eigen::VectorXcd fft2w2(Eigen::DenseBase<DerivedA> &vecIn, int nx, int ny){
 
     Eigen::VectorXcd vec3(nx*ny);
 
+    //Fill up 1D vector by a for loop to ensure order is correct.
     for(int i =0;i<nx;i++){
         for(int j=0;j<ny;j++)
             vec3(ny*i+j) = matOut(i,j);
@@ -60,6 +66,7 @@ Eigen::VectorXcd fft2w2(Eigen::DenseBase<DerivedA> &vecIn, int nx, int ny){
     return vec3;
 }
 
+//This class holds the psd results and outputs them to a netcdf file
 class psdclass {
 public:
     Eigen::VectorXd psd;
@@ -114,6 +121,7 @@ public:
 
 namespace internal {
 
+//Hanning window function.  Move to map_utils?
 Eigen::MatrixXd hanning(int n1in, int n2in){
   double a = 2.*pi/n1in;
   double b = 2.*pi/n2in;
@@ -156,6 +164,7 @@ double select(vector<double> input, int index){
   }
 }
 
+
 template <typename DerivedA>
 double findWeightThresh(DerivedA &mapstruct, double coverageCut) {
   // number of elements in map
@@ -183,6 +192,7 @@ double findWeightThresh(DerivedA &mapstruct, double coverageCut) {
 
 }
 
+//Sets the coverage range for a given cut in map weight values.
 template <typename DerivedA>
 std::tuple<Eigen::VectorXd, Eigen::VectorXd> setCoverageCutRanges(DerivedA &mapstruct, double weightCut) {
 
@@ -258,6 +268,7 @@ std::tuple<Eigen::VectorXd, Eigen::VectorXd> setCoverageCutRanges(DerivedA &maps
 
 }
 
+//Function to smooth edges.  Move to map_utils?
 template <typename Derived>
 void smooth_edge_truncate(Eigen::DenseBase<Derived> &inArr, Eigen::DenseBase<Derived> &outArr, int w){
   int nIn = inArr.size();
@@ -286,7 +297,7 @@ void smooth_edge_truncate(Eigen::DenseBase<Derived> &inArr, Eigen::DenseBase<Der
 
 
 template <typename DerivedA>
-/// calculates the 1d map psd
+/// calculates the 2D map psd
 std::tuple<Eigen::VectorXd,Eigen::VectorXd,Eigen::MatrixXd,Eigen::MatrixXd> calcMapPsd(DerivedA &mapstruct, double coverageCut) {
   // make sure we've got up to date coverage cut indices
   double weightCut = mapmaking::internal::findWeightThresh(mapstruct,coverageCut);
