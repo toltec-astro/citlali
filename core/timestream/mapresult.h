@@ -49,12 +49,12 @@ struct mapResult {
             dims.push_back(nrows);
             dims.push_back(ncols);
 
-            //NcVar rowcoordphys = fo.addVar("rowCoordsPhys", ncDouble, nrows);
-            //NcVar colcoordphys = fo.addVar("colCoordsPhys", ncDouble, ncols);
+            NcVar rowcoordphys_var = fo.addVar("rowCoordsPhys", ncDouble, nrows);
+            NcVar colcoordphys_var = fo.addVar("colCoordsPhys", ncDouble, ncols);
             fo.putAtt("pixelSize",ncDouble,this->mapstruct.pixelsize);
 
-            //rowcoordphys.putVar(this->mapstruct.rowcoordphys.data());
-            //colcoordphys.putVar(this->mapstruct.colcoordphys.data());
+            rowcoordphys_var.putVar(this->mapstruct.rowcoordphys.data());
+            colcoordphys_var.putVar(this->mapstruct.colcoordphys.data());
 
             //SPDLOG_INFO("Writing Detector {} map to ncfile", i);
             auto signalmapvar = "signal";

@@ -6,6 +6,7 @@
 #include <regex>
 
 #include "../core/timestream/observation.h"
+#include "../core/config.h"
 
 template<typename R, typename T, typename =std::enable_if_t<
              std::is_base_of_v<netCDF::NcAtt, T>>, typename Buffer=
@@ -163,7 +164,7 @@ bool is_number(const std::string& s)
 struct DataIOError : public std::runtime_error {
     using std::runtime_error::runtime_error;
 };
-using Metadata = config::Config;
+using Metadata = lali::YamlConfig;
 
 struct BeammapData {
 
@@ -192,7 +193,7 @@ struct BeammapData {
 
         std::vector<int> gbs;
 
-        gbs = { 0,   1,   3,   4,   5,   6,   8,   9,  10,  14,  16,  17,  18,
+        /*gbs = { 0,   1,   3,   4,   5,   6,   8,   9,  10,  14,  16,  17,  18,
              19,  21,  23,  25,  26,  27,  28,  29,  31,  32,  33,  34,  36,
              38,  39,  40,  41,  42,  43,  45,  46,  47,  48,  49,  50,  51,
              52,  53,  54,  56,  57,  58,  59,  60,  61,  62,  63,  64,  65,
@@ -200,13 +201,127 @@ struct BeammapData {
              81,  82,  83,  84,  85,  86,  88,  89,  90,  91,  92,  93,  94,
              95,  96,  99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109,
             110, 112, 115, 116, 117, 118, 119, 120, 121, 123, 125, 126, 129,
-            131, 134, 136, 137, 138, 139, 140, 141, 142};
+            131, 134, 136, 137, 138, 139, 140, 141, 142};*/
+
+        gbs = {0,
+               9,
+               10,
+               14,
+               16,
+               17,
+               18,
+               1,
+               19,
+               21,
+               23,
+               3,
+               4,
+               5,
+               6,
+               8,
+               33,
+               34,
+               36,
+               38,
+               39,
+               40,
+               41,
+               42,
+               25,
+               43,
+               45,
+               46,
+               47,
+               26,
+               27,
+               28,
+               29,
+               31,
+               32,
+               48,
+               57,
+               58,
+               59,
+               60,
+               61,
+               62,
+               63,
+               64,
+               65,
+               66,
+               49,
+               67,
+               70,
+               71,
+               50,
+               51,
+               52,
+               53,
+               54,
+               56,
+               72,
+               81,
+               82,
+               83,
+               84,
+               85,
+               86,
+               88,
+               89,
+               90,
+               73,
+               91,
+               92,
+               93,
+               94,
+               95,
+               74,
+               75,
+               76,
+               77,
+               78,
+               79,
+               80,
+               96,
+               105,
+               106,
+               107,
+               108,
+               109,
+               110,
+               112,
+               115,
+               116,
+               117,
+               118,
+               119,
+               99,
+               100,
+               101,
+               102,
+               103,
+               104,
+               120,
+               129,
+               131,
+               134,
+               136,
+               137,
+               138,
+               121,
+               139,
+               140,
+               141,
+               142,
+               123,
+               125,
+               126};
 
 
         try {
             SPDLOG_INFO("read aztec beammap from netCDF file {}", filepath);
             NcFile fo(filepath, NcFile::read);
-            SPDLOG_INFO("{}", nc_pprint(fo));
+            //SPDLOG_INFO("{}", nc_pprint(fo));
             // go over the vars, get the detector variables
             auto vars = fo.getVars();
             std::set<std::string> dv_names;
@@ -219,11 +334,12 @@ struct BeammapData {
                         ) {
                     ++matched;
                     // check good flag
-                    if (nc_getatt<int16_t>(var.second.getAtt("goodflag")) > 0) {
-                    //if(std::find(gbs.begin(), gbs.end(), k) != gbs.end()) {
+                    //if (nc_getatt<int16_t>(var.second.getAtt("goodflag")) > 0) {
+                    if(std::find(gbs.begin(), gbs.end(), k) != gbs.end()) {
 
                       //   cerr << "k " << k << endl;
                         dv_names.insert(var.first);
+                        //SPDLOG_INFO(var.first);
                     }
                     k++;
                 }
@@ -270,14 +386,6 @@ struct BeammapData {
             vars.find("Data.AztecBackend.AztecUtc")->second.getVar(data.telescope_data["AztecUtc"].data());
             SPDLOG_INFO("AztecUtc {}", data.telescope_data["AztecUtc"]);
 
-            /*data.telescope_data["SourceRaAct"].resize(npts);
-            vars.find("Data.AztecBackend.SourceRaAct")->second.getVar(data.telescope_data["SourceRaAct"].data());
-            SPDLOG_INFO("TelRa{}", logging::pprint(data.telescope_data["SourceRaAct"]));
-
-            data.telescope_data["SourceDecAct"].resize(npts);
-            vars.find("Data.AztecBackend.SourceDecAct")->second.getVar(data.telescope_data["SourceDecAct"].data());
-            SPDLOG_INFO("TelDec{}", logging::pprint(data.telescope_data["SourceDecAct"]));*/
-
             data.telescope_data["TelAzAct"].resize(npts);
             vars.find("Data.AztecBackend.TelAzAct")->second.getVar(data.telescope_data["TelAzAct"].data());
             SPDLOG_INFO("TelAzAct{}", data.telescope_data["TelAzAct"]);
@@ -310,25 +418,33 @@ struct BeammapData {
             vars.find("Data.AztecBackend.SourceEl")->second.getVar(data.telescope_data["SourceEl"].data());
             SPDLOG_INFO("SourceEl{}", data.telescope_data["SourceEl"]);
 
+            data.telescope_data["TelRa"].resize(npts);
+            vars.find("Data.AztecBackend.SourceRaAct")->second.getVar(data.telescope_data["TelRa"].data());
+            SPDLOG_INFO("TelRa{}", data.telescope_data["TelRa"]);
+
+            data.telescope_data["TelDec"].resize(npts);
+            vars.find("Data.AztecBackend.SourceDecAct")->second.getVar(data.telescope_data["TelDec"].data());
+            SPDLOG_INFO("TelDec{}", data.telescope_data["TelDec"]);
+
             data.telescope_data["ParAng"].resize(npts);
             vars.find("Data.AztecBackend.ParAng")->second.getVar(data.telescope_data["ParAng"].data());
             SPDLOG_INFO("ParAng{}", data.telescope_data["ParAng"]);
 
             data.telescope_data["ParAng"] = pi-data.telescope_data["ParAng"].array();
 
-            observation::obs(data.scanindex,data.telescope_data,0,64,0.125);
+            observation::obs(data.scanindex,data.telescope_data,10,64,0.125);
 
             //Toggle commenting here to generate 4000 detectors (40 copies of first 100 detectors)
-            Eigen::Index nmulti = 40;
+            Eigen::Index nmulti = 70;
             Eigen::Index j = 0;
-            data.scans.resize(npts,4000);
+            //data.scans.resize(npts,7000);
 
             for (Eigen::Index i = 0;i <nmulti;i++) {
-                data.scans.block(0,j,npts,100) = data.scans_temp.block(0,0,npts,100);
+                //data.scans.block(0,j,npts,100) = data.scans_temp.block(0,0,npts,100);
                 j = j + 100;
             }
 
-            //ndetectors = 4000;
+            //ndetectors = 7000;
             //end commenting for 4000 detectors
 
             data.scans = data.scans_temp; //temporary,  uncomment this and comment above block for normal reading of file

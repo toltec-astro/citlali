@@ -208,11 +208,67 @@ void absToPhysHorPointing(DerivedA &telescope_data){
     telescope_data["TelElPhys"] = telescope_data["TelElAct"] - telescope_data["SourceEl"] - telescope_data["TelElCor"];
 }
 
+template <typename DerivedA>
+bool absToPhys(DerivedA telescope_data,
+           double  centerRa, double centerDec,
+               int nSamples){
+    //use temporary storage to avoid writing over absRa and absDec
+    Eigen::VectorXd tRa(nSamples);
+    Eigen::VectorXd  tDec(nSamples);
+    for(int i=0;i<nSamples;i++) tDec[i]=telescope_data["TelDec"][i];
+
+    //tRa must range from -PI to PI
+    for(int i=0;i<nSamples;i++)
+        tRa[i] = (telescope_data["TelRa"][i] > pi) ? telescope_data["TelRa"][i]-(2.*pi) : telescope_data["TelRa"][i];
+
+    //same thing for centerRa
+    centerRa = (centerRa > pi) ? centerRa-(2.*pi) : centerRa;
+
+    //the tangential projection
+    Eigen::VectorXd cosc(nSamples);
+    double sCD = sin(centerDec);
+    double cCD = cos(centerDec);
+    for(int i=0;i<nSamples;i++)
+        cosc[i] = sCD*sin(telescope_data["TelDec"][i]) + cCD*cos(telescope_data["TelDec"][i])*cos(tRa[i]-centerRa);
+
+    for(int i=0;i<nSamples;i++)
+        if(cosc[i]==0.){
+            telescope_data["TelRaPhys"][i] = 0.;
+            telescope_data["TelDecPhys"][i] = 0;
+        } else {
+            telescope_data["TelRaPhys"][i] = cos(telescope_data["TelDec"][i])*sin(tRa[i]-centerRa)/cosc[i];
+            telescope_data["TelDecPhys"][i] = (cCD*sin(telescope_data["TelDec"][i]) - sCD*cos(telescope_data["TelDec"][i])*cos(tRa[i]-centerRa))/cosc[i];
+        }
+
+    return 1;
+}
+
+
+template <typename DerivedA>
+bool absToPhysEqPointing(DerivedA &telescope_data)
+{
+    //create the phys pointing arrays
+    int nSamples = telescope_data["Hold"].rows();
+    telescope_data["TelRaPhys"].resize(nSamples);
+    telescope_data["TelDecPhys"].resize(nSamples);
+
+    //get the centerRa and centerDec of the map from ap
+    //double* pmg;
+    //pmg = ap->getMasterGridJ2000();
+    double centerRa = 1.59065;//pmg[0];
+    double centerDec = -0.122377;//pmg[1];
+
+    //call the tangential projection
+  absToPhys(telescope_data,centerRa, centerDec, nSamples);
+
+    return 1;
+}
+
 } //namespace internal
 
 template<typename DerivedA>
 void obs(Eigen::DenseBase<DerivedA> &scanindex, pointing &telescope_data,
-                 const bool timeChunk, const int samplerate, const double timeoffset){
+                 const double timeChunk, const int samplerate, const double timeoffset){
 
     Eigen::Index npts = telescope_data["Hold"].rows();
     Eigen::Index nscans;
@@ -244,6 +300,7 @@ void obs(Eigen::DenseBase<DerivedA> &scanindex, pointing &telescope_data,
     internal::alignWithDetectors(telescope_data, timeoffset);
 
     internal::absToPhysHorPointing<pointing>(telescope_data);
+    internal::absToPhysEqPointing(telescope_data);
 
     //the goal is to pack up the turning array
     Eigen::Matrix<bool, Eigen::Dynamic, 1> turning(npts);
@@ -301,6 +358,31 @@ void obs(Eigen::DenseBase<DerivedA> &scanindex, pointing &telescope_data,
       //the last sample is the end of the last scan
       scanindex(1,nscans-1) = npts-1;
     }
+
+ else {
+    cerr << "Telescope::defineScans(): ";
+    cerr << "timeChunk is nonzero. Lissajous mode enabled." << endl;
+
+    //in this case we've got to take the bounds and redefine the scans
+    //start with the first and last scan index
+    //reduce by one scan since we seem to have a problem at the moment
+
+    cerr << "Telescope::defineScans(): " <<
+      "Redefining scans to use all data." << endl;
+    int firstScanI=0;//scanIndex[0][0];
+    int lastScanI =npts-1;//scanIndex[1][nScans-1];
+    double period = floor(timeChunk*samplerate);
+    int newNScans = floor((lastScanI-firstScanI+1)*1./period);
+
+    scanindex.derived().resize(4,newNScans);
+    for(int i=0;i<newNScans;i++){
+        scanindex(0,i) = i*period + firstScanI;
+        scanindex(1,i) = scanindex(0,i) + period - 1;
+    }
+    nscans = newNScans;
+    cerr << "Telescope::defineScans(): " <<
+      "Now we have " << nscans << " scans." << endl;
+}
 
     //Here we set up the 3rd and 4th scanindex so that we don't lose data during lowpassing
     scanindex.row(2) = scanindex.row(0).array() - 32;

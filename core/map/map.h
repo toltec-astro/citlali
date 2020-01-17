@@ -1,16 +1,20 @@
 #pragma once
+#include "map_utils.h"
 
 namespace mapmaking{
 
-template <typename DerivedA, typename DerivedB, typename DerivedC>//, typename DerivedB>
-void generatemaps(PTCData &ptc, pointing &telescope_data,
+/**
+ * @brief Generates science maps
+ */
+template <typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD>//, typename DerivedB>
+void generate_scimaps(TCData<LaliDataKind::PTC> &ptc, pointing &telescope_data,
                  double mgrid_0, double mgrid_1, const double samplerate,
                  DerivedA &mapstruct, Eigen::DenseBase<DerivedB> &offsets,
-                 const double &tmpwts, const int &NNoiseMapsPerObs,
+                 const Eigen::DenseBase<DerivedD> &tmpwts, const int &NNoiseMapsPerObs,
                  Eigen::DenseBase<DerivedC> &sn,
                  const int dsf){
 
-    Eigen::Index ndet = ptc.scans.cols();
+    Eigen::Index ndet = ptc.scans.data.cols();
 
     //std::mutex farm_mutex;
 
@@ -19,27 +23,26 @@ void generatemaps(PTCData &ptc, pointing &telescope_data,
       weight->image, rowCoordsPhys, colCoordsPhys);
     }*/
 
-
-    Eigen::Index si = ptc.scanindex(0);
-    Eigen::Index ei = ptc.scanindex(1);
+    Eigen::Index si = ptc.scanindex.data(0);
+    Eigen::Index ei = ptc.scanindex.data(1);
 
     for(Eigen::Index i=0;i<ndet;i++){
         {
         //logging::scoped_timeit timer("loops");
         Eigen::VectorXd lat, lon;
-        internal::getPointing(telescope_data, lat, lon, offsets, i, si, ei, dsf);
-        for(int s=0;s<ptc.scans.rows();s++){
-            if(ptc.flags(s,i)){
+        getPointing(telescope_data, lat, lon, offsets, i, si, ei, dsf);
+        for(int s=0;s<ptc.scans.data.rows();s++){
+            if(ptc.flags.data(s,i)){
                 //get the row and column index corresponding to the ra and dec
                 Eigen::Index irow = 0;
                 Eigen::Index icol = 0;
-                internal::latlonPhysToIndex(lat[s], lon[s], irow, icol, mapstruct);
+                latlonPhysToIndex(lat[s], lon[s], irow, icol, mapstruct);
 
                 //weight map
                 {
                 //std::scoped_lock lock(farm_mutex);
                    // logging::scoped_timeit timer("wtt");
-                mapstruct.wtt(irow,icol) += tmpwts;
+                mapstruct.wtt(irow,icol) += tmpwts[i];
                 }
 
                 //inttime map
@@ -50,8 +53,8 @@ void generatemaps(PTCData &ptc, pointing &telescope_data,
                 }
 
                 //check for NaN
-                double hx = ptc.scans(s,i)*tmpwts;
-                double hk = ptc.kernelscans(s,i)*tmpwts;
+                double hx = ptc.scans.data(s,i)*tmpwts[i];
+                double hk = ptc.kernelscans.data(s,i)*tmpwts[i];
 
                 /*double ha = 0.0;
                   if (atmTemplate)
@@ -63,7 +66,7 @@ void generatemaps(PTCData &ptc, pointing &telescope_data,
                       //cerr << "det: " << a->detectors[di[i]].hValues[j] << endl;
                       //cerr << "ker: " << a->detectors[di[i]].hKernel[j] << endl;
                       SPDLOG_INFO("  i = {}, hx {}, hk {}",i,hx,hk);
-                      SPDLOG_INFO("  ktmp = {}, ptc.kernelscans(s,i) {}",tmpwts,ptc.kernelscans(s,i));
+                      SPDLOG_INFO("  ktmp = {}, ptc.kernelscans.data(s,i) {}",tmpwts[i],ptc.kernelscans.data(s,i));
 
                       SPDLOG_INFO("  s = {}",s);
                       exit(1);
@@ -100,6 +103,40 @@ void generatemaps(PTCData &ptc, pointing &telescope_data,
           }
     }
 
+    }
+}
+
+/**
+ * @brief Normalization for science maps.
+ * Needs to be done separately due to
+ * streaming.
+ */
+template <typename T>
+void mapnormalize(T &lal){
+    double wt;
+    double atmpix=0;
+    for(Eigen::Index i=0;i<lal.br.mapstruct.nrows;i++){
+        for(Eigen::Index j=0;j<lal.br.mapstruct.ncols;j++){
+            wt = lal.br.mapstruct.wtt(i,j);
+            if(wt != 0.){
+                //if (atmTemplate)
+                //atmpix = atmTemplate->image(i,j);
+                //br.mapstruct.signal(i,j) = -(br.mapstruct.signal(i,j)-atmpix)/wt;
+                lal.br.mapstruct.signal(i,j) = -(lal.br.mapstruct.signal(i,j))/wt;
+                lal.br.mapstruct.kernel(i,j) = (lal.br.mapstruct.kernel(i,j))/wt;
+
+                for(Eigen::Index kk=0;kk<lal.br.mapstruct.NNoiseMapsPerObs;kk++){
+                    lal.br.mapstruct.noisemaps(kk,i,j) = lal.br.mapstruct.noisemaps(kk,i,j)/wt;
+                }
+            }
+            else{
+                lal.br.mapstruct.signal(i,j) = 0.;
+                lal.br.mapstruct.kernel(i,j) = 0.;
+                for(Eigen::Index kk=0;kk<lal.br.mapstruct.NNoiseMapsPerObs;kk++){
+                    lal.br.mapstruct.noisemaps(kk,i,j) = 0.;
+                }
+            }
+        }
     }
 }
 } //namespace

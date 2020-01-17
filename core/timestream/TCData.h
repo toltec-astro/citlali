@@ -14,29 +14,25 @@ namespace timestream {
 BITMASK_(LaliDataKind, int,        0xFFFF,
          RTC                     = 1 << 0,
          PTC                     = 1 << 1,
-         Sweep                   = RTC | PTC,
-         RawTimeStream           = 1 << 4,
-         SolvedTimeStream        = 1 << 5,
-         TimeStream              = RawTimeStream | SolvedTimeStream,
-         Any                     = Sweep | TimeStream
+         Any                     = RTC | PTC
          );
 // clang-format on
 
 /// @brief RTC data class.
 template <LaliDataKind kind_ = LaliDataKind::Any, typename = void>
-struct RTCData;
+struct TCData;
 } // namespace timestream
 
 namespace std {
 
-// Register RTCData as a variant type
+// Register TCData as a variant type
 // Below are mandatory to inherit from variant on gcc
 template <timestream::LaliDataKind kind>
-struct variant_size<timestream::RTCData<kind>>
-    : variant_size<typename timestream::RTCData<kind>::variant_t> {};
+struct variant_size<timestream::TCData<kind>>
+    : variant_size<typename timestream::TCData<kind>::variant_t> {};
 template <size_t _Np, auto kind>
-struct variant_alternative<_Np, timestream::RTCData<kind>>
-    : variant_alternative<_Np, typename timestream::RTCData<kind>::variant_t> {};
+struct variant_alternative<_Np, timestream::TCData<kind>>
+    : variant_alternative<_Np, typename timestream::TCData<kind>::variant_t> {};
 
 #if defined(__GNUC__) && !defined(__clang__)
 #if (__GNUC__ >= 9)
@@ -45,20 +41,20 @@ namespace __detail {
 namespace __variant {
 
 template <typename _Ret, typename _Visitor, auto kind, size_t __first>
-struct _Multi_array<_Ret (*)(_Visitor, timestream::RTCData<kind>), __first>
-    : _Multi_array<_Ret (*)(_Visitor, typename timestream::RTCData<kind>::variant_t),
+struct _Multi_array<_Ret (*)(_Visitor, timestream::TCData<kind>), __first>
+    : _Multi_array<_Ret (*)(_Visitor, typename timestream::TCData<kind>::variant_t),
                    __first> {
     static constexpr int __do_cookie = 0;
 };
 template <typename _Maybe_variant_cookie, auto kind>
-struct _Extra_visit_slot_needed<_Maybe_variant_cookie, timestream::RTCData<kind>>
+struct _Extra_visit_slot_needed<_Maybe_variant_cookie, timestream::TCData<kind>>
     : _Extra_visit_slot_needed<_Maybe_variant_cookie,
-                               typename timestream::RTCData<kind>::variant_t> {};
+                               typename timestream::TCData<kind>::variant_t> {};
 
 template <typename _Maybe_variant_cookie, auto kind>
-struct _Extra_visit_slot_needed<_Maybe_variant_cookie, timestream::RTCData<kind> &>
+struct _Extra_visit_slot_needed<_Maybe_variant_cookie, timestream::TCData<kind> &>
     : _Extra_visit_slot_needed<_Maybe_variant_cookie,
-                               typename timestream::RTCData<kind>::variant_t &> {};
+                               typename timestream::TCData<kind>::variant_t &> {};
 } // namespace __variant
 } // namespace __detail
 #else
@@ -83,10 +79,10 @@ template <typename Derived> struct impl_traits {
     define_has_member_traits(Derived, rs);
 };
 
-template <typename Derived> struct RTCDataBase;
-template <LaliDataKind kind_> struct RTCDataBase<RTCData<kind_>> {
+template <typename Derived> struct TCDataBase;
+template <LaliDataKind kind_> struct TCDataBase<TCData<kind_>> {
     static constexpr auto kind() { return kind_; }
-    using meta_t = typename internal::impl_traits<RTCData<kind_>>::meta_t;
+    using meta_t = typename internal::impl_traits<TCData<kind_>>::meta_t;
     meta_t meta;
 };
 
@@ -127,7 +123,7 @@ struct TimeStreamFrame : wcs::Frame2D<TimeStreamFrame, TimeAxis, DetectorAxis> {
 
 /// @brief Base class for time stream data
 template <typename Derived>
-struct TimeStream : internal::RTCDataBase<Derived>,
+struct TimeStream : internal::TCDataBase<Derived>,
                     nddata::NDData<TimeStream<Derived>> {
     TimeStreamFrame wcs;
     // The timestream is stored in row major for efficient r/w
@@ -138,11 +134,23 @@ struct TimeStream : internal::RTCDataBase<Derived>,
 };
 
 template <>
-struct RTCData<LaliDataKind::SolvedTimeStream>
-    : TimeStream<RTCData<LaliDataKind::SolvedTimeStream>> {
-    using Base = TimeStream<RTCData<LaliDataKind::SolvedTimeStream>>;
+struct TCData<LaliDataKind::RTC>
+    : TimeStream<TCData<LaliDataKind::RTC>> {
+    using Base = TimeStream<TCData<LaliDataKind::RTC>>;
     // NDData impl
     Base::data_t<Eigen::MatrixXd> scans;
+    //Base::data_t<Eigen::Map<Eigen::MatrixXd>> scans;
+    Base::data_t<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> flags;
+    Base::data_t<Eigen::Matrix<Eigen::Index,Eigen::Dynamic,1>> scanindex;
+};
+
+template <>
+struct TCData<LaliDataKind::PTC>
+    : TimeStream<TCData<LaliDataKind::PTC>> {
+    using Base = TimeStream<TCData<LaliDataKind::PTC>>;
+    // NDData impl
+    Base::data_t<Eigen::MatrixXd> scans;
+    Base::data_t<Eigen::MatrixXd> kernelscans;
     Base::data_t<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> flags;
     Base::data_t<Eigen::Matrix<Eigen::Index,Eigen::Dynamic,1>> scanindex;
 };
@@ -150,15 +158,15 @@ struct RTCData<LaliDataKind::SolvedTimeStream>
 
 /// @brief Kids data class of runtime variant kind.
 template <LaliDataKind kind_>
-struct RTCData<kind_, std::enable_if_t<enum_utils::is_compound_v<kind_>>>
-    : enum_utils::enum_to_variant_t<kind_, RTCData> {
-    using Base = enum_utils::enum_to_variant_t<kind_, RTCData>;
-    using variant_t = enum_utils::enum_to_variant_t<kind_, RTCData>;
-    using meta_t = typename internal::impl_traits<RTCData<kind_>>::meta_t;
+struct TCData<kind_, std::enable_if_t<enum_utils::is_compound_v<kind_>>>
+    : enum_utils::enum_to_variant_t<kind_, TCData> {
+    using Base = enum_utils::enum_to_variant_t<kind_, TCData>;
+    using variant_t = enum_utils::enum_to_variant_t<kind_, TCData>;
+    using meta_t = typename internal::impl_traits<TCData<kind_>>::meta_t;
 
     // construct from primitive type
     // template <LaliDataKind kind1,
-    // REQUIRES_V(!enum_utils::is_compound_v<kind1>)> RTCData(RTCData<kind1>
+    // REQUIRES_V(!enum_utils::is_compound_v<kind1>)> TCData(TCData<kind1>
     // other) : Base(std::move(other)) {}
 
     const variant_t &variant() const { return *this; }
@@ -189,11 +197,11 @@ struct formatter<timestream::TimeAxis> : formatter<wcs::FrameBase<timestream::Ti
 };
 
 template <timestream::LaliDataKind kind_>
-struct formatter<timestream::RTCData<kind_>>
+struct formatter<timestream::TCData<kind_>>
     : fmt_utils::charspec_formatter_base<'l', 's'> {
     // s: the short form
     // l: the long form
-    using Data = timestream::RTCData<kind_>;
+    using Data = timestream::TCData<kind_>;
 
     template <typename FormatContext>
     auto format(const Data &data, FormatContext &ctx) {

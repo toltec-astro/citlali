@@ -75,11 +75,13 @@ std::tuple<Eigen::Index, Eigen::Index, Eigen::Index> windowing(Eigen::DenseBase<
         }
         //Error checking
         if(winIndex0 > winIndex1 || winIndex0 < 0 || winIndex0 > npts || winIndex1 < 0 ||  winIndex1 > npts){
-            std::cerr << "Either spikes everywhere or something else is terribly wrong." << std::endl;
+            SPDLOG_INFO("Either spikes everywhere or something else is terribly wrong.");
 
-            for(int i=0;i<nSpikes;i++) std::cerr << "spikeLoc["<<i<<"] = " << spikeLoc[i] << std::endl;
+            //for(int i=0;i<nSpikes;i++){
+              //  SPDLOG_INFO("spikeLoc["<<i<<"] = " << spikeLoc[i]);
+            //}
 
-            std::cerr << "Overall there are " << nSpikes << " spikes." << std::endl;
+            SPDLOG_INFO("Overall there are {} spikes",nSpikes);
             exit(1);
         }
     }
@@ -161,8 +163,8 @@ void despike(Eigen::DenseBase<DerivedA> const &scans, Eigen::DenseBase<DerivedB>
 
         //Check if more than 100 spikes for the detector
         if(nSpikes > 100){
-                std::cerr << "More than 100 spikes found for detector: " << std::to_string(det) << std::endl;
-                //std::cerr << "Setting this detector's goodflag to 0" << std::endl;
+                SPDLOG_INFO("More than 100 spikes found for detector: {}", std::to_string(det));
+                //SPDLOG_INFO("Setting this detector's goodflag to 0");
                 //goodFlag=0;
           }
 
@@ -240,7 +242,7 @@ void despike(Eigen::DenseBase<DerivedA> const &scans, Eigen::DenseBase<DerivedB>
                 for(Eigen::Index i=0;i<nSpikes;i++){
                     if(decayLength[i] < 6) decayLength[i]=6;
                     if(decayLength[i] > samplerate*10.){
-                        std::cerr << "Decay length is too long.";
+                        SPDLOG_INFO("Decay length is too long.");
                         exit(1);
                     }
                 }
@@ -269,8 +271,6 @@ void despike(Eigen::DenseBase<DerivedA> const &scans, Eigen::DenseBase<DerivedB>
                 }
 
             } //if nSpikes gt 0 then flag samples around spikes
-
-            //flags.col(det) = flgs;
         }
 }
 } //namespace

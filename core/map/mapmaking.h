@@ -1,4 +1,5 @@
 #pragma once
+#include "map_utils.h"
 
 //Needed for config file input
 
@@ -22,7 +23,8 @@
 typedef std::map<string,Eigen::Matrix<double,Eigen::Dynamic,1>> pointing;
 
 using namespace std;
-using timestream::PTCData;
+using timestream::TCData;
+using timestream::LaliDataKind;
 
 namespace mapmaking{
 
@@ -35,11 +37,16 @@ public:
     Eigen::Tensor<double, 2> wtt;
     Eigen::Tensor<double, 2> sigma;
     Eigen::Tensor<double, 2> kernel;
-    Eigen::Tensor<double, 2> kernel_wtt;
     Eigen::Tensor<double, 2> inttime;
     Eigen::Tensor<double,3> noisemaps;
 
-    double pixelsize;
+    Eigen::Tensor<double, 2> filteredsignal;
+    Eigen::Tensor<double, 2> filteredweight;
+    Eigen::Tensor<double, 2> filteredsigma;
+    Eigen::Tensor<double, 2> filteredkernel;
+    Eigen::Tensor<double,3> filterednoisemaps;
+
+    double pixelsize, mgrid_0, mgrid_1;
     Eigen::Index nrows, ncols, npixels, NNoiseMapsPerObs;
     Eigen::VectorXd rowcoordphys, colcoordphys;
 
@@ -52,67 +59,18 @@ void MapStruct::resize(Eigen::Index ndet){
     wtt.resize(nrows,ncols);
     sigma.resize(nrows,ncols);
     kernel.resize(nrows,ncols);
-    kernel_wtt.resize(nrows,ncols);
     inttime.resize(nrows,ncols);
 
     npixels = nrows*ncols;
 
     signal.setZero();
     wtt.setZero();
-    kernel_wtt.setZero();
     sigma.setZero();
     kernel.setZero();
     inttime.setZero();
 }
 
 namespace internal {
-
-//generate the pointing data for this detector this version calculates it from scratch and requires a telescope object
-template <typename DerivedA, typename DerivedB, typename DerivedC>
-void getPointing(DerivedA &telescope_data, Eigen::DenseBase<DerivedB> &lat, Eigen::DenseBase<DerivedB> &lon,
-                 const Eigen::DenseBase<DerivedC> &offsets, const Eigen::Index &det, Eigen::Index si = -99, Eigen::Index ei = -99, int dsf = 1){
-
-  Eigen::Index azelMap = 1;
-  double azOffset = offsets(0,det);
-  double elOffset = offsets(1,det);
-
-  Eigen::Index npts;
-
-  if (si !=-99){
-    npts = ei - si;
-  }
-
-  else{
-    npts = telescope_data["TelAzPhys"].rows();
-    si = 0;
-   }
-
-  Eigen::Map<Eigen::VectorXd,0,Eigen::InnerStride<Eigen::Dynamic>> TelAzPhys(telescope_data["TelAzPhys"].segment(si,npts).data(),(npts+(dsf - 1))/dsf,Eigen::InnerStride<Eigen::Dynamic>(telescope_data["TelAzPhys"].segment(si,npts).innerStride()*dsf));
-  Eigen::Map<Eigen::VectorXd,0,Eigen::InnerStride<Eigen::Dynamic>> TelElPhys(telescope_data["TelElPhys"].segment(si,npts).data(),(npts+(dsf - 1))/dsf,Eigen::InnerStride<Eigen::Dynamic>(telescope_data["TelElPhys"].segment(si,npts).innerStride()*dsf));
-
-  if(!azelMap){
-      auto azOfftmp = cos(telescope_data["TelElDes"].array())*azOffset - sin(telescope_data["TelElDes"].array())*elOffset;
-      auto elOfftmp = cos(telescope_data["TelElDes"].array())*elOffset + sin(telescope_data["TelElDes"].array())*azOffset;
-      auto pa2 = telescope_data["ParAng"].array()-pi;
-
-      auto ratmp = -azOfftmp*cos(pa2) - elOfftmp*sin(pa2);
-      auto dectmp= -azOfftmp*sin(pa2) + elOfftmp*cos(pa2);
-      lat = ratmp*RAD_ASEC + telescope_data["TelRaPhys"].array();
-      lon = dectmp*RAD_ASEC + telescope_data["TelDecPhys"].array();
-  }
-
-  else {
-      /*lat =  (cos(telescope_data["TelElDes"].block(si,0,npts,1).array())*azOffset - sin(telescope_data["TelElDes"].block(si,0,npts,1).array())*elOffset)*RAD_ASEC
-              + telescope_data["TelAzPhys"].block(si,0,npts,1).array();
-      lon = (cos(telescope_data["TelElDes"].block(si,0,npts,1).array())*elOffset + sin(telescope_data["TelElDes"].block(si,0,npts,1).array())*azOffset)*RAD_ASEC
-              + telescope_data["TelElPhys"].block(si,0,npts,1).array();
-*/
-
-  lat = -elOffset*RAD_ASEC + TelAzPhys.array();//telescope_data["TelAzPhys"].block(si,0,npts,1).array();
-  lon = -azOffset*RAD_ASEC + TelElPhys.array();//telescope_data["TelElPhys"].block(si,0,npts,1).array();
-  }
-
-}
 
 void physToAbs(double &pra, double &pdec, double &cra, double &cdec,
            double &ara, double &adec){
@@ -134,15 +92,6 @@ void physToAbs(double &pra, double &pdec, double &cra, double &cdec,
       ara = cra + atan(a2);
     }
 }
-
-template <typename DerivedA>
-void latlonPhysToIndex(double &lat, double &lon, Eigen::Index &irow, Eigen::Index &icol,
-                      DerivedA &mapstruct){
-    double ps = mapstruct.pixelsize*RAD_ASEC;
-    irow = lat / ps + (mapstruct.nrows + 1.) / 2.;
-    icol = lon / ps + (mapstruct.ncols + 1.) / 2.;
-}
-
 template <typename DerivedA>
 void getRowCol(DerivedA &mapstruct, double mgrid_0, double mgrid_1,
                        double x_max_act, double x_min_act, double y_max_act, double y_min_act){
@@ -201,6 +150,7 @@ double calcScanWeight(const Eigen::DenseBase<DerivedA> &scans, const Eigen::Dens
   double tmp = std::sqrt(((scans.derived().array() * flags.derived().template cast<double>().array())
                    -  (scans.derived().array() * flags.derived().template cast<double>().array()).sum()/numgood).square().sum()/(numgood - 1.0));
 
+
   //insist on at least 1s of good samples
   if (tmp!=tmp || numgood < samplerate)
       return 0.0;
@@ -209,16 +159,16 @@ double calcScanWeight(const Eigen::DenseBase<DerivedA> &scans, const Eigen::Dens
 }
 
 template<typename DerivedA>
-DerivedA calculateWeights(std::vector<PTCData> &ptcs, const int samplerate){
-    Eigen::Index ndet = ptcs[0].scans.cols();
+DerivedA calculateWeights(std::vector<TCData<LaliDataKind::PTC>> &ptcs, const int samplerate){
+    Eigen::Index ndet = ptcs[0].scans.data.cols();
     Eigen::Index nscans = ptcs.size();
 
     Eigen::MatrixXd tmpwt(ndet, nscans);
 
     for (Eigen::Index i = 0;i<nscans;i++) {
         for (Eigen::Index j = 0;j<ndet;j++) {
-            Eigen::Map<Eigen::VectorXd> scns(ptcs[i].scans.col(j).data(),ptcs[i].scans.rows());
-            Eigen::Map<Eigen::Matrix<bool,Eigen::Dynamic,1>> flgs(ptcs[i].flags.col(j).data(),ptcs[i].flags.rows());
+            Eigen::Map<Eigen::VectorXd> scns(ptcs[i].scans.data.col(j).data(),ptcs[i].scans.data.rows());
+            Eigen::Map<Eigen::Matrix<bool,Eigen::Dynamic,1>> flgs(ptcs[i].flags.data.col(j).data(),ptcs[i].flags.data.rows());
 
             tmpwt(j,i) = internal::calcScanWeight(scns,flgs,samplerate);
         }
@@ -239,7 +189,7 @@ DerivedA calculateWeights(std::vector<PTCData> &ptcs, const int samplerate){
 } //namespace internal
 
 template <typename DerivedA, typename DerivedC>//, typename DerivedB>
-void mapgen(std::vector<PTCData> &ptcs,
+void mapgen(std::vector<TCData<LaliDataKind::PTC>> &ptcs,
                  pointing &telescope_data,
                  double mgrid_0, double mgrid_1, const int samplerate,
                  DerivedC &mapstruct, Eigen::DenseBase<DerivedA> &offsets, Eigen::Index det,
@@ -254,20 +204,20 @@ void mapgen(std::vector<PTCData> &ptcs,
     Eigen::MatrixXi nValues(mapstruct.nrows,mapstruct.ncols);
     nValues.setZero();
 
-    internal::getPointing(telescope_data, lat, lon, offsets);
+    getPointing(telescope_data, lat, lon, offsets);
 
     for (Eigen::Index j = 0; j < nscans; j++) {
         Eigen::Index s = 0;
-        Eigen::Index si = ptcs[j].scanindex(0);
-        Eigen::Index ei = ptcs[j].scanindex(1);
+        Eigen::Index si = ptcs[j].scanindex.data(0);
+        Eigen::Index ei = ptcs[j].scanindex.data(1);
 
         for (Eigen::Index k=si;k<ei;k++) {
-            if(ptcs[j].flags(s,det)){
-                double hx = ptcs[j].scans(s,det)*tmpwts(det,j);
+            if(ptcs[j].flags.data(s,det)){
+                double hx = ptcs[j].scans.data(s,det)*tmpwts(det,j);
                 Eigen::Index irow = 0;
                 Eigen::Index icol = 0;
 
-                internal::latlonPhysToIndex(lat[k], lon[k], irow, icol, mapstruct);
+                latlonPhysToIndex(lat[k], lon[k], irow, icol, mapstruct);
 
                 mapstruct.signal(det,irow,icol) += hx;
                 mapstruct.wtt(det,irow,icol) += tmpwts(det,j);
