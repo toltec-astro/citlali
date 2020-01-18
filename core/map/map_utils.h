@@ -1,5 +1,5 @@
 #pragma once
-#include <eigen3/unsupported/Eigen/FFT>
+#include <unsupported/Eigen/FFT>
 
 // Arcseconds in 360 degrees
 #define ASEC_CIRC 1296000.0

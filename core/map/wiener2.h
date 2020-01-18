@@ -1,5 +1,5 @@
 #pragma once
-#include <eigen3/unsupported/Eigen/FFT>
+#include <unsupported/Eigen/FFT>
 #include "../../common_utils/src/utils/algorithm/mlinterp/mlinterp.hpp"
 
 namespace mapmaking {
