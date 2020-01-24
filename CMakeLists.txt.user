@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.11.0, 2020-01-17T15:00:14. -->
+<!-- Written by QtCreator 4.11.0, 2020-01-24T10:41:42. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -114,7 +114,8 @@
      <value type="QString">CMAKE_BUILD_TYPE:STRING=Release</value>
      <value type="QString">CMAKE_CXX_COMPILER:STRING=/usr/local/opt/llvm/bin/clang++</value>
      <value type="QString">CMAKE_C_COMPILER:STRING=/usr/local/opt/llvm/bin/clang</value>
-     <value type="QString">USE_EIGEN3_WITH_MKL:BOOL=ON</value>
+     <value type="QString">USE_EIGEN3_WITH_MKL:BOOL=OFF</value>
+     <value type="QString">USE_INSTALLED_NETCDFCXX4:BOOL=ON</value>
     </valuelist>
     <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">/Users/mmccrackan/toltec/build-citlali-brew_llvm-Release</value>
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">

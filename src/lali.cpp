@@ -176,6 +176,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
             while (x != lal.nscans){
                 SPDLOG_INFO("On scan {}/{}",x+1,lal.nscans);
                 TCData<LaliDataKind::RTC> rtc;
+
                 //first scan index for current scan
                 si = lal.bd.scanindex(2,x);
                 //get length of current scan
@@ -185,15 +186,17 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
                 //Get scan indices and push into current RTC
                 rtc.scanindex.data = lal.bd.scanindex.col(x);
 
-                SPDLOG_INFO("RTC {} ", rtc.scans.data);
 
-                /* For testing
-                si = bd.scanindex(2,0);
+                //For testing
+                /*si = lal.bd.scanindex(2,0);
                 scanlength = 4882;
-                rtc.scanindex.data = bd.scanindex.col(0);
+                rtc.scans.data = lal.bd.scans.block(si,0,scanlength,lal.ndet);
+                rtc.scanindex.data = lal.bd.scanindex.col(0);
                 rtc.scanindex.data.row(1) = rtc.scanindex.data.row(0).array() + scanlength;
                 rtc.scanindex.data.row(3) = rtc.scanindex.data.row(0).array() + scanlength + 32;
                 */
+                SPDLOG_INFO("RTC {} ", rtc.scans.data);
+
                 x++;
                 //return RTC
                 return rtc;

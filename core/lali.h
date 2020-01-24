@@ -381,6 +381,8 @@ auto laliclass::process(){
             rtcproc.process(in,out);
             }
 
+            SPDLOG_INFO(out.scans.data);
+
             //Sizes for the kernel
             Eigen::VectorXd beamSigAz(ndet);
             Eigen::VectorXd beamSigEl(ndet);
@@ -394,13 +396,23 @@ auto laliclass::process(){
             for(Eigen::Index det=0;det<ndet;det++) {
                 Eigen::VectorXd lat, lon;
 
+                SPDLOG_INFO(out.kernelscans.data);
+
                 //Map to kernel scan so no copying
                 Eigen::Map<Eigen::VectorXd> scans(out.kernelscans.data.col(det).data(),out.kernelscans.data.rows());
+
+                SPDLOG_INFO("B");
 
                 //Need to get pointing for each scan
                 mapmaking::getPointing(bd.telescope_data, lat, lon, offsets, det, out.scanindex.data(0), out.scanindex.data(1),dsf);
                 //Make the kernel scan
+
+                SPDLOG_INFO("C");
+
                 timestream::makeKernelTimestream(scans,lat,lon,beamSigAz[det],beamSigEl[det]);
+
+                SPDLOG_INFO("D");
+
             }
             }
             return out;
