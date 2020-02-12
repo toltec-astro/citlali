@@ -82,7 +82,8 @@ auto laliclass::setup() {
 
     dsf = config->get_typed<int>("proc.rtc.downsample.downsamplefactor");
 
-    n = config->get_typed<int>("proc.rtc.cores");
+    //n = config->get_typed<int>("proc.rtc.cores");
+    n = omp_get_num_threads();
     n2 = config->get_typed<int>("proc.ptc.cores");
     n3 = config->get_typed<int>("proc.map.cores");
 
