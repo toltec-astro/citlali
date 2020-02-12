@@ -56,7 +56,7 @@ template <typename DerivedA, typename DerivedB, typename DerivedC>
 void getPointing(DerivedA &telescope_data, Eigen::DenseBase<DerivedB> &lat, Eigen::DenseBase<DerivedB> &lon,
                  const Eigen::DenseBase<DerivedC> &offsets, const Eigen::Index &det, Eigen::Index si = -99, Eigen::Index ei = -99, int dsf = 1){
 
-    Eigen::Index azelMap = 1;
+    Eigen::Index azelMap = 0;
     double azOffset = offsets(0,det);
     double elOffset = offsets(1,det);
 

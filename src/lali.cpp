@@ -17,6 +17,7 @@
 #include "../common_utils/src/utils/logging.h"
 #include "../common_utils/src/utils/grppiex.h"
 #include "../common_utils/src/utils/mpi.h"
+#include "../common_utils/src/utils/eigen.h"
 
 #include "../core/timestream/TCData.h"
 #include "../core/timestream/read.h"
@@ -31,6 +32,8 @@
 #include "/Users/mmccrackan/matplotlib-cpp/matplotlibcpp.h"
 
 #include "../core/map/wiener2.h"
+
+#include <string>
 
 // namespaces
 namespace po = boost::program_options;
@@ -149,6 +152,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
             SPDLOG_WARN("failed to read input {}: {}", *it, e.what());
         }
 
+        SPDLOG_INFO("telraphys {}", lal.bd.telescope_data["TelRaPhys"]);
+
         //Sets up the maps and various variables
         lal.setup();
 
@@ -161,8 +166,9 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
         Eigen::MatrixXd scan_wt(lal.nscans,lal.ndet);
 
         //Start of the pipeline.  This is to be removed.
-        grppi::pipeline(grppiex::dyn_ex(ex_name), [&]() -> std::optional<TCData<LaliDataKind::RTC>> {
-            //scan index variable
+        //grppi::pipeline(grppiex::dyn_ex(ex_name), [&]() -> std::optional<TCData<LaliDataKind::RTC,Eigen::Map<Eigen::MatrixXd>>> {
+        grppi::pipeline(grppiex::dyn_ex(ex_name), [&]() -> std::optional<TCData<LaliDataKind::RTC,Eigen::MatrixXd>> {
+        //scan index variable
             static auto x = 0;
             //scanlength
             Eigen::Index scanlength = 0;
@@ -175,27 +181,30 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
 
             while (x != lal.nscans){
                 SPDLOG_INFO("On scan {}/{}",x+1,lal.nscans);
-                TCData<LaliDataKind::RTC> rtc;
 
                 //first scan index for current scan
-                si = lal.bd.scanindex(2,x);
+                //si = lal.bd.scanindex(2,x);
                 //get length of current scan
-                scanlength = lal.bd.scanindex(3,x) - lal.bd.scanindex(2,x);
+                //scanlength = lal.bd.scanindex(3,x) - lal.bd.scanindex(2,x);
                 //get reference to BeammapData and put into the current RTC
-                rtc.scans.data = lal.bd.scans.block(si,0,scanlength,lal.ndet);
+                //rtc.scans.data = lal.bd.scans.block(si,0,scanlength,lal.ndet);
                 //Get scan indices and push into current RTC
-                rtc.scanindex.data = lal.bd.scanindex.col(x);
-
+                //rtc.scanindex.data = lal.bd.scanindex.col(x);
 
                 //For testing
-                /*si = lal.bd.scanindex(2,0);
+                si = lal.bd.scanindex(2,0);
                 scanlength = 4882;
+                //TCData<LaliDataKind::RTC,Eigen::Map<Eigen::MatrixXd>> rtc;
+                TCData<LaliDataKind::RTC,Eigen::MatrixXd> rtc;
+
                 rtc.scans.data = lal.bd.scans.block(si,0,scanlength,lal.ndet);
+                auto scan_data = lal.bd.scans.block(si,0,scanlength,lal.ndet);
+                //new (&rtc.scans.data) Eigen::Map<Eigen::MatrixXd> (scan_data.data(),scanlength,lal.ndet);
                 rtc.scanindex.data = lal.bd.scanindex.col(0);
                 rtc.scanindex.data.row(1) = rtc.scanindex.data.row(0).array() + scanlength;
                 rtc.scanindex.data.row(3) = rtc.scanindex.data.row(0).array() + scanlength + 32;
-                */
-                SPDLOG_INFO("RTC {} ", rtc.scans.data);
+
+                rtc.index.data = x;
 
                 x++;
                 //return RTC
@@ -208,47 +217,19 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
              lal.process()
          );
 
+        SPDLOG_INFO("rtc_times {}", lal.rtc_times);
+        SPDLOG_INFO("ptc_times {}", lal.ptc_times);
+        SPDLOG_INFO("map_times {}", lal.map_times);
+
+        SPDLOG_INFO("Timestream rate: {} RTC/s", lal.nscans/(lal.rtc_times.sum()/1000));
+        SPDLOG_INFO("PCA rate: {} PTC/s", lal.nscans/(lal.ptc_times.sum()/1000));
+        SPDLOG_INFO("Map rate: {} PTC/s", lal.nscans/(lal.map_times.sum()/1000));
+
         //It is required to normalize the map after the pipeline is completed since we are streaming it per scan
         mapmaking::mapnormalize(lal);
 
-        //Plotting fun
-        /*auto b = cin.get();
-
-        do{
-            if (b =='s'){
-                Eigen::MatrixXd signalmatrix = Eigen::Map<Eigen::MatrixXd> (lal.br.mapstruct.signal.data(),lal.br.mapstruct.signal.dimension(0),lal.br.mapstruct.signal.dimension(1));
-                const int colors = 1;
-                Eigen::MatrixXf fff = signalmatrix.cast <float> ();
-                float* zptr = &(fff)(0);
-                plt::imshow(zptr,lal.br.mapstruct.ncols, lal.br.mapstruct.nrows, colors);
-                plt::show();
-            }
-
-            if (b=='w'){
-                Eigen::MatrixXd signalmatrix = Eigen::Map<Eigen::MatrixXd> (lal.br.mapstruct.wtt.data(),lal.br.mapstruct.wtt.dimension(0),lal.br.mapstruct.wtt.dimension(1));
-                const int colors = 1;
-                Eigen::MatrixXf fff = signalmatrix.cast <float> ();
-                float* zptr = &(fff)(0);
-                plt::imshow(zptr,lal.br.mapstruct.ncols, lal.br.mapstruct.nrows, colors);
-                plt::show();
-            }
-
-
-            if (b=='n'){
-                Eigen::Tensor<double, 2> signaltensor = lal.br.mapstruct.noisemaps.chip(0, 0);
-                Eigen::MatrixXd signalmatrix = Eigen::Map<Eigen::MatrixXd> (signaltensor.data(),signaltensor.dimension(0),signaltensor.dimension(1));
-                const int colors = 1;
-                Eigen::MatrixXf fff = signalmatrix.cast <float> ();
-                float* zptr = &(fff)(0);
-                plt::imshow(zptr,lal.br.mapstruct.ncols, lal.br.mapstruct.nrows, colors);
-                plt::show();
-            }
-
-        } while(cin.get()!='\n');
-        */
-
         //Get output file name
-        auto output_filepath = yamlconfig->get_typed<std::string>("output_filepath");
+        /*auto output_filepath = yamlconfig->get_typed<std::string>("output_filepath");
 
         //Calculate Map PSD
 
@@ -278,16 +259,152 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
             mhs.histVals = std::move(histVals);
         }
 
+
+
+        netCDF::NcFile fo("/Users/mmccrackan/MacanaDevel/aztec_c++/test/coadded_maps/coadded_test.nc", netCDF::NcFile::read);
+
+        auto vars = fo.getVars();
+
+        Eigen::Index nrows = 620;
+        Eigen::Index ncols = 552;
+
+        Eigen::MatrixXd signal(nrows,ncols);
+        signal.setZero();
+
+        Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> signal2(nrows,ncols);
+        signal2.setZero();
+
+        const auto& sigvar =  vars.find("signal")->second;
+        sigvar.getVar(signal.data());
+
+        sigvar.getVar(signal2.data());
+
+        Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> weight(nrows,ncols);
+        weight.setZero();
+
+        const auto& wtvar =  vars.find("weight")->second;
+        wtvar.getVar(weight.data());
+
+        Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> kernel(nrows,ncols);
+        kernel.setZero();
+
+        const auto& kvar =  vars.find("kernel")->second;
+        kvar.getVar(kernel.data());
+
+        Eigen::VectorXd rowCoordsPhys(nrows);
+        rowCoordsPhys.setZero();
+
+        const auto& rcvar =  vars.find("rowCoordsPhys")->second;
+        rcvar.getVar(rowCoordsPhys.data());
+
+        Eigen::VectorXd colCoordsPhys(ncols);
+        colCoordsPhys.setZero();
+
+        const auto& ccvar =  vars.find("colCoordsPhys")->second;
+        ccvar.getVar(colCoordsPhys.data());
+
+        fo.close();
+
+
+        std::string psd_path = "/Users/mmccrackan/MacanaDevel/aztec_c++/test/noise_maps/";
+        netCDF::NcFile pfo(psd_path + "average_noise_psd.nc", netCDF::NcFile::read);
+
+        auto pvars = pfo.getVars();
+
+        Eigen::Index npsd = 295;
+
+        Eigen::VectorXd psd(npsd);
+        psd.setZero();
+
+        const auto& psdvar =  pvars.find("psd")->second;
+        psdvar.getVar(psd.data());
+
+
+        Eigen::VectorXd psdFreq(npsd);
+        psdFreq.setZero();
+
+        const auto& psdfvar =  pvars.find("psdFreq")->second;
+        psdfvar.getVar(psdFreq.data());
+
+        pfo.close();
+
+        psdc.psd = psd;
+        psdc.psdFreq = psdFreq;
+
+        //Eigen::TensorMap<Eigen::Tensor<double, 2>> sig(signal2.data(),nrows,ncols);
+        //Eigen::TensorMap<Eigen::Tensor<double, 2>> wt(weight.data(),nrows,ncols);
+        //Eigen::TensorMap<Eigen::Tensor<double, 2>> ker(kernel.data(),nrows,ncols);
+
+        lal.br.mapstruct.kernel.resize(nrows,ncols);
+        lal.br.mapstruct.signal.resize(nrows,ncols);
+        lal.br.mapstruct.wtt.resize(nrows,ncols);
+        lal.br.mapstruct.noisemaps.resize(nrows,ncols,5);
+
+        for(int i=0;i<nrows;i++){
+            for(int j=0;j<ncols;j++){
+
+                lal.br.mapstruct.kernel(i,j) = kernel(i,j);
+                lal.br.mapstruct.wtt(i,j) = weight(i,j);
+                lal.br.mapstruct.signal(i,j) = signal2(i,j);
+
+            }
+        }
+
+        //lal.br.mapstruct.signal = signal2;
+        //lal.br.mapstruct.wtt = weight;
+        //lal.br.mapstruct.kernel = kernel;
+
+        lal.br.mapstruct.rowcoordphys = rowCoordsPhys;
+        lal.br.mapstruct.colcoordphys = colCoordsPhys;
+
+        lal.br.mapstruct.nrows = nrows;
+        lal.br.mapstruct.ncols = ncols;
+
+
+        std::string npath = "/Users/mmccrackan/MacanaDevel/aztec_c++/test/noise_maps/";
+        for(int k =0;k<5;k++){
+            netCDF::NcFile nfo(npath + "noise" + std::to_string(k) + ".nc", netCDF::NcFile::read);
+            auto nvars = nfo.getVars();
+            Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> nn(nrows,ncols);
+            const auto& nvar =  nvars.find("noise")->second;
+            nvar.getVar(nn.data());
+
+            for(int i=0;i<nrows;i++){
+                for(int j=0;j<ncols;j++){
+                    lal.br.mapstruct.noisemaps(i,j,k) = nn(i,j);
+                }
+             }
+        }
+
+
+        const int colors = 1;
+        Eigen::MatrixXf fff = psd.cast <float> ();
+        Eigen::MatrixXf freq = psdFreq.cast <float> ();
+        float* xptr = &(freq)(0);
+
+        std::vector<double> x(npsd);
+        std::vector<double> y(npsd);
+
+        for(int i=0;i<npsd;i++){
+            x[i] = psdFreq[i];
+            y[i] = psd[i];
+        }
+
+        float* yptr = &(fff)(0);
+        plt::plot(x,y);
+        //plt::imshow(zptr,lal.br.mapstruct.nrows, lal.br.mapstruct.ncols, colors);
+        plt::show();
+
+
+
         {
             logging::scoped_timeit timer("wiener");
 
         //Create Wiener filter
         mapmaking::wiener Wiener(lal.br.mapstruct,yamlconfig);
         //Run Wiener filter on coadded maps
-        //Wiener.filterCoaddition(lal.br.mapstruct, psdc);
-
-        SPDLOG_INFO("rr {}",Wiener.rr);
-        SPDLOG_INFO("vvq {}",Wiener.vvq);
+        Wiener.filterCoaddition(lal.br.mapstruct, psdc);
+        Wiener.filterNoiseMaps(lal.br.mapstruct);
         }
 
         //Save everything
@@ -298,7 +415,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
         SPDLOG_INFO("Saving Hists");
         mhs.toNcFile(output_filepath + "hist.nc");
 
-
+*/
     } catch (const po::error &e) {
         SPDLOG_ERROR("{}", e.what());
         return 1;

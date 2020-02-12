@@ -376,78 +376,78 @@ struct BeammapData {
 
             data.telescope_data["Hold"].resize(npts);
             vars.find("Data.AztecBackend.Hold")->second.getVar(data.telescope_data["Hold"].data());
-            SPDLOG_INFO("hold {}", data.telescope_data["Hold"]);
+            //SPDLOG_INFO("hold {}", data.telescope_data["Hold"]);
 
             data.telescope_data["TelUtc"].resize(npts);
             vars.find("Data.AztecBackend.TelUtc")->second.getVar(data.telescope_data["TelUtc"].data());
-            SPDLOG_INFO("TelUtc {}", data.telescope_data["TelUtc"]);
+            //SPDLOG_INFO("TelUtc {}", data.telescope_data["TelUtc"]);
 
             data.telescope_data["AztecUtc"].resize(npts);
             vars.find("Data.AztecBackend.AztecUtc")->second.getVar(data.telescope_data["AztecUtc"].data());
-            SPDLOG_INFO("AztecUtc {}", data.telescope_data["AztecUtc"]);
+            //SPDLOG_INFO("AztecUtc {}", data.telescope_data["AztecUtc"]);
 
             data.telescope_data["TelAzAct"].resize(npts);
             vars.find("Data.AztecBackend.TelAzAct")->second.getVar(data.telescope_data["TelAzAct"].data());
-            SPDLOG_INFO("TelAzAct{}", data.telescope_data["TelAzAct"]);
+            //SPDLOG_INFO("TelAzAct{}", data.telescope_data["TelAzAct"]);
 
             data.telescope_data["TelElAct"].resize(npts);
             vars.find("Data.AztecBackend.TelElAct")->second.getVar(data.telescope_data["TelElAct"].data());
-            SPDLOG_INFO("TelElAct{}", data.telescope_data["TelElAct"]);
+            //SPDLOG_INFO("TelElAct{}", data.telescope_data["TelElAct"]);
 
             data.telescope_data["TelAzDes"].resize(npts);
             vars.find("Data.AztecBackend.TelAzDes")->second.getVar(data.telescope_data["TelAzDes"].data());
-            SPDLOG_INFO("TelAzDes{}", data.telescope_data["TelAzDes"]);
+            //SPDLOG_INFO("TelAzDes{}", data.telescope_data["TelAzDes"]);
 
             data.telescope_data["TelElDes"].resize(npts);
             vars.find("Data.AztecBackend.TelElDes")->second.getVar(data.telescope_data["TelElDes"].data());
-            SPDLOG_INFO("TelElDes{}", data.telescope_data["TelElDes"]);
+            //SPDLOG_INFO("TelElDes{}", data.telescope_data["TelElDes"]);
 
             data.telescope_data["TelAzCor"].resize(npts);
             vars.find("Data.AztecBackend.TelAzCor")->second.getVar(data.telescope_data["TelAzCor"].data());
-            SPDLOG_INFO("TelAzCor{}", data.telescope_data["TelAzCor"]);
+            //SPDLOG_INFO("TelAzCor{}", data.telescope_data["TelAzCor"]);
 
             data.telescope_data["TelElCor"].resize(npts);
             vars.find("Data.AztecBackend.TelElCor")->second.getVar(data.telescope_data["TelElCor"].data());
-            SPDLOG_INFO("TelElCor{}", data.telescope_data["TelElCor"]);
+            //SPDLOG_INFO("TelElCor{}", data.telescope_data["TelElCor"]);
 
             data.telescope_data["SourceAz"].resize(npts);
             vars.find("Data.AztecBackend.SourceAz")->second.getVar(data.telescope_data["SourceAz"].data());
-            SPDLOG_INFO("SourceAz{}", data.telescope_data["SourceAz"]);
+            //SPDLOG_INFO("SourceAz{}", data.telescope_data["SourceAz"]);
 
             data.telescope_data["SourceEl"].resize(npts);
             vars.find("Data.AztecBackend.SourceEl")->second.getVar(data.telescope_data["SourceEl"].data());
-            SPDLOG_INFO("SourceEl{}", data.telescope_data["SourceEl"]);
+            //SPDLOG_INFO("SourceEl{}", data.telescope_data["SourceEl"]);
 
             data.telescope_data["TelRa"].resize(npts);
             vars.find("Data.AztecBackend.SourceRaAct")->second.getVar(data.telescope_data["TelRa"].data());
-            SPDLOG_INFO("TelRa{}", data.telescope_data["TelRa"]);
+            //SPDLOG_INFO("TelRa{}", data.telescope_data["TelRa"]);
 
             data.telescope_data["TelDec"].resize(npts);
             vars.find("Data.AztecBackend.SourceDecAct")->second.getVar(data.telescope_data["TelDec"].data());
-            SPDLOG_INFO("TelDec{}", data.telescope_data["TelDec"]);
+            //SPDLOG_INFO("TelDec{}", data.telescope_data["TelDec"]);
 
             data.telescope_data["ParAng"].resize(npts);
             vars.find("Data.AztecBackend.ParAng")->second.getVar(data.telescope_data["ParAng"].data());
-            SPDLOG_INFO("ParAng{}", data.telescope_data["ParAng"]);
+            //SPDLOG_INFO("ParAng{}", data.telescope_data["ParAng"]);
 
             data.telescope_data["ParAng"] = pi-data.telescope_data["ParAng"].array();
 
             observation::obs(data.scanindex,data.telescope_data,10,64,0.125);
 
             //Toggle commenting here to generate 4000 detectors (40 copies of first 100 detectors)
-            Eigen::Index nmulti = 70;
+            Eigen::Index nmulti = 40;
             Eigen::Index j = 0;
-            //data.scans.resize(npts,7000);
+            data.scans.resize(npts,nmulti*100);
 
             for (Eigen::Index i = 0;i <nmulti;i++) {
-                //data.scans.block(0,j,npts,100) = data.scans_temp.block(0,0,npts,100);
+                data.scans.block(0,j,npts,100) = data.scans_temp.block(0,0,npts,100);
                 j = j + 100;
             }
 
-            //ndetectors = 7000;
+            ndetectors = 4000;
             //end commenting for 4000 detectors
 
-            data.scans = data.scans_temp; //temporary,  uncomment this and comment above block for normal reading of file
+            //data.scans = data.scans_temp; //temporary,  uncomment this and comment above block for normal reading of file
             data.scans_temp.resize(0,0);
 
             // meta data

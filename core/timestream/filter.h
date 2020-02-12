@@ -1,22 +1,27 @@
 #pragma once
 
-#define _STDCPP_MATH_SPEC_FUNCS__201003L
-#define __STDCPP_WANT_MATH_SPEC_FUNCS__ 1
+//#define _STDCPP_MATH_SPEC_FUNCS__201003L
+//#define __STDCPP_WANT_MATH_SPEC_FUNCS__ 1
 
 #include <Eigen/Dense>
 #include <unsupported/Eigen/FFT>
 #include <unsupported/Eigen/CXX11/Tensor>
 
+#include <boost/math/special_functions.hpp>
 #include <boost/math/special_functions/bessel.hpp>
+#include <boost/math/special_functions/round.hpp>
+#include <boost/math/special_functions/bessel_prime.hpp>
 #include <boost/math/constants/constants.hpp>
 
 #include <cmath>
 #include <iostream>
 
-
 namespace timestream {
 
 namespace internal {
+
+//class filter
+
 
 //Filter function
 template <typename DerivedA>
@@ -47,7 +52,7 @@ void df(Eigen::DenseBase<DerivedA> &dft, const double flow,
     //Calculate the coefficients from bessel functions.  Note a loop appears to be required here.
     Eigen::VectorXd coef(nterms);
     for(int i=0;i<nterms;i++){
-        coef[i] = boost::math::cyl_bessel_i(0,arg[i]) / boost::math::cyl_bessel_i(0,alpha);
+        //coef[i] = boost::math::cyl_bessel_i(0,arg[i]) / boost::math::cyl_bessel_i(0,alpha);
     }
 
     //Generate time array
@@ -69,21 +74,14 @@ void df(Eigen::DenseBase<DerivedA> &dft, const double flow,
 
 } //namespace internal
 
-//Zero-padding check
-enum ExtendTimestream {
-        extend = 0,
-        no_extend = 1
-    };
-
 //Convoltuion code using Eigen FFT
-template <ExtendTimestream et, typename DerivedA>
+template <typename DerivedA>
 void filter(Eigen::DenseBase<DerivedA> &in_scans,
             const double HighpassFilterKnee, const double LowpassFilterKnee,
             const double agibbs,const int nterms, const int samplerate){
 
     //Calculate Nyquist frequency
     double nyquist = samplerate/2.;
-
     //Scale upper frequency cutoff to Nyquist frequency
     double fhigh = LowpassFilterKnee/nyquist;
     //Scale lower frequency cutoff to Nyquist frequency

@@ -209,7 +209,7 @@ void absToPhysHorPointing(DerivedA &telescope_data){
 }
 
 template <typename DerivedA>
-bool absToPhys(DerivedA telescope_data,
+bool absToPhys(DerivedA &telescope_data,
            double  centerRa, double centerDec,
                int nSamples){
     //use temporary storage to avoid writing over absRa and absDec

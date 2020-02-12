@@ -128,35 +128,48 @@ struct TimeStream : internal::TCDataBase<Derived>,
     TimeStreamFrame wcs;
     // The timestream is stored in row major for efficient r/w
     template <typename PlainObject>
+    struct dataref_t : nddata::NDData<dataref_t<PlainObject>> {
+        PlainObject data{nullptr, 0, 0};
+    };
+
+    template <typename PlainObject>
     struct data_t : nddata::NDData<data_t<PlainObject>> {
         PlainObject data;
     };
 };
 
-template <>
-struct TCData<LaliDataKind::RTC>
+template <typename RefType>
+struct TCData<LaliDataKind::RTC,RefType>
     : TimeStream<TCData<LaliDataKind::RTC>> {
     using Base = TimeStream<TCData<LaliDataKind::RTC>>;
+    //TCData(RefType r): {}
+    //TCData(RefType r) {
+      //  scans.data = r;
+    //}
+    //using data_t = std::conditional_t<meta::is_template<RefType, Eigen::Map>, Base::dataref_t, Base::data_t>;
+    using data_t = std::conditional_t<eigen_utils::is_plain_v<RefType>,Base::data_t<RefType>, Base::dataref_t<RefType>>;
+    data_t scans;
     // NDData impl
-    Base::data_t<Eigen::MatrixXd> scans;
-    //Base::data_t<Eigen::Map<Eigen::MatrixXd>> scans;
     Base::data_t<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> flags;
     Base::data_t<Eigen::Matrix<Eigen::Index,Eigen::Dynamic,1>> scanindex;
+    Base::data_t<Eigen::Index> index;
 };
 
-template <>
-struct TCData<LaliDataKind::PTC>
+template <typename RefType>
+struct TCData<LaliDataKind::PTC, RefType>
     : TimeStream<TCData<LaliDataKind::PTC>> {
     using Base = TimeStream<TCData<LaliDataKind::PTC>>;
+    using data_t = std::conditional_t<eigen_utils::is_plain_v<RefType>,Base::data_t<RefType>, Base::dataref_t<RefType>>;
     // NDData impl
-    Base::data_t<Eigen::MatrixXd> scans;
+    data_t scans;
     Base::data_t<Eigen::MatrixXd> kernelscans;
     Base::data_t<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> flags;
     Base::data_t<Eigen::Matrix<Eigen::Index,Eigen::Dynamic,1>> scanindex;
+    Base::data_t<Eigen::Index> index;
 };
 
 
-/// @brief Kids data class of runtime variant kind.
+/// @brief data class of runtime variant kind.
 template <LaliDataKind kind_>
 struct TCData<kind_, std::enable_if_t<enum_utils::is_compound_v<kind_>>>
     : enum_utils::enum_to_variant_t<kind_, TCData> {

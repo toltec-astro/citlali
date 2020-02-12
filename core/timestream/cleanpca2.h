@@ -62,18 +62,13 @@ void pcaclean2(
         Eigen::Matrix<bool,Eigen::Dynamic, Eigen::Dynamic> denom(ndetectors, ndetectors);
         Eigen::MatrixXd pcaCorr(ndetectors, ndetectors);
 
-        //det.resize(npts, ndetectors);
-        //ker.resize(npts, ndetectors);
-        flg.resize(npts, ndetectors);
+        //flg.resize(npts, ndetectors);
 
         Eigen::RowVectorXd scan_means = scans.derived().colwise().mean();
         Eigen::RowVectorXd kernel_means = kernelscans.derived().colwise().mean();
 
         det = scans.derived().rowwise() - scan_means;
         ker = kernelscans.derived().rowwise() - kernel_means;
-
-        //det = scans;
-        //ker = kernelscans;
 
         // return data
         cleanedscans.derived().resize(scans.rows(), scans.cols());
@@ -106,7 +101,6 @@ void pcaclean2(
             kproj.noalias() = ker.derived() * evecs.leftCols(neigToCut);
             cleanedscans.derived().noalias() = det - proj * evecs.adjoint().topRows(neigToCut);
             cleanedkernelscans.derived().noalias() = ker.derived() - kproj * evecs.adjoint().topRows(neigToCut);
-
         }
 }
 } // namespace timestream

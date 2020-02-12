@@ -171,7 +171,7 @@ double calcScanWeight(const Eigen::DenseBase<DerivedA> &scans, const Eigen::Dens
 
 //loop through all scans and get the weights.
 template<typename DerivedA>
-DerivedA calculateWeights(std::vector<TCData<LaliDataKind::PTC>> &ptcs, const int samplerate){
+DerivedA calculateWeights(std::vector<TCData<LaliDataKind::PTC,Eigen::MatrixXd>> &ptcs, const int samplerate){
     Eigen::Index ndet = ptcs[0].scans.data.cols();
     Eigen::Index nscans = ptcs.size();
 
@@ -203,7 +203,7 @@ DerivedA calculateWeights(std::vector<TCData<LaliDataKind::PTC>> &ptcs, const in
 
 //Beammap generation code
 template <typename DerivedA, typename DerivedC>//, typename DerivedB>
-void mapgen(std::vector<TCData<LaliDataKind::PTC>> &ptcs,
+void mapgen(std::vector<TCData<LaliDataKind::PTC,Eigen::MatrixXd>> &ptcs,
                  pointing &telescope_data,
                  double mgrid_0, double mgrid_1, const int samplerate,
                  DerivedC &mapstruct, Eigen::DenseBase<DerivedA> &offsets, Eigen::Index det,

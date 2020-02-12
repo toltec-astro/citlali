@@ -61,4 +61,5 @@ target_link_libraries(lali PRIVATE
     spectra
     Boost::program_options
     Boost::random
+    Boost::math
     )

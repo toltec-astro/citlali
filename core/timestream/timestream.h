@@ -30,12 +30,15 @@ class RTCProc
 public:
     RTCProc(std::shared_ptr<YamlConfig> config_): config(std::move(config_)) {}
     std::shared_ptr<YamlConfig> config;
-    void process (TCData<LaliDataKind::RTC>&, TCData<LaliDataKind::PTC>&);
+
+    //template <typename RTC_type, typename PTC_type>
+    void process (TCData<LaliDataKind::RTC,Eigen::MatrixXd>&, TCData<LaliDataKind::PTC,Eigen::MatrixXd>&);
     bool isLowpassed = 0;
     bool isDespiked = 0;
 };
 
- void RTCProc::process(TCData<LaliDataKind::RTC>& in, TCData<LaliDataKind::PTC>& out) {
+//template <typename RTC_type, typename PTC_type>
+void RTCProc::process(TCData<LaliDataKind::RTC,Eigen::MatrixXd>& in, TCData<LaliDataKind::PTC,Eigen::MatrixXd>& out) {
      in.flags.data.resize(in.scans.data.rows(),in.scans.data.cols());
      in.flags.data.setOnes();
 
@@ -45,7 +48,6 @@ public:
 
      auto samplerate = this->config->get_typed<double>("proc.rtc.samplerate");
      auto nterms = this->config->get_typed<int>("proc.rtc.filter.nterms");
-
 
      //Get reference to inner scan region
      auto inner_scans = in.scans.data.block(nterms,0,in.scans.data.rows() - 2*nterms,in.scans.data.cols());
@@ -70,7 +72,7 @@ public:
          auto fhigh = this->config->get_typed<double>("proc.rtc.filter.fhigh");
          auto agibbs = this->config->get_typed<double>("proc.rtc.filter.agibbs");
 
-         timestream::filter<extend>(in.scans.data, flow, fhigh, agibbs, nterms, samplerate);
+         timestream::filter(in.scans.data, flow, fhigh, agibbs, nterms, samplerate);
 
          isLowpassed = 1;
      }
@@ -85,6 +87,7 @@ public:
      out.kernelscans.data.resize(out.scans.data.rows(),out.scans.data.cols());
      out.kernelscans.data.setZero();
      out.scanindex.data.noalias() = in.scanindex.data;
+     out.index.data = in.index.data;
  }
 
 /*Class to clean timestream data*/
@@ -94,10 +97,12 @@ class PTCProc
 public:
     PTCProc(std::shared_ptr<YamlConfig> config_): config(std::move(config_)) {}
     std::shared_ptr<YamlConfig> config;
-    void process (TCData<LaliDataKind::PTC>&,TCData<LaliDataKind::PTC>&);
+    //template <typename PTC_type>
+    void process (TCData<LaliDataKind::PTC,Eigen::MatrixXd>&,TCData<LaliDataKind::PTC,Eigen::MatrixXd>&);
 };
 
-void PTCProc::process(TCData<LaliDataKind::PTC> &in, TCData<LaliDataKind::PTC> &out) {
+//template <typename PTC_type>
+void PTCProc::process(TCData<LaliDataKind::PTC,Eigen::MatrixXd> &in, TCData<LaliDataKind::PTC,Eigen::MatrixXd> &out) {
     auto run_cleanpca = this->config->get_typed<int>("proc.ptc.cleanpca");
     if (run_cleanpca){
         auto neigToCut = this->config->get_typed<int>("proc.ptc.pcaclean.neigToCut");
@@ -113,5 +118,6 @@ void PTCProc::process(TCData<LaliDataKind::PTC> &in, TCData<LaliDataKind::PTC> &
     //Copy flags and scan indices over to output PTCData
     out.flags.data.noalias() = in.flags.data;
     out.scanindex.data.noalias() = in.scanindex.data;
+    out.index.data = in.index.data;
 }
 } //namespace

@@ -2,6 +2,11 @@
 #include <unsupported/Eigen/FFT>
 #include "../../common_utils/src/utils/algorithm/mlinterp/mlinterp.hpp"
 
+namespace plt = matplotlibcpp;
+
+using RowMatrixXd = Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>;
+using RowMatrixXcd = Eigen::Matrix<std::complex<double>,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>;
+
 namespace mapmaking {
 
 template<typename Derived>
@@ -27,23 +32,59 @@ enum FFTdirection {
     backward = 1
 };
 
-template<FFTdirection direc, typename DerivedA>
-Eigen::VectorXcd fft2w(Eigen::DenseBase<DerivedA> &vecIn, int nx, int ny){
-    const int nRows = nx;//matIn.rows();
-    const int nCols = ny;//matIn.cols();
+template<FFTdirection direc, typename Derived>
+Eigen::VectorXcd fft2w(Eigen::DenseBase<Derived> &vecIn, const int nx, const int ny){
 
-    //Eigen::Map<Eigen::MatrixXd> matIn2(vecIn.derived().data(),nx,ny);
+    //Eigen::Map<Eigen::Matrix<std::complex<double>,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>> matIn(vecIn.derived().data(),nx,ny);
 
-    Eigen::MatrixXcd matIn(nRows,nCols);
+    Eigen::Map<RowMatrixXcd> matIn(vecIn.derived().data(),nx,ny);
 
-    for(int i =0;i<nx;i++){
-        for(int j=0;j<ny;j++)
-            matIn(i,j) = vecIn(ny*i+j);
-    }
+    std::vector<int> rowvec_in(nx);
+    std::iota(rowvec_in.begin(), rowvec_in.end(), 0);
+    std::vector<int> rowvec_out(nx);
 
-    Eigen::FFT<double> fft;
+    std::vector<int> colvec_in(ny);
+    std::iota(colvec_in.begin(), colvec_in.end(), 0);
+    std::vector<int> colvec_out(ny);
+
+    Eigen::Matrix<complex<double>,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> matOut(nx, ny);
+
+    grppi::map(grppiex::dyn_ex("omp"),rowvec_in,rowvec_out,[&](auto k){
+        Eigen::FFT<double> fft;
+        fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
+        fft.SetFlag(Eigen::FFT<double>::Unscaled);
+
+        Eigen::VectorXcd tmpOut(ny);
+        if constexpr(direc == forward){
+            fft.fwd(tmpOut, matIn.row(k));
+        }
+        else{
+            fft.inv(tmpOut, matIn.row(k));
+        }
+        matOut.row(k) = tmpOut;
+        return 0;
+    });
+
+    grppi::map(grppiex::dyn_ex("omp"),colvec_in,colvec_out,[&](auto k){
+        Eigen::FFT<double> fft;
+        fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
+        fft.SetFlag(Eigen::FFT<double>::Unscaled);
+
+        Eigen::VectorXcd tmpOut(nx);
+        if constexpr(direc == forward){
+            fft.fwd(tmpOut, matOut.col(k));
+        }
+        else{
+            fft.inv(tmpOut, matOut.col(k));
+        }
+        matOut.col(k) = tmpOut;
+        return 0;
+    });
+
+
+    /*Eigen::FFT<double> fft;
     fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
-    //fft.SetFlag(Eigen::FFT<double>::Unscaled);
+    fft.SetFlag(Eigen::FFT<double>::Unscaled);
     Eigen::MatrixXcd matOut(nRows, nCols);
 
     for (int k = 0; k < nRows; ++k) {
@@ -66,16 +107,18 @@ Eigen::VectorXcd fft2w(Eigen::DenseBase<DerivedA> &vecIn, int nx, int ny){
             fft.inv(tmpOut, matOut.col(k));
         }
         matOut.col(k) = tmpOut;
-    }
+    }*/
 
-    Eigen::VectorXcd vec3(nx*ny);
+    //Eigen::VectorXcd vec3(nx*ny);
 
-    for(int i =0;i<nx;i++){
+    /*for(int i =0;i<nx;i++){
         for(int j=0;j<ny;j++)
             vec3(ny*i+j) = matOut(i,j);
-    }
+    }*/
 
-    return vec3;
+    Eigen::Map<Eigen::VectorXcd> vec3(matOut.data(),nx*ny);
+
+    return std::move(vec3);
 }
 
 bool shift(Eigen::VectorXd &vec, int n){
@@ -121,7 +164,7 @@ class wiener {
 public:
     ///storage for current and future wf
     Eigen::MatrixXd Denom;               ///<denominator to filter (calc once)
-    Eigen::MatrixXd Nume;                ///<numerator to the filter (changes)
+    RowMatrixXd Nume;                ///<numerator to the filter (changes)
     Eigen::MatrixXd rr;
     Eigen::MatrixXd vvq;
     Eigen::MatrixXd tplate;
@@ -142,6 +185,9 @@ public:
         nx = 2*(cmap.nrows/2);
         ny = 2*(cmap.ncols/2);
 
+        diffx = abs(cmap.rowcoordphys(1)-cmap.rowcoordphys(0));
+        diffy = abs(cmap.colcoordphys(1)-cmap.colcoordphys(0));
+
         bool getHighpassOnly = 0;
         bool getGaussianTemplate = 1;
         if(getHighpassOnly){
@@ -156,13 +202,27 @@ public:
 
     std::shared_ptr<lali::YamlConfig> config;
 
-    void prepareTemplate(MapStruct &cmap);
-    void prepareGaussianTemplate(MapStruct &cmap);
-    void filterCoaddition(MapStruct &cmap, psdclass &psd);
-    void filterNoiseMaps(MapStruct &cmap);
-    void calcRr(MapStruct &cmap);
-    void calcVvq(psdclass &psd);
-    void calcNumerator(Eigen::MatrixXd &mflt);
+    template<typename T>
+    void prepareTemplate(T &cmap);
+
+    template<typename T>
+    void prepareGaussianTemplate(T &cmap);
+
+    template<typename T, typename P>
+    void filterCoaddition(T &cmap, P &psd);
+
+    template<typename T>
+    void filterNoiseMaps(T &cmap);
+
+    template<typename T>
+    void calcRr(T &cmap);
+
+    template<typename P>
+    void calcVvq(P &psd);
+
+    template<typename Derived>
+    void calcNumerator(Eigen::DenseBase<Derived> &mflt);
+
     bool calcDenominator();
     void simplewienerFilter2d();
     //  void gaussFilter(Coaddition *cmap);
@@ -170,11 +230,18 @@ public:
 
 };
 
-void wiener::filterCoaddition(MapStruct &cmap, psdclass &psd){
+template<typename T, typename P>
+void wiener::filterCoaddition(T &cmap, P &psd){
 
     cmap.filteredkernel.resize(nx,ny);
     cmap.filteredsignal.resize(nx,ny);
     cmap.filteredweight.resize(nx,ny);
+    cmap.filterednoisemaps.resize(nx,ny,cmap.NNoiseMapsPerObs);
+
+    cmap.filteredkernel.setZero();
+    cmap.filteredsignal.setZero();
+    cmap.filteredweight.setZero();
+    cmap.filterednoisemaps.setZero();
 
     //do the kernel first since it's simpler to calculate
     //the kernel calculation requires uniform weighting
@@ -182,34 +249,37 @@ void wiener::filterCoaddition(MapStruct &cmap, psdclass &psd){
     calcRr(cmap);
     calcVvq(psd);
     calcDenominator();
-    //for(int i=0;i<nx;i++) for(int j=0;j<ny;j++)
-    //Eigen::Tensor<double,2> mflt= cmap.kernel;
 
-    Eigen::MatrixXd mflt = Eigen::Map<Eigen::MatrixXd> (cmap.kernel.data(),cmap.kernel.dimension(0),cmap.kernel.dimension(1));
-
+    auto mflt = Eigen::Map<Eigen::MatrixXd> (cmap.kernel.data(),cmap.kernel.dimension(0),cmap.kernel.dimension(1));
     calcNumerator(mflt);
-    for(int i=0;i<nx;i++)
+
+    for(int i=0;i<nx;i++){
         for(int j=0;j<ny;j++){
-            if (Denom(i,j) != 0.0)
+            if (Denom(i,j) != 0.0){
                 cmap.filteredkernel(i,j)=Nume(i,j)/Denom(i,j);
+            }
             else {
                 cmap.filteredkernel(i,j)= 0.0;
                 SPDLOG_INFO("Nan prevented");
             }
         }
+    }
 
+    Eigen::MatrixXd kt = Eigen::Map<Eigen::MatrixXd> (cmap.filteredkernel.data(),cmap.filteredkernel.dimension(0),cmap.filteredkernel.dimension(1));
+    const int colors = 1;
+    Eigen::MatrixXf fff = kt.cast <float> ();
+    float* zptr = &(fff)(0);
+    plt::imshow(zptr,ny, nx, colors);
+    plt::show();
 
 
     //Do the more complex precomputing for the signal map
     uniformWeight=0;
     calcRr(cmap);
     calcVvq(psd);
-
     calcDenominator();
 
     //Here is the signal map to be filtered
-    //for(int i=0;i<nx;i++) for(int j=0;j<ny;j++)
-    //mflt = cmap.signal;
     mflt = Eigen::Map<Eigen::MatrixXd> (cmap.signal.data(),cmap.signal.dimension(0),cmap.signal.dimension(1));
 
     //calculate the associated numerator
@@ -217,15 +287,25 @@ void wiener::filterCoaddition(MapStruct &cmap, psdclass &psd){
 
     //replace the original images with the filtered images
     //note that the filtered weight map = Denom
-    for(int i=0;i<nx;i++) for(int j=0;j<ny;j++){
-            if (Denom(i,j) !=0.0)
+    for(int i=0;i<nx;i++){
+        for(int j=0;j<ny;j++){
+            if (Denom(i,j) !=0.0){
                 cmap.filteredsignal(i,j)=Nume(i,j)/Denom(i,j);
+            }
             else{
                 //cerr<<"Nan avoided"<<endl;
                 cmap.filteredsignal(i,j)=0.0;
             }
             cmap.filteredweight(i,j)=Denom(i,j);
         }
+    }
+
+    auto st = Eigen::Map<Eigen::MatrixXd> (cmap.filteredweight.data(),cmap.filteredweight.dimension(0),cmap.filteredweight.dimension(1));
+    const int colorss = 1;
+    Eigen::MatrixXf sss = st.cast <float> ();
+    float* sptr = &(sss)(0);
+    plt::imshow(sptr,ny, nx, colorss);
+    plt::show();
 }
 
 ///Main driver code to filter a set of noise realizations.
@@ -236,7 +316,9 @@ void wiener::filterCoaddition(MapStruct &cmap, psdclass &psd){
     It requires that vvq, rr, tplate, and Denom are already
     calculated.
  **/
-void wiener::filterNoiseMaps(MapStruct &cmap){
+
+template<typename T>
+void wiener::filterNoiseMaps(T &cmap){
     //The strategy here is to loop through the noise files one
     //by one, pulling in the noise image, filtering it, and then
     //writing it back into the file.
@@ -245,16 +327,15 @@ void wiener::filterNoiseMaps(MapStruct &cmap){
         SPDLOG_INFO("WienerFilter(): Filtering noise map {}", k);
 
         //the input array dims
-        int nrows = cmap.filterednoisemaps.dimension(0);
-        int ncols = cmap.filterednoisemaps.dimension(1);
+        int nrows = cmap.noisemaps.dimension(0);
+        int ncols = cmap.noisemaps.dimension(1);
 
         //the actual noise matrix
-        Eigen::MatrixXd noise(nrows, ncols);
+        auto noise = Eigen::Map<Eigen::MatrixXd> (cmap.noisemaps.data()+(k*nrows*ncols),nrows,ncols);
 
         //do the filtering
-        //Eigen::MatrixXd filterednoisemaps(nrows,ncols,0.);
-        //Eigen::MatrixXd filteredweight(nrows,ncols,0.);
         calcNumerator(noise);
+        SPDLOG_INFO("B");
         for(int i=0;i<nx;i++) {
             for(int j=0;j<ny;j++){
                 if(Denom(i,j) > 0){
@@ -264,56 +345,56 @@ void wiener::filterNoiseMaps(MapStruct &cmap){
             }
         }
     }
+
+    Eigen::MatrixXd tmap = Eigen::Map<Eigen::MatrixXd> (cmap.filterednoisemaps.data()+(0*nx*ny),nx,ny);
+
+    const int colorsk = 1;
+    Eigen::MatrixXf ddd = tmap.cast <float> ();
+    float* rptr = &(ddd)(0);
+    plt::imshow(rptr,nx, ny, colorsk);
+    plt::title("noise map");
+    plt::show();
 }
 
 ///Calculation of the RR matrix
-void wiener::calcRr(MapStruct &cmap){
+template<typename T>
+void wiener::calcRr(T &cmap){
     rr.resize(nx,ny);
 
     if(uniformWeight){
         rr.setOnes();//(nx,ny,1.);
     }
     else {
-        //for(int i=0;i<nx;i++) for(int j=0;j<ny;j++)
         rr = Eigen::Map<Eigen::MatrixXd> (cmap.wtt.data(),cmap.wtt.dimension(0),cmap.wtt.dimension(1));
         rr = rr.array().sqrt();
     }
 }
 
-void wiener::calcVvq(psdclass &psd){
+template<typename P>
+void wiener::calcVvq(P &psd){
     //start by fetching the noise psd
     //string psdfile = ap->getAvgNoisePsdFile();
     //NcFile ncfid = NcFile(psdfile.c_str(), NcFile::ReadOnly);
     int npsd = psd.psd.size();
-    Eigen::VectorXd qf(npsd);
-    Eigen::VectorXd hp(npsd);
-    //NcVar* psdv = ncfid.get_var("psd");
-    //NcVar* psdfv = ncfid.get_var("psdFreq");
-    //for(int i=0;i<npsd;i++){
-      //  hp[i] = psdv->as_double(i);
-        //qf[i] = psdfv->as_double(i);
-    //}
+    Eigen::Map<Eigen::VectorXd> qf(psd.psdFreq.data(),npsd);
+    Eigen::Map<Eigen::VectorXd> hp(psd.psd.data(),npsd);
 
     //modify the psd array to take out lowpassing and highpassing
     double maxhp=-1.;
     int maxhpind=0;
     double qfbreak=0.;
     double hpbreak=0.;
-    //for(int i=0;i<npsd;i++) if(hp[i] > maxhp){
-      //      maxhp = hp[i];
-        //    maxhpind = i;
-        //}
-    maxhp = hp.maxCoeff();
+    for(int i=0;i<npsd;i++) if(hp[i] > maxhp){
+            maxhp = hp[i];
+            maxhpind = i;
+        }
     for(int i=0;i<npsd;i++) if(hp[i]/maxhp < 1.e-4){
             qfbreak = qf[i];
             break;
         }
     //flatten the response above the lowpass break
-    int count=0;
-    //for(int i=0;i<npsd;i++){
-    //if(qf[i] <= 0.8*qfbreak) count++;
-    count = (qf.array()<= 0.8*qfbreak).count();
-    //}
+    int count = (qf.array()<= 0.8*qfbreak).count();
+
     if(count > 0){
         for(int i=0;i<npsd;i++){
             if(qfbreak > 0){
@@ -322,53 +403,62 @@ void wiener::calcVvq(psdclass &psd){
             }
         }
     }
+
     //flatten highpass response if present
-    if(maxhpind > 0) for(int i=0;i<maxhpind;i++) hp[i] = maxhp;
+    if(maxhpind > 0){
+        for(int i=0;i<maxhpind;i++){
+            hp[i] = maxhp;
+        }
+    }
 
     //set up the Q-space
     double xsize = nx*diffx;
     double ysize = ny*diffy;
     double diffqx = 1./xsize;
     double diffqy = 1./ysize;
+
     Eigen::VectorXd qx(nx);
     for(int i=0;i<nx;i++) qx[i] = diffqx*(i-(nx-1)/2);
     mapmaking::shift(qx,-(nx-1)/2);
+
     Eigen::VectorXd qy(ny);
     for(int i=0;i<ny;i++) qy[i] = diffqy*(i-(ny-1)/2);
     mapmaking::shift(qy,-(ny-1)/2);
+
     Eigen::MatrixXd qmap(nx,ny);
     for(int i=0;i<nx;i++)
-        for(int j=0;j<ny;j++) qmap(i,j) = sqrt(pow(qx[i],2)+pow(qy[j],2));
+       for(int j=0;j<ny;j++) qmap(i,j) = sqrt(pow(qx[i],2)+pow(qy[j],2));
+
+    //Eigen::VectorXd qmag = sqrt(qx.array().square() + qy.array().square());
+    //Eigen::Map<RowMatrixXd> qmap(qmag.data(),nx,ny);
 
     //making psd array which will give us vvq
     Eigen::MatrixXd psdq(nx,ny);
 
     if(getLowpassOnly){
         //set psdq=1 for all elements
-        //for(int i=0;i<nx;i++) for(int j=0;j<ny;j++) psdq(i,j)=1.;
         psdq.setOnes();
     } else {
-        //int nhp = hp.size();
 
         Eigen::Matrix<Eigen::Index,1,1> nhp;
         nhp << hp.size();
 
-        Eigen::Index blah = 1;
-
+        Eigen::Index interp_pts = 1;
         //Need to test limits here
         for(int i=0;i<nx;i++){
             for(int j=0;j<ny;j++){
-                if(qmap(i,j) <= qf[qf.size()-1] && qmap(i,j)>=qf[0])
-                    //psdq(i,j) = gsl_interp_eval(interp, &qf[0], &hp[0], qmap(i,j), acc);
-
-                    mlinterp::interp(nhp.data(), blah,
+                if(qmap(i,j) <= qf[qf.size()-1] && qmap(i,j)>=qf[0]){
+                    mlinterp::interp(nhp.data(), interp_pts,
                                  hp.data(), psdq.data() + nx*j + i,
                                  qf.data(), qmap.data() + nx*j + i);
+                }
 
-                 else if (qmap(i,j) > qf[qf.size()-1])//interp->xmax)
+                 else if (qmap(i,j) > qf[qf.size()-1]){
                     psdq(i,j) = hp[hp.size()-1];
-                 else if (qmap(i,j) <qf[0])//<interp->xmin)
+                }
+                 else if (qmap(i,j) <qf[0]){
                     psdq(i,j) = hp[0];
+                }
             }
         }
         double lowval=hp[0];
@@ -384,11 +474,7 @@ void wiener::calcVvq(psdclass &psd){
 
     //normalize the noise power spectrum and calc vvq
     vvq.resize(nx,ny);
-    double totpsdq=0.;
-    //for(int i=0;i<nx;i++) for(int j=0;j<ny;j++) totpsdq += psdq(i,j);
-    //totpsdq = psdq.sum();
     vvq = psdq/psdq.sum();
-    //for(int i=0;i<nx;i++) for(int j=0;j<ny;j++) vvq(i,j) = psdq(i,j)/totpsdq;
 }
 
 
@@ -399,7 +485,9 @@ void wiener::calcVvq(psdclass &psd){
     Assumptions:
       - rr, VVq, and template all have been precomputed
  **/
-void wiener::calcNumerator(Eigen::MatrixXd &mflt){
+
+template <typename Derived>
+void wiener::calcNumerator(Eigen::DenseBase<Derived> &mflt){
     Eigen::VectorXcd in(nx*ny);
     Eigen::VectorXcd out(nx*ny);
 
@@ -411,17 +499,12 @@ void wiener::calcNumerator(Eigen::MatrixXd &mflt){
         for(int i=0;i<nx;i++)
             for(int j=0;j<ny;j++){
                 ii = ny*i+j;
-                //in.real()(ii) = rr(i,j)*mflt(i,j);
-                //in.imag()(ii) = 0.;
                 in.real()(ii) = rr(i,j)*mflt(i,j);
                 in.imag()(ii) = 0.;
             }
-        out = mapmaking::fft2w<forward>(in,nx,ny);// fftw_execute(pf);
-        //for(int i=0;i<nx*ny;i++){
-          //  out(i,0) *= fftnorm;
-            //out(i,1) *= fftnorm;
-        //}
+        out = mapmaking::fft2w<forward>(in,nx,ny);
         out = out*fftnorm;
+
         for(int i=0;i<nx;i++)
             for(int j=0;j<ny;j++){
                 ii = ny*i+j;
@@ -429,7 +512,7 @@ void wiener::calcNumerator(Eigen::MatrixXd &mflt){
                 in.imag()(ii) = out.imag()(ii)/vvq(i,j);
             }
 
-        in = mapmaking::fft2w<backward>(out,nx,ny);// fftw_execute(pf);
+        out = mapmaking::fft2w<backward>(in,nx,ny);
 
         for(int i=0;i<nx;i++)
             for(int j=0;j<ny;j++){
@@ -438,20 +521,14 @@ void wiener::calcNumerator(Eigen::MatrixXd &mflt){
                 in.imag()(ii) = 0.;
             }
 
-        out = mapmaking::fft2w<forward>(in,nx,ny);// fftw_execute(pf);
+        out = mapmaking::fft2w<forward>(in,nx,ny);
 
         for(int i=0;i<nx*ny;i++){
             out.real()[i] *= fftnorm;
             out.imag()[i] *= fftnorm;
         }
-        Eigen::VectorXcd qqq(nx*ny);
+        Eigen::VectorXcd qqq = out;
 
-        qqq = out;
-
-        //for(int i=0;i<nx*ny;i++){
-            //qqq(i,0) = out(i,0);
-            //qqq(i,1) = out(i,1);
-        //}
         for(int i=0;i<nx;i++)
             for(int j=0;j<ny;j++){
                 ii = ny*i+j;
@@ -459,22 +536,24 @@ void wiener::calcNumerator(Eigen::MatrixXd &mflt){
                 in.imag()(ii) = 0.;
             }
 
-        out = mapmaking::fft2w<forward>(in,nx,ny);// fftw_execute(pf);
-        //for(int i=0;i<nx*ny;i++){
-          //  out(i,0) *= fftnorm;
-            //out(i,1) *= fftnorm;
-        //}
+        out = mapmaking::fft2w<forward>(in,nx,ny);
         out = out*fftnorm;
+
         for(int i=0;i<nx*ny;i++){
             in.real()(i) = out.real()(i)*qqq.real()(i)+ out.imag()(i)*qqq.imag()(i);
             in.imag()(i) = -out.imag()(i)*qqq.real()(i) + out.real()(i)*qqq.imag()(i);
         }
-        in = mapmaking::fft2w<backward>(out,nx,ny);// fftw_execute(pf);
-        for(int i=0;i<nx;i++)
+
+        out = mapmaking::fft2w<backward>(in,nx,ny);
+        for(int i=0;i<nx;i++){
             for(int j=0;j<ny;j++){
                 ii = ny*i+j;
                 Nume(i,j) = out.real()(ii);
             }
+        }
+
+        //Nume = Eigen::Map<RowMatrixXd> (out.real().data(),nx,ny);
+
     }
 }
 
@@ -503,7 +582,9 @@ bool wiener::calcDenominator(){
                 in.real()(ii) = tplate(i,j);
                 in.imag()(ii) = 0.;
             }
+
         out = mapmaking::fft2w<forward>(in,nx,ny);// fftw_execute(pf);
+
         //for(int i=0;i<nx*ny;i++){
           //  out.real()(i) *= fftnorm;
             //out.imag()(i) *= fftnorm;
@@ -514,6 +595,7 @@ bool wiener::calcDenominator(){
                 ii = ny*i+j;
                 d += (out.real()(ii)*out.real()(ii) + out.imag()(ii)*out.imag()(ii))/vvq(i,j);
             }
+
         Denom.setConstant(d);
         return 1;
     }
@@ -525,13 +607,8 @@ bool wiener::calcDenominator(){
             in.real()(ii) = 1./vvq(i,j);
             in.imag()(ii) = 0.;
         }
-    in = mapmaking::fft2w<backward>(out,nx,ny);// fftw_execute(pf);
+    out = mapmaking::fft2w<backward>(in,nx,ny);// fftw_execute(pf);
 
-    //using gsl vector sort routines
-    //remember this is the forward sort but we want the reverse
-    //also, the idl code sorts on the absolute value of out but
-    //then adds in the components with the correct sign.
-    //gsl_vector* zz2d = gsl_vector_alloc(nx*ny);
     Eigen::VectorXd zz2d(nx*ny);
     for(int i=0;i<nx;i++)
         for(int j=0;j<ny;j++){
@@ -548,20 +625,16 @@ bool wiener::calcDenominator(){
 
     auto sorted = mapmaking::sorter(ss_ord);
 
-    for(int i=0;i<nx;i++)
+    for(int i=0;i<nx;i++){
         for(int j=0;j<ny;j++){
             ii = ny*i+j;
             //gsl_vector_set(zz2d,ii,out.real()(ii));
             zz2d(ii) = out.real()(ii);
         }
+    }
 
     //number of iterations for convergence (hopefully)
     int nloop = nx*ny/100;
-
-    //the loop
-    //for(int i=0;i<nx;i++)
-      //  for(int j=0;j<ny;j++)
-        //    Denom(i,j)=0.;
 
     Denom.setZero();
 
@@ -581,10 +654,10 @@ bool wiener::calcDenominator(){
                 int kk = ny*k+l;
                 if(kk >= nloop) continue;
 //#pragma omp critical (wfFFTW)
-                {
+                //{
                     in2.resize(nx*ny);
                     out2.resize(nx*ny);
-                }
+                //}
 
                 //int shifti = gsl_permutation_get(ss_ord,nx*ny-kk-1);
                 int shifti = std::get<1>(sorted[nx*ny-kk-1]);
@@ -633,10 +706,10 @@ bool wiener::calcDenominator(){
                     in2.real()(i) = ar*br + ai*bi;
                     in2.imag()(i) = -ai*br + ar*bi;
                 }
-                in2 = mapmaking::fft2w<backward>(out2,nx,ny);// fftw_execute(pf);
+                out2 = mapmaking::fft2w<backward>(in2,nx,ny);// fftw_execute(pf);
                 //update Denom
 //#pragma omp ordered
-                {
+                //{
                     //storage
                     Eigen::MatrixXd updater(nx,ny);
                     for(int i=0;i<nx;i++)
@@ -645,30 +718,32 @@ bool wiener::calcDenominator(){
                             //updater(i,j) = gsl_vector_get(zz2d,shifti)*out2.real()(ii)*fftnorm;
                             updater(i,j) = zz2d[shifti]*out2.real()(ii)*fftnorm;
 
-        }
+                          }
+
                     for(int i=0;i<nx;i++)
                         for(int j=0;j<ny;j++){
                             Denom(i,j) += updater(i,j);
                         }
 
-/*#pragma omp critical (wfFFTW)
+//#pragma omp critical (wfFFTW)
                     {
-                        fftw_free(in2);
-                        fftw_free(out2);
-                        fftw_destroy_plan(pf2);
-                        fftw_destroy_plan(pr2);
-                    }*/
+                        //fftw_free(in2);
+                        //fftw_free(out2);
+                        //fftw_destroy_plan(pf2);
+                        //fftw_destroy_plan(pr2);
+                    }
 
                     //check to see if we're done every 100 iterations.  The criteria for
                     //finishing is that either we are at nx*ny/100 iterations or that
                     //the significant elements Denom are growing by less than 0.1%
 
                     if((kk % 100) == 1){
+
                         double maxRatio=-1;
                         double maxDenom=-999.;
                         for(int i=0;i<nx;i++)
                           for(int j=0;j<ny;j++)
-                    if(Denom(i,j) > maxDenom) maxDenom = Denom(i,j);
+                            if(Denom(i,j) > maxDenom) maxDenom = Denom(i,j);
                         for(int i=0;i<nx;i++)
                             for(int j=0;j<ny;j++){
                                 if(Denom(i,j) > 0.01*maxDenom){
@@ -685,8 +760,8 @@ bool wiener::calcDenominator(){
                             //update the console with where we are
                             SPDLOG_INFO("Completed iteration {} of {}. maxRatio={}",kk,nloop,maxRatio);
                         }
-      }
-                }
+                    }
+                //}
             }
         }
     }
@@ -702,7 +777,8 @@ bool wiener::calcDenominator(){
 
 }
 
-void wiener::prepareTemplate(MapStruct &cmap){
+template<typename T>
+void wiener::prepareTemplate(T &cmap){
 /*
     //collect what we need
     Eigen::VectorXd xgcut(nx);
@@ -815,15 +891,17 @@ void wiener::prepareTemplate(MapStruct &cmap){
 //----------------------------- o ---------------------------------------
 
 ///Produce a gaussian template in place of the kernel map
-void wiener::prepareGaussianTemplate(MapStruct &cmap){
+template<typename T>
+void wiener::prepareGaussianTemplate(T &cmap){
     //collect what we need
     Eigen::VectorXd xgcut(nx);
     for(int i=0;i<nx;i++) xgcut[i] = cmap.rowcoordphys(i);
     Eigen::VectorXd  ygcut(ny);
     for(int i=0;i<ny;i++) ygcut[i] = cmap.colcoordphys(i);
     Eigen::MatrixXd tem(nx, ny);
-    for(int i=0;i<nx;i++) for(int j=0;j<ny;j++)
-            tem(i,j) = 0;
+    tem.setZero();
+    //for(int i=0;i<nx;i++) for(int j=0;j<ny;j++)
+      //      tem(i,j) = 0;
 
     Eigen::MatrixXd dist(nx,ny);
     for(int i=0;i<nx;i++)

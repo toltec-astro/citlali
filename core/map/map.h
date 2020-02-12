@@ -7,7 +7,7 @@ namespace mapmaking{
  * @brief Generates science maps
  */
 template <typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD>//, typename DerivedB>
-void generate_scimaps(TCData<LaliDataKind::PTC> &ptc, pointing &telescope_data,
+void generate_scimaps(TCData<LaliDataKind::PTC,Eigen::MatrixXd> &ptc, pointing &telescope_data,
                  double mgrid_0, double mgrid_1, const double samplerate,
                  DerivedA &mapstruct, Eigen::DenseBase<DerivedB> &offsets,
                  const Eigen::DenseBase<DerivedD> &tmpwts, const int &NNoiseMapsPerObs,

@@ -77,12 +77,43 @@ struct mapResult {
             signalmapdata.putVar(signalmatrix.data());
             kernelmapdata.putVar(kernelmatrix.data());
 
+            auto fsvar = "filteredsignal";
+            auto fwvar = "filteredweight";
+            auto fkvar = "filteredkernel";
+
+            NcVar fsd = fo.addVar(fsvar, ncDouble, dims);
+            NcVar fwd = fo.addVar(fwvar, ncDouble, dims);
+            NcVar fkd = fo.addVar(fkvar, ncDouble, dims);
+
+            Eigen::MatrixXd fsm = Eigen::Map<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>> (this->mapstruct.filteredsignal.data(),this->mapstruct.filteredsignal.dimension(0),this->mapstruct.filteredsignal.dimension(1));
+            Eigen::MatrixXd fwm = Eigen::Map<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>> (this->mapstruct.filteredweight.data(),this->mapstruct.filteredweight.dimension(0),this->mapstruct.filteredweight.dimension(1));
+            Eigen::MatrixXd fkm = Eigen::Map<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>> (this->mapstruct.filteredkernel.data(),this->mapstruct.filteredkernel.dimension(0),this->mapstruct.filteredkernel.dimension(1));
+
+            //fsm.transposeInPlace();
+            //fwm.transposeInPlace();
+            //fkm.transposeInPlace();
+
+            fsd.putVar(fsm.data());
+            fwd.putVar(fwm.data());
+            fkd.putVar(fkm.data());
+
+
             for(int i = 0; i<this->mapstruct.NNoiseMapsPerObs;i++){
                 auto noisemapvar = "noise" + std::to_string(i);
                 Eigen::Tensor<double, 2> noisetensor = this->mapstruct.noisemaps.chip(i, 0);
                 Eigen::MatrixXd noisematrix = Eigen::Map<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>> (noisetensor.data(),noisetensor.dimension(0),noisetensor.dimension(1));
 
                 noisematrix.transposeInPlace();
+                NcVar noisemapdata = fo.addVar(noisemapvar,ncDouble,dims);
+                noisemapdata.putVar(noisematrix.data());
+            }
+
+            for(int i = 0; i<this->mapstruct.NNoiseMapsPerObs;i++){
+                auto noisemapvar = "filterednoise" + std::to_string(i);
+                Eigen::Tensor<double, 2> noisetensor = this->mapstruct.filterednoisemaps.chip(i, 0);
+                Eigen::MatrixXd noisematrix = Eigen::Map<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>> (noisetensor.data(),noisetensor.dimension(0),noisetensor.dimension(1));
+
+                //noisematrix.transposeInPlace();
                 NcVar noisemapdata = fo.addVar(noisemapvar,ncDouble,dims);
                 noisemapdata.putVar(noisematrix.data());
             }

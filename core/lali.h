@@ -42,6 +42,10 @@ public:
     //data class to hold raw data (will be removed)
     BeammapData bd;
 
+    Eigen::VectorXd rtc_times;
+    Eigen::VectorXd ptc_times;
+    Eigen::VectorXd map_times;
+
     //Mutexes to prevent race conditions
     std::mutex farm_mutex;
     std::mutex random_mutex;
@@ -368,20 +372,23 @@ auto laliclass::process(){
     ndet = bd.meta.get_typed<int>("ndetectors");
     nscans = bd.meta.get_typed<int>("nscans");
 
+    rtc_times.resize(nscans);
+    ptc_times.resize(nscans);
+    map_times.resize(nscans);
+
     auto process = grppi::pipeline(
         //grrppi call to parallelize inputs
-        grppi::farm(n,[&](auto in) -> TCData<LaliDataKind::PTC> {
+        grppi::farm(n,[&](auto in) -> TCData<LaliDataKind::PTC,Eigen::MatrixXd> {
             //create an RTC to hold the reference to BeammapData scans
             RTCProc rtcproc(config);
             //Create a PTC to hold processed data
-            TCData<LaliDataKind::PTC> out;
+            TCData<LaliDataKind::PTC,Eigen::MatrixXd> out;
             //Process the data
             {
-            logging::scoped_timeit timer("RTCProc");
+            logging::scoped_timeit timer("RTCProc",rtc_times.data() + in.index.data);
+            SPDLOG_INFO("RTC in {}", in.scans.data);
             rtcproc.process(in,out);
             }
-
-            SPDLOG_INFO(out.scans.data);
 
             //Sizes for the kernel
             Eigen::VectorXd beamSigAz(ndet);
@@ -391,41 +398,66 @@ auto laliclass::process(){
             beamSigAz.setConstant(4);
             beamSigEl.setConstant(4);
 
-            {
-            logging::scoped_timeit timer("makeKernelTimestream");
+            //{
+            //logging::scoped_timeit timer("makeKernelTimestream");
             for(Eigen::Index det=0;det<ndet;det++) {
                 Eigen::VectorXd lat, lon;
-
-                SPDLOG_INFO(out.kernelscans.data);
 
                 //Map to kernel scan so no copying
                 Eigen::Map<Eigen::VectorXd> scans(out.kernelscans.data.col(det).data(),out.kernelscans.data.rows());
 
-                SPDLOG_INFO("B");
-
                 //Need to get pointing for each scan
                 mapmaking::getPointing(bd.telescope_data, lat, lon, offsets, det, out.scanindex.data(0), out.scanindex.data(1),dsf);
                 //Make the kernel scan
-
-                SPDLOG_INFO("C");
-
-                timestream::makeKernelTimestream(scans,lat,lon,beamSigAz[det],beamSigEl[det]);
-
-                SPDLOG_INFO("D");
+                timestream::makeKernelTimestream(scans,lat,lon,beamSigAz(det),beamSigEl(det));
 
             }
-            }
-            return out;
-         }),
 
-        grppi::farm(n2,[&](auto in) -> TCData<LaliDataKind::PTC> {
-            //Create a TCData with PTC kind to hold output
-            TCData<LaliDataKind::PTC> out;
+            SPDLOG_INFO("BLAH");
+            TCData<LaliDataKind::PTC,Eigen::MatrixXd> out2;
             PTCProc ptcproc(config);
             {
-            logging::scoped_timeit timer("PTCProc");
+                logging::scoped_timeit timer("PTCProc",ptc_times.data() + out.index.data);
+                //Run PCA clean
+                ptcproc.process(out,out2);
+                SPDLOG_INFO("PTC in {}", out.scans.data);
+            }
+
+
+            Eigen::VectorXd tmpwt(out2.scans.data.cols());
+            //Need to loop through detectors since we are parallelized on scans
+            for(int i=0; i<out2.scans.data.cols();i++)
+                //Generate weight matrix
+                tmpwt[i] = mapmaking::internal::calcScanWeight(out2.scans.data.col(i), out2.flags.data.col(i), samplerate);
+
+            //Random matrix for noisemaps
+            Eigen::MatrixXi noisemaps;
+            {
+                //Do this in a scoped lock to prevent parallelization problems with random number generator
+                std::scoped_lock lock(random_mutex);
+                noisemaps = Eigen::MatrixXi::Zero(br.mapstruct.NNoiseMapsPerObs,1).unaryExpr([&](int dummy){return rands(rng);});
+                noisemaps = (2.*(noisemaps.template cast<double>().array() - 0.5)).template cast<int>();
+            }
+
+            {
+                //Make the actual science maps
+                logging::scoped_timeit timer("generate_scimaps",map_times.data() + out2.index.data);
+                mapmaking::generate_scimaps(out2,bd.telescope_data, br.mapstruct.mgrid_0, br.mapstruct.mgrid_1,
+                                            samplerate, br.mapstruct, offsets, tmpwt, br.mapstruct.NNoiseMapsPerObs, noisemaps, dsf);
+            }
+
+            return out2;
+         }));/*,
+
+        grppi::farm(n2,[&](auto in) -> TCData<LaliDataKind::PTC,Eigen::MatrixXd> {
+            //Create a TCData with PTC kind to hold output
+            TCData<LaliDataKind::PTC,Eigen::MatrixXd> out;
+            PTCProc ptcproc(config);
+            {
+            logging::scoped_timeit timer("PTCProc",ptc_times.data() + in.index.data);
             //Run PCA clean
             ptcproc.process(in,out);
+            SPDLOG_INFO("PTC in {}", in.scans.data);
             }
         return out;
         }),
@@ -436,9 +468,6 @@ auto laliclass::process(){
             for(int i=0; i<in.scans.data.cols();i++)
                 //Generate weight matrix
                 tmpwt[i] = mapmaking::internal::calcScanWeight(in.scans.data.col(i), in.flags.data.col(i), samplerate);
-            SPDLOG_INFO(tmpwt);
-            //boost::random::mt19937 rng;
-            //boost::random::uniform_int_distribution<> rands(0,1);
 
             //Random matrix for noisemaps
             Eigen::MatrixXi noisemaps;
@@ -451,11 +480,12 @@ auto laliclass::process(){
 
             {
             //Make the actual science maps
-            logging::scoped_timeit timer("generate_scimaps");
+            logging::scoped_timeit timer("generate_scimaps",map_times.data() + in.index.data);
             mapmaking::generate_scimaps(in,bd.telescope_data, br.mapstruct.mgrid_0, br.mapstruct.mgrid_1,
                                     samplerate, br.mapstruct, offsets, tmpwt, br.mapstruct.NNoiseMapsPerObs, noisemaps, dsf);
             }
            }));
+    */
 
     //We need to return the actual pipeline here so it will run when the function is called in another pipeline.
     return process;
