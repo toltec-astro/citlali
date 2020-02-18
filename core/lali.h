@@ -83,7 +83,7 @@ auto laliclass::setup() {
     dsf = config->get_typed<int>("proc.rtc.downsample.downsamplefactor");
 
     //n = config->get_typed<int>("proc.rtc.cores");
-    n = omp_get_num_threads();
+    n = Eigen::nbThreads();
     n2 = config->get_typed<int>("proc.ptc.cores");
     n3 = config->get_typed<int>("proc.map.cores");
 
@@ -414,7 +414,6 @@ auto laliclass::process(){
 
             }
 
-            SPDLOG_INFO("BLAH");
             TCData<LaliDataKind::PTC,Eigen::MatrixXd> out2;
             PTCProc ptcproc(config);
             {
