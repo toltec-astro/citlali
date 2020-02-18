@@ -68,7 +68,6 @@ public:
     auto getfiles();
     auto setup();
     auto process();
-
 };
 
 //This function sets up variables from the config file and gets things like the offsets
@@ -367,7 +366,7 @@ auto laliclass::setup() {
     br.pp.resize(6,ndet);
     br.pp.setOnes();
 }
-
+/*
 //This function runs the actual pipeline
 auto laliclass::process(){
     ndet = bd.meta.get_typed<int>("ndetectors");
@@ -377,7 +376,7 @@ auto laliclass::process(){
     ptc_times.resize(nscans);
     map_times.resize(nscans);
 
-    auto process = grppi::pipeline(
+    auto pipeline = grppi::pipeline(
         //grrppi call to parallelize inputs
         grppi::farm(n,[&](auto in) -> TCData<LaliDataKind::PTC,Eigen::MatrixXd> {
             //create an RTC to hold the reference to BeammapData scans
@@ -447,7 +446,7 @@ auto laliclass::process(){
             }
 
             return out2;
-         }));/*,
+         })),
 
         grppi::farm(n2,[&](auto in) -> TCData<LaliDataKind::PTC,Eigen::MatrixXd> {
             //Create a TCData with PTC kind to hold output
@@ -485,9 +484,102 @@ auto laliclass::process(){
                                     samplerate, br.mapstruct, offsets, tmpwt, br.mapstruct.NNoiseMapsPerObs, noisemaps, dsf);
             }
            }));
-    */
+
 
     //We need to return the actual pipeline here so it will run when the function is called in another pipeline.
-    return process;
+    return pipeline;
 }
+*/
+
+
+auto laliclass::process(){
+    ndet = bd.meta.get_typed<int>("ndetectors");
+    nscans = bd.meta.get_typed<int>("nscans");
+
+    rtc_times.resize(nscans);
+    ptc_times.resize(nscans);
+    map_times.resize(nscans);
+
+        //grrppi call to parallelize inputs
+       auto farm =  grppi::farm(n,[&](auto in) -> TCData<LaliDataKind::PTC,Eigen::MatrixXd> {
+            //create an RTC to hold the reference to BeammapData scans
+            RTCProc rtcproc(config);
+            //Create a PTC to hold processed data
+            TCData<LaliDataKind::PTC,Eigen::MatrixXd> out;
+            //Process the data
+            {
+            logging::scoped_timeit timer("RTCProc",rtc_times.data() + in.index.data);
+            SPDLOG_INFO("RTC in {}", in.scans.data);
+            rtcproc.process(in,out);
+            }
+
+            //Sizes for the kernel
+            Eigen::VectorXd beamSigAz(ndet);
+            Eigen::VectorXd beamSigEl(ndet);
+
+            //Hard coded for now
+            beamSigAz.setConstant(4);
+            beamSigEl.setConstant(4);
+
+            //{
+            //logging::scoped_timeit timer("makeKernelTimestream");
+            for(Eigen::Index det=0;det<ndet;det++) {
+                Eigen::VectorXd lat, lon;
+
+                //Map to kernel scan so no copying
+                Eigen::Map<Eigen::VectorXd> scans(out.kernelscans.data.col(det).data(),out.kernelscans.data.rows());
+
+                //Need to get pointing for each scan
+                mapmaking::getPointing(bd.telescope_data, lat, lon, offsets, det, out.scanindex.data(0), out.scanindex.data(1),dsf);
+                //Make the kernel scan
+                timestream::makeKernelTimestream(scans,lat,lon,beamSigAz(det),beamSigEl(det));
+
+            }
+
+            TCData<LaliDataKind::PTC,Eigen::MatrixXd> out2;
+            PTCProc ptcproc(config);
+            {
+                logging::scoped_timeit timer("PTCProc",ptc_times.data() + out.index.data);
+                //Run PCA clean
+                ptcproc.process(out,out2);
+                SPDLOG_INFO("PTC in {}", out.scans.data);
+            }
+
+
+            Eigen::VectorXd tmpwt(out2.scans.data.cols());
+            //Need to loop through detectors since we are parallelized on scans
+            for(int i=0; i<out2.scans.data.cols();i++)
+                //Generate weight matrix
+                tmpwt[i] = mapmaking::internal::calcScanWeight(out2.scans.data.col(i), out2.flags.data.col(i), samplerate);
+
+            //Random matrix for noisemaps
+            Eigen::MatrixXi noisemaps;
+            {
+                //Do this in a scoped lock to prevent parallelization problems with random number generator
+                std::scoped_lock lock(random_mutex);
+                noisemaps = Eigen::MatrixXi::Zero(br.mapstruct.NNoiseMapsPerObs,1).unaryExpr([&](int dummy){return rands(rng);});
+                noisemaps = (2.*(noisemaps.template cast<double>().array() - 0.5)).template cast<int>();
+            }
+
+            {
+                //Make the actual science maps
+                logging::scoped_timeit timer("generate_scimaps",map_times.data() + out2.index.data);
+                mapmaking::generate_scimaps(out2,bd.telescope_data, br.mapstruct.mgrid_0, br.mapstruct.mgrid_1,
+                                            samplerate, br.mapstruct, offsets, tmpwt, br.mapstruct.NNoiseMapsPerObs, noisemaps, dsf);
+            }
+
+            return out2;
+         });
+
+    //We need to return the actual pipeline here so it will run when the function is called in another pipeline.
+    return farm;
+}
+
+
+
+
+
+
+
+
 }
