@@ -106,7 +106,7 @@ auto laliclass::setup() {
     offsets.setZero();
 
     //Just hard coded for now for simplicity
-    /*offsets.row(0) << -46.7880,
+    offsets.row(0) << -46.7880,
         -22.1615,
         -27.5385,
         -44.1943,
@@ -332,7 +332,7 @@ auto laliclass::setup() {
         -16.2956,
         -13.5431,
         -42.8164,
-        -33.4187;*/
+        -33.4187;
 
 
     //Get max and min lat and lon values out of all detectors.  Maybe parallelize?

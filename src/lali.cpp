@@ -165,8 +165,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
         //Per scan weights for after analysis
         Eigen::MatrixXd scan_wt(lal.nscans,lal.ndet);
 
-        auto proc = lal.process();
-
         //Start of the pipeline.  This is to be removed.
         //grppi::pipeline(grppiex::dyn_ex(ex_name), [&]() -> std::optional<TCData<LaliDataKind::RTC,Eigen::Map<Eigen::MatrixXd>>> {
         grppi::pipeline(grppiex::dyn_ex(ex_name), [&]() -> std::optional<TCData<LaliDataKind::RTC,Eigen::MatrixXd>> {
@@ -220,8 +218,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
          },
 
             //this includes all the processes
-             //lal.process()
-            proc
+             lal.process()
          );
 
         SPDLOG_INFO("rtc_times {}", lal.rtc_times);
