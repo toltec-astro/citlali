@@ -34,6 +34,7 @@ void generate_scimaps(TCData<LaliDataKind::PTC,Eigen::MatrixXd> &ptc, pointing &
         //get pointing for each scan
         Eigen::VectorXd lat, lon;
         getPointing(telescope_data, lat, lon, offsets, i, si, ei, dsf);
+
         for(int s=0;s<ptc.scans.data.rows();s++){
             if(ptc.flags.data(s,i)){
                 //get the row and column index corresponding to the ra and dec

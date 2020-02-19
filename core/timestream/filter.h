@@ -52,7 +52,7 @@ void df(Eigen::DenseBase<DerivedA> &dft, const double flow,
     //Calculate the coefficients from bessel functions.  Note a loop appears to be required here.
     Eigen::VectorXd coef(nterms);
     for(int i=0;i<nterms;i++){
-        //coef[i] = boost::math::cyl_bessel_i(0,arg[i]) / boost::math::cyl_bessel_i(0,alpha);
+        coef[i] = boost::math::cyl_bessel_i(0,arg[i]) / boost::math::cyl_bessel_i(0,alpha);
     }
 
     //Generate time array

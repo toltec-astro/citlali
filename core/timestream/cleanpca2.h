@@ -70,6 +70,10 @@ void pcaclean2(
         det = scans.derived().rowwise() - scan_means;
         ker = kernelscans.derived().rowwise() - kernel_means;
 
+        SPDLOG_INFO("inside clean {}",scans.derived());
+        SPDLOG_INFO("det {}", det);
+
+
         // return data
         cleanedscans.derived().resize(scans.rows(), scans.cols());
         cleanedkernelscans.derived().resize(kernelscans.rows(), kernelscans.cols());

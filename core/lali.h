@@ -106,7 +106,7 @@ auto laliclass::setup() {
     offsets.setZero();
 
     //Just hard coded for now for simplicity
-    offsets.row(0) << -46.7880,
+    /*offsets.row(0) << -46.7880,
         -22.1615,
         -27.5385,
         -44.1943,
@@ -332,7 +332,7 @@ auto laliclass::setup() {
         -16.2956,
         -13.5431,
         -42.8164,
-        -33.4187;
+        -33.4187;*/
 
 
     //Get max and min lat and lon values out of all detectors.  Maybe parallelize?
@@ -496,10 +496,6 @@ auto laliclass::process(){
     ndet = bd.meta.get_typed<int>("ndetectors");
     nscans = bd.meta.get_typed<int>("nscans");
 
-    rtc_times.resize(nscans);
-    ptc_times.resize(nscans);
-    map_times.resize(nscans);
-
         //grrppi call to parallelize inputs
        auto farm =  grppi::farm(n,[&](auto in) -> TCData<LaliDataKind::PTC,Eigen::MatrixXd> {
             //create an RTC to hold the reference to BeammapData scans
@@ -509,7 +505,7 @@ auto laliclass::process(){
             //Process the data
             {
             logging::scoped_timeit timer("RTCProc",rtc_times.data() + in.index.data);
-            SPDLOG_INFO("RTC in {}", in.scans.data);
+            SPDLOG_INFO("RTC in {} {}", in.scans.data,in.index.data);
             rtcproc.process(in,out);
             }
 
@@ -530,7 +526,10 @@ auto laliclass::process(){
                 Eigen::Map<Eigen::VectorXd> scans(out.kernelscans.data.col(det).data(),out.kernelscans.data.rows());
 
                 //Need to get pointing for each scan
-                mapmaking::getPointing(bd.telescope_data, lat, lon, offsets, det, out.scanindex.data(0), out.scanindex.data(1),dsf);
+                mapmaking::getPointing(bd.telescope_data, lat, lon, offsets, det, out.scanindex.data(0), out.scanindex.data(0)+4882-64,dsf);
+
+                //SPDLOG_INFO(lat);
+                //SPDLOG_INFO(lon);
                 //Make the kernel scan
                 timestream::makeKernelTimestream(scans,lat,lon,beamSigAz(det),beamSigEl(det));
 
@@ -541,16 +540,17 @@ auto laliclass::process(){
             {
                 logging::scoped_timeit timer("PTCProc",ptc_times.data() + out.index.data);
                 //Run PCA clean
+                SPDLOG_INFO("PTC in {} {}", out.scans.data, out.index.data);
                 ptcproc.process(out,out2);
-                SPDLOG_INFO("PTC in {}", out.scans.data);
             }
 
 
             Eigen::VectorXd tmpwt(out2.scans.data.cols());
             //Need to loop through detectors since we are parallelized on scans
-            for(int i=0; i<out2.scans.data.cols();i++)
+            for(int i=0; i<out2.scans.data.cols();i++){
                 //Generate weight matrix
                 tmpwt[i] = mapmaking::internal::calcScanWeight(out2.scans.data.col(i), out2.flags.data.col(i), samplerate);
+            }
 
             //Random matrix for noisemaps
             Eigen::MatrixXi noisemaps;

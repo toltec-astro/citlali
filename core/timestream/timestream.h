@@ -82,12 +82,21 @@ void RTCProc::process(TCData<LaliDataKind::RTC,Eigen::MatrixXd>& in, TCData<Lali
          downsample(inner_scans, inner_flags, in.scanindex.data, out.scans.data, out.flags.data, out.scanindex.data, dsf);
      }
 
+     else{
+         out.scans.data = in.scans.data;
+         out.flags.data = in.flags.data;
+     }
+
      //out.scans.data = inner_scans;
      //out.flags.data = inner_flags;
      out.kernelscans.data.resize(out.scans.data.rows(),out.scans.data.cols());
      out.kernelscans.data.setZero();
      out.scanindex.data.noalias() = in.scanindex.data;
      out.index.data = in.index.data;
+
+     SPDLOG_INFO("inner scans final {} {}", inner_scans,in.index.data);
+     SPDLOG_INFO("out scan {} {}", out.scans.data,out.index.data);
+
  }
 
 /*Class to clean timestream data*/

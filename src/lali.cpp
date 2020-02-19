@@ -165,21 +165,27 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
         //Per scan weights for after analysis
         Eigen::MatrixXd scan_wt(lal.nscans,lal.ndet);
 
+        auto proc = lal.process();
+
         //Start of the pipeline.  This is to be removed.
         //grppi::pipeline(grppiex::dyn_ex(ex_name), [&]() -> std::optional<TCData<LaliDataKind::RTC,Eigen::Map<Eigen::MatrixXd>>> {
         grppi::pipeline(grppiex::dyn_ex(ex_name), [&]() -> std::optional<TCData<LaliDataKind::RTC,Eigen::MatrixXd>> {
         //scan index variable
             static auto x = 0;
             //scanlength
-            Eigen::Index scanlength = 0;
+            Eigen::Index scanlength;
 
             //current scan index
             Eigen::Index si = 0;
 
             //testing
-            //lal.nscans = 180;
+            lal.nscans = 180;
 
-            while (x != lal.nscans){
+            lal.rtc_times.resize(lal.nscans);
+            lal.ptc_times.resize(lal.nscans);
+            lal.map_times.resize(lal.nscans);
+
+            while (x < lal.nscans){
                 SPDLOG_INFO("On scan {}/{}",x+1,lal.nscans);
 
                 //first scan index for current scan
@@ -214,7 +220,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
          },
 
             //this includes all the processes
-             lal.process()
+             //lal.process()
+            proc
          );
 
         SPDLOG_INFO("rtc_times {}", lal.rtc_times);

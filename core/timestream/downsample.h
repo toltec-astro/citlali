@@ -13,5 +13,8 @@ void downsample(Eigen::DenseBase<DerivedA> &in_scans, Eigen::DenseBase<DerivedB>
 
     //out_scanindex = (in_scanindex.derived().array()/dsf).floor();
 
+    SPDLOG_INFO("OUT_SCANS {}",out_scans.derived());
+    SPDLOG_INFO("in_scans {}",in_scans.derived());
+
 }
 } //namespace

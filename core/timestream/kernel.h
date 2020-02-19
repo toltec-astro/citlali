@@ -15,10 +15,10 @@ void makeKernelTimestream(Eigen::DenseBase<DerivedA> &scans,
 
   double sigma = (beamSigAz+beamSigEl)/2./3600./360.*pi;
 
-  scans = (-0.5*(dist/sigma).array().pow(2)).exp();
+  //scans = (-0.5*(dist/sigma).array().pow(2)).exp();
 
   //If the source is more than 3 beam sigmas away, call it 0.
-    for(int i=0;i<dist.size();i++){
+    for(int i=0;i<scans.size();i++){
     if(dist(i) > 3.*sigma){
       scans(i) = 0;
     }
