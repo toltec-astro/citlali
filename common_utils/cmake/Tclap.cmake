@@ -1,6 +1,0 @@
-include_guard(GLOBAL)
-include(FetchContentHelper)
-FetchContentHelper(tclap GIT https://git.code.sf.net/p/tclap/code v1.2.2)
-add_library(tclap INTERFACE)
-target_include_directories(tclap INTERFACE ${tclap_SOURCE_DIR}/include)
-add_library(tclap::tclap ALIAS tclap)
