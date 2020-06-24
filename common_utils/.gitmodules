@@ -1,0 +1,4 @@
+[submodule "cmake"]
+	path = cmake
+	url = ../common_cmake_modules.git
+	branch = master

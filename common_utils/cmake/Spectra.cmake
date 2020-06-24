@@ -1,0 +1,6 @@
+include_guard(GLOBAL)
+include(FetchContentHelper)
+FetchContentHelper(spectra GIT "https://github.com/yixuan/spectra.git" master)
+add_library(spectra INTERFACE)
+target_include_directories(spectra INTERFACE ${spectra_SOURCE_DIR}/include)
+add_library(Spectra::Spectra ALIAS spectra)

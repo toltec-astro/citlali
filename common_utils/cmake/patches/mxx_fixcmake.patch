@@ -1,0 +1,60 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index f10751f..5b7abc6 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 3.6)
+ project(mxx LANGUAGES CXX)
+ 
+ #### options
++OPTION(MXX_BUILD_DOCS "Build docs" ON)
+ OPTION(MXX_BUILD_TESTS "Build tests" ON)
+ OPTION(MXX_BUILD_UTILS "Build utilities and benchmarks" OFF)
+ OPTION(MXX_ENABLE_COVERAGE "Enable code coverage reporting" OFF)
+@@ -19,13 +20,12 @@ target_include_directories(mxx INTERFACE
+ 
+ 
+ #### load MPI
+-find_package(MPI REQUIRED)
+-if (MPI_FOUND)
+-    target_link_libraries(mxx INTERFACE ${MPI_CXX_LIBRARIES})
+-    target_include_directories(mxx INTERFACE ${MPI_CXX_INCLUDE_PATH})
++find_package(MPI REQUIRED COMPONENTS CXX)
++if (MPI_CXX_FOUND)
++    target_link_libraries(mxx INTERFACE MPI::MPI_CXX)
+ else (MPI_FOUND)
+     message(SEND_ERROR "This application cannot compile without MPI")
+-endif (MPI_FOUND)
++endif (MPI_CXX_FOUND)
+ 
+ #### cxx-prettyprint
+ target_include_directories(mxx INTERFACE
+@@ -76,6 +76,7 @@ install(
+ 
+ 
+ #### Doxygen
++if(MXX_BUILD_DOCS)
+ find_package(Doxygen)
+ if(DOXYGEN_FOUND)
+   message(STATUS "Found Doxygen")
+@@ -87,6 +88,7 @@ if(DOXYGEN_FOUND)
+     COMMENT "Generating API documentation with Doxygen" VERBATIM
+   )
+ endif(DOXYGEN_FOUND)
++endif()
+ 
+ #### Travis
+ if(MXX_TRAVIS)
+@@ -119,11 +121,10 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+ 
+-# build mxx enabled gtest module
+-add_subdirectory(gtest)
+-
+ # build tests
+ if(MXX_BUILD_TESTS)
++# build mxx enabled gtest module
++add_subdirectory(gtest)
+ add_subdirectory(test)
+ endif(MXX_BUILD_TESTS)
+ 

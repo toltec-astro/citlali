@@ -1,0 +1,16 @@
+diff --git a/internal/ceres/CMakeLists.txt b/internal/ceres/CMakeLists.txt
+index 5bbe2bd..aae3c45 100644
+--- a/internal/ceres/CMakeLists.txt
++++ b/internal/ceres/CMakeLists.txt
+@@ -281,7 +281,10 @@ target_include_directories(ceres PUBLIC
+ # warnings around the #include statments for Eigen headers across all GCC/Clang
+ # versions, we tell CMake to treat Eigen headers as system headers.  This
+ # results in all compiler warnings from them being suppressed.
+-target_include_directories(ceres SYSTEM PUBLIC ${EIGEN_INCLUDE_DIRS})
++target_include_directories(ceres SYSTEM PUBLIC 
++    $<BUILD_INTERFACE:${EIGEN_INCLUDE_DIRS}>
++    $<INSTALL_INTERFACE:include>
++    )
+ 
+ # Gather the list of public & private include locations for all enabled optional
+ # dependencies to be added to the Ceres target.

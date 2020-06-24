@@ -1,0 +1,147 @@
+diff -r 9c300336de9a bench/spbench/CMakeLists.txt
+--- a/bench/spbench/CMakeLists.txt	Thu Mar 07 18:17:10 2019 +0100
++++ b/bench/spbench/CMakeLists.txt	Fri Mar 08 08:59:40 2019 -0500
+@@ -73,13 +73,15 @@
+   set(SPARSE_LIBS ${SPARSE_LIBS} ${RT_LIBRARY})
+ endif(RT_LIBRARY)
+ 
+-add_executable(spbenchsolver spbenchsolver.cpp)
++add_executable(spbenchsolver EXCLUDE_FROM_ALL spbenchsolver.cpp)
+ target_link_libraries (spbenchsolver ${SPARSE_LIBS})
+ 
+-add_executable(spsolver sp_solver.cpp)
+-target_link_libraries (spsolver ${SPARSE_LIBS})
++if(SUPERLU_FOUND AND BLAS_FOUND)
++    add_executable(spsolver EXCLUDE_FROM_ALL sp_solver.cpp)
++    target_link_libraries (spsolver ${SPARSE_LIBS})
++endif()
+ 
+ 
+-add_executable(test_sparseLU test_sparseLU.cpp)
++add_executable(test_sparseLU EXCLUDE_FROM_ALL test_sparseLU.cpp)
+ target_link_libraries (test_sparseLU ${SPARSE_LIBS})
+ 
+diff -r 9c300336de9a doc/CMakeLists.txt
+--- a/doc/CMakeLists.txt	Thu Mar 07 18:17:10 2019 +0100
++++ b/doc/CMakeLists.txt	Fri Mar 08 08:59:40 2019 -0500
+@@ -69,15 +69,14 @@
+ set(snippets_targets "")
+ 
+ add_definitions("-DEIGEN_MAKING_DOCS")
+-add_custom_target(all_examples)
++add_custom_target(all_examples EXCLUDE_FROM_ALL)
+ 
+-add_subdirectory(examples)
+-add_subdirectory(special_examples)
+-add_subdirectory(snippets)
++add_subdirectory(examples EXCLUDE_FROM_ALL)
++add_subdirectory(special_examples EXCLUDE_FROM_ALL)
++add_subdirectory(snippets EXCLUDE_FROM_ALL)
+ 
+ add_custom_target(
+   doc-eigen-prerequisites
+-  ALL
+   COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/html/
+   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/eigen_navtree_hacks.js           ${CMAKE_CURRENT_BINARY_DIR}/html/
+   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/Eigen_Silly_Professor_64x64.png  ${CMAKE_CURRENT_BINARY_DIR}/html/
+@@ -89,7 +88,6 @@
+ 
+ add_custom_target(
+   doc-unsupported-prerequisites
+-  ALL
+   COMMAND ${CMAKE_COMMAND} -E make_directory ${Eigen_BINARY_DIR}/doc/html/unsupported
+   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/eigen_navtree_hacks.js           ${CMAKE_CURRENT_BINARY_DIR}/html/unsupported/
+   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/Eigen_Silly_Professor_64x64.png  ${CMAKE_CURRENT_BINARY_DIR}/html/unsupported/
+@@ -101,7 +99,7 @@
+ add_dependencies(doc-eigen-prerequisites all_snippets all_examples)
+ add_dependencies(doc-unsupported-prerequisites unsupported_snippets unsupported_examples)
+ 
+-add_custom_target(doc ALL
++add_custom_target(doc
+   COMMAND doxygen
+   COMMAND doxygen Doxyfile-unsupported
+   COMMAND ${CMAKE_COMMAND} -E copy ${Eigen_BINARY_DIR}/doc/html/group__TopicUnalignedArrayAssert.html ${Eigen_BINARY_DIR}/doc/html/TopicUnalignedArrayAssert.html
+diff -r 9c300336de9a doc/examples/CMakeLists.txt
+--- a/doc/examples/CMakeLists.txt	Thu Mar 07 18:17:10 2019 +0100
++++ b/doc/examples/CMakeLists.txt	Fri Mar 08 08:59:40 2019 -0500
+@@ -2,7 +2,7 @@
+ 
+ foreach(example_src ${examples_SRCS})
+   get_filename_component(example ${example_src} NAME_WE)
+-  add_executable(${example} ${example_src})
++  add_executable(${example} EXCLUDE_FROM_ALL ${example_src})
+   if(EIGEN_STANDARD_LIBRARIES_TO_LINK_TO)
+     target_link_libraries(${example} ${EIGEN_STANDARD_LIBRARIES_TO_LINK_TO})
+   endif()
+@@ -17,4 +17,4 @@
+ 
+ if(EIGEN_COMPILER_SUPPORT_CPP11)
+ ei_add_target_property(nullary_indexing COMPILE_FLAGS "-std=c++11")
+-endif()
+\ No newline at end of file
++endif()
+diff -r 9c300336de9a doc/snippets/CMakeLists.txt
+--- a/doc/snippets/CMakeLists.txt	Thu Mar 07 18:17:10 2019 +0100
++++ b/doc/snippets/CMakeLists.txt	Fri Mar 08 08:59:40 2019 -0500
+@@ -11,6 +11,7 @@
+     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/compile_snippet.cpp.in
+                   ${CMAKE_CURRENT_BINARY_DIR}/${compile_snippet_src})
+     add_executable(${compile_snippet_target}
++                  EXCLUDE_FROM_ALL
+                   ${CMAKE_CURRENT_BINARY_DIR}/${compile_snippet_src})
+     if(EIGEN_STANDARD_LIBRARIES_TO_LINK_TO)
+       target_link_libraries(${compile_snippet_target} ${EIGEN_STANDARD_LIBRARIES_TO_LINK_TO})
+diff -r 9c300336de9a doc/special_examples/CMakeLists.txt
+--- a/doc/special_examples/CMakeLists.txt	Thu Mar 07 18:17:10 2019 +0100
++++ b/doc/special_examples/CMakeLists.txt	Fri Mar 08 08:59:40 2019 -0500
+@@ -6,7 +6,7 @@
+ endif(NOT EIGEN_TEST_NOQT)
+ 
+ if(QT4_FOUND)
+-  add_executable(Tutorial_sparse_example Tutorial_sparse_example.cpp Tutorial_sparse_example_details.cpp)
++    add_executable(Tutorial_sparse_example EXCLUDE_FROM_ALL Tutorial_sparse_example.cpp Tutorial_sparse_example_details.cpp)
+   target_link_libraries(Tutorial_sparse_example ${EIGEN_STANDARD_LIBRARIES_TO_LINK_TO} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
+ 
+   add_custom_command(
+@@ -20,7 +20,7 @@
+ endif(QT4_FOUND)
+ 
+ if(EIGEN_COMPILER_SUPPORT_CPP11)
+-  add_executable(random_cpp11 random_cpp11.cpp)
++  add_executable(random_cpp11 EXCLUDE_FROM_ALL random_cpp11.cpp)
+   target_link_libraries(random_cpp11 ${EIGEN_STANDARD_LIBRARIES_TO_LINK_TO})
+   add_dependencies(all_examples random_cpp11)
+   ei_add_target_property(random_cpp11 COMPILE_FLAGS "-std=c++11")
+diff -r 9c300336de9a unsupported/doc/CMakeLists.txt
+--- a/unsupported/doc/CMakeLists.txt	Thu Mar 07 18:17:10 2019 +0100
++++ b/unsupported/doc/CMakeLists.txt	Fri Mar 08 08:59:40 2019 -0500
+@@ -1,4 +1,4 @@
+ set_directory_properties(PROPERTIES EXCLUDE_FROM_ALL TRUE)
+ 
+-add_subdirectory(examples)
+-add_subdirectory(snippets)
++add_subdirectory(examples EXCLUDE_FROM_ALL)
++add_subdirectory(snippets EXCLUDE_FROM_ALL)
+diff -r 9c300336de9a unsupported/doc/examples/CMakeLists.txt
+--- a/unsupported/doc/examples/CMakeLists.txt	Thu Mar 07 18:17:10 2019 +0100
++++ b/unsupported/doc/examples/CMakeLists.txt	Fri Mar 08 08:59:40 2019 -0500
+@@ -6,7 +6,7 @@
+ 
+ FOREACH(example_src ${examples_SRCS})
+   GET_FILENAME_COMPONENT(example ${example_src} NAME_WE)
+-  ADD_EXECUTABLE(example_${example} ${example_src})
++  ADD_EXECUTABLE(example_${example} EXCLUDE_FROM_ALL ${example_src})
+   if(EIGEN_STANDARD_LIBRARIES_TO_LINK_TO)
+     target_link_libraries(example_${example} ${EIGEN_STANDARD_LIBRARIES_TO_LINK_TO})
+   endif()
+diff -r 9c300336de9a unsupported/doc/snippets/CMakeLists.txt
+--- a/unsupported/doc/snippets/CMakeLists.txt	Thu Mar 07 18:17:10 2019 +0100
++++ b/unsupported/doc/snippets/CMakeLists.txt	Fri Mar 08 08:59:40 2019 -0500
+@@ -10,6 +10,7 @@
+   CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/doc/snippets/compile_snippet.cpp.in
+                  ${CMAKE_CURRENT_BINARY_DIR}/${compile_snippet_src})
+   ADD_EXECUTABLE(${compile_snippet_target}
++                EXCLUDE_FROM_ALL
+                  ${CMAKE_CURRENT_BINARY_DIR}/${compile_snippet_src})
+   if(EIGEN_STANDARD_LIBRARIES_TO_LINK_TO)
+     target_link_libraries(${compile_snippet_target} ${EIGEN_STANDARD_LIBRARIES_TO_LINK_TO})
