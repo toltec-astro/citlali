@@ -1,5 +1,6 @@
 #pragma once
-
+#include <boost/random.hpp>
+#include <boost/random/random_device.hpp>
 #include <boost/math/constants/constants.hpp>
 static double pi = boost::math::constants::pi<double>();
 
@@ -11,16 +12,18 @@ static double pi = boost::math::constants::pi<double>();
 #include "config.h"
 #include "read.h"
 
+#include "tester.h"
+
 #include "timestream/timestream.h"
 
-#include "map/map.h"
 #include "map/map_utils.h"
+#include "map/map.h"
 #include "map/coadd.h"
 
 #include "../core/result.h"
 
 /*
-This file holds the main class and its methods for Lali.
+This header file holds the main class and its methods for Lali.
 */
 
 //TCData is the data structure of which RTCData and PTCData are a part
@@ -31,150 +34,64 @@ using timestream::PTCProc;
 //Selects the type of TCData
 using timestream::LaliDataKind;
 
-// Namespaces for getting cmd line values
-namespace po = boost::program_options;
-namespace pt = boost::property_tree;
-
 namespace lali {
 
-class Lali : public Result {
+class Lali : public Result, public Tester
+{
 public:
-  std::shared_ptr<YamlConfig> config;
+    //Lali(std::shared_ptr<YamlConfig> c_): config(std::move(c_)) {}
+    //Lali(int ac, char *av[]): argc(ac), argv(std::move(av)) {}
 
-  // Total number of detectors and scans
-  int ndetectors, nscans;
+    std::shared_ptr<YamlConfig> config;
 
-  // Lowpass+Highpass filter class
-  timestream::Filter filter;
+    Tester tester;
 
-  // Class to hold and populate maps
-  mapmaking::MapStruct Maps;
-  // Class to hold and populate coadded maps
-  mapmaking::CoaddedMapStruct CoaddedMaps;
-  // Temporary class for AzTEC data reading & storage
-  aztec::BeammapData Data;
+    // Total number of detectors and scans
+    int ndetectors, nscans;
 
-  // Number of threads to use for the grppi::farm
-  Eigen::Index nThreads = Eigen::nbThreads();
+    // Lowpass+Highpass filter class
+    timestream::Filter filter;
 
-  // std::map for the detector Az/El offsets
-  std::map<std::string, Eigen::VectorXd> offsets;
+    // Class to hold and populate maps
+    mapmaking::MapStruct Maps;
+    // Class to hold and populate coadded maps
+    mapmaking::CoaddedMapStruct CoaddedMaps;
 
-  // std::vectors for cmd line inputs
-  std::vector<std::string> config_files;
-  std::vector<std::string> input_files;
+    // Number of threads to use for the grppi::farm
+    Eigen::Index nThreads = Eigen::nbThreads();
 
-  auto getInputs(int argc, char *argv[]);
-  auto getConfig();
-  void getData();
-  void setup();
-  auto run();
+    // std::map for the detector Az/El offsets
+    std::map<std::string, Eigen::VectorXd> offsets;
+
+    //Random generator for noise maps
+    boost::random_device rd;
+    boost::random::mt19937 rng{rd};
+    boost::random::uniform_int_distribution<> rands{0,1};
+
+    void setup();
+
+    template<DataType datatype>
+    void makeTestData(int argc, char *argv[]) {
+
+        if constexpr (datatype == UseAzTEC) {
+            tester = tester.getAztecData<datatype>(argc, argv);
+            config = std::move(tester.config_);
+            Data = std::move(tester.Data);
+
+            // Set ndetectors and nscans from the data
+            ndetectors = Data.meta.template get_typed<int>("ndetectors");
+            nscans = Data.meta.template get_typed<int>("nscans");
+        }
+    }
+
+    auto run();
+
 };
 
-// Gets the data and config files specified at the cmd line and
-// puts them into std vectors.
-auto Lali::getInputs(int argc, char *argv[]){
-    using RC = pt::ptree;
-    RC rc;
-    try {
-        po::options_description opts_desc{"Options"};
-        opts_desc.add_options()("help,h", "Help screen")(
-            "config_file,c", po::value<std::vector<std::string>>()
-                                 ->multitoken()
-                                 ->zero_tokens()
-                                 ->composing())(
-            "input_file,i", po::value<std::vector<std::string>>()
-                                ->multitoken()
-                                ->zero_tokens()
-                                ->composing());
-        po::positional_options_description inputs_desc{};
-        inputs_desc.add("input_file", -1);
-        po::command_line_parser parser{argc, argv};
-        parser.options(opts_desc).positional(inputs_desc).allow_unregistered();
-        po::variables_map vm;
-        auto parsed = parser.run();
-        po::store(parsed, vm);
-        po::notify(vm);
-
-        if (vm.empty() || vm.count("help")) {
-            std::cout << opts_desc << '\n';
-            return 0;
-        }
-
-        if (vm.count("config_file")) {
-            config_files = vm["config_file"].as<std::vector<std::string>>();
-        }
-        SPDLOG_INFO("number of config files: {}", config_files.size());
-        for (const auto &f : config_files) {
-            SPDLOG_INFO("   {}", f);
-        }
-
-        if (vm.count("input_file")) {
-            input_files = vm["input_file"].as<std::vector<std::string>>();
-        }
-        SPDLOG_INFO("number of input files: {}", input_files.size());
-        for (const auto &f : input_files) {
-            SPDLOG_INFO("   {}", f);
-        }
-
-        auto unparsed_opts =
-            collect_unrecognized(parsed.options, po::exclude_positional);
-        for (const auto &opt : unparsed_opts) {
-            SPDLOG_INFO("unparsed options: {}", opt);
-        }
-
-
-    } catch (const po::error &e) {
-        SPDLOG_ERROR("{}", e.what());
-        return 1;
-    } catch (std::runtime_error &e) {
-        SPDLOG_ERROR("{}", e.what());
-        return 1;
-    } catch (...) {
-        auto what = boost::current_exception_diagnostic_information();
-        SPDLOG_ERROR("unhandled exception: {}, abort", what);
-        throw;
-    }
-
-    return 0;
- }
-
-
- // Gets the config file from getInputs() and creates a config object
-auto Lali::getConfig(){
-
-    YAML::Node root;
-    try {
-        // Generalize to read multiple config files
-        root = YAML::LoadFile(config_files.front());
-        config = std::move(std::make_shared<lali::YamlConfig>(root));
-
-    } catch (const std::exception& e){
-        SPDLOG_ERROR("{}", e.what());
-        return 0;
-    }
-
-    return 0;
-}
-
-// Loads the data from the input data files
-void Lali::getData(){
-    static auto it = input_files.begin();
-
-    try{
-        Data = aztec::BeammapData::fromNcFile(*(it));
-
-        // Set ndetectors and nscans from the data
-        ndetectors = Data.meta.template get_typed<int>("ndetectors");
-        nscans = Data.meta.template get_typed<int>("nscans");
-    }
-    catch (const aztec::DataIOError &e) {
-        SPDLOG_WARN("failed to read input {}: {}", *it, e.what());
-    }
-}
-
 // Sets up the map dimensions and lowpass+highpass filter
-void Lali::setup() {
+void Lali::setup()
+{
+
   // Check if lowpass+highpass filter requested.
   // If so, make the filter once here and reuse
   // it later for each RTCData.
@@ -199,11 +116,11 @@ void Lali::setup() {
       &(this->config->get_typed<std::vector<double>>("el_offset"))[0],
       ndetectors);
 
-  // Using the offsets, find the map max and min values and calculate
-  // nrows and ncols
-  Maps.setRowsCols<mapmaking::Individual>(Maps, Data.telMetaData, offsets, config);
   // Resize the maps to nrows x ncols and set rcphys and ccphys
-  Maps.allocateMaps();
+  Maps.allocateMaps(Data.telMetaData, offsets, config);
+  CoaddedMaps.allocateMaps(Maps, Data.telMetaData, offsets, config);
+
+
 }
 
 // Runs the timestream -> map analysis pipeline.
@@ -211,23 +128,23 @@ auto Lali::run(){
 
     auto farm =  grppi::farm(nThreads,[&](auto in) -> TCData<LaliDataKind::PTC,Eigen::MatrixXd> {
 
-        //SPDLOG_INFO("scans before rtcproc {}", in.scans.data);
+        SPDLOG_INFO("scans before rtcproc {}", in.scans.data);
 
         /*Stage 1: RTCProc*/
         RTCProc rtcproc(config);
         TCData<LaliDataKind::PTC,Eigen::MatrixXd> out;
         rtcproc.run(in, out, this);
 
-        //SPDLOG_INFO("scans after rtcproc {}", out.scans.data);
+        SPDLOG_INFO("scans after rtcproc {}", out.scans.data);
 
         /*Stage 2: PTCProc*/
         PTCProc ptcproc(config);
         ptcproc.run(out, out);
 
-        //SPDLOG_INFO("scans after ptcproc {}", out.scans.data);
+        SPDLOG_INFO("scans after ptcproc {}", out.scans.data);
 
         /*Stage 3 Populate Map*/
-        Maps.mapPopulate(out, offsets, Data.telMetaData, config);
+        Maps.mapPopulate(out, offsets, config);
 
         SPDLOG_INFO("----------------------------------------------------");
         SPDLOG_INFO("*Done with scan {}...*",out.index.data);

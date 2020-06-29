@@ -24,21 +24,22 @@ public:
 
     double pixelsize;
 
-    template <PointingType maptype, typename DerivedA, typename DerivedB>
+    template <PointingType, typename DerivedA, typename DerivedB>
     void getDetectorPointing(Eigen::DenseBase<DerivedA> &, Eigen::DenseBase<DerivedA> &,
                              Eigen::DenseBase<DerivedB> &, Eigen::DenseBase<DerivedB> &,
                              Eigen::DenseBase<DerivedB> &, Eigen::DenseBase<DerivedB> &,
                              const double, const double, std::shared_ptr<lali::YamlConfig>);
 
-    template <MapClassType mapclasstype, class MS, typename TD, typename OT>
-    static auto setRowsCols(MS&, TD&, OT&, std::shared_ptr<lali::YamlConfig>);
-
-    template <MapClassType mapclasstype, class MS, typename TD, typename OT>
+    template <MapClassType, class MS, typename TD, typename OT>
     auto getMapMaxMin(MS&, TD&, OT&, std::shared_ptr<lali::YamlConfig>);
+
+    template <MapClassType, class MS, typename TD, typename OT>
+    auto setRowsCols(MS&, TD&, OT&, std::shared_ptr<lali::YamlConfig>);
+
 
 };
 
-template <PointingType pointingtype, typename DerivedA, typename DerivedB>
+template <MapUtils::PointingType pointingtype, typename DerivedA, typename DerivedB>
 void MapUtils::getDetectorPointing(Eigen::DenseBase<DerivedA> &lat, Eigen::DenseBase<DerivedA> &lon,
                                    Eigen::DenseBase<DerivedB> &telLat, Eigen::DenseBase<DerivedB> &telLon,
                                    Eigen::DenseBase<DerivedB> &TelElDes, Eigen::DenseBase<DerivedB> &ParAng,
@@ -69,18 +70,19 @@ void MapUtils::getDetectorPointing(Eigen::DenseBase<DerivedA> &lat, Eigen::Dense
 }
 
 
+template <MapUtils::MapClassType mapclasstype, class MS, typename TD, typename OT>
+auto MapUtils::getMapMaxMin(MS &maps, TD &telMetaData, OT &offsets, std::shared_ptr<lali::YamlConfig> config){
 
-template <MapClassType mapclasstype, class MS, typename TD, typename OT>
-auto getMapMaxMin(MS &maps, TD &telMetaData, OT &offsets, std::shared_ptr<lali::YamlConfig> config){
-
+    // Using the offsets, find the map max and min values and calculate
+    // nrows and ncols
     Eigen::MatrixXd mapDims = Eigen::MatrixXd::Zero(2,2);
 
-    if constexpr (mapclasstype == Individual) {
+    if constexpr (mapclasstype == MapUtils::Individual) {
         Eigen::VectorXd lat, lon;
 
         //Get max and min lat and lon values out of all detectors.  Maybe parallelize?
         for (Eigen::Index det=0;det<offsets["azOffset"].size();det++) {
-            getDetectorPointing<RaDec>(lat, lon, telMetaData["TelRaPhys"], telMetaData["TelDecPhys"],
+            getDetectorPointing<MapUtils::RaDec>(lat, lon, telMetaData["TelRaPhys"], telMetaData["TelDecPhys"],
                                                        telMetaData["TelElDes"], telMetaData["ParAng"],
                                                        offsets["azOffset"](det), offsets["elOffset"](det), config);
 
@@ -99,7 +101,7 @@ auto getMapMaxMin(MS &maps, TD &telMetaData, OT &offsets, std::shared_ptr<lali::
         }
     }
 
-    else if constexpr (mapclasstype == Coadded) {
+    else if constexpr (mapclasstype == MapUtils::Coadded) {
         if(maps.rcphys.minCoeff() < mapDims(0,0)){
             mapDims(0,0) = maps.rcphys.minCoeff();
         }
@@ -114,46 +116,45 @@ auto getMapMaxMin(MS &maps, TD &telMetaData, OT &offsets, std::shared_ptr<lali::
         }
     }
 
-    return mapDims;
+    return std::move(mapDims);
 }
 
-template<MapClassType mapclasstype, class MS, typename TD, typename OT>
+template<MapUtils::MapClassType mapclasstype, class MS, typename TD, typename OT>
 auto MapUtils::setRowsCols(MS &maps, TD &telMetaData, OT &offsets,
                            std::shared_ptr<lali::YamlConfig> config)
 {
 
-    // Calculate the max and min dimensions of the map.  Uses telData and offsets
-    // for individual maps and the individual map rcphys and ccphys for coadded
-    // maps
     auto mapDims = getMapMaxMin<mapclasstype>(maps, telMetaData, offsets, config);
 
     // Set the pixelsize
-    maps.pixelsize = config->get_typed<double>("pixelsize")*RAD_ASEC;
-    SPDLOG_INFO("pixelsize {} (arcseconds)/{} (radians)", this->pixelsize/RAD_ASEC, this->pixelsize);
+    pixelsize = config->get_typed<double>("pixelsize")*RAD_ASEC;
+    SPDLOG_INFO("pixelsize {} (arcseconds)/{} (radians)", pixelsize/RAD_ASEC, pixelsize);
 
     // Find the maximum pixel value in the lat dimension
-    int latminpix = ceil(abs(mapDims(0,0)/this->pixelsize));
-    int latmaxpix = ceil(abs(mapDims(1,0)/this->pixelsize));
+    int latminpix = ceil(abs(mapDims(0,0)/pixelsize));
+    int latmaxpix = ceil(abs(mapDims(1,0)/pixelsize));
     latmaxpix = std::max(latminpix, latmaxpix);
     // Set nrows
-    this->nrows = 2 * latmaxpix + 4;
+    int nr = 2 * latmaxpix + 4;
 
     // Find the maximum pixel value in the lon dimension
-    int lonminpix = ceil(abs(mapDims(0,1)/this->pixelsize));
-    int lonmaxpix = ceil(abs(mapDims(1,1)/this->pixelsize));
+    int lonminpix = ceil(abs(mapDims(0,1)/pixelsize));
+    int lonmaxpix = ceil(abs(mapDims(1,1)/pixelsize));
     lonmaxpix = std::max(lonminpix, lonmaxpix);
     // Set ncols
-    this->ncols = 2 * lonmaxpix + 4;
+    int nc = 2 * lonmaxpix + 4;
 
-    SPDLOG_INFO("nrows {}", maps.nrows);
-    SPDLOG_INFO("ncols {}", maps.ncols);
+    SPDLOG_INFO("nrows {}", nr);
+    SPDLOG_INFO("ncols {}", nc);
 
-    this->rcphys = (Eigen::VectorXd::LinSpaced(this->nrows, 0, this->nrows - 1).array() -
-            (this->nrows + 1.) / 2.) *
-           this->pixelsize;
-    this->ccphys = (Eigen::VectorXd::LinSpaced(this->ncols, 0, this->ncols - 1).array() -
-            (this->ncols + 1.) / 2.) *
-           this->pixelsize;
+    auto rcp = (Eigen::VectorXd::LinSpaced(nr, 0, nr - 1).array() -
+            (nr + 1.) / 2.) *
+           pixelsize;
+     auto ccp = (Eigen::VectorXd::LinSpaced(nc, 0, nc - 1).array() -
+            (nc + 1.) / 2.) *
+           pixelsize;
+
+     return std::tuple<int, int, Eigen::VectorXd, Eigen::VectorXd>(nr, nc, std::move(rcp), std::move(ccp));
 }
 
 } //namespace

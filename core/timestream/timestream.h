@@ -6,6 +6,7 @@
 #include "despike.h"
 #include "filter.h"
 #include "downsample.h"
+#include "kernel.h"
 
 using lali::YamlConfig;
 
@@ -27,7 +28,10 @@ public:
 
   void runDownsample(TCData<LaliDataKind::RTC, MatrixXd> &,
                      TCData<LaliDataKind::PTC, MatrixXd> &);
-  void runKernel();
+
+  template<class L>
+  void runKernel(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &, L, std::shared_ptr<YamlConfig>);
+
   void runCalibration();
 };
 
@@ -78,7 +82,7 @@ void RTCProc::run(TCData<LaliDataKind::RTC, Eigen::MatrixXd> &in,
   // Check if kernel is requested and run if so
   if (this->config->get_typed<int>("proc.rtc.kernel")) {
     SPDLOG_INFO("Generating kernel timestream for scan {}...", in.index.data);
-    runKernel();
+    runKernel(out, LC, this->config);
   }
 
   // Set the scan indices and current scan number of out to those of in
@@ -97,9 +101,15 @@ void RTCProc::runDespike(TCData<LaliDataKind::RTC, MatrixXd> &in) {
       this->config->get_typed<double>("proc.rtc.despike.timeconstant");
   auto samplerate = this->config->get_typed<double>("proc.rtc.samplerate");
 
+  // Setup despiker with config values
   Despiker despiker(sigma, timeconstant, samplerate, despikewindow);
+  // Run despiking
   despiker.despike(in.scans.data, in.flags.data);
-  // replaceFlagged();
+
+  Eigen::VectorXd responsivity(in.scans.data.cols());
+  responsivity.setOnes();
+  // Replace flagged data with interpolation
+  despiker.replaceSpikes(in.scans.data, in.flags.data, responsivity);
 }
 
 // Run the lowpass + highpass filter
@@ -134,9 +144,9 @@ void RTCProc::runCalibration() {
 
 // Run the kernel to get kernel timestreams.  Called after
 // downsampling to save time and memory
-void RTCProc::runKernel() {
-
-  // kernel();
+template<class L>
+void RTCProc::runKernel(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in, L LC, std::shared_ptr<YamlConfig> config) {
+    makeKernel(in, LC->offsets, config);
 }
 
 class PTCProc {
@@ -147,8 +157,10 @@ public:
   // template <typename Derived>
   void run(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &,
            TCData<LaliDataKind::PTC, Eigen::MatrixXd> &);
+
   void runClean(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &,
                 TCData<LaliDataKind::PTC, Eigen::MatrixXd> &);
+
   void getWeights(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &);
 };
 
@@ -226,7 +238,7 @@ void PTCProc::getWeights(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in) {
           in.scans.data.col(det).data(), in.scans.data.rows());
 
       // Get standard deviation excluding flagged samples
-      auto [tmp, ngood] = stddev(scans, flags);
+      auto [tmp, ngood] = timestream_utils::stddev(scans, flags);
 
       // Check for NaNs and too short scans
       if (tmp != tmp ||

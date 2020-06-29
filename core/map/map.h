@@ -1,5 +1,7 @@
 #pragma once
 
+#include "map_utils.h"
+
 // TcData is the data structure of which RTCData and PTCData are a part
 using timestream::PTCProc;
 using timestream::RTCProc;
@@ -8,45 +10,55 @@ using timestream::TCData;
 // Selects the type of TCData
 using timestream::LaliDataKind;
 
-class MapStruct: public MapUtils {
+namespace  mapmaking {
+
+class MapStruct: public mapmaking::MapUtils {
 
 public:
   // Number of rows and cols for map
   Eigen::Index nrows, ncols, npixels;
   // Pixel size (radians) and Master Grid coordinates
-  double pixelsize, masterGrid0, masterGrid1;
+  double masterGrid0, masterGrid1;
   // Physical coordinates for rows and cols (radians)
   Eigen::VectorXd rcphys, ccphys;
 
   // Map types
-  Eigen::MatrixXd signal, weight, kernelscans, inttime;
+  Eigen::MatrixXd signal, weight, kernel, intMap;
 
-  void allocateMaps();
+  template<typename TD, typename OT>
+  void allocateMaps(TD&, OT&, std::shared_ptr<lali::YamlConfig>);
 
-  template <typename OT, typename TD>
-  void mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &, OT &, TD &,
+  template <typename OT>
+  void mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &, OT &,
                    std::shared_ptr<YamlConfig>);
 
   void mapNormalize();
 };
 
 // Resizes maps to nrows x ncols
-void MapStruct::allocateMaps() {
+template<typename TD, typename OT>
+void MapStruct::allocateMaps(TD &telMetaData, OT &offsets, std::shared_ptr<lali::YamlConfig> config)
+{
+    auto [nr, nc, rcp, ccp] = setRowsCols<Individual>(*this, telMetaData, offsets, config);
 
-  npixels = nrows * ncols;
+    nrows = nr;
+    ncols = nc;
+    rcphys = rcp;
+    ccphys = ccp;
 
-  signal = Eigen::MatrixXd::Zero(nrows, ncols);
-  weight = Eigen::MatrixXd::Zero(nrows, ncols);
-  kernel = Eigen::MatrixXd::Zero(nrows, ncols);
-  intMap = Eigen::MatrixXd::Zero(nrows, ncols);
+    npixels = nrows * ncols;
+
+    signal = Eigen::MatrixXd::Zero(nrows, ncols);
+    weight = Eigen::MatrixXd::Zero(nrows, ncols);
+    kernel = Eigen::MatrixXd::Zero(nrows, ncols);
+    intMap = Eigen::MatrixXd::Zero(nrows, ncols);
 }
 
 // For a given scan find the row and col indices and add those the
 // corresponding values into the map matricies
-template <typename OT, typename TD>
+template <typename OT>
 void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
-                            OT &offsets, TD &telMetaData,
-                            std::shared_ptr<YamlConfig> config) {
+                            OT &offsets, std::shared_ptr<YamlConfig> config) {
 
   SPDLOG_INFO("Populating map pixels for scan {}...", in.index.data);
 
@@ -90,10 +102,15 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
 
 //Normallize the map pixels by weight map.  Needs the
 // map to be completely populated to be run.
-// Can parallelize so leave in for loops.
 void MapStruct::mapNormalize() {
-  double pixelWeight = 0;
-  for (Eigen::Index irow = 0; irow < nrows; irow++) {
+    double pixelWeight = 0;
+
+    signal = (weight.array() == 0).select(0, -signal.array() / weight.array());
+    kernel = (weight.array() == 0).select(0, -kernel.array() / weight.array());
+
+    // Can parallelize so leave in for loops.
+
+    /*for (Eigen::Index irow = 0; irow < nrows; irow++) {
     for (Eigen::Index icol = 0; icol < ncols; icol++) {
       pixelWeight = weight(irow, icol);
       if (pixelWeight != 0.) {
@@ -102,7 +119,7 @@ void MapStruct::mapNormalize() {
         signal(irow, icol) = 0;
       }
     }
-  }
+  }*/
 }
 
 } // namespace mapmaking

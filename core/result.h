@@ -11,21 +11,21 @@ public:
     void output(std::shared_ptr<YamlConfig> config, MC &Maps)
     {
         std::string filePath = config->get_typed<std::string>("output_filepath");
-        writeMapsToNetCDF(config,filePath, Maps);
+        writeMapsToNetCDF(config, Maps, filePath);
     }
 
     template<typename MC, typename S>
     void output(std::shared_ptr<YamlConfig> config, MC &Maps, S filePath)
     {
-        writeMapsToNetCDF(config,filePath, Maps);
+        writeMapsToNetCDF(config, Maps, filePath);
     }
 
     template <typename MC>
-    auto writeMapsToNetCDF(std::shared_ptr<YamlConfig>, std::string, MC&);
+    auto writeMapsToNetCDF(std::shared_ptr<YamlConfig>, MC &Maps, std::string);
 };
 
 template <typename MC>
-auto Result::writeMapsToNetCDF(std::shared_ptr<YamlConfig> config, std::string filePath, MC &Maps){
+auto Result::writeMapsToNetCDF(std::shared_ptr<YamlConfig> config, MC &Maps, std::string filePath){
 
     int NC_ERR;
     try {
@@ -42,18 +42,31 @@ auto Result::writeMapsToNetCDF(std::shared_ptr<YamlConfig> config, std::string f
 
         auto signalmapvar = "signal";
         auto weightmapvar = "weight";
+        auto kernelmapvar = "kernel";
 
         NcVar signalmapdata = fo.addVar(signalmapvar, ncDouble, dims);
         NcVar weightmapdata = fo.addVar(weightmapvar, ncDouble, dims);
+        NcVar kernelmapdata = fo.addVar(kernelmapvar, ncDouble, dims);
 
-        Eigen::MatrixXd signalmatrix = Eigen::Map<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>> (Maps.signal.data(),Maps.nrows,Maps.ncols);
-        Eigen::MatrixXd weightmatrix = Eigen::Map<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>> (Maps.weight.data(),Maps.nrows,Maps.ncols);
+        Eigen::MatrixXd signalmatrix
+            = Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>>(
+                Maps.signal.data(), Maps.nrows, Maps.ncols);
+
+        Eigen::MatrixXd weightmatrix
+            = Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>>(
+                Maps.weight.data(), Maps.nrows, Maps.ncols);
+
+        Eigen::MatrixXd kernelmatrix
+            = Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>>(
+                Maps.kernel.data(), Maps.nrows, Maps.ncols);
 
         signalmatrix.transposeInPlace();
         weightmatrix.transposeInPlace();
+        kernelmatrix.transposeInPlace();
 
         signalmapdata.putVar(signalmatrix.data());
         weightmapdata.putVar(weightmatrix.data());
+        kernelmapdata.putVar(kernelmatrix.data());
 
         fo.close();
 

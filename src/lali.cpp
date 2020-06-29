@@ -54,7 +54,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[])
     SPDLOG_INFO("Starting Lali");
     logging::scoped_timeit timer("Lali");
 
-
     /*
   Declare Lali class *testing (to be moved outside of lali.cpp)*
   */
@@ -63,28 +62,15 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[])
     lali::Lali LC;
 
     /*
-  Read files *testing (to be moved outside of lali.cpp)*
+  Get Test data *testing*
   */
-
-    SPDLOG_INFO("Getting Files");
-    LC.getInputs(argc, argv);
-    SPDLOG_INFO("Getting Config");
-    LC.getConfig();
-
-    /*
-  Create Data structure *testing*
-  */
-
-    SPDLOG_INFO("Getting Data");
-    {
-        logging::scoped_timeit timer("getData()");
-        LC.getData();
-    }
+    LC.makeTestData<lali::Tester::UseAzTEC>(argc, argv);
 
     /*
   Setup lali *testing (to be moved outside of lali.cpp)*
       - Calculate map dimensions
       - Allocate map matrices/tensors
+      - Calculates Lowpass+Highpass Filter if requested
   */
 
     SPDLOG_INFO("Setting up Maps and Variables");

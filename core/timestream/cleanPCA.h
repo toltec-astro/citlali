@@ -51,11 +51,11 @@ void pcaCleaner::calcEigs(const Eigen::DenseBase<DerivedA> &scans, const Eigen::
     //Container for Correlation Matrix
     Eigen::MatrixXd pcaCorr(ndetectors, ndetectors);
 
-    //Calculate the Correlation Matrix
+    // Calculate the Correlation Matrix
     pcaCorr.noalias() = (det.adjoint() * det);
 
     if constexpr (backend == SpectraBackend) {
-        int nev = neigToCut;//ndetectors <= 100?ndetectors - 1:100;
+        int nev = neigToCut; // ndetectors <= 100?ndetectors - 1:100;
         int ncv = nev * 2.5 < ndetectors?int(nev * 2.5):ndetectors;
         Spectra::DenseSymMatProd<double> op(pcaCorr);
         Spectra::SymEigsSolver<double, Spectra::LARGEST_ALGE, Spectra::DenseSymMatProd<double>> eigs(&op, nev, ncv);
@@ -63,14 +63,17 @@ void pcaCleaner::calcEigs(const Eigen::DenseBase<DerivedA> &scans, const Eigen::
         eigs.init();
         int nconv = eigs.compute();  //Largest eigenvalues first
 
-        //Retrieve results
+        // Retrieve results
         evals = Eigen::VectorXd::Zero(ndetectors);
-        evecs = Eigen::MatrixXd::Zero(ndetectors, ndetectors);
+
+        // Do we need to have ndetectors x ndetectors?
+        evecs = Eigen::MatrixXd::Zero(ndetectors, neigToCut);
 
         if (eigs.info() == Spectra::SUCCESSFUL) {
             evals.head(nev) = eigs.eigenvalues();
             evecs.leftCols(nev) = eigs.eigenvectors();
-        } else {
+        }
+        else {
             throw std::runtime_error("failed to compute eigen values");
         }
     }

@@ -11,10 +11,15 @@ public:
   // despike parameters
   const double nsigmaSpikes, timeconstant, samplerate;
   const int despikewindow;
+  bool useAllDet = 1;
 
   // The main despiking routine
   template <typename DerivedA, typename DerivedB>
-  void despike(Eigen::DenseBase<DerivedA> &, Eigen::DenseBase<DerivedB> &);
+  void despike(Eigen::DenseBase<DerivedA>&, Eigen::DenseBase<DerivedB> &);
+
+  // Replace flagged data with interpolation
+  template<typename DerivedA, typename DerivedB, typename DerivedC>
+  void replaceSpikes(Eigen::DenseBase<DerivedA>&, Eigen::DenseBase<DerivedB>&, Eigen::DenseBase<DerivedC>&);
 
 private:
   // This function loops through the delta timestream values and finds the
@@ -242,6 +247,221 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
 
     } // end of "if (nspikes > 0)" loop
   }   // end of "for (Eigen::Index det = 0; det < ndetectors; det++)" loop
+}
+
+template<typename DerivedA, typename DerivedB, typename DerivedC>
+void Despiker::replaceSpikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBase<DerivedB> &flags,
+                             Eigen::DenseBase<DerivedC>&responsivity)
+{
+    Eigen::Index ndetectors = flags.cols();
+    Eigen::Index npts = flags.rows();
+
+    // Figure out if there are any flag-free detectors
+    Eigen::Index nFlagged = 0;
+
+    // If hasSpikes(detector) == 0, it contains a spike
+    // otherwise none found
+    auto hasSpikes = flags.colwise().minCoeff();
+    nFlagged = ndetectors - hasSpikes.sum();
+
+    for (Eigen::Index det = 0; det < ndetectors; det++) {
+        if (!hasSpikes(det)) {
+            // Condition flags so that if there is a spike we can make
+            //one long flagged or unflagged region.
+            //first do spikes from 0 to 1
+            for (Eigen::Index j = 1; j < npts - 1; j++) {
+                if (flags(j, det) == 1 && flags(j - 1, det) == 0 && flags(j + 1, det) == 0) {
+                    flags(j, det) = 0;
+                }
+            }
+            //now spikes from 1 to 0
+            for (Eigen::Index j = 1; j < npts - 1; j++) {
+                if (flags(j, det) == 0 && flags(j - 1, det) == 1 && flags(j + 1, det) == 1) {
+                    flags(j, det) = 1;
+                }
+            }
+            //and the first and last samples
+            flags(0, det) = flags(1, det);
+            flags(npts - 1, det) = flags(npts - 2, det);
+
+            // Count up the number of flagged regions of data in the scan
+            Eigen::Index nFlaggedRegions = 0;
+
+            if (flags(npts - 1, det) == 0) {
+                nFlaggedRegions++;
+            }
+
+            nFlaggedRegions
+                += ((flags.col(det).tail(npts - 1) - flags.col(det).head(npts - 1)).array() > 0)
+                       .count()
+                   / 2;
+            if (nFlaggedRegions == 0) {
+                break;
+            }
+
+            // Find the start and end index for each flagged region
+            Eigen::Matrix<int, Eigen::Dynamic, 1> siFlags(nFlaggedRegions);
+            Eigen::Matrix<int, Eigen::Dynamic, 1> eiFlags(nFlaggedRegions);
+
+            siFlags.setConstant(-1);
+            eiFlags.setConstant(-1);
+
+            int count = 0;
+            Eigen::Index j = 0;
+
+            while (j < npts) {
+                if (flags(j, det) == 0) {
+                    int jstart = j;
+                    int sampcount = 0;
+
+                    while (flags(j, det) == 0 && j <= npts - 1) {
+                        sampcount++;
+                        j++;
+                    }
+                    if (sampcount > 1) {
+                        siFlags(count) = jstart;
+                        eiFlags(count) = j - 1;
+                        count++;
+                    } else {
+                        j++;
+                    }
+                } else {
+                    j++;
+                }
+            }
+
+            // Now loop on the number of flagged regions for the fix
+            Eigen::VectorXd xx(2);
+            Eigen::VectorXd yy(2);
+            Eigen::Matrix<Eigen::Index, 1, 1> tnpts;
+            tnpts << 2;
+
+            for (int j = 0; j < nFlaggedRegions; j++) {
+                // Determine the linear baseline for flagged region
+                //but use flat level if flagged at endpoints
+                Eigen::Index nFlags = eiFlags(j) - siFlags(j);
+                Eigen::VectorXd linOffset(nFlags);
+
+                if (siFlags(j) == 0) {
+                    linOffset.setConstant(scans(eiFlags(j) + 1, det));
+                } else if (eiFlags(j) == npts - 1) {
+                    linOffset.setConstant(scans(siFlags(j) - 1, det));
+                } else {
+                    // Linearly interpolate between the before
+                    //and after good samples
+                    xx(0) = siFlags(j) - 1;
+                    xx(1) = eiFlags(j) + 1;
+                    yy(0) = scans(siFlags(j) - 1, det);
+                    yy(1) = scans(eiFlags(j) + 1, det);
+
+                    Eigen::VectorXd xLinOffset = Eigen::VectorXd::LinSpaced(nFlags,
+                                                                            siFlags(j),
+                                                                            siFlags(j) + nFlags - 1);
+
+                    mlinterp::interp(tnpts.data(),
+                                     nFlags,
+                                     yy.data(),
+                                     linOffset.data(),
+                                     xx.data(),
+                                     xLinOffset.data());
+                }
+
+                // All non-flagged detectors
+                // Repeat for all detectors without spikes
+                // Count up spike-free detectors and store their values
+
+                int detCount = 0;
+                if (useAllDet) {
+                    detCount = ndetectors;
+                } else {
+                    detCount = hasSpikes.sum();
+                }
+
+                Eigen::MatrixXd detm(detCount, nFlags);
+                Eigen::VectorXd res(detCount);
+                int c = 0;
+                for (int ii = 0; ii < ndetectors; ii++) {
+                    if (hasSpikes(ii) || useAllDet) {
+                        detm.row(c) = Eigen::VectorXd::LinSpaced(nFlags,
+                                                                 siFlags(j),
+                                                                 siFlags(j) + nFlags - 1);
+                        res(c) = 1;
+                        c++;
+                    }
+                }
+
+                // For each of these go through and redo the offset bit
+                Eigen::MatrixXd linOffsetOthers(detCount, nFlags);
+
+                if (siFlags(j) == 0) {
+                    // First sample in scan is flagged so offset is flat
+                    // with the value of the last sample in the flagged region
+
+                    linOffsetOthers = detm.col(0).replicate(1, nFlags);
+
+                } else if (eiFlags(j) == npts - 1) {
+                    // Last sample in scan is flagged so offset is flat
+                    // with the value of the first sample in the flagged region
+                    linOffsetOthers = detm.col(nFlags - 1).replicate(1, nFlags);
+
+                } else {
+                    Eigen::VectorXd tmpVec(nFlags);
+                    Eigen::VectorXd xLinOffset = Eigen::VectorXd::LinSpaced(nFlags,
+                                                                            siFlags(j),
+                                                                            siFlags(j) + nFlags - 1);
+
+                    xx(0) = siFlags(j) - 1;
+                    xx(1) = eiFlags(j) + 1;
+                    // Do we need this loop?
+                    for (int ii = 0; ii < detCount; ii++) {
+                        yy(0) = detm(ii, 0);
+                        yy(0) = detm(ii, nFlags - 1);
+
+                        mlinterp::interp(tnpts.data(),
+                                         nFlags,
+                                         yy.data(),
+                                         tmpVec.data(),
+                                         xx.data(),
+                                         xLinOffset.data());
+                        linOffsetOthers.row(ii) = tmpVec;
+
+                    }
+                }
+
+                detm = detm - linOffsetOthers;
+
+                // Scale det by responsivities and average to make sky model
+                Eigen::VectorXd skyModel = Eigen::VectorXd::Zero(nFlags);
+
+                skyModel = skyModel.array() + (detm.array().colwise() / res.array()).rowwise().sum();
+                skyModel /= detCount;
+
+                Eigen::VectorXd stdDevFF = Eigen::VectorXd::Zero(detCount);
+                double tmpMean;
+                Eigen::VectorXd tmpVec(nFlags);
+
+                for (int ii = 0; ii < detCount; ii++) {
+                    tmpVec = (detm.array().colwise() / res.array() - skyModel.array());
+                    tmpMean = tmpVec.mean();
+                    stdDevFF(ii) = (tmpVec.array() - tmpMean).pow(2).sum();
+
+                    stdDevFF(ii) = (nFlags == 1.) ? stdDevFF(ii) / nFlags
+                                                  : stdDevFF(ii) / (nFlags - 1.);
+                }
+
+                double meanStdDev = (stdDevFF.array().sqrt()).sum() / detCount;
+
+                // The noiseless fake data is then the sky model plus the
+                // flagged detectors linear offset
+                Eigen::VectorXd fake(nFlags);
+                fake = skyModel.array() * responsivity(det) + linOffset.array();
+
+                // Add noise to the fake signal
+                meanStdDev *= responsivity(det); // not used
+                scans.col(det).segment(siFlags(j), nFlags) = fake;
+             }
+        }
+    }
 }
 
 } // namespace timestream
