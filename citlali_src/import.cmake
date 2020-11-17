@@ -20,6 +20,9 @@ target_link_libraries(citlali_core
         cmake_utils::spdlog_and_fmt
         cmake_utils::gitversion
         NetCDF::NetCDFCXX4
+        Eigen3::Eigen
+        grppi::grppi
+        yaml-cpp::yaml-cpp
     )
 option(CITLALI_BUILD_MPI "Build mpi exec" ON)
 if (CITLALI_BUILD_MPI)
@@ -36,13 +39,20 @@ if (CITLALI_BUILD_MPI)
             "src/citlali/mpi_main.cpp"
             )
     target_link_libraries(citlali_mpi PRIVATE
+        kids_core
         citlali_core
         mxx::mxx
-        grppi::grppi
-        Eigen3::Eigen
-        yaml-cpp::yaml-cpp
         )
 endif()
+add_executable(citlali)
+target_sources(citlali
+    PRIVATE
+        "src/citlali/main.cpp"
+        )
+target_link_libraries(citlali PRIVATE
+    kids_core
+    citlali_core
+    )
 # optional targets
 option(CITLALI_BUILD_TESTS "Build tests" ON)
 if (CITLALI_BUILD_TESTS)
