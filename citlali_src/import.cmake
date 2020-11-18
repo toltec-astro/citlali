@@ -24,7 +24,7 @@ target_link_libraries(citlali_core
         grppi::grppi
         yaml-cpp::yaml-cpp
     )
-option(CITLALI_BUILD_MPI "Build mpi exec" ON)
+option(CITLALI_BUILD_MPI "Build mpi exec" OFF)
 if (CITLALI_BUILD_MPI)
     include(MXX)
     print_target_properties(mxx::mxx)

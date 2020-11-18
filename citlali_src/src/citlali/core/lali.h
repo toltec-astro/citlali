@@ -20,7 +20,7 @@ static double pi = boost::math::constants::pi<double>();
 #include "map/map.h"
 #include "map/coadd.h"
 
-#include "../core/result.h"
+#include "result.h"
 
 /*
 This header file holds the main class and its methods for Lali.
@@ -36,15 +36,64 @@ using timestream::LaliDataKind;
 
 namespace lali {
 
-class Lali : public Result, public Tester
-{
+/*
+class PipelineInput {
+    std::vector<std::string> config_files;
+    std::vector<std::string> input_files;
+    std::shared_ptr<YamlConfig> config_;
+};
+
+class AzTECInput : public PipelineInput {
+
+    enum DataType { UseAzTEC = 0, UseTolTEC = 1 };
+
+    aztec::BeammapData Data;
+    template<DataType datatype>
+    static AzTECInput getAztecData(int argc, char *argv[])
+    {
+        Tester tester;
+        tester.getInputs(argc, argv);
+        tester.getConfig();
+
+        if constexpr (datatype == UseAzTEC) {
+            tester.getData();
+        }
+
+        return tester;
+    }
+};
+
+class TolTECInput : public PipelineInput {
+    toltec::Data Data;
+};
+*/
+
+enum DataType {
+    AzTEC_Testing = 0,
+    AzTEC_as_TolTEC_Testing = 1,
+    AzTEC = 2,
+    TolTEC = 3,
+    MUSCAT = 4
+};
+
+class DataStruct {
+    int scans;
+    int scan_indices;
+    int meta;
+};
+
+// template<typename InputType>
+class Lali : public Result {
 public:
     //Lali(std::shared_ptr<YamlConfig> c_): config(std::move(c_)) {}
     //Lali(int ac, char *av[]): argc(ac), argv(std::move(av)) {}
 
     std::shared_ptr<YamlConfig> config;
 
-    Tester tester;
+    DataStruct Data;
+
+    // InputType input;
+    class UseTolTEC {};
 
     // Total number of detectors and scans
     int ndetectors, nscans;
@@ -61,18 +110,42 @@ public:
     Eigen::Index nThreads = Eigen::nbThreads();
 
     // std::map for the detector Az/El offsets
-    std::map<std::string, Eigen::VectorXd> offsets;
+    std::unordered_map<std::string, Eigen::VectorXd> offsets;
 
     //Random generator for noise maps
     boost::random_device rd;
     boost::random::mt19937 rng{rd};
-    boost::random::uniform_int_distribution<> rands{0,1};
+    boost::random::uniform_int_distribution<> rands{0, 1};
 
+    template <DataType data_type> void init_from_cli(int argc, char *argv[]) {
+        if constexpr (data_type == DataType::TolTEC) {
+            Tester1 tester;
+            // tester.getToltecData()
+            // initalize containers with toltec tel.nc file
+            // Data is uninitialized
+            // Data.scan_indices is initialized according to tel.nc
+            // Data.meta telPHyscis...
+            // nscans = ...
+            // std::unordered_map<std::string, std::pair<double, double>>
+            // detector_offsets;
+        } else if (data_type == DataTyle::AzTEC) {
+            //
+            Tester tester;
+            tester = tester.getAztecData<datatype>(argc, argv);
+            config = std::move(tester.config_);
+            Data = std::move(tester.Data);
+
+            // Set ndetectors and nscans from the data
+            ndetectors = Data.meta.template get_typed<int>("ndetectors");
+            nscans = Data.meta.template get_typed<int>("nscans");
+        }
+        //
+    }
     void setup();
 
     template<DataType datatype>
     void makeTestData(int argc, char *argv[]) {
-
+        Tester tester;
         if constexpr (datatype == UseAzTEC) {
             tester = tester.getAztecData<datatype>(argc, argv);
             config = std::move(tester.config_);
@@ -85,7 +158,6 @@ public:
     }
 
     auto run();
-
 };
 
 // Sets up the map dimensions and lowpass+highpass filter

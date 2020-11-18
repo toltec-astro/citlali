@@ -8,7 +8,38 @@ namespace pt = boost::property_tree;
 
 namespace lali {
 
-class Tester{
+class Tester {
+public:
+    // std::vectors for cmd line inputs
+    std::vector<std::string> config_files;
+    std::vector<std::string> input_files;
+
+    std::shared_ptr<YamlConfig> config_;
+
+    enum DataType { UseAzTEC = 0, UseTolTEC = 1 };
+
+    // Temporary class for AzTEC data reading & storage
+    aztec::BeammapData Data;
+
+    int getInputs(int argc, char *argv[]);
+    int getConfig();
+    void getData();
+
+    template <DataType datatype>
+    static Tester getAztecData(int argc, char *argv[]) {
+        Tester tester;
+        tester.getInputs(argc, argv);
+        tester.getConfig();
+
+        if constexpr (datatype == UseAzTEC) {
+            tester.getData();
+        }
+
+        return tester;
+    }
+};
+
+class Tester1 {
 public:
     // std::vectors for cmd line inputs
     std::vector<std::string> config_files;

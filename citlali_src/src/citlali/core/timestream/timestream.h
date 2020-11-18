@@ -2,10 +2,12 @@
 
 #include "timestream_utils.h"
 
+#include "../TCData.h"
+#include "../lali.h"
 #include "cleanPCA.h"
 #include "despike.h"
-#include "filter.h"
 #include "downsample.h"
+#include "filter.h"
 #include "kernel.h"
 
 using lali::YamlConfig;

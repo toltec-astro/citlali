@@ -1,406 +1,230 @@
-#include "cli/utils.h"
-#include "core/kidsdata.h"
-#include "sweep/finder.h"
-#include "sweep/fitter.h"
-#include "timestream/solver.h"
-#include "toltec/toltec.h"
-#include "utils/config.h"
-#include "utils/grppiex.h"
-#include "utils/logging.h"
-#include <utils/filename.h>
+#include <Eigen/Dense>
+#include <boost/exception/diagnostic_information.hpp>
+#include <boost/program_options.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/random.hpp>
+#include <boost/random/random_device.hpp>
+#include <grppi/grppi.h>
+#include <netcdf>
+#include <omp.h>
+#include <yaml-cpp/yaml.h>
 
-#include <cstdlib>
-#include <kids/gitversion.h>
+#include "../common_utils/src/utils/eigen.h"
+#include "../common_utils/src/utils/enum.h"
+#include "../common_utils/src/utils/formatter/enum.h"
+#include "../common_utils/src/utils/formatter/matrix.h"
+#include "../common_utils/src/utils/formatter/utils.h"
+#include "../common_utils/src/utils/grppiex.h"
+#include "../common_utils/src/utils/logging.h"
+#include "../kids/core/kidsdata.h"
 
-// Some implementation typedefs
-using keymap_t = std::unordered_map<std::string, std::string>;
-using Config = config::Config;
+#include "core/TCData.h"
+#include "core/lali.h"
 
-/// @brief Helper to construct Finder from CLI.
-struct finder_options {
+// namespaces
+namespace po = boost::program_options;
+namespace pt = boost::property_tree;
+//namespace ln = lali;
 
-    using Finder = kids::SweepKidsFinder;
+// TcData is the data structure of which RTCData and PTCData are a part
+using timestream::TCData;
 
-    constexpr static auto cli = [](auto &rc) {
-        using namespace config_utils::clipp_builder;
-        // clang-format off
-        return "finder configs" % __(
-        _(rc, p("finder_threshold"     ), "Detection threshold",
-                                           10., doub()),
-        _(rc, p("finder_resample"      ), "Frequency grid to use for the resampling,"
-                                          " specified in '[start]:[end][:step]'",
-                                          ":", str()),
-        _(rc, p("output_d21"           ), "Save the computed D21",
-                                          "{stem}{suffix}.{ext}", opt_str("dest")),
-        _(rc, p("output_processed"     ), "Save the reduced data",
-                                          "{stem}{suffix}.{ext}", opt_str("dest"))
-        ); // clang-format on
-    };
-    constexpr static auto finder = [](auto &rc) {
-        Finder::Config conf{};
-        for (auto &[confkey, rckey] : keymap_t{
-                 {"output_processed", "output_processed"},
-                 {"output_d21", "output_d21"},
-                 {"threshold", "finder_threshold"},
-                 {"resample", "finder_resample"},
-                 {"fitter_weight_window_type", "fitter_weight_window_type"},
-                 {"fitter_weight_window_fwhm", "fitter_weight_window_fwhm"},
-                 {"exmode", "grppiex"}}) {
-            if (rc.is_set(rckey)) {
-                conf.at_or_add(confkey) = rc.at(rckey);
-            }
-        }
-        return Finder{std::move(conf)};
-    };
-};
+// Selects the type of TCData
+using timestream::LaliDataKind;
 
-/// @brief Helper to construct Fitter from CLI.
-struct fitter_options {
-
-    using Fitter = kids::SweepFitter;
-
-    constexpr static auto cli = [](auto &rc) {
-        using namespace config_utils::clipp_builder;
-        // clang-format off
-        return "fitter configs" % __(
-        _(rc, p("fitter_weight_window_type"), "Fit with weight window of this"
-                                              " type applied",
-                                              Fitter::WeightOption::lorentz,
-                                              list(Fitter::WeightOption{})),
-        _(rc, p("fitter_weight_window_fwhm"), "The FWHM of the weight window in Hz",
-                                              1.5e4, doub()),
-        _(rc, p("fitter_modelspec"), "The spec of S21 model to use",
-                                              Fitter::ModelSpec::gainlintrend,
-                                              list(Fitter::ModelSpec{})),
-        _(rc, p("output_processed"     ), "Save the reduced data",
-                                          "{stem}{suffix}.{ext}", opt_str("dest"))
-                                      ); // clang-format on
-    };
-    constexpr static auto fitter = [](auto &rc) {
-        Fitter::Config conf{};
-        for (auto &[confkey, rckey] :
-             keymap_t{{"output_processed", "output_processed"},
-                      {"weight_window_type", "fitter_weight_window_type"},
-                      {"weight_window_fwhm", "fitter_weight_window_fwhm"},
-                      {"modelspec", "fitter_modelspec"},
-                      {"exmode", "grppiex"}}) {
-            if (rc.is_set(rckey)) {
-                conf.at_or_add(confkey) = rc.at(rckey);
-            }
-        }
-        return Fitter{std::move(conf)};
-    };
-};
-
-/// @brief Helper to construct Solver from CLI.
-struct solver_options {
-
-    using Solver = kids::TimeStreamSolver;
-
-    constexpr static auto cli = [](auto &rc) {
-        using namespace config_utils::clipp_builder;
-        // clang-format off
-        return "solver configs" % __(
-        _(rc, p("solver_fitreportdir"), "Look for fitreport file in this directory",
-                                         ".", str("dir")),
-        _(rc, p("solver_fitreportfile"), "Use this fitreport file",
-                                         undef{}, str("file")),
-        _(rc, p("solver_extra_output"), "Compute extra output"),
-        _(rc, p("solver_chunk_size"), "Solve timestream by chunk",
-                                         undef{}, opt_int()),
-        _(rc, p("solver_sample_slice"), "Use this range of samples.",
-                                         ":", str("slice"))
-                                      ); // clang-format on
-    };
-    constexpr static auto solver = [](auto &rc) {
-        Solver::Config conf{};
-        for (auto &[confkey, rckey] :
-             keymap_t{{"fitreportdir", "solver_fitreportdir"},
-                      {"fitreportfile", "solver_fitreportfile"},
-                      {"extra_output", "solver_extra_output"},
-                      {"exmode", "grppiex"},
-		      }) {
-            if (rc.is_set(rckey)) {
-                conf.at_or_add(confkey) = rc.at(rckey);
-            }
-        }
-        return Solver{std::move(conf)};
-    };
-};
-
-auto parse_args(int argc, char *argv[]) {
-    // disable logger in this function
-    auto _0 = logging::scoped_quiet{};
-    // runtime config container
-    Config rc{};
-    // cli config container
-    Config cc{};
-    // some of the option specs
-    auto ver = fmt::format("{} ({})", GIT_VERSION, BUILD_TIMESTAMP);
-    using namespace config_utils::clipp_builder;
-    // clang-format off
-    auto screen = clipp_utils::screen{
-    // =======================================================================
-                        "kids" ,  "kids_c++", ver,
-                                  "Process KIDs I/Q data"                   };
-    auto cli = (
-    // =======================================================================
-    _(cc, p(       "h", "help" ), "Print help information and exit"   )       ,
-    // =======================================================================
-    _(cc, p(         "version" ), "Print version information and exit")       ,
-    // =======================================================================
-                                                                             (
-                 "server mode"                                          % __(
-    _(rc, p(       "p", "port" ), "The port to use", 55437, opt_int()   )
-                                                                            )|
-                    "cmd mode"                                          % __(
-    _(rc,             "source"  , "The path or uri of input data", str())
-                                                                            ),
-              "common options"                                          % __(
-    _(rc, p(     "o", "output" ), "Output dest",
-                                  "{stem}{suffix}.{ext}", opt_str("dest")),
-    _(rc, p(            "plot" ), "Make diagnostic plot"                ),
-    _(rc, p(    "plot_backend" ), "Matplotlib backend to use",
-                                  "default", str()                      ),
-    _(rc, p(     "plot_output" ), "Plot output dest",
-                                  "{stem}.png", opt_str("dest")         ),
-    _(rc, p(         "grppiex" ), "GRPPI executioon policy",
-                                  grppiex::modes::default_(),
-                                  list(grppiex::modes::names())         )
-                                                                            ),
-              finder_options::cli(rc),
-              fitter_options::cli(rc),
-              solver_options::cli(rc)                                         )
-    );
-    // =======================================================================
-    // clang-format on
-
-    screen.parse(cli, argc, argv);
-    // handle cc
-    // SPDLOG_TRACE("cc: {}", cc.pformat());
-    if (cc.get_typed<bool>("help")) {
-        screen.manpage(cli);
-        std::exit(EXIT_SUCCESS);
-    } else if (cc.get_typed<bool>("version")) {
-        screen.version();
-        std::exit(EXIT_SUCCESS);
-    }
-    return rc;
-}
-
-int run_server(int port) {
-    SPDLOG_INFO("start server on port {}", port);
-    SPDLOG_WARN("this functionality is not implemented yet");
-    std::cin.get();
-    SPDLOG_INFO("server shutdown");
-    return EXIT_SUCCESS;
-}
-
-int run_cmdproc(const config::Config &rc) {
-    using kids::KidsData;
-    using kids::KidsDataKind;
-    using logging::timeit;
-    // IO spec
-    namespace spec = kids::toltec;
-    SPDLOG_INFO("use data spec: {}", spec::name);
-    try {
-        // read data
-        auto [kind, meta] = spec::get_meta<>(rc.get_str("source"));
-        KidsData<> kidsdata;
-        if (kind & KidsDataKind::TimeStream) {
-            using index_t = Eigen::Index;
-            // check solver range and pass that to the reader
-            auto sample_slice = container_utils::parse_slice<index_t>(
-                rc.get_str("solver_sample_slice"));
-            auto ntimes = meta.template get_typed<int>("ntimes_all");
-            auto sample_range =
-                container_utils::to_indices(sample_slice, ntimes);
-            SPDLOG_INFO("solve range {} out of {}", sample_range, ntimes);
-            using slice_t = DECAY(sample_slice);
-            using range_t = DECAY(sample_range);
-            auto &[start, stop, step, size] = sample_range;
-
-            // check size, if chunk size is larger than data size, ignore chunk
-            bool solve_by_chunk{false};
-            if (rc.is_set("solver_chunk_size")) {
-                auto chunksize = rc.get_typed<int>("solver_chunk_size");
-		    SPDLOG_INFO("solver chunk size: {}", chunksize);
-                solve_by_chunk = (chunksize < size);
-            }
-            SPDLOG_INFO("solve by chunk: {}", solve_by_chunk?"yes":"no");
-            // make chunks
-            if (solve_by_chunk) {
-                if (rc.get_typed<bool>("solver_extra_output")) {
-                    SPDLOG_WARN(
-                        "solve by chunk cannot produce extra output, ignored");
-                }
-                if (!rc.is_set("output")) {
-                    throw std::runtime_error("solve by chunk requires output");
-                }
-                std::vector<range_t> chunks{};
-                auto chunksize = rc.get_typed<int>("solver_chunk_size");
-                if (chunksize > size) {
-                    // one chunk
-                    chunks.push_back(sample_range);
-                } else {
-                    // split to multiple chunks
-                    index_t c_start = start;
-                    index_t c_stop = start;
-                    while (true) {
-                        // make t_slice the chunk size
-                        c_stop = c_start + step * chunksize;
-                        if (c_stop > stop) {
-                            c_stop = stop;
-                        }
-                        chunks.emplace_back(container_utils::to_indices(
-                            slice_t{c_start, c_stop, step}, ntimes));
-                        c_start = c_stop;
-                        assert((std::get<3>(chunks.back()) == chunksize) ||
-                               (c_stop == stop));
-                        if (c_start == stop) {
-                            break;
-                        }
-                    }
-                }
-                auto nchunks = chunks.size();
-                SPDLOG_INFO("solve by chunks size={} nchunks={}", chunksize,
-                            nchunks);
-                auto ex = grppiex::dyn_ex(rc.get_str("grppiex"));
-                {
-                    logging::scoped_timeit l0("solve by chunk");
-                    logging::progressbar pb0(
-                        [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 60,
-                        "solve by chunk ");
-                    using rts_t =
-                        kids::KidsData<kids::KidsDataKind::RawTimeStream>;
-                    using netCDF::NcFile;
-                    auto filepath = filename_utils::parse_pattern(
-                        rc.get_str("output"), meta.get_str("source"),
-                        fmt::arg("ext", "nc"),
-                        fmt::arg("suffix", "_processed"));
-                    SPDLOG_INFO("save result to {}", filepath);
-                    auto solver = solver_options::solver(rc);
-                    kids::TimeStreamSolverResult::NcFileIO io{filepath};
-                    std::size_t i = 0;
-                    std::mutex io_mutex;
-                    grppi::pipeline(
-                        ex,
-                        [&]() mutable -> std::optional<rts_t> {
-                            std::scoped_lock lock(io_mutex);
-                            logging::scoped_loglevel<spdlog::level::debug> l0{};
-                            if (i >= chunks.size()) {
-                                return std::nullopt;
-                            }
-                            auto [start, stop, step, size] = chunks.at(i);
-                            ++i;
-                            slice_t slice{start, stop, step};
-                            SPDLOG_INFO("read slice {}", slice);
-                            return timeit(
-                                "read kids data slice",
-                                spec::read_data_slice<
-                                    kids::KidsDataKind::RawTimeStream>,
-                                rc.get_str("source"), slice);
-                        },
-                        [&](auto kidsdata) {
-                            SPDLOG_DEBUG("kidsdata ntimes={}",
-                                         kidsdata.meta.template get_typed<int>(
-                                             "sample_slice_size"));
-                            auto result = timeit(
-                                "solve xs", solver, kidsdata,
-                                config::Config{{"extra_output", {false}}});
-                            {
-                                std::scoped_lock lock(io_mutex);
-                                result.append_to_nc(io);
-                            }
-                            pb0.count(nchunks, nchunks / 10);
-                            return EXIT_SUCCESS;
-                        });
-                }
-                return EXIT_SUCCESS;
-            } else {
-                kidsdata =
-                    timeit("read kids data slice", spec::read_data_slice<>,
-                           rc.get_str("source"), sample_slice);
-            }
+// Command line parser
+void po2pt(po::variables_map &in, pt::ptree &out)
+{
+    for (auto it = in.begin(); it != in.end(); ++it) {
+        const auto &t = it->second.value().type();
+        if ((t == typeid(int)) || (t == typeid(size_t))) {
+            out.put<int>(it->first, in[it->first].as<int>());
+        } else if ((t == typeid(float)) || (t == typeid(double))) {
+            out.put<double>(it->first, in[it->first].as<double>());
+        } else if (t == typeid(std::string)) {
+            out.put<std::string>(it->first, in[it->first].as<std::string>());
         } else {
-            kidsdata = timeit("read kids data all", spec::read_data<>,
-                              rc.get_str("source"));
+            throw std::runtime_error(fmt::format("unknown type in config: {}", t.name()));
         }
-        SPDLOG_TRACE("kids data: {}", kidsdata);
-        // logging::scoped_loglevel<spdlog::level::info> _0{};
-        // process result callback
-        auto handle_result = [&rc](const auto &result) {
-            if (rc.is_set("output")) {
-                // logging::scoped_loglevel<spdlog::level::trace> _1{};
-                result.save(rc.get_str("output"));
-            }
-            if (rc.is_set("plot") and rc.get_typed<bool>("plot")) {
-                result.plot();
-            }
-            return EXIT_SUCCESS;
-        };
-        // dispatch and do process
-        auto exitcode = std::visit(
-            [&rc, &handle_result](const auto &data) {
-                using Data = DECAY(data);
-                constexpr auto kind = Data::kind();
-                using kids::KidsDataKind;
-                if constexpr (kind == KidsDataKind::VnaSweep) {
-                    auto finder = finder_options::finder(rc);
-                    auto result = timeit("detect kids", finder, data);
-                    if (rc.is_set("output_d21")) {
-                        result.save_d21(rc.get_str("output_d21"));
-                    }
-                    if (rc.is_set("output_processed")) {
-                        result.save_processed(rc.get_str("output_processed"));
-                    }
-                    return handle_result(result);
-                } else if constexpr (kind == KidsDataKind::TargetSweep) {
-                    auto fitter = fitter_options::fitter(rc);
-                    auto result = timeit("fit s21 model", fitter, data);
-                    if (rc.is_set("output_processed")) {
-                        result.save_processed(rc.get_str("output_processed"));
-                    }
-                    return handle_result(result);
-                    // return EXIT_SUCCESS;
-                } else if constexpr (kind == KidsDataKind::RawTimeStream) {
-                    auto solver = solver_options::solver(rc);
-                    auto result = timeit("solve xs", solver, data);
-                    return handle_result(result);
-                } else {
-                    SPDLOG_TRACE(
-                        "processing of data kind {} is not yet implemented",
-                        kind);
-                    return EXIT_FAILURE;
-                }
-            },
-            kidsdata);
-        return exitcode;
-    } catch (const std::runtime_error &re) {
-        SPDLOG_ERROR("{}. abort", re.what());
-        return EXIT_FAILURE;
     }
-    return EXIT_SUCCESS;
 }
 
-int main(int argc, char *argv[]) {
-    std::cout << fmt::format("log level at compile time: {}\n",
-                             SPDLOG_ACTIVE_LEVEL);
-    spdlog::set_level(
-        static_cast<spdlog::level::level_enum>(SPDLOG_ACTIVE_LEVEL));
-    // spdlog::set_error_handler([](const std::string& msg) {
-    //     throw std::runtime_error(msg);
-    // });
+int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[])
+{
+    SPDLOG_INFO("Starting Lali");
+    logging::scoped_timeit timer("Lali");
 
-    auto rc = parse_args(argc, argv);
-    SPDLOG_TRACE("rc {}", rc.pformat());
-    // server mode
-    if (rc.is_set("port")) {
-        return run_server(rc.get_typed<int>("port"));
-    } else if (rc.is_set("source")) {
-        // cmd mode
-        return run_cmdproc(rc);
-    } else {
-        std::cout << "Invalid argument. Type --help for usage.\n";
+    /*
+  Declare Lali class *testing (to be moved outside of lali.cpp)*
+  */
+
+    SPDLOG_INFO("Making Lali Class");
+    lali::Lali LC;
+
+    /*
+  Get Test data *testing*
+  */
+    // LC.makeTestData<lali::Tester::UseAzTEC>(argc, argv);
+    /*
+  Setup lali *testing (to be moved outside of lali.cpp)*
+      - Calculate map dimensions
+      - Allocate map matrices/tensors
+      - Calculates Lowpass+Highpass Filter if requested
+  */
+
+    /*
+  Begin main pipeline
+      - Timestream Processing Stage 1 (Despking, Replacing Flagged Data,
+  Lowpassing and Highpassing, Downsampling, Calibration
+      - Timestream Processing Stage 2 (PCA Clean)
+      - Mapmakaing Stage 1 (Populate map pixels)
+  */
+
+    // Get GRPPI execution policy (seq, omp, tbb, etc.)
+    auto ex_name = LC.config->get_typed<std::string>("pipeline_ex_policy");
+
+    // Get map type (Ra & Dec, Az & El, etc)
+    std::string maptype = LC.config->get_typed<std::string>("mapType").c_str();
+
+    auto data_type = LC.config->get_str("data_type");
+    if (data_type == "toltec") {
+        LC.init_from_cli<lali::DataType::TolTEC>(argc, argv);
+        // open the kids files here
+        namespace kids_spec = kids::toltec;
+        auto kidsdata = kids_spec::read_data<>,
+                                  rc.get_str("source"));
+        // solve kidsdata in its entirety
+        // and populate scans_data
+        LC.Data.scans.resize(10, 10);
+        LC.ndetectors = scans_data.cols();
+        std::vector<std::string> detector_names(LC.ndetectors);
+    } else if (data_type == "aztec") {
+        LC.init_from_cli<lali::DataType::AzTEC>(argc, argv);
     }
+    SPDLOG_INFO("Setting up Maps and Variables");
+    {
+        logging::scoped_timeit timer("setup()");
+        LC.setup();
+        // populate detector offsets.
+    }
+
+    SPDLOG_INFO("Starting Main Pipeline in {} mode", ex_name);
+    {
+        logging::scoped_timeit timer("Main pipeline");
+        grppi::pipeline(
+            grppiex::dyn_ex(ex_name),
+            [&]() -> std::optional<TCData<LaliDataKind::RTC, Eigen::MatrixXd>> {
+                // Variable for current scan
+                static auto scan = 0;
+                // Current scanlength
+                Eigen::Index scanlength;
+                // Index of the start of the current scan
+                Eigen::Index si = 0;
+
+                // Loop through scans
+                while (scan < LC.nscans) {
+                    SPDLOG_INFO("----------------------------------------------------");
+                    SPDLOG_INFO("Starting timestream -> map reduction for scan {}/{}",
+                                scan + 1,
+                                LC.nscans);
+                    SPDLOG_INFO("----------------------------------------------------");
+                    // Declare a TCData to hold data
+                    TCData<LaliDataKind::RTC, Eigen::MatrixXd> rtc;
+
+                    // First scan index for current scan
+                    si = LC.Data.scanindex(2, scan);
+
+                    // Get length of current scan (do we need the + 1?)
+                    scanlength = LC.Data.scanindex(3, scan) - LC.Data.scanindex(2, scan) + 1;
+
+                    // Get reference to BeammapData and put into the current RTC
+                    if (auto data_type = LC.config->get_str("data_type");
+                        data_type == "aztec") {
+                        rtc.scans.data = LC.Data.scans.block(si, 0, scanlength,
+                                                             LC.ndetectors);
+                    } else if (data_type == "toltec") {
+                        rtc.scans.data =
+                            scans_data.block(si, 0, scanlength, ndetectors);
+                    }
+
+                    // Make flag matrix
+                    rtc.flags.data.resize(rtc.scans.data.rows(),
+                                          rtc.scans.data.cols());
+                    rtc.flags.data.setOnes();
+
+                    // Get scan indices and push into current RTC
+                    rtc.scanindex.data = LC.Data.scanindex.col(scan);
+
+                    // This index keeps track of which scan the RTC actually belongs to.
+                    rtc.index.data = scan + 1;
+
+                    // Get telescope pointings for scan (move to Eigen::Maps to save
+                    // memory and time)
+                    if (std::strcmp("RaDec", maptype.c_str()) == 0) {
+                        rtc.telLat.data = LC.Data.telMetaData["TelRaPhys"].segment(si, scanlength);
+                        rtc.telLon.data = LC.Data.telMetaData["TelDecPhys"].segment(si, scanlength);
+                    }
+
+                    else if (std::strcmp("AzEl", maptype.c_str()) == 0) {
+                        rtc.telLat.data = LC.Data.telMetaData["TelAzPhys"].segment(si, scanlength);
+                        rtc.telLon.data = LC.Data.telMetaData["TelElPhys"].segment(si, scanlength);
+                    }
+
+                    rtc.telElDes.data = LC.Data.telMetaData["TelElDes"].segment(si, scanlength);
+                    rtc.ParAng.data = LC.Data.telMetaData["ParAng"].segment(si, scanlength);
+
+                    // Increment scan
+                    scan++;
+
+                    // return RTC for the grppi:farm in Lali::run()
+                    return rtc;
+                }
+                return {};
+            },
+
+            // Run the timestream - > map analysis.  This command contains a GRPPI farm that
+            // parallelizes over the specified number of cores.
+            LC.run());
+    }
+
+    /*
+  Normalize maps
+      - Mapmaking Stage 3 (Divide by weight map)
+  */
+
+    SPDLOG_INFO("Normalizing Maps by Weight Map");
+    {
+        logging::scoped_timeit timer("mapNormalize()");
+        LC.Maps.mapNormalize();
+    }
+
+    /*
+  Run after-mapmaking analyses
+      - PSD
+      - Histogram
+  */
+
+    /*
+  Coadd maps
+  */
+
+    /*
+  Run Wiener Filter
+  */
+
+    /*
+  Additional Map Analyses
+  */
+
+    /*
+  Output
+  */
+
+    SPDLOG_INFO("Outputing Maps to netCDF File");
+    {
+        logging::scoped_timeit timer("output()");
+        LC.output(LC.config, LC.Maps);
+    }
+
+    return 0;
 }
