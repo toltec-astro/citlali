@@ -1,19 +1,46 @@
-## this file is intended to be included from the citlali repo
+include(PrintProperties)
 
-# dependencies
-
-include(Yaml)
-
-# version header
+## version header
 include(gitversion)
-GenVersionHeader(${CMAKE_CURRENT_BINARY_DIR} citlali)
+GenVersionHeader(citlali)
 
-# citlali
+## dependencies
+
+# import from kids_cpp the kids_core lib only
+set(KIDS_BUILD_CLI OFF CACHE BOOL "" FORCE)
+set(KIDS_BUILD_GUI OFF CACHE BOOL "" FORCE)
+set(KIDS_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(KIDS_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+include("kidscpp_src/import.cmake")
+
+# we use GrPPI with OpenMP so disable the Eigen3 parallelization.
+find_package(OpenMP REQUIRED)
+option(USE_EIGEN3_MULTITHREADING "Enable multithreading inside Eigen3" OFF)
+
+# other citlali deps
+include(NetCDFCXX4)
+include(Eigen3)
+include(Ceres)
+include(Spectra)
+include(Yaml)
+include(FileSystem)
+include(SpdlogAndFmt)
+include(Grppi)
+
+if (VERBOSE)
+    message("----- Summary of Dependencies -----")
+    print_target_properties(cmake_utils::gitversion)
+    print_target_properties(Spectra::Spectra)
+    message("-----------------------------------")
+endif()
+
+## targets
+
 add_library(citlali_core STATIC)
 target_sources(citlali_core
     PRIVATE
-        src/citlali/citlali.cpp
-        )
+        "src/citlali/dummy.cpp"
+    )
 target_include_directories(citlali_core PUBLIC "src")
 target_link_libraries(citlali_core
     PUBLIC
@@ -21,18 +48,34 @@ target_link_libraries(citlali_core
         cmake_utils::gitversion
         NetCDF::NetCDFCXX4
         Eigen3::Eigen
+        ceres::ceres
         grppi::grppi
         yaml-cpp::yaml-cpp
+        Spectra::Spectra
     )
-option(CITLALI_BUILD_MPI "Build mpi exec" OFF)
+
+## optional targets
+option(CITLALI_BUILD_CLI "Build CLI" ON)
+if (CITLALI_BUILD_CLI)
+    include(Clipp)
+    add_executable(citlali)
+    target_sources(citlali
+        PRIVATE
+            "src/citlali/main.cpp"
+            )
+    target_link_libraries(citlali
+        PRIVATE
+            kids_core
+            citlali_core
+            clipp::clipp
+        )
+endif()
+option(CITLALI_BUILD_MPI "Build MPI CLI" OFF)
 if (CITLALI_BUILD_MPI)
     include(MXX)
-    print_target_properties(mxx::mxx)
-    # if (TARGET MPI::MPI)
-    #    print_target_properties(MPI::MPI)
-    # else()
-    #    message(FATAL_ERROR "No MPI found")
-    # endif()
+    if (VERBOSE)
+        print_target_properties(mxx::mxx)
+    endif()
     add_executable(citlali_mpi)
     target_sources(citlali_mpi
         PRIVATE
@@ -44,22 +87,12 @@ if (CITLALI_BUILD_MPI)
         mxx::mxx
         )
 endif()
-add_executable(citlali)
-target_sources(citlali
-    PRIVATE
-        "src/citlali/main.cpp"
-        )
-target_link_libraries(citlali PRIVATE
-    kids_core
-    citlali_core
-    )
-# optional targets
-option(CITLALI_BUILD_TESTS "Build tests" ON)
+option(CITLALI_BUILD_TESTS "Build tests" OFF)
 if (CITLALI_BUILD_TESTS)
     include(GBenchAndGTest)
     add_subdirectory(tests)
 endif()
-option(CITLALI_BUILD_DOCS "Build docs" ON)
+option(CITLALI_BUILD_DOCS "Build docs" OFF)
 if (CITLALI_BUILD_DOCS)
     include(DoxygenDocTarget)
 endif()
