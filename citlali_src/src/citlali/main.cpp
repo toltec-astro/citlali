@@ -1,5 +1,6 @@
 #include "kids/cli/utils.h"
 #include "kids/core/kidsdata.h"
+#include "kids/sweep/fitter.h"
 #include "kids/toltec/toltec.h"
 #include "utils/config.h"
 #include "utils/grppiex.h"
@@ -13,8 +14,6 @@ using Config = config::Config;
 using YamlConfig = config::YamlConfig;
 
 auto parse_args(int argc, char *argv[]) {
-    // disable logger in this function
-    // auto _0 = logging::scoped_quiet{};
     // runtime config container
     Config rc{};
     // cli config container
@@ -37,13 +36,11 @@ auto parse_args(int argc, char *argv[]) {
     _(cc, p(         "version" ), "Print version information and exit")       ,
     // =======================================================================
                                                                              (
-                 "server mode"                                          % __(
-    _(rc, p(       "p", "port" ), "The port to use", 55437, opt_int()   )
-                                                                            )|
-                    "cmd mode"                                          % __(
-    _(rc,        "config_file"  , "The path of input config file", str())
-                                                                            ),
+    _(rc,        "config_file"  , "The path of input config file", str()     ),
               "common options"                                          % __(
+    _(cc, p(  "l", "log_level" ), "Set the log level",
+                                  logging::active_level_str,
+                                  list(logging::level_names)            ),
     _(rc, p(            "plot" ), "Make diagnostic plot"                ),
     _(rc, p(    "plot_backend" ), "Matplotlib backend to use",
                                   "default", str()                      ),
@@ -68,18 +65,134 @@ auto parse_args(int argc, char *argv[]) {
         screen.os << kids_ver << '\n';
         std::exit(EXIT_SUCCESS);
     }
+    {
+        auto log_level_str = cc.get_str("log_level");
+        auto log_level = spdlog::level::from_str(log_level_str);
+        SPDLOG_DEBUG("reconfigure logger to level={}", log_level_str);
+        spdlog::set_level(log_level);
+    }
     return rc;
 }
 
-int run_server(int port) {
-    SPDLOG_INFO("start server on port {}", port);
-    SPDLOG_WARN("this functionality is not implemented yet");
-    std::cin.get();
-    SPDLOG_INFO("server shutdown");
-    return EXIT_SUCCESS;
-}
+/// @brief The mixin class for validating config
+template <typename Derived> struct ConfigMixin {
+    using config_t = YamlConfig;
 
-int run_cmdproc(const config::Config &rc) {
+private:
+    using Self = ConfigMixin<Derived>;
+    config_t m_config;
+    struct derived_has_validate_config {
+        define_has_member_traits(Derived, validate_config);
+        constexpr static auto value = has_validate_config::value;
+    };
+
+public:
+    ConfigMixin() = default;
+    template <typename... Args> ConfigMixin(Args &&...args) {
+        set_config(FWD(args)...);
+    }
+    const config_t &config() { return m_config; }
+    void set_config(config_t config, bool validate = true) {
+        if (validate) {
+            if constexpr (derived_has_validate_config::value) {
+                if (auto opt_errors = Derived::validate_config(config);
+                    opt_errors.has_value()) {
+                    SPDLOG_ERROR("invalid config:\n{}\nerrors: {}", config,
+                                 opt_errors.value());
+                } else {
+                    SPDLOG_TRACE("set config validated");
+                }
+            } else {
+                SPDLOG_WARN(
+                    "set config validation requested but no validator found");
+            }
+        } else {
+            SPDLOG_TRACE("set config without validation");
+        }
+        m_config = std::move(config);
+    }
+};
+
+/**
+ * @brief The raw obs struct
+ * This represents a single observation that contains a set of data items.
+ */
+struct RawObs : ConfigMixin<RawObs> {
+    /**
+     * @brief The DataItem struct
+     * This represent a single data item that belongs to a particular
+     * observation
+     */
+    struct DataItem : ConfigMixin<DataItem> {
+
+        DataItem(config_t config_)
+            : ConfigMixin<DataItem>{std::move(config_)},
+              interface(config().get_str("interface")),
+              filepath(config().get_str("filepath")) {
+            // initalize io
+            //                 meta::switch_invoke<InterfaceRegistry::InterfaceKind>(
+            //                     [&](auto interfacekind_) {
+            //                         constexpr auto interfacekind =
+            //                             DECAY(interfacekind_)::value;
+            //                         io = InterfaceRegistry::template
+            //                         io_t<interfacekind>();
+            //                     },
+            //                     interface_kind());
+        }
+        std::string interface{};
+        std::string filepath{};
+        friend std::ostream &operator<<(std::ostream &os, const DataItem &d) {
+            return os << fmt::format("DataItem(interface={} filepath={})",
+                                     d.interface, d.filepath);
+        }
+        InterfaceRegistry::variant_t io;
+        static auto validate_config(const config_t &config)
+            -> std::optional<std::string> {
+            std::vector<std::string> missing_keys;
+            for (const auto &key : {"interface", "filepath"}) {
+                if (!config.has(key)) {
+                    missing_keys.push_back(key);
+                }
+            }
+            if (missing_keys.empty()) {
+                return std::nullopt;
+            }
+            return fmt::format("missing keys={}", missing_keys);
+        }
+        index_t buffer_size() const { return 4880 * 500; }
+        shape_t buffer_shape() const {
+            shape_t s;
+            s << 4880, 500;
+            return s;
+        }
+    };
+    Observation(config_t config_)
+        : ConfigMixin<Observation>{config_}, name{config().get_str("name",
+                                                                   "unnamed")} {
+        // initialize the data_items
+        //             auto node = config()["data_items"];
+        //             assert(node.IsSequence());
+        //             for (std::size_t i = 0; i < node.size(); ++i) {
+        //                 data_items.emplace_back(config_t(node[i]));
+        //             }
+    }
+    std::string name;
+    // std::vector<DataItem> data_items{};
+    static auto validate_config(const config_t &config)
+        -> std::optional<std::string> {
+        if (config.has("data_items")) {
+            return std::nullopt;
+        }
+        return fmt::format("missing key={}", "data_items");
+    }
+    friend std::ostream &operator<<(std::ostream &os, const Observation &obs) {
+        return os << fmt::format("Observation(name={})", obs.name);
+    }
+};
+
+/// @brief Run citlali reduction.
+/// @param rc The runtime config.
+int run(const config::Config &rc) {
     using kids::KidsData;
     using kids::KidsDataKind;
     using logging::timeit;
@@ -90,27 +203,17 @@ int run_cmdproc(const config::Config &rc) {
     // load the config
     auto config_filepath = rc.get_str("config_file");
     auto config = YamlConfig(YAML::LoadFile(config_filepath));
-    SPDLOG_TRACE("load config: {}", config.pformat());
+    SPDLOG_TRACE("citlali config:\n{}", config.pformat());
     return EXIT_SUCCESS;
 }
 
 int main(int argc, char *argv[]) {
-    std::cout << fmt::format("log level at compile time: {}\n",
-                             SPDLOG_ACTIVE_LEVEL);
-    spdlog::set_level(
-        static_cast<spdlog::level::level_enum>(SPDLOG_ACTIVE_LEVEL));
-    // spdlog::set_error_handler([](const std::string& msg) {
-    //     throw std::runtime_error(msg);
-    // });
+    logging::init<>(true);
 
     auto rc = parse_args(argc, argv);
     SPDLOG_TRACE("rc {}", rc.pformat());
-    // server mode
-    if (rc.is_set("port")) {
-        return run_server(rc.get_typed<int>("port"));
-    } else if (rc.is_set("config_file")) {
-        // cmd mode
-        return run_cmdproc(rc);
+    if (rc.is_set("config_file")) {
+        return run(rc);
     } else {
         std::cout << "Invalid argument. Type --help for usage.\n";
     }
