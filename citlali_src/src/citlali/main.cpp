@@ -81,9 +81,9 @@ template <typename Derived> struct ConfigMixin {
 private:
     using Self = ConfigMixin<Derived>;
     config_t m_config;
-    struct derived_has_validate_config {
-        define_has_member_traits(Derived, validate_config);
-        constexpr static auto value = has_validate_config::value;
+    struct derived_has_check_config {
+        define_has_member_traits(Derived, check_config);
+        constexpr static auto value = has_check_config::value;
     };
 
 public:
@@ -92,22 +92,22 @@ public:
         set_config(FWD(args)...);
     }
     const config_t &config() { return m_config; }
-    void set_config(config_t config, bool validate = true) {
-        if (validate) {
-            if constexpr (derived_has_validate_config::value) {
-                if (auto opt_errors = Derived::validate_config(config);
+    void set_config(config_t config, bool check = true) {
+        if (check) {
+            if constexpr (derived_has_check_config::value) {
+                if (auto opt_errors = Derived::check_config(config);
                     opt_errors.has_value()) {
-                    SPDLOG_ERROR("invalid config:\n{}\nerrors: {}", config,
-                                 opt_errors.value());
-                } else {
-                    SPDLOG_TRACE("set config validated");
+                    throw std::runtime_error(
+                        fmt::format("invalid config:\n{}\nerrors: {}", config,
+                                    opt_errors.value()));
                 }
+                SPDLOG_TRACE("set config check passed");
             } else {
-                SPDLOG_WARN(
-                    "set config validation requested but no validator found");
+                SPDLOG_WARN("set config check requested but no "
+                            "check_config found");
             }
         } else {
-            SPDLOG_TRACE("set config without validation");
+            SPDLOG_TRACE("set config without check");
         }
         m_config = std::move(config);
     }
@@ -127,7 +127,7 @@ struct RawObs : ConfigMixin<RawObs> {
 
         DataItem(config_t config_)
             : ConfigMixin<DataItem>{std::move(config_)},
-              interface(config().get_str("interface")),
+              interface(config().get_str(std::tuple{"meta", "interface"})),
               filepath(config().get_str("filepath")) {
             // initalize io
             //                 meta::switch_invoke<InterfaceRegistry::InterfaceKind>(
@@ -139,14 +139,14 @@ struct RawObs : ConfigMixin<RawObs> {
             //                     },
             //                     interface_kind());
         }
-        std::string interface{};
-        std::string filepath{};
+        const std::string interface{};
+        const std::string filepath{};
         friend std::ostream &operator<<(std::ostream &os, const DataItem &d) {
             return os << fmt::format("DataItem(interface={} filepath={})",
                                      d.interface, d.filepath);
         }
-        InterfaceRegistry::variant_t io;
-        static auto validate_config(const config_t &config)
+
+        static auto check_config(config_t &config)
             -> std::optional<std::string> {
             std::vector<std::string> missing_keys;
             for (const auto &key : {"interface", "filepath"}) {
@@ -159,34 +159,31 @@ struct RawObs : ConfigMixin<RawObs> {
             }
             return fmt::format("missing keys={}", missing_keys);
         }
-        index_t buffer_size() const { return 4880 * 500; }
-        shape_t buffer_shape() const {
-            shape_t s;
-            s << 4880, 500;
-            return s;
-        }
     };
-    Observation(config_t config_)
-        : ConfigMixin<Observation>{config_}, name{config().get_str("name",
-                                                                   "unnamed")} {
+    RawObs(config_t config_)
+        : ConfigMixin<RawObs>{config_}, name{config().get_str("name")} {
         // initialize the data_items
-        //             auto node = config()["data_items"];
-        //             assert(node.IsSequence());
-        //             for (std::size_t i = 0; i < node.size(); ++i) {
-        //                 data_items.emplace_back(config_t(node[i]));
-        //             }
+        auto node = config()["data_items"];
+        assert(node.IsSequence());
+        for (std::size_t i = 0; i < node.size(); ++i) {
+            data_items.emplace_back(config_t(node[i]));
+        }
     }
     std::string name;
-    // std::vector<DataItem> data_items{};
+    std::vector<DataItem> data_items{};
     static auto validate_config(const config_t &config)
         -> std::optional<std::string> {
-        if (config.has("data_items")) {
+        if (config.has("data_items") && config["data_items"].IsSequence()) {
             return std::nullopt;
         }
-        return fmt::format("missing key={}", "data_items");
+        if (config.has("data_items")) {
+            return fmt::format("\"data_items\" has to be a list");
+        }
+        return fmt::format("missing key \"data_items\"");
     }
-    friend std::ostream &operator<<(std::ostream &os, const Observation &obs) {
-        return os << fmt::format("Observation(name={})", obs.name);
+    friend std::ostream &operator<<(std::ostream &os, const RawObs &obs) {
+        return os << fmt::format("RawObs(name={}, n_data_items={})", obs.name,
+                                 obs.data_items.size());
     }
 };
 
