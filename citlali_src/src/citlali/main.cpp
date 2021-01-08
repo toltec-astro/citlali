@@ -1,3 +1,4 @@
+#include "citlali/core/lali.h"
 #include "kids/cli/utils.h"
 #include "kids/core/kidsdata.h"
 #include "kids/sweep/fitter.h"
@@ -304,9 +305,10 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
         : Base{std::move(config)},
           m_fitter{Fitter::Config{
               {"weight_window_type",
-               config.get_str(std::tuple{"fitter", "weight_window", "type"})},
+               this->config().get_str(
+                   std::tuple{"fitter", "weight_window", "type"})},
               {"weight_window_fwhm",
-               config.get_typed<double>(
+               this->config().get_typed<double>(
                    std::tuple{"fitter", "weight_window", "fwhm_Hz"})},
               {"modelspec",
                config.get_str(std::tuple{"fitter", "modelspec"})}}},
@@ -328,7 +330,30 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
         return fmt::format("invalid or missing keys={}", missing_keys);
     }
 
-    auto reduce_data_item(const RawObs::DataItem &data_item) {
+    auto get_data_item_meta(const RawObs::DataItem &data_item) {
+        namespace kidsdata = predefs::kidsdata;
+        auto source = data_item.filepath();
+        auto [kind, meta] = kidsdata::get_meta<>(source);
+        return meta;
+    }
+
+    auto get_rawobs_meta(const RawObs &rawobs) {
+        std::vector<kids::KidsData<>::meta_t> result;
+        for (const auto &data_item : rawobs.kidsdata()) {
+            result.push_back(get_data_item_meta(data_item));
+        }
+        return result;
+    }
+
+    auto populate_rtc_meta(const RawObs &rawobs) {
+        std::vector<kids::KidsData<>::meta_t> result;
+        for (const auto &data_item : rawobs.kidsdata()) {
+            result.push_back(get_data_item_meta(data_item));
+        }
+        return result;
+    }
+
+    auto reduce_data_item(const RawObs::DataItem &data_item, slice) {
         SPDLOG_TRACE("kids reduce data_item {}", data_item);
         // read data
         namespace kidsdata = predefs::kidsdata;
@@ -344,12 +369,19 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
         return result;
     }
 
-    auto reduce_rawobs(const RawObs &rawobs) {
+    auto reduce_rawobs(const RawObs &rawobs, slice) {
         SPDLOG_TRACE("kids reduce rawobs {}", rawobs);
         std::vector<kids::TimeStreamSolverResult> result;
         for (const auto &data_item : rawobs.kidsdata()) {
             result.push_back(reduce_data_item(data_item));
         }
+    }
+
+    template <typename RTC_t>
+    auto populate_rtc(const RawObs &rawobs, RTC_t &rtc) {
+        // call reduce rawobs, get the data into rtc
+        auto [start, stop] = rtc.scanindices;
+        slice = {start, stop} + ikids_data_start_index
     }
 
     // TODO fix the const correctness
@@ -395,14 +427,68 @@ int run(const config::Config &rc) {
 
     SPDLOG_TRACE("kids proc: {}", kidsproc);
 
-    // setup lali co-add map buffer
-    // 1 .for loop of co.inputs() .get_tel_filepath()
-    // figure out the map size of each obs, and get the combined size
-    //
-    // 2. for loop of co.inputs() for each raw obs,
-    // allocate map buffer, calcaulte scanindices, do the reduction {}
-    // co.inputs()[0].generate_rtc(rtc)
+    SPDLOG_INFO("Making Lali Class");
+    lali::Lali LC;
 
+    LC.setup_coadd_map_buffer();
+    for (const auto &rawobs : co.inputs()) {
+        // extract the map size
+        // extract the map group number
+        auto mapsisze = [ 100, 100 ]
+    }
+    /*
+     *
+    1. setup lali co-add map buffer
+        std::vector<rawobs size>
+        vector<n_map_gourps>
+    [done]  for loop of co.inputs().teldata().filepath()
+               get the per rawobs size
+                {
+              [zma]  * check map groupping with apt.ecsv fitgure out number of
+    layers in map buffer n_map_groups = 3;
+                }
+
+    2. for loop of co.inputs() for each raw obs,
+
+        auto rawobs = co.inputs()[i]
+
+        2.1 map buffer
+        * allocate map buffer (one layer for each gorup)
+
+
+        auto rawobs_kids_meta = kidsproc.get_rawobs_meta(rawobs)
+
+        2.2 calc scanindices
+        //// tel pps:   [000011111122...........99100]
+        ///  time range      [0s                  98s]
+        /// use kids sample rate generate
+        /// scanindicies [(0, 4880, 32, 4880-32), (4880-32, 9760 + 32, 4880,
+    9760)]
+        ///
+
+        2.3 get rtc buffer info
+            get number of all detectors from from meta["ntones"]
+
+        2.3 do reduction
+            grppi {
+                scanindices item [start, stop,]
+                rtc [n_samples_per_chunk x ndetector_total]
+                kidsproc.populate_rtc(rawobs, rtc, scanindices item)
+                        {
+                        /// kidsdata 0 ts [0011111122...........99100]
+                        /// kidsdata 1 ts[00011111122...........99100]
+                        /// kidsdata 2 ts  [011111122...........99100]
+                        /// kidsdata_start_vector<13>{2, 3, 1, ...}
+
+                        kids_indics [scanindices + kidsdat_sart_vector]
+                        for dataitem in rawobs.data_items()
+                            read_data_slice(filepath, slice)
+                            reduce kids
+                            rtc.block[detector i] = tsresult.data_out.xs()
+                        }
+                return rtc
+            2.5 add map buffer content to coadd map buffer
+    */
     return EXIT_SUCCESS;
 }
 
