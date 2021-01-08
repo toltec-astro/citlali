@@ -1,6 +1,7 @@
 #include "kids/cli/utils.h"
 #include "kids/core/kidsdata.h"
 #include "kids/sweep/fitter.h"
+#include "kids/timestream/solver.h"
 #include "kids/toltec/toltec.h"
 #include "utils/config.h"
 #include "utils/grppiex.h"
@@ -9,6 +10,7 @@
 #include <citlali/gitversion.h>
 #include <cstdlib>
 #include <kids/gitversion.h>
+#include <regex>
 #include <tuple>
 
 auto parse_args(int argc, char *argv[]) {
@@ -88,129 +90,148 @@ using index_t = std::ptrdiff_t;
 using shape_t = Eigen::Matrix<index_t, 2, 1>;
 using data_t = double;
 
+// IO spec
+namespace kidsdata = kids::toltec;
+
 } // namespace predefs
 
-/// @brief The mixin class stores and validates config
-template <typename Derived> struct ConfigValidatorMixin {
-    using config_t = config::YamlConfig;
-
-private:
-    config_t m_config{};
-    struct derived_has_check_config {
-        define_has_member_traits(Derived, check_config);
-        constexpr static auto value = has_check_config::value;
-    };
-
-public:
-    ConfigValidatorMixin() = default;
-    template <typename... Args> ConfigValidatorMixin(Args &&...args) {
-        set_config(FWD(args)...);
-    }
-    const config_t &config() const { return m_config; }
-    void set_config(config_t config, bool check = true) {
-        if (check) {
-            if constexpr (derived_has_check_config::value) {
-                if (auto opt_errors = Derived::check_config(config);
-                    opt_errors.has_value()) {
-                    throw std::runtime_error(
-                        fmt::format("invalid config:\n{}\nerrors: {}", config,
-                                    opt_errors.value()));
-                }
-                SPDLOG_TRACE("set config check passed");
-            } else {
-                SPDLOG_WARN("set config check requested but no "
-                            "check_config found");
-            }
-        } else {
-            SPDLOG_TRACE("set config without check");
-        }
-        m_config = std::move(config);
-        SPDLOG_TRACE("m_config:\n{}", m_config.pformat());
-    }
-    static auto from_config(config_t config, bool check = true) {
-        if (check) {
-            if constexpr (derived_has_check_config::value) {
-                if (auto opt_errors = Derived::check_config(config);
-                    opt_errors.has_value()) {
-                    throw std::runtime_error(
-                        fmt::format("invalid config:\n{}\nerrors: {}", config,
-                                    opt_errors.value()));
-                }
-                SPDLOG_TRACE("config check passed");
-            } else {
-                SPDLOG_WARN("config check requested but no "
-                            "check_config found");
-            }
-        } else {
-            SPDLOG_TRACE("config check skipped");
-        }
-        return Derived{std::move(config)};
-    }
-};
+template <typename Derived>
+using ConfigMapper = config::ConfigValidatorMixin<Derived, config::YamlConfig>;
 
 /**
  * @brief The raw obs struct
  * This represents a single observation that contains a set of data items.
  */
-struct RawObs : ConfigValidatorMixin<RawObs> {
+struct RawObs : ConfigMapper<RawObs> {
+    using Base = ConfigMapper<RawObs>;
+
     /**
      * @brief The DataItem struct
      * This represent a single data item that belongs to a particular
      * observation
      */
-    struct DataItem : ConfigValidatorMixin<DataItem> {
-        using Base = ConfigValidatorMixin<DataItem>;
+    struct DataItem : ConfigMapper<DataItem> {
+        using Base = ConfigMapper<DataItem>;
         DataItem(config_t config)
-            : Base{std::move(config)}, interface(this->config().get_str(
+            : Base{std::move(config)}, m_interface(this->config().get_str(
                                            std::tuple{"meta", "interface"})),
-              filepath(this->config().get_str("filepath")) {}
-        const std::string interface{};
-        const std::string filepath{};
-        friend std::ostream &operator<<(std::ostream &os, const DataItem &d) {
-            return os << fmt::format("DataItem(interface={} filepath={})",
-                                     d.interface, d.filepath);
-        }
+              m_filepath(this->config().get_str("filepath")) {}
 
         static auto check_config(config_t &config)
             -> std::optional<std::string> {
             std::vector<std::string> missing_keys;
-            for (const auto &key : {"meta", "filepath"}) {
-                if (!config.has(key)) {
-                    missing_keys.push_back(key);
-                }
+            SPDLOG_TRACE("check data items config\n{}", config);
+            if (!config.has(std::tuple{"meta", "interface"})) {
+                missing_keys.push_back("meta.interface");
+            }
+            if (!config.has("filepath")) {
+                missing_keys.push_back("filepath");
             }
             if (missing_keys.empty()) {
                 return std::nullopt;
             }
-            return fmt::format("missing keys={}", missing_keys);
+            return fmt::format("invalid or missing keys={}", missing_keys);
         }
-    };
-    using Base = ConfigValidatorMixin<RawObs>;
-    RawObs(config_t config)
-        : Base{std::move(config)}, name{this->config().get_str(
-                                       std::tuple{"meta", "name"})} {
+        const std::string &interface() const { return m_interface; }
+        const std::string &filepath() const { return m_filepath; }
 
-        // initialize the data_items
-        auto node_data_items = this->config()["data_items"];
-        for (std::size_t i = 0; i < node_data_items.size(); ++i) {
-            data_items.emplace_back(config_t(node_data_items[i]));
+        template <typename OStream>
+        friend auto operator<<(OStream &os, const DataItem &d)
+            -> decltype(auto) {
+            return os << fmt::format("DataItem(interface={} filepath={})",
+                                     d.interface(), d.filepath());
         }
+
+    private:
+        std::string m_interface{};
+        std::string m_filepath{};
+    };
+    RawObs(config_t config)
+        : Base{std::move(config)}, m_name{this->config().get_str(
+                                       std::tuple{"meta", "name"})} {
+        collect_data_items();
     }
-    std::string name;
-    std::vector<DataItem> data_items{};
+
     static auto check_config(const config_t &config)
         -> std::optional<std::string> {
-        if (config.has("data_items") && config["data_items"].IsSequence()) {
+        std::vector<std::string> missing_keys;
+        SPDLOG_TRACE("check raw obs config\n{}", config);
+        if (!config.has(std::tuple{"meta", "name"})) {
+            missing_keys.push_back("meta.name");
+        }
+        if (!config.has_list("data_items")) {
+            missing_keys.push_back("data_items");
+        }
+        if (missing_keys.empty()) {
             return std::nullopt;
         }
-        if (config.has("data_items")) {
-            return fmt::format("\"data_items\" has to be a list");
-        }
-        return fmt::format("missing key \"data_items\"");
+        return fmt::format("invalid or missing keys={}", missing_keys);
     }
-    friend std::ostream &operator<<(std::ostream &os, const RawObs &obs) {
-        return os << fmt::format("RawObs(name={}, n_data_items={})", obs.name,
-                                 obs.data_items.size());
+    const std::string &name() const { return m_name; }
+    constexpr auto n_data_items() const { return m_data_items.size(); }
+    const std::vector<DataItem> &data_items() const { return m_data_items; }
+    const DataItem &teldata() const {
+        return m_data_items[m_teldata_index.value()];
+    }
+    auto kidsdata() const -> decltype(auto) {
+        std::vector<std::reference_wrapper<const DataItem>> result{};
+        for (auto i : m_kidsdata_indices) {
+            result.push_back(std::cref(m_data_items[i]));
+        }
+        return result;
+    }
+
+    template <typename OStream>
+    friend auto operator<<(OStream &os, const RawObs &obs) -> decltype(auto) {
+        return os << fmt::format("RawObs(name={}, n_data_items={})", obs.name(),
+                                 obs.n_data_items());
+    }
+
+private:
+    inline const static std::regex re_interface_kidsdata{"toltec\\d{1,2}"};
+    inline const static std::regex re_interface_teldata{"lmt"};
+
+    std::string m_name;
+    std::vector<DataItem> m_data_items{};
+    std::vector<std::size_t> m_kidsdata_indices{};
+    std::optional<std::size_t> m_teldata_index{std::nullopt};
+    // collect data items
+    void collect_data_items() {
+        m_data_items.clear();
+        std::vector<DataItem> data_items{};
+        auto node_data_items = this->config().get_node("data_items");
+        auto n_data_items = node_data_items.size();
+        for (std::size_t i = 0; i < n_data_items; ++i) {
+            SPDLOG_TRACE("add data item {} of {}", i, n_data_items);
+            data_items.emplace_back(config_t{node_data_items[i]});
+        }
+        m_data_items = std::move(data_items);
+        SPDLOG_DEBUG("collected n_data_items={}\n{}", this->n_data_items(),
+                     this->data_items());
+        // update the data indices
+        m_kidsdata_indices.clear();
+        m_teldata_index.reset();
+        std::smatch m;
+        for (std::size_t i = 0; i < m_data_items.size(); ++i) {
+            if (std::regex_match(m_data_items[i].interface(), m,
+                                 re_interface_kidsdata)) {
+                m_kidsdata_indices.push_back(i);
+            }
+            if (std::regex_match(m_data_items[i].interface(), m,
+                                 re_interface_teldata)) {
+                if (m_teldata_index.has_value()) {
+                    throw std::runtime_error(
+                        "found two many telescope data items");
+                }
+                m_teldata_index = i;
+            }
+        }
+        if (!m_teldata_index) {
+            throw std::runtime_error("no telescope data item found");
+        }
+        SPDLOG_TRACE("kidsdata_indices={} teldata_index={}", m_kidsdata_indices,
+                     m_teldata_index);
+        SPDLOG_TRACE("kidsdata={} teldata={}", kidsdata(), teldata());
     }
 };
 
@@ -220,8 +241,8 @@ struct RawObs : ConfigValidatorMixin<RawObs> {
  * high level methods in various ways to setup the MPI runtime
  * with node-local and cross-node environment.
  */
-struct SeqIOCoordinator : ConfigValidatorMixin<SeqIOCoordinator> {
-    using Base = ConfigValidatorMixin<SeqIOCoordinator>;
+struct SeqIOCoordinator : ConfigMapper<SeqIOCoordinator> {
+    using Base = ConfigMapper<SeqIOCoordinator>;
     using index_t = predefs::index_t;
     using shape_t = predefs::shape_t;
     using input_t = RawObs;
@@ -240,10 +261,10 @@ struct SeqIOCoordinator : ConfigValidatorMixin<SeqIOCoordinator> {
 
     static auto check_config(const config_t &config)
         -> std::optional<std::string> {
-        if (config.has("inputs") && config["inputs"].IsSequence()) {
+        if (config.has_list("inputs")) {
             return std::nullopt;
         }
-        return fmt::format("missing key \"inputs\"");
+        return fmt::format("invalid or missing key \"inputs\"");
     }
     friend std::ostream &operator<<(std::ostream &os,
                                     const SeqIOCoordinator &co) {
@@ -258,15 +279,97 @@ private:
     void collect_inputs() {
         m_inputs.clear();
         std::vector<input_t> inputs;
-        auto node_inputs = this->config()["inputs"];
-        assert(node_inputs.IsSequence());
-        for (std::size_t i = 0; i < node_inputs.size(); i++) {
+        auto node_inputs = this->config().get_node("inputs");
+        auto n_inputs = node_inputs.size();
+        for (std::size_t i = 0; i < n_inputs; ++i) {
+            SPDLOG_TRACE("add input {} of {}", i, n_inputs);
             inputs.emplace_back(config_t{node_inputs[i]});
         }
         m_inputs = std::move(inputs);
 
-        SPDLOG_DEBUG("collected n_inputs={}", n_inputs());
+        SPDLOG_DEBUG("collected n_inputs={}\n{}", this->n_inputs(),
+                     this->inputs());
     }
+};
+
+/**
+ * @brief The KIDs data solver struct
+ * This wraps around the kids config
+ */
+struct KidsDataProc : ConfigMapper<KidsDataProc> {
+    using Base = ConfigMapper<KidsDataProc>;
+    using Fitter = kids::SweepFitter;
+    using Solver = kids::TimeStreamSolver;
+    KidsDataProc(config_t config)
+        : Base{std::move(config)},
+          m_fitter{Fitter::Config{
+              {"weight_window_type",
+               config.get_str(std::tuple{"fitter", "weight_window", "type"})},
+              {"weight_window_fwhm",
+               config.get_typed<double>(
+                   std::tuple{"fitter", "weight_window", "fwhm_Hz"})},
+              {"modelspec",
+               config.get_str(std::tuple{"fitter", "modelspec"})}}},
+          m_solver{Solver::Config{}} {}
+
+    static auto check_config(const config_t &config)
+        -> std::optional<std::string> {
+        std::vector<std::string> missing_keys;
+        SPDLOG_TRACE("check kids data solver config\n{}", config);
+        if (!config.has("fitter")) {
+            missing_keys.push_back("fitter");
+        }
+        if (!config.has("solver")) {
+            missing_keys.push_back("solver");
+        }
+        if (missing_keys.empty()) {
+            return std::nullopt;
+        }
+        return fmt::format("invalid or missing keys={}", missing_keys);
+    }
+
+    auto reduce_data_item(const RawObs::DataItem &data_item) {
+        SPDLOG_TRACE("kids reduce data_item {}", data_item);
+        // read data
+        namespace kidsdata = predefs::kidsdata;
+        auto source = data_item.filepath();
+        auto [kind, meta] = kidsdata::get_meta<>(source);
+        if (!(kind & kids::KidsDataKind::TimeStream)) {
+            throw std::runtime_error(
+                fmt::format("wrong type of kids data {}", kind));
+        }
+        auto rts = kidsdata::read_data_slice<kids::KidsDataKind::RawTimeStream>(
+            source, container_utils::Slice<int>{});
+        auto result = this->solver()(rts, Solver::Config{});
+        return result;
+    }
+
+    auto reduce_rawobs(const RawObs &rawobs) {
+        SPDLOG_TRACE("kids reduce rawobs {}", rawobs);
+        std::vector<kids::TimeStreamSolverResult> result;
+        for (const auto &data_item : rawobs.kidsdata()) {
+            result.push_back(reduce_data_item(data_item));
+        }
+    }
+
+    // TODO fix the const correctness
+    Fitter &fitter() { return m_fitter; }
+    Solver &solver() { return m_solver; }
+
+    const Fitter &fitter() const { return m_fitter; }
+    const Solver &solver() const { return m_solver; }
+
+    template <typename OStream>
+    friend OStream &operator<<(OStream &os, const KidsDataProc &kidsproc) {
+        return os << fmt::format("KidsDataProc(fitter={}, solver={})",
+                                 kidsproc.fitter().config.pformat(),
+                                 kidsproc.solver().config.pformat());
+    }
+
+private:
+    // fitter and solver
+    Fitter m_fitter;
+    Solver m_solver;
 };
 
 /// @brief Run citlali reduction.
@@ -275,9 +378,7 @@ int run(const config::Config &rc) {
     using kids::KidsData;
     using kids::KidsDataKind;
     using logging::timeit;
-    // IO spec
-    namespace kidsdata = kids::toltec;
-    SPDLOG_INFO("use KIDs data spec: {}", kidsdata::name);
+    SPDLOG_INFO("use KIDs data spec: {}", predefs::kidsdata::name);
 
     // load the yaml citlali config
     auto citlali_config =
@@ -287,6 +388,21 @@ int run(const config::Config &rc) {
     // set up the IO coorindator
     auto co = SeqIOCoordinator::from_config(citlali_config);
     SPDLOG_TRACE("pipeline coordinator: {}", co);
+
+    // set up KIDs data proc
+    auto kidsproc =
+        KidsDataProc::from_config(citlali_config.get_config("kids"));
+
+    SPDLOG_TRACE("kids proc: {}", kidsproc);
+
+    // setup lali co-add map buffer
+    // 1 .for loop of co.inputs() .get_tel_filepath()
+    // figure out the map size of each obs, and get the combined size
+    //
+    // 2. for loop of co.inputs() for each raw obs,
+    // allocate map buffer, calcaulte scanindices, do the reduction {}
+    // co.inputs()[0].generate_rtc(rtc)
+
     return EXIT_SUCCESS;
 }
 
