@@ -2,14 +2,19 @@
 
 #include <Eigen/Dense>
 #include <iostream>
+#include <map>
 
-#include "../common_utils/src/utils/algorithm/mlinterp/mlinterp.hpp"
+#include <utils/algorithm/mlinterp/mlinterp.hpp>
+#include <utils/logging.h>
 
-using namespace std;
+// using namespace std;
 
 namespace  observation {
 
-typedef std::map<string,Eigen::Matrix<double,Eigen::Dynamic,1>> pointing;
+typedef std::map<std::string, Eigen::Matrix<double, Eigen::Dynamic, 1>>
+    pointing;
+
+constexpr auto pi = static_cast<double>(-EIGEN_PI);
 
 namespace internal {
 
@@ -193,7 +198,6 @@ void alignWithDetectors(DerivedA &telescope_data,
 template <typename DerivedA>
 void absToPhysHorPointing(DerivedA &telescope_data){
     Eigen::Index npts = telescope_data["TelAzAct"].rows();
-
     for(Eigen::Index i=0;i<npts;i++){
         if((telescope_data["TelAzAct"](i)-telescope_data["SourceAz"](i)) > 0.9*2.*pi){
             telescope_data["TelAzAct"](i) -= 2.*pi;
@@ -212,7 +216,6 @@ bool absToPhys(DerivedA &telescope_data,
     Eigen::VectorXd tRa(nSamples);
     Eigen::VectorXd  tDec(nSamples);
     for(int i=0;i<nSamples;i++) tDec[i]=telescope_data["TelDec"][i];
-
     //tRa must range from -pi to pi
     for(int i=0;i<nSamples;i++)
         tRa[i] = (telescope_data["TelRa"][i] > pi) ? telescope_data["TelRa"][i]-(2.*pi) : telescope_data["TelRa"][i];

@@ -1,4 +1,4 @@
-#include "citlali/core/lali.h"
+// #include "citlali/core/lali.h"
 #include "kids/cli/utils.h"
 #include "kids/core/kidsdata.h"
 #include "kids/sweep/fitter.h"
@@ -116,7 +116,7 @@ struct RawObs : ConfigMapper<RawObs> {
         DataItem(config_t config)
             : Base{std::move(config)}, m_interface(this->config().get_str(
                                            std::tuple{"meta", "interface"})),
-              m_filepath(this->config().get_str("filepath")) {}
+              m_filepath(this->config().get_filepath("filepath")) {}
 
         static auto check_config(config_t &config)
             -> std::optional<std::string> {
@@ -204,7 +204,8 @@ private:
         auto n_data_items = node_data_items.size();
         for (std::size_t i = 0; i < n_data_items; ++i) {
             SPDLOG_TRACE("add data item {} of {}", i, n_data_items);
-            data_items.emplace_back(config_t{node_data_items[i]});
+            data_items.emplace_back(
+                config_t{node_data_items[i], this->config().filepath()});
         }
         m_data_items = std::move(data_items);
         SPDLOG_DEBUG("collected n_data_items={}\n{}", this->n_data_items(),
@@ -284,7 +285,8 @@ private:
         auto n_inputs = node_inputs.size();
         for (std::size_t i = 0; i < n_inputs; ++i) {
             SPDLOG_TRACE("add input {} of {}", i, n_inputs);
-            inputs.emplace_back(config_t{node_inputs[i]});
+            inputs.emplace_back(
+                config_t{node_inputs[i], this->config().filepath()});
         }
         m_inputs = std::move(inputs);
 
@@ -317,7 +319,7 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
     static auto check_config(const config_t &config)
         -> std::optional<std::string> {
         std::vector<std::string> missing_keys;
-        SPDLOG_TRACE("check kids data solver config\n{}", config);
+        SPDLOG_TRACE("check kids data proc config\n{}", config);
         if (!config.has("fitter")) {
             missing_keys.push_back("fitter");
         }
@@ -353,7 +355,8 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
         return result;
     }
 
-    auto reduce_data_item(const RawObs::DataItem &data_item, slice) {
+    auto reduce_data_item(const RawObs::DataItem &data_item,
+                          const container_utils::Slice<double> &slice) {
         SPDLOG_TRACE("kids reduce data_item {}", data_item);
         // read data
         namespace kidsdata = predefs::kidsdata;
@@ -369,11 +372,12 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
         return result;
     }
 
-    auto reduce_rawobs(const RawObs &rawobs, slice) {
+    auto reduce_rawobs(const RawObs &rawobs,
+                       const container_utils::Slice<double> &slice) {
         SPDLOG_TRACE("kids reduce rawobs {}", rawobs);
         std::vector<kids::TimeStreamSolverResult> result;
         for (const auto &data_item : rawobs.kidsdata()) {
-            result.push_back(reduce_data_item(data_item));
+            result.push_back(reduce_data_item(data_item, slice));
         }
     }
 
@@ -381,7 +385,7 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
     auto populate_rtc(const RawObs &rawobs, RTC_t &rtc) {
         // call reduce rawobs, get the data into rtc
         auto [start, stop] = rtc.scanindices;
-        slice = {start, stop} + ikids_data_start_index
+        // slice = {start, stop} + ikids_data_start_index
     }
 
     // TODO fix the const correctness
@@ -404,6 +408,87 @@ private:
     Solver m_solver;
 };
 
+struct DummyEngine {
+    template <typename OStream>
+    friend OStream &operator<<(OStream &os, const DummyEngine &e) {
+        return os << fmt::format("DummyEngine()");
+    }
+};
+
+/**
+ * @brief The time ordered data processing struct
+ * This wraps around the lali config
+ */
+struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc> {
+    using Base = ConfigMapper<TimeOrderedDataProc>;
+    // using Engine = lali::Lali;
+    using Engine = DummyEngine;
+    using map_extent_t = std::vector<double>;
+    using map_count_t = std::size_t;
+    using scanindicies_t = Eigen::MatrixXI;
+
+    TimeOrderedDataProc(config_t config) : Base{std::move(config)} {}
+
+    static auto check_config(const config_t &config)
+        -> std::optional<std::string> {
+        std::vector<std::string> missing_keys;
+        SPDLOG_TRACE("check TOD proc config\n{}", config);
+        if (!config.has("tod")) {
+            missing_keys.push_back("tod");
+        }
+        if (!config.has("map")) {
+            missing_keys.push_back("map");
+        }
+        if (missing_keys.empty()) {
+            return std::nullopt;
+        }
+        return fmt::format("invalid or missing keys={}", missing_keys);
+    }
+
+    auto get_map_extent(const RawObs &rawobs) {
+        auto tel_filepath = rawobs.teldata().filepath();
+        // implement this to return the map size
+        std::vector<double> map_extent{100, 100};
+        return map_extent;
+    }
+
+    auto get_map_count(const RawObs &rawobs) {
+        // implement the logic to look into apt.ecsv and the groupping config
+        // to figure out the number of maps requested for this rawobs
+        return 3;
+    }
+
+    auto get_scanindicies(const RawObs &rawobs, double tod_sample_rate) {
+        // implement the logic to setup map buffer for the engine
+        return scanindicies_t{};
+    }
+
+    void setup_coadd_map_buffer(const map_extent_t &map_extent,
+                                const map_count_t &map_count) {
+        // implement the logic to setup coadd map buffer for the engine
+    }
+
+    void setup_map_buffer(const map_extent_t &map_extent,
+                          const map_count_t &map_count) {
+        // implement the logic to setup map buffer for the engine
+    }
+
+    // TODO fix the const correctness
+    Engine &engine() { return m_engine; }
+
+    const Engine &engine() const { return m_engine; }
+
+    template <typename OStream>
+    friend OStream &operator<<(OStream &os,
+                               const TimeOrderedDataProc &todproc) {
+        return os << fmt::format("TimeOrderedDataProc(engine={})",
+                                 todproc.engine());
+    }
+
+private:
+    Engine m_engine;
+};
+
 /// @brief Run citlali reduction.
 /// @param rc The runtime config.
 int run(const config::Config &rc) {
@@ -415,7 +500,7 @@ int run(const config::Config &rc) {
     // load the yaml citlali config
     auto citlali_config =
         config::YamlConfig::from_filepath(rc.get_str("config_file"));
-    SPDLOG_TRACE("citlali config:\n{}", citlali_config.pformat());
+    SPDLOG_TRACE("citlali config:\n{}", citlali_config);
 
     // set up the IO coorindator
     auto co = SeqIOCoordinator::from_config(citlali_config);
@@ -427,27 +512,64 @@ int run(const config::Config &rc) {
 
     SPDLOG_TRACE("kids proc: {}", kidsproc);
 
-    SPDLOG_INFO("Making Lali Class");
-    lali::Lali LC;
+    // set up TOD proc
+    auto todproc = TimeOrderedDataProc::from_config(citlali_config);
 
-    LC.setup_coadd_map_buffer();
-    for (const auto &rawobs : co.inputs()) {
-        // extract the map size
-        // extract the map group number
-        auto mapsisze = [ 100, 100 ]
+    SPDLOG_TRACE("tod proc: {}", todproc);
+
+    // containers to store some pre-computed info for all inputs
+    using map_extent_t = TimeOrderedDataProc::map_extent_t;
+    using map_count_t = TimeOrderedDataProc::map_count_t;
+
+    std::vector<map_extent_t> map_extents{};
+    std::vector<map_count_t> map_counts{};
+
+    // 1. coadd map buffer
+    {
+        // this block of code is to get the relavant info from all the inputs
+        // and initialize the coadding buffer
+
+        // populate the inputs info
+        for (const auto &rawobs : co.inputs()) {
+            map_extents.push_back(todproc.get_map_extent(rawobs));
+            map_counts.push_back(todproc.get_map_count(rawobs));
+        }
+
+        // combine the map extents to the coadd map extent
+        // TODO implement this
+        auto coadd_map_extent = map_extents.front();
+        // combine the map counts to the coadd map counts
+        auto coadd_map_count =
+            *std::max_element(map_counts.begin(), map_counts.end());
+
+        todproc.setup_coadd_map_buffer(coadd_map_extent, coadd_map_count);
     }
-    /*
-     *
-    1. setup lali co-add map buffer
-        std::vector<rawobs size>
-        vector<n_map_gourps>
-    [done]  for loop of co.inputs().teldata().filepath()
-               get the per rawobs size
-                {
-              [zma]  * check map groupping with apt.ecsv fitgure out number of
-    layers in map buffer n_map_groups = 3;
-                }
 
+    // 2. loop over all the inputs to do the reduction
+    {
+        for (std::size_t i = 0; i < co.n_inputs(); ++i) {
+            const auto &rawobs = co.inputs()[i];
+            // map buffer
+            // just use the stored values here avoid repeated calculation
+            todproc.setup_map_buffer(map_extents[i], map_counts[i]);
+
+            // this is needed to figure out the data sample rate
+            // and number of detectors for creating the scanindices and rtc
+            // buffers
+            auto rawobs_kids_meta = kidsproc.get_rawobs_meta(rawobs);
+            // TODO implement this to be the actual time chunk size
+            double tod_sample_rate = 488.;
+            auto scanindicies =
+                todproc.get_scanindicies(rawobs, tod_sample_rate);
+            // TODO implement to get the number of detectors to create rtc
+            // buffer
+            double n_detectors = 7000;
+            // do grppi reduction
+            {}
+        }
+    }
+
+    /*
     2. for loop of co.inputs() for each raw obs,
 
         auto rawobs = co.inputs()[i]

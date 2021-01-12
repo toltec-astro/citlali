@@ -1,20 +1,17 @@
 #pragma once
 
+#include "../core/observation.h"
 #include <fmt/ostream.h>
+#include <netcdf>
 #include <regex>
 
-#include "../core/observation.h"
-
-
-template<typename R, typename T, typename =std::enable_if_t<
-             std::is_base_of_v<netCDF::NcAtt, T>>, typename Buffer=
-         std::enable_if_t<
-             std::is_arithmetic_v<R> || meta::is_instance<R, std::vector>::value,
-             std::conditional_t<std::is_arithmetic_v<R>, std::vector<R>,
-                R>
-             >
-         >
-R nc_getatt (const T& att) {
+template <
+    typename R, typename T,
+    typename = std::enable_if_t<std::is_base_of_v<netCDF::NcAtt, T>>,
+    typename Buffer = std::enable_if_t<
+        std::is_arithmetic_v<R> || meta::is_instance<R, std::vector>::value,
+        std::conditional_t<std::is_arithmetic_v<R>, std::vector<R>, R>>>
+R nc_getatt(const T &att) {
     using namespace netCDF;
     auto tid = att.getType().getId();
     constexpr bool scalar = std::is_arithmetic_v<R>;
@@ -161,7 +158,7 @@ bool is_number(const std::string& s)
 struct DataIOError : public std::runtime_error {
     using std::runtime_error::runtime_error;
 };
-using Metadata = lali::YamlConfig;
+using Metadata = lali::FlatConfig;
 
 struct BeammapData {
 
