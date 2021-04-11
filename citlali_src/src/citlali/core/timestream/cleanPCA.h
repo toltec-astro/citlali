@@ -58,10 +58,10 @@ void pcaCleaner::calcEigs(const Eigen::DenseBase<DerivedA> &scans, const Eigen::
         int nev = neigToCut; // ndetectors <= 100?ndetectors - 1:100;
         int ncv = nev * 2.5 < ndetectors?int(nev * 2.5):ndetectors;
         Spectra::DenseSymMatProd<double> op(pcaCorr);
-        Spectra::SymEigsSolver<double, Spectra::LARGEST_ALGE, Spectra::DenseSymMatProd<double>> eigs(&op, nev, ncv);
+        Spectra::SymEigsSolver<Spectra::DenseSymMatProd<double>> eigs(op, nev, ncv);
 
         eigs.init();
-        int nconv = eigs.compute();  //Largest eigenvalues first
+        int nconv = eigs.compute(Spectra::SortRule::LargestAlge);  //Largest eigenvalues first
 
         // Retrieve results
         evals = Eigen::VectorXd::Zero(ndetectors);
@@ -69,7 +69,7 @@ void pcaCleaner::calcEigs(const Eigen::DenseBase<DerivedA> &scans, const Eigen::
         // Do we need to have ndetectors x ndetectors?
         evecs = Eigen::MatrixXd::Zero(ndetectors, neigToCut);
 
-        if (eigs.info() == Spectra::SUCCESSFUL) {
+        if (eigs.info() == Spectra::CompInfo::Successful) {
             evals.head(nev) = eigs.eigenvalues();
             evecs.leftCols(nev) = eigs.eigenvectors();
         }

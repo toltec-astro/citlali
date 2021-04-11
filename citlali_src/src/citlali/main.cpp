@@ -14,6 +14,25 @@
 #include <regex>
 #include <tuple>
 
+#include <boost/math/constants/constants.hpp>
+static double pi = boost::math::constants::pi<double>();
+
+// Arcseconds in 360 degrees
+#define ASEC_CIRC 1296000.0
+// rad per arcsecond
+#define RAD_ASEC (2.0*pi / ASEC_CIRC)
+
+// Degrees to radians
+#define DEG_TO_RAD 3600.*RAD_ASEC
+
+#include "citlali/core/read.h"
+#include "citlali/core/observation.h"
+
+#include "citlali/core/TCData.h"
+#include "citlali/core/ecsv_reader.h"
+
+#include "citlali/core/lali.h"
+
 auto parse_args(int argc, char *argv[]) {
 
     using FlatConfig = config::Config;
@@ -93,6 +112,12 @@ using data_t = double;
 
 // IO spec
 namespace kidsdata = kids::toltec;
+
+// TcData is the data structure of which RTCData and PTCData are a part
+using timestream::TCData;
+
+// Selects the type of TCData
+using timestream::LaliDataKind;
 
 } // namespace predefs
 
@@ -299,6 +324,8 @@ private:
  * @brief The KIDs data solver struct
  * This wraps around the kids config
  */
+
+bool extra_output = 0;
 struct KidsDataProc : ConfigMapper<KidsDataProc> {
     using Base = ConfigMapper<KidsDataProc>;
     using Fitter = kids::SweepFitter;
@@ -314,7 +341,10 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
                    std::tuple{"fitter", "weight_window", "fwhm_Hz"})},
               {"modelspec",
                config.get_str(std::tuple{"fitter", "modelspec"})}}},
-          m_solver{Solver::Config{}} {}
+          m_solver{Solver::Config{
+                   {"fitreportdir", "/"},
+                   {"exmode", "omp"},
+                   {"extra_output", extra_output},}} {}
 
     static auto check_config(const config_t &config)
         -> std::optional<std::string> {
@@ -356,7 +386,7 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
     }
 
     auto reduce_data_item(const RawObs::DataItem &data_item,
-                          const container_utils::Slice<double> &slice) {
+                          const container_utils::Slice<int> &slice) {
         SPDLOG_TRACE("kids reduce data_item {}", data_item);
         // read data
         namespace kidsdata = predefs::kidsdata;
@@ -367,25 +397,42 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
                 fmt::format("wrong type of kids data {}", kind));
         }
         auto rts = kidsdata::read_data_slice<kids::KidsDataKind::RawTimeStream>(
-            source, container_utils::Slice<int>{});
+            source, slice);
         auto result = this->solver()(rts, Solver::Config{});
         return result;
     }
 
     auto reduce_rawobs(const RawObs &rawobs,
-                       const container_utils::Slice<double> &slice) {
+                       const container_utils::Slice<int> &slice) {
         SPDLOG_TRACE("kids reduce rawobs {}", rawobs);
         std::vector<kids::TimeStreamSolverResult> result;
         for (const auto &data_item : rawobs.kidsdata()) {
             result.push_back(reduce_data_item(data_item, slice));
         }
+        return result;
     }
 
-    template <typename RTC_t>
-    auto populate_rtc(const RawObs &rawobs, RTC_t &rtc) {
+    template <typename scanindices_t>
+    auto populate_rtc(const RawObs &rawobs, scanindices_t &scanindex, const int scanlength, const int n_detectors) {
         // call reduce rawobs, get the data into rtc
-        auto [start, stop] = rtc.scanindices;
-        // slice = {start, stop} + ikids_data_start_index
+
+        auto slice = container_utils::Slice<int>{scanindex(2), scanindex(3)+1};
+        auto reduced = reduce_rawobs(rawobs, slice);
+
+        Eigen::MatrixXd xs(scanlength, n_detectors);
+
+        Eigen::Index i = 0;
+        for(std::vector<kids::TimeStreamSolverResult>::iterator it = reduced.begin(); it != reduced.end(); ++it) {
+            auto nrows = it->data_out.xs.data.rows();
+            auto ncols = it->data_out.xs.data.cols();
+            xs.block(0, i, nrows, ncols) = it->data_out.xs.data;
+            i += ncols;
+         }
+
+        return std::move(xs);
+
+        //rtc.scans.data = Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic,
+        //        Eigen::ColMajor>> (reduced.front().data_out.xs.data.data(), nrows, ncols);
     }
 
     // TODO fix the const correctness
@@ -421,9 +468,10 @@ struct DummyEngine {
  */
 struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc> {
     using Base = ConfigMapper<TimeOrderedDataProc>;
-    // using Engine = lali::Lali;
-    using Engine = DummyEngine;
+    using Engine = lali::Lali;
+    // using Engine = DummyEngine;
     using map_extent_t = std::vector<double>;
+    using map_coord_t = std::vector<Eigen::VectorXd>;
     using map_count_t = std::size_t;
     using scanindicies_t = Eigen::MatrixXI;
 
@@ -446,21 +494,45 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc> {
     }
 
     auto get_map_extent(const RawObs &rawobs) {
-        auto tel_filepath = rawobs.teldata().filepath();
         // implement this to return the map size
-        std::vector<double> map_extent{100, 100};
-        return map_extent;
+        std::vector<double> map_extent;
+        std::vector<Eigen::VectorXd> map_coord;
+
+        mapmaking::MapUtils mu;
+        auto [nr, nc, rcp, ccp] = mu.getRowsCols<mu.Individual>(engine().telMD.telMetaData,
+                                                                engine().offsets,
+                                                                engine().config);
+
+        map_extent.push_back(nr);
+        map_extent.push_back(nc);
+
+        map_coord.push_back(rcp);
+        map_coord.push_back(ccp);
+
+        return std::tuple{map_extent, map_coord};
     }
 
     auto get_map_count(const RawObs &rawobs) {
         // implement the logic to look into apt.ecsv and the groupping config
         // to figure out the number of maps requested for this rawobs
-        return 3;
+        auto grouping = engine().config.get_str(std::tuple{"map","grouping"});
+        SPDLOG_INFO("grouping {}", grouping);
+
+        int map_count;
+
+        if (std::strcmp("array_name", grouping.c_str()) == 0) {
+            map_count = 1;
+        }
+
+        return map_count;
     }
 
-    auto get_scanindicies(const RawObs &rawobs, double tod_sample_rate) {
+    auto get_scanindicies(const RawObs &rawobs, lali::TelData &telMD, double tod_sample_rate) {
         // implement the logic to setup map buffer for the engine
-        return scanindicies_t{};
+        scanindicies_t scanindices;
+        lali::obs(scanindices,telMD.telMetaData, 0, tod_sample_rate, 0.125, telMD.srcCenter);
+
+        return scanindices;
     }
 
     void setup_coadd_map_buffer(const map_extent_t &map_extent,
@@ -469,8 +541,19 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc> {
     }
 
     void setup_map_buffer(const map_extent_t &map_extent,
+                          const map_coord_t &map_coord,
                           const map_count_t &map_count) {
         // implement the logic to setup map buffer for the engine
+        engine().Maps.nrows = map_extent.at(0);
+        engine().Maps.ncols = map_extent.at(1);
+
+        engine().Maps.rcphys = map_coord.at(0);
+        engine().Maps.ccphys = map_coord.at(1);
+
+        engine().Maps.map_count = map_count;
+
+        engine().Maps.allocateMaps(engine().telMD, engine().offsets, engine().config);
+
     }
 
     // TODO fix the const correctness
@@ -509,19 +592,35 @@ int run(const config::Config &rc) {
     // set up KIDs data proc
     auto kidsproc =
         KidsDataProc::from_config(citlali_config.get_config("kids"));
-
     SPDLOG_TRACE("kids proc: {}", kidsproc);
 
     // set up TOD proc
     auto todproc = TimeOrderedDataProc::from_config(citlali_config);
-
     SPDLOG_TRACE("tod proc: {}", todproc);
+
+    // Set todproc config
+    todproc.engine().config = citlali_config;
+
+    // Path to apt table from config file
+    auto cal_path = citlali_config.get_filepath(std::tuple{"inputs",0,"cal_items",0,"filepath"});
+    SPDLOG_INFO("cal_path {}", cal_path);
+
+    // Get apt table (error with ecsv, so using ascii for now)
+    auto apt_table = get_aptable_from_ecsv(cal_path, citlali_config);
+    SPDLOG_INFO("apt_table {}", apt_table);
+
+    // Put apt table into lali engine (temporary maybe)
+    todproc.engine().nw = apt_table.col(0);
+    todproc.engine().offsets["azOffset"] = apt_table.col(2)*3600.;
+    todproc.engine().offsets["elOffset"] = apt_table.col(3)*3600.;
 
     // containers to store some pre-computed info for all inputs
     using map_extent_t = TimeOrderedDataProc::map_extent_t;
+    using map_coord_t = TimeOrderedDataProc::map_coord_t;
     using map_count_t = TimeOrderedDataProc::map_count_t;
 
     std::vector<map_extent_t> map_extents{};
+    std::vector<map_coord_t> map_coords{};
     std::vector<map_count_t> map_counts{};
 
     // 1. coadd map buffer
@@ -531,7 +630,23 @@ int run(const config::Config &rc) {
 
         // populate the inputs info
         for (const auto &rawobs : co.inputs()) {
-            map_extents.push_back(todproc.get_map_extent(rawobs));
+            auto telMD = lali::TelData::fromNcFile(rawobs.teldata().filepath());
+            auto maptype = todproc.engine().config.get_str(std::tuple{"map","type"});
+
+            if (std::strcmp("RaDec", maptype.c_str()) == 0) {
+                lali::internal::absToPhysEqPointing(telMD.telMetaData, telMD.srcCenter);
+            }
+
+            else if (std::strcmp("AzEl", maptype.c_str()) == 0) {
+                lali::internal::absToPhysHorPointing<lali::pointing>(telMD.telMetaData);
+            }
+            todproc.engine().telMD = telMD;
+
+            auto [me, mc] = todproc.get_map_extent(rawobs);
+            map_extents.push_back(std::move(me));
+            map_coords.push_back(std::move(mc));
+
+            // map_extents.push_back(todproc.get_map_extent(rawobs));
             map_counts.push_back(todproc.get_map_count(rawobs));
         }
 
@@ -545,27 +660,125 @@ int run(const config::Config &rc) {
         todproc.setup_coadd_map_buffer(coadd_map_extent, coadd_map_count);
     }
 
+
     // 2. loop over all the inputs to do the reduction
     {
         for (std::size_t i = 0; i < co.n_inputs(); ++i) {
             const auto &rawobs = co.inputs()[i];
             // map buffer
             // just use the stored values here avoid repeated calculation
-            todproc.setup_map_buffer(map_extents[i], map_counts[i]);
+            todproc.setup_map_buffer(map_extents[i], map_coords[i], map_counts[i]);
 
             // this is needed to figure out the data sample rate
             // and number of detectors for creating the scanindices and rtc
             // buffers
             auto rawobs_kids_meta = kidsproc.get_rawobs_meta(rawobs);
+
+            // Get telescope file pointing and time vectors
+            auto telMD = lali::TelData::fromNcFile(rawobs.teldata().filepath());
+            SPDLOG_INFO("got telescope file");
+
             // TODO implement this to be the actual time chunk size
-            double tod_sample_rate = 488.;
+            double tod_sample_rate = rawobs_kids_meta.back().get_typed<double>("fsmp");
+            SPDLOG_INFO("tod_sample_rate {}", tod_sample_rate);
+            todproc.engine().samplerate = tod_sample_rate;
+
             auto scanindicies =
-                todproc.get_scanindicies(rawobs, tod_sample_rate);
+                todproc.get_scanindicies(rawobs, telMD, tod_sample_rate);
+            SPDLOG_INFO("scanindicies {}", scanindicies);
+
+            todproc.engine().telMD = telMD;
+
             // TODO implement to get the number of detectors to create rtc
             // buffer
-            double n_detectors = 7000;
+            double n_detectors = apt_table.rows();
+            SPDLOG_INFO("n_detectors {}", n_detectors);
+
+            // Do general setup that is only run once per rawobs before grppi pipeline
+            todproc.engine().setup();
+
+            auto ex_name = citlali_config.get_str(std::tuple{"runtime","policy"});
+            auto ncores = citlali_config.get_str(std::tuple{"runtime","ncores"});
+
             // do grppi reduction
-            {}
+            grppi::pipeline(grppiex::dyn_ex(ex_name),
+                [&]() -> std::optional<TCData<LaliDataKind::RTC, Eigen::MatrixXd>> {
+                // Variable for current scan
+                static auto scan = 0;
+                // Current scanlength
+                Eigen::Index scanlength;
+                // Index of the start of the current scan
+                Eigen::Index si = 0;
+
+                while (scan < scanindicies.cols()) {
+
+                    // First scan index for current scan
+                    si = scanindicies(2, scan);
+                    SPDLOG_INFO("si {}", si);
+                    // Get length of current scan (do we need the + 1?)
+                    scanlength = scanindicies(3, scan) - scanindicies(2, scan) + 1;
+                    SPDLOG_INFO("scanlength {}", scanlength);
+
+                    // Declare a TCData to hold data
+                    predefs::TCData<predefs::LaliDataKind::RTC, Eigen::MatrixXd> rtc;
+
+                    // Make flag matrix
+                    rtc.flags.data.resize(scanlength, n_detectors);
+                    rtc.flags.data.setOnes();
+
+                    // Get scan indices and push into current RTC
+                    rtc.scanindex.data = scanindicies.col(scan);
+
+                    // This index keeps track of which scan the RTC actually belongs to.
+                    rtc.index.data = scan + 1;
+
+                    // Get telescope pointings for scan (move to Eigen::Maps to save
+                    // memory and time)
+
+                    // Get the requested map type
+                    auto maptype = citlali_config.get_str(std::tuple{"map","type"});
+                    SPDLOG_INFO("mapy_type {}", maptype);
+
+                    // Put that scan's telescope pointing into RTC
+                    if (std::strcmp("RaDec", maptype.c_str()) == 0) {
+                        rtc.telLat.data = todproc.engine().telMD.telMetaData["TelRaPhys"].segment(si, scanlength);
+                        rtc.telLon.data = todproc.engine().telMD.telMetaData["TelDecPhys"].segment(si, scanlength);
+                    }
+
+                    else if (std::strcmp("AzEl", maptype.c_str()) == 0) {
+                        rtc.telLat.data = todproc.engine().telMD.telMetaData["TelAzPhys"].segment(si, scanlength);
+                        rtc.telLon.data = todproc.engine().telMD.telMetaData["TelElPhys"].segment(si, scanlength);
+                    }
+
+                    rtc.telElDes.data = todproc.engine().telMD.telMetaData["TelElDes"].segment(si, scanlength);
+                    rtc.ParAng.data = todproc.engine().telMD.telMetaData["ParAng"].segment(si, scanlength);
+
+                    // rtc.scans.data.resize(scanlength, n_detectors);
+                    rtc.scans.data = kidsproc.populate_rtc(rawobs, rtc.scanindex.data, scanlength, n_detectors);
+                    // rtc.scans.data.setRandom(scanlength, n_detectors);
+
+                    // Increment scan
+                    scan++;
+
+                    return rtc;
+                }
+                return {};
+
+            },
+                todproc.engine().run());
+
+
+            SPDLOG_INFO("Normalizing Maps by Weight Map");
+            {
+                // logging::scoped_timeit timer("mapNormalize()");
+                todproc.engine().Maps.mapNormalize();
+            }
+
+            SPDLOG_INFO("Outputing Maps to netCDF File");
+            {
+                // logging::scoped_timeit timer("output()");
+                todproc.engine().output(todproc.engine().config, todproc.engine().Maps);
+            }
         }
     }
 
@@ -617,11 +830,15 @@ int run(const config::Config &rc) {
 int main(int argc, char *argv[]) {
     logging::init<>(true);
 
-    auto rc = parse_args(argc, argv);
-    SPDLOG_TRACE("rc {}", rc.pformat());
-    if (rc.is_set("config_file")) {
-        return run(rc);
-    } else {
-        std::cout << "Invalid argument. Type --help for usage.\n";
+    {
+    logging::scoped_timeit timer("Citlali Process");
+
+        auto rc = parse_args(argc, argv);
+        SPDLOG_TRACE("rc {}", rc.pformat());
+        if (rc.is_set("config_file")) {
+            return run(rc);
+        } else {
+            std::cout << "Invalid argument. Type --help for usage.\n";
+        }
     }
 }

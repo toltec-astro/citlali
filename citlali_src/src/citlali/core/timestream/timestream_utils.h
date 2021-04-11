@@ -85,16 +85,16 @@ void getDetectorPointing(Eigen::DenseBase<DerivedA> &lat,
                          Eigen::DenseBase<DerivedB> &ParAng,
                          const double azOffset,
                          const double elOffset,
-                         std::shared_ptr<lali::YamlConfig> config)
+                         lali::YamlConfig config)
 {
     // RaDec map
     if constexpr (pointingtype == RaDec) {
         auto azOfftmp = cos(TelElDes.derived().array()) * azOffset
-                        - sin(TelElDes.derived().array()) * elOffset
-                        + config->get_typed<double>("bsOffset_0");
+                        - sin(TelElDes.derived().array()) * elOffset;
+                        //+ config->get_typed<double>("bsOffset_0");
         auto elOfftmp = cos(TelElDes.derived().array()) * elOffset
-                        + sin(TelElDes.derived().array()) * azOffset
-                        + config->get_typed<double>("bsOffset_1");
+                        + sin(TelElDes.derived().array()) * azOffset;
+                        //+ config->get_typed<double>("bsOffset_1");
         auto pa2 = ParAng.derived().array() - pi;
 
         auto ratmp = -azOfftmp * cos(pa2) - elOfftmp * sin(pa2);
@@ -102,6 +102,20 @@ void getDetectorPointing(Eigen::DenseBase<DerivedA> &lat,
 
         lat = ratmp * RAD_ASEC + telLat.derived().array();
         lon = dectmp * RAD_ASEC + telLon.derived().array();
+    }
+
+    // Az/El map
+    else if constexpr (pointingtype == AzEl) {
+        auto azOfftmp = cos(TelElDes.derived().array()) * azOffset -
+                        sin(TelElDes.derived().array()) * elOffset;// +
+                        //config.get_typed<double>("bsOffset_0");
+        auto elOfftmp = cos(TelElDes.derived().array()) * elOffset +
+                        sin(TelElDes.derived().array()) * azOffset;// +
+                        //config.get_typed<double>("bsOffset_1");
+
+        lat = azOfftmp*RAD_ASEC + telLat.derived().array();
+        lon = elOfftmp * RAD_ASEC + telLon.derived().array();
+
     }
 }
 

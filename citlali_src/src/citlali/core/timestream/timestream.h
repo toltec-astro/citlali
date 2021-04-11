@@ -16,14 +16,16 @@ namespace timestream {
 
 class RTCProc {
 public:
-  RTCProc(std::shared_ptr<YamlConfig> config_) : config(std::move(config_)) {}
-  std::shared_ptr<YamlConfig> config;
+  RTCProc(YamlConfig config_) : config(std::move(config_)) {}
+  YamlConfig config;
 
   template <class L>
   void run(TCData<LaliDataKind::RTC, Eigen::MatrixXd> &,
            TCData<LaliDataKind::PTC, Eigen::MatrixXd> &,
            L);
-  void runDespike(TCData<LaliDataKind::RTC, MatrixXd> &);
+
+  template <class L>
+  void runDespike(TCData<LaliDataKind::RTC, MatrixXd> &, L);
 
   template <class L>
   void runFilter(TCData<LaliDataKind::RTC, MatrixXd> &, L);
@@ -32,7 +34,7 @@ public:
                      TCData<LaliDataKind::PTC, MatrixXd> &);
 
   template<class L>
-  void runKernel(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &, L, std::shared_ptr<YamlConfig>);
+  void runKernel(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &, L, YamlConfig);
 
   void runCalibration();
 };
@@ -48,19 +50,19 @@ void RTCProc::run(TCData<LaliDataKind::RTC, Eigen::MatrixXd> &in,
 
 
   // Check if despiker is requested and run if so
-  if (this->config->get_typed<int>("proc.rtc.despike")) {
+    if (config.get_typed<bool>(std::tuple{"tod","despike","enabled"})) {
     SPDLOG_INFO("Despiking scan {}...", in.index.data);
-    runDespike(in);
+    runDespike(in, LC);
   }
 
   // Check if filter is requested and run if so
-  if (this->config->get_typed<int>("proc.rtc.filter")) {
+  if (config.get_typed<bool>(std::tuple{"tod","filter","enabled"})) {
     SPDLOG_INFO("Filtering scan {}...", in.index.data);
     runFilter(in, LC);
   }
 
   // Check if downsampler is requested and run if so
-  if (this->config->get_typed<int>("proc.rtc.downsample")) {
+  if (config.get_typed<bool>(std::tuple{"tod","downsample","enabled"})) {
     SPDLOG_INFO("Downsampling scan {}...", in.index.data);
     runDownsample(in, out);
   }
@@ -82,9 +84,9 @@ void RTCProc::run(TCData<LaliDataKind::RTC, Eigen::MatrixXd> &in,
   runCalibration();
 
   // Check if kernel is requested and run if so
-  if (this->config->get_typed<int>("proc.rtc.kernel")) {
+  if (config.get_typed<bool>(std::tuple{"tod","kernel","enabled"})) {
     SPDLOG_INFO("Generating kernel timestream for scan {}...", in.index.data);
-    runKernel(out, LC, this->config);
+    runKernel(out, LC, config);
   }
 
   // Set the scan indices and current scan number of out to those of in
@@ -94,14 +96,15 @@ void RTCProc::run(TCData<LaliDataKind::RTC, Eigen::MatrixXd> &in,
 }
 
 // Run the despiker
-void RTCProc::runDespike(TCData<LaliDataKind::RTC, MatrixXd> &in) {
+template <class L>
+void RTCProc::runDespike(TCData<LaliDataKind::RTC, MatrixXd> &in, L LC) {
   // Get parameters
-  auto sigma = this->config->get_typed<double>("proc.rtc.despike.sigma");
+  auto sigma = config.get_typed<double>(std::tuple{"tod","despike","sigma"});
   auto despikewindow =
-      this->config->get_typed<int>("proc.rtc.despike.despikewindow");
+      config.get_typed<int>(std::tuple{"tod","despike","despikewindow"});
   auto timeconstant =
-      this->config->get_typed<double>("proc.rtc.despike.timeconstant");
-  auto samplerate = this->config->get_typed<double>("proc.rtc.samplerate");
+      config.get_typed<double>(std::tuple{"tod","despike","timeconstant"});
+  auto samplerate = LC->samplerate;
 
   // Setup despiker with config values
   Despiker despiker(sigma, timeconstant, samplerate, despikewindow);
@@ -119,9 +122,9 @@ template <class L>
 void RTCProc::runFilter(TCData<LaliDataKind::RTC, MatrixXd> &in, L LC) {
 
   // Get parameters
-  auto flow = this->config->get_typed<double>("proc.rtc.filter.flow");
-  auto fhigh = this->config->get_typed<double>("proc.rtc.filter.fhigh");
-  auto agibbs = this->config->get_typed<double>("proc.rtc.filter.agibbs");
+  auto flow = config.get_typed<double>(std::tuple{"tod","filter","flow"});
+  auto fhigh = config.get_typed<double>(std::tuple{"tod","filter","fhigh"});
+  auto agibbs = config.get_typed<double>(std::tuple{"tod","filter","agibbs"});
 
   // Run the Filter class declared in lali.h
   LC->filter.convolveFilter(in.scans.data);
@@ -132,7 +135,7 @@ void RTCProc::runDownsample(TCData<LaliDataKind::RTC, Eigen::MatrixXd> &in,
                             TCData<LaliDataKind::PTC, Eigen::MatrixXd> &out) {
   // Get parameters
   auto dsf =
-      this->config->get_typed<int>("proc.rtc.downsample.downsamplefactor");
+      config.get_typed<int>(std::tuple{"tod","downsample","downsamplefactor"});
 
   // Run the downsampler
   downsample(in, out, dsf);
@@ -147,33 +150,37 @@ void RTCProc::runCalibration() {
 // Run the kernel to get kernel timestreams.  Called after
 // downsampling to save time and memory
 template<class L>
-void RTCProc::runKernel(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in, L LC, std::shared_ptr<YamlConfig> config) {
+void RTCProc::runKernel(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in, L LC, YamlConfig config) {
     makeKernel(in, LC->offsets, config);
 }
 
+/*------------------------------------------------------------------------------------------------*/
+
 class PTCProc {
 public:
-  PTCProc(std::shared_ptr<YamlConfig> config_) : config(std::move(config_)) {}
-  std::shared_ptr<YamlConfig> config;
+  PTCProc(YamlConfig config_) : config(std::move(config_)) {}
+  YamlConfig config;
 
   // template <typename Derived>
+  template <class L>
   void run(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &,
-           TCData<LaliDataKind::PTC, Eigen::MatrixXd> &);
+           TCData<LaliDataKind::PTC, Eigen::MatrixXd> &, L);
 
   void runClean(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &,
                 TCData<LaliDataKind::PTC, Eigen::MatrixXd> &);
 
-  void getWeights(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &);
+  template<class L>
+  void getWeights(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &, L);
 };
 
 // The main PTC timestream run function.  It checks the config
 // file for each reduction step and calls the corresponding
 // runStep() function.  If none is requested, set out data
 // to in data
-// template <typename Derived>
+template <class L>
 void PTCProc::run(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
-                  TCData<LaliDataKind::PTC, Eigen::MatrixXd> &out) {
-  if (this->config->get_typed<int>("proc.ptc.clean")) {
+                  TCData<LaliDataKind::PTC, Eigen::MatrixXd> &out, L LC) {
+  if (config.get_typed<bool>(std::tuple{"tod","pcaclean","enabled"})) {
     SPDLOG_INFO("Cleaning signal and kernel timestreams for scan {}...",
                 in.index.data);
     //Run clean
@@ -186,7 +193,7 @@ void PTCProc::run(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
   }
 
   // Get scan weights
-  getWeights(out);
+  getWeights(out, LC);
 }
 
 //run the PCA cleaner
@@ -194,8 +201,8 @@ void PTCProc::runClean(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
                        TCData<LaliDataKind::PTC, Eigen::MatrixXd> &out) {
 
   // Get parameters
-  auto neigToCut = this->config->get_typed<int>("proc.ptc.pcaclean.neigToCut");
-  auto cutStd = this->config->get_typed<double>("proc.ptc.pcaclean.cutStd");
+  auto neigToCut = config.get_typed<int>(std::tuple{"tod","pcaclean","neigToCut"});
+  auto cutStd = config.get_typed<double>(std::tuple{"tod","pcaclean","cutStd"});
 
   // Setup PCA cleaner class
   pcaCleaner cleaner(neigToCut, cutStd);
@@ -210,7 +217,7 @@ void PTCProc::runClean(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
   cleaner.det.resize(0, 0);
 
   // Check if kernel is requested
-  if (this->config->get_typed<int>("proc.rtc.kernel")) {
+  if (config.get_typed<bool>(std::tuple{"tod","kernel","enabled"})) {
       // Remove neigToCut eigenvalues from scan kernel timestream
       cleaner.removeEigs<SpectraBackend, KernelType>(in.kernelscans.data,
                                                      out.kernelscans.data);
@@ -218,13 +225,14 @@ void PTCProc::runClean(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
 }
 
 // Get the weights of each scan and replace outliers
-void PTCProc::getWeights(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in) {
+template <class L>
+void PTCProc::getWeights(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in, L LC) {
 
   // Scan weight is a vector that is ndetectors long
   in.weights.data = Eigen::VectorXd::Zero(in.scans.data.cols());
 
   // This is for approximate weights
-  if (this->config->get_typed<int>("proc.ptc.approximateWeights")) {
+  if (config.get_typed<int>(std::tuple{"tod","pcaclean","approximateWeights"})) {
     SPDLOG_INFO("Using Approximate Weights for scan {}...", in.index.data);
   }
 
@@ -244,13 +252,14 @@ void PTCProc::getWeights(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in) {
 
       // Check for NaNs and too short scans
       if (tmp != tmp ||
-          ngood < this->config->get_typed<double>("proc.rtc.samplerate")) {
+          ngood < LC->samplerate) {
         in.weights.data(det) = 0.0;
       } else {
         tmp = pow(tmp, -2.0);
-        // Check if weight is too large and normalize if so
+        // Check if weight is too large and normalize if so (temporary solution)
         if (tmp > 2.0 * 3.95274e+09) {
-          in.weights.data(det) = 3.95274e+09 / 2.0;
+            in.weights.data(det) = tmp;
+            //in.weights.data(det) = 3.95274e+09 / 2.0;
         } else {
           in.weights.data(det) = tmp;
         }

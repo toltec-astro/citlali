@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../core/observation.h"
 #include <fmt/ostream.h>
 #include <netcdf>
 #include <regex>
@@ -146,7 +145,7 @@ struct nc_pprint {
     }
 };
 
-namespace aztec {
+namespace lali {
 
 template<typename Numeric>
 bool is_number(const std::string& s)
@@ -158,272 +157,87 @@ bool is_number(const std::string& s)
 struct DataIOError : public std::runtime_error {
     using std::runtime_error::runtime_error;
 };
-using Metadata = lali::FlatConfig;
+//using Metadata = lali::FlatConfig;
 
-struct BeammapData {
+struct TelData {
 
-    Eigen::MatrixXd scans;
-    Eigen::Matrix<Eigen::Index, Eigen::Dynamic, Eigen::Dynamic> scanindex;
-
-    ///std:map to hold telescope pointing and time matrices.
     std::map<std::string, Eigen::Matrix<double,Eigen::Dynamic,1>> telMetaData;
+    std::map <std::string, Eigen::VectorXd> srcCenter;
 
-    Metadata meta;
-
-    /*
-    BeammapData() = default;
-    ~BeammapData() = default;
-    BeammapData(BeammapData&&) = default;
-    BeammapData& operator=(BeammapData &&) = default;
-    BeammapData(const BeammapData&) = delete;
-    BeammapData& operator=(const BeammapData&) = delete;
-    */
-
-    static BeammapData fromNcFile(const std::string &filepath) {
+    static TelData fromNcFile(const std::string &filepath) {
         using namespace netCDF;
         using namespace netCDF::exceptions;
 
-        std::vector<std::string> gbs(113);
-
-        gbs = {"Data.AztecBackend.h1b1",
-               "Data.AztecBackend.h1b10",
-               "Data.AztecBackend.h1b11",
-               "Data.AztecBackend.h1b15",
-               "Data.AztecBackend.h1b17",
-               "Data.AztecBackend.h1b18",
-               "Data.AztecBackend.h1b19",
-               "Data.AztecBackend.h1b2",
-               "Data.AztecBackend.h1b20",
-               "Data.AztecBackend.h1b22",
-               "Data.AztecBackend.h1b24",
-               "Data.AztecBackend.h1b4",
-               "Data.AztecBackend.h1b5",
-               "Data.AztecBackend.h1b6",
-               "Data.AztecBackend.h1b7",
-               "Data.AztecBackend.h1b9",
-               "Data.AztecBackend.h2b10",
-               "Data.AztecBackend.h2b11",
-               "Data.AztecBackend.h2b13",
-               "Data.AztecBackend.h2b15",
-               "Data.AztecBackend.h2b16",
-               "Data.AztecBackend.h2b17",
-               "Data.AztecBackend.h2b18",
-               "Data.AztecBackend.h2b19",
-               "Data.AztecBackend.h2b2",
-               "Data.AztecBackend.h2b20",
-               "Data.AztecBackend.h2b22",
-               "Data.AztecBackend.h2b23",
-               "Data.AztecBackend.h2b24",
-               "Data.AztecBackend.h2b3",
-               "Data.AztecBackend.h2b4",
-               "Data.AztecBackend.h2b5",
-               "Data.AztecBackend.h2b6",
-               "Data.AztecBackend.h2b8",
-               "Data.AztecBackend.h2b9",
-               "Data.AztecBackend.h3b1",
-               "Data.AztecBackend.h3b10",
-               "Data.AztecBackend.h3b11",
-               "Data.AztecBackend.h3b12",
-               "Data.AztecBackend.h3b13",
-               "Data.AztecBackend.h3b14",
-               "Data.AztecBackend.h3b15",
-               "Data.AztecBackend.h3b16",
-               "Data.AztecBackend.h3b17",
-               "Data.AztecBackend.h3b18",
-               "Data.AztecBackend.h3b19",
-               "Data.AztecBackend.h3b2",
-               "Data.AztecBackend.h3b20",
-               "Data.AztecBackend.h3b23",
-               "Data.AztecBackend.h3b24",
-               "Data.AztecBackend.h3b3",
-               "Data.AztecBackend.h3b4",
-               "Data.AztecBackend.h3b5",
-               "Data.AztecBackend.h3b6",
-               "Data.AztecBackend.h3b7",
-               "Data.AztecBackend.h3b9",
-               "Data.AztecBackend.h4b1",
-               "Data.AztecBackend.h4b10",
-               "Data.AztecBackend.h4b11",
-               "Data.AztecBackend.h4b12",
-               "Data.AztecBackend.h4b13",
-               "Data.AztecBackend.h4b14",
-               "Data.AztecBackend.h4b15",
-               "Data.AztecBackend.h4b17",
-               "Data.AztecBackend.h4b18",
-               "Data.AztecBackend.h4b19",
-               "Data.AztecBackend.h4b2",
-               "Data.AztecBackend.h4b20",
-               "Data.AztecBackend.h4b21",
-               "Data.AztecBackend.h4b22",
-               "Data.AztecBackend.h4b23",
-               "Data.AztecBackend.h4b24",
-               "Data.AztecBackend.h4b3",
-               "Data.AztecBackend.h4b4",
-               "Data.AztecBackend.h4b5",
-               "Data.AztecBackend.h4b6",
-               "Data.AztecBackend.h4b7",
-               "Data.AztecBackend.h4b8",
-               "Data.AztecBackend.h4b9",
-               "Data.AztecBackend.h5b1",
-               "Data.AztecBackend.h5b10",
-               "Data.AztecBackend.h5b11",
-               "Data.AztecBackend.h5b12",
-               "Data.AztecBackend.h5b13",
-               "Data.AztecBackend.h5b14",
-               "Data.AztecBackend.h5b15",
-               "Data.AztecBackend.h5b17",
-               "Data.AztecBackend.h5b20",
-               "Data.AztecBackend.h5b21",
-               "Data.AztecBackend.h5b22",
-               "Data.AztecBackend.h5b23",
-               "Data.AztecBackend.h5b24",
-               "Data.AztecBackend.h5b4",
-               "Data.AztecBackend.h5b5",
-               "Data.AztecBackend.h5b6",
-               "Data.AztecBackend.h5b7",
-               "Data.AztecBackend.h5b8",
-               "Data.AztecBackend.h5b9",
-               "Data.AztecBackend.h6b1",
-               "Data.AztecBackend.h6b10",
-               "Data.AztecBackend.h6b12",
-               "Data.AztecBackend.h6b15",
-               "Data.AztecBackend.h6b17",
-               "Data.AztecBackend.h6b18",
-               "Data.AztecBackend.h6b19",
-               "Data.AztecBackend.h6b2",
-               "Data.AztecBackend.h6b20",
-               "Data.AztecBackend.h6b21",
-               "Data.AztecBackend.h6b22",
-               "Data.AztecBackend.h6b23",
-               "Data.AztecBackend.h6b4",
-               "Data.AztecBackend.h6b6",
-               "Data.AztecBackend.h6b7"};
-
 
         try {
-            SPDLOG_INFO("read aztec beammap from netCDF file {}", filepath);
-            NcFile fo(filepath, NcFile::read);
-            //SPDLOG_INFO("{}", nc_pprint(fo));
-            // go over the vars, get the detector variables
+            SPDLOG_INFO("Read Telescope netCDF file {}", filepath);
+            NcFile fo(filepath, NcFile::read, NcFile::classic);
             auto vars = fo.getVars();
-            std::set<std::string> dv_names;
-            auto matched = 0;
-            int k=0;
-            int gi = 0;
-            for (const auto& var: vars) {
-                if (std::regex_match(
-                            var.first,
-                            std::regex("Data\\.AztecBackend\\.h\\d+b\\d+"))
-                        ) {
-                    ++matched;
-                    // check good flag
-                    //if (nc_getatt<int16_t>(var.second.getAtt("goodflag")) > 0) {
-                    if(std::find(gbs.begin(), gbs.end(), var.first) != gbs.end()) {
-                        dv_names.insert(var.first);
-                        gi++;
-                    }
-                    k++;
-                }
-            }
-            int ndetectors = dv_names.size();
-            SPDLOG_INFO("number of good detector: {} out of {}", ndetectors, matched);
-            // get number of scans per detector, and check if they are the same
-            auto npts = -1;  //
-            for (const auto& name: dv_names) {
-                auto vs = vars.equal_range(name);
-                if (auto n = std::distance(vs.first, vs.second); n != 1) {
-                    throw std::runtime_error(fmt::format("detector {} has {} entries", name, n < 1?"no": "duplicated"));
-                }
-                const auto& var = vs.first->second;
-                auto tmp = var.getDim(0).getSize() * var.getDim(1).getSize();
-                if (npts < 0) {
-                    npts = tmp;
-                } else if (npts != tmp) {
-                    throw std::runtime_error(
-                        fmt::format("detector {} has mismatch npts {} with others {}", name, tmp, npts));
-                }
-            }
-            SPDLOG_INFO("number of pts: {}", npts);
-            // create data container
-            BeammapData data;
-            data.scans.resize(npts, ndetectors);
-            // fill the container
-            auto i = 0;
-            for (const auto& name: dv_names) {
-                const auto& var = vars.find(name)->second;
-                var.getVar(data.scans.col(i).data());
-                ++i;
-            }
 
-            data.telMetaData["Hold"].resize(npts);
-            vars.find("Data.AztecBackend.Hold")->second.getVar(data.telMetaData["Hold"].data());
-            //SPDLOG_INFO("hold {}", data.telMetaData["Hold"]);
+            TelData data;
 
-            data.telMetaData["TelUtc"].resize(npts);
-            vars.find("Data.AztecBackend.TelUtc")->second.getVar(data.telMetaData["TelUtc"].data());
-            //SPDLOG_INFO("TelUtc {}", data.telMetaData["TelUtc"]);
+            Eigen::Index TelTime_npts = vars.find("Data.TelescopeBackend.TelTime")->second.getDim(0).getSize();
+            data.telMetaData["TelTime"].resize(TelTime_npts);
+            vars.find("Data.TelescopeBackend.TelTime")->second.getVar(data.telMetaData["TelTime"].data());
+            // SPDLOG_INFO("TelTime {}", data.telMetaData["TelTime"]);
 
-            data.telMetaData["AztecUtc"].resize(npts);
-            vars.find("Data.AztecBackend.AztecUtc")->second.getVar(data.telMetaData["AztecUtc"].data());
-            //SPDLOG_INFO("AztecUtc {}", data.telMetaData["AztecUtc"]);
+            Eigen::Index TelSourceRaAct_npts = vars.find("Data.TelescopeBackend.TelSourceRaAct")->second.getDim(0).getSize();
+            data.telMetaData["TelRa"].resize(TelSourceRaAct_npts);
+            vars.find("Data.TelescopeBackend.TelSourceRaAct")->second.getVar(data.telMetaData["TelRa"].data());
+            data.telMetaData["TelRa"] = data.telMetaData["TelRa"]*DEG_TO_RAD;
+             SPDLOG_INFO("TelRa {}", data.telMetaData["TelRa"]);
 
-            data.telMetaData["TelAzAct"].resize(npts);
-            vars.find("Data.AztecBackend.TelAzAct")->second.getVar(data.telMetaData["TelAzAct"].data());
-            //SPDLOG_INFO("TelAzAct{}", data.telMetaData["TelAzAct"]);
+            Eigen::Index TelSourceDecAct_npts = vars.find("Data.TelescopeBackend.TelSourceDecAct")->second.getDim(0).getSize();
+            data.telMetaData["TelDec"].resize(TelSourceDecAct_npts);
+            vars.find("Data.TelescopeBackend.TelSourceDecAct")->second.getVar(data.telMetaData["TelDec"].data());
+            data.telMetaData["TelDec"] = data.telMetaData["TelDec"]*DEG_TO_RAD;
+             SPDLOG_INFO("TelDec {}", data.telMetaData["TelDec"]);
 
-            data.telMetaData["TelElAct"].resize(npts);
-            vars.find("Data.AztecBackend.TelElAct")->second.getVar(data.telMetaData["TelElAct"].data());
-            //SPDLOG_INFO("TelElAct{}", data.telMetaData["TelElAct"]);
+            Eigen::Index TelAzAct_npts = vars.find("Data.TelescopeBackend.TelAzAct")->second.getDim(0).getSize();
+            data.telMetaData["TelAzAct"].resize(TelAzAct_npts);
+            vars.find("Data.TelescopeBackend.TelAzAct")->second.getVar(data.telMetaData["TelAzAct"].data());
+            data.telMetaData["TelAzAct"] = data.telMetaData["TelAzAct"]*DEG_TO_RAD;
+             SPDLOG_INFO("TelAzAct {}", data.telMetaData["TelAzAct"]);
 
-            data.telMetaData["TelAzDes"].resize(npts);
-            vars.find("Data.AztecBackend.TelAzDes")->second.getVar(data.telMetaData["TelAzDes"].data());
-            //SPDLOG_INFO("TelAzDes{}", data.telMetaData["TelAzDes"]);
+            Eigen::Index TelElAct_npts = vars.find("Data.TelescopeBackend.TelElAct")->second.getDim(0).getSize();
+            data.telMetaData["TelElAct"].resize(TelElAct_npts);
+            vars.find("Data.TelescopeBackend.TelElAct")->second.getVar(data.telMetaData["TelElAct"].data());
+            data.telMetaData["TelElAct"] = data.telMetaData["TelElAct"]*DEG_TO_RAD;
+             SPDLOG_INFO("TelElAct {}", data.telMetaData["TelElAct"]);
 
-            data.telMetaData["TelElDes"].resize(npts);
-            vars.find("Data.AztecBackend.TelElDes")->second.getVar(data.telMetaData["TelElDes"].data());
-            //SPDLOG_INFO("TelElDes{}", data.telMetaData["TelElDes"]);
-
-            data.telMetaData["TelAzCor"].resize(npts);
-            vars.find("Data.AztecBackend.TelAzCor")->second.getVar(data.telMetaData["TelAzCor"].data());
-            //SPDLOG_INFO("TelAzCor{}", data.telMetaData["TelAzCor"]);
-
-            data.telMetaData["TelElCor"].resize(npts);
-            vars.find("Data.AztecBackend.TelElCor")->second.getVar(data.telMetaData["TelElCor"].data());
-            //SPDLOG_INFO("TelElCor{}", data.telMetaData["TelElCor"]);
-
-            data.telMetaData["SourceAz"].resize(npts);
-            vars.find("Data.AztecBackend.SourceAz")->second.getVar(data.telMetaData["SourceAz"].data());
-            //SPDLOG_INFO("SourceAz{}", data.telMetaData["SourceAz"]);
-
-            data.telMetaData["SourceEl"].resize(npts);
-            vars.find("Data.AztecBackend.SourceEl")->second.getVar(data.telMetaData["SourceEl"].data());
-            //SPDLOG_INFO("SourceEl{}", data.telMetaData["SourceEl"]);
-
-            data.telMetaData["TelRa"].resize(npts);
-            vars.find("Data.AztecBackend.SourceRaAct")->second.getVar(data.telMetaData["TelRa"].data());
-            //SPDLOG_INFO("TelRa{}", data.telMetaData["TelRa"]);
-
-            data.telMetaData["TelDec"].resize(npts);
-            vars.find("Data.AztecBackend.SourceDecAct")->second.getVar(data.telMetaData["TelDec"].data());
-            //SPDLOG_INFO("TelDec{}", data.telMetaData["TelDec"]);
-
-            data.telMetaData["ParAng"].resize(npts);
-            vars.find("Data.AztecBackend.ParAng")->second.getVar(data.telMetaData["ParAng"].data());
-            //SPDLOG_INFO("ParAng{}", data.telMetaData["ParAng"]);
-
+            Eigen::Index ActParAng_npts = vars.find("Data.TelescopeBackend.ActParAng")->second.getDim(0).getSize();
+            data.telMetaData["ParAng"].resize(ActParAng_npts);
+            vars.find("Data.TelescopeBackend.ActParAng")->second.getVar(data.telMetaData["ParAng"].data());
+            data.telMetaData["ParAng"] = data.telMetaData["ParAng"]*DEG_TO_RAD;
             data.telMetaData["ParAng"] = pi-data.telMetaData["ParAng"].array();
 
-            observation::obs(data.scanindex,data.telMetaData,40,64,0.125);
+             SPDLOG_INFO("ActParAng {}", data.telMetaData["ActParAng"]);
 
-            // meta data
-            int nscans = data.scanindex.cols();
-            data.meta.set("source", filepath);
-            data.meta.set("npts", npts);
-            data.meta.set("ndetectors", ndetectors);
-            data.meta.set("nscans", nscans);
-            SPDLOG_INFO("scans{}", data.scans);
-            SPDLOG_INFO("scanindex{}", data.scanindex);
-            SPDLOG_INFO("nscans {}", nscans);
+            Eigen::Index hold_npts = vars.find("Data.TelescopeBackend.Hold")->second.getDim(0).getSize();
+            data.telMetaData["Hold"].resize(hold_npts);
+            vars.find("Data.TelescopeBackend.Hold")->second.getVar(data.telMetaData["Hold"].data());
+             SPDLOG_INFO("hold {}", data.telMetaData["Hold"]);
+
+            data.srcCenter["centerRa"].resize(2);
+            data.srcCenter["centerRa"].setZero();
+            data.srcCenter["centerRa"](0) = 92.0*DEG_TO_RAD;
+            // vars.find("Header.Source.Ra")->second.getVar(data.srcCenter["centerRa"].data());
+
+            data.srcCenter["centerDec"].resize(2);
+            data.srcCenter["centerDec"].setZero();
+            data.srcCenter["centerDec"](0) = -7.0*DEG_TO_RAD;
+
+            // vars.find("Header.Source.Dec")->second.getVar(data.srcCenter["centerDec"].data());
+
+            /* TEMP */
+            data.telMetaData["TelAzCor"].setZero(TelAzAct_npts);
+            data.telMetaData["TelElCor"].setZero(TelElAct_npts);
+
+            data.telMetaData["TelAzDes"] = data.telMetaData["TelAzAct"];
+            data.telMetaData["TelElDes"] = data.telMetaData["TelElAct"];
+
+            data.telMetaData["SourceAz"] = data.telMetaData["TelAzAct"];
+            data.telMetaData["SourceEl"] = data.telMetaData["TelElAct"];
 
 
             return std::move(data);
@@ -435,4 +249,4 @@ struct BeammapData {
     }
 };
 
-} // namespace aztec
+} // namespace lali

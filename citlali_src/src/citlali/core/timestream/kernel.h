@@ -5,23 +5,39 @@ namespace timestream {
 template<typename OT>
 void makeKernel(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
                 OT &offsets,
-                std::shared_ptr<lali::YamlConfig> config)
+                lali::YamlConfig config)
 {
     Eigen::Index ndetectors = in.scans.data.cols();
     Eigen::VectorXd dist, lat, lon;
     in.kernelscans.data.resize(in.scans.data.rows(), in.scans.data.cols());
 
+    auto maptype = config.get_str(std::tuple{"map","type"});
+
     // Loop through each detector
     for (Eigen::Index det = 0; det < ndetectors; det++) {
-        timestream_utils::getDetectorPointing<timestream_utils::RaDec>(lat,
-                                                                       lon,
-                                                                       in.telLat.data,
-                                                                       in.telLon.data,
-                                                                       in.telElDes.data,
-                                                                       in.ParAng.data,
-                                                                       offsets["azOffset"](det),
-                                                                       offsets["elOffset"](det),
-                                                                       config);
+
+        if (std::strcmp("RaDec", maptype.c_str()) == 0) {
+            timestream_utils::getDetectorPointing<timestream_utils::RaDec>(lat, lon,
+                                                                           in.telLat.data,
+                                                                           in.telLon.data,
+                                                                           in.telElDes.data,
+                                                                           in.ParAng.data,
+                                                                           offsets["azOffset"](det),
+                                                                           offsets["elOffset"](det),
+                                                                           config);
+        }
+
+        else if (std::strcmp("AzEl", maptype.c_str()) == 0) {
+            timestream_utils::getDetectorPointing<timestream_utils::AzEl>(lat, lon,
+                                                                           in.telLat.data,
+                                                                           in.telLon.data,
+                                                                           in.telElDes.data,
+                                                                           in.ParAng.data,
+                                                                           offsets["azOffset"](det),
+                                                                           offsets["elOffset"](det),
+                                                                           config);
+        }
+
 
         dist = (lat.array().pow(2) + lon.array().pow(2)).sqrt();
 

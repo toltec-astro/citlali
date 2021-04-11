@@ -28,13 +28,13 @@ public:
     void getDetectorPointing(Eigen::DenseBase<DerivedA> &, Eigen::DenseBase<DerivedA> &,
                              Eigen::DenseBase<DerivedB> &, Eigen::DenseBase<DerivedB> &,
                              Eigen::DenseBase<DerivedB> &, Eigen::DenseBase<DerivedB> &,
-                             const double, const double, std::shared_ptr<lali::YamlConfig>);
+                             const double, const double, lali::YamlConfig);
 
-    template <MapClassType, class MS, typename TD, typename OT>
-    auto getMapMaxMin(MS&, TD&, OT&, std::shared_ptr<lali::YamlConfig>);
+    template <MapClassType, typename TD, typename OT>
+    auto getMapMaxMin(TD&, OT&, lali::YamlConfig);
 
-    template <MapClassType, class MS, typename TD, typename OT>
-    auto setRowsCols(MS&, TD&, OT&, std::shared_ptr<lali::YamlConfig>);
+    template <MapClassType, typename TD, typename OT>
+    auto getRowsCols(TD&, OT&, lali::YamlConfig);
 
 
 };
@@ -43,17 +43,17 @@ template <MapUtils::PointingType pointingtype, typename DerivedA, typename Deriv
 void MapUtils::getDetectorPointing(Eigen::DenseBase<DerivedA> &lat, Eigen::DenseBase<DerivedA> &lon,
                                    Eigen::DenseBase<DerivedB> &telLat, Eigen::DenseBase<DerivedB> &telLon,
                                    Eigen::DenseBase<DerivedB> &TelElDes, Eigen::DenseBase<DerivedB> &ParAng,
-                                   const double azOffset, const double elOffset, std::shared_ptr<lali::YamlConfig> config){
+                                   const double azOffset, const double elOffset, lali::YamlConfig config){
 
   // RaDec map
   if constexpr (pointingtype == RaDec) {
 
     auto azOfftmp = cos(TelElDes.derived().array()) * azOffset -
-                    sin(TelElDes.derived().array()) * elOffset +
-                    config->get_typed<double>("bsOffset_0");
+                    sin(TelElDes.derived().array()) * elOffset;// +
+                    //config.get_typed<double>("bsOffset_0");
     auto elOfftmp = cos(TelElDes.derived().array()) * elOffset +
-                    sin(TelElDes.derived().array()) * azOffset +
-                    config->get_typed<double>("bsOffset_1");
+                    sin(TelElDes.derived().array()) * azOffset;// +
+                    //config.get_typed<double>("bsOffset_1");
     auto pa2 = ParAng.derived().array() - pi;
 
     auto ratmp = -azOfftmp * cos(pa2) - elOfftmp * sin(pa2);
@@ -66,42 +66,82 @@ void MapUtils::getDetectorPointing(Eigen::DenseBase<DerivedA> &lat, Eigen::Dense
 
   // Az/El map
   else if constexpr (pointingtype == AzEl) {
+      auto azOfftmp = cos(TelElDes.derived().array()) * azOffset -
+                      sin(TelElDes.derived().array()) * elOffset;// +
+                      //config.get_typed<double>("bsOffset_0");
+      auto elOfftmp = cos(TelElDes.derived().array()) * elOffset +
+                      sin(TelElDes.derived().array()) * azOffset;// +
+                      //config.get_typed<double>("bsOffset_1");
+
+      lat = azOfftmp * RAD_ASEC + telLat.derived().array();
+      lon = elOfftmp * RAD_ASEC + telLon.derived().array();
   }
 }
 
 
-template <MapUtils::MapClassType mapclasstype, class MS, typename TD, typename OT>
-auto MapUtils::getMapMaxMin(MS &maps, TD &telMetaData, OT &offsets, std::shared_ptr<lali::YamlConfig> config){
+template <MapUtils::MapClassType mapclasstype, typename TD, typename OT>
+auto MapUtils::getMapMaxMin(TD &telMetaData, OT &offsets, lali::YamlConfig config){
 
     // Using the offsets, find the map max and min values and calculate
     // nrows and ncols
     Eigen::MatrixXd mapDims = Eigen::MatrixXd::Zero(2,2);
 
+    auto maptype = config.get_str(std::tuple{"map","type"});
+
     if constexpr (mapclasstype == MapUtils::Individual) {
         Eigen::VectorXd lat, lon;
+        Eigen::MatrixXd lat_lim(offsets["azOffset"].size(), 2);
+        Eigen::MatrixXd lon_lim(offsets["azOffset"].size(), 2);
+
+        std::vector<int> dets(offsets["azOffset"].size());
+        std::iota (std::begin(dets), std::end(dets), 0);
+
+        std::vector<int> w(dets.size());
+
+        auto ex_name = config.get_str(std::tuple{"runtime","policy"});
 
         //Get max and min lat and lon values out of all detectors.  Maybe parallelize?
-        for (Eigen::Index det=0;det<offsets["azOffset"].size();det++) {
-            getDetectorPointing<MapUtils::RaDec>(lat, lon, telMetaData["TelRaPhys"], telMetaData["TelDecPhys"],
-                                                       telMetaData["TelElDes"], telMetaData["ParAng"],
-                                                       offsets["azOffset"](det), offsets["elOffset"](det), config);
+        // for (Eigen::Index det=0;det<offsets["azOffset"].size();det++) {
+        grppi::map(grppiex::dyn_ex(ex_name), begin(dets), end(dets), begin(w), [&](int det) {
+            if (std::strcmp("RaDec", maptype.c_str()) == 0) {
+                getDetectorPointing<MapUtils::RaDec>(lat, lon, telMetaData["TelRaPhys"], telMetaData["TelDecPhys"],
+                                                           telMetaData["TelElDes"], telMetaData["ParAng"],
+                                                           offsets["azOffset"](det), offsets["elOffset"](det), config);
+            }
 
-            if(lat.minCoeff() < mapDims(0,0)){
-                mapDims(0,0) = lat.minCoeff();
+            else if (std::strcmp("AzEl", maptype.c_str()) == 0) {
+                getDetectorPointing<MapUtils::AzEl>(lat, lon, telMetaData["TelAzPhys"], telMetaData["TelElPhys"],
+                                                           telMetaData["TelElDes"], telMetaData["ParAng"],
+                                                           offsets["azOffset"](det), offsets["elOffset"](det), config);
             }
-            if(lat.maxCoeff() > mapDims(1,0)){
-                mapDims(1,0) = lat.maxCoeff();
+
+            lat_lim(det,0) = lat.minCoeff();
+            lat_lim(det,1) = lat.maxCoeff();
+            lon_lim(det,0) = lon.minCoeff();
+            lon_lim(det,1) = lon.maxCoeff();
+
+            return 0;
+
+        });
+
+        for (Eigen::Index det=0;det<offsets["azOffset"].size();det++){
+
+            if(lat_lim(det,0) < mapDims(0,0)){
+                mapDims(0,0) = lat_lim(det,0);
             }
-            if(lon.minCoeff() < mapDims(0,1)){
-                mapDims(0,1) = lon.minCoeff();
+            if(lat_lim(det,1) > mapDims(1,0)){
+                mapDims(1,0) = lat_lim(det,1);
             }
-            if(lon.maxCoeff() > mapDims(1,1)){
-                mapDims(1,1) = lon.maxCoeff();
+            if(lon_lim(det,0) < mapDims(0,1)){
+                mapDims(0,1) = lon_lim(det,0);
+            }
+            if(lon_lim(det,1) > mapDims(1,1)){
+                mapDims(1,1) = lon_lim(det,1);
             }
         }
     }
 
-    else if constexpr (mapclasstype == MapUtils::Coadded) {
+    /*else if constexpr (mapclasstype == MapUtils::Coadded) {
         if(maps.rcphys.minCoeff() < mapDims(0,0)){
             mapDims(0,0) = maps.rcphys.minCoeff();
         }
@@ -114,20 +154,20 @@ auto MapUtils::getMapMaxMin(MS &maps, TD &telMetaData, OT &offsets, std::shared_
         if(maps.ccphys.maxCoeff() > mapDims(1,1)){
             mapDims(1,1) = maps.ccphys.maxCoeff();
         }
-    }
+    }*/
 
     return std::move(mapDims);
 }
 
-template<MapUtils::MapClassType mapclasstype, class MS, typename TD, typename OT>
-auto MapUtils::setRowsCols(MS &maps, TD &telMetaData, OT &offsets,
-                           std::shared_ptr<lali::YamlConfig> config)
+template<MapUtils::MapClassType mapclasstype, typename TD, typename OT>
+auto MapUtils::getRowsCols(TD &telMetaData, OT &offsets,
+                           lali::YamlConfig config)
 {
 
-    auto mapDims = getMapMaxMin<mapclasstype>(maps, telMetaData, offsets, config);
+    auto mapDims = getMapMaxMin<mapclasstype>(telMetaData, offsets, config);
 
     // Set the pixelsize
-    pixelsize = config->get_typed<double>("pixelsize")*RAD_ASEC;
+    pixelsize = config.get_typed<double>(std::tuple{"map","pixelsize"})*RAD_ASEC;
     SPDLOG_INFO("pixelsize {} (arcseconds)/{} (radians)", pixelsize/RAD_ASEC, pixelsize);
 
     // Find the maximum pixel value in the lat dimension
