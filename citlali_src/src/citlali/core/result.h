@@ -36,17 +36,18 @@ auto Result::writeMapsToNetCDF(YamlConfig config, MC &Maps, std::string filePath
         //Create netCDF dimensions
         NcDim nrows = fo.addDim("nrows", Maps.nrows);
         NcDim ncols = fo.addDim("ncols", Maps.ncols);
+        NcDim npixels = fo.addDim("npixels", Maps.ncols*Maps.nrows);
 
         std::vector<NcDim> dims;
         dims.push_back(nrows);
         dims.push_back(ncols);
 
-        auto signalmapvar = "signal";
-        auto weightmapvar = "weight";
-        auto kernelmapvar = "kernel";
-        auto intmapvar = "intMap";
-
         for (Eigen::Index mc = 0; mc < Maps.map_count; mc++) {
+            auto signalmapvar = "signal" + std::to_string(mc);
+            auto weightmapvar = "weight" + std::to_string(mc);
+            auto kernelmapvar = "kernel" + std::to_string(mc);
+            auto intmapvar = "intMap" + std::to_string(mc);
+
             NcVar signalmapdata = fo.addVar(signalmapvar, ncDouble, dims);
             NcVar weightmapdata = fo.addVar(weightmapvar, ncDouble, dims);
             NcVar kernelmapdata = fo.addVar(kernelmapvar, ncDouble, dims);

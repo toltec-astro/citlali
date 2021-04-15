@@ -70,56 +70,58 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
   auto maptype = config.get_str(std::tuple{"map","type"});
   pixelsize = config.get_typed<double>(std::tuple{"map","pixelsize"})*RAD_ASEC;
 
-  for (Eigen::Index mc = 0; mc < map_count; mc++) {
-      // Loop through each detector
-      for (Eigen::Index det = 0; det < ndetectors; det++) {
-        Eigen::VectorXd lat, lon;
+  // Loop through each detector
+  for (Eigen::Index det = 0; det < ndetectors; det++) {
+    Eigen::VectorXd lat, lon;
 
-        // Get pointing for each detector using that scans's telescope pointing only
-        if (std::strcmp("RaDec", maptype.c_str()) == 0) {
-            getDetectorPointing<RaDec>(lat, lon, in.telLat.data, in.telLon.data,
-                                       in.telElDes.data, in.ParAng.data,
-                                       offsets["azOffset"](det),
-                                       offsets["elOffset"](det), config);
-        }
+    // Get pointing for each detector using that scans's telescope pointing only
+    if (std::strcmp("RaDec", maptype.c_str()) == 0) {
+        getDetectorPointing<RaDec>(lat, lon, in.telLat.data, in.telLon.data,
+                                   in.telElDes.data, in.ParAng.data,
+                                   offsets["azOffset"](det),
+                                   offsets["elOffset"](det), config);
+    }
 
-        if (std::strcmp("AzEl", maptype.c_str()) == 0) {
-            getDetectorPointing<AzEl>(lat, lon, in.telLat.data, in.telLon.data,
-                                       in.telElDes.data, in.ParAng.data,
-                                       offsets["azOffset"](det),
-                                       offsets["elOffset"](det), config);
-        }
+    else if (std::strcmp("AzEl", maptype.c_str()) == 0) {
+        getDetectorPointing<AzEl>(lat, lon, in.telLat.data, in.telLon.data,
+                                   in.telElDes.data, in.ParAng.data,
+                                   offsets["azOffset"](det),
+                                   offsets["elOffset"](det), config);
+    }
 
-        // Get row and col indices for lat and lon vectors
-        Eigen::VectorXd irow = lat.array() / pixelsize + (nrows + 1.) / 2.;
-        Eigen::VectorXd icol = lon.array() / pixelsize + (ncols + 1.) / 2.;
+    //SPDLOG_INFO("DET LAT {}", lat/DEG_TO_RAD);
+    //SPDLOG_INFO("DET LON {}", lon/DEG_TO_RAD);
 
-        // Loop through points in scan
-        for (Eigen::Index s = 0; s < npts; s++) {
+    // Get row and col indices for lat and lon vectors
+    Eigen::VectorXd irow = lat.array() / pixelsize + (nrows + 1.) / 2.;
+    Eigen::VectorXd icol = lon.array() / pixelsize + (ncols + 1.) / 2.;
 
-          Eigen::Index ir = irow(s);
-          Eigen::Index ic = icol(s);
+    // Loop through points in scan
+    for (Eigen::Index s = 0; s < npts; s++) {
 
-          // Exclude flagged data
-          if (in.flags.data(s, det)) {
-            /*Weight Map*/
-            weight.at(mc)(ir,ic) += in.weights.data(det);
+      Eigen::Index ir = irow(s);
+      Eigen::Index ic = icol(s);
 
-            /*Signal Map*/
-            auto sig = in.scans.data(s, det) * in.weights.data(det);
-            signal.at(mc)(ir,ic) += sig;
+      // Exclude flagged data
+      if (in.flags.data(s, det)) {
+        /*Weight Map*/
+        weight.at(in.mnum.data)(ir,ic) += in.weights.data(det);
 
-            /*Kernel Map*/
-            auto ker = in.kernelscans.data(s, det) * in.weights.data(det);
-            kernel.at(mc)(ir,ic) += ker;
+        /*Signal Map*/
+        auto sig = in.scans.data(s, det);// * in.weights.data(det);
+        signal.at(in.mnum.data)(ir,ic) += sig;
 
-            /*Int Map*/
-            intMap.at(mc)(ir,ic) += 1;
+        /*Kernel Map*/
+        auto ker = in.kernelscans.data(s, det) * in.weights.data(det);
+        kernel.at(in.mnum.data)(ir,ic) += ker;
 
-            /*Noise Maps*/
-          }
-        }
+        /*Int Map*/
+        intMap.at(in.mnum.data)(ir,ic) += 1;
+
+        /*Noise Maps*/
+        // fix bug with boost random libraries
       }
+    }
   }
 }
 
@@ -129,8 +131,8 @@ void MapStruct::mapNormalize() {
     double pixelWeight = 0;
 
     for (Eigen::Index mc = 0; mc < map_count; mc++) {
-        signal.at(mc) = (weight.at(mc).array() == 0).select(0, -signal.at(mc).array() / weight.at(mc).array());
-        kernel.at(mc) = (weight.at(mc).array() == 0).select(0, -kernel.at(mc).array() / weight.at(mc).array());
+        signal.at(mc) = (weight.at(mc).array() == 0).select(0, signal.at(mc).array() / weight.at(mc).array());
+        kernel.at(mc) = (weight.at(mc).array() == 0).select(0, kernel.at(mc).array() / weight.at(mc).array());
     }
 
     // Can parallelize so leave in for loops.

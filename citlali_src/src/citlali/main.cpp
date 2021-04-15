@@ -15,7 +15,7 @@
 #include <tuple>
 
 #include <boost/math/constants/constants.hpp>
-static double pi = boost::math::constants::pi<double>();
+constexpr auto pi = static_cast<double>(EIGEN_PI);
 
 // Arcseconds in 360 degrees
 #define ASEC_CIRC 1296000.0
@@ -32,6 +32,8 @@ static double pi = boost::math::constants::pi<double>();
 #include "citlali/core/ecsv_reader.h"
 
 #include "citlali/core/lali.h"
+
+#include "citlali/core/source.h"
 
 auto parse_args(int argc, char *argv[]) {
 
@@ -473,6 +475,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc> {
     using map_extent_t = std::vector<double>;
     using map_coord_t = std::vector<Eigen::VectorXd>;
     using map_count_t = std::size_t;
+    using array_indices_t = std::vector<std::tuple<int,int>>;
     using scanindicies_t = Eigen::MatrixXI;
 
     TimeOrderedDataProc(config_t config) : Base{std::move(config)} {}
@@ -519,12 +522,25 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc> {
         SPDLOG_INFO("grouping {}", grouping);
 
         int map_count;
+        Eigen::Index ai = 0;
+        std::vector<std::tuple<int,int>> array_index;
 
         if (std::strcmp("array_name", grouping.c_str()) == 0) {
+            array_index.push_back(std::tuple{0,0});
             map_count = 1;
+            for(Eigen::Index i = 0; i < engine().array_name.size(); i++) {
+                if (engine().array_name(i) == ai){
+                    std::get<1>(array_index.at(ai)) = i;
+                }
+                else {
+                    map_count += 1;
+                    ai += 1;
+                    array_index.push_back(std::tuple{i,0});
+                }
+            }
         }
 
-        return map_count;
+        return std::tuple{map_count, array_index};
     }
 
     auto get_scanindicies(const RawObs &rawobs, lali::TelData &telMD, double tod_sample_rate) {
@@ -553,7 +569,6 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc> {
         engine().Maps.map_count = map_count;
 
         engine().Maps.allocateMaps(engine().telMD, engine().offsets, engine().config);
-
     }
 
     // TODO fix the const correctness
@@ -611,6 +626,7 @@ int run(const config::Config &rc) {
 
     // Put apt table into lali engine (temporary maybe)
     todproc.engine().nw = apt_table.col(0);
+    todproc.engine().array_name = apt_table.col(1);
     todproc.engine().offsets["azOffset"] = apt_table.col(2)*3600.;
     todproc.engine().offsets["elOffset"] = apt_table.col(3)*3600.;
 
@@ -618,10 +634,12 @@ int run(const config::Config &rc) {
     using map_extent_t = TimeOrderedDataProc::map_extent_t;
     using map_coord_t = TimeOrderedDataProc::map_coord_t;
     using map_count_t = TimeOrderedDataProc::map_count_t;
+    using array_indices_t = TimeOrderedDataProc::array_indices_t;
 
     std::vector<map_extent_t> map_extents{};
     std::vector<map_coord_t> map_coords{};
     std::vector<map_count_t> map_counts{};
+    std::vector<array_indices_t> array_indices{};
 
     // 1. coadd map buffer
     {
@@ -642,12 +660,14 @@ int run(const config::Config &rc) {
             }
             todproc.engine().telMD = telMD;
 
-            auto [me, mc] = todproc.get_map_extent(rawobs);
+            auto [me, mco] = todproc.get_map_extent(rawobs);
             map_extents.push_back(std::move(me));
-            map_coords.push_back(std::move(mc));
+            map_coords.push_back(std::move(mco));
 
             // map_extents.push_back(todproc.get_map_extent(rawobs));
-            map_counts.push_back(todproc.get_map_count(rawobs));
+            auto [mc, ai] = todproc.get_map_count(rawobs);
+            map_counts.push_back(std::move(mc));
+            array_indices.push_back(std::move(ai));
         }
 
         // combine the map extents to the coadd map extent
@@ -689,9 +709,11 @@ int run(const config::Config &rc) {
 
             todproc.engine().telMD = telMD;
 
+            todproc.engine().array_index = array_indices.at(i);
+
             // TODO implement to get the number of detectors to create rtc
             // buffer
-            double n_detectors = apt_table.rows();
+            double n_detectors = 4012;//apt_table.rows();
             SPDLOG_INFO("n_detectors {}", n_detectors);
 
             // Do general setup that is only run once per rawobs before grppi pipeline
@@ -722,10 +744,6 @@ int run(const config::Config &rc) {
                     // Declare a TCData to hold data
                     predefs::TCData<predefs::LaliDataKind::RTC, Eigen::MatrixXd> rtc;
 
-                    // Make flag matrix
-                    rtc.flags.data.resize(scanlength, n_detectors);
-                    rtc.flags.data.setOnes();
-
                     // Get scan indices and push into current RTC
                     rtc.scanindex.data = scanindicies.col(scan);
 
@@ -753,9 +771,16 @@ int run(const config::Config &rc) {
                     rtc.telElDes.data = todproc.engine().telMD.telMetaData["TelElDes"].segment(si, scanlength);
                     rtc.ParAng.data = todproc.engine().telMD.telMetaData["ParAng"].segment(si, scanlength);
 
-                    // rtc.scans.data.resize(scanlength, n_detectors);
-                    rtc.scans.data = kidsproc.populate_rtc(rawobs, rtc.scanindex.data, scanlength, n_detectors);
-                    // rtc.scans.data.setRandom(scanlength, n_detectors);
+                    rtc.flags.data.resize(scanlength, n_detectors);
+                    rtc.flags.data.setOnes();
+
+                    rtc.scans.data.resize(scanlength, n_detectors);
+                    rtc.scans.data = kidsproc.populate_rtc(rawobs, rtc.scanindex.data, scanlength, n_detectors);//.col(1998);
+                    // Eigen::MatrixXd scans;
+                    //rtc.scans.data.setRandom(scanlength, n_detectors);
+                    //addsource(rtc, todproc.engine().offsets, todproc.engine().config);
+
+                    rtc.mnum.data = 0;
 
                     // Increment scan
                     scan++;
@@ -771,7 +796,7 @@ int run(const config::Config &rc) {
             SPDLOG_INFO("Normalizing Maps by Weight Map");
             {
                 // logging::scoped_timeit timer("mapNormalize()");
-                todproc.engine().Maps.mapNormalize();
+                // todproc.engine().Maps.mapNormalize();
             }
 
             SPDLOG_INFO("Outputing Maps to netCDF File");

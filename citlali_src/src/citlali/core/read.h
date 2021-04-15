@@ -211,7 +211,7 @@ struct TelData {
             data.telMetaData["ParAng"] = data.telMetaData["ParAng"]*DEG_TO_RAD;
             data.telMetaData["ParAng"] = pi-data.telMetaData["ParAng"].array();
 
-             SPDLOG_INFO("ActParAng {}", data.telMetaData["ActParAng"]);
+             SPDLOG_INFO("ActParAng {}", data.telMetaData["ParAng"]);
 
             Eigen::Index hold_npts = vars.find("Data.TelescopeBackend.Hold")->second.getDim(0).getSize();
             data.telMetaData["Hold"].resize(hold_npts);
@@ -238,7 +238,6 @@ struct TelData {
 
             data.telMetaData["SourceAz"] = data.telMetaData["TelAzAct"];
             data.telMetaData["SourceEl"] = data.telMetaData["TelElAct"];
-
 
             return std::move(data);
         } catch (NcException &e) {

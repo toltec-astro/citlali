@@ -91,7 +91,7 @@ auto MapUtils::getMapMaxMin(TD &telMetaData, OT &offsets, lali::YamlConfig confi
     if constexpr (mapclasstype == MapUtils::Individual) {
         Eigen::VectorXd lat, lon;
         Eigen::MatrixXd lat_lim(offsets["azOffset"].size(), 2);
-        Eigen::MatrixXd lon_lim(offsets["azOffset"].size(), 2);
+        Eigen::MatrixXd lon_lim(offsets["elOffset"].size(), 2);
 
         std::vector<int> dets(offsets["azOffset"].size());
         std::iota (std::begin(dets), std::end(dets), 0);

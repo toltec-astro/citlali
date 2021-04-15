@@ -108,6 +108,12 @@ public:
     // Eigen Vector for nws
     Eigen::VectorXd nw;
 
+    // Eigen Vector for array names
+    Eigen::VectorXd array_name;
+
+    // Array indices
+    std::vector<std::tuple<int,int>> array_index;
+
     //Random generator for noise maps
     // boost::random_device rd;
     //  boost::random::mt19937 rng{rd};
@@ -135,16 +141,6 @@ void Lali::setup()
     filter.makefilter(fLow, fHigh, aGibbs, nTerms, samplerate);
   }
 
-  // Get the detector Az and El offsets and place them in a
-  // std::map
-
-  /*offsets["azOffset"] = Eigen::Map<Eigen::VectorXd>(
-      &(config.get_typed<std::vector<double>>("az_offset"))[0],
-      ndetectors);
-  offsets["elOffset"] = Eigen::Map<Eigen::VectorXd>(
-      &(config.get_typed<std::vector<double>>("el_offset"))[0],
-      ndetectors);
-   */
   // Resize the maps to nrows x ncols and set rcphys and ccphys
   // Maps.allocateMaps(Data.telMetaData, offsets, config);
   // CoaddedMaps.allocateMaps(Maps, Data.telMetaData, offsets, config);
@@ -172,6 +168,7 @@ auto Lali::run(){
         SPDLOG_INFO("scans after ptcproc {}", out.scans.data);
 
         /*Stage 3 Populate Map*/
+        out.mnum.data = in.mnum.data;
         Maps.mapPopulate(out, offsets, config);
 
         SPDLOG_INFO("----------------------------------------------------");

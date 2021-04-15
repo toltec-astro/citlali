@@ -252,7 +252,7 @@ void PTCProc::getWeights(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in, L LC) {
 
       // Check for NaNs and too short scans
       if (tmp != tmp ||
-          ngood < LC->samplerate) {
+          ngood < LC->samplerate || tmp == 0) {
         in.weights.data(det) = 0.0;
       } else {
         tmp = pow(tmp, -2.0);

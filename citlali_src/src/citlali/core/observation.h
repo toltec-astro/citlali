@@ -14,7 +14,7 @@ namespace  lali {
 typedef std::map<std::string, Eigen::Matrix<double, Eigen::Dynamic, 1>>
     pointing;
 
-constexpr auto pi = static_cast<double>(-EIGEN_PI);
+//constexpr auto pi = static_cast<double>(-EIGEN_PI);
 
 namespace internal {
 
@@ -85,17 +85,20 @@ template <typename DerivedA>
 void removeDropouts(Eigen::DenseBase<DerivedA> &sig, Eigen::Index npts){
     //sometimes the LMT signals drop out.  Replace these with average of
     //adjacent signals
+
     for(Eigen::Index i=1;i<npts-1;i++){
         if(sig(i) <= 1.e-9){
             //this is a dropout
             sig(i) = (sig(i-1)+sig(i+1))/2.;
         }
     }
+
     if(sig(0) != sig(0)){
         SPDLOG_INFO("removeDropouts(): First data point is corrupted as a dropout.  "
                     "Setting equal to adjacent data point.");
         sig(0) = sig(1);
     }
+
     if(sig(npts-1) != sig(npts-1)){
         SPDLOG_INFO("removeDropouts(): Last data point is corrupted as a dropout.  "
                     "Setting equal to adjacent data point.");
@@ -182,7 +185,7 @@ void alignWithDetectors(DerivedA &telescope_data,
         if (it.first!="Hold" && it.first!="AztecUtc" && it.first!="locUnique" && it.first!="telUtcUnique"){
 
             for(Eigen::Index i=0;i<nunique;i++){
-                yy[i]=telescope_data[it.first](telescope_data["locUnique"].template cast<Eigen::Index>()(i));
+                yy(i)=telescope_data[it.first](telescope_data["locUnique"].template cast<Eigen::Index>()(i));
             }
 
             Eigen::Index npts = telescope_data[it.first].size();
@@ -200,7 +203,7 @@ void absToPhysHorPointing(DerivedA &telescope_data){
     Eigen::Index npts = telescope_data["TelAzAct"].rows();
     for(Eigen::Index i=0;i<npts;i++){
         if((telescope_data["TelAzAct"](i)-telescope_data["SourceAz"](i)) > 0.9*2.*pi){
-            //telescope_data["TelAzAct"](i) -= 2.*pi;  //*RE-ENABLE after testing*
+            telescope_data["TelAzAct"](i) -= 2.*pi;  //*RE-ENABLE after testing*
         }
     }
 
@@ -209,16 +212,19 @@ void absToPhysHorPointing(DerivedA &telescope_data){
 }
 
 template <typename DerivedA>
-bool absToPhys(DerivedA &telescope_data,
+void absToPhys(DerivedA &telescope_data,
            double  centerRa, double centerDec,
                int nSamples){
     //use temporary storage to avoid writing over absRa and absDec
     Eigen::VectorXd tRa(nSamples);
     Eigen::VectorXd  tDec(nSamples);
-    for(int i=0;i<nSamples;i++) tDec[i]=telescope_data["TelDec"][i];
+    for(int i=0;i<nSamples;i++) {
+        tDec(i)=telescope_data["TelDec"](i);
+    }
     //tRa must range from -pi to pi
-    for(int i=0;i<nSamples;i++)
-        tRa[i] = (telescope_data["TelRa"][i] > pi) ? telescope_data["TelRa"][i]-(2.*pi) : telescope_data["TelRa"][i];
+    for(int i=0;i<nSamples;i++) {
+        tRa(i) = (telescope_data["TelRa"](i) > pi) ? telescope_data["TelRa"](i)-(2.*pi) : telescope_data["TelRa"](i);
+    }
 
     //same thing for centerRa
     centerRa = (centerRa > pi) ? centerRa-(2.*pi) : centerRa;
@@ -227,40 +233,36 @@ bool absToPhys(DerivedA &telescope_data,
     Eigen::VectorXd cosc(nSamples);
     double sCD = sin(centerDec);
     double cCD = cos(centerDec);
-    for(int i=0;i<nSamples;i++)
-        cosc[i] = sCD*sin(telescope_data["TelDec"][i]) + cCD*cos(telescope_data["TelDec"][i])*cos(tRa[i]-centerRa);
+    for(int i=0;i<nSamples;i++) {
+        cosc(i) = sCD*sin(telescope_data["TelDec"](i)) + cCD*cos(telescope_data["TelDec"](i))*cos(tRa(i)-centerRa);
+    }
 
     for(int i=0;i<nSamples;i++){
-        if(cosc[i]==0.){
-            telescope_data["TelRaPhys"][i] = 0.;
-            telescope_data["TelDecPhys"][i] = 0;
+        if(cosc(i)==0.){
+            telescope_data["TelRaPhys"](i) = 0.;
+            telescope_data["TelDecPhys"](i) = 0;
         } else {
-            telescope_data["TelRaPhys"][i] = cos(telescope_data["TelDec"][i])*sin(tRa[i]-centerRa)/cosc[i];
-            telescope_data["TelDecPhys"][i] = (cCD*sin(telescope_data["TelDec"][i]) - sCD*cos(telescope_data["TelDec"][i])*cos(tRa[i]-centerRa))/cosc[i];
+            telescope_data["TelRaPhys"](i) = cos(telescope_data["TelDec"](i))*sin(tRa(i)-centerRa)/cosc(i);
+            telescope_data["TelDecPhys"](i) = (cCD*sin(telescope_data["TelDec"](i)) - sCD*cos(telescope_data["TelDec"](i))*cos(tRa(i)-centerRa))/cosc(i);
         }
     }
-    return 1;
 }
 
 
 template <typename DerivedA, typename srcType>
-bool absToPhysEqPointing(DerivedA &telescope_data, srcType &srcCenter)
+void absToPhysEqPointing(DerivedA &telescope_data, srcType &srcCenter)
 {
     //create the phys pointing arrays
     int nSamples = telescope_data["Hold"].rows();
     telescope_data["TelRaPhys"].resize(nSamples);
     telescope_data["TelDecPhys"].resize(nSamples);
 
-    //get the centerRa and centerDec of the map from ap
-    //double* pmg;
-    //pmg = ap->getMasterGridJ2000();
-    double centerRa = srcCenter["centerRa"](0);// 2.39728972187159;//pmg[0];
-    double centerDec = srcCenter["centerDec"](0); // 0.0336562505563051;//pmg[1];
+    //get the centerRa and centerDec of the map
+    double centerRa = srcCenter["centerRa"](0);
+    double centerDec = srcCenter["centerDec"](0);
 
     //call the tangential projection
     absToPhys(telescope_data, centerRa, centerDec, nSamples);
-
-    return 1;
 }
 
 } //namespace internal
@@ -273,21 +275,23 @@ void obs(Eigen::DenseBase<DerivedA> &scanindex, pointing &telescope_data,
     Eigen::Index npts = telescope_data["Hold"].rows();
     Eigen::Index nscans = 0;
 
-    /*for (const auto &it : telescope_data){
+    SPDLOG_INFO("A");
+
+    for (const auto &it : telescope_data){
         if (it.first!="Hold"){
-            if(it.first!="TelUtc" && it.first!="AztecUtc"){
-                internal::removeDropouts(telescope_data[it.first], npts);
-                internal::deNanSignal(telescope_data[it.first], npts);
-                internal::correctOutOfBounds(telescope_data[it.first], 1.e-9,5.*pi, npts);
-                internal::correctRollover(telescope_data[it.first], pi, 1.99*pi, 2.0*pi, npts);
+            if(it.first!="TeTime"){
+                //internal::removeDropouts(telescope_data[it.first], npts);
+                //internal::deNanSignal(telescope_data[it.first], npts);
+                //internal::correctOutOfBounds(telescope_data[it.first], 1.e-9,5.*pi, npts);
+                //internal::correctRollover(telescope_data[it.first], pi, 1.99*pi, 2.0*pi, npts);
             }
-            else if (it.first=="TelUtc" || it.first=="AztecUtc") {
+            /*else if (it.first=="TelUtc" || it.first=="AztecUtc") {
                 internal::removeDropouts(telescope_data[it.first], npts);
                 internal::deNanSignal(telescope_data[it.first], npts);
                 internal::correctOutOfBounds(telescope_data[it.first], 1.e-9,30, npts);
-            }
+            }*/
         }
-    }*/
+    }
 
     //LMT's UTC is in radians so convert to hours
     // telescope_data["TelUtc"] = telescope_data["TelUtc"]*24./2./pi;
@@ -315,11 +319,11 @@ void obs(Eigen::DenseBase<DerivedA> &scanindex, pointing &telescope_data,
 
     //the telescope is turning at end of scan when hold&8=1
     /*for(Eigen::Index i=0;i<npts;i++) {
-          holdint[i] = int(telescope_data["Hold"][i]);
+          holdint(i) = int(telescope_data["Hold"](i));
     }
     for(Eigen::Index i=0;i<npts;i++) {
-          turning[i] = (holdint[i]&8);
-          std::cerr << holdint[i] << ',';
+          turning(i) = (holdint(i)&8);
+          std::cerr << holdint(i) << ',';
     }
     */
 
@@ -331,7 +335,7 @@ void obs(Eigen::DenseBase<DerivedA> &scanindex, pointing &telescope_data,
       //count up the number of scans and keep track of the scan number
       nscans=0;
       for(Eigen::Index i=1;i<npts;i++){
-        if(turning[i]-turning[i-1]==1){
+        if(turning(i)-turning[i-1]==1){
             nscans++;
         }
       }
@@ -349,12 +353,12 @@ void obs(Eigen::DenseBase<DerivedA> &scanindex, pointing &telescope_data,
       }
 
       for(Eigen::Index i=1;i<npts;i++){
-          if(turning[i]-turning[i-1] < 0){
+          if(turning(i)-turning[i-1] < 0){
               //this is the beginning of the next scan intentionally sacrificing a sample to keep
               counter++;
               scanindex(0,counter) = i+1;
           }
-          if(turning[i]-turning[i-1] > 0){
+          if(turning(i)-turning[i-1] > 0){
               //one sample ago was the end of the scan
               scanindex(1,counter) = i-1;
           }
@@ -392,9 +396,9 @@ void obs(Eigen::DenseBase<DerivedA> &scanindex, pointing &telescope_data,
     scanindex.row(3) = scanindex.row(1).array();// + 32;
 
     scanindex(2,0) = scanindex(0,0);
-    scanindex(0,0) = scanindex(0,0) + 32;
+    //scanindex(0,0) = scanindex(0,0) + 32;
     scanindex(3,nscans-1) = scanindex(1,nscans-1);
-    scanindex(1,nscans-1) = scanindex(1,nscans-1) - 32;
+    //scanindex(1,nscans-1) = scanindex(1,nscans-1) - 32;
 
     Eigen::Matrix<Eigen::Index,Eigen::Dynamic,Eigen::Dynamic> tmpSI(4,nscans);
     tmpSI = scanindex;

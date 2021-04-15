@@ -1,14 +1,13 @@
 #pragma once
 
 namespace timestream {
-
 template<typename OT>
-void makeKernel(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
+void addsource(TCData<LaliDataKind::RTC, Eigen::MatrixXd> &in,
                 OT &offsets,
                 lali::YamlConfig config) {
     Eigen::Index ndetectors = in.scans.data.cols();
     Eigen::VectorXd dist, lat, lon;
-    in.kernelscans.data.resize(in.scans.data.rows(), in.scans.data.cols());
+    // in.kernelscans.data.resize(in.scans.data.rows(), in.scans.data.cols());
 
     auto maptype = config.get_str(std::tuple{"map","type"});
 
@@ -44,9 +43,11 @@ void makeKernel(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
         auto beamSigEl = 5.0;
 
         double sigma = (beamSigAz + beamSigEl) / 2. / 3600. / 360. * 2.0*pi;
-        in.kernelscans.data.col(det) = (dist.array() <= 3. * sigma)
-                                           .select(exp(-0.5 * (dist.array() / sigma).pow(2)), 0);
+        Eigen::VectorXd source_flux = (dist.array() <= 3. * sigma)
+                                           .select(0.05*exp(-0.5 * (dist.array() / sigma).pow(2)), 0);
+
+        in.scans.data.col(det) = in.scans.data.col(det) + source_flux;
+
     }
 }
-
-} // namespace
+} //namespace

@@ -19,13 +19,13 @@ auto get_aptable_from_ecsv(std::string filepath, const Config &config) {
             filepath, &header, &meta_);
 
     } catch (datatable::ParseError &e) {
-        SPDLOG_WARN("unable to read fitreport file as ECSV {}: {}", filepath,
+        SPDLOG_WARN("unable to read apt table file as ECSV {}: {}", filepath,
                     e.what());
         try {
             table = datatable::read<double, datatable::Format::ascii>(filepath,
                                                                       &header);
         } catch (datatable::ParseError &e) {
-            SPDLOG_WARN("unable to read fitreport file as ASCII {}: {}",
+            SPDLOG_WARN("unable to read apt table file as ASCII {}: {}",
                         filepath, e.what());
             throw e;
         }
