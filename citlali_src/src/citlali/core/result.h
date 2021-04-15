@@ -10,7 +10,7 @@ public:
     template<typename MC>
     void output(YamlConfig config, MC &Maps)
     {
-        std::string filePath = "random";//config.get_typed<std::string>("output_filepath");
+        std::string filePath = config.get_str(std::tuple{"runtime","output_filepath"});
         writeMapsToNetCDF(config, Maps, filePath);
     }
 
@@ -30,13 +30,12 @@ auto Result::writeMapsToNetCDF(YamlConfig config, MC &Maps, std::string filePath
     int NC_ERR;
     try {
         //Create NetCDF file
-        // NcFile fo(filePath, NcFile::replace);
-        NcFile fo("/Users/mmccrackan/toltec/temp/citlali_simu_test.nc", NcFile::replace);
+        NcFile fo(filePath, NcFile::replace);
+        //NcFile fo("/Users/mmccrackan/toltec/temp/citlali_simu_test.nc", NcFile::replace);
 
         //Create netCDF dimensions
         NcDim nrows = fo.addDim("nrows", Maps.nrows);
         NcDim ncols = fo.addDim("ncols", Maps.ncols);
-        NcDim npixels = fo.addDim("npixels", Maps.ncols*Maps.nrows);
 
         std::vector<NcDim> dims;
         dims.push_back(nrows);
