@@ -10,7 +10,7 @@
 
 #include "map/map_utils.h"
 #include "map/map.h"
-#include "map/coadd.h"
+// #include "map/coadd.h"
 
 #include "result.h"
 
@@ -97,7 +97,7 @@ public:
     // Class to hold and populate maps
     mapmaking::MapStruct Maps;
     // Class to hold and populate coadded maps
-    mapmaking::CoaddedMapStruct CoaddedMaps;
+    // mapmaking::CoaddedMapStruct CoaddedMaps;
 
     // Number of threads to use for the grppi::farm
     Eigen::Index nThreads = Eigen::nbThreads();

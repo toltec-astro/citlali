@@ -14,7 +14,6 @@
 #include <regex>
 #include <tuple>
 
-#include <boost/math/constants/constants.hpp>
 constexpr auto pi = static_cast<double>(EIGEN_PI);
 
 // Arcseconds in 360 degrees
