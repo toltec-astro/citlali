@@ -44,7 +44,7 @@ mkdir build
 
 cd build
 
-cmake -DCMAKE_C_COMPILER=/path/to/llvm -DCMAKE_CXX_COMPILER=/path/to/llvm++ -DCMAKE_BUILD_TYPE=Release
+cmake -DCMAKE_C_COMPILER=/path/to/llvm -DCMAKE_CXX_COMPILER=/path/to/llvm++ -DCMAKE_BUILD_TYPE=Release ..
 
 make citlali
 
