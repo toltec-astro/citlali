@@ -19,18 +19,31 @@ Have cmake installed:
 brew install cmake
 
 git clone https://github.com/toltec-astro/citlali.git
+
 cd citlali
+
 git checkout sim_dev
+
 git submodule update --recursive --remote --init
+
 cd common_utils
+
 git checkout kids_dev
+
 cd cmake
+
 git checkout master cd ../../
+
 cd kidscpp_src
+
 git checkout master
+
 cd ../
+
 mkdir build
+
 cmake -DCMAKE_C_COMPILER=/path/to/llvm -DCMAKE_CXX_COMPILER=/path/to/llvm++ -DCMAKE_BUILD_TYPE=Release
+
 make citlali
 
 
