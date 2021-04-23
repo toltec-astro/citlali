@@ -169,7 +169,7 @@ auto Lali::run(){
 
         /*Stage 3 Populate Map*/
         out.mnum.data = in.mnum.data;
-        Maps.mapPopulate(out, offsets, config);
+        Maps.mapPopulate(out, offsets, config, array_index);
 
         SPDLOG_INFO("----------------------------------------------------");
         SPDLOG_INFO("*Done with scan {}...*",out.index.data);

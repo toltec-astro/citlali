@@ -432,8 +432,6 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
 
         return std::move(xs);
 
-        //rtc.scans.data = Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic,
-        //        Eigen::ColMajor>> (reduced.front().data_out.xs.data.data(), nrows, ncols);
     }
 
     // TODO fix the const correctness
@@ -712,7 +710,7 @@ int run(const config::Config &rc) {
 
             // TODO implement to get the number of detectors to create rtc
             // buffer
-            double n_detectors = 4012;//apt_table.rows();
+            auto n_detectors = apt_table.rows();
             SPDLOG_INFO("n_detectors {}", n_detectors);
 
             // Do general setup that is only run once per rawobs before grppi pipeline
@@ -770,13 +768,14 @@ int run(const config::Config &rc) {
                     rtc.telElDes.data = todproc.engine().telMD.telMetaData["TelElDes"].segment(si, scanlength);
                     rtc.ParAng.data = todproc.engine().telMD.telMetaData["ParAng"].segment(si, scanlength);
 
+                    rtc.scans.data.resize(scanlength, n_detectors);
+                    rtc.scans.data = kidsproc.populate_rtc(rawobs, rtc.scanindex.data, scanlength, n_detectors);//.col(1998);
+
                     rtc.flags.data.resize(scanlength, n_detectors);
                     rtc.flags.data.setOnes();
 
-                    rtc.scans.data.resize(scanlength, n_detectors);
-                    rtc.scans.data = kidsproc.populate_rtc(rawobs, rtc.scanindex.data, scanlength, n_detectors);//.col(1998);
                     // Eigen::MatrixXd scans;
-                    //rtc.scans.data.setRandom(scanlength, n_detectors);
+                    // rtc.scans.data.setRandom(scanlength, n_detectors);
                     //addsource(rtc, todproc.engine().offsets, todproc.engine().config);
 
                     rtc.mnum.data = 0;
@@ -795,7 +794,7 @@ int run(const config::Config &rc) {
             SPDLOG_INFO("Normalizing Maps by Weight Map");
             {
                 // logging::scoped_timeit timer("mapNormalize()");
-                // todproc.engine().Maps.mapNormalize();
+                todproc.engine().Maps.mapNormalize();
             }
 
             SPDLOG_INFO("Outputing Maps to netCDF File");

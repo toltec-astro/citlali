@@ -30,7 +30,7 @@ public:
 
   template <typename OT>
   void mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &, OT &,
-                   YamlConfig);
+                   YamlConfig, std::vector<std::tuple<int,int>> &);
 
   void mapNormalize();
 };
@@ -39,13 +39,6 @@ public:
 template<typename TD, typename OT>
 void MapStruct::allocateMaps(TD &telMetaData, OT &offsets, lali::YamlConfig config)
 {
-    // auto [nr, nc, rcp, ccp] = setRowsCols<Individual>(telMetaData, offsets, config);
-
-    /*nrows = nr;
-    ncols = nc;
-    rcphys = rcp;
-    ccphys = ccp;
-    */
     npixels = nrows * ncols;
 
     for(Eigen::Index i = 0; i < map_count; i++) {
@@ -60,7 +53,8 @@ void MapStruct::allocateMaps(TD &telMetaData, OT &offsets, lali::YamlConfig conf
 // corresponding values into the map matricies
 template <typename OT>
 void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
-                            OT &offsets, YamlConfig config) {
+                            OT &offsets, YamlConfig config,
+                            std::vector<std::tuple<int,int>> &ai) {
 
   SPDLOG_INFO("Populating map pixels for scan {}...", in.index.data);
 
@@ -70,58 +64,57 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
   auto maptype = config.get_str(std::tuple{"map","type"});
   pixelsize = config.get_typed<double>(std::tuple{"map","pixelsize"})*RAD_ASEC;
 
-  // Loop through each detector
-  for (Eigen::Index det = 0; det < ndetectors; det++) {
-    Eigen::VectorXd lat, lon;
+  for (Eigen::Index mc = 0; mc < map_count; mc++) {
+      // Loop through each detector
+      for (Eigen::Index det = std::get<0>(ai.at(mc)); det < std::get<1>(ai.at(mc)); det++) {
+        Eigen::VectorXd lat, lon;
 
-    // Get pointing for each detector using that scans's telescope pointing only
-    if (std::strcmp("RaDec", maptype.c_str()) == 0) {
-        getDetectorPointing<RaDec>(lat, lon, in.telLat.data, in.telLon.data,
-                                   in.telElDes.data, in.ParAng.data,
-                                   offsets["azOffset"](det),
-                                   offsets["elOffset"](det), config);
-    }
+        // Get pointing for each detector using that scans's telescope pointing only
+        if (std::strcmp("RaDec", maptype.c_str()) == 0) {
+            getDetectorPointing<RaDec>(lat, lon, in.telLat.data, in.telLon.data,
+                                       in.telElDes.data, in.ParAng.data,
+                                       offsets["azOffset"](det),
+                                       offsets["elOffset"](det), config);
+        }
 
-    else if (std::strcmp("AzEl", maptype.c_str()) == 0) {
-        getDetectorPointing<AzEl>(lat, lon, in.telLat.data, in.telLon.data,
-                                   in.telElDes.data, in.ParAng.data,
-                                   offsets["azOffset"](det),
-                                   offsets["elOffset"](det), config);
-    }
+        else if (std::strcmp("AzEl", maptype.c_str()) == 0) {
+            getDetectorPointing<AzEl>(lat, lon, in.telLat.data, in.telLon.data,
+                                       in.telElDes.data, in.ParAng.data,
+                                       offsets["azOffset"](det),
+                                       offsets["elOffset"](det), config);
+        }
 
-    //SPDLOG_INFO("DET LAT {}", lat/DEG_TO_RAD);
-    //SPDLOG_INFO("DET LON {}", lon/DEG_TO_RAD);
+        // Get row and col indices for lat and lon vectors
+        Eigen::VectorXd irow = lat.array() / pixelsize + (nrows + 1.) / 2.;
+        Eigen::VectorXd icol = lon.array() / pixelsize + (ncols + 1.) / 2.;
 
-    // Get row and col indices for lat and lon vectors
-    Eigen::VectorXd irow = lat.array() / pixelsize + (nrows + 1.) / 2.;
-    Eigen::VectorXd icol = lon.array() / pixelsize + (ncols + 1.) / 2.;
+        // Loop through points in scan
+        for (Eigen::Index s = 0; s < npts; s++) {
 
-    // Loop through points in scan
-    for (Eigen::Index s = 0; s < npts; s++) {
+          Eigen::Index ir = irow(s);
+          Eigen::Index ic = icol(s);
 
-      Eigen::Index ir = irow(s);
-      Eigen::Index ic = icol(s);
+          // Exclude flagged data
+          if (in.flags.data(s, det)) {
+            /*Weight Map*/
+            weight.at(mc)(ir,ic) += in.weights.data(det);
 
-      // Exclude flagged data
-      if (in.flags.data(s, det)) {
-        /*Weight Map*/
-        weight.at(in.mnum.data)(ir,ic) += in.weights.data(det);
+            /*Signal Map*/
+            auto sig = in.scans.data(s, det);// * in.weights.data(det);
+            signal.at(mc)(ir,ic) += sig;
 
-        /*Signal Map*/
-        auto sig = in.scans.data(s, det);// * in.weights.data(det);
-        signal.at(in.mnum.data)(ir,ic) += sig;
+            /*Kernel Map*/
+            auto ker = in.kernelscans.data(s, det) * in.weights.data(det);
+            kernel.at(mc)(ir,ic) += ker;
 
-        /*Kernel Map*/
-        auto ker = in.kernelscans.data(s, det) * in.weights.data(det);
-        kernel.at(in.mnum.data)(ir,ic) += ker;
+            /*Int Map*/
+            intMap.at(mc)(ir,ic) += 1;
 
-        /*Int Map*/
-        intMap.at(in.mnum.data)(ir,ic) += 1;
-
-        /*Noise Maps*/
-        // fix bug with boost random libraries
+            /*Noise Maps*/
+            // fix bug with boost random libraries
+          }
+        }
       }
-    }
   }
 }
 

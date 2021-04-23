@@ -33,8 +33,8 @@ public:
     template <EigenSolverBackend backend, typename DerivedA, typename DerivedB>
     void calcEigs(const Eigen::DenseBase<DerivedA> &, const Eigen::DenseBase<DerivedB> &);
 
-    template <EigenSolverBackend backend, ScanType stype, typename Derived>
-    void removeEigs(Eigen::DenseBase<Derived>&, Eigen::DenseBase<Derived> &);
+    template <EigenSolverBackend backend, ScanType stype, typename DerivedA, typename DerivedB>
+    void removeEigs(Eigen::DenseBase<DerivedA>&, Eigen::DenseBase<DerivedB> &);
 };
 
 template <EigenSolverBackend backend, typename DerivedA, typename DerivedB>
@@ -79,11 +79,11 @@ void pcaCleaner::calcEigs(const Eigen::DenseBase<DerivedA> &scans, const Eigen::
     }
 }
 
-template <EigenSolverBackend backend, ScanType stype, typename Derived>
-void pcaCleaner::removeEigs(Eigen::DenseBase<Derived> &scans, Eigen::DenseBase<Derived> &cleanedscans){
+template <EigenSolverBackend backend, ScanType stype, typename DerivedA, typename DerivedB>
+void pcaCleaner::removeEigs(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBase<DerivedB> &cleanedscans){
 
         //Resize output
-        cleanedscans.derived().resize(npts, ndetectors);
+        // cleanedscans.derived().resize(npts, ndetectors);
 
         //If kernelscans, subtract median
         if constexpr (stype == KernelType){
