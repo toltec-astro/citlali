@@ -234,7 +234,7 @@ struct TelData {
             data.telMetaData["TelElCor"].setZero(TelElAct_npts);
 
             data.telMetaData["TelAzDes"] = data.telMetaData["TelAzAct"];
-            data.telMetaData["TelElDes"] = -data.telMetaData["TelElAct"];
+            data.telMetaData["TelElDes"] = data.telMetaData["TelElAct"];
 
             data.telMetaData["SourceAz"] = data.telMetaData["TelAzAct"];
             data.telMetaData["SourceEl"] = data.telMetaData["TelElAct"];
