@@ -181,34 +181,34 @@ struct TelData {
             vars.find("Data.TelescopeBackend.TelTime")->second.getVar(data.telMetaData["TelTime"].data());
             // SPDLOG_INFO("TelTime {}", data.telMetaData["TelTime"]);
 
-            Eigen::Index TelSourceRaAct_npts = vars.find("Data.TelescopeBackend.TelSourceRaAct")->second.getDim(0).getSize();
+            Eigen::Index TelSourceRaAct_npts = vars.find("Data.TelescopeBackend.TelRaAct")->second.getDim(0).getSize();
             data.telMetaData["TelRa"].resize(TelSourceRaAct_npts);
-            vars.find("Data.TelescopeBackend.TelSourceRaAct")->second.getVar(data.telMetaData["TelRa"].data());
-            data.telMetaData["TelRa"] = data.telMetaData["TelRa"]*DEG_TO_RAD;
+            vars.find("Data.TelescopeBackend.TelRaAct")->second.getVar(data.telMetaData["TelRa"].data());
+            data.telMetaData["TelRa"] = data.telMetaData["TelRa"];
              SPDLOG_INFO("TelRa {}", data.telMetaData["TelRa"]);
 
-            Eigen::Index TelSourceDecAct_npts = vars.find("Data.TelescopeBackend.TelSourceDecAct")->second.getDim(0).getSize();
+            Eigen::Index TelSourceDecAct_npts = vars.find("Data.TelescopeBackend.TelDecAct")->second.getDim(0).getSize();
             data.telMetaData["TelDec"].resize(TelSourceDecAct_npts);
-            vars.find("Data.TelescopeBackend.TelSourceDecAct")->second.getVar(data.telMetaData["TelDec"].data());
-            data.telMetaData["TelDec"] = data.telMetaData["TelDec"]*DEG_TO_RAD;
+            vars.find("Data.TelescopeBackend.TelDecAct")->second.getVar(data.telMetaData["TelDec"].data());
+            data.telMetaData["TelDec"] = data.telMetaData["TelDec"];
              SPDLOG_INFO("TelDec {}", data.telMetaData["TelDec"]);
 
             Eigen::Index TelAzAct_npts = vars.find("Data.TelescopeBackend.TelAzAct")->second.getDim(0).getSize();
             data.telMetaData["TelAzAct"].resize(TelAzAct_npts);
             vars.find("Data.TelescopeBackend.TelAzAct")->second.getVar(data.telMetaData["TelAzAct"].data());
-            data.telMetaData["TelAzAct"] = data.telMetaData["TelAzAct"]*DEG_TO_RAD;
+            data.telMetaData["TelAzAct"] = data.telMetaData["TelAzAct"];
              SPDLOG_INFO("TelAzAct {}", data.telMetaData["TelAzAct"]);
 
             Eigen::Index TelElAct_npts = vars.find("Data.TelescopeBackend.TelElAct")->second.getDim(0).getSize();
             data.telMetaData["TelElAct"].resize(TelElAct_npts);
             vars.find("Data.TelescopeBackend.TelElAct")->second.getVar(data.telMetaData["TelElAct"].data());
-            data.telMetaData["TelElAct"] = data.telMetaData["TelElAct"]*DEG_TO_RAD;
+            data.telMetaData["TelElAct"] = data.telMetaData["TelElAct"];
              SPDLOG_INFO("TelElAct {}", data.telMetaData["TelElAct"]);
 
             Eigen::Index ActParAng_npts = vars.find("Data.TelescopeBackend.ActParAng")->second.getDim(0).getSize();
             data.telMetaData["ParAng"].resize(ActParAng_npts);
             vars.find("Data.TelescopeBackend.ActParAng")->second.getVar(data.telMetaData["ParAng"].data());
-            data.telMetaData["ParAng"] = data.telMetaData["ParAng"]*DEG_TO_RAD;
+            data.telMetaData["ParAng"] = data.telMetaData["ParAng"];
             data.telMetaData["ParAng"] = pi-data.telMetaData["ParAng"].array();
 
              SPDLOG_INFO("ActParAng {}", data.telMetaData["ParAng"]);
@@ -218,23 +218,18 @@ struct TelData {
             vars.find("Data.TelescopeBackend.Hold")->second.getVar(data.telMetaData["Hold"].data());
              SPDLOG_INFO("hold {}", data.telMetaData["Hold"]);
 
-            data.srcCenter["centerRa"].resize(2);
-            data.srcCenter["centerRa"].setZero();
-            data.srcCenter["centerRa"](0) = 92.0*DEG_TO_RAD;
-            // vars.find("Header.Source.Ra")->second.getVar(data.srcCenter["centerRa"].data());
+            data.srcCenter["centerRa"].resize(1);
+            vars.find("Header.Source.Ra")->second.getVar(data.srcCenter["centerRa"].data());
 
-            data.srcCenter["centerDec"].resize(2);
-            data.srcCenter["centerDec"].setZero();
-            data.srcCenter["centerDec"](0) = -7.0*DEG_TO_RAD;
-
-            // vars.find("Header.Source.Dec")->second.getVar(data.srcCenter["centerDec"].data());
+            data.srcCenter["centerDec"].resize(1);
+            vars.find("Header.Source.Dec")->second.getVar(data.srcCenter["centerDec"].data());
 
             /* TEMP */
             data.telMetaData["TelAzCor"].setZero(TelAzAct_npts);
             data.telMetaData["TelElCor"].setZero(TelElAct_npts);
 
             data.telMetaData["TelAzDes"] = data.telMetaData["TelAzAct"];
-            data.telMetaData["TelElDes"] = -data.telMetaData["TelElAct"];
+            data.telMetaData["TelElDes"] = data.telMetaData["TelElAct"];
 
             data.telMetaData["SourceAz"] = data.telMetaData["TelAzAct"];
             data.telMetaData["SourceEl"] = data.telMetaData["TelElAct"];
