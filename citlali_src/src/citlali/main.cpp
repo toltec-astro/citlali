@@ -20,18 +20,14 @@ constexpr auto pi = static_cast<double>(EIGEN_PI);
 #define ASEC_CIRC 1296000.0
 // rad per arcsecond
 #define RAD_ASEC (2.0*pi / ASEC_CIRC)
-
 // Degrees to radians
 #define DEG_TO_RAD 3600.*RAD_ASEC
 
 #include "citlali/core/read.h"
 #include "citlali/core/observation.h"
-
 #include "citlali/core/TCData.h"
 #include "citlali/core/ecsv_reader.h"
-
 #include "citlali/core/lali.h"
-
 #include "citlali/core/source.h"
 
 auto parse_args(int argc, char *argv[]) {
@@ -705,101 +701,30 @@ int run(const config::Config &rc) {
             SPDLOG_INFO("scanindicies {}", scanindicies);
 
             todproc.engine().telMD = telMD;
-
             todproc.engine().array_index = array_indices.at(i);
 
-            // TODO implement to get the number of detectors to create rtc
-            // buffer
-            auto n_detectors = apt_table.rows();
-            SPDLOG_INFO("n_detectors {}", n_detectors);
+            // TODO implement to get the number of detectors to create rtc buffer
+            todproc.engine().n_detectors = apt_table.rows();
+            SPDLOG_INFO("n_detectors {}", todproc.engine().n_detectors);
 
             // Do general setup that is only run once per rawobs before grppi pipeline
+            SPDLOG_INFO("Run engine setup");
             todproc.engine().setup();
 
-            auto ex_name = citlali_config.get_str(std::tuple{"runtime","policy"});
-            auto ncores = citlali_config.get_str(std::tuple{"runtime","ncores"});
+            SPDLOG_INFO("Run engine pipeline");
+            todproc.engine().pipeline(scanindicies, kidsproc, rawobs);
 
-            // do grppi reduction
-            grppi::pipeline(grppiex::dyn_ex(ex_name),
-                [&]() -> std::optional<TCData<LaliDataKind::RTC, Eigen::MatrixXd>> {
-                // Variable for current scan
-                static auto scan = 0;
-                // Current scanlength
-                Eigen::Index scanlength;
-                // Index of the start of the current scan
-                Eigen::Index si = 0;
-
-                while (scan < scanindicies.cols()) {
-
-                    // First scan index for current scan
-                    si = scanindicies(2, scan);
-                    SPDLOG_INFO("si {}", si);
-                    // Get length of current scan (do we need the + 1?)
-                    scanlength = scanindicies(3, scan) - scanindicies(2, scan) + 1;
-                    SPDLOG_INFO("scanlength {}", scanlength);
-
-                    // Declare a TCData to hold data
-                    predefs::TCData<predefs::LaliDataKind::RTC, Eigen::MatrixXd> rtc;
-
-                    // Get scan indices and push into current RTC
-                    rtc.scanindex.data = scanindicies.col(scan);
-
-                    // This index keeps track of which scan the RTC actually belongs to.
-                    rtc.index.data = scan + 1;
-
-                    // Get telescope pointings for scan (move to Eigen::Maps to save
-                    // memory and time)
-
-                    // Get the requested map type
-                    auto maptype = citlali_config.get_str(std::tuple{"map","type"});
-                    SPDLOG_INFO("mapy_type {}", maptype);
-
-                    // Put that scan's telescope pointing into RTC
-                    if (std::strcmp("RaDec", maptype.c_str()) == 0) {
-                        rtc.telLat.data = todproc.engine().telMD.telMetaData["TelRaPhys"].segment(si, scanlength);
-                        rtc.telLon.data = todproc.engine().telMD.telMetaData["TelDecPhys"].segment(si, scanlength);
-                    }
-
-                    else if (std::strcmp("AzEl", maptype.c_str()) == 0) {
-                        rtc.telLat.data = todproc.engine().telMD.telMetaData["TelAzPhys"].segment(si, scanlength);
-                        rtc.telLon.data = todproc.engine().telMD.telMetaData["TelElPhys"].segment(si, scanlength);
-                    }
-
-                    rtc.telElDes.data = todproc.engine().telMD.telMetaData["TelElDes"].segment(si, scanlength);
-                    rtc.ParAng.data = todproc.engine().telMD.telMetaData["ParAng"].segment(si, scanlength);
-
-                    rtc.scans.data.resize(scanlength, n_detectors);
-                    rtc.scans.data = kidsproc.populate_rtc(rawobs, rtc.scanindex.data, scanlength, n_detectors);//.col(1998);
-
-                    rtc.flags.data.resize(scanlength, n_detectors);
-                    rtc.flags.data.setOnes();
-
-                    // Eigen::MatrixXd scans;
-                    // rtc.scans.data.setRandom(scanlength, n_detectors);
-                    //addsource(rtc, todproc.engine().offsets, todproc.engine().config);
-
-                    rtc.mnum.data = 0;
-
-                    // Increment scan
-                    scan++;
-
-                    return rtc;
-                }
-                return {};
-
-            },
-                todproc.engine().run());
-
+            SPDLOG_INFO("pipeline done");
 
             SPDLOG_INFO("Normalizing Maps by Weight Map");
             {
-                // logging::scoped_timeit timer("mapNormalize()");
+                logging::scoped_timeit timer("mapNormalize()");
                 todproc.engine().Maps.mapNormalize();
             }
 
             SPDLOG_INFO("Outputing Maps to netCDF File");
             {
-                // logging::scoped_timeit timer("output()");
+                logging::scoped_timeit timer("output()");
                 todproc.engine().output(todproc.engine().config, todproc.engine().Maps);
             }
         }

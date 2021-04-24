@@ -153,7 +153,6 @@ struct TCData<LaliDataKind::RTC,RefType>
     Base::data_t<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> flags;
     Base::data_t<Eigen::Matrix<Eigen::Index,Eigen::Dynamic,1>> scanindex;
     Base::data_t<Eigen::Index> index;
-    Base::data_t<Eigen::Index> mnum;
     Base::data_t<Eigen::VectorXd> telLat;
     Base::data_t<Eigen::VectorXd> telLon;
     Base::data_t<Eigen::VectorXd> telElDes;
@@ -172,7 +171,6 @@ struct TCData<LaliDataKind::PTC, RefType>
     Base::data_t<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> flags;
     Base::data_t<Eigen::Matrix<Eigen::Index,Eigen::Dynamic,1>> scanindex;
     Base::data_t<Eigen::Index> index;
-    Base::data_t<Eigen::Index> mnum;
     Base::data_t<Eigen::VectorXd> weights;
     Base::data_t<Eigen::VectorXd> telLat;
     Base::data_t<Eigen::VectorXd> telLon;

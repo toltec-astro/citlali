@@ -3,15 +3,11 @@
 #include <boost/random.hpp>
 #include <boost/random/random_device.hpp>
 #include <boost/math/constants/constants.hpp>
-
 #include "config.h"
-
 #include "timestream/timestream.h"
-
 #include "map/map_utils.h"
 #include "map/map.h"
 // #include "map/coadd.h"
-
 #include "result.h"
 
 /*
@@ -86,7 +82,7 @@ public:
     lali::TelData telMD;
 
     // Total number of detectors and scans
-    int ndetectors, nscans;
+    int n_detectors, nscans;
 
     // Sample rate
     double samplerate;
@@ -121,11 +117,13 @@ public:
 
     void setup();
     auto run();
+
+    template <typename Derived, class C, class RawObs>
+    auto pipeline(Eigen::DenseBase<Derived> &, C &, RawObs &);
 };
 
-// Sets up the map dimensions and lowpass+highpass filter
-void Lali::setup()
-{
+// Sets up the lowpass+highpass filter
+void Lali::setup() {
 
   // Check if lowpass+highpass filter requested.
   // If so, make the filter once here and reuse
@@ -136,15 +134,9 @@ void Lali::setup()
     auto fHigh = config.get_typed<double>(std::tuple{"tod", "filter", "fhigh"});
     auto aGibbs = config.get_typed<double>(std::tuple{"tod", "filter", "agibbs"});
     auto nTerms = config.get_typed<int>(std::tuple{"tod", "filter", "nterms"});
-    // auto samplerate = config.get_typed<double>("std::tuple{"tod", "filter", "samplerate"});
 
     filter.makefilter(fLow, fHigh, aGibbs, nTerms, samplerate);
   }
-
-  // Resize the maps to nrows x ncols and set rcphys and ccphys
-  // Maps.allocateMaps(Data.telMetaData, offsets, config);
-  // CoaddedMaps.allocateMaps(Maps, Data.telMetaData, offsets, config);
-
 }
 
 // Runs the timestream -> map analysis pipeline.
@@ -168,7 +160,6 @@ auto Lali::run(){
         SPDLOG_INFO("scans after ptcproc {}", out.scans.data);
 
         /*Stage 3 Populate Map*/
-        out.mnum.data = in.mnum.data;
         Maps.mapPopulate(out, offsets, config, array_index);
 
         SPDLOG_INFO("----------------------------------------------------");
@@ -181,4 +172,83 @@ auto Lali::run(){
 
     return farm;
 }
+
+template <typename Derived, class C, class RawObs>
+auto Lali::pipeline(Eigen::DenseBase<Derived> &scanindicies, C &kidsproc, RawObs &rawobs){
+    // do grppi reduction
+    auto ex_name = config.get_str(std::tuple{"runtime","policy"});
+    auto ncores = config.get_str(std::tuple{"runtime","ncores"});
+
+    grppi::pipeline(grppiex::dyn_ex(ex_name),
+        [&]() -> std::optional<TCData<LaliDataKind::RTC, Eigen::MatrixXd>> {
+        // Variable for current scan
+        static auto scan = 0;
+        // Current scanlength
+        Eigen::Index scanlength;
+        // Index of the start of the current scan
+        Eigen::Index si = 0;
+
+        while (scan < scanindicies.cols()) {
+
+            // First scan index for current scan
+            si = scanindicies(2, scan);
+            SPDLOG_INFO("si {}", si);
+            // Get length of current scan (do we need the + 1?)
+            scanlength = scanindicies(3, scan) - scanindicies(2, scan) + 1;
+            SPDLOG_INFO("scanlength {}", scanlength);
+
+            // Declare a TCData to hold data
+            // predefs::TCData<predefs::LaliDataKind::RTC, Eigen::MatrixXd> rtc;
+            TCData<LaliDataKind::RTC, Eigen::MatrixXd> rtc;
+
+            // Get scan indices and push into current RTC
+            rtc.scanindex.data = scanindicies.col(scan);
+
+            // This index keeps track of which scan the RTC actually belongs to.
+            rtc.index.data = scan + 1;
+
+            // Get telescope pointings for scan (move to Eigen::Maps to save
+            // memory and time)
+
+            // Get the requested map type
+            auto maptype = config.get_str(std::tuple{"map","type"});
+            SPDLOG_INFO("mapy_type {}", maptype);
+
+            // Put that scan's telescope pointing into RTC
+            if (std::strcmp("RaDec", maptype.c_str()) == 0) {
+                rtc.telLat.data = telMD.telMetaData["TelRaPhys"].segment(si, scanlength);
+                rtc.telLon.data = telMD.telMetaData["TelDecPhys"].segment(si, scanlength);
+            }
+
+            else if (std::strcmp("AzEl", maptype.c_str()) == 0) {
+                rtc.telLat.data = telMD.telMetaData["TelAzPhys"].segment(si, scanlength);
+                rtc.telLon.data = telMD.telMetaData["TelElPhys"].segment(si, scanlength);
+            }
+
+            rtc.telElDes.data = telMD.telMetaData["TelElDes"].segment(si, scanlength);
+            rtc.ParAng.data = telMD.telMetaData["ParAng"].segment(si, scanlength);
+
+            rtc.scans.data.resize(scanlength, n_detectors);
+            rtc.scans.data = kidsproc.populate_rtc(rawobs, rtc.scanindex.data, scanlength, n_detectors);
+
+            rtc.flags.data.resize(scanlength, n_detectors);
+            rtc.flags.data.setOnes();
+
+            // Eigen::MatrixXd scans;
+            // rtc.scans.data.setRandom(scanlength, n_detectors);
+            //addsource(rtc, offsets, config);
+
+            // Increment scan
+            scan++;
+
+            return rtc;
+        }
+        return {};
+
+    },
+        run());
+
+    // return out;
+}
+
 } //namespace
