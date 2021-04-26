@@ -248,7 +248,11 @@ auto Lali::pipeline(Eigen::DenseBase<Derived> &scanindicies, C &kidsproc, RawObs
     },
         run());
 
-    // return out;
+    SPDLOG_INFO("Normalizing Maps by Weight Map");
+    {
+        logging::scoped_timeit timer("mapNormalize()");
+        Maps.mapNormalize(config);
+    }
 }
 
 } //namespace

@@ -3,9 +3,8 @@
 namespace timestream {
 
 template<typename OT>
-void makeKernel(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
-                OT &offsets,
-                lali::YamlConfig config) {
+void makeKernel(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in, OT &offsets, lali::YamlConfig config) {
+
     Eigen::Index ndetectors = in.scans.data.cols();
     Eigen::VectorXd dist, lat, lon;
     in.kernelscans.data.resize(in.scans.data.rows(), in.scans.data.cols());

@@ -32,7 +32,7 @@ public:
   void mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &, OT &,
                    YamlConfig, std::vector<std::tuple<int,int>> &);
 
-  void mapNormalize();
+  void mapNormalize(lali::YamlConfig);
 };
 
 // Resizes maps to nrows x ncols
@@ -40,12 +40,15 @@ template<typename TD, typename OT>
 void MapStruct::allocateMaps(TD &telMetaData, OT &offsets, lali::YamlConfig config)
 {
     npixels = nrows * ncols;
+    auto grouping = config.get_str(std::tuple{"map","grouping"});
 
     for(Eigen::Index i = 0; i < map_count; i++) {
         signal.push_back(Eigen::MatrixXd::Zero(nrows, ncols));
         weight.push_back(Eigen::MatrixXd::Zero(nrows, ncols));
-        kernel.push_back(Eigen::MatrixXd::Zero(nrows, ncols));
-        intMap.push_back(Eigen::MatrixXd::Zero(nrows, ncols));
+        if (std::strcmp("beammap", grouping.c_str()) == 1) {
+            kernel.push_back(Eigen::MatrixXd::Zero(nrows, ncols));
+            intMap.push_back(Eigen::MatrixXd::Zero(nrows, ncols));
+        }
     }
 }
 
@@ -60,6 +63,8 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
 
   Eigen::Index npts = in.scans.data.rows();
   Eigen::Index ndetectors = in.scans.data.cols();
+
+  auto grouping = config.get_str(std::tuple{"map","grouping"});
 
   auto maptype = config.get_str(std::tuple{"map","type"});
   pixelsize = config.get_typed<double>(std::tuple{"map","pixelsize"})*RAD_ASEC;
@@ -103,15 +108,18 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
             auto sig = in.scans.data(s, det);// * in.weights.data(det);
             signal.at(mc)(ir,ic) += sig;
 
-            /*Kernel Map*/
-            auto ker = in.kernelscans.data(s, det) * in.weights.data(det);
-            kernel.at(mc)(ir,ic) += ker;
+            if (std::strcmp("beammap", grouping.c_str()) == 1) {
 
-            /*Int Map*/
-            intMap.at(mc)(ir,ic) += 1;
+                /*Kernel Map*/
+                auto ker = in.kernelscans.data(s, det) * in.weights.data(det);
+                kernel.at(mc)(ir,ic) += ker;
 
-            /*Noise Maps*/
-            // fix bug with boost random libraries
+                /*Int Map*/
+                intMap.at(mc)(ir,ic) += 1;
+
+                /*Noise Maps*/
+                // fix bug with boost random libraries
+            }
           }
         }
       }
@@ -120,12 +128,15 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
 
 //Normallize the map pixels by weight map.  Needs the
 // map to be completely populated to be run.
-void MapStruct::mapNormalize() {
+void MapStruct::mapNormalize(lali::YamlConfig config) {
     double pixelWeight = 0;
+    auto grouping = config.get_str(std::tuple{"map","grouping"});
 
     for (Eigen::Index mc = 0; mc < map_count; mc++) {
         signal.at(mc) = (weight.at(mc).array() == 0).select(0, signal.at(mc).array() / weight.at(mc).array());
-        kernel.at(mc) = (weight.at(mc).array() == 0).select(0, kernel.at(mc).array() / weight.at(mc).array());
+        if (std::strcmp("beammap", grouping.c_str()) == 1) {
+            kernel.at(mc) = (weight.at(mc).array() == 0).select(0, kernel.at(mc).array() / weight.at(mc).array());
+        }
     }
 
     // Can parallelize so leave in for loops.

@@ -28,6 +28,7 @@ constexpr auto pi = static_cast<double>(EIGEN_PI);
 #include "citlali/core/TCData.h"
 #include "citlali/core/ecsv_reader.h"
 #include "citlali/core/lali.h"
+#include "citlali/core/beammap.h"
 #include "citlali/core/source.h"
 
 auto parse_args(int argc, char *argv[]) {
@@ -463,7 +464,8 @@ struct DummyEngine {
  */
 struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc> {
     using Base = ConfigMapper<TimeOrderedDataProc>;
-    using Engine = lali::Lali;
+    // using Engine = lali::Lali;
+    using Engine = beammap::Beammap;
     // using Engine = DummyEngine;
     using map_extent_t = std::vector<double>;
     using map_coord_t = std::vector<Eigen::VectorXd>;
@@ -530,6 +532,13 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc> {
                     ai += 1;
                     array_index.push_back(std::tuple{i,0});
                 }
+            }
+        }
+
+        if (std::strcmp("beammap", grouping.c_str()) == 0) {
+            map_count = engine().array_name.size();
+            for(Eigen::Index i = 0; i < engine().array_name.size(); i++) {
+                array_index.push_back(std::tuple{i,i+1});
             }
         }
 
@@ -716,11 +725,6 @@ int run(const config::Config &rc) {
 
             SPDLOG_INFO("pipeline done");
 
-            SPDLOG_INFO("Normalizing Maps by Weight Map");
-            {
-                logging::scoped_timeit timer("mapNormalize()");
-                todproc.engine().Maps.mapNormalize();
-            }
 
             SPDLOG_INFO("Outputing Maps to netCDF File");
             {

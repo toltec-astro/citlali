@@ -18,6 +18,7 @@ find_package(OpenMP REQUIRED)
 option(USE_EIGEN3_MULTITHREADING "Enable multithreading inside Eigen3" OFF)
 
 # other citlali deps
+include(CCfits)
 include(NetCDFCXX4)
 include(Eigen3)
 include(Ceres)
@@ -29,6 +30,7 @@ include(Grppi)
 
 if (VERBOSE)
     message("----- Summary of Dependencies -----")
+    print_target_properties(cmake_utils::CCfits)
     print_target_properties(cmake_utils::gitversion)
     print_target_properties(Spectra::Spectra)
     message("-----------------------------------")
@@ -46,6 +48,7 @@ target_link_libraries(citlali_core
     PUBLIC
         cmake_utils::spdlog_and_fmt
         cmake_utils::gitversion
+        cmake_utils::CCfits
         NetCDF::NetCDFCXX4
         Eigen3::Eigen
         ceres::ceres
@@ -62,12 +65,14 @@ if (CITLALI_BUILD_CLI)
     target_sources(citlali
         PRIVATE
             "src/citlali/main.cpp"
+            "src/citlali/gaussmodels.cpp"
             )
     target_link_libraries(citlali
         PRIVATE
             kids_core
             citlali_core
             clipp::clipp
+            cmake_utils::CCfits
         )
 endif()
 option(CITLALI_BUILD_MPI "Build MPI CLI" OFF)
