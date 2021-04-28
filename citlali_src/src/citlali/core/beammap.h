@@ -79,7 +79,7 @@ public:
     int n_params;
 
     // Vector for convergence check
-    Eigen::Vector<bool, Eigen::Dynamic> converged;
+    Eigen::Matrix<bool, Eigen::Dynamic, 1> converged;
 
     // Fitted Parameters
     Eigen::MatrixXd fittedParams, fittedParams_0;

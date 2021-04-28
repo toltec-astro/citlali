@@ -56,7 +56,7 @@ auto parse_args(int argc, char *argv[]) {
     _(cc, p(         "version" ), "Print version information and exit")       ,
     // =======================================================================
                                                                              (
-    _(rc,        "config_file"  , "The path of input config file", str()     ),
+    _(rc,        "config_file"  , "The path of input config file", opt_str() ),
               "common options"                                          % __(
     _(cc, p(  "l", "log_level" ), "Set the log level",
                                   logging::active_level_str,

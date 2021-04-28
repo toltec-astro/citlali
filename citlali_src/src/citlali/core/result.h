@@ -2,9 +2,7 @@
 
 #include <CCfits/CCfits>
 #include <chrono>
-
-using namespace netCDF;
-using namespace netCDF::exceptions;
+#include <utils/nc.h>
 
 namespace lali {
 
@@ -51,7 +49,7 @@ public:
             filename = filename + "simu_";
         }
 
-        if constexpr (projectid == Science) {
+        if constexpr (obstype == Science) {
             // filename = filename + "simu_";
         }
 
@@ -59,10 +57,11 @@ public:
     }
 
     template <typename MC, typename MT>
-    auto setupNetCDFVars(MC &Maps, MT &map, std::string varname, NcFile &fo, std::vector<NcDim> dims) {
+    auto setupNetCDFVars(MC &Maps, MT &map, std::string varname,
+                         netCDF::NcFile &fo, std::vector<netCDF::NcDim> dims) {
         for (Eigen::Index mc = 0; mc < Maps.map_count; mc++) {
             auto var = varname + std::to_string(mc);
-            NcVar mapVar = fo.addVar(var, ncDouble, dims);
+            netCDF::NcVar mapVar = fo.addVar(var, netCDF::ncDouble, dims);
             Eigen::MatrixXd rowMajorMap
                 = Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>>(
                     map.at(mc).data(), map.at(mc).rows(), map.at(mc).cols());
@@ -114,15 +113,15 @@ auto Result::writeMapsToNetCDF(engineType &engine, const std::string filepath){
     int NC_ERR;
     try {
         //Create NetCDF file
-        NcFile fo(filepath, NcFile::replace);
+        netCDF::NcFile fo(filepath, netCDF::NcFile::replace);
 
         auto grouping = engine->config.get_str(std::tuple{"map","grouping"});
 
         //Create netCDF dimensions
-        NcDim nrows = fo.addDim("nrows", engine->Maps.nrows);
-        NcDim ncols = fo.addDim("ncols", engine->Maps.ncols);
+        netCDF::NcDim nrows = fo.addDim("nrows", engine->Maps.nrows);
+        netCDF::NcDim ncols = fo.addDim("ncols", engine->Maps.ncols);
 
-        std::vector<NcDim> dims;
+        std::vector<netCDF::NcDim> dims;
         dims.push_back(nrows);
         dims.push_back(ncols);
 
@@ -137,7 +136,7 @@ auto Result::writeMapsToNetCDF(engineType &engine, const std::string filepath){
 
         fo.close();
 
-    } catch (NcException& e) {
+    } catch (netCDF::exceptions::NcException &e) {
         e.what();
         return NC_ERR;
     }

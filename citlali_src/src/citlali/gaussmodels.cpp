@@ -8,7 +8,7 @@ Gaussian1D::Gaussian1D(double amplitude, double mean, double stddev)
 
 Gaussian1D::ValueType Gaussian1D::eval(const Gaussian1D::InputType& p, const Gaussian1D::InputDataType& x) const
 {
-    SPDLOG_TRACE("eval {} with params{} on input{}", *this, logging::pprint(p), logging::pprint(x));
+    SPDLOG_TRACE("eval {} with params{} on input{}", *this, p, x);
     return p[0] * (-0.5 * (x.array() - p[1]).square() / p[2] / p[2]).exp();
 }
 
@@ -29,7 +29,7 @@ Gaussian2D::Gaussian2D(double amplitude, double xmean, double ymean, double xstd
 
 Gaussian2D::ValueType Gaussian2D::eval(const Gaussian2D::InputType& p, const Gaussian2D::InputDataType& xy) const
 {
-    SPDLOG_TRACE("eval {} with params{} on input{}", *this, logging::pprint(p), logging::pprint(xy));
+    SPDLOG_TRACE("eval {} with params{} on input{}", *this, p, xy);
     double cost2 = cos(p[5]) * cos(p[5]);
     double sint2 = sin(p[5]) * sin(p[5]);
     double sin2t = sin(2. * p[5]);
@@ -85,7 +85,7 @@ SymmetricGaussian2D::SymmetricGaussian2D(double amplitude, double xmean, double 
 
 SymmetricGaussian2D::ValueType SymmetricGaussian2D::eval(const SymmetricGaussian2D::InputType& p, const SymmetricGaussian2D::InputDataType& xy) const
 {
-    SPDLOG_TRACE("eval {} with params{} on data{}", *this, logging::pprint(p), logging::pprint(xy));
+    SPDLOG_TRACE("eval {} with params{} on data{}", *this, p, xy);
     double cost2 = cos(0) * cos(0);
     double sint2 = sin(0) * sin(0);
     double sin2t = sin(2. * 0);
