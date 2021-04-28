@@ -24,51 +24,14 @@ using timestream::LaliDataKind;
 
 namespace lali {
 
-/*
-class PipelineInput {
-    std::vector<std::string> config_files;
-    std::vector<std::string> input_files;
-    std::shared_ptr<YamlConfig> config_;
-};
-
-class AzTECInput : public PipelineInput {
-
-    enum DataType { UseAzTEC = 0, UseTolTEC = 1 };
-
-    aztec::BeammapData Data;
-    template<DataType datatype>
-    static AzTECInput getAztecData(int argc, char *argv[])
-    {
-        Tester tester;
-        tester.getInputs(argc, argv);
-        tester.getConfig();
-
-        if constexpr (datatype == UseAzTEC) {
-            tester.getData();
-        }
-
-        return tester;
-    }
-};
-
-class TolTECInput : public PipelineInput {
-    toltec::Data Data;
-};
-*/
-
-enum DataType {
+/*enum DataType {
     AzTEC_Testing = 0,
     AzTEC_as_TolTEC_Testing = 1,
     AzTEC = 2,
     TolTEC = 3,
     MUSCAT = 4
-};
+};*/
 
-class DataStruct {
-    int scans;
-    int scan_indices;
-    int meta;
-};
 
 // template<typename InputType>
 class Lali : public Result {
@@ -82,7 +45,7 @@ public:
     lali::TelData telMD;
 
     // Total number of detectors and scans
-    int n_detectors, nscans;
+    int n_detectors, nscans, obsid;
 
     // Sample rate
     double samplerate;
@@ -110,6 +73,9 @@ public:
     // Array indices
     std::vector<std::tuple<int,int>> array_index;
 
+    // Detector indices
+    std::vector<std::tuple<int,int>> det_index;
+
     //Random generator for noise maps
     // boost::random_device rd;
     //  boost::random::mt19937 rng{rd};
@@ -120,6 +86,9 @@ public:
 
     template <typename Derived, class C, class RawObs>
     auto pipeline(Eigen::DenseBase<Derived> &, C &, RawObs &);
+
+    void output();
+
 };
 
 // Sets up the lowpass+highpass filter
@@ -160,7 +129,7 @@ auto Lali::run(){
         SPDLOG_INFO("scans after ptcproc {}", out.scans.data);
 
         /*Stage 3 Populate Map*/
-        Maps.mapPopulate(out, offsets, config, array_index);
+        Maps.mapPopulate(out, offsets, config, det_index);
 
         SPDLOG_INFO("----------------------------------------------------");
         SPDLOG_INFO("*Done with scan {}...*",out.index.data);
@@ -252,6 +221,14 @@ auto Lali::pipeline(Eigen::DenseBase<Derived> &scanindicies, C &kidsproc, RawObs
     {
         logging::scoped_timeit timer("mapNormalize()");
         Maps.mapNormalize(config);
+    }
+}
+
+void Lali::output() {
+    std::string filepath = config.get_str(std::tuple{"runtime","output_filepath"});
+    for (int i=0; i < array_index.size(); i++) {
+        auto filename = composeFilename<lali::TolTEC, lali::Simu, lali::Science>(this);
+        writeMapsToFITS(this, filepath, filename, i);
     }
 }
 

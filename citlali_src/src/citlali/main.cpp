@@ -464,8 +464,8 @@ struct DummyEngine {
  */
 struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc> {
     using Base = ConfigMapper<TimeOrderedDataProc>;
-    // using Engine = lali::Lali;
-    using Engine = beammap::Beammap;
+    using Engine = lali::Lali;
+    // using Engine = beammap::Beammap;
     // using Engine = DummyEngine;
     using map_extent_t = std::vector<double>;
     using map_coord_t = std::vector<Eigen::VectorXd>;
@@ -516,33 +516,35 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc> {
         auto grouping = engine().config.get_str(std::tuple{"map","grouping"});
         SPDLOG_INFO("grouping {}", grouping);
 
-        int map_count;
         Eigen::Index ai = 0;
         std::vector<std::tuple<int,int>> array_index;
+        std::vector<std::tuple<int,int>> det_index;
+
+        //if (std::strcmp("array_name", grouping.c_str()) == 0) {
+        array_index.push_back(std::tuple{0,0});
+        for(Eigen::Index i = 0; i < engine().array_name.size(); i++) {
+            if (engine().array_name(i) == ai){
+                std::get<1>(array_index.at(ai)) = i;
+            }
+            else {
+                ai += 1;
+                array_index.push_back(std::tuple{i,0});
+            }
+        }
 
         if (std::strcmp("array_name", grouping.c_str()) == 0) {
-            array_index.push_back(std::tuple{0,0});
-            map_count = 1;
+            det_index = array_index;
+        }
+
+        else if (std::strcmp("beammap", grouping.c_str()) == 0) {
             for(Eigen::Index i = 0; i < engine().array_name.size(); i++) {
-                if (engine().array_name(i) == ai){
-                    std::get<1>(array_index.at(ai)) = i;
-                }
-                else {
-                    map_count += 1;
-                    ai += 1;
-                    array_index.push_back(std::tuple{i,0});
-                }
+                det_index.push_back(std::tuple{i,i+1});
             }
         }
 
-        if (std::strcmp("beammap", grouping.c_str()) == 0) {
-            map_count = engine().array_name.size();
-            for(Eigen::Index i = 0; i < engine().array_name.size(); i++) {
-                array_index.push_back(std::tuple{i,i+1});
-            }
-        }
+        auto map_count = det_index.size();
 
-        return std::tuple{map_count, array_index};
+        return std::tuple{map_count, array_index, det_index};
     }
 
     auto get_scanindicies(const RawObs &rawobs, lali::TelData &telMD, double tod_sample_rate) {
@@ -600,7 +602,7 @@ int run(const config::Config &rc) {
     // load the yaml citlali config
     auto citlali_config =
         config::YamlConfig::from_filepath(rc.get_str("config_file"));
-    SPDLOG_TRACE("citlali config:\n{}", citlali_config);
+    //SPDLOG_INFO("citlali config:\n{}", citlali_config);
 
     // set up the IO coorindator
     auto co = SeqIOCoordinator::from_config(citlali_config);
@@ -609,11 +611,11 @@ int run(const config::Config &rc) {
     // set up KIDs data proc
     auto kidsproc =
         KidsDataProc::from_config(citlali_config.get_config("kids"));
-    SPDLOG_TRACE("kids proc: {}", kidsproc);
+    SPDLOG_INFO("kids proc: {}", kidsproc);
 
     // set up TOD proc
     auto todproc = TimeOrderedDataProc::from_config(citlali_config);
-    SPDLOG_TRACE("tod proc: {}", todproc);
+    //SPDLOG_INFO("tod proc: {}", todproc);
 
     // Set todproc config
     todproc.engine().config = citlali_config;
@@ -642,6 +644,8 @@ int run(const config::Config &rc) {
     std::vector<map_coord_t> map_coords{};
     std::vector<map_count_t> map_counts{};
     std::vector<array_indices_t> array_indices{};
+    std::vector<array_indices_t> det_indices{};
+
 
     // 1. coadd map buffer
     {
@@ -650,26 +654,26 @@ int run(const config::Config &rc) {
 
         // populate the inputs info
         for (const auto &rawobs : co.inputs()) {
-            auto telMD = lali::TelData::fromNcFile(rawobs.teldata().filepath());
+            todproc.engine().telMD = lali::TelData::fromNcFile(rawobs.teldata().filepath());
             auto maptype = todproc.engine().config.get_str(std::tuple{"map","type"});
 
             if (std::strcmp("RaDec", maptype.c_str()) == 0) {
-                lali::internal::absToPhysEqPointing(telMD.telMetaData, telMD.srcCenter);
+                lali::internal::absToPhysEqPointing(todproc.engine().telMD.telMetaData,todproc.engine().telMD.srcCenter);
             }
 
             else if (std::strcmp("AzEl", maptype.c_str()) == 0) {
-                lali::internal::absToPhysHorPointing<lali::pointing>(telMD.telMetaData);
+                lali::internal::absToPhysHorPointing<lali::pointing>(todproc.engine().telMD.telMetaData);
             }
-            todproc.engine().telMD = telMD;
 
             auto [me, mco] = todproc.get_map_extent(rawobs);
             map_extents.push_back(std::move(me));
             map_coords.push_back(std::move(mco));
 
             // map_extents.push_back(todproc.get_map_extent(rawobs));
-            auto [mc, ai] = todproc.get_map_count(rawobs);
+            auto [mc, ai, di] = todproc.get_map_count(rawobs);
             map_counts.push_back(std::move(mc));
             array_indices.push_back(std::move(ai));
+            det_indices.push_back(std::move(di));
         }
 
         // combine the map extents to the coadd map extent
@@ -696,21 +700,28 @@ int run(const config::Config &rc) {
             // buffers
             auto rawobs_kids_meta = kidsproc.get_rawobs_meta(rawobs);
 
+            todproc.engine().obsid = rawobs_kids_meta.back().get_typed<int>("obsid");
+
+            SPDLOG_INFO("obsid {}", todproc.engine().obsid);
+
+            std::stringstream ss;
+            ss << std::setfill('0') << std::setw(6) << todproc.engine().obsid;
+            std::string s = ss.str();
+
             // Get telescope file pointing and time vectors
-            auto telMD = lali::TelData::fromNcFile(rawobs.teldata().filepath());
+            todproc.engine().telMD = lali::TelData::fromNcFile(rawobs.teldata().filepath());
             SPDLOG_INFO("got telescope file");
 
             // TODO implement this to be the actual time chunk size
-            double tod_sample_rate = rawobs_kids_meta.back().get_typed<double>("fsmp");
-            SPDLOG_INFO("tod_sample_rate {}", tod_sample_rate);
-            todproc.engine().samplerate = tod_sample_rate;
+            todproc.engine().samplerate = rawobs_kids_meta.back().get_typed<double>("fsmp");
+            SPDLOG_INFO("tod_sample_rate {}", todproc.engine().samplerate);
 
             auto scanindicies =
-                todproc.get_scanindicies(rawobs, telMD, tod_sample_rate);
+                todproc.get_scanindicies(rawobs, todproc.engine().telMD, todproc.engine().samplerate);
             SPDLOG_INFO("scanindicies {}", scanindicies);
 
-            todproc.engine().telMD = telMD;
             todproc.engine().array_index = array_indices.at(i);
+            todproc.engine().det_index = det_indices.at(i);
 
             // TODO implement to get the number of detectors to create rtc buffer
             todproc.engine().n_detectors = apt_table.rows();
@@ -725,11 +736,10 @@ int run(const config::Config &rc) {
 
             SPDLOG_INFO("pipeline done");
 
-
             SPDLOG_INFO("Outputing Maps to netCDF File");
             {
                 logging::scoped_timeit timer("output()");
-                todproc.engine().output(todproc.engine().config, todproc.engine().Maps);
+                todproc.engine().output();
             }
         }
     }

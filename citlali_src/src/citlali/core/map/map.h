@@ -45,7 +45,7 @@ void MapStruct::allocateMaps(TD &telMetaData, OT &offsets, lali::YamlConfig conf
     for(Eigen::Index i = 0; i < map_count; i++) {
         signal.push_back(Eigen::MatrixXd::Zero(nrows, ncols));
         weight.push_back(Eigen::MatrixXd::Zero(nrows, ncols));
-        if (std::strcmp("beammap", grouping.c_str()) == 1) {
+        if (std::strcmp("array_name", grouping.c_str()) == 0) {
             kernel.push_back(Eigen::MatrixXd::Zero(nrows, ncols));
             intMap.push_back(Eigen::MatrixXd::Zero(nrows, ncols));
         }
@@ -57,7 +57,7 @@ void MapStruct::allocateMaps(TD &telMetaData, OT &offsets, lali::YamlConfig conf
 template <typename OT>
 void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
                             OT &offsets, YamlConfig config,
-                            std::vector<std::tuple<int,int>> &ai) {
+                            std::vector<std::tuple<int,int>> &di) {
 
   SPDLOG_INFO("Populating map pixels for scan {}...", in.index.data);
 
@@ -71,7 +71,7 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
 
   for (Eigen::Index mc = 0; mc < map_count; mc++) {
       // Loop through each detector
-      for (Eigen::Index det = std::get<0>(ai.at(mc)); det < std::get<1>(ai.at(mc)); det++) {
+      for (Eigen::Index det = std::get<0>(di.at(mc)); det < std::get<1>(di.at(mc)); det++) {
         Eigen::VectorXd lat, lon;
 
         // Get pointing for each detector using that scans's telescope pointing only
@@ -105,11 +105,10 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
             weight.at(mc)(ir,ic) += in.weights.data(det);
 
             /*Signal Map*/
-            auto sig = in.scans.data(s, det);// * in.weights.data(det);
+            auto sig = in.scans.data(s, det)* in.weights.data(det);
             signal.at(mc)(ir,ic) += sig;
 
-            if (std::strcmp("beammap", grouping.c_str()) == 1) {
-
+            if (std::strcmp("array_name", grouping.c_str()) == 0) {
                 /*Kernel Map*/
                 auto ker = in.kernelscans.data(s, det) * in.weights.data(det);
                 kernel.at(mc)(ir,ic) += ker;

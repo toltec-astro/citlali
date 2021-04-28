@@ -12,39 +12,39 @@ other telescope/detectors that shares similar architectural properties.
 
 On Mac:
 
-Use llvm compiler:
-brew install llvm
+- Use llvm compiler:
+  - brew install llvm
 
-Have cmake installed:
-brew install cmake
+- Have cmake installed:
+  - brew install cmake
 
-git clone https://github.com/toltec-astro/citlali.git
+- git clone https://github.com/toltec-astro/citlali.git
 
-cd citlali
+- cd citlali
 
-git checkout sim_dev
+- git checkout sim_dev
 
-git submodule update --recursive --remote --init
+- git submodule update --recursive --remote --init
 
-cd common_utils
+- cd common_utils
 
-git checkout kids_dev
+- git checkout kids_dev
 
-cd cmake
+- cd cmake
 
-git checkout master cd ../../
+- git checkout master cd ../../
 
-cd kidscpp_src
+- cd kidscpp_src
 
-git checkout master
+- git checkout master
 
-cd ../
+- cd ../
 
-mkdir build
+- mkdir build
 
-cd build
+- cd build
 
-cmake -DCMAKE_C_COMPILER=/path/to/llvm -DCMAKE_CXX_COMPILER=/path/to/llvm++ -DCMAKE_BUILD_TYPE=Release ..
+- cmake -DCMAKE_C_COMPILER=/path/to/llvm -DCMAKE_CXX_COMPILER=/path/to/llvm++ -DCMAKE_BUILD_TYPE=Release ..
 
 make citlali
 
