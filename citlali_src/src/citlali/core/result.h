@@ -63,7 +63,7 @@ public:
             auto var = varname + std::to_string(mc);
             netCDF::NcVar mapVar = fo.addVar(var, netCDF::ncDouble, dims);
             Eigen::MatrixXd rowMajorMap
-                = Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>>(
+                = Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>(
                     map.at(mc).data(), map.at(mc).rows(), map.at(mc).cols());
             rowMajorMap.transposeInPlace();
             mapVar.putVar(rowMajorMap.data());
@@ -75,7 +75,20 @@ public:
         std::vector naxes{map.cols(), map.rows()};
         auto hdu = pFits->addImage(map_name, DOUBLE_IMG, naxes);
 
-        std::valarray<double> tmp(map.data(), map.size());
+        Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> rowMajorMap
+             = Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>> (
+                map.data(), map.rows(), map.cols());
+
+        std::valarray<double> tmp(rowMajorMap.size());
+
+        int k = 0;
+        for (Eigen::Index i = 0; i< rowMajorMap.rows(); i++) {
+            for (Eigen::Index j = 0; j< rowMajorMap.cols(); j++) {
+                tmp[k] =map(i,j);
+                k++;
+            }
+        }
+
         hdu->write(1, tmp.size(), tmp);
 
         // add wcs to the img hdu

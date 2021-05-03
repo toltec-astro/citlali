@@ -132,9 +132,7 @@ void WienerFilter::prepareGaussianTemplate()
     tplate = exp(-0.5 * pow(dist / sig, 2.));
 
     shift(tplate, -xcind, -ycind);
-
 }
-
 
 void WienerFilter::calcVvq()
 {
