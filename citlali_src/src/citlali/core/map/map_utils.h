@@ -99,6 +99,7 @@ auto MapUtils::getMapMaxMin(TD &telMetaData, OT &offsets, lali::YamlConfig confi
         std::vector<int> w(dets.size());
 
         auto ex_name = config.get_str(std::tuple{"runtime","policy"});
+        auto nThreads = config.get_typed<int>(std::tuple{"runtime","ncores"});
 
         //Get max and min lat and lon values out of all detectors.  Maybe parallelize?
         // for (Eigen::Index det=0;det<offsets["azOffset"].size();det++) {

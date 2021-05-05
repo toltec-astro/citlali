@@ -111,22 +111,51 @@ void Lali::setup() {
 // Runs the timestream -> map analysis pipeline.
 auto Lali::run(){
 
-    auto farm =  grppi::farm(nThreads,[&](auto in) -> TCData<LaliDataKind::PTC,Eigen::MatrixXd> {
+    auto farm =  grppi::farm(nThreads,[&](auto input_tuple) -> TCData<LaliDataKind::PTC,Eigen::MatrixXd> {
 
-        SPDLOG_INFO("scans before rtcproc {}", in.scans.data);
+        // SPDLOG_INFO("scans before rtcproc {}", in.scans.data);
+
+        auto in = std::get<0>(input_tuple);
+        auto si = std::get<1>(input_tuple);
+
+        Eigen::Index scanlength = in.scans.data.rows();
+
+        in.flags.data.resize(scanlength, n_detectors);
+        in.flags.data.setOnes();
+
+        // Get telescope pointings for scan (move to Eigen::Maps to save
+        // memory and time)
+
+        // Get the requested map type
+        auto maptype = config.get_str(std::tuple{"map","type"});
+        // SPDLOG_INFO("map_type {}", maptype);
+
+        // Put that scan's telescope pointing into RTC
+        if (std::strcmp("RaDec", maptype.c_str()) == 0) {
+            in.telLat.data = telMD.telMetaData["TelRaPhys"].segment(si, scanlength);
+            in.telLon.data = telMD.telMetaData["TelDecPhys"].segment(si, scanlength);
+        }
+
+        else if (std::strcmp("AzEl", maptype.c_str()) == 0) {
+            in.telLat.data = telMD.telMetaData["TelAzPhys"].segment(si, scanlength);
+            in.telLon.data = telMD.telMetaData["TelElPhys"].segment(si, scanlength);
+        }
+
+        in.telElDes.data = telMD.telMetaData["TelElDes"].segment(si, scanlength);
+        in.ParAng.data = telMD.telMetaData["ParAng"].segment(si, scanlength);
 
         /*Stage 1: RTCProc*/
         RTCProc rtcproc(config);
         TCData<LaliDataKind::PTC,Eigen::MatrixXd> out;
         rtcproc.run(in, out, this);
 
-        SPDLOG_INFO("scans after rtcproc {}", out.scans.data);
+        // SPDLOG_INFO("scans after rtcproc {}", out.scans.data);
 
         /*Stage 2: PTCProc*/
         PTCProc ptcproc(config);
         ptcproc.run(out, out, this);
 
-        SPDLOG_INFO("scans after ptcproc {}", out.scans.data);
+        // SPDLOG_INFO("scans after ptcproc {}", out.scans.data);
 
         /*Stage 3 Populate Map*/
         Maps.mapPopulate(out, offsets, config, det_index);
@@ -146,10 +175,12 @@ template <typename Derived, class C, class RawObs>
 auto Lali::pipeline(Eigen::DenseBase<Derived> &scanindicies, C &kidsproc, RawObs &rawobs){
     // do grppi reduction
     auto ex_name = config.get_str(std::tuple{"runtime","policy"});
-    auto ncores = config.get_str(std::tuple{"runtime","ncores"});
+    nThreads = config.get_typed<int>(std::tuple{"runtime","ncores"});
+
+    omp_set_num_threads(nThreads);
 
     grppi::pipeline(grppiex::dyn_ex(ex_name),
-        [&]() -> std::optional<TCData<LaliDataKind::RTC, Eigen::MatrixXd>> {
+        [&]() -> std::optional<std::tuple<TCData<LaliDataKind::RTC, Eigen::MatrixXd>, Eigen::Index>> {
         // Variable for current scan
         static auto scan = 0;
         // Current scanlength
@@ -176,37 +207,14 @@ auto Lali::pipeline(Eigen::DenseBase<Derived> &scanindicies, C &kidsproc, RawObs
             // This index keeps track of which scan the RTC actually belongs to.
             rtc.index.data = scan + 1;
 
-            // Get telescope pointings for scan (move to Eigen::Maps to save
-            // memory and time)
-
-            // Get the requested map type
-            auto maptype = config.get_str(std::tuple{"map","type"});
-            SPDLOG_INFO("mapy_type {}", maptype);
-
-            // Put that scan's telescope pointing into RTC
-            if (std::strcmp("RaDec", maptype.c_str()) == 0) {
-                rtc.telLat.data = telMD.telMetaData["TelRaPhys"].segment(si, scanlength);
-                rtc.telLon.data = telMD.telMetaData["TelDecPhys"].segment(si, scanlength);
-            }
-
-            else if (std::strcmp("AzEl", maptype.c_str()) == 0) {
-                rtc.telLat.data = telMD.telMetaData["TelAzPhys"].segment(si, scanlength);
-                rtc.telLon.data = telMD.telMetaData["TelElPhys"].segment(si, scanlength);
-            }
-
-            rtc.telElDes.data = telMD.telMetaData["TelElDes"].segment(si, scanlength);
-            rtc.ParAng.data = telMD.telMetaData["ParAng"].segment(si, scanlength);
-
-            rtc.scans.data.resize(scanlength, n_detectors);
+            // rtc.scans.data.resize(scanlength, n_detectors);
             rtc.scans.data = kidsproc.populate_rtc(rawobs, rtc.scanindex.data, scanlength, n_detectors);
-
-            rtc.flags.data.resize(scanlength, n_detectors);
-            rtc.flags.data.setOnes();
 
             // Increment scan
             scan++;
 
-            return rtc;
+            // Return tuple of RTCData and scanindex
+            return std::tuple<TCData<LaliDataKind::RTC, Eigen::MatrixXd>, Eigen::Index> (rtc, si);
         }
         return {};
 

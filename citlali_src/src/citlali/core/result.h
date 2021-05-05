@@ -53,6 +53,10 @@ public:
             // filename = filename + "simu_";
         }
 
+        if constexpr (obstype == Beammap) {
+            // filename = filename + "simu_";
+        }
+
         return filename;
     }
 
@@ -75,20 +79,15 @@ public:
         std::vector naxes{map.cols(), map.rows()};
         auto hdu = pFits->addImage(map_name, DOUBLE_IMG, naxes);
 
+        // Rewrite to RowMajor storage order
         Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> rowMajorMap
-             = Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>> (
+             = Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>> (
                 map.data(), map.rows(), map.cols());
 
-        std::valarray<double> tmp(rowMajorMap.size());
+        // Convert to std::valarray (may be necessary)
+        std::valarray<double> tmp(rowMajorMap.data(), rowMajorMap.size());
 
-        int k = 0;
-        for (Eigen::Index i = 0; i< rowMajorMap.rows(); i++) {
-            for (Eigen::Index j = 0; j< rowMajorMap.cols(); j++) {
-                tmp[k] = map(i,j);
-                k++;
-            }
-        }
-
+        // Write map to hdu
         hdu->write(1, tmp.size(), tmp);
 
         // add wcs to the img hdu
@@ -100,8 +99,11 @@ public:
         hdu->addKey("CRPIX2", map.rows() / 2. + 1, "");
 
         // coords of the ref pixel in degrees
-        double CRVAL1 = engine->telMD.srcCenter["centerRa"](0)/DEG_TO_RAD;
-        double CRVAL2 = engine->telMD.srcCenter["centerDec"](0)/DEG_TO_RAD;
+        SPDLOG_INFO("DEG_TO_RAD {}", 1/DEG_TO_RAD);
+        double CRVAL1 = engine->telMD.srcCenter["centerRa"](0)*180./pi;
+        double CRVAL2 = engine->telMD.srcCenter["centerDec"](0)*180./pi;
+
+        SPDLOG_INFO("CRVAL1 {} CRVAL2 {}", CRVAL1, CRVAL2);
 
         hdu->addKey("CUNIT1", "deg", "");
         hdu->addKey("CUNIT2", "deg", "");

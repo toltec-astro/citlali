@@ -5,10 +5,6 @@
 #include "../TCData.h"
 #include "../lali.h"
 #include "cleanPCA.h"
-#include "despike.h"
-#include "downsample.h"
-#include "filter.h"
-#include "kernel.h"
 
 using lali::YamlConfig;
 
@@ -20,43 +16,20 @@ public:
   YamlConfig config;
 
   // template <typename Derived>
-  template <class L>
-  void run(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &,
-           TCData<LaliDataKind::PTC, Eigen::MatrixXd> &, L);
+  template <class engineType>
+  auto run(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &,
+           TCData<LaliDataKind::PTC, Eigen::MatrixXd> &, engineType);
 
-  void runClean(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &,
+  auto runClean(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &,
                 TCData<LaliDataKind::PTC, Eigen::MatrixXd> &,
                 std::vector<std::tuple<int,int>> &);
 
-  template<class L>
-  void getWeights(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &, L);
+  template< class engineType>
+  auto getWeights(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &, engineType);
 };
 
-// The main PTC timestream run function.  It checks the config
-// file for each reduction step and calls the corresponding
-// runStep() function.  If none is requested, set out data
-// to in data
-template <class L>
-void PTCProc::run(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
-                  TCData<LaliDataKind::PTC, Eigen::MatrixXd> &out, L LC) {
-  if (config.get_typed<bool>(std::tuple{"tod","pcaclean","enabled"})) {
-    SPDLOG_INFO("Cleaning signal and kernel timestreams for scan {}...",
-                in.index.data);
-    //Run clean
-    runClean(in, out, LC->array_index);
-  }
-
-  // If we don't clean, set out to in.  Not necessary, but done to be safe
-  else {
-    out = in;
-  }
-
-  // Get scan weights
-  getWeights(out, LC);
-}
-
 //run the PCA cleaner
-void PTCProc::runClean(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
+auto PTCProc::runClean(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
                        TCData<LaliDataKind::PTC, Eigen::MatrixXd> &out,
                        std::vector<std::tuple<int,int>> &array_index) {
 
@@ -73,7 +46,6 @@ void PTCProc::runClean(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
           out.kernelscans.data.resize(in.kernelscans.data.rows(), in.kernelscans.data.cols());
       }
   }
-
 
   for (Eigen::Index mc=0;mc<map_count;mc++){
 
@@ -121,7 +93,6 @@ void PTCProc::runClean(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
              out_kernelscans(out_kernelscans_block.data(), out_kernelscans_block.rows(), out_kernelscans_block.cols(),
                       Eigen::OuterStride<>(out_kernelscans_block.outerStride()));
 
-
           cleaner.removeEigs<SpectraBackend, KernelType>(in_kernelscans,
                                                          out_kernelscans);
       }
@@ -129,8 +100,8 @@ void PTCProc::runClean(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
 }
 
 // Get the weights of each scan and replace outliers
-template <class L>
-void PTCProc::getWeights(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in, L LC) {
+template <class engineType>
+auto PTCProc::getWeights(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in, engineType engine) {
 
   // Scan weight is a vector that is ndetectors long
   in.weights.data = Eigen::VectorXd::Zero(in.scans.data.cols());
@@ -156,7 +127,7 @@ void PTCProc::getWeights(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in, L LC) {
 
       // Check for NaNs and too short scans
       if (tmp != tmp ||
-          ngood < LC->samplerate || tmp == 0) {
+          ngood < engine->samplerate || tmp == 0) {
         in.weights.data(det) = 0.0;
       } else {
         tmp = pow(tmp, -2.0);
@@ -170,6 +141,29 @@ void PTCProc::getWeights(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in, L LC) {
       }
     }
   }
+}
+
+// The main PTC timestream run function.  It checks the config
+// file for each reduction step and calls the corresponding
+// runStep() function.  If none is requested, set out data
+// to in data
+template <class engineType>
+auto PTCProc::run(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
+                  TCData<LaliDataKind::PTC, Eigen::MatrixXd> &out, engineType engine) {
+  if (config.get_typed<bool>(std::tuple{"tod","pcaclean","enabled"})) {
+    SPDLOG_INFO("Cleaning signal and kernel timestreams for scan {}...",
+                in.index.data);
+    //Run clean
+    runClean(in, out, engine->array_index);
+  }
+
+  // If we don't clean, set out to in.  Not necessary, but done to be safe
+  else {
+    out = in;
+  }
+
+  // Get scan weights
+  getWeights(out, engine);
 }
 
 } // namespace timestream

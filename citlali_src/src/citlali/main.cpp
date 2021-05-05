@@ -13,6 +13,7 @@
 #include <kids/gitversion.h>
 #include <regex>
 #include <tuple>
+#include <omp.h>
 
 constexpr auto pi = static_cast<double>(EIGEN_PI);
 
@@ -547,10 +548,19 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc> {
         return std::tuple{map_count, array_index, det_index};
     }
 
-    auto get_scanindicies(const RawObs &rawobs, lali::TelData &telMD, double tod_sample_rate) {
+    auto get_scanindicies(const RawObs &rawobs) {
         // implement the logic to setup map buffer for the engine
         scanindicies_t scanindices;
-        lali::obs(scanindices,telMD.telMetaData, 0, tod_sample_rate, 0.125, telMD.srcCenter);
+        auto pattern = engine().config.get_str(std::tuple{"map","pattern"});
+        auto offset = engine().config.get_typed<double>(std::tuple{"map","offset"});
+
+        if (std::strcmp("Raster", pattern.c_str()) == 0) {
+            lali::obs(scanindices,engine().telMD.telMetaData, 0, engine().samplerate, offset, engine().telMD.srcCenter);
+        }
+
+        else if (std::strcmp("Lissajou", pattern.c_str()) == 0){
+            lali::obs(scanindices,engine().telMD.telMetaData, 1, engine().samplerate, offset, engine().telMD.srcCenter);
+        }
 
         return scanindices;
     }
@@ -560,16 +570,14 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc> {
         // implement the logic to setup coadd map buffer for the engine
     }
 
-    void setup_map_buffer(const map_extent_t &map_extent,
+    auto setup_map_buffer(const map_extent_t &map_extent,
                           const map_coord_t &map_coord,
                           const map_count_t &map_count) {
         // implement the logic to setup map buffer for the engine
         engine().Maps.nrows = map_extent.at(0);
         engine().Maps.ncols = map_extent.at(1);
-
         engine().Maps.rcphys = map_coord.at(0);
         engine().Maps.ccphys = map_coord.at(1);
-
         engine().Maps.map_count = map_count;
 
         engine().Maps.allocateMaps(engine().telMD, engine().offsets, engine().config);
@@ -716,8 +724,7 @@ int run(const config::Config &rc) {
             todproc.engine().samplerate = rawobs_kids_meta.back().get_typed<double>("fsmp");
             SPDLOG_INFO("tod_sample_rate {}", todproc.engine().samplerate);
 
-            auto scanindicies =
-                todproc.get_scanindicies(rawobs, todproc.engine().telMD, todproc.engine().samplerate);
+            auto scanindicies = todproc.get_scanindicies(rawobs);
             SPDLOG_INFO("scanindicies {}", scanindicies);
 
             // Copy array and detector indices into engine

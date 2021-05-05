@@ -7,14 +7,10 @@
 #include <utils/algorithm/mlinterp/mlinterp.hpp>
 #include <utils/logging.h>
 
-// using namespace std;
-
 namespace  lali {
 
 typedef std::map<std::string, Eigen::Matrix<double, Eigen::Dynamic, 1>>
     pointing;
-
-//constexpr auto pi = static_cast<double>(-EIGEN_PI);
 
 namespace internal {
 
