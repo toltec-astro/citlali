@@ -203,10 +203,6 @@ auto Lali::pipeline(Eigen::DenseBase<Derived> &scanindicies, C &kidsproc, RawObs
             rtc.flags.data.resize(scanlength, n_detectors);
             rtc.flags.data.setOnes();
 
-            // Eigen::MatrixXd scans;
-            // rtc.scans.data.setRandom(scanlength, n_detectors);
-            //addsource(rtc, offsets, config);
-
             // Increment scan
             scan++;
 
@@ -218,17 +214,16 @@ auto Lali::pipeline(Eigen::DenseBase<Derived> &scanindicies, C &kidsproc, RawObs
         run());
 
     SPDLOG_INFO("Normalizing Maps by Weight Map");
-    {
-        logging::scoped_timeit timer("mapNormalize()");
-        Maps.mapNormalize(config);
-    }
+    Maps.mapNormalize(config);
 }
 
 void Lali::output() {
     std::string filepath = config.get_str(std::tuple{"runtime","output_filepath"});
-    for (int i=0; i < array_index.size(); i++) {
+    for (int i = 0; i < array_index.size(); i++) {
         auto filename = composeFilename<lali::TolTEC, lali::Simu, lali::Science>(this);
         writeMapsToFITS(this, filepath, filename, i);
+        //std::string out = filepath + filename + std::to_string(i) + ".nc";
+        //writeMapsToNetCDF(this, out);
     }
 }
 

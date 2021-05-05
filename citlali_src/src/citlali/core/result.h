@@ -31,7 +31,7 @@ class Result{
 public:
 
     template <class engineType>
-    auto writeMapsToNetCDF(engineType &, const std::string);
+    auto writeMapsToNetCDF(engineType, const std::string);
 
     template <class engineType>
     auto writeMapsToFITS(engineType, const std::string, std::string, int mc);
@@ -62,10 +62,10 @@ public:
         for (Eigen::Index mc = 0; mc < Maps.map_count; mc++) {
             auto var = varname + std::to_string(mc);
             netCDF::NcVar mapVar = fo.addVar(var, netCDF::ncDouble, dims);
-            Eigen::MatrixXd rowMajorMap
-                = Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>(
+            Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> rowMajorMap
+                = Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>>(
                     map.at(mc).data(), map.at(mc).rows(), map.at(mc).cols());
-            rowMajorMap.transposeInPlace();
+            //rowMajorMap.transposeInPlace();
             mapVar.putVar(rowMajorMap.data());
         }
     }
@@ -84,7 +84,7 @@ public:
         int k = 0;
         for (Eigen::Index i = 0; i< rowMajorMap.rows(); i++) {
             for (Eigen::Index j = 0; j< rowMajorMap.cols(); j++) {
-                tmp[k] =map(i,j);
+                tmp[k] = map(i,j);
                 k++;
             }
         }
@@ -121,7 +121,7 @@ public:
 };
 
 template <class engineType>
-auto Result::writeMapsToNetCDF(engineType &engine, const std::string filepath){
+auto Result::writeMapsToNetCDF(engineType engine, const std::string filepath){
 
     int NC_ERR;
     try {

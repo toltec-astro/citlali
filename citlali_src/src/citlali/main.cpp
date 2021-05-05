@@ -700,10 +700,10 @@ int run(const config::Config &rc) {
             // buffers
             auto rawobs_kids_meta = kidsproc.get_rawobs_meta(rawobs);
 
+            // Get obsid for output filename
             todproc.engine().obsid = rawobs_kids_meta.back().get_typed<int>("obsid");
 
-            SPDLOG_INFO("obsid {}", todproc.engine().obsid);
-
+            // Put it in the correct format with leading zeros (move)
             std::stringstream ss;
             ss << std::setfill('0') << std::setw(6) << todproc.engine().obsid;
             std::string s = ss.str();
@@ -720,6 +720,7 @@ int run(const config::Config &rc) {
                 todproc.get_scanindicies(rawobs, todproc.engine().telMD, todproc.engine().samplerate);
             SPDLOG_INFO("scanindicies {}", scanindicies);
 
+            // Copy array and detector indices into engine
             todproc.engine().array_index = array_indices.at(i);
             todproc.engine().det_index = det_indices.at(i);
 
@@ -728,17 +729,20 @@ int run(const config::Config &rc) {
             SPDLOG_INFO("n_detectors {}", todproc.engine().n_detectors);
 
             // Do general setup that is only run once per rawobs before grppi pipeline
-            SPDLOG_INFO("Run engine setup");
-            todproc.engine().setup();
-
-            SPDLOG_INFO("Run engine pipeline");
-            todproc.engine().pipeline(scanindicies, kidsproc, rawobs);
-
-            SPDLOG_INFO("pipeline done");
-
-            SPDLOG_INFO("Outputing Maps to netCDF File");
             {
-                logging::scoped_timeit timer("output()");
+                logging::scoped_timeit timer("engine setup()");
+                todproc.engine().setup();
+            }
+
+            // Run the actual pipeline
+            {
+                logging::scoped_timeit timer("engine pipeline()");
+                todproc.engine().pipeline(scanindicies, kidsproc, rawobs);
+            }
+
+            // Generate output files
+            {
+                logging::scoped_timeit timer("engine output()");
                 todproc.engine().output();
             }
         }
