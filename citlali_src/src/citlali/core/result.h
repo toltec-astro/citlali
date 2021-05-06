@@ -91,9 +91,10 @@ public:
         std::valarray<double> tmp(map.size());
 
         int k = 0;
+        auto n_rows = map.rows();
         for (int i=0; i<map.cols(); i++){
             for (int j=0; j<map.rows(); j++) {
-                tmp[k] = map(i,j);
+                tmp[k] = map(i, n_rows - j - 1);
                 k++;
             }
         }
@@ -110,7 +111,7 @@ public:
         hdu->addKey("CRPIX2", map.rows() / 2. + 1, "");
 
         // coords of the ref pixel in degrees
-        SPDLOG_INFO("DEG_TO_RAD {} 1/DEG_TO_RAD {}", 1/DEG_TO_RAD);
+        // SPDLOG_INFO("DEG_TO_RAD {} 1/DEG_TO_RAD {}", 1/DEG_TO_RAD);
         double CRVAL1 = engine->telMD.srcCenter["centerRa"](0)*180./pi;
         double CRVAL2 = engine->telMD.srcCenter["centerDec"](0)*180./pi;
 
