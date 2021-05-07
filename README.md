@@ -1,7 +1,7 @@
 # Citlali
 
-`Citlali` is the core component of the TolTEC Data Analysis Pipeline
-(TolTEC-DAP).
+`Citlali` is the core component of the TolTEC data analysis software suite
+(TolTECA).
 
 
 While `Citlali` is developed targeting LMT/TolTEC, it also works with
@@ -10,51 +10,84 @@ other telescope/detectors that shares similar architectural properties.
 
 # Install
 
-On Mac:
+`Citlali` is written with C++17 and it uses cmake as the build tool.
 
-- Use llvm compiler:
-  - brew install llvm
+We have tested building `citlali` in the following environments:
 
-- Have cmake installed:
-  - brew install cmake
+* Ubuntu 20.04 LTS, with GCC 10
+* macOS 10.15 and 11.x, with homebrew installed LLVM 12
 
-- git clone https://github.com/toltec-astro/citlali.git
+Lower versions of GCC or LLVM may still work, as long as it support C++17.
 
-- cd citlali
+## macOS
 
-- git checkout sim_dev
+Homebrew is required to install the build tools and some dependencies:
+```
+$ brew install cmake git llvm libomp netcdf
+```
+By default, the installed LLVM compiler is in `/usr/local/opt/llvm/`. If
+not sure, consult `brew info llvm`.
 
-- git submodule update --recursive --remote --init
+Clone and initialize the repo:
+```
+$ git clone https://github.com/toltec-astro/citlali.git
+$ cd citlali
+$ git submodule update --recursive --remote --init
+```
 
-- cd common_utils
+Build:
+```
+// in the cloned citlali directory:
+$ mkdir build
+$ cd build
+$ cmake -DCMAKE_C_COMPILER=/usr/local/opt/llvm/bin/clang -DCMAKE_CXX_COMPILER=/usr/local/opt/llvm/bin/clang++ -DCMAKE_BUILD_TYPE=Release ..
+$ make citlali
+```
+## Ubuntu 20.04
 
-- git checkout kids_dev
+Install the build dependencies:
 
-- cd cmake
+```
+$ sudo apt install cmake build-essential gcc-10 g++-10 libnetcdf-dev
+```
 
-- git checkout master cd ../../
+Optionally, set GCC 10 to the system default C/C++ compiler:
+```
+update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 1000 --slave /usr/bin/g++ g++ /usr/bin/g++-10
+```
+If not doing this step, the similar `-DCMAKE_C_COMPILER...` settings are needed in the next step, to specify the
+path of the GCC 10.
 
-- cd kidscpp_src
+Clone and initialize the repo:
+```
+$ git clone https://github.com/toltec-astro/citlali.git
+$ cd citlali
+$ git submodule update --recursive --remote --init
+```
 
-- git checkout master
-
-- cd ../
-
-- mkdir build
-
-- cd build
-
-- cmake -DCMAKE_C_COMPILER=/path/to/llvm -DCMAKE_CXX_COMPILER=/path/to/llvm++ -DCMAKE_BUILD_TYPE=Release ..
-
-make citlali
-
-
-
+Build:
+```
+// in the cloned citlali directory:
+$ mkdir build
+$ cd build
+$ cmake -DCMAKE_BUILD_TYPE=Release ..
+$ make citlali
+```
 
 # Usage
 
-<usage>
+The created citlali executable will be available in `build/bin`
 
+Check the version:
+```
+// in the cloned citlali directory:
+$ ./bin/citlali --version
+```
+
+Show help screen:
+```
+$ ./bin/citlali --help
+```
 
 # Licence
 
