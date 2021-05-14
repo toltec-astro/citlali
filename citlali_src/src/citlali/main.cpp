@@ -193,7 +193,7 @@ struct RawObs : ConfigMapper<RawObs> {
         return fmt::format("invalid or missing keys={}", missing_keys);
     }
     const std::string &name() const { return m_name; }
-    constexpr auto n_data_items() const { return m_data_items.size(); }
+    const auto n_data_items() const { return m_data_items.size(); }
     const std::vector<DataItem> &data_items() const { return m_data_items; }
     const DataItem &teldata() const {
         return m_data_items[m_teldata_index.value()];
@@ -281,7 +281,7 @@ struct SeqIOCoordinator : ConfigMapper<SeqIOCoordinator> {
     // io_buffer
     using payloads_buffer_data_t = predefs::data_t;
 
-    constexpr auto n_inputs() const { return m_inputs.size(); }
+    const auto n_inputs() const { return m_inputs.size(); }
 
     const std::vector<input_t> &inputs() const { return m_inputs; };
 
@@ -415,7 +415,7 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
     auto populate_rtc(const RawObs &rawobs, scanindices_t &scanindex, const int scanlength, const int n_detectors) {
         // call reduce rawobs, get the data into rtc
 
-        auto slice = container_utils::Slice<int>{scanindex(2), scanindex(3)+1};
+        auto slice = container_utils::Slice<int>{scanindex(2), scanindex(3)+1, std::nullopt};
         auto reduced = reduce_rawobs(rawobs, slice);
 
         Eigen::MatrixXd xs(scanlength, n_detectors);
