@@ -59,7 +59,7 @@ $ sudo apt install cmake build-essential gcc-10 g++-10 libnetcdf-dev python3-pip
 
 Optionally, set GCC 10 to the system default C/C++ compiler:
 ```
-update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 1000 --slave /usr/bin/g++ g++ /usr/bin/g++-10
+$ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 1000 --slave /usr/bin/g++ g++ /usr/bin/g++-10
 ```
 
 The numpy headers may be needed as well:
