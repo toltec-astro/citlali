@@ -84,23 +84,21 @@ public:
              = Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>> (
                 map.data(), map.rows(), map.cols());*/
 
-        map.transposeInPlace();
-
         // Convert to std::valarray (may be necessary)
         //std::valarray<double> tmp(rowMajorMap.data(), rowMajorMap.size());
         std::valarray<double> tmp(map.size());
 
         int k = 0;
-        auto n_rows = map.rows();
-        for (int i=0; i<map.cols(); i++){
-            for (int j=0; j<map.rows(); j++) {
-                tmp[k] = map(i, n_rows - j - 1);
+        for (int i=0; i<map.rows(); i++){
+            for (int j=0; j<map.cols(); j++) {
+                tmp[k] = map(i,j);
                 k++;
             }
         }
 
         // Write map to hdu
-        hdu->write(1, tmp.size(), tmp);
+        long fpixel = 1;
+        hdu->write(fpixel, tmp.size(), tmp);
 
         // add wcs to the img hdu
         hdu->addKey("CTYPE1", "RA---TAN", "");

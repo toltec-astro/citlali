@@ -135,8 +135,8 @@ auto Lali::run(){
 
         // Put that scan's telescope pointing into RTC
         if (std::strcmp("RaDec", maptype.c_str()) == 0) {
-            in.telLat.data = telMD.telMetaData["TelRaPhys"].segment(si, scanlength);
-            in.telLon.data = telMD.telMetaData["TelDecPhys"].segment(si, scanlength);
+            in.telLat.data = telMD.telMetaData["TelDecPhys"].segment(si, scanlength);
+            in.telLon.data = telMD.telMetaData["TelRaPhys"].segment(si, scanlength);
         }
 
         else if (std::strcmp("AzEl", maptype.c_str()) == 0) {

@@ -59,8 +59,8 @@ void MapUtils::getDetectorPointing(Eigen::DenseBase<DerivedA> &lat, Eigen::Dense
     auto ratmp = -azOfftmp * cos(pa2) - elOfftmp * sin(pa2);
     auto dectmp = -azOfftmp * sin(pa2) + elOfftmp * cos(pa2);
 
-    lat = ratmp * RAD_ASEC + telLat.derived().array();
-    lon = dectmp * RAD_ASEC + telLon.derived().array();
+    lat = dectmp * RAD_ASEC + telLat.derived().array();
+    lon = ratmp * RAD_ASEC + telLon.derived().array();
 
   }
 

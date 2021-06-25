@@ -117,7 +117,7 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
                 intMap.at(mc)(ir,ic) += 1;
 
                 /*Noise Maps*/
-                // fix bug with boost random libraries
+                // change to trng library
             }
           }
         }
