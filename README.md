@@ -23,7 +23,7 @@ Lower versions of GCC or LLVM may still work, as long as it support C++17.
 
 Homebrew is required to install the build tools and some dependencies:
 ```
-$ brew install cmake git llvm libomp netcdf python
+$ brew install cmake git llvm libomp netcdf python boost
 ```
 By default, the installed LLVM compiler is in `/usr/local/opt/llvm/`. If
 not sure, consult `brew info llvm`.
@@ -54,12 +54,12 @@ $ make citlali
 Install the build dependencies:
 
 ```
-$ sudo apt install cmake build-essential gcc-10 g++-10 libnetcdf-dev python3-pip python3-tk python3-dev
+$ sudo apt install cmake build-essential gcc-10 g++-10 libnetcdf-dev python3-pip python3-tk python3-dev libboost-all-dev
 ```
 
 Optionally, set GCC 10 to the system default C/C++ compiler:
 ```
-update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 1000 --slave /usr/bin/g++ g++ /usr/bin/g++-10
+$ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 1000 --slave /usr/bin/g++ g++ /usr/bin/g++-10
 ```
 
 The numpy headers may be needed as well:
