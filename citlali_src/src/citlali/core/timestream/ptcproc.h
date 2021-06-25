@@ -109,6 +109,11 @@ auto PTCProc::getWeights(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in, engineT
   // This is for approximate weights
   if (config.get_typed<int>(std::tuple{"tod","pcaclean","approximateWeights"})) {
     SPDLOG_INFO("Using Approximate Weights for scan {}...", in.index.data);
+
+    // temporary set sensitivity vector to 1
+    Eigen::VectorXd sens(in.weights.data.size());
+    sens.setOnes();
+    in.weights.data = pow(sqrt(engine->samplerate)*sens.array(),-2.0);
   }
 
   // Calculating the weights for each detector for this scan

@@ -115,7 +115,7 @@ public:
         double CRVAL1 = engine->telMD.srcCenter["centerRa"](0)*180./pi;
         double CRVAL2 = engine->telMD.srcCenter["centerDec"](0)*180./pi;
 
-        SPDLOG_INFO("CRVAL1 {} CRVAL2 {}", CRVAL1, CRVAL2);
+        // SPDLOG_INFO("CRVAL1 {} CRVAL2 {}", CRVAL1, CRVAL2);
 
         hdu->addKey("CUNIT1", "deg", "");
         hdu->addKey("CUNIT2", "deg", "");

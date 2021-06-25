@@ -551,16 +551,10 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc> {
     auto get_scanindicies(const RawObs &rawobs) {
         // implement the logic to setup map buffer for the engine
         scanindicies_t scanindices;
-        auto pattern = engine().config.get_str(std::tuple{"map","pattern"});
         auto offset = engine().config.get_typed<double>(std::tuple{"map","offset"});
+        auto timechunk = engine().config.get_typed<double>(std::tuple{"map","timechunk"});
 
-        if (std::strcmp("Raster", pattern.c_str()) == 0) {
-            lali::obs(scanindices,engine().telMD.telMetaData, 0, engine().samplerate, offset, engine().telMD.srcCenter);
-        }
-
-        else if (std::strcmp("Lissajou", pattern.c_str()) == 0){
-            lali::obs(scanindices,engine().telMD.telMetaData, 1, engine().samplerate, offset, engine().telMD.srcCenter);
-        }
+        lali::obs(scanindices, engine(), timechunk, offset);
 
         return scanindices;
     }
@@ -639,8 +633,9 @@ int run(const config::Config &rc) {
     // Put apt table into lali engine (temporary maybe)
     todproc.engine().nw = apt_table.col(0);
     todproc.engine().array_name = apt_table.col(1);
-    todproc.engine().offsets["azOffset"] = apt_table.col(2)*3600.;
-    todproc.engine().offsets["elOffset"] = apt_table.col(3)*3600.;
+    todproc.engine().fluxscale = apt_table.col(2);
+    todproc.engine().offsets["azOffset"] = apt_table.col(3)*3600.;
+    todproc.engine().offsets["elOffset"] = apt_table.col(4)*3600.;
 
     // containers to store some pre-computed info for all inputs
     using map_extent_t = TimeOrderedDataProc::map_extent_t;

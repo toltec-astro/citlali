@@ -38,10 +38,12 @@ public:
   template<class engineType>
   auto runKernel(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &, engineType, YamlConfig);
 
-  auto runCalibration();
+  template <class engineType>
+  auto runCalibration(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &, engineType);
 
   auto runPolarization();
 };
+
 
 // Run the despiker
 template <class engineType>
@@ -90,8 +92,9 @@ auto RTCProc::runFilter(TCData<LaliDataKind::RTC, MatrixXd> &in, engineType engi
 }
 
 // Run the calibrator for the timestreams to get science units
-auto RTCProc::runCalibration() {
-  // calibrate();
+template <class engineType>
+auto RTCProc::runCalibration(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in, engineType engine){
+  calibrate(in, engine->fluxscale);
 }
 
 // Run the calibrator for the timestreams to get science units
@@ -110,7 +113,7 @@ auto RTCProc::runKernel(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in, engineTy
  // file for each reduction step and calls the corresponding
  // runStep() function.  If none is requested, set out data
  // to in data
- template <class engineType>
+template <class engineType>
   auto RTCProc::run(TCData<LaliDataKind::RTC, Eigen::MatrixXd> &in,
                    TCData<LaliDataKind::PTC, Eigen::MatrixXd> &out,
                    engineType engine) {
@@ -148,7 +151,7 @@ auto RTCProc::runKernel(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in, engineTy
 
    // Run calibration
    SPDLOG_INFO("Calibrating scan {}...", in.index.data);
-   runCalibration();
+   runCalibration(out, engine);
 
    // Check if kernel is requested and run if so
    if (config.get_typed<bool>(std::tuple{"tod","kernel","enabled"})) {

@@ -163,6 +163,7 @@ struct TelData {
 
     std::map<std::string, Eigen::Matrix<double,Eigen::Dynamic,1>> telMetaData;
     std::map <std::string, Eigen::VectorXd> srcCenter;
+    char map_type [128];
 
     static TelData fromNcFile(const std::string &filepath) {
         using namespace netCDF;
@@ -175,6 +176,9 @@ struct TelData {
             auto vars = fo.getVars();
 
             TelData data;
+
+            vars.find("Header.Dcs.ObsPgm")->second.getVar(&data.map_type);
+            SPDLOG_INFO("map_type {}", data.map_type);
 
             Eigen::Index TelTime_npts = vars.find("Data.TelescopeBackend.TelTime")->second.getDim(0).getSize();
             data.telMetaData["TelTime"].resize(TelTime_npts);

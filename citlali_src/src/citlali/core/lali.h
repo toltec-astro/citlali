@@ -70,6 +70,9 @@ public:
     // Eigen Vector for array names
     Eigen::VectorXd array_name;
 
+    // Eigen Vector for flux calibration
+    Eigen::VectorXd fluxscale;
+
     // Array indices
     std::vector<std::tuple<int,int>> array_index;
 

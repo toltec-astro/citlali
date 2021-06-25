@@ -264,16 +264,14 @@ void absToPhysEqPointing(DerivedA &telescope_data, srcType &srcCenter)
 } //namespace internal
 
 
-template<typename DerivedA, typename srcType>
-void obs(Eigen::DenseBase<DerivedA> &scanindex, pointing &telescope_data,
-                 const double timeChunk, const double samplerate, const double timeoffset, srcType &srcCenter){
+template<typename DerivedA, class engineType>
+void obs(Eigen::DenseBase<DerivedA> &scanindex, engineType &engine,
+                 const double timeChunk, const double timeoffset){
 
-    Eigen::Index npts = telescope_data["Hold"].rows();
+    Eigen::Index npts = engine.telMD.telMetaData["Hold"].rows();
     Eigen::Index nscans = 0;
 
-    SPDLOG_INFO("A");
-
-    for (const auto &it : telescope_data){
+    for (const auto &it : engine.telMD.telMetaData){
         if (it.first!="Hold"){
             if(it.first!="TeTime"){
                 //internal::removeDropouts(telescope_data[it.first], npts);
@@ -299,8 +297,8 @@ void obs(Eigen::DenseBase<DerivedA> &scanindex, pointing &telescope_data,
     // internal::findUniqueTelUtc(telescope_data);
     // internal::alignWithDetectors(telescope_data, timeoffset);
 
-    internal::absToPhysHorPointing<pointing>(telescope_data);
-    internal::absToPhysEqPointing(telescope_data, srcCenter);
+    internal::absToPhysHorPointing<pointing>(engine.telMD.telMetaData);
+    internal::absToPhysEqPointing(engine.telMD.telMetaData, engine.telMD.srcCenter);
 
     //the goal is to pack up the turning array
     //Eigen::Matrix<bool, Eigen::Dynamic, 1> turning(npts);
@@ -309,7 +307,7 @@ void obs(Eigen::DenseBase<DerivedA> &scanindex, pointing &telescope_data,
 
     //recast hold from double to int
     Eigen::Matrix<bool,Eigen::Dynamic,1> turning(npts);
-    turning = telescope_data["Hold"].cast<bool>();
+    turning = engine.telMD.telMetaData["Hold"].template cast<bool>();
 
     // SPDLOG_INFO("hold {}", telescope_data["Hold"]);
 
@@ -324,7 +322,10 @@ void obs(Eigen::DenseBase<DerivedA> &scanindex, pointing &telescope_data,
     */
 
     // Raster scan mode for timeChunk=0.
-    if (timeChunk == 0){
+
+    std::string pattern(engine.telMD.map_type);
+
+    if (std::strcmp("Map", pattern.c_str()) == 0) {
 
       SPDLOG_INFO("timeChunk is zero. Raster scan mode enabled.");
 
@@ -365,26 +366,26 @@ void obs(Eigen::DenseBase<DerivedA> &scanindex, pointing &telescope_data,
     }
 
 
- else {
-    SPDLOG_INFO("timeChunk is nonzero. Lissajous mode enabled.");
+    else if (std::strcmp("Map", pattern.c_str()) == 0) {
+        SPDLOG_INFO("timeChunk is nonzero. Lissajous mode enabled.");
 
-    //in this case we've got to take the bounds and redefine the scans
-    //start with the first and last scan index
-    //reduce by one scan since we seem to have a problem at the moment
+        //in this case we've got to take the bounds and redefine the scans
+        //start with the first and last scan index
+        //reduce by one scan since we seem to have a problem at the moment
 
-    SPDLOG_INFO("Redefining scans to use all data.");
-    int firstScanI=0;//scanIndex[0][0];
-    int lastScanI =npts-1;//scanIndex[1][nScans-1];
-    double period = floor(timeChunk*samplerate);
-    int newNScans = floor((lastScanI-firstScanI+1)*1./period);
+        SPDLOG_INFO("Redefining scans to use all data.");
+        int firstScanI = 0;//scanIndex[0][0];
+        int lastScanI = npts - 1;//scanIndex[1][nScans-1];
+        double period = floor(timeChunk*engine.samplerate);
+        int newNScans = floor((lastScanI-firstScanI+1)*1./period);
 
-    scanindex.derived().resize(4,newNScans);
-    for(int i=0;i<newNScans;i++){
-        scanindex(0,i) = i*period + firstScanI;
-        scanindex(1,i) = scanindex(0,i) + period - 1;
+        scanindex.derived().resize(4,newNScans);
+        for(int i=0;i<newNScans;i++){
+            scanindex(0,i) = i*period + firstScanI;
+            scanindex(1,i) = scanindex(0,i) + period - 1;
+        }
+        nscans = newNScans;
     }
-    nscans = newNScans;
-}
     SPDLOG_INFO("Now we have {} scans.",nscans);
 
     //Here we set up the 3rd and 4th scanindex so that we don't lose data during lowpassing
