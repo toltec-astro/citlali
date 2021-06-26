@@ -366,7 +366,7 @@ void obs(Eigen::DenseBase<DerivedA> &scanindex, engineType &engine,
     }
 
 
-    else if (std::strcmp("Map", pattern.c_str()) == 0) {
+    else if (std::strcmp("Lissajous", pattern.c_str()) == 0) {
         SPDLOG_INFO("timeChunk is nonzero. Lissajous mode enabled.");
 
         //in this case we've got to take the bounds and redefine the scans
