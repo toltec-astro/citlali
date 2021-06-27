@@ -39,6 +39,7 @@ void makeKernel(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in, OT &offsets, lal
 
         dist = (lat.array().pow(2) + lon.array().pow(2)).sqrt();
 
+        // Replace with beammap values
         auto beamSigAz = 5.0;
         auto beamSigEl = 5.0;
 

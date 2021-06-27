@@ -34,7 +34,7 @@ public:
     auto writeMapsToNetCDF(engineType, const std::string);
 
     template <class engineType>
-    auto writeMapsToFITS(engineType, const std::string, std::string, int mc);
+    auto writeMapsToFITS(engineType, const std::string, std::string, int mc, std::vector<std::tuple<int,int>> &);
 
     template <DataType datatype, ProjectID projectid, ObsType obstype, class engineType>
     auto composeFilename(engineType engine) {
@@ -75,17 +75,11 @@ public:
     }
 
     template <class engineType, typename mapType>
-    auto setupHDU(engineType engine, mapType map, std::unique_ptr<CCfits::FITS> &pFits, std::string map_name) {
+    auto setupHDU(engineType engine, mapType map, std::unique_ptr<CCfits::FITS> &pFits, std::string map_name, Eigen::Index map_num) {
+
+        auto grouping = engine->config.get_str(std::tuple{"map","grouping"});
         std::vector naxes{map.cols(), map.rows()};
         auto hdu = pFits->addImage(map_name, DOUBLE_IMG, naxes);
-
-        // Rewrite to RowMajor storage order
-        /*Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> rowMajorMap
-             = Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>> (
-                map.data(), map.rows(), map.cols());*/
-
-        // Convert to std::valarray (may be necessary)
-        //std::valarray<double> tmp(rowMajorMap.data(), rowMajorMap.size());
         std::valarray<double> tmp(map.size());
 
         int k = 0;
@@ -128,13 +122,20 @@ public:
         hdu->addKey("CD1_2", 0, "");
         hdu->addKey("CD2_1", 0, "");
         hdu->addKey("CD2_2", pixelsize/3600., "");
+
+        if (std::strcmp("beammap", grouping.c_str()) == 0) {
+            hdu->addKey("S/N", engine->fittedParams(0,map_num)/RAD_ASEC, "Fitted S/N");
+            hdu->addKey("off_y", engine->fittedParams(1,map_num)/RAD_ASEC, "Fitted Offset y (arcsec)");
+            hdu->addKey("off_x", engine->fittedParams(2,map_num)/RAD_ASEC, "Fitted Offset x (arcsec)");
+            hdu->addKey("fwhm_y", engine->fittedParams(3,map_num)/RAD_ASEC, "Fitted FWHM y (arcsec)");
+            hdu->addKey("fwhm_x", engine->fittedParams(4,map_num)/RAD_ASEC, "Fitted FWHM x (arcsec)");
+        }
     }
 
 };
 
 template <class engineType>
 auto Result::writeMapsToNetCDF(engineType engine, const std::string filepath){
-
     int NC_ERR;
     try {
         //Create NetCDF file
@@ -171,7 +172,8 @@ auto Result::writeMapsToNetCDF(engineType engine, const std::string filepath){
 
 
 template <class engineType>
-auto Result::writeMapsToFITS(engineType engine, const std::string filepath, std::string filename, int mc) {
+auto Result::writeMapsToFITS(engineType engine, const std::string filepath, std::string filename, int mi,
+                             std::vector<std::tuple<int,int>> &di) {
 
     CCfits::FITS::setVerboseMode("True");
 
@@ -180,15 +182,15 @@ auto Result::writeMapsToFITS(engineType engine, const std::string filepath, std:
     //for (Eigen::Index mc = 0; mc < engine->array_index.size(); mc++) {
         std::unique_ptr<CCfits::FITS> pFits(nullptr);
 
-        if (mc == 0) {
+        if (mi == 0) {
             filename = filename + "a1100";
         }
 
-        else if(mc == 1) {
+        else if(mi == 1) {
             filename = filename + "a1400";
         }
 
-        else if (mc == 2) {
+        else if (mi == 2) {
             filename = filename + "a2000";
         }
 
@@ -229,17 +231,23 @@ auto Result::writeMapsToFITS(engineType engine, const std::string filepath, std:
         pFits->pHDU().addKey("OBJECT", "citlali_reduction", "");
         pFits->pHDU().writeDate();
 
+        SPDLOG_INFO("ai at mc0 {}",std::get<0>(engine->array_index.at(mi)));
+        SPDLOG_INFO("ai at mc1 {}",std::get<1>(engine->array_index.at(mi)));
+
         if (std::strcmp("array_name", grouping.c_str()) == 0) {
-            setupHDU(engine,engine->Maps.signal[mc], pFits, "signal");
-            setupHDU(engine,engine->Maps.weight[mc], pFits, "weight");
-            setupHDU(engine,engine->Maps.kernel[mc], pFits, "kernel");
-            setupHDU(engine,engine->Maps.intMap[mc], pFits, "intMap");
+            setupHDU(engine,engine->Maps.signal[mi], pFits, "signal", mi);
+            setupHDU(engine,engine->Maps.weight[mi], pFits, "weight", mi);
+            setupHDU(engine,engine->Maps.kernel[mi], pFits, "kernel", mi);
+            setupHDU(engine,engine->Maps.intMap[mi], pFits, "intMap", mi);
         }
 
         else if (std::strcmp("beammap", grouping.c_str()) == 0) {
-            for (Eigen::Index det = std::get<0>(engine->det_index.at(det)); det < std::get<1>(engine->det_index.at(det)); det++) {
-                setupHDU(engine,engine->Maps.signal[det], pFits, "sig_"+std::to_string(det));
-                setupHDU(engine,engine->Maps.weight[det], pFits, "wt_"+std::to_string(det));
+            for (Eigen::Index mc = std::get<0>(engine->array_index.at(mi)); mc < std::get<1>(engine->array_index.at(mi)); mc++) {
+                //for (Eigen::Index det = std::get<0>(di.at(mc)); det < std::get<1>(di.at(mc)); det++) {
+                  //  SPDLOG_INFO("det {}", det);
+                    setupHDU(engine,engine->Maps.signal[mc], pFits, "sig_"+std::to_string(mc), mc);
+                    setupHDU(engine,engine->Maps.weight[mc], pFits, "wt_"+std::to_string(mc), mc);
+                //}
             }
         }
 

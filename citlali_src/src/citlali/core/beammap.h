@@ -29,7 +29,7 @@ public:
     lali::TelData telMD;
 
     // Total number of detectors and scans
-    int n_detectors, nscans;
+    int n_detectors, nscans, obsid;
 
     // Sample rate
     double samplerate;
@@ -57,8 +57,13 @@ public:
     // Eigen Vector for array names
     Eigen::VectorXd array_name;
 
+    Eigen::VectorXd fluxscale;
+
     // Array indices
     std::vector<std::tuple<int,int>> array_index;
+
+    // Detector indices
+    std::vector<std::tuple<int,int>> det_index;
 
     // Vector for ptcs
     std::vector<TCData<LaliDataKind::PTC,Eigen::MatrixXd>> ptcs;
@@ -96,6 +101,8 @@ public:
 
     template <typename Derived, class C, class RawObs>
     auto pipeline(Eigen::DenseBase<Derived> &, C &, RawObs &);
+
+    void output();
 
 };
 
@@ -176,7 +183,7 @@ auto Beammap::runLoop() {
 
             /*Stage 3 Populate Map*/
             SPDLOG_INFO("Populating Maps");
-            Maps.mapPopulate(ptcs_working[s], offsets, config, array_index);
+            Maps.mapPopulate(ptcs_working[s], offsets, config, det_index);
 
             return 0;});
 
@@ -194,14 +201,15 @@ auto Beammap::runLoop() {
                 Eigen::VectorXd init_p;
                 init_p.setZero(6);
 
+                // Set limits for fitting (temp)
                 MatrixXd::Index maxRow, maxCol;
                 double max = Maps.signal[d].maxCoeff(&maxRow, &maxCol);
-                init_p(0) = max;
-                init_p(1) = Maps.rcphys(maxRow);
-                init_p(2) = Maps.ccphys(maxCol);
-                init_p(3) = 5.0*RAD_ASEC;
-                init_p(4) = 5.0*RAD_ASEC;
-                init_p(5) = pi/4.;
+                init_p(0) = max; // amp
+                init_p(1) = Maps.rcphys(maxRow); // offset_y
+                init_p(2) = Maps.ccphys(maxCol); // offset_x
+                init_p(3) = 5.0*RAD_ASEC; // fwhm_y
+                init_p(4) = 5.0*RAD_ASEC; // fwhm_x
+                init_p(5) = pi/4.; // ang
 
                 Eigen::MatrixXd limits(n_params, 2);
                 limits.row(0) << 0, max;
@@ -308,8 +316,8 @@ auto Beammap::timestreamPipeline(Eigen::DenseBase<Derived> &scanindicies, C &kid
 
             // Put that scan's telescope pointing into RTC
             if (std::strcmp("RaDec", maptype.c_str()) == 0) {
-                rtc.telLat.data = telMD.telMetaData["TelRaPhys"].segment(si, scanlength);
-                rtc.telLon.data = telMD.telMetaData["TelDecPhys"].segment(si, scanlength);
+                rtc.telLat.data = telMD.telMetaData["TelDecPhys"].segment(si, scanlength);
+                rtc.telLon.data = telMD.telMetaData["TelRaPhys"].segment(si, scanlength);
             }
 
             else if (std::strcmp("AzEl", maptype.c_str()) == 0) {
@@ -390,6 +398,15 @@ auto Beammap::pipeline(Eigen::DenseBase<Derived> &scanindicies, C &kidsproc, Raw
     timestreamPipeline(scanindicies, kidsproc, rawobs);
     SPDLOG_INFO("Done with beammap timestream pipeline");
     loopPipeline(scanindicies, kidsproc, rawobs);
+}
+
+void Beammap::output() {
+    std::string filepath = config.get_str(std::tuple{"runtime","output_filepath"});
+    for (int i = 0; i < array_index.size(); i++) {
+        SPDLOG_INFO("array_index {}", i);
+        auto filename = composeFilename<lali::TolTEC, lali::Simu, lali::Beammap>(this);
+        writeMapsToFITS(this, filepath, filename, i, det_index);
+    }
 }
 
 

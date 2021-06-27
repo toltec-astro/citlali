@@ -79,9 +79,11 @@ public:
     // Detector indices
     std::vector<std::tuple<int,int>> det_index;
 
+    Eigen::MatrixXd fittedParams, fittedParams_0;
+
     //Random generator for noise maps
     // boost::random_device rd;
-    //  boost::random::mt19937 rng{rd};
+    // boost::random::mt19937 rng{rd};
     // boost::random::uniform_int_distribution<> rands{0, 1};
 
     void setup();
@@ -232,7 +234,7 @@ void Lali::output() {
     std::string filepath = config.get_str(std::tuple{"runtime","output_filepath"});
     for (int i = 0; i < array_index.size(); i++) {
         auto filename = composeFilename<lali::TolTEC, lali::Simu, lali::Science>(this);
-        writeMapsToFITS(this, filepath, filename, i);
+        writeMapsToFITS(this, filepath, filename, i, det_index);
         //std::string out = filepath + filename + std::to_string(i) + ".nc";
         //writeMapsToNetCDF(this, out);
     }

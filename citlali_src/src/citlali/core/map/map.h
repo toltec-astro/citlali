@@ -23,7 +23,7 @@ public:
   Eigen::VectorXd rcphys, ccphys;
 
   // Map types
-  std::vector<Eigen::MatrixXd> signal, weight, kernel, intMap;
+  std::vector<Eigen::MatrixXd> signal, weight, kernel, intMap, snrMap;
 
   template<typename TD, typename OT>
   void allocateMaps(TD&, OT&, lali::YamlConfig);
@@ -105,7 +105,7 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
             weight.at(mc)(ir,ic) += in.weights.data(det);
 
             /*Signal Map*/
-            auto sig = in.scans.data(s, det)* in.weights.data(det);
+            auto sig = in.scans.data(s, det) * in.weights.data(det);
             signal.at(mc)(ir,ic) += sig;
 
             if (std::strcmp("array_name", grouping.c_str()) == 0) {
