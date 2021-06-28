@@ -37,7 +37,7 @@ public:
     auto writeMapsToFITS(engineType, const std::string, std::string, int mc, std::vector<std::tuple<int,int>> &);
 
     template <DataType datatype, ProjectID projectid, ObsType obstype, class engineType>
-    auto composeFilename(engineType engine) {
+    auto composeFilename(engineType engine, int mi) {
 
         std::string filename;
 
@@ -57,6 +57,18 @@ public:
             // filename = filename + "simu_";
         }
 
+        if (mi == 0) {
+            filename = filename + "a1100";
+        }
+
+        else if(mi == 1) {
+            filename = filename + "a1400";
+        }
+
+        else if (mi == 2) {
+            filename = filename + "a2000";
+        }
+
         return filename;
     }
 
@@ -69,7 +81,6 @@ public:
             Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> rowMajorMap
                 = Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>>(
                     map.at(mc).data(), map.at(mc).rows(), map.at(mc).cols());
-            //rowMajorMap.transposeInPlace();
             mapVar.putVar(rowMajorMap.data());
         }
     }
@@ -182,19 +193,6 @@ auto Result::writeMapsToFITS(engineType engine, const std::string filepath, std:
     //for (Eigen::Index mc = 0; mc < engine->array_index.size(); mc++) {
         std::unique_ptr<CCfits::FITS> pFits(nullptr);
 
-        if (mi == 0) {
-            filename = filename + "a1100";
-        }
-
-        else if(mi == 1) {
-            filename = filename + "a1400";
-        }
-
-        else if (mi == 2) {
-            filename = filename + "a2000";
-        }
-
-
         std::stringstream ss;
         ss << std::setfill('0') << std::setw(6) << engine->obsid;
         std::string obsid = ss.str();
@@ -231,9 +229,6 @@ auto Result::writeMapsToFITS(engineType engine, const std::string filepath, std:
         pFits->pHDU().addKey("OBJECT", "citlali_reduction", "");
         pFits->pHDU().writeDate();
 
-        SPDLOG_INFO("ai at mc0 {}",std::get<0>(engine->array_index.at(mi)));
-        SPDLOG_INFO("ai at mc1 {}",std::get<1>(engine->array_index.at(mi)));
-
         if (std::strcmp("array_name", grouping.c_str()) == 0) {
             setupHDU(engine,engine->Maps.signal[mi], pFits, "signal", mi);
             setupHDU(engine,engine->Maps.weight[mi], pFits, "weight", mi);
@@ -243,16 +238,9 @@ auto Result::writeMapsToFITS(engineType engine, const std::string filepath, std:
 
         else if (std::strcmp("beammap", grouping.c_str()) == 0) {
             for (Eigen::Index mc = std::get<0>(engine->array_index.at(mi)); mc < std::get<1>(engine->array_index.at(mi)); mc++) {
-                //for (Eigen::Index det = std::get<0>(di.at(mc)); det < std::get<1>(di.at(mc)); det++) {
-                  //  SPDLOG_INFO("det {}", det);
                     setupHDU(engine,engine->Maps.signal[mc], pFits, "sig_"+std::to_string(mc), mc);
                     setupHDU(engine,engine->Maps.weight[mc], pFits, "wt_"+std::to_string(mc), mc);
-                //}
             }
         }
-
-    //}
 }
-
-
-}
+} //namespace

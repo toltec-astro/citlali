@@ -7,6 +7,9 @@
 #include <boost/math/special_functions/bessel.hpp>
 #include <boost/math/special_functions/bessel_prime.hpp>
 #include <boost/math/special_functions/round.hpp>
+#include <cmath>
+#include <iostream>
+
 
 namespace timestream {
 
@@ -90,7 +93,7 @@ void Filter::makefilter(const double fLow_, const double fHigh_,
   // Generate time array
   Eigen::VectorXd t(nterms);
   t.setLinSpaced(nterms, 1, nterms);
-  t = t * boost::math::constants::pi<double>();
+  t = t * pi;
 
   // Multiply coefficients by time array trig functions
   coef = coef.array() * (sin(t.array() * fHigh) - sin(t.array() * fLow)) /

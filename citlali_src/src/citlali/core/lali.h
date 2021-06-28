@@ -233,7 +233,7 @@ auto Lali::pipeline(Eigen::DenseBase<Derived> &scanindicies, C &kidsproc, RawObs
 void Lali::output() {
     std::string filepath = config.get_str(std::tuple{"runtime","output_filepath"});
     for (int i = 0; i < array_index.size(); i++) {
-        auto filename = composeFilename<lali::TolTEC, lali::Simu, lali::Science>(this);
+        auto filename = composeFilename<lali::TolTEC, lali::Simu, lali::Science>(this, i);
         writeMapsToFITS(this, filepath, filename, i, det_index);
         //std::string out = filepath + filename + std::to_string(i) + ".nc";
         //writeMapsToNetCDF(this, out);

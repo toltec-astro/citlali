@@ -107,7 +107,7 @@ auto PTCProc::getWeights(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in, engineT
   in.weights.data = Eigen::VectorXd::Zero(in.scans.data.cols());
 
   // This is for approximate weights
-  if (config.get_typed<int>(std::tuple{"tod","pcaclean","approximateWeights"})) {
+  if (config.get_typed<bool>(std::tuple{"tod","pcaclean","approximateWeights"})) {
     SPDLOG_INFO("Using Approximate Weights for scan {}...", in.index.data);
 
     // temporary set sensitivity vector to 1

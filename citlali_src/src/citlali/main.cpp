@@ -465,8 +465,8 @@ struct DummyEngine {
  */
 struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc> {
     using Base = ConfigMapper<TimeOrderedDataProc>;
-    // using Engine = lali::Lali;
-    using Engine = beammap::Beammap;
+    using Engine = lali::Lali;
+    // using Engine = beammap::Beammap;
     // using Engine = DummyEngine;
     using map_extent_t = std::vector<double>;
     using map_coord_t = std::vector<Eigen::VectorXd>;

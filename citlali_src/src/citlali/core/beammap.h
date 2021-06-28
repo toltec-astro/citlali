@@ -403,11 +403,9 @@ auto Beammap::pipeline(Eigen::DenseBase<Derived> &scanindicies, C &kidsproc, Raw
 void Beammap::output() {
     std::string filepath = config.get_str(std::tuple{"runtime","output_filepath"});
     for (int i = 0; i < array_index.size(); i++) {
-        SPDLOG_INFO("array_index {}", i);
-        auto filename = composeFilename<lali::TolTEC, lali::Simu, lali::Beammap>(this);
+        auto filename = composeFilename<lali::TolTEC, lali::Simu, lali::Beammap>(this, i);
         writeMapsToFITS(this, filepath, filename, i, det_index);
     }
 }
-
 
 } // namespace
