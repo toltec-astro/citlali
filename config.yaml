@@ -103,7 +103,7 @@ tod:
   kernel:
     enabled: true
   pcaclean:
-    approximateWeights: 0
+    approximateWeights: false
     cutStd: 0.0
     enabled: false
     grouping: array_name
