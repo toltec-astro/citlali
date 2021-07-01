@@ -67,7 +67,7 @@ namespace timestream {
 
 namespace internal {
 
-template <typename Derived> struct impl_traits {
+/*template <typename Derived> struct impl_traits {
     using meta_t = config::Config;
     define_has_member_traits(Derived, fs);
     define_has_member_traits(Derived, iqs);
@@ -77,13 +77,13 @@ template <typename Derived> struct impl_traits {
     define_has_member_traits(Derived, qs);
     define_has_member_traits(Derived, xs);
     define_has_member_traits(Derived, rs);
-};
+};*/
 
 template <typename Derived> struct TCDataBase;
 template <LaliDataKind kind_> struct TCDataBase<TCData<kind_>> {
     static constexpr auto kind() { return kind_; }
-    using meta_t = typename internal::impl_traits<TCData<kind_>>::meta_t;
-    meta_t meta;
+    //using meta_t = typename internal::impl_traits<TCData<kind_>>::meta_t;
+    //meta_t meta;
 };
 
 } // namespace internal
@@ -185,7 +185,7 @@ struct TCData<kind_, std::enable_if_t<enum_utils::is_compound_v<kind_>>>
     : enum_utils::enum_to_variant_t<kind_, TCData> {
     using Base = enum_utils::enum_to_variant_t<kind_, TCData>;
     using variant_t = enum_utils::enum_to_variant_t<kind_, TCData>;
-    using meta_t = typename internal::impl_traits<TCData<kind_>>::meta_t;
+    //using meta_t = typename internal::impl_traits<TCData<kind_>>::meta_t;
 
     // construct from primitive type
     // template <LaliDataKind kind1,
@@ -228,13 +228,13 @@ struct formatter<timestream::TCData<kind_>>
 
     template <typename FormatContext>
     auto format(const Data &data, FormatContext &ctx) {
-        using data_traits = timestream::internal::impl_traits<Data>;
+        //using data_traits = timestream::internal::impl_traits<Data>;
         auto it = ctx.out();
         constexpr auto kind = Data::kind();
         if constexpr (enum_utils::is_compound_v<kind>) {
             // format compound kind as variant
             return format_to(it, "({}) {:0}", kind, data.variant());
-        } else {
+        }/* else {
             /// format simple kind type
             auto spec = spec_handler();
             // meta
@@ -281,7 +281,7 @@ struct formatter<timestream::TCData<kind_>>
             }
             }
             return it;
-        }
+        }*/
     }
     template <typename T, typename FormatContextOut>
     auto format_member(FormatContextOut &it, std::string_view name, const T &m,

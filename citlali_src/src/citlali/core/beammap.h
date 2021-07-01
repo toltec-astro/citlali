@@ -321,8 +321,8 @@ auto Beammap::timestreamPipeline(Eigen::DenseBase<Derived> &scanindicies, C &kid
             }
 
             else if (std::strcmp("AzEl", maptype.c_str()) == 0) {
-                rtc.telLat.data = telMD.telMetaData["TelAzPhys"].segment(si, scanlength);
-                rtc.telLon.data = telMD.telMetaData["TelElPhys"].segment(si, scanlength);
+                rtc.telLat.data = telMD.telMetaData["TelElPhys"].segment(si, scanlength);
+                rtc.telLon.data = telMD.telMetaData["TelAzPhys"].segment(si, scanlength);
             }
 
             rtc.telElDes.data = telMD.telMetaData["TelElDes"].segment(si, scanlength);

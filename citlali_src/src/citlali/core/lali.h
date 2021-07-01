@@ -142,8 +142,8 @@ auto Lali::run(){
         }
 
         else if (std::strcmp("AzEl", maptype.c_str()) == 0) {
-            in.telLat.data = telMD.telMetaData["TelAzPhys"].segment(si, scanlength);
-            in.telLon.data = telMD.telMetaData["TelElPhys"].segment(si, scanlength);
+            in.telLat.data = telMD.telMetaData["TelElPhys"].segment(si, scanlength);
+            in.telLon.data = telMD.telMetaData["TelAzPhys"].segment(si, scanlength);
         }
 
         in.telElDes.data = telMD.telMetaData["TelElDes"].segment(si, scanlength);
@@ -154,13 +154,29 @@ auto Lali::run(){
         TCData<LaliDataKind::PTC,Eigen::MatrixXd> out;
         rtcproc.run(in, out, this);
 
-        // SPDLOG_INFO("scans after rtcproc {}", out.scans.data);
+        SPDLOG_INFO("scans after rtcproc {}", out.scans.data);
 
         /*Stage 2: PTCProc*/
         PTCProc ptcproc(config);
         ptcproc.run(out, out, this);
 
-        // SPDLOG_INFO("scans after ptcproc {}", out.scans.data);
+        SPDLOG_INFO("scans after ptcproc {}", out.scans.data);
+        SPDLOG_INFO("scans max {}", out.scans.data.maxCoeff());
+        SPDLOG_INFO("scans min {}", out.scans.data.minCoeff());
+
+        SPDLOG_INFO("flags after ptcproc {}", out.flags.data);
+
+
+        SPDLOG_INFO("weights {}", out.weights.data);
+        SPDLOG_INFO("weights max {}", out.weights.data.maxCoeff());
+        SPDLOG_INFO("weights min {}", out.weights.data.minCoeff());
+
+        SPDLOG_INFO("signal {}", Maps.signal);
+        SPDLOG_INFO("wt {}", Maps.weight);
+        SPDLOG_INFO("ker {}", Maps.kernel);
+
+        SPDLOG_INFO("tellat {}", out.telLat.data);
+        SPDLOG_INFO("telLon {}", out.telLon.data);
 
         /*Stage 3 Populate Map*/
         Maps.mapPopulate(out, offsets, config, det_index);

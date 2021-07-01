@@ -73,8 +73,8 @@ void MapUtils::getDetectorPointing(Eigen::DenseBase<DerivedA> &lat, Eigen::Dense
                       sin(TelElDes.derived().array()) * azOffset;// +
                       //config.get_typed<double>("bsOffset_1");
 
-      lat = azOfftmp * RAD_ASEC + telLat.derived().array();
-      lon = elOfftmp * RAD_ASEC + telLon.derived().array();
+      lat = elOfftmp * RAD_ASEC + telLat.derived().array();
+      lon = azOfftmp * RAD_ASEC + telLon.derived().array();
   }
 }
 

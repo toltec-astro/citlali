@@ -3,6 +3,7 @@
 #include <fmt/ostream.h>
 #include <netcdf>
 #include <regex>
+#include <utils/nc.h>
 
 template <
     typename R, typename T,
@@ -162,13 +163,12 @@ struct DataIOError : public std::runtime_error {
 struct TelData {
 
     std::map<std::string, Eigen::Matrix<double,Eigen::Dynamic,1>> telMetaData;
-    std::map <std::string, Eigen::VectorXd> srcCenter;
-    char map_type [128];
+    std::map <std::string, Eigen::Matrix<double,Eigen::Dynamic,1>> srcCenter;
+    std::string map_type;
 
     static TelData fromNcFile(const std::string &filepath) {
         using namespace netCDF;
         using namespace netCDF::exceptions;
-
 
         try {
             SPDLOG_INFO("Read Telescope netCDF file {}", filepath);
@@ -177,7 +177,8 @@ struct TelData {
 
             TelData data;
 
-            vars.find("Header.Dcs.ObsPgm")->second.getVar(&data.map_type);
+            //vars.find("Header.Dcs.ObsPgm")->second.getVar(&data.map_type);
+            data.map_type = nc_utils::getstr(vars.find("Header.Dcs.ObsPgm")->second);
             SPDLOG_INFO("map_type {}", data.map_type);
 
             Eigen::Index TelTime_npts = vars.find("Data.TelescopeBackend.TelTime")->second.getDim(0).getSize();
@@ -221,10 +222,10 @@ struct TelData {
             vars.find("Data.TelescopeBackend.Hold")->second.getVar(data.telMetaData["Hold"].data());
             // SPDLOG_INFO("hold {}", data.telMetaData["Hold"]);
 
-            data.srcCenter["centerRa"].resize(1);
+            data.srcCenter["centerRa"].resize(2);
             vars.find("Header.Source.Ra")->second.getVar(data.srcCenter["centerRa"].data());
 
-            data.srcCenter["centerDec"].resize(1);
+            data.srcCenter["centerDec"].resize(2);
             vars.find("Header.Source.Dec")->second.getVar(data.srcCenter["centerDec"].data());
 
             /* TEMP */

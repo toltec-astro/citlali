@@ -23,7 +23,7 @@ public:
   Eigen::VectorXd rcphys, ccphys;
 
   // Map types
-  std::vector<Eigen::MatrixXd> signal, weight, kernel, intMap, snrMap;
+  std::vector<Eigen::MatrixXd> signal, weight, kernel, intMap;
 
   template<typename TD, typename OT>
   void allocateMaps(TD&, OT&, lali::YamlConfig);
@@ -62,7 +62,7 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
   SPDLOG_INFO("Populating map pixels for scan {}...", in.index.data);
 
   Eigen::Index npts = in.scans.data.rows();
-  Eigen::Index ndetectors = in.scans.data.cols();
+  //Eigen::Index ndetectors = in.scans.data.cols();
 
   auto grouping = config.get_str(std::tuple{"map","grouping"});
 
@@ -70,6 +70,9 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
   pixelsize = config.get_typed<double>(std::tuple{"map","pixelsize"})*RAD_ASEC;
 
   for (Eigen::Index mc = 0; mc < map_count; mc++) {
+      SPDLOG_INFO("det0 {}", std::get<0>(di.at(mc)));
+      SPDLOG_INFO("det1 {}", std::get<1>(di.at(mc)));
+
       // Loop through each detector
       for (Eigen::Index det = std::get<0>(di.at(mc)); det < std::get<1>(di.at(mc)); det++) {
         Eigen::VectorXd lat, lon;
@@ -93,11 +96,21 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
         Eigen::VectorXd irow = lat.array() / pixelsize + (nrows + 1.) / 2.;
         Eigen::VectorXd icol = lon.array() / pixelsize + (ncols + 1.) / 2.;
 
+        //SPDLOG_INFO("irow {} icol {}", irow.maxCoeff(), icol.maxCoeff());
+
         // Loop through points in scan
         for (Eigen::Index s = 0; s < npts; s++) {
 
-          Eigen::Index ir = irow(s);
-          Eigen::Index ic = icol(s);
+          Eigen::Index ir = floor(irow(s));
+          Eigen::Index ic = floor(icol(s));
+
+          if (ir > nrows) {
+              SPDLOG_INFO("irow larger than map size {}", irow);
+          }
+
+          if (ic > ncols) {
+              SPDLOG_INFO("icol larger than map size {}", icol);
+          }
 
           // Exclude flagged data
           if (in.flags.data(s, det)) {
@@ -105,8 +118,8 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
             weight.at(mc)(ir,ic) += in.weights.data(det);
 
             /*Signal Map*/
-            auto sig = in.scans.data(s, det) * in.weights.data(det);
-            signal.at(mc)(ir,ic) += sig;
+           auto sig = in.scans.data(s, det) * in.weights.data(det);
+           signal.at(mc)(ir,ic) += sig;
 
             if (std::strcmp("array_name", grouping.c_str()) == 0) {
                 /*Kernel Map*/
@@ -114,7 +127,7 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
                 kernel.at(mc)(ir,ic) += ker;
 
                 /*Int Map*/
-                intMap.at(mc)(ir,ic) += 1;
+               intMap.at(mc)(ir,ic) += 1;
 
                 /*Noise Maps*/
                 // change to trng library
@@ -122,6 +135,7 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
           }
         }
       }
+      //SPDLOG_INFO("DONE WITH MC {}", mc);
   }
 }
 
@@ -133,7 +147,7 @@ void MapStruct::mapNormalize(lali::YamlConfig config) {
 
     for (Eigen::Index mc = 0; mc < map_count; mc++) {
         signal.at(mc) = (weight.at(mc).array() == 0).select(0, signal.at(mc).array() / weight.at(mc).array());
-        if (std::strcmp("beammap", grouping.c_str()) == 1) {
+        if (std::strcmp("array_name", grouping.c_str()) == 0) {
             kernel.at(mc) = (weight.at(mc).array() == 0).select(0, kernel.at(mc).array() / weight.at(mc).array());
         }
     }

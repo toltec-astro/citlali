@@ -651,7 +651,7 @@ int run(const config::Config &rc) {
 
 
     // 1. coadd map buffer
-    {
+    //{
         // this block of code is to get the relavant info from all the inputs
         // and initialize the coadding buffer
 
@@ -687,11 +687,11 @@ int run(const config::Config &rc) {
             *std::max_element(map_counts.begin(), map_counts.end());
 
         todproc.setup_coadd_map_buffer(coadd_map_extent, coadd_map_count);
-    }
+    //}
 
 
     // 2. loop over all the inputs to do the reduction
-    {
+    //{
         for (std::size_t i = 0; i < co.n_inputs(); ++i) {
             const auto &rawobs = co.inputs()[i];
             // map buffer
@@ -748,7 +748,7 @@ int run(const config::Config &rc) {
                 todproc.engine().output();
             }
         }
-    }
+    //}
 
     /*
     2. for loop of co.inputs() for each raw obs,
