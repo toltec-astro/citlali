@@ -86,6 +86,15 @@ $ cmake -DCMAKE_BUILD_TYPE=Release ..
 $ make citlali
 ```
 
+The citlali is under heavy development, so make sure you check frequently for new updates. To update to latest version:
+
+```
+// in the cloned citlali directory:
+$ git pull --recurse-submodules
+$ cd build
+$ make citlali
+```
+
 # Usage
 
 The created citlali executable will be available in `build/bin`
