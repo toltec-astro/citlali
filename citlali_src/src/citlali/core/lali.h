@@ -160,24 +160,6 @@ auto Lali::run(){
         PTCProc ptcproc(config);
         ptcproc.run(out, out, this);
 
-        SPDLOG_INFO("scans after ptcproc {}", out.scans.data);
-        SPDLOG_INFO("scans max {}", out.scans.data.maxCoeff());
-        SPDLOG_INFO("scans min {}", out.scans.data.minCoeff());
-
-        SPDLOG_INFO("flags after ptcproc {}", out.flags.data);
-
-
-        SPDLOG_INFO("weights {}", out.weights.data);
-        SPDLOG_INFO("weights max {}", out.weights.data.maxCoeff());
-        SPDLOG_INFO("weights min {}", out.weights.data.minCoeff());
-
-        SPDLOG_INFO("signal {}", Maps.signal);
-        SPDLOG_INFO("wt {}", Maps.weight);
-        SPDLOG_INFO("ker {}", Maps.kernel);
-
-        SPDLOG_INFO("tellat {}", out.telLat.data);
-        SPDLOG_INFO("telLon {}", out.telLon.data);
-
         /*Stage 3 Populate Map*/
         Maps.mapPopulate(out, offsets, config, det_index);
 
@@ -252,7 +234,7 @@ void Lali::output() {
         auto filename = composeFilename<lali::TolTEC, lali::Simu, lali::Science>(this, i);
         writeMapsToFITS(this, filepath, filename, i, det_index);
         //std::string out = filepath + filename + std::to_string(i) + ".nc";
-        //writeMapsToNetCDF(this, out);
+        // writeMapsToNetCDF(this, filepath, filename);
     }
 }
 

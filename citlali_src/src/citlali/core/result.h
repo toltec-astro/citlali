@@ -31,7 +31,7 @@ class Result{
 public:
 
     template <class engineType>
-    auto writeMapsToNetCDF(engineType, const std::string);
+    auto writeMapsToNetCDF(engineType, const std::string, std::string);
 
     template <class engineType>
     auto writeMapsToFITS(engineType, const std::string, std::string, int mc, std::vector<std::tuple<int,int>> &);
@@ -96,7 +96,7 @@ public:
         int k = 0;
         for (int i=0; i<map.rows(); i++){
             for (int j=0; j<map.cols(); j++) {
-                tmp[k] = map(i,j);
+                tmp[k] = map(i, map.cols() - j - 1);
                 k++;
             }
         }
@@ -110,15 +110,19 @@ public:
         hdu->addKey("CTYPE2", "DEC--TAN", "");
         // center pixel. note the order of axis. crpix1 is x which is col
         // note the extra 1 in the crpix, because fits is 1-based
-        hdu->addKey("CRPIX1", map.cols() / 2. + 1, "");
-        hdu->addKey("CRPIX2", map.rows() / 2. + 1, "");
+
+        int refpixC2 = map.cols()/2;
+        int refpixC1 = map.rows()/2;
+
+        refpixC1 = map.rows()-1-refpixC1+1;
+        refpixC2 += 1;
+
+        hdu->addKey("CRPIX1", refpixC2, "");
+        hdu->addKey("CRPIX2", refpixC1, "");
 
         // coords of the ref pixel in degrees
-        // SPDLOG_INFO("DEG_TO_RAD {} 1/DEG_TO_RAD {}", 1/DEG_TO_RAD);
         double CRVAL1 = engine->telMD.srcCenter["centerRa"](0)*180./pi;
         double CRVAL2 = engine->telMD.srcCenter["centerDec"](0)*180./pi;
-
-        // SPDLOG_INFO("CRVAL1 {} CRVAL2 {}", CRVAL1, CRVAL2);
 
         hdu->addKey("CUNIT1", "deg", "");
         hdu->addKey("CUNIT2", "deg", "");
@@ -146,13 +150,34 @@ public:
 };
 
 template <class engineType>
-auto Result::writeMapsToNetCDF(engineType engine, const std::string filepath){
+auto Result::writeMapsToNetCDF(engineType engine, const std::string filepath, std::string filename){
     int NC_ERR;
     try {
-        //Create NetCDF file
-        netCDF::NcFile fo(filepath, netCDF::NcFile::replace);
 
         auto grouping = engine->config.get_str(std::tuple{"map","grouping"});
+
+        std::stringstream ss;
+        ss << std::setfill('0') << std::setw(6) << engine->obsid;
+        std::string obsid = ss.str();
+
+        if (std::strcmp("array_name", grouping.c_str()) == 0) {
+            filename = filename+ "_science_" + obsid + "_";
+        }
+
+        else if (std::strcmp("beammap", grouping.c_str()) == 0) {
+            filename = filename+ "_beammap_" + obsid + "_";
+        }
+        std::stringstream ss2;
+
+        const auto p1 = std::chrono::system_clock::now();
+        ss2 <<  std::chrono::duration_cast<std::chrono::hours>(
+                           p1.time_since_epoch()).count();
+
+        std::string unix_time = ss2.str();
+        filename = filename + unix_time + ".nc";
+
+        //Create NetCDF file
+        netCDF::NcFile fo(filepath + filename, netCDF::NcFile::replace);
 
         //Create netCDF dimensions
         netCDF::NcDim nrows = fo.addDim("nrows", engine->Maps.nrows);
@@ -163,7 +188,7 @@ auto Result::writeMapsToNetCDF(engineType engine, const std::string filepath){
         dims.push_back(ncols);
 
         setupNetCDFVars(engine->Maps, engine->Maps.signal, "signal", fo, dims);
-        setupNetCDFVars(engine->Maps, engine->Maps.weight, "weight", fo, dims);
+        setupNetCDFVars(engine->Maps, engine->Maps.weight, "weight", fo, dims);        
 
         if (std::strcmp("beammap", grouping.c_str()) == 1) {
             setupNetCDFVars(engine->Maps, engine->Maps.kernel, "kernel", fo, dims);
@@ -234,6 +259,8 @@ auto Result::writeMapsToFITS(engineType engine, const std::string filepath, std:
             setupHDU(engine,engine->Maps.weight[mi], pFits, "weight", mi);
             setupHDU(engine,engine->Maps.kernel[mi], pFits, "kernel", mi);
             setupHDU(engine,engine->Maps.intMap[mi], pFits, "intMap", mi);
+            //setupHDU(engine,engine->Maps.signal[mi]*sqrt(engine->Maps.weight[mi]), pFits, "snrMap", mi);
+
         }
 
         else if (std::strcmp("beammap", grouping.c_str()) == 0) {

@@ -70,9 +70,6 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
   pixelsize = config.get_typed<double>(std::tuple{"map","pixelsize"})*RAD_ASEC;
 
   for (Eigen::Index mc = 0; mc < map_count; mc++) {
-      SPDLOG_INFO("det0 {}", std::get<0>(di.at(mc)));
-      SPDLOG_INFO("det1 {}", std::get<1>(di.at(mc)));
-
       // Loop through each detector
       for (Eigen::Index det = std::get<0>(di.at(mc)); det < std::get<1>(di.at(mc)); det++) {
         Eigen::VectorXd lat, lon;
@@ -93,23 +90,26 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
         }
 
         // Get row and col indices for lat and lon vectors
-        Eigen::VectorXd irow = lat.array() / pixelsize + (nrows + 1.) / 2.;
-        Eigen::VectorXd icol = lon.array() / pixelsize + (ncols + 1.) / 2.;
+        //Eigen::VectorXd irow = lat.array() / pixelsize + (nrows + 1.) / 2.;
+        //Eigen::VectorXd icol = lon.array() / pixelsize + (ncols + 1.) / 2.;
 
-        //SPDLOG_INFO("irow {} icol {}", irow.maxCoeff(), icol.maxCoeff());
+        Eigen::VectorXd irow = floor((lat.array()-rcphys[0])/pixelsize);
+        Eigen::VectorXd icol = floor((lon.array()-ccphys[0])/pixelsize);
 
         // Loop through points in scan
         for (Eigen::Index s = 0; s < npts; s++) {
 
-          Eigen::Index ir = floor(irow(s));
-          Eigen::Index ic = floor(icol(s));
+          Eigen::Index ir = (irow(s));
+          Eigen::Index ic = (icol(s));
 
-          if (ir > nrows) {
+          if (ir >= nrows) {
               SPDLOG_INFO("irow larger than map size {}", irow);
+              //exit(1);
           }
 
-          if (ic > ncols) {
+          if (ic >= ncols) {
               SPDLOG_INFO("icol larger than map size {}", icol);
+              //exit(1);
           }
 
           // Exclude flagged data

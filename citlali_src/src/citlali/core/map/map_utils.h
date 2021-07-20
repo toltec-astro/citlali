@@ -45,15 +45,16 @@ void MapUtils::getDetectorPointing(Eigen::DenseBase<DerivedA> &lat, Eigen::Dense
                                    Eigen::DenseBase<DerivedB> &TelElDes, Eigen::DenseBase<DerivedB> &ParAng,
                                    const double azOffset, const double elOffset, lali::YamlConfig config){
 
+
+  auto azOfftmp = cos(TelElDes.derived().array()) * azOffset -
+                  sin(TelElDes.derived().array()) * elOffset;// +
+                    //config.get_typed<double>("bsOffset_0");
+  auto elOfftmp = cos(TelElDes.derived().array()) * elOffset +
+                  sin(TelElDes.derived().array()) * azOffset;// +
+                    //config.get_typed<double>("bsOffset_1");
+
   // RaDec map
   if constexpr (pointingtype == RaDec) {
-
-    auto azOfftmp = cos(TelElDes.derived().array()) * azOffset -
-                    sin(TelElDes.derived().array()) * elOffset;// +
-                    //config.get_typed<double>("bsOffset_0");
-    auto elOfftmp = cos(TelElDes.derived().array()) * elOffset +
-                    sin(TelElDes.derived().array()) * azOffset;// +
-                    //config.get_typed<double>("bsOffset_1");
     auto pa2 = ParAng.derived().array() - pi;
 
     auto ratmp = -azOfftmp * cos(pa2) - elOfftmp * sin(pa2);
@@ -66,13 +67,6 @@ void MapUtils::getDetectorPointing(Eigen::DenseBase<DerivedA> &lat, Eigen::Dense
 
   // Az/El map
   else if constexpr (pointingtype == AzEl) {
-      auto azOfftmp = cos(TelElDes.derived().array()) * azOffset -
-                      sin(TelElDes.derived().array()) * elOffset;// +
-                      //config.get_typed<double>("bsOffset_0");
-      auto elOfftmp = cos(TelElDes.derived().array()) * elOffset +
-                      sin(TelElDes.derived().array()) * azOffset;// +
-                      //config.get_typed<double>("bsOffset_1");
-
       lat = elOfftmp * RAD_ASEC + telLat.derived().array();
       lon = azOfftmp * RAD_ASEC + telLon.derived().array();
   }
@@ -105,13 +99,13 @@ auto MapUtils::getMapMaxMin(TD &telMetaData, OT &offsets, lali::YamlConfig confi
         // for (Eigen::Index det=0;det<offsets["azOffset"].size();det++) {
         grppi::map(grppiex::dyn_ex(ex_name), begin(dets), end(dets), begin(w), [&](int det) {
             if (std::strcmp("RaDec", maptype.c_str()) == 0) {
-                getDetectorPointing<MapUtils::RaDec>(lat, lon, telMetaData["TelRaPhys"], telMetaData["TelDecPhys"],
+                getDetectorPointing<MapUtils::RaDec>(lat, lon, telMetaData["TelDecPhys"], telMetaData["TelRaPhys"],
                                                            telMetaData["TelElDes"], telMetaData["ParAng"],
                                                            offsets["azOffset"](det), offsets["elOffset"](det), config);
             }
 
             else if (std::strcmp("AzEl", maptype.c_str()) == 0) {
-                getDetectorPointing<MapUtils::AzEl>(lat, lon, telMetaData["TelAzPhys"], telMetaData["TelElPhys"],
+                getDetectorPointing<MapUtils::AzEl>(lat, lon, telMetaData["TelElPhys"], telMetaData["TelAzPhys"],
                                                            telMetaData["TelElDes"], telMetaData["ParAng"],
                                                            offsets["azOffset"](det), offsets["elOffset"](det), config);
             }
@@ -125,37 +119,11 @@ auto MapUtils::getMapMaxMin(TD &telMetaData, OT &offsets, lali::YamlConfig confi
 
         });
 
-        for (Eigen::Index det=0;det<offsets["azOffset"].size();det++){
-
-            if(lat_lim(det,0) < mapDims(0,0)){
-                mapDims(0,0) = lat_lim(det,0);
-            }
-            if(lat_lim(det,1) > mapDims(1,0)){
-                mapDims(1,0) = lat_lim(det,1);
-            }
-            if(lon_lim(det,0) < mapDims(0,1)){
-                mapDims(0,1) = lon_lim(det,0);
-            }
-            if(lon_lim(det,1) > mapDims(1,1)){
-                mapDims(1,1) = lon_lim(det,1);
-            }
-        }
+        mapDims(0,0)  = lat_lim.col(0).minCoeff();
+        mapDims(1,0)  = lat_lim.col(1).maxCoeff();
+        mapDims(0,1)  = lon_lim.col(0).minCoeff();
+        mapDims(1,1)  = lon_lim.col(1).maxCoeff();
     }
-
-    /*else if constexpr (mapclasstype == MapUtils::Coadded) {
-        if(maps.rcphys.minCoeff() < mapDims(0,0)){
-            mapDims(0,0) = maps.rcphys.minCoeff();
-        }
-        if(maps.rcphys.maxCoeff() > mapDims(1,0)){
-            mapDims(1,0) = maps.rcphys.maxCoeff();
-        }
-        if(maps.ccphys.minCoeff() < mapDims(0,1)){
-            mapDims(0,1) = maps.ccphys.minCoeff();
-        }
-        if(maps.ccphys.maxCoeff() > mapDims(1,1)){
-            mapDims(1,1) = maps.ccphys.maxCoeff();
-        }
-    }*/
 
     return std::move(mapDims);
 }

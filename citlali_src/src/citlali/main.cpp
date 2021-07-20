@@ -649,7 +649,6 @@ int run(const config::Config &rc) {
     std::vector<array_indices_t> array_indices{};
     std::vector<array_indices_t> det_indices{};
 
-
     // 1. coadd map buffer
     //{
         // this block of code is to get the relavant info from all the inputs

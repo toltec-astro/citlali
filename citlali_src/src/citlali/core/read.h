@@ -213,7 +213,6 @@ struct TelData {
             Eigen::Index ActParAng_npts = vars.find("Data.TelescopeBackend.ActParAng")->second.getDim(0).getSize();
             data.telMetaData["ParAng"].resize(ActParAng_npts);
             vars.find("Data.TelescopeBackend.ActParAng")->second.getVar(data.telMetaData["ParAng"].data());
-            data.telMetaData["ParAng"] = data.telMetaData["ParAng"];
             data.telMetaData["ParAng"] = pi-data.telMetaData["ParAng"].array();
             // SPDLOG_INFO("ActParAng {}", data.telMetaData["ParAng"]);
 
