@@ -259,8 +259,7 @@ auto Result::writeMapsToFITS(engineType engine, const std::string filepath, std:
             setupHDU(engine,engine->Maps.weight[mi], pFits, "weight", mi);
             setupHDU(engine,engine->Maps.kernel[mi], pFits, "kernel", mi);
             setupHDU(engine,engine->Maps.intMap[mi], pFits, "intMap", mi);
-            //setupHDU(engine,engine->Maps.signal[mi]*sqrt(engine->Maps.weight[mi]), pFits, "snrMap", mi);
-
+            setupHDU(engine,engine->Maps.signal[mi].array()*engine->Maps.weight[mi].array().sqrt(), pFits, "snrMap", mi);
         }
 
         else if (std::strcmp("beammap", grouping.c_str()) == 0) {
