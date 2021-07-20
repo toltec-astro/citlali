@@ -50,6 +50,7 @@ public:
 
     // std::map for the detector Az/El offsets
     std::unordered_map<std::string, Eigen::VectorXd> offsets;
+    std::unordered_map<std::string, Eigen::VectorXd> fwhms;
 
     // Eigen Vector for nws
     Eigen::VectorXd nw;
