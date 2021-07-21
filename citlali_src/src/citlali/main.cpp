@@ -633,9 +633,9 @@ int run(const config::Config &rc) {
     // Put apt table into lali engine (temporary maybe)
     todproc.engine().nw = apt_table.col(0);
     todproc.engine().array_name = apt_table.col(1);
-    todproc.engine().fluxscale = apt_table.col(2);
-    todproc.engine().fwhms["a_fwhm"] = apt_table.col(3)*3600.;
-    todproc.engine().fwhms["b_fwhm"] = apt_table.col(4)*3600.;
+    todproc.engine().fwhms["a_fwhm"] = apt_table.col(2)*3600.;
+    todproc.engine().fwhms["b_fwhm"] = apt_table.col(3)*3600.;
+    todproc.engine().fluxscale = apt_table.col(4);
     todproc.engine().offsets["azOffset"] = apt_table.col(5)*3600.;
     todproc.engine().offsets["elOffset"] = apt_table.col(6)*3600.;
 
