@@ -30,7 +30,6 @@ include(Grppi)
 
 if (VERBOSE)
     message("----- Summary of Dependencies -----")
-    print_target_properties(cmake_utils::CCfits)
     print_target_properties(cmake_utils::gitversion)
     print_target_properties(Spectra::Spectra)
     message("-----------------------------------")
@@ -48,7 +47,7 @@ target_link_libraries(citlali_core
     PUBLIC
         cmake_utils::spdlog_and_fmt
         cmake_utils::gitversion
-        cmake_utils::CCfits
+        cmake_utils::ccfits
         NetCDF::NetCDFCXX4
         Eigen3::Eigen
         ceres::ceres
@@ -72,7 +71,6 @@ if (CITLALI_BUILD_CLI)
             kids_core
             citlali_core
             clipp::clipp
-            cmake_utils::CCfits
         )
 endif()
 option(CITLALI_BUILD_MPI "Build MPI CLI" OFF)
