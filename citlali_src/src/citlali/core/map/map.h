@@ -69,14 +69,7 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
   auto maptype = config.get_str(std::tuple{"map","type"});
   pixelsize = config.get_typed<double>(std::tuple{"map","pixelsize"})*RAD_ASEC;
 
-  /*SPDLOG_INFO("mc {}", map_count);
-  SPDLOG_INFO("di {}", std::get<0>(di.at(0)));
-  SPDLOG_INFO("di {}", std::get<1>(di.at(0)));
-*/
-
   for (Eigen::Index mc = 0; mc < map_count; mc++) {
-      SPDLOG_INFO("mc {} di {}", mc, std::get<0>(di.at(mc)));
-      SPDLOG_INFO("mc {} di {}", mc, std::get<1>(di.at(mc)));
       // Loop through each detector
       for (Eigen::Index det = std::get<0>(di.at(mc)); det < std::get<1>(di.at(mc)); det++) {
 
