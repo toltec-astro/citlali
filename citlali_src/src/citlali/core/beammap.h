@@ -147,7 +147,7 @@ auto Beammap::runTimestream(){
         // push the ptc into the ptc vector
         {
             //std::scoped_lock lock(farm_mutex);
-            ptcs.at(in.index.data) = out;
+            ptcs.at(in.index.data-1) = out;
         }
 
         SPDLOG_INFO("Done with timestream processing for scan {}", out.index.data);

@@ -243,9 +243,6 @@ void absToPhys(DerivedA &telescope_data,
             telescope_data["TelDecPhys"](i) = (cCD*sin(telescope_data["TelDec"](i)) - sCD*cos(telescope_data["TelDec"](i))*cos(tRa(i)-centerRa))/cosc(i);
         }
     }
-
-    SPDLOG_INFO("telescope_dataTelRaPhys {}", telescope_data["TelRaPhys"]);
-    SPDLOG_INFO("telescope_dataTelDecPhys {}", telescope_data["TelDecPhys"]);
 }
 
 
