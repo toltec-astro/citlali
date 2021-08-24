@@ -206,6 +206,7 @@ auto Beammap::runLoop() {
         grppi::map(grppiex::dyn_ex(ex_name), deti, deto, [&](auto d) {
 
             if (converged(d) == 0) {
+                double scale = 50;
                 Eigen::VectorXd init_p;
                 init_p.setZero(6);
 
@@ -221,8 +222,8 @@ auto Beammap::runLoop() {
 
                 Eigen::MatrixXd limits(n_params, 2);
                 limits.row(0) << 0, max;
-                limits.row(1) << Maps.rcphys.minCoeff(), Maps.rcphys.maxCoeff();
-                limits.row(2) << Maps.ccphys.minCoeff(), Maps.ccphys.maxCoeff();
+                limits.row(1) << maxRow - scale, maxRow + scale;
+                limits.row(2) << maxCol - scale, maxCol + scale;
                 limits.row(3) << 0, 10.0*RAD_ASEC;
                 limits.row(4) << 0, 10.0*RAD_ASEC;
                 limits.row(5) << 0, pi/2.;
@@ -231,11 +232,14 @@ auto Beammap::runLoop() {
 
                 auto g = gaussfit::modelgen<gaussfit::Gaussian2D>(init_p);
                 auto _p = g.params;
-                auto xy = g.meshgrid(Maps.ccphys, Maps.rcphys);
+                auto xy = g.meshgrid(Maps.ccphys.segment(maxCol - scale, maxCol + scale), Maps.rcphys.segment(maxRow - scale, maxRow + scale));
+                auto size = Maps.ccphys.segment(maxCol - scale, maxCol + scale).size();
 
-                Eigen::Map<Eigen::MatrixXd> sigma(Maps.weight[d].data(), Maps.weight[d].rows(), Maps.weight[d].cols());
+                Eigen::MatrixXd signal = Maps.signal[d].block(maxRow - scale,maxCol - scale, size,size);
+                Eigen::MatrixXd sigma = Maps.weight[d].block(maxRow - scale,maxCol - scale, size,size);
+                // Eigen::Map<Eigen::MatrixXd> sigma(Maps.weight[d].data(), Maps.weight[d].rows(), Maps.weight[d].cols());
                 (sigma.array() !=0).select(0, 1./sqrt(sigma.array()));
-                auto g_fit = gaussfit::curvefit_ceres(g, _p, xy, Maps.signal[d], sigma, limits);
+                auto g_fit = gaussfit::curvefit_ceres(g, _p, xy, signal, sigma, limits);
 
                 fittedParams.col(d) = _p;
             }
