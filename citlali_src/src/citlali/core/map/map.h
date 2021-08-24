@@ -61,6 +61,8 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
 
   SPDLOG_INFO("Populating map pixels for scan {}...", in.index.data);
 
+  auto run_kernel = config.get_typed<bool>(std::tuple{"tod","kernel","enabled"});
+
   Eigen::Index npts = in.scans.data.rows();
   //Eigen::Index ndetectors = in.scans.data.cols();
 
@@ -126,7 +128,7 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
             if (std::strcmp("array_name", grouping.c_str()) == 0) {
                 /*Kernel Map*/
 
-                if (config.get_typed<bool>(std::tuple{"tod","kernel","enabled"})) {
+                if (run_kernel) {
                     auto ker = in.kernelscans.data(s, det) * in.weights.data(det);
                     kernel.at(mc)(ir,ic) += ker;
                 }
