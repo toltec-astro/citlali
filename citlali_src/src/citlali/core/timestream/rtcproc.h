@@ -35,7 +35,7 @@ public:
                      TCData<LaliDataKind::PTC, MatrixXd> &);
 
   template<class engineType>
-  auto runKernel(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &, engineType, YamlConfig);
+  void runKernel(TCData<LaliDataKind::RTC, Eigen::MatrixXd> &, engineType, YamlConfig);
 
   template <class engineType>
   auto runCalibration(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &, engineType);
@@ -66,6 +66,13 @@ auto RTCProc::runDespike(TCData<LaliDataKind::RTC, MatrixXd> &in, engineType eng
   despiker.replaceSpikes(in.scans.data, in.flags.data, responsivity);
 }
 
+// Run the kernel to get kernel timestreams.  Called after
+// downsampling to save time and memory
+template<class engineType>
+void RTCProc::runKernel(TCData<LaliDataKind::RTC, Eigen::MatrixXd> &in, engineType engine, YamlConfig config) {
+    makeKernel(in, engine->offsets, engine->fwhms, config);
+}
+
 // Run the lowpass + highpass filter
 template <class engineType>
 auto RTCProc::runFilter(TCData<LaliDataKind::RTC, MatrixXd> &in, engineType engine) {
@@ -77,6 +84,11 @@ auto RTCProc::runFilter(TCData<LaliDataKind::RTC, MatrixXd> &in, engineType engi
 
   // Run the Filter class declared in lali.h
   engine->filter.convolveFilter(in.scans.data);
+
+  if (config.get_typed<bool>(std::tuple{"tod","kernel","enabled"})) {
+    engine->filter.convolveFilter(in.kernelscans.data);
+  }
+
 }
 
 // Run the downsampler
@@ -85,9 +97,11 @@ auto RTCProc::runFilter(TCData<LaliDataKind::RTC, MatrixXd> &in, engineType engi
   // Get parameters
   auto dsf =
       config.get_typed<int>(std::tuple{"tod","downsample","downsamplefactor"});
+  auto run_kernel =
+          config.get_typed<bool>(std::tuple{"tod","kernel","enabled"});
 
   // Run the downsampler
-  downsample(in, out, dsf);
+  downsample(in, out, dsf, run_kernel);
 }
 
 // Run the calibrator for the timestreams to get science units
@@ -99,13 +113,6 @@ auto RTCProc::runCalibration(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in, eng
 // Run the calibrator for the timestreams to get science units
 auto RTCProc::runPolarization() {
   // polarizationDemodulation();
-}
-
-// Run the kernel to get kernel timestreams.  Called after
-// downsampling to save time and memory
-template<class engineType>
-auto RTCProc::runKernel(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in, engineType engine, YamlConfig config) {
-    makeKernel(in, engine->offsets, engine->fwhms, config);
 }
 
  // The main RTC timestream run function.  It checks the config
@@ -124,6 +131,12 @@ template <class engineType>
      runDespike(in, engine);
    }
 
+   // Check if kernel is requested and run if so
+     if (config.get_typed<bool>(std::tuple{"tod","kernel","enabled"})) {
+       SPDLOG_INFO("Generating kernel timestream for scan {}...", in.index.data);
+       runKernel(in, engine, config);
+     }
+
    // Check if filter is requested and run if so
    if (config.get_typed<bool>(std::tuple{"tod","filter","enabled"})) {
      SPDLOG_INFO("Filtering scan {}...", in.index.data);
@@ -139,24 +152,24 @@ template <class engineType>
    // If downsampler is not run, we need to set out's data
    // to in's data
    else {
-     out.scans.data = in.scans.data;
-     out.flags.data = in.flags.data;
+       out.scans.data = in.scans.data;
 
-     out.telLat.data = in.telLat.data;
-     out.telLon.data = in.telLon.data;
-     out.telElDes.data = in.telElDes.data;
-     out.ParAng.data = in.ParAng.data;
+       if (config.get_typed<bool>(std::tuple{"tod","kernel","enabled"})) {
+           out.kernelscans.data = in.kernelscans.data;
+       }
+
+       out.flags.data = in.flags.data;
+
+       out.telLat.data = in.telLat.data;
+       out.telLon.data = in.telLon.data;
+       out.telElDes.data = in.telElDes.data;
+       out.ParAng.data = in.ParAng.data;
    }
 
    // Run calibration
    SPDLOG_INFO("Calibrating scan {}...", in.index.data);
    runCalibration(out, engine);
 
-   // Check if kernel is requested and run if so
-   if (config.get_typed<bool>(std::tuple{"tod","kernel","enabled"})) {
-     SPDLOG_INFO("Generating kernel timestream for scan {}...", in.index.data);
-     runKernel(out, engine, config);
-   }
 
    // Set the scan indices and current scan number of out to those of in
    // These are unused elsewhere in this method

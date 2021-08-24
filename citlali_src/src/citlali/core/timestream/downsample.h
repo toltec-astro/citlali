@@ -10,12 +10,16 @@ using Eigen::Dynamic;
 
 namespace timestream {
 
-auto downsample(TCData<LaliDataKind::RTC,MatrixXd>&in, TCData<LaliDataKind::PTC,MatrixXd>&out, const int dsf){
+auto downsample(TCData<LaliDataKind::RTC,MatrixXd>&in, TCData<LaliDataKind::PTC,MatrixXd>&out, const int dsf, const bool run_kernel){
 
     auto rows = in.scans.data.rows();
     auto cols = in.scans.data.cols();
 
     out.scans.data = Map<MatrixXd,0,Stride<Dynamic,Dynamic>> (in.scans.data.data(), (rows+(dsf - 1))/dsf, cols, Stride<Dynamic,Dynamic>(in.scans.data.outerStride(),in.scans.data.innerStride()*dsf));
+
+    if (run_kernel) {
+        out.kernelscans.data = Map<MatrixXd,0,Stride<Dynamic,Dynamic>> (in.kernelscans.data.data(), (rows+(dsf - 1))/dsf, cols, Stride<Dynamic,Dynamic>(in.kernelscans.data.outerStride(),in.kernelscans.data.innerStride()*dsf));
+    }
     out.flags.data = Map<Matrix<bool,Dynamic,Dynamic>,0,Stride<Dynamic,Dynamic>> (in.flags.data.data(), (rows+(dsf - 1))/dsf, cols,Stride<Dynamic,Dynamic>(in.flags.data.outerStride(),in.flags.data.innerStride()*dsf));
 
     out.telLat.data = Map<VectorXd,0,InnerStride<Dynamic>> (in.telLat.data.data(),(rows+(dsf - 1))/dsf,InnerStride<Dynamic>(in.telLat.data.innerStride()*dsf));

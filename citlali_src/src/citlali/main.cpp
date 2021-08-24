@@ -536,7 +536,6 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
             else {
                 ai += 1;
                 array_index.push_back(std::tuple{i+1,0});
-                SPDLOG_INFO("ai {}",i+1);
             }
         }
 
@@ -547,7 +546,6 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
         else if (std::strcmp("beammap", grouping.c_str()) == 0) {
             for(Eigen::Index i = 0; i < engine().array_name.size(); i++) {
                 det_index.push_back(std::tuple{i,i+1});
-                SPDLOG_INFO("di {}",i);
             }
         }
 
@@ -613,7 +611,7 @@ int run(const config::Config &rc) {
     // load the yaml citlali config
     auto citlali_config =
         config::YamlConfig::from_filepath(rc.get_str("config_file"));
-    //SPDLOG_INFO("citlali config:\n{}", citlali_config);
+    SPDLOG_INFO("citlali config:\n{}", citlali_config);
 
     // set up the IO coorindator
     auto co = SeqIOCoordinator::from_config(citlali_config);
@@ -837,6 +835,8 @@ int run(const config::Config &rc) {
         }
         }
         ,todproc);
+
+    return exitcode;
 }
 
 int main(int argc, char *argv[]) {

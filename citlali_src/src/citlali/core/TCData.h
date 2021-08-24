@@ -149,6 +149,7 @@ struct TCData<LaliDataKind::RTC,RefType>
     //using data_t = std::conditional_t<meta::is_template<RefType, Eigen::Map>, Base::dataref_t, Base::data_t>;
     using data_t = std::conditional_t<eigen_utils::is_plain_v<RefType>,Base::data_t<RefType>, Base::dataref_t<RefType>>;
     data_t scans;
+    Base::data_t<Eigen::MatrixXd> kernelscans;
     // NDData impl
     Base::data_t<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> flags;
     Base::data_t<Eigen::Matrix<Eigen::Index,Eigen::Dynamic,1>> scanindex;

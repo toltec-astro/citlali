@@ -5,7 +5,7 @@
 namespace timestream {
 
 template<typename OT, typename FT>
-void makeKernel(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in, OT &offsets, FT &fwhms, config::YamlConfig config) {
+void makeKernel(TCData<LaliDataKind::RTC, Eigen::MatrixXd> &in, OT &offsets, FT &fwhms, config::YamlConfig config) {
 
     Eigen::Index ndetectors = in.scans.data.cols();
     Eigen::VectorXd dist, lat, lon;

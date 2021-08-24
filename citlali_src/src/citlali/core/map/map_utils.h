@@ -83,7 +83,6 @@ auto MapUtils::getMapMaxMin(TD &telMetaData, OT &offsets, lali::YamlConfig confi
     auto maptype = config.get_str(std::tuple{"map","type"});
 
     if constexpr (mapclasstype == MapUtils::Individual) {
-        Eigen::VectorXd lat, lon;
         Eigen::MatrixXd lat_lim(offsets["elOffset"].size(), 2);
         Eigen::MatrixXd lon_lim(offsets["azOffset"].size(), 2);
 
@@ -115,6 +114,8 @@ auto MapUtils::getMapMaxMin(TD &telMetaData, OT &offsets, lali::YamlConfig confi
             //Get max and min lat and lon values out of all detectors.  Maybe parallelize?
             // for (Eigen::Index det=0;det<offsets["azOffset"].size();det++) {
             grppi::map(grppiex::dyn_ex(ex_name), begin(dets), end(dets), begin(w), [&](int det) {
+
+                Eigen::VectorXd lat, lon;
 
                 if (std::strcmp("RaDec", maptype.c_str()) == 0) {
 
