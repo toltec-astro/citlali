@@ -389,8 +389,9 @@ Model curvefit_ceres(
     options.linear_solver_type = ceres::DENSE_QR;
     // options.minimizer_progress_to_stdout = true;
     options.logging_type = ceres::SILENT;
-    Solver::Summary summary;
-    Solve(options, problem.get(), &summary);
+    options.minimizer_progress_to_stdout = false;
+    //Solver::Summary summary;
+    //Solve(options, problem.get(), &summary);
 
     //SPDLOG_INFO("{}", summary.BriefReport());
     //SPDLOG_INFO("fitted params{}", pp);

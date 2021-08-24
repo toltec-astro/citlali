@@ -228,15 +228,15 @@ auto Beammap::runLoop() {
                 limits.row(4) << 0, 10.0*RAD_ASEC;
                 limits.row(5) << 0, pi/2.;
 
-                SPDLOG_INFO("init_p {}", init_p);
+                SPDLOG_INFO("det {}, init_p {}", d, init_p);
 
                 auto g = gaussfit::modelgen<gaussfit::Gaussian2D>(init_p);
                 auto _p = g.params;
                 auto xy = g.meshgrid(Maps.ccphys.segment(maxCol - scale, maxCol + scale), Maps.rcphys.segment(maxRow - scale, maxRow + scale));
                 auto size = Maps.ccphys.segment(maxCol - scale, maxCol + scale).size();
 
-                Eigen::MatrixXd signal = Maps.signal[d].block(maxRow - scale,maxCol - scale, size,size);
-                Eigen::MatrixXd sigma = Maps.weight[d].block(maxRow - scale,maxCol - scale, size,size);
+                Eigen::MatrixXd signal = Maps.signal[d].block(maxRow - scale,maxCol - scale, size, size);
+                Eigen::MatrixXd sigma = Maps.weight[d].block(maxRow - scale,maxCol - scale, size, size);
                 // Eigen::Map<Eigen::MatrixXd> sigma(Maps.weight[d].data(), Maps.weight[d].rows(), Maps.weight[d].cols());
                 (sigma.array() !=0).select(0, 1./sqrt(sigma.array()));
                 auto g_fit = gaussfit::curvefit_ceres(g, _p, xy, signal, sigma, limits);
