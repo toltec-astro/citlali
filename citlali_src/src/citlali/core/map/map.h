@@ -125,8 +125,11 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
 
             if (std::strcmp("array_name", grouping.c_str()) == 0) {
                 /*Kernel Map*/
-                auto ker = in.kernelscans.data(s, det) * in.weights.data(det);
-                kernel.at(mc)(ir,ic) += ker;
+
+                if (config.get_typed<bool>(std::tuple{"tod","kernel","enabled"})) {
+                    auto ker = in.kernelscans.data(s, det) * in.weights.data(det);
+                    kernel.at(mc)(ir,ic) += ker;
+                }
 
                 /*Int Map*/
                intMap.at(mc)(ir,ic) += 1;
