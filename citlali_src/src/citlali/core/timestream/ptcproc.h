@@ -3,10 +3,9 @@
 #include "timestream_utils.h"
 
 #include "../TCData.h"
-#include "../lali.h"
 #include "cleanPCA.h"
 
-using lali::YamlConfig;
+using config::YamlConfig;
 
 namespace timestream {
 

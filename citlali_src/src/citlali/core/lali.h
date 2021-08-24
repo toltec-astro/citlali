@@ -1,10 +1,11 @@
 #pragma once
 
+#include "timestream/timestream.h"
+
 #include <boost/random.hpp>
 #include <boost/random/random_device.hpp>
 #include <boost/math/constants/constants.hpp>
 #include "config.h"
-#include "timestream/timestream.h"
 #include "map/map_utils.h"
 #include "map/map.h"
 // #include "map/coadd.h"
@@ -235,7 +236,7 @@ void Lali::output() {
         auto filename = composeFilename<lali::TolTEC, lali::Simu, lali::Science>(this, i);
         writeMapsToFITS(this, filepath, filename, i, det_index);
         //std::string out = filepath + filename + std::to_string(i) + ".nc";
-        // writeMapsToNetCDF(this, filepath, filename);
+        //writeMapsToNetCDF(this, filepath, filename);
     }
 }
 

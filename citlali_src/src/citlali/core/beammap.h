@@ -2,6 +2,10 @@
 
 #include <mutex>
 
+#include <boost/random.hpp>
+#include <boost/random/random_device.hpp>
+#include <boost/math/constants/constants.hpp>
+
 #include "config.h"
 #include "timestream/timestream.h"
 #include "map/map_utils.h"
@@ -70,7 +74,7 @@ public:
     std::vector<TCData<LaliDataKind::PTC,Eigen::MatrixXd>> ptcs;
 
     // Mutex for populating ptcs in farm
-    std::mutex farm_mutex;
+    //std::mutex farm_mutex;
 
     // Vectors for grppi maps
     std::vector<int> si, so, deti, deto;
@@ -128,19 +132,22 @@ void Beammap::setup() {
 // Runs the timestream -> map analysis pipeline.
 auto Beammap::runTimestream(){
 
+    // Mutex for populating ptcs in farm
+    //std::mutex farm_mutex;
+
     auto farm =  grppi::farm(nThreads,[&](auto in) -> TCData<LaliDataKind::PTC,Eigen::MatrixXd> {
 
         SPDLOG_INFO("Starting rtcproc {}", in.index.data);
 
-        /*Stage 1: RTCProc*/
+        //Stage 1: RTCProc
         RTCProc rtcproc(config);
         TCData<LaliDataKind::PTC,Eigen::MatrixXd> out;
         rtcproc.run(in, out, this);
 
         // push the ptc into the ptc vector
         {
-            std::scoped_lock lock(farm_mutex);
-            ptcs.push_back(std::move(out));
+            //std::scoped_lock lock(farm_mutex);
+            ptcs.at(in.index.data) = out;
         }
 
         SPDLOG_INFO("Done with timestream processing for scan {}", out.index.data);
@@ -164,25 +171,25 @@ auto Beammap::runLoop() {
             SPDLOG_INFO("s {}", s);
             SPDLOG_INFO("ptcs[s].scans.data {}", ptcs_working[s].scans.data);
 
-            /*Subtract Gaussian for iterations > 0*/
+            //Subtract Gaussian for iterations > 0
             if (iteration > 0) {
                 SPDLOG_INFO("Subtracting Gaussian");
                 SPDLOG_INFO("fittedParams_0 {}", fittedParams_0);
                 timestream::addGaussian(ptcs_working[s], offsets, fittedParams_0, config);
             }
 
-            /*Stage 2: PTCProc*/
+            //Stage 2: PTCProc
             SPDLOG_INFO("Running PTCProc");
             ptcproc.run(ptcs_working[s], ptcs_working[s], this);
 
-            /*Add Gaussian for iterations > 0*/
+            //Add Gaussian for iterations > 0
             if (iteration > 0) {
                 SPDLOG_INFO("Adding Gaussian");
                 fittedParams_0.row(0) = -fittedParams_0.row(0);
                 timestream::addGaussian(ptcs_working[s], offsets, fittedParams_0, config);
             }
 
-            /*Stage 3 Populate Map*/
+            //Stage 3 Populate Map
             SPDLOG_INFO("Populating Maps");
             Maps.mapPopulate(ptcs_working[s], offsets, config, det_index);
 
@@ -194,7 +201,7 @@ auto Beammap::runLoop() {
             Maps.mapNormalize(config);
         }
 
-        /*Stage 4 Fit Maps to Gaussian*/
+        //Stage 4 Fit Maps to Gaussian
         SPDLOG_INFO("Fitting maps");
         grppi::map(grppiex::dyn_ex(ex_name), deti, deto, [&](auto d) {
 
@@ -280,6 +287,9 @@ template <typename Derived, class C, class RawObs>
 auto Beammap::timestreamPipeline(Eigen::DenseBase<Derived> &scanindicies, C &kidsproc, RawObs &rawobs) {
 
     // do grppi reduction
+
+    ptcs.resize(scanindicies.cols());
+
     grppi::pipeline(grppiex::dyn_ex(ex_name),
         [&]() -> std::optional<TCData<LaliDataKind::RTC, Eigen::MatrixXd>> {
         // Variable for current scan

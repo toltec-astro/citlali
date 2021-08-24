@@ -199,7 +199,7 @@ void absToPhysHorPointing(DerivedA &telescope_data){
     Eigen::Index npts = telescope_data["TelAzAct"].rows();
     for(Eigen::Index i=0;i<npts;i++){
         if((telescope_data["TelAzAct"](i)-telescope_data["SourceAz"](i)) > 0.9*2.*pi){
-            telescope_data["TelAzAct"](i) -= 2.*pi;  //*RE-ENABLE after testing*
+            telescope_data["TelAzAct"](i) -= 2.*pi;
         }
     }
 
@@ -211,6 +211,7 @@ template <typename DerivedA>
 void absToPhys(DerivedA &telescope_data,
            double  centerRa, double centerDec,
                int nSamples){
+
     //use temporary storage to avoid writing over absRa and absDec
     Eigen::VectorXd tRa(nSamples);
     Eigen::VectorXd  tDec(nSamples);
@@ -234,7 +235,7 @@ void absToPhys(DerivedA &telescope_data,
     }
 
     for(int i=0;i<nSamples;i++){
-        if(cosc(i)==0.){
+        if(cosc(i) == 0.){
             telescope_data["TelRaPhys"](i) = 0.;
             telescope_data["TelDecPhys"](i) = 0;
         } else {
@@ -242,7 +243,11 @@ void absToPhys(DerivedA &telescope_data,
             telescope_data["TelDecPhys"](i) = (cCD*sin(telescope_data["TelDec"](i)) - sCD*cos(telescope_data["TelDec"](i))*cos(tRa(i)-centerRa))/cosc(i);
         }
     }
+
+    SPDLOG_INFO("telescope_dataTelRaPhys {}", telescope_data["TelRaPhys"]);
+    SPDLOG_INFO("telescope_dataTelDecPhys {}", telescope_data["TelDecPhys"]);
 }
+
 
 
 template <typename DerivedA, typename srcType>
@@ -274,10 +279,12 @@ void obs(Eigen::DenseBase<DerivedA> &scanindex, engineType &engine,
     for (const auto &it : engine.telMD.telMetaData){
         if (it.first!="Hold"){
             if(it.first!="TeTime"){
-                //internal::removeDropouts(telescope_data[it.first], npts);
-                //internal::deNanSignal(telescope_data[it.first], npts);
-                //internal::correctOutOfBounds(telescope_data[it.first], 1.e-9,5.*pi, npts);
-                //internal::correctRollover(telescope_data[it.first], pi, 1.99*pi, 2.0*pi, npts);
+                internal::removeDropouts(engine.telMD.telMetaData[it.first], npts);
+                internal::deNanSignal(engine.telMD.telMetaData[it.first], npts);
+                internal::correctOutOfBounds(engine.telMD.telMetaData[it.first], 1.e-9,5.*pi, npts);
+                if(it.first!="ParAng"){
+                    internal::correctRollover(engine.telMD.telMetaData[it.first], pi, 1.99*pi, 2.0*pi, npts);
+                }
             }
             /*else if (it.first=="TelUtc" || it.first=="AztecUtc") {
                 internal::removeDropouts(telescope_data[it.first], npts);
@@ -295,7 +302,7 @@ void obs(Eigen::DenseBase<DerivedA> &scanindex, engineType &engine,
     // internal::correctRollover(telescope_data["AztecUtc"], 10., 23., 24., npts);
 
     // internal::findUniqueTelUtc(telescope_data);
-    // internal::alignWithDetectors(telescope_data, timeoffset);
+    //internal::alignWithDetectors(engine.telMD.telMetaData, timeoffset);
 
     internal::absToPhysHorPointing<pointing>(engine.telMD.telMetaData);
     internal::absToPhysEqPointing(engine.telMD.telMetaData, engine.telMD.srcCenter);
@@ -399,6 +406,11 @@ void obs(Eigen::DenseBase<DerivedA> &scanindex, engineType &engine,
 
     Eigen::Matrix<Eigen::Index,Eigen::Dynamic,Eigen::Dynamic> tmpSI(4,nscans);
     tmpSI = scanindex;
+
+
+    for (int ns=0; ns < nscans; ns++) {
+        //SPDLOG_INFO(scanindex.col(ns));
+    }
 
 }
 } //namespace

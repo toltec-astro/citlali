@@ -85,7 +85,7 @@ void getDetectorPointing(Eigen::DenseBase<DerivedA> &lat,
                          Eigen::DenseBase<DerivedB> &ParAng,
                          const double azOffset,
                          const double elOffset,
-                         lali::YamlConfig config) {
+                         config::YamlConfig config) {
     // RaDec map
     if constexpr (pointingtype == RaDec) {
 

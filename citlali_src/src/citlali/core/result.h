@@ -117,8 +117,8 @@ public:
         refpixC1 = map.rows()-1-refpixC1+1;
         refpixC2 += 1;
 
-        hdu->addKey("CRPIX1", refpixC2, "");
-        hdu->addKey("CRPIX2", refpixC1, "");
+        hdu->addKey("CRPIX1", refpixC1, "");
+        hdu->addKey("CRPIX2", refpixC2, "");
 
         // coords of the ref pixel in degrees
         double CRVAL1 = engine->telMD.srcCenter["centerRa"](0)*180./pi;

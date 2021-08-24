@@ -3,7 +3,6 @@
 #include "timestream_utils.h"
 
 #include "../TCData.h"
-#include "../lali.h"
 #include "cleanPCA.h"
 #include "despike.h"
 #include "downsample.h"
@@ -12,7 +11,7 @@
 #include "calibrate.h"
 #include "polarization.h"
 
-using lali::YamlConfig;
+using config::YamlConfig;
 
 namespace timestream {
 

@@ -69,10 +69,19 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
   auto maptype = config.get_str(std::tuple{"map","type"});
   pixelsize = config.get_typed<double>(std::tuple{"map","pixelsize"})*RAD_ASEC;
 
+  /*SPDLOG_INFO("mc {}", map_count);
+  SPDLOG_INFO("di {}", std::get<0>(di.at(0)));
+  SPDLOG_INFO("di {}", std::get<1>(di.at(0)));
+*/
+
   for (Eigen::Index mc = 0; mc < map_count; mc++) {
+      SPDLOG_INFO("mc {} di {}", mc, std::get<0>(di.at(mc)));
+      SPDLOG_INFO("mc {} di {}", mc, std::get<1>(di.at(mc)));
       // Loop through each detector
       for (Eigen::Index det = std::get<0>(di.at(mc)); det < std::get<1>(di.at(mc)); det++) {
-        Eigen::VectorXd lat, lon;
+
+
+          Eigen::VectorXd lat, lon;
 
         // Get pointing for each detector using that scans's telescope pointing only
         if (std::strcmp("RaDec", maptype.c_str()) == 0) {
@@ -90,11 +99,11 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
         }
 
         // Get row and col indices for lat and lon vectors
-        //Eigen::VectorXd irow = lat.array() / pixelsize + (nrows + 1.) / 2.;
-        //Eigen::VectorXd icol = lon.array() / pixelsize + (ncols + 1.) / 2.;
+        Eigen::VectorXd irow = lat.array() / pixelsize + (nrows + 1.) / 2.;
+        Eigen::VectorXd icol = lon.array() / pixelsize + (ncols + 1.) / 2.;
 
-        Eigen::VectorXd irow = floor((lat.array()-rcphys[0])/pixelsize);
-        Eigen::VectorXd icol = floor((lon.array()-ccphys[0])/pixelsize);
+        //Eigen::VectorXd irow = floor((lat.array()-rcphys(0))/pixelsize);
+        //Eigen::VectorXd icol = floor((lon.array()-ccphys(0))/pixelsize);
 
         // Loop through points in scan
         for (Eigen::Index s = 0; s < npts; s++) {
@@ -104,12 +113,12 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
 
           if (ir >= nrows) {
               SPDLOG_INFO("irow larger than map size {}", irow);
-              //exit(1);
+              exit(1);
           }
 
           if (ic >= ncols) {
               SPDLOG_INFO("icol larger than map size {}", icol);
-              //exit(1);
+              exit(1);
           }
 
           // Exclude flagged data
