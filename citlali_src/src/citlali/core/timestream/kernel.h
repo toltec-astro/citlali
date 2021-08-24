@@ -1,9 +1,11 @@
 #pragma once
 
+#include <math.h>
+
 namespace timestream {
 
-template<typename OT>
-void makeKernel(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in, OT &offsets, config::YamlConfig config) {
+template<typename OT, typename FT>
+void makeKernel(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in, OT &offsets, FT &fwhms, config::YamlConfig config) {
 
     Eigen::Index ndetectors = in.scans.data.cols();
     Eigen::VectorXd dist, lat, lon;
@@ -40,10 +42,14 @@ void makeKernel(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in, OT &offsets, con
         dist = (lat.array().pow(2) + lon.array().pow(2)).sqrt();
 
         // Replace with beammap values
-        auto beamSigAz = 5.0;
-        auto beamSigEl = 5.0;
+        auto beamSigAz = fwhms["a_fwhm"](det);
+        auto beamSigEl = fwhms["b_fwhm"](det);
+
+        //SPDLOG_INFO("beamSigAz {} beamSigEl {}", beamSigAz, beamSigEl);
 
         double sigma = (beamSigAz + beamSigEl) / 2. / 3600. / 360. * 2.0*pi;
+
+        sigma = sigma/(2*sqrt(2*log(2)));
         in.kernelscans.data.col(det) = (dist.array() <= 3. * sigma)
                                            .select(exp(-0.5 * (dist.array() / sigma).pow(2)), 0);
     }

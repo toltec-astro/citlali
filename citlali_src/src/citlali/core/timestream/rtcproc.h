@@ -105,7 +105,7 @@ auto RTCProc::runPolarization() {
 // downsampling to save time and memory
 template<class engineType>
 auto RTCProc::runKernel(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in, engineType engine, YamlConfig config) {
-    makeKernel(in, engine->offsets, config);
+    makeKernel(in, engine->offsets, engine->fwhms, config);
 }
 
  // The main RTC timestream run function.  It checks the config
