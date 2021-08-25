@@ -206,7 +206,10 @@ auto Beammap::runLoop() {
         grppi::map(grppiex::dyn_ex(ex_name), deti, deto, [&](auto d) {
 
             if (converged(d) == 0) {
+
                 double scale = 50;
+                auto size = 2*scale + 1;
+
                 Eigen::VectorXd init_p;
                 init_p.setZero(6);
 
@@ -218,12 +221,18 @@ auto Beammap::runLoop() {
                 init_p(2) = Maps.ccphys(maxCol); // offset_x
                 init_p(3) = 5.0*RAD_ASEC; // fwhm_y
                 init_p(4) = 5.0*RAD_ASEC; // fwhm_x
-                init_p(5) = pi/4.; // ang
+                init_p(5) = 0.0; // ang
+
+
+                Eigen::Index row_low = maxRow - scale;
+                Eigen::Index row_high = maxRow - scale + size;
+                Eigen::Index col_low = maxCol - scale;
+                Eigen::Index col_high = maxCol - scale + size;
 
                 Eigen::MatrixXd limits(n_params, 2);
                 limits.row(0) << 0, max;
-                limits.row(1) << maxRow - scale, maxRow + scale;
-                limits.row(2) << maxCol - scale, maxCol + scale;
+                limits.row(1) << Maps.rcphys(row_low), Maps.rcphys(row_high);
+                limits.row(2) << Maps.ccphys(col_low), Maps.ccphys(col_high);
                 limits.row(3) << 0, 10.0*RAD_ASEC;
                 limits.row(4) << 0, 10.0*RAD_ASEC;
                 limits.row(5) << 0, pi/2.;
@@ -233,12 +242,10 @@ auto Beammap::runLoop() {
                 auto g = gaussfit::modelgen<gaussfit::Gaussian2D>(init_p);
                 auto _p = g.params;
 
-                auto size = 2*scale + 1;
+                auto xy = g.meshgrid(Maps.ccphys.segment(col_low, size), Maps.rcphys.segment(row_low, size));
 
-                auto xy = g.meshgrid(Maps.ccphys.segment(maxCol - scale, size), Maps.rcphys.segment(maxRow - scale, size));
-
-                Eigen::MatrixXd signal = Maps.signal[d].block(maxRow - scale, maxCol - scale, size, size);
-                Eigen::MatrixXd sigma = Maps.weight[d].block(maxRow - scale, maxCol - scale, size, size);
+                Eigen::MatrixXd signal = Maps.signal[d].block(row_low, col_low, size, size);
+                Eigen::MatrixXd sigma = Maps.weight[d].block(row_low, col_low, size, size);
                 // Eigen::Map<Eigen::MatrixXd> sigma(Maps.weight[d].data(), Maps.weight[d].rows(), Maps.weight[d].cols());
                 (sigma.array() !=0).select(0, 1./sqrt(sigma.array()));
                 auto g_fit = gaussfit::curvefit_ceres(g, _p, xy, signal, sigma, limits);
