@@ -232,11 +232,13 @@ auto Beammap::runLoop() {
 
                 auto g = gaussfit::modelgen<gaussfit::Gaussian2D>(init_p);
                 auto _p = g.params;
-                auto xy = g.meshgrid(Maps.ccphys.segment(maxCol - scale, maxCol + scale), Maps.rcphys.segment(maxRow - scale, maxRow + scale));
-                auto size = Maps.ccphys.segment(maxCol - scale, maxCol + scale).size();
 
-                Eigen::MatrixXd signal = Maps.signal[d].block(maxRow - scale,maxCol - scale, size, size);
-                Eigen::MatrixXd sigma = Maps.weight[d].block(maxRow - scale,maxCol - scale, size, size);
+                auto size = 2*scale + 1;
+
+                auto xy = g.meshgrid(Maps.ccphys.segment(maxCol - scale, size), Maps.rcphys.segment(maxRow - scale, size));
+
+                Eigen::MatrixXd signal = Maps.signal[d].block(maxRow - scale, maxCol - scale, size, size);
+                Eigen::MatrixXd sigma = Maps.weight[d].block(maxRow - scale, maxCol - scale, size, size);
                 // Eigen::Map<Eigen::MatrixXd> sigma(Maps.weight[d].data(), Maps.weight[d].rows(), Maps.weight[d].cols());
                 (sigma.array() !=0).select(0, 1./sqrt(sigma.array()));
                 auto g_fit = gaussfit::curvefit_ceres(g, _p, xy, signal, sigma, limits);
@@ -303,6 +305,10 @@ auto Beammap::timestreamPipeline(Eigen::DenseBase<Derived> &scanindicies, C &kid
         // Index of the start of the current scan
         Eigen::Index si = 0;
 
+        // Get the requested map type
+        auto maptype = config.get_str(std::tuple{"map","type"});
+        SPDLOG_INFO("map_type {}", maptype);
+
         while (scan < scanindicies.cols()) {
 
             // First scan index for current scan
@@ -324,10 +330,6 @@ auto Beammap::timestreamPipeline(Eigen::DenseBase<Derived> &scanindicies, C &kid
 
             // Get telescope pointings for scan (move to Eigen::Maps to save
             // memory and time)
-
-            // Get the requested map type
-            auto maptype = config.get_str(std::tuple{"map","type"});
-            SPDLOG_INFO("mapy_type {}", maptype);
 
             // Put that scan's telescope pointing into RTC
             if (std::strcmp("RaDec", maptype.c_str()) == 0) {
