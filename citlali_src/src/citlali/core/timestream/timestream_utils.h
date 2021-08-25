@@ -83,10 +83,19 @@ void getDetectorPointing(Eigen::DenseBase<DerivedA> &lat,
                          Eigen::DenseBase<DerivedB> &telLon,
                          Eigen::DenseBase<DerivedB> &TelElDes,
                          Eigen::DenseBase<DerivedB> &ParAng,
-                         const double azOffset,
-                         const double elOffset,
+                         double azOffset,
+                         double elOffset,
                          config::YamlConfig config) {
     // RaDec map
+
+
+    auto grouping = config.get_str(std::tuple{"map","grouping"});
+    if (std::strcmp("beammap", grouping.c_str()) == 0) {
+        azOffset = 0;
+        elOffset = 0;
+    }
+
+
     if constexpr (pointingtype == RaDec) {
 
       auto azOfftmp = cos(TelElDes.derived().array()) * azOffset -

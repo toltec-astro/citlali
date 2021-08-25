@@ -97,6 +97,8 @@ auto MapUtils::getMapMaxMin(TD &telMetaData, OT &offsets, lali::YamlConfig confi
         auto ex_name = config.get_str(std::tuple{"runtime","policy"});
         auto nThreads = config.get_typed<int>(std::tuple{"runtime","ncores"});
 
+        auto grouping = config.get_str(std::tuple{"map","grouping"});
+
         for (Eigen::Index scan=0; scan < scanindices.cols(); scan++) {
 
             auto scanlength = scanindices(3, scan) - scanindices(2, scan) + 1;
@@ -117,15 +119,23 @@ auto MapUtils::getMapMaxMin(TD &telMetaData, OT &offsets, lali::YamlConfig confi
 
                 Eigen::VectorXd lat, lon;
 
+                double azOffset = 0;
+                double elOffset = 0;
+
+                if (std::strcmp("array_name", grouping.c_str()) == 0) {
+                    azOffset = offsets["azOffset"](det);
+                    elOffset = offsets["elOffset"](det);
+                }
+
                 if (std::strcmp("RaDec", maptype.c_str()) == 0) {
 
                     getDetectorPointing<MapUtils::RaDec>(lat, lon, teldecphys, telraphys, teleldes, telparang,
-                                                               offsets["azOffset"](det), offsets["elOffset"](det), config);
+                                                               azOffset, elOffset, config);
                 }
 
                 else if (std::strcmp("AzEl", maptype.c_str()) == 0) {
                     getDetectorPointing<MapUtils::AzEl>(lat, lon, telelphys, telazphys, teleldes, telparang,
-                                                               offsets["azOffset"](det), offsets["elOffset"](det), config);
+                                                               azOffset, elOffset, config);
                 }
 
                 if (lat.minCoeff() < lat_lim(det,0)) {

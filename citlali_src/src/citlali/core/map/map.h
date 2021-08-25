@@ -90,15 +90,15 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
         if (std::strcmp("RaDec", maptype.c_str()) == 0) {
             getDetectorPointing<RaDec>(lat, lon, in.telLat.data, in.telLon.data,
                                        in.telElDes.data, in.ParAng.data,
-                                       offsets["azOffset"](det),
-                                       offsets["elOffset"](det), config);
+                                       azOffset,
+                                       elOffset, config);
         }
 
         else if (std::strcmp("AzEl", maptype.c_str()) == 0) {
             getDetectorPointing<AzEl>(lat, lon, in.telLat.data, in.telLon.data,
                                        in.telElDes.data, in.ParAng.data,
-                                       offsets["azOffset"](det),
-                                       offsets["elOffset"](det), config);
+                                       azOffset,
+                                       elOffset, config);
         }
 
         // Get row and col indices for lat and lon vectors
