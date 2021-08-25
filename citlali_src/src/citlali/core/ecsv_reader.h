@@ -40,17 +40,14 @@ void write_aptable_to_ecsv(Eigen::DenseBase<Derived> &data, const std::string &f
         constexpr auto format = datatable::Format::ecsv;
         YAML::Node meta;
         std::vector<std::string> colnames {
+            {"array_name"},
+            {"nw"},
             {"S/N"},
-            {"offset_x"},
-            {"offset_y"},
-            {"fwhm_x"},
-            {"fwhm_y"}};
-        //using meta_t = DECAY(data.meta);
-        //meta_t::storage_t meta_out;
-        //for (const auto &p : _) {
-          //  meta_out[p.second] = data.meta.at(p.first);
-        //}
-        //auto colnames = itersteps.front().candsfitresult.colnames;
+            {"x_t"},
+            {"y_t"},
+            {"a_fwhm"},
+            {"b_fwhm"}};
+
         datatable::write<format>(filepath, data, colnames, std::vector<int>{});
         SPDLOG_INFO("finished writing file {}", filepath);
     } catch (const datatable::DumpError &e) {

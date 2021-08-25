@@ -48,7 +48,7 @@ public:
         }
 
         else if constexpr (datatype == apt) {
-            filename = filename + "apt";
+            filename = filename + "apt_";
         }
 
         if constexpr (projectid == Simu) {
@@ -84,7 +84,7 @@ public:
         std::stringstream ss2;
 
         const auto p1 = std::chrono::system_clock::now();
-        ss2 <<  std::chrono::duration_cast<std::chrono::hours>(
+        ss2 <<  std::chrono::duration_cast<std::chrono::seconds>(
                            p1.time_since_epoch()).count();
 
         std::string unix_time = ss2.str();

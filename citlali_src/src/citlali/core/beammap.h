@@ -432,8 +432,13 @@ void Beammap::output() {
         writeMapsToFITS(this, filepath, filename, i, det_index);
     }
 
+    Eigen::MatrixXd data(fittedParams.rows(), 7);
+    data.col(0) = array_name;
+    data.col(1) = nw;
+    data.block(0,2,data.rows(),fittedParams.cols()) = fittedParams;
+
     auto apt_table_name = composeFilename<lali::apt, lali::Simu, lali::Beammap>(this, -1);
-    write_aptable_to_ecsv(fittedParams, filepath+apt_table_name + ".ecsv", config);
+    write_aptable_to_ecsv(data, filepath+apt_table_name + ".ecsv", config);
 }
 
 } // namespace
