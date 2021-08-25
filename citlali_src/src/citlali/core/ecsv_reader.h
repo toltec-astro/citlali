@@ -6,6 +6,7 @@
 #include <utils/datatable.h>
 #include <utils/filename.h>
 #include <utils/grppiex.h>
+#include <utils/ecsv.h>
 
 template <typename Config>
 auto get_aptable_from_ecsv(std::string filepath, const Config &config) {
@@ -31,4 +32,28 @@ auto get_aptable_from_ecsv(std::string filepath, const Config &config) {
         }
     }
     return table;
+}
+
+template <typename Config, typename Derived>
+void write_aptable_to_ecsv(Eigen::DenseBase<Derived> &data, const std::string &filepath, Config &config) {
+    try {
+        constexpr auto format = datatable::Format::ecsv;
+        YAML::Node meta;
+        std::vector<std::string> colnames {
+            {"S/N"},
+            {"offset_x"},
+            {"offset_y"},
+            {"fwhm_x"},
+            {"fwhm_y"}};
+        //using meta_t = DECAY(data.meta);
+        //meta_t::storage_t meta_out;
+        //for (const auto &p : _) {
+          //  meta_out[p.second] = data.meta.at(p.first);
+        //}
+        //auto colnames = itersteps.front().candsfitresult.colnames;
+        datatable::write<format>(filepath, data, colnames, std::vector<int>{});
+        SPDLOG_INFO("finished writing file {}", filepath);
+    } catch (const datatable::DumpError &e) {
+        SPDLOG_ERROR("unable to write to file {}: {}", filepath, e.what());
+    }
 }

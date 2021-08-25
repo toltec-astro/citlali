@@ -11,7 +11,8 @@ enum DataType {
     AzTEC_as_TolTEC_Testing = 1,
     AzTEC = 2,
     TolTEC = 3,
-    MUSCAT = 4
+    MUSCAT = 4,
+    apt = 5,
 };
 
 enum ProjectID {
@@ -19,6 +20,7 @@ enum ProjectID {
     Commissioning = 1,
     Engineering = 2,
     Simu = 3,
+    none = 4,
 };
 
 enum ObsType {
@@ -45,29 +47,48 @@ public:
             filename = filename + "toltec_";
         }
 
+        else if constexpr (datatype == apt) {
+            filename = filename + "apt";
+        }
+
         if constexpr (projectid == Simu) {
             filename = filename + "simu_";
         }
 
-        if constexpr (obstype == Science) {
-            // filename = filename + "simu_";
-        }
-
-        if constexpr (obstype == Beammap) {
-            // filename = filename + "simu_";
-        }
-
         if (mi == 0) {
-            filename = filename + "a1100";
+            filename = filename + "a1100_";
         }
 
         else if(mi == 1) {
-            filename = filename + "a1400";
+            filename = filename + "a1400_";
         }
 
         else if (mi == 2) {
-            filename = filename + "a2000";
+            filename = filename + "a2000_";
         }
+
+        if constexpr (obstype == Science) {
+            filename = filename + "science_";
+        }
+
+        if constexpr (obstype == Beammap) {
+            filename = filename + "beammap_";
+        }
+
+        std::stringstream ss;
+        ss << std::setfill('0') << std::setw(6) << engine->obsid;
+        std::string obsid = ss.str();
+
+        filename = filename + obsid + "_";
+
+        std::stringstream ss2;
+
+        const auto p1 = std::chrono::system_clock::now();
+        ss2 <<  std::chrono::duration_cast<std::chrono::hours>(
+                           p1.time_since_epoch()).count();
+
+        std::string unix_time = ss2.str();
+        filename = filename + unix_time;
 
         return filename;
     }
@@ -156,18 +177,21 @@ auto Result::writeMapsToNetCDF(engineType engine, const std::string filepath, st
 
         auto grouping = engine->config.get_str(std::tuple{"map","grouping"});
 
-        std::stringstream ss;
+        /*std::stringstream ss;
         ss << std::setfill('0') << std::setw(6) << engine->obsid;
         std::string obsid = ss.str();
 
-        if (std::strcmp("array_name", grouping.c_str()) == 0) {
+        filename = filename + obsid + "_";*/
+
+
+        /*if (std::strcmp("array_name", grouping.c_str()) == 0) {
             filename = filename+ "_science_" + obsid + "_";
         }
 
         else if (std::strcmp("beammap", grouping.c_str()) == 0) {
             filename = filename+ "_beammap_" + obsid + "_";
-        }
-        std::stringstream ss2;
+        }*/
+        /*std::stringstream ss2;
 
         const auto p1 = std::chrono::system_clock::now();
         ss2 <<  std::chrono::duration_cast<std::chrono::hours>(
@@ -175,9 +199,10 @@ auto Result::writeMapsToNetCDF(engineType engine, const std::string filepath, st
 
         std::string unix_time = ss2.str();
         filename = filename + unix_time + ".nc";
+        */
 
         //Create NetCDF file
-        netCDF::NcFile fo(filepath + filename, netCDF::NcFile::replace);
+        netCDF::NcFile fo(filepath + filename + ".nc", netCDF::NcFile::replace);
 
         //Create netCDF dimensions
         netCDF::NcDim nrows = fo.addDim("nrows", engine->Maps.nrows);
@@ -218,31 +243,33 @@ auto Result::writeMapsToFITS(engineType engine, const std::string filepath, std:
     //for (Eigen::Index mc = 0; mc < engine->array_index.size(); mc++) {
         std::unique_ptr<CCfits::FITS> pFits(nullptr);
 
-        std::stringstream ss;
+        /*std::stringstream ss;
         ss << std::setfill('0') << std::setw(6) << engine->obsid;
         std::string obsid = ss.str();
 
-        if (std::strcmp("array_name", grouping.c_str()) == 0) {
+        filename = filename + obsid + "_";*/
+
+        /*if (std::strcmp("array_name", grouping.c_str()) == 0) {
             filename = filename+ "_science_" + obsid + "_";
         }
 
         else if (std::strcmp("beammap", grouping.c_str()) == 0) {
             filename = filename+ "_beammap_" + obsid + "_";
-        }
-        std::stringstream ss2;
+        }*/
+        /*std::stringstream ss2;
 
         const auto p1 = std::chrono::system_clock::now();
         ss2 <<  std::chrono::duration_cast<std::chrono::hours>(
                            p1.time_since_epoch()).count();
 
         std::string unix_time = ss2.str();
-        filename = filename + unix_time + ".fits";
+        filename = filename + unix_time + ".fits";*/
 
         try
         {
             // create the fits object with empty primary hdu
             // we'll add images later
-            pFits.reset( new CCfits::FITS(filepath + filename, CCfits::Write) );
+            pFits.reset( new CCfits::FITS(filepath + filename + ".fits", CCfits::Write) );
         }
 
         catch (CCfits::FITS::CantCreate)

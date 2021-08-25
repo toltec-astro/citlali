@@ -431,6 +431,9 @@ void Beammap::output() {
         auto filename = composeFilename<lali::TolTEC, lali::Simu, lali::Beammap>(this, i);
         writeMapsToFITS(this, filepath, filename, i, det_index);
     }
+
+    auto apt_table_name = composeFilename<lali::apt, lali::Simu, lali::Beammap>(this, -1);
+    write_aptable_to_ecsv(fittedParams, filepath+apt_table_name + ".ecsv", config);
 }
 
 } // namespace
