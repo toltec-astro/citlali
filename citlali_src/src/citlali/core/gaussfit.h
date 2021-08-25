@@ -393,7 +393,7 @@ Model curvefit_ceres(
     //Solver::Summary summary;
     //Solve(options, problem.get(), &summary);
 
-    SPDLOG_INFO("{}", summary.BriefReport());
+    //SPDLOG_INFO("{}", summary.BriefReport());
     //SPDLOG_INFO("fitted params{}", pp);
 
     return Model(pp);
