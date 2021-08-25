@@ -229,7 +229,7 @@ auto Beammap::runLoop() {
                 Eigen::Index col_high = maxCol - scale + size;
 
                 Eigen::MatrixXd limits(n_params, 2);
-                limits.row(0) << 0, max;
+                limits.row(0) << 0.1*max, max;
                 limits.row(1) << Maps.rcphys(row_low), Maps.rcphys(row_high);
                 limits.row(2) << Maps.ccphys(col_low), Maps.ccphys(col_high);
                 limits.row(3) << 0, 10.0*RAD_ASEC;
@@ -246,7 +246,7 @@ auto Beammap::runLoop() {
                 Eigen::MatrixXd signal = Maps.signal[d].block(row_low, col_low, size, size);
                 Eigen::MatrixXd sigma = Maps.weight[d].block(row_low, col_low, size, size);
                 // Eigen::Map<Eigen::MatrixXd> sigma(Maps.weight[d].data(), Maps.weight[d].rows(), Maps.weight[d].cols());
-                (sigma.array() !=0).select(0, 1./sqrt(sigma.array()));
+                (sigma.array() !=0).select(1./sqrt(sigma.array()),0.);
                 auto g_fit = gaussfit::curvefit_ceres(g, _p, xy, signal, sigma, limits);
 
                 fittedParams.col(d) = _p;
