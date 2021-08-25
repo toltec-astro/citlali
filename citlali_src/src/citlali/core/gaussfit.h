@@ -390,10 +390,10 @@ Model curvefit_ceres(
     // options.minimizer_progress_to_stdout = true;
     options.logging_type = ceres::SILENT;
     options.minimizer_progress_to_stdout = false;
-    //Solver::Summary summary;
-    //Solve(options, problem.get(), &summary);
+    Solver::Summary summary;
+    Solve(options, problem.get(), &summary);
 
-    //SPDLOG_INFO("{}", summary.BriefReport());
+    SPDLOG_INFO("{}", summary.BriefReport());
     //SPDLOG_INFO("fitted params{}", pp);
 
     return Model(pp);

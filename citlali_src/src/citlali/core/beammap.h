@@ -221,8 +221,7 @@ auto Beammap::runLoop() {
                 init_p(2) = Maps.ccphys(maxCol); // offset_x
                 init_p(3) = 5.0*RAD_ASEC; // fwhm_y
                 init_p(4) = 5.0*RAD_ASEC; // fwhm_x
-                init_p(5) = 0.0; // ang
-
+                init_p(5) = 0.0; // angle
 
                 Eigen::Index row_low = maxRow - scale;
                 Eigen::Index row_high = maxRow - scale + size;
