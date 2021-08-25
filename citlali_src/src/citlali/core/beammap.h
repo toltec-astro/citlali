@@ -244,6 +244,7 @@ auto Beammap::runLoop() {
                 auto g_fit = gaussfit::curvefit_ceres(g, _p, xy, signal, sigma, limits);
 
                 fittedParams.col(d) = _p;
+                SPDLOG_INFO("fittedParams {}",_p);
             }
 
             return 0;});

@@ -46,6 +46,8 @@ auto PTCProc::runClean(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
       }
   }
 
+  auto run_kernel = config.get_typed<bool>(std::tuple{"tod","kernel","enabled"});
+
   for (Eigen::Index mc=0;mc<map_count;mc++){
 
       auto det = std::get<0>(array_index.at(mc));
@@ -79,7 +81,7 @@ auto PTCProc::runClean(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
       cleaner.det.resize(0, 0);
 
       // Check if kernel is requested
-      if (config.get_typed<bool>(std::tuple{"tod","kernel","enabled"})) {
+      if (run_kernel) {
           // Remove neigToCut eigenvalues from scan kernel timestream
 
           Eigen::Ref<Eigen::MatrixXd> in_kernelscans_block = in.kernelscans.data.block(0,det,in.kernelscans.data.rows(),ndetectors);

@@ -78,6 +78,14 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
 
           Eigen::VectorXd lat, lon;
 
+          double azOffset = 0;
+          double elOffset = 0;
+
+          if (std::strcmp("array_name", grouping.c_str()) == 0) {
+              azOffset = offsets["azOffset"](det);
+              elOffset = offsets["elOffset"](det);
+          }
+
         // Get pointing for each detector using that scans's telescope pointing only
         if (std::strcmp("RaDec", maptype.c_str()) == 0) {
             getDetectorPointing<RaDec>(lat, lon, in.telLat.data, in.telLon.data,
