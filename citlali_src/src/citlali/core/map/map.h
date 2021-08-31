@@ -109,6 +109,7 @@ void MapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
         //Eigen::VectorXd icol = floor((lon.array()-ccphys(0))/pixelsize);
 
         // Loop through points in scan
+        SPDLOG_INFO("ker  {}", in.kernelscans.data.col(det).maxCoeff());
         for (Eigen::Index s = 0; s < npts; s++) {
 
           Eigen::Index ir = (irow(s));
