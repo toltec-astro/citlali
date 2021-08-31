@@ -63,6 +63,9 @@ inputs:
           interface: 'lmt'
     cal_items:
       - filepath: example_simu/apt_000003_000_0000_2021_06_25_18_50_06_edited.ecsv
+        type: array_prop_table
+      - type: some_type
+        some_key: some_value
 kids:
   fitter:
     modelspec: gainlintrend

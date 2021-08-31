@@ -125,7 +125,8 @@ using ConfigMapper = config::ConfigValidatorMixin<Derived, config::YamlConfig>;
 
 /**
  * @brief The raw obs struct
- * This represents a single observation that contains a set of data items.
+ * This represents a single observation that contains a set of data items
+ * and calibration items.
  */
 struct RawObs : ConfigMapper<RawObs> {
     using Base = ConfigMapper<RawObs>;
@@ -145,7 +146,7 @@ struct RawObs : ConfigMapper<RawObs> {
         static auto check_config(config_t &config)
             -> std::optional<std::string> {
             std::vector<std::string> missing_keys;
-            SPDLOG_TRACE("check data items config\n{}", config);
+            SPDLOG_TRACE("check data item config\n{}", config);
             if (!config.has(std::tuple{"meta", "interface"})) {
                 missing_keys.push_back("meta.interface");
             }
@@ -171,10 +172,121 @@ struct RawObs : ConfigMapper<RawObs> {
         std::string m_interface{};
         std::string m_filepath{};
     };
+
+    // clang-format off
+    META_ENUM(CalItemType, int,
+           array_prop_table,
+           unresolved 
+          );
+    // clang-format on
+    using CalItemTypes =
+        meta::cases<CalItemType::array_prop_table, CalItemType::unresolved>;
+    struct ArrayPropTable;
+    struct CalItem;
+    template <auto type>
+    using cal_item_t = meta::switch_t<
+        type, meta::case_t<CalItemType::array_prop_table, ArrayPropTable>,
+        meta::case_t<CalItemType::unresolved, CalItem>>;
+    using cal_item_var_t =
+        std::variant<std::monostate, cal_item_t<CalItemType::array_prop_table>>;
+
+    struct ArrayPropTable : ConfigMapper<ArrayPropTable> {
+        using Base = ConfigMapper<ArrayPropTable>;
+        ArrayPropTable(config_t config)
+            : Base{std::move(config)},
+              m_filepath(this->config().get_str("filepath")) {}
+
+        static auto check_config(config_t &config)
+            -> std::optional<std::string> {
+            std::vector<std::string> missing_keys;
+            SPDLOG_TRACE("check array prop table config\n{}", config);
+            if (!config.has("filepath")) {
+                missing_keys.push_back("filepath");
+            }
+            if (missing_keys.empty()) {
+                return std::nullopt;
+            }
+            return fmt::format("invalid or missing keys={}", missing_keys);
+        }
+        const std::string &filepath() const { return m_filepath; }
+
+        template <typename OStream>
+        friend auto operator<<(OStream &os, const ArrayPropTable &d)
+            -> decltype(auto) {
+            return os << fmt::format("ArrayPropTable(filepath={})",
+                                     d.filepath());
+        }
+
+    private:
+        std::string m_filepath{};
+    };
+
+    /// @breif a generic cal item holder
+    struct CalItem : ConfigMapper<CalItem> {
+        using Base = ConfigMapper<CalItem>;
+        CalItem(config_t config)
+            : Base{std::move(config)},
+              m_typestr(this->config().get_str("type")) {
+            resolve();
+        }
+
+        static auto check_config(config_t &config)
+            -> std::optional<std::string> {
+            std::vector<std::string> missing_keys;
+            SPDLOG_TRACE("check cal item config\n{}", config);
+            if (!config.has("type")) {
+                missing_keys.push_back("type");
+            }
+            if (missing_keys.empty()) {
+                return std::nullopt;
+            }
+            return fmt::format("invalid or missing keys={}", missing_keys);
+        }
+        const std::string &typestr() const { return m_typestr; }
+
+        auto type() const {
+            if (auto opt_type_meta = CalItemType_meta::from_name(typestr());
+                opt_type_meta.has_value()) {
+                return opt_type_meta.value().value;
+            }
+            return CalItemType::unresolved;
+        }
+
+        template <auto type_> bool is_type() { return type() == type_; }
+
+        template <auto type_> const auto &get() const {
+            return std::get<cal_item_t<type_>>(m_cal_item);
+        }
+
+        template <typename OStream>
+        friend auto operator<<(OStream &os, const CalItem &d)
+            -> decltype(auto) {
+            return os << fmt::format("CalItem(type={}, typestr={})", d.type(),
+                                     d.typestr());
+        }
+
+    private:
+        std::string m_typestr{};
+        cal_item_var_t m_cal_item{};
+        void resolve() {
+            meta::switch_invoke<CalItemTypes>(
+                [&](auto _) {
+                    constexpr auto type_ = DECAY(_)::value;
+                    if constexpr (type_ == CalItemType::unresolved) {
+                        m_cal_item = std::monostate{};
+                    } else {
+                        m_cal_item = cal_item_t<type_>{this->config()};
+                    }
+                },
+                type());
+        }
+    };
+
     RawObs(config_t config)
         : Base{std::move(config)}, m_name{this->config().get_str(
                                        std::tuple{"meta", "name"})} {
         collect_data_items();
+        collect_cal_items();
     }
 
     static auto check_config(const config_t &config)
@@ -187,13 +299,16 @@ struct RawObs : ConfigMapper<RawObs> {
         if (!config.has_list("data_items")) {
             missing_keys.push_back("data_items");
         }
+        if (!config.has_list("cal_items")) {
+            missing_keys.push_back("cal_items");
+        }
         if (missing_keys.empty()) {
             return std::nullopt;
         }
         return fmt::format("invalid or missing keys={}", missing_keys);
     }
     const std::string &name() const { return m_name; }
-    const auto n_data_items() const { return m_data_items.size(); }
+    auto n_data_items() const { return m_data_items.size(); }
     const std::vector<DataItem> &data_items() const { return m_data_items; }
     const DataItem &teldata() const {
         return m_data_items[m_teldata_index.value()];
@@ -204,6 +319,13 @@ struct RawObs : ConfigMapper<RawObs> {
             result.push_back(std::cref(m_data_items[i]));
         }
         return result;
+    }
+
+    auto n_cal_items() const { return m_cal_items.size(); }
+    const std::vector<CalItem> &cal_items() const { return m_cal_items; }
+    const ArrayPropTable &array_prop_table() const {
+        return m_cal_items[m_apt_index.value()]
+            .get<CalItemType::array_prop_table>();
     }
 
     template <typename OStream>
@@ -220,6 +342,7 @@ private:
     std::vector<DataItem> m_data_items{};
     std::vector<std::size_t> m_kidsdata_indices{};
     std::optional<std::size_t> m_teldata_index{std::nullopt};
+
     // collect data items
     void collect_data_items() {
         m_data_items.clear();
@@ -247,7 +370,7 @@ private:
                                  re_interface_teldata)) {
                 if (m_teldata_index.has_value()) {
                     throw std::runtime_error(
-                        "found two many telescope data items");
+                        "found too many telescope data items");
                 }
                 m_teldata_index = i;
             }
@@ -259,7 +382,42 @@ private:
                      m_teldata_index);
         SPDLOG_TRACE("kidsdata={} teldata={}", kidsdata(), teldata());
     }
+
+    std::vector<CalItem> m_cal_items{};
+    std::optional<std::size_t> m_apt_index{std::nullopt};
+
+    // collect cal items
+    void collect_cal_items() {
+        m_cal_items.clear();
+        std::vector<CalItem> cal_items{};
+        auto node_cal_items = this->config().get_node("cal_items");
+        auto n_cal_items = node_cal_items.size();
+        for (std::size_t i = 0; i < n_cal_items; ++i) {
+            cal_items.emplace_back(
+                config_t{node_cal_items[i], this->config().filepath()});
+        }
+        m_cal_items = std::move(cal_items);
+        SPDLOG_DEBUG("collected n_cal_items={}\n{}", this->n_cal_items(),
+                     this->cal_items());
+        // update the data indices
+        m_apt_index.reset();
+        for (std::size_t i = 0; i < m_cal_items.size(); ++i) {
+            if (m_cal_items[i].is_type<CalItemType::array_prop_table>()) {
+                if (m_apt_index.has_value()) {
+                    throw std::runtime_error(
+                        "found too many array prop tables");
+                }
+                m_apt_index = i;
+            }
+        }
+        if (!m_apt_index) {
+            throw std::runtime_error("no array prop table found");
+        }
+        SPDLOG_TRACE("apt_index={}", m_apt_index);
+        SPDLOG_TRACE("apt={}", array_prop_table());
+    }
 };
+REGISTER_META_ENUM(RawObs::CalItemType);
 
 /**
  * @brief The Coordinator struct
@@ -281,7 +439,7 @@ struct SeqIOCoordinator : ConfigMapper<SeqIOCoordinator> {
     // io_buffer
     using payloads_buffer_data_t = predefs::data_t;
 
-    const auto n_inputs() const { return m_inputs.size(); }
+    auto n_inputs() const { return m_inputs.size(); }
 
     const std::vector<input_t> &inputs() const { return m_inputs; };
 
@@ -341,9 +499,10 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
               {"modelspec",
                config.get_str(std::tuple{"fitter", "modelspec"})}}},
           m_solver{Solver::Config{
-                   {"fitreportdir", "/"},
-                   {"exmode", "omp"},
-                   {"extra_output", extra_output},}} {}
+              {"fitreportdir", "/"},
+              {"exmode", "omp"},
+              {"extra_output", extra_output},
+          }} {}
 
     static auto check_config(const config_t &config)
         -> std::optional<std::string> {
@@ -412,24 +571,27 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
     }
 
     template <typename scanindices_t>
-    auto populate_rtc(const RawObs &rawobs, scanindices_t &scanindex, const int scanlength, const int n_detectors) {
+    auto populate_rtc(const RawObs &rawobs, scanindices_t &scanindex,
+                      const int scanlength, const int n_detectors) {
         // call reduce rawobs, get the data into rtc
 
-        auto slice = container_utils::Slice<int>{scanindex(2), scanindex(3)+1, std::nullopt};
+        auto slice = container_utils::Slice<int>{scanindex(2), scanindex(3) + 1,
+                                                 std::nullopt};
         auto reduced = reduce_rawobs(rawobs, slice);
 
         Eigen::MatrixXd xs(scanlength, n_detectors);
 
         Eigen::Index i = 0;
-        for(std::vector<kids::TimeStreamSolverResult>::iterator it = reduced.begin(); it != reduced.end(); ++it) {
+        for (std::vector<kids::TimeStreamSolverResult>::iterator it =
+                 reduced.begin();
+             it != reduced.end(); ++it) {
             auto nrows = it->data_out.xs.data.rows();
             auto ncols = it->data_out.xs.data.cols();
             xs.block(0, i, nrows, ncols) = it->data_out.xs.data;
             i += ncols;
-         }
+        }
 
         return std::move(xs);
-
     }
 
     // TODO fix the const correctness
@@ -464,7 +626,7 @@ struct DummyEngine {
  * This wraps around the lali config
  */
 
-template<class EngineType>
+template <class EngineType>
 struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
 
     using Base = ConfigMapper<TimeOrderedDataProc<EngineType>>;
@@ -473,7 +635,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
     using map_extent_t = std::vector<double>;
     using map_coord_t = std::vector<Eigen::VectorXd>;
     using map_count_t = std::size_t;
-    using array_indices_t = std::vector<std::tuple<int,int>>;
+    using array_indices_t = std::vector<std::tuple<int, int>>;
     using scanindicies_t = Eigen::MatrixXI;
 
     TimeOrderedDataProc(config_t config) : Base{std::move(config)} {}
@@ -501,12 +663,10 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
 
         auto scanindices = get_scanindicies(rawobs);
 
-
-
         mapmaking::MapUtils mu;
-        auto [nr, nc, rcp, ccp] = mu.getRowsCols<mu.Individual>(engine().telMD.telMetaData,
-                                                                engine().offsets,
-                                                                engine().config, scanindices);
+        auto [nr, nc, rcp, ccp] = mu.getRowsCols<mu.Individual>(
+            engine().telMD.telMetaData, engine().offsets, engine().config,
+            scanindices);
 
         map_extent.push_back(nr);
         map_extent.push_back(nc);
@@ -518,24 +678,25 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
     }
 
     template <typename Derived>
-    auto get_map_count(const RawObs &rawobs, Eigen::DenseBase<Derived> &apt_table) {
-        // implement the logic to look into apt.ecsv and the groupping config
-        // to figure out the number of maps requested for this rawobs
-        auto grouping = engine().config.get_str(std::tuple{"map","grouping"});
+    auto get_map_count(const RawObs &rawobs,
+                       Eigen::DenseBase<Derived> &apt_table) {
+        // implement the logic to look into apt.ecsv and the groupping
+        // config to figure out the number of maps requested for this
+        // rawobs
+        auto grouping = engine().config.get_str(std::tuple{"map", "grouping"});
         SPDLOG_INFO("grouping {}", grouping);
 
         Eigen::Index ai = 0;
-        std::vector<std::tuple<int,int>> array_index;
-        std::vector<std::tuple<int,int>> det_index;
+        std::vector<std::tuple<int, int>> array_index;
+        std::vector<std::tuple<int, int>> det_index;
 
-        array_index.push_back(std::tuple{0,0});
-        for(Eigen::Index i = 0; i < engine().array_name.size(); i++) {
-            if (engine().array_name(i) == ai){
+        array_index.push_back(std::tuple{0, 0});
+        for (Eigen::Index i = 0; i < engine().array_name.size(); i++) {
+            if (engine().array_name(i) == ai) {
                 std::get<1>(array_index.at(ai)) = i;
-            }
-            else {
+            } else {
                 ai += 1;
-                array_index.push_back(std::tuple{i+1,0});
+                array_index.push_back(std::tuple{i + 1, 0});
             }
         }
 
@@ -544,12 +705,12 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
         }
 
         else if (std::strcmp("beammap", grouping.c_str()) == 0) {
-            for(Eigen::Index i = 0; i < engine().array_name.size(); i++) {
-                det_index.push_back(std::tuple{i,i+1});
+            for (Eigen::Index i = 0; i < engine().array_name.size(); i++) {
+                det_index.push_back(std::tuple{i, i + 1});
             }
         }
 
-        //auto map_count = 3;
+        // auto map_count = 3;
         auto map_count = det_index.size();
 
         return std::tuple{map_count, array_index, det_index};
@@ -558,8 +719,10 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
     auto get_scanindicies(const RawObs &rawobs) {
         // implement the logic to setup map buffer for the engine
         scanindicies_t scanindices;
-        auto offset = engine().config.template get_typed<double>(std::tuple{"map","offset"});
-        auto timechunk = engine().config.template get_typed<double>(std::tuple{"map","timechunk"});
+        auto offset = engine().config.template get_typed<double>(
+            std::tuple{"map", "offset"});
+        auto timechunk = engine().config.template get_typed<double>(
+            std::tuple{"map", "timechunk"});
 
         lali::obs(scanindices, engine(), timechunk, offset);
 
@@ -581,7 +744,8 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
         engine().Maps.ccphys = map_coord.at(1);
         engine().Maps.map_count = map_count;
 
-        engine().Maps.allocateMaps(engine().telMD, engine().offsets, engine().config);
+        engine().Maps.allocateMaps(engine().telMD, engine().offsets,
+                                   engine().config);
     }
 
     // TODO fix the const correctness
@@ -623,12 +787,15 @@ int run(const config::Config &rc) {
     SPDLOG_INFO("kids proc: {}", kidsproc);
 
     // set up TOD proc
-    using todproc_var_t = std::variant<std::monostate, TimeOrderedDataProc<lali::Lali>, TimeOrderedDataProc<beammap::Beammap>>;
+    using todproc_var_t =
+        std::variant<std::monostate, TimeOrderedDataProc<lali::Lali>,
+                     TimeOrderedDataProc<beammap::Beammap>>;
 
     todproc_var_t todproc;
 
-    // set todproc to variant depending on the config file map grouping type
-    auto grouping = citlali_config.get_str(std::tuple{"map","grouping"});
+    // set todproc to variant depending on the config file map grouping
+    // type
+    auto grouping = citlali_config.get_str(std::tuple{"map", "grouping"});
 
     if (std::strcmp("array_name", grouping.c_str()) == 0) {
         SPDLOG_INFO("Reducing in Science Mode");
@@ -637,13 +804,15 @@ int run(const config::Config &rc) {
 
     if (std::strcmp("beammap", grouping.c_str()) == 0) {
         SPDLOG_INFO("Reducing in Beammap Mode");
-        todproc = TimeOrderedDataProc<beammap::Beammap>::from_config(citlali_config);
+        todproc =
+            TimeOrderedDataProc<beammap::Beammap>::from_config(citlali_config);
     }
-
 
     auto exitcode = std::visit(
         [&](auto &todproc) {
+            using todproc_t = DECAY(todproc);
 
+<<<<<<< HEAD
         using todproc_t = DECAY(todproc);
 
         if constexpr(std::is_same_v<todproc_t, std::monostate>) {
@@ -713,137 +882,229 @@ int run(const config::Config &rc) {
 
             else if (std::strcmp("AzEl", maptype.c_str()) == 0) {
                 lali::internal::absToPhysHorPointing<lali::pointing>(todproc.engine().telMD.telMetaData);
+=======
+            if constexpr (std::is_same_v<todproc_t, std::monostate>) {
+                return EXIT_FAILURE;
+>>>>>>> b867974f442baa26c5badc988b3875e44907659f
             }
 
+            else {
 
-            auto [me, mco] = todproc.get_map_extent(rawobs);
-            map_extents.push_back(std::move(me));
-            map_coords.push_back(std::move(mco));
+                // auto todproc =
+                // TimeOrderedDataProc::from_config(citlali_config);
+                // SPDLOG_INFO("tod proc: {}", todproc);
 
-            auto [mc, ai, di] = todproc.get_map_count(rawobs, apt_table);
-            map_counts.push_back(std::move(mc));
-            array_indices.push_back(std::move(ai));
-            det_indices.push_back(std::move(di));
-        }
+                // Set todproc config
+                todproc.engine().config = citlali_config;
 
-        // combine the map extents to the coadd map extent
-        // TODO implement this
-        auto coadd_map_extent = map_extents.front();
-        // combine the map counts to the coadd map counts
-        auto coadd_map_count =
-            *std::max_element(map_counts.begin(), map_counts.end());
+                // Path to apt table from config file
+                // auto cal_path = citlali_config.get_filepath(
+                //    std::tuple{"inputs", 0, "cal_items", 0, "filepath"});
+                auto cal_path =
+                    co.inputs().front().array_prop_table().filepath();
+                SPDLOG_INFO("cal_path {}", cal_path);
 
-        todproc.setup_coadd_map_buffer(coadd_map_extent, coadd_map_count);
-    //}
+                // Get apt table (error with ecsv, so using ascii for
+                // now)
+                auto apt_table =
+                    get_aptable_from_ecsv(cal_path, citlali_config);
+                SPDLOG_INFO("apt_table {}", apt_table);
+
+                // Put apt table into lali engine (temporary maybe)
+                todproc.engine().nw = apt_table.col(0);
+                todproc.engine().array_name = apt_table.col(1);
+                todproc.engine().fluxscale = apt_table.col(2);
+                todproc.engine().offsets["azOffset"] = apt_table.col(3) * 3600.;
+                todproc.engine().offsets["elOffset"] = apt_table.col(4) * 3600.;
+                todproc.engine().fwhms["a_fwhm"] = apt_table.col(5); //*3600.;
+                todproc.engine().fwhms["b_fwhm"] = apt_table.col(6); //*3600.;
+
+                // containers to store some pre-computed info for all
+                // inputs
+                using map_extent_t = typename todproc_t::map_extent_t;
+                using map_coord_t = typename todproc_t::map_coord_t;
+                using map_count_t = typename todproc_t::map_count_t;
+                using array_indices_t = typename todproc_t::array_indices_t;
+
+                std::vector<map_extent_t> map_extents{};
+                std::vector<map_coord_t> map_coords{};
+                std::vector<map_count_t> map_counts{};
+                std::vector<array_indices_t> array_indices{};
+                std::vector<array_indices_t> det_indices{};
+
+                // 1. coadd map buffer
+                //{
+                // this block of code is to get the relavant info from
+                // all the inputs and initialize the coadding buffer
+
+                // populate the inputs info
+                for (const auto &rawobs : co.inputs()) {
+                    todproc.engine().telMD =
+                        lali::TelData::fromNcFile(rawobs.teldata().filepath());
+
+                    auto maptype = todproc.engine().config.get_str(
+                        std::tuple{"map", "type"});
+
+                    if (std::strcmp("RaDec", maptype.c_str()) == 0) {
+                        lali::internal::absToPhysEqPointing(
+                            todproc.engine().telMD.telMetaData,
+                            todproc.engine().telMD.srcCenter);
+                    }
+
+                    else if (std::strcmp("AzEl", maptype.c_str()) == 0) {
+                        lali::internal::absToPhysHorPointing<lali::pointing>(
+                            todproc.engine().telMD.telMetaData);
+                    }
+
+                    auto [me, mco] = todproc.get_map_extent(rawobs);
+                    map_extents.push_back(std::move(me));
+                    map_coords.push_back(std::move(mco));
+
+                    auto [mc, ai, di] =
+                        todproc.get_map_count(rawobs, apt_table);
+                    map_counts.push_back(std::move(mc));
+                    array_indices.push_back(std::move(ai));
+                    det_indices.push_back(std::move(di));
+                }
+
+                // combine the map extents to the coadd map extent
+                // TODO implement this
+                auto coadd_map_extent = map_extents.front();
+                // combine the map counts to the coadd map counts
+                auto coadd_map_count =
+                    *std::max_element(map_counts.begin(), map_counts.end());
+
+                todproc.setup_coadd_map_buffer(coadd_map_extent,
+                                               coadd_map_count);
+                //}
+
+                // 2. loop over all the inputs to do the reduction
+                //{
+                for (std::size_t i = 0; i < co.n_inputs(); ++i) {
+                    const auto &rawobs = co.inputs()[i];
+                    // map buffer
+                    // just use the stored values here avoid repeated
+                    // calculation
+                    todproc.setup_map_buffer(map_extents[i], map_coords[i],
+                                             map_counts[i]);
+
+                    // this is needed to figure out the data sample rate
+                    // and number of detectors for creating the
+                    // scanindices and rtc buffers
+                    auto rawobs_kids_meta = kidsproc.get_rawobs_meta(rawobs);
+
+                    // Get obsid for output filename
+                    todproc.engine().obsid =
+                        rawobs_kids_meta.back().get_typed<int>("obsid");
+
+                    // Put it in the correct format with leading zeros
+                    // (move)
+                    std::stringstream ss;
+                    ss << std::setfill('0') << std::setw(6)
+                       << todproc.engine().obsid;
+                    std::string s = ss.str();
+
+                    // Get telescope file pointing and time vectors
+                    todproc.engine().telMD =
+                        lali::TelData::fromNcFile(rawobs.teldata().filepath());
+
+                    SPDLOG_INFO("got telescope file");
+
+                    // TODO implement this to be the actual time chunk
+                    // size
+                    todproc.engine().samplerate =
+                        rawobs_kids_meta.back().get_typed<double>("fsmp");
+                    SPDLOG_INFO("tod_sample_rate {}",
+                                todproc.engine().samplerate);
+
+                    auto scanindicies = todproc.get_scanindicies(rawobs);
+                    SPDLOG_INFO("scanindicies {}", scanindicies);
+
+                    // Copy array and detector indices into engine
+                    todproc.engine().array_index = array_indices.at(i);
+                    todproc.engine().det_index = det_indices.at(i);
+
+                    // TODO implement to get the number of detectors to
+                    // create rtc buffer
+                    todproc.engine().n_detectors = apt_table.rows();
+                    SPDLOG_INFO("n_detectors {}", todproc.engine().n_detectors);
+
+                    // Do general setup that is only run once per rawobs
+                    // before grppi pipeline
+                    {
+                        logging::scoped_timeit timer("engine setup()");
+                        todproc.engine().setup();
+                    }
+
+                    // Run the actual pipeline
+                    {
+                        logging::scoped_timeit timer("engine pipeline()");
+                        todproc.engine().pipeline(scanindicies, kidsproc,
+                                                  rawobs);
+                    }
+
+                    // Generate output files
+                    {
+                        logging::scoped_timeit timer("engine output()");
+                        todproc.engine().output();
+                    }
+                }
+                //}
+
+                /*
+                2. for loop of co.inputs() for each raw obs,
+
+                    auto rawobs = co.inputs()[i]
+
+                    2.1 map buffer
+                    * allocate map buffer (one layer for each gorup)
 
 
-    // 2. loop over all the inputs to do the reduction
-    //{
-        for (std::size_t i = 0; i < co.n_inputs(); ++i) {
-            const auto &rawobs = co.inputs()[i];
-            // map buffer
-            // just use the stored values here avoid repeated calculation
-            todproc.setup_map_buffer(map_extents[i], map_coords[i], map_counts[i]);
+                    auto rawobs_kids_meta =
+                kidsproc.get_rawobs_meta(rawobs)
 
-            // this is needed to figure out the data sample rate
-            // and number of detectors for creating the scanindices and rtc
-            // buffers
-            auto rawobs_kids_meta = kidsproc.get_rawobs_meta(rawobs);
+                    2.2 calc scanindices
+                    //// tel pps:   [000011111122...........99100]
+                    ///  time range      [0s                  98s]
+                    /// use kids sample rate generate
+                    /// scanindicies [(0, 4880, 32, 4880-32), (4880-32,
+                9760 + 32, 4880, 9760)]
+                    ///
 
-            // Get obsid for output filename
-            todproc.engine().obsid = rawobs_kids_meta.back().get_typed<int>("obsid");
+                    2.3 get rtc buffer info
+                        get number of all detectors from from
+                meta["ntones"]
 
-            // Put it in the correct format with leading zeros (move)
-            std::stringstream ss;
-            ss << std::setfill('0') << std::setw(6) << todproc.engine().obsid;
-            std::string s = ss.str();
+                    2.3 do reduction
+                        grppi {
+                            scanindices item [start, stop,]
+                            rtc [n_samples_per_chunk x ndetector_total]
+                            kidsproc.populate_rtc(rawobs, rtc,
+                scanindices item)
+                                    {
+                                    /// kidsdata 0 ts
+                [0011111122...........99100]
+                                    /// kidsdata 1
+                ts[00011111122...........99100]
+                                    /// kidsdata 2 ts
+                [011111122...........99100]
+                                    /// kidsdata_start_vector<13>{2, 3,
+                1, ...}
 
-            // Get telescope file pointing and time vectors
-            todproc.engine().telMD = lali::TelData::fromNcFile(rawobs.teldata().filepath());
-
-            SPDLOG_INFO("got telescope file");
-
-            // TODO implement this to be the actual time chunk size
-            todproc.engine().samplerate = rawobs_kids_meta.back().get_typed<double>("fsmp");
-            SPDLOG_INFO("tod_sample_rate {}", todproc.engine().samplerate);
-
-            auto scanindicies = todproc.get_scanindicies(rawobs);
-            SPDLOG_INFO("scanindicies {}", scanindicies);
-
-            // Copy array and detector indices into engine
-            todproc.engine().array_index = array_indices.at(i);
-            todproc.engine().det_index = det_indices.at(i);
-
-            // TODO implement to get the number of detectors to create rtc buffer
-            todproc.engine().n_detectors = apt_table.rows();
-            SPDLOG_INFO("n_detectors {}", todproc.engine().n_detectors);
-
-            // Do general setup that is only run once per rawobs before grppi pipeline
-            {
-                logging::scoped_timeit timer("engine setup()");
-                todproc.engine().setup();
+                                    kids_indics [scanindices +
+                kidsdat_sart_vector] for dataitem in rawobs.data_items()
+                                        read_data_slice(filepath, slice)
+                                        reduce kids
+                                        rtc.block[detector i] =
+                tsresult.data_out.xs()
+                                    }
+                            return rtc
+                        2.5 add map buffer content to coadd map buffer
+                */
+                return EXIT_SUCCESS;
             }
-
-            // Run the actual pipeline
-            {
-                logging::scoped_timeit timer("engine pipeline()");
-                todproc.engine().pipeline(scanindicies, kidsproc, rawobs);
-            }
-
-            // Generate output files
-            {
-                logging::scoped_timeit timer("engine output()");
-                todproc.engine().output();
-            }
-        }
-    //}
-
-    /*
-    2. for loop of co.inputs() for each raw obs,
-
-        auto rawobs = co.inputs()[i]
-
-        2.1 map buffer
-        * allocate map buffer (one layer for each gorup)
-
-
-        auto rawobs_kids_meta = kidsproc.get_rawobs_meta(rawobs)
-
-        2.2 calc scanindices
-        //// tel pps:   [000011111122...........99100]
-        ///  time range      [0s                  98s]
-        /// use kids sample rate generate
-        /// scanindicies [(0, 4880, 32, 4880-32), (4880-32, 9760 + 32, 4880,
-    9760)]
-        ///
-
-        2.3 get rtc buffer info
-            get number of all detectors from from meta["ntones"]
-
-        2.3 do reduction
-            grppi {
-                scanindices item [start, stop,]
-                rtc [n_samples_per_chunk x ndetector_total]
-                kidsproc.populate_rtc(rawobs, rtc, scanindices item)
-                        {
-                        /// kidsdata 0 ts [0011111122...........99100]
-                        /// kidsdata 1 ts[00011111122...........99100]
-                        /// kidsdata 2 ts  [011111122...........99100]
-                        /// kidsdata_start_vector<13>{2, 3, 1, ...}
-
-                        kids_indics [scanindices + kidsdat_sart_vector]
-                        for dataitem in rawobs.data_items()
-                            read_data_slice(filepath, slice)
-                            reduce kids
-                            rtc.block[detector i] = tsresult.data_out.xs()
-                        }
-                return rtc
-            2.5 add map buffer content to coadd map buffer
-    */
-    return EXIT_SUCCESS;
-        }
-        }
-        ,todproc);
+        },
+        todproc);
 
     return exitcode;
 }
@@ -852,7 +1113,7 @@ int main(int argc, char *argv[]) {
     logging::init<>(true);
 
     {
-    logging::scoped_timeit timer("Citlali Process");
+        logging::scoped_timeit timer("Citlali Process");
 
         auto rc = parse_args(argc, argv);
         SPDLOG_TRACE("rc {}", rc.pformat());
