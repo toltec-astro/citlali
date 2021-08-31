@@ -377,6 +377,10 @@ void obs(Eigen::DenseBase<DerivedA> &scanindex, engineType &engine,
         //start with the first and last scan index
         //reduce by one scan since we seem to have a problem at the moment
 
+        SPDLOG_INFO("timeChunk {}", timeChunk);
+        SPDLOG_INFO("samplerate {}",engine.samplerate);
+
+
         SPDLOG_INFO("Redefining scans to use all data.");
         int firstScanI = 0;//scanIndex[0][0];
         int lastScanI = npts - 1;//scanIndex[1][nScans-1];

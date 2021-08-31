@@ -696,6 +696,15 @@ int run(const config::Config &rc) {
         for (const auto &rawobs : co.inputs()) {
             todproc.engine().telMD = lali::TelData::fromNcFile(rawobs.teldata().filepath());
 
+
+            auto rawobs_kids_meta = kidsproc.get_rawobs_meta(rawobs);
+
+            // TODO implement this to be the actual time chunk
+            // size
+            todproc.engine().samplerate =
+                rawobs_kids_meta.back().get_typed<double>("fsmp");
+            SPDLOG_INFO("tod_sample_rate {}", todproc.engine().samplerate);
+
             auto maptype = todproc.engine().config.get_str(std::tuple{"map","type"});
 
             if (std::strcmp("RaDec", maptype.c_str()) == 0) {

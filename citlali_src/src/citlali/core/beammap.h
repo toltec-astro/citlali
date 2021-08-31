@@ -207,8 +207,8 @@ auto Beammap::runLoop() {
 
             if (converged(d) == 0) {
 
-                double scale = 50;
-                auto size = 2*scale + 1;
+                Eigen::Index scale = 50;
+                // auto size = 2*scale + 1;
 
                 Eigen::VectorXd init_p;
                 init_p.setZero(6);
@@ -221,32 +221,58 @@ auto Beammap::runLoop() {
                 init_p(2) = Maps.ccphys(maxCol); // offset_x
                 init_p(3) = 5.0*RAD_ASEC; // fwhm_y
                 init_p(4) = 5.0*RAD_ASEC; // fwhm_x
-                init_p(5) = 0.0; // angle
+                init_p(5) = pi/4.; // angle
+                
+                Eigen::Index row_scale_low = scale;
+                Eigen::Index col_scale_low = scale;
 
-                Eigen::Index row_low = maxRow - scale;
-                Eigen::Index row_high = maxRow - scale + size;
-                Eigen::Index col_low = maxCol - scale;
-                Eigen::Index col_high = maxCol - scale + size;
+                if (maxRow - scale < 0) {
+                    row_scale_low = maxRow;
+                }
+
+                if (maxCol - scale < 0) {
+                    col_scale_low = maxCol;
+                }
+
+                Eigen::Index row_scale_high = scale;
+                Eigen::Index col_scale_high = scale;
+
+                if (maxRow + scale > Maps.nrows) {
+                     row_scale_high = Maps.nrows - maxRow;
+                 }
+
+                 if (maxCol + scale > Maps.ncols) {
+                     col_scale_high = Maps.ncols - maxCol;
+                 }
+
+                 Eigen::Index row_scale = std::min(row_scale_low,row_scale_high);
+                 Eigen::Index col_scale = std::min(col_scale_low,col_scale_high);
+
+                scale = std::min(row_scale, col_scale);
+
+                auto size = 2*scale + 1;
 
                 Eigen::MatrixXd limits(n_params, 2);
-                limits.row(0) << 0.1*max, max;
-                limits.row(1) << Maps.rcphys(row_low), Maps.rcphys(row_high);
-                limits.row(2) << Maps.ccphys(col_low), Maps.ccphys(col_high);
-                limits.row(3) << 0, 10.0*RAD_ASEC;
-                limits.row(4) << 0, 10.0*RAD_ASEC;
+                limits.row(0) << 0.1*max, 1.1*max;
+                limits.row(1) << Maps.ccphys(maxCol-scale), Maps.ccphys(maxCol+scale);
+                limits.row(2) << Maps.rcphys(maxRow-scale), Maps.rcphys(maxRow+scale);
+                limits.row(3) << 0, 15.0*RAD_ASEC;
+                limits.row(4) << 0, 15.0*RAD_ASEC;
                 limits.row(5) << 0, pi/2.;
 
+                SPDLOG_INFO("limits {}", limits);
                 SPDLOG_INFO("det {}, init_p {}", d, init_p);
 
                 auto g = gaussfit::modelgen<gaussfit::Gaussian2D>(init_p);
                 auto _p = g.params;
 
-                auto xy = g.meshgrid(Maps.ccphys.segment(col_low, size), Maps.rcphys.segment(row_low, size));
+                auto xy = g.meshgrid(Maps.ccphys.segment(maxCol-scale,size), Maps.rcphys.segment(maxRow-scale,size));
 
-                Eigen::MatrixXd signal = Maps.signal[d].block(row_low, col_low, size, size);
-                Eigen::MatrixXd sigma = Maps.weight[d].block(row_low, col_low, size, size);
+                Eigen::MatrixXd signal = Maps.signal[d].block(maxRow-scale,maxCol-scale,size,size);
+                Eigen::MatrixXd sigma = Maps.weight[d].block(maxRow-scale,maxCol-scale,size,size);
                 // Eigen::Map<Eigen::MatrixXd> sigma(Maps.weight[d].data(), Maps.weight[d].rows(), Maps.weight[d].cols());
                 (sigma.array() !=0).select(1./sqrt(sigma.array()),0.);
+                SPDLOG_INFO("sigma {}",sigma);
                 auto g_fit = gaussfit::curvefit_ceres(g, _p, xy, signal, sigma, limits);
 
                 fittedParams.col(d) = _p;

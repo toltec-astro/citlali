@@ -386,12 +386,12 @@ Model curvefit_ceres(
     }
 
     Solver::Options options;
-    options.linear_solver_type = ceres::DENSE_QR;
+    options.linear_solver_type = ceres::LinearSolverType::DENSE_QR;
     // options.minimizer_progress_to_stdout = true;
-    options.logging_type = ceres::SILENT;
-    //options.minimizer_progress_to_stdout = false;
-    //Solver::Summary summary;
-    //Solve(options, problem.get(), &summary);
+    options.logging_type = ceres::LoggingType::SILENT;
+    options.minimizer_progress_to_stdout = false;
+    Solver::Summary summary;
+    Solve(options, problem.get(), &summary);
 
     //SPDLOG_INFO("{}", summary.BriefReport());
     //SPDLOG_INFO("fitted params{}", pp);
