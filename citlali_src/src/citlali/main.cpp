@@ -844,8 +844,8 @@ int run(const config::Config &rc) {
                 todproc.engine().fluxscale = apt_table.col(2);
                 todproc.engine().offsets["azOffset"] = apt_table.col(3) * 3600.;
                 todproc.engine().offsets["elOffset"] = apt_table.col(4) * 3600.;
-                todproc.engine().fwhms["a_fwhm"] = apt_table.col(5); //*3600.;
-                todproc.engine().fwhms["b_fwhm"] = apt_table.col(6); //*3600.;
+                todproc.engine().fwhms["a_fwhm"] = apt_table.col(5)*3600.;
+                todproc.engine().fwhms["b_fwhm"] = apt_table.col(6)*3600.;
 
                 // containers to store some pre-computed info for all
                 // inputs

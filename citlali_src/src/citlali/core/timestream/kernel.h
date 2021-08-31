@@ -44,7 +44,6 @@ void makeKernel(TCData<LaliDataKind::RTC, Eigen::MatrixXd> &in, OT &offsets, FT 
         // Replace with beammap values
         auto beamSigAz = fwhms["a_fwhm"](det);
         auto beamSigEl = fwhms["b_fwhm"](det);
-
         //SPDLOG_INFO("beamSigAz {} beamSigEl {}", beamSigAz, beamSigEl);
 
         double sigma = (beamSigAz + beamSigEl) / 2. / 3600. / 360. * 2.0*pi;
