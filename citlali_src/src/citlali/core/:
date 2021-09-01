@@ -207,7 +207,8 @@ auto Beammap::runLoop() {
 
             if (converged(d) == 0) {
 
-                Eigen::Index scale = 25;
+                Eigen::Index scale = 50;
+                // auto size = 2*scale + 1;
 
                 Eigen::VectorXd init_p;
                 init_p.setZero(6);
@@ -216,39 +217,20 @@ auto Beammap::runLoop() {
                 double maxFlux = Maps.signal[d].maxCoeff(&maxRow, &maxCol);
 
                 init_p(0) = maxFlux; // amp
-                init_p(1) = maxCol; // offset_y
-                init_p(2) = maxRow; // offset_x
-                init_p(3) = 10.0; // fwhm_y
-                init_p(4) = 10.0; // fwhm_x
-                init_p(5) = pi/4; // angle
+                init_p(1) = maxRow; // offset_y
+                init_p(2) = maxCol; // offset_x
+                init_p(3) = 10; // fwhm_y
+                init_p(4) = 10; // fwhm_x
+                init_p(5) = 0; // angle
 
-                if ((maxRow - scale) < 0) {
-                scale = maxRow;
-                }
-
-                if ((maxRow + scale) >= Maps.nrows) {
-                    scale = Maps.nrows - maxRow;
-                }
-
-
-                if ((maxCol - scale) < 0) {
-                    scale = maxCol;
-                }
-
-                if ((maxCol + scale) >= Maps.ncols) {
-                    scale = Maps.ncols - maxCol;
-                }
-
-                SPDLOG_INFO("scale {}", scale);
-
-                /*Eigen::MatrixXd limits(n_params, 2);
+                Eigen::MatrixXd limits(n_params, 2);
                 limits.row(0) << 0.1*maxFlux, 1.1*maxFlux;
-                limits.row(1) << 0., Maps.ncols;
-                limits.row(2) << 0, Maps.nrows;
+                limits.row(1) << 0, Maps.nrows;
+                limits.row(2) << 0, Maps.ncols;
                 limits.row(3) << 0, 50;
                 limits.row(4) << 0, 50;
                 limits.row(5) << 0, pi/2.;
-                
+
                 Eigen::VectorXd rc = Eigen::VectorXd::LinSpaced(Maps.nrows,0,Maps.nrows-1);
                 Eigen::VectorXd cc = Eigen::VectorXd::LinSpaced(Maps.ncols,0,Maps.ncols-1);
                 
@@ -261,39 +243,72 @@ auto Beammap::runLoop() {
 
                 Eigen::MatrixXd signal = Maps.signal[d];
                 Eigen::MatrixXd sigma = Maps.weight[d];
-                sigma.setOnes();
-        */
 
-                Eigen::MatrixXd limits(n_params, 2);
-                limits.row(0) << 0.1*maxFlux, 1.1*maxFlux;
-                limits.row(1) << maxCol - scale, maxCol + scale;
-                limits.row(2) << maxRow - scale, maxRow + scale;
-                limits.row(3) << 0, 50.;
-                limits.row(4) << 0, 50.;
-                limits.row(5) << 0, pi/2.;
 
-                SPDLOG_INFO("limits {}", limits);
-                SPDLOG_INFO("det {}, init_p {}", d, init_p);
+                // Set limits for fitting (temp)
+               /* MatrixXd::Index maxRow, maxCol;
+                double max = Maps.signal[d].maxCoeff(&maxRow, &maxCol);
+                init_p(0) = max; // amp
+                init_p(1) = Maps.rcphys(maxRow); // offset_y
+                init_p(2) = Maps.ccphys(maxCol); // offset_x
+                init_p(3) = 5.0*RAD_ASEC; // fwhm_y
+                init_p(4) = 5.0*RAD_ASEC; // fwhm_x
+                init_p(5) = pi/4.; // angle
+                
+                Eigen::Index row_scale_low = scale;
+                Eigen::Index col_scale_low = scale;
 
-                auto g = gaussfit::modelgen<gaussfit::Gaussian2D>(init_p);
-                auto _p = g.params;
+                if (maxRow - scale < 0) {
+                    row_scale_low = maxRow;
+                }
+
+                if (maxCol - scale < 0) {
+                    col_scale_low = maxCol;
+                }
+
+                Eigen::Index row_scale_high = scale;
+                Eigen::Index col_scale_high = scale;
+
+                if (maxRow + scale > Maps.nrows) {
+                     row_scale_high = Maps.nrows - maxRow;
+                 }
+
+                 if (maxCol + scale > Maps.ncols) {
+                     col_scale_high = Maps.ncols - maxCol;
+                 }
+
+                 Eigen::Index row_scale = std::min(row_scale_low,row_scale_high);
+                 Eigen::Index col_scale = std::min(col_scale_low,col_scale_high);
+
+                scale = std::min(row_scale, col_scale);
 
                 auto size = 2*scale + 1;
 
-                Eigen::VectorXd rc = Eigen::VectorXd::LinSpaced(size,maxRow-scale,maxRow+scale);
-                Eigen::VectorXd cc = Eigen::VectorXd::LinSpaced(size,maxCol-scale,maxCol+scale);
-                auto xy = g.meshgrid(cc,rc);
+                Eigen::MatrixXd limits(n_params, 2);
+                limits.row(0) << 0.1*max, 1.1*max;
+                limits.row(1) << Maps.ccphys(maxCol-scale), Maps.ccphys(maxCol+scale);
+                limits.row(2) << Maps.rcphys(maxRow-scale), Maps.rcphys(maxRow+scale);
+                limits.row(3) << 0, 15.0*RAD_ASEC;
+                limits.row(4) << 0, 15.0*RAD_ASEC;
+                limits.row(5) << 0, pi/2.;
+*/
+                SPDLOG_INFO("limits {}", limits);
+                SPDLOG_INFO("det {}, init_p {}", d, init_p);
 
-                SPDLOG_INFO("rc {} cc {}",rc, cc);
+               // auto g = gaussfit::modelgen<gaussfit::Gaussian2D>(init_p);
+                //auto _p = g.params;
 
-                Eigen::MatrixXd signal = Maps.signal[d].block(maxRow-scale,maxCol-scale,size,size);
-                Eigen::MatrixXd sigma = Maps.weight[d].block(maxRow-scale,maxCol-scale,size,size);
-                (sigma.array() !=0).select(1./sqrt(sigma.array()),0.);
+  //              auto xy = g.meshgrid(Maps.ccphys.segment(maxCol-scale,size), Maps.rcphys.segment(maxRow-scale,size));
+
+    //            Eigen::MatrixXd signal = Maps.signal[d].block(maxRow-scale,maxCol-scale,size,size);
+      //          Eigen::MatrixXd sigma = Maps.weight[d].block(maxRow-scale,maxCol-scale,size,size);
+                // Eigen::Map<Eigen::MatrixXd> sigma(Maps.weight[d].data(), Maps.weight[d].rows(), Maps.weight[d].cols());
+                //(sigma.array() !=0).select(1./sqrt(sigma.array()),0.);
                 SPDLOG_INFO("sigma {}",sigma);
                 auto g_fit = gaussfit::curvefit_ceres(g, _p, xy, signal, sigma, limits);
 
-                fittedParams.col(d) = g_fit.params;
-                SPDLOG_INFO("fittedParams {}",fittedParams.col(d));
+                fittedParams.col(d) = _p;
+                SPDLOG_INFO("fittedParams {}",_p);
             }
 
             return 0;});
@@ -452,10 +467,6 @@ auto Beammap::loopPipeline(Eigen::DenseBase<Derived> &scanindicies, C &kidsproc,
 
         [&](auto in) {
             // might not need
-            fittedParams.row(1) = Maps.pixelsize*(fittedParams.row(1).array() - (Maps.ncols + 1)/2);
-            fittedParams.row(2) = Maps.pixelsize*(fittedParams.row(2).array() - (Maps.nrows + 1)/2);
-            fittedParams.row(3) = Maps.pixelsize*(fittedParams.row(3));
-            fittedParams.row(4) = Maps.pixelsize*(fittedParams.row(4));
         return in;
         });
 }
@@ -465,13 +476,9 @@ auto Beammap::pipeline(Eigen::DenseBase<Derived> &scanindicies, C &kidsproc, Raw
 
     ex_name = config.get_str(std::tuple{"runtime","policy"});
     ncores = config.get_typed<int>(std::tuple{"runtime","ncores"});
-    omp_set_num_threads(ncores);
-    Eigen::setNbThreads(ncores);
 
     timestreamPipeline(scanindicies, kidsproc, rawobs);
     SPDLOG_INFO("Done with beammap timestream pipeline");
-    
-
     loopPipeline(scanindicies, kidsproc, rawobs);
 }
 
@@ -482,13 +489,10 @@ void Beammap::output() {
         writeMapsToFITS(this, filepath, filename, i, det_index);
     }
 
-    Eigen::MatrixXd data(fittedParams.rows()+2, fittedParams.cols());
-    data.row(0) = array_name;
-    data.row(1) = nw;
-    data.block(2,0,fittedParams.rows(),fittedParams.cols()) = fittedParams;
-    data.transposeInPlace();
-
-    SPDLOG_INFO("data {}", data);
+    Eigen::MatrixXd data(fittedParams.rows(), 7);
+    data.col(0) = array_name;
+    data.col(1) = nw;
+    data.block(0,2,data.rows(),fittedParams.cols()) = fittedParams;
 
     auto apt_table_name = composeFilename<lali::apt, lali::Simu, lali::Beammap>(this, -1);
     write_aptable_to_ecsv(data, filepath+apt_table_name + ".ecsv", config);

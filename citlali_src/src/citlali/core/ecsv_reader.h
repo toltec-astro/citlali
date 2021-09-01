@@ -46,7 +46,8 @@ void write_aptable_to_ecsv(Eigen::DenseBase<Derived> &data, const std::string &f
             {"x_t"},
             {"y_t"},
             {"a_fwhm"},
-            {"b_fwhm"}};
+            {"b_fwhm"},
+            {"ang"}};
 
         datatable::write<format>(filepath, data, colnames, std::vector<int>{});
         SPDLOG_INFO("finished writing file {}", filepath);
