@@ -1,8 +1,0 @@
-[submodule "common_utils"]
-	path = common_utils
-	url = https://github.com/toltec-astro/common_utils
-	branch = kids_dev
-[submodule "kidscpp_src"]
-	path = kidscpp_src
-	url = https://github.com/toltec-astro/kidscpp_src
-	branch = master

@@ -1,0 +1,207 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "base",
+      "description": "Default using ninja generator",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build_${presetName}",
+      "vendor": {
+        "tula_cmake": {
+          "preset_group": "config_base"
+        }
+      }
+    },
+    {
+      "name": "brew-llvm",
+      "description": "Brew installed LLVM on macOS",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "/usr/local/opt/llvm/bin/clang",
+        "CMAKE_CXX_COMPILER": "/usr/local/opt/llvm/bin/clang++"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      },
+      "vendor": {
+        "tula_cmake": {
+          "preset_group": "compiler"
+        }
+      }
+    },
+    {
+      "name": "brew-gcc-11",
+      "description": "Brew installed GCC-11 on macOS",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "/usr/local/opt/gcc/bin/gcc-11",
+        "CMAKE_CXX_COMPILER": "/usr/local/opt/gcc/bin/g++-11"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      },
+      "vendor": {
+        "tula_cmake": {
+          "preset_group": "compiler"
+        }
+      }
+    },
+    {
+      "name": "linux-gcc",
+      "description": "Default GCC on Linix systems",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
+      "vendor": {
+        "tula_cmake": {
+          "preset_group": "compiler"
+        }
+      }
+    },
+    {
+      "name": "release",
+      "description": "Release build.",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      },
+      "vendor": {
+        "tula_cmake": {
+          "preset_group": "build_type"
+        }
+      }
+    },
+    {
+      "name": "debug",
+      "description": "Debug build.",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      },
+      "vendor": {
+        "tula_cmake": {
+          "preset_group": "build_type"
+        }
+      }
+    },
+    {
+      "name": "brew-llvm-release",
+      "description": "Release with brew-llvm",
+      "inherits": [
+        "release",
+        "brew-llvm",
+        "base"
+      ]
+    },
+    {
+      "name": "brew-gcc-11-release",
+      "description": "Release with brew-gcc-11",
+      "inherits": [
+        "release",
+        "brew-gcc-11",
+        "base"
+      ]
+    },
+    {
+      "name": "linux-gcc-release",
+      "description": "Release with linux-gcc",
+      "inherits": [
+        "release",
+        "linux-gcc",
+        "base"
+      ]
+    },
+    {
+      "name": "brew-llvm-debug",
+      "description": "Debug with brew-llvm",
+      "inherits": [
+        "debug",
+        "brew-llvm",
+        "base"
+      ]
+    },
+    {
+      "name": "brew-gcc-11-debug",
+      "description": "Debug with brew-gcc-11",
+      "inherits": [
+        "debug",
+        "brew-gcc-11",
+        "base"
+      ]
+    },
+    {
+      "name": "linux-gcc-debug",
+      "description": "Debug with linux-gcc",
+      "inherits": [
+        "debug",
+        "linux-gcc",
+        "base"
+      ]
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "default",
+      "hidden": true,
+      "vendor": {
+        "tula_cmake": {
+          "preset_group": "build_base"
+        }
+      }
+    },
+    {
+      "name": "verbose",
+      "nativeToolOptions": [
+        "-v"
+      ],
+      "hidden": true,
+      "vendor": {
+        "tula_cmake": {
+          "preset_group": "build_base"
+        }
+      }
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "default",
+      "output": {
+        "outputOnFailure": true
+      },
+      "hidden": true,
+      "vendor": {
+        "tula_cmake": {
+          "preset_group": "test_base"
+        }
+      }
+    }
+  ],
+  "vendor": {
+    "tula_cmake": {
+      "generators": [
+        {
+          "type": "configurePresets",
+          "name": "{compiler}-{build_type}",
+          "description": "{build_type} with {compiler}",
+          "inherits": [
+            "{build_type}",
+            "{compiler}",
+            "base"
+          ]
+        }
+      ]
+    }
+  }
+}
