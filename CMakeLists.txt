@@ -10,7 +10,7 @@ project(citlali
 include(FetchContent)
 FetchContent_Declare(
   kidscpp
-  GIT_REPOSITORY ${PROJECT_SOURCE_DIR}/../kidscpp
+  GIT_REPOSITORY https://github.com/toltec-astro/kidscpp.git
   GIT_TAG        "v0.1.x"
 )
 FetchContent_MakeAvailable(kidscpp)
