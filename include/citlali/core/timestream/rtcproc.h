@@ -11,7 +11,7 @@
 #include "calibrate.h"
 #include "polarization.h"
 
-using config::YamlConfig;
+using tula::config::YamlConfig;
 
 namespace timestream {
 

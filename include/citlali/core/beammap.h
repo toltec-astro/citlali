@@ -161,181 +161,183 @@ auto Beammap::runTimestream(){
 
 auto Beammap::runLoop() {
 
-    auto loop = grppi::repeat_until([&](auto in) {
+//  auto loop = grppi::repeat_until([&](auto in) {
 
-        // Make working copy of ptc vector.  Overwrite it on each loop.
-        std::vector<TCData<LaliDataKind::PTC,Eigen::MatrixXd>> ptcs_working(ptcs);
+//      // Make working copy of ptc vector.  Overwrite it on each loop.
+//      std::vector<TCData<LaliDataKind::PTC,Eigen::MatrixXd>> ptcs_working(ptcs);
 
-        PTCProc ptcproc(config);
-        grppi::map(grppiex::dyn_ex(ex_name), si, so, [&](auto s) {
-            SPDLOG_INFO("s {}", s);
-            SPDLOG_INFO("ptcs[s].scans.data {}", ptcs_working[s].scans.data);
+//      PTCProc ptcproc(config);
+//      grppi::map(tula::grppi_utils::dyn_ex(ex_name), si, so, [&](auto s) {
+//          SPDLOG_INFO("s {}", s);
+//          SPDLOG_INFO("ptcs[s].scans.data {}", ptcs_working[s].scans.data);
 
-            //Subtract Gaussian for iterations > 0
-            if (iteration > 0) {
-                SPDLOG_INFO("Subtracting Gaussian");
-                SPDLOG_INFO("fittedParams_0 {}", fittedParams_0);
-                timestream::addGaussian(ptcs_working[s], offsets, fittedParams_0, config);
-            }
+//          //Subtract Gaussian for iterations > 0
+//          if (iteration > 0) {
+//              SPDLOG_INFO("Subtracting Gaussian");
+//              SPDLOG_INFO("fittedParams_0 {}", fittedParams_0);
+//              timestream::addGaussian(ptcs_working[s], offsets, fittedParams_0, config);
+//          }
 
-            //Stage 2: PTCProc
-            SPDLOG_INFO("Running PTCProc");
-            ptcproc.run(ptcs_working[s], ptcs_working[s], this);
+//          //Stage 2: PTCProc
+//          SPDLOG_INFO("Running PTCProc");
+//          ptcproc.run(ptcs_working[s], ptcs_working[s], this);
 
-            //Add Gaussian for iterations > 0
-            if (iteration > 0) {
-                SPDLOG_INFO("Adding Gaussian");
-                fittedParams_0.row(0) = -fittedParams_0.row(0);
-                timestream::addGaussian(ptcs_working[s], offsets, fittedParams_0, config);
-            }
+//          //Add Gaussian for iterations > 0
+//          if (iteration > 0) {
+//              SPDLOG_INFO("Adding Gaussian");
+//              fittedParams_0.row(0) = -fittedParams_0.row(0);
+//              timestream::addGaussian(ptcs_working[s], offsets, fittedParams_0, config);
+//          }
 
-            //Stage 3 Populate Map
-            SPDLOG_INFO("Populating Maps");
-            Maps.mapPopulate(ptcs_working[s], offsets, config, det_index);
+//          //Stage 3 Populate Map
+//          SPDLOG_INFO("Populating Maps");
+//          Maps.mapPopulate(ptcs_working[s], offsets, config, det_index);
 
-            return 0;});
+//          return 0;});
 
-        SPDLOG_INFO("Normalizing Maps by Weight Map");
-        {
-            logging::scoped_timeit timer("mapNormalize()");
-            Maps.mapNormalize(config);
-        }
+//      SPDLOG_INFO("Normalizing Maps by Weight Map");
+//      {
+//          tula::logging::scoped_timeit timer("mapNormalize()");
+//          Maps.mapNormalize(config);
+//      }
 
-        //Stage 4 Fit Maps to Gaussian
-        SPDLOG_INFO("Fitting maps");
-        grppi::map(grppiex::dyn_ex(ex_name), deti, deto, [&](auto d) {
+//      //Stage 4 Fit Maps to Gaussian
+//      SPDLOG_INFO("Fitting maps");
+//      grppi::map(tula::grppi_utils::dyn_ex(ex_name), deti, deto, [&](auto d) {
 
-            if (converged(d) == 0) {
+//          if (converged(d) == 0) {
 
-                Eigen::Index scale = 25;
+//              Eigen::Index scale = 25;
 
-                Eigen::VectorXd init_p;
-                init_p.setZero(6);
+//              Eigen::VectorXd init_p;
+//              init_p.setZero(6);
 
-                Eigen::MatrixXd::Index maxRow, maxCol;
-                double maxFlux = Maps.signal[d].maxCoeff(&maxRow, &maxCol);
+//              Eigen::MatrixXd::Index maxRow, maxCol;
+//              double maxFlux = Maps.signal[d].maxCoeff(&maxRow, &maxCol);
 
-                init_p(0) = maxFlux; // amp
-                init_p(1) = maxCol; // offset_y
-                init_p(2) = maxRow; // offset_x
-                init_p(3) = 10.0; // fwhm_y
-                init_p(4) = 10.0; // fwhm_x
-                init_p(5) = pi/4; // angle
+//              init_p(0) = maxFlux; // amp
+//              init_p(1) = maxCol; // offset_y
+//              init_p(2) = maxRow; // offset_x
+//              init_p(3) = 10.0; // fwhm_y
+//              init_p(4) = 10.0; // fwhm_x
+//              init_p(5) = pi/4; // angle
 
-                if ((maxRow - scale) < 0) {
-                scale = maxRow;
-                }
+//              if ((maxRow - scale) < 0) {
+//              scale = maxRow;
+//              }
 
-                if ((maxRow + scale) >= Maps.nrows) {
-                    scale = Maps.nrows - maxRow;
-                }
+//              if ((maxRow + scale) >= Maps.nrows) {
+//                  scale = Maps.nrows - maxRow;
+//              }
 
 
-                if ((maxCol - scale) < 0) {
-                    scale = maxCol;
-                }
+//              if ((maxCol - scale) < 0) {
+//                  scale = maxCol;
+//              }
 
-                if ((maxCol + scale) >= Maps.ncols) {
-                    scale = Maps.ncols - maxCol;
-                }
+//              if ((maxCol + scale) >= Maps.ncols) {
+//                  scale = Maps.ncols - maxCol;
+//              }
 
-                SPDLOG_INFO("scale {}", scale);
+//              SPDLOG_INFO("scale {}", scale);
 
-                /*Eigen::MatrixXd limits(n_params, 2);
-                limits.row(0) << 0.1*maxFlux, 1.1*maxFlux;
-                limits.row(1) << 0., Maps.ncols;
-                limits.row(2) << 0, Maps.nrows;
-                limits.row(3) << 0, 50;
-                limits.row(4) << 0, 50;
-                limits.row(5) << 0, pi/2.;
-                
-                Eigen::VectorXd rc = Eigen::VectorXd::LinSpaced(Maps.nrows,0,Maps.nrows-1);
-                Eigen::VectorXd cc = Eigen::VectorXd::LinSpaced(Maps.ncols,0,Maps.ncols-1);
-                
-                SPDLOG_INFO("rc {} cc {}",rc, cc);
+//              /*Eigen::MatrixXd limits(n_params, 2);
+//              limits.row(0) << 0.1*maxFlux, 1.1*maxFlux;
+//              limits.row(1) << 0., Maps.ncols;
+//              limits.row(2) << 0, Maps.nrows;
+//              limits.row(3) << 0, 50;
+//              limits.row(4) << 0, 50;
+//              limits.row(5) << 0, pi/2.;
 
-                auto g = gaussfit::modelgen<gaussfit::Gaussian2D>(init_p);
-                auto _p = g.params;
+//              Eigen::VectorXd rc = Eigen::VectorXd::LinSpaced(Maps.nrows,0,Maps.nrows-1);
+//              Eigen::VectorXd cc = Eigen::VectorXd::LinSpaced(Maps.ncols,0,Maps.ncols-1);
 
-                auto xy = g.meshgrid(cc,rc);
+//              SPDLOG_INFO("rc {} cc {}",rc, cc);
 
-                Eigen::MatrixXd signal = Maps.signal[d];
-                Eigen::MatrixXd sigma = Maps.weight[d];
-                sigma.setOnes();
-        */
+//              auto g = gaussfit::modelgen<gaussfit::Gaussian2D>(init_p);
+//              auto _p = g.params;
 
-                Eigen::MatrixXd limits(n_params, 2);
-                limits.row(0) << 0.1*maxFlux, 1.1*maxFlux;
-                limits.row(1) << maxCol - scale, maxCol + scale;
-                limits.row(2) << maxRow - scale, maxRow + scale;
-                limits.row(3) << 0, 50.;
-                limits.row(4) << 0, 50.;
-                limits.row(5) << 0, pi/2.;
+//              auto xy = g.meshgrid(cc,rc);
 
-                SPDLOG_INFO("limits {}", limits);
-                SPDLOG_INFO("det {}, init_p {}", d, init_p);
+//              Eigen::MatrixXd signal = Maps.signal[d];
+//              Eigen::MatrixXd sigma = Maps.weight[d];
+//              sigma.setOnes();
+//      */
 
-                auto g = gaussfit::modelgen<gaussfit::Gaussian2D>(init_p);
-                auto _p = g.params;
+//              Eigen::MatrixXd limits(n_params, 2);
+//              limits.row(0) << 0.1*maxFlux, 1.1*maxFlux;
+//              limits.row(1) << maxCol - scale, maxCol + scale;
+//              limits.row(2) << maxRow - scale, maxRow + scale;
+//              limits.row(3) << 0, 50.;
+//              limits.row(4) << 0, 50.;
+//              limits.row(5) << 0, pi/2.;
 
-                auto size = 2*scale + 1;
+//              SPDLOG_INFO("limits {}", limits);
+//              SPDLOG_INFO("det {}, init_p {}", d, init_p);
 
-                Eigen::VectorXd rc = Eigen::VectorXd::LinSpaced(size,maxRow-scale,maxRow+scale);
-                Eigen::VectorXd cc = Eigen::VectorXd::LinSpaced(size,maxCol-scale,maxCol+scale);
-                auto xy = g.meshgrid(cc,rc);
+//              auto g = gaussfit::modelgen<gaussfit::Gaussian2D>(init_p);
+//              auto _p = g.params;
 
-                SPDLOG_INFO("rc {} cc {}",rc, cc);
+//              auto size = 2*scale + 1;
 
-                Eigen::MatrixXd signal = Maps.signal[d].block(maxRow-scale,maxCol-scale,size,size);
-                Eigen::MatrixXd sigma = Maps.weight[d].block(maxRow-scale,maxCol-scale,size,size);
-                (sigma.array() !=0).select(1./sqrt(sigma.array()),0.);
-                SPDLOG_INFO("sigma {}",sigma);
-                auto g_fit = gaussfit::curvefit_ceres(g, _p, xy, signal, sigma, limits);
+//              Eigen::VectorXd rc = Eigen::VectorXd::LinSpaced(size,maxRow-scale,maxRow+scale);
+//              Eigen::VectorXd cc = Eigen::VectorXd::LinSpaced(size,maxCol-scale,maxCol+scale);
+//              auto xy = g.meshgrid(cc,rc);
 
-                fittedParams.col(d) = g_fit.params;
-                SPDLOG_INFO("fittedParams {}",fittedParams.col(d));
-            }
+//              SPDLOG_INFO("rc {} cc {}",rc, cc);
 
-            return 0;});
-        SPDLOG_INFO("Done with fitting maps");
+//              Eigen::MatrixXd signal = Maps.signal[d].block(maxRow-scale,maxCol-scale,size,size);
+//              Eigen::MatrixXd sigma = Maps.weight[d].block(maxRow-scale,maxCol-scale,size,size);
+//              (sigma.array() !=0).select(1./sqrt(sigma.array()),0.);
+//              SPDLOG_INFO("sigma {}",sigma);
+//              auto g_fit = gaussfit::curvefit_ceres(g, _p, xy, signal, sigma, limits);
 
-        return in;
+//              fittedParams.col(d) = g_fit.params;
+//              SPDLOG_INFO("fittedParams {}",fittedParams.col(d));
+//          }
 
-    },
+//          return 0;});
+//      SPDLOG_INFO("Done with fitting maps");
 
-    [&](auto in) {
-        SPDLOG_INFO("checking convergence");
-        bool complete = 0;
-        iteration++;
-        if (iteration < max_iterations) {
-            // do check for fit
-            if ((converged.array() == 1).all()) {
-                complete = 1;
-            }
+//      return in;
 
-            else {
-                grppi::map(grppiex::dyn_ex(ex_name), deti, deto, [&](auto d) {
-                    if (converged(d) == 0) {
-                        auto ratio = abs((fittedParams.col(d).array() - fittedParams_0.col(d).array())/fittedParams_0.col(d).array());
-                        if ((ratio.array() <= cutoff).all()) {
-                            converged(d) = 1;
-                        }
-                    }
+//  },
 
-                    return 0;});
-            }
+//  [&](auto in) {
+//      SPDLOG_INFO("checking convergence");
+//      bool complete = 0;
+//      iteration++;
+//      if (iteration < max_iterations) {
+//          // do check for fit
+//          if ((converged.array() == 1).all()) {
+//              complete = 1;
+//          }
 
-            fittedParams_0 = fittedParams;
-        }
+//          else {
+//              grppi::map(tula::grppi_utils::dyn_ex(ex_name), deti, deto, [&](auto d) {
+//                  if (converged(d) == 0) {
+//                      auto ratio = abs((fittedParams.col(d).array() - fittedParams_0.col(d).array())/fittedParams_0.col(d).array());
+//                      if ((ratio.array() <= cutoff).all()) {
+//                          converged(d) = 1;
+//                      }
+//                  }
 
-        else {
-            complete = 1;
-        }
+//                  return 0;});
+//          }
 
-        SPDLOG_INFO("complete {}", complete);
-        return complete;
-    });
+//          fittedParams_0 = fittedParams;
+//      }
 
+//      else {
+//          complete = 1;
+//      }
+
+//      SPDLOG_INFO("complete {}", complete);
+//      return complete;
+//  });
+auto loop = grppi::repeat_until(
+    [](auto in) { return int(2); },
+    [](auto in) { return in>1; });
     return loop;
 }
 
@@ -346,7 +348,7 @@ auto Beammap::timestreamPipeline(Eigen::DenseBase<Derived> &scanindicies, C &kid
 
     ptcs.resize(scanindicies.cols());
 
-    grppi::pipeline(grppiex::dyn_ex(ex_name),
+    grppi::pipeline(tula::grppi_utils::dyn_ex(ex_name),
         [&]() -> std::optional<TCData<LaliDataKind::RTC, Eigen::MatrixXd>> {
         // Variable for current scan
         static auto scan = 0;
@@ -436,7 +438,7 @@ auto Beammap::loopPipeline(Eigen::DenseBase<Derived> &scanindicies, C &kidsproc,
     fittedParams_0.setConstant(std::nan(""));
 
     // do grppi reduction
-    grppi::pipeline(grppiex::dyn_ex(ex_name),
+    grppi::pipeline(tula::grppi_utils::dyn_ex(ex_name),
         [&]() -> std::optional<Eigen::Index> {
 
          static auto placeholder = 0;
@@ -470,7 +472,7 @@ auto Beammap::pipeline(Eigen::DenseBase<Derived> &scanindicies, C &kidsproc, Raw
 
     timestreamPipeline(scanindicies, kidsproc, rawobs);
     SPDLOG_INFO("Done with beammap timestream pipeline");
-    
+
 
     loopPipeline(scanindicies, kidsproc, rawobs);
 }

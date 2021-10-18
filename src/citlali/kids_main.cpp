@@ -7,7 +7,7 @@
 #include "utils/config.h"
 #include "utils/grppiex.h"
 #include "utils/logging.h"
-#include <utils/filename.h>
+#include <tula/filename.h>
 
 #include <cstdlib>
 #include <kids/gitversion.h>
@@ -165,8 +165,8 @@ auto parse_args(int argc, char *argv[]) {
     _(rc, p(     "plot_output" ), "Plot output dest",
                                   "{stem}.png", opt_str("dest")         ),
     _(rc, p(         "grppiex" ), "GRPPI executioon policy",
-                                  grppiex::modes::default_(),
-                                  list(grppiex::modes::names())         )
+                                  tula::grppi_utils::modes::default_(),
+                                  list(tula::grppi_utils::modes::names())         )
                                                                             ),
               finder_options::cli(rc),
               fitter_options::cli(rc),
@@ -210,11 +210,11 @@ int run_cmdproc(const config::Config &rc) {
         if (kind & KidsDataKind::TimeStream) {
             using index_t = Eigen::Index;
             // check solver range and pass that to the reader
-            auto sample_slice = container_utils::parse_slice<index_t>(
+            auto sample_slice = tula::container_utils::parse_slice<index_t>(
                 rc.get_str("solver_sample_slice"));
             auto ntimes = meta.template get_typed<int>("ntimes_all");
             auto sample_range =
-                container_utils::to_indices(sample_slice, ntimes);
+                tula::container_utils::to_indices(sample_slice, ntimes);
             SPDLOG_INFO("solve range {} out of {}", sample_range, ntimes);
             using slice_t = DECAY(sample_slice);
             using range_t = DECAY(sample_range);
@@ -265,7 +265,7 @@ int run_cmdproc(const config::Config &rc) {
                 auto nchunks = chunks.size();
                 SPDLOG_INFO("solve by chunks size={} nchunks={}", chunksize,
                             nchunks);
-                auto ex = grppiex::dyn_ex(rc.get_str("grppiex"));
+                auto ex = tula::grppi_utils::dyn_ex(rc.get_str("grppiex"));
                 {
                     logging::scoped_timeit l0("solve by chunk");
                     logging::progressbar pb0(

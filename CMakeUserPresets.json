@@ -1,0 +1,16 @@
+{
+  "version": 3,
+  "configurePresets": [
+        {
+            "name": "tula_examples",
+            "description": "",
+            "displayName": "",
+            "inherits": [
+                "brew-llvm-debug"
+            ],
+      "cacheVariables": {
+        "TULA_BUILD_EXAMPLES": "ON"
+      }
+            }
+  ]
+}

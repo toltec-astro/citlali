@@ -1,17 +1,17 @@
 #pragma once
 
-#include "../common_utils/src/utils/config.h"
-#include "../common_utils/src/utils/enum.h"
-#include "../common_utils/src/utils/formatter/enum.h"
-#include "../common_utils/src/utils/formatter/matrix.h"
-#include "../common_utils/src/utils/formatter/utils.h"
-#include "../common_utils/src/utils/logging.h"
-#include "../common_utils/src/utils/nddata/nddata.h"
+#include "tula/enum.h"
+#include "tula/formatter/enum.h"
+#include "tula/formatter/matrix.h"
+#include "tula/formatter/utils.h"
+#include "tula/logging.h"
+#include <kids/core/wcs.h>
 
 namespace timestream {
+namespace wcs = kids::wcs;
 
 // clang-format off
-BITMASK_(LaliDataKind, int,        0xFFFF,
+TULA_BITFLAG(LaliDataKind, int,        0xFFFF,
          RTC                     = 1 << 0,
          PTC                     = 1 << 1,
          Any                     = RTC | PTC
@@ -90,24 +90,24 @@ template <LaliDataKind kind_> struct TCDataBase<TCData<kind_>> {
 
 // WCS objects
 struct DetectorAxis : wcs::Axis<DetectorAxis, wcs::CoordsKind::Column>,
-                  nddata::LabeledData<DetectorAxis> {
+                  wcs::LabeledData<DetectorAxis> {
     DetectorAxis() = default;
-    DetectorAxis(Eigen::MatrixXd data_, nddata::LabelMapper<DetectorAxis> row_labels_)
+    DetectorAxis(Eigen::MatrixXd data_, tula::nddata::LabelMapper<DetectorAxis> row_labels_)
         : data{std::move(data_)}, row_labels{std::move(row_labels_)} {}
     std::string_view name{"detector"};
     Eigen::MatrixXd data;
-    nddata::LabelMapper<DetectorAxis> row_labels;
+    tula::nddata::LabelMapper<DetectorAxis> row_labels;
 };
 
 
 struct TimeAxis : wcs::Axis<TimeAxis, wcs::CoordsKind::Row>,
-                  nddata::LabeledData<TimeAxis> {
+                  wcs::LabeledData<TimeAxis> {
     TimeAxis() = default;
-    TimeAxis(Eigen::MatrixXd data_, nddata::LabelMapper<TimeAxis> col_labels_)
+    TimeAxis(Eigen::MatrixXd data_, tula::nddata::LabelMapper<TimeAxis> col_labels_)
         : data{std::move(data_)}, col_labels{std::move(col_labels_)} {}
     std::string_view name{"time"};
     Eigen::MatrixXd data;
-    nddata::LabelMapper<TimeAxis> col_labels;
+    tula::nddata::LabelMapper<TimeAxis> col_labels;
 };
 
 struct TimeStreamFrame : wcs::Frame2D<TimeStreamFrame, TimeAxis, DetectorAxis> {
@@ -124,16 +124,16 @@ struct TimeStreamFrame : wcs::Frame2D<TimeStreamFrame, TimeAxis, DetectorAxis> {
 /// @brief Base class for time stream data
 template <typename Derived>
 struct TimeStream : internal::TCDataBase<Derived>,
-                    nddata::NDData<TimeStream<Derived>> {
+                    tula::nddata::NDData<TimeStream<Derived>> {
     TimeStreamFrame wcs;
     // The timestream is stored in row major for efficient r/w
     template <typename PlainObject>
-    struct dataref_t : nddata::NDData<dataref_t<PlainObject>> {
+    struct dataref_t : tula::nddata::NDData<dataref_t<PlainObject>> {
         PlainObject data{nullptr, 0, 0};
     };
 
     template <typename PlainObject>
-    struct data_t : nddata::NDData<data_t<PlainObject>> {
+    struct data_t : tula::nddata::NDData<data_t<PlainObject>> {
         PlainObject data;
     };
 };
@@ -147,7 +147,7 @@ struct TCData<LaliDataKind::RTC,RefType>
       //  scans.data = r;
     //}
     //using data_t = std::conditional_t<meta::is_template<RefType, Eigen::Map>, Base::dataref_t, Base::data_t>;
-    using data_t = std::conditional_t<eigen_utils::is_plain_v<RefType>,Base::data_t<RefType>, Base::dataref_t<RefType>>;
+    using data_t = std::conditional_t<tula::eigen_utils::is_plain_v<RefType>,Base::data_t<RefType>, Base::dataref_t<RefType>>;
     data_t scans;
     Base::data_t<Eigen::MatrixXd> kernelscans;
     // NDData impl
@@ -165,7 +165,7 @@ template <typename RefType>
 struct TCData<LaliDataKind::PTC, RefType>
     : TimeStream<TCData<LaliDataKind::PTC>> {
     using Base = TimeStream<TCData<LaliDataKind::PTC>>;
-    using data_t = std::conditional_t<eigen_utils::is_plain_v<RefType>,Base::data_t<RefType>, Base::dataref_t<RefType>>;
+    using data_t = std::conditional_t<tula::eigen_utils::is_plain_v<RefType>,Base::data_t<RefType>, Base::dataref_t<RefType>>;
     // NDData impl
     data_t scans;
     Base::data_t<Eigen::MatrixXd> kernelscans;
@@ -182,10 +182,10 @@ struct TCData<LaliDataKind::PTC, RefType>
 
 /// @brief data class of runtime variant kind.
 template <LaliDataKind kind_>
-struct TCData<kind_, std::enable_if_t<enum_utils::is_compound_v<kind_>>>
-    : enum_utils::enum_to_variant_t<kind_, TCData> {
-    using Base = enum_utils::enum_to_variant_t<kind_, TCData>;
-    using variant_t = enum_utils::enum_to_variant_t<kind_, TCData>;
+struct TCData<kind_, std::enable_if_t<tula::enum_utils::is_compound_v<kind_>>>
+    : tula::enum_utils::enum_to_variant_t<kind_, TCData> {
+    using Base = tula::enum_utils::enum_to_variant_t<kind_, TCData>;
+    using variant_t = tula::enum_utils::enum_to_variant_t<kind_, TCData>;
     //using meta_t = typename internal::impl_traits<TCData<kind_>>::meta_t;
 
     // construct from primitive type
@@ -202,8 +202,8 @@ struct TCData<kind_, std::enable_if_t<enum_utils::is_compound_v<kind_>>>
 namespace fmt {
 
 template <>
-struct formatter<timestream::DetectorAxis> : formatter<wcs::FrameBase<timestream::DetectorAxis>> {
-    using Base = formatter<wcs::FrameBase<timestream::DetectorAxis>>;
+struct formatter<timestream::DetectorAxis> : formatter<kids::wcs::FrameBase<timestream::DetectorAxis>> {
+    using Base = formatter<kids::wcs::FrameBase<timestream::DetectorAxis>>;
     template <typename FormatContext>
     auto format(const timestream::DetectorAxis &data, FormatContext &ctx) {
         auto it = Base::format(data, ctx);
@@ -212,8 +212,8 @@ struct formatter<timestream::DetectorAxis> : formatter<wcs::FrameBase<timestream
 };
 
 template <>
-struct formatter<timestream::TimeAxis> : formatter<wcs::FrameBase<timestream::TimeAxis>> {
-    using Base = formatter<wcs::FrameBase<timestream::TimeAxis>>;
+struct formatter<timestream::TimeAxis> : formatter<kids::wcs::FrameBase<timestream::TimeAxis>> {
+    using Base = formatter<kids::wcs::FrameBase<timestream::TimeAxis>>;
     template <typename FormatContext>
     auto format(const timestream::TimeAxis &data, FormatContext &ctx) {
         return Base::format(data, ctx);
@@ -222,7 +222,7 @@ struct formatter<timestream::TimeAxis> : formatter<wcs::FrameBase<timestream::Ti
 
 template <timestream::LaliDataKind kind_>
 struct formatter<timestream::TCData<kind_>>
-    : fmt_utils::charspec_formatter_base<'l', 's'> {
+    : tula::fmt_utils::charspec_formatter_base<'l', 's'> {
     // s: the short form
     // l: the long form
     using Data = timestream::TCData<kind_>;
@@ -232,7 +232,7 @@ struct formatter<timestream::TCData<kind_>>
         //using data_traits = timestream::internal::impl_traits<Data>;
         auto it = ctx.out();
         constexpr auto kind = Data::kind();
-        if constexpr (enum_utils::is_compound_v<kind>) {
+        if constexpr (tula::enum_utils::is_compound_v<kind>) {
             // format compound kind as variant
             return format_to(it, "({}) {:0}", kind, data.variant());
         }/* else {

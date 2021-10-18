@@ -1,5 +1,6 @@
 #pragma once
 
+#include <tula/grppi.h>
 /*
 This header file includes various helper functions for use during mapmaking.
 */
@@ -115,7 +116,7 @@ auto MapUtils::getMapMaxMin(TD &telMetaData, OT &offsets, lali::YamlConfig confi
 
             //Get max and min lat and lon values out of all detectors.  Maybe parallelize?
             // for (Eigen::Index det=0;det<offsets["azOffset"].size();det++) {
-            grppi::map(grppiex::dyn_ex(ex_name), begin(dets), end(dets), begin(w), [&](int det) {
+            grppi::map(tula::grppi_utils::dyn_ex(ex_name), begin(dets), end(dets), begin(w), [&](int det) {
 
                 Eigen::VectorXd lat, lon;
 

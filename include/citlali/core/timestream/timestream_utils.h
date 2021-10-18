@@ -1,5 +1,7 @@
 #pragma once
 
+#include <tula/config/yamlconfig.h>
+
 namespace timestream {
 
 namespace timestream_utils {
@@ -85,7 +87,7 @@ void getDetectorPointing(Eigen::DenseBase<DerivedA> &lat,
                          Eigen::DenseBase<DerivedB> &ParAng,
                          double azOffset,
                          double elOffset,
-                         config::YamlConfig config) {
+                         tula::config::YamlConfig config) {
     // RaDec map
 
 

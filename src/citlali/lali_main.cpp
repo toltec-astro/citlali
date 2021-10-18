@@ -9,13 +9,13 @@
 #include <omp.h>
 #include <yaml-cpp/yaml.h>
 
-#include "../common_utils/src/utils/eigen.h"
-#include "../common_utils/src/utils/enum.h"
-#include "../common_utils/src/utils/formatter/enum.h"
-#include "../common_utils/src/utils/formatter/matrix.h"
-#include "../common_utils/src/utils/formatter/utils.h"
-#include "../common_utils/src/utils/grppiex.h"
-#include "../common_utils/src/utils/logging.h"
+#include "tula/eigen.h"
+#include "tula/enum.h"
+#include "tula/formatter/enum.h"
+#include "tula/formatter/matrix.h"
+#include "tula/formatter/utils.h"
+#include "tula/grppiex.h"
+#include "tula/logging.h"
 #include "kids/core/kidsdata.h"
 
 #include "core/TCData.h"
@@ -112,7 +112,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[])
     {
         logging::scoped_timeit timer("Main pipeline");
         grppi::pipeline(
-            grppiex::dyn_ex(ex_name),
+            tula::grppi_utils::dyn_ex(ex_name),
             [&]() -> std::optional<TCData<LaliDataKind::RTC, Eigen::MatrixXd>> {
                 // Variable for current scan
                 static auto scan = 0;

@@ -1,5 +1,7 @@
 project (citlali_test LANGUAGES CXX C)
 
+include(testing)
+
 add_executable(citlali_test EXCLUDE_FROM_ALL)
 set_target_properties(citlali_test
     PROPERTIES
@@ -10,16 +12,15 @@ target_sources(citlali_test
         main.cpp
         test_utils.cpp
     )
-target_include_directories(citlali_test
-    PRIVATE
-        ${CMAKE_SOURCE_DIR}/src
-    )
 target_link_libraries(citlali_test
     PRIVATE
-        gtest gmock benchmark
-        spdlog::spdlog
-        fmt::fmt
-        Eigen3::Eigen
+        citlali::citlali
+        tula::testing
     )
 add_dependencies(check citlali_test)
-gtest_discover_tests(citlali_test TEST_PREFIX "citlali::")
+gtest_discover_tests(
+    citlali_test
+        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+        TEST_PREFIX "citlali::"
+        DISCOVERY_MODE PRE_TEST
+    )

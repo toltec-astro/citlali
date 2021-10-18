@@ -5,7 +5,7 @@
 #include "../TCData.h"
 #include "cleanPCA.h"
 
-using config::YamlConfig;
+using tula::config::YamlConfig;
 
 namespace timestream {
 

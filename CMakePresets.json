@@ -7,6 +7,9 @@
       "hidden": true,
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build_${presetName}",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      },
       "vendor": {
         "tula_cmake": {
           "preset_group": "config_base"

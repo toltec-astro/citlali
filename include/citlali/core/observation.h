@@ -4,8 +4,8 @@
 #include <iostream>
 #include <map>
 
-#include <utils/algorithm/mlinterp/mlinterp.hpp>
-#include <utils/logging.h>
+#include <tula/algorithm/mlinterp/mlinterp.hpp>
+#include <tula/logging.h>
 
 namespace  lali {
 

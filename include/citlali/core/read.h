@@ -3,13 +3,16 @@
 #include <fmt/ostream.h>
 #include <netcdf>
 #include <regex>
-#include <utils/nc.h>
+#include <tula/nc.h>
+#include <tula/traits.h>
+#include <tula/formatter/container.h>
+#include <tula/formatter/matrix.h>
 
 template <
     typename R, typename T,
     typename = std::enable_if_t<std::is_base_of_v<netCDF::NcAtt, T>>,
     typename Buffer = std::enable_if_t<
-        std::is_arithmetic_v<R> || meta::is_instance<R, std::vector>::value,
+        std::is_arithmetic_v<R> || tula::meta::is_instance<R, std::vector>::value,
         std::conditional_t<std::is_arithmetic_v<R>, std::vector<R>, R>>>
 R nc_getatt(const T &att) {
     using namespace netCDF;
@@ -50,7 +53,7 @@ R nc_getatt(const T &att) {
     } else if constexpr(std::is_same_v<R, double>) {
         return get_typed(NcType::ncType::nc_DOUBLE);
     } else {
-        static_assert(meta::always_false<R>::value, "UNABLE TO HANDLE TYPE");
+        static_assert(tula::meta::always_false<R>, "UNABLE TO HANDLE TYPE");
     }
 }
 
@@ -74,25 +77,25 @@ struct nc_pprint {
             case netCDF::NcType::ncType::nc_SHORT: {
                 std::vector<int16_t> buf(len);
                 att.getValues(buf.data());
-                os << " = " << buf;
+                os << " = " << fmt::format("{}", buf);
                 break;
             }
             case netCDF::NcType::ncType::nc_INT: {
                 std::vector<int32_t> buf(len);
                 att.getValues(buf.data());
-                os << "=" << buf;
+                os << "=" << fmt::format("{}", buf);
                 break;
             }
             case netCDF::NcType::ncType::nc_FLOAT: {
                 std::vector<float> buf(len);
                 att.getValues(buf.data());
-                os << "=" << buf;
+                os << "=" << fmt::format("{}", buf);
                 break;
             }
             case netCDF::NcType::ncType::nc_DOUBLE: {
                 std::vector<double> buf(len);
                 att.getValues(buf.data());
-                os << "=" << buf;
+                os << "=" << fmt::format("{}", buf);
                 break;
             }
             default: {
@@ -141,7 +144,7 @@ struct nc_pprint {
         } else if constexpr (std::is_same_v<var_t, netCDF::NcVarAtt>) {
             return os << nc_pprint::format_ncvaratt(pp.nc);
         } else {
-            static_assert (meta::always_false<var_t>::value, "UNABLE TO FORMAT TYPE");
+            static_assert (tula::meta::always_false<var_t>, "UNABLE TO FORMAT TYPE");
         }
     }
 };
@@ -178,7 +181,7 @@ struct TelData {
             TelData data;
 
             //vars.find("Header.Dcs.ObsPgm")->second.getVar(&data.map_type);
-            data.map_type = nc_utils::getstr(vars.find("Header.Dcs.ObsPgm")->second);
+            data.map_type = tula::nc_utils::getstr(vars.find("Header.Dcs.ObsPgm")->second);
             //SPDLOG_INFO("map_type {}", data.map_type);
 
             Eigen::Index TelTime_npts = vars.find("Data.TelescopeBackend.TelTime")->second.getDim(0).getSize();

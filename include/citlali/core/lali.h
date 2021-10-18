@@ -184,7 +184,7 @@ auto Lali::pipeline(Eigen::DenseBase<Derived> &scanindicies, C &kidsproc, RawObs
 
     omp_set_num_threads(nThreads);
 
-    grppi::pipeline(grppiex::dyn_ex(ex_name),
+    grppi::pipeline(tula::grppi_utils::dyn_ex(ex_name),
         [&]() -> std::optional<std::tuple<TCData<LaliDataKind::RTC, Eigen::MatrixXd>, Eigen::Index>> {
         // Variable for current scan
         static auto scan = 0;

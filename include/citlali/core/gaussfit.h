@@ -3,12 +3,11 @@
 #include <ceres/ceres.h>
 #include <Eigen/Core>
 
-#include "../common_utils/src/utils/config.h"
-//#include "../../common_utils/src/utils/enum.h"
-//#include "../../common_utils/src/utils/formatter/enum.h"
-//#include "../../common_utils/src/utils/formatter/matrix.h"
-//#include "../../common_utils/src/utils/formatter/utils.h"
-//#include "../../common_utils/src/utils/logging.h"
+//#include "../tula/enum.h"
+//#include "../tula/formatter/enum.h"
+//#include "../tula/formatter/matrix.h"
+//#include "../tula/formatter/utils.h"
+//#include "../tula/logging.h"
 
 namespace gaussfit {
 

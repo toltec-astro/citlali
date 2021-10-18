@@ -66,8 +66,8 @@ auto parse_args(int argc, char *argv[]) {
     _(rc, p(    "plot_backend" ), "Matplotlib backend to use",
                                   "default", str()                      ),
     _(rc, p(         "grppiex" ), "GRPPI executioon policy",
-                                  grppiex::modes::default_(),
-                                  list(grppiex::modes::names())         )
+                                  tula::grppi_utils::modes::default_(),
+                                  list(tula::grppi_utils::modes::names())         )
                                                                             )
                                                                               )
     );
@@ -176,7 +176,7 @@ struct RawObs : ConfigMapper<RawObs> {
     // clang-format off
     META_ENUM(CalItemType, int,
            array_prop_table,
-           unresolved 
+           unresolved
           );
     // clang-format on
     using CalItemTypes =
@@ -544,7 +544,7 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
     }
 
     auto reduce_data_item(const RawObs::DataItem &data_item,
-                          const container_utils::Slice<int> &slice) {
+                          const tula::container_utils::Slice<int> &slice) {
         SPDLOG_TRACE("kids reduce data_item {}", data_item);
         // read data
         namespace kidsdata = predefs::kidsdata;
@@ -561,7 +561,7 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
     }
 
     auto reduce_rawobs(const RawObs &rawobs,
-                       const container_utils::Slice<int> &slice) {
+                       const tula::container_utils::Slice<int> &slice) {
         SPDLOG_TRACE("kids reduce rawobs {}", rawobs);
         std::vector<kids::TimeStreamSolverResult> result;
         for (const auto &data_item : rawobs.kidsdata()) {
@@ -575,7 +575,7 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
                       const int scanlength, const int n_detectors) {
         // call reduce rawobs, get the data into rtc
 
-        auto slice = container_utils::Slice<int>{scanindex(2), scanindex(3) + 1,
+        auto slice = tula::container_utils::Slice<int>{scanindex(2), scanindex(3) + 1,
                                                  std::nullopt};
         auto reduced = reduce_rawobs(rawobs, slice);
 
@@ -812,6 +812,75 @@ int run(const config::Config &rc) {
         [&](auto &todproc) {
             using todproc_t = DECAY(todproc);
 
+        using todproc_t = DECAY(todproc);
+
+        if constexpr(std::is_same_v<todproc_t, std::monostate>) {
+            return EXIT_FAILURE;
+        }
+
+        else {
+
+    //auto todproc = TimeOrderedDataProc::from_config(citlali_config);
+    //SPDLOG_INFO("tod proc: {}", todproc);
+
+    // Set todproc config
+    todproc.engine().config = citlali_config;
+
+    // Path to apt table from config file
+    auto cal_path = citlali_config.get_filepath(std::tuple{"inputs",0,"cal_items",0,"filepath"});
+    SPDLOG_INFO("cal_path {}", cal_path);
+
+    // Get apt table (error with ecsv, so using ascii for now)
+    auto apt_table = get_aptable_from_ecsv(cal_path, citlali_config);
+    SPDLOG_INFO("apt_table {}", apt_table);
+
+    // Put apt table into lali engine (temporary maybe)
+    todproc.engine().nw = apt_table.col(0);
+    todproc.engine().array_name = apt_table.col(1);
+    todproc.engine().fluxscale = apt_table.col(2);
+    todproc.engine().offsets["azOffset"] = apt_table.col(3)*3600.;
+    todproc.engine().offsets["elOffset"] = apt_table.col(4)*3600.;
+    todproc.engine().fwhms["a_fwhm"] = apt_table.col(5);//*3600.;
+    todproc.engine().fwhms["b_fwhm"] = apt_table.col(6);//*3600.;
+
+    // containers to store some pre-computed info for all inputs
+    using map_extent_t = typename todproc_t::map_extent_t;
+    using map_coord_t = typename todproc_t::map_coord_t;
+    using map_count_t = typename todproc_t::map_count_t;
+    using array_indices_t = typename todproc_t::array_indices_t;
+
+    std::vector<map_extent_t> map_extents{};
+    std::vector<map_coord_t> map_coords{};
+    std::vector<map_count_t> map_counts{};
+    std::vector<array_indices_t> array_indices{};
+    std::vector<array_indices_t> det_indices{};
+
+    // 1. coadd map buffer
+    //{
+        // this block of code is to get the relavant info from all the inputs
+        // and initialize the coadding buffer
+
+        // populate the inputs info
+        for (const auto &rawobs : co.inputs()) {
+            todproc.engine().telMD = lali::TelData::fromNcFile(rawobs.teldata().filepath());
+
+
+            auto rawobs_kids_meta = kidsproc.get_rawobs_meta(rawobs);
+
+            // TODO implement this to be the actual time chunk
+            // size
+            todproc.engine().samplerate =
+                rawobs_kids_meta.back().get_typed<double>("fsmp");
+            SPDLOG_INFO("tod_sample_rate {}", todproc.engine().samplerate);
+
+            auto maptype = todproc.engine().config.get_str(std::tuple{"map","type"});
+
+            if (std::strcmp("RaDec", maptype.c_str()) == 0) {
+                lali::internal::absToPhysEqPointing(todproc.engine().telMD.telMetaData,todproc.engine().telMD.srcCenter);
+            }
+
+            else if (std::strcmp("AzEl", maptype.c_str()) == 0) {
+                lali::internal::absToPhysHorPointing<lali::pointing>(todproc.engine().telMD.telMetaData);
             if constexpr (std::is_same_v<todproc_t, std::monostate>) {
                 return EXIT_FAILURE;
             }
@@ -844,8 +913,8 @@ int run(const config::Config &rc) {
                 todproc.engine().fluxscale = apt_table.col(2);
                 todproc.engine().offsets["azOffset"] = apt_table.col(3) * 3600.;
                 todproc.engine().offsets["elOffset"] = apt_table.col(4) * 3600.;
-                todproc.engine().fwhms["a_fwhm"] = apt_table.col(5)*3600.;
-                todproc.engine().fwhms["b_fwhm"] = apt_table.col(6)*3600.;
+                todproc.engine().fwhms["a_fwhm"] = apt_table.col(5); //*3600.;
+                todproc.engine().fwhms["b_fwhm"] = apt_table.col(6); //*3600.;
 
                 // containers to store some pre-computed info for all
                 // inputs
@@ -869,15 +938,6 @@ int run(const config::Config &rc) {
                 for (const auto &rawobs : co.inputs()) {
                     todproc.engine().telMD =
                         lali::TelData::fromNcFile(rawobs.teldata().filepath());
-                       
-                    auto rawobs_kids_meta = kidsproc.get_rawobs_meta(rawobs);
-
-                    todproc.engine().samplerate =
-                        rawobs_kids_meta.back().get_typed<double>("fsmp");
-                    SPDLOG_INFO("tod_sample_rate {}",
-                                todproc.engine().samplerate);
-
-
 
                     auto maptype = todproc.engine().config.get_str(
                         std::tuple{"map", "type"});
@@ -1061,4 +1121,3 @@ int main(int argc, char *argv[]) {
         }
     }
 }
-

@@ -4,12 +4,12 @@
 #include <exception>
 // #include <kids/toltec/toltec.h>
 #include <thread>
-#include <utils/config.h>
-#include <utils/container.h>
-#include <utils/formatter/matrix.h>
-#include <utils/formatter/ptr.h>
-#include <utils/grppiex.h>
-#include <utils/mpi.h>
+#include <tula/config.h>
+#include <tula/container.h>
+#include <tula/formatter/matrix.h>
+#include <tula/formatter/ptr.h>
+#include <tula/grppiex.h>
+#include <tula/mpi.h>
 #include <yaml-cpp/yaml.h>
 
 namespace predefs {
@@ -577,9 +577,9 @@ io:
             filepath: "toltec1.nc"
           - interface: toltec2
             filepath: "toltec2.nc"
-          - interface: lmt 
+          - interface: lmt
             filepath: "lmt.nc"
-          - interface: hwp 
+          - interface: hwp
             filepath: "hwp.nc"
         cal_items:
           - name: beammap
@@ -594,9 +594,9 @@ io:
             filepath: "toltec1.nc"
           - interface: toltec2
             filepath: "toltec2.nc"
-          - interface: lmt 
+          - interface: lmt
             filepath: "lmt.nc"
-          - interface: hwp 
+          - interface: hwp
             filepath: "hwp.nc"
         cal_items:
           - name: beammap
@@ -672,10 +672,10 @@ reduce:
         // citlali_co_t cco(co.config());
         // allocate all buffers map, coadded map. per map product.
         // cco.allocate_buffers(telescope_data);
-        auto ex = grppiex::Mode::omp;
+        auto ex = tula::grppi_utils::Mode::omp;
         SPDLOG_TRACE("use grppi ex {}", ex);
         grppi::pipeline(
-            grppiex::dyn_ex(ex),
+            tula::grppi_utils::dyn_ex(ex),
             [&]() -> std::optional<int> {
                 static int rtc = 0;
                 // returns upon each recieved rtc

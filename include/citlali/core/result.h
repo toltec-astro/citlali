@@ -2,7 +2,7 @@
 
 #include <CCfits/CCfits>
 #include <chrono>
-#include <utils/nc.h>
+#include <tula/nc.h>
 
 namespace lali {
 
@@ -213,7 +213,7 @@ auto Result::writeMapsToNetCDF(engineType engine, const std::string filepath, st
         dims.push_back(ncols);
 
         setupNetCDFVars(engine->Maps, engine->Maps.signal, "signal", fo, dims);
-        setupNetCDFVars(engine->Maps, engine->Maps.weight, "weight", fo, dims);        
+        setupNetCDFVars(engine->Maps, engine->Maps.weight, "weight", fo, dims);
 
         if (std::strcmp("beammap", grouping.c_str()) == 1) {
             setupNetCDFVars(engine->Maps, engine->Maps.kernel, "kernel", fo, dims);

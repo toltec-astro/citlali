@@ -1,16 +1,21 @@
 // #include "citlali/core/lali.h"
-#include "kids/cli/utils.h"
-#include "kids/core/kidsdata.h"
-#include "kids/sweep/fitter.h"
-#include "kids/timestream/solver.h"
-#include "kids/toltec/toltec.h"
-#include "utils/config.h"
-#include "utils/grppiex.h"
-#include "utils/logging.h"
-#include "utils/yamlconfig.h"
-#include <citlali/gitversion.h>
+#include <kids/core/kidsdata.h>
+#include <kids/sweep/fitter.h>
+#include <kids/timestream/solver.h>
+#include <kids/toltec/toltec.h>
+#include <tula/enum.h>
+#include <tula/cli.h>
+#include <tula/grppi.h>
+#include <tula/logging.h>
+#include <tula/config/core.h>
+#include <tula/config/flatconfig.h>
+#include <tula/config/yamlconfig.h>
+#include <tula/switch_invoke.h>
+#include <citlali_config/gitversion.h>
+#include <citlali_config/config.h>
+#include <kidscpp_config/gitversion.h>
+
 #include <cstdlib>
-#include <kids/gitversion.h>
 #include <regex>
 #include <tuple>
 #include <omp.h>
@@ -32,68 +37,70 @@ constexpr auto pi = static_cast<double>(EIGEN_PI);
 #include "citlali/core/beammap.h"
 #include "citlali/core/source.h"
 
+using rc_t = tula::config::FlatConfig;
+
 auto parse_args(int argc, char *argv[]) {
+    // disable logger before parse
+    spdlog::set_level(spdlog::level::off);
+    using namespace tula::cli::clipp_builder;
 
-    using FlatConfig = config::Config;
-    // Runtime config container, this is returned.
-    FlatConfig rc{};
-    // CLI config container, this is consumed and discarded.
-    FlatConfig cc{};
     // some of the option specs
-    auto citlali_ver = fmt::format("citlali {} ({})", CITLALI_GIT_VERSION,
-                                   CITLALI_BUILD_TIMESTAMP);
-    auto kids_ver =
-        fmt::format("kids {} ({})", KIDS_GIT_VERSION, KIDS_BUILD_TIMESTAMP);
-    using namespace config_utils::clipp_builder;
+    auto ver_str =
+        fmt::format("{} ({})", CITLALI_GIT_VERSION, CITLALI_BUILD_TIMESTAMP);
+    auto kids_ver_str =
+        fmt::format("kids {} ({})", KIDSCPP_GIT_VERSION, KIDSCPP_BUILD_TIMESTAMP);
+    constexpr auto level_names = tula::logging::active_level_names;
+    auto default_level_name = []() {
+        auto v = spdlog::level::debug;
+        if (v < tula::logging::active_level) {
+            v = tula::logging::active_level;
+        }
+        return tula::logging::get_level_name(v);
+    }();
+    using ex_config = tula::grppi_utils::ex_config;
     // clang-format off
-    auto screen = clipp_utils::screen{
+    auto parse = config_parser<rc_t, rc_t>{};
+    auto screen = tula::cli::screen{
     // =======================================================================
-                      "citlali" , "citlali", citlali_ver,
-                                  "TolTEC data reduction pipeline"           };
-    auto cli = (
+                      "citlali" , CITLALI_PROJECT_NAME, ver_str,
+                                  CITLALI_PROJECT_DESCRIPTION};
+    auto [cli, rc, cc] = parse([&](auto &r, auto &c) { return (
+    // rc -- runtime config
+    // cc -- cli config
     // =======================================================================
-    _(cc, p(       "h", "help" ), "Print help information and exit"   )       ,
+    c(p(           "h", "help"), "Print help information and exit"),
+    c(p(             "version"), "Print version information and exit"),
     // =======================================================================
-    _(cc, p(         "version" ), "Print version information and exit")       ,
+    r(             "config_file" , "The path of input config file",
+                                 opt_str()),
     // =======================================================================
-                                                                             (
-    _(rc,        "config_file"  , "The path of input config file", opt_str() ),
-              "common options"                                          % __(
-    _(cc, p(  "l", "log_level" ), "Set the log level",
-                                  logging::active_level_str,
-                                  list(logging::level_names)            ),
-    _(rc, p(            "plot" ), "Make diagnostic plot"                ),
-    _(rc, p(    "plot_backend" ), "Matplotlib backend to use",
-                                  "default", str()                      ),
-    _(rc, p(         "grppiex" ), "GRPPI executioon policy",
-                                  grppiex::modes::default_(),
-                                  list(grppiex::modes::names())         )
-                                                                            )
-                                                                              )
-    );
+              "common options" % g(
+    c(p(      "l", "log_level"), "Set the log level.",
+                                 default_level_name, list(level_names)),
+    r(p(             "grppiex"), "GRPPI execution policy",
+                                 ex_config::default_mode(),
+                                 list(ex_config::mode_names_supported())))
     // =======================================================================
+    );}, screen, argc, argv);
     // clang-format on
-
-    screen.parse(cli, argc, argv);
-    // handle CLI config
-    SPDLOG_TRACE("cc: {}", cc.pformat());
+    // SPDLOG_TRACE("cc: {}", cc.pformat());
     if (cc.get_typed<bool>("help")) {
         screen.manpage(cli);
         std::exit(EXIT_SUCCESS);
     } else if (cc.get_typed<bool>("version")) {
         screen.version();
         // also print the kids version
-        screen.os << kids_ver << '\n';
+        fmt::print("{}\n", kids_ver_str);
         std::exit(EXIT_SUCCESS);
     }
     {
         auto log_level_str = cc.get_str("log_level");
         auto log_level = spdlog::level::from_str(log_level_str);
-        SPDLOG_DEBUG("reconfigure logger to level={}", log_level_str);
         spdlog::set_level(log_level);
+        SPDLOG_INFO("reconfigure logger to level={}", log_level_str);
     }
     // pass on the runtime config
-    return rc;
+    return std::move(rc);
 }
 
 namespace predefs {
@@ -121,7 +128,7 @@ using timestream::LaliDataKind;
 } // namespace predefs
 
 template <typename Derived>
-using ConfigMapper = config::ConfigValidatorMixin<Derived, config::YamlConfig>;
+using ConfigMapper = tula::config::ConfigValidatorMixin<Derived, tula::config::YamlConfig>;
 
 /**
  * @brief The raw obs struct
@@ -174,19 +181,19 @@ struct RawObs : ConfigMapper<RawObs> {
     };
 
     // clang-format off
-    META_ENUM(CalItemType, int,
+    TULA_ENUM_DECL(CalItemType, int,
            array_prop_table,
-           unresolved 
+           unresolved
           );
     // clang-format on
     using CalItemTypes =
-        meta::cases<CalItemType::array_prop_table, CalItemType::unresolved>;
+        tula::meta::cases<CalItemType::array_prop_table, CalItemType::unresolved>;
     struct ArrayPropTable;
     struct CalItem;
     template <auto type>
-    using cal_item_t = meta::switch_t<
-        type, meta::case_t<CalItemType::array_prop_table, ArrayPropTable>,
-        meta::case_t<CalItemType::unresolved, CalItem>>;
+    using cal_item_t = tula::meta::switch_t<
+        type, tula::meta::case_t<CalItemType::array_prop_table, ArrayPropTable>,
+        tula::meta::case_t<CalItemType::unresolved, CalItem>>;
     using cal_item_var_t =
         std::variant<std::monostate, cal_item_t<CalItemType::array_prop_table>>;
 
@@ -269,9 +276,9 @@ struct RawObs : ConfigMapper<RawObs> {
         std::string m_typestr{};
         cal_item_var_t m_cal_item{};
         void resolve() {
-            meta::switch_invoke<CalItemTypes>(
+            tula::meta::switch_invoke<CalItemTypes>(
                 [&](auto _) {
-                    constexpr auto type_ = DECAY(_)::value;
+                    constexpr auto type_ = std::decay_t<decltype(_)>::value;
                     if constexpr (type_ == CalItemType::unresolved) {
                         m_cal_item = std::monostate{};
                     } else {
@@ -417,7 +424,7 @@ private:
         SPDLOG_TRACE("apt={}", array_prop_table());
     }
 };
-REGISTER_META_ENUM(RawObs::CalItemType);
+TULA_ENUM_REGISTER(RawObs::CalItemType);
 
 /**
  * @brief The Coordinator struct
@@ -544,7 +551,7 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
     }
 
     auto reduce_data_item(const RawObs::DataItem &data_item,
-                          const container_utils::Slice<int> &slice) {
+                          const tula::container_utils::Slice<int> &slice) {
         SPDLOG_TRACE("kids reduce data_item {}", data_item);
         // read data
         namespace kidsdata = predefs::kidsdata;
@@ -561,7 +568,7 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
     }
 
     auto reduce_rawobs(const RawObs &rawobs,
-                       const container_utils::Slice<int> &slice) {
+                       const tula::container_utils::Slice<int> &slice) {
         SPDLOG_TRACE("kids reduce rawobs {}", rawobs);
         std::vector<kids::TimeStreamSolverResult> result;
         for (const auto &data_item : rawobs.kidsdata()) {
@@ -575,7 +582,7 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
                       const int scanlength, const int n_detectors) {
         // call reduce rawobs, get the data into rtc
 
-        auto slice = container_utils::Slice<int>{scanindex(2), scanindex(3) + 1,
+        auto slice = tula::container_utils::Slice<int>{scanindex(2), scanindex(3) + 1,
                                                  std::nullopt};
         auto reduced = reduce_rawobs(rawobs, slice);
 
@@ -766,15 +773,15 @@ private:
 
 /// @brief Run citlali reduction.
 /// @param rc The runtime config.
-int run(const config::Config &rc) {
+int run(const rc_t &rc) {
     using kids::KidsData;
     using kids::KidsDataKind;
-    using logging::timeit;
+    using tula::logging::timeit;
     SPDLOG_INFO("use KIDs data spec: {}", predefs::kidsdata::name);
 
     // load the yaml citlali config
     auto citlali_config =
-        config::YamlConfig::from_filepath(rc.get_str("config_file"));
+        tula::config::YamlConfig::from_filepath(rc.get_str("config_file"));
     SPDLOG_INFO("citlali config:\n{}", citlali_config);
 
     // set up the IO coorindator
@@ -810,77 +817,8 @@ int run(const config::Config &rc) {
 
     auto exitcode = std::visit(
         [&](auto &todproc) {
-            using todproc_t = DECAY(todproc);
+            using todproc_t = std::decay_t<decltype(todproc)>;
 
-        using todproc_t = DECAY(todproc);
-
-        if constexpr(std::is_same_v<todproc_t, std::monostate>) {
-            return EXIT_FAILURE;
-        }
-
-        else {
-
-    //auto todproc = TimeOrderedDataProc::from_config(citlali_config);
-    //SPDLOG_INFO("tod proc: {}", todproc);
-
-    // Set todproc config
-    todproc.engine().config = citlali_config;
-
-    // Path to apt table from config file
-    auto cal_path = citlali_config.get_filepath(std::tuple{"inputs",0,"cal_items",0,"filepath"});
-    SPDLOG_INFO("cal_path {}", cal_path);
-
-    // Get apt table (error with ecsv, so using ascii for now)
-    auto apt_table = get_aptable_from_ecsv(cal_path, citlali_config);
-    SPDLOG_INFO("apt_table {}", apt_table);
-
-    // Put apt table into lali engine (temporary maybe)
-    todproc.engine().nw = apt_table.col(0);
-    todproc.engine().array_name = apt_table.col(1);
-    todproc.engine().fluxscale = apt_table.col(2);
-    todproc.engine().offsets["azOffset"] = apt_table.col(3)*3600.;
-    todproc.engine().offsets["elOffset"] = apt_table.col(4)*3600.;
-    todproc.engine().fwhms["a_fwhm"] = apt_table.col(5);//*3600.;
-    todproc.engine().fwhms["b_fwhm"] = apt_table.col(6);//*3600.;
-
-    // containers to store some pre-computed info for all inputs
-    using map_extent_t = typename todproc_t::map_extent_t;
-    using map_coord_t = typename todproc_t::map_coord_t;
-    using map_count_t = typename todproc_t::map_count_t;
-    using array_indices_t = typename todproc_t::array_indices_t;
-
-    std::vector<map_extent_t> map_extents{};
-    std::vector<map_coord_t> map_coords{};
-    std::vector<map_count_t> map_counts{};
-    std::vector<array_indices_t> array_indices{};
-    std::vector<array_indices_t> det_indices{};
-
-    // 1. coadd map buffer
-    //{
-        // this block of code is to get the relavant info from all the inputs
-        // and initialize the coadding buffer
-
-        // populate the inputs info
-        for (const auto &rawobs : co.inputs()) {
-            todproc.engine().telMD = lali::TelData::fromNcFile(rawobs.teldata().filepath());
-
-
-            auto rawobs_kids_meta = kidsproc.get_rawobs_meta(rawobs);
-
-            // TODO implement this to be the actual time chunk
-            // size
-            todproc.engine().samplerate =
-                rawobs_kids_meta.back().get_typed<double>("fsmp");
-            SPDLOG_INFO("tod_sample_rate {}", todproc.engine().samplerate);
-
-            auto maptype = todproc.engine().config.get_str(std::tuple{"map","type"});
-
-            if (std::strcmp("RaDec", maptype.c_str()) == 0) {
-                lali::internal::absToPhysEqPointing(todproc.engine().telMD.telMetaData,todproc.engine().telMD.srcCenter);
-            }
-
-            else if (std::strcmp("AzEl", maptype.c_str()) == 0) {
-                lali::internal::absToPhysHorPointing<lali::pointing>(todproc.engine().telMD.telMetaData);
             if constexpr (std::is_same_v<todproc_t, std::monostate>) {
                 return EXIT_FAILURE;
             }
@@ -913,8 +851,8 @@ int run(const config::Config &rc) {
                 todproc.engine().fluxscale = apt_table.col(2);
                 todproc.engine().offsets["azOffset"] = apt_table.col(3) * 3600.;
                 todproc.engine().offsets["elOffset"] = apt_table.col(4) * 3600.;
-                todproc.engine().fwhms["a_fwhm"] = apt_table.col(5); //*3600.;
-                todproc.engine().fwhms["b_fwhm"] = apt_table.col(6); //*3600.;
+                todproc.engine().fwhms["a_fwhm"] = apt_table.col(5)*3600.;
+                todproc.engine().fwhms["b_fwhm"] = apt_table.col(6)*3600.;
 
                 // containers to store some pre-computed info for all
                 // inputs
@@ -938,6 +876,15 @@ int run(const config::Config &rc) {
                 for (const auto &rawobs : co.inputs()) {
                     todproc.engine().telMD =
                         lali::TelData::fromNcFile(rawobs.teldata().filepath());
+
+                    auto rawobs_kids_meta = kidsproc.get_rawobs_meta(rawobs);
+
+                    todproc.engine().samplerate =
+                        rawobs_kids_meta.back().get_typed<double>("fsmp");
+                    SPDLOG_INFO("tod_sample_rate {}",
+                                todproc.engine().samplerate);
+
+
 
                     auto maptype = todproc.engine().config.get_str(
                         std::tuple{"map", "type"});
@@ -1029,25 +976,24 @@ int run(const config::Config &rc) {
                     // Do general setup that is only run once per rawobs
                     // before grppi pipeline
                     {
-                        logging::scoped_timeit timer("engine setup()");
+                        tula::logging::scoped_timeit timer("engine setup()");
                         todproc.engine().setup();
                     }
 
                     // Run the actual pipeline
                     {
-                        logging::scoped_timeit timer("engine pipeline()");
+                        tula::logging::scoped_timeit timer("engine pipeline()");
                         todproc.engine().pipeline(scanindicies, kidsproc,
                                                   rawobs);
                     }
 
                     // Generate output files
                     {
-                        logging::scoped_timeit timer("engine output()");
+                        tula::logging::scoped_timeit timer("engine output()");
                         todproc.engine().output();
                     }
                 }
                 //}
-
                 /*
                 2. for loop of co.inputs() for each raw obs,
 
@@ -1102,22 +1048,17 @@ int run(const config::Config &rc) {
             }
         },
         todproc);
-
     return exitcode;
 }
 
 int main(int argc, char *argv[]) {
-    logging::init<>(true);
-
-    {
-        logging::scoped_timeit timer("Citlali Process");
-
-        auto rc = parse_args(argc, argv);
-        SPDLOG_TRACE("rc {}", rc.pformat());
+    tula::logging::init();
+    auto rc = parse_args(argc, argv);
+    SPDLOG_TRACE("rc {}", rc.pformat());
         if (rc.is_set("config_file")) {
+            tula::logging::scoped_timeit TULA_X{"Citlali Process"};
             return run(rc);
         } else {
             std::cout << "Invalid argument. Type --help for usage.\n";
         }
-    }
 }
