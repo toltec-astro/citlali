@@ -1,16 +1,25 @@
 {
   "version": 3,
   "configurePresets": [
-        {
-            "name": "tula_examples",
-            "description": "",
-            "displayName": "",
-            "inherits": [
-                "brew-llvm-debug"
-            ],
+    {
+      "name": "unity_debug",
+      "description": "",
+      "displayName": "",
+      "inherits": [
+          "linux-gcc-debug"
+      ],
       "cacheVariables": {
-        "TULA_BUILD_EXAMPLES": "ON"
       }
-            }
+    },
+    {
+      "name": "unity_release",
+      "description": "",
+      "displayName": "",
+      "inherits": [
+          "linux-gcc-release"
+      ],
+      "cacheVariables": {
+      }
+    }
   ]
 }
