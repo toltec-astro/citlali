@@ -100,7 +100,7 @@ To build, go into the source directory:
     $ mkdir build
     $ cd build
     $ cmake .. -DCMAKE_BUILD_TYPE=Release [more options...]
-    $ make citlali
+    $ make citlali_cli
 
 To customize the build, add options like :code:`-D<key>=<value>` to the cmake command
 line. Some options to set are:
