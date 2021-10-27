@@ -1,172 +1,173 @@
 #pragma once
+#include <string>
+#include <vector>
+#include <map>
+#include <Eigen/Core>
+#include <unsupported/Eigen/CXX11/Tensor>
 
-#include "map_utils.h"
+#include <tula/logging.h>
 
-// TcData is the data structure of which RTCData and PTCData are a part
-using timestream::PTCProc;
-using timestream::RTCProc;
-using timestream::TCData;
+#include <citlali/core/utils/pointing.h>
 
-// Selects the type of TCData
-using timestream::LaliDataKind;
+using map_dims_t = std::tuple<int, int, Eigen::VectorXd, Eigen::VectorXd>;
+using map_extent_t = std::vector<double>;
+using map_coord_t = std::vector<Eigen::VectorXd>;
+using map_count_t = std::size_t;
 
-namespace  mapmaking {
 
-class CoaddMapStruct: public mapmaking::MapUtils {
-
+class CoaddedMapBuffer {
 public:
-  // Number of rows and cols for map
-  Eigen::Index nrows, ncols, npixels, map_count;
-  // Pixel size (radians) and Master Grid coordinates
-  double masterGrid0, masterGrid1;
-  // Physical coordinates for rows and cols (radians)
-  Eigen::VectorXd rcphys, ccphys;
+    Eigen::Index nrows, ncols, nnoise;
+    map_count_t map_count;
+    double pixel_size;
 
-  // Map types
-  std::vector<Eigen::MatrixXd> signal, weight, kernel, intMap;
+    // for source fits in coadded maps
+    Eigen::MatrixXd pfit;
 
-  template<typename TD, typename OT>
-  void allocateMaps(TD&, OT&, lali::YamlConfig);
+    // Physical coordinates for rows and cols (radians)
+    Eigen::VectorXd rcphys, ccphys;
 
-  template <typename OT>
-  void mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &, OT &,
-                   YamlConfig, std::vector<std::tuple<int,int>> &);
+    // vectors for each map type
+    std::vector<Eigen::MatrixXd> signal, weight, kernel, coverage;
 
-  void mapNormalize(lali::YamlConfig);
-};
+    // noise maps
+    std::vector<Eigen::Tensor<double,3>> noise;
 
-// Resizes maps to nrows x ncols
-template<typename TD, typename OT>
-void CoaddMapStruct::allocateMaps(TD &telMetaData, OT &offsets, lali::YamlConfig config)
-{
-    npixels = nrows * ncols;
-    auto grouping = config.get_str(std::tuple{"map","grouping"});
+    void setup_maps(std::vector<map_coord_t> map_coords, map_count_t _mc) {
+        map_count = _mc;
 
-    for(Eigen::Index i = 0; i < map_count; i++) {
-        signal.push_back(Eigen::MatrixXd::Zero(nrows, ncols));
-        weight.push_back(Eigen::MatrixXd::Zero(nrows, ncols));
-        if (std::strcmp("array_name", grouping.c_str()) == 0) {
-            kernel.push_back(Eigen::MatrixXd::Zero(nrows, ncols));
-            intMap.push_back(Eigen::MatrixXd::Zero(nrows, ncols));
-        }
-    }
-}
+        double min_row, max_row, min_col, max_col;
 
-// For a given scan find the row and col indices and add those the
-// corresponding values into the map matricies
-template <typename OT>
-void CoaddMapStruct::mapPopulate(TCData<LaliDataKind::PTC, Eigen::MatrixXd> &in,
-                            OT &offsets, YamlConfig config,
-                            std::vector<std::tuple<int,int>> &di) {
+        // loop through physical coordinates and get min/max
+        for (Eigen::Index i=0; i<map_coords.size(); i++) {
+            auto rcp = map_coords.at(i).front();
+            auto ccp = map_coords.at(i).back();
 
-  SPDLOG_INFO("Populating map pixels for scan {}...", in.index.data);
+            auto rc_npts = rcp.size();
+            auto cc_npts = ccp.size();
 
-  Eigen::Index npts = in.scans.data.rows();
-  //Eigen::Index ndetectors = in.scans.data.cols();
+            // initialze to first obs map's min/max
+            if (i == 0) {
+                min_row = rcp(0);
+                max_row = rcp(rc_npts-1);
 
-  auto grouping = config.get_str(std::tuple{"map","grouping"});
+                min_col = ccp(0);
+                max_col = ccp(cc_npts-1);
+            }            
+            // see if current min/max is larger than previous
+            // and replace if so
+            else {
+                if (rcp(0) < min_row) {
+                    min_row = rcp(0);
+                }
 
-  auto maptype = config.get_str(std::tuple{"map","type"});
-  pixelsize = config.get_typed<double>(std::tuple{"map","pixelsize"})*RAD_ASEC;
+                if (rcp(rc_npts-1) > min_row) {
+                    max_row = rcp(rc_npts-1);
+                }
 
-  for (Eigen::Index mc = 0; mc < map_count; mc++) {
-      SPDLOG_INFO("mc {} di {}", mc, std::get<0>(di.at(mc)));
-      SPDLOG_INFO("mc {} di {}", mc, std::get<1>(di.at(mc)));
-      // Loop through each detector
-      for (Eigen::Index det = std::get<0>(di.at(mc)); det < std::get<1>(di.at(mc)); det++) {
+                if (ccp(0) < min_col) {
+                    min_col = ccp(0);
+                }
 
-          Eigen::VectorXd lat, lon;
-
-        // Get pointing for each detector using that scans's telescope pointing only
-        if (std::strcmp("RaDec", maptype.c_str()) == 0) {
-            getDetectorPointing<RaDec>(lat, lon, in.telLat.data, in.telLon.data,
-                                       in.telElDes.data, in.ParAng.data,
-                                       offsets["azOffset"](det),
-                                       offsets["elOffset"](det), config);
-        }
-
-        else if (std::strcmp("AzEl", maptype.c_str()) == 0) {
-            getDetectorPointing<AzEl>(lat, lon, in.telLat.data, in.telLon.data,
-                                       in.telElDes.data, in.ParAng.data,
-                                       offsets["azOffset"](det),
-                                       offsets["elOffset"](det), config);
-        }
-
-        // Get row and col indices for lat and lon vectors
-        Eigen::VectorXd irow = lat.array() / pixelsize + (nrows + 1.) / 2.;
-        Eigen::VectorXd icol = lon.array() / pixelsize + (ncols + 1.) / 2.;
-
-        //Eigen::VectorXd irow = floor((lat.array()-rcphys(0))/pixelsize);
-        //Eigen::VectorXd icol = floor((lon.array()-ccphys(0))/pixelsize);
-
-        // Loop through points in scan
-        for (Eigen::Index s = 0; s < npts; s++) {
-
-          Eigen::Index ir = (irow(s));
-          Eigen::Index ic = (icol(s));
-
-          if (ir >= nrows) {
-              SPDLOG_INFO("irow larger than map size {}", irow);
-              exit(1);
-          }
-
-          if (ic >= ncols) {
-              SPDLOG_INFO("icol larger than map size {}", icol);
-              exit(1);
-          }
-
-          // Exclude flagged data
-          if (in.flags.data(s, det)) {
-            /*Weight Map*/
-            weight.at(mc)(ir,ic) += in.weights.data(det);
-
-            /*Signal Map*/
-           auto sig = in.scans.data(s, det) * in.weights.data(det);
-           signal.at(mc)(ir,ic) += sig;
-
-            if (std::strcmp("array_name", grouping.c_str()) == 0) {
-                /*Kernel Map*/
-                auto ker = in.kernelscans.data(s, det) * in.weights.data(det);
-                kernel.at(mc)(ir,ic) += ker;
-
-                /*Int Map*/
-               intMap.at(mc)(ir,ic) += 1;
-
-                /*Noise Maps*/
-                // change to trng library
+                if (ccp(cc_npts-1) > max_col) {
+                    max_col = ccp(cc_npts-1);
+                }
             }
-          }
         }
-      }
-      //SPDLOG_INFO("DONE WITH MC {}", mc);
-  }
-}
 
-//Normallize the map pixels by weight map.  Needs the
-// map to be completely populated to be run.
-void CoaddMapStruct::mapNormalize(lali::YamlConfig config) {
-    double pixelWeight = 0;
-    auto grouping = config.get_str(std::tuple{"map","grouping"});
+        // get number of rows
+        Eigen::Index xminpix = ceil(abs(min_row/pixel_size));
+        Eigen::Index xmaxpix = ceil(abs(max_row/pixel_size));
+        xmaxpix = std::max(xminpix,xmaxpix);
+        // always even
+        nrows = 2.*xmaxpix + 4;
 
-    for (Eigen::Index mc = 0; mc < map_count; mc++) {
-        signal.at(mc) = (weight.at(mc).array() == 0).select(0, signal.at(mc).array() / weight.at(mc).array());
-        if (std::strcmp("array_name", grouping.c_str()) == 0) {
-            kernel.at(mc) = (weight.at(mc).array() == 0).select(0, kernel.at(mc).array() / weight.at(mc).array());
+        // get number of cols
+        Eigen::Index yminpix = ceil(abs(min_col/pixel_size));
+        Eigen::Index ymaxpix = ceil(abs(max_col/pixel_size));
+        ymaxpix = std::max(yminpix,ymaxpix);
+        // always even
+        ncols = 2.*ymaxpix + 4;
+
+        // set coadded physical coordinate vectors
+        rcphys = (Eigen::VectorXd::LinSpaced(nrows,0,nrows-1).array() -
+                (nrows)/2.)*pixel_size;
+        ccphys = (Eigen::VectorXd::LinSpaced(ncols,0,ncols-1).array() -
+                (ncols)/2.)*pixel_size;
+
+        SPDLOG_INFO("coadd map buffer nrows {} ncols {}", nrows, ncols);
+
+        // resize the maps (nobs, [nrows, ncols])
+        for (Eigen::Index i=0; i<map_count; i++) {
+            signal.push_back(Eigen::MatrixXd::Zero(nrows, ncols));
+            weight.push_back(Eigen::MatrixXd::Zero(nrows, ncols));
+            kernel.push_back(Eigen::MatrixXd::Zero(nrows, ncols));
+            coverage.push_back(Eigen::MatrixXd::Zero(nrows, ncols));
+        }
+
+        // resize noise maps (nobs, [nrows, ncols, nnoise])
+        for (Eigen::Index i=0; i<map_count; i++) {
+            noise.push_back(Eigen::Tensor<double,3>(nrows, ncols, nnoise));
+            noise.at(i).setZero();
         }
     }
 
-    // Can parallelize so leave in for loops.
+    template <class MB>
+    void coadd(MB &mb, const double fsmp, const bool run_kernel) {
+        // offset between CMB and MB physical coordinates
+        int deltai = (mb.rcphys(0) - rcphys(0))/pixel_size;
+        int deltaj = (mb.ccphys(0) - ccphys(0))/pixel_size;
 
-    /*for (Eigen::Index irow = 0; irow < nrows; irow++) {
-    for (Eigen::Index icol = 0; icol < ncols; icol++) {
-      pixelWeight = weight(irow, icol);
-      if (pixelWeight != 0.) {
-        signal(irow, icol) = -(signal(irow, icol)) / pixelWeight;
-      } else {
-        signal(irow, icol) = 0;
-      }
+        // coadd the MB into the CMB
+        for (Eigen::Index mi=0; mi<map_count; mi++) {
+            // weight += weight
+            weight.at(mi).block(deltai, deltaj, mb.nrows, mb.ncols) =
+                    weight.at(mi).block(deltai, deltaj, mb.nrows, mb.ncols).array() +
+                    mb.weight.at(mi).array();
+
+            // signal += signal*weight
+            signal.at(mi).block(deltai, deltaj, mb.nrows, mb.ncols) =
+                    signal.at(mi).block(deltai, deltaj, mb.nrows, mb.ncols).array() +
+                    (mb.signal.at(mi).array()*mb.signal.at(mi).array()).array();
+
+            if (run_kernel) {
+                // kernel += kernel*weight
+                kernel.at(mi).block(deltai, deltaj, mb.nrows, mb.ncols) =
+                        kernel.at(mi).block(deltai, deltaj, mb.nrows, mb.ncols).array() +
+                        (mb.weight.at(mi).array()*mb.kernel.at(mi).array()).array();
+            }
+
+            // signal += fsmp*weight
+            coverage.at(mi).block(deltai, deltaj, mb.nrows, mb.ncols) +=
+                    mb.weight.at(mi)*1./fsmp;
+        }
     }
-  }*/
-}
 
-} // namespace mapmaking
+    void normalize_maps(const bool run_kernel) {
+        /*for (Eigen::Index mc = 0; mc < map_count; mc++) {
+            signal.at(mc) = (weight.at(mc).array() == 0).select(0, signal.at(mc).array() / weight.at(mc).array());
+            if (run_kernel) {
+                kernel.at(mc) = (weight.at(mc).array() == 0).select(0, kernel.at(mc).array() / weight.at(mc).array());
+            }
+        }*/
+
+        for (Eigen::Index mc=0; mc<map_count; mc++) {
+            for (Eigen::Index i=0; i<nrows; i++) {
+                for (Eigen::Index j=0; j<ncols; j++) {
+                    auto pixel_weight = weight.at(mc)(i,j);
+                    if (pixel_weight != pixel_weight) {
+                            SPDLOG_INFO("bad pixel weight {}", pixel_weight);
+                    }
+                    if (pixel_weight != 0. && pixel_weight == pixel_weight) {
+                        signal.at(mc)(i,j) = (signal.at(mc)(i,j)) / pixel_weight;
+                        kernel.at(mc)(i,j) = (kernel.at(mc)(i,j)) / pixel_weight;
+                    }
+                    else {
+                        signal.at(mc)(i,j) = 0;
+                        kernel.at(mc)(i,j) = 0;
+                    }
+                }
+            }
+        }
+    }
+};
