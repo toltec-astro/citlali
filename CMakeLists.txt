@@ -17,7 +17,7 @@ FetchContent_MakeAvailable(kidscpp)
 
 # Add the tula cmake modules
 set(CMAKE_MODULE_PATH "${CMAKE_BINARY_DIR}/" ${CMAKE_MODULE_PATH})
-set(CMAKE_MODULE_PATH "${CMAKE_BINARY_DIR}/_deps/tula-src/tula_cmake/cmake" ${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH "${tula_SOURCE_DIR}/tula_cmake/cmake" ${CMAKE_MODULE_PATH})
 include(common_settings)
 
 # Check if this project is embedded as sub project.

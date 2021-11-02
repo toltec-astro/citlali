@@ -9,6 +9,7 @@
           "linux-gcc-debug"
       ],
       "cacheVariables": {
+          "FETCHCONTENT_SOURCE_DIR_TULA": "${sourceParentDir}/tula"
       }
     },
     {
