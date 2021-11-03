@@ -37,9 +37,11 @@ To install the compiler and build tools:
 
 .. code-block::
 
-    $ brew install git cmake llvm libomp python
+    $ brew install git cmake llvm libomp python conan
 
 The package :code:`libomp` and :code:`python` are not required, but highly recommended.
+
+:code:`conan` can be installed either through ::code:`brew` or ::code'python'.
 
 By default, the installed LLVM compiler is in :code:`/usr/local/opt/llvm/bin`. If
 not sure, consult :code:`brew info llvm`.
