@@ -18,7 +18,8 @@ struct ToltecIO {
         toltec = 0,
         muscat = 1,
         apt = 2,
-        no_data_type = 3,
+        ppt = 3,
+        no_data_type = 4,
     };
 
     // project id filename
@@ -113,6 +114,10 @@ struct ToltecIO {
 
         else if constexpr (data_type == apt) {
             filepath = filepath + "apt_";
+        }
+
+        else if constexpr (data_type == ppt) {
+            filepath = filepath + "ppt_";
         }
 
         if constexpr (project_id == simu) {

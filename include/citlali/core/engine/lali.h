@@ -181,11 +181,7 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         SPDLOG_INFO("fitting pointing maps");
         grppi::map(tula::grppi_utils::dyn_ex(ex_name), array_in_vec, array_out_vec, [&](auto d) {
             gaussfit::MapFitter fitter;
-            Eigen::MatrixXd sigma = mb.weight[d];
-            (sigma.array() !=0).select(1./sqrt(mb.weight[d].array()),0.);
-            mb.pfit.col(d) = fitter.fit<gaussfit::MapFitter::centerValue>(mb.signal[d], sigma, calib_data);
-            SPDLOG_INFO("mb.pfit.col(d) {}",mb.pfit.col(d));
-
+            mb.pfit.col(d) = fitter.fit<gaussfit::MapFitter::centerValue>(mb.signal[d], mb.weight[d], calib_data);
             return 0;});
 
         // rescale fits from pixel to on-sky units (radians)
@@ -303,7 +299,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios) {
             SPDLOG_INFO("writing pointing fit table");
 
             // get output path from citlali_config
-            auto filename = toltec_io.setup_filepath<ToltecIO::apt, ToltecIO::simu,
+            auto filename = toltec_io.setup_filepath<ToltecIO::ppt, ToltecIO::simu,
                     ToltecIO::pointing, ToltecIO::no_prod_type, ToltecIO::obsnum_true>(filepath,obsnum,-1);
             Eigen::MatrixXf table(toltec_io.apt_header.size(), array_indices.size());
             table = mout.pfit.template cast <float> ();

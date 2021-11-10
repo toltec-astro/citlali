@@ -197,11 +197,11 @@ auto Beammap::run_loop() {
             // declare fitter class for detector
             gaussfit::MapFitter fitter;
             // get sigma matrix from weight matrix
-            Eigen::MatrixXd sigma = mb.weight[d];
+            //Eigen::MatrixXd sigma = mb.weight[d];
             // invert weight matrix to get sigma matrix, set 1/0 to 0
-            (sigma.array() !=0).select(1./sqrt(sigma.array()),0.);
+            //(sigma.array() !=0).select(1./sqrt(sigma.array()),0.);
             // do the fit
-            mb.pfit.col(d) = fitter.fit<gaussfit::MapFitter::peakValue>(mb.signal[d], sigma, calib_data);
+            mb.pfit.col(d) = fitter.fit<gaussfit::MapFitter::peakValue>(mb.signal[d], mb.weight[d], calib_data);
             SPDLOG_INFO("pfit.col(d) {}", mb.pfit.col(d));
 
             return 0;});

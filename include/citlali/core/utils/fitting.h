@@ -39,30 +39,26 @@ public:
     Eigen::MatrixXd limits;
     Eigen::VectorXd x, y;
 
-    template<FitMode fit_mode, typename Derived, typename C>
-    void setup(Eigen::DenseBase<Derived> &data, C &calib) {
+    template<FitMode fit_mode, typename DerivedA, typename DerivedB, typename C>
+    void setup(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &weight, C &calib) {
 
         p0.resize(nparams);
 
         // use the peak value of the map as the starting guess
         if constexpr (fit_mode == peakValue) {
-
-            flux0 = data.maxCoeff(&row0, &col0);
+            auto sig2noise = data.derived().array()*sqrt(weight.derived().array());
+            sig2noise.maxCoeff(&row0, &col0);
+            flux0 = data(row0,col0);
 
             // set initial guess
             p0 << flux0, col0, row0, fwhm0, fwhm0, ang0;
-            SPDLOG_INFO("P0 {}", p0);
         }
 
         else if constexpr (fit_mode == centerValue) {
             row0 = data.rows()/2;
             col0 = data.cols()/2;
 
-            SPDLOG_INFO("row0 {}, col0 {}",row0,col0);
-
             flux0 = data(row0, col0);
-
-            SPDLOG_INFO("flux0",flux0);
 
             p0 << flux0, col0, row0, fwhm0, fwhm0, ang0;
         }
@@ -93,19 +89,16 @@ public:
         limits.col(1) << flux_high*flux0, col0 + box_size + 1, row0 + box_size + 1,
                 fwhm_high, fwhm_high, ang_high;
 
-        SPDLOG_INFO("limits col 0 {}",limits.col(0));
-        SPDLOG_INFO("limits col 1 {}",limits.col(1));
-
         // axes coordinate vectors for meshgrid
         x = Eigen::VectorXd::LinSpaced(2*box_size+1, col0-box_size, col0+box_size+1);
         y = Eigen::VectorXd::LinSpaced(2*box_size+1, row0-box_size, row0+box_size+1);
     }
 
     template <FitMode fit_mode, typename DerivedA, typename DerivedB, typename C>
-    auto fit(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &sigma, C &calib_data) {
+    auto fit(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &weight, C &calib_data) {
 
         // get bounding initial conditions, bounding box, and limits
-        setup<fit_mode>(data, calib_data);
+        setup<fit_mode>(data, weight, calib_data);
 
         // setup gauss model with initial conditions
         auto g = gaussfit::modelgen<gaussfit::Gaussian2D>(p0);
@@ -114,12 +107,12 @@ public:
         // meshgrid for coordinates
         auto xy = g.meshgrid(x, y);
 
+        Eigen::MatrixXd sigma = weight;
+        (sigma.array() !=0).select(1./sqrt(weight.derived().array()),0.);
+
         // copy data and sigma within bounding box region
         auto _data = data.block(row0-box_size, col0-box_size, 2*box_size+1, 2*box_size+1);
         auto _sigma = sigma.block(row0-box_size, col0-box_size, 2*box_size+1, 2*box_size+1);
-
-        SPDLOG_INFO("data {}",_data);
-        SPDLOG_INFO("_sigma {}",_sigma);
 
         // do the fit with ceres
         auto g_fit = gaussfit::curvefit_ceres(g, _p, xy, _data, _sigma, limits);
