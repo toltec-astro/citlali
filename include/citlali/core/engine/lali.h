@@ -183,7 +183,8 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
             gaussfit::MapFitter fitter;
             Eigen::MatrixXd sigma = mb.weight[d];
             (sigma.array() !=0).select(1./sqrt(mb.weight[d].array()),0.);
-            mb.pfit.col(d) = fitter.fit<gaussfit::MapFitter::peakValue>(mb.signal[d], sigma, calib_data);
+            mb.pfit.col(d) = fitter.fit<gaussfit::MapFitter::centerValue>(mb.signal[d], sigma, calib_data);
+            SPDLOG_INFO("mb.pfit.col(d) {}",mb.pfit.col(d));
 
             return 0;});
 

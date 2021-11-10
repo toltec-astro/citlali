@@ -13,7 +13,8 @@ public:
 
     enum FitMode {
         peakValue = 0,
-        aptTable = 1,
+        centerValue = 1,
+        aptTable = 2,
     };
 
     int nparams = 6;
@@ -50,6 +51,20 @@ public:
 
             // set initial guess
             p0 << flux0, col0, row0, fwhm0, fwhm0, ang0;
+            SPDLOG_INFO("P0 {}", p0);
+        }
+
+        else if constexpr (fit_mode == centerValue) {
+            row0 = data.rows()/2;
+            col0 = data.cols()/2;
+
+            SPDLOG_INFO("row0 {}, col0 {}",row0,col0);
+
+            flux0 = data(row0, col0);
+
+            SPDLOG_INFO("flux0",flux0);
+
+            p0 << flux0, col0, row0, fwhm0, fwhm0, ang0;
         }
 
         //else if constexpr (fit_mode == aptTable) {
@@ -78,6 +93,9 @@ public:
         limits.col(1) << flux_high*flux0, col0 + box_size + 1, row0 + box_size + 1,
                 fwhm_high, fwhm_high, ang_high;
 
+        SPDLOG_INFO("limits col 0 {}",limits.col(0));
+        SPDLOG_INFO("limits col 1 {}",limits.col(1));
+
         // axes coordinate vectors for meshgrid
         x = Eigen::VectorXd::LinSpaced(2*box_size+1, col0-box_size, col0+box_size+1);
         y = Eigen::VectorXd::LinSpaced(2*box_size+1, row0-box_size, row0+box_size+1);
@@ -99,6 +117,9 @@ public:
         // copy data and sigma within bounding box region
         auto _data = data.block(row0-box_size, col0-box_size, 2*box_size+1, 2*box_size+1);
         auto _sigma = sigma.block(row0-box_size, col0-box_size, 2*box_size+1, 2*box_size+1);
+
+        SPDLOG_INFO("data {}",_data);
+        SPDLOG_INFO("_sigma {}",_sigma);
 
         // do the fit with ceres
         auto g_fit = gaussfit::curvefit_ceres(g, _p, xy, _data, _sigma, limits);
