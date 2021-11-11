@@ -56,7 +56,7 @@ void Lali::setup() {
     }
 
     // create coadd files
-    if (run_coadd) {
+    /*if (run_coadd) {
         // create files for each member of the array_indices group
         for (Eigen::Index i=0; i<array_indices.size(); i++) {
             std::string filename;
@@ -69,7 +69,7 @@ void Lali::setup() {
             FitsIO<fileType::write_fits, CCfits::ExtHDU*> fits_io(filename);
             coadd_fits_ios.push_back(std::move(fits_io));
         }
-    }
+    }*/
 }
 
 auto Lali::run() {
@@ -295,7 +295,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios) {
     // add fitting parameters to file if pointing mode is selected
     if constexpr (out_type==MapType::obs) {
         if (reduction_type == "pointing") {
-            // apt table
+            // ppt table
             SPDLOG_INFO("writing pointing fit table");
 
             // get output path from citlali_config
@@ -310,7 +310,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios) {
 
             // write the ecsv file
             to_ecsv_from_matrix(filename, table, toltec_io.apt_header,meta);
-            SPDLOG_INFO("successfully wrote apt table to {}.ecsv", filename);
+            SPDLOG_INFO("successfully wrote ppt table to {}.ecsv", filename);
         }
     }
 

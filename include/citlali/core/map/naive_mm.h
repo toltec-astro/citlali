@@ -42,12 +42,12 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine en
             }
 
             // if in beammap mode, offsets are zero
-            else if (engine->reduction_type == "beammap" || engine->reduction_type == "wyatt") {
+            else if (engine->reduction_type == "beammap") {
                 azoff = 0;
                 eloff = 0;
             }
 
-            // get detector pointing (lat/lon = rows/cols -> dec/ra or el/az)
+            // get detector pointing (lat/lon = rows/cols -> icrs or altaz)
             auto [lat, lon] = engine_utils::get_det_pointing(in.tel_meta_data.data, azoff, eloff, engine->map_type);
 
             // get map buffer row and col indices for lat and lon vectors

@@ -935,6 +935,23 @@ int run(const rc_t &rc) {
                 if (todproc.engine().run_coadd) {
                     SPDLOG_INFO("setup coadded map buffer");
                     todproc.setup_coadd_map_buffer(map_coords, map_counts.front());
+
+                    // toltec i/o class for filename generation
+                    ToltecIO toltec_io;
+
+                    // create files for each member of the array_indices group
+                    // uses filepath from last config read
+                    for (Eigen::Index i=0; i<todproc.engine().cmb.map_count; i++) {
+                        std::string filename;
+                        // generate filename for coadded maps
+                        filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                ToltecIO::no_obs_type, ToltecIO::raw, ToltecIO::obsnum_false>(todproc.engine().filepath,
+                                                                                              todproc.engine().obsnum,i);
+
+                        // push the file classes into a vector for storage
+                        FitsIO<fileType::write_fits, CCfits::ExtHDU*> fits_io(filename);
+                        todproc.engine().coadd_fits_ios.push_back(std::move(fits_io));
+                    }
                 }
 
                 // run the reduction for each observation

@@ -144,19 +144,19 @@ struct ToltecIO {
 
         // append product type
         if constexpr (prod_type == raw) {
-            filepath = filepath + "raw_";
+            filepath = filepath + "raw";
         }
 
         if constexpr (prod_type == filtered) {
-            filepath = filepath + "filtered_";
+            filepath = filepath + "filtered";
         }
 
         if constexpr (prod_type == hist) {
-            filepath = filepath + "hist_";
+            filepath = filepath + "hist";
         }
 
         if constexpr (prod_type == psd) {
-            filepath = filepath + "psd_";
+            filepath = filepath + "psd";
         }
 
 
