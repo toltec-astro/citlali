@@ -19,14 +19,18 @@ template <class Engine>
 void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine engine) {
     SPDLOG_INFO("populating map with scan {}", in.index.data);
 
-    // declare random number generator for each thread
-    boost::random::mt19937 eng(omp_get_thread_num());
-    boost::random::uniform_int_distribution<> rands{0,1};
+    Eigen::MatrixXi noise_rand;
 
-    // generate the random number matrix
-    Eigen::MatrixXi noise_rand =
-            Eigen::MatrixXi::Zero(engine->cmb.nnoise,1).unaryExpr([&](int dummy){return rands(eng);});
-    noise_rand = (2.*(noise_rand.template cast<double>().array() - 0.5)).template cast<int>();
+    if (engine->run_noise) {
+        // declare random number generator for each thread
+        boost::random::mt19937 eng(omp_get_thread_num());
+        boost::random::uniform_int_distribution<> rands{0,1};
+
+        // generate the random number matrix
+        noise_rand =
+                Eigen::MatrixXi::Zero(engine->cmb.nnoise,1).unaryExpr([&](int dummy){return rands(eng);});
+        noise_rand = (2.*(noise_rand.template cast<double>().array() - 0.5)).template cast<int>();
+    }
 
     // loop through the detector indices
     for (Eigen::Index mi = 0; mi < engine->det_indices.size(); mi++) {
@@ -54,9 +58,12 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine en
             Eigen::VectorXd mb_irow = lat.array()/engine->pixel_size + (engine->mb.nrows)/2.;
             Eigen::VectorXd mb_icol = lon.array()/engine->pixel_size + (engine->mb.ncols)/2.;
 
-            // get coadded map buffer row and col indices for lat and lon vectors
-            Eigen::VectorXd cmb_irow = lat.array()/engine->pixel_size + (engine->cmb.nrows)/2.;
-            Eigen::VectorXd cmb_icol = lon.array()/engine->pixel_size + (engine->cmb.ncols)/2.;
+            Eigen::VectorXd cmb_irow, cmb_icol;
+            if (engine->run_coadd) {
+                // get coadded map buffer row and col indices for lat and lon vectors
+                cmb_irow = lat.array()/engine->pixel_size + (engine->cmb.nrows)/2.;
+                cmb_icol = lon.array()/engine->pixel_size + (engine->cmb.ncols)/2.;
+            }
 
             // loop through scan
             for (Eigen::Index si = 0; si < in.scans.data.rows(); si++) {
@@ -64,9 +71,12 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine en
                 Eigen::Index mb_ir = (mb_irow(si));
                 Eigen::Index mb_ic = (mb_icol(si));
 
-                // row and col pixel for coadded map buffer
-                Eigen::Index cmb_ir = (cmb_irow(si));
-                Eigen::Index cmb_ic = (cmb_icol(si));
+                Eigen::Index cmb_ir, cmb_ic;
+                if (engine->run_coadd) {
+                    // row and col pixel for coadded map buffer
+                    cmb_ir = (cmb_irow(si));
+                    cmb_ic = (cmb_icol(si));
+                }
 
                 // check if sample is flagged as good
                 if (in.flags.data(si, di)) {
@@ -91,7 +101,7 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine en
                     }
 
                     // noise maps
-                    if (engine->run_coadd) {
+                    if (engine->run_noise) {
                         for (Eigen::Index nn=0; nn<engine->cmb.nnoise; nn++) {
                             engine->cmb.noise.at(mi)(cmb_ir,cmb_ic,nn) += noise_rand(nn)*sig;
                         }

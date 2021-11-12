@@ -68,6 +68,9 @@ public:
     // control for coadd
     bool run_coadd;
 
+    // control for noise maps
+    bool run_noise;
+
     // kernel class
     timestream::Kernel kernel;
 
@@ -277,10 +280,6 @@ public:
         // get coadd config options
         get_config(run_coadd,std::tuple{"coadd","enabled"});
         if (run_coadd) {
-            //get_config(run_noise,std::tuple{"coadd","noise_maps","enabled"});
-            //if (run_noise) {
-                get_config(cmb.nnoise,std::tuple{"coadd","noise_maps","n_noise_maps"});
-            //}
             //get_config(run_coadd_filter,std::tuple{"coadd","filtering","enabled"});
             // if (run_coadd_filter) {
                 //get_config(coadd_filter_type,std::tuple{"coadd","filtering","type"});
@@ -291,6 +290,11 @@ public:
                 //get_config(wiener_filter.highpass_only,std::tuple{"wiener_filter","highpass_only"});
                 //get_config(wiener_filter.normalize_error,std::tuple{"wiener_filter","normalize_error"});
             //}
+        }
+
+        get_config(run_noise,std::tuple{"coadd","noise_maps","enabled"});
+        if (run_noise) {
+            get_config(cmb.nnoise,std::tuple{"coadd","noise_maps","n_noise_maps"});
         }
     }
 };

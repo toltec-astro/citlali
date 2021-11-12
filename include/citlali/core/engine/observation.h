@@ -23,10 +23,10 @@ public:
     void get_phys_pointing(tel_meta_data_t &, C &, std::string);
 
     template <typename tel_meta_data_t, typename C>
-    void get_phys_radec(tel_meta_data_t &, C &);
+    void get_phys_icrs(tel_meta_data_t &, C &);
 
     template <typename tel_meta_data_t, typename C>
-    void get_phys_azel(tel_meta_data_t &, C &);
+    void get_phys_altaz(tel_meta_data_t &, C &);
 
     template <typename tel_meta_data_t, typename C>
     void get_scanindices(tel_meta_data_t &, C &, std::string, const double, const double,
@@ -237,17 +237,17 @@ void Observation::get_phys_pointing(tel_meta_data_t &tel_meta_data, C &center, s
 
     // get icrs physical pointing
     if (std::strcmp("icrs", map_type.c_str()) == 0) {
-        get_phys_radec(tel_meta_data, center);
+        get_phys_icrs(tel_meta_data, center);
     }
 
     // get altaz physical pointing
     else if (std::strcmp("altaz", map_type.c_str()) == 0) {
-        get_phys_azel(tel_meta_data, center);
+        get_phys_altaz(tel_meta_data, center);
     }
 }
 
 template <typename tel_meta_data_t, typename C>
-void Observation::get_phys_radec(tel_meta_data_t &tel_meta_data, C &center) {
+void Observation::get_phys_icrs(tel_meta_data_t &tel_meta_data, C &center) {
 
     // copy of absolute RA
     Eigen::VectorXd tempRa = tel_meta_data["TelRa"];
@@ -285,7 +285,7 @@ void Observation::get_phys_radec(tel_meta_data_t &tel_meta_data, C &center) {
 }
 
 template <typename tel_meta_data_t, typename C>
-void Observation::get_phys_azel(tel_meta_data_t &tel_meta_data, C &center) {
+void Observation::get_phys_altaz(tel_meta_data_t &tel_meta_data, C &center) {
     for (Eigen::Index i = 0; i < tel_meta_data["TelAzAct"].size(); i++) {
         if (tel_meta_data["TelAzAct"](i) - tel_meta_data["SourceAz"](i) > 0.9*2.0*pi) {
             tel_meta_data["TelAzAct"](i) = tel_meta_data["TelAzAct"](i) - 2.0*pi;
