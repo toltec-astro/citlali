@@ -50,6 +50,9 @@ public:
     // reduction type
     std::string reduction_type;
 
+    // requested fitting model type
+    std::string fit_model;
+
     // number of cores to parallelize over
     int ncores;
 
@@ -65,11 +68,26 @@ public:
     int max_iterations;
     double cutoff;
 
+    // control for fitting
+    bool run_fit;
+
+    // size of fit bounding box
+    double bounding_box;
+
+    // starting point for fit
+    std::string fit_init_guess;
+
     // control for coadd
     bool run_coadd;
 
     // control for noise maps
     bool run_noise;
+
+    // control for coadd filter
+    bool run_coadd_filter;
+
+    // requested coadd filter type
+    std::string coadd_filter_type;
 
     // kernel class
     timestream::Kernel kernel;
@@ -222,7 +240,7 @@ public:
 
             filter.fsmp = fsmp;
 
-            // if filter is selected, set the despike window to the filter window
+            // if filter is requested, set the despike window to the filter window
             despiker.run_filter = true;
             despiker.despike_window = filter.nterms;
         }
@@ -261,40 +279,47 @@ public:
         mb.pixel_size = pixel_size;
         cmb.pixel_size = pixel_size;
 
-        //get_config(crval1_J2000,std::tuple{"mapmaking","custom_map_params","crval1_J2000"});
-        //get_config(crval2_J2000,std::tuple{"mapmaking","custom_map_params","crval2_J2000"});
-        //get_config(x_size_arcmin,std::tuple{"mapmaking","custom_map_params","x_size_pix"});
-        //get_config(y_size_arcmin,std::tuple{"mapmaking","custom_map_params","y_size_pix"});
+        // override default map parameters
+        get_config(crval1_J2000,std::tuple{"mapmaking","crval1_J2000"});
+        get_config(crval2_J2000,std::tuple{"mapmaking","crval2_J2000"});
+        get_config(x_size_arcmin,std::tuple{"mapmaking","x_size_pix"});
+        get_config(y_size_arcmin,std::tuple{"mapmaking","y_size_pix"});
 
         // get beammap config options
         get_config(cutoff,std::tuple{"beammap","iter_tolerance"});
         get_config(max_iterations,std::tuple{"beammap","iter_max"});
 
-        //get_config(run_fit,std::tuple{"source_fitting","enabled"});
-        // if (run_fit) {
-            //get_config(fit_model,std::tuple{"source_fitting","model"});
-            //get_config(bounding_box,std::tuple{"source_fitting","bounding_box_arcsec"});
-            //get_config(fit_init_guess,std::tuple{"source_fitting","initial_guess"});
-        //}
+        // check if point source fitting is requested
+        get_config(run_fit,std::tuple{"source_fitting","enabled"});
+         if (run_fit) {
+            get_config(fit_model,std::tuple{"source_fitting","model"});
+            get_config(bounding_box,std::tuple{"source_fitting","bounding_box_arcsec"});
+            get_config(fit_init_guess,std::tuple{"source_fitting","initial_guess"});
+        }
 
         // get coadd config options
         get_config(run_coadd,std::tuple{"coadd","enabled"});
         if (run_coadd) {
-            //get_config(run_coadd_filter,std::tuple{"coadd","filtering","enabled"});
-            // if (run_coadd_filter) {
-                //get_config(coadd_filter_type,std::tuple{"coadd","filtering","type"});
+            cmb.pixel_size = pixel_size;
+
+            get_config(run_noise,std::tuple{"coadd","noise_maps","enabled"});
+            if (run_noise) {
+                get_config(cmb.nnoise,std::tuple{"coadd","noise_maps","n_noise_maps"});
+            }
+
+            else {
+                cmb.nnoise = 0;
+            }
+            get_config(run_coadd_filter,std::tuple{"coadd","filtering","enabled"});
+            if (run_coadd_filter) {
+                get_config(coadd_filter_type,std::tuple{"coadd","filtering","type"});
 
                 //get_config(wiener_filter.gauss_template,std::tuple{"wiener_filter","gaussian_template"});
                 //get_config(wiener_filter.gaussian_template_fwhm_arcsec,std::tuple{"wiener_filter","gaussian_template_fwhm_arcsec"});
                 //get_config(wiener_filter.lowpass_only,std::tuple{"wiener_filter","lowpass_only"});
                 //get_config(wiener_filter.highpass_only,std::tuple{"wiener_filter","highpass_only"});
                 //get_config(wiener_filter.normalize_error,std::tuple{"wiener_filter","normalize_error"});
-            //}
-        }
-
-        get_config(run_noise,std::tuple{"coadd","noise_maps","enabled"});
-        if (run_noise) {
-            get_config(cmb.nnoise,std::tuple{"coadd","noise_maps","n_noise_maps"});
+            }
         }
     }
 };

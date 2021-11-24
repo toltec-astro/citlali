@@ -34,6 +34,7 @@ void Lali::setup() {
       filter.make_filter();
     }
 
+    // toltec i/o class for filenames
     ToltecIO toltec_io;
 
     // create files for each member of the array_indices group
@@ -50,26 +51,11 @@ void Lali::setup() {
             filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
                     ToltecIO::pointing, ToltecIO::no_prod_type, ToltecIO::obsnum_true>(filepath,obsnum,i);
         }
+
         // push the file classes into a vector for storage
         FitsIO<fileType::write_fits, CCfits::ExtHDU*> fits_io(filename);
         fits_ios.push_back(std::move(fits_io));
     }
-
-    // create coadd files
-    /*if (run_coadd) {
-        // create files for each member of the array_indices group
-        for (Eigen::Index i=0; i<array_indices.size(); i++) {
-            std::string filename;
-            // generate filename for science maps
-            //if (std::strcmp("array_name", map_grouping.c_str()) == 0) {
-                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
-                        ToltecIO::no_obs_type, ToltecIO::raw, ToltecIO::obsnum_false>(filepath,obsnum,i);
-
-            // push the file classes into a vector for storage
-            FitsIO<fileType::write_fits, CCfits::ExtHDU*> fits_io(filename);
-            coadd_fits_ios.push_back(std::move(fits_io));
-        }
-    }*/
 }
 
 auto Lali::run() {
@@ -271,7 +257,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios) {
 
     }
 
-    // Yaml node for ecsv table meta data (units and description)
+    // yaml node for ecsv table meta data (units and description)
     YAML::Node meta;
     meta["amp"].push_back("units: Mjy/sr");
     meta["amp"].push_back("fitted signal to noise");
@@ -314,7 +300,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios) {
         }
     }
 
-    //else if constexpr (out_type == MapType::coadd) {
+    else if constexpr (out_type == MapType::coadd) {
         // apt table
         /*SPDLOG_INFO("writing coadd fit table");
 
@@ -331,5 +317,5 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios) {
         // write the ecsv file
         to_ecsv_from_matrix(filename, table, toltec_io.apt_header,meta);
         SPDLOG_INFO("successfully wrote apt table to {}.ecsv", filename);*/
-    //}
+    }
 }

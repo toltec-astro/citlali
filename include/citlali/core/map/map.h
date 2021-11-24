@@ -101,10 +101,10 @@ public:
 
     enum MapType {
         obs = 0,
-        coadd = 1
+        coadd = 1,
     };
 
-    // Ra/Dec or Az/El
+    // icrs or altaz
     std::string map_type;
 
     // grouping of detectors
@@ -115,6 +115,12 @@ public:
 
     // pixel size
     double pixel_size;
+
+    // map absolute center value
+    double crval1_J2000, crval2_J2000;
+
+    // map size in arcminutes
+    double x_size_arcmin, y_size_arcmin;
 
     template <typename tel_meta_t, typename C, typename S>
     map_dims_t get_dims(tel_meta_t &, C &, S &, std::string, std::string);

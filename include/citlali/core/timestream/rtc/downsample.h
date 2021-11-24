@@ -21,6 +21,7 @@ public:
         // use eigen stride to skip over points
         using EigenStrideMap = Map<Matrix<typename DerivedA::Scalar, Dynamic, Dynamic>,0, Stride<Dynamic,Dynamic>>;
 
+        // saving space
         auto rows = in.rows();
         auto cols = in.cols();
 

@@ -734,6 +734,14 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
 
     }
 
+    // allocate the noise map buffer
+    void setup_noise_map_buffer(const map_count_t &map_count, const Eigen::Index nrows,
+                                const Eigen::Index ncols) {
+
+        engine().nmb.setup_maps(map_count, nrows, ncols);
+
+    }
+
     // allocate a single observation's map buffer
     auto setup_map_buffer(const map_extent_t &map_extent,
                           const map_coord_t &map_coord,

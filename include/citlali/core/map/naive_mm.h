@@ -21,15 +21,17 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine en
 
     Eigen::MatrixXi noise_rand;
 
-    if (engine->run_noise) {
-        // declare random number generator for each thread
-        boost::random::mt19937 eng(omp_get_thread_num());
-        boost::random::uniform_int_distribution<> rands{0,1};
+    if (engine->run_coadd) {
+        if (engine->run_noise) {
+            // declare random number generator for each thread
+            boost::random::mt19937 eng(omp_get_thread_num());
+            boost::random::uniform_int_distribution<> rands{0,1};
 
-        // generate the random number matrix
-        noise_rand =
-                Eigen::MatrixXi::Zero(engine->cmb.nnoise,1).unaryExpr([&](int dummy){return rands(eng);});
-        noise_rand = (2.*(noise_rand.template cast<double>().array() - 0.5)).template cast<int>();
+            // generate the random number matrix
+            noise_rand =
+                    Eigen::MatrixXi::Zero(engine->cmb.nnoise,1).unaryExpr([&](int dummy){return rands(eng);});
+            noise_rand = (2.*(noise_rand.template cast<double>().array() - 0.5)).template cast<int>();
+        }
     }
 
     // loop through the detector indices
@@ -101,9 +103,11 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine en
                     }
 
                     // noise maps
-                    if (engine->run_noise) {
-                        for (Eigen::Index nn=0; nn<engine->cmb.nnoise; nn++) {
-                            engine->cmb.noise.at(mi)(cmb_ir,cmb_ic,nn) += noise_rand(nn)*sig;
+                    if (engine->run_coadd) {
+                        if (engine->run_noise) {
+                            for (Eigen::Index nn=0; nn<engine->cmb.nnoise; nn++) {
+                                engine->cmb.noise.at(mi)(cmb_ir,cmb_ic,nn) += noise_rand(nn)*sig;
+                            }
                         }
                     }
                 }
