@@ -78,13 +78,9 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         SPDLOG_INFO("downsampling telescope meta for scan {}", in.index.data);
         for (auto const& x: in.tel_meta_data.data) {
 
-            SPDLOG_INFO("x.first {}", x.first);
-
             // get the block of in tel data that corresponds to the inner scan indices
             Eigen::Ref<Eigen::VectorXd> in_tel =
                     in.tel_meta_data.data[x.first].segment(si, sl);
-            //in.tel_meta_data.data[x.first].block(si, 0, sl, in.tel_meta_data.data[x.first].cols());
-
 
             engine->downsampler.downsample(in_tel, out.tel_meta_data.data[x.first]);
 
