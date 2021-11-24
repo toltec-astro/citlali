@@ -34,6 +34,11 @@ void Lali::setup() {
       filter.make_filter();
     }
 
+    if (run_downsample) {
+        // set the sample rate to the downsampled sample rate
+        fsmp = fsmp/downsampler.dsf;
+    }
+
     // toltec i/o class for filenames
     ToltecIO toltec_io;
 

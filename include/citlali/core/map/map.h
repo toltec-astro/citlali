@@ -120,7 +120,7 @@ public:
     double crval1_J2000, crval2_J2000;
 
     // map size in arcminutes
-    double x_size_arcmin, y_size_arcmin;
+    double x_size_pix, y_size_pix;
 
     template <typename tel_meta_t, typename C, typename S>
     map_dims_t get_dims(tel_meta_t &, C &, S &, std::string, std::string);

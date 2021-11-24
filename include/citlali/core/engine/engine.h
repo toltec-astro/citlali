@@ -286,8 +286,8 @@ public:
         // override default map parameters
         get_config(crval1_J2000,std::tuple{"mapmaking","crval1_J2000"});
         get_config(crval2_J2000,std::tuple{"mapmaking","crval2_J2000"});
-        get_config(x_size_arcmin,std::tuple{"mapmaking","x_size_pix"});
-        get_config(y_size_arcmin,std::tuple{"mapmaking","y_size_pix"});
+        get_config(x_size_pix,std::tuple{"mapmaking","x_size_pix"});
+        get_config(y_size_pix,std::tuple{"mapmaking","y_size_pix"});
 
         // get beammap config options
         get_config(cutoff,std::tuple{"beammap","iter_tolerance"});

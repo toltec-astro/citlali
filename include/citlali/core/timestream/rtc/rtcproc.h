@@ -96,9 +96,6 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
             SPDLOG_INFO("downsampling kernel scan {}", in.index.data);
             engine->downsampler.downsample(in_kernel_scans, out.kernel_scans.data);
         }
-
-        // set the sample rate to the downsampled sample rate
-        engine->fsmp = engine->fsmp/engine->downsampler.dsf;
     }
 
     // if downsampling skipped, just copy scans, flags, and kernel over
