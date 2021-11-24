@@ -245,6 +245,10 @@ public:
             despiker.despike_window = filter.nterms;
         }
 
+        else {
+            filter.nterms = 0;
+        }
+
         // get downsample config options
         get_config(run_downsample,std::tuple{"timestream","downsample","enabled"});
         if (run_downsample) {
