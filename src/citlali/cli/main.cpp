@@ -950,15 +950,27 @@ int run(const rc_t &rc) {
                     // create files for each member of the array_indices group
                     // uses filepath from last config read
                     for (Eigen::Index i=0; i<todproc.engine().cmb.map_count; i++) {
-                        std::string filename;
+                        std::string coadd_filename;
                         // generate filename for coadded maps
-                        filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                        coadd_filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
                                 ToltecIO::no_obs_type, ToltecIO::raw, ToltecIO::obsnum_false>(todproc.engine().filepath,
                                                                                               todproc.engine().obsnum,i);
 
                         // push the file classes into a vector for storage
-                        FitsIO<fileType::write_fits, CCfits::ExtHDU*> fits_io(filename);
-                        todproc.engine().coadd_fits_ios.push_back(std::move(fits_io));
+                        FitsIO<fileType::write_fits, CCfits::ExtHDU*> coadd_fits_io(coadd_filename);
+                        todproc.engine().coadd_fits_ios.push_back(std::move(coadd_fits_io));
+
+                        // check if noise maps requested
+                        if (todproc.engine().run_noise) {
+                            std::string noise_filename;
+                            noise_filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                    ToltecIO::no_obs_type, ToltecIO::noise, ToltecIO::obsnum_false>(todproc.engine().filepath,
+                                                                                                  todproc.engine().obsnum,i);
+
+                            // push the file classes into a vector for storage
+                            FitsIO<fileType::write_fits, CCfits::ExtHDU*> noise_fits_io(noise_filename);
+                            todproc.engine().noise_fits_ios.push_back(std::move(noise_fits_io));
+                        }
                     }
                 }
 

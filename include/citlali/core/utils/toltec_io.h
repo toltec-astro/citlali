@@ -151,6 +151,10 @@ struct ToltecIO {
             filepath = filepath + "filtered";
         }
 
+        if constexpr (prod_type == noise) {
+            filepath = filepath + "noise";
+        }
+
         if constexpr (prod_type == hist) {
             filepath = filepath + "hist";
         }

@@ -112,6 +112,7 @@ public:
     // Output files
     std::vector<FitsIO<fileType::write_fits, CCfits::ExtHDU*>> fits_ios;
     std::vector<FitsIO<fileType::write_fits, CCfits::ExtHDU*>> coadd_fits_ios;
+    std::vector<FitsIO<fileType::write_fits, CCfits::ExtHDU*>> noise_fits_ios;
 
     template<typename param_t, typename option_t>
     void check_allowed(param_t param, std::vector<param_t> allowed, option_t option) {

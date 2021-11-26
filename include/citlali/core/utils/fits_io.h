@@ -23,6 +23,10 @@ enum UnitsType {
 template<fileType file_type, typename ext_hdu_t>
 class FitsIO {
 public:
+
+    // file path
+    std::string filepath;
+
     // pointer to FITS file
     std::unique_ptr<CCfits::FITS> pfits;
 
@@ -40,8 +44,9 @@ public:
     };
 
     // constructor
-    FitsIO<file_type,ext_hdu_t>(std::string filepath) {
+    FitsIO<file_type,ext_hdu_t>(std::string _filepath) {
 
+        filepath = _filepath;
         // read in file
         if constexpr (file_type==fileType::read_fits) {
             try {

@@ -171,6 +171,7 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         // loop through the arrays and do the fit
         SPDLOG_INFO("fitting pointing maps");
         grppi::map(tula::grppi_utils::dyn_ex(ex_name), array_in_vec, array_out_vec, [&](auto d) {
+            // declare fitter class for detector
             gaussfit::MapFitter fitter;
             mb.pfit.col(d) = fitter.fit<gaussfit::MapFitter::centerValue>(mb.signal[d], mb.weight[d], calib_data);
             return 0;});
@@ -191,6 +192,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios) {
 
     // loop through array indices and add hdu's to existing files
     for (Eigen::Index i=0; i<array_indices.size(); i++) {
+        SPDLOG_INFO("writing {}.fits", f_ios.at(i).filepath);
         // add signal map to file
         f_ios.at(i).add_hdu("signal", mout.signal.at(i));
 
@@ -223,7 +225,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios) {
 
                 if constexpr (out_type==MapType::obs) {
                     // add fit parameters
-                    hdu->addKey("snr", (float)mout.pfit(0,i),"signal to noise (Mjy/sr)");
+                    hdu->addKey("amp", (float)mout.pfit(0,i),"amplitude (Mjy/sr)");
                     hdu->addKey("x_t", (float)mout.pfit(1,i),"az offset (arcsec)");
                     hdu->addKey("y_t", (float)mout.pfit(2,i),"alt offset (arcsec)");
                     hdu->addKey("a_fwhm", (float)mout.pfit(3,i),"az fwhm (arcsec)");
