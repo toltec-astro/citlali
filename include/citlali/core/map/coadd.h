@@ -24,13 +24,16 @@ public:
     // for source fits in coadded maps
     Eigen::MatrixXd pfit;
 
+    // tensor for noise map inclusion (nnoise,nobs,nmaps)
+    Eigen::Tensor<double,3> noise_rand;
+
     // Physical coordinates for rows and cols (radians)
     Eigen::VectorXd rcphys, ccphys;
 
     // vectors for each map type
     std::vector<Eigen::MatrixXd> signal, weight, kernel, coverage;
 
-    // noise maps
+    // noise maps (nrows, ncols, nnoise) of length nmaps
     std::vector<Eigen::Tensor<double,3>> noise;
 
     void setup_maps(std::vector<map_coord_t> map_coords, map_count_t _mc) {
@@ -151,6 +154,7 @@ public:
             }
         }*/
 
+        // normalize signal and kernel
         for (Eigen::Index mc=0; mc<map_count; mc++) {
             for (Eigen::Index i=0; i<nrows; i++) {
                 for (Eigen::Index j=0; j<ncols; j++) {
@@ -160,11 +164,35 @@ public:
                     }
                     if (pixel_weight != 0. && pixel_weight == pixel_weight) {
                         signal.at(mc)(i,j) = (signal.at(mc)(i,j)) / pixel_weight;
-                        kernel.at(mc)(i,j) = (kernel.at(mc)(i,j)) / pixel_weight;
+                        if (run_kernel) {
+                            kernel.at(mc)(i,j) = (kernel.at(mc)(i,j)) / pixel_weight;
+                        }
                     }
                     else {
                         signal.at(mc)(i,j) = 0;
-                        kernel.at(mc)(i,j) = 0;
+                        if (run_kernel) {
+                            kernel.at(mc)(i,j) = 0;
+                        }
+                    }
+                }
+            }
+        }
+
+        // normalize noise maps
+        for (Eigen::Index k=0;k<nnoise;k++) {
+            for (Eigen::Index mc=0; mc<map_count; mc++) {
+                for (Eigen::Index i=0; i<nrows; i++) {
+                    for (Eigen::Index j=0; j<ncols; j++) {
+                        auto pixel_weight = weight.at(mc)(i,j);
+                        if (pixel_weight != pixel_weight) {
+                                SPDLOG_INFO("bad pixel weight {}", pixel_weight);
+                        }
+                        if (pixel_weight != 0. && pixel_weight == pixel_weight) {
+                            noise.at(mc)(i,j,k) = (noise.at(mc)(i,j,k)) / pixel_weight;
+                        }
+                        else {
+                            noise.at(mc)(i,j,k) = 0;
+                        }
                     }
                 }
             }

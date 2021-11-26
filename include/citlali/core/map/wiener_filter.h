@@ -83,7 +83,7 @@ WienerFilter::WienerFilter(CMB &cmb) {
     bool get_highpass_only = 0;
     bool get_gaussian_template = 0;
 
-    if(get_highpass_only) {
+    if (get_highpass_only) {
         tplate.setZero(nx, ny);
         tplate(0, 0) = 1.;
     }

@@ -944,6 +944,15 @@ int run(const rc_t &rc) {
                     SPDLOG_INFO("setup coadded map buffer");
                     todproc.setup_coadd_map_buffer(map_coords, map_counts.front());
 
+                    // generator for a random integer that goes between 0 and nobs.
+                    boost::random::mt19937 eng;
+                    int nobs = co.n_inputs();
+                    boost::random::uniform_int_distribution<> randu{0,nobs-1};
+
+                    // rezise cmb noise matrix to (nnoise, nobs, nmaps)
+                    todproc.engine().cmb.noise_rand.resize(todproc.engine().cmb.nnoise,nobs,todproc.engine().cmb.map_count);
+                    todproc.engine().cmb.noise_rand.setZero();
+
                     // toltec i/o class for filename generation
                     ToltecIO toltec_io;
 
@@ -970,6 +979,13 @@ int run(const rc_t &rc) {
                             // push the file classes into a vector for storage
                             FitsIO<fileType::write_fits, CCfits::ExtHDU*> noise_fits_io(noise_filename);
                             todproc.engine().noise_fits_ios.push_back(std::move(noise_fits_io));
+
+                            // loop through noise maps for each map count
+                            for (Eigen::Index j=0; j<todproc.engine().cmb.nnoise; j++) {
+                                auto u = randu(eng);
+                                // increment noise rand matrix
+                                ++todproc.engine().cmb.noise_rand(j,u,i);
+                            }
                         }
                     }
                 }
@@ -978,6 +994,11 @@ int run(const rc_t &rc) {
                 for (std::size_t i = 0; i < co.n_inputs(); ++i) {
                     SPDLOG_INFO("starting reduction of observation {}/{}",i+1, co.n_inputs());
                     const auto &rawobs = co.inputs()[i];
+
+                    // keep track of what observation is being reduced
+                    todproc.engine().nobs = i;
+
+                    SPDLOG_INFO("todproc.engine().nobs {}", todproc.engine().nobs);
 
                     // set up map buffer for current observation
                     todproc.setup_map_buffer(map_extents[i], map_coords[i], map_counts[i]);

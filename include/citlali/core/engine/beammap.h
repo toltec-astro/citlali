@@ -291,7 +291,9 @@ auto Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
 template <class KidsProc, class RawObs>
 auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
-    grppi::pipeline(tula::grppi_utils::dyn_ex(ex_name),
+    // note that this pipeline is forced to be sequential
+    // this ensures that grppi::map parallelization works!
+    grppi::pipeline(tula::grppi_utils::dyn_ex("seq"),
         [&]() -> std::optional<Eigen::Index> {
 
          // place holder variable to make pipeline work
@@ -407,14 +409,14 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios) {
         auto end_det = std::get<1>(array_indices.at(i)) + 1;
 
         for (Eigen::Index j=start_det; j<end_det; j++) {
-            SPDLOG_INFO("writing sig{}", j);
+            //SPDLOG_INFO("writing sig{}", j);
             f_ios.at(i).add_hdu("sig" + std::to_string(j), mout.signal.at(j));
-            SPDLOG_INFO("writing wt{}", j);
+            //SPDLOG_INFO("writing wt{}", j);
             f_ios.at(i).add_hdu("wt" + std::to_string(j), mout.weight.at(j));
 
             // write kernel if requested
             if (run_kernel) {
-                SPDLOG_INFO("writing ker{}", j);
+                //SPDLOG_INFO("writing ker{}", j);
                 f_ios.at(i).add_hdu("ker" + std::to_string(j), mout.kernel.at(j));
             }
         }

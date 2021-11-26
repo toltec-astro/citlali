@@ -24,7 +24,7 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine en
     if (engine->run_coadd) {
         if (engine->run_noise) {
             // declare random number generator for each thread
-            boost::random::mt19937 eng(omp_get_thread_num());
+            boost::random::mt19937 eng;//(engine->nthreads);
             boost::random::uniform_int_distribution<> rands{0,1};
 
             // generate the random number matrix
@@ -38,7 +38,7 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine en
     for (Eigen::Index mi = 0; mi < engine->det_indices.size(); mi++) {
         for (Eigen::Index di = std::get<0>(engine->det_indices.at(mi)); di < std::get<1>(engine->det_indices.at(mi)); di++) {
 
-            // current detector's offsets
+            // current detector offsets
             double azoff, eloff;
 
             // if in science/pointing mode, get offsets from apt table
@@ -47,7 +47,7 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine en
                 eloff = engine->calib_data["y_t"](di);
             }
 
-            // if in beammap mode, offsets are zero
+            // else if in beammap mode, offsets are zero
             else if (engine->reduction_type == "beammap") {
                 azoff = 0;
                 eloff = 0;
@@ -104,9 +104,18 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine en
 
                     // noise maps
                     if (engine->run_coadd) {
+                        // check if noise maps requested
                         if (engine->run_noise) {
+                            // loop through noise maps
                             for (Eigen::Index nn=0; nn<engine->cmb.nnoise; nn++) {
-                                engine->cmb.noise.at(mi)(cmb_ir,cmb_ic,nn) += noise_rand(nn)*sig;
+                                // check if this obs was randomly selected
+                                if (engine->cmb.noise_rand(nn,engine->nobs,mi) > 0) {
+                                    // loop through number of times this obs was randomly selected
+                                    for (Eigen::Index nt=0; nt<engine->cmb.noise_rand(nn,engine->nobs,mi);nt++) {
+                                        // coadd into current noise map
+                                        engine->cmb.noise.at(mi)(cmb_ir,cmb_ic,nn) += noise_rand(nn)*sig;
+                                    }
+                                }
                             }
                         }
                     }

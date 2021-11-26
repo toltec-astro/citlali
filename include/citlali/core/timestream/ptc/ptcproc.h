@@ -62,11 +62,11 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                          Eigen::OuterStride<>(out_scans_block.outerStride()));
 
              // calculate the eigenvalues from the signal timestream
-             SPDLOG_INFO("calculating eigenvalues for scan {}", in.index.data);
+             SPDLOG_INFO("calculating eigenvalues for scan {} for map {}", in.index.data, mi);
              auto [det_scan, evals, evecs] = engine->cleaner.template calcEigs<SpectraBackend>(in_scans, in_flags);
 
              // remove eigenvalues from signal timestream
-             SPDLOG_INFO("removing eigenvalues from scan {}", in.index.data);
+             SPDLOG_INFO("removing eigenvalues from scan {} for map {}", in.index.data, mi);
              engine->cleaner.template removeEigs<SpectraBackend, DataType>(det_scan, out_scans,
                      evals, evecs);
 
@@ -91,7 +91,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                              Eigen::OuterStride<>(out_kernel_scans_block.outerStride()));
 
                  // remove kernel scan eigenvalues
-                 SPDLOG_INFO("removing kernel eigenvalues from scan {}", in.index.data);
+                 SPDLOG_INFO("removing kernel eigenvalues from scan {} for map {}", in.index.data, mi);
                  engine->cleaner.template removeEigs<SpectraBackend, KernelType>(in_kernel_scans,
                                                                 out_kernel_scans, evals, evecs);
              }

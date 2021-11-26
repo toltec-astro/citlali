@@ -107,7 +107,9 @@ public:
         // meshgrid for coordinates
         auto xy = g.meshgrid(x, y);
 
+        // calculate sigma matrix
         Eigen::MatrixXd sigma = weight;
+        // set 1/weight=0 to 0
         (sigma.array() !=0).select(1./sqrt(weight.derived().array()),0.);
 
         // copy data and sigma within bounding box region

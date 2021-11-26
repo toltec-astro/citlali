@@ -56,6 +56,9 @@ public:
     // number of cores to parallelize over
     int nthreads;
 
+    // current obs number
+    int nobs;
+
     // sample rate
     double fsmp;
 
@@ -72,7 +75,7 @@ public:
     bool run_fit;
 
     // size of fit bounding box
-    double bounding_box;
+    double bounding_box_pix;
 
     // starting point for fit
     std::string fit_init_guess;
@@ -298,7 +301,8 @@ public:
         get_config(run_fit,std::tuple{"source_fitting","enabled"});
          if (run_fit) {
             get_config(fit_model,std::tuple{"source_fitting","model"});
-            get_config(bounding_box,std::tuple{"source_fitting","bounding_box_arcsec"});
+            get_config(bounding_box_pix,std::tuple{"source_fitting","bounding_box_arcsec"});
+            bounding_box_pix = bounding_box_pix/pixel_size*RAD_ASEC;
             get_config(fit_init_guess,std::tuple{"source_fitting","initial_guess"});
         }
 
