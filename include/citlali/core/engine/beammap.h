@@ -419,7 +419,7 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios) {
             }
         }
 
-        // loop through hdus and add wcs
+        // loop through hdus and add wcs (hacky method)
         int j = start_det;
         int k = 0;
         int nhdus = 2;
