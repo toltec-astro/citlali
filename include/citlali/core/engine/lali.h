@@ -64,7 +64,7 @@ void Lali::setup() {
 }
 
 auto Lali::run() {
-    auto farm = grppi::farm(ncores,[&](auto input_tuple) -> TCData<TCDataKind::PTC,Eigen::MatrixXd> {
+    auto farm = grppi::farm(nthreads,[&](auto input_tuple) -> TCData<TCDataKind::PTC,Eigen::MatrixXd> {
         // RTCData input
         auto in = std::get<0>(input_tuple);
         // start index input
@@ -264,30 +264,30 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios) {
 
     }
 
-    // yaml node for ecsv table meta data (units and description)
-    YAML::Node meta;
-    meta["amp"].push_back("units: Mjy/sr");
-    meta["amp"].push_back("fitted signal to noise");
-
-    meta["x_t"].push_back("units: arcsec");
-    meta["x_t"].push_back("fitted azimuthal offset");
-
-    meta["y_t"].push_back("units: arcsec");
-    meta["y_t"].push_back("fitted altitude offset");
-
-    meta["a_fwhm"].push_back("units: arcsec");
-    meta["a_fwhm"].push_back("fitted azimuthal FWHM");
-
-    meta["b_fwhm"].push_back("units: arcsec");
-    meta["b_fwhm"].push_back("fitted altitude FWMH");
-
-    meta["angle"].push_back("units: radians");
-    meta["angle"].push_back("fitted rotation angle");
-
-
     // add fitting parameters to file if pointing mode is selected
     if constexpr (out_type==MapType::obs) {
         if (reduction_type == "pointing") {
+
+            // yaml node for ecsv table meta data (units and description)
+            YAML::Node meta;
+            meta["amp"].push_back("units: Mjy/sr");
+            meta["amp"].push_back("fitted signal to noise");
+
+            meta["x_t"].push_back("units: arcsec");
+            meta["x_t"].push_back("fitted azimuthal offset");
+
+            meta["y_t"].push_back("units: arcsec");
+            meta["y_t"].push_back("fitted altitude offset");
+
+            meta["a_fwhm"].push_back("units: arcsec");
+            meta["a_fwhm"].push_back("fitted azimuthal FWHM");
+
+            meta["b_fwhm"].push_back("units: arcsec");
+            meta["b_fwhm"].push_back("fitted altitude FWMH");
+
+            meta["angle"].push_back("units: radians");
+            meta["angle"].push_back("fitted rotation angle");
+
             // ppt table
             SPDLOG_INFO("writing pointing fit table");
 
@@ -308,21 +308,52 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios) {
     }
 
     else if constexpr (out_type == MapType::coadd) {
-        // apt table
-        /*SPDLOG_INFO("writing coadd fit table");
+        if (run_coadd) {
+            if (run_noise) {
+                SPDLOG_INFO("writing noise maps");
+                // loop through array indices and add hdu's to existing files
+                for (Eigen::Index i=0; i<array_indices.size(); i++) {
+                    SPDLOG_INFO("writing {}.fits", noise_fits_ios.at(i).filepath);
+                    // loop through noise map number
+                    for (Eigen::Index j=0; j<mout.nnoise; j++) {
 
-        // get output path from citlali_config
-        auto filename = toltec_io.setup_filepath<ToltecIO::apt, ToltecIO::simu,
-                ToltecIO::no_obs_type, ToltecIO::obsnum_false>(filepath,obsnum,-1);
-        Eigen::MatrixXf table(toltec_io.apt_header.size(), array_indices.size());
-        table = mout.pfit.template cast <float> ();
-        table.transposeInPlace();
+                        // get tensor chip on 3rd dimension (nrows,ncols, nnoise)
+                        Eigen::Tensor<double,2> out = mout.noise.at(i).chip(j,2);
+                        auto out_matrix = Eigen::Map<Eigen::MatrixXd>(out.data(), out.dimension(0),
+                                                    out.dimension(1));
+                        // add noise map to file
+                        noise_fits_ios.at(i).add_hdu("noise" + std::to_string(j),out_matrix);
+                    }
 
-        SPDLOG_INFO("pointing fit table header {}", toltec_io.apt_header);
-        SPDLOG_INFO("pointing fit table {}", table);
+                    // now loop through hdus and add wcs
+                    for (auto hdu: noise_fits_ios.at(i).hdus) {
+                        // degrees if science map
+                        //if (reduction_type == "science") {
+                            noise_fits_ios.at(i).template add_wcs<UnitsType::deg>(hdu,map_type,mout.nrows,mout.ncols,
+                                                                   pixel_size,source_center);
+                        //}
+                    }
 
-        // write the ecsv file
-        to_ecsv_from_matrix(filename, table, toltec_io.apt_header,meta);
-        SPDLOG_INFO("successfully wrote apt table to {}.ecsv", filename);*/
+                    // loop through default TolTEC fits header keys and add to primary header
+                    for (auto const& pair : toltec_io.fits_header_keys) {
+                        noise_fits_ios.at(i).pfits->pHDU().addKey(pair.first, pair.second, " ");
+                    }
+
+                    // add wcs to pHDU
+                    noise_fits_ios.at(i).template add_wcs<UnitsType::deg>(&noise_fits_ios.at(i).pfits->pHDU(),map_type,
+                                                           mout.nrows,mout.ncols,pixel_size,source_center);
+
+                    // add wavelength
+                    noise_fits_ios.at(i).pfits->pHDU().addKey("WAV", toltec_io.name_keys[i], "Array Name");
+                    // add obsnum
+                    noise_fits_ios.at(i).pfits->pHDU().addKey("OBSNUM", obsnum, "Observation Number");
+                    // add units
+                    noise_fits_ios.at(i).pfits->pHDU().addKey("UNIT", obsnum, "MJy/Sr");
+                    // add conversion
+                    noise_fits_ios.at(i).pfits->pHDU().addKey("to_mjy/b", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
+
+                }
+            }
+        }
     }
 }
