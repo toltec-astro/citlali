@@ -23,7 +23,7 @@ public:
 
     }
 
-    template<class TCType>
+    template<typename TCType>
     void write_scan(TCData<TCType, Eigen::MatrixXd> &in) {
 
     }

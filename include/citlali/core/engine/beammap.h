@@ -313,6 +313,14 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
             mb.pfit.row(4) = STD_TO_FWHM*pixel_size*(mb.pfit.row(4))/RAD_ASEC;
             mb.pfit.row(5) = mb.pfit.row(5);
 
+            double mean_el = tel_meta_data["TelElDes"].mean();
+
+            auto rot_azoff = cos(-mean_el)*mb.pfit.row(1) - sin(-mean_el)*mb.pfit.row(2);
+            auto rot_eloff = cos(-mean_el)*mb.pfit.row(2) + sin(-mean_el)*mb.pfit.row(1);
+
+            mb.pfit.row(1) = -rot_azoff;
+            mb.pfit.row(2) = -rot_eloff;
+
             return in;
         });
 }

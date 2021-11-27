@@ -1,9 +1,15 @@
 #pragma once
 
 #include <Eigen/Core>
+#include <unsupported/Eigen/FFT>
 #include <vector>
+#include <numeric>
+#include <complex>
 
 namespace engine_utils {
+
+using RowMatrixXd = Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>;
+using RowMatrixXcd = Eigen::Matrix<std::complex<double>,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>;
 
 template<typename DerivedA>
 auto stddev(Eigen::DenseBase<DerivedA> &vec) {
@@ -77,22 +83,113 @@ void for_each_in_tuple(const std::tuple<Ts...> & tuple, F func){
     for_each_in_tuple(tuple, func, std::make_index_sequence<sizeof...(Ts)>());
 }
 
+enum FFTdirection {
+    forward = 0,
+    backward = 1
+};
+
+template<FFTdirection direc, typename Derived>
+Eigen::VectorXcd fft2w(Eigen::DenseBase<Derived> &in, const int nx, const int ny){
+
+    Eigen::Map<RowMatrixXcd> matIn(in.derived().data(),nx,ny);
+
+    /*std::vector<int> rowvec_in(nx);
+    std::iota(rowvec_in.begin(), rowvec_in.end(), 0);
+    std::vector<int> rowvec_out(nx);
+
+    std::vector<int> colvec_in(ny);
+    std::iota(colvec_in.begin(), colvec_in.end(), 0);
+    std::vector<int> colvec_out(ny);*/
+
+    RowMatrixXcd out(nx, ny);
+
+    /*grppi::map(grppiex::dyn_ex("omp"),rowvec_in,rowvec_out,[&](auto k){
+        Eigen::FFT<double> fft;
+        fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
+        fft.SetFlag(Eigen::FFT<double>::Unscaled);
+
+        Eigen::VectorXcd tmpOut(ny);
+        if constexpr(direc == forward){
+            fft.fwd(tmpOut, matIn.row(k));
+        }
+        else{
+            fft.inv(tmpOut, matIn.row(k));
+        }
+        matOut.row(k) = tmpOut;
+        return 0;
+    });
+
+    grppi::map(grppiex::dyn_ex("omp"),colvec_in,colvec_out,[&](auto k){
+        Eigen::FFT<double> fft;
+        fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
+        fft.SetFlag(Eigen::FFT<double>::Unscaled);
+
+        Eigen::VectorXcd tmpOut(nx);
+        if constexpr(direc == forward){
+            fft.fwd(tmpOut, matOut.col(k));
+        }
+        else{
+            fft.inv(tmpOut, matOut.col(k));
+        }
+        matOut.col(k) = tmpOut;
+        return 0;
+    });*/
+
+
+    Eigen::FFT<double> fft;
+    fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
+    fft.SetFlag(Eigen::FFT<double>::Unscaled);
+
+    for (int k=0; k<nx; ++k) {
+        Eigen::VectorXcd tmp_out(ny);
+        if constexpr(direc == forward){
+            fft.fwd(tmp_out, in.row(k));
+        }
+        else{
+            fft.inv(tmp_out, in.row(k));
+        }
+        out.row(k) = tmp_out;
+    }
+
+    for (int k=0; k<ny; ++k) {
+        Eigen::VectorXcd tmp_out(nx);
+        if constexpr(direc == forward){
+            fft.fwd(tmp_out, out.col(k));
+        }
+        else{
+            fft.inv(tmp_out, out.col(k));
+        }
+        out.col(k) = tmp_out;
+    }
+
+    //Eigen::VectorXcd out_vec(nx*ny);
+
+    /*for(int i=0; i<nx; i++){
+        for(int j=0; j<ny; j++)
+            out_vec(ny*i+j) = out(i,j);
+    }*/
+
+    Eigen::Map<Eigen::VectorXcd> out_vec(out.data(),nx*ny);
+
+    return std::move(out_vec);
+}
+
 template <typename Derived>
 std::tuple<Eigen::VectorXd, Eigen::VectorXd> set_coverage_cut_ranges(Eigen::DenseBase<Derived> &in, const double weight_cut) {
     Eigen::VectorXd cut_x_range(2);
     Eigen::VectorXd cut_y_range(2);
 
-    cut_x_range[0] = 0;
-    cut_x_range[1] = in.rows() - 1;
-    cut_y_range[0] = 0;
-    cut_y_range[1] = in.cols() - 1;
+    cut_x_range(0) = 0;
+    cut_x_range(1) = in.rows() - 1;
+    cut_y_range(0) = 0;
+    cut_y_range(1) = in.cols() - 1;
 
     // find lower row bound
     bool flag = false;
     for (int i = 0; i < in.rows(); i++) {
         for (int j = 0; j < in.cols(); j++) {
             if (in(i,j) >= weight_cut) {
-                cut_x_range[0] = i;
+                cut_x_range(0) = i;
                 flag = true;
                 break;
             }
@@ -107,7 +204,7 @@ std::tuple<Eigen::VectorXd, Eigen::VectorXd> set_coverage_cut_ranges(Eigen::Dens
     for (int i = in.rows() - 1; i > -1; i--) {
         for (int j = 0; j < in.cols(); j++) {
             if (in(i,j) >= weight_cut) {
-                cut_x_range[1] = i;
+                cut_x_range(1) = i;
                 flag = true;
                 break;
             }
@@ -120,9 +217,9 @@ std::tuple<Eigen::VectorXd, Eigen::VectorXd> set_coverage_cut_ranges(Eigen::Dens
     // find lower column bound
     flag = false;
     for (int i = 0; i < in.cols(); i++) {
-        for (int j = cut_x_range[0]; j < cut_x_range[1] + 1; j++) {
+        for (int j = cut_x_range(0); j < cut_x_range(1) + 1; j++) {
             if (in(j,i) >= weight_cut) {
-                cut_y_range[0] = i;
+                cut_y_range(0) = i;
                 flag = true;
                 break;
             }
@@ -135,9 +232,9 @@ std::tuple<Eigen::VectorXd, Eigen::VectorXd> set_coverage_cut_ranges(Eigen::Dens
     // find upper column bound
     flag = false;
     for (int i = in.cols() - 1; i > -1; i--) {
-        for (int j = cut_x_range[0]; j < cut_x_range[1] + 1; j++) {
+        for (int j = cut_x_range(0); j < cut_x_range(1) + 1; j++) {
             if (in(j,i) >= weight_cut) {
-                cut_y_range[1] = i;
+                cut_y_range(1) = i;
                 flag = true;
                 break;
             }
