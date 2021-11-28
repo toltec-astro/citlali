@@ -306,13 +306,7 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
         run_loop(),
 
         [&](auto in) {
-            // convert to map units (arcsec and radians)
-            mb.pfit.row(1) = pixel_size*(mb.pfit.row(1).array() - (mb.ncols)/2)/RAD_ASEC;
-            mb.pfit.row(2) = pixel_size*(mb.pfit.row(2).array() - (mb.nrows)/2)/RAD_ASEC;
-            mb.pfit.row(3) = STD_TO_FWHM*pixel_size*(mb.pfit.row(3))/RAD_ASEC;
-            mb.pfit.row(4) = STD_TO_FWHM*pixel_size*(mb.pfit.row(4))/RAD_ASEC;
-            mb.pfit.row(5) = mb.pfit.row(5);
-
+            // derotate by mean elevation
             double mean_el = tel_meta_data["TelElDes"].mean();
 
             auto rot_azoff = cos(-mean_el)*mb.pfit.row(1) - sin(-mean_el)*mb.pfit.row(2);
@@ -320,6 +314,13 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
 
             mb.pfit.row(1) = -rot_azoff;
             mb.pfit.row(2) = -rot_eloff;
+
+            // convert to map units (arcsec and radians)
+            mb.pfit.row(1) = pixel_size*(mb.pfit.row(1).array() - (mb.ncols)/2)/RAD_ASEC;
+            mb.pfit.row(2) = pixel_size*(mb.pfit.row(2).array() - (mb.nrows)/2)/RAD_ASEC;
+            mb.pfit.row(3) = STD_TO_FWHM*pixel_size*(mb.pfit.row(3))/RAD_ASEC;
+            mb.pfit.row(4) = STD_TO_FWHM*pixel_size*(mb.pfit.row(4))/RAD_ASEC;
+            mb.pfit.row(5) = mb.pfit.row(5);
 
             return in;
         });
