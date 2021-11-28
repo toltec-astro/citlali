@@ -181,7 +181,7 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         mb.pfit.row(2) = pixel_size*(mb.pfit.row(2).array() - (mb.nrows)/2)/RAD_ASEC;
         mb.pfit.row(3) = STD_TO_FWHM*pixel_size*(mb.pfit.row(3))/RAD_ASEC;
         mb.pfit.row(4) = STD_TO_FWHM*pixel_size*(mb.pfit.row(4))/RAD_ASEC;
-        mb.pfit.row(5) = mb.pfit.row(5);
+        //mb.pfit.row(5) = mb.pfit.row(5);
     }
 }
 

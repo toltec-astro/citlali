@@ -235,10 +235,10 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
             Eigen::VectorXd sub_vals =
                 scans.col(det).segment(win_index_0, win_size);
 
-            // copy of th sub-array for smoothing
+            // copy of the sub-array for smoothing
             Eigen::VectorXd smoothed_sub_vals = Eigen::VectorXd::Zero(win_size);
 
-            // smooth the sub-array with a box-car filter
+            // smooth the sub-array with a box-car filter (10 element is hardcoded)
             engine_utils::smooth(sub_vals, smoothed_sub_vals, 10);
 
             // estimate the standard deviation

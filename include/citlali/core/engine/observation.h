@@ -249,18 +249,18 @@ void Observation::get_phys_pointing(tel_meta_data_t &tel_meta_data, C &center, s
 template <typename tel_meta_data_t, typename C>
 void Observation::get_phys_icrs(tel_meta_data_t &tel_meta_data, C &center) {
 
-    // copy of absolute RA
+    // copy of absolute ra
     Eigen::VectorXd tempRa = tel_meta_data["TelRa"];
     (tempRa.array() > pi).select(tel_meta_data["TelRa"].array() - 2.0*pi, tel_meta_data["TelRa"]);
 
-    // copy of absolute Dec
+    // copy of absolute dec
     Eigen::VectorXd tempDec = tel_meta_data["TelDec"];
 
-    // copy of center RA
+    // copy of center ra
     double tempCenterRa = center["Ra"](0);
     tempCenterRa = (tempCenterRa > pi) ? tempCenterRa-(2.0*pi) : tempCenterRa;
 
-    // copy of center Dec
+    // copy of center dec
     double tempCenterDec = center["Dec"](0);
 
     auto cosc = sin(tempCenterDec)*sin(tel_meta_data["TelDec"].array()) +

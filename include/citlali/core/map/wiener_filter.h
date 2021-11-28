@@ -155,11 +155,11 @@ void WienerFilter::filter_coaddition(CMB &cmb){
 
 template <typename CMB>
 void WienerFilter::calc_rr(CMB &cmb) {
-        if (uniform_weight){
-            rr.setOnes(nx,ny);
-        }
-        else {
-            rr = sqrt(cmb.weight);
-        }
+    if (uniform_weight){
+        rr.setOnes(nx,ny);
+    }
+    else {
+        rr = sqrt(cmb.weight);
+    }
 }
 

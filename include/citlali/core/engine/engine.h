@@ -29,6 +29,7 @@
 #include <citlali/core/timestream/ptc/ptcproc.h>
 
 #include <citlali/core/map/naive_mm.h>
+#include <citlali/core/map/wiener_filter_2.h>
 
 class EngineBase: public Telescope, public Observation, public MapBase, public Calib {
 public:
@@ -107,7 +108,9 @@ public:
     // pca clean class
     timestream::Cleaner cleaner;
 
-    //WienerFilter wiener_filter;
+    WienerFilter wiener_filter;
+
+    std::map<std::string, double> gaussian_template_fwhm_rad;
 
     // weight type
     std::string approx_weights;
@@ -138,14 +141,14 @@ public:
 
         bool invalid = false;
 
-        // check if param is larger than minimum
+        // make sure param is larger than minimum
         if (!min_val.empty()) {
             if (param < min_val.at(0)) {
                     invalid = true;
             }
         }
 
-        // check if param is smaller than maximum
+        // make sure param is smaller than maximum
         if (!max_val.empty()) {
             if (param > max_val.at(0)) {
                     invalid = true;
@@ -311,6 +314,7 @@ public:
         if (run_coadd) {
             cmb.pixel_size = pixel_size;
 
+            // get noise config options
             get_config(run_noise,std::tuple{"coadd","noise_maps","enabled"});
             if (run_noise) {
                 get_config(cmb.nnoise,std::tuple{"coadd","noise_maps","n_noise_maps"});
@@ -319,15 +323,22 @@ public:
             else {
                 cmb.nnoise = 0;
             }
+
+            // get coadd filter config options
             get_config(run_coadd_filter,std::tuple{"coadd","filtering","enabled"});
             if (run_coadd_filter) {
                 get_config(coadd_filter_type,std::tuple{"coadd","filtering","type"});
 
-                //get_config(wiener_filter.gauss_template,std::tuple{"wiener_filter","gaussian_template"});
-                //get_config(wiener_filter.gaussian_template_fwhm_arcsec,std::tuple{"wiener_filter","gaussian_template_fwhm_arcsec"});
-                //get_config(wiener_filter.lowpass_only,std::tuple{"wiener_filter","lowpass_only"});
-                //get_config(wiener_filter.highpass_only,std::tuple{"wiener_filter","highpass_only"});
-                //get_config(wiener_filter.normalize_error,std::tuple{"wiener_filter","normalize_error"});
+                get_config(wiener_filter.run_gaussian_template,std::tuple{"wiener_filter","gaussian_template"});
+                get_config(wiener_filter.run_lowpass_only,std::tuple{"wiener_filter","lowpass_only"});
+                get_config(wiener_filter.run_highpass_only,std::tuple{"wiener_filter","highpass_only"});
+                get_config(wiener_filter.normalize_error,std::tuple{"wiener_filter","normalize_error"});
+
+                get_config(gaussian_template_fwhm_rad["a1100"],std::tuple{"wiener_filter","gaussian_template_fwhm_arcsec","a1100"});
+                get_config(gaussian_template_fwhm_rad["a1400"],std::tuple{"wiener_filter","gaussian_template_fwhm_arcsec","a1400"});
+                get_config(gaussian_template_fwhm_rad["a2000"],std::tuple{"wiener_filter","gaussian_template_fwhm_arcsec","a2000"});
+
+                wiener_filter.run_kernel = run_kernel;
             }
         }
     }

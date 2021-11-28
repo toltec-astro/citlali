@@ -235,6 +235,7 @@ auto Beammap::run_loop() {
                         }
                     }
                     return 0;});
+                SPDLOG_INFO("converged detectors {}",(converged.array() == 1).count());
             }
             // set previous iteration fit to current fit
             p0 = mb.pfit;
@@ -311,16 +312,17 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
             mb.pfit.row(2) = pixel_size*(mb.pfit.row(2).array() - (mb.nrows)/2)/RAD_ASEC;
             mb.pfit.row(3) = STD_TO_FWHM*pixel_size*(mb.pfit.row(3))/RAD_ASEC;
             mb.pfit.row(4) = STD_TO_FWHM*pixel_size*(mb.pfit.row(4))/RAD_ASEC;
-            mb.pfit.row(5) = mb.pfit.row(5);
+            //mb.pfit.row(5) = mb.pfit.row(5);
 
             // derotate x_t and y_t
             double mean_el = tel_meta_data["TelElDes"].mean();
 
+            // need to copy because of aliasing?
             Eigen::VectorXd rot_azoff = cos(-mean_el)*mb.pfit.row(1).array() - sin(-mean_el)*mb.pfit.row(2).array();
             Eigen::VectorXd rot_eloff = cos(-mean_el)*mb.pfit.row(2).array() + sin(-mean_el)*mb.pfit.row(1).array();
 
-            mb.pfit.row(1) = rot_azoff;
-            mb.pfit.row(2) = rot_eloff;
+            mb.pfit.row(1) = -rot_azoff;
+            mb.pfit.row(2) = -rot_eloff;
 
             return in;
         });
@@ -337,7 +339,7 @@ auto Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     std::iota(scan_in_vec.begin(), scan_in_vec.end(), 0);
     scan_out_vec.resize(ptcs0.size());
 
-    // placeholder vectors of size n_detectors for grppi maps
+    // placeholder vectors of size ndet for grppi maps
     det_in_vec.resize(ndet);
     std::iota(det_in_vec.begin(), det_in_vec.end(), 0);
     det_out_vec.resize(ndet);
@@ -457,7 +459,6 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios) {
                 j++;
             }
         }
-        //}
 
         // loop through default TolTEC fits header keys and add to primary header
         for (auto const& pair : toltec_io.fits_header_keys) {

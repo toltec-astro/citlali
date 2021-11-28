@@ -1076,13 +1076,39 @@ int run(const rc_t &rc) {
                     // normalize coadded maps
                     todproc.engine().cmb.normalize_maps(todproc.engine().run_kernel);
 
-                    //if (todproc.engine().run_coadd_filter) {
-                      // filter coadd map
-                    //}
+                    // coadd histogram and psd
+
+
+
+                    if (todproc.engine().run_noise) {
+                        // noise average histogram and psd
+                    }
+
 
                     // generate coadd output files
                     {
                         tula::logging::scoped_timeit timer("engine coadd output()");
+                        todproc.engine().template
+                                output<EngineBase::coadd>(todproc.engine().cmb,todproc.engine().coadd_fits_ios);
+                    }
+
+                    if (todproc.engine().run_coadd_filter) {
+                        // filter coadd map
+                        {
+                            tula::logging::scoped_timeit timer("filtering coadd map()");
+                            for (Eigen::Index i=0; i<todproc.engine().cmb.map_count; i++) {
+                                //todproc.engine().wiener_filter.filter_coaddition(todproc.engine().cmb, i);
+                            }
+                        }
+                        if (todproc.engine().run_noise) {
+                            tula::logging::scoped_timeit timer("filtering noise map()");
+                            //todproc.engine().wiener_filter.filter_noise();
+                        }
+                    }
+
+                    // generate filtered coadd output files (cmb is overwritten with filtered maps)
+                    {
+                        tula::logging::scoped_timeit timer("engine filtered coadd output()");
                         todproc.engine().template
                                 output<EngineBase::coadd>(todproc.engine().cmb,todproc.engine().coadd_fits_ios);
                     }
@@ -1094,17 +1120,17 @@ int run(const rc_t &rc) {
     }, todproc);
 
     return exitcode;
-
 }
 
 int main(int argc, char *argv[]) {
     tula::logging::init();
     auto rc = parse_args(argc, argv);
     SPDLOG_TRACE("rc {}", rc.pformat());
-        if (rc.is_set("config_file")) {
-            tula::logging::scoped_timeit TULA_X{"Citlali Process"};
-            return run(rc);
-        } else {
-            std::cout << "Invalid argument. Type --help for usage.\n";
-        }
+    if (rc.is_set("config_file")) {
+        tula::logging::scoped_timeit TULA_X{"Citlali Process"};
+        return run(rc);
+    }
+    else {
+        std::cout << "Invalid argument. Type --help for usage.\n";
+    }
 }

@@ -11,15 +11,14 @@ using namespace Eigen;
 
 template <typename Model>
 typename std::enable_if<Model::DimensionsAtCompileTime == 2, Model>::type
-modelgen(const Eigen::VectorXd& params){
+modelgen(const Eigen::VectorXd& params) {
     Model g(params);
     return g;
 }
 
 // A general functor, assuming X inputs and Y outputs
 template <typename _Scalar, int NX=Dynamic, int NY=Dynamic>
-struct DenseFunctor
-{
+struct DenseFunctor {
     enum {
         InputsAtCompileTime = NX,
         ValuesAtCompileTime = NY
@@ -57,8 +56,7 @@ protected:
 // NP -- number of input parameters
 // ND -- number of demensions of input data
 template <int NP=Dynamic, int ND=Dynamic>
-struct Model: DenseFunctor<double, NP, Dynamic>
-{
+struct Model: DenseFunctor<double, NP, Dynamic> {
     enum {
         DimensionsAtCompileTime = ND
     };
@@ -75,8 +73,7 @@ struct Model: DenseFunctor<double, NP, Dynamic>
     // via copy of params
     Model(const typename _Base::InputType& params): Model(static_cast<int>(params.size())) {this->params=params;}
     // via initializer list of params
-    Model(std::initializer_list<double> params): Model(static_cast<int>(params.size()))
-    {
+    Model(std::initializer_list<double> params): Model(static_cast<int>(params.size())) {
         int i = 0;
         for (auto& p: params) {
             this->params(i) = p;

@@ -3,105 +3,98 @@
 #include <Eigen/Core>
 #include <tula/algorithm/mlinterp/mlinterp.hpp>
 
+#include <citlali/core/utils/constants.h>
+#include <citlali/core/utils/utils.h>
+
 class WienerFilter {
 public:
-    bool highpass_only, lowpass_only, normalize_error;
+    bool run_gaussian_template, run_highpass_only, run_lowpass_only;
+    bool normalize_error, uniform_weight;
+
     bool run_kernel;
-    double gaussian_template_fwhm_arcsec;
-
-    bool uniform_weight;
-    void filter_coaddition() {
-        Eigen::MatrixXd mflt;
-
-        if (run_kernel) {
-            mflt = kernel;
-            uniform_weight = 1;
-            run_filter();
-            filtered_kernel = (denom == 0).select(0, nume.array() / denom.array());
-        }
-
-        mflt = signal;
-        uniform_weight = 0;
-        run_filter();
-        filtered_signal = (denom == 0).select(0, nume.array() / denom.array());
-        filtered_weight = denom;
-    }
-
-    void filter_noise_maps();
-
-private:
-
-    enum FilterType {
-        Kernel = 0,
-        Signal = 1
-    };
-
-    /* Temporary */
-    Eigen::MatrixXd rr, vvq, denom, nume;
-    Eigen::MatrixXd signal, weight, kernel;
-    Eigen::MatrixXd filtered_signal, filtered_weight, filtered_kernel;
-    Eigen::VectorXd rcphys, ccphys;
-    Eigen::MatrixXd tplate;
+    int nloops;
 
     int nx, ny;
-    /* Temporary */
+    double diffx, diffy;
 
-    void calc_rr() {
-        if (uniform_weight) {
-            rr = Eigen::MatrixXd::Ones(nx, ny);
-        } else {
-            rr = weight.sqrt();
+    Eigen::MatrixXd rr, vvq, denom, nume;
+    Eigen::MatrixXd mflt;
+    Eigen::MatrixXd tplate;
+
+    template<class CMB>
+    void make_gaussian_template(CMB &cmb, const double);
+    void make_symmetric_template();
+
+    template<class CMB>
+    void make_template(CMB &cmb, const double gaussian_template_fwhm_rad) {
+
+        // make sure new wiener filtered maps are even dimensioned
+        nx = 2*(cmb.nrows/2);
+        ny = 2*(cmb.ncols/2);
+
+        // x and y spacing should be equal
+        diffx = abs(cmb.rcphys(1) - cmb.rcphys(0));
+        diffy = abs(cmb.ccphys(1) - cmb.ccphys(0));
+
+        if (run_highpass_only) {
+            tplate.setZero(nx,ny);
+            tplate(0,0) = 1;
+        }
+
+        else if (run_gaussian_template) {
+            make_gaussian_template(cmb, gaussian_template_fwhm_rad);
+        }
+
+        else {
+            make_symmetric_template();
         }
     }
 
-    void prepare_gaussian_template();
-    void prepare_template();
+    template<class CMB>
+    void calc_rr(CMB &cmb, const int map_num) {
+        if (uniform_weight) {
+            rr = Eigen::MatrixXd::Ones(nx, ny);
+        }
+        else {
+            rr = sqrt(cmb.weight.at(map_num).array());
+        }
+    }
+
     void calc_vvq();
     void calc_numerator();
     void calc_denominator();
 
-    void run_filter() {
-        calc_rr();
+    template<class CMB>
+    void run_filter(CMB &cmb, const int map_num) {
+        calc_rr(cmb, map_num);
         calc_vvq();
         calc_denominator();
         calc_numerator();
     }
+
+    template<class CMB>
+    void filter_coaddition(CMB &cmb, const int map_num) {
+        if (run_kernel) {
+            mflt = cmb.kernel.at(map_num);
+            uniform_weight = true;
+            run_filter(cmb, map_num);
+            cmb.kernel.at(map_num) = (denom.array() == 0).select(0, nume.array() / denom.array());
+        }
+
+        mflt = cmb.signal.at(map_num);
+        uniform_weight = false;
+        run_filter(cmb, map_num);
+        cmb.signal.at(map_num) = (denom.array() == 0).select(0, nume.array() / denom.array());
+        cmb.weight.at(map_num) = denom;
+    }
+
+    void filter_noise_maps();
 };
 
-void WienerFilter::prepare_template() {
-    /*Eigen::VectorXd xgcut = rcphys.head(nx);
-    Eigen::VectorXd ygcut = ccphys.head(ny);
-    Eigen::MatrixXd tem = kernel;
-    Eigen::VectorXd pp(6);*/
-
-    /* Fit to Gaussian */
-
-    /*double beamRatio = 30.0 / 8.0;
-    beamRatio *= 8.0;
-    // Shift the kernel appropriately
-    shift(tem, -round(pp(4) / diffx), -round(pp(5) / diffy));
-    Eigen::MatrixXd dist(nx, ny);
-    dist = (xgcut.replicate(1, ny).array().pow(2.0).matrix()
-            + ygcut.replicate(nx, 1).array().pow(2.0).matrix())
-               .array()
-               .sqrt();
-    Eigen::Index xcind = nx / 2;
-    Eigen::Index ycind = ny / 2;
-    double mindist = 99.;
-    mindist = dist.minCoeff(&xcind, &ycind);
-    // Create new bins based on diffx
-    int nbins = xgcut(nx - 1) / diffx;
-    Eigen::VectorXd binlow = Eigen::VectorXd::LinSpaced(nbins, 0, nbins - 1);
-    binlow = binlow * diffx;
-    Eigen::VectorXd kone = Eigen::VectorXd::Zero(nbins - 1);
-    Eigen::VectorXd done = Eigen::VectorXd::Zero(nbins - 1);
-*/
-
-}
-
-void WienerFilter::prepare_gaussian_template() {
-    Eigen::VectorXd xgcut = rcphys.head(nx);
-    Eigen::VectorXd ygcut = ccphys.head(ny);
+template<class CMB>
+void WienerFilter::make_gaussian_template(CMB &cmb, const double gaussian_template_fwhm_rad) {
+    Eigen::VectorXd xgcut = cmb.rcphys.head(nx);
+    Eigen::VectorXd ygcut = cmb.ccphys.head(ny);
 
     Eigen::MatrixXd tem = Eigen::MatrixXd::Zero(nx, ny);
 
@@ -117,15 +110,15 @@ void WienerFilter::prepare_gaussian_template() {
 
     mindist = dist.minCoeff(&xcind, &ycind);
 
-    tplate.resize(nx, ny);
+    double sig = gaussian_template_fwhm_rad / STD_TO_FWHM;
+    tplate = exp(-0.5 * pow(dist.array() / sig, 2.));
 
-    double fwhm = gaussian_template_fwhm_arcsec;
-    double sig = fwhm / 2.3548;
-    tplate = exp(-0.5 * pow(dist / sig, 2.));
-
-    shift(tplate, -xcind, -ycind);
+    tplate = engine_utils::shift_matrix(tplate, -xcind, -ycind);
 }
 
+void WienerFilter::make_symmetric_template() {
+
+}
 
 void WienerFilter::calc_vvq() {
     // size of psd and psd freq vectors
@@ -133,7 +126,7 @@ void WienerFilter::calc_vvq() {
     // psd and psd freq vectors
     Eigen::VectorXd qf, hp;
 
-    // modify the PSD array to take out lowpassing+highpassing
+    // modify the psd array to take out lowpassing+highpassing
     Eigen::Index maxhpind;
     double qfbreak = 0.;
     double hpbreak = 0.;
@@ -160,12 +153,14 @@ void WienerFilter::calc_vvq() {
     // since the frequencies are monotonically increasing.
     if (count > 0) {
         if (qfbreak > 0) {
-            hp.segment(0.8 * qfbreak, hp.size() - 0.8 * qfbreak) = hp(0.8 * qfbreak);
+            Eigen::Index start = 0.8 * qfbreak;
+            Eigen::Index size = hp.size() - 0.8 * qfbreak;
+            hp.segment(start, size).setConstant(hp(start));
         }
     }
 
     // do the same for the region below the maximum hp
-    hp.head(maxhpind) = maxhp;
+    hp.head(maxhpind).setConstant(maxhp);
 
     // set up Q-space
     double xsize = nx * diffx;
@@ -187,7 +182,7 @@ void WienerFilter::calc_vvq() {
 
     Eigen::MatrixXd psdq(nx, ny);
 
-    if (lowpass_only) {
+    if (run_lowpass_only) {
         psdq.setOnes();
     }
 
@@ -196,9 +191,10 @@ void WienerFilter::calc_vvq() {
         nhp << hp.size();
 
         // interpolate onto psdq
+        Eigen::Index interp_pts = 1;
         for (int i = 0; i < nx; i++) {
             for (int j = 0; j < ny; j++) {
-                if (qmap(i, j) <= qf[qf.size() - 1] && qmap(i, j) >= qf[0]) {
+                if (qmap(i, j) <= qf(qf.size() - 1) && qmap(i, j) >= qf(0)) {
                     mlinterp::interp(nhp.data(),
                                      interp_pts,
                                      hp.data(),
@@ -207,10 +203,10 @@ void WienerFilter::calc_vvq() {
                                      qmap.data() + nx * j + i);
                 }
 
-                else if (qmap(i, j) > qf[qf.size() - 1]) {
+                else if (qmap(i, j) > qf(qf.size() - 1)) {
                     psdq(i, j) = hp[hp.size() - 1];
-                } else if (qmap(i, j) < qf[0]) {
-                    psdq(i, j) = hp[0];
+                } else if (qmap(i, j) < qf(0)) {
+                    psdq(i, j) = hp(0);
                 }
             }
         }
@@ -220,11 +216,10 @@ void WienerFilter::calc_vvq() {
     auto lowval = hp.minCoeff();
 
     // set all the points in psdq smaller than lowval to lowval
-    psdq = (psdq < lowval).select(lowval, psdq);
+    psdq = (psdq.array() < lowval).select(lowval, psdq);
 
     // normalize the power spectrum psdq and place into vvq
     vvq = psdq/psdq.sum();
-
 }
 
 void WienerFilter::calc_numerator() {
@@ -237,33 +232,33 @@ void WienerFilter::calc_numerator() {
     in.real() = rr * mflt;
     in.imag().setZero();
 
-    out = mapmaking::fft2w<forward>(in, nx, ny);
+    out = engine_utils::fft2w<engine_utils::forward>(in, nx, ny);
     out = out * fftnorm;
 
-    in.real() = out.real() / vvq;
-    in.imag() = out.imag() / vvq;
+    in.real() = out.real().array() / vvq.array();
+    in.imag() = out.imag().array() / vvq.array();
 
-    out = mapmaking::fft2w<backward>(in, nx, ny);
+    out = engine_utils::fft2w<engine_utils::backward>(in, nx, ny);
 
-    in.real() = out.real() * rr;
+    in.real() = out.real().array() * rr.array();
     in.imag().setZero();
 
-    out = mapmaking::fft2w<forward>(in, nx, ny);
+    out = engine_utils::fft2w<engine_utils::forward>(in, nx, ny);
     out = out * fftnorm;
 
-    // Copy of out
+    // copy of out
     Eigen::VectorXcd qqq = out;
 
     in.real() = tplate;
     in.imag().setZero();
 
-    out = mapmaking::fft2w<forward>(in, nx, ny);
+    out = engine_utils::fft2w<engine_utils::forward>(in, nx, ny);
     out = out * fftnorm;
 
     in.real() = out.real() * qqq.real() + out.imag() * qqq.imag();
     in.imag() = -out.imag() * qqq.real() + out.real() * qqq.imag();
 
-    out = mapmaking::fft2w<backward>(in, nx, ny);
+    out = engine_utils::fft2w<engine_utils::backward>(in, nx, ny);
 
     // populate numerator
     nume = out.real();
@@ -275,37 +270,37 @@ void WienerFilter::calc_denominator() {
     Eigen::VectorXcd out(nx * ny);
 
     if (uniform_weight) {
-        in.real() = tplate();
+        in.real() = tplate;
         in.imag().setZero();
 
-        out = mapmaking::fft2w<forward>(in, nx, ny);
+        out = engine_utils::fft2w<engine_utils::forward>(in, nx, ny);
         out = out * fftnorm;
 
-        auto d = ((out.real() * out.real() + out.imag() * out.imag()) / vvq).sum();
+        auto d = ((out.real().array() * out.real().array() + out.imag().array() * out.imag().array()) / vvq.array()).sum();
         denom.setConstant(d);
     }
 
     else {
         denom.setZero();
 
-        in.real() = vvq.pow(-1.);
+        in.real() = pow(vvq.array(),-1.);
         in.imag().setZero();
 
-        out = mapmaking::fft2w<backward>(in, nx, ny);
+        out = engine_utils::fft2w<engine_utils::backward>(in, nx, ny);
 
         Eigen::VectorXd zz2d(nx * ny);
-        zz2d = abs(out.real());
+        zz2d = abs(out.real().array());
 
         Eigen::VectorXd ss_ord;
         ss_ord = zz2d;
-        auto sorted = eigen_utils::sorter(ss_ord);
+        auto sorted = engine_utils::sorter(ss_ord);
 
         zz2d = out.real();
 
-        // Number of iterations for convergence
+        // number of iterations for convergence
         nloops = nx * ny / 100;
 
-        // Flag for convergence
+        // flag for convergence
         bool done = false;
 
         for (int k = 0; k < nx; k++) {
@@ -315,21 +310,23 @@ void WienerFilter::calc_denominator() {
 
                     /*May need to flip directions due to order of Matrix storage order*/
                     int kk = ny * k + l;
-                    if (kk >= nloop) {
+                    if (kk >= nloops) {
                         continue;
                     }
 
                     auto shifti = std::get<1>(sorted[nx * ny - kk - 1]);
 
-                    double xshiftN = shifti / ny;
-                    double yshiftN = shifti % ny;
+                    double x_shift_n = shifti / ny;
+                    double y_shift_n = shifti % ny;
 
-                    in2.real() = Eigen::Map<Eigen::VectorXcd>(
-                        (tplate.array() * shift(tplate, -xshiftN, -yshiftN).array()).data(),
+                    Eigen::MatrixXd in_prod = tplate.array() * engine_utils::shift_matrix(tplate, -x_shift_n, -y_shift_n).array();
+
+                    in2.real() = Eigen::Map<Eigen::VectorXd>(
+                        (in_prod).data(),
                         nx * ny);
                     in2.imag().setZero();
 
-                    out2 = mapmaking::fft2w<forward>(in2, nx, ny);
+                    out2 = engine_utils::fft2w<engine_utils::forward>(in2, nx, ny);
                     out2 = out2 * fftnorm;
 
                     Eigen::VectorXcd ffdq(nx * ny);
@@ -337,53 +334,53 @@ void WienerFilter::calc_denominator() {
                     ffdq.real() = out2.real();
                     ffdq.imag() = out2.imag();
 
-                    in2.real() = Eigen::Map<Eigen::VectorXcd>(
-                        (rr.array() * shift(tplate, -xshiftN, -yshiftN).array()).data(), nx * ny);
+                    in_prod = rr.array() * engine_utils::shift_matrix(tplate, -x_shift_n, -y_shift_n).array();
+
+                    in2.real() = Eigen::Map<Eigen::VectorXd>(in_prod.data(), nx * ny);
                     in2.imag().setZero();
 
-                    out2 = mapmaking::fft2w<forward>(in2, nx, ny);
+                    out2 = engine_utils::fft2w<engine_utils::forward>(in2, nx, ny);
                     out2 = out2 * fftnorm;
 
                     in2.real() = ffdq.real() * out2.real() + ffdq.imag() * out2.imag();
                     in2.imag() = -ffdq.imag() * out2.real() + ffdq.real() * out2.imag();
 
-                    out2 = mapmaking::fft2w<backward>(in2, nx, ny);
+                    out2 = engine_utils::fft2w<engine_utils::backward>(in2, nx, ny);
 
-                    Eigen::MatrixXd updater = zz2d[shifti] * out2.real() * fftnorm;
+                    Eigen::MatrixXd updater = zz2d(shifti) * out2.real() * fftnorm;
 
                     denom = denom + updater;
 
                     if ((kk % 100) == 1) {
-                        double maxRatio = -1;
+                        double max_ratio = -1;
                         double maxdenom = -999.;
 
                         maxdenom = denom.maxCoeff();
                         for (int i = 0; i < nx; i++) {
                             for (int j = 0; j < ny; j++) {
                                 if (denom(i, j) > 0.01 * maxdenom) {
-                                    if (abs(updater(i, j) / denom(i, j)) > maxRatio)
-                                        maxRatio = abs(updater(i, j) / denom(i, j));
+                                    if (abs(updater(i, j) / denom(i, j)) > max_ratio)
+                                        max_ratio = abs(updater(i, j) / denom(i, j));
                                 }
                             }
                         }
 
-                        if (((kk >= 500) && (maxRatio < 0.0002)) || maxRatio < 1e-10) {
-                            SPDLOG_INFO("Seems like we're done.  maxRatio={}", maxRatio);
+                        if (((kk >= 500) && (max_ratio < 0.0002)) || max_ratio < 1e-10) {
+                            SPDLOG_INFO("Seems like we're done.  max_ratio={}", max_ratio);
                             SPDLOG_INFO("The denom calcualtion required {} iterations", kk);
                             done = true;
-                        } else {
-                            SPDLOG_INFO("Completed iteration {} of {}. maxRatio={}",
-                                        kk,
-                                        nloop,
-                                        maxRatio);
+                        }
+                        else {
+                            SPDLOG_INFO("Completed iteration {} of {}. max_ratio={}",
+                                        kk, nloops, max_ratio);
                         }
                     }
                 }
             }
         }
 
-        double denomLimit = 1.e-4;
-        SPDLOG_INFO("Zeroing out any small values (< {}) in denominator", denomLimit);
-        denom = (denom.array() < denomLimit).select(0, denom);
+        double denom_imit = 1.e-4;
+        SPDLOG_INFO("Zeroing out any small values (< {}) in denominator", denom_imit);
+        denom = (denom.array() < denom_imit).select(0, denom);
     }
 }

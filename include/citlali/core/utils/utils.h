@@ -83,6 +83,44 @@ void for_each_in_tuple(const std::tuple<Ts...> & tuple, F func){
     for_each_in_tuple(tuple, func, std::make_index_sequence<sizeof...(Ts)>());
 }
 
+template<typename Derived>
+std::vector<std::tuple<double, int>> sorter(Eigen::DenseBase<Derived> &vec){
+    std::vector<std::tuple<double, int>> vis;
+    Eigen::VectorXi indices = Eigen::VectorXi::LinSpaced(vec.size(),0,vec.size()-1);
+
+    for(int i=0; i<vec.size(); i++){
+        std::tuple<double, double> vec_and_val(vec[i], indices[i]);
+        vis.push_back(vec_and_val);
+    }
+
+    std::sort(vis.begin(), vis.end(),
+              [&](const std::tuple<double, int>& a, const std::tuple<double, int>& b) -> bool{
+                  return std::get<0>(a) < std::get<0>(b);
+              });
+
+    return vis;
+}
+
+template <typename Derived>
+auto shift_matrix(Eigen::DenseBase<Derived> &in, const int n1, const int n2) {
+    Eigen::Index nx = in.rows();
+    Eigen::Index ny = in.cols();
+
+    Eigen::MatrixXd out;
+    out.setZero(nx, ny);
+
+    for (Eigen::Index i=0; i<nx; i++) {
+        for (Eigen::Index j=0; j<ny; j++){
+            Eigen::Index ti = (i+n1) % nx;
+            Eigen::Index tj = (j+n2) % ny;
+            Eigen::Index shifti = (ti < 0) ? nx+ti : ti;
+            Eigen::Index shiftj = (tj < 0) ? ny+tj : tj;
+            out(shifti,shiftj) = in(i,j);
+        }
+    }
+    return out;
+}
+
 enum FFTdirection {
     forward = 0,
     backward = 1
@@ -91,7 +129,7 @@ enum FFTdirection {
 template<FFTdirection direc, typename Derived>
 Eigen::VectorXcd fft2w(Eigen::DenseBase<Derived> &in, const int nx, const int ny){
 
-    Eigen::Map<RowMatrixXcd> matIn(in.derived().data(),nx,ny);
+    //Eigen::Map<RowMatrixXcd> matIn(in.derived().data(),nx,ny);
 
     /*std::vector<int> rowvec_in(nx);
     std::iota(rowvec_in.begin(), rowvec_in.end(), 0);
