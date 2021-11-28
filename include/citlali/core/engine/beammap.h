@@ -315,19 +315,12 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
 
             // derotate x_t and y_t
             double mean_el = tel_meta_data["TelElDes"].mean();
-            SPDLOG_INFO("mean_el {}", mean_el);
 
-            auto rot_azoff = cos(mean_el)*mb.pfit.row(1) - sin(mean_el)*mb.pfit.row(2);
-            auto rot_eloff = cos(mean_el)*mb.pfit.row(2) + sin(mean_el)*mb.pfit.row(1);
+            Eigen::VectorXd rot_azoff = cos(-mean_el)*mb.pfit.row(1).array() - sin(-mean_el)*mb.pfit.row(2).array();
+            Eigen::VectorXd rot_eloff = cos(-mean_el)*mb.pfit.row(2).array() + sin(-mean_el)*mb.pfit.row(1).array();
 
-            SPDLOG_INFO("rot_azoff {}", rot_azoff);
-            SPDLOG_INFO("rot_azoff {}", rot_eloff);
-
-            mb.pfit.row(1) = -rot_azoff;
-            mb.pfit.row(2) = -rot_eloff;
-
-            SPDLOG_INFO(" mb.pfit.row(1) {}",  mb.pfit.row(1));
-            SPDLOG_INFO("mb.pfit.row(2) {}", mb.pfit.row(2));
+            mb.pfit.row(1) = rot_azoff;
+            mb.pfit.row(2) = rot_eloff;
 
             return in;
         });
