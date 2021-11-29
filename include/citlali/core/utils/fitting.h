@@ -18,7 +18,7 @@ public:
     };
 
     int nparams = 6;
-    double box_size = 15;
+    double bounding_box_pix = 15;
 
     double flux0;
 
@@ -69,29 +69,29 @@ public:
 
 
         // get the maximum bounding box size that is contained in the map
-        if ((row0 - box_size) < 0) {
-            box_size = row0;
+        if ((row0 - bounding_box_pix) < 0) {
+            bounding_box_pix = row0;
         }
-        if ((row0 + box_size + 1) >= data.rows()) {
-            box_size = data.rows() - row0 - 1;
+        if ((row0 + bounding_box_pix + 1) >= data.rows()) {
+            bounding_box_pix = data.rows() - row0 - 1;
         }
-        if ((col0 - box_size) < 0) {
-            box_size = col0;
+        if ((col0 - bounding_box_pix) < 0) {
+            bounding_box_pix = col0;
         }
-        if ((col0 + box_size + 1) >= data.cols()) {
-            box_size = data.cols() - col0 - 1;
+        if ((col0 + bounding_box_pix + 1) >= data.cols()) {
+            bounding_box_pix = data.cols() - col0 - 1;
         }
 
         // get limits
         limits.resize(nparams, 2);
-        limits.col(0) << flux_low*flux0, col0 - box_size, row0 - box_size, fwhm_low,
+        limits.col(0) << flux_low*flux0, col0 - bounding_box_pix, row0 - bounding_box_pix, fwhm_low,
                 fwhm_low, ang_low;
-        limits.col(1) << flux_high*flux0, col0 + box_size + 1, row0 + box_size + 1,
+        limits.col(1) << flux_high*flux0, col0 + bounding_box_pix + 1, row0 + bounding_box_pix + 1,
                 fwhm_high, fwhm_high, ang_high;
 
         // axes coordinate vectors for meshgrid
-        x = Eigen::VectorXd::LinSpaced(2*box_size+1, col0-box_size, col0+box_size+1);
-        y = Eigen::VectorXd::LinSpaced(2*box_size+1, row0-box_size, row0+box_size+1);
+        x = Eigen::VectorXd::LinSpaced(2*bounding_box_pix+1, col0-bounding_box_pix, col0+bounding_box_pix+1);
+        y = Eigen::VectorXd::LinSpaced(2*bounding_box_pix+1, row0-bounding_box_pix, row0+bounding_box_pix+1);
     }
 
     template <FitMode fit_mode, typename DerivedA, typename DerivedB, typename C>
@@ -113,8 +113,8 @@ public:
         (sigma.array() !=0).select(1./sqrt(weight.derived().array()),0.);
 
         // copy data and sigma within bounding box region
-        auto _data = data.block(row0-box_size, col0-box_size, 2*box_size+1, 2*box_size+1);
-        auto _sigma = sigma.block(row0-box_size, col0-box_size, 2*box_size+1, 2*box_size+1);
+        auto _data = data.block(row0-bounding_box_pix, col0-bounding_box_pix, 2*bounding_box_pix+1, 2*bounding_box_pix+1);
+        auto _sigma = sigma.block(row0-bounding_box_pix, col0-bounding_box_pix, 2*bounding_box_pix+1, 2*bounding_box_pix+1);
 
         // do the fit with ceres
         auto g_fit = gaussfit::curvefit_ceres(g, _p, xy, _data, _sigma, limits);

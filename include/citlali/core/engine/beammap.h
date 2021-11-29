@@ -201,6 +201,8 @@ auto Beammap::run_loop() {
             SPDLOG_INFO("fitting detector {}/{}",d+1, det_in_vec.size());
             // declare fitter class for detector
             gaussfit::MapFitter fitter;
+            // size of region to fit in pixels
+            fitter.bounding_box_pix = bounding_box_pix;
             mb.pfit.col(d) = fitter.fit<gaussfit::MapFitter::peakValue>(mb.signal[d], mb.weight[d], calib_data);
             SPDLOG_INFO("pfit.col(d) {}", mb.pfit.col(d));
 
@@ -385,7 +387,7 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios) {
     meta["flxscale"].push_back("flux conversion scale");
 
     meta["amp"].push_back("units: mJy/beam");
-    meta["amp"].push_back("fitted signal to noise");
+    meta["amp"].push_back("fitted amplitude");
 
     meta["x_t"].push_back("units: arcsec");
     meta["x_t"].push_back("fitted azimuthal offset");
@@ -440,10 +442,11 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios) {
         if (run_kernel) {
             nhdus = 3;
         }
+
         for (auto hdu: f_ios.at(i).hdus) {
             f_ios.at(i).template add_wcs<UnitsType::arcsec>(hdu,map_type,mout.nrows,mout.ncols,
                                                    pixel_size,source_center);
-            // add fit parameters
+            // add fit parameters to hdus
             hdu->addKey("amp", (float)mout.pfit(0,j),"amplitude (Mjy/sr)");
             hdu->addKey("x_t", (float)mout.pfit(1,j),"az offset (arcsec)");
             hdu->addKey("y_t", (float)mout.pfit(2,j),"alt offset (arcsec)");

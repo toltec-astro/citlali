@@ -667,7 +667,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
 
         auto [nr, nc, rcp, ccp] =
                 engine().get_dims(engine().tel_meta_data, engine().calib_data, engine().scanindices,
-                engine().ex_name, engine().reduction_type);
+                engine().ex_name, engine().reduction_type, engine().x_size_pix, engine().y_size_pix);
 
         map_extent.push_back(nr);
         map_extent.push_back(nc);
@@ -997,8 +997,6 @@ int run(const rc_t &rc) {
 
                     // keep track of what observation is being reduced
                     todproc.engine().nobs = i;
-
-                    SPDLOG_INFO("todproc.engine().nobs {}", todproc.engine().nobs);
 
                     // set up map buffer for current observation
                     todproc.setup_map_buffer(map_extents[i], map_coords[i], map_counts[i]);

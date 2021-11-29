@@ -116,113 +116,132 @@ public:
     // pixel size
     double pixel_size;
 
-    // map absolute center value
-    double crval1_J2000, crval2_J2000;
-
-    // map size in arcminutes
+    // map size in pixels
     double x_size_pix, y_size_pix;
 
     template <typename tel_meta_t, typename C, typename S>
-    map_dims_t get_dims(tel_meta_t &, C &, S &, std::string, std::string);
+    map_dims_t get_dims(tel_meta_t &, C &, S &, std::string, std::string,
+                        const double, const double);
 };
 
 template <typename tel_meta_t, typename C, typename S>
 map_dims_t MapBase::get_dims(tel_meta_t &tel_meta_data, C &calib_data, S &scan_indices,
-                             std::string ex_name, std::string reduction_type) {
+                             std::string ex_name, std::string reduction_type,
+                             const double _xs, const double _ys) {
 
-    // matrices to hold min and max lat/lon values for each detector
-    Eigen::MatrixXd lat_limits, lon_limits;
-    lat_limits.setZero(calib_data["y_t"].size(), 2);
-    lon_limits.setZero(calib_data["x_t"].size(), 2);
+    if ((x_size_pix==0) && (y_size_pix==0)) {
+        SPDLOG_INFO("calculating map dimensions based on pointing max/min");
+        // matrices to hold min and max lat/lon values for each detector
+        Eigen::MatrixXd lat_limits, lon_limits;
 
-    // global max and min lat/lon
-    Eigen::MatrixXd map_dims = Eigen::MatrixXd::Zero(2,2);
+        lat_limits.setZero(calib_data["y_t"].size(), 2);
+        lon_limits.setZero(calib_data["x_t"].size(), 2);
 
-    // placeholder vectors for grppi maps
-    std::vector<int> scan_in_vec, scan_out_vec;
-    std::vector<int> det_in_vec, det_out_vec;
+        // global max and min lat/lon
+        Eigen::MatrixXd map_dims = Eigen::MatrixXd::Zero(2,2);
 
-    det_in_vec.resize(calib_data["x_t"].size());
-    std::iota(det_in_vec.begin(), det_in_vec.end(), 0);
-    det_out_vec.resize(calib_data["x_t"].size());
+        // placeholder vectors for grppi maps
+        std::vector<int> scan_in_vec, scan_out_vec;
+        std::vector<int> det_in_vec, det_out_vec;
 
-    // loop through scans
-    for (Eigen::Index s = 0; s < scan_indices.cols(); s++) {
-        auto si = scan_indices(2, s);
-        auto scan_length = scan_indices(3, s) - scan_indices(2, s) + 1;
+        det_in_vec.resize(calib_data["x_t"].size());
+        std::iota(det_in_vec.begin(), det_in_vec.end(), 0);
+        det_out_vec.resize(calib_data["x_t"].size());
 
-        // copy tel meta data for scan
-        tel_meta_t tel_meta_data_scan;
-        tel_meta_data_scan["TelElDes"] = tel_meta_data["TelElDes"].segment(si, scan_length);
-        tel_meta_data_scan["ParAng"] = tel_meta_data["ParAng"].segment(si, scan_length);
+        // loop through scans
+        for (Eigen::Index s = 0; s < scan_indices.cols(); s++) {
+            auto si = scan_indices(2, s);
+            auto scan_length = scan_indices(3, s) - scan_indices(2, s) + 1;
 
-        tel_meta_data_scan["TelLatPhys"] = tel_meta_data["TelLatPhys"].segment(si, scan_length);
-        tel_meta_data_scan["TelLonPhys"] = tel_meta_data["TelLonPhys"].segment(si, scan_length);
+            // copy tel meta data for scan
+            tel_meta_t tel_meta_data_scan;
+            tel_meta_data_scan["TelElDes"] = tel_meta_data["TelElDes"].segment(si, scan_length);
+            tel_meta_data_scan["ParAng"] = tel_meta_data["ParAng"].segment(si, scan_length);
 
-        // loop through detectors
-        grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](auto di) {
+            tel_meta_data_scan["TelLatPhys"] = tel_meta_data["TelLatPhys"].segment(si, scan_length);
+            tel_meta_data_scan["TelLonPhys"] = tel_meta_data["TelLonPhys"].segment(si, scan_length);
 
-            double azoff, eloff;
+            // loop through detectors
+            grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](auto di) {
 
-            // get detector offsets from apt table
-            if (reduction_type == "science" || reduction_type == "pointing") {
-                azoff = calib_data["x_t"](di);
-                eloff = calib_data["y_t"](di);
-            }
+                double azoff, eloff;
 
-            // if beammap, detector offsets are zero
-            else if (reduction_type == "beammap") {
-                azoff = 0;
-                eloff = 0;
-            }
+                // get detector offsets from apt table
+                if (reduction_type == "science" || reduction_type == "pointing") {
+                    azoff = calib_data["x_t"](di);
+                    eloff = calib_data["y_t"](di);
+                }
 
-            // get detector pointing
-            auto [lat, lon] = engine_utils::get_det_pointing(tel_meta_data_scan,
-                    azoff, eloff, map_type);
+                // if beammap, detector offsets are zero
+                else if (reduction_type == "beammap") {
+                    azoff = 0;
+                    eloff = 0;
+                }
 
-            // check for min and max
-            if (lat.minCoeff() < lat_limits(di,0)) {
-                lat_limits(di,0) = lat.minCoeff();
-            }
-            else if (lat.maxCoeff() > lat_limits(di,1)) {
-                lat_limits(di,1) = lat.maxCoeff();
-            }
-            if (lon.minCoeff() < lon_limits(di,0)) {
-                lon_limits(di,0) = lon.minCoeff();
-            }
-            else if (lon.maxCoeff() > lon_limits(di,1)) {
-                lon_limits(di,1) = lon.maxCoeff();
-            }
+                // get detector pointing
+                auto [lat, lon] = engine_utils::get_det_pointing(tel_meta_data_scan,
+                        azoff, eloff, map_type);
 
-            return 0;
-        });
+                // check for min and max
+                if (lat.minCoeff() < lat_limits(di,0)) {
+                    lat_limits(di,0) = lat.minCoeff();
+                }
+                else if (lat.maxCoeff() > lat_limits(di,1)) {
+                    lat_limits(di,1) = lat.maxCoeff();
+                }
+                if (lon.minCoeff() < lon_limits(di,0)) {
+                    lon_limits(di,0) = lon.minCoeff();
+                }
+                else if (lon.maxCoeff() > lon_limits(di,1)) {
+                    lon_limits(di,1) = lon.maxCoeff();
+                }
+
+                return 0;
+            });
+        }
+
+        // get the global min and max
+        map_dims(0,0)  = lat_limits.col(0).minCoeff();
+        map_dims(1,0)  = lat_limits.col(1).maxCoeff();
+        map_dims(0,1)  = lon_limits.col(0).minCoeff();
+        map_dims(1,1)  = lon_limits.col(1).maxCoeff();
+
+        // calculate dimension and corresponding vector
+        auto get_dim_size = [&](auto min_dim, auto max_dim) {
+            auto min_pix = ceil(abs(min_dim/pixel_size));
+            auto max_pix = ceil(abs(max_dim/pixel_size));
+
+            max_pix = std::max(min_pix, max_pix);
+            auto ndim = 2*max_pix + 4;
+
+            Eigen::VectorXd dim_vec = (Eigen::VectorXd::LinSpaced(ndim,0,ndim-1).array() -
+                    (ndim)/2.)*pixel_size;
+
+            return std::tuple{ndim, std::move(dim_vec)};
+        };
+
+        // get nrows and ncols
+        auto [nr, rcp] = get_dim_size(map_dims(0,0), map_dims(1,0));
+        auto [nc, ccp] = get_dim_size(map_dims(0,1), map_dims(1,1));
+
+        SPDLOG_INFO("nrows {} ncols {}", nr, nc);
+
+        return map_dims_t {nr, nc, std::move(rcp), std::move(ccp)};
     }
 
-    // get the global min and max
-    map_dims(0,0)  = lat_limits.col(0).minCoeff();
-    map_dims(1,0)  = lat_limits.col(1).maxCoeff();
-    map_dims(0,1)  = lon_limits.col(0).minCoeff();
-    map_dims(1,1)  = lon_limits.col(1).maxCoeff();
+    else {
+        // set rows and cols to requested sizes
+        Eigen::Index nr = y_size_pix;
+        Eigen::Index nc = x_size_pix;
 
-    // calculate dimension and corresponding vector
-    auto get_dim_size = [&](auto min_dim, auto max_dim) {
-        auto min_pix = ceil(abs(min_dim/pixel_size));
-        auto max_pix = ceil(abs(max_dim/pixel_size));
+        Eigen::VectorXd rcp = (Eigen::VectorXd::LinSpaced(nr,0,nr-1).array() -
+                (nr)/2.)*pixel_size;
 
-        max_pix = std::max(min_pix, max_pix);
-        auto ndim = 2*max_pix + 4;
+        Eigen::VectorXd ccp = (Eigen::VectorXd::LinSpaced(nc,0,nc-1).array() -
+                (nc)/2.)*pixel_size;
 
-        Eigen::VectorXd dim_vec = (Eigen::VectorXd::LinSpaced(ndim,0,ndim-1).array() -
-                (ndim)/2.)*pixel_size;
+        SPDLOG_INFO("nrows {} ncols {}", nr, nc);
 
-        return std::tuple{ndim, std::move(dim_vec)};
-    };
-
-    // get nrows and ncols
-    auto [nr, rcp] = get_dim_size(map_dims(0,0), map_dims(1,0));
-    auto [nc, ccp] = get_dim_size(map_dims(0,1), map_dims(1,1));
-    
-    SPDLOG_INFO("nrows {} ncols {}", nr, nc);
-
-    return map_dims_t {nr, nc, std::move(rcp), std::move(ccp)};
+        return map_dims_t {nr, nc, std::move(rcp), std::move(ccp)};
+    }
 }

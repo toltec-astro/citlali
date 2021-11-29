@@ -80,26 +80,31 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine en
                     cmb_ic = (cmb_icol(si));
                 }
 
+                //SPDLOG_INFO("mb_ir {} mb_ic {}", mb_ir, mb_ic);
+
                 // check if sample is flagged as good
                 if (in.flags.data(si, di)) {
-                    // weight map
-                    engine->mb.weight.at(mi)(mb_ir,mb_ic) += in.weights.data(di);
-
-                    // signal map
                     auto sig = in.scans.data(si, di)*in.weights.data(di);
-                    engine->mb.signal.at(mi)(mb_ir,mb_ic) += sig;
 
-                    // check if kernel map is requested
-                    if (engine->run_kernel) {
-                        // kernel map
-                        auto ker = in.kernel_scans.data(si, di)*in.weights.data(di);
-                        engine->mb.kernel.at(mi)(mb_ir,mb_ic) += ker;
-                    }
+                    if ((mb_ir >= 0) && (mb_ir < engine->mb.nrows) && (mb_ic >= 0) && (mb_ic < engine->mb.ncols)) {
+                        // weight map
+                        engine->mb.weight.at(mi)(mb_ir,mb_ic) += in.weights.data(di);
 
-                    // coverage map if not in beammap mode
-                    if (engine->reduction_type != "beammap") {
-                        // coverage map
-                        engine->mb.coverage.at(mi)(mb_ir,mb_ic) += 1./engine->fsmp;
+                        // signal map
+                        engine->mb.signal.at(mi)(mb_ir,mb_ic) += sig;
+
+                        // check if kernel map is requested
+                        if (engine->run_kernel) {
+                            // kernel map
+                            auto ker = in.kernel_scans.data(si, di)*in.weights.data(di);
+                            engine->mb.kernel.at(mi)(mb_ir,mb_ic) += ker;
+                        }
+
+                        // coverage map if not in beammap mode
+                        if (engine->reduction_type != "beammap") {
+                            // coverage map
+                            engine->mb.coverage.at(mi)(mb_ir,mb_ic) += 1./engine->fsmp;
+                        }
                     }
 
                     // noise maps
@@ -113,7 +118,9 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine en
                                     // loop through number of times this obs was randomly selected
                                     for (Eigen::Index nt=0; nt<engine->cmb.noise_rand(nn,engine->nobs,mi);nt++) {
                                         // coadd into current noise map
-                                        engine->cmb.noise.at(mi)(cmb_ir,cmb_ic,nn) += noise_rand(nn)*sig;
+                                        if ((cmb_ir >= 0) && (cmb_ir < engine->cmb.nrows) && (cmb_ic >= 0) && (cmb_ic < engine->cmb.ncols)) {
+                                            engine->cmb.noise.at(mi)(cmb_ir,cmb_ic,nn) += noise_rand(nn)*sig;
+                                        }
                                     }
                                 }
                             }

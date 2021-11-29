@@ -108,17 +108,21 @@ public:
     // pca clean class
     timestream::Cleaner cleaner;
 
+    // wiener filter
     WienerFilter wiener_filter;
 
+    // gaussian template fwhm in radians
     std::map<std::string, double> gaussian_template_fwhm_rad;
 
     // weight type
     std::string approx_weights;
 
-    // Output files
+    // output files
     std::vector<FitsIO<fileType::write_fits, CCfits::ExtHDU*>> fits_ios;
     std::vector<FitsIO<fileType::write_fits, CCfits::ExtHDU*>> coadd_fits_ios;
     std::vector<FitsIO<fileType::write_fits, CCfits::ExtHDU*>> noise_fits_ios;
+    std::vector<FitsIO<fileType::write_fits, CCfits::ExtHDU*>> filtered_coadd_fits_ios;
+    std::vector<FitsIO<fileType::write_fits, CCfits::ExtHDU*>> filtered_noise_fits_ios;
 
     template<typename param_t, typename option_t>
     void check_allowed(param_t param, std::vector<param_t> allowed, option_t option) {

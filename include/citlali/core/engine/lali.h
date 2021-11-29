@@ -173,10 +173,12 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         grppi::map(tula::grppi_utils::dyn_ex(ex_name), array_in_vec, array_out_vec, [&](auto d) {
             // declare fitter class for detector
             gaussfit::MapFitter fitter;
+            // size of region to fit in pixels
+            fitter.bounding_box_pix = bounding_box_pix;
             mb.pfit.col(d) = fitter.fit<gaussfit::MapFitter::centerValue>(mb.signal[d], mb.weight[d], calib_data);
             return 0;});
 
-        // rescale fits from pixel to on-sky units (radians)
+        // rescale params from pixel to on-sky units (radians)
         mb.pfit.row(1) = pixel_size*(mb.pfit.row(1).array() - (mb.ncols)/2)/RAD_ASEC;
         mb.pfit.row(2) = pixel_size*(mb.pfit.row(2).array() - (mb.nrows)/2)/RAD_ASEC;
         mb.pfit.row(3) = STD_TO_FWHM*pixel_size*(mb.pfit.row(3))/RAD_ASEC;

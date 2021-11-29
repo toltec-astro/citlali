@@ -39,6 +39,9 @@ public:
     // source center from telescope file
     std::map<std::string, Eigen::VectorXd> source_center;
 
+    // map absolute center value
+    double crval1_J2000, crval2_J2000;
+
     void get_telescope(const std::string &filepath) {
             using namespace netCDF;
             using namespace netCDF::exceptions;
@@ -68,6 +71,18 @@ public:
                     Eigen::Index npts = vars.find(pair.first)->second.getDim(0).getSize();
                     source_center[pair.second].resize(npts);
                     vars.find(pair.first)->second.getVar(source_center[pair.second].data());
+                }
+
+                // override center Ra if crval1_J2000 is non-zero
+                if (crval1_J2000 !=0) {
+                    Eigen::VectorXd center_ra(source_center["Ra"].size());
+                    source_center["Ra"] = center_ra.setConstant(crval1_J2000*DEG_TO_RAD);
+                }
+
+                // override center Dec if crval2_J2000 is non-zero
+                if (crval2_J2000 !=0) {
+                    Eigen::VectorXd center_dec(source_center["Dec"].size());
+                    source_center["Dec"] = center_dec.setConstant(crval2_J2000*DEG_TO_RAD);
                 }
 
                 /* TEMP */
