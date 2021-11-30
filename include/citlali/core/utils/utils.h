@@ -11,8 +11,8 @@ namespace engine_utils {
 using RowMatrixXd = Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>;
 using RowMatrixXcd = Eigen::Matrix<std::complex<double>,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>;
 
-template<typename DerivedA>
-auto stddev(Eigen::DenseBase<DerivedA> &vec) {
+template<typename Derived>
+auto stddev(Eigen::DenseBase<Derived> &vec) {
     double norm;
     if (vec.derived().size() == 1) {
         norm = 1;

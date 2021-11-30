@@ -63,6 +63,9 @@ public:
     // sample rate
     double fsmp;
 
+    // downsampled sample rate
+    double dfsmp;
+
     // controls for each stage
     bool run_despike, run_kernel, run_filter,
     run_downsample, run_clean;
@@ -299,6 +302,8 @@ public:
         get_config(crval2_J2000,std::tuple{"mapmaking","crval2_J2000"});
         get_config(x_size_pix,std::tuple{"mapmaking","x_size_pix"});
         get_config(y_size_pix,std::tuple{"mapmaking","y_size_pix"});
+        get_config(crpix1,std::tuple{"mapmaking","crpix1"});
+        get_config(crpix2,std::tuple{"mapmaking","crpix2"});
 
         // get beammap config options
         get_config(cutoff,std::tuple{"beammap","iter_tolerance"});

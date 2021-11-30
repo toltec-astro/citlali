@@ -4,7 +4,6 @@
 
 namespace timestream {
 
-
 class RTCProc {
 public:
     template <class Engine>

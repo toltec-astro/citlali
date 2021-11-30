@@ -1064,7 +1064,7 @@ int run(const rc_t &rc) {
                     if (todproc.engine().run_coadd) {
                         {
                             tula::logging::scoped_timeit timer("engine coadd()");
-                            todproc.engine().cmb.coadd(todproc.engine().mb, todproc.engine().fsmp,
+                            todproc.engine().cmb.coadd(todproc.engine().mb, todproc.engine().dfsmp,
                                                        todproc.engine().run_kernel);
                         }
                     }

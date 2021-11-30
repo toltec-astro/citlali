@@ -50,7 +50,7 @@ public:
         // read in file
         if constexpr (file_type==fileType::read_fits) {
             try {
-            pfits.reset( new CCfits::FITS(filepath + ".fits", CCfits::Read));
+            pfits.reset( new CCfits::FITS(filepath, CCfits::Read));
             }
             catch (CCfits::FITS::CantOpen) {
                 SPDLOG_ERROR("unable to open file {}", filepath);
@@ -103,7 +103,7 @@ public:
     auto get_hdu(std::string hdu_name) {
         // add extension hdu to vector
         CCfits::ExtHDU& hdu = pfits->extension(hdu_name);
-        std::valarray<unsigned long> contents;
+        std::valarray<double> contents;
 
         // read all user-specifed, coordinate, and checksum keys in the image
         hdu.readAllKeys();
@@ -113,11 +113,13 @@ public:
         long ax1(hdu.axis(0));
         long ax2(hdu.axis(1));
 
+        // holds the image data
         Eigen::MatrixXd data(ax2,ax1);
 
+        // loop through and copy into eigen matrix
         Eigen::Index k = 0;
-        for (Eigen::Index i=0;i<ax2;i++) {
-            for (Eigen::Index j=0;j<ax1;j++) {
+        for (Eigen::Index i=0; i<ax2; i++) {
+            for (Eigen::Index j=0; j<ax1; j++) {
                 data(i,j) = contents[k];
                 k++;
             }
@@ -174,21 +176,21 @@ public:
         hdu->addKey("CRVAL2", CRVAL2, "");
 
         // pixel corresponding to reference value
-        double refpixC1 = ncols/2;
-        double refpixC2 = nrows/2;
+        double ref_pix_c1 = ncols/2;
+        double ref_pix_c2 = nrows/2;
 
-        // add 0.5 for even sided maps (all maps are even sided currently)
-        if ((int)refpixC1 == refpixC1) {
-            refpixC1 += 0.5;
+        // add 0.5 for even sided maps (all maps are currently even sided)
+        if ((int)ref_pix_c1 == ref_pix_c1) {
+            ref_pix_c1 += 0.5;
         }
 
-        if ((int)refpixC2 == refpixC2) {
-            refpixC2 += 0.5;
+        if ((int)ref_pix_c2 == ref_pix_c2) {
+            ref_pix_c2 += 0.5;
         }
 
         // add CRPIX values
-        hdu->addKey("CRPIX1", refpixC1, "");
-        hdu->addKey("CRPIX2", refpixC2, "");
+        hdu->addKey("CRPIX1", ref_pix_c1, "");
+        hdu->addKey("CRPIX2", ref_pix_c2, "");
 
         // add CD matrix
         hdu->addKey("CD1_1", -pixel_size/unit_scale, "");

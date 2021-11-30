@@ -80,8 +80,6 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine en
                     cmb_ic = (cmb_icol(si));
                 }
 
-                //SPDLOG_INFO("mb_ir {} mb_ic {}", mb_ir, mb_ic);
-
                 // check if sample is flagged as good
                 if (in.flags.data(si, di)) {
                     auto sig = in.scans.data(si, di)*in.weights.data(di);
@@ -103,7 +101,7 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine en
                         // coverage map if not in beammap mode
                         if (engine->reduction_type != "beammap") {
                             // coverage map
-                            engine->mb.coverage.at(mi)(mb_ir,mb_ic) += 1./engine->fsmp;
+                            engine->mb.coverage.at(mi)(mb_ir,mb_ic) += 1./engine->dfsmp;
                         }
                     }
 

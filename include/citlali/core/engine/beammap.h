@@ -83,8 +83,12 @@ void Beammap::setup() {
     }
 
     if (run_downsample) {
-        // set the sample rate to the downsampled sample rate
-        fsmp = fsmp/downsampler.dsf;
+        // set the downsampled sample rate
+        dfsmp = fsmp/downsampler.dsf;
+    }
+
+    else {
+        dfsmp = fsmp;
     }
 
     // toltec input/output class

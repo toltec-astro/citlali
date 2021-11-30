@@ -35,8 +35,12 @@ void Lali::setup() {
     }
 
     if (run_downsample) {
-        // set the sample rate to the downsampled sample rate
-        fsmp = fsmp/downsampler.dsf;
+        // set the downsampled sample rate
+        dfsmp = fsmp/downsampler.dsf;
+    }
+
+    else {
+        dfsmp = fsmp;
     }
 
     // toltec i/o class for filenames
@@ -209,7 +213,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios) {
         // add coverage map to file
         f_ios.at(i).add_hdu("coverage", mout.coverage.at(i));
 
-        // add signal to noise map to file.  We calculate it here to save space
+        // add signal-to-noise map to file.  We calculate it here to save space
         Eigen::MatrixXd signoise = mout.signal.at(i).array()*sqrt(mout.weight.at(i).array());
         f_ios.at(i).add_hdu("sig2noise", signoise);
 

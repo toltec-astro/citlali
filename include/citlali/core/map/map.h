@@ -119,6 +119,9 @@ public:
     // map size in pixels
     double x_size_pix, y_size_pix;
 
+    // reference pixel
+    double crpix1, crpix2;
+
     template <typename tel_meta_t, typename C, typename S>
     map_dims_t get_dims(tel_meta_t &, C &, S &, std::string, std::string,
                         const double, const double);

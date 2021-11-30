@@ -116,7 +116,7 @@ public:
     }
 
     template <class MB>
-    void coadd(MB &mb, const double fsmp, const bool run_kernel) {
+    void coadd(MB &mb, const double dfsmp, const bool run_kernel) {
         // offset between CMB and MB physical coordinates
         int deltai = (mb.rcphys(0) - rcphys(0))/pixel_size;
         int deltaj = (mb.ccphys(0) - ccphys(0))/pixel_size;
@@ -142,7 +142,7 @@ public:
 
             // signal += fsmp*weight
             coverage.at(mi).block(deltai, deltaj, mb.nrows, mb.ncols) +=
-                    mb.weight.at(mi)*1./fsmp;
+                    mb.weight.at(mi)*1./dfsmp;
         }
     }
 
