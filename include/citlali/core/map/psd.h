@@ -8,144 +8,164 @@ class PSD {
 public:
     double cov_cut;
 
-    Eigen::VectorXd rcphys, ccphys;
+    //Eigen::VectorXd rcphys, ccphys;
     Eigen::MatrixXd w;
     Eigen::VectorXd psd, psd_freq;
     Eigen::MatrixXd psd2d, psd2d_freq;
 
-    template <typename Derived>
-    void calc_map_psd(Eigen::DenseBase<Derived> &);
+    template <typename DerivedA, typename DerivedB, typename DerivedC>
+    void calc_map_psd(Eigen::DenseBase<DerivedA> &, Eigen::DenseBase<DerivedB> &,
+                      Eigen::DenseBase<DerivedC> &, Eigen::DenseBase<DerivedC> &);
 };
 
-template <typename Derived>
-void PSD::calc_map_psd(Eigen::DenseBase<Derived> &in) {
+template <typename DerivedA, typename DerivedB, typename DerivedC>
+void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB> &wt,
+                       Eigen::DenseBase<DerivedC> &rcphys, Eigen::DenseBase<DerivedC> &ccphys) {
 
-    auto weight_threshold = engine_utils::find_weight_threshold(in, cov_cut);
-    auto [cut_x_range, cut_y_range] = engine_utils::set_coverage_cut_ranges(in, weight_threshold);
+    auto weight_threshold = engine_utils::find_weight_threshold(wt, cov_cut);
+    auto [cut_row_range, cut_col_range] = engine_utils::set_coverage_cut_ranges(wt, weight_threshold);
 
-    // make sure coverage cut map has an even number
-    // of rows and columns
+    // make sure coverage cut map has an even number of rows and cols
+    Eigen::Index nr = cut_row_range(1) - cut_row_range(0) + 1;
+    Eigen::Index nc = cut_col_range(1) - cut_col_range(0) + 1;
+    Eigen::Index crr0 = cut_row_range(0);
+    Eigen::Index ccr0 = cut_col_range(0);
+    Eigen::Index crr1 = cut_row_range(1);
+    Eigen::Index ccr1 = cut_col_range(1);
 
-    Eigen::Index nx = cut_x_range(1)-cut_x_range(0)+1;
-    Eigen::Index ny = cut_y_range(1)-cut_y_range(0)+1;
-    Eigen::Index cxr0 = cut_x_range(0);
-    Eigen::Index cyr0 = cut_y_range(0);
-    Eigen::Index cxr1 = cut_x_range(1);
-    Eigen::Index cyr1 = cut_y_range(1);
-
-    if (nx % 2 == 1) {
-      cxr1 = cut_x_range(1) - 1;
-      nx--;
+    if (nr % 2 == 1) {
+      crr1 = cut_row_range(1) - 1;
+      nr--;
     }
 
-    if (ny % 2 == 1) {
-      cyr1 = cut_y_range(1) - 1;
-      ny--;
+    if (nc % 2 == 1) {
+      ccr1 = cut_col_range(1) - 1;
+      nc--;
     }
 
-    double diffx = rcphys(1) - rcphys(0);
-    double diffy = ccphys(1) - ccphys(0);
-    double xsize = diffx * nx;
-    double ysize = diffy * ny;
-    double diffqx = 1. / xsize;
-    double diffqy = 1. / ysize;
+    double diffr = rcphys(1) - rcphys(0);
+    double diffc = ccphys(1) - ccphys(0);
+    double rsize = diffr * nr;
+    double csize = diffc * nc;
+    double diffqr = 1. / rsize;
+    double diffqc = 1. / csize;
 
-    auto out = engine_utils::fft2w<engine_utils::forward>(in, nx,ny);
-    out = out*diffx*diffy;
+    //SPDLOG_INFO("in {}", in.derived());
+    Eigen::MatrixXcd block(nr, nc);
+    block.real() = in.block(crr0, ccr0, nr, nc);
+    block.imag().setZero();
 
-    Eigen::MatrixXd h = diffqx*diffqy*out.cwiseAbs2();
+    block.real() = block.real().array() * engine_utils::hanning(nr, nc).array();
 
-    w = Eigen::Map<Eigen::VectorXd>(h.data(),nx*ny);
+    SPDLOG_INFO("block {}", block);
+    auto out = engine_utils::fft2w<engine_utils::forward>(block, nr, nc);
+    out = out*diffr*diffc;
+
+    //Eigen::Map<Eigen::VectorXcd> out_vec(out.data(),nr*nc);
+
+    SPDLOG_INFO("out {}", out);
+
+    //Eigen::VectorXd w = diffqr*diffqc*out.cwiseAbs2();
+    //Eigen::MatrixXd h = Eigen::Map<Eigen::MatrixXd>(w.data(), nr, nc);
+
+    Eigen::MatrixXd h = diffqr*diffqc*out.cwiseAbs2();
 
     // vectors of frequencies
-    Eigen::VectorXd qx(nx);
-    Eigen::VectorXd qy(ny);
+    Eigen::VectorXd qr(nr);
+    Eigen::VectorXd qc(nc);
 
-    int shift = nx/2-1;
+    int shift = nr/2 - 1;
     Eigen::Index index;
-    for (int i=0; i<nx; i++) {
+    for (Eigen::Index i=0; i<nr; i++) {
         index = i-shift;
         if (index < 0) {
-            index += nx;
+            index += nr;
         }
-        qx(index) = diffqx*(i-(nx/2-1));
+        qr(index) = diffqr*(i-(nr/2-1));
     }
 
-    shift = ny/2-1;
-    for (int i=0; i<ny; i++) {
+    //SPDLOG_INFO("qr {}", qr);
+
+    shift = nc/2 - 1;
+    for (Eigen::Index i=0; i<nc; i++) {
         index = i-shift;
         if (index < 0) {
-            index += ny;
+            index += nc;
         }
-        qy(index) = diffqy*(i-(ny/2-1));
+        qc(index) = diffqc*(i-(nc/2-1));
     }
 
-    // shed first row and column of h, qx, qy
-    Eigen::MatrixXd pmfq(nx-1,ny-1);
-    for (int i=1; i<nx; i++) {
-        for (int j=1; j<ny; j++) {
-            pmfq(i-1,j-1) = h(i,j);
+    // shed first row and column of h, qr, qc
+    Eigen::MatrixXd pmfq(nr-1,nc-1);
+    for (Eigen::Index i=1; i<nc; i++) {
+        for (int j=1; j<nr; j++) {
+            pmfq(j-1,i-1) = h(j,i);
         }
     }
 
-    for (int i=0; i<nx-1; i++) {
-        qx(i) = qx(i+1);
+    for (Eigen::Index i=0; i<nr-1; i++) {
+        qr(i) = qr(i+1);
     }
-    for (int j=0; j<ny-1; j++) {
-        qy(j) = qy(j+1);
+    for (int j=0; j<nc-1; j++) {
+        qc(j) = qc(j+1);
     }
 
     // matrices of frequencies and distances
-    Eigen::MatrixXd qmap(nx-1,ny-1);
-    Eigen::MatrixXd qsymm(nx-1,ny-1);
+    Eigen::MatrixXd qmap(nr-1,nc-1);
+    Eigen::MatrixXd qsymm(nr-1,nc-1);
 
-    for (int i=1; i<nx; i++) {
-        for(int j=1; j<ny; j++) {
-            qmap(i-1,j-1) = sqrt(pow(qx(i),2) + pow(qy(j),2));
-            qsymm(i-1,j-1) = qx(i)*qy(j);
+    for (Eigen::Index i=1; i<nc; i++) {
+        for(int j=1; j<nr; j++) {
+            qmap(j-1,i-1) = sqrt(pow(qr(j),2) + pow(qc(i),2));
+            qsymm(j-1,i-1) = qr(j)*qc(i);
         }
     }
 
-    // find max of nx and ny and correspoinding diffq
+    // find max of nr and nc and correspoinding diffq
     int nn;
     double diffq;
-    if (nx > ny) {
-        nn = nx/2+1;
-        diffq = diffqx;
+    if (nr > nc) {
+        nn = nr/2+1;
+        diffq = diffqr;
     }
     else {
-      nn = ny/2+1;
-      diffq = diffqy;
+      nn = nc/2+1;
+      diffq = diffqc;
     }
 
     // generate the final vector of frequencies
     psd_freq.resize(nn);
-    for (int i=0; i<nn; i++) {
-        psd_freq[i] = diffq*(i + 0.5);
+    for (Eigen::Index i=0; i<nn; i++) {
+        psd_freq(i) = diffq*(i + 0.5);
     }
 
     // pack up the final vector of psd values
-    psd.resize(nn);
-    for (int i=0; i<nn; i++){
-        int countS=0;
-        int countA=0;
-        double psdarrS=0.;
-        double psdarrA=0.;
-        for (int j=0;j<nx-1;j++)
-            for (int k=0;k<ny-1;k++) {
-                if((int) (qmap(j,k) / diffq) == i && qsymm(j,k) >= 0.){
-                    countS++;
-                    psdarrS += pmfq(j,k);
+    psd.setZero(nn);
+    for (Eigen::Index i=0; i<nn; i++) {
+        int count_s = 0;
+        int count_a = 0;
+        double psdarr_s = 0.;
+        double psdarr_a = 0.;
+        for (int j=0; j<nc-1; j++) {
+            for (int k=0; k<nr-1; k++) {
+                if ((int) (qmap(k,j) / diffq) == i && qsymm(k,j) >= 0.){
+                    count_s++;
+                    psdarr_s += pmfq(k,j);
                 }
 
-                if((int) (qmap(j,k) / diffq) == i && qsymm(j,k) < 0.){
-                    countA++;
-                    psdarrA += pmfq(j,k);
+                if ((int) (qmap(k,j) / diffq) == i && qsymm(k,j) < 0.){
+                    count_a++;
+                    psdarr_a += pmfq(k,j);
                 }
             }
-            if(countS != 0) psdarrS /= countS;
-            if(countA != 0) psdarrA /= countA;
-            psd(i) = std::min(psdarrS,psdarrA);
+        }
+            if (count_s != 0) {
+                psdarr_s /= count_s;
+            }
+            if (count_a != 0) {
+                psdarr_a /= count_a;
+            }
+            psd(i) = std::min(psdarr_s,psdarr_a);
     }
 
     // smooth the psd with a 10-element boxcar filter
@@ -155,4 +175,16 @@ void PSD::calc_map_psd(Eigen::DenseBase<Derived> &in) {
 
     psd2d = pmfq;
     psd2d_freq = qmap;
+
+    SPDLOG_INFO("nr {} nc {}", nr, nc);
+    SPDLOG_INFO("diffqr {} diffqc {}", diffqr, diffqc);
+    SPDLOG_INFO("out {}", out);
+
+    SPDLOG_INFO("h {}",h);
+
+    SPDLOG_INFO("psd2d {}", psd2d);
+    SPDLOG_INFO("psd2d_freq {}", psd2d_freq);
+
+    SPDLOG_INFO("psd {}", psd);
+    SPDLOG_INFO("psd_freq {}", psd_freq);
 }

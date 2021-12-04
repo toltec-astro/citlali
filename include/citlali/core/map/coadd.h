@@ -8,6 +8,7 @@
 #include <tula/logging.h>
 
 #include <citlali/core/utils/pointing.h>
+#include <citlali/core/map/psd.h>
 
 using map_dims_t = std::tuple<int, int, Eigen::VectorXd, Eigen::VectorXd>;
 using map_extent_t = std::vector<double>;
@@ -35,6 +36,13 @@ public:
 
     // noise maps (nrows, ncols, nnoise) of length nmaps
     std::vector<Eigen::Tensor<double,3>> noise;
+
+    // vector of psd classes for signal maps
+    std::vector<PSD> psd;
+
+    // vector of vector of psd classes for noise maps
+    std::vector<std::vector<PSD>> noise_psd;
+    std::vector<PSD> noise_avg_psd;
 
     void setup_maps(std::vector<map_coord_t> map_coords, map_count_t _mc) {
         map_count = _mc;

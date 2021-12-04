@@ -398,8 +398,8 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                   }
 
                   else {
-                      // Linearly interpolate between the before
-                      //and after good samples
+                      // linearly interpolate between the before
+                      // and after good samples
                       xx(0) = si_flags(j) - 1;
                       xx(1) = ei_flags(j) + 1;
                       yy(0) = scans(si_flags(j) - 1, det);
@@ -415,40 +415,39 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                   // all non-flagged detectors
                   // repeat for all detectors without spikes
                   // count up spike-free detectors and store their values
-                  int detCount = 0;
+                  int det_count = 0;
                   if (use_all_det) {
-                      detCount = ndet;
+                      det_count = ndet;
                   }
                   else {
-                      detCount = has_spikes.sum();
+                      det_count = has_spikes.sum();
                   }
 
-                  Eigen::MatrixXd detm(detCount, nflags);
-                  Eigen::VectorXd res(detCount);
+                  Eigen::MatrixXd detm(det_count, nflags);
+                  Eigen::VectorXd res(det_count);
                   int c = 0;
                   for (Eigen::Index ii = 0; ii < ndet; ii++) {
                       if (has_spikes(ii) || use_all_det) {
                           detm.row(c) =
                                   Eigen::VectorXd::LinSpaced(nflags, si_flags(j), si_flags(j) + nflags - 1);
-                          res(c) = 1;
+                          res(c) = responsivity(c);
                           c++;
                       }
                   }
 
                   // for each of these go through and redo the offset bit
-                  Eigen::MatrixXd lin_offsetOthers(detCount, nflags);
+                  Eigen::MatrixXd lin_offset_others(det_count, nflags);
 
+                  // first sample in scan is flagged so offset is flat
+                  // with the value of the last sample in the flagged region
                   if (si_flags(j) == 0) {
-                      // first sample in scan is flagged so offset is flat
-                      // with the value of the last sample in the flagged region
-
-                      lin_offsetOthers = detm.col(0).replicate(1, nflags);
+                      lin_offset_others = detm.col(0).replicate(1, nflags);
                   }
 
+                  // last sample in scan is flagged so offset is flat
+                  // with the value of the first sample in the flagged region
                   else if (ei_flags(j) == npts - 1) {
-                      // last sample in scan is flagged so offset is flat
-                      // with the value of the first sample in the flagged region
-                      lin_offsetOthers = detm.col(nflags - 1).replicate(1, nflags);
+                      lin_offset_others = detm.col(nflags - 1).replicate(1, nflags);
                   }
 
                   else {
@@ -459,29 +458,29 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                       xx(0) = si_flags(j) - 1;
                       xx(1) = ei_flags(j) + 1;
                       // do we need this loop?
-                      for (Eigen::Index ii = 0; ii < detCount; ii++) {
+                      for (Eigen::Index ii = 0; ii < det_count; ii++) {
                           yy(0) = detm(ii, 0);
                           yy(0) = detm(ii, nflags - 1);
 
                           mlinterp::interp(tnpts.data(), nflags, yy.data(), tmp_vec.data(), xx.data(),
                                            xlin_offset.data());
-                          lin_offsetOthers.row(ii) = tmp_vec;
+                          lin_offset_others.row(ii) = tmp_vec;
                       }
                   }
 
-                  detm = detm - lin_offsetOthers;
+                  detm = detm - lin_offset_others;
 
                   // scale det by responsivities and average to make sky model
                   Eigen::VectorXd sky_model = Eigen::VectorXd::Zero(nflags);
 
                   sky_model = sky_model.array() + (detm.array().colwise() / res.array()).rowwise().sum();
-                  sky_model /= detCount;
+                  sky_model /= det_count;
 
-                  Eigen::VectorXd std_dev_ff = Eigen::VectorXd::Zero(detCount);
+                  Eigen::VectorXd std_dev_ff = Eigen::VectorXd::Zero(det_count);
                   double tmp_mean;
                   Eigen::VectorXd tmp_vec(nflags);
 
-                  for (Eigen::Index ii = 0; ii < detCount; ii++) {
+                  for (Eigen::Index ii = 0; ii < det_count; ii++) {
                       tmp_vec = (detm.array().colwise() / res.array() - sky_model.array());
                       tmp_mean = tmp_vec.mean();
                       std_dev_ff(ii) = (tmp_vec.array() - tmp_mean).pow(2).sum();
@@ -490,7 +489,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                                                     : std_dev_ff(ii) / (nflags - 1.);
                   }
 
-                  double mean_std_dev = (std_dev_ff.array().sqrt()).sum() / detCount;
+                  double mean_std_dev = (std_dev_ff.array().sqrt()).sum() / det_count;
 
                   // the noiseless fake data is then the sky model plus the
                   // flagged detectors linear offset

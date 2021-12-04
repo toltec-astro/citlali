@@ -568,7 +568,6 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
     auto populate_rtc(const RawObs &rawobs, scanindices_t &scanindex,
                       const int scanlength, const int n_detectors) {
         // call reduce rawobs, get the data into rtc
-
         auto slice = tula::container_utils::Slice<int>{scanindex(2), scanindex(3) + 1,
                                                  std::nullopt};
         auto reduced = reduce_rawobs(rawobs, slice);
@@ -969,16 +968,38 @@ int run(const rc_t &rc) {
                         FitsIO<fileType::write_fits, CCfits::ExtHDU*> coadd_fits_io(coadd_filename);
                         todproc.engine().coadd_fits_ios.push_back(std::move(coadd_fits_io));
 
+                        if (todproc.engine().run_coadd_filter) {
+                            // generate filename for filtered coadded maps
+                            coadd_filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                    ToltecIO::no_obs_type, ToltecIO::filtered, ToltecIO::obsnum_false>(todproc.engine().filepath,
+                                                                                                  todproc.engine().obsnum,i);
+
+                            // push the file classes into a vector for storage
+                            FitsIO<fileType::write_fits, CCfits::ExtHDU*> filtered_coadd_fits_ios(coadd_filename);
+                            todproc.engine().filtered_coadd_fits_ios.push_back(std::move(filtered_coadd_fits_ios));
+                        }
+
+
                         // check if noise maps requested
                         if (todproc.engine().run_noise) {
                             std::string noise_filename;
                             noise_filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
-                                    ToltecIO::no_obs_type, ToltecIO::noise, ToltecIO::obsnum_false>(todproc.engine().filepath,
+                                    ToltecIO::no_obs_type, ToltecIO::noise_raw, ToltecIO::obsnum_false>(todproc.engine().filepath,
                                                                                                   todproc.engine().obsnum,i);
 
                             // push the file classes into a vector for storage
                             FitsIO<fileType::write_fits, CCfits::ExtHDU*> noise_fits_io(noise_filename);
                             todproc.engine().noise_fits_ios.push_back(std::move(noise_fits_io));
+
+                            if (todproc.engine().run_coadd_filter) {
+                                noise_filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                        ToltecIO::no_obs_type, ToltecIO::noise_filtered, ToltecIO::obsnum_false>(todproc.engine().filepath,
+                                                                                                      todproc.engine().obsnum,i);
+
+                                // push the file classes into a vector for storage
+                                FitsIO<fileType::write_fits, CCfits::ExtHDU*> filtered_noise_fits_io(noise_filename);
+                                todproc.engine().filtered_noise_fits_ios.push_back(std::move(filtered_noise_fits_io));
+                            }
 
                             // loop through noise maps for each map count
                             for (Eigen::Index j=0; j<todproc.engine().cmb.nnoise; j++) {
@@ -1075,13 +1096,60 @@ int run(const rc_t &rc) {
                     todproc.engine().cmb.normalize_maps(todproc.engine().run_kernel);
 
                     // coadd histogram and psd
+                    for (Eigen::Index i=0; i < todproc.engine().cmb.map_count; i++) {
+                        SPDLOG_INFO("calculating coadded map psds for map {}", i);
+                        PSD psd;
+                        psd.cov_cut = 0.75;
+                        psd.calc_map_psd(todproc.engine().cmb.signal.at(i), todproc.engine().cmb.weight.at(i),
+                                         todproc.engine().cmb.rcphys, todproc.engine().cmb.ccphys);
+                        todproc.engine().cmb.psd.push_back(std::move(psd));
 
+                        SPDLOG_INFO("calculating noise map psds for map {}", i);
+                        if (todproc.engine().run_noise) {
+                            // noise average histogram and psd
+                            std::vector<PSD> psd_vec;
+                            todproc.engine().cmb.noise_psd.push_back(psd_vec);
 
+                            PSD noise_avg_psd;
 
-                    if (todproc.engine().run_noise) {
-                        // noise average histogram and psd
+                            for (Eigen::Index j=0; j < todproc.engine().cmb.nnoise; j++) {
+                                PSD psd;
+                                psd.cov_cut = 0.75;
+                                Eigen::Tensor<double,2> out = todproc.engine().cmb.noise.at(i).chip(j,2);
+                                Eigen::Map<Eigen::MatrixXd> noise(out.data(),out.dimension(0),out.dimension(1));
+                                psd.calc_map_psd(noise, todproc.engine().cmb.weight.at(i),todproc.engine().cmb.rcphys, todproc.engine().cmb.ccphys);
+                                todproc.engine().cmb.noise_psd.at(i).push_back(std::move(psd));
+
+                                if (j==0) {
+                                    noise_avg_psd.psd = todproc.engine().cmb.noise_psd.at(i).back().psd;
+                                    noise_avg_psd.psd_freq = todproc.engine().cmb.noise_psd.at(i).back().psd_freq;
+                                    noise_avg_psd.psd2d = todproc.engine().cmb.noise_psd.at(i).back().psd2d;
+                                    noise_avg_psd.psd2d_freq = todproc.engine().cmb.noise_psd.at(i).back().psd2d_freq;
+                                }
+
+                                else {
+                                    noise_avg_psd.psd = noise_avg_psd.psd + todproc.engine().cmb.noise_psd.at(i).back().psd;
+                                    //noise_avg_psd.psd_freq = noise_avg_psd.psd_freq + todproc.engine().cmb.noise_psd.at(i).back().psd_freq;
+                                    noise_avg_psd.psd2d = noise_avg_psd.psd2d + todproc.engine().cmb.noise_psd.at(i).back().psd2d/todproc.engine().cmb.nnoise;
+                                    noise_avg_psd.psd2d_freq = noise_avg_psd.psd2d_freq + todproc.engine().cmb.noise_psd.at(i).back().psd2d_freq/todproc.engine().cmb.nnoise;
+                                }
+                            }
+
+                            noise_avg_psd.psd = noise_avg_psd.psd/todproc.engine().cmb.nnoise;
+                            noise_avg_psd.psd_freq = noise_avg_psd.psd_freq;///todproc.engine().cmb.nnoise;
+                            //noise_avg_psd.psd2d = noise_avg_psd.psd2d/todproc.engine().cmb.nnoise;
+                            //noise_avg_psd.psd2d_freq = noise_avg_psd.psd2d_freq/todproc.engine().cmb.nnoise;
+
+                            todproc.engine().cmb.noise_avg_psd.push_back(noise_avg_psd);
+
+                            SPDLOG_INFO("avg psd {}",todproc.engine().cmb.noise_avg_psd.back().psd);
+                            SPDLOG_INFO("avg psd_freq {}",todproc.engine().cmb.noise_avg_psd.back().psd_freq);
+                            SPDLOG_INFO("avg psd2d {}",todproc.engine().cmb.noise_avg_psd.back().psd2d);
+                            SPDLOG_INFO("avg psd2d_freq {}",todproc.engine().cmb.noise_avg_psd.back().psd2d_freq);
+                        }
                     }
 
+                    SPDLOG_INFO("noise_avg_psd {}", todproc.engine().cmb.noise_avg_psd.size());
 
                     // generate coadd output files
                     {
@@ -1091,24 +1159,31 @@ int run(const rc_t &rc) {
                     }
 
                     if (todproc.engine().run_coadd_filter) {
-                        // filter coadd map
+                        // filter coadd maps
                         {
-                            tula::logging::scoped_timeit timer("filtering coadd map()");
+                            ToltecIO toltec_io;
+                            tula::logging::scoped_timeit timer("filter_coaddition()");
                             for (Eigen::Index i=0; i<todproc.engine().cmb.map_count; i++) {
-                                //todproc.engine().wiener_filter.filter_coaddition(todproc.engine().cmb, i);
+                                todproc.engine().wiener_filter.make_template(todproc.engine().cmb,
+                                                                             todproc.engine().gaussian_template_fwhm_rad[toltec_io.name_keys[i]]);
+                                todproc.engine().wiener_filter.filter_coaddition(todproc.engine().cmb, i);
+
+                                // filter noise maps
+                                if (todproc.engine().run_noise) {
+                                    tula::logging::scoped_timeit timer("filter_noise()");
+                                    for (Eigen::Index j=0; j<todproc.engine().cmb.nnoise; j++) {
+                                        todproc.engine().wiener_filter.filter_noise(todproc.engine().cmb, i, j);
+                                    }
+                                }
                             }
                         }
-                        if (todproc.engine().run_noise) {
-                            tula::logging::scoped_timeit timer("filtering noise map()");
-                            //todproc.engine().wiener_filter.filter_noise();
-                        }
-                    }
 
-                    // generate filtered coadd output files (cmb is overwritten with filtered maps)
-                    {
-                        tula::logging::scoped_timeit timer("engine filtered coadd output()");
-                        todproc.engine().template
-                                output<EngineBase::coadd>(todproc.engine().cmb,todproc.engine().coadd_fits_ios);
+                        // generate filtered coadd output files (cmb is overwritten with filtered maps)
+                        {
+                            tula::logging::scoped_timeit timer("engine filtered coadd output()");
+                            todproc.engine().template
+                                    output<EngineBase::coadd>(todproc.engine().cmb,todproc.engine().filtered_coadd_fits_ios);
+                        }
                     }
                 }
 

@@ -130,8 +130,6 @@ auto Cleaner::calcEigs(const Eigen::DenseBase<DerivedA> &scans, const Eigen::Den
     // subtract median from scans and copy into det matrix
     det = scans.derived().rowwise() - det_means;
 
-    SPDLOG_INFO("det row/col {} {}", det.rows(), det.cols());
-
     // container for Correlation Matrix
     Eigen::MatrixXd pcaCorr(ndetectors, ndetectors);
 
@@ -173,6 +171,7 @@ auto Cleaner::calcEigs(const Eigen::DenseBase<DerivedA> &scans, const Eigen::Den
     }
 
     if constexpr (backend == EigenBackend) {
+        // use Eigen's eigen solver
         Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> solution(pcaCorr);
         evals = solution.eigenvalues();
         evecs = solution.eigenvectors();

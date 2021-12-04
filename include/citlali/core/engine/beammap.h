@@ -94,6 +94,9 @@ void Beammap::setup() {
     // toltec input/output class
     ToltecIO toltec_io;
 
+    // empty the fits vector for subsequent observations
+    fits_ios.clear();
+
     // create empty FITS files at start
     for (Eigen::Index i=0; i<array_indices.size(); i++) {
         std::string filename;

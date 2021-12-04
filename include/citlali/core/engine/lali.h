@@ -46,6 +46,9 @@ void Lali::setup() {
     // toltec i/o class for filenames
     ToltecIO toltec_io;
 
+    // empty the fits vector for subsequent observations
+    fits_ios.clear();
+
     // create files for each member of the array_indices group
     for (Eigen::Index i=0; i<array_indices.size(); i++) {
         std::string filename;
@@ -158,9 +161,16 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     SPDLOG_INFO("normalizing maps");
     mb.normalize_maps(run_kernel);
 
+    SPDLOG_INFO("getting maps psds");
+    for (Eigen::Index i=0; i < array_indices.size(); i++) {
+        PSD psd;
+        psd.cov_cut = 0.75;
+        psd.calc_map_psd(mb.signal.at(i), mb.weight.at(i), mb.rcphys, mb.ccphys);
+        mb.psd.push_back(std::move(psd));
+    }
+
     // do fit if map_grouping is pointing
     if (reduction_type == "pointing") {
-
         // placeholder vectors for grppi loop
         std::vector<int> array_in_vec, array_out_vec;
         array_in_vec.resize(array_indices.size());
@@ -200,13 +210,17 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios) {
     for (Eigen::Index i=0; i<array_indices.size(); i++) {
         SPDLOG_INFO("writing {}.fits", f_ios.at(i).filepath);
         // add signal map to file
+        SPDLOG_INFO("SIG {}", mout.signal.at(i));
         f_ios.at(i).add_hdu("signal", mout.signal.at(i));
 
         //add weight map to file
+        SPDLOG_INFO("wt {}", mout.weight.at(i));
         f_ios.at(i).add_hdu("weight", mout.weight.at(i));
+        //f_ios.at(i).add_hdu("weight", mout.psd.at(i).psd2d);
 
         //add kernel map to file
         if (run_kernel) {
+            SPDLOG_INFO("ker {}", mout.kernel.at(i));
             f_ios.at(i).add_hdu("kernel", mout.kernel.at(i));
         }
 
@@ -273,7 +287,6 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios) {
     // add fitting parameters to file if pointing mode is selected
     if constexpr (out_type==MapType::obs) {
         if (reduction_type == "pointing") {
-
             // yaml node for ecsv table meta data (units and description)
             YAML::Node meta;
             meta["amp"].push_back("units: Mjy/sr");

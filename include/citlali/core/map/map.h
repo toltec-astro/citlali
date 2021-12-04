@@ -11,7 +11,7 @@
 #include <tula/grppi.h>
 
 #include <citlali/core/utils/pointing.h>
-
+#include <citlali/core/map/psd.h>
 #include <citlali/core/map/coadd.h>
 
 using map_dims_t = std::tuple<int, int, Eigen::VectorXd, Eigen::VectorXd>;
@@ -28,8 +28,11 @@ public:
     // for map fit parameters
     Eigen::MatrixXd pfit;
 
-    // Physical coordinates for rows and cols (radians)
+    // physical coordinates for rows and cols (radians)
     Eigen::VectorXd rcphys, ccphys;
+
+    // vector of psd classes
+    std::vector<PSD> psd;
 
     // map types
     std::vector<Eigen::MatrixXd> signal, weight, kernel, coverage;

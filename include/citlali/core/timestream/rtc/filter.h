@@ -22,18 +22,18 @@ public:
 };
 
 void Filter::make_filter() {
-    // Calculate Nyquist frequency
+    // calculate nyquist frequency
     double nyquist = fsmp / 2.;
-    // Scale upper frequency cutoff to Nyquist frequency
+    // scale upper frequency cutoff to Nyquist frequency
     auto f_high = _flow / nyquist;
-    // Scale lower frequency cutoff to Nyquist frequency
+    // scale lower frequency cutoff to Nyquist frequency
     auto f_low = _fhigh / nyquist;
 
-    // Check if upper frequency limit (lowpass)
+    // check if upper frequency limit (lowpass)
     // is larger than lower frequency limit (highpass)
     double f_stop = (f_high < f_low) ? 1. : 0.;
 
-    // Determine alpha parameter based on Gibbs factor
+    // determine alpha parameter based on Gibbs factor
     double alpha;
 
     if (a_gibbs <= 21.) {
@@ -46,7 +46,7 @@ void Filter::make_filter() {
       alpha = 0.5842 * std::pow(a_gibbs - 21., 0.4) + 0.07886 * (a_gibbs - 21.);
     }
 
-    // Argument for bessel function
+    // argument for bessel function
     Eigen::VectorXd arg(nterms);
     arg.setLinSpaced(nterms, 1, nterms);
     arg = alpha * sqrt(1. - (arg / nterms).cwiseAbs2().array());
@@ -95,7 +95,7 @@ void Filter::convolve_filter(Eigen::DenseBase<Derived> &in) {
     Eigen::Tensor<double, 2> out_tensor(
         in_tensor.dimension(0) - fvec_tensor.dimension(0) + 1, in.cols());
 
-    // Run the tensor convolution
+    // run the tensor convolution
     out_tensor = in_tensor.convolve(fvec_tensor, dims);
 
     // replace the scan data with the filtered data through an Eigen::Map

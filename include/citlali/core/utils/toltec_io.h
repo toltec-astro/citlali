@@ -44,10 +44,11 @@ struct ToltecIO {
     enum ProdType {
         raw = 0,
         filtered = 1,
-        noise = 2,
-        hist = 3,
-        psd = 4,
-        no_prod_type = 5
+        noise_raw = 2,
+        noise_filtered = 3,
+        hist = 4,
+        psd = 5,
+        no_prod_type = 6
     };
 
     enum ObsNum {
@@ -151,8 +152,12 @@ struct ToltecIO {
             filepath = filepath + "filtered";
         }
 
-        if constexpr (prod_type == noise) {
-            filepath = filepath + "noise";
+        if constexpr (prod_type == noise_raw) {
+            filepath = filepath + "noise_raw";
+        }
+
+        if constexpr (prod_type == noise_filtered) {
+            filepath = filepath + "noise_filtered";
         }
 
         if constexpr (prod_type == hist) {

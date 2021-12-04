@@ -347,6 +347,10 @@ public:
                 get_config(gaussian_template_fwhm_rad["a1400"],std::tuple{"wiener_filter","gaussian_template_fwhm_arcsec","a1400"});
                 get_config(gaussian_template_fwhm_rad["a2000"],std::tuple{"wiener_filter","gaussian_template_fwhm_arcsec","a2000"});
 
+                for (auto const& pair : gaussian_template_fwhm_rad) {
+                    gaussian_template_fwhm_rad[pair.first] = gaussian_template_fwhm_rad[pair.first]*RAD_ASEC;
+                }
+
                 wiener_filter.run_kernel = run_kernel;
             }
         }
