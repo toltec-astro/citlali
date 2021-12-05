@@ -1014,8 +1014,7 @@ int run(const rc_t &rc) {
                 }
 
                 // run the reduction for each observation
-                for (std::size_t j = 0; j < 2;++j){//co.n_inputs(); ++i) {
-                            std::size_t i = 0;
+                for (std::size_t i = 0; i < co.n_inputs(); ++i) {
                     SPDLOG_INFO("starting reduction of observation {}/{}",i+1, co.n_inputs());
                     const auto &rawobs = co.inputs()[i];
 
