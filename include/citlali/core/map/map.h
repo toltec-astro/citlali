@@ -47,10 +47,10 @@ public:
         ccphys = map_coord.at(1);
 
         // empty map vectors for each observation
-        signal.empty();
-        weight.empty();
-        kernel.empty();
-        coverage.empty();
+        signal.clear();
+        weight.clear();
+        kernel.clear();
+        coverage.clear();
 
         // resize the maps (nobs, [nrows, ncols])
         for (Eigen::Index i=0; i<map_count; i++) {
