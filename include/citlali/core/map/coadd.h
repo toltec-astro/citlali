@@ -108,6 +108,12 @@ public:
 
         SPDLOG_INFO("coadd map buffer nrows {} ncols {}", nrows, ncols);
 
+        // exit if individual maps are too far apart
+        if (nrows > 36000 || ncols > 36000 ||  nrows*ncols > 1.e9) {
+            SPDLOG_INFO("map is too big: [{} {}]", nrows, ncols);
+            std::exit(EXIT_FAILURE);
+          }
+
         // resize the maps (nobs, [nrows, ncols])
         for (Eigen::Index i=0; i<map_count; i++) {
             signal.push_back(Eigen::MatrixXd::Zero(nrows, ncols));

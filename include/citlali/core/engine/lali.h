@@ -132,6 +132,9 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         // start index of current scan
         Eigen::Index start_index = 0;
         // main grppi loop
+
+                            SPDLOG_INFO("scan {} scanindices.cols() {}", scan, scanindices.cols());
+
         while (scan < scanindices.cols()) {
             SPDLOG_INFO("reducing scan {}", scan + 1);
             // start index of current scan
@@ -154,6 +157,7 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
             return std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, Eigen::Index> (rtc, start_index);
         }
+        scan = 0;
         return {};
     },
     run());
@@ -198,7 +202,7 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         mb.pfit.row(3) = STD_TO_FWHM*pixel_size*(mb.pfit.row(3))/RAD_ASEC;
         mb.pfit.row(4) = STD_TO_FWHM*pixel_size*(mb.pfit.row(4))/RAD_ASEC;
         //mb.pfit.row(5) = mb.pfit.row(5);
-    }
+    }    
 }
 
 template <MapBase::MapType out_type, class MC, typename fits_out_vec_t>

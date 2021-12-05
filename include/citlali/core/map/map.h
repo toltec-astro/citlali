@@ -51,6 +51,7 @@ public:
         weight.clear();
         kernel.clear();
         coverage.clear();
+        psd.clear();
 
         // resize the maps (nobs, [nrows, ncols])
         for (Eigen::Index i=0; i<map_count; i++) {

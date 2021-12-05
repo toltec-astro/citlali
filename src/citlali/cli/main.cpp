@@ -992,6 +992,7 @@ int run(const rc_t &rc) {
                             FitsIO<fileType::write_fits, CCfits::ExtHDU*> noise_fits_io(noise_filename);
                             todproc.engine().noise_fits_ios.push_back(std::move(noise_fits_io));
 
+                            // check if filter is requested
                             if (todproc.engine().run_coadd_filter) {
                                 noise_filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
                                         ToltecIO::no_obs_type, ToltecIO::noise_filtered, ToltecIO::obsnum_false>(todproc.engine().filepath,
@@ -1013,7 +1014,8 @@ int run(const rc_t &rc) {
                 }
 
                 // run the reduction for each observation
-                for (std::size_t i = 0; i < co.n_inputs(); ++i) {
+                for (std::size_t j = 0; j < 2;++j){//co.n_inputs(); ++i) {
+                            std::size_t i = 0;
                     SPDLOG_INFO("starting reduction of observation {}/{}",i+1, co.n_inputs());
                     const auto &rawobs = co.inputs()[i];
 
@@ -1113,6 +1115,7 @@ int run(const rc_t &rc) {
 
                             PSD noise_avg_psd;
 
+                            // loop through noise maps and get psd
                             for (Eigen::Index j=0; j < todproc.engine().cmb.nnoise; j++) {
                                 PSD psd;
                                 psd.cov_cut = 0.75;
@@ -1149,8 +1152,6 @@ int run(const rc_t &rc) {
                             SPDLOG_INFO("avg psd2d_freq {}",todproc.engine().cmb.noise_avg_psd.back().psd2d_freq);
                         }
                     }
-
-                    SPDLOG_INFO("noise_avg_psd {}", todproc.engine().cmb.noise_avg_psd.size());
 
                     // generate coadd output files
                     {
