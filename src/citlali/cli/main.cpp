@@ -949,7 +949,8 @@ int run(const rc_t &rc) {
                     boost::random::uniform_int_distribution<> randu{0,nobs-1};
 
                     // rezise cmb noise matrix to (nnoise, nobs, nmaps)
-                    todproc.engine().cmb.noise_rand.resize(todproc.engine().cmb.nnoise,nobs,todproc.engine().cmb.map_count);
+                    todproc.engine().cmb.noise_rand.resize(todproc.engine().cmb.nnoise,nobs,
+                                                           todproc.engine().cmb.map_count);
                     todproc.engine().cmb.noise_rand.setZero();
 
                     // toltec i/o class for filename generation

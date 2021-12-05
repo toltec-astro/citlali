@@ -44,7 +44,13 @@ public:
         nrows = map_extent.at(0);
         ncols = map_extent.at(1);
         rcphys = map_coord.at(0);
-        ccphys = map_coord.at(1);    
+        ccphys = map_coord.at(1);
+
+        // empty map vectors for each observation
+        signal.empty();
+        weight.empty();
+        kernel.empty();
+        coverage.empty();
 
         // resize the maps (nobs, [nrows, ncols])
         for (Eigen::Index i=0; i<map_count; i++) {
