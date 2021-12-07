@@ -135,6 +135,11 @@ public:
         int deltai = (mb.rcphys(0) - rcphys(0))/pixel_size;
         int deltaj = (mb.ccphys(0) - ccphys(0))/pixel_size;
 
+        SPDLOG_INFO("deltai {} deltaj {}", deltai, deltaj);
+        SPDLOG_INFO("mb.nrows {} mb.ncols {}", mb.nrows, mb.ncols);
+        SPDLOG_INFO("cmb.nrows {} cmb.ncols {}", nrows, ncols);
+
+
         // coadd the MB into the CMB
         for (Eigen::Index mi=0; mi<map_count; mi++) {
             // weight += weight
