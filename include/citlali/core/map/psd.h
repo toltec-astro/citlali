@@ -176,7 +176,7 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
     psd2d = pmfq;
     psd2d_freq = qmap;
 
-    SPDLOG_INFO("nr {} nc {}", nr, nc);
+    /*SPDLOG_INFO("nr {} nc {}", nr, nc);
     SPDLOG_INFO("diffqr {} diffqc {}", diffqr, diffqc);
     SPDLOG_INFO("out {}", out);
 
@@ -187,4 +187,5 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
 
     SPDLOG_INFO("psd {}", psd);
     SPDLOG_INFO("psd_freq {}", psd_freq);
+    */
 }

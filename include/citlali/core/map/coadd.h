@@ -72,7 +72,7 @@ public:
                     min_row = rcp(0);
                 }
 
-                if (rcp(rc_npts-1) > min_row) {
+                if (rcp(rc_npts-1) > max_row) {
                     max_row = rcp(rc_npts-1);
                 }
 
