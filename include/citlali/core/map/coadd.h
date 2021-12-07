@@ -150,7 +150,7 @@ public:
             // signal += signal*weight
             signal.at(mi).block(deltai, deltaj, mb.nrows, mb.ncols) =
                     signal.at(mi).block(deltai, deltaj, mb.nrows, mb.ncols).array() +
-                    (mb.signal.at(mi).array()*mb.signal.at(mi).array()).array();
+                    (mb.weight.at(mi).array()*mb.signal.at(mi).array()).array();
 
             if (run_kernel) {
                 // kernel += kernel*weight
