@@ -1,13 +1,17 @@
 #pragma once
 
-#include "tula/enum.h"
-#include "tula/formatter/enum.h"
-#include "tula/formatter/matrix.h"
-#include "tula/formatter/utils.h"
-#include "tula/logging.h"
+#include <map>
+
+#include <tula/enum.h>
+#include <tula/nddata/labelmapper.h>
+#include <tula/formatter/enum.h>
+#include <tula/formatter/matrix.h>
+#include <tula/formatter/utils.h>
+#include <tula/logging.h>
 #include <kids/core/wcs.h>
 
 namespace timestream {
+
 namespace wcs = kids::wcs;
 
 // clang-format off
@@ -21,15 +25,17 @@ TULA_BITFLAG(TCDataKind, int,        0xFFFF,
 /// @brief TC data class.
 template <TCDataKind kind_ = TCDataKind::Any, typename = void>
 struct TCData;
+
 } // namespace timestream
 
 namespace std {
 
-// Register TCData as a variant type
-// Below are mandatory to inherit from variant on gcc
+// register TCData as a variant type
+// below are mandatory to inherit from variant on gcc
 template <timestream::TCDataKind kind>
 struct variant_size<timestream::TCData<kind>>
     : variant_size<typename timestream::TCData<kind>::variant_t> {};
+
 template <size_t _Np, auto kind>
 struct variant_alternative<_Np, timestream::TCData<kind>>
     : variant_alternative<_Np, typename timestream::TCData<kind>::variant_t> {};
@@ -76,7 +82,7 @@ template <TCDataKind kind_> struct TCDataBase<TCData<kind_>> {
 
 } // namespace internal
 
-// WCS objects
+// wcs objects
 struct DetectorAxis : wcs::Axis<DetectorAxis, wcs::CoordsKind::Column>,
                   wcs::LabeledData<DetectorAxis> {
     DetectorAxis() = default;
@@ -106,9 +112,9 @@ struct TimeStreamFrame : wcs::Frame2D<TimeStreamFrame, TimeAxis, DetectorAxis> {
     const DetectorAxis &col_axis() const { return detector_axis; }
 };
 
-// Data objects
+// data objects
 
-/// @brief Base class for time stream data
+/// @brief base class for time stream data
 template <typename Derived>
 struct TimeStream : internal::TCDataBase<Derived>,
                     tula::nddata::NDData<TimeStream<Derived>> {
@@ -145,6 +151,7 @@ struct TCData<TCDataKind::PTC, RefType>
     using Base = TimeStream<TCData<TCDataKind::PTC>>;
     using data_t = std::conditional_t<tula::eigen_utils::is_plain_v<RefType>,Base::data_t<RefType>, Base::dataref_t<RefType>>;
     data_t scans;
+
     Base::data_t<Eigen::MatrixXd> weights;
     Base::data_t<Eigen::MatrixXd> kernel_scans;
     Base::data_t<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> flags;

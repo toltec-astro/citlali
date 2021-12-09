@@ -112,9 +112,9 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine en
                             // loop through noise maps
                             for (Eigen::Index nn=0; nn<engine->cmb.nnoise; nn++) {
                                 // check if this obs was randomly selected
-                                if (engine->cmb.noise_rand(nn,engine->nobs,mi) > 0) {
+                                if (engine->cmb.noise_rand(nn,engine->nobs,mi) != 0) {
                                     // loop through number of times this obs was randomly selected
-                                    for (Eigen::Index nt=0; nt<engine->cmb.noise_rand(nn,engine->nobs,mi);nt++) {
+                                    for (Eigen::Index nt=0; nt<engine->cmb.noise_rand(nn,engine->nobs,mi); nt++) {
                                         // coadd into current noise map
                                         if ((cmb_ir >= 0) && (cmb_ir < engine->cmb.nrows) && (cmb_ic >= 0) && (cmb_ic < engine->cmb.ncols)) {
                                             engine->cmb.noise.at(mi)(cmb_ir,cmb_ic,nn) += noise_rand(nn)*sig;

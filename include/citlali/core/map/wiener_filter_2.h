@@ -2,6 +2,7 @@
 
 #include <Eigen/Core>
 #include <unsupported/Eigen/CXX11/Tensor>
+#include <unsupported/Eigen/Splines>
 
 #include <tula/algorithm/mlinterp/mlinterp.hpp>
 #include <tula/logging.h>

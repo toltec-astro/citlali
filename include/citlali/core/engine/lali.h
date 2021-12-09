@@ -25,7 +25,7 @@ public:
     auto pipeline(KidsProc&, RawObs&);
 
     template <MapBase::MapType out_type, class MC, typename fits_out_vec_t>
-    void output(MC&, fits_out_vec_t &);
+    void output(MC&, fits_out_vec_t &, fits_out_vec_t &);
 };
 
 void Lali::setup() {
@@ -168,7 +168,7 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     SPDLOG_INFO("getting maps psds");
     for (Eigen::Index i=0; i < array_indices.size(); i++) {
         PSD psd;
-        psd.cov_cut = 0.75;
+        psd.cov_cut = cmb.cov_cut;
         psd.calc_map_psd(mb.signal.at(i), mb.weight.at(i), mb.rcphys, mb.ccphys);
         mb.psd.push_back(std::move(psd));
     }
@@ -206,7 +206,7 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 }
 
 template <MapBase::MapType out_type, class MC, typename fits_out_vec_t>
-void Lali::output(MC &mout, fits_out_vec_t &f_ios) {
+void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios) {
     // toltec input/output class
     ToltecIO toltec_io;
 
@@ -336,7 +336,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios) {
                 SPDLOG_INFO("writing noise maps");
                 // loop through array indices and add hdu's to existing files
                 for (Eigen::Index i=0; i<array_indices.size(); i++) {
-                    SPDLOG_INFO("writing {}.fits", noise_fits_ios.at(i).filepath);
+                    SPDLOG_INFO("writing {}.fits", nf_ios.at(i).filepath);
                     // loop through noise map number
                     for (Eigen::Index j=0; j<mout.nnoise; j++) {
 
@@ -345,35 +345,35 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios) {
                         auto out_matrix = Eigen::Map<Eigen::MatrixXd>(out.data(), out.dimension(0),
                                                     out.dimension(1));
                         // add noise map to file
-                        noise_fits_ios.at(i).add_hdu("noise" + std::to_string(j),out_matrix);
+                        nf_ios.at(i).add_hdu("noise" + std::to_string(j),out_matrix);
                     }
 
                     // now loop through hdus and add wcs
-                    for (auto hdu: noise_fits_ios.at(i).hdus) {
+                    for (auto hdu: nf_ios.at(i).hdus) {
                         // degrees if science map
                         //if (reduction_type == "science") {
-                            noise_fits_ios.at(i).template add_wcs<UnitsType::deg>(hdu,map_type,mout.nrows,mout.ncols,
+                            nf_ios.at(i).template add_wcs<UnitsType::deg>(hdu,map_type,mout.nrows,mout.ncols,
                                                                    pixel_size,source_center);
                         //}
                     }
 
                     // loop through default TolTEC fits header keys and add to primary header
                     for (auto const& pair : toltec_io.fits_header_keys) {
-                        noise_fits_ios.at(i).pfits->pHDU().addKey(pair.first, pair.second, " ");
+                        nf_ios.at(i).pfits->pHDU().addKey(pair.first, pair.second, " ");
                     }
 
                     // add wcs to pHDU
-                    noise_fits_ios.at(i).template add_wcs<UnitsType::deg>(&noise_fits_ios.at(i).pfits->pHDU(),map_type,
+                    nf_ios.at(i).template add_wcs<UnitsType::deg>(&nf_ios.at(i).pfits->pHDU(),map_type,
                                                            mout.nrows,mout.ncols,pixel_size,source_center);
 
                     // add wavelength
-                    noise_fits_ios.at(i).pfits->pHDU().addKey("WAV", toltec_io.name_keys[i], "Array Name");
+                    nf_ios.at(i).pfits->pHDU().addKey("WAV", toltec_io.name_keys[i], "Array Name");
                     // add obsnum
-                    noise_fits_ios.at(i).pfits->pHDU().addKey("OBSNUM", obsnum, "Observation Number");
+                    nf_ios.at(i).pfits->pHDU().addKey("OBSNUM", obsnum, "Observation Number");
                     // add units
-                    noise_fits_ios.at(i).pfits->pHDU().addKey("UNIT", obsnum, "MJy/Sr");
+                    nf_ios.at(i).pfits->pHDU().addKey("UNIT", obsnum, "MJy/Sr");
                     // add conversion
-                    noise_fits_ios.at(i).pfits->pHDU().addKey("to_mjy/b", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
+                    nf_ios.at(i).pfits->pHDU().addKey("to_mjy/b", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
 
                 }
             }

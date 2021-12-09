@@ -11,6 +11,7 @@
 #include <citlali/core/map/map.h>
 #include <citlali/core/engine/calib.h>
 #include <citlali/core/utils/utils.h>
+#include <citlali/core/utils/diagnostics.h>
 
 #include <citlali/core/utils/toltec_io.h>
 #include <citlali/core/utils/fits_io.h>
@@ -321,6 +322,7 @@ public:
         // get coadd config options
         get_config(run_coadd,std::tuple{"coadd","enabled"});
         if (run_coadd) {
+            get_config(cmb.cov_cut,std::tuple{"coadd","cov_cut"});
             cmb.pixel_size = pixel_size;
 
             // get noise config options

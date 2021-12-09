@@ -21,6 +21,13 @@ public:
     Eigen::Index nrows, ncols, nnoise;
     map_count_t map_count;
     double pixel_size;
+    double cov_cut;
+
+    // noise average filtered rms
+    Eigen::VectorXd average_filtered_rms;
+
+    // noise weight factor
+    std::vector<Eigen::VectorXd> nfac;
 
     // for source fits in coadded maps
     Eigen::MatrixXd pfit;
@@ -135,11 +142,6 @@ public:
         int deltai = (mb.rcphys(0) - rcphys(0))/pixel_size;
         int deltaj = (mb.ccphys(0) - ccphys(0))/pixel_size;
 
-        SPDLOG_INFO("deltai {} deltaj {}", deltai, deltaj);
-        SPDLOG_INFO("mb.nrows {} mb.ncols {}", mb.nrows, mb.ncols);
-        SPDLOG_INFO("cmb.nrows {} cmb.ncols {}", nrows, ncols);
-
-
         // coadd the MB into the CMB
         for (Eigen::Index mi=0; mi<map_count; mi++) {
             // weight += weight
@@ -215,6 +217,97 @@ public:
                     }
                 }
             }
+        }
+    }
+
+    void normalize_noise_map_errors() {
+        for (int m=0; m<map_count; m++) {
+            Eigen::VectorXd nfacs;
+            nfacs.setZero(nnoise);
+            nfac.push_back(std::move(nfacs));
+
+            for (int k=0; k<nnoise; k++) {
+                Eigen::MatrixXd wt = weight.at(m);
+                double weight_cut = engine_utils::find_weight_threshold(wt,cov_cut);
+
+                double counter=0;
+                double sig_of_map=0.;
+                for (int i=0; i<nrows; i++) {
+                      for (int j=0; j<ncols; j++) {
+                          if (wt(i,j) >= weight_cut) {
+                              counter++;
+                              sig_of_map += pow(noise.at(m)(i,j,k),2);
+                          }
+                      }
+                }
+                sig_of_map /= (counter-1);
+                sig_of_map = sqrt(sig_of_map);
+
+                double mean_sqerr=0;
+                counter=0.;
+                for (int i=0; i<nrows; i++) {
+                    for (int j=0; j<ncols; j++){
+                        if (wt(i,j) >= weight_cut) {
+                            counter++;
+                            mean_sqerr += (1./wt(i,j));
+                        }
+                    }
+                }
+                mean_sqerr /= counter;
+                nfac.back()(k) = (1./pow(sig_of_map,2.))*mean_sqerr;
+            }
+        }
+    }
+
+    void normalize_errors() {
+        for (int m=0; m<map_count; m++) {
+            Eigen::MatrixXd wt = weight.at(m);
+            double weight_cut = engine_utils::find_weight_threshold(wt,cov_cut);
+
+            double mean_sqerr=0.;
+            int counter=0;
+            for (int i=0; i<nrows; i++) {
+                for (int j=0; j<ncols; j++) {
+                    if (wt(i,j) >= weight_cut){
+                        mean_sqerr += (1./wt(i,j));
+                        counter++;
+                    }
+                }
+            }
+
+            mean_sqerr /= counter;
+            double nfac = (1./pow(average_filtered_rms(m),2.))*mean_sqerr;
+            SPDLOG_INFO("renormalization factor = {}",nfac);
+
+            weight.at(m) = weight.at(m)*nfac;
+        }
+    }
+
+    void calc_average_filtered_rms() {
+        average_filtered_rms.resize(map_count);
+
+        for (Eigen::Index m = 0; m<map_count; m++) {
+            Eigen::VectorXd map_rms(nnoise);
+            for (int k=0; k<nnoise; k++) {
+                Eigen::MatrixXd wt = weight.at(m)*nfac.at(m)(k);
+                double weight_cut = engine_utils::find_weight_threshold(wt,cov_cut);
+
+                int counter = 0;
+                double rms = 0.;
+                for (int i=0; i<nrows; i++) {
+                    for (int j=0; j<ncols; ++j) {
+                        if (wt(i,j) > weight_cut) {
+                            counter++;
+                            rms += pow(noise.at(m)(i,j,k),2);
+                        }
+                    }
+                }
+
+                rms /= (counter);
+                map_rms(k) = sqrt(rms);
+                SPDLOG_INFO("Filtered noise rms {} from noise map {} map {}", map_rms(k), k, m);
+            }
+            average_filtered_rms(m) = map_rms.mean();
         }
     }
 };
