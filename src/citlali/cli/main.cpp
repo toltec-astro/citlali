@@ -1172,11 +1172,13 @@ int run(const rc_t &rc) {
                                     for (Eigen::Index j=0; j<todproc.engine().cmb.nnoise; j++) {
                                         todproc.engine().wiener_filter.filter_noise(todproc.engine().cmb, i, j);
                                     }
-
-                                    todproc.engine().cmb.normalize_noise_map_errors();
-                                    todproc.engine().cmb.calc_average_filtered_rms();
-                                    todproc.engine().cmb.normalize_errors();
                                 }
+                            }
+
+                            if (todproc.engine().run_noise) {
+                                todproc.engine().cmb.normalize_noise_map_errors();
+                                todproc.engine().cmb.calc_average_filtered_rms();
+                                todproc.engine().cmb.normalize_errors();
                             }
                         }
 
