@@ -8,6 +8,9 @@ inputs:
       - filepath: /Users/mmccrackan/toltec/simu_stuff/pointSource_simu/Pointing_1.0/tel_000001_000_0000_2021_09_04_16_26_41.nc
         meta:
           interface: lmt
+      - filepath: /Users/mmccrackan/toltec/simu_stuff/pointSource_simu/Pointing_1.0/hwp_000001_000_0000_2021_09_04_16_26_41.nc
+        meta:
+          interface: hwp
       - filepath: /Users/mmccrackan/toltec/simu_stuff/pointSource_simu/Pointing_1.0/toltec0_000001_000_0000_2021_09_04_16_26_41_timestream.nc
         meta:
           interface: toltec0
