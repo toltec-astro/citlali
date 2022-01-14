@@ -6,7 +6,7 @@ project(citlali
         "https://toltec-astro.github.io/citlali"
     )
 
-# Fetch citlalicpp, which fetches tula
+# Fetch kidscpp, which fetches tula
 include(FetchContent)
 FetchContent_Declare(
   kidscpp
