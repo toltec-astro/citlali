@@ -71,23 +71,37 @@ struct ToltecIO {
     // header keys for pointing fit ecsv
     std::vector<std::string> apt_header {
         {"amp"},
+        {"amp_err"},
         {"x_t"},
+        {"x_t_err"},
         {"y_t"},
+        {"y_t_err"},
         {"a_fwhm"},
+        {"a_fwhm_err"},
         {"b_fwhm"},
-        {"angle"}};
+        {"b_fwhm_err"},
+        {"angle"},
+        {"angle_err"},
+    };
 
     // header keys for beammap apt table
     std::vector<std::string> beammap_apt_header {
         {"array"},
         {"nw"},
         {"flxscale"},
+        {"sens"},
         {"amp"},
+        {"amp_err"},
         {"x_t"},
+        {"x_t_err"},
         {"y_t"},
+        {"y_t_err"},
         {"a_fwhm"},
+        {"a_fwhm_err"},
         {"b_fwhm"},
+        {"b_fwhm_err"},
         {"angle"},
+        {"angle_err"},
         {"converge_iter"}};
 
     // header keys for output FITS files

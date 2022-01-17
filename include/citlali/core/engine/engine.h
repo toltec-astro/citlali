@@ -25,6 +25,7 @@
 #include <citlali/core/timestream/rtc/calibrate.h>
 
 #include <citlali/core/timestream/ptc/clean.h>
+#include <citlali/core/timestream/ptc/sensitivity.h>
 
 #include <citlali/core/timestream/rtc/rtcproc.h>
 #include <citlali/core/timestream/ptc/ptcproc.h>
@@ -34,7 +35,6 @@
 
 class EngineBase: public Telescope, public Observation, public MapBase, public Calib {
 public:
-
     using key_vec_t = std::vector<std::vector<std::string>>;
 
     // citlali config file
@@ -315,7 +315,7 @@ public:
          if (run_fit) {
             get_config(fit_model,std::tuple{"source_fitting","model"});
             get_config(bounding_box_pix,std::tuple{"source_fitting","bounding_box_arcsec"});
-            bounding_box_pix = bounding_box_pix/pixel_size*RAD_ASEC;
+            bounding_box_pix = std::floor(bounding_box_pix/pixel_size*RAD_ASEC);
             get_config(fit_init_guess,std::tuple{"source_fitting","initial_guess"});
         }
 

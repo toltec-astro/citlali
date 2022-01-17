@@ -19,6 +19,7 @@ class Beammap: public EngineBase {
 public:
     // vector to store each scan's PTCData
     std::vector<TCData<TCDataKind::PTC,Eigen::MatrixXd>> ptcs0;
+    std::vector<TCData<TCDataKind::PTC,Eigen::MatrixXd>> ptcs;
 
     // beammap iteration parameters
     Eigen::Index iteration;
@@ -34,6 +35,9 @@ public:
 
     // previous iteration fit parameters
     Eigen::MatrixXd p0;
+
+    // previous iteration fit parameter errors
+    Eigen::MatrixXd perror0;
 
     // placeholder vectors for grppi maps
     std::vector<int> scan_in_vec, scan_out_vec;
@@ -74,8 +78,18 @@ void Beammap::setup() {
     p0.resize(nparams, ndet);
     // set initial fit to nan to pass first cutoff test
     p0.setConstant(std::nan(""));
+    // resize the initial fit error vector
+    perror0.setZero(nparams, ndet);
     // resize the current fit vector
     mb.pfit.setZero(nparams, ndet);
+    mb.perror.setZero(nparams, ndet);
+
+    // set initial elevations for when det is on source
+    mb.min_el.resize(ndet);
+    mb.min_el.setConstant(std::numeric_limits<double>::max());
+
+    // set initial elevation dist for when det is on source
+    mb.el_dist.setZero(std::numeric_limits<double>::max());
 
     // make filter if requested
     if (run_filter) {
@@ -128,6 +142,8 @@ auto Beammap::run_timestream() {
         in.tel_meta_data.data["TelLatPhys"] = tel_meta_data["TelLatPhys"].segment(start_index, scan_length);
         in.tel_meta_data.data["TelLonPhys"] = tel_meta_data["TelLonPhys"].segment(start_index, scan_length);
 
+        in.tel_meta_data.data["SourceEl"] = tel_meta_data["SourceEl"].segment(start_index, scan_length);
+
         /*Stage 1: RTCProc*/
         RTCProc rtcproc;
         TCData<TCDataKind::PTC,Eigen::MatrixXd> out;
@@ -148,7 +164,7 @@ auto Beammap::run_loop() {
     auto loop = grppi::repeat_until([&](auto in) {
         // vector to hold the ptcs for each iteration
         // reset it to the original ptc vector each time
-        std::vector<TCData<TCDataKind::PTC,Eigen::MatrixXd>> ptcs(ptcs0);
+        ptcs = ptcs0;
 
         /*Stage 2: PTCProc*/
         PTCProc ptcproc;
@@ -205,14 +221,19 @@ auto Beammap::run_loop() {
 
         SPDLOG_INFO("fitting maps");
         grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](auto d) {
-            SPDLOG_INFO("fitting detector {}/{}",d+1, det_in_vec.size());
-            // declare fitter class for detector
-            gaussfit::MapFitter fitter;
-            // size of region to fit in pixels
-            fitter.bounding_box_pix = bounding_box_pix;
-            mb.pfit.col(d) = fitter.fit<gaussfit::MapFitter::peakValue>(mb.signal[d], mb.weight[d], calib_data);
-            SPDLOG_INFO("pfit.col(d) {}", mb.pfit.col(d));
-
+            if (!converged(d)) {
+                SPDLOG_INFO("fitting detector {}/{}",d+1, det_in_vec.size());
+                // declare fitter class for detector
+                gaussfit::MapFitter fitter;
+                // size of region to fit in pixels
+                fitter.bounding_box_pix = bounding_box_pix;
+                mb.pfit.col(d) = fitter.fit<gaussfit::MapFitter::peakValue>(mb.signal[d], mb.weight[d], calib_data);
+                mb.perror.col(d) = fitter.error;
+            }
+            else {
+                mb.pfit.col(d) = p0.col(d);
+                mb.perror.col(d) = perror0.col(d);
+            }
             return 0;});
 
         return in;
@@ -248,6 +269,7 @@ auto Beammap::run_loop() {
             }
             // set previous iteration fit to current fit
             p0 = mb.pfit;
+            perror0 = mb.perror;
         }
         else {
             // we're done!
@@ -317,21 +339,37 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
 
         [&](auto in) {
             // convert to map units (arcsec and radians)
-            mb.pfit.row(1) = pixel_size*(mb.pfit.row(1).array() - (mb.ncols)/2)/RAD_ASEC;
-            mb.pfit.row(2) = pixel_size*(mb.pfit.row(2).array() - (mb.nrows)/2)/RAD_ASEC;
+            mb.pfit.row(1) = pixel_size*(mb.pfit.row(1).array() - 1 - (mb.ncols)/2)/RAD_ASEC;
+            mb.pfit.row(2) = pixel_size*(mb.pfit.row(2).array() - 1 - (mb.nrows)/2)/RAD_ASEC;
             mb.pfit.row(3) = STD_TO_FWHM*pixel_size*(mb.pfit.row(3))/RAD_ASEC;
             mb.pfit.row(4) = STD_TO_FWHM*pixel_size*(mb.pfit.row(4))/RAD_ASEC;
-            //mb.pfit.row(5) = mb.pfit.row(5);
+
+            // rescale errors from pixel to on-sky units
+            mb.perror.row(1) = pixel_size*(mb.perror.row(1))/RAD_ASEC;
+            mb.perror.row(2) = pixel_size*(mb.perror.row(2))/RAD_ASEC;
+            mb.perror.row(3) = STD_TO_FWHM*pixel_size*(mb.perror.row(3))/RAD_ASEC;
+            mb.perror.row(4) = STD_TO_FWHM*pixel_size*(mb.perror.row(4))/RAD_ASEC;
 
             // derotate x_t and y_t
             double mean_el = tel_meta_data["TelElDes"].mean();
 
             // need to copy because of aliasing?
-            Eigen::VectorXd rot_azoff = cos(-mean_el)*mb.pfit.row(1).array() - sin(-mean_el)*mb.pfit.row(2).array();
-            Eigen::VectorXd rot_eloff = cos(-mean_el)*mb.pfit.row(2).array() + sin(-mean_el)*mb.pfit.row(1).array();
+            Eigen::VectorXd rot_azoff = cos(-mb.min_el.array())*mb.pfit.row(1).array() -
+                    sin(-mb.min_el.array())*mb.pfit.row(2).array();
+            Eigen::VectorXd rot_eloff = cos(-mb.min_el.array())*mb.pfit.row(2).array() +
+                    sin(-mb.min_el.array())*mb.pfit.row(1).array();
 
             mb.pfit.row(1) = -rot_azoff;
             mb.pfit.row(2) = -rot_eloff;
+
+            // calculate sensitivity for detectors
+            grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](int d) {
+                SPDLOG_INFO("calculating sensitivity for det {}", d);
+                Eigen::MatrixXd det_sens;
+                Eigen::MatrixXd noise_flux;
+                calc_sensitivity(ptcs, det_sens, noise_flux, dfsmp, d);
+                sensitivity(d) = det_sens.mean();
+            return 0;});
 
             return in;
         });
@@ -362,130 +400,166 @@ auto Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
 template <MapBase::MapType out_type, class MC, typename fits_out_vec_t>
 void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios) {
-    // apt table
-    SPDLOG_INFO("writing apt table");
-    ToltecIO toltec_io;
-    // get output path from citlali_config
-    auto filename = toltec_io.setup_filepath<ToltecIO::apt,ToltecIO::simu,
-            ToltecIO::beammap, ToltecIO::no_prod_type, ToltecIO::obsnum_true>(filepath,obsnum,-1);
+    if constexpr (out_type==MapType::obs) {
+        // apt table
+        SPDLOG_INFO("writing apt table");
+        ToltecIO toltec_io;
+        // get output path from citlali_config
+        auto filename = toltec_io.setup_filepath<ToltecIO::apt,ToltecIO::simu,
+                ToltecIO::beammap, ToltecIO::no_prod_type, ToltecIO::obsnum_true>(filepath,obsnum,-1);
 
-    // check in debug mode for row/col error (seems fine)
-    Eigen::MatrixXf table(toltec_io.beammap_apt_header.size(), ndet);
-    table.row(0) = calib_data["array"].cast <float> ();
-    table.row(1) = calib_data["nw"].cast <float> ();
-    table.row(2) = calib_data["flxscale"].cast <float> ();
-    table.block(3,0,nparams,ndet) = mout.pfit.template cast <float> ();
-    table.row(9) = converge_iter.cast <float> ();
+        // check in debug mode for row/col error (seems fine)
+        Eigen::MatrixXf table(toltec_io.beammap_apt_header.size(), ndet);
+        table.row(0) = calib_data["array"].cast <float> ();
+        table.row(1) = calib_data["nw"].cast <float> ();
+        table.row(2) = calib_data["flxscale"].cast <float> ();
+        table.row(3) = sensitivity.cast <float> ();
+        //table.block(3,0,nparams,ndet) = mout.pfit.template cast <float> ();
+        //table.row(9) = converge_iter.cast <float> ();
 
-    table.transposeInPlace();
+        int ci = 0;
+        for (int ti=4; ti < toltec_io.apt_header.size()-1; ti=ti+2) {
+            table.row(ti) = mout.pfit.row(ci).template cast <float> ();
+            table.row(ti + 1) = mout.perror.row(ci).template cast <float> ();
+            ci++;
+        }
 
-    SPDLOG_INFO("beammap fit table header {}", toltec_io.beammap_apt_header);
-    SPDLOG_INFO("beammap fit table {}", table);
+        table.row(toltec_io.beammap_apt_header.size()-1) = converge_iter.cast <float> ();
 
-    // Yaml node for ecsv table meta data (units and description)
-    YAML::Node meta;
-    meta["array"].push_back("units: N/A");
-    meta["array"].push_back("array index");
+        table.transposeInPlace();
 
-    meta["nw"].push_back("units: N/A");
-    meta["nw"].push_back("network index");
+        SPDLOG_INFO("beammap fit table header {}", toltec_io.beammap_apt_header);
+        SPDLOG_INFO("beammap fit table {}", table);
 
-    meta["flxscale"].push_back("units: Mjy/sr");
-    meta["flxscale"].push_back("flux conversion scale");
+        // Yaml node for ecsv table meta data (units and description)
+        YAML::Node meta;
+        meta["array"].push_back("units: N/A");
+        meta["array"].push_back("array index");
 
-    meta["amp"].push_back("units: mJy/beam");
-    meta["amp"].push_back("fitted amplitude");
+        meta["nw"].push_back("units: N/A");
+        meta["nw"].push_back("network index");
 
-    meta["x_t"].push_back("units: arcsec");
-    meta["x_t"].push_back("fitted azimuthal offset");
+        meta["flxscale"].push_back("units: Mjy/sr");
+        meta["flxscale"].push_back("flux conversion scale");
 
-    meta["y_t"].push_back("units: arcsec");
-    meta["y_t"].push_back("fitted altitude offset");
+        meta["amp"].push_back("units: Mjy/sr");
+        meta["amp"].push_back("fitted amplitude");
 
-    meta["a_fwhm"].push_back("units: arcsec");
-    meta["a_fwhm"].push_back("fitted azimuthal FWHM");
+        meta["amp_err"].push_back("units: Mjy/sr");
+        meta["amp_err"].push_back("fitted amplitude error");
 
-    meta["b_fwhm"].push_back("units: arcsec");
-    meta["b_fwhm"].push_back("fitted altitude FWMH");
+        meta["x_t"].push_back("units: arcsec");
+        meta["x_t"].push_back("fitted azimuthal offset");
 
-    meta["angle"].push_back("units: radians");
-    meta["angle"].push_back("fitted rotation angle");
+        meta["x_t_err"].push_back("units: arcsec");
+        meta["x_t_err"].push_back("fitted azimuthal offset error");
 
-    meta["converge_iter"].push_back("units: N/A");
-    meta["converge_iter"].push_back("beammap convergence iteration");
+        meta["y_t"].push_back("units: arcsec");
+        meta["y_t"].push_back("fitted altitude offset");
 
-    // write apt table to ecsv file
-    to_ecsv_from_matrix(filename, table, toltec_io.beammap_apt_header, meta);
-    SPDLOG_INFO("successfully wrote apt table to {}.ecsv", filename);
+        meta["y_t_err"].push_back("units: arcsec");
+        meta["y_t_err"].push_back("fitted altitude offset error");
 
-    SPDLOG_INFO("writing maps");
-    // loop through existing files
-    for (Eigen::Index i=0; i<array_indices.size(); i++) {
-        SPDLOG_INFO("writing {}.fits", f_ios.at(i).filepath);
-        // loop through maps and save them as an hdu
-        // current detector
-        auto start_det = std::get<0>(array_indices.at(i));
-        // size of block for each grouping
-        auto end_det = std::get<1>(array_indices.at(i)) + 1;
+        meta["a_fwhm"].push_back("units: arcsec");
+        meta["a_fwhm"].push_back("fitted azimuthal FWHM");
 
-        for (Eigen::Index j=start_det; j<end_det; j++) {
-            //SPDLOG_INFO("writing sig{}", j);
-            f_ios.at(i).add_hdu("sig" + std::to_string(j), mout.signal.at(j));
-            //SPDLOG_INFO("writing wt{}", j);
-            f_ios.at(i).add_hdu("wt" + std::to_string(j), mout.weight.at(j));
+        meta["a_fwhm_err"].push_back("units: arcsec");
+        meta["a_fwhm_err"].push_back("fitted azimuthal FWHM error");
 
-            // write kernel if requested
+        meta["b_fwhm"].push_back("units: arcsec");
+        meta["b_fwhm"].push_back("fitted altitude FWMH");
+
+        meta["b_fwhm_err"].push_back("units: arcsec");
+        meta["b_fwhm_err"].push_back("fitted altitude FWMH error");
+
+        meta["angle"].push_back("units: radians");
+        meta["angle"].push_back("fitted rotation angle");
+
+        meta["angle_err"].push_back("units: radians");
+        meta["angle_err"].push_back("fitted rotation angle error");
+
+        meta["converge_iter"].push_back("units: N/A");
+        meta["converge_iter"].push_back("beammap convergence iteration");
+
+        // write apt table to ecsv file
+        to_ecsv_from_matrix(filename, table, toltec_io.beammap_apt_header, meta);
+        SPDLOG_INFO("successfully wrote apt table to {}.ecsv", filename);
+
+        SPDLOG_INFO("writing maps");
+        // loop through existing files
+        for (Eigen::Index i=0; i<array_indices.size(); i++) {
+            SPDLOG_INFO("writing {}.fits", f_ios.at(i).filepath);
+            // loop through maps and save them as an hdu
+            // current detector
+            auto start_det = std::get<0>(array_indices.at(i));
+            // size of block for each grouping
+            auto end_det = std::get<1>(array_indices.at(i)) + 1;
+
+            for (Eigen::Index j=start_det; j<end_det; j++) {
+                //SPDLOG_INFO("writing sig{}", j);
+                f_ios.at(i).add_hdu("sig" + std::to_string(j), mout.signal.at(j));
+                //SPDLOG_INFO("writing wt{}", j);
+                f_ios.at(i).add_hdu("wt" + std::to_string(j), mout.weight.at(j));
+
+                // write kernel if requested
+                if (run_kernel) {
+                    //SPDLOG_INFO("writing ker{}", j);
+                    f_ios.at(i).add_hdu("ker" + std::to_string(j), mout.kernel.at(j));
+                }
+            }
+
+            // loop through hdus and add wcs (hacky method)
+            int j = start_det;
+            int k = 0;
+            int nhdus = 2;
+
             if (run_kernel) {
-                //SPDLOG_INFO("writing ker{}", j);
-                f_ios.at(i).add_hdu("ker" + std::to_string(j), mout.kernel.at(j));
+                nhdus = 3;
             }
-        }
 
-        // loop through hdus and add wcs (hacky method)
-        int j = start_det;
-        int k = 0;
-        int nhdus = 2;
+            for (auto hdu: f_ios.at(i).hdus) {
+                f_ios.at(i).template add_wcs<UnitsType::arcsec>(hdu,map_type,mout.nrows,mout.ncols,
+                                                       pixel_size,source_center);
+                // add fit parameters to hdus
+                hdu->addKey("amp", (float)mout.pfit(0,i),"amplitude (Mjy/sr)");
+                hdu->addKey("amp_err", (float)mout.perror(0,i),"amplitude error (Mjy/sr)");
+                hdu->addKey("x_t", (float)mout.pfit(1,i),"az offset (arcsec)");
+                hdu->addKey("x_t_err", (float)mout.perror(1,i),"az offset error (arcsec)");
+                hdu->addKey("y_t", (float)mout.pfit(2,i),"alt offset (arcsec)");
+                hdu->addKey("y_t_err", (float)mout.perror(2,i),"alt offset error (arcsec)");
+                hdu->addKey("a_fwhm", (float)mout.pfit(3,i),"az fwhm (arcsec)");
+                hdu->addKey("a_fwhm_err", (float)mout.perror(3,i),"az fwhm error (arcsec)");
+                hdu->addKey("b_fwhm", (float)mout.pfit(4,i),"alt fwhm (arcsec)");
+                hdu->addKey("b_fwhm_err", (float)mout.perror(4,i),"alt fwhm error (arcsec)");
+                hdu->addKey("angle", (float)mout.pfit(5,i),"position angle (radians)");
+                hdu->addKey("angle_err", (float)mout.perror(5,i),"position angle error (radians)");
 
-        if (run_kernel) {
-            nhdus = 3;
-        }
+                k++;
 
-        for (auto hdu: f_ios.at(i).hdus) {
-            f_ios.at(i).template add_wcs<UnitsType::arcsec>(hdu,map_type,mout.nrows,mout.ncols,
-                                                   pixel_size,source_center);
-            // add fit parameters to hdus
-            hdu->addKey("amp", (float)mout.pfit(0,j),"amplitude (Mjy/sr)");
-            hdu->addKey("x_t", (float)mout.pfit(1,j),"az offset (arcsec)");
-            hdu->addKey("y_t", (float)mout.pfit(2,j),"alt offset (arcsec)");
-            hdu->addKey("a_fwhm", (float)mout.pfit(3,j),"az fwhm (arcsec)");
-            hdu->addKey("b_fwhm", (float)mout.pfit(4,j),"alt fwhm (arcsec)");
-            hdu->addKey("angle", (float)mout.pfit(5,j),"rotation angle (radians");
-
-            k++;
-
-            // only increment every nhdus
-            if (k == nhdus) {
-                k = 0;
-                j++;
+                // only increment every nhdus
+                if (k == nhdus) {
+                    k = 0;
+                    j++;
+                }
             }
+
+            // loop through default TolTEC fits header keys and add to primary header
+            for (auto const& pair : toltec_io.fits_header_keys) {
+                f_ios.at(i).pfits->pHDU().addKey(pair.first, pair.second, " ");
+            }
+
+            // add wcs to pHDU
+            f_ios.at(i).template add_wcs<UnitsType::arcsec>(&f_ios.at(i).pfits->pHDU(),map_type,mout.nrows,
+                                                      mout.ncols,pixel_size,source_center);
+
+            // add wavelength
+            f_ios.at(i).pfits->pHDU().addKey("WAV", toltec_io.name_keys[i], "Array Name");
+            // add obsnum
+            f_ios.at(i).pfits->pHDU().addKey("OBSNUM", obsnum, "Observation Number");
+            // add units
+            f_ios.at(i).pfits->pHDU().addKey("UNIT", obsnum, "MJy/Sr");
+            // add conversion
+            f_ios.at(i).pfits->pHDU().addKey("to_mjy/b", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
         }
-
-        // loop through default TolTEC fits header keys and add to primary header
-        for (auto const& pair : toltec_io.fits_header_keys) {
-            f_ios.at(i).pfits->pHDU().addKey(pair.first, pair.second, " ");
-        }
-
-        // add wcs to pHDU
-        f_ios.at(i).template add_wcs<UnitsType::arcsec>(&f_ios.at(i).pfits->pHDU(),map_type,mout.nrows,
-                                                  mout.ncols,pixel_size,source_center);
-
-        // add wavelength
-        f_ios.at(i).pfits->pHDU().addKey("WAV", toltec_io.name_keys[i], "Array Name");
-        // add obsnum
-        f_ios.at(i).pfits->pHDU().addKey("OBSNUM", obsnum, "Observation Number");
-        // add units
-        f_ios.at(i).pfits->pHDU().addKey("UNIT", obsnum, "MJy/Sr");
-        // add conversion
-        f_ios.at(i).pfits->pHDU().addKey("to_mjy/b", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
     }
 }

@@ -1016,19 +1016,6 @@ int run(const rc_t &rc) {
                     todproc.setup_coadd_map_buffer(map_coords,
                                                    map_counts.front());
 
-                    // generator for a random integer that goes between 0 and
-                    // nobs.
-                    boost::random::mt19937 eng;
-                    int nobs = co.n_inputs();
-                    boost::random::uniform_int_distribution<> randu{0,
-                                                                    nobs - 1};
-
-                    // rezise cmb noise matrix to (nnoise, nobs, nmaps)
-                    todproc.engine().cmb.noise_rand.resize(
-                        todproc.engine().cmb.nnoise, nobs,
-                        todproc.engine().cmb.map_count);
-                    todproc.engine().cmb.noise_rand.setZero();
-
                     // toltec i/o class for filename generation
                     ToltecIO toltec_io;
 
@@ -1099,14 +1086,6 @@ int run(const rc_t &rc) {
                                 todproc.engine()
                                     .filtered_noise_fits_ios.push_back(
                                         std::move(filtered_noise_fits_io));
-                            }
-
-                            // loop through noise maps for each map count
-                            for (Eigen::Index j = 0;
-                                 j < todproc.engine().cmb.nnoise; j++) {
-                                auto u = randu(eng);
-                                // increment noise rand matrix
-                                ++todproc.engine().cmb.noise_rand(j, u, i);
                             }
                         }
                     }
@@ -1325,9 +1304,9 @@ int run(const rc_t &rc) {
                             for (Eigen::Index i = 0;
                                  i < todproc.engine().cmb.map_count; i++) {
                                 todproc.engine().wiener_filter.make_template(
-                                    todproc.engine().cmb,
+                                    todproc.engine().cmb, todproc.engine().calib_data,
                                     todproc.engine().gaussian_template_fwhm_rad
-                                        [toltec_io.name_keys[i]]);
+                                        [toltec_io.name_keys[i]], i);
                                 todproc.engine()
                                     .wiener_filter.filter_coaddition(
                                         todproc.engine().cmb, i);

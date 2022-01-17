@@ -19,23 +19,25 @@ template <class Engine>
 void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine engine) {
     SPDLOG_INFO("populating map with scan {}", in.index.data);
 
-    Eigen::MatrixXi noise_rand;
-
-    if (engine->run_coadd) {
-        if (engine->run_noise) {
-            // declare random number generator for each thread
-            boost::random::mt19937 eng;//(engine->nthreads);
-            boost::random::uniform_int_distribution<> rands{0,1};
-
-            // generate the random number matrix
-            noise_rand =
-                    Eigen::MatrixXi::Zero(engine->cmb.nnoise,1).unaryExpr([&](int dummy){return rands(eng);});
-            noise_rand = (2.*(noise_rand.template cast<double>().array() - 0.5)).template cast<int>();
-        }
-    }
-
     // loop through the detector indices
     for (Eigen::Index mi = 0; mi < engine->det_indices.size(); mi++) {
+
+        Eigen::MatrixXi noise_rand;
+        Eigen::Index ndets = std::get<1>(engine->det_indices.at(mi)) - std::get<0>(engine->det_indices.at(mi)) + 1;
+
+        if (engine->run_coadd) {
+            if (engine->run_noise) {
+                // declare random number generator
+                boost::random::mt19937 eng;
+                boost::random::uniform_int_distribution<> rands{0,1};
+
+                // generate the random number matrix
+                noise_rand =
+                        Eigen::MatrixXi::Zero(engine->cmb.nnoise, ndets).unaryExpr([&](int dummy){return rands(eng);});
+                noise_rand = (2.*(noise_rand.template cast<double>().array() - 0.5)).template cast<int>();
+            }
+        }
+
         for (Eigen::Index di = std::get<0>(engine->det_indices.at(mi)); di < std::get<1>(engine->det_indices.at(mi)); di++) {
 
             // current detector offsets
@@ -55,6 +57,16 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine en
 
             // get detector pointing (lat/lon = rows/cols -> icrs or altaz)
             auto [lat, lon] = engine_utils::get_det_pointing(in.tel_meta_data.data, azoff, eloff, engine->map_type);
+
+            // see if detector lat (el) is as close to source el for beammap derotation
+            if (engine->reduction_type == "beammap") {
+                Eigen::Index min_el_index;
+                auto min_el = (in.tel_meta_data.data["SourceEl"] - lat).cwiseAbs().minCoeff(&min_el_index);
+                if (min_el < engine->mb.el_dist(di)) {
+                    engine->mb.min_el(di) = lat(min_el_index);
+                    engine->mb.el_dist(di) = min_el;
+                }
+            }
 
             // get map buffer row and col indices for lat and lon vectors
             Eigen::VectorXd mb_irow = lat.array()/engine->pixel_size + (engine->mb.nrows)/2.;
@@ -111,15 +123,9 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine en
                         if (engine->run_noise) {
                             // loop through noise maps
                             for (Eigen::Index nn=0; nn<engine->cmb.nnoise; nn++) {
-                                // check if this obs was randomly selected
-                                if (engine->cmb.noise_rand(nn,engine->nobs,mi) != 0) {
-                                    // loop through number of times this obs was randomly selected
-                                    for (Eigen::Index nt=0; nt<engine->cmb.noise_rand(nn,engine->nobs,mi); nt++) {
-                                        // coadd into current noise map
-                                        if ((cmb_ir >= 0) && (cmb_ir < engine->cmb.nrows) && (cmb_ic >= 0) && (cmb_ic < engine->cmb.ncols)) {
-                                            engine->cmb.noise.at(mi)(cmb_ir,cmb_ic,nn) += noise_rand(nn)*sig;
-                                        }
-                                    }
+                                // coadd into current noise map
+                                if ((cmb_ir >= 0) && (cmb_ir < engine->cmb.nrows) && (cmb_ic >= 0) && (cmb_ic < engine->cmb.ncols)) {
+                                    engine->cmb.noise.at(mi)(cmb_ir,cmb_ic,nn) += noise_rand(nn, di)*sig;
                                 }
                             }
                         }

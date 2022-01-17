@@ -10,7 +10,6 @@ namespace gaussfit {
 
 class MapFitter {
 public:
-
     enum FitMode {
         peakValue = 0,
         centerValue = 1,
@@ -18,21 +17,24 @@ public:
     };
 
     int nparams = 6;
-    double bounding_box_pix = 15;
+    double bounding_box_pix;
 
     double flux0;
 
-    double fwhm0 = 10;
+    double fwhm0 = 6;
     double ang0 = 0;
 
     double flux_low = 0.1;
     double flux_high = 1.1;
 
-    double fwhm_low = 0;
-    double fwhm_high = 30;
+    double fwhm_low = 2;
+    double fwhm_high = 20;
 
-    double ang_low = -pi/2;
+    double ang_low = 0;
     double ang_high = pi/2;
+
+    Eigen::MatrixXd covariance;
+    Eigen::VectorXd error;
 
     Eigen::MatrixXd::Index row0, col0;
     Eigen::VectorXd p0;
@@ -82,6 +84,8 @@ public:
             bounding_box_pix = data.cols() - col0 - 1;
         }
 
+        SPDLOG_INFO("bounding_box_pix {}", bounding_box_pix);
+
         // get limits
         limits.resize(nparams, 2);
         limits.col(0) << flux_low*flux0, col0 - bounding_box_pix, row0 - bounding_box_pix, fwhm_low,
@@ -90,8 +94,8 @@ public:
                 fwhm_high, fwhm_high, ang_high;
 
         // axes coordinate vectors for meshgrid
-        x = Eigen::VectorXd::LinSpaced(2*bounding_box_pix+1, col0-bounding_box_pix, col0+bounding_box_pix+1);
-        y = Eigen::VectorXd::LinSpaced(2*bounding_box_pix+1, row0-bounding_box_pix, row0+bounding_box_pix+1);
+        x = Eigen::VectorXd::LinSpaced(2*bounding_box_pix+1, col0-bounding_box_pix, col0+bounding_box_pix);
+        y = Eigen::VectorXd::LinSpaced(2*bounding_box_pix+1, row0-bounding_box_pix, row0+bounding_box_pix);
     }
 
     template <FitMode fit_mode, typename DerivedA, typename DerivedB, typename C>
@@ -110,14 +114,19 @@ public:
         // calculate sigma matrix
         Eigen::MatrixXd sigma = weight;
         // set 1/weight=0 to 0
-        (sigma.array() !=0).select(1./sqrt(weight.derived().array()),0.);
+        sigma = (weight.derived().array() !=0).select(1./sqrt(weight.derived().array()),0.);
 
         // copy data and sigma within bounding box region
         auto _data = data.block(row0-bounding_box_pix, col0-bounding_box_pix, 2*bounding_box_pix+1, 2*bounding_box_pix+1);
         auto _sigma = sigma.block(row0-bounding_box_pix, col0-bounding_box_pix, 2*bounding_box_pix+1, 2*bounding_box_pix+1);
 
-        // do the fit with ceres
-        auto g_fit = gaussfit::curvefit_ceres(g, _p, xy, _data, _sigma, limits);
+        // do the fit with ceres-solver
+        auto [g_fit, covariance] = gaussfit::curvefit_ceres(g, _p, xy, _data, _sigma, limits);
+        //auto [g_fit, covariance] = gaussfit::curvefit_ceres(g, _p, xy, ydata, _sigma, limits);
+
+        error = covariance.diagonal().cwiseSqrt();
+        SPDLOG_INFO("ERROR {}", error);
+        SPDLOG_INFO("covariance {}", covariance);
 
         // return the parameters
         return std::move(g_fit.params);
@@ -140,7 +149,7 @@ void add_gaussian(Engine engine, Eigen::DenseBase<Derived> &scan, tel_meta_t &te
         }
 
         // set offsets to 0 for beammap mode
-        else if (engine->map_grouping == "beammap" || engine->map_grouping == "wyatt") {
+        else if (engine->map_grouping == "beammap") {
             azoff = 0;
             eloff = 0;
         }

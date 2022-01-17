@@ -2,11 +2,13 @@
 
 #include <Eigen/Core>
 #include <unsupported/Eigen/FFT>
+
 #include <tuple>
 
 #include <tula/algorithm/mlinterp/mlinterp.hpp>
 #include <tula/algorithm/ei_stats.h>
 
+#include <citlali/core/utils/constants.h>
 
 namespace internal {
 
@@ -115,7 +117,7 @@ inline decltype(auto) hann(Eigen::Index npts) {
     // 0.5 - 0.5 cos([0, 2pi/N,  2pi/N * 2, ... 2pi/N * (N - 1)])
     // NENBW = 1.5 * df therefore we devide by 1.5 here to get the
     // equivalent scale as if no window is used
-    return (0.5 - 0.5 * Eigen::ArrayXd::LinSpaced(npts, 0, 2.0 * M_PI / npts * (npts - 1)).cos()).matrix();// / 1.5;
+    return (0.5 - 0.5 * Eigen::ArrayXd::LinSpaced(npts, 0, 2.0 * pi / npts * (npts - 1)).cos()).matrix();// / 1.5;
 }
 
 // psd of individual scan npts/2 + 1 values with frequency [0, f/2];
@@ -186,7 +188,7 @@ FreqStat psds(const std::vector<DerivedA> &ptcs,
     Eigen::Matrix<Eigen::Index,Eigen::Dynamic,1> scanlengths;
     scanlengths.resize(nscans);
     for(Eigen::Index j=0;j<nscans;j++) {
-        scanlengths(j) = ptcs[j].scans.rows();
+        scanlengths(j) = ptcs[j].scans.data.rows();
     }
     // use the median length for computation
     Eigen::Index len = tula::alg::median(scanlengths);
@@ -204,12 +206,13 @@ FreqStat psds(const std::vector<DerivedA> &ptcs,
 
     // make some temporaries
     Eigen::VectorXd tfreqs, tpsd;
-    Eigen::Matrix<Eigen::Index, Eigen::Dynamic,1> td(1);  // need this to store array ize for interp
+    // need this to store array size for interp
+    Eigen::Matrix<Eigen::Index, Eigen::Dynamic,1> td(1);
 
     // get the psds
     for (Eigen::Index i=0; i<nscans; ++i) {
         //SPDLOG_TRACE("process scan {} out of {}", i + 1, nscans);
-        internal::psd<win>(ptcs[i].scans.block(0,det,scanlengths(i),1), tpsd,
+        internal::psd<win>(ptcs[i].scans.data.block(0,det,scanlengths(i),1), tpsd,
                       &tfreqs, fsmp);
         // interpolate (tfreqs, tpsd) on to _freqs
         td << tfreqs.size();
@@ -251,11 +254,11 @@ inline auto psd2sen = internal::MoveEnabledUnaryOp([](auto&& psd){
 
 } // namespace internal
 
-template <typename DerivedA, typename DerivedB, typename DerivedC>
-void sensitivity(
-    DerivedA &ptcs,
-    Eigen::DenseBase<DerivedB> &sensitivities, // V * s^(1/2)
-    Eigen::DenseBase<DerivedC> &noisefluxes,   // V, = sqrt(\int PSD df)
+template <typename PTCD, typename DerivedA, typename DerivedB>
+void calc_sensitivity(
+    std::vector<PTCD> &ptcs,
+    Eigen::DenseBase<DerivedA> &sensitivities, // V * s^(1/2)
+    Eigen::DenseBase<DerivedB> &noisefluxes,   // V, = sqrt(\int PSD df)
     double fsmp,
     Eigen::Index det,
     internal::Interval<double> freqrange = {3., 5.}) {

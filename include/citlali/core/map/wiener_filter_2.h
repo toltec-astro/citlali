@@ -9,6 +9,8 @@
 
 #include <citlali/core/utils/constants.h>
 #include <citlali/core/utils/utils.h>
+#include <citlali/core/utils/gaussfit.h>
+#include <citlali/core/utils/fitting.h>
 
 class WienerFilter {
 public:
@@ -22,16 +24,20 @@ public:
     double diffr, diffc;
     double denom_imit = 1.e-4;
 
+    double beam_ratio = 30.;
+
     Eigen::MatrixXd rr, vvq, denom, nume;
     Eigen::MatrixXd mflt;
     Eigen::MatrixXd tplate;
 
     template<class CMB>
     void make_gaussian_template(CMB &cmb, const double);
-    void make_symmetric_template();
 
-    template<class CMB>
-    void make_template(CMB &cmb, const double gaussian_template_fwhm_rad) {
+    template<class CMB, class CD>
+    void make_symmetric_template(CMB &cmb, const double, CD &);
+
+    template<class CMB, class CD>
+    void make_template(CMB &cmb, CD &calib_data, const double gaussian_template_fwhm_rad, const double map_num) {
         // make sure new wiener filtered maps are even dimensioned
         nr = 2*(cmb.nrows/2);
         nc = 2*(cmb.ncols/2);
@@ -52,7 +58,7 @@ public:
         }
 
         else {
-            make_symmetric_template();
+            make_symmetric_template(cmb, map_num, calib_data);
         }
     }
 
@@ -89,28 +95,22 @@ public:
         if (run_kernel) {
             SPDLOG_INFO("filtering kernel");
             mflt = cmb.kernel.at(map_num);
-            //SPDLOG_INFO("kernel mflt {}", mflt);
             uniform_weight = true;
             run_filter(cmb, map_num);
-            //SPDLOG_INFO("kernel nume {}", nume);
-            //SPDLOG_INFO("kernel denom {}", denom);
             cmb.kernel.at(map_num) = (denom.array() == 0).select(0, nume.array() / denom.array());
-            //SPDLOG_INFO("kernel {}", cmb.kernel.at(map_num));
         }
 
         SPDLOG_INFO("filtering signal");
         mflt = cmb.signal.at(map_num);
         uniform_weight = false;
         run_filter(cmb, map_num);
-        //SPDLOG_INFO("denom {}", denom);
         cmb.signal.at(map_num) = (denom.array() == 0).select(0, nume.array() / denom.array());
-        //SPDLOG_INFO("denom {}", denom);
         cmb.weight.at(map_num) = denom;
     }
 
     template<class CMB>
     void filter_noise(CMB &cmb, const int map_num, const int noise_num) {
-        //SPDLOG_INFO("filtering noise");
+        SPDLOG_INFO("filtering noise");
         Eigen::Tensor<double,2> out = cmb.noise.at(map_num).chip(noise_num,2);
         mflt = Eigen::Map<Eigen::MatrixXd>(out.data(),out.dimension(0),out.dimension(1));
         calc_numerator();
@@ -150,8 +150,87 @@ void WienerFilter::make_gaussian_template(CMB &cmb, const double gaussian_templa
     tplate = engine_utils::shift_matrix(tplate, -rcind, -ccind);
 }
 
-void WienerFilter::make_symmetric_template() {
+template<class CMB, class CD>
+void WienerFilter::make_symmetric_template(CMB &cmb, const double map_num, CD &calib_data) {
+    // collect what we need
+    Eigen::VectorXd rgcut(nr);
+    rgcut = cmb.rcphys;
+    Eigen::VectorXd cgcut(nc);
+    cgcut = cmb.ccphys;
+    Eigen::MatrixXd tem = cmb.kernel.at(map_num);
+      
+    // set nparams for fit
+    Eigen::Index nparams = 6;
+    Eigen::VectorXd pfit;
+    pfit.setZero(nparams);
+      
+    // declare fitter class for detector
+    gaussfit::MapFitter fitter;
+    // size of region to fit in pixels
+    // fitter.bounding_box_pix = bounding_box_pix;
+    pfit = fitter.fit<gaussfit::MapFitter::centerValue>(cmb.kernel.at(map_num), cmb.weight.at(map_num), calib_data);
 
+    tem = engine_utils::shift_matrix(tem, -std::round(pfit(3)/diffr), -std::round(pfit(2)/diffc));
+
+    Eigen::MatrixXd dist(nr,nc);
+    for (int i=0; i<nc; i++) {
+        for(int j=0;j<nr;j++) {
+            dist(i,j) = sqrt(pow(rgcut(j),2)+pow(cgcut(i),2));
+        }
+    }
+
+    Eigen::Index rcind, ccind;
+    auto mindist = dist.minCoeff(&rcind,&ccind);
+
+    // create new bins based on diffx
+    int nbins = rgcut(nr-1)/diffr;
+    Eigen::VectorXd binlow(nbins);
+    for(int i=0;i<nbins;i++) {
+        binlow(i) = (double) (i*diffr);
+    }
+
+    Eigen::VectorXd kone(nbins-1);
+    kone.setZero();
+    Eigen::VectorXd done(nbins-1);
+    done.setZero();
+    for (int i=0;i<nbins-1;i++) {
+        int c=0;
+        for (int j=0;j<nc;j++) {
+            for (int k=0;k<nr;k++) {
+                if (dist(k,j) >= binlow(i) && dist(k,j) < binlow(i+1)){
+                    c++;
+                    kone(i) += tem(k,j);
+                    done(i) += dist(k,j);
+                }
+            }
+        }
+        kone(i) /= c;
+        done(i) /= c;
+    }
+
+    //now spline interpolate to generate new template array
+    tplate.resize(nr,nc);
+
+    engine_utils::SplineFunction s(done, kone);
+
+    for (int i=0; i<nc; i++) {
+        for (int j=0; j<nr; j++) {
+            int tj = (j-rcind)%nr;
+            int ti = (i-ccind)%nc;
+            int shiftj = (tj < 0) ? nr+tj : tj;
+            int shifti = (ti < 0) ? nc+ti : ti;
+
+            if (dist(j,i) <= s.x_max && dist(j,i) >= s.x_min) {
+                tplate(shiftj,shifti) = s(dist(j,i));
+            }
+            else if (dist(j,i) > s.x_max) {
+                tplate(shiftj,shifti) = kone(kone.size()-1);
+            }
+            else if (dist(j,i) < s.x_min) {
+                tplate(shiftj,shifti) = kone(0);
+            }
+        }
+    }
 }
 
 template <class CMB>
@@ -464,8 +543,6 @@ void WienerFilter::calc_denominator() {
         out = engine_utils::fft2w<engine_utils::backward>(in, nr, nc);
 
         //SPDLOG_INFO("denom out1 {}", out);
-
-
         ////SPDLOG_INFO("denom e");
 
         Eigen::VectorXd zz2d(nr * nc);

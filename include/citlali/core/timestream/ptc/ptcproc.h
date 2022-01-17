@@ -108,7 +108,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
      }
 
      // get weights from stddev of each scan for each detector
-     else {
+     else if (engine->approx_weights == "full"){
          out.weights.data = Eigen::VectorXd::Zero(out.scans.data.cols());
          for (Eigen::Index i=0; i<out.scans.data.cols(); i++) {
 

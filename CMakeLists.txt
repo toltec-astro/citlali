@@ -41,9 +41,14 @@ set(dep_libs ${dep_libs} tula::Boost)
 include(CCfits)
 set(dep_libs ${dep_libs} tula::CCfits)
 
-add_library(citlali INTERFACE)
-target_include_directories(citlali INTERFACE "include")
-target_link_libraries(citlali INTERFACE ${dep_libs})
+add_library(citlali STATIC)
+target_sources(citlali
+    PRIVATE
+    "src/citlali/core/gaussfit.cpp"
+    "src/citlali/core/sensitivity.cpp"
+    )
+target_include_directories(citlali PUBLIC "include")
+target_link_libraries(citlali PUBLIC ${dep_libs})
 add_library(citlali::citlali ALIAS citlali)
 
 ## optional targets

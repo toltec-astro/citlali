@@ -132,9 +132,6 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         // start index of current scan
         Eigen::Index start_index = 0;
         // main grppi loop
-
-                            SPDLOG_INFO("scan {} scanindices.cols() {}", scan, scanindices.cols());
-
         while (scan < scanindices.cols()) {
             SPDLOG_INFO("reducing scan {}", scan + 1);
             // start index of current scan
@@ -185,6 +182,7 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         // set nparams for fit
         Eigen::Index nparams = 6;
         mb.pfit.setZero(nparams, array_indices.size());
+        mb.perror.setZero(nparams, array_indices.size());
 
         // loop through the arrays and do the fit
         SPDLOG_INFO("fitting pointing maps");
@@ -193,15 +191,21 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
             gaussfit::MapFitter fitter;
             // size of region to fit in pixels
             fitter.bounding_box_pix = bounding_box_pix;
-            mb.pfit.col(d) = fitter.fit<gaussfit::MapFitter::centerValue>(mb.signal[d], mb.weight[d], calib_data);
+            mb.pfit.col(d) = fitter.fit<gaussfit::MapFitter::peakValue>(mb.signal[d], mb.weight[d], calib_data);
+            mb.perror.col(d) = fitter.error;
             return 0;});
 
-        // rescale params from pixel to on-sky units (radians)
+        // rescale params from pixel to on-sky units
         mb.pfit.row(1) = pixel_size*(mb.pfit.row(1).array() - (mb.ncols)/2)/RAD_ASEC;
         mb.pfit.row(2) = pixel_size*(mb.pfit.row(2).array() - (mb.nrows)/2)/RAD_ASEC;
         mb.pfit.row(3) = STD_TO_FWHM*pixel_size*(mb.pfit.row(3))/RAD_ASEC;
         mb.pfit.row(4) = STD_TO_FWHM*pixel_size*(mb.pfit.row(4))/RAD_ASEC;
-        //mb.pfit.row(5) = mb.pfit.row(5);
+
+        // rescale errors from pixel to on-sky units
+        mb.perror.row(1) = pixel_size*(mb.perror.row(1))/RAD_ASEC;
+        mb.perror.row(2) = pixel_size*(mb.perror.row(2))/RAD_ASEC;
+        mb.perror.row(3) = STD_TO_FWHM*pixel_size*(mb.perror.row(3))/RAD_ASEC;
+        mb.perror.row(4) = STD_TO_FWHM*pixel_size*(mb.perror.row(4))/RAD_ASEC;
     }    
 }
 
@@ -214,17 +218,13 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios) {
     for (Eigen::Index i=0; i<array_indices.size(); i++) {
         SPDLOG_INFO("writing {}.fits", f_ios.at(i).filepath);
         // add signal map to file
-        SPDLOG_INFO("SIG {}", mout.signal.at(i));
         f_ios.at(i).add_hdu("signal", mout.signal.at(i));
 
         //add weight map to file
-        SPDLOG_INFO("wt {}", mout.weight.at(i));
         f_ios.at(i).add_hdu("weight", mout.weight.at(i));
-        //f_ios.at(i).add_hdu("weight", mout.psd.at(i).psd2d);
 
         //add kernel map to file
         if (run_kernel) {
-            SPDLOG_INFO("ker {}", mout.kernel.at(i));
             f_ios.at(i).add_hdu("kernel", mout.kernel.at(i));
         }
 
@@ -250,11 +250,17 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios) {
                 if constexpr (out_type==MapType::obs) {
                     // add fit parameters
                     hdu->addKey("amp", (float)mout.pfit(0,i),"amplitude (Mjy/sr)");
+                    hdu->addKey("amp_err", (float)mout.perror(0,i),"amplitude error (Mjy/sr)");
                     hdu->addKey("x_t", (float)mout.pfit(1,i),"az offset (arcsec)");
+                    hdu->addKey("x_t_err", (float)mout.perror(1,i),"az offset error (arcsec)");
                     hdu->addKey("y_t", (float)mout.pfit(2,i),"alt offset (arcsec)");
+                    hdu->addKey("y_t_err", (float)mout.perror(2,i),"alt offset error (arcsec)");
                     hdu->addKey("a_fwhm", (float)mout.pfit(3,i),"az fwhm (arcsec)");
+                    hdu->addKey("a_fwhm_err", (float)mout.perror(3,i),"az fwhm error (arcsec)");
                     hdu->addKey("b_fwhm", (float)mout.pfit(4,i),"alt fwhm (arcsec)");
-                    hdu->addKey("angle", (float)mout.pfit(5,i),"rotation angle (radians)");
+                    hdu->addKey("b_fwhm_err", (float)mout.perror(4,i),"alt fwhm error (arcsec)");
+                    hdu->addKey("angle", (float)mout.pfit(5,i),"position angle (radians)");
+                    hdu->addKey("angle_err", (float)mout.perror(5,i),"position angle error (radians)");
                 }
             }
         }
@@ -285,7 +291,10 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios) {
         f_ios.at(i).pfits->pHDU().addKey("UNIT", obsnum, "MJy/Sr");
         // add conversion
         f_ios.at(i).pfits->pHDU().addKey("to_mjy/b", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
-
+        // add source ra
+        f_ios.at(i).pfits->pHDU().addKey("src_ra", source_center["Ra"][0], "Source RA");
+        // add source dec
+        f_ios.at(i).pfits->pHDU().addKey("src_dec", source_center["Dec"][0], "Source Dec");
     }
 
     // add fitting parameters to file if pointing mode is selected
@@ -294,22 +303,40 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios) {
             // yaml node for ecsv table meta data (units and description)
             YAML::Node meta;
             meta["amp"].push_back("units: Mjy/sr");
-            meta["amp"].push_back("fitted signal to noise");
+            meta["amp"].push_back("fitted amplitude");
+
+            meta["amp_err"].push_back("units: Mjy/sr");
+            meta["amp_err"].push_back("fitted amplitude error");
 
             meta["x_t"].push_back("units: arcsec");
             meta["x_t"].push_back("fitted azimuthal offset");
 
+            meta["x_t_err"].push_back("units: arcsec");
+            meta["x_t_err"].push_back("fitted azimuthal offset error");
+
             meta["y_t"].push_back("units: arcsec");
             meta["y_t"].push_back("fitted altitude offset");
+
+            meta["y_t_err"].push_back("units: arcsec");
+            meta["y_t_err"].push_back("fitted altitude offset error");
 
             meta["a_fwhm"].push_back("units: arcsec");
             meta["a_fwhm"].push_back("fitted azimuthal FWHM");
 
+            meta["a_fwhm_err"].push_back("units: arcsec");
+            meta["a_fwhm_err"].push_back("fitted azimuthal FWHM error");
+
             meta["b_fwhm"].push_back("units: arcsec");
             meta["b_fwhm"].push_back("fitted altitude FWMH");
 
+            meta["b_fwhm_err"].push_back("units: arcsec");
+            meta["b_fwhm_err"].push_back("fitted altitude FWMH error");
+
             meta["angle"].push_back("units: radians");
             meta["angle"].push_back("fitted rotation angle");
+
+            meta["angle_err"].push_back("units: radians");
+            meta["angle_err"].push_back("fitted rotation angle error");
 
             // ppt table
             SPDLOG_INFO("writing pointing fit table");
@@ -318,7 +345,14 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios) {
             auto filename = toltec_io.setup_filepath<ToltecIO::ppt, ToltecIO::simu,
                     ToltecIO::pointing, ToltecIO::no_prod_type, ToltecIO::obsnum_true>(filepath,obsnum,-1);
             Eigen::MatrixXf table(toltec_io.apt_header.size(), array_indices.size());
-            table = mout.pfit.template cast <float> ();
+
+            //table = mout.pfit.template cast <float> ();
+            int ci = 0;
+            for (int ti=0; ti < toltec_io.apt_header.size()-1; ti=ti+2) {
+                table.row(ti) = mout.pfit.row(ci).template cast <float> ();
+                table.row(ti + 1) = mout.perror.row(ci).template cast <float> ();
+                ci++;
+            }
             table.transposeInPlace();
 
             SPDLOG_INFO("pointing fit table header {}", toltec_io.apt_header);

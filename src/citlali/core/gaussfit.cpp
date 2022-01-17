@@ -1,4 +1,4 @@
-#include <citlali/include/utils/fitting.h>
+#include <citlali/core/utils/gaussfit.h>
 #include <iostream>
 
 namespace gaussfit {
@@ -66,7 +66,7 @@ Gaussian2D::InputType Gaussian2D::transform (
     // fix degeneracy issue by constrain the position angle to [0, pi/2]
     // pp[5] is [-inf, inf]
     Gaussian2D::InputType pp(p);
-    pp[5] = tan(p[5] * 2. - PI / 2.);
+    pp[5] = tan(p[5] * 2. - pi / 2.);
     return pp;
 }
 
@@ -75,7 +75,7 @@ Gaussian2D::InputType Gaussian2D::inverseTransform (
 {
     // p[5] is [0, pi/2]
     Gaussian2D::InputType p(pp);
-    p[5] = (atan(pp[5]) + PI / 2.) / 2.;
+    p[5] = (atan(pp[5]) + pi / 2.) / 2.;
     return p;
 }
 
