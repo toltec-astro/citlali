@@ -30,7 +30,7 @@ public:
     double fwhm_low = 2;
     double fwhm_high = 20;
 
-    double ang_low = 0;
+    double ang_low = -pi/2;
     double ang_high = pi/2;
 
     Eigen::MatrixXd covariance;

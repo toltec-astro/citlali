@@ -278,26 +278,26 @@ struct CeresAutoDiffFitter: Fitter<Model>
         auto c = - 0.5 * ((sint2 / xstd2) + (cost2 / ystd2));
 
         for (int i=0; i < this->values(); ++i){
-            //SPDLOG_INFO();
-            //SPDLOG_INFO("X {} Y {}", this->xdata->coeffRef(i, 0), this->xdata->coeffRef(i, 1));
-            //if (this->sigma->coeffRef(i) == 0){
-                /*r[i] =  (
-                            this->ydata->coeffRef(i) -
-                            p[0] * exp(
-                                -pow(this->xdata->coeffRef(i, 0) - p[1], 2) /xstd2 -
-                                pow(this->xdata->coeffRef(i, 1) - p[2], 2) /ystd2)
-                        ) / this->sigma->coeffRef(i);
-            }*/
-            //else {
-            r[i] =  (
+            if (this->sigma->coeffRef(i) == 0){
+                r[i] =  (
                         this->ydata->coeffRef(i) -
                         p[0] * exp(
                             pow(this->xdata->coeffRef(i, 0) - p[1], 2) * a +
                             (this->xdata->coeffRef(i, 0) - p[1]) * (this->xdata->coeffRef(i, 1) - p[2]) * b +
                             pow(this->xdata->coeffRef(i, 1) - p[2], 2) * c
                             )
-                    ) / this->sigma->coeffRef(i);
-            //}
+                    ) * this->sigma->coeffRef(i);
+            }
+            else {
+                r[i] =  (
+                            this->ydata->coeffRef(i) -
+                            p[0] * exp(
+                                pow(this->xdata->coeffRef(i, 0) - p[1], 2) * a +
+                                (this->xdata->coeffRef(i, 0) - p[1]) * (this->xdata->coeffRef(i, 1) - p[2]) * b +
+                                pow(this->xdata->coeffRef(i, 1) - p[2], 2) * c
+                                )
+                        ) / this->sigma->coeffRef(i);
+            }
         }
         return true;
     }
@@ -372,25 +372,23 @@ std::tuple<Model, Eigen::MatrixXd> curvefit_ceres(
     Solve(options, problem.get(), &summary);
 
     SPDLOG_INFO("{}", summary.BriefReport());
-
-    // uncertainty calculation
-    Covariance::Options cov_options;
-    // EIGEN_SPARSE and DENSE_SVD are the slower, but more accurate options.
-    cov_options.sparse_linear_algebra_library_type = ceres::SparseLinearAlgebraLibraryType::EIGEN_SPARSE;
-    cov_options.algorithm_type = ceres::CovarianceAlgorithmType::DENSE_SVD;
-    Covariance covariance(cov_options);
-
-    std::vector<std::pair<const double*, const double*>> covariance_blocks;
-    covariance_blocks.push_back(std::make_pair(pp.data(), pp.data()));
+    SPDLOG_INFO("summary.IsSolutionUsable() {}",summary.IsSolutionUsable());
 
     Eigen::MatrixXd covariances(pp.size(),pp.size());
 
-    SPDLOG_INFO("summary.IsSolutionUsable() {}",summary.IsSolutionUsable());
-
     if (summary.IsSolutionUsable()) {
+        // uncertainty calculation
+        Covariance::Options cov_options;
+        // EIGEN_SPARSE and DENSE_SVD are the slower, but more accurate options.
+        cov_options.sparse_linear_algebra_library_type = ceres::SparseLinearAlgebraLibraryType::EIGEN_SPARSE;
+        cov_options.algorithm_type = ceres::CovarianceAlgorithmType::DENSE_SVD;
+        Covariance covariance(cov_options);
+
+        std::vector<std::pair<const double*, const double*>> covariance_blocks;
+        covariance_blocks.push_back(std::make_pair(pp.data(), pp.data()));
         covariance.Compute(covariance_blocks, problem.get());
         covariance.GetCovarianceBlock(pp.data(),pp.data(), covariances.data());
-        }
+    }
     else {
         covariances.setZero();
     }
