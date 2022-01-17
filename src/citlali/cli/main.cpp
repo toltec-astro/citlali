@@ -550,7 +550,7 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
               {"modelspec",
                config.get_str(std::tuple{"fitter", "modelspec"})}}},
           m_solver{Solver::Config{
-              {"fitreportdir", "/"},
+	      {"fitreportdir", "/dev/null"},
               {"exmode", "omp"},
               {"extra_output", extra_output},
           }} {}
