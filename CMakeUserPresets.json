@@ -5,6 +5,7 @@
       "name": "unity_debug",
       "description": "",
       "displayName": "",
+      "generator": "Unix Makefiles",
       "inherits": [
           "linux-gcc-debug"
       ],
@@ -16,10 +17,12 @@
       "name": "unity_release",
       "description": "",
       "displayName": "",
+      "generator": "Unix Makefiles",
       "inherits": [
           "linux-gcc-release"
       ],
       "cacheVariables": {
+	  "FETCHCONTENT_SOURCE_DIR_TULA": "${sourceParentDir}/tula"
       }
     }
   ]

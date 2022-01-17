@@ -10,4 +10,4 @@ preset=$1
 echo -e "build with preset=${preset}\n"
 builddir=build_${preset}
 mkdir -p ${builddir}
-cmake -S . -B ${builddir}
+cmake -S . -B ${builddir} --preset ${preset}
