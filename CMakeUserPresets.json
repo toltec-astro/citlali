@@ -22,7 +22,7 @@
           "linux-gcc-release"
       ],
       "cacheVariables": {
-	  "FETCHCONTENT_SOURCE_DIR_TULA": "${sourceParentDir}/tula"
+	 "FETCHCONTENT_SOURCE_DIR_TULA": "${sourceParentDir}/tula"
       }
     }
   ]
