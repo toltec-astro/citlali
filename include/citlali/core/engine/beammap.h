@@ -352,8 +352,6 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
             mb.perror.row(4) = STD_TO_FWHM*pixel_size*(mb.perror.row(4))/RAD_ASEC;
 
             // derotate x_t and y_t
-            SPDLOG_INFO("min el {}", mb.min_el);
-            SPDLOG_INFO("el dist {}", mb.el_dist);
 
             // need to copy because of aliasing?
             /*Eigen::VectorXd rot_azoff = cos(-mb.min_el.array())*mb.pfit.row(1).array() -
@@ -367,6 +365,19 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
 
             // calculate sensitivity for detectors
             grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](int d) {
+                SPDLOG_INFO("derotating det {}", d);
+                Eigen::Index min_el_index;
+                Eigen::VectorXd lat = (mb.pfit(2,d)*RAD_ASEC) + tel_meta_data["TelLatPhys"].array();
+                double min_el_dist = (tel_meta_data["SourceEl"] - lat).cwiseAbs().minCoeff(&min_el_index);
+
+                double rot_azoff = cos(-lat(min_el_index))*mb.pfit(1,d) -
+                        sin(-lat(min_el_index))*mb.pfit(2,d);
+                double rot_eloff = cos(-lat(min_el_index))*mb.pfit(2,d) +
+                        sin(-lat(min_el_index))*mb.pfit(1,d);
+
+                mb.pfit(1,d) = -rot_azoff;
+                mb.pfit(2,d) = -rot_eloff;
+
                 SPDLOG_INFO("calculating sensitivity for det {}", d);
                 Eigen::MatrixXd det_sens;
                 Eigen::MatrixXd noise_flux;

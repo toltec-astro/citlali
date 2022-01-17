@@ -58,16 +58,6 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine en
             // get detector pointing (lat/lon = rows/cols -> icrs or altaz)
             auto [lat, lon] = engine_utils::get_det_pointing(in.tel_meta_data.data, azoff, eloff, engine->map_type);
 
-            // see if detector lat (el) is as close to source el for beammap derotation
-            if (engine->reduction_type == "beammap") {
-                Eigen::Index min_el_index;
-                auto min_el = (in.tel_meta_data.data["SourceEl"] - lat).cwiseAbs().minCoeff(&min_el_index);
-                if (min_el < engine->mb.el_dist(di)) {
-                    engine->mb.min_el(di) = lat(min_el_index);
-                    engine->mb.el_dist(di) = min_el;
-                }
-            }
-
             // get map buffer row and col indices for lat and lon vectors
             Eigen::VectorXd mb_irow = lat.array()/engine->pixel_size + (engine->mb.nrows)/2.;
             Eigen::VectorXd mb_icol = lon.array()/engine->pixel_size + (engine->mb.ncols)/2.;
