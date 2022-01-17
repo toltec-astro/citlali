@@ -21,14 +21,14 @@ public:
 
     double flux0;
 
-    double fwhm0 = 6;
+    double fwhm0 = 10;
     double ang0 = 0;
 
     double flux_low = 0.1;
     double flux_high = 1.1;
 
-    double fwhm_low = 2;
-    double fwhm_high = 20;
+    double fwhm_low = 0;
+    double fwhm_high = 30;
 
     double ang_low = -pi/2;
     double ang_high = pi/2;
@@ -94,6 +94,7 @@ public:
                 fwhm_high, fwhm_high, ang_high;
 
         SPDLOG_INFO("limits {}", limits);
+        SPDLOG_INFO("p0 {}",p0);
 
         // axes coordinate vectors for meshgrid
         x = Eigen::VectorXd::LinSpaced(2*bounding_box_pix+1, col0-bounding_box_pix, col0+bounding_box_pix);
@@ -116,7 +117,7 @@ public:
         // calculate sigma matrix
         Eigen::MatrixXd sigma = weight;
         // set 1/weight=0 to 0
-        sigma = (weight.derived().array() !=0).select(1./sqrt(weight.derived().array()),0.);
+        (sigma.derived().array() !=0).select(1./sqrt(weight.derived().array()),0.);
 
         // copy data and sigma within bounding box region
         auto _data = data.block(row0-bounding_box_pix, col0-bounding_box_pix, 2*bounding_box_pix+1, 2*bounding_box_pix+1);
@@ -160,10 +161,10 @@ void add_gaussian(Engine engine, Eigen::DenseBase<Derived> &scan, tel_meta_t &te
 
         // get parameters for current detector
         auto amplitude = engine->mb.pfit(0,d);
-        auto off_lat = -engine->mb.pfit(2,d);
-        auto off_lon = -engine->mb.pfit(1,d);
-        auto sigma_lat = engine->mb.pfit(3,d);
-        auto sigma_lon = engine->mb.pfit(4,d);
+        auto off_lat = engine->mb.pfit(2,d);
+        auto off_lon = engine->mb.pfit(1,d);
+        auto sigma_lat = engine->mb.pfit(4,d);
+        auto sigma_lon = engine->mb.pfit(3,d);
 
         // rescale offsets and fwhm to on-sky units
         off_lat = engine->pixel_size*(off_lat - (engine->mb.nrows)/2);

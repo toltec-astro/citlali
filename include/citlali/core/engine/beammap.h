@@ -221,7 +221,7 @@ auto Beammap::run_loop() {
 
         SPDLOG_INFO("fitting maps");
         grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](auto d) {
-            //if (converged(d) == false) {
+            if (converged(d) == false) {
                 SPDLOG_INFO("fitting detector {}/{}",d+1, det_in_vec.size());
                 // declare fitter class for detector
                 gaussfit::MapFitter fitter;
@@ -230,11 +230,11 @@ auto Beammap::run_loop() {
                 mb.pfit.col(d) = fitter.fit<gaussfit::MapFitter::peakValue>(mb.signal[d], mb.weight[d], calib_data);
                 mb.perror.col(d) = fitter.error;
                 SPDLOG_INFO("pfit.col(d) {}", mb.pfit.col(d));
-            //}
-            //else {
-              //  mb.pfit.col(d) = p0.col(d);
-                //mb.perror.col(d) = perror0.col(d);
-            //}
+            }
+            else {
+                mb.pfit.col(d) = p0.col(d);
+                mb.perror.col(d) = perror0.col(d);
+            }
             return 0;});
 
         return in;
@@ -266,7 +266,7 @@ auto Beammap::run_loop() {
                         }
                     }
                     return 0;});
-                SPDLOG_INFO("converged detectors {}",(converged.array() == true).count());
+                SPDLOG_INFO("converged detectors {}", (converged.array() == true).count());
             }
             // set previous iteration fit to current fit
             p0 = mb.pfit;
