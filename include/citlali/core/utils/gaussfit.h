@@ -386,8 +386,15 @@ std::tuple<Model, Eigen::MatrixXd> curvefit_ceres(
 
         std::vector<std::pair<const double*, const double*>> covariance_blocks;
         covariance_blocks.push_back(std::make_pair(pp.data(), pp.data()));
-        covariance.Compute(covariance_blocks, problem.get());
-        covariance.GetCovarianceBlock(pp.data(),pp.data(), covariances.data());
+        auto get_covariance = covariance.Compute(covariance_blocks, problem.get());
+
+        if (get_covariance) {
+            covariance.GetCovarianceBlock(pp.data(),pp.data(), covariances.data());
+        }
+
+        else {
+            covariances.setZero();
+        }
     }
     else {
         covariances.setZero();
