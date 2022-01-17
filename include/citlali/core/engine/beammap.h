@@ -418,9 +418,9 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios) {
         //table.row(9) = converge_iter.cast <float> ();
 
         int ci = 0;
-        for (int ti=4; ti < toltec_io.apt_header.size()-1; ti=ti+2) {
-            table.row(ti) = mout.pfit.row(ci).template cast <float> ();
-            table.row(ti + 1) = mout.perror.row(ci).template cast <float> ();
+        for (int ti=0; ti < toltec_io.apt_header.size()-1; ti=ti+2) {
+            table.row(ti+4) = mout.pfit.row(ci).template cast <float> ();
+            table.row(ti+4 + 1) = mout.perror.row(ci).template cast <float> ();
             ci++;
         }
 
