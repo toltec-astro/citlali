@@ -356,13 +356,13 @@ std::tuple<Model, Eigen::MatrixXd> curvefit_ceres(
     }
 
     // indices to hold constant
-    /*std::vector<int> sspv;
+    std::vector<int> sspv;
     sspv.push_back(limits.rows()-1);
     if (sspv.size() > 0 ){
         ceres::SubsetParameterization *pcssp
                 = new ceres::SubsetParameterization(limits.rows(), sspv);
         problem->SetParameterization(pp.data(), pcssp);
-    }*/
+    }
 
     Solver::Options options;
     options.linear_solver_type = ceres::LinearSolverType::DENSE_QR;
@@ -383,11 +383,18 @@ std::tuple<Model, Eigen::MatrixXd> curvefit_ceres(
     std::vector<std::pair<const double*, const double*>> covariance_blocks;
     covariance_blocks.push_back(std::make_pair(pp.data(), pp.data()));
 
-    CHECK(covariance.Compute(covariance_blocks, problem.get()));
-
     Eigen::MatrixXd covariances(pp.size(),pp.size());
 
-    covariance.GetCovarianceBlock(pp.data(),pp.data(), covariances.data());
+    SPDLOG_INFO("summary.IsSolutionUsable() {}",summary.IsSolutionUsable());
+
+    if (summary.IsSolutionUsable()) {
+        covariance.Compute(covariance_blocks, problem.get());
+        covariance.GetCovarianceBlock(pp.data(),pp.data(), covariances.data());
+        }
+    else {
+        covariances.setZero();
+    }
+
     SPDLOG_INFO("covariance {}", covariances);
 
     return std::tuple<Model, Eigen::MatrixXd> (Model(pp), covariances);
