@@ -4,10 +4,10 @@
 #include <Eigen/Core>
 
 #include <tula/eigen.h>
+#include <tula/logging.h>
 
 #include <citlali/core/utils/constants.h>
 #include <tula/algorithm/mlinterp/mlinterp.hpp>
-
 
 class Observation {
 public:
@@ -62,12 +62,12 @@ void Observation::remove_dropouts(Eigen::DenseBase<Derived> &data) {
     }
 
     if (data(0) != data(0)) {
-        SPDLOG_WARN("First data point is NaN.  Replaced with adjacent");
+        SPDLOG_WARN("First data point is nan.  Replaced with adjacent");
         data(0) = data(1);
     }
 
     if (data(data.size()-1) != data(data.size()-1)) {
-        SPDLOG_WARN("Last data point is NaN.  Replaced with adjacent");
+        SPDLOG_WARN("Last data point is nan.  Replaced with adjacent");
         data(data.size()-1) = data(data.size()-2);
     }
 }
@@ -81,12 +81,12 @@ void Observation::remove_nan(Eigen::DenseBase<Derived> &data) {
     }
 
     if (data(0) != data(0)) {
-        SPDLOG_WARN("First data point is NaN.  Replaced with adjacent");
+        SPDLOG_WARN("First data point is nan.  Replaced with adjacent");
         data(0) = data(1);
     }
 
     if (data(data.size()-1) != data(data.size()-1)) {
-        SPDLOG_WARN("Last data point is NaN.  Replaced with adjacent");
+        SPDLOG_WARN("Last data point is nan.  Replaced with adjacent");
         data(data.size()-1) = data(data.size()-2);
     }
 }
@@ -250,36 +250,36 @@ template <typename tel_meta_data_t, typename C>
 void Observation::get_phys_icrs(tel_meta_data_t &tel_meta_data, C &center) {
 
     // copy of absolute ra
-    Eigen::VectorXd tempRa = tel_meta_data["TelRa"];
-    (tempRa.array() > pi).select(tel_meta_data["TelRa"].array() - 2.0*pi, tel_meta_data["TelRa"]);
+    Eigen::VectorXd temp_ra = tel_meta_data["TelRa"];
+    (temp_ra.array() > pi).select(tel_meta_data["TelRa"].array() - 2.0*pi, tel_meta_data["TelRa"]);
 
     // copy of absolute dec
-    Eigen::VectorXd tempDec = tel_meta_data["TelDec"];
+    Eigen::VectorXd temp_dec = tel_meta_data["TelDec"];
 
     // copy of center ra
-    double tempCenterRa = center["Ra"](0);
-    tempCenterRa = (tempCenterRa > pi) ? tempCenterRa-(2.0*pi) : tempCenterRa;
+    double temp_center_ra = center["Ra"](0);
+    temp_center_ra = (temp_center_ra > pi) ? temp_center_ra-(2.0*pi) : temp_center_ra;
 
     // copy of center dec
     double tempCenterDec = center["Dec"](0);
 
     auto cosc = sin(tempCenterDec)*sin(tel_meta_data["TelDec"].array()) +
-            cos(tempCenterDec)*cos(tel_meta_data["TelDec"].array())*cos(tempRa.array()-tempCenterRa);
+            cos(tempCenterDec)*cos(tel_meta_data["TelDec"].array())*cos(temp_ra.array()-temp_center_ra);
 
-    tel_meta_data["TelLatPhys"].resize(tempRa.size());
-    tel_meta_data["TelLonPhys"].resize(tempRa.size());
+    tel_meta_data["TelLatPhys"].resize(temp_ra.size());
+    tel_meta_data["TelLonPhys"].resize(temp_ra.size());
 
     // get physical Ra/Dec
-    for (Eigen::Index i = 0; i < tempRa.size(); i++) {
+    for (Eigen::Index i = 0; i < temp_ra.size(); i++) {
         if (cosc(i) == 0.) {
             tel_meta_data["TelLatPhys"](i) = 0.;
             tel_meta_data["TelLonPhys"](i) = 0.;
         }
         else {
             tel_meta_data["TelLatPhys"](i) = (cos(tempCenterDec)*sin(tel_meta_data["TelDec"](i)) -
-                    sin(tempCenterDec)*cos(tel_meta_data["TelDec"](i))*cos(tempRa(i)-tempCenterRa))/cosc(i);
+                    sin(tempCenterDec)*cos(tel_meta_data["TelDec"](i))*cos(temp_ra(i)-temp_center_ra))/cosc(i);
 
-            tel_meta_data["TelLonPhys"](i) = cos(tel_meta_data["TelDec"](i))*sin(tempRa(i)-tempCenterRa)/cosc(i);
+            tel_meta_data["TelLonPhys"](i) = cos(tel_meta_data["TelDec"](i))*sin(temp_ra(i)-temp_center_ra)/cosc(i);
         }
     }
 }
@@ -315,7 +315,7 @@ void Observation::get_scanindices(tel_meta_data_t &tel_meta_data, C &center, std
         //nscans = ((turning.tail(turning.size() - 1) - turning.head(turning.size() - 1)).array() == 1).count();
 
         for (Eigen::Index i=1; i<turning.size(); i++) {
-            if (turning(i) - turning[i-1] == 1) {
+            if (turning(i) - turning(i-1) == 1) {
                 nscans++;
             }
         }

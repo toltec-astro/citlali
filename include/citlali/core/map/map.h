@@ -27,9 +27,17 @@ public:
 
     // for map fit parameters
     Eigen::MatrixXd pfit;
+    // for map fit errors
+    Eigen::MatrixXd perror;
 
     // physical coordinates for rows and cols (radians)
     Eigen::VectorXd rcphys, ccphys;
+
+    // elevations when detector is on source
+    Eigen::VectorXd min_el;
+
+    // src-det el when detector is on source
+    Eigen::VectorXd el_dist;
 
     // vector of psd classes
     std::vector<PSD> psd;

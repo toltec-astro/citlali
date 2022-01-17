@@ -5,6 +5,8 @@
 
 #include <tula/config/flatconfig.h>
 
+#include <citlali/core/utils/constants.h>
+
 namespace gaussfit {
 
 using namespace Eigen;
@@ -30,7 +32,6 @@ struct DenseFunctor {
 
     constexpr static std::string_view name = "functor";
     DenseFunctor(int inputs, int values) : m_inputs(inputs), m_values(values) {
-        //logger = logging::createLogger(this->name, this);
     }
     // default
     DenseFunctor(): DenseFunctor(InputsAtCompileTime, ValuesAtCompileTime) {}
@@ -68,7 +69,6 @@ struct Model: DenseFunctor<double, NP, Dynamic> {
     constexpr static std::string_view name = "model";
     // via known size of params
     Model(int inputs): _Base(inputs, Dynamic), params(inputs) {
-      //  this->logger = logging::createLogger(Model::name, this);
     }
     // via copy of params
     Model(const typename _Base::InputType& params): Model(static_cast<int>(params.size())) {this->params=params;}
@@ -157,7 +157,7 @@ struct Gaussian1D: Model<3, 1> // 3 params, 1 dimen
     };
 };
 
-struct Gaussian2D: Model<6, 2>  // 6 params, 2 dimen
+struct Gaussian2D: Model<6, 2>  // 6 params, 2 dim
 {
     constexpr static std::string_view name = "gaussian2d";
     using Model<6, 2>::Model; // model constructors;
@@ -179,15 +179,14 @@ struct Gaussian2D: Model<6, 2>  // 6 params, 2 dimen
 
     InputType transform(const InputType& p) const;
     InputType inverseTransform(const InputType& p) const;
-
-    const double PI = std::atan(1.0) * 4;
-    std::vector<Parameter> param_settings{
+    std::vector<Parameter> param_settings {
         {"amplitude"},
         {"xmean"},
         {"ymean"},
         {"xstddev"},
         {"ystddev"},
-        {"theta", false, true, 0., PI / 2.},
+        {"theta"},
+        //{"theta", false, true, 0., PI / 2.},
     };
 };
 
@@ -227,7 +226,6 @@ struct Fitter: _Model::_Base
     using Model = _Model;
 
     Fitter (const Model* model, int values): _Base(model->inputs(), values), m_model(model) {
-      //  this->logger = logging::createLogger("fitter", this);
     }
     Fitter (const Model* model): Fitter(model, Fitter::InputsAtCompileTime) {}
 
@@ -250,6 +248,7 @@ using ceres::CauchyLoss;
 using ceres::Problem;
 using ceres::Solve;
 using ceres::Solver;
+using ceres::Covariance;
 
 // CeresAutoDiff Fitter provides concrete method for least-square minimization using ceres
 template <typename Model>
@@ -265,15 +264,10 @@ struct CeresAutoDiffFitter: Fitter<Model>
         Map<const typename Model::InputType> p(params, this->inputs());
         Map<typename Model::ValueType> r(residual, this->values());
         r = ((this->ydata->array() - this->model()->eval(p, *this->xdata).array()) / this->sigma->array()).eval();
-        SPDLOG_LOGGER_TRACE(this->logger, "fit with xdata{}", logging::pprint(this->xdata));
-        SPDLOG_LOGGER_TRACE(this->logger, "         ydata{}", logging::pprint(this->ydata));
-        SPDLOG_LOGGER_TRACE(this->logger, "         sigma{}", logging::pprint(this->sigma));
-        SPDLOG_LOGGER_TRACE(this->logger, "residual{}", logging::pprint(&r));
         return true;
     }
     */
-    bool operator()(const T* const p, T* r) const
-    {
+    bool operator()(const T* const p, T* r) const {
         auto cost2 = cos(p[5]) * cos(p[5]);
         auto sint2 = sin(p[5]) * sin(p[5]);
         auto sin2t = sin(2. * p[5]);
@@ -284,18 +278,17 @@ struct CeresAutoDiffFitter: Fitter<Model>
         auto c = - 0.5 * ((sint2 / xstd2) + (cost2 / ystd2));
 
         for (int i=0; i < this->values(); ++i){
-
-            if (this->sigma->coeffRef(i) == 0){
-                r[i] =  (
+            //SPDLOG_INFO();
+            //SPDLOG_INFO("X {} Y {}", this->xdata->coeffRef(i, 0), this->xdata->coeffRef(i, 1));
+            //if (this->sigma->coeffRef(i) == 0){
+                /*r[i] =  (
                             this->ydata->coeffRef(i) -
                             p[0] * exp(
-                                pow(this->xdata->coeffRef(i, 0) - p[1], 2) * a +
-                                (this->xdata->coeffRef(i, 0) - p[1]) * (this->xdata->coeffRef(i, 1) - p[2]) * b +
-                                pow(this->xdata->coeffRef(i, 1) - p[2], 2) * c
-                                )
-                        ) * this->sigma->coeffRef(i);
-            }
-            else{
+                                -pow(this->xdata->coeffRef(i, 0) - p[1], 2) /xstd2 -
+                                pow(this->xdata->coeffRef(i, 1) - p[2], 2) /ystd2)
+                        ) / this->sigma->coeffRef(i);
+            }*/
+            //else {
             r[i] =  (
                         this->ydata->coeffRef(i) -
                         p[0] * exp(
@@ -304,42 +297,34 @@ struct CeresAutoDiffFitter: Fitter<Model>
                             pow(this->xdata->coeffRef(i, 1) - p[2], 2) * c
                             )
                     ) / this->sigma->coeffRef(i);
-            }
-
-            //std::cerr << std::endl << "r[i] " << r[i] << std::endl;
+            //}
         }
         return true;
     }
 
     //int df(const InputType &x, JacobianType& fjac) { }
     // should be defined in derived classes if fitting using LevMar algorithm
-    // TODO: figure out a place to store fit info
-    // int info = 0;
-    // int result = 0;
-    std::shared_ptr<Problem> createProblem(double* params)
-    {
+    std::shared_ptr<Problem> createProblem(double* params) {
         std::shared_ptr<Problem> problem = std::make_shared<Problem>();
         problem->AddParameterBlock(params, this->model()->params.size());
-        for (int i = 0; i < this->model()->params.size(); ++i)
-        {
+        /*for (int i = 0; i < this->model()->params.size(); ++i) {
             typename Model::Parameter p = this->model()->param_settings.at(i);
             if (p.fixed) problem->SetParameterBlockConstant(params);
-            if (p.bounded)
-            {
+            if (p.bounded) {
                 problem->SetParameterLowerBound(params, i, p.lower);
                 problem->SetParameterUpperBound(params, i, p.upper);
             }
-        }
+        }*/
         return problem;
     }
 };
 
 template <typename Model, typename Derived>
-Model curvefit_ceres(
+std::tuple<Model, Eigen::MatrixXd> curvefit_ceres(
                     const Model& model,  // y = f(x)
                     const typename Model::InputType& p,         // initial guess of model parameters
                     const typename Model::InputDataType& xdata,     // x data values, independant variable
-                    const typename Model::DataType& ydata,     // y data values, measurments
+                    const typename Model::DataType& ydata,     // y data values, measurements
                     const typename Model::DataType& sigma,      // uncertainty
                     const Eigen::DenseBase<Derived> &limits
                     ) {
@@ -357,10 +342,12 @@ Model curvefit_ceres(
         new AutoDiffCostFunction<Fitter, Fitter::ValuesAtCompileTime, Fitter::InputsAtCompileTime>(fitter, fitter->values());
 
     // do the fit
-    VectorXd pp(p);
+    Eigen::VectorXd pp(p);
     auto problem = fitter->createProblem(pp.data());
+    // including CauchyLoss(0.5) leads to large covariances.
     problem->AddResidualBlock(cost_function,
-                              new CauchyLoss(0.5),
+                              nullptr,
+                              //new CauchyLoss(0.5),
                               pp.data());
 
     for (int i = 0; i < limits.rows(); ++i) {
@@ -385,9 +372,25 @@ Model curvefit_ceres(
     Solve(options, problem.get(), &summary);
 
     SPDLOG_INFO("{}", summary.BriefReport());
-    //SPDLOG_INFO("fitted params{}", pp);
 
-    return Model(pp);
+    // uncertainty calculation
+    Covariance::Options cov_options;
+    // EIGEN_SPARSE and DENSE_SVD are the slower, but more accurate options.
+    cov_options.sparse_linear_algebra_library_type = ceres::SparseLinearAlgebraLibraryType::EIGEN_SPARSE;
+    cov_options.algorithm_type = ceres::CovarianceAlgorithmType::DENSE_SVD;
+    Covariance covariance(cov_options);
+
+    std::vector<std::pair<const double*, const double*>> covariance_blocks;
+    covariance_blocks.push_back(std::make_pair(pp.data(), pp.data()));
+
+    CHECK(covariance.Compute(covariance_blocks, problem.get()));
+
+    Eigen::MatrixXd covariances(pp.size(),pp.size());
+
+    covariance.GetCovarianceBlock(pp.data(),pp.data(), covariances.data());
+    SPDLOG_INFO("covariance {}", covariances);
+
+    return std::tuple<Model, Eigen::MatrixXd> (Model(pp), covariances);
 }
 
 }  // namespace

@@ -32,9 +32,6 @@ public:
     // for source fits in coadded maps
     Eigen::MatrixXd pfit;
 
-    // tensor for noise map inclusion (nnoise,nobs,nmaps)
-    Eigen::Tensor<double,3> noise_rand;
-
     // Physical coordinates for rows and cols (radians)
     Eigen::VectorXd rcphys, ccphys;
 
@@ -162,8 +159,9 @@ public:
             }
 
             // signal += fsmp*weight
-            coverage.at(mi).block(deltai, deltaj, mb.nrows, mb.ncols) +=
-                    mb.weight.at(mi)*1./dfsmp;
+            coverage.at(mi).block(deltai, deltaj, mb.nrows, mb.ncols) =
+                     coverage.at(mi).block(deltai, deltaj, mb.nrows, mb.ncols).array() + 1./dfsmp;
+                    // mb.weight.at(mi)*1./dfsmp;
         }
     }
 
