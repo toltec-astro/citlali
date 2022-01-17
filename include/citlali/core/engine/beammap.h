@@ -221,7 +221,7 @@ auto Beammap::run_loop() {
 
         SPDLOG_INFO("fitting maps");
         grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](auto d) {
-            if (converged(d) == false) {
+            //if (converged(d) == false) {
                 SPDLOG_INFO("fitting detector {}/{}",d+1, det_in_vec.size());
                 // declare fitter class for detector
                 gaussfit::MapFitter fitter;
@@ -229,11 +229,11 @@ auto Beammap::run_loop() {
                 fitter.bounding_box_pix = bounding_box_pix;
                 mb.pfit.col(d) = fitter.fit<gaussfit::MapFitter::peakValue>(mb.signal[d], mb.weight[d], calib_data);
                 mb.perror.col(d) = fitter.error;
-            }
-            else {
-                mb.pfit.col(d) = p0.col(d);
-                mb.perror.col(d) = perror0.col(d);
-            }
+            //}
+            //else {
+              //  mb.pfit.col(d) = p0.col(d);
+                //mb.perror.col(d) = perror0.col(d);
+            //}
             return 0;});
 
         return in;
