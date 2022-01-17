@@ -356,13 +356,14 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
             SPDLOG_INFO("el dist {}", mb.el_dist);
 
             // need to copy because of aliasing?
-            Eigen::VectorXd rot_azoff = cos(-mb.min_el.array())*mb.pfit.row(1).array() -
+            /*Eigen::VectorXd rot_azoff = cos(-mb.min_el.array())*mb.pfit.row(1).array() -
                     sin(-mb.min_el.array())*mb.pfit.row(2).array();
             Eigen::VectorXd rot_eloff = cos(-mb.min_el.array())*mb.pfit.row(2).array() +
                     sin(-mb.min_el.array())*mb.pfit.row(1).array();
 
             mb.pfit.row(1) = -rot_azoff;
             mb.pfit.row(2) = -rot_eloff;
+            */
 
             // calculate sensitivity for detectors
             grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](int d) {
