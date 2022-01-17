@@ -85,11 +85,11 @@ void Beammap::setup() {
     mb.perror.setZero(nparams, ndet);
 
     // set initial elevations for when det is on source
-    mb.min_el.resize(ndet);
-    mb.min_el.setConstant(std::numeric_limits<double>::max());
+    mb.min_el.setZero(ndet);
 
     // set initial elevation dist for when det is on source
-    mb.el_dist.setZero(std::numeric_limits<double>::max());
+    mb.el_dist.resize(ndet);
+    mb.el_dist.setConstant(std::numeric_limits<double>::max());
 
     // make filter if requested
     if (run_filter) {
