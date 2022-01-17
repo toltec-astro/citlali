@@ -93,6 +93,8 @@ public:
         limits.col(1) << flux_high*flux0, col0 + bounding_box_pix + 1, row0 + bounding_box_pix + 1,
                 fwhm_high, fwhm_high, ang_high;
 
+        SPDLOG_INFO("limits {}", limits);
+
         // axes coordinate vectors for meshgrid
         x = Eigen::VectorXd::LinSpaced(2*bounding_box_pix+1, col0-bounding_box_pix, col0+bounding_box_pix);
         y = Eigen::VectorXd::LinSpaced(2*bounding_box_pix+1, row0-bounding_box_pix, row0+bounding_box_pix);
@@ -122,14 +124,13 @@ public:
 
         // do the fit with ceres-solver
         auto [g_fit, covariance] = gaussfit::curvefit_ceres(g, _p, xy, _data, _sigma, limits);
-        //auto [g_fit, covariance] = gaussfit::curvefit_ceres(g, _p, xy, ydata, _sigma, limits);
 
         error = covariance.diagonal().cwiseSqrt();
         SPDLOG_INFO("ERROR {}", error);
         SPDLOG_INFO("covariance {}", covariance);
 
         // return the parameters
-        return std::move(g_fit.params);
+        return g_fit.params;
     }
 };
 
