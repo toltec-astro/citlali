@@ -221,7 +221,7 @@ auto Beammap::run_loop() {
 
         SPDLOG_INFO("fitting maps");
         grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](auto d) {
-            if (!converged(d)) {
+            //if (converged(d) == false) {
                 SPDLOG_INFO("fitting detector {}/{}",d+1, det_in_vec.size());
                 // declare fitter class for detector
                 gaussfit::MapFitter fitter;
@@ -229,11 +229,11 @@ auto Beammap::run_loop() {
                 fitter.bounding_box_pix = bounding_box_pix;
                 mb.pfit.col(d) = fitter.fit<gaussfit::MapFitter::peakValue>(mb.signal[d], mb.weight[d], calib_data);
                 mb.perror.col(d) = fitter.error;
-            }
-            else {
-                mb.pfit.col(d) = p0.col(d);
-                mb.perror.col(d) = perror0.col(d);
-            }
+            //}
+            //else {
+              //  mb.pfit.col(d) = p0.col(d);
+                //mb.perror.col(d) = perror0.col(d);
+            //}
             return 0;});
 
         return in;
@@ -265,7 +265,7 @@ auto Beammap::run_loop() {
                         }
                     }
                     return 0;});
-                SPDLOG_INFO("converged detectors {}",(converged.array() == 1).count());
+                SPDLOG_INFO("converged detectors {}",(converged.array() == true).count());
             }
             // set previous iteration fit to current fit
             p0 = mb.pfit;
@@ -339,8 +339,8 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
 
         [&](auto in) {
             // convert to map units (arcsec and radians)
-            mb.pfit.row(1) = pixel_size*(mb.pfit.row(1).array() - 1 - (mb.ncols)/2)/RAD_ASEC;
-            mb.pfit.row(2) = pixel_size*(mb.pfit.row(2).array() - 1 - (mb.nrows)/2)/RAD_ASEC;
+            mb.pfit.row(1) = pixel_size*(mb.pfit.row(1).array() - (mb.ncols)/2)/RAD_ASEC;
+            mb.pfit.row(2) = pixel_size*(mb.pfit.row(2).array() - (mb.nrows)/2)/RAD_ASEC;
             mb.pfit.row(3) = STD_TO_FWHM*pixel_size*(mb.pfit.row(3))/RAD_ASEC;
             mb.pfit.row(4) = STD_TO_FWHM*pixel_size*(mb.pfit.row(4))/RAD_ASEC;
 
@@ -351,7 +351,8 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
             mb.perror.row(4) = STD_TO_FWHM*pixel_size*(mb.perror.row(4))/RAD_ASEC;
 
             // derotate x_t and y_t
-            double mean_el = tel_meta_data["TelElDes"].mean();
+            SPDLOG_INFO("min el {}", mb.min_el);
+            SPDLOG_INFO("el dist {}", mb.el_dist);
 
             // need to copy because of aliasing?
             Eigen::VectorXd rot_azoff = cos(-mb.min_el.array())*mb.pfit.row(1).array() -
