@@ -229,7 +229,7 @@ auto Beammap::run_loop() {
                 fitter.bounding_box_pix = bounding_box_pix;
                 mb.pfit.col(d) = fitter.fit<gaussfit::MapFitter::peakValue>(mb.signal[d], mb.weight[d], calib_data);
                 mb.perror.col(d) = fitter.error;
-                SPDLOG_INFO("pfit.col(d)", pfit.col(d);
+                SPDLOG_INFO("pfit.col(d)", mb.pfit.col(d);
             //}
             //else {
               //  mb.pfit.col(d) = p0.col(d);
