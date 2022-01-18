@@ -161,8 +161,8 @@ void add_gaussian(Engine engine, Eigen::DenseBase<Derived> &scan, tel_meta_t &te
 
         // get parameters for current detector
         auto amplitude = engine->mb.pfit(0,d);
-        auto off_lat = engine->mb.pfit(2,d);
-        auto off_lon = engine->mb.pfit(1,d);
+        auto off_lat = -engine->mb.pfit(2,d);
+        auto off_lon = -engine->mb.pfit(1,d);
         auto sigma_lat = engine->mb.pfit(4,d);
         auto sigma_lon = engine->mb.pfit(3,d);
 
