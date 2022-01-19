@@ -123,7 +123,7 @@ void Beammap::setup() {
 }
 
 auto Beammap::run_timestream() {
-    auto farm = grppi::farm(nthreads,[&](auto input_tuple) -> TCData<TCDataKind::PTC,Eigen::MatrixXd> {
+    auto farm = grppi::farm(1,[&](auto input_tuple) -> TCData<TCDataKind::PTC,Eigen::MatrixXd> {
         // RTCData input
         auto in = std::get<0>(input_tuple);
         // start index
@@ -259,6 +259,7 @@ auto Beammap::run_loop() {
                     if (converged(d) == false) {
                         // percent difference between current and previous iteration's fit
                         auto ratio = abs((mb.pfit.col(d).array() - p0.col(d).array())/p0.col(d).array());
+			SPDLOG_INFO("ratio {}", ratio);
                         // if the detector is converged, set it to converged
                         if ((ratio.array() <= cutoff).all()) {
                             converged(d) = true;
@@ -351,34 +352,34 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
             mb.perror.row(3) = STD_TO_FWHM*pixel_size*(mb.perror.row(3))/RAD_ASEC;
             mb.perror.row(4) = STD_TO_FWHM*pixel_size*(mb.perror.row(4))/RAD_ASEC;
 
-            // derotate x_t and y_t
+	    double mean_el = tel_meta_data["TelElDes"].mean();
+	    SPDLOG_INFO("mean el {}", mean_el);
 
-            // need to copy because of aliasing?
-            /*Eigen::VectorXd rot_azoff = cos(-mb.min_el.array())*mb.pfit.row(1).array() -
-                    sin(-mb.min_el.array())*mb.pfit.row(2).array();
-            Eigen::VectorXd rot_eloff = cos(-mb.min_el.array())*mb.pfit.row(2).array() +
-                    sin(-mb.min_el.array())*mb.pfit.row(1).array();
-
-            mb.pfit.row(1) = -rot_azoff;
-            mb.pfit.row(2) = -rot_eloff;
-            */
-
-            // calculate sensitivity for detectors
+            // derotate x_t and y_t and calculate sensitivity for detectors
             grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](int d) {
-                SPDLOG_INFO("derotating det {}", d);
-                Eigen::Index min_el_index;
-                Eigen::VectorXd lat = (mb.pfit(2,d)*RAD_ASEC) + tel_meta_data["TelLatPhys"].array();
-                double min_el_dist = (tel_meta_data["SourceEl"] - lat).cwiseAbs().minCoeff(&min_el_index);
+		SPDLOG_INFO("derotating det {}", d);
+                Eigen::Index min_index;
 
-                double rot_azoff = cos(-lat(min_el_index))*mb.pfit(1,d) -
-                        sin(-lat(min_el_index))*mb.pfit(2,d);
-                double rot_eloff = cos(-lat(min_el_index))*mb.pfit(2,d) +
-                        sin(-lat(min_el_index))*mb.pfit(1,d);
+                // don't use pointing here as that will rotate by azoff/eloff
+                Eigen::VectorXd lat = -(mb.pfit(2,d)*RAD_ASEC) + tel_meta_data["TelElDes"].array();
+                Eigen::VectorXd lon = -(mb.pfit(1,d)*RAD_ASEC) + tel_meta_data["TelAzDes"].array();
+
+                // minimum cartesian distance from source
+                double min_dist = ((tel_meta_data["SourceEl"] - lat).array().pow(2) +
+                        (tel_meta_data["SourceAz"] - lon).array().pow(2)).minCoeff(&min_index);
+
+                double min_el = tel_meta_data["TelElDes"](min_index);
+
+
+               double rot_azoff = cos(-min_el)*mb.pfit(1,d) -
+                        sin(-min_el)*mb.pfit(2,d);
+                double rot_eloff = sin(-min_el)*mb.pfit(1,d) +
+                        cos(-min_el)*mb.pfit(2,d);
 
                 mb.pfit(1,d) = -rot_azoff;
-                mb.pfit(2,d) = -rot_eloff;
+                mb.pfit(2,d) = -rot_eloff; 
 
-                SPDLOG_INFO("calculating sensitivity for det {}", d);
+		SPDLOG_INFO("calculating sensitivity for det {}", d);
                 Eigen::MatrixXd det_sens;
                 Eigen::MatrixXd noise_flux;
                 calc_sensitivity(ptcs, det_sens, noise_flux, dfsmp, d);

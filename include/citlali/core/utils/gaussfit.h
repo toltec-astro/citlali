@@ -356,13 +356,13 @@ std::tuple<Model, Eigen::MatrixXd> curvefit_ceres(
     }
 
     // indices to hold constant
-    std::vector<int> sspv;
+    /*std::vector<int> sspv;
     sspv.push_back(limits.rows()-1);
     if (sspv.size() > 0 ){
         ceres::SubsetParameterization *pcssp
                 = new ceres::SubsetParameterization(limits.rows(), sspv);
         problem->SetParameterization(pp.data(), pcssp);
-    }
+    }*/
 
     Solver::Options options;
     options.linear_solver_type = ceres::LinearSolverType::DENSE_QR;
