@@ -160,8 +160,8 @@ public:
 
             // signal += fsmp*weight
             coverage.at(mi).block(deltai, deltaj, mb.nrows, mb.ncols) =
-                     coverage.at(mi).block(deltai, deltaj, mb.nrows, mb.ncols).array() + 1./dfsmp;
-                    // mb.weight.at(mi)*1./dfsmp;
+                     coverage.at(mi).block(deltai, deltaj, mb.nrows, mb.ncols).array() +
+                    mb.coverage.at(mi).array();
         }
     }
 
