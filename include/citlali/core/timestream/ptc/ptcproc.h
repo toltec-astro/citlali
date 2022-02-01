@@ -62,12 +62,22 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 
              // calculate the eigenvalues from the signal timestream
              SPDLOG_INFO("calculating eigenvalues for scan {} for map {}", in.index.data, mi);
-             auto [det_scan, evals, evecs] = engine->cleaner.template calcEigs<SpectraBackend>(in_scans, in_flags);
+
+             std::tuple<Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd> clean_out;
 
              // remove eigenvalues from signal timestream
              SPDLOG_INFO("removing eigenvalues from scan {} for map {}", in.index.data, mi);
-             engine->cleaner.template removeEigs<SpectraBackend, DataType>(det_scan, out_scans,
-                     evals, evecs);
+             if (engine->cleaner.cut_std > 0) {
+                clean_out = engine->cleaner.template calcEigs<EigenBackend>(in_scans, in_flags);
+                engine->cleaner.template removeEigs<EigenBackend, DataType>(std::get<0>(clean_out), out_scans,
+                        std::get<1>(clean_out), std::get<2>(clean_out));
+             }
+
+             else {
+                 clean_out = engine->cleaner.template calcEigs<SpectraBackend>(in_scans, in_flags);
+                 engine->cleaner.template removeEigs<SpectraBackend, DataType>(std::get<0>(clean_out), out_scans,
+                         std::get<1>(clean_out), std::get<2>(clean_out));
+             }
 
              // we don't need det anymore, so delete it to save some space
              //engine->cleaner.det.resize(0, 0);
@@ -91,8 +101,16 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 
                  // remove kernel scan eigenvalues
                  SPDLOG_INFO("removing kernel eigenvalues from scan {} for map {}", in.index.data, mi);
-                 engine->cleaner.template removeEigs<SpectraBackend, KernelType>(in_kernel_scans,
-                                                                out_kernel_scans, evals, evecs);
+                 if (engine->cleaner.cut_std > 0) {
+                    engine->cleaner.template removeEigs<EigenBackend, KernelType>(in_kernel_scans,
+                                                                    out_kernel_scans, std::get<1>(clean_out),
+                                                                                  std::get<2>(clean_out));
+                 }
+                 else {
+                     engine->cleaner.template removeEigs<SpectraBackend, KernelType>(in_kernel_scans,
+                                                                     out_kernel_scans,std::get<1>(clean_out),
+                                                                                     std::get<2>(clean_out));
+                 }
              }
          }
      }
