@@ -167,22 +167,26 @@ void WienerFilter::make_symmetric_template(CMB &cmb, const double map_num, CD &c
     // declare fitter class for detector
     gaussfit::MapFitter fitter;
     // size of region to fit in pixels
-    // fitter.bounding_box_pix = bounding_box_pix;
+    fitter.bounding_box_pix = 15;//bounding_box_pix;
     pfit = fitter.fit<gaussfit::MapFitter::centerValue>(cmb.kernel.at(map_num), cmb.weight.at(map_num), calib_data);
+    SPDLOG_INFO("pfit {}",pfit);
 
-    tem = engine_utils::shift_matrix(tem, -std::round(pfit(3)/diffr), -std::round(pfit(2)/diffc));
+    pfit(1) = cmb.pixel_size*(pfit(1) - (nc)/2);
+    pfit(2) = cmb.pixel_size*(pfit(2) - (nr)/2);
+
+    tem = engine_utils::shift_matrix(tem, std::round(pfit(2)/diffr), std::round(pfit(1)/diffc));
 
     Eigen::MatrixXd dist(nr,nc);
     for (int i=0; i<nc; i++) {
         for(int j=0;j<nr;j++) {
-            dist(i,j) = sqrt(pow(rgcut(j),2)+pow(cgcut(i),2));
+            dist(j,i) = sqrt(pow(rgcut(j),2)+pow(cgcut(i),2));
         }
     }
 
     Eigen::Index rcind, ccind;
     auto mindist = dist.minCoeff(&rcind,&ccind);
 
-    // create new bins based on diffx
+    // create new bins based on diffr
     int nbins = rgcut(nr-1)/diffr;
     Eigen::VectorXd binlow(nbins);
     for(int i=0;i<nbins;i++) {

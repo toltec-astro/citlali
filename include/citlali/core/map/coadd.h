@@ -279,7 +279,6 @@ public:
             mean_sqerr /= counter;
             double nfac = (1./pow(average_filtered_rms(m),2.))*mean_sqerr;
             SPDLOG_INFO("renormalization factor = {}",nfac);
-
             weight.at(m) = weight.at(m)*nfac;
         }
     }

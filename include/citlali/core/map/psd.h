@@ -50,20 +50,16 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
     double diffqr = 1. / rsize;
     double diffqc = 1. / csize;
 
-    //SPDLOG_INFO("in {}", in.derived());
     Eigen::MatrixXcd block(nr, nc);
     block.real() = in.block(crr0, ccr0, nr, nc);
     block.imag().setZero();
 
     block.real() = block.real().array() * engine_utils::hanning(nr, nc).array();
 
-    SPDLOG_INFO("block {}", block);
     auto out = engine_utils::fft2w<engine_utils::forward>(block, nr, nc);
     out = out*diffr*diffc;
 
     //Eigen::Map<Eigen::VectorXcd> out_vec(out.data(),nr*nc);
-
-    SPDLOG_INFO("out {}", out);
 
     //Eigen::VectorXd w = diffqr*diffqc*out.cwiseAbs2();
     //Eigen::MatrixXd h = Eigen::Map<Eigen::MatrixXd>(w.data(), nr, nc);
@@ -83,8 +79,6 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
         }
         qr(index) = diffqr*(i-(nr/2-1));
     }
-
-    //SPDLOG_INFO("qr {}", qr);
 
     shift = nc/2 - 1;
     for (Eigen::Index i=0; i<nc; i++) {
@@ -175,17 +169,4 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
 
     psd2d = pmfq;
     psd2d_freq = qmap;
-
-    /*SPDLOG_INFO("nr {} nc {}", nr, nc);
-    SPDLOG_INFO("diffqr {} diffqc {}", diffqr, diffqc);
-    SPDLOG_INFO("out {}", out);
-
-    SPDLOG_INFO("h {}",h);
-
-    SPDLOG_INFO("psd2d {}", psd2d);
-    SPDLOG_INFO("psd2d_freq {}", psd2d_freq);
-
-    SPDLOG_INFO("psd {}", psd);
-    SPDLOG_INFO("psd_freq {}", psd_freq);
-    */
 }

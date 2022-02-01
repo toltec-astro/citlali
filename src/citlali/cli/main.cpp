@@ -1250,9 +1250,7 @@ int run(const rc_t &rc) {
                                                             .cmb.noise_psd.at(i)
                                                             .back()
                                                             .psd;
-                                    // noise_avg_psd.psd_freq =
-                                    // noise_avg_psd.psd_freq +
-                                    // todproc.engine().cmb.noise_psd.at(i).back().psd_freq;
+
                                     noise_avg_psd.psd2d =
                                         noise_avg_psd.psd2d +
                                         todproc.engine()
@@ -1274,11 +1272,7 @@ int run(const rc_t &rc) {
                                 noise_avg_psd.psd / todproc.engine().cmb.nnoise;
                             noise_avg_psd.psd_freq =
                                 noise_avg_psd
-                                    .psd_freq; /// todproc.engine().cmb.nnoise;
-                            // noise_avg_psd.psd2d =
-                            // noise_avg_psd.psd2d/todproc.engine().cmb.nnoise;
-                            // noise_avg_psd.psd2d_freq =
-                            // noise_avg_psd.psd2d_freq/todproc.engine().cmb.nnoise;
+                                    .psd_freq;
 
                             todproc.engine().cmb.noise_avg_psd.push_back(
                                 noise_avg_psd);

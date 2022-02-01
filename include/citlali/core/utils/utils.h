@@ -7,6 +7,8 @@
 #include <numeric>
 #include <complex>
 
+#include <tula/grppi.h>
+
 #include <citlali/core/utils/constants.h>
 
 namespace engine_utils {
@@ -106,14 +108,14 @@ std::vector<std::tuple<double, int>> sorter(Eigen::DenseBase<Derived> &vec){
 
 template<typename Derived>
 void shift_vector(Eigen::DenseBase<Derived> &in, const int n){
-  int nx = in.size();
-  Eigen::VectorXd vec2(nx);
-  for(int i=0;i<nx;i++){
-    int ti = (i+n)%nx;
-    int shifti = (ti < 0) ? nx+ti : ti;
-    vec2[shifti] = in(i);
-  }
-  for(int i=0;i<nx;i++) in(i) = vec2(i);
+    int nx = in.size();
+    Eigen::VectorXd vec2(nx);
+    for(int i=0;i<nx;i++){
+        int ti = (i+n)%nx;
+        int shifti = (ti < 0) ? nx+ti : ti;
+        vec2[shifti] = in(i);
+    }
+    for(int i=0;i<nx;i++) in(i) = vec2(i);
 }
 
 template <typename Derived>
@@ -144,53 +146,53 @@ enum FFTdirection {
 template<FFTdirection direc, typename Derived>
 Eigen::MatrixXcd fft2w(Eigen::DenseBase<Derived> &in, const Eigen::Index nrows, const Eigen::Index ncols){
 
-    //Eigen::Map<RowMatrixXd> in(in.derived().data(),nrows,ncols);
+    // placeholder vectors for grppi maps
+    std::vector<int> ri(nrows);
+    std::iota(ri.begin(), ri.end(), 0);
+    std::vector<int> ro(nrows);
 
-    /*std::vector<int> rowvec_in(nx);
-    std::iota(rowvec_in.begin(), rowvec_in.end(), 0);
-    std::vector<int> rowvec_out(nx);
-
-    std::vector<int> colvec_in(ny);
-    std::iota(colvec_in.begin(), colvec_in.end(), 0);
-    std::vector<int> colvec_out(ny);*/
+    std::vector<int> ci(ncols);
+    std::iota(ci.begin(), ci.end(), 0);
+    std::vector<int> co(ncols);
 
     Eigen::MatrixXcd out(nrows, ncols);
 
-    /*grppi::map(grppiex::dyn_ex("omp"),rowvec_in,rowvec_out,[&](auto k){
+    // do the fft over the rows
+    grppi::map(tula::grppi_utils::dyn_ex("omp"),ri,ro,[&](auto k){
         Eigen::FFT<double> fft;
         fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
         fft.SetFlag(Eigen::FFT<double>::Unscaled);
 
-        Eigen::VectorXcd tmpOut(ny);
-        if constexpr(direc == forward){
-            fft.fwd(tmpOut, matIn.row(k));
+        Eigen::VectorXcd tmp_out(ncols);
+        if constexpr(direc == forward) {
+            fft.fwd(tmp_out, in.row(k));
         }
-        else{
-            fft.inv(tmpOut, matIn.row(k));
+        else if constexpr(direc == backward){
+            fft.inv(tmp_out, in.row(k));
         }
-        matOut.row(k) = tmpOut;
+        out.row(k) = tmp_out;
         return 0;
     });
 
-    grppi::map(grppiex::dyn_ex("omp"),colvec_in,colvec_out,[&](auto k){
+    // do the fft over the cols
+    grppi::map(tula::grppi_utils::dyn_ex("omp"),ci,ri,[&](auto k){
         Eigen::FFT<double> fft;
         fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
         fft.SetFlag(Eigen::FFT<double>::Unscaled);
 
-        Eigen::VectorXcd tmpOut(nx);
-        if constexpr(direc == forward){
-            fft.fwd(tmpOut, matOut.col(k));
+        Eigen::VectorXcd tmp_out(nrows);
+        if constexpr(direc == forward) {
+            fft.fwd(tmp_out, out.col(k));
         }
-        else{
-            fft.inv(tmpOut, matOut.col(k));
+        else if constexpr(direc == backward){
+            fft.inv(tmp_out, out.col(k));
         }
-        matOut.col(k) = tmpOut;
+        out.col(k) = tmp_out;
         return 0;
-    });*/
+    });
 
-
-    Eigen::FFT<double> fft;
-    //fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
+    /*Eigen::FFT<double> fft;
+    fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
     fft.SetFlag(Eigen::FFT<double>::Unscaled);
 
     for (Eigen::Index k=0; k<nrows; ++k) {
@@ -213,16 +215,7 @@ Eigen::MatrixXcd fft2w(Eigen::DenseBase<Derived> &in, const Eigen::Index nrows, 
             fft.inv(tmp_out, out.col(k));
         }
         out.col(k) = tmp_out;
-    }
-
-    //Eigen::VectorXcd out_vec(nx*ny);
-
-    /*for(int i=0; i<nx; i++){
-        for(int j=0; j<ny; j++)
-            out_vec(ny*i+j) = out(i,j);
     }*/
-
-    //Eigen::Map<Eigen::VectorXcd> out_vec(out.data(),nrows*ncols);
 
     return std::move(out);
 }
