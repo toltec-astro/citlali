@@ -117,7 +117,7 @@ public:
         // calculate sigma matrix
         Eigen::MatrixXd sigma = weight;
         // set 1/weight=0 to 0
-        (sigma.derived().array() !=0).select(1./sqrt(weight.derived().array()),0.);
+        sigma = (weight.derived().array() !=0).select(1./sqrt(weight.derived().array()),0.);
 
         // copy data and sigma within bounding box region
         auto _data = data.block(row0-bounding_box_pix, col0-bounding_box_pix, 2*bounding_box_pix+1, 2*bounding_box_pix+1);

@@ -42,15 +42,12 @@ private:
 
         // set flag matrix to zero if scan delta is nsigmaSpike times larger than
         // the standard deviaton
-        flags.tail(npts - 2) =
-            (diff.tail(npts - 2).array() > cutoff).select(0, flags.tail(npts - 2));
+        flags.segment(1,npts - 2) =
+            (diff.segment(1,npts - 2).array() > cutoff).select(0, flags.segment(1,npts - 2));
 
         // set corresponding delta values to zero
-        delta.tail(npts - 2) =
-            (diff.tail(npts - 2).array() > cutoff).select(0, delta.tail(npts - 2));
-
-        // count up the number of spikes
-        nspikes = (flags.tail(npts - 2).array() == 0).count();
+        delta.segment(1,npts - 2) =
+            (diff.segment(1,npts - 2).array() > cutoff).select(0, delta.segment(1,npts - 2));
 
         // update difference vector and cutoff
         diff = abs(delta.derived().array() - delta.mean());
@@ -145,8 +142,7 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
         int nspikes = 0;
 
         // array of delta's between adjacent points
-        Eigen::VectorXd delta(npts - 1);
-        delta = scans.col(det).tail(npts - 1) - scans.col(det).head(npts - 1);
+        Eigen::VectorXd delta = scans.col(det).tail(npts - 1) - scans.col(det).head(npts - 1);
 
         // minimum amplitude of spike
         auto cutoff = sigma * engine_utils::stddev(delta);
@@ -164,13 +160,16 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
         // spikes
         while (new_found == 1) {
             // if no new spikes found, set new_found to zero to end while loop
-            new_found = ((diff.tail(npts - 2).array() > cutoff).count() > 0) ? 1 : 0;
+            new_found = ((diff.segment(1,npts - 2).array() > cutoff).count() > 0) ? 1 : 0;
 
             // only run if there are spikes
             if (new_found == 1) {
                 spike_finder(flags.col(det), delta, diff, nspikes, cutoff);
             }
         }
+
+        // count up the number of spikes
+        nspikes = (flags.col(det).segment(1,npts - 2).array() == 0).count();
 
         // if there are other spikes within 10 samples after a spike, set only the
         // center value to be a spike
@@ -297,7 +296,7 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
 
 template<typename DerivedA, typename DerivedB, typename DerivedC>
 void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBase<DerivedB> &flags,
-                           Eigen::DenseBase<DerivedC>&responsivity) {
+                           Eigen::DenseBase<DerivedC> &responsivity) {
 
       // use all detectors in replacing flagged scans
       bool use_all_det = 1;

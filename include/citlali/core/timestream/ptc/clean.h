@@ -122,19 +122,23 @@ auto Cleaner::calcEigs(const Eigen::DenseBase<DerivedA> &scans, const Eigen::Den
     Eigen::MatrixXd evecs;
 
     //Eigen::Matrix<bool,Eigen::Dynamic, Eigen::Dynamic> flg;
-    //Eigen::Matrix<bool,Eigen::Dynamic, Eigen::Dynamic> denom;
+    Eigen::MatrixXd denom;
 
     // mean of each detector
-    Eigen::RowVectorXd det_means = scans.derived().colwise().mean();
+    //Eigen::RowVectorXd det_means = scans.derived().colwise().mean();
+    Eigen::RowVectorXd det_means = (scans.derived().array()*flags.derived().array().template cast <double> ()).colwise().sum()/
+            flags.derived().array().template cast <double> ().colwise().sum();
 
-    // subtract median from scans and copy into det matrix
-    det = scans.derived().rowwise() - det_means;
+    // subtract mean from scans and copy into det matrix
+    det = (scans.derived().array()*flags.derived().array().template cast <double> ()).matrix().rowwise() - det_means;
 
-    // container for Correlation Matrix
-    Eigen::MatrixXd pcaCorr(ndetectors, ndetectors);
+    // container for covariance Matrix
+    Eigen::MatrixXd pca_cov(ndetectors, ndetectors);
 
-    // calculate the Correlation Matrix
-    pcaCorr.noalias() = (det.derived().adjoint() * det);
+    // number of unflagged samples
+    denom = (flags.derived().template cast <double> ().adjoint() * flags.derived().template cast <double> ()).array() - 1;
+    // calculate the covariance Matrix
+    pca_cov.noalias() = ((det.adjoint() * det).array() / denom.array()).matrix();
 
     if constexpr (backend == SpectraBackend) {
         // number of eigs to cut
@@ -148,7 +152,7 @@ auto Cleaner::calcEigs(const Eigen::DenseBase<DerivedA> &scans, const Eigen::Den
         int ncv = nev * 2.5 < ndetectors?int(nev * 2.5):ndetectors;
 
         // set up spectra
-        Spectra::DenseSymMatProd<double> op(pcaCorr);
+        Spectra::DenseSymMatProd<double> op(pca_cov);
         Spectra::SymEigsSolver<Spectra::DenseSymMatProd<double>> eigs(op, nev, ncv);
 
         eigs.init();
@@ -172,7 +176,7 @@ auto Cleaner::calcEigs(const Eigen::DenseBase<DerivedA> &scans, const Eigen::Den
 
     if constexpr (backend == EigenBackend) {
         // use Eigen's eigen solver
-        Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> solution(pcaCorr);
+        Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> solution(pca_cov);
         evals = solution.eigenvalues();
         evecs = solution.eigenvectors();
     }

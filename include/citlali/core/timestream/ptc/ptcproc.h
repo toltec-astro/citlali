@@ -5,7 +5,6 @@
 
 namespace timestream {
 
-
 class PTCProc {
 public:
     template <class Engine>

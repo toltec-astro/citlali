@@ -32,6 +32,9 @@ public:
     // for source fits in coadded maps
     Eigen::MatrixXd pfit;
 
+    // for source fits errors in coadded maps
+    Eigen::MatrixXd perror;
+
     // Physical coordinates for rows and cols (radians)
     Eigen::VectorXd rcphys, ccphys;
 
@@ -158,7 +161,7 @@ public:
                         (mb.weight.at(mi).array()*mb.kernel.at(mi).array()).array();
             }
 
-            // signal += fsmp*weight
+            // coverage +=coverage
             coverage.at(mi).block(deltai, deltaj, mb.nrows, mb.ncols) =
                      coverage.at(mi).block(deltai, deltaj, mb.nrows, mb.ncols).array() +
                     mb.coverage.at(mi).array();
