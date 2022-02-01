@@ -165,6 +165,7 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     SPDLOG_INFO("getting maps psds");
     for (Eigen::Index i=0; i < array_indices.size(); i++) {
         PSD psd;
+        SPDLOG_INFO("cmb.cov_cut {}",cmb.cov_cut);
         psd.cov_cut = cmb.cov_cut;
         psd.calc_map_psd(mb.signal.at(i), mb.weight.at(i), mb.rcphys, mb.ccphys);
         mb.psd.push_back(std::move(psd));

@@ -291,6 +291,8 @@ public:
         get_config(mapping_method,std::tuple{"mapmaking","method"});
         get_config(map_type,std::tuple{"mapmaking","pixel_axes"});
         get_config(pixel_size,std::tuple{"mapmaking","pixel_size_arcsec"});
+        get_config(cmb.cov_cut,std::tuple{"coadd","cov_cut"});
+
 
         // convert pixel size to radians at start
         pixel_size *= RAD_ASEC;
