@@ -54,14 +54,24 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
 
     SPDLOG_INFO("psd test b");
 
+    SPDLOG_INFO("nr {} nc {}", nr, nc);
+    SPDLOG_INFO("diffqr {} diffqc {}", diffqr, diffqc);
+
     Eigen::MatrixXcd block(nr, nc);
     block.real() = in.block(crr0, ccr0, nr, nc);
     block.imag().setZero();
 
+    SPDLOG_INFO("block {}", block);
+
     block.real() = block.real().array() * engine_utils::hanning(nr, nc).array();
 
     auto out = engine_utils::fft2w<engine_utils::forward>(block, nr, nc);
+
+    SPDLOG_INFO("out {}", out);
+
     out = out*diffr*diffc;
+
+    SPDLOG_INFO("out {}", out);
 
     SPDLOG_INFO("psd test c");
 
