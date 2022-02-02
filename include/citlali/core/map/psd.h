@@ -65,6 +65,8 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
 
     block.real() = block.real().array() * engine_utils::hanning(nr, nc).array();
 
+        SPDLOG_INFO("block {}", block);
+
     auto out = engine_utils::fft2w<engine_utils::forward>(block, nr, nc);
 
     SPDLOG_INFO("out {}", out);

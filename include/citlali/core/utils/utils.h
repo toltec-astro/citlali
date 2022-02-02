@@ -175,7 +175,7 @@ Eigen::MatrixXcd fft2w(Eigen::DenseBase<Derived> &in, const Eigen::Index nrows, 
     });
 
     // do the fft over the cols
-    grppi::map(tula::grppi_utils::dyn_ex("omp"),ci,ri,[&](auto k){
+    grppi::map(tula::grppi_utils::dyn_ex("omp"),ci,co,[&](auto k){
         Eigen::FFT<double> fft;
         fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
         fft.SetFlag(Eigen::FFT<double>::Unscaled);
