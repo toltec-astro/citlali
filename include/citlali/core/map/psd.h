@@ -38,8 +38,6 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
       nr--;
     }
 
-    SPDLOG_INFO("psd test a");
-
     if (nc % 2 == 1) {
       ccr1 = cut_col_range(1) - 1;
       nc--;
@@ -52,31 +50,14 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
     double diffqr = 1. / rsize;
     double diffqc = 1. / csize;
 
-    SPDLOG_INFO("psd test b");
-
-    SPDLOG_INFO("nr {} nc {}", nr, nc);
-    SPDLOG_INFO("diffqr {} diffqc {}", diffqr, diffqc);
-
     Eigen::MatrixXcd block(nr, nc);
     block.real() = in.block(crr0, ccr0, nr, nc);
     block.imag().setZero();
 
-    SPDLOG_INFO("block {}", block);
-
     block.real() = block.real().array() * engine_utils::hanning(nr, nc).array();
 
-        SPDLOG_INFO("block {}", block);
-
     auto out = engine_utils::fft2w<engine_utils::forward>(block, nr, nc);
-
-    SPDLOG_INFO("out {}", out);
-
     out = out*diffr*diffc;
-
-    SPDLOG_INFO("out {}", out);
-
-    SPDLOG_INFO("psd test c");
-
 
     //Eigen::Map<Eigen::VectorXcd> out_vec(out.data(),nr*nc);
 
@@ -88,9 +69,6 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
     // vectors of frequencies
     Eigen::VectorXd qr(nr);
     Eigen::VectorXd qc(nc);
-
-    SPDLOG_INFO("psd test d");
-
 
     int shift = nr/2 - 1;
     Eigen::Index index;
@@ -111,9 +89,6 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
         qc(index) = diffqc*(i-(nc/2-1));
     }
 
-    SPDLOG_INFO("psd test e");
-
-
     // shed first row and column of h, qr, qc
     Eigen::MatrixXd pmfq(nr-1,nc-1);
     for (Eigen::Index i=1; i<nc; i++) {
@@ -122,18 +97,12 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
         }
     }
 
-    SPDLOG_INFO("psd test f");
-
-
     for (Eigen::Index i=0; i<nr-1; i++) {
         qr(i) = qr(i+1);
     }
     for (int j=0; j<nc-1; j++) {
         qc(j) = qc(j+1);
     }
-
-    SPDLOG_INFO("psd test g");
-
 
     // matrices of frequencies and distances
     Eigen::MatrixXd qmap(nr-1,nc-1);
@@ -145,9 +114,6 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
             qsymm(j-1,i-1) = qr(j)*qc(i);
         }
     }
-
-    SPDLOG_INFO("psd test h");
-
 
     // find max of nr and nc and correspoinding diffq
     int nn;
@@ -161,17 +127,11 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
       diffq = diffqc;
     }
 
-    SPDLOG_INFO("psd test i");
-
-
     // generate the final vector of frequencies
     psd_freq.resize(nn);
     for (Eigen::Index i=0; i<nn; i++) {
         psd_freq(i) = diffq*(i + 0.5);
     }
-
-    SPDLOG_INFO("psd test j");
-
 
     // pack up the final vector of psd values
     psd.setZero(nn);
@@ -202,16 +162,10 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
             psd(i) = std::min(psdarr_s,psdarr_a);
     }
 
-    SPDLOG_INFO("psd test k");
-
-
     // smooth the psd with a 10-element boxcar filter
     Eigen::VectorXd tmp(nn);
     engine_utils::smooth(psd, tmp, 10);
     psd = tmp;
-
-    SPDLOG_INFO("psd test l");
-
 
     psd2d = pmfq;
     psd2d_freq = qmap;

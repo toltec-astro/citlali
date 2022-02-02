@@ -31,7 +31,7 @@
 #include <citlali/core/timestream/ptc/ptcproc.h>
 
 #include <citlali/core/map/naive_mm.h>
-#include <citlali/core/map/wiener_filter_2.h>
+#include <citlali/core/map/wiener_filter.h>
 
 class EngineBase: public Telescope, public Observation, public MapBase, public Calib {
 public:
@@ -40,7 +40,10 @@ public:
     // citlali config file
     tula::config::YamlConfig engine_config;
 
+    // path to output files and directories
     std::string filepath;
+
+    int redu_num;
 
     // vectors to hold missing/invalid keys
     key_vec_t missing_keys;

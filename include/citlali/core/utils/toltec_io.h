@@ -9,8 +9,13 @@
 #include <iostream>
 #include <iomanip>
 
+#include <tula/filesystem.h>
+#include <tula/logging.h>
+
 #include <citlali_config/gitversion.h>
 #include <citlali/core/utils/constants.h>
+
+namespace fs = std::filesystem;
 
 struct ToltecIO {
     // instrument filename
@@ -116,7 +121,7 @@ struct ToltecIO {
         //{"DATE","N/A"},
         {"DATE-OBS","N/A"},
         //{"WAV","N/A"}
-};
+    };
 
     template <DataType data_type, ProjectID project_id,
               ObsType obs_type, ProdType prod_type, ObsNum obs_num>
@@ -203,6 +208,16 @@ struct ToltecIO {
 
         // return the updated filepath
         return filepath;
+    }
+
+    void setup_output_directory(std::string filepath, std::string dname) {
+        if (!fs::exists(fs::status(filepath + dname))) {
+            fs::create_directories(filepath + dname);
+        }
+
+        else {
+            SPDLOG_WARN("directory {} already exists", filepath + dname);
+        }
     }
 
 };

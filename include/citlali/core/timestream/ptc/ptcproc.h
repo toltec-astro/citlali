@@ -22,12 +22,16 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
      if (engine->run_clean) {
 
          // need this if out != in
-         if (out.scans.data.isZero(0)){
+         if (out.scans.data.isZero(0)) {
              out.scans.data.resize(in.scans.data.rows(), in.scans.data.cols());
 
              if (engine->run_kernel) {
                  out.kernel_scans.data.resize(in.kernel_scans.data.rows(), in.kernel_scans.data.cols());
              }
+
+             out.tel_meta_data.data = in.tel_meta_data.data;
+             out.scan_indices.data = in.scan_indices.data;
+             out.index.data = in.index.data;
          }
 
          // loop through the arrays
@@ -69,12 +73,14 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
              SPDLOG_INFO("removing eigenvalues from scan {} for map {}", in.index.data, mi);
              if (engine->cleaner.cut_std > 0) {
                 clean_out = engine->cleaner.template calcEigs<EigenBackend>(in_scans, in_flags);
+                SPDLOG_INFO("calculated eigenvalues for scan {} for map {}: {}",in.index.data, mi, std::get<1>(clean_out));
                 engine->cleaner.template removeEigs<EigenBackend, DataType>(std::get<0>(clean_out), out_scans,
                         std::get<1>(clean_out), std::get<2>(clean_out));
              }
 
              else {
                  clean_out = engine->cleaner.template calcEigs<SpectraBackend>(in_scans, in_flags);
+                 SPDLOG_INFO("calculated eigenvalues for scan {} for map {}: {}", in.index.data, mi, std::get<1>(clean_out));
                  engine->cleaner.template removeEigs<SpectraBackend, DataType>(std::get<0>(clean_out), out_scans,
                          std::get<1>(clean_out), std::get<2>(clean_out));
              }
@@ -116,6 +122,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
      }
 
      else {
+         SPDLOG_INFO("cleaning skipped");
          out = in;
      }
 

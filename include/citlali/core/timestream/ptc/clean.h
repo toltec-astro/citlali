@@ -18,7 +18,7 @@ enum ScanType {
         KernelType = 1
     };
 
-class Cleaner{
+class Cleaner {
 public:
     int neig;
     double cut_std;
@@ -168,8 +168,8 @@ auto Cleaner::calcEigs(const Eigen::DenseBase<DerivedA> &scans, const Eigen::Den
         if (eigs.info() == Spectra::CompInfo::Successful) {
             evals.head(nev) = eigs.eigenvalues();
             evecs.leftCols(nev) = eigs.eigenvectors();
-            SPDLOG_INFO("calculated eigenvalues {}", eigs.eigenvalues());
         }
+
         else {
             throw std::runtime_error("failed to compute eigen values");
         }

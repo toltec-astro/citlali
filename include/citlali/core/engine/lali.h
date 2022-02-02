@@ -49,19 +49,27 @@ void Lali::setup() {
     // empty the fits vector for subsequent observations
     fits_ios.clear();
 
+    std::string hdname = "redu" + std::to_string(redu_num) + "/";
+
+    std::stringstream ss;
+    ss << std::setfill('0') << std::setw(6) << obsnum;
+    std::string dname = hdname + ss.str() + "/";
+
+    toltec_io.setup_output_directory(filepath, dname);
+
     // create files for each member of the array_indices group
     for (Eigen::Index i=0; i<array_indices.size(); i++) {
         std::string filename;
         // generate filename for science maps
         if (reduction_type == "science") {
             filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
-                    ToltecIO::science, ToltecIO::no_prod_type, ToltecIO::obsnum_true>(filepath,obsnum,i);
+                    ToltecIO::science, ToltecIO::no_prod_type, ToltecIO::obsnum_true>(filepath + dname,obsnum,i);
         }
 
         else if (reduction_type == "pointing") {
             // generate filename for pointing maps
             filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
-                    ToltecIO::pointing, ToltecIO::no_prod_type, ToltecIO::obsnum_true>(filepath,obsnum,i);
+                    ToltecIO::pointing, ToltecIO::no_prod_type, ToltecIO::obsnum_true>(filepath + dname,obsnum,i);
         }
 
         // push the file classes into a vector for storage

@@ -111,11 +111,19 @@ void Beammap::setup() {
     // empty the fits vector for subsequent observations
     fits_ios.clear();
 
+    std::string hdname = "redu" + std::to_string(redu_num) + "/";
+
+    std::stringstream ss;
+    ss << std::setfill('0') << std::setw(6) << obsnum;
+    std::string dname = hdname + ss.str() + "/";
+
+    toltec_io.setup_output_directory(filepath, dname);
+
     // create empty FITS files at start
     for (Eigen::Index i=0; i<array_indices.size(); i++) {
         std::string filename;
         filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
-                ToltecIO::beammap, ToltecIO::no_prod_type, ToltecIO::obsnum_true>(filepath,obsnum,i);
+                ToltecIO::beammap, ToltecIO::no_prod_type, ToltecIO::obsnum_true>(filepath + dname,obsnum,i);
 
         FitsIO<fileType::write_fits, CCfits::ExtHDU*> fits_io(filename);
         fits_ios.push_back(std::move(fits_io));

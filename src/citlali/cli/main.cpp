@@ -1010,6 +1010,19 @@ int run(const rc_t &rc) {
                     det_indices.push_back(std::move(di));
                 }
 
+                // toltec i/o class for filename generation
+                ToltecIO toltec_io;
+
+                todproc.engine().redu_num = 0;
+                std::string hdname = "redu" + std::to_string(todproc.engine().redu_num) + "/";
+
+                while (fs::exists(fs::status(todproc.engine().filepath + hdname))) {
+                    todproc.engine().redu_num++;
+                    hdname = "redu" + std::to_string(todproc.engine().redu_num) + "/";
+                }
+
+                toltec_io.setup_output_directory(todproc.engine().filepath, hdname);
+
                 // set up coadded map buffer
                 if (todproc.engine().run_coadd) {
                     SPDLOG_INFO("setup coadded map buffer");
@@ -1018,6 +1031,14 @@ int run(const rc_t &rc) {
 
                     // toltec i/o class for filename generation
                     ToltecIO toltec_io;
+
+                    std::string rdname = hdname + "/coadded/raw/";
+                    toltec_io.setup_output_directory(todproc.engine().filepath, rdname);
+
+                    std::string fdname = hdname + "/coadded/filtered/";
+                    if (todproc.engine().run_coadd_filter) {
+                        toltec_io.setup_output_directory(todproc.engine().filepath, fdname);
+                    }
 
                     // create files for each member of the array_indices group
                     // uses filepath from last config read
@@ -1028,7 +1049,7 @@ int run(const rc_t &rc) {
                         coadd_filename = toltec_io.setup_filepath<
                             ToltecIO::toltec, ToltecIO::simu,
                             ToltecIO::no_obs_type, ToltecIO::raw,
-                            ToltecIO::obsnum_false>(todproc.engine().filepath,
+                            ToltecIO::obsnum_false>(todproc.engine().filepath + rdname,
                                                     todproc.engine().obsnum, i);
 
                         // push the file classes into a vector for storage
@@ -1043,7 +1064,7 @@ int run(const rc_t &rc) {
                                 ToltecIO::toltec, ToltecIO::simu,
                                 ToltecIO::no_obs_type, ToltecIO::filtered,
                                 ToltecIO::obsnum_false>(
-                                todproc.engine().filepath,
+                                todproc.engine().filepath + fdname,
                                 todproc.engine().obsnum, i);
 
                             // push the file classes into a vector for storage
@@ -1060,7 +1081,7 @@ int run(const rc_t &rc) {
                                 ToltecIO::toltec, ToltecIO::simu,
                                 ToltecIO::no_obs_type, ToltecIO::noise_raw,
                                 ToltecIO::obsnum_false>(
-                                todproc.engine().filepath,
+                                todproc.engine().filepath + rdname,
                                 todproc.engine().obsnum, i);
 
                             // push the file classes into a vector for storage
@@ -1076,7 +1097,7 @@ int run(const rc_t &rc) {
                                     ToltecIO::no_obs_type,
                                     ToltecIO::noise_filtered,
                                     ToltecIO::obsnum_false>(
-                                    todproc.engine().filepath,
+                                    todproc.engine().filepath + fdname,
                                     todproc.engine().obsnum, i);
 
                                 // push the file classes into a vector for
