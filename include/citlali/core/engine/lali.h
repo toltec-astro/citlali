@@ -163,12 +163,12 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     mb.normalize_maps(run_kernel);
 
     SPDLOG_INFO("getting maps psds");
+    mb.psd.resize(array_indices.size());
     for (Eigen::Index i=0; i < array_indices.size(); i++) {
         PSD psd;
-        SPDLOG_INFO("cmb.cov_cut {}",cmb.cov_cut);
         psd.cov_cut = cmb.cov_cut;
         psd.calc_map_psd(mb.signal.at(i), mb.weight.at(i), mb.rcphys, mb.ccphys);
-        mb.psd.push_back(std::move(psd));
+        mb.psd.at(i) = std::move(psd);
     }
 
     // do fit if map_grouping is pointing
