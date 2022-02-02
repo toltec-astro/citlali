@@ -254,6 +254,7 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
             // if a decay length is less than 6, set it to 6
             decay_length = (decay_length.array() < 6.).select(6., decay_length);
 
+
             // exit if the decay length is too large
             if ((decay_length.array() > 10. * fsmp).any()) {
                 SPDLOG_INFO("decay length is longer than 10 * fsmp.  mission "

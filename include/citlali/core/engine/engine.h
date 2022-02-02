@@ -246,6 +246,7 @@ public:
         if (run_despike) {
             get_config(despiker.sigma,std::tuple{"timestream","despike","min_spike_sigma"});
             get_config(despiker.time_constant,std::tuple{"timestream","despike","time_constant_sec"});
+	    despiker.fsmp = fsmp;
         }
 
         // get filter config options
