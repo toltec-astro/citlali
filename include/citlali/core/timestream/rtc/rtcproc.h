@@ -68,7 +68,7 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
             Eigen::Map<Eigen::VectorXd> res(engine->responsivity.data()+det,ndet);
 
             SPDLOG_INFO("replacing flagged signal for scan {} for map {}", in.index.data, mi);
-            engine->despiker.replace_spikes(in_scans, in_flags, res);
+            //engine->despiker.replace_spikes(in_scans, in_flags, res);
         }
     }
 

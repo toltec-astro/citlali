@@ -265,7 +265,6 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
             // due to filtering later, we flag a region with the size of the filter
             // around each spike
             if (run_filter) {
-
                 // half of the total despike window - 1
                 int decay_window = (despike_window - 1) / 2;
 

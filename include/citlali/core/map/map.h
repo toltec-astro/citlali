@@ -215,7 +215,6 @@ map_dims_t MapBase::get_dims(tel_meta_t &tel_meta_data, C &calib_data, S &scan_i
                 else if (lon.maxCoeff() > lon_limits(di,1)) {
                     lon_limits(di,1) = lon.maxCoeff();
                 }
-
                 return 0;
             });
         }

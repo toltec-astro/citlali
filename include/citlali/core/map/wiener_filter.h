@@ -212,7 +212,7 @@ void WienerFilter::make_symmetric_template(CMB &cmb, const double map_num, CD &c
         done(i) /= c;
     }
 
-    //now spline interpolate to generate new template array
+    // now spline interpolate to generate new template array
     tplate.resize(nr,nc);
 
     engine_utils::SplineFunction s(done, kone);

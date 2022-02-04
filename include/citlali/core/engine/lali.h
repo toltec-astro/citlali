@@ -49,7 +49,9 @@ void Lali::setup() {
     // empty the fits vector for subsequent observations
     fits_ios.clear();
 
-    std::string hdname = "redu" + std::to_string(redu_num) + "/";
+    std::stringstream ss_redu;
+    ss_redu << std::setfill('0') << std::setw(2) << redu_num;
+    std::string hdname = "redu" + ss_redu.str() + "/";
 
     std::stringstream ss;
     ss << std::setfill('0') << std::setw(6) << obsnum;
@@ -119,6 +121,11 @@ auto Lali::run() {
                 tula::logging::scoped_timeit timer("populate_maps_naive()");
                 populate_maps_naive(out, this);
             }
+        }
+
+        else if (mapping_method == "jinc") {
+            tula::logging::scoped_timeit timer("populate_maps_jinc()");
+            populate_maps_jinc(out, this);
         }
 
         SPDLOG_INFO("done with scan {}", out.index.data);
