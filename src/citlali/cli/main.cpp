@@ -1014,11 +1014,15 @@ int run(const rc_t &rc) {
                 ToltecIO toltec_io;
 
                 todproc.engine().redu_num = 0;
-                std::string hdname = "redu" + std::to_string(todproc.engine().redu_num) + "/";
+                std::stringstream ss_redu;
+                ss_redu << std::setfill('0') << std::setw(2) << todproc.engine().redu_num;
+                std::string hdname = "redu" + ss_redu.str() + "/";
 
                 while (fs::exists(fs::status(todproc.engine().filepath + hdname))) {
                     todproc.engine().redu_num++;
-                    hdname = "redu" + std::to_string(todproc.engine().redu_num) + "/";
+                    std::stringstream ss_redu_i;
+                    ss_redu_i << std::setfill('0') << std::setw(2) << todproc.engine().redu_num;
+                    hdname = "redu" + ss_redu_i.str() + "/";
                 }
 
                 toltec_io.setup_output_directory(todproc.engine().filepath, hdname);
