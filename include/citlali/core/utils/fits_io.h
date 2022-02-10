@@ -128,7 +128,6 @@ public:
         return data;
     }
 
-
     template <UnitsType units, typename hdu_t, typename map_type_t, typename center_t>
     void add_wcs(hdu_t *hdu, map_type_t map_type, const int nrows, const int ncols,
                  const double pixel_size, center_t &source_center) {
@@ -199,8 +198,8 @@ public:
         hdu->addKey("CD2_2", pixel_size/unit_scale, "");
 
         // add source ra
-        hdu->addKey("SRC_RA", source_center["Ra"][0], "Source RA");
+        hdu->addKey("SRC_RA_RAD", source_center["Ra"][0], "Source RA (radians)");
         // add source dec
-        hdu->addKey("SRC_DEC", source_center["Dec"][0], "Source DEC");
+        hdu->addKey("SRC_DEC_RAD", source_center["Dec"][0], "Source DEC (radians)");
     }
 };

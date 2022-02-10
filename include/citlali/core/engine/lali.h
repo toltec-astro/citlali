@@ -311,9 +311,9 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios) {
         // add conversion
         f_ios.at(i).pfits->pHDU().addKey("to_mjy/b", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
         // add source ra
-        f_ios.at(i).pfits->pHDU().addKey("SRC_RA", source_center["Ra"][0], "Source RA");
+        f_ios.at(i).pfits->pHDU().addKey("SRC_RA_RAD", source_center["Ra"][0], "Source RA (radians)");
         // add source dec
-        f_ios.at(i).pfits->pHDU().addKey("SRC_DEC", source_center["Dec"][0], "Source Dec");
+        f_ios.at(i).pfits->pHDU().addKey("SRC_DEC_RAD", source_center["Dec"][0], "Source Dec (radians)");
     }
 
     // add fitting parameters to file if pointing mode is selected
@@ -428,9 +428,9 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios) {
                     // add conversion
                     nf_ios.at(i).pfits->pHDU().addKey("to_mjy/b", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
                     // add source ra
-                    f_ios.at(i).pfits->pHDU().addKey("SRC_RA", source_center["Ra"][0], "Source RA");
+                    f_ios.at(i).pfits->pHDU().addKey("SRC_RA_RAD", source_center["Ra"][0], "Source RA (radians)");
                     // add source dec
-                    f_ios.at(i).pfits->pHDU().addKey("SRC_DEC", source_center["Dec"][0], "Source Dec");
+                    f_ios.at(i).pfits->pHDU().addKey("SRC_DEC_RAD", source_center["Dec"][0], "Source Dec (radians)");
 
                 }
             }
