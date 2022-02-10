@@ -22,9 +22,9 @@ public:
 
     int nr, nc;
     double diffr, diffc;
-    double denom_imit = 1.e-4;
+    double denom_limit = 1.e-4;
 
-    double beam_ratio = 30.;
+    //double beam_ratio = 30.;
 
     Eigen::MatrixXd rr, vvq, denom, nume;
     Eigen::MatrixXd mflt;
@@ -34,10 +34,10 @@ public:
     void make_gaussian_template(CMB &cmb, const double);
 
     template<class CMB, class CD>
-    void make_symmetric_template(CMB &cmb, const double, CD &);
+    void make_symmetric_template(CMB &cmb, const int, CD &);
 
     template<class CMB, class CD>
-    void make_template(CMB &cmb, CD &calib_data, const double gaussian_template_fwhm_rad, const double map_num) {
+    void make_template(CMB &cmb, CD &calib_data, const double gaussian_template_fwhm_rad, const int map_num) {
         // make sure new wiener filtered maps are even dimensioned
         nr = 2*(cmb.nrows/2);
         nc = 2*(cmb.ncols/2);
@@ -123,10 +123,10 @@ public:
 
 template<class CMB>
 void WienerFilter::make_gaussian_template(CMB &cmb, const double gaussian_template_fwhm_rad) {
-    Eigen::VectorXd rgcut = cmb.rcphys.head(nr);
-    Eigen::VectorXd cgcut = cmb.ccphys.head(nc);
+    tplate.setZero(nr,nc);
 
-    Eigen::MatrixXd tem = Eigen::MatrixXd::Zero(nr, nc);
+    Eigen::VectorXd rgcut = cmb.rcphys;
+    Eigen::VectorXd cgcut = cmb.ccphys;
 
     Eigen::MatrixXd dist(nr, nc);
     /*dist = (xgcut.replicate(1, nc).array().pow(2.0).matrix()
@@ -134,29 +134,33 @@ void WienerFilter::make_gaussian_template(CMB &cmb, const double gaussian_templa
                .array()
                .sqrt();*/
 
-    for(int i=0;i<nc;i++)
-      for(int j=0;j<nr;j++)
-        dist(j,i) = sqrt(pow(rgcut[j],2)+pow(cgcut[i],2));
+    for (Eigen::Index i=0; i<nc; i++) {
+        for (Eigen::Index j=0; j<nr; j++) {
+            dist(j,i) = sqrt(pow(rgcut(j),2) + pow(cgcut(i),2));
+        }
+    }
 
-    Eigen::Index rcind = nr / 2;
-    Eigen::Index ccind = nc / 2;
-    double mindist = 99.;
+    Eigen::Index rcind;
+    Eigen::Index ccind;
 
-    mindist = dist.minCoeff(&rcind, &ccind);
+    double mindist = dist.minCoeff(&rcind, &ccind);
+    SPDLOG_INFO("gaussian_template_fwhm_rad {}",gaussian_template_fwhm_rad);
+    double sigma = gaussian_template_fwhm_rad / STD_TO_FWHM;
+    SPDLOG_INFO("sigma {}",sigma);
+    SPDLOG_INFO("STD_TO_FWHM {}",STD_TO_FWHM);
+    SPDLOG_INFO("cmb.rcphys {}",cmb.rcphys);
+    SPDLOG_INFO("cmb.ccphys {}",cmb.ccphys);
+    SPDLOG_INFO("rcind {} ccind {}",rcind,ccind);
 
-    double sig = gaussian_template_fwhm_rad / STD_TO_FWHM;
-    tplate = exp(-0.5 * pow(dist.array() / sig, 2.));
-
+    tplate = exp(-0.5 * pow(dist.array() / sigma, 2.));
     tplate = engine_utils::shift_matrix(tplate, -rcind, -ccind);
 }
 
 template<class CMB, class CD>
-void WienerFilter::make_symmetric_template(CMB &cmb, const double map_num, CD &calib_data) {
+void WienerFilter::make_symmetric_template(CMB &cmb, const int map_num, CD &calib_data) {
     // collect what we need
-    Eigen::VectorXd rgcut(nr);
-    rgcut = cmb.rcphys;
-    Eigen::VectorXd cgcut(nc);
-    cgcut = cmb.ccphys;
+    Eigen::VectorXd rgcut = cmb.rcphys;
+    Eigen::VectorXd cgcut = cmb.ccphys;
     Eigen::MatrixXd tem = cmb.kernel.at(map_num);
       
     // set nparams for fit
@@ -177,8 +181,8 @@ void WienerFilter::make_symmetric_template(CMB &cmb, const double map_num, CD &c
     tem = engine_utils::shift_matrix(tem, std::round(pfit(2)/diffr), std::round(pfit(1)/diffc));
 
     Eigen::MatrixXd dist(nr,nc);
-    for (int i=0; i<nc; i++) {
-        for(int j=0;j<nr;j++) {
+    for (Eigen::Index i=0; i<nc; i++) {
+        for(Eigen::Index j=0; j<nr; j++) {
             dist(j,i) = sqrt(pow(rgcut(j),2)+pow(cgcut(i),2));
         }
     }
@@ -217,12 +221,12 @@ void WienerFilter::make_symmetric_template(CMB &cmb, const double map_num, CD &c
 
     engine_utils::SplineFunction s(done, kone);
 
-    for (int i=0; i<nc; i++) {
-        for (int j=0; j<nr; j++) {
-            int tj = (j-rcind)%nr;
-            int ti = (i-ccind)%nc;
-            int shiftj = (tj < 0) ? nr+tj : tj;
-            int shifti = (ti < 0) ? nc+ti : ti;
+    for (Eigen::Index i=0; i<nc; i++) {
+        for (Eigen::Index j=0; j<nr; j++) {
+            Eigen::Index tj = (j-rcind)%nr;
+            Eigen::Index ti = (i-ccind)%nc;
+            Eigen::Index shiftj = (tj < 0) ? nr+tj : tj;
+            Eigen::Index shifti = (ti < 0) ? nc+ti : ti;
 
             if (dist(j,i) <= s.x_max && dist(j,i) >= s.x_min) {
                 tplate(shiftj,shifti) = s(dist(j,i));
@@ -364,7 +368,6 @@ void WienerFilter::calc_vvq(CMB &cmb, const int map_num) {
 
     ////SPDLOG_INFO("a3");
 
-
     Eigen::MatrixXd psdq;
     psdq.setZero(nr, nc);
 
@@ -423,7 +426,7 @@ void WienerFilter::calc_vvq(CMB &cmb, const int map_num) {
 
     // normalize the power spectrum psdq and place into vvq
     //vvq = psdq/psdq.sum();
-    vvq.resize(nr,nc);
+    vvq.setZero(nr,nc);
       double totpsdq=0.;
       for(int i=0;i<nc;i++) for(int j=0;j<nr;j++) totpsdq += psdq(j,i);
       for(int i=0;i<nc;i++) for(int j=0;j<nr;j++) vvq(j,i) = psdq(j,i)/totpsdq;
@@ -431,6 +434,7 @@ void WienerFilter::calc_vvq(CMB &cmb, const int map_num) {
 }
 
 void WienerFilter::calc_numerator() {
+    nume.setZero(nr,nc);
     // normalization for fft
     double fftnorm = 1. / nr / nc;
 
@@ -520,7 +524,6 @@ void WienerFilter::calc_denominator() {
         double d=0;
         for(int i=0;i<nc;i++)
               for(int j=0;j<nr;j++){
-                  auto blah = (out.real()(j,i)*out.real()(j,i) + out.imag()(j,i)*out.imag()(j,i))/vvq(j,i);
                   ////SPDLOG_INFO("BLAH {}", blah);
                 d += (out.real()(j,i)*out.real()(j,i) + out.imag()(j,i)*out.imag()(j,i))/vvq(j,i);
               }
@@ -573,7 +576,6 @@ void WienerFilter::calc_denominator() {
 
         //SPDLOG_INFO("denom zz2d {}", zz2d);
         ////SPDLOG_INFO("sorted {}",sorted);
-
 
         // number of iterations for convergence
         nloops = nr * nc / 100;
@@ -676,7 +678,7 @@ void WienerFilter::calc_denominator() {
 
                     if ((kk % 100) == 1) {
                         double max_ratio = -1;
-                        double maxdenom = -999.;
+                        double maxdenom;
 
                         //SPDLOG_INFO("DENOM IN LOOP {}", denom);
                         //SPDLOG_INFO("updater IN LOOP {}", updater);
@@ -704,7 +706,7 @@ void WienerFilter::calc_denominator() {
             }
         }
 
-        //SPDLOG_INFO("zeroing out any small values (< {}) in denominator", denom_imit);
-        denom = (denom.array() < denom_imit).select(0, denom);
+        SPDLOG_INFO("zeroing out any values < {} in denominator", denom_limit);
+        (denom.array() < denom_limit).select(0, denom);
     }
 }

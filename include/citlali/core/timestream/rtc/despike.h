@@ -397,8 +397,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                   }
 
                   else {
-                      // linearly interpolate between the before
-                      // and after good samples
+                      // linearly interpolate between the before and after good samples
                       xx(0) = si_flags(j) - 1;
                       xx(1) = ei_flags(j) + 1;
                       yy(0) = scans(si_flags(j) - 1, det);
@@ -411,8 +410,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                                        xlin_offset.data());
                   }
 
-                  // all non-flagged detectors
-                  // repeat for all detectors without spikes
+                  // all non-flagged detectors repeat for all detectors without spikes
                   // count up spike-free detectors and store their values
                   int det_count = 0;
                   if (use_all_det) {
@@ -434,7 +432,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                       }
                   }
 
-                  // for each of these go through and redo the offset bit
+                  // for each of these go through and redo the offset
                   Eigen::MatrixXd lin_offset_others(det_count, nflags);
 
                   // first sample in scan is flagged so offset is flat

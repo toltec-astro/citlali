@@ -127,20 +127,20 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
      }
 
      // calculate approximate weights from sensitivity and sample rate
-     if (engine->approx_weights == "approximate") {
+     if (engine->weighting_type == "approximate") {
          out.weights.data = pow(sqrt(engine->dfsmp)*engine->sensitivity.array(),-2.0);
      }
 
      // get weights from stddev of each scan for each detector
-     else if (engine->approx_weights == "full"){
+     else if (engine->weighting_type == "full"){
          out.weights.data = Eigen::VectorXd::Zero(out.scans.data.cols());
          for (Eigen::Index i=0; i<out.scans.data.cols(); i++) {
 
              // make Eigen::Maps for each detector's scan
+             Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
+                 out.scans.data.col(i).data(), out.scans.data.rows());
              Eigen::Map<Eigen::Matrix<bool, Eigen::Dynamic, 1>> flags(
                          out.flags.data.col(i).data(), out.flags.data.rows());
-             Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
-                         out.scans.data.col(i).data(), out.scans.data.rows());
 
              // get standard deviation excluding flagged samples
              auto [tmp, ngood] = engine_utils::stddev(scans, flags);

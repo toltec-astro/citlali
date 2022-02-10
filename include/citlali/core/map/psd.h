@@ -8,7 +8,6 @@ class PSD {
 public:
     double cov_cut;
 
-    //Eigen::VectorXd rcphys, ccphys;
     Eigen::MatrixXd w;
     Eigen::VectorXd psd, psd_freq;
     Eigen::MatrixXd psd2d, psd2d_freq;
@@ -57,6 +56,7 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
     block.real() = block.real().array() * engine_utils::hanning(nr, nc).array();
 
     auto out = engine_utils::fft2w<engine_utils::forward>(block, nr, nc);
+
     out = out*diffr*diffc;
 
     //Eigen::Map<Eigen::VectorXcd> out_vec(out.data(),nr*nc);

@@ -18,9 +18,13 @@ using map_count_t = std::size_t;
 
 class CoaddedMapBuffer {
 public:
+    // dimensions
     Eigen::Index nrows, ncols, nnoise;
+    // number of maps
     map_count_t map_count;
+    // map pixel scale in radians
     double pixel_size;
+    // coverage cut
     double cov_cut;
 
     // noise average filtered rms
@@ -222,35 +226,35 @@ public:
     }
 
     void normalize_noise_map_errors() {
-        for (int m=0; m<map_count; m++) {
+        for (Eigen::Index m=0; m<map_count; m++) {
             Eigen::VectorXd nfacs;
             nfacs.setZero(nnoise);
             nfac.push_back(std::move(nfacs));
 
-            for (int k=0; k<nnoise; k++) {
-                Eigen::MatrixXd wt = weight.at(m);
-                double weight_cut = engine_utils::find_weight_threshold(wt,cov_cut);
+            Eigen::MatrixXd wt = weight.at(m);
+            double weight_cut = engine_utils::find_weight_threshold(wt,cov_cut);
 
+            for (int k=0; k<nnoise; k++) {
                 double counter=0;
                 double sig_of_map=0.;
-                for (int i=0; i<nrows; i++) {
-                      for (int j=0; j<ncols; j++) {
-                          if (wt(i,j) >= weight_cut) {
+                for (Eigen::Index i=0; i<ncols; i++) {
+                      for (Eigen::Index j=0; j<nrows; j++) {
+                          if (wt(j,i) >= weight_cut) {
                               counter++;
-                              sig_of_map += pow(noise.at(m)(i,j,k),2);
+                              sig_of_map += pow(noise.at(m)(j,i,k),2);
                           }
                       }
                 }
                 sig_of_map /= (counter-1);
                 sig_of_map = sqrt(sig_of_map);
 
-                double mean_sqerr=0;
-                counter=0.;
-                for (int i=0; i<nrows; i++) {
-                    for (int j=0; j<ncols; j++){
-                        if (wt(i,j) >= weight_cut) {
+                double mean_sqerr = 0;
+                counter = 0.;
+                for (Eigen::Index i=0; i<ncols; i++) {
+                    for (Eigen::Index j=0; j<nrows; j++){
+                        if (wt(j,i) >= weight_cut) {
                             counter++;
-                            mean_sqerr += (1./wt(i,j));
+                            mean_sqerr += (1./wt(j,i));
                         }
                     }
                 }
@@ -260,17 +264,45 @@ public:
         }
     }
 
+    void calc_average_filtered_rms() {
+        average_filtered_rms.setZero(map_count);
+
+        for (Eigen::Index m = 0; m<map_count; m++) {
+            Eigen::VectorXd map_rms(nnoise);
+            for (Eigen::Index k=0; k<nnoise; k++) {
+                Eigen::MatrixXd wt = weight.at(m)*nfac.at(m)(k);
+                double weight_cut = engine_utils::find_weight_threshold(wt,cov_cut);
+
+                int counter = 0;
+                double rms = 0.;
+                for (Eigen::Index i=0; i<ncols; i++) {
+                    for (Eigen::Index j=0; j<nrows; ++j) {
+                        if (wt(j,i) > weight_cut) {
+                            counter++;
+                            rms += pow(noise.at(m)(j,i,k),2);
+                        }
+                    }
+                }
+
+                rms /= counter;
+                map_rms(k) = sqrt(rms);
+                SPDLOG_INFO("Filtered noise rms {} from noise map {} map {}", map_rms(k), k, m);
+            }
+            average_filtered_rms(m) = map_rms.mean();
+        }
+    }
+
     void normalize_errors() {
-        for (int m=0; m<map_count; m++) {
+        for (Eigen::Index m=0; m<map_count; m++) {
             Eigen::MatrixXd wt = weight.at(m);
             double weight_cut = engine_utils::find_weight_threshold(wt,cov_cut);
 
-            double mean_sqerr=0.;
-            int counter=0;
-            for (int i=0; i<nrows; i++) {
-                for (int j=0; j<ncols; j++) {
-                    if (wt(i,j) >= weight_cut){
-                        mean_sqerr += (1./wt(i,j));
+            double mean_sqerr = 0.;
+            int counter = 0;
+            for (Eigen::Index i=0; i<ncols; i++) {
+                for (Eigen::Index j=0; j<nrows; j++) {
+                    if (wt(j,i) >= weight_cut){
+                        mean_sqerr += (1./wt(j,i));
                         counter++;
                     }
                 }
@@ -278,36 +310,8 @@ public:
 
             mean_sqerr /= counter;
             double nfac = (1./pow(average_filtered_rms(m),2.))*mean_sqerr;
-            SPDLOG_INFO("renormalization factor = {}",nfac);
+            SPDLOG_INFO("renormalization factor = {}", nfac);
             weight.at(m) = weight.at(m)*nfac;
-        }
-    }
-
-    void calc_average_filtered_rms() {
-        average_filtered_rms.resize(map_count);
-
-        for (Eigen::Index m = 0; m<map_count; m++) {
-            Eigen::VectorXd map_rms(nnoise);
-            for (int k=0; k<nnoise; k++) {
-                Eigen::MatrixXd wt = weight.at(m)*nfac.at(m)(k);
-                double weight_cut = engine_utils::find_weight_threshold(wt,cov_cut);
-
-                int counter = 0;
-                double rms = 0.;
-                for (int i=0; i<nrows; i++) {
-                    for (int j=0; j<ncols; ++j) {
-                        if (wt(i,j) > weight_cut) {
-                            counter++;
-                            rms += pow(noise.at(m)(i,j,k),2);
-                        }
-                    }
-                }
-
-                rms /= (counter);
-                map_rms(k) = sqrt(rms);
-                SPDLOG_INFO("Filtered noise rms {} from noise map {} map {}", map_rms(k), k, m);
-            }
-            average_filtered_rms(m) = map_rms.mean();
         }
     }
 };

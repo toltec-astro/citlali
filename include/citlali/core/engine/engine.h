@@ -123,7 +123,7 @@ public:
     std::map<std::string, double> gaussian_template_fwhm_rad;
 
     // weight type
-    std::string approx_weights;
+    std::string weighting_type;
 
     // output files
     std::vector<FitsIO<fileType::write_fits, CCfits::ExtHDU*>> fits_ios;
@@ -240,7 +240,7 @@ public:
         get_config(reduction_type,std::tuple{"runtime","reduction_type"},{"science","pointing","beammap"});
 
         get_config(time_chunk,std::tuple{"timestream","chunking","length_sec"});
-        get_config(approx_weights,std::tuple{"timestream","weighting","type"});
+        get_config(weighting_type,std::tuple{"timestream","weighting","type"});
 
         // get despike config options
         get_config(run_despike,std::tuple{"timestream","despike","enabled"});
@@ -258,6 +258,7 @@ public:
             get_config(filter._fhigh,std::tuple{"timestream","filter","freq_high_Hz"});
             get_config(filter.nterms,std::tuple{"timestream","filter","n_terms"});
 
+            // filter is run before downsampling
             filter.fsmp = fsmp;
 
             // if filter is requested, set the despike window to the filter window
@@ -266,6 +267,7 @@ public:
         }
 
         else {
+            // controls inner scan start index
             filter.nterms = 0;
         }
 
@@ -357,7 +359,9 @@ public:
                 get_config(gaussian_template_fwhm_rad["a2000"],std::tuple{"wiener_filter","gaussian_template_fwhm_arcsec","a2000"});
 
                 for (auto const& pair : gaussian_template_fwhm_rad) {
+                    SPDLOG_INFO("gaussian_template_fwhm_rad[pair.first] {}",gaussian_template_fwhm_rad[pair.first]);
                     gaussian_template_fwhm_rad[pair.first] = gaussian_template_fwhm_rad[pair.first]*RAD_ASEC;
+                    SPDLOG_INFO("gaussian_template_fwhm_rad[pair.first] {}",gaussian_template_fwhm_rad[pair.first]);
                 }
 
                 wiener_filter.run_kernel = run_kernel;

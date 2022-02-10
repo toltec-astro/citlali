@@ -197,5 +197,10 @@ public:
         hdu->addKey("CD1_2", 0, "");
         hdu->addKey("CD2_1", 0, "");
         hdu->addKey("CD2_2", pixel_size/unit_scale, "");
+
+        // add source ra
+        hdu->addKey("SRC_RA", source_center["Ra"][0], "Source RA");
+        // add source dec
+        hdu->addKey("SRC_DEC", source_center["Dec"][0], "Source DEC");
     }
 };

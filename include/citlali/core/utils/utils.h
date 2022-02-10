@@ -32,25 +32,31 @@ auto stddev(Eigen::DenseBase<Derived> &vec) {
 }
 
 template <typename DerivedA, typename DerivedB>
-auto stddev(Eigen::DenseBase<DerivedA> &scans,
-            Eigen::DenseBase<DerivedB> &flags) {
+auto stddev(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBase<DerivedB> &flags) {
 
-    Eigen::Index ngood = (flags.derived().array() == 1).count();
+    // count up number of unflagged samples
+    double ngood = (flags.derived().array() == 1).count();
 
-    double norm;
+    double N;
     if (ngood == 1) {
-        norm = 1;
+        N = ngood;
     }
     else {
-        norm = scans.derived().size() - 1;
+        N = ngood - 1;
     }
 
-    //Calculate the standard deviation
+    // calculate the standard deviation
     double tmp = std::sqrt(((scans.derived().array() *flags.derived().template cast<double>().array()) -
                             (scans.derived().array() * flags.derived().template cast<double>().array()).sum()/
-                                ngood).square().sum() / norm);
+                                ngood).square().sum() / N);
 
-    // Return stddev and the number of unflagged samples
+    /*auto x = scans.derived().array() *flags.derived().template cast<double>().array();
+    auto mean = (scans.derived().array() * flags.derived().template cast<double>().array()).sum()/ngood;
+*/
+    // calculate the standard deviation
+    //double tmp = std::sqrt((x - mean).square().sum() / N);
+
+    // return stddev and the number of unflagged samples
     return std::tuple<double, double>(tmp, ngood);
 }
 
@@ -325,8 +331,8 @@ double find_weight_threshold(Eigen::DenseBase<Derived> &in, const double cov) {
     int nc = in.cols();
     std::vector<double> og;
 
-    for (Eigen::Index x = 0; x < nc; x++){
-        for (Eigen::Index y = 0; y < nr; y++){
+    for (Eigen::Index x = 0; x < nc; x++) {
+        for (Eigen::Index y = 0; y < nr; y++) {
             if (in(y,x) > 0.){
                 og.push_back(in(y,x));
             }
@@ -337,9 +343,12 @@ double find_weight_threshold(Eigen::DenseBase<Derived> &in, const double cov) {
     double covlim;
     int covlimi;
     covlimi = 0.75*og.size();
+
     covlim = selector(og, covlimi);
+
     double mval, mvali;
     mvali = floor((covlimi+og.size())/2.);
+
     mval = selector(og, mvali);
 
     // return the weight cut value

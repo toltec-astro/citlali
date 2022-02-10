@@ -17,7 +17,7 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
          TCData<TCDataKind::PTC, Eigen::MatrixXd> &out,
          Engine engine) {
 
-    // start index for removing scan edges due to lowpassing
+    // start index for removing scan edges due to lowpassing (nterms=0 if filter is skipped)
     auto si = engine->filter.nterms;
     // scan length for inner scans
     auto sl = in.scan_indices.data(1) - in.scan_indices.data(0) + 1;

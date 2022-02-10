@@ -49,6 +49,7 @@ void Lali::setup() {
     // empty the fits vector for subsequent observations
     fits_ios.clear();
 
+    // get obsnum directory name inside redu directory name
     std::stringstream ss_redu;
     ss_redu << std::setfill('0') << std::setw(2) << redu_num;
     std::string hdname = "redu" + ss_redu.str() + "/";
@@ -57,6 +58,7 @@ void Lali::setup() {
     ss << std::setfill('0') << std::setw(6) << obsnum;
     std::string dname = hdname + ss.str() + "/";
 
+    // create obsnum directory
     toltec_io.setup_output_directory(filepath, dname);
 
     // create files for each member of the array_indices group
@@ -177,10 +179,11 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     SPDLOG_INFO("normalizing maps");
     mb.normalize_maps(run_kernel);
 
-    SPDLOG_INFO("getting maps psds");
     mb.psd.resize(array_indices.size());
     for (Eigen::Index i=0; i < array_indices.size(); i++) {
+        SPDLOG_INFO("calculating map {} psd", i);
         PSD psd;
+        SPDLOG_INFO("cov_cut {}",cmb.cov_cut);
         psd.cov_cut = cmb.cov_cut;
         psd.calc_map_psd(mb.signal.at(i), mb.weight.at(i), mb.rcphys, mb.ccphys);
         mb.psd.at(i) = std::move(psd);
@@ -308,9 +311,9 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios) {
         // add conversion
         f_ios.at(i).pfits->pHDU().addKey("to_mjy/b", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
         // add source ra
-        f_ios.at(i).pfits->pHDU().addKey("src_ra", source_center["Ra"][0], "Source RA");
+        f_ios.at(i).pfits->pHDU().addKey("SRC_RA", source_center["Ra"][0], "Source RA");
         // add source dec
-        f_ios.at(i).pfits->pHDU().addKey("src_dec", source_center["Dec"][0], "Source Dec");
+        f_ios.at(i).pfits->pHDU().addKey("SRC_DEC", source_center["Dec"][0], "Source Dec");
     }
 
     // add fitting parameters to file if pointing mode is selected
@@ -424,6 +427,10 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios) {
                     nf_ios.at(i).pfits->pHDU().addKey("UNIT", obsnum, "MJy/Sr");
                     // add conversion
                     nf_ios.at(i).pfits->pHDU().addKey("to_mjy/b", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
+                    // add source ra
+                    f_ios.at(i).pfits->pHDU().addKey("SRC_RA", source_center["Ra"][0], "Source RA");
+                    // add source dec
+                    f_ios.at(i).pfits->pHDU().addKey("SRC_DEC", source_center["Dec"][0], "Source Dec");
 
                 }
             }

@@ -18,7 +18,7 @@ constexpr auto pi = static_cast<double>(EIGEN_PI);
 #define DEG_TO_RAD (DEG_TO_ASEC*RAD_ASEC)
 
 // standard deviation to fwhm
-#define STD_TO_FWHM 2*sqrt(2*log(2))
+#define STD_TO_FWHM 2.0*sqrt(2.0*log(2.0))
 
 // 1.1 mm fwhm
 #define A1100_FWHM 5.0
