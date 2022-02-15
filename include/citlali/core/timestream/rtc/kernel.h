@@ -12,13 +12,14 @@ namespace timestream {
 
 class Kernel {
 public:
-    std::string filepath, kernel_type;
+    std::string filepath, kernel_type, hdu_name;
     Eigen::MatrixXd image;
 
     void setup() {
         if (kernel_type == "image") {
             FitsIO<fileType::read_fits, CCfits::ExtHDU*> fits_io(filepath);
-            image = fits_io.get_hdu("signal");
+            image = fits_io.get_hdu(hdu_name);
+            SPDLOG_INFO("kernel image {}",image);
         }
     }
 
@@ -54,18 +55,18 @@ void Kernel::gaussian_kernel(Engine engine, TCData<TCDataKind::RTC, Eigen::Matri
         // distance from map center
         auto dist = (lat.array().pow(2) + lon.array().pow(2)).sqrt();
 
-        //in.kernel_scans.data.col(i) =
-          //      (dist.array() <= 3.*sigma(i)).select(exp(-0.5*(dist.array()/sigma(i)).pow(2)), 0);
+        in.kernel_scans.data.col(i) =
+                (dist.array() <= 3.*sigma(i)).select(exp(-0.5*(dist.array()/sigma(i)).pow(2)), 0);
 
         // is this faster?
-        for (Eigen::Index j=0; j<in.scans.data.rows(); j++) {
+        /*for (Eigen::Index j=0; j<in.scans.data.rows(); j++) {
             if (dist(j) <= 3.*sigma(i)) {
                 in.kernel_scans.data(j,i) = exp(-0.5*pow(dist(j)/sigma(i),2));
             }
             else {
                 in.kernel_scans.data(j,i) = 0;
             }
-        }
+        }*/
     }
 }
 

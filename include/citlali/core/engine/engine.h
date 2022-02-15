@@ -281,7 +281,8 @@ public:
         get_config(run_kernel,std::tuple{"timestream","kernel","enabled"});
         if (run_kernel) {
             get_config(kernel.filepath,std::tuple{"timestream","kernel","filepath"});
-            get_config(kernel.kernel_type,std::tuple{"timestream","kernel","type"});
+            get_config(kernel.kernel_type,std::tuple{"timestream","kernel","type"},{"internal_gaussian","internal_airy","image"});
+            get_config(kernel.hdu_name,std::tuple{"timestream","kernel","image_ext_name"});
             kernel.setup();
         }
 
