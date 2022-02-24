@@ -551,7 +551,7 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
                config.get_str(std::tuple{"fitter", "modelspec"})}}},
           m_solver{Solver::Config{
               {"fitreportdir", "/dev/null"},
-              {"exmode", "omp"},
+              {"exmode", "seq"},
               {"extra_output", extra_output},
           }} {}
 
@@ -621,6 +621,32 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
         return result;
     }
 
+    auto load_data_item(const RawObs::DataItem &data_item,
+                        const tula::container_utils::Slice<int> &slice) {
+        SPDLOG_TRACE("kids reduce data_item {}", data_item);
+        // read data
+        namespace kidsdata = predefs::kidsdata;
+        auto source = data_item.filepath();
+        auto [kind, meta] = kidsdata::get_meta<>(source);
+        if (!(kind & kids::KidsDataKind::TimeStream)) {
+            throw std::runtime_error(
+                fmt::format("wrong type of kids data {}", kind));
+        }
+        auto rts = kidsdata::read_data_slice<kids::KidsDataKind::RawTimeStream>(
+            source, slice);
+        return rts;
+    }
+
+    auto load_rawobs(const RawObs &rawobs,
+                     const tula::container_utils::Slice<int> &slice) {
+        SPDLOG_TRACE("kids load rawobs {}", rawobs);
+        std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> result;
+        for (const auto &data_item : rawobs.kidsdata()) {
+            result.push_back(load_data_item(data_item, slice));
+        }
+        return result;
+    }
+
     template <typename scanindices_t>
     auto populate_rtc(const RawObs &rawobs, scanindices_t &scanindex,
                       const int scanlength, const int n_detectors) {
@@ -632,12 +658,32 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
         Eigen::MatrixXd xs(scanlength, n_detectors);
 
         Eigen::Index i = 0;
-        for (std::vector<kids::TimeStreamSolverResult>::iterator it =
-                 reduced.begin();
-             it != reduced.end(); ++it) {
+        for (std::vector<kids::TimeStreamSolverResult>::iterator it = reduced.begin(); it != reduced.end(); ++it) {
             auto nrows = it->data_out.xs.data.rows();
             auto ncols = it->data_out.xs.data.cols();
             xs.block(0, i, nrows, ncols) = it->data_out.xs.data;
+            i += ncols;
+        }
+
+        return std::move(xs);
+    }
+
+    template <typename loaded_t, typename scanindices_t>
+    auto populate_rtc_load(loaded_t &loaded, scanindices_t &scanindex,
+                      const int scanlength, const int n_detectors) {
+        // call reduce rawobs, get the data into rtc
+        auto slice = tula::container_utils::Slice<int>{
+            scanindex(2), scanindex(3) + 1, std::nullopt};
+        //auto loaded = load_rawobs(rawobs, slice);
+
+        Eigen::MatrixXd xs(scanlength, n_detectors);
+
+        Eigen::Index i = 0;
+        for (std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>::iterator it = loaded.begin(); it != loaded.end(); ++it) {
+            auto result = this->solver()(*it, Solver::Config{});
+            auto nrows = result.data_out.xs.data.rows();
+            auto ncols = result.data_out.xs.data.cols();
+            xs.block(0, i, nrows, ncols) = result.data_out.xs.data;
             i += ncols;
         }
 

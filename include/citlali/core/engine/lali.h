@@ -3,6 +3,7 @@
 #include <Eigen/Core>
 
 #include <tula/grppi.h>
+#include <kids/core/kidsdata.h>
 
 #include <citlali/core/utils/constants.h>
 #include <citlali/core/engine/engine.h>
@@ -86,11 +87,16 @@ auto Lali::run() {
     auto farm = grppi::farm(nthreads,[&](auto input_tuple) -> TCData<TCDataKind::PTC,Eigen::MatrixXd> {
         // RTCData input
         auto in = std::get<0>(input_tuple);
+        // kidsproc
+        auto kidsproc = std::get<1>(input_tuple);
         // start index input
-        auto start_index = std::get<1>(input_tuple);
+        auto loaded_rawobs = std::get<2>(input_tuple);
+
+        // starting index for scan
+        Eigen::Index start_index = in.scan_indices.data(2);
 
         // current length of outer scans
-        Eigen::Index scan_length = in.scans.data.rows();
+        Eigen::Index scan_length = in.scan_indices.data(3) - in.scan_indices.data(2) + 1;
 
         // set up flag matrix
         in.flags.data.setOnes(scan_length, ndet);
@@ -101,6 +107,12 @@ auto Lali::run() {
 
         in.tel_meta_data.data["TelLatPhys"] = tel_meta_data["TelLatPhys"].segment(start_index, scan_length);
         in.tel_meta_data.data["TelLonPhys"] = tel_meta_data["TelLonPhys"].segment(start_index, scan_length);
+
+        /*Stage 0: KidsProc*/
+        {
+            tula::logging::scoped_timeit timer("kidsproc.populate_rtc_load()");
+            in.scans.data = kidsproc.populate_rtc_load(loaded_rawobs,in.scan_indices.data, scan_length, ndet);
+        }
 
         /*Stage 1: RTCProc*/
         RTCProc rtcproc;
@@ -141,18 +153,15 @@ auto Lali::run() {
 template <class KidsProc, class RawObs>
 auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     grppi::pipeline(tula::grppi_utils::dyn_ex(ex_name),
-        [&]() -> std::optional<std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, Eigen::Index>> {
+        [&]() -> std::optional<std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
+                                          std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>> {
         // variable to hold current scan
         static auto scan = 0;
         // length of current outer scan
         Eigen::Index scan_length;
-        // start index of current scan
-        Eigen::Index start_index = 0;
         // main grppi loop
         while (scan < scanindices.cols()) {
             SPDLOG_INFO("reducing scan {}", scan + 1);
-            // start index of current scan
-            start_index = scanindices(2, scan);
             // length of current scan
             scan_length = scanindices(3, scan) - scanindices(2, scan) + 1;
 
@@ -161,15 +170,22 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
             // current scanindices (inner si, inner ei, outer si, outer ei)
             rtc.scan_indices.data = scanindices.col(scan);
             // current scan number for outputting progress
-            rtc.index.data = scan + 1;
+            rtc.index.data = scan;
 
             // run kidsproc to get correct units
-            rtc.scans.data = kidsproc.populate_rtc(rawobs, rtc.scan_indices.data, scan_length, ndet);
+            std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> loaded_rawobs;
+            {
+                tula::logging::scoped_loglevel<spdlog::level::critical> _0;
+                auto slice = tula::container_utils::Slice<int>{
+                    scanindices(2,scan), scanindices(3,scan) + 1, std::nullopt};
+                loaded_rawobs = kidsproc.load_rawobs(rawobs, slice);
+                //rtc.scans.data = kidsproc.populate_rtc(rawobs, rtc.scan_indices.data, scan_length, ndet);
+            }
 
             // increment scan
             scan++;
-
-            return std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, Eigen::Index> (rtc, start_index);
+            return std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
+                              std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>> (rtc, kidsproc, loaded_rawobs);
         }
         scan = 0;
         return {};
