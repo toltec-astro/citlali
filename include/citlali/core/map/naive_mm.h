@@ -43,7 +43,7 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine en
         }
         SPDLOG_INFO("DI_0 {} DI_1 {}", std::get<0>(engine->det_indices.at(mi)), std::get<1>(engine->det_indices.at(mi)));
 
-        for (Eigen::Index di = std::get<0>(engine->det_indices.at(mi)); di < std::get<1>(engine->det_indices.at(mi)); di++) {
+        for (Eigen::Index di = std::get<0>(engine->det_indices.at(mi)); di <= std::get<1>(engine->det_indices.at(mi)); di++) {
             // current detector offsets
             double azoff, eloff;
 
