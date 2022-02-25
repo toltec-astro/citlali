@@ -9,6 +9,9 @@
 #include <citlali/core/timestream/timestream.h>
 #include <citlali/core/utils/pointing.h>
 
+#include <thread>
+#include <time.h>
+
 using timestream::TCData;
 using timestream::TCDataKind;
 
@@ -28,7 +31,7 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine en
         if (engine->run_coadd) {
             if (engine->run_noise) {
                 // declare random number generator
-                boost::random::mt19937 eng;
+                static thread_local boost::random::mt19937 eng;
                 boost::random::uniform_int_distribution<> rands{0,1};
 
                 // generate the random number matrix
