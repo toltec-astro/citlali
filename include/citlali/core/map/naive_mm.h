@@ -31,17 +31,18 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine en
         if (engine->run_coadd) {
             if (engine->run_noise) {
                 // declare random number generator
-                static thread_local boost::random::mt19937 eng;
+                thread_local boost::random::mt19937 eng;
                 boost::random::uniform_int_distribution<> rands{0,1};
 
                 // generate the random number matrix
                 noise_rand =
                         Eigen::MatrixXi::Zero(engine->cmb.nnoise, ndets).unaryExpr([&](int dummy){return rands(eng);});
                 noise_rand = (2.*(noise_rand.template cast<double>().array() - 0.5)).template cast<int>();
-                SPDLOG_INFO("noise_rand {} max {} min {}", noise_rand, noise_rand.maxCoeff(), noise_rand.minCoeff());
             }
         }
-        SPDLOG_INFO("DI_0 {} DI_1 {}", std::get<0>(engine->det_indices.at(mi)), std::get<1>(engine->det_indices.at(mi)));
+
+
+	Eigen::Index noise_det = 0;
 
         for (Eigen::Index di = std::get<0>(engine->det_indices.at(mi)); di <= std::get<1>(engine->det_indices.at(mi)); di++) {
             // current detector offsets
@@ -119,13 +120,14 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine en
                             for (Eigen::Index nn=0; nn<engine->cmb.nnoise; nn++) {
                                 // coadd into current noise map
                                 if ((cmb_ir >= 0) && (cmb_ir < engine->cmb.nrows) && (cmb_ic >= 0) && (cmb_ic < engine->cmb.ncols)) {
-                                    engine->cmb.noise.at(mi)(cmb_ir,cmb_ic,nn) += noise_rand(nn, di)*sig;
+                                    engine->cmb.noise.at(mi)(cmb_ir,cmb_ic,nn) += noise_rand(nn, noise_det)*sig;
                                 }
                             }
                         }
                     }
                 }
             }
-        }
+        noise_det++;
+	}
     }
 }
