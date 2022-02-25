@@ -140,8 +140,7 @@ void WienerFilter::make_gaussian_template(CMB &cmb, const double gaussian_templa
         }
     }
 
-    Eigen::Index rcind;
-    Eigen::Index ccind;
+    Eigen::Index rcind, ccind;
 
     double mindist = dist.minCoeff(&rcind, &ccind);
     SPDLOG_INFO("gaussian_template_fwhm_rad {}",gaussian_template_fwhm_rad);
@@ -707,6 +706,14 @@ void WienerFilter::calc_denominator() {
         }
 
         SPDLOG_INFO("zeroing out any values < {} in denominator", denom_limit);
-        (denom.array() < denom_limit).select(0, denom);
+        SPDLOG_INFO("min denom {}",denom.minCoeff());
+        //(denom.array() < denom_limit).select(0, denom);
+        for (Eigen::Index i=0;i<nr;i++) {
+            for (Eigen::Index j=0;j<nc;j++) {
+                if (denom(i,j) < 1.e-4) denom(i,j) = 0;
+            }
+        }
+        SPDLOG_INFO("min denom after {}",denom.minCoeff());
+
     }
 }
