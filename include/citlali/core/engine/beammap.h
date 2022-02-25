@@ -133,7 +133,7 @@ void Beammap::setup() {
 }
 
 auto Beammap::run_timestream() {
-    auto farm = grppi::farm(1,[&](auto input_tuple) -> TCData<TCDataKind::PTC,Eigen::MatrixXd> {
+    auto farm = grppi::farm(nthreads,[&](auto input_tuple) -> TCData<TCDataKind::PTC,Eigen::MatrixXd> {
         // RTCData input
         auto in = std::get<0>(input_tuple);
         // start index

@@ -111,6 +111,7 @@ auto Lali::run() {
         /*Stage 0: KidsProc*/
         {
             tula::logging::scoped_timeit timer("kidsproc.populate_rtc_load()");
+            tula::logging::scoped_loglevel<spdlog::level::critical> _0;
             in.scans.data = kidsproc.populate_rtc_load(loaded_rawobs,in.scan_indices.data, scan_length, ndet);
         }
 
