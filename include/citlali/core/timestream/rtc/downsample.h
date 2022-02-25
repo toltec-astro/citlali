@@ -5,7 +5,6 @@
 namespace timestream {
 class Downsampler {
 public:
-
     // downsample factor
     int dsf;
 

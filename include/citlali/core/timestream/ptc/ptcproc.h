@@ -109,13 +109,11 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                  SPDLOG_INFO("removing kernel eigenvalues from scan {} for map {}", in.index.data, mi);
                  if (engine->cleaner.cut_std > 0) {
                     engine->cleaner.template removeEigs<EigenBackend, KernelType>(in_kernel_scans,
-                                                                    out_kernel_scans, std::get<1>(clean_out),
-                                                                                  std::get<2>(clean_out));
+                            out_kernel_scans, std::get<1>(clean_out), std::get<2>(clean_out));
                  }
                  else {
                      engine->cleaner.template removeEigs<SpectraBackend, KernelType>(in_kernel_scans,
-                                                                     out_kernel_scans,std::get<1>(clean_out),
-                                                                                     std::get<2>(clean_out));
+                             out_kernel_scans,std::get<1>(clean_out), std::get<2>(clean_out));
                  }
              }
          }

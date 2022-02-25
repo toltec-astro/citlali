@@ -35,8 +35,10 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine en
                 noise_rand =
                         Eigen::MatrixXi::Zero(engine->cmb.nnoise, ndets).unaryExpr([&](int dummy){return rands(eng);});
                 noise_rand = (2.*(noise_rand.template cast<double>().array() - 0.5)).template cast<int>();
+                SPDLOG_INFO("noise_rand {} max {} min {}", noise_rand, noise_rand.maxCoeff(), noise_rand.minCoeff());
             }
         }
+        SPDLOG_INFO("DI_0 {} DI_1 {}", std::get<0>(engine->det_indices.at(mi)), std::get<1>(engine->det_indices.at(mi)));
 
         for (Eigen::Index di = std::get<0>(engine->det_indices.at(mi)); di < std::get<1>(engine->det_indices.at(mi)); di++) {
             // current detector offsets

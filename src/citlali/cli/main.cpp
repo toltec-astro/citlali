@@ -793,8 +793,8 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
             if (engine().calib_data["array"](i) == ai) {
                 std::get<1>(array_indices.at(ai)) = i;
             } else {
+                array_indices.push_back(std::tuple{i, 0});
                 ai += 1;
-                array_indices.push_back(std::tuple{i + 1, 0});
             }
         }
 
