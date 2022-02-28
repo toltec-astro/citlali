@@ -113,7 +113,16 @@ public:
         mflt = cmb.signal.at(map_num);
         uniform_weight = false;
         run_filter(cmb, map_num);
-        cmb.signal.at(map_num) = (denom.array() == 0).select(0, nume.array() / denom.array());
+        //cmb.signal.at(map_num) = (denom.array() == 0).select(0, nume.array() / denom.array());
+
+        for(int i=0;i<nc;i++)
+            for(int j=0;j<nr;j++){
+                if (denom(j,i) != 0.0)
+                    cmb.signal.at(map_num)(j,i)=nume(j,i)/denom(j,i);
+                else {
+                    cmb.signal.at(map_num)(j,i)= 0.0;
+                }
+            }
         cmb.weight.at(map_num) = denom;
     }
 
