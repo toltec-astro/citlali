@@ -234,7 +234,7 @@ public:
         SPDLOG_INFO("getting config options");
 
         // get runtime config options
-        get_config(ex_name,std::tuple{"runtime","parallel_policy"},{"omp","seq","tbb"});
+        get_config(ex_name,std::tuple{"runtime","parallel_policy"});//,{"omp","seq","tbb"});
         get_config(nthreads,std::tuple{"runtime","n_threads"});
         get_config(filepath,std::tuple{"runtime","output_dir"});
         get_config(reduction_type,std::tuple{"runtime","reduction_type"},{"science","pointing","beammap"});

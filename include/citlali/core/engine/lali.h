@@ -176,7 +176,7 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
             // run kidsproc to get correct units
             std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> loaded_rawobs;
             {
-                tula::logging::scoped_loglevel<spdlog::level::critical> _0;
+                tula::logging::scoped_loglevel<spdlog::level::off> _0;
                 auto slice = tula::container_utils::Slice<int>{
                     scanindices(2,scan), scanindices(3,scan) + 1, std::nullopt};
                 loaded_rawobs = kidsproc.load_rawobs(rawobs, slice);
