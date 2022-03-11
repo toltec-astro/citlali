@@ -4,6 +4,30 @@ inputs:
         meta:
           interface: apt
         type: array_prop_table
+      - type: photometry
+        beammap_source:
+          name: S1
+          ra_deg: 180.
+          dec_deg: 0.
+          fluxes:
+          - array_name: a1100
+            value_mJy: 1.
+            uncertainty_mJy: 0.05
+          - array_name: a1400
+            value_mJy: 2.
+            uncertainty_mJy: 0.05
+          - array_name: a2000
+            value_mJy: 3.
+            uncertainty_mJy: 0.05
+        extinction:
+          model_name: "some_model"
+          tau_220: 0.3
+      - type: astrometry
+        pointing_offsets:
+        - axes_name: az
+          value_arcsec: 1
+        - axes_name: alt
+          value_arcsec: 1.2
     data_items:
       - filepath: /Users/mmccrackan/toltec/simu_stuff/pointSource_simu/Pointing_1.0/tel_000001_000_0000_2021_09_04_16_26_41.nc
         meta:
@@ -139,7 +163,7 @@ coadd:
     type: wiener_filter
 wiener_filter:
   gaussian_template: true
-  gaussian_template_fwhm_arcsec: 
+  gaussian_template_fwhm_arcsec:
     a1100: 5
     a1400: 6.3
     a2000: 9.5

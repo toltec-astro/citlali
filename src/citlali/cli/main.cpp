@@ -1,5 +1,6 @@
 #include <citlali_config/config.h>
 #include <citlali_config/gitversion.h>
+#include <citlali_config/default_config.h>
 #include <kids/core/kidsdata.h>
 #include <kids/sweep/fitter.h>
 #include <kids/timestream/solver.h>
@@ -25,7 +26,7 @@
 #include <citlali/core/engine/lali.h>
 #include <citlali/core/utils/constants.h>
 
-using rc_t = tula::config::FlatConfig;
+using rc_t = tula::config::YamlConfig;
 
 auto parse_args(int argc, char *argv[]) {
     // disable logger before parse
@@ -47,7 +48,7 @@ auto parse_args(int argc, char *argv[]) {
     }();
     using ex_config = tula::grppi_utils::ex_config;
     // clang-format off
-    auto parse = config_parser<rc_t, rc_t>{};
+    auto parse = config_parser<rc_t, tula::config::FlatConfig>{};
     auto screen = tula::cli::screen{
     // =======================================================================
                       "citlali" , CITLALI_PROJECT_NAME, ver_str,
@@ -56,16 +57,18 @@ auto parse_args(int argc, char *argv[]) {
     // rc -- runtime config
     // cc -- cli config
     // =======================================================================
-    c(p(           "h", "help"), "Print help information and exit"),
-    c(p(             "version"), "Print version information and exit"),
+    c(p(           "h", "help"), "Print help information and exit."),
+    c(p(             "version"), "Print version information and exit."),
     // =======================================================================
-    r(             "config_file" , "The path of input config file",
-                                 opt_str()),
+    r(             "config_file" , "The path of input config file. "
+                                 "Multiple config file are merged in order.",
+                                 opt_strs()),
+    c(p(          "dump_config"), "Print the default config file to STDOUT."),
     // =======================================================================
               "common options" % g(
     c(p(      "l", "log_level"), "Set the log level.",
                                  default_level_name, list(level_names)),
-    r(p(             "grppiex"), "GRPPI execution policy",
+    r(p(             "grppiex"), "GRPPI execution policy.",
                                  ex_config::default_mode(),
                                  list(ex_config::mode_names_supported())))
     // =======================================================================
@@ -165,19 +168,34 @@ struct RawObs : ConfigMapper<RawObs> {
     // clang-format off
     TULA_ENUM_DECL(CalItemType, int,
            array_prop_table,
+           photometry,
+           astrometry,
            unresolved
           );
     // clang-format on
     using CalItemTypes = tula::meta::cases<CalItemType::array_prop_table,
+                                           CalItemType::photometry,
+                                           CalItemType::astrometry,
                                            CalItemType::unresolved>;
     struct ArrayPropTable;
+    struct PhotometryCalibInfo;
+    struct AstrometryCalibInfo;
+
     struct CalItem;
     template <auto type>
     using cal_item_t = tula::meta::switch_t<
-        type, tula::meta::case_t<CalItemType::array_prop_table, ArrayPropTable>,
+        type,
+        tula::meta::case_t<CalItemType::array_prop_table, ArrayPropTable>,
+        tula::meta::case_t<CalItemType::photometry, PhotometryCalibInfo>,
+        tula::meta::case_t<CalItemType::astrometry, AstrometryCalibInfo>,
         tula::meta::case_t<CalItemType::unresolved, CalItem>>;
     using cal_item_var_t =
-        std::variant<std::monostate, cal_item_t<CalItemType::array_prop_table>>;
+        std::variant<
+        std::monostate,
+        cal_item_t<CalItemType::array_prop_table>,
+        cal_item_t<CalItemType::photometry>,
+        cal_item_t<CalItemType::astrometry>
+        >;
 
     struct ArrayPropTable : ConfigMapper<ArrayPropTable> {
         using Base = ConfigMapper<ArrayPropTable>;
@@ -208,6 +226,48 @@ struct RawObs : ConfigMapper<RawObs> {
 
     private:
         std::string m_filepath{};
+    };
+
+    struct PhotometryCalibInfo : ConfigMapper<PhotometryCalibInfo> {
+        using Base = ConfigMapper<PhotometryCalibInfo>;
+        PhotometryCalibInfo(config_t config)
+            : Base{std::move(config)}{}
+        static auto check_config(config_t &config)
+            -> std::optional<std::string> {
+            std::vector<std::string> missing_keys;
+            SPDLOG_TRACE("check photometry calib info\n{}", config);
+            // do the checks here
+            if (missing_keys.empty()) {
+                return std::nullopt;
+            }
+            return fmt::format("invalid or missing keys={}", missing_keys);
+        }
+        template <typename OStream>
+        friend auto operator<<(OStream &os, const PhotometryCalibInfo &d)
+            -> decltype(auto) {
+            return os << fmt::format("PhotometryCalibInfo()");
+        }
+    };
+
+    struct AstrometryCalibInfo : ConfigMapper<AstrometryCalibInfo> {
+        using Base = ConfigMapper<AstrometryCalibInfo>;
+        AstrometryCalibInfo(config_t config)
+            : Base{std::move(config)}{}
+        static auto check_config(config_t &config)
+            -> std::optional<std::string> {
+            std::vector<std::string> missing_keys;
+            SPDLOG_TRACE("check astrometry calib info\n{}", config);
+            // do the checks here
+            if (missing_keys.empty()) {
+                return std::nullopt;
+            }
+            return fmt::format("invalid or missing keys={}", missing_keys);
+        }
+        template <typename OStream>
+        friend auto operator<<(OStream &os, const AstrometryCalibInfo &d)
+            -> decltype(auto) {
+            return os << fmt::format("AstrometryCalibInfo()");
+        }
     };
 
     /// @breif a generic cal item holder
@@ -331,6 +391,14 @@ struct RawObs : ConfigMapper<RawObs> {
         return m_cal_items[m_apt_index.value()]
             .get<CalItemType::array_prop_table>();
     }
+    const PhotometryCalibInfo &photometry_calib_info() const {
+        return m_cal_items[m_phot_cal_index.value()]
+            .get<CalItemType::photometry>();
+    }
+    const AstrometryCalibInfo &astrometry_calib_info() const {
+        return m_cal_items[m_astro_cal_index.value()]
+            .get<CalItemType::astrometry>();
+    }
 
 private:
     inline const static std::regex re_interface_kidsdata{"toltec\\d{1,2}"};
@@ -346,6 +414,8 @@ private:
     void collect_data_items();
     std::vector<CalItem> m_cal_items{};
     std::optional<std::size_t> m_apt_index{std::nullopt};
+    std::optional<std::size_t> m_phot_cal_index{std::nullopt};
+    std::optional<std::size_t> m_astro_cal_index{std::nullopt};
 
     void collect_cal_items();
 };
@@ -457,12 +527,26 @@ void RawObs::collect_cal_items() {
                  this->cal_items());
     // update the data indices
     m_apt_index.reset();
+    m_phot_cal_index.reset();
+    m_astro_cal_index.reset();
     for (std::size_t i = 0; i < m_cal_items.size(); ++i) {
         if (m_cal_items[i].is_type<CalItemType::array_prop_table>()) {
             if (m_apt_index.has_value()) {
                 throw std::runtime_error("found too many array prop tables");
             }
             m_apt_index = i;
+        }
+        if (m_cal_items[i].is_type<CalItemType::photometry>()) {
+            if (m_phot_cal_index.has_value()) {
+                throw std::runtime_error("found too many photometry calib info.");
+            }
+            m_phot_cal_index = i;
+        }
+        if (m_cal_items[i].is_type<CalItemType::astrometry>()) {
+            if (m_astro_cal_index.has_value()) {
+                throw std::runtime_error("found too many astrometry calib info.");
+            }
+            m_astro_cal_index = i;
         }
     }
     if (!m_apt_index) {
@@ -658,7 +742,9 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
         Eigen::MatrixXd xs(scanlength, n_detectors);
 
         Eigen::Index i = 0;
-        for (std::vector<kids::TimeStreamSolverResult>::iterator it = reduced.begin(); it != reduced.end(); ++it) {
+        for (std::vector<kids::TimeStreamSolverResult>::iterator it =
+                 reduced.begin();
+             it != reduced.end(); ++it) {
             auto nrows = it->data_out.xs.data.rows();
             auto ncols = it->data_out.xs.data.cols();
             xs.block(0, i, nrows, ncols) = it->data_out.xs.data;
@@ -670,16 +756,18 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
 
     template <typename loaded_t, typename scanindices_t>
     auto populate_rtc_load(loaded_t &loaded, scanindices_t &scanindex,
-                      const int scanlength, const int n_detectors) {
+                           const int scanlength, const int n_detectors) {
         // call reduce rawobs, get the data into rtc
         auto slice = tula::container_utils::Slice<int>{
             scanindex(2), scanindex(3) + 1, std::nullopt};
-        //auto loaded = load_rawobs(rawobs, slice);
+        // auto loaded = load_rawobs(rawobs, slice);
 
         Eigen::MatrixXd xs(scanlength, n_detectors);
 
         Eigen::Index i = 0;
-        for (std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>::iterator it = loaded.begin(); it != loaded.end(); ++it) {
+        for (std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>::
+                 iterator it = loaded.begin();
+             it != loaded.end(); ++it) {
             auto result = this->solver()(*it, Solver::Config{});
             auto nrows = result.data_out.xs.data.rows();
             auto ncols = result.data_out.xs.data.cols();
@@ -766,9 +854,10 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
         map_extent_t map_extent;
         map_coord_t map_coord;
 
-        auto [nr, nc, rcp, ccp] = engine().get_dims(engine().tel_meta_data,engine().calib_data, engine().scanindices,
-                                                    engine().ex_name, engine().reduction_type, engine().x_size_pix,
-                                                    engine().y_size_pix);
+        auto [nr, nc, rcp, ccp] = engine().get_dims(
+            engine().tel_meta_data, engine().calib_data, engine().scanindices,
+            engine().ex_name, engine().reduction_type, engine().x_size_pix,
+            engine().y_size_pix);
 
         map_extent.push_back(nr);
         map_extent.push_back(nc);
@@ -804,9 +893,11 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
 
         }
 
-        else if ((std::strcmp("beammap", engine().reduction_type.c_str()) == 0) ||
+        else if ((std::strcmp("beammap", engine().reduction_type.c_str()) ==
+                  0) ||
                  (std::strcmp("wyatt", engine().reduction_type.c_str()) == 0)) {
-            for (Eigen::Index i = 0; i < engine().calib_data["array"].size(); i++) {
+            for (Eigen::Index i = 0; i < engine().calib_data["array"].size();
+                 i++) {
                 det_indices.push_back(std::tuple{i, i + 1});
             }
         }
@@ -876,10 +967,20 @@ int run(const rc_t &rc) {
     SPDLOG_INFO("use KIDs data spec: {}", predefs::kidsdata::name);
 
     // load the yaml citlali config
-    auto citlali_config =
-        tula::config::YamlConfig::from_filepath(rc.get_str("config_file"));
+    // this will merge the list of config files in rc
+    tula::config::YamlConfig citlali_config;
+    {
+        auto node_config_files = rc.get_node("config_file");
+        for (const auto & n: node_config_files) {
+            auto filepath = n.as<std::string>();
+            SPDLOG_TRACE("load config from file {}", filepath);
+            citlali_config = tula::config::merge(citlali_config, tula::config::YamlConfig::from_filepath(filepath));
+        }
+    }
+    // auto citlali_config =
+    //    tula::config::YamlConfig::from_filepath(rc.get_str("config_file"));
 
-    // SPDLOG_INFO("citlali config file {}", citlali_config);
+    SPDLOG_INFO("citlali config file {}", citlali_config);
 
     // set up the IO coorindator
     auto co = SeqIOCoordinator::from_config(citlali_config);
@@ -1002,33 +1103,44 @@ int run(const rc_t &rc) {
                     todproc.engine().get_calib(cal_path);
 
                     // get sample rate
-                    todproc.engine().fsmp = rawobs_kids_meta.back().get_typed<double>("fsmp");
-                    SPDLOG_INFO("todproc.engine().fsmp {}", todproc.engine().fsmp);
+                    todproc.engine().fsmp =
+                        rawobs_kids_meta.back().get_typed<double>("fsmp");
+                    SPDLOG_INFO("todproc.engine().fsmp {}",
+                                todproc.engine().fsmp);
 
                     // get config options from citlali_config
                     todproc.engine().from_config(citlali_config);
 
                     // exit if missing or invalid config options
-                    if (!todproc.engine().missing_keys.empty() || !todproc.engine().invalid_keys.empty()) {
-                        std::cerr << fmt::format("missing keys={}", todproc.engine().missing_keys) << "\n";
-                        std::cerr << fmt::format("invalid keys={}",todproc.engine().invalid_keys) << "\n";
+                    if (!todproc.engine().missing_keys.empty() ||
+                        !todproc.engine().invalid_keys.empty()) {
+                        std::cerr << fmt::format("missing keys={}",
+                                                 todproc.engine().missing_keys)
+                                  << "\n";
+                        std::cerr << fmt::format("invalid keys={}",
+                                                 todproc.engine().invalid_keys)
+                                  << "\n";
                         return EXIT_FAILURE;
                     }
 
                     // load telescope file
                     todproc.engine().get_telescope(rawobs.teldata().filepath());
                     // calculate physical pointing vectors
-                    todproc.engine().get_phys_pointing(todproc.engine().tel_meta_data,todproc.engine().source_center,
-                                                       todproc.engine().map_type);
+                    todproc.engine().get_phys_pointing(
+                        todproc.engine().tel_meta_data,
+                        todproc.engine().source_center,
+                        todproc.engine().map_type);
 
                     // get scanindices
                     todproc.get_scanindicies(rawobs);
-                    SPDLOG_INFO("todproc.engine().scanindices {}", todproc.engine().scanindices);
+                    SPDLOG_INFO("todproc.engine().scanindices {}",
+                                todproc.engine().scanindices);
 
                     // get map extents for each observation
                     SPDLOG_INFO("getting map extents");
                     {
-                        tula::logging::scoped_timeit timer("getting map extents");
+                        tula::logging::scoped_timeit timer(
+                            "getting map extents");
                         auto [me, mcoord] = todproc.get_map_extent(rawobs);
                         map_extents.push_back(std::move(me));
                         map_coords.push_back(std::move(mcoord));
@@ -1047,88 +1159,111 @@ int run(const rc_t &rc) {
 
                 todproc.engine().redu_num = 0;
                 std::stringstream ss_redu;
-                ss_redu << std::setfill('0') << std::setw(2) << todproc.engine().redu_num;
+                ss_redu << std::setfill('0') << std::setw(2)
+                        << todproc.engine().redu_num;
                 std::string hdname = "redu" + ss_redu.str() + "/";
 
-                while (fs::exists(fs::status(todproc.engine().filepath + hdname))) {
+                while (fs::exists(
+                    fs::status(todproc.engine().filepath + hdname))) {
                     todproc.engine().redu_num++;
                     std::stringstream ss_redu_i;
-                    ss_redu_i << std::setfill('0') << std::setw(2) << todproc.engine().redu_num;
+                    ss_redu_i << std::setfill('0') << std::setw(2)
+                              << todproc.engine().redu_num;
                     hdname = "redu" + ss_redu_i.str() + "/";
                 }
 
-                toltec_io.setup_output_directory(todproc.engine().filepath, hdname);
+                toltec_io.setup_output_directory(todproc.engine().filepath,
+                                                 hdname);
 
-                //fs::copy(rc.get_str("config_file"))
+                // fs::copy(rc.get_str("config_file"))
 
                 // set up coadded map buffer
                 if (todproc.engine().run_coadd) {
                     SPDLOG_INFO("setup coadded map buffer");
-                    todproc.setup_coadd_map_buffer(map_coords, map_counts.front());
+                    todproc.setup_coadd_map_buffer(map_coords,
+                                                   map_counts.front());
 
                     // toltec i/o class for filename generation
                     ToltecIO toltec_io;
 
                     std::string rdname = hdname + "/coadded/raw/";
-                    toltec_io.setup_output_directory(todproc.engine().filepath, rdname);
+                    toltec_io.setup_output_directory(todproc.engine().filepath,
+                                                     rdname);
 
                     std::string fdname = hdname + "/coadded/filtered/";
                     if (todproc.engine().run_coadd_filter) {
-                        toltec_io.setup_output_directory(todproc.engine().filepath, fdname);
+                        toltec_io.setup_output_directory(
+                            todproc.engine().filepath, fdname);
                     }
 
                     // create files for each member of the array_indices group
                     // uses filepath from last config read
-                    for (Eigen::Index i = 0; i < todproc.engine().cmb.map_count; i++) {
+                    for (Eigen::Index i = 0; i < todproc.engine().cmb.map_count;
+                         i++) {
                         std::string coadd_filename;
                         // generate filename for coadded maps
-                        coadd_filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
-                                                                  ToltecIO::no_obs_type,
-                                                                  ToltecIO::raw,
-                                                                  ToltecIO::obsnum_false>(todproc.engine().filepath + rdname,
-                                                                                          todproc.engine().obsnum, i);
+                        coadd_filename = toltec_io.setup_filepath<
+                            ToltecIO::toltec, ToltecIO::simu,
+                            ToltecIO::no_obs_type, ToltecIO::raw,
+                            ToltecIO::obsnum_false>(todproc.engine().filepath +
+                                                        rdname,
+                                                    todproc.engine().obsnum, i);
 
                         // push the file classes into a vector for storage
-                        FitsIO<fileType::write_fits, CCfits::ExtHDU *>coadd_fits_io(coadd_filename);
-                        todproc.engine().coadd_fits_ios.push_back(std::move(coadd_fits_io));
+                        FitsIO<fileType::write_fits, CCfits::ExtHDU *>
+                            coadd_fits_io(coadd_filename);
+                        todproc.engine().coadd_fits_ios.push_back(
+                            std::move(coadd_fits_io));
 
                         if (todproc.engine().run_coadd_filter) {
                             // generate filename for filtered coadded maps
-                            coadd_filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
-                                                                      ToltecIO::no_obs_type,
-                                                                      ToltecIO::filtered,
-                                                                      ToltecIO::obsnum_false>(todproc.engine().filepath + fdname,
-                                                                                              todproc.engine().obsnum, i);
+                            coadd_filename = toltec_io.setup_filepath<
+                                ToltecIO::toltec, ToltecIO::simu,
+                                ToltecIO::no_obs_type, ToltecIO::filtered,
+                                ToltecIO::obsnum_false>(
+                                todproc.engine().filepath + fdname,
+                                todproc.engine().obsnum, i);
 
                             // push the file classes into a vector for storage
-                            FitsIO<fileType::write_fits, CCfits::ExtHDU *> filtered_coadd_fits_ios(coadd_filename);
-                            todproc.engine().filtered_coadd_fits_ios.push_back(std::move(filtered_coadd_fits_ios));
+                            FitsIO<fileType::write_fits, CCfits::ExtHDU *>
+                                filtered_coadd_fits_ios(coadd_filename);
+                            todproc.engine().filtered_coadd_fits_ios.push_back(
+                                std::move(filtered_coadd_fits_ios));
                         }
 
                         // check if noise maps requested
                         if (todproc.engine().run_noise) {
                             std::string noise_filename;
-                            noise_filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
-                                                                      ToltecIO::no_obs_type,
-                                                                      ToltecIO::noise_raw,
-                                                                      ToltecIO::obsnum_false>(todproc.engine().filepath + rdname,
-                                                                                              todproc.engine().obsnum, i);
+                            noise_filename = toltec_io.setup_filepath<
+                                ToltecIO::toltec, ToltecIO::simu,
+                                ToltecIO::no_obs_type, ToltecIO::noise_raw,
+                                ToltecIO::obsnum_false>(
+                                todproc.engine().filepath + rdname,
+                                todproc.engine().obsnum, i);
 
                             // push the file classes into a vector for storage
-                            FitsIO<fileType::write_fits, CCfits::ExtHDU *> noise_fits_io(noise_filename);
-                            todproc.engine().noise_fits_ios.push_back(std::move(noise_fits_io));
+                            FitsIO<fileType::write_fits, CCfits::ExtHDU *>
+                                noise_fits_io(noise_filename);
+                            todproc.engine().noise_fits_ios.push_back(
+                                std::move(noise_fits_io));
 
                             // check if filter is requested
                             if (todproc.engine().run_coadd_filter) {
-                                noise_filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
-                                                                          ToltecIO::no_obs_type,
-                                                                          ToltecIO::noise_filtered,
-                                                                          ToltecIO::obsnum_false>(todproc.engine().filepath + fdname,
-                                                                                                  todproc.engine().obsnum, i);
+                                noise_filename = toltec_io.setup_filepath<
+                                    ToltecIO::toltec, ToltecIO::simu,
+                                    ToltecIO::no_obs_type,
+                                    ToltecIO::noise_filtered,
+                                    ToltecIO::obsnum_false>(
+                                    todproc.engine().filepath + fdname,
+                                    todproc.engine().obsnum, i);
 
-                                // push the file classes into a vector for storage
-                                FitsIO<fileType::write_fits, CCfits::ExtHDU *> filtered_noise_fits_io(noise_filename);
-                                todproc.engine().filtered_noise_fits_ios.push_back(std::move(filtered_noise_fits_io));
+                                // push the file classes into a vector for
+                                // storage
+                                FitsIO<fileType::write_fits, CCfits::ExtHDU *>
+                                    filtered_noise_fits_io(noise_filename);
+                                todproc.engine()
+                                    .filtered_noise_fits_ios.push_back(
+                                        std::move(filtered_noise_fits_io));
                             }
                         }
                     }
@@ -1136,14 +1271,16 @@ int run(const rc_t &rc) {
 
                 // run the reduction for each observation
                 for (std::size_t i = 0; i < co.n_inputs(); ++i) {
-                    SPDLOG_INFO("starting reduction of observation {}/{}", i + 1, co.n_inputs());
+                    SPDLOG_INFO("starting reduction of observation {}/{}",
+                                i + 1, co.n_inputs());
                     const auto &rawobs = co.inputs()[i];
 
                     // keep track of what observation is being reduced
                     todproc.engine().nobs = i;
 
                     // set up map buffer for current observation
-                    todproc.setup_map_buffer(map_extents[i], map_coords[i], map_counts[i]);
+                    todproc.setup_map_buffer(map_extents[i], map_coords[i],
+                                             map_counts[i]);
 
                     // this is needed to figure out the data sample rate
                     // and number of detectors
@@ -1157,24 +1294,30 @@ int run(const rc_t &rc) {
                     todproc.engine().get_calib(cal_path);
 
                     // get sample rate
-                    todproc.engine().fsmp = rawobs_kids_meta.back().get_typed<double>("fsmp");
-                    SPDLOG_INFO("todproc.engine().fsmp {}", todproc.engine().fsmp);
+                    todproc.engine().fsmp =
+                        rawobs_kids_meta.back().get_typed<double>("fsmp");
+                    SPDLOG_INFO("todproc.engine().fsmp {}",
+                                todproc.engine().fsmp);
 
                     // get config options from citlali_config
                     todproc.engine().from_config(citlali_config);
 
                     // get obsnum for output filename
-                    todproc.engine().obsnum = rawobs_kids_meta.back().get_typed<int>("obsid");
+                    todproc.engine().obsnum =
+                        rawobs_kids_meta.back().get_typed<int>("obsid");
 
                     // load telescope file
                     todproc.engine().get_telescope(rawobs.teldata().filepath());
 
                     // calculate physical pointing vectors
-                    todproc.engine().get_phys_pointing(todproc.engine().tel_meta_data, todproc.engine().source_center,
-                                                       todproc.engine().map_type);
+                    todproc.engine().get_phys_pointing(
+                        todproc.engine().tel_meta_data,
+                        todproc.engine().source_center,
+                        todproc.engine().map_type);
                     // get scanindices
                     todproc.get_scanindicies(rawobs);
-                    SPDLOG_INFO("todproc.engine().scanindices {}", todproc.engine().scanindices);
+                    SPDLOG_INFO("todproc.engine().scanindices {}",
+                                todproc.engine().scanindices);
 
                     // copy array and detector indices into engine
                     todproc.engine().array_indices = array_indices.at(i);
@@ -1195,31 +1338,41 @@ int run(const rc_t &rc) {
 
                     // generate observation output files
                     {
-                        tula::logging::scoped_timeit timer("engine obs output()");
-                        todproc.engine().template output<EngineBase::obs>(todproc.engine().mb, todproc.engine().fits_ios,
-                                                                          todproc.engine().noise_fits_ios);
+                        tula::logging::scoped_timeit timer(
+                            "engine obs output()");
+                        todproc.engine().template output<EngineBase::obs>(
+                            todproc.engine().mb, todproc.engine().fits_ios,
+                            todproc.engine().noise_fits_ios);
                     }
 
                     // coadd current map buffer into coadded map buffer
                     if (todproc.engine().run_coadd) {
                         {
-                            tula::logging::scoped_timeit timer("engine coadd()");
-                            todproc.engine().cmb.coadd(todproc.engine().mb, todproc.engine().dfsmp, todproc.engine().run_kernel);
+                            tula::logging::scoped_timeit timer(
+                                "engine coadd()");
+                            todproc.engine().cmb.coadd(
+                                todproc.engine().mb, todproc.engine().dfsmp,
+                                todproc.engine().run_kernel);
                         }
                     }
                 }
 
                 if (todproc.engine().run_coadd) {
                     // normalize coadded maps
-                    todproc.engine().cmb.normalize_maps(todproc.engine().run_kernel);
+                    todproc.engine().cmb.normalize_maps(
+                        todproc.engine().run_kernel);
 
                     // coadd histogram and psd
-                    for (Eigen::Index i = 0; i < todproc.engine().cmb.map_count; i++) {
-                        SPDLOG_INFO("calculating coadded map psds for map {}",i);
+                    for (Eigen::Index i = 0; i < todproc.engine().cmb.map_count;
+                         i++) {
+                        SPDLOG_INFO("calculating coadded map psds for map {}",
+                                    i);
                         PSD psd;
                         psd.cov_cut = todproc.engine().cmb.cov_cut;
-                        psd.calc_map_psd(todproc.engine().cmb.signal.at(i),todproc.engine().cmb.weight.at(i),
-                                         todproc.engine().cmb.rcphys, todproc.engine().cmb.ccphys);
+                        psd.calc_map_psd(todproc.engine().cmb.signal.at(i),
+                                         todproc.engine().cmb.weight.at(i),
+                                         todproc.engine().cmb.rcphys,
+                                         todproc.engine().cmb.ccphys);
                         todproc.engine().cmb.psd.push_back(std::move(psd));
 
                         SPDLOG_INFO("calculating noise map psds for map {}", i);
@@ -1231,83 +1384,146 @@ int run(const rc_t &rc) {
                             PSD noise_avg_psd;
 
                             // loop through noise maps and get psd
-                            for (Eigen::Index j = 0; j < todproc.engine().cmb.nnoise; j++) {
+                            for (Eigen::Index j = 0;
+                                 j < todproc.engine().cmb.nnoise; j++) {
                                 PSD psd;
                                 psd.cov_cut = todproc.engine().cmb.cov_cut;
-                                Eigen::Tensor<double, 2> out =todproc.engine().cmb.noise.at(i).chip(j, 2);
-                                Eigen::Map<Eigen::MatrixXd> noise(out.data(), out.dimension(0), out.dimension(1));
-                                psd.calc_map_psd(noise, todproc.engine().cmb.weight.at(i), todproc.engine().cmb.rcphys,
-                                                 todproc.engine().cmb.ccphys);
-                                todproc.engine().cmb.noise_psd.at(i).push_back(std::move(psd));
+                                Eigen::Tensor<double, 2> out =
+                                    todproc.engine().cmb.noise.at(i).chip(j, 2);
+                                Eigen::Map<Eigen::MatrixXd> noise(
+                                    out.data(), out.dimension(0),
+                                    out.dimension(1));
+                                psd.calc_map_psd(
+                                    noise, todproc.engine().cmb.weight.at(i),
+                                    todproc.engine().cmb.rcphys,
+                                    todproc.engine().cmb.ccphys);
+                                todproc.engine().cmb.noise_psd.at(i).push_back(
+                                    std::move(psd));
 
                                 if (j == 0) {
-                                    noise_avg_psd.psd = todproc.engine().cmb.noise_psd.at(i).back().psd;
-                                    noise_avg_psd.psd_freq =todproc.engine().cmb.noise_psd.at(i).back().psd_freq;
-                                    noise_avg_psd.psd2d = todproc.engine().cmb.noise_psd.at(i).back().psd2d;
-                                    noise_avg_psd.psd2d_freq =todproc.engine().cmb.noise_psd.at(i).back().psd2d_freq;
+                                    noise_avg_psd.psd = todproc.engine()
+                                                            .cmb.noise_psd.at(i)
+                                                            .back()
+                                                            .psd;
+                                    noise_avg_psd.psd_freq =
+                                        todproc.engine()
+                                            .cmb.noise_psd.at(i)
+                                            .back()
+                                            .psd_freq;
+                                    noise_avg_psd.psd2d =
+                                        todproc.engine()
+                                            .cmb.noise_psd.at(i)
+                                            .back()
+                                            .psd2d;
+                                    noise_avg_psd.psd2d_freq =
+                                        todproc.engine()
+                                            .cmb.noise_psd.at(i)
+                                            .back()
+                                            .psd2d_freq;
                                 }
 
                                 else {
-                                    noise_avg_psd.psd = noise_avg_psd.psd +todproc.engine().cmb.noise_psd.at(i).back().psd;
-                                    noise_avg_psd.psd2d = noise_avg_psd.psd2d + todproc.engine().cmb.noise_psd.at(i).back().psd2d /
-                                                                                    todproc.engine().cmb.nnoise;
-                                    noise_avg_psd.psd2d_freq = noise_avg_psd.psd2d_freq +
-                                                               todproc.engine().cmb.noise_psd.at(i).back().psd2d_freq /
-                                                                   todproc.engine().cmb.nnoise;
+                                    noise_avg_psd.psd = noise_avg_psd.psd +
+                                                        todproc.engine()
+                                                            .cmb.noise_psd.at(i)
+                                                            .back()
+                                                            .psd;
+                                    noise_avg_psd.psd2d =
+                                        noise_avg_psd.psd2d +
+                                        todproc.engine()
+                                                .cmb.noise_psd.at(i)
+                                                .back()
+                                                .psd2d /
+                                            todproc.engine().cmb.nnoise;
+                                    noise_avg_psd.psd2d_freq =
+                                        noise_avg_psd.psd2d_freq +
+                                        todproc.engine()
+                                                .cmb.noise_psd.at(i)
+                                                .back()
+                                                .psd2d_freq /
+                                            todproc.engine().cmb.nnoise;
                                 }
                             }
 
-                            noise_avg_psd.psd = noise_avg_psd.psd / todproc.engine().cmb.nnoise;
+                            noise_avg_psd.psd =
+                                noise_avg_psd.psd / todproc.engine().cmb.nnoise;
                             noise_avg_psd.psd_freq = noise_avg_psd.psd_freq;
-                            todproc.engine().cmb.noise_avg_psd.push_back( noise_avg_psd);
+                            todproc.engine().cmb.noise_avg_psd.push_back(
+                                noise_avg_psd);
                         }
                     }
 
                     // generate coadd output files
                     {
-                        tula::logging::scoped_timeit timer("engine coadd output()");
-                        todproc.engine().template output<EngineBase::coadd>(todproc.engine().cmb, todproc.engine().coadd_fits_ios,
-                                                                            todproc.engine().noise_fits_ios);
+                        tula::logging::scoped_timeit timer(
+                            "engine coadd output()");
+                        todproc.engine().template output<EngineBase::coadd>(
+                            todproc.engine().cmb,
+                            todproc.engine().coadd_fits_ios,
+                            todproc.engine().noise_fits_ios);
                     }
 
                     if (todproc.engine().run_coadd_filter) {
                         // filter coadd maps
                         {
                             ToltecIO toltec_io;
-                            tula::logging::scoped_timeit timer("filter_coaddition()");
-                            for (Eigen::Index i = 0; i < todproc.engine().cmb.map_count; i++) {
-                                SPDLOG_INFO("todproc.engine().gaussian_template_fwhm_rad[toltec_io.name_keys[i]] {}",todproc.engine().gaussian_template_fwhm_rad[toltec_io.name_keys[i]]);
-                                todproc.engine().wiener_filter.make_template(todproc.engine().cmb,
-                                                                             todproc.engine().calib_data,
-                                                                             todproc.engine().gaussian_template_fwhm_rad[toltec_io.name_keys[i]], i);
-                                todproc.engine().wiener_filter.filter_coaddition(todproc.engine().cmb, i);
+                            tula::logging::scoped_timeit timer(
+                                "filter_coaddition()");
+                            for (Eigen::Index i = 0;
+                                 i < todproc.engine().cmb.map_count; i++) {
+                                SPDLOG_INFO(
+                                    "todproc.engine().gaussian_template_fwhm_"
+                                    "rad[toltec_io.name_keys[i]] {}",
+                                    todproc.engine().gaussian_template_fwhm_rad
+                                        [toltec_io.name_keys[i]]);
+                                todproc.engine().wiener_filter.make_template(
+                                    todproc.engine().cmb,
+                                    todproc.engine().calib_data,
+                                    todproc.engine().gaussian_template_fwhm_rad
+                                        [toltec_io.name_keys[i]],
+                                    i);
+                                todproc.engine()
+                                    .wiener_filter.filter_coaddition(
+                                        todproc.engine().cmb, i);
 
                                 // filter noise maps
                                 if (todproc.engine().run_noise) {
-                                    tula::logging::scoped_timeit timer("filter_noise()");
-                                    for (Eigen::Index j = 0; j < todproc.engine().cmb.nnoise; j++) {
-                                        todproc.engine().wiener_filter.filter_noise(todproc.engine().cmb, i, j);
+                                    tula::logging::scoped_timeit timer(
+                                        "filter_noise()");
+                                    for (Eigen::Index j = 0;
+                                         j < todproc.engine().cmb.nnoise; j++) {
+                                        todproc.engine()
+                                            .wiener_filter.filter_noise(
+                                                todproc.engine().cmb, i, j);
                                     }
                                 }
                             }
 
                             if (todproc.engine().run_noise) {
-                                if (todproc.engine().wiener_filter.normalize_error) {
+                                if (todproc.engine()
+                                        .wiener_filter.normalize_error) {
                                     SPDLOG_INFO("normalizing noise map errors");
-                                    todproc.engine().cmb.normalize_noise_map_errors();
-                                    SPDLOG_INFO("calculating average filtered rms");
-                                    todproc.engine().cmb.calc_average_filtered_rms();
+                                    todproc.engine()
+                                        .cmb.normalize_noise_map_errors();
+                                    SPDLOG_INFO(
+                                        "calculating average filtered rms");
+                                    todproc.engine()
+                                        .cmb.calc_average_filtered_rms();
                                     SPDLOG_INFO("normalizing errors");
                                     todproc.engine().cmb.normalize_errors();
                                 }
                             }
                         }
 
-                        // generate filtered coadd output files (cmb is overwritten with filtered maps)
+                        // generate filtered coadd output files (cmb is
+                        // overwritten with filtered maps)
                         {
-                            tula::logging::scoped_timeit timer("engine filtered coadd output()");
-                            todproc.engine().template output<EngineBase::coadd>(todproc.engine().cmb,todproc.engine().filtered_coadd_fits_ios,
-                                                                                todproc.engine().filtered_noise_fits_ios);
+                            tula::logging::scoped_timeit timer(
+                                "engine filtered coadd output()");
+                            todproc.engine().template output<EngineBase::coadd>(
+                                todproc.engine().cmb,
+                                todproc.engine().filtered_coadd_fits_ios,
+                                todproc.engine().filtered_noise_fits_ios);
                         }
                     }
                 }
@@ -1321,10 +1537,29 @@ int run(const rc_t &rc) {
 }
 
 int main(int argc, char *argv[]) {
+    // to do the dump_config, we need to make sure the output is
+    // not contaminated with any logging message. Therefore this has
+    // to go first
+    bool exit_dump_config{false};
+    clipp::parse(argc, argv, (
+        clipp::option("--dump_config").call([&exit_dump_config] () {
+            auto preamble = fmt::format(
+                "# Default config.yaml of Citlali {} ({})",
+                CITLALI_GIT_VERSION, CITLALI_BUILD_TIMESTAMP
+                );
+            fmt::print("{}\n{}", preamble, citlali::citlali_default_config_content);
+            exit_dump_config = true;
+            }),
+        clipp::any_other()
+    ));
+    if (exit_dump_config) {
+        return EXIT_SUCCESS;
+    }
+    // now with normal CLI interface
     tula::logging::init();
     auto rc = parse_args(argc, argv);
     SPDLOG_TRACE("rc {}", rc.pformat());
-    if (rc.is_set("config_file")) {
+    if (rc.get_node("config_file").size() > 0) {
         tula::logging::scoped_timeit TULA_X{"Citlali Process"};
         return run(rc);
     } else {

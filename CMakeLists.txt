@@ -92,3 +92,15 @@ endif()
 # Create concfig headers
 generate_gitversion_header(${PROJECT_NAME})
 generate_config_header(${PROJECT_NAME})
+
+# create default citlali config file header
+set(citlali_data_dir ${CMAKE_CURRENT_LIST_DIR}/data)
+get_config_header_output_dir(output_dir citlali)
+set(output_path ${output_dir}/default_config.h)
+verbose_message("Generate default config header ${output_path}")
+file(READ ${citlali_data_dir}/config.yaml CITLALI_DEFAULT_CONFIG_CONTENT)
+configure_file(${citlali_data_dir}/default_config.h.in ${output_path} @ONLY)
+add_custom_target(default_config_header_citlali DEPENDS
+    ${output_path}
+)
+add_dependencies(citlali default_config_header_citlali)

@@ -24,6 +24,19 @@
       "cacheVariables": {
           "FETCHCONTENT_SOURCE_DIR_TULA": "${sourceParentDir}/tula"
       }
+    },
+    {
+      "name": "brew_llvm_release_dev",
+      "description": "",
+      "displayName": "",
+      "generator": "Unix Makefiles",
+      "inherits": [
+          "brew-llvm-release"
+      ],
+      "cacheVariables": {
+          "FETCHCONTENT_SOURCE_DIR_TULA": "${sourceParentDir}/tula",
+          "USE_INSTALLED_BOOST": "ON"
+      }
     }
   ]
 }
