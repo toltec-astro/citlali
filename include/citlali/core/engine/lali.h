@@ -47,6 +47,8 @@ void Lali::setup() {
     // toltec i/o class for filenames
     ToltecIO toltec_io;
 
+    std::vector<netCDF::NcVar> nc_vars;
+
     // empty the fits vector for subsequent observations
     fits_ios.clear();
 
@@ -81,6 +83,59 @@ void Lali::setup() {
         FitsIO<fileType::write_fits, CCfits::ExtHDU*> fits_io(filename);
         fits_ios.push_back(std::move(fits_io));
     }
+
+    if (ts_out) {
+        if (ts_format == "fits") {
+            auto filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                                     ToltecIO::science, ToltecIO::timestream, ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
+            FitsIO<fileType::write_fits, CCfits::ExtHDU*> ts_fits_io(filename);
+            ts_fits_io.add_ascii_table("Minkaski TOD", 0, toltec_io.minkaski_colnames, toltec_io.minkaski_colform,
+                                       toltec_io.minkaski_colunits);
+            ts_out_ios.push_back(std::move(ts_fits_io));
+        }
+
+        if (ts_format == "netcdf") {
+            ts_rows = 0;
+            auto filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                                     ToltecIO::science, ToltecIO::timestream,
+                                                     ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
+
+            //NcFileIO ts_out_temp(filename+".nc");
+
+            SPDLOG_INFO("nc filename {}", filename);
+
+            ts_filepath = filename + ".nc";
+
+            netCDF::NcFile fo(ts_filepath,netCDF::NcFile::replace);
+            netCDF::NcDim nsmp_dim = fo.addDim("nsamples");
+            netCDF::NcDim ndet_dim = fo.addDim("ndetectors",ndet);
+
+            std::vector<netCDF::NcDim> dims;
+            dims.push_back(nsmp_dim);
+            dims.push_back(ndet_dim);
+
+            netCDF::NcVar pixid_v = fo.addVar("PIXID",netCDF::ncInt, ndet_dim);
+            pixid_v.putAtt("Units","N/A");
+            netCDF::NcVar t_v = fo.addVar("TIME",netCDF::ncDouble, nsmp_dim);
+            t_v.putAtt("Units","seconds");
+            netCDF::NcVar e_v = fo.addVar("ELEV",netCDF::ncDouble, nsmp_dim);
+            e_v.putAtt("Units","radians");
+
+            netCDF::NcVar data_v = fo.addVar("DATA",netCDF::ncDouble, dims);
+            data_v.putAtt("Units","MJy/sr");
+            netCDF::NcVar flag_v = fo.addVar("FLAG",netCDF::ncDouble, dims);
+            flag_v.putAtt("Units","N/A");
+            netCDF::NcVar lat_v = fo.addVar("DY",netCDF::ncDouble, dims);
+            lat_v.putAtt("Units","radians");
+            netCDF::NcVar lon_v = fo.addVar("DX",netCDF::ncDouble, dims);
+            lon_v.putAtt("Units","radians");
+
+            fo.sync();
+            fo.close();
+
+            //ts_out_ncs.push_back(&fo);
+        }
+    }
 }
 
 auto Lali::run() {
@@ -102,6 +157,8 @@ auto Lali::run() {
         in.flags.data.setOnes(scan_length, ndet);
 
         // copy tel_meta_data for scan
+        in.tel_meta_data.data["TelTime"] = tel_meta_data["TelTime"].segment(start_index, scan_length);
+
         in.tel_meta_data.data["TelElDes"] = tel_meta_data["TelElDes"].segment(start_index, scan_length);
         in.tel_meta_data.data["ParAng"] = tel_meta_data["ParAng"].segment(start_index, scan_length);
 
@@ -121,6 +178,31 @@ auto Lali::run() {
         {
             tula::logging::scoped_timeit timer("rtcproc.run()");
             rtcproc.run(in, out, this);
+        }
+
+        if (ts_out) {
+            Eigen::MatrixXd lat(out.scans.data.rows(),out.scans.data.cols());
+            Eigen::MatrixXd lon(out.scans.data.rows(),out.scans.data.cols());
+
+            if (ts_format == "netcdf") {
+                SPDLOG_INFO("writing scan {} to {}", in.index.data, ts_filepath);
+                // loop through detectors and get pointing timestream
+                for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
+
+                    // get offsets
+                    auto azoff = calib_data["x_t"](i);
+                    auto eloff = calib_data["y_t"](i);
+
+                    // get pointing
+                    auto [lat_i, lon_i] = engine_utils::get_det_pointing(out.tel_meta_data.data, azoff, eloff, map_type);
+                    lat.col(i) = std::move(lat_i);
+                    lon.col(i) = std::move(lon_i);
+                }
+
+                append_to_nc(ts_filepath, out.scans.data, out.flags.data, lat, lon, out.tel_meta_data.data["TelElDes"],
+                             out.tel_meta_data.data["TelTime"], ts_rows);
+                ts_rows = ts_rows + out.scans.data.rows();
+            }
         }
 
         /*Stage 2: PTCProc*/
@@ -249,6 +331,15 @@ template <MapBase::MapType out_type, class MC, typename fits_out_vec_t>
 void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios) {
     // toltec input/output class
     ToltecIO toltec_io;
+
+    // get obsnum directory name inside redu directory name
+    std::stringstream ss_redu;
+    ss_redu << std::setfill('0') << std::setw(2) << redu_num;
+    std::string hdname = "redu" + ss_redu.str() + "/";
+
+    std::stringstream ss;
+    ss << std::setfill('0') << std::setw(6) << obsnum;
+    std::string dname = hdname + ss.str() + "/";
 
     // loop through array indices and add hdu's to existing files
     for (Eigen::Index i=0; i<array_indices.size(); i++) {
@@ -379,7 +470,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios) {
 
             // get output path from citlali_config
             auto filename = toltec_io.setup_filepath<ToltecIO::ppt, ToltecIO::simu,
-                    ToltecIO::pointing, ToltecIO::no_prod_type, ToltecIO::obsnum_true>(filepath,obsnum,-1);
+                    ToltecIO::pointing, ToltecIO::no_prod_type, ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
             Eigen::MatrixXf table(toltec_io.apt_header.size(), array_indices.size());
 
             //table = mout.pfit.template cast <float> ();

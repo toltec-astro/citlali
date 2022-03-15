@@ -55,18 +55,18 @@ void Kernel::gaussian_kernel(Engine engine, TCData<TCDataKind::RTC, Eigen::Matri
         // distance from map center
         auto dist = (lat.array().pow(2) + lon.array().pow(2)).sqrt();
 
-        in.kernel_scans.data.col(i) =
-                (dist.array() <= 3.*sigma(i)).select(exp(-0.5*(dist.array()/sigma(i)).pow(2)), 0);
+        //in.kernel_scans.data.col(i) =
+        //        (dist.array() <= 3.*sigma(i)).select(exp(-0.5*(dist.array()/sigma(i)).pow(2)), 0);
 
         // is this faster?
-        /*for (Eigen::Index j=0; j<in.scans.data.rows(); j++) {
+        for (Eigen::Index j=0; j<in.scans.data.rows(); j++) {
             if (dist(j) <= 3.*sigma(i)) {
                 in.kernel_scans.data(j,i) = exp(-0.5*pow(dist(j)/sigma(i),2));
             }
             else {
                 in.kernel_scans.data(j,i) = 0;
             }
-        }*/
+        }
     }
 }
 

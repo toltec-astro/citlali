@@ -44,6 +44,12 @@ public:
     // path to output files and directories
     std::string filepath;
 
+    // path to timestream outuput file
+    std::string ts_filepath;
+
+    // format for output timestream file
+    std::string ts_format;
+
     int redu_num;
 
     // vectors to hold missing/invalid keys
@@ -79,6 +85,9 @@ public:
     // for initial validation
     int max_iterations;
     double cutoff;
+
+    // control for outputting timestreams
+    bool ts_out;
 
     // control for fitting
     bool run_fit;
@@ -125,7 +134,12 @@ public:
     // weight type
     std::string weighting_type;
 
-    // output files
+    // timestream output files
+    std::vector<FitsIO<fileType::write_fits, CCfits::ExtHDU*>> ts_out_ios;
+    std::vector<netCDF::NcFile*> ts_out_ncs;
+    Eigen::Index ts_rows;
+
+    // map output files
     std::vector<FitsIO<fileType::write_fits, CCfits::ExtHDU*>> fits_ios;
     std::vector<FitsIO<fileType::write_fits, CCfits::ExtHDU*>> coadd_fits_ios;
     std::vector<FitsIO<fileType::write_fits, CCfits::ExtHDU*>> noise_fits_ios;
@@ -241,6 +255,11 @@ public:
 
         get_config(time_chunk,std::tuple{"timestream","chunking","length_sec"});
         get_config(weighting_type,std::tuple{"timestream","weighting","type"});
+
+        get_config(ts_out,std::tuple{"timestream","output","enabled"});
+        if (ts_out) {
+            get_config(ts_format,std::tuple{"timestream","output","format"});
+        }
 
         // get despike config options
         get_config(run_despike,std::tuple{"timestream","despike","enabled"});

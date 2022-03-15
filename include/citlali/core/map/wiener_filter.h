@@ -118,7 +118,7 @@ public:
         for(int i=0;i<nc;i++)
             for(int j=0;j<nr;j++){
                 if (denom(j,i) != 0.0)
-                    cmb.signal.at(map_num)(j,i)=nume(j,i)/denom(j,i);
+                    cmb.signal.at(map_num)(j,i) = nume(j,i)/denom(j,i);
                 else {
                     cmb.signal.at(map_num)(j,i)= 0.0;
                 }
@@ -188,7 +188,7 @@ void WienerFilter::make_symmetric_template(CMB &cmb, const int map_num, CD &cali
     // declare fitter class for detector
     gaussfit::MapFitter fitter;
     // size of region to fit in pixels
-    fitter.bounding_box_pix = 15;//bounding_box_pix;
+    fitter.bounding_box_pix = 20;//bounding_box_pix;
     pfit = fitter.fit<gaussfit::MapFitter::centerValue>(cmb.kernel.at(map_num), cmb.weight.at(map_num), calib_data);
     SPDLOG_INFO("pfit {}",pfit);
 

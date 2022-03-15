@@ -53,7 +53,8 @@ struct ToltecIO {
         noise_filtered = 3,
         hist = 4,
         psd = 5,
-        no_prod_type = 6
+        timestream = 6,
+        no_prod_type = 7
     };
 
     enum ObsNum {
@@ -123,6 +124,47 @@ struct ToltecIO {
         //{"WAV","N/A"}
     };
 
+    // colnames for minkaski timestream file
+    std::vector<std::string> minkaski_colnames {
+        {"PIXID"},
+        {"DX"},
+        {"DY"},
+        {"ELEV"},
+        {"TIME"},
+        {"FNU"},
+        {"UFNU"}
+    };
+
+    std::map<std::string,std::string> toast_colnames {
+        {"PIXID","PIXID"},
+        {"DX","DX"},
+        {"DY","DY"},
+        {"ELEV","ELEV"},
+        {"TIME","TIME"},
+        {"FNU","FNU"},
+        {"UFNU","UFNU"}
+    };
+
+    std::vector<std::string> minkaski_colform {
+        {"f4.2"},
+        {"f4.2"},
+        {"f4.2"},
+        {"f4.2"},
+        {"f4.2"},
+        {"f4.2"},
+        {"f4.2"}
+    };
+
+    std::vector<std::string> minkaski_colunits {
+        {""},
+        {""},
+        {""},
+        {""},
+        {""},
+        {""},
+        {""}
+    };
+
     template <DataType data_type, ProjectID project_id,
               ObsType obs_type, ProdType prod_type, ObsNum obs_num>
     std::string setup_filepath(std::string filepath, int obsnum, int array_name) {
@@ -187,6 +229,9 @@ struct ToltecIO {
             filepath = filepath + "psd";
         }
 
+        if constexpr (prod_type == timestream) {
+            filepath = filepath + "timestream_";
+        }
 
         if constexpr (obs_num == obsnum_true) {
             // append obsnum to filename

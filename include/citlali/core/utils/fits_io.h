@@ -33,6 +33,12 @@ public:
     // vector of hdu's for easy access
     std::vector<ext_hdu_t> hdus;
 
+    // vector of tables for easy access
+    std::vector<CCfits::Table*> tables;
+
+    // number of rows for each table
+    std::vector<Eigen::Index> rows;
+
     // wcs keys
     std::vector<std::string> wcs_keys {
         "CTYPE1","CTYPE2",
@@ -201,5 +207,34 @@ public:
         hdu->addKey("SRC_RA_RAD", source_center["Ra"][0], "Source RA (radians)");
         // add source dec
         hdu->addKey("SRC_DEC_RAD", source_center["Dec"][0], "Source DEC (radians)");
+    }
+
+    void add_ascii_table(std::string hdu_name, unsigned long nrows, std::vector<std::string> &colnames,
+                   std::vector<std::string> &colform, std::vector<std::string> &colunits) {
+
+        tables.push_back(pfits->addTable(hdu_name,nrows,colnames,colform,colunits,CCfits::AsciiTbl));
+        rows.push_back(nrows);
+    }
+
+    template<typename Derived, typename dtype>
+    void write_to_table(CCfits::Table* table, Eigen::DenseBase<Derived> &data, std::string colname, unsigned long rows,
+                        unsigned long start_index) {
+        long ignore_val(12112);
+        long null_number(-999);
+
+        std::vector<dtype> data_vec;
+        for (Eigen::Index i=0; i<data.size(); i++) {
+            data_vec.push_back(data(i));
+        }
+
+        try {
+            table->column(colname).addNullValue(null_number);
+            table->column(colname).write(data,data.size(),start_index);
+        }
+
+        catch (CCfits::FitsException&) {
+          // do something
+        }
+
     }
 };
