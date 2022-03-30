@@ -251,7 +251,13 @@ void Observation::get_phys_icrs(tel_meta_data_t &tel_meta_data, C &center) {
 
     // copy of absolute ra
     Eigen::VectorXd temp_ra = tel_meta_data["TelRa"];
-    (temp_ra.array() > pi).select(tel_meta_data["TelRa"].array() - 2.0*pi, tel_meta_data["TelRa"]);
+    //(temp_ra.array() > pi).select(tel_meta_data["TelRa"].array() - 2.0*pi, tel_meta_data["TelRa"]);
+
+
+   // temp ra must range from -pi to pi
+    for(Eigen::Index i=0;i<temp_ra.size();i++)
+      temp_ra(i) = (tel_meta_data["TelRa"](i) > pi) ? tel_meta_data["TelRa"](i)-(2*pi) : tel_meta_data["TelRa"](i);
+
 
     // copy of absolute dec
     Eigen::VectorXd temp_dec = tel_meta_data["TelDec"];

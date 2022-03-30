@@ -51,6 +51,7 @@ public:
             if (it != header.end()) {
                 int index = it - header.begin();
                 calib_data[pair.first] = table.col(index)*pair.second;
+		SPDLOG_INFO("{} {}",pair.first, calib_data[pair.first]);
             }
         }
 

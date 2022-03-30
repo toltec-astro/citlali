@@ -100,7 +100,6 @@ void Lali::setup() {
                                                      ToltecIO::science, ToltecIO::timestream,
                                                      ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
 
-            //NcFileIO ts_out_temp(filename+".nc");
 
             SPDLOG_INFO("nc filename {}", filename);
 
@@ -123,7 +122,7 @@ void Lali::setup() {
 
             netCDF::NcVar data_v = fo.addVar("DATA",netCDF::ncDouble, dims);
             data_v.putAtt("Units","MJy/sr");
-            netCDF::NcVar flag_v = fo.addVar("FLAG",netCDF::ncDouble, dims);
+            netCDF::NcVar flag_v = fo.addVar("FLAG",netCDF::ncInt, dims);
             flag_v.putAtt("Units","N/A");
             netCDF::NcVar lat_v = fo.addVar("DY",netCDF::ncDouble, dims);
             lat_v.putAtt("Units","radians");
@@ -133,7 +132,6 @@ void Lali::setup() {
             fo.sync();
             fo.close();
 
-            //ts_out_ncs.push_back(&fo);
         }
     }
 }
@@ -194,14 +192,21 @@ auto Lali::run() {
                     auto eloff = calib_data["y_t"](i);
 
                     // get pointing
-                    auto [lat_i, lon_i] = engine_utils::get_det_pointing(out.tel_meta_data.data, azoff, eloff, map_type);
-                    lat.col(i) = std::move(lat_i);
-                    lon.col(i) = std::move(lon_i);
+                    auto [lat_i, lon_i] = engine_utils::get_det_pointing(in.tel_meta_data.data, azoff, eloff, map_type);
+                    lat.col(i) = lat_i;
+                    lon.col(i) = lon_i;
+
+		    if (i==0) {
+			SPDLOG_INFO("tel_lat {} tel_lon {}",  in.tel_meta_data.data["TelLatPhys"], in.tel_meta_data.data["TelLatPhys"]);
+		    	SPDLOG_INFO("lat_i {} lon_i {}", lat_i,lon_i);
+		    }
                 }
+
+		SPDLOG_INFO("flag {}", out.flags.data);
+		SPDLOG_INFO("lat {} lon {}", lat,lon);
 
                 append_to_nc(ts_filepath, out.scans.data, out.flags.data, lat, lon, out.tel_meta_data.data["TelElDes"],
                              out.tel_meta_data.data["TelTime"], ts_rows);
-                ts_rows = ts_rows + out.scans.data.rows();
             }
         }
 

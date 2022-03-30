@@ -36,6 +36,7 @@ void append_to_nc(std::string filepath, Eigen::DenseBase<DerivedA> &data, Eigen:
         NcDim d_nsmp = fo.getDim("nsamples"); // unlimited
         NcDim d_ndet = fo.getDim("ndetectors");
         unsigned long nsmp_exists = d_nsmp.getSize();
+	SPDLOG_INFO("nsmp_exists {}",nsmp_exists);
         //NcDim d_ntimecols = fo.getDim(_["ntimecols"]);
         /*if (!d_nsmp.isNull()){// || !d_ndet.isNull()) {
             //save_to_nc(fo, true);
@@ -59,14 +60,6 @@ void append_to_nc(std::string filepath, Eigen::DenseBase<DerivedA> &data, Eigen:
         std::vector<std::size_t> i03{0};
         std::vector<std::size_t> s_d2{1};
 
-           // std::vector<std::size_t> s{SIZET(ntimes), SIZET(ntones)};
-
-        //if (!d_nsmp.isNull()) {
-/*
-        NcVar data_v = fo.addVar("data", netCDF::ncDouble, dims);
-        NcVar lat_v = fo.addVar("lat", netCDF::ncDouble, dims);
-        NcVar lon_v = fo.addVar("lon", netCDF::ncDouble, dims);
-*/
             NcVar data_v = fo.getVar("DATA");//, netCDF::ncDouble, dims);
             NcVar flag_v = fo.getVar("FLAG");//, netCDF::ncDouble, dims);
             NcVar lat_v = fo.getVar("DY");//, netCDF::ncDouble, dims);
@@ -77,22 +70,27 @@ void append_to_nc(std::string filepath, Eigen::DenseBase<DerivedA> &data, Eigen:
 
             NcVar p_v = fo.getVar("PIXID");//, netCDF::ncDouble, dims);
 
-            auto put_data = [&](auto ii) mutable {
+
+
+            for (std::size_t ii = 0; ii < TULA_SIZET(data.rows()); ++ii) {
                 i0[0] = nsmp_exists + ii;
                 i02[0] = nsmp_exists + ii;
 
-                data_v.putVar(i0, s_d, data.row(ii).data());
-                flag_v.putVar(i0, s_d, flag.row(ii).data());
-                lat_v.putVar(i0, s_d, lat.row(ii).data());
-                lon_v.putVar(i0, s_d, lon.row(ii).data());
+		Eigen::VectorXd data_vec = data.row(ii);
+		Eigen::Matrix<bool, Eigen::Dynamic,1> flag_vec = flag.row(ii);
 
-                e_v.putVar(i02, s_d2, &elev(ii));
-                t_v.putVar(i02, s_d2, &time(ii));
-            };
 
-            for (std::size_t ii = 0; ii < TULA_SIZET(data.rows()); ++ii) {
-                put_data(ii);
-                //pb0.count(ntimes, ntimes / 10);
+		Eigen::VectorXd lat_vec = lat.row(ii);
+		Eigen::VectorXd lon_vec = lon.row(ii);
+
+                data_v.putVar(i0, s_d, data_vec.data());
+                flag_v.putVar(i0, s_d, flag_vec.data());
+                lat_v.putVar(i0, s_d, lat_vec.data());
+                lon_v.putVar(i0, s_d, lon_vec.data());
+
+                e_v.putVar(i02, &elev(ii));
+                t_v.putVar(i02, &time(ii));
+
             }
 
             for (std::size_t ii = 0; ii < TULA_SIZET(data.cols()); ++ii) {
@@ -102,7 +100,7 @@ void append_to_nc(std::string filepath, Eigen::DenseBase<DerivedA> &data, Eigen:
                 //pb0.count(ntimes, ntimes / 10);
             }
 
-            //fo.sync();
+            fo.sync();
             fo.close();
         //}
 

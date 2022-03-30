@@ -21,13 +21,22 @@ det_pointing_t get_det_pointing(TD &tel_meta_data, const double azoff, const dou
 
     // icrs map
     if (std::strcmp("icrs", map_type.c_str()) == 0) {
-        auto pa2 = tel_meta_data["ParAng"].array();// - pi;
+        //auto pa2 = tel_meta_data["ParAng"].array();// - pi;
 
+        auto pa2 = tel_meta_data["ParAng"].array() - pi;
+        
+        lon = (-rot_azoff*cos(pa2) - rot_eloff*sin(pa2))*RAD_ASEC
+            + tel_meta_data["TelLonPhys"].array();
+        
+        lat = (-rot_azoff*sin(pa2) + rot_eloff*cos(pa2))*RAD_ASEC
+            + tel_meta_data["TelLatPhys"].array();
+/*
         // rotate by position angle and add phys pointing
         lat = (rot_azoff*sin(pa2) - rot_eloff*cos(pa2))*RAD_ASEC
                 + tel_meta_data["TelLatPhys"].array();
         lon = (rot_azoff*cos(pa2) + rot_eloff*sin(pa2))*RAD_ASEC
                 + tel_meta_data["TelLonPhys"].array();
+		*/
     }
 
     // altaz map
