@@ -7,15 +7,16 @@
 #include <Eigen/Core>
 
 #include <tula/logging.h>
+#include <tula/nc.h>
 
 struct DataIOError : public std::runtime_error {
     using std::runtime_error::runtime_error;
 };
 
 template <typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD>
-void append_to_nc(std::string filepath, Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedC> &flag,
+void append_to_netcdf(std::string filepath, Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedC> &flag,
                   Eigen::DenseBase<DerivedA> &lat, Eigen::DenseBase<DerivedA> &lon, Eigen::DenseBase<DerivedB> &elev,
-                  Eigen::DenseBase<DerivedD> &time, size_t start_row) {
+                  Eigen::DenseBase<DerivedD> &time) {
 
     using Eigen::Index;
 
@@ -32,23 +33,9 @@ void append_to_nc(std::string filepath, Eigen::DenseBase<DerivedA> &data, Eigen:
 
     try {
         // define the dimensions.
-        // NcDim d_ntimes = fo.addDim(_["ntimes"], SIZET(ntimes));
-        NcDim d_nsmp = fo.getDim("nsamples"); // unlimited
+        NcDim d_nsmp = fo.getDim("nsamples");
         NcDim d_ndet = fo.getDim("ndetectors");
         unsigned long nsmp_exists = d_nsmp.getSize();
-	SPDLOG_INFO("nsmp_exists {}",nsmp_exists);
-        //NcDim d_ntimecols = fo.getDim(_["ntimecols"]);
-        /*if (!d_nsmp.isNull()){// || !d_ndet.isNull()) {
-            //save_to_nc(fo, true);
-            d_nsmp = fo.getDim("nsamples");
-            d_ndet = fo.getDim("ndetectors");
-            nsmp_exists = d_nsmp.getSize();
-        }
-
-        else {
-            d_nsmp = fo.addDim("nsamples");
-            d_ndet = fo.addDim("ndetectors",data.cols());
-        }*/
 
         std::vector<netCDF::NcDim> dims;
         dims.push_back(d_nsmp);
@@ -60,16 +47,15 @@ void append_to_nc(std::string filepath, Eigen::DenseBase<DerivedA> &data, Eigen:
         std::vector<std::size_t> i03{0};
         std::vector<std::size_t> s_d2{1};
 
-            NcVar data_v = fo.getVar("DATA");//, netCDF::ncDouble, dims);
-            NcVar flag_v = fo.getVar("FLAG");//, netCDF::ncDouble, dims);
-            NcVar lat_v = fo.getVar("DY");//, netCDF::ncDouble, dims);
-            NcVar lon_v = fo.getVar("DX");//, netCDF::ncDouble, dims);
+            NcVar data_v = fo.getVar("DATA");
+            NcVar flag_v = fo.getVar("FLAG");
+            NcVar lat_v = fo.getVar("DY");
+            NcVar lon_v = fo.getVar("DX");
 
-            NcVar e_v = fo.getVar("ELEV");//, netCDF::ncDouble, dims);
-            NcVar t_v = fo.getVar("TIME");//, netCDF::ncDouble, dims);
+            NcVar e_v = fo.getVar("ELEV");
+            NcVar t_v = fo.getVar("TIME");
 
-            NcVar p_v = fo.getVar("PIXID");//, netCDF::ncDouble, dims);
-
+            NcVar p_v = fo.getVar("PIXID");
 
 
             for (std::size_t ii = 0; ii < TULA_SIZET(data.rows()); ++ii) {
@@ -78,7 +64,6 @@ void append_to_nc(std::string filepath, Eigen::DenseBase<DerivedA> &data, Eigen:
 
 		Eigen::VectorXd data_vec = data.row(ii);
 		Eigen::Matrix<bool, Eigen::Dynamic,1> flag_vec = flag.row(ii);
-
 
 		Eigen::VectorXd lat_vec = lat.row(ii);
 		Eigen::VectorXd lon_vec = lon.row(ii);
@@ -97,46 +82,16 @@ void append_to_nc(std::string filepath, Eigen::DenseBase<DerivedA> &data, Eigen:
                 int i = ii;
                 std::vector<std::size_t> index{ii};
                 p_v.putVar(index, s_d2, &i);
-                //pb0.count(ntimes, ntimes / 10);
             }
 
             fo.sync();
             fo.close();
-        //}
-
-        /*else {
-
-           NcVar data_v = fo.addVar("data", netCDF::ncDouble, dims);
-           NcVar lat_v = fo.addVar("lat", netCDF::ncDouble, dims);
-           NcVar lon_v = fo.addVar("lon", netCDF::ncDouble, dims);
-
-           auto put_data = [&](auto ii) mutable {
-               i0[0] = nsmp_exists + ii;
-               data_v.putVar(i0, s_d, data.row(ii).data());
-               lat_v.putVar(i0, s_d, lat.row(ii).data());
-               lon_v.putVar(i0, s_d, lon.row(ii).data());
-           };
-
-           for (std::size_t ii = 0; ii < TULA_SIZET(data.rows()); ++ii) {
-               put_data(ii);
-               //pb0.count(ntimes, ntimes / 10);
-           }
-
-        }*/
-
-        //std::vector<std::size_t> s_t{1, d_ntimecols.getSize()};
-
-        //const auto &tdata = data.wcs.time_axis.data;
-        //assert(d_ntimecols.getSize() == TULA_SIZET(tdata.cols()));
-        //assert(d_ntones.getSize() == TULA_SIZET(data_out.xs.data.cols()));
-        //auto ntimes = data_out.xs.data.rows();
 
     } catch (NcException &e) {
         SPDLOG_ERROR("{}", e.what());
-        //throw std::runtime_error(fmt::format("failed to append data to file {}",
-                                             //tula::nc_utils::pprint(fo)));
+        throw std::runtime_error(fmt::format("failed to append data to file {}",
+                                             tula::nc_utils::pprint(fo)));
     }
-    //return io;
 }
 
 /*

@@ -69,6 +69,18 @@ struct ToltecIO {
         {2, "a2000"},};
 
     // map between index and array name (temp)
+    std::map<int, std::string> polarized_name_keys {
+        {0, "a1100"},
+        {1, "a1100"},
+        {2, "a1100"},
+        {3, "a1400"},
+        {4, "a1400"},
+        {5, "a1400"},
+        {6, "a2000"},
+        {7, "a2000"},
+        {8, "a2000"},};
+
+    // map between index and array name (temp)
     std::map<int, double> barea_keys {
         {0, A1100_BAREA},
         {1, A1400_BAREA},
@@ -222,11 +234,11 @@ struct ToltecIO {
         }
 
         if constexpr (prod_type == hist) {
-            filepath = filepath + "hist";
+            filepath = filepath + "hist_";
         }
 
         if constexpr (prod_type == psd) {
-            filepath = filepath + "psd";
+            filepath = filepath + "psd_";
         }
 
         if constexpr (prod_type == timestream) {

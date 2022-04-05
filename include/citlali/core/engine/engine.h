@@ -18,6 +18,7 @@
 
 #include <citlali/core/timestream/timestream.h>
 
+#include <citlali/core/timestream/rtc/polarization.h>
 #include <citlali/core/timestream/rtc/kernel.h>
 #include <citlali/core/timestream/rtc/despike.h>
 #include <citlali/core/timestream/rtc/filter.h>
@@ -30,7 +31,7 @@
 #include <citlali/core/timestream/rtc/rtcproc.h>
 #include <citlali/core/timestream/ptc/ptcproc.h>
 
-#include <citlali/core/map/naive_mm.h>
+#include <citlali/core/map/naive_mm_2.h>
 #include <citlali/core/map/jinc_mm.h>
 #include <citlali/core/map/wiener_filter.h>
 
@@ -49,6 +50,9 @@ public:
 
     // format for output timestream file
     std::string ts_format;
+
+    // output rtc, ptc, or both
+    std::string ts_chunk_type;
 
     int redu_num;
 
@@ -78,7 +82,7 @@ public:
     double dfsmp;
 
     // controls for each stage
-    bool run_despike, run_kernel, run_filter,
+    bool run_polarization, run_kernel, run_despike, run_filter,
     run_downsample, run_clean;
 
     // beammap config options included here
@@ -109,6 +113,9 @@ public:
 
     // requested coadd filter type
     std::string coadd_filter_type;
+
+    // polarization class
+    timestream::Polarization polarization;
 
     // kernel class
     timestream::Kernel kernel;
@@ -247,8 +254,22 @@ public:
         engine_config = _c;
         SPDLOG_INFO("getting config options");
 
+        get_config(ts_out,std::tuple{"timestream","output","enabled"});
+        if (ts_out) {
+            get_config(ts_format,std::tuple{"timestream","output","format"});
+            get_config(ts_chunk_type,std::tuple{"timestream","output","chunk_type"});
+        }
+
         // get runtime config options
         get_config(ex_name,std::tuple{"runtime","parallel_policy"});//,{"omp","seq","tbb"});
+
+        if (ts_out) {
+            if (ex_name != "seq") {
+                SPDLOG_INFO("timestream output requires sequential execution policy.  setting policy to seq");
+                ex_name = "seq";
+                }
+        }
+
         get_config(nthreads,std::tuple{"runtime","n_threads"});
         get_config(filepath,std::tuple{"runtime","output_dir"});
         get_config(reduction_type,std::tuple{"runtime","reduction_type"},{"science","pointing","beammap"});
@@ -256,10 +277,8 @@ public:
         get_config(time_chunk,std::tuple{"timestream","chunking","length_sec"});
         get_config(weighting_type,std::tuple{"timestream","weighting","type"});
 
-        get_config(ts_out,std::tuple{"timestream","output","enabled"});
-        if (ts_out) {
-            get_config(ts_format,std::tuple{"timestream","output","format"});
-        }
+        // get config
+        get_config(run_polarization,std::tuple{"timestream","polariametry","enabled"});
 
         // get despike config options
         get_config(run_despike,std::tuple{"timestream","despike","enabled"});

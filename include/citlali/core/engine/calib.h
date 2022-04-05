@@ -16,7 +16,9 @@ struct ToltecCalib {
         {"x_t", DEG_TO_ASEC},
         {"y_t", DEG_TO_ASEC},
         {"a_fwhm", DEG_TO_ASEC},
-        {"b_fwhm", DEG_TO_ASEC}
+        {"b_fwhm", DEG_TO_ASEC},
+        {"fg",1},
+        {"responsivity",1}
     };
 };
 

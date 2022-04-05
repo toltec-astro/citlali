@@ -50,7 +50,7 @@ public:
     };
 
     // constructor
-    FitsIO<file_type,ext_hdu_t>(std::string _filepath) {
+    FitsIO(std::string _filepath) {
 
         filepath = _filepath;
         // read in file
@@ -155,6 +155,9 @@ public:
             hdu->addKey("CUNIT2", "arcsec", "");
         }
 
+        hdu->addKey("CUNIT3", "Hz", "");
+        hdu->addKey("CUNIT4", "", "");
+
         // get reference value
         double CRVAL1, CRVAL2;
 
@@ -176,9 +179,15 @@ public:
             CRVAL2 = 0.0;
         }
 
+        hdu->addKey("CTYPE3", "FREQ", "");
+        hdu->addKey("CTYPE4", "STOKES", "");
+
         // add CRVAL values
         hdu->addKey("CRVAL1", CRVAL1, "");
         hdu->addKey("CRVAL2", CRVAL2, "");
+
+        hdu->addKey("CRVAL3", 1, "");
+        hdu->addKey("CRVAL4", 1, "");
 
         // pixel corresponding to reference value
         double ref_pix_c1 = ncols/2;
@@ -196,6 +205,9 @@ public:
         // add CRPIX values
         hdu->addKey("CRPIX1", ref_pix_c1, "");
         hdu->addKey("CRPIX2", ref_pix_c2, "");
+
+        hdu->addKey("CRPIX3", 1, "");
+        hdu->addKey("CRPIX4", 1, "");
 
         // add CD matrix
         hdu->addKey("CD1_1", -pixel_size/unit_scale, "");

@@ -180,6 +180,9 @@ auto Cleaner::calcEigs(const Eigen::DenseBase<DerivedA> &scans, const Eigen::Den
         Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> solution(pca_cov);
         evals = solution.eigenvalues();
         evecs = solution.eigenvectors();
+
+        evals.reverseInPlace();
+        evecs.colwise().reverseInPlace();
     }
 
     return std::tuple<Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd> {std::move(det), std::move(evals), std::move(evecs)};

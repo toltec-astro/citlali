@@ -5,6 +5,7 @@
 #include <tula/grppi.h>
 #include <kids/core/kidsdata.h>
 
+#include <citlali/core/utils/netcdf_io.h>
 #include <citlali/core/utils/constants.h>
 #include <citlali/core/engine/engine.h>
 #include <citlali/core/utils/fitting.h>
@@ -47,8 +48,6 @@ void Lali::setup() {
     // toltec i/o class for filenames
     ToltecIO toltec_io;
 
-    std::vector<netCDF::NcVar> nc_vars;
-
     // empty the fits vector for subsequent observations
     fits_ios.clear();
 
@@ -85,23 +84,22 @@ void Lali::setup() {
     }
 
     if (ts_out) {
-        if (ts_format == "fits") {
-            auto filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
-                                                     ToltecIO::science, ToltecIO::timestream, ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
-            FitsIO<fileType::write_fits, CCfits::ExtHDU*> ts_fits_io(filename);
-            ts_fits_io.add_ascii_table("Minkaski TOD", 0, toltec_io.minkaski_colnames, toltec_io.minkaski_colform,
-                                       toltec_io.minkaski_colunits);
-            ts_out_ios.push_back(std::move(ts_fits_io));
-        }
-
         if (ts_format == "netcdf") {
             ts_rows = 0;
-            auto filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
-                                                     ToltecIO::science, ToltecIO::timestream,
-                                                     ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
 
+            std::string filename;
 
-            SPDLOG_INFO("nc filename {}", filename);
+            if (reduction_type == "science") {
+                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                                    ToltecIO::science, ToltecIO::timestream,
+                                                    ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
+            }
+
+            else if (reduction_type == "pointing") {
+                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                                    ToltecIO::pointing, ToltecIO::timestream,
+                                                    ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
+            }
 
             ts_filepath = filename + ".nc";
 
@@ -122,16 +120,14 @@ void Lali::setup() {
 
             netCDF::NcVar data_v = fo.addVar("DATA",netCDF::ncDouble, dims);
             data_v.putAtt("Units","MJy/sr");
-            netCDF::NcVar flag_v = fo.addVar("FLAG",netCDF::ncInt, dims);
+            netCDF::NcVar flag_v = fo.addVar("FLAG",netCDF::ncDouble, dims);
             flag_v.putAtt("Units","N/A");
             netCDF::NcVar lat_v = fo.addVar("DY",netCDF::ncDouble, dims);
             lat_v.putAtt("Units","radians");
             netCDF::NcVar lon_v = fo.addVar("DX",netCDF::ncDouble, dims);
             lon_v.putAtt("Units","radians");
 
-            fo.sync();
             fo.close();
-
         }
     }
 }
@@ -170,6 +166,14 @@ auto Lali::run() {
             in.scans.data = kidsproc.populate_rtc_load(loaded_rawobs,in.scan_indices.data, scan_length, ndet);
         }
 
+
+        if (run_polarization) {
+            SPDLOG_INFO("demodulating timestream");
+            for (auto const& pair: polarization.stokes_params) {
+                //polarization.create_rtc(in,pair.first,this);
+            }
+        }
+
         /*Stage 1: RTCProc*/
         RTCProc rtcproc;
         TCData<TCDataKind::PTC,Eigen::MatrixXd> out;
@@ -192,21 +196,13 @@ auto Lali::run() {
                     auto eloff = calib_data["y_t"](i);
 
                     // get pointing
-                    auto [lat_i, lon_i] = engine_utils::get_det_pointing(in.tel_meta_data.data, azoff, eloff, map_type);
-                    lat.col(i) = lat_i;
-                    lon.col(i) = lon_i;
-
-		    if (i==0) {
-			SPDLOG_INFO("tel_lat {} tel_lon {}",  in.tel_meta_data.data["TelLatPhys"], in.tel_meta_data.data["TelLatPhys"]);
-		    	SPDLOG_INFO("lat_i {} lon_i {}", lat_i,lon_i);
-		    }
+                    auto [lat_i, lon_i] = engine_utils::get_det_pointing(out.tel_meta_data.data, azoff, eloff, map_type);
+                    lat.col(i) = std::move(lat_i);
+                    lon.col(i) = std::move(lon_i);
                 }
 
-		SPDLOG_INFO("flag {}", out.flags.data);
-		SPDLOG_INFO("lat {} lon {}", lat,lon);
-
-                append_to_nc(ts_filepath, out.scans.data, out.flags.data, lat, lon, out.tel_meta_data.data["TelElDes"],
-                             out.tel_meta_data.data["TelTime"], ts_rows);
+                append_to_netcdf(ts_filepath, out.scans.data, out.flags.data, lat, lon, out.tel_meta_data.data["TelElDes"],
+                             out.tel_meta_data.data["TelTime"]);
             }
         }
 
@@ -249,7 +245,7 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         Eigen::Index scan_length;
         // main grppi loop
         while (scan < scanindices.cols()) {
-            SPDLOG_INFO("reducing scan {}", scan + 1);
+            SPDLOG_INFO("reducing scan {}", scan);
             // length of current scan
             scan_length = scanindices(3, scan) - scanindices(2, scan) + 1;
 
@@ -329,7 +325,7 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         mb.perror.row(2) = pixel_size*(mb.perror.row(2))/RAD_ASEC;
         mb.perror.row(3) = STD_TO_FWHM*pixel_size*(mb.perror.row(3))/RAD_ASEC;
         mb.perror.row(4) = STD_TO_FWHM*pixel_size*(mb.perror.row(4))/RAD_ASEC;
-    }    
+    }
 }
 
 template <MapBase::MapType out_type, class MC, typename fits_out_vec_t>
@@ -427,7 +423,59 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios) {
         f_ios.at(i).pfits->pHDU().addKey("SRC_RA_RAD", source_center["Ra"][0], "Source RA (radians)");
         // add source dec
         f_ios.at(i).pfits->pHDU().addKey("SRC_DEC_RAD", source_center["Dec"][0], "Source Dec (radians)");
+
     }
+    // close file since we're done
+    SPDLOG_INFO("closing FITS files");
+    f_ios.clear();
+
+    // save psds
+    SPDLOG_INFO("saving map psd");
+
+    std::string filename;
+
+    if (reduction_type == "science") {
+        filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                            ToltecIO::science, ToltecIO::psd,
+                                            ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
+    }
+
+    else if (reduction_type == "pointing") {
+        filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                            ToltecIO::pointing, ToltecIO::psd,
+                                            ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
+    }
+    SPDLOG_INFO("filename {}",filename);
+
+    netCDF::NcFile fo(filename + ".nc",netCDF::NcFile::replace);
+
+    for (Eigen::Index i=0; i<array_indices.size(); i++) {
+        netCDF::NcDim psd_dim = fo.addDim(toltec_io.name_keys[i] +"_nfreq",mb.psd.at(i).psd.size());
+        netCDF::NcDim pds2d_row_dim = fo.addDim(toltec_io.name_keys[i] +"_rows",mb.psd.at(i).psd2d.rows());
+        netCDF::NcDim pds2d_col_dim = fo.addDim(toltec_io.name_keys[i] +"_cols",mb.psd.at(i).psd2d.cols());
+
+        std::vector<netCDF::NcDim> dims;
+        dims.push_back(pds2d_row_dim);
+        dims.push_back(pds2d_col_dim);
+
+        netCDF::NcVar psd_v = fo.addVar(toltec_io.name_keys[i] + "_psd",netCDF::ncDouble, psd_dim);
+        psd_v.putVar(mb.psd.at(i).psd.data());
+
+        netCDF::NcVar psdfreq_v = fo.addVar(toltec_io.name_keys[i] + "_psd_freq",netCDF::ncDouble, psd_dim);
+        psdfreq_v.putVar(mb.psd.at(i).psd_freq.data());
+
+        Eigen::MatrixXd psd2d_transposed = mb.psd.at(i).psd2d.transpose();
+        Eigen::MatrixXd psd2d_freq_transposed = mb.psd.at(i).psd2d_freq.transpose();
+
+        netCDF::NcVar psd2d_v = fo.addVar(toltec_io.name_keys[i] + "_psd2d",netCDF::ncDouble, dims);
+        psd2d_v.putVar(psd2d_transposed.data());
+
+        netCDF::NcVar psd2d_freq_v = fo.addVar(toltec_io.name_keys[i] + "_psd2d_freq",netCDF::ncDouble, dims);
+        psd2d_freq_v.putVar(psd2d_freq_transposed.data());
+    }
+
+    fo.close();
+
 
     // add fitting parameters to file if pointing mode is selected
     if constexpr (out_type==MapType::obs) {
@@ -541,11 +589,14 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios) {
                     // add conversion
                     nf_ios.at(i).pfits->pHDU().addKey("to_mjy/b", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
                     // add source ra
-                    f_ios.at(i).pfits->pHDU().addKey("SRC_RA_RAD", source_center["Ra"][0], "Source RA (radians)");
+                    nf_ios.at(i).pfits->pHDU().addKey("SRC_RA_RAD", source_center["Ra"][0], "Source RA (radians)");
                     // add source dec
-                    f_ios.at(i).pfits->pHDU().addKey("SRC_DEC_RAD", source_center["Dec"][0], "Source Dec (radians)");
+                    nf_ios.at(i).pfits->pHDU().addKey("SRC_DEC_RAD", source_center["Dec"][0], "Source Dec (radians)");
 
                 }
+                // close the file when we're done
+                SPDLOG_INFO("closing noise FITS files");
+                nf_ios.clear();
             }
         }
     }

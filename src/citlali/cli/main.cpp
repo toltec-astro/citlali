@@ -904,8 +904,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
 
         map_count = det_indices.size();
         SPDLOG_INFO("map_count {}", map_count);
-        // SPDLOG_INFO("array_indices {}", array_indices);
-        // SPDLOG_INFO("det_indices {}", det_indices);
+
 
         return std::tuple{map_count, array_indices, det_indices};
     }
