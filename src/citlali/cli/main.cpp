@@ -905,8 +905,13 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
         map_count = det_indices.size();
         SPDLOG_INFO("map_count {}", map_count);
 
+        Eigen::Index new_map_count = 3;
+        if (engine().run_polarization) {
+            new_map_count = new_map_count*3;
+        }
 
-        return std::tuple{map_count, array_indices, det_indices};
+
+        return std::tuple{new_map_count, array_indices, det_indices};
     }
 
     // get scan indices
@@ -1291,6 +1296,12 @@ int run(const rc_t &rc) {
 
                     // load apt table into engine
                     todproc.engine().get_calib(cal_path);
+
+                    if (todproc.engine().run_polarization) {
+                        SPDLOG_INFO("getting hwpdata");
+                        auto hwp_filepath = rawobs.hwpdata()->filepath();
+                        todproc.engine().get_hwp(hwp_filepath);
+                    }
 
                     // get sample rate
                     todproc.engine().fsmp =

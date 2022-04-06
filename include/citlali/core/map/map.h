@@ -134,6 +134,9 @@ public:
     // mapping method (naive, etc)
     std::string mapping_method;
 
+    // vector for what map detectors go into
+    //Eigen::VectorXd map_index_vector;
+
     // pixel size
     double pixel_size;
 

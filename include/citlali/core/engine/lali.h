@@ -159,6 +159,10 @@ auto Lali::run() {
         in.tel_meta_data.data["TelLatPhys"] = tel_meta_data["TelLatPhys"].segment(start_index, scan_length);
         in.tel_meta_data.data["TelLonPhys"] = tel_meta_data["TelLonPhys"].segment(start_index, scan_length);
 
+        if (run_polarization) {
+            in.hwp.data = hwp.segment(start_index, scan_length);
+        }
+
         /*Stage 0: KidsProc*/
         {
             tula::logging::scoped_timeit timer("kidsproc.populate_rtc_load()");
@@ -166,64 +170,67 @@ auto Lali::run() {
             in.scans.data = kidsproc.populate_rtc_load(loaded_rawobs,in.scan_indices.data, scan_length, ndet);
         }
 
-
-        if (run_polarization) {
-            SPDLOG_INFO("demodulating timestream");
-            for (auto const& pair: polarization.stokes_params) {
-                //polarization.create_rtc(in,pair.first,this);
-            }
-        }
-
-        /*Stage 1: RTCProc*/
-        RTCProc rtcproc;
         TCData<TCDataKind::PTC,Eigen::MatrixXd> out;
-        {
-            tula::logging::scoped_timeit timer("rtcproc.run()");
-            rtcproc.run(in, out, this);
-        }
 
-        if (ts_out) {
-            Eigen::MatrixXd lat(out.scans.data.rows(),out.scans.data.cols());
-            Eigen::MatrixXd lon(out.scans.data.rows(),out.scans.data.cols());
+        for (auto const& stokes_params: polarization.stokes_params) {
+            TCData<TCDataKind::RTC,Eigen::MatrixXd> in2;
+            auto [map_index_vector, det_index_vector] =  polarization.create_rtc(in, in2, stokes_params.first, this);
 
-            if (ts_format == "netcdf") {
-                SPDLOG_INFO("writing scan {} to {}", in.index.data, ts_filepath);
-                // loop through detectors and get pointing timestream
-                for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
+            /*Stage 1: RTCProc*/
+            RTCProc rtcproc;
+            {
+                tula::logging::scoped_timeit timer("rtcproc.run()");
+                rtcproc.run(in2, out, this);
+            }
 
-                    // get offsets
-                    auto azoff = calib_data["x_t"](i);
-                    auto eloff = calib_data["y_t"](i);
+            if (ts_out) {
+                Eigen::MatrixXd lat(out.scans.data.rows(),out.scans.data.cols());
+                Eigen::MatrixXd lon(out.scans.data.rows(),out.scans.data.cols());
 
-                    // get pointing
-                    auto [lat_i, lon_i] = engine_utils::get_det_pointing(out.tel_meta_data.data, azoff, eloff, map_type);
-                    lat.col(i) = std::move(lat_i);
-                    lon.col(i) = std::move(lon_i);
+                if (ts_format == "netcdf") {
+                    SPDLOG_INFO("writing scan {} to {}", in.index.data, ts_filepath);
+                    // loop through detectors and get pointing timestream
+                    for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
+
+                        // get offsets
+                        auto azoff = calib_data["x_t"](i);
+                        auto eloff = calib_data["y_t"](i);
+
+                        // get pointing
+                        auto [lat_i, lon_i] = engine_utils::get_det_pointing(out.tel_meta_data.data, azoff, eloff, map_type);
+                        lat.col(i) = std::move(lat_i);
+                        lon.col(i) = std::move(lon_i);
+                    }
+
+                    append_to_netcdf(ts_filepath, out.scans.data, out.flags.data, lat, lon, out.tel_meta_data.data["TelElDes"],
+                                 out.tel_meta_data.data["TelTime"]);
+                }
+            }
+
+            /*Stage 2: PTCProc*/
+            PTCProc ptcproc;
+            {
+                bool rc = true;
+                if (stokes_params.first == "Q" || stokes_params.first == "U") {
+                    rc = false;
                 }
 
-                append_to_netcdf(ts_filepath, out.scans.data, out.flags.data, lat, lon, out.tel_meta_data.data["TelElDes"],
-                             out.tel_meta_data.data["TelTime"]);
+                tula::logging::scoped_timeit timer("ptcproc.run()");
+                ptcproc.run(out, out, this, rc);
             }
-        }
 
-        /*Stage 2: PTCProc*/
-        PTCProc ptcproc;
-        {
-            tula::logging::scoped_timeit timer("ptcproc.run()");
-            ptcproc.run(out, out, this);
-        }
-
-        /*Stage 3 Populate Map*/
-        if (mapping_method == "naive") {
-            {
-                tula::logging::scoped_timeit timer("populate_maps_naive()");
-                populate_maps_naive(out, this);
+            /*Stage 3 Populate Map*/
+            if (mapping_method == "naive") {
+                {
+                    tula::logging::scoped_timeit timer("populate_maps_naive()");
+                    populate_maps_naive(out, map_index_vector, det_index_vector, this);
+                }
             }
-        }
 
-        else if (mapping_method == "jinc") {
-            tula::logging::scoped_timeit timer("populate_maps_jinc()");
-            populate_maps_jinc(out, this);
+            else if (mapping_method == "jinc") {
+                tula::logging::scoped_timeit timer("populate_maps_jinc()");
+                populate_maps_jinc(out, this);
+            }
         }
 
         SPDLOG_INFO("done with scan {}", out.index.data);
@@ -279,39 +286,47 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     SPDLOG_INFO("normalizing maps");
     mb.normalize_maps(run_kernel);
 
-    mb.psd.resize(array_indices.size());
-    for (Eigen::Index i=0; i < array_indices.size(); i++) {
-        SPDLOG_INFO("calculating map {} psd", i);
-        PSD psd;
-        SPDLOG_INFO("cov_cut {}",cmb.cov_cut);
-        psd.cov_cut = cmb.cov_cut;
-        psd.calc_map_psd(mb.signal.at(i), mb.weight.at(i), mb.rcphys, mb.ccphys);
-        mb.psd.at(i) = std::move(psd);
+    mb.psd.resize(mb.map_count);
+    try {
+        for (Eigen::Index i=0; i < mb.map_count; i++) {
+            SPDLOG_INFO("calculating map {} psd", i);
+            PSD psd;
+            SPDLOG_INFO("cov_cut {}",cmb.cov_cut);
+            psd.cov_cut = cmb.cov_cut;
+            //psd.calc_map_psd(mb.signal.at(i), mb.weight.at(i), mb.rcphys, mb.ccphys);
+            //mb.psd.at(i) = std::move(psd);
+        }
+    } catch (...) {
+        SPDLOG_INFO("failed to compute psds");
     }
 
-    mb.histogram.resize(array_indices.size());
-    for (Eigen::Index i=0; i < array_indices.size(); i++) {
-        SPDLOG_INFO("calculating map {} histogram", i);
-        Histogram histogram;
-        int nbins = 200;
-        histogram.cov_cut = cmb.cov_cut;
-        histogram.calc_hist(mb.signal.at(i), mb.weight.at(i), nbins);
-        mb.histogram.at(i) = std::move(histogram);
+    mb.histogram.resize(mb.map_count);
+    try {
+        for (Eigen::Index i=0; i < mb.map_count; i++) {
+            SPDLOG_INFO("calculating map {} histogram", i);
+            Histogram histogram;
+            int nbins = 200;
+            histogram.cov_cut = cmb.cov_cut;
+            //histogram.calc_hist(mb.signal.at(i), mb.weight.at(i), nbins);
+            //mb.histogram.at(i) = std::move(histogram);
+        }
+    } catch (...) {
+        SPDLOG_INFO("failed to compute psds");
     }
 
     // do fit if map_grouping is pointing
     if (reduction_type == "pointing") {
         // placeholder vectors for grppi loop
         std::vector<int> array_in_vec, array_out_vec;
-        array_in_vec.resize(array_indices.size());
+        array_in_vec.resize(mb.map_count);
 
         std::iota(array_in_vec.begin(), array_in_vec.end(), 0);
-        array_out_vec.resize(array_indices.size());
+        array_out_vec.resize(mb.map_count);
 
         // set nparams for fit
         Eigen::Index nparams = 6;
-        mb.pfit.setZero(nparams, array_indices.size());
-        mb.perror.setZero(nparams, array_indices.size());
+        mb.pfit.setZero(nparams, mb.map_count);
+        mb.perror.setZero(nparams, mb.map_count);
 
         // loop through the arrays and do the fit
         SPDLOG_INFO("fitting pointing maps");
@@ -365,23 +380,48 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
     // loop through array indices and add hdu's to existing files
     for (Eigen::Index i=0; i<array_indices.size(); i++) {
         SPDLOG_INFO("writing {}.fits", f_ios.at(i).filepath);
-        // add signal map to file
-        f_ios.at(i).add_hdu("signal", mout.signal.at(i));
 
-        //add weight map to file
-        f_ios.at(i).add_hdu("weight", mout.weight.at(i));
+        if (run_polarization) {
+            for (auto const& stokes_params: polarization.stokes_params) {
+                // add signal map to file
+                f_ios.at(i).add_hdu("signal_"+stokes_params.first, mout.signal.at(i+stokes_params.second));
 
-        //add kernel map to file
-        if (run_kernel) {
-            f_ios.at(i).add_hdu("kernel", mout.kernel.at(i));
+                //add weight map to file
+                f_ios.at(i).add_hdu("weight_"+stokes_params.first, mout.weight.at(i+stokes_params.second));
+
+                //add kernel map to file
+                if (run_kernel) {
+                    f_ios.at(i).add_hdu("kernel_"+stokes_params.first, mout.kernel.at(i+stokes_params.second));
+                }
+
+                // add coverage map to file
+                f_ios.at(i).add_hdu("coverage_"+stokes_params.first, mout.coverage.at(i+stokes_params.second));
+
+                // add signal-to-noise map to file.  We calculate it here to save space
+                Eigen::MatrixXd signoise = mout.signal.at(i+stokes_params.second).array()*sqrt(mout.weight.at(i+stokes_params.second).array());
+                f_ios.at(i).add_hdu("sig2noise_"+stokes_params.first, signoise);
+            }
         }
 
-        // add coverage map to file
-        f_ios.at(i).add_hdu("coverage", mout.coverage.at(i));
+        else {
+            // add signal map to file
+            f_ios.at(i).add_hdu("signal", mout.signal.at(i));
 
-        // add signal-to-noise map to file.  We calculate it here to save space
-        Eigen::MatrixXd signoise = mout.signal.at(i).array()*sqrt(mout.weight.at(i).array());
-        f_ios.at(i).add_hdu("sig2noise", signoise);
+                 //add weight map to file
+            f_ios.at(i).add_hdu("weight", mout.weight.at(i));
+
+                 //add kernel map to file
+            if (run_kernel) {
+                f_ios.at(i).add_hdu("kernel", mout.kernel.at(i));
+            }
+
+                 // add coverage map to file
+            f_ios.at(i).add_hdu("coverage", mout.coverage.at(i));
+
+                 // add signal-to-noise map to file.  We calculate it here to save space
+            Eigen::MatrixXd signoise = mout.signal.at(i).array()*sqrt(mout.weight.at(i).array());
+            f_ios.at(i).add_hdu("sig2noise", signoise);
+        }
 
         // now loop through hdus and add wcs
         for (auto hdu: f_ios.at(i).hdus) {
@@ -499,32 +539,41 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
         }
     }
 
-    SPDLOG_INFO("filename {}",filename);
-
     netCDF::NcFile fo(filename + ".nc",netCDF::NcFile::replace);
 
-    for (Eigen::Index i=0; i<array_indices.size(); i++) {
-        netCDF::NcDim psd_dim = fo.addDim(toltec_io.name_keys[i] +"_nfreq",mb.psd.at(i).psd.size());
-        netCDF::NcDim pds2d_row_dim = fo.addDim(toltec_io.name_keys[i] +"_rows",mb.psd.at(i).psd2d.rows());
-        netCDF::NcDim pds2d_col_dim = fo.addDim(toltec_io.name_keys[i] +"_cols",mb.psd.at(i).psd2d.cols());
+    std::map<int, std::string> name_keys;
+
+    if (run_polarization) {
+        name_keys = toltec_io.polarized_name_keys;
+    }
+
+    else {
+        name_keys = toltec_io.name_keys;
+    }
+
+    for (Eigen::Index i=0; i<mb.map_count; i++) {
+
+        netCDF::NcDim psd_dim = fo.addDim(name_keys[i] +"_nfreq",mb.psd.at(i).psd.size());
+        netCDF::NcDim pds2d_row_dim = fo.addDim(name_keys[i] +"_rows",mb.psd.at(i).psd2d.rows());
+        netCDF::NcDim pds2d_col_dim = fo.addDim(name_keys[i] +"_cols",mb.psd.at(i).psd2d.cols());
 
         std::vector<netCDF::NcDim> dims;
         dims.push_back(pds2d_row_dim);
         dims.push_back(pds2d_col_dim);
 
-        netCDF::NcVar psd_v = fo.addVar(toltec_io.name_keys[i] + "_psd",netCDF::ncDouble, psd_dim);
+        netCDF::NcVar psd_v = fo.addVar(name_keys[i] + "_psd",netCDF::ncDouble, psd_dim);
         psd_v.putVar(mb.psd.at(i).psd.data());
 
-        netCDF::NcVar psdfreq_v = fo.addVar(toltec_io.name_keys[i] + "_psd_freq",netCDF::ncDouble, psd_dim);
+        netCDF::NcVar psdfreq_v = fo.addVar(name_keys[i] + "_psd_freq",netCDF::ncDouble, psd_dim);
         psdfreq_v.putVar(mb.psd.at(i).psd_freq.data());
 
         Eigen::MatrixXd psd2d_transposed = mb.psd.at(i).psd2d.transpose();
         Eigen::MatrixXd psd2d_freq_transposed = mb.psd.at(i).psd2d_freq.transpose();
 
-        netCDF::NcVar psd2d_v = fo.addVar(toltec_io.name_keys[i] + "_psd2d",netCDF::ncDouble, dims);
+        netCDF::NcVar psd2d_v = fo.addVar(name_keys[i] + "_psd2d",netCDF::ncDouble, dims);
         psd2d_v.putVar(psd2d_transposed.data());
 
-        netCDF::NcVar psd2d_freq_v = fo.addVar(toltec_io.name_keys[i] + "_psd2d_freq",netCDF::ncDouble, dims);
+        netCDF::NcVar psd2d_freq_v = fo.addVar(name_keys[i] + "_psd2d_freq",netCDF::ncDouble, dims);
         psd2d_freq_v.putVar(psd2d_freq_transposed.data());
     }
 
@@ -576,17 +625,15 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
         }
     }
 
-    SPDLOG_INFO("filename {}",filename);
-
     netCDF::NcFile hist_fo(filename + ".nc",netCDF::NcFile::replace);
 
-    for (Eigen::Index i=0; i<array_indices.size(); i++) {
-        netCDF::NcDim bins_dim = hist_fo.addDim(toltec_io.name_keys[i] +"nbins",mb.psd.at(i).psd.size());
+    for (Eigen::Index i=0; i<mb.map_count; i++) {
+        netCDF::NcDim bins_dim = hist_fo.addDim(name_keys[i] +"nbins",mb.psd.at(i).psd.size());
 
-        netCDF::NcVar hist_v = hist_fo.addVar(toltec_io.name_keys[i] + "_values",netCDF::ncDouble, bins_dim);
+        netCDF::NcVar hist_v = hist_fo.addVar(name_keys[i] + "_values",netCDF::ncDouble, bins_dim);
         hist_v.putVar(mb.histogram.at(i).hist_vals.data());
 
-        netCDF::NcVar bins_v = hist_fo.addVar(toltec_io.name_keys[i] + "_bins",netCDF::ncDouble, bins_dim);
+        netCDF::NcVar bins_v = hist_fo.addVar(name_keys[i] + "_bins",netCDF::ncDouble, bins_dim);
         bins_v.putVar(mb.histogram.at(i).hist_bins.data());
     }
 
@@ -640,7 +687,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
             // get output path from citlali_config
             auto filename = toltec_io.setup_filepath<ToltecIO::ppt, ToltecIO::simu,
                     ToltecIO::pointing, ToltecIO::no_prod_type, ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
-            Eigen::MatrixXf table(toltec_io.apt_header.size(), array_indices.size());
+            Eigen::MatrixXf table(toltec_io.apt_header.size(), mb.map_count);
 
             //table = mout.pfit.template cast <float> ();
             int ci = 0;
@@ -695,7 +742,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
 
                 netCDF::NcFile fo(filename + ".nc",netCDF::NcFile::replace);
 
-                /*for (Eigen::Index i=0; i<array_indices.size(); i++) {
+                /*for (Eigen::Index i=0; i<mb.map_count; i++) {
                     netCDF::NcDim psd_dim = fo.addDim(toltec_io.name_keys[i] +"_nfreq",mb.noise_psd.at(i).psd.size());
                     netCDF::NcDim pds2d_row_dim = fo.addDim(toltec_io.name_keys[i] +"_rows",mb.noise_psd.at(i).psd2d.rows());
                     netCDF::NcDim pds2d_col_dim = fo.addDim(toltec_io.name_keys[i] +"_cols",mb.noise_psd.at(i).psd2d.cols());

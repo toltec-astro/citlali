@@ -18,11 +18,14 @@ using timestream::TCDataKind;
 using map_count_t = std::size_t;
 using det_indices_t = std::vector<std::tuple<Eigen::Index, Eigen::Index>>;
 
-template <class Engine>
-void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine engine) {
+template <typename Derived, class Engine>
+void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::DenseBase<Derived> &map_index_vector,
+                         Eigen::DenseBase<Derived> &det_index_vector, Engine engine) {
     SPDLOG_INFO("populating map with scan {}", in.index.data);
 
     Eigen::MatrixXi noise_rand;
+
+    Eigen::Index ndets = in.scans.data.cols();
 
     if (engine->run_coadd) {
         if (engine->run_noise) {
@@ -32,19 +35,19 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine en
 
             // generate the random number matrix
             noise_rand =
-                Eigen::MatrixXi::Zero(engine->cmb.nnoise, engine->ndet).unaryExpr([&](int dummy){return rands(eng);});
+                Eigen::MatrixXi::Zero(engine->cmb.nnoise, ndets).unaryExpr([&](int dummy){return rands(eng);});
             noise_rand = (2.*(noise_rand.template cast<double>().array() - 0.5)).template cast<int>();
         }
     }
 
 
     // loop through the detector indices
-    for (Eigen::Index mi = 0; mi < engine->ndet; mi++) {
+    for (Eigen::Index mi = 0; mi < ndets; mi++) {
 
         Eigen::Index mc = 0;
 
         if (engine->reduction_type == "science" || engine->reduction_type == "pointing") {
-            mc = engine->calib_data["array"](mi);
+            mc = map_index_vector(mi);
         }
 
         else if (engine->reduction_type == "beammap") {
@@ -59,8 +62,9 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Engine en
 
         // if in science/pointing mode, get offsets from apt table
         if (engine->reduction_type == "science" || engine->reduction_type == "pointing") {
-            azoff = engine->calib_data["x_t"](mi);
-            eloff = engine->calib_data["y_t"](mi);
+            Eigen::Index di = det_index_vector(mi);
+            azoff = engine->calib_data["x_t"](di);
+            eloff = engine->calib_data["y_t"](di);
         }
 
         // else if in beammap mode, offsets are zero

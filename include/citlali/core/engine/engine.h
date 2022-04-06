@@ -280,6 +280,11 @@ public:
         // get config
         get_config(run_polarization,std::tuple{"timestream","polariametry","enabled"});
 
+        if (run_polarization == false) {
+            polarization.stokes_params = {{"I",0}};
+        }
+
+
         // get despike config options
         get_config(run_despike,std::tuple{"timestream","despike","enabled"});
         if (run_despike) {
@@ -387,6 +392,11 @@ public:
             get_config(run_coadd_filter,std::tuple{"coadd","filtering","enabled"});
             if (run_coadd_filter) {
                 get_config(coadd_filter_type,std::tuple{"coadd","filtering","type"});
+
+                if (run_noise == false) {
+                    SPDLOG_INFO("noise maps are needed for map filtering.");
+                    std::exit(EXIT_FAILURE);
+                }
 
                 get_config(wiener_filter.run_gaussian_template,std::tuple{"wiener_filter","gaussian_template"});
                 get_config(wiener_filter.run_lowpass_only,std::tuple{"wiener_filter","lowpass_only"});

@@ -3,8 +3,10 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <netcdf>
 
 #include <citlali/core/utils/ecsv_io.h>
+#include <citlali/core/utils/netcdf_io.h>
 #include <citlali/core/utils/constants.h>
 
 struct ToltecCalib {
@@ -41,6 +43,8 @@ public:
     Eigen::VectorXd responsivity;
     Eigen::VectorXd sensitivity;
 
+    Eigen::VectorXd hwp;
+
     void get_calib(const std::string &filepath) {
         // read in the apt table
         auto [table, header] = get_matrix_from_ecsv(filepath);
@@ -61,5 +65,35 @@ public:
         responsivity.setOnes(ndet);
         sensitivity.setOnes(ndet);
     }
+
+
+    void get_hwp(std::string &filepath) {
+        using namespace netCDF;
+        using namespace netCDF::exceptions;
+
+        try {
+            // get hwp file
+            NcFile fo(filepath, NcFile::read, NcFile::classic);
+            SPDLOG_INFO("read in hwp netCDF file {}", filepath);
+            auto vars = fo.getVars();
+
+            // get hwp signal
+            Eigen::Index npts = vars.find("Data.Hwp.")->second.getDim(0).getSize();
+            hwp.resize(npts);
+
+            vars.find("Data.Hwp.")->second.getVar(hwp.data());
+            SPDLOG_INFO("blah");
+
+            fo.close();
+
+        } catch (NcException &e) {
+            SPDLOG_ERROR("{}", e.what());
+            throw DataIOError{fmt::format(
+                "failed to load data from netCDF file {}", filepath)};
+        }
+
+    }
+
+
 };
 

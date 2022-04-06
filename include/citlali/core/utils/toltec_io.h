@@ -76,15 +76,15 @@ struct ToltecIO {
 
     // map between index and array name (temp)
     std::map<int, std::string> polarized_name_keys {
-        {0, "a1100"},
-        {1, "a1100"},
-        {2, "a1100"},
-        {3, "a1400"},
-        {4, "a1400"},
-        {5, "a1400"},
-        {6, "a2000"},
-        {7, "a2000"},
-        {8, "a2000"},};
+        {0, "a1100_I"},
+        {1, "a1100_Q"},
+        {2, "a1100_U"},
+        {3, "a1400_I"},
+        {4, "a1400_Q"},
+        {5, "a1400_U"},
+        {6, "a2000_I"},
+        {7, "a2000_Q"},
+        {8, "a2000_U"},};
 
     // map between index and array name (temp)
     std::map<int, double> barea_keys {

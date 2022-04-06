@@ -204,7 +204,7 @@ auto Beammap::run_loop() {
             // clean scan
             {
                 tula::logging::scoped_timeit timer("ptcproc.run()");
-                ptcproc.run(ptcs.at(s), ptcs.at(s), this);
+                ptcproc.run(ptcs.at(s), ptcs.at(s), this, run_clean);
             }
 
             // add gaussian if iteration > 0
@@ -219,8 +219,10 @@ auto Beammap::run_loop() {
             /*Stage 3 Populate Map*/
             if (mapping_method == "naive") {
                 {
+                    Eigen::VectorXd map_index_vector;
+                    Eigen::VectorXd det_index_vector;
                     tula::logging::scoped_timeit timer("populate_maps_naive()");
-                    populate_maps_naive(ptcs.at(s), this);
+                    populate_maps_naive(ptcs.at(s), map_index_vector, det_index_vector, this);
                 }
             }
 

@@ -10,16 +10,16 @@ public:
     template <class Engine>
     void run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
              TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
-             Engine);
+             Engine, bool);
 };
 
 template <class Engine>
 void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
          TCData<TCDataKind::PTC, Eigen::MatrixXd> &out,
-         Engine engine) {
+         Engine engine, bool run_clean) {
 
     // run timestream cleaning
-     if (engine->run_clean) {
+     if (run_clean) {
 
          // need this if out != in
          if (out.scans.data.isZero(0)) {
