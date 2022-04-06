@@ -12,6 +12,7 @@
 
 #include <citlali/core/utils/pointing.h>
 #include <citlali/core/map/psd.h>
+#include <citlali/core/map/histogram.h>
 #include <citlali/core/map/coadd.h>
 
 using map_dims_t = std::tuple<int, int, Eigen::VectorXd, Eigen::VectorXd>;
@@ -41,6 +42,9 @@ public:
 
     // vector of psd classes
     std::vector<PSD> psd;
+
+    // vector of histogram psds
+    std::vector<Histogram> histogram;
 
     // map types
     std::vector<Eigen::MatrixXd> signal, weight, kernel, coverage;

@@ -1341,7 +1341,7 @@ int run(const rc_t &rc) {
                             "engine obs output()");
                         todproc.engine().template output<EngineBase::obs>(
                             todproc.engine().mb, todproc.engine().fits_ios,
-                            todproc.engine().noise_fits_ios);
+                            todproc.engine().noise_fits_ios,false);
                     }
 
                     // coadd current map buffer into coadded map buffer
@@ -1459,7 +1459,8 @@ int run(const rc_t &rc) {
                         todproc.engine().template output<EngineBase::coadd>(
                             todproc.engine().cmb,
                             todproc.engine().coadd_fits_ios,
-                            todproc.engine().noise_fits_ios);
+                            todproc.engine().noise_fits_ios,
+                            false);
                     }
 
                     if (todproc.engine().run_coadd_filter) {
@@ -1522,7 +1523,7 @@ int run(const rc_t &rc) {
                             todproc.engine().template output<EngineBase::coadd>(
                                 todproc.engine().cmb,
                                 todproc.engine().filtered_coadd_fits_ios,
-                                todproc.engine().filtered_noise_fits_ios);
+                                todproc.engine().filtered_noise_fits_ios, true);
                         }
                     }
                 }

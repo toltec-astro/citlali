@@ -9,6 +9,7 @@
 
 #include <citlali/core/utils/pointing.h>
 #include <citlali/core/map/psd.h>
+#include <citlali/core/map/histogram.h>
 
 using map_dims_t = std::tuple<int, int, Eigen::VectorXd, Eigen::VectorXd>;
 using map_extent_t = std::vector<double>;
@@ -50,6 +51,9 @@ public:
 
     // vector of psd classes for signal maps
     std::vector<PSD> psd;
+
+    // vector of histogram psds
+    std::vector<Histogram> histogram;
 
     // vector of vector of psd classes for noise maps
     std::vector<std::vector<PSD>> noise_psd;

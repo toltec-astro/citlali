@@ -57,7 +57,7 @@ public:
     auto pipeline(KidsProc &, RawObs &);
 
     template <MapBase::MapType out_type, class MC, typename fits_out_vec_t>
-    void output(MC&, fits_out_vec_t &, fits_out_vec_t &);
+    void output(MC&, fits_out_vec_t &, fits_out_vec_t &, bool);
 };
 
 void Beammap::setup() {
@@ -424,7 +424,7 @@ auto Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 }
 
 template <MapBase::MapType out_type, class MC, typename fits_out_vec_t>
-void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios) {
+void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, bool filtered) {
     if constexpr (out_type==MapType::obs) {
         // apt table
         SPDLOG_INFO("writing apt table");

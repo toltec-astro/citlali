@@ -27,7 +27,7 @@ public:
     auto pipeline(KidsProc&, RawObs&);
 
     template <MapBase::MapType out_type, class MC, typename fits_out_vec_t>
-    void output(MC&, fits_out_vec_t &, fits_out_vec_t &);
+    void output(MC&, fits_out_vec_t &, fits_out_vec_t &, bool);
 };
 
 void Lali::setup() {
@@ -289,6 +289,16 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         mb.psd.at(i) = std::move(psd);
     }
 
+    mb.histogram.resize(array_indices.size());
+    for (Eigen::Index i=0; i < array_indices.size(); i++) {
+        SPDLOG_INFO("calculating map {} histogram", i);
+        Histogram histogram;
+        int nbins = 200;
+        histogram.cov_cut = cmb.cov_cut;
+        histogram.calc_hist(mb.signal.at(i), mb.weight.at(i), nbins);
+        mb.histogram.at(i) = std::move(histogram);
+    }
+
     // do fit if map_grouping is pointing
     if (reduction_type == "pointing") {
         // placeholder vectors for grppi loop
@@ -329,7 +339,7 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 }
 
 template <MapBase::MapType out_type, class MC, typename fits_out_vec_t>
-void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios) {
+void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool filtered) {
     // toltec input/output class
     ToltecIO toltec_io;
 
@@ -341,6 +351,16 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios) {
     std::stringstream ss;
     ss << std::setfill('0') << std::setw(6) << obsnum;
     std::string dname = hdname + ss.str() + "/";
+
+    std::string cname = hdname + "coadded/";
+
+    if (filtered==false) {
+        cname = cname + "raw/";
+    }
+
+    else if (filtered==true) {
+        cname = cname + "filtered/";
+    }
 
     // loop through array indices and add hdu's to existing files
     for (Eigen::Index i=0; i<array_indices.size(); i++) {
@@ -434,17 +454,51 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios) {
 
     std::string filename;
 
-    if (reduction_type == "science") {
-        filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
-                                            ToltecIO::science, ToltecIO::psd,
-                                            ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
+    if constexpr (out_type==MapType::obs) {
+        if constexpr (out_type==MapType::obs) {
+            if (reduction_type == "science") {
+                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                                    ToltecIO::science, ToltecIO::psd,
+                                                    ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
+            }
+
+            else if (reduction_type == "pointing") {
+                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                                    ToltecIO::pointing, ToltecIO::psd,
+                                                    ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
+            }
+        }
     }
 
-    else if (reduction_type == "pointing") {
-        filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
-                                            ToltecIO::pointing, ToltecIO::psd,
-                                            ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
+    else if constexpr (out_type == MapType::coadd) {
+        if (reduction_type == "science") {
+            if (filtered == false) {
+                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                                    ToltecIO::science, ToltecIO::raw_psd,
+                                                    ToltecIO::obsnum_false>(filepath + cname,obsnum,-1);
+            }
+
+            else if (filtered == true) {
+                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                                    ToltecIO::science, ToltecIO::filtered_psd,
+                                                    ToltecIO::obsnum_false>(filepath + cname,obsnum,-1);
+            }
+        }
+
+        else if (reduction_type == "pointing") {
+            if (filtered == false) {
+                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                                    ToltecIO::pointing, ToltecIO::raw_psd,
+                                                    ToltecIO::obsnum_false>(filepath + cname,obsnum,-1);
+            }
+            if (filtered == true) {
+                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                                    ToltecIO::pointing, ToltecIO::filtered_psd,
+                                                    ToltecIO::obsnum_false>(filepath + cname,obsnum,-1);
+            }
+        }
     }
+
     SPDLOG_INFO("filename {}",filename);
 
     netCDF::NcFile fo(filename + ".nc",netCDF::NcFile::replace);
@@ -475,6 +529,68 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios) {
     }
 
     fo.close();
+
+    // save histogram
+    SPDLOG_INFO("saving map histogram");
+
+    if constexpr (out_type==MapType::obs) {
+        if (reduction_type == "science") {
+                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                                    ToltecIO::science, ToltecIO::hist,
+                                                    ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
+        }
+
+        else if (reduction_type == "pointing") {
+                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                                    ToltecIO::pointing, ToltecIO::hist,
+                                                    ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
+        }
+    }
+
+    else if constexpr (out_type == MapType::coadd) {
+        if (reduction_type == "science") {
+            if (filtered == false) {
+                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                                    ToltecIO::science, ToltecIO::raw_hist,
+                                                    ToltecIO::obsnum_false>(filepath + cname,obsnum,-1);
+            }
+
+            else if (filtered == true) {
+                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                                    ToltecIO::science, ToltecIO::filtered_hist,
+                                                    ToltecIO::obsnum_false>(filepath + cname,obsnum,-1);
+            }
+        }
+
+        else if (reduction_type == "pointing") {
+            if (filtered == false) {
+                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                                    ToltecIO::pointing, ToltecIO::raw_hist,
+                                                    ToltecIO::obsnum_false>(filepath + cname,obsnum,-1);
+            }
+            if (filtered == true) {
+                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                                    ToltecIO::pointing, ToltecIO::filtered_hist,
+                                                    ToltecIO::obsnum_false>(filepath + cname,obsnum,-1);
+            }
+        }
+    }
+
+    SPDLOG_INFO("filename {}",filename);
+
+    netCDF::NcFile hist_fo(filename + ".nc",netCDF::NcFile::replace);
+
+    for (Eigen::Index i=0; i<array_indices.size(); i++) {
+        netCDF::NcDim bins_dim = hist_fo.addDim(toltec_io.name_keys[i] +"nbins",mb.psd.at(i).psd.size());
+
+        netCDF::NcVar hist_v = hist_fo.addVar(toltec_io.name_keys[i] + "_values",netCDF::ncDouble, bins_dim);
+        hist_v.putVar(mb.histogram.at(i).hist_vals.data());
+
+        netCDF::NcVar bins_v = hist_fo.addVar(toltec_io.name_keys[i] + "_bins",netCDF::ncDouble, bins_dim);
+        bins_v.putVar(mb.histogram.at(i).hist_bins.data());
+    }
+
+    hist_fo.close();
 
 
     // add fitting parameters to file if pointing mode is selected
@@ -547,6 +663,65 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios) {
     else if constexpr (out_type == MapType::coadd) {
         if (run_coadd) {
             if (run_noise) {
+
+                if constexpr (out_type == MapType::coadd) {
+                    if (reduction_type == "science") {
+                        if (filtered == false) {
+                            filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                                                ToltecIO::science, ToltecIO::noise_raw_psd,
+                                                                ToltecIO::obsnum_false>(filepath + cname,obsnum,-1);
+                        }
+
+                        else if (filtered == true) {
+                            filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                                                ToltecIO::science, ToltecIO::noise_filtered_psd,
+                                                                ToltecIO::obsnum_false>(filepath + cname,obsnum,-1);
+                        }
+                    }
+
+                    else if (reduction_type == "pointing") {
+                        if (filtered == false) {
+                            filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                                                ToltecIO::pointing, ToltecIO::noise_raw_psd,
+                                                                ToltecIO::obsnum_false>(filepath + cname,obsnum,-1);
+                        }
+                        if (filtered == true) {
+                            filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                                                ToltecIO::pointing, ToltecIO::noise_filtered_psd,
+                                                                ToltecIO::obsnum_false>(filepath + cname,obsnum,-1);
+                        }
+                    }
+                }
+
+                netCDF::NcFile fo(filename + ".nc",netCDF::NcFile::replace);
+
+                /*for (Eigen::Index i=0; i<array_indices.size(); i++) {
+                    netCDF::NcDim psd_dim = fo.addDim(toltec_io.name_keys[i] +"_nfreq",mb.noise_psd.at(i).psd.size());
+                    netCDF::NcDim pds2d_row_dim = fo.addDim(toltec_io.name_keys[i] +"_rows",mb.noise_psd.at(i).psd2d.rows());
+                    netCDF::NcDim pds2d_col_dim = fo.addDim(toltec_io.name_keys[i] +"_cols",mb.noise_psd.at(i).psd2d.cols());
+
+                    std::vector<netCDF::NcDim> dims;
+                    dims.push_back(pds2d_row_dim);
+                    dims.push_back(pds2d_col_dim);
+
+                    netCDF::NcVar psd_v = fo.addVar(toltec_io.name_keys[i] + "_psd",netCDF::ncDouble, psd_dim);
+                    psd_v.putVar(mb.noise_psd.at(i).psd.data());
+
+                    netCDF::NcVar psdfreq_v = fo.addVar(toltec_io.name_keys[i] + "_psd_freq",netCDF::ncDouble, psd_dim);
+                    psdfreq_v.putVar(mb.noise_psd.at(i).psd_freq.data());
+
+                    Eigen::MatrixXd psd2d_transposed = mb.noise_psd.at(i).psd2d.transpose();
+                    Eigen::MatrixXd psd2d_freq_transposed = mb.noise_psd.at(i).psd2d_freq.transpose();
+
+                    netCDF::NcVar psd2d_v = fo.addVar(toltec_io.name_keys[i] + "_psd2d",netCDF::ncDouble, dims);
+                    psd2d_v.putVar(psd2d_transposed.data());
+
+                    netCDF::NcVar psd2d_freq_v = fo.addVar(toltec_io.name_keys[i] + "_psd2d_freq",netCDF::ncDouble, dims);
+                    psd2d_freq_v.putVar(psd2d_freq_transposed.data());
+                }*/
+
+                fo.close();
+
                 SPDLOG_INFO("writing noise maps");
                 // loop through array indices and add hdu's to existing files
                 for (Eigen::Index i=0; i<array_indices.size(); i++) {

@@ -30,16 +30,16 @@ void Polarization::create_rtc(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std:
 
     if (sp == "Q") {
         int ndet = (engine->calib_data["fg"].array() == 0).count();
-        Eigen::MatrixXd scans(in.scans.data.rows(), ndet);
-        Eigen::MatrixXd kernel(in.scans.data.rows(), ndet);
+        Eigen::MatrixXd qr(in.scans.data.rows(), ndet);
+        Eigen::MatrixXd kqr(in.scans.data.rows(), ndet);
 
         SPDLOG_INFO("ndet {}",ndet);
 
         Eigen::Index j = 0;
         for (Eigen::Index i=0;i<in.scans.data.cols();i++) {
             if (engine->calib_data["fg"][i] == 0) {
-                scans.col(j) = in.scans.data.col(i+1) - in.scans.data.col(i);
-                kernel.col(j) = in.kernel_scans.data.col(i+1) - in.kernel_scans.data.col(i);
+                qr.col(j) = in.scans.data.col(i+1) - in.scans.data.col(i);
+                kqr.col(j) = in.kernel_scans.data.col(i+1) - in.kernel_scans.data.col(i);
 
                 j++;
             }
@@ -50,16 +50,16 @@ void Polarization::create_rtc(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std:
 
     else if (sp == "U") {
         int ndet = (engine->calib_data["fg"].array() == 1).count();
-        Eigen::MatrixXd scans(in.scans.data.rows(), ndet);
-        Eigen::MatrixXd kernel(in.scans.data.rows(), ndet);
+        Eigen::MatrixXd ur(in.scans.data.rows(), ndet);
+        Eigen::MatrixXd kur(in.scans.data.rows(), ndet);
 
         SPDLOG_INFO("ndet {}",ndet);
 
         Eigen::Index j = 0;
         for (Eigen::Index i=0;i<in.scans.data.cols();i++) {
             if (engine->calib_data["fg"][i] == 1) {
-                scans.col(j) = in.scans.data.col(i) - in.scans.data.col(i+1);
-                kernel.col(j) = in.kernel_scans.data.col(i) - in.kernel_scans.data.col(i+1);
+                ur.col(j) = in.scans.data.col(i) - in.scans.data.col(i+1);
+                kur.col(j) = in.kernel_scans.data.col(i) - in.kernel_scans.data.col(i+1);
 
                 j++;
             }

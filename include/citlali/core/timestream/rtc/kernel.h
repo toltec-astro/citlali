@@ -42,8 +42,6 @@ void Kernel::gaussian_kernel(Engine engine, TCData<TCDataKind::RTC, Eigen::Matri
     Eigen::VectorXd sigma = RAD_ASEC*(engine->calib_data["a_fwhm"] + engine->calib_data["b_fwhm"])/2.;
     sigma = sigma.array()/(2*sqrt(2*std::log(2)));
 
-    SPDLOG_INFO("STD_FWHM {}",2*sqrt(2*std::log(2)));
-
     // loop through detectors and make a kernel timestream
     for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
 
