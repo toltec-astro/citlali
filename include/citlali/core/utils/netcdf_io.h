@@ -57,7 +57,6 @@ void append_to_netcdf(std::string filepath, Eigen::DenseBase<DerivedA> &data, Ei
 
             NcVar p_v = fo.getVar("PIXID");
 
-
             for (std::size_t ii = 0; ii < TULA_SIZET(data.rows()); ++ii) {
                 i0[0] = nsmp_exists + ii;
                 i02[0] = nsmp_exists + ii;

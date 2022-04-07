@@ -75,10 +75,9 @@ std::tuple<Eigen::VectorXd, Eigen::VectorXd> Polarization::create_rtc(TCData<TCD
         SPDLOG_INFO("ndet {}",ndet);
 
         Eigen::Index j = 0;
-        for (Eigen::Index i=0;i<in.scans.data.cols()-1;i++) {
+        for (Eigen::Index i=0;i<in.scans.data.cols();i++) {
             if (engine->calib_data["fg"](i) == 0) {
                 qr.col(j) = in.scans.data.col(i+1) - in.scans.data.col(i);
-                //kqr.col(j) = in.kernel_scans.data.col(i+1) - in.kernel_scans.data.col(i);
                 map_index_vector(j) = engine->calib_data["array"](i);
                 map_index_vector(j+ndet) = engine->calib_data["array"](i);
                 det_index_vector(j) = i;
@@ -94,20 +93,36 @@ std::tuple<Eigen::VectorXd, Eigen::VectorXd> Polarization::create_rtc(TCData<TCD
 
         for (Eigen::Index i=0;i<ndet;i++) {
 
+            Eigen::Index di = det_index_vector(i);
+
+            // don't use pointing here as that will rotate by azoff/eloff
+            Eigen::VectorXd lat = -(engine->calib_data["x_t"](di)*RAD_ASEC) + in.tel_meta_data.data["TelElDes"].array();
+
             // rotate by PA
-            auto qs0 = cos(2*pa2.array())*qr.col(i).array();
-            auto us0 = sin(2*pa2.array())*qr.col(i).array();
+            auto qs0 = cos(-2*pa2.array())*qr.col(i).array();
+            auto us0 = sin(-2*pa2.array())*qr.col(i).array();
 
             // rotate by elevation and flip
             auto qs1 = qs0.array()*cos(2*in.tel_meta_data.data["TelElDes"].array()) -us0.array()*sin(2*in.tel_meta_data.data["TelElDes"].array());
-            auto us1 = - qs0.array()*sin(2*in.tel_meta_data.data["TelElDes"].array()) - us0.array()*cos(2*in.tel_meta_data.data["TelElDes"].array());
+            auto us1 = -qs0.array()*sin(2*in.tel_meta_data.data["TelElDes"].array()) - us0.array()*cos(2*in.tel_meta_data.data["TelElDes"].array());
 
-            // rotate by hwp signal
-            auto qs = qs1.array()*cos(4*in.hwp.data.array()) + us1.array()*sin(4*in.hwp.data.array());
-            auto us = qs1.array()*sin(4*in.hwp.data.array()) - us1.array()*cos(4*in.hwp.data.array());
+            // rotate by elevation and flip
+            //auto qs1 = qs0.array()*cos(2*lat.array()) - us0.array()*sin(2*lat.array());
+            //auto us1 = - qs0.array()*sin(2*lat.array()) - us0.array()*cos(2*lat.array());
 
-            out.scans.data.col(i) = qs;
-            out.scans.data.col(i+ndet) = us;
+            if (engine->run_hwp) {
+                // rotate by hwp signal
+                auto qs = qs1.array()*cos(4*in.hwp.data.array()) + us1.array()*sin(4*in.hwp.data.array());
+                auto us = qs1.array()*sin(4*in.hwp.data.array()) - us1.array()*cos(4*in.hwp.data.array());
+
+                out.scans.data.col(i) = qs;
+                out.scans.data.col(i+ndet) = us;
+            }
+
+            else {
+                out.scans.data.col(i) = qs1;
+                out.scans.data.col(i+ndet) = us1;
+            }
         }
 
         out.flags.data.setOnes(out.scans.data.rows(),out.scans.data.cols());
@@ -174,10 +189,9 @@ std::tuple<Eigen::VectorXd, Eigen::VectorXd> Polarization::create_rtc(TCData<TCD
         SPDLOG_INFO("ndet {}",ndet);
 
         Eigen::Index j = 0;
-        for (Eigen::Index i=0;i<in.scans.data.cols()-1;i++) {
+        for (Eigen::Index i=0;i<in.scans.data.cols();i++) {
             if (engine->calib_data["fg"][i] == 1) {
                 ur.col(j) = in.scans.data.col(i) - in.scans.data.col(i+1);
-                //kur.col(j) = in.kernel_scans.data.col(i) - in.kernel_scans.data.col(i+1);
                 map_index_vector(j) = engine->calib_data["array"](i);
                 map_index_vector(j+ndet) = engine->calib_data["array"](i);
                 det_index_vector(j) = i;
@@ -194,20 +208,36 @@ std::tuple<Eigen::VectorXd, Eigen::VectorXd> Polarization::create_rtc(TCData<TCD
 
         for (Eigen::Index i=0;i<ndet;i++) {
 
+            Eigen::Index di = det_index_vector(i);
+
+            // don't use pointing here as that will rotate by azoff/eloff
+            Eigen::VectorXd lat = -(engine->calib_data["x_t"](di)*RAD_ASEC) + in.tel_meta_data.data["TelElDes"].array();
+
             // rotate by PA
-            auto qs0 = -sin(2*pa2.array())*ur.col(i).array();
-            auto us0 = cos(2*pa2.array())*ur.col(i).array();
+            auto qs0 = -sin(-2*pa2.array())*ur.col(i).array();
+            auto us0 = cos(-2*pa2.array())*ur.col(i).array();
 
             // rotate by elevation and flip
             auto qs1 = qs0.array()*cos(2*in.tel_meta_data.data["TelElDes"].array()) - us0.array()*sin(2*in.tel_meta_data.data["TelElDes"].array());
             auto us1 = - qs0.array()*sin(2*in.tel_meta_data.data["TelElDes"].array()) - us0.array()*cos(2*in.tel_meta_data.data["TelElDes"].array());
 
-            // rotate by hwp signal
-            auto qs = qs1.array()*cos(4*in.hwp.data.array()) + us1.array()*sin(4*in.hwp.data.array());
-            auto us = qs1.array()*sin(4*in.hwp.data.array()) - us1.array()*cos(4*in.hwp.data.array());
+            // rotate by elevation and flip
+            //auto qs1 = qs0.array()*cos(2*lat.array()) - us0.array()*sin(2*lat.array());
+            //auto us1 = - qs0.array()*sin(2*lat.array()) - us0.array()*cos(2*lat.array());
 
-            out.scans.data.col(i) = qs;
-            in.scans.data.col(i+ndet) = us;
+            if (engine->run_hwp) {
+                // rotate by hwp signal
+                auto qs = qs1.array()*cos(4*in.hwp.data.array()) + us1.array()*sin(4*in.hwp.data.array());
+                auto us = qs1.array()*sin(4*in.hwp.data.array()) - us1.array()*cos(4*in.hwp.data.array());
+
+                out.scans.data.col(i) = qs;
+                out.scans.data.col(i+ndet) = us;
+            }
+
+            else {
+                out.scans.data.col(i) = qs1;
+                out.scans.data.col(i+ndet) = us1;
+            }
         }
 
         out.flags.data.setOnes(out.scans.data.rows(),out.scans.data.cols());

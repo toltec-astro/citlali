@@ -22,6 +22,8 @@ struct ToltecCalib {
         {"fg",1},
         {"responsivity",1}
     };
+
+    bool run_hwp;
 };
 
 
@@ -77,12 +79,15 @@ public:
             SPDLOG_INFO("read in hwp netCDF file {}", filepath);
             auto vars = fo.getVars();
 
+            // check if hwp is enabled
+            vars.find("Header.Hwp.RotatorEnabled")->second.getVar(&run_hwp);
+            SPDLOG_INFO("Header.Hwp.RotatorEnabled {}", run_hwp);
+
             // get hwp signal
             Eigen::Index npts = vars.find("Data.Hwp.")->second.getDim(0).getSize();
             hwp.resize(npts);
 
             vars.find("Data.Hwp.")->second.getVar(hwp.data());
-            SPDLOG_INFO("blah");
 
             fo.close();
 

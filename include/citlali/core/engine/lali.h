@@ -201,8 +201,8 @@ auto Lali::run() {
 
                         // get pointing
                         auto [lat_i, lon_i] = engine_utils::get_det_pointing(out.tel_meta_data.data, azoff, eloff, map_type);
-                        lat.col(i) = std::move(lat_i);
-                        lon.col(i) = std::move(lon_i);
+                        lat.col(i) = lat_i;
+                        lon.col(i) = lon_i;
                     }
 
                     append_to_netcdf(ts_filepath, out.scans.data, out.flags.data, lat, lon, out.tel_meta_data.data["TelElDes"],
