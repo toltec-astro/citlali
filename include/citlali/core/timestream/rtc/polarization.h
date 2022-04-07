@@ -84,8 +84,6 @@ std::tuple<Eigen::VectorXd, Eigen::VectorXd> Polarization::create_rtc(TCData<TCD
             }
         }
 
-        SPDLOG_INFO("map_index_vector {}",map_index_vector);
-
         auto pa2 = in.tel_meta_data.data["ParAng"].array() - pi;
 
         out.scans.data.resize(nsamples,2*ndet);
@@ -112,6 +110,9 @@ std::tuple<Eigen::VectorXd, Eigen::VectorXd> Polarization::create_rtc(TCData<TCD
 
         map_index_vector.head(ndet).array() +=1;
         map_index_vector.tail(ndet).array() +=2;
+
+        SPDLOG_INFO("map_index_vector {}", map_index_vector);
+        SPDLOG_INFO("det_index_vector {}", det_index_vector);
 
     }
 
@@ -143,8 +144,6 @@ std::tuple<Eigen::VectorXd, Eigen::VectorXd> Polarization::create_rtc(TCData<TCD
             }
         }
 
-        SPDLOG_INFO("done with loop");
-
         auto pa2 = in.tel_meta_data.data["ParAng"].array() - pi;
 
         out.scans.data.resize(nsamples,2*ndet);
@@ -171,11 +170,11 @@ std::tuple<Eigen::VectorXd, Eigen::VectorXd> Polarization::create_rtc(TCData<TCD
         out.flags.data.setOnes(out.scans.data.rows(),out.scans.data.cols());
 
 
-        SPDLOG_INFO("map_index_vector {}", map_index_vector);
-        SPDLOG_INFO("det_index_vector {}", det_index_vector);
-
         map_index_vector.head(ndet).array() +=1;
         map_index_vector.tail(ndet).array() +=2;
+
+        SPDLOG_INFO("map_index_vector {}", map_index_vector);
+        SPDLOG_INFO("det_index_vector {}", det_index_vector);
 
     }
 

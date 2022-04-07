@@ -378,28 +378,30 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
     }
 
     // loop through array indices and add hdu's to existing files
+    Eigen::Index pp = 0;
     for (Eigen::Index i=0; i<array_indices.size(); i++) {
         SPDLOG_INFO("writing {}.fits", f_ios.at(i).filepath);
 
         if (run_polarization) {
             for (auto const& stokes_params: polarization.stokes_params) {
                 // add signal map to file
-                f_ios.at(i).add_hdu("signal_"+stokes_params.first, mout.signal.at(i+stokes_params.second));
+                f_ios.at(i).add_hdu("signal_"+stokes_params.first, mout.signal.at(pp));
 
                 //add weight map to file
-                f_ios.at(i).add_hdu("weight_"+stokes_params.first, mout.weight.at(i+stokes_params.second));
+                f_ios.at(i).add_hdu("weight_"+stokes_params.first, mout.weight.at(pp));
 
                 //add kernel map to file
                 if (run_kernel) {
-                    f_ios.at(i).add_hdu("kernel_"+stokes_params.first, mout.kernel.at(i+stokes_params.second));
+                    f_ios.at(i).add_hdu("kernel_"+stokes_params.first, mout.kernel.at(pp));
                 }
 
                 // add coverage map to file
-                f_ios.at(i).add_hdu("coverage_"+stokes_params.first, mout.coverage.at(i+stokes_params.second));
+                f_ios.at(i).add_hdu("coverage_"+stokes_params.first, mout.coverage.at(pp));
 
                 // add signal-to-noise map to file.  We calculate it here to save space
-                Eigen::MatrixXd signoise = mout.signal.at(i+stokes_params.second).array()*sqrt(mout.weight.at(i+stokes_params.second).array());
+                Eigen::MatrixXd signoise = mout.signal.at(pp).array()*sqrt(mout.weight.at(pp).array());
                 f_ios.at(i).add_hdu("sig2noise_"+stokes_params.first, signoise);
+                pp++;
             }
         }
 
@@ -425,15 +427,17 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
 
         // now loop through hdus and add wcs
         for (auto hdu: f_ios.at(i).hdus) {
+            std::string hdu_name = hdu->name();
             // degrees if science map
             if (reduction_type == "science") {
                 f_ios.at(i).template add_wcs<UnitsType::deg>(hdu,map_type,mout.nrows,mout.ncols,
-                                                       pixel_size,source_center);
+                                                       pixel_size,source_center, hdu_name);
             }
+
             // arcseconds if pointing map
             else if (reduction_type == "pointing") {
                 f_ios.at(i). template add_wcs<UnitsType::arcsec>(hdu,map_type,mout.nrows,mout.ncols,
-                                                          pixel_size,source_center);
+                                                          pixel_size,source_center, hdu_name);
 
                 if constexpr (out_type==MapType::obs) {
                     // add fit parameters

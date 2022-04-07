@@ -344,6 +344,8 @@ double find_weight_threshold(Eigen::DenseBase<Derived> &in, const double cov) {
     int covlimi;
     covlimi = 0.75*og.size();
 
+    SPDLOG_INFO("covlimi {}",covlimi);
+
     covlim = selector(og, covlimi);
 
     double mval, mvali;

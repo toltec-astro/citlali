@@ -22,6 +22,7 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
                        Eigen::DenseBase<DerivedC> &rcphys, Eigen::DenseBase<DerivedC> &ccphys) {
 
     auto weight_threshold = engine_utils::find_weight_threshold(wt, cov_cut);
+    SPDLOG_INFO("weight_threshold {}",weight_threshold);
     auto [cut_row_range, cut_col_range] = engine_utils::set_coverage_cut_ranges(wt, weight_threshold);
 
     // make sure coverage cut map has an even number of rows and cols
@@ -48,6 +49,8 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
     double csize = diffc * nc;
     double diffqr = 1. / rsize;
     double diffqc = 1. / csize;
+
+    SPDLOG_INFO("nr {} nc {}", nr, nc);
 
     Eigen::MatrixXcd block(nr, nc);
     block.real() = in.block(crr0, ccr0, nr, nc);

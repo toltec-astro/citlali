@@ -136,7 +136,7 @@ public:
 
     template <UnitsType units, typename hdu_t, typename map_type_t, typename center_t>
     void add_wcs(hdu_t *hdu, map_type_t map_type, const int nrows, const int ncols,
-                 const double pixel_size, center_t &source_center) {
+                 const double pixel_size, center_t &source_center, std::string hdu_name="none") {
 
         // get units
         double unit_scale;
