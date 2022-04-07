@@ -154,10 +154,13 @@ auto Beammap::run_timestream() {
 
         in.tel_meta_data.data["SourceEl"] = tel_meta_data["SourceEl"].segment(start_index, scan_length);
 
+        Eigen::VectorXd map_index_vector;
+        Eigen::VectorXd det_index_vector;
+
         /*Stage 1: RTCProc*/
         RTCProc rtcproc;
         TCData<TCDataKind::PTC,Eigen::MatrixXd> out;
-        rtcproc.run(in, out, this);
+        rtcproc.run(in, out, det_index_vector, this);
 
         // move out into the PTCData vector
         ptcs0.at(out.index.data - 1) = std::move(out);

@@ -23,31 +23,34 @@ public:
         }
     }
 
-    template <class Engine>
-    void gaussian_kernel(Engine, TCData<TCDataKind::RTC, Eigen::MatrixXd> &);
+    template <class Engine, typename Derived>
+    void gaussian_kernel(Engine, TCData<TCDataKind::RTC, Eigen::MatrixXd> &, Eigen::DenseBase<Derived> &);
 
-    template <class Engine>
-    void airy_kernel(Engine, TCData<TCDataKind::RTC, Eigen::MatrixXd> &);
+    template <class Engine, typename Derived>
+    void airy_kernel(Engine, TCData<TCDataKind::RTC, Eigen::MatrixXd> &, Eigen::DenseBase<Derived> &);
 
-    template <class Engine>
-    void kernel_from_fits(Engine, TCData<TCDataKind::RTC, Eigen::MatrixXd> &);
+    template <class Engine, typename Derived>
+    void kernel_from_fits(Engine, TCData<TCDataKind::RTC, Eigen::MatrixXd> &, Eigen::DenseBase<Derived> &);
 };
 
-template <class Engine>
-void Kernel::gaussian_kernel(Engine engine, TCData<TCDataKind::RTC, Eigen::MatrixXd> &in) {
+template <class Engine, typename Derived>
+void Kernel::gaussian_kernel(Engine engine, TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, Eigen::DenseBase<Derived> &det_index_vector) {
 
     // resize kernel scans
     in.kernel_scans.data.resize(in.scans.data.rows(), in.scans.data.cols());
-    // get kernel standard deviation from apt table
-    Eigen::VectorXd sigma = RAD_ASEC*(engine->calib_data["a_fwhm"] + engine->calib_data["b_fwhm"])/2.;
-    sigma = sigma.array()/(2*sqrt(2*std::log(2)));
 
     // loop through detectors and make a kernel timestream
     for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
 
+        Eigen::Index di = det_index_vector(i);
+
+        // get kernel standard deviation from apt table
+        double sigma = RAD_ASEC*(engine->calib_data["a_fwhm"](di) + engine->calib_data["b_fwhm"](di))/2.;
+        sigma = sigma/(2*sqrt(2*std::log(2)));
+
         // get offsets
-        auto azoff = engine->calib_data["x_t"](i);
-        auto eloff = engine->calib_data["y_t"](i);
+        auto azoff = engine->calib_data["x_t"](di);
+        auto eloff = engine->calib_data["y_t"](di);
 
         // get pointing
         auto [lat, lon] = engine_utils::get_det_pointing(in.tel_meta_data.data, azoff, eloff, engine->map_type);
@@ -60,8 +63,8 @@ void Kernel::gaussian_kernel(Engine engine, TCData<TCDataKind::RTC, Eigen::Matri
 
         // is this faster?
         for (Eigen::Index j=0; j<in.scans.data.rows(); j++) {
-            if (dist(j) <= 3.*sigma(i)) {
-                in.kernel_scans.data(j,i) = exp(-0.5*pow(dist(j)/sigma(i),2));
+            if (dist(j) <= 3.*sigma) {
+                in.kernel_scans.data(j,i) = exp(-0.5*pow(dist(j)/sigma,2));
             }
             else {
                 in.kernel_scans.data(j,i) = 0;
@@ -70,24 +73,26 @@ void Kernel::gaussian_kernel(Engine engine, TCData<TCDataKind::RTC, Eigen::Matri
     }
 }
 
-template <class Engine>
-void Kernel::airy_kernel(Engine engine, TCData<TCDataKind::RTC, Eigen::MatrixXd> &in) {
+template <class Engine, typename Derived>
+void Kernel::airy_kernel(Engine engine, TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, Eigen::DenseBase<Derived> &det_index_vector) {
     // resize kernel scans
     in.kernel_scans.data.resize(in.scans.data.rows(), in.scans.data.cols());
 
     // loop through detectors and make a kernel timestream
     for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
 
+        Eigen::Index di = det_index_vector(i);
+
         // get offsets
-        auto azoff = engine->calib_data["x_t"](i);
-        auto eloff = engine->calib_data["y_t"](i);
+        auto azoff = engine->calib_data["x_t"](di);
+        auto eloff = engine->calib_data["y_t"](di);
 
         // get pointing
         auto [lat, lon] = engine_utils::get_det_pointing(in.tel_meta_data.data, azoff, eloff, engine->map_type);
 
         // distance from map center
         auto dist = (lat.array().pow(2) + lon.array().pow(2)).sqrt();
-        auto fwhm = RAD_ASEC*(engine->calib_data["a_fwhm"](i) + engine->calib_data["b_fwhm"](i))/2.;
+        auto fwhm = RAD_ASEC*(engine->calib_data["a_fwhm"](di) + engine->calib_data["b_fwhm"](di))/2.;
         auto factor = pi*(1.028/fwhm);
 
         for (Eigen::Index j=0; j<in.scans.data.rows(); j++) {
@@ -96,17 +101,19 @@ void Kernel::airy_kernel(Engine engine, TCData<TCDataKind::RTC, Eigen::MatrixXd>
     }
 }
 
-template <class Engine>
-void Kernel::kernel_from_fits(Engine engine, TCData<TCDataKind::RTC, Eigen::MatrixXd> &in) {
+template <class Engine, typename Derived>
+void Kernel::kernel_from_fits(Engine engine, TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, Eigen::DenseBase<Derived> &det_index_vector) {
 
     in.kernel_scans.data.setZero(in.scans.data.rows(), in.scans.data.cols());
 
     // loop through detectors and make a kernel timestream
     for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
 
+        Eigen::Index di = det_index_vector(i);
+
         // get offsets
-        auto azoff = engine->calib_data["x_t"](i);
-        auto eloff = engine->calib_data["y_t"](i);
+        auto azoff = engine->calib_data["x_t"](di);
+        auto eloff = engine->calib_data["y_t"](di);
 
         // get pointing
         auto [lat, lon] = engine_utils::get_det_pointing(in.tel_meta_data.data, azoff, eloff, engine->map_type);

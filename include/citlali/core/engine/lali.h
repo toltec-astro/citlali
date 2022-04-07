@@ -172,6 +172,9 @@ auto Lali::run() {
 
         TCData<TCDataKind::PTC,Eigen::MatrixXd> out;
 
+        SPDLOG_INFO("polarization.stokes_params {}",polarization.stokes_params);
+        SPDLOG_INFO("run_polarizatoin {}",run_polarization);
+
         for (auto const& stokes_params: polarization.stokes_params) {
             TCData<TCDataKind::RTC,Eigen::MatrixXd> in2;
             auto [map_index_vector, det_index_vector] =  polarization.create_rtc(in, in2, stokes_params.first, this);
@@ -180,7 +183,7 @@ auto Lali::run() {
             RTCProc rtcproc;
             {
                 tula::logging::scoped_timeit timer("rtcproc.run()");
-                rtcproc.run(in2, out, this);
+                rtcproc.run(in2, out, det_index_vector, this);
             }
 
             if (ts_out) {
@@ -213,6 +216,10 @@ auto Lali::run() {
                 bool rc = true;
                 if (stokes_params.first == "Q" || stokes_params.first == "U") {
                     rc = false;
+                }
+
+                else {
+                    rc = run_clean;
                 }
 
                 tula::logging::scoped_timeit timer("ptcproc.run()");

@@ -45,6 +45,7 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::De
     for (Eigen::Index mi = 0; mi < ndets; mi++) {
 
         Eigen::Index mc = 0;
+        Eigen::Index di = det_index_vector(mi);
 
         if (engine->reduction_type == "science" || engine->reduction_type == "pointing") {
             mc = map_index_vector(mi);
@@ -54,7 +55,6 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::De
             mc = mi;
         }
 
-
         Eigen::Index noise_det = 0;
 
         // current detector offsets
@@ -62,7 +62,6 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::De
 
         // if in science/pointing mode, get offsets from apt table
         if (engine->reduction_type == "science" || engine->reduction_type == "pointing") {
-            Eigen::Index di = det_index_vector(mi);
             azoff = engine->calib_data["x_t"](di);
             eloff = engine->calib_data["y_t"](di);
         }

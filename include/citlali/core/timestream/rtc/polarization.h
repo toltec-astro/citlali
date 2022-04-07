@@ -36,6 +36,8 @@ std::tuple<Eigen::VectorXd, Eigen::VectorXd> Polarization::create_rtc(TCData<TCD
 
     Eigen::VectorXd map_index_vector, det_index_vector;
 
+    Eigen::Index ndet;
+
     if (sp == "I") {
         SPDLOG_INFO("creating I timestream");
         map_index_vector = engine->calib_data["array"];
@@ -45,8 +47,11 @@ std::tuple<Eigen::VectorXd, Eigen::VectorXd> Polarization::create_rtc(TCData<TCD
 
         for (Eigen::Index i=0;i<engine->ndet;i++) {
             if (engine->run_polarization) {
-                if (map_index_vector(i) != 0) {
-                    map_index_vector(i) +=2;
+                if (map_index_vector(i) == 1) {
+                    map_index_vector(i) = 3;
+                }
+                else if (map_index_vector(i) == 2) {
+                    map_index_vector(i) = 6;
                 }
             }
             det_index_vector(i) = i;
@@ -54,12 +59,11 @@ std::tuple<Eigen::VectorXd, Eigen::VectorXd> Polarization::create_rtc(TCData<TCD
 
         SPDLOG_INFO("map_index_vector {}", map_index_vector);
         SPDLOG_INFO("det_index_vector {}", det_index_vector);
-
     }
 
-    if (sp == "Q") {
+    else if (sp == "Q") {
         SPDLOG_INFO("creating Q timestream");
-        int ndet = (engine->calib_data["fg"].array() == 0).count();
+        ndet = (engine->calib_data["fg"].array() == 0).count();
         //engine->ndet = 2*ndet;
         Eigen::MatrixXd qr, kqr;
         qr.setZero(in.scans.data.rows(), ndet);
@@ -108,8 +112,47 @@ std::tuple<Eigen::VectorXd, Eigen::VectorXd> Polarization::create_rtc(TCData<TCD
 
         out.flags.data.setOnes(out.scans.data.rows(),out.scans.data.cols());
 
-        map_index_vector.head(ndet).array() +=1;
-        map_index_vector.tail(ndet).array() +=2;
+        //map_index_vector.head(ndet).array() +=1;
+        //map_index_vector.tail(ndet).array() +=2;
+
+        SPDLOG_INFO("map_index_vector {}", map_index_vector);
+        SPDLOG_INFO("det_index_vector {}", det_index_vector);
+
+        bool done = false;
+        for (Eigen::Index i=0;i<map_index_vector.size();i++) {
+            if (map_index_vector(i)==0 && done==false) {
+                if (i < ndet) {
+                    map_index_vector(i) = 1;
+                    done = true;
+                }
+                else {
+                    map_index_vector(i) = 2;
+                    done = true;
+                }
+            }
+            if (map_index_vector(i)==1 && done==false) {
+                if (i < ndet) {
+                    map_index_vector(i) = 4;
+                    done = true;
+                }
+                else {
+                    map_index_vector(i) = 5;
+                    done = true;
+                }
+            }
+            if (map_index_vector(i)==2 && done==false) {
+                if (i < ndet) {
+                    map_index_vector(i) = 7;
+                    done = true;
+                }
+                else {
+                    map_index_vector(i) = 8;
+                    done = true;
+                }
+            }
+            done = false;
+
+        }
 
         SPDLOG_INFO("map_index_vector {}", map_index_vector);
         SPDLOG_INFO("det_index_vector {}", det_index_vector);
@@ -118,7 +161,7 @@ std::tuple<Eigen::VectorXd, Eigen::VectorXd> Polarization::create_rtc(TCData<TCD
 
     else if (sp == "U") {
         SPDLOG_INFO("creating U timestream");
-        int ndet = (engine->calib_data["fg"].array() == 1).count();
+        ndet = (engine->calib_data["fg"].array() == 1).count();
         //engine->ndet = 2*ndet;
         Eigen::MatrixXd ur, kur;
 
@@ -169,9 +212,43 @@ std::tuple<Eigen::VectorXd, Eigen::VectorXd> Polarization::create_rtc(TCData<TCD
 
         out.flags.data.setOnes(out.scans.data.rows(),out.scans.data.cols());
 
+        SPDLOG_INFO("map_index_vector {}", map_index_vector);
+        SPDLOG_INFO("det_index_vector {}", det_index_vector);
 
-        map_index_vector.head(ndet).array() +=1;
-        map_index_vector.tail(ndet).array() +=2;
+        bool done = false;
+        for (Eigen::Index i=0;i<map_index_vector.size();i++) {
+            if (map_index_vector(i)==0 && done==false) {
+                if (i < ndet) {
+                    map_index_vector(i) = 1;
+                    done = true;
+                }
+                else {
+                    map_index_vector(i) = 2;
+                    done = true;
+                }
+            }
+            if (map_index_vector(i)==1 && done==false) {
+                if (i < ndet) {
+                    map_index_vector(i) = 4;
+                    done = true;
+                }
+                else {
+                    map_index_vector(i) = 5;
+                    done = true;
+                }
+            }
+            if (map_index_vector(i)==2 && done==false) {
+                if (i < ndet) {
+                    map_index_vector(i) = 7;
+                    done = true;
+                }
+                else {
+                    map_index_vector(i) = 8;
+                    done = true;
+                }
+            }
+            done = false;
+        }
 
         SPDLOG_INFO("map_index_vector {}", map_index_vector);
         SPDLOG_INFO("det_index_vector {}", det_index_vector);

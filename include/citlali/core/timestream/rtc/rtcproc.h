@@ -6,16 +6,16 @@ namespace timestream {
 
 class RTCProc {
 public:
-    template <class Engine>
+    template <typename Derived, class Engine>
     void run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &,
              TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
-             Engine);
+             Eigen::DenseBase<Derived> &,Engine);
 };
 
-template <class Engine>
+template <typename Derived, class Engine>
 void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
          TCData<TCDataKind::PTC, Eigen::MatrixXd> &out,
-         Engine engine) {
+         Eigen::DenseBase<Derived> &det_index_vector, Engine engine) {
 
     // start index for removing scan edges due to lowpassing (nterms=0 if filter is skipped)
     auto si = engine->filter.nterms;
@@ -26,13 +26,13 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     if (engine->run_kernel) {
         SPDLOG_INFO("making kernel for scan {}",in.index.data);
         if (engine->kernel.kernel_type == "internal_gaussian") {
-            engine->kernel.gaussian_kernel(engine, in);
+            engine->kernel.gaussian_kernel(engine, in, det_index_vector);
         }
         else if (engine->kernel.kernel_type == "internal_airy") {
-            engine->kernel.airy_kernel(engine, in);
+            engine->kernel.airy_kernel(engine, in, det_index_vector);
         }
         else if (engine->kernel.kernel_type == "image") {
-            engine->kernel.kernel_from_fits(engine, in);
+            engine->kernel.kernel_from_fits(engine, in, det_index_vector);
         }
     }
 
@@ -147,7 +147,7 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     // flux calibration
     if ((engine->reduction_type == "science") || (engine->reduction_type == "pointing")) {
         SPDLOG_INFO("calibrating flux scale for scan {}", in.index.data);
-        calibrate(out.scans.data, engine->calib_data["flxscale"]);
+        calibrate(out.scans.data, engine->calib_data["flxscale"], det_index_vector);
     }
 }
 
