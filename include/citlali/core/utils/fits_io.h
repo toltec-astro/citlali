@@ -7,6 +7,7 @@
 
 #include <tula/logging.h>
 #include <citlali/core/utils/constants.h>
+#include <citlali/core/utils/toltec_io.h>
 
 enum fileType {
     read_fits = 0,
@@ -136,35 +137,36 @@ public:
 
     template <UnitsType units, typename hdu_t, typename map_type_t, typename center_t>
     void add_wcs(hdu_t *hdu, map_type_t map_type, const int nrows, const int ncols,
-                 const double pixel_size, center_t &source_center, std::string hdu_name="none") {
+                 const double pixel_size, center_t &source_center, double freq, std::map<std::string, int> &stokes_params,
+                 std::string hdu_name="none") {
+
+        ToltecIO toltec_io;
 
         // get units
         double unit_scale;
 
-        // if degrees requested
-        if constexpr (units == UnitsType::deg) {
-            unit_scale = DEG_TO_RAD;
-            hdu->addKey("CUNIT1", "deg", "");
-            hdu->addKey("CUNIT2", "deg", "");
-        }
-
-        // if arcseconds requested
-        else if constexpr (units == UnitsType::arcsec) {
-            unit_scale = RAD_ASEC;
-            hdu->addKey("CUNIT1", "arcsec", "");
-            hdu->addKey("CUNIT2", "arcsec", "");
-        }
-
-        hdu->addKey("CUNIT3", "Hz", "");
-        hdu->addKey("CUNIT4", "", "");
-
         // get reference value
         double CRVAL1, CRVAL2;
 
+        std::string CTYPE1, CTYPE2;
+
+        std::string CUNIT;
+        // if degrees requested
+        if constexpr (units == UnitsType::deg) {
+            unit_scale = DEG_TO_RAD;
+            CUNIT = "deg";
+        }
+
+             // if arcseconds requested
+        else if constexpr (units == UnitsType::arcsec) {
+            unit_scale = RAD_ASEC;
+            CUNIT = "arcsec";
+        }
+
         // if icrs map, set the center to the (RA, Dec)
         if (std::strcmp("icrs", map_type.c_str()) == 0) {
-            hdu->addKey("CTYPE1", "RA---TAN", "");
-            hdu->addKey("CTYPE2", "DEC--TAN", "");
+            CTYPE1 = "RA---TAN";
+            CTYPE2 = "DEC--TAN";
 
             CRVAL1 = source_center["Ra"](0)/unit_scale;
             CRVAL2 = source_center["Dec"](0)/unit_scale;
@@ -172,22 +174,12 @@ public:
 
         // else set it to (0,0) for offset maps
         else if (std::strcmp("altaz", map_type.c_str()) == 0) {
-            hdu->addKey("CTYPE1", "AZOFFSET", "");
-            hdu->addKey("CTYPE2", "ELOFFSET", "");
+            CTYPE1 = "AZOFFSET";
+            CTYPE2 = "ELOFFSET";
 
             CRVAL1 = 0.0;
             CRVAL2 = 0.0;
         }
-
-        hdu->addKey("CTYPE3", "FREQ", "");
-        hdu->addKey("CTYPE4", "STOKES", "");
-
-        // add CRVAL values
-        hdu->addKey("CRVAL1", CRVAL1, "");
-        hdu->addKey("CRVAL2", CRVAL2, "");
-
-        hdu->addKey("CRVAL3", 1, "");
-        hdu->addKey("CRVAL4", 1, "");
 
         // pixel corresponding to reference value
         double ref_pix_c1 = ncols/2;
@@ -202,18 +194,48 @@ public:
             ref_pix_c2 += 0.5;
         }
 
-        // add CRPIX values
-        hdu->addKey("CRPIX1", ref_pix_c1, "");
-        hdu->addKey("CRPIX2", ref_pix_c2, "");
 
-        hdu->addKey("CRPIX3", 1, "");
-        hdu->addKey("CRPIX4", 1, "");
+        // add CRPIX values
+        hdu->addKey("CTYPE1", CTYPE1, "");
+        hdu->addKey("CRVAL1", CRVAL1, "");
+        hdu->addKey("CDELT1", pixel_size/unit_scale, "");
+        hdu->addKey("CRPIX1", ref_pix_c1, "");
+        hdu->addKey("CUNIT1", CUNIT, "");
+
+        hdu->addKey("CTYPE2", CTYPE2, "");
+        hdu->addKey("CRVAL2", CRVAL2, "");
+        hdu->addKey("CDELT2", pixel_size/unit_scale, "");
+        hdu->addKey("CRPIX2", ref_pix_c2, "");
+        hdu->addKey("CUNIT2", CUNIT, "");
 
         // add CD matrix
-        hdu->addKey("CD1_1", -pixel_size/unit_scale, "");
-        hdu->addKey("CD1_2", 0, "");
-        hdu->addKey("CD2_1", 0, "");
-        hdu->addKey("CD2_2", pixel_size/unit_scale, "");
+        //hdu->addKey("CD1_1", -pixel_size/unit_scale, "");
+        //hdu->addKey("CD1_2", 0, "");
+        //hdu->addKey("CD2_1", 0, "");
+        //hdu->addKey("CD2_2", pixel_size/unit_scale, "");
+
+        // add freq WCS for non-primary hdus
+        if (hdu_name != "none") {
+            hdu->addKey("CTYPE3", "FREQ", "");
+            hdu->addKey("CRVAL3", freq, "");
+            hdu->addKey("CDELT3", 1, "");
+            hdu->addKey("CRPIX3", 1, "");
+            hdu->addKey("CUNIT3", "Hz", "");
+
+            std::string key;
+            int p_unit = 0;
+            if (stokes_params.size() > 1) {
+                key.push_back(hdu_name.back());
+                p_unit = stokes_params[key];
+            }
+
+            // add stokes WCS params for non-primary hdus
+            hdu->addKey("CTYPE4", "STOKES", "");
+            hdu->addKey("CRVAL4", p_unit+1, "");
+            hdu->addKey("CDELT4", p_unit+1, "");
+            hdu->addKey("CRPIX4", p_unit+1, "");
+            hdu->addKey("CUNIT4", "", "");
+        }
 
         // add source ra
         hdu->addKey("SRC_RA_RAD", source_center["Ra"][0], "Source RA (radians)");

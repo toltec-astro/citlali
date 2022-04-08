@@ -358,6 +358,7 @@ public:
         get_config(y_size_pix,std::tuple{"mapmaking","y_size_pix"});
         get_config(crpix1,std::tuple{"mapmaking","crpix1"});
         get_config(crpix2,std::tuple{"mapmaking","crpix2"});
+        get_config(cunit,std::tuple{"mapmaking","cunit"});
 
         // get beammap config options
         get_config(cutoff,std::tuple{"beammap","iter_tolerance"});

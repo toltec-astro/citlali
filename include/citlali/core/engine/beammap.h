@@ -549,8 +549,10 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
             }
 
             for (auto hdu: f_ios.at(i).hdus) {
+                std::string hdu_name = hdu->name();
                 f_ios.at(i).template add_wcs<UnitsType::arcsec>(hdu,map_type,mout.nrows,mout.ncols,
-                                                       pixel_size,source_center);
+                                                       pixel_size,source_center,toltec_io.array_freqs[i],
+                                                                polarization.stokes_params,hdu_name);
                 // add fit parameters to hdus
                 hdu->addKey("amp", (float)mout.pfit(0,i),"amplitude (Mjy/sr)");
                 hdu->addKey("amp_err", (float)mout.perror(0,i),"amplitude error (Mjy/sr)");
@@ -581,7 +583,9 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
 
             // add wcs to pHDU
             f_ios.at(i).template add_wcs<UnitsType::arcsec>(&f_ios.at(i).pfits->pHDU(),map_type,mout.nrows,
-                                                      mout.ncols,pixel_size,source_center);
+                                                      mout.ncols,pixel_size,source_center,
+                                                            toltec_io.array_freqs[i],
+                                                            polarization.stokes_params);
 
             // add wavelength
             f_ios.at(i).pfits->pHDU().addKey("WAV", toltec_io.name_keys[i], "Array Name");

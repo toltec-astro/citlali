@@ -365,6 +365,8 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
     // toltec input/output class
     ToltecIO toltec_io;
 
+    double unit_factor = 1;
+
     // get obsnum directory name inside redu directory name
     std::stringstream ss_redu;
     ss_redu << std::setfill('0') << std::setw(2) << redu_num;
@@ -388,14 +390,20 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
     Eigen::Index pp = 0;
     for (Eigen::Index i=0; i<array_indices.size(); i++) {
         SPDLOG_INFO("writing {}.fits", f_ios.at(i).filepath);
+        if (cunit == "mJy/beam") {
+            unit_factor = toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC;
+        }
 
         if (run_polarization) {
             for (auto const& stokes_params: polarization.stokes_params) {
                 // add signal map to file
-                f_ios.at(i).add_hdu("signal_"+stokes_params.first, mout.signal.at(pp));
+
+                auto signal = mout.signal.at(pp)*unit_factor;
+                f_ios.at(i).add_hdu("signal_"+stokes_params.first, signal);
 
                 //add weight map to file
-                f_ios.at(i).add_hdu("weight_"+stokes_params.first, mout.weight.at(pp));
+                auto weight = mout.signal.at(pp)*unit_factor;
+                f_ios.at(i).add_hdu("weight_"+stokes_params.first, weight);
 
                 //add kernel map to file
                 if (run_kernel) {
@@ -414,10 +422,12 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
 
         else {
             // add signal map to file
-            f_ios.at(i).add_hdu("signal", mout.signal.at(i));
+            auto signal = mout.signal.at(pp)*unit_factor;
+            f_ios.at(i).add_hdu("signal", signal);
 
-                 //add weight map to file
-            f_ios.at(i).add_hdu("weight", mout.weight.at(i));
+            //add weight map to file
+            auto weight = mout.signal.at(pp)*unit_factor;
+            f_ios.at(i).add_hdu("weight", weight);
 
                  //add kernel map to file
             if (run_kernel) {
@@ -438,18 +448,20 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
             // degrees if science map
             if (reduction_type == "science") {
                 f_ios.at(i).template add_wcs<UnitsType::deg>(hdu,map_type,mout.nrows,mout.ncols,
-                                                       pixel_size,source_center, hdu_name);
+                                                       pixel_size,source_center, toltec_io.array_freqs[i],
+                                                             polarization.stokes_params, hdu_name);
             }
 
             // arcseconds if pointing map
             else if (reduction_type == "pointing") {
                 f_ios.at(i). template add_wcs<UnitsType::arcsec>(hdu,map_type,mout.nrows,mout.ncols,
-                                                          pixel_size,source_center, hdu_name);
+                                                          pixel_size,source_center, toltec_io.array_freqs[i],
+                                                                polarization.stokes_params,hdu_name);
 
                 if constexpr (out_type==MapType::obs) {
                     // add fit parameters
-                    hdu->addKey("amp", (float)mout.pfit(0,i),"amplitude (Mjy/sr)");
-                    hdu->addKey("amp_err", (float)mout.perror(0,i),"amplitude error (Mjy/sr)");
+                    hdu->addKey("amp", (float)mout.pfit(0,i)*unit_factor,"amplitude (" + cunit + ")");
+                    hdu->addKey("amp_err", (float)mout.perror(0,i)*unit_factor,"amplitude error ("+cunit+")");
                     hdu->addKey("x_t", (float)mout.pfit(1,i),"az offset (arcsec)");
                     hdu->addKey("x_t_err", (float)mout.perror(1,i),"az offset error (arcsec)");
                     hdu->addKey("y_t", (float)mout.pfit(2,i),"alt offset (arcsec)");
@@ -473,13 +485,15 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
         if (reduction_type == "science") {
             // add wcs to pHDU
             f_ios.at(i).template add_wcs<UnitsType::deg>(&f_ios.at(i).pfits->pHDU(),map_type,
-                                                   mout.nrows,mout.ncols,pixel_size,source_center);
+                                                   mout.nrows,mout.ncols,pixel_size,source_center,toltec_io.array_freqs[i],
+                                                         polarization.stokes_params);
         }
         // arcseconds if pointing map
         else if (reduction_type == "pointing") {
             // add wcs to pHDU
             f_ios.at(i).template add_wcs<UnitsType::arcsec>(&f_ios.at(i).pfits->pHDU(),map_type,
-                                                      mout.nrows,mout.ncols,pixel_size,source_center);
+                                                      mout.nrows,mout.ncols,pixel_size,source_center,toltec_io.array_freqs[i],
+                                                            polarization.stokes_params);
         }
 
         // add wavelength
@@ -487,7 +501,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
         // add obsnum
         f_ios.at(i).pfits->pHDU().addKey("OBSNUM", obsnum, "Observation Number");
         // add units
-        f_ios.at(i).pfits->pHDU().addKey("UNIT", obsnum, "MJy/Sr");
+        f_ios.at(i).pfits->pHDU().addKey("UNIT", obsnum, cunit);
         // add conversion
         f_ios.at(i).pfits->pHDU().addKey("to_mjy/b", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
         // add source ra
@@ -721,7 +735,6 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
     else if constexpr (out_type == MapType::coadd) {
         if (run_coadd) {
             if (run_noise) {
-
                 if constexpr (out_type == MapType::coadd) {
                     if (reduction_type == "science") {
                         if (filtered == false) {
@@ -782,26 +795,47 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
 
                 SPDLOG_INFO("writing noise maps");
                 // loop through array indices and add hdu's to existing files
+                pp = 0;
                 for (Eigen::Index i=0; i<array_indices.size(); i++) {
+
+                    if (cunit == "mJy/beam") {
+                        unit_factor = toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC;
+                    }
                     SPDLOG_INFO("writing {}.fits", nf_ios.at(i).filepath);
                     // loop through noise map number
-                    for (Eigen::Index j=0; j<mout.nnoise; j++) {
 
-                        // get tensor chip on 3rd dimension (nrows,ncols, nnoise)
-                        Eigen::Tensor<double,2> out = mout.noise.at(i).chip(j,2);
-                        auto out_matrix = Eigen::Map<Eigen::MatrixXd>(out.data(), out.dimension(0),
-                                                    out.dimension(1));
-                        // add noise map to file
-                        nf_ios.at(i).add_hdu("noise" + std::to_string(j),out_matrix);
+                    if (run_polarization) {
+                        for (auto const& stokes_params: polarization.stokes_params) {
+                            for (Eigen::Index j=0; j<mout.nnoise; j++) {
+                                // get tensor chip on 3rd dimension (nrows,ncols, nnoise)
+                                Eigen::Tensor<double,2> out = mout.noise.at(pp).chip(j,2);
+                                auto out_matrix = Eigen::Map<Eigen::MatrixXd>(out.data(), out.dimension(0),
+                                                                              out.dimension(1))*unit_factor;
+                                // add noise map to file
+                                nf_ios.at(i).add_hdu("noise" + std::to_string(j) + stokes_params.first,out_matrix);
+                            }
+                            pp++;
+                        }
+                    }
+
+                    else {
+                        for (Eigen::Index j=0; j<mout.nnoise; j++) {
+                            // get tensor chip on 3rd dimension (nrows,ncols, nnoise)
+                            Eigen::Tensor<double,2> out = mout.noise.at(i).chip(j,2);
+                            auto out_matrix = Eigen::Map<Eigen::MatrixXd>(out.data(), out.dimension(0),
+                                                        out.dimension(1))*unit_factor;
+                            // add noise map to file
+                            nf_ios.at(i).add_hdu("noise" + std::to_string(j),out_matrix);
+                        }
                     }
 
                     // now loop through hdus and add wcs
                     for (auto hdu: nf_ios.at(i).hdus) {
+                        std::string hdu_name = hdu->name();
                         // degrees if science map
-                        //if (reduction_type == "science") {
-                            nf_ios.at(i).template add_wcs<UnitsType::deg>(hdu,map_type,mout.nrows,mout.ncols,
-                                                                   pixel_size,source_center);
-                        //}
+                        nf_ios.at(i).template add_wcs<UnitsType::deg>(hdu,map_type,mout.nrows,mout.ncols,
+                                                               pixel_size,source_center,toltec_io.array_freqs[i],
+                                                               polarization.stokes_params,hdu_name);
                     }
 
                     // loop through default TolTEC fits header keys and add to primary header
@@ -811,7 +845,8 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
 
                     // add wcs to pHDU
                     nf_ios.at(i).template add_wcs<UnitsType::deg>(&nf_ios.at(i).pfits->pHDU(),map_type,
-                                                           mout.nrows,mout.ncols,pixel_size,source_center);
+                                                           mout.nrows,mout.ncols,pixel_size,source_center,toltec_io.array_freqs[i],
+                                                                  polarization.stokes_params);
 
                     // add wavelength
                     nf_ios.at(i).pfits->pHDU().addKey("WAV", toltec_io.name_keys[i], "Array Name");

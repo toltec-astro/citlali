@@ -146,6 +146,9 @@ public:
     // reference pixel
     double crpix1, crpix2;
 
+    // map unit
+    std::string cunit;
+
     template <typename tel_meta_t, typename C, typename S>
     map_dims_t get_dims(tel_meta_t &, C &, S &, std::string, std::string,
                         const double, const double);

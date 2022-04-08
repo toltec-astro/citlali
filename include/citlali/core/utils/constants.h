@@ -20,6 +20,15 @@ constexpr auto pi = static_cast<double>(EIGEN_PI);
 // standard deviation to fwhm
 #define STD_TO_FWHM 2.0*sqrt(2.0*log(2.0))
 
+// 1.1 mm freq
+#define A1100_FREQ 3*pow(10,8)/(1.1/1000)
+
+// 1.4 mm freq
+#define A1400_FREQ 3*pow(10,8)/(1.4/1000)
+
+// 2.0 mm freq
+#define A2000_FREQ 3*pow(10,8)/(2.0/1000)
+
 // 1.1 mm fwhm
 #define A1100_FWHM 5.0
 

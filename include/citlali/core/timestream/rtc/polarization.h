@@ -96,7 +96,7 @@ std::tuple<Eigen::VectorXd, Eigen::VectorXd> Polarization::create_rtc(TCData<TCD
             Eigen::Index di = det_index_vector(i);
 
             // don't use pointing here as that will rotate by azoff/eloff
-            Eigen::VectorXd lat = -(engine->calib_data["x_t"](di)*RAD_ASEC) + in.tel_meta_data.data["TelElDes"].array();
+            Eigen::VectorXd lat = (engine->calib_data["x_t"](di)*RAD_ASEC) + in.tel_meta_data.data["TelElDes"].array();
 
             // rotate by PA
             auto qs0 = cos(-2*pa2.array())*qr.col(i).array();
@@ -211,7 +211,7 @@ std::tuple<Eigen::VectorXd, Eigen::VectorXd> Polarization::create_rtc(TCData<TCD
             Eigen::Index di = det_index_vector(i);
 
             // don't use pointing here as that will rotate by azoff/eloff
-            Eigen::VectorXd lat = -(engine->calib_data["x_t"](di)*RAD_ASEC) + in.tel_meta_data.data["TelElDes"].array();
+            Eigen::VectorXd lat = (engine->calib_data["x_t"](di)*RAD_ASEC) + in.tel_meta_data.data["TelElDes"].array();
 
             // rotate by PA
             auto qs0 = -sin(-2*pa2.array())*ur.col(i).array();
@@ -219,7 +219,7 @@ std::tuple<Eigen::VectorXd, Eigen::VectorXd> Polarization::create_rtc(TCData<TCD
 
             // rotate by elevation and flip
             auto qs1 = qs0.array()*cos(2*in.tel_meta_data.data["TelElDes"].array()) - us0.array()*sin(2*in.tel_meta_data.data["TelElDes"].array());
-            auto us1 = - qs0.array()*sin(2*in.tel_meta_data.data["TelElDes"].array()) - us0.array()*cos(2*in.tel_meta_data.data["TelElDes"].array());
+            auto us1 = -qs0.array()*sin(2*in.tel_meta_data.data["TelElDes"].array()) - us0.array()*cos(2*in.tel_meta_data.data["TelElDes"].array());
 
             // rotate by elevation and flip
             //auto qs1 = qs0.array()*cos(2*lat.array()) - us0.array()*sin(2*lat.array());

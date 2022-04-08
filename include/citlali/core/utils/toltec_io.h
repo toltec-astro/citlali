@@ -92,6 +92,11 @@ struct ToltecIO {
         {1, A1400_BAREA},
         {2, A2000_BAREA},};
 
+    std::map<int, double> array_freqs {
+        {0,A1100_FREQ},
+        {1,A1400_FREQ},
+        {2,A2000_FREQ}};
+
     // header keys for pointing fit ecsv
     std::vector<std::string> apt_header {
         {"amp"},
