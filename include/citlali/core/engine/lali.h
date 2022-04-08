@@ -505,9 +505,9 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
         // add conversion
         f_ios.at(i).pfits->pHDU().addKey("to_mjy/b", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
         // add source ra
-        f_ios.at(i).pfits->pHDU().addKey("SRC_RA_RAD", source_center["Ra"][0], "Source RA (radians)");
+        f_ios.at(i).pfits->pHDU().addKey("s_ra", source_center["Ra"][0], "Source RA (radians)");
         // add source dec
-        f_ios.at(i).pfits->pHDU().addKey("SRC_DEC_RAD", source_center["Dec"][0], "Source Dec (radians)");
+        f_ios.at(i).pfits->pHDU().addKey("s_dec", source_center["Dec"][0], "Source Dec (radians)");
 
     }
     // close file since we're done
@@ -670,10 +670,10 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
         if (reduction_type == "pointing") {
             // yaml node for ecsv table meta data (units and description)
             YAML::Node meta;
-            meta["amp"].push_back("units: Mjy/sr");
+            meta["amp"].push_back("units: " + cunit);
             meta["amp"].push_back("fitted amplitude");
 
-            meta["amp_err"].push_back("units: Mjy/sr");
+            meta["amp_err"].push_back("units: " + cunit);
             meta["amp_err"].push_back("fitted amplitude error");
 
             meta["x_t"].push_back("units: arcsec");
@@ -857,9 +857,9 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
                     // add conversion
                     nf_ios.at(i).pfits->pHDU().addKey("to_mjy/b", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
                     // add source ra
-                    nf_ios.at(i).pfits->pHDU().addKey("SRC_RA_RAD", source_center["Ra"][0], "Source RA (radians)");
+                    nf_ios.at(i).pfits->pHDU().addKey("s_ra", source_center["Ra"][0], "Source RA (radians)");
                     // add source dec
-                    nf_ios.at(i).pfits->pHDU().addKey("SRC_DEC_RAD", source_center["Dec"][0], "Source Dec (radians)");
+                    nf_ios.at(i).pfits->pHDU().addKey("s_dec", source_center["Dec"][0], "Source Dec (radians)");
 
                 }
                 // close the file when we're done

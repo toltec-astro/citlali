@@ -970,6 +970,8 @@ int run(const rc_t &rc) {
     using tula::logging::timeit;
     SPDLOG_INFO("use KIDs data spec: {}", predefs::kidsdata::name);
 
+    std::vector<std::string> config_filepaths;
+
     // load the yaml citlali config
     // this will merge the list of config files in rc
     tula::config::YamlConfig citlali_config;
@@ -977,6 +979,7 @@ int run(const rc_t &rc) {
         auto node_config_files = rc.get_node("config_file");
         for (const auto & n: node_config_files) {
             auto filepath = n.as<std::string>();
+            config_filepaths.push_back(filepath);
             SPDLOG_TRACE("load config from file {}", filepath);
             citlali_config = tula::config::merge(citlali_config, tula::config::YamlConfig::from_filepath(filepath));
         }
@@ -1178,6 +1181,16 @@ int run(const rc_t &rc) {
 
                 toltec_io.setup_output_directory(todproc.engine().filepath,
                                                  hdname);
+
+                for (std::string config_filepath : config_filepaths) {
+                    std::size_t found = config_filepath.rfind("/");
+                    if (found!=std::string::npos) {
+                        std::string config_name = config_filepath.substr(found);
+                        SPDLOG_INFO("config_name {}",config_name);
+                        fs::copy(config_filepath, todproc.engine().filepath + hdname + config_name);
+                    }
+
+                }
 
                 // fs::copy(rc.get_str("config_file"))
 

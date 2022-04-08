@@ -238,9 +238,9 @@ public:
         }
 
         // add source ra
-        hdu->addKey("SRC_RA_RAD", source_center["Ra"][0], "Source RA (radians)");
+        hdu->addKey("s_ra", source_center["Ra"][0], "Source RA (radians)");
         // add source dec
-        hdu->addKey("SRC_DEC_RAD", source_center["Dec"][0], "Source DEC (radians)");
+        hdu->addKey("s_dec", source_center["Dec"][0], "Source DEC (radians)");
     }
 
     void add_ascii_table(std::string hdu_name, unsigned long nrows, std::vector<std::string> &colnames,
