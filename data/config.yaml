@@ -1,6 +1,6 @@
 inputs:
   - cal_items:
-      - filepath: /Users/mmccrackan/toltec/simu_stuff/pointSource_simu/Pointing_1.0/apt_000001_000_0000_2021_09_04_16_26_41_trimmed.ecsv
+      - filepath: /path/to/raw/data/directory/apt_000001_000_0000_2021_09_04_16_26_41_trimmed.ecsv
         meta:
           interface: apt
         type: array_prop_table
@@ -29,49 +29,49 @@ inputs:
         - axes_name: alt
           value_arcsec: 1.2
     data_items:
-      - filepath: /Users/mmccrackan/toltec/simu_stuff/pointSource_simu/Pointing_1.0/tel_000001_000_0000_2021_09_04_16_26_41.nc
+      - filepath: /path/to/raw/data/directory/tel_000001_000_0000_2021_09_04_16_26_41.nc
         meta:
           interface: lmt
-      - filepath: /Users/mmccrackan/toltec/simu_stuff/pointSource_simu/Pointing_1.0/hwp_000001_000_0000_2021_09_04_16_26_41.nc
+      - filepath: /path/to/raw/data/directory/hwp_000001_000_0000_2021_09_04_16_26_41.nc
         meta:
           interface: hwp
-      - filepath: /Users/mmccrackan/toltec/simu_stuff/pointSource_simu/Pointing_1.0/toltec0_000001_000_0000_2021_09_04_16_26_41_timestream.nc
+      - filepath: /path/to/raw/data/directory/toltec0_000001_000_0000_2021_09_04_16_26_41_timestream.nc
         meta:
           interface: toltec0
-      - filepath: /Users/mmccrackan/toltec/simu_stuff/pointSource_simu/Pointing_1.0/toltec1_000001_000_0000_2021_09_04_16_26_41_timestream.nc
+      - filepath: /path/to/raw/data/directory/toltec1_000001_000_0000_2021_09_04_16_26_41_timestream.nc
         meta:
           interface: toltec1
-      - filepath: /Users/mmccrackan/toltec/simu_stuff/pointSource_simu/Pointing_1.0/toltec2_000001_000_0000_2021_09_04_16_26_41_timestream.nc
+      - filepath: /path/to/raw/data/directory/toltec2_000001_000_0000_2021_09_04_16_26_41_timestream.nc
         meta:
           interface: toltec2
-      - filepath: /Users/mmccrackan/toltec/simu_stuff/pointSource_simu/Pointing_1.0/toltec3_000001_000_0000_2021_09_04_16_26_41_timestream.nc
+      - filepath: /path/to/raw/data/directory/toltec3_000001_000_0000_2021_09_04_16_26_41_timestream.nc
         meta:
           interface: toltec3
-      - filepath: /Users/mmccrackan/toltec/simu_stuff/pointSource_simu/Pointing_1.0/toltec4_000001_000_0000_2021_09_04_16_26_41_timestream.nc
+      - filepath: /path/to/raw/data/directory/toltec4_000001_000_0000_2021_09_04_16_26_41_timestream.nc
         meta:
           interface: toltec4
-      - filepath: /Users/mmccrackan/toltec/simu_stuff/pointSource_simu/Pointing_1.0/toltec5_000001_000_0000_2021_09_04_16_26_41_timestream.nc
+      - filepath: /path/to/raw/data/directory/toltec5_000001_000_0000_2021_09_04_16_26_41_timestream.nc
         meta:
           interface: toltec5
-      - filepath: /Users/mmccrackan/toltec/simu_stuff/pointSource_simu/Pointing_1.0/toltec6_000001_000_0000_2021_09_04_16_26_41_timestream.nc
+      - filepath: /path/to/raw/data/directory/toltec6_000001_000_0000_2021_09_04_16_26_41_timestream.nc
         meta:
           interface: toltec6
-      - filepath: /Users/mmccrackan/toltec/simu_stuff/pointSource_simu/Pointing_1.0/toltec7_000001_000_0000_2021_09_04_16_26_41_timestream.nc
+      - filepath: /path/to/raw/data/directory/toltec7_000001_000_0000_2021_09_04_16_26_41_timestream.nc
         meta:
           interface: toltec7
-      - filepath: /Users/mmccrackan/toltec/simu_stuff/pointSource_simu/Pointing_1.0/toltec8_000001_000_0000_2021_09_04_16_26_41_timestream.nc
+      - filepath: /path/to/raw/data/directory/toltec8_000001_000_0000_2021_09_04_16_26_41_timestream.nc
         meta:
           interface: toltec8
-      - filepath: /Users/mmccrackan/toltec/simu_stuff/pointSource_simu/Pointing_1.0/toltec9_000001_000_0000_2021_09_04_16_26_41_timestream.nc
+      - filepath: /path/to/raw/data/directory/toltec9_000001_000_0000_2021_09_04_16_26_41_timestream.nc
         meta:
           interface: toltec9
-      - filepath: /Users/mmccrackan/toltec/simu_stuff/pointSource_simu/Pointing_1.0/toltec10_000001_000_0000_2021_09_04_16_26_41_timestream.nc
+      - filepath: /path/to/raw/data/directory/toltec10_000001_000_0000_2021_09_04_16_26_41_timestream.nc
         meta:
           interface: toltec10
-      - filepath: /Users/mmccrackan/toltec/simu_stuff/pointSource_simu/Pointing_1.0/toltec11_000001_000_0000_2021_09_04_16_26_41_timestream.nc
+      - filepath: /path/to/raw/data/directory/toltec11_000001_000_0000_2021_09_04_16_26_41_timestream.nc
         meta:
           interface: toltec11
-      - filepath: /Users/mmccrackan/toltec/simu_stuff/pointSource_simu/Pointing_1.0/toltec12_000001_000_0000_2021_09_04_16_26_41_timestream.nc
+      - filepath: /path/to/raw/data/directory/toltec12_000001_000_0000_2021_09_04_16_26_41_timestream.nc
         meta:
           interface: toltec12
     meta:
@@ -86,8 +86,8 @@ kids:
 runtime:
   parallel_policy: seq # seq, omp, tbb
   n_threads: 1 # number of threads to parallelize over
-  output_dir: /Users/mmccrackan/toltec/simu_stuff/pointSource_simu/Pointing_1.0_reduce/ #root path
-  reduction_type: pointing #beammap, pointing, etc
+  output_dir: /path/to/reduction/directory/ #root path
+  reduction_type: science #beammap, pointing, etc
   meta:
     version: tolteca...
     #high level config settings
@@ -107,17 +107,23 @@ interface_sync_offset: #dict for each toltec[0..12]+hwp+lmt/  #match keys with f
   - toltec12: 0
   - hwp: 0
 timestream:
+  polariametry:
+    enabled: false
+  output:
+    enabled: false
+    format: netcdf
+    chunk_type: rtc #ptc, both
   chunking:
     length_sec: 10.0
   weighting:
     type: full #approximate
   despike:
-    enabled: true
+    enabled: false
     min_spike_sigma: 8.0
     time_constant_sec: 0.015
     window_size: 32
   filter:
-    enabled: true
+    enabled: false
     a_gibbs: 50.0
     freq_high_Hz: 16.0
     freq_low_Hz: 0.0
@@ -126,38 +132,41 @@ timestream:
     enabled: true
     factor: 1
   kernel:
-    enabled: true
+    enabled: false
     filepath: null
+    image_ext_name: signal
     type: internal_gaussian #image, internal_airy
   clean:
-    enabled: true
+    enabled: false
     cut_std: 0.0
     grouping: array_name
     n_eig_to_cut: 3
 mapmaking:
-  grouping: array_name #array, detector, polarization, nw
-  method: naive #jinc, maximum_likelihood (toast)?
-  pixel_axes: altaz #icrs, lb
-  pixel_size_arcsec: 0.75
-  crval1_J2000: null #absolute pointing_x
-  crval2_J2000: null #absolute pointing_y
-  crpix1: null
-  crpix2: null
-  x_size_pix: null #null or value
-  y_size_pix: null #null or value
+  cunit: "MJy/Sr" # mJy/beam
+  crpix1: 0
+  crpix2: 0
+  crval1_J2000: 0
+  crval2_J2000: 0
+  grouping: array_name
+  method: naive
+  pixel_axes: icrs
+  pixel_size_arcsec: 1.0
+  x_size_pix: 0
+  y_size_pix: 0
 beammap:
   iter_tolerance: 0.2
   iter_max: 1
 source_fitting:
-  enabled: true
+  enabled: false
   model: gaussian
   bounding_box_arcsec: 10
   initial_guess: brightest_pixel #table
 coadd:
-  enabled: true
+  enabled: false
+  cov_cut: 0.75
   noise_maps:
-    enabled: true
-    n_noise_maps: 100
+    enabled: false
+    n_noise_maps: 30
   filtering:
     enabled: true
     type: wiener_filter
