@@ -1183,11 +1183,15 @@ int run(const rc_t &rc) {
                                                  hdname);
 
                 for (std::string config_filepath : config_filepaths) {
+                    SPDLOG_INFO("config_filepath {}", config_filepath);
                     std::size_t found = config_filepath.rfind("/");
                     if (found!=std::string::npos) {
                         std::string config_name = config_filepath.substr(found);
                         SPDLOG_INFO("config_name {}",config_name);
                         fs::copy(config_filepath, todproc.engine().filepath + hdname + config_name);
+                    }
+                    else {
+                        fs::copy(config_filepath, todproc.engine().filepath + hdname + config_filepath);
                     }
 
                 }
