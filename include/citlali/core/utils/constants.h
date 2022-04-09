@@ -18,7 +18,7 @@ constexpr auto pi = static_cast<double>(EIGEN_PI);
 #define DEG_TO_RAD (DEG_TO_ASEC*RAD_ASEC)
 
 // standard deviation to fwhm
-#define STD_TO_FWHM 2.0*sqrt(2.0*log(2.0))
+#define STD_TO_FWHM 2.0*std::sqrt(2.0*std::log(2.0))
 
 // 1.1 mm freq
 #define A1100_FREQ 3*pow(10,8)/(1.1/1000)
@@ -48,4 +48,4 @@ constexpr auto pi = static_cast<double>(EIGEN_PI);
 #define A2000_BAREA pi*pow(A2000_FWHM/2,2)
 
 // MJy/sr to mJy/arcsec
-#define MJY_SR_TO_mJY_ASEC (1/3282.8)*(1/pow(3600,2))*pow(10,6)*1000
+#define MJY_SR_TO_mJY_ASEC (1/3282.8)*(1/pow(3600.0,2.0))*pow(10.0,6.0)*1000

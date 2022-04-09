@@ -56,11 +56,13 @@ struct ToltecIO {
         hist = 6,
         raw_hist = 7,
         filtered_hist = 8,
-        psd = 9,
-        raw_psd = 10,
-        filtered_psd = 11,
-        timestream = 12,
-        no_prod_type = 13
+        noise_raw_hist = 9,
+        noise_filtered_hist = 10,
+        psd = 11,
+        raw_psd = 12,
+        filtered_psd = 13,
+        timestream = 14,
+        no_prod_type = 15
     };
 
     enum ObsNum {
@@ -262,6 +264,14 @@ struct ToltecIO {
 
         if constexpr (prod_type == filtered_hist) {
             filepath = filepath + "filtered_hist";
+        }
+
+        if constexpr (prod_type == noise_raw_hist) {
+            filepath = filepath + "noise_raw_hist";
+        }
+
+        if constexpr (prod_type == noise_filtered_hist) {
+            filepath = filepath + "noise_filtered_hist";
         }
 
         if constexpr (prod_type == psd) {

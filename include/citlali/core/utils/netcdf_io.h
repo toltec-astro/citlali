@@ -26,8 +26,6 @@ void append_to_netcdf(std::string filepath, Eigen::DenseBase<DerivedA> &data, Ei
     using netCDF::NcVar;
     using namespace netCDF::exceptions;
 
-    //auto &fo = io.file_obj();
-
     netCDF::NcFile fo(filepath,netCDF::NcFile::write);
     auto vars = fo.getVars();
 

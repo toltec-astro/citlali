@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include <Eigen/Core>
 #include <unsupported/Eigen/CXX11/Tensor>
 #include <unsupported/Eigen/Splines>
@@ -26,6 +28,8 @@ public:
     double diffr, diffc;
     double denom_limit = 1.e-4;
 
+    std::string exmode;
+
     //double beam_ratio = 30.;
 
     Eigen::MatrixXd rr, vvq, denom, nume;
@@ -40,7 +44,7 @@ public:
 
     template<class CMB, class CD>
     void make_template(CMB &cmb, CD &calib_data, const double gaussian_template_fwhm_rad, const int map_num) {
-        // make sure new wiener filtered maps are even dimensioned
+        // make sure new wiener filtered maps have even dimensions
         nr = 2*(cmb.nrows/2);
         nc = 2*(cmb.ncols/2);
 
@@ -102,7 +106,7 @@ public:
             //cmb.kernel.at(map_num) = (denom.array() == 0).select(0, nume.array() / denom.array());
 
             for(int i=0;i<nc;i++)
-                for(int j=0;j<nr;j++){
+                for(int j=0;j<nr;j++) {
                     if (denom(j,i) != 0.0)
                         cmb.kernel.at(map_num)(j,i)=nume(j,i)/denom(j,i);
                     else {
@@ -117,8 +121,8 @@ public:
         run_filter(cmb, map_num);
         //cmb.signal.at(map_num) = (denom.array() == 0).select(0, nume.array() / denom.array());
 
-        for(int i=0;i<nc;i++)
-            for(int j=0;j<nr;j++){
+        for(int i=0; i<nc; i++)
+            for(int j=0; j<nr;j ++) {
                 if (denom(j,i) != 0.0)
                     cmb.signal.at(map_num)(j,i) = nume(j,i)/denom(j,i);
                 else {
@@ -163,13 +167,7 @@ void WienerFilter::make_gaussian_template(CMB &cmb, const double gaussian_templa
     Eigen::Index rcind, ccind;
 
     double mindist = dist.minCoeff(&rcind, &ccind);
-    SPDLOG_INFO("gaussian_template_fwhm_rad {}",gaussian_template_fwhm_rad);
     double sigma = gaussian_template_fwhm_rad / STD_TO_FWHM;
-    SPDLOG_INFO("sigma {}",sigma);
-    SPDLOG_INFO("STD_TO_FWHM {}",STD_TO_FWHM);
-    SPDLOG_INFO("cmb.rcphys {}",cmb.rcphys);
-    SPDLOG_INFO("cmb.ccphys {}",cmb.ccphys);
-    SPDLOG_INFO("rcind {} ccind {}",rcind,ccind);
 
     tplate = exp(-0.5 * pow(dist.array() / sigma, 2.));
     tplate = engine_utils::shift_matrix(tplate, -rcind, -ccind);
@@ -266,8 +264,6 @@ void WienerFilter::calc_vvq(CMB &cmb, const int map_num) {
     Eigen::VectorXd qf = cmb.noise_avg_psd.at(map_num).psd_freq;
     Eigen::VectorXd hp = cmb.noise_avg_psd.at(map_num).psd;
 
-    ////SPDLOG_INFO("qf {} hp {}", qf, hp);
-
     // size of psd and psd freq vectors
     Eigen::Index npsd = hp.size();
 
@@ -306,8 +302,6 @@ void WienerFilter::calc_vvq(CMB &cmb, const int map_num) {
     // get max value and index of hp
     auto maxhp = hp.maxCoeff(&maxhpind);
 
-    ////SPDLOG_INFO("a0");
-
     if (maxhp < -1) {
         maxhp = -1;
         maxhpind = 0;
@@ -334,8 +328,6 @@ void WienerFilter::calc_vvq(CMB &cmb, const int map_num) {
     }
     */
 
-    ////SPDLOG_INFO("a1");
-
     // do the same for the region below the maximum hp
     //hp.head(maxhpind).setConstant(maxhp);
 
@@ -353,18 +345,11 @@ void WienerFilter::calc_vvq(CMB &cmb, const int map_num) {
     /*shift qc */
     //qc = Eigen::VectorXd::LinSpaced(nc, -(nc - 1) / 2, (nc - 1) / 2) * diffqc;
 
-
     for(int i=0;i<nr;i++) qr[i] = diffqr*(i-(nr-1)/2);
       for(int i=0;i<nc;i++) qc[i] = diffqc*(i-(nc-1)/2);
 
     engine_utils::shift_vector(qr, -(nr-1)/2);
     engine_utils::shift_vector(qc, -(nc-1)/2);
-
-    //SPDLOG_INFO("qr {}", qr);
-    //SPDLOG_INFO("qc {}", qc);
-
-    ////SPDLOG_INFO("a2");
-
 
     // make qmap by replicating qc and qr ncols and nrows times respectively.  Faster than a for loop for expected
     // map dimensions
@@ -375,17 +360,6 @@ void WienerFilter::calc_vvq(CMB &cmb, const int map_num) {
             qmap(j,i) = sqrt(pow(qr[j],2)+pow(qc[i],2));
         }
     }
-
-    //SPDLOG_INFO("qmap {}", qmap);
-    //SPDLOG_INFO("qf {}", qf);
-    //SPDLOG_INFO("hp {}", hp);
-
-    /*std::cerr << std::endl;
-    for (int bb=0; bb<hp.size(); bb++) {
-        std::cerr << hp(bb) << "," << std::endl;
-    }*/
-
-    ////SPDLOG_INFO("a3");
 
     Eigen::MatrixXd psdq;
     psdq.setZero(nr, nc);
@@ -407,9 +381,6 @@ void WienerFilter::calc_vvq(CMB &cmb, const int map_num) {
                                      hp.data(), psdq.data() + nr * i + j,
                                      qf.data(), qmap.data() + nr * i + j);
 
-                    //std::cerr << std::endl << psdq.data() + nr * i + j << std::endl;
-
-                ////SPDLOG_INFO("hp(before) {} psdq(i,j) {} hp(nr * i + j +1) {}",hp(nr * i + j -1), psdq(j,i),hp(nr * i + j +1));
                 }
 
                 else if (qmap(j, i) > qf(qf.size() - 1)) {
@@ -420,15 +391,9 @@ void WienerFilter::calc_vvq(CMB &cmb, const int map_num) {
                 }
             }
         }
-    ////SPDLOG_INFO("a41");
-
-        //SPDLOG_INFO("psdq {}", psdq);
-
 
     // find the minimum value of hp
     auto lowval = 0;//hp.minCoeff();
-
-    ////SPDLOG_INFO("lowval {}", lowval);
 
     // set all the points in psdq smaller than lowval to lowval
     //(psdq.array() < lowval).select(lowval, psdq);
@@ -439,17 +404,12 @@ void WienerFilter::calc_vvq(CMB &cmb, const int map_num) {
             if (psdq(j,i) < lowval) psdq(j,i)=lowval;
     }
 
-    ////SPDLOG_INFO("PSDQ {}", psdq);
-
-    ////SPDLOG_INFO("a5");
-
     // normalize the power spectrum psdq and place into vvq
     //vvq = psdq/psdq.sum();
     vvq.setZero(nr,nc);
       double totpsdq=0.;
       for(int i=0;i<nc;i++) for(int j=0;j<nr;j++) totpsdq += psdq(j,i);
       for(int i=0;i<nc;i++) for(int j=0;j<nr;j++) vvq(j,i) = psdq(j,i)/totpsdq;
-    //SPDLOG_INFO("vvq {}", vvq);
 }
 
 void WienerFilter::calc_numerator() {
@@ -460,35 +420,24 @@ void WienerFilter::calc_numerator() {
     Eigen::MatrixXcd in(nr, nc);
     Eigen::MatrixXcd out(nr, nc);
 
-    ////SPDLOG_INFO("rr {}", rr);
-    ////SPDLOG_INFO("mflt {}", mflt);
-
     //Eigen::Map<Eigen::VectorXd> rr_vec(rr.data(),rr.rows(),rr.cols());
     //Eigen::Map<Eigen::VectorXd> mflt_vec(mflt.data(),mflt.rows(),mflt.cols());
 
     in.real() = rr.array() * mflt.array();
     in.imag().setZero();
 
-    ////SPDLOG_INFO("In {}", in);
-
-    out = engine_utils::fft2w<engine_utils::forward>(in, nr, nc);
+    out = engine_utils::fft2d<engine_utils::forward>(in, nr, nc, exmode);
     out = out * fftnorm;
-
-    ////SPDLOG_INFO("out {}", out);
 
     in.real() = out.real().array() / vvq.array();
     in.imag() = out.imag().array() / vvq.array();
 
-    ////SPDLOG_INFO("in after vvq {}", in);
-
-    out = engine_utils::fft2w<engine_utils::backward>(in, nr, nc);
-
-    ////SPDLOG_INFO("out after vvq {}", out);
+    out = engine_utils::fft2d<engine_utils::backward>(in, nr, nc, exmode);
 
     in.real() = out.real().array() * rr.array();
     in.imag().setZero();
 
-    out = engine_utils::fft2w<engine_utils::forward>(in, nr, nc);
+    out = engine_utils::fft2d<engine_utils::forward>(in, nr, nc, exmode);
     out = out * fftnorm;
 
     // copy of out
@@ -497,17 +446,16 @@ void WienerFilter::calc_numerator() {
     in.real() = tplate;
     in.imag().setZero();
 
-    out = engine_utils::fft2w<engine_utils::forward>(in, nr, nc);
+    out = engine_utils::fft2d<engine_utils::forward>(in, nr, nc, exmode);
     out = out * fftnorm;
 
     in.real() = out.real().array() * qqq.real().array() + out.imag().array() * qqq.imag().array();
     in.imag() = -out.imag().array() * qqq.real().array() + out.real().array() * qqq.imag().array();
 
-    out = engine_utils::fft2w<engine_utils::backward>(in, nr, nc);
+    out = engine_utils::fft2d<engine_utils::backward>(in, nr, nc, exmode);
 
     // populate numerator
     nume = out.real();
-    //SPDLOG_INFO("nume in calc_numerator{}", nume);
 }
 
 void WienerFilter::calc_denominator() {
@@ -519,38 +467,21 @@ void WienerFilter::calc_denominator() {
     Eigen::MatrixXcd in(nr, nc);
     Eigen::MatrixXcd out(nr, nc);
 
-    ////SPDLOG_INFO("denom a");
-
     if (uniform_weight) {
         in.real() = tplate;
         in.imag().setZero();
 
-        //SPDLOG_INFO("uniform weight in {}", in);
-
-        out = engine_utils::fft2w<engine_utils::forward>(in, nr, nc);
+        out = engine_utils::fft2d<engine_utils::forward>(in, nr, nc, exmode);
         out = out * fftnorm;
-
-        //SPDLOG_INFO("uniform weight out {}", out);
-        //SPDLOG_INFO("out max real {}", out.real().maxCoeff());
-
-        //SPDLOG_INFO("VVQ IN KERNEL DENOM {}", vvq);
-
-
-        ////SPDLOG_INFO("denom b");
 
        // auto d = ((out.real().array() * out.real().array() + out.imag().array() * out.imag().array()) / vvq.array()).sum();
 
         double d=0;
         for(int i=0;i<nc;i++)
               for(int j=0;j<nr;j++){
-                  ////SPDLOG_INFO("BLAH {}", blah);
                 d += (out.real()(j,i)*out.real()(j,i) + out.imag()(j,i)*out.imag()(j,i))/vvq(j,i);
               }
-        //SPDLOG_INFO("d {}", d);
         denom.setConstant(d);
-        //SPDLOG_INFO("denom from kernel in calc_denom{}", denom);
-
-        ////SPDLOG_INFO("denom c");
     }
 
     else {
@@ -560,16 +491,7 @@ void WienerFilter::calc_denominator() {
         in.real() = pow(vvq.array(), -1);
         in.imag().setZero();
 
-        //SPDLOG_INFO("denom in1 {}", in);
-        ////SPDLOG_INFO("in max {}", in.real().maxCoeff());
-        ////SPDLOG_INFO("in min {}", in.real().minCoeff());
-
-        ////SPDLOG_INFO("denom d");
-
-        out = engine_utils::fft2w<engine_utils::backward>(in, nr, nc);
-
-        //SPDLOG_INFO("denom out1 {}", out);
-        ////SPDLOG_INFO("denom e");
+        out = engine_utils::fft2d<engine_utils::backward>(in, nr, nc, exmode);
 
         Eigen::VectorXd zz2d(nr * nc);
         //Eigen::Map<Eigen::VectorXd> out_vec(out.real().data(), nr*nc);
@@ -585,16 +507,11 @@ void WienerFilter::calc_denominator() {
         Eigen::VectorXd ss_ord = zz2d;
         auto sorted = engine_utils::sorter(ss_ord);
 
-        ////SPDLOG_INFO("denom f");
-
         for(int i=0;i<nc;i++)
             for(int j=0;j<nr;j++){
               int ii = nr*i+j;
               zz2d(ii) = (out.real()(j,i));
             }
-
-        //SPDLOG_INFO("denom zz2d {}", zz2d);
-        ////SPDLOG_INFO("sorted {}",sorted);
 
         // number of iterations for convergence
         nloops = nr * nc / 100;
@@ -622,18 +539,11 @@ void WienerFilter::calc_denominator() {
 
                     auto shifti = std::get<1>(sorted[nr * nc - kk - 1]);
 
-                    ////SPDLOG_INFO("shifti {}", shifti);
-
                     // changed nr
                     double r_shift_n = shifti / nr;
                     double c_shift_n = shifti % nr;
 
-                    //SPDLOG_INFO("x_shift_n {} y_shift_n {}", x_shift_n, y_shift_n);
-
                     Eigen::MatrixXd in_prod = tplate.array() * engine_utils::shift_matrix(tplate, -r_shift_n, -c_shift_n).array();
-                    //SPDLOG_INFO("in_prod in loop{}", in_prod);
-
-                    ////SPDLOG_INFO("in_prod {}", in_prod);
 
                     /*in2.real() = Eigen::Map<Eigen::VectorXd>(
                         (in_prod).data(),
@@ -644,13 +554,8 @@ void WienerFilter::calc_denominator() {
                     in2.real() = in_prod;
                     in2.imag().setZero();
 
-                    //SPDLOG_INFO("in2 in loop {}", in2);
-                    ////SPDLOG_INFO("in2 {}", in2);
-
-                    out2 = engine_utils::fft2w<engine_utils::forward>(in2, nr, nc);
+                    out2 = engine_utils::fft2d<engine_utils::forward>(in2, nr, nc, exmode);
                     out2 = out2 * fftnorm;
-
-                    //SPDLOG_INFO("out2 in loop {}", out2);
 
                     Eigen::MatrixXcd ffdq(nr,nc);
 
@@ -659,48 +564,30 @@ void WienerFilter::calc_denominator() {
 
                     in_prod = rr.array() * engine_utils::shift_matrix(rr, -r_shift_n, -c_shift_n).array();
 
-                    //SPDLOG_INFO("in_prod in loop 2 {}", in_prod);
-
                     //in2.real() = Eigen::Map<Eigen::VectorXd>(in_prod.data(), nr * nc);
                     //in2.imag().setZero();
 
                     in2.real() = in_prod;
                     in2.imag().setZero();
 
-                    out2 = engine_utils::fft2w<engine_utils::forward>(in2, nr, nc);
+                    out2 = engine_utils::fft2d<engine_utils::forward>(in2, nr, nc, exmode);
                     out2 = out2 * fftnorm;
-
-                    //SPDLOG_INFO("out2 in loop 2 {}", out2);
-
 
                     in2.real() = ffdq.real().array() * out2.real().array() + ffdq.imag().array() * out2.imag().array();
                     in2.imag() = -ffdq.imag().array() * out2.real().array() + ffdq.real().array() * out2.imag().array();
 
-                    //SPDLOG_INFO("in2 in loop 2{}", in2);
-
-                    out2 = engine_utils::fft2w<engine_utils::backward>(in2, nr, nc);
-
-                    //SPDLOG_INFO("out2 in loop 3 {}", out2);
-
-
-                    ////SPDLOG_INFO("out2 {}", out2);
+                    out2 = engine_utils::fft2d<engine_utils::backward>(in2, nr, nc, exmode);
 
                     Eigen::MatrixXd updater = zz2d(shifti) * out2.real() * fftnorm;
-
-                    //SPDLOG_INFO("updater in loop {}", updater);
 
                     denom = denom + updater;
 
                     pb0.count(nloops, nloops / 100);
 
-                    ////SPDLOG_INFO("denom {}", denom);
 
                     if ((kk % 100) == 1) {
                         double max_ratio = -1;
                         double maxdenom;
-
-                        //SPDLOG_INFO("DENOM IN LOOP {}", denom);
-                        //SPDLOG_INFO("updater IN LOOP {}", updater);
 
                         maxdenom = denom.maxCoeff();
                         for (int i = 0; i < nr; i++) {

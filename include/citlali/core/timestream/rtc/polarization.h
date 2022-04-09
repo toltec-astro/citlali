@@ -15,6 +15,8 @@ namespace timestream {
 class Polarization {
 public:
 
+    using indices_tuple_t = std::tuple<Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1>, Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1>>;
+
     // stokes params
     std::map<std::string, int> stokes_params {
         {"I",0},
@@ -22,299 +24,171 @@ public:
         {"U",2},
     };
 
+    template <typename DerivedA, typename DerivedB>
+    void derotate_detector(Eigen::DenseBase<DerivedA> &q0, Eigen::DenseBase<DerivedB> &u0, Eigen::Index det,
+                           TCData<TCDataKind::RTC, Eigen::MatrixXd> &out, Eigen::Index nsamples, Eigen::Index ndet,
+                           Eigen::Index di, bool run_hwp) {
 
-    template <typename DerivedA, typename DerivedB, class CalibMetaData>
-    void derotate(Eigen::DenseBase<DerivedA> &q0, Eigen::DenseBase<DerivedA> &u0, TCData<TCDataKind::RTC, Eigen::MatrixXd> &out,
-                  Eigen::Index nsamples, Eigen::Index ndet, Eigen::DenseBase<DerivedB> &det_index_vector, CalibMetaData &calib_data,
-                  bool run_hwp) {
+        // current detector's elevation
+        //Eigen::VectorXd lat = (calib_data["x_t"](di)*RAD_ASEC) + out.tel_meta_data.data["TelElDes"].array();
 
-        // resize scans and flags
-        out.scans.data.resize(nsamples,2*ndet);
-        out.flags.data.setOnes(out.scans.data.rows(),out.scans.data.cols());
+        // rotate by elevation and flip
+        auto qs1 = q0.derived().array()*cos(2*out.tel_meta_data.data["TelElDes"].array()) -
+                   u0.derived().array()*sin(2*out.tel_meta_data.data["TelElDes"].array());
 
-        // parallactic angle
-        auto pa2 = out.tel_meta_data.data["ParAng"].array() - pi;
+        auto us1 = -q0.derived().array()*sin(2*out.tel_meta_data.data["TelElDes"].array()) -
+                   u0.derived().array()*cos(2*out.tel_meta_data.data["TelElDes"].array());
 
-        // loop through detectors and derotate
-        for (Eigen::Index i=0;i<ndet;i++) {
+        // rotate by detector elevation and flip
+        //auto qs1 = q0.array()*cos(2*lat.array()) - u0.array()*sin(2*lat.array());
+        //auto us1 = - q0.array()*sin(2*lat.array()) - u0.array()*cos(2*lat.array());
 
-            // detector index
-            Eigen::Index di = det_index_vector(i);
+        if (run_hwp) {
+            // rotate by hwp signal
+            auto qs = qs1.array()*cos(4*out.hwp.data.array()) + us1.array()*sin(4*out.hwp.data.array());
+            auto us = qs1.array()*sin(4*out.hwp.data.array()) - us1.array()*cos(4*out.hwp.data.array());
 
-            // current detector's elevation
-            Eigen::VectorXd lat = (calib_data["x_t"](di)*RAD_ASEC) + out.tel_meta_data.data["TelElDes"].array();
+            out.scans.data.col(det) = qs;
+            out.scans.data.col(det+ndet) = us;
+        }
 
-            // rotate by elevation and flip
-            auto qs1 = q0.array()*cos(2*out.tel_meta_data.data["TelElDes"].array()) -
-                       u0.array()*sin(2*out.tel_meta_data.data["TelElDes"].array());
-
-            auto us1 = -q0.array()*sin(2*out.tel_meta_data.data["TelElDes"].array()) -
-                       u0.array()*cos(2*out.tel_meta_data.data["TelElDes"].array());
-
-            // rotate by detector elevation and flip
-            //auto qs1 = q0.array()*cos(2*lat.array()) - u0.array()*sin(2*lat.array());
-            //auto us1 = - q0.array()*sin(2*lat.array()) - u0.array()*cos(2*lat.array());
-
-            if (run_hwp) {
-                // rotate by hwp signal
-                auto qs = qs1.array()*cos(4*out.hwp.data.array()) + us1.array()*sin(4*out.hwp.data.array());
-                auto us = qs1.array()*sin(4*out.hwp.data.array()) - us1.array()*cos(4*out.hwp.data.array());
-
-                out.scans.data.col(i) = qs;
-                out.scans.data.col(i+ndet) = us;
-            }
-
-            else {
-                out.scans.data.col(i) = qs1;
-                out.scans.data.col(i+ndet) = us1;
-            }
+        else {
+            out.scans.data.col(det) = qs1;
+            out.scans.data.col(det+ndet) = us1;
         }
     }
-
 
     template <class Engine>
-    std::tuple<Eigen::VectorXd, Eigen::VectorXd> create_rtc(TCData<TCDataKind::RTC, Eigen::MatrixXd> &,
-                                                            TCData<TCDataKind::RTC, Eigen::MatrixXd> &,
-                                                            std::string, Engine);
-};
+    indices_tuple_t create_rtc(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKind::RTC, Eigen::MatrixXd> &out, std::string sp,
+                                   Engine engine) {
 
-template <class Engine>
-std::tuple<Eigen::VectorXd, Eigen::VectorXd> Polarization::create_rtc(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
-                                                                      TCData<TCDataKind::RTC, Eigen::MatrixXd> &out,
-                                                                      std::string sp, Engine engine) {
+        // copy scan and telescope metadata
+        out.scan_indices.data = in.scan_indices.data;
+        out.index.data = in.index.data;
+        out.tel_meta_data.data = in.tel_meta_data.data;
 
-    out.scan_indices.data = in.scan_indices.data;
-    out.index.data = in.index.data;
-    out.tel_meta_data.data = in.tel_meta_data.data;
+        Eigen::Index nsamples = in.scans.data.rows();
 
-    Eigen::Index nsamples = in.scans.data.rows();
+        // vectors for map and detector indices
+        Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1> map_index_vector, det_index_vector;
 
-    // vectors for map and detector indices
-    Eigen::VectorXd map_index_vector, det_index_vector;
+        // ndetectors for stokes directions
+        Eigen::Index ndet;
 
-    Eigen::Index ndet;
+        if (sp == "I") {
+            SPDLOG_INFO("creating I timestream");
+            map_index_vector = engine->calib_data["array"].template cast<Eigen::Index> ();
+            det_index_vector.resize(engine->ndet);
 
-    if (sp == "I") {
-        SPDLOG_INFO("creating I timestream");
-        map_index_vector = engine->calib_data["array"];
-        det_index_vector.resize(engine->ndet);
+            out = in;
 
-        out = in;
+            for (Eigen::Index i=0;i<engine->ndet;i++) {
+                if (engine->run_polarization) {
+                    if (map_index_vector(i) == 1) {
+                        map_index_vector(i) = 3;
+                    }
+                    else if (map_index_vector(i) == 2) {
+                        map_index_vector(i) = 6;
+                    }
+                }
+                det_index_vector(i) = i;
+            }
+        }
 
-        for (Eigen::Index i=0;i<engine->ndet;i++) {
-            if (engine->run_polarization) {
-                if (map_index_vector(i) == 1) {
-                    map_index_vector(i) = 3;
+        else {
+            Eigen::MatrixXd data;
+            Eigen::Index ori;
+            auto pa2 = in.tel_meta_data.data["ParAng"].array() - pi;
+
+            if (sp == "Q") {
+                SPDLOG_INFO("creating Q timestream");
+                ori = 0;
+                ndet = (engine->calib_data["fg"].array() == 0).count();
+            }
+
+            else if (sp == "U") {
+                SPDLOG_INFO("creating U timestream");
+                ori = 1;
+                ndet = (engine->calib_data["fg"].array() == 1).count();
+            }
+
+            data.resize(nsamples, ndet);
+
+            map_index_vector.resize(2*ndet);
+            det_index_vector.resize(2*ndet);
+
+            Eigen::Index j = 0;
+            for (Eigen::Index i=0;i<in.scans.data.cols();i++) {
+                if (engine->calib_data["fg"](i) == ori) {
+                    data.col(j) = in.scans.data.col(i+1) - in.scans.data.col(i);
+                    map_index_vector(j) = engine->calib_data["array"](i);
+                    map_index_vector(j+ndet) = engine->calib_data["array"](i);
+                    det_index_vector(j) = i;
+                    det_index_vector(j + ndet) = i;
+
+                    j++;
+                }
+            }
+
+            // resize scans and flags
+            out.scans.data.resize(nsamples,2*ndet);
+            out.flags.data.setOnes(nsamples,2*ndet);
+
+            // get hwp data if enabled
+            if (engine->run_hwp) {
+                out.hwp.data = in.hwp.data;
+            }
+
+            // loop through detectors and derotate
+            for (Eigen::Index i=0; i<ndet; i++) {
+                // detector index
+                Eigen::Index di = det_index_vector(i);
+                // rotate by PA
+                if (sp == "Q") {
+                    auto qs0 = cos(-2*pa2.array())*data.col(i).array();
+                    auto us0 = sin(-2*pa2.array())*data.col(i).array();
+
+                    derotate_detector(qs0, us0, i, out, nsamples, ndet, di, engine->run_hwp);
+                }
+
+                else if (sp == "U") {
+                    auto qs0 = -sin(-2*pa2.array())*data.col(i).array();
+                    auto us0 = cos(-2*pa2.array())*data.col(i).array();
+
+                    derotate_detector(qs0, us0, i, out, nsamples, ndet, di, engine->run_hwp);
+                }
+            }
+
+            for (Eigen::Index i=0; i<map_index_vector.size(); i++) {
+                if (map_index_vector(i) == 0) {
+                    if (i < ndet) {
+                        map_index_vector(i) = 1;
+                    }
+                    else {
+                        map_index_vector(i) = 2;
+                    }
+                }
+                else if (map_index_vector(i) == 1) {
+                    if (i < ndet) {
+                        map_index_vector(i) = 4;
+                    }
+                    else {
+                        map_index_vector(i) = 5;
+                    }
                 }
                 else if (map_index_vector(i) == 2) {
-                    map_index_vector(i) = 6;
+                    if (i < ndet) {
+                        map_index_vector(i) = 7;
+                    }
+                    else {
+                        map_index_vector(i) = 8;
+                    }
                 }
             }
-            det_index_vector(i) = i;
         }
+
+        return indices_tuple_t(map_index_vector, det_index_vector);
     }
-
-    else if (sp == "Q") {
-        SPDLOG_INFO("creating Q timestream");
-        ndet = (engine->calib_data["fg"].array() == 0).count();
-        //engine->ndet = 2*ndet;
-        Eigen::MatrixXd qr, kqr;
-        qr.setZero(in.scans.data.rows(), ndet);
-        kqr.setZero(in.scans.data.rows(), ndet);
-
-        map_index_vector.resize(2*ndet);
-        det_index_vector.resize(2*ndet);
-
-        Eigen::Index j = 0;
-        for (Eigen::Index i=0;i<in.scans.data.cols();i++) {
-            if (engine->calib_data["fg"](i) == 0) {
-                qr.col(j) = in.scans.data.col(i+1) - in.scans.data.col(i);
-                map_index_vector(j) = engine->calib_data["array"](i);
-                map_index_vector(j+ndet) = engine->calib_data["array"](i);
-                det_index_vector(j) = i;
-                det_index_vector(j + ndet) = i;
-
-                j++;
-            }
-        }
-
-        auto pa2 = in.tel_meta_data.data["ParAng"].array() - pi;
-
-        out.scans.data.resize(nsamples,2*ndet);
-
-        for (Eigen::Index i=0;i<ndet;i++) {
-
-            Eigen::Index di = det_index_vector(i);
-
-            // don't use pointing here as that will rotate by azoff/eloff
-            Eigen::VectorXd lat = (engine->calib_data["x_t"](di)*RAD_ASEC) + in.tel_meta_data.data["TelElDes"].array();
-
-            // rotate by PA
-            auto qs0 = cos(-2*pa2.array())*qr.col(i).array();
-            auto us0 = sin(-2*pa2.array())*qr.col(i).array();
-
-            // rotate by elevation and flip
-            auto qs1 = qs0.array()*cos(2*in.tel_meta_data.data["TelElDes"].array()) -us0.array()*sin(2*in.tel_meta_data.data["TelElDes"].array());
-            auto us1 = -qs0.array()*sin(2*in.tel_meta_data.data["TelElDes"].array()) - us0.array()*cos(2*in.tel_meta_data.data["TelElDes"].array());
-
-            // rotate by elevation and flip
-            //auto qs1 = qs0.array()*cos(2*lat.array()) - us0.array()*sin(2*lat.array());
-            //auto us1 = - qs0.array()*sin(2*lat.array()) - us0.array()*cos(2*lat.array());
-
-            if (engine->run_hwp) {
-                // rotate by hwp signal
-                auto qs = qs1.array()*cos(4*in.hwp.data.array()) + us1.array()*sin(4*in.hwp.data.array());
-                auto us = qs1.array()*sin(4*in.hwp.data.array()) - us1.array()*cos(4*in.hwp.data.array());
-
-                out.scans.data.col(i) = qs;
-                out.scans.data.col(i+ndet) = us;
-            }
-
-            else {
-                out.scans.data.col(i) = qs1;
-                out.scans.data.col(i+ndet) = us1;
-            }
-        }
-
-        out.flags.data.setOnes(out.scans.data.rows(),out.scans.data.cols());
-
-        for (Eigen::Index i=0;i<map_index_vector.size();i++) {
-            if (map_index_vector(i)==0) {
-                if (i < ndet) {
-                    map_index_vector(i) = 1;
-                }
-                else {
-                    map_index_vector(i) = 2;
-                }
-            }
-            else if (map_index_vector(i)==1) {
-                if (i < ndet) {
-                    map_index_vector(i) = 4;
-                }
-                else {
-                    map_index_vector(i) = 5;
-                }
-            }
-            else if (map_index_vector(i)==2) {
-                if (i < ndet) {
-                    map_index_vector(i) = 7;
-                }
-                else {
-                    map_index_vector(i) = 8;
-                }
-            }
-        }
-
-        SPDLOG_INFO("map_index_vector {}", map_index_vector);
-        SPDLOG_INFO("det_index_vector {}", det_index_vector);
-
-    }
-
-    else if (sp == "U") {
-        SPDLOG_INFO("creating U timestream");
-        ndet = (engine->calib_data["fg"].array() == 1).count();
-        //engine->ndet = 2*ndet;
-        Eigen::MatrixXd ur, kur;
-
-        ur.setZero(in.scans.data.rows(), ndet);
-        kur.setZero(in.scans.data.rows(), ndet);
-
-        map_index_vector.resize(2*ndet);
-        det_index_vector.resize(2*ndet);
-
-        SPDLOG_INFO("ndet {}",ndet);
-
-        Eigen::Index j = 0;
-        for (Eigen::Index i=0;i<in.scans.data.cols();i++) {
-            if (engine->calib_data["fg"][i] == 1) {
-                ur.col(j) = in.scans.data.col(i) - in.scans.data.col(i+1);
-                map_index_vector(j) = engine->calib_data["array"](i);
-                map_index_vector(j+ndet) = engine->calib_data["array"](i);
-                det_index_vector(j) = i;
-                det_index_vector(j + ndet) = i;
-
-                j++;
-            }
-        }
-
-        auto pa2 = in.tel_meta_data.data["ParAng"].array() - pi;
-
-        out.scans.data.resize(nsamples,2*ndet);
-        //in.kernel_scans.data.resize(nsamples,2*ndet);
-
-        for (Eigen::Index i=0;i<ndet;i++) {
-
-            Eigen::Index di = det_index_vector(i);
-
-            // don't use pointing here as that will rotate by azoff/eloff
-            Eigen::VectorXd lat = (engine->calib_data["x_t"](di)*RAD_ASEC) + in.tel_meta_data.data["TelElDes"].array();
-
-            // rotate by PA
-            auto qs0 = -sin(-2*pa2.array())*ur.col(i).array();
-            auto us0 = cos(-2*pa2.array())*ur.col(i).array();
-
-            // rotate by elevation and flip
-            auto qs1 = qs0.array()*cos(2*in.tel_meta_data.data["TelElDes"].array()) - us0.array()*sin(2*in.tel_meta_data.data["TelElDes"].array());
-            auto us1 = -qs0.array()*sin(2*in.tel_meta_data.data["TelElDes"].array()) - us0.array()*cos(2*in.tel_meta_data.data["TelElDes"].array());
-
-            // rotate by elevation and flip
-            //auto qs1 = qs0.array()*cos(2*lat.array()) - us0.array()*sin(2*lat.array());
-            //auto us1 = - qs0.array()*sin(2*lat.array()) - us0.array()*cos(2*lat.array());
-
-            if (engine->run_hwp) {
-                // rotate by hwp signal
-                auto qs = qs1.array()*cos(4*in.hwp.data.array()) + us1.array()*sin(4*in.hwp.data.array());
-                auto us = qs1.array()*sin(4*in.hwp.data.array()) - us1.array()*cos(4*in.hwp.data.array());
-
-                out.scans.data.col(i) = qs;
-                out.scans.data.col(i+ndet) = us;
-            }
-
-            else {
-                out.scans.data.col(i) = qs1;
-                out.scans.data.col(i+ndet) = us1;
-            }
-        }
-
-        out.flags.data.setOnes(out.scans.data.rows(),out.scans.data.cols());
-
-        SPDLOG_INFO("map_index_vector {}", map_index_vector);
-        SPDLOG_INFO("det_index_vector {}", det_index_vector);
-
-        for (Eigen::Index i=0;i<map_index_vector.size();i++) {
-            if (map_index_vector(i)==0) {
-                if (i < ndet) {
-                    map_index_vector(i) = 1;
-                }
-                else {
-                    map_index_vector(i) = 2;
-                }
-            }
-            else if (map_index_vector(i)==1) {
-                if (i < ndet) {
-                    map_index_vector(i) = 4;
-                }
-                else {
-                    map_index_vector(i) = 5;
-                }
-            }
-            else if (map_index_vector(i)==2) {
-                if (i < ndet) {
-                    map_index_vector(i) = 7;
-                }
-                else {
-                    map_index_vector(i) = 8;
-                }
-            }
-        }
-
-        SPDLOG_INFO("map_index_vector {}", map_index_vector);
-        SPDLOG_INFO("det_index_vector {}", det_index_vector);
-
-    }
-
-    return std::tuple<Eigen::VectorXd, Eigen::VectorXd>(map_index_vector, det_index_vector);
-
-}
+};
 
 } // namespace timestream

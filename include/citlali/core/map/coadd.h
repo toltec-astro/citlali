@@ -62,6 +62,10 @@ public:
     std::vector<std::vector<PSD>> noise_psd;
     std::vector<PSD> noise_avg_psd;
 
+    // vector of vector of psd classes for noise maps
+    std::vector<std::vector<Histogram>> noise_hist;
+    std::vector<Histogram> noise_avg_hist;
+
     void setup_maps(std::vector<map_coord_t> map_coords, map_count_t _mc) {
         map_count = _mc;
 

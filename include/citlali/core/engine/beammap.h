@@ -156,8 +156,7 @@ auto Beammap::run_timestream() {
 
         in.tel_meta_data.data["SourceEl"] = tel_meta_data["SourceEl"].segment(start_index, scan_length);
 
-        Eigen::VectorXd map_index_vector;
-        Eigen::VectorXd det_index_vector;
+        Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1> map_index_vector, det_index_vector;
 
         /*Stage 1: RTCProc*/
         RTCProc rtcproc;

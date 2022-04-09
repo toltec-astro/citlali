@@ -8,6 +8,8 @@ class PSD {
 public:
     double cov_cut;
 
+    std::string exmode;
+
     Eigen::MatrixXd w;
     Eigen::VectorXd psd, psd_freq;
     Eigen::MatrixXd psd2d, psd2d_freq;
@@ -22,7 +24,6 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
                        Eigen::DenseBase<DerivedC> &rcphys, Eigen::DenseBase<DerivedC> &ccphys) {
 
     auto weight_threshold = engine_utils::find_weight_threshold(wt, cov_cut);
-    SPDLOG_INFO("weight_threshold {}",weight_threshold);
     auto [cut_row_range, cut_col_range] = engine_utils::set_coverage_cut_ranges(wt, weight_threshold);
 
     // make sure coverage cut map has an even number of rows and cols
@@ -50,15 +51,13 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
     double diffqr = 1. / rsize;
     double diffqc = 1. / csize;
 
-    SPDLOG_INFO("nr {} nc {}", nr, nc);
-
     Eigen::MatrixXcd block(nr, nc);
     block.real() = in.block(crr0, ccr0, nr, nc);
     block.imag().setZero();
 
     block.real() = block.real().array() * engine_utils::hanning(nr, nc).array();
 
-    auto out = engine_utils::fft2w<engine_utils::forward>(block, nr, nc);
+    auto out = engine_utils::fft2d<engine_utils::forward>(block, nr, nc, exmode);
 
     out = out*diffr*diffc;
 
@@ -103,6 +102,7 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
     for (Eigen::Index i=0; i<nr-1; i++) {
         qr(i) = qr(i+1);
     }
+
     for (int j=0; j<nc-1; j++) {
         qc(j) = qc(j+1);
     }

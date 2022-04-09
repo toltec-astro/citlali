@@ -44,7 +44,7 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::De
     // loop through the detector indices
     for (Eigen::Index mi = 0; mi < ndets; mi++) {
 
-        Eigen::Index mc = 0;
+        Eigen::Index mc;
         Eigen::Index di = det_index_vector(mi);
 
         if (engine->reduction_type == "science" || engine->reduction_type == "pointing") {

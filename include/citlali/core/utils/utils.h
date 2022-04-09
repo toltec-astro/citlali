@@ -150,7 +150,7 @@ enum FFTdirection {
 };
 
 template<FFTdirection direc, typename Derived>
-Eigen::MatrixXcd fft2w(Eigen::DenseBase<Derived> &in, const Eigen::Index nrows, const Eigen::Index ncols){
+Eigen::MatrixXcd fft2d(Eigen::DenseBase<Derived> &in, const Eigen::Index nrows, const Eigen::Index ncols, std::string exmode){
 
     // placeholder vectors for grppi maps
     std::vector<int> ri(nrows);
@@ -164,7 +164,7 @@ Eigen::MatrixXcd fft2w(Eigen::DenseBase<Derived> &in, const Eigen::Index nrows, 
     Eigen::MatrixXcd out(nrows, ncols);
 
     // do the fft over the rows
-    grppi::map(tula::grppi_utils::dyn_ex("omp"),ri,ro,[&](auto k){
+    grppi::map(tula::grppi_utils::dyn_ex(exmode),ri,ro,[&](auto k){
         Eigen::FFT<double> fft;
         fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
         fft.SetFlag(Eigen::FFT<double>::Unscaled);
@@ -181,7 +181,7 @@ Eigen::MatrixXcd fft2w(Eigen::DenseBase<Derived> &in, const Eigen::Index nrows, 
     });
 
     // do the fft over the cols
-    grppi::map(tula::grppi_utils::dyn_ex("omp"),ci,co,[&](auto k){
+    grppi::map(tula::grppi_utils::dyn_ex(exmode),ci,co,[&](auto k){
         Eigen::FFT<double> fft;
         fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
         fft.SetFlag(Eigen::FFT<double>::Unscaled);
@@ -196,32 +196,6 @@ Eigen::MatrixXcd fft2w(Eigen::DenseBase<Derived> &in, const Eigen::Index nrows, 
         out.col(k) = tmp_out;
         return 0;
     });
-
-    /*Eigen::FFT<double> fft;
-    fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
-    fft.SetFlag(Eigen::FFT<double>::Unscaled);
-
-    for (Eigen::Index k=0; k<nrows; ++k) {
-        Eigen::VectorXcd tmp_out(ncols);
-        if constexpr(direc == forward){
-            fft.fwd(tmp_out, in.row(k));
-        }
-        else if constexpr(direc == backward){
-            fft.inv(tmp_out, in.row(k));
-        }
-        out.row(k) = tmp_out;
-    }
-
-    for (Eigen::Index k=0; k<ncols; ++k) {
-        Eigen::VectorXcd tmp_out(nrows);
-        if constexpr(direc == forward){
-            fft.fwd(tmp_out, out.col(k));
-        }
-        else if constexpr(direc == backward){
-            fft.inv(tmp_out, out.col(k));
-        }
-        out.col(k) = tmp_out;
-    }*/
 
     return std::move(out);
 }
