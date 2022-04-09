@@ -33,11 +33,11 @@ public:
         //Eigen::VectorXd lat = (calib_data["x_t"](di)*RAD_ASEC) + out.tel_meta_data.data["TelElDes"].array();
 
         // rotate by elevation and flip
-        auto qs1 = q0.derived().array()*cos(2*out.tel_meta_data.data["TelElDes"].array()) -
-                   u0.derived().array()*sin(2*out.tel_meta_data.data["TelElDes"].array());
+        auto qs1 = q0.derived().array()*cos(-2*out.tel_meta_data.data["TelElDes"].array()) -
+                   u0.derived().array()*sin(-2*out.tel_meta_data.data["TelElDes"].array());
 
-        auto us1 = -q0.derived().array()*sin(2*out.tel_meta_data.data["TelElDes"].array()) -
-                   u0.derived().array()*cos(2*out.tel_meta_data.data["TelElDes"].array());
+        auto us1 = -q0.derived().array()*sin(-2*out.tel_meta_data.data["TelElDes"].array()) -
+                   u0.derived().array()*cos(-2*out.tel_meta_data.data["TelElDes"].array());
 
         // rotate by detector elevation and flip
         //auto qs1 = q0.array()*cos(2*lat.array()) - u0.array()*sin(2*lat.array());
@@ -103,13 +103,13 @@ public:
             if (sp == "Q") {
                 SPDLOG_INFO("creating Q timestream");
                 ori = 0;
-                ndet = (engine->calib_data["fg"].array() == 0).count();
+                ndet = (engine->calib_data["fg"].array() == ori).count();
             }
 
             else if (sp == "U") {
                 SPDLOG_INFO("creating U timestream");
                 ori = 1;
-                ndet = (engine->calib_data["fg"].array() == 1).count();
+                ndet = (engine->calib_data["fg"].array() == ori).count();
             }
 
             data.resize(nsamples, ndet);
@@ -120,7 +120,12 @@ public:
             Eigen::Index j = 0;
             for (Eigen::Index i=0;i<in.scans.data.cols();i++) {
                 if (engine->calib_data["fg"](i) == ori) {
-                    data.col(j) = in.scans.data.col(i+1) - in.scans.data.col(i);
+                    if (sp == "Q") {
+                        data.col(j) = in.scans.data.col(i+1) - in.scans.data.col(i);
+                    }
+                    else if (sp == "U") {
+                        data.col(j) = in.scans.data.col(i) - in.scans.data.col(i+1);
+                    }
                     map_index_vector(j) = engine->calib_data["array"](i);
                     map_index_vector(j+ndet) = engine->calib_data["array"](i);
                     det_index_vector(j) = i;
@@ -145,15 +150,15 @@ public:
                 Eigen::Index di = det_index_vector(i);
                 // rotate by PA
                 if (sp == "Q") {
-                    auto qs0 = cos(-2*pa2.array())*data.col(i).array();
-                    auto us0 = sin(-2*pa2.array())*data.col(i).array();
+                    auto qs0 = cos(2*pa2.array())*data.col(i).array();
+                    auto us0 = sin(2*pa2.array())*data.col(i).array();
 
                     derotate_detector(qs0, us0, i, out, nsamples, ndet, di, engine->run_hwp);
                 }
 
                 else if (sp == "U") {
-                    auto qs0 = -sin(-2*pa2.array())*data.col(i).array();
-                    auto us0 = cos(-2*pa2.array())*data.col(i).array();
+                    auto qs0 = -sin(2*pa2.array())*data.col(i).array();
+                    auto us0 = cos(2*pa2.array())*data.col(i).array();
 
                     derotate_detector(qs0, us0, i, out, nsamples, ndet, di, engine->run_hwp);
                 }

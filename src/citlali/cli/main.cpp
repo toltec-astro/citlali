@@ -1471,7 +1471,7 @@ int run(const rc_t &rc) {
                         // filter coadd maps
                         {
                             ToltecIO toltec_io;
-                            tula::logging::scoped_timeit timer("filter_coaddition()");
+                            tula::logging::scoped_timeit timer("wiener filter");
                             todproc.engine().wiener_filter.exmode = todproc.engine().ex_name;
 
                             for (Eigen::Index i = 0; i < todproc.engine().cmb.map_count; i++) {

@@ -296,11 +296,10 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     for (Eigen::Index i=0; i < mb.map_count; i++) {
         SPDLOG_INFO("calculating map {} psd", i);
         PSD psd;
-        SPDLOG_INFO("cov_cut {}",cmb.cov_cut);
         psd.cov_cut = cmb.cov_cut;
         psd.exmode = ex_name;
-        //psd.calc_map_psd(mb.signal.at(i), mb.weight.at(i), mb.rcphys, mb.ccphys);
-        //mb.psd.at(i) = std::move(psd);
+        psd.calc_map_psd(mb.signal.at(i), mb.weight.at(i), mb.rcphys, mb.ccphys);
+        mb.psd.at(i) = std::move(psd);
     }
 
     mb.histogram.resize(mb.map_count);
@@ -308,8 +307,8 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         SPDLOG_INFO("calculating map {} histogram", i);
         Histogram histogram;
         histogram.cov_cut = cmb.cov_cut;
-        //histogram.calc_hist(mb.signal.at(i), mb.weight.at(i));
-        //mb.histogram.at(i) = std::move(histogram);
+        histogram.calc_hist(mb.signal.at(i), mb.weight.at(i));
+        mb.histogram.at(i) = std::move(histogram);
     }
 
     // do fit if map_grouping is pointing
