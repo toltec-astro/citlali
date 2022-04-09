@@ -14,6 +14,25 @@
 #include <citlali/core/map/psd.h>
 #include <citlali/core/map/histogram.h>
 #include <citlali/core/map/coadd.h>
+#include <citlali/core/map/noise.h>
+
+namespace mapmaking {
+
+
+struct WCS {
+    // pixel size
+    double pixel_size;
+
+    // map size in pixels
+    double x_size_pix, y_size_pix;
+
+    // reference pixel
+    double crpix1, crpix2;
+
+    // map unit
+    std::string cunit;
+
+};
 
 using map_dims_t = std::tuple<int, int, Eigen::VectorXd, Eigen::VectorXd>;
 using map_extent_t = std::vector<double>;
@@ -24,12 +43,13 @@ class MapBuffer {
 public:
     Eigen::Index nrows, ncols;
     map_count_t map_count;
-    double pixel_size;
 
     // for map fit parameters
     Eigen::MatrixXd pfit;
     // for map fit errors
     Eigen::MatrixXd perror;
+
+    double pixel_size;
 
     // physical coordinates for rows and cols (radians)
     Eigen::VectorXd rcphys, ccphys;
@@ -115,10 +135,11 @@ public:
 
 };
 
-class MapBase {
+class MapBase: public WCS {
 public:
     MapBuffer mb;
     CoaddedMapBuffer cmb;
+    NoiseMapBuffer nmb;
 
     enum MapType {
         obs = 0,
@@ -133,21 +154,6 @@ public:
 
     // mapping method (naive, etc)
     std::string mapping_method;
-
-    // vector for what map detectors go into
-    //Eigen::VectorXd map_index_vector;
-
-    // pixel size
-    double pixel_size;
-
-    // map size in pixels
-    double x_size_pix, y_size_pix;
-
-    // reference pixel
-    double crpix1, crpix2;
-
-    // map unit
-    std::string cunit;
 
     template <typename tel_meta_t, typename C, typename S>
     map_dims_t get_dims(tel_meta_t &, C &, S &, std::string, std::string,
@@ -274,3 +280,5 @@ map_dims_t MapBase::get_dims(tel_meta_t &tel_meta_data, C &calib_data, S &scan_i
         return map_dims_t {nr, nc, std::move(rcp), std::move(ccp)};
     }
 }
+
+} // namespace mapmaking

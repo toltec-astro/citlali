@@ -21,6 +21,57 @@ public:
         {"Q",1},
         {"U",2},
     };
+
+
+    template <typename DerivedA, typename DerivedB, class CalibMetaData>
+    void derotate(Eigen::DenseBase<DerivedA> &q0, Eigen::DenseBase<DerivedA> &u0, TCData<TCDataKind::RTC, Eigen::MatrixXd> &out,
+                  Eigen::Index nsamples, Eigen::Index ndet, Eigen::DenseBase<DerivedB> &det_index_vector, CalibMetaData &calib_data,
+                  bool run_hwp) {
+
+        // resize scans and flags
+        out.scans.data.resize(nsamples,2*ndet);
+        out.flags.data.setOnes(out.scans.data.rows(),out.scans.data.cols());
+
+        // parallactic angle
+        auto pa2 = out.tel_meta_data.data["ParAng"].array() - pi;
+
+        // loop through detectors and derotate
+        for (Eigen::Index i=0;i<ndet;i++) {
+
+            // detector index
+            Eigen::Index di = det_index_vector(i);
+
+            // current detector's elevation
+            Eigen::VectorXd lat = (calib_data["x_t"](di)*RAD_ASEC) + out.tel_meta_data.data["TelElDes"].array();
+
+            // rotate by elevation and flip
+            auto qs1 = q0.array()*cos(2*out.tel_meta_data.data["TelElDes"].array()) -
+                       u0.array()*sin(2*out.tel_meta_data.data["TelElDes"].array());
+
+            auto us1 = -q0.array()*sin(2*out.tel_meta_data.data["TelElDes"].array()) -
+                       u0.array()*cos(2*out.tel_meta_data.data["TelElDes"].array());
+
+            // rotate by detector elevation and flip
+            //auto qs1 = q0.array()*cos(2*lat.array()) - u0.array()*sin(2*lat.array());
+            //auto us1 = - q0.array()*sin(2*lat.array()) - u0.array()*cos(2*lat.array());
+
+            if (run_hwp) {
+                // rotate by hwp signal
+                auto qs = qs1.array()*cos(4*out.hwp.data.array()) + us1.array()*sin(4*out.hwp.data.array());
+                auto us = qs1.array()*sin(4*out.hwp.data.array()) - us1.array()*cos(4*out.hwp.data.array());
+
+                out.scans.data.col(i) = qs;
+                out.scans.data.col(i+ndet) = us;
+            }
+
+            else {
+                out.scans.data.col(i) = qs1;
+                out.scans.data.col(i+ndet) = us1;
+            }
+        }
+    }
+
+
     template <class Engine>
     std::tuple<Eigen::VectorXd, Eigen::VectorXd> create_rtc(TCData<TCDataKind::RTC, Eigen::MatrixXd> &,
                                                             TCData<TCDataKind::RTC, Eigen::MatrixXd> &,
@@ -31,9 +82,14 @@ template <class Engine>
 std::tuple<Eigen::VectorXd, Eigen::VectorXd> Polarization::create_rtc(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
                                                                       TCData<TCDataKind::RTC, Eigen::MatrixXd> &out,
                                                                       std::string sp, Engine engine) {
-    // generate rtc
+
+    out.scan_indices.data = in.scan_indices.data;
+    out.index.data = in.index.data;
+    out.tel_meta_data.data = in.tel_meta_data.data;
+
     Eigen::Index nsamples = in.scans.data.rows();
 
+    // vectors for map and detector indices
     Eigen::VectorXd map_index_vector, det_index_vector;
 
     Eigen::Index ndet;
@@ -56,9 +112,6 @@ std::tuple<Eigen::VectorXd, Eigen::VectorXd> Polarization::create_rtc(TCData<TCD
             }
             det_index_vector(i) = i;
         }
-
-        SPDLOG_INFO("map_index_vector {}", map_index_vector);
-        SPDLOG_INFO("det_index_vector {}", det_index_vector);
     }
 
     else if (sp == "Q") {
@@ -71,8 +124,6 @@ std::tuple<Eigen::VectorXd, Eigen::VectorXd> Polarization::create_rtc(TCData<TCD
 
         map_index_vector.resize(2*ndet);
         det_index_vector.resize(2*ndet);
-
-        SPDLOG_INFO("ndet {}",ndet);
 
         Eigen::Index j = 0;
         for (Eigen::Index i=0;i<in.scans.data.cols();i++) {
@@ -127,46 +178,31 @@ std::tuple<Eigen::VectorXd, Eigen::VectorXd> Polarization::create_rtc(TCData<TCD
 
         out.flags.data.setOnes(out.scans.data.rows(),out.scans.data.cols());
 
-        //map_index_vector.head(ndet).array() +=1;
-        //map_index_vector.tail(ndet).array() +=2;
-
-        SPDLOG_INFO("map_index_vector {}", map_index_vector);
-        SPDLOG_INFO("det_index_vector {}", det_index_vector);
-
-        bool done = false;
         for (Eigen::Index i=0;i<map_index_vector.size();i++) {
-            if (map_index_vector(i)==0 && done==false) {
+            if (map_index_vector(i)==0) {
                 if (i < ndet) {
                     map_index_vector(i) = 1;
-                    done = true;
                 }
                 else {
                     map_index_vector(i) = 2;
-                    done = true;
                 }
             }
-            if (map_index_vector(i)==1 && done==false) {
+            else if (map_index_vector(i)==1) {
                 if (i < ndet) {
                     map_index_vector(i) = 4;
-                    done = true;
                 }
                 else {
                     map_index_vector(i) = 5;
-                    done = true;
                 }
             }
-            if (map_index_vector(i)==2 && done==false) {
+            else if (map_index_vector(i)==2) {
                 if (i < ndet) {
                     map_index_vector(i) = 7;
-                    done = true;
                 }
                 else {
                     map_index_vector(i) = 8;
-                    done = true;
                 }
             }
-            done = false;
-
         }
 
         SPDLOG_INFO("map_index_vector {}", map_index_vector);
@@ -245,49 +281,37 @@ std::tuple<Eigen::VectorXd, Eigen::VectorXd> Polarization::create_rtc(TCData<TCD
         SPDLOG_INFO("map_index_vector {}", map_index_vector);
         SPDLOG_INFO("det_index_vector {}", det_index_vector);
 
-        bool done = false;
         for (Eigen::Index i=0;i<map_index_vector.size();i++) {
-            if (map_index_vector(i)==0 && done==false) {
+            if (map_index_vector(i)==0) {
                 if (i < ndet) {
                     map_index_vector(i) = 1;
-                    done = true;
                 }
                 else {
                     map_index_vector(i) = 2;
-                    done = true;
                 }
             }
-            if (map_index_vector(i)==1 && done==false) {
+            else if (map_index_vector(i)==1) {
                 if (i < ndet) {
                     map_index_vector(i) = 4;
-                    done = true;
                 }
                 else {
                     map_index_vector(i) = 5;
-                    done = true;
                 }
             }
-            if (map_index_vector(i)==2 && done==false) {
+            else if (map_index_vector(i)==2) {
                 if (i < ndet) {
                     map_index_vector(i) = 7;
-                    done = true;
                 }
                 else {
                     map_index_vector(i) = 8;
-                    done = true;
                 }
             }
-            done = false;
         }
 
         SPDLOG_INFO("map_index_vector {}", map_index_vector);
         SPDLOG_INFO("det_index_vector {}", det_index_vector);
 
     }
-
-    out.scan_indices.data = in.scan_indices.data;
-    out.index.data = in.index.data;
-    out.tel_meta_data.data = in.tel_meta_data.data;
 
     return std::tuple<Eigen::VectorXd, Eigen::VectorXd>(map_index_vector, det_index_vector);
 

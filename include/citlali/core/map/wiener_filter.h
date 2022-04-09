@@ -12,6 +12,8 @@
 #include <citlali/core/utils/gaussfit.h>
 #include <citlali/core/utils/fitting.h>
 
+namespace mapmaking {
+
 class WienerFilter {
 public:
     bool run_gaussian_template, run_highpass_only, run_lowpass_only;
@@ -735,3 +737,5 @@ void WienerFilter::calc_denominator() {
 
     }
 }
+
+} // namespace mapmaking

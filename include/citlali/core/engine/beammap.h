@@ -12,6 +12,8 @@ using timestream::TCData;
 using timestream::RTCProc;
 using timestream::PTCProc;
 
+using namespace mapmaking;
+
 // selects the type of TCData
 using timestream::TCDataKind;
 
@@ -122,7 +124,7 @@ void Beammap::setup() {
     toltec_io.setup_output_directory(filepath, dname);
 
     // create empty FITS files at start
-    for (Eigen::Index i=0; i<array_indices.size(); i++) {
+    for (Eigen::Index i=0; i<arrays.size(); i++) {
         std::string filename;
         filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
                 ToltecIO::beammap, ToltecIO::no_prod_type, ToltecIO::obsnum_true>(filepath + dname,obsnum,i);
@@ -518,29 +520,27 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
 
         SPDLOG_INFO("writing maps");
         // loop through existing files
-        for (Eigen::Index i=0; i<array_indices.size(); i++) {
+        for (Eigen::Index i=0; i<arrays.size(); i++) {
             SPDLOG_INFO("writing {}.fits", f_ios.at(i).filepath);
             // loop through maps and save them as an hdu
-            // current detector
-            auto start_det = std::get<0>(array_indices.at(i));
-            // size of block for each grouping
-            auto end_det = std::get<1>(array_indices.at(i)) + 1;
 
-            for (Eigen::Index j=start_det; j<end_det; j++) {
-                //SPDLOG_INFO("writing sig{}", j);
-                f_ios.at(i).add_hdu("sig" + std::to_string(j), mout.signal.at(j));
-                //SPDLOG_INFO("writing wt{}", j);
-                f_ios.at(i).add_hdu("wt" + std::to_string(j), mout.weight.at(j));
+            for (Eigen::Index j=0; j<ndet; j++) {
+                if (calib_data["array"](j) == i) {
+                    //SPDLOG_INFO("writing sig{}", j);
+                    f_ios.at(i).add_hdu("sig" + std::to_string(j), mout.signal.at(j));
+                    //SPDLOG_INFO("writing wt{}", j);
+                    f_ios.at(i).add_hdu("wt" + std::to_string(j), mout.weight.at(j));
 
-                // write kernel if requested
-                if (run_kernel) {
-                    //SPDLOG_INFO("writing ker{}", j);
-                    f_ios.at(i).add_hdu("ker" + std::to_string(j), mout.kernel.at(j));
+                    // write kernel if requested
+                    if (run_kernel) {
+                        //SPDLOG_INFO("writing ker{}", j);
+                        f_ios.at(i).add_hdu("ker" + std::to_string(j), mout.kernel.at(j));
+                    }
                 }
             }
 
             // loop through hdus and add wcs (hacky method)
-            int j = start_det;
+            //int j = start_det;
             int k = 0;
             int nhdus = 2;
 
@@ -572,7 +572,7 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
                 // only increment every nhdus
                 if (k == nhdus) {
                     k = 0;
-                    j++;
+                    //j++;
                 }
             }
 

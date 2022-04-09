@@ -11,6 +11,9 @@
 #include <citlali/core/map/psd.h>
 #include <citlali/core/map/histogram.h>
 
+
+namespace mapmaking {
+
 using map_dims_t = std::tuple<int, int, Eigen::VectorXd, Eigen::VectorXd>;
 using map_extent_t = std::vector<double>;
 using map_coord_t = std::vector<Eigen::VectorXd>;
@@ -319,3 +322,5 @@ public:
         }
     }
 };
+
+} // namespace mapmaking

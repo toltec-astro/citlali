@@ -17,9 +17,10 @@ using timestream::PTCProc;
 // selects the type of TCData
 using timestream::TCDataKind;
 
+using namespace mapmaking;
+
 class Lali: public EngineBase {
 public:
-
     void setup();
     auto run();
 
@@ -64,7 +65,7 @@ void Lali::setup() {
     toltec_io.setup_output_directory(filepath, dname);
 
     // create files for each member of the array_indices group
-    for (Eigen::Index i=0; i<array_indices.size(); i++) {
+    for (Eigen::Index i=0; i<arrays.size(); i++) {
         std::string filename;
         // generate filename for science maps
         if (reduction_type == "science") {
@@ -83,7 +84,7 @@ void Lali::setup() {
         fits_ios.push_back(std::move(fits_io));
     }
 
-    if (ts_out) {
+    if (run_tod_output) {
         if (ts_format == "netcdf") {
             ts_rows = 0;
 
@@ -186,7 +187,7 @@ auto Lali::run() {
                 rtcproc.run(in2, out, det_index_vector, this);
             }
 
-            if (ts_out) {
+            if (run_tod_output) {
                 Eigen::MatrixXd lat(out.scans.data.rows(),out.scans.data.cols());
                 Eigen::MatrixXd lon(out.scans.data.rows(),out.scans.data.cols());
 
@@ -388,7 +389,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
 
     // loop through array indices and add hdu's to existing files
     Eigen::Index pp = 0;
-    for (Eigen::Index i=0; i<array_indices.size(); i++) {
+    for (Eigen::Index i=0; i<arrays.size(); i++) {
         SPDLOG_INFO("writing {}.fits", f_ios.at(i).filepath);
         if (cunit == "mJy/beam") {
             unit_factor = toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC;
@@ -397,12 +398,11 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
         if (run_polarization) {
             for (auto const& stokes_params: polarization.stokes_params) {
                 // add signal map to file
-
                 auto signal = mout.signal.at(pp)*unit_factor;
                 f_ios.at(i).add_hdu("signal_"+stokes_params.first, signal);
 
                 //add weight map to file
-                auto weight = mout.signal.at(pp)*unit_factor;
+                auto weight = mout.weight.at(pp)*unit_factor;
                 f_ios.at(i).add_hdu("weight_"+stokes_params.first, weight);
 
                 //add kernel map to file
@@ -426,7 +426,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
             f_ios.at(i).add_hdu("signal", signal);
 
             //add weight map to file
-            auto weight = mout.signal.at(pp)*unit_factor;
+            auto weight = mout.weight.at(pp)*unit_factor;
             f_ios.at(i).add_hdu("weight", weight);
 
                  //add kernel map to file
@@ -796,7 +796,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
                 SPDLOG_INFO("writing noise maps");
                 // loop through array indices and add hdu's to existing files
                 pp = 0;
-                for (Eigen::Index i=0; i<array_indices.size(); i++) {
+                for (Eigen::Index i=0; i<arrays.size(); i++) {
 
                     if (cunit == "mJy/beam") {
                         unit_factor = toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC;

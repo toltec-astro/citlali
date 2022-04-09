@@ -7,6 +7,9 @@
 #include <unsupported/Eigen/CXX11/Tensor>
 #include <citlali/core/utils/pointing.h>
 
+
+namespace  mapmaking {
+
 using map_dims_t = std::tuple<int, int, Eigen::VectorXd, Eigen::VectorXd>;
 using map_extent_t = std::vector<double>;
 using map_coord_t = std::vector<Eigen::VectorXd>;
@@ -27,9 +30,16 @@ public:
     // noise maps (nrows, ncols, nnoise) of length nmaps
     std::vector<Eigen::Tensor<double,3>> noise;
 
-    void normalize_maps(const bool run_kernel) {
+    // vector of psd classes
+    std::vector<PSD> psd;
+
+    // vector of histogram psds
+    std::vector<Histogram> histogram;
+
+    template <typename Derived>
+    void normalize_maps(std::vector<Eigen::DenseBase<Derived>> &weight) {
         // normalize noise maps
-        for (Eigen::Index k=0;k<nnoise;k++) {
+        for (Eigen::Index k=0; k<nnoise; k++) {
             for (Eigen::Index mc=0; mc<map_count; mc++) {
                 for (Eigen::Index i=0; i<nrows; i++) {
                     for (Eigen::Index j=0; j<ncols; j++) {
@@ -47,6 +57,7 @@ public:
                 }
             }
         }
-
     }
 };
+
+} // namespace mapmaking

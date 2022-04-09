@@ -35,7 +35,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
          }
 
          // loop through the arrays
-         for (Eigen::Index mi=0; mi<engine->array_indices.size(); mi++) {
+         for (Eigen::Index mi=0; mi<engine->arrays.size(); mi++) {
 
              // current detector
              auto det = std::get<0>(engine->array_indices.at(mi));

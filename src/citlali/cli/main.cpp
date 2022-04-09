@@ -869,7 +869,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
     }
 
     // get number of maps and grouping indices
-    auto get_map_count(const RawObs &rawobs) {
+    /*auto get_map_count(const RawObs &rawobs) {
         map_count_t map_count;
         array_indices_t array_indices;
         det_indices_t det_indices;
@@ -912,6 +912,60 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
 
 
         return std::tuple{new_map_count, array_indices, det_indices};
+    }*/
+
+    // get number of maps and grouping indices
+    auto get_map_count(const RawObs &rawobs) {
+        map_count_t map_count = 0;
+        array_indices_t array_indices;
+        det_indices_t det_indices;
+
+        ToltecIO toltec_io;
+
+        if (std::strcmp("beammap", engine().reduction_type.c_str()) == 0) {
+            map_count = engine().ndet;
+        }
+
+        Eigen::Index narrays = 3;
+
+        if ((std::strcmp("science", engine().reduction_type.c_str()) == 0) ||
+            (std::strcmp("pointing", engine().reduction_type.c_str()) == 0)) {
+
+            for (Eigen::Index arr=0; arr<narrays; arr++) {
+                if ((engine().calib_data["array"].array()==arr).any()) {
+                    map_count++;
+                    engine().arrays[toltec_io.name_keys[arr]] = arr;
+                }
+            }
+        }
+
+        array_indices.push_back(std::tuple{0, 0});
+
+        Eigen::Index ai = 0;
+
+        for (Eigen::Index i = 0; i < engine().calib_data["array"].size(); i++) {
+            if (engine().calib_data["array"](i) == ai) {
+                std::get<1>(array_indices.at(ai)) = i;
+            }
+            else {
+                array_indices.push_back(std::tuple{i, 0});
+                ai += 1;
+            }
+        }
+
+        if ((std::strcmp("science", engine().reduction_type.c_str()) == 0) ||
+            (std::strcmp("pointing", engine().reduction_type.c_str()) == 0)) {
+            det_indices = array_indices;
+        }
+
+        // multiply by number of stokes parameters
+        map_count = map_count*engine().polarization.stokes_params.size();
+
+        SPDLOG_INFO("map count {}", map_count);
+        SPDLOG_INFO("array_indices {}", array_indices);
+        SPDLOG_INFO("det_indices {}", det_indices);
+
+        return std::tuple{map_count, array_indices, det_indices};
     }
 
     // get scan indices
@@ -1165,18 +1219,27 @@ int run(const rc_t &rc) {
                 ToltecIO toltec_io;
 
                 todproc.engine().redu_num = 0;
-                std::stringstream ss_redu;
+                std::stringstream ss_redu, ss_redu_next;
+
                 ss_redu << std::setfill('0') << std::setw(2)
                         << todproc.engine().redu_num;
                 std::string hdname = "redu" + ss_redu.str() + "/";
 
-                while (fs::exists(
-                    fs::status(todproc.engine().filepath + hdname))) {
+                ss_redu_next << std::setfill('0') << std::setw(2)
+                        << todproc.engine().redu_num + 1;
+                std::string hdname_next = "redu" + ss_redu_next.str() + "/";
+
+                while (fs::exists(fs::status(todproc.engine().filepath + hdname)) ||
+                       fs::exists(fs::status(todproc.engine().filepath + hdname_next))) {
                     todproc.engine().redu_num++;
                     std::stringstream ss_redu_i;
                     ss_redu_i << std::setfill('0') << std::setw(2)
                               << todproc.engine().redu_num;
                     hdname = "redu" + ss_redu_i.str() + "/";
+
+                    ss_redu_next << std::setfill('0') << std::setw(2)
+                                 << todproc.engine().redu_num + 1;
+                    hdname_next = "redu" + ss_redu_next.str() + "/";
                 }
 
                 toltec_io.setup_output_directory(todproc.engine().filepath,

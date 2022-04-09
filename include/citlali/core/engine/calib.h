@@ -20,6 +20,8 @@ struct ToltecCalib {
         {"a_fwhm", DEG_TO_ASEC},
         {"b_fwhm", DEG_TO_ASEC},
         {"fg",1},
+        {"pg", 1},
+        {"ori",1},
         {"responsivity",1}
     };
 
@@ -34,6 +36,8 @@ public:
 
     // indices of the arrays
     array_indices_t array_indices;
+    // vector for arrays
+    std::map<std::string, Eigen::Index> arrays;
     // indices of the detectors
     det_indices_t det_indices;
 
@@ -68,7 +72,6 @@ public:
         sensitivity.setOnes(ndet);
     }
 
-
     void get_hwp(std::string &filepath) {
         using namespace netCDF;
         using namespace netCDF::exceptions;
@@ -98,7 +101,5 @@ public:
         }
 
     }
-
-
 };
 

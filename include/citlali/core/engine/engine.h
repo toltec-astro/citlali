@@ -35,7 +35,49 @@
 #include <citlali/core/map/jinc_mm.h>
 #include <citlali/core/map/wiener_filter.h>
 
-class EngineBase: public Telescope, public Observation, public MapBase, public Calib {
+struct reduControls {
+    // timestream controls
+    bool run_timestream;
+    bool run_polarization;
+    bool run_despike;
+    bool run_kernel;
+    bool run_filter;
+    bool run_downsample;
+    bool run_clean;
+
+    // output timestreams?
+    bool run_tod_output;
+
+    // create maps?
+    bool run_maps;
+
+    // fit maps?
+    bool run_fitting;
+
+    // do coaddition?
+    bool run_coadd;
+    // create noise maps?
+    bool run_noise;
+    // filter coadded maps?
+    bool run_coadd_filter;
+};
+
+struct reduClasses {
+    // rtc classes
+    timestream::Polarization polarization;
+    timestream::Kernel kernel;
+    timestream::Despiker despiker;
+    timestream::Filter filter;
+    timestream::Downsampler downsampler;
+
+    // ptc classes
+    timestream::Cleaner cleaner;
+
+    // map classes
+    mapmaking::WienerFilter wiener_filter;
+};
+
+class EngineBase: public reduControls, public reduClasses, public Telescope, public Observation, public mapmaking::MapBase, public Calib {
 public:
     using key_vec_t = std::vector<std::vector<std::string>>;
 
@@ -54,6 +96,10 @@ public:
     // output rtc, ptc, or both
     std::string ts_chunk_type;
 
+    // timestream offsets
+    std::vector<double> interface_sync_offset;
+
+    // reduction number
     int redu_num;
 
     // vectors to hold missing/invalid keys
@@ -81,17 +127,10 @@ public:
     // downsampled sample rate
     double dfsmp;
 
-    // controls for each stage
-    bool run_polarization, run_kernel, run_despike, run_filter,
-    run_downsample, run_clean;
-
     // beammap config options included here
     // for initial validation
     int max_iterations;
     double cutoff;
-
-    // control for outputting timestreams
-    bool ts_out;
 
     // control for fitting
     bool run_fit;
@@ -102,38 +141,8 @@ public:
     // starting point for fit
     std::string fit_init_guess;
 
-    // control for coadd
-    bool run_coadd;
-
-    // control for noise maps
-    bool run_noise;
-
-    // control for coadd filter
-    bool run_coadd_filter;
-
     // requested coadd filter type
     std::string coadd_filter_type;
-
-    // polarization class
-    timestream::Polarization polarization;
-
-    // kernel class
-    timestream::Kernel kernel;
-
-    // despike class
-    timestream::Despiker despiker;
-
-    // lowpass and highpass class
-    timestream::Filter filter;
-
-    // downsample class
-    timestream::Downsampler downsampler;
-
-    // pca clean class
-    timestream::Cleaner cleaner;
-
-    // wiener filter
-    WienerFilter wiener_filter;
 
     // gaussian template fwhm in radians
     std::map<std::string, double> gaussian_template_fwhm_rad;
@@ -254,8 +263,8 @@ public:
         engine_config = _c;
         SPDLOG_INFO("getting config options");
 
-        get_config(ts_out,std::tuple{"timestream","output","enabled"});
-        if (ts_out) {
+        get_config(run_tod_output,std::tuple{"timestream","output","enabled"});
+        if (run_tod_output) {
             get_config(ts_format,std::tuple{"timestream","output","format"});
             get_config(ts_chunk_type,std::tuple{"timestream","output","chunk_type"});
         }
@@ -263,7 +272,7 @@ public:
         // get runtime config options
         get_config(ex_name,std::tuple{"runtime","parallel_policy"});//,{"omp","seq","tbb"});
 
-        if (ts_out) {
+        if (run_tod_output) {
             if (ex_name != "seq") {
                 SPDLOG_INFO("timestream output requires sequential execution policy.  setting policy to seq");
                 ex_name = "seq";
