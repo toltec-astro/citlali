@@ -114,6 +114,30 @@ void Lali::setup() {
 
             netCDF::NcVar pixid_v = fo.addVar("PIXID",netCDF::ncInt, ndet_dim);
             pixid_v.putAtt("Units","N/A");
+            netCDF::NcVar a_v = fo.addVar("ARRAYID",netCDF::ncDouble, ndet_dim);
+            a_v.putAtt("Units","N/A");
+            a_v.putVar(calib_data["array"].data());
+
+            netCDF::NcVar xt_v = fo.addVar("AZOFF",netCDF::ncDouble, ndet_dim);
+            xt_v.putAtt("Units","radians");
+            Eigen::VectorXd xt_temp = 1/DEG_TO_ASEC*DEG_TO_RAD*calib_data["x_t"];
+            xt_v.putVar(xt_temp.data());
+
+            netCDF::NcVar yt_v = fo.addVar("ELOFF",netCDF::ncDouble, ndet_dim);
+            yt_v.putAtt("Units","radians");
+            Eigen::VectorXd yt_temp = 1/DEG_TO_ASEC*DEG_TO_RAD*calib_data["y_t"];
+            yt_v.putVar(yt_temp.data());
+
+            netCDF::NcVar afwhm_v = fo.addVar("AFWHM",netCDF::ncDouble, ndet_dim);
+            afwhm_v.putAtt("Units","radians");
+            Eigen::VectorXd afwhm_temp = RAD_ASEC*calib_data["a_fwhm"];
+            afwhm_v.putVar(afwhm_temp.data());
+
+            netCDF::NcVar bfwhm_v = fo.addVar("BFWHM",netCDF::ncDouble, ndet_dim);
+            bfwhm_v.putAtt("Units","radians");
+            Eigen::VectorXd bfwhm_temp = RAD_ASEC*calib_data["b_fwhm"];
+            bfwhm_v.putVar(bfwhm_temp.data());
+
             netCDF::NcVar t_v = fo.addVar("TIME",netCDF::ncDouble, nsmp_dim);
             t_v.putAtt("Units","seconds");
             netCDF::NcVar e_v = fo.addVar("ELEV",netCDF::ncDouble, nsmp_dim);
@@ -123,6 +147,7 @@ void Lali::setup() {
             data_v.putAtt("Units","MJy/sr");
             netCDF::NcVar flag_v = fo.addVar("FLAG",netCDF::ncDouble, dims);
             flag_v.putAtt("Units","N/A");
+
             netCDF::NcVar lat_v = fo.addVar("DY",netCDF::ncDouble, dims);
             lat_v.putAtt("Units","radians");
             netCDF::NcVar lon_v = fo.addVar("DX",netCDF::ncDouble, dims);

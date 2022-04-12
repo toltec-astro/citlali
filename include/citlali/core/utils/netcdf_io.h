@@ -62,11 +62,13 @@ void append_to_netcdf(std::string filepath, Eigen::DenseBase<DerivedA> &data, Ei
 		Eigen::VectorXd data_vec = data.row(ii);
 		Eigen::Matrix<bool, Eigen::Dynamic,1> flag_vec = flag.row(ii);
 
+                Eigen::Matrix<int,Eigen::Dynamic,1> fvi = flag_vec.cast<int> ();
+
 		Eigen::VectorXd lat_vec = lat.row(ii);
 		Eigen::VectorXd lon_vec = lon.row(ii);
 
                 data_v.putVar(i0, s_d, data_vec.data());
-                flag_v.putVar(i0, s_d, flag_vec.data());
+                flag_v.putVar(i0, s_d, fvi.data());
                 lat_v.putVar(i0, s_d, lat_vec.data());
                 lon_v.putVar(i0, s_d, lon_vec.data());
 

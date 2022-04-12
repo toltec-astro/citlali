@@ -27,21 +27,21 @@ public:
     template <typename DerivedA, typename DerivedB>
     void derotate_detector(Eigen::DenseBase<DerivedA> &q0, Eigen::DenseBase<DerivedB> &u0, Eigen::Index det,
                            TCData<TCDataKind::RTC, Eigen::MatrixXd> &out, Eigen::Index nsamples, Eigen::Index ndet,
-                           Eigen::Index di, bool run_hwp) {
+                           Eigen::Index di, double y_t, bool run_hwp) {
 
         // current detector's elevation
-        //Eigen::VectorXd lat = (calib_data["x_t"](di)*RAD_ASEC) + out.tel_meta_data.data["TelElDes"].array();
+        auto lat = y_t*RAD_ASEC + out.tel_meta_data.data["TelElDes"].array();
 
         // rotate by elevation and flip
-        auto qs1 = q0.derived().array()*cos(-2*out.tel_meta_data.data["TelElDes"].array()) -
-                   u0.derived().array()*sin(-2*out.tel_meta_data.data["TelElDes"].array());
+        //auto qs1 = q0.derived().array()*cos(-2*out.tel_meta_data.data["TelElDes"].array()) -
+        //           u0.derived().array()*sin(-2*out.tel_meta_data.data["TelElDes"].array());
 
-        auto us1 = -q0.derived().array()*sin(-2*out.tel_meta_data.data["TelElDes"].array()) -
-                   u0.derived().array()*cos(-2*out.tel_meta_data.data["TelElDes"].array());
+        //auto us1 = -q0.derived().array()*sin(-2*out.tel_meta_data.data["TelElDes"].array()) -
+        //           u0.derived().array()*cos(-2*out.tel_meta_data.data["TelElDes"].array());
 
         // rotate by detector elevation and flip
-        //auto qs1 = q0.array()*cos(2*lat.array()) - u0.array()*sin(2*lat.array());
-        //auto us1 = - q0.array()*sin(2*lat.array()) - u0.array()*cos(2*lat.array());
+        auto qs1 = q0.derived().array()*cos(-2*lat.array()) - u0.derived().array()*sin(-2*lat.array());
+        auto us1 = -q0.derived().array()*sin(-2*lat.array()) - u0.derived().array()*cos(-2*lat.array());
 
         if (run_hwp) {
             // rotate by hwp signal
@@ -153,14 +153,14 @@ public:
                     auto qs0 = cos(2*pa2.array())*data.col(i).array();
                     auto us0 = sin(2*pa2.array())*data.col(i).array();
 
-                    derotate_detector(qs0, us0, i, out, nsamples, ndet, di, engine->run_hwp);
+                    derotate_detector(qs0, us0, i, out, nsamples, ndet, di, engine->calib_data["y_t"](di), engine->run_hwp);
                 }
 
                 else if (sp == "U") {
                     auto qs0 = -sin(2*pa2.array())*data.col(i).array();
                     auto us0 = cos(2*pa2.array())*data.col(i).array();
 
-                    derotate_detector(qs0, us0, i, out, nsamples, ndet, di, engine->run_hwp);
+                    derotate_detector(qs0, us0, i, out, nsamples, ndet, di, engine->calib_data["y_t"](di), engine->run_hwp);
                 }
             }
 
