@@ -107,7 +107,7 @@ interface_sync_offset: #dict for each toltec[0..12]+hwp+lmt/  #match keys with f
   - toltec12: 0
   - hwp: 0
 timestream:
-  polariametry:
+  polarimetry:
     enabled: false
   output:
     enabled: false

@@ -287,7 +287,7 @@ public:
         get_config(weighting_type,std::tuple{"timestream","weighting","type"});
 
         // get config
-        get_config(run_polarization,std::tuple{"timestream","polariametry","enabled"});
+        get_config(run_polarization,std::tuple{"timestream","polarimetry","enabled"});
 
         if (run_polarization == false) {
             polarization.stokes_params = {{"I",0}};
