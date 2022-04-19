@@ -236,14 +236,14 @@ public:
         }
     }
 
-    void normalize_noise_map_errors() {
+    void normalize_noise_map_errors(std::string weight_type) {
         for (Eigen::Index m=0; m<map_count; m++) {
             Eigen::VectorXd nfacs;
             nfacs.setZero(nnoise);
             nfac.push_back(std::move(nfacs));
 
             Eigen::MatrixXd wt = weight.at(m);
-            double weight_cut = engine_utils::find_weight_threshold(wt,cov_cut);
+            double weight_cut = engine_utils::find_weight_threshold(wt,cov_cut, weight_type);
 
             for (int k=0; k<nnoise; k++) {
                 double counter=0;
@@ -275,14 +275,14 @@ public:
         }
     }
 
-    void calc_average_filtered_rms() {
+    void calc_average_filtered_rms(std::string weight_type) {
         average_filtered_rms.setZero(map_count);
 
         for (Eigen::Index m = 0; m<map_count; m++) {
             Eigen::VectorXd map_rms(nnoise);
             for (Eigen::Index k=0; k<nnoise; k++) {
                 Eigen::MatrixXd wt = weight.at(m)*nfac.at(m)(k);
-                double weight_cut = engine_utils::find_weight_threshold(wt,cov_cut);
+                double weight_cut = engine_utils::find_weight_threshold(wt,cov_cut,weight_type);
 
                 int counter = 0;
                 double rms = 0.;
@@ -303,10 +303,10 @@ public:
         }
     }
 
-    void normalize_errors() {
+    void normalize_errors(std::string weight_type) {
         for (Eigen::Index m=0; m<map_count; m++) {
             Eigen::MatrixXd wt = weight.at(m);
-            double weight_cut = engine_utils::find_weight_threshold(wt,cov_cut);
+            double weight_cut = engine_utils::find_weight_threshold(wt,cov_cut,weight_type);
 
             double mean_sqerr = 0.;
             int counter = 0;

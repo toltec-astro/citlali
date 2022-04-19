@@ -10,6 +10,8 @@ public:
 
     std::string exmode;
 
+    std::string weight_type;
+
     Eigen::MatrixXd w;
     Eigen::VectorXd psd, psd_freq;
     Eigen::MatrixXd psd2d, psd2d_freq;
@@ -23,7 +25,7 @@ template <typename DerivedA, typename DerivedB, typename DerivedC>
 void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB> &wt,
                        Eigen::DenseBase<DerivedC> &rcphys, Eigen::DenseBase<DerivedC> &ccphys) {
 
-    auto weight_threshold = engine_utils::find_weight_threshold(wt, cov_cut);
+    auto weight_threshold = engine_utils::find_weight_threshold(wt, cov_cut, weight_type);
     auto [cut_row_range, cut_col_range] = engine_utils::set_coverage_cut_ranges(wt, weight_threshold);
 
     // make sure coverage cut map has an even number of rows and cols

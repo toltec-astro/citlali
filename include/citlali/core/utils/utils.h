@@ -300,10 +300,12 @@ double selector(std::vector<double> input, int index){
 }
 
 template <typename Derived>
-double find_weight_threshold(Eigen::DenseBase<Derived> &in, const double cov) {
+double find_weight_threshold(Eigen::DenseBase<Derived> &in, const double cov, std::string weight_type) {
     int nr = in.rows();
     int nc = in.cols();
     std::vector<double> og;
+
+    double mval;
 
     for (Eigen::Index x = 0; x < nc; x++) {
         for (Eigen::Index y = 0; y < nr; y++) {
@@ -313,19 +315,33 @@ double find_weight_threshold(Eigen::DenseBase<Derived> &in, const double cov) {
         }
     }
 
-    // find the point where 25% of nonzero elements have greater weight
-    double covlim;
-    int covlimi;
-    covlimi = 0.75*og.size();
+    if (weight_type == "approximate") {
+        std::vector<double> og2 = og;
+        std::sort(og2.begin(), og2.end());
 
-    SPDLOG_INFO("covlimi {}",covlimi);
+        int covlimi = 0.75*og2.size();
 
-    covlim = selector(og, covlimi);
+        mval = og2[floor((covlimi+og.size())/2.)];
+    }
 
-    double mval, mvali;
-    mvali = floor((covlimi+og.size())/2.);
+    // temporary for approximate weights
+    else if (weight_type == "full") {
+        // find the point where 25% of nonzero elements have greater weight
+        double covlim;
+        int covlimi;
+        covlimi = 0.75*og.size();
 
-    mval = selector(og, mvali);
+        SPDLOG_INFO("covlimi {}",covlimi);
+
+        covlim = selector(og, covlimi);
+
+        double mvali;
+        mvali = floor((covlimi+og.size())/2.);
+
+        mval = selector(og, mvali);
+    }
+
+    SPDLOG_INFO("mval {}",mval);
 
     // return the weight cut value
     return cov*mval;

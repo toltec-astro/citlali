@@ -9,6 +9,8 @@ class Histogram {
 public:
     double cov_cut;
 
+    std::string weight_type;
+
     int nbins = 25;
     Eigen::VectorXd hist_vals, hist_bins;
 
@@ -20,7 +22,7 @@ public:
 template<typename DerivedA, typename DerivedB>
 void Histogram::calc_hist(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB> &wt) {
 
-    auto weight_threshold = engine_utils::find_weight_threshold(wt, cov_cut);
+    auto weight_threshold = engine_utils::find_weight_threshold(wt, cov_cut, weight_type);
     auto [cut_row_range, cut_col_range] = engine_utils::set_coverage_cut_ranges(wt, weight_threshold);
 
     // get rows and cols

@@ -74,7 +74,6 @@ void append_to_netcdf(std::string filepath, Eigen::DenseBase<DerivedA> &data, Ei
 
                 e_v.putVar(i02, &elev(ii));
                 t_v.putVar(i02, &time(ii));
-
             }
 
             for (std::size_t ii = 0; ii < TULA_SIZET(data.cols()); ++ii) {

@@ -1396,6 +1396,7 @@ int run(const rc_t &rc) {
                     for (Eigen::Index i = 0; i < todproc.engine().cmb.map_count;i++) {
                         SPDLOG_INFO("calculating coadded map psds for map {}",i);
                         PSD psd;
+                        psd.weight_type = todproc.engine().weighting_type;
                         psd.cov_cut = todproc.engine().cmb.cov_cut;
                         psd.exmode = todproc.engine().ex_name;
                         psd.calc_map_psd(todproc.engine().cmb.signal.at(i), todproc.engine().cmb.weight.at(i), todproc.engine().cmb.rcphys,
@@ -1403,6 +1404,7 @@ int run(const rc_t &rc) {
                         todproc.engine().cmb.psd.push_back(std::move(psd));
 
                         Histogram histogram;
+                        histogram.weight_type = todproc.engine().weighting_type;
                         histogram.cov_cut = todproc.engine().cmb.cov_cut;
                         histogram.calc_hist(todproc.engine().cmb.signal.at(i), todproc.engine().cmb.weight.at(i));
                         todproc.engine().cmb.histogram.push_back(std::move(histogram));
@@ -1424,9 +1426,11 @@ int run(const rc_t &rc) {
                                 PSD psd;
                                 psd.cov_cut = todproc.engine().cmb.cov_cut;
                                 psd.exmode = todproc.engine().ex_name;
+                                psd.weight_type = todproc.engine().weighting_type;
 
                                 Histogram hist;
                                 hist.cov_cut = todproc.engine().cmb.cov_cut;
+                                hist.weight_type = todproc.engine().weighting_type;
 
                                 Eigen::Tensor<double, 2> out = todproc.engine().cmb.noise.at(i).chip(j, 2);
                                 Eigen::Map<Eigen::MatrixXd> noise(out.data(), out.dimension(0), out.dimension(1));
@@ -1491,11 +1495,11 @@ int run(const rc_t &rc) {
                             if (todproc.engine().run_noise) {
                                 if (todproc.engine().wiener_filter.normalize_error) {
                                     SPDLOG_INFO("normalizing noise map errors");
-                                    todproc.engine().cmb.normalize_noise_map_errors();
+                                    todproc.engine().cmb.normalize_noise_map_errors(todproc.engine().weighting_type);
                                     SPDLOG_INFO("calculating average filtered rms");
-                                    todproc.engine().cmb.calc_average_filtered_rms();
+                                    todproc.engine().cmb.calc_average_filtered_rms(todproc.engine().weighting_type);
                                     SPDLOG_INFO("normalizing errors");
-                                    todproc.engine().cmb.normalize_errors();
+                                    todproc.engine().cmb.normalize_errors(todproc.engine().weighting_type);
                                 }
 
 
@@ -1513,6 +1517,7 @@ int run(const rc_t &rc) {
                                 for (Eigen::Index i = 0; i < todproc.engine().cmb.map_count;i++) {
                                     SPDLOG_INFO("calculating coadded map psds for map {}",i);
                                     PSD psd;
+                                    psd.weight_type = todproc.engine().weighting_type;
                                     psd.cov_cut = todproc.engine().cmb.cov_cut;
                                     psd.exmode = todproc.engine().ex_name;
                                     psd.calc_map_psd(todproc.engine().cmb.signal.at(i), todproc.engine().cmb.weight.at(i), todproc.engine().cmb.rcphys,
@@ -1520,6 +1525,7 @@ int run(const rc_t &rc) {
                                     todproc.engine().cmb.psd.push_back(std::move(psd));
 
                                     Histogram histogram;
+                                    histogram.weight_type = todproc.engine().weighting_type;
                                     histogram.cov_cut = todproc.engine().cmb.cov_cut;
                                     histogram.calc_hist(todproc.engine().cmb.signal.at(i), todproc.engine().cmb.weight.at(i));
                                     todproc.engine().cmb.histogram.push_back(std::move(histogram));
@@ -1539,10 +1545,12 @@ int run(const rc_t &rc) {
                                         // loop through noise maps and get psd
                                         for (Eigen::Index j = 0; j < todproc.engine().cmb.nnoise; j++) {
                                             PSD psd;
+                                            psd.weight_type = todproc.engine().weighting_type;
                                             psd.cov_cut = todproc.engine().cmb.cov_cut;
                                             psd.exmode = todproc.engine().ex_name;
 
                                             Histogram hist;
+                                            hist.weight_type = todproc.engine().weighting_type;
                                             hist.cov_cut = todproc.engine().cmb.cov_cut;
 
                                             Eigen::Tensor<double, 2> out = todproc.engine().cmb.noise.at(i).chip(j, 2);
