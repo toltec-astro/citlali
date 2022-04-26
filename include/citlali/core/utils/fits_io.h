@@ -198,7 +198,7 @@ public:
         // add CRPIX values
         hdu->addKey("CTYPE1", CTYPE1, "");
         hdu->addKey("CRVAL1", CRVAL1, "");
-        hdu->addKey("CDELT1", pixel_size/unit_scale, "");
+        hdu->addKey("CDELT1", -pixel_size/unit_scale, "");
         hdu->addKey("CRPIX1", ref_pix_c1, "");
         hdu->addKey("CUNIT1", CUNIT, "");
 

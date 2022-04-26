@@ -307,6 +307,9 @@ double find_weight_threshold(Eigen::DenseBase<Derived> &in, const double cov, st
 
     double mval;
 
+    SPDLOG_INFO("weight_type {}",weight_type);
+
+
     for (Eigen::Index x = 0; x < nc; x++) {
         for (Eigen::Index y = 0; y < nr; y++) {
             if (in(y,x) > 0.){
