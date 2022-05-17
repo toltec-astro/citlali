@@ -376,7 +376,7 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
 	    double mean_el = tel_meta_data["TelElDes"].mean();
 	    SPDLOG_INFO("mean el {}", mean_el);
 
-            Eigen::VectorXd map_index_vector = ptcs.back().map_index_vector.data;
+            Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1> map_index_vector = ptcs.back().map_index_vector.data;
             ToltecIO toltec_io;
 
             // derotate x_t and y_t and calculate sensitivity for detectors

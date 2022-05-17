@@ -144,8 +144,8 @@ struct TCData<TCDataKind::RTC,RefType>
     Base::data_t<std::map<std::string, Eigen::VectorXd>> tel_meta_data;
     Base::data_t<Eigen::VectorXd> hwp;
 
-    Base::data_t<Eigen::VectorXd> det_index_vector;
-    Base::data_t<Eigen::VectorXd> map_index_vector;
+    Base::data_t<Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1>> det_index_vector;
+    Base::data_t<Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1>> map_index_vector;
 
 };
 
@@ -165,8 +165,8 @@ struct TCData<TCDataKind::PTC, RefType>
     Base::data_t<std::map<std::string, Eigen::VectorXd>> tel_meta_data;
     Base::data_t<Eigen::VectorXd> hwp;
 
-    Base::data_t<Eigen::VectorXd> det_index_vector;
-    Base::data_t<Eigen::VectorXd> map_index_vector;
+    Base::data_t<Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1>> det_index_vector;
+    Base::data_t<Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1>> map_index_vector;
 
 };
 
