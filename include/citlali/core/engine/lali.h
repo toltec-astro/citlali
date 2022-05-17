@@ -232,7 +232,7 @@ auto Lali::run() {
                         auto eloff = calib_data["y_t"](i);
 
                         // get pointing
-                        auto [lat_i, lon_i] = engine_utils::get_det_pointing(out.tel_meta_data.data, azoff, eloff, map_type);
+                        auto [lat_i, lon_i] = engine_utils::get_det_pointing(out.tel_meta_data.data, azoff, eloff, map_type, pointing_offsets);
                         lat.col(i) = lat_i;
                         lon.col(i) = lon_i;
                     }
@@ -273,7 +273,7 @@ auto Lali::run() {
                         auto eloff = calib_data["y_t"](i);
 
                         // get pointing
-                        auto [lat_i, lon_i] = engine_utils::get_det_pointing(out.tel_meta_data.data, azoff, eloff, map_type);
+                        auto [lat_i, lon_i] = engine_utils::get_det_pointing(out.tel_meta_data.data, azoff, eloff, map_type, pointing_offsets);
                         lat.col(i) = lat_i;
                         lon.col(i) = lon_i;
                     }

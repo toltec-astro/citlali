@@ -53,7 +53,7 @@ void Kernel::gaussian_kernel(Engine engine, TCData<TCDataKind::RTC, Eigen::Matri
         auto eloff = engine->calib_data["y_t"](di);
 
         // get pointing
-        auto [lat, lon] = engine_utils::get_det_pointing(in.tel_meta_data.data, azoff, eloff, engine->map_type);
+        auto [lat, lon] = engine_utils::get_det_pointing(in.tel_meta_data.data, azoff, eloff, engine->map_type, engine->pointing_offsets);
 
         // distance from map center
         auto dist = (lat.array().pow(2) + lon.array().pow(2)).sqrt();
@@ -88,7 +88,7 @@ void Kernel::airy_kernel(Engine engine, TCData<TCDataKind::RTC, Eigen::MatrixXd>
         auto eloff = engine->calib_data["y_t"](di);
 
         // get pointing
-        auto [lat, lon] = engine_utils::get_det_pointing(in.tel_meta_data.data, azoff, eloff, engine->map_type);
+        auto [lat, lon] = engine_utils::get_det_pointing(in.tel_meta_data.data, azoff, eloff, engine->map_type, engine->pointing_offsets);
 
         // distance from map center
         auto dist = (lat.array().pow(2) + lon.array().pow(2)).sqrt();
@@ -116,7 +116,7 @@ void Kernel::kernel_from_fits(Engine engine, TCData<TCDataKind::RTC, Eigen::Matr
         auto eloff = engine->calib_data["y_t"](di);
 
         // get pointing
-        auto [lat, lon] = engine_utils::get_det_pointing(in.tel_meta_data.data, azoff, eloff, engine->map_type);
+        auto [lat, lon] = engine_utils::get_det_pointing(in.tel_meta_data.data, azoff, eloff, engine->map_type, engine->pointing_offsets);
 
         // get map buffer row and col indices for lat and lon vectors
         Eigen::VectorXd mb_irow = lat.array()/engine->pixel_size + (image.rows())/2.;

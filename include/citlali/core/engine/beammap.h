@@ -165,6 +165,9 @@ auto Beammap::run_timestream() {
         TCData<TCDataKind::PTC,Eigen::MatrixXd> out;
         rtcproc.run(in, out, map_index_vector, det_index_vector, this);
 
+        out.map_index_vector.data = map_index_vector;
+        out.det_index_vector.data = det_index_vector;
+
         // move out into the PTCData vector
         ptcs0.at(out.index.data - 1) = std::move(out);
 
@@ -373,8 +376,16 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
 	    double mean_el = tel_meta_data["TelElDes"].mean();
 	    SPDLOG_INFO("mean el {}", mean_el);
 
+            Eigen::VectorXd map_index_vector = ptcs.back().map_index_vector.data;
+            ToltecIO toltec_io;
+
             // derotate x_t and y_t and calculate sensitivity for detectors
             grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](int d) {
+
+                Eigen::Index mi = map_index_vector(d);
+
+                mb.pfit(0,d) = beammap_fluxes[toltec_io.name_keys[mi]]/mb.pfit(0,d);
+
 		SPDLOG_INFO("derotating det {}", d);
                 Eigen::Index min_index;
 
@@ -388,8 +399,7 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
 
                 double min_el = tel_meta_data["TelElDes"](min_index);
 
-
-               double rot_azoff = cos(-min_el)*mb.pfit(1,d) -
+                double rot_azoff = cos(-min_el)*mb.pfit(1,d) -
                         sin(-min_el)*mb.pfit(2,d);
                 double rot_eloff = sin(-min_el)*mb.pfit(1,d) +
                         cos(-min_el)*mb.pfit(2,d);
@@ -551,7 +561,7 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
             for (auto hdu: f_ios.at(i).hdus) {
                 std::string hdu_name = hdu->name();
                 f_ios.at(i).template add_wcs<UnitsType::arcsec>(hdu,map_type,mout.nrows,mout.ncols,
-                                                       pixel_size,source_center,toltec_io.array_freqs[i],
+                                                                pixel_size,source_center,toltec_io.array_freqs[i],
                                                                 polarization.stokes_params,hdu_name);
                 // add fit parameters to hdus
                 hdu->addKey("amp", (float)mout.pfit(0,i),"amplitude (MJy/Sr)");

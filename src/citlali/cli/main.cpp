@@ -857,7 +857,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
         auto [nr, nc, rcp, ccp] = engine().get_dims(
             engine().tel_meta_data, engine().calib_data, engine().scanindices,
             engine().ex_name, engine().reduction_type, engine().x_size_pix,
-            engine().y_size_pix);
+            engine().y_size_pix, engine().pointing_offsets);
 
         map_extent.push_back(nr);
         map_extent.push_back(nc);
@@ -1330,6 +1330,43 @@ int run(const rc_t &rc) {
                     // get path to apt table
                     auto cal_path = rawobs.array_prop_table().filepath();
                     SPDLOG_INFO("cal_path {}", cal_path);
+
+
+                    // beammap source name
+                    todproc.engine().beammap_source_name =
+                        rawobs.photometry_calib_info().config().get_typed<std::string>(std::tuple{"beammap_source","name"});
+
+                    // beammap source ra
+                    todproc.engine().beammap_ra =
+                        rawobs.photometry_calib_info().config().get_typed<double>(std::tuple{"beammap_source","ra_deg"});
+                    // beammap source dec
+                    todproc.engine().beammap_dec =
+                        rawobs.photometry_calib_info().config().get_typed<double>(std::tuple{"beammap_source","dec_deg"});
+
+                    Eigen::Index nfluxes =
+                        rawobs.photometry_calib_info().config().get_node(std::tuple{"beammap_source","fluxes"}).size();
+
+                    for (Eigen::Index nf=0; nf<nfluxes; nf++) {
+                        // fluxes
+                        todproc.engine().beammap_fluxes[toltec_io.name_keys[nf]] =
+                            rawobs.photometry_calib_info().config().get_typed<double>(std::tuple{"beammap_source","fluxes",i,"value_mJy"});
+                        // flux uncertainties
+                        todproc.engine().beammap_uncer[toltec_io.name_keys[nf]] =
+                            rawobs.photometry_calib_info().config().get_typed<double>(std::tuple{"beammap_source","fluxes",i,"uncertainty_mJy"});
+                    }
+
+                    // extinction model name
+                    todproc.engine().beammap_source_name =
+                        rawobs.photometry_calib_info().config().get_typed<std::string>(std::tuple{"extinction","model_name"});
+                    // tau
+                    todproc.engine().tau =
+                        rawobs.photometry_calib_info().config().get_typed<double>(std::tuple{"extinction","tau_220"});
+
+                    todproc.engine().pointing_offsets["az"] =
+                        rawobs.astrometry_calib_info().config().get_typed<double>(std::tuple{"pointing_offsets",0,"value_arcsec"});
+
+                    todproc.engine().pointing_offsets["alt"] =
+                        rawobs.astrometry_calib_info().config().get_typed<double>(std::tuple{"pointing_offsets",1,"value_arcsec"});
 
                     // load apt table into engine
                     todproc.engine().get_calib(cal_path);

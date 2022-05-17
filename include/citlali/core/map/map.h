@@ -158,13 +158,14 @@ public:
 
     template <typename tel_meta_t, typename C, typename S>
     map_dims_t get_dims(tel_meta_t &, C &, S &, std::string, std::string,
-                        const double, const double);
+                        const double, const double, std::map<std::string,double> &);
 };
 
 template <typename tel_meta_t, typename C, typename S>
 map_dims_t MapBase::get_dims(tel_meta_t &tel_meta_data, C &calib_data, S &scan_indices,
                              std::string ex_name, std::string reduction_type,
-                             const double _xs, const double _ys) {
+                             const double _xs, const double _ys,
+                             std::map<std::string,double> &pointing_offsets) {
 
     if ((x_size_pix==0) && (y_size_pix==0)) {
         SPDLOG_INFO("calculating map dimensions based on pointing max/min");
@@ -218,7 +219,7 @@ map_dims_t MapBase::get_dims(tel_meta_t &tel_meta_data, C &calib_data, S &scan_i
 
                 // get detector pointing
                 auto [lat, lon] = engine_utils::get_det_pointing(tel_meta_data_scan,
-                        azoff, eloff, map_type);
+                        azoff, eloff, map_type, pointing_offsets);
 
                 // check for min and max
                 if (lat.minCoeff() < lat_limits(di,0)) {

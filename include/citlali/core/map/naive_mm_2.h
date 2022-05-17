@@ -74,7 +74,8 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
         }
 
         // get detector pointing (lat/lon = rows/cols -> icrs or altaz)
-        auto [lat, lon] = engine_utils::get_det_pointing(in.tel_meta_data.data, azoff, eloff, engine->map_type);
+        auto [lat, lon] = engine_utils::get_det_pointing(in.tel_meta_data.data, azoff, eloff, engine->map_type,
+                                                         engine->pointing_offsets);
 
         // get map buffer row and col indices for lat and lon vectors
         Eigen::VectorXd mb_irow = lat.array()/engine->pixel_size + (engine->mb.nrows)/2.;

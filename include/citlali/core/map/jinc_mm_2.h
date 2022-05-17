@@ -104,7 +104,8 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
         }
 
         // get detector pointing (lat/lon = rows/cols -> icrs or altaz)
-        auto [lat, lon] = engine_utils::get_det_pointing(in.tel_meta_data.data, azoff, eloff, engine->map_type);
+        auto [lat, lon] = engine_utils::get_det_pointing(in.tel_meta_data.data, azoff, eloff, engine->map_type,
+                                                         engine->pointing_offsets);
 
         // loop through scan
         for (Eigen::Index si = 0; si < in.scans.data.rows(); si++) {

@@ -157,7 +157,7 @@ void add_gaussian(Engine engine, Eigen::DenseBase<Derived> &scan, tel_meta_t &te
         }
 
         // get detector pointing (lat/lon = rows/cols -> dec/ra or el/az)
-        auto [lat, lon] = engine_utils::get_det_pointing(tel_meta_data, azoff, eloff, engine->map_type);
+        auto [lat, lon] = engine_utils::get_det_pointing(tel_meta_data, azoff, eloff, engine->map_type, engine->pointing_offsets);
 
         // get parameters for current detector
         auto amplitude = engine->mb.pfit(0,d);

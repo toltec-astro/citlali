@@ -90,6 +90,16 @@ public:
     // path to timestream outuput file
     std::string ts_filepath;
 
+    std::string beammap_source_name;
+    double beammap_ra, beammap_dec;
+
+    std::map<std::string,double> beammap_fluxes, beammap_uncer;
+
+    std::string extinction_model;
+    double tau;
+
+    std::map<std::string,double> pointing_offsets;
+
     // format for output timestream file
     std::string ts_format;
 
