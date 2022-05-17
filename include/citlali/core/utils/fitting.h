@@ -25,7 +25,7 @@ public:
     double ang0 = 0;
 
     double flux_low = 0.1;
-    double flux_high = 1.1;
+    double flux_high = 10.0;
 
     double fwhm_low = 0;
     double fwhm_high = 30;

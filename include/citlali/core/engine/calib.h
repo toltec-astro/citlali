@@ -12,6 +12,7 @@
 struct ToltecCalib {
     // name and scale
     std::map<std::string, double> header_keys = {
+        {"uid", 1},
         {"nw", 1},
         {"array", 1},
         {"flxscale", 1},
@@ -99,7 +100,16 @@ public:
             throw DataIOError{fmt::format(
                 "failed to load data from netCDF file {}", filepath)};
         }
+    }
 
+    void check_missing() {
+        for (Eigen::Index i=0; i<calib_data["uid"].size(); i++) {
+            std::ostringstream os;
+
+            os << calib_data["uid"](i);
+            std::string digits = os.str();
+
+        }
     }
 };
 

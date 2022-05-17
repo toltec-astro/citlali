@@ -32,7 +32,7 @@
 #include <citlali/core/timestream/ptc/ptcproc.h>
 
 #include <citlali/core/map/naive_mm_2.h>
-#include <citlali/core/map/jinc_mm.h>
+#include <citlali/core/map/jinc_mm_2.h>
 #include <citlali/core/map/wiener_filter.h>
 
 struct reduControls {
@@ -131,6 +131,9 @@ public:
     // for initial validation
     int max_iterations;
     double cutoff;
+
+    // jinc map-maker
+    Eigen::VectorXd radius, jinc_weights;
 
     // control for fitting
     bool run_fit;
@@ -263,6 +266,8 @@ public:
         engine_config = _c;
         SPDLOG_INFO("getting config options");
 
+        ToltecIO toltec_io;
+
         get_config(run_tod_output,std::tuple{"timestream","output","enabled"});
         if (run_tod_output) {
             get_config(ts_format,std::tuple{"timestream","output","format"});
@@ -276,7 +281,7 @@ public:
             if (ex_name != "seq") {
                 SPDLOG_INFO("timestream output requires sequential execution policy.  setting policy to seq");
                 ex_name = "seq";
-                }
+            }
         }
 
         get_config(nthreads,std::tuple{"runtime","n_threads"});
@@ -334,6 +339,11 @@ public:
         if (run_kernel) {
             get_config(kernel.filepath,std::tuple{"timestream","kernel","filepath"});
             get_config(kernel.kernel_type,std::tuple{"timestream","kernel","type"},{"internal_gaussian","internal_airy","image"});
+
+            auto kernel_node = engine_config.get_node(std::tuple{"timestream","kernel","image_ext_name"});
+            auto kernel_node_size = kernel_node.size();
+
+            std::string hdu_name;
             get_config(kernel.hdu_name,std::tuple{"timestream","kernel","image_ext_name"});
             kernel.setup();
         }
@@ -349,10 +359,25 @@ public:
         // get mapmaking config options
         get_config(map_grouping,std::tuple{"mapmaking","grouping"});
         get_config(mapping_method,std::tuple{"mapmaking","method"});
+
+        if (mapping_method == "jinc") {
+
+            double r_max = 1.5;
+            double a = 1.1;
+            double b = 4.75;
+            double c = 2.;
+
+            radius = Eigen::VectorXd::LinSpaced(1000, 1e-10, r_max);
+            jinc_weights.resize(radius.size());
+
+            for (Eigen::Index i=0; i<radius.size(); i++) {
+                jinc_weights(i) = jinc_func(radius(i),a,b,c,r_max,1);
+            }
+        }
+
         get_config(map_type,std::tuple{"mapmaking","pixel_axes"});
         get_config(pixel_size,std::tuple{"mapmaking","pixel_size_arcsec"});
         get_config(cmb.cov_cut,std::tuple{"coadd","cov_cut"});
-
 
         // convert pixel size to radians at start
         pixel_size *= RAD_ASEC;
@@ -367,7 +392,18 @@ public:
         get_config(y_size_pix,std::tuple{"mapmaking","y_size_pix"});
         get_config(crpix1,std::tuple{"mapmaking","crpix1"});
         get_config(crpix2,std::tuple{"mapmaking","crpix2"});
-        get_config(cunit,std::tuple{"mapmaking","cunit"});
+        get_config(cunit,std::tuple{"mapmaking","cunit"},{"MJy/Sr","mJy/beam"});
+
+        cflux.resize(toltec_io.barea_keys.size());
+
+        for (Eigen::Index i=0; i<toltec_io.barea_keys.size(); i++) {
+            if (cunit == "mJy/beam") {
+                cflux(i) = toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC;
+            }
+            else if (cunit == "MJy/Sr") {
+                cflux(i) = 1;
+            }
+        }
 
         // get beammap config options
         get_config(cutoff,std::tuple{"beammap","iter_tolerance"});
@@ -404,7 +440,7 @@ public:
                 get_config(coadd_filter_type,std::tuple{"coadd","filtering","type"});
 
                 if (run_noise == false) {
-                    SPDLOG_INFO("noise maps are needed for map filtering.");
+                    SPDLOG_ERROR("noise maps are needed for map filtering.");
                     std::exit(EXIT_FAILURE);
                 }
 
@@ -418,9 +454,7 @@ public:
                 get_config(gaussian_template_fwhm_rad["a2000"],std::tuple{"wiener_filter","gaussian_template_fwhm_arcsec","a2000"});
 
                 for (auto const& pair : gaussian_template_fwhm_rad) {
-                    SPDLOG_INFO("gaussian_template_fwhm_rad[pair.first] {}",gaussian_template_fwhm_rad[pair.first]);
                     gaussian_template_fwhm_rad[pair.first] = gaussian_template_fwhm_rad[pair.first]*RAD_ASEC;
-                    SPDLOG_INFO("gaussian_template_fwhm_rad[pair.first] {}",gaussian_template_fwhm_rad[pair.first]);
                 }
 
                 wiener_filter.run_kernel = run_kernel;

@@ -180,6 +180,22 @@ struct ToltecIO {
         {"f4.2"}
     };
 
+    std::vector<double> nw_sizes {
+        684,
+        522,
+        558,
+        564,
+        556,
+        510,
+        618,
+        676,
+        588,
+        590,
+        680,
+        544,
+        628,
+        };
+
     std::vector<std::string> minkaski_colunits {
         {""},
         {""},

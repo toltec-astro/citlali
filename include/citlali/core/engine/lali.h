@@ -207,17 +207,18 @@ auto Lali::run() {
             RTCProc rtcproc;
             {
                 tula::logging::scoped_timeit timer("rtcproc.run()");
-                rtcproc.run(in2, out, det_index_vector, this);
+                rtcproc.run(in2, out, map_index_vector, det_index_vector, this);
             }
 
             if (run_tod_output) {
-                Eigen::MatrixXd lat(out.scans.data.rows(),out.scans.data.cols());
-                Eigen::MatrixXd lon(out.scans.data.rows(),out.scans.data.cols());
+                if (ts_chunk_type == "rtc") {
 
-                if (ts_format == "netcdf") {
+                    Eigen::MatrixXd lat(out.scans.data.rows(),out.scans.data.cols());
+                    Eigen::MatrixXd lon(out.scans.data.rows(),out.scans.data.cols());
+
                     SPDLOG_INFO("writing scan {} to {}", in.index.data, ts_filepath);
                     // loop through detectors and get pointing timestream
-                    for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
+                    for (Eigen::Index i=0; i<out.scans.data.cols(); i++) {
 
                         // get offsets
                         auto azoff = calib_data["x_t"](i);
@@ -230,7 +231,7 @@ auto Lali::run() {
                     }
 
                     append_to_netcdf(ts_filepath, out.scans.data, out.flags.data, lat, lon, out.tel_meta_data.data["TelElDes"],
-                                 out.tel_meta_data.data["TelTime"]);
+                                     out.tel_meta_data.data["TelTime"]);
                 }
             }
 
@@ -250,6 +251,31 @@ auto Lali::run() {
                 ptcproc.run(out, out, this, rc);
             }
 
+            if (run_tod_output) {
+                if (ts_chunk_type == "ptc") {
+
+                    Eigen::MatrixXd lat(out.scans.data.rows(),out.scans.data.cols());
+                    Eigen::MatrixXd lon(out.scans.data.rows(),out.scans.data.cols());
+
+                    SPDLOG_INFO("writing scan {} to {}", in.index.data, ts_filepath);
+                    // loop through detectors and get pointing timestream
+                    for (Eigen::Index i=0; i<out.scans.data.cols(); i++) {
+
+                        // get offsets
+                        auto azoff = calib_data["x_t"](i);
+                        auto eloff = calib_data["y_t"](i);
+
+                        // get pointing
+                        auto [lat_i, lon_i] = engine_utils::get_det_pointing(out.tel_meta_data.data, azoff, eloff, map_type);
+                        lat.col(i) = lat_i;
+                        lon.col(i) = lon_i;
+                    }
+
+                        append_to_netcdf(ts_filepath, out.scans.data, out.flags.data, lat, lon, out.tel_meta_data.data["TelElDes"],
+                                         out.tel_meta_data.data["TelTime"]);
+                }
+            }
+
             /*Stage 3 Populate Map*/
             if (mapping_method == "naive") {
                 {
@@ -260,7 +286,7 @@ auto Lali::run() {
 
             else if (mapping_method == "jinc") {
                 tula::logging::scoped_timeit timer("populate_maps_jinc()");
-                populate_maps_jinc(out, this);
+                populate_maps_jinc(out, map_index_vector, det_index_vector, this);
             }
         }
 
@@ -382,8 +408,6 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
     // toltec input/output class
     ToltecIO toltec_io;
 
-    double unit_factor = 1;
-
     // get obsnum directory name inside redu directory name
     std::stringstream ss_redu;
     ss_redu << std::setfill('0') << std::setw(2) << redu_num;
@@ -407,18 +431,15 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
     Eigen::Index pp = 0;
     for (Eigen::Index i=0; i<arrays.size(); i++) {
         SPDLOG_INFO("writing {}.fits", f_ios.at(i).filepath);
-        if (cunit == "mJy/beam") {
-            unit_factor = toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC;
-        }
 
-        if (run_polarization) {
+        //if (run_polarization) {
             for (auto const& stokes_params: polarization.stokes_params) {
                 // add signal map to file
-                auto signal = mout.signal.at(pp)*unit_factor;
+                auto signal = mout.signal.at(pp);
                 f_ios.at(i).add_hdu("signal_"+stokes_params.first, signal);
 
                 //add weight map to file
-                auto weight = mout.weight.at(pp)*unit_factor;
+                auto weight = mout.weight.at(pp);
                 f_ios.at(i).add_hdu("weight_"+stokes_params.first, weight);
 
                 //add kernel map to file
@@ -432,11 +453,25 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
                 // add signal-to-noise map to file.  We calculate it here to save space
                 Eigen::MatrixXd signoise = mout.signal.at(pp).array()*sqrt(mout.weight.at(pp).array());
                 f_ios.at(i).add_hdu("sig2noise_"+stokes_params.first, signoise);
+
+                auto weight_threshold = engine_utils::find_weight_threshold(mout.weight.at(pp), cmb.cov_cut, weighting_type);
+                //auto [cut_row_range, cut_col_range] = engine_utils::set_coverage_cut_ranges(mout.weight.at(pp), weight_threshold);
+
+                SPDLOG_INFO("weight_threshold {}",weight_threshold);
+                Eigen::MatrixXd wt_cov = mout.weight.at(pp);
+                Eigen::MatrixXd ones, zeros;
+                ones.setOnes(wt_cov.rows(), wt_cov.cols());
+                zeros.setZero(wt_cov.rows(), wt_cov.cols());
+
+                wt_cov = (mout.weight.at(pp).array() < weight_threshold).select(zeros,ones);
+
+                f_ios.at(i).add_hdu("coverage_bool_"+stokes_params.first, wt_cov);
+
                 pp++;
             }
-        }
+        //}
 
-        else {
+        /*else {
             // add signal map to file
             auto signal = mout.signal.at(pp)*unit_factor;
             f_ios.at(i).add_hdu("signal", signal);
@@ -456,7 +491,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
                  // add signal-to-noise map to file.  We calculate it here to save space
             Eigen::MatrixXd signoise = mout.signal.at(i).array()*sqrt(mout.weight.at(i).array());
             f_ios.at(i).add_hdu("sig2noise", signoise);
-        }
+        }*/
 
         // now loop through hdus and add wcs
         for (auto hdu: f_ios.at(i).hdus) {
@@ -476,8 +511,8 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
 
                 if constexpr (out_type==MapType::obs) {
                     // add fit parameters
-                    hdu->addKey("amp", (float)mout.pfit(0,i)*unit_factor,"amplitude (" + cunit + ")");
-                    hdu->addKey("amp_err", (float)mout.perror(0,i)*unit_factor,"amplitude error ("+cunit+")");
+                    hdu->addKey("amp", (float)mout.pfit(0,i),"amplitude (" + cunit + ")");
+                    hdu->addKey("amp_err", (float)mout.perror(0,i),"amplitude error (" + cunit + ")");
                     hdu->addKey("x_t", (float)mout.pfit(1,i),"az offset (arcsec)");
                     hdu->addKey("x_t_err", (float)mout.perror(1,i),"az offset error (arcsec)");
                     hdu->addKey("y_t", (float)mout.pfit(2,i),"alt offset (arcsec)");
@@ -498,7 +533,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
         }
 
         // degrees if science map
-        if (reduction_type == "science") {
+        /*if (reduction_type == "science") {
             // add wcs to pHDU
             f_ios.at(i).template add_wcs<UnitsType::deg>(&f_ios.at(i).pfits->pHDU(),map_type, mout.nrows,mout.ncols,pixel_size,
                                                          source_center,toltec_io.array_freqs[i], polarization.stokes_params);
@@ -508,12 +543,20 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
             // add wcs to pHDU
             f_ios.at(i).template add_wcs<UnitsType::arcsec>(&f_ios.at(i).pfits->pHDU(),map_type,mout.nrows,mout.ncols,pixel_size,
                                                             source_center,toltec_io.array_freqs[i], polarization.stokes_params);
-        }
+        }*/
 
         // add wavelength
         f_ios.at(i).pfits->pHDU().addKey("WAV", toltec_io.name_keys[i], "Array Name");
         // add obsnum
         f_ios.at(i).pfits->pHDU().addKey("OBSNUM", obsnum, "Observation Number");
+        // add exp time
+        if constexpr (out_type==MapType::obs) {
+            f_ios.at(i).pfits->pHDU().addKey("t_exptime", tel_meta_params["t_exp"], "Exposure Time (sec)");
+        }
+
+        else if constexpr (out_type == MapType::coadd) {
+            f_ios.at(i).pfits->pHDU().addKey("t_exptime", c_t_exp, "Exposure Time (sec)");
+        }
         // add units
         f_ios.at(i).pfits->pHDU().addKey("UNIT", obsnum, cunit);
         // add conversion
@@ -524,6 +567,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
         f_ios.at(i).pfits->pHDU().addKey("s_dec", source_center["Dec"][0], "Source Dec (radians)");
 
     }
+
     // close file since we're done
     SPDLOG_INFO("closing FITS files");
     f_ios.clear();
@@ -534,18 +578,16 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
     std::string filename;
 
     if constexpr (out_type==MapType::obs) {
-        if constexpr (out_type==MapType::obs) {
-            if (reduction_type == "science") {
-                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
-                                                    ToltecIO::science, ToltecIO::psd,
-                                                    ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
-            }
+        if (reduction_type == "science") {
+            filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                                ToltecIO::science, ToltecIO::psd,
+                                                ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
+        }
 
-            else if (reduction_type == "pointing") {
-                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
-                                                    ToltecIO::pointing, ToltecIO::psd,
-                                                    ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
-            }
+        else if (reduction_type == "pointing") {
+            filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                                ToltecIO::pointing, ToltecIO::psd,
+                                                ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
         }
     }
 
@@ -755,6 +797,30 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
                         netCDF::NcVar psd2d_freq_v = fo.addVar(name_keys[i] + "_psd2d_freq_"+std::to_string(j),netCDF::ncDouble, dims);
                         psd2d_freq_v.putVar(psd2d_freq_transposed.data());
                     }
+
+                    netCDF::NcDim psd_dim = fo.addDim(name_keys[i] +"_avg_nfreq",mout.noise_avg_psd.at(i).psd.size());
+                    netCDF::NcDim pds2d_row_dim = fo.addDim(name_keys[i] +"_avg_rows",mout.noise_avg_psd.at(i).psd2d.rows());
+                    netCDF::NcDim pds2d_col_dim = fo.addDim(name_keys[i] +"_avg_cols",mout.noise_avg_psd.at(i).psd2d.cols());
+
+                    std::vector<netCDF::NcDim> dims;
+                    dims.push_back(pds2d_row_dim);
+                    dims.push_back(pds2d_col_dim);
+
+                    netCDF::NcVar psd_v = fo.addVar(name_keys[i] + "_avg_psd",netCDF::ncDouble, psd_dim);
+                    psd_v.putVar(mout.noise_avg_psd.at(i).psd.data());
+
+                    netCDF::NcVar psdfreq_v = fo.addVar(name_keys[i] + "_avg_psd_freq",netCDF::ncDouble, psd_dim);
+                    psdfreq_v.putVar(mout.noise_avg_psd.at(i).psd_freq.data());
+
+                    Eigen::MatrixXd psd2d_transposed = mout.noise_avg_psd.at(i).psd2d.transpose();
+                    Eigen::MatrixXd psd2d_freq_transposed = mout.noise_avg_psd.at(i).psd2d_freq.transpose();
+
+                    netCDF::NcVar psd2d_v = fo.addVar(name_keys[i] + "_avg_psd2d",netCDF::ncDouble, dims);
+                    psd2d_v.putVar(psd2d_transposed.data());
+
+                    netCDF::NcVar psd2d_freq_v = fo.addVar(name_keys[i] + "_avg_psd2d_freq",netCDF::ncDouble, dims);
+                    psd2d_freq_v.putVar(psd2d_freq_transposed.data());
+
                 }
 
                 fo.close();
@@ -773,7 +839,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
 
                 for (Eigen::Index i=0; i<mout.map_count; i++) {
                     for (Eigen::Index j=0; j<mout.nnoise; j++) {
-                        netCDF::NcDim bins_dim = hist_fo.addDim(name_keys[i] +"_nbins_"+std::to_string(j),mout.psd.at(i).psd.size());
+                        netCDF::NcDim bins_dim = hist_fo.addDim(name_keys[i] +"_nbins_"+std::to_string(j),mout.noise_hist.at(i).at(j).hist_vals.size());
 
                         netCDF::NcVar hist_v = hist_fo.addVar(name_keys[i] + "_values_"+std::to_string(j),netCDF::ncDouble, bins_dim);
                         hist_v.putVar(mout.noise_hist.at(i).at(j).hist_vals.data());
@@ -781,6 +847,14 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
                         netCDF::NcVar bins_v = hist_fo.addVar(name_keys[i] + "_bins_"+std::to_string(j),netCDF::ncDouble, bins_dim);
                         bins_v.putVar(mout.noise_hist.at(i).at(j).hist_bins.data());
                     }
+
+                    netCDF::NcDim bins_dim = hist_fo.addDim(name_keys[i] +"_avg_nbins",mout.noise_avg_hist.at(i).hist_vals.size());
+
+                    netCDF::NcVar hist_v = hist_fo.addVar(name_keys[i] + "_avg_values",netCDF::ncDouble, bins_dim);
+                    hist_v.putVar(mout.noise_avg_hist.at(i).hist_vals.data());
+
+                    netCDF::NcVar bins_v = hist_fo.addVar(name_keys[i] + "_avg_bins",netCDF::ncDouble, bins_dim);
+                    bins_v.putVar(mout.noise_avg_hist.at(i).hist_bins.data());
                 }
 
                 hist_fo.close();
@@ -790,26 +864,23 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
                 pp = 0;
                 for (Eigen::Index i=0; i<arrays.size(); i++) {
 
-                    if (cunit == "mJy/beam") {
-                        unit_factor = toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC;
-                    }
                     SPDLOG_INFO("writing {}.fits", nf_ios.at(i).filepath);
                     // loop through noise map number
 
-                    if (run_polarization) {
+                    //if (run_polarization) {
                         for (auto const& stokes_params: polarization.stokes_params) {
                             for (Eigen::Index j=0; j<mout.nnoise; j++) {
                                 // get tensor chip on 3rd dimension (nrows,ncols, nnoise)
                                 Eigen::Tensor<double,2> out = mout.noise.at(pp).chip(j,2);
-                                auto out_matrix = Eigen::Map<Eigen::MatrixXd>(out.data(), out.dimension(0), out.dimension(1))*unit_factor;
+                                auto out_matrix = Eigen::Map<Eigen::MatrixXd>(out.data(), out.dimension(0), out.dimension(1));
                                 // add noise map to file
                                 nf_ios.at(i).add_hdu("noise" + std::to_string(j) + stokes_params.first,out_matrix);
                             }
                             pp++;
                         }
-                    }
+                    //}
 
-                    else {
+                    /*else {
                         for (Eigen::Index j=0; j<mout.nnoise; j++) {
                             // get tensor chip on 3rd dimension (nrows,ncols, nnoise)
                             Eigen::Tensor<double,2> out = mout.noise.at(i).chip(j,2);
@@ -817,7 +888,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
                             // add noise map to file
                             nf_ios.at(i).add_hdu("noise" + std::to_string(j),out_matrix);
                         }
-                    }
+                    }*/
 
                     // now loop through hdus and add wcs
                     for (auto hdu: nf_ios.at(i).hdus) {
@@ -833,15 +904,23 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
                     }
 
                     // add wcs to pHDU
-                    nf_ios.at(i).template add_wcs<UnitsType::deg>(&nf_ios.at(i).pfits->pHDU(),map_type, mout.nrows,mout.ncols,pixel_size,
-                                                                  source_center,toltec_io.array_freqs[i], polarization.stokes_params);
+                    //nf_ios.at(i).template add_wcs<UnitsType::deg>(&nf_ios.at(i).pfits->pHDU(),map_type, mout.nrows,mout.ncols,pixel_size,
+                    //                                              source_center,toltec_io.array_freqs[i], polarization.stokes_params);
 
                     // add wavelength
                     nf_ios.at(i).pfits->pHDU().addKey("WAV", toltec_io.name_keys[i], "Array Name");
                     // add obsnum
                     nf_ios.at(i).pfits->pHDU().addKey("OBSNUM", obsnum, "Observation Number");
+                    // add exp time
+                    if constexpr (out_type==MapType::obs) {
+                        nf_ios.at(i).pfits->pHDU().addKey("t_exptime", tel_meta_params["t_exp"], "Exposure Time (sec)");
+                    }
+
+                    else if constexpr (out_type == MapType::coadd) {
+                        nf_ios.at(i).pfits->pHDU().addKey("t_exptime", c_t_exp, "Exposure Time (sec)");
+                    }
                     // add units
-                    nf_ios.at(i).pfits->pHDU().addKey("UNIT", obsnum, "MJy/Sr");
+                    nf_ios.at(i).pfits->pHDU().addKey("UNIT", cunit, "units");
                     // add conversion
                     nf_ios.at(i).pfits->pHDU().addKey("to_mjy/b", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
                     // add source ra

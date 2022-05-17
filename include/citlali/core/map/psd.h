@@ -61,14 +61,20 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
 
     auto out = engine_utils::fft2d<engine_utils::forward>(block, nr, nc, exmode);
 
-    out = out*diffr*diffc;
+    //out = out*diffr*diffc;
+    out = out/nr/nc;
 
     //Eigen::Map<Eigen::VectorXcd> out_vec(out.data(),nr*nc);
 
     //Eigen::VectorXd w = diffqr*diffqc*out.cwiseAbs2();
     //Eigen::MatrixXd h = Eigen::Map<Eigen::MatrixXd>(w.data(), nr, nc);
 
-    Eigen::MatrixXd h = diffqr*diffqc*out.cwiseAbs2();
+    //Eigen::MatrixXd h = diffqr*diffqc*out.cwiseAbs2();
+    Eigen::MatrixXd h(nr,nc);
+    for(int i=0;i<nc;i++)
+        for(int j=0;j<nr;j++)
+            h(j,i) = diffqr*diffqc*pow(out.real()(j,i),2) + pow(out.imag()(j,i),2);
+
 
     // vectors of frequencies
     Eigen::VectorXd qr(nr);
@@ -114,7 +120,7 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
     Eigen::MatrixXd qsymm(nr-1,nc-1);
 
     for (Eigen::Index i=1; i<nc; i++) {
-        for(int j=1; j<nr; j++) {
+        for(Eigen::Index j=1; j<nr; j++) {
             qmap(j-1,i-1) = sqrt(pow(qr(j),2) + pow(qc(i),2));
             qsymm(j-1,i-1) = qr(j)*qc(i);
         }
@@ -158,18 +164,18 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
                 }
             }
         }
-            if (count_s != 0) {
-                psdarr_s /= count_s;
-            }
-            if (count_a != 0) {
-                psdarr_a /= count_a;
-            }
-            psd(i) = std::min(psdarr_s,psdarr_a);
+        if (count_s != 0) {
+            psdarr_s /= count_s;
+        }
+        if (count_a != 0) {
+            psdarr_a /= count_a;
+        }
+        psd(i) = std::min(psdarr_s,psdarr_a);
     }
 
     // smooth the psd with a 10-element boxcar filter
     Eigen::VectorXd tmp(nn);
-    engine_utils::smooth(psd, tmp, 10);
+    engine_utils::smooth_edge_truncate(psd, tmp, 10);
     psd = tmp;
 
     psd2d = pmfq;

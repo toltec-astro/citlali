@@ -82,6 +82,36 @@ void smooth(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB> &out, int
     }
 }
 
+//implements the boxcar smoothing algorithm used by IDL
+//using the edge_truncate keyword activated
+//inArr is the original array to be smoothed
+//outArr is the smoothed version
+//w is the boxcar width in samples
+template<typename DerivedA, typename DerivedB>
+void smooth_edge_truncate(Eigen::DenseBase<DerivedA> &inArr, Eigen::DenseBase<DerivedB> &outArr, int w)
+{
+    int nIn = inArr.size();
+    int nOut = outArr.size();
+
+         //as with idl, if w is even then add 1
+    if(w % 2 == 0) w++;
+
+         //do this all at once
+    double winv = 1./w;
+    int wm1d2 = (w-1)/2;
+    double tmpsum;
+    for(int i=0;i<nIn;i++){
+        tmpsum=0;
+        for(int j=0;j<w;j++){
+            int addindex = i+j-wm1d2;
+            if(addindex < 0) addindex=0;
+            if(addindex > nIn-1) addindex=nIn-1;
+            tmpsum += inArr[addindex];
+        }
+        outArr(i) = winv*tmpsum;
+    }
+}
+
 // iterate over tuple (https://stackoverflow.com/questions/26902633/how-to-iterate-over-a-stdtuple-in-c-11)
 template<class F, class...Ts, std::size_t...Is>
 void for_each_in_tuple(const std::tuple<Ts...> & tuple, F func, std::index_sequence<Is...>) {
@@ -133,7 +163,7 @@ auto shift_matrix(Eigen::DenseBase<Derived> &in, const int n1, const int n2) {
     out.setZero(nr, nc);
 
     for (Eigen::Index i=0; i<nc; i++) {
-        for (Eigen::Index j=0; j<nr; j++){
+        for (Eigen::Index j=0; j<nr; j++) {
             Eigen::Index ti = (i+n2) % nc;
             Eigen::Index tj = (j+n1) % nr;
             Eigen::Index shifti = (ti < 0) ? nc+ti : ti;
@@ -307,9 +337,6 @@ double find_weight_threshold(Eigen::DenseBase<Derived> &in, const double cov, st
 
     double mval;
 
-    SPDLOG_INFO("weight_type {}",weight_type);
-
-
     for (Eigen::Index x = 0; x < nc; x++) {
         for (Eigen::Index y = 0; y < nr; y++) {
             if (in(y,x) > 0.){
@@ -334,8 +361,6 @@ double find_weight_threshold(Eigen::DenseBase<Derived> &in, const double cov, st
         int covlimi;
         covlimi = 0.75*og.size();
 
-        SPDLOG_INFO("covlimi {}",covlimi);
-
         covlim = selector(og, covlimi);
 
         double mvali;
@@ -343,8 +368,6 @@ double find_weight_threshold(Eigen::DenseBase<Derived> &in, const double cov, st
 
         mval = selector(og, mvali);
     }
-
-    SPDLOG_INFO("mval {}",mval);
 
     // return the weight cut value
     return cov*mval;

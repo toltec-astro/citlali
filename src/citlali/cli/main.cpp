@@ -1180,6 +1180,9 @@ int run(const rc_t &rc) {
 
                     // load telescope file
                     todproc.engine().get_telescope(rawobs.teldata().filepath());
+
+                    todproc.engine().c_t_exp += todproc.engine().tel_meta_params["t_exp"];
+
                     // calculate physical pointing vectors
                     todproc.engine().get_phys_pointing(todproc.engine().tel_meta_data, todproc.engine().source_center,
                                                        todproc.engine().map_type);
@@ -1403,11 +1406,11 @@ int run(const rc_t &rc) {
                                          todproc.engine().cmb.ccphys);
                         todproc.engine().cmb.psd.push_back(std::move(psd));
 
-                        Histogram histogram;
-                        histogram.weight_type = todproc.engine().weighting_type;
-                        histogram.cov_cut = todproc.engine().cmb.cov_cut;
-                        histogram.calc_hist(todproc.engine().cmb.signal.at(i), todproc.engine().cmb.weight.at(i));
-                        todproc.engine().cmb.histogram.push_back(std::move(histogram));
+                        Histogram hist;
+                        hist.weight_type = todproc.engine().weighting_type;
+                        hist.cov_cut = todproc.engine().cmb.cov_cut;
+                        hist.calc_hist(todproc.engine().cmb.signal.at(i), todproc.engine().cmb.weight.at(i));
+                        todproc.engine().cmb.histogram.push_back(std::move(hist));
 
                         SPDLOG_INFO("calculating noise map psds and histograms for map {}", i);
                         if (todproc.engine().run_noise) {
@@ -1439,14 +1442,18 @@ int run(const rc_t &rc) {
                                                  todproc.engine().cmb.ccphys);
                                 todproc.engine().cmb.noise_psd.at(i).push_back(std::move(psd));
 
-                                histogram.calc_hist(noise, todproc.engine().cmb.weight.at(i));
-                                todproc.engine().cmb.noise_hist.at(i).push_back(std::move(histogram));
+                                hist.calc_hist(noise, todproc.engine().cmb.weight.at(i));
+                                todproc.engine().cmb.noise_hist.at(i).push_back(std::move(hist));
 
                                 if (j == 0) {
                                     noise_avg_psd.psd = todproc.engine().cmb.noise_psd.at(i).back().psd;
                                     noise_avg_psd.psd_freq = todproc.engine().cmb.noise_psd.at(i).back().psd_freq;
                                     noise_avg_psd.psd2d = todproc.engine().cmb.noise_psd.at(i).back().psd2d;
                                     noise_avg_psd.psd2d_freq = todproc.engine().cmb.noise_psd.at(i).back().psd2d_freq;
+
+                                    noise_avg_hist.hist_vals = todproc.engine().cmb.noise_hist.at(i).back().hist_vals;
+                                    noise_avg_hist.hist_bins = todproc.engine().cmb.noise_hist.at(i).back().hist_bins;
+
                                 }
 
                                 else {
@@ -1455,12 +1462,16 @@ int run(const rc_t &rc) {
                                             todproc.engine().cmb.nnoise;
                                     noise_avg_psd.psd2d_freq = noise_avg_psd.psd2d_freq + todproc.engine()
                                                 .cmb.noise_psd.at(i).back().psd2d_freq / todproc.engine().cmb.nnoise;
+
+                                    noise_avg_hist.hist_vals = noise_avg_hist.hist_vals + todproc.engine().cmb.noise_hist.at(i).back().hist_vals;
                                 }
                             }
 
                             noise_avg_psd.psd = noise_avg_psd.psd / todproc.engine().cmb.nnoise;
-                            noise_avg_psd.psd_freq = noise_avg_psd.psd_freq;
                             todproc.engine().cmb.noise_avg_psd.push_back(noise_avg_psd);
+
+                            noise_avg_hist.hist_vals = noise_avg_hist.hist_vals / todproc.engine().cmb.nnoise;
+                            todproc.engine().cmb.noise_avg_hist.push_back(noise_avg_hist);
                         }
                     }
 
@@ -1524,11 +1535,11 @@ int run(const rc_t &rc) {
                                                      todproc.engine().cmb.ccphys);
                                     todproc.engine().cmb.psd.push_back(std::move(psd));
 
-                                    Histogram histogram;
-                                    histogram.weight_type = todproc.engine().weighting_type;
-                                    histogram.cov_cut = todproc.engine().cmb.cov_cut;
-                                    histogram.calc_hist(todproc.engine().cmb.signal.at(i), todproc.engine().cmb.weight.at(i));
-                                    todproc.engine().cmb.histogram.push_back(std::move(histogram));
+                                    Histogram hist;
+                                    hist.weight_type = todproc.engine().weighting_type;
+                                    hist.cov_cut = todproc.engine().cmb.cov_cut;
+                                    hist.calc_hist(todproc.engine().cmb.signal.at(i), todproc.engine().cmb.weight.at(i));
+                                    todproc.engine().cmb.histogram.push_back(std::move(hist));
 
                                     SPDLOG_INFO("calculating noise map psds and histograms for map {}", i);
                                     if (todproc.engine().run_noise) {
@@ -1560,14 +1571,17 @@ int run(const rc_t &rc) {
                                                              todproc.engine().cmb.ccphys);
                                             todproc.engine().cmb.noise_psd.at(i).push_back(std::move(psd));
 
-                                            histogram.calc_hist(noise, todproc.engine().cmb.weight.at(i));
-                                            todproc.engine().cmb.noise_hist.at(i).push_back(std::move(histogram));
+                                            hist.calc_hist(noise, todproc.engine().cmb.weight.at(i));
+                                            todproc.engine().cmb.noise_hist.at(i).push_back(std::move(hist));
 
                                             if (j == 0) {
                                                 noise_avg_psd.psd = todproc.engine().cmb.noise_psd.at(i).back().psd;
                                                 noise_avg_psd.psd_freq = todproc.engine().cmb.noise_psd.at(i).back().psd_freq;
                                                 noise_avg_psd.psd2d = todproc.engine().cmb.noise_psd.at(i).back().psd2d;
                                                 noise_avg_psd.psd2d_freq = todproc.engine().cmb.noise_psd.at(i).back().psd2d_freq;
+
+                                                noise_avg_hist.hist_vals = todproc.engine().cmb.noise_hist.at(i).back().hist_vals;
+                                                noise_avg_hist.hist_bins = todproc.engine().cmb.noise_hist.at(i).back().hist_bins;
                                             }
 
                                             else {
@@ -1576,12 +1590,17 @@ int run(const rc_t &rc) {
                                                                                                 todproc.engine().cmb.nnoise;
                                                 noise_avg_psd.psd2d_freq = noise_avg_psd.psd2d_freq +
                                                                            todproc.engine().cmb.noise_psd.at(i).back().psd2d_freq / todproc.engine().cmb.nnoise;
+
+                                                noise_avg_hist.hist_vals = noise_avg_hist.hist_vals + todproc.engine().cmb.noise_hist.at(i).back().hist_vals;
+
                                             }
                                         }
 
                                         noise_avg_psd.psd = noise_avg_psd.psd / todproc.engine().cmb.nnoise;
-                                        noise_avg_psd.psd_freq = noise_avg_psd.psd_freq;
                                         todproc.engine().cmb.noise_avg_psd.push_back(noise_avg_psd);
+
+                                        noise_avg_hist.hist_vals = noise_avg_hist.hist_vals / todproc.engine().cmb.nnoise;
+                                        todproc.engine().cmb.noise_avg_hist.push_back(noise_avg_hist);
                                     }
                                 }
                             }

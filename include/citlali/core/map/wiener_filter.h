@@ -30,8 +30,6 @@ public:
 
     std::string exmode;
 
-    //double beam_ratio = 30.;
-
     Eigen::MatrixXd rr, vvq, denom, nume;
     Eigen::MatrixXd mflt;
     Eigen::MatrixXd tplate;
@@ -105,14 +103,16 @@ public:
             run_filter(cmb, map_num);
             //cmb.kernel.at(map_num) = (denom.array() == 0).select(0, nume.array() / denom.array());
 
-            for(int i=0;i<nc;i++)
-                for(int j=0;j<nr;j++) {
-                    if (denom(j,i) != 0.0)
+            for (int i=0; i<nc; i++) {
+                for (int j=0; j<nr; j++) {
+                    if (denom(j,i) != 0.0) {
                         cmb.kernel.at(map_num)(j,i)=nume(j,i)/denom(j,i);
+                    }
                     else {
                         cmb.kernel.at(map_num)(j,i)= 0.0;
                     }
                 }
+            }
         }
 
         SPDLOG_INFO("filtering signal");
@@ -121,25 +121,40 @@ public:
         run_filter(cmb, map_num);
         //cmb.signal.at(map_num) = (denom.array() == 0).select(0, nume.array() / denom.array());
 
-        for(int i=0; i<nc; i++)
-            for(int j=0; j<nr;j ++) {
-                if (denom(j,i) != 0.0)
+        for (int i=0; i<nc; i++) {
+            for (int j=0; j<nr; j ++) {
+                if (denom(j,i) != 0.0) {
                     cmb.signal.at(map_num)(j,i) = nume(j,i)/denom(j,i);
+                }
                 else {
                     cmb.signal.at(map_num)(j,i)= 0.0;
                 }
             }
+        }
         cmb.weight.at(map_num) = denom;
     }
 
     template<class CMB>
     void filter_noise(CMB &cmb, const int map_num, const int noise_num) {
-        SPDLOG_INFO("filtering noise");
+        SPDLOG_INFO("filtering noise {}/{}",noise_num+1, cmb.noise.at(map_num).dimension(2));
         Eigen::Tensor<double,2> out = cmb.noise.at(map_num).chip(noise_num,2);
         mflt = Eigen::Map<Eigen::MatrixXd>(out.data(),out.dimension(0),out.dimension(1));
         calc_numerator();
 
-        Eigen::MatrixXd ratio = (denom.array() == 0).select(0, nume.array() / denom.array());
+        //Eigen::MatrixXd ratio = (denom.array() == 0).select(0, nume.array() / denom.array());
+        Eigen::MatrixXd ratio(nr,nc);
+
+        for (int i=0; i<nc; i++) {
+            for (int j=0; j<nr; j++) {
+                if (denom(j,i) != 0.0) {
+                    ratio(j,i) = nume(j,i)/denom(j,i);
+                }
+                else {
+                    ratio(j,i)= 0.0;
+                }
+            }
+        }
+
         Eigen::TensorMap<Eigen::Tensor<double, 2>> in_tensor(ratio.data(), ratio.rows(), ratio.cols());
         cmb.noise.at(map_num).chip(noise_num,2) = in_tensor;
     }
@@ -147,6 +162,7 @@ public:
 
 template<class CMB>
 void WienerFilter::make_gaussian_template(CMB &cmb, const double gaussian_template_fwhm_rad) {
+
     tplate.setZero(nr,nc);
 
     Eigen::VectorXd rgcut = cmb.rcphys;
@@ -179,7 +195,7 @@ void WienerFilter::make_symmetric_template(CMB &cmb, const int map_num, CD &cali
     Eigen::VectorXd rgcut = cmb.rcphys;
     Eigen::VectorXd cgcut = cmb.ccphys;
     Eigen::MatrixXd tem = cmb.kernel.at(map_num);
-      
+
     // set nparams for fit
     Eigen::Index nparams = 6;
     Eigen::VectorXd pfit;
@@ -188,14 +204,14 @@ void WienerFilter::make_symmetric_template(CMB &cmb, const int map_num, CD &cali
     // declare fitter class for detector
     gaussfit::MapFitter fitter;
     // size of region to fit in pixels
-    fitter.bounding_box_pix = 20;//bounding_box_pix;
+    fitter.bounding_box_pix = 50;//bounding_box_pix;
     pfit = fitter.fit<gaussfit::MapFitter::centerValue>(cmb.kernel.at(map_num), cmb.weight.at(map_num), calib_data);
     SPDLOG_INFO("pfit {}",pfit);
 
     pfit(1) = cmb.pixel_size*(pfit(1) - (nc)/2);
     pfit(2) = cmb.pixel_size*(pfit(2) - (nr)/2);
 
-    tem = engine_utils::shift_matrix(tem, std::round(pfit(2)/diffr), std::round(pfit(1)/diffc));
+    tem = engine_utils::shift_matrix(tem, -std::round(pfit(2)/diffr), -std::round(pfit(1)/diffc));
 
     Eigen::MatrixXd dist(nr,nc);
     for (Eigen::Index i=0; i<nc; i++) {
@@ -407,9 +423,9 @@ void WienerFilter::calc_vvq(CMB &cmb, const int map_num) {
     // normalize the power spectrum psdq and place into vvq
     //vvq = psdq/psdq.sum();
     vvq.setZero(nr,nc);
-      double totpsdq=0.;
-      for(int i=0;i<nc;i++) for(int j=0;j<nr;j++) totpsdq += psdq(j,i);
-      for(int i=0;i<nc;i++) for(int j=0;j<nr;j++) vvq(j,i) = psdq(j,i)/totpsdq;
+    double totpsdq=0.;
+    for(int i=0;i<nc;i++) for(int j=0;j<nr;j++) totpsdq += psdq(j,i);
+    for(int i=0;i<nc;i++) for(int j=0;j<nr;j++) vvq(j,i) = psdq(j,i)/totpsdq;
 }
 
 void WienerFilter::calc_numerator() {
@@ -584,7 +600,6 @@ void WienerFilter::calc_denominator() {
 
                     pb0.count(nloops, nloops / 100);
 
-
                     if ((kk % 100) == 1) {
                         double max_ratio = -1;
                         double maxdenom;
@@ -604,8 +619,8 @@ void WienerFilter::calc_denominator() {
                             done = true;
                         }
                         else {
-                            SPDLOG_INFO("completed iteration {} of {}. max_ratio={}",
-                                        kk, nloops, max_ratio);
+                            //SPDLOG_INFO("completed iteration {} of {}. max_ratio={}",
+                                        //kk, nloops, max_ratio);
                         }
                     }
                 }

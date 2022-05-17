@@ -24,6 +24,10 @@ struct ToltecTelescope {
         {"Data.TelescopeBackend.Hold", "Hold"}
     };
 
+    std::map<std::string, std::string> meta_keys {
+        {"Header.Telescope.t_exp","t_exp"}
+    };
+
     std::map<std::string, std::string> header_keys {
         {"Header.Source.Ra", "Ra"},
         {"Header.Source.Dec", "Dec"}
@@ -36,8 +40,12 @@ public:
     char map_pattern_type [128];
     // telescope pointing vectors
     std::map<std::string, Eigen::VectorXd> tel_meta_data;
+    std::map<std::string, double> tel_meta_params;
     // source center from telescope file
     std::map<std::string, Eigen::VectorXd> source_center;
+
+    // coadded t_exp
+    double c_t_exp = 0;
 
     // map absolute center value
     double crval1_J2000, crval2_J2000;
@@ -91,6 +99,10 @@ public:
 
                 tel_meta_data["TelAzDes"] = tel_meta_data["TelAzAct"];
                 tel_meta_data["TelElDes"] = tel_meta_data["TelElAct"];
+
+                Eigen::Index npts = tel_meta_data["TelTime"].size();
+
+                tel_meta_params["t_exp"] = tel_meta_data["TelTime"](npts - 1) - tel_meta_data["TelTime"](0);
 
                 fo.close();
 

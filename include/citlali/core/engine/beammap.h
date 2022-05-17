@@ -156,12 +156,14 @@ auto Beammap::run_timestream() {
 
         in.tel_meta_data.data["SourceEl"] = tel_meta_data["SourceEl"].segment(start_index, scan_length);
 
-        Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1> map_index_vector, det_index_vector;
+        //Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1> map_index_vector, det_index_vector;
+
+        auto [map_index_vector, det_index_vector] =  polarization.create_rtc(in, in, "I", this);
 
         /*Stage 1: RTCProc*/
         RTCProc rtcproc;
         TCData<TCDataKind::PTC,Eigen::MatrixXd> out;
-        rtcproc.run(in, out, det_index_vector, this);
+        rtcproc.run(in, out, map_index_vector, det_index_vector, this);
 
         // move out into the PTCData vector
         ptcs0.at(out.index.data - 1) = std::move(out);
@@ -453,7 +455,6 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
             table.row(ti+4) = mout.pfit.row(ci).template cast <float> ();
             table.row(ti+4 + 1) = mout.perror.row(ci).template cast <float> ();
             ci++;
-            SPDLOG_INFO("ci {} ti {}", ci, ti);
         }
 
         table.row(toltec_io.beammap_apt_header.size()-1) = converge_iter.cast <float> ();
@@ -471,13 +472,13 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
         meta["nw"].push_back("units: N/A");
         meta["nw"].push_back("network index");
 
-        meta["flxscale"].push_back("units: Mjy/sr");
+        meta["flxscale"].push_back("units: MJy/Sr");
         meta["flxscale"].push_back("flux conversion scale");
 
-        meta["amp"].push_back("units: Mjy/sr");
+        meta["amp"].push_back("units: MJy/Sr");
         meta["amp"].push_back("fitted amplitude");
 
-        meta["amp_err"].push_back("units: Mjy/sr");
+        meta["amp_err"].push_back("units: MJy/Sr");
         meta["amp_err"].push_back("fitted amplitude error");
 
         meta["x_t"].push_back("units: arcsec");
@@ -553,8 +554,8 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
                                                        pixel_size,source_center,toltec_io.array_freqs[i],
                                                                 polarization.stokes_params,hdu_name);
                 // add fit parameters to hdus
-                hdu->addKey("amp", (float)mout.pfit(0,i),"amplitude (Mjy/sr)");
-                hdu->addKey("amp_err", (float)mout.perror(0,i),"amplitude error (Mjy/sr)");
+                hdu->addKey("amp", (float)mout.pfit(0,i),"amplitude (MJy/Sr)");
+                hdu->addKey("amp_err", (float)mout.perror(0,i),"amplitude error (MJy/Sr)");
                 hdu->addKey("x_t", (float)mout.pfit(1,i),"az offset (arcsec)");
                 hdu->addKey("x_t_err", (float)mout.perror(1,i),"az offset error (arcsec)");
                 hdu->addKey("y_t", (float)mout.pfit(2,i),"alt offset (arcsec)");
@@ -590,6 +591,8 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
             f_ios.at(i).pfits->pHDU().addKey("WAV", toltec_io.name_keys[i], "Array Name");
             // add obsnum
             f_ios.at(i).pfits->pHDU().addKey("OBSNUM", obsnum, "Observation Number");
+            // exp time
+            f_ios.at(i).pfits->pHDU().addKey("t_exptime", tel_meta_params["t_exp"], "Exposure Time (sec)");
             // add units
             f_ios.at(i).pfits->pHDU().addKey("UNIT", obsnum, "MJy/Sr");
             // add conversion

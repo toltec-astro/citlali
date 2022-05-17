@@ -19,8 +19,11 @@ using map_count_t = std::size_t;
 using det_indices_t = std::vector<std::tuple<Eigen::Index, Eigen::Index>>;
 
 template <typename Derived, class Engine>
-void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::DenseBase<Derived> &map_index_vector,
-                         Eigen::DenseBase<Derived> &det_index_vector, Engine engine) {
+void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
+                         Eigen::DenseBase<Derived> &map_index_vector,
+                         Eigen::DenseBase<Derived> &det_index_vector,
+                         Engine engine) {
+
     SPDLOG_INFO("populating map with scan {}", in.index.data);
 
     Eigen::MatrixXi noise_rand;
@@ -33,17 +36,15 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::De
             thread_local boost::random::mt19937 eng;
             boost::random::uniform_int_distribution<> rands{0,1};
 
-            // generate the random number matrix
+                 // generate the random number matrix
             noise_rand =
-                Eigen::MatrixXi::Zero(engine->cmb.nnoise, ndets).unaryExpr([&](int dummy){return rands(eng);});
+                Eigen::MatrixXi::Zero(engine->cmb.nnoise, in.scans.data.rows()).unaryExpr([&](int dummy){return rands(eng);});
             noise_rand = (2.*(noise_rand.template cast<double>().array() - 0.5)).template cast<int>();
         }
     }
 
-
     // loop through the detector indices
     for (Eigen::Index mi = 0; mi < ndets; mi++) {
-
         Eigen::Index mc;
         Eigen::Index di = det_index_vector(mi);
 
@@ -89,6 +90,7 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::De
         // loop through scan
         for (Eigen::Index si = 0; si < in.scans.data.rows(); si++) {
             // row and col pixel for map buffer
+
             Eigen::Index mb_ir = (mb_irow(si));
             Eigen::Index mb_ic = (mb_icol(si));
 
@@ -132,13 +134,13 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::De
                         for (Eigen::Index nn=0; nn<engine->cmb.nnoise; nn++) {
                             // coadd into current noise map
                             if ((cmb_ir >= 0) && (cmb_ir < engine->cmb.nrows) && (cmb_ic >= 0) && (cmb_ic < engine->cmb.ncols)) {
-                                engine->cmb.noise.at(mc)(cmb_ir,cmb_ic,nn) += noise_rand(nn, noise_det)*sig;
+                                engine->cmb.noise.at(mc)(cmb_ir,cmb_ic,nn) += noise_rand(nn, si)*sig;
                             }
                         }
                     }
                 }
             }
         }
-        noise_det++;
+        //noise_det++;
     }
 }

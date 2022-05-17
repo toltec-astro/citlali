@@ -31,7 +31,6 @@ struct WCS {
 
     // map unit
     std::string cunit;
-
 };
 
 using map_dims_t = std::tuple<int, int, Eigen::VectorXd, Eigen::VectorXd>;
@@ -155,6 +154,8 @@ public:
     // mapping method (naive, etc)
     std::string mapping_method;
 
+    Eigen::VectorXd cflux;
+
     template <typename tel_meta_t, typename C, typename S>
     map_dims_t get_dims(tel_meta_t &, C &, S &, std::string, std::string,
                         const double, const double);
@@ -183,6 +184,7 @@ map_dims_t MapBase::get_dims(tel_meta_t &tel_meta_data, C &calib_data, S &scan_i
         det_in_vec.resize(calib_data["x_t"].size());
         std::iota(det_in_vec.begin(), det_in_vec.end(), 0);
         det_out_vec.resize(calib_data["x_t"].size());
+
 
         // loop through scans
         for (Eigen::Index s = 0; s < scan_indices.cols(); s++) {

@@ -83,7 +83,9 @@ public:
     template <typename Derived>
     void add_hdu(std::string hdu_name, Eigen::DenseBase<Derived> &data) {
         // axes dimensions (note the reversed order)
-        std::vector naxes{data.cols(), data.rows()};
+        Eigen::Index npol = 1;
+        Eigen::Index nfreq = 1;
+        std::vector naxes{data.cols(), data.rows(), nfreq, npol};
 
         // add an extension hdu to vector
         hdus.push_back((pfits->addImage(hdu_name,DOUBLE_IMG,naxes)));
@@ -138,7 +140,7 @@ public:
     template <UnitsType units, typename hdu_t, typename map_type_t, typename center_t>
     void add_wcs(hdu_t *hdu, map_type_t map_type, const int nrows, const int ncols,
                  const double pixel_size, center_t &source_center, double freq, std::map<std::string, int> &stokes_params,
-                 std::string hdu_name="none") {
+                 std::string hdu_name="I") {
 
         ToltecIO toltec_io;
 
@@ -215,7 +217,7 @@ public:
         //hdu->addKey("CD2_2", pixel_size/unit_scale, "");
 
         // add freq WCS for non-primary hdus
-        if (hdu_name != "none") {
+        //if (hdu_name != "none") {
             hdu->addKey("CTYPE3", "FREQ", "");
             hdu->addKey("CRVAL3", freq, "");
             hdu->addKey("CDELT3", 1, "");
@@ -224,10 +226,10 @@ public:
 
             std::string key;
             int p_unit = 0;
-            if (stokes_params.size() > 1) {
+            //if (stokes_params.size() > 1) {
                 key.push_back(hdu_name.back());
                 p_unit = stokes_params[key];
-            }
+            //}
 
             // add stokes WCS params for non-primary hdus
             hdu->addKey("CTYPE4", "STOKES", "");
@@ -235,7 +237,7 @@ public:
             hdu->addKey("CDELT4", p_unit+1, "");
             hdu->addKey("CRPIX4", p_unit+1, "");
             hdu->addKey("CUNIT4", "", "");
-        }
+        //}
 
         // add source ra
         hdu->addKey("s_ra", source_center["Ra"][0], "Source RA (radians)");

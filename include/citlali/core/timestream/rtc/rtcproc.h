@@ -9,13 +9,15 @@ public:
     template <typename Derived, class Engine>
     void run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &,
              TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
-             Eigen::DenseBase<Derived> &,Engine);
+             Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &,
+             Engine);
 };
 
 template <typename Derived, class Engine>
 void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
          TCData<TCDataKind::PTC, Eigen::MatrixXd> &out,
-         Eigen::DenseBase<Derived> &det_index_vector, Engine engine) {
+                  Eigen::DenseBase<Derived> &map_index_vector,
+                  Eigen::DenseBase<Derived> &det_index_vector, Engine engine) {
 
     // start index for removing scan edges due to lowpassing (nterms=0 if filter is skipped)
     auto si = engine->filter.nterms;
@@ -147,7 +149,7 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     // flux calibration
     if ((engine->reduction_type == "science") || (engine->reduction_type == "pointing")) {
         SPDLOG_INFO("calibrating flux scale for scan {}", in.index.data);
-        calibrate(out.scans.data, engine->calib_data["flxscale"], det_index_vector);
+        calibrate(out.scans.data, engine->calib_data["flxscale"], map_index_vector, det_index_vector, engine->cflux);
     }
 }
 
