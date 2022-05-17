@@ -394,17 +394,6 @@ public:
         get_config(crpix2,std::tuple{"mapmaking","crpix2"});
         get_config(cunit,std::tuple{"mapmaking","cunit"},{"MJy/Sr","mJy/beam"});
 
-        cflux.resize(toltec_io.barea_keys.size());
-
-        for (Eigen::Index i=0; i<toltec_io.barea_keys.size(); i++) {
-            if (cunit == "mJy/beam") {
-                cflux(i) = toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC;
-            }
-            else if (cunit == "MJy/Sr") {
-                cflux(i) = 1;
-            }
-        }
-
         // get beammap config options
         get_config(cutoff,std::tuple{"beammap","iter_tolerance"});
         get_config(max_iterations,std::tuple{"beammap","iter_max"});

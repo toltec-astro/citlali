@@ -1181,6 +1181,7 @@ int run(const rc_t &rc) {
                     // load telescope file
                     todproc.engine().get_telescope(rawobs.teldata().filepath());
 
+                    // coadded exposure time
                     todproc.engine().c_t_exp += todproc.engine().tel_meta_params["t_exp"];
 
                     // calculate physical pointing vectors
@@ -1362,6 +1363,28 @@ int run(const rc_t &rc) {
                     // copy array and detector indices into engine
                     todproc.engine().array_indices = array_indices.at(i);
                     todproc.engine().det_indices = det_indices.at(i);
+
+                    todproc.engine().cflux.resize(map_counts[i]);
+
+                    Eigen::Index k = 0;
+                    Eigen::Index l = 0;
+                    for (Eigen::Index j=0; j<todproc.engine().cflux.size(); j++) {
+                        if (todproc.engine().cunit == "mJy/beam") {
+                             todproc.engine().cflux(j) = toltec_io.barea_keys[l]*MJY_SR_TO_mJY_ASEC;
+                            if (k == toltec_io.barea_keys.size() - 1) {
+                                k = 0;
+                                l++;
+                             }
+                            else {
+                                k++;
+                            }
+                        }
+                        else if (todproc.engine().cunit == "MJy/Sr") {
+                             todproc.engine().cflux(j) = 1;
+                        }
+                    }
+
+                    SPDLOG_INFO("cflux {}",todproc.engine().cflux);
 
                     // do general setup that is only run once per rawobs before grppi pipeline
                     {

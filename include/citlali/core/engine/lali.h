@@ -201,7 +201,12 @@ auto Lali::run() {
 
         for (auto const& stokes_params: polarization.stokes_params) {
             TCData<TCDataKind::RTC,Eigen::MatrixXd> in2;
+
+            SPDLOG_INFO("in scans {}",in.scans.data);
+
             auto [map_index_vector, det_index_vector] =  polarization.create_rtc(in, in2, stokes_params.first, this);
+
+            SPDLOG_INFO("in2 scans {}",in2.scans.data);
 
             /*Stage 1: RTCProc*/
             RTCProc rtcproc;
@@ -209,6 +214,8 @@ auto Lali::run() {
                 tula::logging::scoped_timeit timer("rtcproc.run()");
                 rtcproc.run(in2, out, map_index_vector, det_index_vector, this);
             }
+
+            SPDLOG_INFO("out scans {}",out.scans.data);
 
             if (run_tod_output) {
                 if (ts_chunk_type == "rtc") {
