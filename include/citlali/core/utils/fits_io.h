@@ -218,26 +218,23 @@ public:
 
         // add freq WCS for non-primary hdus
         //if (hdu_name != "none") {
-            hdu->addKey("CTYPE3", "FREQ", "");
-            hdu->addKey("CRVAL3", freq, "");
-            hdu->addKey("CDELT3", 1, "");
-            hdu->addKey("CRPIX3", 1, "");
-            hdu->addKey("CUNIT3", "Hz", "");
+        hdu->addKey("CTYPE3", "FREQ", "");
+        hdu->addKey("CRVAL3", freq, "");
+        hdu->addKey("CDELT3", 1, "");
+        hdu->addKey("CRPIX3", 1, "");
+        hdu->addKey("CUNIT3", "Hz", "");
 
-            std::string key;
-            int p_unit = 0;
-            //if (stokes_params.size() > 1) {
-                key.push_back(hdu_name.back());
-                p_unit = stokes_params[key];
-            //}
+        std::string key;
+        int p_unit = 0;
+        key.push_back(hdu_name.back());
+        p_unit = stokes_params[key];
 
-            // add stokes WCS params for non-primary hdus
-            hdu->addKey("CTYPE4", "STOKES", "");
-            hdu->addKey("CRVAL4", p_unit+1, "");
-            hdu->addKey("CDELT4", p_unit+1, "");
-            hdu->addKey("CRPIX4", p_unit+1, "");
-            hdu->addKey("CUNIT4", "", "");
-        //}
+        // add stokes WCS params for non-primary hdus
+        hdu->addKey("CTYPE4", "STOKES", "");
+        hdu->addKey("CRVAL4", p_unit+1, "");
+        hdu->addKey("CDELT4", p_unit+1, "");
+        hdu->addKey("CRPIX4", p_unit+1, "");
+        hdu->addKey("CUNIT4", "", "");
 
         // add source ra
         hdu->addKey("s_ra", source_center["Ra"][0], "Source RA (radians)");

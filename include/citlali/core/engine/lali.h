@@ -440,65 +440,41 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
         SPDLOG_INFO("writing {}.fits", f_ios.at(i).filepath);
 
         //if (run_polarization) {
-            for (auto const& stokes_params: polarization.stokes_params) {
-                // add signal map to file
-                auto signal = mout.signal.at(pp);
-                f_ios.at(i).add_hdu("signal_"+stokes_params.first, signal);
-
-                //add weight map to file
-                auto weight = mout.weight.at(pp);
-                f_ios.at(i).add_hdu("weight_"+stokes_params.first, weight);
-
-                //add kernel map to file
-                if (run_kernel) {
-                    f_ios.at(i).add_hdu("kernel_"+stokes_params.first, mout.kernel.at(pp));
-                }
-
-                // add coverage map to file
-                f_ios.at(i).add_hdu("coverage_"+stokes_params.first, mout.coverage.at(pp));
-
-                // add signal-to-noise map to file.  We calculate it here to save space
-                Eigen::MatrixXd signoise = mout.signal.at(pp).array()*sqrt(mout.weight.at(pp).array());
-                f_ios.at(i).add_hdu("sig2noise_"+stokes_params.first, signoise);
-
-                auto weight_threshold = engine_utils::find_weight_threshold(mout.weight.at(pp), cmb.cov_cut, weighting_type);
-                //auto [cut_row_range, cut_col_range] = engine_utils::set_coverage_cut_ranges(mout.weight.at(pp), weight_threshold);
-
-                SPDLOG_INFO("weight_threshold {}",weight_threshold);
-                Eigen::MatrixXd wt_cov = mout.weight.at(pp);
-                Eigen::MatrixXd ones, zeros;
-                ones.setOnes(wt_cov.rows(), wt_cov.cols());
-                zeros.setZero(wt_cov.rows(), wt_cov.cols());
-
-                wt_cov = (mout.weight.at(pp).array() < weight_threshold).select(zeros,ones);
-
-                f_ios.at(i).add_hdu("coverage_bool_"+stokes_params.first, wt_cov);
-
-                pp++;
-            }
-        //}
-
-        /*else {
+        for (auto const& stokes_params: polarization.stokes_params) {
             // add signal map to file
-            auto signal = mout.signal.at(pp)*unit_factor;
-            f_ios.at(i).add_hdu("signal", signal);
+            auto signal = mout.signal.at(pp);
+            f_ios.at(i).add_hdu("signal_"+stokes_params.first, signal);
 
             //add weight map to file
-            auto weight = mout.weight.at(pp)*unit_factor;
-            f_ios.at(i).add_hdu("weight", weight);
+            auto weight = mout.weight.at(pp);
+            f_ios.at(i).add_hdu("weight_"+stokes_params.first, weight);
 
-                 //add kernel map to file
+            //add kernel map to file
             if (run_kernel) {
-                f_ios.at(i).add_hdu("kernel", mout.kernel.at(i));
+                f_ios.at(i).add_hdu("kernel_"+stokes_params.first, mout.kernel.at(pp));
             }
 
-                 // add coverage map to file
-            f_ios.at(i).add_hdu("coverage", mout.coverage.at(i));
+            // add coverage map to file
+            f_ios.at(i).add_hdu("coverage_"+stokes_params.first, mout.coverage.at(pp));
 
-                 // add signal-to-noise map to file.  We calculate it here to save space
-            Eigen::MatrixXd signoise = mout.signal.at(i).array()*sqrt(mout.weight.at(i).array());
-            f_ios.at(i).add_hdu("sig2noise", signoise);
-        }*/
+            // add signal-to-noise map to file.  We calculate it here to save space
+            Eigen::MatrixXd signoise = mout.signal.at(pp).array()*sqrt(mout.weight.at(pp).array());
+            f_ios.at(i).add_hdu("sig2noise_"+stokes_params.first, signoise);
+
+            auto weight_threshold = engine_utils::find_weight_threshold(mout.weight.at(pp), cmb.cov_cut, weighting_type);
+
+            SPDLOG_INFO("weight_threshold {}",weight_threshold);
+            Eigen::MatrixXd wt_cov = mout.weight.at(pp);
+            Eigen::MatrixXd ones, zeros;
+            ones.setOnes(wt_cov.rows(), wt_cov.cols());
+            zeros.setZero(wt_cov.rows(), wt_cov.cols());
+
+            wt_cov = (mout.weight.at(pp).array() < weight_threshold).select(zeros,ones);
+
+            f_ios.at(i).add_hdu("coverage_bool_"+stokes_params.first, wt_cov);
+
+            pp++;
+        }
 
         // now loop through hdus and add wcs
         for (auto hdu: f_ios.at(i).hdus) {
@@ -532,6 +508,35 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
                     hdu->addKey("angle_err", (float)mout.perror(5,i),"position angle error (radians)");
                 }
             }
+
+            std::regex sig_regex("signal", std::regex_constants::ECMAScript | std::regex_constants::icase);
+            if (std::regex_search(hdu_name, sig_regex)) {
+                hdu->addKey("UNIT", cunit, "Unit of map");
+            }
+
+            std::regex wt_regex("weight", std::regex_constants::ECMAScript | std::regex_constants::icase);
+            if (std::regex_search(hdu_name, wt_regex)) {
+                hdu->addKey("UNIT", "1/(" + cunit + ")^2", "Unit of map");
+            }
+
+            std::regex kernel_regex("kernel", std::regex_constants::ECMAScript | std::regex_constants::icase);
+            if (std::regex_search(hdu_name, kernel_regex)) {
+                hdu->addKey("UNIT", cunit, "Unit of map");
+            }
+
+            std::regex coverage_regex("coverage", std::regex_constants::ECMAScript | std::regex_constants::icase);
+            if (std::regex_search(hdu_name, coverage_regex)) {
+                hdu->addKey("UNIT", "sec", "Unit of map");
+            }
+            std::regex s2n_regex("sig2noise", std::regex_constants::ECMAScript | std::regex_constants::icase);
+            if (std::regex_search(hdu_name, s2n_regex)) {
+                hdu->addKey("UNIT", "N/A", "Unit of map");
+            }
+
+            std::regex bool_regex("bool", std::regex_constants::ECMAScript | std::regex_constants::icase);
+            if (std::regex_search(hdu_name, bool_regex)) {
+                hdu->addKey("UNIT", "N/A", "Unit of map");
+            }
         }
 
         // loop through default TolTEC fits header keys and add to primary header
@@ -539,23 +544,11 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
             f_ios.at(i).pfits->pHDU().addKey(pair.first, pair.second, " ");
         }
 
-        // degrees if science map
-        /*if (reduction_type == "science") {
-            // add wcs to pHDU
-            f_ios.at(i).template add_wcs<UnitsType::deg>(&f_ios.at(i).pfits->pHDU(),map_type, mout.nrows,mout.ncols,pixel_size,
-                                                         source_center,toltec_io.array_freqs[i], polarization.stokes_params);
-        }
-        // arcseconds if pointing map
-        else if (reduction_type == "pointing") {
-            // add wcs to pHDU
-            f_ios.at(i).template add_wcs<UnitsType::arcsec>(&f_ios.at(i).pfits->pHDU(),map_type,mout.nrows,mout.ncols,pixel_size,
-                                                            source_center,toltec_io.array_freqs[i], polarization.stokes_params);
-        }*/
-
         // add wavelength
         f_ios.at(i).pfits->pHDU().addKey("WAV", toltec_io.name_keys[i], "Array Name");
         // add obsnum
         f_ios.at(i).pfits->pHDU().addKey("OBSNUM", obsnum, "Observation Number");
+
         // add exp time
         if constexpr (out_type==MapType::obs) {
             f_ios.at(i).pfits->pHDU().addKey("t_exptime", tel_meta_params["t_exp"], "Exposure Time (sec)");
@@ -564,10 +557,19 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
         else if constexpr (out_type == MapType::coadd) {
             f_ios.at(i).pfits->pHDU().addKey("t_exptime", c_t_exp, "Exposure Time (sec)");
         }
+
         // add units
-        f_ios.at(i).pfits->pHDU().addKey("UNIT", obsnum, cunit);
-        // add conversion
-        f_ios.at(i).pfits->pHDU().addKey("to_mjy/b", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
+        //f_ios.at(i).pfits->pHDU().addKey("UNIT", cunit, "Unit of map");
+
+        if (cunit == "MJy/Sr") {
+            // add conversion
+            f_ios.at(i).pfits->pHDU().addKey("to_mjy/beam", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
+            f_ios.at(i).pfits->pHDU().addKey("to_Mjy/Sr", 1.0, "Conversion to MJy/Sr");
+        }
+        else if (cunit == "mJy/beam") {
+            f_ios.at(i).pfits->pHDU().addKey("to_mjy/beam", 1.0, "Conversion to mJy/beam");
+            f_ios.at(i).pfits->pHDU().addKey("to_MJy/Sr", 1/toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to MJy/Sr");
+        }
         // add source ra
         f_ios.at(i).pfits->pHDU().addKey("s_ra", source_center["Ra"][0], "Source RA (radians)");
         // add source dec
@@ -779,6 +781,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
 
                 netCDF::NcFile fo(filename + ".nc",netCDF::NcFile::replace);
 
+                // noise map psd
                 for (Eigen::Index i=0; i<mout.map_count; i++) {
                     for (Eigen::Index j=0; j<mout.nnoise; j++) {
                         netCDF::NcDim psd_dim = fo.addDim(name_keys[i] +"_nfreq_"+std::to_string(j),mout.noise_psd.at(i).at(j).psd.size());
@@ -805,6 +808,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
                         psd2d_freq_v.putVar(psd2d_freq_transposed.data());
                     }
 
+                    // noise map average psd
                     netCDF::NcDim psd_dim = fo.addDim(name_keys[i] +"_avg_nfreq",mout.noise_avg_psd.at(i).psd.size());
                     netCDF::NcDim pds2d_row_dim = fo.addDim(name_keys[i] +"_avg_rows",mout.noise_avg_psd.at(i).psd2d.rows());
                     netCDF::NcDim pds2d_col_dim = fo.addDim(name_keys[i] +"_avg_cols",mout.noise_avg_psd.at(i).psd2d.cols());
@@ -844,6 +848,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
 
                 netCDF::NcFile hist_fo(filename + ".nc",netCDF::NcFile::replace);
 
+                // noise map histogram
                 for (Eigen::Index i=0; i<mout.map_count; i++) {
                     for (Eigen::Index j=0; j<mout.nnoise; j++) {
                         netCDF::NcDim bins_dim = hist_fo.addDim(name_keys[i] +"_nbins_"+std::to_string(j),mout.noise_hist.at(i).at(j).hist_vals.size());
@@ -873,29 +878,16 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
 
                     SPDLOG_INFO("writing {}.fits", nf_ios.at(i).filepath);
                     // loop through noise map number
-
-                    //if (run_polarization) {
-                        for (auto const& stokes_params: polarization.stokes_params) {
-                            for (Eigen::Index j=0; j<mout.nnoise; j++) {
-                                // get tensor chip on 3rd dimension (nrows,ncols, nnoise)
-                                Eigen::Tensor<double,2> out = mout.noise.at(pp).chip(j,2);
-                                auto out_matrix = Eigen::Map<Eigen::MatrixXd>(out.data(), out.dimension(0), out.dimension(1));
-                                // add noise map to file
-                                nf_ios.at(i).add_hdu("noise" + std::to_string(j) + stokes_params.first,out_matrix);
-                            }
-                            pp++;
-                        }
-                    //}
-
-                    /*else {
+                    for (auto const& stokes_params: polarization.stokes_params) {
                         for (Eigen::Index j=0; j<mout.nnoise; j++) {
                             // get tensor chip on 3rd dimension (nrows,ncols, nnoise)
-                            Eigen::Tensor<double,2> out = mout.noise.at(i).chip(j,2);
-                            auto out_matrix = Eigen::Map<Eigen::MatrixXd>(out.data(), out.dimension(0), out.dimension(1))*unit_factor;
+                            Eigen::Tensor<double,2> out = mout.noise.at(pp).chip(j,2);
+                            auto out_matrix = Eigen::Map<Eigen::MatrixXd>(out.data(), out.dimension(0), out.dimension(1));
                             // add noise map to file
-                            nf_ios.at(i).add_hdu("noise" + std::to_string(j),out_matrix);
+                            nf_ios.at(i).add_hdu("noise" + std::to_string(j) + stokes_params.first,out_matrix);
                         }
-                    }*/
+                        pp++;
+                    }
 
                     // now loop through hdus and add wcs
                     for (auto hdu: nf_ios.at(i).hdus) {
@@ -903,16 +895,14 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
                         // degrees if science map
                         nf_ios.at(i).template add_wcs<UnitsType::deg>(hdu,map_type,mout.nrows,mout.ncols, pixel_size,source_center,
                                                                       toltec_io.array_freqs[i], polarization.stokes_params,hdu_name);
+                        // add units to hdus
+                        hdu->addKey("UNIT", cunit, "Unit of map");
                     }
 
                     // loop through default TolTEC fits header keys and add to primary header
                     for (auto const& pair : toltec_io.fits_header_keys) {
                         nf_ios.at(i).pfits->pHDU().addKey(pair.first, pair.second, " ");
                     }
-
-                    // add wcs to pHDU
-                    //nf_ios.at(i).template add_wcs<UnitsType::deg>(&nf_ios.at(i).pfits->pHDU(),map_type, mout.nrows,mout.ncols,pixel_size,
-                    //                                              source_center,toltec_io.array_freqs[i], polarization.stokes_params);
 
                     // add wavelength
                     nf_ios.at(i).pfits->pHDU().addKey("WAV", toltec_io.name_keys[i], "Array Name");
@@ -927,9 +917,16 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
                         nf_ios.at(i).pfits->pHDU().addKey("t_exptime", c_t_exp, "Exposure Time (sec)");
                     }
                     // add units
-                    nf_ios.at(i).pfits->pHDU().addKey("UNIT", cunit, "units");
+                    //nf_ios.at(i).pfits->pHDU().addKey("UNIT", cunit, "Unit of maps");
+                    if (cunit == "MJy/Sr") {
                     // add conversion
-                    nf_ios.at(i).pfits->pHDU().addKey("to_mjy/b", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
+                        nf_ios.at(i).pfits->pHDU().addKey("to_mjy/beam", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
+                        nf_ios.at(i).pfits->pHDU().addKey("to_Mjy/Sr", 1.0, "Conversion to MJy/Sr");
+                    }
+                    else if (cunit == "mJy/beam") {
+                        nf_ios.at(i).pfits->pHDU().addKey("to_mjy/beam", 1.0, "Conversion to mJy/beam");
+                        nf_ios.at(i).pfits->pHDU().addKey("to_MJy/Sr", 1/toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to MJy/Sr");
+                    }
                     // add source ra
                     nf_ios.at(i).pfits->pHDU().addKey("s_ra", source_center["Ra"][0], "Source RA (radians)");
                     // add source dec
