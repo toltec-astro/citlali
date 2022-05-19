@@ -112,6 +112,9 @@ public:
     // reduction number
     int redu_num;
 
+    // reduction sub directory
+    bool use_subdir;
+
     // vectors to hold missing/invalid keys
     key_vec_t missing_keys;
     key_vec_t invalid_keys;
@@ -297,6 +300,7 @@ public:
         get_config(nthreads,std::tuple{"runtime","n_threads"});
         get_config(filepath,std::tuple{"runtime","output_dir"});
         get_config(reduction_type,std::tuple{"runtime","reduction_type"},{"science","pointing","beammap"});
+        get_config(use_subdir,std::tuple{"runtime","use_subdir"});
 
         get_config(time_chunk,std::tuple{"timestream","chunking","length_sec"});
         get_config(weighting_type,std::tuple{"timestream","weighting","type"});

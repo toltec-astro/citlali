@@ -55,7 +55,16 @@ void Lali::setup() {
     // get obsnum directory name inside redu directory name
     std::stringstream ss_redu;
     ss_redu << std::setfill('0') << std::setw(2) << redu_num;
-    std::string hdname = "redu" + ss_redu.str() + "/";
+
+    std::string hdname;
+
+    if (use_subdir) {
+        hdname = "redu" + ss_redu.str() + "/";
+    }
+
+    else {
+        hdname = "";
+    }
 
     std::stringstream ss;
     ss << std::setfill('0') << std::setw(6) << obsnum;
@@ -418,7 +427,15 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
     // get obsnum directory name inside redu directory name
     std::stringstream ss_redu;
     ss_redu << std::setfill('0') << std::setw(2) << redu_num;
-    std::string hdname = "redu" + ss_redu.str() + "/";
+    std::string hdname;
+
+    if (use_subdir) {
+        hdname = "redu" + ss_redu.str() + "/";
+    }
+
+    else {
+        hdname = "";
+    }
 
     std::stringstream ss;
     ss << std::setfill('0') << std::setw(6) << obsnum;

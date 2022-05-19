@@ -107,21 +107,33 @@ void Beammap::setup() {
         dfsmp = fsmp;
     }
 
-    // toltec input/output class
+         // toltec i/o class for filenames
     ToltecIO toltec_io;
 
-    // empty the fits vector for subsequent observations
+         // empty the fits vector for subsequent observations
     fits_ios.clear();
 
+         // get obsnum directory name inside redu directory name
     std::stringstream ss_redu;
     ss_redu << std::setfill('0') << std::setw(2) << redu_num;
-    std::string hdname = "redu" + ss_redu.str() + "/";
+
+    std::string hdname;
+
+    if (use_subdir) {
+        hdname = "redu" + ss_redu.str() + "/";
+    }
+
+    else {
+        hdname = "";
+    }
 
     std::stringstream ss;
     ss << std::setfill('0') << std::setw(6) << obsnum;
     std::string dname = hdname + ss.str() + "/";
 
+    // create obsnum directory
     toltec_io.setup_output_directory(filepath, dname);
+
 
     // create empty FITS files at start
     for (Eigen::Index i=0; i<arrays.size(); i++) {

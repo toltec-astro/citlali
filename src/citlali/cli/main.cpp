@@ -1212,40 +1212,48 @@ int run(const rc_t &rc) {
                 // toltec i/o class for filename generation
                 ToltecIO toltec_io;
 
-                todproc.engine().redu_num = 0;
-                std::stringstream ss_redu, ss_redu_next;
+                std::string hdname;
 
-                ss_redu << std::setfill('0') << std::setw(2) << todproc.engine().redu_num;
-                std::string hdname = "redu" + ss_redu.str() + "/";
+                if (todproc.engine().use_subdir) {
 
-                ss_redu_next << std::setfill('0') << std::setw(2) << todproc.engine().redu_num + 1;
-                std::string hdname_next = "redu" + ss_redu_next.str() + "/";
+                    todproc.engine().redu_num = 0;
+                    std::stringstream ss_redu, ss_redu_next;
 
-                while (fs::exists(fs::status(todproc.engine().filepath + hdname)) ||
-                       fs::exists(fs::status(todproc.engine().filepath + hdname_next))) {
-                    todproc.engine().redu_num++;
-                    std::stringstream ss_redu_i;
-                    ss_redu_i << std::setfill('0') << std::setw(2) << todproc.engine().redu_num;
-                    hdname = "redu" + ss_redu_i.str() + "/";
+                    ss_redu << std::setfill('0') << std::setw(2) << todproc.engine().redu_num;
+                    hdname = "redu" + ss_redu.str() + "/";
 
                     ss_redu_next << std::setfill('0') << std::setw(2) << todproc.engine().redu_num + 1;
-                    hdname_next = "redu" + ss_redu_next.str() + "/";
+                    std::string hdname_next = "redu" + ss_redu_next.str() + "/";
+
+                    while (fs::exists(fs::status(todproc.engine().filepath + hdname)) ||
+                           fs::exists(fs::status(todproc.engine().filepath + hdname_next))) {
+                        todproc.engine().redu_num++;
+                        std::stringstream ss_redu_i;
+                        ss_redu_i << std::setfill('0') << std::setw(2) << todproc.engine().redu_num;
+                        hdname = "redu" + ss_redu_i.str() + "/";
+
+                        ss_redu_next << std::setfill('0') << std::setw(2) << todproc.engine().redu_num + 1;
+                        hdname_next = "redu" + ss_redu_next.str() + "/";
+                    }
+
+                    toltec_io.setup_output_directory(todproc.engine().filepath, hdname);
+
+                    for (std::string config_filepath : config_filepaths) {
+                        SPDLOG_INFO("config_filepath {}", config_filepath);
+                        std::size_t found = config_filepath.rfind("/");
+                        if (found!=std::string::npos) {
+                            std::string config_name = config_filepath.substr(found);
+                            SPDLOG_INFO("config_name {}",config_name);
+                            fs::copy(config_filepath, todproc.engine().filepath + hdname + config_name);
+                        }
+                        else {
+                            fs::copy(config_filepath, todproc.engine().filepath + hdname + config_filepath);
+                        }
+                    }
                 }
 
-                toltec_io.setup_output_directory(todproc.engine().filepath, hdname);
-
-                for (std::string config_filepath : config_filepaths) {
-                    SPDLOG_INFO("config_filepath {}", config_filepath);
-                    std::size_t found = config_filepath.rfind("/");
-                    if (found!=std::string::npos) {
-                        std::string config_name = config_filepath.substr(found);
-                        SPDLOG_INFO("config_name {}",config_name);
-                        fs::copy(config_filepath, todproc.engine().filepath + hdname + config_name);
-                    }
-                    else {
-                        fs::copy(config_filepath, todproc.engine().filepath + hdname + config_filepath);
-                    }
-
+                else {
+                    hdname = "";
                 }
 
                 // set up coadded map buffer
@@ -1358,20 +1366,24 @@ int run(const rc_t &rc) {
                         // extinction model name
                         todproc.engine().beammap_source_name =
                             rawobs.photometry_calib_info().config().get_typed<std::string>(std::tuple{"extinction","model_name"});
+
                         // tau
                         todproc.engine().tau =
                             rawobs.photometry_calib_info().config().get_typed<double>(std::tuple{"extinction","tau_220"});
 
+                        // pointing az offset
                         todproc.engine().pointing_offsets["az"] =
                             rawobs.astrometry_calib_info().config().get_typed<double>(std::tuple{"pointing_offsets",0,"value_arcsec"});
 
+                        // pointing alt offset
                         todproc.engine().pointing_offsets["alt"] =
                             rawobs.astrometry_calib_info().config().get_typed<double>(std::tuple{"pointing_offsets",1,"value_arcsec"});
                     }
 
-                    // load apt table into engine
+                    // get apt table
                     todproc.engine().get_calib(cal_path);
 
+                    // get hwp data
                     if (todproc.engine().run_polarization) {
                         SPDLOG_INFO("getting hwpdata");
                         auto hwp_filepath = rawobs.hwpdata()->filepath();

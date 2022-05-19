@@ -87,6 +87,7 @@ runtime:
   parallel_policy: seq # seq, omp, tbb
   n_threads: 1 # number of threads to parallelize over
   output_dir: /path/to/reduction/directory/ #root path
+  use_subdir: true #make a unique sub directory for each run
   reduction_type: science #beammap, pointing, etc
   meta:
     version: tolteca...
@@ -112,7 +113,7 @@ timestream:
   output:
     enabled: false
     format: netcdf
-    chunk_type: rtc #ptc, both
+    chunk_type: rtc #ptc
   chunking:
     length_sec: 10.0
   weighting:
