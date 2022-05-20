@@ -345,10 +345,7 @@ std::tuple<Model, Eigen::MatrixXd> curvefit_ceres(
     Eigen::VectorXd pp(p);
     auto problem = fitter->createProblem(pp.data());
     // including CauchyLoss(0.5) leads to large covariances.
-    problem->AddResidualBlock(cost_function,
-                              nullptr,
-                              //new CauchyLoss(0.5),
-                              pp.data());
+    problem->AddResidualBlock(cost_function, nullptr, pp.data());
 
     for (int i = 0; i < limits.rows(); ++i) {
        problem->SetParameterLowerBound(pp.data(), i, limits(i,0));
@@ -371,8 +368,8 @@ std::tuple<Model, Eigen::MatrixXd> curvefit_ceres(
     Solver::Summary summary;
     Solve(options, problem.get(), &summary);
 
-    SPDLOG_INFO("{}", summary.BriefReport());
-    SPDLOG_INFO("summary.IsSolutionUsable() {}",summary.IsSolutionUsable());
+    //SPDLOG_INFO("{}", summary.BriefReport());
+    //SPDLOG_INFO("summary.IsSolutionUsable() {}",summary.IsSolutionUsable());
 
     Eigen::MatrixXd covariances(pp.size(),pp.size());
 
@@ -399,8 +396,6 @@ std::tuple<Model, Eigen::MatrixXd> curvefit_ceres(
     else {
         covariances.setZero();
     }
-
-    SPDLOG_INFO("covariance {}", covariances);
 
     return std::tuple<Model, Eigen::MatrixXd> (Model(pp), covariances);
 }

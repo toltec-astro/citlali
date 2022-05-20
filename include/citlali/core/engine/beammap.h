@@ -107,13 +107,10 @@ void Beammap::setup() {
         dfsmp = fsmp;
     }
 
-         // toltec i/o class for filenames
-    ToltecIO toltec_io;
-
-         // empty the fits vector for subsequent observations
+    // empty the fits vector for subsequent observations
     fits_ios.clear();
 
-         // get obsnum directory name inside redu directory name
+    // get obsnum directory name inside redu directory name
     std::stringstream ss_redu;
     ss_redu << std::setfill('0') << std::setw(2) << redu_num;
 
@@ -389,7 +386,6 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
 	    SPDLOG_INFO("mean el {}", mean_el);
 
             Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1> map_index_vector = ptcs.back().map_index_vector.data;
-            ToltecIO toltec_io;
 
             // derotate x_t and y_t and calculate sensitivity for detectors
             grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](int d) {
@@ -458,7 +454,6 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
     if constexpr (out_type==MapType::obs) {
         // apt table
         SPDLOG_INFO("writing apt table");
-        ToltecIO toltec_io;
         // get output path from citlali_config
         auto filename = toltec_io.setup_filepath<ToltecIO::apt,ToltecIO::simu,
                 ToltecIO::beammap, ToltecIO::no_prod_type, ToltecIO::obsnum_true>(filepath,obsnum,-1);

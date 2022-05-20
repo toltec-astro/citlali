@@ -139,7 +139,7 @@ public:
 
     template <UnitsType units, typename hdu_t, typename map_type_t, typename center_t>
     void add_wcs(hdu_t *hdu, map_type_t map_type, const int nrows, const int ncols,
-                 const double pixel_size, center_t &source_center, double freq, std::map<std::string, int> &stokes_params,
+                 const double pixel_size, center_t &source_center, double freq, std::map<std::string, int> stokes_params,
                  std::string hdu_name="I") {
 
         ToltecIO toltec_io;
@@ -199,18 +199,18 @@ public:
 
         // add CRPIX values
         hdu->addKey("CTYPE1", CTYPE1, "");
+        hdu->addKey("CUNIT1", CUNIT, "");
         hdu->addKey("CRVAL1", CRVAL1, "");
         hdu->addKey("CDELT1", -pixel_size/unit_scale, "");
         hdu->addKey("CRPIX1", ref_pix_c1, "");
-        hdu->addKey("CUNIT1", CUNIT, "");
 
         hdu->addKey("CTYPE2", CTYPE2, "");
+        hdu->addKey("CUNIT2", CUNIT, "");
         hdu->addKey("CRVAL2", CRVAL2, "");
         hdu->addKey("CDELT2", pixel_size/unit_scale, "");
         hdu->addKey("CRPIX2", ref_pix_c2, "");
-        hdu->addKey("CUNIT2", CUNIT, "");
 
-        // add CD matrix
+        // add CD matrix (do we need this?)
         //hdu->addKey("CD1_1", -pixel_size/unit_scale, "");
         //hdu->addKey("CD1_2", 0, "");
         //hdu->addKey("CD2_1", 0, "");
@@ -219,10 +219,10 @@ public:
         // add freq WCS for non-primary hdus
         //if (hdu_name != "none") {
         hdu->addKey("CTYPE3", "FREQ", "");
+        hdu->addKey("CUNIT3", "Hz", "");
         hdu->addKey("CRVAL3", freq, "");
         hdu->addKey("CDELT3", 1, "");
         hdu->addKey("CRPIX3", 1, "");
-        hdu->addKey("CUNIT3", "Hz", "");
 
         std::string key;
         int p_unit = 0;
@@ -231,10 +231,10 @@ public:
 
         // add stokes WCS params for non-primary hdus
         hdu->addKey("CTYPE4", "STOKES", "");
+        hdu->addKey("CUNIT4", "", "");
         hdu->addKey("CRVAL4", p_unit+1, "");
         hdu->addKey("CDELT4", p_unit+1, "");
         hdu->addKey("CRPIX4", p_unit+1, "");
-        hdu->addKey("CUNIT4", "", "");
 
         // add source ra
         hdu->addKey("s_ra", source_center["Ra"][0], "Source RA (radians)");

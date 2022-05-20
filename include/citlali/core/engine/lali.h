@@ -46,19 +46,16 @@ void Lali::setup() {
         dfsmp = fsmp;
     }
 
-    // toltec i/o class for filenames
-    ToltecIO toltec_io;
-
     // empty the fits vector for subsequent observations
     fits_ios.clear();
-
-    // get obsnum directory name inside redu directory name
-    std::stringstream ss_redu;
-    ss_redu << std::setfill('0') << std::setw(2) << redu_num;
 
     std::string hdname;
 
     if (use_subdir) {
+        // get obsnum directory name inside redu directory name
+        std::stringstream ss_redu;
+        ss_redu << std::setfill('0') << std::setw(2) << redu_num;
+
         hdname = "redu" + ss_redu.str() + "/";
     }
 
@@ -211,11 +208,8 @@ auto Lali::run() {
         for (auto const& stokes_params: polarization.stokes_params) {
             TCData<TCDataKind::RTC,Eigen::MatrixXd> in2;
 
-            SPDLOG_INFO("in scans {}",in.scans.data);
-
+            // do polarization derotation (copies input RTCData)
             auto [map_index_vector, det_index_vector] =  polarization.create_rtc(in, in2, stokes_params.first, this);
-
-            SPDLOG_INFO("in2 scans {}",in2.scans.data);
 
             /*Stage 1: RTCProc*/
             RTCProc rtcproc;
@@ -224,15 +218,14 @@ auto Lali::run() {
                 rtcproc.run(in2, out, map_index_vector, det_index_vector, this);
             }
 
-            SPDLOG_INFO("out scans {}",out.scans.data);
-
             if (run_tod_output) {
+                // we use out here due to filtering and downsampling
                 if (ts_chunk_type == "rtc") {
 
                     Eigen::MatrixXd lat(out.scans.data.rows(),out.scans.data.cols());
                     Eigen::MatrixXd lon(out.scans.data.rows(),out.scans.data.cols());
 
-                    SPDLOG_INFO("writing scan {} to {}", in.index.data, ts_filepath);
+                    SPDLOG_INFO("writing scan RTC timestream {} to {}", in.index.data, ts_filepath);
                     // loop through detectors and get pointing timestream
                     for (Eigen::Index i=0; i<out.scans.data.cols(); i++) {
 
@@ -246,6 +239,7 @@ auto Lali::run() {
                         lon.col(i) = lon_i;
                     }
 
+                    // append to netcdf file
                     append_to_netcdf(ts_filepath, out.scans.data, out.flags.data, lat, lon, out.tel_meta_data.data["TelElDes"],
                                      out.tel_meta_data.data["TelTime"]);
                 }
@@ -273,7 +267,7 @@ auto Lali::run() {
                     Eigen::MatrixXd lat(out.scans.data.rows(),out.scans.data.cols());
                     Eigen::MatrixXd lon(out.scans.data.rows(),out.scans.data.cols());
 
-                    SPDLOG_INFO("writing scan {} to {}", in.index.data, ts_filepath);
+                    SPDLOG_INFO("writing scan PTC timestream {} to {}", out.index.data, ts_filepath);
                     // loop through detectors and get pointing timestream
                     for (Eigen::Index i=0; i<out.scans.data.cols(); i++) {
 
@@ -421,15 +415,14 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
 template <MapBase::MapType out_type, class MC, typename fits_out_vec_t>
 void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool filtered) {
-    // toltec input/output class
-    ToltecIO toltec_io;
 
-    // get obsnum directory name inside redu directory name
-    std::stringstream ss_redu;
-    ss_redu << std::setfill('0') << std::setw(2) << redu_num;
     std::string hdname;
 
     if (use_subdir) {
+        // get obsnum directory name inside redu directory name
+        std::stringstream ss_redu;
+        ss_redu << std::setfill('0') << std::setw(2) << redu_num;
+
         hdname = "redu" + ss_redu.str() + "/";
     }
 
@@ -456,31 +449,35 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
     for (Eigen::Index i=0; i<arrays.size(); i++) {
         SPDLOG_INFO("writing {}.fits", f_ios.at(i).filepath);
 
-        //if (run_polarization) {
         for (auto const& stokes_params: polarization.stokes_params) {
             // add signal map to file
             auto signal = mout.signal.at(pp);
             f_ios.at(i).add_hdu("signal_"+stokes_params.first, signal);
+            f_ios.at(i).hdus.back()->addKey("UNIT", cunit, "Unit of map");
 
-            //add weight map to file
+            // add weight map to file
             auto weight = mout.weight.at(pp);
             f_ios.at(i).add_hdu("weight_"+stokes_params.first, weight);
+            f_ios.at(i).hdus.back()->addKey("UNIT", "(" + cunit + ")^-2", "Unit of map");
 
-            //add kernel map to file
+            // add kernel map to file
             if (run_kernel) {
                 f_ios.at(i).add_hdu("kernel_"+stokes_params.first, mout.kernel.at(pp));
+                f_ios.at(i).hdus.back()->addKey("UNIT", cunit, "Unit of map");
             }
 
             // add coverage map to file
             f_ios.at(i).add_hdu("coverage_"+stokes_params.first, mout.coverage.at(pp));
+            f_ios.at(i).hdus.back()->addKey("UNIT", "sec", "Unit of map");
 
             // add signal-to-noise map to file.  We calculate it here to save space
             Eigen::MatrixXd signoise = mout.signal.at(pp).array()*sqrt(mout.weight.at(pp).array());
             f_ios.at(i).add_hdu("sig2noise_"+stokes_params.first, signoise);
+            f_ios.at(i).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
 
+            // calculate weight threshold for coverage boolean map
             auto weight_threshold = engine_utils::find_weight_threshold(mout.weight.at(pp), cmb.cov_cut, weighting_type);
 
-            SPDLOG_INFO("weight_threshold {}",weight_threshold);
             Eigen::MatrixXd wt_cov = mout.weight.at(pp);
             Eigen::MatrixXd ones, zeros;
             ones.setOnes(wt_cov.rows(), wt_cov.cols());
@@ -488,7 +485,9 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
 
             wt_cov = (mout.weight.at(pp).array() < weight_threshold).select(zeros,ones);
 
+            // add coverage boolean map
             f_ios.at(i).add_hdu("coverage_bool_"+stokes_params.first, wt_cov);
+            f_ios.at(i).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
 
             pp++;
         }
@@ -499,14 +498,14 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
             // degrees if science map
             if (reduction_type == "science") {
                 f_ios.at(i).template add_wcs<UnitsType::deg>(hdu,map_type,mout.nrows,mout.ncols,
-                                                       pixel_size,source_center, toltec_io.array_freqs[i],
+                                                             pixel_size,source_center, toltec_io.array_freqs[i],
                                                              polarization.stokes_params, hdu_name);
             }
 
             // arcseconds if pointing map
             else if (reduction_type == "pointing") {
                 f_ios.at(i). template add_wcs<UnitsType::arcsec>(hdu,map_type,mout.nrows,mout.ncols,
-                                                          pixel_size,source_center, toltec_io.array_freqs[i],
+                                                                pixel_size,source_center, toltec_io.array_freqs[i],
                                                                 polarization.stokes_params,hdu_name);
 
                 if constexpr (out_type==MapType::obs) {
@@ -528,31 +527,31 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
 
             std::regex sig_regex("signal", std::regex_constants::ECMAScript | std::regex_constants::icase);
             if (std::regex_search(hdu_name, sig_regex)) {
-                hdu->addKey("UNIT", cunit, "Unit of map");
+                //hdu->addKey("UNIT", cunit, "Unit of map");
             }
 
             std::regex wt_regex("weight", std::regex_constants::ECMAScript | std::regex_constants::icase);
             if (std::regex_search(hdu_name, wt_regex)) {
-                hdu->addKey("UNIT", "1/(" + cunit + ")^2", "Unit of map");
+                //hdu->addKey("UNIT", "1/(" + cunit + ")^2", "Unit of map");
             }
 
             std::regex kernel_regex("kernel", std::regex_constants::ECMAScript | std::regex_constants::icase);
             if (std::regex_search(hdu_name, kernel_regex)) {
-                hdu->addKey("UNIT", cunit, "Unit of map");
+                //hdu->addKey("UNIT", cunit, "Unit of map");
             }
 
             std::regex coverage_regex("coverage", std::regex_constants::ECMAScript | std::regex_constants::icase);
             if (std::regex_search(hdu_name, coverage_regex)) {
-                hdu->addKey("UNIT", "sec", "Unit of map");
+                //hdu->addKey("UNIT", "sec", "Unit of map");
             }
             std::regex s2n_regex("sig2noise", std::regex_constants::ECMAScript | std::regex_constants::icase);
             if (std::regex_search(hdu_name, s2n_regex)) {
-                hdu->addKey("UNIT", "N/A", "Unit of map");
+                //hdu->addKey("UNIT", "N/A", "Unit of map");
             }
 
             std::regex bool_regex("bool", std::regex_constants::ECMAScript | std::regex_constants::icase);
             if (std::regex_search(hdu_name, bool_regex)) {
-                hdu->addKey("UNIT", "N/A", "Unit of map");
+                //hdu->addKey("UNIT", "N/A", "Unit of map");
             }
         }
 
@@ -643,30 +642,35 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
         name_keys = toltec_io.name_keys;
     }
 
-    for (Eigen::Index i=0; i<mout.map_count; i++) {
+    Eigen::Index i = 0;
+    for (auto const& stokes_params: polarization.stokes_params) {
 
-        netCDF::NcDim psd_dim = fo.addDim(name_keys[i] +"_nfreq",mout.psd.at(i).psd.size());
-        netCDF::NcDim pds2d_row_dim = fo.addDim(name_keys[i] +"_rows",mout.psd.at(i).psd2d.rows());
-        netCDF::NcDim pds2d_col_dim = fo.addDim(name_keys[i] +"_cols",mout.psd.at(i).psd2d.cols());
+        std::string name = name_keys[i] + "_" + stokes_params.first;
+
+        netCDF::NcDim psd_dim = fo.addDim(name + "_nfreq",mout.psd.at(i).psd.size());
+        netCDF::NcDim pds2d_row_dim = fo.addDim(name + "_rows",mout.psd.at(i).psd2d.rows());
+        netCDF::NcDim pds2d_col_dim = fo.addDim(name + "_cols",mout.psd.at(i).psd2d.cols());
 
         std::vector<netCDF::NcDim> dims;
         dims.push_back(pds2d_row_dim);
         dims.push_back(pds2d_col_dim);
 
-        netCDF::NcVar psd_v = fo.addVar(name_keys[i] + "_psd",netCDF::ncDouble, psd_dim);
+        netCDF::NcVar psd_v = fo.addVar(name + "_psd",netCDF::ncDouble, psd_dim);
         psd_v.putVar(mout.psd.at(i).psd.data());
 
-        netCDF::NcVar psdfreq_v = fo.addVar(name_keys[i] + "_psd_freq",netCDF::ncDouble, psd_dim);
+        netCDF::NcVar psdfreq_v = fo.addVar(name + "_psd_freq",netCDF::ncDouble, psd_dim);
         psdfreq_v.putVar(mout.psd.at(i).psd_freq.data());
 
         Eigen::MatrixXd psd2d_transposed = mout.psd.at(i).psd2d.transpose();
         Eigen::MatrixXd psd2d_freq_transposed = mout.psd.at(i).psd2d_freq.transpose();
 
-        netCDF::NcVar psd2d_v = fo.addVar(name_keys[i] + "_psd2d",netCDF::ncDouble, dims);
+        netCDF::NcVar psd2d_v = fo.addVar(name + "_psd2d",netCDF::ncDouble, dims);
         psd2d_v.putVar(psd2d_transposed.data());
 
-        netCDF::NcVar psd2d_freq_v = fo.addVar(name_keys[i] + "_psd2d_freq",netCDF::ncDouble, dims);
+        netCDF::NcVar psd2d_freq_v = fo.addVar(name + "_psd2d_freq",netCDF::ncDouble, dims);
         psd2d_freq_v.putVar(psd2d_freq_transposed.data());
+
+        i++;
     }
 
     fo.close();
@@ -704,14 +708,20 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
 
     netCDF::NcFile hist_fo(filename + ".nc",netCDF::NcFile::replace);
 
-    for (Eigen::Index i=0; i<mout.map_count; i++) {
-        netCDF::NcDim bins_dim = hist_fo.addDim(name_keys[i] +"_nbins",mout.histogram.at(i).nbins);
+    i = 0;
+    for (auto const& stokes_params: polarization.stokes_params) {
 
-        netCDF::NcVar hist_v = hist_fo.addVar(name_keys[i] + "_values",netCDF::ncDouble, bins_dim);
+        std::string name = name_keys[i] + "_" + stokes_params.first;
+
+        netCDF::NcDim bins_dim = hist_fo.addDim(name +"_nbins",mout.histogram.at(i).nbins);
+
+        netCDF::NcVar hist_v = hist_fo.addVar(name + "_values",netCDF::ncDouble, bins_dim);
         hist_v.putVar(mout.histogram.at(i).hist_vals.data());
 
-        netCDF::NcVar bins_v = hist_fo.addVar(name_keys[i] + "_bins",netCDF::ncDouble, bins_dim);
+        netCDF::NcVar bins_v = hist_fo.addVar(name + "_bins",netCDF::ncDouble, bins_dim);
         bins_v.putVar(mout.histogram.at(i).hist_bins.data());
+
+        i++;
     }
 
     hist_fo.close();
@@ -799,56 +809,73 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
                 netCDF::NcFile fo(filename + ".nc",netCDF::NcFile::replace);
 
                 // noise map psd
-                for (Eigen::Index i=0; i<mout.map_count; i++) {
+                i = 0;
+                for (auto const& stokes_params: polarization.stokes_params) {
                     for (Eigen::Index j=0; j<mout.nnoise; j++) {
-                        netCDF::NcDim psd_dim = fo.addDim(name_keys[i] +"_nfreq_"+std::to_string(j),mout.noise_psd.at(i).at(j).psd.size());
-                        netCDF::NcDim pds2d_row_dim = fo.addDim(name_keys[i] +"_rows_"+std::to_string(j),mout.noise_psd.at(i).at(j).psd2d.rows());
-                        netCDF::NcDim pds2d_col_dim = fo.addDim(name_keys[i] +"_cols_"+std::to_string(j),mout.noise_psd.at(i).at(j).psd2d.cols());
+
+                        std::string name = name_keys[i] + "_" + std::to_string(j);
+
+                        // psd dimensions
+                        netCDF::NcDim psd_dim = fo.addDim(name +"_nfreq_"+stokes_params.first,mout.noise_psd.at(i).at(j).psd.size());
+                        netCDF::NcDim pds2d_row_dim = fo.addDim(name +"_rows_"+stokes_params.first,mout.noise_psd.at(i).at(j).psd2d.rows());
+                        netCDF::NcDim pds2d_col_dim = fo.addDim(name +"_cols_"+stokes_params.first,mout.noise_psd.at(i).at(j).psd2d.cols());
 
                         std::vector<netCDF::NcDim> dims;
                         dims.push_back(pds2d_row_dim);
                         dims.push_back(pds2d_col_dim);
 
-                        netCDF::NcVar psd_v = fo.addVar(name_keys[i] + "_psd_"+std::to_string(j),netCDF::ncDouble, psd_dim);
+                        // psd variable
+                        netCDF::NcVar psd_v = fo.addVar(name + "_psd_"+stokes_params.first,netCDF::ncDouble, psd_dim);
                         psd_v.putVar(mout.noise_psd.at(i).at(j).psd.data());
 
-                        netCDF::NcVar psdfreq_v = fo.addVar(name_keys[i] + "_psd_freq_"+std::to_string(j),netCDF::ncDouble, psd_dim);
+                        // psd freq variable
+                        netCDF::NcVar psdfreq_v = fo.addVar(name + "_psd_freq_"+stokes_params.first,netCDF::ncDouble, psd_dim);
                         psdfreq_v.putVar(mout.noise_psd.at(i).at(j).psd_freq.data());
 
+                        // get 2D psd and freq
                         Eigen::MatrixXd psd2d_transposed = mout.noise_psd.at(i).at(j).psd2d.transpose();
                         Eigen::MatrixXd psd2d_freq_transposed = mout.noise_psd.at(i).at(j).psd2d_freq.transpose();
 
-                        netCDF::NcVar psd2d_v = fo.addVar(name_keys[i] + "_psd2d_"+std::to_string(j),netCDF::ncDouble, dims);
+                        // 2D psd variable
+                        netCDF::NcVar psd2d_v = fo.addVar(name + "_psd2d_"+stokes_params.first,netCDF::ncDouble, dims);
                         psd2d_v.putVar(psd2d_transposed.data());
 
-                        netCDF::NcVar psd2d_freq_v = fo.addVar(name_keys[i] + "_psd2d_freq_"+std::to_string(j),netCDF::ncDouble, dims);
+                        // 2D psd freq variable
+                        netCDF::NcVar psd2d_freq_v = fo.addVar(name + "_psd2d_freq_"+stokes_params.first,netCDF::ncDouble, dims);
                         psd2d_freq_v.putVar(psd2d_freq_transposed.data());
                     }
 
-                    // noise map average psd
-                    netCDF::NcDim psd_dim = fo.addDim(name_keys[i] +"_avg_nfreq",mout.noise_avg_psd.at(i).psd.size());
-                    netCDF::NcDim pds2d_row_dim = fo.addDim(name_keys[i] +"_avg_rows",mout.noise_avg_psd.at(i).psd2d.rows());
-                    netCDF::NcDim pds2d_col_dim = fo.addDim(name_keys[i] +"_avg_cols",mout.noise_avg_psd.at(i).psd2d.cols());
+                    std::string name = name_keys[i] + "_" + stokes_params.first;
+
+                    // noise map average psd dimensions
+                    netCDF::NcDim psd_dim = fo.addDim(name +"_avg_nfreq",mout.noise_avg_psd.at(i).psd.size());
+                    netCDF::NcDim pds2d_row_dim = fo.addDim(name +"_avg_rows",mout.noise_avg_psd.at(i).psd2d.rows());
+                    netCDF::NcDim pds2d_col_dim = fo.addDim(name +"_avg_cols",mout.noise_avg_psd.at(i).psd2d.cols());
 
                     std::vector<netCDF::NcDim> dims;
                     dims.push_back(pds2d_row_dim);
                     dims.push_back(pds2d_col_dim);
 
-                    netCDF::NcVar psd_v = fo.addVar(name_keys[i] + "_avg_psd",netCDF::ncDouble, psd_dim);
+                    // noise map average psd variable
+                    netCDF::NcVar psd_v = fo.addVar(name + "_avg_psd",netCDF::ncDouble, psd_dim);
                     psd_v.putVar(mout.noise_avg_psd.at(i).psd.data());
 
-                    netCDF::NcVar psdfreq_v = fo.addVar(name_keys[i] + "_avg_psd_freq",netCDF::ncDouble, psd_dim);
+                    // noise map average freq variable
+                    netCDF::NcVar psdfreq_v = fo.addVar(name + "_avg_psd_freq",netCDF::ncDouble, psd_dim);
                     psdfreq_v.putVar(mout.noise_avg_psd.at(i).psd_freq.data());
 
                     Eigen::MatrixXd psd2d_transposed = mout.noise_avg_psd.at(i).psd2d.transpose();
                     Eigen::MatrixXd psd2d_freq_transposed = mout.noise_avg_psd.at(i).psd2d_freq.transpose();
 
-                    netCDF::NcVar psd2d_v = fo.addVar(name_keys[i] + "_avg_psd2d",netCDF::ncDouble, dims);
+                    // noise map average 2D psd variable
+                    netCDF::NcVar psd2d_v = fo.addVar(name + "_avg_psd2d",netCDF::ncDouble, dims);
                     psd2d_v.putVar(psd2d_transposed.data());
 
-                    netCDF::NcVar psd2d_freq_v = fo.addVar(name_keys[i] + "_avg_psd2d_freq",netCDF::ncDouble, dims);
+                    // noise map average 2D freq variable
+                    netCDF::NcVar psd2d_freq_v = fo.addVar(name + "_avg_psd2d_freq",netCDF::ncDouble, dims);
                     psd2d_freq_v.putVar(psd2d_freq_transposed.data());
 
+                    i++;
                 }
 
                 fo.close();
@@ -865,25 +892,38 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
 
                 netCDF::NcFile hist_fo(filename + ".nc",netCDF::NcFile::replace);
 
-                // noise map histogram
-                for (Eigen::Index i=0; i<mout.map_count; i++) {
+                i = 0;
+                for (auto const& stokes_params: polarization.stokes_params) {
                     for (Eigen::Index j=0; j<mout.nnoise; j++) {
-                        netCDF::NcDim bins_dim = hist_fo.addDim(name_keys[i] +"_nbins_"+std::to_string(j),mout.noise_hist.at(i).at(j).hist_vals.size());
 
-                        netCDF::NcVar hist_v = hist_fo.addVar(name_keys[i] + "_values_"+std::to_string(j),netCDF::ncDouble, bins_dim);
+                        std::string name = name_keys[i] + "_" + std::to_string(j);
+
+                        // bins dimension
+                        netCDF::NcDim bins_dim = hist_fo.addDim(name +"_nbins_" + stokes_params.first,mout.noise_hist.at(i).at(j).hist_vals.size());
+
+                        // histogram value variable
+                        netCDF::NcVar hist_v = hist_fo.addVar(name + "_values_" + stokes_params.first,netCDF::ncDouble, bins_dim);
                         hist_v.putVar(mout.noise_hist.at(i).at(j).hist_vals.data());
 
-                        netCDF::NcVar bins_v = hist_fo.addVar(name_keys[i] + "_bins_"+std::to_string(j),netCDF::ncDouble, bins_dim);
+                        // histogram bins variable
+                        netCDF::NcVar bins_v = hist_fo.addVar(name + "_bins_" + stokes_params.first,netCDF::ncDouble, bins_dim);
                         bins_v.putVar(mout.noise_hist.at(i).at(j).hist_bins.data());
                     }
 
-                    netCDF::NcDim bins_dim = hist_fo.addDim(name_keys[i] +"_avg_nbins",mout.noise_avg_hist.at(i).hist_vals.size());
+                    std::string name = name_keys[i] + "_" + stokes_params.first;
 
-                    netCDF::NcVar hist_v = hist_fo.addVar(name_keys[i] + "_avg_values",netCDF::ncDouble, bins_dim);
+                    // average histogram bins dimension
+                    netCDF::NcDim bins_dim = hist_fo.addDim(name +"_avg_nbins",mout.noise_avg_hist.at(i).hist_vals.size());
+
+                    // average histogram value variable
+                    netCDF::NcVar hist_v = hist_fo.addVar(name + "_avg_values",netCDF::ncDouble, bins_dim);
                     hist_v.putVar(mout.noise_avg_hist.at(i).hist_vals.data());
 
-                    netCDF::NcVar bins_v = hist_fo.addVar(name_keys[i] + "_avg_bins",netCDF::ncDouble, bins_dim);
+                    // average histogram bins variable
+                    netCDF::NcVar bins_v = hist_fo.addVar(name + "_avg_bins",netCDF::ncDouble, bins_dim);
                     bins_v.putVar(mout.noise_avg_hist.at(i).hist_bins.data());
+
+                    i++;
                 }
 
                 hist_fo.close();
@@ -901,7 +941,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
                             Eigen::Tensor<double,2> out = mout.noise.at(pp).chip(j,2);
                             auto out_matrix = Eigen::Map<Eigen::MatrixXd>(out.data(), out.dimension(0), out.dimension(1));
                             // add noise map to file
-                            nf_ios.at(i).add_hdu("noise" + std::to_string(j) + stokes_params.first,out_matrix);
+                            nf_ios.at(i).add_hdu("noise_" + std::to_string(j) + "_" + stokes_params.first, out_matrix);
                         }
                         pp++;
                     }

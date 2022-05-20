@@ -86,18 +86,17 @@ struct ToltecIO {
         {5, "a1400_U"},
         {6, "a2000_I"},
         {7, "a2000_Q"},
-        {8, "a2000_U"},};
+        {8, "a2000_U"}
+    };
 
     // map between index and array name (temp)
-    std::map<int, double> barea_keys {
-        {0, A1100_BAREA},
-        {1, A1400_BAREA},
-        {2, A2000_BAREA},};
+    std::map<int, double> barea_keys {};
 
     std::map<int, double> array_freqs {
         {0,A1100_FREQ},
         {1,A1400_FREQ},
-        {2,A2000_FREQ}};
+        {2,A2000_FREQ}
+    };
 
     // header keys for pointing fit ecsv
     std::vector<std::string> apt_header {

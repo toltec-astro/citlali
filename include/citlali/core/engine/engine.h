@@ -31,11 +31,14 @@
 #include <citlali/core/timestream/rtc/rtcproc.h>
 #include <citlali/core/timestream/ptc/ptcproc.h>
 
-#include <citlali/core/map/naive_mm_2.h>
-#include <citlali/core/map/jinc_mm_2.h>
+#include <citlali/core/map/naive_mm.h>
+#include <citlali/core/map/jinc_mm.h>
 #include <citlali/core/map/wiener_filter.h>
 
 struct reduControls {
+    // reduction sub directory
+    bool use_subdir;
+
     // timestream controls
     bool run_timestream;
     bool run_polarization;
@@ -81,6 +84,9 @@ class EngineBase: public reduControls, public reduClasses, public Telescope, pub
 public:
     using key_vec_t = std::vector<std::vector<std::string>>;
 
+    // class for outputs
+    ToltecIO toltec_io;
+
     // citlali config file
     tula::config::YamlConfig engine_config;
 
@@ -111,9 +117,6 @@ public:
 
     // reduction number
     int redu_num;
-
-    // reduction sub directory
-    bool use_subdir;
 
     // vectors to hold missing/invalid keys
     key_vec_t missing_keys;
@@ -147,9 +150,6 @@ public:
 
     // jinc map-maker
     Eigen::VectorXd radius, jinc_weights;
-
-    // control for fitting
-    bool run_fit;
 
     // size of fit bounding box
     double bounding_box_pix;
@@ -279,8 +279,6 @@ public:
         engine_config = _c;
         SPDLOG_INFO("getting config options");
 
-        ToltecIO toltec_io;
-
         get_config(run_tod_output,std::tuple{"timestream","output","enabled"});
         if (run_tod_output) {
             get_config(ts_format,std::tuple{"timestream","output","format"});
@@ -357,7 +355,6 @@ public:
             auto kernel_node = engine_config.get_node(std::tuple{"timestream","kernel","image_ext_name"});
             auto kernel_node_size = kernel_node.size();
 
-            std::string hdu_name;
             get_config(kernel.hdu_name,std::tuple{"timestream","kernel","image_ext_name"});
             kernel.setup();
         }
@@ -375,7 +372,6 @@ public:
         get_config(mapping_method,std::tuple{"mapmaking","method"});
 
         if (mapping_method == "jinc") {
-
             double r_max = 1.5;
             double a = 1.1;
             double b = 4.75;
@@ -413,8 +409,8 @@ public:
         get_config(max_iterations,std::tuple{"beammap","iter_max"});
 
         // check if point source fitting is requested
-        get_config(run_fit,std::tuple{"source_fitting","enabled"});
-         if (run_fit) {
+        get_config(run_fitting,std::tuple{"source_fitting","enabled"});
+         if (run_fitting) {
             get_config(fit_model,std::tuple{"source_fitting","model"});
             get_config(bounding_box_pix,std::tuple{"source_fitting","bounding_box_arcsec"});
             bounding_box_pix = std::floor(bounding_box_pix/pixel_size*RAD_ASEC);

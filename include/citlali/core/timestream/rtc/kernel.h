@@ -13,13 +13,16 @@ namespace timestream {
 class Kernel {
 public:
     std::string filepath, kernel_type, hdu_name;
+
     Eigen::MatrixXd image;
+
+    std::vector<std::string> hdu_names;
+    std::vector<Eigen::MatrixXd> images;
 
     void setup() {
         if (kernel_type == "image") {
             FitsIO<fileType::read_fits, CCfits::ExtHDU*> fits_io(filepath);
             image = fits_io.get_hdu(hdu_name);
-            SPDLOG_INFO("kernel image {}",image);
         }
     }
 
@@ -46,7 +49,7 @@ void Kernel::gaussian_kernel(Engine engine, TCData<TCDataKind::RTC, Eigen::Matri
 
         // get kernel standard deviation from apt table
         double sigma = RAD_ASEC*(engine->calib_data["a_fwhm"](di) + engine->calib_data["b_fwhm"](di))/2.;
-        sigma = sigma/(2*sqrt(2*std::log(2)));
+        sigma = sigma/STD_TO_FWHM;
 
         // get offsets
         auto azoff = engine->calib_data["x_t"](di);
