@@ -1423,19 +1423,18 @@ int run(const rc_t &rc) {
                     todproc.engine().array_indices = array_indices.at(i);
                     todproc.engine().det_indices = det_indices.at(i);
 
-                    todproc.engine().cflux.resize(map_counts[i]);
-
                     for (Eigen::Index mc = 0; mc<todproc.engine().toltec_io.name_keys.size(); mc++) {
                         auto a_fwhm = todproc.engine().calib_data["a_fwhm"].segment(std::get<0>(todproc.engine().array_indices.at(mc)),
                                                                                     std::get<1>(todproc.engine().array_indices.at(mc)));
                         auto b_fwhm = todproc.engine().calib_data["b_fwhm"].segment(std::get<0>(todproc.engine().array_indices.at(mc)),
                                                                                     std::get<1>(todproc.engine().array_indices.at(mc)));
 
-                        SPDLOG_INFO("toltec_io.barea_keys {}",todproc.engine().toltec_io.barea_keys[mc]);
-
                         auto fwhm = ((a_fwhm + b_fwhm)/2).mean();
                         todproc.engine().toltec_io.barea_keys[mc] = 2.*pi*pow(fwhm/STD_TO_FWHM,2);
                     }
+
+                    // flux conversion
+                    todproc.engine().cflux.resize(map_counts[i]);
 
                     Eigen::Index k = 0;
                     Eigen::Index l = 0;
@@ -1451,7 +1450,7 @@ int run(const rc_t &rc) {
                             }
                         }
                         else if (todproc.engine().cunit == "MJy/Sr") {
-                             todproc.engine().cflux(j) = 1;
+                             todproc.engine().cflux(j) = 1.0;
                         }
                     }
 

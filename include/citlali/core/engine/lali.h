@@ -261,6 +261,7 @@ auto Lali::run() {
                 ptcproc.run(out, out, this, rc);
             }
 
+            // timestream output (seq only)
             if (run_tod_output) {
                 if (ts_chunk_type == "ptc") {
 
@@ -280,7 +281,6 @@ auto Lali::run() {
                         lat.col(i) = lat_i;
                         lon.col(i) = lon_i;
                     }
-
                         append_to_netcdf(ts_filepath, out.scans.data, out.flags.data, lat, lon, out.tel_meta_data.data["TelElDes"],
                                          out.tel_meta_data.data["TelTime"]);
                 }
@@ -445,6 +445,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
     }
 
     // loop through array indices and add hdu's to existing files
+    SPDLOG_INFO("writing maps");
     Eigen::Index pp = 0;
     for (Eigen::Index i=0; i<arrays.size(); i++) {
         SPDLOG_INFO("writing {}.fits", f_ios.at(i).filepath);
@@ -523,35 +524,6 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
                     hdu->addKey("angle", (float)mout.pfit(5,i),"position angle (radians)");
                     hdu->addKey("angle_err", (float)mout.perror(5,i),"position angle error (radians)");
                 }
-            }
-
-            std::regex sig_regex("signal", std::regex_constants::ECMAScript | std::regex_constants::icase);
-            if (std::regex_search(hdu_name, sig_regex)) {
-                //hdu->addKey("UNIT", cunit, "Unit of map");
-            }
-
-            std::regex wt_regex("weight", std::regex_constants::ECMAScript | std::regex_constants::icase);
-            if (std::regex_search(hdu_name, wt_regex)) {
-                //hdu->addKey("UNIT", "1/(" + cunit + ")^2", "Unit of map");
-            }
-
-            std::regex kernel_regex("kernel", std::regex_constants::ECMAScript | std::regex_constants::icase);
-            if (std::regex_search(hdu_name, kernel_regex)) {
-                //hdu->addKey("UNIT", cunit, "Unit of map");
-            }
-
-            std::regex coverage_regex("coverage", std::regex_constants::ECMAScript | std::regex_constants::icase);
-            if (std::regex_search(hdu_name, coverage_regex)) {
-                //hdu->addKey("UNIT", "sec", "Unit of map");
-            }
-            std::regex s2n_regex("sig2noise", std::regex_constants::ECMAScript | std::regex_constants::icase);
-            if (std::regex_search(hdu_name, s2n_regex)) {
-                //hdu->addKey("UNIT", "N/A", "Unit of map");
-            }
-
-            std::regex bool_regex("bool", std::regex_constants::ECMAScript | std::regex_constants::icase);
-            if (std::regex_search(hdu_name, bool_regex)) {
-                //hdu->addKey("UNIT", "N/A", "Unit of map");
             }
         }
 

@@ -4,7 +4,10 @@
 #include <Eigen/Core>
 
 #include <tula/grppi.h>
+#include <kids/core/kidsdata.h>
 
+#include <citlali/core/utils/netcdf_io.h>
+#include <citlali/core/utils/constants.h>
 #include <citlali/core/engine/engine.h>
 #include <citlali/core/utils/fitting.h>
 
@@ -141,14 +144,92 @@ void Beammap::setup() {
         FitsIO<fileType::write_fits, CCfits::ExtHDU*> fits_io(filename);
         fits_ios.push_back(std::move(fits_io));
     }
+
+    if (run_tod_output) {
+        if (ts_format == "netcdf") {
+            ts_rows = 0;
+
+            std::string filename;
+
+            if (reduction_type == "science") {
+                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                                    ToltecIO::science, ToltecIO::timestream,
+                                                    ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
+            }
+
+            else if (reduction_type == "pointing") {
+                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                                    ToltecIO::pointing, ToltecIO::timestream,
+                                                    ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
+            }
+
+            ts_filepath = filename + ".nc";
+
+            netCDF::NcFile fo(ts_filepath,netCDF::NcFile::replace);
+            netCDF::NcDim nsmp_dim = fo.addDim("nsamples");
+            netCDF::NcDim ndet_dim = fo.addDim("ndetectors",ndet);
+
+            std::vector<netCDF::NcDim> dims;
+            dims.push_back(nsmp_dim);
+            dims.push_back(ndet_dim);
+
+            netCDF::NcVar pixid_v = fo.addVar("PIXID",netCDF::ncInt, ndet_dim);
+            pixid_v.putAtt("Units","N/A");
+            netCDF::NcVar a_v = fo.addVar("ARRAYID",netCDF::ncDouble, ndet_dim);
+            a_v.putAtt("Units","N/A");
+            a_v.putVar(calib_data["array"].data());
+
+            netCDF::NcVar xt_v = fo.addVar("AZOFF",netCDF::ncDouble, ndet_dim);
+            xt_v.putAtt("Units","radians");
+            Eigen::VectorXd xt_temp = 1/DEG_TO_ASEC*DEG_TO_RAD*calib_data["x_t"];
+            xt_v.putVar(xt_temp.data());
+
+            netCDF::NcVar yt_v = fo.addVar("ELOFF",netCDF::ncDouble, ndet_dim);
+            yt_v.putAtt("Units","radians");
+            Eigen::VectorXd yt_temp = 1/DEG_TO_ASEC*DEG_TO_RAD*calib_data["y_t"];
+            yt_v.putVar(yt_temp.data());
+
+            netCDF::NcVar afwhm_v = fo.addVar("AFWHM",netCDF::ncDouble, ndet_dim);
+            afwhm_v.putAtt("Units","radians");
+            Eigen::VectorXd afwhm_temp = RAD_ASEC*calib_data["a_fwhm"];
+            afwhm_v.putVar(afwhm_temp.data());
+
+            netCDF::NcVar bfwhm_v = fo.addVar("BFWHM",netCDF::ncDouble, ndet_dim);
+            bfwhm_v.putAtt("Units","radians");
+            Eigen::VectorXd bfwhm_temp = RAD_ASEC*calib_data["b_fwhm"];
+            bfwhm_v.putVar(bfwhm_temp.data());
+
+            netCDF::NcVar t_v = fo.addVar("TIME",netCDF::ncDouble, nsmp_dim);
+            t_v.putAtt("Units","seconds");
+            netCDF::NcVar e_v = fo.addVar("ELEV",netCDF::ncDouble, nsmp_dim);
+            e_v.putAtt("Units","radians");
+
+            netCDF::NcVar data_v = fo.addVar("DATA",netCDF::ncDouble, dims);
+            data_v.putAtt("Units","MJy/sr");
+            netCDF::NcVar flag_v = fo.addVar("FLAG",netCDF::ncDouble, dims);
+            flag_v.putAtt("Units","N/A");
+
+            netCDF::NcVar lat_v = fo.addVar("DY",netCDF::ncDouble, dims);
+            lat_v.putAtt("Units","radians");
+            netCDF::NcVar lon_v = fo.addVar("DX",netCDF::ncDouble, dims);
+            lon_v.putAtt("Units","radians");
+
+            fo.close();
+        }
+    }
 }
 
 auto Beammap::run_timestream() {
     auto farm = grppi::farm(nthreads,[&](auto input_tuple) -> TCData<TCDataKind::PTC,Eigen::MatrixXd> {
         // RTCData input
         auto in = std::get<0>(input_tuple);
-        // start index
-        auto start_index = std::get<1>(input_tuple);
+        // kidsproc
+        auto kidsproc = std::get<1>(input_tuple);
+        // start index input
+        auto loaded_rawobs = std::get<2>(input_tuple);
+
+        // starting index for scan
+        Eigen::Index start_index = in.scan_indices.data(2);
 
         // current length of outer scans
         Eigen::Index scan_length = in.scans.data.rows();
@@ -157,6 +238,8 @@ auto Beammap::run_timestream() {
         in.flags.data.setOnes(scan_length, ndet);
 
         // copy tel_meta_data for scan
+        in.tel_meta_data.data["TelTime"] = tel_meta_data["TelTime"].segment(start_index, scan_length);
+
         in.tel_meta_data.data["TelElDes"] = tel_meta_data["TelElDes"].segment(start_index, scan_length);
         in.tel_meta_data.data["ParAng"] = tel_meta_data["ParAng"].segment(start_index, scan_length);
 
@@ -165,8 +248,14 @@ auto Beammap::run_timestream() {
 
         in.tel_meta_data.data["SourceEl"] = tel_meta_data["SourceEl"].segment(start_index, scan_length);
 
-        //Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1> map_index_vector, det_index_vector;
+        /*Stage 0: KidsProc*/
+        {
+            tula::logging::scoped_timeit timer("kidsproc.populate_rtc_load()");
+            tula::logging::scoped_loglevel<spdlog::level::critical> _0;
+            in.scans.data = kidsproc.populate_rtc_load(loaded_rawobs,in.scan_indices.data, scan_length, ndet);
+        }
 
+        // do polarization to get map and detector index vectors
         auto [map_index_vector, det_index_vector] =  polarization.create_rtc(in, in, "I", this);
 
         /*Stage 1: RTCProc*/
@@ -176,6 +265,33 @@ auto Beammap::run_timestream() {
 
         out.map_index_vector.data = map_index_vector;
         out.det_index_vector.data = det_index_vector;
+
+        // timestream output (seq only)
+        if (run_tod_output) {
+            // we use out here due to filtering and downsampling
+            if (ts_chunk_type == "rtc") {
+
+                Eigen::MatrixXd lat(out.scans.data.rows(),out.scans.data.cols());
+                Eigen::MatrixXd lon(out.scans.data.rows(),out.scans.data.cols());
+
+                SPDLOG_INFO("writing scan RTC timestream {} to {}", in.index.data, ts_filepath);
+                // loop through detectors and get pointing timestream
+                for (Eigen::Index i=0; i<out.scans.data.cols(); i++) {
+
+                    // get offsets
+                    auto azoff = calib_data["x_t"](i);
+                    auto eloff = calib_data["y_t"](i);
+
+                    // get pointing
+                    auto [lat_i, lon_i] = engine_utils::get_det_pointing(out.tel_meta_data.data, azoff, eloff, map_type, pointing_offsets);
+                    lat.col(i) = lat_i;
+                    lon.col(i) = lon_i;
+                }
+                // append to netcdf file
+                append_to_netcdf(ts_filepath, out.scans.data, out.flags.data, lat, lon, out.tel_meta_data.data["TelElDes"],
+                                 out.tel_meta_data.data["TelTime"]);
+            }
+        }
 
         // move out into the PTCData vector
         ptcs0.at(out.index.data - 1) = std::move(out);
@@ -194,6 +310,34 @@ auto Beammap::run_loop() {
         // reset it to the original ptc vector each time
         ptcs = ptcs0;
 
+        if (iteration == 0) {
+            if (run_tod_output) {
+                if (ts_chunk_type == "ptc") {
+                    for (Eigen::Index s=0; s<ptcs.size(); s++) {
+                        Eigen::MatrixXd lat(ptcs[s].scans.data.rows(), ptcs[s].scans.data.cols());
+                        Eigen::MatrixXd lon(ptcs[s].scans.data.rows(), ptcs[s].scans.data.cols());
+
+                        SPDLOG_INFO("writing scan PTC timestream {} to {}", ptcs[s].index.data, ts_filepath);
+                        // loop through detectors and get pointing timestream
+                        for (Eigen::Index i=0; i<ptcs[s].scans.data.cols(); i++) {
+
+                            // get offsets
+                            auto azoff = calib_data["x_t"](i);
+                            auto eloff = calib_data["y_t"](i);
+
+                            // get pointing
+                            auto [lat_i, lon_i] = engine_utils::get_det_pointing(ptcs[s].tel_meta_data.data, azoff, eloff,
+                                                                                 map_type, pointing_offsets);
+                            lat.col(i) = lat_i;
+                            lon.col(i) = lon_i;
+                        }
+                        append_to_netcdf(ts_filepath, ptcs[s].scans.data, ptcs[s].flags.data, lat, lon,
+                                         ptcs[s].tel_meta_data.data["TelElDes"], ptcs[s].tel_meta_data.data["TelTime"]);
+                    }
+                }
+            }
+        }
+
         /*Stage 2: PTCProc*/
         PTCProc ptcproc;
 
@@ -201,7 +345,6 @@ auto Beammap::run_loop() {
         for (Eigen::Index i=0; i<mb.map_count; i++) {
             mb.signal.at(i).setZero();
             mb.weight.at(i).setZero();
-            //mb.coverage.at(i).setZero();
 
             if (run_kernel) {
                 mb.kernel.at(i).setZero();
@@ -237,10 +380,8 @@ auto Beammap::run_loop() {
             /*Stage 3 Populate Map*/
             if (mapping_method == "naive") {
                 {
-                    Eigen::VectorXd map_index_vector;
-                    Eigen::VectorXd det_index_vector;
                     tula::logging::scoped_timeit timer("populate_maps_naive()");
-                    populate_maps_naive(ptcs.at(s), map_index_vector, det_index_vector, this);
+                    populate_maps_naive(ptcs.at(s), ptcs.at(s).map_index_vector.data, ptcs.at(s).det_index_vector.data, this);
                 }
             }
 
@@ -318,8 +459,9 @@ auto Beammap::run_loop() {
 template <class KidsProc, class RawObs>
 auto Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     grppi::pipeline(tula::grppi_utils::dyn_ex(ex_name),
-        [&]() -> std::optional<std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, Eigen::Index>> {
-        // variable to hold current scan
+        [&]() -> std::optional<std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
+                                          std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>> {
+            // variable to hold current scan
         static auto scan = 0;
         // length of current outer scan
         Eigen::Index scan_length;
@@ -340,17 +482,27 @@ auto Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
             rtc.index.data = scan + 1;
 
             // run kidsproc to get correct units
-            rtc.scans.data = kidsproc.populate_rtc(rawobs, rtc.scan_indices.data, scan_length, ndet);
+            //rtc.scans.data = kidsproc.populate_rtc(rawobs, rtc.scan_indices.data, scan_length, ndet);
+            // run kidsproc to get correct units
+            std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> loaded_rawobs;
+            {
+                tula::logging::scoped_loglevel<spdlog::level::off> _0;
+                auto slice = tula::container_utils::Slice<int>{
+                                                               scanindices(2,scan), scanindices(3,scan) + 1, std::nullopt};
+                loaded_rawobs = kidsproc.load_rawobs(rawobs, slice);
+                //rtc.scans.data = kidsproc.populate_rtc(rawobs, rtc.scan_indices.data, scan_length, ndet);
+            }
 
             // increment scan
             scan++;
 
-            return std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, Eigen::Index> (rtc, start_index);
+            return std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
+                              std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>> (rtc, kidsproc, loaded_rawobs);
        }
+        scan = 0;
        return {};
     },
     run_timestream());
-
 }
 
 template <class KidsProc, class RawObs>
@@ -464,8 +616,6 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
         table.row(1) = calib_data["nw"].cast <float> ();
         table.row(2) = calib_data["flxscale"].cast <float> ();
         table.row(3) = sensitivity.cast <float> ();
-        //table.block(3,0,nparams,ndet) = mout.pfit.template cast <float> ();
-        //table.row(9) = converge_iter.cast <float> ();
 
         int ci = 0;
         for (int ti=0; ti < toltec_io.apt_header.size()-2; ti=ti+2) {
@@ -543,26 +693,19 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
 
             for (Eigen::Index j=0; j<ndet; j++) {
                 if (calib_data["array"](j) == i) {
-                    //SPDLOG_INFO("writing sig{}", j);
-                    f_ios.at(i).add_hdu("sig" + std::to_string(j), mout.signal.at(j));
-                    //SPDLOG_INFO("writing wt{}", j);
-                    f_ios.at(i).add_hdu("wt" + std::to_string(j), mout.weight.at(j));
+                    // add signal map to file
+                    f_ios.at(i).add_hdu("signal_" + std::to_string(j), mout.signal.at(j));
+                    f_ios.at(i).hdus.back()->addKey("UNIT", cunit, "Unit of map");
+                    // add weight map to file
+                    f_ios.at(i).add_hdu("weight_" + std::to_string(j), mout.weight.at(j));
+                    f_ios.at(i).hdus.back()->addKey("UNIT", "(" + cunit + ")^-2", "Unit of map");
 
-                    // write kernel if requested
+                    // add kernel map to file
                     if (run_kernel) {
-                        //SPDLOG_INFO("writing ker{}", j);
-                        f_ios.at(i).add_hdu("ker" + std::to_string(j), mout.kernel.at(j));
+                        f_ios.at(i).add_hdu("kernel_" + std::to_string(j), mout.kernel.at(j));
+                        f_ios.at(i).hdus.back()->addKey("UNIT", cunit, "Unit of map");
                     }
                 }
-            }
-
-            // loop through hdus and add wcs (hacky method)
-            //int j = start_det;
-            int k = 0;
-            int nhdus = 2;
-
-            if (run_kernel) {
-                nhdus = 3;
             }
 
             for (auto hdu: f_ios.at(i).hdus) {
@@ -583,14 +726,6 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
                 hdu->addKey("b_fwhm_err", (float)mout.perror(4,i),"alt fwhm error (arcsec)");
                 hdu->addKey("angle", (float)mout.pfit(5,i),"position angle (radians)");
                 hdu->addKey("angle_err", (float)mout.perror(5,i),"position angle error (radians)");
-
-                k++;
-
-                // only increment every nhdus
-                if (k == nhdus) {
-                    k = 0;
-                    //j++;
-                }
             }
 
             // loop through default TolTEC fits header keys and add to primary header
@@ -600,7 +735,7 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
 
             // add wcs to pHDU
             f_ios.at(i).template add_wcs<UnitsType::arcsec>(&f_ios.at(i).pfits->pHDU(),map_type,mout.nrows,
-                                                      mout.ncols,pixel_size,source_center,
+                                                            mout.ncols,pixel_size,source_center,
                                                             toltec_io.array_freqs[i],
                                                             polarization.stokes_params);
 
@@ -610,10 +745,15 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
             f_ios.at(i).pfits->pHDU().addKey("OBSNUM", obsnum, "Observation Number");
             // exp time
             f_ios.at(i).pfits->pHDU().addKey("t_exptime", tel_meta_params["t_exp"], "Exposure Time (sec)");
-            // add units
-            f_ios.at(i).pfits->pHDU().addKey("UNIT", obsnum, "MJy/Sr");
             // add conversion
-            f_ios.at(i).pfits->pHDU().addKey("to_mjy/b", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
+            if (cunit == "MJy/Sr") {
+                f_ios.at(i).pfits->pHDU().addKey("to_mjy/beam", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
+                f_ios.at(i).pfits->pHDU().addKey("to_Mjy/Sr", 1.0, "Conversion to MJy/Sr");
+            }
+            else if (cunit == "mJy/beam") {
+                f_ios.at(i).pfits->pHDU().addKey("to_mjy/beam", 1.0, "Conversion to mJy/beam");
+                f_ios.at(i).pfits->pHDU().addKey("to_MJy/Sr", 1/toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to MJy/Sr");
+            }
         }
     }
 }
