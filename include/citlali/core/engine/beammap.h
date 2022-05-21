@@ -232,7 +232,7 @@ auto Beammap::run_timestream() {
         Eigen::Index start_index = in.scan_indices.data(2);
 
         // current length of outer scans
-        Eigen::Index scan_length = in.scans.data.rows();
+        Eigen::Index scan_length = in.scan_indices.data(3) - in.scan_indices.data(2) + 1;
 
         // set up flag matrix
         in.flags.data.setOnes(scan_length, ndet);

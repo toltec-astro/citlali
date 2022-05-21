@@ -1342,6 +1342,9 @@ int run(const rc_t &rc) {
                     auto cal_path = rawobs.array_prop_table().filepath();
                     SPDLOG_INFO("cal_path {}", cal_path);
 
+                    // get apt table
+                    todproc.engine().get_calib(cal_path);
+
                     // initialize pointing az offset
                     todproc.engine().pointing_offsets["az"] = 0;
 
@@ -1388,9 +1391,6 @@ int run(const rc_t &rc) {
                         todproc.engine().pointing_offsets["alt"] =
                             rawobs.astrometry_calib_info().config().get_typed<double>(std::tuple{"pointing_offsets",1,"value_arcsec"});
                     }
-
-                    // get apt table
-                    todproc.engine().get_calib(cal_path);
 
                     // get hwp data
                     if (todproc.engine().run_polarization) {
