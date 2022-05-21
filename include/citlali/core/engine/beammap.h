@@ -603,12 +603,43 @@ auto Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
 template <MapBase::MapType out_type, class MC, typename fits_out_vec_t>
 void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, bool filtered) {
+
+    std::string hdname;
+
+    if (use_subdir) {
+        // get obsnum directory name inside redu directory name
+        std::stringstream ss_redu;
+        ss_redu << std::setfill('0') << std::setw(2) << redu_num;
+
+        hdname = "redu" + ss_redu.str() + "/";
+    }
+
+    else {
+        hdname = "";
+    }
+
+    std::stringstream ss;
+    ss << std::setfill('0') << std::setw(6) << obsnum;
+    std::string dname = hdname + ss.str() + "/";
+
+    std::string cname = hdname + "coadded/";
+
+    if (filtered==false) {
+        cname = cname + "raw/";
+    }
+
+    else if (filtered==true) {
+        cname = cname + "filtered/";
+    }
+
+
     if constexpr (out_type==MapType::obs) {
         // apt table
         SPDLOG_INFO("writing apt table");
         // get output path from citlali_config
-        auto filename = toltec_io.setup_filepath<ToltecIO::apt,ToltecIO::simu,
-                ToltecIO::beammap, ToltecIO::no_prod_type, ToltecIO::obsnum_true>(filepath,obsnum,-1);
+        auto filename = toltec_io.setup_filepath<ToltecIO::ppt, ToltecIO::simu,
+                                                 ToltecIO::pointing, ToltecIO::no_prod_type,
+                                                 ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
 
         // check in debug mode for row/col error (seems fine)
         Eigen::MatrixXf table(toltec_io.beammap_apt_header.size(), ndet);
@@ -627,9 +658,6 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
         table.row(toltec_io.beammap_apt_header.size()-1) = converge_iter.cast <float> ();
 
         table.transposeInPlace();
-
-        SPDLOG_INFO("beammap fit table header {}", toltec_io.beammap_apt_header);
-        SPDLOG_INFO("beammap fit table {}", table);
 
         // Yaml node for ecsv table meta data (units and description)
         YAML::Node meta;

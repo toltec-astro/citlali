@@ -926,14 +926,10 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
 
         Eigen::Index narrays = 3;
 
-        if ((std::strcmp("science", engine().reduction_type.c_str()) == 0) ||
-            (std::strcmp("pointing", engine().reduction_type.c_str()) == 0)) {
-
-            for (Eigen::Index arr=0; arr<narrays; arr++) {
-                if ((engine().calib_data["array"].array()==arr).any()) {
-                    map_count++;
-                    engine().arrays[engine().toltec_io.name_keys[arr]] = arr;
-                }
+        for (Eigen::Index arr=0; arr<narrays; arr++) {
+            if ((engine().calib_data["array"].array()==arr).any()) {
+                map_count++;
+                engine().arrays[engine().toltec_io.name_keys[arr]] = arr;
             }
         }
 
