@@ -637,7 +637,7 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
         // apt table
         SPDLOG_INFO("writing apt table");
         // get output path from citlali_config
-        auto filename = toltec_io.setup_filepath<ToltecIO::ppt, ToltecIO::simu,
+        auto filename = toltec_io.setup_filepath<ToltecIO::apt, ToltecIO::simu,
                                                  ToltecIO::pointing, ToltecIO::no_prod_type,
                                                  ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
 
@@ -722,38 +722,42 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
             for (Eigen::Index j=0; j<ndet; j++) {
                 if (calib_data["array"](j) == i) {
                     // add signal map to file
-                    f_ios.at(i).add_hdu("signal_" + std::to_string(j), mout.signal.at(j));
+                    f_ios.at(i).add_hdu("signal_" + std::to_string(j) + "_I", mout.signal.at(j));
                     f_ios.at(i).hdus.back()->addKey("UNIT", cunit, "Unit of map");
+                    // add fit parameters to signal hdu
+                    f_ios.at(i).hdus.back()->addKey("amp", (float)mout.pfit(0,j),"amplitude (MJy/Sr)");
+                    f_ios.at(i).hdus.back()->addKey("amp_err", (float)mout.perror(0,j),"amplitude error (MJy/Sr)");
+                    f_ios.at(i).hdus.back()->addKey("x_t", (float)mout.pfit(1,j),"az offset (arcsec)");
+                    f_ios.at(i).hdus.back()->addKey("x_t_err", (float)mout.perror(1,j),"az offset error (arcsec)");
+                    f_ios.at(i).hdus.back()->addKey("y_t", (float)mout.pfit(2,j),"alt offset (arcsec)");
+                    f_ios.at(i).hdus.back()->addKey("y_t_err", (float)mout.perror(2,j),"alt offset error (arcsec)");
+                    f_ios.at(i).hdus.back()->addKey("a_fwhm", (float)mout.pfit(3,j),"az fwhm (arcsec)");
+                    f_ios.at(i).hdus.back()->addKey("a_fwhm_err", (float)mout.perror(3,j),"az fwhm error (arcsec)");
+                    f_ios.at(i).hdus.back()->addKey("b_fwhm", (float)mout.pfit(4,j),"alt fwhm (arcsec)");
+                    f_ios.at(i).hdus.back()->addKey("b_fwhm_err", (float)mout.perror(4,j),"alt fwhm error (arcsec)");
+                    f_ios.at(i).hdus.back()->addKey("angle", (float)mout.pfit(5,j),"position angle (radians)");
+                    f_ios.at(i).hdus.back()->addKey("angle_err", (float)mout.perror(5,j),"position angle error (radians)");
+
                     // add weight map to file
-                    f_ios.at(i).add_hdu("weight_" + std::to_string(j), mout.weight.at(j));
+                    f_ios.at(i).add_hdu("weight_" + std::to_string(j) + "_I", mout.weight.at(j));
                     f_ios.at(i).hdus.back()->addKey("UNIT", "(" + cunit + ")^-2", "Unit of map");
 
                     // add kernel map to file
                     if (run_kernel) {
-                        f_ios.at(i).add_hdu("kernel_" + std::to_string(j), mout.kernel.at(j));
+                        f_ios.at(i).add_hdu("kernel_" + std::to_string(j) + "_I", mout.kernel.at(j));
                         f_ios.at(i).hdus.back()->addKey("UNIT", cunit, "Unit of map");
                     }
                 }
             }
 
+            Eigen:: Index k = 0;
             for (auto hdu: f_ios.at(i).hdus) {
                 std::string hdu_name = hdu->name();
-                f_ios.at(i).template add_wcs<UnitsType::arcsec>(hdu,map_type,mout.nrows,mout.ncols,
-                                                                pixel_size,source_center,toltec_io.array_freqs[i],
+                f_ios.at(i).template add_wcs<UnitsType::arcsec>(hdu,map_type,mout.nrows,mout.ncols,pixel_size,
+                                                                source_center,toltec_io.array_freqs[i],
                                                                 polarization.stokes_params,hdu_name);
-                // add fit parameters to hdus
-                hdu->addKey("amp", (float)mout.pfit(0,i),"amplitude (MJy/Sr)");
-                hdu->addKey("amp_err", (float)mout.perror(0,i),"amplitude error (MJy/Sr)");
-                hdu->addKey("x_t", (float)mout.pfit(1,i),"az offset (arcsec)");
-                hdu->addKey("x_t_err", (float)mout.perror(1,i),"az offset error (arcsec)");
-                hdu->addKey("y_t", (float)mout.pfit(2,i),"alt offset (arcsec)");
-                hdu->addKey("y_t_err", (float)mout.perror(2,i),"alt offset error (arcsec)");
-                hdu->addKey("a_fwhm", (float)mout.pfit(3,i),"az fwhm (arcsec)");
-                hdu->addKey("a_fwhm_err", (float)mout.perror(3,i),"az fwhm error (arcsec)");
-                hdu->addKey("b_fwhm", (float)mout.pfit(4,i),"alt fwhm (arcsec)");
-                hdu->addKey("b_fwhm_err", (float)mout.perror(4,i),"alt fwhm error (arcsec)");
-                hdu->addKey("angle", (float)mout.pfit(5,i),"position angle (radians)");
-                hdu->addKey("angle_err", (float)mout.perror(5,i),"position angle error (radians)");
+
+                k++;
             }
 
             // loop through default TolTEC fits header keys and add to primary header
