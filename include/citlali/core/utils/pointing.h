@@ -27,17 +27,17 @@ det_pointing_t get_det_pointing(TD &tel_meta_data, const double azoff, const dou
 
         auto pa2 = tel_meta_data["ParAng"].array() - pi;
         
-        lon = (-rot_azoff*cos(pa2) - rot_altoff*sin(pa2))*RAD_ASEC
+        lon = (-rot_azoff*cos(pa2) - rot_altoff*sin(pa2))*ASEC_TO_RAD
             + tel_meta_data["TelLonPhys"].array();
         
-        lat = (-rot_azoff*sin(pa2) + rot_altoff*cos(pa2))*RAD_ASEC
+        lat = (-rot_azoff*sin(pa2) + rot_altoff*cos(pa2))*ASEC_TO_RAD
             + tel_meta_data["TelLatPhys"].array();
     }
 
     // altaz map
     else if (std::strcmp("altaz", map_type.c_str()) == 0) {
-        lat = (rot_altoff*RAD_ASEC) + tel_meta_data["TelLatPhys"].array();
-        lon = (rot_azoff*RAD_ASEC) + tel_meta_data["TelLonPhys"].array();
+        lat = (rot_altoff*ASEC_TO_RAD) + tel_meta_data["TelLatPhys"].array();
+        lon = (rot_azoff*ASEC_TO_RAD) + tel_meta_data["TelLonPhys"].array();
     }
 
     return det_pointing_t {lat,lon};

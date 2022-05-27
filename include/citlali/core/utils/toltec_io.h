@@ -89,8 +89,11 @@ struct ToltecIO {
         {8, "a2000_U"}
     };
 
-    // map between index and array name (temp)
+    // map between index and beam area
     std::map<int, double> barea_keys {};
+
+    // map between index and beam fwhm
+    std::map<int, double> bfwhm_keys {};
 
     std::map<int, double> array_freqs {
         {0,A1100_FREQ},

@@ -24,13 +24,10 @@ struct ToltecTelescope {
         {"Data.TelescopeBackend.Hold", "Hold"}
     };
 
-    std::map<std::string, std::string> meta_keys {
-        {"Header.Telescope.t_exp","t_exp"}
-    };
-
     std::map<std::string, std::string> header_keys {
         {"Header.Source.Ra", "Ra"},
-        {"Header.Source.Dec", "Dec"}
+        {"Header.Source.Dec", "Dec"},
+        //{"Header.Telescope.t_exp","t_exp"}
     };
 };
 
@@ -38,9 +35,11 @@ class Telescope: ToltecTelescope {
 public:
     // map pattern variable (Map or lissajous)
     char map_pattern_type [128];
+    // source name
+    char source_name [128];
     // telescope pointing vectors
     std::map<std::string, Eigen::VectorXd> tel_meta_data;
-    std::map<std::string, double> tel_meta_params;
+    std::map<std::string, double> tel_header_data;
     // source center from telescope file
     std::map<std::string, Eigen::VectorXd> source_center;
 
@@ -62,6 +61,9 @@ public:
 
                 // get mapping pattern
                 vars.find("Header.Dcs.ObsPgm")->second.getVar(&map_pattern_type);
+
+                // get source name
+                vars.find("Header.Source.SourceName")->second.getVar(&source_name);
 
                 // loop through and get telescope backend vectors
                 for (auto const& pair : backend_keys) {
@@ -102,7 +104,7 @@ public:
 
                 Eigen::Index npts = tel_meta_data["TelTime"].size();
 
-                tel_meta_params["t_exp"] = tel_meta_data["TelTime"](npts - 1) - tel_meta_data["TelTime"](0);
+                tel_header_data["t_exp"] = tel_meta_data["TelTime"](npts - 1) - tel_meta_data["TelTime"](0);
 
                 fo.close();
 
@@ -111,5 +113,32 @@ public:
                 throw DataIOError{fmt::format(
                     "failed to load data from netCDF file {}", filepath)};
             }
+    }
+
+    //template  <typename hdu_t>
+    void copy_header_to_fits(const std::string &filepath) {//, hdu_t *hdu) {
+        using namespace netCDF;
+        using namespace netCDF::exceptions;
+
+        try {
+            // get telescope file
+            NcFile fo(filepath, NcFile::read, NcFile::classic);
+            auto vars = fo.getVars();
+
+            for (const auto& var: vars) {
+                std::size_t found = var.first.find("Header");
+                if (found!=std::string::npos) {
+                    SPDLOG_INFO("Header Key {}", var.first);
+                }
+            }
+
+            fo.close();
+
+        } catch (NcException &e) {
+            SPDLOG_ERROR("{}", e.what());
+            throw DataIOError{fmt::format(
+                "failed to load data from netCDF file {}", filepath)};
+        }
+
     }
 };

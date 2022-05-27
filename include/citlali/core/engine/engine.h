@@ -94,7 +94,7 @@ public:
     std::string filepath;
 
     // path to timestream outuput file
-    std::string ts_filepath;
+    std::vector<std::string> ts_filepath;
 
     std::string beammap_source_name;
     double beammap_ra, beammap_dec;
@@ -310,6 +310,11 @@ public:
             polarization.stokes_params = {{"I",0}};
         }
 
+        else {
+            polarization.stokes_params = {{"I",0},
+                                          {"Q",1},
+                                          {"U",2}};
+        }
 
         // get despike config options
         get_config(run_despike,std::tuple{"timestream","despike","enabled"});
@@ -390,7 +395,7 @@ public:
         get_config(cmb.cov_cut,std::tuple{"coadd","cov_cut"});
 
         // convert pixel size to radians at start
-        pixel_size *= RAD_ASEC;
+        pixel_size *= ASEC_TO_RAD;
         // assign pixel size to map buffer and coadded map buffer for convenience
         mb.pixel_size = pixel_size;
         cmb.pixel_size = pixel_size;
@@ -402,7 +407,7 @@ public:
         get_config(y_size_pix,std::tuple{"mapmaking","y_size_pix"});
         get_config(crpix1,std::tuple{"mapmaking","crpix1"});
         get_config(crpix2,std::tuple{"mapmaking","crpix2"});
-        get_config(cunit,std::tuple{"mapmaking","cunit"},{"MJy/Sr","mJy/beam"});
+        get_config(cunit,std::tuple{"mapmaking","cunit"},{"MJy/Sr","mJy/beam", "uK/arcmin^2"});
 
         // get beammap config options
         get_config(cutoff,std::tuple{"beammap","iter_tolerance"});
@@ -413,7 +418,7 @@ public:
          if (run_fitting) {
             get_config(fit_model,std::tuple{"source_fitting","model"});
             get_config(bounding_box_pix,std::tuple{"source_fitting","bounding_box_arcsec"});
-            bounding_box_pix = std::floor(bounding_box_pix/pixel_size*RAD_ASEC);
+            bounding_box_pix = std::floor(bounding_box_pix/pixel_size*ASEC_TO_RAD);
             get_config(fit_init_guess,std::tuple{"source_fitting","initial_guess"});
         }
 
@@ -453,7 +458,7 @@ public:
                 get_config(gaussian_template_fwhm_rad["a2000"],std::tuple{"wiener_filter","gaussian_template_fwhm_arcsec","a2000"});
 
                 for (auto const& pair : gaussian_template_fwhm_rad) {
-                    gaussian_template_fwhm_rad[pair.first] = gaussian_template_fwhm_rad[pair.first]*RAD_ASEC;
+                    gaussian_template_fwhm_rad[pair.first] = gaussian_template_fwhm_rad[pair.first]*ASEC_TO_RAD;
                 }
 
                 wiener_filter.run_kernel = run_kernel;

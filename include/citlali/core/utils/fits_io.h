@@ -161,7 +161,7 @@ public:
 
              // if arcseconds requested
         else if constexpr (units == UnitsType::arcsec) {
-            unit_scale = RAD_ASEC;
+            unit_scale = ASEC_TO_RAD;
             CUNIT = "arcsec";
         }
 
@@ -195,7 +195,6 @@ public:
         if ((int)ref_pix_c2 == ref_pix_c2) {
             ref_pix_c2 += 0.5;
         }
-
 
         // add CRPIX values
         hdu->addKey("CTYPE1", CTYPE1, "");

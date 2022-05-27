@@ -48,7 +48,7 @@ void Kernel::gaussian_kernel(Engine engine, TCData<TCDataKind::RTC, Eigen::Matri
         Eigen::Index di = det_index_vector(i);
 
         // get kernel standard deviation from apt table
-        double sigma = RAD_ASEC*(engine->calib_data["a_fwhm"](di) + engine->calib_data["b_fwhm"](di))/2.;
+        double sigma = ASEC_TO_RAD*(engine->calib_data["a_fwhm"](di) + engine->calib_data["b_fwhm"](di))/2.;
         sigma = sigma/STD_TO_FWHM;
 
         // get offsets
@@ -61,9 +61,14 @@ void Kernel::gaussian_kernel(Engine engine, TCData<TCDataKind::RTC, Eigen::Matri
         // distance from map center
         auto dist = (lat.array().pow(2) + lon.array().pow(2)).sqrt();
 
-        //in.kernel_scans.data.col(i) =
-        //        (dist.array() <= 3.*sigma(i)).select(exp(-0.5*(dist.array()/sigma(i)).pow(2)), 0);
+        {
+            //tula::logging::scoped_timeit timer("kernel method 2");
+        in.kernel_scans.data.col(i) =
+                (dist.array() <= 3.*sigma).select(exp(-0.5*(dist.array()/sigma).pow(2)), 0);
+        }
 
+        {
+            //tula::logging::scoped_timeit timer("kernel method 1");
         // is this faster?
         for (Eigen::Index j=0; j<in.scans.data.rows(); j++) {
             if (dist(j) <= 3.*sigma) {
@@ -72,6 +77,7 @@ void Kernel::gaussian_kernel(Engine engine, TCData<TCDataKind::RTC, Eigen::Matri
             else {
                 in.kernel_scans.data(j,i) = 0;
             }
+        }
         }
     }
 }
@@ -95,7 +101,7 @@ void Kernel::airy_kernel(Engine engine, TCData<TCDataKind::RTC, Eigen::MatrixXd>
 
         // distance from map center
         auto dist = (lat.array().pow(2) + lon.array().pow(2)).sqrt();
-        auto fwhm = RAD_ASEC*(engine->calib_data["a_fwhm"](di) + engine->calib_data["b_fwhm"](di))/2.;
+        auto fwhm = ASEC_TO_RAD*(engine->calib_data["a_fwhm"](di) + engine->calib_data["b_fwhm"](di))/2.;
         auto factor = pi*(1.028/fwhm);
 
         for (Eigen::Index j=0; j<in.scans.data.rows(); j++) {

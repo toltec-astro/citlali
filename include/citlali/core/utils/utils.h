@@ -52,7 +52,7 @@ auto stddev(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBase<DerivedB> &flags
 
     /*auto x = scans.derived().array() *flags.derived().template cast<double>().array();
     auto mean = (scans.derived().array() * flags.derived().template cast<double>().array()).sum()/ngood;
-*/
+    */
     // calculate the standard deviation
     //double tmp = std::sqrt((x - mean).square().sum() / N);
 
@@ -345,6 +345,7 @@ double find_weight_threshold(Eigen::DenseBase<Derived> &in, const double cov, st
         }
     }
 
+    // temporary for approximate weights
     if (weight_type == "approximate") {
         std::vector<double> og2 = og;
         std::sort(og2.begin(), og2.end());
@@ -354,7 +355,6 @@ double find_weight_threshold(Eigen::DenseBase<Derived> &in, const double cov, st
         mval = og2[floor((covlimi+og.size())/2.)];
     }
 
-    // temporary for approximate weights
     else if (weight_type == "full") {
         // find the point where 25% of nonzero elements have greater weight
         double covlim;
@@ -435,5 +435,17 @@ private:
   // Spline of one-dimensional "points."
   Eigen::Spline<double, 1> spline_;
 };
+
+// adapted from https://cmb-s4.uchicago.edu/wiki/index.php/Point_source_sensitivity_from_uK-arcmin/beam
+auto MJy_Sr_to_uK(double flux, double freq, double beam_fwhm) {
+    auto xx = h_J_s*freq/(k_B_J_K*tcmb_K);
+
+    auto sq_arcmin_to_sr = pow(pi/180,2)/3600.;
+    auto beam_fwhm_arcmin = beam_fwhm/3600;
+
+    auto k_to_jy = 2.*h_J_s*pow(freq,3)/pow(c_m_s,2)/(exp(xx)-1.)*exp(xx)/(exp(xx)-1.)*xx/tcmb_K*1e26;
+
+    return 1e6*(flux*1e6/sq_arcmin_to_sr)/k_to_jy/sqrt(2*pi/(8*log(2))*pow(beam_fwhm_arcmin,2))/sqrt(2.);
+}
 
 } // namespace

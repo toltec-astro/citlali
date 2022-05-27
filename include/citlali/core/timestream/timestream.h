@@ -146,7 +146,6 @@ struct TCData<TCDataKind::RTC,RefType>
 
     Base::data_t<Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1>> det_index_vector;
     Base::data_t<Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1>> map_index_vector;
-
 };
 
 template <typename RefType>
@@ -167,7 +166,6 @@ struct TCData<TCDataKind::PTC, RefType>
 
     Base::data_t<Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1>> det_index_vector;
     Base::data_t<Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1>> map_index_vector;
-
 };
 
 

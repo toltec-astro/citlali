@@ -163,58 +163,67 @@ void Beammap::setup() {
                                                     ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
             }
 
-            ts_filepath = filename + ".nc";
+            Eigen::Index ndim_pol = (calib_data["fg"].array() == 0).count() + (calib_data["fg"].array() == 1).count();
 
-            netCDF::NcFile fo(ts_filepath,netCDF::NcFile::replace);
-            netCDF::NcDim nsmp_dim = fo.addDim("nsamples");
-            netCDF::NcDim ndet_dim = fo.addDim("ndetectors",ndet);
+            SPDLOG_INFO("ndim_pol {}", ndim_pol);
 
-            std::vector<netCDF::NcDim> dims;
-            dims.push_back(nsmp_dim);
-            dims.push_back(ndet_dim);
+            for (auto const& stokes_params: polarization.stokes_params) {
 
-            netCDF::NcVar pixid_v = fo.addVar("PIXID",netCDF::ncInt, ndet_dim);
-            pixid_v.putAtt("Units","N/A");
-            netCDF::NcVar a_v = fo.addVar("ARRAYID",netCDF::ncDouble, ndet_dim);
-            a_v.putAtt("Units","N/A");
-            a_v.putVar(calib_data["array"].data());
+                ts_filepath.push_back(filename + "_" + stokes_params.first + ".nc");
 
-            netCDF::NcVar xt_v = fo.addVar("AZOFF",netCDF::ncDouble, ndet_dim);
-            xt_v.putAtt("Units","radians");
-            Eigen::VectorXd xt_temp = 1/DEG_TO_ASEC*DEG_TO_RAD*calib_data["x_t"];
-            xt_v.putVar(xt_temp.data());
+                netCDF::NcFile fo(ts_filepath.back(), netCDF::NcFile::replace);
+                netCDF::NcDim nsmp_dim = fo.addDim("nsamples");
 
-            netCDF::NcVar yt_v = fo.addVar("ELOFF",netCDF::ncDouble, ndet_dim);
-            yt_v.putAtt("Units","radians");
-            Eigen::VectorXd yt_temp = 1/DEG_TO_ASEC*DEG_TO_RAD*calib_data["y_t"];
-            yt_v.putVar(yt_temp.data());
+                std::vector<netCDF::NcDim> dims;
+                dims.push_back(nsmp_dim);
 
-            netCDF::NcVar afwhm_v = fo.addVar("AFWHM",netCDF::ncDouble, ndet_dim);
-            afwhm_v.putAtt("Units","radians");
-            Eigen::VectorXd afwhm_temp = RAD_ASEC*calib_data["a_fwhm"];
-            afwhm_v.putVar(afwhm_temp.data());
+                if (stokes_params.first == "I") {
+                    netCDF::NcDim ndet_dim = fo.addDim("ndetectors",ndet);
+                    dims.push_back(ndet_dim);
+                }
 
-            netCDF::NcVar bfwhm_v = fo.addVar("BFWHM",netCDF::ncDouble, ndet_dim);
-            bfwhm_v.putAtt("Units","radians");
-            Eigen::VectorXd bfwhm_temp = RAD_ASEC*calib_data["b_fwhm"];
-            bfwhm_v.putVar(bfwhm_temp.data());
+                else if (stokes_params.first == "Q") {
+                    netCDF::NcDim ndet_dim = fo.addDim("ndetectors",ndim_pol);
+                    dims.push_back(ndet_dim);
+                }
 
-            netCDF::NcVar t_v = fo.addVar("TIME",netCDF::ncDouble, nsmp_dim);
-            t_v.putAtt("Units","seconds");
-            netCDF::NcVar e_v = fo.addVar("ELEV",netCDF::ncDouble, nsmp_dim);
-            e_v.putAtt("Units","radians");
+                if (stokes_params.first == "U") {
+                    netCDF::NcDim ndet_dim = fo.addDim("ndetectors",ndim_pol);
+                    dims.push_back(ndet_dim);
+                }
 
-            netCDF::NcVar data_v = fo.addVar("DATA",netCDF::ncDouble, dims);
-            data_v.putAtt("Units","MJy/sr");
-            netCDF::NcVar flag_v = fo.addVar("FLAG",netCDF::ncDouble, dims);
-            flag_v.putAtt("Units","N/A");
+                netCDF::NcVar pixid_v = fo.addVar("PIXID",netCDF::ncInt, dims[1]);
+                pixid_v.putAtt("Units","N/A");
+                netCDF::NcVar a_v = fo.addVar("ARRAYID",netCDF::ncDouble, dims[1]);
+                a_v.putAtt("Units","N/A");
 
-            netCDF::NcVar lat_v = fo.addVar("DY",netCDF::ncDouble, dims);
-            lat_v.putAtt("Units","radians");
-            netCDF::NcVar lon_v = fo.addVar("DX",netCDF::ncDouble, dims);
-            lon_v.putAtt("Units","radians");
+                netCDF::NcVar xt_v = fo.addVar("AZOFF",netCDF::ncDouble, dims[1]);
+                xt_v.putAtt("Units","radians");
+                netCDF::NcVar yt_v = fo.addVar("ELOFF",netCDF::ncDouble, dims[1]);
+                yt_v.putAtt("Units","radians");
 
-            fo.close();
+                netCDF::NcVar afwhm_v = fo.addVar("AFWHM",netCDF::ncDouble, dims[1]);
+                afwhm_v.putAtt("Units","radians");
+                netCDF::NcVar bfwhm_v = fo.addVar("BFWHM",netCDF::ncDouble, dims[1]);
+                bfwhm_v.putAtt("Units","radians");
+
+                netCDF::NcVar t_v = fo.addVar("TIME",netCDF::ncDouble, nsmp_dim);
+                t_v.putAtt("Units","seconds");
+                netCDF::NcVar e_v = fo.addVar("ELEV",netCDF::ncDouble, nsmp_dim);
+                e_v.putAtt("Units","radians");
+
+                netCDF::NcVar data_v = fo.addVar("DATA",netCDF::ncDouble, dims);
+                data_v.putAtt("Units","MJy/sr");
+                netCDF::NcVar flag_v = fo.addVar("FLAG",netCDF::ncDouble, dims);
+                flag_v.putAtt("Units","N/A");
+
+                netCDF::NcVar lat_v = fo.addVar("DY",netCDF::ncDouble, dims);
+                lat_v.putAtt("Units","radians");
+                netCDF::NcVar lon_v = fo.addVar("DX",netCDF::ncDouble, dims);
+                lon_v.putAtt("Units","radians");
+
+                fo.close();
+            }
         }
     }
 }
@@ -274,7 +283,7 @@ auto Beammap::run_timestream() {
                 Eigen::MatrixXd lat(out.scans.data.rows(),out.scans.data.cols());
                 Eigen::MatrixXd lon(out.scans.data.rows(),out.scans.data.cols());
 
-                SPDLOG_INFO("writing scan RTC timestream {} to {}", in.index.data, ts_filepath);
+                SPDLOG_INFO("writing scan RTC timestream {} to {}", in.index.data, ts_filepath[0]);
                 // loop through detectors and get pointing timestream
                 for (Eigen::Index i=0; i<out.scans.data.cols(); i++) {
 
@@ -288,8 +297,9 @@ auto Beammap::run_timestream() {
                     lon.col(i) = lon_i;
                 }
                 // append to netcdf file
-                append_to_netcdf(ts_filepath, out.scans.data, out.flags.data, lat, lon, out.tel_meta_data.data["TelElDes"],
-                                 out.tel_meta_data.data["TelTime"]);
+                append_to_netcdf(ts_filepath[0], out.scans.data, out.flags.data, lat, lon,
+                                 out.tel_meta_data.data["TelElDes"], out.tel_meta_data.data["TelTime"],
+                                 det_index_vector, calib_data,out.scans.data.cols());
             }
         }
 
@@ -317,7 +327,7 @@ auto Beammap::run_loop() {
                         Eigen::MatrixXd lat(ptcs[s].scans.data.rows(), ptcs[s].scans.data.cols());
                         Eigen::MatrixXd lon(ptcs[s].scans.data.rows(), ptcs[s].scans.data.cols());
 
-                        SPDLOG_INFO("writing scan PTC timestream {} to {}", ptcs[s].index.data, ts_filepath);
+                        SPDLOG_INFO("writing scan PTC timestream {} to {}", ptcs[s].index.data, ts_filepath[0]);
                         // loop through detectors and get pointing timestream
                         for (Eigen::Index i=0; i<ptcs[s].scans.data.cols(); i++) {
 
@@ -331,8 +341,9 @@ auto Beammap::run_loop() {
                             lat.col(i) = lat_i;
                             lon.col(i) = lon_i;
                         }
-                        append_to_netcdf(ts_filepath, ptcs[s].scans.data, ptcs[s].flags.data, lat, lon,
-                                         ptcs[s].tel_meta_data.data["TelElDes"], ptcs[s].tel_meta_data.data["TelTime"]);
+                        append_to_netcdf(ts_filepath[0], ptcs[s].scans.data, ptcs[s].flags.data, lat, lon,
+                                         ptcs[s].tel_meta_data.data["TelElDes"], ptcs[s].tel_meta_data.data["TelTime"],
+                                         ptcs[s].det_index_vector.data, calib_data, ptcs[s].scans.data.cols());
                     }
                 }
             }
@@ -385,6 +396,13 @@ auto Beammap::run_loop() {
                 }
             }
 
+            else if (mapping_method == "jinc") {
+                {
+                    tula::logging::scoped_timeit timer("populate_maps_naive()");
+                    populate_maps_jinc(ptcs.at(s), ptcs.at(s).map_index_vector.data, ptcs.at(s).det_index_vector.data, this);
+                }
+            }
+
             return 0;});
 
         SPDLOG_INFO("normalizing maps");
@@ -400,7 +418,6 @@ auto Beammap::run_loop() {
                 fitter.bounding_box_pix = bounding_box_pix;
                 mb.pfit.col(d) = fitter.fit<gaussfit::MapFitter::peakValue>(mb.signal[d], mb.weight[d], calib_data);
                 mb.perror.col(d) = fitter.error;
-                SPDLOG_INFO("pfit.col(d) {}", mb.pfit.col(d));
             }
             else {
                 mb.pfit.col(d) = p0.col(d);
@@ -523,19 +540,18 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
 
         [&](auto in) {
             // convert to map units (arcsec and radians)
-            mb.pfit.row(1) = pixel_size*(mb.pfit.row(1).array() - (mb.ncols)/2)/RAD_ASEC;
-            mb.pfit.row(2) = pixel_size*(mb.pfit.row(2).array() - (mb.nrows)/2)/RAD_ASEC;
-            mb.pfit.row(3) = STD_TO_FWHM*pixel_size*(mb.pfit.row(3))/RAD_ASEC;
-            mb.pfit.row(4) = STD_TO_FWHM*pixel_size*(mb.pfit.row(4))/RAD_ASEC;
+            mb.pfit.row(1) = pixel_size*(mb.pfit.row(1).array() - (mb.ncols)/2)/ASEC_TO_RAD;
+            mb.pfit.row(2) = pixel_size*(mb.pfit.row(2).array() - (mb.nrows)/2)/ASEC_TO_RAD;
+            mb.pfit.row(3) = STD_TO_FWHM*pixel_size*(mb.pfit.row(3))/ASEC_TO_RAD;
+            mb.pfit.row(4) = STD_TO_FWHM*pixel_size*(mb.pfit.row(4))/ASEC_TO_RAD;
 
             // rescale errors from pixel to on-sky units
-            mb.perror.row(1) = pixel_size*(mb.perror.row(1))/RAD_ASEC;
-            mb.perror.row(2) = pixel_size*(mb.perror.row(2))/RAD_ASEC;
-            mb.perror.row(3) = STD_TO_FWHM*pixel_size*(mb.perror.row(3))/RAD_ASEC;
-            mb.perror.row(4) = STD_TO_FWHM*pixel_size*(mb.perror.row(4))/RAD_ASEC;
+            mb.perror.row(1) = pixel_size*(mb.perror.row(1))/ASEC_TO_RAD;
+            mb.perror.row(2) = pixel_size*(mb.perror.row(2))/ASEC_TO_RAD;
+            mb.perror.row(3) = STD_TO_FWHM*pixel_size*(mb.perror.row(3))/ASEC_TO_RAD;
+            mb.perror.row(4) = STD_TO_FWHM*pixel_size*(mb.perror.row(4))/ASEC_TO_RAD;
 
 	    double mean_el = tel_meta_data["TelElDes"].mean();
-	    SPDLOG_INFO("mean el {}", mean_el);
 
             Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1> map_index_vector = ptcs.back().map_index_vector.data;
 
@@ -546,12 +562,12 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
 
                 mb.pfit(0,d) = beammap_fluxes[toltec_io.name_keys[mi]]/mb.pfit(0,d);
 
-		SPDLOG_INFO("derotating det {}", d);
+                //SPDLOG_INFO("derotating det {}", d);
                 Eigen::Index min_index;
 
                 // don't use pointing here as that will rotate by azoff/eloff
-                Eigen::VectorXd lat = -(mb.pfit(2,d)*RAD_ASEC) + tel_meta_data["TelElDes"].array();
-                Eigen::VectorXd lon = -(mb.pfit(1,d)*RAD_ASEC) + tel_meta_data["TelAzDes"].array();
+                Eigen::VectorXd lat = -(mb.pfit(2,d)*ASEC_TO_RAD) + tel_meta_data["TelElDes"].array();
+                Eigen::VectorXd lon = -(mb.pfit(1,d)*ASEC_TO_RAD) + tel_meta_data["TelAzDes"].array();
 
                 // minimum cartesian distance from source
                 double min_dist = ((tel_meta_data["SourceEl"] - lat).array().pow(2) +
@@ -567,7 +583,7 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
                 mb.pfit(1,d) = -rot_azoff;
                 mb.pfit(2,d) = -rot_eloff; 
 
-		SPDLOG_INFO("calculating sensitivity for det {}", d);
+                //SPDLOG_INFO("calculating sensitivity for det {}", d);
                 Eigen::MatrixXd det_sens;
                 Eigen::MatrixXd noise_flux;
                 calc_sensitivity(ptcs, det_sens, noise_flux, dfsmp, d);
@@ -631,7 +647,6 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
     else if (filtered==true) {
         cname = cname + "filtered/";
     }
-
 
     if constexpr (out_type==MapType::obs) {
         // apt table
@@ -724,9 +739,10 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
                     // add signal map to file
                     f_ios.at(i).add_hdu("signal_" + std::to_string(j) + "_I", mout.signal.at(j));
                     f_ios.at(i).hdus.back()->addKey("UNIT", cunit, "Unit of map");
-                    // add fit parameters to signal hdu
-                    f_ios.at(i).hdus.back()->addKey("amp", (float)mout.pfit(0,j),"amplitude (MJy/Sr)");
-                    f_ios.at(i).hdus.back()->addKey("amp_err", (float)mout.perror(0,j),"amplitude error (MJy/Sr)");
+
+                    // add fit parameters to hdus
+                    f_ios.at(i).hdus.back()->addKey("amp", (float)mout.pfit(0,j),"amplitude (N/A)");
+                    f_ios.at(i).hdus.back()->addKey("amp_err", (float)mout.perror(0,j),"amplitude error (N/A)");
                     f_ios.at(i).hdus.back()->addKey("x_t", (float)mout.pfit(1,j),"az offset (arcsec)");
                     f_ios.at(i).hdus.back()->addKey("x_t_err", (float)mout.perror(1,j),"az offset error (arcsec)");
                     f_ios.at(i).hdus.back()->addKey("y_t", (float)mout.pfit(2,j),"alt offset (arcsec)");
@@ -757,7 +773,21 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
                                                                 source_center,toltec_io.array_freqs[i],
                                                                 polarization.stokes_params,hdu_name);
 
-                k++;
+                // add fit parameters to hdus
+                /*hdu->addKey("amp", (float)mout.pfit(0,std::get<0>(array_indices[i]) + k),"amplitude (N/A)");
+                hdu->addKey("amp_err", (float)mout.perror(0,std::get<0>(array_indices[i]) + k),"amplitude error (N/A)");
+                hdu->addKey("x_t", (float)mout.pfit(1,std::get<0>(array_indices[i]) + k),"az offset (arcsec)");
+                hdu->addKey("x_t_err", (float)mout.perror(1,std::get<0>(array_indices[i]) + k),"az offset error (arcsec)");
+                hdu->addKey("y_t", (float)mout.pfit(2,std::get<0>(array_indices[i]) + k),"alt offset (arcsec)");
+                hdu->addKey("y_t_err", (float)mout.perror(2,std::get<0>(array_indices[i]) + k),"alt offset error (arcsec)");
+                hdu->addKey("a_fwhm", (float)mout.pfit(3,std::get<0>(array_indices[i]) + k),"az fwhm (arcsec)");
+                hdu->addKey("a_fwhm_err", (float)mout.perror(3,std::get<0>(array_indices[i]) + k),"az fwhm error (arcsec)");
+                hdu->addKey("b_fwhm", (float)mout.pfit(4,std::get<0>(array_indices[i]) + k),"alt fwhm (arcsec)");
+                hdu->addKey("b_fwhm_err", (float)mout.perror(4,std::get<0>(array_indices[i]) + k),"alt fwhm error (arcsec)");
+                hdu->addKey("angle", (float)mout.pfit(5,std::get<0>(array_indices[i]) + k),"position angle (radians)");
+                hdu->addKey("angle_err", (float)mout.perror(5,std::get<0>(array_indices[i]) + k),"position angle error (radians)");
+
+                k++;*/
             }
 
             // loop through default TolTEC fits header keys and add to primary header
@@ -775,16 +805,30 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
             f_ios.at(i).pfits->pHDU().addKey("WAV", toltec_io.name_keys[i], "Array Name");
             // add obsnum
             f_ios.at(i).pfits->pHDU().addKey("OBSNUM", obsnum, "Observation Number");
+            // object
+            f_ios.at(i).pfits->pHDU().addKey("OBJECT", (std::string)source_name, "");
             // exp time
-            f_ios.at(i).pfits->pHDU().addKey("t_exptime", tel_meta_params["t_exp"], "Exposure Time (sec)");
+            f_ios.at(i).pfits->pHDU().addKey("t_exptime", tel_header_data["t_exp"], "Exposure Time (sec)");
             // add conversion
             if (cunit == "MJy/Sr") {
-                f_ios.at(i).pfits->pHDU().addKey("to_mjy/beam", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
+                f_ios.at(i).pfits->pHDU().addKey("to_mJy/beam", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
                 f_ios.at(i).pfits->pHDU().addKey("to_Mjy/Sr", 1.0, "Conversion to MJy/Sr");
+                f_ios.at(i).pfits->pHDU().addKey("to_uK/arcmin^2", engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[i],toltec_io.bfwhm_keys[i]),
+                                                 "Conversion to uK/arcmin^2");
             }
             else if (cunit == "mJy/beam") {
-                f_ios.at(i).pfits->pHDU().addKey("to_mjy/beam", 1.0, "Conversion to mJy/beam");
-                f_ios.at(i).pfits->pHDU().addKey("to_MJy/Sr", 1/toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to MJy/Sr");
+                f_ios.at(i).pfits->pHDU().addKey("to_mJy/beam", 1.0, "Conversion to mJy/beam");
+                f_ios.at(i).pfits->pHDU().addKey("to_MJy/Sr", 1/(toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC), "Conversion to MJy/Sr");
+                f_ios.at(i).pfits->pHDU().addKey("to_uK/arcmin^2", MJY_SR_TO_mJY_ASEC/engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[i],toltec_io.bfwhm_keys[i]),
+                                                 "Conversion to uK/arcmin^2");
+            }
+            else if (cunit == "uK/arcmin^2") {
+                f_ios.at(i).pfits->pHDU().addKey("to_mJy/beam", MJY_SR_TO_mJY_ASEC/engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[i],
+                                                                                                                toltec_io.bfwhm_keys[i]),
+                                                 "Conversion to mJy/beam");
+                f_ios.at(i).pfits->pHDU().addKey("to_MJy/Sr", 1/engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[i],toltec_io.bfwhm_keys[i]),
+                                                 "Conversion to MJy/Sr");
+                f_ios.at(i).pfits->pHDU().addKey("to_uK/arcmin^2", 1.0, "Conversion to uK/arcmin^2");
             }
         }
     }

@@ -25,7 +25,9 @@ template <typename DerivedA, typename DerivedB, typename DerivedC>
 void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB> &wt,
                        Eigen::DenseBase<DerivedC> &rcphys, Eigen::DenseBase<DerivedC> &ccphys) {
 
+    // get weight threshold
     auto weight_threshold = engine_utils::find_weight_threshold(wt, cov_cut, weight_type);
+    // caluclate cov_cut row/col ranges
     auto [cut_row_range, cut_col_range] = engine_utils::set_coverage_cut_ranges(wt, weight_threshold);
 
     // make sure coverage cut map has an even number of rows and cols
@@ -53,6 +55,7 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
     double diffqr = 1. / rsize;
     double diffqc = 1. / csize;
 
+    // copy data into complex matrix
     Eigen::MatrixXcd block(nr, nc);
     block.real() = in.block(crr0, ccr0, nr, nc);
     block.imag().setZero();
@@ -62,19 +65,13 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
     auto out = engine_utils::fft2d<engine_utils::forward>(block, nr, nc, exmode);
 
     //out = out*diffr*diffc;
+    // normalize
     out = out/nr/nc;
 
-    //Eigen::Map<Eigen::VectorXcd> out_vec(out.data(),nr*nc);
-
-    //Eigen::VectorXd w = diffqr*diffqc*out.cwiseAbs2();
-    //Eigen::MatrixXd h = Eigen::Map<Eigen::MatrixXd>(w.data(), nr, nc);
-
-    //Eigen::MatrixXd h = diffqr*diffqc*out.cwiseAbs2();
     Eigen::MatrixXd h(nr,nc);
     for(int i=0;i<nc;i++)
         for(int j=0;j<nr;j++)
             h(j,i) = diffqr*diffqc*pow(out.real()(j,i),2) + pow(out.imag()(j,i),2);
-
 
     // vectors of frequencies
     Eigen::VectorXd qr(nr);
@@ -99,7 +96,7 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
         qc(index) = diffqc*(i-(nc/2-1));
     }
 
-    // shed first row and column of h, qr, qc
+    // remove first row and column of h, qr, qc
     Eigen::MatrixXd pmfq(nr-1,nc-1);
     for (Eigen::Index i=1; i<nc; i++) {
         for (int j=1; j<nr; j++) {
@@ -126,7 +123,7 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
         }
     }
 
-    // find max of nr and nc and correspoinding diffq
+    // find max of nr and nc and corresponding to diffq
     int nn;
     double diffq;
     if (nr > nc) {
@@ -144,7 +141,7 @@ void PSD::calc_map_psd(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB
         psd_freq(i) = diffq*(i + 0.5);
     }
 
-    // pack up the final vector of psd values
+    // get the final vector of psd values
     psd.setZero(nn);
     for (Eigen::Index i=0; i<nn; i++) {
         int count_s = 0;

@@ -9,14 +9,17 @@
 #include <tula/logging.h>
 #include <tula/nc.h>
 
+#include <citlali/core/utils/constants.h>
+
 struct DataIOError : public std::runtime_error {
     using std::runtime_error::runtime_error;
 };
 
-template <typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD>
-void append_to_netcdf(std::string filepath, Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedC> &flag,
-                  Eigen::DenseBase<DerivedA> &lat, Eigen::DenseBase<DerivedA> &lon, Eigen::DenseBase<DerivedB> &elev,
-                  Eigen::DenseBase<DerivedD> &time) {
+template <typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD, typename DerivedE, typename DerivedF, typename C>
+void append_to_netcdf(std::string filepath, Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &flag,
+                  Eigen::DenseBase<DerivedC> &lat, Eigen::DenseBase<DerivedC> &lon, Eigen::DenseBase<DerivedD> &elev,
+                  Eigen::DenseBase<DerivedE> &time, Eigen::DenseBase<DerivedF> &det_index_vector, C &calib_data, unsigned long dsize,
+                      unsigned long dstart=0, unsigned long offset=0) {
 
     using Eigen::Index;
 
@@ -33,57 +36,73 @@ void append_to_netcdf(std::string filepath, Eigen::DenseBase<DerivedA> &data, Ei
         // define the dimensions.
         NcDim d_nsmp = fo.getDim("nsamples");
         NcDim d_ndet = fo.getDim("ndetectors");
-        unsigned long nsmp_exists = d_nsmp.getSize();
+        unsigned long nsmp_exists = d_nsmp.getSize() - offset;
 
-        std::vector<netCDF::NcDim> dims;
-        dims.push_back(d_nsmp);
-        dims.push_back(d_ndet);
-
-        std::vector<std::size_t> i0{nsmp_exists, 0};
-        std::vector<std::size_t> s_d{1, d_ndet.getSize()};
+        std::vector<std::size_t> i0{nsmp_exists, dstart};
+        std::vector<std::size_t> s_d{1, dsize};
         std::vector<std::size_t> i02{nsmp_exists};
-        std::vector<std::size_t> i03{0};
+        std::vector<std::size_t> i03{dstart};
         std::vector<std::size_t> s_d2{1};
 
-            NcVar data_v = fo.getVar("DATA");
-            NcVar flag_v = fo.getVar("FLAG");
-            NcVar lat_v = fo.getVar("DY");
-            NcVar lon_v = fo.getVar("DX");
+        NcVar data_v = fo.getVar("DATA");
+        NcVar flag_v = fo.getVar("FLAG");
+        NcVar lat_v = fo.getVar("DY");
+        NcVar lon_v = fo.getVar("DX");
 
-            NcVar e_v = fo.getVar("ELEV");
-            NcVar t_v = fo.getVar("TIME");
+        NcVar e_v = fo.getVar("ELEV");
+        NcVar t_v = fo.getVar("TIME");
 
-            NcVar p_v = fo.getVar("PIXID");
+        NcVar p_v = fo.getVar("PIXID");
 
-            for (std::size_t ii = 0; ii < TULA_SIZET(data.rows()); ++ii) {
-                i0[0] = nsmp_exists + ii;
-                i02[0] = nsmp_exists + ii;
+        NcVar eloff_v = fo.getVar("ELOFF");
+        NcVar azoff_v = fo.getVar("AZOFF");
+        NcVar afwhm_v = fo.getVar("AFWHM");
+        NcVar bfwhm_v = fo.getVar("BFWHM");
+        NcVar arrayid_v = fo.getVar("ARRAYID");
 
-		Eigen::VectorXd data_vec = data.row(ii);
-		Eigen::Matrix<bool, Eigen::Dynamic,1> flag_vec = flag.row(ii);
+        for (std::size_t ii = 0; ii < TULA_SIZET(data.rows()); ++ii) {
+            i0[0] = nsmp_exists + ii;
+            i02[0] = nsmp_exists + ii;
 
-                Eigen::Matrix<int,Eigen::Dynamic,1> fvi = flag_vec.cast<int> ();
+            Eigen::VectorXd data_vec = data.row(ii);
+            Eigen::Matrix<bool, Eigen::Dynamic,1> flag_vec = flag.row(ii);
 
-		Eigen::VectorXd lat_vec = lat.row(ii);
-		Eigen::VectorXd lon_vec = lon.row(ii);
+            Eigen::Matrix<int,Eigen::Dynamic,1> fvi = flag_vec.cast<int> ();
 
-                data_v.putVar(i0, s_d, data_vec.data());
-                flag_v.putVar(i0, s_d, fvi.data());
-                lat_v.putVar(i0, s_d, lat_vec.data());
-                lon_v.putVar(i0, s_d, lon_vec.data());
+            Eigen::VectorXd lat_vec = lat.row(ii);
+            Eigen::VectorXd lon_vec = lon.row(ii);
 
-                e_v.putVar(i02, &elev(ii));
-                t_v.putVar(i02, &time(ii));
-            }
+            data_v.putVar(i0, s_d, data_vec.data());
+            flag_v.putVar(i0, s_d, fvi.data());
+            lat_v.putVar(i0, s_d, lat_vec.data());
+            lon_v.putVar(i0, s_d, lon_vec.data());
 
-            for (std::size_t ii = 0; ii < TULA_SIZET(data.cols()); ++ii) {
-                int i = ii;
-                std::vector<std::size_t> index{ii};
-                p_v.putVar(index, s_d2, &i);
-            }
+            e_v.putVar(i02, &elev(ii));
+            t_v.putVar(i02, &time(ii));
+        }
 
-            fo.sync();
-            fo.close();
+        for (std::size_t ii = 0; ii < TULA_SIZET(data.cols()); ++ii) {
+            int di = det_index_vector[ii];
+
+            i03[0] = dstart + ii;
+
+            p_v.putVar(i03, s_d2, &di);
+
+            auto eloff_i = ASEC_TO_RAD*calib_data["x_t"][di];
+            auto azoff_i = ASEC_TO_RAD*calib_data["y_t"][di];
+
+            auto a_fwhm_i = ASEC_TO_RAD*calib_data["a_fwhm"][di];
+            auto b_fwhm_i = ASEC_TO_RAD*calib_data["b_fwhm"][di];
+
+            arrayid_v.putVar(i03, s_d2, &calib_data["array"][di]);
+            eloff_v.putVar(i03, s_d2, &eloff_i);
+            azoff_v.putVar(i03, s_d2, &azoff_i);
+            afwhm_v.putVar(i03, s_d2, &a_fwhm_i);
+            bfwhm_v.putVar(i03, s_d2, &b_fwhm_i);
+        }
+
+        fo.sync();
+        fo.close();
 
     } catch (NcException &e) {
         SPDLOG_ERROR("{}", e.what());

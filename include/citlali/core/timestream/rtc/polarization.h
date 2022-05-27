@@ -30,20 +30,12 @@ public:
                            Eigen::Index di, double y_t, bool run_hwp) {
 
         // current detector's elevation
-        auto lat = y_t*RAD_ASEC + out.tel_meta_data.data["TelElDes"].array();
-
-        // rotate by elevation and flip
-        /*auto qs1 = q0.derived().array()*cos(-2*out.tel_meta_data.data["TelElDes"].array()) -
-                   u0.derived().array()*sin(-2*out.tel_meta_data.data["TelElDes"].array());
-
-        auto us1 = -q0.derived().array()*sin(-2*out.tel_meta_data.data["TelElDes"].array()) -
-                   u0.derived().array()*cos(-2*out.tel_meta_data.data["TelElDes"].array());
-
-        */
+        //auto lat = -y_t*ASEC_TO_RAD + out.tel_meta_data.data["TelElDes"].array();
+        auto lat = out.tel_meta_data.data["TelElDes"].array();
 
         // rotate by detector elevation and flip
-        auto qs1 = q0.derived().array()*cos(-2*lat.array()) - u0.derived().array()*sin(-2*lat.array());
-        auto us1 = -q0.derived().array()*sin(-2*lat.array()) - u0.derived().array()*cos(-2*lat.array());
+        auto qs1 = q0.derived().array()*cos(2*lat.array()) - u0.derived().array()*sin(2*lat.array());
+        auto us1 = (q0.derived().array()*sin(2*lat.array()) + u0.derived().array()*cos(2*lat.array()));
 
         if (run_hwp) {
             // rotate by hwp signal
@@ -100,7 +92,7 @@ public:
         else {
             Eigen::MatrixXd data;
             Eigen::Index ori;
-            auto pa2 = in.tel_meta_data.data["ParAng"].array() - pi;
+            auto pa2 = -(in.tel_meta_data.data["ParAng"].array() - pi);
 
             if (sp == "Q") {
                 SPDLOG_INFO("creating Q timestream");
@@ -120,7 +112,7 @@ public:
             det_index_vector.resize(2*ndet);
 
             Eigen::Index j = 0;
-            for (Eigen::Index i=0;i<in.scans.data.cols();i++) {
+            for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
                 if (engine->calib_data["fg"](i) == ori) {
                     if (sp == "Q") {
                         data.col(j) = in.scans.data.col(i+1) - in.scans.data.col(i);

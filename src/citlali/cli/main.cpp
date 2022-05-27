@@ -1176,7 +1176,7 @@ int run(const rc_t &rc) {
                     todproc.engine().get_telescope(rawobs.teldata().filepath());
 
                     // coadded exposure time
-                    todproc.engine().c_t_exp += todproc.engine().tel_meta_params["t_exp"];
+                    todproc.engine().c_t_exp += todproc.engine().tel_header_data["t_exp"];
 
                     // calculate physical pointing vectors
                     todproc.engine().get_phys_pointing(todproc.engine().tel_meta_data, todproc.engine().source_center,
@@ -1425,8 +1425,8 @@ int run(const rc_t &rc) {
                         auto b_fwhm = todproc.engine().calib_data["b_fwhm"].segment(std::get<0>(todproc.engine().array_indices.at(mc)),
                                                                                     std::get<1>(todproc.engine().array_indices.at(mc)));
 
-                        auto fwhm = ((a_fwhm + b_fwhm)/2).mean();
-                        todproc.engine().toltec_io.barea_keys[mc] = 2.*pi*pow(fwhm/STD_TO_FWHM,2);
+                        todproc.engine().toltec_io.bfwhm_keys[mc] = ((a_fwhm + b_fwhm)/2).mean();
+                        todproc.engine().toltec_io.barea_keys[mc] = 2.*pi*pow(todproc.engine().toltec_io.bfwhm_keys[mc]/STD_TO_FWHM,2);
                     }
 
                     // flux conversion
@@ -1447,6 +1447,18 @@ int run(const rc_t &rc) {
                         }
                         else if (todproc.engine().cunit == "MJy/Sr") {
                              todproc.engine().cflux(j) = 1.0;
+                        }
+
+                        else if (todproc.engine().cunit == "uK/arcmin^2") {
+                            todproc.engine().cflux(j) = engine_utils::MJy_Sr_to_uK(1, todproc.engine().toltec_io.array_freqs[l],
+                                                                     todproc.engine().toltec_io.bfwhm_keys[l]);
+                            if (k == todproc.engine().toltec_io.barea_keys.size() - 1) {
+                                k = 0;
+                                l++;
+                            }
+                            else {
+                                k++;
+                            }
                         }
                     }
 
