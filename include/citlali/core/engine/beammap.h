@@ -82,7 +82,7 @@ void Beammap::setup() {
     // resize the initial fit vector
     p0.resize(nparams, ndet);
     // set initial fit to nan to pass first cutoff test
-    p0.setConstant(std::nan(""));
+    p0.setZero();
     // resize the initial fit error vector
     perror0.setZero(nparams, ndet);
     // resize the current fit vector
@@ -349,9 +349,6 @@ auto Beammap::run_loop() {
             }
         }
 
-        /*Stage 2: PTCProc*/
-        PTCProc ptcproc;
-
         // set maps to zero on each iteration
         for (Eigen::Index i=0; i<mb.map_count; i++) {
             mb.signal.at(i).setZero();
@@ -361,6 +358,9 @@ auto Beammap::run_loop() {
                 mb.kernel.at(i).setZero();
             }
         }
+
+        /*Stage 2: PTCProc*/
+        PTCProc ptcproc;
 
         grppi::map(tula::grppi_utils::dyn_ex(ex_name), scan_in_vec, scan_out_vec, [&](auto s) {
             SPDLOG_INFO("reducing scan {}/{}", s+1, ptcs.size());
@@ -601,8 +601,10 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
 template <class KidsProc, class RawObs>
 auto Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     // start the timestream pipeline (RTCProc only)
-    SPDLOG_INFO("starting beammap timestream pipeline");
-    timestream_pipeline(kidsproc, rawobs);
+    {
+        tula::logging::scoped_timeit timer("timestream_pipeline");
+        timestream_pipeline(kidsproc, rawobs);
+    }
 
     // placeholder vectors of size nscans for grppi maps
     scan_in_vec.resize(ptcs0.size());
@@ -614,9 +616,12 @@ auto Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     std::iota(det_in_vec.begin(), det_in_vec.end(), 0);
     det_out_vec.resize(ndet);
 
-    // start the iterative pipeline (clean, map, and fit)
+    // start the iterative pipeline (clean, map, and fit, check convergence)
     SPDLOG_INFO("starting iterative pipeline");
-    loop_pipeline(kidsproc, rawobs);
+    {
+        tula::logging::scoped_timeit timer("loop_pipeline");
+        loop_pipeline(kidsproc, rawobs);
+    }
 
     SPDLOG_INFO("beammapping finished");
 }

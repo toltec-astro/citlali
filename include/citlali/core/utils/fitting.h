@@ -166,8 +166,8 @@ void add_gaussian(Engine engine, Eigen::DenseBase<Derived> &scan, tel_meta_t &te
         auto sigma_lon = engine->mb.pfit(3,d);
 
         // rescale offsets and stddev to on-sky units
-        off_lat = engine->pixel_size*(off_lat - (engine->mb.nrows)/2)/ASEC_TO_RAD;
-        off_lon = engine->pixel_size*(off_lon - (engine->mb.ncols)/2)/ASEC_TO_RAD;
+        off_lat = engine->pixel_size*(off_lat - (engine->mb.nrows)/2);
+        off_lon = engine->pixel_size*(off_lon - (engine->mb.ncols)/2);
 
         sigma_lon = engine->pixel_size*sigma_lon;
         sigma_lat = engine->pixel_size*sigma_lat;
@@ -219,12 +219,22 @@ void add_gaussian_2(Engine engine, Eigen::DenseBase<Derived> &scan, tel_meta_t &
         auto sigma_lon = engine->mb.pfit(3,d);
         auto rot_ang = engine->mb.pfit(5,d);
 
+        SPDLOG_INFO("amp {}, off_lat {}, off_lon {}, sigma_lat {}, sigma_lon {}, rot_ang {}", amp, off_lat, off_lon, sigma_lat, sigma_lon,
+                    rot_ang);
+
+
         // rescale offsets and stddev to on-sky units
-        off_lat = engine->pixel_size*(off_lat - (engine->mb.nrows)/2)/ASEC_TO_RAD;
-        off_lon = engine->pixel_size*(off_lon - (engine->mb.ncols)/2)/ASEC_TO_RAD;
+        off_lat = engine->pixel_size*(off_lat - (engine->mb.nrows)/2);
+        off_lon = engine->pixel_size*(off_lon - (engine->mb.ncols)/2);
+
+        SPDLOG_INFO("off_lat {}, off_lon {}", off_lat, off_lon);
+
 
         sigma_lon = engine->pixel_size*sigma_lon;
         sigma_lat = engine->pixel_size*sigma_lat;
+
+        SPDLOG_INFO("sigma_lat {}, sigma_lon {}", sigma_lat, sigma_lon);
+
 
         // calculate gaussian
         //auto gauss = amplitude*exp(-0.5*(pow(lat.array() - off_lat, 2) / (pow(sigma_lat,2))
