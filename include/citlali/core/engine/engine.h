@@ -414,13 +414,13 @@ public:
         get_config(max_iterations,std::tuple{"beammap","iter_max"});
 
         // check if point source fitting is requested
-        get_config(run_fitting,std::tuple{"source_fitting","enabled"});
-         if (run_fitting) {
-            get_config(fit_model,std::tuple{"source_fitting","model"});
-            get_config(bounding_box_pix,std::tuple{"source_fitting","bounding_box_arcsec"});
-            bounding_box_pix = std::floor(bounding_box_pix/pixel_size*ASEC_TO_RAD);
-            get_config(fit_init_guess,std::tuple{"source_fitting","initial_guess"});
-        }
+        //get_config(run_fitting,std::tuple{"source_fitting","enabled"});
+         //if (run_fitting) {
+        get_config(fit_model,std::tuple{"source_fitting","model"});
+        get_config(bounding_box_pix,std::tuple{"source_fitting","bounding_box_arcsec"});
+        bounding_box_pix = std::floor(bounding_box_pix/pixel_size*ASEC_TO_RAD);
+        get_config(fit_init_guess,std::tuple{"source_fitting","initial_guess"});
+        //}
 
         // get coadd config options
         get_config(run_coadd,std::tuple{"coadd","enabled"});

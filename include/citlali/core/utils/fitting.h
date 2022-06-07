@@ -165,9 +165,9 @@ void add_gaussian(Engine engine, Eigen::DenseBase<Derived> &scan, tel_meta_t &te
         auto sigma_lat = engine->mb.pfit(4,d);
         auto sigma_lon = engine->mb.pfit(3,d);
 
-        // rescale offsets and fwhm to on-sky units
-        off_lat = engine->pixel_size*(off_lat - (engine->mb.nrows)/2);
-        off_lon = engine->pixel_size*(off_lon - (engine->mb.ncols)/2);
+        // rescale offsets and stddev to on-sky units
+        off_lat = engine->pixel_size*(off_lat - (engine->mb.nrows)/2)/ASEC_TO_RAD;
+        off_lon = engine->pixel_size*(off_lon - (engine->mb.ncols)/2)/ASEC_TO_RAD;
 
         sigma_lon = engine->pixel_size*sigma_lon;
         sigma_lat = engine->pixel_size*sigma_lat;
@@ -187,4 +187,76 @@ void add_gaussian(Engine engine, Eigen::DenseBase<Derived> &scan, tel_meta_t &te
             scan(i,d) = scan(i,d) + gauss;
         }*/
     }
+}
+
+template <class Engine, typename Derived, typename tel_meta_t>
+void add_gaussian_2(Engine engine, Eigen::DenseBase<Derived> &scan, tel_meta_t &tel_meta_data) {
+
+    // loop through detectors
+    for (Eigen::Index d = 0; d < scan.cols(); d++) {
+        double azoff, eloff;
+
+        // use apt table for science and pointing mode offsets
+        if (engine->map_grouping == "array_name" || engine->map_grouping == "pointing") {
+            azoff = engine->calib_data["x_t"](d);
+            eloff = engine->calib_data["y_t"](d);
+        }
+
+        // set offsets to 0 for beammap mode
+        else if (engine->map_grouping == "beammap") {
+            azoff = 0;
+            eloff = 0;
+        }
+
+        // get detector pointing (lat/lon = rows/cols -> dec/ra or el/az)
+        auto [lat, lon] = engine_utils::get_det_pointing(tel_meta_data, azoff, eloff, engine->map_type, engine->pointing_offsets);
+
+        // get parameters for current detector
+        auto amp = engine->mb.pfit(0,d);
+        auto off_lat = -engine->mb.pfit(2,d);
+        auto off_lon = -engine->mb.pfit(1,d);
+        auto sigma_lat = engine->mb.pfit(4,d);
+        auto sigma_lon = engine->mb.pfit(3,d);
+        auto rot_ang = engine->mb.pfit(5,d);
+
+        // rescale offsets and stddev to on-sky units
+        off_lat = engine->pixel_size*(off_lat - (engine->mb.nrows)/2)/ASEC_TO_RAD;
+        off_lon = engine->pixel_size*(off_lon - (engine->mb.ncols)/2)/ASEC_TO_RAD;
+
+        sigma_lon = engine->pixel_size*sigma_lon;
+        sigma_lat = engine->pixel_size*sigma_lat;
+
+        // calculate gaussian
+        //auto gauss = amplitude*exp(-0.5*(pow(lat.array() - off_lat, 2) / (pow(sigma_lat,2))
+        //                                     + pow(lon.array() - off_lon, 2) / (pow(sigma_lon,2))));
+
+
+        auto cost2 = cos(rot_ang) * cos(rot_ang);
+        auto sint2 = sin(rot_ang) * sin(rot_ang);
+        auto sin2t = sin(2. * rot_ang);
+        auto xstd2 = sigma_lon * sigma_lon;
+        auto ystd2 = sigma_lat * sigma_lat;
+        auto a = - 0.5 * ((cost2 / xstd2) + (sint2 / ystd2));
+        auto b = - 0.5 * ((sin2t / xstd2) - (sin2t / ystd2));
+        auto c = - 0.5 * ((sint2 / xstd2) + (cost2 / ystd2));
+
+        Eigen::VectorXd gauss(scan.rows());
+
+        for (Eigen::Index i=0; i<scan.rows(); i++) {
+            gauss(i) = amp*exp(pow(lat(i) - off_lat, 2) * a +
+                           (lon(i) - off_lon) * (lat(i) - off_lat) * b +
+                           pow(lon(i) - off_lon, 2) * c);
+        }
+
+        // add gaussian to detector scan
+        scan.col(d) = scan.col(d).array() + gauss.array();
+
+         // check speed vs vectorized routine
+        /*for (Eigen::Index i=0; i<scan.rows(); i++) {
+            double gauss = amplitude*exp(-0.5*(pow(lat(i) - off_lat, 2) / (pow(sigma_lat,2))
+                                              + pow(lon(i) - off_lon, 2) / (pow(sigma_lon,2))));
+
+        scan(i,d) = scan(i,d) + gauss;
+    }*/
+}
 }

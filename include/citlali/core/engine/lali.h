@@ -1,5 +1,8 @@
 #pragma once
 
+#include <mutex>
+#include <condition_variable>
+
 #include <Eigen/Core>
 
 #include <tula/grppi.h>
@@ -174,7 +177,7 @@ void Lali::setup() {
 }
 
 auto Lali::run() {
-    auto farm = grppi::farm(nthreads,[&](auto input_tuple) -> TCData<TCDataKind::PTC,Eigen::MatrixXd> {
+    auto farm = grppi::farm(nthreads,[&](auto &input_tuple) -> TCData<TCDataKind::PTC,Eigen::MatrixXd> {
         // RTCData input
         auto in = std::get<0>(input_tuple);
         // kidsproc
@@ -208,7 +211,7 @@ auto Lali::run() {
         /*Stage 0: KidsProc*/
         {
             tula::logging::scoped_timeit timer("kidsproc.populate_rtc_load()");
-            tula::logging::scoped_loglevel<spdlog::level::critical> _0;
+            tula::logging::scoped_loglevel<spdlog::level::off> _0;
             in.scans.data = kidsproc.populate_rtc_load(loaded_rawobs,in.scan_indices.data, scan_length, ndet);
         }
 
@@ -450,18 +453,24 @@ auto Lali::run() {
 
 template <class KidsProc, class RawObs>
 auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
+
+    static std::mutex io_mutex;
+    std::unique_lock<std::mutex> lk(io_mutex);
+    std::condition_variable cv;
+
     grppi::pipeline(tula::grppi_utils::dyn_ex(ex_name),
         [&]() -> std::optional<std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
                                           std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>> {
+
         // variable to hold current scan
         static auto scan = 0;
         // length of current outer scan
-        Eigen::Index scan_length;
+        //Eigen::Index scan_length;
         // main grppi loop
         while (scan < scanindices.cols()) {
             SPDLOG_INFO("reducing scan {}", scan);
             // length of current scan
-            scan_length = scanindices(3, scan) - scanindices(2, scan) + 1;
+            //scan_length = scanindices(3, scan) - scanindices(2, scan) + 1;
 
             // create TCData of kind RTC
             TCData<TCDataKind::RTC, Eigen::MatrixXd> rtc;
@@ -473,22 +482,32 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
             // run kidsproc to get correct units
             std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> loaded_rawobs;
             {
-                tula::logging::scoped_loglevel<spdlog::level::off> _0;
+                //std::scoped_lock lock(io_mutex);
+                tula::logging::scoped_timeit timer("kidsproc.load_rawobs()");
+                //tula::logging::scoped_loglevel<spdlog::level::off> _0;
                 auto slice = tula::container_utils::Slice<int>{
                     scanindices(2,scan), scanindices(3,scan) + 1, std::nullopt};
                 loaded_rawobs = kidsproc.load_rawobs(rawobs, slice);
+
+                //cv.wait(lk,[&]{loaded_rawobs = kidsproc.load_rawobs(rawobs, slice);
+                //return true;});
+                //cv.notify_all();
+
                 //rtc.scans.data = kidsproc.populate_rtc(rawobs, rtc.scan_indices.data, scan_length, ndet);
             }
 
             // increment scan
             scan++;
             return std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
-                              std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>> (rtc, kidsproc, loaded_rawobs);
+                              std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>> (std::move(rtc), kidsproc, std::move(loaded_rawobs));
         }
         scan = 0;
         return {};
     },
-    run());
+
+        [&](auto &in) {return in;});
+
+        //run());
 
     SPDLOG_INFO("normalizing maps");
     mb.normalize_maps(run_kernel);

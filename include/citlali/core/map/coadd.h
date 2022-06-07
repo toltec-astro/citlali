@@ -237,28 +237,36 @@ public:
     }
 
     void normalize_noise_map_errors(std::string weight_type) {
+        // loop through arrays/polarizations
         for (Eigen::Index m=0; m<map_count; m++) {
+            // vector for normalization factors
             Eigen::VectorXd nfacs;
             nfacs.setZero(nnoise);
             nfac.push_back(std::move(nfacs));
 
+            // get weight cut
             Eigen::MatrixXd wt = weight.at(m);
             double weight_cut = engine_utils::find_weight_threshold(wt,cov_cut, weight_type);
 
-            for (int k=0; k<nnoise; k++) {
+            // loop through noise maps
+            for (Eigen::Index k=0; k<nnoise; k++) {
                 double counter=0;
                 double sig_of_map=0.;
+                // loop through map pixels
                 for (Eigen::Index i=0; i<ncols; i++) {
-                      for (Eigen::Index j=0; j<nrows; j++) {
-                          if (wt(j,i) >= weight_cut) {
-                              counter++;
-                              sig_of_map += pow(noise.at(m)(j,i,k),2);
-                          }
-                      }
+                    for (Eigen::Index j=0; j<nrows; j++) {
+                        // get pixels above weight cut
+                        if (wt(j,i) >= weight_cut) {
+                            counter++;
+                            sig_of_map += pow(noise.at(m)(j,i,k),2);
+                        }
+                    }
                 }
+                // get rms
                 sig_of_map /= (counter-1);
                 sig_of_map = sqrt(sig_of_map);
 
+                // do the same for the weight map
                 double mean_sqerr = 0;
                 counter = 0.;
                 for (Eigen::Index i=0; i<ncols; i++) {
@@ -270,24 +278,31 @@ public:
                     }
                 }
                 mean_sqerr /= counter;
+                // get ratio
                 nfac.back()(k) = (1./pow(sig_of_map,2.))*mean_sqerr;
             }
         }
     }
 
     void calc_average_filtered_rms(std::string weight_type) {
+        // average filtered rms vector
         average_filtered_rms.setZero(map_count);
 
+        // loop through arrays/polarizations
         for (Eigen::Index m = 0; m<map_count; m++) {
+            // vector of rms of noise maps
             Eigen::VectorXd map_rms(nnoise);
             for (Eigen::Index k=0; k<nnoise; k++) {
                 Eigen::MatrixXd wt = weight.at(m)*nfac.at(m)(k);
+                // get weight threshold
                 double weight_cut = engine_utils::find_weight_threshold(wt,cov_cut,weight_type);
 
                 int counter = 0;
                 double rms = 0.;
+                // loop through pixels
                 for (Eigen::Index i=0; i<ncols; i++) {
                     for (Eigen::Index j=0; j<nrows; ++j) {
+                        // if weight is above cov_cut
                         if (wt(j,i) > weight_cut) {
                             counter++;
                             rms += pow(noise.at(m)(j,i,k),2);
@@ -295,23 +310,29 @@ public:
                     }
                 }
 
+                // get mean rms
                 rms /= counter;
                 map_rms(k) = sqrt(rms);
                 SPDLOG_INFO("Filtered noise rms {} from noise map {} map {}", map_rms(k), k, m);
             }
+            // get average rms
             average_filtered_rms(m) = map_rms.mean();
         }
     }
 
     void normalize_errors(std::string weight_type) {
+        // loop through arrays/polarizations
         for (Eigen::Index m=0; m<map_count; m++) {
+            // get weight cut
             Eigen::MatrixXd wt = weight.at(m);
             double weight_cut = engine_utils::find_weight_threshold(wt,cov_cut,weight_type);
 
             double mean_sqerr = 0.;
             int counter = 0;
+            // loop through pixels
             for (Eigen::Index i=0; i<ncols; i++) {
                 for (Eigen::Index j=0; j<nrows; j++) {
+                    // if weight is above cov cut
                     if (wt(j,i) >= weight_cut){
                         mean_sqerr += (1./wt(j,i));
                         counter++;
@@ -319,9 +340,12 @@ public:
                 }
             }
 
+            // get mean square error
             mean_sqerr /= counter;
+            // get normalization factor (needs average_filtered_rms)
             double nfac = (1./pow(average_filtered_rms(m),2.))*mean_sqerr;
             SPDLOG_INFO("renormalization factor = {}", nfac);
+            // renormalize weights
             weight.at(m) = weight.at(m)*nfac;
         }
     }

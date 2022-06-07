@@ -728,7 +728,7 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
         for (const auto &data_item : rawobs.kidsdata()) {
             result.push_back(load_data_item(data_item, slice));
         }
-        return result;
+        return std::move(result);
     }
 
     template <typename scanindices_t>
@@ -758,8 +758,8 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
     auto populate_rtc_load(loaded_t &loaded, scanindices_t &scanindex,
                            const int scanlength, const int n_detectors) {
         // call reduce rawobs, get the data into rtc
-        auto slice = tula::container_utils::Slice<int>{
-            scanindex(2), scanindex(3) + 1, std::nullopt};
+        //auto slice = tula::container_utils::Slice<int>{
+            //scanindex(2), scanindex(3) + 1, std::nullopt};
         // auto loaded = load_rawobs(rawobs, slice);
 
         Eigen::MatrixXd xs(scanlength, n_detectors);
@@ -1172,6 +1172,13 @@ int run(const rc_t &rc) {
                         return EXIT_FAILURE;
                     }
 
+
+                    // initialize pointing az offset
+                    todproc.engine().pointing_offsets["az"] = 0.0;
+
+                    // initialize pointing alt offset
+                    todproc.engine().pointing_offsets["alt"] = 0.0;
+
                     // load telescope file
                     todproc.engine().get_telescope(rawobs.teldata().filepath());
 
@@ -1342,10 +1349,10 @@ int run(const rc_t &rc) {
                     todproc.engine().get_calib(cal_path);
 
                     // initialize pointing az offset
-                    todproc.engine().pointing_offsets["az"] = 0;
+                    todproc.engine().pointing_offsets["az"] = 0.0;
 
                     // initialize pointing alt offset
-                    todproc.engine().pointing_offsets["alt"] = 0;
+                    todproc.engine().pointing_offsets["alt"] = 0.0;
 
                     if constexpr (std::is_same_v<todproc_t, TimeOrderedDataProc<Beammap>>) {
                         // beammap source name
@@ -1622,7 +1629,7 @@ int run(const rc_t &rc) {
                                 todproc.engine().cmb.noise_avg_hist.clear();
 
                                 // coadd histogram and psd
-                                for (Eigen::Index i = 0; i < todproc.engine().cmb.map_count;i++) {
+                                for (Eigen::Index i = 0; i < todproc.engine().cmb.map_count; i++) {
                                     SPDLOG_INFO("calculating coadded map psds and hists for map {}",i);
                                     PSD psd;
                                     psd.weight_type = todproc.engine().weighting_type;

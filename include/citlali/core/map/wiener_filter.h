@@ -101,7 +101,6 @@ public:
             mflt = cmb.kernel.at(map_num);
             uniform_weight = true;
             run_filter(cmb, map_num);
-            //cmb.kernel.at(map_num) = (denom.array() == 0).select(0, nume.array() / denom.array());
 
             for (int i=0; i<nc; i++) {
                 for (int j=0; j<nr; j++) {
@@ -119,7 +118,6 @@ public:
         mflt = cmb.signal.at(map_num);
         uniform_weight = false;
         run_filter(cmb, map_num);
-        //cmb.signal.at(map_num) = (denom.array() == 0).select(0, nume.array() / denom.array());
 
         for (int i=0; i<nc; i++) {
             for (int j=0; j<nr; j ++) {

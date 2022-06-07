@@ -369,7 +369,7 @@ auto Beammap::run_loop() {
                 {
                     tula::logging::scoped_timeit timer("subtract gaussian");
                     mb.pfit.row(0) = -mb.pfit.row(0);
-                    add_gaussian(this,ptcs.at(s).scans.data, ptcs.at(s).tel_meta_data.data);
+                    add_gaussian_2(this,ptcs.at(s).scans.data, ptcs.at(s).tel_meta_data.data);
                 }
             }
 
@@ -384,7 +384,7 @@ auto Beammap::run_loop() {
                 {
                     tula::logging::scoped_timeit timer("add gaussian()");
                     mb.pfit.row(0) = -mb.pfit.row(0);
-                    add_gaussian(this,ptcs.at(s).scans.data, ptcs.at(s).tel_meta_data.data);
+                    add_gaussian_2(this,ptcs.at(s).scans.data, ptcs.at(s).tel_meta_data.data);
                 }
             }
 
@@ -478,7 +478,7 @@ auto Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     grppi::pipeline(tula::grppi_utils::dyn_ex(ex_name),
         [&]() -> std::optional<std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
                                           std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>> {
-            // variable to hold current scan
+        // variable to hold current scan
         static auto scan = 0;
         // length of current outer scan
         Eigen::Index scan_length;
@@ -653,7 +653,7 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
         SPDLOG_INFO("writing apt table");
         // get output path from citlali_config
         auto filename = toltec_io.setup_filepath<ToltecIO::apt, ToltecIO::simu,
-                                                 ToltecIO::pointing, ToltecIO::no_prod_type,
+                                                 ToltecIO::beammap, ToltecIO::no_prod_type,
                                                  ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
 
         // check in debug mode for row/col error (seems fine)
