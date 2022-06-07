@@ -229,7 +229,6 @@ void add_gaussian_2(Engine engine, Eigen::DenseBase<Derived> &scan, tel_meta_t &
 
         SPDLOG_INFO("off_lat {}, off_lon {}", off_lat, off_lon);
 
-
         sigma_lon = engine->pixel_size*sigma_lon;
         sigma_lat = engine->pixel_size*sigma_lat;
 
@@ -253,7 +252,7 @@ void add_gaussian_2(Engine engine, Eigen::DenseBase<Derived> &scan, tel_meta_t &
         Eigen::VectorXd gauss(scan.rows());
 
         for (Eigen::Index i=0; i<scan.rows(); i++) {
-            gauss(i) = amp*exp(pow(lat(i) - off_lat, 2) * a +
+            gauss(i) = 1e6*amp*exp(pow(lat(i) - off_lat, 2) * a +
                            (lon(i) - off_lon) * (lat(i) - off_lat) * b +
                            pow(lon(i) - off_lon, 2) * c);
         }

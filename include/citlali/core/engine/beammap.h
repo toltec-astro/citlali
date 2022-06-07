@@ -369,7 +369,7 @@ auto Beammap::run_loop() {
                 {
                     tula::logging::scoped_timeit timer("subtract gaussian");
                     mb.pfit.row(0) = -mb.pfit.row(0);
-                    add_gaussian_2(this,ptcs.at(s).scans.data, ptcs.at(s).tel_meta_data.data);
+                    //add_gaussian_2(this,ptcs.at(s).scans.data, ptcs.at(s).tel_meta_data.data);
                 }
             }
 
@@ -441,7 +441,7 @@ auto Beammap::run_loop() {
             if ((converged.array() == true).all()) {
                 complete = true;
             }
-            else if (iteration > 1) {
+            else {
                 // loop through and find if any are converged
                 grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](auto d) {
                     if (converged(d) == false) {
@@ -750,7 +750,7 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
                     f_ios.at(i).hdus.back()->addKey("UNIT", cunit, "Unit of map");
 
                     // add fit parameters to hdus
-                    f_ios.at(i).hdus.back()->addKey("amp", (float)mout.pfit(0,j),"amplitude (N/A)");
+                    /*f_ios.at(i).hdus.back()->addKey("amp", (float)mout.pfit(0,j),"amplitude (N/A)");
                     f_ios.at(i).hdus.back()->addKey("amp_err", (float)mout.perror(0,j),"amplitude error (N/A)");
                     f_ios.at(i).hdus.back()->addKey("x_t", (float)mout.pfit(1,j),"az offset (arcsec)");
                     f_ios.at(i).hdus.back()->addKey("x_t_err", (float)mout.perror(1,j),"az offset error (arcsec)");
@@ -762,6 +762,7 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
                     f_ios.at(i).hdus.back()->addKey("b_fwhm_err", (float)mout.perror(4,j),"alt fwhm error (arcsec)");
                     f_ios.at(i).hdus.back()->addKey("angle", (float)mout.pfit(5,j),"position angle (radians)");
                     f_ios.at(i).hdus.back()->addKey("angle_err", (float)mout.perror(5,j),"position angle error (radians)");
+                    */
 
                     // add weight map to file
                     f_ios.at(i).add_hdu("weight_" + std::to_string(j) + "_I", mout.weight.at(j));
