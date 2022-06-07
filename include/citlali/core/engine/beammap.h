@@ -428,7 +428,7 @@ auto Beammap::run_loop() {
         return in;
     },
 
-    [&](auto in) {
+    [&](auto &in) {
         SPDLOG_INFO("iteration {} done", iteration);
         // increment iteration
         iteration++;
@@ -441,12 +441,15 @@ auto Beammap::run_loop() {
             if ((converged.array() == true).all()) {
                 complete = true;
             }
-            else {
+            else if (iteration > 1) {
                 // loop through and find if any are converged
                 grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](auto d) {
                     if (converged(d) == false) {
                         // percent difference between current and previous iteration's fit
                         auto ratio = abs((mb.pfit.col(d).array() - p0.col(d).array())/p0.col(d).array());
+                        SPDLOG_INFO("mb.pfit.col(d) {}", mb.pfit.col(d));
+                        SPDLOG_INFO("p0.col(d) {}", p0.col(d));
+
 			SPDLOG_INFO("ratio {}", ratio);
                         // if the detector is converged, set it to converged
                         if ((ratio.array() <= cutoff).all()) {

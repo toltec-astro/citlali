@@ -484,7 +484,7 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
             {
                 //std::scoped_lock lock(io_mutex);
                 tula::logging::scoped_timeit timer("kidsproc.load_rawobs()");
-                //tula::logging::scoped_loglevel<spdlog::level::off> _0;
+                tula::logging::scoped_loglevel<spdlog::level::off> _0;
                 auto slice = tula::container_utils::Slice<int>{
                     scanindices(2,scan), scanindices(3,scan) + 1, std::nullopt};
                 loaded_rawobs = kidsproc.load_rawobs(rawobs, slice);

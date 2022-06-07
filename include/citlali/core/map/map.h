@@ -200,8 +200,6 @@ map_dims_t MapBase::get_dims(tel_meta_t &tel_meta_data, C &calib_data, S &scan_i
             tel_meta_data_scan["TelLatPhys"] = tel_meta_data["TelLatPhys"].segment(si, scan_length);
             tel_meta_data_scan["TelLonPhys"] = tel_meta_data["TelLonPhys"].segment(si, scan_length);
 
-            SPDLOG_INFO("a");
-
             // loop through detectors
             grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](auto di) {
 
@@ -239,8 +237,6 @@ map_dims_t MapBase::get_dims(tel_meta_t &tel_meta_data, C &calib_data, S &scan_i
                 return 0;
             });
         }
-
-        SPDLOG_INFO("b");
 
         // get the global min and max
         map_dims(0,0)  = lat_limits.col(0).minCoeff();
