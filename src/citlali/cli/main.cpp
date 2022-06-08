@@ -879,52 +879,6 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
     }
 
     // get number of maps and grouping indices
-    /*auto get_map_count(const RawObs &rawobs) {
-        map_count_t map_count;
-        array_indices_t array_indices;
-        det_indices_t det_indices;
-
-        array_indices.push_back(std::tuple{0, 0});
-
-        Eigen::Index ai = 0;
-
-        for (Eigen::Index i = 0; i < engine().calib_data["array"].size(); i++) {
-            if (engine().calib_data["array"](i) == ai) {
-                std::get<1>(array_indices.at(ai)) = i;
-            } else {
-                array_indices.push_back(std::tuple{i, 0});
-                ai += 1;
-            }
-        }
-
-        if ((std::strcmp("science", engine().reduction_type.c_str()) == 0) ||
-            (std::strcmp("pointing", engine().reduction_type.c_str()) == 0)) {
-            det_indices = array_indices;
-
-        }
-
-        else if ((std::strcmp("beammap", engine().reduction_type.c_str()) ==
-                  0) ||
-                 (std::strcmp("wyatt", engine().reduction_type.c_str()) == 0)) {
-            for (Eigen::Index i = 0; i < engine().calib_data["array"].size();
-                 i++) {
-                det_indices.push_back(std::tuple{i, i + 1});
-            }
-        }
-
-        map_count = det_indices.size();
-        SPDLOG_INFO("map_count {}", map_count);
-
-        Eigen::Index new_map_count = 3;
-        if (engine().run_polarization) {
-            new_map_count = new_map_count*3;
-        }
-
-
-        return std::tuple{new_map_count, array_indices, det_indices};
-    }*/
-
-    // get number of maps and grouping indices
     auto get_map_count(const RawObs &rawobs) {
         map_count_t map_count = 0;
         array_indices_t array_indices;
@@ -1236,6 +1190,13 @@ int run(const rc_t &rc) {
                     todproc.get_scanindicies(rawobs);
                     SPDLOG_INFO("todproc.engine().scanindices {}", todproc.engine().scanindices);
 
+                    // get map counts for each observation
+                    SPDLOG_INFO("calculating map count");
+                    auto [mc, ai, di] = todproc.get_map_count(rawobs);
+                    map_counts.push_back(std::move(mc));
+                    array_indices.push_back(std::move(ai));
+                    det_indices.push_back(std::move(di));
+
                     // get map extents for each observation
                     SPDLOG_INFO("getting map extents");
                     {
@@ -1244,13 +1205,6 @@ int run(const rc_t &rc) {
                         map_extents.push_back(std::move(me));
                         map_coords.push_back(std::move(mcoord));
                     }
-
-                    // get map counts for each observation
-                    SPDLOG_INFO("calculating map count");
-                    auto [mc, ai, di] = todproc.get_map_count(rawobs);
-                    map_counts.push_back(std::move(mc));
-                    array_indices.push_back(std::move(ai));
-                    det_indices.push_back(std::move(di));
                 }
 
                 std::string hdname;
