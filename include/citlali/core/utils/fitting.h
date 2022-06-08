@@ -153,16 +153,12 @@ public:
                     _s(k) = _sigma(j,i);
                     xy2(k,0) = x(i);
                     xy2(k,1) = y(j);
-
-                    //yy(k) = y(j);
-                    //xx(k) = x(i);
                     k++;
                 }
             }
         }
 
         SPDLOG_INFO("_d {} _s {}", _d, _s);
-        SPDLOG_INFO("xx {} yy {}", xx, yy);
 
         // meshgrid for coordinates
         //auto xy2 = g.meshgrid(xx, yy);

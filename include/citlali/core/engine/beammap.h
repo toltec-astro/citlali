@@ -672,12 +672,26 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
         table.row(2) = calib_data["flxscale"].cast <float> ();
         table.row(3) = sensitivity.cast <float> ();
 
-        int ci = 0;
+        table.row(4) = mout.pfit.row(0).template cast <float> ();
+        table.row(5) = mout.pfit.row(0).template cast <float> ();
+        table.row(6) = mout.pfit.row(1).template cast <float> ();
+        table.row(7) = mout.pfit.row(1).template cast <float> ();
+        table.row(8) = mout.pfit.row(2).template cast <float> ();
+        table.row(9) = mout.pfit.row(2).template cast <float> ();
+        table.row(10) = mout.pfit.row(3).template cast <float> ();
+        table.row(11) = mout.pfit.row(3).template cast <float> ();
+        table.row(12) = mout.pfit.row(4).template cast <float> ();
+        table.row(13) = mout.pfit.row(4).template cast <float> ();
+        table.row(14) = mout.pfit.row(5).template cast <float> ();
+        table.row(15) = mout.pfit.row(5).template cast <float> ();
+
+
+        /*int ci = 0;
         for (int ti=0; ti < toltec_io.apt_header.size()-2; ti=ti+2) {
             table.row(ti + 4) = mout.pfit.row(ci).template cast <float> ();
             table.row(ti + 4 + 1) = mout.perror.row(ci).template cast <float> ();
             ci++;
-        }
+        }*/
 
         table.row(toltec_io.beammap_apt_header.size()-1) = converge_iter.cast <float> ();
 
