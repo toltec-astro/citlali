@@ -28,7 +28,7 @@ public:
     double flux_high = 2.0;
 
     double fwhm_low = 0;
-    double fwhm_high = 20;
+    double fwhm_high = 12;
 
     double ang_low = -pi/2;
     double ang_high = pi/2;
@@ -178,6 +178,7 @@ public:
 
         error = covariance.diagonal().cwiseSqrt();
         SPDLOG_INFO("source fit error {}", error);
+        SPDLOG_INFO("g_fit.params {}", g_fit.params);
 
         // return the parameters
         return g_fit.params;

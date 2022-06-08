@@ -835,4 +835,8 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
             }
         }
     }
+
+    f_ios.clear();
+    // close file since we're done
+    SPDLOG_INFO("closing FITS files");
 }
