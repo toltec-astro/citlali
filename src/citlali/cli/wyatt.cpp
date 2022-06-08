@@ -1373,7 +1373,6 @@ int run(const rc_t &rc) {
             NcVar LoFreq_data = fo.addVar(LoFreq_var,ncDouble,LoFreq_dim);
             LoFreq_data.putVar(&LoFreq_mean);
 
-
             auto tone_freq_var = "tone_freq";
             NcVar tone_freq_data = fo.addVar(tone_freq_var,ncDouble,ndet_dim);
             tone_freq_data.putVar(tf.data());

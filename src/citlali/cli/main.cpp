@@ -936,9 +936,42 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
 
         Eigen::Index narrays = 3;
 
+        Eigen::Index k = 0;
+        Eigen::Index pol = 0;
         for (Eigen::Index arr=0; arr<narrays; arr++) {
             if ((engine().calib_data["array"].array()==arr).any()) {
                 map_count++;
+                if (arr==0) {
+                    engine().toltec_io.name_keys[k] = "a1100";
+                    k++;
+                    engine().toltec_io.polarized_name_keys[pol] = "a1100_I";
+                    pol++;
+                    engine().toltec_io.polarized_name_keys[pol] = "a1100_Q";
+                    pol++;
+                    engine().toltec_io.polarized_name_keys[pol] = "a1100_U";
+                    pol++;
+                }
+                else if (arr==1) {
+                    engine().toltec_io.name_keys[k] = "a1400";
+                    k++;
+                    engine().toltec_io.polarized_name_keys[pol] = "a1400_I";
+                    pol++;
+                    engine().toltec_io.polarized_name_keys[pol] = "a1400_Q";
+                    pol++;
+                    engine().toltec_io.polarized_name_keys[pol] = "a1400_U";
+                    pol++;
+                }
+                else if (arr==2) {
+                    engine().toltec_io.name_keys[k] = "a2000";
+                    k++;
+                    engine().toltec_io.polarized_name_keys[pol] = "a2000_I";
+                    pol++;
+                    engine().toltec_io.polarized_name_keys[pol] = "a2000_Q";
+                    pol++;
+                    engine().toltec_io.polarized_name_keys[pol] = "a2000_U";
+                    pol++;
+                }
+
                 engine().arrays[engine().toltec_io.name_keys[arr]] = arr;
             }
         }

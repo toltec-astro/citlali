@@ -705,13 +705,16 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
         meta["nw"].push_back("units: N/A");
         meta["nw"].push_back("network index");
 
-        meta["flxscale"].push_back("units: MJy/Sr");
+        meta["flxscale"].push_back("units: " + cunit);
         meta["flxscale"].push_back("flux conversion scale");
 
-        meta["amp"].push_back("units: MJy/Sr");
+        meta["sens"].push_back("N/A");
+        meta["sens"].push_back("sensitivity");
+
+        meta["amp"].push_back("units: " + cunit);
         meta["amp"].push_back("fitted amplitude");
 
-        meta["amp_err"].push_back("units: MJy/Sr");
+        meta["amp_err"].push_back("units: " + cunit);
         meta["amp_err"].push_back("fitted amplitude error");
 
         meta["x_t"].push_back("units: arcsec");

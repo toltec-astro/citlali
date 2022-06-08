@@ -71,14 +71,14 @@ struct ToltecIO {
     };
 
     // map between index and array name (temp)
-    std::map<int, std::string> name_keys {
-        {0, "a1100"},
-        {1, "a1400"},
-        {2, "a2000"},};
+    std::map<int, std::string> name_keys {};
+        //{0, "a1100"},
+        //{1, "a1400"},
+        //{2, "a2000"},};
 
     // map between index and array name (temp)
-    std::map<int, std::string> polarized_name_keys {
-        {0, "a1100_I"},
+    std::map<int, std::string> polarized_name_keys {};
+        /*{0, "a1100_I"},
         {1, "a1100_Q"},
         {2, "a1100_U"},
         {3, "a1400_I"},
@@ -87,7 +87,7 @@ struct ToltecIO {
         {6, "a2000_I"},
         {7, "a2000_Q"},
         {8, "a2000_U"}
-    };
+    };*/
 
     // map between index and beam area
     std::map<int, double> barea_keys {};
