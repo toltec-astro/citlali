@@ -21,14 +21,14 @@ public:
 
     double flux0;
 
-    double fwhm0 = 10;
+    double fwhm0 = 2;
     double ang0 = 0;
 
     double flux_low = 0.5;
     double flux_high = 2.0;
 
     double fwhm_low = 0;
-    double fwhm_high = 12;
+    double fwhm_high = 10;
 
     double ang_low = -pi/2;
     double ang_high = pi/2;
@@ -168,7 +168,6 @@ public:
         // do the fit with ceres-solver
        auto [g_fit, covariance] = gaussfit::curvefit_ceres(g, _p, xy2, _d, _s, limits);
 
-
         // do the fit with ceres-solver
         //auto [g_fit, covariance] = gaussfit::curvefit_ceres(g, _p, xy, _data, _sigma, limits);
 
@@ -206,7 +205,7 @@ void add_gaussian(Engine engine, Eigen::DenseBase<Derived> &scan, tel_meta_t &te
         auto [lat, lon] = engine_utils::get_det_pointing(tel_meta_data, azoff, eloff, engine->map_type, engine->pointing_offsets);
 
         // get parameters for current detector
-        auto amplitude = engine->mb.pfit(0,d);
+        auto amp = engine->mb.pfit(0,d);
         auto off_lat = engine->mb.pfit(2,d);
         auto off_lon = engine->mb.pfit(1,d);
         auto sigma_lat = engine->mb.pfit(4,d);
@@ -220,7 +219,7 @@ void add_gaussian(Engine engine, Eigen::DenseBase<Derived> &scan, tel_meta_t &te
         sigma_lat = engine->pixel_size*sigma_lat;
 
         // calculate gaussian
-        auto gauss = amplitude*exp(-0.5*(pow(lat.array() - off_lat, 2) / (pow(sigma_lat,2))
+        auto gauss = amp*exp(-0.5*(pow(lat.array() - off_lat, 2) / (pow(sigma_lat,2))
                                         + pow(lon.array() - off_lon, 2) / (pow(sigma_lon,2))));
 
         // add gaussian to detector scan

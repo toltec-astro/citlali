@@ -673,17 +673,17 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
         table.row(3) = sensitivity.cast <float> ();
 
         table.row(4) = mout.pfit.row(0).template cast <float> ();
-        table.row(5) = mout.pfit.row(0).template cast <float> ();
+        table.row(5) = mout.perror.row(0).template cast <float> ();
         table.row(6) = mout.pfit.row(1).template cast <float> ();
-        table.row(7) = mout.pfit.row(1).template cast <float> ();
+        table.row(7) = mout.perror.row(1).template cast <float> ();
         table.row(8) = mout.pfit.row(2).template cast <float> ();
-        table.row(9) = mout.pfit.row(2).template cast <float> ();
+        table.row(9) = mout.perror.row(2).template cast <float> ();
         table.row(10) = mout.pfit.row(3).template cast <float> ();
-        table.row(11) = mout.pfit.row(3).template cast <float> ();
+        table.row(11) = mout.perror.row(3).template cast <float> ();
         table.row(12) = mout.pfit.row(4).template cast <float> ();
-        table.row(13) = mout.pfit.row(4).template cast <float> ();
+        table.row(13) = mout.perror.row(4).template cast <float> ();
         table.row(14) = mout.pfit.row(5).template cast <float> ();
-        table.row(15) = mout.pfit.row(5).template cast <float> ();
+        table.row(15) = mout.perror.row(5).template cast <float> ();
 
 
         /*int ci = 0;
