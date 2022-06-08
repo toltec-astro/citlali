@@ -151,6 +151,9 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         SPDLOG_INFO("calibrating flux scale for scan {}", in.index.data);
         calibrate(out.scans.data, engine->calib_data["flxscale"], map_index_vector, det_index_vector, engine->cflux);
     }
+
+    // correct tau
+    //estimate_tau(out.scans.data, out.tel_meta_data.data["TelElDes"], engine->tau);
 }
 
 } // namespace

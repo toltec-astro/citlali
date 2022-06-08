@@ -2,6 +2,8 @@
 
 #include <Eigen/Core>
 
+#include <citlali/core/utils/constants.h>
+
 namespace timestream {
 
 template <typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD>
@@ -19,19 +21,21 @@ void calibrate(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB> &flxsc
 
 // estimate opacity
 template <typename DerivedA, typename DerivedB>
-auto estimate_tau(Eigen::DenseBase<DerivedB> &scans, Eigen::DenseBase<DerivedB> &dc2tau) {
+void estimate_tau(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB> &el, double tau0) {
 
-    Eigen::MatrixXd in_temp = scans.colwise().mean();
-    Eigen::VectorXd estimated_tau(scans.cols());
+    // z is zenith angle
+    auto cz = cos(pi/2 - el.derived().array());
 
-    if (dc2tau.row(0) < 9998){
-        estimated_tau = dc2tau.row(2).array()*pow(in_temp.array(),2) + dc2tau.row(1).array()*in_temp.array() + dc2tau.row(0).array();
-    }
+    // This is David Tholen’s approximation
+    auto A = sqrt(235225.0*cz*cz + 970.0 + 1.0) - 485*cz;
 
-    else {
-        estimated_tau.setConstant(-9999.);
-    }
-    return estimated_tau;
+    // observed tau
+    auto obs_taui = A*tau0;
+
+    SPDLOG_INFO("obs_taui {}", obs_taui);
+
+    // multiply scan cols by observed tau vector
+    in = (in.derived().array().colwise()*obs_taui.array()).eval();
 }
 
-} // namespace
+} // namespace timestream

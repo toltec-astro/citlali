@@ -103,6 +103,7 @@ struct Model: DenseFunctor<double, NP, Dynamic> {
         // column major
         // [x0, y0,] [x1, y0] [x2, y0] ... [xn, y0] [x0, y1] ... [xn, yn]
         const long nx = x.size(), ny = y.size();
+        SPDLOG_INFO("nx {} ny {}",nx, ny);
         InputDataType xy(nx * ny, 2);
         // map xx [ny, nx] to the first column of xy
         Map<MatrixXd> xx(xy.data(), ny, nx);

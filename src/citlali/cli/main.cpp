@@ -724,11 +724,11 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
     auto load_rawobs(const RawObs &rawobs,
                      const tula::container_utils::Slice<int> &slice,std::string ex_name="seq") {
         std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> result;
-        /*for (const auto &data_item : rawobs.kidsdata()) {
+        for (const auto &data_item : rawobs.kidsdata()) {
             result.push_back(load_data_item(data_item, slice));
-        }*/
+        }
 
-        std::vector<int> result_in_vec, result_out_vec;
+        /*std::vector<int> result_in_vec, result_out_vec;
         result_in_vec.resize(rawobs.kidsdata().size());
         std::iota(result_in_vec.begin(), result_in_vec.end(), 0);
         result_out_vec.resize(rawobs.kidsdata().size());
@@ -736,7 +736,7 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
         grppi::map(tula::grppi_utils::dyn_ex(ex_name), result_in_vec, result_out_vec, [&](auto r) {
             result.push_back(load_data_item(rawobs.kidsdata()[r], slice));
             return 0;
-        });
+        });*/
 
         return std::move(result);
     }

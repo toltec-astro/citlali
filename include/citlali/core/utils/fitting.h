@@ -25,7 +25,7 @@ public:
     double ang0 = 0;
 
     double flux_low = 0.5;
-    double flux_high = 5.0;
+    double flux_high = 2.0;
 
     double fwhm_low = 0;
     double fwhm_high = 20;
@@ -131,11 +131,50 @@ public:
         }
 
         // copy data and sigma within bounding box region
-        auto _data = data.block(row0-bounding_box_pix, col0-bounding_box_pix, 2*bounding_box_pix+1, 2*bounding_box_pix+1);
-        auto _sigma = sigma.block(row0-bounding_box_pix, col0-bounding_box_pix, 2*bounding_box_pix+1, 2*bounding_box_pix+1);
+        Eigen::MatrixXd _data = data.block(row0-bounding_box_pix, col0-bounding_box_pix, 2*bounding_box_pix+1, 2*bounding_box_pix+1);
+        Eigen::MatrixXd _sigma = sigma.block(row0-bounding_box_pix, col0-bounding_box_pix, 2*bounding_box_pix+1, 2*bounding_box_pix+1);
+
+
+        Eigen::Index nzeros = (_sigma.array() !=0).count();
+        Eigen::MatrixXd xy2(nzeros,2);
+
+        SPDLOG_INFO("nzerios {} _sigma.size() {}",nzeros, _sigma.size());
+
+        Eigen::VectorXd _d(nzeros), _s(nzeros), xx(nzeros), yy(nzeros);
+
+        Eigen::Index k = 0;
+        Eigen::Index nr = 0;
+        Eigen::Index nc = 0;
+
+        for (Eigen::Index i=0; i<_sigma.cols(); i++) {
+            for (Eigen::Index j=0; j<_sigma.rows(); j++) {
+                if (_sigma(j,i) != 0) {
+                    _d(k) = _data(j,i);
+                    _s(k) = _sigma(j,i);
+                    xy2(k,0) = x(i);
+                    xy2(k,1) = y(j);
+
+                    //yy(k) = y(j);
+                    //xx(k) = x(i);
+                    k++;
+                }
+            }
+        }
+
+        SPDLOG_INFO("_d {} _s {}", _d, _s);
+        SPDLOG_INFO("xx {} yy {}", xx, yy);
+
+        // meshgrid for coordinates
+        //auto xy2 = g.meshgrid(xx, yy);
+
+        SPDLOG_INFO("xy {} xy2 {}", xy, xy2);
 
         // do the fit with ceres-solver
-        auto [g_fit, covariance] = gaussfit::curvefit_ceres(g, _p, xy, _data, _sigma, limits);
+       auto [g_fit, covariance] = gaussfit::curvefit_ceres(g, _p, xy2, _d, _s, limits);
+
+
+        // do the fit with ceres-solver
+        //auto [g_fit, covariance] = gaussfit::curvefit_ceres(g, _p, xy, _data, _sigma, limits);
 
         error = covariance.diagonal().cwiseSqrt();
         SPDLOG_INFO("source fit error {}", error);
@@ -230,20 +269,20 @@ void add_gaussian_2(Engine engine, Eigen::DenseBase<Derived> &scan, tel_meta_t &
         auto sigma_lon = engine->mb.pfit(3,d);
         auto rot_ang = engine->mb.pfit(5,d);
 
-        SPDLOG_INFO("amp {}, off_lat {}, off_lon {}, sigma_lat {}, sigma_lon {}, rot_ang {}", amp, off_lat, off_lon, sigma_lat, sigma_lon,
-                    rot_ang);
+        //SPDLOG_INFO("amp {}, off_lat {}, off_lon {}, sigma_lat {}, sigma_lon {}, rot_ang {}", amp, off_lat, off_lon, sigma_lat, sigma_lon,
+                    //rot_ang);
 
 
         // rescale offsets and stddev to on-sky units
         off_lat = engine->pixel_size*(off_lat - (engine->mb.nrows)/2);
         off_lon = engine->pixel_size*(off_lon - (engine->mb.ncols)/2);
 
-        SPDLOG_INFO("off_lat {}, off_lon {}", off_lat, off_lon);
+        //SPDLOG_INFO("off_lat {}, off_lon {}", off_lat, off_lon);
 
         sigma_lon = engine->pixel_size*sigma_lon;
         sigma_lat = engine->pixel_size*sigma_lat;
 
-        SPDLOG_INFO("sigma_lat {}, sigma_lon {}", sigma_lat, sigma_lon);
+        //SPDLOG_INFO("sigma_lat {}, sigma_lon {}", sigma_lat, sigma_lon);
 
 
         // calculate gaussian
