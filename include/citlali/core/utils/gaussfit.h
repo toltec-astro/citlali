@@ -157,8 +157,7 @@ struct Gaussian1D: Model<3, 1> // 3 params, 1 dimen
     };
 };
 
-struct Gaussian2D: Model<6, 2>  // 6 params, 2 dim
-{
+struct Gaussian2D: Model<6, 2> {
     constexpr static std::string_view name = "gaussian2d";
     using Model<6, 2>::Model; // model constructors;
     Gaussian2D(double amplitude=1., double xmean=0., double ymean=0., double xstddev=1., double ystddev=1., double theta=0.);
@@ -190,8 +189,7 @@ struct Gaussian2D: Model<6, 2>  // 6 params, 2 dim
     };
 };
 
-struct SymmetricGaussian2D: Model<4, 2>  // 4 params, 2 dimen
-{
+struct SymmetricGaussian2D: Model<4, 2> {
     constexpr static std::string_view name = "symmetricgaussian2d";
     using Model<4, 2>::Model; // model constructors;
     SymmetricGaussian2D(double amplitude=1., double xmean=0., double ymean=0., double stddev=1.);
@@ -220,8 +218,7 @@ struct SymmetricGaussian2D: Model<4, 2>  // 4 params, 2 dimen
 // Fitter is a functor that matches the data types of the Model.
 // Fitter relies on the eval() method
 template <typename _Model>
-struct Fitter: _Model::_Base
-{
+struct Fitter: _Model::_Base {
     using _Base = typename _Model::_Base;
     using Model = _Model;
 
@@ -252,21 +249,11 @@ using ceres::Covariance;
 
 // CeresAutoDiff Fitter provides concrete method for least-square minimization using ceres
 template <typename Model>
-struct CeresAutoDiffFitter: Fitter<Model>
-{
+struct CeresAutoDiffFitter: Fitter<Model> {
     using _Base = Fitter<Model>;
     using _Base::_Base;  // the base constructors
 
     template <typename T>
-    /*
-    bool operator()(const T* const params, T* residual) const
-    {
-        Map<const typename Model::InputType> p(params, this->inputs());
-        Map<typename Model::ValueType> r(residual, this->values());
-        r = ((this->ydata->array() - this->model()->eval(p, *this->xdata).array()) / this->sigma->array()).eval();
-        return true;
-    }
-    */
     bool operator()(const T* const p, T* r) const {
         auto cost2 = cos(p[5]) * cos(p[5]);
         auto sint2 = sin(p[5]) * sin(p[5]);
@@ -302,30 +289,20 @@ struct CeresAutoDiffFitter: Fitter<Model>
         return true;
     }
 
-    //int df(const InputType &x, JacobianType& fjac) { }
-    // should be defined in derived classes if fitting using LevMar algorithm
     std::shared_ptr<Problem> createProblem(double* params) {
         std::shared_ptr<Problem> problem = std::make_shared<Problem>();
         problem->AddParameterBlock(params, this->model()->params.size());
-        /*for (int i = 0; i < this->model()->params.size(); ++i) {
-            typename Model::Parameter p = this->model()->param_settings.at(i);
-            if (p.fixed) problem->SetParameterBlockConstant(params);
-            if (p.bounded) {
-                problem->SetParameterLowerBound(params, i, p.lower);
-                problem->SetParameterUpperBound(params, i, p.upper);
-            }
-        }*/
         return problem;
     }
 };
 
 template <typename Model, typename Derived>
 std::tuple<Model, Eigen::MatrixXd> curvefit_ceres(
-                    const Model& model,  // y = f(x)
-                    const typename Model::InputType& p,         // initial guess of model parameters
-                    const typename Model::InputDataType& xdata,     // x data values, independant variable
-                    const typename Model::DataType& ydata,     // y data values, measurements
-                    const typename Model::DataType& sigma,      // uncertainty
+                    const Model &model,
+                    const typename Model::InputType &p,         // initial guess of model parameters
+                    const typename Model::InputDataType &xdata,     // x data values, independant variable
+                    const typename Model::DataType &ydata,     // y data values, measurements
+                    const typename Model::DataType &sigma,      // uncertainty
                     const Eigen::DenseBase<Derived> &limits
                     ) {
 
@@ -334,6 +311,11 @@ std::tuple<Model, Eigen::MatrixXd> curvefit_ceres(
     Map<const typename Model::InputDataType> _x(xdata.data(), xdata.rows(), xdata.cols());
     Map<const typename Fitter::ValueType> _y(ydata.data(), ydata.size());
     Map<const typename Fitter::ValueType> _s(sigma.data(), sigma.size());
+
+    SPDLOG_INFO("_x {}", _x);
+    SPDLOG_INFO("_y {}", _y);
+    SPDLOG_INFO("_s {}", _s);
+
     fitter->xdata = &_x;
     fitter->ydata = &_y;
     fitter->sigma = &_s;

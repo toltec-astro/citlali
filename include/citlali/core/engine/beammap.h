@@ -82,7 +82,7 @@ void Beammap::setup() {
     // resize the initial fit vector
     p0.resize(nparams, ndet);
     // set initial fit to nan to pass first cutoff test
-    p0.setZero();
+    p0.setConstant(std::nan(""));
     // resize the initial fit error vector
     perror0.setZero(nparams, ndet);
     // resize the current fit vector
@@ -133,7 +133,6 @@ void Beammap::setup() {
 
     // create obsnum directory
     toltec_io.setup_output_directory(filepath, dname);
-
 
     // create empty FITS files at start
     for (Eigen::Index i=0; i<arrays.size(); i++) {
@@ -369,7 +368,7 @@ auto Beammap::run_loop() {
                 {
                     tula::logging::scoped_timeit timer("subtract gaussian");
                     mb.pfit.row(0) = -mb.pfit.row(0);
-                    //add_gaussian_2(this,ptcs.at(s).scans.data, ptcs.at(s).tel_meta_data.data);
+                    add_gaussian_2(this,ptcs.at(s).scans.data, ptcs.at(s).tel_meta_data.data);
                 }
             }
 
@@ -406,7 +405,7 @@ auto Beammap::run_loop() {
             return 0;});
 
         SPDLOG_INFO("normalizing maps");
-        mb.normalize_maps(run_kernel);
+        mb.normalize_maps(run_kernel,ex_name);
 
         SPDLOG_INFO("fitting maps");
         grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](auto d) {
@@ -560,6 +559,7 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
             Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1> map_index_vector = ptcs.back().map_index_vector.data;
 
             // derotate x_t and y_t and calculate sensitivity for detectors
+            SPDLOG_INFO("derotating offsets and calculating sensitivity");
             grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](int d) {
 
                 Eigen::Index mi = map_index_vector(d);
@@ -674,8 +674,8 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
 
         int ci = 0;
         for (int ti=0; ti < toltec_io.apt_header.size()-2; ti=ti+2) {
-            table.row(ti+4) = mout.pfit.row(ci).template cast <float> ();
-            table.row(ti+4 + 1) = mout.perror.row(ci).template cast <float> ();
+            table.row(ti + 4) = mout.pfit.row(ci).template cast <float> ();
+            table.row(ti + 4 + 1) = mout.perror.row(ci).template cast <float> ();
             ci++;
         }
 
@@ -782,22 +782,6 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
                 f_ios.at(i).template add_wcs<UnitsType::arcsec>(hdu,map_type,mout.nrows,mout.ncols,pixel_size,
                                                                 source_center,toltec_io.array_freqs[i],
                                                                 polarization.stokes_params,hdu_name);
-
-                // add fit parameters to hdus
-                /*hdu->addKey("amp", (float)mout.pfit(0,std::get<0>(array_indices[i]) + k),"amplitude (N/A)");
-                hdu->addKey("amp_err", (float)mout.perror(0,std::get<0>(array_indices[i]) + k),"amplitude error (N/A)");
-                hdu->addKey("x_t", (float)mout.pfit(1,std::get<0>(array_indices[i]) + k),"az offset (arcsec)");
-                hdu->addKey("x_t_err", (float)mout.perror(1,std::get<0>(array_indices[i]) + k),"az offset error (arcsec)");
-                hdu->addKey("y_t", (float)mout.pfit(2,std::get<0>(array_indices[i]) + k),"alt offset (arcsec)");
-                hdu->addKey("y_t_err", (float)mout.perror(2,std::get<0>(array_indices[i]) + k),"alt offset error (arcsec)");
-                hdu->addKey("a_fwhm", (float)mout.pfit(3,std::get<0>(array_indices[i]) + k),"az fwhm (arcsec)");
-                hdu->addKey("a_fwhm_err", (float)mout.perror(3,std::get<0>(array_indices[i]) + k),"az fwhm error (arcsec)");
-                hdu->addKey("b_fwhm", (float)mout.pfit(4,std::get<0>(array_indices[i]) + k),"alt fwhm (arcsec)");
-                hdu->addKey("b_fwhm_err", (float)mout.perror(4,std::get<0>(array_indices[i]) + k),"alt fwhm error (arcsec)");
-                hdu->addKey("angle", (float)mout.pfit(5,std::get<0>(array_indices[i]) + k),"position angle (radians)");
-                hdu->addKey("angle_err", (float)mout.perror(5,std::get<0>(array_indices[i]) + k),"position angle error (radians)");
-
-                k++;*/
             }
 
             // loop through default TolTEC fits header keys and add to primary header
@@ -819,6 +803,15 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
             f_ios.at(i).pfits->pHDU().addKey("OBJECT", (std::string)source_name, "");
             // exp time
             f_ios.at(i).pfits->pHDU().addKey("t_exptime", tel_header_data["t_exp"], "Exposure Time (sec)");
+            // add source ra
+            f_ios.at(i).pfits->pHDU().addKey("s_ra", source_center["Ra"][0], "Source RA (radians)");
+            // add source dec
+            f_ios.at(i).pfits->pHDU().addKey("s_dec", source_center["Dec"][0], "Source Dec (radians)");
+            // add map tangent point ra
+            f_ios.at(i).pfits->pHDU().addKey("tan_ra", source_center["Ra"][0], "Map Tangent Point RA (radians)");
+            // add map tangent point dec
+            f_ios.at(i).pfits->pHDU().addKey("tan_dec", source_center["Dec"][0], "Map Tangent Point Dec (radians)");
+
             // add conversion
             if (cunit == "MJy/Sr") {
                 f_ios.at(i).pfits->pHDU().addKey("to_mJy/beam", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");

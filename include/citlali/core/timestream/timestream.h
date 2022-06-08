@@ -18,6 +18,7 @@ namespace wcs = kids::wcs;
 TULA_BITFLAG(TCDataKind, int,        0xFFFF,
          RTC                     = 1 << 0,
          PTC                     = 1 << 1,
+         WTC                     = 1 << 2,
          Any                     = RTC | PTC
          );
 // clang-format on
@@ -157,6 +158,27 @@ struct TCData<TCDataKind::PTC, RefType>
 
     Base::data_t<Eigen::MatrixXd> weights;
     Base::data_t<Eigen::MatrixXd> kernel_scans;
+    Base::data_t<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> flags;
+
+    Base::data_t<Eigen::Matrix<Eigen::Index,Eigen::Dynamic,1>> scan_indices;
+    Base::data_t<Eigen::Index> index;
+    Base::data_t<std::map<std::string, Eigen::VectorXd>> tel_meta_data;
+    Base::data_t<Eigen::VectorXd> hwp;
+
+    Base::data_t<Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1>> det_index_vector;
+    Base::data_t<Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1>> map_index_vector;
+
+};
+
+template <typename RefType>
+struct TCData<TCDataKind::WTC, RefType>
+    : TimeStream<TCData<TCDataKind::WTC>> {
+    using Base = TimeStream<TCData<TCDataKind::WTC>>;
+    using data_t = std::conditional_t<tula::eigen_utils::is_plain_v<RefType>,Base::data_t<RefType>, Base::dataref_t<RefType>>;
+    data_t scans;
+
+    Base::data_t<Eigen::MatrixXd> xscans;
+    Base::data_t<Eigen::MatrixXd> rscans;
     Base::data_t<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> flags;
 
     Base::data_t<Eigen::Matrix<Eigen::Index,Eigen::Dynamic,1>> scan_indices;

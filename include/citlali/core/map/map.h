@@ -99,7 +99,7 @@ public:
         }
     }
 
-    void normalize_maps(const bool run_kernel) {
+    void normalize_maps(const bool run_kernel, std::string ex_name) {
         // normalize maps by weight map
         /*for (Eigen::Index mc = 0; mc < map_count; mc++) {
                 signal.at(mc) = (weight.at(mc).array() == 0).select(0, signal.at(mc).array() / weight.at(mc).array());
@@ -108,7 +108,14 @@ public:
             }
         }*/
 
-        for (Eigen::Index mc=0; mc<map_count; mc++) {
+        std::vector<int> det_in_vec, det_out_vec;
+
+        det_in_vec.resize(map_count);
+        std::iota(det_in_vec.begin(), det_in_vec.end(), 0);
+        det_out_vec.resize(map_count);
+
+        //for (Eigen::Index mc=0; mc<map_count; mc++) {
+        grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](int mc) {
             for (Eigen::Index i=0; i<nrows; i++) {
                 for (Eigen::Index j=0; j<ncols; j++) {
                     auto pixel_weight = weight.at(mc)(i,j);
@@ -129,9 +136,9 @@ public:
                     }
                 }
             }
-        }
+            return 0;
+        });
     }
-
 };
 
 class MapBase: public WCS {

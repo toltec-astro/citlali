@@ -174,14 +174,6 @@ void Lali::setup() {
             }
         }
     }
-
-    mb.pfit.resize(6,ndet);
-    mb.pfit.row(0).setConstant(1e3);
-    mb.pfit.row(1).setConstant(mb.nrows/2+20);
-    mb.pfit.row(2).setConstant(mb.ncols/2-20);
-    mb.pfit.row(3).setConstant(5);
-    mb.pfit.row(4).setConstant(5);
-    mb.pfit.row(5).setConstant(0);
 }
 
 auto Lali::run() {
@@ -344,10 +336,6 @@ auto Lali::run() {
                 tula::logging::scoped_timeit timer("ptcproc.run()");
                 ptcproc.run(out, out, this, rc);
             }
-
-            tula::logging::scoped_timeit timer("add gaussian()");
-
-            add_gaussian_2(this,out.scans.data, out.tel_meta_data.data);
 
             // timestream output (seq only)
             if (run_tod_output) {

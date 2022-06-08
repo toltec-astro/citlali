@@ -24,11 +24,11 @@ public:
     double fwhm0 = 10;
     double ang0 = 0;
 
-    double flux_low = 0.1;
-    double flux_high = 10.0;
+    double flux_low = 0.5;
+    double flux_high = 5.0;
 
     double fwhm_low = 0;
-    double fwhm_high = 30;
+    double fwhm_high = 20;
 
     double ang_low = -pi/2;
     double ang_high = pi/2;
@@ -117,7 +117,18 @@ public:
         // calculate sigma matrix
         Eigen::MatrixXd sigma = weight;
         // set 1/weight=0 to 0
-        sigma = (weight.derived().array() !=0).select(1./sqrt(weight.derived().array()),0.);
+        //sigma = (weight.derived().array() !=0).select(1./sqrt(weight.derived().array()),0.);
+
+        for (Eigen::Index nr=0; nr<weight.rows(); nr++) {
+            for (Eigen::Index nc=0; nc<weight.cols(); nc++) {
+                if (weight(nr,nc)!=0) {
+                    sigma(nr,nc) = 1./sqrt(weight(nr,nc));
+                }
+                else {
+                    sigma(nr,nc) = 0;
+                }
+            }
+        }
 
         // copy data and sigma within bounding box region
         auto _data = data.block(row0-bounding_box_pix, col0-bounding_box_pix, 2*bounding_box_pix+1, 2*bounding_box_pix+1);
@@ -160,8 +171,8 @@ void add_gaussian(Engine engine, Eigen::DenseBase<Derived> &scan, tel_meta_t &te
 
         // get parameters for current detector
         auto amplitude = engine->mb.pfit(0,d);
-        auto off_lat = -engine->mb.pfit(2,d);
-        auto off_lon = -engine->mb.pfit(1,d);
+        auto off_lat = engine->mb.pfit(2,d);
+        auto off_lon = engine->mb.pfit(1,d);
         auto sigma_lat = engine->mb.pfit(4,d);
         auto sigma_lon = engine->mb.pfit(3,d);
 
@@ -213,8 +224,8 @@ void add_gaussian_2(Engine engine, Eigen::DenseBase<Derived> &scan, tel_meta_t &
 
         // get parameters for current detector
         auto amp = engine->mb.pfit(0,d);
-        auto off_lat = -engine->mb.pfit(2,d);
-        auto off_lon = -engine->mb.pfit(1,d);
+        auto off_lat = engine->mb.pfit(2,d);
+        auto off_lon = engine->mb.pfit(1,d);
         auto sigma_lat = engine->mb.pfit(4,d);
         auto sigma_lon = engine->mb.pfit(3,d);
         auto rot_ang = engine->mb.pfit(5,d);
@@ -252,7 +263,7 @@ void add_gaussian_2(Engine engine, Eigen::DenseBase<Derived> &scan, tel_meta_t &
         Eigen::VectorXd gauss(scan.rows());
 
         for (Eigen::Index i=0; i<scan.rows(); i++) {
-            gauss(i) = 1e6*amp*exp(pow(lat(i) - off_lat, 2) * a +
+            gauss(i) = amp*exp(pow(lat(i) - off_lat, 2) * a +
                            (lon(i) - off_lon) * (lat(i) - off_lat) * b +
                            pow(lon(i) - off_lon, 2) * c);
         }
