@@ -55,8 +55,9 @@ public:
     void get_calib(const std::string &filepath) {
         // read in the apt table
         auto [table, header] = get_matrix_from_ecsv(filepath);
+        SPDLOG_INFO("table {}",table);
         // set the number of detectors
-        ndet = table.rows();
+        ndet = table.rows() - 1;
 
         // loop through the apt table header keys and populate calib_data
         for (auto const& pair: header_keys) {

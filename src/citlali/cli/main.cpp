@@ -898,6 +898,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                 if (arr==0) {
                     engine().toltec_io.name_keys[k] = "a1100";
                     k++;
+                    engine().arrays[engine().toltec_io.name_keys[arr]] = arr;
                     engine().toltec_io.polarized_name_keys[pol] = "a1100_I";
                     pol++;
                     engine().toltec_io.polarized_name_keys[pol] = "a1100_Q";
@@ -908,6 +909,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                 else if (arr==1) {
                     engine().toltec_io.name_keys[k] = "a1400";
                     k++;
+                    engine().arrays[engine().toltec_io.name_keys[arr]] = arr;
                     engine().toltec_io.polarized_name_keys[pol] = "a1400_I";
                     pol++;
                     engine().toltec_io.polarized_name_keys[pol] = "a1400_Q";
@@ -918,6 +920,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                 else if (arr==2) {
                     engine().toltec_io.name_keys[k] = "a2000";
                     k++;
+                    engine().arrays[engine().toltec_io.name_keys[arr]] = arr;
                     engine().toltec_io.polarized_name_keys[pol] = "a2000_I";
                     pol++;
                     engine().toltec_io.polarized_name_keys[pol] = "a2000_Q";
@@ -925,8 +928,6 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                     engine().toltec_io.polarized_name_keys[pol] = "a2000_U";
                     pol++;
                 }
-
-                engine().arrays[engine().toltec_io.name_keys[arr]] = arr;
             }
         }
 
@@ -1169,7 +1170,6 @@ int run(const rc_t &rc) {
                         return EXIT_FAILURE;
                     }
 
-
                     // initialize pointing az offset
                     todproc.engine().pointing_offsets["az"] = 0.0;
 
@@ -1367,12 +1367,18 @@ int run(const rc_t &rc) {
                             rawobs.photometry_calib_info().config().get_node(std::tuple{"beammap_source","fluxes"}).size();
 
                         for (Eigen::Index nf=0; nf<nfluxes; nf++) {
-                            // fluxes
-                            todproc.engine().beammap_fluxes[todproc.engine().toltec_io.name_keys[nf]] =
-                                rawobs.photometry_calib_info().config().get_typed<double>(std::tuple{"beammap_source","fluxes",i,"value_mJy"});
-                            // flux uncertainties
-                            todproc.engine().beammap_uncer[todproc.engine().toltec_io.name_keys[nf]] =
-                                rawobs.photometry_calib_info().config().get_typed<double>(std::tuple{"beammap_source","fluxes",i,"uncertainty_mJy"});
+                            auto fname = rawobs.photometry_calib_info().config().get_str(std::tuple{"beammap_source","fluxes",nf,"array_name"});
+
+                            for (Eigen::Index nk=0; nk<todproc.engine().toltec_io.name_keys.size(); nk++) {
+                                if (todproc.engine().toltec_io.name_keys[nk] == fname) {
+                                    // fluxes
+                                    todproc.engine().beammap_fluxes[todproc.engine().toltec_io.name_keys[nk]] =
+                                        rawobs.photometry_calib_info().config().get_typed<double>(std::tuple{"beammap_source","fluxes",nf,"value_mJy"});
+                                    // flux uncertainties
+                                    todproc.engine().beammap_uncer[todproc.engine().toltec_io.name_keys[nk]] =
+                                        rawobs.photometry_calib_info().config().get_typed<double>(std::tuple{"beammap_source","fluxes",nf,"uncertainty_mJy"});
+                                }
+                            }
                         }
 
                         // extinction model name
@@ -1423,6 +1429,9 @@ int run(const rc_t &rc) {
                     todproc.engine().array_indices = array_indices.at(i);
                     todproc.engine().det_indices = det_indices.at(i);
 
+                    SPDLOG_INFO("todproc.engine().toltec_io.name_keys {}",todproc.engine().toltec_io.name_keys);
+                    SPDLOG_INFO("std::get<0>(todproc.engine().array_indices.at(0) {}",std::get<0>(todproc.engine().array_indices.at(0)));
+
                     for (Eigen::Index mc = 0; mc<todproc.engine().toltec_io.name_keys.size(); mc++) {
                         auto a_fwhm = todproc.engine().calib_data["a_fwhm"].segment(std::get<0>(todproc.engine().array_indices.at(mc)),
                                                                                     std::get<1>(todproc.engine().array_indices.at(mc)));
@@ -1432,6 +1441,8 @@ int run(const rc_t &rc) {
                         todproc.engine().toltec_io.bfwhm_keys[mc] = ((a_fwhm + b_fwhm)/2).mean();
                         todproc.engine().toltec_io.barea_keys[mc] = 2.*pi*pow(todproc.engine().toltec_io.bfwhm_keys[mc]/STD_TO_FWHM,2);
                     }
+
+                    SPDLOG_INFO("a");
 
                     // flux conversion
                     todproc.engine().cflux.resize(map_counts[i]);
@@ -1465,6 +1476,8 @@ int run(const rc_t &rc) {
                             }
                         }
                     }
+
+                    SPDLOG_INFO("b");
 
                     // do general setup that is only run once per rawobs before grppi pipeline
                     {
