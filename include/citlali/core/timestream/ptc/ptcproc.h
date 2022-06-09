@@ -34,13 +34,24 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
              out.index.data = in.index.data;
          }
 
+         std::vector<std::tuple<Eigen::Index, Eigen::Index>> indices;
+
+         if (engine->cleaner.grouping == "array_name") {
+             indices = engine->array_indices;
+
+         }
+
+         else if (engine->cleaner.grouping == "nw") {
+             indices = engine->nw_indices;
+         }
+
          // loop through the arrays
-         for (Eigen::Index mi=0; mi<engine->arrays.size(); mi++) {
+         for (Eigen::Index mi=0; mi<indices.size(); mi++) {
 
              // current detector
-             auto det = std::get<0>(engine->array_indices.at(mi));
+             auto det = std::get<0>(indices.at(mi));
              // size of block for each grouping
-             auto ndet = std::get<1>(engine->array_indices.at(mi)) - std::get<0>(engine->array_indices.at(mi)) + 1;
+             auto ndet = std::get<1>(indices.at(mi)) - std::get<0>(indices.at(mi)) + 1;
 
              // get the block of in scans that corresponds to the current array
              Eigen::Ref<Eigen::MatrixXd> in_scans_block = in.scans.data.block(0,det,in.scans.data.rows(),ndet);

@@ -35,10 +35,10 @@ public:
     using array_indices_t = std::vector<std::tuple<Eigen::Index, Eigen::Index>>;
     using det_indices_t = std::vector<std::tuple<Eigen::Index, Eigen::Index>>;
 
-    // indices of the arrays
-    array_indices_t array_indices;
-    // vector for arrays
-    std::map<std::string, Eigen::Index> arrays;
+    // indices of the arrays and networks
+    array_indices_t array_indices, nw_indices;
+    // vector for arrays and networks
+    std::map<std::string, Eigen::Index> arrays, nws;
     // indices of the detectors
     det_indices_t det_indices;
 
@@ -50,6 +50,7 @@ public:
     Eigen::VectorXd responsivity;
     Eigen::VectorXd sensitivity;
 
+    // vector for half-wave plate
     Eigen::VectorXd hwp;
 
     void get_calib(const std::string &filepath) {
@@ -57,7 +58,7 @@ public:
         auto [table, header] = get_matrix_from_ecsv(filepath);
         SPDLOG_INFO("table {}",table);
         // set the number of detectors
-        ndet = table.rows() - 1;
+        ndet = table.rows();
 
         // loop through the apt table header keys and populate calib_data
         for (auto const& pair: header_keys) {

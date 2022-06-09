@@ -880,16 +880,19 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
 
     // get number of maps and grouping indices
     auto get_map_count(const RawObs &rawobs) {
+        // total number of maps for each map type
         map_count_t map_count = 0;
-        array_indices_t array_indices;
+        // indices of arrays and networks
+        array_indices_t array_indices, nw_indices;
+        // indices of detectors
         det_indices_t det_indices;
 
-        if (std::strcmp("beammap", engine().reduction_type.c_str()) == 0) {
-            map_count = engine().ndet;
-        }
-
+        // total possible number of arrays
         Eigen::Index narrays = 3;
 
+        // loop through all possible arrays, see if array number is in apt
+        // table and add to name keys and polarized name keys.
+        // increment map count.
         Eigen::Index k = 0;
         Eigen::Index pol = 0;
         for (Eigen::Index arr=0; arr<narrays; arr++) {
@@ -899,6 +902,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                     engine().toltec_io.name_keys[k] = "a1100";
                     k++;
                     engine().arrays[engine().toltec_io.name_keys[arr]] = arr;
+
                     engine().toltec_io.polarized_name_keys[pol] = "a1100_I";
                     pol++;
                     engine().toltec_io.polarized_name_keys[pol] = "a1100_Q";
@@ -910,6 +914,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                     engine().toltec_io.name_keys[k] = "a1400";
                     k++;
                     engine().arrays[engine().toltec_io.name_keys[arr]] = arr;
+
                     engine().toltec_io.polarized_name_keys[pol] = "a1400_I";
                     pol++;
                     engine().toltec_io.polarized_name_keys[pol] = "a1400_Q";
@@ -921,6 +926,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                     engine().toltec_io.name_keys[k] = "a2000";
                     k++;
                     engine().arrays[engine().toltec_io.name_keys[arr]] = arr;
+
                     engine().toltec_io.polarized_name_keys[pol] = "a2000_I";
                     pol++;
                     engine().toltec_io.polarized_name_keys[pol] = "a2000_Q";
@@ -931,16 +937,39 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
             }
         }
 
+        // if in beammap mode, the total number of maps is the number of dets
+        if (std::strcmp("beammap", engine().reduction_type.c_str()) == 0) {
+            map_count = engine().ndet;
+        }
+
+        // set up array indices
         array_indices.push_back(std::tuple{0, 0});
 
         Eigen::Index ai = 0;
 
+        // loop through apt table arrays, get highest index for current array
         for (Eigen::Index i = 0; i < engine().calib_data["array"].size(); i++) {
             if (engine().calib_data["array"](i) == ai) {
                 std::get<1>(array_indices.at(ai)) = i;
             }
             else {
                 array_indices.push_back(std::tuple{i, 0});
+                ai += 1;
+            }
+        }
+
+        // set up network indices
+        nw_indices.push_back(std::tuple{0, 0});
+
+        ai = 0;
+
+        // loop through apt table networks, get highest index for current networks
+        for (Eigen::Index i = 0; i < engine().calib_data["nw"].size(); i++) {
+            if (engine().calib_data["nw"](i) == ai) {
+                std::get<1>(nw_indices.at(ai)) = i;
+            }
+            else {
+                nw_indices.push_back(std::tuple{i, 0});
                 ai += 1;
             }
         }
@@ -955,9 +984,10 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
 
         SPDLOG_INFO("map count {}", map_count);
         SPDLOG_INFO("array_indices {}", array_indices);
+        SPDLOG_INFO("nw_indices {}", nw_indices);
         SPDLOG_INFO("det_indices {}", det_indices);
 
-        return std::tuple{map_count, array_indices, det_indices};
+        return std::tuple{map_count, array_indices, nw_indices, det_indices};
     }
 
     // get scan indices
@@ -1139,6 +1169,7 @@ int run(const rc_t &rc) {
                 std::vector<map_coord_t> map_coords{};
                 std::vector<map_count_t> map_counts{};
                 std::vector<array_indices_t> array_indices{};
+                std::vector<array_indices_t> nw_indices{};
                 std::vector<array_indices_t> det_indices{};
 
                 // set up the coadded map buffer (CMB) by reading in each
@@ -1192,9 +1223,10 @@ int run(const rc_t &rc) {
 
                     // get map counts for each observation
                     SPDLOG_INFO("calculating map count");
-                    auto [mc, ai, di] = todproc.get_map_count(rawobs);
+                    auto [mc, ai, ni, di] = todproc.get_map_count(rawobs);
                     map_counts.push_back(std::move(mc));
                     array_indices.push_back(std::move(ai));
+                    nw_indices.push_back(std::move(ni));
                     det_indices.push_back(std::move(di));
 
                     // get map extents for each observation
@@ -1427,6 +1459,7 @@ int run(const rc_t &rc) {
 
                     // copy array and detector indices into engine
                     todproc.engine().array_indices = array_indices.at(i);
+                    todproc.engine().nw_indices = nw_indices.at(i);
                     todproc.engine().det_indices = det_indices.at(i);
 
                     SPDLOG_INFO("todproc.engine().toltec_io.name_keys {}",todproc.engine().toltec_io.name_keys);
