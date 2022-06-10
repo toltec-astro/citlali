@@ -20,7 +20,6 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 
     // run timestream cleaning
      if (run_clean) {
-
          // need this if out != in
          if (out.scans.data.isZero(0)) {
              out.scans.data.resize(in.scans.data.rows(), in.scans.data.cols());
@@ -46,8 +45,8 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
          }
 
          // loop through the arrays
+         SPDLOG_INFO("removing eigenvalues from scan {}", in.index.data);
          for (Eigen::Index mi=0; mi<indices.size(); mi++) {
-
              // current detector
              auto det = std::get<0>(indices.at(mi));
              // size of block for each grouping
@@ -75,23 +74,20 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 out_scans(out_scans_block.data(), out_scans_block.rows(), out_scans_block.cols(),
                          Eigen::OuterStride<>(out_scans_block.outerStride()));
 
-             // calculate the eigenvalues from the signal timestream
-             SPDLOG_INFO("calculating eigenvalues for scan {} for group {}", in.index.data, mi);
-
              std::tuple<Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd> clean_out;
 
              // remove eigenvalues from signal timestream
-             SPDLOG_INFO("removing eigenvalues from scan {} for map {}", in.index.data, mi);
+             //SPDLOG_INFO("removing eigenvalues from scan {} for array {}", in.index.data, mi);
              if (engine->cleaner.cut_std > 0) {
                 clean_out = engine->cleaner.template calcEigs<EigenBackend>(in_scans, in_flags);
-                SPDLOG_INFO("calculated eigenvalues for scan {} for group {}: {}",in.index.data, mi, std::get<1>(clean_out));
+                //SPDLOG_INFO("calculated eigenvalues for scan {} for group {}: {}",in.index.data, mi, std::get<1>(clean_out));
                 engine->cleaner.template removeEigs<EigenBackend, DataType>(std::get<0>(clean_out), out_scans,
                         std::get<1>(clean_out), std::get<2>(clean_out));
              }
 
              else {
                  clean_out = engine->cleaner.template calcEigs<SpectraBackend>(in_scans, in_flags);
-                 SPDLOG_INFO("calculated eigenvalues for scan {} for group {}: {}", in.index.data, mi, std::get<1>(clean_out));
+                 //SPDLOG_INFO("calculated eigenvalues for scan {} for group {}: {}", in.index.data, mi, std::get<1>(clean_out));
                  engine->cleaner.template removeEigs<SpectraBackend, DataType>(std::get<0>(clean_out), out_scans,
                          std::get<1>(clean_out), std::get<2>(clean_out));
              }
@@ -117,7 +113,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                              Eigen::OuterStride<>(out_kernel_scans_block.outerStride()));
 
                  // remove kernel scan eigenvalues
-                 SPDLOG_INFO("removing kernel eigenvalues from scan {} for group {}", in.index.data, mi);
+                 //SPDLOG_INFO("removing kernel eigenvalues from scan {} for group {}", in.index.data, mi);
                  if (engine->cleaner.cut_std > 0) {
                     engine->cleaner.template removeEigs<EigenBackend, KernelType>(in_kernel_scans,
                             out_kernel_scans, std::get<1>(clean_out), std::get<2>(clean_out));

@@ -899,7 +899,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
             if ((engine().calib_data["array"].array()==arr).any()) {
                 map_count++;
                 if (arr==0) {
-                    engine().toltec_io.name_keys[k] = "a1100";
+                    engine().toltec_io.name_keys[arr] = "a1100";
                     engine().toltec_io.array_freqs[k] = A1100_FREQ;
                     k++;
                     engine().arrays[engine().toltec_io.name_keys[arr]] = arr;
@@ -913,7 +913,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                 }
 
                 else if (arr==1) {
-                    engine().toltec_io.name_keys[k] = "a1400";
+                    engine().toltec_io.name_keys[arr] = "a1400";
                     engine().toltec_io.array_freqs[k] = A1400_FREQ;
                     k++;
                     engine().arrays[engine().toltec_io.name_keys[arr]] = arr;
@@ -927,7 +927,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                 }
 
                 else if (arr==2) {
-                    engine().toltec_io.name_keys[k] = "a2000";
+                    engine().toltec_io.name_keys[arr] = "a2000";
                     engine().toltec_io.array_freqs[k] = A2000_FREQ;
                     k++;
                     engine().arrays[engine().toltec_io.name_keys[arr]] = arr;
@@ -941,6 +941,8 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                 }
             }
         }
+
+        SPDLOG_INFO("engine().toltec_io.name_key {}",engine().toltec_io.name_keys);
 
         // if in beammap mode, the total number of maps is the number of dets
         if (std::strcmp("beammap", engine().reduction_type.c_str()) == 0) {
@@ -1308,14 +1310,15 @@ int run(const rc_t &rc) {
 
                     // create files for each member of the array_indices group
                     // uses filepath from last config read
-                    for (Eigen::Index i=0; i<todproc.engine().arrays.size(); i++) {
+                    Eigen::Index i = 0;
+                    for (auto const& arr: todproc.engine().toltec_io.name_keys) {
                         std::string coadd_filename;
                         // generate filename for coadded maps
                         coadd_filename = todproc.engine().toltec_io.template setup_filepath<ToltecIO::toltec,
                                                                                             ToltecIO::simu,
                                                                                             ToltecIO::no_obs_type,
                                                                                             ToltecIO::raw,
-                            ToltecIO::obsnum_false>(todproc.engine().filepath + rdname, todproc.engine().obsnum, i);
+                            ToltecIO::obsnum_false>(todproc.engine().filepath + rdname, todproc.engine().obsnum, arr.first);
 
                         // push the file classes into a vector for storage
                         FitsIO<fileType::write_fits, CCfits::ExtHDU *>coadd_fits_io(coadd_filename);
@@ -1328,7 +1331,7 @@ int run(const rc_t &rc) {
                                                                                                 ToltecIO::no_obs_type,
                                                                                                 ToltecIO::filtered,
                                                                                                 ToltecIO::obsnum_false>(
-                                todproc.engine().filepath + fdname, todproc.engine().obsnum, i);
+                                todproc.engine().filepath + fdname, todproc.engine().obsnum, arr.first);
 
                             // push the file classes into a vector for storage
                             FitsIO<fileType::write_fits, CCfits::ExtHDU *> filtered_coadd_fits_ios(coadd_filename);
@@ -1342,7 +1345,7 @@ int run(const rc_t &rc) {
                                                                                                 ToltecIO::simu,
                                                                                                 ToltecIO::no_obs_type,
                                                                       ToltecIO::noise_raw,ToltecIO::obsnum_false>(
-                                todproc.engine().filepath + rdname, todproc.engine().obsnum, i);
+                                todproc.engine().filepath + rdname, todproc.engine().obsnum, arr.first);
 
                             // push the file classes into a vector for storage
                             FitsIO<fileType::write_fits, CCfits::ExtHDU *> noise_fits_io(noise_filename);
@@ -1355,13 +1358,14 @@ int run(const rc_t &rc) {
                                                                                                     ToltecIO::no_obs_type,
                                                                                                     ToltecIO::noise_filtered,
                                                                                                     ToltecIO::obsnum_false>(
-                                    todproc.engine().filepath + fdname, todproc.engine().obsnum, i);
+                                    todproc.engine().filepath + fdname, todproc.engine().obsnum, arr.first);
 
                                 // push the file classes into a vector for storage
                                 FitsIO<fileType::write_fits, CCfits::ExtHDU *> filtered_noise_fits_io(noise_filename);
                                 todproc.engine().filtered_noise_fits_ios.push_back(std::move(filtered_noise_fits_io));
                             }
                         }
+                        i++;
                     }
                 }
 
@@ -1411,13 +1415,13 @@ int run(const rc_t &rc) {
                         for (Eigen::Index nf=0; nf<nfluxes; nf++) {
                             auto fname = rawobs.photometry_calib_info().config().get_str(std::tuple{"beammap_source","fluxes",nf,"array_name"});
 
-                            for (Eigen::Index nk=0; nk<todproc.engine().toltec_io.name_keys.size(); nk++) {
-                                if (todproc.engine().toltec_io.name_keys[nk] == fname) {
+                            for (auto const& arr: todproc.engine().toltec_io.name_keys) {
+                                if (arr.second == fname) {
                                     // fluxes
-                                    todproc.engine().beammap_fluxes[todproc.engine().toltec_io.name_keys[nk]] =
+                                    todproc.engine().beammap_fluxes[arr.second] =
                                         rawobs.photometry_calib_info().config().get_typed<double>(std::tuple{"beammap_source","fluxes",nf,"value_mJy"});
                                     // flux uncertainties
-                                    todproc.engine().beammap_uncer[todproc.engine().toltec_io.name_keys[nk]] =
+                                    todproc.engine().beammap_uncer[arr.second] =
                                         rawobs.photometry_calib_info().config().get_typed<double>(std::tuple{"beammap_source","fluxes",nf,"uncertainty_mJy"});
                                 }
                             }
@@ -1472,6 +1476,8 @@ int run(const rc_t &rc) {
                     todproc.engine().nw_indices = nw_indices.at(i);
                     todproc.engine().det_indices = det_indices.at(i);
 
+                    SPDLOG_INFO("todproc.engine().toltec_io.name_keys {}",todproc.engine().toltec_io.name_keys);
+
                     for (Eigen::Index mc = 0; mc<todproc.engine().toltec_io.name_keys.size(); mc++) {
                         auto ndet = std::get<1>(todproc.engine().array_indices.at(mc)) - std::get<0>(todproc.engine().array_indices.at(mc));
                         auto a_fwhm = todproc.engine().calib_data["a_fwhm"].segment(std::get<0>(todproc.engine().array_indices.at(mc)),
@@ -1479,7 +1485,12 @@ int run(const rc_t &rc) {
                         auto b_fwhm = todproc.engine().calib_data["b_fwhm"].segment(std::get<0>(todproc.engine().array_indices.at(mc)),
                                                                                     ndet);
 
+                        SPDLOG_INFO("ndet {} a_fwhm {} b_fwhm {}", ndet, a_fwhm, b_fwhm);
+
                         todproc.engine().toltec_io.bfwhm_keys[mc] = ((a_fwhm + b_fwhm)/2).mean();
+
+                        SPDLOG_INFO("todproc.engine().toltec_io.bfwhm_keys {}",todproc.engine().toltec_io.bfwhm_keys);
+
                         todproc.engine().toltec_io.barea_keys[mc] = 2.*pi*pow(todproc.engine().toltec_io.bfwhm_keys[mc]/STD_TO_FWHM,2);
                     }
 
@@ -1516,6 +1527,8 @@ int run(const rc_t &rc) {
                         }
                     }
 
+                    SPDLOG_INFO("cflux {}",todproc.engine().cflux);
+
                     // do general setup that is only run once per rawobs before grppi pipeline
                     {
                         tula::logging::scoped_timeit timer("engine setup()");
@@ -1549,7 +1562,8 @@ int run(const rc_t &rc) {
                     todproc.engine().cmb.normalize_maps(todproc.engine().run_kernel);
 
                     // coadd histogram and psd
-                    for (Eigen::Index i = 0; i < todproc.engine().cmb.map_count;i++) {
+                    Eigen::Index i = 0;
+                    for (auto const& arr: todproc.engine().toltec_io.name_keys) {
                         SPDLOG_INFO("calculating coadded map psds and hists for map {}",i);
                         PSD psd;
                         psd.weight_type = todproc.engine().weighting_type;
@@ -1626,6 +1640,7 @@ int run(const rc_t &rc) {
                             noise_avg_hist.hist_vals = noise_avg_hist.hist_vals / todproc.engine().cmb.nnoise;
                             todproc.engine().cmb.noise_avg_hist.push_back(noise_avg_hist);
                         }
+                        i++;
                     }
 
                     // generate coadd output files
@@ -1641,9 +1656,10 @@ int run(const rc_t &rc) {
                             tula::logging::scoped_timeit timer("wiener filter");
                             todproc.engine().wiener_filter.exmode = todproc.engine().ex_name;
 
-                            for (Eigen::Index i = 0; i < todproc.engine().cmb.map_count; i++) {
+                            Eigen::Index i = 0;
+                            for (auto const& arr: todproc.engine().toltec_io.name_keys) {
                                 todproc.engine().wiener_filter.make_template(todproc.engine().cmb,todproc.engine().calib_data,
-                                                                             todproc.engine().gaussian_template_fwhm_rad[todproc.engine().toltec_io.name_keys[i]],i);
+                                                                             todproc.engine().gaussian_template_fwhm_rad[todproc.engine().toltec_io.name_keys[arr.first]],i);
                                 todproc.engine().wiener_filter.filter_coaddition(todproc.engine().cmb, i);
 
                                 // filter noise maps
@@ -1653,6 +1669,7 @@ int run(const rc_t &rc) {
                                         todproc.engine().wiener_filter.filter_noise(todproc.engine().cmb, i, j);
                                     }
                                 }
+                                i++;
                             }
 
                             if (todproc.engine().run_noise) {

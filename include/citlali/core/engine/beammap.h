@@ -137,10 +137,10 @@ void Beammap::setup() {
     SPDLOG_INFO("arrays in beammap {}", arrays);
 
     // create empty FITS files at start
-    for (Eigen::Index i=0; i<arrays.size(); i++) {
+    for (auto const& arr: toltec_io.name_keys) {
         std::string filename;
         filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
-                ToltecIO::beammap, ToltecIO::no_prod_type, ToltecIO::obsnum_true>(filepath + dname,obsnum,i);
+                ToltecIO::beammap, ToltecIO::no_prod_type, ToltecIO::obsnum_true>(filepath + dname,obsnum, arr.first);
 
         FitsIO<fileType::write_fits, CCfits::ExtHDU*> fits_io(filename);
         fits_ios.push_back(std::move(fits_io));
@@ -812,7 +812,7 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
                                                             polarization.stokes_params);
 
             // add wavelength
-            f_ios.at(i).pfits->pHDU().addKey("WAV", toltec_io.name_keys[i], "Array Name");
+            f_ios.at(i).pfits->pHDU().addKey("WAV", arr.first, "Array Name");
             // add obsnum
             f_ios.at(i).pfits->pHDU().addKey("OBSNUM", obsnum, "Observation Number");
             // object
