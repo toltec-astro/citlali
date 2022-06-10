@@ -96,9 +96,9 @@ struct ToltecIO {
     std::map<int, double> bfwhm_keys {};
 
     std::map<int, double> array_freqs {
-        {0,A1100_FREQ},
-        {1,A1400_FREQ},
-        {2,A2000_FREQ}
+        //{0,A1100_FREQ},
+        //{1,A1400_FREQ},
+        //{2,A2000_FREQ}
     };
 
     // header keys for pointing fit ecsv

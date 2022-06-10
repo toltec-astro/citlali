@@ -17,7 +17,7 @@ public:
     };
 
     int nparams = 6;
-    double bounding_box_pix;
+    double bounding_box_pix = 20;
 
     double flux0;
 
@@ -84,17 +84,12 @@ public:
             bounding_box_pix = data.cols() - col0 - 1;
         }
 
-        SPDLOG_INFO("bounding_box_pix {}", bounding_box_pix);
-
         // get limits
         limits.resize(nparams, 2);
         limits.col(0) << flux_low*flux0, col0 - bounding_box_pix, row0 - bounding_box_pix, fwhm_low,
                 fwhm_low, ang_low;
         limits.col(1) << flux_high*flux0, col0 + bounding_box_pix + 1, row0 + bounding_box_pix + 1,
                 fwhm_high, fwhm_high, ang_high;
-
-        SPDLOG_INFO("param limits {}", limits);
-        SPDLOG_INFO("param init values {}",p0);
 
         // axes coordinate vectors for meshgrid
         x = Eigen::VectorXd::LinSpaced(2*bounding_box_pix+1, col0-bounding_box_pix, col0+bounding_box_pix);
@@ -138,8 +133,6 @@ public:
         Eigen::Index nzeros = (_sigma.array() !=0).count();
         Eigen::MatrixXd xy2(nzeros,2);
 
-        SPDLOG_INFO("nzerios {} _sigma.size() {}",nzeros, _sigma.size());
-
         Eigen::VectorXd _d(nzeros), _s(nzeros), xx(nzeros), yy(nzeros);
 
         Eigen::Index k = 0;
@@ -158,12 +151,8 @@ public:
             }
         }
 
-        SPDLOG_INFO("_d {} _s {}", _d, _s);
-
         // meshgrid for coordinates
         //auto xy2 = g.meshgrid(xx, yy);
-
-        SPDLOG_INFO("xy {} xy2 {}", xy, xy2);
 
         // do the fit with ceres-solver
        auto [g_fit, covariance] = gaussfit::curvefit_ceres(g, _p, xy2, _d, _s, limits);
@@ -172,8 +161,6 @@ public:
         //auto [g_fit, covariance] = gaussfit::curvefit_ceres(g, _p, xy, _data, _sigma, limits);
 
         error = covariance.diagonal().cwiseSqrt();
-        SPDLOG_INFO("source fit error {}", error);
-        SPDLOG_INFO("g_fit.params {}", g_fit.params);
 
         // return the parameters
         return g_fit.params;

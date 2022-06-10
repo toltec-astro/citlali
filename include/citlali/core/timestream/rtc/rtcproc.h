@@ -50,7 +50,7 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
             // current detector
             auto det = std::get<0>(engine->array_indices.at(mi));
             // size of block for each grouping
-            auto ndet = std::get<1>(engine->array_indices.at(mi)) - std::get<0>(engine->array_indices.at(mi)) + 1;
+            auto ndet = std::get<1>(engine->array_indices.at(mi)) - std::get<0>(engine->array_indices.at(mi));
 
             // get the block of in scans that corresponds to the current array
             Eigen::Ref<Eigen::MatrixXd> in_scans_block = in.scans.data.block(0,det,in.scans.data.rows(),ndet);

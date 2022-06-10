@@ -900,6 +900,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                 map_count++;
                 if (arr==0) {
                     engine().toltec_io.name_keys[k] = "a1100";
+                    engine().toltec_io.array_freqs[k] = A1100_FREQ;
                     k++;
                     engine().arrays[engine().toltec_io.name_keys[arr]] = arr;
 
@@ -910,8 +911,10 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                     engine().toltec_io.polarized_name_keys[pol] = "a1100_U";
                     pol++;
                 }
+
                 else if (arr==1) {
                     engine().toltec_io.name_keys[k] = "a1400";
+                    engine().toltec_io.array_freqs[k] = A1400_FREQ;
                     k++;
                     engine().arrays[engine().toltec_io.name_keys[arr]] = arr;
 
@@ -922,8 +925,10 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                     engine().toltec_io.polarized_name_keys[pol] = "a1400_U";
                     pol++;
                 }
+
                 else if (arr==2) {
                     engine().toltec_io.name_keys[k] = "a2000";
+                    engine().toltec_io.array_freqs[k] = A2000_FREQ;
                     k++;
                     engine().arrays[engine().toltec_io.name_keys[arr]] = arr;
 
@@ -945,16 +950,18 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
         // set up array indices
         array_indices.push_back(std::tuple{0, 0});
 
+        Eigen::Index aai = engine().calib_data["array"](0);
         Eigen::Index ai = 0;
 
         // loop through apt table arrays, get highest index for current array
         for (Eigen::Index i = 0; i < engine().calib_data["array"].size(); i++) {
-            if (engine().calib_data["array"](i) == ai) {
-                std::get<1>(array_indices.at(ai)) = i;
+            if (engine().calib_data["array"](i) == aai) {
+                std::get<1>(array_indices.at(ai)) = i+1;
             }
             else {
-                array_indices.push_back(std::tuple{i, 0});
+                aai = engine().calib_data["array"](i);
                 ai += 1;
+                array_indices.push_back(std::tuple{i, 0});
             }
         }
 
@@ -962,17 +969,19 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
         nw_indices.push_back(std::tuple{0, 0});
 
         ai = 0;
-
+        Eigen::Index nwi = engine().calib_data["nw"](0);
         // loop through apt table networks, get highest index for current networks
         for (Eigen::Index i = 0; i < engine().calib_data["nw"].size(); i++) {
-            if (engine().calib_data["nw"](i) == ai) {
-                std::get<1>(nw_indices.at(ai)) = i;
+            if (engine().calib_data["nw"](i) == nwi) {
+                std::get<1>(nw_indices.at(ai)) = i+1;
             }
             else {
+                nwi = engine().calib_data["nw"](i);
+                ai+=1;
                 nw_indices.push_back(std::tuple{i, 0});
-                ai += 1;
             }
         }
+
 
         if ((std::strcmp("science", engine().reduction_type.c_str()) == 0) ||
             (std::strcmp("pointing", engine().reduction_type.c_str()) == 0)) {
@@ -982,7 +991,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
         // multiply by number of stokes parameters
         map_count = map_count*engine().polarization.stokes_params.size();
 
-        SPDLOG_INFO("map count {}", map_count);
+        SPDLOG_INFO("number of maps {}", map_count);
         SPDLOG_INFO("array_indices {}", array_indices);
         SPDLOG_INFO("nw_indices {}", nw_indices);
         SPDLOG_INFO("det_indices {}", det_indices);
@@ -1239,6 +1248,7 @@ int run(const rc_t &rc) {
                     }
                 }
 
+                // set up output directories
                 std::string hdname;
 
                 if (todproc.engine().use_subdir) {
@@ -1462,20 +1472,16 @@ int run(const rc_t &rc) {
                     todproc.engine().nw_indices = nw_indices.at(i);
                     todproc.engine().det_indices = det_indices.at(i);
 
-                    SPDLOG_INFO("todproc.engine().toltec_io.name_keys {}",todproc.engine().toltec_io.name_keys);
-                    SPDLOG_INFO("std::get<0>(todproc.engine().array_indices.at(0) {}",std::get<0>(todproc.engine().array_indices.at(0)));
-
                     for (Eigen::Index mc = 0; mc<todproc.engine().toltec_io.name_keys.size(); mc++) {
+                        auto ndet = std::get<1>(todproc.engine().array_indices.at(mc)) - std::get<0>(todproc.engine().array_indices.at(mc));
                         auto a_fwhm = todproc.engine().calib_data["a_fwhm"].segment(std::get<0>(todproc.engine().array_indices.at(mc)),
-                                                                                    std::get<1>(todproc.engine().array_indices.at(mc)));
+                                                                                    ndet);
                         auto b_fwhm = todproc.engine().calib_data["b_fwhm"].segment(std::get<0>(todproc.engine().array_indices.at(mc)),
-                                                                                    std::get<1>(todproc.engine().array_indices.at(mc)));
+                                                                                    ndet);
 
                         todproc.engine().toltec_io.bfwhm_keys[mc] = ((a_fwhm + b_fwhm)/2).mean();
                         todproc.engine().toltec_io.barea_keys[mc] = 2.*pi*pow(todproc.engine().toltec_io.bfwhm_keys[mc]/STD_TO_FWHM,2);
                     }
-
-                    SPDLOG_INFO("a");
 
                     // flux conversion
                     todproc.engine().cflux.resize(map_counts[i]);
@@ -1509,8 +1515,6 @@ int run(const rc_t &rc) {
                             }
                         }
                     }
-
-                    SPDLOG_INFO("b");
 
                     // do general setup that is only run once per rawobs before grppi pipeline
                     {

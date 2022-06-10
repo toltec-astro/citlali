@@ -134,6 +134,8 @@ void Beammap::setup() {
     // create obsnum directory
     toltec_io.setup_output_directory(filepath, dname);
 
+    SPDLOG_INFO("arrays in beammap {}", arrays);
+
     // create empty FITS files at start
     for (Eigen::Index i=0; i<arrays.size(); i++) {
         std::string filename;
@@ -163,8 +165,6 @@ void Beammap::setup() {
             }
 
             Eigen::Index ndim_pol = (calib_data["fg"].array() == 0).count() + (calib_data["fg"].array() == 1).count();
-
-            SPDLOG_INFO("ndim_pol {}", ndim_pol);
 
             for (auto const& stokes_params: polarization.stokes_params) {
 
@@ -410,7 +410,7 @@ auto Beammap::run_loop() {
         SPDLOG_INFO("fitting maps");
         grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](auto d) {
             if (converged(d) == false) {
-                SPDLOG_INFO("fitting detector {}/{}",d+1, det_in_vec.size());
+                //SPDLOG_INFO("fitting detector {}/{}",d+1, det_in_vec.size());
                 // declare fitter class for detector
                 gaussfit::MapFitter fitter;
                 // size of region to fit in pixels
@@ -446,9 +446,6 @@ auto Beammap::run_loop() {
                     if (converged(d) == false) {
                         // percent difference between current and previous iteration's fit
                         auto ratio = abs((mb.pfit.col(d).array() - p0.col(d).array())/p0.col(d).array());
-                        SPDLOG_INFO("mb.pfit.col(d) {}", mb.pfit.col(d));
-                        SPDLOG_INFO("p0.col(d) {}", p0.col(d));
-
 			SPDLOG_INFO("ratio {}", ratio);
                         // if the detector is converged, set it to converged
                         if ((ratio.array() <= cutoff).all()) {
@@ -564,7 +561,7 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
 
                 Eigen::Index mi = map_index_vector(d);
 
-                mb.pfit(0,d) = beammap_fluxes[toltec_io.name_keys[mi]]/mb.pfit(0,d);
+                calib_data["flxscale"](d) = beammap_fluxes[toltec_io.name_keys[mi]]/mb.pfit(0,d);
 
                 //SPDLOG_INFO("derotating det {}", d);
                 Eigen::Index min_index;
@@ -756,30 +753,16 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
 
         SPDLOG_INFO("writing maps");
         // loop through existing files
-        for (Eigen::Index i=0; i<arrays.size(); i++) {
+        Eigen::Index i = 0;
+        for (auto const& arr: arrays) {
             SPDLOG_INFO("writing {}.fits", f_ios.at(i).filepath);
             // loop through maps and save them as an hdu
 
             for (Eigen::Index j=0; j<ndet; j++) {
-                if (calib_data["array"](j) == i) {
+                if (calib_data["array"](j) == arr.second) {
                     // add signal map to file
                     f_ios.at(i).add_hdu("signal_" + std::to_string(j) + "_I", mout.signal.at(j));
                     f_ios.at(i).hdus.back()->addKey("UNIT", cunit, "Unit of map");
-
-                    // add fit parameters to hdus
-                    /*f_ios.at(i).hdus.back()->addKey("amp", (float)mout.pfit(0,j),"amplitude (N/A)");
-                    f_ios.at(i).hdus.back()->addKey("amp_err", (float)mout.perror(0,j),"amplitude error (N/A)");
-                    f_ios.at(i).hdus.back()->addKey("x_t", (float)mout.pfit(1,j),"az offset (arcsec)");
-                    f_ios.at(i).hdus.back()->addKey("x_t_err", (float)mout.perror(1,j),"az offset error (arcsec)");
-                    f_ios.at(i).hdus.back()->addKey("y_t", (float)mout.pfit(2,j),"alt offset (arcsec)");
-                    f_ios.at(i).hdus.back()->addKey("y_t_err", (float)mout.perror(2,j),"alt offset error (arcsec)");
-                    f_ios.at(i).hdus.back()->addKey("a_fwhm", (float)mout.pfit(3,j),"az fwhm (arcsec)");
-                    f_ios.at(i).hdus.back()->addKey("a_fwhm_err", (float)mout.perror(3,j),"az fwhm error (arcsec)");
-                    f_ios.at(i).hdus.back()->addKey("b_fwhm", (float)mout.pfit(4,j),"alt fwhm (arcsec)");
-                    f_ios.at(i).hdus.back()->addKey("b_fwhm_err", (float)mout.perror(4,j),"alt fwhm error (arcsec)");
-                    f_ios.at(i).hdus.back()->addKey("angle", (float)mout.pfit(5,j),"position angle (radians)");
-                    f_ios.at(i).hdus.back()->addKey("angle_err", (float)mout.perror(5,j),"position angle error (radians)");
-                    */
 
                     // add weight map to file
                     f_ios.at(i).add_hdu("weight_" + std::to_string(j) + "_I", mout.weight.at(j));
@@ -799,6 +782,22 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
                 f_ios.at(i).template add_wcs<UnitsType::arcsec>(hdu,map_type,mout.nrows,mout.ncols,pixel_size,
                                                                 source_center,toltec_io.array_freqs[i],
                                                                 polarization.stokes_params,hdu_name);
+
+                /*if (hdname.find("signal")) {
+                    hdu->addKey("amp", (float)mout.pfit(0,k),"amplitude (N/A)");
+                    hdu->addKey("amp_err", (float)mout.perror(0,k),"amplitude error (N/A)");
+                    hdu->addKey("x_t", (float)mout.pfit(1,k),"az offset (arcsec)");
+                    hdu->addKey("x_t_err", (float)mout.perror(1,k),"az offset error (arcsec)");
+                    hdu->addKey("y_t", (float)mout.pfit(2,k),"alt offset (arcsec)");
+                    hdu->addKey("y_t_err", (float)mout.perror(2,k),"alt offset error (arcsec)");
+                    hdu->addKey("a_fwhm", (float)mout.pfit(3,k),"az fwhm (arcsec)");
+                    hdu->addKey("a_fwhm_err", (float)mout.perror(3,k),"az fwhm error (arcsec)");
+                    hdu->addKey("b_fwhm", (float)mout.pfit(4,k),"alt fwhm (arcsec)");
+                    hdu->addKey("b_fwhm_err", (float)mout.perror(4,k),"alt fwhm error (arcsec)");
+                    hdu->addKey("angle", (float)mout.pfit(5,k),"position angle (radians)");
+                    hdu->addKey("angle_err", (float)mout.perror(5,k),"position angle error (radians)");
+                    k++;
+                }*/
             }
 
             // loop through default TolTEC fits header keys and add to primary header
@@ -850,6 +849,7 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
                                                  "Conversion to MJy/Sr");
                 f_ios.at(i).pfits->pHDU().addKey("to_uK/arcmin^2", 1.0, "Conversion to uK/arcmin^2");
             }
+            i++;
         }
     }
 

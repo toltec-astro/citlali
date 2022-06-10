@@ -604,7 +604,9 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
     // loop through array indices and add hdu's to existing files
     SPDLOG_INFO("writing maps");
     Eigen::Index pp = 0;
-    for (Eigen::Index i=0; i<arrays.size(); i++) {
+    Eigen::Index i = 0;
+    for (auto const& arr: arrays) {
+    //for (Eigen::Index i=0; i<arrays.size(); i++) {
         SPDLOG_INFO("writing {}.fits", f_ios.at(i).filepath);
 
         for (auto const& stokes_params: polarization.stokes_params) {
@@ -738,6 +740,8 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
         f_ios.at(i).pfits->pHDU().addKey("tan_ra", source_center["Ra"][0], "Map Tangent Point RA (radians)");
         // add map tangent point dec
         f_ios.at(i).pfits->pHDU().addKey("tan_dec", source_center["Dec"][0], "Map Tangent Point Dec (radians)");
+
+        i++;
     }
 
     // close file since we're done
@@ -789,7 +793,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
         name_keys = toltec_io.name_keys;
     }
 
-    Eigen::Index i = 0;
+    i = 0;
     for (auto const& stokes_params: polarization.stokes_params) {
 
         std::string name = name_keys[i] + "_" + stokes_params.first;

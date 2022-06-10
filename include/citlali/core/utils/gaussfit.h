@@ -103,7 +103,6 @@ struct Model: DenseFunctor<double, NP, Dynamic> {
         // column major
         // [x0, y0,] [x1, y0] [x2, y0] ... [xn, y0] [x0, y1] ... [xn, yn]
         const long nx = x.size(), ny = y.size();
-        SPDLOG_INFO("nx {} ny {}",nx, ny);
         InputDataType xy(nx * ny, 2);
         // map xx [ny, nx] to the first column of xy
         Map<MatrixXd> xx(xy.data(), ny, nx);
@@ -312,10 +311,6 @@ std::tuple<Model, Eigen::MatrixXd> curvefit_ceres(
     Map<const typename Model::InputDataType> _x(xdata.data(), xdata.rows(), xdata.cols());
     Map<const typename Fitter::ValueType> _y(ydata.data(), ydata.size());
     Map<const typename Fitter::ValueType> _s(sigma.data(), sigma.size());
-
-    SPDLOG_INFO("_x {}", _x);
-    SPDLOG_INFO("_y {}", _y);
-    SPDLOG_INFO("_s {}", _s);
 
     fitter->xdata = &_x;
     fitter->ydata = &_y;
