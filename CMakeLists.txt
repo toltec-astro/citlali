@@ -69,6 +69,16 @@ if (CITLALI_BUILD_CLI)
     target_include_directories(citlali_cli PUBLIC "include")
     set_property(TARGET citlali_cli PROPERTY RULE_LAUNCH_COMPILE "\"${CMAKE_COMMAND}\" -E time")
     set_property(TARGET citlali_cli PROPERTY OUTPUT_NAME citlali)
+
+    add_executable(wyatt_cli)
+    target_sources(wyatt_cli
+        PRIVATE
+            "src/citlali/cli/wyatt.cpp"
+            )
+    target_link_libraries(wyatt_cli PRIVATE ${dep_libs})
+    target_include_directories(wyatt_cli PUBLIC "include")
+    set_property(TARGET wyatt_cli PROPERTY RULE_LAUNCH_COMPILE "\"${CMAKE_COMMAND}\" -E time")
+    set_property(TARGET wyatt_cli PROPERTY OUTPUT_NAME wyatt)
 endif()
 
 if (CITLALI_STANDALONE)

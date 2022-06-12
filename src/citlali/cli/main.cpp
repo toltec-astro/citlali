@@ -721,11 +721,28 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
         return rts;
     }
 
+    template <typename Derived>
     auto load_rawobs(const RawObs &rawobs,
-                     const tula::container_utils::Slice<int> &slice,std::string ex_name="seq") {
+                     const Eigen::Index scan,
+                     Eigen::DenseBase<Derived> &scanindices,
+                     std::vector<Eigen::Index> &init_indices) {
+
         std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> result;
+        Eigen::Index i = 0;
+        Eigen::Index offset;
         for (const auto &data_item : rawobs.kidsdata()) {
-            result.push_back(load_data_item(data_item, slice));
+            if (scan == 0) {
+                SPDLOG_INFO("init_indices {}",init_indices[i]);
+                auto slice = tula::container_utils::Slice<int>{scanindices(2 + init_indices[i],scan),
+                                                               scanindices(3,scan) + 1, std::nullopt};
+                result.push_back(load_data_item(data_item, slice));
+            }
+            else {
+                auto slice = tula::container_utils::Slice<int>{scanindices(2,scan),
+                                                               scanindices(3,scan) + 1, std::nullopt};
+                result.push_back(load_data_item(data_item, slice));
+            }
+            i++;
         }
 
         /*std::vector<int> result_in_vec, result_out_vec;
@@ -741,7 +758,7 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
         return std::move(result);
     }
 
-    template <typename scanindices_t>
+    /*template <typename scanindices_t>
     auto populate_rtc(const RawObs &rawobs, scanindices_t &scanindex,
                       const int scanlength, const int n_detectors) {
         // call reduce rawobs, get the data into rtc
@@ -762,22 +779,18 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
         }
 
         return std::move(xs);
-    }
+    }*/
 
     template <typename loaded_t, typename scanindices_t>
     auto populate_rtc_load(loaded_t &loaded, scanindices_t &scanindex,
                            const int scanlength, const int n_detectors) {
-        // call reduce rawobs, get the data into rtc
-        //auto slice = tula::container_utils::Slice<int>{
-            //scanindex(2), scanindex(3) + 1, std::nullopt};
-        // auto loaded = load_rawobs(rawobs, slice);
 
         Eigen::MatrixXd xs(scanlength, n_detectors);
 
         Eigen::Index i = 0;
         for (std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>::
                  iterator it = loaded.begin();
-             it != loaded.end(); ++it) {
+            it != loaded.end(); ++it) {
             auto result = this->solver()(*it, Solver::Config{});
             auto nrows = result.data_out.xs.data.rows();
             auto ncols = result.data_out.xs.data.cols();
@@ -878,6 +891,102 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
         return std::tuple{map_extent, map_coord};
     }
 
+    template <typename TelMetaData>
+    auto align_timestreams(const RawObs &rawobs, TelMetaData &tel_meta_data) {
+        using namespace netCDF;
+        using namespace netCDF::exceptions;
+
+        std::vector<Eigen::VectorXd> data_ts;
+
+        std::vector<size_t> start {0,0};
+
+        double init_t = -99;
+
+        for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
+            auto source = data_item.filepath();
+            SPDLOG_INFO("source {}",source);
+            try {
+                NcFile fo(source, NcFile::read);
+                auto vars = fo.getVars();
+
+                Eigen::Index ntimes = vars.find("Data.Toltec.Ts")->second.getDim(0).getSize();
+                Eigen::Index nvars = vars.find("Data.Toltec.Ts")->second.getDim(1).getSize();
+
+                size_t ntimes_t = ntimes;
+                std::vector<size_t> count {ntimes_t,6};
+
+                Eigen::Matrix<int,Eigen::Dynamic,Eigen::Dynamic> ts(nvars,count[0]);
+
+                vars.find("Data.Toltec.Ts")->second.getVar(start,count,ts.data());
+
+                ts.transposeInPlace();
+
+                double fpga_freq;
+                vars.find("Header.Toltec.FpgaFreq")->second.getVar(&fpga_freq);
+                //SPDLOG_INFO("fpga_freq {}",fpga_freq);
+
+                data_ts.push_back(ts.cast <double> ().col(0) + ts.cast <double> ().col(5)/1e9 +
+                                  ts.cast <double> ().col(1) + (ts.cast <double> ().col(2) - ts.cast <double> ().col(4))/fpga_freq);
+
+                // get initial time
+                if (data_ts.back()(0) > init_t) {
+                    init_t = data_ts.back()(0);
+                }
+
+                fo.close();
+
+            } catch (NcException &e) {
+                SPDLOG_ERROR("{}", e.what());
+                throw DataIOError{fmt::format(
+                    "failed to load data from netCDF file {}", source)};
+            }
+        }
+
+        Eigen::Index max_index = -99;
+        for (const auto &vec : data_ts) {
+            for (Eigen::Index i=0; i<vec.size(); i++) {
+                if (vec[i] == init_t) {
+                    engine().init_indices.push_back(i);
+                    if (vec[i] > max_index) {
+                        max_index = i;
+                    }
+                }
+            }
+        }
+
+        SPDLOG_INFO("init_t {} init_indices {}",init_t, engine().init_indices);
+
+        SPDLOG_INFO("tel_meta_data[TelTime] {}",tel_meta_data["TelTime"]);
+
+        Eigen::Index mii;
+        auto max_diffi = (tel_meta_data["TelTime"].array() - data_ts[max_index].array()).maxCoeff(&mii);
+        SPDLOG_INFO("max diffi {} mii{}",max_diffi,mii);
+        Eigen::Matrix<Eigen::Index,1,1> nd;
+        nd << engine().tel_meta_data["TelTime"].size();
+
+        Eigen::Index npts = data_ts[max_index].size();
+
+        /*for (const auto &tel_it : engine().tel_meta_data) {
+            if (tel_it.first !="TelTime") {
+                Eigen::VectorXd yd = tel_meta_data[tel_it.first];
+                Eigen::VectorXd yi(npts);
+
+                SPDLOG_INFO("before tel_meta_data[{}] {}",tel_it.first, tel_meta_data[tel_it.first]);
+                mlinterp::interp(nd.data(), npts, // nd, ni
+                                 yd.data(), yi.data(), // yd, yi
+                                 tel_meta_data["TelTime"].data(), data_ts[max_index].data()); // xd, xi
+
+                Eigen::Index mi;
+                auto max_diff = (yi.array() - yd.array()).maxCoeff(&mi);
+                SPDLOG_INFO("max diff {} mi {}",max_diff,mi);
+
+                tel_meta_data[tel_it.first] = std::move(yi);
+
+                SPDLOG_INFO("after tel_meta_data[{}] {}",tel_it.first, tel_meta_data[tel_it.first]);
+            }
+        }*/
+    }
+
     // get number of maps and grouping indices
     auto get_map_count(const RawObs &rawobs) {
         // total number of maps for each map type
@@ -898,6 +1007,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
         for (Eigen::Index arr=0; arr<narrays; arr++) {
             if ((engine().calib_data["array"].array()==arr).any()) {
                 map_count++;
+                // check for 1.1 mm array
                 if (arr==0) {
                     engine().toltec_io.name_keys[arr] = "a1100";
                     engine().toltec_io.array_freqs[k] = A1100_FREQ;
@@ -911,7 +1021,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                     engine().toltec_io.polarized_name_keys[pol] = "a1100_U";
                     pol++;
                 }
-
+                // check for 1.4 mm array
                 else if (arr==1) {
                     engine().toltec_io.name_keys[arr] = "a1400";
                     engine().toltec_io.array_freqs[k] = A1400_FREQ;
@@ -925,7 +1035,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                     engine().toltec_io.polarized_name_keys[pol] = "a1400_U";
                     pol++;
                 }
-
+                // check for 2.0 mm array
                 else if (arr==2) {
                     engine().toltec_io.name_keys[arr] = "a2000";
                     engine().toltec_io.array_freqs[k] = A2000_FREQ;
@@ -1132,7 +1242,7 @@ int run(const rc_t &rc) {
                 return EXIT_FAILURE;
             }
 
-            // catch bad yaml type conversion and mark as invalid
+        // catch bad yaml type conversion and mark as invalid
         } catch (YAML::TypedBadConversion<std::string>) {
             std::vector<std::string> invalid_keys;
             // push back invalid keys into temp vector
@@ -1397,6 +1507,9 @@ int run(const rc_t &rc) {
                     // initialize pointing alt offset
                     todproc.engine().pointing_offsets["alt"] = 0.0;
 
+                    // initialize tau
+                    todproc.engine().tau = 0;
+
                     if constexpr (std::is_same_v<todproc_t, TimeOrderedDataProc<Beammap>>) {
                         // beammap source name
                         todproc.engine().beammap_source_name =
@@ -1467,6 +1580,10 @@ int run(const rc_t &rc) {
                     // calculate physical pointing vectors
                     todproc.engine().get_phys_pointing(todproc.engine().tel_meta_data, todproc.engine().source_center,
                                                        todproc.engine().map_type);
+
+                    // align telescope meta data with detectors timestreams
+                    todproc.align_timestreams(rawobs,todproc.engine().tel_meta_data);
+
                     // get scanindices
                     todproc.get_scanindicies(rawobs);
                     SPDLOG_INFO("todproc.engine().scanindices {}", todproc.engine().scanindices);

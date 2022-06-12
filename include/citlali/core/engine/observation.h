@@ -48,8 +48,8 @@ private:
     template <typename tel_meta_data_t>
     void find_unique_tel_utc(tel_meta_data_t &);
 
-    template <typename tel_meta_data_t>
-    void align_with_dets(tel_meta_data_t &);
+    //template <typename tel_meta_data_t>
+    //void align_with_dets(tel_meta_data_t &);
 
 };
 
@@ -176,7 +176,7 @@ void find_unique_tel_utc(tel_meta_data_t &tel_meta_data, const double glitch_lim
     }
 }
 
-template <typename tel_meta_data_t>
+/*template <typename tel_meta_data_t>
 void align_with_dets(tel_meta_data_t &tel_meta_data, const double time_offset) {
 
     Eigen::Index nunique = tel_meta_data["locUnique"].size();
@@ -200,6 +200,7 @@ void align_with_dets(tel_meta_data_t &tel_meta_data, const double time_offset) {
         }
     }
 }
+*/
 
 template <typename tel_meta_data_t, typename C>
 void Observation::fix_tel_meta(tel_meta_data_t &tel_meta_data, C &center) {

@@ -185,7 +185,6 @@ struct Gaussian2D: Model<6, 2> {
         {"xstddev"},
         {"ystddev"},
         {"theta"},
-        //{"theta", false, true, 0., PI / 2.},
     };
 };
 
@@ -275,6 +274,7 @@ struct CeresAutoDiffFitter: Fitter<Model> {
                             )
                     ) * this->sigma->coeffRef(i);
             }
+            // remove zero weights
             else {
                 r[i] =  (
                             this->ydata->coeffRef(i) -
@@ -351,12 +351,14 @@ std::tuple<Model, Eigen::MatrixXd> curvefit_ceres(
 
     Eigen::MatrixXd covariances(pp.size(),pp.size());
 
+    // uncertainty calculation
     if (summary.IsSolutionUsable()) {
-        // uncertainty calculation
         Covariance::Options cov_options;
         // EIGEN_SPARSE and DENSE_SVD are the slower, but more accurate options.
         cov_options.sparse_linear_algebra_library_type = ceres::SparseLinearAlgebraLibraryType::EIGEN_SPARSE;
         cov_options.algorithm_type = ceres::CovarianceAlgorithmType::DENSE_SVD;
+        cov_options.null_space_rank = -1;
+        cov_options.apply_loss_function = false;
         Covariance covariance(cov_options);
 
         std::vector<std::pair<const double*, const double*>> covariance_blocks;

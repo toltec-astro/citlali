@@ -113,7 +113,7 @@ public:
     std::string ts_chunk_type;
 
     // timestream offsets
-    std::vector<double> interface_sync_offset;
+    std::vector<Eigen::Index> interface_sync_offset, init_indices;
 
     // reduction number
     int redu_num;
