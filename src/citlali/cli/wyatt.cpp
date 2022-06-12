@@ -1041,6 +1041,28 @@ int run(const rc_t &rc) {
 
     SPDLOG_INFO(wyatt_config);
 
+    auto [table, header] = get_matrix_from_ecsv("/home/mmccrackan/wyatt/python/wyatt_info/wyatt_info.asc");
+
+    SPDLOG_INFO("table {}",table);
+
+    std::map<std::string, double> header_keys = {
+        {"x", 1},
+        {"y", 1},
+    };
+
+    std::map<std::string, Eigen::VectorXd> calib_data;
+
+    // loop through the apt table header keys and populate calib_data
+    for (auto const& pair: header_keys) {
+        auto it = find(header.begin(), header.end(), pair.first);
+        if (it != header.end()) {
+            int index = it - header.begin();
+            calib_data[pair.first] = table.col(index)*pair.second;
+            SPDLOG_INFO("{} {}",pair.first, calib_data[pair.first]);
+        }
+    }
+
+
     std::size_t found = config_filepaths[0].find("coadd");
     if (found!=std::string::npos) {
         SPDLOG_INFO("Doing coadd");
