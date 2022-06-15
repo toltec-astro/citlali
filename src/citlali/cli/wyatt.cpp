@@ -1041,7 +1041,7 @@ int run(const rc_t &rc) {
 
     SPDLOG_INFO(wyatt_config);
 
-    auto [table, header] = get_matrix_from_ecsv("/home/mmccrackan/wyatt/python/wyatt_info/wyatt_info.asc");
+    auto [table, header] = get_matrix_from_ecsv("/home/mmccrackan/wyatt/python/wyatt_info.asc");
 
     SPDLOG_INFO("table {}",table);
 

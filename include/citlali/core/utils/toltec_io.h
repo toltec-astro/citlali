@@ -11,9 +11,12 @@
 
 #include <tula/filesystem.h>
 #include <tula/logging.h>
+#include <tula/config/flatconfig.h>
+#include <tula/config/yamlconfig.h>
 
 #include <citlali_config/gitversion.h>
 #include <citlali/core/utils/constants.h>
+#include <citlali/core/utils/utils.h>
 
 namespace fs = std::filesystem;
 
@@ -334,10 +337,31 @@ struct ToltecIO {
         if (!fs::exists(fs::status(filepath + dname))) {
             fs::create_directories(filepath + dname);
         }
-
         else {
             SPDLOG_WARN("directory {} already exists", filepath + dname);
         }
+    }
+
+    void make_index_file(std::string filepath) {
+        std::set<fs::path> sorted_by_name;
+
+        for (auto &entry : fs::directory_iterator(filepath))
+            sorted_by_name.insert(entry);
+
+        YAML::Node node;
+        node["description"].push_back("citlali data products");
+        node["date"].push_back(engine_utils::current_date_time());
+        node["version"].push_back(CITLALI_GIT_VERSION);
+
+        for (const auto & entry : sorted_by_name) {
+            std::string path_string{entry.generic_string()};
+            if (fs::is_directory(entry)) {
+                make_index_file(path_string);
+            }
+            node["files"].push_back(path_string.substr(path_string.find_last_of("/") + 1));
+        }
+        std::ofstream fout(filepath + "/index.yaml");
+        fout << node;
     }
 
 };

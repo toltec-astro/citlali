@@ -1,5 +1,7 @@
 #pragma once
 
+#include <time.h>
+
 #include <Eigen/Core>
 #include <unsupported/Eigen/FFT>
 #include <unsupported/Eigen/Splines>
@@ -446,6 +448,19 @@ auto MJy_Sr_to_uK(double flux, double freq, double beam_fwhm) {
     auto k_to_jy = 2.*h_J_s*pow(freq,3)/pow(c_m_s,2)/(exp(xx)-1.)*exp(xx)/(exp(xx)-1.)*xx/tcmb_K*1e26;
 
     return 1e6*(flux*1e6/sq_arcmin_to_sr)/k_to_jy/sqrt(2*pi/(8*log(2))*pow(beam_fwhm_arcmin,2))/sqrt(2.);
+}
+
+// Get current date/time, format is YYYY-MM-DD.HH:mm:ss
+const std::string current_date_time() {
+    time_t     now = time(0);
+    struct tm  tstruct;
+    char       buf[80];
+    tstruct = *localtime(&now);
+    // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
+    // for more information about date/time format
+    strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+
+    return buf;
 }
 
 } // namespace

@@ -731,17 +731,11 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
         Eigen::Index i = 0;
         Eigen::Index offset;
         for (const auto &data_item : rawobs.kidsdata()) {
-            if (scan == 0) {
-                SPDLOG_INFO("init_indices {}",init_indices[i]);
-                auto slice = tula::container_utils::Slice<int>{scanindices(2 + init_indices[i],scan),
-                                                               scanindices(3,scan) + 1, std::nullopt};
-                result.push_back(load_data_item(data_item, slice));
-            }
-            else {
-                auto slice = tula::container_utils::Slice<int>{scanindices(2,scan),
-                                                               scanindices(3,scan) + 1, std::nullopt};
-                result.push_back(load_data_item(data_item, slice));
-            }
+            SPDLOG_INFO("init_indices {}",init_indices[i]);
+            auto slice = tula::container_utils::Slice<int>{scanindices(2 + init_indices[i],scan),
+                                                           scanindices(3,scan) + 1, std::nullopt};
+            result.push_back(load_data_item(data_item, slice));
+
             i++;
         }
 
@@ -904,7 +898,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
 
         for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
             auto source = data_item.filepath();
-            SPDLOG_INFO("source {}",source);
+            SPDLOG_INFO("kids file {}",source);
             try {
                 NcFile fo(source, NcFile::read);
                 auto vars = fo.getVars();
@@ -928,6 +922,15 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                 data_ts.push_back(ts.cast <double> ().col(0) + ts.cast <double> ().col(5)/1e9 +
                                   ts.cast <double> ().col(1) + (ts.cast <double> ().col(2) - ts.cast <double> ().col(4))/fpga_freq);
 
+                // remove jumps due to int32 overflow
+                for (Eigen::Index i=0; i<data_ts.back().size()-1; i++) {
+                    if ((data_ts.back()(i+1) - data_ts.back()(i)) > 1/engine().fsmp) {
+                        auto diff = data_ts.back()(i+1) - data_ts.back()(i);
+                        Eigen::VectorXd temp = data_ts.back().tail(i+1).array() - diff + 1/engine().fsmp;
+                        data_ts.back().tail(i+1) = std::move(temp);
+                    }
+                }
+
                 // get initial time
                 if (data_ts.back()(0) > init_t) {
                     init_t = data_ts.back()(0);
@@ -942,9 +945,11 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
             }
         }
 
+        // get reference timestream and get start time from others
+        // only search within first 2xfsmp samples to save time
         Eigen::Index max_index = -99;
         for (const auto &vec : data_ts) {
-            for (Eigen::Index i=0; i<vec.size(); i++) {
+            for (Eigen::Index i=0; i<2.0*engine().fsmp; i++) {
                 if (vec[i] == init_t) {
                     engine().init_indices.push_back(i);
                     if (vec[i] > max_index) {
@@ -966,7 +971,8 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
 
         Eigen::Index npts = data_ts[max_index].size();
 
-        /*for (const auto &tel_it : engine().tel_meta_data) {
+        // do the interpolation
+        for (const auto &tel_it : engine().tel_meta_data) {
             if (tel_it.first !="TelTime") {
                 Eigen::VectorXd yd = tel_meta_data[tel_it.first];
                 Eigen::VectorXd yi(npts);
@@ -974,7 +980,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                 SPDLOG_INFO("before tel_meta_data[{}] {}",tel_it.first, tel_meta_data[tel_it.first]);
                 mlinterp::interp(nd.data(), npts, // nd, ni
                                  yd.data(), yi.data(), // yd, yi
-                                 tel_meta_data["TelTime"].data(), data_ts[max_index].data()); // xd, xi
+                                 tel_meta_data["TelTime"].data(), data_ts[max_index].tail(engine().init_indices[max_index]).data()); // xd, xi
 
                 Eigen::Index mi;
                 auto max_diff = (yi.array() - yd.array()).maxCoeff(&mi);
@@ -984,7 +990,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
 
                 SPDLOG_INFO("after tel_meta_data[{}] {}",tel_it.first, tel_meta_data[tel_it.first]);
             }
-        }*/
+        }
     }
 
     // get number of maps and grouping indices
@@ -1093,7 +1099,6 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                 nw_indices.push_back(std::tuple{i, 0});
             }
         }
-
 
         if ((std::strcmp("science", engine().reduction_type.c_str()) == 0) ||
             (std::strcmp("pointing", engine().reduction_type.c_str()) == 0)) {
@@ -1900,6 +1905,8 @@ int run(const rc_t &rc) {
                         }
                     }
                 }
+
+                todproc.engine().toltec_io.make_index_file(todproc.engine().filepath + hdname);
 
                 return EXIT_SUCCESS;
             }

@@ -53,8 +53,9 @@ public:
     }
 
     template <class Engine>
-    indices_tuple_t create_rtc(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKind::RTC, Eigen::MatrixXd> &out, std::string sp,
-                                   Engine engine) {
+    indices_tuple_t create_rtc(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
+                               TCData<TCDataKind::RTC, Eigen::MatrixXd> &out, std::string sp,
+                               Engine engine) {
 
         // copy scan and telescope metadata
         out.scan_indices.data = in.scan_indices.data;
