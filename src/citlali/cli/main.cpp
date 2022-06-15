@@ -972,7 +972,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
         Eigen::Index npts = data_ts[max_index].size();
 
         // do the interpolation
-        for (const auto &tel_it : engine().tel_meta_data) {
+        /*for (const auto &tel_it : engine().tel_meta_data) {
             if (tel_it.first !="TelTime") {
                 Eigen::VectorXd yd = tel_meta_data[tel_it.first];
                 Eigen::VectorXd yi(npts);
@@ -990,7 +990,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
 
                 SPDLOG_INFO("after tel_meta_data[{}] {}",tel_it.first, tel_meta_data[tel_it.first]);
             }
-        }
+        }*/
     }
 
     // get number of maps and grouping indices
