@@ -15,11 +15,13 @@ struct DataIOError : public std::runtime_error {
     using std::runtime_error::runtime_error;
 };
 
-template <typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD, typename DerivedE, typename DerivedF, typename C>
+template <typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD, typename C, typename T>
 void append_to_netcdf(std::string filepath, Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &flag,
-                  Eigen::DenseBase<DerivedC> &lat, Eigen::DenseBase<DerivedC> &lon, Eigen::DenseBase<DerivedD> &elev,
-                  Eigen::DenseBase<DerivedE> &time, Eigen::DenseBase<DerivedF> &det_index_vector, C &calib_data, unsigned long dsize,
-                      unsigned long dstart=0, unsigned long offset=0) {
+                  Eigen::DenseBase<DerivedC> &lat, Eigen::DenseBase<DerivedC> &lon, 
+                  Eigen::DenseBase<DerivedD> &det_index_vector, 
+                  C &calib_data,
+                  T &tel_meta_data,
+                  unsigned long dsize, unsigned long dstart=0, unsigned long offset=0) {
 
     using Eigen::Index;
 
@@ -49,8 +51,22 @@ void append_to_netcdf(std::string filepath, Eigen::DenseBase<DerivedA> &data, Ei
         NcVar lat_v = fo.getVar("DY");
         NcVar lon_v = fo.getVar("DX");
 
-        NcVar e_v = fo.getVar("ELEV");
-        NcVar t_v = fo.getVar("TIME");
+        std::map<std::string, NcVar> tel_meta_vars;
+
+        std::map<std::string, std::string> nc_vars = {
+            {"TelTime", "seconds"},
+            {"TelElDes", "radians"},
+            {"ParAng", "radians"},
+            {"TelLatPhys", "radians"},
+            {"TelLonPhys", "radians"},
+            {"SourceEl", "radians"},
+            {"TelAzMap", "radians"},
+            {"TelElMap", "radians"}
+        };
+
+        for (const auto&var: nc_vars) {
+            tel_meta_vars[var.first] = fo.getVar(var.first);
+        }
 
         NcVar p_v = fo.getVar("PIXID");
 
@@ -77,8 +93,13 @@ void append_to_netcdf(std::string filepath, Eigen::DenseBase<DerivedA> &data, Ei
             lat_v.putVar(i0, s_d, lat_vec.data());
             lon_v.putVar(i0, s_d, lon_vec.data());
 
-            e_v.putVar(i02, &elev(ii));
-            t_v.putVar(i02, &time(ii));
+            //e_v.putVar(i02, &elev(ii));
+            //a_v.putVar(i02, &az(ii));
+            //t_v.putVar(i02, &time(ii));
+
+            for (const auto&var: nc_vars) {
+                tel_meta_vars[var.first].putVar(i02,&tel_meta_data[var.first](ii));
+            }  
         }
 
         for (std::size_t ii = 0; ii < TULA_SIZET(data.cols()); ++ii) {

@@ -87,6 +87,8 @@ public:
     // class for outputs
     ToltecIO toltec_io;
 
+    double temp_time_offset;
+
     // citlali config file
     tula::config::YamlConfig engine_config;
 
@@ -101,6 +103,8 @@ public:
 
     std::map<std::string,double> beammap_fluxes, beammap_uncer;
 
+    std::map<std::string, int> nc_header;
+
     std::string extinction_model;
     double tau;
 
@@ -113,7 +117,7 @@ public:
     std::string ts_chunk_type;
 
     // timestream offsets
-    std::vector<Eigen::Index> interface_sync_offset, init_indices;
+    std::vector<Eigen::Index> interface_sync_offset, init_indices, end_indices;
 
     // reduction number
     int redu_num;
@@ -295,6 +299,8 @@ public:
             }
         }
 
+        get_config(temp_time_offset,std::tuple{"timestream","offset"});
+
         get_config(nthreads,std::tuple{"runtime","n_threads"});
         get_config(filepath,std::tuple{"runtime","output_dir"});
         get_config(reduction_type,std::tuple{"runtime","reduction_type"},{"science","pointing","beammap"});
@@ -373,6 +379,7 @@ public:
         }
 
         // get mapmaking config options
+        get_config(run_maps,std::tuple{"mapmaking","enabled"});
         get_config(map_grouping,std::tuple{"mapmaking","grouping"});
         get_config(mapping_method,std::tuple{"mapmaking","method"});
 

@@ -243,6 +243,7 @@ void Observation::get_phys_pointing(tel_meta_data_t &tel_meta_data, C &center, s
 
     // get altaz physical pointing
     else if (std::strcmp("altaz", map_type.c_str()) == 0) {
+        SPDLOG_INFO("getting altaz map");
         get_phys_altaz(tel_meta_data, center);
     }
 }
@@ -294,7 +295,7 @@ void Observation::get_phys_icrs(tel_meta_data_t &tel_meta_data, C &center) {
 template <typename tel_meta_data_t, typename C>
 void Observation::get_phys_altaz(tel_meta_data_t &tel_meta_data, C &center) {
     for (Eigen::Index i = 0; i < tel_meta_data["TelAzAct"].size(); i++) {
-        if (tel_meta_data["TelAzAct"](i) - tel_meta_data["SourceAz"](i) > 0.9*2.0*pi) {
+        if ((tel_meta_data["TelAzAct"](i) - tel_meta_data["SourceAz"](i)) > 0.9*2.0*pi) {
             tel_meta_data["TelAzAct"](i) = tel_meta_data["TelAzAct"](i) - 2.0*pi;
         }
     }
@@ -311,12 +312,21 @@ void Observation::get_scanindices(tel_meta_data_t &tel_meta_data, C &center, std
 
     Eigen::Index nscans = 0;
 
+    SPDLOG_INFO("OBSPGM {}", ObsPgm);
+    SPDLOG_INFO("OBSPGM bool{}", std::strcmp("Map", ObsPgm.c_str()) == 0);
+
     // get scan indices for Raster pattern
-    if (std::strcmp("Map", ObsPgm.c_str()) == 0) {
+    if (1){//std::strcmp("Map", ObsPgm.c_str()) == 0) {
         SPDLOG_INFO("Calculating scans for Raster mode");
 
         // cast Hold signal to bool
         Eigen::Matrix<bool,Eigen::Dynamic,1> turning = tel_meta_data["Hold"].template cast<bool>();
+
+        //for(int i=0;i<turning.size();i++) turning[i] = (tel_meta_data["Hold"].template cast<int>()(i)&8);
+
+        SPDLOG_INFO("how many zeros {}",(turning.array()==0).count());
+
+        SPDLOG_INFO("turning {}", turning);
 
         // this doesn't work for some reason
         //nscans = ((turning.tail(turning.size() - 1) - turning.head(turning.size() - 1)).array() == 1).count();
@@ -327,9 +337,14 @@ void Observation::get_scanindices(tel_meta_data_t &tel_meta_data, C &center, std
             }
         }
 
+        SPDLOG_INFO("nscans {}", nscans);
+
+
         if (turning(turning.size()-1) == 0){
             nscans++;
         }
+
+        SPDLOG_INFO("nscans {}", nscans);
 
         scanindices.resize(4,nscans);
 
@@ -375,13 +390,51 @@ void Observation::get_scanindices(tel_meta_data_t &tel_meta_data, C &center, std
 
     }
 
-    // set up the 3rd and 4th scanindex rows so that we don't lose data during lowpassing
+    Eigen::Matrix<Eigen::Index,Eigen::Dynamic, Eigen::Dynamic> scanindices_temp(4,nscans); 
+    scanindices_temp = scanindices; 
+
+    // do a final check of scan length.  If a scan is
+    // less than 2s of data then delete it
+    int n_bad_scans = 0;
+    int sum = 0;
+    
+    Eigen::Matrix<bool, Eigen::Dynamic, 1> is_bad_scan(nscans);
+    for (Eigen::Index i=0; i<nscans; i++) {
+        sum=0;
+        for (Eigen::Index j=scanindices_temp(0,i); j<(scanindices_temp(1,i)+1); j++) {
+            sum += 1;
+        }
+        if(sum < 2.*fsmp) {
+            n_bad_scans++;
+            is_bad_scan(i)=1;
+        } 
+        else {
+            is_bad_scan(i) = 0;
+        }
+    }
+
+    if (n_bad_scans > 0) {
+      SPDLOG_INFO("n_bad_scans {} scans with duration less than 2 seconds detected", n_bad_scans);
+    }
+
+    int c = 0;
+    scanindices.resize(4,nscans-n_bad_scans);
+    for (Eigen::Index i=0; i<nscans; i++) {
+        if (!is_bad_scan(i)) {
+            scanindices(0,c) = scanindices_temp(0,i);
+            scanindices(1,c) = scanindices_temp(1,i);
+            c++;
+        }
+    }
+    nscans = nscans - n_bad_scans;
+
+    // set up the 3rd and 4th scanindices rows so that we don't lose data during lowpassing
     // filter_nterms is zero if lowpassing is not enabled
     scanindices.row(2) = scanindices.row(0).array() - filter_nterms;
     scanindices.row(3) = scanindices.row(1).array() + filter_nterms;
 
     // set first and last outer scan positions to the same as inner scans since there's no
     // data on either side
-    scanindices(2,0) = scanindices(0,0);
-    scanindices(3,nscans-1) = scanindices(1,nscans-1);
+    scanindices(2,0) = scanindices(0,0) + filter_nterms;
+    scanindices(3,nscans-1) = scanindices(1,nscans-1) - filter_nterms;
 }

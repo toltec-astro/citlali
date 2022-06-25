@@ -119,6 +119,7 @@ void Lali::setup() {
 
                 netCDF::NcFile fo(ts_filepath.back(), netCDF::NcFile::replace);
                 netCDF::NcDim nsmp_dim = fo.addDim("nsamples");
+                netCDF::NcDim header_dim = fo.addDim("header_dim",1);
 
                 std::vector<netCDF::NcDim> dims;
                 dims.push_back(nsmp_dim);
@@ -153,10 +154,32 @@ void Lali::setup() {
                 netCDF::NcVar bfwhm_v = fo.addVar("BFWHM",netCDF::ncDouble, dims[1]);
                 bfwhm_v.putAtt("Units","radians");
 
-                netCDF::NcVar t_v = fo.addVar("TIME",netCDF::ncDouble, nsmp_dim);
+                std::map<std::string, std::string> nc_vars = {
+                    {"TelTime", "seconds"},
+                    {"TelElDes", "radians"},
+                    {"ParAng", "radians"},
+                    {"TelLatPhys", "radians"},
+                    {"TelLonPhys", "radians"},
+                    {"SourceEl", "radians"},
+                    {"TelAzMap", "radians"},
+                    {"TelElMap", "radians"}
+                };
+
+                for (const auto&var: nc_vars) {
+                    netCDF::NcVar v = fo.addVar(var.first,netCDF::ncDouble, nsmp_dim);
+                    v.putAtt("Units",var.second);
+                }
+
+                for (const auto&var: nc_header) {
+                    netCDF::NcVar v = fo.addVar(var.first,netCDF::ncInt, header_dim);
+                    v.putVar(&var.second);
+                }
+
+                /*netCDF::NcVar t_v = fo.addVar("TIME",netCDF::ncDouble, nsmp_dim);
                 t_v.putAtt("Units","seconds");
                 netCDF::NcVar e_v = fo.addVar("ELEV",netCDF::ncDouble, nsmp_dim);
                 e_v.putAtt("Units","radians");
+                */
 
                 netCDF::NcVar data_v = fo.addVar("DATA",netCDF::ncDouble, dims);
                 data_v.putAtt("Units","MJy/sr");
@@ -200,6 +223,11 @@ auto Lali::run() {
 
         in.tel_meta_data.data["TelLatPhys"] = tel_meta_data["TelLatPhys"].segment(start_index, scan_length);
         in.tel_meta_data.data["TelLonPhys"] = tel_meta_data["TelLonPhys"].segment(start_index, scan_length);
+
+        in.tel_meta_data.data["SourceEl"] = tel_meta_data["SourceEl"].segment(start_index, scan_length);
+        
+        in.tel_meta_data.data["TelAzMap"] = tel_meta_data["TelAzMap"].segment(start_index, scan_length);
+        in.tel_meta_data.data["TelElMap"] = tel_meta_data["TelElMap"].segment(start_index, scan_length);
 
         // get hwp
         if (run_polarization) {
@@ -250,8 +278,8 @@ auto Lali::run() {
 
                     if (stokes_params.first == "I") {
                         // append to netcdf file
-                        append_to_netcdf(ts_filepath[0], out.scans.data, out.flags.data, lat, lon, out.tel_meta_data.data["TelElDes"],
-                                         out.tel_meta_data.data["TelTime"], det_index_vector, calib_data, out.scans.data.cols());
+                        append_to_netcdf(ts_filepath[0], out.scans.data, out.flags.data, lat, lon, det_index_vector, 
+                        calib_data, out.tel_meta_data.data, out.scans.data.cols());
                     }
 
                     else if (stokes_params.first == "Q") {
@@ -270,8 +298,8 @@ auto Lali::run() {
                         Eigen::Ref<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> out_q_flags =
                             out.flags.data.block(r0,cq0,nr,ncq);
 
-                        append_to_netcdf(ts_filepath[1], out_q_scans, out_q_flags, lat, lon, out.tel_meta_data.data["TelElDes"],
-                                         out.tel_meta_data.data["TelTime"], det_index_vector, calib_data,ncq,0,0);
+                        append_to_netcdf(ts_filepath[1], out_q_scans, out_q_flags, lat, lon,
+                        det_index_vector, calib_data, out.tel_meta_data.data, ncq,0,0);
 
                         // get the block of out scans that corresponds to the stokes u scans
                         Eigen::Ref<Eigen::Map<Eigen::MatrixXd>> out_u_scans =
@@ -281,8 +309,8 @@ auto Lali::run() {
                         Eigen::Ref<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> out_u_flags =
                             out.flags.data.block(r0,cu0,nr,ncq);
 
-                        append_to_netcdf(ts_filepath[2], out_u_scans, out_u_flags, lat, lon, out.tel_meta_data.data["TelElDes"],
-                                         out.tel_meta_data.data["TelTime"], det_index_vector, calib_data,ncq,0,0);
+                        append_to_netcdf(ts_filepath[2], out_u_scans, out_u_flags, lat, lon, det_index_vector, calib_data, out.tel_meta_data.data,
+                        ncq,0,0);
                     }
 
                     else if (stokes_params.first == "U") {
@@ -302,8 +330,8 @@ auto Lali::run() {
                         Eigen::Ref<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> out_q_flags =
                             out.flags.data.block(r0,cq0,nr,ncu);
 
-                        append_to_netcdf(ts_filepath[1], out_q_scans, out_q_flags, lat, lon, out.tel_meta_data.data["TelElDes"],
-                                         out.tel_meta_data.data["TelTime"], det_index_vector, calib_data,ncq,ncu-1,nr);
+                        append_to_netcdf(ts_filepath[1], out_q_scans, out_q_flags, lat, lon, det_index_vector, calib_data, out.tel_meta_data.data,
+                        ncq,ncu-1,nr);
 
                         // get the block of out scans that corresponds to the stokes u scans
                         Eigen::Ref<Eigen::Map<Eigen::MatrixXd>> out_u_scans =
@@ -313,8 +341,8 @@ auto Lali::run() {
                         Eigen::Ref<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> out_u_flags =
                             out.flags.data.block(r0,cu0,nr,ncu);
 
-                        append_to_netcdf(ts_filepath[2], out_u_scans, out_u_flags, lat, lon, out.tel_meta_data.data["TelElDes"],
-                                         out.tel_meta_data.data["TelTime"], det_index_vector, calib_data,ncq,ncu-1,nr);
+                        append_to_netcdf(ts_filepath[2], out_u_scans, out_u_flags, lat, lon, det_index_vector, 
+                        calib_data,out.tel_meta_data.data,ncq,ncu-1,nr);
                     }
                 }
             }
@@ -358,8 +386,8 @@ auto Lali::run() {
 
                     if (stokes_params.first == "I") {
                         // append to netcdf file
-                        append_to_netcdf(ts_filepath[0], out.scans.data, out.flags.data, lat, lon, out.tel_meta_data.data["TelElDes"],
-                                         out.tel_meta_data.data["TelTime"], det_index_vector, calib_data, out.scans.data.cols());
+                        append_to_netcdf(ts_filepath[0], out.scans.data, out.flags.data, lat, lon, det_index_vector, calib_data, 
+                        out.tel_meta_data.data, out.scans.data.cols());
                     }
 
                     else if (stokes_params.first == "Q") {
@@ -378,8 +406,8 @@ auto Lali::run() {
                         Eigen::Ref<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> out_q_flags =
                             out.flags.data.block(r0,cq0,nr,ncq);
 
-                        append_to_netcdf(ts_filepath[1], out_q_scans, out_q_flags, lat, lon, out.tel_meta_data.data["TelElDes"],
-                                         out.tel_meta_data.data["TelTime"], det_index_vector, calib_data,ncq,0,0);
+                        append_to_netcdf(ts_filepath[1], out_q_scans, out_q_flags, lat, lon, det_index_vector, 
+                        calib_data, out.tel_meta_data.data, ncq,0,0);
 
                              // get the block of out scans that corresponds to the stokes u scans
                         Eigen::Ref<Eigen::Map<Eigen::MatrixXd>> out_u_scans =
@@ -389,8 +417,8 @@ auto Lali::run() {
                         Eigen::Ref<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> out_u_flags =
                             out.flags.data.block(r0,cu0,nr,ncq);
 
-                        append_to_netcdf(ts_filepath[2], out_u_scans, out_u_flags, lat, lon, out.tel_meta_data.data["TelElDes"],
-                                         out.tel_meta_data.data["TelTime"], det_index_vector, calib_data,ncq,0,0);
+                        append_to_netcdf(ts_filepath[2], out_u_scans, out_u_flags, lat, lon, det_index_vector, 
+                        calib_data, out.tel_meta_data.data,ncq,0,0);
                     }
 
                     else if (stokes_params.first == "U") {
@@ -410,8 +438,8 @@ auto Lali::run() {
                         Eigen::Ref<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> out_q_flags =
                             out.flags.data.block(r0,cq0,nr,ncu);
 
-                        append_to_netcdf(ts_filepath[1], out_q_scans, out_q_flags, lat, lon, out.tel_meta_data.data["TelElDes"],
-                                         out.tel_meta_data.data["TelTime"], det_index_vector, calib_data,ncq,ncu-1,nr);
+                        append_to_netcdf(ts_filepath[1], out_q_scans, out_q_flags, lat, lon, det_index_vector, 
+                        calib_data, out.tel_meta_data.data, ncq,ncu-1,nr);
 
                              // get the block of out scans that corresponds to the stokes u scans
                         Eigen::Ref<Eigen::Map<Eigen::MatrixXd>> out_u_scans =
@@ -421,23 +449,25 @@ auto Lali::run() {
                         Eigen::Ref<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> out_u_flags =
                             out.flags.data.block(r0,cu0,nr,ncu);
 
-                        append_to_netcdf(ts_filepath[2], out_u_scans, out_u_flags, lat, lon, out.tel_meta_data.data["TelElDes"],
-                                         out.tel_meta_data.data["TelTime"], det_index_vector, calib_data,ncq,ncu-1,nr);
+                        append_to_netcdf(ts_filepath[2], out_u_scans, out_u_flags, lat, lon, det_index_vector, 
+                        calib_data,out.tel_meta_data.data,ncq,ncu-1,nr);
                     }
                 }
             }
 
-            /*Stage 3 Populate Map*/
-            if (mapping_method == "naive") {
-                {
-                    tula::logging::scoped_timeit timer("populate_maps_naive()");
-                    populate_maps_naive(out, map_index_vector, det_index_vector, this);
+            if (run_maps) {
+                /*Stage 3 Populate Map*/
+                if (mapping_method == "naive") {
+                    {
+                        tula::logging::scoped_timeit timer("populate_maps_naive()");
+                        populate_maps_naive(out, map_index_vector, det_index_vector, this);
+                    }
                 }
-            }
 
-            else if (mapping_method == "jinc") {
-                tula::logging::scoped_timeit timer("populate_maps_jinc()");
-                populate_maps_jinc(out, map_index_vector, det_index_vector, this);
+                else if (mapping_method == "jinc") {
+                    tula::logging::scoped_timeit timer("populate_maps_jinc()");
+                    populate_maps_jinc(out, map_index_vector, det_index_vector, this);
+                }
             }
         }
 
@@ -506,66 +536,68 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
         run());
 
-    SPDLOG_INFO("normalizing maps");
-    mb.normalize_maps(run_kernel,ex_name);
+    if (run_maps) {
+        SPDLOG_INFO("normalizing maps");
+        mb.normalize_maps(run_kernel,ex_name);
 
-    mb.psd.resize(mb.map_count);
-    for (Eigen::Index i=0; i < mb.map_count; i++) {
-        SPDLOG_INFO("calculating map {} psd", i);
-        PSD psd;
-        psd.cov_cut = cmb.cov_cut;
-        psd.weight_type = weighting_type;
-        psd.exmode = ex_name;
-        psd.calc_map_psd(mb.signal.at(i), mb.weight.at(i), mb.rcphys, mb.ccphys);
-        mb.psd.at(i) = std::move(psd);
-    }
+        mb.psd.resize(mb.map_count);
+        for (Eigen::Index i=0; i < mb.map_count; i++) {
+            SPDLOG_INFO("calculating map {} psd", i);
+            PSD psd;
+            psd.cov_cut = cmb.cov_cut;
+            psd.weight_type = weighting_type;
+            psd.exmode = ex_name;
+            psd.calc_map_psd(mb.signal.at(i), mb.weight.at(i), mb.rcphys, mb.ccphys);
+            mb.psd.at(i) = std::move(psd);
+        }
 
-    mb.histogram.resize(mb.map_count);
-    for (Eigen::Index i=0; i < mb.map_count; i++) {
-        SPDLOG_INFO("calculating map {} histogram", i);
-        Histogram histogram;
-        histogram.weight_type = weighting_type;
-        histogram.cov_cut = cmb.cov_cut;
-        histogram.calc_hist(mb.signal.at(i), mb.weight.at(i));
-        mb.histogram.at(i) = std::move(histogram);
-    }
+        mb.histogram.resize(mb.map_count);
+        for (Eigen::Index i=0; i < mb.map_count; i++) {
+            SPDLOG_INFO("calculating map {} histogram", i);
+            Histogram histogram;
+            histogram.weight_type = weighting_type;
+            histogram.cov_cut = cmb.cov_cut;
+            histogram.calc_hist(mb.signal.at(i), mb.weight.at(i));
+            mb.histogram.at(i) = std::move(histogram);
+        }
 
-    // do fit if map_grouping is pointing
-    if (reduction_type == "pointing") {
-        // placeholder vectors for grppi loop
-        std::vector<int> array_in_vec, array_out_vec;
-        array_in_vec.resize(mb.map_count);
+        // do fit if map_grouping is pointing
+        if (reduction_type == "pointing") {
+            // placeholder vectors for grppi loop
+            std::vector<int> array_in_vec, array_out_vec;
+            array_in_vec.resize(mb.map_count);
 
-        std::iota(array_in_vec.begin(), array_in_vec.end(), 0);
-        array_out_vec.resize(mb.map_count);
+            std::iota(array_in_vec.begin(), array_in_vec.end(), 0);
+            array_out_vec.resize(mb.map_count);
 
-        // set nparams for fit
-        Eigen::Index nparams = 6;
-        mb.pfit.setZero(nparams, mb.map_count);
-        mb.perror.setZero(nparams, mb.map_count);
+            // set nparams for fit
+            Eigen::Index nparams = 6;
+            mb.pfit.setZero(nparams, mb.map_count);
+            mb.perror.setZero(nparams, mb.map_count);
 
-        // loop through the arrays and do the fit
-        SPDLOG_INFO("fitting pointing maps");
-        grppi::map(tula::grppi_utils::dyn_ex(ex_name), array_in_vec, array_out_vec, [&](auto d) {
-            // declare fitter class for detector
-            gaussfit::MapFitter fitter;
-            // size of region to fit in pixels
-            fitter.bounding_box_pix = bounding_box_pix;
-            mb.pfit.col(d) = fitter.fit<gaussfit::MapFitter::centerValue>(mb.signal[d], mb.weight[d], calib_data);
-            mb.perror.col(d) = fitter.error;
-            return 0;});
+            // loop through the arrays and do the fit
+            SPDLOG_INFO("fitting pointing maps");
+            grppi::map(tula::grppi_utils::dyn_ex(ex_name), array_in_vec, array_out_vec, [&](auto d) {
+                // declare fitter class for detector
+                gaussfit::MapFitter fitter;
+                // size of region to fit in pixels
+                fitter.bounding_box_pix = bounding_box_pix;
+                mb.pfit.col(d) = fitter.fit<gaussfit::MapFitter::centerValue>(mb.signal[d], mb.weight[d], calib_data);
+                mb.perror.col(d) = fitter.error;
+                return 0;});
 
-        // rescale params from pixel to on-sky units
-        mb.pfit.row(1) = pixel_size*(mb.pfit.row(1).array() - (mb.ncols)/2)/ASEC_TO_RAD;
-        mb.pfit.row(2) = pixel_size*(mb.pfit.row(2).array() - (mb.nrows)/2)/ASEC_TO_RAD;
-        mb.pfit.row(3) = STD_TO_FWHM*pixel_size*(mb.pfit.row(3))/ASEC_TO_RAD;
-        mb.pfit.row(4) = STD_TO_FWHM*pixel_size*(mb.pfit.row(4))/ASEC_TO_RAD;
+            // rescale params from pixel to on-sky units
+            mb.pfit.row(1) = pixel_size*(mb.pfit.row(1).array() - (mb.ncols)/2)/ASEC_TO_RAD;
+            mb.pfit.row(2) = pixel_size*(mb.pfit.row(2).array() - (mb.nrows)/2)/ASEC_TO_RAD;
+            mb.pfit.row(3) = STD_TO_FWHM*pixel_size*(mb.pfit.row(3))/ASEC_TO_RAD;
+            mb.pfit.row(4) = STD_TO_FWHM*pixel_size*(mb.pfit.row(4))/ASEC_TO_RAD;
 
-        // rescale errors from pixel to on-sky units
-        mb.perror.row(1) = pixel_size*(mb.perror.row(1))/ASEC_TO_RAD;
-        mb.perror.row(2) = pixel_size*(mb.perror.row(2))/ASEC_TO_RAD;
-        mb.perror.row(3) = STD_TO_FWHM*pixel_size*(mb.perror.row(3))/ASEC_TO_RAD;
-        mb.perror.row(4) = STD_TO_FWHM*pixel_size*(mb.perror.row(4))/ASEC_TO_RAD;
+            // rescale errors from pixel to on-sky units
+            mb.perror.row(1) = pixel_size*(mb.perror.row(1))/ASEC_TO_RAD;
+            mb.perror.row(2) = pixel_size*(mb.perror.row(2))/ASEC_TO_RAD;
+            mb.perror.row(3) = STD_TO_FWHM*pixel_size*(mb.perror.row(3))/ASEC_TO_RAD;
+            mb.perror.row(4) = STD_TO_FWHM*pixel_size*(mb.perror.row(4))/ASEC_TO_RAD;
+        }
     }
 }
 
@@ -617,7 +649,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
             // add weight map to file
             auto weight = mout.weight.at(pp);
             f_ios.at(i).add_hdu("weight_"+stokes_params.first, weight);
-            f_ios.at(i).hdus.back()->addKey("UNIT", "(" + cunit + ")^-2", "Unit of map");
+            f_ios.at(i).hdus.back()->addKey("UNIT", "(" + cunit + ")-2", "Unit of map");
 
             // add kernel map to file
             if (run_kernel) {
@@ -713,22 +745,22 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
         if (cunit == "MJy/Sr") {
             f_ios.at(i).pfits->pHDU().addKey("to_mJy/beam", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
             f_ios.at(i).pfits->pHDU().addKey("to_Mjy/Sr", 1.0, "Conversion to MJy/Sr");
-            f_ios.at(i).pfits->pHDU().addKey("to_uK/arcmin^2", engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[i],toltec_io.bfwhm_keys[i]),
-                                             "Conversion to uK/arcmin^2");
+            f_ios.at(i).pfits->pHDU().addKey("to_uK/arcmin2", engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[i],toltec_io.bfwhm_keys[i]),
+                                             "Conversion to uK/arcmin2");
         }
         else if (cunit == "mJy/beam") {
             f_ios.at(i).pfits->pHDU().addKey("to_mJy/beam", 1.0, "Conversion to mJy/beam");
             f_ios.at(i).pfits->pHDU().addKey("to_MJy/Sr", 1/(toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC), "Conversion to MJy/Sr");
-            f_ios.at(i).pfits->pHDU().addKey("to_uK/arcmin^2", MJY_SR_TO_mJY_ASEC/engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[i],toltec_io.bfwhm_keys[i]),
-                                             "Conversion to uK/arcmin^2");
+            f_ios.at(i).pfits->pHDU().addKey("to_uK/arcmin2", MJY_SR_TO_mJY_ASEC/engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[i],toltec_io.bfwhm_keys[i]),
+                                             "Conversion to uK/arcmin2");
         }
-        else if (cunit == "uK/arcmin^2") {
+        else if (cunit == "uK/arcmin2") {
             f_ios.at(i).pfits->pHDU().addKey("to_mJy/beam", MJY_SR_TO_mJY_ASEC/engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[i],
                                                                                                             toltec_io.bfwhm_keys[i]),
                                              "Conversion to mJy/beam");
             f_ios.at(i).pfits->pHDU().addKey("to_MJy/Sr", 1/engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[i],toltec_io.bfwhm_keys[i]),
                                              "Conversion to MJy/Sr");
-            f_ios.at(i).pfits->pHDU().addKey("to_uK/arcmin^2", 1.0, "Conversion to uK/arcmin^2");
+            f_ios.at(i).pfits->pHDU().addKey("to_uK/arcmin2", 1.0, "Conversion to uK/arcmin2");
         }
 
         // add source ra

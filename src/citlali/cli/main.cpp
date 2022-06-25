@@ -634,7 +634,8 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
               {"modelspec",
                config.get_str(std::tuple{"fitter", "modelspec"})}}},
           m_solver{Solver::Config{
-              {"fitreportdir", "/dev/null"},
+              // {"fitreportdir", "/dev/null"},
+              {"fitreportdir", this->config().get_str(std::tuple{"solver", "fitreportdir"})},
               {"exmode", "seq"},
               {"extra_output", extra_output},
           }} {}
@@ -727,16 +728,18 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
                      Eigen::DenseBase<Derived> &scanindices,
                      std::vector<Eigen::Index> &init_indices) {
 
+        SPDLOG_INFO("scan in load_rawobs {}", scan);
+        SPDLOG_INFO("scanindices {} {} in load_rawobs", scanindices(2,scan), scanindices(3,scan) + 1);
+
         std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> result;
-        Eigen::Index i = 0;
         Eigen::Index offset;
         for (const auto &data_item : rawobs.kidsdata()) {
-            SPDLOG_INFO("init_indices {}",init_indices[i]);
-            auto slice = tula::container_utils::Slice<int>{scanindices(2 + init_indices[i],scan),
+            //SPDLOG_INFO("init_indices {}",init_indices[i]);
+            auto slice = tula::container_utils::Slice<int>{scanindices(2,scan),
                                                            scanindices(3,scan) + 1, std::nullopt};
             result.push_back(load_data_item(data_item, slice));
 
-            i++;
+            //i++;
         }
 
         /*std::vector<int> result_in_vec, result_out_vec;
@@ -871,16 +874,18 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
         map_extent_t map_extent;
         map_coord_t map_coord;
 
-        auto [nr, nc, rcp, ccp] = engine().get_dims(
-            engine().tel_meta_data, engine().calib_data, engine().scanindices,
-            engine().ex_name, engine().reduction_type, engine().x_size_pix,
-            engine().y_size_pix, engine().pointing_offsets);
+        if (engine().run_maps) {
+            auto [nr, nc, rcp, ccp] = engine().get_dims(
+                engine().tel_meta_data, engine().calib_data, engine().scanindices,
+                engine().ex_name, engine().reduction_type, engine().x_size_pix,
+                engine().y_size_pix, engine().pointing_offsets);
 
-        map_extent.push_back(nr);
-        map_extent.push_back(nc);
+            map_extent.push_back(nr);
+            map_extent.push_back(nc);
 
-        map_coord.push_back(rcp);
-        map_coord.push_back(ccp);
+            map_coord.push_back(rcp);
+            map_coord.push_back(ccp);
+        }
 
         return std::tuple{map_extent, map_coord};
     }
@@ -890,12 +895,19 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
         using namespace netCDF;
         using namespace netCDF::exceptions;
 
-        std::vector<Eigen::VectorXd> data_ts;
+        // vector storing calculated, aligned network times
+        std::vector<Eigen::VectorXd> nw_ts;
 
-        std::vector<size_t> start {0,0};
+        // initial times for all networks
+        std::vector<double> nw_t0s;
+        // final time for all networks
+        std::vector<double> nw_tns;
 
-        double init_t = -99;
+        double max_t0s = -99;
+        double min_tns = std::numeric_limits<double>::max();
+        Eigen::Index max_t0s_i, min_tns_i;
 
+        Eigen::Index nw = 0;
         for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
             auto source = data_item.filepath();
             SPDLOG_INFO("kids file {}",source);
@@ -903,38 +915,79 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                 NcFile fo(source, NcFile::read);
                 auto vars = fo.getVars();
 
+                int obsnum;
+                vars.find("Header.Toltec.ObsNum")->second.getVar(&obsnum);
+                engine().nc_header["ObsNum"] = obsnum;
+
+                int sub_obsnum;
+                vars.find("Header.Toltec.SubObsNum")->second.getVar(&sub_obsnum);
+                engine().nc_header["SubObsNum"] = sub_obsnum;
+
+                int scan_num;
+                vars.find("Header.Toltec.ScanNum")->second.getVar(&scan_num);
+                engine().nc_header["ScanNum"] = scan_num;
+
+                int roach_index;
+                vars.find("Header.Toltec.RoachIndex")->second.getVar(&roach_index);
+                engine().nc_header["RoachIndex"] = roach_index;
+
                 Eigen::Index ntimes = vars.find("Data.Toltec.Ts")->second.getDim(0).getSize();
                 Eigen::Index nvars = vars.find("Data.Toltec.Ts")->second.getDim(1).getSize();
 
                 size_t ntimes_t = ntimes;
-                std::vector<size_t> count {ntimes_t,6};
 
-                Eigen::Matrix<int,Eigen::Dynamic,Eigen::Dynamic> ts(nvars,count[0]);
+                Eigen::Matrix<int,Eigen::Dynamic,Eigen::Dynamic> ts(nvars,ntimes);
 
-                vars.find("Data.Toltec.Ts")->second.getVar(start,count,ts.data());
+                vars.find("Data.Toltec.Ts")->second.getVar(ts.data());
 
                 ts.transposeInPlace();
 
                 double fpga_freq;
                 vars.find("Header.Toltec.FpgaFreq")->second.getVar(&fpga_freq);
-                //SPDLOG_INFO("fpga_freq {}",fpga_freq);
 
-                data_ts.push_back(ts.cast <double> ().col(0) + ts.cast <double> ().col(5)/1e9 +
-                                  ts.cast <double> ().col(1) + (ts.cast <double> ().col(2) - ts.cast <double> ().col(4))/fpga_freq);
+                // sec part of time
+                auto sec0 = ts.cast <double> ().col(0);
+                // nanosec part of time
+                auto nsec0 = ts.cast <double> ().col(5);
+                // pps count
+                auto pps = ts.cast <double> ().col(1);
+                auto msec = ts.cast <double> ().col(2)/fpga_freq;
+                auto count = ts.cast <double> ().col(3);
+                auto pps_msec = ts.cast <double> ().col(4)/fpga_freq;
+                auto t0 = sec0 + nsec0*1e-9;
 
-                // remove jumps due to int32 overflow
-                for (Eigen::Index i=0; i<data_ts.back().size()-1; i++) {
-                    if ((data_ts.back()(i+1) - data_ts.back()(i)) > 1/engine().fsmp) {
-                        auto diff = data_ts.back()(i+1) - data_ts.back()(i);
-                        Eigen::VectorXd temp = data_ts.back().tail(i+1).array() - diff + 1/engine().fsmp;
-                        data_ts.back().tail(i+1) = std::move(temp);
-                    }
+                // shift start time
+                int start_t = int(sec0[0] + nsec0[0]*1e-9 - 0.5);
+                // convert back to double for Eigen
+                double start_t_dbl = start_t;
+                
+                Eigen::VectorXd dt = msec - pps_msec;
+                
+                // remove overflow due to int32
+                dt = (dt.array() < 0).select(msec.array() - pps_msec.array() + (pow(2.0,32)-1)/fpga_freq,msec - pps_msec);
+                
+                // absolute aligned network time
+                nw_ts.push_back(start_t_dbl + pps.array() + dt.array() + engine().temp_time_offset);
+
+                // get start time of nw
+                nw_t0s.push_back(nw_ts.back()[0]);
+
+                // get end time of nw
+                nw_tns.push_back(nw_ts.back()[ntimes-1]);
+
+                // get global max start time and index
+                if (nw_t0s.back() > max_t0s) {
+                    max_t0s = nw_t0s.back();
+                    max_t0s_i = nw;
                 }
 
-                // get initial time
-                if (data_ts.back()(0) > init_t) {
-                    init_t = data_ts.back()(0);
+                // get global min end time and index
+                if (nw_tns.back() < min_tns) {
+                    min_tns = nw_tns.back();
+                    min_tns_i = nw;
                 }
+
+                nw++;
 
                 fo.close();
 
@@ -945,34 +998,26 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
             }
         }
 
-        // get reference timestream and get start time from others
-        // only search within first 2xfsmp samples to save time
-        Eigen::Index max_index = -99;
-        for (const auto &vec : data_ts) {
-            for (Eigen::Index i=0; i<2.0*engine().fsmp; i++) {
-                if (vec[i] == init_t) {
-                    engine().init_indices.push_back(i);
-                    if (vec[i] > max_index) {
-                        max_index = i;
-                    }
-                }
-            }
+        for (Eigen::Index i=0; i<nw_t0s.size(); i++) {
+            auto si = (abs(nw_ts[i].array() - max_t0s)).minCoeff();
+            engine().init_indices.push_back(si);
+
+            auto ei = (abs(nw_ts[i].array() - min_tns)).minCoeff();
+            engine().end_indices.push_back(ei);
         }
 
-        SPDLOG_INFO("init_t {} init_indices {}",init_t, engine().init_indices);
+        SPDLOG_INFO("init_indices {}",engine().init_indices);
+        SPDLOG_INFO("end_indices {}",engine().end_indices);
 
-        SPDLOG_INFO("tel_meta_data[TelTime] {}",tel_meta_data["TelTime"]);
-
-        Eigen::Index mii;
-        auto max_diffi = (tel_meta_data["TelTime"].array() - data_ts[max_index].array()).maxCoeff(&mii);
-        SPDLOG_INFO("max diffi {} mii{}",max_diffi,mii);
+        // size of telescope data
         Eigen::Matrix<Eigen::Index,1,1> nd;
         nd << engine().tel_meta_data["TelTime"].size();
 
-        Eigen::Index npts = data_ts[max_index].size();
+        // size of kids data
+        Eigen::Index npts = nw_ts[0].size();
 
         // do the interpolation
-        /*for (const auto &tel_it : engine().tel_meta_data) {
+        for (const auto &tel_it : engine().tel_meta_data) {
             if (tel_it.first !="TelTime") {
                 Eigen::VectorXd yd = tel_meta_data[tel_it.first];
                 Eigen::VectorXd yi(npts);
@@ -980,17 +1025,16 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                 SPDLOG_INFO("before tel_meta_data[{}] {}",tel_it.first, tel_meta_data[tel_it.first]);
                 mlinterp::interp(nd.data(), npts, // nd, ni
                                  yd.data(), yi.data(), // yd, yi
-                                 tel_meta_data["TelTime"].data(), data_ts[max_index].tail(engine().init_indices[max_index]).data()); // xd, xi
-
-                Eigen::Index mi;
-                auto max_diff = (yi.array() - yd.array()).maxCoeff(&mi);
-                SPDLOG_INFO("max diff {} mi {}",max_diff,mi);
+                                 tel_meta_data["TelTime"].data(), nw_ts[0].data()); // xd, xi
 
                 tel_meta_data[tel_it.first] = std::move(yi);
 
                 SPDLOG_INFO("after tel_meta_data[{}] {}",tel_it.first, tel_meta_data[tel_it.first]);
             }
-        }*/
+        }
+
+        // set telescope time to aligned kids time
+        tel_meta_data["TelTime"] = nw_ts[0];
     }
 
     // get number of maps and grouping indices
@@ -1343,6 +1387,13 @@ int run(const rc_t &rc) {
                     todproc.engine().get_phys_pointing(todproc.engine().tel_meta_data, todproc.engine().source_center,
                                                        todproc.engine().map_type);
 
+                    SPDLOG_INFO("got physical pointng");
+                    SPDLOG_INFO("tel_meta_data {}",todproc.engine().tel_meta_data);
+                    SPDLOG_INFO("source_center {}",todproc.engine().source_center);
+
+                    // align telescope meta data with detectors timestreams
+                    todproc.align_timestreams(rawobs,todproc.engine().tel_meta_data);
+
                     // get scanindices
                     todproc.get_scanindicies(rawobs);
                     SPDLOG_INFO("todproc.engine().scanindices {}", todproc.engine().scanindices);
@@ -1413,7 +1464,9 @@ int run(const rc_t &rc) {
                 // set up coadded map buffer
                 if (todproc.engine().run_coadd) {
                     SPDLOG_INFO("setup coadded map buffer");
-                    todproc.setup_coadd_map_buffer(map_coords, map_counts.front());
+                    if (todproc.engine().run_maps) {
+                        todproc.setup_coadd_map_buffer(map_coords, map_counts.front());
+                    }
 
                     std::string rdname = hdname + "coadded/raw/";
                     todproc.engine().toltec_io.setup_output_directory(todproc.engine().filepath,rdname);
@@ -1493,7 +1546,9 @@ int run(const rc_t &rc) {
                     todproc.engine().nobs = i;
 
                     // set up map buffer for current observation
-                    todproc.setup_map_buffer(map_extents[i], map_coords[i], map_counts[i]);
+                    if (todproc.engine().run_maps) {
+                        todproc.setup_map_buffer(map_extents[i], map_coords[i], map_counts[i]);
+                    }
 
                     // this is needed to figure out the data sample rate
                     // and number of detectors
@@ -1586,6 +1641,7 @@ int run(const rc_t &rc) {
                     todproc.engine().get_phys_pointing(todproc.engine().tel_meta_data, todproc.engine().source_center,
                                                        todproc.engine().map_type);
 
+
                     // align telescope meta data with detectors timestreams
                     todproc.align_timestreams(rawobs,todproc.engine().tel_meta_data);
 
@@ -1664,244 +1720,248 @@ int run(const rc_t &rc) {
                     }
 
                     // generate observation output files
-                    {
-                        tula::logging::scoped_timeit timer("engine obs output()");
-                        todproc.engine().template output<EngineBase::obs>(todproc.engine().mb, todproc.engine().fits_ios,
-                                                                          todproc.engine().noise_fits_ios,false);
-                    }
-
-                    // coadd current map buffer into coadded map buffer
-                    if (todproc.engine().run_coadd) {
+                    if (todproc.engine().run_maps) {
                         {
-                            tula::logging::scoped_timeit timer("engine coadd()");
-                            todproc.engine().cmb.coadd(todproc.engine().mb, todproc.engine().dfsmp, todproc.engine().run_kernel);
+                            tula::logging::scoped_timeit timer("engine obs output()");
+                            todproc.engine().template output<EngineBase::obs>(todproc.engine().mb, todproc.engine().fits_ios,
+                                                                            todproc.engine().noise_fits_ios,false);
+                        }
+
+                        // coadd current map buffer into coadded map buffer
+                        if (todproc.engine().run_coadd) {
+                            {
+                                tula::logging::scoped_timeit timer("engine coadd()");
+                                todproc.engine().cmb.coadd(todproc.engine().mb, todproc.engine().dfsmp, todproc.engine().run_kernel);
+                            }
                         }
                     }
                 }
 
-                if (todproc.engine().run_coadd) {
-                    // normalize coadded maps
-                    todproc.engine().cmb.normalize_maps(todproc.engine().run_kernel);
+                if (todproc.engine().run_maps) {
+                    if (todproc.engine().run_coadd) {
+                        // normalize coadded maps
+                        todproc.engine().cmb.normalize_maps(todproc.engine().run_kernel);
 
-                    // coadd histogram and psd
-                    Eigen::Index i = 0;
-                    for (auto const& arr: todproc.engine().toltec_io.name_keys) {
-                        SPDLOG_INFO("calculating coadded map psds and hists for map {}",i);
-                        PSD psd;
-                        psd.weight_type = todproc.engine().weighting_type;
-                        psd.cov_cut = todproc.engine().cmb.cov_cut;
-                        psd.exmode = todproc.engine().ex_name;
-                        psd.calc_map_psd(todproc.engine().cmb.signal.at(i), todproc.engine().cmb.weight.at(i), todproc.engine().cmb.rcphys,
-                                         todproc.engine().cmb.ccphys);
-                        todproc.engine().cmb.psd.push_back(std::move(psd));
+                        // coadd histogram and psd
+                        Eigen::Index i = 0;
+                        for (auto const& arr: todproc.engine().toltec_io.name_keys) {
+                            SPDLOG_INFO("calculating coadded map psds and hists for map {}",i);
+                            PSD psd;
+                            psd.weight_type = todproc.engine().weighting_type;
+                            psd.cov_cut = todproc.engine().cmb.cov_cut;
+                            psd.exmode = todproc.engine().ex_name;
+                            psd.calc_map_psd(todproc.engine().cmb.signal.at(i), todproc.engine().cmb.weight.at(i), todproc.engine().cmb.rcphys,
+                                            todproc.engine().cmb.ccphys);
+                            todproc.engine().cmb.psd.push_back(std::move(psd));
 
-                        Histogram hist;
-                        hist.weight_type = todproc.engine().weighting_type;
-                        hist.cov_cut = todproc.engine().cmb.cov_cut;
-                        hist.calc_hist(todproc.engine().cmb.signal.at(i), todproc.engine().cmb.weight.at(i));
-                        todproc.engine().cmb.histogram.push_back(std::move(hist));
+                            Histogram hist;
+                            hist.weight_type = todproc.engine().weighting_type;
+                            hist.cov_cut = todproc.engine().cmb.cov_cut;
+                            hist.calc_hist(todproc.engine().cmb.signal.at(i), todproc.engine().cmb.weight.at(i));
+                            todproc.engine().cmb.histogram.push_back(std::move(hist));
 
-                        SPDLOG_INFO("calculating noise map psds and hists for map {}", i);
-                        if (todproc.engine().run_noise) {
-                            // noise average histogram and psd
-                            std::vector<PSD> psd_vec;
-                            std::vector<Histogram> hist_vec;
-
-                            todproc.engine().cmb.noise_psd.push_back(psd_vec);
-                            todproc.engine().cmb.noise_hist.push_back(hist_vec);
-
-                            PSD noise_avg_psd;
-                            Histogram noise_avg_hist;
-
-                            // loop through noise maps and get psd
-                            for (Eigen::Index j = 0; j < todproc.engine().cmb.nnoise; j++) {
-                                PSD psd;
-                                psd.cov_cut = todproc.engine().cmb.cov_cut;
-                                psd.exmode = todproc.engine().ex_name;
-                                psd.weight_type = todproc.engine().weighting_type;
-
-                                Histogram hist;
-                                hist.cov_cut = todproc.engine().cmb.cov_cut;
-                                hist.weight_type = todproc.engine().weighting_type;
-
-                                Eigen::Tensor<double, 2> out = todproc.engine().cmb.noise.at(i).chip(j, 2);
-                                Eigen::Map<Eigen::MatrixXd> noise(out.data(), out.dimension(0), out.dimension(1));
-
-                                psd.calc_map_psd(noise, todproc.engine().cmb.weight.at(i), todproc.engine().cmb.rcphys,
-                                                 todproc.engine().cmb.ccphys);
-                                todproc.engine().cmb.noise_psd.at(i).push_back(std::move(psd));
-
-                                hist.calc_hist(noise, todproc.engine().cmb.weight.at(i));
-                                todproc.engine().cmb.noise_hist.at(i).push_back(std::move(hist));
-
-                                if (j == 0) {
-                                    noise_avg_psd.psd = todproc.engine().cmb.noise_psd.at(i).back().psd;
-                                    noise_avg_psd.psd_freq = todproc.engine().cmb.noise_psd.at(i).back().psd_freq;
-                                    noise_avg_psd.psd2d = todproc.engine().cmb.noise_psd.at(i).back().psd2d;
-                                    noise_avg_psd.psd2d_freq = todproc.engine().cmb.noise_psd.at(i).back().psd2d_freq;
-
-                                    noise_avg_hist.hist_vals = todproc.engine().cmb.noise_hist.at(i).back().hist_vals;
-                                    noise_avg_hist.hist_bins = todproc.engine().cmb.noise_hist.at(i).back().hist_bins;
-
-                                }
-
-                                else {
-                                    noise_avg_psd.psd = noise_avg_psd.psd + todproc.engine().cmb.noise_psd.at(i).back().psd;
-                                    noise_avg_psd.psd2d = noise_avg_psd.psd2d + todproc.engine().cmb.noise_psd.at(i).back().psd2d /
-                                            todproc.engine().cmb.nnoise;
-                                    noise_avg_psd.psd2d_freq = noise_avg_psd.psd2d_freq + todproc.engine()
-                                                .cmb.noise_psd.at(i).back().psd2d_freq / todproc.engine().cmb.nnoise;
-
-                                    noise_avg_hist.hist_vals = noise_avg_hist.hist_vals + todproc.engine().cmb.noise_hist.at(i).back().hist_vals;
-                                }
-                            }
-
-                            noise_avg_psd.psd = noise_avg_psd.psd / todproc.engine().cmb.nnoise;
-                            todproc.engine().cmb.noise_avg_psd.push_back(noise_avg_psd);
-
-                            noise_avg_hist.hist_vals = noise_avg_hist.hist_vals / todproc.engine().cmb.nnoise;
-                            todproc.engine().cmb.noise_avg_hist.push_back(noise_avg_hist);
-                        }
-                        i++;
-                    }
-
-                    // generate coadd output files
-                    {
-                        tula::logging::scoped_timeit timer("engine coadd output()");
-                        todproc.engine().template output<EngineBase::coadd>(todproc.engine().cmb, todproc.engine().coadd_fits_ios,
-                                                                            todproc.engine().noise_fits_ios,false);
-                    }
-
-                    if (todproc.engine().run_coadd_filter) {
-                        // filter coadd maps
-                        {
-                            tula::logging::scoped_timeit timer("wiener filter");
-                            todproc.engine().wiener_filter.exmode = todproc.engine().ex_name;
-
-                            Eigen::Index i = 0;
-                            for (auto const& arr: todproc.engine().toltec_io.name_keys) {
-                                todproc.engine().wiener_filter.make_template(todproc.engine().cmb,todproc.engine().calib_data,
-                                                                             todproc.engine().gaussian_template_fwhm_rad[todproc.engine().toltec_io.name_keys[arr.first]],i);
-                                todproc.engine().wiener_filter.filter_coaddition(todproc.engine().cmb, i);
-
-                                // filter noise maps
-                                if (todproc.engine().run_noise) {
-                                    tula::logging::scoped_timeit timer("filter_noise()");
-                                    for (Eigen::Index j = 0;j < todproc.engine().cmb.nnoise; j++) {
-                                        todproc.engine().wiener_filter.filter_noise(todproc.engine().cmb, i, j);
-                                    }
-                                }
-                                i++;
-                            }
-
+                            SPDLOG_INFO("calculating noise map psds and hists for map {}", i);
                             if (todproc.engine().run_noise) {
-                                if (todproc.engine().wiener_filter.normalize_error) {
-                                    SPDLOG_INFO("normalizing noise map errors");
-                                    todproc.engine().cmb.normalize_noise_map_errors(todproc.engine().weighting_type);
-                                    SPDLOG_INFO("calculating average filtered rms");
-                                    todproc.engine().cmb.calc_average_filtered_rms(todproc.engine().weighting_type);
-                                    SPDLOG_INFO("normalizing errors");
-                                    todproc.engine().cmb.normalize_errors(todproc.engine().weighting_type);
-                                }
+                                // noise average histogram and psd
+                                std::vector<PSD> psd_vec;
+                                std::vector<Histogram> hist_vec;
 
-                                // clear psd and histogram vectors
-                                todproc.engine().cmb.psd.clear();
-                                todproc.engine().cmb.histogram.clear();
+                                todproc.engine().cmb.noise_psd.push_back(psd_vec);
+                                todproc.engine().cmb.noise_hist.push_back(hist_vec);
 
-                                todproc.engine().cmb.noise_psd.clear();
-                                todproc.engine().cmb.noise_hist.clear();
+                                PSD noise_avg_psd;
+                                Histogram noise_avg_hist;
 
-                                todproc.engine().cmb.noise_avg_psd.clear();
-                                todproc.engine().cmb.noise_avg_hist.clear();
-
-                                // coadd histogram and psd
-                                for (Eigen::Index i = 0; i < todproc.engine().cmb.map_count; i++) {
-                                    SPDLOG_INFO("calculating coadded map psds and hists for map {}",i);
+                                // loop through noise maps and get psd
+                                for (Eigen::Index j = 0; j < todproc.engine().cmb.nnoise; j++) {
                                     PSD psd;
-                                    psd.weight_type = todproc.engine().weighting_type;
                                     psd.cov_cut = todproc.engine().cmb.cov_cut;
                                     psd.exmode = todproc.engine().ex_name;
-                                    psd.calc_map_psd(todproc.engine().cmb.signal.at(i), todproc.engine().cmb.weight.at(i), todproc.engine().cmb.rcphys,
-                                                     todproc.engine().cmb.ccphys);
-                                    todproc.engine().cmb.psd.push_back(std::move(psd));
+                                    psd.weight_type = todproc.engine().weighting_type;
 
                                     Histogram hist;
-                                    hist.weight_type = todproc.engine().weighting_type;
                                     hist.cov_cut = todproc.engine().cmb.cov_cut;
-                                    hist.calc_hist(todproc.engine().cmb.signal.at(i), todproc.engine().cmb.weight.at(i));
-                                    todproc.engine().cmb.histogram.push_back(std::move(hist));
+                                    hist.weight_type = todproc.engine().weighting_type;
 
-                                    SPDLOG_INFO("calculating noise map psds and hists for map {}", i);
+                                    Eigen::Tensor<double, 2> out = todproc.engine().cmb.noise.at(i).chip(j, 2);
+                                    Eigen::Map<Eigen::MatrixXd> noise(out.data(), out.dimension(0), out.dimension(1));
+
+                                    psd.calc_map_psd(noise, todproc.engine().cmb.weight.at(i), todproc.engine().cmb.rcphys,
+                                                    todproc.engine().cmb.ccphys);
+                                    todproc.engine().cmb.noise_psd.at(i).push_back(std::move(psd));
+
+                                    hist.calc_hist(noise, todproc.engine().cmb.weight.at(i));
+                                    todproc.engine().cmb.noise_hist.at(i).push_back(std::move(hist));
+
+                                    if (j == 0) {
+                                        noise_avg_psd.psd = todproc.engine().cmb.noise_psd.at(i).back().psd;
+                                        noise_avg_psd.psd_freq = todproc.engine().cmb.noise_psd.at(i).back().psd_freq;
+                                        noise_avg_psd.psd2d = todproc.engine().cmb.noise_psd.at(i).back().psd2d;
+                                        noise_avg_psd.psd2d_freq = todproc.engine().cmb.noise_psd.at(i).back().psd2d_freq;
+
+                                        noise_avg_hist.hist_vals = todproc.engine().cmb.noise_hist.at(i).back().hist_vals;
+                                        noise_avg_hist.hist_bins = todproc.engine().cmb.noise_hist.at(i).back().hist_bins;
+
+                                    }
+
+                                    else {
+                                        noise_avg_psd.psd = noise_avg_psd.psd + todproc.engine().cmb.noise_psd.at(i).back().psd;
+                                        noise_avg_psd.psd2d = noise_avg_psd.psd2d + todproc.engine().cmb.noise_psd.at(i).back().psd2d /
+                                                todproc.engine().cmb.nnoise;
+                                        noise_avg_psd.psd2d_freq = noise_avg_psd.psd2d_freq + todproc.engine()
+                                                    .cmb.noise_psd.at(i).back().psd2d_freq / todproc.engine().cmb.nnoise;
+
+                                        noise_avg_hist.hist_vals = noise_avg_hist.hist_vals + todproc.engine().cmb.noise_hist.at(i).back().hist_vals;
+                                    }
+                                }
+
+                                noise_avg_psd.psd = noise_avg_psd.psd / todproc.engine().cmb.nnoise;
+                                todproc.engine().cmb.noise_avg_psd.push_back(noise_avg_psd);
+
+                                noise_avg_hist.hist_vals = noise_avg_hist.hist_vals / todproc.engine().cmb.nnoise;
+                                todproc.engine().cmb.noise_avg_hist.push_back(noise_avg_hist);
+                            }
+                            i++;
+                        }
+
+                        // generate coadd output files
+                        {
+                            tula::logging::scoped_timeit timer("engine coadd output()");
+                            todproc.engine().template output<EngineBase::coadd>(todproc.engine().cmb, todproc.engine().coadd_fits_ios,
+                                                                                todproc.engine().noise_fits_ios,false);
+                        }
+
+                        if (todproc.engine().run_coadd_filter) {
+                            // filter coadd maps
+                            {
+                                tula::logging::scoped_timeit timer("wiener filter");
+                                todproc.engine().wiener_filter.exmode = todproc.engine().ex_name;
+
+                                Eigen::Index i = 0;
+                                for (auto const& arr: todproc.engine().toltec_io.name_keys) {
+                                    todproc.engine().wiener_filter.make_template(todproc.engine().cmb,todproc.engine().calib_data,
+                                                                                todproc.engine().gaussian_template_fwhm_rad[todproc.engine().toltec_io.name_keys[arr.first]],i);
+                                    todproc.engine().wiener_filter.filter_coaddition(todproc.engine().cmb, i);
+
+                                    // filter noise maps
                                     if (todproc.engine().run_noise) {
-                                        // noise average histogram and psd
-                                        std::vector<PSD> psd_vec;
-                                        std::vector<Histogram> hist_vec;
-
-                                        todproc.engine().cmb.noise_psd.push_back(psd_vec);
-                                        todproc.engine().cmb.noise_hist.push_back(hist_vec);
-
-                                        PSD noise_avg_psd;
-                                        Histogram noise_avg_hist;
-
-                                        // loop through noise maps and get psd
-                                        for (Eigen::Index j = 0; j < todproc.engine().cmb.nnoise; j++) {
-                                            PSD psd;
-                                            psd.weight_type = todproc.engine().weighting_type;
-                                            psd.cov_cut = todproc.engine().cmb.cov_cut;
-                                            psd.exmode = todproc.engine().ex_name;
-
-                                            Histogram hist;
-                                            hist.weight_type = todproc.engine().weighting_type;
-                                            hist.cov_cut = todproc.engine().cmb.cov_cut;
-
-                                            Eigen::Tensor<double, 2> out = todproc.engine().cmb.noise.at(i).chip(j, 2);
-                                            Eigen::Map<Eigen::MatrixXd> noise(out.data(), out.dimension(0), out.dimension(1));
-
-                                            psd.calc_map_psd(noise, todproc.engine().cmb.weight.at(i), todproc.engine().cmb.rcphys,
-                                                             todproc.engine().cmb.ccphys);
-                                            todproc.engine().cmb.noise_psd.at(i).push_back(std::move(psd));
-
-                                            hist.calc_hist(noise, todproc.engine().cmb.weight.at(i));
-                                            todproc.engine().cmb.noise_hist.at(i).push_back(std::move(hist));
-
-                                            if (j == 0) {
-                                                noise_avg_psd.psd = todproc.engine().cmb.noise_psd.at(i).back().psd;
-                                                noise_avg_psd.psd_freq = todproc.engine().cmb.noise_psd.at(i).back().psd_freq;
-                                                noise_avg_psd.psd2d = todproc.engine().cmb.noise_psd.at(i).back().psd2d;
-                                                noise_avg_psd.psd2d_freq = todproc.engine().cmb.noise_psd.at(i).back().psd2d_freq;
-
-                                                noise_avg_hist.hist_vals = todproc.engine().cmb.noise_hist.at(i).back().hist_vals;
-                                                noise_avg_hist.hist_bins = todproc.engine().cmb.noise_hist.at(i).back().hist_bins;
-                                            }
-
-                                            else {
-                                                noise_avg_psd.psd = noise_avg_psd.psd + todproc.engine().cmb.noise_psd.at(i).back().psd;
-                                                noise_avg_psd.psd2d = noise_avg_psd.psd2d + todproc.engine().cmb.noise_psd.at(i).back().psd2d /
-                                                                                                todproc.engine().cmb.nnoise;
-                                                noise_avg_psd.psd2d_freq = noise_avg_psd.psd2d_freq +
-                                                                           todproc.engine().cmb.noise_psd.at(i).back().psd2d_freq / todproc.engine().cmb.nnoise;
-
-                                                noise_avg_hist.hist_vals = noise_avg_hist.hist_vals + todproc.engine().cmb.noise_hist.at(i).back().hist_vals;
-
-                                            }
+                                        tula::logging::scoped_timeit timer("filter_noise()");
+                                        for (Eigen::Index j = 0;j < todproc.engine().cmb.nnoise; j++) {
+                                            todproc.engine().wiener_filter.filter_noise(todproc.engine().cmb, i, j);
                                         }
+                                    }
+                                    i++;
+                                }
 
-                                        noise_avg_psd.psd = noise_avg_psd.psd / todproc.engine().cmb.nnoise;
-                                        todproc.engine().cmb.noise_avg_psd.push_back(noise_avg_psd);
+                                if (todproc.engine().run_noise) {
+                                    if (todproc.engine().wiener_filter.normalize_error) {
+                                        SPDLOG_INFO("normalizing noise map errors");
+                                        todproc.engine().cmb.normalize_noise_map_errors(todproc.engine().weighting_type);
+                                        SPDLOG_INFO("calculating average filtered rms");
+                                        todproc.engine().cmb.calc_average_filtered_rms(todproc.engine().weighting_type);
+                                        SPDLOG_INFO("normalizing errors");
+                                        todproc.engine().cmb.normalize_errors(todproc.engine().weighting_type);
+                                    }
 
-                                        noise_avg_hist.hist_vals = noise_avg_hist.hist_vals / todproc.engine().cmb.nnoise;
-                                        todproc.engine().cmb.noise_avg_hist.push_back(noise_avg_hist);
+                                    // clear psd and histogram vectors
+                                    todproc.engine().cmb.psd.clear();
+                                    todproc.engine().cmb.histogram.clear();
+
+                                    todproc.engine().cmb.noise_psd.clear();
+                                    todproc.engine().cmb.noise_hist.clear();
+
+                                    todproc.engine().cmb.noise_avg_psd.clear();
+                                    todproc.engine().cmb.noise_avg_hist.clear();
+
+                                    // coadd histogram and psd
+                                    for (Eigen::Index i = 0; i < todproc.engine().cmb.map_count; i++) {
+                                        SPDLOG_INFO("calculating coadded map psds and hists for map {}",i);
+                                        PSD psd;
+                                        psd.weight_type = todproc.engine().weighting_type;
+                                        psd.cov_cut = todproc.engine().cmb.cov_cut;
+                                        psd.exmode = todproc.engine().ex_name;
+                                        psd.calc_map_psd(todproc.engine().cmb.signal.at(i), todproc.engine().cmb.weight.at(i), todproc.engine().cmb.rcphys,
+                                                        todproc.engine().cmb.ccphys);
+                                        todproc.engine().cmb.psd.push_back(std::move(psd));
+
+                                        Histogram hist;
+                                        hist.weight_type = todproc.engine().weighting_type;
+                                        hist.cov_cut = todproc.engine().cmb.cov_cut;
+                                        hist.calc_hist(todproc.engine().cmb.signal.at(i), todproc.engine().cmb.weight.at(i));
+                                        todproc.engine().cmb.histogram.push_back(std::move(hist));
+
+                                        SPDLOG_INFO("calculating noise map psds and hists for map {}", i);
+                                        if (todproc.engine().run_noise) {
+                                            // noise average histogram and psd
+                                            std::vector<PSD> psd_vec;
+                                            std::vector<Histogram> hist_vec;
+
+                                            todproc.engine().cmb.noise_psd.push_back(psd_vec);
+                                            todproc.engine().cmb.noise_hist.push_back(hist_vec);
+
+                                            PSD noise_avg_psd;
+                                            Histogram noise_avg_hist;
+
+                                            // loop through noise maps and get psd
+                                            for (Eigen::Index j = 0; j < todproc.engine().cmb.nnoise; j++) {
+                                                PSD psd;
+                                                psd.weight_type = todproc.engine().weighting_type;
+                                                psd.cov_cut = todproc.engine().cmb.cov_cut;
+                                                psd.exmode = todproc.engine().ex_name;
+
+                                                Histogram hist;
+                                                hist.weight_type = todproc.engine().weighting_type;
+                                                hist.cov_cut = todproc.engine().cmb.cov_cut;
+
+                                                Eigen::Tensor<double, 2> out = todproc.engine().cmb.noise.at(i).chip(j, 2);
+                                                Eigen::Map<Eigen::MatrixXd> noise(out.data(), out.dimension(0), out.dimension(1));
+
+                                                psd.calc_map_psd(noise, todproc.engine().cmb.weight.at(i), todproc.engine().cmb.rcphys,
+                                                                todproc.engine().cmb.ccphys);
+                                                todproc.engine().cmb.noise_psd.at(i).push_back(std::move(psd));
+
+                                                hist.calc_hist(noise, todproc.engine().cmb.weight.at(i));
+                                                todproc.engine().cmb.noise_hist.at(i).push_back(std::move(hist));
+
+                                                if (j == 0) {
+                                                    noise_avg_psd.psd = todproc.engine().cmb.noise_psd.at(i).back().psd;
+                                                    noise_avg_psd.psd_freq = todproc.engine().cmb.noise_psd.at(i).back().psd_freq;
+                                                    noise_avg_psd.psd2d = todproc.engine().cmb.noise_psd.at(i).back().psd2d;
+                                                    noise_avg_psd.psd2d_freq = todproc.engine().cmb.noise_psd.at(i).back().psd2d_freq;
+
+                                                    noise_avg_hist.hist_vals = todproc.engine().cmb.noise_hist.at(i).back().hist_vals;
+                                                    noise_avg_hist.hist_bins = todproc.engine().cmb.noise_hist.at(i).back().hist_bins;
+                                                }
+
+                                                else {
+                                                    noise_avg_psd.psd = noise_avg_psd.psd + todproc.engine().cmb.noise_psd.at(i).back().psd;
+                                                    noise_avg_psd.psd2d = noise_avg_psd.psd2d + todproc.engine().cmb.noise_psd.at(i).back().psd2d /
+                                                                                                    todproc.engine().cmb.nnoise;
+                                                    noise_avg_psd.psd2d_freq = noise_avg_psd.psd2d_freq +
+                                                                            todproc.engine().cmb.noise_psd.at(i).back().psd2d_freq / todproc.engine().cmb.nnoise;
+
+                                                    noise_avg_hist.hist_vals = noise_avg_hist.hist_vals + todproc.engine().cmb.noise_hist.at(i).back().hist_vals;
+
+                                                }
+                                            }
+
+                                            noise_avg_psd.psd = noise_avg_psd.psd / todproc.engine().cmb.nnoise;
+                                            todproc.engine().cmb.noise_avg_psd.push_back(noise_avg_psd);
+
+                                            noise_avg_hist.hist_vals = noise_avg_hist.hist_vals / todproc.engine().cmb.nnoise;
+                                            todproc.engine().cmb.noise_avg_hist.push_back(noise_avg_hist);
+                                        }
                                     }
                                 }
                             }
-                        }
 
-                        // generate filtered coadd output files (cmb is overwritten with filtered maps)
-                        {
-                            tula::logging::scoped_timeit timer("engine filtered coadd output()");
-                            todproc.engine().template output<EngineBase::coadd>(todproc.engine().cmb,
-                                                                                todproc.engine().filtered_coadd_fits_ios,
-                                                                                todproc.engine().filtered_noise_fits_ios, true);
+                            // generate filtered coadd output files (cmb is overwritten with filtered maps)
+                            {
+                                tula::logging::scoped_timeit timer("engine filtered coadd output()");
+                                todproc.engine().template output<EngineBase::coadd>(todproc.engine().cmb,
+                                                                                    todproc.engine().filtered_coadd_fits_ios,
+                                                                                    todproc.engine().filtered_noise_fits_ios, true);
+                            }
                         }
                     }
                 }

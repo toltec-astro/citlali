@@ -51,10 +51,20 @@ void Kernel::gaussian_kernel(Engine engine, TCData<TCDataKind::RTC, Eigen::Matri
         double sigma = ASEC_TO_RAD*(engine->calib_data["a_fwhm"](di) + engine->calib_data["b_fwhm"](di))/2.;
         sigma = sigma/STD_TO_FWHM;
 
-        // get offsets
-        auto azoff = engine->calib_data["x_t"](di);
-        auto eloff = engine->calib_data["y_t"](di);
+        // current detector offsets
+        double azoff, eloff;
 
+        // if in science/pointing mode, get offsets from apt table
+        if (engine->reduction_type == "science" || engine->reduction_type == "pointing") {
+            azoff = engine->calib_data["x_t"](di);
+            eloff = engine->calib_data["y_t"](di);
+        }
+
+        // else if in beammap mode, offsets are zero
+        else if (engine->reduction_type == "beammap") {
+            azoff = 0;
+            eloff = 0;
+        }
         // get pointing
         auto [lat, lon] = engine_utils::get_det_pointing(in.tel_meta_data.data, azoff, eloff, engine->map_type, engine->pointing_offsets);
 
@@ -63,21 +73,21 @@ void Kernel::gaussian_kernel(Engine engine, TCData<TCDataKind::RTC, Eigen::Matri
 
         {
             //tula::logging::scoped_timeit timer("kernel method 2");
-        in.kernel_scans.data.col(i) =
-                (dist.array() <= 3.*sigma).select(exp(-0.5*(dist.array()/sigma).pow(2)), 0);
+             in.kernel_scans.data.col(i) =
+             (dist.array() <= 3.*sigma).select(exp(-0.5*(dist.array()/sigma).pow(2)), 0);
         }
 
         {
             //tula::logging::scoped_timeit timer("kernel method 1");
-        // is this faster?
-        for (Eigen::Index j=0; j<in.scans.data.rows(); j++) {
-            if (dist(j) <= 3.*sigma) {
-                in.kernel_scans.data(j,i) = exp(-0.5*pow(dist(j)/sigma,2));
+            // is this faster?
+            for (Eigen::Index j=0; j<in.scans.data.rows(); j++) {
+                if (dist(j) <= 3.*sigma) {
+                    in.kernel_scans.data(j,i) = exp(-0.5*pow(dist(j)/sigma,2));
+                }
+                else {
+                    in.kernel_scans.data(j,i) = 0;
+                }
             }
-            else {
-                in.kernel_scans.data(j,i) = 0;
-            }
-        }
         }
     }
 }
@@ -92,9 +102,20 @@ void Kernel::airy_kernel(Engine engine, TCData<TCDataKind::RTC, Eigen::MatrixXd>
 
         Eigen::Index di = det_index_vector(i);
 
-        // get offsets
-        auto azoff = engine->calib_data["x_t"](di);
-        auto eloff = engine->calib_data["y_t"](di);
+        // current detector offsets
+        double azoff, eloff;
+
+        // if in science/pointing mode, get offsets from apt table
+        if (engine->reduction_type == "science" || engine->reduction_type == "pointing") {
+            azoff = engine->calib_data["x_t"](di);
+            eloff = engine->calib_data["y_t"](di);
+        }
+
+        // else if in beammap mode, offsets are zero
+        else if (engine->reduction_type == "beammap") {
+            azoff = 0;
+            eloff = 0;
+        }
 
         // get pointing
         auto [lat, lon] = engine_utils::get_det_pointing(in.tel_meta_data.data, azoff, eloff, engine->map_type, engine->pointing_offsets);
@@ -120,9 +141,20 @@ void Kernel::kernel_from_fits(Engine engine, TCData<TCDataKind::RTC, Eigen::Matr
 
         Eigen::Index di = det_index_vector(i);
 
-        // get offsets
-        auto azoff = engine->calib_data["x_t"](di);
-        auto eloff = engine->calib_data["y_t"](di);
+        // current detector offsets
+        double azoff, eloff;
+
+        // if in science/pointing mode, get offsets from apt table
+        if (engine->reduction_type == "science" || engine->reduction_type == "pointing") {
+            azoff = engine->calib_data["x_t"](di);
+            eloff = engine->calib_data["y_t"](di);
+        }
+
+        // else if in beammap mode, offsets are zero
+        else if (engine->reduction_type == "beammap") {
+            azoff = 0;
+            eloff = 0;
+        }
 
         // get pointing
         auto [lat, lon] = engine_utils::get_det_pointing(in.tel_meta_data.data, azoff, eloff, engine->map_type, engine->pointing_offsets);

@@ -83,6 +83,7 @@ kids:
       fwhm_Hz: 1.5e4
       type: lorentz
   solver:
+      fitreportdir: /dev/null
 runtime:
   parallel_policy: seq # seq, omp, tbb
   n_threads: 1 # number of threads to parallelize over
