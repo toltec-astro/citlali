@@ -967,13 +967,17 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                 dt = (dt.array() < 0).select(msec.array() - pps_msec.array() + (pow(2.0,32)-1)/fpga_freq,msec - pps_msec);
                 
                 // absolute aligned network time
-                nw_ts.push_back(start_t_dbl + pps.array() + dt.array() + engine().temp_time_offset);
+                nw_ts.push_back(start_t_dbl + pps.array() + dt.array());// + engine().temp_time_offset);
+
+                SPDLOG_INFO("nw_ts.back() {}", nw_ts.back());
 
                 // get start time of nw
                 nw_t0s.push_back(nw_ts.back()[0]);
+                SPDLOG_INFO("nw_ts.back()[0] {}", nw_t0s.back());
 
                 // get end time of nw
                 nw_tns.push_back(nw_ts.back()[ntimes-1]);
+                SPDLOG_INFO("nw_ts.back()[ntimes-1] {}", nw_tns.back());
 
                 // get global max start time and index
                 if (nw_t0s.back() > max_t0s) {
@@ -999,11 +1003,14 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
         }
 
         for (Eigen::Index i=0; i<nw_t0s.size(); i++) {
-            auto si = (abs(nw_ts[i].array() - max_t0s)).minCoeff();
+            Eigen::Index si, ei;
+            auto s = (abs(nw_ts[i].array() - max_t0s)).minCoeff(&si);
             engine().init_indices.push_back(si);
 
-            auto ei = (abs(nw_ts[i].array() - min_tns)).minCoeff();
+            auto e = (abs(nw_ts[i].array() - min_tns)).minCoeff(&ei);
             engine().end_indices.push_back(ei);
+
+            SPDLOG_INFO("si {}, ei {}, ei - si {}", si, ei, ei-si);
         }
 
         SPDLOG_INFO("init_indices {}",engine().init_indices);

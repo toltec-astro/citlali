@@ -63,6 +63,8 @@ public:
 
     template <MapBase::MapType out_type, class MC, typename fits_out_vec_t>
     void output(MC&, fits_out_vec_t &, fits_out_vec_t &, bool);
+
+    Eigen::VectorXd mean_els;
 };
 
 void Beammap::setup() {
@@ -586,6 +588,8 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
 
                 double mean_el = tel_meta_data["TelElDes"].mean();
 
+                mean_els.resize(ndet);
+
                 Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1> map_index_vector = ptcs.back().map_index_vector.data;
 
                 // derotate x_t and y_t and calculate sensitivity for detectors
@@ -608,6 +612,7 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
                             (tel_meta_data["SourceAz"] - lon).array().pow(2)).minCoeff(&min_index);
 
                     double min_el = tel_meta_data["TelElDes"](min_index);
+                    mean_els(d) = min_el;
 
                     double rot_azoff = cos(-min_el)*mb.pfit(1,d) -
                             sin(-min_el)*mb.pfit(2,d);
@@ -751,19 +756,20 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
         table.row(1) = calib_data["nw"].cast <float> ();
         table.row(2) = calib_data["flxscale"].cast <float> ();
         table.row(3) = sensitivity.cast <float> ();
+        table.row(4) = mean_els.cast <float> ();
 
-        table.row(4) = mout.pfit.row(0).template cast <float> ();
-        table.row(5) = mout.perror.row(0).template cast <float> ();
-        table.row(6) = mout.pfit.row(1).template cast <float> ();
-        table.row(7) = mout.perror.row(1).template cast <float> ();
-        table.row(8) = mout.pfit.row(2).template cast <float> ();
-        table.row(9) = mout.perror.row(2).template cast <float> ();
-        table.row(10) = mout.pfit.row(3).template cast <float> ();
-        table.row(11) = mout.perror.row(3).template cast <float> ();
-        table.row(12) = mout.pfit.row(4).template cast <float> ();
-        table.row(13) = mout.perror.row(4).template cast <float> ();
-        table.row(14) = mout.pfit.row(5).template cast <float> ();
-        table.row(15) = mout.perror.row(5).template cast <float> ();
+        table.row(5) = mout.pfit.row(0).template cast <float> ();
+        table.row(6) = mout.perror.row(0).template cast <float> ();
+        table.row(7) = mout.pfit.row(1).template cast <float> ();
+        table.row(8) = mout.perror.row(1).template cast <float> ();
+        table.row(9) = mout.pfit.row(2).template cast <float> ();
+        table.row(10) = mout.perror.row(2).template cast <float> ();
+        table.row(11) = mout.pfit.row(3).template cast <float> ();
+        table.row(12) = mout.perror.row(3).template cast <float> ();
+        table.row(13) = mout.pfit.row(4).template cast <float> ();
+        table.row(14) = mout.perror.row(4).template cast <float> ();
+        table.row(15) = mout.pfit.row(5).template cast <float> ();
+        table.row(16) = mout.perror.row(5).template cast <float> ();
 
 
         /*int ci = 0;
@@ -788,8 +794,11 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
         meta["flxscale"].push_back("units: " + cunit);
         meta["flxscale"].push_back("flux conversion scale");
 
-        meta["sens"].push_back("N/A");
+        meta["sens"].push_back("units: N/A");
         meta["sens"].push_back("sensitivity");
+
+        meta["derot_elev"].push_back("units: radians");
+        meta["derot_elev"].push_back("derotation elevation angle");
 
         meta["amp"].push_back("units: " + cunit);
         meta["amp"].push_back("fitted amplitude");

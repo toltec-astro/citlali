@@ -126,6 +126,7 @@ struct ToltecIO {
         {"nw"},
         {"flxscale"},
         {"sens"},
+        {"derot_elev"},
         {"amp"},
         {"amp_err"},
         {"x_t"},
