@@ -24,6 +24,14 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     // scan length for inner scans
     auto sl = in.scan_indices.data(1) - in.scan_indices.data(0) + 1;
 
+    /*if (in.index.data == 0) {
+        si = si + engine->filter.nterms;
+    }
+
+    else if (in.index.data == engine->scanindices.cols()) {
+        sl = sl - engine->filter.nterms;
+    }*/
+
     // generate kernel
     if (engine->run_kernel) {
         SPDLOG_INFO("making kernel for scan {}",in.index.data);

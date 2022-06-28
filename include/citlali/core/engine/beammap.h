@@ -223,15 +223,6 @@ void Beammap::setup() {
                     v.putVar(&var.second);
                 }
 
-                /*netCDF::NcVar t_v = fo.addVar("TIME",netCDF::ncDouble, nsmp_dim);
-                t_v.putAtt("Units","seconds");
-                netCDF::NcVar e_v = fo.addVar("ELEV",netCDF::ncDouble, nsmp_dim);
-                e_v.putAtt("Units","radians");
-                
-                netCDF::NcVar az_v = fo.addVar("AZ",netCDF::ncDouble, nsmp_dim);
-                az_v.putAtt("Units","radians");
-                */
-
                 netCDF::NcVar data_v = fo.addVar("DATA",netCDF::ncDouble, dims);
                 data_v.putAtt("Units","MJy/sr");
                 netCDF::NcVar flag_v = fo.addVar("FLAG",netCDF::ncDouble, dims);
@@ -620,7 +611,7 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
                             cos(-min_el)*mb.pfit(2,d);
 
                     mb.pfit(1,d) = -rot_azoff;
-                    mb.pfit(2,d) = -rot_eloff; 
+                    mb.pfit(2,d) = -rot_eloff;
 
                     //SPDLOG_INFO("calculating sensitivity for det {}", d);
                     Eigen::MatrixXd det_sens;
