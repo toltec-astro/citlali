@@ -29,7 +29,7 @@ public:
     void get_phys_altaz(tel_meta_data_t &, C &);
 
     template <typename tel_meta_data_t, typename C>
-    void get_scanindices(tel_meta_data_t &, C &, std::string, const double, const double,
+    void get_scanindices(tel_meta_data_t &, C &, std::string, std::string, const double, const double,
                          const int);
 private:
     /* old code.  may not apply to TolTEC*/
@@ -50,7 +50,6 @@ private:
 
     //template <typename tel_meta_data_t>
     //void align_with_dets(tel_meta_data_t &);
-
 };
 
 template<typename Derived>
@@ -255,11 +254,9 @@ void Observation::get_phys_icrs(tel_meta_data_t &tel_meta_data, C &center) {
     Eigen::VectorXd temp_ra = tel_meta_data["TelRa"];
     //(temp_ra.array() > pi).select(tel_meta_data["TelRa"].array() - 2.0*pi, tel_meta_data["TelRa"]);
 
-
    // temp ra must range from -pi to pi
     for(Eigen::Index i=0;i<temp_ra.size();i++)
       temp_ra(i) = (tel_meta_data["TelRa"](i) > pi) ? tel_meta_data["TelRa"](i)-(2*pi) : tel_meta_data["TelRa"](i);
-
 
     // copy of absolute dec
     Eigen::VectorXd temp_dec = tel_meta_data["TelDec"];
@@ -307,26 +304,20 @@ void Observation::get_phys_altaz(tel_meta_data_t &tel_meta_data, C &center) {
 }
 
 template <typename tel_meta_data_t, typename C>
-void Observation::get_scanindices(tel_meta_data_t &tel_meta_data, C &center, std::string ObsPgm,
+void Observation::get_scanindices(tel_meta_data_t &tel_meta_data, C &center, std::string ObsPgm, std::string redu_t,
                                   const double fsmp, const double time_chunk, const int filter_nterms) {
 
     Eigen::Index nscans = 0;
 
     SPDLOG_INFO("OBSPGM {}", ObsPgm);
-    SPDLOG_INFO("OBSPGM bool{}", std::strcmp("Map", ObsPgm.c_str()) == 0);
+    SPDLOG_INFO("OBSPGM bool{}", std::strcmp("Lissajous", ObsPgm.c_str()) == 0);
 
     // get scan indices for Raster pattern
-    if (1){//std::strcmp("Map", ObsPgm.c_str()) == 0) {
+    if (redu_t == "beammap") {//std::strcmp("Map", ObsPgm.c_str()) == 0) {
         SPDLOG_INFO("Calculating scans for Raster mode");
 
         // cast Hold signal to bool
         Eigen::Matrix<bool,Eigen::Dynamic,1> turning = tel_meta_data["Hold"].template cast<bool>();
-
-        //for(int i=0;i<turning.size();i++) turning[i] = (tel_meta_data["Hold"].template cast<int>()(i)&8);
-
-        SPDLOG_INFO("how many zeros {}",(turning.array()==0).count());
-
-        SPDLOG_INFO("turning {}", turning);
 
         // this doesn't work for some reason
         //nscans = ((turning.tail(turning.size() - 1) - turning.head(turning.size() - 1)).array() == 1).count();
@@ -337,15 +328,9 @@ void Observation::get_scanindices(tel_meta_data_t &tel_meta_data, C &center, std
             }
         }
 
-        SPDLOG_INFO("nscans {}", nscans);
-
-
         if (turning(turning.size()-1) == 0){
             nscans++;
         }
-
-        SPDLOG_INFO("nscans {}", nscans);
-
         scanindices.resize(4,nscans);
 
         int counter = -1;
@@ -368,13 +353,14 @@ void Observation::get_scanindices(tel_meta_data_t &tel_meta_data, C &center, std
     }
 
     // get scanindices for Lissajous/Rastajous pattern
-    else if (std::strcmp("Lissajous", ObsPgm.c_str()) == 0) {
+    else if (redu_t == "pointing") {//std::strcmp("Lissajous", ObsPgm.c_str()) == 0) {
         SPDLOG_INFO("Calculating scans for Lissajous/Rastajous mode");
 
         // index of first scan
         Eigen::Index first_scan_i = 0;
         // index of last scan
         Eigen::Index last_scan_i = tel_meta_data["Hold"].size() - 1;
+
         // period (time_chunk/fsmp in seconds/Hz)
         Eigen::Index period_i = floor(time_chunk*fsmp);
 
@@ -387,7 +373,6 @@ void Observation::get_scanindices(tel_meta_data_t &tel_meta_data, C &center, std
         scanindices.row(0) =
                 Eigen::Vector<Eigen::Index,Eigen::Dynamic>::LinSpaced(nscans,0,nscans-1).array()*period_i + first_scan_i;
         scanindices.row(1) = scanindices.row(0).array() + period_i - 1;
-
     }
 
     Eigen::Matrix<Eigen::Index,Eigen::Dynamic, Eigen::Dynamic> scanindices_temp(4,nscans); 
@@ -414,7 +399,7 @@ void Observation::get_scanindices(tel_meta_data_t &tel_meta_data, C &center, std
     }
 
     if (n_bad_scans > 0) {
-      SPDLOG_INFO("n_bad_scans {} scans with duration less than 2 seconds detected", n_bad_scans);
+      SPDLOG_INFO("removing {} scans with duration less than 2 sec", n_bad_scans);
     }
 
     int c = 0;
@@ -440,5 +425,4 @@ void Observation::get_scanindices(tel_meta_data_t &tel_meta_data, C &center, std
 
     scanindices(0,0) = scanindices(0,0) + filter_nterms;
     scanindices(1,nscans-1) = scanindices(1,nscans-1) - filter_nterms;
-    
 }

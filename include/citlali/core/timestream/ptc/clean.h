@@ -129,14 +129,17 @@ auto Cleaner::calcEigs(const Eigen::DenseBase<DerivedA> &scans, const Eigen::Den
     Eigen::RowVectorXd det_means = (scans.derived().array()*flags.derived().array().template cast <double> ()).colwise().sum()/
             flags.derived().array().template cast <double> ().colwise().sum();
 
+    Eigen::RowVectorXd dm = (det_means).array().isNaN().select(0,det_means);
+
     // subtract mean from scans and copy into det matrix
-    det = (scans.derived().array()*flags.derived().array().template cast <double> ()).matrix().rowwise() - det_means;
+    det = (scans.derived().array()*flags.derived().array().template cast <double> ()).matrix().rowwise() - dm;
 
     // container for covariance Matrix
     Eigen::MatrixXd pca_cov(ndetectors, ndetectors);
 
     // number of unflagged samples
     denom = (flags.derived().template cast <double> ().adjoint() * flags.derived().template cast <double> ()).array() - 1;
+
     // calculate the covariance Matrix
     pca_cov.noalias() = ((det.adjoint() * det).array() / denom.array()).matrix();
 

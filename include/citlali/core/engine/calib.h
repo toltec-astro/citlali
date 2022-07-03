@@ -16,14 +16,15 @@ struct ToltecCalib {
         {"nw", 1},
         {"array", 1},
         {"flxscale", 1},
-        {"x_t", DEG_TO_ASEC},
-        {"y_t", DEG_TO_ASEC},
-        {"a_fwhm", DEG_TO_ASEC},
-        {"b_fwhm", DEG_TO_ASEC},
+        {"x_t", 1},
+        {"y_t", 1},
+        {"a_fwhm", 1},
+        {"b_fwhm", 1},
         {"fg",1},
         {"pg", 1},
         {"ori",1},
-        {"responsivity",1}
+        {"responsivity",1},
+        {"flag",1}
     };
 
     bool run_hwp;

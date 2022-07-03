@@ -78,13 +78,13 @@ void Lali::setup() {
         std::string filename;
         // generate filename for science maps
         if (reduction_type == "science") {
-            filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+            filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::commissioning,
                     ToltecIO::science, ToltecIO::no_prod_type, ToltecIO::obsnum_true>(filepath + dname,obsnum,arr.first);
         }
 
         else if (reduction_type == "pointing") {
             // generate filename for pointing maps
-            filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+            filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::commissioning,
                     ToltecIO::pointing, ToltecIO::no_prod_type, ToltecIO::obsnum_true>(filepath + dname,obsnum,arr.first);
         }
 
@@ -100,13 +100,13 @@ void Lali::setup() {
             std::string filename;
 
             if (reduction_type == "science") {
-                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::commissioning,
                                                     ToltecIO::science, ToltecIO::timestream,
                                                     ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
             }
 
             else if (reduction_type == "pointing") {
-                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::commissioning,
                                                     ToltecIO::pointing, ToltecIO::timestream,
                                                     ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
             }
@@ -143,6 +143,9 @@ void Lali::setup() {
                 pixid_v.putAtt("Units","N/A");
                 netCDF::NcVar a_v = fo.addVar("ARRAYID",netCDF::ncDouble, dims[1]);
                 a_v.putAtt("Units","N/A");
+                netCDF::NcVar n_v = fo.addVar("NETWORKID",netCDF::ncInt, dims[1]);
+                n_v.putAtt("Units","N/A");
+                n_v.putVar(calib_data["nw"].data());
 
                 netCDF::NcVar xt_v = fo.addVar("AZOFF",netCDF::ncDouble, dims[1]);
                 xt_v.putAtt("Units","radians");
@@ -195,6 +198,17 @@ void Lali::setup() {
             }
         }
     }
+
+    // temporary fix for removing bad detectors
+    Eigen::Index nbad = 0;
+    for (Eigen::Index i=0; i<ndet; i++) {
+        auto dist = pow(calib_data["x_t"](i) + 16,2) + pow(calib_data["y_t"](i) - 20,2);
+        if (dist > pow(110.,2)) {
+            nbad++;
+        }
+    }
+    
+    SPDLOG_INFO("number of bad detectors {}/{}", nbad, ndet);
 }
 
 auto Lali::run() {
@@ -240,6 +254,26 @@ auto Lali::run() {
             tula::logging::scoped_loglevel<spdlog::level::off> _0;
             in.scans.data = kidsproc.populate_rtc_load(loaded_rawobs,in.scan_indices.data, scan_length, ndet);
         }
+
+        SPDLOG_INFO("flags before {}",in.flags.data);
+
+        // temporary fix for removing bad detectors
+        Eigen::Index nbad = 0;
+        for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
+            auto dist = pow(calib_data["x_t"](i) + 16,2) + pow(calib_data["y_t"](i) - 20,2);
+            if (dist > pow(70.,2)) {
+                nbad++;
+                //SPDLOG_INFO("bad det {}",i);
+                in.flags.data.col(i).setZero();
+            }
+            /*if (calib_data["flag"](i) == 0) {
+                in.flags.data.col(i).setZero();
+            }*/
+
+           // SPDLOG_INFO("in.scans.data {}", in.scans.data);
+        }
+        SPDLOG_INFO("flags after {}",in.flags.data);
+        SPDLOG_INFO("number of bad detectors {}", nbad);
 
         TCData<TCDataKind::PTC,Eigen::MatrixXd> out;
 
@@ -472,6 +506,7 @@ auto Lali::run() {
         }
 
         SPDLOG_INFO("done with scan {}", out.index.data);
+        SPDLOG_INFO("out {}",out.scans.data);
         return out;
     });
 
@@ -524,6 +559,8 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
                 //rtc.scans.data = kidsproc.populate_rtc(rawobs, rtc.scan_indices.data, scan_length, ndet);
             }
+
+            SPDLOG_INFO("got scan {}",scan);
 
             // increment scan
             scan++;
@@ -786,13 +823,13 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
 
     if constexpr (out_type==MapType::obs) {
         if (reduction_type == "science") {
-            filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+            filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::commissioning,
                                                 ToltecIO::science, ToltecIO::psd,
                                                 ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
         }
 
         else if (reduction_type == "pointing") {
-            filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+            filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::commissioning,
                                                 ToltecIO::pointing, ToltecIO::psd,
                                                 ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
         }
@@ -800,13 +837,13 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
 
     else if constexpr (out_type == MapType::coadd) {
         if (filtered == false) {
-            filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+            filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::commissioning,
                                                 ToltecIO::no_obs_type, ToltecIO::raw_psd,
                                                 ToltecIO::obsnum_false>(filepath + cname,obsnum,-1);
         }
 
         else if (filtered == true) {
-            filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+            filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::commissioning,
                                                 ToltecIO::no_obs_type, ToltecIO::filtered_psd,
                                                 ToltecIO::obsnum_false>(filepath + cname,obsnum,-1);
         }
@@ -863,13 +900,13 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
 
     if constexpr (out_type==MapType::obs) {
         if (reduction_type == "science") {
-                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::commissioning,
                                                     ToltecIO::science, ToltecIO::hist,
                                                     ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
         }
 
         else if (reduction_type == "pointing") {
-                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::commissioning,
                                                     ToltecIO::pointing, ToltecIO::hist,
                                                     ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
         }
@@ -877,13 +914,13 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
 
     else if constexpr (out_type == MapType::coadd) {
         if (filtered == false) {
-            filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+            filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::commissioning,
                                                 ToltecIO::no_obs_type, ToltecIO::raw_hist,
                                                 ToltecIO::obsnum_false>(filepath + cname,obsnum,-1);
         }
 
         else if (filtered == true) {
-            filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+            filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::commissioning,
                                                 ToltecIO::no_obs_type, ToltecIO::filtered_hist,
                                                 ToltecIO::obsnum_false>(filepath + cname,obsnum,-1);
         }
@@ -956,7 +993,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
             SPDLOG_INFO("writing pointing fit table");
 
             // get output path from citlali_config
-            auto filename = toltec_io.setup_filepath<ToltecIO::ppt, ToltecIO::simu,
+            auto filename = toltec_io.setup_filepath<ToltecIO::ppt, ToltecIO::commissioning,
                     ToltecIO::pointing, ToltecIO::no_prod_type, ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
             Eigen::MatrixXf table(toltec_io.apt_header.size(), mout.map_count);
 
@@ -982,12 +1019,12 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
         if (run_coadd) {
             if (run_noise) {
                 if (filtered == false) {
-                    filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu, ToltecIO::no_obs_type, ToltecIO::noise_raw_psd,
+                    filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::commissioning, ToltecIO::no_obs_type, ToltecIO::noise_raw_psd,
                                                         ToltecIO::obsnum_false>(filepath + cname,obsnum,-1);
                 }
 
                 else if (filtered == true) {
-                    filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu, ToltecIO::no_obs_type, ToltecIO::noise_filtered_psd,
+                    filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::commissioning, ToltecIO::no_obs_type, ToltecIO::noise_filtered_psd,
                                                         ToltecIO::obsnum_false>(filepath + cname,obsnum,-1);
                 }
 
@@ -1035,12 +1072,12 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
                 fo.close();
 
                 if (filtered == false) {
-                    filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu, ToltecIO::no_obs_type, ToltecIO::noise_raw_hist,
+                    filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::commissioning, ToltecIO::no_obs_type, ToltecIO::noise_raw_hist,
                                                         ToltecIO::obsnum_false>(filepath + cname,obsnum,-1);
                 }
 
                 else if (filtered == true) {
-                    filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu, ToltecIO::no_obs_type, ToltecIO::noise_filtered_hist,
+                    filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::commissioning, ToltecIO::no_obs_type, ToltecIO::noise_filtered_hist,
                                                         ToltecIO::obsnum_false>(filepath + cname,obsnum,-1);
                 }
 
@@ -1115,15 +1152,29 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
                     }
                     // add units
                     //nf_ios.at(i).pfits->pHDU().addKey("UNIT", cunit, "Unit of maps");
-                    if (cunit == "MJy/Sr") {
+
                     // add conversion
-                        nf_ios.at(i).pfits->pHDU().addKey("to_mjy/beam", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
+                    if (cunit == "MJy/Sr") {
+                        nf_ios.at(i).pfits->pHDU().addKey("to_mJy/beam", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
                         nf_ios.at(i).pfits->pHDU().addKey("to_Mjy/Sr", 1.0, "Conversion to MJy/Sr");
+                        nf_ios.at(i).pfits->pHDU().addKey("to_uK/arcmin2", engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[i],toltec_io.bfwhm_keys[i]),
+                                                        "Conversion to uK/arcmin2");
                     }
                     else if (cunit == "mJy/beam") {
-                        nf_ios.at(i).pfits->pHDU().addKey("to_mjy/beam", 1.0, "Conversion to mJy/beam");
-                        nf_ios.at(i).pfits->pHDU().addKey("to_MJy/Sr", 1/toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to MJy/Sr");
+                        nf_ios.at(i).pfits->pHDU().addKey("to_mJy/beam", 1.0, "Conversion to mJy/beam");
+                        nf_ios.at(i).pfits->pHDU().addKey("to_MJy/Sr", 1/(toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC), "Conversion to MJy/Sr");
+                        nf_ios.at(i).pfits->pHDU().addKey("to_uK/arcmin2", MJY_SR_TO_mJY_ASEC/engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[i],toltec_io.bfwhm_keys[i]),
+                                                        "Conversion to uK/arcmin2");
                     }
+                    else if (cunit == "uK/arcmin2") {
+                        nf_ios.at(i).pfits->pHDU().addKey("to_mJy/beam", MJY_SR_TO_mJY_ASEC/engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[i],
+                                                                                                                        toltec_io.bfwhm_keys[i]),
+                                                        "Conversion to mJy/beam");
+                        nf_ios.at(i).pfits->pHDU().addKey("to_MJy/Sr", 1/engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[i],toltec_io.bfwhm_keys[i]),
+                                                        "Conversion to MJy/Sr");
+                        nf_ios.at(i).pfits->pHDU().addKey("to_uK/arcmin2", 1.0, "Conversion to uK/arcmin2");
+                    }
+
                     // add source ra
                     nf_ios.at(i).pfits->pHDU().addKey("s_ra", source_center["Ra"][0], "Source RA (radians)");
                     // add source dec

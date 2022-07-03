@@ -75,6 +75,7 @@ void append_to_netcdf(std::string filepath, Eigen::DenseBase<DerivedA> &data, Ei
         NcVar afwhm_v = fo.getVar("AFWHM");
         NcVar bfwhm_v = fo.getVar("BFWHM");
         NcVar arrayid_v = fo.getVar("ARRAYID");
+        NcVar nwid_v = fo.getVar("NETWORKID");
 
         for (std::size_t ii = 0; ii < TULA_SIZET(data.rows()); ++ii) {
             i0[0] = nsmp_exists + ii;
@@ -116,6 +117,7 @@ void append_to_netcdf(std::string filepath, Eigen::DenseBase<DerivedA> &data, Ei
             auto b_fwhm_i = ASEC_TO_RAD*calib_data["b_fwhm"][di];
 
             arrayid_v.putVar(i03, s_d2, &calib_data["array"][di]);
+            nwid_v.putVar(i03, s_d2, &calib_data["nw"][di]);
             eloff_v.putVar(i03, s_d2, &eloff_i);
             azoff_v.putVar(i03, s_d2, &azoff_i);
             afwhm_v.putVar(i03, s_d2, &a_fwhm_i);

@@ -71,6 +71,7 @@ public:
             vars.find("Header.Dcs.ObsPgm")->second.getVar(&map_pattern_type_c);
 
             map_pattern_type = std::string(map_pattern_type_c);
+            map_pattern_type = map_pattern_type.substr(0,50);
 
             SPDLOG_INFO("map_pattern_type {}", map_pattern_type);
 
@@ -78,6 +79,7 @@ public:
             vars.find("Header.Source.SourceName")->second.getVar(&source_name_c);
 
             source_name = std::string(source_name_c);
+            source_name = source_name.substr(0,50);
             SPDLOG_INFO("source_name {}", source_name);
 
             // loop through and get telescope backend vectors

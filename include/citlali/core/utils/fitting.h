@@ -17,18 +17,18 @@ public:
     };
 
     int nparams = 6;
-    double bounding_box_pix = 20;
+    double bounding_box_pix = 50;
 
     double flux0;
 
-    double fwhm0 = 2;
-    double ang0 = 0;
+    double fwhm0 = 6.67;
+    double ang0 = 0.01;
 
-    double flux_low = 0.5;
-    double flux_high = 2.0;
+    double flux_low = 0.75;
+    double flux_high = 1.5;
 
-    double fwhm_low = 0;
-    double fwhm_high = 27;
+    double fwhm_low = 0.75;
+    double fwhm_high = 14;
 
     double ang_low = -pi/2;
     double ang_high = pi/2;
@@ -128,7 +128,6 @@ public:
         // copy data and sigma within bounding box region
         Eigen::MatrixXd _data = data.block(row0-bounding_box_pix, col0-bounding_box_pix, 2*bounding_box_pix+1, 2*bounding_box_pix+1);
         Eigen::MatrixXd _sigma = sigma.block(row0-bounding_box_pix, col0-bounding_box_pix, 2*bounding_box_pix+1, 2*bounding_box_pix+1);
-
 
         Eigen::Index nzeros = (_sigma.array() !=0).count();
         Eigen::MatrixXd xy2(nzeros,2);

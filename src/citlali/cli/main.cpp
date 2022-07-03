@@ -916,7 +916,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
         Eigen::Index nw = 0;
         for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
             auto source = data_item.filepath();
-            SPDLOG_INFO("kids file {}",source);
+            SPDLOG_INFO("kids file {}", source);
             try {
                 NcFile fo(source, NcFile::read);
                 auto vars = fo.getVars();
@@ -1211,7 +1211,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
     auto get_scanindicies(const RawObs &rawobs) {
 
         engine().get_scanindices(engine().tel_meta_data, engine().source_center,
-                                 engine().map_pattern_type, engine().fsmp,
+                                 engine().map_pattern_type, engine().reduction_type ,engine().fsmp,
                                  engine().time_chunk, engine().filter.nterms);
     }
 
@@ -1530,7 +1530,7 @@ int run(const rc_t &rc) {
                         std::string coadd_filename;
                         // generate filename for coadded maps
                         coadd_filename = todproc.engine().toltec_io.template setup_filepath<ToltecIO::toltec,
-                                                                                            ToltecIO::simu,
+                                                                                            ToltecIO::commissioning,
                                                                                             ToltecIO::no_obs_type,
                                                                                             ToltecIO::raw,
                             ToltecIO::obsnum_false>(todproc.engine().filepath + rdname, todproc.engine().obsnum, arr.first);
@@ -1542,7 +1542,7 @@ int run(const rc_t &rc) {
                         if (todproc.engine().run_coadd_filter) {
                             // generate filename for filtered coadded maps
                             coadd_filename = todproc.engine().toltec_io. template setup_filepath<ToltecIO::toltec,
-                                                                                                ToltecIO::simu,
+                                                                                                ToltecIO::commissioning,
                                                                                                 ToltecIO::no_obs_type,
                                                                                                 ToltecIO::filtered,
                                                                                                 ToltecIO::obsnum_false>(
@@ -1557,7 +1557,7 @@ int run(const rc_t &rc) {
                         if (todproc.engine().run_noise) {
                             std::string noise_filename;
                             noise_filename = todproc.engine().toltec_io.template setup_filepath<ToltecIO::toltec,
-                                                                                                ToltecIO::simu,
+                                                                                                ToltecIO::commissioning,
                                                                                                 ToltecIO::no_obs_type,
                                                                       ToltecIO::noise_raw,ToltecIO::obsnum_false>(
                                 todproc.engine().filepath + rdname, todproc.engine().obsnum, arr.first);
@@ -1569,7 +1569,7 @@ int run(const rc_t &rc) {
                             // check if filter is requested
                             if (todproc.engine().run_coadd_filter) {
                                 noise_filename = todproc.engine().toltec_io.template setup_filepath<ToltecIO::toltec,
-                                                                                                    ToltecIO::simu,
+                                                                                                    ToltecIO::commissioning,
                                                                                                     ToltecIO::no_obs_type,
                                                                                                     ToltecIO::noise_filtered,
                                                                                                     ToltecIO::obsnum_false>(

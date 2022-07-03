@@ -68,6 +68,9 @@ public:
 };
 
 void Beammap::setup() {
+    // flag for bad detectors
+    calib_data["flag"].setOnes(ndet);
+    
     // set number of fit parameters
     nparams = 6;
     // initially all detectors are unconverged
@@ -141,7 +144,7 @@ void Beammap::setup() {
     // create empty FITS files at start
     for (auto const& arr: toltec_io.name_keys) {
         std::string filename;
-        filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+        filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::commissioning,
                 ToltecIO::beammap, ToltecIO::no_prod_type, ToltecIO::obsnum_true>(filepath + dname,obsnum, arr.first);
 
         FitsIO<fileType::write_fits, CCfits::ExtHDU*> fits_io(filename);
@@ -155,7 +158,7 @@ void Beammap::setup() {
             std::string filename;
 
 
-            filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+            filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::commissioning,
                                                 ToltecIO::beammap, ToltecIO::timestream,
                                                 ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
 
@@ -191,6 +194,10 @@ void Beammap::setup() {
                 pixid_v.putAtt("Units","N/A");
                 netCDF::NcVar a_v = fo.addVar("ARRAYID",netCDF::ncDouble, dims[1]);
                 a_v.putAtt("Units","N/A");
+                
+                netCDF::NcVar n_v = fo.addVar("NETWORKID",netCDF::ncInt, dims[1]);
+                n_v.putAtt("Units","N/A");
+                n_v.putVar(calib_data["nw"].data());
 
                 netCDF::NcVar xt_v = fo.addVar("AZOFF",netCDF::ncDouble, dims[1]);
                 xt_v.putAtt("Units","radians");
@@ -437,6 +444,8 @@ auto Beammap::run_loop() {
                     fitter.bounding_box_pix = bounding_box_pix;
                     mb.pfit.col(d) = fitter.fit<gaussfit::MapFitter::peakValue>(mb.signal[d], mb.weight[d], calib_data);
                     mb.perror.col(d) = fitter.error;
+                    SPDLOG_INFO("mb.pfit.col(d) {}",mb.pfit.col(d));
+                    SPDLOG_INFO("mb.perror.col(d) {}",mb.perror.col(d));
                 }
                 else {
                     mb.pfit.col(d) = p0.col(d);
@@ -467,7 +476,7 @@ auto Beammap::run_loop() {
                     if (converged(d) == false) {
                         // percent difference between current and previous iteration's fit
                         auto ratio = abs((mb.pfit.col(d).array() - p0.col(d).array())/p0.col(d).array());
-			SPDLOG_INFO("ratio {}", ratio);
+			            SPDLOG_INFO("ratio {}", ratio);
                         // if the detector is converged, set it to converged
                         if ((ratio.array() <= cutoff).all()) {
                             converged(d) = true;
@@ -581,6 +590,9 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
 
                 mean_els.resize(ndet);
 
+                double az_center = 0;//-16;
+                double el_center = 0;//18;
+
                 Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1> map_index_vector = ptcs.back().map_index_vector.data;
 
                 // derotate x_t and y_t and calculate sensitivity for detectors
@@ -610,8 +622,8 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
                     double rot_eloff = sin(-min_el)*mb.pfit(1,d) +
                             cos(-min_el)*mb.pfit(2,d);
 
-                    mb.pfit(1,d) = -rot_azoff;
-                    mb.pfit(2,d) = -rot_eloff;
+                    mb.pfit(1,d) = -rot_azoff - az_center;
+                    mb.pfit(2,d) = -rot_eloff - el_center;
 
                     //SPDLOG_INFO("calculating sensitivity for det {}", d);
                     Eigen::MatrixXd det_sens;
@@ -656,7 +668,7 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
                             cflux(j) = 1.0;
                     }
 
-                    else if (cunit == "uK/arcmin^2") {
+                    else if (cunit == "uK/arcmin2") {
                         cflux(j) = engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[l],
                                                                     toltec_io.bfwhm_keys[l]);
                         if (k == toltec_io.barea_keys.size() - 1) {
@@ -737,50 +749,71 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
         // apt table
         SPDLOG_INFO("writing apt table");
         // get output path from citlali_config
-        auto filename = toltec_io.setup_filepath<ToltecIO::apt, ToltecIO::simu,
+        auto filename = toltec_io.setup_filepath<ToltecIO::apt, ToltecIO::commissioning,
                                                  ToltecIO::beammap, ToltecIO::no_prod_type,
                                                  ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
 
         // check in debug mode for row/col error (seems fine)
-        Eigen::MatrixXf table(toltec_io.beammap_apt_header.size(), ndet);
-        table.row(0) = calib_data["array"].cast <float> ();
-        table.row(1) = calib_data["nw"].cast <float> ();
-        table.row(2) = calib_data["flxscale"].cast <float> ();
-        table.row(3) = sensitivity.cast <float> ();
-        table.row(4) = mean_els.cast <float> ();
+        //Eigen::MatrixXf table(toltec_io.beammap_apt_header.size(), ndet);
+        Eigen::MatrixXd table(toltec_io.beammap_apt_header.size(), ndet);
+        table.row(0) = calib_data["uid"].cast<double> ();
+        table.row(1) = calib_data["array"].cast<double> ();
+        table.row(2) = calib_data["nw"].cast<double> ();
+        table.row(3) = calib_data["fg"].cast<double> ();
+        table.row(4) = calib_data["pg"].cast<double> ();
+        table.row(5) = calib_data["ori"].cast<double> ();
+        table.row(6) = responsivity.cast<double> ();
+        table.row(7) = calib_data["flxscale"].cast<double> ();
+        table.row(8) = sensitivity.cast<double> ();
+        table.row(9) = mean_els.cast<double> ();
 
-        table.row(5) = mout.pfit.row(0).template cast <float> ();
-        table.row(6) = mout.perror.row(0).template cast <float> ();
-        table.row(7) = mout.pfit.row(1).template cast <float> ();
-        table.row(8) = mout.perror.row(1).template cast <float> ();
-        table.row(9) = mout.pfit.row(2).template cast <float> ();
-        table.row(10) = mout.perror.row(2).template cast <float> ();
-        table.row(11) = mout.pfit.row(3).template cast <float> ();
-        table.row(12) = mout.perror.row(3).template cast <float> ();
-        table.row(13) = mout.pfit.row(4).template cast <float> ();
-        table.row(14) = mout.perror.row(4).template cast <float> ();
-        table.row(15) = mout.pfit.row(5).template cast <float> ();
-        table.row(16) = mout.perror.row(5).template cast <float> ();
-
+        table.row(10) = mout.pfit.row(0).template cast<double> ();
+        table.row(11) = mout.perror.row(0).template cast<double> ();
+        table.row(12) = mout.pfit.row(1).template cast<double> ();
+        table.row(13) = mout.perror.row(1).template cast<double> ();
+        table.row(14) = mout.pfit.row(2).template cast<double> ();
+        table.row(15) = mout.perror.row(2).template cast<double> ();
+        table.row(16) = mout.pfit.row(3).template cast<double> ();
+        table.row(17) = mout.perror.row(3).template cast<double> ();
+        table.row(18) = mout.pfit.row(4).template cast<double> ();
+        table.row(19) = mout.perror.row(4).template cast<double> ();
+        table.row(20) = mout.pfit.row(5).template cast<double> ();
+        table.row(21) = mout.perror.row(5).template cast<double> ();
 
         /*int ci = 0;
         for (int ti=0; ti < toltec_io.apt_header.size()-2; ti=ti+2) {
-            table.row(ti + 4) = mout.pfit.row(ci).template cast <float> ();
-            table.row(ti + 4 + 1) = mout.perror.row(ci).template cast <float> ();
+            table.row(ti + 4) = mout.pfit.row(ci).template cast<double> ();
+            table.row(ti + 4 + 1) = mout.perror.row(ci).template cast<double> ();
             ci++;
         }*/
 
-        table.row(toltec_io.beammap_apt_header.size()-1) = converge_iter.cast <float> ();
+        table.row(toltec_io.beammap_apt_header.size()-2) = converge_iter.cast<double> ();
+        table.row(toltec_io.beammap_apt_header.size()-1) = calib_data["flag"].cast<double> ();
 
         table.transposeInPlace();
 
         // Yaml node for ecsv table meta data (units and description)
         YAML::Node meta;
+        meta["uid"].push_back("units: N/A");
+        meta["uid"].push_back("unique id");
+        
         meta["array"].push_back("units: N/A");
         meta["array"].push_back("array index");
 
         meta["nw"].push_back("units: N/A");
         meta["nw"].push_back("network index");
+
+        meta["fg"].push_back("units: N/A");
+        meta["fg"].push_back("frequency group");
+
+        meta["pg"].push_back("units: N/A");
+        meta["pg"].push_back("polarization gropu");
+
+        meta["ori"].push_back("units: N/A");
+        meta["ori"].push_back("orientation");
+
+        meta["responsivity"].push_back("units: N/A");
+        meta["responsivity"].push_back("responsivity");
 
         meta["flxscale"].push_back("units: " + cunit);
         meta["flxscale"].push_back("flux conversion scale");
@@ -829,6 +862,9 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
 
         meta["converge_iter"].push_back("units: N/A");
         meta["converge_iter"].push_back("beammap convergence iteration");
+
+        meta["flag"].push_back("units: N/A");
+        meta["flag"].push_back("good det");
 
         // write apt table to ecsv file
         to_ecsv_from_matrix(filename, table, toltec_io.beammap_apt_header, meta);
@@ -915,22 +951,22 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
             if (cunit == "MJy/Sr") {
                 f_ios.at(i).pfits->pHDU().addKey("to_mJy/beam", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
                 f_ios.at(i).pfits->pHDU().addKey("to_Mjy/Sr", 1.0, "Conversion to MJy/Sr");
-                f_ios.at(i).pfits->pHDU().addKey("to_uK/arcmin^2", engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[i],toltec_io.bfwhm_keys[i]),
-                                                 "Conversion to uK/arcmin^2");
+                f_ios.at(i).pfits->pHDU().addKey("to_uK/arcmin2", engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[i],toltec_io.bfwhm_keys[i]),
+                                                 "Conversion to uK/arcmin2");
             }
             else if (cunit == "mJy/beam") {
                 f_ios.at(i).pfits->pHDU().addKey("to_mJy/beam", 1.0, "Conversion to mJy/beam");
                 f_ios.at(i).pfits->pHDU().addKey("to_MJy/Sr", 1/(toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC), "Conversion to MJy/Sr");
-                f_ios.at(i).pfits->pHDU().addKey("to_uK/arcmin^2", MJY_SR_TO_mJY_ASEC/engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[i],toltec_io.bfwhm_keys[i]),
-                                                 "Conversion to uK/arcmin^2");
+                f_ios.at(i).pfits->pHDU().addKey("to_uK/arcmin2", MJY_SR_TO_mJY_ASEC/engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[i],toltec_io.bfwhm_keys[i]),
+                                                 "Conversion to uK/arcmin2");
             }
-            else if (cunit == "uK/arcmin^2") {
+            else if (cunit == "uK/arcmin2") {
                 f_ios.at(i).pfits->pHDU().addKey("to_mJy/beam", MJY_SR_TO_mJY_ASEC/engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[i],
                                                                                                                 toltec_io.bfwhm_keys[i]),
                                                  "Conversion to mJy/beam");
                 f_ios.at(i).pfits->pHDU().addKey("to_MJy/Sr", 1/engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[i],toltec_io.bfwhm_keys[i]),
                                                  "Conversion to MJy/Sr");
-                f_ios.at(i).pfits->pHDU().addKey("to_uK/arcmin^2", 1.0, "Conversion to uK/arcmin^2");
+                f_ios.at(i).pfits->pHDU().addKey("to_uK/arcmin2", 1.0, "Conversion to uK/arcmin2");
             }
             i++;
         }
