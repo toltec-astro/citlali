@@ -24,7 +24,8 @@ struct ToltecCalib {
         {"pg", 1},
         {"ori",1},
         {"responsivity",1},
-        {"flag",1}
+        {"flag",1},
+        {"sens",1}
     };
 
     bool run_hwp;
@@ -49,7 +50,7 @@ public:
     std::map<std::string, Eigen::VectorXd> calib_data;
 
     Eigen::VectorXd responsivity;
-    Eigen::VectorXd sensitivity;
+    //Eigen::VectorXd sensitivity;
 
     // vector for half-wave plate
     Eigen::VectorXd hwp;
@@ -73,7 +74,6 @@ public:
 
         /* TEMP */
         responsivity.setOnes(ndet);
-        sensitivity.setOnes(ndet);
     }
 
     void get_hwp(std::string &filepath) {

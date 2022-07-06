@@ -157,7 +157,7 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     // flux calibration
     if ((engine->reduction_type == "science") || (engine->reduction_type == "pointing")) {
         SPDLOG_INFO("calibrating flux scale for scan {}", in.index.data);
-        //calibrate(out.scans.data, engine->calib_data["flxscale"], map_index_vector, det_index_vector, engine->cflux);
+        calibrate(out.scans.data, engine->calib_data["flxscale"], map_index_vector, det_index_vector, engine->cflux);
     }
 
     // correct tau

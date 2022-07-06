@@ -197,18 +197,7 @@ void Lali::setup() {
                 fo.close();
             }
         }
-    }
-
-    // temporary fix for removing bad detectors
-    Eigen::Index nbad = 0;
-    for (Eigen::Index i=0; i<ndet; i++) {
-        auto dist = pow(calib_data["x_t"](i) + 16,2) + pow(calib_data["y_t"](i) - 20,2);
-        if (dist > pow(110.,2)) {
-            nbad++;
-        }
-    }
-    
-    SPDLOG_INFO("number of bad detectors {}/{}", nbad, ndet);
+    }    
 }
 
 auto Lali::run() {
@@ -233,6 +222,7 @@ auto Lali::run() {
         in.tel_meta_data.data["TelTime"] = tel_meta_data["TelTime"].segment(start_index, scan_length);
 
         in.tel_meta_data.data["TelElDes"] = tel_meta_data["TelElDes"].segment(start_index, scan_length);
+        in.tel_meta_data.data["TelElAct"] = tel_meta_data["TelElAct"].segment(start_index, scan_length);
         in.tel_meta_data.data["ParAng"] = tel_meta_data["ParAng"].segment(start_index, scan_length);
 
         in.tel_meta_data.data["TelLatPhys"] = tel_meta_data["TelLatPhys"].segment(start_index, scan_length);
@@ -254,26 +244,6 @@ auto Lali::run() {
             tula::logging::scoped_loglevel<spdlog::level::off> _0;
             in.scans.data = kidsproc.populate_rtc_load(loaded_rawobs,in.scan_indices.data, scan_length, ndet);
         }
-
-        SPDLOG_INFO("flags before {}",in.flags.data);
-
-        // temporary fix for removing bad detectors
-        Eigen::Index nbad = 0;
-        for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
-            auto dist = pow(calib_data["x_t"](i) + 16,2) + pow(calib_data["y_t"](i) - 20,2);
-            if (dist > pow(70.,2)) {
-                nbad++;
-                //SPDLOG_INFO("bad det {}",i);
-                in.flags.data.col(i).setZero();
-            }
-            /*if (calib_data["flag"](i) == 0) {
-                in.flags.data.col(i).setZero();
-            }*/
-
-           // SPDLOG_INFO("in.scans.data {}", in.scans.data);
-        }
-        SPDLOG_INFO("flags after {}",in.flags.data);
-        SPDLOG_INFO("number of bad detectors {}", nbad);
 
         TCData<TCDataKind::PTC,Eigen::MatrixXd> out;
 
@@ -393,8 +363,24 @@ auto Lali::run() {
                     rc = run_clean;
                 }
 
+                SPDLOG_INFO("flags before {}",out.flags.data);
+
+                // temporary fix for removing bad detectors
+                Eigen::Index nbad = 0;
+                for (Eigen::Index i=0; i<out.flags.data.cols(); i++) {
+                    if (calib_data["flag"](i) == 0) {
+                        out.flags.data.col(i).setZero();
+                        nbad++;
+                    }
+                }
+                
+                SPDLOG_INFO("flags after {}",out.flags.data);
+                SPDLOG_INFO("number of bad detectors {}", nbad);
+
                 tula::logging::scoped_timeit timer("ptcproc.run()");
                 ptcproc.run(out, out, this, rc);
+                ptcproc.get_weights(out, out, this, rc);
+
             }
 
             // timestream output (seq only)
@@ -619,7 +605,7 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                 gaussfit::MapFitter fitter;
                 // size of region to fit in pixels
                 fitter.bounding_box_pix = bounding_box_pix;
-                mb.pfit.col(d) = fitter.fit<gaussfit::MapFitter::centerValue>(mb.signal[d], mb.weight[d], calib_data);
+                mb.pfit.col(d) = fitter.fit<gaussfit::MapFitter::peakValue>(mb.signal[d], mb.weight[d], calib_data);
                 mb.perror.col(d) = fitter.error;
                 return 0;});
 

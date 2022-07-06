@@ -21,7 +21,7 @@ public:
 
     double flux0;
 
-    double fwhm0 = 6.67;
+    double fwhm0 = 2;
     double ang0 = 0.01;
 
     double flux_low = 0.75;
@@ -154,10 +154,10 @@ public:
         //auto xy2 = g.meshgrid(xx, yy);
 
         // do the fit with ceres-solver
-       auto [g_fit, covariance] = gaussfit::curvefit_ceres(g, _p, xy2, _d, _s, limits);
+       //auto [g_fit, covariance] = gaussfit::curvefit_ceres(g, _p, xy2, _d, _s, limits);
 
         // do the fit with ceres-solver
-        //auto [g_fit, covariance] = gaussfit::curvefit_ceres(g, _p, xy, _data, _sigma, limits);
+        auto [g_fit, covariance] = gaussfit::curvefit_ceres(g, _p, xy, _data, _sigma, limits);
 
         error = covariance.diagonal().cwiseSqrt();
 

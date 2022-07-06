@@ -736,7 +736,7 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
 
         for (const auto &data_item : rawobs.kidsdata()) {
             //SPDLOG_INFO("init_indices {}",init_indices[i]);
-            auto slice = tula::container_utils::Slice<int>{scanindices(2,scan)+ init_indices[i],
+            auto slice = tula::container_utils::Slice<int>{scanindices(2,scan) + init_indices[i],
                                                            scanindices(3,scan) + 1 + init_indices[i], 
                                                            std::nullopt};
             result.push_back(load_data_item(data_item, slice));
@@ -902,7 +902,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
         using namespace netCDF::exceptions;
 
         // vector storing calculated, aligned network times
-        std::vector<Eigen::VectorXd> nw_ts;
+        engine().nw_ts.clear();
 
         // initial times for all networks
         std::vector<double> nw_t0s;
@@ -976,16 +976,16 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                 
                 // absolute aligned network time
                 SPDLOG_INFO("engine().temp_time_offset {}",engine().temp_time_offset);
-                nw_ts.push_back(start_t_dbl + pps.array() + dt.array() + engine().temp_time_offset);
+                engine().nw_ts.push_back(start_t_dbl + pps.array() + dt.array() + engine().temp_time_offset);
 
-                SPDLOG_INFO("nw_ts.back() {}", nw_ts.back());
+                SPDLOG_INFO("nw_ts.back() {}", engine().nw_ts.back());
 
                 // get start time of nw
-                nw_t0s.push_back(nw_ts.back()[0]);
+                nw_t0s.push_back(engine().nw_ts.back()[0]);
                 SPDLOG_INFO("nw_ts.back()[0] {}", nw_t0s.back());
 
                 // get end time of nw
-                nw_tns.push_back(nw_ts.back()[ntimes-1]);
+                nw_tns.push_back(engine().nw_ts.back()[ntimes-1]);
                 SPDLOG_INFO("nw_ts.back()[ntimes-1] {}", nw_tns.back());
 
                 // get global max start time and index
@@ -1013,35 +1013,47 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
             }
         }
 
-        Eigen::Index min_size = nw_ts[0].size();
+        Eigen::Index min_size = engine().nw_ts[0].size();
         
         for (Eigen::Index i=0; i<nw_t0s.size(); i++) {
-            if (nw_ts[i].size() < min_size) {
-                min_size = nw_ts[i].size();
+            if (engine().nw_ts[i].size() < min_size) {
+                min_size = engine().nw_ts[i].size();
             }
             
             Eigen::Index si, ei;
-            auto s = (abs(nw_ts[i].array() - max_t0s)).minCoeff(&si);
+            auto s = (abs(engine().nw_ts[i].array() - max_t0s)).minCoeff(&si);
 
-            while (nw_ts[i][si] < max_t0s) {
+            while (engine().nw_ts[i][si] < max_t0s) {
                 si++;
             }
 
             engine().init_indices.push_back(si);
 
-            auto e = (abs(nw_ts[i].array() - min_tns)).minCoeff(&ei);
-            engine().end_indices.push_back(ei);
+            auto e = (abs(engine().nw_ts[i].array() - min_tns)).minCoeff(&ei);
 
-            while (nw_ts[i][ei] > min_tns) {
+            while (engine().nw_ts[i][ei] > min_tns) {
                 ei--;
             }
 
+            engine().end_indices.push_back(ei);
+
             SPDLOG_INFO("s {}, e {}, si {}, ei {}, ei - si {}", s, e, si, ei, ei-si);
-            SPDLOG_INFO("min {} max {} diff {}", nw_ts[i](si), nw_ts[i](ei), nw_ts[i](ei) - nw_ts[i](si));
+            SPDLOG_INFO("min {} max {} diff {}", engine().nw_ts[i](si), engine().nw_ts[i](ei), 
+            engine().nw_ts[i](ei) - engine().nw_ts[i](si));
         }
 
         SPDLOG_INFO("init_indices {}",engine().init_indices);
         SPDLOG_INFO("end_indices {}",engine().end_indices);
+
+
+            /*min_size = engine().nw_ts[0].size();
+            Eigen::Index min_size_i = 0;
+            for (Eigen::Index i=0; i<nw_t0s.size(); i++) {
+                if ((engine().end_indices[i] - engine().init_indices[i]) < min_size) {
+                    min_size = engine().end_indices[i] - engine().init_indices[i];
+                    min_size_i = i;
+                }
+            }*/
 
         // size of telescope data
         Eigen::Matrix<Eigen::Index,1,1> nd;
@@ -1052,7 +1064,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
         Eigen::Index npts = min_size;
 
         //Eigen::VectorXd xi = nw_ts[0].data();
-        Eigen::VectorXd xi = nw_ts[max_t0s_i].head(npts);
+        Eigen::VectorXd xi = engine().nw_ts[max_t0s_i].head(npts);
 
         // do the interpolation
         for (const auto &tel_it : engine().tel_meta_data) {
@@ -1060,28 +1072,28 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                 Eigen::VectorXd yd = tel_meta_data[tel_it.first];
                 Eigen::VectorXd yi(npts);
 
-                SPDLOG_INFO("before tel_meta_data[{}] {}",tel_it.first, tel_meta_data[tel_it.first]);
+                //SPDLOG_INFO("before tel_meta_data[{}] {}",tel_it.first, tel_meta_data[tel_it.first]);
                 mlinterp::interp(nd.data(), npts, // nd, ni
                                  yd.data(), yi.data(), // yd, yi
                                  tel_meta_data["TelTime"].data(), xi.data()); // xd, xi
 
                 tel_meta_data[tel_it.first] = std::move(yi);
 
-                SPDLOG_INFO("after tel_meta_data[{}] {}",tel_it.first, tel_meta_data[tel_it.first]);
+                //SPDLOG_INFO("after tel_meta_data[{}] {}",tel_it.first, tel_meta_data[tel_it.first]);
             }
         }
 
         // set telescope time to aligned kids time
         tel_meta_data["TelTime"] = xi;
 
-        /*NcFile fo("/data/work_toltec/mmccrackan/timestreams.nc", NcFile::replace);
+        NcFile fo("/data/work_toltec/mmccrackan/timestreams.nc", NcFile::replace);
 
         for (Eigen::Index i=0; i<nw_t0s.size(); i++) {
-            auto dim = fo.addDim("dim"+std::to_string(i),nw_ts[i].size());
+            auto dim = fo.addDim("dim"+std::to_string(i),engine().nw_ts[i].size());
             auto var = fo.addVar("nw"+std::to_string(i),netCDF::ncDouble,dim);
-            var.putVar(nw_ts[i].data());
+            var.putVar(engine().nw_ts[i].data());
         }
-        fo.close();*/
+        fo.close();
     }
 
     // get number of maps and grouping indices

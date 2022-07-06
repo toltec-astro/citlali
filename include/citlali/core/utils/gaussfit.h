@@ -264,7 +264,7 @@ struct CeresAutoDiffFitter: Fitter<Model> {
         auto c = - 0.5 * ((sint2 / xstd2) + (cost2 / ystd2));
 
         for (int i=0; i < this->values(); ++i){
-            /*if (this->sigma->coeffRef(i) == 0){
+            if (this->sigma->coeffRef(i) == 0) {
                 r[i] =  (
                         this->ydata->coeffRef(i) -
                         p[0] * exp(
@@ -272,10 +272,10 @@ struct CeresAutoDiffFitter: Fitter<Model> {
                             (this->xdata->coeffRef(i, 0) - p[1]) * (this->xdata->coeffRef(i, 1) - p[2]) * b +
                             pow(this->xdata->coeffRef(i, 1) - p[2], 2) * c
                             )
-                    ) / this->sigma->coeffRef(i);*/
-            //}
+                    ) * this->sigma->coeffRef(i);
+            }
             // remove zero weights
-            //else {
+            else {
                 r[i] =  (
                             this->ydata->coeffRef(i) -
                             p[0] * exp(
@@ -284,7 +284,7 @@ struct CeresAutoDiffFitter: Fitter<Model> {
                                 pow(this->xdata->coeffRef(i, 1) - p[2], 2) * c
                                 )
                         ) / this->sigma->coeffRef(i);
-            //}
+            }
         }
         return true;
     }

@@ -11,6 +11,10 @@ public:
     void run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
              TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
              Engine, bool);
+    template <class Engine>
+    void get_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
+             TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
+             Engine, bool);
 };
 
 template <class Engine>
@@ -130,14 +134,19 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
          SPDLOG_INFO("cleaning skipped");
          out = in;
      }
+}
 
-     // calculate approximate weights from sensitivity and sample rate
+template <class Engine>
+void PTCProc::get_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
+         TCData<TCDataKind::PTC, Eigen::MatrixXd> &out,
+         Engine engine, bool run_clean) {
+    // calculate approximate weights from sensitivity and sample rate
      if (engine->weighting_type == "approximate") {
-         out.weights.data = pow(sqrt(engine->dfsmp)*engine->sensitivity.array(),-2.0);
+         out.weights.data = pow(sqrt(engine->dfsmp)*engine->calib_data["sens"].array(),-2.0);
      }
 
      // get weights from stddev of each scan for each detector
-     else if (engine->weighting_type == "full"){
+     else if (engine->weighting_type == "full") {
          out.weights.data = Eigen::VectorXd::Zero(out.scans.data.cols());
          for (Eigen::Index i=0; i<out.scans.data.cols(); i++) {
 
@@ -157,6 +166,9 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
              }
          }
      }
+
+    SPDLOG_INFO("out.weights.data {}",out.weights.data);
+         
 }
 
 } // namespace

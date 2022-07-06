@@ -89,6 +89,9 @@ public:
 
     double temp_time_offset;
 
+    // network time vectors
+    std::vector<Eigen::VectorXd> nw_ts;
+
     // citlali config file
     tula::config::YamlConfig engine_config;
 

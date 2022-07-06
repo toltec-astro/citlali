@@ -70,6 +70,9 @@ public:
 void Beammap::setup() {
     // flag for bad detectors
     calib_data["flag"].setOnes(ndet);
+
+    // initialize sensitivity
+    calib_data["sens"].setOnes(ndet);
     
     // set number of fit parameters
     nparams = 6;
@@ -268,6 +271,7 @@ auto Beammap::run_timestream() {
         in.tel_meta_data.data["TelTime"] = tel_meta_data["TelTime"].segment(start_index, scan_length);
 
         in.tel_meta_data.data["TelElDes"] = tel_meta_data["TelElDes"].segment(start_index, scan_length);
+        in.tel_meta_data.data["TelElAct"] = tel_meta_data["TelElAct"].segment(start_index, scan_length);
         in.tel_meta_data.data["ParAng"] = tel_meta_data["ParAng"].segment(start_index, scan_length);
 
         in.tel_meta_data.data["TelLatPhys"] = tel_meta_data["TelLatPhys"].segment(start_index, scan_length);
@@ -381,7 +385,19 @@ auto Beammap::run_loop() {
                     add_gaussian_2(this,ptcs.at(s).scans.data, ptcs.at(s).tel_meta_data.data);
                 }
             }
+        return 0;});
 
+        // calculate sensitivity
+        grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](int d) {
+            //SPDLOG_INFO("calculating sensitivity for det {}", d);
+            Eigen::MatrixXd det_sens;
+            Eigen::MatrixXd noise_flux;
+            calc_sensitivity(ptcs, det_sens, noise_flux, dfsmp, d);
+            calib_data["sens"](d) = tula::alg::median(det_sens);
+        return 0;});
+
+        grppi::map(tula::grppi_utils::dyn_ex(ex_name), scan_in_vec, scan_out_vec, [&](auto s) {
+            ptcproc.get_weights(ptcs.at(s), ptcs.at(s), this, run_clean);
             /*Stage 3 Populate Map*/
             if (run_maps) {
                 if (mapping_method == "naive") {
@@ -435,11 +451,18 @@ auto Beammap::run_loop() {
             mb.normalize_maps(run_kernel,ex_name);
 
             SPDLOG_INFO("fitting maps");
+            Eigen::VectorXd fwhms(3);
+            fwhms << 5.0, 6.3, 10.0;
+            fwhms = fwhms/(mb.pixel_size/ASEC_TO_RAD);
+            SPDLOG_INFO("fwhms {}",fwhms);
             grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](auto d) {
                 if (converged(d) == false) {
                     //SPDLOG_INFO("fitting detector {}/{}",d+1, det_in_vec.size());
                     // declare fitter class for detector
                     gaussfit::MapFitter fitter;
+                    Eigen::Index arr = calib_data["array"](d);
+                    fitter.fwhm0 = fwhms(arr);
+                    SPDLOG_INFO("fwhms {}",fwhms);
                     // size of region to fit in pixels
                     fitter.bounding_box_pix = bounding_box_pix;
                     mb.pfit.col(d) = fitter.fit<gaussfit::MapFitter::peakValue>(mb.signal[d], mb.weight[d], calib_data);
@@ -590,31 +613,64 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
 
                 mean_els.resize(ndet);
 
-                double az_center = 0;//-16;
-                double el_center = 0;//18;
-
                 Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1> map_index_vector = ptcs.back().map_index_vector.data;
 
+                Eigen::VectorXd fwhms(3);
+                fwhms << 15.0, 15, 15.0;
+
+                Eigen::VectorXd az_center(toltec_io.name_keys.size()), el_center(toltec_io.name_keys.size());
+
+                 for (Eigen::Index mc = 0; mc<toltec_io.name_keys.size(); mc++) {
+                    auto arr_ndet = std::get<1>(array_indices.at(mc)) - std::get<0>(array_indices.at(mc));
+                    auto x_t = mb.pfit.row(1).segment(std::get<0>(array_indices.at(mc)),
+                                                                                arr_ndet);
+                    auto y_t = mb.pfit.row(2).segment(std::get<0>(array_indices.at(mc)),
+                                                                                arr_ndet);
+
+                    az_center(mc) = tula::alg::median(x_t);
+                    el_center(mc) = tula::alg::median(y_t);
+                }
+
                 // derotate x_t and y_t and calculate sensitivity for detectors
-                SPDLOG_INFO("derotating offsets and calculating sensitivity");
+                SPDLOG_INFO("derotating offsets");
                 grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](int d) {
+                    // map stddev
+                    double map_stddev = engine_utils::stddev(mb.signal[d]);
+                    SPDLOG_INFO("mb.pfit(0,d)/map_stddev {}",mb.pfit(0,d)/map_stddev);
+
+                    // flag bad a_fwhm
+                    if (mb.pfit(3,d) < 2 || mb.pfit(3,d) > fwhms(int(calib_data["array"](d)))) {
+                        calib_data["flag"](d) = 0;
+                    }
+
+                    // flag bad b_fwhm
+                    if (mb.pfit(4,d) < 2 || mb.pfit(4,d) > fwhms(int(calib_data["array"](d)))) {
+                        calib_data["flag"](d) = 0;
+                    }
+
+                    // flag low S/N
+                    if (mb.pfit(0,d) < 0 || mb.pfit(0,d)/map_stddev < 5.0) {
+                        calib_data["flag"](d) = 0;
+                    }
 
                     Eigen::Index mi = map_index_vector(d);
 
                     calib_data["flxscale"](d) = beammap_fluxes[toltec_io.name_keys[mi]]/mb.pfit(0,d);
+                    // change sensitivity units
+                    calib_data["sens"](d) = calib_data["flxscale"](d)*calib_data["sens"](d);
 
                     //SPDLOG_INFO("derotating det {}", d);
                     Eigen::Index min_index;
 
                     // don't use pointing here as that will rotate by azoff/eloff
-                    Eigen::VectorXd lat = -(mb.pfit(2,d)*ASEC_TO_RAD) + tel_meta_data["TelElDes"].array();
-                    Eigen::VectorXd lon = -(mb.pfit(1,d)*ASEC_TO_RAD) + tel_meta_data["TelAzDes"].array();
+                    Eigen::VectorXd lat = -(mb.pfit(2,d)*ASEC_TO_RAD) + tel_meta_data["TelElAct"].array();
+                    Eigen::VectorXd lon = -(mb.pfit(1,d)*ASEC_TO_RAD) + tel_meta_data["TelAzAct"].array();
 
                     // minimum cartesian distance from source
                     double min_dist = ((tel_meta_data["SourceEl"] - lat).array().pow(2) +
                             (tel_meta_data["SourceAz"] - lon).array().pow(2)).minCoeff(&min_index);
 
-                    double min_el = tel_meta_data["TelElDes"](min_index);
+                    double min_el = tel_meta_data["TelElAct"](min_index);
                     mean_els(d) = min_el;
 
                     double rot_azoff = cos(-min_el)*mb.pfit(1,d) -
@@ -622,24 +678,27 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
                     double rot_eloff = sin(-min_el)*mb.pfit(1,d) +
                             cos(-min_el)*mb.pfit(2,d);
 
-                    mb.pfit(1,d) = -rot_azoff - az_center;
-                    mb.pfit(2,d) = -rot_eloff - el_center;
+                    Eigen::Index arr = calib_data["array"](d);
 
-                    //SPDLOG_INFO("calculating sensitivity for det {}", d);
-                    Eigen::MatrixXd det_sens;
-                    Eigen::MatrixXd noise_flux;
-                    calc_sensitivity(ptcs, det_sens, noise_flux, dfsmp, d);
-                    sensitivity(d) = det_sens.mean();
+                    //mb.pfit(1,d) = -rot_azoff;// - az_center(arr);
+                    //mb.pfit(2,d) = -rot_eloff;// - el_center(arr);
+
+                    //mb.pfit(1,d) = mb.pfit(1,d) - az_center(arr);
+                    //mb.pfit(2,d) = mb.pfit(2,d) - el_center(arr);
+
+
                 return 0;});
 
-                for (Eigen::Index mc = 0; mc<toltec_io.name_keys.size(); mc++) {
-                    auto ndet = std::get<1>(array_indices.at(mc)) - std::get<0>(array_indices.at(mc));
-                    auto a_fwhm = mb.pfit.row(3).segment(std::get<0>(array_indices.at(mc)),
-                                                                                ndet);
-                    auto b_fwhm = mb.pfit.row(4).segment(std::get<0>(array_indices.at(mc)),
-                                                                                ndet);
+                SPDLOG_INFO("calib_data[flag] {}", calib_data["flag"]);
 
-                    SPDLOG_INFO("ndet {} a_fwhm {} b_fwhm {}", ndet, a_fwhm, b_fwhm);
+                for (Eigen::Index mc = 0; mc<toltec_io.name_keys.size(); mc++) {
+                    auto arr_ndet = std::get<1>(array_indices.at(mc)) - std::get<0>(array_indices.at(mc));
+                    auto a_fwhm = mb.pfit.row(3).segment(std::get<0>(array_indices.at(mc)),
+                                                                                arr_ndet);
+                    auto b_fwhm = mb.pfit.row(4).segment(std::get<0>(array_indices.at(mc)),
+                                                                                arr_ndet);
+
+                    SPDLOG_INFO("ndet {} a_fwhm {} b_fwhm {}", arr_ndet, a_fwhm, b_fwhm);
 
                     toltec_io.bfwhm_keys[mc] = ((a_fwhm + b_fwhm)/2).mean();
 
@@ -764,7 +823,7 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
         table.row(5) = calib_data["ori"].cast<double> ();
         table.row(6) = responsivity.cast<double> ();
         table.row(7) = calib_data["flxscale"].cast<double> ();
-        table.row(8) = sensitivity.cast<double> ();
+        table.row(8) = calib_data["sens"].cast<double> ();
         table.row(9) = mean_els.cast<double> ();
 
         table.row(10) = mout.pfit.row(0).template cast<double> ();

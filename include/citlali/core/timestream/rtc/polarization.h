@@ -65,7 +65,7 @@ public:
         Eigen::Index nsamples = in.scans.data.rows();
 
         // vectors for map and detector indices
-        Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1> map_index_vector, det_index_vector;
+        Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1> map_index_vector, array_index_vector, det_index_vector;
 
         // ndetectors for stokes directions
         Eigen::Index ndet;
@@ -74,6 +74,7 @@ public:
             SPDLOG_INFO("creating I timestream");
             map_index_vector = engine->calib_data["array"].template cast<Eigen::Index> ();
             det_index_vector.resize(engine->ndet);
+            array_index_vector.resize(engine->ndet);
 
             out = in;
 
@@ -87,11 +88,13 @@ public:
                     }
                 }
                 det_index_vector(i) = i;
+                array_index_vector(i) = engine->calib_data["array"](i);
             }
         }
 
         else {
             Eigen::MatrixXd data;
+            // and the blind forest
             Eigen::Index ori;
             auto pa2 = -(in.tel_meta_data.data["ParAng"].array() - pi);
 

@@ -147,6 +147,9 @@ public:
         // get units
         double unit_scale;
 
+        // sign of cdelt
+        double cdelt_sign;
+
         // get reference value
         double CRVAL1, CRVAL2;
 
@@ -172,6 +175,8 @@ public:
 
             CRVAL1 = source_center["Ra"](0)/unit_scale;
             CRVAL2 = source_center["Dec"](0)/unit_scale;
+
+            cdelt_sign = -1;
         }
 
         // else set it to (0,0) for offset maps
@@ -181,6 +186,8 @@ public:
 
             CRVAL1 = 0.0;
             CRVAL2 = 0.0;
+
+            cdelt_sign = 1;
         }
 
         // pixel corresponding to reference value
@@ -200,13 +207,13 @@ public:
         hdu->addKey("CTYPE1", CTYPE1, "");
         hdu->addKey("CUNIT1", CUNIT, "");
         hdu->addKey("CRVAL1", CRVAL1, "");
-        hdu->addKey("CDELT1", -pixel_size/unit_scale, "");
+        hdu->addKey("CDELT1", cdelt_sign*pixel_size/unit_scale, "");
         hdu->addKey("CRPIX1", ref_pix_c1, "");
 
         hdu->addKey("CTYPE2", CTYPE2, "");
         hdu->addKey("CUNIT2", CUNIT, "");
         hdu->addKey("CRVAL2", CRVAL2, "");
-        hdu->addKey("CDELT2", pixel_size/unit_scale, "");
+        hdu->addKey("CDELT2", -cdelt_sign*pixel_size/unit_scale, "");
         hdu->addKey("CRPIX2", ref_pix_c2, "");
 
         // add CD matrix (do we need this?)
