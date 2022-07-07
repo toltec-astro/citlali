@@ -754,7 +754,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
 
         // add exp time
         if constexpr (out_type==MapType::obs) {
-            f_ios.at(i).pfits->pHDU().addKey("t_exptime", tel_header_data["t_exp"], "Exposure Time (sec)");
+            f_ios.at(i).pfits->pHDU().addKey("t_exptime", t_exp, "Exposure Time (sec)");
         }
 
         else if constexpr (out_type == MapType::coadd) {
@@ -794,6 +794,10 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
         f_ios.at(i).pfits->pHDU().addKey("tan_ra", source_center["Ra"][0], "Map Tangent Point RA (radians)");
         // add map tangent point dec
         f_ios.at(i).pfits->pHDU().addKey("tan_dec", source_center["Dec"][0], "Map Tangent Point Dec (radians)");
+
+        for (auto const& [key, val] : tel_header_data) {
+            f_ios.at(i).pfits->pHDU().addKey(key, val(0), key);
+        }
 
         i++;
     }
@@ -1130,7 +1134,7 @@ void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool 
                     nf_ios.at(i).pfits->pHDU().addKey("OBSNUM", obsnum, "Observation Number");
                     // add exp time
                     if constexpr (out_type==MapType::obs) {
-                        nf_ios.at(i).pfits->pHDU().addKey("t_exptime", tel_header_data["t_exp"], "Exposure Time (sec)");
+                        nf_ios.at(i).pfits->pHDU().addKey("t_exptime", t_exp, "Exposure Time (sec)");
                     }
 
                     else if constexpr (out_type == MapType::coadd) {

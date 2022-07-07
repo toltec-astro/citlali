@@ -31,10 +31,38 @@ struct ToltecTelescope {
         {"Data.TelescopeBackend.TelElMap", "TelElMap"}
     };
 
-    std::map<std::string, std::string> header_keys {
+    std::map<std::string, std::string> src_keys {
         {"Header.Source.Ra", "Ra"},
-        {"Header.Source.Dec", "Dec"},
-        //{"Header.Telescope.t_exp","t_exp"}
+        {"Header.Source.Dec", "Dec"}
+    };
+
+    std::map<std::string, std::string> header_keys {
+        {"Header.M2.XAct","Header.M2.XAct"},
+        {"Header.M2.YAct","Header.M2.YAct"},
+        {"Header.M2.ZAct","Header.M2.ZAct"},
+        {"Header.M2.TipAct","Header.M2.TipAct"},
+        {"Header.M2.TiltAct","Header.M2.TiltAct"},
+        {"Header.M2.XReq","Header.M2.XReq"},
+        {"Header.M2.YReq","Header.M2.YReq"},
+        {"Header.M2.ZReq","Header.M2.ZReq"},
+        {"Header.M2.TipReq","Header.M2.TipReq"},
+        {"Header.M2.TiltReq","Header.M2.TiltReq"},
+        {"Header.M2.XDes","Header.M2.XDes"},
+        {"Header.M2.YDes","Header.M2.YDes"},
+        {"Header.M2.ZDes","Header.M2.ZDes"},
+        {"Header.M2.TipDes","Header.M2.TipDes"},
+        {"Header.M2.TiltDes","Header.M2.TiltDes"},
+        {"Header.M2.XPcor","Header.M2.XPcor"},
+        {"Header.M2.YPcor","Header.M2.YPcor"},
+        {"Header.M2.ZPcor","Header.M2.ZPcor"},
+        {"Header.M2.TipPcor","Header.M2.TipPcor"},
+        {"Header.M2.TiltPcor","Header.M2.TiltPcor"},
+        {"Header.M2.XCmd","Header.M2.XCmd"},
+        {"Header.M2.YCmd","Header.M2.YCmd"},
+        {"Header.M2.ZCmd","Header.M2.ZCmd"},
+        {"Header.M2.TipCmd","Header.M2.TipCmd"},
+        {"Header.M2.TiltCmd","Header.M2.TiltCmd"},
+        {"Header.M1.ZernikeC","Header.M1.ZernikeC"}
     };
 };
 
@@ -47,11 +75,12 @@ public:
     char source_name_c [128];
     // telescope pointing vectors
     std::map<std::string, Eigen::VectorXd> tel_meta_data;
-    std::map<std::string, double> tel_header_data;
+    std::map<std::string, Eigen::VectorXd> tel_header_data;
     // source center from telescope file
     std::map<std::string, Eigen::VectorXd> source_center;
 
     // coadded t_exp
+    double t_exp = 0;
     double c_t_exp = 0;
 
     // map absolute center value
@@ -95,10 +124,31 @@ public:
             tel_meta_data["ActParAng"] = pi - tel_meta_data["ActParAng"].array();
 
             // loop through and get telescope header vectors
-            for (auto const& pair : header_keys) {
+            for (auto const& pair : src_keys) {
                 Eigen::Index npts = vars.find(pair.first)->second.getDim(0).getSize();
+                    SPDLOG_INFO("src.FIRST {}",pair.first);
                 source_center[pair.second].resize(npts);
                 vars.find(pair.first)->second.getVar(source_center[pair.second].data());
+            }
+
+
+            // loop through and get telescope header vectors
+            for (auto const& pair : header_keys) {
+                Eigen::Index npts = 1;
+                /*try {
+                    Eigen::Index npts = vars.find(pair.first)->second.getDim(0).getSize();
+                } catch (...) {
+                    Eigen::Index npts = 1;
+                }*/
+
+                if (pair.first == "Header.M1.ZernikeC") {
+                    npts = vars.find(pair.first)->second.getDim(0).getSize();
+                }
+
+                SPDLOG_INFO("{}",pair.second);
+
+                tel_header_data[pair.second].resize(npts);
+                vars.find(pair.first)->second.getVar(tel_header_data[pair.second].data());
             }
 
             // override center Ra if crval1_J2000 is non-zero
@@ -115,7 +165,7 @@ public:
 
             Eigen::Index npts = tel_meta_data["TelTime"].size();
 
-            tel_header_data["t_exp"] = tel_meta_data["TelTime"](npts - 1) - tel_meta_data["TelTime"](0);
+            t_exp = tel_meta_data["TelTime"](npts - 1) - tel_meta_data["TelTime"](0);
             fo.close();
 
         } catch (NcException &e) {

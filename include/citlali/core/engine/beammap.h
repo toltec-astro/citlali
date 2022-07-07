@@ -1037,7 +1037,7 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
             // object
             f_ios.at(i).pfits->pHDU().addKey("OBJECT", (std::string)source_name, "");
             // exp time
-            f_ios.at(i).pfits->pHDU().addKey("t_exptime", tel_header_data["t_exp"], "Exposure Time (sec)");
+            f_ios.at(i).pfits->pHDU().addKey("t_exptime", t_exp, "Exposure Time (sec)");
             // add source ra
             f_ios.at(i).pfits->pHDU().addKey("s_ra", source_center["Ra"][0], "Source RA (radians)");
             // add source dec
@@ -1068,6 +1068,11 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
                                                  "Conversion to MJy/Sr");
                 f_ios.at(i).pfits->pHDU().addKey("to_uK/arcmin2", 1.0, "Conversion to uK/arcmin2");
             }
+
+            for (auto const& [key, val] : tel_header_data) {
+                f_ios.at(i).pfits->pHDU().addKey(key, val(0), key);
+            }
+
             i++;
         }
     }

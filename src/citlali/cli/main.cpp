@@ -1440,7 +1440,7 @@ int run(const rc_t &rc) {
                     todproc.engine().get_telescope(rawobs.teldata().filepath());
 
                     // coadded exposure time
-                    todproc.engine().c_t_exp += todproc.engine().tel_header_data["t_exp"];
+                    todproc.engine().c_t_exp += todproc.engine().t_exp;
 
                     // calculate physical pointing vectors
                     todproc.engine().get_phys_pointing(todproc.engine().tel_meta_data, todproc.engine().source_center,
