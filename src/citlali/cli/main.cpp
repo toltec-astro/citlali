@@ -1086,14 +1086,14 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
         // set telescope time to aligned kids time
         tel_meta_data["TelTime"] = xi;
 
-        NcFile fo("/data/work_toltec/mmccrackan/timestreams.nc", NcFile::replace);
+        /*NcFile fo("/data/work_toltec/mmccrackan/timestreams.nc", NcFile::replace);
 
         for (Eigen::Index i=0; i<nw_t0s.size(); i++) {
             auto dim = fo.addDim("dim"+std::to_string(i),engine().nw_ts[i].size());
             auto var = fo.addVar("nw"+std::to_string(i),netCDF::ncDouble,dim);
             var.putVar(engine().nw_ts[i].data());
         }
-        fo.close();
+        fo.close();*/
     }
 
     // get number of maps and grouping indices

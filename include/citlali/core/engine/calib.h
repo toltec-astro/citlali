@@ -25,7 +25,8 @@ struct ToltecCalib {
         {"ori",1},
         {"responsivity",1},
         {"flag",1},
-        {"sens",1}
+        {"sens",1},
+        {"sig2noise",1}
     };
 
     bool run_hwp;

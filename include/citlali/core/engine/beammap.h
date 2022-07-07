@@ -616,11 +616,11 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
                 Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1> map_index_vector = ptcs.back().map_index_vector.data;
 
                 Eigen::VectorXd fwhms(3);
-                fwhms << 15.0, 15, 15.0;
+                fwhms << 15.0, 15.0, 15.0;
 
-                Eigen::VectorXd az_center(toltec_io.name_keys.size()), el_center(toltec_io.name_keys.size());
+                /*Eigen::VectorXd az_center(toltec_io.name_keys.size()), el_center(toltec_io.name_keys.size());
 
-                 for (Eigen::Index mc = 0; mc<toltec_io.name_keys.size(); mc++) {
+                for (Eigen::Index mc = 0; mc<toltec_io.name_keys.size(); mc++) {
                     auto arr_ndet = std::get<1>(array_indices.at(mc)) - std::get<0>(array_indices.at(mc));
                     auto x_t = mb.pfit.row(1).segment(std::get<0>(array_indices.at(mc)),
                                                                                 arr_ndet);
@@ -629,7 +629,10 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
 
                     az_center(mc) = tula::alg::median(x_t);
                     el_center(mc) = tula::alg::median(y_t);
-                }
+                }*/
+
+                // signal to noise
+                calib_data["sig2noise"].resize(ndet);
 
                 // derotate x_t and y_t and calculate sensitivity for detectors
                 SPDLOG_INFO("derotating offsets");
@@ -652,6 +655,8 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
                     if (mb.pfit(0,d) < 0 || mb.pfit(0,d)/map_stddev < 5.0) {
                         calib_data["flag"](d) = 0;
                     }
+
+                    calib_data["sig2noise"](d) = mb.pfit(0,d)/map_stddev;
 
                     Eigen::Index mi = map_index_vector(d);
 
@@ -680,14 +685,46 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
 
                     Eigen::Index arr = calib_data["array"](d);
 
-                    //mb.pfit(1,d) = -rot_azoff;// - az_center(arr);
-                    //mb.pfit(2,d) = -rot_eloff;// - el_center(arr);
-
-                    //mb.pfit(1,d) = mb.pfit(1,d) - az_center(arr);
-                    //mb.pfit(2,d) = mb.pfit(2,d) - el_center(arr);
-
+                    mb.pfit(1,d) = -rot_azoff;
+                    mb.pfit(2,d) = -rot_eloff;
 
                 return 0;});
+
+                auto nw3_ndet = (calib_data["nw"].array()==3).count();
+                SPDLOG_INFO("nw3_ndet {}", nw3_ndet);
+
+                if (nw3_ndet !=0 && nw3_ndet != ndet) {
+                    Eigen::VectorXd nw3_xt(nw3_ndet), nw3_yt(nw3_ndet);
+
+                    nw3_xt.setZero();
+                    nw3_yt.setZero();
+
+                    Eigen::Index j = 0;
+                    for (Eigen::Index i=0; i<calib_data["nw"].size(); i++) {
+                        if (calib_data["nw"](i) == 3) {
+                            nw3_xt(j) = mb.pfit(1,i);
+                            nw3_yt(j) = mb.pfit(1,i);
+                            j++;
+                        }
+                    }
+
+                    SPDLOG_INFO("nw3_xt {} nw3_yt {}", nw3_xt,nw3_yt);
+
+                    double nw3_med_xt = tula::alg::median(nw3_xt);
+                    double nw3_med_yt = tula::alg::median(nw3_yt);
+
+                    SPDLOG_INFO("nw3_med_xt {} nw3_med_yt {}", nw3_med_xt, nw3_med_yt);
+
+                    Eigen::Index nw3_xc, nw3_yc;
+
+                    auto minx = (abs(nw3_xt.array() - nw3_med_xt)).minCoeff(&nw3_xc);
+                    auto miny = (abs(nw3_yt.array() - nw3_med_yt)).minCoeff(&nw3_yc);
+
+                    SPDLOG_INFO("nw3_xc {} nw3_yc {}", nw3_xc, nw3_yc);
+
+                    mb.pfit.row(1) = mb.pfit.row(1).array() - nw3_xt(nw3_xc);
+                    mb.pfit.row(2) = mb.pfit.row(2).array() - nw3_yt(nw3_yc);
+                }
 
                 SPDLOG_INFO("calib_data[flag] {}", calib_data["flag"]);
 
@@ -846,8 +883,9 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
             ci++;
         }*/
 
-        table.row(toltec_io.beammap_apt_header.size()-2) = converge_iter.cast<double> ();
-        table.row(toltec_io.beammap_apt_header.size()-1) = calib_data["flag"].cast<double> ();
+        table.row(toltec_io.beammap_apt_header.size()-3) = converge_iter.cast<double> ();
+        table.row(toltec_io.beammap_apt_header.size()-2) = calib_data["flag"].cast<double> ();
+        table.row(toltec_io.beammap_apt_header.size()-1) = calib_data["sig2noise"].cast<double> ();
 
         table.transposeInPlace();
 
@@ -924,6 +962,9 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
 
         meta["flag"].push_back("units: N/A");
         meta["flag"].push_back("good det");
+
+        meta["sig2noise"].push_back("units: N/A");
+        meta["sig2noise"].push_back("signal to noise");
 
         // write apt table to ecsv file
         to_ecsv_from_matrix(filename, table, toltec_io.beammap_apt_header, meta);

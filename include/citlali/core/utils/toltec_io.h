@@ -145,7 +145,8 @@ struct ToltecIO {
         {"angle"},
         {"angle_err"},
         {"converge_iter"},
-        {"flag"}};
+        {"flag"},
+        {"sig2noise"}};
 
     // header keys for output FITS files
     std::map<std::string, std::string> fits_header_keys {
