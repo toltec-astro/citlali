@@ -937,6 +937,8 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                 vars.find("Header.Toltec.RoachIndex")->second.getVar(&roach_index);
                 engine().nc_header["RoachIndex"] = roach_index;
 
+                SPDLOG_INFO("roach_index {}", roach_index);
+
                 Eigen::Index ntimes = vars.find("Data.Toltec.Ts")->second.getDim(0).getSize();
                 Eigen::Index nvars = vars.find("Data.Toltec.Ts")->second.getDim(1).getSize();
 
@@ -976,7 +978,8 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                 
                 // absolute aligned network time
                 SPDLOG_INFO("engine().temp_time_offset {}",engine().temp_time_offset);
-                engine().nw_ts.push_back(start_t_dbl + pps.array() + dt.array() + engine().temp_time_offset);
+                engine().nw_ts.push_back(start_t_dbl + pps.array() + dt.array() + engine().temp_time_offset + 
+                engine().interface_sync_offset["toltec"+std::to_string(roach_index)]);
 
                 SPDLOG_INFO("nw_ts.back() {}", engine().nw_ts.back());
 

@@ -313,7 +313,7 @@ void Observation::get_scanindices(tel_meta_data_t &tel_meta_data, C &center, std
     SPDLOG_INFO("OBSPGM bool{}", std::strcmp("Lissajous", ObsPgm.c_str()) == 0);
 
     // get scan indices for Raster pattern
-    if (redu_t == "beammap") {//std::strcmp("Map", ObsPgm.c_str()) == 0) {
+    if (redu_t == "beammap" || redu_t == "science") {//std::strcmp("Map", ObsPgm.c_str()) == 0) {
         SPDLOG_INFO("Calculating scans for Raster mode");
 
         // cast Hold signal to bool
