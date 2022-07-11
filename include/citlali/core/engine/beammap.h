@@ -660,9 +660,13 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
 
                     Eigen::Index mi = map_index_vector(d);
 
-                    calib_data["flxscale"](d) = beammap_fluxes[toltec_io.name_keys[mi]]/mb.pfit(0,d);
+                    calib_data["flxscale"](d) = 1e-3*1e-6*beammap_fluxes[toltec_io.name_keys[mi]]/mb.pfit(0,d);
                     // change sensitivity units
                     calib_data["sens"](d) = calib_data["flxscale"](d)*calib_data["sens"](d);
+
+                    if (calib_data["flxscale"](d) > pow(10,10)) {
+                        calib_data["flag"](d) = 0;
+                    }
 
                     //SPDLOG_INFO("derotating det {}", d);
                     Eigen::Index min_index;
@@ -724,6 +728,12 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
 
                     mb.pfit.row(1) = mb.pfit.row(1).array() - nw3_xt(nw3_xc);
                     mb.pfit.row(2) = mb.pfit.row(2).array() - nw3_yt(nw3_yc);
+
+                    for (Eigen::Index i=0; i<ndet; i++) {
+                        if (pow(mb.pfit(1,i) - nw3_xt(nw3_xc),2) + pow(mb.pfit(2,i) - nw3_xt(nw3_yc),2) > pow(120,2)) {
+                            calib_data["flag"](i) = 0;
+                        }
+                    }
                 }
 
                 SPDLOG_INFO("calib_data[flag] {}", calib_data["flag"]);

@@ -35,7 +35,7 @@ void estimate_tau(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB> &el
     SPDLOG_INFO("obs_taui {}", obs_taui);
 
     // multiply scan cols by observed tau vector
-    in = (in.derived().array().colwise()*obs_taui.array()).eval();
+    in = (in.derived().array().colwise()*exp(obs_taui.array())).eval();
 }
 
 } // namespace timestream

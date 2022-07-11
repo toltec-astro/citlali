@@ -1754,7 +1754,7 @@ int run(const rc_t &rc) {
                              todproc.engine().cflux(j) = 1.0;
                         }
 
-                        else if (todproc.engine().cunit == "uK/arcmin^2") {
+                        else if (todproc.engine().cunit == "uK/arcmin2") {
                             todproc.engine().cflux(j) = engine_utils::MJy_Sr_to_uK(1, todproc.engine().toltec_io.array_freqs[l],
                                                                      todproc.engine().toltec_io.bfwhm_keys[l]);
                             if (k == todproc.engine().toltec_io.barea_keys.size() - 1) {
@@ -1768,6 +1768,11 @@ int run(const rc_t &rc) {
                     }
 
                     SPDLOG_INFO("cflux {}",todproc.engine().cflux);
+
+                    for (Eigen::Index det=0; det<todproc.engine().calib_data["sens"].size(); det++) {
+                        Eigen::Index mi = todproc.engine().calib_data["array"](det);
+                        todproc.engine().calib_data["sens"](det) = todproc.engine().calib_data["sens"](det)*todproc.engine().cflux(mi);
+                    }
 
                     // do general setup that is only run once per rawobs before grppi pipeline
                     {
