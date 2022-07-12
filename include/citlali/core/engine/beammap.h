@@ -660,9 +660,9 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
 
                     Eigen::Index mi = map_index_vector(d);
 
-                    calib_data["flxscale"](d) = 1e-3*1e-6*beammap_fluxes[toltec_io.name_keys[mi]]/mb.pfit(0,d);
+                    calib_data["flxscale"](d) = beammap_fluxes[toltec_io.name_keys[mi]]/mb.pfit(0,d);
                     // change sensitivity units
-                    calib_data["sens"](d) = calib_data["flxscale"](d)*calib_data["sens"](d);
+                    //calib_data["sens"](d) = calib_data["flxscale"](d)*calib_data["sens"](d);
 
                     if (calib_data["flxscale"](d) > pow(10,10)) {
                         calib_data["flag"](d) = 0;
@@ -754,6 +754,12 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
                     toltec_io.barea_keys[mc] = 2.*pi*pow(toltec_io.bfwhm_keys[mc]/STD_TO_FWHM,2);
                 }
 
+                for (Eigen::Index d=0; d<calib_data["sens"].size(); d++) {
+                    Eigen::Index mi = map_index_vector(d);
+                    calib_data["flxscale"](d) = calib_data["flxscale"](d)/(toltec_io.barea_keys[mi]*MJY_SR_TO_mJY_ASEC);
+                    calib_data["sens"](d) = calib_data["flxscale"](d)*calib_data["sens"](d);
+                }
+
                 // flux conversion
                 cflux.resize(mb.map_count);
 
@@ -765,7 +771,7 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
                         if (k == toltec_io.barea_keys.size() - 1) {
                             k = 0;
                             l++;
-                            }
+                        }
                         else {
                             k++;
                         }
@@ -822,6 +828,8 @@ auto Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
 template <MapBase::MapType out_type, class MC, typename fits_out_vec_t>
 void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, bool filtered) {
+
+    SPDLOG_INFO("dets with bad weights {}", bad_weights);
 
     std::string hdname;
 

@@ -627,6 +627,8 @@ auto Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 template <MapBase::MapType out_type, class MC, typename fits_out_vec_t>
 void Lali::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t &nf_ios, bool filtered) {
 
+    SPDLOG_INFO("dets with bad weights {}", bad_weights);
+
     std::string hdname;
 
     if (use_subdir) {

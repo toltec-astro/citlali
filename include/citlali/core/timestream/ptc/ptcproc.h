@@ -139,35 +139,56 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 template <class Engine>
 void PTCProc::get_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
          TCData<TCDataKind::PTC, Eigen::MatrixXd> &out,
-         Engine engine, bool run_clean) {
+    Engine engine, bool run_clean) {
     // calculate approximate weights from sensitivity and sample rate
-     if (engine->weighting_type == "approximate") {
-         out.weights.data = pow(sqrt(engine->dfsmp)*engine->calib_data["sens"].array(),-2.0);
-     }
+    if (engine->weighting_type == "approximate") {
+        out.weights.data = pow(sqrt(engine->dfsmp)*engine->calib_data["sens"].array(),-2.0);
+    }
 
-     // get weights from stddev of each scan for each detector
-     else if (engine->weighting_type == "full") {
-         out.weights.data = Eigen::VectorXd::Zero(out.scans.data.cols());
-         for (Eigen::Index i=0; i<out.scans.data.cols(); i++) {
+    // get weights from stddev of each scan for each detector
+    else if (engine->weighting_type == "full") {
+        out.weights.data = Eigen::VectorXd::Zero(out.scans.data.cols());
+        for (Eigen::Index i=0; i<out.scans.data.cols(); i++) {
 
-             // make Eigen::Maps for each detector's scan
-             Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
-                 out.scans.data.col(i).data(), out.scans.data.rows());
-             Eigen::Map<Eigen::Matrix<bool, Eigen::Dynamic, 1>> flags(
-                         out.flags.data.col(i).data(), out.flags.data.rows());
+            // make Eigen::Maps for each detector's scan
+            Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
+                out.scans.data.col(i).data(), out.scans.data.rows());
+            Eigen::Map<Eigen::Matrix<bool, Eigen::Dynamic, 1>> flags(
+                        out.flags.data.col(i).data(), out.flags.data.rows());
 
-             // get standard deviation excluding flagged samples
-             auto [tmp, ngood] = engine_utils::stddev(scans, flags);
-             if (tmp != tmp || ngood < engine->dfsmp || tmp == 0) {
-                 out.weights.data(i) = 0.0;
-             }
-             else {
-                 out.weights.data(i) = pow(tmp, -2.0);
-             }
-         }
-     }
+            // get standard deviation excluding flagged samples
+            auto [tmp, ngood] = engine_utils::stddev(scans, flags);
+            if (tmp != tmp || ngood < engine->dfsmp || tmp == 0) {
+                out.weights.data(i) = 0.0;
+            }
+            else {
+                out.weights.data(i) = pow(tmp, -2.0);
+            }
+        }
+    }
 
-    SPDLOG_INFO("out.weights.data {}",out.weights.data);
+    Eigen::Index good_det = (engine->calib_data["flag"].array()==1).count();
+    Eigen::VectorXd good_weights(good_det);
+    Eigen::Index j = 0;
+    for (Eigen::Index i=0; i<out.scans.data.cols(); i++) {
+        if (engine->calib_data["flag"](i) == 1) {
+            good_weights(j) = out.weights.data(i);
+            j++;
+        }
+    }
+
+    engine->bad_weights = engine->ndet - j;
+
+    auto mean_wt = good_weights.mean();
+    auto stddev_wt = engine_utils::stddev(good_weights);
+
+    for (Eigen::Index i=0; i<out.scans.data.cols(); i++) {
+        if (out.weights.data(i) > (mean_wt + 4*stddev_wt)) {
+            out.weights.data(i) = mean_wt/2;
+        }
+    }
+
+    SPDLOG_INFO("number of dets with bad weights {}",engine->bad_weights);
          
 }
 

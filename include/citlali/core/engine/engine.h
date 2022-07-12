@@ -111,6 +111,9 @@ public:
     std::string extinction_model;
     double tau;
 
+    // number of bad weights
+    Eigen::Index bad_weights;
+
     std::map<std::string,double> pointing_offsets;
 
     // format for output timestream file
