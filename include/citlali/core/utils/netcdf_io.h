@@ -84,7 +84,7 @@ void append_to_netcdf(std::string filepath, Eigen::DenseBase<DerivedA> &data, Ei
         NcVar nwid_v = fo.getVar("NETWORKID");
 
         NcVar wt_v = fo.getVar("WEIGHTS");
-        SPDLOG_INFO("weights {}", weights);
+        //SPDLOG_INFO("weights {}", weights);
 
         wt_v.putVar(i04,s_d3,weights.derived().data());
 
