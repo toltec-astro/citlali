@@ -179,16 +179,37 @@ void PTCProc::get_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 
     engine->bad_weights = engine->ndet - j;
 
-    auto mean_wt = good_weights.mean();
+    /*auto mean_wt = good_weights.mean();
     auto stddev_wt = engine_utils::stddev(good_weights);
 
     for (Eigen::Index i=0; i<out.scans.data.cols(); i++) {
         if (out.weights.data(i) > (mean_wt + 4*stddev_wt)) {
             out.weights.data(i) = mean_wt/2;
         }
-    }
+    }*/
 
     SPDLOG_INFO("number of dets with bad weights {}",engine->bad_weights);
+
+    Eigen::VectorXd det_stddev(out.scans.data.cols());
+    for (Eigen::Index i=0; i<out.scans.data.cols(); i++) {
+        // make Eigen::Maps for each detector's scan
+        Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
+            out.scans.data.col(i).data(), out.scans.data.rows());
+        Eigen::Map<Eigen::Matrix<bool, Eigen::Dynamic, 1>> flags(
+                    out.flags.data.col(i).data(), out.flags.data.rows());
+
+        // get standard deviation excluding flagged samples
+        auto [tmp, ngood] = engine_utils::stddev(scans, flags);
+        det_stddev(i) = tmp;
+    }
+
+    double mean_stddev = det_stddev.mean();
+
+    for (Eigen::Index i=0; i<out.scans.data.cols(); i++) {
+        if ((det_stddev(i) < mean_stddev/2) || (det_stddev(i) > 1.5*mean_stddev)) {
+            out.flags.data.col(i).setZero();
+        }
+    }
          
 }
 

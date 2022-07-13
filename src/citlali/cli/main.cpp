@@ -1812,6 +1812,7 @@ int run(const rc_t &rc) {
                         // coadd histogram and psd
                         Eigen::Index i = 0;
                         for (auto const& arr: todproc.engine().toltec_io.name_keys) {
+                            SPDLOG_INFO("ARR {}",arr);
                             SPDLOG_INFO("calculating coadded map psds and hists for map {}",i);
                             PSD psd;
                             psd.weight_type = todproc.engine().weighting_type;
@@ -1820,6 +1821,8 @@ int run(const rc_t &rc) {
                             psd.calc_map_psd(todproc.engine().cmb.signal.at(i), todproc.engine().cmb.weight.at(i), todproc.engine().cmb.rcphys,
                                             todproc.engine().cmb.ccphys);
                             todproc.engine().cmb.psd.push_back(std::move(psd));
+                            
+                            SPDLOG_INFO("done {}",i);
 
                             Histogram hist;
                             hist.weight_type = todproc.engine().weighting_type;
@@ -1913,7 +1916,7 @@ int run(const rc_t &rc) {
                                     // filter noise maps
                                     if (todproc.engine().run_noise) {
                                         tula::logging::scoped_timeit timer("filter_noise()");
-                                        for (Eigen::Index j = 0;j < todproc.engine().cmb.nnoise; j++) {
+                                        for (Eigen::Index j=0; j<todproc.engine().cmb.nnoise; j++) {
                                             todproc.engine().wiener_filter.filter_noise(todproc.engine().cmb, i, j);
                                         }
                                     }
@@ -1941,7 +1944,9 @@ int run(const rc_t &rc) {
                                     todproc.engine().cmb.noise_avg_hist.clear();
 
                                     // coadd histogram and psd
-                                    for (Eigen::Index i = 0; i < todproc.engine().cmb.map_count; i++) {
+                                    Eigen::Index i = 0;
+                                    for (auto const& arr: todproc.engine().toltec_io.name_keys) {
+                                        SPDLOG_INFO("ARR {}",arr);
                                         SPDLOG_INFO("calculating coadded map psds and hists for map {}",i);
                                         PSD psd;
                                         psd.weight_type = todproc.engine().weighting_type;
@@ -1950,6 +1955,8 @@ int run(const rc_t &rc) {
                                         psd.calc_map_psd(todproc.engine().cmb.signal.at(i), todproc.engine().cmb.weight.at(i), todproc.engine().cmb.rcphys,
                                                         todproc.engine().cmb.ccphys);
                                         todproc.engine().cmb.psd.push_back(std::move(psd));
+                                        
+                                        SPDLOG_INFO("done {}",i);
 
                                         Histogram hist;
                                         hist.weight_type = todproc.engine().weighting_type;
@@ -1972,13 +1979,13 @@ int run(const rc_t &rc) {
                                             // loop through noise maps and get psd
                                             for (Eigen::Index j = 0; j < todproc.engine().cmb.nnoise; j++) {
                                                 PSD psd;
-                                                psd.weight_type = todproc.engine().weighting_type;
                                                 psd.cov_cut = todproc.engine().cmb.cov_cut;
                                                 psd.exmode = todproc.engine().ex_name;
+                                                psd.weight_type = todproc.engine().weighting_type;
 
                                                 Histogram hist;
-                                                hist.weight_type = todproc.engine().weighting_type;
                                                 hist.cov_cut = todproc.engine().cmb.cov_cut;
+                                                hist.weight_type = todproc.engine().weighting_type;
 
                                                 Eigen::Tensor<double, 2> out = todproc.engine().cmb.noise.at(i).chip(j, 2);
                                                 Eigen::Map<Eigen::MatrixXd> noise(out.data(), out.dimension(0), out.dimension(1));
@@ -1998,17 +2005,17 @@ int run(const rc_t &rc) {
 
                                                     noise_avg_hist.hist_vals = todproc.engine().cmb.noise_hist.at(i).back().hist_vals;
                                                     noise_avg_hist.hist_bins = todproc.engine().cmb.noise_hist.at(i).back().hist_bins;
+
                                                 }
 
                                                 else {
                                                     noise_avg_psd.psd = noise_avg_psd.psd + todproc.engine().cmb.noise_psd.at(i).back().psd;
                                                     noise_avg_psd.psd2d = noise_avg_psd.psd2d + todproc.engine().cmb.noise_psd.at(i).back().psd2d /
-                                                                                                    todproc.engine().cmb.nnoise;
-                                                    noise_avg_psd.psd2d_freq = noise_avg_psd.psd2d_freq +
-                                                                            todproc.engine().cmb.noise_psd.at(i).back().psd2d_freq / todproc.engine().cmb.nnoise;
+                                                            todproc.engine().cmb.nnoise;
+                                                    noise_avg_psd.psd2d_freq = noise_avg_psd.psd2d_freq + todproc.engine()
+                                                                .cmb.noise_psd.at(i).back().psd2d_freq / todproc.engine().cmb.nnoise;
 
                                                     noise_avg_hist.hist_vals = noise_avg_hist.hist_vals + todproc.engine().cmb.noise_hist.at(i).back().hist_vals;
-
                                                 }
                                             }
 
@@ -2018,6 +2025,7 @@ int run(const rc_t &rc) {
                                             noise_avg_hist.hist_vals = noise_avg_hist.hist_vals / todproc.engine().cmb.nnoise;
                                             todproc.engine().cmb.noise_avg_hist.push_back(noise_avg_hist);
                                         }
+                                        i++;
                                     }
                                 }
                             }

@@ -114,6 +114,9 @@ public:
     // number of bad weights
     Eigen::Index bad_weights;
 
+    // tone flags
+    Eigen::Matrix<int, Eigen::Dynamic, 1> tone_flags;
+
     std::map<std::string,double> pointing_offsets;
 
     // format for output timestream file

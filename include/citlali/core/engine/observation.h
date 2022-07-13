@@ -420,8 +420,8 @@ void Observation::get_scanindices(tel_meta_data_t &tel_meta_data, C &center, std
 
     // set first and last outer scan positions to the same as inner scans since there's no
     // data on either side
-    scanindices(2,0) = scanindices(0,0) + filter_nterms;
-    scanindices(3,nscans-1) = scanindices(1,nscans-1) - filter_nterms;
+    scanindices(2,0) = scanindices(0,0);
+    scanindices(3,nscans-1) = scanindices(1,nscans-1);
 
     scanindices(0,0) = scanindices(0,0) + filter_nterms;
     scanindices(1,nscans-1) = scanindices(1,nscans-1) - filter_nterms;

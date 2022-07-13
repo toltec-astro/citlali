@@ -73,6 +73,8 @@ void Beammap::setup() {
 
     // initialize sensitivity
     calib_data["sens"].setOnes(ndet);
+
+    tone_flags.setZero(ndet);
     
     // set number of fit parameters
     nparams = 6;
@@ -174,9 +176,15 @@ void Beammap::setup() {
                 netCDF::NcFile fo(ts_filepath.back(), netCDF::NcFile::replace);
                 netCDF::NcDim nsmp_dim = fo.addDim("nsamples");
                 netCDF::NcDim header_dim = fo.addDim("header_dim",1);
+                netCDF::NcDim scan_indices_rows = fo.addDim("scanindices_rows",scanindices.rows());
+                netCDF::NcDim scan_indices_cols = fo.addDim("scanindices_cols",scanindices.cols());
 
                 std::vector<netCDF::NcDim> dims;
                 dims.push_back(nsmp_dim);
+
+                std::vector<netCDF::NcDim> scan_indices_dims;
+                scan_indices_dims.push_back(scan_indices_rows);
+                scan_indices_dims.push_back(scan_indices_cols);
 
                 if (stokes_params.first == "I") {
                     netCDF::NcDim ndet_dim = fo.addDim("ndetectors",ndet);
@@ -201,6 +209,11 @@ void Beammap::setup() {
                 netCDF::NcVar n_v = fo.addVar("NETWORKID",netCDF::ncInt, dims[1]);
                 n_v.putAtt("Units","N/A");
                 n_v.putVar(calib_data["nw"].data());
+
+                netCDF::NcVar scanindices_v = fo.addVar("SCANINDICES",netCDF::ncInt, scan_indices_dims);
+                scanindices_v.putAtt("Units","N/A");
+                Eigen::MatrixXI scan_indices_temp = scanindices.transpose();
+                scanindices_v.putVar(scan_indices_temp.data());
 
                 netCDF::NcVar xt_v = fo.addVar("AZOFF",netCDF::ncDouble, dims[1]);
                 xt_v.putAtt("Units","radians");
@@ -323,7 +336,7 @@ auto Beammap::run_timestream() {
                     lon.col(i) = lon_i;
                 }
                 // append to netcdf file
-                append_to_netcdf(ts_filepath[0], out.scans.data, out.flags.data, lat, lon,
+                append_to_netcdf(ts_filepath[0], out.scans.data, out.flags.data, out.weights.data, lat, lon,
                                  det_index_vector, calib_data, out.tel_meta_data.data, out.scans.data.cols());
             }
         }
@@ -438,7 +451,7 @@ auto Beammap::run_loop() {
                                 lat.col(i) = lat_i;
                                 lon.col(i) = lon_i;
                             }
-                            append_to_netcdf(ts_filepath[0], ptcs[s].scans.data, ptcs[s].flags.data, lat, lon,
+                            append_to_netcdf(ts_filepath[0], ptcs[s].scans.data, ptcs[s].flags.data, ptcs[s].weights.data, lat, lon,
                                             ptcs[s].det_index_vector.data, calib_data, 
                                             ptcs[s].tel_meta_data.data, ptcs[s].scans.data.cols());
                         }
@@ -562,6 +575,14 @@ auto Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                                                                //scanindices(2,scan), scanindices(3,scan) + 1, std::nullopt};
                 //loaded_rawobs = kidsproc.load_rawobs(rawobs, slice);
                 loaded_rawobs = kidsproc.load_rawobs(rawobs, scan, scanindices, init_indices);
+
+                Eigen::Index di = 0;
+                for (Eigen::Index i=0; i<loaded_rawobs.size(); i++) {
+                    auto tone_axis = loaded_rawobs[i].wcs.tone_axis;
+                    //tone_flags.segment(di,tone_axis("flag").size()) = tone_axis("flag");
+                    di = di + tone_axis("flag").size();
+                    SPDLOG_INFO("tone_axis(flag) {}", tone_axis("flag"));
+                }
                 //rtc.scans.data = kidsproc.populate_rtc(rawobs, rtc.scan_indices.data, scan_length, ndet);
             }
 

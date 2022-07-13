@@ -15,8 +15,9 @@ struct DataIOError : public std::runtime_error {
     using std::runtime_error::runtime_error;
 };
 
-template <typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD, typename C, typename T>
+template <typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD, typename DerivedE, typename C, typename T>
 void append_to_netcdf(std::string filepath, Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &flag,
+                  Eigen::DenseBase<DerivedE> &weights,
                   Eigen::DenseBase<DerivedC> &lat, Eigen::DenseBase<DerivedC> &lon, 
                   Eigen::DenseBase<DerivedD> &det_index_vector, 
                   C &calib_data,
@@ -38,13 +39,18 @@ void append_to_netcdf(std::string filepath, Eigen::DenseBase<DerivedA> &data, Ei
         // define the dimensions.
         NcDim d_nsmp = fo.getDim("nsamples");
         NcDim d_ndet = fo.getDim("ndetectors");
+        NcDim d_wt = fo.getDim("wt_rows");
         unsigned long nsmp_exists = d_nsmp.getSize() - offset;
+        unsigned long nwt_exists = d_wt.getSize();
+        unsigned long nwt = weights.size();
 
         std::vector<std::size_t> i0{nsmp_exists, dstart};
         std::vector<std::size_t> s_d{1, dsize};
         std::vector<std::size_t> i02{nsmp_exists};
         std::vector<std::size_t> i03{dstart};
+        std::vector<std::size_t> i04{nwt_exists,0};
         std::vector<std::size_t> s_d2{1};
+        std::vector<std::size_t> s_d3{1,nwt};
 
         NcVar data_v = fo.getVar("DATA");
         NcVar flag_v = fo.getVar("FLAG");
@@ -76,6 +82,11 @@ void append_to_netcdf(std::string filepath, Eigen::DenseBase<DerivedA> &data, Ei
         NcVar bfwhm_v = fo.getVar("BFWHM");
         NcVar arrayid_v = fo.getVar("ARRAYID");
         NcVar nwid_v = fo.getVar("NETWORKID");
+
+        NcVar wt_v = fo.getVar("WEIGHTS");
+        SPDLOG_INFO("weights {}", weights);
+
+        wt_v.putVar(i04,s_d3,weights.derived().data());
 
         for (std::size_t ii = 0; ii < TULA_SIZET(data.rows()); ++ii) {
             i0[0] = nsmp_exists + ii;
@@ -121,6 +132,7 @@ void append_to_netcdf(std::string filepath, Eigen::DenseBase<DerivedA> &data, Ei
             eloff_v.putVar(i03, s_d2, &eloff_i);
             azoff_v.putVar(i03, s_d2, &azoff_i);
             afwhm_v.putVar(i03, s_d2, &a_fwhm_i);
+            bfwhm_v.putVar(i03, s_d2, &b_fwhm_i);
             bfwhm_v.putVar(i03, s_d2, &b_fwhm_i);
         }
 
