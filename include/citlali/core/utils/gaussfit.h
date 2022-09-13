@@ -264,7 +264,7 @@ struct CeresAutoDiffFitter: Fitter<Model> {
         auto c = - 0.5 * ((sint2 / xstd2) + (cost2 / ystd2));
 
         for (int i=0; i < this->values(); ++i){
-            if (this->sigma->coeffRef(i) == 0) {
+            if (this->sigma->coeffRef(i) == 0){
                 r[i] =  (
                         this->ydata->coeffRef(i) -
                         p[0] * exp(
@@ -349,7 +349,7 @@ std::tuple<Model, Eigen::MatrixXd> curvefit_ceres(
     //SPDLOG_INFO("{}", summary.BriefReport());
     //SPDLOG_INFO("summary.IsSolutionUsable() {}",summary.IsSolutionUsable());
 
-    Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> covariances(pp.size(),pp.size());
+    Eigen::MatrixXd covariances(pp.size(),pp.size());
 
     // uncertainty calculation
     if (summary.IsSolutionUsable()) {
@@ -358,7 +358,6 @@ std::tuple<Model, Eigen::MatrixXd> curvefit_ceres(
         cov_options.sparse_linear_algebra_library_type = ceres::SparseLinearAlgebraLibraryType::EIGEN_SPARSE;
         cov_options.algorithm_type = ceres::CovarianceAlgorithmType::DENSE_SVD;
         cov_options.null_space_rank = -1;
-        //cov_options.min_reciprocal_condition_number = 1e-5;
         cov_options.apply_loss_function = false;
         Covariance covariance(cov_options);
 

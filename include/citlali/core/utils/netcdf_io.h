@@ -15,14 +15,11 @@ struct DataIOError : public std::runtime_error {
     using std::runtime_error::runtime_error;
 };
 
-template <typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD, typename DerivedE, typename C, typename T>
+template <typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD, typename DerivedE, typename DerivedF, typename C>
 void append_to_netcdf(std::string filepath, Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &flag,
-                  Eigen::DenseBase<DerivedE> &weights,
-                  Eigen::DenseBase<DerivedC> &lat, Eigen::DenseBase<DerivedC> &lon, 
-                  Eigen::DenseBase<DerivedD> &det_index_vector, 
-                  C &calib_data,
-                  T &tel_meta_data,
-                  unsigned long dsize, unsigned long dstart=0, unsigned long offset=0) {
+                  Eigen::DenseBase<DerivedC> &lat, Eigen::DenseBase<DerivedC> &lon, Eigen::DenseBase<DerivedD> &elev,
+                  Eigen::DenseBase<DerivedE> &time, Eigen::DenseBase<DerivedF> &det_index_vector, C &calib_data, unsigned long dsize,
+                      unsigned long dstart=0, unsigned long offset=0) {
 
     using Eigen::Index;
 
@@ -39,40 +36,21 @@ void append_to_netcdf(std::string filepath, Eigen::DenseBase<DerivedA> &data, Ei
         // define the dimensions.
         NcDim d_nsmp = fo.getDim("nsamples");
         NcDim d_ndet = fo.getDim("ndetectors");
-        NcDim d_wt = fo.getDim("wt_rows");
         unsigned long nsmp_exists = d_nsmp.getSize() - offset;
-        unsigned long nwt_exists = d_wt.getSize();
-        unsigned long nwt = weights.size();
 
         std::vector<std::size_t> i0{nsmp_exists, dstart};
         std::vector<std::size_t> s_d{1, dsize};
         std::vector<std::size_t> i02{nsmp_exists};
         std::vector<std::size_t> i03{dstart};
-        std::vector<std::size_t> i04{nwt_exists,0};
         std::vector<std::size_t> s_d2{1};
-        std::vector<std::size_t> s_d3{1,nwt};
 
         NcVar data_v = fo.getVar("DATA");
         NcVar flag_v = fo.getVar("FLAG");
         NcVar lat_v = fo.getVar("DY");
         NcVar lon_v = fo.getVar("DX");
 
-        std::map<std::string, NcVar> tel_meta_vars;
-
-        std::map<std::string, std::string> nc_vars = {
-            {"TelTime", "seconds"},
-            {"TelElDes", "radians"},
-            {"ParAng", "radians"},
-            {"TelLatPhys", "radians"},
-            {"TelLonPhys", "radians"},
-            {"SourceEl", "radians"},
-            {"TelAzMap", "radians"},
-            {"TelElMap", "radians"}
-        };
-
-        for (const auto&var: nc_vars) {
-            tel_meta_vars[var.first] = fo.getVar(var.first);
-        }
+        NcVar e_v = fo.getVar("ELEV");
+        NcVar t_v = fo.getVar("TIME");
 
         NcVar p_v = fo.getVar("PIXID");
 
@@ -81,12 +59,6 @@ void append_to_netcdf(std::string filepath, Eigen::DenseBase<DerivedA> &data, Ei
         NcVar afwhm_v = fo.getVar("AFWHM");
         NcVar bfwhm_v = fo.getVar("BFWHM");
         NcVar arrayid_v = fo.getVar("ARRAYID");
-        NcVar nwid_v = fo.getVar("NETWORKID");
-
-        NcVar wt_v = fo.getVar("WEIGHTS");
-        //SPDLOG_INFO("weights {}", weights);
-
-        wt_v.putVar(i04,s_d3,weights.derived().data());
 
         for (std::size_t ii = 0; ii < TULA_SIZET(data.rows()); ++ii) {
             i0[0] = nsmp_exists + ii;
@@ -105,13 +77,8 @@ void append_to_netcdf(std::string filepath, Eigen::DenseBase<DerivedA> &data, Ei
             lat_v.putVar(i0, s_d, lat_vec.data());
             lon_v.putVar(i0, s_d, lon_vec.data());
 
-            //e_v.putVar(i02, &elev(ii));
-            //a_v.putVar(i02, &az(ii));
-            //t_v.putVar(i02, &time(ii));
-
-            for (const auto&var: nc_vars) {
-                tel_meta_vars[var.first].putVar(i02,&tel_meta_data[var.first](ii));
-            }  
+            e_v.putVar(i02, &elev(ii));
+            t_v.putVar(i02, &time(ii));
         }
 
         for (std::size_t ii = 0; ii < TULA_SIZET(data.cols()); ++ii) {
@@ -128,11 +95,9 @@ void append_to_netcdf(std::string filepath, Eigen::DenseBase<DerivedA> &data, Ei
             auto b_fwhm_i = ASEC_TO_RAD*calib_data["b_fwhm"][di];
 
             arrayid_v.putVar(i03, s_d2, &calib_data["array"][di]);
-            nwid_v.putVar(i03, s_d2, &calib_data["nw"][di]);
             eloff_v.putVar(i03, s_d2, &eloff_i);
             azoff_v.putVar(i03, s_d2, &azoff_i);
             afwhm_v.putVar(i03, s_d2, &a_fwhm_i);
-            bfwhm_v.putVar(i03, s_d2, &b_fwhm_i);
             bfwhm_v.putVar(i03, s_d2, &b_fwhm_i);
         }
 

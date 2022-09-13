@@ -122,16 +122,10 @@ struct ToltecIO {
 
     // header keys for beammap apt table
     std::vector<std::string> beammap_apt_header {
-        {"uid"},
         {"array"},
         {"nw"},
-        {"fg"},
-        {"pg"},
-        {"ori"},
-        {"responsivity"},
         {"flxscale"},
         {"sens"},
-        {"derot_elev"},
         {"amp"},
         {"amp_err"},
         {"x_t"},
@@ -144,9 +138,7 @@ struct ToltecIO {
         {"b_fwhm_err"},
         {"angle"},
         {"angle_err"},
-        {"converge_iter"},
-        {"flag"},
-        {"sig2noise"}};
+        {"converge_iter"}};
 
     // header keys for output FITS files
     std::map<std::string, std::string> fits_header_keys {
@@ -238,10 +230,6 @@ struct ToltecIO {
 
         if constexpr (project_id == simu) {
             filepath = filepath + "simu_";
-        }
-
-        if constexpr (project_id == commissioning) {
-            filepath = filepath + "commissioning_";
         }
 
         // append array name to filename

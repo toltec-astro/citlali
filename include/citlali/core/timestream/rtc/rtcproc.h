@@ -24,14 +24,6 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     // scan length for inner scans
     auto sl = in.scan_indices.data(1) - in.scan_indices.data(0) + 1;
 
-    /*if (in.index.data == 0) {
-        si = si + engine->filter.nterms;
-    }
-
-    else if (in.index.data == engine->scanindices.cols()) {
-        sl = sl - engine->filter.nterms;
-    }*/
-
     // generate kernel
     if (engine->run_kernel) {
         SPDLOG_INFO("making kernel for scan {}",in.index.data);
@@ -113,6 +105,7 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         // loop through telescope meta data and downsample
         SPDLOG_INFO("downsampling telescope meta for scan {}", in.index.data);
         for (auto const& x: in.tel_meta_data.data) {
+
             // get the block of in tel data that corresponds to the inner scan indices
             Eigen::Ref<Eigen::VectorXd> in_tel =
                     in.tel_meta_data.data[x.first].segment(si, sl);

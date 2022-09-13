@@ -63,19 +63,9 @@ public:
 
     template <MapBase::MapType out_type, class MC, typename fits_out_vec_t>
     void output(MC&, fits_out_vec_t &, fits_out_vec_t &, bool);
-
-    Eigen::VectorXd mean_els;
 };
 
 void Beammap::setup() {
-    // flag for bad detectors
-    calib_data["flag"].setOnes(ndet);
-
-    // initialize sensitivity
-    calib_data["sens"].setOnes(ndet);
-
-    tone_flags.setZero(ndet);
-    
     // set number of fit parameters
     nparams = 6;
     // initially all detectors are unconverged
@@ -149,7 +139,7 @@ void Beammap::setup() {
     // create empty FITS files at start
     for (auto const& arr: toltec_io.name_keys) {
         std::string filename;
-        filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::commissioning,
+        filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
                 ToltecIO::beammap, ToltecIO::no_prod_type, ToltecIO::obsnum_true>(filepath + dname,obsnum, arr.first);
 
         FitsIO<fileType::write_fits, CCfits::ExtHDU*> fits_io(filename);
@@ -162,10 +152,17 @@ void Beammap::setup() {
 
             std::string filename;
 
+            if (reduction_type == "science") {
+                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                                    ToltecIO::science, ToltecIO::timestream,
+                                                    ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
+            }
 
-            filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::commissioning,
-                                                ToltecIO::beammap, ToltecIO::timestream,
-                                                ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
+            else if (reduction_type == "pointing") {
+                filename = toltec_io.setup_filepath<ToltecIO::toltec, ToltecIO::simu,
+                                                    ToltecIO::pointing, ToltecIO::timestream,
+                                                    ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
+            }
 
             Eigen::Index ndim_pol = (calib_data["fg"].array() == 0).count() + (calib_data["fg"].array() == 1).count();
 
@@ -175,16 +172,9 @@ void Beammap::setup() {
 
                 netCDF::NcFile fo(ts_filepath.back(), netCDF::NcFile::replace);
                 netCDF::NcDim nsmp_dim = fo.addDim("nsamples");
-                netCDF::NcDim header_dim = fo.addDim("header_dim",1);
-                netCDF::NcDim scan_indices_rows = fo.addDim("scanindices_rows",scanindices.rows());
-                netCDF::NcDim scan_indices_cols = fo.addDim("scanindices_cols",scanindices.cols());
 
                 std::vector<netCDF::NcDim> dims;
                 dims.push_back(nsmp_dim);
-
-                std::vector<netCDF::NcDim> scan_indices_dims;
-                scan_indices_dims.push_back(scan_indices_rows);
-                scan_indices_dims.push_back(scan_indices_cols);
 
                 if (stokes_params.first == "I") {
                     netCDF::NcDim ndet_dim = fo.addDim("ndetectors",ndet);
@@ -205,15 +195,6 @@ void Beammap::setup() {
                 pixid_v.putAtt("Units","N/A");
                 netCDF::NcVar a_v = fo.addVar("ARRAYID",netCDF::ncDouble, dims[1]);
                 a_v.putAtt("Units","N/A");
-                
-                netCDF::NcVar n_v = fo.addVar("NETWORKID",netCDF::ncInt, dims[1]);
-                n_v.putAtt("Units","N/A");
-                n_v.putVar(calib_data["nw"].data());
-
-                netCDF::NcVar scanindices_v = fo.addVar("SCANINDICES",netCDF::ncInt, scan_indices_dims);
-                scanindices_v.putAtt("Units","N/A");
-                Eigen::MatrixXI scan_indices_temp = scanindices.transpose();
-                scanindices_v.putVar(scan_indices_temp.data());
 
                 netCDF::NcVar xt_v = fo.addVar("AZOFF",netCDF::ncDouble, dims[1]);
                 xt_v.putAtt("Units","radians");
@@ -225,26 +206,10 @@ void Beammap::setup() {
                 netCDF::NcVar bfwhm_v = fo.addVar("BFWHM",netCDF::ncDouble, dims[1]);
                 bfwhm_v.putAtt("Units","radians");
 
-                std::map<std::string, std::string> nc_vars = {
-                    {"TelTime", "seconds"},
-                    {"TelElDes", "radians"},
-                    {"ParAng", "radians"},
-                    {"TelLatPhys", "radians"},
-                    {"TelLonPhys", "radians"},
-                    {"SourceEl", "radians"},
-                    {"TelAzMap", "radians"},
-                    {"TelElMap", "radians"}
-                };
-
-                for (const auto&var: nc_vars) {
-                    netCDF::NcVar v = fo.addVar(var.first,netCDF::ncDouble, nsmp_dim);
-                    v.putAtt("Units",var.second);
-                }
-
-                for (const auto&var: nc_header) {
-                    netCDF::NcVar v = fo.addVar(var.first,netCDF::ncInt, header_dim);
-                    v.putVar(&var.second);
-                }
+                netCDF::NcVar t_v = fo.addVar("TIME",netCDF::ncDouble, nsmp_dim);
+                t_v.putAtt("Units","seconds");
+                netCDF::NcVar e_v = fo.addVar("ELEV",netCDF::ncDouble, nsmp_dim);
+                e_v.putAtt("Units","radians");
 
                 netCDF::NcVar data_v = fo.addVar("DATA",netCDF::ncDouble, dims);
                 data_v.putAtt("Units","MJy/sr");
@@ -284,23 +249,18 @@ auto Beammap::run_timestream() {
         in.tel_meta_data.data["TelTime"] = tel_meta_data["TelTime"].segment(start_index, scan_length);
 
         in.tel_meta_data.data["TelElDes"] = tel_meta_data["TelElDes"].segment(start_index, scan_length);
-        in.tel_meta_data.data["TelElAct"] = tel_meta_data["TelElAct"].segment(start_index, scan_length);
         in.tel_meta_data.data["ParAng"] = tel_meta_data["ParAng"].segment(start_index, scan_length);
 
         in.tel_meta_data.data["TelLatPhys"] = tel_meta_data["TelLatPhys"].segment(start_index, scan_length);
         in.tel_meta_data.data["TelLonPhys"] = tel_meta_data["TelLonPhys"].segment(start_index, scan_length);
 
         in.tel_meta_data.data["SourceEl"] = tel_meta_data["SourceEl"].segment(start_index, scan_length);
-        
-        in.tel_meta_data.data["TelAzMap"] = tel_meta_data["TelAzMap"].segment(start_index, scan_length);
-        in.tel_meta_data.data["TelElMap"] = tel_meta_data["TelElMap"].segment(start_index, scan_length);
 
         /*Stage 0: KidsProc*/
         {
             tula::logging::scoped_timeit timer("kidsproc.populate_rtc_load()");
-            //tula::logging::scoped_loglevel<spdlog::level::critical> _0;
+            tula::logging::scoped_loglevel<spdlog::level::critical> _0;
             in.scans.data = kidsproc.populate_rtc_load(loaded_rawobs,in.scan_indices.data, scan_length, ndet);
-            SPDLOG_INFO("in.scans.data {}", in.scans.data);
         }
 
         // do polarization to get map and detector index vectors
@@ -336,8 +296,9 @@ auto Beammap::run_timestream() {
                     lon.col(i) = lon_i;
                 }
                 // append to netcdf file
-                append_to_netcdf(ts_filepath[0], out.scans.data, out.flags.data, out.weights.data, lat, lon,
-                                 det_index_vector, calib_data, out.tel_meta_data.data, out.scans.data.cols());
+                append_to_netcdf(ts_filepath[0], out.scans.data, out.flags.data, lat, lon,
+                                 out.tel_meta_data.data["TelElDes"], out.tel_meta_data.data["TelTime"],
+                                 det_index_vector, calib_data,out.scans.data.cols());
             }
         }
 
@@ -358,15 +319,42 @@ auto Beammap::run_loop() {
         // reset it to the original ptc vector each time
         ptcs = ptcs0;
 
-        // set maps to zero on each iteration
-        if (run_maps) {
-            for (Eigen::Index i=0; i<mb.map_count; i++) {
-                mb.signal.at(i).setZero();
-                mb.weight.at(i).setZero();
+        if (iteration == 0) {
+            if (run_tod_output) {
+                if (ts_chunk_type == "ptc") {
+                    for (Eigen::Index s=0; s<ptcs.size(); s++) {
+                        Eigen::MatrixXd lat(ptcs[s].scans.data.rows(), ptcs[s].scans.data.cols());
+                        Eigen::MatrixXd lon(ptcs[s].scans.data.rows(), ptcs[s].scans.data.cols());
 
-                if (run_kernel) {
-                    mb.kernel.at(i).setZero();
+                        SPDLOG_INFO("writing scan PTC timestream {} to {}", ptcs[s].index.data, ts_filepath[0]);
+                        // loop through detectors and get pointing timestream
+                        for (Eigen::Index i=0; i<ptcs[s].scans.data.cols(); i++) {
+
+                            // get offsets
+                            auto azoff = calib_data["x_t"](i);
+                            auto eloff = calib_data["y_t"](i);
+
+                            // get pointing
+                            auto [lat_i, lon_i] = engine_utils::get_det_pointing(ptcs[s].tel_meta_data.data, azoff, eloff,
+                                                                                 map_type, pointing_offsets);
+                            lat.col(i) = lat_i;
+                            lon.col(i) = lon_i;
+                        }
+                        append_to_netcdf(ts_filepath[0], ptcs[s].scans.data, ptcs[s].flags.data, lat, lon,
+                                         ptcs[s].tel_meta_data.data["TelElDes"], ptcs[s].tel_meta_data.data["TelTime"],
+                                         ptcs[s].det_index_vector.data, calib_data, ptcs[s].scans.data.cols());
+                    }
                 }
+            }
+        }
+
+        // set maps to zero on each iteration
+        for (Eigen::Index i=0; i<mb.map_count; i++) {
+            mb.signal.at(i).setZero();
+            mb.weight.at(i).setZero();
+
+            if (run_kernel) {
+                mb.kernel.at(i).setZero();
             }
         }
 
@@ -377,7 +365,7 @@ auto Beammap::run_loop() {
             SPDLOG_INFO("reducing scan {}/{}", s+1, ptcs.size());
             // subtract gaussian if iteration > 0
             if (iteration > 0) {
-                if (run_maps) {
+                {
                     tula::logging::scoped_timeit timer("subtract gaussian");
                     mb.pfit.row(0) = -mb.pfit.row(0);
                     add_gaussian_2(this,ptcs.at(s).scans.data, ptcs.at(s).tel_meta_data.data);
@@ -392,103 +380,49 @@ auto Beammap::run_loop() {
 
             // add gaussian if iteration > 0
             if (iteration > 0) {
-                if (run_maps) {
+                {
                     tula::logging::scoped_timeit timer("add gaussian()");
                     mb.pfit.row(0) = -mb.pfit.row(0);
                     add_gaussian_2(this,ptcs.at(s).scans.data, ptcs.at(s).tel_meta_data.data);
                 }
             }
-        return 0;});
 
-        // calculate sensitivity
-        grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](int d) {
-            //SPDLOG_INFO("calculating sensitivity for det {}", d);
-            Eigen::MatrixXd det_sens;
-            Eigen::MatrixXd noise_flux;
-            calc_sensitivity(ptcs, det_sens, noise_flux, dfsmp, d);
-            calib_data["sens"](d) = tula::alg::median(det_sens);
-        return 0;});
-
-        grppi::map(tula::grppi_utils::dyn_ex(ex_name), scan_in_vec, scan_out_vec, [&](auto s) {
-            ptcproc.get_weights(ptcs.at(s), ptcs.at(s), this, run_clean);
             /*Stage 3 Populate Map*/
-            if (run_maps) {
-                if (mapping_method == "naive") {
-                    {
-                        tula::logging::scoped_timeit timer("populate_maps_naive()");
-                        populate_maps_naive(ptcs.at(s), ptcs.at(s).map_index_vector.data, ptcs.at(s).det_index_vector.data, this);
-                    }
+            if (mapping_method == "naive") {
+                {
+                    tula::logging::scoped_timeit timer("populate_maps_naive()");
+                    populate_maps_naive(ptcs.at(s), ptcs.at(s).map_index_vector.data, ptcs.at(s).det_index_vector.data, this);
                 }
+            }
 
-                else if (mapping_method == "jinc") {
-                    {
-                        tula::logging::scoped_timeit timer("populate_maps_naive()");
-                        populate_maps_jinc(ptcs.at(s), ptcs.at(s).map_index_vector.data, ptcs.at(s).det_index_vector.data, this);
-                    }
+            else if (mapping_method == "jinc") {
+                {
+                    tula::logging::scoped_timeit timer("populate_maps_naive()");
+                    populate_maps_jinc(ptcs.at(s), ptcs.at(s).map_index_vector.data, ptcs.at(s).det_index_vector.data, this);
                 }
             }
 
             return 0;});
 
-            if (iteration == 0) {
-                if (run_tod_output) {
-                    if (ts_chunk_type == "ptc") {
-                        for (Eigen::Index s=0; s<ptcs.size(); s++) {
-                            Eigen::MatrixXd lat(ptcs[s].scans.data.rows(), ptcs[s].scans.data.cols());
-                            Eigen::MatrixXd lon(ptcs[s].scans.data.rows(), ptcs[s].scans.data.cols());
+        SPDLOG_INFO("normalizing maps");
+        mb.normalize_maps(run_kernel,ex_name);
 
-                            SPDLOG_INFO("writing scan PTC timestream {} to {}", ptcs[s].index.data, ts_filepath[0]);
-                            // loop through detectors and get pointing timestream
-                            for (Eigen::Index i=0; i<ptcs[s].scans.data.cols(); i++) {
-
-                                // get offsets
-                                auto azoff = calib_data["x_t"](i);
-                                auto eloff = calib_data["y_t"](i);
-
-                                // get pointing
-                                auto [lat_i, lon_i] = engine_utils::get_det_pointing(ptcs[s].tel_meta_data.data, azoff, eloff,
-                                                                                    map_type, pointing_offsets);
-                                lat.col(i) = lat_i;
-                                lon.col(i) = lon_i;
-                            }
-                            append_to_netcdf(ts_filepath[0], ptcs[s].scans.data, ptcs[s].flags.data, ptcs[s].weights.data, lat, lon,
-                                            ptcs[s].det_index_vector.data, calib_data, 
-                                            ptcs[s].tel_meta_data.data, ptcs[s].scans.data.cols());
-                        }
-                    }
-                }
+        SPDLOG_INFO("fitting maps");
+        grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](auto d) {
+            if (converged(d) == false) {
+                //SPDLOG_INFO("fitting detector {}/{}",d+1, det_in_vec.size());
+                // declare fitter class for detector
+                gaussfit::MapFitter fitter;
+                // size of region to fit in pixels
+                fitter.bounding_box_pix = bounding_box_pix;
+                mb.pfit.col(d) = fitter.fit<gaussfit::MapFitter::peakValue>(mb.signal[d], mb.weight[d], calib_data);
+                mb.perror.col(d) = fitter.error;
             }
-
-        if (run_maps) {
-            SPDLOG_INFO("normalizing maps");
-            mb.normalize_maps(run_kernel,ex_name);
-
-            SPDLOG_INFO("fitting maps");
-            Eigen::VectorXd fwhms(3);
-            fwhms << 5.0, 6.3, 10.0;
-            fwhms = fwhms/(mb.pixel_size/ASEC_TO_RAD);
-            SPDLOG_INFO("fwhms {}",fwhms);
-            grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](auto d) {
-                if (converged(d) == false) {
-                    //SPDLOG_INFO("fitting detector {}/{}",d+1, det_in_vec.size());
-                    // declare fitter class for detector
-                    gaussfit::MapFitter fitter;
-                    Eigen::Index arr = calib_data["array"](d);
-                    fitter.fwhm0 = fwhms(arr);
-                    SPDLOG_INFO("fwhms {}",fwhms);
-                    // size of region to fit in pixels
-                    fitter.bounding_box_pix = bounding_box_pix;
-                    mb.pfit.col(d) = fitter.fit<gaussfit::MapFitter::peakValue>(mb.signal[d], mb.weight[d], calib_data);
-                    mb.perror.col(d) = fitter.error;
-                    SPDLOG_INFO("mb.pfit.col(d) {}",mb.pfit.col(d));
-                    SPDLOG_INFO("mb.perror.col(d) {}",mb.perror.col(d));
-                }
-                else {
-                    mb.pfit.col(d) = p0.col(d);
-                    mb.perror.col(d) = perror0.col(d);
-                }
-                return 0;});
-        }
+            else {
+                mb.pfit.col(d) = p0.col(d);
+                mb.perror.col(d) = perror0.col(d);
+            }
+            return 0;});
 
         return in;
     },
@@ -512,7 +446,7 @@ auto Beammap::run_loop() {
                     if (converged(d) == false) {
                         // percent difference between current and previous iteration's fit
                         auto ratio = abs((mb.pfit.col(d).array() - p0.col(d).array())/p0.col(d).array());
-			            SPDLOG_INFO("ratio {}", ratio);
+			SPDLOG_INFO("ratio {}", ratio);
                         // if the detector is converged, set it to converged
                         if ((ratio.array() <= cutoff).all()) {
                             converged(d) = true;
@@ -569,24 +503,13 @@ auto Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
             std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> loaded_rawobs;
             {
                 tula::logging::scoped_timeit timer("kidsproc.load_rawobs()");
-                //tula::logging::scoped_loglevel<spdlog::level::off> _0;
-                SPDLOG_INFO("scanindices {}", scanindices);
+                tula::logging::scoped_loglevel<spdlog::level::off> _0;
                 //auto slice = tula::container_utils::Slice<int>{
                                                                //scanindices(2,scan), scanindices(3,scan) + 1, std::nullopt};
                 //loaded_rawobs = kidsproc.load_rawobs(rawobs, slice);
                 loaded_rawobs = kidsproc.load_rawobs(rawobs, scan, scanindices, init_indices);
-
-                Eigen::Index di = 0;
-                for (Eigen::Index i=0; i<loaded_rawobs.size(); i++) {
-                    auto tone_axis = loaded_rawobs[i].wcs.tone_axis;
-                    //tone_flags.segment(di,tone_axis("flag").size()) = tone_axis("flag");
-                    di = di + tone_axis("flag").size();
-                    SPDLOG_INFO("tone_axis(flag) {}", tone_axis("flag"));
-                }
                 //rtc.scans.data = kidsproc.populate_rtc(rawobs, rtc.scan_indices.data, scan_length, ndet);
             }
-
-            SPDLOG_INFO("done with kids load");
 
             // increment scan
             scan++;
@@ -617,203 +540,57 @@ auto Beammap::loop_pipeline(KidsProc &kidproc, RawObs &rawobs) {
         run_loop(),
 
         [&](auto in) {
-            if (run_maps) {
-                // convert to map units (arcsec and radians)
-                mb.pfit.row(1) = pixel_size*(mb.pfit.row(1).array() - (mb.ncols)/2)/ASEC_TO_RAD;
-                mb.pfit.row(2) = pixel_size*(mb.pfit.row(2).array() - (mb.nrows)/2)/ASEC_TO_RAD;
-                mb.pfit.row(3) = STD_TO_FWHM*pixel_size*(mb.pfit.row(3))/ASEC_TO_RAD;
-                mb.pfit.row(4) = STD_TO_FWHM*pixel_size*(mb.pfit.row(4))/ASEC_TO_RAD;
+            // convert to map units (arcsec and radians)
+            mb.pfit.row(1) = pixel_size*(mb.pfit.row(1).array() - (mb.ncols)/2)/ASEC_TO_RAD;
+            mb.pfit.row(2) = pixel_size*(mb.pfit.row(2).array() - (mb.nrows)/2)/ASEC_TO_RAD;
+            mb.pfit.row(3) = STD_TO_FWHM*pixel_size*(mb.pfit.row(3))/ASEC_TO_RAD;
+            mb.pfit.row(4) = STD_TO_FWHM*pixel_size*(mb.pfit.row(4))/ASEC_TO_RAD;
 
-                // rescale errors from pixel to on-sky units
-                mb.perror.row(1) = pixel_size*(mb.perror.row(1))/ASEC_TO_RAD;
-                mb.perror.row(2) = pixel_size*(mb.perror.row(2))/ASEC_TO_RAD;
-                mb.perror.row(3) = STD_TO_FWHM*pixel_size*(mb.perror.row(3))/ASEC_TO_RAD;
-                mb.perror.row(4) = STD_TO_FWHM*pixel_size*(mb.perror.row(4))/ASEC_TO_RAD;
+            // rescale errors from pixel to on-sky units
+            mb.perror.row(1) = pixel_size*(mb.perror.row(1))/ASEC_TO_RAD;
+            mb.perror.row(2) = pixel_size*(mb.perror.row(2))/ASEC_TO_RAD;
+            mb.perror.row(3) = STD_TO_FWHM*pixel_size*(mb.perror.row(3))/ASEC_TO_RAD;
+            mb.perror.row(4) = STD_TO_FWHM*pixel_size*(mb.perror.row(4))/ASEC_TO_RAD;
 
-                double mean_el = tel_meta_data["TelElDes"].mean();
+	    double mean_el = tel_meta_data["TelElDes"].mean();
 
-                mean_els.resize(ndet);
+            Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1> map_index_vector = ptcs.back().map_index_vector.data;
 
-                Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1> map_index_vector = ptcs.back().map_index_vector.data;
+            // derotate x_t and y_t and calculate sensitivity for detectors
+            SPDLOG_INFO("derotating offsets and calculating sensitivity");
+            grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](int d) {
 
-                Eigen::VectorXd fwhms(3);
-                fwhms << 15.0, 15.0, 15.0;
+                Eigen::Index mi = map_index_vector(d);
 
-                /*Eigen::VectorXd az_center(toltec_io.name_keys.size()), el_center(toltec_io.name_keys.size());
+                calib_data["flxscale"](d) = beammap_fluxes[toltec_io.name_keys[mi]]/mb.pfit(0,d);
 
-                for (Eigen::Index mc = 0; mc<toltec_io.name_keys.size(); mc++) {
-                    auto arr_ndet = std::get<1>(array_indices.at(mc)) - std::get<0>(array_indices.at(mc));
-                    auto x_t = mb.pfit.row(1).segment(std::get<0>(array_indices.at(mc)),
-                                                                                arr_ndet);
-                    auto y_t = mb.pfit.row(2).segment(std::get<0>(array_indices.at(mc)),
-                                                                                arr_ndet);
+                //SPDLOG_INFO("derotating det {}", d);
+                Eigen::Index min_index;
 
-                    az_center(mc) = tula::alg::median(x_t);
-                    el_center(mc) = tula::alg::median(y_t);
-                }*/
+                // don't use pointing here as that will rotate by azoff/eloff
+                Eigen::VectorXd lat = -(mb.pfit(2,d)*ASEC_TO_RAD) + tel_meta_data["TelElDes"].array();
+                Eigen::VectorXd lon = -(mb.pfit(1,d)*ASEC_TO_RAD) + tel_meta_data["TelAzDes"].array();
 
-                // signal to noise
-                calib_data["sig2noise"].resize(ndet);
+                // minimum cartesian distance from source
+                double min_dist = ((tel_meta_data["SourceEl"] - lat).array().pow(2) +
+                        (tel_meta_data["SourceAz"] - lon).array().pow(2)).minCoeff(&min_index);
 
-                // derotate x_t and y_t and calculate sensitivity for detectors
-                SPDLOG_INFO("derotating offsets");
-                grppi::map(tula::grppi_utils::dyn_ex(ex_name), det_in_vec, det_out_vec, [&](int d) {
-                    // map stddev
-                    double map_stddev = engine_utils::stddev(mb.signal[d]);
-                    SPDLOG_INFO("mb.pfit(0,d)/map_stddev {}",mb.pfit(0,d)/map_stddev);
+                double min_el = tel_meta_data["TelElDes"](min_index);
 
-                    // flag bad a_fwhm
-                    if (mb.pfit(3,d) < 2 || mb.pfit(3,d) > fwhms(int(calib_data["array"](d)))) {
-                        calib_data["flag"](d) = 0;
-                    }
+                double rot_azoff = cos(-min_el)*mb.pfit(1,d) -
+                        sin(-min_el)*mb.pfit(2,d);
+                double rot_eloff = sin(-min_el)*mb.pfit(1,d) +
+                        cos(-min_el)*mb.pfit(2,d);
 
-                    // flag bad b_fwhm
-                    if (mb.pfit(4,d) < 2 || mb.pfit(4,d) > fwhms(int(calib_data["array"](d)))) {
-                        calib_data["flag"](d) = 0;
-                    }
+                mb.pfit(1,d) = -rot_azoff;
+                mb.pfit(2,d) = -rot_eloff; 
 
-                    // flag low S/N
-                    if (mb.pfit(0,d) < 0 || mb.pfit(0,d)/map_stddev < 5.0) {
-                        calib_data["flag"](d) = 0;
-                    }
-
-                    calib_data["sig2noise"](d) = mb.pfit(0,d)/map_stddev;
-
-                    Eigen::Index mi = map_index_vector(d);
-
-                    calib_data["flxscale"](d) = beammap_fluxes[toltec_io.name_keys[mi]]/mb.pfit(0,d);
-                    // change sensitivity units
-                    //calib_data["sens"](d) = calib_data["flxscale"](d)*calib_data["sens"](d);
-
-                    if (calib_data["flxscale"](d) > pow(10,10)) {
-                        calib_data["flag"](d) = 0;
-                    }
-
-                    //SPDLOG_INFO("derotating det {}", d);
-                    Eigen::Index min_index;
-
-                    // don't use pointing here as that will rotate by azoff/eloff
-                    Eigen::VectorXd lat = -(mb.pfit(2,d)*ASEC_TO_RAD) + tel_meta_data["TelElAct"].array();
-                    Eigen::VectorXd lon = -(mb.pfit(1,d)*ASEC_TO_RAD) + tel_meta_data["TelAzAct"].array();
-
-                    // minimum cartesian distance from source
-                    double min_dist = ((tel_meta_data["SourceEl"] - lat).array().pow(2) +
-                            (tel_meta_data["SourceAz"] - lon).array().pow(2)).minCoeff(&min_index);
-
-                    double min_el = tel_meta_data["TelElAct"](min_index);
-                    mean_els(d) = min_el;
-
-                    double rot_azoff = cos(-min_el)*mb.pfit(1,d) -
-                            sin(-min_el)*mb.pfit(2,d);
-                    double rot_eloff = sin(-min_el)*mb.pfit(1,d) +
-                            cos(-min_el)*mb.pfit(2,d);
-
-                    Eigen::Index arr = calib_data["array"](d);
-
-                    mb.pfit(1,d) = -rot_azoff;
-                    mb.pfit(2,d) = -rot_eloff;
-
-                return 0;});
-
-                auto nw3_ndet = (calib_data["nw"].array()==3).count();
-                SPDLOG_INFO("nw3_ndet {}", nw3_ndet);
-
-                if (nw3_ndet !=0 && nw3_ndet != ndet) {
-                    Eigen::VectorXd nw3_xt(nw3_ndet), nw3_yt(nw3_ndet);
-
-                    nw3_xt.setZero();
-                    nw3_yt.setZero();
-
-                    Eigen::Index j = 0;
-                    for (Eigen::Index i=0; i<calib_data["nw"].size(); i++) {
-                        if (calib_data["nw"](i) == 3) {
-                            nw3_xt(j) = mb.pfit(1,i);
-                            nw3_yt(j) = mb.pfit(1,i);
-                            j++;
-                        }
-                    }
-
-                    SPDLOG_INFO("nw3_xt {} nw3_yt {}", nw3_xt,nw3_yt);
-
-                    double nw3_med_xt = tula::alg::median(nw3_xt);
-                    double nw3_med_yt = tula::alg::median(nw3_yt);
-
-                    SPDLOG_INFO("nw3_med_xt {} nw3_med_yt {}", nw3_med_xt, nw3_med_yt);
-
-                    Eigen::Index nw3_xc, nw3_yc;
-
-                    auto minx = (abs(nw3_xt.array() - nw3_med_xt)).minCoeff(&nw3_xc);
-                    auto miny = (abs(nw3_yt.array() - nw3_med_yt)).minCoeff(&nw3_yc);
-
-                    SPDLOG_INFO("nw3_xc {} nw3_yc {}", nw3_xc, nw3_yc);
-
-                    mb.pfit.row(1) = mb.pfit.row(1).array() - nw3_xt(nw3_xc);
-                    mb.pfit.row(2) = mb.pfit.row(2).array() - nw3_yt(nw3_yc);
-
-                    for (Eigen::Index i=0; i<ndet; i++) {
-                        if (pow(mb.pfit(1,i) - nw3_xt(nw3_xc),2) + pow(mb.pfit(2,i) - nw3_xt(nw3_yc),2) > pow(120,2)) {
-                            calib_data["flag"](i) = 0;
-                        }
-                    }
-                }
-
-                SPDLOG_INFO("calib_data[flag] {}", calib_data["flag"]);
-
-                for (Eigen::Index mc = 0; mc<toltec_io.name_keys.size(); mc++) {
-                    auto arr_ndet = std::get<1>(array_indices.at(mc)) - std::get<0>(array_indices.at(mc));
-                    auto a_fwhm = mb.pfit.row(3).segment(std::get<0>(array_indices.at(mc)),
-                                                                                arr_ndet);
-                    auto b_fwhm = mb.pfit.row(4).segment(std::get<0>(array_indices.at(mc)),
-                                                                                arr_ndet);
-
-                    SPDLOG_INFO("ndet {} a_fwhm {} b_fwhm {}", arr_ndet, a_fwhm, b_fwhm);
-
-                    toltec_io.bfwhm_keys[mc] = ((a_fwhm + b_fwhm)/2).mean();
-
-                    SPDLOG_INFO("toltec_io.bfwhm_keys {}",toltec_io.bfwhm_keys);
-
-                    toltec_io.barea_keys[mc] = 2.*pi*pow(toltec_io.bfwhm_keys[mc]/STD_TO_FWHM,2);
-                }
-
-                for (Eigen::Index d=0; d<calib_data["sens"].size(); d++) {
-                    Eigen::Index mi = map_index_vector(d);
-                    calib_data["flxscale"](d) = calib_data["flxscale"](d)/(toltec_io.barea_keys[mi]*MJY_SR_TO_mJY_ASEC);
-                    calib_data["sens"](d) = calib_data["flxscale"](d)*calib_data["sens"](d);
-                }
-
-                // flux conversion
-                cflux.resize(mb.map_count);
-
-                Eigen::Index k = 0;
-                Eigen::Index l = 0;
-                for (Eigen::Index j=0; j<cflux.size(); j++) {
-                    if (cunit == "mJy/beam") {
-                            cflux(j) = toltec_io.barea_keys[l]*MJY_SR_TO_mJY_ASEC;
-                        if (k == toltec_io.barea_keys.size() - 1) {
-                            k = 0;
-                            l++;
-                        }
-                        else {
-                            k++;
-                        }
-                    }
-                    else if (cunit == "MJy/Sr") {
-                            cflux(j) = 1.0;
-                    }
-
-                    else if (cunit == "uK/arcmin2") {
-                        cflux(j) = engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[l],
-                                                                    toltec_io.bfwhm_keys[l]);
-                        if (k == toltec_io.barea_keys.size() - 1) {
-                            k = 0;
-                            l++;
-                        }
-                        else {
-                            k++;
-                        }
-                    }
-                }
-            }
+                //SPDLOG_INFO("calculating sensitivity for det {}", d);
+                Eigen::MatrixXd det_sens;
+                Eigen::MatrixXd noise_flux;
+                calc_sensitivity(ptcs, det_sens, noise_flux, dfsmp, d);
+                sensitivity(d) = det_sens.mean();
+            return 0;});
 
             return in;
         });
@@ -850,8 +627,6 @@ auto Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 template <MapBase::MapType out_type, class MC, typename fits_out_vec_t>
 void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, bool filtered) {
 
-    SPDLOG_INFO("dets with bad weights {}", bad_weights);
-
     std::string hdname;
 
     if (use_subdir) {
@@ -884,81 +659,55 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
         // apt table
         SPDLOG_INFO("writing apt table");
         // get output path from citlali_config
-        auto filename = toltec_io.setup_filepath<ToltecIO::apt, ToltecIO::commissioning,
+        auto filename = toltec_io.setup_filepath<ToltecIO::apt, ToltecIO::simu,
                                                  ToltecIO::beammap, ToltecIO::no_prod_type,
                                                  ToltecIO::obsnum_true>(filepath + dname,obsnum,-1);
 
         // check in debug mode for row/col error (seems fine)
-        //Eigen::MatrixXf table(toltec_io.beammap_apt_header.size(), ndet);
-        Eigen::MatrixXd table(toltec_io.beammap_apt_header.size(), ndet);
-        table.row(0) = calib_data["uid"].cast<double> ();
-        table.row(1) = calib_data["array"].cast<double> ();
-        table.row(2) = calib_data["nw"].cast<double> ();
-        table.row(3) = calib_data["fg"].cast<double> ();
-        table.row(4) = calib_data["pg"].cast<double> ();
-        table.row(5) = calib_data["ori"].cast<double> ();
-        table.row(6) = responsivity.cast<double> ();
-        table.row(7) = calib_data["flxscale"].cast<double> ();
-        table.row(8) = calib_data["sens"].cast<double> ();
-        table.row(9) = mean_els.cast<double> ();
+        Eigen::MatrixXf table(toltec_io.beammap_apt_header.size(), ndet);
+        table.row(0) = calib_data["array"].cast <float> ();
+        table.row(1) = calib_data["nw"].cast <float> ();
+        table.row(2) = calib_data["flxscale"].cast <float> ();
+        table.row(3) = sensitivity.cast <float> ();
 
-        table.row(10) = mout.pfit.row(0).template cast<double> ();
-        table.row(11) = mout.perror.row(0).template cast<double> ();
-        table.row(12) = mout.pfit.row(1).template cast<double> ();
-        table.row(13) = mout.perror.row(1).template cast<double> ();
-        table.row(14) = mout.pfit.row(2).template cast<double> ();
-        table.row(15) = mout.perror.row(2).template cast<double> ();
-        table.row(16) = mout.pfit.row(3).template cast<double> ();
-        table.row(17) = mout.perror.row(3).template cast<double> ();
-        table.row(18) = mout.pfit.row(4).template cast<double> ();
-        table.row(19) = mout.perror.row(4).template cast<double> ();
-        table.row(20) = mout.pfit.row(5).template cast<double> ();
-        table.row(21) = mout.perror.row(5).template cast<double> ();
+        table.row(4) = mout.pfit.row(0).template cast <float> ();
+        table.row(5) = mout.perror.row(0).template cast <float> ();
+        table.row(6) = mout.pfit.row(1).template cast <float> ();
+        table.row(7) = mout.perror.row(1).template cast <float> ();
+        table.row(8) = mout.pfit.row(2).template cast <float> ();
+        table.row(9) = mout.perror.row(2).template cast <float> ();
+        table.row(10) = mout.pfit.row(3).template cast <float> ();
+        table.row(11) = mout.perror.row(3).template cast <float> ();
+        table.row(12) = mout.pfit.row(4).template cast <float> ();
+        table.row(13) = mout.perror.row(4).template cast <float> ();
+        table.row(14) = mout.pfit.row(5).template cast <float> ();
+        table.row(15) = mout.perror.row(5).template cast <float> ();
+
 
         /*int ci = 0;
         for (int ti=0; ti < toltec_io.apt_header.size()-2; ti=ti+2) {
-            table.row(ti + 4) = mout.pfit.row(ci).template cast<double> ();
-            table.row(ti + 4 + 1) = mout.perror.row(ci).template cast<double> ();
+            table.row(ti + 4) = mout.pfit.row(ci).template cast <float> ();
+            table.row(ti + 4 + 1) = mout.perror.row(ci).template cast <float> ();
             ci++;
         }*/
 
-        table.row(toltec_io.beammap_apt_header.size()-3) = converge_iter.cast<double> ();
-        table.row(toltec_io.beammap_apt_header.size()-2) = calib_data["flag"].cast<double> ();
-        table.row(toltec_io.beammap_apt_header.size()-1) = calib_data["sig2noise"].cast<double> ();
+        table.row(toltec_io.beammap_apt_header.size()-1) = converge_iter.cast <float> ();
 
         table.transposeInPlace();
 
         // Yaml node for ecsv table meta data (units and description)
         YAML::Node meta;
-        meta["uid"].push_back("units: N/A");
-        meta["uid"].push_back("unique id");
-        
         meta["array"].push_back("units: N/A");
         meta["array"].push_back("array index");
 
         meta["nw"].push_back("units: N/A");
         meta["nw"].push_back("network index");
 
-        meta["fg"].push_back("units: N/A");
-        meta["fg"].push_back("frequency group");
-
-        meta["pg"].push_back("units: N/A");
-        meta["pg"].push_back("polarization gropu");
-
-        meta["ori"].push_back("units: N/A");
-        meta["ori"].push_back("orientation");
-
-        meta["responsivity"].push_back("units: N/A");
-        meta["responsivity"].push_back("responsivity");
-
         meta["flxscale"].push_back("units: " + cunit);
         meta["flxscale"].push_back("flux conversion scale");
 
-        meta["sens"].push_back("units: N/A");
+        meta["sens"].push_back("N/A");
         meta["sens"].push_back("sensitivity");
-
-        meta["derot_elev"].push_back("units: radians");
-        meta["derot_elev"].push_back("derotation elevation angle");
 
         meta["amp"].push_back("units: " + cunit);
         meta["amp"].push_back("fitted amplitude");
@@ -998,12 +747,6 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
 
         meta["converge_iter"].push_back("units: N/A");
         meta["converge_iter"].push_back("beammap convergence iteration");
-
-        meta["flag"].push_back("units: N/A");
-        meta["flag"].push_back("good det");
-
-        meta["sig2noise"].push_back("units: N/A");
-        meta["sig2noise"].push_back("signal to noise");
 
         // write apt table to ecsv file
         to_ecsv_from_matrix(filename, table, toltec_io.beammap_apt_header, meta);
@@ -1076,7 +819,7 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
             // object
             f_ios.at(i).pfits->pHDU().addKey("OBJECT", (std::string)source_name, "");
             // exp time
-            f_ios.at(i).pfits->pHDU().addKey("t_exptime", t_exp, "Exposure Time (sec)");
+            f_ios.at(i).pfits->pHDU().addKey("t_exptime", tel_header_data["t_exp"], "Exposure Time (sec)");
             // add source ra
             f_ios.at(i).pfits->pHDU().addKey("s_ra", source_center["Ra"][0], "Source RA (radians)");
             // add source dec
@@ -1090,28 +833,23 @@ void Beammap::output(MC &mout, fits_out_vec_t &f_ios, fits_out_vec_t & nf_ios, b
             if (cunit == "MJy/Sr") {
                 f_ios.at(i).pfits->pHDU().addKey("to_mJy/beam", toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
                 f_ios.at(i).pfits->pHDU().addKey("to_Mjy/Sr", 1.0, "Conversion to MJy/Sr");
-                f_ios.at(i).pfits->pHDU().addKey("to_uK/arcmin2", engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[i],toltec_io.bfwhm_keys[i]),
-                                                 "Conversion to uK/arcmin2");
+                f_ios.at(i).pfits->pHDU().addKey("to_uK/arcmin^2", engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[i],toltec_io.bfwhm_keys[i]),
+                                                 "Conversion to uK/arcmin^2");
             }
             else if (cunit == "mJy/beam") {
                 f_ios.at(i).pfits->pHDU().addKey("to_mJy/beam", 1.0, "Conversion to mJy/beam");
                 f_ios.at(i).pfits->pHDU().addKey("to_MJy/Sr", 1/(toltec_io.barea_keys[i]*MJY_SR_TO_mJY_ASEC), "Conversion to MJy/Sr");
-                f_ios.at(i).pfits->pHDU().addKey("to_uK/arcmin2", MJY_SR_TO_mJY_ASEC/engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[i],toltec_io.bfwhm_keys[i]),
-                                                 "Conversion to uK/arcmin2");
+                f_ios.at(i).pfits->pHDU().addKey("to_uK/arcmin^2", MJY_SR_TO_mJY_ASEC/engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[i],toltec_io.bfwhm_keys[i]),
+                                                 "Conversion to uK/arcmin^2");
             }
-            else if (cunit == "uK/arcmin2") {
+            else if (cunit == "uK/arcmin^2") {
                 f_ios.at(i).pfits->pHDU().addKey("to_mJy/beam", MJY_SR_TO_mJY_ASEC/engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[i],
                                                                                                                 toltec_io.bfwhm_keys[i]),
                                                  "Conversion to mJy/beam");
                 f_ios.at(i).pfits->pHDU().addKey("to_MJy/Sr", 1/engine_utils::MJy_Sr_to_uK(1, toltec_io.array_freqs[i],toltec_io.bfwhm_keys[i]),
                                                  "Conversion to MJy/Sr");
-                f_ios.at(i).pfits->pHDU().addKey("to_uK/arcmin2", 1.0, "Conversion to uK/arcmin2");
+                f_ios.at(i).pfits->pHDU().addKey("to_uK/arcmin^2", 1.0, "Conversion to uK/arcmin^2");
             }
-
-            for (auto const& [key, val] : tel_header_data) {
-                f_ios.at(i).pfits->pHDU().addKey(key, val(0), key);
-            }
-
             i++;
         }
     }

@@ -25,9 +25,9 @@ void Filter::make_filter() {
     // calculate nyquist frequency
     double nyquist = fsmp / 2.;
     // scale upper frequency cutoff to Nyquist frequency
-    auto f_low = _flow / nyquist;
+    auto f_high = _flow / nyquist;
     // scale lower frequency cutoff to Nyquist frequency
-    auto f_high = _fhigh / nyquist;
+    auto f_low = _fhigh / nyquist;
 
     // check if upper frequency limit (lowpass)
     // is larger than lower frequency limit (highpass)

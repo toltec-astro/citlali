@@ -34,11 +34,10 @@ public:
         auto lat = out.tel_meta_data.data["TelElDes"].array();
 
         // rotate by detector elevation and flip
-        auto qs1 = q0.derived().array()*cos(-2*lat.array()) - u0.derived().array()*sin(-2*lat.array());
-        auto us1 = -q0.derived().array()*sin(-2*lat.array()) - u0.derived().array()*cos(-2*lat.array());
+        auto qs1 = q0.derived().array()*cos(2*lat.array()) - u0.derived().array()*sin(2*lat.array());
+        auto us1 = (q0.derived().array()*sin(2*lat.array()) + u0.derived().array()*cos(2*lat.array()));
 
-        
-	if (run_hwp) {
+        if (run_hwp) {
             // rotate by hwp signal
             auto qs = qs1.array()*cos(4*out.hwp.data.array()) + us1.array()*sin(4*out.hwp.data.array());
             auto us = qs1.array()*sin(4*out.hwp.data.array()) - us1.array()*cos(4*out.hwp.data.array());
@@ -94,7 +93,7 @@ public:
         else {
             Eigen::MatrixXd data;
             Eigen::Index ori;
-            auto pa2 = (in.tel_meta_data.data["ParAng"].array() - pi);
+            auto pa2 = -(in.tel_meta_data.data["ParAng"].array() - pi);
 
             if (sp == "Q") {
                 SPDLOG_INFO("creating Q timestream");

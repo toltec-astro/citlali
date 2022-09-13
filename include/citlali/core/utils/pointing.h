@@ -17,10 +17,10 @@ det_pointing_t get_det_pointing(TD &tel_meta_data, const double azoff, const dou
     Eigen::VectorXd lat, lon;
 
     // rotate altaz offsets by elevation angle
-    auto rot_azoff = cos(tel_meta_data["TelElAct"].array())*azoff
-            - sin(tel_meta_data["TelElAct"].array())*eloff + pointing_offsets["az"];
-    auto rot_altoff = cos(tel_meta_data["TelElAct"].array())*eloff
-            + sin(tel_meta_data["TelElAct"].array())*azoff + pointing_offsets["alt"];
+    auto rot_azoff = cos(tel_meta_data["TelElDes"].array())*azoff
+            - sin(tel_meta_data["TelElDes"].array())*eloff + pointing_offsets["az"];
+    auto rot_altoff = cos(tel_meta_data["TelElDes"].array())*eloff
+            + sin(tel_meta_data["TelElDes"].array())*azoff + pointing_offsets["alt"];
 
     // icrs map
     if (std::strcmp("icrs", map_type.c_str()) == 0) {
