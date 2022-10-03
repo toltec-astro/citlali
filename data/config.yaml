@@ -1,0 +1,202 @@
+
+beammap:
+  iter_max: 1
+  iter_tolerance: 0.0
+  lower_fwhm_arcsec:
+    a1100: 0.0
+    a1400: 0.0
+    a2000: 0.0
+  upper_fwhm_arcsec:
+    a1100: 0.0
+    a1400: 0.0
+    a2000: 0.0
+  lower_sig2noise:
+    a1100: 0.0
+    a1400: 0.0
+    a2000: 0.0
+coadd:
+  cov_cut: 0.9
+  enabled: false
+  filtering:
+    enabled: false
+    type: wiener_filter
+  noise_maps:
+    enabled: false
+    n_noise_maps: 0
+inputs:
+  - cal_items:
+      - beammap_source:
+          dec_deg: 0.0
+          fluxes:
+            - array_name: a1100
+              uncertainty_mJy: 0.0
+              value_mJy: 0.0
+            - array_name: a1400
+              uncertainty_mJy: 0.0
+              value_mJy: 0.0
+            - array_name: a2000
+              uncertainty_mJy: 0.0
+              value_mJy: 0.0
+          name: S1
+          ra_deg: 0.0
+        extinction:
+          model_name: some_model
+          tau_220: 0.0
+        type: photometry
+      - pointing_offsets:
+          - axes_name: az
+            value_arcsec: 0.0
+          - axes_name: alt
+            value_arcsec: 0.0
+        type: astrometry
+      - filepath: /path/to/outputs/apt_trimmed.ecsv
+        meta:
+          interface: apt
+        type: array_prop_table
+    data_items:
+      - filepath: /path/to/outputs/hwp.nc
+        meta:
+          interface: hwp
+      - filepath: /path/to/outputs/tel.nc
+        meta:
+          interface: lmt
+      - filepath: /path/to/outputs/toltec0_timestream.nc
+        meta:
+          interface: toltec0
+      - filepath: /path/to/outputs/toltec1_timestream.nc
+        meta:
+          interface: toltec1
+      - filepath: /path/to/outputs/toltec2_timestream.nc
+        meta:
+          interface: toltec2
+      - filepath: /path/to/outputs/toltec3_timestream.nc
+        meta:
+          interface: toltec3
+      - filepath: /path/to/outputs/toltec4_timestream.nc
+        meta:
+          interface: toltec4
+      - filepath: /path/to/outputs/toltec5_timestream.nc
+        meta:
+          interface: toltec5
+      - filepath: /path/to/outputs/toltec6_timestream.nc
+        meta:
+          interface: toltec6
+      - filepath: /path/to/outputs/toltec7_timestream.nc
+        meta:
+          interface: toltec7
+      - filepath: /path/to/outputs/toltec8_timestream.nc
+        meta:
+          interface: toltec8
+      - filepath: /path/to/outputs/toltec9_timestream.nc
+        meta:
+          interface: toltec9
+      - filepath: /path/to/outputs/toltec10_timestream.nc
+        meta:
+          interface: toltec10
+      - filepath: /path/to/outputs/toltec11_timestream.nc
+        meta:
+          interface: toltec11
+      - filepath: /path/to/outputs/toltec12_timestream.nc
+        meta:
+          interface: toltec12
+    meta:
+      name: 1_0_0
+interface_sync_offset:
+  - toltec0: 0
+  - toltec1: 0
+  - toltec2: 0
+  - toltec3: 0
+  - toltec4: 0
+  - toltec5: 0
+  - toltec6: 0
+  - toltec7: 0
+  - toltec8: 0
+  - toltec9: 0
+  - toltec10: 0
+  - toltec11: 0
+  - toltec12: 0
+  - hwp: 0
+kids:
+  fitter:
+    modelspec: gainlintrend
+    weight_window:
+      fwhm_Hz: 1.5e4
+      type: lorentz
+  solver:
+      fitreportdir:
+mapmaking:
+  enabled: true
+  crpix1: 0
+  crpix2: 0
+  crval1_J2000: 0
+  crval2_J2000: 0
+  cunit: MJy/Sr
+  grouping: null
+  method: naive
+  pixel_axes: icrs
+  pixel_size_arcsec: 1.0
+  x_size_pix: 0
+  y_size_pix: 0
+runtime:
+  meta:
+    version: tolteca...
+  n_threads: 1
+  output_dir: /path/to/outputs/
+  parallel_policy: seq
+  reduction_type: science
+  use_subdir: true
+source_fitting:
+  bounding_box_arcsec: 10
+  enabled: false
+  initial_guess: brightest_pixel
+  model: gaussian
+timestream:
+  type: xs
+  enabled: true
+  chunking:
+    length_sec: 10.0
+  clean:
+    cut_std: 0.0
+    enabled: false
+    grouping: array
+    n_eig_to_cut: 3
+  despike:
+    enabled: false
+    min_spike_sigma: 8.0
+    time_constant_sec: 0.015
+    window_size: 32
+  downsample:
+    enabled: false
+    factor: 1
+  filter:
+    a_gibbs: 50.0
+    enabled: false
+    freq_high_Hz: 16.0
+    freq_low_Hz: 0.0
+    n_terms: 32
+  kernel:
+    enabled: true
+    filepath:
+    image_ext_name: signal
+    type: gaussian
+  output:
+    chunk_type: rtc
+    enabled: false
+    format: netcdf
+  calibration:
+    enabled: true
+  polarimetry:
+    enabled: false
+  weighting:
+    type: full
+    lower_std_factor: 0
+    upper_std_factor: 0
+wiener_filter:
+  gaussian_template: true
+  gaussian_template_fwhm_arcsec:
+    a1100: 5
+    a1400: 6.3
+    a2000: 9.5
+  highpass_only: false
+  lowpass_only: false
+  normalize_error: false
