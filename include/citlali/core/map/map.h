@@ -201,7 +201,6 @@ map_dims_t MapBase::get_dims(tel_meta_t &tel_meta_data, C &calib_data, S &scan_i
             // copy tel meta data for scan
             tel_meta_t tel_meta_data_scan;
             tel_meta_data_scan["TelElDes"] = tel_meta_data["TelElDes"].segment(si, scan_length);
-            tel_meta_data_scan["TelElAct"] = tel_meta_data["TelElAct"].segment(si, scan_length);
             tel_meta_data_scan["ParAng"] = tel_meta_data["ParAng"].segment(si, scan_length);
 
             tel_meta_data_scan["TelLatPhys"] = tel_meta_data["TelLatPhys"].segment(si, scan_length);

@@ -17,18 +17,18 @@ public:
     };
 
     int nparams = 6;
-    double bounding_box_pix = 50;
+    double bounding_box_pix = 20;
 
     double flux0;
 
     double fwhm0 = 2;
-    double ang0 = 0.01;
+    double ang0 = 0;
 
-    double flux_low = 0.75;
-    double flux_high = 1.5;
+    double flux_low = 0.5;
+    double flux_high = 2.0;
 
-    double fwhm_low = 0.75;
-    double fwhm_high = 14;
+    double fwhm_low = 0;
+    double fwhm_high = 10;
 
     double ang_low = -pi/2;
     double ang_high = pi/2;
@@ -129,6 +129,7 @@ public:
         Eigen::MatrixXd _data = data.block(row0-bounding_box_pix, col0-bounding_box_pix, 2*bounding_box_pix+1, 2*bounding_box_pix+1);
         Eigen::MatrixXd _sigma = sigma.block(row0-bounding_box_pix, col0-bounding_box_pix, 2*bounding_box_pix+1, 2*bounding_box_pix+1);
 
+
         Eigen::Index nzeros = (_sigma.array() !=0).count();
         Eigen::MatrixXd xy2(nzeros,2);
 
@@ -154,10 +155,10 @@ public:
         //auto xy2 = g.meshgrid(xx, yy);
 
         // do the fit with ceres-solver
-       //auto [g_fit, covariance] = gaussfit::curvefit_ceres(g, _p, xy2, _d, _s, limits);
+       auto [g_fit, covariance] = gaussfit::curvefit_ceres(g, _p, xy2, _d, _s, limits);
 
         // do the fit with ceres-solver
-        auto [g_fit, covariance] = gaussfit::curvefit_ceres(g, _p, xy, _data, _sigma, limits);
+        //auto [g_fit, covariance] = gaussfit::curvefit_ceres(g, _p, xy, _data, _sigma, limits);
 
         error = covariance.diagonal().cwiseSqrt();
 

@@ -31,27 +31,25 @@ public:
 
         // current detector's elevation
         //auto lat = -y_t*ASEC_TO_RAD + out.tel_meta_data.data["TelElDes"].array();
-        //Eigen::VectorXd lat = out.tel_meta_data.data["TelElDes"].array();
+	Eigen::VectorXd lat = out.tel_meta_data.data["TelElDes"].array();
 
-        // rotate by detector elevation
-        //Eigen::VectorXd qs1 = q0.derived().array()*cos(2*lat.array()) - u0.derived().array()*sin(2*lat.array());
-        //Eigen::VectorXd us1 = q0.derived().array()*sin(2*lat.array()) + u0.derived().array()*cos(2*lat.array());
+        // rotate by detector elevation and flip
+	Eigen::VectorXd qs1 = q0.derived().array()*cos(-2*lat.array()) - u0.derived().array()*sin(-2*lat.array());
+	Eigen::VectorXd us1 = -q0.derived().array()*sin(-2*lat.array()) - u0.derived().array()*cos(-2*lat.array());
 
-        // mirror flip
-        u0 = -u0.eval();
-
-        if (run_hwp) {
+        
+	if (run_hwp) {
             // rotate by hwp signal
-            Eigen::VectorXd qs = q0.derived().array()*cos(4*out.hwp.data.array()) + u0.derived().array()*sin(4*out.hwp.data.array());
-            Eigen::VectorXd us = q0.derived().array()*sin(4*out.hwp.data.array()) - u0.derived().array()*cos(4*out.hwp.data.array());
+		Eigen::VectorXd qs = qs1.array()*cos(4*out.hwp.data.array()) + us1.array()*sin(4*out.hwp.data.array());
+		Eigen::VectorXd us = qs1.array()*sin(4*out.hwp.data.array()) - us1.array()*cos(4*out.hwp.data.array());
 
             out.scans.data.col(det) = qs;
             out.scans.data.col(det+ndet) = us;
         }
 
         else {
-            out.scans.data.col(det) = q0;
-            out.scans.data.col(det+ndet) = u0;
+            out.scans.data.col(det) = qs1;
+            out.scans.data.col(det+ndet) = us1;
         }
     }
 
@@ -60,9 +58,7 @@ public:
                                TCData<TCDataKind::RTC, Eigen::MatrixXd> &out, std::string sp,
                                Engine engine) {
 
-        SPDLOG_INFO("new pol version test");
-	    
-	// copy scan and telescope metadata
+        // copy scan and telescope metadata
         out.scan_indices.data = in.scan_indices.data;
         out.index.data = in.index.data;
         out.tel_meta_data.data = in.tel_meta_data.data;
@@ -98,10 +94,7 @@ public:
         else {
             Eigen::MatrixXd data;
             Eigen::Index ori;
-	    //Eigen::VectorXd pa2 = -(in.tel_meta_data.data["ParAng"].array() - pi);
-	    Eigen::VectorXd pa2 = -(in.tel_meta_data.data["ParAng"].array());
-	    //pa2.setZero();
-            Eigen::VectorXd lat = in.tel_meta_data.data["TelElDes"].array();
+            auto pa2 = -(in.tel_meta_data.data["ParAng"].array() - pi);
 
             if (sp == "Q") {
                 SPDLOG_INFO("creating Q timestream");
@@ -124,7 +117,7 @@ public:
             for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
                 if (engine->calib_data["fg"](i) == ori) {
                     if (sp == "Q") {
-                        data.col(j) = in.scans.data.col(i) - in.scans.data.col(i+1);
+                        data.col(j) = in.scans.data.col(i+1) - in.scans.data.col(i);
                     }
                     else if (sp == "U") {
                         data.col(j) = in.scans.data.col(i) - in.scans.data.col(i+1);
@@ -153,15 +146,15 @@ public:
                 Eigen::Index di = det_index_vector(i);
                 // rotate by PA
                 if (sp == "Q") {
-			Eigen::VectorXd qs0 = cos(2*(pa2.array() + lat.array()))*data.col(i).array();
-			Eigen::VectorXd us0 = sin(2*(pa2.array()+ lat.array()))*data.col(i).array();
+			Eigen::VectorXd  qs0 = cos(2*pa2.array())*data.col(i).array();
+			Eigen::VectorXd  us0 = sin(2*pa2.array())*data.col(i).array();
 
                     derotate_detector(qs0, us0, i, out, nsamples, ndet, di, engine->calib_data["y_t"](di), engine->run_hwp);
                 }
 
                 else if (sp == "U") {
-			Eigen::VectorXd qs0 = -sin(2*(pa2.array()+lat.array()))*data.col(i).array();
-                   	Eigen::VectorXd us0 = cos(2*(pa2.array()+lat.array()))*data.col(i).array();
+			Eigen::VectorXd  qs0 = -sin(2*pa2.array())*data.col(i).array();
+			Eigen::VectorXd  us0 = cos(2*pa2.array())*data.col(i).array();
 
                     derotate_detector(qs0, us0, i, out, nsamples, ndet, di, engine->calib_data["y_t"](di), engine->run_hwp);
                 }
@@ -200,4 +193,3 @@ public:
 };
 
 } // namespace timestream
-

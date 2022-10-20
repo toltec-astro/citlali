@@ -29,7 +29,7 @@ public:
     void get_phys_altaz(tel_meta_data_t &, C &);
 
     template <typename tel_meta_data_t, typename C>
-    void get_scanindices(tel_meta_data_t &, C &, std::string, std::string, const double, const double,
+    void get_scanindices(tel_meta_data_t &, C &, std::string, const double, const double,
                          const int);
 private:
     /* old code.  may not apply to TolTEC*/
@@ -50,6 +50,7 @@ private:
 
     //template <typename tel_meta_data_t>
     //void align_with_dets(tel_meta_data_t &);
+
 };
 
 template<typename Derived>
@@ -242,7 +243,6 @@ void Observation::get_phys_pointing(tel_meta_data_t &tel_meta_data, C &center, s
 
     // get altaz physical pointing
     else if (std::strcmp("altaz", map_type.c_str()) == 0) {
-        SPDLOG_INFO("getting altaz map");
         get_phys_altaz(tel_meta_data, center);
     }
 }
@@ -254,9 +254,11 @@ void Observation::get_phys_icrs(tel_meta_data_t &tel_meta_data, C &center) {
     Eigen::VectorXd temp_ra = tel_meta_data["TelRa"];
     //(temp_ra.array() > pi).select(tel_meta_data["TelRa"].array() - 2.0*pi, tel_meta_data["TelRa"]);
 
+
    // temp ra must range from -pi to pi
     for(Eigen::Index i=0;i<temp_ra.size();i++)
       temp_ra(i) = (tel_meta_data["TelRa"](i) > pi) ? tel_meta_data["TelRa"](i)-(2*pi) : tel_meta_data["TelRa"](i);
+
 
     // copy of absolute dec
     Eigen::VectorXd temp_dec = tel_meta_data["TelDec"];
@@ -292,7 +294,7 @@ void Observation::get_phys_icrs(tel_meta_data_t &tel_meta_data, C &center) {
 template <typename tel_meta_data_t, typename C>
 void Observation::get_phys_altaz(tel_meta_data_t &tel_meta_data, C &center) {
     for (Eigen::Index i = 0; i < tel_meta_data["TelAzAct"].size(); i++) {
-        if ((tel_meta_data["TelAzAct"](i) - tel_meta_data["SourceAz"](i)) > 0.9*2.0*pi) {
+        if (tel_meta_data["TelAzAct"](i) - tel_meta_data["SourceAz"](i) > 0.9*2.0*pi) {
             tel_meta_data["TelAzAct"](i) = tel_meta_data["TelAzAct"](i) - 2.0*pi;
         }
     }
@@ -304,16 +306,13 @@ void Observation::get_phys_altaz(tel_meta_data_t &tel_meta_data, C &center) {
 }
 
 template <typename tel_meta_data_t, typename C>
-void Observation::get_scanindices(tel_meta_data_t &tel_meta_data, C &center, std::string ObsPgm, std::string redu_t,
+void Observation::get_scanindices(tel_meta_data_t &tel_meta_data, C &center, std::string ObsPgm,
                                   const double fsmp, const double time_chunk, const int filter_nterms) {
 
     Eigen::Index nscans = 0;
 
-    SPDLOG_INFO("OBSPGM {}", ObsPgm);
-    SPDLOG_INFO("OBSPGM bool{}", std::strcmp("Lissajous", ObsPgm.c_str()) == 0);
-
     // get scan indices for Raster pattern
-    if (redu_t == "beammap" || redu_t == "science") {//std::strcmp("Map", ObsPgm.c_str()) == 0) {
+    if (std::strcmp("Map", ObsPgm.c_str()) == 0) {
         SPDLOG_INFO("Calculating scans for Raster mode");
 
         // cast Hold signal to bool
@@ -331,6 +330,7 @@ void Observation::get_scanindices(tel_meta_data_t &tel_meta_data, C &center, std
         if (turning(turning.size()-1) == 0){
             nscans++;
         }
+
         scanindices.resize(4,nscans);
 
         int counter = -1;
@@ -353,14 +353,13 @@ void Observation::get_scanindices(tel_meta_data_t &tel_meta_data, C &center, std
     }
 
     // get scanindices for Lissajous/Rastajous pattern
-    else if (redu_t == "pointing") {//std::strcmp("Lissajous", ObsPgm.c_str()) == 0) {
+    else if (std::strcmp("Lissajous", ObsPgm.c_str()) == 0) {
         SPDLOG_INFO("Calculating scans for Lissajous/Rastajous mode");
 
         // index of first scan
         Eigen::Index first_scan_i = 0;
         // index of last scan
         Eigen::Index last_scan_i = tel_meta_data["Hold"].size() - 1;
-
         // period (time_chunk/fsmp in seconds/Hz)
         Eigen::Index period_i = floor(time_chunk*fsmp);
 
@@ -373,47 +372,10 @@ void Observation::get_scanindices(tel_meta_data_t &tel_meta_data, C &center, std
         scanindices.row(0) =
                 Eigen::Vector<Eigen::Index,Eigen::Dynamic>::LinSpaced(nscans,0,nscans-1).array()*period_i + first_scan_i;
         scanindices.row(1) = scanindices.row(0).array() + period_i - 1;
+
     }
 
-    Eigen::Matrix<Eigen::Index,Eigen::Dynamic, Eigen::Dynamic> scanindices_temp(4,nscans); 
-    scanindices_temp = scanindices; 
-
-    // do a final check of scan length.  If a scan is
-    // less than 2s of data then delete it
-    int n_bad_scans = 0;
-    int sum = 0;
-    
-    Eigen::Matrix<bool, Eigen::Dynamic, 1> is_bad_scan(nscans);
-    for (Eigen::Index i=0; i<nscans; i++) {
-        sum=0;
-        for (Eigen::Index j=scanindices_temp(0,i); j<(scanindices_temp(1,i)+1); j++) {
-            sum += 1;
-        }
-        if(sum < 2.*fsmp) {
-            n_bad_scans++;
-            is_bad_scan(i)=1;
-        } 
-        else {
-            is_bad_scan(i) = 0;
-        }
-    }
-
-    if (n_bad_scans > 0) {
-      SPDLOG_INFO("removing {} scans with duration less than 2 sec", n_bad_scans);
-    }
-
-    int c = 0;
-    scanindices.resize(4,nscans-n_bad_scans);
-    for (Eigen::Index i=0; i<nscans; i++) {
-        if (!is_bad_scan(i)) {
-            scanindices(0,c) = scanindices_temp(0,i);
-            scanindices(1,c) = scanindices_temp(1,i);
-            c++;
-        }
-    }
-    nscans = nscans - n_bad_scans;
-
-    // set up the 3rd and 4th scanindices rows so that we don't lose data during lowpassing
+    // set up the 3rd and 4th scanindex rows so that we don't lose data during lowpassing
     // filter_nterms is zero if lowpassing is not enabled
     scanindices.row(2) = scanindices.row(0).array() - filter_nterms;
     scanindices.row(3) = scanindices.row(1).array() + filter_nterms;
@@ -422,7 +384,4 @@ void Observation::get_scanindices(tel_meta_data_t &tel_meta_data, C &center, std
     // data on either side
     scanindices(2,0) = scanindices(0,0);
     scanindices(3,nscans-1) = scanindices(1,nscans-1);
-
-    scanindices(0,0) = scanindices(0,0) + filter_nterms;
-    scanindices(1,nscans-1) = scanindices(1,nscans-1) - filter_nterms;
 }

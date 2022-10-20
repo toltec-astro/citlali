@@ -87,11 +87,6 @@ public:
     // class for outputs
     ToltecIO toltec_io;
 
-    double temp_time_offset;
-
-    // network time vectors
-    std::vector<Eigen::VectorXd> nw_ts;
-
     // citlali config file
     tula::config::YamlConfig engine_config;
 
@@ -106,16 +101,8 @@ public:
 
     std::map<std::string,double> beammap_fluxes, beammap_uncer;
 
-    std::map<std::string, int> nc_header;
-
     std::string extinction_model;
     double tau;
-
-    // number of bad weights
-    Eigen::Index bad_weights;
-
-    // tone flags
-    Eigen::Matrix<int, Eigen::Dynamic, 1> tone_flags;
 
     std::map<std::string,double> pointing_offsets;
 
@@ -126,8 +113,7 @@ public:
     std::string ts_chunk_type;
 
     // timestream offsets
-    std::map<std::string,double> interface_sync_offset;
-    std::vector<Eigen::Index> init_indices, end_indices;
+    std::vector<Eigen::Index> interface_sync_offset, init_indices;
 
     // reduction number
     int redu_num;
@@ -293,39 +279,6 @@ public:
         engine_config = _c;
         SPDLOG_INFO("getting config options");
 
-        auto interface_node = engine_config.get_node(std::tuple{"interface_sync_offset"});
-
-        if (interface_node.IsSequence()) {
-            SPDLOG_INFO("seq");
-        }
-        /*for (auto it = interface_node.begin(); it != interface_node.end(); ++it) {
-            auto element = *it;
-            //SPDLOG_INFO("element {}", element);
-            //interface_sync_offset[it->first] = it->second;
-        }*/
-
-        std::vector<std::string> interface_keys = {
-            "toltec0",
-            "toltec1",
-            "toltec2",
-            "toltec3",
-            "toltec4",
-            "toltec5",
-            "toltec6",
-            "toltec7",
-            "toltec8",
-            "toltec9",
-            "toltec10",
-            "toltec11",
-            "toltec12",
-            "hwp"
-        };
-
-        for (Eigen::Index i=0; i<interface_node.size(); i++) {
-            interface_sync_offset[interface_keys[i]] = engine_config.get_typed<double>(std::tuple{"interface_sync_offset",i, interface_keys[i]});
-            SPDLOG_INFO("interface_sync_offset[interface_keys[i]] {}",interface_sync_offset[interface_keys[i]]);
-        }
-
         get_config(run_tod_output,std::tuple{"timestream","output","enabled"});
         if (run_tod_output) {
             get_config(ts_format,std::tuple{"timestream","output","format"});
@@ -341,8 +294,6 @@ public:
                 ex_name = "seq";
             }
         }
-
-        get_config(temp_time_offset,std::tuple{"timestream","offset"});
 
         get_config(nthreads,std::tuple{"runtime","n_threads"});
         get_config(filepath,std::tuple{"runtime","output_dir"});
@@ -422,7 +373,6 @@ public:
         }
 
         // get mapmaking config options
-        get_config(run_maps,std::tuple{"mapmaking","enabled"});
         get_config(map_grouping,std::tuple{"mapmaking","grouping"});
         get_config(mapping_method,std::tuple{"mapmaking","method"});
 
