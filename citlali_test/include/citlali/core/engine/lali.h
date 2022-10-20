@@ -51,7 +51,7 @@ void Lali::setup() {
 
     // empty the fits vector for subsequent observations
     fits_ios.clear();
-
+    ts_filepath.clear();
     std::string hdname;
 
     if (use_subdir) {
