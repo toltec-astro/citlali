@@ -35,7 +35,8 @@
       ],
       "cacheVariables": {
           "FETCHCONTENT_SOURCE_DIR_TULA": "${sourceParentDir}/tula",
-          "USE_INSTALLED_BOOST": "ON"
+          "USE_INSTALLED_BOOST": "ON",
+          "USE_INSTALLED_NETCDF": "ON"
       }
     }
   ]
