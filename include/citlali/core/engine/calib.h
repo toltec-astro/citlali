@@ -87,6 +87,8 @@ public:
 
             // check if hwp is enabled
             vars.find("Header.Hwp.RotatorEnabled")->second.getVar(&run_hwp);
+	    // hard-code hwp to true
+	    run_hwp = true;
             SPDLOG_INFO("Header.Hwp.RotatorEnabled {}", run_hwp);
 
             // get hwp signal
