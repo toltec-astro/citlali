@@ -31,11 +31,11 @@ public:
 
         // current detector's elevation
         //auto lat = -y_t*ASEC_TO_RAD + out.tel_meta_data.data["TelElDes"].array();
-        auto lat = out.tel_meta_data.data["TelElDes"].array();
+        auto lat = out.tel_meta_data.data["TelElDes"].array() + pi / 2;
 
         // rotate by detector elevation and flip
-        auto qs1 = q0.derived().array()*cos(-2*lat.array()) - u0.derived().array()*sin(-2*lat.array());
-        auto us1 = -q0.derived().array()*sin(-2*lat.array()) - u0.derived().array()*cos(-2*lat.array());
+        auto qs1 = q0.derived().array()*cos(2*lat.array()) - u0.derived().array()*sin(2*lat.array());
+        auto us1 = q0.derived().array()*sin(2*lat.array()) + u0.derived().array()*cos(2*lat.array());
 
         
 	if (run_hwp) {
@@ -94,7 +94,7 @@ public:
         else {
             Eigen::MatrixXd data;
             Eigen::Index ori;
-            auto pa2 = (in.tel_meta_data.data["ParAng"].array() - pi);
+            auto pa2 = -(in.tel_meta_data.data["ParAng"].array() - pi);
 
             if (sp == "Q") {
                 SPDLOG_INFO("creating Q timestream");
@@ -117,7 +117,7 @@ public:
             for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
                 if (engine->calib_data["fg"](i) == ori) {
                     if (sp == "Q") {
-                        data.col(j) = in.scans.data.col(i+1) - in.scans.data.col(i);
+                        data.col(j) = in.scans.data.col(i) - in.scans.data.col(i+1);
                     }
                     else if (sp == "U") {
                         data.col(j) = in.scans.data.col(i) - in.scans.data.col(i+1);

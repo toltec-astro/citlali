@@ -36,7 +36,8 @@
       "cacheVariables": {
           "FETCHCONTENT_SOURCE_DIR_TULA": "${sourceParentDir}/tula",
           "USE_INSTALLED_BOOST": "ON",
-          "USE_INSTALLED_NETCDF": "ON"
+          "USE_INSTALLED_NETCDF": "ON",
+          "CMAKE_CXX_FLAGS": "-L/usr/local/opt/llvm/lib/c++ -fexperimental-library -fvisibility=hidden -fvisibility-inlines-hidden"
       }
     }
   ]

@@ -23,6 +23,7 @@ struct ToltecCalib {
         {"fg",1},
         {"pg", 1},
         {"ori",1},
+        {"pa_t",1},
         {"responsivity",1}
     };
 
