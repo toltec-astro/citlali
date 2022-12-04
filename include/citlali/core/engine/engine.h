@@ -3,9 +3,28 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include <tula/config/yamlconfig.h>
-#include <tula/config/flatconfig.h>
 #include <omp.h>
+#include <Eigen/Core>
+
+#include <citlali_config/config.h>
+#include <citlali_config/gitversion.h>
+#include <citlali_config/default_config.h>
+#include <kids/core/kidsdata.h>
+#include <kids/sweep/fitter.h>
+#include <kids/timestream/solver.h>
+#include <kids/toltec/toltec.h>
+#include <kidscpp_config/gitversion.h>
+#include <tula/cli.h>
+#include <tula/config/core.h>
+#include <tula/config/flatconfig.h>
+#include <tula/config/yamlconfig.h>
+#include <tula/enum.h>
+#include <tula/filesystem.h>
+#include <tula/formatter/container.h>
+#include <tula/formatter/enum.h>
+#include <tula/grppi.h>
+#include <tula/logging.h>
+#include <tula/switch_invoke.h>
 
 #include <citlali/core/utils/constants.h>
 #include <citlali/core/utils/fits_io.h>
@@ -28,6 +47,7 @@
 #include <citlali/core/timestream/rtc/calibrate.h>
 
 #include <citlali/core/timestream/ptc/clean.h>
+#include <citlali/core/timestream/ptc/sensitivity.h>
 
 #include <citlali/core/timestream/rtc/rtcproc.h>
 #include <citlali/core/timestream/ptc/ptcproc.h>
@@ -39,10 +59,15 @@
 #include <citlali/core/mapmaking/jinc_mm.h>
 #include <citlali/core/mapmaking/wiener_filter.h>
 
+#include <citlali/core/engine/io.h>
+#include <citlali/core/engine/kidsproc.h>
+#include <citlali/core/engine/todproc.h>
+
 struct reduControls {
     // create reduction subdirectories
     bool use_subdir;
 
+    // run or skip tod processing
     bool run_timestream;
 
     // output timestreams
@@ -56,6 +81,11 @@ struct reduControls {
 };
 
 struct reduClasses {
+    // reduction classes
+    engine::Calib calib;
+    engine::Telescope telescope;
+    engine_utils::toltecIO toltec_io;
+    engine_utils::mapFitter map_fitter;
 
     // rtc proc
     timestream::RTCProc rtcproc;
@@ -72,11 +102,26 @@ struct reduClasses {
 };
 
 struct beammapControls {
+    // source name
+    std::string beammap_source_name;
+
+    // beammap source position
+    double beammap_ra_rad, beammap_dec_rad;
+
+    // fluxes and errs
+    std::map<std::string, double> beammap_fluxes, beammap_err;
+
     // maximum beammap iterations
     int beammap_iter_max;
 
     // beammap tolerance
     double beammap_iter_tolerance;
+
+    // beammap reference detector
+    Eigen::Index beammap_reference_det;
+
+    // upper and lower limits of psd for sensitivity calc
+    Eigen::VectorXd sens_psd_limits;
 
     // limits for fwhm and sig2noise  for flagging
     std::map<std::string, double> lower_fwhm_arcsec, upper_fwhm_arcsec, lower_sig2noise;
@@ -85,6 +130,9 @@ struct beammapControls {
 class Engine: public reduControls, public reduClasses, public beammapControls {
 public:
     using key_vec_t = std::vector<std::vector<std::string>>;
+
+    // add extra output for debugging
+    bool verbose_mode;
 
     // output directory and optional sub directory name
     std::string output_dir, redu_dir_name;
@@ -103,6 +151,9 @@ public:
 
     // parallel execution policy
     std::string parallel_policy;
+
+    // number of scans completed
+    Eigen::Index n_scans_done;
 
     // manual offsets for nws and hwp
     std::map<std::string,double> interface_sync_offset;
@@ -131,6 +182,9 @@ public:
     // number of maps
     Eigen::Index n_maps;
 
+    // mapping from index in map vector to array index
+    Eigen::VectorXI maps_to_arrays;
+
     // manual pointing offsets
     std::map<std::string, double> pointing_offsets_arcsec;
 
@@ -140,12 +194,6 @@ public:
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> noise_fits_io_vec;
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> filtered_coadd_fits_io_vec;
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> filtered_noise_fits_io_vec;
-
-    // reduction classes
-    engine::Calib calib;
-    engine::Telescope telescope;
-    engine_utils::toltecIO toltec_io;
-    engine_utils::mapFitter map_fitter;
 
     template<typename CT>
     void get_citlali_config(CT &);
@@ -159,6 +207,14 @@ public:
     template <typename Derived>
     auto calc_map_indices(Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &,
                           Eigen::DenseBase<Derived> &, std::string);
+
+    void create_map_files();
+    void create_tod_files();
+
+    template <typename fits_io_type, class map_buffer_t>
+    void write_maps(fits_io_type &, map_buffer_t &, Eigen::Index, Eigen::Index, Eigen::Index);
+    void write_psd();
+    void write_hist();
 };
 
 template<typename CT>
@@ -217,9 +273,15 @@ void Engine::get_citlali_config(CT &config) {
     }
 
     /* runtime */
+    get_value(config, verbose_mode, missing_keys, invalid_keys, std::tuple{"runtime","verbose"});
     get_value(config, output_dir, missing_keys, invalid_keys, std::tuple{"runtime","output_dir"});
     get_value(config, n_threads, missing_keys, invalid_keys, std::tuple{"runtime","n_threads"});
-    get_value(config, parallel_policy, missing_keys, invalid_keys, std::tuple{"runtime","parallel_policy"});
+    get_value(config, parallel_policy, missing_keys, invalid_keys, std::tuple{"runtime","parallel_policy"},{"seq","omp"});
+
+    // parallelization for ffts
+    omb.parallel_policy = parallel_policy;
+    cmb.parallel_policy = parallel_policy;
+
     get_value(config, redu_type, missing_keys, invalid_keys, std::tuple{"runtime","reduction_type"},{"science","pointing","beammap"});
     get_value(config, use_subdir, missing_keys, invalid_keys, std::tuple{"runtime","use_subdir"});
 
@@ -227,6 +289,15 @@ void Engine::get_citlali_config(CT &config) {
     get_value(config, run_timestream, missing_keys, invalid_keys, std::tuple{"timestream","enabled"});
     get_value(config, tod_type, missing_keys, invalid_keys, std::tuple{"timestream","type"});
     get_value(config, run_tod_output, missing_keys, invalid_keys, std::tuple{"timestream","output","enabled"});
+
+    // tod output requires sequential policy
+    if (run_tod_output) {
+        SPDLOG_INFO("tod output requires sequential policy");
+        parallel_policy = "seq";
+        omb.parallel_policy = parallel_policy;
+        cmb.parallel_policy = parallel_policy;
+    }
+
     get_value(config, tod_output_type, missing_keys, invalid_keys, std::tuple{"timestream","output", "chunk_type"});
     get_value(config, telescope.time_chunk, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "length_sec"});
     get_value(config, ptcproc.weighting_type, missing_keys, invalid_keys, std::tuple{"timestream","weighting", "type"});
@@ -266,6 +337,7 @@ void Engine::get_citlali_config(CT &config) {
     get_value(config, rtcproc.filter.freq_high_Hz, missing_keys, invalid_keys, std::tuple{"timestream","filter","freq_high_Hz"});
     get_value(config, rtcproc.filter.n_terms, missing_keys, invalid_keys, std::tuple{"timestream","filter","n_terms"});
 
+    // set scan limits
     if (rtcproc.run_tod_filter) {
         telescope.inner_scans_chunk = rtcproc.filter.n_terms;
         rtcproc.despiker.window_size = rtcproc.filter.n_terms;
@@ -282,6 +354,11 @@ void Engine::get_citlali_config(CT &config) {
     /* calibration */
     get_value(config, rtcproc.run_calibrate, missing_keys, invalid_keys, std::tuple{"timestream","calibration","enabled"});
 
+    // override calibration if in beammap mode
+    if (redu_type=="beammap") {
+        rtcproc.run_calibrate = false;
+    }
+
     /* cleaning */
     get_value(config, ptcproc.run_clean, missing_keys, invalid_keys, std::tuple{"timestream","clean","enabled"});
     get_value(config, ptcproc.cleaner.n_eig_to_cut, missing_keys, invalid_keys, std::tuple{"timestream","clean","n_eig_to_cut"});
@@ -292,6 +369,9 @@ void Engine::get_citlali_config(CT &config) {
     get_value(config, run_mapmaking, missing_keys, invalid_keys, std::tuple{"mapmaking","enabled"});
     get_value(config, map_grouping, missing_keys, invalid_keys, std::tuple{"mapmaking","grouping"});
     get_value(config, map_method, missing_keys, invalid_keys, std::tuple{"mapmaking","method"});
+    // histogram
+    get_value(config, omb.hist_n_bins, missing_keys, invalid_keys, std::tuple{"mapmaking","histogram","n_bins"});
+    cmb.hist_n_bins = omb.hist_n_bins;
 
     /* wcs */
 
@@ -344,7 +424,13 @@ void Engine::get_citlali_config(CT &config) {
     omb.wcs.naxis.push_back(1);
 
     // map units
-    get_value(config, omb.sig_unit, missing_keys, invalid_keys, std::tuple{"mapmaking","cunit"});
+    if (rtcproc.run_calibrate) {
+        get_value(config, omb.sig_unit, missing_keys, invalid_keys, std::tuple{"mapmaking","cunit"});
+    }
+
+    else {
+        omb.sig_unit = tod_type;
+    }
 
     if (telescope.pixel_axes == "icrs") {
         omb.wcs.ctype.push_back("RA---TAN");
@@ -367,15 +453,25 @@ void Engine::get_citlali_config(CT &config) {
         omb.wcs.ctype.push_back("FREQ");
         omb.wcs.ctype.push_back("STOKES");
 
-        omb.wcs.cunit.push_back("arcsec");
-        omb.wcs.cunit.push_back("arcsec");
+        // arcsec if pointing
+        if (redu_type == "pointing" || redu_type == "beammap") {
+            omb.wcs.cunit.push_back("arcsec");
+            omb.wcs.cunit.push_back("arcsec");
+            omb.wcs.cdelt[0] *= RAD_TO_ASEC;
+            omb.wcs.cdelt[1] *= RAD_TO_ASEC;
+        }
+        // degrees if science
+        else {
+            omb.wcs.cunit.push_back("deg");
+            omb.wcs.cunit.push_back("deg");
+            omb.wcs.cdelt[0] *= RAD_TO_DEG;
+            omb.wcs.cdelt[1] *= RAD_TO_DEG;
+        }
         omb.wcs.cunit.push_back("Hz");
         omb.wcs.cunit.push_back("");
-
-        omb.wcs.cdelt[0] *= RAD_TO_ASEC;
-        omb.wcs.cdelt[1] *= RAD_TO_ASEC;
     }
 
+    // copy omb wcs to cmb wcs
     cmb.wcs = omb.wcs;
 
     /* fitting */
@@ -398,6 +494,7 @@ void Engine::get_citlali_config(CT &config) {
     /* beammap */
     get_value(config, beammap_iter_max, missing_keys, invalid_keys, std::tuple{"beammap","iter_max"});
     get_value(config, beammap_iter_tolerance, missing_keys, invalid_keys, std::tuple{"beammap","iter_tolerance"});
+    get_value(config, beammap_reference_det, missing_keys, invalid_keys, std::tuple{"beammap","reference_det"});
 
     for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
         get_value(config, lower_fwhm_arcsec[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","lower_fwhm_arcsec",arr_name});
@@ -405,11 +502,40 @@ void Engine::get_citlali_config(CT &config) {
         get_value(config, lower_sig2noise[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","lower_sig2noise",arr_name});
     }
 
+    // sensitiivty
+    sens_psd_limits.resize(2);
+    double sens;
+    get_value(config, sens, missing_keys, invalid_keys, std::tuple{"beammap","sens_psd_lower_limit"});
+    sens_psd_limits(0) = sens;
+
+    get_value(config, sens, missing_keys, invalid_keys, std::tuple{"beammap","sens_psd_upper_limit"});
+    sens_psd_limits(1) = sens;
 }
 
 template<typename CT>
 void Engine::get_photometry_config(CT &config) {
+    // beammap name
+    get_value(config, beammap_source_name, missing_keys, invalid_keys, std::tuple{"beammap_source","name"});
 
+    // beammap source ra
+    get_value(config, beammap_ra_rad, missing_keys, invalid_keys, std::tuple{"beammap_source","ra_deg"});
+    beammap_ra_rad = beammap_ra_rad*DEG_TO_RAD;
+
+    // beammap source dec
+    get_value(config, beammap_dec_rad, missing_keys, invalid_keys, std::tuple{"beammap_source","dec_deg"});
+    beammap_dec_rad = beammap_dec_rad*DEG_TO_RAD;
+
+    Eigen::Index n_fluxes = config.get_node(std::tuple{"beammap_source","fluxes"}).size();
+
+    for (Eigen::Index i=0; i<n_fluxes; i++) {
+        auto array = config.get_str(std::tuple{"beammap_source","fluxes",i,"array_name"});
+
+        auto flux = config.template get_typed<double>(std::tuple{"beammap_source","fluxes",i,"value_mJy"});
+        auto uncertainty_mJy = config.template get_typed<double>(std::tuple{"beammap_source","fluxes",i,"uncertainty_mJy"});
+
+        beammap_fluxes[array] = flux;
+        beammap_err[array] = uncertainty_mJy;
+    }
 }
 
 template<typename CT>
@@ -419,7 +545,6 @@ void Engine::get_astrometry_config(CT &config) {
 
     // initialize pointing alt offset
     pointing_offsets_arcsec["alt"] = 0.0;
-
 }
 
 template <typename Derived>
@@ -483,3 +608,270 @@ auto Engine::calc_map_indices(Eigen::DenseBase<Derived> &det_indices, Eigen::Den
 
     return std::move(map_indices);
 }
+
+void Engine::create_map_files() {
+    // clear for each observation
+    fits_io_vec.clear();
+
+    for (Eigen::Index i=0; i<calib.n_arrays; i++) {
+        auto array = calib.arrays[i];
+        std::string array_name = toltec_io.array_name_map[array];
+        auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
+                                                  engine_utils::toltecIO::map>(obsnum_dir_name, redu_type, array_name,
+                                                                               obsnum, telescope.sim_obs);
+        fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
+
+        fits_io_vec.push_back(std::move(fits_io));
+    }
+}
+
+void Engine::create_tod_files() {
+    for (const auto &stokes_param: rtcproc.polarization.stokes_params) {
+        auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
+                                                  engine_utils::toltecIO::timestream>(obsnum_dir_name, redu_type, "",
+                                                                                      obsnum, telescope.sim_obs);
+
+        SPDLOG_INFO("tod_filename {}", filename);
+        tod_filename[stokes_param] = filename + "_" + stokes_param + ".nc";
+        netCDF::NcFile fo(tod_filename[stokes_param], netCDF::NcFile::replace);
+
+        // add tod output type to file
+        netCDF::NcDim n_tod_output_type_dim = fo.addDim("n_tod_output_type",1);
+        netCDF::NcVar tod_output_type_var = fo.addVar("tod_output_type",netCDF::ncString, n_tod_output_type_dim);
+        const std::vector< size_t > tod_output_type_index = {0};
+        tod_output_type_var.putVar(tod_output_type_index, tod_output_type);
+
+        netCDF::NcDim n_pts_dim = fo.addDim("n_pts");
+        netCDF::NcDim n_scan_indices_dim = fo.addDim("n_scan_indices", telescope.scan_indices.rows());
+        netCDF::NcDim n_scans_dim = fo.addDim("n_scans", telescope.scan_indices.cols());
+
+        Eigen::Index n_dets;
+
+        // set number of dets for unpolarized timestreams
+        if (stokes_param=="I") {
+            n_dets = calib.apt["array"].size();
+        }
+
+        // set number of detectors for polarized timestreams
+        else if ((stokes_param == "Q") || (stokes_param == "U")) {
+            n_dets = (calib.apt["fg"].array() == 0).count() + (calib.apt["fg"].array() == 1).count();
+        }
+
+        netCDF::NcDim n_dets_dim = fo.addDim("n_dets", n_dets);
+
+        std::vector<netCDF::NcDim> dims = {n_pts_dim, n_dets_dim};
+        std::vector<netCDF::NcDim> scans_dims = {n_scan_indices_dim, n_scans_dim};
+
+        // scan indices
+        netCDF::NcVar scan_indices_v = fo.addVar("scan_indices",netCDF::ncInt, scans_dims);
+        Eigen::MatrixXI scans_indices_transposed = telescope.scan_indices.transpose();
+        scan_indices_v.putVar(scans_indices_transposed.data());
+
+        // scans
+        netCDF::NcVar scans_v = fo.addVar("signal",netCDF::ncDouble, dims);
+        // flags
+        netCDF::NcVar flags_v = fo.addVar("flags",netCDF::ncDouble, dims);
+        // kernel
+        if (rtcproc.run_kernel) {
+            netCDF::NcVar kernel_v = fo.addVar("kernel",netCDF::ncDouble, dims);
+        }
+
+        // detector lat
+        netCDF::NcVar det_lat_v = fo.addVar("det_lat",netCDF::ncDouble, dims);
+        // detector lon
+        netCDF::NcVar det_lon_v = fo.addVar("det_lon",netCDF::ncDouble, dims);
+
+        // add apt table
+        for (auto const& x: calib.apt) {
+            netCDF::NcVar apt_v = fo.addVar("apt_" + x.first,netCDF::ncDouble, n_dets_dim);
+        }
+
+        // add telescope parameters
+        for (auto const& x: telescope.tel_data) {
+            netCDF::NcVar tel_data_v = fo.addVar(x.first,netCDF::ncDouble, n_pts_dim);
+        }
+
+        // weights
+        if (tod_output_type == "ptc") {
+            std::vector<netCDF::NcDim> weight_dims = {n_scans_dim, n_dets_dim};
+            netCDF::NcVar weights_v = fo.addVar("weights",netCDF::ncDouble, weight_dims);
+        }
+
+        // add psd and hist variables if in verbose mode
+        if (verbose_mode) {
+            netCDF::NcDim n_hist_dim = fo.addDim("n_hist_bins", omb.hist_n_bins);
+            std::vector<netCDF::NcDim> hist_dims = {n_dets_dim, n_hist_dim};
+            netCDF::NcVar hist_v = fo.addVar("hist",netCDF::ncDouble, hist_dims);
+            netCDF::NcVar hist_bins_v = fo.addVar("hist_bins",netCDF::ncDouble, hist_dims);
+        }
+
+        fo.close();
+
+        SPDLOG_INFO("made timestream files");
+    }
+}
+
+template <typename fits_io_type, class map_buffer_t>
+void Engine::write_maps(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i, Eigen::Index j, Eigen::Index k) {
+    // array name
+    std::string name = toltec_io.array_name_map[j];
+    // signal map
+    fits_io[j].add_hdu("signal_" + rtcproc.polarization.stokes_params[i], omb.signal[k]);
+    fits_io[j].add_wcs(fits_io_vec[j].hdus.back(),omb.wcs);
+    fits_io[j].hdus.back()->addKey("UNIT", mb.sig_unit, "Unit of map");
+
+    // weight map
+    fits_io[j].add_hdu("weight_" + rtcproc.polarization.stokes_params[i], omb.weight[k]);
+    fits_io[j].add_wcs(fits_io_vec[j].hdus.back(),omb.wcs);
+    fits_io[j].hdus.back()->addKey("UNIT", "1/("+mb.sig_unit+")", "Unit of map");
+
+    // kernel map
+    if (rtcproc.run_kernel) {
+        fits_io[j].add_hdu("kernel_" + rtcproc.polarization.stokes_params[i], omb.kernel[k]);
+        fits_io[j].add_wcs(fits_io_vec[j].hdus.back(),omb.wcs);
+        fits_io[j].hdus.back()->addKey("UNIT", mb.sig_unit, "Unit of map");
+    }
+
+    // coverage map
+    fits_io[j].add_hdu("coverage_" + rtcproc.polarization.stokes_params[i], omb.coverage[k]);
+    fits_io[j].add_wcs(fits_io_vec[j].hdus.back(),omb.wcs);
+    fits_io[j].hdus.back()->addKey("UNIT", "sec", "Unit of map");
+
+    // coverage bool map
+    Eigen::MatrixXd ones, zeros;
+    ones.setOnes(omb.weight[k].rows(), omb.weight[k].cols());
+    zeros.setZero(omb.weight[k].rows(), omb.weight[k].cols());
+
+    auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = omb.calc_cov_region(omb.weight[k]);
+    auto coverage_bool = (omb.weight[k].array() < weight_threshold).select(zeros,ones);
+
+    fits_io[j].add_hdu("coverage_bool_" + rtcproc.polarization.stokes_params[i], coverage_bool);
+    fits_io[j].add_wcs(fits_io_vec[j].hdus.back(),omb.wcs);
+    fits_io[j].hdus.back()->addKey("UNIT", "N/A", "Unit of map");
+
+    // signal-to-noise map
+    Eigen::MatrixXd sig2noise = omb.signal[k].array()*sqrt(omb.weight[k].array());
+    fits_io[j].add_hdu("sig2noise_" + rtcproc.polarization.stokes_params[i], sig2noise);
+    fits_io[j].add_wcs(fits_io_vec[j].hdus.back(),omb.wcs);
+    fits_io[j].hdus.back()->addKey("UNIT", "N/A", "Unit of map");
+
+    if (rtcproc.run_calibrate) {
+        if (mb.sig_unit == "Mjy/sr") {
+            fits_io[j].pfits->pHDU().addKey("to_mJy/beam", calib.array_beam_areas[calib.arrays(j)]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
+            fits_io[j].pfits->pHDU().addKey("to_Mjy/sr", 1, "Conversion to MJy/sr");
+        }
+
+        else if (mb.sig_unit == "mJy/beam") {
+            fits_io[j].pfits->pHDU().addKey("to_mJy/beam", 1, "Conversion to mJy/beam");
+            fits_io[j].pfits->pHDU().addKey("to_Mjy/sr", 1/calib.mean_flux_conversion_factor[name], "Conversion to MJy/sr");
+        }
+    }
+
+    else {
+        fits_io[j].pfits->pHDU().addKey("to_mJy/beam", "N/A", "Conversion to mJy/beam");
+        fits_io[j].pfits->pHDU().addKey("to_Mjy/sr", "N/A", "Conversion to MJy/sr");
+    }
+
+    // add obsnum
+    fits_io[j].pfits->pHDU().addKey("OBSNUM", obsnum, "Observation Number");
+    // add citlali version
+    fits_io[j].pfits->pHDU().addKey("VERSION", CITLALI_GIT_VERSION, "CITLALI_GIT_VERSION");
+    // add tod type
+    fits_io[j].pfits->pHDU().addKey("TYPE", tod_type, "TOD Type");
+    // add exposure time
+    fits_io[j].pfits->pHDU().addKey("EXPTIME", mb.exposure_time, "Exposure Time");
+
+    // add source ra
+    fits_io[j].pfits->pHDU().addKey("SRC_RA", telescope.tel_header["Header.Source.Ra"][0], "Source RA (radians)");
+    // add source dec
+    fits_io[j].pfits->pHDU().addKey("SRC_DEC", telescope.tel_header["Header.Source.Dec"][0], "Source Dec (radians)");
+    // add map tangent point ra
+    fits_io[j].pfits->pHDU().addKey("TAN_RA", telescope.tel_header["Header.Source.Ra"][0], "Map Tangent Point RA (radians)");
+    // add map tangent point dec
+    fits_io[j].pfits->pHDU().addKey("TAN_DEC", telescope.tel_header["Header.Source.Dec"][0], "Map Tangent Point Dec (radians)");
+
+    // add telescope file header information
+    for (auto const& [key, val] : telescope.tel_header) {
+        fits_io[j].pfits->pHDU().addKey(key, val(0), key);
+    }
+}
+
+void Engine::write_psd() {
+    auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
+                                              engine_utils::toltecIO::psd>(obsnum_dir_name, redu_type, "",
+                                                                           obsnum, telescope.sim_obs);
+    netCDF::NcFile fo(filename + ".nc", netCDF::NcFile::replace);
+
+    Eigen::Index k = 0;
+
+    for (Eigen::Index i=0; i<rtcproc.polarization.stokes_params.size(); i++) {
+        for (Eigen::Index j=0; j<n_maps/rtcproc.polarization.stokes_params.size(); j++) {
+
+            auto array = calib.arrays[j];
+            std::string name = toltec_io.array_name_map[array] + "_" + rtcproc.polarization.stokes_params[k];
+
+            // add dimensions
+            netCDF::NcDim psd_dim = fo.addDim(name + "_nfreq",omb.psds[k].size());
+            netCDF::NcDim pds_2d_row_dim = fo.addDim(name + "_rows",omb.psd_2ds[k].rows());
+            netCDF::NcDim pds_2d_col_dim = fo.addDim(name + "_cols",omb.psd_2ds[k].cols());
+
+            std::vector<netCDF::NcDim> dims;
+            dims.push_back(pds_2d_row_dim);
+            dims.push_back(pds_2d_col_dim);
+
+            // psd
+            netCDF::NcVar psd_v = fo.addVar(name + "_psd",netCDF::ncDouble, psd_dim);
+            psd_v.putVar(omb.psds[k].data());
+
+            // psd freq
+            netCDF::NcVar psd_freq_v = fo.addVar(name + "_psd_freq",netCDF::ncDouble, psd_dim);
+            psd_freq_v.putVar(omb.psd_freqs[k].data());
+
+            // transpose 2d psd and freq
+            Eigen::MatrixXd psd_2d_transposed = omb.psd_2ds[k].transpose();
+            Eigen::MatrixXd psd_2d_freq_transposed = omb.psd_2d_freqs[k].transpose();
+
+            // 2d psd
+            netCDF::NcVar psd_2d_v = fo.addVar(name + "_psd_2d",netCDF::ncDouble, dims);
+            psd_2d_v.putVar(psd_2d_transposed.data());
+
+            // 2d psd freq
+            netCDF::NcVar psd_2d_freq_v = fo.addVar(name + "_psd_2d_freq",netCDF::ncDouble, dims);
+            psd_2d_freq_v.putVar(psd_2d_freq_transposed.data());
+
+            k++;
+        }
+    }
+    // close file
+    fo.close();
+}
+
+void Engine::write_hist() {
+    auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::hist>
+                    (obsnum_dir_name, redu_type, "", obsnum, telescope.sim_obs);
+
+    netCDF::NcFile fo(filename + ".nc", netCDF::NcFile::replace);
+    netCDF::NcDim hist_bins_dim = fo.addDim("n_bins", omb.hist_n_bins);
+
+    Eigen::Index k = 0;
+
+    for (Eigen::Index i=0; i<rtcproc.polarization.stokes_params.size(); i++) {
+        for (Eigen::Index j=0; j<n_maps/rtcproc.polarization.stokes_params.size(); j++) {
+
+            auto array = calib.arrays[j];
+            std::string name = toltec_io.array_name_map[array] + "_" + rtcproc.polarization.stokes_params[k];
+
+            // histogram bins
+            netCDF::NcVar hist_bins_v = fo.addVar(name + "_bins",netCDF::ncDouble, hist_bins_dim);
+            hist_bins_v.putVar(omb.hist_bins[k].data());
+
+            // histogram
+            netCDF::NcVar hist_v = fo.addVar(name + "_hist",netCDF::ncDouble, hist_bins_dim);
+            hist_v.putVar(omb.hists[k].data());
+            k++;
+        }
+    }
+    // close file
+    fo.close();
+}
+

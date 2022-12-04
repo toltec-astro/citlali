@@ -41,4 +41,33 @@ auto calc_det_pointing(tel_data_t &tel_data, const double az_off, const double e
     return std::tuple<Eigen::VectorXd, Eigen::VectorXd>{lat,lon};
 }
 
+template <typename Derived>
+auto phys_to_abs(Eigen::DenseBase<Derived>& lat, Eigen::DenseBase<Derived>& lon, const double cra, const double cdec) {
+
+    Eigen::Index n_pts = lat.size();
+
+    Eigen::VectorXd abs_lat(n_pts), abs_lon(n_pts);
+    for (int i=0;i<lat.size(); i++) {
+        double rho = sqrt(pow(lat(i),2) + pow(lon(i),2));
+        double c = atan(rho);
+        if (c == 0.) {
+            abs_lat(i) = lat(i);
+            abs_lon(i) = lon(i);
+        }
+
+        else {
+            double ccwhn0 = cos(c);
+            double scwhn0 = sin(c);
+            double ccdec = cos(cdec);
+            double scdec = sin(cdec);
+            double a1, a2;
+            a1 = ccwhn0*scdec + lon(i)*scwhn0*ccdec/rho;
+            abs_lat(i) = asin(a1);
+            a2 = lon(i)*scwhn0/(rho*ccdec*ccwhn0 - abs_lat(i)*scdec*scwhn0);
+            abs_lon(i) = cra + atan(a2);
+        }
+    }
+    return std::tuple<Eigen::VectorXd, Eigen::VectorXd>{abs_lat,abs_lon};
+}
+
 } // namespace engine_utils

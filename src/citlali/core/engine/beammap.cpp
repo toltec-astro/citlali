@@ -1,83 +1,9 @@
-#pragma once
+#include <citlali_config/gitversion.h>
 
-#include <map>
-#include <vector>
-#include <string>
-
-#include <citlali/core/engine/engine.h>
-
-using timestream::TCData;
-using timestream::RTCProc;
-using timestream::PTCProc;
-
-// selects the type of TCData
-using timestream::TCDataKind;
-
-class Beammap: public Engine {
-public:
-    // vector to store each scan's PTCData
-    std::vector<TCData<TCDataKind::PTC,Eigen::MatrixXd>> ptcs0, ptcs;
-
-    // beammap iteration parameters
-    Eigen::Index current_iter;
-
-    // vector for convergence check
-    Eigen::Matrix<bool, Eigen::Dynamic, 1> converged;
-
-    // vector to record convergence iteration
-    Eigen::Vector<int, Eigen::Dynamic> converge_iter;
-
-    // vector to hold derotation elevation
-    Eigen::VectorXd derot_elev;
-
-    // number of parameters for map fitting
-    Eigen::Index n_params;
-
-    // previous iteration fit parameters
-    Eigen::MatrixXd p0;
-
-    // current iteration fit parameters
-    Eigen::MatrixXd params;
-
-    // previous iteration fit errors
-    Eigen::MatrixXd perror0;
-
-    // current iteration fit errors
-    Eigen::MatrixXd perrors;
-
-    // placeholder vectors for grppi maps
-    std::vector<int> scan_in_vec, scan_out_vec;
-    std::vector<int> det_in_vec, det_out_vec;
-
-    void setup();
-    auto run_timestream();
-    auto run_loop();
-
-    template <class KidsProc, class RawObs>
-    auto timestream_pipeline(KidsProc &, RawObs &);
-
-    auto loop_pipeline();
-
-    template <class KidsProc, class RawObs>
-    void pipeline(KidsProc &, RawObs &);
-
-    template <mapmaking::MapType map_type>
-    void output();
-};
+#include <citlali/core/engine/beammap.h>
+#include <citlali/core/engine/kidsproc.h>
 
 void Beammap::setup() {
-    // convert beammap flux and error to MJy/sr (default) units
-    SPDLOG_INFO("beammap_fluxes {}",beammap_fluxes);
-    /*Eigen::Index i = 0;
-    for (auto const& [key, val] : beammap_fluxes) {
-        std::string name = toltec_io.array_name_map[i];
-        beammap_fluxes[name] = beammap_fluxes[name]/calib.array_beam_areas[calib.arrays(i)]/MJY_SR_TO_mJY_ASEC;
-        beammap_err[name] = beammap_err[name]/calib.array_beam_areas[calib.arrays(i)]/MJY_SR_TO_mJY_ASEC;
-        i++;
-    }*/
-
-    SPDLOG_INFO("beammap_fluxes {}",beammap_fluxes);
-
     // set number of parameters for map fitting
     n_params = 6;
 
@@ -121,82 +47,6 @@ void Beammap::setup() {
     if (run_tod_output) {
         create_tod_files();
     }
-
-    // update apt table meta data
-    calib.apt_meta["uid"].push_back("units: N/A");
-    calib.apt_meta["uid"].push_back("unique id");
-
-    calib.apt_meta["array"].push_back("units: N/A");
-    calib.apt_meta["array"].push_back("array index");
-
-    calib.apt_meta["nw"].push_back("units: N/A");
-    calib.apt_meta["nw"].push_back("network index");
-
-    calib.apt_meta["fg"].push_back("units: N/A");
-    calib.apt_meta["fg"].push_back("frequency group");
-
-    calib.apt_meta["pg"].push_back("units: N/A");
-    calib.apt_meta["pg"].push_back("polarization group");
-
-    calib.apt_meta["ori"].push_back("units: N/A");
-    calib.apt_meta["ori"].push_back("orientation");
-
-    calib.apt_meta["responsivity"].push_back("units: N/A");
-    calib.apt_meta["responsivity"].push_back("responsivity");
-
-    calib.apt_meta["flxscale"].push_back("units: " + omb.sig_unit);
-    calib.apt_meta["flxscale"].push_back("flux conversion scale");
-
-    calib.apt_meta["sens"].push_back("units: N/A");
-    calib.apt_meta["sens"].push_back("sensitivity");
-
-    calib.apt_meta["derot_elev"].push_back("units: radians");
-    calib.apt_meta["derot_elev"].push_back("derotation elevation angle");
-
-    calib.apt_meta["amp"].push_back("units: N/A");
-    calib.apt_meta["amp"].push_back("fitted amplitude");
-
-    calib.apt_meta["amp_err"].push_back("units: N/A");
-    calib.apt_meta["amp_err"].push_back("fitted amplitude error");
-
-    calib.apt_meta["x_t"].push_back("units: arcsec");
-    calib.apt_meta["x_t"].push_back("fitted azimuthal offset");
-
-    calib.apt_meta["x_t_err"].push_back("units: arcsec");
-    calib.apt_meta["x_t_err"].push_back("fitted azimuthal offset error");
-
-    calib.apt_meta["y_t"].push_back("units: arcsec");
-    calib.apt_meta["y_t"].push_back("fitted altitude offset");
-
-    calib.apt_meta["y_t_err"].push_back("units: arcsec");
-    calib.apt_meta["y_t_err"].push_back("fitted altitude offset error");
-
-    calib.apt_meta["a_fwhm"].push_back("units: arcsec");
-    calib.apt_meta["a_fwhm"].push_back("fitted azimuthal FWHM");
-
-    calib.apt_meta["a_fwhm_err"].push_back("units: arcsec");
-    calib.apt_meta["a_fwhm_err"].push_back("fitted azimuthal FWHM error");
-
-    calib.apt_meta["b_fwhm"].push_back("units: arcsec");
-    calib.apt_meta["b_fwhm"].push_back("fitted altitude FWMH");
-
-    calib.apt_meta["b_fwhm_err"].push_back("units: arcsec");
-    calib.apt_meta["b_fwhm_err"].push_back("fitted altitude FWMH error");
-
-    calib.apt_meta["angle"].push_back("units: radians");
-    calib.apt_meta["angle"].push_back("fitted rotation angle");
-
-    calib.apt_meta["angle_err"].push_back("units: radians");
-    calib.apt_meta["angle_err"].push_back("fitted rotation angle error");
-
-    calib.apt_meta["converge_iter"].push_back("units: N/A");
-    calib.apt_meta["converge_iter"].push_back("beammap convergence iteration");
-
-    calib.apt_meta["flag"].push_back("units: N/A");
-    calib.apt_meta["flag"].push_back("good detector");
-
-    calib.apt_meta["sig2noise"].push_back("units: N/A");
-    calib.apt_meta["sig2noise"].push_back("signal to noise");
 }
 
 auto Beammap::run_timestream() {
@@ -206,16 +56,7 @@ auto Beammap::run_timestream() {
         // kidsproc
         auto kidsproc = std::get<1>(input_tuple);
         // start index input
-        auto scan_rawobs = std::get<2>(input_tuple);        
-
-        Eigen::Index j = 0;
-        Eigen::VectorXd tone_flags(calib.n_dets);
-        for (Eigen::Index i=0; i<scan_rawobs.size(); i++) {
-            auto tone_axis = scan_rawobs[i].wcs.tone_axis("flag");
-            tone_flags.segment(j,tone_axis.size()) = tone_axis;
-            j = j + tone_axis.size();
-            SPDLOG_INFO("tone_axis(flag) {}", tone_axis);
-        }
+        auto scan_rawobs = std::get<2>(input_tuple);
 
         // starting index for scan
         Eigen::Index si = rtcdata.scan_indices.data(2);
@@ -265,8 +106,7 @@ auto Beammap::run_timestream() {
             if (run_tod_output) {
                 SPDLOG_INFO("writing rtcdata");
                 if (tod_output_type == "rtc") {
-                    ptcproc.append_to_netcdf(ptcdata, tod_filename[stokes_param], redu_type, telescope.pixel_axes, pointing_offsets_arcsec,
-                                             det_indices, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
+                    ptcproc.append_to_netcdf(ptcdata, tod_filename[stokes_param], det_indices, calib.apt);
                 }
             }
 
@@ -280,9 +120,6 @@ auto Beammap::run_timestream() {
             ptcs0.at(ptcdata.index.data) = std::move(ptcdata);
         }
 
-        n_scans_done++;
-        SPDLOG_INFO("done with scan {}. {}/{} scans completed", ptcdata.index.data + 1, n_scans_done, telescope.scan_indices.cols());
-
         return ptcdata;
     });
 
@@ -290,17 +127,15 @@ auto Beammap::run_timestream() {
 }
 
 auto Beammap::run_loop() {
-    // variable to control iteration
     bool keep_going = true;
 
-    // iterative loop
     while (keep_going) {
         ptcs = ptcs0;
         // set maps to zero for each iteration
         for (Eigen::Index i=0; i<n_maps; i++) {
             omb.signal[i].setZero();
             omb.weight[i].setZero();
-            //omb.coverage[i].setZero();
+            omb.coverage[i].setZero();
 
             if (rtcproc.run_kernel) {
                 omb.kernel[i].setZero();
@@ -309,51 +144,40 @@ auto Beammap::run_loop() {
 
         // cleaning
         grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
-            // remove outliers
-            //SPDLOG_INFO("removing outlier weights");
-            //ptcproc.remove_bad_dets(ptcdata, calib.apt, det_indices);
-            //ptcproc.remove_bad_dets_nw(ptcs[i], calib, ptcs[i].det_indices.data);
-
             // run cleaning
             SPDLOG_INFO("ptcproc");
             ptcproc.run(ptcs[i], ptcs[i], calib);
-            SPDLOG_INFO("i {}",i);
             return 0;
         });
 
         // sensitivity
         grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
-            SPDLOG_INFO("sens");
             Eigen::MatrixXd det_sens, noise_flux;
-            calc_sensitivity(ptcs, det_sens, noise_flux, telescope.d_fsmp, i, {sens_psd_limits(0), sens_psd_limits(1)});
+            calc_sensitivity(ptcs, det_sens, noise_flux, telescope.d_fsmp, i);
             calib.apt["sens"](i) = tula::alg::median(det_sens);
-            SPDLOG_INFO("i {}",i);
             return 0;
         });
-
-        SPDLOG_INFO("sens {}",calib.apt["sens"]);
 
         // calculate weights, populate maps
         grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
             // calculate weights
             SPDLOG_INFO("calculating weights");
-            ptcproc.calc_weights(ptcs[i], calib.apt, telescope);
+            ptcproc.calc_weights(ptcs[i], calib, telescope);
 
             // write ptc timestreams
             if (run_tod_output) {
                 SPDLOG_INFO("writing ptcdata");
                 if (tod_output_type == "ptc") {
-                    ptcproc.append_to_netcdf(ptcs[i], tod_filename["I"], redu_type, telescope.pixel_axes, pointing_offsets_arcsec,
-                                             ptcs[i].det_indices.data, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
+                    ptcproc.append_to_netcdf(ptcs[i], tod_filename["I"], ptcs[i].det_indices.data,
+                                             calib.apt);
                 }
             }
 
             // populate maps
             SPDLOG_INFO("populating maps");
-            mapmaking::populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
+            mapmaking::populate_maps_naive(ptcs[i], omb, ptcs[i].map_indices.data,
                                            ptcs[i].det_indices.data, telescope.pixel_axes,
-                                           redu_type, calib.apt, pointing_offsets_arcsec,
-                                           telescope.d_fsmp, run_noise);
+                                           redu_type, calib.apt, pointing_offsets_arcsec, telescope.d_fsmp);
             return 0;
         });
 
@@ -366,7 +190,7 @@ auto Beammap::run_loop() {
             auto array_index = ptcs[0].array_indices.data(i);
             auto init_fwhm = toltec_io.array_fwhm_arcsec[array_index]*ASEC_TO_RAD/omb.pixel_size_rad;
             auto [det_params, det_perror, good_fit] =
-                map_fitter.fit_to_gaussian<engine_utils::mapFitter::peakValue>(omb.signal[i], omb.weight[i], init_fwhm);
+                map_fitter.fit_to_gaussian<engine_utils::mapFitter::centerValue>(omb.signal[i], omb.weight[i], init_fwhm);
 
             params.row(i) = det_params;
             perrors.row(i) = det_perror;
@@ -417,8 +241,6 @@ auto Beammap::run_loop() {
 
 template <class KidsProc, class RawObs>
 auto Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
-    // initialize number of completed scans
-    n_scans_done = 0;
     grppi::pipeline(tula::grppi_utils::dyn_ex(parallel_policy),
         [&]() -> std::optional<std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
                                           std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>> {
@@ -462,34 +284,18 @@ auto Beammap::loop_pipeline() {
     // empty initial ptcdata vector to save memory
     ptcs0.clear();
 
-    SPDLOG_INFO("params {}", params);
-    SPDLOG_INFO("1/ASEC_TO_RAD {}",1/ASEC_TO_RAD);
-    SPDLOG_INFO("RAD_TO_ASEC {}",RAD_TO_ASEC);
-
-    SPDLOG_INFO("omb.n_cols/2 {}",omb.n_cols/2);
-    SPDLOG_INFO("omb.pixel_size_rad {}", omb.pixel_size_rad);
-    SPDLOG_INFO("x_t {}", params(0,1));
-
     // rescale fit params from pixel to on-sky units
-    calib.apt["amp"] = params.col(0);
-    calib.apt["x_t"] = omb.pixel_size_rad*(params.col(1).array() - (omb.n_cols)/2)*RAD_TO_ASEC;
-    calib.apt["y_t"] = omb.pixel_size_rad*(params.col(2).array() - (omb.n_rows)/2)*RAD_TO_ASEC;
-    calib.apt["a_fwhm"] = STD_TO_FWHM*omb.pixel_size_rad*(params.col(3))*RAD_TO_ASEC;
-    calib.apt["b_fwhm"] = STD_TO_FWHM*omb.pixel_size_rad*(params.col(4))*RAD_TO_ASEC;
-    calib.apt["angle"] = params.col(5);
+    calib.apt["x_t"] = omb.pixel_size_rad*(params.col(1).array() - (omb.n_cols)/2)/ASEC_TO_RAD;
+    calib.apt["y_t"] = omb.pixel_size_rad*(params.col(2).array() - (omb.n_rows)/2)/ASEC_TO_RAD;
+    calib.apt["a_fwhm"] = STD_TO_FWHM*omb.pixel_size_rad*(params.col(3))/ASEC_TO_RAD;
+    calib.apt["b_fwhm"] = STD_TO_FWHM*omb.pixel_size_rad*(params.col(4))/ASEC_TO_RAD;
 
-    SPDLOG_INFO("x_t {}", calib.apt["x_t"]);
-    SPDLOG_INFO("a_fwhm {}", calib.apt["a_fwhm"]);
-
-     // rescale fit errors from pixel to on-sky units
-    calib.apt["amp"] = params.col(0);
-    calib.apt["x_t_err"] = omb.pixel_size_rad*(perrors.col(1))*RAD_TO_ASEC;
-    calib.apt["y_t_err"] = omb.pixel_size_rad*(perrors.col(2))*RAD_TO_ASEC;
-    calib.apt["a_fwhm_err"] = STD_TO_FWHM*omb.pixel_size_rad*(perrors.col(3))*RAD_TO_ASEC;
-    calib.apt["b_fwhm_err"] = STD_TO_FWHM*omb.pixel_size_rad*(perrors.col(4))*RAD_TO_ASEC;
-    calib.apt["angle_err"] = perrors.col(5);
-
-    calib.apt["converge_iter"] = converge_iter.cast<double> ();
+    // rescale fit errors from pixel to on-sky units
+    /*calib.apt["x_t_err"] = omb.pixel_size_rad*(perrors.col(1))/ASEC_TO_RAD;
+    calib.apt["y_t_err"] = omb.pixel_size_rad*(perrors.col(2))/ASEC_TO_RAD;
+    calib.apt["a_fwhm_err"] = STD_TO_FWHM*omb.pixel_size_rad*(perrors.col(3))/ASEC_TO_RAD;
+    calib.apt["b_fwhm_err"] = STD_TO_FWHM*omb.pixel_size_rad*(perrors.col(4))/ASEC_TO_RAD;
+    calib.apt["angle_err"] = STD_TO_FWHM*omb.pixel_size_rad*(params.col(4))/ASEC_TO_RAD;*/
 
     // array indices for current polarization
     auto array_indices = ptcs[0].array_indices.data;
@@ -497,8 +303,6 @@ auto Beammap::loop_pipeline() {
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
         auto array_index = array_indices(i);
         std::string array_name = toltec_io.array_name_map[calib.apt["array"](array_index)];
-
-        SPDLOG_INFO("ARRAY NAME {}", array_name);
 
         // calculate map standard deviation
         double map_std_dev = engine_utils::calc_std_dev(omb.signal[i]);
@@ -516,11 +320,6 @@ auto Beammap::loop_pipeline() {
         if (params(i,0)/map_std_dev < lower_sig2noise[array_name]) {
             calib.apt["flag"](i) = 0;
         }
-
-        // set flux scale (always in MJy/sr)
-        calib.apt["flxscale"](i) = beammap_fluxes["array_name"]/params(i,0);
-
-        SPDLOG_INFO("beammap_fluxes[array_name] {} params(i,0) {}",beammap_fluxes["array_name"], params(i,0));
 
         // get detector pointing
         Eigen::VectorXd lat = -(params(i,2)*ASEC_TO_RAD) + telescope.tel_data["TelElAct"].array();
@@ -546,19 +345,6 @@ auto Beammap::loop_pipeline() {
 
         return 0;
     });
-
-    // rescale sens to MJy/sr units
-    calib.apt["sens"] = calib.apt["sens"].array()*calib.apt["flxscale"].array();
-
-    // align to reference detector if specified
-    if (beammap_reference_det > 0) {
-        SPDLOG_INFO("subtracting reference detector {} position", beammap_reference_det);
-        auto ref_det_x_t = params(beammap_reference_det,1);
-        auto ref_det_y_t = params(beammap_reference_det,2);
-
-        params.col(1) =  params.col(1).array() - ref_det_x_t;
-        params.col(2) =  params.col(2).array() - ref_det_y_t;
-    }
 }
 
 template <class KidsProc, class RawObs>
@@ -580,7 +366,6 @@ void Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     loop_pipeline();
 }
 
-template <mapmaking::MapType map_type>
 void Beammap::output() {
     SPDLOG_INFO("writing apt table");
     auto apt_filename = toltec_io.create_filename<engine_utils::toltecIO::apt, engine_utils::toltecIO::map>
@@ -588,18 +373,13 @@ void Beammap::output() {
 
     Eigen::MatrixXf apt_table(calib.n_dets, calib.apt_header_keys.size());
 
-    // convert to floats
     Eigen::Index i = 0;
     for (auto const& x: calib.apt_header_keys) {
-        SPDLOG_INFO("apt header key {}", x);
-        SPDLOG_INFO("apt key {}", calib.apt[x]);
-
         apt_table.col(i) = calib.apt[x].cast<float> ();
         i++;
     }
 
-    // write to ecsv
-    to_ecsv_from_matrix(apt_filename, apt_table, calib.apt_header_keys, calib.apt_meta);
+    to_ecsv_from_matrix(apt_filename, apt_table, calib.apt_header_keys, calib.apt_header);
 
     SPDLOG_INFO("writing maps");
     for (Eigen::Index i=0; i<rtcproc.polarization.stokes_params.size(); i++) {
@@ -607,31 +387,31 @@ void Beammap::output() {
             auto array = calib.arrays[j];
             for (Eigen::Index k=0; k<calib.n_dets; k++) {
                 if (calib.apt["array"](k) == array) {
-                    // signal
                     fits_io_vec[array].add_hdu("signal_" + std::to_string(k) + "_" + rtcproc.polarization.stokes_params[i], omb.signal[k]);
                     fits_io_vec[array].add_wcs(fits_io_vec[array].hdus.back(),omb.wcs);
 
-                    // weight
                     fits_io_vec[array].add_hdu("weight_" + std::to_string(k) + "_" + rtcproc.polarization.stokes_params[i], omb.weight[k]);
                     fits_io_vec[array].add_wcs(fits_io_vec[array].hdus.back(),omb.wcs);
 
                     if (rtcproc.run_kernel) {
-                        // kernel
                         fits_io_vec[array].add_hdu("kernel_" + std::to_string(k) + "_" + rtcproc.polarization.stokes_params[i],
-                                                   omb.kernel[k]);
+                                                       omb.kernel[k]);
                         fits_io_vec[array].add_wcs(fits_io_vec[array].hdus.back(),omb.wcs);
                     }
+
+                    fits_io_vec[array].add_hdu("coverage_" + std::to_string(k) + "_" + rtcproc.polarization.stokes_params[i],
+                                                   omb.coverage[k]);
+                    fits_io_vec[array].add_wcs(fits_io_vec[array].hdus.back(),omb.wcs);
                 }
             }
-
-            fits_io_vec[array].pfits->pHDU().addKey("OBSNUM", obsnum, "Observation Number");
-            fits_io_vec[array].pfits->pHDU().addKey("CITLALI_VER", CITLALI_GIT_VERSION, "CITLALI_GIT_VERSION");
 
             // add telescope file header information
             for (auto const& [key, val] : telescope.tel_header) {
                 fits_io_vec[array].pfits->pHDU().addKey(key, val(0), key);
             }
+
+            fits_io_vec[array].pfits->pHDU().addKey("OBSNUM", obsnum, "Observation Number");
+            fits_io_vec[array].pfits->pHDU().addKey("CITLALI_GIT_VERSION", CITLALI_GIT_VERSION, "CITLALI_GIT_VERSION");
         }
     }
 }
-

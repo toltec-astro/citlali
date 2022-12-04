@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/utils/utils.h>
+
 template<typename param_t, typename option_t, typename key_vec_t>
 void check_allowed(param_t param, key_vec_t &missing_keys, key_vec_t &invalid_keys,
                    std::vector<param_t> allowed, option_t option) {

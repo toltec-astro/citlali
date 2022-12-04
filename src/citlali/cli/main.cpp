@@ -30,10 +30,6 @@
 #include <citlali/core/engine/pointing.h>
 #include <citlali/core/engine/beammap.h>
 
-#include <citlali/core/engine/io.h>
-#include <citlali/core/engine/kidsproc.h>
-#include <citlali/core/engine/todproc.h>
-
 using rc_t = tula::config::YamlConfig;
 
 auto parse_args(int argc, char *argv[]) {
@@ -131,7 +127,7 @@ int run(const rc_t &rc) {
     auto kidsproc =
         KidsDataProc::from_config(citlali_config.get_config("kids"));
 
-    // set up TOD proc
+    // set up todproc
     using todproc_var_t =
         std::variant<std::monostate, TimeOrderedDataProc<Lali>, TimeOrderedDataProc<Pointing>,
                      TimeOrderedDataProc<Beammap>>;
@@ -261,21 +257,32 @@ int run(const rc_t &rc) {
                 // set up the coadded map buffer by reading in each observation
                 for (const auto &rawobs : co.inputs()) {
 
+                    // this is needed to figure out the data sample rate
+                    // and number of detectors
+                    auto rawobs_kids_meta = kidsproc.get_rawobs_meta(rawobs);
+
                     // get astrometry config options
                     todproc.engine().get_astrometry_config(rawobs.astrometry_calib_info().config());
                     // get photometry config options
-                    todproc.engine().get_photometry_config(rawobs.photometry_calib_info().config());
+                    if constexpr (std::is_same_v<todproc_t, TimeOrderedDataProc<Beammap>>) {
+                        todproc.engine().get_photometry_config(rawobs.photometry_calib_info().config());
+                    }
 
                     // get apt table
                     auto apt_path = rawobs.array_prop_table().filepath();
                     SPDLOG_INFO("getting array properties table {}", apt_path);
 
-                    std::vector<std::string> raw_filenames;
+                    std::vector<std::string> raw_filenames, interfaces;
                     for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
                         raw_filenames.push_back(data_item.filepath());
+                        interfaces.push_back(data_item.interface());
                     }
 
-                    todproc.engine().calib.get_apt(apt_path, raw_filenames);
+                    todproc.engine().calib.get_apt(apt_path, raw_filenames, interfaces);
+
+                    // get sample rate
+                    todproc.engine().telescope.fsmp = rawobs_kids_meta.back().get_typed<double>("fsmp");
+
                     // get telescope file
                     auto tel_path = rawobs.teldata().filepath();
                     SPDLOG_INFO("getting telescope file {}", tel_path);
@@ -286,16 +293,30 @@ int run(const rc_t &rc) {
 
                     // align tod
                     if (!todproc.engine().telescope.sim_obs) {
+                        SPDLOG_INFO("align timestream");
                         todproc.align_timestreams(rawobs);
                     }
 
+                    else {
+                        todproc.engine().start_indices.clear();
+                        todproc.engine().end_indices.clear();
+
+                        for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
+                            todproc.engine().start_indices.push_back(0);
+                            todproc.engine().start_indices.push_back(0);
+                        }
+                    }
+
                     // calc scan indices
+                    SPDLOG_INFO("calc_scan_indices()");
                     todproc.engine().telescope.calc_scan_indices();
 
                     // determine number of maps
+                    SPDLOG_INFO("calc_map_num()");
                     todproc.calc_map_num();
 
                     // determine map sizes
+                    SPDLOG_INFO("calc_map_size()");
                     todproc.calc_map_size(map_extents, map_coords);
                 }
 
@@ -350,12 +371,16 @@ int run(const rc_t &rc) {
                     auto apt_path = rawobs.array_prop_table().filepath();
                     SPDLOG_INFO("getting array properties table {}", apt_path);
 
-                    std::vector<std::string> raw_filenames;
+                    std::vector<std::string> raw_filenames, interfaces;
                     for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
                         raw_filenames.push_back(data_item.filepath());
+                        interfaces.push_back(data_item.interface());
                     }
 
-                    todproc.engine().calib.get_apt(apt_path, raw_filenames);
+                    todproc.engine().calib.get_apt(apt_path, raw_filenames, interfaces);
+
+                    SPDLOG_INFO("array_limits {}", todproc.engine().calib.array_limits);
+
 
                     // get hwp if polarized reduction is requested
                     if (todproc.engine().rtcproc.run_polarization) {
@@ -365,6 +390,9 @@ int run(const rc_t &rc) {
 
                     // get flux calibration
                     todproc.engine().calib.calc_flux_calibration(todproc.engine().omb.sig_unit);
+
+                    SPDLOG_INFO("array_limits {}", todproc.engine().calib.array_limits);
+
 
                     // get telescope file
                     auto tel_path = rawobs.teldata().filepath();
@@ -376,7 +404,18 @@ int run(const rc_t &rc) {
 
                     // align tod
                     if (!todproc.engine().telescope.sim_obs) {
+                        SPDLOG_INFO("align timestream");
                         todproc.align_timestreams(rawobs);
+                    }
+
+                    else {
+                        todproc.engine().start_indices.clear();
+                        todproc.engine().end_indices.clear();
+
+                        for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
+                            todproc.engine().start_indices.push_back(0);
+                            todproc.engine().start_indices.push_back(0);
+                        }
                     }
                     // calc scan indices
                     todproc.engine().telescope.calc_scan_indices();
@@ -391,6 +430,13 @@ int run(const rc_t &rc) {
                         }
                     }
 
+                    // calc exposure time estimate
+                    auto t0 = todproc.engine().telescope.tel_data["TelTime"](0);
+                    auto tn = todproc.engine().telescope.tel_data["TelTime"](todproc.engine().telescope.tel_data["TelTime"].size()-1);
+
+                    todproc.engine().omb.exposure_time = tn - t0;
+                    todproc.engine().cmb.exposure_time = todproc.engine().cmb.exposure_time + todproc.engine().omb.exposure_time;
+
                     // setup
                     todproc.engine().setup();
 
@@ -398,24 +444,49 @@ int run(const rc_t &rc) {
                     todproc.engine().pipeline(kidsproc, rawobs);
 
                     // output
-                    todproc.engine().output();
+                    todproc.engine().template output<mapmaking::Obs>();
 
                     // coadd
                     if (todproc.engine().run_coadd) {
                         todproc.coadd();
                     }
+
+                    else if (todproc.engine().run_map_filter) {
+                        // filter
+                        // output filtered maps
+                        todproc.engine().template output<mapmaking::Obs>();
+
+                    }
                 }
 
-                // normalize coadd
                 if (todproc.engine().run_coadd) {
+                    // normalize coadd
                     todproc.engine().cmb.normalize_maps();
+
+                    // calculate coadded map psds
+                    todproc.engine().cmb.calc_map_psd();
+                    // calculate coadded map histograms
+                    todproc.engine().cmb.calc_map_hist();
+
+                    // output coadd
+                    todproc.engine().template output<mapmaking::Coadd>();
+
+                    if (todproc.engine().run_map_filter) {
+                        // filter
+
+                        // calculate filtered coadded map psds
+                        todproc.engine().cmb.calc_map_psd();
+                        // calculate filtered coadded map histograms
+                        todproc.engine().cmb.calc_map_hist();
+
+                        // output filtered coadd
+                        todproc.engine().template output<mapmaking::Coadd>();
+                    }
                 }
 
-                // filter
-
-                // output coadd
-
+                SPDLOG_INFO("make index file");
                 todproc.make_index_file(todproc.engine().redu_dir_name);
+                SPDLOG_INFO("done");
                 return EXIT_SUCCESS;
 
             }

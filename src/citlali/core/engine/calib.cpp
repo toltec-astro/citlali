@@ -1,0 +1,336 @@
+#include <citlali/core/utils/constants.h>
+#include <citlali/core/engine/calib.h>
+
+namespace engine {
+void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_filenames, std::vector<std::string> &interfaces) {
+    // read in the apt table
+    auto [table, header, meta] = to_matrix_from_ecsv(filepath);
+
+    // apt header
+    apt_meta = meta;
+
+    // loop through the apt table header keys and populate calib_data
+    for (auto const& value: apt_header_keys) {
+        auto it = find(header.begin(), header.end(), value);
+        if (it != header.end()) {
+            int index = it - header.begin();
+            apt[value] = table.col(index);
+        }
+    }
+
+    SPDLOG_INFO("apt before {}",apt);
+    SPDLOG_INFO("header {}", header);
+    SPDLOG_INFO("apt_header {}", apt_meta);
+
+    setup();
+
+    std::vector<Eigen::Index> roach_indices, missing;
+    Eigen::Index n_dets_temp = 0;//apt["nw"].size();
+
+    for (Eigen::Index i=0; i<raw_filenames.size(); i++) {
+        netCDF::NcFile fo(raw_filenames[i], netCDF::NcFile::read);
+        auto vars = fo.getVars();
+        // get roach index
+        int roach_index;
+        vars.find("Header.Toltec.RoachIndex")->second.getVar(&roach_index);
+        roach_indices.push_back(roach_index);
+        fo.close();
+    }
+
+    auto roach_vec = Eigen::Map<Eigen::VectorXI>(roach_indices.data(), roach_indices.size());
+
+    Eigen::VectorXi interfaces_vec(interfaces.size());
+
+    for (Eigen::Index i=0; i<interfaces.size(); i++) {
+        interfaces_vec(i) = std::stoi(interfaces[i].substr(6));
+    }
+
+    SPDLOG_INFO("interfaces_vec {}",interfaces_vec);
+
+    std::map<std::string, Eigen::VectorXd> apt_temp;
+
+    for (Eigen::Index i=0; i<interfaces.size(); i++) {
+        n_dets_temp = n_dets_temp + (apt["nw"].array() == interfaces_vec(i)).count();
+    }
+
+    for (auto const& value: apt_header_keys) {
+        apt_temp[value].setZero(n_dets_temp);
+        Eigen::Index i = 0;
+        for (Eigen::Index j=0; j<apt["nw"].size(); j++) {
+            if ((apt["nw"](j) == interfaces_vec.array()).any()) {
+                apt_temp[value](i) = apt[value](j);
+                i++;
+            }
+        }
+    }
+
+    for (auto const& value: apt_header_keys) {
+        apt[value].setZero(n_dets_temp);
+        apt[value] = apt_temp[value];
+    }
+
+    apt_temp.clear();
+
+    SPDLOG_INFO("apt after {}",apt);
+
+    setup();
+
+    /*for (Eigen::Index i=0; i<nws.size(); i++) {
+        if (!(roach_vec.array() == nws(i)).any()) {
+            missing.push_back(nws(i));
+            n_dets = n_dets - (apt["nw"].array() == nws(i)).count();
+        }
+    }*/
+
+    /*
+    if (!missing.empty()) {
+        auto missing_vec = Eigen::Map<Eigen::VectorXI>(missing.data(), missing.size());
+        std::map<std::string, Eigen::VectorXd> apt;
+
+        SPDLOG_INFO("missing_vec {}", missing_vec);
+        for (auto const& value: apt_header_keys) {
+            apt[value].setZero(n_dets);
+            Eigen::Index i = 0;
+            for (Eigen::Index j=0; j<apt["nw"].size(); j++) {
+                if ((apt["nw"](j) != missing_vec.array()).all()) {
+                    apt[value](i) = apt[value](j);
+                    i++;
+                }
+            }
+        }
+
+        //apt.clear();
+        for (auto const& value: apt_header_keys) {
+            apt[value].setZero(n_dets);
+            apt[value] = apt[value];
+        }
+
+        apt.clear();
+
+        setup();
+    }*/
+}
+
+void Calib::get_hwp(const std::string &filepath) {
+    using namespace netCDF;
+    using namespace netCDF::exceptions;
+
+    try {
+        // get hwp file
+        NcFile fo(filepath, NcFile::read, NcFile::classic);
+        auto vars = fo.getVars();
+
+        // check if hwp is enabled
+        vars.find("Header.Hwp.RotatorEnabled")->second.getVar(&run_hwp);
+
+        // get hwp signal
+        Eigen::Index npts = vars.find("Data.Hwp.")->second.getDim(0).getSize();
+        hwp_angle.resize(npts);
+
+        vars.find("Data.Hwp.")->second.getVar(hwp_angle.data());
+
+        fo.close();
+
+    } catch (NcException &e) {
+        SPDLOG_ERROR("{}", e.what());
+        throw DataIOError{fmt::format(
+            "failed to load data from netCDF file {}", filepath)};
+    }
+}
+
+void Calib::calc_flux_calibration(std::string units) {
+    // flux conversion is per detector
+    flux_conversion_factor.setOnes(n_dets);
+
+    // default is MJy/sr
+    if (units == "MJy/sr") {
+        flux_conversion_factor.setOnes();
+    }
+
+    // convert to mJy/beam
+    else if (units == "mJy/beam") {
+        for (Eigen::Index i=0; i<n_dets; i++) {
+            auto det_fwhm = RAD_TO_ASEC*(apt["a_fwhm"](i) + apt["b_fwhm"](i))/2;
+            auto beam_area = 2.*pi*pow(det_fwhm/STD_TO_FWHM,2);
+            flux_conversion_factor(i) = beam_area*MJY_SR_TO_mJY_ASEC;
+        }
+    }    
+
+    else if (units == "uK/arcmin") {
+        for (Eigen::Index i=0; i<n_dets; i++) {
+        }
+    }
+
+    // get mean flux conversion factor from all unflagged detectors
+    for (Eigen::Index i=0; i<n_arrays; i++) {
+        Eigen::Index start = std::get<0>(array_limits[i]);
+        Eigen::Index end = std::get<1>(array_limits[i]);
+
+        Eigen::Index n_good_dets = 0;
+
+        auto array = arrays[i];
+        std::string name = array_name_map[array];
+
+        for (Eigen::Index j=start; j<end; j++) {
+            if (apt["flag"](j)) {
+                mean_flux_conversion_factor[name] += flux_conversion_factor(j);
+                n_good_dets++;
+            }
+        }
+        mean_flux_conversion_factor[name] = mean_flux_conversion_factor[name]/n_good_dets;
+    }
+}
+
+void Calib::setup() {
+    // get number of detectors
+    n_dets = apt["uid"].size();
+
+    // get number of networks
+    n_nws = ((apt["nw"].tail(n_dets - 1) - apt["nw"].head(n_dets - 1)).array() > 0).count() + 1;
+    // get number of arrays
+    n_arrays = ((apt["array"].tail(n_dets - 1) - apt["array"].head(n_dets - 1)).array() > 0).count() + 1;
+
+    SPDLOG_INFO("n_nws {} n_arrays {} ",n_nws,n_arrays);
+
+    nws.setZero(n_nws);
+    arrays.setZero(n_arrays);
+
+    // set up network values
+    nw_limits.clear();
+    nw_fwhms.clear();
+    nw_beam_areas.clear();
+
+    Eigen::Index j = 0;
+    Eigen::Index nw_i = apt["nw"](0);
+    nw_limits[nw_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
+
+    // loop through apt table networks, get highest index for current networks
+    for (Eigen::Index i=0; i<apt["nw"].size(); i++) {
+        if (apt["nw"](i) == nw_i) {
+            std::get<1>(nw_limits[nw_i]) = i+1;
+        }
+        else {
+            nw_i = apt["nw"](i);
+            j += 1;
+            nw_limits[nw_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
+        }
+    }
+
+    SPDLOG_INFO("nw_limits {}", nw_limits);
+
+    // get average fwhms for networks
+    j = 0;
+    for (auto const& [key, val] : nw_limits) {
+        SPDLOG_INFO("KEY {}",key);
+        SPDLOG_INFO("apt size {}",apt["a_fwhm"].size());
+        SPDLOG_INFO("NW_LIMTS {}",nw_limits[key]);
+        SPDLOG_INFO("SEQ {}",apt["a_fwhm"](Eigen::seq(std::get<0>(nw_limits[key]), std::get<1>(nw_limits[key])-1)));
+        nws(j) = key;
+        SPDLOG_INFO("nws {}",nws);
+        j++;
+        nw_fwhms[key] = std::tuple<double,double>{0, 0};
+
+        auto nw_a_fwhm = apt["a_fwhm"](Eigen::seq(std::get<0>(nw_limits[key]),
+                                                std::get<1>(nw_limits[key])-1));
+
+        auto nw_b_fwhm = apt["b_fwhm"](Eigen::seq(std::get<0>(nw_limits[key]),
+                                                  std::get<1>(nw_limits[key])-1));
+
+        Eigen::Index n_good_det = apt["flag"](Eigen::seq(std::get<0>(nw_limits[key]),
+                                                         std::get<1>(nw_limits[key])-1)).sum();
+
+        // remove flagged dets
+        for (Eigen::Index i=0; i<nw_a_fwhm.size(); i++) {
+            if (apt["flag"](i)) {
+                std::get<0>(nw_fwhms[key]) = std::get<0>(nw_fwhms[key]) + nw_a_fwhm(i);
+                std::get<1>(nw_fwhms[key]) = std::get<1>(nw_fwhms[key]) + nw_b_fwhm(i);
+            }
+        }
+
+        std::get<0>(nw_fwhms[key]) = std::get<0>(nw_fwhms[key])/n_good_det;
+        std::get<1>(nw_fwhms[key]) = std::get<1>(nw_fwhms[key])/n_good_det;
+
+        double avg_nw_fwhm = (std::get<0>(nw_fwhms[key]) + std::get<1>(nw_fwhms[key]))/2;
+
+        //std::get<0>(nw_fwhms[key]) = apt["a_fwhm"](Eigen::seq(std::get<0>(nw_limits[key]),
+        //                                                      std::get<1>(nw_limits[key])-1)).mean();
+        //std::get<1>(nw_fwhms[key]) = apt["b_fwhm"](Eigen::seq(std::get<0>(nw_limits[key]),
+        //                                                      std::get<1>(nw_limits[key])-1)).mean();
+
+        //double avg_nw_fwhm = ((apt["a_fwhm"](Eigen::seq(std::get<0>(nw_limits[key]), std::get<1>(nw_limits[key])-1)) +
+        //                  apt["b_fwhm"](Eigen::seq(std::get<0>(nw_limits[key]), std::get<1>(nw_limits[key])-1)))/2).mean();
+        //SPDLOG_INFO("avg nw fwhm {}",avg_nw_fwhm);
+
+        nw_beam_areas[key] = 2.*pi*pow(avg_nw_fwhm/STD_TO_FWHM,2);
+        SPDLOG_INFO("nw_beam_areas[key]{}",nw_beam_areas[key]);
+    }
+
+    SPDLOG_INFO("nw_fwhms {}", nw_fwhms);
+    SPDLOG_INFO("nw_beam_areas {}", nw_beam_areas);
+
+    // set up array values
+    array_limits.clear();
+    array_fwhms.clear();
+    array_beam_areas.clear();
+
+    Eigen::Index arr_i = apt["array"](0);
+    array_limits[arr_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
+
+    j = 0;
+
+    // loop through apt table arrays, get highest index for current array
+    for (Eigen::Index i=0; i<apt["array"].size(); i++) {
+        if (apt["array"](i) == arr_i) {
+            std::get<1>(array_limits[arr_i]) = i+1;
+        }
+        else {
+            arr_i = apt["array"](i);
+            j += 1;
+            array_limits[arr_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
+        }
+    }
+
+    SPDLOG_INFO("array limits {}", array_limits);
+
+    // get average fwhms for networks
+    j = 0;
+    for (auto const& [key, val] : array_limits) {
+        arrays(j) = key;
+        j++;
+        array_fwhms[key] = std::tuple<double,double>{0, 0};
+        //std::get<0>(array_fwhms[key]) = apt["a_fwhm"](Eigen::seq(std::get<0>(array_limits[key]),
+        //                                                         std::get<1>(array_limits[key])-1)).mean();
+        //std::get<1>(array_fwhms[key]) = apt["b_fwhm"](Eigen::seq(std::get<0>(array_limits[key]),
+        //                                                         std::get<1>(array_limits[key])-1)).mean();
+
+        //double avg_array_fwhm = ((apt["a_fwhm"](Eigen::seq(std::get<0>(array_limits[key]), std::get<1>(array_limits[key])-1)) +
+        //                     apt["b_fwhm"](Eigen::seq(std::get<0>(array_limits[key]), std::get<1>(array_limits[key])-1)))/2).mean();
+
+
+        auto array_a_fwhm = apt["a_fwhm"](Eigen::seq(std::get<0>(array_limits[key]),
+                                                  std::get<1>(array_limits[key])-1));
+
+        auto array_b_fwhm = apt["b_fwhm"](Eigen::seq(std::get<0>(array_limits[key]),
+                                                  std::get<1>(array_limits[key])-1));
+
+        Eigen::Index n_good_det = apt["flag"](Eigen::seq(std::get<0>(array_limits[key]),
+                                                         std::get<1>(array_limits[key])-1)).sum();
+
+        // remove flagged dets
+        for (Eigen::Index i=0; i<array_a_fwhm.size(); i++) {
+            if (apt["flag"](i)) {
+                std::get<0>(array_fwhms[key]) = std::get<0>(array_fwhms[key]) + array_a_fwhm(i);
+                std::get<1>(array_fwhms[key]) = std::get<1>(array_fwhms[key]) + array_b_fwhm(i);
+            }
+        }
+
+        std::get<0>(array_fwhms[key]) = std::get<0>(array_fwhms[key])/n_good_det;
+        std::get<1>(array_fwhms[key]) = std::get<1>(array_fwhms[key])/n_good_det;
+
+        double avg_array_fwhm = (std::get<0>(array_fwhms[key]) + std::get<1>(array_fwhms[key]))/2;
+
+        array_beam_areas[key] = 2.*pi*pow(avg_array_fwhm/STD_TO_FWHM,2);
+    }
+}
+
+} // namespace engine_utils

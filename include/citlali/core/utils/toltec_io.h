@@ -9,12 +9,14 @@ namespace engine_utils {
 
 class toltecIO {
 public:
+    // data type
     enum DataType {
         toltec = 0,
         apt = 1,
         ppt = 2,
     };
 
+    // product type
     enum ProdType {
         map = 0,
         psd = 1,
@@ -22,6 +24,7 @@ public:
         timestream = 3,
     };
 
+    // raw or filtered
     enum FilterType {
         raw = 0,
         filtered = 1,
@@ -33,6 +36,7 @@ public:
         {2,"a2000"}
     };
 
+    // expected fwhms
     std::map<Eigen::Index, double> array_fwhm_arcsec = {
         {0, 5.0},
         {1, 6.3},
@@ -85,18 +89,17 @@ std::string toltecIO::create_filename(const std::string filepath, const std::str
     }
 
     if constexpr (prod_t == psd) {
-        filename = filename + "psd";
+        filename = filename + "_psd";
     }
 
     if constexpr (prod_t == hist) {
-        filename = filename + "hist";
+        filename = filename + "_hist";
     }
 
     if constexpr (prod_t == timestream) {
-        filename = filename + "timestream";
+        filename = filename + "_timestream";
     }
 
-    SPDLOG_INFO("filename {}", filename);
     return filename;
 }
 

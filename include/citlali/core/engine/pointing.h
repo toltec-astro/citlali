@@ -43,14 +43,14 @@ public:
     auto run();
 
     template <class KidsProc, class RawObs>
-    auto pipeline(KidsProc &, RawObs &);
+    void pipeline(KidsProc &, RawObs &);
 
+    template <mapmaking::MapType map_type>
     void output();
 };
 
 void Pointing::setup() {
     // populate ppt meta information
-
     ppt_meta["array"].push_back("units: N/A");
     ppt_meta["array"].push_back("array");
 
@@ -102,79 +102,25 @@ void Pointing::setup() {
         rtcproc.kernel.setup(n_maps);
     }
 
-    // clear for each observation
-    fits_io_vec.clear();
-
-    for (Eigen::Index i=0; i<calib.n_arrays; i++) {
-        auto array = calib.arrays[i];
-        std::string array_name = toltec_io.array_name_map[array];
-        auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
-                                                  engine_utils::toltecIO::map>(obsnum_dir_name, redu_type, array_name,
-                                                                               obsnum, telescope.sim_obs);
-        fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
-
-        fits_io_vec.push_back(std::move(fits_io));
+    // if filter is requested, make it here
+    if (rtcproc.run_tod_filter) {
+        rtcproc.filter.make_filter(telescope.fsmp);
     }
 
+    // create output map files
+    create_map_files();
+    // create timestream files
     if (run_tod_output) {
-        for (const auto &stokes_param: rtcproc.polarization.stokes_params) {
-            auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
-                                                      engine_utils::toltecIO::timestream>(obsnum_dir_name, redu_type, "",
-                                                                                          obsnum, telescope.sim_obs);
+        create_tod_files();
+    }
 
-            SPDLOG_INFO("tod_filename {}", tod_filename);
-            tod_filename[stokes_param] = filename + "_" + stokes_param + ".nc";
-            netCDF::NcFile fo(tod_filename[stokes_param], netCDF::NcFile::replace);
-            netCDF::NcDim n_pts_dim = fo.addDim("n_pts");
-            netCDF::NcDim n_scan_indices_dim = fo.addDim("n_scan_indices", telescope.scan_indices.rows());
-            netCDF::NcDim n_scans_dim = fo.addDim("n_scans", telescope.scan_indices.cols());
+    // set center pointing
+    if (telescope.pixel_axes == "ircs") {
+        omb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0);
+        omb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0);
 
-            Eigen::Index n_dets;
-
-            if (stokes_param=="I") {
-                n_dets = calib.apt["array"].size();
-            }
-
-            else if ((stokes_param == "Q") || (stokes_param == "U")) {
-                n_dets = (calib.apt["fg"].array() == 0).count() + (calib.apt["fg"].array() == 1).count();
-            }
-
-            netCDF::NcDim n_dets_dim = fo.addDim("n_dets", n_dets);
-
-            std::vector<netCDF::NcDim> dims = {n_pts_dim, n_dets_dim};
-            std::vector<netCDF::NcDim> scans_dims = {n_scan_indices_dim, n_scans_dim};
-
-            // scan indices
-            netCDF::NcVar scan_indices_v = fo.addVar("scan_indices",netCDF::ncInt, scans_dims);
-            Eigen::MatrixXI scans_indices_transposed = telescope.scan_indices.transpose();
-            scan_indices_v.putVar(scans_indices_transposed.data());
-
-            // scans
-            netCDF::NcVar scans_v = fo.addVar("scans",netCDF::ncDouble, dims);
-            // flags
-            netCDF::NcVar flags_v = fo.addVar("flags",netCDF::ncDouble, dims);
-            // kernel
-            netCDF::NcVar kernel_v = fo.addVar("kernel",netCDF::ncDouble, dims);
-
-            // add apt table
-            for (auto const& x: calib.apt) {
-                netCDF::NcVar apt_v = fo.addVar(x.first,netCDF::ncDouble, n_dets_dim);
-            }
-
-            // add telescope parameters
-            for (auto const& x: telescope.tel_data) {
-                netCDF::NcVar tel_data_v = fo.addVar(x.first,netCDF::ncDouble, n_pts_dim);
-            }
-
-            // weights
-            if (tod_output_type == "ptc") {
-                netCDF::NcDim n_weights_dim = fo.addDim("n_weights");
-                std::vector<netCDF::NcDim> weight_dims = {n_scans_dim, n_weights_dim};
-                netCDF::NcVar weights_v = fo.addVar("weights",netCDF::ncDouble, n_weights_dim);
-            }
-
-            fo.close();
-        }
+        cmb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0);
+        cmb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0);
     }
 }
 
@@ -214,63 +160,96 @@ auto Pointing::run() {
 
         // loop through polarizations
         for (const auto &stokes_param: rtcproc.polarization.stokes_params) {
+            SPDLOG_INFO("starting scan {}. {}/{} scans completed", rtcdata.index.data + 1, n_scans_done, telescope.scan_indices.cols());
+
             SPDLOG_INFO("reducing {} timestream",stokes_param);
             // create a new rtcdata for each polarization
             TCData<TCDataKind::RTC,Eigen::MatrixXd> rtcdata_pol;
             // demodulate
             SPDLOG_INFO("demodulating polarization");
+            SPDLOG_INFO("array_limits {}", calib.array_limits);
+
             auto [array_indices, nw_indices, det_indices] = rtcproc.polarization.demodulate_timestream(rtcdata, rtcdata_pol,
                                                                                                        stokes_param,
                                                                                                        redu_type, calib);
-
             // get indices for maps
             SPDLOG_INFO("calculating map indices");
+            SPDLOG_INFO("array_limits {}", calib.array_limits);
+
             auto map_indices = calc_map_indices(det_indices, nw_indices, array_indices, stokes_param);
 
             // run rtcproc
             SPDLOG_INFO("rtcproc");
+            SPDLOG_INFO("array_limits {}", calib.array_limits);
+
             rtcproc.run(rtcdata_pol, ptcdata, telescope.pixel_axes, redu_type, calib, pointing_offsets_arcsec, det_indices, array_indices,
                         map_indices, omb.pixel_size_rad);
 
+            SPDLOG_INFO("scans before clean {}", ptcdata.scans.data);
+            SPDLOG_INFO("scans max before clean {}", ptcdata.scans.data.maxCoeff());
+            SPDLOG_INFO("scans min before clean {}", ptcdata.scans.data.minCoeff());
+            SPDLOG_INFO("flags before clean {}", ptcdata.flags.data);
+
             // write rtc timestreams
             if (run_tod_output) {
-                SPDLOG_INFO("writing rtcdata");
                 if (tod_output_type == "rtc") {
-                    ptcproc.append_to_netcdf(ptcdata, tod_filename[stokes_param], det_indices, calib.apt);
+                    SPDLOG_INFO("writing rtcdata");
+                    ptcproc.append_to_netcdf(ptcdata, tod_filename[stokes_param], redu_type, telescope.pixel_axes, pointing_offsets_arcsec,
+                                             det_indices, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
                 }
             }
 
             // remove flagged dets
             SPDLOG_INFO("removing flagged dets");
+
+            SPDLOG_INFO("array_limits {}", calib.array_limits);
+
             ptcproc.remove_flagged_dets(ptcdata, calib.apt, det_indices);
+
+            // remove outliers
+            SPDLOG_INFO("removing outlier weights");
+            //ptcproc.remove_bad_dets(ptcdata, calib.apt, det_indices);
+            auto calib_scan = ptcproc.remove_bad_dets_nw(ptcdata, calib, det_indices, nw_indices, array_indices);
+            //map_indices = calc_map_indices(det_indices, nw_indices, array_indices, stokes_param);
 
             // run cleaning
             if (stokes_param == "I") {
                 SPDLOG_INFO("ptcproc");
                 ptcproc.run(ptcdata, ptcdata, calib);
+                //ptcproc.run(ptcdata, ptcdata, calib_scan);
             }
+
             // calculate weights
             SPDLOG_INFO("calculating weights");
-            ptcproc.calc_weights(ptcdata, calib, telescope);
-
-            // remove outliers
-            SPDLOG_INFO("removing outlier weights");
-            //ptcproc.remove_bad_dets(ptcdata, calib.apt, det_indices);
+            ptcproc.calc_weights(ptcdata, calib.apt, telescope);
+            //ptcproc.calc_weights(ptcdata, calib_scan.apt, telescope);
 
             // write ptc timestreams
             if (run_tod_output) {
-                SPDLOG_INFO("writing ptcdata");
                 if (tod_output_type == "ptc") {
-                    ptcproc.append_to_netcdf(ptcdata, tod_filename[stokes_param], det_indices, calib.apt);
+                    SPDLOG_INFO("writing ptcdata");
+                    ptcproc.append_to_netcdf(ptcdata, tod_filename[stokes_param], redu_type, telescope.pixel_axes, pointing_offsets_arcsec,
+                                             det_indices, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
                 }
             }
+            SPDLOG_INFO("scans after{}", ptcdata.scans.data);
+            SPDLOG_INFO("scans max after clean {}", ptcdata.scans.data.maxCoeff());
+            SPDLOG_INFO("scans min after clean {}", ptcdata.scans.data.minCoeff());
+            SPDLOG_INFO("flags after {}", ptcdata.flags.data);
+            SPDLOG_INFO("weight after {}", ptcdata.weights.data);
 
             // populate maps
             SPDLOG_INFO("populating maps");
-            mapmaking::populate_maps_naive(ptcdata, omb, map_indices, det_indices, telescope.pixel_axes,
-                                           redu_type, calib.apt, pointing_offsets_arcsec, telescope.d_fsmp);
-
+            mapmaking::populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
+                                           redu_type, calib.apt, pointing_offsets_arcsec, telescope.d_fsmp, run_noise);
+            //mapmaking::populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
+            //                               redu_type, calib_scan.apt, pointing_offsets_arcsec, telescope.d_fsmp, run_noise);
+            SPDLOG_INFO("signal map {}", omb.signal);
+            SPDLOG_INFO("cov map {}", omb.coverage);
         }
+
+        n_scans_done++;
+        SPDLOG_INFO("done with scan {}. {}/{} scans completed", ptcdata.index.data + 1, n_scans_done, telescope.scan_indices.cols());
 
         return ptcdata;
     });
@@ -279,7 +258,9 @@ auto Pointing::run() {
 }
 
 template <class KidsProc, class RawObs>
-auto Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
+void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
+    // initialize number of completed scans
+    n_scans_done = 0;
     grppi::pipeline(tula::grppi_utils::dyn_ex(parallel_policy),
         [&]() -> std::optional<std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
                                           std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>> {
@@ -287,21 +268,28 @@ auto Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
             // variable to hold current scan
             static auto scan = 0;
             while (scan < telescope.scan_indices.cols()) {
+                // create rtcdata
                 TCData<TCDataKind::RTC, Eigen::MatrixXd> rtcdata;
+                // get scan indices
                 rtcdata.scan_indices.data = telescope.scan_indices.col(scan);
+                // current scan
                 rtcdata.index.data = scan;
 
+                // vector to store kids data
                 std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> scan_rawobs;
                 {
                     tula::logging::scoped_loglevel<spdlog::level::off> _0;
+                    // get kids data
                     scan_rawobs = kidsproc.load_rawobs(rawobs, scan, telescope.scan_indices, start_indices, end_indices);
                 }
 
+                // increment scan
                 scan++;
                 return std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
                                   std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>> (std::move(rtcdata), kidsproc,
                                                                                                   std::move(scan_rawobs));
             }
+            // reset scan to zero for each obs
             scan = 0;
             return {};
         },
@@ -311,12 +299,19 @@ auto Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     // normalize maps
     omb.normalize_maps();
 
+    // calculate map psds
+    SPDLOG_INFO("calc_map_psd");
+    omb.calc_map_psd();
+    // calculate map histograms
+    SPDLOG_INFO("calc_map_hist");
+    omb.calc_map_hist();
+
     // fit maps
     for (Eigen::Index i=0; i<n_maps; i++) {
         //auto array_index = ptcs[stokes_param][0].array_indices.data(i);
         auto init_fwhm = toltec_io.array_fwhm_arcsec[i]*ASEC_TO_RAD/omb.pixel_size_rad;
         auto [det_params, det_perror, good_fit] =
-            map_fitter.fit_to_gaussian<engine_utils::mapFitter::centerValue>(omb.signal[i], omb.weight[i], init_fwhm);
+            map_fitter.fit_to_gaussian<engine_utils::mapFitter::peakValue>(omb.signal[i], omb.weight[i], init_fwhm);
         params.row(i) = det_params;
         perrors.row(i) = det_perror;
 
@@ -338,8 +333,9 @@ auto Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     }
 }
 
+template <mapmaking::MapType map_type>
 void Pointing::output() {
-    SPDLOG_INFO("writing apt table");
+    SPDLOG_INFO("writing ppt table");
     auto ppt_filename = toltec_io.create_filename<engine_utils::toltecIO::ppt, engine_utils::toltecIO::map>
                         (obsnum_dir_name, redu_type, "", obsnum, telescope.sim_obs);
 
@@ -353,7 +349,6 @@ void Pointing::output() {
 
     Eigen::Index j = 0;
     for (Eigen::Index i=1; i<2*n_params; i=i+2) {
-        SPDLOG_INFO("i {}",i);
         ppt_table.col(i) = params.col(j).cast <float> ();
         ppt_table.col(i+1) = perrors.col(j).cast <float> ();
         j++;
@@ -365,32 +360,25 @@ void Pointing::output() {
     Eigen::Index k = 0;
     for (Eigen::Index i=0; i<rtcproc.polarization.stokes_params.size(); i++) {
         for (Eigen::Index j=0; j<n_maps/rtcproc.polarization.stokes_params.size(); j++) {
-            fits_io_vec[j].add_hdu("signal_" + rtcproc.polarization.stokes_params[i], omb.signal[k]);
-            fits_io_vec[j].add_wcs(fits_io_vec[j].hdus.back(),omb.wcs);
-
-            fits_io_vec[j].add_hdu("weight_" + rtcproc.polarization.stokes_params[i], omb.weight[k]);
-            fits_io_vec[j].add_wcs(fits_io_vec[j].hdus.back(),omb.wcs);
-
-            if (rtcproc.run_kernel) {
-                fits_io_vec[j].add_hdu("kernel_" + rtcproc.polarization.stokes_params[i], omb.kernel[k]);
-                fits_io_vec[j].add_wcs(fits_io_vec[j].hdus.back(),omb.wcs);
+            SPDLOG_INFO("i {}, j {}, k {}",i,j,k);
+            if constexpr (map_type == mapmaking::Obs) {
+                write_maps(fits_io_vec,omb,i,j,j);
             }
-
-            fits_io_vec[j].add_hdu("coverage_" + rtcproc.polarization.stokes_params[i], omb.coverage[k]);
-            fits_io_vec[j].add_wcs(fits_io_vec[j].hdus.back(),omb.wcs);
-
-            Eigen::MatrixXd sig2noise = omb.signal[k].array()*sqrt(omb.weight[k].array());
-            fits_io_vec[j].add_hdu("sig2noise_" + rtcproc.polarization.stokes_params[i], sig2noise);
-            fits_io_vec[j].add_wcs(fits_io_vec[j].hdus.back(),omb.wcs);
-
-            // add telescope file header information
-            for (auto const& [key, val] : telescope.tel_header) {
-                fits_io_vec[j].pfits->pHDU().addKey(key, val(0), key);
+            else if constexpr (map_type == mapmaking::Coadd) {
+                write_maps(coadd_fits_io_vec,cmb,i,j,j);
             }
-            fits_io_vec[j].pfits->pHDU().addKey("OBSNUM", obsnum, "Observation Number");
-            fits_io_vec[j].pfits->pHDU().addKey("CITLALI_GIT_VERSION", CITLALI_GIT_VERSION, "CITLALI_GIT_VERSION");
 
             k++;
         }
     }
+
+    // empty fits vector
+    fits_io_vec.clear();
+
+    SPDLOG_INFO("done with writing maps");
+
+    write_psd();
+    SPDLOG_INFO("done with psd");
+    write_hist();
+    SPDLOG_INFO("done with hist");
 }

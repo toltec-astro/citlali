@@ -113,7 +113,7 @@ auto mapFitter::ceres_fit(const Model &model,
         // if covariance calculation suceeded
         if (covariance_result) {
             covariance_matrix.resize(params.size(),params.size());
-            covariance.GetCovarianceBlock(params.data(),params.data(), covariance_matrix.data());
+            covariance.GetCovarianceBlock(params.data(),params.data(),covariance_matrix.data());
             // calculate uncertainty
             uncertainty = covariance_matrix.diagonal().cwiseSqrt();
         }
@@ -146,7 +146,7 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
         init_flux = signal(static_cast<int>(init_row), static_cast<int>(init_col));
     }
 
-    else if constexpr (fit_mode == centerValue) {
+    else if constexpr (fit_mode == peakValue) {
         auto sig2noise = signal.derived().array()*sqrt(weight.derived().array());
         sig2noise.maxCoeff(&init_row, &init_col);
 

@@ -61,7 +61,12 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     }
 
     if (run_tod_filter) {
+        SPDLOG_INFO("convolving with tod filter");
+        filter.convolve(in.scans.data);
 
+        if (run_kernel) {
+            filter.convolve(in.kernel.data);
+        }
     }
 
     if (run_downsample) {
@@ -110,8 +115,10 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         }
     }
 
+    // calibrate timestreams
     if (run_calibrate) {
-        calibration.calibrate_tod(in, det_indices, array_indices, calib);
+        SPDLOG_INFO("calibrating timestream");
+        calibration.calibrate_tod(out, det_indices, array_indices, calib);
     }
 
     out.scan_indices.data = in.scan_indices.data;

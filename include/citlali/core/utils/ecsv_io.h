@@ -7,13 +7,14 @@
 #include <tula/filename.h>
 
 // create Eigen::Matrix from ecsv file
-auto to_matrix_from_ecsv(std::string filepath) {
+inline auto to_matrix_from_ecsv(std::string filepath) {
     namespace fs = std::filesystem;
     std::vector<std::string> header;
     Eigen::MatrixXd table;
 
+    YAML::Node meta_;
+
     try {
-        YAML::Node meta_;
         table = datatable::read<double, datatable::Format::ecsv>(
             filepath, &header, &meta_);
 
@@ -29,12 +30,12 @@ auto to_matrix_from_ecsv(std::string filepath) {
             throw e;
         }
     }
-    return std::tuple {table, header};
+    return std::tuple {table, header, meta_};
 }
 
 // create ecsv file from Eigen::Matrix
 template <typename Derived>
-void to_ecsv_from_matrix(std::string filepath, Eigen::DenseBase<Derived> &table, std::vector<std::string> header, YAML::Node meta) {
+inline void to_ecsv_from_matrix(std::string filepath, Eigen::DenseBase<Derived> &table, std::vector<std::string> header, YAML::Node meta) {
     namespace fs = std::filesystem;
 
     try {
