@@ -257,10 +257,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
     Eigen::Index min_size = nw_ts[0].size();
 
     // loop through time vectors and get the smallest
-    for (Eigen::Index i=0; i<nw_t0.size(); i++) {
-        if (nw_ts[i].size() < min_size) {
-            min_size = nw_ts[i].size();
-        }
+    for (Eigen::Index i=0; i<nw_ts.size(); i++) {
 
         // find start index that is larger than max start
         Eigen::Index si, ei;
@@ -280,12 +277,23 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
         engine().end_indices.push_back(ei);
     }
 
+    for (Eigen::Index i=0; i<nw_ts.size(); i++) {
+        auto si = engine().start_indices.back();
+        auto ei = engine().end_indices.back();
+
+        if ((ei - si) < min_size) {
+            min_size = ei - si;
+        }
+    }
+
     // size of telescope data
     Eigen::Matrix<Eigen::Index,1,1> nd;
     nd << engine().telescope.tel_data["TelTime"].size();
 
     // shortest data time vector
     Eigen::VectorXd xi = nw_ts[max_t0_i].head(min_size);
+
+    SPDLOG_INFO("start_indices {}, end_indices {} minsize {}", engine().start_indices, engine().end_indices, min_size);
 
     // interpolate telescope data
     for (const auto &tel_it : engine().telescope.tel_data) {

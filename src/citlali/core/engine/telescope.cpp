@@ -91,6 +91,9 @@ void Telescope::get_tel_data(std::string &filepath) {
             }
         }
 
+        tau_225_GHz = tel_header["Header.Radiometer.Tau"](0);
+        SPDLOG_INFO("tau_225_GHz {}",tau_225_GHz);
+
     } catch (NcException &e) {
         SPDLOG_WARN("{}", e.what());
         throw DataIOError{fmt::format(

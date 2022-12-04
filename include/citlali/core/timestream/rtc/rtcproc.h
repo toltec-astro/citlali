@@ -21,23 +21,28 @@ public:
     timestream::Downsampler downsampler;
     timestream::Calibration calibration;
 
-    template<typename calib_t, typename pointing_offset_t, typename Derived>
+    template<typename calib_t, typename telescope_t, typename pointing_offset_t, typename Derived>
     void run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &,
              TCData<TCDataKind::PTC, Eigen::MatrixXd> &, std::string &,
-             std::string &, calib_t &, pointing_offset_t &,
+             std::string &, calib_t &, telescope_t &, pointing_offset_t &,
              Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &,
              Eigen::DenseBase<Derived> &, double);
 };
 
-template<class calib_t, typename pointing_offset_t, typename Derived>
+template<class calib_t, typename telescope_t, typename pointing_offset_t, typename Derived>
 void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
                   TCData<TCDataKind::PTC, Eigen::MatrixXd> &out, std::string &pixel_axes,
-                  std::string &redu_type, calib_t &calib, pointing_offset_t &pointing_offsets_arcsec,
-                  Eigen::DenseBase<Derived> &det_indices, Eigen::DenseBase<Derived> &array_indices,
-                  Eigen::DenseBase<Derived> &map_indices, double pixel_size_rad) {
+                  std::string &redu_type, calib_t &calib, telescope_t &telescope,
+                  pointing_offset_t &pointing_offsets_arcsec, Eigen::DenseBase<Derived> &det_indices,
+                  Eigen::DenseBase<Derived> &array_indices, Eigen::DenseBase<Derived> &map_indices,
+                  double pixel_size_rad) {
+
+    Eigen::Index n_pts = in.scans.data.rows();
 
     auto si = filter.n_terms;
     auto sl = in.scan_indices.data(1) - in.scan_indices.data(0) + 1;
+
+    SPDLOG_INFO("si {}, sl {}", si, sl);
 
     in.flags.data.setOnes(in.scans.data.rows(), in.scans.data.cols());
 
@@ -57,7 +62,45 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     }
 
     if (run_despike) {
+        SPDLOG_INFO("despiking");
+        despiker.despike(in.scans.data, in.flags.data);
 
+        std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grouping_limits;
+
+        if (despiker.grouping == "nw") {
+            grouping_limits = calib.nw_limits;
+        }
+
+        else if (despiker.grouping == "array") {
+            grouping_limits = calib.array_limits;
+            SPDLOG_INFO("array_limits {}", calib.array_limits);
+        }
+
+        for (auto const& [key, val] : grouping_limits) {
+            // starting index
+            auto start_index = std::get<0>(val);
+            // size of block for each grouping
+            auto n_dets = std::get<1>(val) - std::get<0>(val);
+
+            SPDLOG_INFO("start_index {} ndets {}", start_index, n_dets);
+
+            // get the reference block of in scans that corresponds to the current array
+            Eigen::Ref<Eigen::MatrixXd> in_scans_ref = in.scans.data.block(0, start_index, n_pts, n_dets);
+
+            Eigen::Map<Eigen::MatrixXd, 0, Eigen::OuterStride<>>
+                in_scans(in_scans_ref.data(), in_scans_ref.rows(), in_scans_ref.cols(),
+                         Eigen::OuterStride<>(in_scans_ref.outerStride()));
+
+            // get the block of in flags that corresponds to the current array
+            Eigen::Ref<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> in_flags_ref =
+                in.flags.data.block(0, start_index, n_pts, n_dets);
+
+            Eigen::Map<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>, 0, Eigen::OuterStride<> >
+                in_flags(in_flags_ref.data(), in_flags_ref.rows(), in_flags_ref.cols(),
+                         Eigen::OuterStride<>(in_flags_ref.outerStride()));
+
+            despiker.replace_spikes(in_scans, in_flags, calib.apt["responsivity"]);
+        }
     }
 
     if (run_tod_filter) {
@@ -102,27 +145,29 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
 
     else {
         // copy data
-        out.scans.data = in.scans.data.block(si, 0, sl, in.scans.data.cols());;
-        // copy kernel
-        if (run_kernel) {
-            out.kernel.data = in.kernel.data.block(si, 0, sl, in.kernel.data.cols());;
-        }
+        out.scans.data = in.scans.data.block(si, 0, sl, in.scans.data.cols());
         // copy flags
         out.flags.data = in.flags.data.block(si, 0, sl, in.flags.data.cols());
+        // copy kernel
+        if (run_kernel) {
+            out.kernel.data = in.kernel.data.block(si, 0, sl, in.kernel.data.cols());
+        }
         // copy telescope data
         for (auto const& x: in.tel_data.data) {
             out.tel_data.data[x.first] = in.tel_data.data[x.first].segment(si, sl);
         }
     }
 
-    // calibrate timestreams
-    if (run_calibrate) {
-        SPDLOG_INFO("calibrating timestream");
-        calibration.calibrate_tod(out, det_indices, array_indices, calib);
-    }
-
     out.scan_indices.data = in.scan_indices.data;
     out.index.data = in.index.data;
+
+    // calibrate timestreams
+    auto tau_freq = calibration.calc_tau(in.tel_data.data["TelElDes"], telescope.tau_225_GHz);
+
+    if (run_calibrate) {
+        SPDLOG_INFO("calibrating timestream");
+        calibration.calibrate_tod(out, det_indices, array_indices, calib, tau_freq);
+    }
 }
 
 } // namespace timestream

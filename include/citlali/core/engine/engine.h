@@ -330,6 +330,8 @@ void Engine::get_citlali_config(CT &config) {
     get_value(config, rtcproc.despiker.time_constant_sec, missing_keys, invalid_keys, std::tuple{"timestream","despike","time_constant_sec"});
     get_value(config, rtcproc.despiker.window_size, missing_keys, invalid_keys, std::tuple{"timestream","despike","window_size"});
 
+    rtcproc.despiker.grouping = "nw";
+
     /* filter */
     get_value(config, rtcproc.run_tod_filter, missing_keys, invalid_keys, std::tuple{"timestream","filter","enabled"});
     get_value(config, rtcproc.filter.a_gibbs, missing_keys, invalid_keys, std::tuple{"timestream","filter","a_gibbs"});
@@ -353,6 +355,9 @@ void Engine::get_citlali_config(CT &config) {
 
     /* calibration */
     get_value(config, rtcproc.run_calibrate, missing_keys, invalid_keys, std::tuple{"timestream","calibration","enabled"});
+    get_value(config, rtcproc.calibration.extinction_model, missing_keys, invalid_keys, std::tuple{"timestream","calibration","extinction_model"});
+
+    rtcproc.calibration.setup();
 
     // override calibration if in beammap mode
     if (redu_type=="beammap") {

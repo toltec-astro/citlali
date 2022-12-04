@@ -27,6 +27,9 @@ void Lali::setup() {
         rtcproc.kernel.setup(n_maps);
     }
 
+    // set despiker sample rate
+    rtcproc.despiker.fsmp = telescope.fsmp;
+
     // if filter is requested, make it here
     if (rtcproc.run_tod_filter) {
         rtcproc.filter.make_filter(telescope.fsmp);
@@ -107,8 +110,8 @@ auto Lali::run() {
             SPDLOG_INFO("rtcproc");
             SPDLOG_INFO("array_limits {}", calib.array_limits);
 
-            rtcproc.run(rtcdata_pol, ptcdata, telescope.pixel_axes, redu_type, calib, pointing_offsets_arcsec, det_indices, array_indices,
-                        map_indices, omb.pixel_size_rad);
+            rtcproc.run(rtcdata_pol, ptcdata, telescope.pixel_axes, redu_type, calib, telescope, pointing_offsets_arcsec, det_indices,
+                        array_indices, map_indices, omb.pixel_size_rad);
 
             SPDLOG_INFO("scans before clean {}", ptcdata.scans.data);
             SPDLOG_INFO("scans max before clean {}", ptcdata.scans.data.maxCoeff());
@@ -255,7 +258,7 @@ void Lali::output() {
     }
 
     // empty fits vector
-    //fits_io_vec.clear();
+    fits_io_vec.clear();
 
     SPDLOG_INFO("done with writing maps");
 

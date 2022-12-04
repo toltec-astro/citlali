@@ -225,9 +225,9 @@ auto PTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, c
         SPDLOG_INFO("{}/{} dets below limit. {}/{} dets above limit.", n_low_dets, n_good_dets, n_high_dets, n_good_dets);
     }
 
-    TCData<TCDataKind::PTC, Eigen::MatrixXd> out = in;
+    //TCData<TCDataKind::PTC, Eigen::MatrixXd> out = in;
 
-    Eigen::Index n_good_dets = 0;
+    /*Eigen::Index n_good_dets = 0;
     for (Eigen::Index i=0; i<n_dets; i++) {
         if ((in.flags.data.col(i).array()!=0).all()) {
             n_good_dets++;
@@ -239,13 +239,13 @@ auto PTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, c
 
     if (in.kernel.data.size()!=0) {
         out.kernel.data.resize(in.kernel.data.rows(), n_good_dets);
-    }
+    }*/
 
     calib_t calib_temp;
 
-    Eigen::VectorXI array_indices_temp(n_good_dets), nw_indices_temp(n_good_dets), det_indices_temp(n_good_dets);
+    //Eigen::VectorXI array_indices_temp(n_good_dets), nw_indices_temp(n_good_dets), det_indices_temp(n_good_dets);
 
-    Eigen::Index j = 0;
+    /*Eigen::Index j = 0;
     for (Eigen::Index i=0; i<n_dets; i++) {
         if ((in.flags.data.col(i).array()!=0).all()) {
             out.scans.data.col(j) = in.scans.data.col(i);
@@ -260,7 +260,7 @@ auto PTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, c
             array_indices_temp(j) = array_indices(i);
             j++;
         }
-    }
+    }*/
 
     /*det_indices = det_indices_temp;
     nw_indices = nw_indices_temp;
@@ -268,7 +268,7 @@ auto PTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, c
 
     in = out;*/
 
-    for (auto const& [key, val]: calib.apt) {
+    /*for (auto const& [key, val]: calib.apt) {
         calib_temp.apt[key].setZero(n_good_dets);
         Eigen::Index i = 0;
         for (Eigen::Index j=0; j<calib.apt["nw"].size(); j++) {
@@ -279,7 +279,7 @@ auto PTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, c
         }
     }
 
-    calib_temp.setup();
+    calib_temp.setup();*/
 
     return std::move(calib_temp);
 }

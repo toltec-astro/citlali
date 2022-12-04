@@ -110,6 +110,9 @@ void Beammap::setup() {
         rtcproc.kernel.setup(n_maps);
     }
 
+    // set despiker sample rate
+    rtcproc.despiker.fsmp = telescope.fsmp;
+
     // if filter is requested, make it here
     if (rtcproc.run_tod_filter) {
         rtcproc.filter.make_filter(telescope.fsmp);
@@ -258,8 +261,8 @@ auto Beammap::run_timestream() {
 
             // run rtcproc
             SPDLOG_INFO("rtcproc");
-            rtcproc.run(rtcdata_pol, ptcdata, telescope.pixel_axes, redu_type, calib, pointing_offsets_arcsec, det_indices, array_indices,
-                        map_indices, omb.pixel_size_rad);
+            rtcproc.run(rtcdata_pol, ptcdata, telescope.pixel_axes, redu_type, calib, telescope, pointing_offsets_arcsec,
+                        det_indices, array_indices, map_indices, omb.pixel_size_rad);
 
             // write rtc timestreams
             if (run_tod_output) {
@@ -517,8 +520,11 @@ auto Beammap::loop_pipeline() {
             calib.apt["flag"](i) = 0;
         }
 
+        double det_fwhm = (calib.apt["a_fwhm"](i) + calib.apt["b_fwhm"](i))/2;
+        double det_beamsize = 2.*pi*pow(det_fwhm*FWHM_TO_STD,2);
+
         // set flux scale (always in MJy/sr)
-        calib.apt["flxscale"](i) = beammap_fluxes["array_name"]/params(i,0);
+        calib.apt["flxscale"](i) = beammap_fluxes["array_name"]/params(i,0)/det_beamsize*mJY_ASEC_to_MJY_SR;
 
         SPDLOG_INFO("beammap_fluxes[array_name] {} params(i,0) {}",beammap_fluxes["array_name"], params(i,0));
 

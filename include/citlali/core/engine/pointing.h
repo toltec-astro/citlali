@@ -97,6 +97,9 @@ void Pointing::setup() {
     params.setZero(n_maps, n_params);
     perrors.setZero(n_maps, n_params);
 
+    // set despiker sample rate
+    rtcproc.despiker.fsmp = telescope.fsmp;
+
     // setup kernel
     if (rtcproc.run_kernel) {
         rtcproc.kernel.setup(n_maps);
@@ -182,8 +185,8 @@ auto Pointing::run() {
             SPDLOG_INFO("rtcproc");
             SPDLOG_INFO("array_limits {}", calib.array_limits);
 
-            rtcproc.run(rtcdata_pol, ptcdata, telescope.pixel_axes, redu_type, calib, pointing_offsets_arcsec, det_indices, array_indices,
-                        map_indices, omb.pixel_size_rad);
+            rtcproc.run(rtcdata_pol, ptcdata, telescope.pixel_axes, redu_type, calib, telescope, pointing_offsets_arcsec,
+                        det_indices, array_indices, map_indices, omb.pixel_size_rad);
 
             SPDLOG_INFO("scans before clean {}", ptcdata.scans.data);
             SPDLOG_INFO("scans max before clean {}", ptcdata.scans.data.maxCoeff());

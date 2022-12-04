@@ -300,6 +300,28 @@ auto set_cov_cov_ranges(const Eigen::DenseBase<Derived> &weight, const double we
     return cov_ranges;
 }
 
+// box car smooth function
+template<typename DerivedA, typename DerivedB>
+void smooth_boxcar(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB> &out, int w) {
+    // ensure box-car width is odd
+    if (w % 2 == 0) {
+        w++;
+    }
+
+    Eigen::Index n_pts = in.size();
+
+    out.head((w - 1) / 2) = in.head((w - 1) / 2);
+    out.tail(n_pts - (w + 1) / 2. + 1) = in.tail(n_pts - (w + 1) / 2. + 1);
+
+    double winv = 1. / w;
+    int wm1d2 = (w - 1) / 2.;
+    int wp1d2 = (w + 1) / 2.;
+
+    for (int i = wm1d2; i <= n_pts - wp1d2; i++) {
+        out(i) = winv * in.segment(i - wm1d2, w).sum();
+    }
+}
+
 template <typename Derived>
 void smooth_edge_truncate(Eigen::DenseBase<Derived> &in, Eigen::DenseBase<Derived> &out, int w) {
     Eigen::Index n_pts = in.size();

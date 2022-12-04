@@ -224,6 +224,7 @@ int run(const rc_t &rc) {
                 std::vector<map_count_t> map_counts{};
 
                 // get config options from citlali_config
+                SPDLOG_INFO("getting citlali config");
                 todproc.engine().get_citlali_config(citlali_config);
 
                 // set parallelization explicitly

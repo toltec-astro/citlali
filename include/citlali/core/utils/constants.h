@@ -32,6 +32,9 @@ constexpr auto pi = static_cast<double>(EIGEN_PI);
 // standard deviation to fwhm
 #define STD_TO_FWHM sqrt(8.*log(2.))
 
+// standard deviation to fwhm
+#define FWHM_TO_STD 1/sqrt(8.*log(2.))
+
 // MJy/Sr to mJy/arcsec
 #define MJY_SR_TO_mJY_ASEC 1/SR_TO_DEG*(1/pow(3600.0,2.0))*pow(10.0,6.0)*1000
 
