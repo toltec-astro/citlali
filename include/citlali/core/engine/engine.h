@@ -120,6 +120,9 @@ struct beammapControls {
     // beammap reference detector
     Eigen::Index beammap_reference_det;
 
+    // derotate fitted detectors
+    bool beammap_derotate;
+
     // upper and lower limits of psd for sensitivity calc
     Eigen::VectorXd sens_psd_limits;
 
@@ -500,6 +503,7 @@ void Engine::get_citlali_config(CT &config) {
     get_value(config, beammap_iter_max, missing_keys, invalid_keys, std::tuple{"beammap","iter_max"});
     get_value(config, beammap_iter_tolerance, missing_keys, invalid_keys, std::tuple{"beammap","iter_tolerance"});
     get_value(config, beammap_reference_det, missing_keys, invalid_keys, std::tuple{"beammap","reference_det"});
+    get_value(config, beammap_derotate, missing_keys, invalid_keys, std::tuple{"beammap","derotate"});
 
     for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
         get_value(config, lower_fwhm_arcsec[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","lower_fwhm_arcsec",arr_name});

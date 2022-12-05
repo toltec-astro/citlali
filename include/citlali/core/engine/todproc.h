@@ -278,8 +278,8 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
     }
 
     for (Eigen::Index i=0; i<nw_ts.size(); i++) {
-        auto si = engine().start_indices.back();
-        auto ei = engine().end_indices.back();
+        auto si = engine().start_indices[i];
+        auto ei = engine().end_indices[i];
 
         if ((ei - si) < min_size) {
             min_size = ei - si;

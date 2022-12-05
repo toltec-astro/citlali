@@ -161,11 +161,10 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     out.scan_indices.data = in.scan_indices.data;
     out.index.data = in.index.data;
 
-    // calibrate timestreams
-    auto tau_freq = calibration.calc_tau(in.tel_data.data["TelElDes"], telescope.tau_225_GHz);
-
     if (run_calibrate) {
         SPDLOG_INFO("calibrating timestream");
+        auto tau_freq = calibration.calc_tau(in.tel_data.data["TelElDes"], telescope.tau_225_GHz);
+
         calibration.calibrate_tod(out, det_indices, array_indices, calib, tau_freq);
     }
 }

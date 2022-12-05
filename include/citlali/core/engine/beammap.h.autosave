@@ -516,7 +516,7 @@ auto Beammap::loop_pipeline() {
         double det_beamsize = 2.*pi*pow(det_fwhm*FWHM_TO_STD,2);
 
         // set flux scale (always in MJy/sr)
-        calib.apt["flxscale"](i) = beammap_fluxes["array_name"]/params(i,0)/det_beamsize*mJY_ASEC_to_MJY_SR;
+        calib.apt["flxscale"](i) = mJY_ASEC_to_MJY_SR*beammap_fluxes["array_name"]/params(i,0)/det_beamsize;
 
         SPDLOG_INFO("beammap_fluxes[array_name] {} params(i,0) {}",beammap_fluxes["array_name"], params(i,0));
 

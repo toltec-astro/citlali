@@ -218,12 +218,21 @@ void Telescope::calc_scan_indices() {
         // index of last scan
         Eigen::Index last_scan_i = tel_data["Hold"].size() - 1;
 
+        SPDLOG_INFO("last_scan_i {}", last_scan_i);
+
         // period (time_chunk/fsmp in seconds/Hz)
         Eigen::Index period_i = floor(time_chunk*fsmp);
 
+        SPDLOG_INFO("period_i {}", period_i);
+
         double period = floor(time_chunk*fsmp);
+
+        SPDLOG_INFO("period {}", period);
+
         // calculate number of scans
         n_scans = floor((last_scan_i - first_scan_i + 1)*1./period);
+
+        SPDLOG_INFO("n_scans {}", n_scans);
 
         // assign scans to scan_indices matrix
         scan_indices.resize(4,n_scans);

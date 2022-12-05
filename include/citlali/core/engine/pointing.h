@@ -278,6 +278,8 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                 // current scan
                 rtcdata.index.data = scan;
 
+                SPDLOG_INFO("telescope.scan_indices.col(scan) {}",telescope.scan_indices);
+
                 // vector to store kids data
                 std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> scan_rawobs;
                 {
