@@ -11,8 +11,10 @@
 namespace mapmaking {
 
 enum MapType {
-    Obs = 0,
-    Coadd = 1
+    RawObs = 0,
+    FilteredObs = 1,
+    RawCoadd = 2,
+    FilteredCoadd = 3,
 };
 
 // wcs information
@@ -170,8 +172,6 @@ auto ObsMapBuffer::calc_cov_region(Eigen::DenseBase<Derived> &w) {
 // loop through maps
 void ObsMapBuffer::calc_map_psd() {
     // clear storage vectors
-
-    SPDLOG_INFO("A0");
     psds.clear();
     psd_freqs.clear();
     psd_2ds.clear();
@@ -181,8 +181,6 @@ void ObsMapBuffer::calc_map_psd() {
     noise_psd_freqs.clear();
     noise_psd_2ds.clear();
     noise_psd_2d_freqs.clear();
-
-    SPDLOG_INFO("A");
 
     // loop through maps
     for (Eigen::Index i=0; i<signal.size(); i++) {
@@ -206,18 +204,12 @@ void ObsMapBuffer::calc_map_psd() {
         auto [p, pf, p_2d, pf_2d] = engine_utils::calc_2D_psd(sig, rows_tan_vec, cols_tan_vec, cov_n_rows, cov_n_cols,
                                                            smooth_window, parallel_policy);
 
-        SPDLOG_INFO("B");
-
-
         // move current map psd values into vectors
         psds.push_back(std::move(p));
         psd_freqs.push_back(std::move(pf));
 
         psd_2ds.push_back(std::move(p_2d));
         psd_2d_freqs.push_back(std::move(pf_2d));
-
-        SPDLOG_INFO("C");
-
 
         // get average noise psd if noise maps are requested
         if (!noise.empty()) {

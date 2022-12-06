@@ -5,6 +5,7 @@
 #include <vector>
 #include <omp.h>
 #include <Eigen/Core>
+#include <fstream>
 
 #include <citlali_config/config.h>
 #include <citlali_config/gitversion.h>
@@ -193,10 +194,15 @@ public:
 
     // map output files
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> fits_io_vec;
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> coadd_fits_io_vec;
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> noise_fits_io_vec;
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> filtered_coadd_fits_io_vec;
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> filtered_fits_io_vec;
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> filtered_noise_fits_io_vec;
+
+    // coadded map output files
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> coadd_fits_io_vec;
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> coadd_noise_fits_io_vec;
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> filtered_coadd_fits_io_vec;
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> filtered_coadd_noise_fits_io_vec;
 
     template<typename CT>
     void get_citlali_config(CT &);
@@ -214,10 +220,19 @@ public:
     void create_map_files();
     void create_tod_files();
 
+    void write_summary();
+
     template <typename fits_io_type, class map_buffer_t>
-    void write_maps(fits_io_type &, map_buffer_t &, Eigen::Index, Eigen::Index, Eigen::Index);
-    void write_psd();
-    void write_hist();
+    void add_phdu(fits_io_type &, map_buffer_t &, Eigen::Index);
+
+    template <typename fits_io_type, class map_buffer_t>
+    void write_maps(fits_io_type &, fits_io_type &, map_buffer_t &, Eigen::Index, Eigen::Index, Eigen::Index);
+
+    template <mapmaking::MapType map_t, class map_buffer_t>
+    void write_psd(map_buffer_t &, std::string);
+
+    template <mapmaking::MapType map_t, class map_buffer_t>
+    void write_hist(map_buffer_t &, std::string);
 };
 
 template<typename CT>
@@ -505,6 +520,7 @@ void Engine::get_citlali_config(CT &config) {
     get_value(config, beammap_reference_det, missing_keys, invalid_keys, std::tuple{"beammap","reference_det"});
     get_value(config, beammap_derotate, missing_keys, invalid_keys, std::tuple{"beammap","derotate"});
 
+    // limits for flagging
     for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
         get_value(config, lower_fwhm_arcsec[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","lower_fwhm_arcsec",arr_name});
         get_value(config, upper_fwhm_arcsec[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","upper_fwhm_arcsec",arr_name});
@@ -536,6 +552,7 @@ void Engine::get_photometry_config(CT &config) {
 
     Eigen::Index n_fluxes = config.get_node(std::tuple{"beammap_source","fluxes"}).size();
 
+    // get source fluxes
     for (Eigen::Index i=0; i<n_fluxes; i++) {
         auto array = config.get_str(std::tuple{"beammap_source","fluxes",i,"array_name"});
 
@@ -622,22 +639,65 @@ void Engine::create_map_files() {
     // clear for each observation
     fits_io_vec.clear();
 
+    if (!run_coadd) {
+        if (run_noise) {
+            noise_fits_io_vec.clear();
+        }
+    }
+
     for (Eigen::Index i=0; i<calib.n_arrays; i++) {
         auto array = calib.arrays[i];
         std::string array_name = toltec_io.array_name_map[array];
         auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
-                                                  engine_utils::toltecIO::map>(obsnum_dir_name, redu_type, array_name,
+                                                  engine_utils::toltecIO::map,
+                                                  engine_utils::toltecIO::raw>(obsnum_dir_name + "/raw/", redu_type, array_name,
                                                                                obsnum, telescope.sim_obs);
         fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
 
         fits_io_vec.push_back(std::move(fits_io));
+
+        // if noise maps are requested but coadding is not, populate noise fits vector
+        if (!run_coadd) {
+            if (run_noise) {
+                auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
+                                                          engine_utils::toltecIO::noise,
+                                                          engine_utils::toltecIO::raw>(obsnum_dir_name + "/raw/", redu_type, array_name,
+                                                                                         obsnum, telescope.sim_obs);
+                fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
+
+                noise_fits_io_vec.push_back(std::move(fits_io));
+            }
+
+            // map filtering
+            if (run_map_filter) {
+                auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
+                                                          engine_utils::toltecIO::map,
+                                                          engine_utils::toltecIO::filtered>(obsnum_dir_name + "/filtered/", redu_type, array_name,
+                                                                                       obsnum, telescope.sim_obs);
+                fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
+
+                filtered_fits_io_vec.push_back(std::move(fits_io));
+
+                // filtered noise maps
+                if (run_noise) {
+                    auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
+                                                              engine_utils::toltecIO::noise,
+                                                              engine_utils::toltecIO::filtered>(obsnum_dir_name + "/filtered/", redu_type,
+                                                                                             array_name, obsnum, telescope.sim_obs);
+                    fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
+
+                    filtered_noise_fits_io_vec.push_back(std::move(fits_io));
+                }
+            }
+        }
     }
 }
 
 void Engine::create_tod_files() {
     for (const auto &stokes_param: rtcproc.polarization.stokes_params) {
         auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
-                                                  engine_utils::toltecIO::timestream>(obsnum_dir_name, redu_type, "",
+                                                  engine_utils::toltecIO::timestream,
+                                                  engine_utils::toltecIO::raw>(obsnum_dir_name + "/raw/", redu_type, "",
                                                                                       obsnum, telescope.sim_obs);
 
         SPDLOG_INFO("tod_filename {}", filename);
@@ -720,95 +780,158 @@ void Engine::create_tod_files() {
     }
 }
 
+void Engine::write_summary() {
+    std::ofstream myfile;
+    myfile.open (obsnum_dir_name + "/test.out");
+    myfile << "Hello world!\n";
+    myfile.close();
+
+}
+
 template <typename fits_io_type, class map_buffer_t>
-void Engine::write_maps(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i, Eigen::Index j, Eigen::Index k) {
+void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index j) {
     // array name
     std::string name = toltec_io.array_name_map[j];
-    // signal map
-    fits_io[j].add_hdu("signal_" + rtcproc.polarization.stokes_params[i], omb.signal[k]);
-    fits_io[j].add_wcs(fits_io_vec[j].hdus.back(),omb.wcs);
-    fits_io[j].hdus.back()->addKey("UNIT", mb.sig_unit, "Unit of map");
-
-    // weight map
-    fits_io[j].add_hdu("weight_" + rtcproc.polarization.stokes_params[i], omb.weight[k]);
-    fits_io[j].add_wcs(fits_io_vec[j].hdus.back(),omb.wcs);
-    fits_io[j].hdus.back()->addKey("UNIT", "1/("+mb.sig_unit+")", "Unit of map");
-
-    // kernel map
-    if (rtcproc.run_kernel) {
-        fits_io[j].add_hdu("kernel_" + rtcproc.polarization.stokes_params[i], omb.kernel[k]);
-        fits_io[j].add_wcs(fits_io_vec[j].hdus.back(),omb.wcs);
-        fits_io[j].hdus.back()->addKey("UNIT", mb.sig_unit, "Unit of map");
-    }
-
-    // coverage map
-    fits_io[j].add_hdu("coverage_" + rtcproc.polarization.stokes_params[i], omb.coverage[k]);
-    fits_io[j].add_wcs(fits_io_vec[j].hdus.back(),omb.wcs);
-    fits_io[j].hdus.back()->addKey("UNIT", "sec", "Unit of map");
-
-    // coverage bool map
-    Eigen::MatrixXd ones, zeros;
-    ones.setOnes(omb.weight[k].rows(), omb.weight[k].cols());
-    zeros.setZero(omb.weight[k].rows(), omb.weight[k].cols());
-
-    auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = omb.calc_cov_region(omb.weight[k]);
-    auto coverage_bool = (omb.weight[k].array() < weight_threshold).select(zeros,ones);
-
-    fits_io[j].add_hdu("coverage_bool_" + rtcproc.polarization.stokes_params[i], coverage_bool);
-    fits_io[j].add_wcs(fits_io_vec[j].hdus.back(),omb.wcs);
-    fits_io[j].hdus.back()->addKey("UNIT", "N/A", "Unit of map");
-
-    // signal-to-noise map
-    Eigen::MatrixXd sig2noise = omb.signal[k].array()*sqrt(omb.weight[k].array());
-    fits_io[j].add_hdu("sig2noise_" + rtcproc.polarization.stokes_params[i], sig2noise);
-    fits_io[j].add_wcs(fits_io_vec[j].hdus.back(),omb.wcs);
-    fits_io[j].hdus.back()->addKey("UNIT", "N/A", "Unit of map");
 
     if (rtcproc.run_calibrate) {
-        if (mb.sig_unit == "Mjy/sr") {
-            fits_io[j].pfits->pHDU().addKey("to_mJy/beam", calib.array_beam_areas[calib.arrays(j)]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
-            fits_io[j].pfits->pHDU().addKey("to_Mjy/sr", 1, "Conversion to MJy/sr");
+        if (mb->sig_unit == "Mjy/sr") {
+            fits_io->at(j).pfits->pHDU().addKey("to_mJy/beam", calib.array_beam_areas[calib.arrays(j)]*MJY_SR_TO_mJY_ASEC,
+                                            "Conversion to mJy/beam");
+            fits_io->at(j).pfits->pHDU().addKey("to_Mjy/sr", 1, "Conversion to MJy/sr");
         }
 
-        else if (mb.sig_unit == "mJy/beam") {
-            fits_io[j].pfits->pHDU().addKey("to_mJy/beam", 1, "Conversion to mJy/beam");
-            fits_io[j].pfits->pHDU().addKey("to_Mjy/sr", 1/calib.mean_flux_conversion_factor[name], "Conversion to MJy/sr");
+        else if (mb->sig_unit == "mJy/beam") {
+            fits_io->at(j).pfits->pHDU().addKey("to_mJy/beam", 1, "Conversion to mJy/beam");
+            fits_io->at(j).pfits->pHDU().addKey("to_Mjy/sr", 1/calib.mean_flux_conversion_factor[name], "Conversion to MJy/sr");
         }
     }
 
     else {
-        fits_io[j].pfits->pHDU().addKey("to_mJy/beam", "N/A", "Conversion to mJy/beam");
-        fits_io[j].pfits->pHDU().addKey("to_Mjy/sr", "N/A", "Conversion to MJy/sr");
+        fits_io->at(j).pfits->pHDU().addKey("to_mJy/beam", "N/A", "Conversion to mJy/beam");
+        fits_io->at(j).pfits->pHDU().addKey("to_Mjy/sr", "N/A", "Conversion to MJy/sr");
     }
 
     // add obsnum
-    fits_io[j].pfits->pHDU().addKey("OBSNUM", obsnum, "Observation Number");
+    fits_io->at(j).pfits->pHDU().addKey("OBSNUM", obsnum, "Observation Number");
     // add citlali version
-    fits_io[j].pfits->pHDU().addKey("VERSION", CITLALI_GIT_VERSION, "CITLALI_GIT_VERSION");
+    fits_io->at(j).pfits->pHDU().addKey("VERSION", CITLALI_GIT_VERSION, "CITLALI_GIT_VERSION");
     // add tod type
-    fits_io[j].pfits->pHDU().addKey("TYPE", tod_type, "TOD Type");
+    fits_io->at(j).pfits->pHDU().addKey("TYPE", tod_type, "TOD Type");
     // add exposure time
-    fits_io[j].pfits->pHDU().addKey("EXPTIME", mb.exposure_time, "Exposure Time");
+    fits_io->at(j).pfits->pHDU().addKey("EXPTIME", mb->exposure_time, "Exposure Time");
 
     // add source ra
-    fits_io[j].pfits->pHDU().addKey("SRC_RA", telescope.tel_header["Header.Source.Ra"][0], "Source RA (radians)");
+    fits_io->at(j).pfits->pHDU().addKey("SRC_RA", telescope.tel_header["Header.Source.Ra"][0], "Source RA (radians)");
     // add source dec
-    fits_io[j].pfits->pHDU().addKey("SRC_DEC", telescope.tel_header["Header.Source.Dec"][0], "Source Dec (radians)");
+    fits_io->at(j).pfits->pHDU().addKey("SRC_DEC", telescope.tel_header["Header.Source.Dec"][0], "Source Dec (radians)");
     // add map tangent point ra
-    fits_io[j].pfits->pHDU().addKey("TAN_RA", telescope.tel_header["Header.Source.Ra"][0], "Map Tangent Point RA (radians)");
+    fits_io->at(j).pfits->pHDU().addKey("TAN_RA", telescope.tel_header["Header.Source.Ra"][0], "Map Tangent Point RA (radians)");
     // add map tangent point dec
-    fits_io[j].pfits->pHDU().addKey("TAN_DEC", telescope.tel_header["Header.Source.Dec"][0], "Map Tangent Point Dec (radians)");
+    fits_io->at(j).pfits->pHDU().addKey("TAN_DEC", telescope.tel_header["Header.Source.Dec"][0], "Map Tangent Point Dec (radians)");
 
     // add telescope file header information
     for (auto const& [key, val] : telescope.tel_header) {
-        fits_io[j].pfits->pHDU().addKey(key, val(0), key);
+        fits_io->at(j).pfits->pHDU().addKey(key, val(0), key);
     }
 }
 
-void Engine::write_psd() {
-    auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
-                                              engine_utils::toltecIO::psd>(obsnum_dir_name, redu_type, "",
-                                                                           obsnum, telescope.sim_obs);
+template <typename fits_io_type, class map_buffer_t>
+void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_buffer_t &mb,
+                        Eigen::Index i, Eigen::Index j, Eigen::Index k) {
+    // array name
+    std::string name = toltec_io.array_name_map[j];
+    // signal map
+    fits_io->at(j).add_hdu("signal_" + rtcproc.polarization.stokes_params[i], mb->signal[k]);
+    fits_io->at(j).add_wcs(fits_io->at(j).hdus.back(),mb->wcs);
+    fits_io->at(j).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
+
+    // weight map
+    fits_io->at(j).add_hdu("weight_" + rtcproc.polarization.stokes_params[i], mb->weight[k]);
+    fits_io->at(j).add_wcs(fits_io->at(j).hdus.back(),mb->wcs);
+    fits_io->at(j).hdus.back()->addKey("UNIT", "1/("+mb->sig_unit+")", "Unit of map");
+
+    // kernel map
+    if (rtcproc.run_kernel) {
+        fits_io->at(j).add_hdu("kernel_" + rtcproc.polarization.stokes_params[i], mb->kernel[k]);
+        fits_io->at(j).add_wcs(fits_io->at(j).hdus.back(),mb->wcs);
+        fits_io->at(j).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
+    }
+
+    // coverage map
+    fits_io->at(j).add_hdu("coverage_" + rtcproc.polarization.stokes_params[i], mb->coverage[k]);
+    fits_io->at(j).add_wcs(fits_io->at(j).hdus.back(),mb->wcs);
+    fits_io->at(j).hdus.back()->addKey("UNIT", "sec", "Unit of map");
+
+    // coverage bool map
+    Eigen::MatrixXd ones, zeros;
+    ones.setOnes(mb->weight[k].rows(), mb->weight[k].cols());
+    zeros.setZero(mb->weight[k].rows(), mb->weight[k].cols());
+
+    auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = mb->calc_cov_region(mb->weight[k]);
+    auto coverage_bool = (mb->weight[k].array() < weight_threshold).select(zeros,ones);
+
+    fits_io->at(j).add_hdu("coverage_bool_" + rtcproc.polarization.stokes_params[i], coverage_bool);
+    fits_io->at(j).add_wcs(fits_io->at(j).hdus.back(),mb->wcs);
+    fits_io->at(j).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
+
+    // signal-to-noise map
+    Eigen::MatrixXd sig2noise = mb->signal[k].array()*sqrt(mb->weight[k].array());
+    fits_io->at(j).add_hdu("sig2noise_" + rtcproc.polarization.stokes_params[i], sig2noise);
+    fits_io->at(j).add_wcs(fits_io->at(j).hdus.back(),mb->wcs);
+    fits_io->at(j).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
+
+    // add primary hdu
+    add_phdu(fits_io, mb, j);
+
+    // write noise maps
+    if (!mb->noise.empty()) {
+        SPDLOG_INFO("writing noise maps");
+        for (Eigen::Index n=0; n<mb->n_noise; n++) {
+            Eigen::Tensor<double,2> out = mb->noise[k].chip(n,2);
+            auto out_matrix = Eigen::Map<Eigen::MatrixXd>(out.data(), out.dimension(0), out.dimension(1));
+            SPDLOG_INFO("n {}", n);
+
+            noise_fits_io->at(j).add_hdu("signal_" + std::to_string(n) + "_" + rtcproc.polarization.stokes_params[i], out_matrix);
+            SPDLOG_INFO("added signal");
+            noise_fits_io->at(j).add_wcs(noise_fits_io->at(j).hdus.back(),mb->wcs);
+            SPDLOG_INFO("wcs");
+            noise_fits_io->at(j).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
+            SPDLOG_INFO("added unit");
+        }
+
+        // add primary hdu to noise files
+        add_phdu(noise_fits_io, mb, j);
+    }
+}
+
+template <mapmaking::MapType map_t, class map_buffer_t>
+void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
+    std::string filename, noise_filename;
+
+    if constexpr (map_t == mapmaking::RawObs) {
+        filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::psd,
+                                             engine_utils::toltecIO::raw>
+                   (dir_name, redu_type, "", obsnum, telescope.sim_obs);
+    }
+
+    else if constexpr (map_t == mapmaking::FilteredObs) {
+        filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::psd,
+                                             engine_utils::toltecIO::filtered>
+                   (dir_name, redu_type, "", obsnum, telescope.sim_obs);
+    }
+
+    else if constexpr (map_t == mapmaking::RawCoadd) {
+        filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::psd,
+                                             engine_utils::toltecIO::raw>
+                   (dir_name, redu_type, "", "", telescope.sim_obs);
+    }
+
+    else if constexpr (map_t == mapmaking::FilteredCoadd) {
+        filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::psd,
+                                             engine_utils::toltecIO::filtered>
+                   (dir_name, redu_type, "", "", telescope.sim_obs);
+    }
+
     netCDF::NcFile fo(filename + ".nc", netCDF::NcFile::replace);
 
     Eigen::Index k = 0;
@@ -820,9 +943,9 @@ void Engine::write_psd() {
             std::string name = toltec_io.array_name_map[array] + "_" + rtcproc.polarization.stokes_params[k];
 
             // add dimensions
-            netCDF::NcDim psd_dim = fo.addDim(name + "_nfreq",omb.psds[k].size());
-            netCDF::NcDim pds_2d_row_dim = fo.addDim(name + "_rows",omb.psd_2ds[k].rows());
-            netCDF::NcDim pds_2d_col_dim = fo.addDim(name + "_cols",omb.psd_2ds[k].cols());
+            netCDF::NcDim psd_dim = fo.addDim(name + "_nfreq",mb->psds[k].size());
+            netCDF::NcDim pds_2d_row_dim = fo.addDim(name + "_rows",mb->psd_2ds[k].rows());
+            netCDF::NcDim pds_2d_col_dim = fo.addDim(name + "_cols",mb->psd_2ds[k].cols());
 
             std::vector<netCDF::NcDim> dims;
             dims.push_back(pds_2d_row_dim);
@@ -830,15 +953,15 @@ void Engine::write_psd() {
 
             // psd
             netCDF::NcVar psd_v = fo.addVar(name + "_psd",netCDF::ncDouble, psd_dim);
-            psd_v.putVar(omb.psds[k].data());
+            psd_v.putVar(mb->psds[k].data());
 
             // psd freq
             netCDF::NcVar psd_freq_v = fo.addVar(name + "_psd_freq",netCDF::ncDouble, psd_dim);
-            psd_freq_v.putVar(omb.psd_freqs[k].data());
+            psd_freq_v.putVar(mb->psd_freqs[k].data());
 
             // transpose 2d psd and freq
-            Eigen::MatrixXd psd_2d_transposed = omb.psd_2ds[k].transpose();
-            Eigen::MatrixXd psd_2d_freq_transposed = omb.psd_2d_freqs[k].transpose();
+            Eigen::MatrixXd psd_2d_transposed = mb->psd_2ds[k].transpose();
+            Eigen::MatrixXd psd_2d_freq_transposed = mb->psd_2d_freqs[k].transpose();
 
             // 2d psd
             netCDF::NcVar psd_2d_v = fo.addVar(name + "_psd_2d",netCDF::ncDouble, dims);
@@ -855,12 +978,36 @@ void Engine::write_psd() {
     fo.close();
 }
 
-void Engine::write_hist() {
-    auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::hist>
-                    (obsnum_dir_name, redu_type, "", obsnum, telescope.sim_obs);
+template <mapmaking::MapType map_t, class map_buffer_t>
+void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
+    std::string filename;
+
+    if constexpr (map_t == mapmaking::RawObs) {
+        filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::hist,
+                                             engine_utils::toltecIO::raw>
+                   (dir_name, redu_type, "", obsnum, telescope.sim_obs);
+    }
+
+    else if constexpr (map_t == mapmaking::FilteredObs) {
+        filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::hist,
+                                             engine_utils::toltecIO::filtered>
+                    (dir_name, redu_type, "", obsnum, telescope.sim_obs);
+    }
+
+    else if constexpr (map_t == mapmaking::RawCoadd) {
+        filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::hist,
+                                             engine_utils::toltecIO::raw>
+                   (dir_name, redu_type, "", "", telescope.sim_obs);
+    }
+
+    else if constexpr (map_t == mapmaking::FilteredCoadd) {
+        filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::hist,
+                                             engine_utils::toltecIO::filtered>
+                   (dir_name, redu_type, "", "", telescope.sim_obs);
+    }
 
     netCDF::NcFile fo(filename + ".nc", netCDF::NcFile::replace);
-    netCDF::NcDim hist_bins_dim = fo.addDim("n_bins", omb.hist_n_bins);
+    netCDF::NcDim hist_bins_dim = fo.addDim("n_bins", mb->hist_n_bins);
 
     Eigen::Index k = 0;
 
@@ -872,11 +1019,11 @@ void Engine::write_hist() {
 
             // histogram bins
             netCDF::NcVar hist_bins_v = fo.addVar(name + "_bins",netCDF::ncDouble, hist_bins_dim);
-            hist_bins_v.putVar(omb.hist_bins[k].data());
+            hist_bins_v.putVar(mb->hist_bins[k].data());
 
             // histogram
             netCDF::NcVar hist_v = fo.addVar(name + "_hist",netCDF::ncDouble, hist_bins_dim);
-            hist_v.putVar(omb.hists[k].data());
+            hist_v.putVar(mb->hists[k].data());
             k++;
         }
     }

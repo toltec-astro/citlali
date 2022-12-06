@@ -66,8 +66,7 @@ public:
 };
 
 void Beammap::setup() {
-
-    // ensure all detectors are initiall flagged as good
+    // ensure all detectors are initially flagged as good
     calib.apt["flag"].setOnes();
 
     // set number of parameters for map fitting
@@ -486,6 +485,8 @@ auto Beammap::loop_pipeline() {
 
     calib.apt["converge_iter"] = converge_iter.cast<double> ();
 
+    SPDLOG_INFO("beammap_fluxes {}",beammap_fluxes);
+
     // array indices for current polarization
     auto array_indices = ptcs[0].array_indices.data;
 
@@ -515,10 +516,12 @@ auto Beammap::loop_pipeline() {
         double det_fwhm = (calib.apt["a_fwhm"](i) + calib.apt["b_fwhm"](i))/2;
         double det_beamsize = 2.*pi*pow(det_fwhm*FWHM_TO_STD,2);
 
-        // set flux scale (always in MJy/sr)
-        calib.apt["flxscale"](i) = beammap_fluxes["array_name"]/params(i,0)/det_beamsize*mJY_ASEC_to_MJY_SR;
+        SPDLOG_INFO("det_fwhm {} det_beamsize {}",det_fwhm,det_beamsize);
 
-        SPDLOG_INFO("beammap_fluxes[array_name] {} params(i,0) {}",beammap_fluxes["array_name"], params(i,0));
+        // set flux scale (always in MJy/sr)
+        calib.apt["flxscale"](i) = mJY_ASEC_to_MJY_SR*beammap_fluxes[array_name]/params(i,0)/det_beamsize;
+
+        SPDLOG_INFO("beammap_fluxes[array_name] {} params(i,0) {}",beammap_fluxes[array_name], params(i,0));
 
         // get detector pointing
 
@@ -592,10 +595,11 @@ void Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 template <mapmaking::MapType map_type>
 void Beammap::output() {
     SPDLOG_INFO("writing apt table");
-    auto apt_filename = toltec_io.create_filename<engine_utils::toltecIO::apt, engine_utils::toltecIO::map>
+    auto apt_filename = toltec_io.create_filename<engine_utils::toltecIO::apt, engine_utils::toltecIO::map,
+                                                  engine_utils::toltecIO::raw>
                         (obsnum_dir_name, redu_type, "", obsnum, telescope.sim_obs);
 
-    Eigen::MatrixXf apt_table(calib.n_dets, calib.apt_header_keys.size());
+    Eigen::MatrixXd apt_table(calib.n_dets, calib.apt_header_keys.size());
 
     // convert to floats
     Eigen::Index i = 0;
@@ -603,7 +607,7 @@ void Beammap::output() {
         SPDLOG_INFO("apt header key {}", x);
         SPDLOG_INFO("apt key {}", calib.apt[x]);
 
-        apt_table.col(i) = calib.apt[x].cast<float> ();
+        apt_table.col(i) = calib.apt[x].cast<double> ();
         i++;
     }
 
@@ -621,7 +625,6 @@ void Beammap::output() {
                     fits_io_vec[array].add_hdu("signal_" + std::to_string(k) + "_" + rtcproc.polarization.stokes_params[i], omb.signal[k]);
                     fits_io_vec[array].add_wcs(fits_io_vec[array].hdus.back(),omb.wcs);
                     fits_io_vec[array].hdus.back()->addKey("UNIT", omb.sig_unit, "Unit of map");
-
 
                     // weight
                     fits_io_vec[array].add_hdu("weight_" + std::to_string(k) + "_" + rtcproc.polarization.stokes_params[i], omb.weight[k]);
@@ -667,7 +670,7 @@ void Beammap::output() {
             // add exposure time
             fits_io_vec[array].pfits->pHDU().addKey("EXPTIME", omb.exposure_time, "Exposure Time");
 
-                 // add source ra
+            // add source ra
             fits_io_vec[j].pfits->pHDU().addKey("SRC_RA", telescope.tel_header["Header.Source.Ra"][0], "Source RA (radians)");
             // add source dec
             fits_io_vec[j].pfits->pHDU().addKey("SRC_DEC", telescope.tel_header["Header.Source.Dec"][0], "Source Dec (radians)");
@@ -676,7 +679,7 @@ void Beammap::output() {
             // add map tangent point dec
             fits_io_vec[j].pfits->pHDU().addKey("TAN_DEC", telescope.tel_header["Header.Source.Dec"][0], "Map Tangent Point Dec (radians)");
 
-                 // add telescope file header information
+            // add telescope file header information
             for (auto const& [key, val] : telescope.tel_header) {
                 fits_io_vec[j].pfits->pHDU().addKey(key, val(0), key);
             }

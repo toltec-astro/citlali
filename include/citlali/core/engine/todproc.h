@@ -734,11 +734,22 @@ void TimeOrderedDataProc<EngineType>::setup_filenames() {
             auto array = engine().calib.arrays[i];
             std::string array_name = engine().toltec_io.array_name_map[array];
             auto filename = engine().toltec_io.template create_filename<engine_utils::toltecIO::toltec,
-                                                                        engine_utils::toltecIO::map>(engine().coadd_dir_name + "/raw/",
+                                                                        engine_utils::toltecIO::map,
+                                                                        engine_utils::toltecIO::raw>(engine().coadd_dir_name + "/raw/",
                                                                                                      engine().redu_type, array_name,
                                                                                                      "", engine().telescope.sim_obs);
             fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
             engine().coadd_fits_io_vec.push_back(std::move(fits_io));
+
+            if (engine().run_noise) {
+                auto filename = engine().toltec_io.template create_filename<engine_utils::toltecIO::toltec,
+                                                                            engine_utils::toltecIO::noise,
+                                                                            engine_utils::toltecIO::raw>(engine().coadd_dir_name + "/raw/",
+                                                                                                         engine().redu_type, array_name,
+                                                                                                         "", engine().telescope.sim_obs);
+                fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
+                engine().coadd_noise_fits_io_vec.push_back(std::move(fits_io));
+            }
         }
 
         if (engine().run_map_filter) {
@@ -746,11 +757,22 @@ void TimeOrderedDataProc<EngineType>::setup_filenames() {
                 auto array = engine().calib.arrays[i];
                 std::string array_name = engine().toltec_io.array_name_map[array];
                 auto filename = engine().toltec_io.template create_filename<engine_utils::toltecIO::toltec,
-                                                                            engine_utils::toltecIO::map>(engine().coadd_dir_name + "/filtered/",
+                                                                            engine_utils::toltecIO::map,
+                                                                            engine_utils::toltecIO::filtered>(engine().coadd_dir_name + "/filtered/",
                                                                                                          engine().redu_type, array_name,
                                                                                                          "", engine().telescope.sim_obs);
                 fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
-                engine().coadd_fits_io_vec.push_back(std::move(fits_io));
+                engine().filtered_coadd_fits_io_vec.push_back(std::move(fits_io));
+
+                if (engine().run_noise) {
+                    auto filename = engine().toltec_io.template create_filename<engine_utils::toltecIO::toltec,
+                                                                                engine_utils::toltecIO::noise,
+                                                                                engine_utils::toltecIO::filtered>(engine().coadd_dir_name + "/filtered/",
+                                                                                                               engine().redu_type, array_name,
+                                                                                                               "", engine().telescope.sim_obs);
+                    fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
+                    engine().filtered_coadd_noise_fits_io_vec.push_back(std::move(fits_io));
+                }
             }
         }
     }

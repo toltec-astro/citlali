@@ -19,9 +19,10 @@ public:
     // product type
     enum ProdType {
         map = 0,
-        psd = 1,
-        hist = 2,
-        timestream = 3,
+        noise = 1,
+        psd = 2,
+        hist = 3,
+        timestream = 4,
     };
 
     // raw or filtered
@@ -43,11 +44,11 @@ public:
         {2, 9.5}
     };
 
-    template <toltecIO::DataType data_t, toltecIO::ProdType prod_t>
+    template <toltecIO::DataType data_t, toltecIO::ProdType prod_t, toltecIO::FilterType filter_t>
     std::string create_filename(const std::string filepath, const std::string, std::string, std::string, const bool);
 };
 
-template <toltecIO::DataType data_t, toltecIO::ProdType prod_t>
+template <toltecIO::DataType data_t, toltecIO::ProdType prod_t, toltecIO::FilterType filter_t>
 std::string toltecIO::create_filename(const std::string filepath, const std::string redu_type,
                                       std::string array_name, std::string obsnum, const bool simu_obs) {
 
@@ -55,37 +56,41 @@ std::string toltecIO::create_filename(const std::string filepath, const std::str
 
     /* data type */
     if constexpr (data_t == toltec) {
-        filename  = filename + "toltec_";
+        filename  = filename + "toltec";
     }
 
     else if constexpr (data_t == apt) {
-        filename  = filename + "apt_";
+        filename  = filename + "apt";
     }
 
     else if constexpr (data_t == ppt) {
-        filename  = filename + "ppt_";
+        filename  = filename + "ppt";
     }
 
     /* real data or simulation */
     if (!simu_obs) {
-        filename = filename + "commissioning_";
+        filename = filename + "_commissioning";
     }
 
     else {
-        filename = filename + "simu_";
+        filename = filename + "_simu";
     }
 
     if (!array_name.empty()) {
-        filename = filename + array_name + "_";
+        filename = filename + "_" + array_name;
     }
 
-    filename = filename + redu_type;
+    if (!redu_type.empty()) {
+        filename = filename + "_" + redu_type;
+    }
 
-    filename = filename + "_" + obsnum;
+    if (!obsnum.empty()) {
+        filename = filename + "_" + obsnum;
+    }
 
     /* prod type */
-    if constexpr (prod_t == map) {
-
+    if constexpr (prod_t == noise) {
+        filename = filename + "_noise";
     }
 
     if constexpr (prod_t == psd) {
@@ -99,6 +104,11 @@ std::string toltecIO::create_filename(const std::string filepath, const std::str
     if constexpr (prod_t == timestream) {
         filename = filename + "_timestream";
     }
+
+    if constexpr (filter_t == filtered) {
+        filename = filename + "_filtered";
+    }
+
 
     return filename;
 }

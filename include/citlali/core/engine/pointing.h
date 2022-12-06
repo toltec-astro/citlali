@@ -341,17 +341,21 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 template <mapmaking::MapType map_type>
 void Pointing::output() {
     SPDLOG_INFO("writing ppt table");
-    auto ppt_filename = toltec_io.create_filename<engine_utils::toltecIO::ppt, engine_utils::toltecIO::map>
-                        (obsnum_dir_name, redu_type, "", obsnum, telescope.sim_obs);
+    auto ppt_filename = toltec_io.create_filename<engine_utils::toltecIO::ppt, engine_utils::toltecIO::map,
+                                                  engine_utils::toltecIO::raw>
+                        (obsnum_dir_name + "/raw/", redu_type, "", obsnum, telescope.sim_obs);
 
+    // matrix to hold pointing fit values and errors
     Eigen::MatrixXf ppt_table(n_maps, 2*n_params + 1);
 
+    // loop through params and add arrays
     for (const auto &stokes_param: rtcproc.polarization.stokes_params) {
         for (Eigen::Index i=0; i<calib.arrays.size(); i++) {
             ppt_table(i,0) = calib.arrays(i);
         }
     }
 
+    // populate table
     Eigen::Index j = 0;
     for (Eigen::Index i=1; i<2*n_params; i=i+2) {
         ppt_table.col(i) = params.col(j).cast <float> ();
@@ -359,31 +363,89 @@ void Pointing::output() {
         j++;
     }
 
+    // write table
     to_ecsv_from_matrix(ppt_filename, ppt_table, ppt_header, ppt_meta);
 
+    // pointer to map buffer
+    mapmaking::ObsMapBuffer* mb = NULL;
+    // pointer to data file fits vector
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* f_io = NULL;
+    // pointer to noise file fits vector
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* n_io = NULL;
+
+    // directory name
+    std::string dir_name;
+
+    // raw obs maps
+    if constexpr (map_type == mapmaking::RawObs) {
+        mb = &omb;
+        f_io = &fits_io_vec;
+        n_io = &noise_fits_io_vec;
+        dir_name = obsnum_dir_name + "/raw/";
+    }
+
+    // filtered obs maps
+    else if constexpr (map_type == mapmaking::FilteredObs) {
+        mb = &omb;
+        f_io = &filtered_fits_io_vec;
+        n_io = &filtered_noise_fits_io_vec;
+        dir_name = obsnum_dir_name + "/filtered/";
+    }
+
+    // raw coadded maps
+    else if constexpr (map_type == mapmaking::RawCoadd) {
+        mb = &cmb;
+        f_io = &coadd_fits_io_vec;
+        n_io = &coadd_noise_fits_io_vec;
+        dir_name = coadd_dir_name + "/raw/";
+    }
+
+    // filtered coadded maps
+    else if constexpr (map_type == mapmaking::FilteredCoadd) {
+        mb = &cmb;
+        f_io = &filtered_coadd_fits_io_vec;
+        n_io = &filtered_coadd_noise_fits_io_vec;
+        dir_name = coadd_dir_name + "/filtered/";
+    }
+
     SPDLOG_INFO("writing maps");
+    // loop through and write maps
     Eigen::Index k = 0;
     for (Eigen::Index i=0; i<rtcproc.polarization.stokes_params.size(); i++) {
         for (Eigen::Index j=0; j<n_maps/rtcproc.polarization.stokes_params.size(); j++) {
-            SPDLOG_INFO("i {}, j {}, k {}",i,j,k);
-            if constexpr (map_type == mapmaking::Obs) {
-                write_maps(fits_io_vec,omb,i,j,j);
-            }
-            else if constexpr (map_type == mapmaking::Coadd) {
-                write_maps(coadd_fits_io_vec,cmb,i,j,j);
-            }
-
+            write_maps(f_io,n_io,mb,i,j,j);
             k++;
         }
     }
 
+    // clear fits file vectors to ensure its closed.
+    f_io->clear();
+    n_io->clear();
+
+    /*SPDLOG_INFO("writing maps");
+    Eigen::Index k = 0;
+    for (Eigen::Index i=0; i<rtcproc.polarization.stokes_params.size(); i++) {
+        for (Eigen::Index j=0; j<n_maps/rtcproc.polarization.stokes_params.size(); j++) {
+
+            SPDLOG_INFO("i {}, j {}, k {}",i,j,k);
+            if constexpr (map_type == mapmaking::RawObs) {
+                write_maps(fits_io_vec,noise_fits_io_vec,omb,i,j,j);
+            }
+            else if constexpr (map_type == mapmaking::RawCoadd) {
+                write_maps(coadd_fits_io_vec,noise_fits_io_vec,cmb,i,j,j);
+            }
+
+            k++;
+        }
+    }*/
+
     // empty fits vector
-    fits_io_vec.clear();
+    //fits_io_vec.clear();
 
     SPDLOG_INFO("done with writing maps");
 
-    write_psd();
+    write_psd<map_type>(mb, dir_name);
     SPDLOG_INFO("done with psd");
-    write_hist();
+    write_hist<map_type>(mb, dir_name);
     SPDLOG_INFO("done with hist");
 }

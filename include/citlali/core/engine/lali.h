@@ -136,7 +136,6 @@ auto Lali::run() {
 
             // remove outliers
             SPDLOG_INFO("removing outlier weights");
-            //ptcproc.remove_bad_dets(ptcdata, calib.apt, det_indices);
             auto calib_scan = ptcproc.remove_bad_dets_nw(ptcdata, calib, det_indices, nw_indices, array_indices);
             //map_indices = calc_map_indices(det_indices, nw_indices, array_indices, stokes_param);
 
@@ -240,31 +239,88 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
 template <mapmaking::MapType map_type>
 void Lali::output() {
+
+    // pointer to map buffer
+    mapmaking::ObsMapBuffer* mb = NULL;
+    // pointer to data file fits vector
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* f_io = NULL;
+    // pointer to noise file fits vector
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* n_io = NULL;
+
+    // directory name
+    std::string dir_name;
+
+    // raw obs maps
+    if constexpr (map_type == mapmaking::RawObs) {
+        mb = &omb;
+        f_io = &fits_io_vec;
+        n_io = &noise_fits_io_vec;
+        dir_name = obsnum_dir_name + "/raw/";
+    }
+
+    // filtered obs maps
+    else if constexpr (map_type == mapmaking::FilteredObs) {
+        mb = &omb;
+        f_io = &filtered_fits_io_vec;
+        n_io = &filtered_noise_fits_io_vec;
+        dir_name = obsnum_dir_name + "/filtered/";
+    }
+
+    // raw coadded maps
+    else if constexpr (map_type == mapmaking::RawCoadd) {
+        mb = &cmb;
+        f_io = &coadd_fits_io_vec;
+        n_io = &coadd_noise_fits_io_vec;
+        dir_name = coadd_dir_name + "/raw/";
+    }
+
+    // filtered coadded maps
+    else if constexpr (map_type == mapmaking::FilteredCoadd) {
+        mb = &cmb;
+        f_io = &filtered_coadd_fits_io_vec;
+        n_io = &filtered_coadd_noise_fits_io_vec;
+        dir_name = coadd_dir_name + "/filtered/";
+    }
+
     SPDLOG_INFO("writing maps");
+    // loop through and write maps
+    Eigen::Index k = 0;
+    for (Eigen::Index i=0; i<rtcproc.polarization.stokes_params.size(); i++) {
+        for (Eigen::Index j=0; j<n_maps/rtcproc.polarization.stokes_params.size(); j++) {
+            write_maps(f_io,n_io,mb,i,j,j);
+            k++;
+        }
+    }
+
+    // clear fits file vectors to ensure its closed.
+    f_io->clear();
+    n_io->clear();
+
+    /*SPDLOG_INFO("writing maps");
     Eigen::Index k = 0;
     for (Eigen::Index i=0; i<rtcproc.polarization.stokes_params.size(); i++) {
         for (Eigen::Index j=0; j<n_maps/rtcproc.polarization.stokes_params.size(); j++) {
 
             SPDLOG_INFO("i {}, j {}, k {}",i,j,k);
-            if constexpr (map_type == mapmaking::Obs) {
-                write_maps(fits_io_vec,omb,i,j,j);
+            if constexpr (map_type == mapmaking::RawObs) {
+                write_maps(fits_io_vec,noise_fits_io_vec,omb,i,j,j);
             }
-            else if constexpr (map_type == mapmaking::Coadd) {
-                write_maps(coadd_fits_io_vec,cmb,i,j,j);
+            else if constexpr (map_type == mapmaking::RawCoadd) {
+                write_maps(coadd_fits_io_vec,noise_fits_io_vec,cmb,i,j,j);
             }
 
             k++;
         }
-    }
+    }*/
 
     // empty fits vector
-    fits_io_vec.clear();
+    //fits_io_vec.clear();
 
     SPDLOG_INFO("done with writing maps");
 
-    write_psd();
-    write_hist();
-
+    write_psd<map_type>(mb, dir_name);
     SPDLOG_INFO("done with psd");
+    write_hist<map_type>(mb, dir_name);
+    SPDLOG_INFO("done with hist");
 
 }

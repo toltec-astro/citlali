@@ -368,6 +368,16 @@ int run(const rc_t &rc) {
                     // create obsnum directory
                     fs::create_directories(todproc.engine().obsnum_dir_name);
 
+                    // create raw obsnum directory
+                    fs::create_directories(todproc.engine().obsnum_dir_name + "/raw/");
+
+                    // create filtered obsnum directory
+                    if (!todproc.engine().run_coadd) {
+                        if (todproc.engine().run_map_filter) {
+                            fs::create_directories(todproc.engine().obsnum_dir_name + "/filtered/");
+                        }
+                    }
+
                     // get apt table
                     auto apt_path = rawobs.array_prop_table().filepath();
                     SPDLOG_INFO("getting array properties table {}", apt_path);
@@ -381,7 +391,6 @@ int run(const rc_t &rc) {
                     todproc.engine().calib.get_apt(apt_path, raw_filenames, interfaces);
 
                     SPDLOG_INFO("array_limits {}", todproc.engine().calib.array_limits);
-
 
                     // get hwp if polarized reduction is requested
                     if (todproc.engine().rtcproc.run_polarization) {
@@ -445,7 +454,7 @@ int run(const rc_t &rc) {
                     todproc.engine().pipeline(kidsproc, rawobs);
 
                     // output
-                    todproc.engine().template output<mapmaking::Obs>();
+                    todproc.engine().template output<mapmaking::RawObs>();
 
                     // coadd
                     if (todproc.engine().run_coadd) {
@@ -455,7 +464,7 @@ int run(const rc_t &rc) {
                     else if (todproc.engine().run_map_filter) {
                         // filter
                         // output filtered maps
-                        todproc.engine().template output<mapmaking::Obs>();
+                        todproc.engine().template output<mapmaking::FilteredObs>();
 
                     }
                 }
@@ -470,7 +479,7 @@ int run(const rc_t &rc) {
                     todproc.engine().cmb.calc_map_hist();
 
                     // output coadd
-                    todproc.engine().template output<mapmaking::Coadd>();
+                    todproc.engine().template output<mapmaking::RawCoadd>();
 
                     if (todproc.engine().run_map_filter) {
                         // filter
@@ -481,7 +490,7 @@ int run(const rc_t &rc) {
                         todproc.engine().cmb.calc_map_hist();
 
                         // output filtered coadd
-                        todproc.engine().template output<mapmaking::Coadd>();
+                        todproc.engine().template output<mapmaking::FilteredCoadd>();
                     }
                 }
 
