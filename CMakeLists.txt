@@ -44,8 +44,16 @@ set(dep_libs ${dep_libs} tula::CCfits)
 add_library(citlali STATIC)
 target_sources(citlali
     PRIVATE
-    "src/citlali/core/gauss_models.cpp"
-    #"src/citlali/core/sensitivity.cpp"
+    #"src/citlali/core/engine/todproc.cpp"
+    #"src/citlali/core/engine/kidsproc.cpp"
+    "src/citlali/core/engine/calib.cpp"
+    "src/citlali/core/engine/telescope.cpp"
+    #"src/citlali/core/engine/engine.cpp"
+    "src/citlali/core/utils/gauss_models.cpp"
+    "src/citlali/core/timestream/ptc/sensitivity.cpp"
+    #"src/citlali/core/engine/lali.cpp"
+    #"src/citlali/core/engine/pointing.cpp"
+    #"src/citlali/core/engine/beammap.cpp"
     )
 target_include_directories(citlali PUBLIC "include")
 target_link_libraries(citlali PUBLIC ${dep_libs})
