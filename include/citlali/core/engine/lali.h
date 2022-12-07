@@ -95,28 +95,17 @@ auto Lali::run() {
             TCData<TCDataKind::RTC,Eigen::MatrixXd> rtcdata_pol;
             // demodulate
             SPDLOG_INFO("demodulating polarization");
-            SPDLOG_INFO("array_limits {}", calib.array_limits);
-
             auto [array_indices, nw_indices, det_indices] = rtcproc.polarization.demodulate_timestream(rtcdata, rtcdata_pol,
                                                                                                        stokes_param,
                                                                                                        redu_type, calib);
             // get indices for maps
             SPDLOG_INFO("calculating map indices");
-            SPDLOG_INFO("array_limits {}", calib.array_limits);
-
             auto map_indices = calc_map_indices(det_indices, nw_indices, array_indices, stokes_param);
 
             // run rtcproc
             SPDLOG_INFO("rtcproc");
-            SPDLOG_INFO("array_limits {}", calib.array_limits);
-
             rtcproc.run(rtcdata_pol, ptcdata, telescope.pixel_axes, redu_type, calib, telescope, pointing_offsets_arcsec, det_indices,
                         array_indices, map_indices, omb.pixel_size_rad);
-
-            SPDLOG_INFO("scans before clean {}", ptcdata.scans.data);
-            SPDLOG_INFO("scans max before clean {}", ptcdata.scans.data.maxCoeff());
-            SPDLOG_INFO("scans min before clean {}", ptcdata.scans.data.minCoeff());
-            SPDLOG_INFO("flags before clean {}", ptcdata.flags.data);
 
             // write rtc timestreams
             if (run_tod_output) {
@@ -129,27 +118,25 @@ auto Lali::run() {
 
             // remove flagged dets
             SPDLOG_INFO("removing flagged dets");
-
-            SPDLOG_INFO("array_limits {}", calib.array_limits);
-
             ptcproc.remove_flagged_dets(ptcdata, calib.apt, det_indices);
 
             // remove outliers
             SPDLOG_INFO("removing outlier weights");
             auto calib_scan = ptcproc.remove_bad_dets_nw(ptcdata, calib, det_indices, nw_indices, array_indices);
-            //map_indices = calc_map_indices(det_indices, nw_indices, array_indices, stokes_param);
 
             // run cleaning
             if (stokes_param == "I") {
                 SPDLOG_INFO("ptcproc");
                 ptcproc.run(ptcdata, ptcdata, calib);
-                //ptcproc.run(ptcdata, ptcdata, calib_scan);
             }
 
             // calculate weights
             SPDLOG_INFO("calculating weights");
             ptcproc.calc_weights(ptcdata, calib.apt, telescope);
-            //ptcproc.calc_weights(ptcdata, calib_scan.apt, telescope);
+
+            if (verbose_mode) {
+                write_chunk_summary(ptcdata);
+            }
 
             // write ptc timestreams
             if (run_tod_output) {
@@ -159,20 +146,11 @@ auto Lali::run() {
                                              det_indices, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
                 }
             }
-            SPDLOG_INFO("scans after{}", ptcdata.scans.data);
-            SPDLOG_INFO("scans max after clean {}", ptcdata.scans.data.maxCoeff());
-            SPDLOG_INFO("scans min after clean {}", ptcdata.scans.data.minCoeff());
-            SPDLOG_INFO("flags after {}", ptcdata.flags.data);
-            SPDLOG_INFO("weight after {}", ptcdata.weights.data);
 
             // populate maps
             SPDLOG_INFO("populating maps");
             mapmaking::populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
                                            redu_type, calib.apt, pointing_offsets_arcsec, telescope.d_fsmp, run_noise);
-            //mapmaking::populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
-            //                               redu_type, calib_scan.apt, pointing_offsets_arcsec, telescope.d_fsmp, run_noise);
-            SPDLOG_INFO("signal map {}", omb.signal);
-            SPDLOG_INFO("cov map {}", omb.coverage);
         }
 
         n_scans_done++;
@@ -228,12 +206,11 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     // normalize maps
     SPDLOG_INFO("normalizing maps");
     omb.normalize_maps();
-
     // calculate map psds
-    SPDLOG_INFO("calc_map_psd");
+    SPDLOG_INFO("calculating map psd");
     omb.calc_map_psd();
     // calculate map histograms
-    SPDLOG_INFO("calc_map_hist");
+    SPDLOG_INFO("calculating map histogram");
     omb.calc_map_hist();
 }
 
@@ -282,7 +259,6 @@ void Lali::output() {
         dir_name = coadd_dir_name + "/filtered/";
     }
 
-    SPDLOG_INFO("writing maps");
     // loop through and write maps
     Eigen::Index k = 0;
     for (Eigen::Index i=0; i<rtcproc.polarization.stokes_params.size(); i++) {
@@ -296,31 +272,7 @@ void Lali::output() {
     f_io->clear();
     n_io->clear();
 
-    /*SPDLOG_INFO("writing maps");
-    Eigen::Index k = 0;
-    for (Eigen::Index i=0; i<rtcproc.polarization.stokes_params.size(); i++) {
-        for (Eigen::Index j=0; j<n_maps/rtcproc.polarization.stokes_params.size(); j++) {
-
-            SPDLOG_INFO("i {}, j {}, k {}",i,j,k);
-            if constexpr (map_type == mapmaking::RawObs) {
-                write_maps(fits_io_vec,noise_fits_io_vec,omb,i,j,j);
-            }
-            else if constexpr (map_type == mapmaking::RawCoadd) {
-                write_maps(coadd_fits_io_vec,noise_fits_io_vec,cmb,i,j,j);
-            }
-
-            k++;
-        }
-    }*/
-
-    // empty fits vector
-    //fits_io_vec.clear();
-
-    SPDLOG_INFO("done with writing maps");
-
+    // write psd and histogram files
     write_psd<map_type>(mb, dir_name);
-    SPDLOG_INFO("done with psd");
     write_hist<map_type>(mb, dir_name);
-    SPDLOG_INFO("done with hist");
-
 }

@@ -10,6 +10,8 @@
 #include <tula/logging.h>
 #include <kids/core/wcs.h>
 
+#include <citlali/core/utils/utils.h>
+
 namespace timestream {
 
 namespace wcs = kids::wcs;
@@ -150,6 +152,16 @@ struct TCData<TCDataKind::RTC,RefType>
     Base::data_t<std::map<std::string, Eigen::VectorXd>> tel_data;
     // hwp angle for scan
     Base::data_t<Eigen::VectorXd> hwp_angle;
+    // time of rtc creation
+    std::string creation_time = engine_utils::current_date_time();
+
+    bool demodulated = false;
+    bool kernel_generated = false;
+    bool despiked = false;
+    bool tod_filtered = false;
+    bool downsampled = false;
+    bool calibrated = false;
+    bool cleaned = false;
 };
 
 template <typename RefType>
@@ -173,11 +185,25 @@ struct TCData<TCDataKind::PTC, RefType>
     Base::data_t<std::map<std::string, Eigen::VectorXd>> tel_data;
     // hwp angle for scan
     Base::data_t<Eigen::VectorXd> hwp_angle;
+    // eigenvalues for scan
+    Base::data_t<Eigen::VectorXd> evals;
     // vectors for mapping apt table onto timestreams
     Base::data_t<Eigen::VectorXI> det_indices, nw_indices, array_indices, map_indices;
+    // number of detectors lower than stddev limit
+    int n_low_dets;
+    // number of detectors lower than stddev limit
+    int n_high_dets;
+    // time of ptc creation
+    std::string creation_time = engine_utils::current_date_time();
 
+    bool demodulated = false;
+    bool kernel_generated = false;
+    bool despiked = false;
+    bool tod_filtered = false;
+    bool downsampled = false;
+    bool calibrated = false;
+    bool cleaned = false;
 };
-
 
 /// @brief data class of runtime variant kind.
 template <TCDataKind kind_>

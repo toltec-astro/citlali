@@ -109,7 +109,6 @@ std::string toltecIO::create_filename(const std::string filepath, const std::str
         filename = filename + "_filtered";
     }
 
-
     return filename;
 }
 

@@ -45,6 +45,9 @@ public:
     // current iteration fit errors
     Eigen::MatrixXd perrors;
 
+    // good fits
+    Eigen::Matrix<bool, Eigen::Dynamic, 1> good_fits;
+
     // placeholder vectors for grppi maps
     std::vector<int> scan_in_vec, scan_out_vec;
     std::vector<int> det_in_vec, det_out_vec;
@@ -84,6 +87,9 @@ void Beammap::setup() {
     // resize the current fit matrix
     params.setZero(calib.n_dets, n_params);
     perrors.setZero(calib.n_dets, n_params);
+
+    // resize good fits
+    good_fits.setZero(calib.n_dets);
 
     // initially all detectors are unconverged
     converged.setZero(calib.n_dets);
@@ -208,7 +214,6 @@ auto Beammap::run_timestream() {
             auto tone_axis = scan_rawobs[i].wcs.tone_axis("flag");
             tone_flags.segment(j,tone_axis.size()) = tone_axis;
             j = j + tone_axis.size();
-            SPDLOG_INFO("tone_axis(flag) {}", tone_axis);
         }
 
         // starting index for scan
@@ -238,6 +243,8 @@ auto Beammap::run_timestream() {
 
         // loop through polarizations
         for (const auto &stokes_param: rtcproc.polarization.stokes_params) {
+            SPDLOG_INFO("starting scan {}. {}/{} scans completed", rtcdata.index.data + 1, n_scans_done, telescope.scan_indices.cols());
+
             SPDLOG_INFO("reducing {} timestream",stokes_param);
             // create a new rtcdata for each polarization
             TCData<TCDataKind::RTC,Eigen::MatrixXd> rtcdata_pol;
@@ -303,15 +310,28 @@ auto Beammap::run_loop() {
 
         // cleaning
         grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
-            // remove outliers
-            //SPDLOG_INFO("removing outlier weights");
-            //ptcproc.remove_bad_dets(ptcdata, calib.apt, det_indices);
-            //ptcproc.remove_bad_dets_nw(ptcs[i], calib, ptcs[i].det_indices.data);
 
-            // run cleaning
+            if (current_iter > 0) {
+                SPDLOG_INFO("subtract gaussian");
+                params.col(0) = -params.col(0);
+                ptcproc.add_gaussian(ptcs[i], params, telescope.pixel_axes,redu_type, calib.apt,pointing_offsets_arcsec,
+                                     omb.pixel_size_rad, omb.n_rows, omb.n_cols,ptcs[i].map_indices.data, ptcs[i].det_indices.data);
+            }
+
+
+            SPDLOG_INFO("removing outlier weights");
+            auto calib_scan = ptcproc.remove_bad_dets_nw(ptcs[i], calib, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
+                                                         ptcs[i].array_indices.data);
             SPDLOG_INFO("ptcproc");
             ptcproc.run(ptcs[i], ptcs[i], calib);
-            SPDLOG_INFO("i {}",i);
+
+            if (current_iter > 0) {
+                SPDLOG_INFO("add gaussian");
+                params.col(0) = -params.col(0);
+                ptcproc.add_gaussian(ptcs[i], params, telescope.pixel_axes,redu_type, calib.apt,pointing_offsets_arcsec,
+                                     omb.pixel_size_rad, omb.n_rows, omb.n_cols,ptcs[i].map_indices.data, ptcs[i].det_indices.data);
+            }
+
             return 0;
         });
 
@@ -321,11 +341,8 @@ auto Beammap::run_loop() {
             Eigen::MatrixXd det_sens, noise_flux;
             calc_sensitivity(ptcs, det_sens, noise_flux, telescope.d_fsmp, i, {sens_psd_limits(0), sens_psd_limits(1)});
             calib.apt["sens"](i) = tula::alg::median(det_sens);
-            SPDLOG_INFO("i {}",i);
             return 0;
         });
-
-        SPDLOG_INFO("sens {}",calib.apt["sens"]);
 
         // calculate weights, populate maps
         grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
@@ -337,8 +354,10 @@ auto Beammap::run_loop() {
             if (run_tod_output) {
                 SPDLOG_INFO("writing ptcdata");
                 if (tod_output_type == "ptc") {
-                    ptcproc.append_to_netcdf(ptcs[i], tod_filename["I"], redu_type, telescope.pixel_axes, pointing_offsets_arcsec,
-                                             ptcs[i].det_indices.data, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
+                    if (current_iter == 0) {
+                        ptcproc.append_to_netcdf(ptcs[i], tod_filename["I"], redu_type, telescope.pixel_axes, pointing_offsets_arcsec,
+                                                ptcs[i].det_indices.data, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
+                    }
                 }
             }
 
@@ -364,10 +383,12 @@ auto Beammap::run_loop() {
 
             params.row(i) = det_params;
             perrors.row(i) = det_perror;
+            good_fits(i) = good_fit;
 
-            SPDLOG_INFO("det_params {}, det_perror {} {}",det_params,det_perror,good_fit);
-            return 0;});
+            return 0;}
+        );
 
+        SPDLOG_INFO("number of good beammap fits {}/{}", (good_fits.array()==true).count(), calib.n_dets);
 
         // increment loop iteration
         current_iter++;
@@ -456,14 +477,6 @@ auto Beammap::loop_pipeline() {
     // empty initial ptcdata vector to save memory
     ptcs0.clear();
 
-    SPDLOG_INFO("params {}", params);
-    SPDLOG_INFO("1/ASEC_TO_RAD {}",1/ASEC_TO_RAD);
-    SPDLOG_INFO("RAD_TO_ASEC {}",RAD_TO_ASEC);
-
-    SPDLOG_INFO("omb.n_cols/2 {}",omb.n_cols/2);
-    SPDLOG_INFO("omb.pixel_size_rad {}", omb.pixel_size_rad);
-    SPDLOG_INFO("x_t {}", params(0,1));
-
     // rescale fit params from pixel to on-sky units
     calib.apt["amp"] = params.col(0);
     calib.apt["x_t"] = omb.pixel_size_rad*(params.col(1).array() - (omb.n_cols)/2)*RAD_TO_ASEC;
@@ -471,9 +484,6 @@ auto Beammap::loop_pipeline() {
     calib.apt["a_fwhm"] = STD_TO_FWHM*omb.pixel_size_rad*(params.col(3))*RAD_TO_ASEC;
     calib.apt["b_fwhm"] = STD_TO_FWHM*omb.pixel_size_rad*(params.col(4))*RAD_TO_ASEC;
     calib.apt["angle"] = params.col(5);
-
-    SPDLOG_INFO("x_t {}", calib.apt["x_t"]);
-    SPDLOG_INFO("a_fwhm {}", calib.apt["a_fwhm"]);
 
      // rescale fit errors from pixel to on-sky units
     calib.apt["amp"] = params.col(0);
@@ -485,16 +495,12 @@ auto Beammap::loop_pipeline() {
 
     calib.apt["converge_iter"] = converge_iter.cast<double> ();
 
-    SPDLOG_INFO("beammap_fluxes {}",beammap_fluxes);
-
     // array indices for current polarization
     auto array_indices = ptcs[0].array_indices.data;
 
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
         auto array_index = array_indices(i);
         std::string array_name = toltec_io.array_name_map[calib.apt["array"](array_index)];
-
-        SPDLOG_INFO("ARRAY NAME {}", array_name);
 
         // calculate map standard deviation
         double map_std_dev = engine_utils::calc_std_dev(omb.signal[i]);
@@ -507,24 +513,19 @@ auto Beammap::loop_pipeline() {
         if (calib.apt["b_fwhm"](i) < lower_fwhm_arcsec[array_name] || calib.apt["b_fwhm"](i) > upper_fwhm_arcsec[array_name]) {
             calib.apt["flag"](i) = 0;
         }
-
         // flag detectors with outler S/N values
         if (params(i,0)/map_std_dev < lower_sig2noise[array_name]) {
             calib.apt["flag"](i) = 0;
         }
 
+        // calculate detector beamsize
         double det_fwhm = (calib.apt["a_fwhm"](i) + calib.apt["b_fwhm"](i))/2;
         double det_beamsize = 2.*pi*pow(det_fwhm*FWHM_TO_STD,2);
-
-        SPDLOG_INFO("det_fwhm {} det_beamsize {}",det_fwhm,det_beamsize);
 
         // set flux scale (always in MJy/sr)
         calib.apt["flxscale"](i) = mJY_ASEC_to_MJY_SR*beammap_fluxes[array_name]/params(i,0)/det_beamsize;
 
-        SPDLOG_INFO("beammap_fluxes[array_name] {} params(i,0) {}",beammap_fluxes[array_name], params(i,0));
-
         // get detector pointing
-
         Eigen::VectorXd lat = -(calib.apt["y_t"](i)*ASEC_TO_RAD) + telescope.tel_data["TelElAct"].array();
         Eigen::VectorXd lon = -(calib.apt["x_t"](i)*ASEC_TO_RAD) + telescope.tel_data["TelAzAct"].array();
 
@@ -604,9 +605,6 @@ void Beammap::output() {
     // convert to floats
     Eigen::Index i = 0;
     for (auto const& x: calib.apt_header_keys) {
-        SPDLOG_INFO("apt header key {}", x);
-        SPDLOG_INFO("apt key {}", calib.apt[x]);
-
         apt_table.col(i) = calib.apt[x].cast<double> ();
         i++;
     }

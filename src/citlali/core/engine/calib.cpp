@@ -18,14 +18,11 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
         }
     }
 
-    SPDLOG_INFO("apt before {}",apt);
-    SPDLOG_INFO("header {}", header);
-    SPDLOG_INFO("apt_header {}", apt_meta);
-
+    // run setup on apt table
     setup();
 
     std::vector<Eigen::Index> roach_indices, missing;
-    Eigen::Index n_dets_temp = 0;//apt["nw"].size();
+    Eigen::Index n_dets_temp = 0;
 
     for (Eigen::Index i=0; i<raw_filenames.size(); i++) {
         netCDF::NcFile fo(raw_filenames[i], netCDF::NcFile::read);
@@ -45,8 +42,6 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
         interfaces_vec(i) = std::stoi(interfaces[i].substr(6));
     }
 
-    SPDLOG_INFO("interfaces_vec {}",interfaces_vec);
-
     std::map<std::string, Eigen::VectorXd> apt_temp;
 
     for (Eigen::Index i=0; i<interfaces.size(); i++) {
@@ -64,6 +59,7 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
         }
     }
 
+    // populate apt table
     for (auto const& value: apt_header_keys) {
         apt[value].setZero(n_dets_temp);
         apt[value] = apt_temp[value];
@@ -71,44 +67,8 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
 
     apt_temp.clear();
 
-    SPDLOG_INFO("apt after {}",apt);
-
+    // run setup on new apt table
     setup();
-
-    /*for (Eigen::Index i=0; i<nws.size(); i++) {
-        if (!(roach_vec.array() == nws(i)).any()) {
-            missing.push_back(nws(i));
-            n_dets = n_dets - (apt["nw"].array() == nws(i)).count();
-        }
-    }*/
-
-    /*
-    if (!missing.empty()) {
-        auto missing_vec = Eigen::Map<Eigen::VectorXI>(missing.data(), missing.size());
-        std::map<std::string, Eigen::VectorXd> apt;
-
-        SPDLOG_INFO("missing_vec {}", missing_vec);
-        for (auto const& value: apt_header_keys) {
-            apt[value].setZero(n_dets);
-            Eigen::Index i = 0;
-            for (Eigen::Index j=0; j<apt["nw"].size(); j++) {
-                if ((apt["nw"](j) != missing_vec.array()).all()) {
-                    apt[value](i) = apt[value](j);
-                    i++;
-                }
-            }
-        }
-
-        //apt.clear();
-        for (auto const& value: apt_header_keys) {
-            apt[value].setZero(n_dets);
-            apt[value] = apt[value];
-        }
-
-        apt.clear();
-
-        setup();
-    }*/
 }
 
 void Calib::get_hwp(const std::string &filepath) {
@@ -184,13 +144,10 @@ void Calib::calc_flux_calibration(std::string units) {
 void Calib::setup() {
     // get number of detectors
     n_dets = apt["uid"].size();
-
     // get number of networks
     n_nws = ((apt["nw"].tail(n_dets - 1) - apt["nw"].head(n_dets - 1)).array() > 0).count() + 1;
     // get number of arrays
     n_arrays = ((apt["array"].tail(n_dets - 1) - apt["array"].head(n_dets - 1)).array() > 0).count() + 1;
-
-    SPDLOG_INFO("n_nws {} n_arrays {} ",n_nws,n_arrays);
 
     nws.setZero(n_nws);
     arrays.setZero(n_arrays);
@@ -216,17 +173,10 @@ void Calib::setup() {
         }
     }
 
-    SPDLOG_INFO("nw_limits {}", nw_limits);
-
     // get average fwhms for networks
     j = 0;
     for (auto const& [key, val] : nw_limits) {
-        SPDLOG_INFO("KEY {}",key);
-        SPDLOG_INFO("apt size {}",apt["a_fwhm"].size());
-        SPDLOG_INFO("NW_LIMTS {}",nw_limits[key]);
-        SPDLOG_INFO("SEQ {}",apt["a_fwhm"](Eigen::seq(std::get<0>(nw_limits[key]), std::get<1>(nw_limits[key])-1)));
         nws(j) = key;
-        SPDLOG_INFO("nws {}",nws);
         j++;
         nw_fwhms[key] = std::tuple<double,double>{0, 0};
 
@@ -262,11 +212,7 @@ void Calib::setup() {
         //SPDLOG_INFO("avg nw fwhm {}",avg_nw_fwhm);
 
         nw_beam_areas[key] = 2.*pi*pow(avg_nw_fwhm/STD_TO_FWHM,2);
-        SPDLOG_INFO("nw_beam_areas[key]{}",nw_beam_areas[key]);
     }
-
-    SPDLOG_INFO("nw_fwhms {}", nw_fwhms);
-    SPDLOG_INFO("nw_beam_areas {}", nw_beam_areas);
 
     // set up array values
     array_limits.clear();
@@ -289,8 +235,6 @@ void Calib::setup() {
             array_limits[arr_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
         }
     }
-
-    SPDLOG_INFO("array limits {}", array_limits);
 
     // get average fwhms for networks
     j = 0;

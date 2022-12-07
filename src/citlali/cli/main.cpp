@@ -294,7 +294,7 @@ int run(const rc_t &rc) {
 
                     // align tod
                     if (!todproc.engine().telescope.sim_obs) {
-                        SPDLOG_INFO("align timestream");
+                        SPDLOG_INFO("aligning timestreams");
                         todproc.align_timestreams(rawobs);
                     }
 
@@ -309,15 +309,15 @@ int run(const rc_t &rc) {
                     }
 
                     // calc scan indices
-                    SPDLOG_INFO("calc_scan_indices()");
+                    SPDLOG_INFO("calculating scan indices");
                     todproc.engine().telescope.calc_scan_indices();
 
                     // determine number of maps
-                    SPDLOG_INFO("calc_map_num()");
+                    SPDLOG_INFO("calculating number of maps");
                     todproc.calc_map_num();
 
                     // determine map sizes
-                    SPDLOG_INFO("calc_map_size()");
+                    SPDLOG_INFO("calculating map dimensions");
                     todproc.calc_map_size(map_extents, map_coords);
                 }
 
@@ -378,6 +378,10 @@ int run(const rc_t &rc) {
                         }
                     }
 
+                    if (todproc.engine().verbose_mode) {
+                        fs::create_directories(todproc.engine().obsnum_dir_name + "/logs/");
+                    }
+
                     // get apt table
                     auto apt_path = rawobs.array_prop_table().filepath();
                     SPDLOG_INFO("getting array properties table {}", apt_path);
@@ -390,8 +394,6 @@ int run(const rc_t &rc) {
 
                     todproc.engine().calib.get_apt(apt_path, raw_filenames, interfaces);
 
-                    SPDLOG_INFO("array_limits {}", todproc.engine().calib.array_limits);
-
                     // get hwp if polarized reduction is requested
                     if (todproc.engine().rtcproc.run_polarization) {
                         auto hwp_filepath = rawobs.hwpdata()->filepath();
@@ -400,9 +402,6 @@ int run(const rc_t &rc) {
 
                     // get flux calibration
                     todproc.engine().calib.calc_flux_calibration(todproc.engine().omb.sig_unit);
-
-                    SPDLOG_INFO("array_limits {}", todproc.engine().calib.array_limits);
-
 
                     // get telescope file
                     auto tel_path = rawobs.teldata().filepath();
@@ -414,7 +413,7 @@ int run(const rc_t &rc) {
 
                     // align tod
                     if (!todproc.engine().telescope.sim_obs) {
-                        SPDLOG_INFO("align timestream");
+                        SPDLOG_INFO("aligning timestreams");
                         todproc.align_timestreams(rawobs);
                     }
 
@@ -465,7 +464,6 @@ int run(const rc_t &rc) {
                         // filter
                         // output filtered maps
                         todproc.engine().template output<mapmaking::FilteredObs>();
-
                     }
                 }
 
@@ -494,9 +492,9 @@ int run(const rc_t &rc) {
                     }
                 }
 
-                SPDLOG_INFO("make index file");
+                SPDLOG_INFO("making index files");
                 todproc.make_index_file(todproc.engine().redu_dir_name);
-                SPDLOG_INFO("done");
+                SPDLOG_INFO("citlali is done!");
                 return EXIT_SUCCESS;
 
             }

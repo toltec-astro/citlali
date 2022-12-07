@@ -50,6 +50,42 @@ public:
 };
 
 void Pointing::setup() {
+    // set number of parameters for map fitting
+    n_params = 6;
+
+    // resize the current fit matrix
+    params.setZero(n_maps, n_params);
+    perrors.setZero(n_maps, n_params);
+
+    // set despiker sample rate
+    rtcproc.despiker.fsmp = telescope.fsmp;
+
+    // setup kernel
+    if (rtcproc.run_kernel) {
+        rtcproc.kernel.setup(n_maps);
+    }
+
+    // if filter is requested, make it here
+    if (rtcproc.run_tod_filter) {
+        rtcproc.filter.make_filter(telescope.fsmp);
+    }
+
+    // create output map files
+    create_map_files();
+    // create timestream files
+    if (run_tod_output) {
+        create_tod_files();
+    }
+
+    // set center pointing
+    if (telescope.pixel_axes == "ircs") {
+        omb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0);
+        omb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0);
+
+        cmb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0);
+        cmb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0);
+    }
+
     // populate ppt meta information
     ppt_meta["array"].push_back("units: N/A");
     ppt_meta["array"].push_back("array");
@@ -89,42 +125,6 @@ void Pointing::setup() {
 
     ppt_meta["angle_err"].push_back("units: radians");
     ppt_meta["angle_err"].push_back("fitted rotation angle error");
-
-    // set number of parameters for map fitting
-    n_params = 6;
-
-    // resize the current fit matrix
-    params.setZero(n_maps, n_params);
-    perrors.setZero(n_maps, n_params);
-
-    // set despiker sample rate
-    rtcproc.despiker.fsmp = telescope.fsmp;
-
-    // setup kernel
-    if (rtcproc.run_kernel) {
-        rtcproc.kernel.setup(n_maps);
-    }
-
-    // if filter is requested, make it here
-    if (rtcproc.run_tod_filter) {
-        rtcproc.filter.make_filter(telescope.fsmp);
-    }
-
-    // create output map files
-    create_map_files();
-    // create timestream files
-    if (run_tod_output) {
-        create_tod_files();
-    }
-
-    // set center pointing
-    if (telescope.pixel_axes == "ircs") {
-        omb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0);
-        omb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0);
-
-        cmb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0);
-        cmb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0);
-    }
 }
 
 auto Pointing::run() {
@@ -170,28 +170,17 @@ auto Pointing::run() {
             TCData<TCDataKind::RTC,Eigen::MatrixXd> rtcdata_pol;
             // demodulate
             SPDLOG_INFO("demodulating polarization");
-            SPDLOG_INFO("array_limits {}", calib.array_limits);
-
             auto [array_indices, nw_indices, det_indices] = rtcproc.polarization.demodulate_timestream(rtcdata, rtcdata_pol,
                                                                                                        stokes_param,
                                                                                                        redu_type, calib);
             // get indices for maps
             SPDLOG_INFO("calculating map indices");
-            SPDLOG_INFO("array_limits {}", calib.array_limits);
-
             auto map_indices = calc_map_indices(det_indices, nw_indices, array_indices, stokes_param);
 
             // run rtcproc
             SPDLOG_INFO("rtcproc");
-            SPDLOG_INFO("array_limits {}", calib.array_limits);
-
             rtcproc.run(rtcdata_pol, ptcdata, telescope.pixel_axes, redu_type, calib, telescope, pointing_offsets_arcsec,
                         det_indices, array_indices, map_indices, omb.pixel_size_rad);
-
-            SPDLOG_INFO("scans before clean {}", ptcdata.scans.data);
-            SPDLOG_INFO("scans max before clean {}", ptcdata.scans.data.maxCoeff());
-            SPDLOG_INFO("scans min before clean {}", ptcdata.scans.data.minCoeff());
-            SPDLOG_INFO("flags before clean {}", ptcdata.flags.data);
 
             // write rtc timestreams
             if (run_tod_output) {
@@ -204,28 +193,25 @@ auto Pointing::run() {
 
             // remove flagged dets
             SPDLOG_INFO("removing flagged dets");
-
-            SPDLOG_INFO("array_limits {}", calib.array_limits);
-
             ptcproc.remove_flagged_dets(ptcdata, calib.apt, det_indices);
 
             // remove outliers
             SPDLOG_INFO("removing outlier weights");
-            //ptcproc.remove_bad_dets(ptcdata, calib.apt, det_indices);
             auto calib_scan = ptcproc.remove_bad_dets_nw(ptcdata, calib, det_indices, nw_indices, array_indices);
-            //map_indices = calc_map_indices(det_indices, nw_indices, array_indices, stokes_param);
 
             // run cleaning
             if (stokes_param == "I") {
                 SPDLOG_INFO("ptcproc");
                 ptcproc.run(ptcdata, ptcdata, calib);
-                //ptcproc.run(ptcdata, ptcdata, calib_scan);
             }
 
             // calculate weights
             SPDLOG_INFO("calculating weights");
             ptcproc.calc_weights(ptcdata, calib.apt, telescope);
-            //ptcproc.calc_weights(ptcdata, calib_scan.apt, telescope);
+
+            if (verbose_mode) {
+                write_chunk_summary(ptcdata);
+            }
 
             // write ptc timestreams
             if (run_tod_output) {
@@ -235,20 +221,11 @@ auto Pointing::run() {
                                              det_indices, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
                 }
             }
-            SPDLOG_INFO("scans after{}", ptcdata.scans.data);
-            SPDLOG_INFO("scans max after clean {}", ptcdata.scans.data.maxCoeff());
-            SPDLOG_INFO("scans min after clean {}", ptcdata.scans.data.minCoeff());
-            SPDLOG_INFO("flags after {}", ptcdata.flags.data);
-            SPDLOG_INFO("weight after {}", ptcdata.weights.data);
 
             // populate maps
             SPDLOG_INFO("populating maps");
             mapmaking::populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
                                            redu_type, calib.apt, pointing_offsets_arcsec, telescope.d_fsmp, run_noise);
-            //mapmaking::populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
-            //                               redu_type, calib_scan.apt, pointing_offsets_arcsec, telescope.d_fsmp, run_noise);
-            SPDLOG_INFO("signal map {}", omb.signal);
-            SPDLOG_INFO("cov map {}", omb.coverage);
         }
 
         n_scans_done++;
@@ -278,8 +255,6 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                 // current scan
                 rtcdata.index.data = scan;
 
-                SPDLOG_INFO("telescope.scan_indices.col(scan) {}",telescope.scan_indices);
-
                 // vector to store kids data
                 std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> scan_rawobs;
                 {
@@ -302,25 +277,25 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         run());
 
     // normalize maps
+    SPDLOG_INFO("normalizing maps");
     omb.normalize_maps();
-
     // calculate map psds
-    SPDLOG_INFO("calc_map_psd");
+    SPDLOG_INFO("calculating map psd");
     omb.calc_map_psd();
     // calculate map histograms
-    SPDLOG_INFO("calc_map_hist");
+    SPDLOG_INFO("calculating map histogram");
     omb.calc_map_hist();
 
     // fit maps
     for (Eigen::Index i=0; i<n_maps; i++) {
-        //auto array_index = ptcs[stokes_param][0].array_indices.data(i);
-        auto init_fwhm = toltec_io.array_fwhm_arcsec[i]*ASEC_TO_RAD/omb.pixel_size_rad;
+        auto array = calib.arrays(i);
+        auto init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
         auto [det_params, det_perror, good_fit] =
             map_fitter.fit_to_gaussian<engine_utils::mapFitter::peakValue>(omb.signal[i], omb.weight[i], init_fwhm);
         params.row(i) = det_params;
         perrors.row(i) = det_perror;
 
-        SPDLOG_INFO("params {} perrors {}", params, perrors);
+        SPDLOG_INFO("{} good fit: {}",toltec_io.array_name_map[i], good_fit);
 
         if (good_fit) {
             // rescale fit params from pixel to on-sky units
@@ -340,32 +315,6 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
 template <mapmaking::MapType map_type>
 void Pointing::output() {
-    SPDLOG_INFO("writing ppt table");
-    auto ppt_filename = toltec_io.create_filename<engine_utils::toltecIO::ppt, engine_utils::toltecIO::map,
-                                                  engine_utils::toltecIO::raw>
-                        (obsnum_dir_name + "/raw/", redu_type, "", obsnum, telescope.sim_obs);
-
-    // matrix to hold pointing fit values and errors
-    Eigen::MatrixXf ppt_table(n_maps, 2*n_params + 1);
-
-    // loop through params and add arrays
-    for (const auto &stokes_param: rtcproc.polarization.stokes_params) {
-        for (Eigen::Index i=0; i<calib.arrays.size(); i++) {
-            ppt_table(i,0) = calib.arrays(i);
-        }
-    }
-
-    // populate table
-    Eigen::Index j = 0;
-    for (Eigen::Index i=1; i<2*n_params; i=i+2) {
-        ppt_table.col(i) = params.col(j).cast <float> ();
-        ppt_table.col(i+1) = perrors.col(j).cast <float> ();
-        j++;
-    }
-
-    // write table
-    to_ecsv_from_matrix(ppt_filename, ppt_table, ppt_header, ppt_meta);
-
     // pointer to map buffer
     mapmaking::ObsMapBuffer* mb = NULL;
     // pointer to data file fits vector
@@ -382,6 +331,31 @@ void Pointing::output() {
         f_io = &fits_io_vec;
         n_io = &noise_fits_io_vec;
         dir_name = obsnum_dir_name + "/raw/";
+
+        auto ppt_filename = toltec_io.create_filename<engine_utils::toltecIO::ppt, engine_utils::toltecIO::map,
+                                                      engine_utils::toltecIO::raw>
+                            (obsnum_dir_name + "/raw/", redu_type, "", obsnum, telescope.sim_obs);
+
+        // matrix to hold pointing fit values and errors
+        Eigen::MatrixXf ppt_table(n_maps, 2*n_params + 1);
+
+        // loop through params and add arrays
+        for (const auto &stokes_param: rtcproc.polarization.stokes_params) {
+            for (Eigen::Index i=0; i<calib.arrays.size(); i++) {
+                ppt_table(i,0) = calib.arrays(i);
+            }
+        }
+
+        // populate table
+        Eigen::Index j = 0;
+        for (Eigen::Index i=1; i<2*n_params; i=i+2) {
+            ppt_table.col(i) = params.col(j).cast <float> ();
+            ppt_table.col(i+1) = perrors.col(j).cast <float> ();
+            j++;
+        }
+
+        // write table
+        to_ecsv_from_matrix(ppt_filename, ppt_table, ppt_header, ppt_meta);
     }
 
     // filtered obs maps
@@ -408,7 +382,6 @@ void Pointing::output() {
         dir_name = coadd_dir_name + "/filtered/";
     }
 
-    SPDLOG_INFO("writing maps");
     // loop through and write maps
     Eigen::Index k = 0;
     for (Eigen::Index i=0; i<rtcproc.polarization.stokes_params.size(); i++) {
@@ -422,30 +395,7 @@ void Pointing::output() {
     f_io->clear();
     n_io->clear();
 
-    /*SPDLOG_INFO("writing maps");
-    Eigen::Index k = 0;
-    for (Eigen::Index i=0; i<rtcproc.polarization.stokes_params.size(); i++) {
-        for (Eigen::Index j=0; j<n_maps/rtcproc.polarization.stokes_params.size(); j++) {
-
-            SPDLOG_INFO("i {}, j {}, k {}",i,j,k);
-            if constexpr (map_type == mapmaking::RawObs) {
-                write_maps(fits_io_vec,noise_fits_io_vec,omb,i,j,j);
-            }
-            else if constexpr (map_type == mapmaking::RawCoadd) {
-                write_maps(coadd_fits_io_vec,noise_fits_io_vec,cmb,i,j,j);
-            }
-
-            k++;
-        }
-    }*/
-
-    // empty fits vector
-    //fits_io_vec.clear();
-
-    SPDLOG_INFO("done with writing maps");
-
+    // write psd and histogram files
     write_psd<map_type>(mb, dir_name);
-    SPDLOG_INFO("done with psd");
     write_hist<map_type>(mb, dir_name);
-    SPDLOG_INFO("done with hist");
 }

@@ -7,7 +7,9 @@
 #include <citlali/core/utils/pointing.h>
 #include <tula/algorithm/mlinterp/mlinterp.hpp>
 
+#include <citlali/core/utils/fits_io.h>
 #include <citlali/core/utils/netcdf_io.h>
+#include <citlali/core/utils/toltec_io.h>
 
 namespace fs = std::filesystem;
 
@@ -121,6 +123,7 @@ void TimeOrderedDataProc<EngineType>::create_output_dir() {
         fs::create_directories(engine().redu_dir_name);
     }
 
+    // coaddition directories
     if (engine().run_coadd) {
         engine().coadd_dir_name = engine().redu_dir_name + "/coadded";
         if (!fs::exists(fs::status(engine().coadd_dir_name + "/raw"))) {
@@ -130,6 +133,7 @@ void TimeOrderedDataProc<EngineType>::create_output_dir() {
             SPDLOG_WARN("directory {} already exists", engine().coadd_dir_name + "/raw");
         }
 
+        // filtered directories
         if (engine().run_map_filter) {
             if (!fs::exists(fs::status(engine().coadd_dir_name + "/filtered"))) {
                 fs::create_directories(engine().coadd_dir_name + "/filtered");
@@ -281,8 +285,8 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
         auto si = engine().start_indices[i];
         auto ei = engine().end_indices[i];
 
-        if ((ei - si) < min_size) {
-            min_size = ei - si;
+        if ((ei - si + 1) < min_size) {
+            min_size = ei - si + 1;
         }
     }
 
@@ -292,8 +296,6 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
 
     // shortest data time vector
     Eigen::VectorXd xi = nw_ts[max_t0_i].head(min_size);
-
-    SPDLOG_INFO("start_indices {}, end_indices {} minsize {}", engine().start_indices, engine().end_indices, min_size);
 
     // interpolate telescope data
     for (const auto &tel_it : engine().telescope.tel_data) {
@@ -660,7 +662,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
         auto n_cols = engine().omb.wcs.naxis[0];
 
         Eigen::VectorXd rows_tan_vec = (Eigen::VectorXd::LinSpaced(n_rows,0,n_rows-1).array() -
-                                   (n_rows)/2.)*engine().omb.pixel_size_rad;
+                                        (n_rows)/2.)*engine().omb.pixel_size_rad;
         Eigen::VectorXd cols_tan_vec = (Eigen::VectorXd::LinSpaced(n_cols,0,n_cols-1).array() -
                                         (n_cols)/2.)*engine().omb.pixel_size_rad;
         map_extent_t map_extent = {n_rows, n_cols};
@@ -729,6 +731,7 @@ void TimeOrderedDataProc<EngineType>::make_index_file(std::string filepath) {
 
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::setup_filenames() {
+    // if coaddition is requested
     if (engine().run_coadd) {
         for (Eigen::Index i=0; i<engine().calib.n_arrays; i++) {
             auto array = engine().calib.arrays[i];
@@ -736,22 +739,24 @@ void TimeOrderedDataProc<EngineType>::setup_filenames() {
             auto filename = engine().toltec_io.template create_filename<engine_utils::toltecIO::toltec,
                                                                         engine_utils::toltecIO::map,
                                                                         engine_utils::toltecIO::raw>(engine().coadd_dir_name + "/raw/",
-                                                                                                     engine().redu_type, array_name,
-                                                                                                     "", engine().telescope.sim_obs);
+                                                                                                     "", array_name, "",
+                                                                                                     engine().telescope.sim_obs);
             fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
             engine().coadd_fits_io_vec.push_back(std::move(fits_io));
 
+            // if noise maps requested
             if (engine().run_noise) {
                 auto filename = engine().toltec_io.template create_filename<engine_utils::toltecIO::toltec,
                                                                             engine_utils::toltecIO::noise,
                                                                             engine_utils::toltecIO::raw>(engine().coadd_dir_name + "/raw/",
-                                                                                                         engine().redu_type, array_name,
+                                                                                                         "", array_name,
                                                                                                          "", engine().telescope.sim_obs);
                 fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
                 engine().coadd_noise_fits_io_vec.push_back(std::move(fits_io));
             }
         }
 
+        // if map filtering are requested
         if (engine().run_map_filter) {
             for (Eigen::Index i=0; i<engine().calib.n_arrays; i++) {
                 auto array = engine().calib.arrays[i];
@@ -759,16 +764,17 @@ void TimeOrderedDataProc<EngineType>::setup_filenames() {
                 auto filename = engine().toltec_io.template create_filename<engine_utils::toltecIO::toltec,
                                                                             engine_utils::toltecIO::map,
                                                                             engine_utils::toltecIO::filtered>(engine().coadd_dir_name + "/filtered/",
-                                                                                                         engine().redu_type, array_name,
+                                                                                                         "", array_name,
                                                                                                          "", engine().telescope.sim_obs);
                 fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
                 engine().filtered_coadd_fits_io_vec.push_back(std::move(fits_io));
 
+                // if noise maps requested
                 if (engine().run_noise) {
                     auto filename = engine().toltec_io.template create_filename<engine_utils::toltecIO::toltec,
                                                                                 engine_utils::toltecIO::noise,
                                                                                 engine_utils::toltecIO::filtered>(engine().coadd_dir_name + "/filtered/",
-                                                                                                               engine().redu_type, array_name,
+                                                                                                               "", array_name,
                                                                                                                "", engine().telescope.sim_obs);
                     fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
                     engine().filtered_coadd_noise_fits_io_vec.push_back(std::move(fits_io));

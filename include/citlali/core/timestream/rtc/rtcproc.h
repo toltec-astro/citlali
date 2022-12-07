@@ -37,12 +37,14 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
                   Eigen::DenseBase<Derived> &array_indices, Eigen::DenseBase<Derived> &map_indices,
                   double pixel_size_rad) {
 
+    if (run_polarization) {
+        out.demodulated = true;
+    }
+
     Eigen::Index n_pts = in.scans.data.rows();
 
     auto si = filter.n_terms;
     auto sl = in.scan_indices.data(1) - in.scan_indices.data(0) + 1;
-
-    SPDLOG_INFO("si {}, sl {}", si, sl);
 
     in.flags.data.setOnes(in.scans.data.rows(), in.scans.data.cols());
 
@@ -57,8 +59,10 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         }
         else if (kernel.type == "fits") {
             kernel.create_kernel_from_fits(in, pixel_axes, redu_type, calib.apt, pointing_offsets_arcsec,
-                                           pixel_size_rad, map_indices);
+                                           pixel_size_rad, map_indices, det_indices);
         }
+
+        out.kernel_generated = true;
     }
 
     if (run_despike) {
@@ -101,6 +105,8 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
 
             despiker.replace_spikes(in_scans, in_flags, calib.apt["responsivity"]);
         }
+
+        out.despiked = true;
     }
 
     if (run_tod_filter) {
@@ -110,6 +116,8 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         if (run_kernel) {
             filter.convolve(in.kernel.data);
         }
+
+        out.tod_filtered = true;
     }
 
     if (run_downsample) {
@@ -141,6 +149,8 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
 
             downsampler.downsample(in_kernel, out.kernel.data);
         }
+
+        out.downsampled =true;
     }
 
     else {
@@ -163,9 +173,12 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
 
     if (run_calibrate) {
         SPDLOG_INFO("calibrating timestream");
+        //calc tau at toltec frequencies
         auto tau_freq = calibration.calc_tau(in.tel_data.data["TelElDes"], telescope.tau_225_GHz);
-
+        // calibrate tod
         calibration.calibrate_tod(out, det_indices, array_indices, calib, tau_freq);
+
+        out.calibrated = true;
     }
 }
 

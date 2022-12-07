@@ -34,7 +34,6 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
 
     // mean subtracted detectors
     Eigen::MatrixXd det;
-
     // eigenvalues
     Eigen::VectorXd evals;
     // eigenvecs
@@ -43,8 +42,9 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     // normalization denominator
     Eigen::MatrixXd denom;
 
+    /*
     // number of non zero dets
-    /*Eigen::Index n_non_zero = 0;
+    Eigen::Index n_non_zero = 0;
 
     // find number of non zero detectors
     for (Eigen::Index i=0; i<n_dets; i++) {
@@ -70,22 +70,13 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
         }
     }
 
-    SPDLOG_INFO("det {}", det);
-
     // calculate detector means
     Eigen::RowVectorXd det_means = det.colwise().mean();
     // subtract detector means
     det.noalias() = det.rowwise() - det_means;
 
-    SPDLOG_INFO("det_means {}", det_means);
-
-    SPDLOG_INFO("det {}", det);
-
     // calculate denominator
     denom = (f.template cast <double> ().adjoint() * f.template cast <double> ()).array() - 1;
-
-    SPDLOG_INFO("denom {}", denom);
-
 
     // container for covariance matrix
     Eigen::MatrixXd pca_cov(n_non_zero, n_non_zero);*/
@@ -108,9 +99,6 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
 
     // calculate the covariance Matrix
     pca_cov.noalias() = ((det.adjoint() * det).array() / denom.array()).matrix();
-
-
-    SPDLOG_INFO("pca_cov {}", pca_cov);
 
     if constexpr (backend == SpectraBackend) {
         // number of eigenvalues to remove
@@ -145,13 +133,9 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
         else {
             throw std::runtime_error("failed to compute eigen values");
         }
-
-        SPDLOG_INFO("evals {}, evecs {}", evals, evecs);
-        SPDLOG_INFO("max evecs {} min evecs {}", evecs.maxCoeff(), evecs.minCoeff());
     }
 
     return std::tuple<Eigen::VectorXd, Eigen::MatrixXd> {evals, evecs};
-
 }
 
 template <typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD>
@@ -163,25 +147,15 @@ auto Cleaner::remove_eig_values(const Eigen::DenseBase<DerivedA> &scans, const E
     Eigen::RowVectorXd det_means = (scans.derived().array()*flags.derived().array().template cast <double> ()).colwise().sum()/
                                    flags.derived().array().template cast <double> ().colwise().sum();
 
-    SPDLOG_INFO("det means 2 {}", det_means);
-
     // remove nans from completely flagged detectors
     Eigen::RowVectorXd dm = (det_means).array().isNaN().select(0,det_means);
-
-    SPDLOG_INFO("dm {}", dm);
-
 
     // subtract mean from data and copy into det matrix
     Eigen::MatrixXd det = scans.derived().rowwise() - dm;
 
-    SPDLOG_INFO("det 2 {} {} {}", det, det.maxCoeff(), det.minCoeff());
-
-
     // subtract out the desired eigenvectors
     Eigen::MatrixXd proj;
     proj.noalias() = det * evecs.derived().leftCols(n_eig_to_cut);
-
-    SPDLOG_INFO("proj {}", proj);
 
     cleaned_scans.derived().noalias() = det - proj * evecs.derived().adjoint().topRows(n_eig_to_cut);
 }

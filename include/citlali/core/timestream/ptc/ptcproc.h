@@ -34,12 +34,14 @@ public:
     auto remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
                             Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &);
 
-    template <typename apt_t, typename Derived>
-    void remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, apt_t &, Eigen::DenseBase<Derived> &);
-
     template <typename Derived, typename apt_t, typename pointing_offset_t>
     void append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, std::string, std::string, std::string &,
                           pointing_offset_t &, Eigen::DenseBase<Derived> &, apt_t &, std::string, bool, double);
+
+    template <typename DerivedB, typename DerivedC, typename apt_t, typename pointing_offset_t>
+    void add_gaussian(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, Eigen::DenseBase<DerivedB> &, std::string &,
+                      std::string &, apt_t &, pointing_offset_t &, double,
+                      Eigen::Index, Eigen::Index, Eigen::DenseBase<DerivedC> &, Eigen::DenseBase<DerivedC> &);
 };
 
 template <class calib_type>
@@ -57,7 +59,6 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 
         else if (cleaner.grouping == "array") {
             grouping_limits = calib.array_limits;
-            SPDLOG_INFO("array_limits {}", calib.array_limits);
         }
 
         for (auto const& [key, val] : grouping_limits) {
@@ -65,8 +66,6 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
             auto start_index = std::get<0>(val);
             // size of block for each grouping
             auto n_dets = std::get<1>(val) - std::get<0>(val);
-
-            SPDLOG_INFO("start_index {} ndets {}", start_index, n_dets);
 
             // get the reference block of in scans that corresponds to the current array
             Eigen::Ref<Eigen::MatrixXd> in_scans_ref = in.scans.data.block(0, start_index, n_pts, n_dets);
@@ -90,11 +89,10 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 out_scans(out_scans_ref.data(), out_scans_ref.rows(), out_scans_ref.cols(),
                           Eigen::OuterStride<>(out_scans_ref.outerStride()));
 
-            SPDLOG_INFO("in_scans {}", in_scans);
-            SPDLOG_INFO("in_flags {}", in_flags);
-
             auto [evals, evecs] = cleaner.calc_eig_values<SpectraBackend>(in_scans, in_flags);
             cleaner.remove_eig_values(in_scans, in_flags, evals, evecs, out_scans);
+
+            in.evals.data = evals.head(cleaner.n_eig_to_cut);
 
             if (in.kernel.data.size()!=0) {
                 SPDLOG_INFO("cleaning kernel");
@@ -115,6 +113,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 cleaner.remove_eig_values(in_kernel, in_flags, evals, evecs, out_kernel);
             }
         }
+        out.cleaned = true;
     }
 }
 
@@ -167,6 +166,9 @@ auto PTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, c
 
     Eigen::Index n_dets = in.scans.data.cols();
 
+    in.n_low_dets = 0;
+    in.n_high_dets = 0;
+
     for (Eigen::Index i=0; i<calib.n_nws; i++) {
 
         // number of unflagged detectors
@@ -213,16 +215,20 @@ auto PTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, c
             if (calib.apt["flag"](det_index) && calib.apt["nw"](det_index)==calib.nws(i)) {
                 if ((det_std_dev(j) < (lower_std_dev*mean_std_dev)) && lower_std_dev!=0) {
                     in.flags.data.col(dets(j)).setZero();
+                    in.n_low_dets++;
                     n_low_dets++;
                 }
 
                 if ((det_std_dev(j) > (upper_std_dev*mean_std_dev)) && upper_std_dev!=0) {
                     in.flags.data.col(dets(j)).setZero();
+                    in.n_high_dets++;
                     n_high_dets++;
                 }
             }
         }
-        SPDLOG_INFO("{}/{} dets below limit. {}/{} dets above limit.", n_low_dets, n_good_dets, n_high_dets, n_good_dets);
+
+        SPDLOG_INFO("nw{}: {}/{} dets below limit. {}/{} dets above limit.", calib.nws(i), n_low_dets, n_good_dets,
+                    n_high_dets, n_good_dets);
     }
 
     //TCData<TCDataKind::PTC, Eigen::MatrixXd> out = in;
@@ -284,76 +290,14 @@ auto PTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, c
     return std::move(calib_temp);
 }
 
-template <typename apt_t, typename Derived>
-void PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_t &apt, Eigen::DenseBase<Derived> &det_indices) {
-    Eigen::Index n_dets = in.scans.data.cols();
-
-    // number of unflagged detectors
-    Eigen::Index n_good_dets = 0;
-
-    for (Eigen::Index i=0; i<n_dets; i++) {
-        Eigen::Index det_index = det_indices(i);
-        if (apt["flag"](det_index)) {
-            n_good_dets++;
-        }
-    }
-
-    Eigen::VectorXd det_std_dev(n_good_dets);
-    Eigen::VectorXI dets(n_good_dets);
-    Eigen::Index j = 0;
-
-    // collect standard deviation from good detectors
-    for (Eigen::Index i=0; i<n_dets; i++) {
-        Eigen::Index det_index = det_indices(i);
-        if (apt["flag"](det_index)) {
-            //good_weights(j) = in.weights.data(i);
-
-            // make Eigen::Maps for each detector's scan
-            Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
-                in.scans.data.col(i).data(), in.scans.data.rows());
-            Eigen::Map<Eigen::Matrix<bool, Eigen::Dynamic, 1>> flags(
-                in.flags.data.col(i).data(), in.flags.data.rows());
-
-            det_std_dev(j) = engine_utils::calc_std_dev(scans, flags);
-            dets(j) = i;
-            j++;
-        }
-    }
-
-    // get mean standard deviation
-    double mean_std_dev = det_std_dev.mean();
-    //double mean_std_dev = tula::alg::median(det_std_dev);
-
-    int n_low_dets = 0;
-    int n_high_dets = 0;
-
-    // loop through good detectors and flag those that have std devs beyond the limits
-    for (Eigen::Index i=0; i<n_good_dets; i++) {
-        Eigen::Index det_index = det_indices(dets(i));
-        if (apt["flag"](det_index)) {
-            if ((det_std_dev(i) < (lower_std_dev*mean_std_dev)) && lower_std_dev!=0) {
-                in.flags.data.col(dets(i)).setZero();
-                n_low_dets++;
-            }
-
-            if ((det_std_dev(i) > (upper_std_dev*mean_std_dev)) && upper_std_dev!=0) {
-                in.flags.data.col(dets(i)).setZero();
-                n_high_dets++;
-            }
-        }
-    }
-
-    SPDLOG_INFO("{}/{} dets below limit. {}/{} dets above limit.", n_low_dets, n_good_dets, n_high_dets, n_good_dets);
-}
-
 template <typename Derived, typename apt_t, typename pointing_offset_t>
 void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std::string filepath, std::string redu_type,
                                std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec, Eigen::DenseBase<Derived> &det_indices,
                                apt_t &apt, std::string tod_output_type,bool verbose_mode, double fsmp) {
 
+    // tangent plane pointing for each detector
     Eigen::MatrixXd lats(in.scans.data.rows(), in.scans.data.cols()), lons(in.scans.data.rows(), in.scans.data.cols());
     for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
-        // skip completely flagged detectors
         double az_off = 0;
         double el_off = 0;
 
@@ -461,92 +405,74 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
             }
         }
 
-        // if in verbose mode
-        if (verbose_mode) {
-            // number of samples
-            unsigned long n_pts = in.scans.data.rows();
-
-            // make sure its even
-            if (n_pts % 2 == 1) {
-                n_pts--;
-            }
-
-            // containers for frequency domain
-            Eigen::Index n_freqs = n_pts / 2 + 1; // number of one sided freq bins
-            double d_freq = fsmp / n_pts;
-
-            // number of bins dimension
-            NcDim n_hist_dim = fo.getDim("n_hist_bins");
-            // get number of bins
-            auto n_hist_bins = n_hist_dim.getSize();
-
-            std::vector<netCDF::NcDim> hist_dims = {n_dets_dim, n_hist_dim};
-
-            // histogram variable
-            netCDF::NcVar hist_var = fo.addVar("scan_hist_"+std::to_string(in.index.data),netCDF::ncDouble, hist_dims);
-            // histogram bins variable
-            NcVar hist_bin_var = fo.addVar("scan_hist_bins_"+std::to_string(in.index.data),netCDF::ncDouble, hist_dims);
-
-            // add psd variable
-            NcDim n_psd_dim = fo.addDim("scan_n_psd_"+std::to_string(in.index.data), n_freqs);
-            std::vector<netCDF::NcDim> psd_dims = {n_dets_dim, n_psd_dim};
-
-            // psd variable
-            netCDF::NcVar psd_var = fo.addVar("scan_psd_"+std::to_string(in.index.data),netCDF::ncDouble, psd_dims);
-            psd_var.putAtt("Units","V * s^(1/2)");
-            // psd freq variable
-            NcVar psd_freq_var = fo.addVar("scan_psd_freq_"+std::to_string(in.index.data),netCDF::ncDouble, n_psd_dim);
-            psd_freq_var.putAtt("Units","Hz");
-
-            Eigen::VectorXd psd_freq = d_freq * Eigen::VectorXd::LinSpaced(n_freqs, 0, n_pts / 2);
-            psd_freq_var.putVar(psd_freq.data());
-
-            // start index for hist
-            std::vector<std::size_t> start_index_hist = {0,0};
-            // size for hist
-            std::vector<std::size_t> size_hist = {1,n_hist_bins};
-
-            // size for psd
-            std::vector<std::size_t> size_psd = {1,TULA_SIZET(n_freqs)};
-
-            // loop through detectors
-            for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
-                // increment starting row
-                start_index_hist[0] = i;
-                // get data for detector
-                Eigen::VectorXd scan = in.scans.data.col(i);
-                // calculate histogram
-                auto [h, h_bins] = engine_utils::calc_hist(scan, n_hist_bins);
-                // add data to histogram variable
-                hist_var.putVar(start_index_hist, size_hist, h.data());
-                // add data to histogram bins variable
-                hist_bin_var.putVar(start_index_hist, size_hist, h_bins.data());
-
-                // do fft
-                Eigen::FFT<double> fft;
-                fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
-                fft.SetFlag(Eigen::FFT<double>::Unscaled);
-
-                // vector to hold fft data
-                Eigen::VectorXcd freqdata;
-
-                // do fft
-                fft.fwd(freqdata, scan.head(n_pts));
-                // calc psd
-                Eigen::VectorXd psd = freqdata.cwiseAbs2() / d_freq;
-                // account for negative freqs
-                psd.segment(1, n_freqs - 2) *= 2.;
-
-                // put detector's psd into variable
-                psd_var.putVar(start_index_hist, size_psd, psd.data());
-            }
-        }
-
         fo.sync();
         fo.close();
 
     } catch (NcException &e) {
         SPDLOG_ERROR("{}", e.what());
+    }
+}
+
+template <typename DerivedB, typename DerivedC, typename apt_t, typename pointing_offset_t>
+void PTCProc::add_gaussian(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::DenseBase<DerivedB> &params, std::string &pixel_axes,
+                  std::string &redu_type, apt_t &apt, pointing_offset_t &pointing_offsets_arcsec,
+                  double pixel_size_rad, Eigen::Index n_rows, Eigen::Index n_cols,
+                  Eigen::DenseBase<DerivedC> &map_indices, Eigen::DenseBase<DerivedC> &det_indices) {
+
+    Eigen::Index n_dets = in.scans.data.cols();
+    Eigen::Index n_pts = in.scans.data.rows();
+
+    // loop through detectors
+    for (Eigen::Index i=0; i<n_dets; i++) {
+        double azoff, eloff;
+
+        auto det_index = det_indices(i);
+
+        double az_off = 0;
+        double el_off = 0;
+
+        if (redu_type!="beammap") {
+            az_off = apt["x_t"](det_index);
+            el_off = apt["y_t"](det_index);
+        }
+
+        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off,
+                                                          pixel_axes, pointing_offsets_arcsec);
+
+        // get parameters for current detector
+        auto amp = params(i,0);
+        auto off_lat = params(i,2);
+        auto off_lon = params(i,1);
+        auto sigma_lat = params(i,4);
+        auto sigma_lon = params(i,3);
+        auto rot_ang = params(i,5);
+
+        // rescale offsets and stddev to on-sky units
+        off_lat = pixel_size_rad*(off_lat - (n_rows)/2);
+        off_lon = pixel_size_rad*(off_lon - (n_cols)/2);
+
+        sigma_lon = pixel_size_rad*sigma_lon;
+        sigma_lat = pixel_size_rad*sigma_lat;
+
+        auto cost2 = cos(rot_ang) * cos(rot_ang);
+        auto sint2 = sin(rot_ang) * sin(rot_ang);
+        auto sin2t = sin(2. * rot_ang);
+        auto xstd2 = sigma_lon * sigma_lon;
+        auto ystd2 = sigma_lat * sigma_lat;
+        auto a = - 0.5 * ((cost2 / xstd2) + (sint2 / ystd2));
+        auto b = - 0.5 * ((sin2t / xstd2) - (sin2t / ystd2));
+        auto c = - 0.5 * ((sint2 / xstd2) + (cost2 / ystd2));
+
+        Eigen::VectorXd gauss(n_pts);
+
+        for (Eigen::Index j=0; j<n_pts; j++) {
+            gauss(j) = amp*exp(pow(lat(j) - off_lat, 2) * a +
+                                 (lon(j) - off_lon) * (lat(j) - off_lat) * b +
+                                 pow(lon(j) - off_lon, 2) * c);
+        }
+
+        // add gaussian to detector scan
+        in.scans.data.col(i) = in.scans.data.col(i).array() + gauss.array();
     }
 }
 

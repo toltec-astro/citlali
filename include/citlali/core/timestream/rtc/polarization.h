@@ -109,6 +109,8 @@ public:
                     }
                 }
             }
+
+            out.demodulated = true;
         }
 
         return indices_t(array_indices, nw_indices, det_indices);

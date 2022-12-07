@@ -118,12 +118,12 @@ auto mapFitter::ceres_fit(const Model &model,
             uncertainty = covariance_matrix.diagonal().cwiseSqrt();
         }
         else {
-            uncertainty.setConstant(-99);
+            uncertainty.setConstant(0);
         }
     }
     else {
-        params.setConstant(-99);
-        uncertainty.setConstant(-99);
+        params.setConstant(0);
+        uncertainty.setConstant(0);
     }
 
     return std::tuple<Eigen::VectorXd, Eigen::VectorXd,bool>(params,uncertainty,summary.IsSolutionUsable());
@@ -181,10 +181,6 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     // axes coordinate vectors for meshgrid
     x = Eigen::VectorXd::LinSpaced(n_cols, lower_col, upper_col);
     y = Eigen::VectorXd::LinSpaced(n_rows, lower_row, upper_row);
-
-    SPDLOG_INFO("x {} y {}",x,y);
-    SPDLOG_INFO("limtis {}", limits);
-    SPDLOG_INFO("init_params {}", init_params);
 
     // create gaussian 2d model
     auto g = create_model<Gaussian2D>(init_params);

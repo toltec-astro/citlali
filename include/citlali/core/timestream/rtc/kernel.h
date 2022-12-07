@@ -47,6 +47,7 @@ public:
     template<typename apt_t, typename pointing_offset_t, typename Derived>
     void create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &, std::string &,
                                           std::string &, apt_t &, pointing_offset_t &, double,
+                                          Eigen::DenseBase<Derived> &,
                                           Eigen::DenseBase<Derived> &);
 
 };
@@ -138,7 +139,8 @@ void Kernel::create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &i
                                      std::string &redu_type, apt_t &apt,
                                      pointing_offset_t &pointing_offsets_arcsec,
                                      double pixel_size_rad,
-                                     Eigen::DenseBase<Derived> &map_indices) {
+                                     Eigen::DenseBase<Derived> &map_indices,
+                                     Eigen::DenseBase<Derived> &det_indices) {
 
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
@@ -146,12 +148,15 @@ void Kernel::create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &i
     in.kernel.data.resize(n_pts, n_dets);
 
     for (Eigen::Index i=0; i<n_dets; i++) {
+
+        auto det_index = det_indices(i);
+
         double az_off = 0;
         double el_off = 0;
 
         if (redu_type!="beammap") {
-            az_off = apt["x_t"](i);
-            el_off = apt["y_t"](i);
+            az_off = apt["x_t"](det_index);
+            el_off = apt["y_t"](det_index);
         }
 
         Eigen::Index map_index = 0;

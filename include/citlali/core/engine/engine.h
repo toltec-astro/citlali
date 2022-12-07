@@ -220,7 +220,8 @@ public:
     void create_map_files();
     void create_tod_files();
 
-    void write_summary();
+    template <TCDataKind tc_t>
+    void write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &);
 
     template <typename fits_io_type, class map_buffer_t>
     void add_phdu(fits_io_type &, map_buffer_t &, Eigen::Index);
@@ -296,10 +297,6 @@ void Engine::get_citlali_config(CT &config) {
     get_value(config, n_threads, missing_keys, invalid_keys, std::tuple{"runtime","n_threads"});
     get_value(config, parallel_policy, missing_keys, invalid_keys, std::tuple{"runtime","parallel_policy"},{"seq","omp"});
 
-    // parallelization for ffts
-    omb.parallel_policy = parallel_policy;
-    cmb.parallel_policy = parallel_policy;
-
     get_value(config, redu_type, missing_keys, invalid_keys, std::tuple{"runtime","reduction_type"},{"science","pointing","beammap"});
     get_value(config, use_subdir, missing_keys, invalid_keys, std::tuple{"runtime","use_subdir"});
 
@@ -308,13 +305,15 @@ void Engine::get_citlali_config(CT &config) {
     get_value(config, tod_type, missing_keys, invalid_keys, std::tuple{"timestream","type"});
     get_value(config, run_tod_output, missing_keys, invalid_keys, std::tuple{"timestream","output","enabled"});
 
-    // tod output requires sequential policy
-    if (run_tod_output) {
-        SPDLOG_INFO("tod output requires sequential policy");
+    // tod output/verbose mode require sequential policy so set explicitly
+    if (run_tod_output || verbose_mode) {
+        SPDLOG_INFO("tod output/verbose mode require sequential policy");
         parallel_policy = "seq";
-        omb.parallel_policy = parallel_policy;
-        cmb.parallel_policy = parallel_policy;
     }
+
+    // set parallelization for psd ffts
+    omb.parallel_policy = parallel_policy;
+    cmb.parallel_policy = parallel_policy;
 
     get_value(config, tod_output_type, missing_keys, invalid_keys, std::tuple{"timestream","output", "chunk_type"});
     get_value(config, telescope.time_chunk, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "length_sec"});
@@ -700,7 +699,6 @@ void Engine::create_tod_files() {
                                                   engine_utils::toltecIO::raw>(obsnum_dir_name + "/raw/", redu_type, "",
                                                                                       obsnum, telescope.sim_obs);
 
-        SPDLOG_INFO("tod_filename {}", filename);
         tod_filename[stokes_param] = filename + "_" + stokes_param + ".nc";
         netCDF::NcFile fo(tod_filename[stokes_param], netCDF::NcFile::replace);
 
@@ -766,26 +764,170 @@ void Engine::create_tod_files() {
             netCDF::NcVar weights_v = fo.addVar("weights",netCDF::ncDouble, weight_dims);
         }
 
-        // add psd and hist variables if in verbose mode
-        if (verbose_mode) {
-            netCDF::NcDim n_hist_dim = fo.addDim("n_hist_bins", omb.hist_n_bins);
-            std::vector<netCDF::NcDim> hist_dims = {n_dets_dim, n_hist_dim};
-            netCDF::NcVar hist_v = fo.addVar("hist",netCDF::ncDouble, hist_dims);
-            netCDF::NcVar hist_bins_v = fo.addVar("hist_bins",netCDF::ncDouble, hist_dims);
+        fo.close();
+    }
+}
+
+template <TCDataKind tc_t>
+void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
+
+    std::string filename = "summary_" + std::to_string(in.index.data);
+
+    /*if constexpr (tc_t == TCDataKind::RTC) {
+        filename = filename + "_rtc";
+    }
+
+    else if constexpr (tc_t == TCDataKind::PTC) {
+        filename = filename + "_ptc";
+    }*/
+
+    /*SPDLOG_INFO("scans: {}", in.scans.data);
+    SPDLOG_INFO("flags: {}", in.flags.data);
+
+    if (rtcproc.run_kernel) {
+        SPDLOG_INFO("kernel: {}", in.kernel.data);
+    }*/
+
+    // write summary log file
+    std::ofstream f;
+    f.open (obsnum_dir_name+"/logs/" + filename + ".log");
+
+    f << "Summary file for scan " << in.index.data << "\n";
+    f << "-Citlali version: " << CITLALI_GIT_VERSION << "\n";
+    f << "-Time of time chunk creation: " + in.creation_time + "\n";
+    f << "-Time of file writing: " << engine_utils::current_date_time() << "\n";
+
+    f << "-Reduction type: " << redu_type << "\n";
+    f << "-TOD type: " << tod_type << "\n";
+    f << "-TOD unit: " << omb.sig_unit << "\n";
+
+    f << "-Demodulated: " << in.demodulated << "\n";
+    f << "-Kernel Generated: " << in.kernel_generated << "\n";
+    f << "-Despiked: " << in.despiked << "\n";
+    f << "-TOD filtered: " << in.tod_filtered << "\n";
+    f << "-Downsampled: " << in.downsampled << "\n";
+    f << "-Calibrated: " << in.calibrated << "\n";
+    f << "-Cleaned: " << in.cleaned << "\n";
+
+    f << "-Scan length: " << in.scans.data.rows() << "\n";
+
+    f << "-Number of detectors: " << in.scans.data.cols() << "\n";
+    f << "-Number of detectors flagged in APT table: " << (calib.apt["flag"].array()==0).count() << "\n";
+    f << "-Number of detectors flagged below RMS limit: " << in.n_low_dets <<"\n";
+    f << "-Number of detectors flagged above RMS limit: " << in.n_high_dets << "\n";
+    Eigen::Index n_flagged = in.n_low_dets + in.n_high_dets + (calib.apt["flag"].array()==0).count();
+    f << "-Number of detectors flagged: " << n_flagged << " (" << 100*float(n_flagged)/float(in.scans.data.cols()) << "%)\n";
+
+    f << "-NaNs found: " << in.scans.data.array().isNaN().count() << "\n";
+    f << "-Infs found: " << in.scans.data.array().isInf().count() << "\n";
+    f << "-Data min: " << in.scans.data.minCoeff() << "\n";
+    f << "-Data max: " << in.scans.data.maxCoeff() << "\n";
+    f << "-Data mean: " << in.scans.data.mean() << "\n";
+    //f << "Eigenvalues: ";
+    //for (Eigen::Index i=0; i<in.evals.data.size(); i++) {
+        //f << in.evals.data(i) << ", ";
+    //}
+
+    f.close();
+
+    using netCDF::NcDim;
+    using netCDF::NcFile;
+    using netCDF::NcType;
+    using netCDF::NcVar;
+    using namespace netCDF::exceptions;
+
+    //try {
+        netCDF::NcFile fo(obsnum_dir_name+"/logs/" + filename + ".nc", netCDF::NcFile::replace);
+
+        // number of samples
+        unsigned long n_pts = in.scans.data.rows();
+
+        // make sure its even
+        if (n_pts % 2 == 1) {
+            n_pts--;
+        }
+
+        // containers for frequency domain
+        Eigen::Index n_freqs = n_pts / 2 + 1; // number of one sided freq bins
+        double d_freq = telescope.d_fsmp / n_pts;
+
+        netCDF::NcDim n_dets_dim = fo.addDim("n_dets", in.scans.data.cols());
+        netCDF::NcDim n_hist_dim = fo.addDim("n_hist_bins", omb.hist_n_bins);
+
+        // get number of bins
+        auto n_hist_bins = n_hist_dim.getSize();
+
+        std::vector<netCDF::NcDim> hist_dims = {n_dets_dim, n_hist_dim};
+
+        // histogram variable
+        netCDF::NcVar hist_var = fo.addVar("hist",netCDF::ncDouble, hist_dims);
+        // histogram bins variable
+        NcVar hist_bin_var = fo.addVar("hist_bins",netCDF::ncDouble, hist_dims);
+
+        // add psd variable
+        NcDim n_psd_dim = fo.addDim("n_psd", n_freqs);
+        std::vector<netCDF::NcDim> psd_dims = {n_dets_dim, n_psd_dim};
+
+        // psd variable
+        netCDF::NcVar psd_var = fo.addVar("psd",netCDF::ncDouble, psd_dims);
+        psd_var.putAtt("Units","V * s^(1/2)");
+        // psd freq variable
+        NcVar psd_freq_var = fo.addVar("psd_freq",netCDF::ncDouble, n_psd_dim);
+        psd_freq_var.putAtt("Units","Hz");
+
+        Eigen::VectorXd psd_freq = d_freq * Eigen::VectorXd::LinSpaced(n_freqs, 0, n_pts / 2);
+        psd_freq_var.putVar(psd_freq.data());
+
+        // start index for hist
+        std::vector<std::size_t> start_index_hist = {0,0};
+        // size for hist
+        std::vector<std::size_t> size_hist = {1,n_hist_bins};
+
+        // size for psd
+        std::vector<std::size_t> size_psd = {1,TULA_SIZET(n_freqs)};
+
+        // loop through detectors
+        for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
+            // increment starting row
+            start_index_hist[0] = i;
+            // get data for detector
+            Eigen::VectorXd scan = in.scans.data.col(i);
+            // calculate histogram
+            auto [h, h_bins] = engine_utils::calc_hist(scan, n_hist_bins);
+            // add data to histogram variable
+            hist_var.putVar(start_index_hist, size_hist, h.data());
+            // add data to histogram bins variable
+            hist_bin_var.putVar(start_index_hist, size_hist, h_bins.data());
+
+            // apply hanning window
+            Eigen::VectorXd hanning = (0.5 - 0.5 * Eigen::ArrayXd::LinSpaced(n_pts, 0, 2.0 * pi / n_pts * (n_pts - 1)).cos());
+
+            scan.noalias() = (scan.array()*hanning.array()).matrix();
+
+            // setup fft
+            Eigen::FFT<double> fft;
+            fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
+            fft.SetFlag(Eigen::FFT<double>::Unscaled);
+
+            // vector to hold fft data
+            Eigen::VectorXcd freqdata;
+
+            // do fft
+            fft.fwd(freqdata, scan.head(n_pts));
+            // calc psd
+            Eigen::VectorXd psd = freqdata.cwiseAbs2() / d_freq;
+            // account for negative freqs
+            psd.segment(1, n_freqs - 2) *= 2.;
+
+            // put detector's psd into variable
+            psd_var.putVar(start_index_hist, size_psd, psd.data());
         }
 
         fo.close();
 
-        SPDLOG_INFO("made timestream files");
-    }
-}
-
-void Engine::write_summary() {
-    std::ofstream myfile;
-    myfile.open (obsnum_dir_name + "/test.out");
-    myfile << "Hello world!\n";
-    myfile.close();
-
+    //} catch (NcException &e) {
+        //SPDLOG_ERROR("{}", e.what());
+    //}
 }
 
 template <typename fits_io_type, class map_buffer_t>
@@ -885,18 +1027,13 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
 
     // write noise maps
     if (!mb->noise.empty()) {
-        SPDLOG_INFO("writing noise maps");
         for (Eigen::Index n=0; n<mb->n_noise; n++) {
             Eigen::Tensor<double,2> out = mb->noise[k].chip(n,2);
             auto out_matrix = Eigen::Map<Eigen::MatrixXd>(out.data(), out.dimension(0), out.dimension(1));
-            SPDLOG_INFO("n {}", n);
 
             noise_fits_io->at(j).add_hdu("signal_" + std::to_string(n) + "_" + rtcproc.polarization.stokes_params[i], out_matrix);
-            SPDLOG_INFO("added signal");
             noise_fits_io->at(j).add_wcs(noise_fits_io->at(j).hdus.back(),mb->wcs);
-            SPDLOG_INFO("wcs");
             noise_fits_io->at(j).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
-            SPDLOG_INFO("added unit");
         }
 
         // add primary hdu to noise files
@@ -923,13 +1060,13 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
     else if constexpr (map_t == mapmaking::RawCoadd) {
         filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::psd,
                                              engine_utils::toltecIO::raw>
-                   (dir_name, redu_type, "", "", telescope.sim_obs);
+                   (dir_name, "", "", "", telescope.sim_obs);
     }
 
     else if constexpr (map_t == mapmaking::FilteredCoadd) {
         filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::psd,
                                              engine_utils::toltecIO::filtered>
-                   (dir_name, redu_type, "", "", telescope.sim_obs);
+                   (dir_name, "", "", "", telescope.sim_obs);
     }
 
     netCDF::NcFile fo(filename + ".nc", netCDF::NcFile::replace);
@@ -997,13 +1134,13 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
     else if constexpr (map_t == mapmaking::RawCoadd) {
         filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::hist,
                                              engine_utils::toltecIO::raw>
-                   (dir_name, redu_type, "", "", telescope.sim_obs);
+                   (dir_name, "", "", "", telescope.sim_obs);
     }
 
     else if constexpr (map_t == mapmaking::FilteredCoadd) {
         filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::hist,
                                              engine_utils::toltecIO::filtered>
-                   (dir_name, redu_type, "", "", telescope.sim_obs);
+                   (dir_name, "", "", "", telescope.sim_obs);
     }
 
     netCDF::NcFile fo(filename + ".nc", netCDF::NcFile::replace);

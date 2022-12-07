@@ -17,14 +17,6 @@ void Telescope::get_tel_data(std::string &filepath) {
         vars.find("Header.Dcs.ObsPgm")->second.getVar(&obs_pgm_char);
         obs_pgm = obs_pgm_char;
 
-        SPDLOG_INFO("obs_pgm {}", obs_pgm);
-        SPDLOG_INFO("obs_pgm_char {}", obs_pgm_char);
-
-
-        SPDLOG_INFO("obs_pgm len{}", obs_pgm.size());
-        SPDLOG_INFO("obs_pgm find {}", obs_pgm.find("Map"));
-
-
         // work around for files with bad ObsPgm
         if (!obs_pgm.find("Lissajous")) {
             obs_pgm = "Lissajous";
@@ -33,11 +25,6 @@ void Telescope::get_tel_data(std::string &filepath) {
         else if (!obs_pgm.find("Map")) {
             obs_pgm = "Map";
         }
-
-        SPDLOG_INFO("obs_pgm_after {}",obs_pgm);
-        SPDLOG_INFO("obs_pgm_L {}",obs_pgm=="Lissajous");
-        SPDLOG_INFO("obs_pgm_M{}",obs_pgm=="Map");
-
 
         if (std::strcmp("Lissajous", obs_pgm.c_str()) && time_chunk==0) {
             SPDLOG_ERROR("mapping mode is lissajous and time chunk size is zero");
@@ -92,7 +79,6 @@ void Telescope::get_tel_data(std::string &filepath) {
         }
 
         tau_225_GHz = tel_header["Header.Radiometer.Tau"](0);
-        SPDLOG_INFO("tau_225_GHz {}",tau_225_GHz);
 
     } catch (NcException &e) {
         SPDLOG_WARN("{}", e.what());
@@ -218,21 +204,13 @@ void Telescope::calc_scan_indices() {
         // index of last scan
         Eigen::Index last_scan_i = tel_data["Hold"].size() - 1;
 
-        SPDLOG_INFO("last_scan_i {}", last_scan_i);
-
         // period (time_chunk/fsmp in seconds/Hz)
         Eigen::Index period_i = floor(time_chunk*fsmp);
 
-        SPDLOG_INFO("period_i {}", period_i);
-
         double period = floor(time_chunk*fsmp);
-
-        SPDLOG_INFO("period {}", period);
 
         // calculate number of scans
         n_scans = floor((last_scan_i - first_scan_i + 1)*1./period);
-
-        SPDLOG_INFO("n_scans {}", n_scans);
 
         // assign scans to scan_indices matrix
         scan_indices.resize(4,n_scans);
