@@ -71,7 +71,9 @@ void Pointing::setup() {
     }
 
     // create output map files
-    create_map_files();
+    if (run_mapmaking) {
+        create_map_files();
+    }
     // create timestream files
     if (run_tod_output) {
         create_tod_files();
@@ -223,9 +225,11 @@ auto Pointing::run() {
             }
 
             // populate maps
-            SPDLOG_INFO("populating maps");
-            mapmaking::populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
-                                           redu_type, calib.apt, pointing_offsets_arcsec, telescope.d_fsmp, run_noise);
+            if (run_mapmaking) {
+                SPDLOG_INFO("populating maps");
+                mapmaking::populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
+                                               redu_type, calib.apt, pointing_offsets_arcsec, telescope.d_fsmp, run_noise);
+            }
         }
 
         n_scans_done++;
@@ -276,39 +280,41 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
         run());
 
-    // normalize maps
-    SPDLOG_INFO("normalizing maps");
-    omb.normalize_maps();
-    // calculate map psds
-    SPDLOG_INFO("calculating map psd");
-    omb.calc_map_psd();
-    // calculate map histograms
-    SPDLOG_INFO("calculating map histogram");
-    omb.calc_map_hist();
+    if (run_mapmaking) {
+        // normalize maps
+        SPDLOG_INFO("normalizing maps");
+        omb.normalize_maps();
+        // calculate map psds
+        SPDLOG_INFO("calculating map psd");
+        omb.calc_map_psd();
+        // calculate map histograms
+        SPDLOG_INFO("calculating map histogram");
+        omb.calc_map_hist();
 
-    // fit maps
-    for (Eigen::Index i=0; i<n_maps; i++) {
-        auto array = calib.arrays(i);
-        auto init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
-        auto [det_params, det_perror, good_fit] =
-            map_fitter.fit_to_gaussian<engine_utils::mapFitter::peakValue>(omb.signal[i], omb.weight[i], init_fwhm);
-        params.row(i) = det_params;
-        perrors.row(i) = det_perror;
+        // fit maps
+        for (Eigen::Index i=0; i<n_maps; i++) {
+            auto array = calib.arrays(i);
+            auto init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
+            auto [det_params, det_perror, good_fit] =
+                map_fitter.fit_to_gaussian<engine_utils::mapFitter::peakValue>(omb.signal[i], omb.weight[i], init_fwhm);
+            params.row(i) = det_params;
+            perrors.row(i) = det_perror;
 
-        SPDLOG_INFO("{} good fit: {}",toltec_io.array_name_map[i], good_fit);
+            SPDLOG_INFO("{} good fit: {}",toltec_io.array_name_map[i], good_fit);
 
-        if (good_fit) {
-            // rescale fit params from pixel to on-sky units
-            params(i,1) = omb.pixel_size_rad*(params(i,1) - (omb.n_cols)/2)*RAD_TO_ASEC;
-            params(i,2) = omb.pixel_size_rad*(params(i,2) - (omb.n_rows)/2)*RAD_TO_ASEC;
-            params(i,3) = STD_TO_FWHM*omb.pixel_size_rad*(params(i,3))*RAD_TO_ASEC;
-            params(i,4) = STD_TO_FWHM*omb.pixel_size_rad*(params(i,4))*RAD_TO_ASEC;
+            if (good_fit) {
+                // rescale fit params from pixel to on-sky units
+                params(i,1) = omb.pixel_size_rad*(params(i,1) - (omb.n_cols)/2)*RAD_TO_ASEC;
+                params(i,2) = omb.pixel_size_rad*(params(i,2) - (omb.n_rows)/2)*RAD_TO_ASEC;
+                params(i,3) = STD_TO_FWHM*omb.pixel_size_rad*(params(i,3))*RAD_TO_ASEC;
+                params(i,4) = STD_TO_FWHM*omb.pixel_size_rad*(params(i,4))*RAD_TO_ASEC;
 
-            // rescale fit errors from pixel to on-sky units
-            perrors(i,1) = omb.pixel_size_rad*(perrors(i,1))*RAD_TO_ASEC;
-            perrors(i,2) = omb.pixel_size_rad*(perrors(i,2))*RAD_TO_ASEC;
-            perrors(i,3) = STD_TO_FWHM*omb.pixel_size_rad*(perrors(i,3))*RAD_TO_ASEC;
-            perrors(i,4) = STD_TO_FWHM*omb.pixel_size_rad*(perrors(i,4))*RAD_TO_ASEC;
+                // rescale fit errors from pixel to on-sky units
+                perrors(i,1) = omb.pixel_size_rad*(perrors(i,1))*RAD_TO_ASEC;
+                perrors(i,2) = omb.pixel_size_rad*(perrors(i,2))*RAD_TO_ASEC;
+                perrors(i,3) = STD_TO_FWHM*omb.pixel_size_rad*(perrors(i,3))*RAD_TO_ASEC;
+                perrors(i,4) = STD_TO_FWHM*omb.pixel_size_rad*(perrors(i,4))*RAD_TO_ASEC;
+            }
         }
     }
 }

@@ -54,8 +54,6 @@
 #include <citlali/core/timestream/ptc/ptcproc.h>
 
 #include <citlali/core/mapmaking/map.h>
-#include <citlali/core/mapmaking/psd.h>
-#include <citlali/core/mapmaking/histogram.h>
 #include <citlali/core/mapmaking/naive_mm.h>
 #include <citlali/core/mapmaking/jinc_mm.h>
 #include <citlali/core/mapmaking/wiener_filter.h>
@@ -98,8 +96,6 @@ struct reduClasses {
     mapmaking::ObsMapBuffer omb;
     mapmaking::ObsMapBuffer cmb;
     mapmaking::WienerFilter wiener_filter;
-    mapmaking::PSD psd;
-    mapmaking::Histogram hist;
 };
 
 struct beammapControls {
@@ -128,7 +124,7 @@ struct beammapControls {
     Eigen::VectorXd sens_psd_limits;
 
     // limits for fwhm and sig2noise  for flagging
-    std::map<std::string, double> lower_fwhm_arcsec, upper_fwhm_arcsec, lower_sig2noise;
+    std::map<std::string, double> lower_fwhm_arcsec, upper_fwhm_arcsec, lower_sig2noise, max_dist_arcsec;
 };
 
 class Engine: public reduControls, public reduClasses, public beammapControls {
@@ -500,40 +496,52 @@ void Engine::get_citlali_config(CT &config) {
     get_value(config, map_fitter.bounding_box_pix, missing_keys, invalid_keys, std::tuple{"source_fitting","bounding_box_arcsec"});
     map_fitter.bounding_box_pix = ASEC_TO_RAD*map_fitter.bounding_box_pix/omb.pixel_size_rad;
 
-    /* coadd */
+    /* coaddition */
     get_value(config, run_coadd, missing_keys, invalid_keys, std::tuple{"coadd","enabled"});
     get_value(config, omb.cov_cut, missing_keys, invalid_keys, std::tuple{"coadd","cov_cut"});
     cmb.cov_cut = omb.cov_cut;
 
-    /* noise */
-    get_value(config, run_noise, missing_keys, invalid_keys, std::tuple{"coadd","noise_maps","enabled"});
-    get_value(config, omb.n_noise, missing_keys, invalid_keys, std::tuple{"coadd","noise_maps","n_noise_maps"});
+    /* noise maps */
+    get_value(config, run_noise, missing_keys, invalid_keys, std::tuple{"noise_maps","enabled"});
+    get_value(config, omb.n_noise, missing_keys, invalid_keys, std::tuple{"noise_maps","n_noise_maps"});
     cmb.n_noise = omb.n_noise;
 
-    /* filtering */
-    get_value(config, run_map_filter, missing_keys, invalid_keys, std::tuple{"coadd","filtering","enabled"});
+    /* map filtering */
+    get_value(config, run_map_filter, missing_keys, invalid_keys, std::tuple{"map_filtering","enabled"});
 
     /* beammap */
-    get_value(config, beammap_iter_max, missing_keys, invalid_keys, std::tuple{"beammap","iter_max"});
-    get_value(config, beammap_iter_tolerance, missing_keys, invalid_keys, std::tuple{"beammap","iter_tolerance"});
-    get_value(config, beammap_reference_det, missing_keys, invalid_keys, std::tuple{"beammap","reference_det"});
-    get_value(config, beammap_derotate, missing_keys, invalid_keys, std::tuple{"beammap","derotate"});
+    if (redu_type=="beammap") {
+        get_value(config, beammap_iter_max, missing_keys, invalid_keys, std::tuple{"beammap","iter_max"});
+        get_value(config, beammap_iter_tolerance, missing_keys, invalid_keys, std::tuple{"beammap","iter_tolerance"});
+        get_value(config, beammap_reference_det, missing_keys, invalid_keys, std::tuple{"beammap","reference_det"});
+        get_value(config, beammap_derotate, missing_keys, invalid_keys, std::tuple{"beammap","derotate"});
 
-    // limits for flagging
-    for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
-        get_value(config, lower_fwhm_arcsec[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","lower_fwhm_arcsec",arr_name});
-        get_value(config, upper_fwhm_arcsec[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","upper_fwhm_arcsec",arr_name});
-        get_value(config, lower_sig2noise[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","lower_sig2noise",arr_name});
+        // limits for flagging
+        for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
+            get_value(config, lower_fwhm_arcsec[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","lower_fwhm_arcsec",arr_name});
+            get_value(config, upper_fwhm_arcsec[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","upper_fwhm_arcsec",arr_name});
+            get_value(config, lower_sig2noise[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","lower_sig2noise",arr_name});
+            get_value(config, max_dist_arcsec[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","max_dist_arcsec",arr_name});
+        }
+
+        // sensitiivty
+        sens_psd_limits.resize(2);
+        double sens;
+        get_value(config, sens, missing_keys, invalid_keys, std::tuple{"beammap","sens_psd_lower_limit"});
+        sens_psd_limits(0) = sens;
+
+        get_value(config, sens, missing_keys, invalid_keys, std::tuple{"beammap","sens_psd_upper_limit"});
+        sens_psd_limits(1) = sens;
     }
 
-    // sensitiivty
-    sens_psd_limits.resize(2);
-    double sens;
-    get_value(config, sens, missing_keys, invalid_keys, std::tuple{"beammap","sens_psd_lower_limit"});
-    sens_psd_limits(0) = sens;
-
-    get_value(config, sens, missing_keys, invalid_keys, std::tuple{"beammap","sens_psd_upper_limit"});
-    sens_psd_limits(1) = sens;
+    // disable map related keys if map-making is disabled
+    if (!run_mapmaking) {
+        run_coadd = false;
+        run_noise = false;
+        run_map_filter = false;
+        // we don't need to do iterations if no maps are made
+        beammap_iter_max = 1;
+    }
 }
 
 template<typename CT>

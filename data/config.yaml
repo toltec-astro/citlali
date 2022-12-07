@@ -1,4 +1,4 @@
-beammap:
+beammap: # beammap controls (ignored if not beammapping)
   iter_max: 1 # maximum number of iterations for beammapping
   derotate: false # derotate beammap to zero elevation
   reference_det: -99 # reference detector offset for APT positions (<0 is ignored)
@@ -17,19 +17,19 @@ beammap:
     a1100: 0
     a1400: 0
     a2000: 0
-  max_dist_arcsec: # upper limits for fitted S/N values
+  max_dist_arcsec: # maximum allowed distance from mean of all positions (ignored if 0)
     a1100: 0
     a1400: 0
     a2000: 0
 coadd: # coaddition controls
   cov_cut: 0.0 # coverage cut value for psd, hist, and coverage_bool maps
   enabled: false # enable or disable coaddition
-  filtering: # map filtering
-    enabled: false # enable or disable map filtering
-    type: wiener_filter # type of filter (currently ignored)
-  noise_maps: # noise map controls
-    enabled: false # enable or disable coaddition
-    n_noise_maps: 1 # number of noise maps (>0)
+map_filtering: # map filtering
+  enabled: false # enable or disable map filtering
+  type: wiener_filter # type of filter (currently ignored)
+noise_maps: # noise map controls
+  enabled: false # enable or disable coaddition
+  n_noise_maps: 1 # number of noise maps (>0)
 inputs: # list of inputs and related data
   - cal_items:
       - beammap_source: # extra information used by beammapping (not needed if not beammapping)
@@ -176,7 +176,7 @@ timestream: # timestream reduction parameters
     enabled: false # enable or disable downsampling
     factor: 2 # downsample factor (integer only)
   filter: # tod filtering
-    a_gibbs: 50.0 # Kaiser Bessel filter shape param
+    a_gibbs: 50.0 # Kaiser-Bessel filter shape param
     enabled: false # enable or disable tod filtering
     freq_high_Hz: 16.0 # upper freq limit
     freq_low_Hz: 0.0 # lower freq limit

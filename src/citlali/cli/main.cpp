@@ -430,12 +430,14 @@ int run(const rc_t &rc) {
                     todproc.engine().telescope.calc_scan_indices();
 
                     // allocate map buffer
-                    todproc.allocate_omb(map_extents[i], map_coords[i]);
+                    if (todproc.engine().run_mapmaking) {
+                        todproc.allocate_omb(map_extents[i], map_coords[i]);
 
-                    // make noise maps for observation map buffer
-                    if (!todproc.engine().run_coadd) {
-                        if (todproc.engine().run_noise) {
-                            todproc.allocate_nmb(todproc.engine().omb);
+                        // make noise maps for observation map buffer
+                        if (!todproc.engine().run_coadd) {
+                            if (todproc.engine().run_noise) {
+                                todproc.allocate_nmb(todproc.engine().omb);
+                            }
                         }
                     }
 
@@ -453,7 +455,9 @@ int run(const rc_t &rc) {
                     todproc.engine().pipeline(kidsproc, rawobs);
 
                     // output
-                    todproc.engine().template output<mapmaking::RawObs>();
+                    if (todproc.engine().run_mapmaking) {
+                        todproc.engine().template output<mapmaking::RawObs>();
+                    }
 
                     // coadd
                     if (todproc.engine().run_coadd) {

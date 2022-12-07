@@ -116,7 +116,9 @@ void Beammap::setup() {
     }
 
     // create output map files
-    create_map_files();
+    if (run_mapmaking) {
+        create_map_files();
+    }
     // create timestream files
     if (run_tod_output) {
         create_tod_files();
@@ -311,13 +313,14 @@ auto Beammap::run_loop() {
         // cleaning
         grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
 
-            if (current_iter > 0) {
-                SPDLOG_INFO("subtract gaussian");
-                params.col(0) = -params.col(0);
-                ptcproc.add_gaussian(ptcs[i], params, telescope.pixel_axes,redu_type, calib.apt,pointing_offsets_arcsec,
-                                     omb.pixel_size_rad, omb.n_rows, omb.n_cols,ptcs[i].map_indices.data, ptcs[i].det_indices.data);
+            if (run_mapmaking) {
+                if (current_iter > 0) {
+                    SPDLOG_INFO("subtract gaussian");
+                    params.col(0) = -params.col(0);
+                    ptcproc.add_gaussian(ptcs[i], params, telescope.pixel_axes,redu_type, calib.apt,pointing_offsets_arcsec,
+                                         omb.pixel_size_rad, omb.n_rows, omb.n_cols,ptcs[i].map_indices.data, ptcs[i].det_indices.data);
+                }
             }
-
 
             SPDLOG_INFO("removing outlier weights");
             auto calib_scan = ptcproc.remove_bad_dets_nw(ptcs[i], calib, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
@@ -325,11 +328,13 @@ auto Beammap::run_loop() {
             SPDLOG_INFO("ptcproc");
             ptcproc.run(ptcs[i], ptcs[i], calib);
 
-            if (current_iter > 0) {
-                SPDLOG_INFO("add gaussian");
-                params.col(0) = -params.col(0);
-                ptcproc.add_gaussian(ptcs[i], params, telescope.pixel_axes,redu_type, calib.apt,pointing_offsets_arcsec,
-                                     omb.pixel_size_rad, omb.n_rows, omb.n_cols,ptcs[i].map_indices.data, ptcs[i].det_indices.data);
+            if (run_mapmaking) {
+                if (current_iter > 0) {
+                    SPDLOG_INFO("add gaussian");
+                    params.col(0) = -params.col(0);
+                    ptcproc.add_gaussian(ptcs[i], params, telescope.pixel_axes,redu_type, calib.apt,pointing_offsets_arcsec,
+                                         omb.pixel_size_rad, omb.n_rows, omb.n_cols,ptcs[i].map_indices.data, ptcs[i].det_indices.data);
+                }
             }
 
             return 0;
@@ -363,32 +368,36 @@ auto Beammap::run_loop() {
 
             // populate maps
             SPDLOG_INFO("populating maps");
-            mapmaking::populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
-                                           ptcs[i].det_indices.data, telescope.pixel_axes,
-                                           redu_type, calib.apt, pointing_offsets_arcsec,
-                                           telescope.d_fsmp, run_noise);
+            if (run_mapmaking) {
+                mapmaking::populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
+                                               ptcs[i].det_indices.data, telescope.pixel_axes,
+                                               redu_type, calib.apt, pointing_offsets_arcsec,
+                                               telescope.d_fsmp, run_noise);
+            }
             return 0;
         });
 
-        // normalize maps
-        SPDLOG_INFO("normalizing maps");
-        omb.normalize_maps();
+        if (run_mapmaking) {
+            // normalize maps
+            SPDLOG_INFO("normalizing maps");
+            omb.normalize_maps();
 
-        SPDLOG_INFO("fitting maps");
-        grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
-            auto array_index = ptcs[0].array_indices.data(i);
-            auto init_fwhm = toltec_io.array_fwhm_arcsec[array_index]*ASEC_TO_RAD/omb.pixel_size_rad;
-            auto [det_params, det_perror, good_fit] =
-                map_fitter.fit_to_gaussian<engine_utils::mapFitter::peakValue>(omb.signal[i], omb.weight[i], init_fwhm);
+            SPDLOG_INFO("fitting maps");
+            grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+                auto array_index = ptcs[0].array_indices.data(i);
+                auto init_fwhm = toltec_io.array_fwhm_arcsec[array_index]*ASEC_TO_RAD/omb.pixel_size_rad;
+                auto [det_params, det_perror, good_fit] =
+                    map_fitter.fit_to_gaussian<engine_utils::mapFitter::peakValue>(omb.signal[i], omb.weight[i], init_fwhm);
 
-            params.row(i) = det_params;
-            perrors.row(i) = det_perror;
-            good_fits(i) = good_fit;
+                params.row(i) = det_params;
+                perrors.row(i) = det_perror;
+                good_fits(i) = good_fit;
 
-            return 0;}
-        );
+                return 0;}
+            );
 
-        SPDLOG_INFO("number of good beammap fits {}/{}", (good_fits.array()==true).count(), calib.n_dets);
+            SPDLOG_INFO("number of good beammap fits {}/{}", (good_fits.array()==true).count(), calib.n_dets);
+        }
 
         // increment loop iteration
         current_iter++;
@@ -498,12 +507,19 @@ auto Beammap::loop_pipeline() {
     // array indices for current polarization
     auto array_indices = ptcs[0].array_indices.data;
 
+    // mean values of fitted detector positions
+    double mean_x_t = calib.apt["x_t"].mean();
+    double mean_y_t = calib.apt["y_t"].mean();
+
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
         auto array_index = array_indices(i);
         std::string array_name = toltec_io.array_name_map[calib.apt["array"](array_index)];
 
         // calculate map standard deviation
         double map_std_dev = engine_utils::calc_std_dev(omb.signal[i]);
+
+        // calculate distance of detector from mean position of all detectors
+        double dist = sqrt(pow(calib.apt["x_t"](i) - mean_x_t,2) + pow(calib.apt["y_t"](i) - mean_y_t,2));
 
         // flag detectors with outler a_fwhm values
         if (calib.apt["a_fwhm"](i) < lower_fwhm_arcsec[array_name] || calib.apt["a_fwhm"](i) > upper_fwhm_arcsec[array_name]) {
@@ -515,6 +531,10 @@ auto Beammap::loop_pipeline() {
         }
         // flag detectors with outler S/N values
         if (params(i,0)/map_std_dev < lower_sig2noise[array_name]) {
+            calib.apt["flag"](i) = 0;
+        }
+        // flag detectors that are further than the mean value than the distance limit
+        if (dist > max_dist_arcsec[array_name] && max_dist_arcsec[array_name] != 0) {
             calib.apt["flag"](i) = 0;
         }
 
@@ -644,7 +664,8 @@ void Beammap::output() {
 
             if (rtcproc.run_calibrate) {
                 if (omb.sig_unit == "Mjy/sr") {
-                    fits_io_vec[array].pfits->pHDU().addKey("to_mJy/beam", calib.array_beam_areas[calib.arrays(j)]*MJY_SR_TO_mJY_ASEC, "Conversion to mJy/beam");
+                    fits_io_vec[array].pfits->pHDU().addKey("to_mJy/beam", calib.array_beam_areas[calib.arrays(j)]*MJY_SR_TO_mJY_ASEC,
+                                                            "Conversion to mJy/beam");
                     fits_io_vec[array].pfits->pHDU().addKey("to_Mjy/sr", 1, "Conversion to MJy/sr");
                 }
 

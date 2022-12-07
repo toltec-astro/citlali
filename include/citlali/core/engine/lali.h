@@ -45,7 +45,9 @@ void Lali::setup() {
     }
 
     // create output map files
-    create_map_files();
+    if (run_mapmaking) {
+        create_map_files();
+    }
     // create timestream files
     if (run_tod_output) {
         create_tod_files();
@@ -148,9 +150,11 @@ auto Lali::run() {
             }
 
             // populate maps
-            SPDLOG_INFO("populating maps");
-            mapmaking::populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
-                                           redu_type, calib.apt, pointing_offsets_arcsec, telescope.d_fsmp, run_noise);
+            if (run_mapmaking) {
+                SPDLOG_INFO("populating maps");
+                mapmaking::populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
+                                               redu_type, calib.apt, pointing_offsets_arcsec, telescope.d_fsmp, run_noise);
+            }
         }
 
         n_scans_done++;
@@ -203,20 +207,21 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         // run the farm
         run());
 
-    // normalize maps
-    SPDLOG_INFO("normalizing maps");
-    omb.normalize_maps();
-    // calculate map psds
-    SPDLOG_INFO("calculating map psd");
-    omb.calc_map_psd();
-    // calculate map histograms
-    SPDLOG_INFO("calculating map histogram");
-    omb.calc_map_hist();
+    if (run_mapmaking) {
+        // normalize maps
+        SPDLOG_INFO("normalizing maps");
+        omb.normalize_maps();
+        // calculate map psds
+        SPDLOG_INFO("calculating map psd");
+        omb.calc_map_psd();
+        // calculate map histograms
+        SPDLOG_INFO("calculating map histogram");
+        omb.calc_map_hist();
+    }
 }
 
 template <mapmaking::MapType map_type>
 void Lali::output() {
-
     // pointer to map buffer
     mapmaking::ObsMapBuffer* mb = NULL;
     // pointer to data file fits vector

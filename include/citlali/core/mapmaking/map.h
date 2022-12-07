@@ -300,7 +300,6 @@ void ObsMapBuffer::wiener_filter_maps() {
         //WienerFilter wiener_filter;
         //wiener_filter.make_template();
         //wiener_filter.run();
-
     }
 }
 
