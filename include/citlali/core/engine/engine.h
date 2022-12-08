@@ -67,7 +67,7 @@ struct reduControls {
     bool use_subdir;
 
     // run or skip tod processing
-    bool run_timestream;
+    bool run_tod;
 
     // output timestreams
     bool run_tod_output;
@@ -185,6 +185,9 @@ public:
     // mapping from index in map vector to array index
     Eigen::VectorXI maps_to_arrays;
 
+    // mapping from index in map vector to array index
+    Eigen::VectorXI maps_to_stokes;
+
     // manual pointing offsets
     std::map<std::string, double> pointing_offsets_arcsec;
 
@@ -223,7 +226,7 @@ public:
     void add_phdu(fits_io_type &, map_buffer_t &, Eigen::Index);
 
     template <typename fits_io_type, class map_buffer_t>
-    void write_maps(fits_io_type &, fits_io_type &, map_buffer_t &, Eigen::Index, Eigen::Index, Eigen::Index);
+    void write_maps(fits_io_type &, fits_io_type &, map_buffer_t &, Eigen::Index);
 
     template <mapmaking::MapType map_t, class map_buffer_t>
     void write_psd(map_buffer_t &, std::string);
@@ -297,7 +300,7 @@ void Engine::get_citlali_config(CT &config) {
     get_value(config, use_subdir, missing_keys, invalid_keys, std::tuple{"runtime","use_subdir"});
 
     /* timestream */
-    get_value(config, run_timestream, missing_keys, invalid_keys, std::tuple{"timestream","enabled"});
+    get_value(config, run_tod, missing_keys, invalid_keys, std::tuple{"timestream","enabled"});
     get_value(config, tod_type, missing_keys, invalid_keys, std::tuple{"timestream","type"});
     get_value(config, run_tod_output, missing_keys, invalid_keys, std::tuple{"timestream","output","enabled"});
 
@@ -321,7 +324,8 @@ void Engine::get_citlali_config(CT &config) {
     get_value(config, rtcproc.run_polarization, missing_keys, invalid_keys, std::tuple{"timestream","polarimetry", "enabled"});
 
     if (!rtcproc.run_polarization) {
-        rtcproc.polarization.stokes_params = {"I"};
+        rtcproc.polarization.stokes_params.clear();
+        rtcproc.polarization.stokes_params[0] = "I";
     }
 
     /* kernel */
@@ -444,10 +448,12 @@ void Engine::get_citlali_config(CT &config) {
     // map units
     if (rtcproc.run_calibrate) {
         get_value(config, omb.sig_unit, missing_keys, invalid_keys, std::tuple{"mapmaking","cunit"});
+        cmb.sig_unit = omb.sig_unit;
     }
 
     else {
         omb.sig_unit = tod_type;
+        cmb.sig_unit = tod_type;
     }
 
     if (telescope.pixel_axes == "icrs") {
@@ -584,38 +590,50 @@ template <typename Derived>
 auto Engine::calc_map_indices(Eigen::DenseBase<Derived> &det_indices, Eigen::DenseBase<Derived> &nw_indices,
                               Eigen::DenseBase<Derived> &array_indices, std::string stokes_param) {
     // indices for maps
-    Eigen::VectorXI map_indices(array_indices.size());
+    Eigen::VectorXI indices(array_indices.size()), map_indices(array_indices.size());
 
     // set map indices
     if (redu_type == "science") {
-        map_indices = array_indices;
+        indices = array_indices;
     }
 
     else if (redu_type == "pointing") {
-        map_indices = array_indices;
+        indices = array_indices;
     }
 
     else if (redu_type == "beammap") {
-        map_indices = det_indices;
+        indices = det_indices;
     }
 
     // overwrite map indices for networks
     if (map_grouping == "nw") {
-        map_indices = nw_indices;
+        indices = nw_indices;
     }
 
     // overwrite map indices for arrays
     else if (map_grouping == "array") {
-        map_indices = array_indices;
+        indices = array_indices;
     }
 
     // overwrite map indices for detectors
     else if (map_grouping == "detector") {
-        map_indices = det_indices;
+        indices = det_indices;
+    }
+
+    // start at 0
+    Eigen::Index map_index = 0;
+    map_indices(0) = 0;
+    // loop through and populate map indices
+    for (Eigen::Index i=0; i<indices.size()-1; i++) {
+        // if next index is larger than current index, increment map index
+        if (indices(i+1) > indices(i)) {
+            map_index++;
+        }
+        map_indices(i+1) = map_index;
     }
 
     // loop through and calculate map indices
-    if (map_grouping != "detector") {
+    /*if (map_grouping != "detector") {
         for (Eigen::Index i=0; i<map_indices.size()-1; i++) {
             if (map_indices(i+1) > (map_indices(i)+1)) {
                 auto map_indices_temp = map_indices;
@@ -624,11 +642,11 @@ auto Engine::calc_map_indices(Eigen::DenseBase<Derived> &det_indices, Eigen::Den
                 (map_indices.array() == mi_upper).select(mi_lower+1,map_indices.array());
             }
         }
-    }
+    }*/
 
     // make sure first value is zero
-    auto min_index = map_indices.minCoeff();
-    map_indices = map_indices.array() - min_index;
+    //auto min_index = map_indices.minCoeff();
+    //map_indices = map_indices.array() - min_index;
 
     if (rtcproc.run_polarization) {
         if (stokes_param == "Q") {
@@ -701,7 +719,7 @@ void Engine::create_map_files() {
 }
 
 void Engine::create_tod_files() {
-    for (const auto &stokes_param: rtcproc.polarization.stokes_params) {
+    for (const auto &[stokes_index,stokes_param]: rtcproc.polarization.stokes_params) {
         auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
                                                   engine_utils::toltecIO::timestream,
                                                   engine_utils::toltecIO::raw>(obsnum_dir_name + "/raw/", redu_type, "",
@@ -939,113 +957,139 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
 }
 
 template <typename fits_io_type, class map_buffer_t>
-void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index j) {
+void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // array name
-    std::string name = toltec_io.array_name_map[j];
+    std::string name = toltec_io.array_name_map[i];
 
     if (rtcproc.run_calibrate) {
         if (mb->sig_unit == "Mjy/sr") {
-            fits_io->at(j).pfits->pHDU().addKey("to_mJy/beam", calib.array_beam_areas[calib.arrays(j)]*MJY_SR_TO_mJY_ASEC,
+            fits_io->at(i).pfits->pHDU().addKey("to_mJy/beam", calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC,
                                             "Conversion to mJy/beam");
-            fits_io->at(j).pfits->pHDU().addKey("to_Mjy/sr", 1, "Conversion to MJy/sr");
+            fits_io->at(i).pfits->pHDU().addKey("to_Mjy/sr", 1, "Conversion to MJy/sr");
         }
 
         else if (mb->sig_unit == "mJy/beam") {
-            fits_io->at(j).pfits->pHDU().addKey("to_mJy/beam", 1, "Conversion to mJy/beam");
-            fits_io->at(j).pfits->pHDU().addKey("to_Mjy/sr", 1/calib.mean_flux_conversion_factor[name], "Conversion to MJy/sr");
+            fits_io->at(i).pfits->pHDU().addKey("to_mJy/beam", 1, "Conversion to mJy/beam");
+            fits_io->at(i).pfits->pHDU().addKey("to_Mjy/sr", 1/calib.mean_flux_conversion_factor[name], "Conversion to MJy/sr");
         }
     }
 
     else {
-        fits_io->at(j).pfits->pHDU().addKey("to_mJy/beam", "N/A", "Conversion to mJy/beam");
-        fits_io->at(j).pfits->pHDU().addKey("to_Mjy/sr", "N/A", "Conversion to MJy/sr");
+        fits_io->at(i).pfits->pHDU().addKey("to_mJy/beam", "N/A", "Conversion to mJy/beam");
+        fits_io->at(i).pfits->pHDU().addKey("to_Mjy/sr", "N/A", "Conversion to MJy/sr");
     }
 
     // add obsnum
-    fits_io->at(j).pfits->pHDU().addKey("OBSNUM", obsnum, "Observation Number");
+    fits_io->at(i).pfits->pHDU().addKey("OBSNUM", obsnum, "Observation Number");
     // add citlali version
-    fits_io->at(j).pfits->pHDU().addKey("VERSION", CITLALI_GIT_VERSION, "CITLALI_GIT_VERSION");
+    fits_io->at(i).pfits->pHDU().addKey("VERSION", CITLALI_GIT_VERSION, "CITLALI_GIT_VERSION");
     // add tod type
-    fits_io->at(j).pfits->pHDU().addKey("TYPE", tod_type, "TOD Type");
+    fits_io->at(i).pfits->pHDU().addKey("TYPE", tod_type, "TOD Type");
     // add exposure time
-    fits_io->at(j).pfits->pHDU().addKey("EXPTIME", mb->exposure_time, "Exposure Time");
-
+    fits_io->at(i).pfits->pHDU().addKey("EXPTIME", mb->exposure_time, "Exposure Time");
+    // add map grouping
+    fits_io->at(i).pfits->pHDU().addKey("GROUPING", map_grouping, "Map Grouping");
     // add source ra
-    fits_io->at(j).pfits->pHDU().addKey("SRC_RA", telescope.tel_header["Header.Source.Ra"][0], "Source RA (radians)");
+    fits_io->at(i).pfits->pHDU().addKey("SRC_RA", telescope.tel_header["Header.Source.Ra"][0], "Source RA (radians)");
     // add source dec
-    fits_io->at(j).pfits->pHDU().addKey("SRC_DEC", telescope.tel_header["Header.Source.Dec"][0], "Source Dec (radians)");
+    fits_io->at(i).pfits->pHDU().addKey("SRC_DEC", telescope.tel_header["Header.Source.Dec"][0], "Source Dec (radians)");
     // add map tangent point ra
-    fits_io->at(j).pfits->pHDU().addKey("TAN_RA", telescope.tel_header["Header.Source.Ra"][0], "Map Tangent Point RA (radians)");
+    fits_io->at(i).pfits->pHDU().addKey("TAN_RA", telescope.tel_header["Header.Source.Ra"][0], "Map Tangent Point RA (radians)");
     // add map tangent point dec
-    fits_io->at(j).pfits->pHDU().addKey("TAN_DEC", telescope.tel_header["Header.Source.Dec"][0], "Map Tangent Point Dec (radians)");
+    fits_io->at(i).pfits->pHDU().addKey("TAN_DEC", telescope.tel_header["Header.Source.Dec"][0], "Map Tangent Point Dec (radians)");
 
     // add telescope file header information
     for (auto const& [key, val] : telescope.tel_header) {
-        fits_io->at(j).pfits->pHDU().addKey(key, val(0), key);
+        fits_io->at(i).pfits->pHDU().addKey(key, val(0), key);
     }
 }
 
 template <typename fits_io_type, class map_buffer_t>
-void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_buffer_t &mb,
-                        Eigen::Index i, Eigen::Index j, Eigen::Index k) {
+void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_buffer_t &mb, Eigen::Index i) {
+
+    std::string map_name = "";
+
+    if ((redu_type=="beammap" && map_grouping!="array") || (redu_type!="beammap" && map_grouping!="array")) {
+
+        if (map_grouping=="nw") {
+            map_name = map_name + "nw_" + std::to_string(calib.nws(i)) + "_";
+        }
+
+        else if (map_grouping=="detector") {
+            map_name = map_name + "det_" + std::to_string(i) + "_";
+        }
+    }
+
+    // get the array for the given map
+    Eigen::Index map_index = maps_to_arrays(i);
+    // get the stokes parameter for the given map
+    Eigen::Index stokes_index = maps_to_stokes(i);
+
     // array name
-    std::string name = toltec_io.array_name_map[j];
+    std::string name = toltec_io.array_name_map[map_index];
+
     // signal map
-    fits_io->at(j).add_hdu("signal_" + rtcproc.polarization.stokes_params[i], mb->signal[k]);
-    fits_io->at(j).add_wcs(fits_io->at(j).hdus.back(),mb->wcs);
-    fits_io->at(j).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
+    fits_io->at(map_index).add_hdu("signal_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->signal[i]);
+    fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs);
+    fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
 
     // weight map
-    fits_io->at(j).add_hdu("weight_" + rtcproc.polarization.stokes_params[i], mb->weight[k]);
-    fits_io->at(j).add_wcs(fits_io->at(j).hdus.back(),mb->wcs);
-    fits_io->at(j).hdus.back()->addKey("UNIT", "1/("+mb->sig_unit+")", "Unit of map");
+    fits_io->at(map_index).add_hdu("weight_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->weight[i]);
+    fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs);
+    fits_io->at(map_index).hdus.back()->addKey("UNIT", "1/("+mb->sig_unit+")", "Unit of map");
 
     // kernel map
     if (rtcproc.run_kernel) {
-        fits_io->at(j).add_hdu("kernel_" + rtcproc.polarization.stokes_params[i], mb->kernel[k]);
-        fits_io->at(j).add_wcs(fits_io->at(j).hdus.back(),mb->wcs);
-        fits_io->at(j).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
+        fits_io->at(map_index).add_hdu("kernel_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->kernel[i]);
+        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs);
+        fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
     }
 
     // coverage map
-    fits_io->at(j).add_hdu("coverage_" + rtcproc.polarization.stokes_params[i], mb->coverage[k]);
-    fits_io->at(j).add_wcs(fits_io->at(j).hdus.back(),mb->wcs);
-    fits_io->at(j).hdus.back()->addKey("UNIT", "sec", "Unit of map");
+    if (!mb->coverage.empty()) {
+        fits_io->at(map_index).add_hdu("coverage_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->weight[i]);
+        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs);
+        fits_io->at(map_index).hdus.back()->addKey("UNIT", "sec", "Unit of map");
+    }
 
     // coverage bool map
-    Eigen::MatrixXd ones, zeros;
-    ones.setOnes(mb->weight[k].rows(), mb->weight[k].cols());
-    zeros.setZero(mb->weight[k].rows(), mb->weight[k].cols());
+    if (redu_type!="beammap") {
+        Eigen::MatrixXd ones, zeros;
+        ones.setOnes(mb->weight[i].rows(), mb->weight[i].cols());
+        zeros.setZero(mb->weight[i].rows(), mb->weight[i].cols());
 
-    auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = mb->calc_cov_region(mb->weight[k]);
-    auto coverage_bool = (mb->weight[k].array() < weight_threshold).select(zeros,ones);
+        auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = mb->calc_cov_region(mb->weight[i]);
+        Eigen::MatrixXd coverage_bool = (mb->weight[i].array() < weight_threshold).select(zeros,ones);
 
-    fits_io->at(j).add_hdu("coverage_bool_" + rtcproc.polarization.stokes_params[i], coverage_bool);
-    fits_io->at(j).add_wcs(fits_io->at(j).hdus.back(),mb->wcs);
-    fits_io->at(j).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
+        fits_io->at(map_index).add_hdu("coverage_bool_" + map_name + rtcproc.polarization.stokes_params[stokes_index], coverage_bool);
+        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs);
+        fits_io->at(map_index).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
 
-    // signal-to-noise map
-    Eigen::MatrixXd sig2noise = mb->signal[k].array()*sqrt(mb->weight[k].array());
-    fits_io->at(j).add_hdu("sig2noise_" + rtcproc.polarization.stokes_params[i], sig2noise);
-    fits_io->at(j).add_wcs(fits_io->at(j).hdus.back(),mb->wcs);
-    fits_io->at(j).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
+        // signal-to-noise map
+        Eigen::MatrixXd sig2noise = mb->signal[i].array()*sqrt(mb->weight[i].array());
+        fits_io->at(map_index).add_hdu("sig2noise_" + map_name + rtcproc.polarization.stokes_params[stokes_index], sig2noise);
+        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs);
+        fits_io->at(map_index).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
+    }
 
     // add primary hdu
-    add_phdu(fits_io, mb, j);
+    add_phdu(fits_io, mb, map_index);
 
     // write noise maps
     if (!mb->noise.empty()) {
         for (Eigen::Index n=0; n<mb->n_noise; n++) {
-            Eigen::Tensor<double,2> out = mb->noise[k].chip(n,2);
+            Eigen::Tensor<double,2> out = mb->noise[i].chip(n,2);
             auto out_matrix = Eigen::Map<Eigen::MatrixXd>(out.data(), out.dimension(0), out.dimension(1));
 
-            noise_fits_io->at(j).add_hdu("signal_" + std::to_string(n) + "_" + rtcproc.polarization.stokes_params[i], out_matrix);
-            noise_fits_io->at(j).add_wcs(noise_fits_io->at(j).hdus.back(),mb->wcs);
-            noise_fits_io->at(j).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
+            noise_fits_io->at(map_index).add_hdu("signal_" + map_name + std::to_string(n) + "_" +
+                                                     rtcproc.polarization.stokes_params[stokes_index],
+                                                 out_matrix);
+            noise_fits_io->at(map_index).add_wcs(noise_fits_io->at(map_index).hdus.back(),mb->wcs);
+            noise_fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
         }
 
         // add primary hdu to noise files
-        add_phdu(noise_fits_io, mb, j);
+        add_phdu(noise_fits_io, mb, map_index);
     }
 }
 
@@ -1079,45 +1123,57 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
 
     netCDF::NcFile fo(filename + ".nc", netCDF::NcFile::replace);
 
-    Eigen::Index k = 0;
+    for (Eigen::Index i=0; i<mb->psds.size(); i++) {
 
-    for (Eigen::Index i=0; i<rtcproc.polarization.stokes_params.size(); i++) {
-        for (Eigen::Index j=0; j<n_maps/rtcproc.polarization.stokes_params.size(); j++) {
+        std::string map_name = "";
 
-            auto array = calib.arrays[j];
-            std::string name = toltec_io.array_name_map[array] + "_" + rtcproc.polarization.stokes_params[k];
+        if ((redu_type=="beammap" && map_grouping!="array") || (redu_type!="beammap" && map_grouping!="array")) {
 
-            // add dimensions
-            netCDF::NcDim psd_dim = fo.addDim(name + "_nfreq",mb->psds[k].size());
-            netCDF::NcDim pds_2d_row_dim = fo.addDim(name + "_rows",mb->psd_2ds[k].rows());
-            netCDF::NcDim pds_2d_col_dim = fo.addDim(name + "_cols",mb->psd_2ds[k].cols());
+            if (map_grouping=="nw") {
+                map_name = map_name + "nw_" + std::to_string(calib.nws(i)) + "_";
+            }
 
-            std::vector<netCDF::NcDim> dims;
-            dims.push_back(pds_2d_row_dim);
-            dims.push_back(pds_2d_col_dim);
-
-            // psd
-            netCDF::NcVar psd_v = fo.addVar(name + "_psd",netCDF::ncDouble, psd_dim);
-            psd_v.putVar(mb->psds[k].data());
-
-            // psd freq
-            netCDF::NcVar psd_freq_v = fo.addVar(name + "_psd_freq",netCDF::ncDouble, psd_dim);
-            psd_freq_v.putVar(mb->psd_freqs[k].data());
-
-            // transpose 2d psd and freq
-            Eigen::MatrixXd psd_2d_transposed = mb->psd_2ds[k].transpose();
-            Eigen::MatrixXd psd_2d_freq_transposed = mb->psd_2d_freqs[k].transpose();
-
-            // 2d psd
-            netCDF::NcVar psd_2d_v = fo.addVar(name + "_psd_2d",netCDF::ncDouble, dims);
-            psd_2d_v.putVar(psd_2d_transposed.data());
-
-            // 2d psd freq
-            netCDF::NcVar psd_2d_freq_v = fo.addVar(name + "_psd_2d_freq",netCDF::ncDouble, dims);
-            psd_2d_freq_v.putVar(psd_2d_freq_transposed.data());
-
-            k++;
+            else if (map_grouping=="detector") {
+                map_name = map_name + "det_" + std::to_string(i) + "_";
+            }
         }
+
+        // get the array for the given map
+        Eigen::Index map_index = maps_to_arrays(i);
+        // get the stokes parameter for the given map
+        Eigen::Index stokes_index = maps_to_stokes(i);
+
+        auto array = calib.arrays[map_index];
+        std::string name = toltec_io.array_name_map[array] + "_" + map_name + rtcproc.polarization.stokes_params[stokes_index];
+
+        // add dimensions
+        netCDF::NcDim psd_dim = fo.addDim(name + "_nfreq",mb->psds[i].size());
+        netCDF::NcDim pds_2d_row_dim = fo.addDim(name + "_rows",mb->psd_2ds[i].rows());
+        netCDF::NcDim pds_2d_col_dim = fo.addDim(name + "_cols",mb->psd_2ds[i].cols());
+
+        std::vector<netCDF::NcDim> dims;
+        dims.push_back(pds_2d_row_dim);
+        dims.push_back(pds_2d_col_dim);
+
+        // psd
+        netCDF::NcVar psd_v = fo.addVar(name + "_psd",netCDF::ncDouble, psd_dim);
+        psd_v.putVar(mb->psds[i].data());
+
+        // psd freq
+        netCDF::NcVar psd_freq_v = fo.addVar(name + "_psd_freq",netCDF::ncDouble, psd_dim);
+        psd_freq_v.putVar(mb->psd_freqs[i].data());
+
+        // transpose 2d psd and freq
+        Eigen::MatrixXd psd_2d_transposed = mb->psd_2ds[i].transpose();
+        Eigen::MatrixXd psd_2d_freq_transposed = mb->psd_2d_freqs[i].transpose();
+
+        // 2d psd
+        netCDF::NcVar psd_2d_v = fo.addVar(name + "_psd_2d",netCDF::ncDouble, dims);
+        psd_2d_v.putVar(psd_2d_transposed.data());
+
+        // 2d psd freq
+        netCDF::NcVar psd_2d_freq_v = fo.addVar(name + "_psd_2d_freq",netCDF::ncDouble, dims);
+        psd_2d_freq_v.putVar(psd_2d_freq_transposed.data());
     }
     // close file
     fo.close();
@@ -1156,21 +1212,36 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
 
     Eigen::Index k = 0;
 
-    for (Eigen::Index i=0; i<rtcproc.polarization.stokes_params.size(); i++) {
-        for (Eigen::Index j=0; j<n_maps/rtcproc.polarization.stokes_params.size(); j++) {
+    for (Eigen::Index i=0; i<mb->hists.size(); i++) {
 
-            auto array = calib.arrays[j];
-            std::string name = toltec_io.array_name_map[array] + "_" + rtcproc.polarization.stokes_params[k];
+        std::string map_name = "";
 
-            // histogram bins
-            netCDF::NcVar hist_bins_v = fo.addVar(name + "_bins",netCDF::ncDouble, hist_bins_dim);
-            hist_bins_v.putVar(mb->hist_bins[k].data());
+        if ((redu_type=="beammap" && map_grouping!="array") || (redu_type!="beammap" && map_grouping!="array")) {
 
-            // histogram
-            netCDF::NcVar hist_v = fo.addVar(name + "_hist",netCDF::ncDouble, hist_bins_dim);
-            hist_v.putVar(mb->hists[k].data());
-            k++;
+            if (map_grouping=="nw") {
+                map_name = map_name + "nw_" + std::to_string(calib.nws(i)) + "_";
+            }
+
+            else if (map_grouping=="detector") {
+                map_name = map_name + "det_" + std::to_string(i) + "_";
+            }
         }
+
+        // get the array for the given map
+        Eigen::Index map_index = maps_to_arrays(i);
+        // get the stokes parameter for the given map
+        Eigen::Index stokes_index = maps_to_stokes(i);
+
+        auto array = calib.arrays[map_index];
+        std::string name = toltec_io.array_name_map[array] + "_" + map_name + rtcproc.polarization.stokes_params[stokes_index];
+
+        // histogram bins
+        netCDF::NcVar hist_bins_v = fo.addVar(name + "_bins",netCDF::ncDouble, hist_bins_dim);
+        hist_bins_v.putVar(mb->hist_bins[i].data());
+
+        // histogram
+        netCDF::NcVar hist_v = fo.addVar(name + "_hist",netCDF::ncDouble, hist_bins_dim);
+        hist_v.putVar(mb->hists[i].data());
     }
     // close file
     fo.close();

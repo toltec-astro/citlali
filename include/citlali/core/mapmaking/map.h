@@ -133,7 +133,7 @@ void ObsMapBuffer::normalize_maps() {
                 }
             }
         }
-    }
+    }    
 
     // normalize noise maps
     for (Eigen::Index i=0; i<signal.size(); i++) {
@@ -199,7 +199,8 @@ void ObsMapBuffer::calc_map_psd() {
             cov_n_cols--;
         }
 
-        auto sig = signal[i].block(cov_ranges(0,0), cov_ranges(0,1), n_rows, n_cols);
+        // explicit copy
+        Eigen::MatrixXd sig = signal[i].block(cov_ranges(0,0), cov_ranges(0,1), n_rows, n_cols);
         // calculate psds
         auto [p, pf, p_2d, pf_2d] = engine_utils::calc_2D_psd(sig, rows_tan_vec, cols_tan_vec, cov_n_rows, cov_n_cols,
                                                            smooth_window, parallel_policy);
@@ -259,7 +260,7 @@ void ObsMapBuffer::calc_map_hist() {
         auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = calc_cov_region(weight[i]);
 
         // setup input signal data
-        auto sig = signal[i].block(cov_ranges(0,0),cov_ranges(0,1), cov_n_rows, cov_n_cols);
+        Eigen::MatrixXd sig = signal[i].block(cov_ranges(0,0),cov_ranges(0,1), cov_n_rows, cov_n_cols);
 
         // calculate histogram and bins
         auto [h, h_bins] = engine_utils::calc_hist(sig, hist_n_bins);

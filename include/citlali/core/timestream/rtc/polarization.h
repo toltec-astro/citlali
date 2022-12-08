@@ -10,10 +10,10 @@ class Polarization {
 public:
     using indices_t = std::tuple<Eigen::VectorXI, Eigen::VectorXI, Eigen::VectorXI>;
 
-    std::vector<std::string> stokes_params = {
-        "I",
-        "Q",
-        "U"
+    std::map<int,std::string> stokes_params = {
+        {0,"I"},
+        {1,"Q"},
+        {2,"U"}
     };
 
     template<class calib_type>

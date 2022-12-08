@@ -39,7 +39,7 @@ public:
                 pfits.reset( new CCfits::FITS(filepath + ".fits", CCfits::Write));
                 // write date
                 pfits->pHDU().writeDate();
-                SPDLOG_INFO("created file {}", filepath + ".fits");
+                //SPDLOG_INFO("created file {}", filepath + ".fits");
             }
             catch (CCfits::FITS::CantCreate) {
                 SPDLOG_ERROR("unable to create file {}", filepath);

@@ -61,6 +61,9 @@ inputs: # list of inputs and related data
           interface: apt
         type: array_prop_table
     data_items:
+      - filepath: /path/to/data/raw/hwp.nc # half-wave plate file
+        meta:
+          interface: hwp
       - filepath: /path/to/data/raw/tel.nc # telescope file
         meta:
           interface: lmt
@@ -137,7 +140,7 @@ mapmaking: # mapmaking parameters
   crval1_J2000: 0 # ref value 1 (ignored if 0)
   crval2_J2000: 0 # ref value 1 (ignored if 0)
   cunit: MJy/sr # units (MJy/sr or mJy/beam)
-  grouping: auto # mapmaking grouping (det,nw, array.  use auto for now)
+  grouping: auto # mapmaking grouping (detector,nw, array.  use auto for now)
   method: naive # mapmaking algorithm (naive or jinc)
   pixel_axes: icrs # reference frame (icrs or altaz)
   pixel_size_arcsec: 1.0 # pixel size in arceconds
@@ -181,7 +184,7 @@ timestream: # timestream reduction parameters
     freq_high_Hz: 16.0 # upper freq limit
     freq_low_Hz: 0.0 # lower freq limit
     n_terms: 32 # size of filter in samples
-  kernel: # make syntethic timestreams for reduction characterization
+  kernel: # make synthetic timestreams for reduction characterization
     enabled: false # enable or disable kernel generation
     filepath: null # filepath to FITS file with kernel
     image_ext_name: signal # extention name if FITS file

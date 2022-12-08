@@ -244,7 +244,7 @@ auto Beammap::run_timestream() {
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;
 
         // loop through polarizations
-        for (const auto &stokes_param: rtcproc.polarization.stokes_params) {
+        for (const auto &[stokes_index,stokes_param]: rtcproc.polarization.stokes_params) {
             SPDLOG_INFO("starting scan {}. {}/{} scans completed", rtcdata.index.data + 1, n_scans_done, telescope.scan_indices.cols());
 
             SPDLOG_INFO("reducing {} timestream",stokes_param);
@@ -341,8 +341,8 @@ auto Beammap::run_loop() {
         });
 
         // sensitivity
+        SPDLOG_INFO("calculating sensitivity");
         grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
-            SPDLOG_INFO("sens");
             Eigen::MatrixXd det_sens, noise_flux;
             calc_sensitivity(ptcs, det_sens, noise_flux, telescope.d_fsmp, i, {sens_psd_limits(0), sens_psd_limits(1)});
             calib.apt["sens"](i) = tula::alg::median(det_sens);
@@ -443,6 +443,11 @@ template <class KidsProc, class RawObs>
 auto Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     // initialize number of completed scans
     n_scans_done = 0;
+
+    // progress bar
+    tula::logging::progressbar pb(
+        [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 100, "RTC progress ");
+
     grppi::pipeline(tula::grppi_utils::dyn_ex(parallel_policy),
         [&]() -> std::optional<std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
                                           std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>> {
@@ -450,6 +455,10 @@ auto Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
             // variable to hold current scan
             static auto scan = 0;
             while (scan < telescope.scan_indices.cols()) {
+
+                // update progress bar
+                pb.count(telescope.scan_indices.cols(), 1);
+
                 // create rtcdata
                 TCData<TCDataKind::RTC, Eigen::MatrixXd> rtcdata;
                 // get scan indices
@@ -615,6 +624,78 @@ void Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
 template <mapmaking::MapType map_type>
 void Beammap::output() {
+    // pointer to map buffer
+    mapmaking::ObsMapBuffer* mb = NULL;
+    // pointer to data file fits vector
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* f_io = NULL;
+    // pointer to noise file fits vector
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* n_io = NULL;
+
+    // directory name
+    std::string dir_name;
+
+    // raw obs maps
+    if constexpr (map_type == mapmaking::RawObs) {
+        mb = &omb;
+        f_io = &fits_io_vec;
+        n_io = &noise_fits_io_vec;
+        dir_name = obsnum_dir_name + "/raw/";
+
+        SPDLOG_INFO("writing apt table");
+        auto apt_filename = toltec_io.create_filename<engine_utils::toltecIO::apt, engine_utils::toltecIO::map,
+                                                      engine_utils::toltecIO::raw>
+                            (obsnum_dir_name, redu_type, "", obsnum, telescope.sim_obs);
+
+        Eigen::MatrixXd apt_table(calib.n_dets, calib.apt_header_keys.size());
+
+        // convert to floats
+        Eigen::Index i = 0;
+        for (auto const& x: calib.apt_header_keys) {
+            apt_table.col(i) = calib.apt[x].cast<double> ();
+            i++;
+        }
+
+        // write to ecsv
+        to_ecsv_from_matrix(apt_filename, apt_table, calib.apt_header_keys, calib.apt_meta);
+    }
+
+    // filtered obs maps
+    else if constexpr (map_type == mapmaking::FilteredObs) {
+        mb = &omb;
+        f_io = &filtered_fits_io_vec;
+        n_io = &filtered_noise_fits_io_vec;
+        dir_name = obsnum_dir_name + "/filtered/";
+    }
+
+    // raw coadded maps
+    else if constexpr (map_type == mapmaking::RawCoadd) {
+        mb = &cmb;
+        f_io = &coadd_fits_io_vec;
+        n_io = &coadd_noise_fits_io_vec;
+        dir_name = coadd_dir_name + "/raw/";
+    }
+
+    // filtered coadded maps
+    else if constexpr (map_type == mapmaking::FilteredCoadd) {
+        mb = &cmb;
+        f_io = &filtered_coadd_fits_io_vec;
+        n_io = &filtered_coadd_noise_fits_io_vec;
+        dir_name = coadd_dir_name + "/filtered/";
+    }
+
+    for (Eigen::Index i=0; i<n_maps; i++) {
+        write_maps(f_io,n_io,mb,i);
+    }
+
+    // clear fits file vectors to ensure its closed.
+    f_io->clear();
+    n_io->clear();
+
+    // write psd and histogram files
+    write_psd<map_type>(mb, dir_name);
+    write_hist<map_type>(mb, dir_name);
+
+    /*
     SPDLOG_INFO("writing apt table");
     auto apt_filename = toltec_io.create_filename<engine_utils::toltecIO::apt, engine_utils::toltecIO::map,
                                                   engine_utils::toltecIO::raw>
@@ -704,5 +785,6 @@ void Beammap::output() {
             }
         }
     }
+    */
 }
 

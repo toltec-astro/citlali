@@ -257,7 +257,6 @@ int run(const rc_t &rc) {
 
                 // set up the coadded map buffer by reading in each observation
                 for (const auto &rawobs : co.inputs()) {
-
                     // this is needed to figure out the data sample rate
                     // and number of detectors
                     auto rawobs_kids_meta = kidsproc.get_rawobs_meta(rawobs);
@@ -312,13 +311,15 @@ int run(const rc_t &rc) {
                     SPDLOG_INFO("calculating scan indices");
                     todproc.engine().telescope.calc_scan_indices();
 
-                    // determine number of maps
-                    SPDLOG_INFO("calculating number of maps");
-                    todproc.calc_map_num();
+                    if (todproc.engine().run_mapmaking) {
+                        // determine number of maps
+                        SPDLOG_INFO("calculating number of maps");
+                        todproc.calc_map_num();
 
-                    // determine map sizes
-                    SPDLOG_INFO("calculating map dimensions");
-                    todproc.calc_map_size(map_extents, map_coords);
+                        // determine map sizes
+                        SPDLOG_INFO("calculating map dimensions");
+                        todproc.calc_map_size(map_extents, map_coords);
+                    }
                 }
 
                 if (todproc.engine().run_coadd) {
@@ -377,7 +378,7 @@ int run(const rc_t &rc) {
                             fs::create_directories(todproc.engine().obsnum_dir_name + "/filtered/");
                         }
                     }
-
+                    // create log directory for verbose mode
                     if (todproc.engine().verbose_mode) {
                         fs::create_directories(todproc.engine().obsnum_dir_name + "/logs/");
                     }
@@ -396,11 +397,13 @@ int run(const rc_t &rc) {
 
                     // get hwp if polarized reduction is requested
                     if (todproc.engine().rtcproc.run_polarization) {
+                        SPDLOG_INFO("getting hwp file");
                         auto hwp_filepath = rawobs.hwpdata()->filepath();
                         todproc.engine().calib.get_hwp(hwp_filepath);
                     }
 
                     // get flux calibration
+                    SPDLOG_INFO("calculating flux calibration");
                     todproc.engine().calib.calc_flux_calibration(todproc.engine().omb.sig_unit);
 
                     // get telescope file
@@ -427,15 +430,18 @@ int run(const rc_t &rc) {
                         }
                     }
                     // calc scan indices
+                    SPDLOG_INFO("calculating scan indices");
                     todproc.engine().telescope.calc_scan_indices();
 
                     // allocate map buffer
                     if (todproc.engine().run_mapmaking) {
+                        SPDLOG_INFO("allocating obs map buffer");
                         todproc.allocate_omb(map_extents[i], map_coords[i]);
 
                         // make noise maps for observation map buffer
                         if (!todproc.engine().run_coadd) {
                             if (todproc.engine().run_noise) {
+                                SPDLOG_INFO("allocating obs noise maps");
                                 todproc.allocate_nmb(todproc.engine().omb);
                             }
                         }
@@ -449,38 +455,49 @@ int run(const rc_t &rc) {
                     todproc.engine().cmb.exposure_time = todproc.engine().cmb.exposure_time + todproc.engine().omb.exposure_time;
 
                     // setup
+                    SPDLOG_INFO("pipeline setup");
                     todproc.engine().setup();
 
                     // run
-                    todproc.engine().pipeline(kidsproc, rawobs);
+                    if (todproc.engine().run_tod) {
+                        SPDLOG_INFO("running pipeline");
+                        todproc.engine().pipeline(kidsproc, rawobs);
+                    }
 
                     // output
                     if (todproc.engine().run_mapmaking) {
+                        SPDLOG_INFO("outputting raw obs files");
                         todproc.engine().template output<mapmaking::RawObs>();
                     }
 
                     // coadd
                     if (todproc.engine().run_coadd) {
+                        SPDLOG_INFO("coadding");
                         todproc.coadd();
                     }
 
                     else if (todproc.engine().run_map_filter) {
                         // filter
                         // output filtered maps
+                        SPDLOG_INFO("outputting filtered obs files");
                         todproc.engine().template output<mapmaking::FilteredObs>();
                     }
                 }
 
                 if (todproc.engine().run_coadd) {
                     // normalize coadd
+                    SPDLOG_INFO("normalizing coadded maps");
                     todproc.engine().cmb.normalize_maps();
 
                     // calculate coadded map psds
+                    SPDLOG_INFO("calculating coadded map psd");
                     todproc.engine().cmb.calc_map_psd();
                     // calculate coadded map histograms
+                    SPDLOG_INFO("calculating coadded map histogram");
                     todproc.engine().cmb.calc_map_hist();
 
                     // output coadd
+                    SPDLOG_INFO("outputting raw coadded files");
                     todproc.engine().template output<mapmaking::RawCoadd>();
 
                     if (todproc.engine().run_map_filter) {
@@ -492,6 +509,7 @@ int run(const rc_t &rc) {
                         todproc.engine().cmb.calc_map_hist();
 
                         // output filtered coadd
+                        SPDLOG_INFO("outputting filtered coadded files");
                         todproc.engine().template output<mapmaking::FilteredCoadd>();
                     }
                 }
@@ -500,7 +518,6 @@ int run(const rc_t &rc) {
                 todproc.make_index_file(todproc.engine().redu_dir_name);
                 SPDLOG_INFO("citlali is done!");
                 return EXIT_SUCCESS;
-
             }
 
         },

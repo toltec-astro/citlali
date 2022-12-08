@@ -164,7 +164,7 @@ auto Pointing::run() {
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;
 
         // loop through polarizations
-        for (const auto &stokes_param: rtcproc.polarization.stokes_params) {
+        for (const auto &[stokes_index,stokes_param]: rtcproc.polarization.stokes_params) {
             SPDLOG_INFO("starting scan {}. {}/{} scans completed", rtcdata.index.data + 1, n_scans_done, telescope.scan_indices.cols());
 
             SPDLOG_INFO("reducing {} timestream",stokes_param);
@@ -245,6 +245,11 @@ template <class KidsProc, class RawObs>
 void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     // initialize number of completed scans
     n_scans_done = 0;
+
+    // progress bar
+    tula::logging::progressbar pb(
+        [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 100, "citlali progress ");
+
     grppi::pipeline(tula::grppi_utils::dyn_ex(parallel_policy),
         [&]() -> std::optional<std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
                                           std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>> {
@@ -252,6 +257,10 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
             // variable to hold current scan
             static auto scan = 0;
             while (scan < telescope.scan_indices.cols()) {
+
+                // update progress bar
+                pb.count(telescope.scan_indices.cols(), 1);
+
                 // create rtcdata
                 TCData<TCDataKind::RTC, Eigen::MatrixXd> rtcdata;
                 // get scan indices
@@ -300,7 +309,7 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
             params.row(i) = det_params;
             perrors.row(i) = det_perror;
 
-            SPDLOG_INFO("{} good fit: {}",toltec_io.array_name_map[i], good_fit);
+            SPDLOG_INFO("map {} good fit: {}",i, good_fit);
 
             if (good_fit) {
                 // rescale fit params from pixel to on-sky units
@@ -388,13 +397,8 @@ void Pointing::output() {
         dir_name = coadd_dir_name + "/filtered/";
     }
 
-    // loop through and write maps
-    Eigen::Index k = 0;
-    for (Eigen::Index i=0; i<rtcproc.polarization.stokes_params.size(); i++) {
-        for (Eigen::Index j=0; j<n_maps/rtcproc.polarization.stokes_params.size(); j++) {
-            write_maps(f_io,n_io,mb,i,j,j);
-            k++;
-        }
+    for (Eigen::Index i=0; i<n_maps; i++) {
+        write_maps(f_io,n_io,mb,i);
     }
 
     // clear fits file vectors to ensure its closed.

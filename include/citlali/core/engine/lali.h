@@ -89,7 +89,7 @@ auto Lali::run() {
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;
 
         // loop through polarizations
-        for (const auto &stokes_param: rtcproc.polarization.stokes_params) {
+        for (const auto &[stokes_index,stokes_param]: rtcproc.polarization.stokes_params) {
             SPDLOG_INFO("starting scan {}. {}/{} scans completed", rtcdata.index.data + 1, n_scans_done, telescope.scan_indices.cols());
 
             SPDLOG_INFO("reducing {} timestream",stokes_param);
@@ -170,6 +170,11 @@ template <class KidsProc, class RawObs>
 void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     // initialize number of completed scans
     n_scans_done = 0;
+
+    // progress bar
+    tula::logging::progressbar pb(
+        [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 100, "citlali progress ");
+
     grppi::pipeline(tula::grppi_utils::dyn_ex(parallel_policy),
         [&]() -> std::optional<std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
                                           std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>> {
@@ -178,6 +183,10 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
             static auto scan = 0;
             // loop through scans
             while (scan < telescope.scan_indices.cols()) {
+
+                // update progress bar
+                pb.count(telescope.scan_indices.cols(), 1);
+
                 // create rtcdata
                 TCData<TCDataKind::RTC, Eigen::MatrixXd> rtcdata;
                 // get scan indices
@@ -264,13 +273,8 @@ void Lali::output() {
         dir_name = coadd_dir_name + "/filtered/";
     }
 
-    // loop through and write maps
-    Eigen::Index k = 0;
-    for (Eigen::Index i=0; i<rtcproc.polarization.stokes_params.size(); i++) {
-        for (Eigen::Index j=0; j<n_maps/rtcproc.polarization.stokes_params.size(); j++) {
-            write_maps(f_io,n_io,mb,i,j,j);
-            k++;
-        }
+    for (Eigen::Index i=0; i<n_maps; i++) {
+        write_maps(f_io,n_io,mb,i);
     }
 
     // clear fits file vectors to ensure its closed.
@@ -280,4 +284,8 @@ void Lali::output() {
     // write psd and histogram files
     write_psd<map_type>(mb, dir_name);
     write_hist<map_type>(mb, dir_name);
+
+    mb = NULL;
+    f_io = NULL;
+    n_io = NULL;
 }

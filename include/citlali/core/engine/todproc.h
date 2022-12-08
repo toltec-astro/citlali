@@ -322,11 +322,19 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
     // for science and pointing maps
     if ((engine().redu_type == "science") || (engine().redu_type == "pointing")) {
         engine().n_maps = engine().calib.n_arrays;
+
+        if (engine().map_grouping=="auto") {
+            engine().map_grouping = "array";
+        }
     }
 
     // for beammaps
     else if ((engine().redu_type == "beammap")) {
         engine().n_maps = engine().calib.n_dets;
+
+        if (engine().map_grouping=="auto") {
+            engine().map_grouping = "detector";
+        }
     }
 
     // overwrite map number for networks
@@ -350,18 +358,22 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
     }
 
     engine().maps_to_arrays.resize(engine().n_maps);
+    engine().maps_to_stokes.resize(engine().n_maps);
 
     if (((engine().redu_type == "science") || (engine().redu_type == "pointing") || (engine().map_grouping == "array"))) {
         Eigen::Index i=0;
-        for (const auto &stokes_param: engine().rtcproc.polarization.stokes_params) {
-            engine().maps_to_arrays.segment(i,engine().calib.arrays.size()) = engine().calib.arrays;
-            i = i + engine().calib.arrays.size();
+        for (const auto &[stokes_index,stokes_param]: engine().rtcproc.polarization.stokes_params) {
+            for (Eigen::Index i=0; i<engine().n_maps; i++) {
+                engine().maps_to_arrays.segment(i,engine().calib.arrays.size()) = engine().calib.arrays;
+                engine().maps_to_stokes.segment(i,engine().calib.arrays.size()).setConstant(stokes_index);
+                i = i + engine().calib.arrays.size();
+            }
         }
     }
 
-    if (((engine().redu_type == "beammap") || (engine().map_grouping == "detector"))) {
+    else if (((engine().redu_type == "beammap") || (engine().map_grouping == "detector"))) {
         Eigen::Index i=0;
-        for (const auto &stokes_param: engine().rtcproc.polarization.stokes_params) {
+        for (const auto &[stokes_index,stokes_param]: engine().rtcproc.polarization.stokes_params) {
             Eigen::Index n_dets;
             Eigen::VectorXI array_indices;
 
@@ -381,6 +393,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
             }
 
             engine().maps_to_arrays.segment(i,n_dets) = array_indices;
+            engine().maps_to_stokes.segment(i,n_dets).setConstant(stokes_index);
             i = i + n_dets;
         }
     }
@@ -396,14 +409,12 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
             }
         }
         Eigen::Index i=0;
-        for (const auto &stokes_param: engine().rtcproc.polarization.stokes_params) {
-            engine().maps_to_arrays.segment(i,engine().calib.nws.size()) = engine().calib.nws;
+        for (const auto &[stokes_index,stokes_param]: engine().rtcproc.polarization.stokes_params) {
+            engine().maps_to_arrays.segment(i,engine().calib.nws.size()) = array_indices;
+            engine().maps_to_stokes.segment(i,engine().calib.nws.size()).setConstant(stokes_index);
             i = i + engine().calib.nws.size();
         }
     }
-
-    SPDLOG_INFO("n_maps {}", engine().n_maps);
-    SPDLOG_INFO("engine().maps_to_arrays {}", engine().maps_to_arrays);
 }
 
 // determine the map dimensions and allocate the coadded map buffer
@@ -413,10 +424,10 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb(std::vector<map_extent_t> &ma
     double min_row, max_row, min_col, max_col;
 
     min_row = map_coords.at(0).front()(0);
-    max_row = map_coords.at(0).front()( map_coords.at(0).front().size() - 1);
+    max_row = map_coords.at(0).front()(map_coords.at(0).front().size() - 1);
 
     min_col = map_coords.at(0).back()(0);
-    max_col = map_coords.at(0).back()( map_coords.at(0).back().size() - 1);
+    max_col = map_coords.at(0).back()(map_coords.at(0).back().size() - 1);
 
     // loop through physical coordinates and get min/max
     for (Eigen::Index i=0; i<map_coords.size(); i++) {
@@ -441,7 +452,7 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb(std::vector<map_extent_t> &ma
             min_col = cols_tan_vec(0);
         }
 
-        // check global maximum row
+        // check global maximum col
         if (cols_tan_vec(n_pts_cols-1) > max_col) {
             max_col = cols_tan_vec(n_pts_cols-1);
         }
@@ -464,8 +475,6 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb(std::vector<map_extent_t> &ma
     // get number of rows and n_cols
     auto [n_rows, rows_tan_vec] = calc_map_dims(min_row, max_row);
     auto [n_cols, cols_tan_vec] = calc_map_dims(min_col, max_col);
-
-    SPDLOG_INFO("map buffer n_rows {} n_cols {}", n_rows, n_cols);
 
     // clear map vectors
     engine().cmb.signal.clear();
@@ -648,13 +657,13 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
         auto [n_rows, rows_tan_vec] = calc_map_dims(map_limits(0,0), map_limits(1,0));
         auto [n_cols, cols_tan_vec] = calc_map_dims(map_limits(0,1), map_limits(1,1));
 
-        SPDLOG_INFO("n_rows {}, n_cols {}", n_rows, n_cols);
-
         map_extent_t map_extent = {n_rows, n_cols};
         map_coord_t map_coord = {rows_tan_vec, cols_tan_vec};
 
         map_extents.push_back(map_extent);
         map_coords.push_back(map_coord);
+
+        SPDLOG_INFO("n_rows {}, n_cols {}", n_rows, n_cols);
     }
 
     else {
@@ -670,7 +679,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
 
         map_extents.push_back(map_extent);
         map_coords.push_back(map_coord);
-    }
+    }    
 }
 
 // coadd maps
