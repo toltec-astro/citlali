@@ -71,6 +71,7 @@ public:
 void Beammap::setup() {
     // ensure all detectors are initially flagged as good
     calib.apt["flag"].setOnes();
+    calib.apt["flxscale"].setZero();
 
     // set number of parameters for map fitting
     n_params = 6;
@@ -529,6 +530,10 @@ auto Beammap::loop_pipeline() {
         // calculate distance of detector from mean position of all detectors
         double dist = sqrt(pow(calib.apt["x_t"](i) - mean_x_t,2) + pow(calib.apt["y_t"](i) - mean_y_t,2));
 
+        // remove bad fits
+        if (!good_fits(i)) {
+            calib.apt["flag"](i) = 0;
+        }
         // flag detectors with outler a_fwhm values
         if (calib.apt["a_fwhm"](i) < lower_fwhm_arcsec[array_name] || calib.apt["a_fwhm"](i) > upper_fwhm_arcsec[array_name]) {
             calib.apt["flag"](i) = 0;
@@ -551,7 +556,9 @@ auto Beammap::loop_pipeline() {
         double det_beamsize = 2.*pi*pow(det_fwhm*FWHM_TO_STD,2);
 
         // set flux scale (always in MJy/sr)
-        calib.apt["flxscale"](i) = mJY_ASEC_to_MJY_SR*beammap_fluxes[array_name]/params(i,0)/det_beamsize;
+        if (params(i,0)!=0) {
+            calib.apt["flxscale"](i) = mJY_ASEC_to_MJY_SR*beammap_fluxes[array_name]/params(i,0)/det_beamsize;
+        }
 
         // get detector pointing
         Eigen::VectorXd lat = -(calib.apt["y_t"](i)*ASEC_TO_RAD) + telescope.tel_data["TelElAct"].array();

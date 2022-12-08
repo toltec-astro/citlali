@@ -117,11 +117,19 @@ void Calibration::calibrate_tod(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Ei
         // current array index in apt table
         Eigen::Index array_index = array_indices(i);
 
+        SPDLOG_INFO("tau {}",tau_freq[array_index]);
+
         // factor = flux conversion factor / exp(-tau_freq)
         auto factor = calib.flux_conversion_factor(array_index)/(-tau_freq[array_index]).array().exp();
 
+        SPDLOG_INFO("calib.flux_conversion_factor(array_index) {}",calib.flux_conversion_factor(array_index));
+        SPDLOG_INFO("calib.apt[flxscale](det_index) {}",calib.apt["flxscale"](det_index));
+
         // data x flxscale x factor
         in.scans.data.col(i) = in.scans.data.col(i).array()*factor.array()*calib.apt["flxscale"](det_index);
+
+        SPDLOG_INFO("in.scans.data.col(i) {}",in.scans.data.col(i));
+
     }
 }
 

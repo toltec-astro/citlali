@@ -163,11 +163,9 @@ auto KidsDataProc::load_rawobs(const RawObs &rawobs,
                                std::vector<Eigen::Index> &start_indices,
                                std::vector<Eigen::Index> &end_indices) {
 
-    SPDLOG_INFO("start_indices[i] {}", start_indices);
     std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> result;
     Eigen::Index i = 0;
     for (const auto &data_item : rawobs.kidsdata()) {
-        SPDLOG_INFO("start_indices[i] {}", start_indices[i]);
         auto slice = tula::container_utils::Slice<int>{scan_indices(2,scan) + start_indices[i],
                                                        scan_indices(3,scan) + 1 + start_indices[i],
                                                        std::nullopt};
@@ -185,8 +183,6 @@ auto KidsDataProc::populate_rtc(loaded_t &loaded, scanindices_t &scanindex,
 
     Eigen::MatrixXd data(scanlength, n_detectors);
 
-    SPDLOG_INFO("scanlength {} n_detectors {}",scanlength,n_detectors);
-
     Eigen::Index i = 0;
     for (std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>::
          iterator it = loaded.begin();
@@ -195,16 +191,12 @@ auto KidsDataProc::populate_rtc(loaded_t &loaded, scanindices_t &scanindex,
         Eigen::Index n_rows = result.data_out.xs.data.rows();
         Eigen::Index n_cols = result.data_out.xs.data.cols();
 
-        SPDLOG_INFO("nrows {} ncols {}",n_rows, n_cols);
-
         if (data_type == "xs") {
             data.block(0, i, n_rows, n_cols) = result.data_out.xs.data;
         }
         else if (data_type == "rs") {
             data.block(0, i, n_rows, n_cols) = result.data_out.rs.data;
         }
-
-        SPDLOG_INFO("i {}",i);
 
         i += n_cols;
     }

@@ -304,9 +304,9 @@ void Engine::get_citlali_config(CT &config) {
     get_value(config, tod_type, missing_keys, invalid_keys, std::tuple{"timestream","type"});
     get_value(config, run_tod_output, missing_keys, invalid_keys, std::tuple{"timestream","output","enabled"});
 
-    // tod output/verbose mode require sequential policy so set explicitly
-    if (run_tod_output || verbose_mode) {
-        SPDLOG_INFO("tod output/verbose mode require sequential policy");
+    // tod output mode require sequential policy so set explicitly
+    if (run_tod_output) {
+        SPDLOG_INFO("tod output mode require sequential policy");
         parallel_policy = "seq";
     }
 
@@ -797,7 +797,7 @@ void Engine::create_tod_files() {
 template <TCDataKind tc_t>
 void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
 
-    std::string filename = "summary_" + std::to_string(in.index.data);
+    std::string filename = "chunk_summary_" + std::to_string(in.index.data);
 
     /*if constexpr (tc_t == TCDataKind::RTC) {
         filename = filename + "_rtc";
@@ -820,6 +820,7 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
 
     f << "Summary file for scan " << in.index.data << "\n";
     f << "-Citlali version: " << CITLALI_GIT_VERSION << "\n";
+    f << "-Kidscpp version: " << KIDSCPP_GIT_VERSION << "\n";
     f << "-Time of time chunk creation: " + in.creation_time + "\n";
     f << "-Time of file writing: " << engine_utils::current_date_time() << "\n";
 
@@ -983,6 +984,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("OBSNUM", obsnum, "Observation Number");
     // add citlali version
     fits_io->at(i).pfits->pHDU().addKey("VERSION", CITLALI_GIT_VERSION, "CITLALI_GIT_VERSION");
+    fits_io->at(i).pfits->pHDU().addKey("KIDS", KIDSCPP_GIT_VERSION, "KIDSCPP_GIT_VERSION");
     // add tod type
     fits_io->at(i).pfits->pHDU().addKey("TYPE", tod_type, "TOD Type");
     // add exposure time
