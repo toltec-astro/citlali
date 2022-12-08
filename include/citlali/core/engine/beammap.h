@@ -350,9 +350,9 @@ auto Beammap::run_loop() {
         });
 
         // calculate weights, populate maps
+        SPDLOG_INFO("populating maps");
         grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
             // calculate weights
-            SPDLOG_INFO("calculating weights");
             ptcproc.calc_weights(ptcs[i], calib.apt, telescope);
 
             // write ptc timestreams
@@ -367,7 +367,6 @@ auto Beammap::run_loop() {
             }
 
             // populate maps
-            SPDLOG_INFO("populating maps");
             if (run_mapmaking) {
                 mapmaking::populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
                                                ptcs[i].det_indices.data, telescope.pixel_axes,
@@ -647,6 +646,7 @@ void Beammap::output() {
                             (obsnum_dir_name, redu_type, "", obsnum, telescope.sim_obs);
 
         Eigen::MatrixXd apt_table(calib.n_dets, calib.apt_header_keys.size());
+        SPDLOG_INFO("done writing apt table");
 
         // convert to floats
         Eigen::Index i = 0;

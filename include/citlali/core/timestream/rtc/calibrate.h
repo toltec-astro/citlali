@@ -4,6 +4,8 @@
 #include <string>
 #include <Eigen/Core>
 
+#include <citlali/core/utils/constants.h>
+
 namespace timestream {
 
 class Calibration {
@@ -55,8 +57,8 @@ public:
     auto tau_polynomial(Eigen::DenseBase<DerivedA> &coeff, Eigen::DenseBase<DerivedB> &elev) {
 
         return coeff(0)*pow(elev.derived().array(),4) + coeff(1)*pow(elev.derived().array(),3) +
-               coeff(2)*pow(elev.derived().array(),2) + coeff(3)*pow(elev.derived().array(),2) +
-               coeff(4)*elev.derived().array();
+               coeff(2)*pow(elev.derived().array(),2) + coeff(3)*pow(elev.derived().array(),1) +
+               coeff(4);
     }
 
     template <typename Derived>
@@ -85,33 +87,20 @@ auto Calibration::calc_tau(Eigen::DenseBase<Derived> &elev, double tau_225_GHz) 
     // observed 225 GHz tau
     auto obs_tau_i = A*tau_225_GHz;
 
-    SPDLOG_INFO("obs_taui {}", obs_tau_i);
-
     // 225 GHz transmission
     auto tx = (-obs_tau_i).exp();
 
-    SPDLOG_INFO("tx {}", tx);
-
     // a1100
     auto tx_a1100 = tau_polynomial(tx_ratio_coeff["a1100"],elev).array()*tx.array();
-    SPDLOG_INFO("tx_a1100 {}", tx_a1100);
-
     tau_freq[0] = -(tx_a1100.array().log())/A.array();
-    SPDLOG_INFO("tau_freq a1100 {}", tau_freq[0]);
 
     // a1400
     auto tx_a1400 = tau_polynomial(tx_ratio_coeff["a1400"],elev)*tx.array();
-    SPDLOG_INFO("tx_a1400 {}", tx_a1400);
-
     tau_freq[1] = -(tx_a1400.array().log())/A.array();
-    SPDLOG_INFO("tau_freq a1400 {}", tau_freq[1]);
 
     // a2000
     auto tx_a2000 = tau_polynomial(tx_ratio_coeff["a2000"],elev)*tx.array();
-    SPDLOG_INFO("tx_a2000 {}", tx_a2000);
-
     tau_freq[2] = -(tx_a2000.array().log())/A.array();
-    SPDLOG_INFO("tau_freq a2000 {}", tau_freq[2]);
 
     return tau_freq;
 
