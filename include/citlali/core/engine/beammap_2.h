@@ -80,22 +80,22 @@ void Beammap::setup() {
     ptcs0.resize(telescope.scan_indices.cols());
 
     // resize the initial fit matrix
-    p0.resize(calib.n_dets, n_params);
+    p0.resize(n_maps, n_params);
     // set initial fit to nan to pass first cutoff test
     p0.setConstant(std::nan(""));
     // resize the initial fit error matrix
-    perror0.setZero(calib.n_dets, n_params);
+    perror0.setZero(n_maps, n_params);
     // resize the current fit matrix
-    params.setZero(calib.n_dets, n_params);
-    perrors.setZero(calib.n_dets, n_params);
+    params.setZero(n_maps, n_params);
+    perrors.setZero(n_maps, n_params);
 
     // resize good fits
-    good_fits.setZero(calib.n_dets);
+    good_fits.setZero(n_maps);
 
     // initially all detectors are unconverged
-    converged.setZero(calib.n_dets);
+    converged.setZero(n_maps);
     // convergence iteration
-    converge_iter.resize(calib.n_dets);
+    converge_iter.resize(n_maps);
     converge_iter.setConstant(1);
     // set the initial iteration
     current_iter = 0;
@@ -209,7 +209,7 @@ auto Beammap::run_timestream() {
         // kidsproc
         auto kidsproc = std::get<1>(input_tuple);
         // start index input
-        auto scan_rawobs = std::get<2>(input_tuple);        
+        auto scan_rawobs = std::get<2>(input_tuple);
 
         Eigen::Index j = 0;
         Eigen::VectorXd tone_flags(calib.n_dets);
@@ -396,7 +396,7 @@ auto Beammap::run_loop() {
                 return 0;}
             );
 
-            SPDLOG_INFO("number of good beammap fits {}/{}", (good_fits.array()==true).count(), calib.n_dets);
+            SPDLOG_INFO("number of good beammap fits {}/{}", (good_fits.array()==true).count(), n_maps);
         }
 
         // increment loop iteration
@@ -520,9 +520,6 @@ auto Beammap::loop_pipeline() {
     double mean_x_t = calib.apt["x_t"].mean();
     double mean_y_t = calib.apt["y_t"].mean();
 
-    // track number of flagged detectors
-    int n_flagged_dets = 0;
-
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
         auto array_index = array_indices(i);
         std::string array_name = toltec_io.array_name_map[calib.apt["array"](array_index)];
@@ -536,27 +533,22 @@ auto Beammap::loop_pipeline() {
         // remove bad fits
         if (!good_fits(i)) {
             calib.apt["flag"](i) = 0;
-            n_flagged_dets++;
         }
         // flag detectors with outler a_fwhm values
         if (calib.apt["a_fwhm"](i) < lower_fwhm_arcsec[array_name] || calib.apt["a_fwhm"](i) > upper_fwhm_arcsec[array_name]) {
             calib.apt["flag"](i) = 0;
-            n_flagged_dets++;
         }
         // flag detectors with outler b_fwhm values
         if (calib.apt["b_fwhm"](i) < lower_fwhm_arcsec[array_name] || calib.apt["b_fwhm"](i) > upper_fwhm_arcsec[array_name]) {
             calib.apt["flag"](i) = 0;
-            n_flagged_dets++;
         }
         // flag detectors with outler S/N values
         if (params(i,0)/map_std_dev < lower_sig2noise[array_name]) {
             calib.apt["flag"](i) = 0;
-            n_flagged_dets++;
         }
         // flag detectors that are further than the mean value than the distance limit
         if (dist > max_dist_arcsec[array_name] && max_dist_arcsec[array_name] != 0) {
             calib.apt["flag"](i) = 0;
-            n_flagged_dets++;
         }
 
         // calculate detector beamsize
@@ -564,12 +556,8 @@ auto Beammap::loop_pipeline() {
         double det_beamsize = 2.*pi*pow(det_fwhm*FWHM_TO_STD,2);
 
         // set flux scale (always in MJy/sr)
-        if (params(i,0) != 0 && det_beamsize !=0) {
-            calib.apt["flxscale"](i) = mJY_ASEC_to_MJY_SR*(beammap_fluxes[array_name]/params(i,0))/det_beamsize;
-        }
-
-        else {
-            calib.apt["flxscale"](i) = 0;
+        if (params(i,0)!=0) {
+            calib.apt["flxscale"](i) = mJY_ASEC_to_MJY_SR*beammap_fluxes[array_name]/params(i,0)/det_beamsize;
         }
 
         // get detector pointing
@@ -607,12 +595,8 @@ auto Beammap::loop_pipeline() {
         return 0;
     });
 
-    // print number of flagged detectors
-    SPDLOG_INFO("{} detectors were flagged", n_flagged_dets);
-
     // rescale sens to MJy/sr units
-    //calib.apt["sens"] = calib.apt["sens"].array()*calib.apt["flxscale"].array();
-    //SPDLOG_INFO("sens after {}",calib.apt["sens"]);
+    calib.apt["sens"] = calib.apt["sens"].array()*calib.apt["flxscale"].array();
 
     // align to reference detector if specified
     if (beammap_reference_det > 0) {
@@ -636,9 +620,9 @@ void Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     scan_out_vec.resize(ptcs0.size());
 
     // placeholder vectors of size ndet for grppi maps
-    det_in_vec.resize(calib.n_dets);
+    det_in_vec.resize(n_maps);
     std::iota(det_in_vec.begin(), det_in_vec.end(), 0);
-    det_out_vec.resize(calib.n_dets);
+    det_out_vec.resize(n_maps);
 
     // run iterative pipeline
     loop_pipeline();
@@ -810,4 +794,3 @@ void Beammap::output() {
     }
     */
 }
-

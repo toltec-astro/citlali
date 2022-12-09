@@ -291,6 +291,9 @@ int run(const rc_t &rc) {
                     // calc tangent plane pointing
                     todproc.engine().telescope.calc_tan_pointing();
 
+                    // check input files
+                    todproc.check_inputs(rawobs);
+
                     // align tod
                     if (!todproc.engine().telescope.sim_obs) {
                         SPDLOG_INFO("aligning timestreams");
@@ -363,8 +366,17 @@ int run(const rc_t &rc) {
                     std::stringstream ss;
                     ss << std::setfill('0') << std::setw(6) << obsnum;
 
+                    // add obsnum to todproc for file/directory names
                     todproc.engine().obsnum = ss.str();
+                    // set up obsnum directory name
                     todproc.engine().obsnum_dir_name = todproc.engine().redu_dir_name + "/" + todproc.engine().obsnum +"/";
+
+                    // add obsnum to OMB for fits hdu headers
+                    todproc.engine().omb.obsnums.clear();
+                    todproc.engine().omb.obsnums.push_back(todproc.engine().obsnum);
+
+                    // add current obsnum to CMB for fits hdu headers
+                    todproc.engine().cmb.obsnums.push_back(todproc.engine().obsnum);
 
                     // create obsnum directory
                     fs::create_directories(todproc.engine().obsnum_dir_name);

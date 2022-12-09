@@ -42,6 +42,8 @@ class ObsMapBuffer {
 public:
     // parallel policy for fft
     std::string parallel_policy;
+    //obsnums
+    std::vector<std::string> obsnums;
     // wcs
     WCS wcs;
     // number of rows and columns

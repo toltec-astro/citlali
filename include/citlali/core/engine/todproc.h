@@ -65,6 +65,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
     }
 
     void create_output_dir();
+    void check_inputs(const RawObs &rawobs);
     void align_timestreams(const RawObs &rawobs);
     void calc_map_num();
     void allocate_cmb(std::vector<map_extent_t> &map_extents, std::vector<map_coord_t> &map_coords);
@@ -142,6 +143,35 @@ void TimeOrderedDataProc<EngineType>::create_output_dir() {
                 SPDLOG_WARN("directory {} already exists", engine().coadd_dir_name + "/filtered");
             }
         }
+    }
+}
+
+template <class EngineType>
+void TimeOrderedDataProc<EngineType>::check_inputs(const RawObs &rawobs) {
+    using namespace netCDF;
+    using namespace netCDF::exceptions;
+
+    Eigen::Index n_dets = 0;
+
+    // loop through input files
+    for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
+        try {
+            // load data file
+            NcFile fo(data_item.filepath(), NcFile::read);
+            auto vars = fo.getVars();
+
+            n_dets += vars.find("Data.Toltec.Is")->second.getDim(1).getSize();
+
+        } catch (NcException &e) {
+            SPDLOG_ERROR("{}", e.what());
+            throw DataIOError{fmt::format(
+                "failed to load data from netCDF file {}", data_item.filepath())};
+        }
+    }
+
+    if (n_dets != engine().calib.n_dets) {
+        SPDLOG_ERROR("number of detectors in data files and apt file do not match");
+        std::exit(EXIT_FAILURE);
     }
 }
 

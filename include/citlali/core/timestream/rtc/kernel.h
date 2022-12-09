@@ -17,6 +17,8 @@ public:
 
     std::vector<Eigen::MatrixXd> images;
 
+    double sigma_rad, fwhm_rad;
+
     void setup(Eigen::Index n_maps) {
         if (type == "fits") {
             if (img_ext_names.size()!=n_maps && img_ext_names.size()!=1) {
@@ -80,7 +82,15 @@ void Kernel::create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::Mat
 
         auto distance = (lat.array().pow(2) + lon.array().pow(2)).sqrt();
 
-        double sigma = ASEC_TO_RAD*(apt["a_fwhm"](det_index) + apt["b_fwhm"](det_index))/STD_TO_FWHM;
+        double sigma;
+
+        if (sigma_rad==0) {
+            double sigma = FWHM_TO_STD*ASEC_TO_RAD*(apt["a_fwhm"](det_index) + apt["b_fwhm"](det_index))/2;
+        }
+
+        else {
+            sigma = sigma_rad;
+        }
 
         for (Eigen::Index j=0; j<n_pts; j++) {
             if (distance(j) <= 3.*sigma) {
@@ -119,7 +129,15 @@ void Kernel::create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, st
 
         auto distance = (lat.array().pow(2) + lon.array().pow(2)).sqrt();
 
-        double fwhm = ASEC_TO_RAD*(apt["a_fwhm"](det_index) + apt["b_fwhm"](det_index));
+        double fwhm;
+
+        if (fwhm_rad==0) {
+            fwhm = ASEC_TO_RAD*(apt["a_fwhm"](det_index) + apt["b_fwhm"](det_index))/2;
+        }
+
+        else {
+            fwhm = fwhm_rad;
+        }
 
         double factor = pi*(1.028/fwhm);
 

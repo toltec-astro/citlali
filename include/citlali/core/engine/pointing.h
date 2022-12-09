@@ -49,7 +49,7 @@ public:
     void output();
 };
 
-void Pointing::setup() {
+void Pointing::setup() {    
     // set number of parameters for map fitting
     n_params = 6;
 
@@ -80,7 +80,7 @@ void Pointing::setup() {
     }
 
     // set center pointing
-    if (telescope.pixel_axes == "ircs") {
+    if (telescope.pixel_axes == "icrs") {
         omb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0);
         omb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0);
 

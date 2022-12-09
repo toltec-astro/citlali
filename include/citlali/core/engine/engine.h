@@ -222,6 +222,9 @@ public:
     template <TCDataKind tc_t>
     void write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &);
 
+    template <typename map_buffer_t>
+    void write_map_summary(map_buffer_t &);
+
     template <typename fits_io_type, class map_buffer_t>
     void add_phdu(fits_io_type &, map_buffer_t &, Eigen::Index);
 
@@ -332,6 +335,12 @@ void Engine::get_citlali_config(CT &config) {
     get_value(config, rtcproc.run_kernel, missing_keys, invalid_keys, std::tuple{"timestream","kernel","enabled"});
     get_value(config, rtcproc.kernel.filepath, missing_keys, invalid_keys, std::tuple{"timestream","kernel","filepath"});
     get_value(config, rtcproc.kernel.type, missing_keys, invalid_keys, std::tuple{"timestream","kernel","type"});
+    get_value(config, rtcproc.kernel.fwhm_rad, missing_keys, invalid_keys, std::tuple{"timestream","kernel","fwhm_arcsec"});
+
+    if (rtcproc.kernel.fwhm_rad!=0) {
+        rtcproc.kernel.fwhm_rad *=ASEC_TO_RAD;
+        rtcproc.kernel.sigma_rad = rtcproc.kernel.fwhm_rad*FWHM_TO_STD;
+    }
 
     if (rtcproc.kernel.type == "fits") {
         auto img_ext_name_node = config.get_node(std::tuple{"timestream","kernel", "image_ext_names"});
@@ -957,40 +966,54 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
     //}
 }
 
+template <typename map_buffer_t>
+void Engine::write_map_summary(map_buffer_t &mb) {
+
+}
+
 template <typename fits_io_type, class map_buffer_t>
 void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // array name
     std::string name = toltec_io.array_name_map[i];
 
+    // add unit conversions
     if (rtcproc.run_calibrate) {
-        if (mb->sig_unit == "Mjy/sr") {
+        if (mb->sig_unit == "MJy/sr") {
             fits_io->at(i).pfits->pHDU().addKey("to_mJy/beam", calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC,
                                             "Conversion to mJy/beam");
-            fits_io->at(i).pfits->pHDU().addKey("to_Mjy/sr", 1, "Conversion to MJy/sr");
+            fits_io->at(i).pfits->pHDU().addKey("to_MJy/sr", 1, "Conversion to MJy/sr");
         }
 
         else if (mb->sig_unit == "mJy/beam") {
             fits_io->at(i).pfits->pHDU().addKey("to_mJy/beam", 1, "Conversion to mJy/beam");
-            fits_io->at(i).pfits->pHDU().addKey("to_Mjy/sr", 1/calib.mean_flux_conversion_factor[name], "Conversion to MJy/sr");
+            fits_io->at(i).pfits->pHDU().addKey("to_MJy/sr", 1/calib.mean_flux_conversion_factor[name], "Conversion to MJy/sr");
         }
     }
 
     else {
         fits_io->at(i).pfits->pHDU().addKey("to_mJy/beam", "N/A", "Conversion to mJy/beam");
-        fits_io->at(i).pfits->pHDU().addKey("to_Mjy/sr", "N/A", "Conversion to MJy/sr");
+        fits_io->at(i).pfits->pHDU().addKey("to_MJy/sr", "N/A", "Conversion to MJy/sr");
     }
 
-    // add obsnum
-    fits_io->at(i).pfits->pHDU().addKey("OBSNUM", obsnum, "Observation Number");
+    // add obsnums
+    for (Eigen::Index j=0; j<mb->obsnums.size(); j++) {
+        fits_io->at(i).pfits->pHDU().addKey("OBSNUM"+std::to_string(j), mb->obsnums.at(j), "Observation Number " + std::to_string(j));
+    }
+
+    // add wavelength
+    fits_io->at(i).pfits->pHDU().addKey("WAV", name, "wavelength");
     // add citlali version
     fits_io->at(i).pfits->pHDU().addKey("VERSION", CITLALI_GIT_VERSION, "CITLALI_GIT_VERSION");
+    // add kids version
     fits_io->at(i).pfits->pHDU().addKey("KIDS", KIDSCPP_GIT_VERSION, "KIDSCPP_GIT_VERSION");
+    // add redu type
+    fits_io->at(i).pfits->pHDU().addKey("GOAL", redu_type, "Reduction type");
     // add tod type
     fits_io->at(i).pfits->pHDU().addKey("TYPE", tod_type, "TOD Type");
-    // add exposure time
-    fits_io->at(i).pfits->pHDU().addKey("EXPTIME", mb->exposure_time, "Exposure Time");
     // add map grouping
-    fits_io->at(i).pfits->pHDU().addKey("GROUPING", map_grouping, "Map Grouping");
+    fits_io->at(i).pfits->pHDU().addKey("GROUPING", map_grouping, "Map grouping");
+    // add exposure time
+    fits_io->at(i).pfits->pHDU().addKey("EXPTIME", mb->exposure_time, "Exposure time");
     // add source ra
     fits_io->at(i).pfits->pHDU().addKey("SRC_RA", telescope.tel_header["Header.Source.Ra"][0], "Source RA (radians)");
     // add source dec
@@ -999,6 +1022,20 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("TAN_RA", telescope.tel_header["Header.Source.Ra"][0], "Map Tangent Point RA (radians)");
     // add map tangent point dec
     fits_io->at(i).pfits->pHDU().addKey("TAN_DEC", telescope.tel_header["Header.Source.Dec"][0], "Map Tangent Point Dec (radians)");
+
+    // add control/runtime parameters
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.VERBOSE", verbose_mode, "Reduced in verbose mode");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.POLARIZED", rtcproc.run_polarization, "Polarized Obs");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKED", rtcproc.run_despike, "Despiked");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODFILTERED", rtcproc.run_tod_filter, "TOD Filtered");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DOWNSAMPLED", rtcproc.run_downsample, "Downsampled");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CALIBRATED", rtcproc.run_calibrate, "Calibrated");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CALIBRATED.EXTMODEL", rtcproc.calibration.extinction_model, "Extinction model");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.TYPE", ptcproc.weighting_type, "Number of eigenvalues removed");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.RMSLOW", ptcproc.lower_std_dev, "Lower RMS cutoff");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.RMSHIGH", ptcproc.upper_std_dev, "Upper RMS cutoff");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED", ptcproc.run_clean, "Weighting type");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.NEIG", ptcproc.cleaner.n_eig_to_cut, "Number of eigenvalues removed");
 
     // add telescope file header information
     for (auto const& [key, val] : telescope.tel_header) {
@@ -1038,7 +1075,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
     // weight map
     fits_io->at(map_index).add_hdu("weight_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->weight[i]);
     fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs);
-    fits_io->at(map_index).hdus.back()->addKey("UNIT", "1/("+mb->sig_unit+")", "Unit of map");
+    fits_io->at(map_index).hdus.back()->addKey("UNIT", "1/("+mb->sig_unit+")^2", "Unit of map");
 
     // kernel map
     if (rtcproc.run_kernel) {

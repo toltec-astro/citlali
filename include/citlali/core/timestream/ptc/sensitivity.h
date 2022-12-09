@@ -100,7 +100,7 @@ class Interval : public Eigen::Array<_Scalar, 2, 1> {
 };
 
 
-//                         npts   nfreqs, dfreq
+// npts   nfreqs, dfreq
 using FreqStat = std::tuple<Eigen::Index, Eigen::Index, double>;
 
 FreqStat stat(Eigen::Index scanlength, double fsmp);
@@ -117,7 +117,7 @@ inline decltype(auto) hann(Eigen::Index npts) {
     // 0.5 - 0.5 cos([0, 2pi/N,  2pi/N * 2, ... 2pi/N * (N - 1)])
     // NENBW = 1.5 * df therefore we devide by 1.5 here to get the
     // equivalent scale as if no window is used
-    return (0.5 - 0.5 * Eigen::ArrayXd::LinSpaced(npts, 0, 2.0 * pi / npts * (npts - 1)).cos()).matrix();// / 1.5;
+    return (0.5 - 0.5 * Eigen::ArrayXd::LinSpaced(npts, 0, 2.0 * pi / npts * (npts - 1)).cos()).matrix() / 1.5;
 }
 
 // psd of individual scan npts/2 + 1 values with frequency [0, f/2];
@@ -144,11 +144,9 @@ FreqStat psd(const Eigen::DenseBase<DerivedA> &_scan,
         //SPDLOG_TRACE("apply hann window");
         // we need the eval() here per the requirement of fft.fwd()
 
-        Eigen::VectorXd scns;
-        scns = scan.block(0,0,npts,1);
-        fft.fwd(freqdata, scns.cwiseProduct(
-                   internal::hann(npts)).eval());
-
+        Eigen::VectorXd scns = scan.block(0,0,npts,1);
+        fft.fwd(freqdata, scns);//.cwiseProduct(
+                   //internal::hann(npts)).eval());
     }
 
     else if (win == NoWindow) {
@@ -192,14 +190,14 @@ FreqStat psds(const std::vector<DerivedA> &ptcs,
     }
     // use the median length for computation
     Eigen::Index len = tula::alg::median(scanlengths);
-    //SPDLOG_TRACE(use median={} of scan lengths (min={} max={} nscans={})", len,
+    //SPDLOG_INFO("use median={} of scan lengths (min={} max={} nscans={})", len,
         //scanlengths.minCoeff(), scanlengths.maxCoeff(), nscans);
 
     // get the common freq stat and freq array
     auto stat = internal::stat(len, fsmp);
     auto [npts, nfreqs, dfreq] = stat;
     Eigen::VectorXd _freqs = internal::freq(npts, nfreqs, dfreq);
-    //SPDLOG_TRACE("use freqs {}", _freqs);
+    //SPDLOG_INFO("use freqs {} dfreqs {}", _freqs, dfreq);
 
     // compute psd for each scan and interpolate onto the common freq grid
     psds.resize(nfreqs, nscans);
@@ -216,19 +214,19 @@ FreqStat psds(const std::vector<DerivedA> &ptcs,
                       &tfreqs, fsmp);
         // interpolate (tfreqs, tpsd) on to _freqs
         td << tfreqs.size();
-        //SPDLOG_TRACE("interpolate tpsd {} from tfreqs {} to freqs {}",
-                      //     tpsd, tfreqs, _freqs);
-        //SPDLOG_TRACE("interpolate sizes {}", td);
+        //SPDLOG_INFO("interpolate tpsd {} from tfreqs {} to freqs {}",
+        //                   tpsd, tfreqs, _freqs);
+        //SPDLOG_INFO("interpolate sizes {}", td);
 
         // interp (tfreq, tpsd) onto freq and store the result in column i of psds
         mlinterp::interp(td.data(), nfreqs,
                          tpsd.data(), psds.data() + i * nfreqs,
                          tfreqs.data(),_freqs.data());
 
-        //SPDLOG_TRACE("updated psds {}", psds);
+        //SPDLOG_INFO("updated psds {}", psds);
     }
 
-    //SPDLOG_TRACE("calulated psds {}", psds);
+    //SPDLOG_INFO("calulated psds {}", psds);
 
     // update the freqs array if requested
     if (freqs) {
@@ -270,14 +268,14 @@ void calc_sensitivity(
 
     // compute noises by integrate over all frequencies
     noisefluxes = (tpsds * dfreq).colwise().sum().cwiseSqrt();
-    //SPDLOG_TRACE("nosefluxes{}", logging::pprint(noisefluxes));
+    //SPDLOG_INFO("nosefluxes{}", noisefluxes);
     auto meannoise = noisefluxes.mean();
     //SPDLOG_TRACE("meannoise={}", meannoise);
 
     // get sensitivity in V * s^(1/2)
     // this semantic is to indicate the tpsds is to be consumed herer
     // i.e., the data held by tpsds will be moved to neps after the call
-    auto sens = internal::psd2sen(std::move(tpsds));
+    Eigen::MatrixXd sens = internal::psd2sen(std::move(tpsds));
     // to create a copy, just call the following instead
     // MatrixXd sens = internal::psd2sen(tpsds * 2.);
     // to defer the computation, call the following
@@ -290,6 +288,8 @@ void calc_sensitivity(
     // make use the fact that freqs = i * df to find Eigen::Index i
     auto i1 = static_cast<Eigen::Index>(freqrange.left() / dfreq);
     auto i2 = static_cast<Eigen::Index>(freqrange.right() / dfreq);
+
+    //SPDLOG_INFO("f0 {} f1 {}",freqrange(i1),freqrange(i2));
     auto nf = i2 + 1 - i1;
     sensitivities =
         sens.block(i1, 0, nf, ptcs.size()).colwise().sum() / nf;

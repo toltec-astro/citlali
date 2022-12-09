@@ -95,7 +95,6 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
             in.evals.data = evals.head(cleaner.n_eig_to_cut);
 
             if (in.kernel.data.size()!=0) {
-                SPDLOG_INFO("cleaning kernel");
                 // get the reference block of in scans that corresponds to the current array
                 Eigen::Ref<Eigen::MatrixXd> in_kernel_ref = in.kernel.data.block(0, start_index, n_pts, n_dets);
 
@@ -120,7 +119,20 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 template <typename apt_type, class tel_type>
 void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_type &apt, tel_type &telescope) {
     if (weighting_type == "approximate") {
-        in.weights.data = pow(sqrt(telescope.d_fsmp)*apt["sens"].array(),-2.0);
+        // resize weights to number of detectors
+        in.weights.data.resize(in.scans.data.cols(),1);
+
+        // loop through detectors and calculate weights
+        for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
+            // make sure flux conversion is not zero (otherwise weight=0)
+            if (apt["flxscale"](i)!=0) {
+                // calculate weights while applying flux calibration
+                in.weights.data(i) = pow(sqrt(telescope.d_fsmp)*apt["sens"](i)*apt["flxscale"](i),-2.0);
+            }
+            else {
+                in.weights.data(i) = 0;
+            }
+        }
     }
 
     else if (weighting_type == "full"){
@@ -144,6 +156,8 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
             }
         }
     }
+
+    SPDLOG_INFO("in.weights.data {}",in.weights.data);
 }
 
 template <typename apt_t, typename Derived>

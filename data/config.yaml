@@ -177,7 +177,7 @@ timestream: # timestream reduction parameters
     window_size: 32 # number of samples to flag on either side of spike (ignored if TOD filtering)
   downsample: # downsample the data
     enabled: false # enable or disable downsampling
-    factor: 2 # downsample factor (integer only)
+    factor: 1 # downsample factor (integer only)
   filter: # tod filtering
     a_gibbs: 50.0 # Kaiser-Bessel filter shape param
     enabled: false # enable or disable tod filtering
@@ -188,6 +188,7 @@ timestream: # timestream reduction parameters
     enabled: false # enable or disable kernel generation
     filepath: null # filepath to FITS file with kernel
     image_ext_name: signal # extention name if FITS file
+    fwhm_arcsec: 0 # manually specify fwhm for gaussian/airy kernel (ignored if 0)
     type: gaussian # how to make kernel (gaussian, airy, fits)
   output: # controls options for writing out TOD as netCDF file
     chunk_type: rtc # type of chunks to output (rtc or ptc)
