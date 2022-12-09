@@ -71,7 +71,7 @@ public:
 void Beammap::setup() {
     // ensure all detectors are initially flagged as good
     calib.apt["flag"].setOnes();
-    calib.apt["flxscale"].setZero();
+    calib.apt["flxscale"].setOnes();
 
     // set number of parameters for map fitting
     n_params = 6;
