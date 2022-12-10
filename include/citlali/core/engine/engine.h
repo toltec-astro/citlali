@@ -7,8 +7,6 @@
 #include <Eigen/Core>
 #include <fstream>
 
-#include <png.h>
-
 #include <citlali_config/config.h>
 #include <citlali_config/gitversion.h>
 #include <citlali_config/default_config.h>
