@@ -120,7 +120,7 @@ template <typename apt_type, class tel_type>
 void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_type &apt, tel_type &telescope) {
     if (weighting_type == "approximate") {
         // resize weights to number of detectors
-        in.weights.data.resize(in.scans.data.cols(),1);
+        in.weights.data = Eigen::VectorXd::Zero(in.scans.data.cols());
 
         double conversion_factor;
 

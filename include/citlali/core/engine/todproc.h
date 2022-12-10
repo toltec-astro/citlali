@@ -238,17 +238,17 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
             double fpga_freq;
             vars.find("Header.Toltec.FpgaFreq")->second.getVar(&fpga_freq);
 
-            // seconds
+            // ClockTime (sec)
             auto sec0 = ts.cast <double> ().col(0);
-            // nanoseconds
+            // ClockTimeNanoSec (nsec)
             auto nsec0 = ts.cast <double> ().col(5);
-            // pps count
+            // PpsCount (pps ticks)
             auto pps = ts.cast <double> ().col(1);
-            // milliseconds
+            // ClockCount (clock ticks)
             auto msec = ts.cast <double> ().col(2)/fpga_freq;
-            // count
+            // PacketCount (packet ticks)
             auto count = ts.cast <double> ().col(3);
-            // pps milliseconds
+            // PpsTime (clock ticks)
             auto pps_msec = ts.cast <double> ().col(4)/fpga_freq;
             // get start time
             auto t0 = sec0 + nsec0*1e-9;
@@ -330,6 +330,9 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
             min_size = ei - si + 1;
         }
     }
+
+    SPDLOG_INFO("start indices {}", engine().start_indices);
+    SPDLOG_INFO("end indices {}", engine().end_indices);
 
     // size of telescope data
     Eigen::Matrix<Eigen::Index,1,1> nd;

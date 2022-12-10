@@ -226,7 +226,10 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         SPDLOG_INFO("calculating map histogram");
         omb.calc_map_hist();
 
-        write_map_summary(omb);
+        // write map summary
+        if (verbose_mode) {
+            write_map_summary(omb);
+        }
     }
 }
 

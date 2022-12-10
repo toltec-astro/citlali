@@ -432,6 +432,16 @@ int run(const rc_t &rc) {
                         todproc.align_timestreams(rawobs);
                     }
 
+                    else {
+                        todproc.engine().start_indices.clear();
+                        todproc.engine().end_indices.clear();
+
+                        for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
+                            todproc.engine().start_indices.push_back(0);
+                            todproc.engine().start_indices.push_back(0);
+                        }
+                    }
+
                     // warning for gaps in data
                     if (todproc.engine().gaps.size() > 0) {
                         SPDLOG_WARN("gaps found in obnsum {} data file timing!", todproc.engine().obsnum);
@@ -446,16 +456,6 @@ int run(const rc_t &rc) {
                                 f << "-" + key + " gaps: " << val << "\n";
                             }
                             f.close();
-                        }
-                    }
-
-                    else {
-                        todproc.engine().start_indices.clear();
-                        todproc.engine().end_indices.clear();
-
-                        for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
-                            todproc.engine().start_indices.push_back(0);
-                            todproc.engine().start_indices.push_back(0);
                         }
                     }
                     // calc scan indices
