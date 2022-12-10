@@ -709,6 +709,7 @@ void Beammap::output() {
         dir_name = coadd_dir_name + "/filtered/";
     }
 
+    // write the maps
     for (Eigen::Index i=0; i<n_maps; i++) {
         write_maps(f_io,n_io,mb,i);
     }

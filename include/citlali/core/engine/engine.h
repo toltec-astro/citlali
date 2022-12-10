@@ -316,7 +316,7 @@ void Engine::get_citlali_config(CT &config) {
     get_value(config, run_tod_output, missing_keys, invalid_keys, std::tuple{"timestream","output","enabled"});
 
     // tod output mode require sequential policy so set explicitly
-    if (run_tod_output) {
+    if (run_tod_output || verbose_mode) {
         SPDLOG_INFO("tod output mode require sequential policy");
         parallel_policy = "seq";
     }
@@ -1052,42 +1052,46 @@ void Engine::write_map_summary(map_buffer_t &mb) {
     f << "-Map type: " << tod_type << "\n";
     f << "-Map grouping: " << map_grouping << "\n";
     f << "-Rows: " << mb.n_rows << "\n";
-    f << "-Cols: " << mb.n_rows << "\n";
+    f << "-Cols: " << mb.n_cols << "\n";
     f << "-Number of maps: " << n_maps << "\n";
     f << "-Signal map unit: " << mb.sig_unit << "\n";
     f << "-Weight map unit: " << "1/(" + mb.sig_unit + ")^2" << "\n";
-    f << "-Kernel maps generated: " << rtcproc.run_kernel << "\n";
-    f << "-Coverage maps generated: " << mb.coverage.empty() << "\n";
-    f << "-Noise maps generated: " << mb.noise.empty() << "\n";
+    f << "-Kernel maps generated: " << !mb.kernel.empty() << "\n";
+    f << "-Coverage maps generated: " << !mb.coverage.empty() << "\n";
+    f << "-Noise maps generated: " << !mb.noise.empty() << "\n";
     f << "-Number of noise maps: " << mb.noise.size() << "\n";
 
     std::map<std::string,int> n_nans;
     n_nans["signal"] = 0;
     n_nans["weight"] = 0;
+    n_nans["kernel"] = 0;
     n_nans["coverage"] = 0;
     n_nans["noise"] = 0;
 
     std::map<std::string,int> n_infs;
     n_infs["signal"] = 0;
     n_infs["weight"] = 0;
+    n_nans["kernel"] = 0;
     n_infs["coverage"] = 0;
     n_infs["noise"] = 0;
 
     for (Eigen::Index i=0; i<mb.signal.size(); i++) {
         n_nans["signal"] = n_nans["signal"] + mb.signal[i].array().isNaN().count();
         n_nans["weight"] = n_nans["weight"] + mb.weight[i].array().isNaN().count();
+        n_nans["kernel"] = n_nans["kernel"] + mb.kernel[i].array().isNaN().count();
         n_nans["coverage"] = n_nans["coverage"] + mb.coverage[i].array().isNaN().count();
 
-        n_infs["signal"] = n_infs["signal"] + mb.signal[i].array().isNaN().count();
-        n_infs["weight"] = n_infs["weight"] + mb.weight[i].array().isNaN().count();
-        n_infs["coverage"] = n_infs["coverage"] + mb.coverage[i].array().isNaN().count();
+        n_infs["signal"] = n_infs["signal"] + mb.signal[i].array().isInf().count();
+        n_infs["weight"] = n_infs["weight"] + mb.weight[i].array().isInf().count();
+        n_infs["kernel"] = n_infs["kernel"] + mb.kernel[i].array().isInf().count();
+        n_infs["coverage"] = n_infs["coverage"] + mb.coverage[i].array().isInf().count();
 
         if (!mb.noise.empty()) {
             for (Eigen::Index j=0; j<mb.noise.size(); j++) {
                 Eigen::Tensor<double,2> out = mb.noise[i].chip(j,2);
                 auto out_matrix = Eigen::Map<Eigen::MatrixXd>(out.data(), out.dimension(0), out.dimension(1));
                 n_nans["noise"] = n_nans["noise"] + out_matrix.array().isNaN().count();
-                n_infs["noise"] = n_infs["noise"] + out_matrix.array().isNaN().count();
+                n_infs["noise"] = n_infs["noise"] + out_matrix.array().isInf().count();
             }
         }
     }
@@ -1130,6 +1134,10 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         fits_io->at(i).pfits->pHDU().addKey("OBSNUM"+std::to_string(j), mb->obsnums.at(j), "Observation Number " + std::to_string(j));
     }
 
+    // add instrument
+    fits_io->at(i).pfits->pHDU().addKey("INSTRUME", "TolTEC", "Instrument");
+    // add telescope
+    fits_io->at(i).pfits->pHDU().addKey("TELESCOP", "LMT", "Telescope");
     // add wavelength
     fits_io->at(i).pfits->pHDU().addKey("WAV", name, "wavelength");
     // add citlali version
@@ -1161,10 +1169,10 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.DOWNSAMPLED", rtcproc.run_downsample, "Downsampled");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CALIBRATED", rtcproc.run_calibrate, "Calibrated");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CALIBRATED.EXTMODEL", rtcproc.calibration.extinction_model, "Extinction model");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.TYPE", ptcproc.weighting_type, "Number of eigenvalues removed");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.TYPE", ptcproc.weighting_type, "Weighting scheme");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.RMSLOW", ptcproc.lower_std_dev, "Lower RMS cutoff");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.RMSHIGH", ptcproc.upper_std_dev, "Upper RMS cutoff");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED", ptcproc.run_clean, "Weighting type");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED", ptcproc.run_clean, "Cleaned");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.NEIG", ptcproc.cleaner.n_eig_to_cut, "Number of eigenvalues removed");
 
     // add telescope file header information

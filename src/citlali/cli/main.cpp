@@ -235,10 +235,10 @@ int run(const rc_t &rc) {
                     return EXIT_FAILURE;
                 }
 
-                if (spdlog::get_level() == spdlog::level::debug) {
+                /*if (spdlog::get_level() == spdlog::level::debug) {
                     SPDLOG_DEBUG("log level=debug. running in verbose mode.");
                     todproc.engine().verbose_mode = true;
-                }
+                }*/
 
                 // set parallelization explicitly
                 omp_set_num_threads(todproc.engine().n_threads);
