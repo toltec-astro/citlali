@@ -30,6 +30,7 @@ map_filtering: # map filtering
 noise_maps: # noise map controls
   enabled: false # enable or disable coaddition
   n_noise_maps: 1 # number of noise maps (>0)
+  normalize_errors: false # correct weight map errors based on noise maps
 inputs: # list of inputs and related data
   - cal_items:
       - beammap_source: # extra information used by beammapping (not needed if not beammapping)
@@ -187,8 +188,8 @@ timestream: # timestream reduction parameters
   kernel: # make synthetic timestreams for reduction characterization
     enabled: false # enable or disable kernel generation
     filepath: null # filepath to FITS file with kernel
-    image_ext_name: signal # extention name if FITS file
     fwhm_arcsec: 0 # manually specify fwhm for gaussian/airy kernel (ignored if 0)
+    image_ext_name: signal # extention name if FITS file
     type: gaussian # how to make kernel (gaussian, airy, fits)
   output: # controls options for writing out TOD as netCDF file
     chunk_type: rtc # type of chunks to output (rtc or ptc)
@@ -199,15 +200,13 @@ timestream: # timestream reduction parameters
   polarimetry: # polarized reduction
     enabled: false # enable or disable polarized reduction
   weighting: # how to weight data and maps
-    type: full # type of TOD weighting (full=use scan varaince/approximate=use det sensitivity)
+    type: full # type of TOD weighting (full=use scan variance/approximate=use det sensitivity)
     lower_std_factor: 0.0 # flag detectors below this stddev limit (ignored if 0)
     upper_std_factor: 0.0 # flag detectors above this stddev limit (ignored if 0)
 wiener_filter: # controls for wiener filter
-  gaussian_template: true # use gaussian template instead of kernel template
+  template_type: kernel #  template (kernel, gaussian, highpass)
   gaussian_template_fwhm_arcsec: # set fwhms for gaussian template
     a1100: 5
     a1400: 6.3
     a2000: 9.5
-  highpass_only: false # apply highpassing only
   lowpass_only: false # apply lowpassing only
-  normalize_error: false # correct weight map errors based on noise maps
