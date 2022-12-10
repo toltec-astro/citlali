@@ -95,6 +95,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
             in.evals.data = evals.head(cleaner.n_eig_to_cut);
 
             if (in.kernel.data.size()!=0) {
+                SPDLOG_DEBUG("cleaning kernel");
                 // get the reference block of in scans that corresponds to the current array
                 Eigen::Ref<Eigen::MatrixXd> in_kernel_ref = in.kernel.data.block(0, start_index, n_pts, n_dets);
 
@@ -119,6 +120,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 template <typename apt_type, class tel_type>
 void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_type &apt, tel_type &telescope) {
     if (weighting_type == "approximate") {
+        SPDLOG_DEBUG("calculating weights using approximate method");
         // resize weights to number of detectors
         in.weights.data = Eigen::VectorXd::Zero(in.scans.data.cols());
 
@@ -145,6 +147,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
     }
 
     else if (weighting_type == "full"){
+        SPDLOG_DEBUG("calculating weights using full method");
         Eigen::Index n_dets = in.scans.data.cols();
         in.weights.data = Eigen::VectorXd::Zero(n_dets);
 
@@ -171,7 +174,7 @@ template <typename apt_t, typename Derived>
 void PTCProc::remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_t &apt, Eigen::DenseBase<Derived> &det_indices) {
 
     Eigen::Index n_dets = in.scans.data.cols();
-    SPDLOG_INFO("removing {} flagged detectors",(apt["flag"].array()==0).count());
+    SPDLOG_INFO("removing {} detectors flagged in APT table",(apt["flag"].array()==0).count());
 
     for (Eigen::Index i=0; i<n_dets; i++) {
         Eigen::Index det_index = det_indices(i);

@@ -322,6 +322,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
         engine().end_indices.push_back(ei);
     }
 
+    // get min size
     for (Eigen::Index i=0; i<nw_ts.size(); i++) {
         auto si = engine().start_indices[i];
         auto ei = engine().end_indices[i];
@@ -330,9 +331,6 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
             min_size = ei - si + 1;
         }
     }
-
-    SPDLOG_INFO("start indices {}", engine().start_indices);
-    SPDLOG_INFO("end indices {}", engine().end_indices);
 
     // size of telescope data
     Eigen::Matrix<Eigen::Index,1,1> nd;
@@ -706,8 +704,6 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
 
         map_extents.push_back(map_extent);
         map_coords.push_back(map_coord);
-
-        SPDLOG_INFO("n_rows {}, n_cols {}", n_rows, n_cols);
     }
 
     else {

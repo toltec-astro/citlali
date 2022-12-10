@@ -52,6 +52,9 @@ void Lali::setup() {
     if (run_tod_output) {
         create_tod_files();
     }
+
+    // print basic info for obs reduction
+    print_summary();
 }
 
 auto Lali::run() {

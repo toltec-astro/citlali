@@ -200,6 +200,9 @@ void Beammap::setup() {
 
     calib.apt_meta["sig2noise"].push_back("units: N/A");
     calib.apt_meta["sig2noise"].push_back("signal to noise");
+
+    // print basic info for obs reduction
+    print_summary();
 }
 
 auto Beammap::run_timestream() {

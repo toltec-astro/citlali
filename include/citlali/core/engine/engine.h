@@ -7,6 +7,8 @@
 #include <Eigen/Core>
 #include <fstream>
 
+#include <png.h>
+
 #include <citlali_config/config.h>
 #include <citlali_config/gitversion.h>
 #include <citlali_config/default_config.h>
@@ -221,6 +223,11 @@ public:
 
     void create_map_files();
     void create_tod_files();
+
+    //template <TCDataKind tc_t>
+    //void print_summary(TCData<tc_t, Eigen::MatrixXd> &);
+
+    void print_summary();
 
     template <TCDataKind tc_t>
     void write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &);
@@ -530,6 +537,11 @@ void Engine::get_citlali_config(CT &config) {
     /* map filtering */
     get_value(config, run_map_filter, missing_keys, invalid_keys, std::tuple{"map_filtering","enabled"});
 
+    /* wiener filter */
+    get_value(config, wiener_filter.template_type, missing_keys, invalid_keys, std::tuple{"wiener_filter","template_type"});
+    get_value(config, wiener_filter.run_lowpass, missing_keys, invalid_keys, std::tuple{"wiener_filter","lowpass_only"});
+    get_value(config, wiener_filter.normalize_error, missing_keys, invalid_keys, std::tuple{"map_filtering","normalize_errors"});
+
     /* beammap */
     if (redu_type=="beammap") {
         get_value(config, beammap_iter_max, missing_keys, invalid_keys, std::tuple{"beammap","iter_max"});
@@ -612,10 +624,12 @@ auto Engine::calc_map_indices(Eigen::DenseBase<Derived> &det_indices, Eigen::Den
         indices = array_indices;
     }
 
+    // pointing maps
     else if (redu_type == "pointing") {
         indices = array_indices;
     }
 
+    // beammaps
     else if (redu_type == "beammap") {
         indices = det_indices;
     }
@@ -807,6 +821,58 @@ void Engine::create_tod_files() {
 
         fo.close();
     }
+}
+
+//template <TCDataKind tc_t>
+void Engine::print_summary() {//TCData<tc_t, Eigen::MatrixXd> &in) {
+    SPDLOG_INFO("\n\nreduction info:\n\n");
+    SPDLOG_INFO("map buffer rows: {}", omb.n_rows);
+    SPDLOG_INFO("map buffer cols: {}", omb.n_cols);
+
+    double mb_size_total = 0;
+
+    // make a rough estimate of memory usage for obs map buffer
+    double omb_size = 8*omb.n_rows*omb.n_cols*(omb.signal.size() + omb.weight.size() +
+                                               omb.kernel.size() + omb.coverage.size())/1e9;
+
+    SPDLOG_INFO("estimated size of map buffer {} GB", omb_size);
+
+    mb_size_total = mb_size_total + omb_size;
+
+    // print info if coadd is requested
+    if (run_coadd) {
+        SPDLOG_INFO("coadd map buffer rows: {}", cmb.n_rows);
+        SPDLOG_INFO("coadd map buffer cols: {}", cmb.n_cols);
+
+        // make a rough estimate of memory usage for coadd map buffer
+        double cmb_size = 8*cmb.n_rows*cmb.n_cols*(cmb.signal.size() + cmb.weight.size() +
+                                                   cmb.kernel.size() + cmb.coverage.size())/1e9;
+
+        SPDLOG_INFO("estimated size of coadd buffer {} GB", cmb_size);
+
+        mb_size_total = mb_size_total + cmb_size;
+
+        // print info if coadd noise maps are requested
+        if (run_noise) {
+            SPDLOG_INFO("coadd map buffer noise maps: {}", cmb.n_noise);
+            // make a rough estimate of memory usage for coadd noise maps
+            double nmb_size = 8*cmb.n_rows*cmb.n_cols*cmb.noise.size()*cmb.n_noise/1e9;
+            SPDLOG_INFO("estimated size of noise buffer {} GB", nmb_size);
+            mb_size_total = mb_size_total + nmb_size;
+        }
+    }
+    else {
+        // print info if obs noise maps are requested
+        if (run_noise) {
+            SPDLOG_INFO("observation map buffer noise maps: {}", omb.n_noise);
+            // make a rough estimate of memory usage for obs noise maps
+            double nmb_size = 8*omb.n_rows*omb.n_cols*omb.noise.size()*omb.n_noise/1e9;
+            SPDLOG_INFO("estimated size of noise buffer {} GB", nmb_size);
+            mb_size_total = mb_size_total + nmb_size;
+        }
+    }
+
+    SPDLOG_INFO("estimated size of all maps {} GB\n\n", mb_size_total);
 }
 
 template <TCDataKind tc_t>

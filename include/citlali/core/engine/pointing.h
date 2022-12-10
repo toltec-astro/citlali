@@ -127,6 +127,9 @@ void Pointing::setup() {
 
     ppt_meta["angle_err"].push_back("units: radians");
     ppt_meta["angle_err"].push_back("fitted rotation angle error");
+
+    // print basic info for obs reduction
+    print_summary();
 }
 
 auto Pointing::run() {
