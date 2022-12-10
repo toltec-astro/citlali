@@ -165,8 +165,6 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
             }
         }
     }
-
-    SPDLOG_INFO("in.weights.data {}",in.weights.data);
 }
 
 template <typename apt_t, typename Derived>

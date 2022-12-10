@@ -134,6 +134,9 @@ public:
     // add extra output for debugging
     bool verbose_mode;
 
+    // time gaps
+    std::map<std::string,int> gaps;
+
     // output directory and optional sub directory name
     std::string output_dir, redu_dir_name;
 
@@ -875,7 +878,7 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
     using netCDF::NcVar;
     using namespace netCDF::exceptions;
 
-    //try {
+    try {
         netCDF::NcFile fo(obsnum_dir_name+"/logs/" + filename + ".nc", netCDF::NcFile::replace);
 
         // number of samples
@@ -964,18 +967,74 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
 
         fo.close();
 
-    //} catch (NcException &e) {
-        //SPDLOG_ERROR("{}", e.what());
-    //}
+    } catch (NcException &e) {
+        SPDLOG_ERROR("{}", e.what());
+    }
 }
 
 template <typename map_buffer_t>
 void Engine::write_map_summary(map_buffer_t &mb) {
 
-    /*std::string filename = "map_summary_" + std::to_string(in.index.data);
+    std::string filename = "map_summary";
     std::ofstream f;
-    f.open (obsnum_dir_name+"/logs/" + filename + ".log");*/
+    f.open (obsnum_dir_name+"/logs/" + filename + ".log");
 
+    f << "Summary file for maps\n";
+    f << "-Citlali version: " << CITLALI_GIT_VERSION << "\n";
+    f << "-Kidscpp version: " << KIDSCPP_GIT_VERSION << "\n";
+    f << "-Time of file writing: " << engine_utils::current_date_time() << "\n";
+
+    f << "-Reduction type: " << redu_type << "\n";
+    f << "-Map type: " << tod_type << "\n";
+    f << "-Map grouping: " << map_grouping << "\n";
+    f << "-Rows: " << mb.n_rows << "\n";
+    f << "-Cols: " << mb.n_rows << "\n";
+    f << "-Number of maps: " << n_maps << "\n";
+    f << "-Signal map unit: " << mb.sig_unit << "\n";
+    f << "-Weight map unit: " << "1/(" + mb.sig_unit + ")^2" << "\n";
+    f << "-Kernel maps generated: " << rtcproc.run_kernel << "\n";
+    f << "-Coverage maps generated: " << mb.coverage.empty() << "\n";
+    f << "-Noise maps generated: " << mb.noise.empty() << "\n";
+    f << "-Number of noise maps: " << mb.noise.size() << "\n";
+
+    std::map<std::string,int> n_nans;
+    n_nans["signal"] = 0;
+    n_nans["weight"] = 0;
+    n_nans["coverage"] = 0;
+    n_nans["noise"] = 0;
+
+    std::map<std::string,int> n_infs;
+    n_infs["signal"] = 0;
+    n_infs["weight"] = 0;
+    n_infs["coverage"] = 0;
+    n_infs["noise"] = 0;
+
+    for (Eigen::Index i=0; i<mb.signal.size(); i++) {
+        n_nans["signal"] = n_nans["signal"] + mb.signal[i].array().isNaN().count();
+        n_nans["weight"] = n_nans["weight"] + mb.weight[i].array().isNaN().count();
+        n_nans["coverage"] = n_nans["coverage"] + mb.coverage[i].array().isNaN().count();
+
+        n_infs["signal"] = n_infs["signal"] + mb.signal[i].array().isNaN().count();
+        n_infs["weight"] = n_infs["weight"] + mb.weight[i].array().isNaN().count();
+        n_infs["coverage"] = n_infs["coverage"] + mb.coverage[i].array().isNaN().count();
+
+        if (!mb.noise.empty()) {
+            for (Eigen::Index j=0; j<mb.noise.size(); j++) {
+                Eigen::Tensor<double,2> out = mb.noise[i].chip(j,2);
+                auto out_matrix = Eigen::Map<Eigen::MatrixXd>(out.data(), out.dimension(0), out.dimension(1));
+                n_nans["noise"] = n_nans["noise"] + out_matrix.array().isNaN().count();
+                n_infs["noise"] = n_infs["noise"] + out_matrix.array().isNaN().count();
+            }
+        }
+    }
+
+    for (auto const& [key, val] : n_nans) {
+         f << "-Number of "+ key + " NaNs: " << val << "\n";
+    }
+
+    for (auto const& [key, val] : n_infs) {
+        f << "-Number of "+ key + " Infs: " << val << "\n";
+    }
 }
 
 template <typename fits_io_type, class map_buffer_t>

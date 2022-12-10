@@ -185,6 +185,9 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
     engine().start_indices.clear();
     engine().end_indices.clear();
 
+    // clear gaps
+    engine().gaps.clear();
+
     // vector of network times
     std::vector<Eigen::VectorXd> nw_ts;
     // start and end times
@@ -222,6 +225,14 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
 
             // transpose due to row-major order
             ts.transposeInPlace();
+
+            // find gaps
+            int gaps = ((ts.block(1,3,n_pts,1).array() - ts.block(0,3,n_pts-1,1).array()).array() > 1).count();
+
+            // add gaps to engine map
+            if (gaps>0) {
+                engine().gaps["Toltec" + std::to_string(roach_index)] = gaps;
+            }
 
             // get fpga frequency
             double fpga_freq;

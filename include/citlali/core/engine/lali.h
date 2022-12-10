@@ -132,19 +132,6 @@ auto Lali::run() {
                 ptcproc.run(ptcdata, ptcdata, calib);
             }
 
-
-            //std::vector<TCData<TCDataKind::PTC,Eigen::MatrixXd>> ptcs;
-            //ptcs.push_back(ptcdata);
-
-            /*SPDLOG_INFO("sens");
-            Eigen::MatrixXd det_sens, noise_flux;
-            for (Eigen::Index i=0; i< calib.n_dets; i++) {
-                calc_sensitivity(ptcs, det_sens, noise_flux, telescope.d_fsmp, i, {sens_psd_limits(0), sens_psd_limits(1)});
-                //calib.apt["sens"](i) = tula::alg::median(det_sens);
-                SPDLOG_INFO("det_sens {}",det_sens);
-                SPDLOG_INFO("noise_flux {}",noise_flux);
-            }*/
-
             // calculate weights
             SPDLOG_INFO("calculating weights");
             ptcproc.calc_weights(ptcdata, calib.apt, telescope);
@@ -191,7 +178,6 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     grppi::pipeline(tula::grppi_utils::dyn_ex(parallel_policy),
         [&]() -> std::optional<std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
                                           std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>> {
-
             // variable to hold current scan
             static auto scan = 0;
             // loop through scans
@@ -239,6 +225,8 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         // calculate map histograms
         SPDLOG_INFO("calculating map histogram");
         omb.calc_map_hist();
+
+        write_map_summary(omb);
     }
 }
 
