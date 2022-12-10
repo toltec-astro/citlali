@@ -385,9 +385,12 @@ void Engine::get_citlali_config(CT &config) {
 
     rtcproc.calibration.setup();
 
+    ptcproc.run_calibrate = rtcproc.run_calibrate;
+
     // override calibration if in beammap mode
     if (redu_type=="beammap") {
         rtcproc.run_calibrate = false;
+        ptcproc.run_calibrate = false;
     }
 
     /* cleaning */
@@ -951,7 +954,7 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
             // do fft
             fft.fwd(freqdata, scan.head(n_pts));
             // calc psd
-            Eigen::VectorXd psd = freqdata.cwiseAbs2() / d_freq;
+            Eigen::VectorXd psd = freqdata.cwiseAbs2() / d_freq / n_pts;
             // account for negative freqs
             psd.segment(1, n_freqs - 2) *= 2.;
 
@@ -968,6 +971,10 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
 
 template <typename map_buffer_t>
 void Engine::write_map_summary(map_buffer_t &mb) {
+
+    /*std::string filename = "map_summary_" + std::to_string(in.index.data);
+    std::ofstream f;
+    f.open (obsnum_dir_name+"/logs/" + filename + ".log");*/
 
 }
 

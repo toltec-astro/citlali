@@ -39,7 +39,7 @@ template <typename UnaryOp> struct MoveEnabledUnaryOp {
                       !internal::has_storage<T>::value) {
             // lvalue ref, either expression or non-expression
             // return expression that builds on top of input
-            //SPDLOG_TRACE("called with wrapping");
+            //SPDLOG_INFO("called with wrapping");
             return m_func(std::forward<T>(in),
                           std::forward<decltype(args)>(args)...);
             // NOLINTNEXTLINE(readability-else-after-return)
@@ -48,7 +48,7 @@ template <typename UnaryOp> struct MoveEnabledUnaryOp {
             // rvalue ref
             // in this case we need to call the function and update inplace
             // first and move to return
-            //SPDLOG_TRACE("called with moving");
+            //SPDLOG_INFO("called with moving");
             in = m_func(std::forward<T>(in),
                         std::forward<decltype(args)>(args)...);
             return std::forward<T>(in);
@@ -126,8 +126,6 @@ FreqStat psd(const Eigen::DenseBase<DerivedA> &_scan,
              Eigen::DenseBase<DerivedB> &psd, Eigen::DenseBase<DerivedC> *freqs,
              double fsmp) {
     // decltype(auto) scan = _scan.derived();
-    // decltype(auto) forward the return type of derived() so it declares a reference as expected
-    // if scan has storage, this is equivalent to:
     typename internal::const_ref<DerivedA> scan(_scan.derived());
 
     auto stat = internal::stat(scan.size(), fsmp);
@@ -141,32 +139,29 @@ FreqStat psd(const Eigen::DenseBase<DerivedA> &_scan,
 
     // branch according to whether applying hann
     if constexpr (win == Hanning) {
-        //SPDLOG_TRACE("apply hann window");
-        // we need the eval() here per the requirement of fft.fwd()
-
+        //SPDLOG_INFO("apply hann window");
         Eigen::VectorXd scns = scan.block(0,0,npts,1);
-        fft.fwd(freqdata, scns);//.cwiseProduct(
-                   //internal::hann(npts)).eval());
+        fft.fwd(freqdata, scns.cwiseProduct(
+                   internal::hann(npts)).eval());
     }
 
     else if (win == NoWindow) {
         fft.fwd(freqdata, scan.head(npts));
     } // note: at this point the freqdata is not normalized to NEBW yet
 
-    //SPDLOG_TRACE("fft.fwd freqdata {}", freqdata);
+    //SPDLOG_INFO("fft.fwd freqdata {}", freqdata);
 
-    // calcualte psd
-    // normalize to frequency resolution
-    psd = freqdata.cwiseAbs2() / dfreq;  // V/Hz^0.5
+    // calcualte psd and normalize to frequency resolution
+    psd = freqdata.cwiseAbs2() / dfreq / npts;  // V/Hz^0.5
     // accound for the negative frequencies by an extra factor of 2. note: first
     // and last are 0 and nquist freq, so they only appear once
     psd.segment(1, nfreqs - 2) *= 2.;
-    //SPDLOG_TRACE("psd {}", psd);
+    //SPDLOG_INFO("psd {}", psd);
 
     // make the freqency array when requested
     if (freqs) {
         freqs->operator=(internal::freq(npts, nfreqs, dfreq));
-        //SPDLOG_TRACE("freqs {}", freqs);
+        //SPDLOG_INFO("freqs {}", freqs);
     }
     return stat;
 }
@@ -178,7 +173,6 @@ FreqStat psds(const std::vector<DerivedA> &ptcs,
               Eigen::DenseBase<DerivedB> &_psds,
               Eigen::DenseBase<DerivedC> *freqs, double fsmp, Eigen::Index det) {
 
-    // decltype(auto) psds = _psds.derived();
     typename internal::ref<DerivedB> psds(_psds.derived());
 
     // prepare common freq grid
@@ -209,7 +203,7 @@ FreqStat psds(const std::vector<DerivedA> &ptcs,
 
     // get the psds
     for (Eigen::Index i=0; i<nscans; ++i) {
-        //SPDLOG_TRACE("process scan {} out of {}", i + 1, nscans);
+        //SPDLOG_INFO("process scan {} out of {}", i + 1, nscans);
         internal::psd<win>(ptcs[i].scans.data.block(0,det,scanlengths(i),1), tpsd,
                       &tfreqs, fsmp);
         // interpolate (tfreqs, tpsd) on to _freqs
@@ -235,16 +229,7 @@ FreqStat psds(const std::vector<DerivedA> &ptcs,
     return stat;
 }
 
-// The helper class eiu::MoveEnabledUnaryOp is used to wrap a lambda function and
-// provide overloaded calling signitures to allow optionally
-// "consume" the input parameter if passed in as rvalue reference
-// such as temporary objects and std::move(var).
-// Data held by parameters passed this way is transfered to the returning
-// variable at call site, e.g.
-// call "auto ret = neps(std::move(in));" will move data in "in" to
-// "ret" and apply the computation inplace on ret.
-// Also note the auto&& type of input parameter, this will allow it
-// work for different Eigen expression types
+// calc sens from psd
 inline auto psd2sen = internal::MoveEnabledUnaryOp([](auto&& psd) {
     return (psd / 2.).cwiseSqrt();  // V * s^(1/2)
 });
@@ -270,19 +255,10 @@ void calc_sensitivity(
     noisefluxes = (tpsds * dfreq).colwise().sum().cwiseSqrt();
     //SPDLOG_INFO("nosefluxes{}", noisefluxes);
     auto meannoise = noisefluxes.mean();
-    //SPDLOG_TRACE("meannoise={}", meannoise);
+    //SPDLOG_INFO("meannoise={}", meannoise);
 
     // get sensitivity in V * s^(1/2)
-    // this semantic is to indicate the tpsds is to be consumed herer
-    // i.e., the data held by tpsds will be moved to neps after the call
     Eigen::MatrixXd sens = internal::psd2sen(std::move(tpsds));
-    // to create a copy, just call the following instead
-    // MatrixXd sens = internal::psd2sen(tpsds * 2.);
-    // to defer the computation, call the following
-    // auto sens = internal::psd2sen(tpsds);
-
-    // calibrate
-    // neps = calibrate(neps, gain); // mJy/sqrt(Hz)
 
     // compute sensitivity with given freqrange
     // make use the fact that freqs = i * df to find Eigen::Index i

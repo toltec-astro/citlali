@@ -12,7 +12,7 @@ namespace timestream {
 
 class PTCProc {
 public:
-    bool run_clean;
+    bool run_clean, run_calibrate;
     std::string weighting_type;
 
     // ptc tod proc
@@ -122,12 +122,21 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
         // resize weights to number of detectors
         in.weights.data.resize(in.scans.data.cols(),1);
 
+        double conversion_factor;
+
         // loop through detectors and calculate weights
         for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
+            if (run_calibrate) {
+                conversion_factor = apt["flxscale"](i);
+            }
+
+            else {
+                conversion_factor = 1;
+            }
             // make sure flux conversion is not zero (otherwise weight=0)
-            if (apt["flxscale"](i)!=0) {
+            if (conversion_factor!=0) {
                 // calculate weights while applying flux calibration
-                in.weights.data(i) = pow(sqrt(telescope.d_fsmp)*apt["sens"](i)*apt["flxscale"](i),-2.0);
+                in.weights.data(i) = pow(sqrt(telescope.d_fsmp)*apt["sens"](i)*conversion_factor,-2.0);
             }
             else {
                 in.weights.data(i) = 0;

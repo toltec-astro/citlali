@@ -132,6 +132,19 @@ auto Lali::run() {
                 ptcproc.run(ptcdata, ptcdata, calib);
             }
 
+
+            //std::vector<TCData<TCDataKind::PTC,Eigen::MatrixXd>> ptcs;
+            //ptcs.push_back(ptcdata);
+
+            /*SPDLOG_INFO("sens");
+            Eigen::MatrixXd det_sens, noise_flux;
+            for (Eigen::Index i=0; i< calib.n_dets; i++) {
+                calc_sensitivity(ptcs, det_sens, noise_flux, telescope.d_fsmp, i, {sens_psd_limits(0), sens_psd_limits(1)});
+                //calib.apt["sens"](i) = tula::alg::median(det_sens);
+                SPDLOG_INFO("det_sens {}",det_sens);
+                SPDLOG_INFO("noise_flux {}",noise_flux);
+            }*/
+
             // calculate weights
             SPDLOG_INFO("calculating weights");
             ptcproc.calc_weights(ptcdata, calib.apt, telescope);
