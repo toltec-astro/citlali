@@ -4,7 +4,7 @@
 #include <vector>
 #include <numeric>
 #include <complex>
-#include <png.h>
+//#include <png.h>
 
 #include <Eigen/Core>
 #include <unsupported/Eigen/FFT>
