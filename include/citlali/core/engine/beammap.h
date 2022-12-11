@@ -669,7 +669,7 @@ void Beammap::output() {
         SPDLOG_INFO("writing apt table");
         auto apt_filename = toltec_io.create_filename<engine_utils::toltecIO::apt, engine_utils::toltecIO::map,
                                                       engine_utils::toltecIO::raw>
-                            (obsnum_dir_name, redu_type, "", obsnum, telescope.sim_obs);
+                            (obsnum_dir_name + "/raw/", redu_type, "", obsnum, telescope.sim_obs);
 
         Eigen::MatrixXd apt_table(calib.n_dets, calib.apt_header_keys.size());
         SPDLOG_INFO("done writing apt table");
