@@ -1161,6 +1161,17 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // add map tangent point dec
     fits_io->at(i).pfits->pHDU().addKey("TAN_DEC", telescope.tel_header["Header.Source.Dec"][0], "Map Tangent Point Dec (radians)");
 
+    // add apt table to header
+    std::vector<string> result;
+    std::stringstream ss(calib.apt_filepath);
+    std::string item;
+    char delim = '/';
+
+    while (getline (ss, item, delim)) {
+        result.push_back (item);
+    }
+    fits_io->at(i).pfits->pHDU().addKey("APT", result.back(), "APT table used");
+
     // add control/runtime parameters
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.VERBOSE", verbose_mode, "Reduced in verbose mode");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.POLARIZED", rtcproc.run_polarization, "Polarized Obs");

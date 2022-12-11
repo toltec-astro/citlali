@@ -13,6 +13,9 @@ namespace engine {
 
 class Calib {
 public:
+
+    // apt filepath
+    std::string apt_filepath;
     // apt table
     std::map<std::string, Eigen::VectorXd> apt;
     Eigen::VectorXd hwp_angle;

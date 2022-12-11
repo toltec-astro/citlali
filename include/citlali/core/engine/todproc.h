@@ -635,6 +635,14 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
         det_lon_limits.setZero(engine().calib.n_dets,2);
         map_limits.setZero(2,2);
 
+        // placeholder vectors for grppi maps
+        std::vector<int> scan_in_vec, scan_out_vec;
+        std::vector<int> det_in_vec, det_out_vec;
+
+        det_in_vec.resize(engine().calib.n_dets);
+        std::iota(det_in_vec.begin(), det_in_vec.end(), 0);
+        det_out_vec.resize(engine().calib.n_dets);
+
         // loop through scans
         for (Eigen::Index i=0; i<engine().telescope.scan_indices.cols(); i++) {
             auto si = engine().telescope.scan_indices(2, i);
@@ -646,7 +654,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
             }
 
             // loop through detectors
-            for (Eigen::Index j=0; j<engine().calib.n_dets; j++) {
+            grppi::map(tula::grppi_utils::dyn_ex(engine().parallel_policy), det_in_vec, det_out_vec, [&](auto j) {
 
                 double az_off = 0;
                 double el_off = 0;
@@ -672,7 +680,9 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
                 if (lon.maxCoeff() > det_lon_limits(j,1)) {
                     det_lon_limits(j,1) = lon.maxCoeff();
                 }
-            }
+
+                return 0;
+            });
         }
 
         // get the global min and max

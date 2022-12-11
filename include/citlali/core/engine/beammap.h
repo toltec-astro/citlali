@@ -150,7 +150,7 @@ void Beammap::setup() {
     calib.apt_meta["flxscale"].push_back("units: " + omb.sig_unit);
     calib.apt_meta["flxscale"].push_back("flux conversion scale");
 
-    calib.apt_meta["sens"].push_back("units: N/A");
+    calib.apt_meta["sens"].push_back("units: V/Hz^-0.5");
     calib.apt_meta["sens"].push_back("sensitivity");
 
     calib.apt_meta["derot_elev"].push_back("units: radians");
@@ -519,6 +519,20 @@ auto Beammap::loop_pipeline() {
     // array indices for current polarization
     auto array_indices = ptcs[0].array_indices.data;
 
+    std::map<std::string, double> array_mean_x_t, array_mean_y_t;
+
+    // get mean x_t and y_t values for arrays
+    for (Eigen::Index i=0; i<calib.n_arrays; i++) {
+        Eigen::Index array = calib.apt["array"](i);
+        std::string array_name = toltec_io.array_name_map[calib.apt["array"](i)];
+
+        array_mean_x_t[array_name] = calib.apt["x_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
+                               std::get<1>(calib.array_limits[array])-1)).mean();
+
+        array_mean_y_t[array_name] = calib.apt["y_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
+                                                                 std::get<1>(calib.array_limits[array])-1)).mean();
+    }
+
     // mean values of fitted detector positions
     double mean_x_t = calib.apt["x_t"].mean();
     double mean_y_t = calib.apt["y_t"].mean();
@@ -534,7 +548,8 @@ auto Beammap::loop_pipeline() {
         double map_std_dev = engine_utils::calc_std_dev(omb.signal[i]);
 
         // calculate distance of detector from mean position of all detectors
-        double dist = sqrt(pow(calib.apt["x_t"](i) - mean_x_t,2) + pow(calib.apt["y_t"](i) - mean_y_t,2));
+        //double dist = sqrt(pow(calib.apt["x_t"](i) - mean_x_t,2) + pow(calib.apt["y_t"](i) - mean_y_t,2));
+        double dist = sqrt(pow(calib.apt["x_t"](i) - array_mean_x_t[array_name],2) + pow(calib.apt["y_t"](i) - array_mean_y_t[array_name],2));
 
         // remove bad fits
         if (!good_fits(i)) {
@@ -542,22 +557,22 @@ auto Beammap::loop_pipeline() {
             n_flagged_dets++;
         }
         // flag detectors with outler a_fwhm values
-        if (calib.apt["a_fwhm"](i) < lower_fwhm_arcsec[array_name] || calib.apt["a_fwhm"](i) > upper_fwhm_arcsec[array_name]) {
+        else if (calib.apt["a_fwhm"](i) < lower_fwhm_arcsec[array_name] || calib.apt["a_fwhm"](i) > upper_fwhm_arcsec[array_name]) {
             calib.apt["flag"](i) = 0;
             n_flagged_dets++;
         }
         // flag detectors with outler b_fwhm values
-        if (calib.apt["b_fwhm"](i) < lower_fwhm_arcsec[array_name] || calib.apt["b_fwhm"](i) > upper_fwhm_arcsec[array_name]) {
+        else if (calib.apt["b_fwhm"](i) < lower_fwhm_arcsec[array_name] || calib.apt["b_fwhm"](i) > upper_fwhm_arcsec[array_name]) {
             calib.apt["flag"](i) = 0;
             n_flagged_dets++;
         }
         // flag detectors with outler S/N values
-        if (params(i,0)/map_std_dev < lower_sig2noise[array_name]) {
+        else if (params(i,0)/map_std_dev < lower_sig2noise[array_name]) {
             calib.apt["flag"](i) = 0;
             n_flagged_dets++;
         }
         // flag detectors that are further than the mean value than the distance limit
-        if (dist > max_dist_arcsec[array_name] && max_dist_arcsec[array_name] != 0) {
+        else if (dist > max_dist_arcsec[array_name] && max_dist_arcsec[array_name] != 0) {
             calib.apt["flag"](i) = 0;
             n_flagged_dets++;
         }

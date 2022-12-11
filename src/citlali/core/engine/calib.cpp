@@ -3,6 +3,8 @@
 
 namespace engine {
 void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_filenames, std::vector<std::string> &interfaces) {
+    // store apt filepath
+    apt_filepath = filepath;
     // read in the apt table
     auto [table, header, meta] = to_matrix_from_ecsv(filepath);
 
