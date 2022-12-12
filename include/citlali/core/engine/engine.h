@@ -1235,7 +1235,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
 
     // coverage map
     if (!mb->coverage.empty()) {
-        fits_io->at(map_index).add_hdu("coverage_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->weight[i]);
+        fits_io->at(map_index).add_hdu("coverage_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->coverage[i]);
         fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs);
         fits_io->at(map_index).hdus.back()->addKey("UNIT", "sec", "Unit of map");
     }

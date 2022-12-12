@@ -617,7 +617,9 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
             engine().omb.kernel.push_back(Eigen::MatrixXd::Zero(engine().omb.n_rows, engine().omb.n_cols));
         }
 
-        engine().omb.coverage.push_back(Eigen::MatrixXd::Zero(engine().omb.n_rows, engine().omb.n_cols));
+        if (engine().redu_type!="beammap") {
+            engine().omb.coverage.push_back(Eigen::MatrixXd::Zero(engine().omb.n_rows, engine().omb.n_cols));
+        }
     }
 
     engine().omb.rows_tan_vec = map_coord[0];

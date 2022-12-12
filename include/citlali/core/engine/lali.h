@@ -127,7 +127,7 @@ auto Lali::run() {
 
             // remove outliers
             SPDLOG_INFO("removing outlier weights");
-            auto calib_scan = ptcproc.remove_bad_dets_nw(ptcdata, calib, det_indices, nw_indices, array_indices);
+            auto calib_scan = ptcproc.remove_bad_dets_nw(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type);
 
             // run cleaning
             if (stokes_param == "I") {

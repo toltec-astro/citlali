@@ -32,7 +32,7 @@ public:
 
     template <typename calib_t, typename Derived>
     auto remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
-                            Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &);
+                            Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string);
 
     template <typename Derived, typename apt_t, typename pointing_offset_t>
     void append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, std::string, std::string, std::string &,
@@ -89,7 +89,14 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 out_scans(out_scans_ref.data(), out_scans_ref.rows(), out_scans_ref.cols(),
                           Eigen::OuterStride<>(out_scans_ref.outerStride()));
 
-            auto [evals, evecs] = cleaner.calc_eig_values<SpectraBackend>(in_scans, in_flags);
+            // get the block of out scans that corresponds to the current array
+            auto apt_flags = calib.apt["flag"].segment(start_index, n_dets);
+
+            /*Eigen::Map<Eigen::MatrixXd, 0, Eigen::OuterStride<>>
+                apt_flags(apt_flags_ref.data(), apt_flags_ref.rows(), apt_flags_ref.cols(),
+                          Eigen::OuterStride<>(apt_flags_ref.outerStride()));*/
+
+            auto [evals, evecs] = cleaner.calc_eig_values<SpectraBackend>(in_scans, in_flags, apt_flags);
             cleaner.remove_eig_values(in_scans, in_flags, evals, evecs, out_scans);
 
             in.evals.data = evals.head(cleaner.n_eig_to_cut);
@@ -186,7 +193,7 @@ void PTCProc::remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
 
 template <typename calib_t, typename Derived>
 auto PTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
-                                 Eigen::DenseBase<Derived> &nw_indices, Eigen::DenseBase<Derived> &array_indices) {
+                                 Eigen::DenseBase<Derived> &nw_indices, Eigen::DenseBase<Derived> &array_indices, std::string redu_type) {
 
     Eigen::Index n_dets = in.scans.data.cols();
 
@@ -238,13 +245,23 @@ auto PTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, c
             Eigen::Index det_index = det_indices(dets(j));
             if (calib.apt["flag"](det_index) && calib.apt["nw"](det_index)==calib.nws(i)) {
                 if ((det_std_dev(j) < (lower_std_dev*mean_std_dev)) && lower_std_dev!=0) {
-                    in.flags.data.col(dets(j)).setZero();
+                    if (redu_type!="beammap") {
+                        in.flags.data.col(dets(j)).setZero();
+                    }
+                    else {
+                        calib.apt["flag"](j) = 0;
+                    }
                     in.n_low_dets++;
                     n_low_dets++;
                 }
 
                 if ((det_std_dev(j) > (upper_std_dev*mean_std_dev)) && upper_std_dev!=0) {
-                    in.flags.data.col(dets(j)).setZero();
+                    if (redu_type!="beammap") {
+                        in.flags.data.col(dets(j)).setZero();
+                    }
+                    else {
+                        calib.apt["flag"](j) = 0;
+                    }
                     in.n_high_dets++;
                     n_high_dets++;
                 }

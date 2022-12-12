@@ -18,8 +18,8 @@ public:
     double cut_std;
     std::string grouping;
 
-    template <EigenSolverBackend backend, typename DerivedA, typename DerivedB>
-    auto calc_eig_values(const Eigen::DenseBase<DerivedA> &, const Eigen::DenseBase<DerivedB> &);
+    template <EigenSolverBackend backend, typename DerivedA, typename DerivedB, typename DerivedC>
+    auto calc_eig_values(const Eigen::DenseBase<DerivedA> &, const Eigen::DenseBase<DerivedB> &, Eigen::DenseBase<DerivedC> &);
 
     template <typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD>
     auto remove_eig_values(const Eigen::DenseBase<DerivedA> &, const Eigen::DenseBase<DerivedB> &,
@@ -27,8 +27,9 @@ public:
                                     Eigen::DenseBase<DerivedA> &);
 };
 
-template <EigenSolverBackend backend, typename DerivedA, typename DerivedB>
-auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eigen::DenseBase<DerivedB> &flags) {
+template <EigenSolverBackend backend, typename DerivedA, typename DerivedB, typename DerivedC>
+auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eigen::DenseBase<DerivedB> &flags,
+                              Eigen::DenseBase<DerivedC> &apt) {
     Eigen::Index n_pts = scans.rows();
     Eigen::Index n_dets = scans.cols();
 
@@ -81,21 +82,36 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     // container for covariance matrix
     Eigen::MatrixXd pca_cov(n_non_zero, n_non_zero);*/
 
+    // make copy of flags
+    Eigen::MatrixXd f = flags.derived().template cast<double> ();
+
+    for (Eigen::Index i=0; i<n_dets; i++) {
+        if (apt.derived()(i) == 0) {
+            //det.col(i).setZero();
+            f.col(i).setZero();
+        }
+    }
+
     // mean of each detector
-    Eigen::RowVectorXd det_means = (scans.derived().array()*flags.derived().array().template cast <double> ()).colwise().sum()/
-                                   flags.derived().array().template cast <double> ().colwise().sum();
+    //Eigen::RowVectorXd det_means = (scans.derived().array()*flags.derived().array().template cast <double> ()).colwise().sum()/
+                                   //flags.derived().array().template cast <double> ().colwise().sum();
+
+    Eigen::RowVectorXd det_means = (scans.derived().array()*f.array()).colwise().sum()/
+                                   f.array().colwise().sum();
 
     // remove nans from completely flagged detectors
     Eigen::RowVectorXd dm = (det_means).array().isNaN().select(0,det_means);
 
     // subtract mean from data and copy into det matrix
-    det = (scans.derived().array()*flags.derived().array().template cast <double> ()).matrix().rowwise() - dm;
+    //det = (scans.derived().array()*flags.derived().array().template cast <double> ()).matrix().rowwise() - dm;
+    det = (scans.derived().array()*f.array()).matrix().rowwise() - dm;
 
     // container for covariance matrix
     Eigen::MatrixXd pca_cov(n_dets, n_dets);
 
     // number of unflagged samples
-    denom = (flags.derived().template cast <double> ().adjoint() * flags.derived().template cast <double> ()).array() - 1;
+    //denom = (flags.derived().template cast <double> ().adjoint() * flags.derived().template cast <double> ()).array() - 1;
+    denom = (f.adjoint() * f).array() - 1;
 
     // calculate the covariance Matrix
     pca_cov.noalias() = ((det.adjoint() * det).array() / denom.array()).matrix();
