@@ -332,7 +332,7 @@ auto Beammap::run_loop() {
             auto calib_scan = ptcproc.remove_bad_dets_nw(ptcs[i], calib, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
                                                          ptcs[i].array_indices.data, redu_type);
             SPDLOG_INFO("ptcproc");
-            ptcproc.run(ptcs[i], ptcs[i], calib);
+            ptcproc.run(ptcs[i], ptcs[i], calib_scan);
 
             if (run_mapmaking) {
                 // add gaussan back

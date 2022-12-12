@@ -195,6 +195,8 @@ template <typename calib_t, typename Derived>
 auto PTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
                                  Eigen::DenseBase<Derived> &nw_indices, Eigen::DenseBase<Derived> &array_indices, std::string redu_type) {
 
+    calib_t calib_scan = calib;
+
     Eigen::Index n_dets = in.scans.data.cols();
 
     in.n_low_dets = 0;
@@ -249,7 +251,7 @@ auto PTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, c
                         in.flags.data.col(dets(j)).setZero();
                     }
                     else {
-                        calib.apt["flag"](j) = 0;
+                        calib_scan.apt["flag"](j) = 0;
                     }
                     in.n_low_dets++;
                     n_low_dets++;
@@ -260,7 +262,7 @@ auto PTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, c
                         in.flags.data.col(dets(j)).setZero();
                     }
                     else {
-                        calib.apt["flag"](j) = 0;
+                        calib_scan.apt["flag"](j) = 0;
                     }
                     in.n_high_dets++;
                     n_high_dets++;
@@ -287,8 +289,6 @@ auto PTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, c
     if (in.kernel.data.size()!=0) {
         out.kernel.data.resize(in.kernel.data.rows(), n_good_dets);
     }*/
-
-    calib_t calib_temp;
 
     //Eigen::VectorXI array_indices_temp(n_good_dets), nw_indices_temp(n_good_dets), det_indices_temp(n_good_dets);
 
@@ -328,7 +328,7 @@ auto PTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, c
 
     calib_temp.setup();*/
 
-    return std::move(calib_temp);
+    return std::move(calib_scan);
 }
 
 template <typename Derived, typename apt_t, typename pointing_offset_t>
