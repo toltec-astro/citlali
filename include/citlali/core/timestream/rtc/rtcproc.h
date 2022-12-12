@@ -180,7 +180,7 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     if (run_calibrate) {
         SPDLOG_DEBUG("calibrating timestream");
         //calc tau at toltec frequencies
-        auto tau_freq = calibration.calc_tau(in.tel_data.data["TelElDes"], telescope.tau_225_GHz);
+        auto tau_freq = calibration.calc_tau(in.tel_data.data["TelElAct"], telescope.tau_225_GHz);
         // calibrate tod
         calibration.calibrate_tod(out, det_indices, array_indices, calib, tau_freq);
 

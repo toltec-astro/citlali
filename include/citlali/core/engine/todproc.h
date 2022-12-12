@@ -402,7 +402,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
     engine().maps_to_arrays.resize(engine().n_maps);
     engine().maps_to_stokes.resize(engine().n_maps);
 
-    if (((engine().redu_type == "science") || (engine().redu_type == "pointing") || (engine().map_grouping == "array"))) {
+    if (engine().map_grouping == "array") {
         Eigen::Index i=0;
         for (const auto &[stokes_index,stokes_param]: engine().rtcproc.polarization.stokes_params) {
             for (Eigen::Index i=0; i<engine().n_maps; i++) {
@@ -413,7 +413,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
         }
     }
 
-    else if (((engine().redu_type == "beammap") || (engine().map_grouping == "detector"))) {
+    else if (engine().map_grouping == "detector") {
         Eigen::Index i=0;
         for (const auto &[stokes_index,stokes_param]: engine().rtcproc.polarization.stokes_params) {
             Eigen::Index n_dets;
@@ -554,7 +554,7 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb(std::vector<map_extent_t> &ma
             engine().cmb.kernel.push_back(Eigen::MatrixXd::Zero(engine().cmb.n_rows, engine().cmb.n_cols));
         }
 
-        if (engine().redu_type!="beammap") {
+        if (engine().map_grouping!="detector") {
             engine().cmb.coverage.push_back(Eigen::MatrixXd::Zero(engine().cmb.n_rows, engine().cmb.n_cols));
         }
     }
@@ -617,7 +617,7 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
             engine().omb.kernel.push_back(Eigen::MatrixXd::Zero(engine().omb.n_rows, engine().omb.n_cols));
         }
 
-        if (engine().redu_type!="beammap") {
+        if (engine().map_grouping!="detector") {
             engine().omb.coverage.push_back(Eigen::MatrixXd::Zero(engine().omb.n_rows, engine().omb.n_cols));
         }
     }
@@ -661,7 +661,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
                 double az_off = 0;
                 double el_off = 0;
 
-                if (engine().redu_type!="beammap") {
+                if (engine().redu_type!="beammap" || (engine().redu_type=="beammap" && engine().map_grouping!="detector")) {
                     az_off = engine().calib.apt["x_t"](j);
                     el_off = engine().calib.apt["y_t"](j);
                 }
@@ -761,9 +761,11 @@ void TimeOrderedDataProc<EngineType>::coadd() {
         }
 
         // coverage +=coverage
-        engine().cmb.coverage.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols) =
-            engine().cmb.coverage.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols).array() +
-            engine().omb.coverage.at(i).array();
+        if (!engine().cmb.coverage.empty()) {
+            engine().cmb.coverage.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols) =
+                engine().cmb.coverage.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols).array() +
+                engine().omb.coverage.at(i).array();
+        }
     }
 }
 

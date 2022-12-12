@@ -495,117 +495,120 @@ auto Beammap::loop_pipeline() {
     // empty initial ptcdata vector to save memory
     ptcs0.clear();
 
-    // rescale fit params from pixel to on-sky units
-    calib.apt["amp"] = params.col(0);
-    calib.apt["x_t"] = omb.pixel_size_rad*(params.col(1).array() - (omb.n_cols)/2)*RAD_TO_ASEC;
-    calib.apt["y_t"] = omb.pixel_size_rad*(params.col(2).array() - (omb.n_rows)/2)*RAD_TO_ASEC;
-    calib.apt["a_fwhm"] = STD_TO_FWHM*omb.pixel_size_rad*(params.col(3))*RAD_TO_ASEC;
-    calib.apt["b_fwhm"] = STD_TO_FWHM*omb.pixel_size_rad*(params.col(4))*RAD_TO_ASEC;
-    calib.apt["angle"] = params.col(5);
+    if (map_grouping=="detector") {
 
-     // rescale fit errors from pixel to on-sky units
-    calib.apt["amp"] = params.col(0);
-    calib.apt["x_t_err"] = omb.pixel_size_rad*(perrors.col(1))*RAD_TO_ASEC;
-    calib.apt["y_t_err"] = omb.pixel_size_rad*(perrors.col(2))*RAD_TO_ASEC;
-    calib.apt["a_fwhm_err"] = STD_TO_FWHM*omb.pixel_size_rad*(perrors.col(3))*RAD_TO_ASEC;
-    calib.apt["b_fwhm_err"] = STD_TO_FWHM*omb.pixel_size_rad*(perrors.col(4))*RAD_TO_ASEC;
-    calib.apt["angle_err"] = perrors.col(5);
+        // rescale fit params from pixel to on-sky units
+        calib.apt["amp"] = params.col(0);
+        calib.apt["x_t"] = omb.pixel_size_rad*(params.col(1).array() - (omb.n_cols)/2)*RAD_TO_ASEC;
+        calib.apt["y_t"] = omb.pixel_size_rad*(params.col(2).array() - (omb.n_rows)/2)*RAD_TO_ASEC;
+        calib.apt["a_fwhm"] = STD_TO_FWHM*omb.pixel_size_rad*(params.col(3))*RAD_TO_ASEC;
+        calib.apt["b_fwhm"] = STD_TO_FWHM*omb.pixel_size_rad*(params.col(4))*RAD_TO_ASEC;
+        calib.apt["angle"] = params.col(5);
 
-    calib.apt["converge_iter"] = converge_iter.cast<double> ();
+         // rescale fit errors from pixel to on-sky units
+        calib.apt["amp"] = params.col(0);
+        calib.apt["x_t_err"] = omb.pixel_size_rad*(perrors.col(1))*RAD_TO_ASEC;
+        calib.apt["y_t_err"] = omb.pixel_size_rad*(perrors.col(2))*RAD_TO_ASEC;
+        calib.apt["a_fwhm_err"] = STD_TO_FWHM*omb.pixel_size_rad*(perrors.col(3))*RAD_TO_ASEC;
+        calib.apt["b_fwhm_err"] = STD_TO_FWHM*omb.pixel_size_rad*(perrors.col(4))*RAD_TO_ASEC;
+        calib.apt["angle_err"] = perrors.col(5);
 
-    // array indices for current polarization
-    auto array_indices = ptcs[0].array_indices.data;
+        calib.apt["converge_iter"] = converge_iter.cast<double> ();
 
-    // mean values of fitted detector positions
-    double mean_x_t = calib.apt["x_t"].mean();
-    double mean_y_t = calib.apt["y_t"].mean();
+        // array indices for current polarization
+        auto array_indices = ptcs[0].array_indices.data;
 
-    grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
-        auto array_index = array_indices(i);
-        std::string array_name = toltec_io.array_name_map[calib.apt["array"](array_index)];
+        // mean values of fitted detector positions
+        double mean_x_t = calib.apt["x_t"].mean();
+        double mean_y_t = calib.apt["y_t"].mean();
 
-        // calculate map standard deviation
-        double map_std_dev = engine_utils::calc_std_dev(omb.signal[i]);
+        grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+            auto array_index = array_indices(i);
+            std::string array_name = toltec_io.array_name_map[calib.apt["array"](array_index)];
 
-        // calculate distance of detector from mean position of all detectors
-        double dist = sqrt(pow(calib.apt["x_t"](i) - mean_x_t,2) + pow(calib.apt["y_t"](i) - mean_y_t,2));
+            // calculate map standard deviation
+            double map_std_dev = engine_utils::calc_std_dev(omb.signal[i]);
 
-        // remove bad fits
-        if (!good_fits(i)) {
-            calib.apt["flag"](i) = 0;
+            // calculate distance of detector from mean position of all detectors
+            double dist = sqrt(pow(calib.apt["x_t"](i) - mean_x_t,2) + pow(calib.apt["y_t"](i) - mean_y_t,2));
+
+            // remove bad fits
+            if (!good_fits(i)) {
+                calib.apt["flag"](i) = 0;
+            }
+            // flag detectors with outler a_fwhm values
+            if (calib.apt["a_fwhm"](i) < lower_fwhm_arcsec[array_name] || calib.apt["a_fwhm"](i) > upper_fwhm_arcsec[array_name]) {
+                calib.apt["flag"](i) = 0;
+            }
+            // flag detectors with outler b_fwhm values
+            if (calib.apt["b_fwhm"](i) < lower_fwhm_arcsec[array_name] || calib.apt["b_fwhm"](i) > upper_fwhm_arcsec[array_name]) {
+                calib.apt["flag"](i) = 0;
+            }
+            // flag detectors with outler S/N values
+            if (params(i,0)/map_std_dev < lower_sig2noise[array_name]) {
+                calib.apt["flag"](i) = 0;
+            }
+            // flag detectors that are further than the mean value than the distance limit
+            if (dist > max_dist_arcsec[array_name] && max_dist_arcsec[array_name] != 0) {
+                calib.apt["flag"](i) = 0;
+            }
+
+            // calculate detector beamsize
+            double det_fwhm = (calib.apt["a_fwhm"](i) + calib.apt["b_fwhm"](i))/2;
+            double det_beamsize = 2.*pi*pow(det_fwhm*FWHM_TO_STD,2);
+
+            // set flux scale (always in MJy/sr)
+            if (params(i,0)!=0) {
+                calib.apt["flxscale"](i) = mJY_ASEC_to_MJY_SR*beammap_fluxes[array_name]/params(i,0)/det_beamsize;
+            }
+
+            // get detector pointing
+            Eigen::VectorXd lat = -(calib.apt["y_t"](i)*ASEC_TO_RAD) + telescope.tel_data["TelElAct"].array();
+            Eigen::VectorXd lon = -(calib.apt["x_t"](i)*ASEC_TO_RAD) + telescope.tel_data["TelAzAct"].array();
+
+            // index of minimum elevation distance
+            Eigen::Index min_index;
+
+            // minimum cartesian distance from source
+            double min_dist = ((telescope.tel_data["SourceEl"] - lat).array().pow(2) +
+                               (telescope.tel_data["SourceAz"] - lon).array().pow(2)).minCoeff(&min_index);
+
+            // elevation at which we are on source
+            derot_elev(i) = telescope.tel_data["TelElAct"](min_index);
+
+            // derotate detectors to zero elevation
+            if (beammap_derotate) {
+                // rotation az/el angles
+                double rot_azoff = cos(-derot_elev(i))*calib.apt["x_t"](i) - sin(-derot_elev(i))*calib.apt["y_t"](i);
+                double rot_eloff = sin(-derot_elev(i))*calib.apt["x_t"](i) + cos(-derot_elev(i))*calib.apt["y_t"](i);
+
+                // overwrite x_t and y_t
+                calib.apt["x_t"](i) = -rot_azoff;
+                calib.apt["y_t"](i) = -rot_eloff;
+            }
+
+            // correct for extinction
+            Eigen::VectorXd tau_el(1);
+            tau_el << derot_elev(i);
+            auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
+
+            calib.apt["flxscale"](i) = calib.apt["flxscale"](i)/exp(-tau_freq[array_index](0));
+
+            return 0;
+        });
+
+        // rescale sens to MJy/sr units
+        calib.apt["sens"] = calib.apt["sens"].array()*calib.apt["flxscale"].array();
+
+        // align to reference detector if specified
+        if (beammap_reference_det > 0) {
+            SPDLOG_INFO("subtracting reference detector {} position", beammap_reference_det);
+            auto ref_det_x_t = params(beammap_reference_det,1);
+            auto ref_det_y_t = params(beammap_reference_det,2);
+
+            params.col(1) =  params.col(1).array() - ref_det_x_t;
+            params.col(2) =  params.col(2).array() - ref_det_y_t;
         }
-        // flag detectors with outler a_fwhm values
-        if (calib.apt["a_fwhm"](i) < lower_fwhm_arcsec[array_name] || calib.apt["a_fwhm"](i) > upper_fwhm_arcsec[array_name]) {
-            calib.apt["flag"](i) = 0;
-        }
-        // flag detectors with outler b_fwhm values
-        if (calib.apt["b_fwhm"](i) < lower_fwhm_arcsec[array_name] || calib.apt["b_fwhm"](i) > upper_fwhm_arcsec[array_name]) {
-            calib.apt["flag"](i) = 0;
-        }
-        // flag detectors with outler S/N values
-        if (params(i,0)/map_std_dev < lower_sig2noise[array_name]) {
-            calib.apt["flag"](i) = 0;
-        }
-        // flag detectors that are further than the mean value than the distance limit
-        if (dist > max_dist_arcsec[array_name] && max_dist_arcsec[array_name] != 0) {
-            calib.apt["flag"](i) = 0;
-        }
-
-        // calculate detector beamsize
-        double det_fwhm = (calib.apt["a_fwhm"](i) + calib.apt["b_fwhm"](i))/2;
-        double det_beamsize = 2.*pi*pow(det_fwhm*FWHM_TO_STD,2);
-
-        // set flux scale (always in MJy/sr)
-        if (params(i,0)!=0) {
-            calib.apt["flxscale"](i) = mJY_ASEC_to_MJY_SR*beammap_fluxes[array_name]/params(i,0)/det_beamsize;
-        }
-
-        // get detector pointing
-        Eigen::VectorXd lat = -(calib.apt["y_t"](i)*ASEC_TO_RAD) + telescope.tel_data["TelElAct"].array();
-        Eigen::VectorXd lon = -(calib.apt["x_t"](i)*ASEC_TO_RAD) + telescope.tel_data["TelAzAct"].array();
-
-        // index of minimum elevation distance
-        Eigen::Index min_index;
-
-        // minimum cartesian distance from source
-        double min_dist = ((telescope.tel_data["SourceEl"] - lat).array().pow(2) +
-                           (telescope.tel_data["SourceAz"] - lon).array().pow(2)).minCoeff(&min_index);
-
-        // elevation at which we are on source
-        derot_elev(i) = telescope.tel_data["TelElAct"](min_index);
-
-        // derotate detectors to zero elevation
-        if (beammap_derotate) {
-            // rotation az/el angles
-            double rot_azoff = cos(-derot_elev(i))*calib.apt["x_t"](i) - sin(-derot_elev(i))*calib.apt["y_t"](i);
-            double rot_eloff = sin(-derot_elev(i))*calib.apt["x_t"](i) + cos(-derot_elev(i))*calib.apt["y_t"](i);
-
-            // overwrite x_t and y_t
-            calib.apt["x_t"](i) = -rot_azoff;
-            calib.apt["y_t"](i) = -rot_eloff;
-        }
-
-        // correct for extinction
-        Eigen::VectorXd tau_el(1);
-        tau_el << derot_elev(i);
-        auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
-
-        calib.apt["flxscale"](i) = calib.apt["flxscale"](i)/exp(-tau_freq[array_index](0));
-
-        return 0;
-    });
-
-    // rescale sens to MJy/sr units
-    calib.apt["sens"] = calib.apt["sens"].array()*calib.apt["flxscale"].array();
-
-    // align to reference detector if specified
-    if (beammap_reference_det > 0) {
-        SPDLOG_INFO("subtracting reference detector {} position", beammap_reference_det);
-        auto ref_det_x_t = params(beammap_reference_det,1);
-        auto ref_det_y_t = params(beammap_reference_det,2);
-
-        params.col(1) =  params.col(1).array() - ref_det_x_t;
-        params.col(2) =  params.col(2).array() - ref_det_y_t;
     }
 }
 
@@ -647,23 +650,25 @@ void Beammap::output() {
         n_io = &noise_fits_io_vec;
         dir_name = obsnum_dir_name + "/raw/";
 
-        SPDLOG_INFO("writing apt table");
-        auto apt_filename = toltec_io.create_filename<engine_utils::toltecIO::apt, engine_utils::toltecIO::map,
-                                                      engine_utils::toltecIO::raw>
-                            (obsnum_dir_name, redu_type, "", obsnum, telescope.sim_obs);
+        if (map_grouping=="detector") {
+            SPDLOG_INFO("writing apt table");
+            auto apt_filename = toltec_io.create_filename<engine_utils::toltecIO::apt, engine_utils::toltecIO::map,
+                                                          engine_utils::toltecIO::raw>
+                                (obsnum_dir_name, redu_type, "", obsnum, telescope.sim_obs);
 
-        Eigen::MatrixXd apt_table(calib.n_dets, calib.apt_header_keys.size());
-        SPDLOG_INFO("done writing apt table");
+            Eigen::MatrixXd apt_table(calib.n_dets, calib.apt_header_keys.size());
+            SPDLOG_INFO("done writing apt table");
 
-        // convert to floats
-        Eigen::Index i = 0;
-        for (auto const& x: calib.apt_header_keys) {
-            apt_table.col(i) = calib.apt[x].cast<double> ();
-            i++;
+            // convert to floats
+            Eigen::Index i = 0;
+            for (auto const& x: calib.apt_header_keys) {
+                apt_table.col(i) = calib.apt[x].cast<double> ();
+                i++;
+            }
+
+            // write to ecsv
+            to_ecsv_from_matrix(apt_filename, apt_table, calib.apt_header_keys, calib.apt_meta);
         }
-
-        // write to ecsv
-        to_ecsv_from_matrix(apt_filename, apt_table, calib.apt_header_keys, calib.apt_meta);
     }
 
     // filtered obs maps
@@ -699,98 +704,6 @@ void Beammap::output() {
     n_io->clear();
 
     // write psd and histogram files
-    write_psd<map_type>(mb, dir_name);
-    write_hist<map_type>(mb, dir_name);
-
-    /*
-    SPDLOG_INFO("writing apt table");
-    auto apt_filename = toltec_io.create_filename<engine_utils::toltecIO::apt, engine_utils::toltecIO::map,
-                                                  engine_utils::toltecIO::raw>
-                        (obsnum_dir_name, redu_type, "", obsnum, telescope.sim_obs);
-
-    Eigen::MatrixXd apt_table(calib.n_dets, calib.apt_header_keys.size());
-
-    // convert to floats
-    Eigen::Index i = 0;
-    for (auto const& x: calib.apt_header_keys) {
-        apt_table.col(i) = calib.apt[x].cast<double> ();
-        i++;
-    }
-
-    // write to ecsv
-    to_ecsv_from_matrix(apt_filename, apt_table, calib.apt_header_keys, calib.apt_meta);
-
-    SPDLOG_INFO("writing maps");
-    for (Eigen::Index i=0; i<rtcproc.polarization.stokes_params.size(); i++) {
-        for (Eigen::Index j=0; j<calib.n_arrays; j++) {
-            auto array = calib.arrays[j];
-            std::string name = toltec_io.array_name_map[j];
-            for (Eigen::Index k=0; k<calib.n_dets; k++) {
-                if (calib.apt["array"](k) == array) {
-                    // signal
-                    fits_io_vec[array].add_hdu("signal_" + std::to_string(k) + "_" + rtcproc.polarization.stokes_params[i], omb.signal[k]);
-                    fits_io_vec[array].add_wcs(fits_io_vec[array].hdus.back(),omb.wcs);
-                    fits_io_vec[array].hdus.back()->addKey("UNIT", omb.sig_unit, "Unit of map");
-
-                    // weight
-                    fits_io_vec[array].add_hdu("weight_" + std::to_string(k) + "_" + rtcproc.polarization.stokes_params[i], omb.weight[k]);
-                    fits_io_vec[array].add_wcs(fits_io_vec[array].hdus.back(),omb.wcs);
-                    fits_io_vec[array].hdus.back()->addKey("UNIT", "1/("+omb.sig_unit+")", "Unit of map");
-
-                    if (rtcproc.run_kernel) {
-                        // kernel
-                        fits_io_vec[array].add_hdu("kernel_" + std::to_string(k) + "_" + rtcproc.polarization.stokes_params[i],
-                                                   omb.kernel[k]);
-                        fits_io_vec[array].add_wcs(fits_io_vec[array].hdus.back(),omb.wcs);
-                        fits_io_vec[array].hdus.back()->addKey("UNIT", omb.sig_unit, "Unit of map");
-                    }
-                }
-            }
-
-            fits_io_vec[array].pfits->pHDU().addKey("OBSNUM", obsnum, "Observation Number");
-            fits_io_vec[array].pfits->pHDU().addKey("CITLALI_VER", CITLALI_GIT_VERSION, "CITLALI_GIT_VERSION");
-
-            if (rtcproc.run_calibrate) {
-                if (omb.sig_unit == "Mjy/sr") {
-                    fits_io_vec[array].pfits->pHDU().addKey("to_mJy/beam", calib.array_beam_areas[calib.arrays(j)]*MJY_SR_TO_mJY_ASEC,
-                                                            "Conversion to mJy/beam");
-                    fits_io_vec[array].pfits->pHDU().addKey("to_Mjy/sr", 1, "Conversion to MJy/sr");
-                }
-
-                else if (omb.sig_unit == "mJy/beam") {
-                    fits_io_vec[array].pfits->pHDU().addKey("to_mJy/beam", 1, "Conversion to mJy/beam");
-                    fits_io_vec[array].pfits->pHDU().addKey("to_Mjy/sr", 1/calib.mean_flux_conversion_factor[name], "Conversion to MJy/sr");
-                }
-            }
-
-            else {
-                fits_io_vec[array].pfits->pHDU().addKey("to_mJy/beam", "N/A", "Conversion to mJy/beam");
-                fits_io_vec[array].pfits->pHDU().addKey("to_Mjy/sr", "N/A", "Conversion to MJy/sr");
-            }
-
-            // add obsnum
-            fits_io_vec[array].pfits->pHDU().addKey("OBSNUM", obsnum, "Observation Number");
-            // add citlali version
-            fits_io_vec[array].pfits->pHDU().addKey("VERSION", CITLALI_GIT_VERSION, "CITLALI_GIT_VERSION");
-            // add tod type
-            fits_io_vec[array].pfits->pHDU().addKey("TYPE", tod_type, "TOD Type");
-            // add exposure time
-            fits_io_vec[array].pfits->pHDU().addKey("EXPTIME", omb.exposure_time, "Exposure Time");
-
-            // add source ra
-            fits_io_vec[j].pfits->pHDU().addKey("SRC_RA", telescope.tel_header["Header.Source.Ra"][0], "Source RA (radians)");
-            // add source dec
-            fits_io_vec[j].pfits->pHDU().addKey("SRC_DEC", telescope.tel_header["Header.Source.Dec"][0], "Source Dec (radians)");
-            // add map tangent point ra
-            fits_io_vec[j].pfits->pHDU().addKey("TAN_RA", telescope.tel_header["Header.Source.Ra"][0], "Map Tangent Point RA (radians)");
-            // add map tangent point dec
-            fits_io_vec[j].pfits->pHDU().addKey("TAN_DEC", telescope.tel_header["Header.Source.Dec"][0], "Map Tangent Point Dec (radians)");
-
-            // add telescope file header information
-            for (auto const& [key, val] : telescope.tel_header) {
-                fits_io_vec[j].pfits->pHDU().addKey(key, val(0), key);
-            }
-        }
-    }
-    */
+    //write_psd<map_type>(mb, dir_name);
+    //write_hist<map_type>(mb, dir_name);
 }

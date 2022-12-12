@@ -32,7 +32,7 @@ public:
 
     template <typename calib_t, typename Derived>
     auto remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
-                            Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string);
+                            Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string, std::string);
 
     template <typename Derived, typename apt_t, typename pointing_offset_t>
     void append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, std::string, std::string, std::string &,
@@ -193,7 +193,8 @@ void PTCProc::remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
 
 template <typename calib_t, typename Derived>
 auto PTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
-                                 Eigen::DenseBase<Derived> &nw_indices, Eigen::DenseBase<Derived> &array_indices, std::string redu_type) {
+                                 Eigen::DenseBase<Derived> &nw_indices, Eigen::DenseBase<Derived> &array_indices, std::string redu_type,
+                                 std::string map_grouping) {
 
     calib_t calib_scan = calib;
 
@@ -245,24 +246,26 @@ auto PTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, c
         // loop through good detectors and flag those that have std devs beyond the limits
         for (Eigen::Index j=0; j<n_good_dets; j++) {
             Eigen::Index det_index = det_indices(dets(j));
+            // flag those below limit
             if (calib.apt["flag"](det_index) && calib.apt["nw"](det_index)==calib.nws(i)) {
                 if ((det_std_dev(j) < (lower_std_dev*mean_std_dev)) && lower_std_dev!=0) {
-                    if (redu_type!="beammap") {
+                    if (map_grouping!="detector") {
                         in.flags.data.col(dets(j)).setZero();
                     }
                     else {
-                        calib_scan.apt["flag"](j) = 0;
+                        calib_scan.apt["flag"](det_index) = 0;
                     }
                     in.n_low_dets++;
                     n_low_dets++;
                 }
 
+                // flag those above limit
                 if ((det_std_dev(j) > (upper_std_dev*mean_std_dev)) && upper_std_dev!=0) {
-                    if (redu_type!="beammap") {
+                    if (map_grouping!="detector") {
                         in.flags.data.col(dets(j)).setZero();
                     }
                     else {
-                        calib_scan.apt["flag"](j) = 0;
+                        calib_scan.apt["flag"](det_index) = 0;
                     }
                     in.n_high_dets++;
                     n_high_dets++;
@@ -456,7 +459,7 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
 
 template <typename DerivedB, typename DerivedC, typename apt_t, typename pointing_offset_t>
 void PTCProc::add_gaussian(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::DenseBase<DerivedB> &params, std::string &pixel_axes,
-                  std::string &redu_type, apt_t &apt, pointing_offset_t &pointing_offsets_arcsec,
+                  std::string &map_grouping, apt_t &apt, pointing_offset_t &pointing_offsets_arcsec,
                   double pixel_size_rad, Eigen::Index n_rows, Eigen::Index n_cols,
                   Eigen::DenseBase<DerivedC> &map_indices, Eigen::DenseBase<DerivedC> &det_indices) {
 
@@ -468,11 +471,12 @@ void PTCProc::add_gaussian(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::
         double azoff, eloff;
 
         auto det_index = det_indices(i);
+        auto map_index = map_indices(i);
 
         double az_off = 0;
         double el_off = 0;
 
-        if (redu_type!="beammap") {
+        if (map_grouping!="detector") {
             az_off = apt["x_t"](det_index);
             el_off = apt["y_t"](det_index);
         }
@@ -481,12 +485,12 @@ void PTCProc::add_gaussian(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::
                                                           pixel_axes, pointing_offsets_arcsec);
 
         // get parameters for current detector
-        auto amp = params(i,0);
-        auto off_lat = params(i,2);
-        auto off_lon = params(i,1);
-        auto sigma_lat = params(i,4);
-        auto sigma_lon = params(i,3);
-        auto rot_ang = params(i,5);
+        auto amp = params(map_index,0);
+        auto off_lat = params(map_index,2);
+        auto off_lon = params(map_index,1);
+        auto sigma_lat = params(map_index,4);
+        auto sigma_lon = params(map_index,3);
+        auto rot_ang = params(map_index,5);
 
         // rescale offsets and stddev to on-sky units
         off_lat = pixel_size_rad*(off_lat - (n_rows)/2);
@@ -506,14 +510,17 @@ void PTCProc::add_gaussian(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::
 
         Eigen::VectorXd gauss(n_pts);
 
+        // make gaussian
         for (Eigen::Index j=0; j<n_pts; j++) {
             gauss(j) = amp*exp(pow(lat(j) - off_lat, 2) * a +
                                  (lon(j) - off_lon) * (lat(j) - off_lat) * b +
                                  pow(lon(j) - off_lon, 2) * c);
         }
 
-        // add gaussian to detector scan
-        in.scans.data.col(i) = in.scans.data.col(i).array() + gauss.array();
+        if (!gauss.array().isNaN().any()) {
+            // add gaussian to detector scan
+            in.scans.data.col(i) = in.scans.data.col(i).array() + gauss.array();
+        }
     }
 }
 

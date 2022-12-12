@@ -61,7 +61,7 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
             double az_off = 0;
             double el_off = 0;
 
-            if (redu_type!="beammap") {
+            if (redu_type!="beammap" || (redu_type=="beammap" && omb.map_grouping!="detector")) {
                 auto det_index = det_indices(i);
                 az_off = apt["x_t"](det_index);
                 el_off = apt["y_t"](det_index);

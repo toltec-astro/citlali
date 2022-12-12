@@ -410,6 +410,13 @@ void Engine::get_citlali_config(CT &config) {
     /* mapmaking */
     get_value(config, run_mapmaking, missing_keys, invalid_keys, std::tuple{"mapmaking","enabled"});
     get_value(config, map_grouping, missing_keys, invalid_keys, std::tuple{"mapmaking","grouping"});
+
+    // copy map grouping for simplicity
+    omb.map_grouping = map_grouping;
+    cmb.map_grouping = omb.map_grouping;
+
+    rtcproc.kernel.map_grouping = omb.map_grouping;
+
     get_value(config, map_method, missing_keys, invalid_keys, std::tuple{"mapmaking","method"});
     // histogram
     get_value(config, omb.hist_n_bins, missing_keys, invalid_keys, std::tuple{"mapmaking","histogram","n_bins"});
@@ -520,7 +527,9 @@ void Engine::get_citlali_config(CT &config) {
 
     /* fitting */
     get_value(config, map_fitter.bounding_box_pix, missing_keys, invalid_keys, std::tuple{"source_fitting","bounding_box_arcsec"});
+    get_value(config, map_fitter.fitting_region_pix, missing_keys, invalid_keys, std::tuple{"source_fitting","fitting_region_arcsec"});
     map_fitter.bounding_box_pix = ASEC_TO_RAD*map_fitter.bounding_box_pix/omb.pixel_size_rad;
+    map_fitter.fitting_region_pix = ASEC_TO_RAD*map_fitter.fitting_region_pix/omb.pixel_size_rad;
 
     /* coaddition */
     get_value(config, run_coadd, missing_keys, invalid_keys, std::tuple{"coadd","enabled"});
@@ -616,21 +625,6 @@ auto Engine::calc_map_indices(Eigen::DenseBase<Derived> &det_indices, Eigen::Den
                               Eigen::DenseBase<Derived> &array_indices, std::string stokes_param) {
     // indices for maps
     Eigen::VectorXI indices(array_indices.size()), map_indices(array_indices.size());
-
-    // set map indices
-    if (redu_type == "science") {
-        indices = array_indices;
-    }
-
-    // pointing maps
-    else if (redu_type == "pointing") {
-        indices = array_indices;
-    }
-
-    // beammaps
-    else if (redu_type == "beammap") {
-        indices = det_indices;
-    }
 
     // overwrite map indices for networks
     if (map_grouping == "nw") {
@@ -1078,13 +1072,25 @@ void Engine::write_map_summary(map_buffer_t &mb) {
     for (Eigen::Index i=0; i<mb.signal.size(); i++) {
         n_nans["signal"] = n_nans["signal"] + mb.signal[i].array().isNaN().count();
         n_nans["weight"] = n_nans["weight"] + mb.weight[i].array().isNaN().count();
-        n_nans["kernel"] = n_nans["kernel"] + mb.kernel[i].array().isNaN().count();
-        n_nans["coverage"] = n_nans["coverage"] + mb.coverage[i].array().isNaN().count();
+
+        if (!mb.kernel.empty()) {
+            n_nans["kernel"] = n_nans["kernel"] + mb.kernel[i].array().isNaN().count();
+        }
+
+        if (!mb.coverage.empty()) {
+            n_nans["coverage"] = n_nans["coverage"] + mb.coverage[i].array().isNaN().count();
+        }
 
         n_infs["signal"] = n_infs["signal"] + mb.signal[i].array().isInf().count();
         n_infs["weight"] = n_infs["weight"] + mb.weight[i].array().isInf().count();
-        n_infs["kernel"] = n_infs["kernel"] + mb.kernel[i].array().isInf().count();
-        n_infs["coverage"] = n_infs["coverage"] + mb.coverage[i].array().isInf().count();
+
+        if (!mb.kernel.empty()) {
+            n_infs["kernel"] = n_infs["kernel"] + mb.kernel[i].array().isInf().count();
+        }
+
+        if (!mb.coverage.empty()) {
+            n_infs["coverage"] = n_infs["coverage"] + mb.coverage[i].array().isInf().count();
+        }
 
         if (!mb.noise.empty()) {
             for (Eigen::Index j=0; j<mb.noise.size(); j++) {
@@ -1197,8 +1203,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
 
     std::string map_name = "";
 
-    if ((redu_type=="beammap" && map_grouping!="array") || (redu_type!="beammap" && map_grouping!="array")) {
-
+    if (map_grouping!="array") {
         if (map_grouping=="nw") {
             map_name = map_name + "nw_" + std::to_string(calib.nws(i)) + "_";
         }
@@ -1241,7 +1246,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
     }
 
     // coverage bool map
-    if (redu_type!="beammap") {
+    if (map_grouping!="detector" && !mb->coverage.empty()) {
         Eigen::MatrixXd ones, zeros;
         ones.setOnes(mb->weight[i].rows(), mb->weight[i].cols());
         zeros.setZero(mb->weight[i].rows(), mb->weight[i].cols());
@@ -1315,8 +1320,7 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
 
         std::string map_name = "";
 
-        if ((redu_type=="beammap" && map_grouping!="array") || (redu_type!="beammap" && map_grouping!="array")) {
-
+        if (map_grouping!="array") {
             if (map_grouping=="nw") {
                 map_name = map_name + "nw_" + std::to_string(calib.nws(i)) + "_";
             }
@@ -1404,8 +1408,7 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
 
         std::string map_name = "";
 
-        if ((redu_type=="beammap" && map_grouping!="array") || (redu_type!="beammap" && map_grouping!="array")) {
-
+        if (map_grouping!="array") {
             if (map_grouping=="nw") {
                 map_name = map_name + "nw_" + std::to_string(calib.nws(i)) + "_";
             }
@@ -1414,7 +1417,6 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
                 map_name = map_name + "det_" + std::to_string(i) + "_";
             }
         }
-
         // get the array for the given map
         Eigen::Index map_index = maps_to_arrays(i);
         // get the stokes parameter for the given map

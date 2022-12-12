@@ -19,6 +19,8 @@ public:
 
     double sigma_rad, fwhm_rad;
 
+    std::string map_grouping;
+
     void setup(Eigen::Index n_maps) {
         if (type == "fits") {
             if (img_ext_names.size()!=n_maps && img_ext_names.size()!=1) {
@@ -72,7 +74,7 @@ void Kernel::create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::Mat
         double az_off = 0;
         double el_off = 0;
 
-        if (redu_type!="beammap") {
+        if (redu_type!="beammap" || (redu_type=="beammap" && map_grouping!="detector")) {
             az_off = apt["x_t"](det_index);
             el_off = apt["y_t"](det_index);
         }
@@ -119,7 +121,7 @@ void Kernel::create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, st
         double az_off = 0;
         double el_off = 0;
 
-        if (redu_type!="beammap") {
+        if (redu_type!="beammap" || (redu_type=="beammap" && map_grouping!="detector")) {
             az_off = apt["x_t"](det_index);
             el_off = apt["y_t"](det_index);
         }
@@ -172,7 +174,7 @@ void Kernel::create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &i
         double az_off = 0;
         double el_off = 0;
 
-        if (redu_type!="beammap") {
+        if (redu_type!="beammap" || (redu_type=="beammap" && map_grouping!="detector")) {
             az_off = apt["x_t"](det_index);
             el_off = apt["y_t"](det_index);
         }

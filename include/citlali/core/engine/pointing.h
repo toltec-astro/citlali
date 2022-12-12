@@ -202,7 +202,7 @@ auto Pointing::run() {
 
             // remove outliers
             SPDLOG_INFO("removing outlier weights");
-            auto calib_scan = ptcproc.remove_bad_dets_nw(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type);
+            auto calib_scan = ptcproc.remove_bad_dets_nw(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
 
             // run cleaning
             if (stokes_param == "I") {
@@ -400,7 +400,14 @@ void Pointing::output() {
         dir_name = coadd_dir_name + "/filtered/";
     }
 
+    // progress bar
+    tula::logging::progressbar pb(
+        [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 100, "output progress ");
+
+
     for (Eigen::Index i=0; i<n_maps; i++) {
+        // update progress bar
+        pb.count(n_maps, 1);
         write_maps(f_io,n_io,mb,i);
     }
 

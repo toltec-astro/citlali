@@ -46,6 +46,8 @@ public:
     std::vector<std::string> obsnums;
     // wcs
     WCS wcs;
+    // map grouping
+    std::string map_grouping;
     // number of rows and columns
     Eigen::Index n_rows, n_cols;
     // number of noise maps

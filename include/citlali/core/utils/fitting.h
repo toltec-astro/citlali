@@ -17,14 +17,21 @@ public:
 
     // box around source fit
     double bounding_box_pix;
+    double fitting_region_pix;
 
+    // flux lower limit factor
     double flux_low = 0.75;
+    // flux upper limit factor
     double flux_high = 1.5;
 
+    // fwhm lower limit factor
     double fwhm_low = 0.1;
+    // fwhm upper limit factor
     double fwhm_high = 2.0;
 
+    //lower limit on rotation angle
     double ang_low = -pi/2;
+    // upper limit on rotation angle
     double ang_high = pi/2;
 
     template <typename Model, typename Derived>
@@ -49,19 +56,23 @@ auto mapFitter::ceres_fit(const Model &model,
                           const typename Model::DataType &sigma,
                           const Eigen::DenseBase<Derived> &limits) {
 
+    // fitter
     using Fitter = CeresAutoDiffFitter<Model>;
     Fitter* fitter = new Fitter(&model, z_data.size());
     Eigen::Map<const typename Model::InputDataType> _x(xy_data.data(), xy_data.rows(), xy_data.cols());
     Eigen::Map<const typename Fitter::ValueType> _y(z_data.data(), z_data.size());
     Eigen::Map<const typename Fitter::ValueType> _s(sigma.data(), sigma.size());
 
+    // get x, y, and sigma
     fitter->xdata = &_x;
     fitter->ydata = &_y;
     fitter->sigma = &_s;
 
+    // define cost function
     CostFunction* cost_function =
         new AutoDiffCostFunction<Fitter, Fitter::ValuesAtCompileTime, Fitter::InputsAtCompileTime>(fitter, fitter->values());
 
+    // parameter vector
     Eigen::VectorXd params(init_params);
     auto problem = fitter->createProblem(params.data());
 
@@ -74,27 +85,32 @@ auto mapFitter::ceres_fit(const Model &model,
         problem->SetParameterUpperBound(params.data(), i, limits(i,1));
     }
 
-    // indices to hold constant
+    // vector to store indices of parameters to keep constant
     /*std::vector<int> sspv;
     sspv.push_back(limits.rows()-1);
+    // mark parameter as constant
     if (sspv.size() > 0 ){
         ceres::SubsetParameterization *pcssp
                 = new ceres::SubsetParameterization(limits.rows(), sspv);
         problem->SetParameterization(params.data(), pcssp);
     }*/
 
+    // apply solver options
     Solver::Options options;
+    // method
     options.linear_solver_type = ceres::LinearSolverType::DENSE_QR;
     // disable logging
     options.logging_type = ceres::LoggingType::SILENT;
+    // disable output
     options.minimizer_progress_to_stdout = false;
+    // output info
     Solver::Summary summary;
     Solve(options, problem.get(), &summary);
 
-    // for storing uncertainties
+    // vector for storing uncertainties
     Eigen::VectorXd uncertainty(params.size());
 
-    // get uncertainty
+    // get uncertainty if solution is usable
     if (summary.IsSolutionUsable()) {
         // for storing covariance matrix
         Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> covariance_matrix;
@@ -117,10 +133,12 @@ auto mapFitter::ceres_fit(const Model &model,
             // calculate uncertainty
             uncertainty = covariance_matrix.diagonal().cwiseSqrt();
         }
+        // if covariance calculation fails, set uncertainty to zero
         else {
             uncertainty.setConstant(0);
         }
     }
+    // if fit is bad, set both fit and uncertainty to zero
     else {
         params.setConstant(0);
         uncertainty.setConstant(0);
@@ -139,6 +157,7 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
 
     double init_row, init_col, init_flux;
 
+    // start at center of map
     if constexpr (fit_mode == centerValue) {
         init_row = signal.rows()/2;
         init_col = signal.cols()/2;
@@ -146,6 +165,7 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
         init_flux = signal(static_cast<int>(init_row), static_cast<int>(init_col));
     }
 
+    // start at highest S/N value
     else if constexpr (fit_mode == peakValue) {
         auto sig2noise = signal.derived().array()*sqrt(weight.derived().array());
         sig2noise.maxCoeff(&init_row, &init_col);
