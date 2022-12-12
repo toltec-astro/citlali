@@ -5,19 +5,19 @@ beammap: # beammap controls (ignored if not beammapping)
   iter_tolerance: 0.0 # tolerance for iterations
   sens_psd_lower_limit: 0 # lower limit for psd in sensitivity calculation
   sens_psd_upper_limit: 0 # upper limit for psd in sensitivity calculation
-  lower_fwhm_arcsec: # lower limits for fitted fwhm values
+  lower_fwhm_arcsec: # lower limits for fitted fwhm values (used for flagging only)
     a1100: 0
     a1400: 0
     a2000: 0
-  upper_fwhm_arcsec: # upper limits for fitted fwhm values
+  upper_fwhm_arcsec: # upper limits for fitted fwhm values (used for flagging only)
     a1100: 99
     a1400: 99
     a2000: 99
-  lower_sig2noise: # lower limits for fitted S/N values
+  lower_sig2noise: # lower limits for fitted S/N values (used for flagging only)
     a1100: 0
     a1400: 0
     a2000: 0
-  max_dist_arcsec: # maximum allowed distance from mean of all positions (ignored if 0)
+  max_dist_arcsec: # max allowed distance from mean of all positions (ignored if 0, flagging only)
     a1100: 0
     a1400: 0
     a2000: 0

@@ -286,6 +286,7 @@ int run(const rc_t &rc) {
                     todproc.engine().calib.get_apt(apt_path, raw_filenames, interfaces);
 
                     // get sample rate
+                    SPDLOG_DEBUG("getting sample rate");
                     todproc.engine().telescope.fsmp = rawobs_kids_meta.back().get_typed<double>("fsmp");
 
                     // get telescope file
@@ -361,8 +362,10 @@ int run(const rc_t &rc) {
                     auto rawobs_kids_meta = kidsproc.get_rawobs_meta(rawobs);
 
                     // get sample rate
-                    SPDLOG_DEBUG("getting sample rate");
-                    todproc.engine().telescope.fsmp = rawobs_kids_meta.back().get_typed<double>("fsmp");
+                    if (co.n_inputs() > 1) {
+                        SPDLOG_DEBUG("getting sample rate");
+                        todproc.engine().telescope.fsmp = rawobs_kids_meta.back().get_typed<double>("fsmp");
+                    }
 
                     // calculate downsampled sample rate
                     if (todproc.engine().rtcproc.run_downsample) {
@@ -414,16 +417,18 @@ int run(const rc_t &rc) {
                     }
 
                     // get apt table
-                    auto apt_path = rawobs.array_prop_table().filepath();
-                    SPDLOG_INFO("getting array properties table {}", apt_path);
+                    if (co.n_inputs() > 1) {
+                        auto apt_path = rawobs.array_prop_table().filepath();
+                        SPDLOG_INFO("getting array properties table {}", apt_path);
 
-                    std::vector<std::string> raw_filenames, interfaces;
-                    for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
-                        raw_filenames.push_back(data_item.filepath());
-                        interfaces.push_back(data_item.interface());
+                        std::vector<std::string> raw_filenames, interfaces;
+                        for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
+                            raw_filenames.push_back(data_item.filepath());
+                            interfaces.push_back(data_item.interface());
+                        }
+
+                        todproc.engine().calib.get_apt(apt_path, raw_filenames, interfaces);
                     }
-
-                    todproc.engine().calib.get_apt(apt_path, raw_filenames, interfaces);
 
                     // get hwp if polarized reduction is requested
                     if (todproc.engine().rtcproc.run_polarization) {
@@ -437,28 +442,30 @@ int run(const rc_t &rc) {
                     todproc.engine().calib.calc_flux_calibration(todproc.engine().omb.sig_unit);
 
                     // get telescope file
-                    auto tel_path = rawobs.teldata().filepath();
-                    SPDLOG_INFO("getting telescope file {}", tel_path);
-                    todproc.engine().telescope.get_tel_data(tel_path);
+                    if (co.n_inputs() > 1) {
+                        auto tel_path = rawobs.teldata().filepath();
+                        SPDLOG_INFO("getting telescope file {}", tel_path);
+                        todproc.engine().telescope.get_tel_data(tel_path);
 
-                    // calc tangent plane pointing
-                    SPDLOG_INFO("calculating tangent plane pointing");
-                    todproc.engine().telescope.calc_tan_pointing();
+                        // calc tangent plane pointing
+                        SPDLOG_INFO("calculating tangent plane pointing");
+                        todproc.engine().telescope.calc_tan_pointing();
 
-                    // align tod
-                    if (!todproc.engine().telescope.sim_obs) {
-                        SPDLOG_INFO("aligning timestreams");
-                        todproc.align_timestreams(rawobs);
-                    }
+                        // align tod
+                        if (!todproc.engine().telescope.sim_obs) {
+                            SPDLOG_INFO("aligning timestreams");
+                            todproc.align_timestreams(rawobs);
+                        }
 
-                    // if simu, set start and end indices to 0
-                    else {
-                        todproc.engine().start_indices.clear();
-                        todproc.engine().end_indices.clear();
+                        // if simu, set start and end indices to 0
+                        else {
+                            todproc.engine().start_indices.clear();
+                            todproc.engine().end_indices.clear();
 
-                        for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
-                            todproc.engine().start_indices.push_back(0);
-                            todproc.engine().start_indices.push_back(0);
+                            for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
+                                todproc.engine().start_indices.push_back(0);
+                                todproc.engine().start_indices.push_back(0);
+                            }
                         }
                     }
 
@@ -479,9 +486,11 @@ int run(const rc_t &rc) {
                         }
                     }
 
-                    // calc scan indices
-                    SPDLOG_INFO("calculating scan indices");
-                    todproc.engine().telescope.calc_scan_indices();
+                    if (co.n_inputs() > 1) {
+                        // calc scan indices
+                        SPDLOG_INFO("calculating scan indices");
+                        todproc.engine().telescope.calc_scan_indices();
+                    }
 
                     // allocate map buffer
                     if (todproc.engine().run_mapmaking) {

@@ -305,10 +305,10 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
         // fit maps
         for (Eigen::Index i=0; i<n_maps; i++) {
-            auto array = calib.arrays(i);
+            auto array = maps_to_arrays(i);
             auto init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
             auto [det_params, det_perror, good_fit] =
-                map_fitter.fit_to_gaussian<engine_utils::mapFitter::peakValue>(omb.signal[i], omb.weight[i], init_fwhm);
+                map_fitter.fit_to_gaussian<engine_utils::mapFitter::centerValue>(omb.signal[i], omb.weight[i], init_fwhm);
             params.row(i) = det_params;
             perrors.row(i) = det_perror;
 

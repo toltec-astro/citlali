@@ -318,8 +318,10 @@ auto Beammap::run_loop() {
         grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
 
             if (run_mapmaking) {
+                // subtract gaussian
                 if (current_iter > 0) {
                     SPDLOG_INFO("subtract gaussian");
+                    // negate the amplitude
                     params.col(0) = -params.col(0);
                     ptcproc.add_gaussian(ptcs[i], params, telescope.pixel_axes,redu_type, calib.apt,pointing_offsets_arcsec,
                                          omb.pixel_size_rad, omb.n_rows, omb.n_cols,ptcs[i].map_indices.data, ptcs[i].det_indices.data);
@@ -333,8 +335,10 @@ auto Beammap::run_loop() {
             ptcproc.run(ptcs[i], ptcs[i], calib);
 
             if (run_mapmaking) {
+                // add gaussan back
                 if (current_iter > 0) {
                     SPDLOG_INFO("add gaussian");
+                    // params is negative due to earlier gaussian subtraction
                     params.col(0) = -params.col(0);
                     ptcproc.add_gaussian(ptcs[i], params, telescope.pixel_axes,redu_type, calib.apt,pointing_offsets_arcsec,
                                          omb.pixel_size_rad, omb.n_rows, omb.n_cols,ptcs[i].map_indices.data, ptcs[i].det_indices.data);
@@ -387,7 +391,9 @@ auto Beammap::run_loop() {
 
             SPDLOG_INFO("fitting maps");
             grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+                // get array number
                 auto array_index = ptcs[0].array_indices.data(i);
+                // get initial guess fwhm from theoretical fwhms for the arrays
                 auto init_fwhm = toltec_io.array_fwhm_arcsec[array_index]*ASEC_TO_RAD/omb.pixel_size_rad;
                 auto [det_params, det_perror, good_fit] =
                     map_fitter.fit_to_gaussian<engine_utils::mapFitter::peakValue>(omb.signal[i], omb.weight[i], init_fwhm);
