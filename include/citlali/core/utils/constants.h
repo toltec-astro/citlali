@@ -40,5 +40,3 @@ constexpr auto pi = static_cast<double>(EIGEN_PI);
 
 // mJy/arcsec to MJy/Sr
 #define mJY_ASEC_to_MJY_SR (1/DEG_TO_SR)/(1/pow(3600.0,2.0))/pow(10.0,6.0)/1000
-
-#define mJY_ASEC_to_MJY_SR_2 SR_TO_DEG/(1/pow(3600.0,2.0))/pow(10.0,6.0)/1000

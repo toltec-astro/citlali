@@ -414,6 +414,9 @@ void Pointing::output() {
         if constexpr (map_type == mapmaking::RawObs) {
             f_io->at(i).pfits->pHDU().addKey("AMP", params(i,0), "fitted amplitude");
             f_io->at(i).pfits->pHDU().addKey("AMP_ERR", perrors(i,0), "fitted amplitude error");
+
+            f_io->at(i).hdus.at(0)->addKey("AMP", params(i,0), "fitted amplitude");
+            f_io->at(i).hdus.at(0)->addKey("AMP_ERR", perrors(i,0), "fitted amplitude error");
         }
     }
 
