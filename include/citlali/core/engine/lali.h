@@ -37,11 +37,11 @@ void Lali::setup() {
 
     // set center pointing
     if (telescope.pixel_axes == "icrs") {
-        omb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0);
-        omb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0);
+        omb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0)*RAD_TO_DEG;
+        omb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0)*RAD_TO_DEG;
 
-        cmb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0);
-        cmb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0);
+        cmb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0)*RAD_TO_DEG;
+        cmb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0)*RAD_TO_DEG;
     }
 
     // create output map files

@@ -45,7 +45,6 @@ struct DenseFunctor {
 protected:
     int m_inputs = InputsAtCompileTime;
     int m_values = ValuesAtCompileTime;
-
 };
 
 

@@ -118,6 +118,9 @@ void Calibration::calibrate_tod(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Ei
         // factor = flux conversion factor / exp(-tau_freq)
         auto factor = calib.flux_conversion_factor(array_index)/(-tau_freq[array_index]).array().exp();
 
+        // flux calibration factor for sens
+        in.fcf.data(i) = factor.mean()*calib.apt["flxscale"](det_index);
+
         // data x flxscale x factor
         in.scans.data.col(i) = in.scans.data.col(i).array()*factor.array()*calib.apt["flxscale"](det_index);
     }

@@ -104,23 +104,22 @@ void Calib::calc_flux_calibration(std::string units) {
     // flux conversion is per detector
     flux_conversion_factor.setOnes(n_dets);
 
-    // default is MJy/sr
-    if (units == "MJy/sr") {
+    // default is mJy/beam
+    if (units == "mJy/beam") {
         flux_conversion_factor.setOnes();
     }
 
-    // convert to mJy/beam
-    else if (units == "mJy/beam") {
+    // convert to MJy/sr
+    else if (units == "MJy/sr") {
         for (Eigen::Index i=0; i<n_dets; i++) {
-            auto det_fwhm = RAD_TO_ASEC*(apt["a_fwhm"](i) + apt["b_fwhm"](i))/2;
+            auto array = apt["array"](i);
+            auto det_fwhm = (std::get<0>(array_fwhms[array]) + std::get<1>(array_fwhms[array]))/2;
             auto beam_area = 2.*pi*pow(det_fwhm/STD_TO_FWHM,2);
-            flux_conversion_factor(i) = beam_area*MJY_SR_TO_mJY_ASEC;
+            flux_conversion_factor(i) = mJY_ASEC_to_MJY_SR/beam_area;
         }
-    }    
+    }
 
     else if (units == "uK/arcmin") {
-        for (Eigen::Index i=0; i<n_dets; i++) {
-        }
     }
 
     // get mean flux conversion factor from all unflagged detectors
@@ -204,15 +203,6 @@ void Calib::setup() {
 
         double avg_nw_fwhm = (std::get<0>(nw_fwhms[key]) + std::get<1>(nw_fwhms[key]))/2;
 
-        //std::get<0>(nw_fwhms[key]) = apt["a_fwhm"](Eigen::seq(std::get<0>(nw_limits[key]),
-        //                                                      std::get<1>(nw_limits[key])-1)).mean();
-        //std::get<1>(nw_fwhms[key]) = apt["b_fwhm"](Eigen::seq(std::get<0>(nw_limits[key]),
-        //                                                      std::get<1>(nw_limits[key])-1)).mean();
-
-        //double avg_nw_fwhm = ((apt["a_fwhm"](Eigen::seq(std::get<0>(nw_limits[key]), std::get<1>(nw_limits[key])-1)) +
-        //                  apt["b_fwhm"](Eigen::seq(std::get<0>(nw_limits[key]), std::get<1>(nw_limits[key])-1)))/2).mean();
-        //SPDLOG_INFO("avg nw fwhm {}",avg_nw_fwhm);
-
         nw_beam_areas[key] = 2.*pi*pow(avg_nw_fwhm/STD_TO_FWHM,2);
     }
 
@@ -244,14 +234,6 @@ void Calib::setup() {
         arrays(j) = key;
         j++;
         array_fwhms[key] = std::tuple<double,double>{0, 0};
-        //std::get<0>(array_fwhms[key]) = apt["a_fwhm"](Eigen::seq(std::get<0>(array_limits[key]),
-        //                                                         std::get<1>(array_limits[key])-1)).mean();
-        //std::get<1>(array_fwhms[key]) = apt["b_fwhm"](Eigen::seq(std::get<0>(array_limits[key]),
-        //                                                         std::get<1>(array_limits[key])-1)).mean();
-
-        //double avg_array_fwhm = ((apt["a_fwhm"](Eigen::seq(std::get<0>(array_limits[key]), std::get<1>(array_limits[key])-1)) +
-        //                     apt["b_fwhm"](Eigen::seq(std::get<0>(array_limits[key]), std::get<1>(array_limits[key])-1)))/2).mean();
-
 
         auto array_a_fwhm = apt["a_fwhm"](Eigen::seq(std::get<0>(array_limits[key]),
                                                   std::get<1>(array_limits[key])-1));

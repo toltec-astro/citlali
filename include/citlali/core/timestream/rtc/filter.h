@@ -19,6 +19,8 @@ public:
 
     void make_filter(double);
 
+    //int k = 0;
+
     template <typename Derived>
     void convolve(Eigen::DenseBase<Derived> &);
 };
@@ -31,8 +33,8 @@ void Filter::make_filter(double fsmp) {
     // scale lower frequency cutoff to Nyquist frequency
     auto f_high = freq_high_Hz / nyquist;
 
-     // check if upper frequency limit (lowpass)
-     // is larger than lower frequency limit (highpass)
+    // check if upper frequency limit (lowpass)
+    // is larger than lower frequency limit (highpass)
     double f_stop = (f_high < f_low) ? 1. : 0.;
 
     // determine alpha parameter based on Gibbs factor
@@ -84,6 +86,35 @@ void Filter::make_filter(double fsmp) {
 
 template <typename Derived>
 void Filter::convolve(Eigen::DenseBase<Derived> &in) {
+
+    /*netCDF::NcFile fo("/Users/mmccrackan/toltec/temp/commissioning_test/pointing/redu/testfilter_" + std::to_string(k) + ".nc", netCDF::NcFile::replace);
+
+    k++;
+    netCDF::NcDim n_filter_dim = fo.addDim("n_filter",filter.size());
+    netCDF::NcDim n_pts_dim = fo.addDim("n_pts",in.rows());
+    netCDF::NcDim n_dets_dim = fo.addDim("n_dets",in.cols());
+
+    std::vector<netCDF::NcDim> dim = {n_pts_dim, n_dets_dim};
+
+    netCDF::NcVar in_v = fo.addVar("in",netCDF::ncDouble, dim);
+    netCDF::NcVar out_v = fo.addVar("out",netCDF::ncDouble, dim);
+
+    netCDF::NcVar filter_v = fo.addVar("filter",netCDF::ncDouble, n_filter_dim);
+    filter_v.putVar(filter.data());
+
+    // start indices for data
+    std::vector<std::size_t> in_start_index = {0, 0};
+    // size for data
+    std::vector<std::size_t> in_size = {1, TULA_SIZET(in.cols())};
+
+    for (std::size_t i = 0; i < TULA_SIZET(in.rows()); ++i) {
+        in_start_index[0] = i;
+        Eigen::VectorXd row = in.derived().row(i);
+        in_v.putVar(in_start_index, in_size, row.data());
+    }
+    */
+
+
     // array to tell which dimension to do the convolution over
     Eigen::array<ptrdiff_t, 1> dims{0};
 
@@ -91,21 +122,36 @@ void Filter::convolve(Eigen::DenseBase<Derived> &in) {
     // convolution method
     Eigen::TensorMap<Eigen::Tensor<double, 2>> in_tensor(in.derived().data(),
                                                          in.rows(), in.cols());
-    Eigen::TensorMap<Eigen::Tensor<double, 1>> fvec_tensor(filter.data(),
-                                                           filter.size());
+    Eigen::TensorMap<Eigen::Tensor<double, 1>> filter_tensor(filter.data(),
+                                                             filter.size());
     // convolve
     Eigen::Tensor<double, 2> out_tensor(
-        in_tensor.dimension(0) - fvec_tensor.dimension(0) + 1, in.cols());
+        in_tensor.dimension(0) - filter_tensor.dimension(0) + 1, in.cols());
 
     // run the tensor convolution
-    out_tensor = in_tensor.convolve(fvec_tensor, dims);
+    out_tensor = in_tensor.convolve(filter_tensor, dims);
 
     // replace the scan data with the filtered data through an Eigen::Map
     // the first and last nterms samples are not overwritten
-    in.block((fvec_tensor.size() - 1) / 2, 0, out_tensor.dimension(0),
+    in.block(n_terms, 0, out_tensor.dimension(0),
              in.cols()) =
         Eigen::Map<Eigen::MatrixXd>(out_tensor.data(), out_tensor.dimension(0),
                                     out_tensor.dimension(1));
+
+    /*// start indices for data
+    std::vector<std::size_t> out_start_index = {0, 0};
+    // size for data
+    std::vector<std::size_t> out_size = {1, TULA_SIZET(in.cols())};
+
+    for (std::size_t i = 0; i < TULA_SIZET(in.rows()); ++i) {
+        out_start_index[0] = i;
+        Eigen::VectorXd row = in.derived().row(i);
+        out_v.putVar(out_start_index, out_size, row.data());
+    }
+
+    fo.close();
+   /std::exit(EXIT_SUCCESS);*/
+
 }
 
 } // namespace timestream

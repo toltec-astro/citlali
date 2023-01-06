@@ -31,6 +31,23 @@ public:
         filtered = 1,
     };
 
+    std::map<Eigen::Index, Eigen::Index> nw_to_array_map = {
+        {0, 0},
+        {1, 0},
+        {2, 0},
+        {3, 0},
+        {4, 0},
+        {5, 0},
+        {6, 0},
+        {7, 1},
+        {8, 1},
+        {9, 1},
+        {10, 1},
+        {11, 2},
+        {12, 2},
+    };
+
+
     std::map<Eigen::Index, std::string> array_name_map = {
         {0,"a1100"},
         {1,"a1400"},

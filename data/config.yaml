@@ -22,15 +22,14 @@ beammap: # beammap controls (ignored if not beammapping)
     a1400: 0
     a2000: 0
 coadd: # coaddition controls
-  cov_cut: 0.0 # coverage cut value for psd, hist, and coverage_bool maps
   enabled: false # enable or disable coaddition
 map_filtering: # map filtering
   enabled: false # enable or disable map filtering
   type: wiener_filter # type of filter (currently ignored)
+  normalize_errors: false # correct weight map errors based on noise maps
 noise_maps: # noise map controls
   enabled: false # enable or disable coaddition
   n_noise_maps: 1 # number of noise maps (>0)
-  normalize_errors: false # correct weight map errors based on noise maps
 inputs: # list of inputs and related data
   - cal_items:
       - beammap_source: # extra information used by beammapping (not needed if not beammapping)
@@ -147,29 +146,33 @@ mapmaking: # mapmaking parameters
   pixel_size_arcsec: 1.0 # pixel size in arceconds
   x_size_pix: 0 # manually specify map columns
   y_size_pix: 0 # manually specify map rows
+  coverage_cut: 0.0 # coverage cut value for psd, hist, and coverage_bool maps
 runtime: # parameters to control how citlali runs
   verbose: true # extra output in terminal.  adds files to obsnum/logs/ directory.
   meta:
     version: tolteca... # extra info from tolteca
   n_threads: 1 # number of threads to use
   output_dir: /path/to/redu/directory/ # path to output directory
-  parallel_policy: seq # parallelization policy (seq=sequential, omp=OMP parallelization)
+  parallel_policy: seq # parallelization policy (seq=sequential, omp=OpenMP parallelization)
   reduction_type: science # reduction engine (science, pointing, beammap)
   use_subdir: true # create "redu00, redu01,..." sub-directories.  increments automatically.
 source_fitting: # parameters for source fitting
   bounding_box_arcsec: 10 # size of box in arcseconds around initial position
-  enabled: false # enable or disable fitting (ignored for now)
-  initial_guess: brightest_pixel # initial position (ignored for now)
+  fitting_region_arcsec: 0 # region of map to search for source in (ignored if zero)
   model: gaussian # model type (ignored for now)
+  gauss_model: # optional fitting limits for guassian model (ignored if zero)
+    amp_limits: [0.0, 0.0] # upper and lower multiplicative factors for amplitude fitting
+    fwhm_limits: [0.0, 0.0] # upper and lower multiplicative factors for fwhm fitting
 timestream: # timestream reduction parameters
   type: xs # type of TOD (xs or rs)
   enabled: true # enable or disable TOD processing (to be implemented)
   chunking: # how to chunk timestreams
+    force_chunking: false # ignore map pattern chunking and use config file chunk length
     length_sec: 10.0 # chunk length for lissajous/rastajous maps (ignored if raster map)
   clean: # remove (hopefully) the atmospheric signal
     cut_std: 0.0 # standard deviation cut for cleaning (only used if >0)
     enabled: false # enable or disable cleaning
-    grouping: array # clean grouping (array or nw)
+    grouping: array # clean grouping (array, nw, all)
     n_eig_to_cut: 3 # number of eigenvalues to remove (ignored if cut_std >0)
   despike: # remove cosmic ray spikes
     enabled: false # enable or disable despiking

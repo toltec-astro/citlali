@@ -84,14 +84,49 @@ public:
         {"angle_err"},
         {"converge_iter"},
         {"flag"},
-        {"sig2noise"}
+        {"sig2noise"},
+        //{"x_t_raw"},
+        //{"y_t_raw"},
+        //{"x_t_derot"},
+        //{"y_t_derot"},
     };
+
+    std::map<std::string,std::string> apt_header_units = {
+        {"uid","N/A"},
+        {"array","N/A"},
+        {"nw","N/A"},
+        {"fg","N/A"},
+        {"pg","N/A"},
+        {"ori","N/A"},
+        {"responsivity","N/A"},
+        {"flxscale","mJy/beam/xs"},
+        {"sens","N/A"},
+        {"derot_elev","rad"},
+        {"amp","xs"},
+        {"amp_err","xs"},
+        {"x_t","arcsec"},
+        {"x_t_err","arcsec"},
+        {"y_t","arcsec"},
+        {"y_t_err","arcsec"},
+        {"a_fwhm","arcsec"},
+        {"a_fwhm_err","arcsec"},
+        {"b_fwhm","arcsec"},
+        {"b_fwhm_err","arcsec"},
+        {"angle","rad"},
+        {"angle_err","rad"},
+        {"converge_iter","N/A"},
+        {"flag","N/A"},
+        {"sig2noise","N/A"},
+        {"x_t_raw","arcsec"},
+        {"y_t_raw","arcsec"},
+        {"x_t_derot","arcsec"},
+        {"y_t_derot","arcsec"},
+        };
 
     void setup();
     void get_apt(const std::string &, std::vector<std::string> &, std::vector<std::string> &);
     void get_hwp(const std::string &);
     void calc_flux_calibration(std::string);
-
 };
 
 } // namespace engine

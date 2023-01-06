@@ -14,7 +14,7 @@ public:
     // mapping pattern
     char obs_pgm_char [128];
     // source name
-    char source_name_char [128];
+    char source_name_char [64];
 
     // simulation jobkey
     char sim_job_key [128];
@@ -26,6 +26,9 @@ public:
 
     // time chunk size for lissajous/rastajous
     double time_chunk;
+
+    // force chunking scan indices
+    bool force_chunk;
 
     // sample rate
     double fsmp, d_fsmp;

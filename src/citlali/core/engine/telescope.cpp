@@ -1,3 +1,5 @@
+#include <boost/algorithm/string/trim.hpp>
+
 #include <tula/logging.h>
 
 #include <citlali/core/engine/telescope.h>
@@ -26,7 +28,7 @@ void Telescope::get_tel_data(std::string &filepath) {
             obs_pgm = "Map";
         }
 
-        if (std::strcmp("Lissajous", obs_pgm.c_str()) && time_chunk==0) {
+        if (std::strcmp("Lissajous", obs_pgm.c_str())==0 && time_chunk==0) {
             SPDLOG_ERROR("mapping mode is lissajous and time chunk size is zero");
             std::exit(EXIT_FAILURE);
         }
@@ -35,13 +37,16 @@ void Telescope::get_tel_data(std::string &filepath) {
         vars.find("Header.Source.SourceName")->second.getVar(&source_name_char);
         source_name = std::string(source_name_char);
 
+        std::string::iterator end_pos = std::remove(source_name.begin(), source_name.end(), ' ');
+        source_name.erase(end_pos, source_name.end());
+
         // check if simulation job key is found.
         try {
             vars.find("Header.Sim.Jobkey")->second.getVar(&sim_job_key);
             SPDLOG_WARN("found Header.Sim.Jobkey");
             sim_obs = true;
         } catch (NcException &e) {
-            SPDLOG_WARN("cannot find Header.Sim.Jobkey");
+            SPDLOG_WARN("cannot find Header.Sim.Jobkey.  reducing as real data.");
             sim_obs = false;
         }
 
@@ -143,6 +148,7 @@ void Telescope::calc_tan_icrs() {
 }
 
 void Telescope::calc_tan_altaz() {
+    // use loop to avoid annoying eigen aliasing issues with select
     for (Eigen::Index i=0; i<tel_data["TelAzAct"].size(); i++) {
         if ((tel_data["TelAzAct"](i) - tel_data["SourceAz"](i)) > 0.9*2.0*pi) {
             tel_data["TelAzAct"](i) = tel_data["TelAzAct"](i) - 2.0*pi;
@@ -151,7 +157,7 @@ void Telescope::calc_tan_altaz() {
 
     // calculate tangent coordinates
     tel_data["lat_phys"] = (tel_data["TelElAct"] - tel_data["SourceEl"]) - tel_data["TelElCor"];
-    tel_data["lon_phys"] = cos(tel_data["TelElDes"].array())*(tel_data["TelAzAct"].array() - tel_data["SourceAz"].array())
+    tel_data["lon_phys"] = cos(tel_data["TelElAct"].array())*(tel_data["TelAzAct"].array() - tel_data["SourceAz"].array())
                            - tel_data["TelAzCor"].array();
 
 }
@@ -160,7 +166,7 @@ void Telescope::calc_scan_indices() {
     // number of scans
     Eigen::Index n_scans = 0;
 
-    if (std::strcmp("Map", obs_pgm.c_str()) == 0) {
+    if (std::strcmp("Map", obs_pgm.c_str()) == 0 && !force_chunk) {
         SPDLOG_INFO("calculating scans for raster mode");
         // cast hold signal to boolean
         Eigen::Matrix<bool,Eigen::Dynamic,1> hold_bool = tel_data["Hold"].template cast<bool>();
@@ -196,7 +202,7 @@ void Telescope::calc_scan_indices() {
     }
 
     // get scan indices for Lissajous/Rastajous pattern
-    else if (std::strcmp("Lissajous", obs_pgm.c_str()) == 0) {
+    else if (std::strcmp("Lissajous", obs_pgm.c_str()) == 0 || force_chunk) {
         SPDLOG_INFO("calculating scans for lissajous/rastajous mode");
 
         // index of first scan

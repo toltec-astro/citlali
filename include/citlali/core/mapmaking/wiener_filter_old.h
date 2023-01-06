@@ -11,17 +11,22 @@
 
 #include <citlali/core/utils/constants.h>
 #include <citlali/core/utils/utils.h>
+
+#include <citlali/core/utils/gauss_models.h>
 #include <citlali/core/utils/fitting.h>
 
 namespace mapmaking {
 
 class WienerFilter {
 public:
-    bool run_gaussian_template, run_highpass_only, run_lowpass_only;
+    std::string template_type;
     bool normalize_error, uniform_weight;
+    bool run_lowpass;
 
     bool run_kernel;
     int nloops;
+
+    std::map<std::string, double> gaussian_template_fwhm_rad;
 
     int nr, nc;
     double diffr, diffc;
@@ -42,20 +47,20 @@ public:
     template<class CMB, class CD>
     void make_template(CMB &cmb, CD &calib_data, const double gaussian_template_fwhm_rad, const int map_num) {
         // make sure new wiener filtered maps have even dimensions
-        nr = 2*(cmb.nrows/2);
-        nc = 2*(cmb.ncols/2);
+        nr = 2*(cmb.n_rows/2);
+        nc = 2*(cmb.n_cols/2);
 
         // x and y spacing should be equal
-        diffr = abs(cmb.rcphys(1) - cmb.rcphys(0));
-        diffc = abs(cmb.ccphys(1) - cmb.ccphys(0));
+        diffr = abs(cmb.rows_tan_vec(1) - cmb.rows_tan_vec(0));
+        diffc = abs(cmb.cols_tan_vec(1) - cmb.cols_tan_vec(0));
 
-        if (run_highpass_only) {
+        if (template_type=="highpass") {
             SPDLOG_INFO("creating template with highpass only");
             tplate.setZero(nr,nc);
             tplate(0,0) = 1;
         }
 
-        else if (run_gaussian_template) {
+        else if (template_type=="gaussian") {
             SPDLOG_INFO("creating gaussian template");
             make_gaussian_template(cmb, gaussian_template_fwhm_rad);
         }
@@ -162,8 +167,8 @@ void WienerFilter::make_gaussian_template(CMB &cmb, const double gaussian_templa
 
     tplate.setZero(nr,nc);
 
-    Eigen::VectorXd rgcut = cmb.rcphys;
-    Eigen::VectorXd cgcut = cmb.ccphys;
+    Eigen::VectorXd rgcut = cmb.rows_tan_vec;
+    Eigen::VectorXd cgcut = cmb.cols_tan_vec;
 
     Eigen::MatrixXd dist(nr, nc);
     /*dist = (xgcut.replicate(1, nc).array().pow(2.0).matrix()
@@ -182,15 +187,17 @@ void WienerFilter::make_gaussian_template(CMB &cmb, const double gaussian_templa
     double mindist = dist.minCoeff(&rcind, &ccind);
     double sigma = gaussian_template_fwhm_rad / STD_TO_FWHM;
 
+    std::vector<Eigen::Index> shift_indices = {-rcind, -ccind};
+
     tplate = exp(-0.5 * pow(dist.array() / sigma, 2.));
-    tplate = engine_utils::shift_matrix(tplate, -rcind, -ccind);
+    tplate = engine_utils::shift_2D(tplate, shift_indices);
 }
 
 template<class CMB, class CD>
 void WienerFilter::make_symmetric_template(CMB &cmb, const int map_num, CD &calib_data) {
     // collect what we need
-    Eigen::VectorXd rgcut = cmb.rcphys;
-    Eigen::VectorXd cgcut = cmb.ccphys;
+    Eigen::VectorXd rgcut = cmb.rows_tan_vec;
+    Eigen::VectorXd cgcut = cmb.cols_tan_vec;
     Eigen::MatrixXd tem = cmb.kernel.at(map_num);
 
     // set nparams for fit
@@ -199,16 +206,25 @@ void WienerFilter::make_symmetric_template(CMB &cmb, const int map_num, CD &cali
     pfit.setZero(nparams);
 
     // declare fitter class for detector
-    gaussfit::MapFitter fitter;
+    engine_utils::mapFitter map_fitter;
     // size of region to fit in pixels
-    fitter.bounding_box_pix = 50;//bounding_box_pix;
-    pfit = fitter.fit<gaussfit::MapFitter::centerValue>(cmb.kernel.at(map_num), cmb.weight.at(map_num), calib_data);
-    SPDLOG_INFO("pfit {}",pfit);
+    map_fitter.bounding_box_pix = 50;//bounding_box_pix;
 
-    pfit(1) = cmb.pixel_size*(pfit(1) - (nc)/2);
-    pfit(2) = cmb.pixel_size*(pfit(2) - (nr)/2);
 
-    tem = engine_utils::shift_matrix(tem, -std::round(pfit(2)/diffr), -std::round(pfit(1)/diffc));
+    double init_fwhm = 5;//toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/cmb.pixel_size_rad;
+    auto [det_params, det_perror, good_fit] =
+        map_fitter.fit_to_gaussian<engine_utils::mapFitter::peakValue>(cmb.signal[map_num], cmb.weight[map_num], init_fwhm);
+    det_params;
+    det_perror;
+
+    pfit(1) = cmb.pixel_size_rad*(pfit(1) - (nc)/2);
+    pfit(2) = cmb.pixel_size_rad*(pfit(2) - (nr)/2);
+
+    Eigen::Index r = -std::round(pfit(2)/diffr);
+    Eigen::Index c = -std::round(pfit(1)/diffc);
+
+    std::vector<Eigen::Index> shift_indices = {r,c};
+    tem = engine_utils::shift_2D(tem, shift_indices);
 
     Eigen::MatrixXd dist(nr,nc);
     for (Eigen::Index i=0; i<nc; i++) {
@@ -274,8 +290,8 @@ void WienerFilter::make_symmetric_template(CMB &cmb, const int map_num, CD &cali
 template <class CMB>
 void WienerFilter::calc_vvq(CMB &cmb, const int map_num) {
     // psd and psd freq vectors
-    Eigen::VectorXd qf = cmb.noise_avg_psd.at(map_num).psd_freq;
-    Eigen::VectorXd hp = cmb.noise_avg_psd.at(map_num).psd;
+    Eigen::VectorXd qf = cmb.noise_psds.at(map_num);
+    Eigen::VectorXd hp = cmb.noise_psd_freqs.at(map_num);
 
     // size of psd and psd freq vectors
     Eigen::Index npsd = hp.size();
@@ -361,8 +377,11 @@ void WienerFilter::calc_vvq(CMB &cmb, const int map_num) {
     for(int i=0;i<nr;i++) qr[i] = diffqr*(i-(nr-1)/2);
       for(int i=0;i<nc;i++) qc[i] = diffqc*(i-(nc-1)/2);
 
-    engine_utils::shift_vector(qr, -(nr-1)/2);
-    engine_utils::shift_vector(qc, -(nc-1)/2);
+
+      std::vector<Eigen::Index> shift_1 = {-(nr-1)/2};
+    engine_utils::shift_1D(qr, shift_1);
+      std::vector<Eigen::Index> shift_2 = {-(nc-1)/2};
+    engine_utils::shift_1D(qc, shift_2);
 
     // make qmap by replicating qc and qr ncols and nrows times respectively.  Faster than a for loop for expected
     // map dimensions
@@ -377,7 +396,7 @@ void WienerFilter::calc_vvq(CMB &cmb, const int map_num) {
     Eigen::MatrixXd psdq;
     psdq.setZero(nr, nc);
 
-    if (run_lowpass_only) {
+    if (run_lowpass) {
         psdq.setOnes();
     }
 
@@ -439,18 +458,18 @@ void WienerFilter::calc_numerator() {
     in.real() = rr.array() * mflt.array();
     in.imag().setZero();
 
-    out = engine_utils::fft2d<engine_utils::forward>(in, nr, nc, exmode);
+    out = engine_utils::fft<engine_utils::forward>(in, exmode);
     out = out * fftnorm;
 
     in.real() = out.real().array() / vvq.array();
     in.imag() = out.imag().array() / vvq.array();
 
-    out = engine_utils::fft2d<engine_utils::backward>(in, nr, nc, exmode);
+    out = engine_utils::fft<engine_utils::inverse>(in, exmode);
 
     in.real() = out.real().array() * rr.array();
     in.imag().setZero();
 
-    out = engine_utils::fft2d<engine_utils::forward>(in, nr, nc, exmode);
+    out = engine_utils::fft<engine_utils::forward>(in, exmode);
     out = out * fftnorm;
 
     // copy of out
@@ -459,13 +478,13 @@ void WienerFilter::calc_numerator() {
     in.real() = tplate;
     in.imag().setZero();
 
-    out = engine_utils::fft2d<engine_utils::forward>(in, nr, nc, exmode);
+    out = engine_utils::fft<engine_utils::forward>(in, exmode);
     out = out * fftnorm;
 
     in.real() = out.real().array() * qqq.real().array() + out.imag().array() * qqq.imag().array();
     in.imag() = -out.imag().array() * qqq.real().array() + out.real().array() * qqq.imag().array();
 
-    out = engine_utils::fft2d<engine_utils::backward>(in, nr, nc, exmode);
+    out = engine_utils::fft<engine_utils::inverse>(in, exmode);
 
     // populate numerator
     nume = out.real();
@@ -484,7 +503,7 @@ void WienerFilter::calc_denominator() {
         in.real() = tplate;
         in.imag().setZero();
 
-        out = engine_utils::fft2d<engine_utils::forward>(in, nr, nc, exmode);
+        out = engine_utils::fft<engine_utils::forward>(in, exmode);
         out = out * fftnorm;
 
        // auto d = ((out.real().array() * out.real().array() + out.imag().array() * out.imag().array()) / vvq.array()).sum();
@@ -504,7 +523,7 @@ void WienerFilter::calc_denominator() {
         in.real() = pow(vvq.array(), -1);
         in.imag().setZero();
 
-        out = engine_utils::fft2d<engine_utils::backward>(in, nr, nc, exmode);
+        out = engine_utils::fft<engine_utils::inverse>(in, exmode);
 
         Eigen::VectorXd zz2d(nr * nc);
         //Eigen::Map<Eigen::VectorXd> out_vec(out.real().data(), nr*nc);
@@ -556,7 +575,13 @@ void WienerFilter::calc_denominator() {
                     double r_shift_n = shifti / nr;
                     double c_shift_n = shifti % nr;
 
-                    Eigen::MatrixXd in_prod = tplate.array() * engine_utils::shift_matrix(tplate, -r_shift_n, -c_shift_n).array();
+                    Eigen::Index shift_1 = -r_shift_n;
+                    Eigen::Index shift_2 = -c_shift_n;
+
+                    std::vector<Eigen::Index> shift_indices = {shift_1, shift_2};
+
+
+                    Eigen::MatrixXd in_prod = tplate.array() * engine_utils::shift_2D(tplate, shift_indices).array();
 
                     /*in2.real() = Eigen::Map<Eigen::VectorXd>(
                         (in_prod).data(),
@@ -567,7 +592,7 @@ void WienerFilter::calc_denominator() {
                     in2.real() = in_prod;
                     in2.imag().setZero();
 
-                    out2 = engine_utils::fft2d<engine_utils::forward>(in2, nr, nc, exmode);
+                    out2 = engine_utils::fft<engine_utils::forward>(in2, exmode);
                     out2 = out2 * fftnorm;
 
                     Eigen::MatrixXcd ffdq(nr,nc);
@@ -575,7 +600,8 @@ void WienerFilter::calc_denominator() {
                     ffdq.real() = out2.real();
                     ffdq.imag() = out2.imag();
 
-                    in_prod = rr.array() * engine_utils::shift_matrix(rr, -r_shift_n, -c_shift_n).array();
+
+                    in_prod = rr.array() * engine_utils::shift_2D(rr, shift_indices).array();
 
                     //in2.real() = Eigen::Map<Eigen::VectorXd>(in_prod.data(), nr * nc);
                     //in2.imag().setZero();
@@ -583,13 +609,13 @@ void WienerFilter::calc_denominator() {
                     in2.real() = in_prod;
                     in2.imag().setZero();
 
-                    out2 = engine_utils::fft2d<engine_utils::forward>(in2, nr, nc, exmode);
+                    out2 = engine_utils::fft<engine_utils::forward>(in2, exmode);
                     out2 = out2 * fftnorm;
 
                     in2.real() = ffdq.real().array() * out2.real().array() + ffdq.imag().array() * out2.imag().array();
                     in2.imag() = -ffdq.imag().array() * out2.real().array() + ffdq.real().array() * out2.imag().array();
 
-                    out2 = engine_utils::fft2d<engine_utils::backward>(in2, nr, nc, exmode);
+                    out2 = engine_utils::fft<engine_utils::inverse>(in2, exmode);
 
                     Eigen::MatrixXd updater = zz2d(shifti) * out2.real() * fftnorm;
 

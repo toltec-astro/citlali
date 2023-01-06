@@ -12,6 +12,36 @@
 
 namespace internal {
 
+template <typename Derived>
+void smooth_edge_truncate(Eigen::DenseBase<Derived> &in, Eigen::DenseBase<Derived> &out, int w) {
+    Eigen::Index n_pts = in.size();
+
+    // ensure w is odd
+    if (w % 2 == 0) {
+        w++;
+    }
+
+    double w_inv = 1./w;
+    int w_mid = (w - 1)/2;
+
+    double sum;
+    for (Eigen::Index i=0; i<n_pts; i++) {
+        sum=0;
+        for (int j=0; j<w; j++) {
+            int add_index = i + j - w_mid;
+
+            if (add_index < 0) {
+                add_index=0;
+            }
+            else if (add_index > n_pts-1) {
+                add_index = n_pts-1;
+            }
+            sum += in(add_index);
+        }
+        out(i) = w_inv*sum;
+    }
+}
+
 template <typename T = Eigen::ArrayXd> T *ei_nullptr() {
     return static_cast<T *>(nullptr);
 }
@@ -39,16 +69,13 @@ template <typename UnaryOp> struct MoveEnabledUnaryOp {
                       !internal::has_storage<T>::value) {
             // lvalue ref, either expression or non-expression
             // return expression that builds on top of input
-            //SPDLOG_INFO("called with wrapping");
             return m_func(std::forward<T>(in),
                           std::forward<decltype(args)>(args)...);
-            // NOLINTNEXTLINE(readability-else-after-return)
         }
         else {
             // rvalue ref
             // in this case we need to call the function and update inplace
             // first and move to return
-            //SPDLOG_INFO("called with moving");
             in = m_func(std::forward<T>(in),
                         std::forward<decltype(args)>(args)...);
             return std::forward<T>(in);
@@ -147,21 +174,21 @@ FreqStat psd(const Eigen::DenseBase<DerivedA> &_scan,
 
     else if (win == NoWindow) {
         fft.fwd(freqdata, scan.head(npts));
-    } // note: at this point the freqdata is not normalized to NEBW yet
-
-    //SPDLOG_INFO("fft.fwd freqdata {}", freqdata);
+    }
 
     // calcualte psd and normalize to frequency resolution
-    psd = freqdata.cwiseAbs2() / dfreq / npts;  // V/Hz^0.5
+    psd = freqdata.cwiseAbs2() / dfreq / npts/ fsmp;  // V/Hz^0.5
     // accound for the negative frequencies by an extra factor of 2. note: first
     // and last are 0 and nquist freq, so they only appear once
     psd.segment(1, nfreqs - 2) *= 2.;
-    //SPDLOG_INFO("psd {}", psd);
+
+    Eigen::VectorXd smoothed_psd(psd.size());
+    internal::smooth_edge_truncate(psd, smoothed_psd, 10);
+    psd = std::move(smoothed_psd);
 
     // make the freqency array when requested
     if (freqs) {
         freqs->operator=(internal::freq(npts, nfreqs, dfreq));
-        //SPDLOG_INFO("freqs {}", freqs);
     }
     return stat;
 }
@@ -178,20 +205,19 @@ FreqStat psds(const std::vector<DerivedA> &ptcs,
     // prepare common freq grid
     Eigen::Index nscans = ptcs.size();
     Eigen::Matrix<Eigen::Index,Eigen::Dynamic,1> scanlengths;
+
     scanlengths.resize(nscans);
-    for(Eigen::Index j=0;j<nscans;j++) {
+    for(Eigen::Index j=0; j<nscans; j++) {
         scanlengths(j) = ptcs[j].scans.data.rows();
     }
+
     // use the median length for computation
     Eigen::Index len = tula::alg::median(scanlengths);
-    //SPDLOG_INFO("use median={} of scan lengths (min={} max={} nscans={})", len,
-        //scanlengths.minCoeff(), scanlengths.maxCoeff(), nscans);
 
     // get the common freq stat and freq array
     auto stat = internal::stat(len, fsmp);
     auto [npts, nfreqs, dfreq] = stat;
     Eigen::VectorXd _freqs = internal::freq(npts, nfreqs, dfreq);
-    //SPDLOG_INFO("use freqs {} dfreqs {}", _freqs, dfreq);
 
     // compute psd for each scan and interpolate onto the common freq grid
     psds.resize(nfreqs, nscans);
@@ -203,24 +229,16 @@ FreqStat psds(const std::vector<DerivedA> &ptcs,
 
     // get the psds
     for (Eigen::Index i=0; i<nscans; ++i) {
-        //SPDLOG_INFO("process scan {} out of {}", i + 1, nscans);
         internal::psd<win>(ptcs[i].scans.data.block(0,det,scanlengths(i),1), tpsd,
                       &tfreqs, fsmp);
         // interpolate (tfreqs, tpsd) on to _freqs
         td << tfreqs.size();
-        //SPDLOG_INFO("interpolate tpsd {} from tfreqs {} to freqs {}",
-        //                   tpsd, tfreqs, _freqs);
-        //SPDLOG_INFO("interpolate sizes {}", td);
 
         // interp (tfreq, tpsd) onto freq and store the result in column i of psds
         mlinterp::interp(td.data(), nfreqs,
                          tpsd.data(), psds.data() + i * nfreqs,
                          tfreqs.data(),_freqs.data());
-
-        //SPDLOG_INFO("updated psds {}", psds);
     }
-
-    //SPDLOG_INFO("calulated psds {}", psds);
 
     // update the freqs array if requested
     if (freqs) {
@@ -253,23 +271,17 @@ void calc_sensitivity(
 
     // compute noises by integrate over all frequencies
     noisefluxes = (tpsds * dfreq).colwise().sum().cwiseSqrt();
-    //SPDLOG_INFO("nosefluxes{}", noisefluxes);
     auto meannoise = noisefluxes.mean();
-    //SPDLOG_INFO("meannoise={}", meannoise);
 
     // get sensitivity in V * s^(1/2)
     Eigen::MatrixXd sens = internal::psd2sen(std::move(tpsds));
 
     // compute sensitivity with given freqrange
     // make use the fact that freqs = i * df to find Eigen::Index i
-    auto i1 = static_cast<Eigen::Index>(freqrange.left() / dfreq);
-    auto i2 = static_cast<Eigen::Index>(freqrange.right() / dfreq);
+    auto i0 = static_cast<Eigen::Index>(freqrange.left() / dfreq);
+    auto i1 = static_cast<Eigen::Index>(freqrange.right() / dfreq);
 
-    //SPDLOG_INFO("f0 {} f1 {}",freqrange(i1),freqrange(i2));
-    auto nf = i2 + 1 - i1;
+    auto nf = i1 + 1 - i0;
     sensitivities =
-        sens.block(i1, 0, nf, ptcs.size()).colwise().sum() / nf;
-
-    // take a mean on the sens for representitive sens to return
-    auto meansens = sensitivities.mean();
+        sens.block(i0, 0, nf, ptcs.size()).colwise().sum() / nf;
 }

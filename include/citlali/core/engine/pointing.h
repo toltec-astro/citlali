@@ -81,14 +81,18 @@ void Pointing::setup() {
 
     // set center pointing
     if (telescope.pixel_axes == "icrs") {
-        omb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0);
-        omb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0);
+        omb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0)*RAD_TO_DEG;
+        omb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0)*RAD_TO_DEG;
 
-        cmb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0);
-        cmb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0);
+        cmb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0)*RAD_TO_DEG;
+        cmb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0)*RAD_TO_DEG;
     }
 
     // populate ppt meta information
+
+    // add obsnum to meta data
+    calib.apt_meta["obsnum"] = obsnum;
+
     ppt_meta["array"].push_back("units: N/A");
     ppt_meta["array"].push_back("array");
 
@@ -307,26 +311,23 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         for (Eigen::Index i=0; i<n_maps; i++) {
             auto array = maps_to_arrays(i);
             double init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
-            SPDLOG_INFO("init_fwhm {} {}", init_fwhm, toltec_io.array_fwhm_arcsec[array]);
             auto [det_params, det_perror, good_fit] =
                 map_fitter.fit_to_gaussian<engine_utils::mapFitter::peakValue>(omb.signal[i], omb.weight[i], init_fwhm);
             params.row(i) = det_params;
             perrors.row(i) = det_perror;
 
-            SPDLOG_INFO("map {} good fit: {}",i, good_fit);
-
             if (good_fit) {
                 // rescale fit params from pixel to on-sky units
-                params(i,1) = omb.pixel_size_rad*(params(i,1) - (omb.n_cols)/2)*RAD_TO_ASEC;
-                params(i,2) = omb.pixel_size_rad*(params(i,2) - (omb.n_rows)/2)*RAD_TO_ASEC;
-                params(i,3) = STD_TO_FWHM*omb.pixel_size_rad*(params(i,3))*RAD_TO_ASEC;
-                params(i,4) = STD_TO_FWHM*omb.pixel_size_rad*(params(i,4))*RAD_TO_ASEC;
+                params(i,1) = RAD_TO_ASEC*omb.pixel_size_rad*(params(i,1) - (omb.n_cols)/2);
+                params(i,2) = RAD_TO_ASEC*omb.pixel_size_rad*(params(i,2) - (omb.n_rows)/2);
+                params(i,3) = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(params(i,3));
+                params(i,4) = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(params(i,4));
 
                 // rescale fit errors from pixel to on-sky units
-                perrors(i,1) = omb.pixel_size_rad*(perrors(i,1))*RAD_TO_ASEC;
-                perrors(i,2) = omb.pixel_size_rad*(perrors(i,2))*RAD_TO_ASEC;
-                perrors(i,3) = STD_TO_FWHM*omb.pixel_size_rad*(perrors(i,3))*RAD_TO_ASEC;
-                perrors(i,4) = STD_TO_FWHM*omb.pixel_size_rad*(perrors(i,4))*RAD_TO_ASEC;
+                perrors(i,1) = RAD_TO_ASEC*omb.pixel_size_rad*(perrors(i,1));
+                perrors(i,2) = RAD_TO_ASEC*omb.pixel_size_rad*(perrors(i,2));
+                perrors(i,3) = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(perrors(i,3));
+                perrors(i,4) = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(perrors(i,4));
             }
         }
     }
@@ -344,6 +345,9 @@ void Pointing::output() {
     // directory name
     std::string dir_name;
 
+    // matrix to hold pointing fit values and errors
+    Eigen::MatrixXf ppt_table(n_maps, 2*n_params + 1);
+
     // raw obs maps
     if constexpr (map_type == mapmaking::RawObs) {
         mb = &omb;
@@ -354,9 +358,6 @@ void Pointing::output() {
         auto ppt_filename = toltec_io.create_filename<engine_utils::toltecIO::ppt, engine_utils::toltecIO::map,
                                                       engine_utils::toltecIO::raw>
                             (obsnum_dir_name + "/raw/", redu_type, "", obsnum, telescope.sim_obs);
-
-        // matrix to hold pointing fit values and errors
-        Eigen::MatrixXf ppt_table(n_maps, 2*n_params + 1);
 
         // loop through params and add arrays
         for (const auto &stokes_param: rtcproc.polarization.stokes_params) {
@@ -405,6 +406,7 @@ void Pointing::output() {
     tula::logging::progressbar pb(
         [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 100, "output progress ");
 
+    Eigen::Index k = 0;
 
     for (Eigen::Index i=0; i<n_maps; i++) {
         // update progress bar
@@ -412,11 +414,35 @@ void Pointing::output() {
         write_maps(f_io,n_io,mb,i);
 
         if constexpr (map_type == mapmaking::RawObs) {
-            f_io->at(i).pfits->pHDU().addKey("AMP", params(i,0), "fitted amplitude");
-            f_io->at(i).pfits->pHDU().addKey("AMP_ERR", perrors(i,0), "fitted amplitude error");
+            Eigen::Index map_index = maps_to_arrays(i);
 
-            f_io->at(i).hdus.at(0)->addKey("AMP", params(i,0), "fitted amplitude");
-            f_io->at(i).hdus.at(0)->addKey("AMP_ERR", perrors(i,0), "fitted amplitude error");
+            // check if we move from one file to the next
+            // if so go back to first hdu layer
+            if (i>0) {
+                if (map_index > maps_to_arrays(i-1)) {
+                    k = 0;
+                }
+            }
+
+            // get current hdu extension name
+            std::string extname = f_io->at(map_index).hdus.at(k)->name();
+            // see if this is a signal extension
+            std::size_t found = extname.find("signal");
+
+            // find next signal extension
+            while (found!=std::string::npos && k<f_io->at(map_index).hdus.size()) {
+                k = k + 1;
+                // get current hdu extension name
+                extname = f_io->at(map_index).hdus.at(k)->name();
+                // see if this is a signal extension
+                found = extname.find("signal");
+            }
+            // add ppt table
+            Eigen::Index j = 0;
+            for (auto const& key: ppt_header) {
+                f_io->at(map_index).hdus.at(k)->addKey("POINTING." + key, ppt_table(i,j), key);
+                j++;
+            }
         }
     }
 

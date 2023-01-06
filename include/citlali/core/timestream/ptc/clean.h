@@ -87,7 +87,6 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
 
     for (Eigen::Index i=0; i<n_dets; i++) {
         if (apt.derived()(i) == 0) {
-            //det.col(i).setZero();
             f.col(i).setZero();
         }
     }

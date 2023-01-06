@@ -172,7 +172,7 @@ struct TCData<TCDataKind::PTC, RefType>
     // data timestreams
     data_t scans;
     // weights for current scan
-    Base::data_t<Eigen::MatrixXd> weights;
+    Base::data_t<Eigen::VectorXd> weights;
     // kernel timestreams
     Base::data_t<Eigen::MatrixXd> kernel;
     // flag timestream
@@ -185,6 +185,8 @@ struct TCData<TCDataKind::PTC, RefType>
     Base::data_t<std::map<std::string, Eigen::VectorXd>> tel_data;
     // hwp angle for scan
     Base::data_t<Eigen::VectorXd> hwp_angle;
+    // fcf
+    Base::data_t<Eigen::VectorXd> fcf;
     // eigenvalues for scan
     Base::data_t<Eigen::VectorXd> evals;
     // vectors for mapping apt table onto timestreams

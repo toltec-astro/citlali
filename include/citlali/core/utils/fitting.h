@@ -2,7 +2,10 @@
 
 #include <Eigen/Core>
 
+#include <tula/algorithm/ei_stats.h>
+
 #include <citlali/core/utils/constants.h>
+#include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/gauss_models.h>
 
 namespace engine_utils {
@@ -18,6 +21,9 @@ public:
     // box around source fit
     double bounding_box_pix;
     double fitting_region_pix;
+
+    // fitting limits from config file
+    Eigen::VectorXd flux_limits, fwhm_limits;
 
     // flux lower limit factor
     double flux_low = 0.75;
@@ -120,6 +126,7 @@ auto mapFitter::ceres_fit(const Model &model,
         // EIGEN_SPARSE and DENSE_SVD are the slower, but more accurate options
         covariance_options.sparse_linear_algebra_library_type = ceres::SparseLinearAlgebraLibraryType::EIGEN_SPARSE;
         covariance_options.algorithm_type = ceres::CovarianceAlgorithmType::DENSE_SVD;
+        //coviariance_options.
         Covariance covariance(covariance_options);
 
         std::vector<std::pair<const double*, const double*>> covariance_blocks;
@@ -155,10 +162,66 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     Eigen::VectorXd init_params(6);
     Eigen::MatrixXd limits(6,2);
 
+    // intiial position and fluxe
     double init_row, init_col, init_flux;
 
+    // initial gaussian standard deviation
+    double init_sigma = init_fwhm*FWHM_TO_STD;
+
+    // center positions
+    double center_row = signal.rows()/2;
+    double center_col = signal.cols()/2;
+
+    Eigen::Index fit_region_lower_row, fit_region_lower_col;
+    Eigen::Index fit_region_upper_row, fit_region_upper_col;
+
+    // ignore fitting region parameter
+    if (fitting_region_pix <= 0) {
+        fit_region_lower_row = 0;
+        fit_region_lower_col = 0;
+
+        fit_region_upper_row = signal.rows() - 1;
+        fit_region_upper_col = signal.cols() - 1;
+    }
+
+    else {
+        // lower limit of fitting region
+        fit_region_lower_row = std::max(0.0, center_row - fitting_region_pix);
+        fit_region_lower_col = std::max(0.0, center_col - fitting_region_pix);
+
+        // upper limit of fitting region
+        fit_region_upper_row = std::min(static_cast<double>(signal.rows()) - 1.0,
+                                        center_row + fitting_region_pix - 1);
+        fit_region_upper_col = std::min(static_cast<double>(signal.cols()) - 1.0,
+                                        center_col + fitting_region_pix - 1);
+    }
+
+    // size of fitting region
+    Eigen::Index fit_region_n_rows = fit_region_upper_row - fit_region_lower_row + 1;
+    Eigen::Index fit_region_n_cols = fit_region_upper_col - fit_region_lower_col + 1;
+
+    // signal to noise map
+    auto sig2noise = signal.derived().array()*sqrt(weight.derived().array());
+
+    // signal to noise map of fitting region
+    auto sig2noise_fit_region = sig2noise.block(fit_region_lower_row, fit_region_lower_col,
+                                                fit_region_n_rows, fit_region_n_cols);
+
+    // max value of signal to noise map fitting region
+    sig2noise_fit_region.maxCoeff(&init_row, &init_col);
+
+    // signal to noise map of fitting region
+    auto signal_fit_region = signal.block(fit_region_lower_row, fit_region_lower_col,
+                                                fit_region_n_rows, fit_region_n_cols);
+
+    // get init flux of signal map
+    init_flux = signal_fit_region(static_cast<int>(init_row), static_cast<int>(init_col));
+
+    init_row = init_row + fit_region_lower_row;
+    init_col = init_col + fit_region_lower_col;
+
     // start at center of map
-    if constexpr (fit_mode == centerValue) {
+    /*if constexpr (fit_mode == centerValue) {
         init_row = signal.rows()/2;
         init_col = signal.cols()/2;
 
@@ -171,32 +234,47 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
         sig2noise.maxCoeff(&init_row, &init_col);
 
         init_flux = signal(static_cast<int>(init_row), static_cast<int>(init_col));
-    }
+    }*/
 
-    init_params << init_flux, init_col, init_row, init_fwhm, init_fwhm, 0;
+    // initial parameter guesses
+    init_params << init_flux, init_col, init_row, init_sigma, init_sigma, 0;
 
+    // limits of bounding box
     double lower_row, lower_col, upper_row, upper_col;
 
-    // ensure lower limits are not less than zero
-    lower_row = std::max(init_row - bounding_box_pix, 0.0);
-    lower_col = std::max(init_col - bounding_box_pix, 0.0);
+    // ignore bounding box if less than/equal to zero
+    if (bounding_box_pix <= 0) {
+        lower_row = 0;
+        upper_row = 0;
 
-    // ensure upper limits are not bigger than the map
-    upper_row = std::min(init_row + bounding_box_pix, static_cast<double>(signal.rows()) - 1);
-    upper_col = std::min(init_col + bounding_box_pix, static_cast<double>(signal.cols()) - 1);
+        upper_row = signal.rows() - 1;
+        upper_col = signal.cols() - 1;
 
+    }
+    // determine bounding box size
+    else {
+        // ensure lower limits of bounding box are not less than zero
+        lower_row = std::max(init_row - bounding_box_pix, 0.0);
+        lower_col = std::max(init_col - bounding_box_pix, 0.0);
+
+        // ensure upper limits of bounding box are not bigger than the map
+        upper_row = std::min(init_row + bounding_box_pix, static_cast<double>(signal.rows()) - 1);
+        upper_col = std::min(init_col + bounding_box_pix, static_cast<double>(signal.cols()) - 1);
+    }
+
+    // size of bounding box region
     double n_rows = upper_row - lower_row + 1;
     double n_cols = upper_col - lower_col + 1;
 
-    // set lower limits
-    limits.col(0) << flux_low*init_flux, lower_col, lower_row, fwhm_low*init_fwhm,
-        fwhm_low*init_fwhm, ang_low;
+    // set lower limits of fitting parameters
+    limits.col(0) << flux_low*init_flux, lower_col, lower_row, fwhm_low*init_sigma,
+        fwhm_low*init_sigma, ang_low;
 
-    // set upper limits
-    limits.col(1) << flux_high*init_flux, upper_col, upper_row, fwhm_high*init_fwhm,
-        fwhm_high*init_fwhm, ang_high;
+    // set upper limits of fitting parameters
+    limits.col(1) << flux_high*init_flux, upper_col, upper_row, fwhm_high*init_sigma,
+        fwhm_high*init_sigma, ang_high;
 
-    Eigen::VectorXd x,y;
+    Eigen::VectorXd x, y;
 
     // axes coordinate vectors for meshgrid
     x = Eigen::VectorXd::LinSpaced(n_cols, lower_col, upper_col);
@@ -207,12 +285,15 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     // get meshgrid
     auto xy = g.meshgrid(x, y);
 
+    auto map_sigma = engine_utils::calc_std_dev(signal_fit_region);
+
+    // standard deviation of signal map
     Eigen::MatrixXd sigma(weight.rows(), weight.cols());
 
     for (Eigen::Index i=0; i<weight.rows(); i++) {
         for (Eigen::Index j=0; j<weight.cols(); j++) {
             if (weight(i,j)!=0) {
-                sigma(i,j) = 1./sqrt(weight(i,j));
+                sigma(i,j) = map_sigma;//1./sqrt(weight(i,j));
             }
             else {
                 sigma(i,j) = 0;

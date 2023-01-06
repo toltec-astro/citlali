@@ -37,22 +37,28 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
                   Eigen::DenseBase<Derived> &array_indices, Eigen::DenseBase<Derived> &map_indices,
                   double pixel_size_rad) {
 
+    // set chunk as demodulated
     if (run_polarization) {
         out.demodulated = true;
     }
 
+    // number of points in scan
     Eigen::Index n_pts = in.scans.data.rows();
 
+    // start index of inner scans
     auto si = filter.n_terms;
+    // end index of inner scans
     auto sl = in.scan_indices.data(1) - in.scan_indices.data(0) + 1;
 
+    // set up flags
     in.flags.data.setOnes(in.scans.data.rows(), in.scans.data.cols());
 
+    // create kernel if requested
     if (run_kernel) {
         SPDLOG_DEBUG("creating kernel timestream");
         if (kernel.type == "gaussian") {
             SPDLOG_DEBUG("creating symmetric gaussian kernel");
-            kernel.create_symmetric_gaussian_kernel(in, pixel_axes, redu_type, calib.apt, pointing_offsets_arcsec,
+            kernel.create_gaussian_kernel(in, pixel_axes, redu_type, calib.apt, pointing_offsets_arcsec,
                                                     det_indices);
         }
         else if (kernel.type == "airy") {
@@ -111,10 +117,12 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         out.despiked = true;
     }
 
+    // timestream filtering
     if (run_tod_filter) {
         SPDLOG_DEBUG("convolving signal with tod filter");
         filter.convolve(in.scans.data);
 
+        // filter kernel
         if (run_kernel) {
             SPDLOG_DEBUG("convolving kernel with tod filter");
             filter.convolve(in.kernel.data);
@@ -137,8 +145,8 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         downsampler.downsample(in_flags, out.flags.data);
 
         // loop through telescope meta data and downsample
+        SPDLOG_DEBUG("downsampling telescope");
         for (auto const& x: in.tel_data.data) {
-            SPDLOG_DEBUG("downsampling telescope");
             // get the block of in tel data that corresponds to the inner scan indices
             Eigen::Ref<Eigen::VectorXd> in_tel =
                 in.tel_data.data[x.first].segment(si, sl);
@@ -180,7 +188,7 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     if (run_calibrate) {
         SPDLOG_DEBUG("calibrating timestream");
         //calc tau at toltec frequencies
-        auto tau_freq = calibration.calc_tau(in.tel_data.data["TelElAct"], telescope.tau_225_GHz);
+        auto tau_freq = calibration.calc_tau(out.tel_data.data["TelElAct"], telescope.tau_225_GHz);
         // calibrate tod
         calibration.calibrate_tod(out, det_indices, array_indices, calib, tau_freq);
 

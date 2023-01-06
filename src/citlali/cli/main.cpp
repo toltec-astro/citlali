@@ -272,19 +272,26 @@ int run(const rc_t &rc) {
                     // get photometry config options
                     if constexpr (std::is_same_v<todproc_t, TimeOrderedDataProc<Beammap>>) {
                         todproc.engine().get_photometry_config(rawobs.photometry_calib_info().config());
+
+                        // if beammap generate the apt table from the files
+                        SPDLOG_INFO("making apt file from raw nc files");
+                        todproc.get_apt_from_files(rawobs);
+                        SPDLOG_INFO("calib.apt {}",todproc.engine().calib.apt);
                     }
 
-                    // get apt table
-                    auto apt_path = rawobs.array_prop_table().filepath();
-                    SPDLOG_INFO("getting array properties table {}", apt_path);
+                    else {
+                        // get apt table
+                        auto apt_path = rawobs.array_prop_table().filepath();
+                        SPDLOG_INFO("getting array properties table {}", apt_path);
 
-                    std::vector<std::string> raw_filenames, interfaces;
-                    for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
-                        raw_filenames.push_back(data_item.filepath());
-                        interfaces.push_back(data_item.interface());
+                        std::vector<std::string> raw_filenames, interfaces;
+                        for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
+                            raw_filenames.push_back(data_item.filepath());
+                            interfaces.push_back(data_item.interface());
+                        }
+
+                        todproc.engine().calib.get_apt(apt_path, raw_filenames, interfaces);
                     }
-
-                    todproc.engine().calib.get_apt(apt_path, raw_filenames, interfaces);
 
                     // get sample rate
                     SPDLOG_DEBUG("getting sample rate");
@@ -364,6 +371,31 @@ int run(const rc_t &rc) {
 
                     // get sample rate
                     if (co.n_inputs() > 1) {
+                        // get astrometry config options
+                        todproc.engine().get_astrometry_config(rawobs.astrometry_calib_info().config());
+                        // get photometry config options
+                        if constexpr (std::is_same_v<todproc_t, TimeOrderedDataProc<Beammap>>) {
+                            todproc.engine().get_photometry_config(rawobs.photometry_calib_info().config());
+
+                            // if beammap generate the apt table from the files
+                            SPDLOG_INFO("making apt file from raw nc files");
+                            todproc.get_apt_from_files(rawobs);
+                        }
+
+                        // get apt file
+                        else {
+                            auto apt_path = rawobs.array_prop_table().filepath();
+                            SPDLOG_INFO("getting array properties table {}", apt_path);
+
+                            std::vector<std::string> raw_filenames, interfaces;
+                            for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
+                                raw_filenames.push_back(data_item.filepath());
+                                interfaces.push_back(data_item.interface());
+                            }
+
+                            todproc.engine().calib.get_apt(apt_path, raw_filenames, interfaces);
+                        }
+
                         SPDLOG_DEBUG("getting sample rate");
                         todproc.engine().telescope.fsmp = rawobs_kids_meta.back().get_typed<double>("fsmp");
                     }
@@ -415,20 +447,6 @@ int run(const rc_t &rc) {
                     if (todproc.engine().verbose_mode) {
                         SPDLOG_DEBUG("creating obsnum logs directory");
                         fs::create_directories(todproc.engine().obsnum_dir_name + "/logs/");
-                    }
-
-                    // get apt table
-                    if (co.n_inputs() > 1) {
-                        auto apt_path = rawobs.array_prop_table().filepath();
-                        SPDLOG_INFO("getting array properties table {}", apt_path);
-
-                        std::vector<std::string> raw_filenames, interfaces;
-                        for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
-                            raw_filenames.push_back(data_item.filepath());
-                            interfaces.push_back(data_item.interface());
-                        }
-
-                        todproc.engine().calib.get_apt(apt_path, raw_filenames, interfaces);
                     }
 
                     // get hwp if polarized reduction is requested
@@ -563,6 +581,7 @@ int run(const rc_t &rc) {
                     if (todproc.engine().run_map_filter) {
                         SPDLOG_INFO("filtering coadded maps");
                         // filter
+                        todproc.engine().run_wiener_filter(todproc.engine().cmb);
 
                         // calculate filtered coadded map psds
                         SPDLOG_INFO("calculating coadded map psds");

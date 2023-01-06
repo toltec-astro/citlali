@@ -64,6 +64,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
         return fmt::format("invalid or missing keys={}", missing_keys);
     }
 
+    void get_apt_from_files(const RawObs &rawobs);
     void create_output_dir();
     void check_inputs(const RawObs &rawobs);
     void align_timestreams(const RawObs &rawobs);
@@ -95,6 +96,62 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
 private:
     Engine m_engine;
 };
+
+// make apt table from raw files instead of an ecsv table
+template <class EngineType>
+void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
+    using namespace netCDF;
+    using namespace netCDF::exceptions;
+
+    Eigen::Index n_dets = 0;
+    std::vector<Eigen::Index> dets, nws, arrays;
+    for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
+        try {
+            // load data file
+            NcFile fo(data_item.filepath(), NcFile::read);
+            auto vars = fo.getVars();
+
+            // get the interface
+            Eigen::Index interface = std::stoi(data_item.interface().substr(6));
+
+            // add the current file's number of dets to the total
+            n_dets += vars.find("Data.Toltec.Is")->second.getDim(1).getSize();
+
+            // get the number of dets in file
+            dets.push_back(vars.find("Data.Toltec.Is")->second.getDim(1).getSize());
+            // get the nw from interface
+            nws.push_back(interface);
+            // get the array from the interface
+            arrays.push_back(engine().toltec_io.nw_to_array_map[interface]);
+
+            fo.close();
+
+        } catch (NcException &e) {
+            SPDLOG_ERROR("{}", e.what());
+            throw DataIOError{fmt::format(
+                "failed to load data from netCDF file {}", data_item.filepath())};
+        }
+    }
+
+    // resize the apt vectors
+    for (auto const& key : engine().calib.apt_header_keys) {
+        engine().calib.apt[key].setOnes(n_dets);
+    }
+
+    // add the nws and arrays to the apt table
+    Eigen::Index j = 0;
+    for (Eigen::Index i=0; i<nws.size(); i++) {
+        engine().calib.apt["nw"].segment(j,dets[i]).setConstant(nws[i]);
+        engine().calib.apt["array"].segment(j,dets[i]).setConstant(arrays[i]);
+        j = j + dets[i];
+    }
+
+    // setup nws, arrays, etc.
+    engine().calib.setup();
+
+    // filepath
+    engine().calib.apt_filepath = "internally generated for beammap";
+}
 
 // create output directories
 template <class EngineType>
@@ -162,6 +219,8 @@ void TimeOrderedDataProc<EngineType>::check_inputs(const RawObs &rawobs) {
 
             n_dets += vars.find("Data.Toltec.Is")->second.getDim(1).getSize();
 
+            fo.close();
+
         } catch (NcException &e) {
             SPDLOG_ERROR("{}", e.what());
             throw DataIOError{fmt::format(
@@ -204,6 +263,8 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
     // set network
     Eigen::Index nw = 0;
 
+    double fsmp = -1;
+
     // loop through input files
     for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
         try {
@@ -214,6 +275,19 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
             // get roach index for offsets
             int roach_index;
             vars.find("Header.Toltec.RoachIndex")->second.getVar(&roach_index);
+
+            // get sample rate
+            double fsmp_roach;
+            vars.find("Header.Toltec.SampleFreq")->second.getVar(&fsmp_roach);
+
+            // check if sample rate is the same
+            if (fsmp!=-1 && fsmp_roach!=fsmp) {
+                SPDLOG_ERROR("mismatched sample rate in toltec{}",roach_index);
+                std::exit(EXIT_FAILURE);
+            }
+            else {
+                fsmp = fsmp_roach;
+            }
 
             // get dimensions for time matrix
             Eigen::Index n_pts = vars.find("Data.Toltec.Ts")->second.getDim(0).getSize();
@@ -303,7 +377,6 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
 
     // loop through time vectors and get the smallest
     for (Eigen::Index i=0; i<nw_ts.size(); i++) {
-
         // find start index that is larger than max start
         Eigen::Index si, ei;
         auto s = (abs(nw_ts[i].array() - max_t0)).minCoeff(&si);
@@ -647,8 +720,8 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
 
         // loop through scans
         for (Eigen::Index i=0; i<engine().telescope.scan_indices.cols(); i++) {
-            auto si = engine().telescope.scan_indices(2, i);
-            auto sl = engine().telescope.scan_indices(3, i) - engine().telescope.scan_indices(2, i) + 1;
+            auto si = engine().telescope.scan_indices(0, i);
+            auto sl = engine().telescope.scan_indices(1, i) - engine().telescope.scan_indices(0, i) + 1;
 
             std::map<std::string, Eigen::VectorXd> tel_data;
             for (auto const& x: engine().telescope.tel_data) {

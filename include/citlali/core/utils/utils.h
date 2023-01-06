@@ -176,6 +176,29 @@ auto calc_std_dev(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &
     return std_dev;
 }
 
+template <typename DerivedA, typename DerivedB>
+auto calc_rms(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &flag) {
+
+         // number of unflagged samples
+    auto n_good = (flag.derived().array() == 1).count();
+
+         // number of samples for divisor
+    double n_samples;
+
+    if (n_good == 0) {
+        return 0.0;
+    }
+
+    else {
+        n_samples = n_good;
+    }
+
+    // calc rms
+    double rms = std::sqrt((((data.derived().array() *flag.derived().template cast<double>().array())).square().sum()) / n_samples);
+
+    return rms;
+}
+
 auto hanning_window(Eigen::Index n_rows, Eigen::Index n_cols) {
     double a = 2.*pi/n_rows;
     double b = 2.*pi/n_cols;
@@ -199,18 +222,19 @@ auto hanning_window(Eigen::Index n_rows, Eigen::Index n_cols) {
 }
 
 template <typename Derived>
-auto find_weight_threshold(const Eigen::DenseBase<Derived> &weight, const double cov) {
+double find_weight_threshold(Eigen::DenseBase<Derived> &weight, double cov) {
 
     // find number of non-zero elements in weights
-    Eigen::Index n_non_zero = (weight.derived().array() !=0).count();
+    Eigen::Index n_non_zero = (weight.derived().array() > 0).count();
 
     // vector to hold non-zero elements
     Eigen::VectorXd non_zero_weights(n_non_zero);
+    non_zero_weights.setZero();
 
     // populate vector with non-zero elements
     Eigen::Index k = 0;
     for (Eigen::Index i=0; i<weight.rows(); i++) {
-        for (Eigen::Index j=0; j<weight.rows(); j++) {
+        for (Eigen::Index j=0; j<weight.cols(); j++) {
             if (weight(i,j) > 0) {
                 non_zero_weights(k) = weight(i,j);
                 k++;
@@ -226,10 +250,13 @@ auto find_weight_threshold(const Eigen::DenseBase<Derived> &weight, const double
     Eigen::Index cov_limit_index = 0.75*non_zero_weights.size();
 
     // get weight value at cov_limit_index + size/2
-    double weight_val = non_zero_weights[std::floor((cov_limit_index + non_zero_weights.size())/2.)];
+    Eigen::Index weight_index = std::floor((cov_limit_index + non_zero_weights.size())/2.);
+    double weight_val = non_zero_weights(weight_index);
+
+    double wc = weight_val*cov;
 
     // return weight value x coverage cut
-    return weight_val*cov;
+    return wc;
 }
 
 template <typename Derived>
@@ -611,5 +638,42 @@ void write_png_file(char* file_name, int width, int height) {
 
     fclose(fp);
 }*/
+
+class SplineFunction {
+public:
+    double x_min;
+    double x_max;
+    SplineFunction(Eigen::VectorXd const &x_vec,
+                   Eigen::VectorXd const &y_vec)
+        : x_min(x_vec.minCoeff()),
+          x_max(x_vec.maxCoeff()),
+          // Spline fitting here. X values are scaled down to [0, 1] for this.
+          spline_(Eigen::SplineFitting<Eigen::Spline<double, 1>>::Interpolate(
+              y_vec.transpose(),
+                                 // No more than cubic spline, but accept short vectors.
+
+              std::min<int>(x_vec.rows() - 1, 3),
+              scaled_values(x_vec)))
+    { }
+
+    double operator()(double x) const {
+        // x values need to be scaled down in extraction as well.
+        return spline_(scaled_value(x))(0);
+    }
+
+private:
+    // Helpers to scale X values down to [0, 1]
+    double scaled_value(double x) const {
+        return (x - x_min) / (x_max - x_min);
+    }
+
+    Eigen::RowVectorXd scaled_values(Eigen::VectorXd const &x_vec) const {
+        return x_vec.unaryExpr([this](double x) { return scaled_value(x); }).transpose();
+    }
+
+         // Spline of one-dimensional "points."
+    Eigen::Spline<double, 1> spline_;
+};
+
 
 } //namespace engine_utils

@@ -6,7 +6,7 @@
 #include <unsupported/Eigen/CXX11/Tensor>
 
 #include <citlali/core/utils/utils.h>
-#include <citlali/core/mapmaking/wiener_filter.h>
+//#include <citlali/core/mapmaking/wiener_filter.h>
 
 namespace mapmaking {
 
@@ -106,8 +106,7 @@ public:
 
     void normalize_maps();
 
-    template <typename Derived>
-    auto calc_cov_region(Eigen::DenseBase<Derived> &);
+    std::tuple<double, Eigen::MatrixXd, Eigen::Index, Eigen::Index> calc_cov_region(Eigen::Index);
 
     void calc_map_psd();
     void calc_map_hist();
@@ -137,21 +136,23 @@ void ObsMapBuffer::normalize_maps() {
                 }
             }
         }
-    }    
+    }
 
     // normalize noise maps
-    for (Eigen::Index i=0; i<signal.size(); i++) {
-        for (Eigen::Index j=0; j<n_rows; j++) {
-            for (Eigen::Index k=0; k<n_cols; k++) {
-                double sig_weight = weight.at(i)(j,k);
-                if (sig_weight != 0.) {
-                    for (Eigen::Index l=0; l<noise.size(); l++) {
-                        noise[i](j,k,l) = (noise.at(i)(j,k,l)) / sig_weight;
+    if (!noise.empty()) {
+        for (Eigen::Index i=0; i<signal.size(); i++) {
+            for (Eigen::Index j=0; j<n_rows; j++) {
+                for (Eigen::Index k=0; k<n_cols; k++) {
+                    double sig_weight = weight.at(i)(j,k);
+                    if (sig_weight != 0.) {
+                        for (Eigen::Index l=0; l<n_noise; l++) {
+                            noise[i](j,k,l) = (noise.at(i)(j,k,l)) / sig_weight;
+                        }
                     }
-                }
-                else {
-                    for (Eigen::Index l=0; l<noise.size(); l++) {
-                        noise[i](j,k,l) = 0;
+                    else {
+                        for (Eigen::Index l=0; l<noise.size(); l++) {
+                            noise[i](j,k,l) = 0;
+                        }
                     }
                 }
             }
@@ -159,13 +160,12 @@ void ObsMapBuffer::normalize_maps() {
     }
 }
 
-template <typename Derived>
-auto ObsMapBuffer::calc_cov_region(Eigen::DenseBase<Derived> &w) {
+std::tuple<double, Eigen::MatrixXd, Eigen::Index, Eigen::Index> ObsMapBuffer::calc_cov_region(Eigen::Index i) {
     // calculate weight threshold
-    double weight_threshold = engine_utils::find_weight_threshold(w, cov_cut);
+    double weight_threshold = engine_utils::find_weight_threshold(weight[i], cov_cut);
 
     // calculate coverage ranges
-    Eigen::MatrixXd cov_ranges = engine_utils::set_cov_cov_ranges(w, weight_threshold);
+    Eigen::MatrixXd cov_ranges = engine_utils::set_cov_cov_ranges(weight[i], weight_threshold);
 
     Eigen::Index cov_n_rows = cov_ranges(1,0) - cov_ranges(0,0) + 1;
     Eigen::Index cov_n_cols = cov_ranges(1,1) - cov_ranges(0,1) + 1;
@@ -189,7 +189,7 @@ void ObsMapBuffer::calc_map_psd() {
     // loop through maps
     for (Eigen::Index i=0; i<signal.size(); i++) {
         // calculate weight threshold
-        auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = calc_cov_region(weight[i]);
+        auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = calc_cov_region(i);
 
         // ensure even rows
         if (cov_n_rows % 2 == 1) {
@@ -204,17 +204,18 @@ void ObsMapBuffer::calc_map_psd() {
         }
 
         // explicit copy
-        Eigen::MatrixXd sig = signal[i].block(cov_ranges(0,0), cov_ranges(0,1), n_rows, n_cols);
+        Eigen::MatrixXd sig = signal[i].block(cov_ranges(0,0), cov_ranges(0,1), cov_n_rows, cov_n_cols);
+
         // calculate psds
         auto [p, pf, p_2d, pf_2d] = engine_utils::calc_2D_psd(sig, rows_tan_vec, cols_tan_vec, cov_n_rows, cov_n_cols,
                                                            smooth_window, parallel_policy);
 
         // move current map psd values into vectors
-        psds.push_back(std::move(p));
-        psd_freqs.push_back(std::move(pf));
+        psds.push_back(p);
+        psd_freqs.push_back(pf);
 
-        psd_2ds.push_back(std::move(p_2d));
-        psd_2d_freqs.push_back(std::move(pf_2d));
+        psd_2ds.push_back(p_2d);
+        psd_2d_freqs.push_back(pf_2d);
 
         // get average noise psd if noise maps are requested
         if (!noise.empty()) {
@@ -223,7 +224,7 @@ void ObsMapBuffer::calc_map_psd() {
                 Eigen::Tensor<double, 2> noise_tensor = noise[i].chip(j, 2);
                 // map to eigen matrix
                 Eigen::Map<Eigen::MatrixXd> noise_matrix(noise_tensor.data(), noise_tensor.dimension(0), noise_tensor.dimension(1));
-                sig = noise_matrix.block(cov_ranges(0,0), cov_ranges(0,1), n_rows, n_cols);
+                sig = noise_matrix.block(cov_ranges(0,0), cov_ranges(0,1), cov_n_rows, cov_n_cols);
 
                 // calculate psds
                 auto [noise_p, noise_pf, noise_p_2d, noise_pf_2d] = engine_utils::calc_2D_psd(sig, rows_tan_vec, cols_tan_vec, cov_n_rows,
@@ -261,7 +262,7 @@ void ObsMapBuffer::calc_map_hist() {
     // loop through maps
     for (Eigen::Index i=0; i<signal.size(); i++) {
         // calculate weight threshold
-        auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = calc_cov_region(weight[i]);
+        auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = calc_cov_region(i);
 
         // setup input signal data
         Eigen::MatrixXd sig = signal[i].block(cov_ranges(0,0),cov_ranges(0,1), cov_n_rows, cov_n_cols);
@@ -279,7 +280,7 @@ void ObsMapBuffer::calc_map_hist() {
                 Eigen::Tensor<double, 2> noise_tensor = noise[i].chip(j,2);
                 // map to eigen matrix
                 Eigen::Map<Eigen::MatrixXd> noise_matrix(noise_tensor.data(), noise_tensor.dimension(0), noise_tensor.dimension(1));
-                sig = noise_matrix.block(cov_ranges(0,0), cov_ranges(0,1), n_rows, n_cols);
+                sig = noise_matrix.block(cov_ranges(0,0), cov_ranges(0,1), cov_n_rows, cov_n_cols);
 
                 // calculate histogram and bins
                 auto [noise_h, noise_h_bins] = engine_utils::calc_hist(sig, hist_n_bins);
@@ -299,13 +300,6 @@ void ObsMapBuffer::calc_map_hist() {
     }
 }
 
-void ObsMapBuffer::wiener_filter_maps() {
-    // loop through maps
-    for (Eigen::Index i=0; i<signal.size(); i++) {
-        //WienerFilter wiener_filter;
-        //wiener_filter.make_template();
-        //wiener_filter.run();
-    }
-}
+void ObsMapBuffer::wiener_filter_maps() {}
 
 } // namespace mapmaking
