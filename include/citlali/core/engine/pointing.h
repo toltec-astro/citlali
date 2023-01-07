@@ -39,6 +39,8 @@ public:
         "angle_err"
     };
 
+    std::map<std::string,std::string> ppt_header_units;
+
     void setup();
     auto run();
 
@@ -100,7 +102,23 @@ void Pointing::setup() {
         cmb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0)*RAD_TO_DEG;
     }
 
-    // populate ppt meta information
+    ppt_header_units = {
+        {"array","N/A"},
+        {"amp", omb.sig_unit},
+        {"amp_err", omb.sig_unit},
+        {"x_t", "arcsec"},
+        {"x_t_err", "arcsec"},
+        {"y_t", "arcsec"},
+        {"y_t_err", "arcsec"},
+        {"a_fwhm", "arcsec"},
+        {"a_fwhm_err", "arcsec"},
+        {"b_fwhm", "arcsec"},
+        {"b_fwhm_err", "arcsec"},
+        {"angle", "rad"},
+        {"angle_err", "rad"}
+    };
+
+    /* populate ppt meta information */
 
     // add obsnum to meta data
     calib.apt_meta["obsnum"] = obsnum;
@@ -444,17 +462,18 @@ void Pointing::output() {
             std::size_t found = extname.find("signal");
 
             // find next signal extension
-            while (found!=std::string::npos && k<f_io->at(map_index).hdus.size()) {
+            while (found==std::string::npos && k<f_io->at(map_index).hdus.size()) {
                 k = k + 1;
                 // get current hdu extension name
                 extname = f_io->at(map_index).hdus.at(k)->name();
                 // see if this is a signal extension
                 found = extname.find("signal");
             }
+
             // add ppt table
             Eigen::Index j = 0;
             for (auto const& key: ppt_header) {
-                f_io->at(map_index).hdus.at(k)->addKey("POINTING." + key, ppt_table(i,j), key);
+                f_io->at(map_index).hdus.at(k)->addKey("POINTING." + key, ppt_table(i,j), key + " (" + ppt_header_units[key] + ")");
                 j++;
             }
         }
