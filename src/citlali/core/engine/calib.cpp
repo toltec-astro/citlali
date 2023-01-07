@@ -6,19 +6,30 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
     // store apt filepath
     apt_filepath = filepath;
     // read in the apt table
-    auto [table, header, meta] = to_matrix_from_ecsv(filepath);
+    //auto [table, header, meta] = to_matrix_from_ecsv(filepath);
+    auto [apt_temp, header] = to_map_from_ecsv_mixted_type(filepath);
 
-    // apt header
-    apt_meta = meta;
+    SPDLOG_INFO("header {}",header);
 
-    // loop through the apt table header keys and populate calib_data
-    for (auto const& value: apt_header_keys) {
-        auto it = find(header.begin(), header.end(), value);
-        if (it != header.end()) {
-            int index = it - header.begin();
-            apt[value] = table.col(index);
+    // vector to hold any missing header keys
+    std::vector<std::string> missing_header_keys;
+
+    // look for missing header keys by comparing to required keys
+    for (auto &apt_header_key: apt_header_keys) {
+        bool found = std::find(header.begin(), header.end(), apt_header_key) != header.end();
+        if (!found) {
+            missing_header_keys.push_back(apt_header_key);
         }
     }
+
+    // exit if any keys are missing
+    if (!missing_header_keys.empty()) {
+        SPDLOG_ERROR("apt table is missing required columns {}", missing_header_keys);
+        std::exit(EXIT_FAILURE);
+    }
+
+    // set apt table
+    apt = apt_temp;
 
     // run setup on apt table
     setup();
@@ -26,6 +37,7 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
     std::vector<Eigen::Index> roach_indices, missing;
     Eigen::Index n_dets_temp = 0;
 
+    // get roach indices from raw data files
     for (Eigen::Index i=0; i<raw_filenames.size(); i++) {
         netCDF::NcFile fo(raw_filenames[i], netCDF::NcFile::read);
         auto vars = fo.getVars();
@@ -40,16 +52,19 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
 
     Eigen::VectorXi interfaces_vec(interfaces.size());
 
+    // get network interfaces
     for (Eigen::Index i=0; i<interfaces.size(); i++) {
         interfaces_vec(i) = std::stoi(interfaces[i].substr(6));
     }
 
-    std::map<std::string, Eigen::VectorXd> apt_temp;
-
+    // count up number of detectors
     for (Eigen::Index i=0; i<interfaces.size(); i++) {
         n_dets_temp = n_dets_temp + (apt["nw"].array() == interfaces_vec(i)).count();
     }
 
+
+    // populate apt temp
+    apt_temp.clear();
     for (auto const& value: apt_header_keys) {
         apt_temp[value].setZero(n_dets_temp);
         Eigen::Index i = 0;
@@ -62,6 +77,7 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
     }
 
     // populate apt table
+    apt.clear();
     for (auto const& value: apt_header_keys) {
         apt[value].setZero(n_dets_temp);
         apt[value] = apt_temp[value];
@@ -114,7 +130,7 @@ void Calib::calc_flux_calibration(std::string units) {
         for (Eigen::Index i=0; i<n_dets; i++) {
             auto array = apt["array"](i);
             auto det_fwhm = (std::get<0>(array_fwhms[array]) + std::get<1>(array_fwhms[array]))/2;
-            auto beam_area = 2.*pi*pow(det_fwhm/STD_TO_FWHM,2);
+            auto beam_area = 2.*pi*pow(det_fwhm*FWHM_TO_STD,2);
             flux_conversion_factor(i) = mJY_ASEC_to_MJY_SR/beam_area;
         }
     }
@@ -145,8 +161,10 @@ void Calib::calc_flux_calibration(std::string units) {
 void Calib::setup() {
     // get number of detectors
     n_dets = apt["uid"].size();
+
     // get number of networks
     n_nws = ((apt["nw"].tail(n_dets - 1) - apt["nw"].head(n_dets - 1)).array() > 0).count() + 1;
+
     // get number of arrays
     n_arrays = ((apt["array"].tail(n_dets - 1) - apt["array"].head(n_dets - 1)).array() > 0).count() + 1;
 

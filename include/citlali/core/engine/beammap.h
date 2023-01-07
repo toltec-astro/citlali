@@ -72,7 +72,7 @@ public:
     void output();
 };
 
-void Beammap::setup() {
+void Beammap::setup() {    
     // ensure all detectors are initially flagged as good
     if (map_grouping=="detector") {
         calib.apt["flag"].setOnes();
@@ -146,6 +146,12 @@ void Beammap::setup() {
     // create timestream files
     if (run_tod_output) {
         create_tod_files();
+    }
+
+    // tod output mode require sequential policy so set explicitly
+    if (run_tod_output || verbose_mode) {
+        SPDLOG_WARN("tod output mode require sequential policy");
+        parallel_policy = "seq";
     }
 
     /* update apt table meta data */
@@ -322,7 +328,7 @@ auto Beammap::run_timestream() {
             // create a new rtcdata for each polarization
             TCData<TCDataKind::RTC,Eigen::MatrixXd> rtcdata_pol;
             // demodulate
-            SPDLOG_INFO("demodulating polarization");
+            //SPDLOG_INFO("demodulating polarization");
             auto [array_indices, nw_indices, det_indices] = rtcproc.polarization.demodulate_timestream(rtcdata, rtcdata_pol,
                                                                                                        stokes_param,
                                                                                                        redu_type, calib);

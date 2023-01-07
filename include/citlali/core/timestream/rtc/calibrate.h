@@ -108,6 +108,9 @@ template <typename Derived, class calib_t, typename tau_t>
 void Calibration::calibrate_tod(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::DenseBase<Derived> &det_indices,
                                 Eigen::DenseBase<Derived> &array_indices, calib_t &calib, tau_t &tau_freq) {
 
+    // resize fcf
+    in.fcf.data.resize(in.scans.data.cols());
+
     // loop through detectors
     for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
         // current detector index in apt table

@@ -92,14 +92,14 @@ auto mapFitter::ceres_fit(const Model &model,
     }
 
     // vector to store indices of parameters to keep constant
-    /*std::vector<int> sspv;
+    std::vector<int> sspv;
     sspv.push_back(limits.rows()-1);
     // mark parameter as constant
     if (sspv.size() > 0 ){
         ceres::SubsetParameterization *pcssp
                 = new ceres::SubsetParameterization(limits.rows(), sspv);
         problem->SetParameterization(params.data(), pcssp);
-    }*/
+    }
 
     // apply solver options
     Solver::Options options;

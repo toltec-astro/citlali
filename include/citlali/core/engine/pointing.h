@@ -79,6 +79,12 @@ void Pointing::setup() {
         create_tod_files();
     }
 
+    // tod output mode require sequential policy so set explicitly
+    if (run_tod_output || verbose_mode) {
+        SPDLOG_WARN("tod output mode require sequential policy");
+        parallel_policy = "seq";
+    }
+
     // set center pointing
     if (telescope.pixel_axes == "icrs") {
         omb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0)*RAD_TO_DEG;

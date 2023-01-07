@@ -112,7 +112,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
             cleaner.remove_eig_values(in_scans, in_flags, evals, evecs, out_scans);
 
             SPDLOG_DEBUG("evals {}", evals.head(cleaner.n_eig_to_cut));
-            SPDLOG_DEBUG("evecs {}", evecs.block(0,0,evecs.rows(),cleaner.n_eig_to_cut));
+            SPDLOG_DEBUG("evecs {}", evecs.block(0,0,cleaner.n_eig_to_cut,evecs.cols()));
 
             in.evals.data = evals.head(cleaner.n_eig_to_cut);
 

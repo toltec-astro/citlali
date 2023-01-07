@@ -318,12 +318,6 @@ void Engine::get_citlali_config(CT &config) {
     get_value(config, tod_type, missing_keys, invalid_keys, std::tuple{"timestream","type"});
     get_value(config, run_tod_output, missing_keys, invalid_keys, std::tuple{"timestream","output","enabled"});
 
-    // tod output mode require sequential policy so set explicitly
-    if (run_tod_output || verbose_mode) {
-        SPDLOG_WARN("tod output mode require sequential policy");
-        parallel_policy = "seq";
-    }
-
     // set parallelization for psd/wiener filter ffts
     omb.parallel_policy = parallel_policy;
     cmb.parallel_policy = parallel_policy;
@@ -824,6 +818,7 @@ void Engine::create_map_files() {
 }
 
 void Engine::create_tod_files() {
+    tod_filename.clear();
     for (const auto &[stokes_index,stokes_param]: rtcproc.polarization.stokes_params) {
         auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
                                                   engine_utils::toltecIO::timestream,
@@ -1292,6 +1287,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.RMSHIGH", ptcproc.upper_std_dev, "Upper RMS cutoff");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED", ptcproc.run_clean, "Cleaned");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.NEIG", ptcproc.cleaner.n_eig_to_cut, "Number of eigenvalues removed");
+
+    fits_io->at(i).pfits->pHDU().addKey("SAMPRATE", telescope.fsmp, "sample rate");
 
     // add telescope file header information
     for (auto const& [key, val] : telescope.tel_header) {

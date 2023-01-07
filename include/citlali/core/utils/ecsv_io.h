@@ -6,6 +6,14 @@
 #include <tula/datatable.h>
 #include <tula/filename.h>
 
+#include <tula/ecsv/core.h>
+#include <csv_parser/parser.hpp>
+#include <sstream>
+#include <tula/ecsv/table.h>
+#include <tula/formatter/container.h>
+#include <tula/formatter/matrix.h>
+#include <yaml-cpp/node/emit.h>
+
 // create Eigen::Matrix from ecsv file
 inline auto to_matrix_from_ecsv(std::string filepath) {
     namespace fs = std::filesystem;
@@ -54,4 +62,46 @@ inline void to_ecsv_from_matrix(std::string filepath, Eigen::DenseBase<Derived> 
             throw e;
         }
     }
+}
+
+inline auto to_map_from_ecsv_mixted_type(std::string filepath) {
+    using namespace tula::ecsv;
+
+    std::ifstream fo(filepath);
+    auto tbl = ECSVTable(ECSVHeader::read(fo));
+    // parse the contents
+    auto parser = aria::csv::CsvParser(fo).delimiter(tbl.header().delimiter());
+    // load rows
+    tbl.load_rows(parser);
+
+    // vector to hold header
+    std::vector<std::string> header;
+
+    // get header colnames
+    for (Eigen::Index i=0; i<tbl.header().colnames().size(); i++) {
+        header.push_back(tbl.header().colnames()[i]);
+    }
+
+    // std map for holding data
+    std::map<std::string, Eigen::VectorXd> table;
+
+    // get ints
+    auto int_colnames =  tbl.array_data<int>().colnames();
+    for (auto & col : int_colnames) {
+        table[col] = tbl.col<int>(col).data.cast<double> ();
+    }
+
+    // get bools
+    auto bool_colnames =  tbl.array_data<bool>().colnames();
+    for (auto & col : bool_colnames) {
+        table[col] = tbl.col<bool>(col).data.cast<double> ();
+    }
+
+    // get doubles
+    auto dbl_colnames =  tbl.array_data<double>().colnames();
+    for (auto & col : dbl_colnames) {
+        table[col] = tbl.col<double>(col).data;
+    }
+    // return map and header
+    return std::tuple {table, header};
 }
