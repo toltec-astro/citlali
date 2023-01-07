@@ -195,7 +195,7 @@ timestream: # timestream reduction parameters
     image_ext_name: signal # extention name if FITS file
     type: gaussian # how to make kernel (gaussian, airy, fits)
   output: # controls options for writing out TOD as netCDF file
-    chunk_type: rtc # type of chunks to output (rtc or ptc)
+    chunk_type: rtc # type of chunks to output (rtc, ptc, both)
     enabled: false # enable or disable TOD output
   calibration: # flux calibration
     enabled: false # enable or disable flux calibration (ignored for beammapping)

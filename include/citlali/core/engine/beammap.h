@@ -145,7 +145,13 @@ void Beammap::setup() {
     }
     // create timestream files
     if (run_tod_output) {
-        create_tod_files();
+        if (tod_output_type == "rtc" || tod_output_type== "both") {
+            create_tod_files<engine_utils::toltecIO::rtc_timestream>();
+        }
+
+        if (tod_output_type == "ptc" || tod_output_type== "both") {
+            create_tod_files<engine_utils::toltecIO::ptc_timestream>();
+        }
     }
 
     // tod output mode require sequential policy so set explicitly
@@ -345,8 +351,8 @@ auto Beammap::run_timestream() {
             if (run_tod_output) {
                 SPDLOG_INFO("writing rtcdata");
                 if (tod_output_type == "rtc") {
-                    ptcproc.append_to_netcdf(ptcdata, tod_filename[stokes_param], redu_type, telescope.pixel_axes, pointing_offsets_arcsec,
-                                             det_indices, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
+                    ptcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], redu_type, telescope.pixel_axes,
+                                             pointing_offsets_arcsec, det_indices, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
                 }
             }
 
@@ -453,8 +459,9 @@ auto Beammap::run_loop() {
                 SPDLOG_INFO("writing ptcdata");
                 if (tod_output_type == "ptc") {
                     if (current_iter == 0) {
-                        ptcproc.append_to_netcdf(ptcs[i], tod_filename["I"], redu_type, telescope.pixel_axes, pointing_offsets_arcsec,
-                                                ptcs[i].det_indices.data, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
+                        ptcproc.append_to_netcdf(ptcs[i], tod_filename["ptc_I"], redu_type, telescope.pixel_axes,
+                                                 pointing_offsets_arcsec, ptcs[i].det_indices.data, calib.apt, tod_output_type, verbose_mode,
+                                                 telescope.d_fsmp);
                     }
                 }
             }
@@ -584,7 +591,7 @@ auto Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                 scan++;
                 return std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
                                   std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>> (std::move(rtcdata), kidsproc,
-                                                                                                  std::move(scan_rawobs));
+                                                                                                   std::move(scan_rawobs));
             }
             // reset scan to zero for each obs
             scan = 0;

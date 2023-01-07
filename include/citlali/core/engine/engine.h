@@ -221,6 +221,7 @@ public:
                           Eigen::DenseBase<Derived> &, std::string);
 
     void create_map_files();
+    template <engine_utils::toltecIO::ProdType prod_t>
     void create_tod_files();
 
     //template <TCDataKind tc_t>
@@ -322,7 +323,7 @@ void Engine::get_citlali_config(CT &config) {
     omb.parallel_policy = parallel_policy;
     cmb.parallel_policy = parallel_policy;
 
-    get_value(config, tod_output_type, missing_keys, invalid_keys, std::tuple{"timestream","output", "chunk_type"});
+    get_value(config, tod_output_type, missing_keys, invalid_keys, std::tuple{"timestream","output", "chunk_type"}, {"rtc","ptc","both"});
     get_value(config, telescope.time_chunk, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "length_sec"});
     get_value(config, telescope.force_chunk, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "force_chunk"});
     get_value(config, ptcproc.weighting_type, missing_keys, invalid_keys, std::tuple{"timestream","weighting", "type"},{"full","approximate"});
@@ -817,16 +818,34 @@ void Engine::create_map_files() {
     }
 }
 
+template <engine_utils::toltecIO::ProdType prod_t>
 void Engine::create_tod_files() {
     tod_filename.clear();
     for (const auto &[stokes_index,stokes_param]: rtcproc.polarization.stokes_params) {
-        auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
-                                                  engine_utils::toltecIO::timestream,
-                                                  engine_utils::toltecIO::raw>(obsnum_dir_name + "/raw/", redu_type, "",
-                                                                                      obsnum, telescope.sim_obs);
 
-        tod_filename[stokes_param] = filename + "_" + stokes_param + ".nc";
-        netCDF::NcFile fo(tod_filename[stokes_param], netCDF::NcFile::replace);
+        std::string name;
+        if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {
+
+            auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
+                                                      engine_utils::toltecIO::rtc_timestream,
+                                                      engine_utils::toltecIO::raw>(obsnum_dir_name + "/raw/", redu_type, "",
+                                                                                          obsnum, telescope.sim_obs);
+
+            tod_filename["rtc_" + stokes_param] = filename + "_" + stokes_param + ".nc";
+            name = "rtc_" + stokes_param;
+        }
+
+        else if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
+
+            auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
+                                                      engine_utils::toltecIO::ptc_timestream,
+                                                      engine_utils::toltecIO::raw>(obsnum_dir_name + "/raw/", redu_type, "",
+                                                                                   obsnum, telescope.sim_obs);
+
+            tod_filename["ptc_" + stokes_param] = filename + "_" + stokes_param + ".nc";
+            name = "ptc_" + stokes_param;
+        }
+        netCDF::NcFile fo(tod_filename[name], netCDF::NcFile::replace);
 
         // add tod output type to file
         netCDF::NcDim n_tod_output_type_dim = fo.addDim("n_tod_output_type",1);

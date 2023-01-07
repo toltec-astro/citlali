@@ -22,7 +22,8 @@ public:
         noise = 1,
         psd = 2,
         hist = 3,
-        timestream = 4,
+        rtc_timestream = 4,
+        ptc_timestream = 5,
     };
 
     // raw or filtered
@@ -118,8 +119,12 @@ std::string toltecIO::create_filename(const std::string filepath, const std::str
         filename = filename + "_hist";
     }
 
-    if constexpr (prod_t == timestream) {
-        filename = filename + "_timestream";
+    if constexpr (prod_t == rtc_timestream) {
+        filename = filename + "_rtc_timestream";
+    }
+
+    if constexpr (prod_t == ptc_timestream) {
+        filename = filename + "_ptc_timestream";
     }
 
     if constexpr (filter_t == filtered) {
