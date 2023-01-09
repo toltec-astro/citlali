@@ -178,7 +178,7 @@ public:
     std::string weighting_type;
 
     // rtc or ptc types
-    std::string tod_output_type;
+    std::string tod_output_type, tod_output_subdir_name;
 
     // map grouping and algorithm
     std::string map_grouping, map_method;
@@ -324,11 +324,14 @@ void Engine::get_citlali_config(CT &config) {
     cmb.parallel_policy = parallel_policy;
 
     get_value(config, tod_output_type, missing_keys, invalid_keys, std::tuple{"timestream","output", "chunk_type"}, {"rtc","ptc","both"});
+    get_value(config, tod_output_subdir_name, missing_keys, invalid_keys, std::tuple{"timestream","output", "subdir_name"});
     get_value(config, telescope.time_chunk, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "length_sec"});
     get_value(config, telescope.force_chunk, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "force_chunk"});
     get_value(config, ptcproc.weighting_type, missing_keys, invalid_keys, std::tuple{"timestream","weighting", "type"},{"full","approximate"});
     get_value(config, ptcproc.lower_std_dev, missing_keys, invalid_keys, std::tuple{"timestream","weighting", "lower_std_factor"});
     get_value(config, ptcproc.upper_std_dev, missing_keys, invalid_keys, std::tuple{"timestream","weighting", "upper_std_factor"});
+
+    SPDLOG_INFO("tod_output_subdir_name {}",tod_output_subdir_name);
 
     /* polarization */
     get_value(config, rtcproc.run_polarization, missing_keys, invalid_keys, std::tuple{"timestream","polarimetry", "enabled"});
@@ -824,12 +827,20 @@ void Engine::create_tod_files() {
     for (const auto &[stokes_index,stokes_param]: rtcproc.polarization.stokes_params) {
 
         std::string name;
+        std::string dir_name = obsnum_dir_name + "/raw/";
+
+        if (tod_output_subdir_name != "null") {
+            dir_name = dir_name + tod_output_subdir_name + "/";
+        }
+
+        SPDLOG_INFO("dir name {}", dir_name);
+
         if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {
 
             auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
                                                       engine_utils::toltecIO::rtc_timestream,
-                                                      engine_utils::toltecIO::raw>(obsnum_dir_name + "/raw/", redu_type, "",
-                                                                                          obsnum, telescope.sim_obs);
+                                                      engine_utils::toltecIO::raw>(dir_name, redu_type, "",
+                                                                                   obsnum, telescope.sim_obs);
 
             tod_filename["rtc_" + stokes_param] = filename + "_" + stokes_param + ".nc";
             name = "rtc_" + stokes_param;
@@ -839,7 +850,7 @@ void Engine::create_tod_files() {
 
             auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
                                                       engine_utils::toltecIO::ptc_timestream,
-                                                      engine_utils::toltecIO::raw>(obsnum_dir_name + "/raw/", redu_type, "",
+                                                      engine_utils::toltecIO::raw>(dir_name, redu_type, "",
                                                                                    obsnum, telescope.sim_obs);
 
             tod_filename["ptc_" + stokes_param] = filename + "_" + stokes_param + ".nc";
@@ -854,7 +865,8 @@ void Engine::create_tod_files() {
         tod_output_type_var.putVar(tod_output_type_index, tod_output_type);
 
         netCDF::NcDim n_pts_dim = fo.addDim("n_pts");
-        netCDF::NcDim n_scan_indices_dim = fo.addDim("n_scan_indices", telescope.scan_indices.rows());
+        netCDF::NcDim n_raw_scan_indices_dim = fo.addDim("n_raw_scan_indices", telescope.scan_indices.rows());
+        netCDF::NcDim n_scan_indices_dim = fo.addDim("n_scan_indices", 2);
         netCDF::NcDim n_scans_dim = fo.addDim("n_scans", telescope.scan_indices.cols());
 
         Eigen::Index n_dets;
@@ -872,12 +884,16 @@ void Engine::create_tod_files() {
         netCDF::NcDim n_dets_dim = fo.addDim("n_dets", n_dets);
 
         std::vector<netCDF::NcDim> dims = {n_pts_dim, n_dets_dim};
-        std::vector<netCDF::NcDim> scans_dims = {n_scan_indices_dim, n_scans_dim};
+        std::vector<netCDF::NcDim> raw_scans_dims = {n_scans_dim, n_raw_scan_indices_dim};
+        std::vector<netCDF::NcDim> scans_dims = {n_scans_dim, n_raw_scan_indices_dim};
 
-        // scan indices
+        // raw file scan indices
+        netCDF::NcVar raw_scan_indices_v = fo.addVar("raw_scan_indices",netCDF::ncInt, raw_scans_dims);
+        Eigen::MatrixXI scans_indices_transposed = telescope.scan_indices;
+        raw_scan_indices_v.putVar(scans_indices_transposed.data());
+
+        // scan indices for data
         netCDF::NcVar scan_indices_v = fo.addVar("scan_indices",netCDF::ncInt, scans_dims);
-        Eigen::MatrixXI scans_indices_transposed = telescope.scan_indices.transpose();
-        scan_indices_v.putVar(scans_indices_transposed.data());
 
         // scans
         netCDF::NcVar scans_v = fo.addVar("signal",netCDF::ncDouble, dims);
@@ -1219,7 +1235,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
         else if (mb->sig_unit == "mJy/beam") {
             fits_io->at(i).pfits->pHDU().addKey("to_mJy/beam", 1, "Conversion to mJy/beam");
-            fits_io->at(i).pfits->pHDU().addKey("to_MJy/sr", 1/calib.mean_flux_conversion_factor[name], "Conversion to MJy/sr");
+            fits_io->at(i).pfits->pHDU().addKey("to_MJy/sr", 1/(calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC),
+                                                "Conversion to MJy/sr");
         }
     }
 

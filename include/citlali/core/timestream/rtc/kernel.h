@@ -132,22 +132,22 @@ void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in
         double az_off = 0;
         double el_off = 0;
 
-        /*if (map_grouping!="detector") {
+        if (map_grouping!="detector") {
             az_off = apt["x_t"](det_index);
             el_off = apt["y_t"](det_index);
-        }*/
+        }
 
         // get parameters for current detector
         auto amp = 1;
-        auto off_lat = apt["y_t"](det_index)*ASEC_TO_RAD;
-        auto off_lon = apt["x_t"](det_index)*ASEC_TO_RAD;
-        auto rot_ang = 0;
+        auto off_lat = 0;//apt["y_t"](det_index)*ASEC_TO_RAD;
+        auto off_lon = 0;//apt["x_t"](det_index)*ASEC_TO_RAD;
+        auto rot_ang = apt["angle"](det_index);
 
         auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off,
                                                           pixel_axes, pointing_offsets_arcsec);
 
         // distance to source to truncate it
-        auto distance = ((lat.array() - off_lat).pow(2) + (lon.array() - off_lon).pow(2)).sqrt();
+        auto distance = ((lat.array()).pow(2) + (lon.array()).pow(2)).sqrt();
 
         // standard deviation
         double sigma_lat, sigma_lon;
@@ -157,7 +157,7 @@ void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in
             //sigma = FWHM_TO_STD*ASEC_TO_RAD*(apt["a_fwhm"](det_index) + apt["b_fwhm"](det_index))/2;
 
             sigma_lat = FWHM_TO_STD*ASEC_TO_RAD*apt["b_fwhm"](det_index);
-            sigma_lon = FWHM_TO_STD*ASEC_TO_RAD*apt["a_fwhm"](det_index);;
+            sigma_lon = FWHM_TO_STD*ASEC_TO_RAD*apt["a_fwhm"](det_index);
         }
         // use config file standard deviation
         else {
@@ -177,9 +177,9 @@ void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in
         // make gaussian
         for (Eigen::Index j=0; j<n_pts; j++) {
             if (distance(j) <= sigma_limit*(sigma_lat + sigma_lon)/2) {
-                in.kernel.data(j,i) = amp*exp(pow(lat(j) - off_lat, 2) * a +
+                in.kernel.data(j,i) = amp*exp(pow(lon(j) - off_lon, 2) * a +
                                      (lon(j) - off_lon) * (lat(j) - off_lat) * b +
-                                     pow(lon(j) - off_lon, 2) * c);
+                                     pow(lat(j) - off_lat, 2) * c);
             }
             else {
                 in.kernel.data(j,i) = 0;

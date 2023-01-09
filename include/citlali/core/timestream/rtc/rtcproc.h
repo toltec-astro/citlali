@@ -58,7 +58,7 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         SPDLOG_DEBUG("creating kernel timestream");
         if (kernel.type == "gaussian") {
             SPDLOG_DEBUG("creating symmetric gaussian kernel");
-            kernel.create_gaussian_kernel(in, pixel_axes, redu_type, calib.apt, pointing_offsets_arcsec,
+            kernel.create_symmetric_gaussian_kernel(in, pixel_axes, redu_type, calib.apt, pointing_offsets_arcsec,
                                                     det_indices);
         }
         else if (kernel.type == "airy") {

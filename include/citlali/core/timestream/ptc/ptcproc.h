@@ -640,6 +640,29 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
             }
         }
 
+        Eigen::VectorXd scan_indices(2);
+
+        if (in.index.data > 0) {
+            // start indices for data
+            std::vector<std::size_t> scan_indices_start_index = {TULA_SIZET(in.index.data-1), 0};
+            // size for data
+            std::vector<std::size_t> scan_indices_size = {1, 2};
+            vars.find("scan_indices")->second.getVar(scan_indices_start_index,scan_indices_size,scan_indices.data());
+
+            scan_indices = scan_indices.array() + in.scans.data.rows();
+        }
+
+        else {
+            scan_indices(0) = 0;
+            scan_indices(1) = in.scans.data.rows() - 1;
+        }
+
+        std::vector<std::size_t> scan_indices_start_index = {TULA_SIZET(in.index.data), 0};
+        // size for data
+        std::vector<std::size_t> scan_indices_size = {1, 2};
+        NcVar scan_indices_var = fo.getVar("scan_indices");
+        scan_indices_var.putVar(scan_indices_start_index, scan_indices_size,scan_indices.data());
+
         fo.sync();
         fo.close();
 

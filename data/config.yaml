@@ -197,6 +197,7 @@ timestream: # timestream reduction parameters
   output: # controls options for writing out TOD as netCDF file
     chunk_type: rtc # type of chunks to output (rtc, ptc, both)
     enabled: false # enable or disable TOD output
+    subdir_name: null # optional subdirectory name for tod output files (ignored if null)
   calibration: # flux calibration
     enabled: false # enable or disable flux calibration (ignored for beammapping)
     extinction_model: am_q25 # model to use for tau calculation (am_q25, am_q50, am_q75)
