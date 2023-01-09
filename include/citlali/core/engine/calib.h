@@ -61,6 +61,7 @@ public:
     // keys for apt header
     std::vector<std::string> apt_header_keys = {
         {"uid"},
+        {"tone_freq"},
         {"array"},
         {"nw"},
         {"fg"},
@@ -93,6 +94,7 @@ public:
 
     std::map<std::string,std::string> apt_header_units = {
         {"uid","N/A"},
+        {"tone_freq", "Hz"},
         {"array","N/A"},
         {"nw","N/A"},
         {"fg","N/A"},

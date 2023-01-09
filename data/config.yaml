@@ -23,16 +23,16 @@ beammap: # beammap controls (ignored if not beammapping)
     a2000: 0
 coadd: # coaddition controls
   enabled: false # enable or disable coaddition
-map_filtering: # map filtering
+map_filtering: # map filtering (if coadd enabled, filters coadded map, if disabled, filters obs maps)
   enabled: false # enable or disable map filtering
   type: wiener_filter # type of filter (currently ignored)
   normalize_errors: false # correct weight map errors based on noise maps
-noise_maps: # noise map controls
+noise_maps: # noise map controls (coadded noise maps if coadd enabled, obs noise maps if disabled)
   enabled: false # enable or disable coaddition
   n_noise_maps: 1 # number of noise maps (>0)
 inputs: # list of inputs and related data
   - cal_items:
-      - beammap_source: # extra information used by beammapping (not needed if not beammapping)
+      - beammap_source: # extra information used by beammapping (not needed if redu_type!=beammap)
           dec_deg: 0.0 # dec position of source (currently ignored)
           fluxes:
             - array_name: a1100
@@ -46,9 +46,6 @@ inputs: # list of inputs and related data
               value_mJy: 0.0 # 2.0 mm flux in mJy
           name: none # beammap source name
           ra_deg: 0.0 # ra position of source (currently ignored)
-        extinction: # extinction parameters (ignored to be depreciated)
-          model_name: some_model
-          tau_220: 0.0
         type: photometry
       - pointing_offsets: # additional pointing offsets to apply
           - axes_name: az
@@ -56,7 +53,7 @@ inputs: # list of inputs and related data
           - axes_name: alt
             value_arcsec: 0.0
         type: astrometry
-      - filepath: /path/to/data/apt.ecsv # APT table
+      - filepath: /path/to/data/apt.ecsv # APT table (ignored for redu_type=beammap)
         meta:
           interface: apt
         type: array_prop_table
@@ -164,7 +161,7 @@ source_fitting: # parameters for source fitting
     amp_limits: [0.0, 0.0] # upper and lower multiplicative factors for amplitude fitting
     fwhm_limits: [0.0, 0.0] # upper and lower multiplicative factors for fwhm fitting
 timestream: # timestream reduction parameters
-  type: xs # type of TOD (xs or rs)
+  type: xs # type of TOD (xs, rs, is, qs)
   enabled: true # enable or disable TOD processing (to be implemented)
   chunking: # how to chunk timestreams
     force_chunking: false # ignore map pattern chunking and use config file chunk length

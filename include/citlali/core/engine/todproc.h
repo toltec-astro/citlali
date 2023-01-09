@@ -103,8 +103,17 @@ void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
     using namespace netCDF;
     using namespace netCDF::exceptions;
 
+    // tone frquencies for each network
+    std::map<Eigen::Index,Eigen::MatrixXd> tone_freqs;
+
+    // nw names
+    std::vector<Eigen::Index> interfaces;
+
+    // total number of detectors
     Eigen::Index n_dets = 0;
+    // detector, nw and array names for each network
     std::vector<Eigen::Index> dets, nws, arrays;
+    // loop through input files
     for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
         try {
             // load data file
@@ -112,17 +121,33 @@ void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
             auto vars = fo.getVars();
 
             // get the interface
-            Eigen::Index interface = std::stoi(data_item.interface().substr(6));
+            interfaces.push_back(std::stoi(data_item.interface().substr(6)));
 
             // add the current file's number of dets to the total
             n_dets += vars.find("Data.Toltec.Is")->second.getDim(1).getSize();
 
+            // dimension of tone freqs is (n_sweeps, n_tones)
+            Eigen::Index n_sweeps = vars.find("Header.Toltec.ToneFreq")->second.getDim(0).getSize();
+
+            // get local oscillator frequency
+            double lo_freq;
+            vars.find("Header.Toltec.LoCenterFreq")->second.getVar(&lo_freq);
+
+            SPDLOG_INFO("lo_freq {}",lo_freq);
+
+            // get tone_freqs for interface
+            tone_freqs[interfaces.back()].resize(vars.find("Header.Toltec.ToneFreq")->second.getDim(1).getSize(),n_sweeps);
+            vars.find("Header.Toltec.ToneFreq")->second.getVar(tone_freqs[interfaces.back()].data());
+
+            // add local oscillator freq
+            tone_freqs[interfaces.back()] = tone_freqs[interfaces.back()].array() + lo_freq;
+
             // get the number of dets in file
             dets.push_back(vars.find("Data.Toltec.Is")->second.getDim(1).getSize());
             // get the nw from interface
-            nws.push_back(interface);
+            nws.push_back(interfaces.back());
             // get the array from the interface
-            arrays.push_back(engine().toltec_io.nw_to_array_map[interface]);
+            arrays.push_back(engine().toltec_io.nw_to_array_map[interfaces.back()]);
 
             fo.close();
 
@@ -143,8 +168,13 @@ void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
     for (Eigen::Index i=0; i<nws.size(); i++) {
         engine().calib.apt["nw"].segment(j,dets[i]).setConstant(nws[i]);
         engine().calib.apt["array"].segment(j,dets[i]).setConstant(arrays[i]);
+        engine().calib.apt["tone_freq"].segment(j,dets[i]) = tone_freqs[interfaces[i]];
+
         j = j + dets[i];
     }
+
+    SPDLOG_INFO("done");
+
 
     // setup nws, arrays, etc.
     engine().calib.setup();
@@ -228,6 +258,7 @@ void TimeOrderedDataProc<EngineType>::check_inputs(const RawObs &rawobs) {
         }
     }
 
+    // check if number of detectors in apt file is equal to those in files
     if (n_dets != engine().calib.n_dets) {
         SPDLOG_ERROR("number of detectors in data files and apt file do not match");
         std::exit(EXIT_FAILURE);

@@ -180,6 +180,10 @@ void Beammap::setup() {
     calib.apt_meta["uid"].push_back("units: N/A");
     calib.apt_meta["uid"].push_back("unique id");
 
+    // tone freq
+    calib.apt_meta["tone_freq"].push_back("units: Hz");
+    calib.apt_meta["tone_freq"].push_back("tone frequency");
+
     // detector array
     calib.apt_meta["array"].push_back("units: N/A");
     calib.apt_meta["array"].push_back("array index");
@@ -464,6 +468,7 @@ auto Beammap::run_loop() {
                 SPDLOG_INFO("writing ptcdata");
                 if (tod_output_type == "ptc") {
                     if (current_iter == 0) {
+                        // hardcoded to stokes I for now
                         ptcproc.append_to_netcdf(ptcs[i], tod_filename["ptc_I"], redu_type, telescope.pixel_axes,
                                                  pointing_offsets_arcsec, ptcs[i].det_indices.data, calib.apt, tod_output_type, verbose_mode,
                                                  telescope.d_fsmp);
@@ -901,47 +906,49 @@ void Beammap::output() {
     }
 
     // progress bar
-    tula::logging::progressbar pb(
-        [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 100, "output progress ");
+    {
+        tula::logging::progressbar pb(
+            [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 100, "output progress ");
 
-    // write the maps
-    Eigen::Index k = 0;
-    Eigen::Index step = 2;
+        // write the maps
+        Eigen::Index k = 0;
+        Eigen::Index step = 2;
 
-    if (!mb->kernel.empty()) {
-        step++;
-    }
+        if (!mb->kernel.empty()) {
+            step++;
+        }
 
-    if (!mb->coverage.empty()) {
-        step++;
-    }
+        if (!mb->coverage.empty()) {
+            step++;
+        }
 
-    // write the maps
-    for (Eigen::Index i=0; i<n_maps; i++) {
-        // update progress bar
-        pb.count(n_maps, 1);
-        write_maps(f_io,n_io,mb,i);
+        // write the maps
+        for (Eigen::Index i=0; i<n_maps; i++) {
+            // update progress bar
+            pb.count(n_maps, 1);
+            write_maps(f_io,n_io,mb,i);
 
-        if (map_grouping=="detector") {
-            if constexpr (map_type == mapmaking::RawObs) {
-                // get the array for the given map
-                Eigen::Index map_index = maps_to_arrays(i);
+            if (map_grouping=="detector") {
+                if constexpr (map_type == mapmaking::RawObs) {
+                    // get the array for the given map
+                    Eigen::Index map_index = maps_to_arrays(i);
 
-                // check if we move from one file to the next
-                // if so go back to first hdu layer
-                if (i>0) {
-                    if (map_index > maps_to_arrays(i-1)) {
-                        k = 0;
+                    // check if we move from one file to the next
+                    // if so go back to first hdu layer
+                    if (i>0) {
+                        if (map_index > maps_to_arrays(i-1)) {
+                            k = 0;
+                        }
                     }
-                }
 
-                // add apt table
-                for (auto const& key: calib.apt_header_keys) {
-                    f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, static_cast<float>(calib.apt[key](i)), key
-                                                           + " (" + calib.apt_header_units[key] + ")");
+                    // add apt table
+                    for (auto const& key: calib.apt_header_keys) {
+                        f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, static_cast<float>(calib.apt[key](i)), key
+                                                               + " (" + calib.apt_header_units[key] + ")");
+                    }
+                    // increment hdu layer
+                    k = k + step;
                 }
-                // increment hdu layer
-                k = k + step;
             }
         }
     }

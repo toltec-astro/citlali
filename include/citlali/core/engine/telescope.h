@@ -14,7 +14,7 @@ public:
     // mapping pattern
     char obs_pgm_char [128];
     // source name
-    char source_name_char [64];
+    char source_name_char [32];
 
     // simulation jobkey
     char sim_job_key [128];

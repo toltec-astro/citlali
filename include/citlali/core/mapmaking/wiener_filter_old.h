@@ -208,14 +208,12 @@ void WienerFilter::make_symmetric_template(CMB &cmb, const int map_num, CD &cali
     // declare fitter class for detector
     engine_utils::mapFitter map_fitter;
     // size of region to fit in pixels
-    map_fitter.bounding_box_pix = 50;//bounding_box_pix;
+    map_fitter.bounding_box_pix = 15;//bounding_box_pix;
 
 
     double init_fwhm = 5;//toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/cmb.pixel_size_rad;
     auto [det_params, det_perror, good_fit] =
         map_fitter.fit_to_gaussian<engine_utils::mapFitter::peakValue>(cmb.signal[map_num], cmb.weight[map_num], init_fwhm);
-    det_params;
-    det_perror;
 
     pfit(1) = cmb.pixel_size_rad*(pfit(1) - (nc)/2);
     pfit(2) = cmb.pixel_size_rad*(pfit(2) - (nr)/2);

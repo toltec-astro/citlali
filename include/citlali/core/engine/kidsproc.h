@@ -197,6 +197,12 @@ auto KidsDataProc::populate_rtc(loaded_t &loaded, scanindices_t &scanindex,
         else if (data_type == "rs") {
             data.block(0, i, n_rows, n_cols) = result.data_out.rs.data;
         }
+        else if (data_type == "is") {
+            data.block(0, i, n_rows, n_cols) = result.data.is.data;
+        }
+        else if (data_type == "qs") {
+            data.block(0, i, n_rows, n_cols) = result.data.qs.data;
+        }
 
         i += n_cols;
     }

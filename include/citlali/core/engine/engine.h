@@ -323,15 +323,15 @@ void Engine::get_citlali_config(CT &config) {
     omb.parallel_policy = parallel_policy;
     cmb.parallel_policy = parallel_policy;
 
-    get_value(config, tod_output_type, missing_keys, invalid_keys, std::tuple{"timestream","output", "chunk_type"}, {"rtc","ptc","both"});
-    get_value(config, tod_output_subdir_name, missing_keys, invalid_keys, std::tuple{"timestream","output", "subdir_name"});
+    if (run_tod_output) {
+        get_value(config, tod_output_type, missing_keys, invalid_keys, std::tuple{"timestream","output", "chunk_type"}, {"rtc","ptc","both"});
+        get_value(config, tod_output_subdir_name, missing_keys, invalid_keys, std::tuple{"timestream","output", "subdir_name"});
+    }
     get_value(config, telescope.time_chunk, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "length_sec"});
     get_value(config, telescope.force_chunk, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "force_chunk"});
     get_value(config, ptcproc.weighting_type, missing_keys, invalid_keys, std::tuple{"timestream","weighting", "type"},{"full","approximate"});
     get_value(config, ptcproc.lower_std_dev, missing_keys, invalid_keys, std::tuple{"timestream","weighting", "lower_std_factor"});
     get_value(config, ptcproc.upper_std_dev, missing_keys, invalid_keys, std::tuple{"timestream","weighting", "upper_std_factor"});
-
-    SPDLOG_INFO("tod_output_subdir_name {}",tod_output_subdir_name);
 
     /* polarization */
     get_value(config, rtcproc.run_polarization, missing_keys, invalid_keys, std::tuple{"timestream","polarimetry", "enabled"});
@@ -414,6 +414,7 @@ void Engine::get_citlali_config(CT &config) {
     get_value(config, ptcproc.run_clean, missing_keys, invalid_keys, std::tuple{"timestream","clean","enabled"});
     get_value(config, ptcproc.cleaner.n_eig_to_cut, missing_keys, invalid_keys, std::tuple{"timestream","clean","n_eig_to_cut"});
     get_value(config, ptcproc.cleaner.grouping, missing_keys, invalid_keys, std::tuple{"timestream","clean","grouping"},{"array", "nw", "network", "all"});
+
     if (ptcproc.cleaner.grouping == "network") {
         ptcproc.cleaner.grouping = "nw";
     }
@@ -1299,7 +1300,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // add map tangent point dec
     fits_io->at(i).pfits->pHDU().addKey("TAN_DEC", telescope.tel_header["Header.Source.Dec"][0], "Map Tangent Point Dec (radians)");
 
-    fits_io->at(i).pfits->pHDU().addKey("SAMPRATE", telescope.fsmp, "sample rate");
+    fits_io->at(i).pfits->pHDU().addKey("SAMPRATE", telescope.fsmp, "sample rate (Hz)");
 
     // add apt table to header
     std::vector<string> result;
@@ -1586,7 +1587,7 @@ void Engine::run_wiener_filter(mapmaking::ObsMapBuffer &mb) {
         wiener_filter.make_template(cmb,calib.apt, wiener_filter.gaussian_template_fwhm_rad[toltec_io.array_name_map[i]],i);
         wiener_filter.filter_coaddition(cmb, i);
 
-             // filter noise maps
+        // filter noise maps
         if (run_noise) {
             tula::logging::scoped_timeit timer("filter_noise()");
             for (Eigen::Index j=0; j<cmb.n_noise; j++) {
