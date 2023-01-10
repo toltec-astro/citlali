@@ -470,7 +470,7 @@ auto Beammap::run_loop() {
                     if (current_iter == 0) {
                         // hardcoded to stokes I for now
                         ptcproc.append_to_netcdf(ptcs[i], tod_filename["ptc_I"], redu_type, telescope.pixel_axes,
-                                                 pointing_offsets_arcsec, ptcs[i].det_indices.data, calib.apt, tod_output_type, verbose_mode,
+                                                 pointing_offsets_arcsec, ptcs[i].det_indices.data, calib.apt, "ptc", verbose_mode,
                                                  telescope.d_fsmp);
                     }
                 }

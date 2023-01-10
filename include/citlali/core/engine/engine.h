@@ -921,7 +921,7 @@ void Engine::create_tod_files() {
         }
 
         // weights
-        if (tod_output_type == "ptc") {
+        if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
             std::vector<netCDF::NcDim> weight_dims = {n_scans_dim, n_dets_dim};
             netCDF::NcVar weights_v = fo.addVar("weights",netCDF::ncDouble, weight_dims);
         }

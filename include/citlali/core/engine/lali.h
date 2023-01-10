@@ -165,7 +165,7 @@ auto Lali::run() {
                 if (tod_output_type == "ptc" || tod_output_type=="both") {
                     SPDLOG_INFO("writing ptcdata");
                     ptcproc.append_to_netcdf(ptcdata, tod_filename["ptc_" + stokes_param], redu_type, telescope.pixel_axes,
-                                             pointing_offsets_arcsec, det_indices, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
+                                             pointing_offsets_arcsec, det_indices, calib.apt, "ptc", verbose_mode, telescope.d_fsmp);
                 }
             }
 
