@@ -34,6 +34,7 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
     // run setup on apt table
     setup();
 
+    // vectors to hold roach indices and missing roaches
     std::vector<Eigen::Index> roach_indices, missing;
     Eigen::Index n_dets_temp = 0;
 
@@ -61,7 +62,6 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
     for (Eigen::Index i=0; i<interfaces.size(); i++) {
         n_dets_temp = n_dets_temp + (apt["nw"].array() == interfaces_vec(i)).count();
     }
-
 
     // populate apt temp
     apt_temp.clear();

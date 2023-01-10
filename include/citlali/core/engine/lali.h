@@ -55,11 +55,11 @@ void Lali::setup() {
             fs::create_directories(obsnum_dir_name + "/raw/" + tod_output_subdir_name);
         }
 
-        if (tod_output_type == "rtc" || tod_output_type== "both") {
+        if (tod_output_type == "rtc" || tod_output_type=="both") {
             create_tod_files<engine_utils::toltecIO::rtc_timestream>();
         }
 
-        if (tod_output_type == "ptc" || tod_output_type== "both") {
+        if (tod_output_type == "ptc" || tod_output_type=="both") {
             create_tod_files<engine_utils::toltecIO::ptc_timestream>();
         }
     }
@@ -131,7 +131,7 @@ auto Lali::run() {
 
             // write rtc timestreams
             if (run_tod_output) {
-                if (tod_output_type == "rtc") {
+                if (tod_output_type == "rtc" || tod_output_type=="both") {
                     SPDLOG_INFO("writing rtcdata");
                     ptcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], redu_type, telescope.pixel_axes,
                                              pointing_offsets_arcsec, det_indices, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
@@ -162,7 +162,7 @@ auto Lali::run() {
 
             // write ptc timestreams
             if (run_tod_output) {
-                if (tod_output_type == "ptc") {
+                if (tod_output_type == "ptc" || tod_output_type=="both") {
                     SPDLOG_INFO("writing ptcdata");
                     ptcproc.append_to_netcdf(ptcdata, tod_filename["ptc_" + stokes_param], redu_type, telescope.pixel_axes,
                                              pointing_offsets_arcsec, det_indices, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);

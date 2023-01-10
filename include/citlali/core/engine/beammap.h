@@ -359,7 +359,7 @@ auto Beammap::run_timestream() {
             // write rtc timestreams
             if (run_tod_output) {
                 SPDLOG_INFO("writing rtcdata");
-                if (tod_output_type == "rtc") {
+                if (tod_output_type == "rtc" || tod_output_type=="both") {
                     ptcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], redu_type, telescope.pixel_axes,
                                              pointing_offsets_arcsec, det_indices, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
                 }
@@ -466,7 +466,7 @@ auto Beammap::run_loop() {
             // write ptc timestreams
             if (run_tod_output) {
                 SPDLOG_INFO("writing ptcdata");
-                if (tod_output_type == "ptc") {
+                if (tod_output_type == "ptc" || tod_output_type=="both") {
                     if (current_iter == 0) {
                         // hardcoded to stokes I for now
                         ptcproc.append_to_netcdf(ptcs[i], tod_filename["ptc_I"], redu_type, telescope.pixel_axes,

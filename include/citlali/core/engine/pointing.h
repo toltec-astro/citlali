@@ -229,7 +229,7 @@ auto Pointing::run() {
 
             // write rtc timestreams
             if (run_tod_output) {
-                if (tod_output_type == "rtc") {
+                if (tod_output_type == "rtc" || tod_output_type=="both") {
                     SPDLOG_INFO("writing rtcdata");
                     ptcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], redu_type, telescope.pixel_axes,
                                              pointing_offsets_arcsec, det_indices, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
@@ -261,7 +261,7 @@ auto Pointing::run() {
 
             // write ptc timestreams
             if (run_tod_output) {
-                if (tod_output_type == "ptc") {
+                if (tod_output_type == "ptc" || tod_output_type=="both") {
                     SPDLOG_INFO("writing ptcdata");
                     ptcproc.append_to_netcdf(ptcdata, tod_filename["ptc_" + stokes_param], redu_type, telescope.pixel_axes,
                                              pointing_offsets_arcsec, det_indices, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
