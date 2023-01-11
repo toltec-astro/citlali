@@ -50,15 +50,15 @@ void Lali::setup() {
     }
     // create timestream files
     if (run_tod_output) {
-
+        // create tod output subdirectory if requested
         if (tod_output_subdir_name!="null") {
             fs::create_directories(obsnum_dir_name + "/raw/" + tod_output_subdir_name);
         }
-
+        // make rtc tod output file
         if (tod_output_type == "rtc" || tod_output_type=="both") {
             create_tod_files<engine_utils::toltecIO::rtc_timestream>();
         }
-
+        // make ptc tod output file
         if (tod_output_type == "ptc" || tod_output_type=="both") {
             create_tod_files<engine_utils::toltecIO::ptc_timestream>();
         }

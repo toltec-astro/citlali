@@ -700,6 +700,9 @@ void Engine::get_astrometry_config(CT &config) {
 
     // initialize pointing alt offset
     pointing_offsets_arcsec["alt"] = 0.0;
+
+    //pointing_offsets_arcsec["az"] = config.template get_typed<double>(std::tuple{"pointing_offsets",0,"value_arcsec"});
+    //pointing_offsets_arcsec["alt"] = config.template get_typed<double>(std::tuple{"pointing_offsets",1,"value_arcsec"});
 }
 
 template <typename Derived>
@@ -824,20 +827,22 @@ void Engine::create_map_files() {
 
 template <engine_utils::toltecIO::ProdType prod_t>
 void Engine::create_tod_files() {
-    tod_filename.clear();
+    // clear tod filenames for each obs
+    //stod_filename.clear();
+    // loop through stokes indices
     for (const auto &[stokes_index,stokes_param]: rtcproc.polarization.stokes_params) {
-
+        // name for std map
         std::string name;
+        // subdirectory name
         std::string dir_name = obsnum_dir_name + "/raw/";
 
+        // if config subdirectory name is specified, add it
         if (tod_output_subdir_name != "null") {
             dir_name = dir_name + tod_output_subdir_name + "/";
         }
 
-        SPDLOG_INFO("dir name {}", dir_name);
-
+        // rtc tod output filename setup
         if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {
-
             auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
                                                       engine_utils::toltecIO::rtc_timestream,
                                                       engine_utils::toltecIO::raw>(dir_name, redu_type, "",
@@ -847,8 +852,8 @@ void Engine::create_tod_files() {
             name = "rtc_" + stokes_param;
         }
 
+        // ptc tod output filename setup
         else if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
-
             auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
                                                       engine_utils::toltecIO::ptc_timestream,
                                                       engine_utils::toltecIO::raw>(dir_name, redu_type, "",
@@ -857,13 +862,21 @@ void Engine::create_tod_files() {
             tod_filename["ptc_" + stokes_param] = filename + "_" + stokes_param + ".nc";
             name = "ptc_" + stokes_param;
         }
+
+        // create netcdf file
         netCDF::NcFile fo(tod_filename[name], netCDF::NcFile::replace);
 
         // add tod output type to file
         netCDF::NcDim n_tod_output_type_dim = fo.addDim("n_tod_output_type",1);
         netCDF::NcVar tod_output_type_var = fo.addVar("tod_output_type",netCDF::ncString, n_tod_output_type_dim);
         const std::vector< size_t > tod_output_type_index = {0};
-        tod_output_type_var.putVar(tod_output_type_index, tod_output_type);
+
+        if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {
+            tod_output_type_var.putVar(tod_output_type_index,"rtc");
+        }
+        else if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
+            tod_output_type_var.putVar(tod_output_type_index,"ptc");
+        }
 
         netCDF::NcDim n_pts_dim = fo.addDim("n_pts");
         netCDF::NcDim n_raw_scan_indices_dim = fo.addDim("n_raw_scan_indices", telescope.scan_indices.rows());
