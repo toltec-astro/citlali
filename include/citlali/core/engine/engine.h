@@ -827,8 +827,6 @@ void Engine::create_map_files() {
 
 template <engine_utils::toltecIO::ProdType prod_t>
 void Engine::create_tod_files() {
-    // clear tod filenames for each obs
-    //stod_filename.clear();
     // loop through stokes indices
     for (const auto &[stokes_index,stokes_param]: rtcproc.polarization.stokes_params) {
         // name for std map
@@ -872,11 +870,17 @@ void Engine::create_tod_files() {
         const std::vector< size_t > tod_output_type_index = {0};
 
         if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {
-            tod_output_type_var.putVar(tod_output_type_index,"rtc");
+            std::string tod_output_type_name = "rtc";
+            tod_output_type_var.putVar(tod_output_type_index,tod_output_type_name);
         }
         else if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
-            tod_output_type_var.putVar(tod_output_type_index,"ptc");
+            std::string tod_output_type_name = "ptc";
+            tod_output_type_var.putVar(tod_output_type_index,tod_output_type_name);
         }
+
+        netCDF::NcVar obsnum_v = fo.addVar("obsnum",netCDF::ncInt);
+        int obsnum_int = std::stoi(obsnum);
+        obsnum_v.putVar(&obsnum_int);
 
         netCDF::NcDim n_pts_dim = fo.addDim("n_pts");
         netCDF::NcDim n_raw_scan_indices_dim = fo.addDim("n_raw_scan_indices", telescope.scan_indices.rows());
@@ -903,8 +907,8 @@ void Engine::create_tod_files() {
 
         // raw file scan indices
         netCDF::NcVar raw_scan_indices_v = fo.addVar("raw_scan_indices",netCDF::ncInt, raw_scans_dims);
-        Eigen::MatrixXI scans_indices_transposed = telescope.scan_indices;
-        raw_scan_indices_v.putVar(scans_indices_transposed.data());
+        //Eigen::MatrixXI scans_indices_transposed = telescope.scan_indices;
+        raw_scan_indices_v.putVar(telescope.scan_indices.data());
 
         // scan indices for data
         netCDF::NcVar scan_indices_v = fo.addVar("scan_indices",netCDF::ncInt, scans_dims);
@@ -949,6 +953,7 @@ void Engine::print_summary() {
     SPDLOG_INFO("map buffer rows: {}", omb.n_rows);
     SPDLOG_INFO("map buffer cols: {}", omb.n_cols);
 
+    // total size of all maps
     double mb_size_total = 0;
 
     // make a rough estimate of memory usage for obs map buffer
@@ -1445,24 +1450,25 @@ template <mapmaking::MapType map_t, class map_buffer_t>
 void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
     std::string filename, noise_filename;
 
+    // raw obs maps
     if constexpr (map_t == mapmaking::RawObs) {
         filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::psd,
                                              engine_utils::toltecIO::raw>
                    (dir_name, redu_type, "", obsnum, telescope.sim_obs);
     }
-
+    // filtered obs maps
     else if constexpr (map_t == mapmaking::FilteredObs) {
         filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::psd,
                                              engine_utils::toltecIO::filtered>
                    (dir_name, redu_type, "", obsnum, telescope.sim_obs);
     }
-
+    // raw coadded maps
     else if constexpr (map_t == mapmaking::RawCoadd) {
         filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::psd,
                                              engine_utils::toltecIO::raw>
                    (dir_name, "", "", "", telescope.sim_obs);
     }
-
+    // filtered coadded maps
     else if constexpr (map_t == mapmaking::FilteredCoadd) {
         filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::psd,
                                              engine_utils::toltecIO::filtered>
@@ -1472,7 +1478,6 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
     netCDF::NcFile fo(filename + ".nc", netCDF::NcFile::replace);
 
     for (Eigen::Index i=0; i<mb->psds.size(); i++) {
-
         std::string map_name = "";
 
         if (map_grouping!="array") {
@@ -1530,24 +1535,28 @@ template <mapmaking::MapType map_t, class map_buffer_t>
 void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
     std::string filename;
 
+    // raw obs maps
     if constexpr (map_t == mapmaking::RawObs) {
         filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::hist,
                                              engine_utils::toltecIO::raw>
                    (dir_name, redu_type, "", obsnum, telescope.sim_obs);
     }
 
+    // filtered obs maps
     else if constexpr (map_t == mapmaking::FilteredObs) {
         filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::hist,
                                              engine_utils::toltecIO::filtered>
                     (dir_name, redu_type, "", obsnum, telescope.sim_obs);
     }
 
+    // raw coadded maps
     else if constexpr (map_t == mapmaking::RawCoadd) {
         filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::hist,
                                              engine_utils::toltecIO::raw>
                    (dir_name, "", "", "", telescope.sim_obs);
     }
 
+    // filtered coadded maps
     else if constexpr (map_t == mapmaking::FilteredCoadd) {
         filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::hist,
                                              engine_utils::toltecIO::filtered>
