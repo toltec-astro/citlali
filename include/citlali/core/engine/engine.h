@@ -899,7 +899,7 @@ void Engine::create_tod_files() {
 
         std::vector<netCDF::NcDim> dims = {n_pts_dim, n_dets_dim};
         std::vector<netCDF::NcDim> raw_scans_dims = {n_scans_dim, n_raw_scan_indices_dim};
-        std::vector<netCDF::NcDim> scans_dims = {n_scans_dim, n_raw_scan_indices_dim};
+        std::vector<netCDF::NcDim> scans_dims = {n_scans_dim, n_scan_indices_dim};
 
         // raw file scan indices
         netCDF::NcVar raw_scan_indices_v = fo.addVar("raw_scan_indices",netCDF::ncInt, raw_scans_dims);
