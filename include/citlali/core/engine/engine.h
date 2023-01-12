@@ -640,10 +640,14 @@ void Engine::get_citlali_config(CT &config) {
 
         // limits for flagging
         for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
-            get_value(config, lower_fwhm_arcsec[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","lower_fwhm_arcsec",arr_name});
-            get_value(config, upper_fwhm_arcsec[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","upper_fwhm_arcsec",arr_name});
-            get_value(config, lower_sig2noise[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","lower_sig2noise",arr_name});
-            get_value(config, max_dist_arcsec[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","max_dist_arcsec",arr_name});
+            get_value(config, lower_fwhm_arcsec[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","flagging","lower_fwhm_arcsec",
+                                                                                                  arr_name});
+            get_value(config, upper_fwhm_arcsec[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","flagging","upper_fwhm_arcsec",
+                                                                                                  arr_name});
+            get_value(config, lower_sig2noise[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","flagging","lower_sig2noise",
+                                                                                                arr_name});
+            get_value(config, max_dist_arcsec[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","flagging","max_dist_arcsec",
+                                                                                                arr_name});
         }
 
         // sensitiivty
@@ -701,8 +705,8 @@ void Engine::get_astrometry_config(CT &config) {
     // initialize pointing alt offset
     pointing_offsets_arcsec["alt"] = 0.0;
 
-    //pointing_offsets_arcsec["az"] = config.template get_typed<double>(std::tuple{"pointing_offsets",0,"value_arcsec"});
-    //pointing_offsets_arcsec["alt"] = config.template get_typed<double>(std::tuple{"pointing_offsets",1,"value_arcsec"});
+    pointing_offsets_arcsec["az"] = config.template get_typed<double>(std::tuple{"pointing_offsets",0,"value_arcsec"});
+    pointing_offsets_arcsec["alt"] = config.template get_typed<double>(std::tuple{"pointing_offsets",1,"value_arcsec"});
 }
 
 template <typename Derived>
@@ -884,11 +888,11 @@ void Engine::create_tod_files() {
         obsnum_v.putVar(&obsnum_int);
 
         // add source ra
-        netCDF::NcVar source_ra_v = fo.addVar("Source.Ra",netCDF::ncDouble);
+        netCDF::NcVar source_ra_v = fo.addVar("SourceRa",netCDF::ncDouble);
         source_ra_v.putVar(&telescope.tel_header["Header.Source.Ra"](0));
 
         // add source dec
-        netCDF::NcVar source_dec_v = fo.addVar("Source.Dec",netCDF::ncDouble);
+        netCDF::NcVar source_dec_v = fo.addVar("SourceDec",netCDF::ncDouble);
         source_dec_v.putVar(&telescope.tel_header["Header.Source.Dec"](0));
 
         netCDF::NcDim n_pts_dim = fo.addDim("n_pts");
@@ -933,7 +937,7 @@ void Engine::create_tod_files() {
         chunkSizes.push_back(((telescope.scan_indices.row(3) - telescope.scan_indices.row(2)).array() + 1).mean());
         chunkSizes.push_back(n_dets);
 
-        // set chunking
+        // set signal chunking
         signal_v.setChunking(chunkMode, chunkSizes);
 
         // flags
@@ -953,13 +957,16 @@ void Engine::create_tod_files() {
         netCDF::NcVar det_lon_v = fo.addVar("det_lon",netCDF::ncDouble, dims);
         det_lon_v.setChunking(chunkMode, chunkSizes);
 
-        // detector absolute ra
-        netCDF::NcVar det_ra_v = fo.addVar("det_ra",netCDF::ncDouble, dims);
-        det_ra_v.setChunking(chunkMode, chunkSizes);
+        // calc absolute pointing if in icrs frame
+        if (telescope.pixel_axes == "icrs") {
+            // detector absolute ra
+            netCDF::NcVar det_ra_v = fo.addVar("det_ra",netCDF::ncDouble, dims);
+            det_ra_v.setChunking(chunkMode, chunkSizes);
 
-        // detector absolute dec
-        netCDF::NcVar det_dec_v = fo.addVar("det_dec",netCDF::ncDouble, dims);
-        det_dec_v.setChunking(chunkMode, chunkSizes);
+            // detector absolute dec
+            netCDF::NcVar det_dec_v = fo.addVar("det_dec",netCDF::ncDouble, dims);
+            det_dec_v.setChunking(chunkMode, chunkSizes);
+        }
 
         // add apt table
         for (auto const& x: calib.apt) {

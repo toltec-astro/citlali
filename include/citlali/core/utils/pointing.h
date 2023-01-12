@@ -46,15 +46,15 @@ auto phys_to_abs(Eigen::DenseBase<Derived>& lat, Eigen::DenseBase<Derived>& lon,
 
     Eigen::Index n_pts = lat.size();
 
+    // lat/lon = dec/ra = y/x (map axes)
     Eigen::VectorXd abs_lat(n_pts), abs_lon(n_pts);
-    for (int i=0; i<n_pts; i++) {
+    for (Eigen::Index i=0; i<n_pts; i++) {
         double rho = sqrt(pow(lat(i),2) + pow(lon(i),2));
         double c = atan(rho);
         if (c == 0.) {
             abs_lat(i) = lat(i);
             abs_lon(i) = lon(i);
         }
-
         else {
             double ccwhn0 = cos(c);
             double scwhn0 = sin(c);

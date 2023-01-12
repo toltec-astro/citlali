@@ -297,15 +297,22 @@ void Lali::output() {
         dir_name = coadd_dir_name + "/filtered/";
     }
 
-    // progress bar
-    tula::logging::progressbar pb(
-        [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 100, "output progress ");
+    {
+        // progress bar
+        tula::logging::progressbar pb(
+            [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 100, "output progress ");
 
-    // write the maps
-    for (Eigen::Index i=0; i<n_maps; i++) {
-        // update progress bar
-        pb.count(n_maps, 1);
-        write_maps(f_io,n_io,mb,i);
+        // write the maps
+        for (Eigen::Index i=0; i<n_maps; i++) {
+            // update progress bar
+            pb.count(n_maps, 1);
+            write_maps(f_io,n_io,mb,i);
+        }
+    }
+
+    SPDLOG_INFO("files have been written to:");
+    for (Eigen::Index i=0; i<f_io->size(); i++) {
+        SPDLOG_INFO("{}.fits",f_io->at(i).filepath);
     }
 
     // clear fits file vectors to ensure its closed.

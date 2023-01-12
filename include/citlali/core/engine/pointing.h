@@ -439,49 +439,56 @@ void Pointing::output() {
         dir_name = coadd_dir_name + "/filtered/";
     }
 
-    // progress bar
-    tula::logging::progressbar pb(
-        [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 100, "output progress ");
+    {
+        // progress bar
+        tula::logging::progressbar pb(
+            [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 100, "output progress ");
 
-    Eigen::Index k = 0;
+        Eigen::Index k = 0;
 
-    for (Eigen::Index i=0; i<n_maps; i++) {
-        // update progress bar
-        pb.count(n_maps, 1);
-        write_maps(f_io,n_io,mb,i);
+        for (Eigen::Index i=0; i<n_maps; i++) {
+            // update progress bar
+            pb.count(n_maps, 1);
+            write_maps(f_io,n_io,mb,i);
 
-        if constexpr (map_type == mapmaking::RawObs) {
-            Eigen::Index map_index = maps_to_arrays(i);
+            if constexpr (map_type == mapmaking::RawObs) {
+                Eigen::Index map_index = maps_to_arrays(i);
 
-            // check if we move from one file to the next
-            // if so go back to first hdu layer
-            if (i>0) {
-                if (map_index > maps_to_arrays(i-1)) {
-                    k = 0;
+                // check if we move from one file to the next
+                // if so go back to first hdu layer
+                if (i>0) {
+                    if (map_index > maps_to_arrays(i-1)) {
+                        k = 0;
+                    }
+                }
+
+                // get current hdu extension name
+                std::string extname = f_io->at(map_index).hdus.at(k)->name();
+                // see if this is a signal extension
+                std::size_t found = extname.find("signal");
+
+                // find next signal extension
+                while (found==std::string::npos && k<f_io->at(map_index).hdus.size()) {
+                    k = k + 1;
+                    // get current hdu extension name
+                    extname = f_io->at(map_index).hdus.at(k)->name();
+                    // see if this is a signal extension
+                    found = extname.find("signal");
+                }
+
+                // add ppt table
+                Eigen::Index j = 0;
+                for (auto const& key: ppt_header) {
+                    f_io->at(map_index).hdus.at(k)->addKey("POINTING." + key, ppt_table(i,j), key + " (" + ppt_header_units[key] + ")");
+                    j++;
                 }
             }
-
-            // get current hdu extension name
-            std::string extname = f_io->at(map_index).hdus.at(k)->name();
-            // see if this is a signal extension
-            std::size_t found = extname.find("signal");
-
-            // find next signal extension
-            while (found==std::string::npos && k<f_io->at(map_index).hdus.size()) {
-                k = k + 1;
-                // get current hdu extension name
-                extname = f_io->at(map_index).hdus.at(k)->name();
-                // see if this is a signal extension
-                found = extname.find("signal");
-            }
-
-            // add ppt table
-            Eigen::Index j = 0;
-            for (auto const& key: ppt_header) {
-                f_io->at(map_index).hdus.at(k)->addKey("POINTING." + key, ppt_table(i,j), key + " (" + ppt_header_units[key] + ")");
-                j++;
-            }
         }
+    }
+
+    SPDLOG_INFO("files have been written to:");
+    for (Eigen::Index i=0; i<f_io->size(); i++) {
+        SPDLOG_INFO("{}.fits",f_io->at(i).filepath);
     }
 
     // clear fits file vectors to ensure its closed.

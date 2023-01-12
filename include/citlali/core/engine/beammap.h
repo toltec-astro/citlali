@@ -300,8 +300,9 @@ auto Beammap::run_timestream() {
         // kidsproc
         auto kidsproc = std::get<1>(input_tuple);
         // start index input
-        auto scan_rawobs = std::get<2>(input_tuple);        
+        auto scan_rawobs = std::get<2>(input_tuple);
 
+        // get tone flags
         Eigen::Index j = 0;
         Eigen::VectorXd tone_flags(calib.n_dets);
         for (Eigen::Index i=0; i<scan_rawobs.size(); i++) {

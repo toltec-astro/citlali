@@ -5,22 +5,23 @@ beammap: # beammap controls (ignored if not beammapping)
   iter_tolerance: 0.0 # tolerance for iterations
   sens_psd_lower_limit: 0 # lower limit for psd in sensitivity calculation
   sens_psd_upper_limit: 0 # upper limit for psd in sensitivity calculation
-  lower_fwhm_arcsec: # lower limits for fitted fwhm values (used for flagging only)
-    a1100: 0
-    a1400: 0
-    a2000: 0
-  upper_fwhm_arcsec: # upper limits for fitted fwhm values (used for flagging only)
-    a1100: 99
-    a1400: 99
-    a2000: 99
-  lower_sig2noise: # lower limits for fitted S/N values (used for flagging only)
-    a1100: 0
-    a1400: 0
-    a2000: 0
-  max_dist_arcsec: # max allowed distance from mean of all positions (ignored if 0, flagging only)
-    a1100: 0
-    a1400: 0
-    a2000: 0
+  flagging: # these parameters control how the beammapping algorithm flags dets
+    lower_fwhm_arcsec: # lower limits for fitted fwhm values (used for flagging only)
+      a1100: 0
+      a1400: 0
+      a2000: 0
+    upper_fwhm_arcsec: # upper limits for fitted fwhm values (used for flagging only)
+      a1100: 99
+      a1400: 99
+      a2000: 99
+    lower_sig2noise: # lower limits for fitted S/N values (used for flagging only)
+      a1100: 0
+      a1400: 0
+      a2000: 0
+    max_dist_arcsec: # max allowed distance from mean of all positions (ignored if 0, flagging only)
+      a1100: 0
+      a1400: 0
+      a2000: 0
 coadd: # coaddition controls
   enabled: false # enable or disable coaddition
 map_filtering: # map filtering (if coadd enabled, filters coadded map, if disabled, filters obs maps)
@@ -127,7 +128,8 @@ kids: # kids fitting parameters
       fwhm_Hz: 1.5e4
       type: lorentz
   solver:
-    fitreportdir: /path/to/fitreportdir/directory/
+    fitreportdir: /path/to/fit/report/directory/ # directory to grab fit report from
+    parallel_policy: seq # parallel policy for kids solver (independent of citlali parallel policy)
 mapmaking: # mapmaking parameters
   histogram:
     n_bins: 20 # number of histogram bins (>0)
@@ -135,9 +137,9 @@ mapmaking: # mapmaking parameters
   crpix1: 0 # ref pixel 1 (ignored if 0)
   crpix2: 0 # ref pixel 2 (ignored if 0)
   crval1_J2000: 0 # ref value 1 (ignored if 0)
-  crval2_J2000: 0 # ref value 1 (ignored if 0)
-  cunit: MJy/sr # units (MJy/sr or mJy/beam)
-  grouping: auto # mapmaking grouping (detector,nw, array.  use auto for now)
+  crval2_J2000: 0 # ref value 2 (ignored if 0)
+  cunit: MJy/sr # units (MJy/sr or mJy/beam.  apt table flux conversion default is mJy/beam)
+  grouping: auto # mapmaking grouping (auto, detector, nw, array)
   method: naive # mapmaking algorithm (naive or jinc)
   pixel_axes: icrs # reference frame (icrs or altaz)
   pixel_size_arcsec: 1.0 # pixel size in arceconds

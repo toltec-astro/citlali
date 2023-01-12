@@ -553,9 +553,20 @@ int run(const rc_t &rc) {
                         todproc.coadd();
                     }
 
+                    // filter obs map
                     else if (todproc.engine().run_map_filter) {
-                        // filter
+                        SPDLOG_INFO("filtering obs maps");
+                        todproc.engine().run_wiener_filter(todproc.engine().omb);
                         // output filtered maps
+                        SPDLOG_INFO("outputting filtered obs files");
+
+                        // calculate filtered obs map psds
+                        SPDLOG_INFO("calculating filtered obs map psds");
+                        todproc.engine().omb.calc_map_psd();
+                        // calculate filtered obs map histograms
+                        SPDLOG_INFO("calculating filtered obs map histograms");
+                        todproc.engine().omb.calc_map_hist();
+
                         SPDLOG_INFO("outputting filtered obs files");
                         todproc.engine().template output<mapmaking::FilteredObs>();
                     }
@@ -583,10 +594,10 @@ int run(const rc_t &rc) {
                         todproc.engine().run_wiener_filter(todproc.engine().cmb);
 
                         // calculate filtered coadded map psds
-                        SPDLOG_INFO("calculating coadded map psds");
+                        SPDLOG_INFO("calculating filtered coadded map psds");
                         todproc.engine().cmb.calc_map_psd();
                         // calculate filtered coadded map histograms
-                        SPDLOG_INFO("calculating coadded map histograms");
+                        SPDLOG_INFO("calculating filtered coadded map histograms");
                         todproc.engine().cmb.calc_map_hist();
 
                         // output filtered coadd

@@ -23,14 +23,12 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
           m_fitter{Fitter::Config{
               {"weight_window_type", this->config().get_str(std::tuple{
                                          "fitter", "weight_window", "type"})},
-              {"weight_window_fwhm",
-               this->config().get_typed<double>(
+              {"weight_window_fwhm", this->config().get_typed<double>(
                    std::tuple{"fitter", "weight_window", "fwhm_Hz"})},
-              {"modelspec",
-               config.get_str(std::tuple{"fitter", "modelspec"})}}},
-          m_solver{Solver::Config{
-              {"fitreportdir", "/dev/null"},
-              {"exmode", "seq"},
+              {"modelspec", config.get_str(std::tuple{"fitter", "modelspec"})}}},
+           m_solver{Solver::Config{
+              {"fitreportdir", this->config().get_str(std::tuple{"solver", "fitreportdir"})},
+              {"exmode", this->config().get_str(std::tuple{"solver", "parallel_policy"})},
               {"extra_output", extra_output},
           }} {}
 

@@ -9,8 +9,6 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
     //auto [table, header, meta] = to_matrix_from_ecsv(filepath);
     auto [apt_temp, header] = to_map_from_ecsv_mixted_type(filepath);
 
-    SPDLOG_INFO("header {}",header);
-
     // vector to hold any missing header keys
     std::vector<std::string> missing_header_keys;
 

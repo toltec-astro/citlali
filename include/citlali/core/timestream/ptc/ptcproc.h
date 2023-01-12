@@ -175,16 +175,22 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
         in.weights.data = Eigen::VectorXd::Zero(n_dets);
 
         for (Eigen::Index i=0; i<n_dets; i++) {
-            // make Eigen::Maps for each detector's scan
-            Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
-                in.scans.data.col(i).data(), in.scans.data.rows());
-            Eigen::Map<Eigen::Matrix<bool, Eigen::Dynamic, 1>> flags(
-                in.flags.data.col(i).data(), in.flags.data.rows());
+            // only calculate weights if detector is unflagged
+            if (apt["flag"](i)!=0) {
+                // make Eigen::Maps for each detector's scan
+                Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
+                    in.scans.data.col(i).data(), in.scans.data.rows());
+                Eigen::Map<Eigen::Matrix<bool, Eigen::Dynamic, 1>> flags(
+                    in.flags.data.col(i).data(), in.flags.data.rows());
 
-            double det_std_dev = engine_utils::calc_std_dev(scans, flags);
+                double det_std_dev = engine_utils::calc_std_dev(scans, flags);
 
-            if (det_std_dev !=0) {
-                in.weights.data(i) = pow(det_std_dev,-2);
+                if (det_std_dev !=0) {
+                    in.weights.data(i) = pow(det_std_dev,-2);
+                }
+                else {
+                    in.weights.data(i) = 0;
+                }
             }
             else {
                 in.weights.data(i) = 0;
@@ -561,8 +567,8 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         auto vars = fo.getVars();
 
         double cra, cdec;
-        vars.find("Source.Ra")->second.getVar(&cra);
-        vars.find("Source.Dec")->second.getVar(&cdec);
+        vars.find("SourceRa")->second.getVar(&cra);
+        vars.find("SourceDec")->second.getVar(&cdec);
 
         NcDim n_pts_dim = fo.getDim("n_pts");
         NcDim n_dets_dim = fo.getDim("n_dets");
@@ -586,13 +592,15 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         std::vector<std::size_t> size_apt = {1};
 
         // get timestream variables
-        NcVar scans_v = fo.getVar("signal");
+        NcVar signal_v = fo.getVar("signal");
         NcVar flags_v = fo.getVar("flags");
         NcVar kernel_v = fo.getVar("kernel");
 
+        // detector tangent plane pointing
         NcVar det_lat_v = fo.getVar("det_lat");
         NcVar det_lon_v = fo.getVar("det_lon");
 
+        // detector absolute pointing
         NcVar det_ra_v = fo.getVar("det_ra");
         NcVar det_dec_v = fo.getVar("det_dec");
 
@@ -613,7 +621,7 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
 
             // append scans
             Eigen::VectorXd scans = in.scans.data.row(i);
-            scans_v.putVar(start_index, size, scans.data());
+            signal_v.putVar(start_index, size, scans.data());
 
             // append flags
             Eigen::VectorXi flags_int = in.flags.data.row(i).cast<int> ();
@@ -633,14 +641,16 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
             Eigen::VectorXd lons_row = lons.row(i);
             det_lon_v.putVar(start_index, size, lons_row.data());
 
-            // get absolute pointing
-            auto [decs, ras] = engine_utils::phys_to_abs(lats_row, lons_row, cra, cdec);
+            if (pixel_axes == "icrs") {
+                // get absolute pointing
+                auto [decs, ras] = engine_utils::phys_to_abs(lats_row, lons_row, cra, cdec);
 
-            // append detector ra
-            det_ra_v.putVar(start_index, size, ras.data());
+                // append detector ra
+                det_ra_v.putVar(start_index, size, ras.data());
 
-            // append detector dec
-            det_dec_v.putVar(start_index, size, decs.data());
+                // append detector dec
+                det_dec_v.putVar(start_index, size, decs.data());
+            }
 
             // append telescope
             for (auto const& x: in.tel_data.data) {
@@ -658,8 +668,10 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
             }
         }
 
+        // vector to hold current scan indices
         Eigen::VectorXd scan_indices(2);
 
+        // if not on first scan, grab last scan and add size of current scan
         if (in.index.data > 0) {
             // start indices for data
             std::vector<std::size_t> scan_indices_start_index = {TULA_SIZET(in.index.data-1), 0};
@@ -669,14 +681,14 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
 
             scan_indices = scan_indices.array() + in.scans.data.rows();
         }
-
+        // otherwise, use size of this scan
         else {
             scan_indices(0) = 0;
             scan_indices(1) = in.scans.data.rows() - 1;
         }
 
+        // add current scan indices row
         std::vector<std::size_t> scan_indices_start_index = {TULA_SIZET(in.index.data), 0};
-        // size for data
         std::vector<std::size_t> scan_indices_size = {1, 2};
         NcVar scan_indices_v = fo.getVar("scan_indices");
         scan_indices_v.putVar(scan_indices_start_index, scan_indices_size,scan_indices.data());

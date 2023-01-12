@@ -62,10 +62,6 @@ void Telescope::get_tel_data(std::string &filepath) {
             }
         }
 
-         // adjust parallactic angle parameters
-         //tel_data["ParAng"] = pi - tel_data["ParAng"].array();
-         //tel_data["ActParAng"] = pi - tel_data["ActParAng"].array();
-
         // loop through telescope header keys and populate vectors
         for (auto const& pair : tel_header_keys) {
             // set for scalars
