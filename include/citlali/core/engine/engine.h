@@ -878,9 +878,18 @@ void Engine::create_tod_files() {
             tod_output_type_var.putVar(tod_output_type_index,tod_output_type_name);
         }
 
+        // add obsnum
         netCDF::NcVar obsnum_v = fo.addVar("obsnum",netCDF::ncInt);
         int obsnum_int = std::stoi(obsnum);
         obsnum_v.putVar(&obsnum_int);
+
+        // add source ra
+        netCDF::NcVar source_ra_v = fo.addVar("Source.Ra",netCDF::ncDouble);
+        source_ra_v.putVar(&telescope.tel_header["Header.Source.Ra"](0));
+
+        // add source dec
+        netCDF::NcVar source_dec_v = fo.addVar("Source.Dec",netCDF::ncDouble);
+        source_dec_v.putVar(&telescope.tel_header["Header.Source.Dec"](0));
 
         netCDF::NcDim n_pts_dim = fo.addDim("n_pts");
         netCDF::NcDim n_raw_scan_indices_dim = fo.addDim("n_raw_scan_indices", telescope.scan_indices.rows());
@@ -926,6 +935,11 @@ void Engine::create_tod_files() {
         netCDF::NcVar det_lat_v = fo.addVar("det_lat",netCDF::ncDouble, dims);
         // detector lon
         netCDF::NcVar det_lon_v = fo.addVar("det_lon",netCDF::ncDouble, dims);
+
+        // detector absolute ra
+        netCDF::NcVar det_ra_v = fo.addVar("det_ra",netCDF::ncDouble, dims);
+        // detector absolute dec
+        netCDF::NcVar det_dec_v = fo.addVar("det_dec",netCDF::ncDouble, dims);
 
         // add apt table
         for (auto const& x: calib.apt) {

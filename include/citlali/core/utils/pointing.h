@@ -47,7 +47,7 @@ auto phys_to_abs(Eigen::DenseBase<Derived>& lat, Eigen::DenseBase<Derived>& lon,
     Eigen::Index n_pts = lat.size();
 
     Eigen::VectorXd abs_lat(n_pts), abs_lon(n_pts);
-    for (int i=0;i<lat.size(); i++) {
+    for (int i=0; i<n_pts; i++) {
         double rho = sqrt(pow(lat(i),2) + pow(lon(i),2));
         double c = atan(rho);
         if (c == 0.) {
@@ -61,9 +61,9 @@ auto phys_to_abs(Eigen::DenseBase<Derived>& lat, Eigen::DenseBase<Derived>& lon,
             double ccdec = cos(cdec);
             double scdec = sin(cdec);
             double a1, a2;
-            a1 = ccwhn0*scdec + lon(i)*scwhn0*ccdec/rho;
+            a1 = ccwhn0*scdec + lat(i)*scwhn0*ccdec/rho;
             abs_lat(i) = asin(a1);
-            a2 = lon(i)*scwhn0/(rho*ccdec*ccwhn0 - abs_lat(i)*scdec*scwhn0);
+            a2 = lon(i)*scwhn0/(rho*ccdec*ccwhn0 - lat(i)*scdec*scwhn0);
             abs_lon(i) = cra + atan(a2);
         }
     }

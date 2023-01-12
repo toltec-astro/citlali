@@ -528,27 +528,28 @@ auto Beammap::run_loop() {
                 keep_going = false;
             }
             else if (current_iter > 1) {
-                // loop through detectors and check if it is converged
-                SPDLOG_INFO("checking convergennce");
-                grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
-                    if (!converged(i)) {
-                        // get relative change from last iteration
-                        auto diff = abs((params.row(i).array() - p0.row(i).array())/p0.row(i).array());
-                        auto d = (diff.array()).isNaN().select(0,diff);
-                        SPDLOG_INFO("p0 {}",p0);
-                        SPDLOG_INFO("params {}",params);
-                        SPDLOG_INFO("diff {}",diff);
-                        if ((d.array() <= beammap_iter_tolerance).all()) {
-                            // set as converged
-                            converged(i) = true;
-                            // set convergence iteration
-                            converge_iter(i) = current_iter;
+                // only do convergence test if tolerance is above zero, otherwise run all iterations
+                if (beammap_iter_tolerance > 0) {
+                    // loop through detectors and check if it is converged
+                    SPDLOG_INFO("checking convergence");
+                    grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+                        if (!converged(i)) {
+                            // get relative change from last iteration
+                            auto diff = abs((params.row(i).array() - p0.row(i).array())/p0.row(i).array());
+                            // if variable is constant, make sure no nans are present
+                            auto d = (diff.array()).isNaN().select(0,diff);
+                            if ((d.array() <= beammap_iter_tolerance).all()) {
+                                // set as converged
+                                converged(i) = true;
+                                // set convergence iteration
+                                converge_iter(i) = current_iter;
+                            }
                         }
-                    }
-                    return 0;
-                });
+                        return 0;
+                    });
+                }
 
-                SPDLOG_INFO("{} detectors convergennce", (converged.array() == true).count());
+                SPDLOG_INFO("{} detectors converged", (converged.array() == true).count());
             }
 
             // set previous iteration fits to current iteration fits
@@ -675,7 +676,7 @@ void Beammap::flag_dets(array_indices_t &array_indices) {
             n_flagged_dets++;
         }
 
-        // calc flux scale (always in MJy/sr)
+        // calc flux scale (always in mJy/beam)
         if (params(i,0) != 0 && calib.apt["flag"](i) != 0) {
                     calib.apt["flxscale"](i) = beammap_fluxes_mJy_beam[array_name]/params(i,0);
         }
@@ -917,7 +918,6 @@ void Beammap::output() {
         if (!mb->kernel.empty()) {
             step++;
         }
-
         if (!mb->coverage.empty()) {
             step++;
         }

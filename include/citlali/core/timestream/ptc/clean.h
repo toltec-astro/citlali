@@ -147,6 +147,7 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
 
         else {
             throw std::runtime_error("failed to compute eigen values");
+            std::exit(EXIT_FAILURE);
         }
     }
 

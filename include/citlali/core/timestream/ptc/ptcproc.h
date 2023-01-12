@@ -532,6 +532,7 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
 
     // tangent plane pointing for each detector
     Eigen::MatrixXd lats(in.scans.data.rows(), in.scans.data.cols()), lons(in.scans.data.rows(), in.scans.data.cols());
+
     for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
         double az_off = 0;
         double el_off = 0;
@@ -542,6 +543,7 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
             el_off = apt["y_t"](det_index);
         }
 
+        // get physical pointing
         auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off,
                                                           pixel_axes, pointing_offsets_arcsec);
         lats.col(i) = std::move(lat);
@@ -557,6 +559,10 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
     try {
         netCDF::NcFile fo(filepath, netCDF::NcFile::write);
         auto vars = fo.getVars();
+
+        double cra, cdec;
+        vars.find("Source.Ra")->second.getVar(&cra);
+        vars.find("Source.Dec")->second.getVar(&cdec);
 
         NcDim n_pts_dim = fo.getDim("n_pts");
         NcDim n_dets_dim = fo.getDim("n_dets");
@@ -586,6 +592,9 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
 
         NcVar det_lat_var = fo.getVar("det_lat");
         NcVar det_lon_var = fo.getVar("det_lon");
+
+        NcVar det_ra_var = fo.getVar("det_ra");
+        NcVar det_dec_var = fo.getVar("det_dec");
 
         // append weights if output type is ptc
         if (tod_output_type == "ptc") {
@@ -623,6 +632,15 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
             // append detector lons
             Eigen::VectorXd lons_row = lons.row(i);
             det_lon_var.putVar(start_index, size, lons_row.data());
+
+            // get absolute pointing
+            auto [decs, ras] = engine_utils::phys_to_abs(lats_row, lons_row, cra, cdec);
+
+            // append detector ra
+            det_ra_var.putVar(start_index, size, ras.data());
+
+            // append detector dec
+            det_dec_var.putVar(start_index, size, decs.data());
 
             // append telescope
             for (auto const& x: in.tel_data.data) {
