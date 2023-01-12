@@ -276,7 +276,6 @@ int run(const rc_t &rc) {
                         // if beammap generate the apt table from the files
                         SPDLOG_INFO("making apt file from raw nc files");
                         todproc.get_apt_from_files(rawobs);
-                        SPDLOG_INFO("calib.apt {}",todproc.engine().calib.apt);
                     }
 
                     else {

@@ -586,24 +586,24 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         std::vector<std::size_t> size_apt = {1};
 
         // get timestream variables
-        NcVar scans_var = fo.getVar("signal");
-        NcVar flags_var = fo.getVar("flags");
-        NcVar kernel_var = fo.getVar("kernel");
+        NcVar scans_v = fo.getVar("signal");
+        NcVar flags_v = fo.getVar("flags");
+        NcVar kernel_v = fo.getVar("kernel");
 
-        NcVar det_lat_var = fo.getVar("det_lat");
-        NcVar det_lon_var = fo.getVar("det_lon");
+        NcVar det_lat_v = fo.getVar("det_lat");
+        NcVar det_lon_v = fo.getVar("det_lon");
 
-        NcVar det_ra_var = fo.getVar("det_ra");
-        NcVar det_dec_var = fo.getVar("det_dec");
+        NcVar det_ra_v = fo.getVar("det_ra");
+        NcVar det_dec_v = fo.getVar("det_dec");
 
         // append weights if output type is ptc
         if (tod_output_type == "ptc") {
             std::vector<std::size_t> start_index_weights = {static_cast<unsigned long>(in.index.data), 0};
             std::vector<std::size_t> size_weights = {1, n_dets_exists};
 
-            NcVar weights_var = fo.getVar("weights");
+            NcVar weights_v = fo.getVar("weights");
 
-            weights_var.putVar(start_index_weights, size_weights, in.weights.data.data());
+            weights_v.putVar(start_index_weights, size_weights, in.weights.data.data());
         }
 
         // append data
@@ -613,48 +613,48 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
 
             // append scans
             Eigen::VectorXd scans = in.scans.data.row(i);
-            scans_var.putVar(start_index, size, scans.data());
+            scans_v.putVar(start_index, size, scans.data());
 
             // append flags
             Eigen::VectorXi flags_int = in.flags.data.row(i).cast<int> ();
-            flags_var.putVar(start_index, size, flags_int.data());
+            flags_v.putVar(start_index, size, flags_int.data());
 
             // append kernel
-            if (!kernel_var.isNull()) {
+            if (!kernel_v.isNull()) {
                 Eigen::VectorXd kernel = in.kernel.data.row(i);
-                kernel_var.putVar(start_index, size, kernel.data());
+                kernel_v.putVar(start_index, size, kernel.data());
             }
 
             // append detector lats
             Eigen::VectorXd lats_row = lats.row(i);
-            det_lat_var.putVar(start_index, size, lats_row.data());
+            det_lat_v.putVar(start_index, size, lats_row.data());
 
             // append detector lons
             Eigen::VectorXd lons_row = lons.row(i);
-            det_lon_var.putVar(start_index, size, lons_row.data());
+            det_lon_v.putVar(start_index, size, lons_row.data());
 
             // get absolute pointing
             auto [decs, ras] = engine_utils::phys_to_abs(lats_row, lons_row, cra, cdec);
 
             // append detector ra
-            det_ra_var.putVar(start_index, size, ras.data());
+            det_ra_v.putVar(start_index, size, ras.data());
 
             // append detector dec
-            det_dec_var.putVar(start_index, size, decs.data());
+            det_dec_v.putVar(start_index, size, decs.data());
 
             // append telescope
             for (auto const& x: in.tel_data.data) {
-                NcVar tel_data_var = fo.getVar(x.first);
-                tel_data_var.putVar(start_index_tel, size_tel, x.second.row(i).data());
+                NcVar tel_data_v = fo.getVar(x.first);
+                tel_data_v.putVar(start_index_tel, size_tel, x.second.row(i).data());
             }
         }
 
         // overwrite apt table
         for (auto const& x: apt) {
-            netCDF::NcVar apt_var = fo.getVar("apt_" + x.first);
+            netCDF::NcVar apt_v = fo.getVar("apt_" + x.first);
             for (std::size_t i=0; i< TULA_SIZET(n_dets_exists); ++i) {
                 start_index_apt[0] = i;
-                apt_var.putVar(start_index_apt, size_apt, &apt[x.first](det_indices(i)));
+                apt_v.putVar(start_index_apt, size_apt, &apt[x.first](det_indices(i)));
             }
         }
 
@@ -678,8 +678,8 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         std::vector<std::size_t> scan_indices_start_index = {TULA_SIZET(in.index.data), 0};
         // size for data
         std::vector<std::size_t> scan_indices_size = {1, 2};
-        NcVar scan_indices_var = fo.getVar("scan_indices");
-        scan_indices_var.putVar(scan_indices_start_index, scan_indices_size,scan_indices.data());
+        NcVar scan_indices_v = fo.getVar("scan_indices");
+        scan_indices_v.putVar(scan_indices_start_index, scan_indices_size,scan_indices.data());
 
         fo.sync();
         fo.close();

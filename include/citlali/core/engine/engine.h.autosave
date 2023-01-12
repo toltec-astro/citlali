@@ -922,33 +922,44 @@ void Engine::create_tod_files() {
         // scan indices for data
         netCDF::NcVar scan_indices_v = fo.addVar("scan_indices",netCDF::ncInt, scans_dims);
 
-        // scans
-        netCDF::NcVar scans_v = fo.addVar("signal",netCDF::ncDouble, dims);
+        // signal
+        netCDF::NcVar signal_v = fo.addVar("signal",netCDF::ncDouble, dims);
+        // chunk sizes
         std::vector<std::size_t> chunkSizes;
+        // set chunk mode
         netCDF::NcVar::ChunkMode chunkMode = netCDF::NcVar::nc_CHUNKED;
-
+        
+        // set chunking to mean scan size and n_dets
         chunkSizes.push_back(((telescope.scan_indices.row(3) - telescope.scan_indices.row(2)).array() + 1).mean());
         chunkSizes.push_back(n_dets);
-
-        //scans_v.getChunkingParameters(chunkMode, chunkSizes);
-        scans_v.setChunking(chunkMode, chunkSizes);
+        
+        // set chunking
+        signal_v.setChunking(chunkMode, chunkSizes);
 
         // flags
         netCDF::NcVar flags_v = fo.addVar("flags",netCDF::ncDouble, dims);
+        flags_v.setChunking(chunkMode, chunkSizes);        
         // kernel
         if (rtcproc.run_kernel) {
             netCDF::NcVar kernel_v = fo.addVar("kernel",netCDF::ncDouble, dims);
+            kernel_v.setChunking(chunkMode, chunkSizes);                    
         }
 
         // detector lat
         netCDF::NcVar det_lat_v = fo.addVar("det_lat",netCDF::ncDouble, dims);
+        det_lat_v.setChunking(chunkMode, chunkSizes);                    
+        
         // detector lon
         netCDF::NcVar det_lon_v = fo.addVar("det_lon",netCDF::ncDouble, dims);
+        det_lon_v.setChunking(chunkMode, chunkSizes);                    
 
         // detector absolute ra
         netCDF::NcVar det_ra_v = fo.addVar("det_ra",netCDF::ncDouble, dims);
+        det_ra_v.setChunking(chunkMode, chunkSizes);                    
+        
         // detector absolute dec
         netCDF::NcVar det_dec_v = fo.addVar("det_dec",netCDF::ncDouble, dims);
+        det_dec_v.setChunking(chunkMode, chunkSizes);                            
 
         // add apt table
         for (auto const& x: calib.apt) {
