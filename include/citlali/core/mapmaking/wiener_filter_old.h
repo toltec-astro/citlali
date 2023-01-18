@@ -103,8 +103,8 @@ public:
     }
 
     template<class MB>
-    void filter_coaddition(MB &mb, const int map_num) {
-        SPDLOG_INFO("filtering coaddition");
+    void filter_maps(MB &mb, const int map_num) {
+        SPDLOG_INFO("filtering maps");
         if (run_kernel) {
             SPDLOG_INFO("filtering kernel");
             filtered_map = mb.kernel.at(map_num);

@@ -606,6 +606,8 @@ void Engine::get_citlali_config(CT &config) {
         get_value(config, wiener_filter.run_lowpass, missing_keys, invalid_keys, std::tuple{"wiener_filter","lowpass_only"});
         get_value(config, wiener_filter.normalize_error, missing_keys, invalid_keys, std::tuple{"map_filtering","normalize_errors"});
 
+        wiener_filter.run_kernel = rtcproc.run_kernel;
+
         if (wiener_filter.template_type=="kernel") {
             if (!rtcproc.run_kernel) {
                 SPDLOG_ERROR("wiener filter kernel template requires kernel");
@@ -1654,7 +1656,7 @@ void Engine::run_wiener_filter(mapmaking::ObsMapBuffer &mb) {
     Eigen::Index i = 0;
     for (auto const& arr: toltec_io.array_name_map) {
         wiener_filter.make_template(mb,calib.apt, wiener_filter.gaussian_template_fwhm_rad[toltec_io.array_name_map[i]],i);
-        wiener_filter.filter_coaddition(mb, i);
+        wiener_filter.filter_maps(mb, i);
 
         // filter noise maps
         if (run_noise) {
