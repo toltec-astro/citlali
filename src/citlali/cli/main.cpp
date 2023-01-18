@@ -136,7 +136,7 @@ int run(const rc_t &rc) {
 
     // set todproc to variant depending on the config file reduction type
 
-    // check if config file has a grouping parameter
+    // check if config file has a reduction type parameter
     if (citlali_config.has(std::tuple{"runtime", "reduction_type"})) {
         try {
             auto reduction_type =
@@ -249,7 +249,7 @@ int run(const rc_t &rc) {
                 todproc.create_output_dir();
 
                 // copy config files to reduction directory
-                for (std::string config_filepath : config_filepaths) {
+                for (std::string &config_filepath : config_filepaths) {
                     std::size_t found = config_filepath.rfind("/");
                     if (found!=std::string::npos) {
                         std::string config_name = config_filepath.substr(found);
@@ -386,12 +386,14 @@ int run(const rc_t &rc) {
                             auto apt_path = rawobs.array_prop_table().filepath();
                             SPDLOG_INFO("getting array properties table {}", apt_path);
 
+                            // get raw files and interfaces
                             std::vector<std::string> raw_filenames, interfaces;
                             for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
                                 raw_filenames.push_back(data_item.filepath());
                                 interfaces.push_back(data_item.interface());
                             }
 
+                            // get and setup apt table
                             todproc.engine().calib.get_apt(apt_path, raw_filenames, interfaces);
                         }
 

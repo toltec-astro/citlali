@@ -138,6 +138,10 @@ auto Lali::run() {
                 }
             }
 
+            // subtract scan means
+            SPDLOG_INFO("subtracting det means");
+            ptcproc.subtract_mean(ptcdata);
+
             // remove flagged dets
             SPDLOG_INFO("removing flagged dets");
             ptcproc.remove_flagged_dets(ptcdata, calib.apt, det_indices);

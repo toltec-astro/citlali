@@ -58,6 +58,12 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
         if (!config.has("coadd")) {
             missing_keys.push_back("coadd");
         }
+        if (!config.has("noise_maps")) {
+            missing_keys.push_back("noise_maps");
+        }
+        if (!config.has("map_filtering")) {
+            missing_keys.push_back("map_filtering");
+        }
         if (missing_keys.empty()) {
             return std::nullopt;
         }

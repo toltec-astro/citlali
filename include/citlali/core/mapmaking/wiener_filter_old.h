@@ -26,121 +26,126 @@ public:
     bool run_kernel;
     int nloops;
 
+    double bounding_box_pix, init_fwhm;
+
     std::map<std::string, double> gaussian_template_fwhm_rad;
 
     int nr, nc;
     double diffr, diffc;
     double denom_limit = 1.e-4;
 
-    std::string exmode;
+    std::string parallel_policy;
 
     Eigen::MatrixXd rr, vvq, denom, nume;
-    Eigen::MatrixXd mflt;
-    Eigen::MatrixXd tplate;
+    Eigen::MatrixXd filtered_map;
+    Eigen::MatrixXd filter_template;
 
-    template<class CMB>
-    void make_gaussian_template(CMB &cmb, const double);
+    // declare fitter class
+    engine_utils::mapFitter map_fitter;
 
-    template<class CMB, class CD>
-    void make_symmetric_template(CMB &cmb, const int, CD &);
+    template<class MB>
+    void make_gaussian_template(MB &mb, const double);
 
-    template<class CMB, class CD>
-    void make_template(CMB &cmb, CD &calib_data, const double gaussian_template_fwhm_rad, const int map_num) {
-        // make sure new wiener filtered maps have even dimensions
-        nr = 2*(cmb.n_rows/2);
-        nc = 2*(cmb.n_cols/2);
+    template<class MB, class CD>
+    void make_symmetric_template(MB &mb, const int, CD &);
+
+    template<class MB, class CD>
+    void make_template(MB &mb, CD &calib_data, const double gaussian_template_fwhm_rad, const int map_num) {
+        // make sure filtered maps have even dimensions
+        nr = 2*(mb.n_rows/2);
+        nc = 2*(mb.n_cols/2);
 
         // x and y spacing should be equal
-        diffr = abs(cmb.rows_tan_vec(1) - cmb.rows_tan_vec(0));
-        diffc = abs(cmb.cols_tan_vec(1) - cmb.cols_tan_vec(0));
+        diffr = abs(mb.rows_tan_vec(1) - mb.rows_tan_vec(0));
+        diffc = abs(mb.cols_tan_vec(1) - mb.cols_tan_vec(0));
 
         if (template_type=="highpass") {
             SPDLOG_INFO("creating template with highpass only");
-            tplate.setZero(nr,nc);
-            tplate(0,0) = 1;
+            filter_template.setZero(nr,nc);
+            filter_template(0,0) = 1;
         }
 
         else if (template_type=="gaussian") {
             SPDLOG_INFO("creating gaussian template");
-            make_gaussian_template(cmb, gaussian_template_fwhm_rad);
+            make_gaussian_template(mb, gaussian_template_fwhm_rad);
         }
 
         else {
-            make_symmetric_template(cmb, map_num, calib_data);
+            make_symmetric_template(mb, map_num, calib_data);
         }
     }
 
-    template<class CMB>
-    void calc_rr(CMB &cmb, const int map_num) {
+    template<class MB>
+    void calc_rr(MB &mb, const int map_num) {
         if (uniform_weight) {
             rr = Eigen::MatrixXd::Ones(nr, nc);
         }
         else {
-            rr = sqrt(cmb.weight.at(map_num).array());
+            rr = sqrt(mb.weight.at(map_num).array());
         }
     }
 
-    template <class CMB>
-    void calc_vvq(CMB &, const int);
+    template <class MB>
+    void calc_vvq(MB &, const int);
     void calc_numerator();
     void calc_denominator();
 
-    template<class CMB>
-    void run_filter(CMB &cmb, const int map_num) {
-        SPDLOG_INFO("calculating rr");
-        calc_rr(cmb, map_num);
-        SPDLOG_INFO("calculating vvq");
-        calc_vvq(cmb, map_num);
-        SPDLOG_INFO("calculating denominator");
+    template<class MB>
+    void run_filter(MB &mb, const int map_num) {
+        SPDLOG_DEBUG("calculating rr");
+        calc_rr(mb, map_num);
+        SPDLOG_DEBUG("calculating vvq");
+        calc_vvq(mb, map_num);
+        SPDLOG_DEBUG("calculating denominator");
         calc_denominator();
-        SPDLOG_INFO("calculating numerator");
+        SPDLOG_DEBUG("calculating numerator");
         calc_numerator();
     }
 
-    template<class CMB>
-    void filter_coaddition(CMB &cmb, const int map_num) {
+    template<class MB>
+    void filter_coaddition(MB &mb, const int map_num) {
         SPDLOG_INFO("filtering coaddition");
         if (run_kernel) {
             SPDLOG_INFO("filtering kernel");
-            mflt = cmb.kernel.at(map_num);
+            filtered_map = mb.kernel.at(map_num);
             uniform_weight = true;
-            run_filter(cmb, map_num);
+            run_filter(mb, map_num);
 
             for (int i=0; i<nc; i++) {
                 for (int j=0; j<nr; j++) {
                     if (denom(j,i) != 0.0) {
-                        cmb.kernel.at(map_num)(j,i)=nume(j,i)/denom(j,i);
+                        mb.kernel.at(map_num)(j,i)=nume(j,i)/denom(j,i);
                     }
                     else {
-                        cmb.kernel.at(map_num)(j,i)= 0.0;
+                        mb.kernel.at(map_num)(j,i)= 0.0;
                     }
                 }
             }
         }
 
         SPDLOG_INFO("filtering signal");
-        mflt = cmb.signal.at(map_num);
+        filtered_map = mb.signal.at(map_num);
         uniform_weight = false;
-        run_filter(cmb, map_num);
+        run_filter(mb, map_num);
 
         for (int i=0; i<nc; i++) {
             for (int j=0; j<nr; j ++) {
                 if (denom(j,i) != 0.0) {
-                    cmb.signal.at(map_num)(j,i) = nume(j,i)/denom(j,i);
+                    mb.signal.at(map_num)(j,i) = nume(j,i)/denom(j,i);
                 }
                 else {
-                    cmb.signal.at(map_num)(j,i)= 0.0;
+                    mb.signal.at(map_num)(j,i)= 0.0;
                 }
             }
         }
-        cmb.weight.at(map_num) = denom;
+        mb.weight.at(map_num) = denom;
     }
 
-    template<class CMB>
-    void filter_noise(CMB &cmb, const int map_num, const int noise_num) {
-        SPDLOG_INFO("filtering noise {}/{}",noise_num+1, cmb.noise.at(map_num).dimension(2));
-        Eigen::Tensor<double,2> out = cmb.noise.at(map_num).chip(noise_num,2);
-        mflt = Eigen::Map<Eigen::MatrixXd>(out.data(),out.dimension(0),out.dimension(1));
+    template<class MB>
+    void filter_noise(MB &mb, const int map_num, const int noise_num) {
+        SPDLOG_INFO("filtering noise {}/{}",noise_num+1, mb.noise.at(map_num).dimension(2));
+        Eigen::Tensor<double,2> out = mb.noise.at(map_num).chip(noise_num,2);
+        filtered_map = Eigen::Map<Eigen::MatrixXd>(out.data(),out.dimension(0),out.dimension(1));
         calc_numerator();
 
         //Eigen::MatrixXd ratio = (denom.array() == 0).select(0, nume.array() / denom.array());
@@ -158,17 +163,17 @@ public:
         }
 
         Eigen::TensorMap<Eigen::Tensor<double, 2>> in_tensor(ratio.data(), ratio.rows(), ratio.cols());
-        cmb.noise.at(map_num).chip(noise_num,2) = in_tensor;
+        mb.noise.at(map_num).chip(noise_num,2) = in_tensor;
     }
 };
 
-template<class CMB>
-void WienerFilter::make_gaussian_template(CMB &cmb, const double gaussian_template_fwhm_rad) {
+template<class MB>
+void WienerFilter::make_gaussian_template(MB &mb, const double gaussian_template_fwhm_rad) {
 
-    tplate.setZero(nr,nc);
+    filter_template.setZero(nr,nc);
 
-    Eigen::VectorXd rgcut = cmb.rows_tan_vec;
-    Eigen::VectorXd cgcut = cmb.cols_tan_vec;
+    Eigen::VectorXd rgcut = mb.rows_tan_vec;
+    Eigen::VectorXd cgcut = mb.cols_tan_vec;
 
     Eigen::MatrixXd dist(nr, nc);
     /*dist = (xgcut.replicate(1, nc).array().pow(2.0).matrix()
@@ -189,37 +194,28 @@ void WienerFilter::make_gaussian_template(CMB &cmb, const double gaussian_templa
 
     std::vector<Eigen::Index> shift_indices = {-rcind, -ccind};
 
-    tplate = exp(-0.5 * pow(dist.array() / sigma, 2.));
-    tplate = engine_utils::shift_2D(tplate, shift_indices);
+    filter_template = exp(-0.5 * pow(dist.array() / sigma, 2.));
+    filter_template = engine_utils::shift_2D(filter_template, shift_indices);
 }
 
-template<class CMB, class CD>
-void WienerFilter::make_symmetric_template(CMB &cmb, const int map_num, CD &calib_data) {
+template<class MB, class CD>
+void WienerFilter::make_symmetric_template(MB &mb, const int map_num, CD &calib_data) {
     // collect what we need
-    Eigen::VectorXd rgcut = cmb.rows_tan_vec;
-    Eigen::VectorXd cgcut = cmb.cols_tan_vec;
-    Eigen::MatrixXd tem = cmb.kernel.at(map_num);
+    Eigen::VectorXd rgcut = mb.rows_tan_vec;
+    Eigen::VectorXd cgcut = mb.cols_tan_vec;
+    Eigen::MatrixXd tem = mb.kernel.at(map_num);
 
     // set nparams for fit
     Eigen::Index nparams = 6;
-    Eigen::VectorXd pfit;
-    pfit.setZero(nparams);
 
-    // declare fitter class for detector
-    engine_utils::mapFitter map_fitter;
-    // size of region to fit in pixels
-    map_fitter.bounding_box_pix = 15;//bounding_box_pix;
-
-
-    double init_fwhm = 5;//toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/cmb.pixel_size_rad;
     auto [det_params, det_perror, good_fit] =
-        map_fitter.fit_to_gaussian<engine_utils::mapFitter::peakValue>(cmb.signal[map_num], cmb.weight[map_num], init_fwhm);
+        map_fitter.fit_to_gaussian<engine_utils::mapFitter::peakValue>(mb.signal[map_num], mb.weight[map_num], init_fwhm);
 
-    pfit(1) = cmb.pixel_size_rad*(pfit(1) - (nc)/2);
-    pfit(2) = cmb.pixel_size_rad*(pfit(2) - (nr)/2);
+    det_params(1) = mb.pixel_size_rad*(det_params(1) - (nc)/2);
+    det_params(2) = mb.pixel_size_rad*(det_params(2) - (nr)/2);
 
-    Eigen::Index r = -std::round(pfit(2)/diffr);
-    Eigen::Index c = -std::round(pfit(1)/diffc);
+    Eigen::Index r = -std::round(det_params(2)/diffr);
+    Eigen::Index c = -std::round(det_params(1)/diffc);
 
     std::vector<Eigen::Index> shift_indices = {r,c};
     tem = engine_utils::shift_2D(tem, shift_indices);
@@ -261,7 +257,7 @@ void WienerFilter::make_symmetric_template(CMB &cmb, const int map_num, CD &cali
     }
 
     // now spline interpolate to generate new template array
-    tplate.resize(nr,nc);
+    filter_template.resize(nr,nc);
 
     engine_utils::SplineFunction s(done, kone);
 
@@ -273,23 +269,23 @@ void WienerFilter::make_symmetric_template(CMB &cmb, const int map_num, CD &cali
             Eigen::Index shifti = (ti < 0) ? nc+ti : ti;
 
             if (dist(j,i) <= s.x_max && dist(j,i) >= s.x_min) {
-                tplate(shiftj,shifti) = s(dist(j,i));
+                filter_template(shiftj,shifti) = s(dist(j,i));
             }
             else if (dist(j,i) > s.x_max) {
-                tplate(shiftj,shifti) = kone(kone.size()-1);
+                filter_template(shiftj,shifti) = kone(kone.size()-1);
             }
             else if (dist(j,i) < s.x_min) {
-                tplate(shiftj,shifti) = kone(0);
+                filter_template(shiftj,shifti) = kone(0);
             }
         }
     }
 }
 
-template <class CMB>
-void WienerFilter::calc_vvq(CMB &cmb, const int map_num) {
+template <class MB>
+void WienerFilter::calc_vvq(MB &mb, const int map_num) {
     // psd and psd freq vectors
-    Eigen::VectorXd qf = cmb.noise_psds.at(map_num);
-    Eigen::VectorXd hp = cmb.noise_psd_freqs.at(map_num);
+    Eigen::VectorXd qf = mb.noise_psds.at(map_num);
+    Eigen::VectorXd hp = mb.noise_psd_freqs.at(map_num);
 
     // size of psd and psd freq vectors
     Eigen::Index npsd = hp.size();
@@ -451,38 +447,38 @@ void WienerFilter::calc_numerator() {
     Eigen::MatrixXcd out(nr, nc);
 
     //Eigen::Map<Eigen::VectorXd> rr_vec(rr.data(),rr.rows(),rr.cols());
-    //Eigen::Map<Eigen::VectorXd> mflt_vec(mflt.data(),mflt.rows(),mflt.cols());
+    //Eigen::Map<Eigen::VectorXd> filtered_map_vec(filtered_map.data(),filtered_map.rows(),filtered_map.cols());
 
-    in.real() = rr.array() * mflt.array();
+    in.real() = rr.array() * filtered_map.array();
     in.imag().setZero();
 
-    out = engine_utils::fft<engine_utils::forward>(in, exmode);
+    out = engine_utils::fft<engine_utils::forward>(in, parallel_policy);
     out = out * fftnorm;
 
     in.real() = out.real().array() / vvq.array();
     in.imag() = out.imag().array() / vvq.array();
 
-    out = engine_utils::fft<engine_utils::inverse>(in, exmode);
+    out = engine_utils::fft<engine_utils::inverse>(in, parallel_policy);
 
     in.real() = out.real().array() * rr.array();
     in.imag().setZero();
 
-    out = engine_utils::fft<engine_utils::forward>(in, exmode);
+    out = engine_utils::fft<engine_utils::forward>(in, parallel_policy);
     out = out * fftnorm;
 
     // copy of out
     Eigen::MatrixXcd qqq = out;
 
-    in.real() = tplate;
+    in.real() = filter_template;
     in.imag().setZero();
 
-    out = engine_utils::fft<engine_utils::forward>(in, exmode);
+    out = engine_utils::fft<engine_utils::forward>(in, parallel_policy);
     out = out * fftnorm;
 
     in.real() = out.real().array() * qqq.real().array() + out.imag().array() * qqq.imag().array();
     in.imag() = -out.imag().array() * qqq.real().array() + out.real().array() * qqq.imag().array();
 
-    out = engine_utils::fft<engine_utils::inverse>(in, exmode);
+    out = engine_utils::fft<engine_utils::inverse>(in, parallel_policy);
 
     // populate numerator
     nume = out.real();
@@ -498,10 +494,10 @@ void WienerFilter::calc_denominator() {
     Eigen::MatrixXcd out(nr, nc);
 
     if (uniform_weight) {
-        in.real() = tplate;
+        in.real() = filter_template;
         in.imag().setZero();
 
-        out = engine_utils::fft<engine_utils::forward>(in, exmode);
+        out = engine_utils::fft<engine_utils::forward>(in, parallel_policy);
         out = out * fftnorm;
 
        // auto d = ((out.real().array() * out.real().array() + out.imag().array() * out.imag().array()) / vvq.array()).sum();
@@ -521,7 +517,7 @@ void WienerFilter::calc_denominator() {
         in.real() = pow(vvq.array(), -1);
         in.imag().setZero();
 
-        out = engine_utils::fft<engine_utils::inverse>(in, exmode);
+        out = engine_utils::fft<engine_utils::inverse>(in, parallel_policy);
 
         Eigen::VectorXd zz2d(nr * nc);
         //Eigen::Map<Eigen::VectorXd> out_vec(out.real().data(), nr*nc);
@@ -578,8 +574,7 @@ void WienerFilter::calc_denominator() {
 
                     std::vector<Eigen::Index> shift_indices = {shift_1, shift_2};
 
-
-                    Eigen::MatrixXd in_prod = tplate.array() * engine_utils::shift_2D(tplate, shift_indices).array();
+                    Eigen::MatrixXd in_prod = filter_template.array() * engine_utils::shift_2D(filter_template, shift_indices).array();
 
                     /*in2.real() = Eigen::Map<Eigen::VectorXd>(
                         (in_prod).data(),
@@ -590,7 +585,7 @@ void WienerFilter::calc_denominator() {
                     in2.real() = in_prod;
                     in2.imag().setZero();
 
-                    out2 = engine_utils::fft<engine_utils::forward>(in2, exmode);
+                    out2 = engine_utils::fft<engine_utils::forward>(in2, parallel_policy);
                     out2 = out2 * fftnorm;
 
                     Eigen::MatrixXcd ffdq(nr,nc);
@@ -607,13 +602,13 @@ void WienerFilter::calc_denominator() {
                     in2.real() = in_prod;
                     in2.imag().setZero();
 
-                    out2 = engine_utils::fft<engine_utils::forward>(in2, exmode);
+                    out2 = engine_utils::fft<engine_utils::forward>(in2, parallel_policy);
                     out2 = out2 * fftnorm;
 
                     in2.real() = ffdq.real().array() * out2.real().array() + ffdq.imag().array() * out2.imag().array();
                     in2.imag() = -ffdq.imag().array() * out2.real().array() + ffdq.real().array() * out2.imag().array();
 
-                    out2 = engine_utils::fft<engine_utils::inverse>(in2, exmode);
+                    out2 = engine_utils::fft<engine_utils::inverse>(in2, parallel_policy);
 
                     Eigen::MatrixXd updater = zz2d(shifti) * out2.real() * fftnorm;
 
@@ -623,9 +618,8 @@ void WienerFilter::calc_denominator() {
 
                     if ((kk % 100) == 1) {
                         double max_ratio = -1;
-                        double maxdenom;
+                        double maxdenom = denom.maxCoeff();
 
-                        maxdenom = denom.maxCoeff();
                         for (int i = 0; i < nr; i++) {
                             for (int j = 0; j < nc; j++) {
                                 if (denom(i, j) > 0.01 * maxdenom) {
@@ -648,15 +642,14 @@ void WienerFilter::calc_denominator() {
             }
         }
 
-        SPDLOG_INFO("zeroing out any values < {} in denominator", denom_limit);
-        SPDLOG_INFO("min denom {}",denom.minCoeff());
+        SPDLOG_DEBUG("zeroing out any values < {} in denominator", denom_limit);
         //(denom.array() < denom_limit).select(0, denom);
         for (Eigen::Index i=0;i<nr;i++) {
             for (Eigen::Index j=0;j<nc;j++) {
                 if (denom(i,j) < 1.e-4) denom(i,j) = 0;
             }
         }
-        SPDLOG_INFO("min denom after {}",denom.minCoeff());
+        SPDLOG_DEBUG("min denom {}",denom.minCoeff());
 
     }
 }

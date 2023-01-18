@@ -5,7 +5,7 @@ beammap: # beammap controls (ignored if not beammapping)
   iter_tolerance: 0.0 # tolerance for iterations
   sens_psd_lower_limit: 0 # lower limit for psd in sensitivity calculation
   sens_psd_upper_limit: 0 # upper limit for psd in sensitivity calculation
-  flagging: # these parameters control how the beammapping algorithm flags dets
+  flagging: # these parameters control how the beammapping algorithm flags bad detectors
     lower_fwhm_arcsec: # lower limits for fitted fwhm values (used for flagging only)
       a1100: 0
       a1400: 0
@@ -129,7 +129,7 @@ kids: # kids fitting parameters
       type: lorentz
   solver:
     fitreportdir: /path/to/fit/report/directory/ # directory to grab fit report from
-    parallel_policy: seq # parallel policy for kids solver (independent of citlali parallel policy)
+    parallel_policy: seq # parallel policy for kids solver (independent of citlali parallel_policy)
 mapmaking: # mapmaking parameters
   histogram:
     n_bins: 20 # number of histogram bins (>0)

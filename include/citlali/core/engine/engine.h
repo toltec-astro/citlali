@@ -545,7 +545,7 @@ void Engine::get_citlali_config(CT &config) {
     cmb.wcs = omb.wcs;
 
     /* fitting */
-    if (redu_type=="pointing" || redu_type=="beammap") {
+    if (redu_type=="pointing" || redu_type=="beammap" || run_map_filter) {
         get_value(config, map_fitter.bounding_box_pix, missing_keys, invalid_keys, std::tuple{"source_fitting","bounding_box_arcsec"});
         get_value(config, map_fitter.fitting_region_pix, missing_keys, invalid_keys, std::tuple{"source_fitting","fitting_region_arcsec"});
         map_fitter.bounding_box_pix = ASEC_TO_RAD*map_fitter.bounding_box_pix/omb.pixel_size_rad;
@@ -606,13 +606,18 @@ void Engine::get_citlali_config(CT &config) {
         get_value(config, wiener_filter.run_lowpass, missing_keys, invalid_keys, std::tuple{"wiener_filter","lowpass_only"});
         get_value(config, wiener_filter.normalize_error, missing_keys, invalid_keys, std::tuple{"map_filtering","normalize_errors"});
 
-        if (wiener_filter.template_type=="kernel" && !rtcproc.run_kernel) {
-            SPDLOG_ERROR("wiener filter kernel template requires kernel");
-            std::exit(EXIT_FAILURE);
+        if (wiener_filter.template_type=="kernel") {
+            if (!rtcproc.run_kernel) {
+                SPDLOG_ERROR("wiener filter kernel template requires kernel");
+                std::exit(EXIT_FAILURE);
+            }
+            else {
+                wiener_filter.map_fitter = map_fitter;
+            }
         }
 
         if (!run_noise) {
-            SPDLOG_ERROR("wiener filter kernel template requires noise maps");
+            SPDLOG_ERROR("wiener filter requires noise maps");
             std::exit(EXIT_FAILURE);
         }
 
@@ -629,6 +634,9 @@ void Engine::get_citlali_config(CT &config) {
                 wiener_filter.gaussian_template_fwhm_rad[pair.first] = wiener_filter.gaussian_template_fwhm_rad[pair.first]*ASEC_TO_RAD;
             }
         }
+
+        // set parallelization for ffts
+        wiener_filter.parallel_policy = parallel_policy;
     }
 
     /* beammap */
@@ -1643,31 +1651,25 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
 }
 
 void Engine::run_wiener_filter(mapmaking::ObsMapBuffer &mb) {
-    wiener_filter.exmode = parallel_policy;
-
     Eigen::Index i = 0;
     for (auto const& arr: toltec_io.array_name_map) {
-        wiener_filter.make_template(cmb,calib.apt, wiener_filter.gaussian_template_fwhm_rad[toltec_io.array_name_map[i]],i);
-        wiener_filter.filter_coaddition(cmb, i);
+        wiener_filter.make_template(mb,calib.apt, wiener_filter.gaussian_template_fwhm_rad[toltec_io.array_name_map[i]],i);
+        wiener_filter.filter_coaddition(mb, i);
 
         // filter noise maps
         if (run_noise) {
-            tula::logging::scoped_timeit timer("filter_noise()");
-            for (Eigen::Index j=0; j<cmb.n_noise; j++) {
-                wiener_filter.filter_noise(cmb, i, j);
+            for (Eigen::Index j=0; j<mb.n_noise; j++) {
+                wiener_filter.filter_noise(mb, i, j);
             }
         }
         i++;
     }
 
+    // renormalize weight maps based on noise map rms
     if (run_noise) {
         if (wiener_filter.normalize_error) {
-            SPDLOG_INFO("normalizing noise map errors");
-            //cmb.normalize_noise_map_errors(weighting_type);
-            SPDLOG_INFO("calculating average filtered rms");
-            //cmb.calc_average_filtered_rms(weighting_type);
-            SPDLOG_INFO("normalizing errors");
-            //cmb.normalize_errors(weighting_type);
+            SPDLOG_INFO("renormalizing errors");
+            mb.renormalize_errors();
         }
     }
 }

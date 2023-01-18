@@ -30,11 +30,10 @@ public:
 template <EigenSolverBackend backend, typename DerivedA, typename DerivedB, typename DerivedC>
 auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eigen::DenseBase<DerivedB> &flags,
                               Eigen::DenseBase<DerivedC> &apt) {
+    // dimensions
     Eigen::Index n_pts = scans.rows();
     Eigen::Index n_dets = scans.cols();
 
-    // mean subtracted detectors
-    Eigen::MatrixXd det;
     // eigenvalues
     Eigen::VectorXd evals;
     // eigenvecs
@@ -44,6 +43,8 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     Eigen::MatrixXd denom;
 
     /*
+    Eigen::MatrixXd det;
+
     // number of non zero dets
     Eigen::Index n_non_zero = 0;
 
@@ -71,16 +72,12 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
         }
     }
 
-    // calculate detector means
-    Eigen::RowVectorXd det_means = det.colwise().mean();
-    // subtract detector means
-    det.noalias() = det.rowwise() - det_means;
-
     // calculate denominator
     denom = (f.template cast <double> ().adjoint() * f.template cast <double> ()).array() - 1;
 
     // container for covariance matrix
-    Eigen::MatrixXd pca_cov(n_non_zero, n_non_zero);*/
+    Eigen::MatrixXd pca_cov(n_non_zero, n_non_zero);
+    */
 
     // make copy of flags
     Eigen::MatrixXd f = flags.derived().template cast<double> ();
@@ -91,20 +88,6 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
         }
     }
 
-    // mean of each detector
-    //Eigen::RowVectorXd det_means = (scans.derived().array()*flags.derived().array().template cast <double> ()).colwise().sum()/
-                                   //flags.derived().array().template cast <double> ().colwise().sum();
-
-    Eigen::RowVectorXd det_means = (scans.derived().array()*f.array()).colwise().sum()/
-                                   f.array().colwise().sum();
-
-    // remove nans from completely flagged detectors
-    Eigen::RowVectorXd dm = (det_means).array().isNaN().select(0,det_means);
-
-    // subtract mean from data and copy into det matrix
-    //det = (scans.derived().array()*flags.derived().array().template cast <double> ()).matrix().rowwise() - dm;
-    det = (scans.derived().array()*f.array()).matrix().rowwise() - dm;
-
     // container for covariance matrix
     Eigen::MatrixXd pca_cov(n_dets, n_dets);
 
@@ -113,19 +96,19 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     denom = (f.adjoint() * f).array() - 1;
 
     // calculate the covariance Matrix
-    pca_cov.noalias() = ((det.adjoint() * det).array() / denom.array()).matrix();
+    pca_cov.noalias() = ((scans.derived().adjoint() * scans.derived()).array() / denom.array()).matrix();
 
     if constexpr (backend == SpectraBackend) {
         // number of eigenvalues to remove
-        int nev = n_eig_to_cut;
+        int n_ev = n_eig_to_cut;
 
         // number of values to calculate
-        int ncv = nev * 2.5 < n_dets?int(nev * 2.5):n_dets;
+        int n_cv = n_ev * 2.5 < n_dets?int(n_ev * 2.5):n_dets;
         //int ncv = nev * 2.5 < n_dets?int(nev * 2.5):n_non_zero;
 
         // set up spectra
         Spectra::DenseSymMatProd<double> op(pca_cov);
-        Spectra::SymEigsSolver<Spectra::DenseSymMatProd<double>> eigs(op, nev, ncv);
+        Spectra::SymEigsSolver<Spectra::DenseSymMatProd<double>> eigs(op, n_ev, n_cv);
 
         eigs.init();
         // largest eigenvalues first
@@ -141,14 +124,24 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
 
         // copy the eigenvalues and eigenvectors
         if (eigs.info() == Spectra::CompInfo::Successful) {
-            evals.head(nev) = eigs.eigenvalues();
-            evecs.leftCols(nev) = eigs.eigenvectors();
+            evals.head(n_ev) = eigs.eigenvalues();
+            evecs.leftCols(n_ev) = eigs.eigenvectors();
         }
 
         else {
-            throw std::runtime_error("failed to compute eigen values");
+            throw std::runtime_error("spectra failed to compute eigen values");
             std::exit(EXIT_FAILURE);
         }
+    }
+
+    else if constexpr (backend == EigenBackend) {
+        // use Eigen's eigen solver
+        Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> solution(pca_cov);
+        evals = solution.eigenvalues();
+        evecs = solution.eigenvectors();
+
+        evals.reverseInPlace();
+        evecs.colwise().reverseInPlace();
     }
 
     return std::tuple<Eigen::VectorXd, Eigen::MatrixXd> {evals, evecs};
@@ -159,21 +152,11 @@ auto Cleaner::remove_eig_values(const Eigen::DenseBase<DerivedA> &scans, const E
                                 const Eigen::DenseBase<DerivedC> &evals, const Eigen::DenseBase<DerivedD> &evecs,
                                 Eigen::DenseBase<DerivedA> &cleaned_scans) {
 
-    // mean of each detector
-    Eigen::RowVectorXd det_means = (scans.derived().array()*flags.derived().array().template cast <double> ()).colwise().sum()/
-                                   flags.derived().array().template cast <double> ().colwise().sum();
-
-    // remove nans from completely flagged detectors
-    Eigen::RowVectorXd dm = (det_means).array().isNaN().select(0,det_means);
-
-    // subtract mean from data and copy into det matrix
-    Eigen::MatrixXd det = scans.derived().rowwise() - dm;
-
     // subtract out the desired eigenvectors
     Eigen::MatrixXd proj;
-    proj.noalias() = det * evecs.derived().leftCols(n_eig_to_cut);
+    proj.noalias() = scans.derived() * evecs.derived().leftCols(n_eig_to_cut);
 
-    cleaned_scans.derived().noalias() = det - proj * evecs.derived().adjoint().topRows(n_eig_to_cut);
+    cleaned_scans.derived().noalias() = scans.derived() - proj * evecs.derived().adjoint().topRows(n_eig_to_cut);
 }
 
 } // namespace timestream

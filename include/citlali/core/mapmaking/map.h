@@ -104,6 +104,9 @@ public:
     // vector to hold noise hist bins
     std::vector<Eigen::VectorXd> noise_hist_bins;
 
+    // vector to hold mean rms values
+    Eigen::VectorXd mean_rms, mean_err;
+
     void normalize_maps();
 
     std::tuple<double, Eigen::MatrixXd, Eigen::Index, Eigen::Index> calc_cov_region(Eigen::Index);
@@ -111,7 +114,9 @@ public:
     void calc_map_psd();
     void calc_map_hist();
 
-    void wiener_filter_maps();
+    void calc_mean_err();
+    void calc_mean_rms();
+    void renormalize_errors();
 };
 
 void ObsMapBuffer::normalize_maps() {
@@ -170,17 +175,19 @@ std::tuple<double, Eigen::MatrixXd, Eigen::Index, Eigen::Index> ObsMapBuffer::ca
     Eigen::Index cov_n_rows = cov_ranges(1,0) - cov_ranges(0,0) + 1;
     Eigen::Index cov_n_cols = cov_ranges(1,1) - cov_ranges(0,1) + 1;
 
-    return std::tuple<double, Eigen::MatrixXd, Eigen::Index, Eigen::Index>(weight_threshold, cov_ranges, cov_n_rows, cov_n_cols);
+    return std::tuple<double, Eigen::MatrixXd, Eigen::Index, Eigen::Index>(weight_threshold, cov_ranges,
+                                                                           cov_n_rows, cov_n_cols);
 }
 
 // loop through maps
 void ObsMapBuffer::calc_map_psd() {
-    // clear storage vectors
+    // clear psd vectors
     psds.clear();
     psd_freqs.clear();
     psd_2ds.clear();
     psd_2d_freqs.clear();
 
+    // clear noise psd vectors
     noise_psds.clear();
     noise_psd_freqs.clear();
     noise_psd_2ds.clear();
@@ -300,6 +307,63 @@ void ObsMapBuffer::calc_map_hist() {
     }
 }
 
-void ObsMapBuffer::wiener_filter_maps() {}
+void ObsMapBuffer::calc_mean_err() {
+    // resize mean errors
+    mean_err.setZero(weight.size());
+    for (Eigen::Index i=0; i<weight.size(); i++) {
+        // calculate weight threshold
+        auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = calc_cov_region(i);
+
+        int counter = (weight[i].array()>=weight_threshold).count();
+        double mean_sqerr = ((weight[i].array()>=weight_threshold).select(1/weight[i].array(),0)).sum();
+
+        // get mean square error
+        mean_err(i) = mean_sqerr/counter;
+    }
+}
+
+void ObsMapBuffer::calc_mean_rms() {
+    // average filtered rms vector
+    mean_rms.setZero(weight.size());
+
+    // loop through arrays/polarizations
+    for (Eigen::Index i=0; i<weight.size(); i++) {
+        // vector of rms of noise maps
+        Eigen::VectorXd noise_rms(n_noise);
+        for (Eigen::Index j=0; j<n_noise; j++) {
+            // calculate weight threshold
+            auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = calc_cov_region(i);
+
+            // get matrix of current noise map
+            Eigen::Tensor<double,2> out = noise[i].chip(j,2);
+            auto out_matrix = Eigen::Map<Eigen::MatrixXd>(out.data(), out.dimension(0), out.dimension(1));
+
+            int counter = (weight[i].array()>=weight_threshold).count();
+            double rms = ((weight[i].array()>=weight_threshold).select(pow(out_matrix.array(),2),0)).sum();
+
+            noise_rms(j) = sqrt(rms/counter);
+        }
+        // get mean rms
+        mean_rms(i) = noise_rms.mean();
+        SPDLOG_INFO("mean rms {} ({})", mean_rms(i), sig_unit);
+    }
+}
+
+void ObsMapBuffer::renormalize_errors() {
+    // get mean error from weight maps
+    calc_mean_err();
+
+    // get mean map rms from noise maps
+    calc_mean_rms();
+
+    // get rescaled normalization factor
+    auto noise_factor = (1./pow(mean_rms.array(),2.))*mean_err.array();
+
+    // loop through arrays/polarizations
+    for (Eigen::Index i=0; i<weight.size(); i++) {
+        // renormalize weights
+        weight[i].noalias() = weight[i]*noise_factor(i);
+    }
+}
 
 } // namespace mapmaking

@@ -418,17 +418,19 @@ auto Beammap::run_loop() {
                 // subtract gaussian
                 if (current_iter > 0) {
                     SPDLOG_INFO("subtract gaussian");
-                    // negate the amplitude
-                    //params.col(0) = -params.col(0);
                     ptcproc.add_gaussian(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt, pointing_offsets_arcsec,
                                          omb.pixel_size_rad, omb.n_rows, omb.n_cols, ptcs[i].map_indices.data, ptcs[i].det_indices.data,
                                          "subtract");
                 }
             }
 
+            // subtract scan means
+            SPDLOG_INFO("subtracting det means");
+            ptcproc.subtract_mean(ptcs[i]);
+
             if (map_grouping!="detector") {
                 SPDLOG_INFO("removing flagged dets");
-                //ptcproc.remove_flagged_dets(ptcs[i], calib.apt, ptcs[i].det_indices.data);
+                ptcproc.remove_flagged_dets(ptcs[i], calib.apt, ptcs[i].det_indices.data);
             }
 
             SPDLOG_INFO("removing outlier weights");
@@ -439,6 +441,7 @@ auto Beammap::run_loop() {
 
             // write chunk summary
             if (verbose_mode && current_iter==0) {
+                SPDLOG_DEBUG("writing chunk summary");
                 write_chunk_summary(ptcs[i]);
             }
 
@@ -446,8 +449,6 @@ auto Beammap::run_loop() {
                 // add gaussan back
                 if (current_iter > 0) {
                     SPDLOG_INFO("add gaussian");
-                    // amplitude is negative due to earlier gaussian negation
-                    //params.col(0) = -params.col(0);
                     ptcproc.add_gaussian(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt, pointing_offsets_arcsec,
                                          omb.pixel_size_rad, omb.n_rows, omb.n_cols, ptcs[i].map_indices.data, ptcs[i].det_indices.data,
                                          "add");
