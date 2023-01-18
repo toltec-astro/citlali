@@ -95,8 +95,11 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     //denom = (flags.derived().template cast <double> ().adjoint() * flags.derived().template cast <double> ()).array() - 1;
     denom = (f.adjoint() * f).array() - 1;
 
+    Eigen::MatrixXd det = scans.derived().array()*f.array();
+
     // calculate the covariance Matrix
-    pca_cov.noalias() = ((scans.derived().adjoint() * scans.derived()).array() / denom.array()).matrix();
+    //pca_cov.noalias() = ((scans.derived().adjoint() * scans.derived()).array() / denom.array()).matrix();
+    pca_cov.noalias() = ((det.adjoint() * det).array() / denom.array()).matrix();
 
     if constexpr (backend == SpectraBackend) {
         // number of eigenvalues to remove

@@ -53,6 +53,8 @@ public:
 
 void PTCProc::subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in) {
     // mean of each detector
+
+    SPDLOG_INFO("scans before {} {}", in.scans.data, in.kernel.data);
     Eigen::RowVectorXd col_mean = (in.scans.data.derived().array()*in.flags.data.derived().array().cast <double> ()).colwise().sum()/
                                    in.flags.data.derived().array().cast <double> ().colwise().sum();
 
@@ -72,6 +74,7 @@ void PTCProc::subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in) {
 
         // subtract mean from data and copy into det matrix
         in.kernel.data.noalias() = in.kernel.data.derived().rowwise() - dm;
+        SPDLOG_INFO("scans after {} {}", in.scans.data, in.kernel.data);
     }
 }
 
