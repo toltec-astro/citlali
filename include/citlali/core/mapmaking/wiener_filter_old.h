@@ -143,7 +143,6 @@ public:
 
     template<class MB>
     void filter_noise(MB &mb, const int map_num, const int noise_num) {
-        SPDLOG_INFO("filtering noise {}/{}",noise_num+1, mb.noise.at(map_num).dimension(2));
         Eigen::Tensor<double,2> out = mb.noise.at(map_num).chip(noise_num,2);
         filtered_map = Eigen::Map<Eigen::MatrixXd>(out.data(),out.dimension(0),out.dimension(1));
         calc_numerator();

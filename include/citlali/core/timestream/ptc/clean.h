@@ -129,6 +129,7 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
         if (eigs.info() == Spectra::CompInfo::Successful) {
             evals.head(n_ev) = eigs.eigenvalues();
             evecs.leftCols(n_ev) = eigs.eigenvectors();
+            SPDLOG_INFO("eigs.eigenvectors() {}",eigs.eigenvectors());
         }
 
         else {

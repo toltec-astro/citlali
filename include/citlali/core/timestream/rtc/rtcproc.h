@@ -1,6 +1,17 @@
 #pragma once
 
+#include <citlali/core/timestream/timestream.h>
+
+#include <citlali/core/timestream/rtc/polarization.h>
+#include <citlali/core/timestream/rtc/kernel.h>
+#include <citlali/core/timestream/rtc/despike.h>
+#include <citlali/core/timestream/rtc/filter.h>
+#include <citlali/core/timestream/rtc/downsample.h>
+#include <citlali/core/timestream/rtc/calibrate.h>
+
 namespace timestream {
+
+using timestream::TCData;
 
 class RTCProc {
 public:
@@ -21,12 +32,18 @@ public:
     timestream::Downsampler downsampler;
     timestream::Calibration calibration;
 
+    double lower_std_dev, upper_std_dev;
+
     template<typename calib_t, typename telescope_t, typename pointing_offset_t, typename Derived>
     void run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &,
              TCData<TCDataKind::PTC, Eigen::MatrixXd> &, std::string &,
              std::string &, calib_t &, telescope_t &, pointing_offset_t &,
              Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &,
              Eigen::DenseBase<Derived> &, double);
+
+    template <typename calib_t, typename Derived>
+    auto remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
+                            Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string, std::string);
 };
 
 template<class calib_t, typename telescope_t, typename pointing_offset_t, typename Derived>
@@ -77,14 +94,15 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
 
     if (run_despike) {
         SPDLOG_DEBUG("despiking");
-        despiker.despike(in.scans.data, in.flags.data);
+        despiker.despike(in.scans.data, in.flags.data, calib.apt);
 
         std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grouping_limits;
 
+        // nw grouping for flag replacement
         if (despiker.grouping == "nw") {
             grouping_limits = calib.nw_limits;
         }
-
+        // array grouping for flag replacement
         else if (despiker.grouping == "array") {
             grouping_limits = calib.array_limits;
         }
@@ -111,7 +129,7 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
                          Eigen::OuterStride<>(in_flags_ref.outerStride()));
 
             SPDLOG_DEBUG("replacing spikes");
-            despiker.replace_spikes(in_scans, in_flags, calib.apt["responsivity"]);
+            despiker.replace_spikes(in_scans, in_flags, calib.apt, start_index);
         }
 
         out.despiked = true;
@@ -194,6 +212,159 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
 
         out.calibrated = true;
     }
+}
+
+template <typename calib_t, typename Derived>
+auto RTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
+                                 Eigen::DenseBase<Derived> &nw_indices, Eigen::DenseBase<Derived> &array_indices, std::string redu_type,
+                                 std::string map_grouping) {
+
+         // make a copy of the calib class for flagging
+    calib_t calib_scan = calib;
+
+         // number of detectors
+    Eigen::Index n_dets = in.scans.data.cols();
+
+    in.n_low_dets = 0;
+    in.n_high_dets = 0;
+
+    for (Eigen::Index i=0; i<calib.n_nws; i++) {
+        // number of unflagged detectors
+        Eigen::Index n_good_dets = 0;
+
+        for (Eigen::Index j=0; j<n_dets; j++) {
+            Eigen::Index det_index = det_indices(j);
+            if (calib.apt["flag"](det_index) && calib.apt["nw"](det_index)==calib.nws(i)) {
+                n_good_dets++;
+            }
+        }
+
+        Eigen::VectorXd det_std_dev(n_good_dets);
+        Eigen::VectorXI dets(n_good_dets);
+        Eigen::Index k = 0;
+
+             // collect standard deviation from good detectors
+        for (Eigen::Index j=0; j<n_dets; j++) {
+            Eigen::Index det_index = det_indices(j);
+            if (calib.apt["flag"](det_index) && calib.apt["nw"](det_index)==calib.nws(i)) {
+
+                     // make Eigen::Maps for each detector's scan
+                Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
+                    in.scans.data.col(j).data(), in.scans.data.rows());
+                Eigen::Map<Eigen::Matrix<bool, Eigen::Dynamic, 1>> flags(
+                    in.flags.data.col(j).data(), in.flags.data.rows());
+
+                det_std_dev(k) = engine_utils::calc_std_dev(scans, flags);
+
+                if (det_std_dev(k) !=0) {
+                    det_std_dev(k) = std::pow(det_std_dev(k),-2);
+                }
+                else {
+                    det_std_dev(k) = 0;
+                }
+                //det_std_dev(k) = engine_utils::calc_rms(scans, flags);
+
+                dets(k) = j;
+                k++;
+            }
+        }
+
+             // get mean standard deviation
+             //double mean_std_dev = det_std_dev.mean();
+        double mean_std_dev = tula::alg::median(det_std_dev);
+
+        int n_low_dets = 0;
+        int n_high_dets = 0;
+
+             // loop through good detectors and flag those that have std devs beyond the limits
+        for (Eigen::Index j=0; j<n_good_dets; j++) {
+            Eigen::Index det_index = det_indices(dets(j));
+            // flag those below limit
+            if (calib.apt["flag"](det_index) && calib.apt["nw"](det_index)==calib.nws(i)) {
+                if ((det_std_dev(j) < (lower_std_dev*mean_std_dev)) && lower_std_dev!=0) {
+                    if (map_grouping!="detector") {
+                        in.flags.data.col(dets(j)).setZero();
+                    }
+                    else {
+                        calib_scan.apt["flag"](det_index) = 0;
+                    }
+                    in.n_low_dets++;
+                    n_low_dets++;
+                }
+
+                     // flag those above limit
+                if ((det_std_dev(j) > (upper_std_dev*mean_std_dev)) && upper_std_dev!=0) {
+                    if (map_grouping!="detector") {
+                        in.flags.data.col(dets(j)).setZero();
+                    }
+                    else {
+                        calib_scan.apt["flag"](det_index) = 0;
+                    }
+                    in.n_high_dets++;
+                    n_high_dets++;
+                }
+            }
+        }
+
+        SPDLOG_INFO("nw{}: {}/{} dets below limit. {}/{} dets above limit.", calib.nws(i), n_low_dets, n_good_dets,
+                    n_high_dets, n_good_dets);
+    }
+
+         //TCData<TCDataKind::PTC, Eigen::MatrixXd> out = in;
+
+    /*Eigen::Index n_good_dets = 0;
+    for (Eigen::Index i=0; i<n_dets; i++) {
+        if ((in.flags.data.col(i).array()!=0).all()) {
+            n_good_dets++;
+        }
+    }
+
+    out.scans.data.resize(in.scans.data.rows(), n_good_dets);
+    out.flags.data.resize(in.flags.data.rows(), n_good_dets);
+
+    if (in.kernel.data.size()!=0) {
+        out.kernel.data.resize(in.kernel.data.rows(), n_good_dets);
+    }*/
+
+             //Eigen::VectorXI array_indices_temp(n_good_dets), nw_indices_temp(n_good_dets), det_indices_temp(n_good_dets);
+
+        /*Eigen::Index j = 0;
+        for (Eigen::Index i=0; i<n_dets; i++) {
+            if ((in.flags.data.col(i).array()!=0).all()) {
+                out.scans.data.col(j) = in.scans.data.col(i);
+                out.flags.data.col(j) = in.flags.data.col(i);
+
+        if (in.kernel.data.size()!=0) {
+        out.kernel.data.col(j) = in.kernel.data.col(i);
+    }
+
+    det_indices_temp(j) = det_indices(i);
+    nw_indices_temp(j) = nw_indices(i);
+    array_indices_temp(j) = array_indices(i);
+    j++;
+}
+}*/
+
+    /*det_indices = det_indices_temp;
+    nw_indices = nw_indices_temp;
+    array_indices = array_indices_temp;
+
+    in = out;*/
+
+    /*for (auto const& [key, val]: calib.apt) {
+        calib_temp.apt[key].setZero(n_good_dets);
+        Eigen::Index i = 0;
+        for (Eigen::Index j=0; j<calib.apt["nw"].size(); j++) {
+            if ((in.flags.data.col(j).array()!=0).all()) {
+                calib_temp.apt[key](i) = calib.apt[key](j);
+                i++;
+            }
+        }
+    }*/
+
+    calib_scan.setup();
+
+return std::move(calib_scan);
 }
 
 } // namespace timestream

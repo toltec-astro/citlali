@@ -21,7 +21,19 @@ public:
     void output();
 };
 
-void Lali::setup() {    
+void Lali::setup() {
+    // check tau calculation
+    Eigen::VectorXd tau_el(1);
+    tau_el << telescope.tel_data["TelElAct"].mean();
+    auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
+
+    for (auto const& [key, val] : tau_freq) {
+        if (val[0] < 0) {
+            SPDLOG_ERROR("calculated mean {} tau {} < 0",toltec_io.array_name_map[key], val[0]);
+            std::exit(EXIT_FAILURE);
+        }
+    }
+
     // setup kernel
     if (rtcproc.run_kernel) {
         rtcproc.kernel.setup(n_maps);
@@ -148,13 +160,17 @@ auto Lali::run() {
 
             // remove outliers
             SPDLOG_INFO("removing outlier weights");
-            auto calib_scan = ptcproc.remove_bad_dets_nw(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
+            auto calib_scan = rtcproc.remove_bad_dets_nw(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
 
             // run cleaning
             if (stokes_param == "I") {
                 SPDLOG_INFO("ptcproc");
                 ptcproc.run(ptcdata, ptcdata, calib);
             }
+
+            // remove outliers after clean
+            SPDLOG_INFO("removing outlier weights");
+            calib_scan = ptcproc.remove_bad_dets_nw(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
 
             // calculate weights
             SPDLOG_INFO("calculating weights");
@@ -312,6 +328,18 @@ void Lali::output() {
             pb.count(n_maps, 1);
             write_maps(f_io,n_io,mb,i);
         }
+
+        /*for (Eigen::Index i=0; i<f_io->size(); i++) {
+            // get the array for the given map
+            Eigen::Index map_index = maps_to_arrays(i);
+            // add primary hdu
+            add_phdu(f_io, mb, map_index);
+
+            if (!mb->noise.empty()) {
+                add_phdu(n_io, mb, map_index);
+            }
+        }*/
+
     }
 
     SPDLOG_INFO("files have been written to:");

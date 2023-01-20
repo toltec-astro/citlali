@@ -54,7 +54,7 @@ void check_range(param_t param, key_vec_t &missing_keys, key_vec_t &invalid_keys
 }
 
 template <typename config_t, typename param_t, typename option_t, typename key_vec_t>
-void get_value(config_t config, param_t &param, key_vec_t &missing_keys,
+void get_config_value(config_t config, param_t &param, key_vec_t &missing_keys,
                key_vec_t &invalid_keys, option_t option, std::vector<param_t> allowed={},
                std::vector<param_t> min_val={}, std::vector<param_t> max_val={}) {
 

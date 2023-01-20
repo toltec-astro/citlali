@@ -7,8 +7,12 @@
 #include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/pointing.h>
 
+#include <citlali/core/timestream/timestream.h>
+#include <citlali/core/timestream/ptc/clean.h>
 
 namespace timestream {
+
+using timestream::TCData;
 
 class PTCProc {
 public:
@@ -53,8 +57,6 @@ public:
 
 void PTCProc::subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in) {
     // mean of each detector
-
-    SPDLOG_INFO("scans before {} {}", in.scans.data, in.kernel.data);
     Eigen::RowVectorXd col_mean = (in.scans.data.derived().array()*in.flags.data.derived().array().cast <double> ()).colwise().sum()/
                                    in.flags.data.derived().array().cast <double> ().colwise().sum();
 
@@ -74,7 +76,6 @@ void PTCProc::subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in) {
 
         // subtract mean from data and copy into det matrix
         in.kernel.data.noalias() = in.kernel.data.derived().rowwise() - dm;
-        SPDLOG_INFO("scans after {} {}", in.scans.data, in.kernel.data);
     }
 }
 
@@ -95,6 +96,28 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
         // array cleaning
         else if (cleaner.grouping == "array") {
             grouping_limits = calib.array_limits;
+        }
+
+        // nw clean followed by array clean
+        else if (cleaner.grouping == "nw_array") {
+            grouping_limits = calib.nw_limits;
+            Eigen::Index start = calib.nws.maxCoeff();
+            int i = 1;
+            for (auto const& [key, val] : calib.array_limits) {
+                grouping_limits[start+i] = val;
+                i++;
+            }
+        }
+
+        // nw clean followed by array clean
+        else if (cleaner.grouping == "array_nw") {
+            grouping_limits = calib.array_limits;
+            Eigen::Index start = calib.arrays.maxCoeff();
+            int i = 1;
+            for (auto const& [key, val] : calib.nw_limits) {
+                grouping_limits[start+i] = val;
+                i++;
+            }
         }
 
         // use all detectors for cleaning
@@ -133,15 +156,11 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
             // get the block of out scans that corresponds to the current array
             auto apt_flags = calib.apt["flag"].segment(start_index, n_dets);
 
-            /*Eigen::Map<Eigen::MatrixXd, 0, Eigen::OuterStride<>>
-                apt_flags(apt_flags_ref.data(), apt_flags_ref.rows(), apt_flags_ref.cols(),
-                          Eigen::OuterStride<>(apt_flags_ref.outerStride()));*/
-
-            auto [evals, evecs] = cleaner.calc_eig_values<SpectraBackend>(in_scans, in_flags, apt_flags);
+            auto [evals, evecs] = cleaner.calc_eig_values<timestream::EigenBackend>(in_scans, in_flags, apt_flags);
             cleaner.remove_eig_values(in_scans, in_flags, evals, evecs, out_scans);
 
             SPDLOG_DEBUG("evals {}", evals.head(cleaner.n_eig_to_cut));
-            SPDLOG_DEBUG("evecs {}", evecs.block(0,0,cleaner.n_eig_to_cut,evecs.cols()));
+            SPDLOG_DEBUG("evecs {}", evecs.leftCols(cleaner.n_eig_to_cut));
 
             in.evals.data = evals.head(cleaner.n_eig_to_cut);
 

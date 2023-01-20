@@ -72,7 +72,20 @@ public:
     void output();
 };
 
-void Beammap::setup() {    
+void Beammap::setup() {
+
+    // check tau calculation
+    Eigen::VectorXd tau_el(1);
+    tau_el << telescope.tel_data["TelElAct"].mean();
+    auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
+
+    for (auto const& [key, val] : tau_freq) {
+        if (val[0] < 0) {
+            SPDLOG_ERROR("calculated mean {} tau {} < 0",toltec_io.array_name_map[key], val[0]);
+            std::exit(EXIT_FAILURE);
+        }
+    }
+
     // ensure all detectors are initially flagged as good
     if (map_grouping=="detector") {
         calib.apt["flag"].setOnes();
@@ -311,7 +324,9 @@ auto Beammap::run_timestream() {
             j = j + tone_axis.size();
         }
 
-        // starting index for scan
+        SPDLOG_INFO("tone flags {}", tone_flags.maxCoeff());
+
+        // starting index for scan (outer scan)
         Eigen::Index si = rtcdata.scan_indices.data(2);
 
         // current length of outer scans
@@ -434,10 +449,15 @@ auto Beammap::run_loop() {
             }
 
             SPDLOG_INFO("removing outlier weights");
-            auto calib_scan = ptcproc.remove_bad_dets_nw(ptcs[i], calib, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
+            auto calib_scan = rtcproc.remove_bad_dets_nw(ptcs[i], calib, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
                                                          ptcs[i].array_indices.data, redu_type, map_grouping);
             SPDLOG_INFO("ptcproc");
             ptcproc.run(ptcs[i], ptcs[i], calib_scan);
+
+            // remove outliers after clean
+            SPDLOG_INFO("removing outlier weights");
+            calib_scan = ptcproc.remove_bad_dets_nw(ptcs[i], calib, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
+                                                    ptcs[i].array_indices.data, redu_type, map_grouping);
 
             // write chunk summary
             if (verbose_mode && current_iter==0) {
@@ -469,7 +489,7 @@ auto Beammap::run_loop() {
             if (run_tod_output) {
                 SPDLOG_INFO("writing ptcdata");
                 if (tod_output_type == "ptc" || tod_output_type=="both") {
-                    if (current_iter == 0) {
+                    if (current_iter == beammap_tod_output_iter) {
                         // hardcoded to stokes I for now
                         ptcproc.append_to_netcdf(ptcs[i], tod_filename["ptc_I"], redu_type, telescope.pixel_axes,
                                                  pointing_offsets_arcsec, ptcs[i].det_indices.data, calib.apt, "ptc", verbose_mode,
@@ -517,6 +537,7 @@ auto Beammap::run_loop() {
                 return 0;}
             );
 
+            SPDLOG_INFO("max good fits {} {}", good_fits.maxCoeff(), good_fits.minCoeff());
             SPDLOG_INFO("number of good beammap fits {}/{}", good_fits.cast<double>().sum(), n_maps);
         }
 
@@ -769,6 +790,10 @@ auto Beammap::loop_pipeline() {
     // run iterative stage
     run_loop();
 
+    if (verbose_mode) {
+        write_map_summary(omb);
+    }
+
     // empty initial ptcdata vector to save memory
     ptcs0.clear();
 
@@ -960,6 +985,17 @@ void Beammap::output() {
                 }
             }
         }
+
+        /*for (Eigen::Index i=0; i<f_io->size(); i++) {
+            // get the array for the given map
+            Eigen::Index map_index = maps_to_arrays(i);
+            // add primary hdu
+            add_phdu(f_io, mb, map_index);
+
+            if (!mb->noise.empty()) {
+                add_phdu(n_io, mb, map_index);
+            }
+        }*/
     }
 
     SPDLOG_INFO("files have been written to:");
