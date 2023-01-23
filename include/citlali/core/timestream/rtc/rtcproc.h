@@ -1,5 +1,7 @@
 #pragma once
 
+#include <tula/algorithm/ei_stats.h>
+
 #include <citlali/core/timestream/timestream.h>
 
 #include <citlali/core/timestream/rtc/polarization.h>
@@ -44,6 +46,10 @@ public:
     template <typename calib_t, typename Derived>
     auto remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
                             Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string, std::string);
+
+    template <typename calib_t, typename Derived>
+    auto remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
+                             Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string, std::string);
 };
 
 template<class calib_t, typename telescope_t, typename pointing_offset_t, typename Derived>
@@ -219,10 +225,10 @@ auto RTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, c
                                  Eigen::DenseBase<Derived> &nw_indices, Eigen::DenseBase<Derived> &array_indices, std::string redu_type,
                                  std::string map_grouping) {
 
-         // make a copy of the calib class for flagging
+    // make a copy of the calib class for flagging
     calib_t calib_scan = calib;
 
-         // number of detectors
+    // number of detectors
     Eigen::Index n_dets = in.scans.data.cols();
 
     in.n_low_dets = 0;
@@ -243,7 +249,7 @@ auto RTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, c
         Eigen::VectorXI dets(n_good_dets);
         Eigen::Index k = 0;
 
-             // collect standard deviation from good detectors
+        // collect standard deviation from good detectors
         for (Eigen::Index j=0; j<n_dets; j++) {
             Eigen::Index det_index = det_indices(j);
             if (calib.apt["flag"](det_index) && calib.apt["nw"](det_index)==calib.nws(i)) {
@@ -269,14 +275,14 @@ auto RTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, c
             }
         }
 
-             // get mean standard deviation
-             //double mean_std_dev = det_std_dev.mean();
+        // get mean standard deviation
+        //double mean_std_dev = det_std_dev.mean();
         double mean_std_dev = tula::alg::median(det_std_dev);
 
         int n_low_dets = 0;
         int n_high_dets = 0;
 
-             // loop through good detectors and flag those that have std devs beyond the limits
+        // loop through good detectors and flag those that have std devs beyond the limits
         for (Eigen::Index j=0; j<n_good_dets; j++) {
             Eigen::Index det_index = det_indices(dets(j));
             // flag those below limit
@@ -292,7 +298,7 @@ auto RTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, c
                     n_low_dets++;
                 }
 
-                     // flag those above limit
+                // flag those above limit
                 if ((det_std_dev(j) > (upper_std_dev*mean_std_dev)) && upper_std_dev!=0) {
                     if (map_grouping!="detector") {
                         in.flags.data.col(dets(j)).setZero();
@@ -310,61 +316,16 @@ auto RTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, c
                     n_high_dets, n_good_dets);
     }
 
-         //TCData<TCDataKind::PTC, Eigen::MatrixXd> out = in;
-
-    /*Eigen::Index n_good_dets = 0;
-    for (Eigen::Index i=0; i<n_dets; i++) {
-        if ((in.flags.data.col(i).array()!=0).all()) {
-            n_good_dets++;
-        }
-    }
-
-    out.scans.data.resize(in.scans.data.rows(), n_good_dets);
-    out.flags.data.resize(in.flags.data.rows(), n_good_dets);
-
-    if (in.kernel.data.size()!=0) {
-        out.kernel.data.resize(in.kernel.data.rows(), n_good_dets);
-    }*/
-
-             //Eigen::VectorXI array_indices_temp(n_good_dets), nw_indices_temp(n_good_dets), det_indices_temp(n_good_dets);
-
-        /*Eigen::Index j = 0;
-        for (Eigen::Index i=0; i<n_dets; i++) {
-            if ((in.flags.data.col(i).array()!=0).all()) {
-                out.scans.data.col(j) = in.scans.data.col(i);
-                out.flags.data.col(j) = in.flags.data.col(i);
-
-        if (in.kernel.data.size()!=0) {
-        out.kernel.data.col(j) = in.kernel.data.col(i);
-    }
-
-    det_indices_temp(j) = det_indices(i);
-    nw_indices_temp(j) = nw_indices(i);
-    array_indices_temp(j) = array_indices(i);
-    j++;
-}
-}*/
-
-    /*det_indices = det_indices_temp;
-    nw_indices = nw_indices_temp;
-    array_indices = array_indices_temp;
-
-    in = out;*/
-
-    /*for (auto const& [key, val]: calib.apt) {
-        calib_temp.apt[key].setZero(n_good_dets);
-        Eigen::Index i = 0;
-        for (Eigen::Index j=0; j<calib.apt["nw"].size(); j++) {
-            if ((in.flags.data.col(j).array()!=0).all()) {
-                calib_temp.apt[key](i) = calib.apt[key](j);
-                i++;
-            }
-        }
-    }*/
-
     calib_scan.setup();
 
-return std::move(calib_scan);
+    return std::move(calib_scan);
+}
+
+template <typename calib_t, typename Derived>
+auto RTCProc::remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
+                                 Eigen::DenseBase<Derived> &nw_indices, Eigen::DenseBase<Derived> &array_indices, std::string redu_type,
+                                 std::string map_grouping) {
+
 }
 
 } // namespace timestream

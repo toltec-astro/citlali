@@ -292,6 +292,10 @@ int run(const rc_t &rc) {
                         todproc.engine().calib.get_apt(apt_path, raw_filenames, interfaces);
                     }
 
+                    // check input files
+                    SPDLOG_DEBUG("checking inputs");
+                    todproc.check_inputs(rawobs);
+
                     // get sample rate
                     SPDLOG_DEBUG("getting sample rate");
                     todproc.engine().telescope.fsmp = rawobs_kids_meta.back().get_typed<double>("fsmp");
@@ -304,10 +308,6 @@ int run(const rc_t &rc) {
                     // calc tangent plane pointing
                     SPDLOG_INFO("calculating tangent plane pointing");
                     todproc.engine().telescope.calc_tan_pointing();
-
-                    // check input files
-                    SPDLOG_DEBUG("checking inputs");
-                    todproc.check_inputs(rawobs);
 
                     // align tod
                     if (!todproc.engine().telescope.sim_obs) {
@@ -400,6 +400,10 @@ int run(const rc_t &rc) {
                         SPDLOG_DEBUG("getting sample rate");
                         todproc.engine().telescope.fsmp = rawobs_kids_meta.back().get_typed<double>("fsmp");
                     }
+
+                    // get tone frequencies from raw files for flagging nearby tones
+                    SPDLOG_DEBUG("getting tone frequencies");
+                    //todproc.get_tone_freqs_from_files(rawobs);
 
                     // calculate downsampled sample rate
                     if (todproc.engine().rtcproc.run_downsample) {

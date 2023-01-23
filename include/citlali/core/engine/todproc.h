@@ -71,9 +71,12 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
     }
 
     void get_apt_from_files(const RawObs &rawobs);
+    void get_tone_freqs_from_files(const RawObs &rawobs);
     void create_output_dir();
     void check_inputs(const RawObs &rawobs);
     void align_timestreams(const RawObs &rawobs);
+    void align_timestreams_2(const RawObs &rawobs);
+
     void calc_map_num();
     void allocate_cmb(std::vector<map_extent_t> &map_extents, std::vector<map_coord_t> &map_coords);
 
@@ -139,8 +142,6 @@ void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
             double lo_freq;
             vars.find("Header.Toltec.LoCenterFreq")->second.getVar(&lo_freq);
 
-            SPDLOG_INFO("lo_freq {}",lo_freq);
-
             // get tone_freqs for interface
             tone_freqs[interfaces.back()].resize(vars.find("Header.Toltec.ToneFreq")->second.getDim(1).getSize(),n_sweeps);
             vars.find("Header.Toltec.ToneFreq")->second.getVar(tone_freqs[interfaces.back()].data());
@@ -179,14 +180,74 @@ void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
         j = j + dets[i];
     }
 
-    SPDLOG_INFO("done");
-
-
     // setup nws, arrays, etc.
     engine().calib.setup();
 
     // filepath
     engine().calib.apt_filepath = "internally generated for beammap";
+}
+
+template <class EngineType>
+void TimeOrderedDataProc<EngineType>::get_tone_freqs_from_files(const RawObs &rawobs) {
+    using namespace netCDF;
+    using namespace netCDF::exceptions;
+
+    // tone frquencies for each network
+    std::map<Eigen::Index,Eigen::MatrixXd> tone_freqs;
+
+    // nw names
+    std::vector<Eigen::Index> interfaces;
+
+    // total number of detectors
+    Eigen::Index n_dets = 0;
+    // detector, nw and array names for each network
+    std::vector<Eigen::Index> dets, nws, arrays;
+    // loop through input files
+    for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
+        try {
+            // load data file
+            NcFile fo(data_item.filepath(), NcFile::read);
+            auto vars = fo.getVars();
+
+            // get the interface
+            interfaces.push_back(std::stoi(data_item.interface().substr(6)));
+
+            // add the current file's number of dets to the total
+            n_dets += vars.find("Data.Toltec.Is")->second.getDim(1).getSize();
+
+            // dimension of tone freqs is (n_sweeps, n_tones)
+            Eigen::Index n_sweeps = vars.find("Header.Toltec.ToneFreq")->second.getDim(0).getSize();
+
+            // get local oscillator frequency
+            double lo_freq;
+            vars.find("Header.Toltec.LoCenterFreq")->second.getVar(&lo_freq);
+
+            // get tone_freqs for interface
+            tone_freqs[interfaces.back()].resize(vars.find("Header.Toltec.ToneFreq")->second.getDim(1).getSize(),n_sweeps);
+            vars.find("Header.Toltec.ToneFreq")->second.getVar(tone_freqs[interfaces.back()].data());
+
+            // add local oscillator freq
+            tone_freqs[interfaces.back()] = tone_freqs[interfaces.back()].array() + lo_freq;
+
+            fo.close();
+
+        } catch (NcException &e) {
+            SPDLOG_ERROR("{}", e.what());
+            throw DataIOError{fmt::format(
+                "failed to load data from netCDF file {}", data_item.filepath())};
+        }
+    }
+
+    engine().calib.apt["tone_freq"].resize(engine().calib.n_dets);
+
+    // add the nws and arrays to the apt table
+    Eigen::Index j = 0;
+    for (Eigen::Index i=0; i<engine().calib.nws.size(); i++) {
+        engine().calib.apt["tone_freq"].segment(j,tone_freqs[interfaces[i]].size()) = tone_freqs[interfaces[i]];
+
+        j = j + tone_freqs[interfaces[i]].size();
+    }
+
 }
 
 // create output directories
@@ -376,9 +437,14 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
             // remove overflow due to int32
             dt = (dt.array() < 0).select(msec.array() - pps_msec.array() + (pow(2.0,32)-1)/fpga_freq,msec - pps_msec);
 
+            SPDLOG_INFO("dt {}",dt);
+
             // get network time and add offsets
             nw_ts.push_back(start_t_dbl + pps.array() + dt.array() +
                             engine().interface_sync_offset["toltec"+std::to_string(roach_index)]);
+
+            SPDLOG_INFO("nw_ts {}",nw_ts.back().array() - nw_ts.back()(0));
+
 
             // push back start time
             nw_t0.push_back(nw_ts.back()[0]);
@@ -466,6 +532,145 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
 
     // replace telescope time vector
     engine().telescope.tel_data["TelTime"] = xi;
+}
+
+// align tod with telescope
+template <class EngineType>
+void TimeOrderedDataProc<EngineType>::align_timestreams_2(const RawObs &rawobs) {
+    using namespace netCDF;
+    using namespace netCDF::exceptions;
+
+    // clear start and end indices for each observation
+    engine().start_indices.clear();
+    engine().end_indices.clear();
+
+    // clear gaps
+    engine().gaps.clear();
+
+    // vector of network times
+    std::vector<Eigen::VectorXd> nw_ts;
+    // start and end times
+    std::vector<double> nw_t0, nw_tn;
+
+    // maximum start time
+    double max_t0 = -99;
+
+    // minimum end time
+    double min_tn = std::numeric_limits<double>::max();
+    // indices of max start time and min end time
+    Eigen::Index max_t0_i, min_tn_i;
+
+    // set network
+    Eigen::Index nw = 0;
+
+    double fsmp = -1;
+
+    // loop through input files
+    for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
+        try {
+            // load data file
+            NcFile fo(data_item.filepath(), NcFile::read);
+            auto vars = fo.getVars();
+
+            // get roach index for offsets
+            int roach_index;
+            vars.find("Header.Toltec.RoachIndex")->second.getVar(&roach_index);
+
+            // get sample rate
+            double fsmp_roach;
+            vars.find("Header.Toltec.SampleFreq")->second.getVar(&fsmp_roach);
+
+            // check if sample rate is the same
+            if (fsmp!=-1 && fsmp_roach!=fsmp) {
+                SPDLOG_ERROR("mismatched sample rate in toltec{}",roach_index);
+                std::exit(EXIT_FAILURE);
+            }
+            else {
+                fsmp = fsmp_roach;
+            }
+
+            // get dimensions for time matrix
+            Eigen::Index n_pts = vars.find("Data.Toltec.Ts")->second.getDim(0).getSize();
+            Eigen::Index n_time = vars.find("Data.Toltec.Ts")->second.getDim(1).getSize();
+
+            // get time matrix
+            Eigen::MatrixXi ts(n_time,n_pts);
+            vars.find("Data.Toltec.Ts")->second.getVar(ts.data());
+
+            // transpose due to row-major order
+            ts.transposeInPlace();
+
+            // find gaps
+            int gaps = ((ts.block(1,3,n_pts,1).array() - ts.block(0,3,n_pts-1,1).array()).array() > 1).count();
+
+            // add gaps to engine map
+            if (gaps>0) {
+                engine().gaps["Toltec" + std::to_string(roach_index)] = gaps;
+            }
+
+            // get fpga frequency
+            double fpga_freq;
+            vars.find("Header.Toltec.FpgaFreq")->second.getVar(&fpga_freq);
+
+            // ClockTime (sec)
+            auto sec0 = ts.cast <double> ().col(0);
+            // ClockTimeNanoSec (nsec)
+            auto nsec0 = ts.cast <double> ().col(5);
+            // PpsCount (pps ticks)
+            auto pps = ts.cast <double> ().col(1);
+            // ClockCount (clock ticks)
+            auto msec = ts.cast <double> ().col(2)/fpga_freq;
+            // PacketCount (packet ticks)
+            auto count = ts.cast <double> ().col(3);
+            // PpsTime (clock ticks)
+            auto pps_msec = ts.cast <double> ().col(4)/fpga_freq;
+            // get start time
+            auto t0 = sec0 + nsec0*1e-9;
+
+            // shift start time
+            int start_t = int(t0[0] - 0.5);
+            //int start_t = int(t0[0]);
+
+            // convert start time to double
+            double start_t_dbl = start_t;
+
+            Eigen::VectorXd dt = msec - pps_msec;
+
+            // remove overflow due to int32
+            dt = (dt.array() < 0).select(msec.array() - pps_msec.array() + (pow(2.0,32)-1)/fpga_freq,msec - pps_msec);
+
+            // get network time and add offsets
+            nw_ts.push_back(start_t_dbl + pps.array() + dt.array() +
+                            engine().interface_sync_offset["toltec"+std::to_string(roach_index)]);
+
+            // push back start time
+            nw_t0.push_back(nw_ts.back()[0]);
+
+            // push back end time
+            nw_tn.push_back(nw_ts.back()[n_pts - 1]);
+
+            // get global max start time and index
+            if (nw_t0.back() > max_t0) {
+                max_t0 = nw_t0.back();
+                max_t0_i = nw;
+            }
+
+            // get global min end time and index
+            if (nw_tn.back() < min_tn) {
+                min_tn = nw_tn.back();
+                min_tn_i = nw;
+            }
+
+            nw++;
+
+            fo.close();
+
+        } catch (NcException &e) {
+            SPDLOG_ERROR("{}", e.what());
+            throw DataIOError{fmt::format(
+                "failed to load data from netCDF file {}", data_item.filepath())};
+        }
+    }
 }
 
 // get map number
@@ -677,6 +882,8 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb(std::vector<map_extent_t> &ma
 template <class EngineType>
 template <class map_buffer_t>
 void TimeOrderedDataProc<EngineType>::allocate_nmb(map_buffer_t &mb) {
+    // clear noise map buffer
+    mb.noise.clear();
     // resize noise maps (n_maps, [n_rows, n_cols, n_noise])
     for (Eigen::Index i=0; i<engine().n_maps; i++) {
         mb.noise.push_back(Eigen::Tensor<double,3>(mb.n_rows, mb.n_cols, mb.n_noise));
