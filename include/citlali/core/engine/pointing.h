@@ -225,7 +225,7 @@ auto Pointing::run() {
             // create a new rtcdata for each polarization
             TCData<TCDataKind::RTC,Eigen::MatrixXd> rtcdata_pol;
             // demodulate
-            SPDLOG_INFO("demodulating polarization");
+            //SPDLOG_INFO("demodulating polarization");
             auto [array_indices, nw_indices, det_indices] = rtcproc.polarization.demodulate_timestream(rtcdata, rtcdata_pol,
                                                                                                        stokes_param,
                                                                                                        redu_type, calib);
@@ -234,14 +234,14 @@ auto Pointing::run() {
             auto map_indices = calc_map_indices(det_indices, nw_indices, array_indices, stokes_param);
 
             // run rtcproc
-            SPDLOG_INFO("rtcproc");
+            SPDLOG_INFO("raw time chunk processing");
             rtcproc.run(rtcdata_pol, ptcdata, telescope.pixel_axes, redu_type, calib, telescope, pointing_offsets_arcsec,
                         det_indices, array_indices, map_indices, omb.pixel_size_rad);
 
             // write rtc timestreams
             if (run_tod_output) {
                 if (tod_output_type == "rtc" || tod_output_type=="both") {
-                    SPDLOG_INFO("writing rtcdata");
+                    SPDLOG_INFO("writing raw time chunk");
                     ptcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], redu_type, telescope.pixel_axes,
                                              pointing_offsets_arcsec, det_indices, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
 
@@ -249,7 +249,7 @@ auto Pointing::run() {
             }
 
             // subtract scan means
-            SPDLOG_INFO("subtracting det means");
+            SPDLOG_INFO("subtracting detector means");
             ptcproc.subtract_mean(ptcdata);
 
             // remove flagged dets
@@ -262,7 +262,7 @@ auto Pointing::run() {
 
             // run cleaning
             if (stokes_param == "I") {
-                SPDLOG_INFO("ptcproc");
+                SPDLOG_INFO("processed time chunk processing");
                 ptcproc.run(ptcdata, ptcdata, calib);
             }
 
@@ -281,7 +281,7 @@ auto Pointing::run() {
             // write ptc timestreams
             if (run_tod_output) {
                 if (tod_output_type == "ptc" || tod_output_type=="both") {
-                    SPDLOG_INFO("writing ptcdata");
+                    SPDLOG_INFO("writing processed time chunk");
                     ptcproc.append_to_netcdf(ptcdata, tod_filename["ptc_" + stokes_param], redu_type, telescope.pixel_axes,
                                              pointing_offsets_arcsec, det_indices, calib.apt, "ptc", verbose_mode, telescope.d_fsmp);
 

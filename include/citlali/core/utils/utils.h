@@ -221,6 +221,32 @@ auto hanning_window(Eigen::Index n_rows, Eigen::Index n_cols) {
     return window;
 }
 
+double pivot_select(std::vector<double> input, int index){
+    unsigned int pivot_index = rand() % input.size();
+    double pivot_value = input[pivot_index];
+    std::vector<double> left;
+    std::vector<double> right;
+    for (unsigned int i = 0; i < input.size(); i++) {
+        if (i != pivot_index) {
+            if (input[i] > pivot_value) {
+                right.push_back(input[i]);
+            }
+            else {
+                left.push_back(input[i]);
+            }
+        }
+    }
+    if ((int)left.size() == index) {
+        return pivot_value;
+    }
+    else if ((int)left.size() < index) {
+        return pivot_select(right, index - left.size() - 1);
+    }
+    else {
+        return pivot_select(left, index);
+    }
+}
+
 template <typename Derived>
 double find_weight_threshold(Eigen::DenseBase<Derived> &weight, double cov) {
 
@@ -228,21 +254,25 @@ double find_weight_threshold(Eigen::DenseBase<Derived> &weight, double cov) {
     Eigen::Index n_non_zero = (weight.derived().array() > 0).count();
 
     // vector to hold non-zero elements
-    Eigen::VectorXd non_zero_weights(n_non_zero);
-    non_zero_weights.setZero();
+    //Eigen::VectorXd non_zero_weights(n_non_zero);
+    //non_zero_weights.setZero();
+
+    std::vector<double> non_zero_weights_vec;
 
     // populate vector with non-zero elements
     Eigen::Index k = 0;
     for (Eigen::Index i=0; i<weight.rows(); i++) {
         for (Eigen::Index j=0; j<weight.cols(); j++) {
             if (weight(i,j) > 0) {
-                non_zero_weights(k) = weight(i,j);
+                //non_zero_weights(k) = weight(i,j);
+                non_zero_weights_vec.push_back(weight(i,j));
                 k++;
             }
         }
     }
 
     // sort in ascending order
+    /*
     std::sort(non_zero_weights.data(), non_zero_weights.data() + non_zero_weights.size(),
               [](double lhs, double rhs){return rhs > lhs;});
 
@@ -252,11 +282,16 @@ double find_weight_threshold(Eigen::DenseBase<Derived> &weight, double cov) {
     // get weight value at cov_limit_index + size/2
     Eigen::Index weight_index = std::floor((cov_limit_index + non_zero_weights.size())/2.);
     double weight_val = non_zero_weights(weight_index);
+    */
 
-    double wc = weight_val*cov;
+    // sort using pivot selection
+    Eigen::Index cov_limit_index = 0.75*non_zero_weights_vec.size();
+    double weight_val = pivot_select(non_zero_weights_vec, cov_limit_index);
+    double weight_index = floor((cov_limit_index + non_zero_weights_vec.size())/2.);
+    weight_val = pivot_select(non_zero_weights_vec, weight_index);
 
     // return weight value x coverage cut
-    return wc;
+    return weight_val*cov;
 }
 
 template <typename Derived>

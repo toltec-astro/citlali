@@ -345,7 +345,7 @@ void ObsMapBuffer::calc_mean_rms() {
         }
         // get mean rms
         mean_rms(i) = noise_rms.mean();
-        SPDLOG_INFO("mean rms {} ({})", mean_rms(i), sig_unit);
+        SPDLOG_INFO("mean rms {} ({})", static_cast<float>(mean_rms(i)), sig_unit);
     }
 }
 

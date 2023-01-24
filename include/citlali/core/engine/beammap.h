@@ -368,13 +368,13 @@ auto Beammap::run_timestream() {
             auto map_indices = calc_map_indices(det_indices, nw_indices, array_indices, stokes_param);
 
             // run rtcproc
-            SPDLOG_INFO("rtcproc");
+            SPDLOG_INFO("raw time chunk processing");
             rtcproc.run(rtcdata_pol, ptcdata, telescope.pixel_axes, redu_type, calib, telescope, pointing_offsets_arcsec,
                         det_indices, array_indices, map_indices, omb.pixel_size_rad);
 
             // write rtc timestreams
             if (run_tod_output) {
-                SPDLOG_INFO("writing rtcdata");
+                SPDLOG_INFO("writing raw time chunk");
                 if (tod_output_type == "rtc" || tod_output_type=="both") {
                     ptcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], redu_type, telescope.pixel_axes,
                                              pointing_offsets_arcsec, det_indices, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
@@ -432,7 +432,7 @@ auto Beammap::run_loop() {
             if (run_mapmaking) {
                 // subtract gaussian
                 if (current_iter > 0) {
-                    SPDLOG_INFO("subtract gaussian");
+                    SPDLOG_INFO("subtracting gaussian from tod");
                     ptcproc.add_gaussian(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt, pointing_offsets_arcsec,
                                          omb.pixel_size_rad, omb.n_rows, omb.n_cols, ptcs[i].map_indices.data, ptcs[i].det_indices.data,
                                          "subtract");
@@ -440,7 +440,7 @@ auto Beammap::run_loop() {
             }
 
             // subtract scan means
-            SPDLOG_INFO("subtracting det means");
+            SPDLOG_INFO("subtracting detector means");
             ptcproc.subtract_mean(ptcs[i]);
 
             if (map_grouping!="detector") {
@@ -451,7 +451,7 @@ auto Beammap::run_loop() {
             SPDLOG_INFO("removing outlier weights");
             auto calib_scan = rtcproc.remove_bad_dets_nw(ptcs[i], calib, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
                                                          ptcs[i].array_indices.data, redu_type, map_grouping);
-            SPDLOG_INFO("ptcproc");
+            SPDLOG_INFO("processed time chunk processing");
             ptcproc.run(ptcs[i], ptcs[i], calib_scan);
 
             // remove outliers after clean
@@ -468,7 +468,7 @@ auto Beammap::run_loop() {
             if (run_mapmaking) {
                 // add gaussan back
                 if (current_iter > 0) {
-                    SPDLOG_INFO("add gaussian");
+                    SPDLOG_INFO("adding gaussian to tod");
                     ptcproc.add_gaussian(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt, pointing_offsets_arcsec,
                                          omb.pixel_size_rad, omb.n_rows, omb.n_cols, ptcs[i].map_indices.data, ptcs[i].det_indices.data,
                                          "add");
@@ -487,7 +487,7 @@ auto Beammap::run_loop() {
 
             // write ptc timestreams
             if (run_tod_output) {
-                SPDLOG_INFO("writing ptcdata");
+                SPDLOG_INFO("writing processed time chunk");
                 if (tod_output_type == "ptc" || tod_output_type=="both") {
                     if (current_iter == beammap_tod_output_iter) {
                         // hardcoded to stokes I for now
