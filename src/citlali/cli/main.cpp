@@ -30,6 +30,9 @@
 #include <citlali/core/engine/pointing.h>
 #include <citlali/core/engine/beammap.h>
 
+#include "spdlog/async.h"
+#include "spdlog/sinks/basic_file_sink.h"
+
 using rc_t = tula::config::YamlConfig;
 
 auto parse_args(int argc, char *argv[]) {
@@ -644,6 +647,10 @@ int main(int argc, char *argv[]) {
         return EXIT_SUCCESS;
     }
     // now with normal CLI interface
+    auto console = spdlog::stdout_color_mt("console");
+    //auto async_file = spdlog::stdout_color_mt<spdlog::async_factory>("async_file_logger");
+    spdlog::set_default_logger(console);
+    //spdlog::flush_every(std::chrono::seconds(3));
     tula::logging::init();
     auto rc = parse_args(argc, argv);
     SPDLOG_TRACE("rc {}", rc.pformat());

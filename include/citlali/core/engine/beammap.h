@@ -344,7 +344,7 @@ auto Beammap::run_timestream() {
 
         // get raw tod from files
         {
-            tula::logging::scoped_loglevel<spdlog::level::off> _0;
+            //tula::logging::scoped_loglevel<spdlog::level::off> _0;
             rtcdata.scans.data = kidsproc.populate_rtc(scan_rawobs,rtcdata.scan_indices.data, sl, calib.n_dets, tod_type);
         }
 

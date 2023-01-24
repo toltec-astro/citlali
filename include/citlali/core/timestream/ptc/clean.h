@@ -141,11 +141,22 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     else if constexpr (backend == EigenBackend) {
         // use Eigen's eigen solver
         Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> solution(pca_cov);
-        evals = solution.eigenvalues();
-        evecs = solution.eigenvectors();
 
-        evals.reverseInPlace();
-        evecs.colwise().reverseInPlace();
+        SPDLOG_INFO("soultion.info() {}",solution.info());
+
+        // copy the eigenvalues and eigenvectors
+        if (!solution.info()) {
+            evals = solution.eigenvalues();
+            evecs = solution.eigenvectors();
+
+            evals.reverseInPlace();
+            evecs.rowwise().reverseInPlace();
+        }
+
+        else {
+            throw std::runtime_error("eigen failed to compute eigen values");
+            std::exit(EXIT_FAILURE);
+        }
     }
 
     return std::tuple<Eigen::VectorXd, Eigen::MatrixXd> {evals, evecs};
