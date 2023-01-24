@@ -156,7 +156,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
             // get the block of out scans that corresponds to the current array
             auto apt_flags = calib.apt["flag"].segment(start_index, n_dets);
 
-            auto [evals, evecs] = cleaner.calc_eig_values<timestream::EigenBackend>(in_scans, in_flags, apt_flags);
+            auto [evals, evecs] = cleaner.calc_eig_values<timestream::SpectraBackend>(in_scans, in_flags, apt_flags);
             cleaner.remove_eig_values(in_scans, in_flags, evals, evecs, out_scans);
 
             SPDLOG_DEBUG("evals {}", evals.head(cleaner.n_eig_to_cut));

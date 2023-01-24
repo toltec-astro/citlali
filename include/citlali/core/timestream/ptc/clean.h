@@ -142,8 +142,6 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
         // use Eigen's eigen solver
         Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> solution(pca_cov);
 
-        SPDLOG_INFO("soultion.info() {}",solution.info());
-
         // copy the eigenvalues and eigenvectors
         if (!solution.info()) {
             evals = solution.eigenvalues();
