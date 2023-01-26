@@ -646,11 +646,55 @@ int main(int argc, char *argv[]) {
     if (exit_dump_config) {
         return EXIT_SUCCESS;
     }
+
+    /*
+
+    enum f {
+         good = 0,
+         D21FitsBetter   = 1 << 0,
+         D21LargeOffset  = 1 << 1,
+         D21NotConverged = 1 << 2,
+         D21OutOfRange   = 1 << 3,
+         D21QrOutOfRange = 1 << 4,
+         LargeOffset     = 1 << 5,
+         NotConverged    = 1 << 6,
+         OutOfRange      = 1 << 7,
+         QrOutOfRange    = 1 << 8,
+         LowGain         = 1 << 9
+    };
+
+    std::uint16_t flag0 = {};
+
+    flag0 = f::good;
+
+    SPDLOG_INFO("me {}", static_cast<bool>(flag0 & f::good));
+
+    SPDLOG_INFO("me {}", flag0);
+
+    SPDLOG_INFO("fg {}", flag0 == f::good);
+
+    flag0 |= (f::D21FitsBetter);
+
+    flag0 |= (f::NotConverged);
+
+    Eigen::Matrix<std::uint16_t,Eigen::Dynamic,1> flags(100);
+    flags.setConstant(f::good);
+
+    SPDLOG_INFO("flags(0) {}", static_cast<bool>(flags(0) & f::good));
+    flags.setConstant(0);
+    SPDLOG_INFO("flags(0) {}", static_cast<bool>(flags(0) & f::good));
+
+
+    SPDLOG_INFO("me {}", static_cast<bool>(flag0 & f::D21FitsBetter));
+    SPDLOG_INFO("me {}", static_cast<bool>(flag0 & f::NotConverged));
+    SPDLOG_INFO("me {}", static_cast<bool>(flag0 & f::good));
+    SPDLOG_INFO("me {}", static_cast<bool>(flag0 & f::LowGain));
+
+
+    std::exit(EXIT_SUCCESS);
+*/
+
     // now with normal CLI interface
-    auto console = spdlog::stdout_color_mt("console");
-    //auto async_file = spdlog::stdout_color_mt<spdlog::async_factory>("async_file_logger");
-    spdlog::set_default_logger(console);
-    //spdlog::flush_every(std::chrono::seconds(3));
     tula::logging::init();
     auto rc = parse_args(argc, argv);
     SPDLOG_TRACE("rc {}", rc.pformat());

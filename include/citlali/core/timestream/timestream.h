@@ -14,13 +14,31 @@
 
 namespace timestream {
 
+enum TimestreamFlags {
+    Good = 0,
+    D21FitsBetter   = 1 << 0,
+    D21LargeOffset  = 1 << 1,
+    D21NotConverged = 1 << 2,
+    D21OutOfRange   = 1 << 3,
+    D21QrOutOfRange = 1 << 4,
+    LargeOffset     = 1 << 5,
+    NotConverged    = 1 << 6,
+    OutOfRange      = 1 << 7,
+    QrOutOfRange    = 1 << 8,
+    LowGain         = 1 << 9,
+    APT             = 1 << 10,
+    Spike           = 1 << 11,
+    Freq            = 1 << 12
+};
+
+
 namespace wcs = kids::wcs;
 
 // clang-format off
-TULA_BITFLAG(TCDataKind, int,        0xFFFF,
-             RTC                     = 1 << 0,
-             PTC                     = 1 << 1,
-             Any                     = RTC | PTC
+TULA_BITFLAG(TCDataKind, int,  0xFFFF,
+             RTC               = 1 << 0,
+             PTC               = 1 << 1,
+             Any               = RTC | PTC
              );
 // clang-format on
 
@@ -144,6 +162,8 @@ struct TCData<TCDataKind::RTC,RefType>
     Base::data_t<Eigen::MatrixXd> kernel;
     // flag timestream
     Base::data_t<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> flags;
+    // bitwise flags
+    Base::data_t<Eigen::Matrix<TimestreamFlags,Eigen::Dynamic,Eigen::Dynamic>> flags2;
     // current scan indices
     Base::data_t<Eigen::Matrix<Eigen::Index,Eigen::Dynamic,1>> scan_indices;
     // scan index
@@ -177,6 +197,8 @@ struct TCData<TCDataKind::PTC, RefType>
     Base::data_t<Eigen::MatrixXd> kernel;
     // flag timestream
     Base::data_t<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> flags;
+    // bitwise flags
+    Base::data_t<Eigen::Matrix<TimestreamFlags,Eigen::Dynamic,Eigen::Dynamic>> flags2;
     // scan index
     Base::data_t<Eigen::Matrix<Eigen::Index,Eigen::Dynamic,1>> scan_indices;
     // scan index

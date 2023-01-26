@@ -445,7 +445,6 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
 
             SPDLOG_INFO("nw_ts {}",nw_ts.back().array() - nw_ts.back()(0));
 
-
             // push back start time
             nw_t0.push_back(nw_ts.back()[0]);
 
@@ -978,7 +977,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
                 double az_off = 0;
                 double el_off = 0;
 
-                if (engine().redu_type!="beammap" || (engine().redu_type=="beammap" && engine().map_grouping!="detector")) {
+                if (engine().map_grouping!="detector") {
                     az_off = engine().calib.apt["x_t"](j);
                     el_off = engine().calib.apt["y_t"](j);
                 }

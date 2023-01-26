@@ -222,7 +222,6 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
             static auto scan = 0;
             // loop through scans
             while (scan < telescope.scan_indices.cols()) {
-
                 // update progress bar
                 pb.count(telescope.scan_indices.cols(), 1);
 

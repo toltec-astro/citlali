@@ -27,9 +27,6 @@ public:
     // vector to record convergence iteration
     Eigen::Vector<int, Eigen::Dynamic> converge_iter;
 
-    // vector to hold derotation elevation
-    Eigen::VectorXd derot_elev;
-
     // number of parameters for map fitting
     Eigen::Index n_params;
 
@@ -59,8 +56,8 @@ public:
     template <class KidsProc, class RawObs>
     auto timestream_pipeline(KidsProc &, RawObs &);
 
-    template<typename array_indices_t>
-    void flag_dets(array_indices_t &);
+    template<typename array_indices_t, typename nw_indices_t>
+    void flag_dets(array_indices_t &, nw_indices_t &);
     void adjust_apt();
 
     auto loop_pipeline();
@@ -135,9 +132,6 @@ void Beammap::setup() {
     converge_iter.setConstant(1);
     // set the initial iteration
     current_iter = 0;
-
-    // derotation elevation
-    derot_elev.resize(n_maps);
 
     // setup kernel
     if (rtcproc.run_kernel) {
@@ -324,7 +318,7 @@ auto Beammap::run_timestream() {
             j = j + tone_axis.size();
         }
 
-        SPDLOG_INFO("tone flags {}", tone_flags.maxCoeff());
+        rtcdata.flags2.data.setConstant(timestream::TimestreamFlags::Good);
 
         // starting index for scan (outer scan)
         Eigen::Index si = rtcdata.scan_indices.data(2);
@@ -359,7 +353,6 @@ auto Beammap::run_timestream() {
             // create a new rtcdata for each polarization
             TCData<TCDataKind::RTC,Eigen::MatrixXd> rtcdata_pol;
             // demodulate
-            //SPDLOG_INFO("demodulating polarization");
             auto [array_indices, nw_indices, det_indices] = rtcproc.polarization.demodulate_timestream(rtcdata, rtcdata_pol,
                                                                                                        stokes_param,
                                                                                                        redu_type, calib);
@@ -374,8 +367,8 @@ auto Beammap::run_timestream() {
 
             // write rtc timestreams
             if (run_tod_output) {
-                SPDLOG_INFO("writing raw time chunk");
                 if (tod_output_type == "rtc" || tod_output_type=="both") {
+                    SPDLOG_INFO("writing raw time chunk");
                     ptcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], redu_type, telescope.pixel_axes,
                                              pointing_offsets_arcsec, det_indices, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
                 }
@@ -458,7 +451,6 @@ auto Beammap::run_loop() {
             SPDLOG_INFO("removing outlier weights");
             calib_scan = ptcproc.remove_bad_dets_nw(ptcs[i], calib, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
                                                     ptcs[i].array_indices.data, redu_type, map_grouping);
-
             // write chunk summary
             if (verbose_mode && current_iter==0) {
                 SPDLOG_DEBUG("writing chunk summary");
@@ -482,13 +474,10 @@ auto Beammap::run_loop() {
             ptcs[i].weights.data.resize(ptcs[i].scans.data.cols());
             ptcs[i].weights.data.setOnes();
 
-            // calculate weights
-            //ptcproc.calc_weights(ptcs[i], calib.apt, telescope);
-
             // write ptc timestreams
             if (run_tod_output) {
-                SPDLOG_INFO("writing processed time chunk");
                 if (tod_output_type == "ptc" || tod_output_type=="both") {
+                    SPDLOG_INFO("writing processed time chunk");
                     if (current_iter == beammap_tod_output_iter) {
                         // hardcoded to stokes I for now
                         ptcproc.append_to_netcdf(ptcs[i], tod_filename["ptc_I"], redu_type, telescope.pixel_axes,
@@ -634,34 +623,51 @@ auto Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         run_timestream());
 }
 
-template<typename array_indices_t>
-void Beammap::flag_dets(array_indices_t &array_indices) {
+template<typename array_indices_t, typename nw_indices_t>
+void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices) {
     // mean values of x_t and y_t
     std::map<std::string, double> array_mean_x_t, array_mean_y_t;
-    std::map<std::string, double> array_mean_a_fwhm, array_mean_b_fwhm;
-    std::map<std::string, double> array_mean_fwhm, array_mean_beamsize;
+    std::map<Eigen::Index, double> nw_mean_sens;
 
-    // calc mean x_t and y_t values for arrays
+    // calc median x_t and y_t values for arrays
     for (Eigen::Index i=0; i<calib.n_arrays; i++) {
-        Eigen::Index array = calib.apt["array"](i);
-        std::string array_name = toltec_io.array_name_map[calib.apt["array"](i)];
+        Eigen::Index array = calib.arrays(i);
+        std::string array_name = toltec_io.array_name_map[array];
 
         // x_t
-        array_mean_x_t[array_name] = calib.apt["x_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
-                                                                 std::get<1>(calib.array_limits[array])-1)).mean();
+        array_mean_x_t[array_name] = tula::alg::median(calib.apt["x_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
+                                                                                   std::get<1>(calib.array_limits[array])-1)));
         // y_t
-        array_mean_y_t[array_name] = calib.apt["y_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
-                                                                 std::get<1>(calib.array_limits[array])-1)).mean();
+        array_mean_y_t[array_name] = tula::alg::median(calib.apt["y_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
+                                                                 std::get<1>(calib.array_limits[array])-1)));
+    }
+
+    // calc median sensitivity for each network
+    for (Eigen::Index i=0; i<calib.n_nws; i++) {
+        Eigen::Index nw = calib.nws(i);
+        nw_mean_sens[nw] = tula::alg::median(calib.apt["sens"](Eigen::seq(std::get<0>(calib.nw_limits[nw]),
+                                                                         std::get<1>(calib.nw_limits[nw])-1)));
     }
 
     // track number of flagged detectors
     int n_flagged_dets = 0;
 
+    // mean elevation for tau calc
+    double mean_elev = telescope.tel_data["TelElAct"].mean();
+
+    // calculate extinction in each waveband
+    Eigen::VectorXd tau_el(1);
+    tau_el << mean_elev;
+    auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
+
     SPDLOG_INFO("flagging detectors");
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
         // get array of current detector
         auto array_index = array_indices(i);
-        std::string array_name = toltec_io.array_name_map[calib.apt["array"](array_index)];
+        std::string array_name = toltec_io.array_name_map[array_index];
+
+        // get nw of current detector
+        auto nw_index = nw_indices(i);
 
         // calculate map standard deviation
         double map_std_dev = engine_utils::calc_std_dev(omb.signal[i]);
@@ -679,12 +685,14 @@ void Beammap::flag_dets(array_indices_t &array_indices) {
             n_flagged_dets++;
         }
         // flag detectors with outler a_fwhm values
-        else if (calib.apt["a_fwhm"](i) < lower_fwhm_arcsec[array_name] || calib.apt["a_fwhm"](i) > upper_fwhm_arcsec[array_name]) {
+        else if (calib.apt["a_fwhm"](i) < lower_fwhm_arcsec[array_name] ||
+                 (calib.apt["a_fwhm"](i) > upper_fwhm_arcsec[array_name]) && upper_fwhm_arcsec[array_name] > 0) {
             calib.apt["flag"](i) = 0;
             n_flagged_dets++;
         }
         // flag detectors with outler b_fwhm values
-        else if (calib.apt["b_fwhm"](i) < lower_fwhm_arcsec[array_name] || calib.apt["b_fwhm"](i) > upper_fwhm_arcsec[array_name]) {
+        else if (calib.apt["b_fwhm"](i) < lower_fwhm_arcsec[array_name] ||
+                 (calib.apt["b_fwhm"](i) > upper_fwhm_arcsec[array_name] && upper_fwhm_arcsec[array_name] > 0)) {
             calib.apt["flag"](i) = 0;
             n_flagged_dets++;
         }
@@ -698,21 +706,22 @@ void Beammap::flag_dets(array_indices_t &array_indices) {
             calib.apt["flag"](i) = 0;
             n_flagged_dets++;
         }
+        // flag outlier sensitivities
+        else if (calib.apt["sens"](i) < lower_sens_factor*nw_mean_sens[nw_index] ||
+                 (calib.apt["sens"](i) > upper_sens_factor*nw_mean_sens[nw_index] && upper_sens_factor > 0)) {
+            calib.apt["flag"](i) = 0;
+            n_flagged_dets++;
+        }
 
         // calc flux scale (always in mJy/beam)
         if (params(i,0) != 0 && calib.apt["flag"](i) != 0) {
-                    calib.apt["flxscale"](i) = beammap_fluxes_mJy_beam[array_name]/params(i,0);
+            calib.apt["flxscale"](i) = beammap_fluxes_mJy_beam[array_name]/params(i,0);
         }
 
         // set fluxscale (fcf) to zero if flagged
         else {
             calib.apt["flxscale"](i) = 0;
         }
-
-        // calculate extinction in each waveband
-        Eigen::VectorXd tau_el(1);
-        tau_el << derot_elev(i);
-        auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
 
         // correct fcf for extinction
         calib.apt["flxscale"](i) = calib.apt["flxscale"](i)*exp(-tau_freq[array_index](0));
@@ -722,13 +731,13 @@ void Beammap::flag_dets(array_indices_t &array_indices) {
     // print number of flagged detectors
     SPDLOG_INFO("{} detectors were flagged", n_flagged_dets);
 
-    // get average beamsizes and beam areas
+    // get average fwhms and beam areas
     calib.setup();
 
     // calculate source flux in MJy/Sr from average beamsizes
     for (Eigen::Index i=0; i<calib.n_arrays; i++) {
-        Eigen::Index array = calib.apt["array"](i);
-        std::string array_name = toltec_io.array_name_map[calib.apt["array"](i)];
+        Eigen::Index array = calib.arrays(i);
+        std::string array_name = toltec_io.array_name_map[array];
 
         // get source flux in MJy/Sr
         beammap_fluxes_MJy_Sr[array_name] = mJY_ASEC_to_MJY_SR*(beammap_fluxes_mJy_beam[array_name])/calib.array_beam_areas[array];
@@ -736,23 +745,78 @@ void Beammap::flag_dets(array_indices_t &array_indices) {
 }
 
 void Beammap::adjust_apt() {
+    // std maps to hold median unflagged x and y positions
+    std::map<std::string, double> array_median_x_t, array_median_y_t;
+    Eigen::VectorXd x_t, y_t;
+
+    // calc mean x_t and y_t values from unflagged detectors for each arrays
+    for (Eigen::Index i=0; i<calib.n_arrays; i++) {
+        Eigen::Index array = calib.arrays(i);
+        std::string array_name = toltec_io.array_name_map[array];
+
+        // x_t
+        auto array_x_t = calib.apt["x_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
+                                                                 std::get<1>(calib.array_limits[array])-1));
+        // y_t
+        auto array_y_t = calib.apt["y_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
+                                                                 std::get<1>(calib.array_limits[array])-1));
+
+        // number of good detectors
+        Eigen::Index n_good_det = calib.apt["flag"](Eigen::seq(std::get<0>(calib.array_limits[array]),
+                                                         std::get<1>(calib.array_limits[array])-1)).sum();
+
+        x_t.resize(n_good_det);
+        y_t.resize(n_good_det);
+
+        // remove flagged dets
+        Eigen::Index j = std::get<0>(calib.array_limits[array]);
+        Eigen::Index k = 0;
+        for (Eigen::Index i=0; i<array_x_t.size(); i++) {
+            if (calib.apt["flag"](j)) {
+                x_t(k) = array_x_t(i);
+                y_t(k) = array_y_t(i);
+                k++;
+            }
+            j++;
+        }
+        array_median_x_t[array_name] = tula::alg::median(x_t);
+        array_median_y_t[array_name] = tula::alg::median(y_t);
+    }
+
     // reference detector x and y
-    auto ref_det_x_t = calib.apt["x_t"](beammap_reference_det);
-    auto ref_det_y_t = calib.apt["y_t"](beammap_reference_det);
+    double ref_det_x_t = 0;
+    double ref_det_y_t = 0;
+
+    // if particular reference detector is requested
+    if (beammap_subtract_reference) {
+        if (beammap_reference_det >= 0) {
+            // set reference x_t and y_t
+            ref_det_x_t = calib.apt["x_t"](beammap_reference_det);
+            ref_det_y_t = calib.apt["y_t"](beammap_reference_det);
+        }
+        // else use closest to a1100 median
+        else if (beammap_reference_det < 0) {
+            auto array_name = toltec_io.array_name_map[calib.apt["array"](0)];
+            Eigen::VectorXd dist = pow(calib.apt["x_t"].array() - array_median_x_t[array_name],2) +
+                pow(calib.apt["y_t"].array() - array_median_y_t[array_name],2);
+
+            // index of detector closest to median
+            auto min_dist = dist.minCoeff(&beammap_reference_det);
+
+            // set reference x_t and y_t
+            ref_det_x_t = calib.apt["x_t"](beammap_reference_det);
+            ref_det_y_t = calib.apt["y_t"](beammap_reference_det);
+        }
+    }
 
     // add reference detector to APT meta data
     calib.apt_meta["reference_x_t"] = ref_det_x_t;
     calib.apt_meta["reference_y_t"] = ref_det_y_t;
 
-    // align to reference detector if specified
-    if (beammap_reference_det > 0) {
-        SPDLOG_INFO("subtracting reference detector {} position ({},{})",
-                    beammap_reference_det, ref_det_x_t, ref_det_y_t);
-
-        // subtract reference detector position from x and y
-        calib.apt["x_t"] =  calib.apt["x_t"].array() - ref_det_x_t;
-        calib.apt["y_t"] =  calib.apt["y_t"].array() - ref_det_y_t;
-    }
+    // align to reference detector if specified and
+    // subtract its position from x and y
+    calib.apt["x_t"] =  calib.apt["x_t"].array() - ref_det_x_t;
+    calib.apt["y_t"] =  calib.apt["y_t"].array() - ref_det_y_t;
 
     // derotated detector x and y values
     calib.apt["x_t_derot"] = calib.apt["x_t"];
@@ -763,16 +827,13 @@ void Beammap::adjust_apt() {
     calib.apt["y_t_raw"] = calib.apt["y_t"];
 
     // derotation elevation
-    derot_elev.setConstant(telescope.tel_data["TelElAct"].mean());
-
-    // set apt derotation elevation
-    calib.apt["derot_elev"] = derot_elev;
+    calib.apt["derot_elev"].setConstant(telescope.tel_data["TelElAct"].mean());
 
     // calculate derotated positions
-    Eigen::VectorXd rot_az_off = cos(-derot_elev.array())*calib.apt["x_t_derot"].array() -
-                                 sin(-derot_elev.array())*calib.apt["y_t_derot"].array();
-    Eigen::VectorXd rot_alt_off = sin(-derot_elev.array())*calib.apt["x_t_derot"].array() +
-                                  cos(-derot_elev.array())*calib.apt["y_t_derot"].array();
+    Eigen::VectorXd rot_az_off = cos(-calib.apt["derot_elev"].array())*calib.apt["x_t_derot"].array() -
+                                 sin(-calib.apt["derot_elev"].array())*calib.apt["y_t_derot"].array();
+    Eigen::VectorXd rot_alt_off = sin(-calib.apt["derot_elev"].array())*calib.apt["x_t_derot"].array() +
+                                  cos(-calib.apt["derot_elev"].array())*calib.apt["y_t_derot"].array();
 
     // overwrite x_t and y_t
     calib.apt["x_t_derot"] = -rot_az_off;
@@ -790,6 +851,7 @@ auto Beammap::loop_pipeline() {
     // run iterative stage
     run_loop();
 
+    // write map summary
     if (verbose_mode) {
         write_map_summary(omb);
     }
@@ -810,9 +872,10 @@ auto Beammap::loop_pipeline() {
 
     // array indices
     auto array_indices = ptcs[0].array_indices.data;
-
-    // empty ptcdata vector to save memory
-    ptcs.clear();
+    // nw indices
+    auto nw_indices = ptcs[0].nw_indices.data;
+    // detector indices
+    auto det_indices = ptcs[0].det_indices.data;
 
     // apt and sensitivity only relevant if beammapping
     if (map_grouping=="detector") {
@@ -835,11 +898,100 @@ auto Beammap::loop_pipeline() {
         // add convergence iteration to apt table
         calib.apt["converge_iter"] = converge_iter.cast<double> ();
 
+        // flag detectors
+        flag_dets(array_indices, nw_indices);
+
         // subtract ref detector position and derotate
         adjust_apt();
 
-        // flag detectors
-        flag_dets(array_indices);
+        // add apt table to timestream files
+        if (run_tod_output) {
+            // vectors to hold tangent plane pointing
+            std::vector<Eigen::MatrixXd> det_lat, det_lon;
+
+            // recalculate tangent plane pointing for tod output
+            for (Eigen::Index i=0; i<ptcs.size(); i++) {
+                // tangent plane pointing for each detector
+                Eigen::MatrixXd lats(ptcs[i].scans.data.rows(), ptcs[i].scans.data.cols());
+                Eigen::MatrixXd lons(ptcs[i].scans.data.rows(), ptcs[i].scans.data.cols());
+
+                for (Eigen::Index j=0; j<ptcs[i].scans.data.cols(); j++) {
+                    double az_off = 0;
+                    double el_off = 0;
+
+                    auto det_index = det_indices(j);
+                    az_off = calib.apt["x_t"](det_index);
+                    el_off = calib.apt["y_t"](det_index);
+
+                    // get physical pointing
+                    auto [lat, lon] = engine_utils::calc_det_pointing(ptcs[i].tel_data.data, az_off, el_off,
+                                                                      telescope.pixel_axes, pointing_offsets_arcsec);
+                    lats.col(j) = std::move(lat);
+                    lons.col(j) = std::move(lon);
+                }
+                det_lat.push_back(std::move(lats));
+                det_lon.push_back(std::move(lons));
+            }
+
+            SPDLOG_INFO("adding final apt and detector tangent plane pointing to tod files");
+            for (const auto & [key, val]: tod_filename) {
+                netCDF::NcFile fo(val, netCDF::NcFile::write);
+                auto vars = fo.getVars();
+                // overwrite apt table
+                for (auto const& x: calib.apt) {
+                    // start index for apt table
+                    std::vector<std::size_t> start_index_apt = {0};
+                    // size for apt
+                    std::vector<std::size_t> size_apt = {1};
+                    netCDF::NcVar apt_v = fo.getVar("apt_" + x.first);
+                    for (std::size_t i=0; i< TULA_SIZET(calib.n_dets); ++i) {
+                        start_index_apt[0] = i;
+                        apt_v.putVar(start_index_apt, size_apt, &calib.apt[x.first](det_indices(i)));
+                    }
+                }
+
+                // detector tangent plane pointing
+                netCDF::NcVar det_lat_v = fo.getVar("det_lat");
+                netCDF::NcVar det_lon_v = fo.getVar("det_lon");
+
+                // detector absolute pointing
+                netCDF::NcVar det_ra_v = fo.getVar("det_ra");
+                netCDF::NcVar det_dec_v = fo.getVar("det_dec");
+
+                // start indices for data
+                std::vector<std::size_t> start_index = {0, 0};
+                // size for data
+                std::vector<std::size_t> size = {1, TULA_SIZET(calib.n_dets)};
+                std::size_t k = 0;
+                for (Eigen::Index i=0; i<det_lat.size(); i++) {
+                    for (std::size_t j=0; j < TULA_SIZET(det_lat[i].rows()); ++j) {
+                        start_index[0] = k;
+                        k++;
+                        // append detector latitudes
+                        Eigen::VectorXd lats_row = det_lat[i].row(j);
+                        det_lat_v.putVar(start_index, size, lats_row.data());
+
+                        // append detector longitudes
+                        Eigen::VectorXd lons_row = det_lon[i].row(j);
+                        det_lon_v.putVar(start_index, size, lons_row.data());
+
+                        if (telescope.pixel_axes == "icrs") {
+                            // get absolute pointing
+                            auto [decs, ras] = engine_utils::phys_to_abs(lats_row, lons_row, telescope.tel_header["Header.Source.Ra"](0),
+                                                                         telescope.tel_header["Header.Source.Dec"](0));
+                            // append detector ra
+                            det_ra_v.putVar(start_index, size, ras.data());
+
+                            // append detector dec
+                            det_dec_v.putVar(start_index, size, decs.data());
+                        }
+                    }
+                }
+            }
+
+            // empty ptcdata vector to save memory
+            ptcs.clear();
+        }
     }
 }
 

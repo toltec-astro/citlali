@@ -91,17 +91,19 @@ void Telescope::get_tel_data(std::string &filepath) {
 void Telescope::calc_tan_pointing() {
     // get icrs tan pointing
     if (std::strcmp("icrs", pixel_axes.c_str()) == 0) {
+        SPDLOG_INFO("using icrs frame");
         calc_tan_icrs();
     }
 
     // get altaz tan pointing
     else if (std::strcmp("altaz", pixel_axes.c_str()) == 0) {
+        SPDLOG_INFO("using altaz frame");
         calc_tan_altaz();
     }
 }
 
 void Telescope::calc_tan_icrs() {
-
+    // size of data
     Eigen::Index n_pts = tel_data["TelRa"].size();
 
     // vectors to hold physical (tangent plane) coordinates
@@ -124,8 +126,8 @@ void Telescope::calc_tan_icrs() {
     // rescale center ra
     center_ra = (center_ra > pi) ? center_ra - (2.0*pi) : center_ra;
 
-    auto cosc = sin(center_dec)*sin(tel_data["TelDec"].array()) +
-                cos(center_dec)*cos(tel_data["TelDec"].array())*cos(ra.array() - center_ra);
+    Eigen::VectorXd cosc = sin(center_dec)*sin(dec.array()) +
+                cos(center_dec)*cos(dec.array())*cos(ra.array() - center_ra);
 
     // calc tangent coordinates
     for (Eigen::Index i=0; i<n_pts; i++) {
@@ -135,10 +137,12 @@ void Telescope::calc_tan_icrs() {
         }
 
         else {
-            tel_data["lat_phys"](i) = (cos(center_dec)*sin(tel_data["TelDec"](i)) -
-                                       sin(center_dec)*cos(tel_data["TelDec"](i))*cos(ra(i)-center_ra))/cosc(i);
+            // tangent plane lat (dec/alt)
+            tel_data["lat_phys"](i) = (cos(center_dec)*sin(dec(i)) -
+                                       sin(center_dec)*cos(dec(i))*cos(ra(i)-center_ra))/cosc(i);
 
-            tel_data["lon_phys"](i) = cos(tel_data["TelDec"](i))*sin(ra(i)-center_ra)/cosc(i);
+            // tangent plane lon (ra/az)
+            tel_data["lon_phys"](i) = cos(dec(i))*sin(ra(i)-center_ra)/cosc(i);
         }
     }
 }

@@ -115,6 +115,9 @@ struct beammapControls {
     // beammap tolerance
     double beammap_iter_tolerance;
 
+    // subtract reference detector
+    bool beammap_subtract_reference;
+
     // beammap reference detector
     Eigen::Index beammap_reference_det;
 
@@ -127,8 +130,12 @@ struct beammapControls {
     // upper and lower limits of psd for sensitivity calc
     Eigen::VectorXd sens_psd_limits;
 
-    // limits for fwhm and sig2noise  for flagging
-    std::map<std::string, double> lower_fwhm_arcsec, upper_fwhm_arcsec, lower_sig2noise, max_dist_arcsec;
+    // limits on fwhm, sig2noise, and distance from center for flagging
+    std::map<std::string, double> lower_fwhm_arcsec, upper_fwhm_arcsec, lower_sig2noise,
+        max_dist_arcsec;
+
+    // limits on sensitivity for flagging
+    double lower_sens_factor, upper_sens_factor;
 };
 
 class Engine: public reduControls, public reduClasses, public beammapControls {
@@ -463,8 +470,8 @@ void Engine::get_citlali_config(CT &config) {
     if (ptcproc.cleaner.grouping == "network") {
         ptcproc.cleaner.grouping = "nw";
     }
-    get_config_value(config, ptcproc.cleaner.cut_std, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk",
-                                                                                             "clean","cut_std"});
+    get_config_value(config, ptcproc.cleaner.stddev_limit, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk",
+                                                                                             "clean","stddev_limit"});
 
     /* mapmaking */
     get_config_value(config, run_mapmaking, missing_keys, invalid_keys, std::tuple{"mapmaking","enabled"});
@@ -699,6 +706,7 @@ void Engine::get_citlali_config(CT &config) {
         get_config_value(config, beammap_iter_max, missing_keys, invalid_keys, std::tuple{"beammap","iter_max"});
         get_config_value(config, beammap_iter_tolerance, missing_keys, invalid_keys, std::tuple{"beammap","iter_tolerance"});
         get_config_value(config, beammap_reference_det, missing_keys, invalid_keys, std::tuple{"beammap","reference_det"});
+        get_config_value(config, beammap_subtract_reference, missing_keys, invalid_keys, std::tuple{"beammap","subtract_reference_det"});
         get_config_value(config, beammap_derotate, missing_keys, invalid_keys, std::tuple{"beammap","derotate"});
 
         // limits for flagging
@@ -712,6 +720,9 @@ void Engine::get_citlali_config(CT &config) {
             get_config_value(config, max_dist_arcsec[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","flagging","max_dist_arcsec",
                                                                                                 arr_name});
         }
+
+        get_config_value(config, lower_sens_factor, missing_keys, invalid_keys, std::tuple{"beammap","flagging","lower_sens_factor"});
+        get_config_value(config, upper_sens_factor, missing_keys, invalid_keys, std::tuple{"beammap","flagging","upper_sens_factor"});
 
         // sensitiivty
         sens_psd_limits.resize(2);

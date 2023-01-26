@@ -207,11 +207,13 @@ void Calib::setup() {
                                                          std::get<1>(nw_limits[key])-1)).sum();
 
         // remove flagged dets
+        Eigen::Index k = std::get<0>(array_limits[key]);
         for (Eigen::Index i=0; i<nw_a_fwhm.size(); i++) {
-            if (apt["flag"](i)) {
+            if (apt["flag"](k)) {
                 std::get<0>(nw_fwhms[key]) = std::get<0>(nw_fwhms[key]) + nw_a_fwhm(i);
                 std::get<1>(nw_fwhms[key]) = std::get<1>(nw_fwhms[key]) + nw_b_fwhm(i);
             }
+            k++;
         }
 
         std::get<0>(nw_fwhms[key]) = std::get<0>(nw_fwhms[key])/n_good_det;
@@ -244,7 +246,7 @@ void Calib::setup() {
         }
     }
 
-    // get average fwhms for networks
+    // get average fwhms for arrays
     j = 0;
     for (auto const& [key, val] : array_limits) {
         arrays(j) = key;
@@ -261,11 +263,13 @@ void Calib::setup() {
                                                          std::get<1>(array_limits[key])-1)).sum();
 
         // remove flagged dets
+        Eigen::Index k = std::get<0>(array_limits[key]);
         for (Eigen::Index i=0; i<array_a_fwhm.size(); i++) {
-            if (apt["flag"](i)) {
+            if (apt["flag"](k)) {
                 std::get<0>(array_fwhms[key]) = std::get<0>(array_fwhms[key]) + array_a_fwhm(i);
                 std::get<1>(array_fwhms[key]) = std::get<1>(array_fwhms[key]) + array_b_fwhm(i);
             }
+            k++;
         }
 
         std::get<0>(array_fwhms[key]) = std::get<0>(array_fwhms[key])/n_good_det;

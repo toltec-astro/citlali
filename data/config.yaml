@@ -1,8 +1,9 @@
 beammap: # beammap controls (ignored if not beammapping)
   iter_max: 1 # maximum number of iterations for beammapping
   derotate: false # derotate beammap to zero elevation
-  reference_det: -99 # reference detector offset for APT positions (<0 is ignored)
-  iter_tolerance: 0.0 # tolerance for iterations
+  subtract_reference_det: true # enable subtraction of reference detector position
+  reference_det: -99 # reference detector offset for APT positions (if <0 and enabled, use detector closest to median)
+  iter_tolerance: 0.0 # tolerance for iterations (if 0 all iterations are performed, tod output will be for last iteration)
   sens_psd_lower_limit: 0 # lower limit for psd in sensitivity calculation
   sens_psd_upper_limit: 0 # upper limit for psd in sensitivity calculation
   flagging: # these parameters control how the beammapping algorithm flags bad detectors
@@ -22,6 +23,8 @@ beammap: # beammap controls (ignored if not beammapping)
       a1100: 0
       a1400: 0
       a2000: 0
+    lower_sens_factor: 0.0 # per network lower multiplicative factor on median sensitivty (ignored if 0)
+    upper_sens_factor: 0.0 # per network upper multiplicative factor on median sensitivty (ignored if 0)
 coadd: # coaddition controls
   enabled: false # enable or disable coaddition
 noise_maps: # noise map controls (coadded noise maps if coadd enabled, obs noise maps if disabled)
@@ -187,10 +190,10 @@ timestream: # timestream reduction parameters
       enabled: false # enable or disablertc TOD output
   processed_time_chunk:
     clean: # remove (hopefully) the atmospheric signal
-      cut_std: 0.0 # standard deviation cut for cleaning (only used if >0)
+      stddev_limit: 0.0 # standard deviation cut for cleaning (only used if >0)
       enabled: false # enable or disable cleaning
-      grouping: array # clean grouping (array, nw, all)
-      n_eig_to_cut: 3 # number of eigenvalues to remove (ignored if cut_std >0)
+      grouping: array # clean grouping (array, nw, nw_array, array_nw, all)
+      n_eig_to_cut: 3 # number of eigenvalues to remove (if stddev_limit >0, calc this many eigs, if this is 0, calc all eigs)
     weighting: # how to weight data and maps
       type: full # type of TOD weighting (full=use scan variance/approximate=use det sensitivity)
     flagging: # controls flagging after cleaning
