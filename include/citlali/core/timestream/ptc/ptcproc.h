@@ -250,7 +250,10 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
 template <typename apt_t, typename Derived>
 void PTCProc::remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_t &apt, Eigen::DenseBase<Derived> &det_indices) {
 
+    // number of detectors
     Eigen::Index n_dets = in.scans.data.cols();
+
+    // number of detectors flagged in apt
     Eigen::Index n_flagged = (apt["flag"].array()==0).count();
     SPDLOG_INFO("removing {} detectors flagged in APT table ({}%)",n_flagged,
                 (static_cast<float>(n_flagged)/static_cast<float>(n_dets))*100);
@@ -389,6 +392,7 @@ auto PTCProc::remove_bad_dets_nw_iter(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
 
     // only do if config options are not zero
     if (upper_std_dev!=0 || lower_std_dev!=0) {
+        SPDLOG_INFO("removing outlier weights");
         for (Eigen::Index i=0; i<calib.n_nws; i++) {
             bool keep_going = true;
             Eigen::Index n_iter = 0;

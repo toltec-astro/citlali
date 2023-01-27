@@ -34,7 +34,10 @@ public:
     timestream::Downsampler downsampler;
     timestream::Calibration calibration;
 
+    // upper and lower limits for outliers
     double lower_std_dev, upper_std_dev;
+    // minimum allowed frequency distance between tones
+    double delta_f_min_Hz;
 
     template<typename calib_t, typename telescope_t, typename pointing_offset_t, typename Derived>
     void run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &,
@@ -236,6 +239,7 @@ auto RTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, c
 
     // only run if limits are not zero
     if (lower_std_dev !=0 || upper_std_dev !=0) {
+        SPDLOG_INFO("removing outlier weights");
         for (Eigen::Index i=0; i<calib.n_nws; i++) {
             // number of unflagged detectors
             Eigen::Index n_good_dets = 0;
@@ -256,7 +260,7 @@ auto RTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, c
                 Eigen::Index det_index = det_indices(j);
                 if (calib.apt["flag"](det_index) && calib.apt["nw"](det_index)==calib.nws(i)) {
 
-                         // make Eigen::Maps for each detector's scan
+                    // make Eigen::Maps for each detector's scan
                     Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
                         in.scans.data.col(j).data(), in.scans.data.rows());
                     Eigen::Map<Eigen::Matrix<bool, Eigen::Dynamic, 1>> flags(
@@ -329,6 +333,47 @@ template <typename calib_t, typename Derived>
 auto RTCProc::remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
                                  Eigen::DenseBase<Derived> &nw_indices, Eigen::DenseBase<Derived> &array_indices, std::string redu_type,
                                  std::string map_grouping) {
+
+    // make a copy of the calib class for flagging
+    calib_t calib_scan = calib;
+
+    // number of detectors
+    Eigen::Index n_dets = in.scans.data.cols();
+
+    // distance to nearest neighbor
+    Eigen::VectorXd dfreq(calib.n_dets);
+    dfreq(0) = calib.apt["tone_freq"](1) - calib.apt["tone_freq"](0);
+
+    // loop through tone freqs and find distance
+    for (Eigen::Index i=0; i<calib.apt["tone_freq"].size(); i++) {
+        dfreq(i) = std::min(abs(calib.apt["tone_freq"](i) - calib.apt["tone_freq"](i-1)),
+                            abs(calib.apt["tone_freq"](i+1) - calib.apt["tone_freq"](i)));
+    }
+    // get last distance
+    dfreq(dfreq.size()-1) = abs(calib.apt["tone_freq"](dfreq.size()-1)-calib.apt["tone_freq"](dfreq.size()-2));
+
+    int n_nearby_tones = 0;
+
+    for (Eigen::Index i=0; i<in.flags.data.cols(); i++) {
+        Eigen::Index det_index = det_indices(i);
+        if (dfreq(det_index) < delta_f_min_Hz && calib_scan.apt["flag"](det_index)) {
+            n_nearby_tones++;
+            if (map_grouping!="detector") {
+                in.flags.data.col(i).setZero();
+            }
+            else {
+                calib_scan.apt["flag"](det_index) = 0;
+            }
+        }
+    }
+
+    SPDLOG_INFO("removing {}/{} ({}%) tones < {} kHz flagged", n_nearby_tones, n_dets,
+                (static_cast<float>(n_nearby_tones)/static_cast<float>(n_dets))*100, delta_f_min_Hz/1000);
+
+    // set up scan calib
+    calib_scan.setup();
+
+    return std::move(calib_scan);
 
 }
 

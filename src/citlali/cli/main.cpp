@@ -406,7 +406,7 @@ int run(const rc_t &rc) {
 
                     // get tone frequencies from raw files for flagging nearby tones
                     SPDLOG_DEBUG("getting tone frequencies");
-                    //todproc.get_tone_freqs_from_files(rawobs);
+                    todproc.get_tone_freqs_from_files(rawobs);
 
                     // calculate downsampled sample rate
                     if (todproc.engine().rtcproc.run_downsample) {

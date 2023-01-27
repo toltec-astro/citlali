@@ -64,7 +64,7 @@ void Lali::setup() {
     if (run_tod_output) {
         // create tod output subdirectory if requested
         if (tod_output_subdir_name!="null") {
-            fs::create_directories(obsnum_dir_name + "/raw/" + tod_output_subdir_name);
+            fs::create_directories(obsnum_dir_name + "raw/" + tod_output_subdir_name);
         }
         // make rtc tod output file
         if (tod_output_type == "rtc" || tod_output_type=="both") {
@@ -159,8 +159,10 @@ auto Lali::run() {
             ptcproc.remove_flagged_dets(ptcdata, calib.apt, det_indices);
 
             // remove outliers
-            SPDLOG_INFO("removing outlier weights");
             auto calib_scan = rtcproc.remove_bad_dets_nw(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
+
+            // remove duplicate tones
+            calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
 
             // run cleaning
             if (stokes_param == "I") {
@@ -169,7 +171,6 @@ auto Lali::run() {
             }
 
             // remove outliers after clean
-            SPDLOG_INFO("removing outlier weights");
             calib_scan = ptcproc.remove_bad_dets_nw(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
 
             // calculate weights
@@ -289,7 +290,7 @@ void Lali::output() {
         mb = &omb;
         f_io = &fits_io_vec;
         n_io = &noise_fits_io_vec;
-        dir_name = obsnum_dir_name + "/raw/";
+        dir_name = obsnum_dir_name + "raw/";
     }
 
     // filtered obs maps
@@ -297,7 +298,7 @@ void Lali::output() {
         mb = &omb;
         f_io = &filtered_fits_io_vec;
         n_io = &filtered_noise_fits_io_vec;
-        dir_name = obsnum_dir_name + "/filtered/";
+        dir_name = obsnum_dir_name + "filtered/";
     }
 
     // raw coadded maps
@@ -305,7 +306,7 @@ void Lali::output() {
         mb = &cmb;
         f_io = &coadd_fits_io_vec;
         n_io = &coadd_noise_fits_io_vec;
-        dir_name = coadd_dir_name + "/raw/";
+        dir_name = coadd_dir_name + "raw/";
     }
 
     // filtered coadded maps
@@ -313,7 +314,7 @@ void Lali::output() {
         mb = &cmb;
         f_io = &filtered_coadd_fits_io_vec;
         n_io = &filtered_coadd_noise_fits_io_vec;
-        dir_name = coadd_dir_name + "/filtered/";
+        dir_name = coadd_dir_name + "filtered/";
     }
 
     {

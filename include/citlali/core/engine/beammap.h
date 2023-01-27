@@ -154,7 +154,7 @@ void Beammap::setup() {
     if (run_tod_output) {
         // create tod output subdirectory if requested
         if (tod_output_subdir_name!="null") {
-            fs::create_directories(obsnum_dir_name + "/raw/" + tod_output_subdir_name);
+            fs::create_directories(obsnum_dir_name + "raw/" + tod_output_subdir_name);
         }
         // make rtc tod output file
         if (tod_output_type == "rtc" || tod_output_type=="both") {
@@ -178,7 +178,7 @@ void Beammap::setup() {
     calib.apt_meta["obsnum"] = obsnum;
 
     // add source name
-    calib.apt_meta["Source"] = telescope.source_name;
+    //calib.apt_meta["Source"] = telescope.source_name;
 
     // add source name
     calib.apt_meta["Date"] = engine_utils::current_date_time();
@@ -441,14 +441,17 @@ auto Beammap::run_loop() {
                 ptcproc.remove_flagged_dets(ptcs[i], calib.apt, ptcs[i].det_indices.data);
             }
 
-            SPDLOG_INFO("removing outlier weights");
             auto calib_scan = rtcproc.remove_bad_dets_nw(ptcs[i], calib, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
                                                          ptcs[i].array_indices.data, redu_type, map_grouping);
+
+            // remove duplicate tones
+            calib_scan = rtcproc.remove_nearby_tones(ptcs[i], calib_scan, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
+                                                     ptcs[i].array_indices.data, redu_type, map_grouping);
+
             SPDLOG_INFO("processed time chunk processing");
             ptcproc.run(ptcs[i], ptcs[i], calib_scan);
 
             // remove outliers after clean
-            SPDLOG_INFO("removing outlier weights");
             calib_scan = ptcproc.remove_bad_dets_nw(ptcs[i], calib, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
                                                     ptcs[i].array_indices.data, redu_type, map_grouping);
             // write chunk summary
@@ -859,6 +862,9 @@ auto Beammap::loop_pipeline() {
     // empty initial ptcdata vector to save memory
     ptcs0.clear();
 
+    // set to input parallel policy
+    parallel_policy = omb.parallel_policy;
+
     SPDLOG_INFO("calculating sensitivity");
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
         Eigen::MatrixXd det_sens, noise_flux;
@@ -915,7 +921,7 @@ auto Beammap::loop_pipeline() {
                 Eigen::MatrixXd lats(ptcs[i].scans.data.rows(), ptcs[i].scans.data.cols());
                 Eigen::MatrixXd lons(ptcs[i].scans.data.rows(), ptcs[i].scans.data.cols());
 
-                for (Eigen::Index j=0; j<ptcs[i].scans.data.cols(); j++) {
+                grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto j) {
                     double az_off = 0;
                     double el_off = 0;
 
@@ -928,12 +934,18 @@ auto Beammap::loop_pipeline() {
                                                                       telescope.pixel_axes, pointing_offsets_arcsec);
                     lats.col(j) = std::move(lat);
                     lons.col(j) = std::move(lon);
-                }
+
+                    return 0;
+                });
                 det_lat.push_back(std::move(lats));
                 det_lon.push_back(std::move(lons));
             }
 
+            // set parallel policy to sequential for tod output
+            parallel_policy = "seq";
+
             SPDLOG_INFO("adding final apt and detector tangent plane pointing to tod files");
+            // loop through tod files
             for (const auto & [key, val]: tod_filename) {
                 netCDF::NcFile fo(val, netCDF::NcFile::write);
                 auto vars = fo.getVars();
@@ -1031,14 +1043,14 @@ void Beammap::output() {
         mb = &omb;
         f_io = &fits_io_vec;
         n_io = &noise_fits_io_vec;
-        dir_name = obsnum_dir_name + "/raw/";
+        dir_name = obsnum_dir_name + "raw/";
 
         // only write apt table if beammapping
         if (map_grouping=="detector") {
             SPDLOG_INFO("writing apt table");
             auto apt_filename = toltec_io.create_filename<engine_utils::toltecIO::apt, engine_utils::toltecIO::map,
                                                           engine_utils::toltecIO::raw>
-                                (obsnum_dir_name + "/raw/", redu_type, "", obsnum, telescope.sim_obs);
+                                (obsnum_dir_name + "raw/", redu_type, "", obsnum, telescope.sim_obs);
 
             calib.apt_header_keys.push_back("x_t_derot");
             calib.apt_header_keys.push_back("y_t_derot");
@@ -1066,7 +1078,7 @@ void Beammap::output() {
         mb = &omb;
         f_io = &filtered_fits_io_vec;
         n_io = &filtered_noise_fits_io_vec;
-        dir_name = obsnum_dir_name + "/filtered/";
+        dir_name = obsnum_dir_name + "filtered/";
     }
 
     // raw coadded maps
@@ -1074,7 +1086,7 @@ void Beammap::output() {
         mb = &cmb;
         f_io = &coadd_fits_io_vec;
         n_io = &coadd_noise_fits_io_vec;
-        dir_name = coadd_dir_name + "/raw/";
+        dir_name = coadd_dir_name + "raw/";
     }
 
     // filtered coadded maps
@@ -1082,7 +1094,7 @@ void Beammap::output() {
         mb = &cmb;
         f_io = &filtered_coadd_fits_io_vec;
         n_io = &filtered_coadd_noise_fits_io_vec;
-        dir_name = coadd_dir_name + "/filtered/";
+        dir_name = coadd_dir_name + "filtered/";
     }
 
     // progress bar

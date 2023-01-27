@@ -369,6 +369,8 @@ void Engine::get_citlali_config(CT &config) {
                                                                                            "lower_weight_factor"});
     get_config_value(config, rtcproc.upper_std_dev, missing_keys, invalid_keys, std::tuple{"timestream", "raw_time_chunk","flagging",
                                                                                            "upper_weight_factor"});
+    get_config_value(config, rtcproc.delta_f_min_Hz, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","flagging",
+                                                                                            "delta_f_min_Hz"});
     get_config_value(config, ptcproc.lower_std_dev, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","flagging",
                                                                                            "lower_weight_factor"});
     get_config_value(config, ptcproc.upper_std_dev, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","flagging",
@@ -869,7 +871,7 @@ void Engine::create_map_files() {
         std::string array_name = toltec_io.array_name_map[array];
         auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
                                                   engine_utils::toltecIO::map,
-                                                  engine_utils::toltecIO::raw>(obsnum_dir_name + "/raw/", redu_type, array_name,
+                                                  engine_utils::toltecIO::raw>(obsnum_dir_name + "raw/", redu_type, array_name,
                                                                                obsnum, telescope.sim_obs);
         fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
 
@@ -880,7 +882,7 @@ void Engine::create_map_files() {
             if (run_noise) {
                 auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
                                                           engine_utils::toltecIO::noise,
-                                                          engine_utils::toltecIO::raw>(obsnum_dir_name + "/raw/", redu_type, array_name,
+                                                          engine_utils::toltecIO::raw>(obsnum_dir_name + "raw/", redu_type, array_name,
                                                                                          obsnum, telescope.sim_obs);
                 fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
 
@@ -891,7 +893,7 @@ void Engine::create_map_files() {
             if (run_map_filter) {
                 auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
                                                           engine_utils::toltecIO::map,
-                                                          engine_utils::toltecIO::filtered>(obsnum_dir_name + "/filtered/",
+                                                          engine_utils::toltecIO::filtered>(obsnum_dir_name + "filtered/",
                                                                                             redu_type, array_name,
                                                                                             obsnum, telescope.sim_obs);
                 fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
@@ -902,7 +904,7 @@ void Engine::create_map_files() {
                 if (run_noise) {
                     auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
                                                               engine_utils::toltecIO::noise,
-                                                              engine_utils::toltecIO::filtered>(obsnum_dir_name + "/filtered/", redu_type,
+                                                              engine_utils::toltecIO::filtered>(obsnum_dir_name + "filtered/", redu_type,
                                                                                              array_name, obsnum, telescope.sim_obs);
                     fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
 
@@ -920,7 +922,7 @@ void Engine::create_tod_files() {
         // name for std map
         std::string name;
         // subdirectory name
-        std::string dir_name = obsnum_dir_name + "/raw/";
+        std::string dir_name = obsnum_dir_name + "raw/";
 
         // if config subdirectory name is specified, add it
         if (tod_output_subdir_name != "null") {
@@ -1166,10 +1168,6 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
     f << "-Data min: " << in.scans.data.minCoeff() << "\n";
     f << "-Data max: " << in.scans.data.maxCoeff() << "\n";
     f << "-Data mean: " << in.scans.data.mean() << "\n";
-    //f << "Eigenvalues: ";
-    //for (Eigen::Index i=0; i<in.evals.data.size(); i++) {
-        //f << in.evals.data(i) << ", ";
-    //}
 
     f.close();
 

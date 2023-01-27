@@ -184,6 +184,7 @@ timestream: # timestream reduction parameters
       enabled: false # enable or disable flux calibration (ignored for beammapping)
       extinction_model: am_q25 # model to use for tau calculation (am_q25, am_q50, am_q75)
     flagging: # controls flagging before cleaning
+      delta_f_min_Hz: 60.e3 # lower limit on frequency separation for flagging tones
       lower_weight_factor: 0.0 # flag detectors below this stddev limit (ignored if 0)
       upper_weight_factor: 0.0 # flag detectors above this stddev limit (ignored if 0)
     output:
