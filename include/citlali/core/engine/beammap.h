@@ -293,6 +293,8 @@ void Beammap::setup() {
 
     // is the detector rotated
     calib.apt_meta["is_derotated"] = beammap_derotate;
+    // is the detector rotated
+    calib.apt_meta["reference_detector_subtracted"] = beammap_subtract_reference;
     // reference detector
     calib.apt_meta["reference_det"] = beammap_reference_det;
 
