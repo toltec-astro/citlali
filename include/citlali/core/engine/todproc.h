@@ -778,6 +778,7 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb(std::vector<map_extent_t> &ma
     // min/max rows and cols
     double min_row, max_row, min_col, max_col;
 
+    // set mins and maxes to first element
     min_row = map_coords.at(0).front()(0);
     max_row = map_coords.at(0).front()(map_coords.at(0).front().size() - 1);
 
@@ -819,8 +820,10 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb(std::vector<map_extent_t> &ma
         auto max_pix = ceil(abs(max_dim/engine().cmb.pixel_size_rad));
 
         max_pix = std::max(min_pix, max_pix);
+        // make sure its even
         auto ndim = 2*max_pix + 4;
 
+        // vector to store tangent plane coordinates
         Eigen::VectorXd dim_vec = (Eigen::VectorXd::LinSpaced(ndim,0,ndim-1).array() -
                                    (ndim)/2.)*engine().cmb.pixel_size_rad;
 
@@ -848,10 +851,12 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb(std::vector<map_extent_t> &ma
     double ref_pix_cols = n_cols/2;
     double ref_pix_rows = n_rows/2;
 
+    // add 0.5 if even
     if ((int)ref_pix_cols == ref_pix_cols) {
         ref_pix_cols += 0.5;
     }
 
+    // add 0.5 if even
     if ((int)ref_pix_rows == ref_pix_rows) {
         ref_pix_rows += 0.5;
     }
@@ -910,10 +915,11 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
     double ref_pix_cols = engine().omb.n_cols/2;
     double ref_pix_rows = engine().omb.n_rows/2;
 
+    // add 0.5 if even
     if ((int)ref_pix_cols == ref_pix_cols) {
         ref_pix_cols += 0.5;
     }
-
+    // add 0.5 if even
     if ((int)ref_pix_rows == ref_pix_rows) {
         ref_pix_rows += 0.5;
     }
@@ -945,8 +951,9 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &map_extents, std::vector<map_coord_t> &map_coords) {
 
+    // only run if manual map sizes have not been input
     if ((engine().omb.wcs.naxis[0] <= 0) || (engine().omb.wcs.naxis[1] <= 0)) {
-
+        // matrix to store size limits
         Eigen::MatrixXd det_lat_limits, det_lon_limits, map_limits;
         det_lat_limits.setZero(engine().calib.n_dets,2);
         det_lon_limits.setZero(engine().calib.n_dets,2);
@@ -956,6 +963,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
         std::vector<int> scan_in_vec, scan_out_vec;
         std::vector<int> det_in_vec, det_out_vec;
 
+        // placeholder vectors for grppi loop
         det_in_vec.resize(engine().calib.n_dets);
         std::iota(det_in_vec.begin(), det_in_vec.end(), 0);
         det_out_vec.resize(engine().calib.n_dets);
@@ -981,6 +989,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
                     el_off = engine().calib.apt["y_t"](j);
                 }
 
+                // get pointing
                 auto [lat, lon] = engine_utils::calc_det_pointing(tel_data, az_off, el_off,
                                                                   engine().telescope.pixel_axes,
                                                                   engine().pointing_offsets_arcsec);
@@ -1014,8 +1023,10 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
             auto max_pix = ceil(abs(max_dim/engine().omb.pixel_size_rad));
 
             max_pix = std::max(min_pix, max_pix);
+            // make sure its even
             auto ndim = 2*max_pix + 4;
 
+            // vector for tangent plane coordinates
             Eigen::VectorXd dim_vec = (Eigen::VectorXd::LinSpaced(ndim,0,ndim-1).array() -
                                        (ndim)/2.)*engine().omb.pixel_size_rad;
 
@@ -1034,9 +1045,11 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
     }
 
     else {
+        // set rows and cols to manually specified sizes
         auto n_rows = engine().omb.wcs.naxis[1];
         auto n_cols = engine().omb.wcs.naxis[0];
 
+        // vectors to store tangent plane coordinates of each pixel
         Eigen::VectorXd rows_tan_vec = (Eigen::VectorXd::LinSpaced(n_rows,0,n_rows-1).array() -
                                         (n_rows)/2.)*engine().omb.pixel_size_rad;
         Eigen::VectorXd cols_tan_vec = (Eigen::VectorXd::LinSpaced(n_cols,0,n_cols-1).array() -
@@ -1044,6 +1057,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
         map_extent_t map_extent = {n_rows, n_cols};
         map_coord_t map_coord = {rows_tan_vec, cols_tan_vec};
 
+        // push back map sizes and coordinates
         map_extents.push_back(map_extent);
         map_coords.push_back(map_coord);
     }    
@@ -1077,6 +1091,7 @@ void TimeOrderedDataProc<EngineType>::coadd() {
 
         // coverage +=coverage
         if (!engine().cmb.coverage.empty()) {
+            // coverage +=coverage
             engine().cmb.coverage.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols) =
                 engine().cmb.coverage.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols).array() +
                 engine().omb.coverage.at(i).array();

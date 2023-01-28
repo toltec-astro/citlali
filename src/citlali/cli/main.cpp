@@ -442,19 +442,45 @@ int run(const rc_t &rc) {
 
                     // create raw obsnum directory
                     SPDLOG_DEBUG("creating obsnum raw directory");
-                    fs::create_directories(todproc.engine().obsnum_dir_name + "/raw/");
+                    fs::create_directories(todproc.engine().obsnum_dir_name + "raw/");
 
                     // create filtered obsnum directory
                     if (!todproc.engine().run_coadd) {
                         if (todproc.engine().run_map_filter) {
                             SPDLOG_DEBUG("creating obsnum filtered directory");
-                            fs::create_directories(todproc.engine().obsnum_dir_name + "/filtered/");
+                            fs::create_directories(todproc.engine().obsnum_dir_name + "filtered/");
                         }
                     }
                     // create log directory for verbose mode
                     if (todproc.engine().verbose_mode) {
                         SPDLOG_DEBUG("creating obsnum logs directory");
-                        fs::create_directories(todproc.engine().obsnum_dir_name + "/logs/");
+                        fs::create_directories(todproc.engine().obsnum_dir_name + "logs/");
+
+                        /*auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+                        auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(todproc.engine().obsnum_dir_name +
+                                                                                                 "logs/test.txt", true);
+                        spdlog::logger logger("multi_sink", {console_sink, file_sink});
+                        spdlog::register_logger(logger);
+
+                        spdlog::set_default_logger(spdlog::get("multi_sink"));*/
+
+                        std::vector<spdlog::sink_ptr> sinks;
+
+                        // console sink
+                        auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+                        console_sink->set_level(spdlog::level::debug);
+                        sinks.push_back(console_sink);
+
+                        auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(todproc.engine().obsnum_dir_name +
+                                                                                                 "logs/test.txt", true);
+                        console_sink->set_level(spdlog::level::debug);
+
+                        sinks.push_back(file_sink);
+
+                        auto daq_logger = std::make_shared<spdlog::logger>("logger", begin(sinks), end(sinks));
+                        spdlog::register_logger(daq_logger);
+                        spdlog::set_default_logger(daq_logger);
+
                     }
 
                     // get hwp if polarized reduction is requested

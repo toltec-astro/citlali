@@ -1130,6 +1130,8 @@ void Engine::print_summary() {
 template <TCDataKind tc_t>
 void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
 
+    SPDLOG_DEBUG("writing summary files for chunk {}",in.index.data);
+
     std::string filename = "chunk_summary_" + std::to_string(in.index.data);
 
     // write summary log file
@@ -1277,6 +1279,8 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
 
 template <typename map_buffer_t>
 void Engine::write_map_summary(map_buffer_t &mb) {
+
+    SPDLOG_DEBUG("writing map summary files");
 
     std::string filename = "map_summary";
     std::ofstream f;

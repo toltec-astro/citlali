@@ -26,9 +26,9 @@ public:
     Eigen::VectorXd flux_limits, fwhm_limits;
 
     // flux lower limit factor
-    double flux_low = 0.75;
+    double flux_low = 0.1;
     // flux upper limit factor
-    double flux_high = 1.5;
+    double flux_high = 2.0;
 
     // fwhm lower limit factor
     double fwhm_low = 0.1;
@@ -36,9 +36,9 @@ public:
     double fwhm_high = 2.0;
 
     //lower limit on rotation angle
-    double ang_low = -pi/2;
+    double angle_low = -pi/2;
     // upper limit on rotation angle
-    double ang_high = pi/2;
+    double angle_high = pi/2;
 
     template <typename Model, typename Derived>
     auto ceres_fit(const Model &,
@@ -51,7 +51,6 @@ public:
     template <mapFitter::FitMode fit_mode, typename Derived>
     auto fit_to_gaussian(Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &,
                          double);
-
 };
 
 template <typename Model, typename Derived>
@@ -63,7 +62,7 @@ auto mapFitter::ceres_fit(const Model &model,
                           const Eigen::DenseBase<Derived> &limits) {
 
     // prevent ceres from writing out stderr
-    freopen("/dev/null", "w", stderr);
+    //freopen("/dev/null", "w", stderr);
 
     // fitter
     using Fitter = CeresAutoDiffFitter<Model>;
@@ -87,9 +86,10 @@ auto mapFitter::ceres_fit(const Model &model,
 
     // including CauchyLoss(0.5) leads to large covariances.
     problem->AddResidualBlock(cost_function, nullptr, params.data());
+    //problem->AddResidualBlock(cost_function, new ceres::CauchyLoss(0.5), params.data());
 
     // set limits
-    for (int i = 0; i < limits.rows(); ++i) {
+    for (int i=0; i<limits.rows(); ++i) {
         problem->SetParameterLowerBound(params.data(), i, limits(i,0));
         problem->SetParameterUpperBound(params.data(), i, limits(i,1));
     }
@@ -121,15 +121,13 @@ auto mapFitter::ceres_fit(const Model &model,
 
     // get uncertainty if solution is usable
     if (summary.IsSolutionUsable()) {
-        // for storing covariance matrix
-        Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> covariance_matrix;
-
         // set covariance options
         Covariance::Options covariance_options;
         // EIGEN_SPARSE and DENSE_SVD are the slower, but more accurate options
         covariance_options.sparse_linear_algebra_library_type = ceres::SparseLinearAlgebraLibraryType::EIGEN_SPARSE;
         covariance_options.algorithm_type = ceres::CovarianceAlgorithmType::DENSE_SVD;
-        //coviariance_options.
+        covariance_options.null_space_rank = -1;
+        //covariance_options.min_reciprocal_condition_number = 1e-14;
         Covariance covariance(covariance_options);
 
         std::vector<std::pair<const double*, const double*>> covariance_blocks;
@@ -138,6 +136,8 @@ auto mapFitter::ceres_fit(const Model &model,
 
         // if covariance calculation suceeded
         if (covariance_result) {
+            // for storing covariance matrix
+            Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> covariance_matrix;
             covariance_matrix.resize(params.size(),params.size());
             covariance.GetCovarianceBlock(params.data(),params.data(),covariance_matrix.data());
             // calculate uncertainty
@@ -217,27 +217,12 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     auto signal_fit_region = signal.block(fit_region_lower_row, fit_region_lower_col,
                                                 fit_region_n_rows, fit_region_n_cols);
 
-    // get init flux of signal map
+    // get init flux of signal map within the fitting region
     init_flux = signal_fit_region(static_cast<int>(init_row), static_cast<int>(init_col));
 
+    // find the positions of the peak flux in the total signal map
     init_row = init_row + fit_region_lower_row;
     init_col = init_col + fit_region_lower_col;
-
-    // start at center of map
-    /*if constexpr (fit_mode == centerValue) {
-        init_row = signal.rows()/2;
-        init_col = signal.cols()/2;
-
-        init_flux = signal(static_cast<int>(init_row), static_cast<int>(init_col));
-    }
-
-    // start at highest S/N value
-    else if constexpr (fit_mode == peakValue) {
-        auto sig2noise = signal.derived().array()*sqrt(weight.derived().array());
-        sig2noise.maxCoeff(&init_row, &init_col);
-
-        init_flux = signal(static_cast<int>(init_row), static_cast<int>(init_col));
-    }*/
 
     // initial parameter guesses
     init_params << init_flux, init_col, init_row, init_sigma, init_sigma, 0;
@@ -271,11 +256,11 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
 
     // set lower limits of fitting parameters
     limits.col(0) << flux_low*init_flux, lower_col, lower_row, fwhm_low*init_sigma,
-        fwhm_low*init_sigma, ang_low;
+        fwhm_low*init_sigma, angle_low;
 
     // set upper limits of fitting parameters
     limits.col(1) << flux_high*init_flux, upper_col, upper_row, fwhm_high*init_sigma,
-        fwhm_high*init_sigma, ang_high;
+        fwhm_high*init_sigma, angle_high;
 
     Eigen::VectorXd x, y;
 
@@ -288,7 +273,7 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     // get meshgrid
     auto xy = g.meshgrid(x, y);
 
-    auto map_sigma = engine_utils::calc_std_dev(signal_fit_region);
+    auto map_sigma = engine_utils::calc_std_dev(signal);
 
     // standard deviation of signal map
     Eigen::MatrixXd sigma(weight.rows(), weight.cols());
@@ -296,7 +281,8 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     for (Eigen::Index i=0; i<weight.rows(); i++) {
         for (Eigen::Index j=0; j<weight.cols(); j++) {
             if (weight(i,j)!=0) {
-                sigma(i,j) = map_sigma;//1./sqrt(weight(i,j));
+                sigma(i,j) = map_sigma;
+                //sigma(i,j) = 1./sqrt(weight(i,j));
             }
             else {
                 sigma(i,j) = 0;
@@ -308,6 +294,7 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     Eigen::MatrixXd _signal = signal.block(lower_row, lower_col, n_rows, n_cols);
     Eigen::MatrixXd _sigma = sigma.block(lower_row, lower_col, n_rows, n_cols);
 
+    // do the fit and return
     return ceres_fit(g, init_params, xy, _signal, _sigma, limits);
 }
 

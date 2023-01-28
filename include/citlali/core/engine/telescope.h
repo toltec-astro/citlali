@@ -12,12 +12,12 @@ namespace engine {
 class Telescope {
 public:
     // mapping pattern
-    char obs_pgm_char [128];
+    char obs_pgm_char [128] = "";;
     // source name
-    char source_name_char [32];
+    char source_name_char [128] = "";
 
     // simulation jobkey
-    char sim_job_key [128];
+    char sim_job_key [128] = "";
     // is this a simulation?
     bool sim_obs;
 

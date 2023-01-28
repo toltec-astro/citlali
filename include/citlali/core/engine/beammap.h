@@ -178,9 +178,9 @@ void Beammap::setup() {
     calib.apt_meta["obsnum"] = obsnum;
 
     // add source name
-    //calib.apt_meta["Source"] = telescope.source_name;
+    calib.apt_meta["Source"] = telescope.source_name;
 
-    // add source name
+    // add date
     calib.apt_meta["Date"] = engine_utils::current_date_time();
 
     // detector id

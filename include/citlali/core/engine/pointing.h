@@ -138,7 +138,13 @@ void Pointing::setup() {
     /* populate ppt meta information */
 
     // add obsnum to meta data
-    calib.apt_meta["obsnum"] = obsnum;
+    ppt_meta["obsnum"] = obsnum;
+
+    // add source name
+    ppt_meta["Source"] = telescope.source_name;
+
+    // add date
+    ppt_meta["Date"] = engine_utils::current_date_time();
 
     ppt_meta["array"].push_back("units: N/A");
     ppt_meta["array"].push_back("array");
@@ -365,6 +371,7 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         omb.calc_map_hist();
 
         // fit maps
+        SPDLOG_INFO("fitting maps");
         for (Eigen::Index i=0; i<n_maps; i++) {
             auto array = maps_to_arrays(i);
             double init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
