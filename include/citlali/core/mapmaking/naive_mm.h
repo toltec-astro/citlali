@@ -5,12 +5,12 @@
 
 #include <thread>
 
+#include <citlali/core/timestream/timestream.h>
+
 #include <citlali/core/mapmaking/map.h>
 #include <citlali/core/utils/pointing.h>
 
 using timestream::TCData;
-using timestream::RTCProc;
-using timestream::PTCProc;
 
 // selects the type of TCData
 using timestream::TCDataKind;

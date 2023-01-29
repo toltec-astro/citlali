@@ -297,8 +297,15 @@ auto Pointing::run() {
             // populate maps
             if (run_mapmaking) {
                 SPDLOG_INFO("populating maps");
-                mapmaking::populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
-                                               redu_type, calib.apt, pointing_offsets_arcsec, telescope.d_fsmp, run_noise);
+                if (map_method=="naive") {
+                    mapmaking::populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
+                                                   redu_type, calib.apt, pointing_offsets_arcsec, telescope.d_fsmp, run_noise);
+                }
+                else if (map_method=="jinc") {
+                    mapmaking::populate_maps_jinc(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
+                                                  redu_type, calib.apt, pointing_offsets_arcsec, telescope.d_fsmp, run_noise,
+                                                  jinc_r_max, jinc_a, jinc_b, jinc_c);
+                }
             }
         }
 

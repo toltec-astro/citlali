@@ -196,6 +196,9 @@ public:
     // number of maps
     Eigen::Index n_maps;
 
+    // jinc mapmaking params
+    double jinc_r_max, jinc_a, jinc_b, jinc_c;
+
     // mapping from index in map vector to array index
     Eigen::VectorXI maps_to_arrays;
 
@@ -489,7 +492,16 @@ void Engine::get_citlali_config(CT &config) {
 
     rtcproc.kernel.map_grouping = omb.map_grouping;
 
+    // map_method
     get_config_value(config, map_method, missing_keys, invalid_keys, std::tuple{"mapmaking","method"},{"naive","jinc"});
+
+    if (map_method=="jinc") {
+        get_config_value(config, jinc_r_max, missing_keys, invalid_keys, std::tuple{"mapmaking","jinc_filter","r_max"},{},{0});
+        get_config_value(config, jinc_a, missing_keys, invalid_keys, std::tuple{"mapmaking","jinc_filter","a"});
+        get_config_value(config, jinc_b, missing_keys, invalid_keys, std::tuple{"mapmaking","jinc_filter","b"});
+        get_config_value(config, jinc_c, missing_keys, invalid_keys, std::tuple{"mapmaking","jinc_filter","c"});
+    }
+
     // histogram
     get_config_value(config, omb.hist_n_bins, missing_keys, invalid_keys, std::tuple{"post_processing","map_histogram_bins"},{},{0});
     cmb.hist_n_bins = omb.hist_n_bins;

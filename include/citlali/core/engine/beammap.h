@@ -488,10 +488,20 @@ auto Beammap::run_loop() {
 
             // populate maps
             if (run_mapmaking) {
-                mapmaking::populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
-                                               ptcs[i].det_indices.data, telescope.pixel_axes,
-                                               redu_type, calib.apt, pointing_offsets_arcsec,
-                                               telescope.d_fsmp, run_noise);
+                if (map_method=="naive") {
+                    mapmaking::populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
+                                                   ptcs[i].det_indices.data, telescope.pixel_axes,
+                                                   redu_type, calib.apt, pointing_offsets_arcsec,
+                                                   telescope.d_fsmp, run_noise);
+                }
+
+                else if (map_method=="jinc") {
+                    mapmaking::populate_maps_jinc(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
+                                                  ptcs[i].det_indices.data, telescope.pixel_axes,
+                                                  redu_type, calib.apt, pointing_offsets_arcsec,
+                                                  telescope.d_fsmp, run_noise, jinc_r_max, jinc_a,
+                                                  jinc_b, jinc_c);
+                }
             }
             return 0;
         });

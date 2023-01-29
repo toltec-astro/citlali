@@ -140,6 +140,11 @@ mapmaking: # mapmaking parameters
   x_size_pix: 0 # manually specify map columns
   y_size_pix: 0 # manually specify map rows
   coverage_cut: 0.0 # coverage cut value for psd, hist, and coverage_bool maps
+  jinc_filter: # parameters to control jinc filter shape
+    r_max: 3.0 # max radius to apply filter to (max radius = r_max x lambda/diameter)
+    a: 1.1 # shape parameter
+    b: 4.75 # shape parameter
+    c: 2.0 # shape parameter
 runtime: # parameters to control how citlali runs
   verbose: true # extra output in terminal.  adds files to obsnum/logs/ directory.
   meta:

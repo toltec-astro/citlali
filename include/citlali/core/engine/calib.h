@@ -86,10 +86,10 @@ public:
         {"converge_iter"},
         {"flag"},
         {"sig2noise"},
-        {"x_t_raw"},
-        {"y_t_raw"},
-        {"x_t_derot"},
-        {"y_t_derot"},
+        //{"x_t_raw"},
+        //{"y_t_raw"},
+        //{"x_t_derot"},
+        //{"y_t_derot"},
     };
 
     std::map<std::string,std::string> apt_header_units = {
