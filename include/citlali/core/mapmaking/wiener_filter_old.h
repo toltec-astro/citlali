@@ -50,7 +50,7 @@ public:
     void make_symmetric_template(MB &mb, const int, CD &);
 
     template<class MB, class CD>
-    void make_template(MB &mb, CD &calib_data, const double gaussian_template_fwhm_rad, const int map_num) {
+    void make_template(MB &mb, CD &calib_data, const double gaussian_template_fwhm_rad, const int map_index) {
         // make sure filtered maps have even dimensions
         nr = 2*(mb.n_rows/2);
         nc = 2*(mb.n_cols/2);
@@ -71,17 +71,17 @@ public:
         }
 
         else {
-            make_symmetric_template(mb, map_num, calib_data);
+            make_symmetric_template(mb, map_index, calib_data);
         }
     }
 
     template<class MB>
-    void calc_rr(MB &mb, const int map_num) {
+    void calc_rr(MB &mb, const int map_index) {
         if (uniform_weight) {
             rr = Eigen::MatrixXd::Ones(nr, nc);
         }
         else {
-            rr = sqrt(mb.weight.at(map_num).array());
+            rr = sqrt(mb.weight.at(map_index).array());
         }
     }
 
@@ -91,11 +91,11 @@ public:
     void calc_denominator();
 
     template<class MB>
-    void run_filter(MB &mb, const int map_num) {
+    void run_filter(MB &mb, const int map_index) {
         SPDLOG_DEBUG("calculating rr");
-        calc_rr(mb, map_num);
+        calc_rr(mb, map_index);
         SPDLOG_DEBUG("calculating vvq");
-        calc_vvq(mb, map_num);
+        calc_vvq(mb, map_index);
         SPDLOG_DEBUG("calculating denominator");
         calc_denominator();
         SPDLOG_DEBUG("calculating numerator");
@@ -103,47 +103,47 @@ public:
     }
 
     template<class MB>
-    void filter_maps(MB &mb, const int map_num) {
+    void filter_maps(MB &mb, const int map_index) {
         SPDLOG_INFO("filtering maps");
         if (run_kernel) {
             SPDLOG_INFO("filtering kernel");
-            filtered_map = mb.kernel.at(map_num);
+            filtered_map = mb.kernel.at(map_index);
             uniform_weight = true;
-            run_filter(mb, map_num);
+            run_filter(mb, map_index);
 
             for (int i=0; i<nc; i++) {
                 for (int j=0; j<nr; j++) {
                     if (denom(j,i) != 0.0) {
-                        mb.kernel.at(map_num)(j,i)=nume(j,i)/denom(j,i);
+                        mb.kernel.at(map_index)(j,i)=nume(j,i)/denom(j,i);
                     }
                     else {
-                        mb.kernel.at(map_num)(j,i)= 0.0;
+                        mb.kernel.at(map_index)(j,i)= 0.0;
                     }
                 }
             }
         }
 
         SPDLOG_INFO("filtering signal");
-        filtered_map = mb.signal.at(map_num);
+        filtered_map = mb.signal.at(map_index);
         uniform_weight = false;
-        run_filter(mb, map_num);
+        run_filter(mb, map_index);
 
         for (int i=0; i<nc; i++) {
             for (int j=0; j<nr; j ++) {
                 if (denom(j,i) != 0.0) {
-                    mb.signal.at(map_num)(j,i) = nume(j,i)/denom(j,i);
+                    mb.signal.at(map_index)(j,i) = nume(j,i)/denom(j,i);
                 }
                 else {
-                    mb.signal.at(map_num)(j,i)= 0.0;
+                    mb.signal.at(map_index)(j,i)= 0.0;
                 }
             }
         }
-        mb.weight.at(map_num) = denom;
+        mb.weight.at(map_index) = denom;
     }
 
     template<class MB>
-    void filter_noise(MB &mb, const int map_num, const int noise_num) {
-        Eigen::Tensor<double,2> out = mb.noise.at(map_num).chip(noise_num,2);
+    void filter_noise(MB &mb, const int map_index, const int noise_num) {
+        Eigen::Tensor<double,2> out = mb.noise.at(map_index).chip(noise_num,2);
         filtered_map = Eigen::Map<Eigen::MatrixXd>(out.data(),out.dimension(0),out.dimension(1));
         calc_numerator();
 
@@ -162,7 +162,7 @@ public:
         }
 
         Eigen::TensorMap<Eigen::Tensor<double, 2>> in_tensor(ratio.data(), ratio.rows(), ratio.cols());
-        mb.noise.at(map_num).chip(noise_num,2) = in_tensor;
+        mb.noise.at(map_index).chip(noise_num,2) = in_tensor;
     }
 };
 
@@ -198,17 +198,17 @@ void WienerFilter::make_gaussian_template(MB &mb, const double gaussian_template
 }
 
 template<class MB, class CD>
-void WienerFilter::make_symmetric_template(MB &mb, const int map_num, CD &calib_data) {
+void WienerFilter::make_symmetric_template(MB &mb, const int map_index, CD &calib_data) {
     // collect what we need
     Eigen::VectorXd rgcut = mb.rows_tan_vec;
     Eigen::VectorXd cgcut = mb.cols_tan_vec;
-    Eigen::MatrixXd tem = mb.kernel.at(map_num);
+    Eigen::MatrixXd tem = mb.kernel.at(map_index);
 
-    // set nparams for fit
-    Eigen::Index nparams = 6;
+    // set n_params for fit
+    Eigen::Index n_params = 6;
 
     auto [det_params, det_perror, good_fit] =
-        map_fitter.fit_to_gaussian<engine_utils::mapFitter::peakValue>(mb.signal[map_num], mb.weight[map_num], init_fwhm);
+        map_fitter.fit_to_gaussian<engine_utils::mapFitter::pointing>(mb.signal[map_index], mb.weight[map_index], init_fwhm);
 
     det_params(1) = mb.pixel_size_rad*(det_params(1) - (nc)/2);
     det_params(2) = mb.pixel_size_rad*(det_params(2) - (nr)/2);
@@ -230,21 +230,21 @@ void WienerFilter::make_symmetric_template(MB &mb, const int map_num, CD &calib_
     auto mindist = dist.minCoeff(&rcind,&ccind);
 
     // create new bins based on diffr
-    int nbins = rgcut(nr-1)/diffr;
-    Eigen::VectorXd binlow(nbins);
-    for(int i=0;i<nbins;i++) {
-        binlow(i) = (double) (i*diffr);
+    int n_bins = rgcut(nr-1)/diffr;
+    Eigen::VectorXd bin_low(n_bins);
+    for(int i=0;i<n_bins;i++) {
+        bin_low(i) = (double) (i*diffr);
     }
 
-    Eigen::VectorXd kone(nbins-1);
+    Eigen::VectorXd kone(n_bins-1);
     kone.setZero();
-    Eigen::VectorXd done(nbins-1);
+    Eigen::VectorXd done(n_bins-1);
     done.setZero();
-    for (int i=0;i<nbins-1;i++) {
+    for (int i=0; i<n_bins-1; i++) {
         int c=0;
         for (int j=0;j<nc;j++) {
-            for (int k=0;k<nr;k++) {
-                if (dist(k,j) >= binlow(i) && dist(k,j) < binlow(i+1)){
+            for (int k=0; k<nr; k++) {
+                if (dist(k,j) >= bin_low(i) && dist(k,j) < bin_low(i+1)){
                     c++;
                     kone(i) += tem(k,j);
                     done(i) += dist(k,j);
@@ -258,6 +258,7 @@ void WienerFilter::make_symmetric_template(MB &mb, const int map_num, CD &calib_
     // now spline interpolate to generate new template array
     filter_template.resize(nr,nc);
 
+    // create spline function
     engine_utils::SplineFunction s(done, kone);
 
     for (Eigen::Index i=0; i<nc; i++) {
@@ -281,10 +282,10 @@ void WienerFilter::make_symmetric_template(MB &mb, const int map_num, CD &calib_
 }
 
 template <class MB>
-void WienerFilter::calc_vvq(MB &mb, const int map_num) {
+void WienerFilter::calc_vvq(MB &mb, const int map_index) {
     // psd and psd freq vectors
-    Eigen::VectorXd qf = mb.noise_psds.at(map_num);
-    Eigen::VectorXd hp = mb.noise_psd_freqs.at(map_num);
+    Eigen::VectorXd qf = mb.noise_psds.at(map_index);
+    Eigen::VectorXd hp = mb.noise_psd_freqs.at(map_index);
 
     // size of psd and psd freq vectors
     Eigen::Index npsd = hp.size();
@@ -304,17 +305,29 @@ void WienerFilter::calc_vvq(MB &mb, const int map_num) {
         }
       //flatten the response above the lowpass break
       int count=0;
-      for(int i=0;i<npsd;i++) if(qf[i] <= 0.8*qfbreak) count++;
-      if(count > 0){
-        for(int i=0;i<npsd;i++){
-          if(qfbreak > 0){
-            if(qf[i] <= 0.8*qfbreak) hpbreak = hp[i];
-            if(qf[i] > 0.8*qfbreak) hp[i] = hpbreak;
+      for (int i=0; i<npsd; i++) {
+          if (qf[i] <= 0.8*qfbreak) {
+              count++;
           }
-        }
+      }
+      if (count > 0) {
+          for (int i=0; i<npsd; i++) {
+              if (qfbreak > 0) {
+                  if (qf[i] <= 0.8*qfbreak) {
+                      hpbreak = hp[i];
+                  }
+                  if (qf[i] > 0.8*qfbreak) {
+                      hp[i] = hpbreak;
+                  }
+              }
+          }
       }
       //flatten highpass response if present
-      if(maxhpind > 0) for(int i=0;i<maxhpind;i++) hp[i] = maxhp;
+      if (maxhpind > 0) {
+          for (int i=0; i<maxhpind; i++) {
+              hp[i] = maxhp;
+          }
+      }
 
     // modify the psd array to take out lowpassing+highpassing
     /*Eigen::Index maxhpind;
@@ -367,11 +380,14 @@ void WienerFilter::calc_vvq(MB &mb, const int map_num) {
     /*shift qc */
     //qc = Eigen::VectorXd::LinSpaced(nc, -(nc - 1) / 2, (nc - 1) / 2) * diffqc;
 
-    for(int i=0;i<nr;i++) qr[i] = diffqr*(i-(nr-1)/2);
-      for(int i=0;i<nc;i++) qc[i] = diffqc*(i-(nc-1)/2);
+    for (int i=0; i<nr; i++) {
+        qr[i] = diffqr*(i-(nr-1)/2);
+    }
+    for (int i=0; i<nc; i++) {
+        qc[i] = diffqc*(i-(nc-1)/2);
+    }
 
-
-      std::vector<Eigen::Index> shift_1 = {-(nr-1)/2};
+    std::vector<Eigen::Index> shift_1 = {-(nr-1)/2};
     engine_utils::shift_1D(qr, shift_1);
       std::vector<Eigen::Index> shift_2 = {-(nc-1)/2};
     engine_utils::shift_1D(qc, shift_2);

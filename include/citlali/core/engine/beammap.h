@@ -520,7 +520,7 @@ auto Beammap::run_loop() {
                     // get initial guess fwhm from theoretical fwhms for the arrays
                     auto init_fwhm = toltec_io.array_fwhm_arcsec[array_index]*ASEC_TO_RAD/omb.pixel_size_rad;
                     auto [det_params, det_perror, good_fit] =
-                        map_fitter.fit_to_gaussian<engine_utils::mapFitter::peakValue>(omb.signal[i], omb.weight[i], init_fwhm);
+                        map_fitter.fit_to_gaussian<engine_utils::mapFitter::beammap>(omb.signal[i], omb.weight[i], init_fwhm);
 
                     params.row(i) = det_params;
                     perrors.row(i) = det_perror;
@@ -532,10 +532,9 @@ auto Beammap::run_loop() {
                     perrors.row(i) = perror0.row(i);
                 }
 
-                return 0;}
-            );
+                return 0;
+            });
 
-            SPDLOG_INFO("max good fits {} {}", good_fits.maxCoeff(), good_fits.minCoeff());
             SPDLOG_INFO("number of good beammap fits {}/{}", good_fits.cast<double>().sum(), n_maps);
         }
 

@@ -13,9 +13,8 @@ namespace engine_utils {
 class mapFitter {
 public:
     enum FitMode {
-        peakValue = 0,
-        centerValue = 1,
-        aptTable = 2,
+        pointing = 0,
+        beammap = 1,
         };
 
     // box around source fit
@@ -281,8 +280,14 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     for (Eigen::Index i=0; i<weight.rows(); i++) {
         for (Eigen::Index j=0; j<weight.cols(); j++) {
             if (weight(i,j)!=0) {
-                sigma(i,j) = map_sigma;
-                //sigma(i,j) = 1./sqrt(weight(i,j));
+                // use map sigma for beammaps
+                if constexpr (fit_mode == FitMode::beammap) {
+                    sigma(i,j) = map_sigma;
+                }
+                // use weights for pointing
+                else if constexpr (fit_mode == FitMode::pointing) {
+                    sigma(i,j) = 1./sqrt(weight(i,j));
+                }
             }
             else {
                 sigma(i,j) = 0;

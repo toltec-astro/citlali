@@ -378,13 +378,21 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
         // fit maps
         SPDLOG_INFO("fitting maps");
-        for (Eigen::Index i=0; i<n_maps; i++) {
+        // placeholder vectors for grppi map
+        std::vector<int> map_in_vec, map_out_vec;
+
+        map_in_vec.resize(n_maps);
+        std::iota(map_in_vec.begin(), map_in_vec.end(), 0);
+        map_out_vec.resize(n_maps);
+
+        grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
             auto array = maps_to_arrays(i);
+            // init fwhm in pixels
             double init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
-            auto [det_params, det_perror, good_fit] =
-                map_fitter.fit_to_gaussian<engine_utils::mapFitter::peakValue>(omb.signal[i], omb.weight[i], init_fwhm);
-            params.row(i) = det_params;
-            perrors.row(i) = det_perror;
+            auto [map_params, map_perror, good_fit] =
+                map_fitter.fit_to_gaussian<engine_utils::mapFitter::pointing>(omb.signal[i], omb.weight[i], init_fwhm);
+            params.row(i) = map_params;
+            perrors.row(i) = map_perror;
 
             if (good_fit) {
                 // rescale fit params from pixel to on-sky units
@@ -399,7 +407,8 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                 perrors(i,3) = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(perrors(i,3));
                 perrors(i,4) = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(perrors(i,4));
             }
-        }
+            return 0;
+        });
     }
 }
 

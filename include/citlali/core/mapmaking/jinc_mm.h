@@ -143,6 +143,10 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                                 if (radius<r_max*l_d[map_index]) {
                                     // jinc weighting function
                                     auto jinc_weight = jinc_func(radius,a,b,c,r_max,l_d[map_index]);
+
+                                    if (jinc_weight!=jinc_weight) {
+                                        SPDLOG_ERROR("nan r {} c {}",r,c);
+                                    }
                                     //SPDLOG_INFO("jinc_weight {}", jinc_weight);
 
                                     // populate signal map
