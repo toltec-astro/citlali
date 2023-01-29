@@ -263,7 +263,7 @@ auto Pointing::run() {
             ptcproc.remove_flagged_dets(ptcdata, calib.apt, det_indices);
 
             // remove outliers
-            auto calib_scan = rtcproc.remove_bad_dets_nw(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
+            auto calib_scan = rtcproc.remove_bad_dets(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
 
             // remove duplicate tones
             calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
@@ -275,7 +275,7 @@ auto Pointing::run() {
             }
 
             // remove outliers after clean
-            calib_scan = ptcproc.remove_bad_dets_nw(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
+            calib_scan = ptcproc.remove_bad_dets(ptcdata, calib_scan, det_indices, nw_indices, array_indices, redu_type, map_grouping);
 
             // calculate weights
             SPDLOG_INFO("calculating weights");
@@ -323,7 +323,6 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     grppi::pipeline(tula::grppi_utils::dyn_ex(parallel_policy),
         [&]() -> std::optional<std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
                                           std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>> {
-
             // variable to hold current scan
             static auto scan = 0;
             while (scan < telescope.scan_indices.cols()) {
@@ -425,8 +424,8 @@ void Pointing::output() {
 
         // loop through params and add arrays
         for (const auto &stokes_param: rtcproc.polarization.stokes_params) {
-            for (Eigen::Index i=0; i<calib.arrays.size(); i++) {
-                ppt_table(i,0) = calib.arrays(i);
+            for (Eigen::Index i=0; i<n_maps; i++) {
+                ppt_table(i,0) = maps_to_arrays(i);
             }
         }
 
@@ -471,6 +470,17 @@ void Pointing::output() {
         tula::logging::progressbar pb(
             [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 100, "output progress ");
 
+        for (Eigen::Index i=0; i<f_io->size(); i++) {
+            // get the array for the given map
+            Eigen::Index map_index = maps_to_arrays(i);
+            // add primary hdu
+            add_phdu(f_io, mb, map_index);
+
+            if (!mb->noise.empty()) {
+                add_phdu(n_io, mb, map_index);
+            }
+        }
+
         Eigen::Index k = 0;
 
         for (Eigen::Index i=0; i<n_maps; i++) {
@@ -488,7 +498,6 @@ void Pointing::output() {
                         k = 0;
                     }
                 }
-
                 // get current hdu extension name
                 std::string extname = f_io->at(map_index).hdus.at(k)->name();
                 // see if this is a signal extension
@@ -506,22 +515,17 @@ void Pointing::output() {
                 // add ppt table
                 Eigen::Index j = 0;
                 for (auto const& key: ppt_header) {
-                    f_io->at(map_index).hdus.at(k)->addKey("POINTING." + key, ppt_table(i,j), key + " (" + ppt_header_units[key] + ")");
+                    if (ppt_table(i,j) == ppt_table(i,j) && !std::isinf(ppt_table(i,j))) {
+                        f_io->at(map_index).hdus.at(k)->addKey("POINTING." + key, ppt_table(i,j), key + " (" + ppt_header_units[key] + ")");
+                    }
+                    else {
+                        f_io->at(map_index).hdus.at(k)->addKey("POINTING." + key, 0, key + " (" + ppt_header_units[key] + ")");
+                    }
                     j++;
                 }
+                k++;
             }
         }
-
-        /*for (Eigen::Index i=0; i<f_io->size(); i++) {
-            // get the array for the given map
-            Eigen::Index map_index = maps_to_arrays(i);
-            // add primary hdu
-            add_phdu(f_io, mb, map_index);
-
-            if (!mb->noise.empty()) {
-                add_phdu(n_io, mb, map_index);
-            }
-        }*/
     }
 
     SPDLOG_INFO("files have been written to:");

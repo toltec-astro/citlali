@@ -452,9 +452,9 @@ void Engine::get_citlali_config(CT &config) {
     get_config_value(config, rtcproc.calibration.extinction_model, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk",
                                                                                                           "calibration","extinction_model"},
                                                                                                          {"am_q25","am_q50","am_q75"});
-
+    // setup atm model
     rtcproc.calibration.setup();
-
+    // for sensitivity fcf
     ptcproc.run_calibrate = rtcproc.run_calibrate;
 
     // override calibration if in beammap mode
@@ -477,7 +477,7 @@ void Engine::get_citlali_config(CT &config) {
 
     /* mapmaking */
     get_config_value(config, run_mapmaking, missing_keys, invalid_keys, std::tuple{"mapmaking","enabled"});
-    get_config_value(config, map_grouping, missing_keys, invalid_keys, std::tuple{"mapmaking","grouping"});
+    get_config_value(config, map_grouping, missing_keys, invalid_keys, std::tuple{"mapmaking","grouping"},{"auto","array","nw","detector"});
 
     // coverage cut
     get_config_value(config, omb.cov_cut, missing_keys, invalid_keys, std::tuple{"mapmaking","coverage_cut"});
@@ -489,15 +489,15 @@ void Engine::get_citlali_config(CT &config) {
 
     rtcproc.kernel.map_grouping = omb.map_grouping;
 
-    get_config_value(config, map_method, missing_keys, invalid_keys, std::tuple{"mapmaking","method"});
+    get_config_value(config, map_method, missing_keys, invalid_keys, std::tuple{"mapmaking","method"},{"naive","jinc"});
     // histogram
-    get_config_value(config, omb.hist_n_bins, missing_keys, invalid_keys, std::tuple{"post_processing","map_histogram_bins"});
+    get_config_value(config, omb.hist_n_bins, missing_keys, invalid_keys, std::tuple{"post_processing","map_histogram_bins"},{},{0});
     cmb.hist_n_bins = omb.hist_n_bins;
 
     /* wcs */
 
     // pixel size
-    get_config_value(config, omb.pixel_size_rad, missing_keys, invalid_keys, std::tuple{"mapmaking","pixel_size_arcsec"});
+    get_config_value(config, omb.pixel_size_rad, missing_keys, invalid_keys, std::tuple{"mapmaking","pixel_size_arcsec"},{},{0});
 
     // convert to radians
     omb.pixel_size_rad *= ASEC_TO_RAD;
@@ -510,7 +510,7 @@ void Engine::get_citlali_config(CT &config) {
     omb.wcs.cdelt.push_back(1);
 
     // icrs or altaz
-    get_config_value(config, telescope.pixel_axes, missing_keys, invalid_keys, std::tuple{"mapmaking","pixel_axes"});
+    get_config_value(config, telescope.pixel_axes, missing_keys, invalid_keys, std::tuple{"mapmaking","pixel_axes"},{"icrs","altaz"});
 
     double wcs_double;
 
@@ -546,7 +546,7 @@ void Engine::get_citlali_config(CT &config) {
 
     // map units
     if (rtcproc.run_calibrate) {
-        get_config_value(config, omb.sig_unit, missing_keys, invalid_keys, std::tuple{"mapmaking","cunit"});
+        get_config_value(config, omb.sig_unit, missing_keys, invalid_keys, std::tuple{"mapmaking","cunit"},{"mJy/beam","MJy/sr"});
         cmb.sig_unit = omb.sig_unit;
     }
 
@@ -602,7 +602,7 @@ void Engine::get_citlali_config(CT &config) {
     /* fitting */
     if (redu_type=="pointing" || redu_type=="beammap" || run_map_filter) {
         get_config_value(config, map_fitter.bounding_box_pix, missing_keys, invalid_keys, std::tuple{"post_processing","source_fitting",
-                                                                                                     "bounding_box_arcsec"});
+                                                                                                     "bounding_box_arcsec"},{},{0});
         get_config_value(config, map_fitter.fitting_region_pix, missing_keys, invalid_keys, std::tuple{"post_processing","source_fitting",
                                                                                                        "fitting_region_arcsec"});
         map_fitter.bounding_box_pix = ASEC_TO_RAD*map_fitter.bounding_box_pix/omb.pixel_size_rad;
@@ -1079,6 +1079,8 @@ void Engine::print_summary() {
     SPDLOG_INFO("\n\nreduction info:\n\n");
     SPDLOG_INFO("map buffer rows: {}", omb.n_rows);
     SPDLOG_INFO("map buffer cols: {}", omb.n_cols);
+    SPDLOG_INFO("number of maps: {}", omb.signal.size());
+    SPDLOG_INFO("map units: {}",omb.sig_unit);
 
     // total size of all maps
     double mb_size_total = 0;
@@ -1124,7 +1126,10 @@ void Engine::print_summary() {
         }
     }
 
-    SPDLOG_INFO("estimated size of all maps {} GB\n\n", mb_size_total);
+    SPDLOG_INFO("estimated size of all maps {} GB", mb_size_total);
+
+    SPDLOG_INFO("number of scans: {}\n\n",telescope.scan_indices.cols());
+
 }
 
 template <TCDataKind tc_t>
@@ -1538,7 +1543,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
     }
 
     /* coverage bool and signal-to-noise maps */
-    if (map_grouping!="detector" && !mb->coverage.empty()) {
+    if (!mb->coverage.empty()) {
         Eigen::MatrixXd ones, zeros;
         ones.setOnes(mb->weight[i].rows(), mb->weight[i].cols());
         zeros.setZero(mb->weight[i].rows(), mb->weight[i].cols());
@@ -1561,7 +1566,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
     }
 
     // add primary hdu
-    add_phdu(fits_io, mb, map_index);
+    //add_phdu(fits_io, mb, map_index);
 
     // write noise maps
     if (!mb->noise.empty()) {
@@ -1576,7 +1581,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             noise_fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
         }
         // add primary hdu to noise files
-        add_phdu(noise_fits_io, mb, map_index);
+        //add_phdu(noise_fits_io, mb, map_index);
     }
 }
 

@@ -253,6 +253,10 @@ double find_weight_threshold(Eigen::DenseBase<Derived> &weight, double cov) {
     // find number of non-zero elements in weights
     Eigen::Index n_non_zero = (weight.derived().array() > 0).count();
 
+    if (n_non_zero==0) {
+        return 0;
+    }
+
     // vector to hold non-zero elements
     //Eigen::VectorXd non_zero_weights(n_non_zero);
     //non_zero_weights.setZero();
@@ -305,8 +309,8 @@ auto set_cov_cov_ranges(const Eigen::DenseBase<Derived> &weight, const double we
 
     // find lower row bound
     bool flag = false;
-    for (Eigen::Index i = 0; i < weight.rows(); i++) {
-        for (Eigen::Index j = 0; j < weight.cols(); j++) {
+    for (Eigen::Index i=0; i<weight.rows(); i++) {
+        for (Eigen::Index j=0; j<weight.cols(); j++) {
             if (weight(i,j) >= weight_threshold) {
                 cov_ranges(0,0) = i;
                 flag = true;
@@ -320,7 +324,7 @@ auto set_cov_cov_ranges(const Eigen::DenseBase<Derived> &weight, const double we
 
     // find upper row bound
     flag = false;
-    for (Eigen::Index i = weight.rows() - 1; i > -1; i--) {
+    for (Eigen::Index i=weight.rows()-1; i>-1; i--) {
         for (Eigen::Index j = 0; j < weight.cols(); j++) {
             if (weight(i,j) >= weight_threshold) {
                 cov_ranges(1,0) = i;
@@ -335,7 +339,7 @@ auto set_cov_cov_ranges(const Eigen::DenseBase<Derived> &weight, const double we
 
     // find lower column bound
     flag = false;
-    for (Eigen::Index i = 0; i < weight.cols(); i++) {
+    for (Eigen::Index i=0; i<weight.cols(); i++) {
         for (Eigen::Index j = cov_ranges(0,0); j < cov_ranges(1,0) + 1; j++) {
             if (weight(j,i) >= weight_threshold) {
                 cov_ranges(0,1) = i;
@@ -350,7 +354,7 @@ auto set_cov_cov_ranges(const Eigen::DenseBase<Derived> &weight, const double we
 
      // find upper column bound
     flag = false;
-    for (Eigen::Index i = weight.cols() - 1; i > -1; i--) {
+    for (Eigen::Index i=weight.cols()-1; i>-1; i--) {
         for (Eigen::Index j = cov_ranges(0,0); j < cov_ranges(1,0) + 1; j++) {
             if (weight(j,i) >= weight_threshold) {
                 cov_ranges(1,1) = i;
@@ -390,12 +394,12 @@ void smooth_boxcar(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB> &o
 
 template <typename Derived>
 void smooth_edge_truncate(Eigen::DenseBase<Derived> &in, Eigen::DenseBase<Derived> &out, int w) {
-    Eigen::Index n_pts = in.size();
-
     // ensure w is odd
     if (w % 2 == 0) {
         w++;
     }
+
+    Eigen::Index n_pts = in.size();
 
     double w_inv = 1./w;
     int w_mid = (w - 1)/2;
@@ -410,7 +414,7 @@ void smooth_edge_truncate(Eigen::DenseBase<Derived> &in, Eigen::DenseBase<Derive
                 add_index=0;
             }
             else if (add_index > n_pts-1) {
-                add_index = n_pts-1;
+                add_index = n_pts - 1;
             }
             sum += in(add_index);
         }

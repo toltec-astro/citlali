@@ -17,16 +17,19 @@ void Telescope::get_tel_data(std::string &filepath) {
 
         // get mapping pattern
         vars.find("Header.Dcs.ObsPgm")->second.getVar(&obs_pgm_char);
-        obs_pgm = obs_pgm_char;
+        obs_pgm = std::string(obs_pgm_char);
+
+        std::string::iterator end_pos = std::remove(obs_pgm.begin(), obs_pgm.end(), ' ');
+        obs_pgm.erase(end_pos, obs_pgm.end());
 
         // work around for files with bad ObsPgm
-        if (!obs_pgm.find("Lissajous")) {
+        /*if (!obs_pgm.find("Lissajous")) {
             obs_pgm = "Lissajous";
         }
 
         else if (!obs_pgm.find("Map")) {
             obs_pgm = "Map";
-        }
+        }*/
 
         if (std::strcmp("Lissajous", obs_pgm.c_str())==0 && time_chunk==0) {
             SPDLOG_ERROR("mapping mode is lissajous and time chunk size is zero");
@@ -37,7 +40,7 @@ void Telescope::get_tel_data(std::string &filepath) {
         vars.find("Header.Source.SourceName")->second.getVar(&source_name_char);
         source_name = std::string(source_name_char);
 
-        std::string::iterator end_pos = std::remove(source_name.begin(), source_name.end(), ' ');
+        end_pos = std::remove(source_name.begin(), source_name.end(), ' ');
         source_name.erase(end_pos, source_name.end());
 
         // check if simulation job key is found.
@@ -46,7 +49,7 @@ void Telescope::get_tel_data(std::string &filepath) {
             SPDLOG_WARN("found Header.Sim.Jobkey");
             sim_obs = true;
         } catch (NcException &e) {
-            SPDLOG_WARN("cannot find Header.Sim.Jobkey.  reducing as real data.");
+            SPDLOG_WARN("cannot find Header.Sim.Jobkey. reducing as real data.");
             sim_obs = false;
         }
 

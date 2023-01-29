@@ -83,12 +83,6 @@ void Beammap::setup() {
         }
     }
 
-    // ensure all detectors are initially flagged as good
-    if (map_grouping=="detector") {
-        calib.apt["flag"].setOnes();
-        calib.apt["flxscale"].setOnes();
-    }
-
     // create kids tone apt row
     calib.apt["kids_tone"].resize(calib.n_dets);
 
@@ -443,8 +437,8 @@ auto Beammap::run_loop() {
                 ptcproc.remove_flagged_dets(ptcs[i], calib.apt, ptcs[i].det_indices.data);
             }
 
-            auto calib_scan = rtcproc.remove_bad_dets_nw(ptcs[i], calib, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
-                                                         ptcs[i].array_indices.data, redu_type, map_grouping);
+            auto calib_scan = rtcproc.remove_bad_dets(ptcs[i], calib, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
+                                                      ptcs[i].array_indices.data, redu_type, map_grouping);
 
             // remove duplicate tones
             calib_scan = rtcproc.remove_nearby_tones(ptcs[i], calib_scan, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
@@ -454,8 +448,8 @@ auto Beammap::run_loop() {
             ptcproc.run(ptcs[i], ptcs[i], calib_scan);
 
             // remove outliers after clean
-            calib_scan = ptcproc.remove_bad_dets_nw(ptcs[i], calib, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
-                                                    ptcs[i].array_indices.data, redu_type, map_grouping);
+            calib_scan = ptcproc.remove_bad_dets(ptcs[i], calib, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
+                                                 ptcs[i].array_indices.data, redu_type, map_grouping);
             // write chunk summary
             if (verbose_mode && current_iter==0) {
                 SPDLOG_DEBUG("writing chunk summary");
@@ -800,7 +794,7 @@ void Beammap::adjust_apt() {
             ref_det_y_t = calib.apt["y_t"](beammap_reference_det);
         }
         // else use closest to a1100 median
-        else if (beammap_reference_det < 0) {
+        else {
             auto array_name = toltec_io.array_name_map[calib.apt["array"](0)];
             Eigen::VectorXd dist = pow(calib.apt["x_t"].array() - array_median_x_t[array_name],2) +
                 pow(calib.apt["y_t"].array() - array_median_y_t[array_name],2);
@@ -1054,10 +1048,10 @@ void Beammap::output() {
                                                           engine_utils::toltecIO::raw>
                                 (obsnum_dir_name + "raw/", redu_type, "", obsnum, telescope.sim_obs);
 
-            calib.apt_header_keys.push_back("x_t_derot");
-            calib.apt_header_keys.push_back("y_t_derot");
-            calib.apt_header_keys.push_back("x_t_raw");
-            calib.apt_header_keys.push_back("y_t_raw");
+            //calib.apt_header_keys.push_back("x_t_derot");
+            //calib.apt_header_keys.push_back("y_t_derot");
+            //calib.apt_header_keys.push_back("x_t_raw");
+            //calib.apt_header_keys.push_back("y_t_raw");
 
             Eigen::MatrixXd apt_table(calib.n_dets, calib.apt_header_keys.size());
 
@@ -1104,6 +1098,17 @@ void Beammap::output() {
         tula::logging::progressbar pb(
             [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 100, "output progress ");
 
+        for (Eigen::Index i=0; i<f_io->size(); i++) {
+            // get the array for the given map
+            Eigen::Index map_index = maps_to_arrays(i);
+            // add primary hdu
+            add_phdu(f_io, mb, map_index);
+
+            if (!mb->noise.empty()) {
+                add_phdu(n_io, mb, map_index);
+            }
+        }
+
         // write the maps
         Eigen::Index k = 0;
         Eigen::Index step = 2;
@@ -1140,7 +1145,6 @@ void Beammap::output() {
                             f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, static_cast<float>(calib.apt[key](i)), key
                                                                   + " (" + calib.apt_header_units[key] + ")");
                         }
-
                         else {
                             f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, 0.0, key
                                                                    + " (" + calib.apt_header_units[key] + ")");
@@ -1151,17 +1155,6 @@ void Beammap::output() {
                 }
             }
         }
-
-        /*for (Eigen::Index i=0; i<f_io->size(); i++) {
-            // get the array for the given map
-            Eigen::Index map_index = maps_to_arrays(i);
-            // add primary hdu
-            add_phdu(f_io, mb, map_index);
-
-            if (!mb->noise.empty()) {
-                add_phdu(n_io, mb, map_index);
-            }
-        }*/
     }
 
     SPDLOG_INFO("files have been written to:");

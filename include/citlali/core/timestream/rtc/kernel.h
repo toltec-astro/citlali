@@ -69,23 +69,26 @@ void Kernel::create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::Mat
                                               std::string &redu_type, apt_t &apt,
                                               pointing_offset_t &pointing_offsets_arcsec, Eigen::DenseBase<Derived> &det_indices) {
 
+    // dimensions of scan
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
 
+    // resize kernel to match data size
     in.kernel.data.resize(n_pts, n_dets);
 
     for (Eigen::Index i=0; i<n_dets; i++) {
-
+        // detector in apt
         auto det_index = det_indices(i);
 
         double az_off = 0;
         double el_off = 0;
 
-        if (map_grouping!="detector") {
+        if (map_grouping!="detector" || redu_type!="beammap") {
             az_off = apt["x_t"](det_index);
             el_off = apt["y_t"](det_index);
         }
 
+        // calc tangent plane pointing
         auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off,
                                                           pixel_axes, pointing_offsets_arcsec);
 
@@ -104,8 +107,9 @@ void Kernel::create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::Mat
             sigma = sigma_rad;
         }
 
+        // loop through samples and calculate
         for (Eigen::Index j=0; j<n_pts; j++) {
-            if (distance(j) <= 3.*sigma) {
+            if (distance(j) <= sigma_limit*sigma) {
                 in.kernel.data(j,i) = exp(-0.5*pow(distance(j)/sigma,2));
             }
             else {
@@ -120,42 +124,43 @@ void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in
                                     std::string &redu_type, apt_t &apt,
                                     pointing_offset_t &pointing_offsets_arcsec, Eigen::DenseBase<Derived> &det_indices) {
 
+    // dimensions of scan
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
 
+    // resize kernel to match data size
     in.kernel.data.resize(n_pts, n_dets);
 
     for (Eigen::Index i=0; i<n_dets; i++) {
-
+        // detector in apt
         auto det_index = det_indices(i);
 
         double az_off = 0;
         double el_off = 0;
 
-        if (map_grouping!="detector") {
+        if (map_grouping!="detector" || redu_type!="beammap") {
             az_off = apt["x_t"](det_index);
             el_off = apt["y_t"](det_index);
         }
 
         // get parameters for current detector
         auto amp = 1;
-        auto off_lat = 0;//apt["y_t"](det_index)*ASEC_TO_RAD;
+        auto off_lat = 0;//pt["y_t"](det_index)*ASEC_TO_RAD;
         auto off_lon = 0;//apt["x_t"](det_index)*ASEC_TO_RAD;
         auto rot_ang = apt["angle"](det_index);
 
+        // calc tangent plane pointing
         auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off,
                                                           pixel_axes, pointing_offsets_arcsec);
 
         // distance to source to truncate it
-        auto distance = ((lat.array()).pow(2) + (lon.array()).pow(2)).sqrt();
+        auto dist = ((lat.array()).pow(2) + (lon.array()).pow(2)).sqrt();
 
         // standard deviation
         double sigma_lat, sigma_lon;
 
         // calculate from APT table
         if (sigma_rad <= 0) {
-            //sigma = FWHM_TO_STD*ASEC_TO_RAD*(apt["a_fwhm"](det_index) + apt["b_fwhm"](det_index))/2;
-
             sigma_lat = FWHM_TO_STD*ASEC_TO_RAD*apt["b_fwhm"](det_index);
             sigma_lon = FWHM_TO_STD*ASEC_TO_RAD*apt["a_fwhm"](det_index);
         }
@@ -176,7 +181,7 @@ void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in
 
         // make gaussian
         for (Eigen::Index j=0; j<n_pts; j++) {
-            if (distance(j) <= sigma_limit*(sigma_lat + sigma_lon)/2) {
+            if (dist(j) <= sigma_limit*(sigma_lat + sigma_lon)/2) {
                 in.kernel.data(j,i) = amp*exp(pow(lon(j) - off_lon, 2) * a +
                                      (lon(j) - off_lon) * (lat(j) - off_lat) * b +
                                      pow(lat(j) - off_lat, 2) * c);
@@ -204,7 +209,7 @@ void Kernel::create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, st
         double az_off = 0;
         double el_off = 0;
 
-        if (map_grouping!="detector") {
+        if (map_grouping!="detector" || redu_type!="beammap") {
             az_off = apt["x_t"](det_index);
             el_off = apt["y_t"](det_index);
         }

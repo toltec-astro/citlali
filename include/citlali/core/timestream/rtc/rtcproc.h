@@ -47,7 +47,7 @@ public:
              Eigen::DenseBase<Derived> &, double);
 
     template <typename calib_t, typename Derived>
-    auto remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
+    auto remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
                             Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string, std::string);
 
     template <typename calib_t, typename Derived>
@@ -84,7 +84,7 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         SPDLOG_DEBUG("creating kernel timestream");
         if (kernel.type == "gaussian") {
             SPDLOG_DEBUG("creating symmetric gaussian kernel");
-            kernel.create_symmetric_gaussian_kernel(in, pixel_axes, redu_type, calib.apt, pointing_offsets_arcsec,
+            kernel.create_gaussian_kernel(in, pixel_axes, redu_type, calib.apt, pointing_offsets_arcsec,
                                                     det_indices);
         }
         else if (kernel.type == "airy") {
@@ -138,7 +138,7 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
                          Eigen::OuterStride<>(in_flags_ref.outerStride()));
 
             SPDLOG_DEBUG("replacing spikes");
-            despiker.replace_spikes(in_scans, in_flags, calib.apt, start_index);
+            //despiker.replace_spikes(in_scans, in_flags, calib.apt, start_index);
         }
 
         out.despiked = true;
@@ -224,9 +224,9 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
 }
 
 template <typename calib_t, typename Derived>
-auto RTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
-                                 Eigen::DenseBase<Derived> &nw_indices, Eigen::DenseBase<Derived> &array_indices, std::string redu_type,
-                                 std::string map_grouping) {
+auto RTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
+                              Eigen::DenseBase<Derived> &nw_indices, Eigen::DenseBase<Derived> &array_indices, std::string redu_type,
+                              std::string map_grouping) {
 
     // make a copy of the calib class for flagging
     calib_t calib_scan = calib;
@@ -352,11 +352,16 @@ auto RTCProc::remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
     // get last distance
     dfreq(dfreq.size()-1) = abs(calib.apt["tone_freq"](dfreq.size()-1)-calib.apt["tone_freq"](dfreq.size()-2));
 
+    // number of nearby tones found
     int n_nearby_tones = 0;
 
+    // loop through flag columns
     for (Eigen::Index i=0; i<in.flags.data.cols(); i++) {
+        // map from data column to apt row
         Eigen::Index det_index = det_indices(i);
+        // if closer than freq separation limit and unflagged, flag it
         if (dfreq(det_index) < delta_f_min_Hz && calib_scan.apt["flag"](det_index)) {
+            // increment number of nearby tones
             n_nearby_tones++;
             if (map_grouping!="detector") {
                 in.flags.data.col(i).setZero();
@@ -367,14 +372,12 @@ auto RTCProc::remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
         }
     }
 
-    SPDLOG_INFO("removing {}/{} ({}%) tones < {} kHz flagged", n_nearby_tones, n_dets,
+    SPDLOG_INFO("removing {}/{} ({}%) tones closer than {} kHz", n_nearby_tones, n_dets,
                 (static_cast<float>(n_nearby_tones)/static_cast<float>(n_dets))*100, delta_f_min_Hz/1000);
 
     // set up scan calib
     calib_scan.setup();
 
     return std::move(calib_scan);
-
 }
-
 } // namespace timestream

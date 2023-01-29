@@ -159,10 +159,10 @@ auto Lali::run() {
             ptcproc.remove_flagged_dets(ptcdata, calib.apt, det_indices);
 
             // remove outliers
-            auto calib_scan = rtcproc.remove_bad_dets_nw(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
+            auto calib_scan = rtcproc.remove_bad_dets(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
 
             // remove duplicate tones
-            calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
+            calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib_scan, det_indices, nw_indices, array_indices, redu_type, map_grouping);
 
             // run cleaning
             if (stokes_param == "I") {
@@ -171,7 +171,7 @@ auto Lali::run() {
             }
 
             // remove outliers after clean
-            calib_scan = ptcproc.remove_bad_dets_nw(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
+            calib_scan = ptcproc.remove_bad_dets(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
 
             // calculate weights
             SPDLOG_INFO("calculating weights");
@@ -322,14 +322,7 @@ void Lali::output() {
         tula::logging::progressbar pb(
             [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 100, "output progress ");
 
-        // write the maps
-        for (Eigen::Index i=0; i<n_maps; i++) {
-            // update progress bar
-            pb.count(n_maps, 1);
-            write_maps(f_io,n_io,mb,i);
-        }
-
-        /*for (Eigen::Index i=0; i<f_io->size(); i++) {
+        for (Eigen::Index i=0; i<f_io->size(); i++) {
             // get the array for the given map
             Eigen::Index map_index = maps_to_arrays(i);
             // add primary hdu
@@ -338,8 +331,14 @@ void Lali::output() {
             if (!mb->noise.empty()) {
                 add_phdu(n_io, mb, map_index);
             }
-        }*/
+        }
 
+        // write the maps
+        for (Eigen::Index i=0; i<n_maps; i++) {
+            // update progress bar
+            pb.count(n_maps, 1);
+            write_maps(f_io,n_io,mb,i);
+        }
     }
 
     SPDLOG_INFO("files have been written to:");

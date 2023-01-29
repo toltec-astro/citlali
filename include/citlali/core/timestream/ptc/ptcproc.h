@@ -37,11 +37,11 @@ public:
     void remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, apt_t &, Eigen::DenseBase<Derived> &);
 
     template <typename calib_t, typename Derived>
-    auto remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
+    auto remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
                             Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string, std::string);
 
     template <typename calib_t, typename Derived>
-    auto remove_bad_dets_nw_iter(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
+    auto remove_bad_dets_iter(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
                             Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string, std::string);
 
     template <typename Derived, typename apt_t, typename pointing_offset_t>
@@ -269,7 +269,7 @@ void PTCProc::remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
 }
 
 template <typename calib_t, typename Derived>
-auto PTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
+auto PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
                                  Eigen::DenseBase<Derived> &nw_indices, Eigen::DenseBase<Derived> &array_indices, std::string redu_type,
                                  std::string map_grouping) {
 
@@ -303,22 +303,23 @@ auto PTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, c
             for (Eigen::Index j=0; j<n_dets; j++) {
                 Eigen::Index det_index = det_indices(j);
                 if (calib.apt["flag"](det_index) && calib.apt["nw"](det_index)==calib.nws(i)) {
-
                     // make Eigen::Maps for each detector's scan
                     Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
                         in.scans.data.col(j).data(), in.scans.data.rows());
                     Eigen::Map<Eigen::Matrix<bool, Eigen::Dynamic, 1>> flags(
                         in.flags.data.col(j).data(), in.flags.data.rows());
 
+                    // calc standard deviation
                     det_std_dev(k) = engine_utils::calc_std_dev(scans, flags);
+                    //det_std_dev(k) = engine_utils::calc_rms(scans, flags);
 
+                    // convert to 1/variance
                     if (det_std_dev(k) !=0) {
                         det_std_dev(k) = std::pow(det_std_dev(k),-2);
                     }
                     else {
                         det_std_dev(k) = 0;
                     }
-                    //det_std_dev(k) = engine_utils::calc_rms(scans, flags);
 
                     dets(k) = j;
                     k++;
@@ -337,7 +338,7 @@ auto PTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, c
                 Eigen::Index det_index = det_indices(dets(j));
                 // flag those below limit
                 if (calib.apt["flag"](det_index) && calib.apt["nw"](det_index)==calib.nws(i)) {
-                    if ((det_std_dev(j) < (lower_std_dev*mean_std_dev))) {
+                    if ((det_std_dev(j) < (lower_std_dev*mean_std_dev))  && lower_std_dev!=0) {
                         if (map_grouping!="detector") {
                             in.flags.data.col(dets(j)).setZero();
                         }
@@ -349,7 +350,7 @@ auto PTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, c
                     }
 
                     // flag those above limit
-                    if ((det_std_dev(j) > (upper_std_dev*mean_std_dev))) {
+                    if ((det_std_dev(j) > (upper_std_dev*mean_std_dev))  && upper_std_dev!=0) {
                         if (map_grouping!="detector") {
                             in.flags.data.col(dets(j)).setZero();
                         }
@@ -375,7 +376,7 @@ auto PTCProc::remove_bad_dets_nw(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, c
 
 
 template <typename calib_t, typename Derived>
-auto PTCProc::remove_bad_dets_nw_iter(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
+auto PTCProc::remove_bad_dets_iter(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
                                  Eigen::DenseBase<Derived> &nw_indices, Eigen::DenseBase<Derived> &array_indices, std::string redu_type,
                                  std::string map_grouping) {
 

@@ -181,7 +181,7 @@ void Calib::setup() {
     // loop through apt table networks, get highest index for current networks
     for (Eigen::Index i=0; i<apt["nw"].size(); i++) {
         if (apt["nw"](i) == nw_i) {
-            std::get<1>(nw_limits[nw_i]) = i+1;
+            std::get<1>(nw_limits[nw_i]) = i + 1;
         }
         else {
             nw_i = apt["nw"](i);

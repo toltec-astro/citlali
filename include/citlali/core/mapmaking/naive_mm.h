@@ -5,6 +5,7 @@
 
 #include <thread>
 
+#include <citlali/core/mapmaking/map.h>
 #include <citlali/core/utils/pointing.h>
 
 using timestream::TCData;
@@ -57,18 +58,21 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 
     for (Eigen::Index i=0; i<n_dets; i++) {
         // skip completely flagged detectors
-        //if ((in.flags.data.array() !=0).all()) {
+        if ((in.flags.data.col(i).array()==true).any()) {
             double az_off = 0;
             double el_off = 0;
 
-            if (redu_type!="beammap" || (redu_type=="beammap" && omb.map_grouping!="detector")) {
+            // get detector positions from apt table if not in detector mapmaking mode
+            if (omb.map_grouping!="detector" || redu_type!="beammap") {
                 auto det_index = det_indices(i);
                 az_off = apt["x_t"](det_index);
                 el_off = apt["y_t"](det_index);
             }
 
+            // which map to assign detector to
             Eigen::Index map_index = map_indices(i);
 
+            // get detector pointing
             auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off,
                                                               pixel_axes, pointing_offsets_arcsec);
 
@@ -90,6 +94,7 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                     Eigen::Index omb_ir = omb_irow(j);
                     Eigen::Index omb_ic = omb_icol(j);
 
+                    // signal map value
                     double signal;
 
                     // make sure the data point is within the map
@@ -140,7 +145,7 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                     }
                 }
             }
-        //}
+        }
     }
 }
 } // namespace mapmaking

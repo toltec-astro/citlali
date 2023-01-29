@@ -112,9 +112,6 @@ void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
     using namespace netCDF;
     using namespace netCDF::exceptions;
 
-    // tone frquencies for each network
-    std::map<Eigen::Index,Eigen::MatrixXd> tone_freqs;
-
     // nw names
     std::vector<Eigen::Index> interfaces;
 
@@ -134,20 +131,6 @@ void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
 
             // add the current file's number of dets to the total
             n_dets += vars.find("Data.Toltec.Is")->second.getDim(1).getSize();
-
-            // dimension of tone freqs is (n_sweeps, n_tones)
-            Eigen::Index n_sweeps = vars.find("Header.Toltec.ToneFreq")->second.getDim(0).getSize();
-
-            // get local oscillator frequency
-            double lo_freq;
-            vars.find("Header.Toltec.LoCenterFreq")->second.getVar(&lo_freq);
-
-            // get tone_freqs for interface
-            tone_freqs[interfaces.back()].resize(vars.find("Header.Toltec.ToneFreq")->second.getDim(1).getSize(),n_sweeps);
-            vars.find("Header.Toltec.ToneFreq")->second.getVar(tone_freqs[interfaces.back()].data());
-
-            // add local oscillator freq
-            tone_freqs[interfaces.back()] = tone_freqs[interfaces.back()].array() + lo_freq;
 
             // get the number of dets in file
             dets.push_back(vars.find("Data.Toltec.Is")->second.getDim(1).getSize());
@@ -170,15 +153,21 @@ void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
         engine().calib.apt[key].setOnes(n_dets);
     }
 
+    // ensure x_t and y_t are zero (crashes!)
+    //engine().calib.apt["x_t"].setZero(n_dets);
+    //engine().calib.apt["y_t"].setZero(n_dets);
+
     // add the nws and arrays to the apt table
     Eigen::Index j = 0;
     for (Eigen::Index i=0; i<nws.size(); i++) {
         engine().calib.apt["nw"].segment(j,dets[i]).setConstant(nws[i]);
         engine().calib.apt["array"].segment(j,dets[i]).setConstant(arrays[i]);
-        engine().calib.apt["tone_freq"].segment(j,dets[i]) = tone_freqs[interfaces[i]];
 
         j = j + dets[i];
     }
+
+    // set uids
+    engine().calib.apt["uid"] = Eigen::VectorXd::LinSpaced(n_dets,0,n_dets-1);
 
     // setup nws, arrays, etc.
     engine().calib.setup();
@@ -436,13 +425,9 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
             // remove overflow due to int32
             dt = (dt.array() < 0).select(msec.array() - pps_msec.array() + (pow(2.0,32)-1)/fpga_freq,msec - pps_msec);
 
-            SPDLOG_INFO("dt {}",dt);
-
             // get network time and add offsets
             nw_ts.push_back(start_t_dbl + pps.array() + dt.array() +
                             engine().interface_sync_offset["toltec"+std::to_string(roach_index)]);
-
-            SPDLOG_INFO("nw_ts {}",nw_ts.back().array() - nw_ts.back()(0));
 
             // push back start time
             nw_t0.push_back(nw_ts.back()[0]);
@@ -872,7 +857,7 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb(std::vector<map_extent_t> &ma
             engine().cmb.kernel.push_back(Eigen::MatrixXd::Zero(engine().cmb.n_rows, engine().cmb.n_cols));
         }
 
-        if (engine().map_grouping!="detector") {
+        if (engine().map_grouping!="detector" || engine().redu_type!="beammap") {
             engine().cmb.coverage.push_back(Eigen::MatrixXd::Zero(engine().cmb.n_rows, engine().cmb.n_cols));
         }
     }
@@ -938,7 +923,7 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
             engine().omb.kernel.push_back(Eigen::MatrixXd::Zero(engine().omb.n_rows, engine().omb.n_cols));
         }
 
-        if (engine().map_grouping!="detector") {
+        if (engine().map_grouping!="detector" || engine().redu_type!="beammap") {
             engine().omb.coverage.push_back(Eigen::MatrixXd::Zero(engine().omb.n_rows, engine().omb.n_cols));
         }
     }
@@ -984,7 +969,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
                 double az_off = 0;
                 double el_off = 0;
 
-                if (engine().map_grouping!="detector") {
+                if (engine().map_grouping!="detector" || engine().redu_type!="beammap") {
                     az_off = engine().calib.apt["x_t"](j);
                     el_off = engine().calib.apt["y_t"](j);
                 }
