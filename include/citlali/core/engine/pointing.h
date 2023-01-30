@@ -531,10 +531,11 @@ void Pointing::output() {
                 // add ppt table
                 Eigen::Index j = 0;
                 for (auto const& key: ppt_header) {
-                    if (ppt_table(i,j) == ppt_table(i,j) && !std::isinf(ppt_table(i,j))) {
+                    //if (ppt_table(i,j) == ppt_table(i,j) && !std::isinf(ppt_table(i,j))) {
+                    try {
                         f_io->at(map_index).hdus.at(k)->addKey("POINTING." + key, ppt_table(i,j), key + " (" + ppt_header_units[key] + ")");
                     }
-                    else {
+                    catch(...) {
                         f_io->at(map_index).hdus.at(k)->addKey("POINTING." + key, 0, key + " (" + ppt_header_units[key] + ")");
                     }
                     j++;

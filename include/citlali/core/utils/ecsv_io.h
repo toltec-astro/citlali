@@ -86,22 +86,29 @@ inline auto to_map_from_ecsv_mixted_type(std::string filepath) {
     std::map<std::string, Eigen::VectorXd> table;
 
     // get ints
-    auto int_colnames =  tbl.array_data<int>().colnames();
+    auto int_colnames = tbl.array_data<int>().colnames();
     for (auto & col : int_colnames) {
         table[col] = tbl.col<int>(col).data.cast<double> ();
     }
 
+    // get int64
+    auto int64_colnames = tbl.array_data<int64_t>().colnames();
+    for (auto & col : int64_colnames) {
+        table[col] = tbl.col<int64_t>(col).data.cast<double> ();
+    }
+
     // get bools
-    auto bool_colnames =  tbl.array_data<bool>().colnames();
+    auto bool_colnames = tbl.array_data<bool>().colnames();
     for (auto & col : bool_colnames) {
         table[col] = tbl.col<bool>(col).data.cast<double> ();
     }
 
     // get doubles
-    auto dbl_colnames =  tbl.array_data<double>().colnames();
+    auto dbl_colnames = tbl.array_data<double>().colnames();
     for (auto & col : dbl_colnames) {
         table[col] = tbl.col<double>(col).data;
     }
+
     // return map and header
     return std::tuple {table, header};
 }

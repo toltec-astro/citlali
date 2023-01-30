@@ -755,7 +755,6 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
 void Beammap::adjust_apt() {
     // std maps to hold median unflagged x and y positions
     std::map<std::string, double> array_median_x_t, array_median_y_t;
-    Eigen::VectorXd x_t, y_t;
 
     // calc mean x_t and y_t values from unflagged detectors for each arrays
     for (Eigen::Index i=0; i<calib.n_arrays; i++) {
@@ -768,10 +767,11 @@ void Beammap::adjust_apt() {
         // y_t
         auto array_y_t = calib.apt["y_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
                                                                  std::get<1>(calib.array_limits[array])-1));
-
         // number of good detectors
         Eigen::Index n_good_det = calib.apt["flag"](Eigen::seq(std::get<0>(calib.array_limits[array]),
                                                          std::get<1>(calib.array_limits[array])-1)).sum();
+
+        Eigen::VectorXd x_t, y_t;
 
         x_t.resize(n_good_det);
         y_t.resize(n_good_det);
@@ -801,9 +801,13 @@ void Beammap::adjust_apt() {
             // set reference x_t and y_t
             ref_det_x_t = calib.apt["x_t"](beammap_reference_det);
             ref_det_y_t = calib.apt["y_t"](beammap_reference_det);
+
+            SPDLOG_INFO("using detector {} at ({},{}) arcsec",beammap_reference_det,
+                        ref_det_x_t,ref_det_y_t);
         }
         // else use closest to a1100 median
         else {
+            SPDLOG_INFO("automatically choosing a reference detector");
             auto array_name = toltec_io.array_name_map[calib.apt["array"](0)];
             Eigen::VectorXd dist = pow(calib.apt["x_t"].array() - array_median_x_t[array_name],2) +
                 pow(calib.apt["y_t"].array() - array_median_y_t[array_name],2);
@@ -814,6 +818,10 @@ void Beammap::adjust_apt() {
             // set reference x_t and y_t
             ref_det_x_t = calib.apt["x_t"](beammap_reference_det);
             ref_det_y_t = calib.apt["y_t"](beammap_reference_det);
+
+            SPDLOG_INFO("using detector {} at ({},{}) arcsec",beammap_reference_det,
+                        ref_det_x_t,ref_det_y_t);
+
         }
     }
 

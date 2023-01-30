@@ -10,7 +10,7 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
     auto [apt_temp, header] = to_map_from_ecsv_mixted_type(filepath);
 
     // vector to hold any missing header keys
-    std::vector<std::string> missing_header_keys;
+    std::vector<std::string> missing_header_keys, empty_header_keys;
 
     // look for missing header keys by comparing to required keys
     for (auto &apt_header_key: apt_header_keys) {
@@ -18,11 +18,21 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
         if (!found) {
             missing_header_keys.push_back(apt_header_key);
         }
+
+        else if (apt_temp[apt_header_key].size()==0) {
+            empty_header_keys.push_back(apt_header_key);
+        }
     }
 
     // exit if any keys are missing
     if (!missing_header_keys.empty()) {
         SPDLOG_ERROR("apt table is missing required columns {}", missing_header_keys);
+        std::exit(EXIT_FAILURE);
+    }
+
+    // exit if any keys are missing
+    if (!empty_header_keys.empty()) {
+        SPDLOG_ERROR("apt table columns are empty {}", empty_header_keys);
         std::exit(EXIT_FAILURE);
     }
 
