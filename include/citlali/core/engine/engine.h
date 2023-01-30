@@ -446,7 +446,7 @@ void Engine::get_citlali_config(CT &config) {
     get_config_value(config, rtcproc.run_downsample, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","downsample","enabled"});
     if (rtcproc.run_downsample) {
         get_config_value(config, rtcproc.downsampler.factor, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","downsample",
-                                                                                             "factor"});
+                                                                                                    "factor"},{},{0});
     }
 
     /* calibration */
@@ -675,7 +675,8 @@ void Engine::get_citlali_config(CT &config) {
 
     /* wiener filter */
     if (run_map_filter) {
-        get_config_value(config, wiener_filter.template_type, missing_keys, invalid_keys, std::tuple{"wiener_filter","template_type"});
+        get_config_value(config, wiener_filter.template_type, missing_keys, invalid_keys, std::tuple{"wiener_filter","template_type"},
+                         {"kernel","gaussian","highpass"});
         get_config_value(config, wiener_filter.run_lowpass, missing_keys, invalid_keys, std::tuple{"wiener_filter","lowpass_only"});
         get_config_value(config, wiener_filter.normalize_error, missing_keys, invalid_keys, std::tuple{"post_processing","map_filtering",
                                                                                                        "normalize_errors"});

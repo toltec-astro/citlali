@@ -221,7 +221,7 @@ void WienerFilter::make_gaussian_template(MB &mb, const double gaussian_template
 
     Eigen::Index row_index, col_index;
 
-    double min_dist = dist.minCoeff(&row_index, &col_index);
+    double min_dist = dist.minCoeff(&row_index,&col_index);
     double sigma = gaussian_template_fwhm_rad*FWHM_TO_STD;
 
     std::vector<Eigen::Index> shift_indices = {-row_index, -col_index};
@@ -270,6 +270,7 @@ void WienerFilter::make_symmetric_template(MB &mb, const int map_index, CD &cali
     kernel_interp.setZero();
     Eigen::VectorXd dist_interp(n_bins-1);
     dist_interp.setZero();
+
     for (Eigen::Index i=0; i<n_bins-1; i++) {
         int c = 0;
         for (Eigen::Index j=0; j<n_cols; j++) {
@@ -380,13 +381,13 @@ void WienerFilter::calc_vvq(MB &mb, const int map_index) {
         }
     }
 
-    Eigen::MatrixXd psd_q;
+    Eigen::MatrixXd psd_q(n_rows,n_cols);
 
     if (run_lowpass) {
         psd_q.setOnes();
     }
     else {
-        psd_q.setZero(n_rows,n_cols);
+        psd_q.setZero();
 
         Eigen::Matrix<Eigen::Index, 1, 1> n_psd_matrix;
         n_psd_matrix << psd.size();
@@ -411,9 +412,6 @@ void WienerFilter::calc_vvq(MB &mb, const int map_index) {
 
         // find the minimum value of psd
         auto psd_min = psd.minCoeff();
-
-        // set all the points in psd_q smaller than lowval to lowval
-        //(psd_q.array() < lowval).select(lowval, psd_q);
 
         for (Eigen::Index i=0; i<n_cols; i++) {
             for (Eigen::Index j=0; j<n_rows; j++) {
@@ -484,6 +482,8 @@ void WienerFilter::calc_denominator() {
     }
 
     else {
+        denom.setZero();
+
         in.real() = pow(vvq.array(), -1);
         in.imag().setZero();
 
