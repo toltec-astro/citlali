@@ -649,9 +649,6 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
         auto array_index = array_indices(i);
         std::string array_name = toltec_io.array_name_map[array_index];
 
-        // get nw of current detector
-        auto nw_index = nw_indices(i);
-
         // calculate map standard deviation
         double map_std_dev = engine_utils::calc_std_dev(omb.signal[i]);
 
@@ -687,7 +684,7 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
     std::map<Eigen::Index, double> nw_median_sens;
 
     // calc median sens from unflagged detectors for each nw
-    for (Eigen::Index i=0; i<calib.n_arrays; i++) {
+    for (Eigen::Index i=0; i<calib.n_nws; i++) {
         Eigen::Index nw = calib.nws(i);
 
         // nw sensitivity
