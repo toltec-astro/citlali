@@ -31,7 +31,6 @@ enum TimestreamFlags {
     Freq            = 1 << 12
 };
 
-
 namespace wcs = kids::wcs;
 
 // clang-format off

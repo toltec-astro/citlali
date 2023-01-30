@@ -432,17 +432,15 @@ auto Beammap::run_loop() {
             SPDLOG_INFO("subtracting detector means");
             ptcproc.subtract_mean(ptcs[i]);
 
-            if (map_grouping!="detector") {
-                SPDLOG_INFO("removing flagged dets");
-                ptcproc.remove_flagged_dets(ptcs[i], calib.apt, ptcs[i].det_indices.data);
-            }
-
             auto calib_scan = rtcproc.remove_bad_dets(ptcs[i], calib, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
                                                       ptcs[i].array_indices.data, redu_type, map_grouping);
 
             // remove duplicate tones
             calib_scan = rtcproc.remove_nearby_tones(ptcs[i], calib_scan, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
                                                      ptcs[i].array_indices.data, redu_type, map_grouping);
+
+            // removed detectors flagged in per scan apt
+            //ptcproc.remove_flagged_dets(ptcs[i], calib_scan.apt, ptcs[i].det_indices.data);
 
             SPDLOG_INFO("processed time chunk processing");
             ptcproc.run(ptcs[i], ptcs[i], calib_scan);
@@ -633,30 +631,6 @@ auto Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
 template<typename array_indices_t, typename nw_indices_t>
 void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices) {
-    // mean values of x_t and y_t
-    std::map<std::string, double> array_mean_x_t, array_mean_y_t;
-    std::map<Eigen::Index, double> nw_mean_sens;
-
-    // calc median x_t and y_t values for arrays
-    for (Eigen::Index i=0; i<calib.n_arrays; i++) {
-        Eigen::Index array = calib.arrays(i);
-        std::string array_name = toltec_io.array_name_map[array];
-
-        // x_t
-        array_mean_x_t[array_name] = tula::alg::median(calib.apt["x_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
-                                                                                   std::get<1>(calib.array_limits[array])-1)));
-        // y_t
-        array_mean_y_t[array_name] = tula::alg::median(calib.apt["y_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
-                                                                 std::get<1>(calib.array_limits[array])-1)));
-    }
-
-    // calc median sensitivity for each network
-    for (Eigen::Index i=0; i<calib.n_nws; i++) {
-        Eigen::Index nw = calib.nws(i);
-        nw_mean_sens[nw] = tula::alg::median(calib.apt["sens"](Eigen::seq(std::get<0>(calib.nw_limits[nw]),
-                                                                         std::get<1>(calib.nw_limits[nw])-1)));
-    }
-
     // track number of flagged detectors
     int n_flagged_dets = 0;
 
@@ -669,6 +643,7 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
     auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
 
     SPDLOG_INFO("flagging detectors");
+    // first flag based on fit values and signal-to-noise
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
         // get array of current detector
         auto array_index = array_indices(i);
@@ -682,10 +657,6 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
 
         // set apt signal to noise
         calib.apt["sig2noise"](i) = params(i,0)/map_std_dev;
-
-        // calculate distance of detector from mean position of all detectors
-        double dist = sqrt(pow(calib.apt["x_t"](i) - array_mean_x_t[array_name],2) +
-                           pow(calib.apt["y_t"](i) - array_mean_y_t[array_name],2));
 
         // flag bad fits
         if (!good_fits(i)) {
@@ -709,23 +680,130 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
             calib.apt["flag"](i) = 0;
             n_flagged_dets++;
         }
-        // flag detectors that are further than the mean value than the distance limit
-        else if (dist > max_dist_arcsec[array_name] && max_dist_arcsec[array_name] > 0) {
-            calib.apt["flag"](i) = 0;
-            n_flagged_dets++;
+        return 0;
+    });
+
+    // median network sensitivity for flagging
+    std::map<Eigen::Index, double> nw_median_sens;
+
+    // calc median sens from unflagged detectors for each nw
+    for (Eigen::Index i=0; i<calib.n_arrays; i++) {
+        Eigen::Index nw = calib.nws(i);
+
+        // nw sensitivity
+        auto nw_sens = calib.apt["sens"](Eigen::seq(std::get<0>(calib.nw_limits[nw]),
+                                                    std::get<1>(calib.nw_limits[nw])-1));
+        // number of good detectors
+        Eigen::Index n_good_det = calib.apt["flag"](Eigen::seq(std::get<0>(calib.nw_limits[nw]),
+                                                               std::get<1>(calib.nw_limits[nw])-1)).sum();
+
+        // to hold good detectors
+        Eigen::VectorXd sens(n_good_det);
+
+        // remove flagged dets
+        Eigen::Index j = std::get<0>(calib.nw_limits[nw]);
+        Eigen::Index k = 0;
+        for (Eigen::Index i=0; i<sens.size(); i++) {
+            if (calib.apt["flag"](j)) {
+                sens(k) = nw_sens(i);
+                k++;
+            }
+            j++;
         }
+        // calculate median sens
+        nw_median_sens[nw] = tula::alg::median(sens);
+    }
+
+    // flag too low/high sensitivies based on the median unflagged sensitivity of each nw
+    grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+        // get array of current detector
+        auto array_index = array_indices(i);
+        std::string array_name = toltec_io.array_name_map[array_index];
+
+        // get nw of current detector
+        auto nw_index = nw_indices(i);
+
         // flag outlier sensitivities
-        else if (calib.apt["sens"](i) < lower_sens_factor*nw_mean_sens[nw_index] ||
-                 (calib.apt["sens"](i) > upper_sens_factor*nw_mean_sens[nw_index] && upper_sens_factor > 0)) {
+        if (calib.apt["sens"](i) < lower_sens_factor*nw_median_sens[nw_index] ||
+            (calib.apt["sens"](i) > upper_sens_factor*nw_median_sens[nw_index] && upper_sens_factor > 0)) {
+            if (calib.apt["flag"](i)!=0) {
+                calib.apt["flag"](i) = 0;
+                n_flagged_dets++;
+            }
+        }
+
+        return 0;
+    });
+
+    // std maps to hold median unflagged x and y positions
+    std::map<std::string, double> array_median_x_t, array_median_y_t;
+
+    // calc median x_t and y_t values from unflagged detectors for each arrays
+    for (Eigen::Index i=0; i<calib.n_arrays; i++) {
+        Eigen::Index array = calib.arrays(i);
+        std::string array_name = toltec_io.array_name_map[array];
+
+        // x_t
+        auto array_x_t = calib.apt["x_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
+                                                     std::get<1>(calib.array_limits[array])-1));
+        // y_t
+        auto array_y_t = calib.apt["y_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
+                                                     std::get<1>(calib.array_limits[array])-1));
+        // number of good detectors
+        Eigen::Index n_good_det = calib.apt["flag"](Eigen::seq(std::get<0>(calib.array_limits[array]),
+                                                               std::get<1>(calib.array_limits[array])-1)).sum();
+
+        // to hold good detectors
+        Eigen::VectorXd x_t, y_t;
+
+        x_t.resize(n_good_det);
+        y_t.resize(n_good_det);
+
+        // remove flagged dets
+        Eigen::Index j = std::get<0>(calib.array_limits[array]);
+        Eigen::Index k = 0;
+        for (Eigen::Index i=0; i<array_x_t.size(); i++) {
+            if (calib.apt["flag"](j)) {
+                x_t(k) = array_x_t(i);
+                y_t(k) = array_y_t(i);
+                k++;
+            }
+            j++;
+        }
+        // calculate medians
+        array_median_x_t[array_name] = tula::alg::median(x_t);
+        array_median_y_t[array_name] = tula::alg::median(y_t);
+    }
+
+    // remove detectors above distance limits
+    grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+        // get array of current detector
+        auto array_index = array_indices(i);
+        std::string array_name = toltec_io.array_name_map[array_index];
+
+        // calculate distance of detector from mean position of all detectors
+        double dist = sqrt(pow(calib.apt["x_t"](i) - array_median_x_t[array_name],2) +
+                           pow(calib.apt["y_t"](i) - array_median_y_t[array_name],2));
+
+        // flag detectors that are further than the mean value than the distance limit
+        if (dist > max_dist_arcsec[array_name] && max_dist_arcsec[array_name] > 0 && calib.apt["flag"](i)!=0) {
             calib.apt["flag"](i) = 0;
             n_flagged_dets++;
         }
+
+        return 0;
+    });
+
+    // calculate fcf
+    grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+        // get array of current detector
+        auto array_index = array_indices(i);
+        std::string array_name = toltec_io.array_name_map[array_index];
 
         // calc flux scale (always in mJy/beam)
         if (params(i,0) != 0 && calib.apt["flag"](i) != 0) {
             calib.apt["flxscale"](i) = beammap_fluxes_mJy_beam[array_name]/params(i,0);
         }
-
         // set fluxscale (fcf) to zero if flagged
         else {
             calib.apt["flxscale"](i) = 0;
@@ -733,6 +811,7 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
 
         // correct fcf for extinction
         calib.apt["flxscale"](i) = calib.apt["flxscale"](i)*exp(-tau_freq[array_index](0));
+
         return 0;
     });
 
@@ -807,7 +886,7 @@ void Beammap::adjust_apt() {
         }
         // else use closest to a1100 median
         else {
-            SPDLOG_INFO("automatically choosing a reference detector");
+            SPDLOG_INFO("finding a reference detector");
             auto array_name = toltec_io.array_name_map[calib.apt["array"](0)];
             Eigen::VectorXd dist = pow(calib.apt["x_t"].array() - array_median_x_t[array_name],2) +
                 pow(calib.apt["y_t"].array() - array_median_y_t[array_name],2);
@@ -823,6 +902,10 @@ void Beammap::adjust_apt() {
                         ref_det_x_t,ref_det_y_t);
 
         }
+    }
+
+    else {
+        SPDLOG_INFO("no reference detector selected");
     }
 
     // add reference detector to APT meta data
@@ -856,7 +939,7 @@ void Beammap::adjust_apt() {
     calib.apt["y_t_derot"] = -rot_alt_off;
 
     if (beammap_derotate) {
-        SPDLOG_INFO("derotating detectors");
+        SPDLOG_INFO("derotating apt");
         // if derotation requested set default positions to derotated positions
         calib.apt["x_t"] = calib.apt["x_t_derot"];
         calib.apt["y_t"] = calib.apt["y_t_derot"];

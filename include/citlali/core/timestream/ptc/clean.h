@@ -26,17 +26,11 @@ public:
         // copy eigenvalues
         Eigen::VectorXd ev = evals.derived().array().abs().log10();
 
-        SPDLOG_INFO("evals {} ev {}", evals, ev);
-        SPDLOG_INFO("ev max {} ev min {}", ev.maxCoeff(), ev.minCoeff());
-
-
         auto n_dets = evals.size();
         // mean of eigenvalues
         auto m_ev = ev.mean();
         // standard deviation of eigenvalues
         auto stddev = engine_utils::calc_std_dev(ev);
-
-        SPDLOG_INFO("m_ev {} stddev {}",m_ev, stddev);
 
         bool keep_going = true;
         int n_keep_last = n_dets;
@@ -84,16 +78,11 @@ public:
                 n_keep_last = count;
             }
             iterator++;
-            SPDLOG_INFO("count {}", count);
         }
-
-        SPDLOG_INFO("m_ev {} stddev_limit {} stddev {}", m_ev, stddev_limit, stddev);
 
         double limit = m_ev + stddev_limit*stddev;
         limit = pow(10.,limit);
         Eigen::Index limit_index = 0;
-
-        SPDLOG_INFO("limit {}", limit);
 
         for (Eigen::Index i=0; i<n_dets; i++) {
             if (evals(i) <= limit){
@@ -108,7 +97,7 @@ public:
     template <EigenSolverBackend backend, typename DerivedA, typename DerivedB, typename DerivedC>
     auto calc_eig_values(const Eigen::DenseBase<DerivedA> &, const Eigen::DenseBase<DerivedB> &, Eigen::DenseBase<DerivedC> &);
 
-    template <typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD>
+    template <EigenSolverBackend backend, typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD>
     auto remove_eig_values(const Eigen::DenseBase<DerivedA> &, const Eigen::DenseBase<DerivedB> &,
                                     const Eigen::DenseBase<DerivedC> &, const Eigen::DenseBase<DerivedD> &,
                                     Eigen::DenseBase<DerivedA> &);
@@ -126,50 +115,10 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     // eigenvecs
     Eigen::MatrixXd evecs;
 
-    // normalization denominator
-    //Eigen::MatrixXd denom;
-
-    /*
-    Eigen::MatrixXd det;
-
-    // number of non zero dets
-    Eigen::Index n_non_zero = 0;
-
-    // find number of non zero detectors
-    for (Eigen::Index i=0; i<n_dets; i++) {
-        if ((flags.col(i).array()!=0).all()) {
-            n_non_zero++;
-        }
-    }
-
-    // resize det matrix
-    det.setZero(n_pts, n_non_zero);
-
-    // flag matrix for non zero detectors
-    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> f;
-    f.resize(n_pts, n_non_zero);
-
-    // populate det matrix with non zero detectors
-    Eigen::Index j=0;
-    for (Eigen::Index i=0; i<n_dets; i++) {
-        if ((flags.col(i).array() !=0).all()) {
-            det.col(j) = scans.col(i);
-            f.col(j) = flags.col(i);
-            j++;
-        }
-    }
-
-    // calculate denominator
-    denom = (f.template cast <double> ().adjoint() * f.template cast <double> ()).array() - 1;
-
-    // container for covariance matrix
-    Eigen::MatrixXd pca_cov(n_non_zero, n_non_zero);
-    */
-
     // make copy of flags
     Eigen::MatrixXd f = flags.derived().template cast<double> ();
 
-    // zero out flagged detectors in apt table
+    // zero out flagged detectors in apt table (used for per scan beammap)
     for (Eigen::Index i=0; i<n_dets; i++) {
         if (apt_flags.derived()(i) == 0) {
             f.col(i).setZero();
@@ -180,9 +129,9 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     Eigen::MatrixXd pca_cov(n_dets, n_dets);
 
     // number of unflagged samples
-    //denom = (flags.derived().template cast <double> ().adjoint() * flags.derived().template cast <double> ()).array() - 1;
     auto denom = (f.adjoint() * f).array() - 1;
 
+    // multiply scans by flags to remove flagged signal
     auto det = (scans.derived().array()*f.array()).matrix();
 
     // calculate the covariance matrix
@@ -192,14 +141,13 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
         // number of eigenvalues to remove
         int n_ev = n_eig_to_cut;
 
-        // if using std dev limit and n_eig_to_cut is zero, use all detectors
+        // if using std dev limit and n_eig_to_cut is zero, use all detectors (-1 for spectra requirement)
         if (stddev_limit > 0 && n_eig_to_cut==0) {
             n_ev = n_dets - 1;
         }
 
         // number of values to calculate
         int n_cv = n_ev * 2.5 < n_dets?int(n_ev * 2.5):n_dets;
-        //int n_cv = n_ev * 2.5 < n_dets?int(nev * 2.5):n_non_zero;
 
         // set up spectra
         Spectra::DenseSymMatProd<double> op(pca_cov);
@@ -211,10 +159,7 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
 
         // retrieve results
         evals = Eigen::VectorXd::Zero(n_dets);
-        //evals = Eigen::VectorXd::Zero(n_non_zero);
-
         evecs = Eigen::MatrixXd::Zero(n_dets, n_dets);
-        //evecs = Eigen::MatrixXd::Zero(n_non_zero, n_non_zero);
 
         // copy the eigenvalues and eigenvectors
         if (eigs.info() == Spectra::CompInfo::Successful) {
@@ -250,33 +195,43 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     return std::tuple<Eigen::VectorXd, Eigen::MatrixXd> {evals, evecs};
 }
 
-template <typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD>
+template <Cleaner::EigenSolverBackend backend,typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD>
 auto Cleaner::remove_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eigen::DenseBase<DerivedB> &flags,
                                 const Eigen::DenseBase<DerivedC> &evals, const Eigen::DenseBase<DerivedD> &evecs,
                                 Eigen::DenseBase<DerivedA> &cleaned_scans) {
 
+    // number of detectors
+    Eigen::Index n_dets = scans.cols();
+
     // number of eigenvalues to remove
     Eigen::Index limit_index;
-
-    Eigen::Index n_dets = scans.cols();
 
     // if using std dev limit, calculate index
     if (stddev_limit > 0) {
         int n_ev;
         // if using std dev limit and n_eig_to_cut is zero, use all detectors
         if (n_eig_to_cut==0) {
-            n_ev = n_dets - 1;
+            if constexpr (backend == SpectraBackend) {
+                n_ev = n_dets - 1;
+            }
+            else if constexpr (backend == EigenBackend) {
+                n_ev = n_dets;
+            }
         }
+        // if n_eig_to_cut is not zero, calc std dev for those eigs only
         else {
             n_ev = n_eig_to_cut;
         }
+        // calculate index above which to remove eigenvalues
         limit_index = get_stddev_index(evals.head(n_ev));
-        SPDLOG_INFO("limit index {}", limit_index);
     }
     // otherwise use number of eigenvalues from config
     else {
         limit_index = n_eig_to_cut;
     }
+
+    SPDLOG_DEBUG("removing {} largest eigenvalues", limit_index);
+
 
     // subtract out the desired eigenvectors
     Eigen::MatrixXd proj = scans.derived() * evecs.derived().leftCols(limit_index);

@@ -157,10 +157,11 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
             auto apt_flags = calib.apt["flag"].segment(start_index, n_dets);
 
             auto [evals, evecs] = cleaner.calc_eig_values<timestream::Cleaner::SpectraBackend>(in_scans, in_flags, apt_flags);
-            cleaner.remove_eig_values(in_scans, in_flags, evals, evecs, out_scans);
 
-            SPDLOG_DEBUG("evals {}", evals.head(cleaner.n_eig_to_cut));
-            SPDLOG_DEBUG("evecs {}", evecs.leftCols(cleaner.n_eig_to_cut));
+            SPDLOG_DEBUG("evals {}", evals);
+            SPDLOG_DEBUG("evecs {}", evecs);
+
+            cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_scans, in_flags, evals, evecs, out_scans);
 
             in.evals.data = evals.head(cleaner.n_eig_to_cut);
 
@@ -180,7 +181,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                     out_kernel(out_kernel_ref.data(), out_kernel_ref.rows(), out_scans_ref.cols(),
                               Eigen::OuterStride<>(out_kernel_ref.outerStride()));
 
-                cleaner.remove_eig_values(in_kernel, in_flags, evals, evecs, out_kernel);
+                cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_kernel, in_flags, evals, evecs, out_kernel);
             }
         }
         out.cleaned = true;

@@ -208,14 +208,12 @@ public:
 
 template<class MB>
 void WienerFilter::make_gaussian_template(MB &mb, const double gaussian_template_fwhm_rad) {
-    Eigen::VectorXd rgcut = mb.rows_tan_vec;
-    Eigen::VectorXd cgcut = mb.cols_tan_vec;
-
+    // distance from tangent point
     Eigen::MatrixXd dist(n_rows,n_cols);
 
     for (Eigen::Index i=0; i<n_cols; i++) {
         for (Eigen::Index j=0; j<n_rows; j++) {
-            dist(j,i) = sqrt(pow(rgcut(j),2) + pow(cgcut(i),2));
+            dist(j,i) = sqrt(pow(mb.rows_tan_vec(j),2) + pow(mb.cols_tan_vec(i),2));
         }
     }
 
@@ -223,6 +221,8 @@ void WienerFilter::make_gaussian_template(MB &mb, const double gaussian_template
 
     double min_dist = dist.minCoeff(&row_index,&col_index);
     double sigma = gaussian_template_fwhm_rad*FWHM_TO_STD;
+
+    SPDLOG_INFO("sigma {}", sigma);
 
     std::vector<Eigen::Index> shift_indices = {-row_index, -col_index};
 
@@ -254,7 +254,7 @@ void WienerFilter::make_symmetric_template(MB &mb, const int map_index, CD &cali
     // calculate distance
     Eigen::MatrixXd dist(n_rows,n_cols);
     for (Eigen::Index i=0; i<n_cols; i++) {
-        for(Eigen::Index j=0; j<n_rows; j++) {
+        for (Eigen::Index j=0; j<n_rows; j++) {
             dist(j,i) = sqrt(pow(rgcut(j),2)+pow(cgcut(i),2));
         }
     }

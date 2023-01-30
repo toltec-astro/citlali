@@ -337,7 +337,7 @@ void Engine::get_citlali_config(CT &config) {
                                                                                         "enabled"});
 
     // set tod output to false by default
-    tod_output_type = false;
+    run_tod_output = false;
 
     // check if rtc output is requested
     if (run_tod_output_rtc) {
