@@ -1150,14 +1150,17 @@ void Beammap::output() {
 
                     // add apt table
                     for (auto const& key: calib.apt_header_keys) {
-                        if (calib.apt[key](i) == calib.apt[key](i) && !std::isinf(calib.apt[key](i))) {
+                        //if (calib.apt[key](i) == calib.apt[key](i) && !std::isinf(calib.apt[key](i))) {
+                        try {
                             f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, static_cast<float>(calib.apt[key](i)), key
                                                                   + " (" + calib.apt_header_units[key] + ")");
-                        }
-                        else {
+                        } catch(...) {
+                        //}
+                        //else {
                             f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, 0.0, key
                                                                    + " (" + calib.apt_header_units[key] + ")");
                         }
+                        //}
                     }
                     // increment hdu layer
                     k = k + step;
