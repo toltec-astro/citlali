@@ -365,7 +365,7 @@ void Engine::get_citlali_config(CT &config) {
         get_config_value(config, tod_output_subdir_name, missing_keys, invalid_keys, std::tuple{"timestream","output", "subdir_name"});
     }
     get_config_value(config, telescope.time_chunk, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "length_sec"});
-    get_config_value(config, telescope.force_chunk, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "force_chunk"});
+    get_config_value(config, telescope.force_chunk, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "force_chunking"});
     get_config_value(config, ptcproc.weighting_type, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","weighting",
                                                                                             "type"},{"full","approximate"});
     get_config_value(config, rtcproc.lower_std_dev, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","flagging",
@@ -503,7 +503,7 @@ void Engine::get_citlali_config(CT &config) {
     }
 
     // histogram
-    get_config_value(config, omb.hist_n_bins, missing_keys, invalid_keys, std::tuple{"post_processing","map_histogram_bins"},{},{0});
+    get_config_value(config, omb.hist_n_bins, missing_keys, invalid_keys, std::tuple{"post_processing","map_histogram_n_bins"},{},{0});
     cmb.hist_n_bins = omb.hist_n_bins;
 
     /* wcs */
