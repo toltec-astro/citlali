@@ -1755,6 +1755,9 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
 void Engine::run_wiener_filter(mapmaking::ObsMapBuffer &mb) {
     Eigen::Index i = 0;
     for (auto const& arr: toltec_io.array_name_map) {
+        auto array = maps_to_arrays(i);
+        // init fwhm in pixels
+        wiener_filter.init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
         wiener_filter.make_template(mb,calib.apt, wiener_filter.gaussian_template_fwhm_rad[toltec_io.array_name_map[i]],i);
         wiener_filter.filter_maps(mb, i);
 
@@ -1762,7 +1765,7 @@ void Engine::run_wiener_filter(mapmaking::ObsMapBuffer &mb) {
         if (run_noise) {
             tula::logging::progressbar pb(
                 [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 100,
-                "filtering noise maps ");
+                "filtering noise");
 
             for (Eigen::Index j=0; j<mb.n_noise; j++) {
                 wiener_filter.filter_noise(mb, i, j);

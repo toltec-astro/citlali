@@ -60,9 +60,6 @@ auto mapFitter::ceres_fit(const Model &model,
                           const typename Model::DataType &sigma,
                           const Eigen::DenseBase<Derived> &limits) {
 
-    // prevent ceres from writing out stderr
-    //freopen("/dev/null", "w", stderr);
-
     // fitter
     using Fitter = CeresAutoDiffFitter<Model>;
     Fitter* fitter = new Fitter(&model, z_data.size());

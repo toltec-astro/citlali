@@ -31,6 +31,27 @@ const std::string current_date_time() {
     return buf;
 }
 
+template <typename Derived>
+auto make_meshgrid(const Eigen::DenseBase<Derived> &x, const Eigen::DenseBase<Derived> &y) {
+    // column major
+    // [x0, y0,] [x1, y0] [x2, y0] ... [xn, y0] [x0, y1] ... [xn, yn]
+    const long nx = x.size(), ny = y.size();
+    Derived xy(nx * ny, 2);
+    // map xx [ny, nx] to the first column of xy
+    Eigen::Map<Eigen::MatrixXd> xx(xy.data(), ny, nx);
+    // map yy [ny, nx] to the second column of xy
+    Eigen::Map<Eigen::MatrixXd> yy(xy.data() + xy.rows(), ny, nx);
+    // populate xx such that each row is x
+    for (Eigen::Index i = 0; i < ny; ++i) {
+        xx.row(i) = x.transpose();
+    }
+    // populate yy such that each col is y
+    for (Eigen::Index j = 0; j < nx; ++j) {
+        yy.col(j) = y;
+    }
+    return xy;
+}
+
 // direction of fft
 enum FFTDirection {
     forward = 0,
