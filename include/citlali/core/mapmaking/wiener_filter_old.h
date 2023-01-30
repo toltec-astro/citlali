@@ -237,9 +237,11 @@ void WienerFilter::make_symmetric_template(MB &mb, const int map_index, CD &cali
     Eigen::VectorXd cgcut = mb.cols_tan_vec;
     Eigen::MatrixXd temp = mb.kernel[map_index];
 
+    // carry out fit to kernel
     auto [det_params, det_perror, good_fit] =
         map_fitter.fit_to_gaussian<engine_utils::mapFitter::pointing>(mb.kernel[map_index], mb.weight[map_index], init_fwhm);
 
+    // rescale parameters to on-sky units
     det_params(1) = mb.pixel_size_rad*(det_params(1) - (n_cols)/2);
     det_params(2) = mb.pixel_size_rad*(det_params(2) - (n_rows)/2);
 
@@ -249,6 +251,7 @@ void WienerFilter::make_symmetric_template(MB &mb, const int map_index, CD &cali
     std::vector<Eigen::Index> shift_indices = {shift_row,shift_col};
     temp = engine_utils::shift_2D(temp, shift_indices);
 
+    // calculate distance
     Eigen::MatrixXd dist(n_rows,n_cols);
     for (Eigen::Index i=0; i<n_cols; i++) {
         for(Eigen::Index j=0; j<n_rows; j++) {
@@ -306,8 +309,6 @@ void WienerFilter::make_symmetric_template(MB &mb, const int map_index, CD &cali
             }
         }
     }
-
-    SPDLOG_INFO("filter template {}", filter_template);
 }
 
 template <class MB>
@@ -373,10 +374,6 @@ void WienerFilter::calc_vvq(MB &mb, const int map_index) {
     std::vector<Eigen::Index> shift_2 = {-(n_cols-1)/2};
     engine_utils::shift_1D(q_col, shift_2);
 
-    // make qmap by replicating qc and qr ncols and n_rowsows times respectively.  Faster than a for loop for expected
-    // map dimensions
-    //qmap = (qr.replicate(1,n_cols).array().pow(2.0).matrix() + qc.replicate(n_rows, 1).array().pow(2.0).matrix()).array().sqrt();
-
     for (Eigen::Index i=0; i<n_cols; i++) {
         for (Eigen::Index j=0; j<n_rows; j++) {
             qmap(j,i) = sqrt(pow(q_row(j),2)+pow(q_col(i),2));
@@ -398,7 +395,7 @@ void WienerFilter::calc_vvq(MB &mb, const int map_index) {
         Eigen::Index interp_pts = 1;
         for (Eigen::Index i=0; i<n_cols; i++) {
             for (Eigen::Index j=0; j<n_rows; j++) {
-                if ((qmap(j,i) <= psd_freq(psd_freq.size() - 1)) && (qmap(j, i) >= psd_freq(0))) {
+                if ((qmap(j,i) <= psd_freq(psd_freq.size() - 1)) && (qmap(j,i) >= psd_freq(0))) {
                     mlinterp::interp<mlinterp::rnatord>(n_psd_matrix.data(), interp_pts,
                                      psd.data(), psd_q.data() + n_rows * i + j,
                                      psd_freq.data(), qmap.data() + n_rows * i + j);

@@ -23,13 +23,13 @@ void Telescope::get_tel_data(std::string &filepath) {
         obs_pgm.erase(end_pos, obs_pgm.end());
 
         // work around for files with bad ObsPgm
-        /*if (!obs_pgm.find("Lissajous")) {
+        if (!obs_pgm.find("Lissajous")) {
             obs_pgm = "Lissajous";
         }
 
         else if (!obs_pgm.find("Map")) {
             obs_pgm = "Map";
-        }*/
+        }
 
         if (std::strcmp("Lissajous", obs_pgm.c_str())==0 && time_chunk==0) {
             SPDLOG_ERROR("mapping mode is lissajous and time chunk size is zero");

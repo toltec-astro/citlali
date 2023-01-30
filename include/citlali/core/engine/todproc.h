@@ -268,21 +268,21 @@ void TimeOrderedDataProc<EngineType>::create_output_dir() {
 
     // coaddition directories
     if (engine().run_coadd) {
-        engine().coadd_dir_name = engine().redu_dir_name + "/coadded";
-        if (!fs::exists(fs::status(engine().coadd_dir_name + "/raw"))) {
-            fs::create_directories(engine().coadd_dir_name + "/raw");
+        engine().coadd_dir_name = engine().redu_dir_name + "/coadded/";
+        if (!fs::exists(fs::status(engine().coadd_dir_name + "raw/"))) {
+            fs::create_directories(engine().coadd_dir_name + "raw/");
         }
         else {
-            SPDLOG_WARN("directory {} already exists", engine().coadd_dir_name + "/raw");
+            SPDLOG_WARN("directory {} already exists", engine().coadd_dir_name + "raw/");
         }
 
         // filtered directories
         if (engine().run_map_filter) {
-            if (!fs::exists(fs::status(engine().coadd_dir_name + "/filtered"))) {
-                fs::create_directories(engine().coadd_dir_name + "/filtered");
+            if (!fs::exists(fs::status(engine().coadd_dir_name + "filtered/"))) {
+                fs::create_directories(engine().coadd_dir_name + "filtered/");
             }
             else {
-                SPDLOG_WARN("directory {} already exists", engine().coadd_dir_name + "/filtered");
+                SPDLOG_WARN("directory {} already exists", engine().coadd_dir_name + "filtered/");
             }
         }
     }
