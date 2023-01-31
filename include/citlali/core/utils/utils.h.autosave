@@ -602,7 +602,7 @@ auto shift_1D(Eigen::DenseBase<Derived> &in, std::vector<Eigen::Index> shift_ind
 
     Eigen::Index n_pts = in.size();
 
-    Eigen::VectorXd out(n_pts);
+    Derived out(n_pts);
 
     for (Eigen::Index i=0; i<n_pts; i++) {
         Eigen::Index ti = (i+shift_indices[0])%n_pts;

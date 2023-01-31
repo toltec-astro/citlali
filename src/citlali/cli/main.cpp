@@ -666,52 +666,34 @@ int main(int argc, char *argv[]) {
         return EXIT_SUCCESS;
     }
 
-    /*
+    /*Eigen::Index nrows = 5558;
+    Eigen::Index ncols = 5596;
+    Eigen::MatrixXd test(nrows, ncols);
 
-    enum f {
-         good = 0,
-         D21FitsBetter   = 1 << 0,
-         D21LargeOffset  = 1 << 1,
-         D21NotConverged = 1 << 2,
-         D21OutOfRange   = 1 << 3,
-         D21QrOutOfRange = 1 << 4,
-         LargeOffset     = 1 << 5,
-         NotConverged    = 1 << 6,
-         OutOfRange      = 1 << 7,
-         QrOutOfRange    = 1 << 8,
-         LowGain         = 1 << 9
-    };
+    test.setZero();
 
-    std::uint16_t flag0 = {};
+    int new_rows = 2;
+    int new_cols = 2;
 
-    flag0 = f::good;
+    while (new_rows < nrows) {
+        new_rows = new_rows*2;
+    }
 
-    SPDLOG_INFO("me {}", static_cast<bool>(flag0 & f::good));
+    while (new_cols < ncols) {
+        new_cols = new_cols*2;
+    }
 
-    SPDLOG_INFO("me {}", flag0);
+    Eigen::MatrixXd new_test(new_cols,new_rows);
+    new_test.setZero();
 
-    SPDLOG_INFO("fg {}", flag0 == f::good);
+    new_test.block(0,0,nrows,ncols) = test;
 
-    flag0 |= (f::D21FitsBetter);
+    {
+        tula::logging::scoped_timeit TULA_X{"fft"};
+        auto fft_test = engine_utils::fft<engine_utils::forward>(test,"seq");
+    }
 
-    flag0 |= (f::NotConverged);
-
-    Eigen::Matrix<std::uint16_t,Eigen::Dynamic,1> flags(100);
-    flags.setConstant(f::good);
-
-    SPDLOG_INFO("flags(0) {}", static_cast<bool>(flags(0) & f::good));
-    flags.setConstant(0);
-    SPDLOG_INFO("flags(0) {}", static_cast<bool>(flags(0) & f::good));
-
-
-    SPDLOG_INFO("me {}", static_cast<bool>(flag0 & f::D21FitsBetter));
-    SPDLOG_INFO("me {}", static_cast<bool>(flag0 & f::NotConverged));
-    SPDLOG_INFO("me {}", static_cast<bool>(flag0 & f::good));
-    SPDLOG_INFO("me {}", static_cast<bool>(flag0 & f::LowGain));
-
-
-    std::exit(EXIT_SUCCESS);
-*/
+    std::exit(EXIT_SUCCESS);*/
 
     // now with normal CLI interface
     tula::logging::init();

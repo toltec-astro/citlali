@@ -357,7 +357,7 @@ void Engine::get_citlali_config(CT &config) {
         }
     }
 
-    // set parallelization for psd/wiener filter ffts (maintained with tod output/verbose mode)
+    // set parallelization for psd filter ffts (maintained with tod output/verbose mode)
     omb.parallel_policy = parallel_policy;
     cmb.parallel_policy = parallel_policy;
 
@@ -712,7 +712,7 @@ void Engine::get_citlali_config(CT &config) {
             }
         }
 
-        // set parallelization for ffts
+        // set parallelization for ffts (maintained with tod output/verbose mode)
         wiener_filter.parallel_policy = parallel_policy;
     }
 

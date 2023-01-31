@@ -120,8 +120,16 @@ public:
 };
 
 void ObsMapBuffer::normalize_maps() {
-    // normalize maps
-    for (Eigen::Index i=0; i<signal.size(); i++) {
+
+    // placeholder vectors for grppi map
+    std::vector<int> map_in_vec, map_out_vec;
+
+    map_in_vec.resize(signal.size());
+    std::iota(map_in_vec.begin(), map_in_vec.end(), 0);
+    map_out_vec.resize(signal.size());
+
+    // normalize science and kernel mpas
+    grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
         for (Eigen::Index j=0; j<n_rows; j++) {
             for (Eigen::Index k=0; k<n_cols; k++) {
                 double sig_weight = weight[i](j,k);
@@ -141,11 +149,13 @@ void ObsMapBuffer::normalize_maps() {
                 }
             }
         }
-    }
+
+        return 0;
+    });
 
     // normalize noise maps
     if (!noise.empty()) {
-        for (Eigen::Index i=0; i<signal.size(); i++) {
+        grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
             for (Eigen::Index j=0; j<n_rows; j++) {
                 for (Eigen::Index k=0; k<n_cols; k++) {
                     double sig_weight = weight.at(i)(j,k);
@@ -161,7 +171,8 @@ void ObsMapBuffer::normalize_maps() {
                     }
                 }
             }
-        }
+            return 0;
+        });
     }
 }
 
@@ -214,8 +225,8 @@ void ObsMapBuffer::calc_map_psd() {
         Eigen::MatrixXd sig = signal[i].block(cov_ranges(0,0), cov_ranges(0,1), cov_n_rows, cov_n_cols);
 
         // calculate psds
-        auto [p, pf, p_2d, pf_2d] = engine_utils::calc_2D_psd(sig, rows_tan_vec, cols_tan_vec, cov_n_rows, cov_n_cols,
-                                                           smooth_window, parallel_policy);
+
+        auto [p, pf, p_2d, pf_2d] = engine_utils::calc_2D_psd(sig, rows_tan_vec, cols_tan_vec, smooth_window, parallel_policy);
         // move current map psd values into vectors
         psds.push_back(p);
         psd_freqs.push_back(pf);
@@ -233,8 +244,8 @@ void ObsMapBuffer::calc_map_psd() {
                 sig = noise_matrix.block(cov_ranges(0,0), cov_ranges(0,1), cov_n_rows, cov_n_cols);
 
                 // calculate psds
-                auto [noise_p, noise_pf, noise_p_2d, noise_pf_2d] = engine_utils::calc_2D_psd(sig, rows_tan_vec, cols_tan_vec, cov_n_rows,
-                                                                                           cov_n_cols, smooth_window, parallel_policy);
+                auto [noise_p, noise_pf, noise_p_2d, noise_pf_2d] = engine_utils::calc_2D_psd(sig, rows_tan_vec, cols_tan_vec,
+                                                                                              smooth_window, parallel_policy);
 
                 // just copy if on first noise map
                 if (j==0) {

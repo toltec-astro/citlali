@@ -53,7 +53,7 @@ public:
     std::string parallel_policy;
 
     // fft normalization
-    double fft_norm;
+    //double fft_norm;
 
     // matrices for main calculations from each function
     Eigen::MatrixXd rr, vvq, denom, nume;
@@ -69,7 +69,7 @@ public:
     void make_gaussian_template(MB &mb, const double);
 
     template<class MB, class CD>
-    void make_symmetric_template(MB &mb, const int, CD &);
+    void make_kernel_template(MB &mb, const int, CD &);
 
     template<class MB, class CD>
     void make_template(MB &mb, CD &calib_data, const double gaussian_template_fwhm_rad, const int map_index) {
@@ -78,7 +78,7 @@ public:
         n_cols = 2*(mb.n_cols/2);
 
         // set fft normalization
-        fft_norm = 1.0/n_rows/n_cols;
+        //fft_norm = 1.0/n_rows/n_cols;
 
         // x and y spacing should be equal
         diff_rows = abs(mb.rows_tan_vec(1) - mb.rows_tan_vec(0));
@@ -99,7 +99,7 @@ public:
 
         // kernel template
         else {
-            make_symmetric_template(mb, map_index, calib_data);
+            make_kernel_template(mb, map_index, calib_data);
         }
     }
 
@@ -187,7 +187,6 @@ public:
         filtered_map = Eigen::Map<Eigen::MatrixXd>(out.data(),out.dimension(0),out.dimension(1));
         calc_numerator();
 
-        //Eigen::MatrixXd ratio = (denom.array() == 0).select(0, nume.array() / denom.array());
         Eigen::MatrixXd ratio(n_rows,n_cols);
 
         for (Eigen::Index i=0; i<n_cols; i++) {
@@ -231,7 +230,7 @@ void WienerFilter::make_gaussian_template(MB &mb, const double gaussian_template
 }
 
 template<class MB, class CD>
-void WienerFilter::make_symmetric_template(MB &mb, const int map_index, CD &calib_data) {
+void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_data) {
     // collect what we need
     Eigen::VectorXd rgcut = mb.rows_tan_vec;
     Eigen::VectorXd cgcut = mb.cols_tan_vec;
@@ -364,9 +363,9 @@ void WienerFilter::calc_vvq(MB &mb, const int map_index) {
 
     Eigen::MatrixXd qmap(n_rows,n_cols);
 
-    // shift qr
+    // shift q_row
     Eigen::VectorXd q_row = Eigen::VectorXd::LinSpaced(n_rows, -(n_rows - 1) / 2, (n_rows - 1) / 2 + 1) * diffqr;
-    // shift qc
+    // shift q_col
     Eigen::VectorXd q_col = Eigen::VectorXd::LinSpaced(n_cols, -(n_cols - 1) / 2, (n_cols - 1) / 2 + 1) * diffqc;
 
     std::vector<Eigen::Index> shift_1 = {-(n_rows-1)/2};
@@ -390,7 +389,7 @@ void WienerFilter::calc_vvq(MB &mb, const int map_index) {
         psd_q.setZero();
 
         Eigen::Matrix<Eigen::Index, 1, 1> n_psd_matrix;
-        n_psd_matrix << psd.size();
+        n_psd_matrix << n_psd;
 
         // interpolate onto psd_q
         Eigen::Index interp_pts = 1;
@@ -401,8 +400,8 @@ void WienerFilter::calc_vvq(MB &mb, const int map_index) {
                                      psd.data(), psd_q.data() + n_rows * i + j,
                                      psd_freq.data(), qmap.data() + n_rows * i + j);
                 }
-                else if (qmap(j,i) > psd_freq(psd_freq.size() - 1)) {
-                    psd_q(j,i) = psd(psd.size() - 1);
+                else if (qmap(j,i) > psd_freq(n_psd - 1)) {
+                    psd_q(j,i) = psd(n_psd- 1);
                 }
                 else if (qmap(j,i) < psd_freq(0)) {
                     psd_q(j,i) = psd(0);
@@ -434,7 +433,6 @@ void WienerFilter::calc_numerator() {
     in.imag().setZero();
 
     out = engine_utils::fft<engine_utils::forward>(in, parallel_policy);
-    out = out * fft_norm;
 
     in.real() = out.real().array() / vvq.array();
     in.imag() = out.imag().array() / vvq.array();
@@ -445,7 +443,6 @@ void WienerFilter::calc_numerator() {
     in.imag().setZero();
 
     out = engine_utils::fft<engine_utils::forward>(in, parallel_policy);
-    out = out * fft_norm;
 
     // copy of out
     Eigen::MatrixXcd qqq = out;
@@ -454,7 +451,6 @@ void WienerFilter::calc_numerator() {
     in.imag().setZero();
 
     out = engine_utils::fft<engine_utils::forward>(in, parallel_policy);
-    out = out * fft_norm;
 
     in.real() = out.real().array() * qqq.real().array() + out.imag().array() * qqq.imag().array();
     in.imag() = -out.imag().array() * qqq.real().array() + out.real().array() * qqq.imag().array();
@@ -476,7 +472,6 @@ void WienerFilter::calc_denominator() {
         in.imag().setZero();
 
         out = engine_utils::fft<engine_utils::forward>(in, parallel_policy);
-        out = out * fft_norm;
 
         denom.setConstant(((out.real().array() * out.real().array() + out.imag().array() * out.imag().array()) / vvq.array()).sum());
     }
@@ -491,6 +486,7 @@ void WienerFilter::calc_denominator() {
 
         Eigen::VectorXd zz2d(n_rows * n_cols);
 
+        // vector of real components of IFFT(1/VVQ)
         for (Eigen::Index i=0; i<n_cols; i++) {
             for (Eigen::Index j=0; j<n_rows;j++) {
                 int ii = n_rows*i+j;
@@ -498,8 +494,8 @@ void WienerFilter::calc_denominator() {
             }
         }
 
-        // sort
-        Eigen::VectorXd ss_ord = zz2d;
+        // sort absolute values in ascending order
+        Eigen::VectorXd ss_ord = zz2d.array().abs();
         auto sorted = engine_utils::sorter(ss_ord);
 
         // number of iterations for convergence
@@ -512,21 +508,17 @@ void WienerFilter::calc_denominator() {
             [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 90,
             "calculating denom");
 
-        for (int k=0; k<n_cols; k++) {
-            for (int l=0; l<n_rows; l++) {
+        for (Eigen::Index k=0; k<n_cols; k++) {
+            for (Eigen::Index l=0; l<n_rows; l++) {
                 if (!done) {
-                    Eigen::MatrixXcd in2(n_rows,n_cols);
-                    Eigen::MatrixXcd out2(n_rows,n_cols);
+                    Eigen::MatrixXcd in(n_rows,n_cols);
+                    Eigen::MatrixXcd out(n_rows,n_cols);
 
-                    /* May need to flip directions due to order of matrix storage order */
+                    // current element in flattened 1d vector
                     int kk = n_rows * k + l;
-                    if (kk >= n_loops) {
-                        continue;
-                    }
-
+                    // get index in reverse order
                     auto shift_index = std::get<1>(sorted[n_rows * n_cols - kk - 1]);
 
-                    // changed n_rows
                     double r_shift_n = shift_index / n_rows;
                     double c_shift_n = shift_index % n_rows;
 
@@ -537,40 +529,39 @@ void WienerFilter::calc_denominator() {
 
                     Eigen::MatrixXd in_prod = filter_template.array() * engine_utils::shift_2D(filter_template, shift_indices).array();
 
-                    in2.real() = in_prod;
-                    in2.imag().setZero();
+                    in.real() = in_prod;
+                    in.imag().setZero();
 
-                    out2 = engine_utils::fft<engine_utils::forward>(in2, parallel_policy);
-                    out2 = out2 * fft_norm;
+                    out = engine_utils::fft<engine_utils::forward>(in, parallel_policy);
 
-                    Eigen::MatrixXcd ffdq = out2;
+                    Eigen::MatrixXcd ffdq = out;
 
                     in_prod = rr.array() * engine_utils::shift_2D(rr, shift_indices).array();
 
-                    in2.real() = in_prod;
-                    in2.imag().setZero();
+                    in.real() = in_prod;
+                    in.imag().setZero();
 
-                    out2 = engine_utils::fft<engine_utils::forward>(in2, parallel_policy);
-                    out2 = out2 * fft_norm;
+                    out = engine_utils::fft<engine_utils::forward>(in, parallel_policy);
 
-                    in2.real() = ffdq.real().array() * out2.real().array() + ffdq.imag().array() * out2.imag().array();
-                    in2.imag() = -ffdq.imag().array() * out2.real().array() + ffdq.real().array() * out2.imag().array();
+                    in.real() = ffdq.real().array() * out.real().array() + ffdq.imag().array() * out.imag().array();
+                    in.imag() = -ffdq.imag().array() * out.real().array() + ffdq.real().array() * out.imag().array();
 
-                    out2 = engine_utils::fft<engine_utils::inverse>(in2, parallel_policy);
+                    out = engine_utils::fft<engine_utils::inverse>(in, parallel_policy);
 
-                    Eigen::MatrixXd updater = zz2d(shift_index) * out2.real() * fft_norm;
+                    Eigen::MatrixXd updater = zz2d(shift_index) * out.real()/n_rows/n_cols;
 
+                    // update denominator
                     denom = denom + updater;
 
                     pb.count(n_loops, n_loops / 100);
 
                     if ((kk % 100) == 1) {
                         double max_ratio = -1;
-                        double maxdenom = denom.maxCoeff();
+                        double max_denom = denom.maxCoeff();
 
                         for (Eigen::Index i=0; i<n_rows; i++) {
                             for (Eigen::Index j=0; j<n_cols; j++) {
-                                if (denom(i, j) > 0.01 * maxdenom) {
+                                if (denom(i, j) > 0.01 * max_denom) {
                                     if (abs(updater(i, j) / denom(i, j)) > max_ratio)
                                         max_ratio = abs(updater(i, j) / denom(i, j));
                                 }
@@ -578,20 +569,12 @@ void WienerFilter::calc_denominator() {
                         }
 
                         if (((kk >= max_loops) && (max_ratio < 0.0002)) || max_ratio < 1e-10) {
-                            //SPDLOG_INFO("done.  max_ratio={} {} iterations", max_ratio, kk);
                             done = true;
-                        }
-                        else {
-                            //SPDLOG_INFO("completed iteration {} of {}. max_ratio={}",
-                                        //kk, n_loops, max_ratio);
                         }
                     }
                 }
             }
         }
-
-        //SPDLOG_DEBUG("zeroing out any values < {} in denominator", denom_limit);
-        //(denom.array() < denom_limit).select(0, denom);
         for (Eigen::Index i=0;i<n_rows;i++) {
             for (Eigen::Index j=0;j<n_cols;j++) {
                 if (denom(i,j) < denom_limit) {

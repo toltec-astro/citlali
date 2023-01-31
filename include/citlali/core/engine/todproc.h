@@ -236,6 +236,37 @@ void TimeOrderedDataProc<EngineType>::get_tone_freqs_from_files(const RawObs &ra
 
         j = j + tone_freqs[interfaces[i]].size();
     }
+
+    /* find duplicates */
+
+    // frequency separation
+    Eigen::VectorXd dfreq(engine().calib.n_dets);
+    dfreq(0) = engine().calib.apt["tone_freq"](1) - engine().calib.apt["tone_freq"](0);
+
+    // loop through tone freqs and find distance
+    for (Eigen::Index i=0; i<engine().calib.apt["tone_freq"].size(); i++) {
+        dfreq(i) = std::min(abs(engine().calib.apt["tone_freq"](i) - engine().calib.apt["tone_freq"](i-1)),
+                            abs(engine().calib.apt["tone_freq"](i+1) - engine().calib.apt["tone_freq"](i)));
+    }
+    // get last distance
+    dfreq(dfreq.size()-1) = abs(engine().calib.apt["tone_freq"](dfreq.size()-1)-engine().calib.apt["tone_freq"](dfreq.size()-2));
+
+    // number of nearby tones found
+    int n_nearby_tones = 0;
+
+    // store duplicates
+    engine().calib.apt["duplicate_tone"].setZero(engine().calib.n_dets);
+
+    // loop through flag columns
+    for (Eigen::Index i=0; i<engine().calib.n_dets; i++) {
+        // if closer than freq separation limit and unflagged, flag it
+        if (dfreq(i) < engine().rtcproc.delta_f_min_Hz) {
+            engine().calib.apt["duplicate_tone"](i) = 1;
+            n_nearby_tones++;
+        }
+    }
+
+    SPDLOG_INFO("{} nearby tones found",n_nearby_tones);
 }
 
 // create output directories

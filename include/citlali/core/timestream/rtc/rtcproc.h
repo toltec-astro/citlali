@@ -340,29 +340,15 @@ auto RTCProc::remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
     // number of detectors
     Eigen::Index n_dets = in.scans.data.cols();
 
-    // distance to nearest neighbor
-    Eigen::VectorXd dfreq(calib.n_dets);
-    dfreq(0) = calib.apt["tone_freq"](1) - calib.apt["tone_freq"](0);
-
-    // loop through tone freqs and find distance
-    for (Eigen::Index i=0; i<calib.apt["tone_freq"].size(); i++) {
-        dfreq(i) = std::min(abs(calib.apt["tone_freq"](i) - calib.apt["tone_freq"](i-1)),
-                            abs(calib.apt["tone_freq"](i+1) - calib.apt["tone_freq"](i)));
-    }
-    // get last distance
-    dfreq(dfreq.size()-1) = abs(calib.apt["tone_freq"](dfreq.size()-1)-calib.apt["tone_freq"](dfreq.size()-2));
-
-    // number of nearby tones found
-    int n_nearby_tones = 0;
+    int n_nearby_tones = calib.apt["duplicate_tone"].sum();
 
     // loop through flag columns
     for (Eigen::Index i=0; i<in.flags.data.cols(); i++) {
         // map from data column to apt row
         Eigen::Index det_index = det_indices(i);
         // if closer than freq separation limit and unflagged, flag it
-        if (dfreq(det_index) < delta_f_min_Hz && calib_scan.apt["flag"](det_index)) {
+        if (calib.apt["duplicate_tone"](det_index) && calib_scan.apt["flag"](det_index)) {
             // increment number of nearby tones
-            n_nearby_tones++;
             if (map_grouping!="detector") {
                 in.flags.data.col(i).setZero();
             }
