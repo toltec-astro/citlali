@@ -41,6 +41,12 @@ set(dep_libs ${dep_libs} tula::Boost)
 include(CCfits)
 set(dep_libs ${dep_libs} tula::CCfits)
 
+#include(Matplotlibcpp)
+#set(dep_libs ${dep_libs} tula::Matplotlibcpp)
+
+include(FFTW)
+set(dep_libs ${dep_libs} tula::FFTW)
+
 add_library(citlali STATIC)
 target_sources(citlali
     PRIVATE
