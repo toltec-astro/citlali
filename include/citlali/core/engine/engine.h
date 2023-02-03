@@ -1839,8 +1839,18 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         // write maps immediately after filtering due to computation time
         write_maps(f_io,n_io,pmb,i);
 
+        SPDLOG_INFO("file has been written to:");
+        SPDLOG_INFO("{}.fits",f_io->at(i).filepath);
+
+        // explicitly destroy the fits file
+        f_io->at(i).pfits->destroy();
+
         i++;
     }
+
+    // clear fits file vectors to ensure its closed.
+    f_io->clear();
+    n_io->clear();
 
     // renormalize weight maps based on noise map rms
     //if (run_noise) {
