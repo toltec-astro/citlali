@@ -222,14 +222,15 @@ auto calc_std_dev(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &
     // number of samples for divisor
     double n_samples;
 
+    // no good samples
     if (n_good == 0) {
         return 0.0;
     }
-
+    // one good sample
     else if (n_good == 1) {
         n_samples = n_good;
     }
-
+    // > 1 good sample
     else {
         n_samples = n_good - 1;
     }
@@ -595,7 +596,14 @@ auto calc_2D_psd(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &y
 
     // get psd values
     psd.setZero(nn);
-    for (Eigen::Index i=0; i<nn; i++) {
+
+    std::vector<Eigen::Index> psd_vec_in(nn);
+    std::iota(psd_vec_in.begin(), psd_vec_in.end(),0);
+    std::vector<Eigen::Index> psd_vec_out(nn);
+
+    // do the fft over the cols (parallelized for large maps)
+    grppi::map(tula::grppi_utils::dyn_ex(parallel_policy),psd_vec_in,psd_vec_out,[&](auto i) {
+    //for (Eigen::Index i=0; i<nn; i++) {
         int count_s = 0;
         int count_a = 0;
         double psdarr_s = 0.;
@@ -619,7 +627,8 @@ auto calc_2D_psd(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &y
             psdarr_a /= count_a;
         }
         psd(i) = std::min(psdarr_s,psdarr_a);
-    }
+        return 0;
+    });
 
      // smooth the psd
      Eigen::VectorXd smoothed_psd(nn);

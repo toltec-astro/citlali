@@ -499,7 +499,6 @@ void WienerFilter::calc_numerator() {
     // destroy fftw plans
     fftw_destroy_plan(pf);
     fftw_destroy_plan(pr);
-
 }
 
 void WienerFilter::calc_denominator() {
