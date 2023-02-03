@@ -260,7 +260,8 @@ public:
     template <mapmaking::MapType map_t, class map_buffer_t>
     void write_hist(map_buffer_t &, std::string);
 
-    void run_wiener_filter(mapmaking::ObsMapBuffer &);
+    template <mapmaking::MapType map_t, class map_buffer_t>
+    void run_wiener_filter(map_buffer_t &);
 };
 
 template<typename CT>
@@ -1763,14 +1764,50 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
     fo.close();
 }
 
-void Engine::run_wiener_filter(mapmaking::ObsMapBuffer &mb) {
+template <mapmaking::MapType map_t, class map_buffer_t>
+void Engine::run_wiener_filter(map_buffer_t &mb) {
+    // pointer to map buffer
+    mapmaking::ObsMapBuffer* pmb = &mb;
+    // pointer to data file fits vector
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* f_io = NULL;
+    // pointer to noise file fits vector
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* n_io = NULL;
+
+    // directory name
+    std::string dir_name;
+
+    // filtered obs maps
+    if constexpr (map_t == mapmaking::FilteredObs) {
+        f_io = &filtered_fits_io_vec;
+        n_io = &filtered_noise_fits_io_vec;
+        dir_name = obsnum_dir_name + "filtered/";
+    }
+
+    // filtered coadded maps
+    else if constexpr (map_t == mapmaking::FilteredCoadd) {
+        f_io = &filtered_coadd_fits_io_vec;
+        n_io = &filtered_coadd_noise_fits_io_vec;
+        dir_name = coadd_dir_name + "filtered/";
+    }
+
+    for (Eigen::Index i=0; i<f_io->size(); i++) {
+        // get the array for the given map
+        Eigen::Index map_index = maps_to_arrays(i);
+        // add primary hdu
+        add_phdu(f_io, pmb, map_index);
+
+        if (!pmb->noise.empty()) {
+            add_phdu(n_io, pmb, map_index);
+        }
+    }
+
     Eigen::Index i = 0;
     for (auto const& arr: toltec_io.array_name_map) {
         auto array = maps_to_arrays(i);
         // init fwhm in pixels
         wiener_filter.init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
         wiener_filter.make_template(mb,calib.apt, wiener_filter.gaussian_template_fwhm_rad[toltec_io.array_name_map[i]],i);
-        wiener_filter.filter_maps(mb, i);
+        wiener_filter.filter_maps(mb,i);
 
         // filter noise maps
         if (run_noise) {
@@ -1783,14 +1820,33 @@ void Engine::run_wiener_filter(mapmaking::ObsMapBuffer &mb) {
                 pb.count(mb.n_noise, mb.n_noise / 100);
             }
         }
+
+        if (wiener_filter.normalize_error) {
+            SPDLOG_INFO("renormalizing errors");
+            // get mean error from weight maps
+            mb.calc_mean_err();
+
+            // get mean map rms from noise maps
+            mb.calc_mean_rms();
+
+            // get rescaled normalization factor
+            auto noise_factor = (1./pow(mb.mean_rms.array(),2.))*mb.mean_err.array();
+
+            // re-normalize weight map
+            mb.weight[i].noalias() = mb.weight[i]*noise_factor(i);
+        }
+
+        // write maps immediately after filtering due to computation time
+        write_maps(f_io,n_io,pmb,i);
+
         i++;
     }
 
     // renormalize weight maps based on noise map rms
-    if (run_noise) {
-        if (wiener_filter.normalize_error) {
-            SPDLOG_INFO("renormalizing errors");
-            mb.renormalize_errors();
-        }
-    }
+    //if (run_noise) {
+        //if (wiener_filter.normalize_error) {
+            //SPDLOG_INFO("renormalizing errors");
+            //mb.renormalize_errors();
+        //}
+    //}
 }

@@ -266,7 +266,7 @@ void TimeOrderedDataProc<EngineType>::get_tone_freqs_from_files(const RawObs &ra
         }
     }
 
-    SPDLOG_INFO("{} nearby tones found",n_nearby_tones);
+    SPDLOG_INFO("{} nearby tones found. these will be flagged.",n_nearby_tones);
 }
 
 // create output directories

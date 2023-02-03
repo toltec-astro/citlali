@@ -1,5 +1,3 @@
-#define EIGEN_FFTW_DEFAULT
-
 #include <citlali_config/config.h>
 #include <citlali_config/gitversion.h>
 #include <citlali_config/default_config.h>
@@ -590,7 +588,7 @@ int run(const rc_t &rc) {
                     // filter obs map
                     else if (todproc.engine().run_map_filter) {
                         SPDLOG_INFO("filtering obs maps");
-                        todproc.engine().run_wiener_filter(todproc.engine().omb);
+                        todproc.engine().template run_wiener_filter<mapmaking::FilteredObs>(todproc.engine().omb);
                         // output filtered maps
                         SPDLOG_INFO("outputting filtered obs files");
 
@@ -602,7 +600,7 @@ int run(const rc_t &rc) {
                         todproc.engine().omb.calc_map_hist();
 
                         SPDLOG_INFO("outputting filtered obs files");
-                        todproc.engine().template output<mapmaking::FilteredObs>();
+                        //todproc.engine().template output<mapmaking::FilteredObs>();
                     }
                 }
 
@@ -625,7 +623,7 @@ int run(const rc_t &rc) {
                     if (todproc.engine().run_map_filter) {
                         SPDLOG_INFO("filtering coadded maps");
                         // filter
-                        todproc.engine().run_wiener_filter(todproc.engine().cmb);
+                        todproc.engine().template run_wiener_filter<mapmaking::FilteredCoadd>(todproc.engine().cmb);
 
                         // calculate filtered coadded map psds
                         SPDLOG_INFO("calculating filtered coadded map psds");
@@ -636,7 +634,7 @@ int run(const rc_t &rc) {
 
                         // output filtered coadd
                         SPDLOG_INFO("outputting filtered coadded files");
-                        todproc.engine().template output<mapmaking::FilteredCoadd>();
+                        //todproc.engine().template output<mapmaking::FilteredCoadd>();
                     }
                 }
 
