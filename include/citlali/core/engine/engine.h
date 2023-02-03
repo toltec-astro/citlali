@@ -468,13 +468,21 @@ void Engine::get_citlali_config(CT &config) {
 
     /* cleaning */
     get_config_value(config, ptcproc.run_clean, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","clean","enabled"});
-    get_config_value(config, ptcproc.cleaner.n_eig_to_cut, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","clean","n_eig_to_cut"});
-    get_config_value(config, ptcproc.cleaner.grouping, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","clean","grouping"},
-                                                                                      {"array", "nw", "network","nw_array","array_nw","all"});
+    //get_config_value(config, ptcproc.cleaner.n_eig_to_cut, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","clean","n_eig_to_cut"});
+    //get_config_value(config, ptcproc.cleaner.grouping, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","clean","grouping"},
+    //                                                                                  {"array", "nw", "network","nw_array","array_nw","all"});
 
-    if (ptcproc.cleaner.grouping == "network") {
+    // vector of groupings
+    ptcproc.cleaner.grouping = config.template get_typed<std::vector<std::string>>(std::tuple{"timestream","processed_time_chunk","clean","grouping"});
+    // vector of eigenvalues to cut
+    auto n_eig_to_cut = config.template get_typed<std::vector<Eigen::Index>>(std::tuple{"timestream","processed_time_chunk","clean","n_eig_to_cut"});
+
+    // map to eigen vector
+    ptcproc.cleaner.n_eig_to_cut = Eigen::Map<Eigen::VectorXI>(n_eig_to_cut.data(),n_eig_to_cut.size());
+
+    /*if (ptcproc.cleaner.grouping == "network") {
         ptcproc.cleaner.grouping = "nw";
-    }
+    }*/
     get_config_value(config, ptcproc.cleaner.stddev_limit, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk",
                                                                                              "clean","stddev_limit"});
 
@@ -1424,13 +1432,15 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
         fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.ITER_TOLERANCE", beammap_iter_tolerance, "Beammap iteration tolerance");
         fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.ITER_MAX", beammap_iter_max, "Beammap max iterations");
-        fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_DET_INDEX", beammap_reference_det, "Beammap Reference det (rotation center)");
         fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.IS_DEROTATED", beammap_derotate, "Beammap derotated");
-        if (beammap_reference_det >= 0) {
+        // add reference detector information
+        if (beammap_subtract_reference) {
+            fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_DET_INDEX", beammap_reference_det, "Beammap Reference det (rotation center)");
             fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_X_T", calib.apt["x_t"](beammap_reference_det), "Az rotation center (arcsec)");
             fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_Y_T", calib.apt["y_t"](beammap_reference_det), "Alt rotation center (arcsec)");
         }
         else {
+            fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_DET_INDEX", -99, "Beammap Reference det (rotation center)");
             fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_X_T", "N/A", "Az rotation center (arcsec)");
             fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_Y_T", "N/A", "Alt rotation center (arcsec)");
         }
@@ -1499,7 +1509,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.WTLOW", ptcproc.lower_std_dev, "Lower weight cutoff");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.WTHIGH", ptcproc.upper_std_dev, "Upper weight cutoff");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED", ptcproc.run_clean, "Cleaned");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.NEIG", ptcproc.cleaner.n_eig_to_cut, "Number of eigenvalues removed");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.NEIG", ptcproc.cleaner.n_eig_to_cut.sum(), "Number of eigenvalues removed");
 
     // add telescope file header information
     for (auto const& [key, val] : telescope.tel_header) {

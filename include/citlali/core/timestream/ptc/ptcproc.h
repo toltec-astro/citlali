@@ -84,105 +84,97 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                   TCData<TCDataKind::PTC, Eigen::MatrixXd> &out, calib_type &calib) {
 
     if (run_clean) {
+        // number of samples
         Eigen::Index n_pts = in.scans.data.rows();
+        Eigen::Index i = 0;
 
-        std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grouping_limits;
+        // loop through config groupings
+        for (const auto & group: cleaner.grouping) {
+            // map of tuples to hold detector limits
+            std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grouping_limits;
 
-        // network cleaning
-        if (cleaner.grouping == "nw") {
-            grouping_limits = calib.nw_limits;
-        }
-
-        // array cleaning
-        else if (cleaner.grouping == "array") {
-            grouping_limits = calib.array_limits;
-        }
-
-        // nw clean followed by array clean
-        else if (cleaner.grouping == "nw_array") {
-            grouping_limits = calib.nw_limits;
-            Eigen::Index start = calib.nws.maxCoeff();
-            int i = 1;
-            for (auto const& [key, val] : calib.array_limits) {
-                grouping_limits[start+i] = val;
-                i++;
+            // network cleaning
+            //if (cleaner.grouping == "nw") {
+            if (group == "nw" || group == "network") {
+                grouping_limits = calib.nw_limits;
             }
-        }
 
-        // nw clean followed by array clean
-        else if (cleaner.grouping == "array_nw") {
-            grouping_limits = calib.array_limits;
-            Eigen::Index start = calib.arrays.maxCoeff();
-            int i = 1;
-            for (auto const& [key, val] : calib.nw_limits) {
-                grouping_limits[start+i] = val;
-                i++;
+            // array cleaning
+            //else if (cleaner.grouping == "array") {
+            else if (group == "array") {
+                grouping_limits = calib.array_limits;
             }
-        }
 
-        // use all detectors for cleaning
-        else if (cleaner.grouping == "all") {
-            grouping_limits[0] = std::make_tuple(0,in.scans.data.cols());
-        }
+            // use all detectors for cleaning
+            //else if (cleaner.grouping == "all") {
+            else if (group == "all") {
+                grouping_limits[0] = std::make_tuple(0,in.scans.data.cols());
+            }
 
-        for (auto const& [key, val] : grouping_limits) {
-            // starting index
-            auto start_index = std::get<0>(val);
-            // size of block for each grouping
-            auto n_dets = std::get<1>(val) - std::get<0>(val);
+            SPDLOG_DEBUG("cleaning with {} grouping", group);
 
-            // get the reference block of in scans that corresponds to the current array
-            Eigen::Ref<Eigen::MatrixXd> in_scans_ref = in.scans.data.block(0, start_index, n_pts, n_dets);
+            for (auto const& [key, val] : grouping_limits) {
+                // starting index
+                auto start_index = std::get<0>(val);
+                // size of block for each grouping
+                auto n_dets = std::get<1>(val) - std::get<0>(val);
 
-            Eigen::Map<Eigen::MatrixXd, 0, Eigen::OuterStride<>>
-                in_scans(in_scans_ref.data(), in_scans_ref.rows(), in_scans_ref.cols(),
-                         Eigen::OuterStride<>(in_scans_ref.outerStride()));
-
-            // get the block of in flags that corresponds to the current array
-            Eigen::Ref<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> in_flags_ref =
-                in.flags.data.block(0, start_index, n_pts, n_dets);
-
-            Eigen::Map<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>, 0, Eigen::OuterStride<> >
-                in_flags(in_flags_ref.data(), in_flags_ref.rows(), in_flags_ref.cols(),
-                         Eigen::OuterStride<>(in_flags_ref.outerStride()));
-
-            // get the block of out scans that corresponds to the current array
-            Eigen::Ref<Eigen::MatrixXd> out_scans_ref = out.scans.data.block(0, start_index, n_pts, n_dets);
-
-            Eigen::Map<Eigen::MatrixXd, 0, Eigen::OuterStride<>>
-                out_scans(out_scans_ref.data(), out_scans_ref.rows(), out_scans_ref.cols(),
-                          Eigen::OuterStride<>(out_scans_ref.outerStride()));
-
-            // get the block of out scans that corresponds to the current array
-            auto apt_flags = calib.apt["flag"].segment(start_index, n_dets);
-
-            auto [evals, evecs] = cleaner.calc_eig_values<timestream::Cleaner::SpectraBackend>(in_scans, in_flags, apt_flags);
-
-            SPDLOG_DEBUG("evals {}", evals);
-            SPDLOG_DEBUG("evecs {}", evecs);
-
-            cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_scans, in_flags, evals, evecs, out_scans);
-
-            in.evals.data = evals.head(cleaner.n_eig_to_cut);
-
-            if (in.kernel.data.size()!=0) {
-                SPDLOG_DEBUG("cleaning kernel");
                 // get the reference block of in scans that corresponds to the current array
-                Eigen::Ref<Eigen::MatrixXd> in_kernel_ref = in.kernel.data.block(0, start_index, n_pts, n_dets);
+                Eigen::Ref<Eigen::MatrixXd> in_scans_ref = in.scans.data.block(0, start_index, n_pts, n_dets);
 
                 Eigen::Map<Eigen::MatrixXd, 0, Eigen::OuterStride<>>
-                    in_kernel(in_kernel_ref.data(), in_kernel_ref.rows(), in_kernel_ref.cols(),
-                             Eigen::OuterStride<>(in_kernel_ref.outerStride()));
+                    in_scans(in_scans_ref.data(), in_scans_ref.rows(), in_scans_ref.cols(),
+                             Eigen::OuterStride<>(in_scans_ref.outerStride()));
+
+                // get the block of in flags that corresponds to the current array
+                Eigen::Ref<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> in_flags_ref =
+                    in.flags.data.block(0, start_index, n_pts, n_dets);
+
+                Eigen::Map<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>, 0, Eigen::OuterStride<> >
+                    in_flags(in_flags_ref.data(), in_flags_ref.rows(), in_flags_ref.cols(),
+                             Eigen::OuterStride<>(in_flags_ref.outerStride()));
 
                 // get the block of out scans that corresponds to the current array
-                Eigen::Ref<Eigen::MatrixXd> out_kernel_ref = out.kernel.data.block(0, start_index, n_pts, n_dets);
+                Eigen::Ref<Eigen::MatrixXd> out_scans_ref = out.scans.data.block(0, start_index, n_pts, n_dets);
 
-                Eigen::Map<Eigen::MatrixXd, 0, Eigen::OuterStride<> >
-                    out_kernel(out_kernel_ref.data(), out_kernel_ref.rows(), out_scans_ref.cols(),
-                              Eigen::OuterStride<>(out_kernel_ref.outerStride()));
+                Eigen::Map<Eigen::MatrixXd, 0, Eigen::OuterStride<>>
+                    out_scans(out_scans_ref.data(), out_scans_ref.rows(), out_scans_ref.cols(),
+                              Eigen::OuterStride<>(out_scans_ref.outerStride()));
 
-                cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_kernel, in_flags, evals, evecs, out_kernel);
+                // get the block of out scans that corresponds to the current array
+                auto apt_flags = calib.apt["flag"].segment(start_index, n_dets);
+
+                auto [evals, evecs] = cleaner.calc_eig_values<timestream::Cleaner::SpectraBackend>(in_scans, in_flags, apt_flags,
+                                                                                                   cleaner.n_eig_to_cut(i));
+                SPDLOG_DEBUG("evals {}", evals);
+                SPDLOG_DEBUG("evecs {}", evecs);
+
+                cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_scans, in_flags, evals, evecs, out_scans,
+                                                                               cleaner.n_eig_to_cut(i));
+
+                //in.evals.data = evals.head(cleaner.n_eig_to_cut2(i));
+
+                if (in.kernel.data.size()!=0) {
+                    SPDLOG_DEBUG("cleaning kernel");
+                    // get the reference block of in scans that corresponds to the current array
+                    Eigen::Ref<Eigen::MatrixXd> in_kernel_ref = in.kernel.data.block(0, start_index, n_pts, n_dets);
+
+                    Eigen::Map<Eigen::MatrixXd, 0, Eigen::OuterStride<>>
+                        in_kernel(in_kernel_ref.data(), in_kernel_ref.rows(), in_kernel_ref.cols(),
+                                 Eigen::OuterStride<>(in_kernel_ref.outerStride()));
+
+                    // get the block of out scans that corresponds to the current array
+                    Eigen::Ref<Eigen::MatrixXd> out_kernel_ref = out.kernel.data.block(0, start_index, n_pts, n_dets);
+
+                    Eigen::Map<Eigen::MatrixXd, 0, Eigen::OuterStride<> >
+                        out_kernel(out_kernel_ref.data(), out_kernel_ref.rows(), out_scans_ref.cols(),
+                                  Eigen::OuterStride<>(out_kernel_ref.outerStride()));
+
+                    cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_kernel, in_flags, evals, evecs, out_kernel,
+                                                                                   cleaner.n_eig_to_cut(i));
+                }
             }
+            i++;
         }
         out.cleaned = true;
     }
@@ -191,7 +183,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 template <typename apt_type, class tel_type>
 void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_type &apt, tel_type &telescope) {
     if (weighting_type == "approximate") {
-        SPDLOG_DEBUG("calculating weights using approximate method");
+        SPDLOG_DEBUG("calculating weights using detector sensitivities");
         // resize weights to number of detectors
         in.weights.data = Eigen::VectorXd::Zero(in.scans.data.cols());
 

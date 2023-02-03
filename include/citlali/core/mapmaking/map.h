@@ -225,7 +225,6 @@ void ObsMapBuffer::calc_map_psd() {
         Eigen::MatrixXd sig = signal[i].block(cov_ranges(0,0), cov_ranges(0,1), cov_n_rows, cov_n_cols);
 
         // calculate psds
-
         auto [p, pf, p_2d, pf_2d] = engine_utils::calc_2D_psd(sig, rows_tan_vec, cols_tan_vec, smooth_window, parallel_policy);
         // move current map psd values into vectors
         psds.push_back(p);

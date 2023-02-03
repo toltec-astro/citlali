@@ -17,9 +17,19 @@ public:
         SpectraBackend = 1
     };
 
-    int n_eig_to_cut;
+    // number of eigenvalues to remove
+    //int n_eig_to_cut;
+
+    // standard deviation limit
     double stddev_limit;
-    std::string grouping;
+
+    // detector grouping
+    //std::string grouping;
+
+    // number of eigenvalues to remove
+    Eigen::VectorXI n_eig_to_cut;
+    // standard deviation limit
+    std::vector<std::string> grouping;
 
     template <typename Derived>
     auto get_stddev_index(const Eigen::DenseBase<Derived> &evals) {
@@ -80,10 +90,12 @@ public:
             iterator++;
         }
 
-        double limit = m_ev + stddev_limit*stddev;
-        limit = pow(10.,limit);
+        // stddev limit
+        double limit = pow(10.,m_ev + stddev_limit*stddev);
+        // index where limit occurs
         Eigen::Index limit_index = 0;
 
+        // find index
         for (Eigen::Index i=0; i<n_dets; i++) {
             if (evals(i) <= limit){
                 limit_index = i;
@@ -95,17 +107,18 @@ public:
     }
 
     template <EigenSolverBackend backend, typename DerivedA, typename DerivedB, typename DerivedC>
-    auto calc_eig_values(const Eigen::DenseBase<DerivedA> &, const Eigen::DenseBase<DerivedB> &, Eigen::DenseBase<DerivedC> &);
+    auto calc_eig_values(const Eigen::DenseBase<DerivedA> &, const Eigen::DenseBase<DerivedB> &, Eigen::DenseBase<DerivedC> &,
+                         const Eigen::Index);
 
     template <EigenSolverBackend backend, typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD>
     auto remove_eig_values(const Eigen::DenseBase<DerivedA> &, const Eigen::DenseBase<DerivedB> &,
-                                    const Eigen::DenseBase<DerivedC> &, const Eigen::DenseBase<DerivedD> &,
-                                    Eigen::DenseBase<DerivedA> &);
+                           const Eigen::DenseBase<DerivedC> &, const Eigen::DenseBase<DerivedD> &,
+                           Eigen::DenseBase<DerivedA> &, const Eigen::Index);
 };
 
 template <Cleaner::EigenSolverBackend backend, typename DerivedA, typename DerivedB, typename DerivedC>
 auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eigen::DenseBase<DerivedB> &flags,
-                              Eigen::DenseBase<DerivedC> &apt_flags) {
+                              Eigen::DenseBase<DerivedC> &apt_flags, const Eigen::Index group_n_eig) {
     // dimensions
     Eigen::Index n_pts = scans.rows();
     Eigen::Index n_dets = scans.cols();
@@ -139,10 +152,10 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
 
     if constexpr (backend == SpectraBackend) {
         // number of eigenvalues to remove
-        int n_ev = n_eig_to_cut;
+        int n_ev = group_n_eig;
 
         // if using std dev limit and n_eig_to_cut is zero, use all detectors (-1 for spectra requirement)
-        if (stddev_limit > 0 && n_eig_to_cut==0) {
+        if (stddev_limit > 0 && group_n_eig==0) {
             n_ev = n_dets - 1;
         }
 
@@ -198,7 +211,7 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
 template <Cleaner::EigenSolverBackend backend,typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD>
 auto Cleaner::remove_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eigen::DenseBase<DerivedB> &flags,
                                 const Eigen::DenseBase<DerivedC> &evals, const Eigen::DenseBase<DerivedD> &evecs,
-                                Eigen::DenseBase<DerivedA> &cleaned_scans) {
+                                Eigen::DenseBase<DerivedA> &cleaned_scans, const Eigen::Index group_n_eig) {
 
     // number of detectors
     Eigen::Index n_dets = scans.cols();
@@ -210,7 +223,7 @@ auto Cleaner::remove_eig_values(const Eigen::DenseBase<DerivedA> &scans, const E
     if (stddev_limit > 0) {
         int n_ev;
         // if using std dev limit and n_eig_to_cut is zero, use all detectors
-        if (n_eig_to_cut==0) {
+        if (group_n_eig == 0) {
             if constexpr (backend == SpectraBackend) {
                 n_ev = n_dets - 1;
             }
@@ -220,14 +233,14 @@ auto Cleaner::remove_eig_values(const Eigen::DenseBase<DerivedA> &scans, const E
         }
         // if n_eig_to_cut is not zero, calc std dev for those eigs only
         else {
-            n_ev = n_eig_to_cut;
+            n_ev = group_n_eig;
         }
         // calculate index above which to remove eigenvalues
         limit_index = get_stddev_index(evals.head(n_ev));
     }
     // otherwise use number of eigenvalues from config
     else {
-        limit_index = n_eig_to_cut;
+        limit_index = group_n_eig;
     }
 
     SPDLOG_DEBUG("removing {} largest eigenvalues", limit_index);

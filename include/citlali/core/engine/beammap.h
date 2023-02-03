@@ -100,7 +100,9 @@ void Beammap::setup() {
         calib.apt["kids_tone"](i) = j;
     }
 
+    // add kids tone to apt header
     calib.apt_header_keys.push_back("kids_tone");
+    calib.apt_header_units["tone_freq"] = "Hz";
 
     // set number of parameters for map fitting
     n_params = 6;

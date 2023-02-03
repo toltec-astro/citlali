@@ -6,6 +6,8 @@
 #include <complex>
 //#include <png.h>
 
+#include <fftw3.h>
+
 #include <Eigen/Core>
 #include <unsupported/Eigen/FFT>
 #include <unsupported/Eigen/Splines>
@@ -60,7 +62,8 @@ enum FFTDirection {
 
 // parallelized 2d fft using eigen
 template <FFTDirection direction, typename Derived>
-auto fft(Eigen::DenseBase<Derived> &in, std::string exmode) {
+auto fft(Eigen::DenseBase<Derived> &in, std::string parallel_policy) {
+    // get dimensions of data
     Eigen::Index n_rows = in.rows();
     Eigen::Index n_cols = in.cols();
 
@@ -77,7 +80,7 @@ auto fft(Eigen::DenseBase<Derived> &in, std::string exmode) {
     std::vector<Eigen::Index> col_vec_out(n_cols);
 
     // do the fft over the cols
-    grppi::map(tula::grppi_utils::dyn_ex(exmode),col_vec_in,col_vec_out,[&](auto i) {
+    grppi::map(tula::grppi_utils::dyn_ex(parallel_policy),col_vec_in,col_vec_out,[&](auto i) {
         Eigen::FFT<double> fft;
         fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
         fft.SetFlag(Eigen::FFT<double>::Unscaled);
@@ -95,7 +98,7 @@ auto fft(Eigen::DenseBase<Derived> &in, std::string exmode) {
         return 0;});
 
     // do the fft over the rows
-    grppi::map(tula::grppi_utils::dyn_ex(exmode),row_vec_in,row_vec_out,[&](auto i) {
+    grppi::map(tula::grppi_utils::dyn_ex(parallel_policy),row_vec_in,row_vec_out,[&](auto i) {
         Eigen::FFT<double> fft;
         fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
         fft.SetFlag(Eigen::FFT<double>::Unscaled);
@@ -111,6 +114,44 @@ auto fft(Eigen::DenseBase<Derived> &in, std::string exmode) {
         out.row(i) = temp_row;
 
         return 0;});
+
+    if constexpr(direction == forward) {
+        // set fft normalization
+        out = out/n_rows/n_cols;
+    }
+
+    return out;
+}
+
+// parallelized 2d fft using eigen
+template <FFTDirection direction, typename Derived, typename fftw_plan_t>
+auto fft2(Eigen::DenseBase<Derived> &in, fftw_plan_t &plan, fftw_complex* a, fftw_complex*b){
+    // get dimensions of data
+    Eigen::Index n_rows = in.rows();
+    Eigen::Index n_cols = in.cols();
+
+    // output matrix
+    Eigen::MatrixXcd out(n_rows, n_cols);
+
+    // copy data from input (row major?)
+    for (Eigen::Index i=0; i< n_rows; i++) {
+        for (Eigen::Index j=0; j<n_cols; j++) {
+            int ii = n_cols*i + j;
+            a[ii][0] = in(i,j).real();
+            a[ii][1] = in(i,j).imag();
+        }
+    }
+
+    fftw_execute(plan);
+
+    // copy data to output (row major?)
+    for (Eigen::Index i=0; i< n_rows; i++) {
+        for (Eigen::Index j=0; j<n_cols; j++) {
+            int ii = n_cols*i + j;
+            out.real()(i,j) = b[ii][0];
+            out.imag()(i,j) = b[ii][1];
+        }
+    }
 
     if constexpr(direction == forward) {
         // set fft normalization
@@ -233,7 +274,6 @@ auto hanning_window(Eigen::Index n_rows, Eigen::Index n_cols) {
     Eigen::VectorXd col = -0.5 * cos(index*b) + 0.5;
 
     Eigen::MatrixXd window(n_rows, n_cols);
-    //window = row.array().colwise()*col.array();
 
     for (Eigen::Index i=0; i<n_cols; i++) {
         for (Eigen::Index j=0; j<n_rows; j++) {
@@ -469,8 +509,22 @@ auto calc_2D_psd(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &y
     // apply hanning window
     in.real() = in.real().array()*engine_utils::hanning_window(n_rows, n_cols).array();
 
+    // fftw setup
+    fftw_complex *a;
+    fftw_complex *b;
+    fftw_plan pf;
+
+    a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
+    b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
+
+    pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
+
     // do fft
-    in = engine_utils::fft<engine_utils::forward>(in, parallel_policy);
+    //in = engine_utils::fft<engine_utils::forward>(in, parallel_policy);
+    in = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
+
+    fftw_destroy_plan(pf);
+
     //in = in/n_rows/n_cols;
 
     // get power
@@ -602,7 +656,7 @@ auto shift_1D(Eigen::DenseBase<Derived> &in, std::vector<Eigen::Index> shift_ind
 
     Eigen::Index n_pts = in.size();
 
-    Eigen::VectorXd out(n_pts);
+    Derived out(n_pts);
 
     for (Eigen::Index i=0; i<n_pts; i++) {
         Eigen::Index ti = (i+shift_indices[0])%n_pts;

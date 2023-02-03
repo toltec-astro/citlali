@@ -1,3 +1,5 @@
+#define EIGEN_FFTW_DEFAULT
+
 #include <citlali_config/config.h>
 #include <citlali_config/gitversion.h>
 #include <citlali_config/default_config.h>
@@ -247,6 +249,10 @@ int run(const rc_t &rc) {
                 // set parallelization explicitly
                 omp_set_num_threads(todproc.engine().n_threads);
                 Eigen::setNbThreads(1);
+
+                // set fftw threads
+                int fftw_threads = fftw_init_threads();
+                fftw_plan_with_nthreads(todproc.engine().n_threads);
 
                 // setup reduction directories
                 todproc.create_output_dir();
@@ -668,32 +674,54 @@ int main(int argc, char *argv[]) {
 
     /*Eigen::Index nrows = 5558;
     Eigen::Index ncols = 5596;
-    Eigen::MatrixXd test(nrows, ncols);
+    Eigen::MatrixXcd test(nrows, ncols);
+    Eigen::MatrixXcd test2(nrows, ncols);
 
-    test.setZero();
+    test.setRandom();
+    test2 = test;
 
-    int new_rows = 2;
-    int new_cols = 2;
+    Eigen::MatrixXcd fft_test, fft_test2;
 
-    while (new_rows < nrows) {
-        new_rows = new_rows*2;
-    }
+    omp_set_num_threads(1);
 
-    while (new_cols < ncols) {
-        new_cols = new_cols*2;
-    }
-
-    Eigen::MatrixXd new_test(new_cols,new_rows);
-    new_test.setZero();
-
-    new_test.block(0,0,nrows,ncols) = test;
+    // set fftw threads
+    int fftw_threads = fftw_init_threads();
+    fftw_plan_with_nthreads(1);
 
     {
         tula::logging::scoped_timeit TULA_X{"fft"};
-        auto fft_test = engine_utils::fft<engine_utils::forward>(test,"seq");
+        fft_test = engine_utils::fft<engine_utils::forward>(test,"seq");
     }
 
-    std::exit(EXIT_SUCCESS);*/
+    {
+
+        fftw_complex *a;
+        fftw_complex *b;
+        fftw_plan pf, pr;
+
+        a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*nrows*ncols);
+        b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*nrows*ncols);
+
+        pf = fftw_plan_dft_2d(nrows, ncols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
+        //pr = fftw_plan_dft_2d(n_rows, n_rows, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
+
+        tula::logging::scoped_timeit TULA_X{"fft2"};
+        fft_test2 = engine_utils::fft2<engine_utils::forward>(test2,pf,pr,a,b);
+
+        fftw_destroy_plan(pf);
+        //fftw_destroy_plan(pf);
+    }
+
+    SPDLOG_INFO("fft_test - fft_test2 {} {}",
+                (fft_test.array() - fft_test2.array()).real().maxCoeff(),
+                (fft_test.array() - fft_test2.array()).real().minCoeff());
+
+    SPDLOG_INFO("fft_test - fft_test2 {} {}",
+                (fft_test.array() - fft_test2.array()).imag().maxCoeff(),
+                (fft_test.array() - fft_test2.array()).imag().minCoeff());
+
+    std::exit(EXIT_SUCCESS);
+    */
 
     // now with normal CLI interface
     tula::logging::init();
