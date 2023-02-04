@@ -617,6 +617,9 @@ void Engine::get_citlali_config(CT &config) {
     // copy omb wcs to cmb wcs
     cmb.wcs = omb.wcs;
 
+    /* map filtering */
+    get_config_value(config, run_map_filter, missing_keys, invalid_keys, std::tuple{"post_processing","map_filtering","enabled"});
+
     /* fitting */
     if (redu_type=="pointing" || redu_type=="beammap" || run_map_filter) {
         get_config_value(config, map_fitter.bounding_box_pix, missing_keys, invalid_keys, std::tuple{"post_processing","source_fitting",
@@ -675,9 +678,6 @@ void Engine::get_citlali_config(CT &config) {
         omb.n_noise = 0;
         cmb.n_noise = 0;
     }
-
-    /* map filtering */
-    get_config_value(config, run_map_filter, missing_keys, invalid_keys, std::tuple{"post_processing","map_filtering","enabled"});
 
     /* wiener filter */
     if (run_map_filter) {
@@ -1801,7 +1801,9 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     }
 
     for (Eigen::Index i = 0; i<n_maps; i++) {
+        // current array
         auto array = maps_to_arrays(i);
+        // get file index
         auto map_index = arrays_to_maps(i);
         // init fwhm in pixels
         wiener_filter.init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;

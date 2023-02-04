@@ -247,7 +247,7 @@ void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_d
         map_fitter.fit_to_gaussian<engine_utils::mapFitter::pointing>(mb.kernel[map_index], mb.weight[map_index], init_fwhm);
 
     if (!good_fit) {
-        SPDLOG_ERROR("fit to kernel map failed. try reducing fitting_region_arcsec.");
+        SPDLOG_ERROR("fit to kernel map failed. try setting a small fitting_region_arcsec value.");
         std::exit(EXIT_FAILURE);
     }
 

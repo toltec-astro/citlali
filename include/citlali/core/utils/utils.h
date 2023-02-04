@@ -689,7 +689,7 @@ auto shift_2D(Eigen::DenseBase<Derived> &in, std::vector<Eigen::Index> shift_ind
             Eigen::Index tj = (j+shift_indices[0]) % n_rows;
             Eigen::Index shift_col = (ti < 0) ? n_cols+ti : ti;
             Eigen::Index shift_row = (tj < 0) ? n_rows+tj : tj;
-            out(shift_row,shift_col) = in(shift_row,shift_col);
+            out(shift_row,shift_col) = in(j,i);
         }
     }
 

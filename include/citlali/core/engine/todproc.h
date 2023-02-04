@@ -803,8 +803,6 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
         }
         engine().arrays_to_maps(i) = index;
     }
-
-    SPDLOG_INFO("engine().arrays_to_maps {}",engine().arrays_to_maps);
 }
 
 // determine the map dimensions and allocate the coadded map buffer

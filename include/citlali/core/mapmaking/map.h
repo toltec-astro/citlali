@@ -228,11 +228,11 @@ void ObsMapBuffer::calc_map_psd() {
         // calculate psds
         auto [p, pf, p_2d, pf_2d] = engine_utils::calc_2D_psd(sig, rows_tan_vec, cols_tan_vec, smooth_window, parallel_policy);
         // move current map psd values into vectors
-        psds.push_back(p);
-        psd_freqs.push_back(pf);
+        psds.push_back(std::move(p));
+        psd_freqs.push_back(std::move(pf));
 
-        psd_2ds.push_back(p_2d);
-        psd_2d_freqs.push_back(pf_2d);
+        psd_2ds.push_back(std::move(p_2d));
+        psd_2d_freqs.push_back(std::move(pf_2d));
 
         // get average noise psd if noise maps are requested
         if (!noise.empty()) {
