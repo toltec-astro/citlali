@@ -1193,7 +1193,7 @@ void Beammap::output() {
     }
 
     // progress bar
-    {
+    if (!f_io->empty()) {
         tula::logging::progressbar pb(
             [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 100, "output progress ");
 
@@ -1256,11 +1256,11 @@ void Beammap::output() {
                 }
             }
         }
-    }
 
-    SPDLOG_INFO("files have been written to:");
-    for (Eigen::Index i=0; i<f_io->size(); i++) {
-        SPDLOG_INFO("{}.fits",f_io->at(i).filepath);
+        SPDLOG_INFO("files have been written to:");
+        for (Eigen::Index i=0; i<f_io->size(); i++) {
+            SPDLOG_INFO("{}.fits",f_io->at(i).filepath);
+        }
     }
 
     // clear fits file vectors to ensure its closed.

@@ -589,8 +589,6 @@ int run(const rc_t &rc) {
                     else if (todproc.engine().run_map_filter) {
                         SPDLOG_INFO("filtering obs maps");
                         todproc.engine().template run_wiener_filter<mapmaking::FilteredObs>(todproc.engine().omb);
-                        // output filtered maps
-                        SPDLOG_INFO("outputting filtered obs files");
 
                         // calculate filtered obs map psds
                         SPDLOG_INFO("calculating filtered obs map psds");
@@ -599,13 +597,14 @@ int run(const rc_t &rc) {
                         SPDLOG_INFO("calculating filtered obs map histograms");
                         todproc.engine().omb.calc_map_hist();
 
+                        // output filtered maps
                         SPDLOG_INFO("outputting filtered obs files");
-                        //todproc.engine().template output<mapmaking::FilteredObs>();
+                        todproc.engine().template output<mapmaking::FilteredObs>();
                     }
                 }
 
                 if (todproc.engine().run_coadd) {
-                    // normalize coadd
+                    // normalize coadded maps
                     SPDLOG_INFO("normalizing coadded maps");
                     todproc.engine().cmb.normalize_maps();
 
@@ -616,13 +615,13 @@ int run(const rc_t &rc) {
                     SPDLOG_INFO("calculating coadded map histogram");
                     todproc.engine().cmb.calc_map_hist();
 
-                    // output coadd
+                    // output coadded maps
                     SPDLOG_INFO("outputting raw coadded files");
                     todproc.engine().template output<mapmaking::RawCoadd>();
 
                     if (todproc.engine().run_map_filter) {
                         SPDLOG_INFO("filtering coadded maps");
-                        // filter
+                        // filter coadded maps
                         todproc.engine().template run_wiener_filter<mapmaking::FilteredCoadd>(todproc.engine().cmb);
 
                         // calculate filtered coadded map psds
@@ -634,7 +633,7 @@ int run(const rc_t &rc) {
 
                         // output filtered coadd
                         SPDLOG_INFO("outputting filtered coadded files");
-                        //todproc.engine().template output<mapmaking::FilteredCoadd>();
+                        todproc.engine().template output<mapmaking::FilteredCoadd>();
                     }
                 }
 
