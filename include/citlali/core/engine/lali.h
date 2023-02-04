@@ -331,12 +331,11 @@ void Lali::output() {
 
         for (Eigen::Index i=0; i<f_io->size(); i++) {
             // get the array for the given map
-            Eigen::Index map_index = maps_to_arrays(i);
             // add primary hdu
-            add_phdu(f_io, mb, map_index);
+            add_phdu(f_io, mb, i);
 
             if (!mb->noise.empty()) {
-                add_phdu(n_io, mb, map_index);
+                add_phdu(n_io, mb, i);
             }
         }
 

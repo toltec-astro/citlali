@@ -148,12 +148,13 @@ void Calib::calc_flux_calibration(std::string units) {
 
     // get mean flux conversion factor from all unflagged detectors
     for (Eigen::Index i=0; i<n_arrays; i++) {
-        Eigen::Index start = std::get<0>(array_limits[i]);
-        Eigen::Index end = std::get<1>(array_limits[i]);
+        auto array = arrays[i];
+
+        Eigen::Index start = std::get<0>(array_limits[array]);
+        Eigen::Index end = std::get<1>(array_limits[array]);
 
         Eigen::Index n_good_dets = 0;
 
-        auto array = arrays[i];
         std::string name = array_name_map[array];
 
         for (Eigen::Index j=start; j<end; j++) {
@@ -243,7 +244,6 @@ void Calib::setup() {
     array_limits[arr_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
 
     j = 0;
-
     // loop through apt table arrays, get highest index for current array
     for (Eigen::Index i=0; i<apt["array"].size(); i++) {
         if (apt["array"](i) == arr_i) {

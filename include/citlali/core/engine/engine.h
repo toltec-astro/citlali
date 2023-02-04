@@ -200,7 +200,7 @@ public:
     double jinc_r_max, jinc_a, jinc_b, jinc_c;
 
     // mapping from index in map vector to array index
-    Eigen::VectorXI maps_to_arrays;
+    Eigen::VectorXI maps_to_arrays, arrays_to_maps;
 
     // mapping from index in map vector to array index
     Eigen::VectorXI maps_to_stokes;
@@ -481,9 +481,6 @@ void Engine::get_citlali_config(CT &config) {
     // map to eigen vector
     ptcproc.cleaner.n_eig_to_cut = Eigen::Map<Eigen::VectorXI>(n_eig_to_cut.data(),n_eig_to_cut.size());
 
-    /*if (ptcproc.cleaner.grouping == "network") {
-        ptcproc.cleaner.grouping = "nw";
-    }*/
     get_config_value(config, ptcproc.cleaner.stddev_limit, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk",
                                                                                              "clean","stddev_limit"});
 
@@ -1396,7 +1393,7 @@ void Engine::write_map_summary(map_buffer_t &mb) {
 template <typename fits_io_type, class map_buffer_t>
 void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // array name
-    std::string name = toltec_io.array_name_map[i];
+    std::string name = toltec_io.array_name_map[calib.arrays(i)];
 
     // add unit conversions
     if (rtcproc.run_calibrate) {
@@ -1535,7 +1532,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
     }
 
     // get the array for the given map
-    Eigen::Index map_index = maps_to_arrays(i);
+    Eigen::Index map_index = arrays_to_maps(i);
     // get the stokes parameter for the given map
     Eigen::Index stokes_index = maps_to_stokes(i);
 
@@ -1638,8 +1635,10 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
                    (dir_name, "", "", "", telescope.sim_obs);
     }
 
+    // create file
     netCDF::NcFile fo(filename + ".nc", netCDF::NcFile::replace);
 
+    // loop through psd vector
     for (Eigen::Index i=0; i<mb->psds.size(); i++) {
         std::string map_name = "";
 
@@ -1654,7 +1653,7 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
         }
 
         // get the array for the given map
-        Eigen::Index map_index = maps_to_arrays(i);
+        Eigen::Index map_index = arrays_to_maps(i);
         // get the stokes parameter for the given map
         Eigen::Index stokes_index = maps_to_stokes(i);
 
@@ -1745,7 +1744,7 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
             }
         }
         // get the array for the given map
-        Eigen::Index map_index = maps_to_arrays(i);
+        Eigen::Index map_index = arrays_to_maps(i);
         // get the stokes parameter for the given map
         Eigen::Index stokes_index = maps_to_stokes(i);
 
@@ -1792,18 +1791,18 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
 
     for (Eigen::Index i=0; i<f_io->size(); i++) {
         // get the array for the given map
-        Eigen::Index map_index = maps_to_arrays(i);
+        //Eigen::Index map_index = arrays_to_maps(i);
         // add primary hdu
-        add_phdu(f_io, pmb, map_index);
+        add_phdu(f_io, pmb, i);
 
         if (!pmb->noise.empty()) {
-            add_phdu(n_io, pmb, map_index);
+            add_phdu(n_io, pmb, i);
         }
     }
 
-    Eigen::Index i = 0;
-    for (auto const& arr: toltec_io.array_name_map) {
+    for (Eigen::Index i = 0; i<n_maps; i++) {
         auto array = maps_to_arrays(i);
+        auto map_index = arrays_to_maps(i);
         // init fwhm in pixels
         wiener_filter.init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
         wiener_filter.make_template(mb,calib.apt, wiener_filter.gaussian_template_fwhm_rad[toltec_io.array_name_map[i]],i);
@@ -1840,12 +1839,15 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         write_maps(f_io,n_io,pmb,i);
 
         SPDLOG_INFO("file has been written to:");
-        SPDLOG_INFO("{}.fits",f_io->at(i).filepath);
+        SPDLOG_INFO("{}.fits",f_io->at(map_index).filepath);
 
-        // explicitly destroy the fits file
-        f_io->at(i).pfits->destroy();
-
-        i++;
+        // explicitly destroy the fits file after we're done with it
+        if (i > 0) {
+            // check if we're moving onto a new file
+            if (arrays_to_maps(i) > arrays_to_maps(i-1)) {
+                f_io->at(map_index).pfits->destroy();
+            }
+        }
     }
 
     // clear fits file vectors to ensure its closed.

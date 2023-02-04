@@ -728,9 +728,15 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
         engine().n_maps = engine().n_maps*3;
     }
 
+    // mapping from index in map vector to arrays
     engine().maps_to_arrays.resize(engine().n_maps);
+    // mapping from index in map vector to stokes parameter
     engine().maps_to_stokes.resize(engine().n_maps);
 
+    // mapping from array to index in map vectors
+    engine().arrays_to_maps.resize(engine().n_maps);
+
+    // array grouping
     if (engine().map_grouping == "array") {
         Eigen::Index i=0;
         for (const auto &[stokes_index,stokes_param]: engine().rtcproc.polarization.stokes_params) {
@@ -742,6 +748,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
         }
     }
 
+    // detector gropuing
     else if (engine().map_grouping == "detector") {
         Eigen::Index i=0;
         for (const auto &[stokes_index,stokes_param]: engine().rtcproc.polarization.stokes_params) {
@@ -769,6 +776,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
         }
     }
 
+    // network grouping
     if (engine().map_grouping == "nw") {
         Eigen::VectorXI array_indices(engine().calib.nws.size());
 
@@ -786,6 +794,17 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
             i = i + engine().calib.nws.size();
         }
     }
+
+    Eigen::Index index = 0;
+    engine().arrays_to_maps(0) = index;
+    for (Eigen::Index i=1; i<engine().n_maps; i++) {
+        if (engine().maps_to_arrays(i) > engine().maps_to_arrays(i-1)) {
+            index++;
+        }
+        engine().arrays_to_maps(i) = index;
+    }
+
+    SPDLOG_INFO("engine().arrays_to_maps {}",engine().arrays_to_maps);
 }
 
 // determine the map dimensions and allocate the coadded map buffer

@@ -1199,12 +1199,11 @@ void Beammap::output() {
 
         for (Eigen::Index i=0; i<f_io->size(); i++) {
             // get the array for the given map
-            Eigen::Index map_index = maps_to_arrays(i);
             // add primary hdu
-            add_phdu(f_io, mb, map_index);
+            add_phdu(f_io, mb, i);
 
             if (!mb->noise.empty()) {
-                add_phdu(n_io, mb, map_index);
+                add_phdu(n_io, mb, i);
             }
         }
 
@@ -1228,12 +1227,12 @@ void Beammap::output() {
             if (map_grouping=="detector") {
                 if constexpr (map_type == mapmaking::RawObs) {
                     // get the array for the given map
-                    Eigen::Index map_index = maps_to_arrays(i);
+                    Eigen::Index map_index = arrays_to_maps(i);
 
                     // check if we move from one file to the next
                     // if so go back to first hdu layer
                     if (i>0) {
-                        if (map_index > maps_to_arrays(i-1)) {
+                        if (map_index > arrays_to_maps(i-1)) {
                             k = 0;
                         }
                     }
