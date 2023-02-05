@@ -524,6 +524,12 @@ auto calc_2D_psd(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &y
     //in = engine_utils::fft<engine_utils::forward>(in, parallel_policy);
     in = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
 
+
+    // free fftw vectors
+    fftw_free(a);
+    fftw_free(b);
+
+    // destroy fftw plan
     fftw_destroy_plan(pf);
 
     //in = in/n_rows/n_cols;

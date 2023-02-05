@@ -198,8 +198,8 @@ timestream: # timestream reduction parameters
     clean: # remove (hopefully) the atmospheric signal
       stddev_limit: 0.0 # standard deviation cut for cleaning (only used if >0)
       enabled: false # enable or disable cleaning
-      grouping: array # clean grouping (array, nw, nw_array, array_nw, all)
-      n_eig_to_cut: 3 # number of eigenvalues to remove (if stddev_limit >0, calc this many eigs, if this is 0, calc all eigs)
+      grouping: [array] # clean grouping (array, nw, nw_array, array_nw, all)
+      n_eig_to_cut: [3] # number of eigenvalues to remove (if stddev_limit >0, calc this many eigs, if this is 0, calc all eigs)
     weighting: # how to weight data and maps
       type: full # type of TOD weighting (full=use scan variance/approximate=use det sensitivity)
     flagging: # controls flagging after cleaning
@@ -221,7 +221,7 @@ post_processing:
     normalize_errors: false # correct weight map errors based on noise maps
   map_histogram_n_bins: 20 # number of histogram bins (>0)
 wiener_filter: # controls for wiener filter
-  template_type: kernel #  template (kernel, gaussian, highpass)
+  template_type: kernel #  template (kernel, gaussian, airy, highpass)
   gaussian_template_fwhm_arcsec: # set fwhms for gaussian template
     a1100: 5
     a1400: 6.3

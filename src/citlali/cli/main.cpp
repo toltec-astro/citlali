@@ -668,58 +668,6 @@ int main(int argc, char *argv[]) {
     if (exit_dump_config) {
         return EXIT_SUCCESS;
     }
-
-    /*Eigen::Index nrows = 5558;
-    Eigen::Index ncols = 5596;
-    Eigen::MatrixXcd test(nrows, ncols);
-    Eigen::MatrixXcd test2(nrows, ncols);
-
-    test.setRandom();
-    test2 = test;
-
-    Eigen::MatrixXcd fft_test, fft_test2;
-
-    omp_set_num_threads(1);
-
-    // set fftw threads
-    int fftw_threads = fftw_init_threads();
-    fftw_plan_with_nthreads(1);
-
-    {
-        tula::logging::scoped_timeit TULA_X{"fft"};
-        fft_test = engine_utils::fft<engine_utils::forward>(test,"seq");
-    }
-
-    {
-
-        fftw_complex *a;
-        fftw_complex *b;
-        fftw_plan pf, pr;
-
-        a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*nrows*ncols);
-        b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*nrows*ncols);
-
-        pf = fftw_plan_dft_2d(nrows, ncols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
-        //pr = fftw_plan_dft_2d(n_rows, n_rows, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
-
-        tula::logging::scoped_timeit TULA_X{"fft2"};
-        fft_test2 = engine_utils::fft2<engine_utils::forward>(test2,pf,pr,a,b);
-
-        fftw_destroy_plan(pf);
-        //fftw_destroy_plan(pf);
-    }
-
-    SPDLOG_INFO("fft_test - fft_test2 {} {}",
-                (fft_test.array() - fft_test2.array()).real().maxCoeff(),
-                (fft_test.array() - fft_test2.array()).real().minCoeff());
-
-    SPDLOG_INFO("fft_test - fft_test2 {} {}",
-                (fft_test.array() - fft_test2.array()).imag().maxCoeff(),
-                (fft_test.array() - fft_test2.array()).imag().minCoeff());
-
-    std::exit(EXIT_SUCCESS);
-    */
-
     // now with normal CLI interface
     tula::logging::init();
     auto rc = parse_args(argc, argv);

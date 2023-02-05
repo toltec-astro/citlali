@@ -56,7 +56,7 @@
 #include <citlali/core/mapmaking/map.h>
 #include <citlali/core/mapmaking/naive_mm.h>
 #include <citlali/core/mapmaking/jinc_mm.h>
-#include <citlali/core/mapmaking/wiener_filter_old.h>
+#include <citlali/core/mapmaking/wiener_filter.h>
 
 #include <citlali/core/engine/io.h>
 #include <citlali/core/engine/kidsproc.h>
@@ -682,13 +682,10 @@ void Engine::get_citlali_config(CT &config) {
     /* wiener filter */
     if (run_map_filter) {
         get_config_value(config, wiener_filter.template_type, missing_keys, invalid_keys, std::tuple{"wiener_filter","template_type"},
-                         {"kernel","gaussian","highpass"});
+                         {"kernel","gaussian","airy","highpass"});
         get_config_value(config, wiener_filter.run_lowpass, missing_keys, invalid_keys, std::tuple{"wiener_filter","lowpass_only"});
         get_config_value(config, wiener_filter.normalize_error, missing_keys, invalid_keys, std::tuple{"post_processing","map_filtering",
                                                                                                        "normalize_errors"});
-
-        wiener_filter.run_kernel = rtcproc.run_kernel;
-
         if (wiener_filter.template_type=="kernel") {
             if (!rtcproc.run_kernel) {
                 SPDLOG_ERROR("wiener filter kernel template requires kernel");
@@ -705,7 +702,7 @@ void Engine::get_citlali_config(CT &config) {
         }
 
         // gaussian template fwhms
-        if (wiener_filter.template_type=="gaussian") {
+        if (wiener_filter.template_type=="gaussian" || wiener_filter.template_type=="airy") {
             get_config_value(config, wiener_filter.gaussian_template_fwhm_rad["a1100"], missing_keys, invalid_keys,
                        std::tuple{"wiener_filter","gaussian_template_fwhm_arcsec","a1100"});
             get_config_value(config, wiener_filter.gaussian_template_fwhm_rad["a1400"], missing_keys, invalid_keys,

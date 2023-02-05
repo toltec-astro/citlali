@@ -221,10 +221,11 @@ void Kernel::create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, st
 
         double fwhm;
 
+        // get fwhm from apt if config file fwhm is <= 0
         if (fwhm_rad <= 0) {
             fwhm = ASEC_TO_RAD*(apt["a_fwhm"](det_index) + apt["b_fwhm"](det_index))/2;
         }
-
+        // else use config file fwhm
         else {
             fwhm = fwhm_rad;
         }

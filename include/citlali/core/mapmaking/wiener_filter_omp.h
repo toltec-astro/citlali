@@ -52,9 +52,6 @@ public:
     // parallelization for ffts
     std::string parallel_policy;
 
-    // fft normalization
-    //double fft_norm;
-
     // matrices for main calculations from each function
     Eigen::MatrixXd rr, vvq, denom, nume;
     // temporarily holds the filtered map
@@ -67,6 +64,9 @@ public:
 
     template<class MB>
     void make_gaussian_template(MB &mb, const double);
+
+    template<class MB>
+    void make_airy_template(MB &mb, const double);
 
     template<class MB, class CD>
     void make_kernel_template(MB &mb, const int, CD &);
@@ -92,6 +92,12 @@ public:
         else if (template_type=="gaussian") {
             SPDLOG_INFO("creating gaussian template");
             make_gaussian_template(mb, gaussian_template_fwhm_rad);
+        }
+
+        // airy template
+        else if (template_type=="airy") {
+            SPDLOG_INFO("creating airy template");
+            make_airy_template(mb, gaussian_template_fwhm_rad);
         }
 
         // kernel template
@@ -236,6 +242,50 @@ void WienerFilter::make_gaussian_template(MB &mb, const double gaussian_template
     // shift template
     filter_template = engine_utils::shift_2D(filter_template, shift_indices);
 }
+
+template<class MB>
+void WienerFilter::make_airy_template(MB &mb, const double gaussian_template_fwhm_rad) {
+    // distance from tangent point
+    Eigen::MatrixXd dist(n_rows,n_cols);
+
+    // calculate distance
+    for (Eigen::Index i=0; i<n_cols; i++) {
+        for (Eigen::Index j=0; j<n_rows; j++) {
+            dist(j,i) = sqrt(pow(mb.rows_tan_vec(j),2) + pow(mb.cols_tan_vec(i),2));
+        }
+    }
+
+    // to hold minimum distance
+    Eigen::Index row_index, col_index;
+
+    // minimum distance
+    double min_dist = dist.minCoeff(&row_index,&col_index);
+
+    // shift indices
+    std::vector<Eigen::Index> shift_indices = {-row_index, -col_index};
+
+    // calculate template
+    double factor = pi*(1.028/gaussian_template_fwhm_rad);
+
+    // resize template
+    filter_template.resize(n_rows, n_cols);
+
+    // populate template
+    for (Eigen::Index i=0; i<n_cols; i++) {
+        for (Eigen::Index j=0; j<n_rows; j++) {
+            if (dist(j,i)!=0) {
+            filter_template(j,i) = pow(2*boost::math::cyl_bessel_j(1,factor*dist(j,i))/(factor*dist(j,i)),2);
+            }
+            else {
+                filter_template(j,i) = 1;
+            }
+        }
+    }
+
+    // shift template
+    filter_template = engine_utils::shift_2D(filter_template, shift_indices);
+}
+
 
 template<class MB, class CD>
 void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_data) {
@@ -530,6 +580,10 @@ void WienerFilter::calc_denominator() {
 
         // set denominator
         denom.setConstant(((out.real().array() * out.real().array() + out.imag().array() * out.imag().array()) / vvq.array()).sum());
+
+        // destroy fftw plans
+        fftw_destroy_plan(pf);
+        fftw_destroy_plan(pr);
     }
 
     else {
@@ -541,6 +595,13 @@ void WienerFilter::calc_denominator() {
 
         //out = engine_utils::fft<engine_utils::inverse>(in, parallel_policy);
         out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
+
+        // destroy fftw plans
+        fftw_free(a);
+        fftw_free(b);
+
+        fftw_destroy_plan(pf);
+        fftw_destroy_plan(pr);
 
         Eigen::VectorXd zz2d(n_rows * n_cols);
 
@@ -566,15 +627,31 @@ void WienerFilter::calc_denominator() {
             [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 90,
             "calculating denom");
 
+        Eigen::Index ii;
         // loop through cols and rows
         for (Eigen::Index k=0; k<n_cols; k++) {
+        #pragma omp parallel for schedule (dynamic) ordered shared (sorted, n_loops, zz2d, k, done, pb) private (ii) default (none)
             for (Eigen::Index l=0; l<n_rows; l++) {
+                #pragma omp flush (done)
                 if (!done) {
+                    fftw_complex *a,*b;
+                    fftw_plan pf, pr;
+                    int kk = n_rows*k + l;
+                    if (kk >= n_loops) {
+                        continue;
+                    }
+                    #pragma omp critical (wfFFTW)
+                    {
+                        a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
+                        b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
+                        pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
+                        pr = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
+                    }
                     Eigen::MatrixXcd in(n_rows,n_cols);
                     Eigen::MatrixXcd out(n_rows,n_cols);
 
                     // current element in flattened 1d vector
-                    int kk = n_rows * k + l;
+                    //int kk = n_rows * k + l;
                     // get index in reverse order
                     auto shift_index = std::get<1>(sorted[n_rows * n_cols - kk - 1]);
 
@@ -610,31 +687,43 @@ void WienerFilter::calc_denominator() {
                     //out = engine_utils::fft<engine_utils::inverse>(in, parallel_policy);
                     out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
 
-                    Eigen::MatrixXd updater = zz2d(shift_index) * out.real()/n_rows/n_cols;
+                    #pragma omp ordered
+                    {
+                        Eigen::MatrixXd updater = zz2d(shift_index) * out.real()/n_rows/n_cols;
 
-                    // update denominator
-                    denom = denom + updater;
+                        // update denominator
+                        denom = denom + updater;
 
-                    // update progress bar
-                    pb.count(n_loops, n_loops / 100);
-
-                    // update status
-                    if ((kk % 100) == 1) {
-                        double max_ratio = -1;
-                        double max_denom = denom.maxCoeff();
-
-                        for (Eigen::Index i=0; i<n_rows; i++) {
-                            for (Eigen::Index j=0; j<n_cols; j++) {
-                                if (denom(i, j) > 0.01 * max_denom) {
-                                    if (abs(updater(i, j) / denom(i, j)) > max_ratio)
-                                        max_ratio = abs(updater(i, j) / denom(i, j));
-                                }
-                            }
+                        #pragma omp critical (wfFFTW)
+                        {
+                            fftw_free(a);
+                            fftw_free(b);
+                            fftw_destroy_plan(pf);
+                            fftw_destroy_plan(pr);
                         }
 
-                        // check if done
-                        if (((kk >= max_loops) && (max_ratio < 0.0002)) || max_ratio < 1e-10) {
-                            done = true;
+                        // update progress bar
+                        pb.count(n_loops, n_loops / 100);
+
+                        // update status
+                        if ((kk % 100) == 1) {
+                            double max_ratio = -1;
+                            double max_denom = denom.maxCoeff();
+
+                            for (Eigen::Index i=0; i<n_rows; i++) {
+                                for (Eigen::Index j=0; j<n_cols; j++) {
+                                    if (denom(i, j) > 0.01 * max_denom) {
+                                        if (abs(updater(i, j) / denom(i, j)) > max_ratio)
+                                            max_ratio = abs(updater(i, j) / denom(i, j));
+                                    }
+                                }
+                            }
+
+                            // check if done
+                            if (((kk >= max_loops) && (max_ratio < 0.0002)) || max_ratio < 1e-10) {
+                                done = true;
+                            #pragma omp flush(done)
+                            }
                         }
                     }
                 }
@@ -648,10 +737,6 @@ void WienerFilter::calc_denominator() {
             }
         }
     }
-
-    // destroy fftw plans
-    fftw_destroy_plan(pf);
-    fftw_destroy_plan(pr);
 }
 
 } // namespace mapmaking
