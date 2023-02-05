@@ -14,6 +14,7 @@ public:
         toltec = 0,
         apt = 1,
         ppt = 2,
+        source = 3
     };
 
     // product type
@@ -47,7 +48,6 @@ public:
         {11, 2},
         {12, 2},
     };
-
 
     std::map<Eigen::Index, std::string> array_name_map = {
         {0,"a1100"},
@@ -83,6 +83,10 @@ std::string toltecIO::create_filename(const std::string filepath, const std::str
 
     else if constexpr (data_t == ppt) {
         filename  = filename + "ppt";
+    }
+
+    else if constexpr (data_t == source) {
+        filename  = filename + "source";
     }
 
     /* real data or simulation */

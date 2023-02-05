@@ -37,7 +37,7 @@ public:
     // lower limit to zero out denom values
     double denom_limit = 1.e-4;
 
-    // kernel map filtering
+    // guess fwhm for kernel map filtering
     double init_fwhm;
 
     // fwhms for gaussian template
@@ -72,146 +72,34 @@ public:
     void make_kernel_template(MB &mb, const int, CD &);
 
     template<class MB, class CD>
-    void make_template(MB &mb, CD &calib_data, const double gaussian_template_fwhm_rad, const int map_index) {
-        // make sure filtered maps have even dimensions
-        n_rows = 2*(mb.n_rows/2);
-        n_cols = 2*(mb.n_cols/2);
-
-        // x and y spacing should be equal
-        diff_rows = abs(mb.rows_tan_vec(1) - mb.rows_tan_vec(0));
-        diff_cols = abs(mb.cols_tan_vec(1) - mb.cols_tan_vec(0));
-
-        // highpass template
-        if (template_type=="highpass") {
-            SPDLOG_INFO("creating template with highpass only");
-            filter_template.setZero(n_rows,n_cols);
-            filter_template(0,0) = 1;
-        }
-
-        // gaussian template
-        else if (template_type=="gaussian") {
-            SPDLOG_INFO("creating gaussian template");
-            make_gaussian_template(mb, gaussian_template_fwhm_rad);
-        }
-
-        // airy template
-        else if (template_type=="airy") {
-            SPDLOG_INFO("creating airy template");
-            make_airy_template(mb, gaussian_template_fwhm_rad);
-        }
-
-        // symmetric version of kernel template
-        else {
-            make_kernel_template(mb, map_index, calib_data);
-        }
-    }
+    void make_template(MB &, CD &c, const double, const int);
 
     template<class MB>
-    void calc_rr(MB &mb, const int map_index) {
-        if (uniform_weight) {
-            rr = Eigen::MatrixXd::Ones(n_rows,n_cols);
-        }
-        else {
-            rr = sqrt(mb.weight[map_index].array());
-        }
-    }
-
+    void calc_rr(MB &, const int);
     template <class MB>
     void calc_vvq(MB &, const int);
     void calc_numerator();
     void calc_denominator();
 
     template<class MB>
-    void run_filter(MB &mb, const int map_index) {
-        SPDLOG_DEBUG("calculating rr");
-        calc_rr(mb, map_index);
-        SPDLOG_DEBUG("rr {}", rr);
-
-        SPDLOG_DEBUG("calculating vvq");
-        calc_vvq(mb, map_index);
-        SPDLOG_DEBUG("vvq {}", vvq);
-
-        SPDLOG_DEBUG("calculating denominator");
-        calc_denominator();
-        SPDLOG_DEBUG("denominator {}", denom);
-
-        SPDLOG_DEBUG("calculating numerator");
-        calc_numerator();
-        SPDLOG_DEBUG("numerator {}", nume);
-    }
+    void run_filter(MB &, const int);
 
     template<class MB>
-    void filter_maps(MB &mb, const int map_index) {
-        // filter kernel
-        SPDLOG_INFO("filtering kernel");
-        filtered_map = mb.kernel[map_index];
-        uniform_weight = true;
-        run_filter(mb, map_index);
-
-        // divide by filtered weight
-        for (Eigen::Index i=0; i<n_cols; i++) {
-            for (Eigen::Index j=0; j<n_rows; j++) {
-                if (denom(j,i) != 0.0) {
-                    mb.kernel[map_index](j,i)=nume(j,i)/denom(j,i);
-                }
-                else {
-                    mb.kernel[map_index](j,i)= 0.0;
-                }
-            }
-        }
-
-        SPDLOG_INFO("kernel filtering done");
-
-        SPDLOG_INFO("filtering signal");
-        // filter signal
-        filtered_map = mb.signal[map_index];
-        uniform_weight = false;
-        // run all filter steps
-        run_filter(mb, map_index);
-
-        // divide by filtered weight
-        for (Eigen::Index i=0; i<n_cols; i++) {
-            for (Eigen::Index j=0; j<n_rows; j ++) {
-                if (denom(j,i) != 0.0) {
-                    mb.signal[map_index](j,i) = nume(j,i)/denom(j,i);
-                }
-                else {
-                    mb.signal[map_index](j,i)= 0.0;
-                }
-            }
-        }
-        // weight map is the denominator
-        mb.weight[map_index] = denom;
-
-        SPDLOG_INFO("signal/weight map filtering done");
-    }
+    void filter_maps(MB &, const int);
 
     template<class MB>
-    void filter_noise(MB &mb, const int map_index, const int noise_num) {
-        Eigen::Tensor<double,2> out = mb.noise[map_index].chip(noise_num,2);
-        filtered_map = Eigen::Map<Eigen::MatrixXd>(out.data(),out.dimension(0),out.dimension(1));
-        // don't need to run through the whole filter, just the numerator
-        calc_numerator();
-
-        Eigen::MatrixXd ratio(n_rows,n_cols);
-
-        // divide by filtered weight
-        for (Eigen::Index i=0; i<n_cols; i++) {
-            for (Eigen::Index j=0; j<n_rows; j++) {
-                if (denom(j,i) != 0.0) {
-                    ratio(j,i) = nume(j,i)/denom(j,i);
-                }
-                else {
-                    ratio(j,i)= 0.0;
-                }
-            }
-        }
-
-        // map to tensor
-        Eigen::TensorMap<Eigen::Tensor<double, 2>> in_tensor(ratio.data(), ratio.rows(), ratio.cols());
-        mb.noise[map_index].chip(noise_num,2) = in_tensor;
-    }
+    void filter_noise(MB &mb, const int, const int);
 };
+
+template<class MB>
+void WienerFilter::calc_rr(MB &mb, const int map_index) {
+    if (uniform_weight) {
+        rr = Eigen::MatrixXd::Ones(n_rows,n_cols);
+    }
+    else {
+        rr = sqrt(mb.weight[map_index].array());
+    }
+}
 
 template<class MB>
 void WienerFilter::make_gaussian_template(MB &mb, const double gaussian_template_fwhm_rad) {
@@ -564,11 +452,11 @@ void WienerFilter::calc_denominator() {
     a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
     b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
 
-    pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
-    pr = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
+    pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_MEASURE);
+    pr = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_MEASURE);
 
     // resize denominator
-    denom.resize(n_rows,n_cols);
+    denom.setZero(n_rows,n_cols);
 
     // inputs and outputs to ffts
     Eigen::MatrixXcd in(n_rows,n_cols);
@@ -667,7 +555,7 @@ void WienerFilter::calc_denominator() {
                     Eigen::MatrixXd updater = zz2d(shift_index) * out.real()/n_rows/n_cols;
 
                     // update denominator
-                    denom = denom + updater;
+                    denom = denom.array() + updater.array();
 
                     // update status
                     if ((kk % 100) == 1) {
@@ -712,6 +600,132 @@ void WienerFilter::calc_denominator() {
     // destroy fftw plans
     fftw_destroy_plan(pf);
     fftw_destroy_plan(pr);
+}
+
+template<class MB, class CD>
+void WienerFilter::make_template(MB &mb, CD &calib_data, const double gaussian_template_fwhm_rad, const int map_index) {
+    // make sure filtered maps have even dimensions
+    n_rows = 2*(mb.n_rows/2);
+    n_cols = 2*(mb.n_cols/2);
+
+    // x and y spacing should be equal
+    diff_rows = abs(mb.rows_tan_vec(1) - mb.rows_tan_vec(0));
+    diff_cols = abs(mb.cols_tan_vec(1) - mb.cols_tan_vec(0));
+
+    // highpass template
+    if (template_type=="highpass") {
+        SPDLOG_INFO("creating template with highpass only");
+        filter_template.setZero(n_rows,n_cols);
+        filter_template(0,0) = 1;
+    }
+
+    // gaussian template
+    else if (template_type=="gaussian") {
+        SPDLOG_INFO("creating gaussian template");
+        make_gaussian_template(mb, gaussian_template_fwhm_rad);
+    }
+
+    // airy template
+    else if (template_type=="airy") {
+        SPDLOG_INFO("creating airy template");
+        make_airy_template(mb, gaussian_template_fwhm_rad);
+    }
+
+    // symmetric version of kernel template
+    else {
+        make_kernel_template(mb, map_index, calib_data);
+    }
+}
+
+template<class MB>
+void WienerFilter::run_filter(MB &mb, const int map_index) {
+    SPDLOG_DEBUG("calculating rr");
+    calc_rr(mb, map_index);
+    SPDLOG_DEBUG("rr {}", rr);
+
+    SPDLOG_DEBUG("calculating vvq");
+    calc_vvq(mb, map_index);
+    SPDLOG_DEBUG("vvq {}", vvq);
+
+    SPDLOG_DEBUG("calculating denominator");
+    calc_denominator();
+    SPDLOG_DEBUG("denominator {}", denom);
+
+    SPDLOG_DEBUG("calculating numerator");
+    calc_numerator();
+    SPDLOG_DEBUG("numerator {}", nume);
+}
+
+template<class MB>
+void WienerFilter::filter_maps(MB &mb, const int map_index) {
+    // filter kernel
+    SPDLOG_INFO("filtering kernel");
+    filtered_map = mb.kernel[map_index];
+    uniform_weight = true;
+    run_filter(mb, map_index);
+
+    // divide by filtered weight
+    for (Eigen::Index i=0; i<n_cols; i++) {
+        for (Eigen::Index j=0; j<n_rows; j++) {
+            if (denom(j,i) != 0.0) {
+                mb.kernel[map_index](j,i)=nume(j,i)/denom(j,i);
+            }
+            else {
+                mb.kernel[map_index](j,i)= 0.0;
+            }
+        }
+    }
+
+    SPDLOG_INFO("kernel filtering done");
+
+    SPDLOG_INFO("filtering signal");
+    // filter signal
+    filtered_map = mb.signal[map_index];
+    uniform_weight = false;
+    // run all filter steps
+    run_filter(mb, map_index);
+
+    // divide by filtered weight
+    for (Eigen::Index i=0; i<n_cols; i++) {
+        for (Eigen::Index j=0; j<n_rows; j ++) {
+            if (denom(j,i) != 0.0) {
+                mb.signal[map_index](j,i) = nume(j,i)/denom(j,i);
+            }
+            else {
+                mb.signal[map_index](j,i)= 0.0;
+            }
+        }
+    }
+    // weight map is the denominator
+    mb.weight[map_index] = denom;
+
+    SPDLOG_INFO("signal/weight map filtering done");
+}
+
+template<class MB>
+void WienerFilter::filter_noise(MB &mb, const int map_index, const int noise_num) {
+    Eigen::Tensor<double,2> out = mb.noise[map_index].chip(noise_num,2);
+    filtered_map = Eigen::Map<Eigen::MatrixXd>(out.data(),out.dimension(0),out.dimension(1));
+    // don't need to run through the whole filter, just the numerator
+    calc_numerator();
+
+    Eigen::MatrixXd ratio(n_rows,n_cols);
+
+    // divide by filtered weight
+    for (Eigen::Index i=0; i<n_cols; i++) {
+        for (Eigen::Index j=0; j<n_rows; j++) {
+            if (denom(j,i) != 0.0) {
+                ratio(j,i) = nume(j,i)/denom(j,i);
+            }
+            else {
+                ratio(j,i)= 0.0;
+            }
+        }
+    }
+
+    // map to tensor
+    Eigen::TensorMap<Eigen::Tensor<double, 2>> in_tensor(ratio.data(), ratio.rows(), ratio.cols());
+    mb.noise[map_index].chip(noise_num,2) = in_tensor;
 }
 
 } // namespace mapmaking

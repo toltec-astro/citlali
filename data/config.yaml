@@ -220,6 +220,12 @@ post_processing:
     type: wiener_filter # type of filter (currently ignored)
     normalize_errors: false # correct weight map errors based on noise maps
   map_histogram_n_bins: 20 # number of histogram bins (>0)
+  source_finding: # parameters to control source finding
+    enabled: false # enable or disable source finding
+    source_sigma: 0.0 # minimum sigma for source
+    source_window_arcsec: 0 # window around each source to mask
+    get_map_negative: false 
+    get_negative_too: false
 wiener_filter: # controls for wiener filter
   template_type: kernel #  template (kernel, gaussian, airy, highpass)
   gaussian_template_fwhm_arcsec: # set fwhms for gaussian template

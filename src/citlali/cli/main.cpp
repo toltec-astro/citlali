@@ -597,6 +597,12 @@ int run(const rc_t &rc) {
                         SPDLOG_INFO("calculating filtered obs map histograms");
                         todproc.engine().omb.calc_map_hist();
 
+                        // find filtered obs map sources
+                        if (todproc.engine().run_source_finder) {
+                            SPDLOG_INFO("finding filtered obs map sources");
+                            todproc.engine().template find_sources<mapmaking::FilteredObs>(todproc.engine().omb);
+                        }
+
                         // output filtered maps
                         SPDLOG_INFO("outputting filtered obs files");
                         todproc.engine().template output<mapmaking::FilteredObs>();
@@ -631,7 +637,13 @@ int run(const rc_t &rc) {
                         SPDLOG_INFO("calculating filtered coadded map histograms");
                         todproc.engine().cmb.calc_map_hist();
 
-                        // output filtered coadd
+                        if (todproc.engine().run_source_finder) {
+                            // find coadded map sources
+                            SPDLOG_INFO("finding filtered coadded map sources");
+                            todproc.engine().template find_sources<mapmaking::FilteredCoadd>(todproc.engine().cmb);
+                        }
+
+                        // output filtered coadded maps
                         SPDLOG_INFO("outputting filtered coadded files");
                         todproc.engine().template output<mapmaking::FilteredCoadd>();
                     }

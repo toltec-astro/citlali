@@ -77,6 +77,9 @@ struct reduControls {
     bool run_coadd;
     bool run_noise;
     bool run_map_filter;
+
+    // run source finding
+    bool run_source_finder;
 };
 
 struct reduClasses {
@@ -262,6 +265,9 @@ public:
 
     template <mapmaking::MapType map_t, class map_buffer_t>
     void run_wiener_filter(map_buffer_t &);
+
+    template <mapmaking::MapType map_t, class map_buffer_t>
+    void find_sources(map_buffer_t &);
 };
 
 template<typename CT>
@@ -762,11 +768,29 @@ void Engine::get_citlali_config(CT &config) {
         }
     }
 
+    /* source finding */
+    get_config_value(config, run_source_finder, missing_keys, invalid_keys, std::tuple{"post_processing","source_finding","enabled"});
+
+    if (run_source_finder) {
+        get_config_value(config, omb.source_sigma, missing_keys, invalid_keys, std::tuple{"post_processing","source_finding","source_sigma"});
+        get_config_value(config, omb.source_window_rad, missing_keys, invalid_keys, std::tuple{"post_processing","source_finding","source_window_arcsec"});
+        get_config_value(config, omb.negative, missing_keys, invalid_keys, std::tuple{"post_processing","source_finding","get_map_negative"});
+        get_config_value(config, omb.negative_too, missing_keys, invalid_keys, std::tuple{"post_processing","source_finding","get_negative_too"});
+
+        omb.source_window_rad = omb.source_window_rad*ASEC_TO_RAD;
+
+        cmb.source_sigma = omb.source_sigma;
+        cmb.source_window_rad = omb.source_window_rad;
+        cmb.negative = omb.negative;
+        cmb.negative_too = omb.negative_too;
+    }
+
     // disable map related keys if map-making is disabled
     if (!run_mapmaking) {
         run_coadd = false;
         run_noise = false;
         run_map_filter = false;
+        run_source_finder = false;
         // we don't need to do iterations if no maps are made
         beammap_iter_max = 1;
     }
@@ -1797,14 +1821,16 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         }
     }
 
-    for (Eigen::Index i = 0; i<n_maps; i++) {
+    for (Eigen::Index i=0; i<n_maps; i++) {
         // current array
         auto array = maps_to_arrays(i);
         // get file index
         auto map_index = arrays_to_maps(i);
         // init fwhm in pixels
         wiener_filter.init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
+        // make wiener filter template
         wiener_filter.make_template(mb,calib.apt, wiener_filter.gaussian_template_fwhm_rad[toltec_io.array_name_map[i]],i);
+        // run the filter for the current map
         wiener_filter.filter_maps(mb,i);
 
         // filter noise maps
@@ -1852,12 +1878,40 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     // clear fits file vectors to ensure its closed.
     f_io->clear();
     n_io->clear();
+}
 
-    // renormalize weight maps based on noise map rms
-    //if (run_noise) {
-        //if (wiener_filter.normalize_error) {
-            //SPDLOG_INFO("renormalizing errors");
-            //mb.renormalize_errors();
-        //}
-    //}
+template <mapmaking::MapType map_t, class map_buffer_t>
+void Engine::find_sources(map_buffer_t &mb) {
+    // clear all source vectors
+    mb.n_sources.clear();
+    mb.row_source_locs.clear();
+    mb.col_source_locs.clear();
+    for (Eigen::Index i=0; i<n_maps; i++) {
+        // current array
+        auto array = maps_to_arrays(i);
+        // get file index
+        auto map_index = arrays_to_maps(i);
+        // init fwhm in pixels
+        auto init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
+
+        // update source vectors
+        mb.n_sources.push_back(0);
+        mb.row_source_locs.push_back(Eigen::VectorXi::Ones(1));
+        mb.col_source_locs.push_back(Eigen::VectorXi::Ones(1));
+
+        mb.row_source_locs.back()*=-99;
+        mb.col_source_locs.back()*=-99;
+
+        // run source finder
+        auto sources_found = mb.find_sources(i,init_fwhm);
+
+        if (sources_found) {
+            SPDLOG_INFO("{} source(s) found", mb.n_sources.back());
+            SPDLOG_INFO("source row(s): {}", mb.row_source_locs.back());
+            SPDLOG_INFO("source col(s): {}", mb.col_source_locs.back());
+        }
+        else {
+            SPDLOG_INFO("no sources found");
+        }
+    }
 }

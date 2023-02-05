@@ -21,7 +21,7 @@
 namespace engine_utils {
 
 // get current date/time, format is YYYY-MM-DD.HH:mm:ss
-const std::string current_date_time() {
+static const std::string current_date_time() {
     time_t     now = time(0);
     struct tm  tstruct;
     char       buf[80];
@@ -264,7 +264,7 @@ auto calc_rms(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &flag
     return std::sqrt((((data.derived().array() *flag.derived().template cast<double>().array())).square().sum()) / n_samples);
 }
 
-auto hanning_window(Eigen::Index n_rows, Eigen::Index n_cols) {
+static auto hanning_window(Eigen::Index n_rows, Eigen::Index n_cols) {
     double a = 2.*pi/n_rows;
     double b = 2.*pi/n_cols;
 
@@ -285,7 +285,7 @@ auto hanning_window(Eigen::Index n_rows, Eigen::Index n_cols) {
     return window;
 }
 
-double pivot_select(std::vector<double> input, int index){
+static double pivot_select(std::vector<double> input, int index){
     unsigned int pivot_index = rand() % input.size();
     double pivot_value = input[pivot_index];
     std::vector<double> left;
@@ -317,46 +317,68 @@ double find_weight_threshold(Eigen::DenseBase<Derived> &weight, double cov) {
     // find number of non-zero elements in weights
     Eigen::Index n_non_zero = (weight.derived().array() > 0).count();
 
+    // if all values are zero, set coverage limit to zero
     if (n_non_zero==0) {
         return 0;
     }
 
     // vector to hold non-zero elements
-    //Eigen::VectorXd non_zero_weights(n_non_zero);
+    //Eigen::VectorXd non_zero_weights;
     //non_zero_weights.setZero();
 
     std::vector<double> non_zero_weights_vec;
 
-    // populate vector with non-zero elements
+    // check if weights are all constant
+    int diff = 0;
+    bool constant = false;
+
     Eigen::Index k = 0;
+    // populate vector with non-zero elements
     for (Eigen::Index i=0; i<weight.rows(); i++) {
         for (Eigen::Index j=0; j<weight.cols(); j++) {
             if (weight(i,j) > 0) {
                 //non_zero_weights(k) = weight(i,j);
                 non_zero_weights_vec.push_back(weight(i,j));
+                if (k==0) {
+                    diff = weight(i,j);
+                }
+                else if (weight(i,j)!=diff) {
+                    constant = true;
+                }
                 k++;
             }
         }
     }
 
-    // sort in ascending order
-    /*
-    std::sort(non_zero_weights.data(), non_zero_weights.data() + non_zero_weights.size(),
-              [](double lhs, double rhs){return rhs > lhs;});
+    // value of weight at coverage limit value
+    double weight_val;
 
-    // find index of upper 25 % of weights
-    Eigen::Index cov_limit_index = 0.75*non_zero_weights.size();
+    // if all weight values are constant, pivot search doesn't work
+    if (constant) {
+        Eigen::VectorXd non_zero_weights = Eigen::Map<Eigen::VectorXd>(non_zero_weights_vec.data(),
+                                                                       non_zero_weights_vec.size());
+        // sort in ascending order
+        std::sort(non_zero_weights.data(), non_zero_weights.data() + non_zero_weights.size(),
+                  [](double lhs, double rhs){return rhs > lhs;});
 
-    // get weight value at cov_limit_index + size/2
-    Eigen::Index weight_index = std::floor((cov_limit_index + non_zero_weights.size())/2.);
-    double weight_val = non_zero_weights(weight_index);
-    */
+        // find index of upper 25 % of weights
+        Eigen::Index cov_limit_index = 0.75*non_zero_weights.size();
+
+        // get weight value at cov_limit_index + size/2
+        Eigen::Index weight_index = std::floor((cov_limit_index + non_zero_weights.size())/2.);
+        weight_val = non_zero_weights(weight_index);
+    }
 
     // sort using pivot selection
-    Eigen::Index cov_limit_index = 0.75*non_zero_weights_vec.size();
-    double weight_val = pivot_select(non_zero_weights_vec, cov_limit_index);
-    double weight_index = floor((cov_limit_index + non_zero_weights_vec.size())/2.);
-    weight_val = pivot_select(non_zero_weights_vec, weight_index);
+    else {
+        // find index of upper 25 % of weights
+        Eigen::Index cov_limit_index = 0.75*non_zero_weights_vec.size();
+        // get weight value at cov_limit_index + size/2
+        weight_val = pivot_select(non_zero_weights_vec, cov_limit_index);
+        // get weight index
+        double weight_index = floor((cov_limit_index + non_zero_weights_vec.size())/2.);
+        weight_val = pivot_select(non_zero_weights_vec, weight_index);
+    }
 
     // return weight value x coverage cut
     return weight_val*cov;

@@ -360,6 +360,71 @@ void Lali::output() {
     write_psd<map_type>(mb, dir_name);
     write_hist<map_type>(mb, dir_name);
 
+    // write source table
+    if constexpr (map_type == mapmaking::FilteredCoadd || map_type == mapmaking::FilteredObs) {
+        if (run_source_finder) {
+            auto source_filename = toltec_io.create_filename<engine_utils::toltecIO::source, engine_utils::toltecIO::map,
+                                                          engine_utils::toltecIO::filtered>
+                                (dir_name, redu_type, "", obsnum, telescope.sim_obs);
+
+            // header information for source table
+            std::vector<std::string> source_header = {
+                "array",
+                "row",
+                "col"
+            };
+
+            // meta information for source table
+            YAML::Node source_meta;
+
+            // add obsnum to meta data
+            source_meta["obsnum"] = obsnum;
+
+            // add source name
+            source_meta["Source"] = telescope.source_name;
+
+            // add date
+            source_meta["Date"] = engine_utils::current_date_time();
+
+            // array
+            source_meta["array"].push_back("units: N/A");
+            source_meta["array"].push_back("array");
+
+            // source rows
+            source_meta["row"].push_back("units: N/A");
+            source_meta["row"].push_back("row in map");
+
+            // source cols
+            source_meta["col"].push_back("units: N/A");
+            source_meta["col"].push_back("col in map");
+
+            // count up the total number of sources
+            Eigen::Index n_sources = 0;
+            for (const auto &sources: mb->n_sources) {
+                n_sources += sources;
+            }
+
+            // matrix to hold source information
+            Eigen::MatrixXf source_table(n_sources, 3);
+
+            // loop through params and add arrays
+            Eigen::Index k=0;
+            for (Eigen::Index i=0; i<mb->n_sources.size(); i++) {
+                if (mb->n_sources[i]!=0) {
+                    for (Eigen::Index j=0; j<mb->n_sources[i]; j++) {
+                        source_table(k,0) = maps_to_arrays(i);
+                        source_table(k,1) = mb->row_source_locs[i](j);
+                        source_table(k,2) = mb->row_source_locs[i](j);
+                        k++;
+                    }
+                }
+            }
+
+            // write table
+            to_ecsv_from_matrix(source_filename, source_table, source_header, source_meta);
+        }
+    }
+
     mb = NULL;
     f_io = NULL;
     n_io = NULL;
