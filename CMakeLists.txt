@@ -57,6 +57,8 @@ target_sources(citlali
     #"src/citlali/core/engine/engine.cpp"
     "src/citlali/core/utils/gauss_models.cpp"
     "src/citlali/core/timestream/ptc/sensitivity.cpp"
+    "src/citlali/core/mapmaking/map.cpp"
+    #"src/citlali/core/mapmaking/wiener_filter.cpp"
     #"src/citlali/core/engine/lali.cpp"
     #"src/citlali/core/engine/pointing.cpp"
     #"src/citlali/core/engine/beammap.cpp"
