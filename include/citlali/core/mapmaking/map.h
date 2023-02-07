@@ -109,9 +109,8 @@ public:
 
     std::vector<int> n_sources;
 
-    // also find sources in negative map
-    bool negative_too;
-    bool negative;
+    // source finding mode
+    std::string source_finder_mode;
 
     // minimum source sigma
     double source_sigma;
@@ -120,6 +119,10 @@ public:
 
     // hold source row/col locations
     std::vector<Eigen::VectorXi> row_source_locs, col_source_locs;
+
+    // fitted source parameters and errors [n_sources x n_params]
+    Eigen::MatrixXd source_params;
+    Eigen::MatrixXd source_perror;
 
     void normalize_maps();
 
@@ -132,7 +135,7 @@ public:
     void calc_mean_rms();
     void renormalize_errors();
 
-    bool find_sources(Eigen::Index, double);
+    bool find_sources(Eigen::Index);
 };
 
 } // namespace mapmaking

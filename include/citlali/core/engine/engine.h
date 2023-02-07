@@ -268,6 +268,9 @@ public:
 
     template <mapmaking::MapType map_t, class map_buffer_t>
     void find_sources(map_buffer_t &);
+
+    template <mapmaking::MapType map_t, class map_buffer_t>
+    void write_sources(map_buffer_t &, std::string);
 };
 
 template<typename CT>
@@ -774,15 +777,13 @@ void Engine::get_citlali_config(CT &config) {
     if (run_source_finder) {
         get_config_value(config, omb.source_sigma, missing_keys, invalid_keys, std::tuple{"post_processing","source_finding","source_sigma"});
         get_config_value(config, omb.source_window_rad, missing_keys, invalid_keys, std::tuple{"post_processing","source_finding","source_window_arcsec"});
-        get_config_value(config, omb.negative, missing_keys, invalid_keys, std::tuple{"post_processing","source_finding","get_map_negative"});
-        get_config_value(config, omb.negative_too, missing_keys, invalid_keys, std::tuple{"post_processing","source_finding","get_negative_too"});
+        get_config_value(config, omb.source_finder_mode, missing_keys, invalid_keys, std::tuple{"post_processing","source_finding","mode"});
 
         omb.source_window_rad = omb.source_window_rad*ASEC_TO_RAD;
 
         cmb.source_sigma = omb.source_sigma;
         cmb.source_window_rad = omb.source_window_rad;
-        cmb.negative = omb.negative;
-        cmb.negative_too = omb.negative_too;
+        cmb.source_finder_mode = omb.source_finder_mode;
     }
 
     // disable map related keys if map-making is disabled
@@ -1887,31 +1888,207 @@ void Engine::find_sources(map_buffer_t &mb) {
     mb.row_source_locs.clear();
     mb.col_source_locs.clear();
     for (Eigen::Index i=0; i<n_maps; i++) {
-        // current array
-        auto array = maps_to_arrays(i);
-        // get file index
-        auto map_index = arrays_to_maps(i);
-        // init fwhm in pixels
-        auto init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
-
         // update source vectors
         mb.n_sources.push_back(0);
         mb.row_source_locs.push_back(Eigen::VectorXi::Ones(1));
         mb.col_source_locs.push_back(Eigen::VectorXi::Ones(1));
 
+        // default value of -99 to keep size of vectors same as map vector
         mb.row_source_locs.back()*=-99;
         mb.col_source_locs.back()*=-99;
 
         // run source finder
-        auto sources_found = mb.find_sources(i,init_fwhm);
+        auto sources_found = mb.find_sources(i);
 
         if (sources_found) {
             SPDLOG_INFO("{} source(s) found", mb.n_sources.back());
-            SPDLOG_INFO("source row(s): {}", mb.row_source_locs.back());
-            SPDLOG_INFO("source col(s): {}", mb.col_source_locs.back());
         }
         else {
             SPDLOG_INFO("no sources found");
         }
     }
+
+    // count up the total number of sources
+    Eigen::Index n_sources = 0;
+    for (const auto &sources: mb.n_sources) {
+        n_sources += sources;
+    }
+
+    // matrix to store source parameters
+    mb.source_params.setZero(n_sources,6);
+    mb.source_perror.setZero(n_sources,6);
+
+    // keep track of row in total source count
+    Eigen::Index k = 0;
+
+    // now loop through and fit the sources
+    for (Eigen::Index i=0; i<n_maps; i++) {
+        // skip map if no sources found
+        if (mb.n_sources[i] > 0) {
+            // current array
+            auto array = maps_to_arrays(i);
+            // get file index
+            auto map_index = arrays_to_maps(i);
+            // init fwhm in pixels
+            auto init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/mb.pixel_size_rad;
+
+            // placeholder vectors for grppi map
+            std::vector<int> source_in_vec, source_out_vec;
+
+            source_in_vec.resize(mb.n_sources[i]);
+            std::iota(source_in_vec.begin(), source_in_vec.end(), 0);
+            source_out_vec.resize(mb.n_sources[i]);
+
+            // loop through sources and fit them
+            grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), source_in_vec, source_out_vec, [&](auto j) {
+                // update source rows and cols
+                double init_row = mb.row_source_locs[i](j);
+                double init_col = mb.col_source_locs[i](j);
+
+                // fit source
+                auto [params, perror, good_fit] =
+                    map_fitter.fit_to_gaussian<engine_utils::mapFitter::pointing>(mb.signal[i], mb.weight[i],
+                                                                                  init_fwhm, init_row, init_col);
+                if (good_fit) {
+                    // rescale fit params from pixel to on-sky units
+                    params(1) = RAD_TO_ASEC*mb.pixel_size_rad*(params(1) - (mb.n_cols)/2);
+                    params(2) = RAD_TO_ASEC*mb.pixel_size_rad*(params(2) - (mb.n_rows)/2);
+                    params(3) = RAD_TO_ASEC*STD_TO_FWHM*mb.pixel_size_rad*(params(3));
+                    params(4) = RAD_TO_ASEC*STD_TO_FWHM*mb.pixel_size_rad*(params(4));
+
+                    // rescale fit errors from pixel to on-sky units
+                    perror(1) = RAD_TO_ASEC*mb.pixel_size_rad*(perror(1));
+                    perror(2) = RAD_TO_ASEC*mb.pixel_size_rad*(perror(2));
+                    perror(3) = RAD_TO_ASEC*STD_TO_FWHM*mb.pixel_size_rad*(perror(3));
+                    perror(4) = RAD_TO_ASEC*STD_TO_FWHM*mb.pixel_size_rad*(perror(4));
+
+                    // add source params and errors to table
+                    mb.source_params.row(k+j) = params;
+                    mb.source_perror.row(k+j) = perror;
+                }
+                return 0;
+            });
+
+            // update row
+            k = k + mb.n_sources[i];
+        }
+    }
+}
+
+template <mapmaking::MapType map_t, class map_buffer_t>
+void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
+    std::string source_filename;
+    if constexpr (map_t == mapmaking::FilteredObs) {
+        source_filename = toltec_io.create_filename<engine_utils::toltecIO::source, engine_utils::toltecIO::map,
+                                                    engine_utils::toltecIO::filtered>
+                          (dir_name, redu_type, "", obsnum, telescope.sim_obs);
+    }
+    else if constexpr (map_t == mapmaking::FilteredCoadd) {
+        source_filename = toltec_io.create_filename<engine_utils::toltecIO::source, engine_utils::toltecIO::map,
+                                                    engine_utils::toltecIO::filtered>
+                          (dir_name, "", "", "", telescope.sim_obs);
+    }
+
+    std::vector<std::string> source_header = {
+        "array",
+        "amp",
+        "amp_err",
+        "x_t",
+        "x_t_err",
+        "y_t",
+        "y_t_err",
+        "a_fwhm",
+        "a_fwhm_err",
+        "b_fwhm",
+        "b_fwhm_err",
+        "angle",
+        "angle_err"
+    };
+
+    // meta information for source table
+    YAML::Node source_meta;
+
+    // add obsnums
+    for (Eigen::Index i=0; i<mb->obsnums.size(); i++) {
+        // add obsnum to meta data
+        source_meta["obsnum" + std::to_string(i)] = mb->obsnums[i];
+    }
+
+    // add source name
+    source_meta["Source"] = telescope.source_name;
+
+    // add date
+    source_meta["Date"] = engine_utils::current_date_time();
+
+    // array
+    source_meta["array"].push_back("units: N/A");
+    source_meta["array"].push_back("array");
+
+    // amplitude
+    source_meta["amp"].push_back("units: " + mb->sig_unit);
+    source_meta["amp"].push_back("fitted amplitude");
+    // amplitude error
+    source_meta["amp_err"].push_back("units: " + mb->sig_unit);
+    source_meta["amp_err"].push_back("fitted amplitude error");
+    // x position
+    source_meta["x_t"].push_back("units: arcsec");
+    source_meta["x_t"].push_back("fitted azimuthal offset");
+    // x position error
+    source_meta["x_t_err"].push_back("units: arcsec");
+    source_meta["x_t_err"].push_back("fitted azimuthal offset error");
+    // y position
+    source_meta["y_t"].push_back("units: arcsec");
+    source_meta["y_t"].push_back("fitted altitude offset");
+    // y position error
+    source_meta["y_t_err"].push_back("units: arcsec");
+    source_meta["y_t_err"].push_back("fitted altitude offset error");
+    // azimuthal fwhm
+    source_meta["a_fwhm"].push_back("units: arcsec");
+    source_meta["a_fwhm"].push_back("fitted azimuthal FWHM");
+    // azimuthal fwhm error
+    source_meta["a_fwhm_err"].push_back("units: arcsec");
+    source_meta["a_fwhm_err"].push_back("fitted azimuthal FWHM error");
+    // elevation fwhm
+    source_meta["b_fwhm"].push_back("units: arcsec");
+    source_meta["b_fwhm"].push_back("fitted altitude FWMH");
+    // elevation fwhm error
+    source_meta["b_fwhm_err"].push_back("units: arcsec");
+    source_meta["b_fwhm_err"].push_back("fitted altitude FWMH error");
+    // rotation angle
+    source_meta["angle"].push_back("units: radians");
+    source_meta["angle"].push_back("fitted rotation angle");
+    // rotation angle error
+    source_meta["angle_err"].push_back("units: radians");
+    source_meta["angle_err"].push_back("fitted rotation angle error");
+
+    // count up the total number of sources
+    Eigen::Index n_sources = 0;
+    for (const auto &sources: mb->n_sources) {
+        n_sources += sources;
+    }
+
+    // matrix to hold source information
+    Eigen::MatrixXf source_table(n_sources, 13);
+
+    // loop through params and add arrays
+    Eigen::Index k=0;
+    for (Eigen::Index i=0; i<mb->n_sources.size(); i++) {
+        if (mb->n_sources[i]!=0) {
+            for (Eigen::Index j=0; j<mb->n_sources[i]; j++) {
+                source_table(k,0) = maps_to_arrays(i);
+                k++;
+            }
+        }
+    }
+
+    // populate table
+    Eigen::Index j = 0;
+    for (Eigen::Index i=1; i<12; i=i+2) {
+        source_table.col(i) = mb->source_params.col(j).template cast <float> ();
+        source_table.col(i+1) = mb->source_perror.col(j).template cast <float> ();
+        j++;
+    }
+
+    // write table
+    to_ecsv_from_matrix(source_filename, source_table, source_header, source_meta);
 }

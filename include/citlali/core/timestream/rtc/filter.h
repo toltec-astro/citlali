@@ -2,6 +2,7 @@
 
 #include <Eigen/Core>
 #include <unsupported/Eigen/CXX11/Tensor>
+#include <unsupported/Eigen/SpecialFunctions>
 
 #include <cmath>
 #include <boost/math/special_functions/bessel.hpp>
@@ -59,7 +60,9 @@ void Filter::make_filter(double fsmp) {
     // be required here.
     Eigen::VectorXd coef(n_terms);
 
-    for (Eigen::Index i = 0; i < n_terms; i++) {
+    // loop through and calculate coefficients
+    // boost is faster than eigen/unsupported/special_functions
+    for (Eigen::Index i=0; i<n_terms; i++) {
         coef(i) = boost::math::cyl_bessel_i(0, arg(i)) /
                   boost::math::cyl_bessel_i(0, alpha);
     }
@@ -86,35 +89,6 @@ void Filter::make_filter(double fsmp) {
 
 template <typename Derived>
 void Filter::convolve(Eigen::DenseBase<Derived> &in) {
-
-    /*netCDF::NcFile fo("/Users/mmccrackan/toltec/temp/commissioning_test/pointing/redu/testfilter_" + std::to_string(k) + ".nc", netCDF::NcFile::replace);
-
-    k++;
-    netCDF::NcDim n_filter_dim = fo.addDim("n_filter",filter.size());
-    netCDF::NcDim n_pts_dim = fo.addDim("n_pts",in.rows());
-    netCDF::NcDim n_dets_dim = fo.addDim("n_dets",in.cols());
-
-    std::vector<netCDF::NcDim> dim = {n_pts_dim, n_dets_dim};
-
-    netCDF::NcVar in_v = fo.addVar("in",netCDF::ncDouble, dim);
-    netCDF::NcVar out_v = fo.addVar("out",netCDF::ncDouble, dim);
-
-    netCDF::NcVar filter_v = fo.addVar("filter",netCDF::ncDouble, n_filter_dim);
-    filter_v.putVar(filter.data());
-
-    // start indices for data
-    std::vector<std::size_t> in_start_index = {0, 0};
-    // size for data
-    std::vector<std::size_t> in_size = {1, TULA_SIZET(in.cols())};
-
-    for (std::size_t i = 0; i < TULA_SIZET(in.rows()); ++i) {
-        in_start_index[0] = i;
-        Eigen::VectorXd row = in.derived().row(i);
-        in_v.putVar(in_start_index, in_size, row.data());
-    }
-    */
-
-
     // array to tell which dimension to do the convolution over
     Eigen::array<ptrdiff_t, 1> dims{0};
 
@@ -137,20 +111,6 @@ void Filter::convolve(Eigen::DenseBase<Derived> &in) {
              in.cols()) =
         Eigen::Map<Eigen::MatrixXd>(out_tensor.data(), out_tensor.dimension(0),
                                     out_tensor.dimension(1));
-
-    /*// start indices for data
-    std::vector<std::size_t> out_start_index = {0, 0};
-    // size for data
-    std::vector<std::size_t> out_size = {1, TULA_SIZET(in.cols())};
-
-    for (std::size_t i = 0; i < TULA_SIZET(in.rows()); ++i) {
-        out_start_index[0] = i;
-        Eigen::VectorXd row = in.derived().row(i);
-        out_v.putVar(out_start_index, out_size, row.data());
-    }
-
-    fo.close();
-   /std::exit(EXIT_SUCCESS);*/
 
 }
 

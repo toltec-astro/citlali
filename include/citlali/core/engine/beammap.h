@@ -511,6 +511,10 @@ auto Beammap::run_loop() {
             SPDLOG_INFO("normalizing maps");
             omb.normalize_maps();
 
+            // initial position for fitting
+            double init_row = -99;
+            double init_col = -99;
+
             SPDLOG_INFO("fitting maps");
             grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
                 // only fit if not converged
@@ -520,7 +524,8 @@ auto Beammap::run_loop() {
                     // get initial guess fwhm from theoretical fwhms for the arrays
                     auto init_fwhm = toltec_io.array_fwhm_arcsec[array_index]*ASEC_TO_RAD/omb.pixel_size_rad;
                     auto [det_params, det_perror, good_fit] =
-                        map_fitter.fit_to_gaussian<engine_utils::mapFitter::beammap>(omb.signal[i], omb.weight[i], init_fwhm);
+                        map_fitter.fit_to_gaussian<engine_utils::mapFitter::beammap>(omb.signal[i], omb.weight[i],
+                                                                                     init_fwhm, init_row, init_col);
 
                     params.row(i) = det_params;
                     perrors.row(i) = det_perror;

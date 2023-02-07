@@ -680,6 +680,7 @@ int main(int argc, char *argv[]) {
     if (exit_dump_config) {
         return EXIT_SUCCESS;
     }
+
     // now with normal CLI interface
     tula::logging::init();
     auto rc = parse_args(argc, argv);

@@ -187,8 +187,6 @@ void Pointing::setup() {
 
     // print basic info for obs reduction
     print_summary();
-
-    SPDLOG_DEBUG("grouping {}", calib.array_limits);
 }
 
 auto Pointing::run() {
@@ -387,12 +385,15 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         std::iota(map_in_vec.begin(), map_in_vec.end(), 0);
         map_out_vec.resize(n_maps);
 
+        double init_row = -99;
+        double init_col = -99;
+
         grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
             auto array = maps_to_arrays(i);
             // init fwhm in pixels
             double init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
             auto [map_params, map_perror, good_fit] =
-                map_fitter.fit_to_gaussian<engine_utils::mapFitter::pointing>(omb.signal[i], omb.weight[i], init_fwhm);
+                map_fitter.fit_to_gaussian<engine_utils::mapFitter::pointing>(omb.signal[i], omb.weight[i], init_fwhm, init_row, init_col);
             params.row(i) = map_params;
             perrors.row(i) = map_perror;
 
@@ -553,6 +554,11 @@ void Pointing::output() {
     // clear fits file vectors to ensure its closed.
     f_io->clear();
     n_io->clear();
+
+    // write source table
+    if (run_source_finder) {
+        write_sources<map_type>(mb, dir_name);
+    }
 
     // write psd and histogram files
     write_psd<map_type>(mb, dir_name);

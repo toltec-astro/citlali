@@ -258,7 +258,7 @@ void ObsMapBuffer::renormalize_errors() {
     }
 }
 
-bool ObsMapBuffer::find_sources(Eigen::Index map_index, double init_fwhm) {
+bool ObsMapBuffer::find_sources(Eigen::Index map_index) {
     // calc coverage bool map
     Eigen::MatrixXd ones, zeros;
 
@@ -271,7 +271,7 @@ bool ObsMapBuffer::find_sources(Eigen::Index map_index, double init_fwhm) {
     Eigen::MatrixXd cov_bool = (weight[map_index].array() < weight_threshold).select(zeros,ones);
 
     // swap the sign of the signal map
-    if (negative) {
+    if (source_finder_mode=="negative") {
         signal[map_index] = -signal[map_index];
     }
 
@@ -281,7 +281,7 @@ bool ObsMapBuffer::find_sources(Eigen::Index map_index, double init_fwhm) {
     // find pixels equal or above source sigma
     std::vector<int> row_index, col_index;
 
-    if (negative_too) {
+    if (source_finder_mode=="both") {
         for (Eigen::Index i=0; i<n_rows; i++) {
             for (Eigen::Index j=0; j<n_cols; j++) {
                 if (cov_bool(i,j) == 1) {
@@ -316,7 +316,7 @@ bool ObsMapBuffer::find_sources(Eigen::Index map_index, double init_fwhm) {
     std::vector<int> row_source_index, col_source_index;
     for (unsigned int i=0; i<row_index.size(); i++) {
         double extremum;
-        if (negative_too && signal[map_index](row_index[i],col_index[i]) < 0.0) {
+        if (source_finder_mode=="both" && signal[map_index](row_index[i],col_index[i]) < 0.0) {
             extremum = signal[map_index](row_index[i],col_index[i]);
             // find minimum within index box
             for (Eigen::Index j=row_index[i]-1; j<row_index[i]+2; j++) {
@@ -407,6 +407,7 @@ bool ObsMapBuffer::find_sources(Eigen::Index map_index, double init_fwhm) {
     row_dist_index.clear();
     col_dist_index.clear();
 
+    // get rows/cols of each source
     std::vector<int> row_source_loc, col_source_loc;
     for (Eigen::Index i=0; i<n_raw_sources; i++) {
         if ((row_source_index[i] != -1) && (col_source_index[i] != -1)) {
@@ -432,7 +433,7 @@ bool ObsMapBuffer::find_sources(Eigen::Index map_index, double init_fwhm) {
     }
 
     // flip signal map
-    if (negative) {
+    if (source_finder_mode=="negative") {
         signal[map_index] = -signal[map_index];
     }
 

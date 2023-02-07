@@ -224,8 +224,7 @@ post_processing:
     enabled: false # enable or disable source finding
     source_sigma: 0.0 # minimum sigma for source
     source_window_arcsec: 0 # window around each source to mask
-    get_map_negative: false 
-    get_negative_too: false
+    mode: default # defines how to search for sources (default=signal map, negative=-signal map, both)
 wiener_filter: # controls for wiener filter
   template_type: kernel #  template (kernel, gaussian, airy, highpass)
   gaussian_template_fwhm_arcsec: # set fwhms for gaussian template

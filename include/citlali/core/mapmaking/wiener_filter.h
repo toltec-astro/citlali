@@ -178,9 +178,13 @@ void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_d
     // collect what we need
     Eigen::MatrixXd temp_kernel = mb.kernel[map_index];
 
-    // carry out fit to kernel
+    double init_row = -99;
+    double init_col = -99;
+
+    // carry out fit to kernel to get centroid
     auto [map_params, map_perror, good_fit] =
-        map_fitter.fit_to_gaussian<engine_utils::mapFitter::pointing>(mb.kernel[map_index], mb.weight[map_index], init_fwhm);
+        map_fitter.fit_to_gaussian<engine_utils::mapFitter::pointing>(mb.kernel[map_index], mb.weight[map_index],
+                                                                      init_fwhm, init_row, init_col);
 
     // if fit failed, give up
     if (!good_fit) {
@@ -572,7 +576,7 @@ void WienerFilter::calc_denominator() {
                         }
                         // update progress bar
                         //pb.count(max_loops/100, 1);
-                        SPDLOG_INFO("{} iterations complete. ratio = {}", kk, static_cast<float>(max_ratio));
+                        SPDLOG_INFO("{} iteration(s) complete. ratio = {}", kk, static_cast<float>(max_ratio));
 
                         // check if done
                         if (((kk >= max_loops) && (max_ratio < 0.0002)) || max_ratio < 1e-10) {
@@ -614,7 +618,7 @@ void WienerFilter::make_template(MB &mb, CD &calib_data, const double gaussian_t
 
     // highpass template
     if (template_type=="highpass") {
-        SPDLOG_INFO("creating template with highpass only");
+        SPDLOG_INFO("creating highpass template");
         filter_template.setZero(n_rows,n_cols);
         filter_template(0,0) = 1;
     }
@@ -633,6 +637,7 @@ void WienerFilter::make_template(MB &mb, CD &calib_data, const double gaussian_t
 
     // symmetric version of kernel template
     else {
+        SPDLOG_INFO("creating template from kernel map");
         make_kernel_template(mb, map_index, calib_data);
     }
 }
