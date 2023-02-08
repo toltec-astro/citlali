@@ -42,6 +42,7 @@ public:
     // current iteration fit errors
     Eigen::MatrixXd perrors;
 
+    // bitwise flags
     enum AptFlags {
         Good         = 0,
         BadFit       = 1 << 0,
@@ -52,6 +53,7 @@ public:
         Position     = 1 << 5,
         };
 
+    // holds bitwise flags
     Eigen::Matrix<uint16_t,Eigen::Dynamic,1> flag2;
 
     // good fits
@@ -695,33 +697,44 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
 
         // flag bad fits
         if (!good_fits(i)) {
-            calib.apt["flag"](i) = 0;
+            if (calib.apt["flag"](i)!=0) {
+                n_flagged_dets++;
+                calib.apt["flag"](i) = 0;
+            }
             flag2(i) |= AptFlags::BadFit;
             calib.apt["flag2"](i) = AptFlags::BadFit;
-            n_flagged_dets++;
         }
         // flag detectors with outler a_fwhm values
-        else if (calib.apt["a_fwhm"](i) < lower_fwhm_arcsec[array_name] ||
+        //else
+        if (calib.apt["a_fwhm"](i) < lower_fwhm_arcsec[array_name] ||
                  (calib.apt["a_fwhm"](i) > upper_fwhm_arcsec[array_name]) && upper_fwhm_arcsec[array_name] > 0) {
-            calib.apt["flag"](i) = 0;
+            if (calib.apt["flag"](i)!=0) {
+                n_flagged_dets++;
+                calib.apt["flag"](i) = 0;
+            }
             flag2(i) |= AptFlags::AzFWHM;
             calib.apt["flag2"](i) = AptFlags::AzFWHM;
-            n_flagged_dets++;
         }
         // flag detectors with outler b_fwhm values
-        else if (calib.apt["b_fwhm"](i) < lower_fwhm_arcsec[array_name] ||
+        //else
+        if (calib.apt["b_fwhm"](i) < lower_fwhm_arcsec[array_name] ||
                  (calib.apt["b_fwhm"](i) > upper_fwhm_arcsec[array_name] && upper_fwhm_arcsec[array_name] > 0)) {
-            calib.apt["flag"](i) = 0;
+            if (calib.apt["flag"](i)!=0) {
+                n_flagged_dets++;
+                calib.apt["flag"](i) = 0;
+            }
             flag2(i) |= AptFlags::ElFWHM;
             calib.apt["flag2"](i) = AptFlags::ElFWHM;
-            n_flagged_dets++;
         }
         // flag detectors with outler S/N values
-        else if (params(i,0)/map_std_dev < lower_sig2noise[array_name]) {
-            calib.apt["flag"](i) = 0;
+        //else
+        if (params(i,0)/map_std_dev < lower_sig2noise[array_name]) {
+            if (calib.apt["flag"](i)!=0) {
+                n_flagged_dets++;
+                calib.apt["flag"](i) = 0;
+            }
             flag2(i) |= AptFlags::Sig2Noise;
             calib.apt["flag2"](i) = AptFlags::Sig2Noise;
-            n_flagged_dets++;
         }
         return 0;
     });
@@ -771,10 +784,10 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
             (calib.apt["sens"](i) > upper_sens_factor*nw_median_sens[nw_index] && upper_sens_factor > 0)) {
             if (calib.apt["flag"](i)!=0) {
                 calib.apt["flag"](i) = 0;
-                flag2(i) |= AptFlags::Sens;
-                calib.apt["flag2"](i) = AptFlags::Sens;
                 n_flagged_dets++;
             }
+            flag2(i) |= AptFlags::Sens;
+            calib.apt["flag2"](i) = AptFlags::Sens;
         }
 
         return 0;
@@ -831,11 +844,13 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
                            pow(calib.apt["y_t"](i) - array_median_y_t[array_name],2));
 
         // flag detectors that are further than the mean value than the distance limit
-        if (dist > max_dist_arcsec[array_name] && max_dist_arcsec[array_name] > 0 && calib.apt["flag"](i)!=0) {
-            calib.apt["flag"](i) = 0;
+        if (dist > max_dist_arcsec[array_name] && max_dist_arcsec[array_name] > 0) {
+            if (calib.apt["flag"](i)!=0) {
+                n_flagged_dets++;
+                calib.apt["flag"](i) = 0;
+            }
             flag2(i) |= AptFlags::Position;
             calib.apt["flag2"](i) = AptFlags::Position;
-            n_flagged_dets++;
         }
 
         return 0;
@@ -1199,12 +1214,12 @@ void Beammap::output() {
             // convert to floats
             Eigen::Index i = 0;
             for (auto const& x: calib.apt_header_keys) {
-                //if (x != "flag2") {
+                if (x != "flag2") {
                     apt_table.col(i) = calib.apt[x].cast<float> ();
-                //}
-                //else {
-                    //apt_table.col(i) = flag2.cast<float> ();
-                //}
+                }
+                else {
+                    apt_table.col(i) = flag2.cast<float> ();
+                }
                 i++;
             }
 
@@ -1288,7 +1303,7 @@ void Beammap::output() {
 
                         // add apt table
                         for (auto const& key: calib.apt_header_keys) {
-                            //if (key!="flag2") {
+                            if (key!="flag2") {
                                 try {
                                     f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, static_cast<float>(calib.apt[key](i)), key
                                                                           + " (" + calib.apt_header_units[key] + ")");
@@ -1296,11 +1311,11 @@ void Beammap::output() {
                                     f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, 0.0, key
                                                                            + " (" + calib.apt_header_units[key] + ")");
                                 }
-                            //}
-                            //else {
-                                //f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, flag2(i), key
-                                //                                       + " (" + calib.apt_header_units[key] + ")");
-                            //}
+                            }
+                            else {
+                                f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, flag2(i), key
+                                                                       + " (" + calib.apt_header_units[key] + ")");
+                            }
                         }
                         // increment hdu layer
                         k = k + step;
