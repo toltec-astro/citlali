@@ -122,8 +122,8 @@ auto mapFitter::ceres_fit(const Model &model,
         // EIGEN_SPARSE and DENSE_SVD are the slower, but more accurate options
         covariance_options.sparse_linear_algebra_library_type = ceres::SparseLinearAlgebraLibraryType::EIGEN_SPARSE;
         covariance_options.algorithm_type = ceres::CovarianceAlgorithmType::DENSE_SVD;
+        // gets rid of error messages related to bad fits
         covariance_options.null_space_rank = -1;
-        //covariance_options.min_reciprocal_condition_number = 1e-14;
         Covariance covariance(covariance_options);
 
         std::vector<std::pair<const double*, const double*>> covariance_blocks;

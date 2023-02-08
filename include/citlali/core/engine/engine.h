@@ -223,6 +223,22 @@ public:
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> filtered_coadd_fits_io_vec;
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> filtered_coadd_noise_fits_io_vec;
 
+
+    template<typename CT>
+    void get_rtc_config(CT &);
+
+    template<typename CT>
+    void get_ptc_config(CT &);
+
+    template<typename CT>
+    void get_beammap_config(CT &);
+
+    template<typename CT>
+    void get_mapmaking_config(CT &);
+
+    template<typename CT>
+    void get_map_filter_config(CT &);
+
     template<typename CT>
     void get_citlali_config(CT &);
 
@@ -274,120 +290,13 @@ public:
 };
 
 template<typename CT>
-void Engine::get_citlali_config(CT &config) {
-
-    /* interface offsets */
-    if (config.has(std::tuple{"interface_sync_offset"})) {
-
-        auto interface_node = config.get_node(std::tuple{"interface_sync_offset"});
-
-        std::vector<std::string> interface_keys = {
-            "toltec0",
-            "toltec1",
-            "toltec2",
-            "toltec3",
-            "toltec4",
-            "toltec5",
-            "toltec6",
-            "toltec7",
-            "toltec8",
-            "toltec9",
-            "toltec10",
-            "toltec11",
-            "toltec12",
-            "hwp"
-        };
-
-        for (Eigen::Index i=0; i<interface_node.size(); i++) {
-            try {
-                auto offset = config.template get_typed<double>(std::tuple{"interface_sync_offset",i, interface_keys[i]});
-                interface_sync_offset[interface_keys[i]] = offset;
-            } catch (YAML::TypedBadConversion<double>) {
-               std::vector<std::string> invalid_temp;
-                engine_utils::for_each_in_tuple(
-                    std::tuple{"interface_sync_offset", std::to_string(i), interface_keys[i]},
-                    [&](const auto &x) { invalid_temp.push_back(x); });
-                invalid_keys.push_back(invalid_temp);
-            }
-
-            catch (YAML::InvalidNode) {
-                std::vector<std::string> invalid_temp;
-                engine_utils::for_each_in_tuple(
-                    std::tuple{"interface_sync_offset", std::to_string(i), interface_keys[i]},
-                    [&](const auto &x) { invalid_temp.push_back(x); });
-                invalid_keys.push_back(invalid_temp);
-            }
-        }
-    }
-
-    else {
-        std::vector<std::string> missing_temp;
-        engine_utils::for_each_in_tuple(
-            std::tuple{"interface_sync_offset"},
-            [&](const auto &x) { missing_temp.push_back(x); });
-        missing_keys.push_back(missing_temp);
-    }
-
-    /* runtime */
-    get_config_value(config, verbose_mode, missing_keys, invalid_keys, std::tuple{"runtime","verbose"});
-    get_config_value(config, output_dir, missing_keys, invalid_keys, std::tuple{"runtime","output_dir"});
-    get_config_value(config, n_threads, missing_keys, invalid_keys, std::tuple{"runtime","n_threads"});
-    get_config_value(config, parallel_policy, missing_keys, invalid_keys, std::tuple{"runtime","parallel_policy"},{"seq","omp"});
-
-    get_config_value(config, redu_type, missing_keys, invalid_keys, std::tuple{"runtime","reduction_type"},{"science","pointing","beammap"});
-    get_config_value(config, use_subdir, missing_keys, invalid_keys, std::tuple{"runtime","use_subdir"});
-
-    /* timestream */
-    get_config_value(config, run_tod, missing_keys, invalid_keys, std::tuple{"timestream","enabled"});
-    get_config_value(config, tod_type, missing_keys, invalid_keys, std::tuple{"timestream","type"});
-
-    bool run_tod_output_rtc, run_tod_output_ptc;
-    get_config_value(config, run_tod_output_rtc, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","output","enabled"});
-    get_config_value(config, run_tod_output_ptc, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","output",
-                                                                                        "enabled"});
-
-    // set tod output to false by default
-    run_tod_output = false;
-
-    // check if rtc output is requested
-    if (run_tod_output_rtc) {
-        run_tod_output = true;
-        tod_output_type = "rtc";
-    }
-    // if ptc output is requested
-    if (run_tod_output_ptc) {
-        // check if rtc output was requested
-        if (run_tod_output == true) {
-            tod_output_type = "both";
-        }
-        // else just output ptc
-        else {
-            run_tod_output = true;
-            tod_output_type = "ptc";
-        }
-    }
-
-    // set parallelization for psd filter ffts (maintained with tod output/verbose mode)
-    omb.parallel_policy = parallel_policy;
-    cmb.parallel_policy = parallel_policy;
-
-    if (run_tod_output) {
-        get_config_value(config, tod_output_subdir_name, missing_keys, invalid_keys, std::tuple{"timestream","output", "subdir_name"});
-    }
-    get_config_value(config, telescope.time_chunk, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "length_sec"});
-    get_config_value(config, telescope.force_chunk, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "force_chunking"});
-    get_config_value(config, ptcproc.weighting_type, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","weighting",
-                                                                                            "type"},{"full","approximate"});
+void Engine::get_rtc_config(CT &config) {
     get_config_value(config, rtcproc.lower_std_dev, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","flagging",
                                                                                            "lower_weight_factor"});
     get_config_value(config, rtcproc.upper_std_dev, missing_keys, invalid_keys, std::tuple{"timestream", "raw_time_chunk","flagging",
                                                                                            "upper_weight_factor"});
     get_config_value(config, rtcproc.delta_f_min_Hz, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","flagging",
                                                                                             "delta_f_min_Hz"});
-    get_config_value(config, ptcproc.lower_std_dev, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","flagging",
-                                                                                           "lower_weight_factor"});
-    get_config_value(config, ptcproc.upper_std_dev, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","flagging",
-                                                                                           "upper_weight_factor"});
 
     /* polarization */
     get_config_value(config, rtcproc.run_polarization, missing_keys, invalid_keys, std::tuple{"timestream","polarimetry", "enabled"});
@@ -467,10 +376,22 @@ void Engine::get_citlali_config(CT &config) {
                                                                                                          {"am_q25","am_q50","am_q75"});
     // setup atm model
     rtcproc.calibration.setup();
+}
+
+template<typename CT>
+void Engine::get_ptc_config(CT &config) {
+    get_config_value(config, ptcproc.weighting_type, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","weighting",
+                                                                                            "type"},{"full","approximate"});
+    get_config_value(config, ptcproc.lower_std_dev, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","flagging",
+                                                                                           "lower_weight_factor"});
+    get_config_value(config, ptcproc.upper_std_dev, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","flagging",
+                                                                                           "upper_weight_factor"});
+
     // for sensitivity fcf
     ptcproc.run_calibrate = rtcproc.run_calibrate;
 
     // override calibration if in beammap mode
+
     /*if (redu_type=="beammap") {
         rtcproc.run_calibrate = false;
         ptcproc.run_calibrate = false;
@@ -478,23 +399,19 @@ void Engine::get_citlali_config(CT &config) {
 
     /* cleaning */
     get_config_value(config, ptcproc.run_clean, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","clean","enabled"});
-    //get_config_value(config, ptcproc.cleaner.n_eig_to_cut, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","clean","n_eig_to_cut"});
-    //get_config_value(config, ptcproc.cleaner.grouping, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","clean","grouping"},
-    //                                                                                  {"array", "nw", "network","nw_array","array_nw","all"});
 
     // vector of groupings
     ptcproc.cleaner.grouping = config.template get_typed<std::vector<std::string>>(std::tuple{"timestream","processed_time_chunk","clean","grouping"});
     // vector of eigenvalues to cut
     auto n_eig_to_cut = config.template get_typed<std::vector<Eigen::Index>>(std::tuple{"timestream","processed_time_chunk","clean","n_eig_to_cut"});
-
     // map to eigen vector
     ptcproc.cleaner.n_eig_to_cut = Eigen::Map<Eigen::VectorXI>(n_eig_to_cut.data(),n_eig_to_cut.size());
-
     get_config_value(config, ptcproc.cleaner.stddev_limit, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk",
                                                                                              "clean","stddev_limit"});
+}
 
-    /* mapmaking */
-    get_config_value(config, run_mapmaking, missing_keys, invalid_keys, std::tuple{"mapmaking","enabled"});
+template<typename CT>
+void Engine::get_mapmaking_config(CT &config) {
     get_config_value(config, map_grouping, missing_keys, invalid_keys, std::tuple{"mapmaking","grouping"},{"auto","array","nw","detector"});
 
     // coverage cut
@@ -626,6 +543,203 @@ void Engine::get_citlali_config(CT &config) {
     // copy omb wcs to cmb wcs
     cmb.wcs = omb.wcs;
 
+    // set parallelization for psd filter ffts (maintained with tod output/verbose mode)
+    omb.parallel_policy = parallel_policy;
+    cmb.parallel_policy = parallel_policy;
+}
+
+
+template<typename CT>
+void Engine::get_beammap_config(CT &config) {
+    get_config_value(config, beammap_iter_max, missing_keys, invalid_keys, std::tuple{"beammap","iter_max"});
+    get_config_value(config, beammap_iter_tolerance, missing_keys, invalid_keys, std::tuple{"beammap","iter_tolerance"});
+    get_config_value(config, beammap_reference_det, missing_keys, invalid_keys, std::tuple{"beammap","reference_det"});
+    get_config_value(config, beammap_subtract_reference, missing_keys, invalid_keys, std::tuple{"beammap","subtract_reference_det"});
+    get_config_value(config, beammap_derotate, missing_keys, invalid_keys, std::tuple{"beammap","derotate"});
+
+    // limits for flagging
+    for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
+        get_config_value(config, lower_fwhm_arcsec[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","flagging","lower_fwhm_arcsec",
+                                                                                              arr_name});
+        get_config_value(config, upper_fwhm_arcsec[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","flagging","upper_fwhm_arcsec",
+                                                                                              arr_name});
+        get_config_value(config, lower_sig2noise[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","flagging","lower_sig2noise",
+                                                                                            arr_name});
+        get_config_value(config, max_dist_arcsec[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","flagging","max_dist_arcsec",
+                                                                                            arr_name});
+    }
+
+    get_config_value(config, lower_sens_factor, missing_keys, invalid_keys, std::tuple{"beammap","flagging","lower_sens_factor"});
+    get_config_value(config, upper_sens_factor, missing_keys, invalid_keys, std::tuple{"beammap","flagging","upper_sens_factor"});
+
+    // sensitiivty
+    sens_psd_limits.resize(2);
+    double sens;
+    get_config_value(config, sens, missing_keys, invalid_keys, std::tuple{"beammap","sens_psd_lower_limit"});
+    sens_psd_limits(0) = sens;
+
+    get_config_value(config, sens, missing_keys, invalid_keys, std::tuple{"beammap","sens_psd_upper_limit"});
+    sens_psd_limits(1) = sens;
+
+    // if no tolerance is specified, write out max iteration tod
+    if (run_tod_output) {
+        if (beammap_iter_tolerance <=0) {
+            beammap_tod_output_iter = beammap_iter_max;
+        }
+        else {
+            beammap_tod_output_iter = 0;
+        }
+    }
+}
+
+template<typename CT>
+void Engine::get_map_filter_config(CT &config) {
+    get_config_value(config, wiener_filter.template_type, missing_keys, invalid_keys, std::tuple{"wiener_filter","template_type"},
+                     {"kernel","gaussian","airy","highpass"});
+    get_config_value(config, wiener_filter.run_lowpass, missing_keys, invalid_keys, std::tuple{"wiener_filter","lowpass_only"});
+    get_config_value(config, wiener_filter.normalize_error, missing_keys, invalid_keys, std::tuple{"post_processing","map_filtering",
+                                                                                                   "normalize_errors"});
+    if (wiener_filter.template_type=="kernel") {
+        if (!rtcproc.run_kernel) {
+            SPDLOG_ERROR("wiener filter kernel template requires kernel");
+            std::exit(EXIT_FAILURE);
+        }
+        else {
+            wiener_filter.map_fitter = map_fitter;
+        }
+    }
+
+    if (!run_noise) {
+        SPDLOG_ERROR("wiener filter requires noise maps");
+        std::exit(EXIT_FAILURE);
+    }
+
+    // gaussian template fwhms
+    if (wiener_filter.template_type=="gaussian" || wiener_filter.template_type=="airy") {
+        get_config_value(config, wiener_filter.gaussian_template_fwhm_rad["a1100"], missing_keys, invalid_keys,
+                   std::tuple{"wiener_filter","gaussian_template_fwhm_arcsec","a1100"});
+        get_config_value(config, wiener_filter.gaussian_template_fwhm_rad["a1400"], missing_keys, invalid_keys,
+                   std::tuple{"wiener_filter","gaussian_template_fwhm_arcsec","a1400"});
+        get_config_value(config, wiener_filter.gaussian_template_fwhm_rad["a2000"], missing_keys, invalid_keys,
+                   std::tuple{"wiener_filter","gaussian_template_fwhm_arcsec","a2000"});
+
+        for (auto const& pair : wiener_filter.gaussian_template_fwhm_rad) {
+            wiener_filter.gaussian_template_fwhm_rad[pair.first] = wiener_filter.gaussian_template_fwhm_rad[pair.first]*ASEC_TO_RAD;
+        }
+    }
+
+    // set parallelization for ffts (maintained with tod output/verbose mode)
+    wiener_filter.parallel_policy = parallel_policy;
+}
+
+template<typename CT>
+void Engine::get_citlali_config(CT &config) {
+    /* interface offsets */
+    if (config.has(std::tuple{"interface_sync_offset"})) {
+
+        auto interface_node = config.get_node(std::tuple{"interface_sync_offset"});
+
+        std::vector<std::string> interface_keys = {
+            "toltec0",
+            "toltec1",
+            "toltec2",
+            "toltec3",
+            "toltec4",
+            "toltec5",
+            "toltec6",
+            "toltec7",
+            "toltec8",
+            "toltec9",
+            "toltec10",
+            "toltec11",
+            "toltec12",
+            "hwp"
+        };
+
+        for (Eigen::Index i=0; i<interface_node.size(); i++) {
+            try {
+                auto offset = config.template get_typed<double>(std::tuple{"interface_sync_offset",i, interface_keys[i]});
+                interface_sync_offset[interface_keys[i]] = offset;
+            } catch (YAML::TypedBadConversion<double>) {
+               std::vector<std::string> invalid_temp;
+                engine_utils::for_each_in_tuple(
+                    std::tuple{"interface_sync_offset", std::to_string(i), interface_keys[i]},
+                    [&](const auto &x) { invalid_temp.push_back(x); });
+                invalid_keys.push_back(invalid_temp);
+            }
+
+            catch (YAML::InvalidNode) {
+                std::vector<std::string> invalid_temp;
+                engine_utils::for_each_in_tuple(
+                    std::tuple{"interface_sync_offset", std::to_string(i), interface_keys[i]},
+                    [&](const auto &x) { invalid_temp.push_back(x); });
+                invalid_keys.push_back(invalid_temp);
+            }
+        }
+    }
+
+    else {
+        std::vector<std::string> missing_temp;
+        engine_utils::for_each_in_tuple(
+            std::tuple{"interface_sync_offset"},
+            [&](const auto &x) { missing_temp.push_back(x); });
+        missing_keys.push_back(missing_temp);
+    }
+
+    /* runtime */
+    get_config_value(config, verbose_mode, missing_keys, invalid_keys, std::tuple{"runtime","verbose"});
+    get_config_value(config, output_dir, missing_keys, invalid_keys, std::tuple{"runtime","output_dir"});
+    get_config_value(config, n_threads, missing_keys, invalid_keys, std::tuple{"runtime","n_threads"});
+    get_config_value(config, parallel_policy, missing_keys, invalid_keys, std::tuple{"runtime","parallel_policy"},{"seq","omp"});
+
+    get_config_value(config, redu_type, missing_keys, invalid_keys, std::tuple{"runtime","reduction_type"},{"science","pointing","beammap"});
+    get_config_value(config, use_subdir, missing_keys, invalid_keys, std::tuple{"runtime","use_subdir"});
+
+    /* timestream */
+    get_config_value(config, run_tod, missing_keys, invalid_keys, std::tuple{"timestream","enabled"});
+    get_config_value(config, tod_type, missing_keys, invalid_keys, std::tuple{"timestream","type"});
+
+    bool run_tod_output_rtc, run_tod_output_ptc;
+    get_config_value(config, run_tod_output_rtc, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","output","enabled"});
+    get_config_value(config, run_tod_output_ptc, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","output",
+                                                                                        "enabled"});
+    // set tod output to false by default
+    run_tod_output = false;
+
+    // check if rtc output is requested
+    if (run_tod_output_rtc) {
+        run_tod_output = true;
+        tod_output_type = "rtc";
+    }
+    // if ptc output is requested
+    if (run_tod_output_ptc) {
+        // check if rtc output was requested
+        if (run_tod_output == true) {
+            tod_output_type = "both";
+        }
+        // else just output ptc
+        else {
+            run_tod_output = true;
+            tod_output_type = "ptc";
+        }
+    }
+
+    if (run_tod_output) {
+        get_config_value(config, tod_output_subdir_name, missing_keys, invalid_keys, std::tuple{"timestream","output", "subdir_name"});
+    }
+    get_config_value(config, telescope.time_chunk, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "length_sec"});
+    get_config_value(config, telescope.force_chunk, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "force_chunking"});
+
+    /* rtc */
+    get_rtc_config(config);
+
+    /* ptc */
+    get_ptc_config(config);
+
+    /* mapmaking */
+    get_config_value(config, run_mapmaking, missing_keys, invalid_keys, std::tuple{"mapmaking","enabled"});
+    get_mapmaking_config(config);
+
     /* map filtering */
     get_config_value(config, run_map_filter, missing_keys, invalid_keys, std::tuple{"post_processing","map_filtering","enabled"});
 
@@ -682,7 +796,6 @@ void Engine::get_citlali_config(CT &config) {
         get_config_value(config, omb.n_noise, missing_keys, invalid_keys, std::tuple{"noise_maps","n_noise_maps"},{},{0},{});
         cmb.n_noise = omb.n_noise;
     }
-
     else {
         omb.n_noise = 0;
         cmb.n_noise = 0;
@@ -690,85 +803,12 @@ void Engine::get_citlali_config(CT &config) {
 
     /* wiener filter */
     if (run_map_filter) {
-        get_config_value(config, wiener_filter.template_type, missing_keys, invalid_keys, std::tuple{"wiener_filter","template_type"},
-                         {"kernel","gaussian","airy","highpass"});
-        get_config_value(config, wiener_filter.run_lowpass, missing_keys, invalid_keys, std::tuple{"wiener_filter","lowpass_only"});
-        get_config_value(config, wiener_filter.normalize_error, missing_keys, invalid_keys, std::tuple{"post_processing","map_filtering",
-                                                                                                       "normalize_errors"});
-        if (wiener_filter.template_type=="kernel") {
-            if (!rtcproc.run_kernel) {
-                SPDLOG_ERROR("wiener filter kernel template requires kernel");
-                std::exit(EXIT_FAILURE);
-            }
-            else {
-                wiener_filter.map_fitter = map_fitter;
-            }
-        }
-
-        if (!run_noise) {
-            SPDLOG_ERROR("wiener filter requires noise maps");
-            std::exit(EXIT_FAILURE);
-        }
-
-        // gaussian template fwhms
-        if (wiener_filter.template_type=="gaussian" || wiener_filter.template_type=="airy") {
-            get_config_value(config, wiener_filter.gaussian_template_fwhm_rad["a1100"], missing_keys, invalid_keys,
-                       std::tuple{"wiener_filter","gaussian_template_fwhm_arcsec","a1100"});
-            get_config_value(config, wiener_filter.gaussian_template_fwhm_rad["a1400"], missing_keys, invalid_keys,
-                       std::tuple{"wiener_filter","gaussian_template_fwhm_arcsec","a1400"});
-            get_config_value(config, wiener_filter.gaussian_template_fwhm_rad["a2000"], missing_keys, invalid_keys,
-                       std::tuple{"wiener_filter","gaussian_template_fwhm_arcsec","a2000"});
-
-            for (auto const& pair : wiener_filter.gaussian_template_fwhm_rad) {
-                wiener_filter.gaussian_template_fwhm_rad[pair.first] = wiener_filter.gaussian_template_fwhm_rad[pair.first]*ASEC_TO_RAD;
-            }
-        }
-
-        // set parallelization for ffts (maintained with tod output/verbose mode)
-        wiener_filter.parallel_policy = parallel_policy;
+        get_map_filter_config(config);
     }
 
     /* beammap */
     if (redu_type=="beammap") {
-        get_config_value(config, beammap_iter_max, missing_keys, invalid_keys, std::tuple{"beammap","iter_max"});
-        get_config_value(config, beammap_iter_tolerance, missing_keys, invalid_keys, std::tuple{"beammap","iter_tolerance"});
-        get_config_value(config, beammap_reference_det, missing_keys, invalid_keys, std::tuple{"beammap","reference_det"});
-        get_config_value(config, beammap_subtract_reference, missing_keys, invalid_keys, std::tuple{"beammap","subtract_reference_det"});
-        get_config_value(config, beammap_derotate, missing_keys, invalid_keys, std::tuple{"beammap","derotate"});
-
-        // limits for flagging
-        for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
-            get_config_value(config, lower_fwhm_arcsec[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","flagging","lower_fwhm_arcsec",
-                                                                                                  arr_name});
-            get_config_value(config, upper_fwhm_arcsec[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","flagging","upper_fwhm_arcsec",
-                                                                                                  arr_name});
-            get_config_value(config, lower_sig2noise[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","flagging","lower_sig2noise",
-                                                                                                arr_name});
-            get_config_value(config, max_dist_arcsec[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","flagging","max_dist_arcsec",
-                                                                                                arr_name});
-        }
-
-        get_config_value(config, lower_sens_factor, missing_keys, invalid_keys, std::tuple{"beammap","flagging","lower_sens_factor"});
-        get_config_value(config, upper_sens_factor, missing_keys, invalid_keys, std::tuple{"beammap","flagging","upper_sens_factor"});
-
-        // sensitiivty
-        sens_psd_limits.resize(2);
-        double sens;
-        get_config_value(config, sens, missing_keys, invalid_keys, std::tuple{"beammap","sens_psd_lower_limit"});
-        sens_psd_limits(0) = sens;
-
-        get_config_value(config, sens, missing_keys, invalid_keys, std::tuple{"beammap","sens_psd_upper_limit"});
-        sens_psd_limits(1) = sens;
-
-        // if no tolerance is specified, write out max iteration tod
-        if (run_tod_output) {
-            if (beammap_iter_tolerance <=0) {
-                beammap_tod_output_iter = beammap_iter_max;
-            }
-            else {
-                beammap_tod_output_iter = 0;
-            }
-        }
+        get_beammap_config(config);
     }
 
     /* source finding */
@@ -1484,6 +1524,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("GROUPING", map_grouping, "Map grouping");
     // add exposure time
     fits_io->at(i).pfits->pHDU().addKey("EXPTIME", mb->exposure_time, "Exposure time (sec)");
+    // add pixel axes
+    fits_io->at(i).pfits->pHDU().addKey("RADESYS", telescope.pixel_axes, "Coord Reference Frame");
     // add source ra
     fits_io->at(i).pfits->pHDU().addKey("SRC_RA", telescope.tel_header["Header.Source.Ra"][0], "Source RA (radians)");
     // add source dec

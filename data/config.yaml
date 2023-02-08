@@ -2,7 +2,7 @@ beammap: # beammap controls (ignored if not beammapping)
   iter_max: 1 # maximum number of iterations for beammapping
   derotate: false # derotate beammap to zero elevation
   subtract_reference_det: true # enable subtraction of reference detector position
-  reference_det: -99 # reference detector offset for APT positions (if <0 and enabled, use detector closest to median)
+  reference_det: -99 # reference detector index for APT positions (if <0 and enabled, use detector closest to median)
   iter_tolerance: 0.0 # tolerance for iterations (if 0 all iterations are performed, tod output will be for last iteration)
   sens_psd_lower_limit: 0 # lower limit for psd in sensitivity calculation
   sens_psd_upper_limit: 0 # upper limit for psd in sensitivity calculation
@@ -146,7 +146,7 @@ mapmaking: # mapmaking parameters
     b: 4.75 # shape parameter
     c: 2.0 # shape parameter
 runtime: # parameters to control how citlali runs
-  verbose: true # extra output in terminal.  adds files to obsnum/logs/ directory.
+  verbose: true # extra output in terminal.  adds files to obsnum/logs/ directory. sequential mode only.
   meta:
     version: tolteca... # extra info from tolteca
   n_threads: 1 # number of threads to use
@@ -190,21 +190,21 @@ timestream: # timestream reduction parameters
       extinction_model: am_q25 # model to use for tau calculation (am_q25, am_q50, am_q75)
     flagging: # controls flagging before cleaning
       delta_f_min_Hz: 60.e3 # lower limit on frequency separation for flagging tones
-      lower_weight_factor: 0.0 # flag detectors below this stddev limit (ignored if 0)
-      upper_weight_factor: 0.0 # flag detectors above this stddev limit (ignored if 0)
+      lower_weight_factor: 0.0 # flag detectors below this stddev limit (ignored if 0, weight=1/variance of TOD)
+      upper_weight_factor: 0.0 # flag detectors above this stddev limit (ignored if 0, weight=1/variance of TOD)
     output:
-      enabled: false # enable or disablertc TOD output
+      enabled: false # enable or disable rtc TOD output
   processed_time_chunk:
     clean: # remove (hopefully) the atmospheric signal
       stddev_limit: 0.0 # standard deviation cut for cleaning (only used if >0)
       enabled: false # enable or disable cleaning
-      grouping: [array] # clean grouping (array, nw, nw_array, array_nw, all)
+      grouping: [array] # clean grouping (array, nw, all)
       n_eig_to_cut: [3] # number of eigenvalues to remove (if stddev_limit >0, calc this many eigs, if this is 0, calc all eigs)
     weighting: # how to weight data and maps
       type: full # type of TOD weighting (full=use scan variance/approximate=use det sensitivity)
     flagging: # controls flagging after cleaning
-      lower_weight_factor: 0.0 # flag detectors below this stddev limit (ignored if 0)
-      upper_weight_factor: 0.0 # flag detectors above this stddev limit (ignored if 0)
+      lower_weight_factor: 0.0 # flag detectors below this weight limit (ignored if 0, weight=1/variance of TOD)
+      upper_weight_factor: 0.0 # flag detectors above this weight limit (ignored if 0, weight=1/variance of TOD)
     output:
       enabled: false # enable or disable ptc TOD output
 post_processing:
@@ -217,7 +217,7 @@ post_processing:
       fwhm_limits: [0.0, 0.0] # upper and lower multiplicative factors for fwhm fitting
   map_filtering: # map filtering (if coadd enabled, filters coadded map, if disabled, filters obs maps)
     enabled: false # enable or disable map filtering
-    type: wiener_filter # type of filter (currently ignored)
+    type: wiener_filter # type of map filter (currently ignored, default is wiener filter)
     normalize_errors: false # correct weight map errors based on noise maps
   map_histogram_n_bins: 20 # number of histogram bins (>0)
   source_finding: # parameters to control source finding

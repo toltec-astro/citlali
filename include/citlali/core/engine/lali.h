@@ -324,26 +324,29 @@ void Lali::output() {
         dir_name = coadd_dir_name + "filtered/";
     }
 
+    // wiener filtered maps write before this and are deleted from the vector.
     if (!f_io->empty()) {
-        // progress bar
-        tula::logging::progressbar pb(
-            [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 100, "output progress ");
+        {
+            // progress bar
+            tula::logging::progressbar pb(
+                [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 100, "output progress ");
 
-        for (Eigen::Index i=0; i<f_io->size(); i++) {
-            // get the array for the given map
-            // add primary hdu
-            add_phdu(f_io, mb, i);
+            for (Eigen::Index i=0; i<f_io->size(); i++) {
+                // get the array for the given map
+                // add primary hdu
+                add_phdu(f_io, mb, i);
 
-            if (!mb->noise.empty()) {
-                add_phdu(n_io, mb, i);
+                if (!mb->noise.empty()) {
+                    add_phdu(n_io, mb, i);
+                }
             }
-        }
 
-        // write the maps
-        for (Eigen::Index i=0; i<n_maps; i++) {
-            // update progress bar
-            pb.count(n_maps, 1);
-            write_maps(f_io,n_io,mb,i);
+            // write the maps
+            for (Eigen::Index i=0; i<n_maps; i++) {
+                // update progress bar
+                pb.count(n_maps, 1);
+                write_maps(f_io,n_io,mb,i);
+            }
         }
 
         SPDLOG_INFO("files have been written to:");

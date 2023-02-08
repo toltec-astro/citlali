@@ -42,6 +42,18 @@ public:
     // current iteration fit errors
     Eigen::MatrixXd perrors;
 
+    enum AptFlags {
+        Good         = 0,
+        BadFit       = 1 << 0,
+        AzFWHM       = 1 << 1,
+        ElFWHM       = 1 << 2,
+        Sig2Noise    = 1 << 3,
+        Sens         = 1 << 4,
+        Position     = 1 << 5,
+        };
+
+    Eigen::Matrix<uint16_t,Eigen::Dynamic,1> flag2;
+
     // good fits
     Eigen::Matrix<bool, Eigen::Dynamic, 1> good_fits;
 
@@ -70,7 +82,6 @@ public:
 };
 
 void Beammap::setup() {
-
     // check tau calculation
     Eigen::VectorXd tau_el(1);
     tau_el << telescope.tel_data["TelElAct"].mean();
@@ -92,7 +103,6 @@ void Beammap::setup() {
         if (calib.apt["nw"](i) > calib.apt["nw"](i-1)) {
             j = 0;
         }
-
         else {
             j++;
         }
@@ -102,7 +112,7 @@ void Beammap::setup() {
 
     // add kids tone to apt header
     calib.apt_header_keys.push_back("kids_tone");
-    calib.apt_header_units["tone_freq"] = "Hz";
+    calib.apt_header_units["kids_tone"] = "N/A";
 
     // set number of parameters for map fitting
     n_params = 6;
@@ -638,6 +648,27 @@ auto Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
 template<typename array_indices_t, typename nw_indices_t>
 void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices) {
+
+    flag2.resize(calib.n_dets);
+    calib.apt["flag2"].resize(calib.n_dets);
+
+    // bitwise flag
+    calib.apt_meta["flag2"].push_back("units: N/A");
+    calib.apt_meta["flag2"].push_back("bitwise flag");
+    calib.apt_meta["flag2"].push_back("Good=0");
+    calib.apt_meta["flag2"].push_back("BadFit=1");
+    calib.apt_meta["flag2"].push_back("AzFWHM=2");
+    calib.apt_meta["flag2"].push_back("ElFWHM=3");
+    calib.apt_meta["flag2"].push_back("Sig2Noise=4");
+    calib.apt_meta["flag2"].push_back("Sens=5");
+    calib.apt_meta["flag2"].push_back("Position=6");
+
+    calib.apt_header_units["flag2"] = "N/A";
+    calib.apt_header_keys.push_back("flag2");
+
+    flag2.setConstant(AptFlags::Good);
+    calib.apt["flag2"].setConstant(AptFlags::Good);
+
     // track number of flagged detectors
     int n_flagged_dets = 0;
 
@@ -665,23 +696,31 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
         // flag bad fits
         if (!good_fits(i)) {
             calib.apt["flag"](i) = 0;
+            flag2(i) |= AptFlags::BadFit;
+            calib.apt["flag2"](i) = AptFlags::BadFit;
             n_flagged_dets++;
         }
         // flag detectors with outler a_fwhm values
         else if (calib.apt["a_fwhm"](i) < lower_fwhm_arcsec[array_name] ||
                  (calib.apt["a_fwhm"](i) > upper_fwhm_arcsec[array_name]) && upper_fwhm_arcsec[array_name] > 0) {
             calib.apt["flag"](i) = 0;
+            flag2(i) |= AptFlags::AzFWHM;
+            calib.apt["flag2"](i) = AptFlags::AzFWHM;
             n_flagged_dets++;
         }
         // flag detectors with outler b_fwhm values
         else if (calib.apt["b_fwhm"](i) < lower_fwhm_arcsec[array_name] ||
                  (calib.apt["b_fwhm"](i) > upper_fwhm_arcsec[array_name] && upper_fwhm_arcsec[array_name] > 0)) {
             calib.apt["flag"](i) = 0;
+            flag2(i) |= AptFlags::ElFWHM;
+            calib.apt["flag2"](i) = AptFlags::ElFWHM;
             n_flagged_dets++;
         }
         // flag detectors with outler S/N values
         else if (params(i,0)/map_std_dev < lower_sig2noise[array_name]) {
             calib.apt["flag"](i) = 0;
+            flag2(i) |= AptFlags::Sig2Noise;
+            calib.apt["flag2"](i) = AptFlags::Sig2Noise;
             n_flagged_dets++;
         }
         return 0;
@@ -732,6 +771,8 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
             (calib.apt["sens"](i) > upper_sens_factor*nw_median_sens[nw_index] && upper_sens_factor > 0)) {
             if (calib.apt["flag"](i)!=0) {
                 calib.apt["flag"](i) = 0;
+                flag2(i) |= AptFlags::Sens;
+                calib.apt["flag2"](i) = AptFlags::Sens;
                 n_flagged_dets++;
             }
         }
@@ -792,6 +833,8 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
         // flag detectors that are further than the mean value than the distance limit
         if (dist > max_dist_arcsec[array_name] && max_dist_arcsec[array_name] > 0 && calib.apt["flag"](i)!=0) {
             calib.apt["flag"](i) = 0;
+            flag2(i) |= AptFlags::Position;
+            calib.apt["flag2"](i) = AptFlags::Position;
             n_flagged_dets++;
         }
 
@@ -888,7 +931,7 @@ void Beammap::adjust_apt() {
             SPDLOG_INFO("using detector {} at ({},{}) arcsec",beammap_reference_det,
                         ref_det_x_t,ref_det_y_t);
         }
-        // else use closest to a1100 median
+        // else use closest to a1100 median (or map 0 if a1100 is missing)
         else {
             SPDLOG_INFO("finding a reference detector");
             auto array_name = toltec_io.array_name_map[calib.apt["array"](0)];
@@ -904,7 +947,6 @@ void Beammap::adjust_apt() {
 
             SPDLOG_INFO("using detector {} at ({},{}) arcsec",beammap_reference_det,
                         ref_det_x_t,ref_det_y_t);
-
         }
     }
 
@@ -916,6 +958,10 @@ void Beammap::adjust_apt() {
     calib.apt_meta["reference_x_t"] = ref_det_x_t;
     calib.apt_meta["reference_y_t"] = ref_det_y_t;
 
+    // raw (not derotated or reference detector subtracted) detector x and y values
+    calib.apt["x_t_raw"] = calib.apt["x_t"];
+    calib.apt["y_t_raw"] = calib.apt["y_t"];
+
     // align to reference detector if specified and
     // subtract its position from x and y
     calib.apt["x_t"] =  calib.apt["x_t"].array() - ref_det_x_t;
@@ -924,10 +970,6 @@ void Beammap::adjust_apt() {
     // derotated detector x and y values
     calib.apt["x_t_derot"] = calib.apt["x_t"];
     calib.apt["y_t_derot"] = calib.apt["y_t"];
-
-    // raw (not derotated) detector x and y values
-    calib.apt["x_t_raw"] = calib.apt["x_t"];
-    calib.apt["y_t_raw"] = calib.apt["y_t"];
 
     // derotation elevation
     calib.apt["derot_elev"].setConstant(telescope.tel_data["TelElAct"].mean());
@@ -1152,17 +1194,17 @@ void Beammap::output() {
                                                           engine_utils::toltecIO::raw>
                                 (obsnum_dir_name + "raw/", redu_type, "", obsnum, telescope.sim_obs);
 
-            //calib.apt_header_keys.push_back("x_t_derot");
-            //calib.apt_header_keys.push_back("y_t_derot");
-            //calib.apt_header_keys.push_back("x_t_raw");
-            //calib.apt_header_keys.push_back("y_t_raw");
-
-            Eigen::MatrixXd apt_table(calib.n_dets, calib.apt_header_keys.size());
+            Eigen::MatrixXf apt_table(calib.n_dets, calib.apt_header_keys.size());
 
             // convert to floats
             Eigen::Index i = 0;
             for (auto const& x: calib.apt_header_keys) {
-                apt_table.col(i) = calib.apt[x].cast<double> ();
+                //if (x != "flag2") {
+                    apt_table.col(i) = calib.apt[x].cast<float> ();
+                //}
+                //else {
+                    //apt_table.col(i) = flag2.cast<float> ();
+                //}
                 i++;
             }
 
@@ -1197,67 +1239,72 @@ void Beammap::output() {
         dir_name = coadd_dir_name + "filtered/";
     }
 
-    // progress bar
+    // wiener filtered maps write before this and are deleted from the vector.
     if (!f_io->empty()) {
-        tula::logging::progressbar pb(
-            [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 100, "output progress ");
+        {
+            // progress bar
+            tula::logging::progressbar pb(
+                [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 100, "output progress ");
 
-        for (Eigen::Index i=0; i<f_io->size(); i++) {
-            // get the array for the given map
-            // add primary hdu
-            add_phdu(f_io, mb, i);
+            for (Eigen::Index i=0; i<f_io->size(); i++) {
+                // get the array for the given map
+                // add primary hdu
+                add_phdu(f_io, mb, i);
 
-            if (!mb->noise.empty()) {
-                add_phdu(n_io, mb, i);
+                if (!mb->noise.empty()) {
+                    add_phdu(n_io, mb, i);
+                }
             }
-        }
 
-        // write the maps
-        Eigen::Index k = 0;
-        Eigen::Index step = 2;
+            // write the maps
+            Eigen::Index k = 0;
+            Eigen::Index step = 2;
 
-        if (!mb->kernel.empty()) {
-            step++;
-        }
-        if (!mb->coverage.empty()) {
-            step++;
-        }
+            if (!mb->kernel.empty()) {
+                step++;
+            }
+            if (!mb->coverage.empty()) {
+                step++;
+            }
 
-        // write the maps
-        for (Eigen::Index i=0; i<n_maps; i++) {
-            // update progress bar
-            pb.count(n_maps, 1);
-            write_maps(f_io,n_io,mb,i);
+            // write the maps
+            for (Eigen::Index i=0; i<n_maps; i++) {
+                // update progress bar
+                pb.count(n_maps, 1);
+                write_maps(f_io,n_io,mb,i);
 
-            if (map_grouping=="detector") {
-                if constexpr (map_type == mapmaking::RawObs) {
-                    // get the array for the given map
-                    Eigen::Index map_index = arrays_to_maps(i);
+                if (map_grouping=="detector") {
+                    if constexpr (map_type == mapmaking::RawObs) {
+                        // get the array for the given map
+                        Eigen::Index map_index = arrays_to_maps(i);
 
-                    // check if we move from one file to the next
-                    // if so go back to first hdu layer
-                    if (i>0) {
-                        if (map_index > arrays_to_maps(i-1)) {
-                            k = 0;
+                        // check if we move from one file to the next
+                        // if so go back to first hdu layer
+                        if (i>0) {
+                            if (map_index > arrays_to_maps(i-1)) {
+                                k = 0;
+                            }
                         }
-                    }
 
-                    // add apt table
-                    for (auto const& key: calib.apt_header_keys) {
-                        //if (calib.apt[key](i) == calib.apt[key](i) && !std::isinf(calib.apt[key](i))) {
-                        try {
-                            f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, static_cast<float>(calib.apt[key](i)), key
-                                                                  + " (" + calib.apt_header_units[key] + ")");
-                        } catch(...) {
-                        //}
-                        //else {
-                            f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, 0.0, key
-                                                                   + " (" + calib.apt_header_units[key] + ")");
+                        // add apt table
+                        for (auto const& key: calib.apt_header_keys) {
+                            //if (key!="flag2") {
+                                try {
+                                    f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, static_cast<float>(calib.apt[key](i)), key
+                                                                          + " (" + calib.apt_header_units[key] + ")");
+                                } catch(...) {
+                                    f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, 0.0, key
+                                                                           + " (" + calib.apt_header_units[key] + ")");
+                                }
+                            //}
+                            //else {
+                                //f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, flag2(i), key
+                                //                                       + " (" + calib.apt_header_units[key] + ")");
+                            //}
                         }
-                        //}
+                        // increment hdu layer
+                        k = k + step;
                     }
-                    // increment hdu layer
-                    k = k + step;
                 }
             }
         }
