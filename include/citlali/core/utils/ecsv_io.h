@@ -103,6 +103,12 @@ inline auto to_map_from_ecsv_mixted_type(std::string filepath) {
         table[col] = tbl.col<bool>(col).data.cast<double> ();
     }
 
+    // get floats
+    auto float_colnames = tbl.array_data<float>().colnames();
+    for (auto & col : float_colnames) {
+        table[col] = tbl.col<float>(col).data.cast<double> ();
+    }
+
     // get doubles
     auto dbl_colnames = tbl.array_data<double>().colnames();
     for (auto & col : dbl_colnames) {
