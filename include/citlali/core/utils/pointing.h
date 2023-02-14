@@ -14,28 +14,31 @@ auto calc_det_pointing(tel_data_t &tel_data, const double az_off, const double e
     // rows, cols pointing vectors
     Eigen::VectorXd lat, lon;
 
-    // rotate altaz offsets by elevation angle
-    auto rot_az_off = cos(tel_data["TelElAct"].array())*az_off
+    // rotate altaz offsets by elevation angle and add pointing offsets
+    Eigen::VectorXd rot_az_off = cos(tel_data["TelElAct"].array())*az_off
                      - sin(tel_data["TelElAct"].array())*el_off + pointing_offsets["az"];
-    auto rot_alt_off = cos(tel_data["TelElAct"].array())*el_off
+    Eigen::VectorXd rot_alt_off = cos(tel_data["TelElAct"].array())*el_off
                       + sin(tel_data["TelElAct"].array())*az_off + pointing_offsets["alt"];
 
     // icrs map
     if (std::strcmp("icrs", pixel_axes.c_str()) == 0) {
+        // get parallactic angle
+        Eigen::ArrayXd par_ang = -tel_data["ActParAng"].array();
 
-        auto par_ang = -tel_data["ParAng"].array();
-
-        lat = (-rot_az_off*sin(par_ang) + rot_alt_off*cos(par_ang))*ASEC_TO_RAD
+        // dec
+        lat = (-rot_az_off.array()*sin(par_ang) + rot_alt_off.array()*cos(par_ang))*ASEC_TO_RAD
               + tel_data["lat_phys"].array();
-
-        lon = (-rot_az_off*cos(par_ang) - rot_alt_off*sin(par_ang))*ASEC_TO_RAD
+        // ra
+        lon = (-rot_az_off.array()*cos(par_ang) - rot_alt_off.array()*sin(par_ang))*ASEC_TO_RAD
               + tel_data["lon_phys"].array();
     }
 
     // altaz map
     else if (std::strcmp("altaz", pixel_axes.c_str()) == 0) {
-        lat = (rot_alt_off*ASEC_TO_RAD) + tel_data["lat_phys"].array();
-        lon = (rot_az_off*ASEC_TO_RAD) + tel_data["lon_phys"].array();
+        // alt
+        lat = (rot_alt_off.array()*ASEC_TO_RAD) + tel_data["lat_phys"].array();
+        // az
+        lon = (rot_az_off.array()*ASEC_TO_RAD) + tel_data["lon_phys"].array();
     }
 
     return std::tuple<Eigen::VectorXd, Eigen::VectorXd>{lat,lon};
@@ -44,6 +47,7 @@ auto calc_det_pointing(tel_data_t &tel_data, const double az_off, const double e
 template <typename Derived>
 auto phys_to_abs(Eigen::DenseBase<Derived>& lat, Eigen::DenseBase<Derived>& lon, const double cra, const double cdec) {
 
+    // number of samples
     Eigen::Index n_pts = lat.size();
 
     // lat/lon = dec/ra = y/x (map axes)

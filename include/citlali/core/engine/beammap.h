@@ -84,15 +84,17 @@ public:
 };
 
 void Beammap::setup() {
-    // check tau calculation
-    Eigen::VectorXd tau_el(1);
-    tau_el << telescope.tel_data["TelElAct"].mean();
-    auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
+    if (!telescope.sim_obs) {
+        // check tau calculation
+        Eigen::VectorXd tau_el(1);
+        tau_el << telescope.tel_data["TelElAct"].mean();
+        auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
 
-    for (auto const& [key, val] : tau_freq) {
-        if (val[0] < 0) {
-            SPDLOG_ERROR("calculated mean {} tau {} < 0",toltec_io.array_name_map[key], val[0]);
-            std::exit(EXIT_FAILURE);
+        for (auto const& [key, val] : tau_freq) {
+            if (val[0] < 0) {
+                SPDLOG_ERROR("calculated mean {} tau {} < 0",toltec_io.array_name_map[key], val[0]);
+                std::exit(EXIT_FAILURE);
+            }
         }
     }
 
@@ -450,8 +452,10 @@ auto Beammap::run_loop() {
                                                       ptcs[i].array_indices.data, redu_type, map_grouping);
 
             // remove duplicate tones
-            calib_scan = rtcproc.remove_nearby_tones(ptcs[i], calib_scan, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
-                                                     ptcs[i].array_indices.data, redu_type, map_grouping);
+            if (!telescope.sim_obs) {
+                calib_scan = rtcproc.remove_nearby_tones(ptcs[i], calib_scan, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
+                                                        ptcs[i].array_indices.data, redu_type, map_grouping);
+            }
 
             // removed detectors flagged in per scan apt
             //ptcproc.remove_flagged_dets(ptcs[i], calib_scan.apt, ptcs[i].det_indices.data);
@@ -990,14 +994,34 @@ void Beammap::adjust_apt() {
     calib.apt["derot_elev"].setConstant(telescope.tel_data["TelElAct"].mean());
 
     // calculate derotated positions
-    Eigen::VectorXd rot_az_off = cos(-calib.apt["derot_elev"].array())*calib.apt["x_t_derot"].array() -
+    /*Eigen::VectorXd rot_az_off = cos(-calib.apt["derot_elev"].array())*calib.apt["x_t_derot"].array() -
                                  sin(-calib.apt["derot_elev"].array())*calib.apt["y_t_derot"].array();
     Eigen::VectorXd rot_alt_off = sin(-calib.apt["derot_elev"].array())*calib.apt["x_t_derot"].array() +
                                   cos(-calib.apt["derot_elev"].array())*calib.apt["y_t_derot"].array();
 
     // overwrite x_t and y_t
     calib.apt["x_t_derot"] = -rot_az_off;
-    calib.apt["y_t_derot"] = -rot_alt_off;
+    calib.apt["y_t_derot"] = -rot_alt_off;*/
+
+    for (Eigen::Index i=0; i<calib.n_dets; i++) {
+        Eigen::VectorXd lat = (-calib.apt["y_t_derot"](i)*ASEC_TO_RAD) + telescope.tel_data["TelElMap"].array();
+        Eigen::VectorXd lon = (-calib.apt["x_t_derot"](i)*ASEC_TO_RAD) + telescope.tel_data["TelAzMap"].array();
+
+        Eigen::Index min_index;
+
+        double min_dist = (lat.array().pow(2) + lon.array().pow(2)).minCoeff(&min_index);
+
+        calib.apt["derot_elev"](i) = telescope.tel_data["SourceEl"](min_index);
+
+        // calculate derotated positions
+        double rot_az_off = cos(-calib.apt["derot_elev"](i))*calib.apt["x_t_derot"](i) -
+                                     sin(-calib.apt["derot_elev"](i))*calib.apt["y_t_derot"](i);
+        double rot_alt_off = sin(-calib.apt["derot_elev"](i))*calib.apt["x_t_derot"](i) +
+                                      cos(-calib.apt["derot_elev"](i))*calib.apt["y_t_derot"](i);
+
+        calib.apt["x_t_derot"](i) = -rot_az_off;
+        calib.apt["y_t_derot"](i) = -rot_alt_off;
+    }
 
     if (beammap_derotate) {
         SPDLOG_INFO("derotating apt");

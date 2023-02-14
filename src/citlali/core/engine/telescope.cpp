@@ -3,6 +3,7 @@
 #include <tula/logging.h>
 
 #include <citlali/core/engine/telescope.h>
+#include <citlali/core/utils/utils.h>
 
 namespace engine {
 
@@ -89,6 +90,17 @@ void Telescope::get_tel_data(std::string &filepath) {
         throw DataIOError{fmt::format(
             "failed to load data from netCDF file {}", filepath)};
     }
+
+    engine_utils::fix_periodic_boundary(tel_data["TelRa"],pi, 1.99*pi, 2.0*pi);
+    engine_utils::fix_periodic_boundary(tel_data["TelDec"],pi, 1.99*pi, 2.0*pi);
+    engine_utils::fix_periodic_boundary(tel_data["TelAzAct"],pi, 1.99*pi, 2.0*pi);
+    engine_utils::fix_periodic_boundary(tel_data["TelElAct"],pi, 1.99*pi, 2.0*pi);
+    engine_utils::fix_periodic_boundary(tel_data["TelAzCor"],pi, 1.99*pi, 2.0*pi);
+    engine_utils::fix_periodic_boundary(tel_data["TelElCor"],pi, 1.99*pi, 2.0*pi);
+    engine_utils::fix_periodic_boundary(tel_data["TelAzDes"],pi, 1.99*pi, 2.0*pi);
+    engine_utils::fix_periodic_boundary(tel_data["TelElDes"],pi, 1.99*pi, 2.0*pi);
+    engine_utils::fix_periodic_boundary(tel_data["SourceAz"],pi, 1.99*pi, 2.0*pi);
+    engine_utils::fix_periodic_boundary(tel_data["SourceEl"],pi, 1.99*pi, 2.0*pi);
 }
 
 void Telescope::calc_tan_pointing() {
@@ -126,6 +138,8 @@ void Telescope::calc_tan_icrs() {
     // copy center dec
     double center_dec = tel_header["Header.Source.Dec"](0);
 
+    SPDLOG_INFO("center_ra {}, center_dec {}", center_ra, center_dec);
+
     // rescale center ra
     center_ra = (center_ra > pi) ? center_ra - (2.0*pi) : center_ra;
 
@@ -138,13 +152,11 @@ void Telescope::calc_tan_icrs() {
             tel_data["lat_phys"](i) = 0.;
             tel_data["lon_phys"](i) = 0.;
         }
-
         else {
-            // tangent plane lat (dec/alt)
+            // tangent plane lat (dec)
             tel_data["lat_phys"](i) = (cos(center_dec)*sin(dec(i)) -
                                        sin(center_dec)*cos(dec(i))*cos(ra(i)-center_ra))/cosc(i);
-
-            // tangent plane lon (ra/az)
+            // tangent plane lon (ra)
             tel_data["lon_phys"](i) = cos(dec(i))*sin(ra(i)-center_ra)/cosc(i);
         }
     }
@@ -158,17 +170,18 @@ void Telescope::calc_tan_altaz() {
         }
     }
 
-    // calculate tangent coordinates
+    // tangent plane lat (alt)
     tel_data["lat_phys"] = (tel_data["TelElAct"] - tel_data["SourceEl"]) - tel_data["TelElCor"];
+    // tangent plane lon (az)
     tel_data["lon_phys"] = cos(tel_data["TelElAct"].array())*(tel_data["TelAzAct"].array() - tel_data["SourceAz"].array())
                            - tel_data["TelAzCor"].array();
-
 }
 
 void Telescope::calc_scan_indices() {
     // number of scans
     Eigen::Index n_scans = 0;
 
+    // get scans for raster pattern
     if (std::strcmp("Map", obs_pgm.c_str()) == 0 && !force_chunk) {
         SPDLOG_INFO("calculating scans for raster mode");
         // cast hold signal to boolean

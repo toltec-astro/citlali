@@ -209,9 +209,6 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         }
     }
 
-    out.scan_indices.data = in.scan_indices.data;
-    out.index.data = in.index.data;
-
     if (run_calibrate) {
         SPDLOG_DEBUG("calibrating timestream");
         //calc tau at toltec frequencies
@@ -221,6 +218,9 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
 
         out.calibrated = true;
     }
+
+    out.scan_indices.data = in.scan_indices.data;
+    out.index.data = in.index.data;
 }
 
 template <typename calib_t, typename Derived>

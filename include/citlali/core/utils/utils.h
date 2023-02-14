@@ -831,5 +831,20 @@ private:
     Eigen::Spline<double, 1> spline_;
 };
 
+template <typename Derived>
+void fix_periodic_boundary(Eigen::DenseBase<Derived>&data, double low,
+                           double high, double upper_limit) {
+
+    Eigen::Index n_pts = data.size();
+    double max = data.maxCoeff();
+    double min = data.minCoeff();
+    if (max > high && min < low) {
+        for (Eigen::Index i=0; i<n_pts; i++) {
+            if (data(i) < low) {
+                data(i) += upper_limit;
+            }
+        }
+    }
+}
 
 } //namespace engine_utils

@@ -12,7 +12,7 @@ namespace engine {
 class Telescope {
 public:
     // mapping pattern
-    char obs_pgm_char [128] = "";;
+    char obs_pgm_char [128] = "";
     // source name
     char source_name_char [128] = "";
 

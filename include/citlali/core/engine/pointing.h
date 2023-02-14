@@ -52,15 +52,17 @@ public:
 };
 
 void Pointing::setup() {
-    // check tau calculation
-    Eigen::VectorXd tau_el(1);
-    tau_el << telescope.tel_data["TelElAct"].mean();
-    auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
+    if (!telescope.sim_obs) {
+        // check tau calculation
+        Eigen::VectorXd tau_el(1);
+        tau_el << telescope.tel_data["TelElAct"].mean();
+        auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
 
-    for (auto const& [key, val] : tau_freq) {
-        if (val[0] < 0) {
-            SPDLOG_ERROR("calculated mean {} tau {} < 0",toltec_io.array_name_map[key], static_cast<float>(val[0]));
-            std::exit(EXIT_FAILURE);
+        for (auto const& [key, val] : tau_freq) {
+            if (val[0] < 0) {
+                SPDLOG_ERROR("calculated mean {} tau {} < 0",toltec_io.array_name_map[key], val[0]);
+                std::exit(EXIT_FAILURE);
+            }
         }
     }
 
@@ -266,7 +268,9 @@ auto Pointing::run() {
             auto calib_scan = rtcproc.remove_bad_dets(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
 
             // remove duplicate tones
-            calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
+            if (!telescope.sim_obs) {
+                calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
+            }
 
             // run cleaning
             if (stokes_param == "I") {

@@ -79,14 +79,14 @@ public:
             for (Eigen::Index i=0; i<n_dets; i++) {
                 // rotate q and u by parallactic angle and elevation for q pairs
                 if (fg(i) == 0) {
-                    q = cos(2*(in.tel_data.data["ParAng"].array() + in.tel_data.data["TelElAct"].array()))*polarized_scans_det.col(i).array();
-                    u = -sin(2*(in.tel_data.data["ParAng"].array() + in.tel_data.data["TelElAct"].array()))*polarized_scans_det.col(i).array();
+                    q = cos(2*(in.tel_data.data["ActParAng"].array() + in.tel_data.data["TelElAct"].array()))*polarized_scans_det.col(i).array();
+                    u = -sin(2*(in.tel_data.data["ActParAng"].array() + in.tel_data.data["TelElAct"].array()))*polarized_scans_det.col(i).array();
                 }
 
                 // rotate q and u by parallactic angle and elevation for u pairs
                 else if (fg(i) == 1) {
-                    q = -sin(2*(in.tel_data.data["ParAng"].array() + in.tel_data.data["TelElAct"].array()))*polarized_scans_det.col(i).array();
-                    u = cos(2*(in.tel_data.data["ParAng"].array() + in.tel_data.data["TelElAct"].array()))*polarized_scans_det.col(i).array();
+                    q = -sin(2*(in.tel_data.data["ActParAng"].array() + in.tel_data.data["TelElAct"].array()))*polarized_scans_det.col(i).array();
+                    u = cos(2*(in.tel_data.data["ActParAng"].array() + in.tel_data.data["TelElAct"].array()))*polarized_scans_det.col(i).array();
 
                 }
 

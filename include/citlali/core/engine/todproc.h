@@ -1004,7 +1004,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
         // loop through scans
         for (Eigen::Index i=0; i<engine().telescope.scan_indices.cols(); i++) {
             auto si = engine().telescope.scan_indices(0, i);
-            auto sl = engine().telescope.scan_indices(1, i) - engine().telescope.scan_indices(0, i) + 1;
+            auto sl = engine().telescope.scan_indices(1, i) - engine().telescope.scan_indices(0,i) + 1;
 
             std::map<std::string, Eigen::VectorXd> tel_data;
             for (auto const& x: engine().telescope.tel_data) {
@@ -1189,7 +1189,8 @@ void TimeOrderedDataProc<EngineType>::setup_filenames() {
                 std::string array_name = engine().toltec_io.array_name_map[array];
                 auto filename = engine().toltec_io.template create_filename<engine_utils::toltecIO::toltec,
                                                                             engine_utils::toltecIO::map,
-                                                                            engine_utils::toltecIO::filtered>(engine().coadd_dir_name + "filtered/",
+                                                                            engine_utils::toltecIO::filtered>(engine().coadd_dir_name +
+                                                                                                                  "filtered/",
                                                                                                          "", array_name,
                                                                                                          "", engine().telescope.sim_obs);
                 fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
@@ -1199,7 +1200,8 @@ void TimeOrderedDataProc<EngineType>::setup_filenames() {
                 if (engine().run_noise) {
                     auto filename = engine().toltec_io.template create_filename<engine_utils::toltecIO::toltec,
                                                                                 engine_utils::toltecIO::noise,
-                                                                                engine_utils::toltecIO::filtered>(engine().coadd_dir_name + "filtered/",
+                                                                                engine_utils::toltecIO::filtered>(engine().coadd_dir_name +
+                                                                                                                      "filtered/",
                                                                                                                "", array_name,
                                                                                                                "", engine().telescope.sim_obs);
                     fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);

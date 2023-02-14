@@ -866,12 +866,6 @@ void Engine::get_photometry_config(CT &config) {
 
 template<typename CT>
 void Engine::get_astrometry_config(CT &config) {
-    // initialize pointing az offset
-    pointing_offsets_arcsec["az"] = 0.0;
-
-    // initialize pointing alt offset
-    pointing_offsets_arcsec["alt"] = 0.0;
-
     pointing_offsets_arcsec["az"] = config.template get_typed<double>(std::tuple{"pointing_offsets",0,"value_arcsec"});
     pointing_offsets_arcsec["alt"] = config.template get_typed<double>(std::tuple{"pointing_offsets",1,"value_arcsec"});
 }

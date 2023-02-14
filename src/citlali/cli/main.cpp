@@ -524,12 +524,12 @@ int run(const rc_t &rc) {
                         SPDLOG_WARN("gaps found in obnsum {} data file timing!", todproc.engine().obsnum);
                         // write gaps.log file if in verbose mode
                         if (todproc.engine().verbose_mode) {
-                            SPDLOG_INFO("writing gaps.log file");
+                            SPDLOG_DEBUG("writing gaps.log file");
                             std::ofstream f;
                             f.open(todproc.engine().obsnum_dir_name+"/logs/gaps.log");
                             f << "Summary of timing gaps\n";
                             for (auto const& [key, val] : todproc.engine().gaps) {
-                                SPDLOG_INFO("{} gaps: {}", key, val);
+                                SPDLOG_DEBUG("{} gaps: {}", key, val);
                                 f << "-" + key + " gaps: " << val << "\n";
                             }
                             f.close();
