@@ -994,16 +994,16 @@ void Beammap::adjust_apt() {
     calib.apt["derot_elev"].setConstant(telescope.tel_data["TelElAct"].mean());
 
     // calculate derotated positions
-    /*Eigen::VectorXd rot_az_off = cos(-calib.apt["derot_elev"].array())*calib.apt["x_t_derot"].array() -
+    Eigen::VectorXd rot_az_off = cos(-calib.apt["derot_elev"].array())*calib.apt["x_t_derot"].array() -
                                  sin(-calib.apt["derot_elev"].array())*calib.apt["y_t_derot"].array();
     Eigen::VectorXd rot_alt_off = sin(-calib.apt["derot_elev"].array())*calib.apt["x_t_derot"].array() +
                                   cos(-calib.apt["derot_elev"].array())*calib.apt["y_t_derot"].array();
 
     // overwrite x_t and y_t
     calib.apt["x_t_derot"] = -rot_az_off;
-    calib.apt["y_t_derot"] = -rot_alt_off;*/
+    calib.apt["y_t_derot"] = -rot_alt_off;
 
-    for (Eigen::Index i=0; i<calib.n_dets; i++) {
+    /*for (Eigen::Index i=0; i<calib.n_dets; i++) {
         Eigen::VectorXd lat = (-calib.apt["y_t_derot"](i)*ASEC_TO_RAD) + telescope.tel_data["TelElMap"].array();
         Eigen::VectorXd lon = (-calib.apt["x_t_derot"](i)*ASEC_TO_RAD) + telescope.tel_data["TelAzMap"].array();
 
@@ -1021,7 +1021,7 @@ void Beammap::adjust_apt() {
 
         calib.apt["x_t_derot"](i) = -rot_az_off;
         calib.apt["y_t_derot"](i) = -rot_alt_off;
-    }
+    }*/
 
     if (beammap_derotate) {
         SPDLOG_INFO("derotating apt");

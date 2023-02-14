@@ -138,8 +138,6 @@ void Telescope::calc_tan_icrs() {
     // copy center dec
     double center_dec = tel_header["Header.Source.Dec"](0);
 
-    SPDLOG_INFO("center_ra {}, center_dec {}", center_ra, center_dec);
-
     // rescale center ra
     center_ra = (center_ra > pi) ? center_ra - (2.0*pi) : center_ra;
 
