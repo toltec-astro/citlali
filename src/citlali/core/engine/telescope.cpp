@@ -121,8 +121,8 @@ void Telescope::calc_tan_icrs() {
     tel_data["dec_phys"] = tel_data["az_phys"].array()*sin(tel_data["ActParAng"].array()) +
                            tel_data["alt_phys"].array()*cos(tel_data["ActParAng"].array());
 
-    tel_data["TelRa"] = tel_data["TelRa"].array() + tel_header["Header.Source.Ra"](0);;
-    tel_data["TelDec"] = tel_data["TelDec"].array() + tel_header["Header.Source.Dec"](0);;
+    tel_data["TelRa"] = tel_data["ra_phys"].array() + tel_header["Header.Source.Ra"](0);;
+    tel_data["TelDec"] = tel_data["dec_phys"].array() + tel_header["Header.Source.Dec"](0);;
 
     // size of data
     Eigen::Index n_pts = tel_data["TelRa"].size();
