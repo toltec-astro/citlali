@@ -120,12 +120,16 @@ void Telescope::calc_tan_icrs() {
     // tangent plane dec
     tel_data["dec_phys"] = tel_data["az_phys"].array()*sin(tel_data["ActParAng"].array()) +
                            tel_data["alt_phys"].array()*cos(tel_data["ActParAng"].array());
+
+    tel_data["TelRa"] = tel_data["TelRa"].array() + tel_header["Header.Source.Ra"](0);;
+    tel_data["TelDec"] = tel_data["TelDec"].array() + tel_header["Header.Source.Dec"](0);;
+
     // size of data
-    /*Eigen::Index n_pts = tel_data["TelRa"].size();
+    Eigen::Index n_pts = tel_data["TelRa"].size();
 
     // vectors to hold physical (tangent plane) coordinates
-    tel_data["dec_phys"].resize(n_pts);
-    tel_data["ra_phys"].resize(n_pts);
+    //tel_data["dec_phys"].resize(n_pts);
+    //tel_data["ra_phys"].resize(n_pts);
 
     // copy ra
     Eigen::VectorXd ra = tel_data["TelRa"];
@@ -159,7 +163,7 @@ void Telescope::calc_tan_icrs() {
             // tangent plane lon (ra)
             tel_data["ra_phys"](i) = cos(dec(i))*sin(ra(i)-center_ra)/cosc(i);
         }
-    }*/
+    }
 }
 
 void Telescope::calc_tan_altaz() {
