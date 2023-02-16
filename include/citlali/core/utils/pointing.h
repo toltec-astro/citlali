@@ -14,16 +14,18 @@ auto calc_det_pointing(tel_data_t &tel_data, const double az_off, const double e
     // rows, cols pointing vectors
     Eigen::VectorXd lat, lon;
 
+    auto derot_elev = tel_data["TelElAct"].array();
+
     // rotate altaz offsets by elevation angle and add pointing offsets
-    Eigen::VectorXd rot_az_off = cos(tel_data["TelElAct"].array())*az_off
-                     - sin(tel_data["TelElAct"].array())*el_off + pointing_offsets["az"];
-    Eigen::VectorXd rot_alt_off = cos(tel_data["TelElAct"].array())*el_off
-                      + sin(tel_data["TelElAct"].array())*az_off + pointing_offsets["alt"];
+    Eigen::VectorXd rot_az_off = cos(derot_elev)*az_off
+                     - sin(derot_elev)*el_off + pointing_offsets["az"];
+    Eigen::VectorXd rot_alt_off = cos(derot_elev)*el_off
+                      + sin(derot_elev)*az_off + pointing_offsets["alt"];
 
     // icrs map
     if (std::strcmp("icrs", pixel_axes.c_str()) == 0) {
         // get parallactic angle
-        Eigen::ArrayXd par_ang = -tel_data["ActParAng"].array();
+        auto par_ang = -tel_data["ActParAng"].array();
 
         // dec
         lat = (-rot_az_off.array()*sin(par_ang) + rot_alt_off.array()*cos(par_ang))*ASEC_TO_RAD

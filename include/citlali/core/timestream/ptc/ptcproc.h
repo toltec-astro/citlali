@@ -194,7 +194,6 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
             if (run_calibrate) {
                 conversion_factor = in.fcf.data(i);
             }
-
             else {
                 conversion_factor = 1;
             }

@@ -4,7 +4,7 @@ namespace timestream {
 
 class Downsampler {
 public:
-    int factor;
+    double factor;
 
     template <typename DerivedA, typename DerivedB>
     void downsample(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB> &out) {

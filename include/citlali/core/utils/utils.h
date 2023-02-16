@@ -13,6 +13,7 @@
 #include <unsupported/Eigen/Splines>
 
 #include <tula/grppi.h>
+#include <tula/algorithm/ei_stats.h>
 
 #include <citlali/core/utils/constants.h>
 
@@ -262,6 +263,15 @@ auto calc_rms(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &flag
 
     // calc rms
     return std::sqrt((((data.derived().array() *flag.derived().template cast<double>().array())).square().sum()) / n_samples);
+}
+
+template <typename Derived>
+double calc_mad(Eigen::DenseBase<Derived> &data) {
+    Eigen::Index n_pts = data.size();
+    double med = tula::alg::median(data);
+
+    Derived abs_delt = abs(data.derived().array() - med);
+    return tula::alg::median(abs_delt);
 }
 
 static auto hanning_window(Eigen::Index n_rows, Eigen::Index n_cols) {

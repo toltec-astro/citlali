@@ -275,6 +275,7 @@ int run(const rc_t &rc) {
                     auto rawobs_kids_meta = kidsproc.get_rawobs_meta(rawobs);
 
                     // get astrometry config options
+                    SPDLOG_DEBUG("getting astrometry config");
                     todproc.engine().get_astrometry_config(rawobs.astrometry_calib_info().config());
                     // get photometry config options
                     if constexpr (std::is_same_v<todproc_t, TimeOrderedDataProc<Beammap>>) {
@@ -311,6 +312,11 @@ int run(const rc_t &rc) {
                     auto tel_path = rawobs.teldata().filepath();
                     SPDLOG_INFO("getting telescope file {}", tel_path);
                     todproc.engine().telescope.get_tel_data(tel_path);
+
+                    if (todproc.engine().omb.wcs.crval[0]!=0 && todproc.engine().omb.wcs.crval[1]!=0) {
+                        todproc.engine().telescope.tel_header["Header.Source.Ra"].setConstant(todproc.engine().omb.wcs.crval[0]);
+                        todproc.engine().telescope.tel_header["Header.Source.Dec"].setConstant(todproc.engine().omb.wcs.crval[1]);
+                    }
 
                     // calc tangent plane pointing
                     SPDLOG_INFO("calculating tangent plane pointing");
@@ -364,7 +370,7 @@ int run(const rc_t &rc) {
                 todproc.setup_filenames();
 
                 // run the reduction for each observation
-                for (std::size_t i = 0; i < co.n_inputs(); ++i) {
+                for (std::size_t i=0; i<co.n_inputs(); ++i) {
                     SPDLOG_INFO("starting reduction of observation {}/{}", i + 1, co.n_inputs());
 
                     // get current rawobs
@@ -378,6 +384,7 @@ int run(const rc_t &rc) {
                     // get sample rate
                     if (co.n_inputs() > 1) {
                         // get astrometry config options
+                        SPDLOG_DEBUG("getting astrometry config");
                         todproc.engine().get_astrometry_config(rawobs.astrometry_calib_info().config());
                         // get photometry config options
                         if constexpr (std::is_same_v<todproc_t, TimeOrderedDataProc<Beammap>>) {
@@ -460,9 +467,9 @@ int run(const rc_t &rc) {
                         SPDLOG_DEBUG("creating obsnum logs directory");
                         fs::create_directories(todproc.engine().obsnum_dir_name + "logs/");
 
+                        /*
                         std::vector<spdlog::sink_ptr> sinks;
 
-                        /*
                         // console sink
                         auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
                         console_sink->set_level(spdlog::level::debug);
@@ -496,6 +503,11 @@ int run(const rc_t &rc) {
                         auto tel_path = rawobs.teldata().filepath();
                         SPDLOG_INFO("getting telescope file {}", tel_path);
                         todproc.engine().telescope.get_tel_data(tel_path);
+
+                        if (todproc.engine().omb.wcs.crval[0]!=0 && todproc.engine().omb.wcs.crval[1]!=0) {
+                            todproc.engine().telescope.tel_header["Header.Source.Ra"].setConstant(todproc.engine().omb.wcs.crval[0]);
+                            todproc.engine().telescope.tel_header["Header.Source.Dec"].setConstant(todproc.engine().omb.wcs.crval[1]);
+                        }
 
                         // calc tangent plane pointing
                         SPDLOG_INFO("calculating tangent plane pointing");

@@ -35,7 +35,7 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
     static auto check_config(const config_t &config)
         -> std::optional<std::string> {
         std::vector<std::string> missing_keys;
-        SPDLOG_TRACE("check kids data proc config\n{}", config);
+        SPDLOG_DEBUG("check kids data proc config\n{}", config);
         if (!config.has("fitter")) {
             missing_keys.push_back("fitter");
         }
@@ -91,7 +91,9 @@ private:
 auto KidsDataProc::get_data_item_meta(const RawObs::DataItem &data_item) {
     namespace kidsdata = predefs::kidsdata;
     auto source = data_item.filepath();
+    SPDLOG_INFO("B");
     auto [kind, meta] = kidsdata::get_meta<>(source);
+    SPDLOG_INFO("C");
     return meta;
 }
 
@@ -100,6 +102,7 @@ std::vector<kids::KidsData<>::meta_t> KidsDataProc::get_rawobs_meta(const RawObs
     for (const auto &data_item : rawobs.kidsdata()) {
         result.push_back(get_data_item_meta(data_item));
     }
+    SPDLOG_INFO("A");
     return result;
 }
 
@@ -113,7 +116,7 @@ auto KidsDataProc::populate_rtc_meta(const RawObs &rawobs) {
 
 auto KidsDataProc::reduce_data_item(const RawObs::DataItem &data_item,
                                     const tula::container_utils::Slice<int> &slice) {
-    SPDLOG_TRACE("kids reduce data_item {}", data_item);
+    SPDLOG_DEBUG("kids reduce data_item {}", data_item);
     // read data
     namespace kidsdata = predefs::kidsdata;
     auto source = data_item.filepath();
@@ -130,7 +133,7 @@ auto KidsDataProc::reduce_data_item(const RawObs::DataItem &data_item,
 
 auto KidsDataProc::reduce_rawobs(const RawObs &rawobs,
                                  const tula::container_utils::Slice<int> &slice) {
-    SPDLOG_TRACE("kids reduce rawobs {}", rawobs);
+    SPDLOG_DEBUG("kids reduce rawobs {}", rawobs);
     std::vector<kids::TimeStreamSolverResult> result;
     for (const auto &data_item : rawobs.kidsdata()) {
         result.push_back(reduce_data_item(data_item, slice));
@@ -140,7 +143,7 @@ auto KidsDataProc::reduce_rawobs(const RawObs &rawobs,
 
 auto KidsDataProc::load_data_item(const RawObs::DataItem &data_item,
                                   const tula::container_utils::Slice<int> &slice) {
-    SPDLOG_TRACE("kids reduce data_item {}", data_item);
+    SPDLOG_DEBUG("kids reduce data_item {}", data_item);
     // read data
     namespace kidsdata = predefs::kidsdata;
     auto source = data_item.filepath();

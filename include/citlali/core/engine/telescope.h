@@ -30,6 +30,9 @@ public:
     // force chunking scan indices
     bool force_chunk;
 
+    // remove samples based on a velocity limit
+    double velocity_limit;
+
     // sample rate
     double fsmp, d_fsmp;
 
