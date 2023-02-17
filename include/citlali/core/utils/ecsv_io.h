@@ -91,6 +91,12 @@ inline auto to_map_from_ecsv_mixted_type(std::string filepath) {
         table[col] = tbl.col<int>(col).data.cast<double> ();
     }
 
+    // get int16
+    auto int16_colnames = tbl.array_data<int16_t>().colnames();
+    for (auto & col : int16_colnames) {
+        table[col] = tbl.col<int16_t>(col).data.cast<double> ();
+    }
+
     // get int64
     auto int64_colnames = tbl.array_data<int64_t>().colnames();
     for (auto & col : int64_colnames) {

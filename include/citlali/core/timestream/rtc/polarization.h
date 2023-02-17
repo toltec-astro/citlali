@@ -76,7 +76,7 @@ public:
 
             Eigen::Index k = 0;
             for (Eigen::Index i=0; i<calib.n_dets; i++) {
-                if (calib.apt["fg"](i)!=-1) {
+                if (calib.apt["loc"](i)!=-1 && calib.apt["ori"](i)==0) {
                     for (Eigen::Index j=0; j<calib.n_dets; j++) {
                         if (calib.apt["loc"](i)==calib.apt["loc"](j)) {
                             Eigen::Index col_0 = std::max(i,j);
