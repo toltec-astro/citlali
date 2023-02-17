@@ -313,9 +313,14 @@ int run(const rc_t &rc) {
                     SPDLOG_INFO("getting telescope file {}", tel_path);
                     todproc.engine().telescope.get_tel_data(tel_path);
 
+                    // overwrite tangent plane center
                     if (todproc.engine().omb.wcs.crval[0]!=0 && todproc.engine().omb.wcs.crval[1]!=0) {
-                        todproc.engine().telescope.tel_header["Header.Source.Ra"].setConstant(todproc.engine().omb.wcs.crval[0]);
-                        todproc.engine().telescope.tel_header["Header.Source.Dec"].setConstant(todproc.engine().omb.wcs.crval[1]);
+                        todproc.engine().telescope.tan_center_rad["ra"] = todproc.engine().omb.wcs.crval[0];
+                        todproc.engine().telescope.tan_center_rad["dec"] = todproc.engine().omb.wcs.crval[1];
+                    }
+                    else {
+                        todproc.engine().telescope.tan_center_rad["ra"] = todproc.engine().telescope.tel_header["Header.Source.Ra"](0);
+                        todproc.engine().telescope.tan_center_rad["dec"] = todproc.engine().telescope.tel_header["Header.Source.Dec"](0);
                     }
 
                     // calc tangent plane pointing
@@ -504,9 +509,14 @@ int run(const rc_t &rc) {
                         SPDLOG_INFO("getting telescope file {}", tel_path);
                         todproc.engine().telescope.get_tel_data(tel_path);
 
+                        // overwrite tangent plane center
                         if (todproc.engine().omb.wcs.crval[0]!=0 && todproc.engine().omb.wcs.crval[1]!=0) {
-                            todproc.engine().telescope.tel_header["Header.Source.Ra"].setConstant(todproc.engine().omb.wcs.crval[0]);
-                            todproc.engine().telescope.tel_header["Header.Source.Dec"].setConstant(todproc.engine().omb.wcs.crval[1]);
+                            todproc.engine().telescope.tan_center_rad["ra"] = todproc.engine().omb.wcs.crval[0];
+                            todproc.engine().telescope.tan_center_rad["dec"] = todproc.engine().omb.wcs.crval[1];
+                        }
+                        else {
+                            todproc.engine().telescope.tan_center_rad["ra"] = todproc.engine().telescope.tel_header["Header.Source.Ra"](0);
+                            todproc.engine().telescope.tan_center_rad["dec"] = todproc.engine().telescope.tel_header["Header.Source.Dec"](0);
                         }
 
                         // calc tangent plane pointing

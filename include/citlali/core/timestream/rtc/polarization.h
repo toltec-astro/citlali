@@ -39,7 +39,8 @@ public:
             // number of samples
             Eigen::Index n_pts = in.scans.data.rows();
             // number of detectors in both q and u in the detector frame
-            Eigen::Index n_dets = (calib.apt["fg"].array() == 0).count() + (calib.apt["fg"].array() == 1).count();
+            //Eigen::Index n_dets = (calib.apt["fg"].array() == 0).count() + (calib.apt["fg"].array() == 1).count();
+            Eigen::Index n_dets = (calib.apt["fg"].array()!=-1).count()/2;
             SPDLOG_INFO("pol ndets {}", n_dets);
 
             // q and u in the detector frame
@@ -62,7 +63,7 @@ public:
 
             Eigen::Index j=0;
             // loop through all detectors
-            for (Eigen::Index i=0; i<calib.n_dets-1; i=i+2) {
+            /*for (Eigen::Index i=0; i<calib.n_dets-1; i=i+2) {
                 polarized_scans_det.col(j) = in.scans.data.col(i) - in.scans.data.col(i+1);
                 fg(j) = calib.apt["fg"](i);
 
@@ -71,6 +72,26 @@ public:
                 det_indices(j) = i;
 
                 j++;
+            }*/
+
+            Eigen::Index k = 0;
+            for (Eigen::Index i=0; i<calib.n_dets; i++) {
+                if (calib.apt["fg"](i)!=-1) {
+                    for (Eigen::Index j=0; j<calib.n_dets; j++) {
+                        if (calib.apt["loc"](i)==calib.apt["loc"](j)) {
+                            Eigen::Index col_0 = std::max(i,j);
+                            Eigen::Index col_1 = std::min(i,j);
+
+                            polarized_scans_det.col(k) = in.scans.data.col(col_0) - in.scans.data.col(col_1);
+                            fg(k) = calib.apt["fg"](i);
+
+                            array_indices(k) = calib.apt["array"](i);
+                            nw_indices(k) = calib.apt["nw"](i);
+                            det_indices(k) = i;
+                            k++;
+                        }
+                    }
+                }
             }
 
             Eigen::VectorXd q(n_pts), u(n_pts);
@@ -78,13 +99,13 @@ public:
             // now loop through polarized detector pairs
             for (Eigen::Index i=0; i<n_dets; i++) {
                 // rotate q and u by parallactic angle and elevation for q pairs
-                if (fg(i) == 0) {
+                if (fg(i)==0 || fg(i)==2) {
                     q = cos(2*(in.tel_data.data["ActParAng"].array() + in.tel_data.data["TelElAct"].array()))*polarized_scans_det.col(i).array();
                     u = -sin(2*(in.tel_data.data["ActParAng"].array() + in.tel_data.data["TelElAct"].array()))*polarized_scans_det.col(i).array();
                 }
 
                 // rotate q and u by parallactic angle and elevation for u pairs
-                else if (fg(i) == 1) {
+                else if (fg(i)==1 || fg(i)==3) {
                     q = -sin(2*(in.tel_data.data["ActParAng"].array() + in.tel_data.data["TelElAct"].array()))*polarized_scans_det.col(i).array();
                     u = cos(2*(in.tel_data.data["ActParAng"].array() + in.tel_data.data["TelElAct"].array()))*polarized_scans_det.col(i).array();
 
@@ -110,6 +131,7 @@ public:
                 }
             }
 
+            // set as chunk as demodulated
             out.demodulated = true;
         }
 

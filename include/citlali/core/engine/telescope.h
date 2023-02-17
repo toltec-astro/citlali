@@ -24,6 +24,9 @@ public:
     // strings for mapping pattern and source name
     std::string obs_pgm, source_name;
 
+    // tangent plane center
+    std::map<std::string, double> tan_center_rad;
+
     // time chunk size for lissajous/rastajous
     double time_chunk;
 

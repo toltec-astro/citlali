@@ -121,8 +121,8 @@ void Telescope::calc_tan_icrs() {
     tel_data["dec_phys"] = tel_data["az_phys"].array()*sin(tel_data["ActParAng"].array()) +
                            tel_data["alt_phys"].array()*cos(tel_data["ActParAng"].array());
 
-    tel_data["TelRa"] = tel_data["ra_phys"].array() + tel_header["Header.Source.Ra"](0);;
-    tel_data["TelDec"] = tel_data["dec_phys"].array() + tel_header["Header.Source.Dec"](0);;
+    /*tel_data["TelRa"] = tel_data["ra_phys"].array() + tel_header["Header.Source.Ra"](0);
+    tel_data["TelDec"] = tel_data["dec_phys"].array() + tel_header["Header.Source.Dec"](0);
 
     // size of data
     Eigen::Index n_pts = tel_data["TelRa"].size();
@@ -140,9 +140,10 @@ void Telescope::calc_tan_icrs() {
     (ra.array() > pi).select(tel_data["TelRa"].array() - 2.0*pi, tel_data["TelRa"].array());
 
     // copy center ra
-    double center_ra = tel_header["Header.Source.Ra"](0);
+    double center_ra = tan_center_rad["ra"];
+
     // copy center dec
-    double center_dec = tel_header["Header.Source.Dec"](0);
+    double center_dec = tan_center_rad["dec"];
 
     // rescale center ra
     center_ra = (center_ra > pi) ? center_ra - (2.0*pi) : center_ra;
@@ -163,7 +164,7 @@ void Telescope::calc_tan_icrs() {
             // tangent plane lon (ra)
             tel_data["ra_phys"](i) = cos(dec(i))*sin(ra(i)-center_ra)/cosc(i);
         }
-    }
+    }*/
 }
 
 void Telescope::calc_tan_altaz() {

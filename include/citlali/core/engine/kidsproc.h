@@ -91,9 +91,7 @@ private:
 auto KidsDataProc::get_data_item_meta(const RawObs::DataItem &data_item) {
     namespace kidsdata = predefs::kidsdata;
     auto source = data_item.filepath();
-    SPDLOG_INFO("B");
     auto [kind, meta] = kidsdata::get_meta<>(source);
-    SPDLOG_INFO("C");
     return meta;
 }
 
@@ -102,7 +100,6 @@ std::vector<kids::KidsData<>::meta_t> KidsDataProc::get_rawobs_meta(const RawObs
     for (const auto &data_item : rawobs.kidsdata()) {
         result.push_back(get_data_item_meta(data_item));
     }
-    SPDLOG_INFO("A");
     return result;
 }
 
