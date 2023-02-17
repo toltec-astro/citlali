@@ -213,7 +213,9 @@ auto Pointing::run() {
 
         // get hwp
         if (rtcproc.run_polarization) {
-            rtcdata.hwp_angle.data = calib.hwp_angle.segment(si, sl);
+            if (calib.run_hwp) {
+                rtcdata.hwp_angle.data = calib.hwp_angle.segment(si, sl);
+            }
         }
 
         // get raw tod from files
