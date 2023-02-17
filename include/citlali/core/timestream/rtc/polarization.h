@@ -5,7 +5,6 @@
 
 namespace timestream {
 
-
 class Polarization {
 public:
     using indices_t = std::tuple<Eigen::VectorXI, Eigen::VectorXI, Eigen::VectorXI>;
@@ -16,9 +15,9 @@ public:
         {2,"U"}
     };
 
-    template<class calib_type>
-    indices_t demodulate_timestream(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
-                                             TCData<TCDataKind::RTC, Eigen::MatrixXd> &out,
+    template<TCDataKind td_kind, class calib_type>
+    indices_t demodulate_timestream(TCData<td_kind, Eigen::MatrixXd> &in,
+                                             TCData<td_kind, Eigen::MatrixXd> &out,
                                               std::string stokes_param, std::string redu_type,
                                               calib_type &calib) {
 

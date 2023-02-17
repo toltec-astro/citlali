@@ -254,7 +254,6 @@ auto Pointing::run() {
                     SPDLOG_INFO("writing raw time chunk");
                     ptcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], redu_type, telescope.pixel_axes,
                                              pointing_offsets_arcsec, det_indices, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
-
                 }
             }
 
