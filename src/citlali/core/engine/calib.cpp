@@ -101,7 +101,9 @@ void Calib::get_hwp(const std::string &filepath) {
     using namespace netCDF;
     using namespace netCDF::exceptions;
 
-    try {
+    run_hwp = false;
+
+    /*try {
         // get hwp file
         NcFile fo(filepath, NcFile::read, NcFile::classic);
         auto vars = fo.getVars();
@@ -110,8 +112,8 @@ void Calib::get_hwp(const std::string &filepath) {
         vars.find("Header.Hwp.RotatorEnabled")->second.getVar(&run_hwp);
 
         // get hwp signal
-        Eigen::Index npts = vars.find("Data.Hwp.")->second.getDim(0).getSize();
-        hwp_angle.resize(npts);
+        Eigen::Index n_pts = vars.find("Data.Hwp.")->second.getDim(0).getSize();
+        hwp_angle.resize(n_pts);
 
         vars.find("Data.Hwp.")->second.getVar(hwp_angle.data());
 
@@ -122,6 +124,7 @@ void Calib::get_hwp(const std::string &filepath) {
         throw DataIOError{fmt::format(
             "failed to load data from netCDF file {}", filepath)};
     }
+    */
 }
 
 void Calib::calc_flux_calibration(std::string units) {

@@ -738,19 +738,19 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
 
     // array grouping
     if (engine().map_grouping == "array") {
-        Eigen::Index i=0;
+        Eigen::Index j = 0;
         for (const auto &[stokes_index,stokes_param]: engine().rtcproc.polarization.stokes_params) {
-            for (Eigen::Index i=0; i<engine().n_maps; i++) {
-                engine().maps_to_arrays.segment(i,engine().calib.arrays.size()) = engine().calib.arrays;
-                engine().maps_to_stokes.segment(i,engine().calib.arrays.size()).setConstant(stokes_index);
-                i = i + engine().calib.arrays.size();
-            }
+            //for (Eigen::Index i=0; i<engine().n_maps; i++) {
+                engine().maps_to_arrays.segment(j,engine().calib.arrays.size()) = engine().calib.arrays;
+                engine().maps_to_stokes.segment(j,engine().calib.arrays.size()).setConstant(stokes_index);
+                j = j + engine().calib.arrays.size();
+            //}
         }
     }
 
     // detector gropuing
     else if (engine().map_grouping == "detector") {
-        Eigen::Index i=0;
+        Eigen::Index k=0;
         for (const auto &[stokes_index,stokes_param]: engine().rtcproc.polarization.stokes_params) {
             Eigen::Index n_dets;
             Eigen::VectorXI array_indices;
@@ -761,7 +761,8 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
             }
 
             else if ((stokes_param == "Q") || (stokes_param == "U")) {
-                n_dets = (engine().calib.apt["fg"].array() == 0).count() + (engine().calib.apt["fg"].array() == 1).count();
+                //n_dets = (engine().calib.apt["fg"].array() == 0).count() + (engine().calib.apt["fg"].array() == 1).count();
+                n_dets = (engine().calib.apt["loc"].array()!=-1).count()/2;
                 Eigen::Index j=0;
                 // loop through all detectors
                 for (Eigen::Index i=0; i<engine().calib.n_dets-1; i=i+2) {
@@ -770,9 +771,9 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
                 }
             }
 
-            engine().maps_to_arrays.segment(i,n_dets) = array_indices;
-            engine().maps_to_stokes.segment(i,n_dets).setConstant(stokes_index);
-            i = i + n_dets;
+            engine().maps_to_arrays.segment(k,n_dets) = array_indices;
+            engine().maps_to_stokes.segment(k,n_dets).setConstant(stokes_index);
+            k = k + n_dets;
         }
     }
 
@@ -787,11 +788,11 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
                 }
             }
         }
-        Eigen::Index i=0;
+        Eigen::Index j = 0;
         for (const auto &[stokes_index,stokes_param]: engine().rtcproc.polarization.stokes_params) {
-            engine().maps_to_arrays.segment(i,engine().calib.nws.size()) = array_indices;
-            engine().maps_to_stokes.segment(i,engine().calib.nws.size()).setConstant(stokes_index);
-            i = i + engine().calib.nws.size();
+            engine().maps_to_arrays.segment(j,engine().calib.nws.size()) = array_indices;
+            engine().maps_to_stokes.segment(j,engine().calib.nws.size()).setConstant(stokes_index);
+            j = j + engine().calib.nws.size();
         }
     }
 
@@ -800,6 +801,9 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
     for (Eigen::Index i=1; i<engine().n_maps; i++) {
         if (engine().maps_to_arrays(i) > engine().maps_to_arrays(i-1)) {
             index++;
+        }
+        else if (engine().maps_to_arrays(i) < engine().maps_to_arrays(i-1)) {
+            index = 0;
         }
         engine().arrays_to_maps(i) = index;
     }

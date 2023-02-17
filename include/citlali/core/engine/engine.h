@@ -1071,7 +1071,7 @@ void Engine::create_tod_files() {
         // set number of detectors for polarized timestreams
         else if ((stokes_param == "Q") || (stokes_param == "U")) {
             //n_dets = (calib.apt["fg"].array() == 0).count() + (calib.apt["fg"].array() == 1).count();
-            n_dets = (calib.apt["fg"].array()!=-1).count()/2;
+            n_dets = (calib.apt["loc"].array()!=-1).count()/2;
         }
 
         netCDF::NcDim n_dets_dim = fo.addDim("n_dets", n_dets);

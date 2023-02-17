@@ -40,7 +40,7 @@ public:
             Eigen::Index n_pts = in.scans.data.rows();
             // number of detectors in both q and u in the detector frame
             //Eigen::Index n_dets = (calib.apt["fg"].array() == 0).count() + (calib.apt["fg"].array() == 1).count();
-            Eigen::Index n_dets = (calib.apt["fg"].array()!=-1).count()/2;
+            Eigen::Index n_dets = (calib.apt["loc"].array()!=-1).count()/2;
             SPDLOG_INFO("pol ndets {}", n_dets);
 
             // q and u in the detector frame
@@ -61,7 +61,6 @@ public:
             out.scan_indices.data = in.scan_indices.data;
             out.index.data = in.index.data;
 
-            Eigen::Index j=0;
             // loop through all detectors
             /*for (Eigen::Index i=0; i<calib.n_dets-1; i=i+2) {
                 polarized_scans_det.col(j) = in.scans.data.col(i) - in.scans.data.col(i+1);
@@ -78,11 +77,8 @@ public:
             for (Eigen::Index i=0; i<calib.n_dets; i++) {
                 if (calib.apt["loc"](i)!=-1 && calib.apt["ori"](i)==0) {
                     for (Eigen::Index j=0; j<calib.n_dets; j++) {
-                        if (calib.apt["loc"](i)==calib.apt["loc"](j)) {
-                            Eigen::Index col_0 = std::max(i,j);
-                            Eigen::Index col_1 = std::min(i,j);
-
-                            polarized_scans_det.col(k) = in.scans.data.col(col_0) - in.scans.data.col(col_1);
+                        if (calib.apt["loc"](i)==calib.apt["loc"](j) && calib.apt["ori"](j)!=0) {
+                            polarized_scans_det.col(k) = in.scans.data.col(j) - in.scans.data.col(i);
                             fg(k) = calib.apt["fg"](i);
 
                             array_indices(k) = calib.apt["array"](i);
@@ -101,7 +97,7 @@ public:
                 // rotate q and u by parallactic angle and elevation for q pairs
                 if (fg(i)==0 || fg(i)==2) {
                     q = cos(2*(in.tel_data.data["ActParAng"].array() + in.tel_data.data["TelElAct"].array()))*polarized_scans_det.col(i).array();
-                    u = -sin(2*(in.tel_data.data["ActParAng"].array() + in.tel_data.data["TelElAct"].array()))*polarized_scans_det.col(i).array();
+                    u = sin(2*(in.tel_data.data["ActParAng"].array() + in.tel_data.data["TelElAct"].array()))*polarized_scans_det.col(i).array();
                 }
 
                 // rotate q and u by parallactic angle and elevation for u pairs
@@ -117,7 +113,7 @@ public:
                         out.scans.data.col(i) = q.array()*cos(4*in.hwp_angle.data.array()) + u.array()*sin(4*in.hwp_angle.data.array());
                     }
                     else if (stokes_param == "U") {
-                        out.scans.data.col(i) = -(q.array()*sin(4*in.hwp_angle.data.array()) - u.array()*cos(4*in.hwp_angle.data.array()));
+                        out.scans.data.col(i) = (q.array()*sin(4*in.hwp_angle.data.array()) - u.array()*cos(4*in.hwp_angle.data.array()));
                     }
                 }
 
@@ -126,7 +122,8 @@ public:
                         out.scans.data.col(i) = q;
                     }
                     else if (stokes_param == "U") {
-                        out.scans.data.col(i) = -u;
+                        // not applying mirror flip
+                        out.scans.data.col(i) = u;
                     }
                 }
             }
