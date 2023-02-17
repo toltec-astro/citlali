@@ -61,17 +61,6 @@ public:
             out.index.data = in.index.data;
 
             // loop through all detectors
-            /*for (Eigen::Index i=0; i<calib.n_dets-1; i=i+2) {
-                polarized_scans_det.col(j) = in.scans.data.col(i) - in.scans.data.col(i+1);
-                fg(j) = calib.apt["fg"](i);
-
-                array_indices(j) = calib.apt["array"](i);
-                nw_indices(j) = calib.apt["nw"](i);
-                det_indices(j) = i;
-
-                j++;
-            }*/
-
             Eigen::Index k = 0;
             for (Eigen::Index i=0; i<calib.n_dets; i++) {
                 if (calib.apt["loc"](i)!=-1 && calib.apt["ori"](i)==0) {

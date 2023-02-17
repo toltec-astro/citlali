@@ -131,9 +131,9 @@ auto Lali::run() {
             SPDLOG_INFO("reducing {} timestream",stokes_param);
             // create a new rtcdata for each polarization
             TCData<TCDataKind::RTC,Eigen::MatrixXd> rtcdata_pol;
-            // demodulate (placeholder)
-            auto [array_indices, nw_indices, det_indices] = rtcproc.polarization.demodulate_timestream(rtcdata, rtcdata,
-                                                                                                       "I",
+            // demodulate
+            auto [array_indices, nw_indices, det_indices] = rtcproc.polarization.demodulate_timestream(rtcdata, rtcdata_pol,
+                                                                                                       stokes_param,
                                                                                                        redu_type, calib);
             // get indices for maps
             SPDLOG_INFO("calculating map indices");
@@ -141,23 +141,15 @@ auto Lali::run() {
 
             // run rtcproc
             SPDLOG_INFO("raw time chunk processing");
-            rtcproc.run(rtcdata, ptcdata, telescope.pixel_axes, redu_type, calib, telescope, pointing_offsets_arcsec, det_indices,
+            rtcproc.run(rtcdata_pol, ptcdata, telescope.pixel_axes, redu_type, calib, telescope, pointing_offsets_arcsec, det_indices,
                         array_indices, map_indices, omb.pixel_size_rad);
-
-            // demodulate
-            auto [array_indices_pol, nw_indices_pol, det_indices_pol] = rtcproc.polarization.demodulate_timestream(rtcdata, rtcdata_pol,
-                                                                                                                   stokes_param,
-                                                                                                                   redu_type, calib);
-            // get indices for maps
-            SPDLOG_INFO("calculating map indices");
-            map_indices = calc_map_indices(det_indices_pol, nw_indices_pol, array_indices_pol, stokes_param);
 
             // write rtc timestreams
             if (run_tod_output) {
                 if (tod_output_type == "rtc" || tod_output_type=="both") {
                     SPDLOG_INFO("writing raw time chunk");
                     ptcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], redu_type, telescope.pixel_axes,
-                                             pointing_offsets_arcsec, det_indices_pol, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
+                                             pointing_offsets_arcsec, det_indices, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
                 }
             }
 
@@ -167,14 +159,14 @@ auto Lali::run() {
 
             // remove flagged dets
             SPDLOG_INFO("removing flagged dets");
-            ptcproc.remove_flagged_dets(ptcdata, calib.apt, det_indices_pol);
+            ptcproc.remove_flagged_dets(ptcdata, calib.apt, det_indices);
 
             // remove outliers
-            auto calib_scan = rtcproc.remove_bad_dets(ptcdata, calib, det_indices_pol, nw_indices_pol, array_indices_pol, redu_type, map_grouping);
+            auto calib_scan = rtcproc.remove_bad_dets(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
 
             // remove duplicate tones
             if (!telescope.sim_obs) {
-                calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib_scan, det_indices_pol, nw_indices_pol, array_indices_pol, redu_type, map_grouping);
+                calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib_scan, det_indices, nw_indices, array_indices, redu_type, map_grouping);
             }
 
             // run cleaning
@@ -184,7 +176,7 @@ auto Lali::run() {
             }
 
             // remove outliers after clean
-            calib_scan = ptcproc.remove_bad_dets(ptcdata, calib, det_indices_pol, nw_indices_pol, array_indices_pol, redu_type, map_grouping);
+            calib_scan = ptcproc.remove_bad_dets(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
 
             // calculate weights
             SPDLOG_INFO("calculating weights");
@@ -199,7 +191,7 @@ auto Lali::run() {
                 if (tod_output_type == "ptc" || tod_output_type=="both") {
                     SPDLOG_INFO("writing processed time chunk");
                     ptcproc.append_to_netcdf(ptcdata, tod_filename["ptc_" + stokes_param], redu_type, telescope.pixel_axes,
-                                             pointing_offsets_arcsec, det_indices_pol, calib.apt, "ptc", verbose_mode, telescope.d_fsmp);
+                                             pointing_offsets_arcsec, det_indices, calib.apt, "ptc", verbose_mode, telescope.d_fsmp);
                 }
             }
 
@@ -207,11 +199,11 @@ auto Lali::run() {
             if (run_mapmaking) {
                 SPDLOG_INFO("populating maps");
                 if (map_method=="naive") {
-                    mapmaking::populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices_pol, telescope.pixel_axes,
+                    mapmaking::populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
                                                    redu_type, calib.apt, pointing_offsets_arcsec, telescope.d_fsmp, run_noise);
                 }
                 else if (map_method=="jinc") {
-                    mapmaking::populate_maps_jinc(ptcdata, omb, cmb, map_indices, det_indices_pol, telescope.pixel_axes,
+                    mapmaking::populate_maps_jinc(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
                                                   redu_type, calib.apt, pointing_offsets_arcsec, telescope.d_fsmp, run_noise,
                                                   jinc_r_max, jinc_a, jinc_b, jinc_c);
                 }

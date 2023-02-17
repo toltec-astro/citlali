@@ -171,6 +171,8 @@ struct TCData<TCDataKind::RTC,RefType>
     Base::data_t<std::map<std::string, Eigen::VectorXd>> tel_data;
     // hwp angle for scan
     Base::data_t<Eigen::VectorXd> hwp_angle;
+    // fcf
+    Base::data_t<Eigen::VectorXd> fcf;
     // time of rtc creation
     std::string creation_time = engine_utils::current_date_time();
 
