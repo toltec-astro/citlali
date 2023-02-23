@@ -210,13 +210,16 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     }
 
     if (run_calibrate) {
-        SPDLOG_DEBUG("calibrating timestream");
-        //calc tau at toltec frequencies
-        auto tau_freq = calibration.calc_tau(out.tel_data.data["TelElAct"], telescope.tau_225_GHz);
-        // calibrate tod
-        calibration.calibrate_tod(out, det_indices, array_indices, calib, tau_freq);
+        out.fcf.data = in.fcf.data;
+        if (!run_polarization) {
+            SPDLOG_DEBUG("calibrating timestream");
+            //calc tau at toltec frequencies
+            auto tau_freq = calibration.calc_tau(out.tel_data.data["TelElAct"], telescope.tau_225_GHz);
+            // calibrate tod
+            calibration.calibrate_tod(out, det_indices, array_indices, calib, tau_freq);
 
-        out.calibrated = true;
+            out.calibrated = true;
+        }
     }
 
     out.scan_indices.data = in.scan_indices.data;

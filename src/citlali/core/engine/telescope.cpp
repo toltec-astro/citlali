@@ -5,6 +5,7 @@
 
 #include <citlali/core/engine/telescope.h>
 #include <citlali/core/utils/utils.h>
+#include <citlali/core/utils/pointing.h>
 
 namespace engine {
 
@@ -94,6 +95,12 @@ void Telescope::get_tel_data(std::string &filepath) {
 }
 
 void Telescope::calc_tan_pointing() {
+
+    /*tel_data["ActParAng"] = engine_utils::calc_par_ang_from_coords(tel_header["Header.TimePlace.ObsLatitude"](0),
+                                                                   tel_header["Header.TimePlace.ObsLongitude"](0),
+                                                                   tel_data["TelAzAct"], tel_data["TelElAct"],
+                                                                   tel_data["TelRaAct"],tel_data["TelDecAct"]);
+    */
     // get altaz tangent pointing
     calc_tan_altaz();
     // get icrs tangent pointing

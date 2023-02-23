@@ -35,6 +35,28 @@ static const std::string current_date_time() {
 }
 
 template <typename Derived>
+void utc_to_unix(Eigen::DenseBase<Derived> tel_utc, Eigen::DenseBase<Derived> &ut_date) {
+    char utc_time_str[20];
+    time_t utc_time;
+    struct tm tm_time;
+
+    // get input UTC time string from user
+    scanf("%s", utc_time_str);
+
+    // parse UTC time string to tm struct
+    strptime(utc_time_str, "%Y-%m-%d %H:%M:%S", &tm_time);
+
+    // convert tm struct to UTC time in seconds since epoch (1970-01-01 00:00:00 UTC)
+    utc_time = mktime(&tm_time);
+
+    // convert UTC time to Unix timestamp
+    time_t unix_time = (time_t) utc_time;
+
+    // output Unix timestamp
+    SPDLOG_INFO("Unix timestamp: {}", unix_time);
+}
+
+template <typename Derived>
 auto make_meshgrid(const Eigen::DenseBase<Derived> &x, const Eigen::DenseBase<Derived> &y) {
     // column major
     // [x0, y0,] [x1, y0] [x2, y0] ... [xn, y0] [x0, y1] ... [xn, yn]

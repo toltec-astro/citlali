@@ -899,10 +899,10 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
 
 void Beammap::adjust_apt() {
     // std maps to hold median unflagged x and y positions
-    std::map<std::string, double> array_median_x_t, array_median_y_t;
+    //std::map<std::string, double> array_median_x_t, array_median_y_t;
 
     // calc mean x_t and y_t values from unflagged detectors for each arrays
-    for (Eigen::Index i=0; i<calib.n_arrays; i++) {
+    /*for (Eigen::Index i=0; i<calib.n_arrays; i++) {
         Eigen::Index array = calib.arrays(i);
         std::string array_name = toltec_io.array_name_map[array];
 
@@ -934,7 +934,7 @@ void Beammap::adjust_apt() {
         }
         array_median_x_t[array_name] = tula::alg::median(x_t);
         array_median_y_t[array_name] = tula::alg::median(y_t);
-    }
+    }*/
 
     // reference detector x and y
     double ref_det_x_t = 0;
@@ -954,11 +954,44 @@ void Beammap::adjust_apt() {
         else {
             SPDLOG_INFO("finding a reference detector");
             auto array_name = toltec_io.array_name_map[calib.apt["array"](0)];
-            Eigen::VectorXd dist = pow(calib.apt["x_t"].array() - array_median_x_t[array_name],2) +
-                pow(calib.apt["y_t"].array() - array_median_y_t[array_name],2);
+
+            // calc x_t and y_t values from unflagged detectors for each arrays
+            Eigen::Index array = calib.arrays(0);
+
+             // x_t
+            auto array_x_t = calib.apt["x_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
+                                                         std::get<1>(calib.array_limits[array])-1));
+            // y_t
+            auto array_y_t = calib.apt["y_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
+                                                         std::get<1>(calib.array_limits[array])-1));
+            // number of good detectors
+            Eigen::Index n_good_det = calib.apt["flag"](Eigen::seq(std::get<0>(calib.array_limits[array]),
+                                                                   std::get<1>(calib.array_limits[array])-1)).sum();
+
+            Eigen::VectorXd x_t, y_t, det_indices;
+
+            x_t.resize(n_good_det);
+            y_t.resize(n_good_det);
+
+            // remove flagged dets
+            Eigen::Index j = std::get<0>(calib.array_limits[array]);
+            Eigen::Index k = 0;
+            for (Eigen::Index i=0; i<array_x_t.size(); i++) {
+                if (calib.apt["flag"](j)) {
+                    x_t(k) = array_x_t(i);
+                    y_t(k) = array_y_t(i);
+                    det_indices(k) = j;
+                    k++;
+                }
+                j++;
+            }
+
+            Eigen::VectorXd dist = pow(x_t.array(),2) + pow(y_t.array(),2);
 
             // index of detector closest to median
             auto min_dist = dist.minCoeff(&beammap_reference_det);
+
+            beammap_reference_det = det_indices(beammap_reference_det);
 
             // set reference x_t and y_t
             ref_det_x_t = calib.apt["x_t"](beammap_reference_det);
@@ -1110,7 +1143,7 @@ auto Beammap::loop_pipeline() {
                     az_off = calib.apt["x_t"](det_index);
                     el_off = calib.apt["y_t"](det_index);
 
-                    // get physical pointing
+                    // get tangent pointing
                     auto [lat, lon] = engine_utils::calc_det_pointing(ptcs[i].tel_data.data, az_off, el_off,
                                                                       telescope.pixel_axes, pointing_offsets_arcsec);
                     lats.col(j) = std::move(lat);
@@ -1170,7 +1203,7 @@ auto Beammap::loop_pipeline() {
 
                         if (telescope.pixel_axes == "icrs") {
                             // get absolute pointing
-                            auto [decs, ras] = engine_utils::phys_to_abs(lats_row, lons_row, telescope.tel_header["Header.Source.Ra"](0),
+                            auto [decs, ras] = engine_utils::tangent_to_abs(lats_row, lons_row, telescope.tel_header["Header.Source.Ra"](0),
                                                                          telescope.tel_header["Header.Source.Dec"](0));
                             // append detector ra
                             det_ra_v.putVar(start_index, size, ras.data());

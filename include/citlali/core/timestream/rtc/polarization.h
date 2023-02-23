@@ -3,6 +3,8 @@
 #include <Eigen/Core>
 #include <string>
 
+#include <citlali/core/timestream/timestream.h>
+
 namespace timestream {
 
 class Polarization {
@@ -17,10 +19,9 @@ public:
 
     template<TCDataKind td_kind, class calib_type>
     indices_t demodulate_timestream(TCData<td_kind, Eigen::MatrixXd> &in,
-                                             TCData<td_kind, Eigen::MatrixXd> &out,
-                                              std::string stokes_param, std::string redu_type,
-                                              calib_type &calib) {
-
+                                    TCData<td_kind, Eigen::MatrixXd> &out,
+                                    std::string stokes_param, std::string redu_type,
+                                    calib_type &calib) {
         // vectors of map, array, nw, and det indices
         Eigen::VectorXI map_indices, array_indices, nw_indices, det_indices;
 
@@ -118,6 +119,8 @@ public:
 
             // set as chunk as demodulated
             out.demodulated = true;
+
+            out.fcf = in.fcf;
         }
 
         return indices_t(array_indices, nw_indices, det_indices);

@@ -30,8 +30,9 @@ public:
     void run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
                    TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_type &);
 
-    template <typename apt_type, class tel_type>
-    void calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, apt_type &, tel_type &);
+    template <typename apt_type, class tel_type, typename Derived>
+    void calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, apt_type &, tel_type &,
+                      Eigen::DenseBase<Derived> &);
 
     template <typename apt_t, typename Derived>
     void remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, apt_t &, Eigen::DenseBase<Derived> &);
@@ -180,8 +181,9 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
     }
 }
 
-template <typename apt_type, class tel_type>
-void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_type &apt, tel_type &telescope) {
+template <typename apt_type, class tel_type, typename Derived>
+void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_type &apt, tel_type &telescope,
+                           Eigen::DenseBase<Derived> &det_indices) {
     if (weighting_type == "approximate") {
         SPDLOG_DEBUG("calculating weights using detector sensitivities");
         // resize weights to number of detectors
@@ -191,16 +193,17 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
 
         // loop through detectors and calculate weights
         for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
+            Eigen::Index det_index = det_indices(i);
             if (run_calibrate) {
-                conversion_factor = in.fcf.data(i);
+                conversion_factor = in.fcf.data(det_index);
             }
             else {
                 conversion_factor = 1;
             }
             // make sure flux conversion is not zero (otherwise weight=0)
-            if (conversion_factor!=0 && apt["flag"](i)!=0) {
+            if (conversion_factor!=0 && apt["flag"](det_index)!=0) {
                 // calculate weights while applying flux calibration
-                in.weights.data(i) = pow(sqrt(telescope.d_fsmp)*apt["sens"](i)*conversion_factor,-2.0);
+                in.weights.data(i) = pow(sqrt(telescope.d_fsmp)*apt["sens"](det_index)*conversion_factor,-2.0);
             }
             else {
                 in.weights.data(i) = 0;
@@ -509,7 +512,7 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
             el_off = apt["y_t"](det_index);
         }
 
-        // get physical pointing
+        // get tangent pointing
         auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off,
                                                           pixel_axes, pointing_offsets_arcsec);
         lats.col(i) = std::move(lat);
@@ -603,7 +606,7 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
 
             if (pixel_axes == "icrs") {
                 // get absolute pointing
-                auto [decs, ras] = engine_utils::phys_to_abs(lats_row, lons_row, cra, cdec);
+                auto [decs, ras] = engine_utils::tangent_to_abs(lats_row, lons_row, cra, cdec);
 
                 // append detector ra
                 det_ra_v.putVar(start_index, size, ras.data());

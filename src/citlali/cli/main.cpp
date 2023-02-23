@@ -323,10 +323,6 @@ int run(const rc_t &rc) {
                         todproc.engine().telescope.tan_center_rad["dec"] = todproc.engine().telescope.tel_header["Header.Source.Dec"](0);
                     }
 
-                    // calc tangent plane pointing
-                    SPDLOG_INFO("calculating tangent plane pointing");
-                    todproc.engine().telescope.calc_tan_pointing();
-
                     // align tod
                     if (!todproc.engine().telescope.sim_obs) {
                         SPDLOG_INFO("aligning timestreams");
@@ -343,6 +339,10 @@ int run(const rc_t &rc) {
                             todproc.engine().start_indices.push_back(0);
                         }
                     }
+
+                    // calc tangent plane pointing
+                    SPDLOG_INFO("calculating tangent plane pointing");
+                    todproc.engine().telescope.calc_tan_pointing();
 
                     // calc scan indices
                     SPDLOG_INFO("calculating scan indices");
@@ -519,10 +519,6 @@ int run(const rc_t &rc) {
                             todproc.engine().telescope.tan_center_rad["dec"] = todproc.engine().telescope.tel_header["Header.Source.Dec"](0);
                         }
 
-                        // calc tangent plane pointing
-                        SPDLOG_INFO("calculating tangent plane pointing");
-                        todproc.engine().telescope.calc_tan_pointing();
-
                         // align tod
                         if (!todproc.engine().telescope.sim_obs) {
                             SPDLOG_INFO("aligning timestreams");
@@ -539,6 +535,10 @@ int run(const rc_t &rc) {
                                 todproc.engine().start_indices.push_back(0);
                             }
                         }
+
+                        // calc tangent plane pointing
+                        SPDLOG_INFO("calculating tangent plane pointing");
+                        todproc.engine().telescope.calc_tan_pointing();
                     }
 
                     // warning for gaps in data
@@ -702,7 +702,6 @@ int main(int argc, char *argv[]) {
     if (exit_dump_config) {
         return EXIT_SUCCESS;
     }
-
     // now with normal CLI interface
     tula::logging::init();
     auto rc = parse_args(argc, argv);

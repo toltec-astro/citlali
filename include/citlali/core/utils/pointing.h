@@ -47,7 +47,25 @@ auto calc_det_pointing(tel_data_t &tel_data, const double az_off, const double e
 }
 
 template <typename Derived>
-auto phys_to_abs(Eigen::DenseBase<Derived>& lat, Eigen::DenseBase<Derived>& lon, const double cra, const double cdec) {
+auto calc_par_ang_from_coords(const double lat, const double lon, Eigen::DenseBase<Derived> &alt, Eigen::DenseBase<Derived> &az,
+                              Eigen::DenseBase<Derived> &ra, Eigen::DenseBase<Derived> &dec) {
+
+    auto cosha = (sin(alt.derived().array()) - sin(dec.derived().array())* sin(lat)) /
+                 (cos(dec.derived().array())* cos(lat));
+
+    auto sinha = (-sin(az.derived().array())* cos(alt.derived().array())/ cos(dec.derived().array()));
+
+    Eigen::VectorXd par_ang(alt.size());
+
+    for (Eigen::Index i=0; i<alt.size(); i++) {
+        par_ang(i) = atan2(sinha(i), (tan(lat)* cos(dec(i)) - sin(dec(i)) * cosha(i)));
+    }
+
+    return par_ang;
+}
+
+template <typename Derived>
+auto tangent_to_abs(Eigen::DenseBase<Derived>& lat, Eigen::DenseBase<Derived>& lon, const double cra, const double cdec) {
 
     // number of samples
     Eigen::Index n_pts = lat.size();

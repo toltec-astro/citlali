@@ -5,6 +5,7 @@
 #include <Eigen/Core>
 
 #include <citlali/core/utils/constants.h>
+#include <citlali/core/timestream/timestream.h>
 
 namespace timestream {
 
@@ -55,8 +56,8 @@ public:
     template <typename Derived>
     auto calc_tau(Eigen::DenseBase<Derived> &, double);
 
-    template <typename Derived, class calib_t, typename tau_t>
-    void calibrate_tod(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, Eigen::DenseBase<Derived> &,
+    template <TCDataKind tcdata_kind, typename Derived, class calib_t, typename tau_t>
+    void calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &, Eigen::DenseBase<Derived> &,
                        Eigen::DenseBase<Derived> &, calib_t &, tau_t &);
 };
 
@@ -96,8 +97,8 @@ auto Calibration::calc_tau(Eigen::DenseBase<Derived> &elev, double tau_225_GHz) 
     return tau_freq;
 }
 
-template <typename Derived, class calib_t, typename tau_t>
-void Calibration::calibrate_tod(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::DenseBase<Derived> &det_indices,
+template <TCDataKind tcdata_kind, typename Derived, class calib_t, typename tau_t>
+void Calibration::calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &in, Eigen::DenseBase<Derived> &det_indices,
                                 Eigen::DenseBase<Derived> &array_indices, calib_t &calib, tau_t &tau_freq) {
 
     // resize fcf

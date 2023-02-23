@@ -227,11 +227,27 @@ auto Pointing::run() {
         // create PTCData
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;
 
+        if (rtcproc.run_polarization && rtcproc.run_calibrate) {
+            SPDLOG_DEBUG("calibrating timestream");
+
+            Eigen::VectorXI array_indices = calib.apt["array"].template cast<Eigen::Index> ();
+            Eigen::VectorXI nw_indices = calib.apt["nw"].template cast<Eigen::Index> ();
+            Eigen::VectorXI det_indices = Eigen::VectorXI::LinSpaced(rtcdata.scans.data.cols(),0,rtcdata.scans.data.cols()+1);
+
+                 // calc tau at toltec frequencies
+            auto tau_freq = rtcproc.calibration.calc_tau(rtcdata.tel_data.data["TelElAct"], telescope.tau_225_GHz);
+            // calibrate tod
+            rtcproc.calibration.calibrate_tod(rtcdata, det_indices, array_indices, calib, tau_freq);
+
+            rtcdata.calibrated = true;
+        }
+
         // loop through polarizations
         for (const auto &[stokes_index,stokes_param]: rtcproc.polarization.stokes_params) {
             SPDLOG_INFO("starting scan {}. {}/{} scans completed", rtcdata.index.data + 1, n_scans_done, telescope.scan_indices.cols());
 
             SPDLOG_INFO("reducing {} timestream",stokes_param);
+
             // create a new rtcdata for each polarization
             TCData<TCDataKind::RTC,Eigen::MatrixXd> rtcdata_pol;
             // demodulate
@@ -284,7 +300,7 @@ auto Pointing::run() {
 
             // calculate weights
             SPDLOG_INFO("calculating weights");
-            ptcproc.calc_weights(ptcdata, calib.apt, telescope);
+            ptcproc.calc_weights(ptcdata, calib.apt, telescope, det_indices);
 
             if (verbose_mode) {
                 write_chunk_summary(ptcdata);
