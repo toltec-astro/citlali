@@ -972,6 +972,7 @@ void Beammap::adjust_apt() {
 
             x_t.resize(n_good_det);
             y_t.resize(n_good_det);
+            det_indices.resize(n_good_det);
 
             // remove flagged dets
             Eigen::Index j = std::get<0>(calib.array_limits[array]);

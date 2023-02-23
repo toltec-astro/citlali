@@ -858,13 +858,13 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb(std::vector<map_extent_t> &ma
 
         max_pix = std::max(min_pix, max_pix);
         // make sure its even
-        auto ndim = 2*max_pix + 4;
+        auto n_dim = 2*max_pix + 4;
 
         // vector to store tangent plane coordinates
-        Eigen::VectorXd dim_vec = (Eigen::VectorXd::LinSpaced(ndim,0,ndim-1).array() -
-                                   (ndim)/2.)*engine().cmb.pixel_size_rad;
+        Eigen::VectorXd dim_vec = (Eigen::VectorXd::LinSpaced(n_dim,0,n_dim-1).array() -
+                                   (n_dim)/2.)*engine().cmb.pixel_size_rad;
 
-        return std::tuple{ndim, std::move(dim_vec)};
+        return std::tuple{n_dim, std::move(dim_vec)};
     };
 
     // get number of rows and n_cols
@@ -1007,12 +1007,12 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
 
         // loop through scans
         for (Eigen::Index i=0; i<engine().telescope.scan_indices.cols(); i++) {
-            auto si = engine().telescope.scan_indices(0, i);
-            auto sl = engine().telescope.scan_indices(1, i) - engine().telescope.scan_indices(0,i) + 1;
+            auto si = engine().telescope.scan_indices(0,i);
+            auto sl = engine().telescope.scan_indices(1,i) - engine().telescope.scan_indices(0,i) + 1;
 
             std::map<std::string, Eigen::VectorXd> tel_data;
             for (auto const& x: engine().telescope.tel_data) {
-                tel_data[x.first] = engine().telescope.tel_data[x.first].segment(si, sl);
+                tel_data[x.first] = engine().telescope.tel_data[x.first].segment(si,sl);
             }
 
             // loop through detectors
@@ -1061,13 +1061,13 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
 
             max_pix = std::max(min_pix, max_pix);
             // make sure its even
-            auto ndim = 2*max_pix + 4;
+            auto n_dim = 2*max_pix + 4;
 
             // vector for tangent plane coordinates
-            Eigen::VectorXd dim_vec = (Eigen::VectorXd::LinSpaced(ndim,0,ndim-1).array() -
-                                       (ndim)/2.)*engine().omb.pixel_size_rad;
+            Eigen::VectorXd dim_vec = (Eigen::VectorXd::LinSpaced(n_dim,0,n_dim-1).array() -
+                                       (n_dim)/2.)*engine().omb.pixel_size_rad;
 
-            return std::tuple{ndim, std::move(dim_vec)};
+            return std::tuple{n_dim, std::move(dim_vec)};
         };
 
         // get n_rows and n_cols

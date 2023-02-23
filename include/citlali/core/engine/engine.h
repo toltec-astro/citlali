@@ -548,7 +548,6 @@ void Engine::get_mapmaking_config(CT &config) {
     cmb.parallel_policy = parallel_policy;
 }
 
-
 template<typename CT>
 void Engine::get_beammap_config(CT &config) {
     get_config_value(config, beammap_iter_max, missing_keys, invalid_keys, std::tuple{"beammap","iter_max"});
