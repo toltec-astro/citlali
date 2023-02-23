@@ -185,8 +185,9 @@ void Telescope::calc_tan_altaz() {
     // tangent plane lat (alt)
     tel_data["alt_phys"] = (tel_data["TelElAct"] - tel_data["SourceEl"]) - tel_data["TelElCor"];
     // tangent plane lon (az)
-    tel_data["az_phys"] = cos(tel_data["TelElAct"].array())*(tel_data["TelAzAct"].array() - tel_data["SourceAz"].array())
-                           - tel_data["TelAzCor"].array();
+    tel_data["az_phys"] = cos(tel_data["TelElAct"].array() - tel_data["TelElCor"].array())*(tel_data["TelAzAct"].array() -
+                                                                                              tel_data["SourceAz"].array()) -
+                          tel_data["TelAzCor"].array();
 
     // apply elevation corrections
     tel_data["TelElAct"] = tel_data["TelElAct"] - tel_data["TelElCor"];
