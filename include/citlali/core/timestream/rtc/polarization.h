@@ -41,10 +41,10 @@ public:
             // number of detectors in both q and u in the detector frame
             Eigen::Index n_dets;
             if (!sim_obs) {
-                Eigen::Index n_dets = (calib.apt["loc"].array()!=-1).count()/2;
+                n_dets = (calib.apt["loc"].array()!=-1).count()/2;
             }
             else {
-                Eigen::Index n_dets = (calib.apt["fg"].array() == 0).count() + (calib.apt["fg"].array() == 1).count();
+                n_dets = (calib.apt["fg"].array() == 0).count() + (calib.apt["fg"].array() == 1).count();
             }
             SPDLOG_INFO("pol ndets {}", n_dets);
 
