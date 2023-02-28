@@ -209,7 +209,7 @@ public:
     Eigen::VectorXI maps_to_stokes;
 
     // manual pointing offsets
-    std::map<std::string, double> pointing_offsets_arcsec;
+    std::map<std::string, Eigen::VectorXd> pointing_offsets_arcsec;
 
     // map output files
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> fits_io_vec;
@@ -222,7 +222,6 @@ public:
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> coadd_noise_fits_io_vec;
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> filtered_coadd_fits_io_vec;
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> filtered_coadd_noise_fits_io_vec;
-
 
     template<typename CT>
     void get_rtc_config(CT &);
@@ -865,8 +864,13 @@ void Engine::get_photometry_config(CT &config) {
 
 template<typename CT>
 void Engine::get_astrometry_config(CT &config) {
-    pointing_offsets_arcsec["az"] = config.template get_typed<double>(std::tuple{"pointing_offsets",0,"value_arcsec"});
-    pointing_offsets_arcsec["alt"] = config.template get_typed<double>(std::tuple{"pointing_offsets",1,"value_arcsec"});
+
+    std::vector<double> offset;
+    offset = config.template get_typed<std::vector<double>>(std::tuple{"pointing_offsets",0,"value_arcsec"});
+    pointing_offsets_arcsec["az"] = Eigen::Map<Eigen::VectorXd>(offset.data(),offset.size());
+
+    offset = config.template get_typed<std::vector<double>>(std::tuple{"pointing_offsets",1,"value_arcsec"});
+    pointing_offsets_arcsec["alt"] = Eigen::Map<Eigen::VectorXd>(offset.data(),offset.size());
 }
 
 template <typename Derived>
@@ -1069,8 +1073,12 @@ void Engine::create_tod_files() {
 
         // set number of detectors for polarized timestreams
         else if ((stokes_param == "Q") || (stokes_param == "U")) {
-            //n_dets = (calib.apt["fg"].array() == 0).count() + (calib.apt["fg"].array() == 1).count();
+            if (!telescope.sim_obs) {
             n_dets = (calib.apt["loc"].array()!=-1).count()/2;
+            }
+            else {
+                n_dets = (calib.apt["fg"].array() == 0).count() + (calib.apt["fg"].array() == 1).count();
+            }
         }
 
         netCDF::NcDim n_dets_dim = fo.addDim("n_dets", n_dets);

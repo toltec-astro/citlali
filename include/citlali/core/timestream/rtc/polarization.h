@@ -21,7 +21,7 @@ public:
     indices_t demodulate_timestream(TCData<td_kind, Eigen::MatrixXd> &in,
                                     TCData<td_kind, Eigen::MatrixXd> &out,
                                     std::string stokes_param, std::string redu_type,
-                                    calib_type &calib) {
+                                    calib_type &calib, bool sim_obs) {
         // vectors of map, array, nw, and det indices
         Eigen::VectorXI map_indices, array_indices, nw_indices, det_indices;
 
@@ -32,15 +32,20 @@ public:
         if (stokes_param == "I") {
             array_indices = calib.apt["array"].template cast<Eigen::Index> ();
             nw_indices = calib.apt["nw"].template cast<Eigen::Index> ();
-            det_indices = Eigen::VectorXI::LinSpaced(out.scans.data.cols(),0,out.scans.data.cols()+1);
+            det_indices = Eigen::VectorXI::LinSpaced(out.scans.data.cols(),0,out.scans.data.cols()-1);
         }
 
         else {
             // number of samples
             Eigen::Index n_pts = in.scans.data.rows();
             // number of detectors in both q and u in the detector frame
-            //Eigen::Index n_dets = (calib.apt["fg"].array() == 0).count() + (calib.apt["fg"].array() == 1).count();
-            Eigen::Index n_dets = (calib.apt["loc"].array()!=-1).count()/2;
+            Eigen::Index n_dets;
+            if (!sim_obs) {
+                Eigen::Index n_dets = (calib.apt["loc"].array()!=-1).count()/2;
+            }
+            else {
+                Eigen::Index n_dets = (calib.apt["fg"].array() == 0).count() + (calib.apt["fg"].array() == 1).count();
+            }
             SPDLOG_INFO("pol ndets {}", n_dets);
 
             // q and u in the detector frame
@@ -62,20 +67,35 @@ public:
             out.index.data = in.index.data;
 
             // loop through all detectors
-            Eigen::Index k = 0;
-            for (Eigen::Index i=0; i<calib.n_dets; i++) {
-                if (calib.apt["loc"](i)!=-1 && calib.apt["ori"](i)==0) {
-                    for (Eigen::Index j=0; j<calib.n_dets; j++) {
-                        if (calib.apt["loc"](i)==calib.apt["loc"](j) && calib.apt["ori"](j)!=0) {
-                            polarized_scans_det.col(k) = in.scans.data.col(j) - in.scans.data.col(i);
-                            fg(k) = calib.apt["fg"](i);
+            if (!sim_obs) {
+                Eigen::Index k = 0;
+                for (Eigen::Index i=0; i<calib.n_dets; i++) {
+                    if (calib.apt["loc"](i)!=-1 && calib.apt["ori"](i)==0) {
+                        for (Eigen::Index j=0; j<calib.n_dets; j++) {
+                            if (calib.apt["loc"](i)==calib.apt["loc"](j) && calib.apt["ori"](j)!=0) {
+                                polarized_scans_det.col(k) = in.scans.data.col(j) - in.scans.data.col(i);
+                                fg(k) = calib.apt["fg"](i);
 
-                            array_indices(k) = calib.apt["array"](i);
-                            nw_indices(k) = calib.apt["nw"](i);
-                            det_indices(k) = i;
-                            k++;
+                                array_indices(k) = calib.apt["array"](i);
+                                nw_indices(k) = calib.apt["nw"](i);
+                                det_indices(k) = i;
+                                k++;
+                            }
                         }
                     }
+                }
+            }
+            else {
+                Eigen::Index j=0;
+                for (Eigen::Index i=0; i<calib.n_dets-1; i=i+2) {
+                    polarized_scans_det.col(j) = in.scans.data.col(i) - in.scans.data.col(i+1);
+                    fg(j) = calib.apt["fg"](i);
+
+                    array_indices(j) = calib.apt["array"](i);
+                    nw_indices(j) = calib.apt["nw"](i);
+                    det_indices(j) = i;
+
+                    j++;
                 }
             }
 

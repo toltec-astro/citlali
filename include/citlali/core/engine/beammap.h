@@ -301,6 +301,20 @@ void Beammap::setup() {
     calib.apt_meta["sig2noise"].push_back("units: N/A");
     calib.apt_meta["sig2noise"].push_back("signal to noise");
 
+    // bitwise flag
+    calib.apt_meta["flag2"].push_back("units: N/A");
+    calib.apt_meta["flag2"].push_back("bitwise flag");
+    calib.apt_meta["flag2"].push_back("Good=0");
+    calib.apt_meta["flag2"].push_back("BadFit=1");
+    calib.apt_meta["flag2"].push_back("AzFWHM=2");
+    calib.apt_meta["flag2"].push_back("ElFWHM=3");
+    calib.apt_meta["flag2"].push_back("Sig2Noise=4");
+    calib.apt_meta["flag2"].push_back("Sens=5");
+    calib.apt_meta["flag2"].push_back("Position=6");
+
+    calib.apt_header_units["flag2"] = "N/A";
+    calib.apt_header_keys.push_back("flag2");
+
     // is the detector rotated
     calib.apt_meta["is_derotated"] = beammap_derotate;
     // is the detector rotated
@@ -367,7 +381,8 @@ auto Beammap::run_timestream() {
             // demodulate
             auto [array_indices, nw_indices, det_indices] = rtcproc.polarization.demodulate_timestream(rtcdata, rtcdata_pol,
                                                                                                        stokes_param,
-                                                                                                       redu_type, calib);
+                                                                                                       redu_type, calib,
+                                                                                                       telescope.sim_obs);
             // get indices for maps
             SPDLOG_INFO("calculating map indices");
             auto map_indices = calc_map_indices(det_indices, nw_indices, array_indices, stokes_param);
@@ -658,20 +673,6 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
     flag2.resize(calib.n_dets);
     calib.apt["flag2"].resize(calib.n_dets);
 
-    // bitwise flag
-    calib.apt_meta["flag2"].push_back("units: N/A");
-    calib.apt_meta["flag2"].push_back("bitwise flag");
-    calib.apt_meta["flag2"].push_back("Good=0");
-    calib.apt_meta["flag2"].push_back("BadFit=1");
-    calib.apt_meta["flag2"].push_back("AzFWHM=2");
-    calib.apt_meta["flag2"].push_back("ElFWHM=3");
-    calib.apt_meta["flag2"].push_back("Sig2Noise=4");
-    calib.apt_meta["flag2"].push_back("Sens=5");
-    calib.apt_meta["flag2"].push_back("Position=6");
-
-    calib.apt_header_units["flag2"] = "N/A";
-    calib.apt_header_keys.push_back("flag2");
-
     flag2.setConstant(AptFlags::Good);
     calib.apt["flag2"].setConstant(AptFlags::Good);
 
@@ -898,44 +899,6 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
 }
 
 void Beammap::adjust_apt() {
-    // std maps to hold median unflagged x and y positions
-    //std::map<std::string, double> array_median_x_t, array_median_y_t;
-
-    // calc mean x_t and y_t values from unflagged detectors for each arrays
-    /*for (Eigen::Index i=0; i<calib.n_arrays; i++) {
-        Eigen::Index array = calib.arrays(i);
-        std::string array_name = toltec_io.array_name_map[array];
-
-        // x_t
-        auto array_x_t = calib.apt["x_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
-                                                                 std::get<1>(calib.array_limits[array])-1));
-        // y_t
-        auto array_y_t = calib.apt["y_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
-                                                                 std::get<1>(calib.array_limits[array])-1));
-        // number of good detectors
-        Eigen::Index n_good_det = calib.apt["flag"](Eigen::seq(std::get<0>(calib.array_limits[array]),
-                                                         std::get<1>(calib.array_limits[array])-1)).sum();
-
-        Eigen::VectorXd x_t, y_t;
-
-        x_t.resize(n_good_det);
-        y_t.resize(n_good_det);
-
-        // remove flagged dets
-        Eigen::Index j = std::get<0>(calib.array_limits[array]);
-        Eigen::Index k = 0;
-        for (Eigen::Index i=0; i<array_x_t.size(); i++) {
-            if (calib.apt["flag"](j)) {
-                x_t(k) = array_x_t(i);
-                y_t(k) = array_y_t(i);
-                k++;
-            }
-            j++;
-        }
-        array_median_x_t[array_name] = tula::alg::median(x_t);
-        array_median_y_t[array_name] = tula::alg::median(y_t);
-    }*/
-
     // reference detector x and y
     double ref_det_x_t = 0;
     double ref_det_y_t = 0;
@@ -950,7 +913,7 @@ void Beammap::adjust_apt() {
             SPDLOG_INFO("using detector {} at ({},{}) arcsec",beammap_reference_det,
                         ref_det_x_t,ref_det_y_t);
         }
-        // else use closest to a1100 median (or map 0 if a1100 is missing)
+        // else use closest to (0,0) in a1100 (or map 0 if a1100 is missing)
         else {
             SPDLOG_INFO("finding a reference detector");
             auto array_name = toltec_io.array_name_map[calib.apt["array"](0)];
@@ -1036,26 +999,6 @@ void Beammap::adjust_apt() {
     // overwrite x_t and y_t
     calib.apt["x_t_derot"] = -rot_az_off;
     calib.apt["y_t_derot"] = -rot_alt_off;
-
-    /*for (Eigen::Index i=0; i<calib.n_dets; i++) {
-        Eigen::VectorXd lat = (-calib.apt["y_t_derot"](i)*ASEC_TO_RAD) + telescope.tel_data["TelElMap"].array();
-        Eigen::VectorXd lon = (-calib.apt["x_t_derot"](i)*ASEC_TO_RAD) + telescope.tel_data["TelAzMap"].array();
-
-        Eigen::Index min_index;
-
-        double min_dist = (lat.array().pow(2) + lon.array().pow(2)).minCoeff(&min_index);
-
-        calib.apt["derot_elev"](i) = telescope.tel_data["SourceEl"](min_index);
-
-        // calculate derotated positions
-        double rot_az_off = cos(-calib.apt["derot_elev"](i))*calib.apt["x_t_derot"](i) -
-                                     sin(-calib.apt["derot_elev"](i))*calib.apt["y_t_derot"](i);
-        double rot_alt_off = sin(-calib.apt["derot_elev"](i))*calib.apt["x_t_derot"](i) +
-                                      cos(-calib.apt["derot_elev"](i))*calib.apt["y_t_derot"](i);
-
-        calib.apt["x_t_derot"](i) = -rot_az_off;
-        calib.apt["y_t_derot"](i) = -rot_alt_off;
-    }*/
 
     if (beammap_derotate) {
         SPDLOG_INFO("derotating apt");

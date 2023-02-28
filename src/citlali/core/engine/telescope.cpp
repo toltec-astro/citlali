@@ -92,17 +92,34 @@ void Telescope::get_tel_data(std::string &filepath) {
         throw DataIOError{fmt::format(
             "failed to load data from netCDF file {}", filepath)};
     }
+
+    engine_utils::fix_periodic_boundary(tel_data["TelRa"],pi, 1.99*pi,2.0*pi);
+    engine_utils::fix_periodic_boundary(tel_data["TelDec"],pi, 1.99*pi,2.0*pi);
+    engine_utils::fix_periodic_boundary(tel_data["TelAzAct"],pi, 1.99*pi,2.0*pi);
+    engine_utils::fix_periodic_boundary(tel_data["TelElAct"],pi, 1.99*pi,2.0*pi);
+    engine_utils::fix_periodic_boundary(tel_data["TelAzCor"],pi, 1.99*pi,2.0*pi);
+    engine_utils::fix_periodic_boundary(tel_data["TelElCor"],pi, 1.99*pi,2.0*pi);
+
+    engine_utils::fix_periodic_boundary(tel_data["SourceAz"],pi, 1.99*pi,2.0*pi);
+    engine_utils::fix_periodic_boundary(tel_data["SourceEl"],pi, 1.99*pi,2.0*pi);
+
+    if (!sim_obs) {
+        // convert TelUTC to unix time
+        engine_utils::utc_to_unix(tel_data["TelUTC"],tel_header["Header.TimePlace.UTDate"]);
+    }
 }
 
 void Telescope::calc_tan_pointing() {
-
-    /*tel_data["ActParAng"] = engine_utils::calc_par_ang_from_coords(tel_header["Header.TimePlace.ObsLatitude"](0),
-                                                                   tel_header["Header.TimePlace.ObsLongitude"](0),
-                                                                   tel_data["TelAzAct"], tel_data["TelElAct"],
-                                                                   tel_data["TelRaAct"],tel_data["TelDecAct"]);
-    */
     // get altaz tangent pointing
     calc_tan_altaz();
+
+    /*if (!sim_obs) {
+        tel_data["ActParAng"] = engine_utils::calc_par_ang_from_coords(tel_header["Header.TimePlace.ObsLatitude"](0),
+                                                                       tel_header["Header.TimePlace.ObsLongitude"](0),
+                                                                       tel_data["TelAzAct"], tel_data["TelElAct"],
+                                                                       tel_data["TelRa"],tel_data["TelDec"]);
+    }*/
+
     // get icrs tangent pointing
     calc_tan_icrs();
 
@@ -185,9 +202,9 @@ void Telescope::calc_tan_altaz() {
     // tangent plane lat (alt)
     tel_data["alt_phys"] = (tel_data["TelElAct"] - tel_data["SourceEl"]) - tel_data["TelElCor"];
     // tangent plane lon (az)
-    tel_data["az_phys"] = cos(tel_data["TelElAct"].array() - tel_data["TelElCor"].array())*(tel_data["TelAzAct"].array() -
-                                                                                              tel_data["SourceAz"].array()) -
-                          tel_data["TelAzCor"].array();
+    tel_data["az_phys"] = cos(tel_data["TelElAct"].array() - tel_data["TelElCor"].array())*(tel_data["TelAzAct"].array()
+                                                                                              - tel_data["SourceAz"].array())
+                          - tel_data["TelAzCor"].array();
 
     // apply elevation corrections
     tel_data["TelElAct"] = tel_data["TelElAct"] - tel_data["TelElCor"];

@@ -77,6 +77,8 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
     void align_timestreams(const RawObs &rawobs);
     void align_timestreams_2(const RawObs &rawobs);
 
+    void interp_pointing();
+
     void calc_map_num();
     void allocate_cmb(std::vector<map_extent_t> &map_extents, std::vector<map_coord_t> &map_coords);
 
@@ -531,21 +533,29 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
 
     // interpolate telescope data
     for (const auto &tel_it : engine().telescope.tel_data) {
-        if (tel_it.first !="TelTime") {
+        if (tel_it.first !="TelTime") { // && tel_it.first != "TelUTC") {
             // telescope vector to interpolate
             Eigen::VectorXd yd = engine().telescope.tel_data[tel_it.first];
             Eigen::VectorXd yi(min_size);
 
-            mlinterp::interp(nd.data(), min_size, // nd, ni
-                             yd.data(), yi.data(), // yd, yi
-                             engine().telescope.tel_data["TelTime"].data(), xi.data()); // xd, xi
+            //if (tel_it.first!="TelRa" && tel_it.first!="TelDec") {
+                mlinterp::interp(nd.data(), min_size, // nd, ni
+                                 yd.data(), yi.data(), // yd, yi
+                                 engine().telescope.tel_data["TelTime"].data(), xi.data()); // xd, xi
+            //}
+            /*else {
+                mlinterp::interp(nd.data(), min_size, // nd, ni
+                                 yd.data(), yi.data(), // yd, yi
+                                 engine().telescope.tel_data["TelUTC"].data(), xi.data()); // xd, xi
+            }*/
 
             engine().telescope.tel_data[tel_it.first] = std::move(yi);
         }
     }
 
-    // replace telescope time vector
+    // replace telescope time vectors
     engine().telescope.tel_data["TelTime"] = xi;
+    engine().telescope.tel_data["TelUTC"] = xi;
 }
 
 // align tod with telescope
@@ -687,6 +697,49 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_2(const RawObs &rawobs) 
     }
 }
 
+template <class EngineType>
+void TimeOrderedDataProc<EngineType>::interp_pointing() {
+    Eigen::Index n_offsets = engine().pointing_offsets_arcsec["az"].size();
+
+    if (n_offsets==1) {
+        double az = engine().pointing_offsets_arcsec["az"](0);
+        engine().pointing_offsets_arcsec["az"].resize(engine().telescope.tel_data["TelTime"].size());
+        engine().pointing_offsets_arcsec["az"].setConstant(az);
+
+        double alt = engine().pointing_offsets_arcsec["alt"](0);
+        engine().pointing_offsets_arcsec["alt"].resize(engine().telescope.tel_data["TelTime"].size());
+        engine().pointing_offsets_arcsec["alt"].setConstant(alt);
+    }
+
+    else {
+        // size of telescope data
+        Eigen::Index ni = engine().telescope.tel_data["TelTime"].size();
+
+        // size of telescope data
+        Eigen::Matrix<Eigen::Index,1,1> nd;
+        nd << n_offsets;;
+
+        Eigen::VectorXd yi;
+
+        Eigen::VectorXd xd(n_offsets);
+        xd << engine().telescope.tel_data["TelTime"](0), ni-1;
+
+        // interpolate az offset onto time vector
+        mlinterp::interp(nd.data(), ni, // nd, ni
+                         engine().pointing_offsets_arcsec["az"].data(), yi.data(), // yd, yi
+                         xd.data(), engine().telescope.tel_data["TelTime"].data()); // xd, xi
+
+        engine().pointing_offsets_arcsec["az"] = yi;
+
+        // interpolate alt offset onto time vector
+        mlinterp::interp(nd.data(), ni, // nd, ni
+                         engine().pointing_offsets_arcsec["alt"].data(), yi.data(), // yd, yi
+                         xd.data(), engine().telescope.tel_data["TelTime"].data()); // xd, xi
+
+        engine().pointing_offsets_arcsec["alt"] = yi;
+    }
+}
+
 // get map number
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::calc_map_num() {
@@ -761,8 +814,12 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
             }
 
             else if ((stokes_param == "Q") || (stokes_param == "U")) {
-                //n_dets = (engine().calib.apt["fg"].array() == 0).count() + (engine().calib.apt["fg"].array() == 1).count();
-                n_dets = (engine().calib.apt["loc"].array()!=-1).count()/2;
+                if (!engine().telescope.sim_obs) {
+                    n_dets = (engine().calib.apt["loc"].array()!=-1).count()/2;
+                }
+                else {
+                    n_dets = (engine().calib.apt["fg"].array() == 0).count() + (engine().calib.apt["fg"].array() == 1).count();
+                }
                 Eigen::Index j=0;
                 // loop through all detectors
                 for (Eigen::Index i=0; i<engine().calib.n_dets-1; i=i+2) {
@@ -987,7 +1044,6 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
 // calculate map dimensions
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &map_extents, std::vector<map_coord_t> &map_coords) {
-
     // only run if manual map sizes have not been input
     if ((engine().omb.wcs.naxis[0] <= 0) || (engine().omb.wcs.naxis[1] <= 0)) {
         // matrix to store size limits

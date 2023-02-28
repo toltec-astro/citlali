@@ -254,7 +254,8 @@ auto Pointing::run() {
             //SPDLOG_INFO("demodulating polarization");
             auto [array_indices, nw_indices, det_indices] = rtcproc.polarization.demodulate_timestream(rtcdata, rtcdata_pol,
                                                                                                        stokes_param,
-                                                                                                       redu_type, calib);
+                                                                                                       redu_type, calib,
+                                                                                                       telescope.sim_obs);
             // get indices for maps
             SPDLOG_INFO("calculating map indices");
             auto map_indices = calc_map_indices(det_indices, nw_indices, array_indices, stokes_param);

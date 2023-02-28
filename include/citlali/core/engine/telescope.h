@@ -59,6 +59,7 @@ public:
     // keys to telescope data vectors
     std::map<std::string, std::string> tel_data_keys {
         {"Data.TelescopeBackend.TelTime", "TelTime"},
+        {"Data.TelescopeBackend.TelUtc","TelUTC"},
         {"Data.TelescopeBackend.TelRaAct", "TelRa"},
         {"Data.TelescopeBackend.TelDecAct", "TelDec"},
         {"Data.TelescopeBackend.SourceRaAct", "TelRa"},

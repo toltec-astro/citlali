@@ -34,26 +34,45 @@ static const std::string current_date_time() {
     return buf;
 }
 
-template <typename Derived>
-void utc_to_unix(Eigen::DenseBase<Derived> tel_utc, Eigen::DenseBase<Derived> &ut_date) {
-    char utc_time_str[20];
+template <typename DerivedA, typename DerivedB>
+void utc_to_unix(Eigen::DenseBase<DerivedA> &tel_utc, Eigen::DenseBase<DerivedB> &ut_date) {
+
+    Eigen::Index n_pts = tel_utc.size();
+
     time_t utc_time;
-    struct tm tm_time;
 
-    // get input UTC time string from user
-    scanf("%s", utc_time_str);
+    auto days_in_year = 365.0;
 
-    // parse UTC time string to tm struct
-    strptime(utc_time_str, "%Y-%m-%d %H:%M:%S", &tm_time);
+    int year = std::floor(ut_date(0));
+    int days = int(((ut_date(0)-year)*days_in_year)+1);
 
-    // convert tm struct to UTC time in seconds since epoch (1970-01-01 00:00:00 UTC)
-    utc_time = mktime(&tm_time);
+    auto ut_time = 180/15/pi * tel_utc.derived().array();
 
-    // convert UTC time to Unix timestamp
-    time_t unix_time = (time_t) utc_time;
+    Eigen::VectorXd tel_unix(n_pts);
 
-    // output Unix timestamp
-    SPDLOG_INFO("Unix timestamp: {}", unix_time);
+    for (Eigen::Index i=0; i<n_pts; i++) {
+        auto h =(int)ut_time(i);
+        auto m = (int)((ut_time(i) - h)*60);
+        auto s = (((ut_time(i) - h)*60 - m)*60);
+
+        struct tm tm_time;
+        tm_time.tm_isdst = -1;
+        tm_time.tm_mon = 0;
+        tm_time.tm_mday = days;
+        tm_time.tm_year = year - 1900;
+
+        tm_time.tm_sec = s;
+        tm_time.tm_min = m;
+        tm_time.tm_hour = h;
+
+        utc_time = timegm(&tm_time);
+
+        // convert UTC time to Unix timestamp
+        time_t unix_time = (time_t) utc_time;
+        tel_unix(i) = unix_time;
+    }
+
+    tel_utc = tel_unix;
 }
 
 template <typename Derived>
@@ -67,11 +86,11 @@ auto make_meshgrid(const Eigen::DenseBase<Derived> &x, const Eigen::DenseBase<De
     // map yy [ny, nx] to the second column of xy
     Eigen::Map<Eigen::MatrixXd> yy(xy.data() + xy.rows(), ny, nx);
     // populate xx such that each row is x
-    for (Eigen::Index i = 0; i < ny; ++i) {
+    for (Eigen::Index i=0; i<ny; ++i) {
         xx.row(i) = x.transpose();
     }
     // populate yy such that each col is y
-    for (Eigen::Index j = 0; j < nx; ++j) {
+    for (Eigen::Index j=0; j<nx; ++j) {
         yy.col(j) = y;
     }
     return xy;
@@ -836,10 +855,10 @@ public:
                    Eigen::VectorXd const &y_vec)
         : x_min(x_vec.minCoeff()),
           x_max(x_vec.maxCoeff()),
-          // Spline fitting here. X values are scaled down to [0, 1] for this.
+          // spline fitting here. X values are scaled down to [0, 1] for this.
           spline_(Eigen::SplineFitting<Eigen::Spline<double, 1>>::Interpolate(
               y_vec.transpose(),
-              // No more than cubic spline, but accept short vectors.
+              // no more than cubic spline, but accept short vectors.
               std::min<int>(x_vec.rows() - 1, 3),
               scaled_values(x_vec)))
     { }
@@ -850,7 +869,7 @@ public:
     }
 
 private:
-    // Helpers to scale X values down to [0, 1]
+    // helpers to scale X values down to [0, 1]
     double scaled_value(double x) const {
         return (x - x_min) / (x_max - x_min);
     }
@@ -859,7 +878,7 @@ private:
         return x_vec.unaryExpr([this](double x) { return scaled_value(x); }).transpose();
     }
 
-    // Spline of one-dimensional "points."
+    // spline of one-dimensional points.
     Eigen::Spline<double, 1> spline_;
 };
 

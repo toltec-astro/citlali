@@ -81,7 +81,6 @@ auto parse_args(int argc, char *argv[]) {
     // =======================================================================
     );}, screen, argc, argv);
     // clang-format on
-    // SPDLOG_TRACE("cc: {}", cc.pformat());
     if (cc.get_typed<bool>("help")) {
         screen.manpage(cli);
         std::exit(EXIT_SUCCESS);
@@ -323,10 +322,6 @@ int run(const rc_t &rc) {
                         todproc.engine().telescope.tan_center_rad["dec"] = todproc.engine().telescope.tel_header["Header.Source.Dec"](0);
                     }
 
-                    // calc tangent plane pointing
-                    SPDLOG_INFO("calculating tangent plane pointing");
-                    todproc.engine().telescope.calc_tan_pointing();
-
                     // align tod
                     if (!todproc.engine().telescope.sim_obs) {
                         SPDLOG_INFO("aligning timestreams");
@@ -343,6 +338,14 @@ int run(const rc_t &rc) {
                             todproc.engine().start_indices.push_back(0);
                         }
                     }
+
+                    // calc tangent plane pointing
+                    SPDLOG_INFO("calculating tangent plane pointing");
+                    todproc.engine().telescope.calc_tan_pointing();
+
+                    // calc pointing offsets
+                    SPDLOG_INFO("calculating pointing offsets");
+                    todproc.interp_pointing();
 
                     // calc scan indices
                     SPDLOG_INFO("calculating scan indices");
@@ -509,10 +512,6 @@ int run(const rc_t &rc) {
                         SPDLOG_INFO("getting telescope file {}", tel_path);
                         todproc.engine().telescope.get_tel_data(tel_path);
 
-                        // calc tangent plane pointing
-                        SPDLOG_INFO("calculating tangent plane pointing");
-                        todproc.engine().telescope.calc_tan_pointing();
-
                         // overwrite tangent plane center
                         if (todproc.engine().omb.wcs.crval[0]!=0 && todproc.engine().omb.wcs.crval[1]!=0) {
                             todproc.engine().telescope.tan_center_rad["ra"] = todproc.engine().omb.wcs.crval[0];
@@ -539,6 +538,14 @@ int run(const rc_t &rc) {
                                 todproc.engine().start_indices.push_back(0);
                             }
                         }
+
+                        // calc tangent plane pointing
+                        SPDLOG_INFO("calculating tangent plane pointing");
+                        todproc.engine().telescope.calc_tan_pointing();
+
+                        // calc pointing offsets
+                        SPDLOG_INFO("calculating pointing offsets");
+                        todproc.interp_pointing();
                     }
 
                     // warning for gaps in data

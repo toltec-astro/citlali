@@ -15,7 +15,7 @@ void ObsMapBuffer::normalize_maps() {
         for (Eigen::Index j=0; j<n_rows; j++) {
             for (Eigen::Index k=0; k<n_cols; k++) {
                 double sig_weight = weight[i](j,k);
-                if (sig_weight != 0.) {
+                if (sig_weight > 0.) {
                     signal[i](j,k) = signal[i](j,k) / sig_weight;
 
                     if (!kernel.empty()) {
@@ -24,6 +24,7 @@ void ObsMapBuffer::normalize_maps() {
                 }
                 else {
                     signal[i](j,k) = 0;
+                    weight[i](j,k) = 0;
 
                     if (!kernel.empty()) {
                         kernel[i](j,k) = 0;
@@ -35,14 +36,13 @@ void ObsMapBuffer::normalize_maps() {
         return 0;
     });
 
-
     // normalize noise maps
     if (!noise.empty()) {
         grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
             for (Eigen::Index j=0; j<n_rows; j++) {
                 for (Eigen::Index k=0; k<n_cols; k++) {
                     double sig_weight = weight[i](j,k);
-                    if (sig_weight != 0.) {
+                    if (sig_weight > 0.) {
                         for (Eigen::Index l=0; l<n_noise; l++) {
                             noise[i](j,k,l) = noise[i](j,k,l) / sig_weight;
                         }

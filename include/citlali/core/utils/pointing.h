@@ -6,10 +6,10 @@
 
 namespace engine_utils {
 
-template <typename tel_data_t>
+template <typename tel_data_t, typename pointing_offset_t>
 auto calc_det_pointing(tel_data_t &tel_data, const double az_off, const double el_off,
-                                const std::string pixel_axes,
-                                std::map<std::string,double> &pointing_offsets) {
+                       const std::string pixel_axes,
+                       pointing_offset_t &pointing_offsets) {
 
     // rows, cols pointing vectors
     Eigen::VectorXd lat, lon;
@@ -18,9 +18,9 @@ auto calc_det_pointing(tel_data_t &tel_data, const double az_off, const double e
 
     // rotate altaz offsets by elevation angle and add pointing offsets
     Eigen::VectorXd rot_az_off = cos(derot_elev)*az_off
-                     - sin(derot_elev)*el_off + pointing_offsets["az"];
+                                 - sin(derot_elev)*el_off + pointing_offsets["az"].array();
     Eigen::VectorXd rot_alt_off = cos(derot_elev)*el_off
-                      + sin(derot_elev)*az_off + pointing_offsets["alt"];
+                                  + sin(derot_elev)*az_off + pointing_offsets["alt"].array();
 
     // icrs map
     if (std::strcmp("icrs", pixel_axes.c_str()) == 0) {
@@ -29,25 +29,25 @@ auto calc_det_pointing(tel_data_t &tel_data, const double az_off, const double e
 
         // dec
         lat = (-rot_az_off.array()*sin(par_ang) + rot_alt_off.array()*cos(par_ang))*ASEC_TO_RAD
-              + tel_data["lat_phys"].array();
+              + tel_data["dec_phys"].array();
         // ra
         lon = (-rot_az_off.array()*cos(par_ang) - rot_alt_off.array()*sin(par_ang))*ASEC_TO_RAD
-              + tel_data["lon_phys"].array();
+              + tel_data["ra_phys"].array();
     }
 
     // altaz map
     else if (std::strcmp("altaz", pixel_axes.c_str()) == 0) {
         // alt
-        lat = (rot_alt_off.array()*ASEC_TO_RAD) + tel_data["lat_phys"].array();
+        lat = (rot_alt_off.array()*ASEC_TO_RAD) + tel_data["alt_phys"].array();
         // az
-        lon = (rot_az_off.array()*ASEC_TO_RAD) + tel_data["lon_phys"].array();
+        lon = (rot_az_off.array()*ASEC_TO_RAD) + tel_data["az_phys"].array();
     }
 
     return std::tuple<Eigen::VectorXd, Eigen::VectorXd>{lat,lon};
 }
 
 template <typename Derived>
-auto calc_par_ang_from_coords(const double lat, const double lon, Eigen::DenseBase<Derived> &alt, Eigen::DenseBase<Derived> &az,
+auto calc_par_ang_from_coords(const double lat, const double lon, Eigen::DenseBase<Derived> &az, Eigen::DenseBase<Derived> &alt,
                               Eigen::DenseBase<Derived> &ra, Eigen::DenseBase<Derived> &dec) {
 
     auto cosha = (sin(alt.derived().array()) - sin(dec.derived().array())* sin(lat)) /

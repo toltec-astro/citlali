@@ -144,11 +144,6 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                                     // jinc weighting function
                                     auto jinc_weight = jinc_func(radius,a,b,c,r_max,l_d[map_index]);
 
-                                    if (jinc_weight!=jinc_weight) {
-                                        SPDLOG_ERROR("nan r {} c {}",r,c);
-                                    }
-                                    //SPDLOG_INFO("jinc_weight {}", jinc_weight);
-
                                     // populate signal map
                                     signal = in.scans.data(j,i)*in.weights.data(i)*jinc_weight;
                                     omb.signal[map_index](r,c) += signal;
@@ -188,35 +183,37 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                         }
 
                         // loop through noise maps
-                        for (Eigen::Index nn=0; nn<nmb->n_noise; nn++) {
-                            // coadd into current noise map
-                            if ((nmb_ir >= 0) && (nmb_ir < nmb->n_rows) && (nmb_ic >= 0) && (nmb_ic < nmb->n_cols)) {
-                                // find minimum row
-                                auto row_min = std::max(0.0,nmb_ir - r_max*l_d[map_index]/nmb->pixel_size_rad);
-                                // find maximum row
-                                auto row_max = std::min(nmb->n_rows - 1.0 ,nmb_ir + r_max*l_d[map_index]/nmb->pixel_size_rad + 1);
+                        //for (Eigen::Index nn=0; nn<nmb->n_noise; nn++) {
+                        // coadd into current noise map
+                        if ((nmb_ir >= 0) && (nmb_ir < nmb->n_rows) && (nmb_ic >= 0) && (nmb_ic < nmb->n_cols)) {
+                            // find minimum row
+                            auto row_min = std::max(0.0,nmb_ir - r_max*l_d[map_index]/nmb->pixel_size_rad);
+                            // find maximum row
+                            auto row_max = std::min(nmb->n_rows - 1.0 ,nmb_ir + r_max*l_d[map_index]/nmb->pixel_size_rad + 1);
 
-                                // find minimum col
-                                auto col_min = std::max(0.0,nmb_ic - r_max*l_d[map_index]/nmb->pixel_size_rad);
-                                // find maximum col
-                                auto col_max = std::min(nmb->n_cols - 1.0 ,nmb_ic + r_max*l_d[map_index]/nmb->pixel_size_rad + 1);
+                            // find minimum col
+                            auto col_min = std::max(0.0,nmb_ic - r_max*l_d[map_index]/nmb->pixel_size_rad);
+                            // find maximum col
+                            auto col_max = std::min(nmb->n_cols - 1.0 ,nmb_ic + r_max*l_d[map_index]/nmb->pixel_size_rad + 1);
 
-                                // loop through nearby rows and cols
-                                for (Eigen::Index r=row_min; r<row_max; r++) {
-                                    for (Eigen::Index c=col_min; c<col_max; c++) {
-                                        // distance from current sample to pixel
-                                        auto radius = sqrt(std::pow(lat(j) - nmb->rows_tan_vec(r),2) + std::pow(lon(j) - nmb->cols_tan_vec(c),2));
-                                        //SPDLOG_INFO("radius {}", radius);
-                                        if (radius<r_max*l_d[map_index]) {
-                                            // jinc weighting function
-                                            auto jinc_weight = jinc_func(radius,a,b,c,r_max,l_d[map_index]);
-                                            signal = in.scans.data(j,i)*in.weights.data(i)*jinc_weight;
+                            // loop through nearby rows and cols
+                            for (Eigen::Index r=row_min; r<row_max; r++) {
+                                for (Eigen::Index c=col_min; c<col_max; c++) {
+                                    // distance from current sample to pixel
+                                    auto radius = sqrt(std::pow(lat(j) - nmb->rows_tan_vec(r),2) + std::pow(lon(j) - nmb->cols_tan_vec(c),2));
+                                    //SPDLOG_INFO("radius {}", radius);
+                                    if (radius<r_max*l_d[map_index]) {
+                                        // jinc weighting function
+                                        auto jinc_weight = jinc_func(radius,a,b,c,r_max,l_d[map_index]);
+                                        signal = in.scans.data(j,i)*in.weights.data(i)*jinc_weight;
+                                        for (Eigen::Index nn=0; nn<nmb->n_noise; nn++) {
                                             nmb->noise[map_index](r,c,nn) += noise(nn,j)*signal;
                                         }
                                     }
                                 }
                             }
                         }
+                        //}
                     }
                 }
             }
