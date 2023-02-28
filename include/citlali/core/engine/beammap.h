@@ -357,6 +357,9 @@ auto Beammap::run_timestream() {
             rtcdata.tel_data.data[x.first] = telescope.tel_data[x.first].segment(si,sl);
         }
 
+        rtcdata.pointing_offsets_arcsec.data["az"] = pointing_offsets_arcsec["az"].segment(si,sl);
+        rtcdata.pointing_offsets_arcsec.data["alt"] = pointing_offsets_arcsec["alt"].segment(si,sl);
+
         // get hwp
         if (rtcproc.run_polarization) {
             rtcdata.hwp_angle.data = calib.hwp_angle.segment(si, sl);
@@ -389,7 +392,7 @@ auto Beammap::run_timestream() {
 
             // run rtcproc
             SPDLOG_INFO("raw time chunk processing");
-            rtcproc.run(rtcdata_pol, ptcdata, telescope.pixel_axes, redu_type, calib, telescope, pointing_offsets_arcsec,
+            rtcproc.run(rtcdata_pol, ptcdata, telescope.pixel_axes, redu_type, calib, telescope, rtcdata.pointing_offsets_arcsec.data,
                         det_indices, array_indices, map_indices, omb.pixel_size_rad);
 
             // write rtc timestreams
@@ -397,7 +400,7 @@ auto Beammap::run_timestream() {
                 if (tod_output_type == "rtc" || tod_output_type=="both") {
                     SPDLOG_INFO("writing raw time chunk");
                     ptcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], redu_type, telescope.pixel_axes,
-                                             pointing_offsets_arcsec, det_indices, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
+                                             ptcdata.pointing_offsets_arcsec.data, det_indices, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
                 }
             }
 
@@ -453,7 +456,7 @@ auto Beammap::run_loop() {
                 // subtract gaussian
                 if (current_iter > 0) {
                     SPDLOG_INFO("subtracting gaussian from tod");
-                    ptcproc.add_gaussian(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt, pointing_offsets_arcsec,
+                    ptcproc.add_gaussian(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt, ptcs[i].pointing_offsets_arcsec.data,
                                          omb.pixel_size_rad, omb.n_rows, omb.n_cols, ptcs[i].map_indices.data, ptcs[i].det_indices.data,
                                          "subtract");
                 }
@@ -491,7 +494,7 @@ auto Beammap::run_loop() {
                 // add gaussan back
                 if (current_iter > 0) {
                     SPDLOG_INFO("adding gaussian to tod");
-                    ptcproc.add_gaussian(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt, pointing_offsets_arcsec,
+                    ptcproc.add_gaussian(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt, ptcs[i].pointing_offsets_arcsec.data,
                                          omb.pixel_size_rad, omb.n_rows, omb.n_cols, ptcs[i].map_indices.data, ptcs[i].det_indices.data,
                                          "add");
                 }
@@ -511,7 +514,7 @@ auto Beammap::run_loop() {
                     if (current_iter == beammap_tod_output_iter) {
                         // hardcoded to stokes I for now
                         ptcproc.append_to_netcdf(ptcs[i], tod_filename["ptc_I"], redu_type, telescope.pixel_axes,
-                                                 pointing_offsets_arcsec, ptcs[i].det_indices.data, calib.apt, "ptc", verbose_mode,
+                                                 ptcs[i].pointing_offsets_arcsec.data, ptcs[i].det_indices.data, calib.apt, "ptc", verbose_mode,
                                                  telescope.d_fsmp);
                     }
                 }
@@ -522,14 +525,14 @@ auto Beammap::run_loop() {
                 if (map_method=="naive") {
                     mapmaking::populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
                                                    ptcs[i].det_indices.data, telescope.pixel_axes,
-                                                   redu_type, calib.apt, pointing_offsets_arcsec,
+                                                   redu_type, calib.apt, ptcs[i].pointing_offsets_arcsec.data,
                                                    telescope.d_fsmp, run_noise);
                 }
 
                 else if (map_method=="jinc") {
                     mapmaking::populate_maps_jinc(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
                                                   ptcs[i].det_indices.data, telescope.pixel_axes,
-                                                  redu_type, calib.apt, pointing_offsets_arcsec,
+                                                  redu_type, calib.apt, ptcs[i].pointing_offsets_arcsec.data,
                                                   telescope.d_fsmp, run_noise, jinc_r_max, jinc_a,
                                                   jinc_b, jinc_c);
                 }
@@ -1089,7 +1092,7 @@ auto Beammap::loop_pipeline() {
 
                     // get tangent pointing
                     auto [lat, lon] = engine_utils::calc_det_pointing(ptcs[i].tel_data.data, az_off, el_off,
-                                                                      telescope.pixel_axes, pointing_offsets_arcsec);
+                                                                      telescope.pixel_axes, ptcs[i].pointing_offsets_arcsec.data);
                     lats.col(j) = std::move(lat);
                     lons.col(j) = std::move(lon);
 

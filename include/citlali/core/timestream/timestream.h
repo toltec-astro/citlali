@@ -169,6 +169,8 @@ struct TCData<TCDataKind::RTC,RefType>
     Base::data_t<Eigen::Index> index;
     // telescope data for scan
     Base::data_t<std::map<std::string, Eigen::VectorXd>> tel_data;
+    // pointing offsets
+    Base::data_t<std::map<std::string, Eigen::VectorXd>> pointing_offsets_arcsec;
     // hwp angle for scan
     Base::data_t<Eigen::VectorXd> hwp_angle;
     // fcf
@@ -206,6 +208,8 @@ struct TCData<TCDataKind::PTC, RefType>
     Base::data_t<Eigen::Index> index;
     // telescope data for scan
     Base::data_t<std::map<std::string, Eigen::VectorXd>> tel_data;
+    // pointing offsets
+    Base::data_t<std::map<std::string, Eigen::VectorXd>> pointing_offsets_arcsec;
     // hwp angle for scan
     Base::data_t<Eigen::VectorXd> hwp_angle;
     // fcf

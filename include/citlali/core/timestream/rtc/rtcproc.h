@@ -181,6 +181,14 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
             downsampler.downsample(in_tel, out.tel_data.data[x.first]);
         }
 
+        for (auto const& x: in.tel_data.data) {
+        Eigen::Ref<Eigen::VectorXd> in_pointing =
+            in.pointing_offsets_arcsec.data[x.first].segment(si, sl);
+
+            downsampler.downsample(in_pointing, out.pointing_offsets_arcsec.data[x.first]);
+        }
+
+
         // downsample kernel if requested
         if (run_kernel) {
             SPDLOG_DEBUG("downsampling kernel");
@@ -207,6 +215,9 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         for (auto const& x: in.tel_data.data) {
             out.tel_data.data[x.first] = in.tel_data.data[x.first].segment(si, sl);
         }
+
+        // copy pointing offsets
+        out.pointing_offsets_arcsec.data = in.pointing_offsets_arcsec.data;
     }
 
     if (run_calibrate) {

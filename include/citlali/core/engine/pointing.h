@@ -211,6 +211,9 @@ auto Pointing::run() {
             rtcdata.tel_data.data[x.first] = telescope.tel_data[x.first].segment(si,sl);
         }
 
+        rtcdata.pointing_offsets_arcsec.data["az"] = pointing_offsets_arcsec["az"].segment(si,sl);
+        rtcdata.pointing_offsets_arcsec.data["alt"] = pointing_offsets_arcsec["alt"].segment(si,sl);
+
         // get hwp
         if (rtcproc.run_polarization) {
             if (calib.run_hwp) {
@@ -262,7 +265,7 @@ auto Pointing::run() {
 
             // run rtcproc
             SPDLOG_INFO("raw time chunk processing");
-            rtcproc.run(rtcdata_pol, ptcdata, telescope.pixel_axes, redu_type, calib, telescope, pointing_offsets_arcsec,
+            rtcproc.run(rtcdata_pol, ptcdata, telescope.pixel_axes, redu_type, calib, telescope, rtcdata.pointing_offsets_arcsec.data,
                         det_indices, array_indices, map_indices, omb.pixel_size_rad);
 
             // write rtc timestreams
@@ -270,7 +273,7 @@ auto Pointing::run() {
                 if (tod_output_type == "rtc" || tod_output_type=="both") {
                     SPDLOG_INFO("writing raw time chunk");
                     ptcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], redu_type, telescope.pixel_axes,
-                                             pointing_offsets_arcsec, det_indices, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
+                                             ptcdata.pointing_offsets_arcsec.data, det_indices, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
                 }
             }
 
@@ -312,7 +315,7 @@ auto Pointing::run() {
                 if (tod_output_type == "ptc" || tod_output_type=="both") {
                     SPDLOG_INFO("writing processed time chunk");
                     ptcproc.append_to_netcdf(ptcdata, tod_filename["ptc_" + stokes_param], redu_type, telescope.pixel_axes,
-                                             pointing_offsets_arcsec, det_indices, calib.apt, "ptc", verbose_mode, telescope.d_fsmp);
+                                             ptcdata.pointing_offsets_arcsec.data, det_indices, calib.apt, "ptc", verbose_mode, telescope.d_fsmp);
                 }
             }
 
@@ -321,11 +324,11 @@ auto Pointing::run() {
                 SPDLOG_INFO("populating maps");
                 if (map_method=="naive") {
                     mapmaking::populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
-                                                   redu_type, calib.apt, pointing_offsets_arcsec, telescope.d_fsmp, run_noise);
+                                                   redu_type, calib.apt, ptcdata.pointing_offsets_arcsec.data, telescope.d_fsmp, run_noise);
                 }
                 else if (map_method=="jinc") {
                     mapmaking::populate_maps_jinc(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
-                                                  redu_type, calib.apt, pointing_offsets_arcsec, telescope.d_fsmp, run_noise,
+                                                  redu_type, calib.apt, ptcdata.pointing_offsets_arcsec.data, telescope.d_fsmp, run_noise,
                                                   jinc_r_max, jinc_a, jinc_b, jinc_c);
                 }
             }

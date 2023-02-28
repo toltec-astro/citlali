@@ -1061,6 +1061,8 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
         std::iota(det_in_vec.begin(), det_in_vec.end(), 0);
         det_out_vec.resize(engine().calib.n_dets);
 
+        std::map<std::string, Eigen::VectorXd> pointing_offsets_arcsec;
+
         // loop through scans
         for (Eigen::Index i=0; i<engine().telescope.scan_indices.cols(); i++) {
             auto si = engine().telescope.scan_indices(0,i);
@@ -1070,6 +1072,9 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
             for (auto const& x: engine().telescope.tel_data) {
                 tel_data[x.first] = engine().telescope.tel_data[x.first].segment(si,sl);
             }
+
+            pointing_offsets_arcsec["az"] = engine().pointing_offsets_arcsec["az"].segment(si,sl);
+            pointing_offsets_arcsec["alt"] = engine().pointing_offsets_arcsec["alt"].segment(si,sl);
 
             // loop through detectors
             grppi::map(tula::grppi_utils::dyn_ex(engine().parallel_policy), det_in_vec, det_out_vec, [&](auto j) {
@@ -1085,7 +1090,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
                 // get pointing
                 auto [lat, lon] = engine_utils::calc_det_pointing(tel_data, az_off, el_off,
                                                                   engine().telescope.pixel_axes,
-                                                                  engine().pointing_offsets_arcsec);
+                                                                  pointing_offsets_arcsec);
                 // check for min and max
                 if (lat.minCoeff() < det_lat_limits(j,0)) {
                     det_lat_limits(j,0) = lat.minCoeff();
