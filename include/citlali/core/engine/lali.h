@@ -161,7 +161,7 @@ auto Lali::run() {
 
             // run rtcproc
             SPDLOG_INFO("raw time chunk processing");
-            rtcproc.run(rtcdata_pol, ptcdata, telescope.pixel_axes, redu_type, calib, telescope, rtcdata.pointing_offsets_arcsec.data, det_indices,
+            rtcproc.run(rtcdata_pol, ptcdata, telescope.pixel_axes, redu_type, calib, telescope, rtcdata_pol.pointing_offsets_arcsec.data, det_indices,
                         array_indices, map_indices, omb.pixel_size_rad);
 
             // write rtc timestreams

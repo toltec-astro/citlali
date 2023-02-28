@@ -66,6 +66,10 @@ public:
             out.scan_indices.data = in.scan_indices.data;
             out.index.data = in.index.data;
 
+            out.pointing_offsets_arcsec.data = in.pointing_offsets_arcsec.data;
+
+            out.fcf = in.fcf;
+
             // loop through all detectors
             if (!sim_obs) {
                 Eigen::Index k = 0;
@@ -113,7 +117,6 @@ public:
                 else if (fg(i)==1 || fg(i)==3) {
                     q = -sin(2*(in.tel_data.data["ActParAng"].array() + in.tel_data.data["TelElAct"].array()))*polarized_scans_det.col(i).array();
                     u = cos(2*(in.tel_data.data["ActParAng"].array() + in.tel_data.data["TelElAct"].array()))*polarized_scans_det.col(i).array();
-
                 }
 
                 // check if hwp is requested
@@ -139,8 +142,6 @@ public:
 
             // set as chunk as demodulated
             out.demodulated = true;
-
-            out.fcf = in.fcf;
         }
 
         return indices_t(array_indices, nw_indices, det_indices);
