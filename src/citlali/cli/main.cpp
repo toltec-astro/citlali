@@ -423,6 +423,21 @@ int run(const rc_t &rc) {
                         todproc.engine().telescope.fsmp = rawobs_kids_meta.back().get_typed<double>("fsmp");
                     }
 
+                    // calculate downsampling factor
+                    if (todproc.engine().rtcproc.run_downsample) {
+                        if (todproc.engine().rtcproc.downsampler.factor <= 0) {
+                            if (todproc.engine().rtcproc.downsampler.downsampled_freq_Hz > todproc.engine().telescope.fsmp) {
+                                SPDLOG_ERROR("downsampled freq ({} Hz) must be less than sample rate ({} Hz)",
+                                             todproc.engine().rtcproc.downsampler.downsampled_freq_Hz,
+                                             todproc.engine().telescope.fsmp);
+                                return EXIT_FAILURE;
+                            }
+                            todproc.engine().rtcproc.downsampler.factor = std::floor(todproc.engine().telescope.fsmp /
+                                                                                     todproc.engine().rtcproc.downsampler.downsampled_freq_Hz);
+                            SPDLOG_INFO("factor {}",todproc.engine().rtcproc.downsampler.factor);
+                        }
+                    }
+
                     // get tone frequencies from raw files for flagging nearby tones
                     SPDLOG_DEBUG("getting tone frequencies");
                     todproc.get_tone_freqs_from_files(rawobs);

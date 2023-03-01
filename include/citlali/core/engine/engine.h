@@ -361,10 +361,14 @@ void Engine::get_rtc_config(CT &config) {
     }
 
     /* downsample */
-    get_config_value(config, rtcproc.run_downsample, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","downsample","enabled"});
+    get_config_value(config, rtcproc.run_downsample, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","downsample",
+                                                                                            "enabled"});
     if (rtcproc.run_downsample) {
         get_config_value(config, rtcproc.downsampler.factor, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","downsample",
                                                                                                     "factor"},{},{0});
+        get_config_value(config, rtcproc.downsampler.downsampled_freq_Hz, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk",
+                                                                                                                 "downsample",
+                                                                                                                 "downsampled_freq_Hz"});
     }
 
     /* calibration */

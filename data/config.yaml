@@ -172,7 +172,8 @@ timestream: # timestream reduction parameters
       window_size: 32 # number of samples to flag on either side of spike (ignored if TOD filtering)
     downsample: # downsample the data
       enabled: false # enable or disable downsampling
-      factor: 1 # downsample factor (integer only)
+      factor: 1 # downsample factor (integer only, ignored if <=0)
+      downsampled_freq_Hz: 0 # specify downsample frequency (used if factor<=0, must be <= raw sampling factor)
     filter: # tod filtering
       a_gibbs: 50.0 # Kaiser-Bessel filter shape param
       enabled: false # enable or disable tod filtering
