@@ -1499,6 +1499,10 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // add source
     fits_io->at(i).pfits->pHDU().addKey("SOURCE", telescope.source_name, "Source name");
 
+    // add date and time of obs
+    auto date_obs = engine_utils::unix_to_utc(telescope.tel_data["TelTime"](0));
+    fits_io->at(i).pfits->pHDU().addKey("DATE-OBS", date_obs, "Date and time of observation");
+
     // add source flux for beammaps
     if (redu_type == "beammap") {
         fits_io->at(i).pfits->pHDU().addKey("HEADER.SOURCE.FLUX_MJYPERBEAM", beammap_fluxes_mJy_beam[name], "Source flux (mJy/beam)");

@@ -27,8 +27,17 @@ static const std::string current_date_time() {
     struct tm  tstruct;
     char       buf[80];
     tstruct = *localtime(&now);
-    // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
-    // for more information about date/time format
+    strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+
+    return buf;
+}
+
+// convert unixt time to utc, format is YYYY-MM-DD.HH:mm:ss
+static const std::string unix_to_utc(double &t) {
+    time_t     now = t;
+    struct tm  tstruct;
+    char       buf[80];
+    tstruct = *localtime(&now);
     strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
 
     return buf;
