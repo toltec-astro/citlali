@@ -27,7 +27,6 @@ public:
             tx_ratio_coeff["a1100"] << -0.07645234,  0.32631179, -0.53526165,  0.41427551,  0.8445016;
             tx_ratio_coeff["a1400"] << 0.01602193, -0.06815535,  0.11116415, -0.08525746,  1.03135867;
             tx_ratio_coeff["a2000"] << 0.09942805, -0.42193151,  0.68537969, -0.52220652,  1.18925417;
-
         }
 
         // am_q50
@@ -83,7 +82,7 @@ auto Calibration::calc_tau(Eigen::DenseBase<Derived> &elev, double tau_225_GHz) 
     // David Tholen’s approximation for airmass
     //auto A = sqrt(235225.0*cz*cz + 970.0 + 1.0) - 485*cz;
 
-    auto secz = 1. / cos(cz);
+    auto secz = 1. / cz;
     auto A = secz * (1. - 0.0012 * (pow(secz.array(), 2) - 1.));
 
     // observed 225 GHz tau

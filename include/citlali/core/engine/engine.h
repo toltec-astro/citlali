@@ -15,6 +15,7 @@
 #include <kids/timestream/solver.h>
 #include <kids/toltec/toltec.h>
 #include <kidscpp_config/gitversion.h>
+#include <tula_config/gitversion.h>
 #include <tula/cli.h>
 #include <tula/config/core.h>
 #include <tula/config/flatconfig.h>
@@ -1534,6 +1535,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("VERSION", CITLALI_GIT_VERSION, "CITLALI_GIT_VERSION");
     // add kids version
     fits_io->at(i).pfits->pHDU().addKey("KIDS", KIDSCPP_GIT_VERSION, "KIDSCPP_GIT_VERSION");
+    // add kids version
+    fits_io->at(i).pfits->pHDU().addKey("TULA", TULA_GIT_VERSION, "TULA_GIT_VERSION");
     // add redu type
     fits_io->at(i).pfits->pHDU().addKey("GOAL", redu_type, "Reduction type");
     // add tod type
@@ -1584,7 +1587,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODFILTERED", rtcproc.run_tod_filter, "TOD Filtered");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.DOWNSAMPLED", rtcproc.run_downsample, "Downsampled");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CALIBRATED", rtcproc.run_calibrate, "Calibrated");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CALIBRATED.EXTMODEL", rtcproc.calibration.extinction_model, "Extinction model");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.EXTINCTION", rtcproc.run_extinction, "Extinction corrected");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.EXTINCTION.EXTMODEL", rtcproc.calibration.extinction_model, "Extinction model");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.TYPE", ptcproc.weighting_type, "Weighting scheme");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.WTLOW", ptcproc.lower_std_dev, "Lower weight cutoff");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.WTHIGH", ptcproc.upper_std_dev, "Upper weight cutoff");
