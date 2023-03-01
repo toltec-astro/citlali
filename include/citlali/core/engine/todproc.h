@@ -717,12 +717,12 @@ void TimeOrderedDataProc<EngineType>::interp_pointing() {
 
         // size of telescope data
         Eigen::Matrix<Eigen::Index,1,1> nd;
-        nd << n_offsets;;
+        nd << n_offsets;
 
         Eigen::VectorXd yi(ni);
 
         Eigen::VectorXd xd(n_offsets);
-        xd << engine().telescope.tel_data["TelTime"](0), ni-1;
+        xd << engine().telescope.tel_data["TelTime"](0), engine().telescope.tel_data["TelTime"](ni-1);
 
         // interpolate az offset onto time vector
         mlinterp::interp(nd.data(), ni, // nd, ni
