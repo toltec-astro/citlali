@@ -46,9 +46,9 @@ inputs: # list of inputs and related data
         type: photometry
       - pointing_offsets: # additional pointing offsets to apply
           - axes_name: az
-            value_arcsec: 0.0
+            value_arcsec: [0.0]
           - axes_name: alt
-            value_arcsec: 0.0
+            value_arcsec: [0.0]
         type: astrometry
       - filepath: /path/to/data/apt.ecsv # APT table (ignored for redu_type=beammap)
         meta:

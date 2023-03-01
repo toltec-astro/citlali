@@ -719,7 +719,7 @@ void TimeOrderedDataProc<EngineType>::interp_pointing() {
         Eigen::Matrix<Eigen::Index,1,1> nd;
         nd << n_offsets;;
 
-        Eigen::VectorXd yi;
+        Eigen::VectorXd yi(ni);
 
         Eigen::VectorXd xd(n_offsets);
         xd << engine().telescope.tel_data["TelTime"](0), ni-1;
