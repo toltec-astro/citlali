@@ -185,8 +185,10 @@ timestream: # timestream reduction parameters
       fwhm_arcsec: 0 # manually specify fwhm for gaussian/airy kernel (ignored if 0)
       image_ext_name: signal # extention name if FITS file
       type: gaussian # how to make kernel (gaussian, airy, fits)
-    calibration: # flux calibration
+    flux_calibration: # flux calibration
       enabled: false # enable or disable flux calibration (ignored for beammapping)
+    extinction_correction:
+      enabled: true
       extinction_model: am_q25 # model to use for tau calculation (am_q25, am_q50, am_q75)
     flagging: # controls flagging before cleaning
       delta_f_min_Hz: 60.e3 # lower limit on frequency separation for flagging tones

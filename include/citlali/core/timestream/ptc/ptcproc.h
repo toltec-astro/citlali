@@ -620,6 +620,12 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
                 NcVar tel_data_v = fo.getVar(x.first);
                 tel_data_v.putVar(start_index_tel, size_tel, x.second.row(i).data());
             }
+
+            // append pointing offsets
+            for (auto const& x: in.pointing_offsets_arcsec.data) {
+                NcVar offset_v = fo.getVar("pointing_offset_"+x.first);
+                offset_v.putVar(start_index_tel, size_tel, x.second.row(i).data());
+            }
         }
 
         // overwrite apt table

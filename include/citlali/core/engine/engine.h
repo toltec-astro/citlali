@@ -368,11 +368,14 @@ void Engine::get_rtc_config(CT &config) {
     }
 
     /* calibration */
-    get_config_value(config, rtcproc.run_calibrate, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","calibration",
+    get_config_value(config, rtcproc.run_calibrate, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","flux_calibration",
+                                                                                           "enabled"});
+    get_config_value(config, rtcproc.run_extinction, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","extinction_correction",
                                                                                            "enabled"});
     get_config_value(config, rtcproc.calibration.extinction_model, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk",
-                                                                                                          "calibration","extinction_model"},
-                                                                                                         {"am_q25","am_q50","am_q75"});
+                                                                                                          "extinction_correction",
+                                                                                                          "extinction_model"},
+                                                                                                         {"am_q25","am_q50","am_q75","null"});
     // setup atm model
     rtcproc.calibration.setup();
 }
@@ -1145,6 +1148,11 @@ void Engine::create_tod_files() {
         // add telescope parameters
         for (auto const& x: telescope.tel_data) {
             netCDF::NcVar tel_data_v = fo.addVar(x.first,netCDF::ncDouble, n_pts_dim);
+        }
+
+        // add telescope parameters
+        for (auto const& x: pointing_offsets_arcsec) {
+            netCDF::NcVar offsets_v = fo.addVar("pointing_offset_"+x.first,netCDF::ncDouble, n_pts_dim);
         }
 
         // weights

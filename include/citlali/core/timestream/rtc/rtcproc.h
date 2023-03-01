@@ -25,6 +25,7 @@ public:
     bool run_tod_filter;
     bool run_downsample;
     bool run_calibrate;
+    bool run_extinction;
 
     // rtc tod classes
     timestream::Polarization polarization;
@@ -199,7 +200,7 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
             downsampler.downsample(in_kernel, out.kernel.data);
         }
 
-        out.downsampled =true;
+        out.downsampled = true;
     }
 
     else {
@@ -220,16 +221,23 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         out.pointing_offsets_arcsec.data = in.pointing_offsets_arcsec.data;
     }
 
+    out.fcf.data = in.fcf.data;
+
     if (run_calibrate) {
-        out.fcf.data = in.fcf.data;
         if (!run_polarization) {
             SPDLOG_DEBUG("calibrating timestream");
-            //calc tau at toltec frequencies
-            auto tau_freq = calibration.calc_tau(out.tel_data.data["TelElAct"], telescope.tau_225_GHz);
             // calibrate tod
-            calibration.calibrate_tod(out, det_indices, array_indices, calib, tau_freq);
+            calibration.calibrate_tod(out, det_indices, array_indices, calib);
 
             out.calibrated = true;
+        }
+    }
+
+    if (run_extinction) {
+        if (!run_polarization) {
+            //calc tau at toltec frequencies
+            auto tau_freq = calibration.calc_tau(out.tel_data.data["TelElAct"], telescope.tau_225_GHz);
+            calibration.extinction_correction(out, det_indices, array_indices, calib, tau_freq);
         }
     }
 

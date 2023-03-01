@@ -23,7 +23,7 @@ public:
         tx_ratio_coeff["a2000"].resize(5);
 
         // am_q25
-        if (extinction_model == "am_q25") {
+        if (extinction_model=="am_q25") {
             tx_ratio_coeff["a1100"] << -0.07645234,  0.32631179, -0.53526165,  0.41427551,  0.8445016;
             tx_ratio_coeff["a1400"] << 0.01602193, -0.06815535,  0.11116415, -0.08525746,  1.03135867;
             tx_ratio_coeff["a2000"] << 0.09942805, -0.42193151,  0.68537969, -0.52220652,  1.18925417;
@@ -31,17 +31,23 @@ public:
         }
 
         // am_q50
-        else if (extinction_model == "am_q50") {
+        else if (extinction_model=="am_q50") {
             tx_ratio_coeff["a1100"] << -0.12248821,  0.52388237, -0.86235963,  0.67117711,  0.74494326;
             tx_ratio_coeff["a1400"] << 0.02615391, -0.11122017,  0.18130761, -0.13893473,  1.05100321;
             tx_ratio_coeff["a2000"] << 0.20312343, -0.85983102,  1.39084759, -1.05255297,  1.3756457;
         }
 
         // am_q75
-        else if (extinction_model == "am_q75") {
+        else if (extinction_model=="am_q75") {
             tx_ratio_coeff["a1100"] << -0.19311728,  0.82931153, -1.37452105,  1.08148198,  0.57913582;
             tx_ratio_coeff["a1400"] << 0.04588952, -0.19502626,  0.31759789, -0.24297199,  1.08886782;
             tx_ratio_coeff["a2000"] << 0.43837991, -1.84767188,  2.96708103, -2.21900446,  1.77085296;
+        }
+
+        else if (extinction_model=="null") {
+            tx_ratio_coeff["a1100"].setZero();
+            tx_ratio_coeff["a1400"].setZero();
+            tx_ratio_coeff["a2000"].setZero();
         }
     }
 
@@ -56,8 +62,12 @@ public:
     template <typename Derived>
     auto calc_tau(Eigen::DenseBase<Derived> &, double);
 
-    template <TCDataKind tcdata_kind, typename Derived, class calib_t, typename tau_t>
+    template <TCDataKind tcdata_kind, typename Derived, class calib_t>
     void calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &, Eigen::DenseBase<Derived> &,
+                       Eigen::DenseBase<Derived> &, calib_t &);
+
+    template <TCDataKind tcdata_kind, typename Derived, class calib_t, typename tau_t>
+    void extinction_correction(TCData<tcdata_kind, Eigen::MatrixXd> &, Eigen::DenseBase<Derived> &,
                        Eigen::DenseBase<Derived> &, calib_t &, tau_t &);
 };
 
@@ -97,9 +107,9 @@ auto Calibration::calc_tau(Eigen::DenseBase<Derived> &elev, double tau_225_GHz) 
     return tau_freq;
 }
 
-template <TCDataKind tcdata_kind, typename Derived, class calib_t, typename tau_t>
+template <TCDataKind tcdata_kind, typename Derived, class calib_t>
 void Calibration::calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &in, Eigen::DenseBase<Derived> &det_indices,
-                                Eigen::DenseBase<Derived> &array_indices, calib_t &calib, tau_t &tau_freq) {
+                                Eigen::DenseBase<Derived> &array_indices, calib_t &calib) {
 
     // resize fcf
     in.fcf.data.resize(in.scans.data.cols());
@@ -112,13 +122,35 @@ void Calibration::calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &in, Eigen:
         Eigen::Index array_index = array_indices(i);
 
         // factor = flux conversion factor / exp(-tau_freq)
-        auto factor = calib.flux_conversion_factor(array_index)/(-tau_freq[array_index]).array().exp();
+        auto factor = calib.flux_conversion_factor(array_index);///(-tau_freq[array_index]).array().exp();
 
         // flux calibration factor for sens
-        in.fcf.data(i) = factor.mean()*calib.apt["flxscale"](det_index);
+        in.fcf.data(i) = factor*calib.apt["flxscale"](det_index);
 
         // data x flxscale x factor
-        in.scans.data.col(i) = in.scans.data.col(i).array()*factor.array()*calib.apt["flxscale"](det_index);
+        in.scans.data.col(i) = in.scans.data.col(i).array()*in.fcf.data(i);
+    }
+}
+
+template <TCDataKind tcdata_kind, typename Derived, class calib_t, typename tau_t>
+void Calibration::extinction_correction(TCData<tcdata_kind, Eigen::MatrixXd> &in, Eigen::DenseBase<Derived> &det_indices,
+                                Eigen::DenseBase<Derived> &array_indices, calib_t &calib, tau_t &tau_freq) {
+
+    // loop through detectors
+    for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
+        // current detector index in apt table
+        Eigen::Index det_index = det_indices(i);
+        // current array index in apt table
+        Eigen::Index array_index = array_indices(i);
+
+        // factor = 1 / exp(-tau_freq)
+        auto factor = 1/(-tau_freq[array_index]).array().exp();
+
+        // apply extinction correction to fcf
+        in.fcf.data(i) = (in.fcf.data(i)*factor).mean();
+
+        // data x factor
+        in.scans.data.col(i) = in.scans.data.col(i).array()*factor.array();
     }
 }
 
