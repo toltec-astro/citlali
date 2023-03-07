@@ -68,7 +68,6 @@ void Filter::make_filter(double fsmp) {
     // generate time array
     Eigen::VectorXd t(n_terms);
     t.setLinSpaced(n_terms, 1, n_terms);
-
     t = t*pi;
 
     // multiply coefficients by time array trig functions
