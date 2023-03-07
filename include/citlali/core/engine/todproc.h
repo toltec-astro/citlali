@@ -815,10 +815,11 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
 
             else if ((stokes_param == "Q") || (stokes_param == "U")) {
                 if (!engine().telescope.sim_obs) {
-                    n_dets = (engine().calib.apt["loc"].array()!=-1).count()/2;
+                    //n_dets = (engine().calib.apt["loc"].array()!=-1).count()/2;
+                    n_dets = (engine().calib.apt["loc"].array()!=-1).count();
                 }
                 else {
-                    n_dets = (engine().calib.apt["fg"].array() == 0).count() + (engine().calib.apt["fg"].array() == 1).count();
+                    n_dets = (engine().calib.apt["fg"].array()==0).count() + (engine().calib.apt["fg"].array()==1).count();
                 }
                 Eigen::Index j=0;
                 // loop through all detectors

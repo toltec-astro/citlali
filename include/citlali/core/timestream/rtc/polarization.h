@@ -11,10 +11,26 @@ class Polarization {
 public:
     using indices_t = std::tuple<Eigen::VectorXI, Eigen::VectorXI, Eigen::VectorXI>;
 
+    // stokes parameters
     std::map<int,std::string> stokes_params = {
         {0,"I"},
         {1,"Q"},
         {2,"U"}
+    };
+
+    // toltec array mounting angle
+    std::map<int, double> install_ang = {
+        {0,pi/2},
+        {1,-pi/2},
+        {2,-pi/2},
+    };
+
+    // toltec detector orientation angles
+    std::map<int, double> fgs = {
+        {0,0},
+        {1,pi/4},
+        {2,pi/2},
+        {3,3*pi/4}
     };
 
     template<TCDataKind td_kind, class calib_type>
@@ -46,7 +62,6 @@ public:
             else {
                 n_dets = (calib.apt["fg"].array() == 0).count() + (calib.apt["fg"].array() == 1).count();
             }
-            SPDLOG_INFO("pol ndets {}", n_dets);
 
             // q and u in the detector frame
             Eigen::MatrixXd polarized_scans_det(n_pts, n_dets);
@@ -107,25 +122,34 @@ public:
 
             // now loop through polarized detector pairs
             for (Eigen::Index i=0; i<n_dets; i++) {
+
+                auto mnt_ang = install_ang[array_indices(i)];
+
                 // rotate q and u by parallactic angle and elevation for q pairs
                 if (fg(i)==0 || fg(i)==2) {
-                    q = cos(2*(in.tel_data.data["ActParAng"].array() + in.tel_data.data["TelElAct"].array()))*polarized_scans_det.col(i).array();
-                    u = sin(2*(in.tel_data.data["ActParAng"].array() + in.tel_data.data["TelElAct"].array()))*polarized_scans_det.col(i).array();
+                    q = cos(2*(in.tel_data.data["ActParAng"].array() +
+                                 in.tel_data.data["TelElAct"].array() + mnt_ang))*polarized_scans_det.col(i).array();
+                    u = sin(2*(in.tel_data.data["ActParAng"].array() +
+                                 in.tel_data.data["TelElAct"].array() + mnt_ang))*polarized_scans_det.col(i).array();
                 }
 
                 // rotate q and u by parallactic angle and elevation for u pairs
                 else if (fg(i)==1 || fg(i)==3) {
-                    q = -sin(2*(in.tel_data.data["ActParAng"].array() + in.tel_data.data["TelElAct"].array()))*polarized_scans_det.col(i).array();
-                    u = cos(2*(in.tel_data.data["ActParAng"].array() + in.tel_data.data["TelElAct"].array()))*polarized_scans_det.col(i).array();
+                    q = -sin(2*(in.tel_data.data["ActParAng"].array() +
+                                  in.tel_data.data["TelElAct"].array() + mnt_ang))*polarized_scans_det.col(i).array();
+                    u = cos(2*(in.tel_data.data["ActParAng"].array() +
+                                 in.tel_data.data["TelElAct"].array() + mnt_ang))*polarized_scans_det.col(i).array();
                 }
 
                 // check if hwp is requested
                 if (calib.run_hwp) {
                     if (stokes_param == "Q") {
-                        out.scans.data.col(i) = q.array()*cos(4*in.hwp_angle.data.array()) + u.array()*sin(4*in.hwp_angle.data.array());
+                        out.scans.data.col(i) = q.array()*cos(4*in.hwp_angle.data.array()) +
+                                                u.array()*sin(4*in.hwp_angle.data.array());
                     }
                     else if (stokes_param == "U") {
-                        out.scans.data.col(i) = (q.array()*sin(4*in.hwp_angle.data.array()) - u.array()*cos(4*in.hwp_angle.data.array()));
+                        out.scans.data.col(i) = (q.array()*sin(4*in.hwp_angle.data.array()) -
+                                                 u.array()*cos(4*in.hwp_angle.data.array()));
                     }
                 }
 

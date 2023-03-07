@@ -131,7 +131,7 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     // make copy of flags
     Eigen::MatrixXd f = flags.derived().template cast<double> ();
 
-    // zero out flagged detectors in apt table (used for per scan beammap)
+    // zero out flagged detectors in apt table (used for per scan beammap flags)
     for (Eigen::Index i=0; i<n_dets; i++) {
         if (apt_flags.derived()(i) == 0) {
             f.col(i).setZero();
@@ -244,7 +244,6 @@ auto Cleaner::remove_eig_values(const Eigen::DenseBase<DerivedA> &scans, const E
     }
 
     SPDLOG_DEBUG("removing {} largest eigenvalues", limit_index);
-
 
     // subtract out the desired eigenvectors
     Eigen::MatrixXd proj = scans.derived() * evecs.derived().leftCols(limit_index);

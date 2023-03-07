@@ -41,7 +41,7 @@
 
 #include <citlali/core/timestream/timestream.h>
 
-#include <citlali/core/timestream/rtc/polarization.h>
+#include <citlali/core/timestream/rtc/polarization_2.h>
 #include <citlali/core/timestream/rtc/kernel.h>
 #include <citlali/core/timestream/rtc/despike.h>
 #include <citlali/core/timestream/rtc/filter.h>
@@ -145,6 +145,9 @@ struct beammapControls {
 class Engine: public reduControls, public reduClasses, public beammapControls {
 public:
     using key_vec_t = std::vector<std::vector<std::string>>;
+
+    // date/time of each obs
+    std::vector<std::string> date_obs;
 
     // add extra output for debugging
     bool verbose_mode;
@@ -1082,7 +1085,9 @@ void Engine::create_tod_files() {
         // set number of detectors for polarized timestreams
         else if ((stokes_param == "Q") || (stokes_param == "U")) {
             if (!telescope.sim_obs) {
-            n_dets = (calib.apt["loc"].array()!=-1).count()/2;
+            //n_dets = (calib.apt["loc"].array()!=-1).count()/2;
+            n_dets = (calib.apt["loc"].array()!=-1).count();
+
             }
             else {
                 n_dets = (calib.apt["fg"].array() == 0).count() + (calib.apt["fg"].array() == 1).count();
@@ -1497,12 +1502,18 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         fits_io->at(i).pfits->pHDU().addKey("OBSNUM"+std::to_string(j), mb->obsnums.at(j), "Observation Number " + std::to_string(j));
     }
 
+    // add date and time of obs
+    if (mb->obsnums.size()==1) {
+        fits_io->at(i).pfits->pHDU().addKey("DATEOBS0", date_obs.back(), "Date and time of observation 0");
+    }
+    else {
+        for (Eigen::Index j=0; j<mb->obsnums.size(); j++) {
+            fits_io->at(i).pfits->pHDU().addKey("DATEOBS"+std::to_string(j), date_obs[j], "Date and time of observation "+std::to_string(j));
+        }
+    }
+
     // add source
     fits_io->at(i).pfits->pHDU().addKey("SOURCE", telescope.source_name, "Source name");
-
-    // add date and time of obs
-    auto date_obs = engine_utils::unix_to_utc(telescope.tel_data["TelTime"](0));
-    fits_io->at(i).pfits->pHDU().addKey("DATE-OBS", date_obs, "Date and time of observation");
 
     // add source flux for beammaps
     if (redu_type == "beammap") {

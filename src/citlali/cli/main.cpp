@@ -564,6 +564,8 @@ int run(const rc_t &rc) {
                         todproc.interp_pointing();
                     }
 
+                    todproc.engine().date_obs.push_back(engine_utils::unix_to_utc(todproc.engine().telescope.tel_data["TelTime"](0)));
+
                     // warning for gaps in data
                     if (todproc.engine().gaps.size() > 0) {
                         SPDLOG_WARN("gaps found in obnsum {} data file timing!", todproc.engine().obsnum);
