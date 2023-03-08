@@ -738,4 +738,3 @@ int main(int argc, char *argv[]) {
         std::cout << "Invalid argument. Type --help for usage.\n";
     }
 }
-

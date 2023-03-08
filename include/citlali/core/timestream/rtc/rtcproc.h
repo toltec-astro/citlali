@@ -236,7 +236,7 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
 
     if (run_extinction) {
         if (!run_polarization) {
-            //calc tau at toltec frequencies
+            // calc tau at toltec frequencies
             auto tau_freq = calibration.calc_tau(out.tel_data.data["TelElAct"], telescope.tau_225_GHz);
             calibration.extinction_correction(out, det_indices, array_indices, calib, tau_freq);
         }

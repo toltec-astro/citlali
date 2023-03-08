@@ -221,6 +221,10 @@ void Beammap::setup() {
     calib.apt_meta["ori"].push_back("units: N/A");
     calib.apt_meta["ori"].push_back("orientation");
 
+    // detector location
+    calib.apt_meta["loc"].push_back("units: N/A");
+    calib.apt_meta["loc"].push_back("location");
+
     // detector responsivity
     calib.apt_meta["responsivity"].push_back("units: N/A");
     calib.apt_meta["responsivity"].push_back("responsivity");

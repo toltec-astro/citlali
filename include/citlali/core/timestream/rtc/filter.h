@@ -34,7 +34,7 @@ void Filter::make_filter(double fsmp) {
 
     // check if upper frequency limit (lowpass)
     // is larger than lower frequency limit (highpass)
-    double f_stop = (f_high < f_low) ? 1. : 0.;
+    double f_stop = (f_high < f_low) ? 0. : 1.;
 
     // determine alpha parameter based on Gibbs factor
     double alpha;
@@ -82,7 +82,7 @@ void Filter::make_filter(double fsmp) {
 
     // normalize with sum
     double filter_sum = filter.sum();
-    filter = filter.derived().array() / filter_sum;
+    filter = filter.array() / filter_sum;
 }
 
 template <typename Derived>
@@ -96,7 +96,7 @@ void Filter::convolve(Eigen::DenseBase<Derived> &in) {
                                                          in.rows(), in.cols());
     Eigen::TensorMap<Eigen::Tensor<double, 1>> filter_tensor(filter.data(),
                                                              filter.size());
-    // make output tensor
+    // convolve
     Eigen::Tensor<double, 2> out_tensor(
         in_tensor.dimension(0) - filter_tensor.dimension(0) + 1, in.cols());
 

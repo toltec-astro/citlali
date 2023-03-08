@@ -63,7 +63,6 @@ public:
 
             // q and u in the detector frame
             Eigen::MatrixXd polarized_scans(n_pts, n_dets);
-            //Eigen::MatrixXd polarized_kernel(n_pts, n_dets);
 
             // frequency group
             Eigen::VectorXd fg(n_dets);
