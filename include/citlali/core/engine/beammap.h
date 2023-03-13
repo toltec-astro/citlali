@@ -378,6 +378,8 @@ auto Beammap::run_timestream() {
         // create PTCData
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;
 
+        rtcdata.fcf.data.setOnes(rtcdata.scans.data.cols());
+
         // loop through polarizations
         for (const auto &[stokes_index,stokes_param]: rtcproc.polarization.stokes_params) {
             SPDLOG_INFO("starting scan {}. {}/{} scans completed", rtcdata.index.data + 1, n_scans_done, telescope.scan_indices.cols());

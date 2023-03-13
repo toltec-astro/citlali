@@ -662,7 +662,7 @@ void Engine::get_citlali_config(CT &config) {
             "toltec10",
             "toltec11",
             "toltec12",
-            "hwp"
+            "hwpr"
         };
 
         for (Eigen::Index i=0; i<interface_node.size(); i++) {
