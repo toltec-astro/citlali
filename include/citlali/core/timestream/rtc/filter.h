@@ -34,7 +34,7 @@ void Filter::make_filter(double fsmp) {
 
     // check if upper frequency limit (lowpass)
     // is larger than lower frequency limit (highpass)
-    double f_stop = (f_high < f_low) ? 0. : 1.;
+    double f_stop = (f_high < f_low) ? 1. : 0.;
 
     // determine alpha parameter based on Gibbs factor
     double alpha;
@@ -75,9 +75,9 @@ void Filter::make_filter(double fsmp) {
            t.array();
 
     // populate the filter vector
-    filter.setZero(2 * n_terms + 1);
+    filter.setZero(2*n_terms + 1);
     filter.head(n_terms) = coef.reverse();
-    filter(n_terms) = f_stop;
+    filter(n_terms) = f_high - f_low - f_stop;
     filter.tail(n_terms) = coef;
 
     // normalize with sum

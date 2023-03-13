@@ -323,7 +323,7 @@ struct RawObs : ConfigMapper<RawObs> {
 private:
     inline const static std::regex re_interface_kidsdata{"toltec\\d{1,2}"};
     inline const static std::regex re_interface_teldata{"lmt"};
-    inline const static std::regex re_interface_hwpdata{"hwp"};
+    inline const static std::regex re_interface_hwpdata{"hwpr"};
 
     std::string m_name;
     std::vector<DataItem> m_data_items{};
