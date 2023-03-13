@@ -57,7 +57,7 @@ inputs: # list of inputs and related data
     data_items:
       - filepath: /path/to/data/raw/hwp.nc # half-wave plate file
         meta:
-          interface: hwp
+          interface: hwpr
       - filepath: /path/to/data/raw/tel.nc # telescope file
         meta:
           interface: lmt
