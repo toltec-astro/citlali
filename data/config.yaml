@@ -116,7 +116,7 @@ interface_sync_offset: # manual timing offsets for each nw/hwp (in seconds)
   - toltec10: 0
   - toltec11: 0
   - toltec12: 0
-  - hwp: 0
+  - hwpr: 0
 kids: # kids fitting parameters
   fitter:
     modelspec: gainlintrend
@@ -193,8 +193,8 @@ timestream: # timestream reduction parameters
       extinction_model: am_q25 # model to use for tau calculation (am_q25, am_q50, am_q75)
     flagging: # controls flagging before cleaning
       delta_f_min_Hz: 60.e3 # lower limit on frequency separation for flagging tones
-      lower_weight_factor: 0.0 # flag detectors below this stddev limit (ignored if 0, weight=1/variance of TOD)
-      upper_weight_factor: 0.0 # flag detectors above this stddev limit (ignored if 0, weight=1/variance of TOD)
+      lower_weight_factor: 0.0 # flag detectors below this weight limit (ignored if 0, weight=1/variance of TOD)
+      upper_weight_factor: 0.0 # flag detectors above this weight limit (ignored if 0, weight=1/variance of TOD)
     output:
       enabled: false # enable or disable rtc TOD output
   processed_time_chunk:
