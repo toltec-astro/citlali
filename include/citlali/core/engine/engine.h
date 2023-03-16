@@ -1554,6 +1554,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("TYPE", tod_type, "TOD Type");
     // add map grouping
     fits_io->at(i).pfits->pHDU().addKey("GROUPING", map_grouping, "Map grouping");
+    // add map grouping
+    fits_io->at(i).pfits->pHDU().addKey("METHOD", map_method, "Map method");
     // add exposure time
     fits_io->at(i).pfits->pHDU().addKey("EXPTIME", mb->exposure_time, "Exposure time (sec)");
     // add pixel axes
