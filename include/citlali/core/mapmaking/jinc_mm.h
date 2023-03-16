@@ -107,7 +107,7 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 cmb_icol = lon.array()/cmb.pixel_size_rad + (cmb.n_cols)/2.;
             }
 
-            double r_max_pix = r_max*l_d[map_index]/omb.pixel_size_rad;
+            double r_max_pix = r_max*l_d[apt["array"](det_indices(i))]/omb.pixel_size_rad;
 
             // loop through the samples
             for (Eigen::Index j=0; j<n_pts; j++) {
@@ -159,7 +159,7 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 
                                     // populate coverage map
                                     if (!omb.coverage.empty()) {
-                                        omb.coverage[map_index](r,c) += 1./d_fsmp*jinc_weight;
+                                        omb.coverage[map_index](r,c) += (jinc_weight/d_fsmp);
                                     }
                                 }
                             }

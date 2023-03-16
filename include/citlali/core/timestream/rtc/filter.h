@@ -19,6 +19,7 @@ public:
     Eigen::Index n_terms;
 
     void make_filter(double);
+    void make_notch_filter();
 
     template <typename Derived>
     void convolve(Eigen::DenseBase<Derived> &);
@@ -83,6 +84,10 @@ void Filter::make_filter(double fsmp) {
     // normalize with sum
     double filter_sum = filter.sum();
     filter = filter.array() / filter_sum;
+}
+
+void Filter::make_notch_filter() {
+
 }
 
 template <typename Derived>
