@@ -190,6 +190,14 @@ void Beammap::setup() {
     // add source name
     calib.apt_meta["Source"] = telescope.source_name;
 
+    // add input source flux
+    for (const auto &beammap_flux: beammap_fluxes_mJy_beam) {
+        auto key = beammap_flux.first + "_flux";
+        calib.apt_meta[key].push_back(beammap_flux.second);
+        calib.apt_meta[key].push_back("units: mJy/beam");
+        calib.apt_meta[key].push_back(beammap_flux.first + " flux density");
+    }
+
     // add date
     calib.apt_meta["Date"] = engine_utils::current_date_time();
 
@@ -967,9 +975,10 @@ void Beammap::adjust_apt() {
 
             Eigen::VectorXd dist = pow(x_t.array(),2) + pow(y_t.array(),2);
 
-            // index of detector closest to median
+            // index of detector closest to zero
             auto min_dist = dist.minCoeff(&beammap_reference_det);
 
+            // get row in apt table
             beammap_reference_det = det_indices(beammap_reference_det);
 
             // set reference x_t and y_t

@@ -1046,7 +1046,7 @@ void Engine::create_tod_files() {
         // add tod output type to file
         netCDF::NcDim n_tod_output_type_dim = fo.addDim("n_tod_output_type",1);
         netCDF::NcVar tod_output_type_var = fo.addVar("tod_output_type",netCDF::ncString, n_tod_output_type_dim);
-        const std::vector< size_t > tod_output_type_index = {0};
+        const std::vector<size_t> tod_output_type_index = {0};
 
         if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {
             std::string tod_output_type_name = "rtc";
@@ -1059,15 +1059,18 @@ void Engine::create_tod_files() {
 
         // add obsnum
         netCDF::NcVar obsnum_v = fo.addVar("obsnum",netCDF::ncInt);
+        obsnum_v.putAtt("units","N/A");
         int obsnum_int = std::stoi(obsnum);
         obsnum_v.putVar(&obsnum_int);
 
         // add source ra
         netCDF::NcVar source_ra_v = fo.addVar("SourceRa",netCDF::ncDouble);
+        source_ra_v.putAtt("units","rad");
         source_ra_v.putVar(&telescope.tel_header["Header.Source.Ra"](0));
 
         // add source dec
         netCDF::NcVar source_dec_v = fo.addVar("SourceDec",netCDF::ncDouble);
+        source_dec_v.putAtt("units","rad");
         source_dec_v.putVar(&telescope.tel_header["Header.Source.Dec"](0));
 
         netCDF::NcDim n_pts_dim = fo.addDim("n_pts");
@@ -1102,14 +1105,18 @@ void Engine::create_tod_files() {
 
         // raw file scan indices
         netCDF::NcVar raw_scan_indices_v = fo.addVar("raw_scan_indices",netCDF::ncInt, raw_scans_dims);
+        raw_scan_indices_v.putAtt("units","N/A");
         //Eigen::MatrixXI scans_indices_transposed = telescope.scan_indices;
         raw_scan_indices_v.putVar(telescope.scan_indices.data());
 
         // scan indices for data
         netCDF::NcVar scan_indices_v = fo.addVar("scan_indices",netCDF::ncInt, scans_dims);
+        scan_indices_v.putAtt("units","N/A");
 
         // signal
         netCDF::NcVar signal_v = fo.addVar("signal",netCDF::ncDouble, dims);
+        signal_v.putAtt("units",omb.sig_unit);
+
         // chunk sizes
         std::vector<std::size_t> chunkSizes;
         // set chunk mode
@@ -1124,51 +1131,63 @@ void Engine::create_tod_files() {
 
         // flags
         netCDF::NcVar flags_v = fo.addVar("flags",netCDF::ncDouble, dims);
+        flags_v.putAtt("units","N/A");
         flags_v.setChunking(chunkMode, chunkSizes);
         // kernel
         if (rtcproc.run_kernel) {
             netCDF::NcVar kernel_v = fo.addVar("kernel",netCDF::ncDouble, dims);
+            kernel_v.putAtt("units","N/A");
             kernel_v.setChunking(chunkMode, chunkSizes);
         }
 
         // detector lat
         netCDF::NcVar det_lat_v = fo.addVar("det_lat",netCDF::ncDouble, dims);
+        det_lat_v.putAtt("units","rad");
         det_lat_v.setChunking(chunkMode, chunkSizes);
 
         // detector lon
         netCDF::NcVar det_lon_v = fo.addVar("det_lon",netCDF::ncDouble, dims);
+        det_lon_v.putAtt("units","rad");
         det_lon_v.setChunking(chunkMode, chunkSizes);
 
         // calc absolute pointing if in icrs frame
         if (telescope.pixel_axes == "icrs") {
             // detector absolute ra
             netCDF::NcVar det_ra_v = fo.addVar("det_ra",netCDF::ncDouble, dims);
+            det_ra_v.putAtt("units","rad");
             det_ra_v.setChunking(chunkMode, chunkSizes);
 
             // detector absolute dec
             netCDF::NcVar det_dec_v = fo.addVar("det_dec",netCDF::ncDouble, dims);
+            det_dec_v.putAtt("units","rad");
             det_dec_v.setChunking(chunkMode, chunkSizes);
         }
 
         // add apt table
         for (auto const& x: calib.apt) {
             netCDF::NcVar apt_v = fo.addVar("apt_" + x.first,netCDF::ncDouble, n_dets_dim);
+            apt_v.putAtt("units",calib.apt_header_units[x.first]);
         }
 
         // add telescope parameters
         for (auto const& x: telescope.tel_data) {
             netCDF::NcVar tel_data_v = fo.addVar(x.first,netCDF::ncDouble, n_pts_dim);
+            tel_data_v.putAtt("units","rad");
+            tel_data_v.setChunking(chunkMode, chunkSizes);
         }
 
         // add telescope parameters
         for (auto const& x: pointing_offsets_arcsec) {
             netCDF::NcVar offsets_v = fo.addVar("pointing_offset_"+x.first,netCDF::ncDouble, n_pts_dim);
+            offsets_v.putAtt("units","arcsec");
+            offsets_v.setChunking(chunkMode, chunkSizes);
         }
 
         // weights
         if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
             std::vector<netCDF::NcDim> weight_dims = {n_scans_dim, n_dets_dim};
             netCDF::NcVar weights_v = fo.addVar("weights",netCDF::ncDouble, weight_dims);
+            weights_v.putAtt("units","("+omb.sig_unit+")^-2");
         }
 
         fo.close();
