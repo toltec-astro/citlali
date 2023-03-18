@@ -757,6 +757,7 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
     std::map<Eigen::Index, double> nw_median_sens;
 
     // calc median sens from unflagged detectors for each nw
+    SPDLOG_DEBUG("calculating mean sensitivities");
     for (Eigen::Index i=0; i<calib.n_nws; i++) {
         Eigen::Index nw = calib.nws(i);
 
@@ -785,6 +786,7 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
     }
 
     // flag too low/high sensitivies based on the median unflagged sensitivity of each nw
+    SPDLOG_DEBUG("flagging sensitivities");
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
         // get array of current detector
         auto array_index = array_indices(i);
@@ -811,6 +813,7 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
     std::map<std::string, double> array_median_x_t, array_median_y_t;
 
     // calc median x_t and y_t values from unflagged detectors for each arrays
+    SPDLOG_DEBUG("calculating array median positions");
     for (Eigen::Index i=0; i<calib.n_arrays; i++) {
         Eigen::Index array = calib.arrays(i);
         std::string array_name = toltec_io.array_name_map[array];
@@ -848,6 +851,7 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
     }
 
     // remove detectors above distance limits
+    SPDLOG_DEBUG("flagging detector positions");
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
         // get array of current detector
         auto array_index = array_indices(i);
@@ -870,7 +874,12 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
         return 0;
     });
 
+
+    // print number of flagged detectors
+    SPDLOG_INFO("{} detectors were flagged", n_flagged_dets);
+
     // calculate fcf
+    SPDLOG_DEBUG("calculating flux conversion factors");
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
         // get array of current detector
         auto array_index = array_indices(i);
@@ -890,9 +899,6 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
 
         return 0;
     });
-
-    // print number of flagged detectors
-    SPDLOG_INFO("{} detectors were flagged", n_flagged_dets);
 
     // get average fwhms and beam areas
     calib.setup();
@@ -1118,14 +1124,16 @@ auto Beammap::loop_pipeline() {
                 auto vars = fo.getVars();
                 // overwrite apt table
                 for (auto const& x: calib.apt) {
-                    // start index for apt table
-                    std::vector<std::size_t> start_index_apt = {0};
-                    // size for apt
-                    std::vector<std::size_t> size_apt = {1};
-                    netCDF::NcVar apt_v = fo.getVar("apt_" + x.first);
-                    for (std::size_t i=0; i< TULA_SIZET(calib.n_dets); ++i) {
-                        start_index_apt[0] = i;
-                        apt_v.putVar(start_index_apt, size_apt, &calib.apt[x.first](det_indices(i)));
+                    if (x.first!="flag2") {
+                        // start index for apt table
+                        std::vector<std::size_t> start_index_apt = {0};
+                        // size for apt
+                        std::vector<std::size_t> size_apt = {1};
+                        netCDF::NcVar apt_v = fo.getVar("apt_" + x.first);
+                        for (std::size_t i=0; i< TULA_SIZET(calib.n_dets); ++i) {
+                            start_index_apt[0] = i;
+                            apt_v.putVar(start_index_apt, size_apt, &calib.apt[x.first](det_indices(i)));
+                        }
                     }
                 }
 
