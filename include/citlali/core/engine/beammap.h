@@ -774,9 +774,9 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
         // remove flagged dets
         Eigen::Index j = std::get<0>(calib.nw_limits[nw]);
         Eigen::Index k = 0;
-        for (Eigen::Index i=0; i<sens.size(); i++) {
+        for (Eigen::Index m=0; m<sens.size(); m++) {
             if (calib.apt["flag"](j)) {
-                sens(k) = nw_sens(i);
+                sens(k) = nw_sens(m);
                 k++;
             }
             j++;
@@ -837,10 +837,10 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
         // remove flagged dets
         Eigen::Index j = std::get<0>(calib.array_limits[array]);
         Eigen::Index k = 0;
-        for (Eigen::Index i=0; i<array_x_t.size(); i++) {
+        for (Eigen::Index m=0; m<array_x_t.size(); m++) {
             if (calib.apt["flag"](j)) {
-                x_t(k) = array_x_t(i);
-                y_t(k) = array_y_t(i);
+                x_t(k) = array_x_t(m);
+                y_t(k) = array_y_t(m);
                 k++;
             }
             j++;
