@@ -738,6 +738,7 @@ void Engine::get_citlali_config(CT &config) {
     }
     get_config_value(config, telescope.time_chunk, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "length_sec"});
     get_config_value(config, telescope.force_chunk, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "force_chunking"});
+    get_config_value(config, telescope.velocity_limit, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "turnaround_samples_to_cut"});
 
     /* rtc */
     get_rtc_config(config);
@@ -1560,7 +1561,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // add telescope
     fits_io->at(i).pfits->pHDU().addKey("TELESCOP", "LMT", "Telescope");
     // add wavelength
-    fits_io->at(i).pfits->pHDU().addKey("WAV", name, "wavelength");
+    fits_io->at(i).pfits->pHDU().addKey("WAV", name, "Wavelength");
     // add citlali version
     fits_io->at(i).pfits->pHDU().addKey("VERSION", CITLALI_GIT_VERSION, "CITLALI_GIT_VERSION");
     // add kids version
@@ -1672,6 +1673,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         fits_io->at(map_index).add_hdu("kernel_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->kernel[i]);
         fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs);
         fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
+        fits_io->at(map_index).hdus.back()->addKey("TYPE",rtcproc.kernel.type, "Kernel type");
     }
 
     // coverage map

@@ -932,9 +932,6 @@ void Beammap::adjust_apt() {
             // set reference x_t and y_t
             ref_det_x_t = calib.apt["x_t"](beammap_reference_det);
             ref_det_y_t = calib.apt["y_t"](beammap_reference_det);
-
-            SPDLOG_INFO("using detector {} at ({},{}) arcsec",beammap_reference_det,
-                        ref_det_x_t,ref_det_y_t);
         }
         // else use closest to (0,0) in a1100 (or map 0 if a1100 is missing)
         else {
@@ -984,10 +981,9 @@ void Beammap::adjust_apt() {
             // set reference x_t and y_t
             ref_det_x_t = calib.apt["x_t"](beammap_reference_det);
             ref_det_y_t = calib.apt["y_t"](beammap_reference_det);
-
-            SPDLOG_INFO("using detector {} at ({},{}) arcsec",beammap_reference_det,
-                        ref_det_x_t,ref_det_y_t);
         }
+        SPDLOG_INFO("using detector {} at ({},{}) arcsec",beammap_reference_det,
+                    static_cast<float>(ref_det_x_t),static_cast<float>(ref_det_y_t));
     }
 
     else {
