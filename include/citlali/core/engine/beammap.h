@@ -1234,7 +1234,7 @@ void Beammap::output() {
 
             Eigen::MatrixXd apt_table(calib.n_dets, calib.apt_header_keys.size());
 
-            // convert to floats
+            // convert to doubles
             Eigen::Index i = 0;
             for (auto const& x: calib.apt_header_keys) {
                 if (x != "flag2") {

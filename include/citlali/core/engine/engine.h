@@ -738,7 +738,7 @@ void Engine::get_citlali_config(CT &config) {
     }
     get_config_value(config, telescope.time_chunk, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "length_sec"});
     get_config_value(config, telescope.force_chunk, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "force_chunking"});
-    get_config_value(config, telescope.velocity_limit, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "turnaround_samples_to_cut"});
+    //get_config_value(config, telescope.velocity_limit, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "turnaround_samples_to_cut"});
 
     /* rtc */
     get_rtc_config(config);

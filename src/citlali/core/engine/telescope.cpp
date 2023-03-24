@@ -218,8 +218,14 @@ void Telescope::calc_scan_indices() {
     if (std::strcmp("Map", obs_pgm.c_str())==0 && !force_chunk) {
         SPDLOG_INFO("calculating scans for raster mode");
 
+        Eigen::Matrix<bool,Eigen::Dynamic,1> hold_bool(tel_data["Hold"].size());
+
         // cast hold signal to boolean
-        Eigen::Matrix<bool,Eigen::Dynamic,1> hold_bool = tel_data["Hold"].template cast<bool>();
+        for (Eigen::Index i=0; i<tel_data["Hold"].size(); i++) {
+            auto hi = int(tel_data["Hold"](i));
+            hold_bool(i) = hi&8;
+        }
+        //Eigen::Matrix<bool,Eigen::Dynamic,1> hold_bool = tel_data["Hold"].template cast<bool>();
 
         // velocity_limit forces a search for stops direction changes that
         // the hold signal is not catching
@@ -230,40 +236,37 @@ void Telescope::calc_scan_indices() {
             Eigen::VectorXd el_vel(n_pts);
             Eigen::VectorXd abs_angles(n_pts);
 
-            Eigen::Matrix<bool, Eigen::Dynamic,1> flagT2(n_pts);
-            flagT2.setConstant(true);
+            Eigen::Matrix<bool, Eigen::Dynamic,1> flag_t2(n_pts);
+            flag_t2.setConstant(true);
 
             // calc velocities
             for (Eigen::Index i=1; i<n_pts-1; i++) {
                 az_vel(i) = (tel_data["az_phys"](i+1) - tel_data["az_phys"](i-1))/
                            (tel_data["TelTime"](i+1) - tel_data["TelTime"](i-1));
-                el_vel(i) = (tel_data["el_phys"](i+1) - tel_data["el_phys"](i-1))/
+                el_vel(i) = (tel_data["alt_phys"](i+1) - tel_data["alt_phys"](i-1))/
                            (tel_data["TelTime"](i+1) - tel_data["TelTime"](i-1));
             }
 
             az_vel(0) = (tel_data["az_phys"](1) - tel_data["az_phys"](0))/
                        (tel_data["TelTime"](1) - tel_data["TelTime"](0));
-            el_vel(0) = (tel_data["el_phys"](1) - tel_data["el_phys"](0))/
+            el_vel(0) = (tel_data["alt_phys"](1) - tel_data["alt_phys"](0))/
                        (tel_data["TelTime"](1) - tel_data["TelTime"](0));
 
             az_vel(n_pts-1) = (tel_data["az_phys"](n_pts-1) - tel_data["az_phys"](n_pts-2))/
                        (tel_data["TelTime"](n_pts-1) - tel_data["TelTime"](n_pts-2));
-            el_vel(n_pts-1) = (tel_data["el_phys"](n_pts-1) - tel_data["el_phys"](n_pts-2))/
+            el_vel(n_pts-1) = (tel_data["alt_phys"](n_pts-1) - tel_data["alt_phys"](n_pts-2))/
                        (tel_data["TelTime"](n_pts-1) - tel_data["TelTime"](n_pts-2));
 
-            for (Eigen::Index i=0; i<n_pts; i++) {
-                vel_mag(i) = sqrt(pow(az_vel(i),2)+pow(el_vel(i),2));
-            }
+            vel_mag = sqrt(pow(az_vel.array(),2) + pow(el_vel.array(),2));
 
             // calc angles
             for (Eigen::Index i=0; i<n_pts-1; i++) {
-                abs_angles(i) = abs(atan2(tel_data["alt_phys"](i+i) - tel_data["alt_phys"](i),
-                                         tel_data["az_phys"](i) - tel_data["az_phys"](i)));
+                abs_angles(i) = abs(atan2(tel_data["alt_phys"](i+1) - tel_data["alt_phys"](i),
+                                         tel_data["az_phys"](i+1) - tel_data["az_phys"](i)));
             }
 
             abs_angles(n_pts-1) = abs(atan2(tel_data["alt_phys"](n_pts-1) - tel_data["alt_phys"](n_pts-2),
                                              tel_data["az_phys"](n_pts-1) - tel_data["az_phys"](n_pts-2)));
-
 
             double med_vel_mag = tula::alg::median(vel_mag);
             double med_abs_ang = tula::alg::median(abs_angles);
@@ -273,35 +276,36 @@ void Telescope::calc_scan_indices() {
 
             for (Eigen::Index i=0; i<n_pts; i++) {
                 hold_bool(i) = ((vel_mag(i) < (med_vel_mag-3.0*mad_vel_mag)) || (vel_mag(i) < (0.2*med_vel_mag)) ||
-                              (abs(abs_angles(i)-med_abs_ang) > (10*mad_abs_ang)) );
+                              (abs(abs_angles(i)-med_abs_ang) > (10*mad_abs_ang)));
+                //hold_bool(i) = ((vel_mag(i) > 2.0*med_vel_mag) || (vel_mag(i) < (0.2*med_vel_mag)) ||
+                  //              (abs(abs_angles(i)-med_abs_ang) > (10*mad_abs_ang)));
             }
 
             double sum = 0;
-            for (long icta=0; icta<n_pts; icta++) {
-                if (hold_bool(icta)==1) {
-                    long begin = icta - velocity_limit;
-                    long end = icta + velocity_limit;
-                    if (begin < 0 ) {
+            for (long i=0; i<n_pts; i++) {
+                if (hold_bool(i)==1) {
+                    long begin = i - velocity_limit;
+                    long end = i + velocity_limit;
+                    if (begin < 0) {
                         begin = 0;
                     }
-                    if (end > (n_pts)) {
+                    if (end > n_pts) {
                         end = n_pts;
                     }
-                    // reset, and ensure we keep edge points of big turn blocks
                     sum = 1;
-                    for (long jcta=begin; jcta<end; jcta++) {
-                        sum += hold_bool(jcta);
+                    for (long j=begin; j<end; j++) {
+                        sum += hold_bool(j);
                     }
                     if (sum > 0.5*(end-begin)) {
-                        for (long jcta=begin; jcta <end; jcta++) {
-                            flagT2(jcta)=0;
+                        for (long j=begin; j<end; j++) {
+                            flag_t2(j) = 0;
                         }
                     }
                 }
             }
 
-            for (long icta = 0; icta < n_pts; icta++) {
-                hold_bool(icta) = !flagT2(icta);
+            for (long i=0; i<n_pts; i++) {
+                hold_bool(i) = !flag_t2(i);
             }
         }*/
 
