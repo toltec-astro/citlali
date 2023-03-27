@@ -26,12 +26,18 @@ namespace mapmaking {
 
 // jinc function
 auto jinc_func(double r, double a, double b, double c, double r_max, double l_d) {
-    r = r/l_d;
-    auto arg0 = 2*boost::math::cyl_bessel_j(1, 2*pi*r/a)/(2*pi*r/a);
-    auto arg1 = exp(-pow(2*r/b,c));
-    auto arg2 = 2*boost::math::cyl_bessel_j(1,3.831706*r/r_max)/(3.831706*r/r_max);
 
-    return arg0*arg1*arg2;
+    if (r!=0) {
+        r = r/l_d;
+        auto arg0 = 2*boost::math::cyl_bessel_j(1, 2*pi*r/a)/(2*pi*r/a);
+        auto arg1 = exp(-pow(2*r/b,c));
+        auto arg2 = 2*boost::math::cyl_bessel_j(1,3.831706*r/r_max)/(3.831706*r/r_max);
+
+        return arg0*arg1*arg2;
+    }
+    else {
+        return 1.0;
+    }
 }
 
 template<class map_buffer_t, typename Derived, typename apt_t, typename pointing_offset_t>
@@ -47,21 +53,17 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
     l_d[1] = (1.4/1000)/50;
     l_d[2] = (2.0/1000)/50;
 
-    auto radius = Eigen::VectorXd::LinSpaced(1000, 1e-10, r_max);
     std::map<Eigen::Index,Eigen::VectorXd> jinc_weights;
+    std::map<Eigen::Index, engine_utils::SplineFunction2> jinc_splines;
 
     for (const auto &ld: l_d) {
+        auto radius = Eigen::VectorXd::LinSpaced(100, 0, r_max*ld.second);
         jinc_weights[ld.first].resize(radius.size());
         Eigen::Index j = 0;
         for (const auto &r: radius) {
             jinc_weights[ld.first](j) = jinc_func(r,a,b,c,r_max,ld.second);
             j++;
         }
-    }
-
-    std::map<Eigen::Index, engine_utils::SplineFunction2> jinc_splines;
-
-    for (const auto &ld: l_d) {
         engine_utils::SplineFunction2 s;
         s.interpolate(radius, jinc_weights[ld.first]);
         jinc_splines[ld.first] = s;
@@ -163,21 +165,22 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                                 // distance from current sample to pixel
                                 auto radius = sqrt(std::pow(lat(j) - omb.rows_tan_vec(r),2) + std::pow(lon(j) - omb.cols_tan_vec(c),2));
                                 //SPDLOG_INFO("radius {}", radius);
-                                if (radius<r_max*l_d[map_index]) {
+                                if (radius<r_max*l_d[apt["array"](det_indices(i))]) {
                                     // jinc weighting function
-                                    auto jinc_weight = jinc_func(radius,a,b,c,r_max,l_d[map_index]);
-                                    //auto jinc_weight = jinc_splines[map_index](radius);
+                                    //auto jinc_weight = jinc_func(radius,a,b,c,r_max,l_d[apt["array"](det_indices(i))]);
+                                    auto jinc_weight = jinc_splines[apt["array"](det_indices(i))](radius);
+                                    auto weight = in.weights.data(i)*jinc_weight;
 
                                     // populate signal map
-                                    signal = in.scans.data(j,i)*in.weights.data(i)*jinc_weight;
+                                    signal = in.scans.data(j,i)*weight;//in.weights.data(i)*jinc_weight;
                                     omb.signal[map_index](r,c) += signal;
 
                                     // populate weight map
-                                    omb.weight[map_index](r,c) += in.weights.data(i)*jinc_weight;
+                                    omb.weight[map_index](r,c) += weight;//in.weights.data(i)*jinc_weight;
 
                                     // populate kernel map
                                     if (!omb.kernel.empty()) {
-                                        auto kernel = in.kernel.data(j,i)*in.weights.data(i)*jinc_weight;
+                                        auto kernel = in.kernel.data(j,i)*weight;//in.weights.data(i)*jinc_weight;
                                         omb.kernel[map_index](r,c) += kernel;
                                     }
 
@@ -210,15 +213,18 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                         //for (Eigen::Index nn=0; nn<nmb->n_noise; nn++) {
                         // coadd into current noise map
                         if ((nmb_ir >= 0) && (nmb_ir < nmb->n_rows) && (nmb_ic >= 0) && (nmb_ic < nmb->n_cols)) {
+
+                            double r_max_pix = r_max*l_d[apt["array"](det_indices(i))]/nmb->pixel_size_rad;
+
                             // find minimum row
-                            auto row_min = std::max(0.0,nmb_ir - r_max*l_d[map_index]/nmb->pixel_size_rad);
+                            auto row_min = std::max(0.0,nmb_ir - r_max_pix);
                             // find maximum row
-                            auto row_max = std::min(nmb->n_rows - 1.0 ,nmb_ir + r_max*l_d[map_index]/nmb->pixel_size_rad + 1);
+                            auto row_max = std::min(nmb->n_rows - 1.0 ,nmb_ir + r_max_pix + 1);
 
                             // find minimum col
                             auto col_min = std::max(0.0,nmb_ic - r_max*l_d[map_index]/nmb->pixel_size_rad);
                             // find maximum col
-                            auto col_max = std::min(nmb->n_cols - 1.0 ,nmb_ic + r_max*l_d[map_index]/nmb->pixel_size_rad + 1);
+                            auto col_max = std::min(nmb->n_cols - 1.0 ,nmb_ic + r_max_pix + 1);
 
                             // loop through nearby rows and cols
                             for (Eigen::Index r=row_min; r<row_max; r++) {
@@ -228,7 +234,7 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                                     //SPDLOG_INFO("radius {}", radius);
                                     if (radius<r_max*l_d[map_index]) {
                                         // jinc weighting function
-                                        auto jinc_weight = jinc_func(radius,a,b,c,r_max,l_d[map_index]);
+                                        auto jinc_weight = jinc_func(radius,a,b,c,r_max,l_d[apt["array"](det_indices(i))]);
                                         signal = in.scans.data(j,i)*in.weights.data(i)*jinc_weight;
                                         for (Eigen::Index nn=0; nn<nmb->n_noise; nn++) {
                                             nmb->noise[map_index](r,c,nn) += noise(nn,j)*signal;

@@ -793,95 +793,99 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
         nw_median_sens[nw] = tula::alg::median(sens);
     }
 
-    // flag too low/high sensitivies based on the median unflagged sensitivity of each nw
-    SPDLOG_DEBUG("flagging sensitivities");
-    grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
-        // get array of current detector
-        auto array_index = array_indices(i);
-        std::string array_name = toltec_io.array_name_map[array_index];
+    if ((calib.apt["flag"].array()==1).any()) {
+        // flag too low/high sensitivies based on the median unflagged sensitivity of each nw
+        SPDLOG_DEBUG("flagging sensitivities");
+        grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+            // get array of current detector
+            auto array_index = array_indices(i);
+            std::string array_name = toltec_io.array_name_map[array_index];
 
-        // get nw of current detector
-        auto nw_index = nw_indices(i);
+            // get nw of current detector
+            auto nw_index = nw_indices(i);
 
-        // flag outlier sensitivities
-        if (calib.apt["sens"](i) < lower_sens_factor*nw_median_sens[nw_index] ||
-            (calib.apt["sens"](i) > upper_sens_factor*nw_median_sens[nw_index] && upper_sens_factor > 0)) {
-            if (calib.apt["flag"](i)!=0) {
-                calib.apt["flag"](i) = 0;
-                n_flagged_dets++;
+            // flag outlier sensitivities
+            if (calib.apt["sens"](i) < lower_sens_factor*nw_median_sens[nw_index] ||
+                (calib.apt["sens"](i) > upper_sens_factor*nw_median_sens[nw_index] && upper_sens_factor > 0)) {
+                if (calib.apt["flag"](i)!=0) {
+                    calib.apt["flag"](i) = 0;
+                    n_flagged_dets++;
+                }
+                flag2(i) |= AptFlags::Sens;
+                calib.apt["flag2"](i) = AptFlags::Sens;
             }
-            flag2(i) |= AptFlags::Sens;
-            calib.apt["flag2"](i) = AptFlags::Sens;
-        }
 
-        return 0;
-    });
-
-    // std maps to hold median unflagged x and y positions
-    std::map<std::string, double> array_median_x_t, array_median_y_t;
-
-    // calc median x_t and y_t values from unflagged detectors for each arrays
-    SPDLOG_DEBUG("calculating array median positions");
-    for (Eigen::Index i=0; i<calib.n_arrays; i++) {
-        Eigen::Index array = calib.arrays(i);
-        std::string array_name = toltec_io.array_name_map[array];
-
-        // x_t
-        auto array_x_t = calib.apt["x_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
-                                                     std::get<1>(calib.array_limits[array])-1));
-        // y_t
-        auto array_y_t = calib.apt["y_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
-                                                     std::get<1>(calib.array_limits[array])-1));
-        // number of good detectors
-        Eigen::Index n_good_det = calib.apt["flag"](Eigen::seq(std::get<0>(calib.array_limits[array]),
-                                                               std::get<1>(calib.array_limits[array])-1)).sum();
-
-        // to hold good detectors
-        Eigen::VectorXd x_t, y_t;
-
-        x_t.resize(n_good_det);
-        y_t.resize(n_good_det);
-
-        // remove flagged dets
-        Eigen::Index j = std::get<0>(calib.array_limits[array]);
-        Eigen::Index k = 0;
-        for (Eigen::Index m=0; m<array_x_t.size(); m++) {
-            if (calib.apt["flag"](j)) {
-                x_t(k) = array_x_t(m);
-                y_t(k) = array_y_t(m);
-                k++;
-            }
-            j++;
-        }
-        // calculate medians
-        array_median_x_t[array_name] = tula::alg::median(x_t);
-        array_median_y_t[array_name] = tula::alg::median(y_t);
+            return 0;
+        });
     }
 
-    // remove detectors above distance limits
-    SPDLOG_DEBUG("flagging detector positions");
-    grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
-        // get array of current detector
-        auto array_index = array_indices(i);
-        std::string array_name = toltec_io.array_name_map[array_index];
+    if ((calib.apt["flag"].array()==1).any()) {
+        // std maps to hold median unflagged x and y positions
+        std::map<std::string, double> array_median_x_t, array_median_y_t;
 
-        // calculate distance of detector from mean position of all detectors
-        double dist = sqrt(pow(calib.apt["x_t"](i) - array_median_x_t[array_name],2) +
-                           pow(calib.apt["y_t"](i) - array_median_y_t[array_name],2));
+        // calc median x_t and y_t values from unflagged detectors for each arrays
+        SPDLOG_DEBUG("calculating array median positions");
+        for (Eigen::Index i=0; i<calib.n_arrays; i++) {
+            Eigen::Index array = calib.arrays(i);
+            std::string array_name = toltec_io.array_name_map[array];
 
-        // flag detectors that are further than the mean value than the distance limit
-        if (dist > max_dist_arcsec[array_name] && max_dist_arcsec[array_name] > 0) {
-            if (calib.apt["flag"](i)!=0) {
-                n_flagged_dets++;
-                calib.apt["flag"](i) = 0;
+            // x_t
+            auto array_x_t = calib.apt["x_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
+                                                         std::get<1>(calib.array_limits[array])-1));
+            // y_t
+            auto array_y_t = calib.apt["y_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
+                                                         std::get<1>(calib.array_limits[array])-1));
+            // number of good detectors
+            Eigen::Index n_good_det = calib.apt["flag"](Eigen::seq(std::get<0>(calib.array_limits[array]),
+                                                                   std::get<1>(calib.array_limits[array])-1)).sum();
+
+            // to hold good detectors
+            Eigen::VectorXd x_t, y_t;
+
+            x_t.resize(n_good_det);
+            y_t.resize(n_good_det);
+
+            // remove flagged dets
+            Eigen::Index j = std::get<0>(calib.array_limits[array]);
+            Eigen::Index k = 0;
+            for (Eigen::Index m=0; m<array_x_t.size(); m++) {
+                if (calib.apt["flag"](j)) {
+                    x_t(k) = array_x_t(m);
+                    y_t(k) = array_y_t(m);
+                    k++;
+                }
+                j++;
             }
-            flag2(i) |= AptFlags::Position;
-            calib.apt["flag2"](i) = AptFlags::Position;
+            // calculate medians
+            array_median_x_t[array_name] = tula::alg::median(x_t);
+            array_median_y_t[array_name] = tula::alg::median(y_t);
         }
 
-        return 0;
-    });
 
+        // remove detectors above distance limits
+        SPDLOG_DEBUG("flagging detector positions");
+        grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+            // get array of current detector
+            auto array_index = array_indices(i);
+            std::string array_name = toltec_io.array_name_map[array_index];
+
+            // calculate distance of detector from mean position of all detectors
+            double dist = sqrt(pow(calib.apt["x_t"](i) - array_median_x_t[array_name],2) +
+                               pow(calib.apt["y_t"](i) - array_median_y_t[array_name],2));
+
+            // flag detectors that are further than the mean value than the distance limit
+            if (dist > max_dist_arcsec[array_name] && max_dist_arcsec[array_name] > 0) {
+                if (calib.apt["flag"](i)!=0) {
+                    n_flagged_dets++;
+                    calib.apt["flag"](i) = 0;
+                }
+                flag2(i) |= AptFlags::Position;
+                calib.apt["flag2"](i) = AptFlags::Position;
+            }
+
+            return 0;
+        });
+    }
 
     // print number of flagged detectors
     SPDLOG_INFO("{} detectors were flagged", n_flagged_dets);
