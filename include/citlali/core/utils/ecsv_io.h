@@ -88,37 +88,37 @@ inline auto to_map_from_ecsv_mixted_type(std::string filepath) {
     // get ints
     auto int_colnames = tbl.array_data<int>().colnames();
     for (auto & col : int_colnames) {
-        table[col] = tbl.col<int>(col).data.cast<double> ();
+        table[col] = tbl.col<int>(col).template cast<double> ();
     }
 
     // get int16
     auto int16_colnames = tbl.array_data<int16_t>().colnames();
     for (auto & col : int16_colnames) {
-        table[col] = tbl.col<int16_t>(col).data.cast<double> ();
+        table[col] = tbl.col<int16_t>(col).template cast<double> ();
     }
 
     // get int64
     auto int64_colnames = tbl.array_data<int64_t>().colnames();
     for (auto & col : int64_colnames) {
-        table[col] = tbl.col<int64_t>(col).data.cast<double> ();
+        table[col] = tbl.col<int64_t>(col).template cast<double> ();
     }
 
     // get bools
     auto bool_colnames = tbl.array_data<bool>().colnames();
     for (auto & col : bool_colnames) {
-        table[col] = tbl.col<bool>(col).data.cast<double> ();
+        table[col] = tbl.col<bool>(col).template cast<double> ();
     }
 
     // get floats
     auto float_colnames = tbl.array_data<float>().colnames();
     for (auto & col : float_colnames) {
-        table[col] = tbl.col<float>(col).data.cast<double> ();
+        table[col] = tbl.col<float>(col).template cast<double> ();
     }
 
     // get doubles
     auto dbl_colnames = tbl.array_data<double>().colnames();
     for (auto & col : dbl_colnames) {
-        table[col] = tbl.col<double>(col).data;
+        table[col] = tbl.col<double>(col);
     }
 
     // return map and header

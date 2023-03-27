@@ -1,10 +1,12 @@
 #pragma once
 
+#include <thread>
+
 #include <boost/random.hpp>
 #include <boost/random/random_device.hpp>
 #include <boost/math/special_functions/bessel.hpp>
 
-#include <thread>
+#include <unsupported/Eigen/Splines>
 
 #include <citlali/core/utils/constants.h>
 #include <citlali/core/utils/utils.h>
@@ -13,6 +15,7 @@
 
 #include <citlali/core/mapmaking/map.h>
 #include <citlali/core/utils/pointing.h>
+
 
 using timestream::TCData;
 
@@ -43,6 +46,26 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
     l_d[0] = (1.1/1000)/50;
     l_d[1] = (1.4/1000)/50;
     l_d[2] = (2.0/1000)/50;
+
+    auto radius = Eigen::VectorXd::LinSpaced(1000, 1e-10, r_max);
+    std::map<Eigen::Index,Eigen::VectorXd> jinc_weights;
+
+    for (const auto &ld: l_d) {
+        jinc_weights[ld.first].resize(radius.size());
+        Eigen::Index j = 0;
+        for (const auto &r: radius) {
+            jinc_weights[ld.first](j) = jinc_func(r,a,b,c,r_max,ld.second);
+            j++;
+        }
+    }
+
+    std::map<Eigen::Index, engine_utils::SplineFunction2> jinc_splines;
+
+    for (const auto &ld: l_d) {
+        engine_utils::SplineFunction2 s;
+        s.interpolate(radius, jinc_weights[ld.first]);
+        jinc_splines[ld.first] = s;
+    }
 
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
@@ -143,6 +166,7 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                                 if (radius<r_max*l_d[map_index]) {
                                     // jinc weighting function
                                     auto jinc_weight = jinc_func(radius,a,b,c,r_max,l_d[map_index]);
+                                    //auto jinc_weight = jinc_splines[map_index](radius);
 
                                     // populate signal map
                                     signal = in.scans.data(j,i)*in.weights.data(i)*jinc_weight;
