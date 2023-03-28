@@ -208,7 +208,6 @@ auto fft2(Eigen::DenseBase<Derived> &in, fftw_plan_t &plan, fftw_complex* a, fft
         // set fft normalization
         out = out/n_rows/n_cols;
     }
-
     return out;
 }
 

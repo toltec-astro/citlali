@@ -761,39 +761,40 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
         return 0;
     });
 
-    // median network sensitivity for flagging
-    std::map<Eigen::Index, double> nw_median_sens;
-
-    // calc median sens from unflagged detectors for each nw
-    SPDLOG_DEBUG("calculating mean sensitivities");
-    for (Eigen::Index i=0; i<calib.n_nws; i++) {
-        Eigen::Index nw = calib.nws(i);
-
-        // nw sensitivity
-        auto nw_sens = calib.apt["sens"](Eigen::seq(std::get<0>(calib.nw_limits[nw]),
-                                                    std::get<1>(calib.nw_limits[nw])-1));
-        // number of good detectors
-        Eigen::Index n_good_det = calib.apt["flag"](Eigen::seq(std::get<0>(calib.nw_limits[nw]),
-                                                               std::get<1>(calib.nw_limits[nw])-1)).sum();
-
-        // to hold good detectors
-        Eigen::VectorXd sens(n_good_det);
-
-        // remove flagged dets
-        Eigen::Index j = std::get<0>(calib.nw_limits[nw]);
-        Eigen::Index k = 0;
-        for (Eigen::Index m=0; m<sens.size(); m++) {
-            if (calib.apt["flag"](j)) {
-                sens(k) = nw_sens(m);
-                k++;
-            }
-            j++;
-        }
-        // calculate median sens
-        nw_median_sens[nw] = tula::alg::median(sens);
-    }
-
     if ((calib.apt["flag"].array()==1).any()) {
+
+        // median network sensitivity for flagging
+        std::map<Eigen::Index, double> nw_median_sens;
+
+        // calc median sens from unflagged detectors for each nw
+        SPDLOG_DEBUG("calculating mean sensitivities");
+        for (Eigen::Index i=0; i<calib.n_nws; i++) {
+            Eigen::Index nw = calib.nws(i);
+
+            // nw sensitivity
+            auto nw_sens = calib.apt["sens"](Eigen::seq(std::get<0>(calib.nw_limits[nw]),
+                                                        std::get<1>(calib.nw_limits[nw])-1));
+            // number of good detectors
+            Eigen::Index n_good_det = calib.apt["flag"](Eigen::seq(std::get<0>(calib.nw_limits[nw]),
+                                                                   std::get<1>(calib.nw_limits[nw])-1)).sum();
+
+            // to hold good detectors
+            Eigen::VectorXd sens(n_good_det);
+
+            // remove flagged dets
+            Eigen::Index j = std::get<0>(calib.nw_limits[nw]);
+            Eigen::Index k = 0;
+            for (Eigen::Index m=0; m<sens.size(); m++) {
+                if (calib.apt["flag"](j)) {
+                    sens(k) = nw_sens(m);
+                    k++;
+                }
+                j++;
+            }
+            // calculate median sens
+            nw_median_sens[nw] = tula::alg::median(sens);
+        }
+
         // flag too low/high sensitivies based on the median unflagged sensitivity of each nw
         SPDLOG_DEBUG("flagging sensitivities");
         grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {

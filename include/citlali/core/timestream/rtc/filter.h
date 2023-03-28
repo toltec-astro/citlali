@@ -18,8 +18,11 @@ public:
     Eigen::VectorXd filter;
     Eigen::Index n_terms;
 
+    std::vector<double> w0s, qs;
+    std::vector<Eigen::VectorXd> notch_a, notch_b;
+
     void make_filter(double);
-    void make_notch_filter();
+    void make_notch_filter(double);
 
     template <typename Derived>
     void convolve(Eigen::DenseBase<Derived> &);
@@ -86,8 +89,51 @@ void Filter::make_filter(double fsmp) {
     filter = filter.array() / filter_sum;
 }
 
-void Filter::make_notch_filter() {
+void Filter::make_notch_filter(double fsmp) {
+    for (Eigen::Index i=0; i<w0s.size(); i++) {
+        double w0 = w0s[i];
+        double Q = qs[i];
+        w0 = 2*w0/fsmp;
 
+        // Get bandwidth
+        double bw = w0/Q;
+
+        // Normalize inputs
+        bw = bw*pi;
+        w0 = w0*pi;
+
+        // Compute -3dB attenuation
+        double gb = 1/sqrt(2);
+
+        //if ftype == "notch":
+            // Compute beta: formula 11.3.4 (p.575) from reference [1]
+        double beta = (sqrt(1.0-pow(gb,2.0))/gb)*tan(bw/2.0);
+        //elif ftype == "peak":
+            // Compute beta: formula 11.3.19 (p.579) from reference [1]
+          //  beta = (gb/np.sqrt(1.0-gb**2.0))*np.tan(bw/2.0)
+        //else:
+          //  raise ValueError("Unknown ftype.")
+
+        // Compute gain: formula 11.3.6 (p.575) from reference [1]
+        double gain = 1.0/(1.0+beta);
+
+        // Compute numerator b and denominator a
+        // formulas 11.3.7 (p.575) and 11.3.21 (p.579)
+        // from reference [1]
+        //if ftype == "notch":
+        Eigen::VectorXd b(3);
+        b << 1.0, -2.0*cos(w0), 1.0;
+        b = gain*b;
+        //b = gain*np.array([1.0, -2.0*np.cos(w0), 1.0]);
+        //else:
+        //double b = (1.0-gain)*np.array([1.0, 0.0, -1.0]);
+        Eigen::VectorXd a(3);
+        a << 1.0, -2.0*gain*cos(w0), (2.0*gain-1.0);
+        //double a = np.array([1.0, -2.0*gain*np.cos(w0), (2.0*gain-1.0)])
+
+        notch_a.push_back(a);
+        notch_b.push_back(b);
+    }
 }
 
 template <typename Derived>
