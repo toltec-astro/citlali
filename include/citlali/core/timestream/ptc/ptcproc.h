@@ -145,34 +145,42 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 // get the block of out scans that corresponds to the current array
                 auto apt_flags = calib.apt["flag"].segment(start_index, n_dets);
 
-                auto [evals, evecs] = cleaner.calc_eig_values<timestream::Cleaner::SpectraBackend>(in_scans, in_flags, apt_flags,
-                                                                                                   cleaner.n_eig_to_cut(i));
-                SPDLOG_DEBUG("evals {}", evals);
-                SPDLOG_DEBUG("evecs {}", evecs);
+                // check if any good flags
+                if ((apt_flags.array()==1).any()) {
+                    auto [evals, evecs] = cleaner.calc_eig_values<timestream::Cleaner::SpectraBackend>(in_scans, in_flags, apt_flags,
+                                                                                                       cleaner.n_eig_to_cut(i));
+                    SPDLOG_DEBUG("evals {}", evals);
+                    SPDLOG_DEBUG("evecs {}", evecs);
 
-                cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_scans, in_flags, evals, evecs, out_scans,
-                                                                               cleaner.n_eig_to_cut(i));
-
-                //in.evals.data = evals.head(cleaner.n_eig_to_cut2(i));
-
-                if (in.kernel.data.size()!=0) {
-                    SPDLOG_DEBUG("cleaning kernel");
-                    // get the reference block of in scans that corresponds to the current array
-                    Eigen::Ref<Eigen::MatrixXd> in_kernel_ref = in.kernel.data.block(0, start_index, n_pts, n_dets);
-
-                    Eigen::Map<Eigen::MatrixXd, 0, Eigen::OuterStride<>>
-                        in_kernel(in_kernel_ref.data(), in_kernel_ref.rows(), in_kernel_ref.cols(),
-                                 Eigen::OuterStride<>(in_kernel_ref.outerStride()));
-
-                    // get the block of out scans that corresponds to the current array
-                    Eigen::Ref<Eigen::MatrixXd> out_kernel_ref = out.kernel.data.block(0, start_index, n_pts, n_dets);
-
-                    Eigen::Map<Eigen::MatrixXd, 0, Eigen::OuterStride<> >
-                        out_kernel(out_kernel_ref.data(), out_kernel_ref.rows(), out_scans_ref.cols(),
-                                  Eigen::OuterStride<>(out_kernel_ref.outerStride()));
-
-                    cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_kernel, in_flags, evals, evecs, out_kernel,
+                    cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_scans, in_flags, evals, evecs, out_scans,
                                                                                    cleaner.n_eig_to_cut(i));
+
+                    if (in.kernel.data.size()!=0) {
+                        // check if any good flags
+                            SPDLOG_DEBUG("cleaning kernel");
+                            // get the reference block of in scans that corresponds to the current array
+                            Eigen::Ref<Eigen::MatrixXd> in_kernel_ref = in.kernel.data.block(0, start_index, n_pts, n_dets);
+
+                            Eigen::Map<Eigen::MatrixXd, 0, Eigen::OuterStride<>>
+                                in_kernel(in_kernel_ref.data(), in_kernel_ref.rows(), in_kernel_ref.cols(),
+                                          Eigen::OuterStride<>(in_kernel_ref.outerStride()));
+
+                            // get the block of out scans that corresponds to the current array
+                            Eigen::Ref<Eigen::MatrixXd> out_kernel_ref = out.kernel.data.block(0, start_index, n_pts, n_dets);
+
+                            Eigen::Map<Eigen::MatrixXd, 0, Eigen::OuterStride<> >
+                                out_kernel(out_kernel_ref.data(), out_kernel_ref.rows(), out_scans_ref.cols(),
+                                           Eigen::OuterStride<>(out_kernel_ref.outerStride()));
+
+                            cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_kernel, in_flags, evals, evecs, out_kernel,
+                                                                                           cleaner.n_eig_to_cut(i));
+                    }
+                }
+                else {
+                    out.scans.data.block(0, start_index, n_pts, n_dets) = in.scans.data.block(0, start_index, n_pts, n_dets);
+                    if (in.kernel.data.size()!=0) {
+                        out.kernel.data.block(0, start_index, n_pts, n_dets) = in.kernel.data.block(0, start_index, n_pts, n_dets);
+                    }
                 }
             }
             i++;
