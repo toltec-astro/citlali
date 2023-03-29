@@ -187,6 +187,14 @@ void Pointing::setup() {
     ppt_meta["angle_err"].push_back("units: radians");
     ppt_meta["angle_err"].push_back("fitted rotation angle error");
 
+
+    for (const auto &val: telescope.tel_header) {
+        std::size_t found = val.first.find("PointModel");
+        if (found!=std::string::npos) {
+            ppt_meta[val.first] = val.second(0);
+        }
+    }
+
     // print basic info for obs reduction
     print_summary();
 }
