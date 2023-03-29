@@ -136,7 +136,7 @@ struct beammapControls {
 
     // limits on fwhm, sig2noise, and distance from center for flagging
     std::map<std::string, double> lower_fwhm_arcsec, upper_fwhm_arcsec, lower_sig2noise,
-        max_dist_arcsec;
+        upper_sig2noise, max_dist_arcsec;
 
     // limits on sensitivity for flagging
     double lower_sens_factor, upper_sens_factor;
@@ -574,6 +574,8 @@ void Engine::get_beammap_config(CT &config) {
                                                                                               arr_name});
         get_config_value(config, lower_sig2noise[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","flagging","lower_sig2noise",
                                                                                             arr_name});
+        get_config_value(config, upper_sig2noise[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","flagging","upper_sig2noise",
+                                                                                                   arr_name});
         get_config_value(config, max_dist_arcsec[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","flagging","max_dist_arcsec",
                                                                                             arr_name});
     }
