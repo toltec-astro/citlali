@@ -25,7 +25,7 @@ public:
     std::string obs_pgm, source_name;
 
     // tangent plane center
-    std::map<std::string, double> tan_center_rad;
+    //std::map<std::string, double> tan_center_rad;
 
     // time chunk size for lissajous/rastajous
     double time_chunk;
@@ -36,7 +36,7 @@ public:
     // remove samples based on a velocity limit
     double velocity_limit;
 
-    // sample rate
+    // sample rate, downsampled sample rate
     double fsmp, d_fsmp;
 
     // tau at 225 GHZ

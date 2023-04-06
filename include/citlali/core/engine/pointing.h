@@ -148,6 +148,9 @@ void Pointing::setup() {
     // add date
     ppt_meta["Date"] = engine_utils::current_date_time();
 
+    // reference frame
+    calib.apt_meta["Radesys"] = telescope.pixel_axes;
+
     ppt_meta["array"].push_back("units: N/A");
     ppt_meta["array"].push_back("array");
 
@@ -186,7 +189,6 @@ void Pointing::setup() {
 
     ppt_meta["angle_err"].push_back("units: radians");
     ppt_meta["angle_err"].push_back("fitted rotation angle error");
-
 
     for (const auto &val: telescope.tel_header) {
         std::size_t found = val.first.find("PointModel");

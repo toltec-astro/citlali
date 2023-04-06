@@ -1587,10 +1587,19 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // add source dec
     fits_io->at(i).pfits->pHDU().addKey("SRC_DEC", telescope.tel_header["Header.Source.Dec"][0], "Source Dec (radians)");
     // add map tangent point ra
-    fits_io->at(i).pfits->pHDU().addKey("TAN_RA", telescope.tel_header["Header.Source.Ra"][0], "Map Tangent Point RA (radians)");
+    //if (telescope.tan_center_rad["ra"]==0) {
+        fits_io->at(i).pfits->pHDU().addKey("TAN_RA", telescope.tel_header["Header.Source.Ra"][0], "Map Tangent Point RA (radians)");
+    //}
+    //else {
+    //    fits_io->at(i).pfits->pHDU().addKey("TAN_RA", telescope.tan_center_rad["ra"], "Map Tangent Point RA (radians)");
+    //}
     // add map tangent point dec
-    fits_io->at(i).pfits->pHDU().addKey("TAN_DEC", telescope.tel_header["Header.Source.Dec"][0], "Map Tangent Point Dec (radians)");
-
+    //if (telescope.tan_center_rad["dec"]==0) {
+        fits_io->at(i).pfits->pHDU().addKey("TAN_DEC", telescope.tel_header["Header.Source.Dec"][0], "Map Tangent Point Dec (radians)");
+    //}
+    //else {
+    //    fits_io->at(i).pfits->pHDU().addKey("TAN_DEC", telescope.tan_center_rad["dec"], "Map Tangent Point Dec (radians)");
+    //}
     // add mean elev
     fits_io->at(i).pfits->pHDU().addKey("MEAN_EL", RAD_TO_DEG*telescope.tel_data["TelElAct"].mean(), "mean elevation (deg)");
 

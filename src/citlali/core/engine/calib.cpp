@@ -6,8 +6,7 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
     // store apt filepath
     apt_filepath = filepath;
     // read in the apt table
-    //auto [table, header, meta] = to_matrix_from_ecsv(filepath);
-    auto [apt_temp, header] = to_map_from_ecsv_mixted_type(filepath);
+    auto [apt_temp, header, map_with_strs] = to_map_from_ecsv_mixted_type(filepath);
 
     // vector to hold any missing header keys
     std::vector<std::string> missing_header_keys, empty_header_keys;
@@ -30,9 +29,14 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
         std::exit(EXIT_FAILURE);
     }
 
-    // exit if any keys are missing
+    // exit if any keys are empty
     if (!empty_header_keys.empty()) {
         SPDLOG_ERROR("apt table columns are empty {}", empty_header_keys);
+        std::exit(EXIT_FAILURE);
+    }
+
+    if (map_with_strs["Radesys"]!="altaz") {
+        SPDLOG_ERROR("apt table is not in altaz reference frame");
         std::exit(EXIT_FAILURE);
     }
 
@@ -103,19 +107,24 @@ void Calib::get_hwp(const std::string &filepath) {
 
     run_hwp = false;
 
-    /*try {
+    try {
         // get hwp file
         NcFile fo(filepath, NcFile::read, NcFile::classic);
         auto vars = fo.getVars();
 
         // check if hwp is enabled
-        vars.find("Header.Hwp.RotatorEnabled")->second.getVar(&run_hwp);
+        vars.find("Header.Hwp.RotatorInstalled")->second.getVar(&run_hwp);
 
         // get hwp signal
         Eigen::Index n_pts = vars.find("Data.Hwp.")->second.getDim(0).getSize();
         hwp_angle.resize(n_pts);
 
         vars.find("Data.Hwp.")->second.getVar(hwp_angle.data());
+
+        // get hwp time
+        hwp_ts.resize(n_pts);
+
+        vars.find("Data.Hwp.Ts")->second.getVar(hwp_ts.data());
 
         fo.close();
 
@@ -124,7 +133,7 @@ void Calib::get_hwp(const std::string &filepath) {
         throw DataIOError{fmt::format(
             "failed to load data from netCDF file {}", filepath)};
     }
-    */
+
 }
 
 void Calib::calc_flux_calibration(std::string units) {

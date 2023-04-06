@@ -67,60 +67,81 @@ inline void to_ecsv_from_matrix(std::string filepath, Eigen::DenseBase<Derived> 
 inline auto to_map_from_ecsv_mixted_type(std::string filepath) {
     using namespace tula::ecsv;
 
-    std::ifstream fo(filepath);
-    auto tbl = ECSVTable(ECSVHeader::read(fo));
-    // parse the contents
-    auto parser = aria::csv::CsvParser(fo).delimiter(tbl.header().delimiter());
-    // load rows
-    tbl.load_rows(parser);
-
     // vector to hold header
     std::vector<std::string> header;
-
-    // get header colnames
-    for (Eigen::Index i=0; i<tbl.header().colnames().size(); i++) {
-        header.push_back(tbl.header().colnames()[i]);
-    }
 
     // std map for holding data
     std::map<std::string, Eigen::VectorXd> table;
 
-    // get ints
-    auto int_colnames = tbl.array_data<int>().colnames();
-    for (auto & col : int_colnames) {
-        table[col] = tbl.col<int>(col).template cast<double> ();
-    }
+    // hold str meta
+    std::map<std::string, std::string> map_with_strs;
 
-    // get int16
-    auto int16_colnames = tbl.array_data<int16_t>().colnames();
-    for (auto & col : int16_colnames) {
-        table[col] = tbl.col<int16_t>(col).template cast<double> ();
-    }
+    // to hold meta data
+    YAML::Node meta{};
 
-    // get int64
-    auto int64_colnames = tbl.array_data<int64_t>().colnames();
-    for (auto & col : int64_colnames) {
-        table[col] = tbl.col<int64_t>(col).template cast<double> ();
-    }
+    std::ifstream fo(filepath);
+    try {
+        // read in header
+        auto hdr = ECSVHeader::read(fo);
+        // create table
+        auto tbl = ECSVTable(hdr);
+        // parse the contents
+        auto parser = aria::csv::CsvParser(fo).delimiter(tbl.header().delimiter());
+        // load rows
+        tbl.load_rows(parser);
 
-    // get bools
-    auto bool_colnames = tbl.array_data<bool>().colnames();
-    for (auto & col : bool_colnames) {
-        table[col] = tbl.col<bool>(col).template cast<double> ();
-    }
+        // get header colnames
+        for (Eigen::Index i=0; i<tbl.header().colnames().size(); i++) {
+            header.push_back(tbl.header().colnames()[i]);
+        }
 
-    // get floats
-    auto float_colnames = tbl.array_data<float>().colnames();
-    for (auto & col : float_colnames) {
-        table[col] = tbl.col<float>(col).template cast<double> ();
-    }
+        const auto map_with_bools =
+            meta_to_map<std::string, bool>(hdr.meta(), &meta);
 
-    // get doubles
-    auto dbl_colnames = tbl.array_data<double>().colnames();
-    for (auto & col : dbl_colnames) {
-        table[col] = tbl.col<double>(col);
+        map_with_strs =
+            meta_to_map<std::string, std::string>(meta, &meta);
+
+        // get ints
+        auto int_colnames = tbl.array_data<int>().colnames();
+        for (auto & col : int_colnames) {
+            table[col] = tbl.col<int>(col).template cast<double> ();
+        }
+
+        // get int16
+        auto int16_colnames = tbl.array_data<int16_t>().colnames();
+        for (auto & col : int16_colnames) {
+            table[col] = tbl.col<int16_t>(col).template cast<double> ();
+        }
+
+        // get int64
+        auto int64_colnames = tbl.array_data<int64_t>().colnames();
+        for (auto & col : int64_colnames) {
+            table[col] = tbl.col<int64_t>(col).template cast<double> ();
+        }
+
+        // get bools
+        auto bool_colnames = tbl.array_data<bool>().colnames();
+        for (auto & col : bool_colnames) {
+            table[col] = tbl.col<bool>(col).template cast<double> ();
+        }
+
+        // get floats
+        auto float_colnames = tbl.array_data<float>().colnames();
+        for (auto & col : float_colnames) {
+            table[col] = tbl.col<float>(col).template cast<double> ();
+        }
+
+        // get doubles
+        auto dbl_colnames = tbl.array_data<double>().colnames();
+        for (auto & col : dbl_colnames) {
+            table[col] = tbl.col<double>(col);
+        }
+    }
+    catch(...) {
+        SPDLOG_ERROR("cannot open input table");
+        std::exit(EXIT_FAILURE);
     }
 
     // return map and header
-    return std::tuple {table, header};
+    return std::tuple {table, header, map_with_strs};
 }

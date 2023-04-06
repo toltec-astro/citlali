@@ -280,9 +280,12 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     // standard deviation of signal map
     Eigen::MatrixXd sigma(weight.rows(), weight.cols());
 
+    // add a lower flux limit for weights
+    auto lower_flux_limit = 0.2*init_flux;
+
     for (Eigen::Index i=0; i<weight.rows(); i++) {
         for (Eigen::Index j=0; j<weight.cols(); j++) {
-            if (weight(i,j)!=0) {
+            if (weight(i,j)!=0 && signal(i,j) >= init_flux) {
                 // use map sigma for beammaps
                 if constexpr (fit_mode == FitMode::beammap) {
                     sigma(i,j) = map_sigma;

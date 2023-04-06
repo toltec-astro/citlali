@@ -57,7 +57,7 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
     std::map<Eigen::Index, engine_utils::SplineFunction2> jinc_splines;
 
     for (const auto &ld: l_d) {
-        auto radius = Eigen::VectorXd::LinSpaced(100, 0, r_max*ld.second);
+        auto radius = Eigen::VectorXd::LinSpaced(1000, 0, r_max*ld.second);
         jinc_weights[ld.first].resize(radius.size());
         Eigen::Index j = 0;
         for (const auto &r: radius) {
@@ -69,12 +69,10 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
         jinc_splines[ld.first] = s;
     }
 
-    /*std::map<Eigen::Index,Eigen::MatrixXd> jinc_weights_mat;
+    std::map<Eigen::Index,Eigen::MatrixXd> jinc_weights_mat;
     for (const auto &ld: l_d) {
         double r_max_pix = std::floor(r_max*ld.second/omb.pixel_size_rad);
         Eigen::VectorXd pixels = Eigen::VectorXd::LinSpaced(2*r_max_pix + 1,-r_max_pix, r_max_pix);
-
-        SPDLOG_INFO("pixels {}", pixels);
 
         jinc_weights_mat[ld.first].setZero(2*r_max_pix + 1,2*r_max_pix + 1);
 
@@ -84,7 +82,7 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 jinc_weights_mat[ld.first](i,j) = jinc_func(r,a,b,c,r_max,ld.second);
             }
         }
-    }*/
+    }
 
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
@@ -164,7 +162,7 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                     // make sure the data point is within the map
                     if ((omb_ir >= 0) && (omb_ir < omb.n_rows) && (omb_ic >= 0) && (omb_ic < omb.n_cols)) {
                         // find minimum row
-                        auto row_min = std::max(static_cast<Eigen::Index>(0), omb_ir - r_max_pix);
+                        /*auto row_min = std::max(static_cast<Eigen::Index>(0), omb_ir - r_max_pix);
                         // find maximum row
                         auto row_max = std::min(omb.n_rows, omb_ir + r_max_pix);
 
@@ -174,8 +172,8 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                         auto col_max = std::min(omb.n_cols, omb_ic + r_max_pix);
 
                         // loop through nearby rows and cols
-                        for (Eigen::Index r=row_min; r<row_max; r++) {
-                            for (Eigen::Index c=col_min; c<col_max; c++) {
+                        for (Eigen::Index r=row_min; r<row_max+1; r++) {
+                            for (Eigen::Index c=col_min; c<col_max+1; c++) {
                                 // distance from current sample to pixel
                                 auto radius = sqrt(std::pow(lat(j) - omb.rows_tan_vec(r),2) + std::pow(lon(j) - omb.cols_tan_vec(c),2));
                                 //SPDLOG_INFO("radius {}", radius);
@@ -190,7 +188,7 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                                     omb.signal[map_index](r,c) += signal;
 
                                     // populate weight map
-                                    omb.weight[map_index](r,c) += jinc_weight;//weight;//in.weights.data(i)*jinc_weight;
+                                    omb.weight[map_index](r,c) += in.weights.data(i);//in.weights.data(i)*jinc_weight;
 
                                     // populate kernel map
                                     if (!omb.kernel.empty()) {
@@ -204,41 +202,10 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                                     }
                                 }
                             }
-                        }
-
-                        // find minimum row
-                        /*auto row_min = std::max(static_cast<Eigen::Index>(0), omb_ir - r_max_pix);
-                        // find maximum row
-                        auto row_max = std::min(omb.n_rows, omb_ir + r_max_pix);
-
-                        // find minimum col
-                        auto col_min = std::max(static_cast<Eigen::Index>(0), omb_ic - r_max_pix);
-                        // find maximum col
-                        auto col_max = std::min(omb.n_cols, omb_ic + r_max_pix);
-
-                        Eigen::Index ji, jj;
-
-                        if (row_min>0) {
-                            ji = 0;
-                        }
-                        else {
-                            ji = r_max_pix - omb_ir;
-                        }
-
-                        if (col_min>0) {
-                            jj = 0;
-                        }
-                        else {
-                            jj = r_max_pix - omb_ic;
-                        }
-
-                        if (jj!=0 || ji!=0) {
-                            SPDLOG_INFO("jj {}, ji {} omb_ir {}, omb_ic {}",jj,ji,omb_ir, omb_ic);
-                            SPDLOG_INFO("row_min {}, row_max {}, col_min {} col_max {}",row_min,row_max,col_min,col_max);
-                        }
+                        }*/
 
                         // loop through nearby rows and cols
-                        /*for (Eigen::Index r=-r_max_pix; r<r_max_pix+1; r++) {
+                        for (Eigen::Index r=-r_max_pix; r<r_max_pix+1; r++) {
                             for (Eigen::Index c=-r_max_pix; c<r_max_pix+1; c++) {
                                 // distance from current sample to pixel
                                 //auto radius = sqrt(std::pow(lat(j) - omb.rows_tan_vec(r),2) + std::pow(lon(j) - omb.cols_tan_vec(c),2));
@@ -277,7 +244,7 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                                 }
                             //}
                             }
-                        }*/
+                        }
                     }
 
                     // check if noise maps requested

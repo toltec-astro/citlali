@@ -201,6 +201,9 @@ void Beammap::setup() {
     // add date
     calib.apt_meta["Date"] = engine_utils::current_date_time();
 
+    // reference frame
+    calib.apt_meta["Radesys"] = telescope.pixel_axes;
+
     // detector id
     calib.apt_meta["uid"].push_back("units: N/A");
     calib.apt_meta["uid"].push_back("unique id");
@@ -751,7 +754,7 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
         // flag detectors with outler S/N values
         //else
         if ((params(i,0)/map_std_dev < lower_sig2noise[array_name]) ||
-            (params(i,0)/map_std_dev > upper_sig2noise[array_name] && upper_sig2noise[array_name] >0)) {
+            (params(i,0)/map_std_dev > upper_sig2noise[array_name] && upper_sig2noise[array_name] > 0)) {
             if (calib.apt["flag"](i)!=0) {
                 n_flagged_dets++;
                 calib.apt["flag"](i) = 0;
@@ -906,23 +909,19 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
 
         // calc flux scale (always in mJy/beam)
         if (params(i,0) != 0 && calib.apt["flag"](i) != 0) {
-            calib.apt["flxscale"](i) = beammap_fluxes_mJy_beam[array_name]/params(i,0);
+            calib.apt["flxscale"](i) = exp(-tau_freq[array_index](0))*beammap_fluxes_mJy_beam[array_name]/params(i,0);
         }
         // set fluxscale (fcf) to zero if flagged
         else {
             calib.apt["flxscale"](i) = 0;
         }
-
-        // correct fcf for extinction
-        calib.apt["flxscale"](i) = calib.apt["flxscale"](i)*exp(-tau_freq[array_index](0));
-
         return 0;
     });
 
     // get average fwhms and beam areas
     calib.setup();
 
-    // calculate source flux in MJy/Sr from average beamsizes
+    // calculate source flux in MJy/sr from average beamsizes
     for (Eigen::Index i=0; i<calib.n_arrays; i++) {
         Eigen::Index array = calib.arrays(i);
         std::string array_name = toltec_io.array_name_map[array];

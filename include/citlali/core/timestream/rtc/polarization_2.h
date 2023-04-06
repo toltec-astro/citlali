@@ -111,7 +111,7 @@ public:
                 det_indices = Eigen::VectorXI::LinSpaced(out.scans.data.cols(),0,out.scans.data.cols()-1);
             }
 
-            // now loop through polarized detector pairs
+            // now loop through polarized detectors
             for (Eigen::Index i=0; i<n_dets; i++) {
                 // detector angle = installation angle + det orientation
                 auto ang = install_ang[array_indices(i)] + fgs[fg(i)];
