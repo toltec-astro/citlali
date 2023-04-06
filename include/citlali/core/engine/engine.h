@@ -879,12 +879,18 @@ void Engine::get_photometry_config(CT &config) {
 template<typename CT>
 void Engine::get_astrometry_config(CT &config) {
 
-    std::vector<double> offset;
-    offset = config.template get_typed<std::vector<double>>(std::tuple{"pointing_offsets",0,"value_arcsec"});
-    pointing_offsets_arcsec["az"] = Eigen::Map<Eigen::VectorXd>(offset.data(),offset.size());
+    if (config.has("pointing_offsets")) {
+        std::vector<double> offset;
+        offset = config.template get_typed<std::vector<double>>(std::tuple{"pointing_offsets",0,"value_arcsec"});
+        pointing_offsets_arcsec["az"] = Eigen::Map<Eigen::VectorXd>(offset.data(),offset.size());
 
-    offset = config.template get_typed<std::vector<double>>(std::tuple{"pointing_offsets",1,"value_arcsec"});
-    pointing_offsets_arcsec["alt"] = Eigen::Map<Eigen::VectorXd>(offset.data(),offset.size());
+        offset = config.template get_typed<std::vector<double>>(std::tuple{"pointing_offsets",1,"value_arcsec"});
+        pointing_offsets_arcsec["alt"] = Eigen::Map<Eigen::VectorXd>(offset.data(),offset.size());
+    }
+    else {
+        SPDLOG_ERROR("pointing_offsets not found in config");
+        std::exit(EXIT_FAILURE);
+    }
 }
 
 template <typename Derived>
