@@ -314,10 +314,10 @@ int run(const rc_t &rc) {
                     todproc.engine().telescope.get_tel_data(tel_path);
 
                     // overwrite map center
-                    if (todproc.engine().omb.wcs.crval[0]!=0 && todproc.engine().omb.wcs.crval[1]!=0) {
+                    /*if (todproc.engine().omb.wcs.crval[0]!=0 && todproc.engine().omb.wcs.crval[1]!=0) {
                         todproc.engine().telescope.tel_header["Header.Source.Ra"].setConstant(todproc.engine().omb.wcs.crval[0]);
                         todproc.engine().telescope.tel_header["Header.Source.Dec"].setConstant(todproc.engine().omb.wcs.crval[1]);
-                    }
+                    }*/
 
                     // align tod
                     if (!todproc.engine().telescope.sim_obs) {
@@ -525,10 +525,10 @@ int run(const rc_t &rc) {
                         todproc.engine().telescope.get_tel_data(tel_path);
 
                         // overwrite map center
-                        if (todproc.engine().omb.wcs.crval[0]!=0 && todproc.engine().omb.wcs.crval[1]!=0) {
+                        /*if (todproc.engine().omb.wcs.crval[0]!=0 && todproc.engine().omb.wcs.crval[1]!=0) {
                             todproc.engine().telescope.tel_header["Header.Source.Ra"].setConstant(todproc.engine().omb.wcs.crval[0]);
                             todproc.engine().telescope.tel_header["Header.Source.Dec"].setConstant(todproc.engine().omb.wcs.crval[1]);
-                        }
+                        }*/
 
                         // align tod
                         if (!todproc.engine().telescope.sim_obs) {
