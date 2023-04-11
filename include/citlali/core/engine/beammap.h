@@ -1199,6 +1199,27 @@ auto Beammap::loop_pipeline() {
 
 template <class KidsProc, class RawObs>
 void Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
+
+    // add kids models to apt
+    auto [kids_models, kids_model_header] = kidsproc.load_fit_report(rawobs);
+
+    Eigen::Index i = 0;
+    for (const auto &h: kids_model_header) {
+        calib.apt[h].resize(calib.n_dets);
+        Eigen::Index j = 0;
+        for (const auto &v: kids_models) {
+            calib.apt[h].segment(j,v.rows()) = v.col(i);
+            j = j + v.rows();
+        }
+        calib.apt_header_keys.push_back(h);
+        calib.apt_header_units[h] = "N/A";
+
+        // detector orientation
+        calib.apt_meta[h].push_back("units: N/A");
+        calib.apt_meta[h].push_back(h);
+        i++;
+    }
+
     // run timestream pipeline
     timestream_pipeline(kidsproc, rawobs);
 
@@ -1338,7 +1359,7 @@ void Beammap::output() {
                         for (auto const& key: calib.apt_header_keys) {
                             if (key!="flag2") {
                                 try {
-                                    f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, static_cast<float>(calib.apt[key](i)), key
+                                    f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, static_cast<double>(calib.apt[key](i)), key
                                                                           + " (" + calib.apt_header_units[key] + ")");
                                 } catch(...) {
                                     f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, 0.0, key

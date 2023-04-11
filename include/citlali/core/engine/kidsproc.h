@@ -6,6 +6,8 @@
 #include <kids/toltec/toltec.h>
 #include <kidscpp_config/gitversion.h>
 
+#include <tula/datatable.h>
+
 #include <citlali/core/engine/io.h>
 
 /**
@@ -58,6 +60,8 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
                        const tula::container_utils::Slice<int> &);
     auto load_data_item(const RawObs::DataItem &,
                         const tula::container_utils::Slice<int> &);
+    auto load_fit_report(const RawObs &);
+
     template <typename Derived>
     auto load_rawobs(const RawObs &, const Eigen::Index,
                      Eigen::DenseBase<Derived> &,
@@ -152,6 +156,80 @@ auto KidsDataProc::load_data_item(const RawObs::DataItem &data_item,
     auto rts = kidsdata::read_data_slice<kids::KidsDataKind::RawTimeStream>(
         source, slice);
     return rts;
+}
+
+auto KidsDataProc::load_fit_report(const RawObs &rawobs) {
+    std::vector<Eigen::MatrixXd> kids_models;
+    std::vector<std::string> header;
+
+    for (const auto &data_item : rawobs.kidsdata()) {
+        auto meta = get_data_item_meta(data_item);
+        //auto fitreport = this->solver().loadfitreport(this->config(),meta);
+
+        namespace fs = std::filesystem;
+        auto pattern = meta.get_str("cal_file");
+        std::string filepath{};
+        if (this->solver().config.has("fitreportfile")) {
+            filepath = this->solver().config.get_str("fitreportfile");
+        } else if (this->solver().config.has("fitreportdir")) {
+            auto dir = this->solver().config.get_str("fitreportdir");
+            SPDLOG_INFO("look for fitreport dir {} with pattern {}", dir, pattern);
+            auto candidates = tula::filename_utils::find_regex(dir, pattern);
+            if (!candidates.empty()) {
+                filepath = candidates[0];
+            } else {
+                throw std::runtime_error(fmt::format(
+                    "no fit report found in {} that matches {}", dir, pattern));
+            }
+        } else {
+            throw std::runtime_error(
+                fmt::format("no fit report location specified."));
+        }
+        SPDLOG_INFO("use fitreport file {}", filepath);
+        //std::vector<std::string> header;
+        header.clear();
+        Eigen::MatrixXd table;
+        using meta_t = kids::KidsData<>::meta_t;
+        meta_t meta_cal{};
+
+        try {
+            YAML::Node meta_;
+            table = datatable::read<double, datatable::Format::ecsv>(
+                filepath, &header, &meta_);
+            auto meta_map =
+                tula::ecsv::meta_to_map<typename meta_t::storage_t::key_type,
+                                        typename meta_t::storage_t::mapped_type>(
+                    meta_, &meta_);
+            meta_cal = meta_t{std::move(meta_map)};
+
+            kids_models.push_back(std::move(table));
+            if (!meta_.IsNull()) {
+                SPDLOG_WARN("un recongnized meta:\n{}", YAML::Dump(meta_));
+            }
+        } catch (datatable::ParseError &e) {
+            SPDLOG_WARN("unable to read fitreport file as ECSV {}: {}", filepath,
+                        e.what());
+            try {
+                table = datatable::read<double, datatable::Format::ascii>(filepath,
+                                                                          &header);
+                kids_models.push_back(std::move(table));
+
+            } catch (datatable::ParseError &e) {
+                SPDLOG_WARN("unable to read fitreport file as ASCII {}: {}",
+                            filepath, e.what());
+                throw e;
+            }
+        }
+        SPDLOG_INFO("meta_cal: {}", meta_cal.pformat());
+        SPDLOG_INFO("table {}",table);
+        SPDLOG_INFO("header {}",header);
+
+        //return std::tuple{
+        //                  kids::ToneAxis(std::move(table).transpose(), std::move(header)),
+        //                  std::move(meta_cal)};
+    }
+
+    return std::tuple{std::move(kids_models), std::move(header)};
 }
 
 template <typename Derived>
