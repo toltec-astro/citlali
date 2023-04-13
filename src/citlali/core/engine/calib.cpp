@@ -107,7 +107,7 @@ void Calib::get_hwp(const std::string &filepath) {
 
     run_hwp = false;
 
-    try {
+    /*try {
         // get hwp file
         NcFile fo(filepath, NcFile::read, NcFile::classic);
         auto vars = fo.getVars();
@@ -133,7 +133,7 @@ void Calib::get_hwp(const std::string &filepath) {
         throw DataIOError{fmt::format(
             "failed to load data from netCDF file {}", filepath)};
     }
-
+    */
 }
 
 void Calib::calc_flux_calibration(std::string units) {
