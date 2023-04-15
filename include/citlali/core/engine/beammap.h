@@ -926,6 +926,8 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
         Eigen::Index array = calib.arrays(i);
         std::string array_name = toltec_io.array_name_map[array];
 
+
+
         // get source flux in MJy/Sr
         beammap_fluxes_MJy_Sr[array_name] = mJY_ASEC_to_MJY_SR*(beammap_fluxes_mJy_beam[array_name])/calib.array_beam_areas[array];
     }
@@ -1205,6 +1207,9 @@ void Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
     Eigen::Index i = 0;
     for (const auto &h: kids_model_header) {
+        if (h=="flag") {
+            h = "kids_flag";
+        }
         calib.apt[h].resize(calib.n_dets);
         Eigen::Index j = 0;
         for (const auto &v: kids_models) {
