@@ -1606,8 +1606,10 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     //else {
     //    fits_io->at(i).pfits->pHDU().addKey("TAN_DEC", telescope.tan_center_rad["dec"], "Map Tangent Point Dec (radians)");
     //}
-    // add mean elev
+    // add mean alt
     fits_io->at(i).pfits->pHDU().addKey("MEAN_EL", RAD_TO_DEG*telescope.tel_data["TelElAct"].mean(), "mean elevation (deg)");
+    // add mean az
+    fits_io->at(i).pfits->pHDU().addKey("MEAN_AZ", RAD_TO_DEG*telescope.tel_data["TelAzAct"].mean(), "mean azimuth (deg)");
 
     // add mean tau
     Eigen::VectorXd tau_el(1);

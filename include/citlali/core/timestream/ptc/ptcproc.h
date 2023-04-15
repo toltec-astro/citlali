@@ -713,6 +713,8 @@ void PTCProc::add_gaussian(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::
         double sigma_lon = params(map_index,3);
         double rot_ang = params(map_index,5);
 
+        double sigma = std::max(sigma_lat, sigma_lon);
+
         if (type=="subtract") {
             amp = -amp;
         }
@@ -721,14 +723,14 @@ void PTCProc::add_gaussian(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::
         off_lat = pixel_size_rad*(off_lat - (n_rows)/2);
         off_lon = pixel_size_rad*(off_lon - (n_cols)/2);
 
-        sigma_lon = pixel_size_rad*sigma_lon;
-        sigma_lat = pixel_size_rad*sigma_lat;
+        sigma_lon = pixel_size_rad*sigma;
+        sigma_lat = pixel_size_rad*sigma;
 
         auto cost2 = cos(rot_ang) * cos(rot_ang);
         auto sint2 = sin(rot_ang) * sin(rot_ang);
         auto sin2t = sin(2. * rot_ang);
-        auto xstd2 = sigma_lon * sigma_lon;
-        auto ystd2 = sigma_lat * sigma_lat;
+        auto xstd2 = sigma * sigma;
+        auto ystd2 = sigma * sigma;
         auto a = - 0.5 * ((cost2 / xstd2) + (sint2 / ystd2));
         auto b = - 0.5 * ((sin2t / xstd2) - (sin2t / ystd2));
         auto c = - 0.5 * ((sint2 / xstd2) + (cost2 / ystd2));
