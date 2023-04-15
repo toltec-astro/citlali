@@ -1269,7 +1269,7 @@ void Beammap::output() {
             Eigen::Index i = 0;
             for (auto const& x: calib.apt_header_keys) {
                 if (x != "flag2") {
-                    apt_table.col(i) = calib.apt[x].cast<double> ();
+                    apt_table.col(i) = calib.apt[x];
                 }
                 else {
                     apt_table.col(i) = flag2.cast<double> ();
@@ -1359,7 +1359,7 @@ void Beammap::output() {
                         for (auto const& key: calib.apt_header_keys) {
                             if (key!="flag2") {
                                 try {
-                                    f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, static_cast<double>(calib.apt[key](i)), key
+                                    f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, calib.apt[key](i), key
                                                                           + " (" + calib.apt_header_units[key] + ")");
                                 } catch(...) {
                                     f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, 0.0, key

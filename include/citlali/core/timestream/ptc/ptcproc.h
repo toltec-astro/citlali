@@ -725,6 +725,7 @@ void PTCProc::add_gaussian(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::
 
         sigma_lon = pixel_size_rad*sigma;
         sigma_lat = pixel_size_rad*sigma;
+        sigma = pixel_size_rad*sigma;
 
         auto cost2 = cos(rot_ang) * cos(rot_ang);
         auto sint2 = sin(rot_ang) * sin(rot_ang);
