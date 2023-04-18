@@ -183,6 +183,7 @@ void Beammap::setup() {
     }
 
     /* update apt table meta data */
+    calib.apt_meta.clear();
 
     // add obsnum to meta data
     calib.apt_meta["obsnum"] = obsnum;
