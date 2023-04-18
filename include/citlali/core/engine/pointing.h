@@ -138,7 +138,7 @@ void Pointing::setup() {
     };
 
     /* populate ppt meta information */
-    ppt_meta.clear();
+    ppt_meta.reset();
 
     // add obsnum to meta data
     ppt_meta["obsnum"] = obsnum;
