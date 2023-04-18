@@ -150,6 +150,9 @@ void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
         }
     }
 
+    // explicitly clear the apt
+    engine().calib.apt.clear();
+
     // resize the apt vectors
     for (auto const& key : engine().calib.apt_header_keys) {
         engine().calib.apt[key].setOnes(n_dets);
