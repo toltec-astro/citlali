@@ -103,7 +103,7 @@ public:
         {"loc","N/A"},
         {"responsivity","N/A"},
         {"flxscale","mJy/beam/xs"},
-        {"sens","N/A"},
+        {"sens","mJy/beam x s^-0.5"},
         {"derot_elev","rad"},
         {"amp","xs"},
         {"amp_err","xs"},

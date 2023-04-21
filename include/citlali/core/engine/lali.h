@@ -199,10 +199,10 @@ auto Lali::run() {
             }
 
             // run cleaning
-            if (stokes_param == "I") {
+            //if (stokes_param == "I") {
                 SPDLOG_INFO("processed time chunk processing");
-                ptcproc.run(ptcdata, ptcdata, calib);
-            }
+                ptcproc.run(ptcdata, ptcdata, calib, det_indices, stokes_param);
+            //}
 
             // remove outliers after clean
             calib_scan = ptcproc.remove_bad_dets(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
@@ -210,6 +210,11 @@ auto Lali::run() {
             // calculate weights
             SPDLOG_INFO("calculating weights");
             ptcproc.calc_weights(ptcdata, calib.apt, telescope, det_indices);
+
+            // reset weights to median
+            if (ptcproc.reset_weighting) {
+                ptcproc.reset_weights(ptcdata, calib);
+            }
 
             if (verbose_mode) {
                 write_chunk_summary(ptcdata);

@@ -132,6 +132,8 @@ mapmaking: # mapmaking parameters
   crpix2: 0 # ref pixel 2 (ignored if 0)
   crval1_J2000: 0 # ref value 1 (ignored if 0)
   crval2_J2000: 0 # ref value 2 (ignored if 0)
+  tan_ra: 0 # tangent plane ra
+  tan_dec: 0 # tangent plane dec
   cunit: mJy/beam # units (MJy/sr or mJy/beam.  apt table flux conversion default is mJy/beam)
   grouping: auto # mapmaking grouping (auto, detector, nw, array)
   method: naive # mapmaking algorithm (naive or jinc)
@@ -204,8 +206,10 @@ timestream: # timestream reduction parameters
       enabled: false # enable or disable cleaning
       grouping: [array] # clean grouping (array, nw, all)
       n_eig_to_cut: [3] # number of eigenvalues to remove (if stddev_limit >0, calc this many eigs, if this is 0, calc all eigs)
+      clean_polarized_maps: false # carry out cleaning on Q and U maps as well as I maps
     weighting: # how to weight data and maps
       type: full # type of TOD weighting (full=use scan variance/approximate=use det sensitivity)
+      set_high_weights_to_median: true # set all weights above median to median of unflagged detectors
     flagging: # controls flagging after cleaning
       lower_weight_factor: 0.0 # flag detectors below this weight limit (ignored if 0, weight=1/variance of TOD)
       upper_weight_factor: 0.0 # flag detectors above this weight limit (ignored if 0, weight=1/variance of TOD)

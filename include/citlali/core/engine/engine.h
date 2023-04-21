@@ -192,7 +192,7 @@ public:
     std::string obsnum;
 
     // weight type (approximate or full)
-    std::string weighting_type;
+    //std::string weighting_type;
 
     // rtc or ptc types
     std::string tod_output_type, tod_output_subdir_name;
@@ -392,6 +392,8 @@ template<typename CT>
 void Engine::get_ptc_config(CT &config) {
     get_config_value(config, ptcproc.weighting_type, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","weighting",
                                                                                             "type"},{"full","approximate"});
+    get_config_value(config, ptcproc.reset_weighting, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","weighting",
+                                                                                            "set_high_weights_to_median"});
     get_config_value(config, ptcproc.lower_std_dev, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","flagging",
                                                                                            "lower_weight_factor"});
     get_config_value(config, ptcproc.upper_std_dev, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","flagging",
@@ -418,6 +420,8 @@ void Engine::get_ptc_config(CT &config) {
     ptcproc.cleaner.n_eig_to_cut = Eigen::Map<Eigen::VectorXI>(n_eig_to_cut.data(),n_eig_to_cut.size());
     get_config_value(config, ptcproc.cleaner.stddev_limit, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk",
                                                                                              "clean","stddev_limit"});
+    get_config_value(config, ptcproc.run_stokes_clean, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","clean","clean_polarized_maps"});
+
 }
 
 template<typename CT>
@@ -1593,19 +1597,9 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // add source dec
     fits_io->at(i).pfits->pHDU().addKey("SRC_DEC", telescope.tel_header["Header.Source.Dec"][0], "Source Dec (radians)");
     // add map tangent point ra
-    //if (telescope.tan_center_rad["ra"]==0) {
-        fits_io->at(i).pfits->pHDU().addKey("TAN_RA", telescope.tel_header["Header.Source.Ra"][0], "Map Tangent Point RA (radians)");
-    //}
-    //else {
-    //    fits_io->at(i).pfits->pHDU().addKey("TAN_RA", telescope.tan_center_rad["ra"], "Map Tangent Point RA (radians)");
-    //}
-    // add map tangent point dec
-    //if (telescope.tan_center_rad["dec"]==0) {
-        fits_io->at(i).pfits->pHDU().addKey("TAN_DEC", telescope.tel_header["Header.Source.Dec"][0], "Map Tangent Point Dec (radians)");
-    //}
-    //else {
-    //    fits_io->at(i).pfits->pHDU().addKey("TAN_DEC", telescope.tan_center_rad["dec"], "Map Tangent Point Dec (radians)");
-    //}
+    fits_io->at(i).pfits->pHDU().addKey("TAN_RA", telescope.tel_header["Header.Source.Ra"][0], "Map Tangent Point RA (radians)");
+    //add map tangent point dec
+    fits_io->at(i).pfits->pHDU().addKey("TAN_DEC", telescope.tel_header["Header.Source.Dec"][0], "Map Tangent Point Dec (radians)");
     // add mean alt
     fits_io->at(i).pfits->pHDU().addKey("MEAN_EL", RAD_TO_DEG*telescope.tel_data["TelElAct"].mean(), "mean elevation (deg)");
     // add mean az
@@ -1725,9 +1719,6 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         fits_io->at(map_index).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
     }
 
-    // add primary hdu
-    //add_phdu(fits_io, mb, map_index);
-
     // write noise maps
     if (!mb->noise.empty()) {
         for (Eigen::Index n=0; n<mb->n_noise; n++) {
@@ -1740,8 +1731,6 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             noise_fits_io->at(map_index).add_wcs(noise_fits_io->at(map_index).hdus.back(),mb->wcs);
             noise_fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
         }
-        // add primary hdu to noise files
-        //add_phdu(noise_fits_io, mb, map_index);
     }
 }
 

@@ -49,18 +49,27 @@ public:
         {12, 2},
     };
 
+    // map from array index to array name
     std::map<Eigen::Index, std::string> array_name_map = {
         {0,"a1100"},
         {1,"a1400"},
         {2,"a2000"}
     };
 
+    // map from array index to array wavelength
+    std::map<Eigen::Index, double> array_wavelength_map = {
+        {0,1.1},
+        {1,1.4},
+        {2,2.0}
+    };
+
+
     // expected fwhms
     std::map<Eigen::Index, double> array_fwhm_arcsec = {
         {0, 5.0},
         {1, 6.3},
         {2, 9.5}
-    };
+    };    
 
     template <toltecIO::DataType data_t, toltecIO::ProdType prod_t, toltecIO::FilterType filter_t>
     std::string create_filename(const std::string filepath, const std::string, std::string, std::string, const bool);

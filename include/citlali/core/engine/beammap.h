@@ -246,7 +246,7 @@ void Beammap::setup() {
     calib.apt_meta["flxscale"].push_back("flux conversion scale");
 
     // detector sensitivity
-    calib.apt_meta["sens"].push_back("units: V/Hz^-0.5");
+    calib.apt_meta["sens"].push_back("units: mJy/beam x s^0.5");
     calib.apt_meta["sens"].push_back("sensitivity");
 
     // detector derotation elevation
@@ -497,7 +497,7 @@ auto Beammap::run_loop() {
             //ptcproc.remove_flagged_dets(ptcs[i], calib_scan.apt, ptcs[i].det_indices.data);
 
             SPDLOG_INFO("processed time chunk processing");
-            ptcproc.run(ptcs[i], ptcs[i], calib_scan);
+            ptcproc.run(ptcs[i], ptcs[i], calib_scan, ptcs[i].det_indices.data, "I");
 
             // remove outliers after clean
             calib_scan = ptcproc.remove_bad_dets(ptcs[i], calib, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
@@ -909,12 +909,14 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
         std::string array_name = toltec_io.array_name_map[array_index];
 
         // calc flux scale (always in mJy/beam)
-        if (params(i,0) != 0 && calib.apt["flag"](i) != 0) {
+        if (params(i,0)!=0) {// && calib.apt["flag"](i)!=0) {
             calib.apt["flxscale"](i) = exp(-tau_freq[array_index](0))*beammap_fluxes_mJy_beam[array_name]/params(i,0);
+            calib.apt["sens"](i) = calib.apt["sens"](i)*calib.apt["flxscale"](i);
         }
         // set fluxscale (fcf) to zero if flagged
         else {
             calib.apt["flxscale"](i) = 0;
+            calib.apt["sens"](i) = 0;
         }
         return 0;
     });
@@ -1053,6 +1055,18 @@ auto Beammap::loop_pipeline() {
 
     // set to input parallel policy
     parallel_policy = omb.parallel_policy;
+
+    // calibrate timestreams
+    /*grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), scan_in_vec, scan_in_vec, [&](auto i) {
+        // calibrate tod
+        rtcproc.calibration.calibrate_tod(ptcs[i], ptcs[i].det_indices.data, ptcs[i].array_indices.data, calib);
+
+        //calc tau at toltec frequencies
+        auto tau_freq = rtcproc.calibration.calc_tau(ptcs[i].tel_data.data["TelElAct"], telescope.tau_225_GHz);
+        rtcproc.calibration.extinction_correction(ptcs[i], ptcs[i].det_indices.data, ptcs[i].array_indices.data, calib, tau_freq);
+
+        return 0;
+    });*/
 
     SPDLOG_INFO("calculating sensitivity");
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
