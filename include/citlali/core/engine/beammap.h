@@ -1231,8 +1231,17 @@ void Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
             calib.apt[name].segment(j,v.rows()) = v.col(i);
             j = j + v.rows();
         }
-        calib.apt_header_keys.push_back(name);
-        calib.apt_header_units[name] = "N/A";
+
+        bool found = false;
+        for (const auto &key: calib.apt_header_keys){
+            if (key==name) {
+                found = true;
+            }
+        }
+        if (!found) {
+            calib.apt_header_keys.push_back(name);
+            calib.apt_header_units[name] = "N/A";
+        }
 
         // detector orientation
         calib.apt_meta[name].push_back("units: N/A");

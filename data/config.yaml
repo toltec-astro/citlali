@@ -160,7 +160,6 @@ timestream: # timestream reduction parameters
   type: xs # type of TOD (xs, rs, is, qs)
   enabled: true # enable or disable TOD processing (to be implemented)
   chunking: # how to chunk timestreams
-    turnaround_samples_to_cut: 0 # number of samples to cut at turnarounds (0 uses hold signal only, debugging only!)
     force_chunking: false # ignore map pattern chunking and use config file chunk length
     length_sec: 10.0 # chunk length for lissajous/rastajous maps (ignored if raster map)
   polarimetry: # polarized reduction
