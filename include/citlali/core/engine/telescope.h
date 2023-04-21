@@ -13,6 +13,8 @@ class Telescope {
 public:
     // mapping pattern
     char obs_pgm_char [128] = "";
+    // obs goal
+    char obs_goal_char [128] = "";
     // source name
     char source_name_char [128] = "";
 
@@ -22,7 +24,7 @@ public:
     bool sim_obs;
 
     // strings for mapping pattern and source name
-    std::string obs_pgm, source_name;
+    std::string obs_pgm, source_name, obs_goal;
 
     // tangent plane center
     //std::map<std::string, double> tan_center_rad;

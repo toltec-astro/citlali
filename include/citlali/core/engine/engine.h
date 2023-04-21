@@ -1582,6 +1582,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("TULA", TULA_GIT_VERSION, "TULA_GIT_VERSION");
     // add redu type
     fits_io->at(i).pfits->pHDU().addKey("GOAL", redu_type, "Reduction type");
+    // add obs goal
+    fits_io->at(i).pfits->pHDU().addKey("OBSGOAL", telescope.obs_goal, "Obs goal");
     // add tod type
     fits_io->at(i).pfits->pHDU().addKey("TYPE", tod_type, "TOD Type");
     // add map grouping
