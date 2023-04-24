@@ -294,9 +294,9 @@ public:
 
 template<typename CT>
 void Engine::get_rtc_config(CT &config) {
-    get_config_value(config, rtcproc.lower_std_dev, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","flagging",
+    get_config_value(config, rtcproc.lower_weight_factor, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","flagging",
                                                                                            "lower_weight_factor"});
-    get_config_value(config, rtcproc.upper_std_dev, missing_keys, invalid_keys, std::tuple{"timestream", "raw_time_chunk","flagging",
+    get_config_value(config, rtcproc.upper_weight_factor, missing_keys, invalid_keys, std::tuple{"timestream", "raw_time_chunk","flagging",
                                                                                            "upper_weight_factor"});
     get_config_value(config, rtcproc.delta_f_min_Hz, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","flagging",
                                                                                             "delta_f_min_Hz"});
@@ -394,9 +394,9 @@ void Engine::get_ptc_config(CT &config) {
                                                                                             "type"},{"full","approximate"});
     get_config_value(config, ptcproc.reset_weighting, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","weighting",
                                                                                             "set_high_weights_to_median"});
-    get_config_value(config, ptcproc.lower_std_dev, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","flagging",
+    get_config_value(config, ptcproc.lower_weight_factor, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","flagging",
                                                                                            "lower_weight_factor"});
-    get_config_value(config, ptcproc.upper_std_dev, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","flagging",
+    get_config_value(config, ptcproc.upper_weight_factor, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","flagging",
                                                                                            "upper_weight_factor"});
 
     // for sensitivity fcf
@@ -412,15 +412,17 @@ void Engine::get_ptc_config(CT &config) {
     /* cleaning */
     get_config_value(config, ptcproc.run_clean, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","clean","enabled"});
 
-    // vector of groupings
-    ptcproc.cleaner.grouping = config.template get_typed<std::vector<std::string>>(std::tuple{"timestream","processed_time_chunk","clean","grouping"});
-    // vector of eigenvalues to cut
-    auto n_eig_to_cut = config.template get_typed<std::vector<Eigen::Index>>(std::tuple{"timestream","processed_time_chunk","clean","n_eig_to_cut"});
-    // map to eigen vector
-    ptcproc.cleaner.n_eig_to_cut = Eigen::Map<Eigen::VectorXI>(n_eig_to_cut.data(),n_eig_to_cut.size());
-    get_config_value(config, ptcproc.cleaner.stddev_limit, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk",
-                                                                                             "clean","stddev_limit"});
-    get_config_value(config, ptcproc.run_stokes_clean, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","clean","clean_polarized_maps"});
+    if (ptcproc.run_clean) {
+        // vector of groupings
+        ptcproc.cleaner.grouping = config.template get_typed<std::vector<std::string>>(std::tuple{"timestream","processed_time_chunk","clean","grouping"});
+        // vector of eigenvalues to cut
+        auto n_eig_to_cut = config.template get_typed<std::vector<Eigen::Index>>(std::tuple{"timestream","processed_time_chunk","clean","n_eig_to_cut"});
+        // map to eigen vector
+        ptcproc.cleaner.n_eig_to_cut = Eigen::Map<Eigen::VectorXI>(n_eig_to_cut.data(),n_eig_to_cut.size());
+        get_config_value(config, ptcproc.cleaner.stddev_limit, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk",
+                                                                                                 "clean","stddev_limit"});
+        get_config_value(config, ptcproc.run_stokes_clean, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","clean","clean_polarized_maps"});
+    }
 
 }
 
@@ -1618,15 +1620,15 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("SAMPRATE", telescope.fsmp, "sample rate (Hz)");
 
     // add apt table to header
-    std::vector<string> result;
+    std::vector<string> apt_filename;
     std::stringstream ss(calib.apt_filepath);
     std::string item;
     char delim = '/';
 
     while (getline (ss, item, delim)) {
-        result.push_back(item);
+        apt_filename.push_back(item);
     }
-    fits_io->at(i).pfits->pHDU().addKey("APT", result.back(), "APT table used");
+    fits_io->at(i).pfits->pHDU().addKey("APT", apt_filename.back(), "APT table used");
 
     // add control/runtime parameters
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.VERBOSE", verbose_mode, "Reduced in verbose mode");
@@ -1638,8 +1640,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.EXTINCTION", rtcproc.run_extinction, "Extinction corrected");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.EXTINCTION.EXTMODEL", rtcproc.calibration.extinction_model, "Extinction model");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.TYPE", ptcproc.weighting_type, "Weighting scheme");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.WTLOW", ptcproc.lower_std_dev, "Lower weight cutoff");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.WTHIGH", ptcproc.upper_std_dev, "Upper weight cutoff");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.WTLOW", ptcproc.lower_weight_factor, "Lower weight cutoff");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.WTHIGH", ptcproc.upper_weight_factor, "Upper weight cutoff");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED", ptcproc.run_clean, "Cleaned");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.NEIG", ptcproc.cleaner.n_eig_to_cut.sum(), "Number of eigenvalues removed");
 

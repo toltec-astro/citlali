@@ -36,7 +36,7 @@ public:
     timestream::Calibration calibration;
 
     // upper and lower limits for outliers
-    double lower_std_dev, upper_std_dev;
+    double lower_weight_factor, upper_weight_factor;
     // minimum allowed frequency distance between tones
     double delta_f_min_Hz;
 
@@ -261,7 +261,7 @@ auto RTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
     in.n_high_dets = 0;
 
     // only run if limits are not zero
-    if (lower_std_dev !=0 || upper_std_dev !=0) {
+    if (lower_weight_factor !=0 || upper_weight_factor !=0) {
         SPDLOG_INFO("removing outlier weights");
         for (Eigen::Index i=0; i<calib.n_nws; i++) {
             // number of unflagged detectors
@@ -316,7 +316,7 @@ auto RTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                 Eigen::Index det_index = det_indices(dets(j));
                 // flag those below limit
                 if (calib.apt["flag"](det_index) && calib.apt["nw"](det_index)==calib.nws(i)) {
-                    if ((det_std_dev(j) < (lower_std_dev*mean_std_dev)) && lower_std_dev!=0) {
+                    if ((det_std_dev(j) < (lower_weight_factor*mean_std_dev)) && lower_weight_factor!=0) {
                         if (map_grouping!="detector") {
                             in.flags.data.col(dets(j)).setZero();
                         }
@@ -328,7 +328,7 @@ auto RTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                     }
 
                     // flag those above limit
-                    if ((det_std_dev(j) > (upper_std_dev*mean_std_dev)) && upper_std_dev!=0) {
+                    if ((det_std_dev(j) > (upper_weight_factor*mean_std_dev)) && upper_weight_factor!=0) {
                         if (map_grouping!="detector") {
                             in.flags.data.col(dets(j)).setZero();
                         }

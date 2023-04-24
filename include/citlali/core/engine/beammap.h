@@ -42,6 +42,9 @@ public:
     // current iteration fit errors
     Eigen::MatrixXd perrors;
 
+    // reference detector
+    Eigen::Index beammap_reference_det_found = -99;
+
     // bitwise flags
     enum AptFlags {
         Good         = 0,
@@ -336,7 +339,7 @@ void Beammap::setup() {
     // is the detector rotated
     calib.apt_meta["reference_detector_subtracted"] = beammap_subtract_reference;
     // reference detector
-    calib.apt_meta["reference_det"] = beammap_reference_det;
+    calib.apt_meta["reference_det"] = beammap_reference_det_found;
 
     // print basic info for obs reduction
     print_summary();
@@ -350,15 +353,6 @@ auto Beammap::run_timestream() {
         auto kidsproc = std::get<1>(input_tuple);
         // start index input
         auto scan_rawobs = std::get<2>(input_tuple);
-
-        // get tone flags
-        Eigen::Index j = 0;
-        Eigen::VectorXd tone_flags(calib.n_dets);
-        for (Eigen::Index i=0; i<scan_rawobs.size(); i++) {
-            auto tone_axis = scan_rawobs[i].wcs.tone_axis("flag");
-            tone_flags.segment(j,tone_axis.size()) = tone_axis;
-            j = j + tone_axis.size();
-        }
 
         rtcdata.flags2.data.setConstant(timestream::TimestreamFlags::Good);
 
@@ -939,12 +933,15 @@ void Beammap::adjust_apt() {
     double ref_det_x_t = 0;
     double ref_det_y_t = 0;
 
+    beammap_reference_det_found = -99;
+
     // if particular reference detector is requested
     if (beammap_subtract_reference) {
         if (beammap_reference_det >= 0) {
+            beammap_reference_det_found = beammap_reference_det;
             // set reference x_t and y_t
-            ref_det_x_t = calib.apt["x_t"](beammap_reference_det);
-            ref_det_y_t = calib.apt["y_t"](beammap_reference_det);
+            ref_det_x_t = calib.apt["x_t"](beammap_reference_det_found);
+            ref_det_y_t = calib.apt["y_t"](beammap_reference_det_found);
         }
         // else use closest to (0,0) in a1100 (or map 0 if a1100 is missing)
         else {
@@ -986,19 +983,18 @@ void Beammap::adjust_apt() {
             Eigen::VectorXd dist = pow(x_t.array(),2) + pow(y_t.array(),2);
 
             // index of detector closest to zero
-            auto min_dist = dist.minCoeff(&beammap_reference_det);
+            auto min_dist = dist.minCoeff(&beammap_reference_det_found);
 
             // get row in apt table
-            beammap_reference_det = det_indices(beammap_reference_det);
+            beammap_reference_det_found = det_indices(beammap_reference_det_found);
 
             // set reference x_t and y_t
-            ref_det_x_t = calib.apt["x_t"](beammap_reference_det);
-            ref_det_y_t = calib.apt["y_t"](beammap_reference_det);
+            ref_det_x_t = calib.apt["x_t"](beammap_reference_det_found);
+            ref_det_y_t = calib.apt["y_t"](beammap_reference_det_found);
         }
-        SPDLOG_INFO("using detector {} at ({},{}) arcsec",beammap_reference_det,
+        SPDLOG_INFO("using detector {} at ({},{}) arcsec",beammap_reference_det_found,
                     static_cast<float>(ref_det_x_t),static_cast<float>(ref_det_y_t));
     }
-
     else {
         SPDLOG_INFO("no reference detector selected");
     }
@@ -1055,18 +1051,6 @@ auto Beammap::loop_pipeline() {
 
     // set to input parallel policy
     parallel_policy = omb.parallel_policy;
-
-    // calibrate timestreams
-    /*grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), scan_in_vec, scan_in_vec, [&](auto i) {
-        // calibrate tod
-        rtcproc.calibration.calibrate_tod(ptcs[i], ptcs[i].det_indices.data, ptcs[i].array_indices.data, calib);
-
-        //calc tau at toltec frequencies
-        auto tau_freq = rtcproc.calibration.calc_tau(ptcs[i].tel_data.data["TelElAct"], telescope.tau_225_GHz);
-        rtcproc.calibration.extinction_correction(ptcs[i], ptcs[i].det_indices.data, ptcs[i].array_indices.data, calib, tau_freq);
-
-        return 0;
-    });*/
 
     SPDLOG_INFO("calculating sensitivity");
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
@@ -1147,7 +1131,7 @@ auto Beammap::loop_pipeline() {
             // set parallel policy to sequential for tod output
             parallel_policy = "seq";
 
-            SPDLOG_INFO("adding final apt and detector tangent plane pointing to tod files");
+            SPDLOG_INFO("adding final apt and detector pointing to tod files");
             // loop through tod files
             for (const auto & [key, val]: tod_filename) {
                 netCDF::NcFile fo(val, netCDF::NcFile::write);

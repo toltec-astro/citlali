@@ -133,7 +133,7 @@ auto Lali::run() {
 
             Eigen::VectorXI array_indices = calib.apt["array"].template cast<Eigen::Index> ();
             Eigen::VectorXI nw_indices = calib.apt["nw"].template cast<Eigen::Index> ();
-            Eigen::VectorXI det_indices = Eigen::VectorXI::LinSpaced(rtcdata.scans.data.cols(),0,rtcdata.scans.data.cols()+1);
+            Eigen::VectorXI det_indices = Eigen::VectorXI::LinSpaced(rtcdata.scans.data.cols(),0,rtcdata.scans.data.cols()-1);
 
             // calibrate tod
             rtcproc.calibration.calibrate_tod(rtcdata, det_indices, array_indices, calib);
@@ -144,7 +144,7 @@ auto Lali::run() {
         if (rtcproc.run_polarization && rtcproc.run_extinction) {
             Eigen::VectorXI array_indices = calib.apt["array"].template cast<Eigen::Index> ();
             Eigen::VectorXI nw_indices = calib.apt["nw"].template cast<Eigen::Index> ();
-            Eigen::VectorXI det_indices = Eigen::VectorXI::LinSpaced(rtcdata.scans.data.cols(),0,rtcdata.scans.data.cols()+1);
+            Eigen::VectorXI det_indices = Eigen::VectorXI::LinSpaced(rtcdata.scans.data.cols(),0,rtcdata.scans.data.cols()-1);
 
             //calc tau at toltec frequencies
             auto tau_freq = rtcproc.calibration.calc_tau(rtcdata.tel_data.data["TelElAct"], telescope.tau_225_GHz);
@@ -213,7 +213,7 @@ auto Lali::run() {
 
             // reset weights to median
             if (ptcproc.reset_weighting) {
-                ptcproc.reset_weights(ptcdata, calib);
+                ptcproc.reset_weights(ptcdata, calib, det_indices);
             }
 
             if (verbose_mode) {

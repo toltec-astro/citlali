@@ -22,7 +22,7 @@ public:
     // ptc tod proc
     timestream::Cleaner cleaner;
 
-    double lower_std_dev, upper_std_dev;
+    double lower_weight_factor, upper_weight_factor;
 
     void subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &);
 
@@ -35,8 +35,9 @@ public:
     void calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, apt_type &, tel_type &,
                       Eigen::DenseBase<Derived> &);
 
-    template <typename calib_t>
-    auto reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &);
+    template <typename calib_t, typename Derived>
+    auto reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &,
+                       Eigen::DenseBase<Derived> &det_indices);
 
     template <typename apt_t, typename Derived>
     void remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, apt_t &, Eigen::DenseBase<Derived> &);
@@ -99,7 +100,12 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
             // map of tuples to hold detector limits
             std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grouping_limits;
 
-            if (stokes_param=="I") {
+            // use all detectors for cleaning
+            if (group == "all") {
+                grouping_limits[0] = std::make_tuple(0,in.scans.data.cols());
+            }
+
+            else if (stokes_param=="I") {
                 // network cleaning
                 if (group == "nw" || group == "network") {
                     grouping_limits = calib.nw_limits;
@@ -108,11 +114,6 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 // array cleaning
                 else if (group == "array") {
                     grouping_limits = calib.array_limits;
-                }
-
-                // use all detectors for cleaning
-                else if (group == "all") {
-                    grouping_limits[0] = std::make_tuple(0,in.scans.data.cols());
                 }
             }
 
@@ -124,7 +125,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
                     auto det_index = det_indices(i);
                     if (calib.apt[group](det_index) == grp_i) {
-                        std::get<1>(grouping_limits[grp_i]) = i+1;
+                        std::get<1>(grouping_limits[grp_i]) = i + 1;
                     }
                     else {
                         grp_i = calib.apt[group](det_index);
@@ -233,7 +234,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
                 conversion_factor = 1;
             }
             // make sure flux conversion is not zero (otherwise weight=0)
-            if (conversion_factor!=0) {// && apt["flag"](det_index)!=0) {
+            if (conversion_factor*apt["sens"](det_index)!=0) {
                 // calculate weights while applying flux calibration
                 in.weights.data(i) = pow(sqrt(telescope.d_fsmp)*apt["sens"](det_index)*conversion_factor,-2.0);
             }
@@ -251,7 +252,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
 
         for (Eigen::Index i=0; i<n_dets; i++) {
             // only calculate weights if detector is unflagged
-            if (apt["flag"](i)!=0) {
+            if (apt["flag"](det_indices(i))!=0) {
                 // make Eigen::Maps for each detector's scan
                 Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
                     in.scans.data.col(i).data(), in.scans.data.rows());
@@ -274,29 +275,57 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
     }
 }
 
-template <typename calib_t>
-auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib) {
+template <typename calib_t, typename Derived>
+auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib,
+                            Eigen::DenseBase<Derived> &det_indices) {
     // number of detectors
     Eigen::Index n_dets = in.scans.data.cols();
-    for (auto const& [key, val] : calib.nw_limits) {
-        auto nw_weights = in.weights.data(Eigen::seq(std::get<0>(calib.nw_limits[key]),
-                                                     std::get<1>(calib.nw_limits[key])-1));
 
-        // number of good detectors
-        Eigen::Index n_good_det = calib.apt["flag"](Eigen::seq(std::get<0>(calib.nw_limits[key]),
-                                                               std::get<1>(calib.nw_limits[key])-1)).sum();
+    std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grouping_limits;
+
+
+    Eigen::Index grp_i = calib.apt["nw"](det_indices(0));
+    grouping_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
+    Eigen::Index j = 0;
+    // loop through apt table arrays, get highest index for current array
+    for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
+        auto det_index = det_indices(i);
+        if (calib.apt["nw"](det_index) == grp_i) {
+            std::get<1>(grouping_limits[grp_i]) = i + 1;
+        }
+        else {
+            grp_i = calib.apt["nw"](det_index);
+            j += 1;
+            grouping_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
+        }
+    }
+
+    for (auto const& [key, val] : grouping_limits) {
+        auto nw_weights = in.weights.data(Eigen::seq(std::get<0>(grouping_limits[key]),
+                                                     std::get<1>(grouping_limits[key])-1));
+
+        //SPDLOG_INFO("grp {} {}",std::get<0>(grouping_limits[key]),std::get<1>(grouping_limits[key]));
+
+        Eigen::Index n_good_dets = 0;
+        j = std::get<0>(grouping_limits[key]);
+        for (Eigen::Index m=0; m<nw_weights.size(); m++) {
+            if (calib.apt["flag"](det_indices(j)) && nw_weights(m)>0) {
+                    n_good_dets++;
+            }
+            j++;
+        }
 
         // to hold good detectors
         Eigen::VectorXd good_wt;
 
-        if (n_good_det>0) {
-            good_wt.resize(n_good_det);
+        if (n_good_dets>0) {
+            good_wt.resize(n_good_dets);
 
             // remove flagged dets
-            Eigen::Index j = std::get<0>(calib.nw_limits[key]);
+            j = std::get<0>(grouping_limits[key]);
             Eigen::Index k = 0;
             for (Eigen::Index m=0; m<nw_weights.size(); m++) {
-                if (calib.apt["flag"](j)) {
+                if (calib.apt["flag"](det_indices(j)) && nw_weights(m)>0) {
                     good_wt(k) = nw_weights(m);
                     k++;
                 }
@@ -308,11 +337,11 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
         }
 
         auto med_wt = tula::alg::median(good_wt);
-        SPDLOG_INFO("nw{} med_wt {}",key, med_wt);
+        SPDLOG_INFO("nw{} med_wt {} {} {}",key, med_wt, n_good_dets, nw_weights);
 
         int outliers = 0;
 
-        Eigen::Index j = std::get<0>(calib.nw_limits[key]);
+        j = std::get<0>(grouping_limits[key]);
         for (Eigen::Index m=0; m<nw_weights.size(); m++) {
             if (in.weights.data(j) > med_wt) {
                 in.weights.data(j) = med_wt;
@@ -360,7 +389,7 @@ auto PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
     in.n_high_dets = 0;
 
     // only run if limits are not zero
-    if (lower_std_dev !=0 || upper_std_dev !=0) {
+    if (lower_weight_factor !=0 || upper_weight_factor !=0) {
         for (Eigen::Index i=0; i<calib.n_nws; i++) {
             // number of unflagged detectors
             Eigen::Index n_good_dets = 0;
@@ -415,7 +444,7 @@ auto PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                 Eigen::Index det_index = det_indices(dets(j));
                 // flag those below limit
                 if (calib.apt["flag"](det_index) && calib.apt["nw"](det_index)==calib.nws(i)) {
-                    if ((det_std_dev(j) < (lower_std_dev*mean_std_dev))  && lower_std_dev!=0) {
+                    if ((det_std_dev(j) < (lower_weight_factor*mean_std_dev))  && lower_weight_factor!=0) {
                         if (map_grouping!="detector") {
                             in.flags.data.col(dets(j)).setZero();
                         }
@@ -427,7 +456,7 @@ auto PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                     }
 
                     // flag those above limit
-                    if ((det_std_dev(j) > (upper_std_dev*mean_std_dev))  && upper_std_dev!=0) {
+                    if ((det_std_dev(j) > (upper_weight_factor*mean_std_dev))  && upper_weight_factor!=0) {
                         if (map_grouping!="detector") {
                             in.flags.data.col(dets(j)).setZero();
                         }
@@ -469,7 +498,7 @@ auto PTCProc::remove_bad_dets_iter(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
     in.n_high_dets = 0;
 
     // only do if config options are not zero
-    if (upper_std_dev!=0 || lower_std_dev!=0) {
+    if (upper_weight_factor!=0 || lower_weight_factor!=0) {
         SPDLOG_INFO("removing outlier weights");
         for (Eigen::Index i=0; i<calib.n_nws; i++) {
             bool keep_going = true;
@@ -530,7 +559,7 @@ auto PTCProc::remove_bad_dets_iter(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                     Eigen::Index det_index = det_indices(dets(j));
                     // flag those below limit
                     if (calib_scan.apt["flag"](det_index) && calib_scan.apt["nw"](det_index)==calib_scan.nws(i)) {
-                        if ((det_std_dev(j) < (lower_std_dev*mean_std_dev)) && lower_std_dev!=0) {
+                        if ((det_std_dev(j) < (lower_weight_factor*mean_std_dev)) && lower_weight_factor!=0) {
                             if (map_grouping!="detector") {
                                 in.flags.data.col(dets(j)).setZero();
                                 calib_scan.apt["flag"](det_index) = 0;
@@ -543,7 +572,7 @@ auto PTCProc::remove_bad_dets_iter(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                         }
 
                         // flag those above limit
-                        if ((det_std_dev(j) > (upper_std_dev*mean_std_dev)) && upper_std_dev!=0) {
+                        if ((det_std_dev(j) > (upper_weight_factor*mean_std_dev)) && upper_weight_factor!=0) {
                             if (map_grouping!="detector") {
                                 in.flags.data.col(dets(j)).setZero();
                                 calib_scan.apt["flag"](det_index) = 0;
@@ -660,7 +689,7 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         }
 
         // append data
-        for (std::size_t i = 0; i < TULA_SIZET(in.scans.data.rows()); ++i) {
+        for (std::size_t i=0; i<TULA_SIZET(in.scans.data.rows()); ++i) {
             start_index[0] = n_pts_exists + i;
             start_index_tel[0] = n_pts_exists + i;
 
@@ -713,7 +742,7 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         // overwrite apt table
         for (auto const& x: apt) {
             netCDF::NcVar apt_v = fo.getVar("apt_" + x.first);
-            for (std::size_t i=0; i< TULA_SIZET(n_dets_exists); ++i) {
+            for (std::size_t i=0; i<TULA_SIZET(n_dets_exists); ++i) {
                 start_index_apt[0] = i;
                 apt_v.putVar(start_index_apt, size_apt, &apt[x.first](det_indices(i)));
             }
