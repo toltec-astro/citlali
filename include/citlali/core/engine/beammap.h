@@ -904,7 +904,8 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
 
         // calc flux scale (always in mJy/beam)
         if (params(i,0)!=0) {// && calib.apt["flag"](i)!=0) {
-            calib.apt["flxscale"](i) = exp(-tau_freq[array_index](0))*beammap_fluxes_mJy_beam[array_name]/params(i,0);
+            //calib.apt["flxscale"](i) = exp(-tau_freq[array_index](0))*beammap_fluxes_mJy_beam[array_name]/params(i,0);
+            calib.apt["flxscale"](i) = beammap_fluxes_mJy_beam[array_name]/params(i,0);
             calib.apt["sens"](i) = calib.apt["sens"](i)*calib.apt["flxscale"](i);
         }
         // set fluxscale (fcf) to zero if flagged

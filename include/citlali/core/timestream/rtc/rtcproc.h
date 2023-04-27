@@ -222,6 +222,7 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         }
     }
 
+    // copy fcf
     out.fcf.data = in.fcf.data;
 
     if (run_calibrate) {
@@ -238,6 +239,7 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         if (!run_polarization) {
             // calc tau at toltec frequencies
             auto tau_freq = calibration.calc_tau(out.tel_data.data["TelElAct"], telescope.tau_225_GHz);
+            // correct for extinction
             calibration.extinction_correction(out, det_indices, array_indices, calib, tau_freq);
         }
     }
