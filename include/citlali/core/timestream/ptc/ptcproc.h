@@ -284,17 +284,17 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
     std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grouping_limits;
 
 
-    Eigen::Index grp_i = calib.apt["nw"](det_indices(0));
+    Eigen::Index grp_i = calib.apt["array"](det_indices(0));
     grouping_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
     Eigen::Index j = 0;
     // loop through apt table arrays, get highest index for current array
     for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
         auto det_index = det_indices(i);
-        if (calib.apt["nw"](det_index) == grp_i) {
+        if (calib.apt["array"](det_index) == grp_i) {
             std::get<1>(grouping_limits[grp_i]) = i + 1;
         }
         else {
-            grp_i = calib.apt["nw"](det_index);
+            grp_i = calib.apt["array"](det_index);
             j += 1;
             grouping_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
         }
@@ -337,7 +337,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
         }
 
         auto med_wt = tula::alg::median(good_wt);
-        SPDLOG_INFO("nw{} med_wt {} {} {}",key, med_wt, n_good_dets, nw_weights);
+        //SPDLOG_INFO("array {} med_wt {} {} {}",key, med_wt, n_good_dets, nw_weights);
 
         int outliers = 0;
 
@@ -349,7 +349,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
             }
             j++;
         }
-        SPDLOG_INFO("nw{} had {} outlier weights",key, outliers);
+        SPDLOG_INFO("array {} had {} outlier weights",key, outliers);
     }
 }
 
