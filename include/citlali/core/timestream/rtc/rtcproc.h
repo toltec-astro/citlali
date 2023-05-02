@@ -343,7 +343,7 @@ auto RTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                 }
             }
 
-            SPDLOG_INFO("nw{}: {}/{} dets below limit. {}/{} dets above limit.", calib.nws(i), n_low_dets, n_good_dets,
+            SPDLOG_INFO("array {}: {}/{} dets below limit. {}/{} dets above limit.", calib.arrays(i), n_low_dets, n_good_dets,
                         n_high_dets, n_good_dets);
         }
     }

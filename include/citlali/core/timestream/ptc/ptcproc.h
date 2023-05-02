@@ -442,7 +442,7 @@ auto PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                 Eigen::Index det_index = det_indices(dets(j));
                 // flag those below limit
                 if (calib.apt["flag"](det_index) && calib.apt["array"](det_index)==calib.arrays(i)) {
-                    if ((det_std_dev(j) < (lower_weight_factor*mean_std_dev))  && lower_weight_factor!=0) {
+                    if ((det_std_dev(j) < (lower_weight_factor*mean_std_dev)) && lower_weight_factor!=0) {
                         if (map_grouping!="detector") {
                             in.flags.data.col(dets(j)).setZero();
                         }
@@ -454,7 +454,7 @@ auto PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                     }
 
                     // flag those above limit
-                    if ((det_std_dev(j) > (upper_weight_factor*mean_std_dev))  && upper_weight_factor!=0) {
+                    if ((det_std_dev(j) > (upper_weight_factor*mean_std_dev)) && upper_weight_factor!=0) {
                         if (map_grouping!="detector") {
                             in.flags.data.col(dets(j)).setZero();
                         }
@@ -467,7 +467,7 @@ auto PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                 }
             }
 
-            SPDLOG_INFO("nw{}: {}/{} dets below limit. {}/{} dets above limit.", calib.nws(i), n_low_dets, n_good_dets,
+            SPDLOG_INFO("array {}: {}/{} dets below limit. {}/{} dets above limit.", calib.arrays(i), n_low_dets, n_good_dets,
                         n_high_dets, n_good_dets);
         }
     }
