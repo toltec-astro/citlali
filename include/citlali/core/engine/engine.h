@@ -392,7 +392,7 @@ template<typename CT>
 void Engine::get_ptc_config(CT &config) {
     get_config_value(config, ptcproc.weighting_type, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","weighting",
                                                                                             "type"},{"full","approximate"});
-    get_config_value(config, ptcproc.reset_weighting, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","weighting",
+    get_config_value(config, ptcproc.med_weight_factor, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","weighting",
                                                                                             "set_high_weights_to_median"});
     get_config_value(config, ptcproc.lower_weight_factor, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","flagging",
                                                                                            "lower_weight_factor"});
