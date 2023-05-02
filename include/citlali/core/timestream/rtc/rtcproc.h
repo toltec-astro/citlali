@@ -265,13 +265,13 @@ auto RTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
     // only run if limits are not zero
     if (lower_weight_factor !=0 || upper_weight_factor !=0) {
         SPDLOG_INFO("removing outlier weights");
-        for (Eigen::Index i=0; i<calib.n_nws; i++) {
+        for (Eigen::Index i=0; i<calib.n_arrays; i++) {
             // number of unflagged detectors
             Eigen::Index n_good_dets = 0;
 
             for (Eigen::Index j=0; j<n_dets; j++) {
                 Eigen::Index det_index = det_indices(j);
-                if (calib.apt["flag"](det_index) && calib.apt["nw"](det_index)==calib.nws(i)) {
+                if (calib.apt["flag"](det_index) && calib.apt["array"](det_index)==calib.arrays(i)) {
                     n_good_dets++;
                 }
             }
@@ -283,7 +283,7 @@ auto RTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
             // collect standard deviation from good detectors
             for (Eigen::Index j=0; j<n_dets; j++) {
                 Eigen::Index det_index = det_indices(j);
-                if (calib.apt["flag"](det_index) && calib.apt["nw"](det_index)==calib.nws(i)) {
+                if (calib.apt["flag"](det_index) && calib.apt["array"](det_index)==calib.arrays(i)) {
 
                     // make Eigen::Maps for each detector's scan
                     Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
@@ -317,7 +317,7 @@ auto RTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
             for (Eigen::Index j=0; j<n_good_dets; j++) {
                 Eigen::Index det_index = det_indices(dets(j));
                 // flag those below limit
-                if (calib.apt["flag"](det_index) && calib.apt["nw"](det_index)==calib.nws(i)) {
+                if (calib.apt["flag"](det_index) && calib.apt["array"](det_index)==calib.arrays(i)) {
                     if ((det_std_dev(j) < (lower_weight_factor*mean_std_dev)) && lower_weight_factor!=0) {
                         if (map_grouping!="detector") {
                             in.flags.data.col(dets(j)).setZero();

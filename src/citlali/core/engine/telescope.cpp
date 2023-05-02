@@ -19,10 +19,17 @@ void Telescope::get_tel_data(std::string &filepath) {
         auto vars = fo.getVars();
 
         // get mapping pattern
+        vars.find("Header.Dcs.ObsGoal")->second.getVar(&obs_goal_char);
+        obs_goal = std::string(obs_goal_char);
+
+        std::string::iterator end_pos = std::remove(obs_goal.begin(), obs_goal.end(), ' ');
+        obs_goal.erase(end_pos, obs_goal.end());
+
+        // get mapping pattern
         vars.find("Header.Dcs.ObsPgm")->second.getVar(&obs_pgm_char);
         obs_pgm = std::string(obs_pgm_char);
 
-        std::string::iterator end_pos = std::remove(obs_pgm.begin(), obs_pgm.end(), ' ');
+        end_pos = std::remove(obs_pgm.begin(), obs_pgm.end(), ' ');
         obs_pgm.erase(end_pos, obs_pgm.end());
 
         // work around for files with bad ObsPgm

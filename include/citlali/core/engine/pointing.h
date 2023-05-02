@@ -328,7 +328,7 @@ auto Pointing::run() {
             ptcproc.calc_weights(ptcdata, calib.apt, telescope, det_indices);
 
             // reset weights to median
-            if (ptcproc.reset_weighting) {
+            if (ptcproc.med_weight_factor >= 1) {
                 ptcproc.reset_weights(ptcdata, calib, det_indices);
             }
 
