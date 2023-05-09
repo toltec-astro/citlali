@@ -205,10 +205,10 @@ timestream: # timestream reduction parameters
       enabled: false # enable or disable cleaning
       grouping: [array] # clean grouping (array, nw, all)
       n_eig_to_cut: [3] # number of eigenvalues to remove (if stddev_limit >0, calc this many eigs, if this is 0, calc all eigs)
-      clean_polarized_maps: false # carry out cleaning on Q and U maps as well as I maps
+      clean_polarized_time_chunks: false # carry out cleaning on Q and U maps as well as I maps
     weighting: # how to weight data and maps
       type: full # type of TOD weighting (full=use scan variance/approximate=use det sensitivity)
-      set_high_weights_to_median: true # set all weights above median to median of unflagged detectors
+      median_weight_factor: true # set all weights above this factorx median of unflagged detectors to median (>=1 allowed)
     flagging: # controls flagging after cleaning
       lower_weight_factor: 0.0 # flag detectors below this weight limit (ignored if 0, weight=1/variance of TOD)
       upper_weight_factor: 0.0 # flag detectors above this weight limit (ignored if 0, weight=1/variance of TOD)

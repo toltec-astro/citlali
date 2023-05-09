@@ -393,7 +393,7 @@ void Engine::get_ptc_config(CT &config) {
     get_config_value(config, ptcproc.weighting_type, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","weighting",
                                                                                             "type"},{"full","approximate"});
     get_config_value(config, ptcproc.med_weight_factor, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","weighting",
-                                                                                            "set_high_weights_to_median"});
+                                                                                            "median_weight_factor"});
     get_config_value(config, ptcproc.lower_weight_factor, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","flagging",
                                                                                            "lower_weight_factor"});
     get_config_value(config, ptcproc.upper_weight_factor, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","flagging",
@@ -421,7 +421,7 @@ void Engine::get_ptc_config(CT &config) {
         ptcproc.cleaner.n_eig_to_cut = Eigen::Map<Eigen::VectorXI>(n_eig_to_cut.data(),n_eig_to_cut.size());
         get_config_value(config, ptcproc.cleaner.stddev_limit, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk",
                                                                                                  "clean","stddev_limit"});
-        get_config_value(config, ptcproc.run_stokes_clean, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","clean","clean_polarized_maps"});
+        get_config_value(config, ptcproc.run_stokes_clean, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","clean","clean_polarized_time_chunk"});
     }
 
 }
