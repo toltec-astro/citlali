@@ -511,10 +511,11 @@ int run(const rc_t &rc) {
                     if (todproc.engine().rtcproc.run_polarization) {
                         SPDLOG_INFO("getting hwp file");
                         std::string hwp_filepath;
-                        try {
+
+                        if (rawobs.hwpdata().has_value()) {
                             hwp_filepath = rawobs.hwpdata()->filepath();
                         }
-                        catch (...) {
+                        else {
                             hwp_filepath = "null";
                         }
                         todproc.engine().calib.get_hwp(hwp_filepath);
