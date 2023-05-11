@@ -145,7 +145,7 @@ void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in
 
         // get parameters for current detector
         auto amp = 1;
-        auto off_lat = 0;//pt["y_t"](det_index)*ASEC_TO_RAD;
+        auto off_lat = 0;//apt["y_t"](det_index)*ASEC_TO_RAD;
         auto off_lon = 0;//apt["x_t"](det_index)*ASEC_TO_RAD;
         auto rot_ang = apt["angle"](det_index);
 

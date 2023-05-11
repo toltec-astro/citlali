@@ -65,7 +65,7 @@ struct RawObs : ConfigMapper<RawObs> {
         static auto check_config(config_t &config)
             -> std::optional<std::string> {
             std::vector<std::string> missing_keys;
-            SPDLOG_TRACE("check data item config\n{}", config);
+            SPDLOG_INFO("check data item config\n{}", config);
             if (!config.has(std::tuple{"meta", "interface"})) {
                 missing_keys.push_back("meta.interface");
             }
@@ -126,7 +126,7 @@ struct RawObs : ConfigMapper<RawObs> {
         static auto check_config(config_t &config)
             -> std::optional<std::string> {
             std::vector<std::string> missing_keys;
-            SPDLOG_TRACE("check array prop table config\n{}", config);
+            SPDLOG_INFO("check array prop table config\n{}", config);
             if (!config.has("filepath")) {
                 missing_keys.push_back("filepath");
             }
@@ -155,7 +155,7 @@ struct RawObs : ConfigMapper<RawObs> {
         static auto check_config(config_t &config)
             -> std::optional<std::string> {
             std::vector<std::string> missing_keys;
-            SPDLOG_TRACE("check photometry calib info\n{}", config);
+            SPDLOG_INFO("check photometry calib info\n{}", config);
             // do the checks here
             if (missing_keys.empty()) {
                 return std::nullopt;
@@ -176,7 +176,7 @@ struct RawObs : ConfigMapper<RawObs> {
         static auto check_config(config_t &config)
             -> std::optional<std::string> {
             std::vector<std::string> missing_keys;
-            SPDLOG_TRACE("check astrometry calib info\n{}", config);
+            SPDLOG_INFO("check astrometry calib info\n{}", config);
             // do the checks here
             if (missing_keys.empty()) {
                 return std::nullopt;
@@ -202,7 +202,7 @@ struct RawObs : ConfigMapper<RawObs> {
         static auto check_config(config_t &config)
             -> std::optional<std::string> {
             std::vector<std::string> missing_keys;
-            SPDLOG_TRACE("check cal item config\n{}", config);
+            SPDLOG_INFO("check cal item config\n{}", config);
             if (!config.has("type")) {
                 missing_keys.push_back("type");
             }
@@ -268,7 +268,7 @@ struct RawObs : ConfigMapper<RawObs> {
     static auto check_config(const config_t &config)
         -> std::optional<std::string> {
         std::vector<std::string> missing_keys;
-        SPDLOG_TRACE("check raw obs config\n{}", config);
+        SPDLOG_INFO("check raw obs config\n{}", config);
         if (!config.has(std::tuple{"meta", "name"})) {
             missing_keys.push_back("meta.name");
         }
@@ -385,7 +385,7 @@ void RawObs::collect_data_items() {
     auto node_data_items = this->config().get_node("data_items");
     auto n_data_items = node_data_items.size();
     for (std::size_t i = 0; i < n_data_items; ++i) {
-        SPDLOG_TRACE("add data item {} of {}", i, n_data_items);
+        SPDLOG_INFO("add data item {} of {}", i, n_data_items);
         data_items.emplace_back(
             config_t{node_data_items[i], this->config().filepath()});
     }
@@ -423,11 +423,11 @@ void RawObs::collect_data_items() {
     }
     // The hwp data is optional
     if (!m_hwpdata_index) {
-        SPDLOG_TRACE("no hwp data item found");
+        SPDLOG_INFO("no hwp data item found");
     }
-    SPDLOG_TRACE("kidsdata_indices={} teldata_index={} hwpdata_index={}",
+    SPDLOG_INFO("kidsdata_indices={} teldata_index={} hwpdata_index={}",
                  m_kidsdata_indices, m_teldata_index, m_hwpdata_index);
-    SPDLOG_TRACE("kidsdata={} teldata={} hwpdata={}", kidsdata(), teldata(),
+    SPDLOG_INFO("kidsdata={} teldata={} hwpdata={}", kidsdata(), teldata(),
                  hwpdata());
 }
 
@@ -472,8 +472,8 @@ void RawObs::collect_cal_items() {
     if (!m_apt_index) {
         throw std::runtime_error("no array prop table found");
     }
-    SPDLOG_TRACE("apt_index={}", m_apt_index);
-    SPDLOG_TRACE("apt={}", array_prop_table());
+    SPDLOG_INFO("apt_index={}", m_apt_index);
+    SPDLOG_INFO("apt={}", array_prop_table());
 }
 /**
  * @brief The Coordinator struct
@@ -522,7 +522,7 @@ private:
         auto node_inputs = this->config().get_node("inputs");
         auto n_inputs = node_inputs.size();
         for (std::size_t i = 0; i < n_inputs; ++i) {
-            SPDLOG_TRACE("add input {} of {}", i, n_inputs);
+            SPDLOG_INFO("add input {} of {}", i, n_inputs);
             inputs.emplace_back(
                 config_t{node_inputs[i], this->config().filepath()});
         }
