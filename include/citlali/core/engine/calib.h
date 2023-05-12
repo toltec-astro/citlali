@@ -17,7 +17,10 @@ public:
     std::string apt_filepath;
     // apt table
     std::map<std::string, Eigen::VectorXd> apt;
-    Eigen::VectorXd hwp_angle, hwp_ts;
+    Eigen::VectorXd hwp_angle, hwp_recvt;
+    Eigen::MatrixXd hwp_ts;
+
+    double hwpr_fpga_freq;
 
     // apt header
     YAML::Node apt_meta;

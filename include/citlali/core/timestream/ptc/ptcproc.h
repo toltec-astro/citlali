@@ -284,7 +284,6 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
 
     std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grouping_limits;
 
-
     Eigen::Index grp_i = calib.apt["array"](det_indices(0));
     grouping_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
     Eigen::Index j = 0;
@@ -302,12 +301,12 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
     }
 
     for (auto const& [key, val] : grouping_limits) {
-        auto nw_weights = in.weights.data(Eigen::seq(std::get<0>(grouping_limits[key]),
+        auto grp_weights = in.weights.data(Eigen::seq(std::get<0>(grouping_limits[key]),
                                                      std::get<1>(grouping_limits[key])-1));
         Eigen::Index n_good_dets = 0;
         j = std::get<0>(grouping_limits[key]);
-        for (Eigen::Index m=0; m<nw_weights.size(); m++) {
-            if (calib.apt["flag"](det_indices(j)) && nw_weights(m)>0) {
+        for (Eigen::Index m=0; m<grp_weights.size(); m++) {
+            if (calib.apt["flag"](det_indices(j)) && grp_weights(m)>0) {
                     n_good_dets++;
             }
             j++;
@@ -322,16 +321,16 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
             // remove flagged dets
             j = std::get<0>(grouping_limits[key]);
             Eigen::Index k = 0;
-            for (Eigen::Index m=0; m<nw_weights.size(); m++) {
-                if (calib.apt["flag"](det_indices(j)) && nw_weights(m)>0) {
-                    good_wt(k) = nw_weights(m);
+            for (Eigen::Index m=0; m<grp_weights.size(); m++) {
+                if (calib.apt["flag"](det_indices(j)) && grp_weights(m)>0) {
+                    good_wt(k) = grp_weights(m);
                     k++;
                 }
                 j++;
             }
         }
         else {
-            good_wt = nw_weights;
+            good_wt = grp_weights;
         }
 
         auto med_wt = tula::alg::median(good_wt);
@@ -340,7 +339,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
         int outliers = 0;
 
         j = std::get<0>(grouping_limits[key]);
-        for (Eigen::Index m=0; m<nw_weights.size(); m++) {
+        for (Eigen::Index m=0; m<grp_weights.size(); m++) {
             if (in.weights.data(j) > med_weight_factor*med_wt) {
                 in.weights.data(j) = med_wt;
                 outliers++;
@@ -734,6 +733,12 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
             for (auto const& x: in.pointing_offsets_arcsec.data) {
                 NcVar offset_v = fo.getVar("pointing_offset_"+x.first);
                 offset_v.putVar(start_index_tel, size_tel, x.second.row(i).data());
+            }
+
+            // append hwpr angle
+            if (in.hwp_angle.data.size()!=0) {
+                NcVar hwpr_v = fo.getVar("hwpr");
+                hwpr_v.putVar(start_index_tel, size_tel, in.hwp_angle.data.row(i).data());
             }
         }
 

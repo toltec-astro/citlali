@@ -372,7 +372,7 @@ auto Beammap::run_timestream() {
 
         // get hwp
         if (rtcproc.run_polarization) {
-            rtcdata.hwp_angle.data = calib.hwp_angle.segment(si, sl);
+            rtcdata.hwp_angle.data = calib.hwp_angle.segment(si + hwpr_start_indices, sl);
         }
 
         // get raw tod from files

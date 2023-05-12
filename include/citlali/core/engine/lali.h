@@ -114,7 +114,7 @@ auto Lali::run() {
         // get hwp
         if (rtcproc.run_polarization) {
             if (calib.run_hwp) {
-                rtcdata.hwp_angle.data = calib.hwp_angle.segment(si, sl);
+                rtcdata.hwp_angle.data = calib.hwp_angle.segment(si + hwpr_start_indices, sl);
             }
         }
 

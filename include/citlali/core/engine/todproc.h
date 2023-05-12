@@ -494,6 +494,48 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
         }
     }
 
+    // check if hwp starts later
+    if (engine().calib.run_hwp) {
+        /*auto sec0 = engine().calib.hwp_ts.template cast <double> ().col(0);
+        // ClockTimeNanoSec (nsec)
+        auto nsec0 = engine().calib.hwp_ts.template cast <double> ().col(5);
+        // PpsCount (pps ticks)
+        auto pps = engine().calib.hwp_ts.template cast <double> ().col(1);
+        // ClockCount (clock ticks)
+        auto msec = engine().calib.hwp_ts.template cast <double> ().col(2)/engine().calib.hwpr_fpga_freq;
+        // PacketCount (packet ticks)
+        auto count = engine().calib.hwp_ts.template cast <double> ().col(3);
+        // PpsTime (clock ticks)
+        auto pps_msec = engine().calib.hwp_ts.template cast <double> ().col(4)/engine().calib.hwpr_;
+        // get start time
+        auto t0 = sec0 + nsec0*1e-9;
+
+        // shift start time
+        int start_t = int(t0[0] - 0.5);
+        //int start_t = int(t0[0]);
+
+        // convert start time to double
+        double start_t_dbl = start_t;
+
+        Eigen::VectorXd dt = msec - pps_msec;
+
+        // remove overflow due to int32
+        dt = (dt.array() < 0).select(msec.array() - pps_msec.array() + (pow(2.0,32)-1)/engine().calib.hwpr_,msec - pps_msec);
+
+        // get network time and add offsets
+        engine().calib.hwp_recvt = start_t_dbl + pps.array() + dt.array() + engine().interface_sync_offset["hwpr"];
+        */
+
+        Eigen::Index hwp_ts_n_pts = engine().calib.hwp_recvt.size();
+        if (engine().calib.hwp_recvt(0) > max_t0) {
+            max_t0 = engine().calib.hwp_recvt(0);
+        }
+
+        if (engine().calib.hwp_recvt(hwp_ts_n_pts - 1) < min_tn) {
+            min_tn = engine().calib.hwp_recvt(hwp_ts_n_pts - 1);
+        }
+    }
+
     // size of smallest data time vector
     Eigen::Index min_size = nw_ts[0].size();
 
@@ -521,6 +563,29 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
     for (Eigen::Index i=0; i<nw_ts.size(); i++) {
         auto si = engine().start_indices[i];
         auto ei = engine().end_indices[i];
+
+        if ((ei - si + 1) < min_size) {
+            min_size = ei - si + 1;
+        }
+    }
+
+    //
+    if (engine().calib.run_hwp) {
+        Eigen::Index si, ei;
+        auto s = (abs(engine().calib.hwp_recvt.array() - max_t0)).minCoeff(&si);
+
+        while (engine().calib.hwp_recvt(si) < max_t0) {
+            si++;
+        }
+
+        engine().hwpr_start_indices = si;
+
+        // find end index that is smaller than min end
+        auto e = (abs(engine().calib.hwp_recvt.array() - min_tn)).minCoeff(&ei);
+        while (engine().calib.hwp_recvt(ei) > min_tn) {
+            ei--;
+        }
+        engine().hwpr_start_indices = ei;
 
         if ((ei - si + 1) < min_size) {
             min_size = ei - si + 1;
@@ -559,6 +624,15 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
     // replace telescope time vectors
     engine().telescope.tel_data["TelTime"] = xi;
     engine().telescope.tel_data["TelUTC"] = xi;
+
+    if (engine().calib.run_hwp) {
+        Eigen::VectorXd yd = engine().calib.hwp_recvt;
+        Eigen::VectorXd yi(min_size);
+        mlinterp::interp(nd.data(), min_size, // nd, ni
+                         yd.data(), yi.data(), // yd, yi
+                         engine().calib.hwp_angle.data(), xi.data()); // xd, xi
+
+    }
 }
 
 // align tod with telescope

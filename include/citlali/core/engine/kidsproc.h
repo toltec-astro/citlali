@@ -283,5 +283,16 @@ auto KidsDataProc::populate_rtc(loaded_t &loaded, scanindices_t &scanindex,
         i += n_cols;
     }
 
+    // check for bad values
+    if ((data.array().isNaN()).any()) {
+        SPDLOG_ERROR("NaN found in data!");
+        std::exit(EXIT_FAILURE);
+    }
+
+    else if ((data.array().isInf()).any()) {
+        SPDLOG_ERROR("Inf found in data!");
+        std::exit(EXIT_FAILURE);
+    }
+
     return std::move(data);
 }

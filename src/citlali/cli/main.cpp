@@ -334,6 +334,11 @@ int run(const rc_t &rc) {
                             todproc.engine().start_indices.push_back(0);
                             todproc.engine().start_indices.push_back(0);
                         }
+
+                        if (todproc.engine().calib.run_hwp) {
+                            todproc.engine().hwpr_start_indices = 0;
+                            todproc.engine().hwpr_end_indices = 0;
+                        }
                     }
 
                     // calc tangent plane pointing
@@ -509,16 +514,21 @@ int run(const rc_t &rc) {
 
                     // get hwp if polarized reduction is requested
                     if (todproc.engine().rtcproc.run_polarization) {
-                        SPDLOG_INFO("getting hwp file");
                         std::string hwp_filepath;
 
                         if (rawobs.hwpdata().has_value()) {
+                            SPDLOG_INFO("getting hwpr file");
                             hwp_filepath = rawobs.hwpdata()->filepath();
+                            if (hwp_filepath != "null") {
+                                todproc.engine().calib.get_hwp(hwp_filepath);
+                            }
+                            else {
+                                todproc.engine().calib.run_hwp = false;
+                            }
                         }
                         else {
-                            hwp_filepath = "null";
+                            todproc.engine().calib.run_hwp = false;
                         }
-                        todproc.engine().calib.get_hwp(hwp_filepath);
                     }
 
                     // get flux calibration
@@ -551,6 +561,11 @@ int run(const rc_t &rc) {
                             for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
                                 todproc.engine().start_indices.push_back(0);
                                 todproc.engine().start_indices.push_back(0);
+
+                                if (todproc.engine().calib.run_hwp) {
+                                    todproc.engine().hwpr_start_indices = 0;
+                                    todproc.engine().hwpr_end_indices = 0;
+                                }
                             }
                         }
 

@@ -105,15 +105,13 @@ void Calib::get_hwp(const std::string &filepath) {
     using namespace netCDF;
     using namespace netCDF::exceptions;
 
-    run_hwp = false;
-
-    /*try {
+    try {
         // get hwp file
         NcFile fo(filepath, NcFile::read, NcFile::classic);
         auto vars = fo.getVars();
 
         // check if hwp is enabled
-        vars.find("Header.Hwp.RotatorInstalled")->second.getVar(&run_hwp);
+        vars.find("Header.Toltec.HwpInstalled")->second.getVar(&run_hwp);
 
         // get hwp signal
         Eigen::Index n_pts = vars.find("Data.Hwp.")->second.getDim(0).getSize();
@@ -122,9 +120,16 @@ void Calib::get_hwp(const std::string &filepath) {
         vars.find("Data.Hwp.")->second.getVar(hwp_angle.data());
 
         // get hwp time
-        hwp_ts.resize(n_pts);
+        hwp_ts.resize(n_pts,6);
 
         vars.find("Data.Hwp.Ts")->second.getVar(hwp_ts.data());
+        hwp_ts.transposeInPlace();
+
+        Eigen::Index recvt_n_pts = vars.find("Data.Hwp.Uts")->second.getDim(0).getSize();
+        hwp_recvt.resize(recvt_n_pts);
+        vars.find("Data.Hwp.Uts")->second.getVar(hwp_recvt.data());
+
+        vars.find("Header.Toltec.FpgaFreq")->second.getVar(&hwpr_fpga_freq);
 
         fo.close();
 
@@ -133,7 +138,6 @@ void Calib::get_hwp(const std::string &filepath) {
         throw DataIOError{fmt::format(
             "failed to load data from netCDF file {}", filepath)};
     }
-    */
 }
 
 void Calib::calc_flux_calibration(std::string units) {

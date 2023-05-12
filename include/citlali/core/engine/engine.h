@@ -182,6 +182,9 @@ public:
     // vectors for tod alignment offsets
     std::vector<Eigen::Index> start_indices, end_indices;
 
+    // indices for hwp alignment offsets
+    Eigen::Index hwpr_start_indices, hwpr_end_indices;
+
     // xs or rs
     std::string tod_type;
 
@@ -1203,6 +1206,11 @@ void Engine::create_tod_files() {
             std::vector<netCDF::NcDim> weight_dims = {n_scans_dim, n_dets_dim};
             netCDF::NcVar weights_v = fo.addVar("weights",netCDF::ncDouble, weight_dims);
             weights_v.putAtt("units","("+omb.sig_unit+")^-2");
+        }
+
+        if (calib.run_hwp) {
+            netCDF::NcVar hwpr_v = fo.addVar("hwpr",netCDF::ncDouble, n_pts_dim);
+            hwpr_v.putAtt("units","rad");
         }
 
         fo.close();
