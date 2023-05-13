@@ -34,6 +34,8 @@ public:
     // fwhm upper limit factor
     double fwhm_high = 2.0;
 
+    bool fit_angle;
+
     //lower limit on rotation angle
     double angle_low = -pi/2;
     // upper limit on rotation angle
@@ -91,13 +93,16 @@ auto mapFitter::ceres_fit(const Model &model,
     }
 
     // vector to store indices of parameters to keep constant
-    std::vector<int> sspv;
-    sspv.push_back(limits.rows()-1);
-    // mark parameter as constant
-    if (sspv.size() > 0 ){
-        ceres::SubsetParameterization *pcssp
-                = new ceres::SubsetParameterization(limits.rows(), sspv);
-        problem->SetParameterization(params.data(), pcssp);
+
+    if (!fit_angle) {
+        std::vector<int> sspv;
+        sspv.push_back(limits.rows()-1);
+        // mark parameter as constant
+        if (sspv.size() > 0 ){
+            ceres::SubsetParameterization *pcssp
+                    = new ceres::SubsetParameterization(limits.rows(), sspv);
+            problem->SetParameterization(params.data(), pcssp);
+        }
     }
 
     // apply solver options

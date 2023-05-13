@@ -25,6 +25,8 @@ public:
     // ptc tod proc
     timestream::Cleaner cleaner;
 
+    engine_utils::toltecIO toltec_io;
+
     double lower_weight_factor, upper_weight_factor;
 
     void subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &);
@@ -92,8 +94,6 @@ template <class calib_type, typename Derived>
 void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                   TCData<TCDataKind::PTC, Eigen::MatrixXd> &out, calib_type &calib,
                   Eigen::DenseBase<Derived> &det_indices, std::string stokes_param) {
-
-    engine_utils::toltecIO toltec_io;
 
     if (run_clean) {
         // number of samples
@@ -379,7 +379,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
             }
             j++;
         }
-        SPDLOG_INFO("array {} had {} outlier weights",key, outliers);
+        SPDLOG_INFO("array {} had {} outlier weights", key, outliers);
     }
 }
 
