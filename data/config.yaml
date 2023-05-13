@@ -204,7 +204,10 @@ timestream: # timestream reduction parameters
       stddev_limit: 0.0 # standard deviation cut for cleaning (only used if >0)
       enabled: false # enable or disable cleaning
       grouping: [array] # clean grouping (array, nw, all)
-      n_eig_to_cut: [3] # number of eigenvalues to remove (if stddev_limit >0, calc this many eigs, if this is 0, calc all eigs)
+      n_eig_to_cut: # number of eigenvalues to remove (if stddev_limit >0, calc this many eigs, if this is 0, calc all eigs) 
+        a1100: [3]
+        a1400: [3]
+        a2000: [3]
       clean_polarized_time_chunks: false # carry out cleaning on Q and U maps as well as I maps
     weighting: # how to weight data and maps
       type: full # type of TOD weighting (full=use scan variance/approximate=use det sensitivity)

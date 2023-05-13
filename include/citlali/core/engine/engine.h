@@ -394,7 +394,7 @@ void Engine::get_rtc_config(CT &config) {
 template<typename CT>
 void Engine::get_ptc_config(CT &config) {
     get_config_value(config, ptcproc.weighting_type, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","weighting",
-                                                                                            "type"},{"full","approximate"});
+                                                                                            "type"},{"full","approximate","const"});
     get_config_value(config, ptcproc.med_weight_factor, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","weighting",
                                                                                             "median_weight_factor"});
     get_config_value(config, ptcproc.lower_weight_factor, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","flagging",
@@ -405,13 +405,6 @@ void Engine::get_ptc_config(CT &config) {
     // for sensitivity fcf
     ptcproc.run_calibrate = rtcproc.run_calibrate;
 
-    // override calibration if in beammap mode
-
-    /*if (redu_type=="beammap") {
-        rtcproc.run_calibrate = false;
-        ptcproc.run_calibrate = false;
-    }*/
-
     /* cleaning */
     get_config_value(config, ptcproc.run_clean, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","clean","enabled"});
 
@@ -419,9 +412,11 @@ void Engine::get_ptc_config(CT &config) {
         // vector of groupings
         ptcproc.cleaner.grouping = config.template get_typed<std::vector<std::string>>(std::tuple{"timestream","processed_time_chunk","clean","grouping"});
         // vector of eigenvalues to cut
-        auto n_eig_to_cut = config.template get_typed<std::vector<Eigen::Index>>(std::tuple{"timestream","processed_time_chunk","clean","n_eig_to_cut"});
+        for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
+            auto n_eig_to_cut = config.template get_typed<std::vector<Eigen::Index>>(std::tuple{"timestream","processed_time_chunk","clean","n_eig_to_cut",arr_name});
+            ptcproc.cleaner.n_eig_to_cut[arr_index] = (Eigen::Map<Eigen::VectorXI>(n_eig_to_cut.data(),n_eig_to_cut.size()));
+        }
         // map to eigen vector
-        ptcproc.cleaner.n_eig_to_cut = Eigen::Map<Eigen::VectorXI>(n_eig_to_cut.data(),n_eig_to_cut.size());
         get_config_value(config, ptcproc.cleaner.stddev_limit, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk",
                                                                                                  "clean","stddev_limit"});
         get_config_value(config, ptcproc.run_stokes_clean, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","clean","clean_polarized_time_chunks"});
@@ -749,7 +744,6 @@ void Engine::get_citlali_config(CT &config) {
     }
     get_config_value(config, telescope.time_chunk, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "length_sec"});
     get_config_value(config, telescope.force_chunk, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "force_chunking"});
-    //get_config_value(config, telescope.velocity_limit, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "turnaround_samples_to_cut"});
 
     /* rtc */
     get_rtc_config(config);
@@ -959,6 +953,8 @@ auto Engine::calc_map_indices(Eigen::DenseBase<Derived> &det_indices, Eigen::Den
             map_indices = map_indices.array() + 2*n_maps/3;
         }
     }
+
+    SPDLOG_INFO("stokes {} map_indices {}",stokes_param, map_indices);
 
     return std::move(map_indices);
 }
@@ -1651,7 +1647,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.WTLOW", ptcproc.lower_weight_factor, "Lower weight cutoff");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.WTHIGH", ptcproc.upper_weight_factor, "Upper weight cutoff");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED", ptcproc.run_clean, "Cleaned");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.NEIG", ptcproc.cleaner.n_eig_to_cut.sum(), "Number of eigenvalues removed");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.NEIG", ptcproc.cleaner.n_eig_to_cut[calib.arrays(i)].sum(),
+                                        "Number of eigenvalues removed");
 
     // add telescope file header information
     for (auto const& [key, val] : telescope.tel_header) {

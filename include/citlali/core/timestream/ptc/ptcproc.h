@@ -10,6 +10,8 @@
 #include <citlali/core/timestream/timestream.h>
 #include <citlali/core/timestream/ptc/clean.h>
 
+#include <citlali/core/utils/toltec_io.h>
+
 namespace timestream {
 
 using timestream::TCData;
@@ -91,10 +93,12 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                   TCData<TCDataKind::PTC, Eigen::MatrixXd> &out, calib_type &calib,
                   Eigen::DenseBase<Derived> &det_indices, std::string stokes_param) {
 
+    engine_utils::toltecIO toltec_io;
+
     if (run_clean) {
         // number of samples
         Eigen::Index n_pts = in.scans.data.rows();
-        Eigen::Index i = 0;
+        Eigen::Index indx = 0;
 
         // loop through config groupings
         for (const auto & group: cleaner.grouping) {
@@ -140,6 +144,21 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 
             if (stokes_param=="I" || run_stokes_clean) {
                 for (auto const& [key, val] : grouping_limits) {
+
+                    Eigen::Index arr_index;
+
+                    if (group=="all") {
+                        arr_index = calib.arrays(0);
+                    }
+
+                    else if (group=="nw" || group=="network") {
+                        arr_index = toltec_io.nw_to_array_map[key];
+                    }
+
+                    else if (group=="array") {
+                        arr_index = key;
+                    }
+
                     // starting index
                     auto start_index = std::get<0>(val);
                     // size of block for each grouping
@@ -173,12 +192,12 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                     // check if any good flags
                     if ((apt_flags.array()==1).any()) {
                         auto [evals, evecs] = cleaner.calc_eig_values<timestream::Cleaner::SpectraBackend>(in_scans, in_flags, apt_flags,
-                                                                                                           cleaner.n_eig_to_cut(i));
+                                                                                                           cleaner.n_eig_to_cut[arr_index](indx));
                         SPDLOG_DEBUG("evals {}", evals);
                         SPDLOG_DEBUG("evecs {}", evecs);
 
                         cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_scans, in_flags, evals, evecs, out_scans,
-                                                                                       cleaner.n_eig_to_cut(i));
+                                                                                       cleaner.n_eig_to_cut[arr_index](indx));
 
                         if (in.kernel.data.size()!=0) {
                             // check if any good flags
@@ -198,7 +217,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                                                Eigen::OuterStride<>(out_kernel_ref.outerStride()));
 
                                 cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_kernel, in_flags, evals, evecs, out_kernel,
-                                                                                               cleaner.n_eig_to_cut(i));
+                                                                                               cleaner.n_eig_to_cut[arr_index](indx));
                         }
                     }
                     else {
@@ -208,7 +227,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                         }
                     }
                 }
-                i++;
+                indx++;
             }
             out.cleaned = true;
         }
@@ -268,6 +287,21 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
                 else {
                     in.weights.data(i) = 0;
                 }
+            }
+            else {
+                in.weights.data(i) = 0;
+            }
+        }
+    }
+
+    else if (weighting_type == "const") {
+        Eigen::Index n_dets = in.scans.data.cols();
+        in.weights.data = Eigen::VectorXd::Zero(n_dets);
+
+        for (Eigen::Index i=0; i<n_dets; i++) {
+            // only calculate weights if detector is unflagged
+            if (apt["flag"](det_indices(i))!=0) {
+                in.weights.data(i) = 1;
             }
             else {
                 in.weights.data(i) = 0;
@@ -334,7 +368,6 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
         }
 
         auto med_wt = tula::alg::median(good_wt);
-        //SPDLOG_INFO("array {} med_wt {} {} {}",key, med_wt, n_good_dets, nw_weights);
 
         int outliers = 0;
 
@@ -357,9 +390,7 @@ void PTCProc::remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
     Eigen::Index n_dets = in.scans.data.cols();
 
     // number of detectors flagged in apt
-    Eigen::Index n_flagged = (apt["flag"].array()==0).count();
-    SPDLOG_INFO("removing {} detectors flagged in APT table ({}%)",n_flagged,
-                (static_cast<float>(n_flagged)/static_cast<float>(n_dets))*100);
+    Eigen::Index n_flagged = 0;//(apt["flag"].array()==0).count();
 
     // loop through detectors and set flags to zero
     // for those flagged in apt table
@@ -367,8 +398,12 @@ void PTCProc::remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
         Eigen::Index det_index = det_indices(i);
         if (!apt["flag"](det_index)) {
             in.flags.data.col(i).setZero();
+            n_flagged++;
         }
     }
+
+    SPDLOG_INFO("removed {} detectors flagged in APT table ({}%)",n_flagged,
+                (static_cast<float>(n_flagged)/static_cast<float>(n_dets))*100);
 }
 
 template <typename calib_t, typename Derived>
@@ -592,7 +627,6 @@ auto PTCProc::remove_bad_dets_iter(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 SPDLOG_INFO("nw{}: {}/{} dets below limit. {}/{} dets above limit.", calib.nws(i), n_low_dets, n_good_dets,
                             n_high_dets, n_good_dets);
             }
-
         }
     }
 

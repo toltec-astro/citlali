@@ -120,13 +120,13 @@ public:
                 if (!calib.run_hwp) {
                     if (stokes_param == "Q") {
                         out.scans.data.col(i) = cos(2*(in.tel_data.data["ActParAng"].array() +
-                                                             in.tel_data.data["TelElAct"].array() +
-                                                             ang))*polarized_scans.col(i).array();
+                                                       in.tel_data.data["TelElAct"].array() +
+                                                       ang))*polarized_scans.col(i).array();
                     }
                     else if (stokes_param == "U") {
                         out.scans.data.col(i) = sin(2*(in.tel_data.data["ActParAng"].array() +
-                                                         in.tel_data.data["TelElAct"].array() +
-                                                         ang))*polarized_scans.col(i).array();
+                                                       in.tel_data.data["TelElAct"].array() +
+                                                       ang))*polarized_scans.col(i).array();
                     }
                 }
 

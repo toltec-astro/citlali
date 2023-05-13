@@ -365,7 +365,7 @@ auto RTCProc::remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
     // number of detectors
     Eigen::Index n_dets = in.scans.data.cols();
 
-    int n_nearby_tones = calib.apt["duplicate_tone"].sum();
+    int n_nearby_tones = 0;//calib.apt["duplicate_tone"].sum();
 
     // loop through flag columns
     for (Eigen::Index i=0; i<in.flags.data.cols(); i++) {
@@ -373,6 +373,7 @@ auto RTCProc::remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
         Eigen::Index det_index = det_indices(i);
         // if closer than freq separation limit and unflagged, flag it
         if (calib.apt["duplicate_tone"](det_index) && calib_scan.apt["flag"](det_index)) {
+            n_nearby_tones++;
             // increment number of nearby tones
             if (map_grouping!="detector") {
                 in.flags.data.col(i).setZero();
@@ -383,7 +384,7 @@ auto RTCProc::remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
         }
     }
 
-    SPDLOG_INFO("removing {}/{} ({}%) tones closer than {} kHz", n_nearby_tones, n_dets,
+    SPDLOG_INFO("removed {}/{} ({}%) unflagged tones closer than {} kHz", n_nearby_tones, n_dets,
                 (static_cast<float>(n_nearby_tones)/static_cast<float>(n_dets))*100, delta_f_min_Hz/1000);
 
     // set up scan calib

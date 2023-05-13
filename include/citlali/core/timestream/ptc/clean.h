@@ -27,8 +27,8 @@ public:
     //std::string grouping;
 
     // number of eigenvalues to remove
-    Eigen::VectorXI n_eig_to_cut;
-    // standard deviation limit
+    std::map<Eigen::Index,Eigen::VectorXI> n_eig_to_cut;
+    // grouping
     std::vector<std::string> grouping;
 
     template <typename Derived>
