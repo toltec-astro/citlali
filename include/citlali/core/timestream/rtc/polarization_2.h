@@ -55,7 +55,7 @@ public:
 
             Eigen::Index n_dets;
             if (!sim_obs) {
-                n_dets = (calib.apt["loc"].array()!=-1).count();
+                n_dets = (calib.apt["fg"].array()!=-1).count();
             }
             else {
                 n_dets = calib.n_dets;
@@ -86,7 +86,7 @@ public:
                 Eigen::Index k = 0;
                 for (Eigen::Index i=0; i<calib.n_dets; i++) {
                     // if matched, add to polarized array
-                    if (calib.apt["loc"](i)!=-1) {
+                    if (calib.apt["fg"](i)!=-1) {
                         polarized_scans.col(k) = in.scans.data.col(i);
 
                         fg(k) = calib.apt["fg"](i);

@@ -39,6 +39,8 @@
 #include <citlali/core/engine/calib.h>
 #include <citlali/core/engine/telescope.h>
 
+#include <citlali/core/engine/diagnostics.h>
+
 #include <citlali/core/timestream/timestream.h>
 
 #include <citlali/core/timestream/rtc/polarization_2.h>
@@ -88,6 +90,7 @@ struct reduClasses {
     engine::Calib calib;
     engine::Telescope telescope;
     engine_utils::toltecIO toltec_io;
+    engine::Diagnostics diagnostics;
     engine_utils::mapFitter map_fitter;
 
     // rtc proc
@@ -1093,9 +1096,7 @@ void Engine::create_tod_files() {
         // set number of detectors for polarized timestreams
         else if ((stokes_param == "Q") || (stokes_param == "U")) {
             if (!telescope.sim_obs) {
-            //n_dets = (calib.apt["loc"].array()!=-1).count()/2;
-            n_dets = (calib.apt["loc"].array()!=-1).count();
-
+                n_dets = (calib.apt["fg"].array()!=-1).count();
             }
             else {
                 n_dets = (calib.apt["fg"].array() == 0).count() + (calib.apt["fg"].array() == 1).count();

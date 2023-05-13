@@ -25,6 +25,7 @@ public:
         hist = 3,
         rtc_timestream = 4,
         ptc_timestream = 5,
+        summary = 6
     };
 
     // raw or filtered
@@ -62,7 +63,6 @@ public:
         {1,1.4},
         {2,2.0}
     };
-
 
     // expected fwhms
     std::map<Eigen::Index, double> array_fwhm_arcsec = {
@@ -128,22 +128,27 @@ std::string toltecIO::create_filename(const std::string filepath, const std::str
         filename = filename + "_noise";
     }
     // psd file
-    if constexpr (prod_t == psd) {
+    else if constexpr (prod_t == psd) {
         filename = filename + "_psd";
     }
     // histogram file
-    if constexpr (prod_t == hist) {
+    else if constexpr (prod_t == hist) {
         filename = filename + "_hist";
     }
 
     // raw time chunk file
-    if constexpr (prod_t == rtc_timestream) {
+    else if constexpr (prod_t == rtc_timestream) {
         filename = filename + "_rtc_timestream";
     }
 
     // processed time chunk file
-    if constexpr (prod_t == ptc_timestream) {
+    else if constexpr (prod_t == ptc_timestream) {
         filename = filename + "_ptc_timestream";
+    }
+
+    // time chunk summary file
+    else if constexpr (prod_t == summary) {
+        filename = filename + "_summary";
     }
 
     // filtered map

@@ -343,6 +343,10 @@ void Beammap::setup() {
 
     // print basic info for obs reduction
     print_summary();
+
+    for (const auto &stat: diagnostics.tpt_header) {
+        diagnostics.stats[stat].setZero(calib.n_dets, telescope.scan_indices.cols());
+    }
 }
 
 auto Beammap::run_timestream() {
@@ -483,7 +487,7 @@ auto Beammap::run_loop() {
             calib_scan = ptcproc.remove_bad_dets(ptcs[i], calib, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
                                                  ptcs[i].array_indices.data, redu_type, map_grouping);
             // write chunk summary
-            if (verbose_mode && current_iter==0) {
+            if (verbose_mode && current_iter==beammap_tod_output_iter) {
                 SPDLOG_DEBUG("writing chunk summary");
                 write_chunk_summary(ptcs[i]);
             }
@@ -517,6 +521,8 @@ auto Beammap::run_loop() {
                     }
                 }
             }
+
+            diagnostics.calc_stats(ptcs[i]);
 
             // populate maps
             if (run_mapmaking) {
@@ -1255,6 +1261,34 @@ void Beammap::output() {
         f_io = &fits_io_vec;
         n_io = &noise_fits_io_vec;
         dir_name = obsnum_dir_name + "raw/";
+
+        if constexpr (map_type == mapmaking::RawObs) {
+            auto stats_filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::summary,
+                                                            engine_utils::toltecIO::raw>
+                                  (obsnum_dir_name + "raw/", redu_type, "", obsnum, telescope.sim_obs);
+
+            netCDF::NcFile fo(stats_filename + ".nc", netCDF::NcFile::replace);
+
+            netCDF::NcDim n_dets_dim = fo.addDim("n_dets", calib.n_dets);
+            netCDF::NcDim n_chunks_dim = fo.addDim("n_chunks", telescope.scan_indices.cols());
+
+            std::vector<netCDF::NcDim> dims = {n_chunks_dim, n_dets_dim};
+
+            for (const auto &stat: diagnostics.tpt_header) {
+                netCDF::NcVar stat_v = fo.addVar(stat,netCDF::ncDouble, dims);
+                stat_v.putVar(diagnostics.stats[stat].data());
+                stat_v.putAtt("units",omb.sig_unit);
+            }
+
+            // add apt table
+            for (auto const& x: calib.apt) {
+                netCDF::NcVar apt_v = fo.addVar("apt_" + x.first,netCDF::ncDouble, n_dets_dim);
+                apt_v.putVar(x.second.data());
+                apt_v.putAtt("units",calib.apt_header_units[x.first]);
+            }
+
+            fo.close();
+        }
 
         // only write apt table if beammapping
         if (map_grouping=="detector") {

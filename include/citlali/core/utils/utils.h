@@ -293,6 +293,27 @@ auto calc_std_dev(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &
     return std_dev;
 }
 
+template <typename DerivedA>
+auto calc_rms(Eigen::DenseBase<DerivedA> &data) {
+
+    // number of unflagged samples
+    auto n_good = data.size();
+
+    // number of samples for divisor
+    double n_samples;
+
+    if (n_good == 0) {
+        return 0.0;
+    }
+
+    else {
+        n_samples = n_good;
+    }
+
+    // calc rms
+    return std::sqrt(data.derived().array().square().mean());
+}
+
 template <typename DerivedA, typename DerivedB>
 auto calc_rms(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &flag) {
 
