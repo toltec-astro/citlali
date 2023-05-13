@@ -307,8 +307,15 @@ void Engine::get_rtc_config(CT &config) {
     /* polarization */
     get_config_value(config, rtcproc.run_polarization, missing_keys, invalid_keys, std::tuple{"timestream","polarimetry", "enabled"});
 
-    if (!rtcproc.run_polarization) {
-        rtcproc.polarization.stokes_params.clear();
+    if (rtcproc.run_polarization && redu_type=="beammap") {
+        SPDLOG_ERROR("Beammap reductions do not currently support polarimetry mode");
+        std::exit(EXIT_FAILURE);
+    }
+
+    if (rtcproc.run_polarization) {
+        rtcproc.polarization.stokes_params = {{0,"I"}, {1,"Q"}, {2,"U"}};
+    }
+    else {
         rtcproc.polarization.stokes_params[0] = "I";
     }
 

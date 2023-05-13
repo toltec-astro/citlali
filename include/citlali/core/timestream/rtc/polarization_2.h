@@ -12,11 +12,11 @@ public:
     using indices_t = std::tuple<Eigen::VectorXI, Eigen::VectorXI, Eigen::VectorXI>;
 
     // stokes parameters
-    std::map<int,std::string> stokes_params = {
+    std::map<int,std::string> stokes_params;/* = {
         {0,"I"},
         {1,"Q"},
         {2,"U"}
-    };
+    };*/
 
     // toltec array mounting angle
     std::map<int, double> install_ang = {

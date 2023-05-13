@@ -178,7 +178,7 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
         double center_row = signal.rows()/2;
         double center_col = signal.cols()/2;
 
-        Eigen::Index fit_region_lower_row, fit_region_lower_col;
+        /*Eigen::Index fit_region_lower_row, fit_region_lower_col;
         Eigen::Index fit_region_upper_row, fit_region_upper_col;
 
         // ignore fitting region parameter
@@ -218,7 +218,7 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
 
         // signal to noise map of fitting region
         auto signal_fit_region = signal.block(fit_region_lower_row, fit_region_lower_col,
-                                                    fit_region_n_rows, fit_region_n_cols);
+                                              fit_region_n_rows, fit_region_n_cols);
 
         // get init flux of signal map within the fitting region
         init_flux = signal_fit_region(static_cast<int>(init_row), static_cast<int>(init_col));
@@ -226,6 +226,29 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
         // find the positions of the peak flux in the total signal map
         init_row = init_row + fit_region_lower_row;
         init_col = init_col + fit_region_lower_col;
+        */
+
+
+        auto sig2noise = signal.derived().array()*sqrt(weight.derived().array());
+
+        if (fitting_region_pix <= 0) {
+            sig2noise.maxCoeff(&init_row, &init_col);
+            init_flux = signal(static_cast<int>(init_row),static_cast<int>(init_col));
+        }
+        else {
+            for (Eigen::Index i=0; i<sig2noise.rows(); i++) {
+                for (Eigen::Index j=0; j<sig2noise.cols(); j++) {
+                    auto dist = sqrt(pow(i - center_row,2) + pow(j - center_col,2));
+                    if (dist < fitting_region_pix) {
+                        if (signal(i,j) > init_flux) {
+                            init_flux = signal(i,j);
+                            init_row = i;
+                            init_col = j;
+                        }
+                    }
+                }
+            }
+        }
     }
     // otherwise use the input initial position
     else {
