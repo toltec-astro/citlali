@@ -81,8 +81,6 @@ public:
 
             out.pointing_offsets_arcsec.data = in.pointing_offsets_arcsec.data;
 
-            out.fcf = in.fcf;
-
             // loop through all detectors
             if (!sim_obs) {
                 Eigen::Index k = 0;

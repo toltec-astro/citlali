@@ -377,42 +377,28 @@ auto Beammap::run_timestream() {
 
         // get raw tod from files
         {
-            //tula::logging::scoped_loglevel<spdlog::level::off> _0;
             rtcdata.scans.data = kidsproc.populate_rtc(scan_rawobs,rtcdata.scan_indices.data, sl, calib.n_dets, tod_type);
         }
 
         // create PTCData
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;
 
-        rtcdata.fcf.data.setOnes(rtcdata.scans.data.cols());
-
         // loop through polarizations
         for (const auto &[stokes_index,stokes_param]: rtcproc.polarization.stokes_params) {
             SPDLOG_INFO("starting scan {}. {}/{} scans completed", rtcdata.index.data + 1, n_scans_done, telescope.scan_indices.cols());
 
-            SPDLOG_INFO("reducing {} timestream",stokes_param);
-            // create a new rtcdata for each polarization
-            TCData<TCDataKind::RTC,Eigen::MatrixXd> rtcdata_pol;
-            // demodulate
-            auto [array_indices, nw_indices, det_indices] = rtcproc.polarization.demodulate_timestream(rtcdata, rtcdata_pol,
-                                                                                                       stokes_param,
-                                                                                                       redu_type, calib,
-                                                                                                       telescope.sim_obs);
-            // get indices for maps
-            SPDLOG_INFO("calculating map indices");
-            auto map_indices = calc_map_indices(det_indices, nw_indices, array_indices, stokes_param);
-
             // run rtcproc
             SPDLOG_INFO("raw time chunk processing");
-            rtcproc.run(rtcdata_pol, ptcdata, telescope.pixel_axes, redu_type, calib, telescope, rtcdata.pointing_offsets_arcsec.data,
-                        det_indices, array_indices, map_indices, omb.pixel_size_rad);
-
+            auto [map_indices, array_indices, nw_indices, det_indices] = rtcproc.run(rtcdata, ptcdata, telescope.pixel_axes, redu_type,
+                                                                                     calib, telescope, omb.pixel_size_rad, stokes_param,
+                                                                                     map_grouping);
             // write rtc timestreams
             if (run_tod_output) {
                 if (tod_output_type == "rtc" || tod_output_type=="both") {
                     SPDLOG_INFO("writing raw time chunk");
                     ptcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], redu_type, telescope.pixel_axes,
-                                             ptcdata.pointing_offsets_arcsec.data, det_indices, calib.apt, tod_output_type, verbose_mode, telescope.d_fsmp);
+                                             ptcdata.pointing_offsets_arcsec.data, det_indices, calib.apt, tod_output_type, verbose_mode,
+                                             telescope.d_fsmp);
                 }
             }
 
@@ -478,7 +464,7 @@ auto Beammap::run_loop() {
             SPDLOG_INFO("subtracting detector means");
             ptcproc.subtract_mean(ptcs[i]);
 
-            auto calib_scan = rtcproc.remove_bad_dets(ptcs[i], calib, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
+            auto calib_scan = ptcproc.remove_bad_dets(ptcs[i], calib, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
                                                       ptcs[i].array_indices.data, redu_type, map_grouping);
 
             // remove duplicate tones

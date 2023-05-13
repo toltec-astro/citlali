@@ -248,7 +248,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
         for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
             Eigen::Index det_index = det_indices(i);
             if (run_calibrate) {
-                conversion_factor = in.fcf.data(det_index);
+                conversion_factor = in.fcf.data(i);
             }
             else {
                 conversion_factor = 1;

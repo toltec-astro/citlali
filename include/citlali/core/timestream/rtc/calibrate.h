@@ -110,9 +110,6 @@ template <TCDataKind tcdata_kind, typename Derived, class calib_t>
 void Calibration::calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &in, Eigen::DenseBase<Derived> &det_indices,
                                 Eigen::DenseBase<Derived> &array_indices, calib_t &calib) {
 
-    // resize fcf
-    in.fcf.data.resize(in.scans.data.cols());
-
     // loop through detectors
     for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
         // current detector index in apt table
@@ -124,10 +121,10 @@ void Calibration::calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &in, Eigen:
         auto factor = calib.flux_conversion_factor(array_index);
 
         // flux calibration factor for sens
-        in.fcf.data(i) = factor;//*calib.apt["flxscale"](det_index);
+        in.fcf.data(i) = factor;
 
         // data x flxscale x factor
-        in.scans.data.col(i) = in.scans.data.col(i).array()*factor*calib.apt["flxscale"](det_index);//in.fcf.data(i);
+        in.scans.data.col(i) = in.scans.data.col(i).array()*factor*calib.apt["flxscale"](det_index);
     }
 }
 

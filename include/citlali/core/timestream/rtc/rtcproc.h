@@ -40,62 +40,138 @@ public:
     // minimum allowed frequency distance between tones
     double delta_f_min_Hz;
 
-    template<typename calib_t, typename telescope_t, typename pointing_offset_t, typename Derived>
-    void run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &,
-             TCData<TCDataKind::PTC, Eigen::MatrixXd> &, std::string &,
-             std::string &, calib_t &, telescope_t &, pointing_offset_t &,
-             Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &,
-             Eigen::DenseBase<Derived> &, double);
+    template <class calib_t, typename Derived>
+    auto calc_map_indices(calib_t &, Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &,
+                          Eigen::DenseBase<Derived> &, std::string, std::string);
 
-    template <typename calib_t, typename Derived>
-    auto remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
-                            Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string, std::string);
+
+    template<typename calib_t, typename telescope_t>
+    auto run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &,
+             TCData<TCDataKind::PTC, Eigen::MatrixXd> &, std::string &,
+             std::string &, calib_t &, telescope_t &, double, std::string, std::string);
 
     template <typename calib_t, typename Derived>
     auto remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
                              Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string, std::string);
 };
 
-template<class calib_t, typename telescope_t, typename pointing_offset_t, typename Derived>
-void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
-                  TCData<TCDataKind::PTC, Eigen::MatrixXd> &out, std::string &pixel_axes,
-                  std::string &redu_type, calib_t &calib, telescope_t &telescope,
-                  pointing_offset_t &pointing_offsets_arcsec, Eigen::DenseBase<Derived> &det_indices,
-                  Eigen::DenseBase<Derived> &array_indices, Eigen::DenseBase<Derived> &map_indices,
-                  double pixel_size_rad) {
+template <class calib_t, typename Derived>
+auto RTCProc::calc_map_indices(calib_t &calib, Eigen::DenseBase<Derived> &det_indices, Eigen::DenseBase<Derived> &nw_indices,
+                               Eigen::DenseBase<Derived> &array_indices, std::string stokes_param, std::string map_grouping) {
+    // indices for maps
+    Eigen::VectorXI indices(array_indices.size()), map_indices(array_indices.size());
 
-    // set chunk as demodulated
+    int n_maps = 0;
+
+    // overwrite map indices for networks
+    if (map_grouping == "nw") {
+        indices = nw_indices;
+        n_maps = calib.n_nws;
+    }
+
+    // overwrite map indices for arrays
+    else if (map_grouping == "array") {
+        indices = array_indices;
+        n_maps = calib.n_arrays;
+    }
+
+    // overwrite map indices for detectors
+    else if (map_grouping == "detector") {
+        indices = det_indices;
+        n_maps = calib.n_dets;
+    }
+
+    // start at 0
+    Eigen::Index map_index = 0;
+    map_indices(0) = 0;
+    // loop through and populate map indices
+    for (Eigen::Index i=0; i<indices.size()-1; i++) {
+        // if next index is larger than current index, increment map index
+        if (indices(i+1) > indices(i)) {
+            map_index++;
+        }
+        map_indices(i+1) = map_index;
+    }
+
     if (run_polarization) {
-        out.demodulated = true;
+        if (stokes_param == "Q") {
+            map_indices = map_indices.array() + (3*n_maps)/3;
+        }
+        else if (stokes_param == "U") {
+            map_indices = map_indices.array() + 2*(3*n_maps)/3;
+        }
+    }
+
+    return std::move(map_indices);
+}
+
+template<class calib_t, typename telescope_t>
+auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
+                  TCData<TCDataKind::PTC, Eigen::MatrixXd> &out, std::string &pixel_axes,
+                  std::string &redu_type, calib_t &calib, telescope_t &telescope, double pixel_size_rad,
+                  std::string stokes_param, std::string map_grouping) {
+
+    TCData<TCDataKind::RTC,Eigen::MatrixXd> in_pol;
+
+    // demodulate
+    auto [array_indices, nw_indices, det_indices] = polarization.demodulate_timestream(in, in_pol,
+                                                                                       stokes_param,
+                                                                                       redu_type, calib,
+                                                                                       telescope.sim_obs);
+
+    // resize fcf
+    in_pol.fcf.data.setOnes(in_pol.scans.data.cols());
+
+    // get indices for maps
+    SPDLOG_INFO("calculating map indices");
+    auto map_indices = calc_map_indices(calib, det_indices, nw_indices, array_indices, stokes_param, map_grouping);
+
+    SPDLOG_DEBUG("array indices {}, nw indices {}, det indices {} map_indices {}",array_indices,nw_indices,det_indices,
+                 map_indices);
+
+    if (run_calibrate) {
+        SPDLOG_DEBUG("calibrating timestream");
+        // calibrate tod
+        calibration.calibrate_tod(in_pol, det_indices, array_indices, calib);
+
+        out.calibrated = true;
+    }
+
+    if (run_extinction) {
+        SPDLOG_DEBUG("correcting extinction");
+        // calc tau at toltec frequencies
+        auto tau_freq = calibration.calc_tau(in_pol.tel_data.data["TelElAct"], telescope.tau_225_GHz);
+        // correct for extinction
+        calibration.extinction_correction(in_pol, det_indices, array_indices, calib, tau_freq);
     }
 
     // number of points in scan
-    Eigen::Index n_pts = in.scans.data.rows();
+    Eigen::Index n_pts = in_pol.scans.data.rows();
 
     // start index of inner scans
     auto si = filter.n_terms;
     // end index of inner scans
-    auto sl = in.scan_indices.data(1) - in.scan_indices.data(0) + 1;
+    auto sl = in_pol.scan_indices.data(1) - in_pol.scan_indices.data(0) + 1;
 
     // set up flags
-    in.flags.data.setOnes(in.scans.data.rows(), in.scans.data.cols());
+    in_pol.flags.data.setOnes(in_pol.scans.data.rows(), in_pol.scans.data.cols());
 
     // create kernel if requested
     if (run_kernel) {
         SPDLOG_DEBUG("creating kernel timestream");
         if (kernel.type == "gaussian") {
             SPDLOG_DEBUG("creating symmetric gaussian kernel");
-            kernel.create_gaussian_kernel(in, pixel_axes, redu_type, calib.apt, pointing_offsets_arcsec,
+            kernel.create_gaussian_kernel(in_pol, pixel_axes, redu_type, calib.apt, in_pol.pointing_offsets_arcsec.data,
                                                     det_indices);
         }
         else if (kernel.type == "airy") {
             SPDLOG_DEBUG("creating airy kernel");
-            kernel.create_airy_kernel(in, pixel_axes, redu_type, calib.apt, pointing_offsets_arcsec,
+            kernel.create_airy_kernel(in_pol, pixel_axes, redu_type, calib.apt, in_pol.pointing_offsets_arcsec.data,
                                       det_indices);
         }
         else if (kernel.type == "fits") {
             SPDLOG_DEBUG("getting kernel from fits");
-            kernel.create_kernel_from_fits(in, pixel_axes, redu_type, calib.apt, pointing_offsets_arcsec,
+            kernel.create_kernel_from_fits(in_pol, pixel_axes, redu_type, calib.apt, in_pol.pointing_offsets_arcsec.data,
                                            pixel_size_rad, map_indices, det_indices);
         }
 
@@ -104,7 +180,7 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
 
     if (run_despike) {
         SPDLOG_DEBUG("despiking");
-        despiker.despike(in.scans.data, in.flags.data, calib.apt);
+        despiker.despike(in_pol.scans.data, in_pol.flags.data, calib.apt);
 
         std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grouping_limits;
 
@@ -124,7 +200,7 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
             auto n_dets = std::get<1>(val) - std::get<0>(val);
 
             // get the reference block of in scans that corresponds to the current array
-            Eigen::Ref<Eigen::MatrixXd> in_scans_ref = in.scans.data.block(0, start_index, n_pts, n_dets);
+            Eigen::Ref<Eigen::MatrixXd> in_scans_ref = in_pol.scans.data.block(0, start_index, n_pts, n_dets);
 
             Eigen::Map<Eigen::MatrixXd, 0, Eigen::OuterStride<>>
                 in_scans(in_scans_ref.data(), in_scans_ref.rows(), in_scans_ref.cols(),
@@ -132,7 +208,7 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
 
             // get the block of in flags that corresponds to the current array
             Eigen::Ref<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> in_flags_ref =
-                in.flags.data.block(0, start_index, n_pts, n_dets);
+                in_pol.flags.data.block(0, start_index, n_pts, n_dets);
 
             Eigen::Map<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>, 0, Eigen::OuterStride<> >
                 in_flags(in_flags_ref.data(), in_flags_ref.rows(), in_flags_ref.cols(),
@@ -148,12 +224,12 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     // timestream filtering
     if (run_tod_filter) {
         SPDLOG_DEBUG("convolving signal with tod filter");
-        filter.convolve(in.scans.data);
+        filter.convolve(in_pol.scans.data);
 
         // filter kernel
         if (run_kernel) {
             SPDLOG_DEBUG("convolving kernel with tod filter");
-            filter.convolve(in.kernel.data);
+            filter.convolve(in_pol.kernel.data);
         }
 
         out.tod_filtered = true;
@@ -163,28 +239,28 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         SPDLOG_DEBUG("downsampling data");
         // get the block of out scans that corresponds to the inner scan indices
         Eigen::Ref<Eigen::Map<Eigen::MatrixXd>> in_scans =
-            in.scans.data.block(si, 0, sl, in.scans.data.cols());
+            in_pol.scans.data.block(si, 0, sl, in_pol.scans.data.cols());
 
         // get the block of in flags that corresponds to the inner scan indices
         Eigen::Ref<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> in_flags =
-            in.flags.data.block(si, 0, sl, in.flags.data.cols());
+            in_pol.flags.data.block(si, 0, sl, in_pol.flags.data.cols());
 
         downsampler.downsample(in_scans, out.scans.data);
         downsampler.downsample(in_flags, out.flags.data);
 
         // loop through telescope meta data and downsample
         SPDLOG_DEBUG("downsampling telescope");
-        for (auto const& x: in.tel_data.data) {
+        for (auto const& x: in_pol.tel_data.data) {
             // get the block of in tel data that corresponds to the inner scan indices
             Eigen::Ref<Eigen::VectorXd> in_tel =
-                in.tel_data.data[x.first].segment(si, sl);
+                in_pol.tel_data.data[x.first].segment(si, sl);
 
             downsampler.downsample(in_tel, out.tel_data.data[x.first]);
         }
 
-        for (auto const& x: in.pointing_offsets_arcsec.data) {
+        for (auto const& x: in_pol.pointing_offsets_arcsec.data) {
         Eigen::Ref<Eigen::VectorXd> in_pointing =
-            in.pointing_offsets_arcsec.data[x.first].segment(si, sl);
+            in_pol.pointing_offsets_arcsec.data[x.first].segment(si, sl);
 
             downsampler.downsample(in_pointing, out.pointing_offsets_arcsec.data[x.first]);
         }
@@ -194,7 +270,7 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
             SPDLOG_DEBUG("downsampling kernel");
             // get the block of in kernel scans that corresponds to the inner scan indices
             Eigen::Ref<Eigen::MatrixXd> in_kernel =
-                in.kernel.data.block(si, 0, sl, in.kernel.data.cols());
+                in_pol.kernel.data.block(si, 0, sl, in_pol.kernel.data.cols());
 
             downsampler.downsample(in_kernel, out.kernel.data);
         }
@@ -204,154 +280,29 @@ void RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
 
     else {
         // copy data
-        out.scans.data = in.scans.data.block(si, 0, sl, in.scans.data.cols());
+        out.scans.data = in_pol.scans.data.block(si, 0, sl, in_pol.scans.data.cols());
         // copy flags
-        out.flags.data = in.flags.data.block(si, 0, sl, in.flags.data.cols());
+        out.flags.data = in_pol.flags.data.block(si, 0, sl, in_pol.flags.data.cols());
         // copy kernel
         if (run_kernel) {
-            out.kernel.data = in.kernel.data.block(si, 0, sl, in.kernel.data.cols());
+            out.kernel.data = in_pol.kernel.data.block(si, 0, sl, in_pol.kernel.data.cols());
         }
         // copy telescope data
-        for (auto const& x: in.tel_data.data) {
-            out.tel_data.data[x.first] = in.tel_data.data[x.first].segment(si, sl);
+        for (auto const& x: in_pol.tel_data.data) {
+            out.tel_data.data[x.first] = in_pol.tel_data.data[x.first].segment(si, sl);
         }
 
         // copy pointing offsets
-        for (auto const& x: in.pointing_offsets_arcsec.data) {
-            out.pointing_offsets_arcsec.data[x.first] = in.pointing_offsets_arcsec.data[x.first].segment(si, sl);
+        for (auto const& x: in_pol.pointing_offsets_arcsec.data) {
+            out.pointing_offsets_arcsec.data[x.first] = in_pol.pointing_offsets_arcsec.data[x.first].segment(si, sl);
         }
     }
 
-    // copy fcf
-    out.fcf.data = in.fcf.data;
+    out.scan_indices.data = in_pol.scan_indices.data;
+    out.index.data = in_pol.index.data;
+    out.fcf.data = in_pol.fcf.data;
 
-    if (run_calibrate) {
-        if (!run_polarization) {
-            SPDLOG_DEBUG("calibrating timestream");
-            // calibrate tod
-            calibration.calibrate_tod(out, det_indices, array_indices, calib);
-
-            out.calibrated = true;
-        }
-    }
-
-    if (run_extinction) {
-        if (!run_polarization) {
-            // calc tau at toltec frequencies
-            auto tau_freq = calibration.calc_tau(out.tel_data.data["TelElAct"], telescope.tau_225_GHz);
-            // correct for extinction
-            calibration.extinction_correction(out, det_indices, array_indices, calib, tau_freq);
-        }
-    }
-
-    out.scan_indices.data = in.scan_indices.data;
-    out.index.data = in.index.data;
-}
-
-template <typename calib_t, typename Derived>
-auto RTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
-                              Eigen::DenseBase<Derived> &nw_indices, Eigen::DenseBase<Derived> &array_indices, std::string redu_type,
-                              std::string map_grouping) {
-
-    // make a copy of the calib class for flagging
-    calib_t calib_scan = calib;
-
-    // number of detectors
-    Eigen::Index n_dets = in.scans.data.cols();
-
-    in.n_low_dets = 0;
-    in.n_high_dets = 0;
-
-    // only run if limits are not zero
-    if (lower_weight_factor !=0 || upper_weight_factor !=0) {
-        SPDLOG_INFO("removing outlier weights");
-        for (Eigen::Index i=0; i<calib.n_arrays; i++) {
-            // number of unflagged detectors
-            Eigen::Index n_good_dets = 0;
-
-            for (Eigen::Index j=0; j<n_dets; j++) {
-                Eigen::Index det_index = det_indices(j);
-                if (calib.apt["flag"](det_index) && calib.apt["array"](det_index)==calib.arrays(i)) {
-                    n_good_dets++;
-                }
-            }
-
-            Eigen::VectorXd det_std_dev(n_good_dets);
-            Eigen::VectorXI dets(n_good_dets);
-            Eigen::Index k = 0;
-
-            // collect standard deviation from good detectors
-            for (Eigen::Index j=0; j<n_dets; j++) {
-                Eigen::Index det_index = det_indices(j);
-                if (calib.apt["flag"](det_index) && calib.apt["array"](det_index)==calib.arrays(i)) {
-
-                    // make Eigen::Maps for each detector's scan
-                    Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
-                        in.scans.data.col(j).data(), in.scans.data.rows());
-                    Eigen::Map<Eigen::Matrix<bool, Eigen::Dynamic, 1>> flags(
-                        in.flags.data.col(j).data(), in.flags.data.rows());
-
-                    det_std_dev(k) = engine_utils::calc_std_dev(scans, flags);
-
-                    if (det_std_dev(k) !=0) {
-                        det_std_dev(k) = std::pow(det_std_dev(k),-2);
-                    }
-                    else {
-                        det_std_dev(k) = 0;
-                    }
-                    //det_std_dev(k) = engine_utils::calc_rms(scans, flags);
-
-                    dets(k) = j;
-                    k++;
-                }
-            }
-
-            // get mean standard deviation
-            //double mean_std_dev = det_std_dev.mean();
-            double mean_std_dev = tula::alg::median(det_std_dev);
-
-            int n_low_dets = 0;
-            int n_high_dets = 0;
-
-            // loop through good detectors and flag those that have std devs beyond the limits
-            for (Eigen::Index j=0; j<n_good_dets; j++) {
-                Eigen::Index det_index = det_indices(dets(j));
-                // flag those below limit
-                if (calib.apt["flag"](det_index) && calib.apt["array"](det_index)==calib.arrays(i)) {
-                    if ((det_std_dev(j) < (lower_weight_factor*mean_std_dev)) && lower_weight_factor!=0) {
-                        if (map_grouping!="detector") {
-                            in.flags.data.col(dets(j)).setZero();
-                        }
-                        else {
-                            calib_scan.apt["flag"](det_index) = 0;
-                        }
-                        in.n_low_dets++;
-                        n_low_dets++;
-                    }
-
-                    // flag those above limit
-                    if ((det_std_dev(j) > (upper_weight_factor*mean_std_dev)) && upper_weight_factor!=0) {
-                        if (map_grouping!="detector") {
-                            in.flags.data.col(dets(j)).setZero();
-                        }
-                        else {
-                            calib_scan.apt["flag"](det_index) = 0;
-                        }
-                        in.n_high_dets++;
-                        n_high_dets++;
-                    }
-                }
-            }
-
-            SPDLOG_INFO("array {}: {}/{} dets below limit. {}/{} dets above limit.", calib.arrays(i), n_low_dets, n_good_dets,
-                        n_high_dets, n_good_dets);
-        }
-    }
-
-    // set up scan calib
-    calib_scan.setup();
-
-    return std::move(calib_scan);
+    return std::tuple<Eigen::VectorXI,Eigen::VectorXI,Eigen::VectorXI,Eigen::VectorXI>(map_indices, array_indices, nw_indices, det_indices);
 }
 
 template <typename calib_t, typename Derived>

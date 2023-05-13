@@ -938,22 +938,6 @@ auto Engine::calc_map_indices(Eigen::DenseBase<Derived> &det_indices, Eigen::Den
         map_indices(i+1) = map_index;
     }
 
-    // loop through and calculate map indices
-    /*if (map_grouping != "detector") {
-        for (Eigen::Index i=0; i<map_indices.size()-1; i++) {
-            if (map_indices(i+1) > (map_indices(i)+1)) {
-                auto map_indices_temp = map_indices;
-                auto mi_lower = map_indices(i);
-                auto mi_upper = map_indices(i+1);
-                (map_indices.array() == mi_upper).select(mi_lower+1,map_indices.array());
-            }
-        }
-    }*/
-
-    // make sure first value is zero
-    //auto min_index = map_indices.minCoeff();
-    //map_indices = map_indices.array() - min_index;
-
     if (rtcproc.run_polarization) {
         if (stokes_param == "Q") {
             map_indices = map_indices.array() + n_maps/3;
@@ -962,8 +946,6 @@ auto Engine::calc_map_indices(Eigen::DenseBase<Derived> &det_indices, Eigen::Den
             map_indices = map_indices.array() + 2*n_maps/3;
         }
     }
-
-    SPDLOG_INFO("stokes {} map_indices {}",stokes_param, map_indices);
 
     return std::move(map_indices);
 }
