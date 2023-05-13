@@ -770,7 +770,7 @@ void Engine::get_citlali_config(CT &config) {
         get_config_value(config, map_fitter.bounding_box_pix, missing_keys, invalid_keys, std::tuple{"post_processing","source_fitting",
                                                                                                      "bounding_box_arcsec"},{},{0});
         get_config_value(config, map_fitter.fitting_region_pix, missing_keys, invalid_keys, std::tuple{"post_processing","source_fitting",
-                                                                                                       "fitting_region_arcsec"});
+                                                                                                       "fitting_radius_arcsec"});
         get_config_value(config, map_fitter.fit_angle, missing_keys, invalid_keys, std::tuple{"post_processing","source_fitting",
                                                                                               "gauss_model","fit_rotation_angle"});
         map_fitter.bounding_box_pix = ASEC_TO_RAD*map_fitter.bounding_box_pix/omb.pixel_size_rad;
