@@ -211,7 +211,7 @@ timestream: # timestream reduction parameters
       clean_polarized_time_chunks: false # carry out cleaning on Q and U maps as well as I maps
     weighting: # how to weight data and maps
       type: full # type of TOD weighting (full=use scan variance/approximate=use det sensitivity)
-      median_weight_factor: true # set all weights above this factorx median of unflagged detectors to median (>=1 allowed)
+      median_weight_factor: 0 # set all weights above this factorx median of unflagged detectors to median (>=1 allowed)
     flagging: # controls flagging after cleaning
       lower_weight_factor: 0.0 # flag detectors below this weight limit (ignored if 0, weight=1/variance of TOD)
       upper_weight_factor: 0.0 # flag detectors above this weight limit (ignored if 0, weight=1/variance of TOD)
