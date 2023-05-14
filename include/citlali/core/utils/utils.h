@@ -266,10 +266,10 @@ auto calc_std_dev(Eigen::DenseBase<DerivedA> &data) {
 template <typename DerivedA, typename DerivedB>
 auto calc_std_dev(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &flag) {
 
-    auto f = (flag.derived().array() - 1).abs();
+    auto f = (flag.derived().template cast<double>().array() - 1).abs();
 
     // number of unflagged samples
-    auto n_good = (f.array() == 0).count();
+    auto n_good = (f.array() == 1).count();
 
     // number of samples for divisor
     double n_samples;
@@ -288,8 +288,8 @@ auto calc_std_dev(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &
     }
 
     // calc standard deviation
-    double std_dev = std::sqrt((((data.derived().array() *f.template cast<double>().array()) -
-                            (data.derived().array() * f.template cast<double>().array()).sum()/
+    double std_dev = std::sqrt((((data.derived().array()*f.array()) -
+                            (data.derived().array()*f.array()).sum()/
                                 n_good).square().sum()) / n_samples);
 
     return std_dev;
@@ -319,10 +319,10 @@ auto calc_rms(Eigen::DenseBase<DerivedA> &data) {
 template <typename DerivedA, typename DerivedB>
 auto calc_rms(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &flag) {
 
-    auto f = (flag.derived().array() - 1).abs();
+    auto f = (flag.derived().template cast<double>().array() - 1).abs();
 
     // number of unflagged samples
-    auto n_good = (f.array() == 0).count();
+    auto n_good = (f.array() == 1).count();
 
     // number of samples for divisor
     double n_samples;
@@ -336,7 +336,7 @@ auto calc_rms(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &flag
     }
 
     // calc rms
-    return std::sqrt((((data.derived().array() *f.template cast<double>().array())).square().sum()) / n_samples);
+    return std::sqrt((((data.derived().array()*f.array())).square().sum()) / n_samples);
 }
 
 template <typename Derived>

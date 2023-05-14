@@ -298,6 +298,8 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         }
     }
 
+    SPDLOG_INFO("flags {}",out.flags.data);
+
     out.scan_indices.data = in_pol.scan_indices.data;
     out.index.data = in_pol.index.data;
     out.fcf.data = in_pol.fcf.data;
@@ -316,7 +318,7 @@ auto RTCProc::remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
     // number of detectors
     Eigen::Index n_dets = in.scans.data.cols();
 
-    int n_nearby_tones = 0;//calib.apt["duplicate_tone"].sum();
+    int n_nearby_tones = 0;
 
     // loop through flag columns
     for (Eigen::Index i=0; i<in.flags.data.cols(); i++) {

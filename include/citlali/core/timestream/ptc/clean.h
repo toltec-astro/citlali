@@ -133,9 +133,8 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
 
     // zero out flagged detectors in apt table (used for per scan beammap flags)
     for (Eigen::Index i=0; i<n_dets; i++) {
-
         if (apt_flags.derived()(i) == 1) {
-            f.col(i).setOnes();
+            f.col(i).setZero();
         }
     }
 

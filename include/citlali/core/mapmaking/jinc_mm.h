@@ -118,7 +118,7 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 
     for (Eigen::Index i=0; i<n_dets; i++) {
         // skip completely flagged detectors
-        if ((in.flags.data.col(i).array()==false).any()) {
+        if ((in.flags.data.col(i).array()==0).any()) {
             double az_off = 0;
             double el_off = 0;
 
