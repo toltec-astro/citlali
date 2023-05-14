@@ -390,6 +390,19 @@ void RawObs::collect_data_items() {
             config_t{node_data_items[i], this->config().filepath()});
     }
     m_data_items = std::move(data_items);
+
+    sort(m_data_items.begin(), m_data_items.end(), [] (const RawObs::DataItem& a, const RawObs::DataItem& b) {
+
+        if ((a.interface().find("toltec"))!=std::string::npos && (b.interface().find("toltec"))!=std::string::npos) {
+            std::string cmp_a { a.interface().begin() + 6, a.interface().end() };
+            std::string cmp_b { b.interface().begin() + 6, b.interface().end() };
+            return std::stoi(cmp_a) < std::stoi(cmp_b);
+        }
+        else {
+            return false;
+        }
+    });
+
     SPDLOG_DEBUG("collected n_data_items={}\n{}", this->n_data_items(),
                  this->data_items());
     // update the data indices
