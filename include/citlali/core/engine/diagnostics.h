@@ -21,7 +21,8 @@ public:
     std::vector<std::string> tpt_header = {
         "rms",
         "stddev",
-        "median"
+        "median",
+        "flagged_frac"
     };
 
     // tpt header units
@@ -40,12 +41,14 @@ void Diagnostics::calc_stats(timestream::TCData<tcdata_kind, Eigen::MatrixXd> &i
         // make Eigen::Maps for each detector's scan
         Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
             in.scans.data.col(i).data(), in.scans.data.rows());
+        Eigen::Map<Eigen::Matrix<bool, Eigen::Dynamic, 1>> flags(
+            in.flags.data.col(i).data(), in.flags.data.rows());
         // calc rms.  divide by sqrt(sample rate) to keep units
         stats["rms"](i,in.index.data) = engine_utils::calc_rms(scans)/sqrt(fsmp);
         stats["stddev"](i,in.index.data) = engine_utils::calc_std_dev(scans);
         stats["median"](i,in.index.data) = tula::alg::median(scans);
+        stats["flagged_frac"](i,in.index.data) = flags.cast<double>().sum()/static_cast<double>(n_pts);
     }
 }
-
 
 } // namespace engine

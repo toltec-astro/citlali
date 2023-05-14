@@ -1901,6 +1901,12 @@ void Engine::write_stats() {
 
     netCDF::NcFile fo(stats_filename + ".nc", netCDF::NcFile::replace);
 
+    // add obsnum
+    netCDF::NcVar obsnum_v = fo.addVar("obsnum",netCDF::ncInt);
+    obsnum_v.putAtt("units","N/A");
+    int obsnum_int = std::stoi(obsnum);
+    obsnum_v.putVar(&obsnum_int);
+
     netCDF::NcDim n_dets_dim = fo.addDim("n_dets", calib.n_dets);
     netCDF::NcDim n_chunks_dim = fo.addDim("n_chunks", telescope.scan_indices.cols());
 
