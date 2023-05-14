@@ -67,9 +67,11 @@ public:
 };
 
 void PTCProc::subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in) {
+
+    auto f = (in.flags.data.derived().array().cast <double> ().array() - 1).abs();
     // mean of each detector
-    Eigen::RowVectorXd col_mean = (in.scans.data.derived().array()*in.flags.data.derived().array().cast <double> ()).colwise().sum()/
-                                   in.flags.data.derived().array().cast <double> ().colwise().sum();
+    Eigen::RowVectorXd col_mean = (in.scans.data.derived().array()*f).colwise().sum()/
+                                   f.colwise().sum();
 
     // remove nans from completely flagged detectors
     Eigen::RowVectorXd dm = (col_mean).array().isNaN().select(0,col_mean);
@@ -79,8 +81,8 @@ void PTCProc::subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in) {
 
     // subtract kernel mean
     if (in.kernel.data.size()!=0) {
-        Eigen::RowVectorXd col_mean = (in.kernel.data.derived().array()*in.flags.data.derived().array().cast <double> ()).colwise().sum()/
-                                      in.flags.data.derived().array().cast <double> ().colwise().sum();
+        Eigen::RowVectorXd col_mean = (in.kernel.data.derived().array()*f).colwise().sum()/
+                                      f.colwise().sum();
 
         // remove nans from completely flagged detectors
         Eigen::RowVectorXd dm = (col_mean).array().isNaN().select(0,col_mean);
@@ -397,7 +399,7 @@ void PTCProc::remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
     for (Eigen::Index i=0; i<n_dets; i++) {
         Eigen::Index det_index = det_indices(i);
         if (apt["flag"](det_index)==1) {
-            in.flags.data.col(i).setZero();
+            in.flags.data.col(i).setOnes();
             n_flagged++;
         }
     }
@@ -478,7 +480,7 @@ auto PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                 if (calib.apt["flag"](det_index)!=1 && calib.apt["array"](det_index)==calib.arrays(i)) {
                     if ((det_std_dev(j) < (lower_weight_factor*mean_std_dev)) && lower_weight_factor!=0) {
                         if (map_grouping!="detector") {
-                            in.flags.data.col(dets(j)).setZero();
+                            in.flags.data.col(dets(j)).setOnes();
                         }
                         else {
                             calib_scan.apt["flag"](det_index) = 1;
@@ -490,7 +492,7 @@ auto PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                     // flag those above limit
                     if ((det_std_dev(j) > (upper_weight_factor*mean_std_dev)) && upper_weight_factor!=0) {
                         if (map_grouping!="detector") {
-                            in.flags.data.col(dets(j)).setZero();
+                            in.flags.data.col(dets(j)).setOnes();
                         }
                         else {
                             calib_scan.apt["flag"](det_index) = 1;
@@ -593,7 +595,7 @@ auto PTCProc::remove_bad_dets_iter(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                     if (calib_scan.apt["flag"](det_index)!=1 && calib_scan.apt["nw"](det_index)==calib_scan.nws(i)) {
                         if ((det_std_dev(j) < (lower_weight_factor*mean_std_dev)) && lower_weight_factor!=0) {
                             if (map_grouping!="detector") {
-                                in.flags.data.col(dets(j)).setZero();
+                                in.flags.data.col(dets(j)).setOnes();
                                 calib_scan.apt["flag"](det_index) = 1;
                             }
                             else {
@@ -606,7 +608,7 @@ auto PTCProc::remove_bad_dets_iter(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                         // flag those above limit
                         if ((det_std_dev(j) > (upper_weight_factor*mean_std_dev)) && upper_weight_factor!=0) {
                             if (map_grouping!="detector") {
-                                in.flags.data.col(dets(j)).setZero();
+                                in.flags.data.col(dets(j)).setOnes();
                                 calib_scan.apt["flag"](det_index) = 1;
                             }
                             else {

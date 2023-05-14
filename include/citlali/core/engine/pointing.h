@@ -191,6 +191,7 @@ void Pointing::setup() {
     ppt_meta["angle_err"].push_back("units: radians");
     ppt_meta["angle_err"].push_back("fitted rotation angle error");
 
+    // add point model variables from telescope file
     for (const auto &val: telescope.tel_header) {
         std::size_t found = val.first.find("PointModel");
         if (found!=std::string::npos) {

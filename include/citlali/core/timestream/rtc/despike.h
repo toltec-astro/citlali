@@ -55,11 +55,11 @@ private:
 
         // set flag matrix to zero if scan delta is above the cutoff
         flags.segment(1,n_pts - 2) =
-            (diff.segment(1,n_pts - 2).array() > cutoff).select(0, flags.segment(1,n_pts - 2));
+            (diff.segment(1,n_pts - 2).array() > cutoff).select(1, flags.segment(1,n_pts - 2));
 
         // set corresponding delta values to zero
         delta.segment(1,n_pts - 2) =
-            (diff.segment(1,n_pts - 2).array() > cutoff).select(0, delta.segment(1,n_pts - 2));
+            (diff.segment(1,n_pts - 2).array() > cutoff).select(1, delta.segment(1,n_pts - 2));
 
         // update difference vector and cutoff
         diff = abs(delta.derived().array() - delta.mean());
@@ -197,12 +197,12 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
             }
 
             // count up the number of spikes
-            n_spikes = (det_flags.head(n_pts - 1).array() == 0).count();
+            n_spikes = (det_flags.head(n_pts - 1).array() == 1).count();
 
             // if there are other spikes within set number of samples after a spike, set only the
             // center value to be a spike
             for (Eigen::Index i = 0; i < n_pts; i++) {
-                if (det_flags(i) == 0) {
+                if (det_flags(i) == 1) {
                     int size_loop = size;
                     // check the size of the region to set un_flagged if a flag is found.
                     if ((n_pts - i - 1) < size_loop) {
@@ -211,21 +211,21 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                     }
 
                     // count up the flags in the region
-                    int c = (det_flags.segment(i + 1, size_loop).array() == 0).count();
+                    int c = (det_flags.segment(i + 1, size_loop).array() == 1).count();
 
                     // if flags are found
                     if (c > 0) {
                         // remove those flags from the total count
                         n_spikes -= c;
                         // set region to un_flagged
-                        det_flags.segment(i + 1, size_loop).setOnes();
+                        det_flags.segment(i + 1, size_loop).setZero();
 
                         // is this a bug?  if n_pts - i <= size/2, i + size/2 >= n_pts
                         // for now, let's limit it to i + size/2 < n_pts since the
                         // start and end of the scan are not used due to
                         // filtering
                         if ((i + size_loop/2) < n_pts) {
-                            det_flags(i + size_loop/2) = 0;
+                            det_flags(i + size_loop/2) = 1;
                         }
                     }
 
@@ -237,7 +237,7 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
             // now loop through if spikes were found
             if (n_spikes > 0) {
                 // recount spikes
-                n_spikes = (det_flags.head(n_pts - 1).array() == 0).count();
+                n_spikes = (det_flags.head(n_pts - 1).array() == 1).count();
 
                 SPDLOG_INFO("n_spikes 3 {} {}", n_spikes, det);
 
@@ -249,7 +249,7 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                 // populate scan location and amplitude vectors
                 int count = 0;
                 for (Eigen::Index i = 0; i < n_pts - 1; i++) {
-                    if (det_flags(i) == 0) {
+                    if (det_flags(i) == 1) {
                         spike_loc(count) = i + 1;
                         spike_vals(count) = scans(det,i+1) - scans(det,i);
                         count++;
@@ -311,7 +311,7 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                             spike_loc(i) + decay_window + 1 < n_pts) {
                             det_flags
                                 .segment(spike_loc(i) - decay_window, 2*window_size + 1)
-                                .setZero();
+                                .setOnes();
                         }
                     }
                 }
@@ -323,7 +323,7 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                             spike_loc(i) + decay_length(i) + 1 < n_pts) {
                             det_flags
                                 .segment(spike_loc(i) - decay_length(i), 2*decay_length(i) + 1)
-                                .setZero();
+                                .setOnes();
                         }
                     }
                 }
@@ -347,9 +347,9 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
     // figure out if there are any flag-free detectors
     Eigen::Index n_flagged = 0;
 
-    // if spike_free(detector) == 0, it contains a spike
+    // if spike_free(detector) == 1, it contains a spike
     // otherwise none found
-    auto spike_free = flags.colwise().minCoeff();
+    auto spike_free = flags.colwise().maxCoeff();
     n_flagged = n_dets - spike_free.template cast<int>().sum();
 
     SPDLOG_INFO("has spikes {}", spike_free);
@@ -357,18 +357,18 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
 
     for (Eigen::Index det = 0; det < n_dets; det++) {
         if (apt["flag"](det + start_det)!=1) {
-            if (!spike_free(det)) {
+            if (spike_free(det)) {
                 // condition flags so that if there is a spike we can make
                 // one long flagged or un-flagged region.
                 // first do spikes from 0 to 1
                 for (Eigen::Index j = 1; j < n_pts - 1; j++) {
-                    if (flags(j, det) == 1 && flags(j - 1, det) == 0 && flags(j + 1, det) == 0) {
+                    if (flags(j, det) == 0 && flags(j - 1, det) == 1 && flags(j + 1, det) == 1) {
                         flags(j, det) = 0;
                     }
                 }
                 // now do spikes from 1 to 0
                 for (Eigen::Index j = 1; j < n_pts - 1; j++) {
-                    if (flags(j, det) == 0 && flags(j - 1, det) == 1 && flags(j + 1, det) == 1) {
+                    if (flags(j, det) == 1 && flags(j - 1, det) == 0 && flags(j + 1, det) == 0) {
                         flags(j, det) = 1;
                     }
                 }
@@ -379,12 +379,12 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                 // count up the number of flagged regions of data in the scan
                 Eigen::Index n_flagged_regions = 0;
 
-                if (flags(n_pts - 1, det) == 0) {
+                if (flags(n_pts - 1, det) == 1) {
                     n_flagged_regions++;
                 }
 
                 n_flagged_regions
-                    += ((flags.col(det).tail(n_pts - 1) - flags.col(det).head(n_pts - 1)).array() > 0)
+                    += ((flags.col(det).tail(n_pts - 1) - flags.col(det).head(n_pts - 1)).array() < 0)
                            .count()/ 2;
                 if (n_flagged_regions == 0) {
                     break;
@@ -403,11 +403,11 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                 Eigen::Index j = 0;
 
                 while (j < n_pts) {
-                    if (flags(j, det) == 0) {
+                    if (flags(j, det) == 1) {
                         int jstart = j;
                         int samp_count = 0;
 
-                        while (flags(j, det) == 0 && j <= n_pts - 1) {
+                        while (flags(j, det) == 1 && j <= n_pts - 1) {
                             samp_count++;
                             j++;
                         }
@@ -472,7 +472,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                     }
                     else {
                         for (Eigen::Index ii=0;ii<n_dets;ii++) {
-                            if(spike_free(ii) && apt["flag"](ii + start_det)!=1) {
+                            if (!spike_free(ii) && apt["flag"](ii + start_det)!=1) {
                                 det_count++;
                             }
                         }

@@ -58,7 +58,7 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 
     for (Eigen::Index i=0; i<n_dets; i++) {
         // skip completely flagged detectors
-        if ((in.flags.data.col(i).array()==true).any()) {
+        if ((in.flags.data.col(i).array()==false).any()) {
             double az_off = 0;
             double el_off = 0;
 
@@ -90,7 +90,7 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
             // loop through the samples
             for (Eigen::Index j=0; j<n_pts; j++) {
                 // check if sample is flagged, ignore if so
-                if (in.flags.data(j,i)) {
+                if (!in.flags.data(j,i)) {
                     Eigen::Index omb_ir = omb_irow(j);
                     Eigen::Index omb_ic = omb_icol(j);
 

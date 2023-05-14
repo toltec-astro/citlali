@@ -154,7 +154,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     auto sl = in_pol.scan_indices.data(1) - in_pol.scan_indices.data(0) + 1;
 
     // set up flags
-    in_pol.flags.data.setOnes(in_pol.scans.data.rows(), in_pol.scans.data.cols());
+    in_pol.flags.data.setZero(in_pol.scans.data.rows(), in_pol.scans.data.cols());
 
     // create kernel if requested
     if (run_kernel) {
@@ -327,7 +327,7 @@ auto RTCProc::remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
             n_nearby_tones++;
             // increment number of nearby tones
             if (map_grouping!="detector") {
-                in.flags.data.col(i).setZero();
+                in.flags.data.col(i).setOnes();
             }
             else {
                 calib_scan.apt["flag"](det_index) = 1;

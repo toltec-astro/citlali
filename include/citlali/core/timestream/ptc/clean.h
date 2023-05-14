@@ -129,12 +129,13 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     Eigen::MatrixXd evecs;
 
     // make copy of flags
-    Eigen::MatrixXd f = flags.derived().template cast<double> ();
+    Eigen::MatrixXd f = abs(flags.derived().template cast<double> ().array() - 1);
 
     // zero out flagged detectors in apt table (used for per scan beammap flags)
     for (Eigen::Index i=0; i<n_dets; i++) {
+
         if (apt_flags.derived()(i) == 1) {
-            f.col(i).setZero();
+            f.col(i).setOnes();
         }
     }
 
