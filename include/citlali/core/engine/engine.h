@@ -1895,7 +1895,7 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
 }
 
 void Engine::write_stats() {
-    auto stats_filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::summary,
+    auto stats_filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::stats,
                                                     engine_utils::toltecIO::raw>
                           (obsnum_dir_name + "raw/", redu_type, "", obsnum, telescope.sim_obs);
 

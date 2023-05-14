@@ -25,7 +25,7 @@ public:
         hist = 3,
         rtc_timestream = 4,
         ptc_timestream = 5,
-        summary = 6
+        stats = 6
     };
 
     // raw or filtered
@@ -147,8 +147,8 @@ std::string toltecIO::create_filename(const std::string filepath, const std::str
     }
 
     // time chunk summary file
-    else if constexpr (prod_t == summary) {
-        filename = filename + "_summary";
+    else if constexpr (prod_t == stats) {
+        filename = filename + "_stats";
     }
 
     // filtered map
