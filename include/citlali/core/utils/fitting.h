@@ -230,24 +230,30 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
 
         auto sig2noise = signal.derived().array()*sqrt(weight.derived().array());
 
+        Eigen::Index ir, ic;
+
         if (fitting_region_pix <= 0) {
-            sig2noise.maxCoeff(&init_row, &init_col);
-            init_flux = signal(static_cast<int>(init_row),static_cast<int>(init_col));
+            sig2noise.maxCoeff(&ir, &ic);
+            init_flux = signal(ir,ic);
         }
         else {
             for (Eigen::Index i=0; i<sig2noise.rows(); i++) {
                 for (Eigen::Index j=0; j<sig2noise.cols(); j++) {
                     auto dist = sqrt(pow(i - center_row,2) + pow(j - center_col,2));
                     if (dist < fitting_region_pix) {
-                        if (signal(i,j) > init_flux) {
-                            init_flux = signal(i,j);
-                            init_row = i;
-                            init_col = j;
+                        if (sig2noise(i,j) > init_flux) {
+                            init_flux = sig2noise(i,j);
+                            ir = i;
+                            ic = j;
                         }
                     }
                 }
             }
+            init_flux = signal(ir, ic);
         }
+
+        init_row = ir;
+        init_col = ic;
     }
     // otherwise use the input initial position
     else {
