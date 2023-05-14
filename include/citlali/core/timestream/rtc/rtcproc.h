@@ -126,9 +126,6 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     SPDLOG_INFO("calculating map indices");
     auto map_indices = calc_map_indices(calib, det_indices, nw_indices, array_indices, stokes_param, map_grouping);
 
-    SPDLOG_DEBUG("array indices {}, nw indices {}, det indices {} map_indices {}",array_indices,nw_indices,det_indices,
-                 map_indices);
-
     if (run_calibrate) {
         SPDLOG_DEBUG("calibrating timestream");
         // calibrate tod
@@ -258,6 +255,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
             downsampler.downsample(in_tel, out.tel_data.data[x.first]);
         }
 
+        // downsample pointing
         for (auto const& x: in_pol.pointing_offsets_arcsec.data) {
         Eigen::Ref<Eigen::VectorXd> in_pointing =
             in_pol.pointing_offsets_arcsec.data[x.first].segment(si, sl);
@@ -265,6 +263,14 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
             downsampler.downsample(in_pointing, out.pointing_offsets_arcsec.data[x.first]);
         }
 
+        // downsample hwp
+        if (run_polarization) {
+            if (calib.run_hwp) {
+                Eigen::Ref<Eigen::VectorXd> in_hwp =
+                    in_pol.hwp_angle.data.segment(si, sl);
+                downsampler.downsample(in_hwp, in_pol.hwp_angle.data);
+            }
+        }
         // downsample kernel if requested
         if (run_kernel) {
             SPDLOG_DEBUG("downsampling kernel");
@@ -296,9 +302,14 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         for (auto const& x: in_pol.pointing_offsets_arcsec.data) {
             out.pointing_offsets_arcsec.data[x.first] = in_pol.pointing_offsets_arcsec.data[x.first].segment(si, sl);
         }
-    }
 
-    SPDLOG_INFO("flags {}",out.flags.data);
+        // copy hwp angle
+        if (run_polarization) {
+            if (calib.run_hwp) {
+                out.hwp_angle.data = in_pol.hwp_angle.data.segment(si, sl);
+            }
+        }
+    }
 
     out.scan_indices.data = in_pol.scan_indices.data;
     out.index.data = in_pol.index.data;

@@ -167,7 +167,7 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     Eigen::MatrixXd limits(6,2);
 
     // intiial position and flux
-    double init_flux;
+    double init_flux = 0;
 
     // initial gaussian standard deviation
     double init_sigma = init_fwhm*FWHM_TO_STD;
@@ -227,7 +227,6 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
         init_row = init_row + fit_region_lower_row;
         init_col = init_col + fit_region_lower_col;
         */
-
 
         auto sig2noise = signal.derived().array()*sqrt(weight.derived().array());
 

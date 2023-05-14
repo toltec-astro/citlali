@@ -1157,37 +1157,66 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
             pointing_offsets_arcsec["az"] = engine().pointing_offsets_arcsec["az"].segment(si,sl);
             pointing_offsets_arcsec["alt"] = engine().pointing_offsets_arcsec["alt"].segment(si,sl);
 
-            // loop through detectors
-            grppi::map(tula::grppi_utils::dyn_ex(engine().parallel_policy), det_in_vec, det_out_vec, [&](auto j) {
 
-                double az_off = 0;
-                double el_off = 0;
+            if (engine().map_grouping!="detector" || engine().redu_type!="beammap") {
+                // loop through detectors
+                grppi::map(tula::grppi_utils::dyn_ex(engine().parallel_policy), det_in_vec, det_out_vec, [&](auto j) {
 
-                if (engine().map_grouping!="detector" || engine().redu_type!="beammap") {
-                    az_off = engine().calib.apt["x_t"](j);
-                    el_off = engine().calib.apt["y_t"](j);
-                }
+                    double az_off = 0;
+                    double el_off = 0;
 
+                    //if (engine().map_grouping!="detector" || engine().redu_type!="beammap") {
+                        az_off = engine().calib.apt["x_t"](j);
+                        el_off = engine().calib.apt["y_t"](j);
+                    //}
+
+                    // get pointing
+                    auto [lat, lon] = engine_utils::calc_det_pointing(tel_data, az_off, el_off,
+                                                                      engine().telescope.pixel_axes,
+                                                                      pointing_offsets_arcsec);
+                    // check for min and max
+                    if (engine().calib.apt["flag"](j)!=1) {
+                        if (lat.minCoeff() < det_lat_limits(j,0)) {
+                            det_lat_limits(j,0) = lat.minCoeff();
+                        }
+                        if (lat.maxCoeff() > det_lat_limits(j,1)) {
+                            det_lat_limits(j,1) = lat.maxCoeff();
+                        }
+                        if (lon.minCoeff() < det_lon_limits(j,0)) {
+                            det_lon_limits(j,0) = lon.minCoeff();
+                        }
+                        if (lon.maxCoeff() > det_lon_limits(j,1)) {
+                            det_lon_limits(j,1) = lon.maxCoeff();
+                        }
+                    }
+                    else {
+                        det_lat_limits(j,0) = 0;
+                        det_lat_limits(j,1) = 0;
+                        det_lon_limits(j,0) = 0;
+                        det_lon_limits(j,1) = 0;
+                    }
+
+                    return 0;
+                });
+            }
+            else {
                 // get pointing
-                auto [lat, lon] = engine_utils::calc_det_pointing(tel_data, az_off, el_off,
+                auto [lat, lon] = engine_utils::calc_det_pointing(tel_data, 0, 0,
                                                                   engine().telescope.pixel_axes,
                                                                   pointing_offsets_arcsec);
-                // check for min and max
-                if (lat.minCoeff() < det_lat_limits(j,0)) {
-                    det_lat_limits(j,0) = lat.minCoeff();
+                if (lat.minCoeff() < det_lat_limits(0,0)) {
+                    det_lat_limits.col(0).setConstant(lat.minCoeff());
                 }
-                if (lat.maxCoeff() > det_lat_limits(j,1)) {
-                    det_lat_limits(j,1) = lat.maxCoeff();
+                if (lat.maxCoeff() > det_lat_limits(0,1)) {
+                    det_lat_limits.col(1).setConstant(lat.maxCoeff());
                 }
-                if (lon.minCoeff() < det_lon_limits(j,0)) {
-                    det_lon_limits(j,0) = lon.minCoeff();
+                if (lon.minCoeff() < det_lon_limits(0,0)) {
+                    det_lon_limits.col(0).setConstant(lon.minCoeff());
                 }
-                if (lon.maxCoeff() > det_lon_limits(j,1)) {
-                    det_lon_limits(j,1) = lon.maxCoeff();
+                if (lon.maxCoeff() > det_lon_limits(0,1)) {
+                    det_lon_limits.col(1).setConstant(lon.maxCoeff());
                 }
-
-                return 0;
-            });
+            }
         }
 
         // get the global min and max

@@ -1198,9 +1198,11 @@ void Engine::create_tod_files() {
             weights_v.putAtt("units","("+omb.sig_unit+")^-2");
         }
 
-        if (calib.run_hwp) {
-            netCDF::NcVar hwpr_v = fo.addVar("hwpr",netCDF::ncDouble, n_pts_dim);
-            hwpr_v.putAtt("units","rad");
+        if (rtcproc.run_polarization) {
+            if (calib.run_hwp) {
+                netCDF::NcVar hwpr_v = fo.addVar("hwpr",netCDF::ncDouble, n_pts_dim);
+                hwpr_v.putAtt("units","rad");
+            }
         }
 
         fo.close();
