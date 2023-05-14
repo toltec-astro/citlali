@@ -288,6 +288,8 @@ public:
     template <mapmaking::MapType map_t, class map_buffer_t>
     void write_hist(map_buffer_t &, std::string);
 
+    void write_stats();
+
     template <mapmaking::MapType map_t, class map_buffer_t>
     void run_wiener_filter(map_buffer_t &);
 
@@ -1889,6 +1891,34 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
         hist_v.putVar(mb->hists[i].data());
     }
     // close file
+    fo.close();
+}
+
+void Engine::write_stats() {
+    auto stats_filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::summary,
+                                                    engine_utils::toltecIO::raw>
+                          (obsnum_dir_name + "raw/", redu_type, "", obsnum, telescope.sim_obs);
+
+    netCDF::NcFile fo(stats_filename + ".nc", netCDF::NcFile::replace);
+
+    netCDF::NcDim n_dets_dim = fo.addDim("n_dets", calib.n_dets);
+    netCDF::NcDim n_chunks_dim = fo.addDim("n_chunks", telescope.scan_indices.cols());
+
+    std::vector<netCDF::NcDim> dims = {n_chunks_dim, n_dets_dim};
+
+    for (const auto &stat: diagnostics.tpt_header) {
+        netCDF::NcVar stat_v = fo.addVar(stat,netCDF::ncDouble, dims);
+        stat_v.putVar(diagnostics.stats[stat].data());
+        stat_v.putAtt("units",omb.sig_unit);
+    }
+
+    // add apt table
+    for (auto const& x: calib.apt) {
+        netCDF::NcVar apt_v = fo.addVar("apt_" + x.first,netCDF::ncDouble, n_dets_dim);
+        apt_v.putVar(x.second.data());
+        apt_v.putAtt("units",calib.apt_header_units[x.first]);
+    }
+
     fo.close();
 }
 

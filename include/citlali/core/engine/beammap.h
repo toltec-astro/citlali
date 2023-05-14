@@ -347,6 +347,7 @@ void Beammap::setup() {
     for (const auto &stat: diagnostics.tpt_header) {
         diagnostics.stats[stat].setZero(calib.n_dets, telescope.scan_indices.cols());
     }
+    diagnostics.fsmp = telescope.d_fsmp;
 }
 
 auto Beammap::run_timestream() {
@@ -709,9 +710,9 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
 
         // flag bad fits
         if (!good_fits(i)) {
-            if (calib.apt["flag"](i)!=0) {
+            if (calib.apt["flag"](i)!=1) {
                 n_flagged_dets++;
-                calib.apt["flag"](i) = 0;
+                calib.apt["flag"](i) = 1;
             }
             flag2(i) |= AptFlags::BadFit;
             calib.apt["flag2"](i) = AptFlags::BadFit;
@@ -720,9 +721,9 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
         //else
         if (calib.apt["a_fwhm"](i) < lower_fwhm_arcsec[array_name] ||
                  (calib.apt["a_fwhm"](i) > upper_fwhm_arcsec[array_name]) && upper_fwhm_arcsec[array_name] > 0) {
-            if (calib.apt["flag"](i)!=0) {
+            if (calib.apt["flag"](i)!=1) {
                 n_flagged_dets++;
-                calib.apt["flag"](i) = 0;
+                calib.apt["flag"](i) = 1;
             }
             flag2(i) |= AptFlags::AzFWHM;
             calib.apt["flag2"](i) = AptFlags::AzFWHM;
@@ -731,9 +732,9 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
         //else
         if (calib.apt["b_fwhm"](i) < lower_fwhm_arcsec[array_name] ||
                  (calib.apt["b_fwhm"](i) > upper_fwhm_arcsec[array_name] && upper_fwhm_arcsec[array_name] > 0)) {
-            if (calib.apt["flag"](i)!=0) {
+            if (calib.apt["flag"](i)!=1) {
                 n_flagged_dets++;
-                calib.apt["flag"](i) = 0;
+                calib.apt["flag"](i) = 1;
             }
             flag2(i) |= AptFlags::ElFWHM;
             calib.apt["flag2"](i) = AptFlags::ElFWHM;
@@ -742,9 +743,9 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
         //else
         if ((params(i,0)/map_std_dev < lower_sig2noise[array_name]) ||
             (params(i,0)/map_std_dev > upper_sig2noise[array_name] && upper_sig2noise[array_name] > 0)) {
-            if (calib.apt["flag"](i)!=0) {
+            if (calib.apt["flag"](i)!=1) {
                 n_flagged_dets++;
-                calib.apt["flag"](i) = 0;
+                calib.apt["flag"](i) = 1;
             }
             flag2(i) |= AptFlags::Sig2Noise;
             calib.apt["flag2"](i) = AptFlags::Sig2Noise;
@@ -764,8 +765,8 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
         auto nw_sens = calib.apt["sens"](Eigen::seq(std::get<0>(calib.nw_limits[nw]),
                                                     std::get<1>(calib.nw_limits[nw])-1));
         // number of good detectors
-        Eigen::Index n_good_det = calib.apt["flag"](Eigen::seq(std::get<0>(calib.nw_limits[nw]),
-                                                               std::get<1>(calib.nw_limits[nw])-1)).sum();
+        Eigen::Index n_good_det = (calib.apt["flag"](Eigen::seq(std::get<0>(calib.nw_limits[nw]),
+                                                               std::get<1>(calib.nw_limits[nw])-1)).array()==0).count();
 
         if (n_good_det>0) {
             // to hold good detectors
@@ -775,7 +776,7 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
             Eigen::Index j = std::get<0>(calib.nw_limits[nw]);
             Eigen::Index k = 0;
             for (Eigen::Index m=0; m<sens.size(); m++) {
-                if (calib.apt["flag"](j)) {
+                if (calib.apt["flag"](j)!=1) {
                     sens(k) = nw_sens(m);
                     k++;
                 }
@@ -802,8 +803,8 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
         // flag outlier sensitivities
         if (calib.apt["sens"](i) < lower_sens_factor*nw_median_sens[nw_index] ||
             (calib.apt["sens"](i) > upper_sens_factor*nw_median_sens[nw_index] && upper_sens_factor > 0)) {
-            if (calib.apt["flag"](i)!=0) {
-                calib.apt["flag"](i) = 0;
+            if (calib.apt["flag"](i)!=1) {
+                calib.apt["flag"](i) = 1;
                 n_flagged_dets++;
             }
             flag2(i) |= AptFlags::Sens;
@@ -829,8 +830,8 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
         auto array_y_t = calib.apt["y_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
                                                      std::get<1>(calib.array_limits[array])-1));
         // number of good detectors
-        Eigen::Index n_good_det = calib.apt["flag"](Eigen::seq(std::get<0>(calib.array_limits[array]),
-                                                               std::get<1>(calib.array_limits[array])-1)).sum();
+        Eigen::Index n_good_det = (calib.apt["flag"](Eigen::seq(std::get<0>(calib.array_limits[array]),
+                                                               std::get<1>(calib.array_limits[array])-1)).array()==0).count();
 
         // to hold good detectors
         Eigen::VectorXd x_t, y_t;
@@ -843,7 +844,7 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
             Eigen::Index j = std::get<0>(calib.array_limits[array]);
             Eigen::Index k = 0;
             for (Eigen::Index m=0; m<array_x_t.size(); m++) {
-                if (calib.apt["flag"](j)) {
+                if (calib.apt["flag"](j)!=1) {
                     x_t(k) = array_x_t(m);
                     y_t(k) = array_y_t(m);
                     k++;
@@ -873,9 +874,9 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
 
         // flag detectors that are further than the mean value than the distance limit
         if (dist > max_dist_arcsec[array_name] && max_dist_arcsec[array_name] > 0) {
-            if (calib.apt["flag"](i)!=0) {
+            if (calib.apt["flag"](i)!=1) {
                 n_flagged_dets++;
-                calib.apt["flag"](i) = 0;
+                calib.apt["flag"](i) = 1;
             }
             flag2(i) |= AptFlags::Position;
             calib.apt["flag2"](i) = AptFlags::Position;
@@ -951,8 +952,8 @@ void Beammap::adjust_apt() {
             auto array_y_t = calib.apt["y_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
                                                          std::get<1>(calib.array_limits[array])-1));
             // number of good detectors
-            Eigen::Index n_good_det = calib.apt["flag"](Eigen::seq(std::get<0>(calib.array_limits[array]),
-                                                                   std::get<1>(calib.array_limits[array])-1)).sum();
+            Eigen::Index n_good_det = (calib.apt["flag"](Eigen::seq(std::get<0>(calib.array_limits[array]),
+                                                                   std::get<1>(calib.array_limits[array])-1)).array()==0).count();
 
             Eigen::VectorXd x_t, y_t, det_indices;
 
@@ -964,7 +965,7 @@ void Beammap::adjust_apt() {
             Eigen::Index j = std::get<0>(calib.array_limits[array]);
             Eigen::Index k = 0;
             for (Eigen::Index i=0; i<array_x_t.size(); i++) {
-                if (calib.apt["flag"](j)) {
+                if (calib.apt["flag"](j)!=1) {
                     x_t(k) = array_x_t(i);
                     y_t(k) = array_y_t(i);
                     det_indices(k) = j;
@@ -1263,31 +1264,7 @@ void Beammap::output() {
         dir_name = obsnum_dir_name + "raw/";
 
         if constexpr (map_type == mapmaking::RawObs) {
-            auto stats_filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::summary,
-                                                            engine_utils::toltecIO::raw>
-                                  (obsnum_dir_name + "raw/", redu_type, "", obsnum, telescope.sim_obs);
-
-            netCDF::NcFile fo(stats_filename + ".nc", netCDF::NcFile::replace);
-
-            netCDF::NcDim n_dets_dim = fo.addDim("n_dets", calib.n_dets);
-            netCDF::NcDim n_chunks_dim = fo.addDim("n_chunks", telescope.scan_indices.cols());
-
-            std::vector<netCDF::NcDim> dims = {n_chunks_dim, n_dets_dim};
-
-            for (const auto &stat: diagnostics.tpt_header) {
-                netCDF::NcVar stat_v = fo.addVar(stat,netCDF::ncDouble, dims);
-                stat_v.putVar(diagnostics.stats[stat].data());
-                stat_v.putAtt("units",omb.sig_unit);
-            }
-
-            // add apt table
-            for (auto const& x: calib.apt) {
-                netCDF::NcVar apt_v = fo.addVar("apt_" + x.first,netCDF::ncDouble, n_dets_dim);
-                apt_v.putVar(x.second.data());
-                apt_v.putAtt("units",calib.apt_header_units[x.first]);
-            }
-
-            fo.close();
+            write_stats();
         }
 
         // only write apt table if beammapping

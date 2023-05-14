@@ -174,7 +174,7 @@ void Calib::calc_flux_calibration(std::string units) {
         std::string name = array_name_map[array];
 
         for (Eigen::Index j=start; j<end; j++) {
-            if (apt["flag"](j)) {
+            if (apt["flag"](j)!=1) {
                 mean_flux_conversion_factor[name] += flux_conversion_factor(j);
                 n_good_dets++;
             }
@@ -230,13 +230,13 @@ void Calib::setup() {
         auto nw_b_fwhm = apt["b_fwhm"](Eigen::seq(std::get<0>(nw_limits[key]),
                                                   std::get<1>(nw_limits[key])-1));
 
-        Eigen::Index n_good_det = apt["flag"](Eigen::seq(std::get<0>(nw_limits[key]),
-                                                         std::get<1>(nw_limits[key])-1)).sum();
+        Eigen::Index n_good_det = (apt["flag"](Eigen::seq(std::get<0>(nw_limits[key]),
+                                                         std::get<1>(nw_limits[key])-1)).array()==0).count();
 
         // remove flagged dets
         Eigen::Index k = std::get<0>(array_limits[key]);
         for (Eigen::Index i=0; i<nw_a_fwhm.size(); i++) {
-            if (apt["flag"](k)) {
+            if (apt["flag"](k)!=1) {
                 std::get<0>(nw_fwhms[key]) = std::get<0>(nw_fwhms[key]) + nw_a_fwhm(i);
                 std::get<1>(nw_fwhms[key]) = std::get<1>(nw_fwhms[key]) + nw_b_fwhm(i);
             }
@@ -285,13 +285,13 @@ void Calib::setup() {
         auto array_b_fwhm = apt["b_fwhm"](Eigen::seq(std::get<0>(array_limits[key]),
                                                   std::get<1>(array_limits[key])-1));
 
-        Eigen::Index n_good_det = apt["flag"](Eigen::seq(std::get<0>(array_limits[key]),
-                                                         std::get<1>(array_limits[key])-1)).sum();
+        Eigen::Index n_good_det = (apt["flag"](Eigen::seq(std::get<0>(array_limits[key]),
+                                                         std::get<1>(array_limits[key])-1)).array()==0).count();
 
         // remove flagged dets
         Eigen::Index k = std::get<0>(array_limits[key]);
         for (Eigen::Index i=0; i<array_a_fwhm.size(); i++) {
-            if (apt["flag"](k)) {
+            if (apt["flag"](k)!=1) {
                 std::get<0>(array_fwhms[key]) = std::get<0>(array_fwhms[key]) + array_a_fwhm(i);
                 std::get<1>(array_fwhms[key]) = std::get<1>(array_fwhms[key]) + array_b_fwhm(i);
             }

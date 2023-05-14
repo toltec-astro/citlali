@@ -323,14 +323,14 @@ auto RTCProc::remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
         // map from data column to apt row
         Eigen::Index det_index = det_indices(i);
         // if closer than freq separation limit and unflagged, flag it
-        if (calib.apt["duplicate_tone"](det_index) && calib_scan.apt["flag"](det_index)) {
+        if (calib.apt["duplicate_tone"](det_index) && calib_scan.apt["flag"](det_index)!=1) {
             n_nearby_tones++;
             // increment number of nearby tones
             if (map_grouping!="detector") {
                 in.flags.data.col(i).setZero();
             }
             else {
-                calib_scan.apt["flag"](det_index) = 0;
+                calib_scan.apt["flag"](det_index) = 1;
             }
         }
     }

@@ -158,6 +158,9 @@ void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
         engine().calib.apt[key].setOnes(n_dets);
     }
 
+    // set all flags to good
+    engine().calib.apt["flag"].setZero(n_dets);
+
     // ensure x_t and y_t are zero (crashes!)
     //engine().calib.apt["x_t"].setZero(n_dets);
     //engine().calib.apt["y_t"].setZero(n_dets);

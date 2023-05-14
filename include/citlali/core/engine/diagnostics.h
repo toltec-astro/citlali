@@ -15,6 +15,8 @@ class Diagnostics {
 public:
     std::map<std::string, Eigen::MatrixXd> stats;
 
+    double fsmp;
+
     // header for tpt table
     std::vector<std::string> tpt_header = {
         "rms",
@@ -38,7 +40,8 @@ void Diagnostics::calc_stats(timestream::TCData<tcdata_kind, Eigen::MatrixXd> &i
         // make Eigen::Maps for each detector's scan
         Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
             in.scans.data.col(i).data(), in.scans.data.rows());
-        stats["rms"](i,in.index.data) = engine_utils::calc_rms(scans);
+        // calc rms.  divide by sqrt(sample rate) to keep units
+        stats["rms"](i,in.index.data) = engine_utils::calc_rms(scans)/sqrt(fsmp);
         stats["stddev"](i,in.index.data) = engine_utils::calc_std_dev(scans);
         stats["median"](i,in.index.data) = tula::alg::median(scans);
     }

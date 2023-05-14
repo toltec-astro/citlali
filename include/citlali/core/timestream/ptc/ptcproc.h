@@ -272,7 +272,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
 
         for (Eigen::Index i=0; i<n_dets; i++) {
             // only calculate weights if detector is unflagged
-            if (apt["flag"](det_indices(i))!=0) {
+            if (apt["flag"](det_indices(i))!=1) {
                 // make Eigen::Maps for each detector's scan
                 Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
                     in.scans.data.col(i).data(), in.scans.data.rows());
@@ -300,7 +300,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
 
         for (Eigen::Index i=0; i<n_dets; i++) {
             // only calculate weights if detector is unflagged
-            if (apt["flag"](det_indices(i))!=0) {
+            if (apt["flag"](det_indices(i))!=1) {
                 in.weights.data(i) = 1;
             }
             else {
@@ -340,7 +340,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
         Eigen::Index n_good_dets = 0;
         j = std::get<0>(grouping_limits[key]);
         for (Eigen::Index m=0; m<grp_weights.size(); m++) {
-            if (calib.apt["flag"](det_indices(j)) && grp_weights(m)>0) {
+            if (calib.apt["flag"](det_indices(j))!=1 && grp_weights(m)>0) {
                     n_good_dets++;
             }
             j++;
@@ -356,7 +356,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
             j = std::get<0>(grouping_limits[key]);
             Eigen::Index k = 0;
             for (Eigen::Index m=0; m<grp_weights.size(); m++) {
-                if (calib.apt["flag"](det_indices(j)) && grp_weights(m)>0) {
+                if (calib.apt["flag"](det_indices(j))!=1 && grp_weights(m)>0) {
                     good_wt(k) = grp_weights(m);
                     k++;
                 }
@@ -390,13 +390,13 @@ void PTCProc::remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
     Eigen::Index n_dets = in.scans.data.cols();
 
     // number of detectors flagged in apt
-    Eigen::Index n_flagged = 0;//(apt["flag"].array()==0).count();
+    Eigen::Index n_flagged = 0;
 
     // loop through detectors and set flags to zero
     // for those flagged in apt table
     for (Eigen::Index i=0; i<n_dets; i++) {
         Eigen::Index det_index = det_indices(i);
-        if (!apt["flag"](det_index)) {
+        if (apt["flag"](det_index)==1) {
             in.flags.data.col(i).setZero();
             n_flagged++;
         }
@@ -428,7 +428,7 @@ auto PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
 
             for (Eigen::Index j=0; j<n_dets; j++) {
                 Eigen::Index det_index = det_indices(j);
-                if (calib.apt["flag"](det_index) && calib.apt["array"](det_index)==calib.arrays(i)) {
+                if (calib.apt["flag"](det_index)!=1 && calib.apt["array"](det_index)==calib.arrays(i)) {
                     n_good_dets++;
                 }
             }
@@ -440,7 +440,7 @@ auto PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
             // collect standard deviation from good detectors
             for (Eigen::Index j=0; j<n_dets; j++) {
                 Eigen::Index det_index = det_indices(j);
-                if (calib.apt["flag"](det_index) && calib.apt["array"](det_index)==calib.arrays(i)) {
+                if (calib.apt["flag"](det_index)!=1 && calib.apt["array"](det_index)==calib.arrays(i)) {
                     // make Eigen::Maps for each detector's scan
                     Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
                         in.scans.data.col(j).data(), in.scans.data.rows());
@@ -475,13 +475,13 @@ auto PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
             for (Eigen::Index j=0; j<n_good_dets; j++) {
                 Eigen::Index det_index = det_indices(dets(j));
                 // flag those below limit
-                if (calib.apt["flag"](det_index) && calib.apt["array"](det_index)==calib.arrays(i)) {
+                if (calib.apt["flag"](det_index)!=1 && calib.apt["array"](det_index)==calib.arrays(i)) {
                     if ((det_std_dev(j) < (lower_weight_factor*mean_std_dev)) && lower_weight_factor!=0) {
                         if (map_grouping!="detector") {
                             in.flags.data.col(dets(j)).setZero();
                         }
                         else {
-                            calib_scan.apt["flag"](det_index) = 0;
+                            calib_scan.apt["flag"](det_index) = 1;
                         }
                         in.n_low_dets++;
                         n_low_dets++;
@@ -493,7 +493,7 @@ auto PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                             in.flags.data.col(dets(j)).setZero();
                         }
                         else {
-                            calib_scan.apt["flag"](det_index) = 0;
+                            calib_scan.apt["flag"](det_index) = 1;
                         }
                         in.n_high_dets++;
                         n_high_dets++;
@@ -544,7 +544,7 @@ auto PTCProc::remove_bad_dets_iter(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 // get number of unflagged detectors
                 for (Eigen::Index j=0; j<n_dets; j++) {
                     Eigen::Index det_index = det_indices(j);
-                    if (calib_scan.apt["flag"](det_index) && calib_scan.apt["nw"](det_index)==calib_scan.nws(i)) {
+                    if (calib_scan.apt["flag"](det_index)!=1 && calib_scan.apt["nw"](det_index)==calib_scan.nws(i)) {
                         n_good_dets++;
                     }
                 }
@@ -556,7 +556,7 @@ auto PTCProc::remove_bad_dets_iter(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 // collect standard deviation from good detectors
                 for (Eigen::Index j=0; j<n_dets; j++) {
                     Eigen::Index det_index = det_indices(j);
-                    if (calib_scan.apt["flag"](det_index) && calib_scan.apt["nw"](det_index)==calib_scan.nws(i)) {
+                    if (calib_scan.apt["flag"](det_index)!=1 && calib_scan.apt["nw"](det_index)==calib_scan.nws(i)) {
 
                         // make Eigen::Maps for each detector's scan
                         Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
@@ -590,14 +590,14 @@ auto PTCProc::remove_bad_dets_iter(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 for (Eigen::Index j=0; j<n_good_dets; j++) {
                     Eigen::Index det_index = det_indices(dets(j));
                     // flag those below limit
-                    if (calib_scan.apt["flag"](det_index) && calib_scan.apt["nw"](det_index)==calib_scan.nws(i)) {
+                    if (calib_scan.apt["flag"](det_index)!=1 && calib_scan.apt["nw"](det_index)==calib_scan.nws(i)) {
                         if ((det_std_dev(j) < (lower_weight_factor*mean_std_dev)) && lower_weight_factor!=0) {
                             if (map_grouping!="detector") {
                                 in.flags.data.col(dets(j)).setZero();
-                                calib_scan.apt["flag"](det_index) = 0;
+                                calib_scan.apt["flag"](det_index) = 1;
                             }
                             else {
-                                calib_scan.apt["flag"](det_index) = 0;
+                                calib_scan.apt["flag"](det_index) = 1;
                             }
                             in.n_low_dets++;
                             n_low_dets++;
@@ -607,10 +607,10 @@ auto PTCProc::remove_bad_dets_iter(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                         if ((det_std_dev(j) > (upper_weight_factor*mean_std_dev)) && upper_weight_factor!=0) {
                             if (map_grouping!="detector") {
                                 in.flags.data.col(dets(j)).setZero();
-                                calib_scan.apt["flag"](det_index) = 0;
+                                calib_scan.apt["flag"](det_index) = 1;
                             }
                             else {
-                                calib_scan.apt["flag"](det_index) = 0;
+                                calib_scan.apt["flag"](det_index) = 1;
                             }
                             in.n_high_dets++;
                             n_high_dets++;
