@@ -1026,18 +1026,28 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb(std::vector<map_extent_t> &ma
     double ref_pix_cols = n_cols/2;
     double ref_pix_rows = n_rows/2;
 
+    if (engine().telescope.pixel_axes == "icrs") {
+        engine().cmb.wcs.crval[0] = cols_tan_vec(static_cast<Eigen::Index>(ref_pix_cols));
+        engine().cmb.wcs.crval[1] = rows_tan_vec(static_cast<Eigen::Index>(ref_pix_rows));
+    }
+
     // add 0.5 if even
     if ((int)ref_pix_cols == ref_pix_cols) {
         ref_pix_cols += 0.5;
+        engine().cmb.wcs.crval[0] += engine().cmb.pixel_size_rad/2;
     }
 
     // add 0.5 if even
     if ((int)ref_pix_rows == ref_pix_rows) {
         ref_pix_rows += 0.5;
+        engine().cmb.wcs.crval[1] += engine().cmb.pixel_size_rad/2;
     }
 
     engine().cmb.wcs.crpix[0] = ref_pix_cols;
     engine().cmb.wcs.crpix[1] = ref_pix_rows;
+
+    engine().cmb.wcs.crval[0] *= RAD_TO_DEG;
+    engine().cmb.wcs.crval[1] *= RAD_TO_DEG;
 
     // loop through maps and allocate space
     for (Eigen::Index i=0; i<engine().n_maps; i++) {

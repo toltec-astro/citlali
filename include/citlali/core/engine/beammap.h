@@ -159,6 +159,14 @@ void Beammap::setup() {
         rtcproc.filter.make_filter(telescope.fsmp);
     }
 
+    if (telescope.pixel_axes == "icrs") {
+        omb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0)*RAD_TO_DEG;
+        omb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0)*RAD_TO_DEG;
+
+        cmb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0)*RAD_TO_DEG;
+        cmb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0)*RAD_TO_DEG;
+    }
+
     // create output map files
     if (run_mapmaking) {
         create_map_files();
@@ -344,7 +352,7 @@ void Beammap::setup() {
     // print basic info for obs reduction
     print_summary();
 
-    for (const auto &stat: diagnostics.tpt_header) {
+    for (const auto &stat: diagnostics.stats_header) {
         diagnostics.stats[stat].setZero(calib.n_dets, telescope.scan_indices.cols());
     }
     diagnostics.fsmp = telescope.d_fsmp;
@@ -372,6 +380,7 @@ auto Beammap::run_timestream() {
             rtcdata.tel_data.data[x.first] = telescope.tel_data[x.first].segment(si,sl);
         }
 
+        // copy pointing offsets
         rtcdata.pointing_offsets_arcsec.data["az"] = pointing_offsets_arcsec["az"].segment(si,sl);
         rtcdata.pointing_offsets_arcsec.data["alt"] = pointing_offsets_arcsec["alt"].segment(si,sl);
 
@@ -953,7 +962,7 @@ void Beammap::adjust_apt() {
                                                          std::get<1>(calib.array_limits[array])-1));
             // number of good detectors
             Eigen::Index n_good_det = (calib.apt["flag"](Eigen::seq(std::get<0>(calib.array_limits[array]),
-                                                                   std::get<1>(calib.array_limits[array])-1)).array()==0).count();
+                                                                    std::get<1>(calib.array_limits[array])-1)).array()==0).count();
 
             Eigen::VectorXd x_t, y_t, det_indices;
 

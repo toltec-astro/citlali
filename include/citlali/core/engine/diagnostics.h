@@ -18,7 +18,7 @@ public:
     double fsmp;
 
     // header for tpt table
-    std::vector<std::string> tpt_header = {
+    std::vector<std::string> stats_header = {
         "rms",
         "stddev",
         "median",

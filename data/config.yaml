@@ -59,7 +59,7 @@ inputs: # list of inputs and related data
           interface: apt
         type: array_prop_table
     data_items:
-      - filepath: /path/to/data/raw/hwpr.nc # half-wave plate file.  Set to null to ignore hwpr when polarimetry=true.
+      - filepath: /path/to/data/raw/hwpr.nc # half-wave plate file.  Set to null or remove to ignore hwpr when polarimetry=true.
         meta:
           interface: hwpr
       - filepath: /path/to/data/raw/tel.nc # telescope file

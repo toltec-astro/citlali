@@ -87,7 +87,7 @@ void Lali::setup() {
     // print basic info for obs reduction
     print_summary();
 
-    for (const auto &stat: diagnostics.tpt_header) {
+    for (const auto &stat: diagnostics.stats_header) {
         diagnostics.stats[stat].setZero(calib.n_dets, telescope.scan_indices.cols());
     }
 
@@ -114,10 +114,11 @@ auto Lali::run() {
             rtcdata.tel_data.data[x.first] = telescope.tel_data[x.first].segment(si,sl);
         }
 
+        // copy pointing offsets
         rtcdata.pointing_offsets_arcsec.data["az"] = pointing_offsets_arcsec["az"].segment(si,sl);
         rtcdata.pointing_offsets_arcsec.data["alt"] = pointing_offsets_arcsec["alt"].segment(si,sl);
 
-        // get hwp
+        // get hwpr
         if (rtcproc.run_polarization) {
             if (calib.run_hwp) {
                 rtcdata.hwp_angle.data = calib.hwp_angle.segment(si + hwpr_start_indices, sl);

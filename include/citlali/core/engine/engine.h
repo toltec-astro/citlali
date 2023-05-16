@@ -282,6 +282,9 @@ public:
     template <typename fits_io_type, class map_buffer_t>
     void write_maps(fits_io_type &, fits_io_type &, map_buffer_t &, Eigen::Index);
 
+    template <mapmaking::MapType map_t>
+    auto setup_filenames(std::string);
+
     template <mapmaking::MapType map_t, class map_buffer_t>
     void write_psd(map_buffer_t &, std::string);
 
@@ -1552,7 +1555,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // add source flux for beammaps
     if (redu_type == "beammap") {
         fits_io->at(i).pfits->pHDU().addKey("HEADER.SOURCE.FLUX_MJYPERBEAM", beammap_fluxes_mJy_beam[name], "Source flux (mJy/beam)");
-        fits_io->at(i).pfits->pHDU().addKey("HEADER.SOURCE.FLUX_MJYPERSR", beammap_fluxes_MJy_Sr[name], "Sorce flux (MJy/Sr)");
+        fits_io->at(i).pfits->pHDU().addKey("HEADER.SOURCE.FLUX_MJYPERSR", beammap_fluxes_MJy_Sr[name], "Sorce flux (MJy/sr)");
 
         fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.ITER_TOLERANCE", beammap_iter_tolerance, "Beammap iteration tolerance");
         fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.ITER_MAX", beammap_iter_max, "Beammap max iterations");
@@ -1572,6 +1575,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     // add instrument
     fits_io->at(i).pfits->pHDU().addKey("INSTRUME", "TolTEC", "Instrument");
+    // add mean az
+    fits_io->at(i).pfits->pHDU().addKey("HWPR", calib.run_hwp, "HWPR installed");
     // add telescope
     fits_io->at(i).pfits->pHDU().addKey("TELESCOP", "LMT", "Telescope");
     // add wavelength
@@ -1620,15 +1625,17 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("SAMPRATE", telescope.fsmp, "sample rate (Hz)");
 
     // add apt table to header
-    std::vector<string> apt_filename;
-    std::stringstream ss(calib.apt_filepath);
-    std::string item;
-    char delim = '/';
+    if (mb->obsnums.size()==1) {
+        std::vector<string> apt_filename;
+        std::stringstream ss(calib.apt_filepath);
+        std::string item;
+        char delim = '/';
 
-    while (getline (ss, item, delim)) {
-        apt_filename.push_back(item);
+        while (getline (ss, item, delim)) {
+            apt_filename.push_back(item);
+        }
+        fits_io->at(i).pfits->pHDU().addKey("APT", apt_filename.back(), "APT table used");
     }
-    fits_io->at(i).pfits->pHDU().addKey("APT", apt_filename.back(), "APT table used");
 
     // add control/runtime parameters
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.VERBOSE", verbose_mode, "Reduced in verbose mode");
@@ -1640,15 +1647,20 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.EXTINCTION", rtcproc.run_extinction, "Extinction corrected");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.EXTINCTION.EXTMODEL", rtcproc.calibration.extinction_model, "Extinction model");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.TYPE", ptcproc.weighting_type, "Weighting scheme");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.WTLOW", ptcproc.lower_weight_factor, "Lower weight cutoff");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.WTHIGH", ptcproc.upper_weight_factor, "Upper weight cutoff");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.RTC.WTLOW", rtcproc.lower_weight_factor, "RTC lower weight cutoff");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.RTC.WTHIGH", rtcproc.upper_weight_factor, "RTC upper weight cutoff");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.PTC.WTLOW", ptcproc.lower_weight_factor, "PTC lower weight cutoff");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.PTC.WTHIGH", ptcproc.upper_weight_factor, "PTC upper weight cutoff");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.MEDWTFACTOR", ptcproc.med_weight_factor, "Median weight factor");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED", ptcproc.run_clean, "Cleaned");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.NEIG", ptcproc.cleaner.n_eig_to_cut[calib.arrays(i)].sum(),
                                         "Number of eigenvalues removed");
 
     // add telescope file header information
-    for (auto const& [key, val] : telescope.tel_header) {
-        fits_io->at(i).pfits->pHDU().addKey(key, val(0), key);
+    if (mb->obsnums.size()==1) {
+        for (auto const& [key, val] : telescope.tel_header) {
+            fits_io->at(i).pfits->pHDU().addKey(key, val(0), key);
+        }
     }
 }
 
@@ -1737,6 +1749,39 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             noise_fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
         }
     }
+}
+
+template <mapmaking::MapType map_t>
+auto Engine::setup_filenames(std::string dir_name) {
+
+    std::string filename;
+
+    // raw obs maps
+    if constexpr (map_t == mapmaking::RawObs) {
+        filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::psd,
+                                             engine_utils::toltecIO::raw>
+                   (dir_name, redu_type, "", obsnum, telescope.sim_obs);
+    }
+    // filtered obs maps
+    else if constexpr (map_t == mapmaking::FilteredObs) {
+        filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::psd,
+                                             engine_utils::toltecIO::filtered>
+                   (dir_name, redu_type, "", obsnum, telescope.sim_obs);
+    }
+    // raw coadded maps
+    else if constexpr (map_t == mapmaking::RawCoadd) {
+        filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::psd,
+                                             engine_utils::toltecIO::raw>
+                   (dir_name, "", "", "", telescope.sim_obs);
+    }
+    // filtered coadded maps
+    else if constexpr (map_t == mapmaking::FilteredCoadd) {
+        filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::psd,
+                                             engine_utils::toltecIO::filtered>
+                   (dir_name, "", "", "", telescope.sim_obs);
+    }
+
+    return filename;
 }
 
 template <mapmaking::MapType map_t, class map_buffer_t>
@@ -1914,7 +1959,8 @@ void Engine::write_stats() {
 
     std::vector<netCDF::NcDim> dims = {n_chunks_dim, n_dets_dim};
 
-    for (const auto &stat: diagnostics.tpt_header) {
+    // add stats
+    for (const auto &stat: diagnostics.stats_header) {
         netCDF::NcVar stat_v = fo.addVar(stat,netCDF::ncDouble, dims);
         stat_v.putVar(diagnostics.stats[stat].data());
         stat_v.putAtt("units",omb.sig_unit);
@@ -2013,15 +2059,9 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         SPDLOG_INFO("{}.fits",f_io->at(map_index).filepath);
 
         // explicitly destroy the fits file after we're done with it
-        bool close_file = true;
-        if (rtcproc.run_polarization) {
-            if (rtcproc.polarization.stokes_params[maps_to_stokes(i)]!="U") {
-                close_file = false;
-            }
-        }
         // check if we're moving onto a new file
         if (i>0) {
-            if (arrays_to_maps(i) > arrays_to_maps(i-1) && close_file) {
+            if (arrays_to_maps(i) > arrays_to_maps(i-1) && rtcproc.polarization.stokes_params[maps_to_stokes(i)]!="U") {
                 f_io->at(map_index-1).pfits->destroy();
             }
         }
