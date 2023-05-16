@@ -1,8 +1,8 @@
-beammap: # beammap controls (ignored if not beammapping)
+beammap: # beammap controls (required, but ignored if not beammapping)
   iter_max: 1 # maximum number of iterations for beammapping
   derotate: false # derotate beammap to zero elevation
   subtract_reference_det: true # enable subtraction of reference detector position
-  reference_det: -99 # reference detector index for APT positions (if <0 and enabled, use detector closest to median)
+  reference_det: -99 # reference detector index for APT positions (if <0 and enabled, use detector closest to median of first array)
   iter_tolerance: 0.0 # tolerance for iterations (if 0 all iterations are performed, tod output will be for last iteration)
   sens_psd_lower_limit: 0 # lower limit for psd in sensitivity calculation
   sens_psd_upper_limit: 0 # upper limit for psd in sensitivity calculation
@@ -11,7 +11,7 @@ beammap: # beammap controls (ignored if not beammapping)
       a1100: 0
       a1400: 0
       a2000: 0
-    upper_fwhm_arcsec: # upper limits for fitted fwhm values (used for flagging only)
+    upper_fwhm_arcsec: # upper limits for fitted fwhm values (ignored if <0, flagging only)
       a1100: 99
       a1400: 99
       a2000: 99
@@ -19,7 +19,11 @@ beammap: # beammap controls (ignored if not beammapping)
       a1100: 0
       a1400: 0
       a2000: 0
-    max_dist_arcsec: # max allowed distance from mean of all positions (ignored if 0, flagging only)
+    upper_sig2noise: # upper limits for fitted S/N values (ignored if <0, flagging only)
+      a1100: 0
+      a1400: 0
+      a2000: 0
+    max_dist_arcsec: # max allowed distance from mean of all positions (ignored if <0, flagging only)
       a1100: 0
       a1400: 0
       a2000: 0
@@ -28,7 +32,7 @@ beammap: # beammap controls (ignored if not beammapping)
 coadd: # coaddition controls
   enabled: false # enable or disable coaddition
 noise_maps: # noise map controls (coadded noise maps if coadd enabled, obs noise maps if disabled)
-  enabled: false # enable or disable coaddition
+  enabled: false # enable or disable noise maps
   n_noise_maps: 1 # number of noise maps (>0)
 inputs: # list of inputs and related data
   - cal_items:
@@ -44,7 +48,7 @@ inputs: # list of inputs and related data
               uncertainty_mJy: 0.0 # 2.0 mm flux uncertainty in mJy
               value_mJy: 0.0 # 2.0 mm flux in mJy
         type: photometry
-      - pointing_offsets: # additional pointing offsets to apply
+      - pointing_offsets: # pointing offsets.  can provide 1 or 2 values in each dimension.  if 2, they are interpolated between.
           - axes_name: az
             value_arcsec: [0.0]
           - axes_name: alt
@@ -55,7 +59,7 @@ inputs: # list of inputs and related data
           interface: apt
         type: array_prop_table
     data_items:
-      - filepath: /path/to/data/raw/hwp.nc # half-wave plate file
+      - filepath: /path/to/data/raw/hwpr.nc # half-wave plate file.  Set to null to ignore hwpr when polarimetry=true.
         meta:
           interface: hwpr
       - filepath: /path/to/data/raw/tel.nc # telescope file
@@ -102,7 +106,7 @@ inputs: # list of inputs and related data
           interface: toltec12
     meta:
       name: 1_0_0 # for additional information from tolteca
-interface_sync_offset: # manual timing offsets for each nw/hwp (in seconds)
+interface_sync_offset: # manual timing offsets for each nw/hwpr (in seconds)
   - toltec0: 0
   - toltec1: 0
   - toltec2: 0
@@ -132,15 +136,15 @@ mapmaking: # mapmaking parameters
   crpix2: 0 # ref pixel 2 (ignored if 0)
   crval1_J2000: 0 # ref value 1 (ignored if 0)
   crval2_J2000: 0 # ref value 2 (ignored if 0)
-  tan_ra: 0 # tangent plane ra
-  tan_dec: 0 # tangent plane dec
+  tan_ra: 0 # tangent plane ra (ignored for now)
+  tan_dec: 0 # tangent plane dec (ignored for now)
   cunit: mJy/beam # units (MJy/sr or mJy/beam.  apt table flux conversion default is mJy/beam)
   grouping: auto # mapmaking grouping (auto, detector, nw, array)
   method: naive # mapmaking algorithm (naive or jinc)
   pixel_axes: icrs # reference frame (icrs or altaz)
   pixel_size_arcsec: 1.0 # pixel size in arceconds
-  x_size_pix: 0 # manually specify map columns
-  y_size_pix: 0 # manually specify map rows
+  x_size_pix: 0 # manually specify number of map columns
+  y_size_pix: 0 # manually specify number of map rows
   coverage_cut: 0.0 # coverage cut value for psd, hist, and coverage_bool maps
   jinc_filter: # parameters to control jinc filter shape
     r_max: 3.0 # max radius to apply filter to (max radius = r_max x lambda/diameter)
@@ -211,7 +215,7 @@ timestream: # timestream reduction parameters
       clean_polarized_time_chunks: false # carry out cleaning on Q and U maps as well as I maps
     weighting: # how to weight data and maps
       type: full # type of TOD weighting (full=use scan variance/approximate=use det sensitivity)
-      median_weight_factor: 0 # set all weights above this factorx median of unflagged detectors to median (>=1 allowed)
+      median_weight_factor: 0 # set all weights above this factor x median of unflagged detectors to median (>=1 allowed)
     flagging: # controls flagging after cleaning
       lower_weight_factor: 0.0 # flag detectors below this weight limit (ignored if 0, weight=1/variance of TOD)
       upper_weight_factor: 0.0 # flag detectors above this weight limit (ignored if 0, weight=1/variance of TOD)

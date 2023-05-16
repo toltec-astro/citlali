@@ -2013,10 +2013,16 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         SPDLOG_INFO("{}.fits",f_io->at(map_index).filepath);
 
         // explicitly destroy the fits file after we're done with it
-        if (i > 0) {
-            // check if we're moving onto a new file
-            if (arrays_to_maps(i) > arrays_to_maps(i-1)) {
-                f_io->at(map_index).pfits->destroy();
+        bool close_file = true;
+        if (rtcproc.run_polarization) {
+            if (rtcproc.polarization.stokes_params[maps_to_stokes(i)]!="U") {
+                close_file = false;
+            }
+        }
+        // check if we're moving onto a new file
+        if (i>0) {
+            if (arrays_to_maps(i) > arrays_to_maps(i-1) && close_file) {
+                f_io->at(map_index-1).pfits->destroy();
             }
         }
     }

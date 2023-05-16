@@ -254,11 +254,13 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
 
         init_row = ir;
         init_col = ic;
-    }
+    }    
     // otherwise use the input initial position
     else {
         init_flux = signal(static_cast<int>(init_row), static_cast<int>(init_col));
     }
+
+    SPDLOG_INFO("init_flux {} init_row {} init_col {}",init_flux, init_row, init_col);
 
     // initial parameter guesses (order of positions is x,y = col,row)
     init_params << init_flux, init_col, init_row, init_sigma, init_sigma, 0;

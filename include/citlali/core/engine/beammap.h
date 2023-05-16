@@ -720,7 +720,7 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
         // flag detectors with outler a_fwhm values
         //else
         if (calib.apt["a_fwhm"](i) < lower_fwhm_arcsec[array_name] ||
-                 (calib.apt["a_fwhm"](i) > upper_fwhm_arcsec[array_name]) && upper_fwhm_arcsec[array_name] > 0) {
+            ((calib.apt["a_fwhm"](i) > upper_fwhm_arcsec[array_name]) && upper_fwhm_arcsec[array_name] > 0)) {
             if (calib.apt["flag"](i)!=1) {
                 n_flagged_dets++;
                 calib.apt["flag"](i) = 1;
@@ -731,7 +731,7 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
         // flag detectors with outler b_fwhm values
         //else
         if (calib.apt["b_fwhm"](i) < lower_fwhm_arcsec[array_name] ||
-                 (calib.apt["b_fwhm"](i) > upper_fwhm_arcsec[array_name] && upper_fwhm_arcsec[array_name] > 0)) {
+            ((calib.apt["b_fwhm"](i) > upper_fwhm_arcsec[array_name] && upper_fwhm_arcsec[array_name] > 0))) {
             if (calib.apt["flag"](i)!=1) {
                 n_flagged_dets++;
                 calib.apt["flag"](i) = 1;
@@ -742,7 +742,7 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
         // flag detectors with outler S/N values
         //else
         if ((params(i,0)/map_std_dev < lower_sig2noise[array_name]) ||
-            (params(i,0)/map_std_dev > upper_sig2noise[array_name] && upper_sig2noise[array_name] > 0)) {
+            ((params(i,0)/map_std_dev > upper_sig2noise[array_name]) && (upper_sig2noise[array_name] > 0))) {
             if (calib.apt["flag"](i)!=1) {
                 n_flagged_dets++;
                 calib.apt["flag"](i) = 1;
