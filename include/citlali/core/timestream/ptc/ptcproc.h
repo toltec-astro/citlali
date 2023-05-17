@@ -51,10 +51,6 @@ public:
     auto remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
                             Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string, std::string);
 
-    template <typename calib_t, typename Derived>
-    auto remove_bad_dets_iter(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
-                            Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string, std::string);
-
     template <typename Derived, typename apt_t, typename pointing_offset_t>
     void append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, std::string, std::string, std::string &,
                           pointing_offset_t &, Eigen::DenseBase<Derived> &, apt_t &, std::string, bool, double);
@@ -296,6 +292,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
         }
     }
 
+    // constant weighting
     else if (weighting_type == "const") {
         Eigen::Index n_dets = in.scans.data.cols();
         in.weights.data = Eigen::VectorXd::Zero(n_dets);
@@ -343,7 +340,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
         j = std::get<0>(grouping_limits[key]);
         for (Eigen::Index m=0; m<grp_weights.size(); m++) {
             if (calib.apt["flag"](det_indices(j))!=1 && grp_weights(m)>0) {
-                    n_good_dets++;
+                n_good_dets++;
             }
             j++;
         }
@@ -419,134 +416,40 @@ auto PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
     // number of detectors
     Eigen::Index n_dets = in.scans.data.cols();
 
+    std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grouping_limits;
+
+    Eigen::Index grp_i = calib.apt["array"](det_indices(0));
+    grouping_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
+    Eigen::Index j = 0;
+    // loop through apt table arrays, get highest index for current array
+    for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
+        auto det_index = det_indices(i);
+        if (calib.apt["array"](det_index) == grp_i) {
+            std::get<1>(grouping_limits[grp_i]) = i + 1;
+        }
+        else {
+            grp_i = calib.apt["array"](det_index);
+            j += 1;
+            grouping_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
+        }
+    }
+
     in.n_low_dets = 0;
     in.n_high_dets = 0;
 
     // only run if limits are not zero
     if (lower_weight_factor !=0 || upper_weight_factor !=0) {
-        for (Eigen::Index i=0; i<calib.n_arrays; i++) {
-            // number of unflagged detectors
-            Eigen::Index n_good_dets = 0;
+        for (auto const& [key, val] : grouping_limits) {
 
-            for (Eigen::Index j=0; j<n_dets; j++) {
-                Eigen::Index det_index = det_indices(j);
-                if (calib.apt["flag"](det_index)!=1 && calib.apt["array"](det_index)==calib.arrays(i)) {
-                    n_good_dets++;
-                }
-            }
-
-            Eigen::VectorXd det_std_dev(n_good_dets);
-            Eigen::VectorXI dets(n_good_dets);
-            Eigen::Index k = 0;
-
-            // collect standard deviation from good detectors
-            for (Eigen::Index j=0; j<n_dets; j++) {
-                Eigen::Index det_index = det_indices(j);
-                if (calib.apt["flag"](det_index)!=1 && calib.apt["array"](det_index)==calib.arrays(i)) {
-                    // make Eigen::Maps for each detector's scan
-                    Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
-                        in.scans.data.col(j).data(), in.scans.data.rows());
-                    Eigen::Map<Eigen::Matrix<bool, Eigen::Dynamic, 1>> flags(
-                        in.flags.data.col(j).data(), in.flags.data.rows());
-
-                    // calc standard deviation
-                    det_std_dev(k) = engine_utils::calc_std_dev(scans, flags);
-                    //det_std_dev(k) = engine_utils::calc_rms(scans, flags);
-
-                    // convert to 1/variance
-                    if (det_std_dev(k) !=0) {
-                        det_std_dev(k) = std::pow(det_std_dev(k),-2);
-                    }
-                    else {
-                        det_std_dev(k) = 0;
-                    }
-
-                    dets(k) = j;
-                    k++;
-                }
-            }
-
-            // get mean standard deviation
-            //double mean_std_dev = det_std_dev.mean();
-            double mean_std_dev = tula::alg::median(det_std_dev);
-
-            int n_low_dets = 0;
-            int n_high_dets = 0;
-
-            // loop through good detectors and flag those that have std devs beyond the limits
-            for (Eigen::Index j=0; j<n_good_dets; j++) {
-                Eigen::Index det_index = det_indices(dets(j));
-                // flag those below limit
-                if (calib.apt["flag"](det_index)!=1 && calib.apt["array"](det_index)==calib.arrays(i)) {
-                    if ((det_std_dev(j) < (lower_weight_factor*mean_std_dev)) && lower_weight_factor!=0) {
-                        if (map_grouping!="detector") {
-                            in.flags.data.col(dets(j)).setOnes();
-                        }
-                        else {
-                            calib_scan.apt["flag"](det_index) = 1;
-                        }
-                        in.n_low_dets++;
-                        n_low_dets++;
-                    }
-
-                    // flag those above limit
-                    if ((det_std_dev(j) > (upper_weight_factor*mean_std_dev)) && upper_weight_factor!=0) {
-                        if (map_grouping!="detector") {
-                            in.flags.data.col(dets(j)).setOnes();
-                        }
-                        else {
-                            calib_scan.apt["flag"](det_index) = 1;
-                        }
-                        in.n_high_dets++;
-                        n_high_dets++;
-                    }
-                }
-            }
-
-            SPDLOG_INFO("array {}: {}/{} dets below limit. {}/{} dets above limit.", calib.arrays(i), n_low_dets, n_good_dets,
-                        n_high_dets, n_good_dets);
-        }
-    }
-
-    // set up scan calib
-    calib_scan.setup();
-
-    return std::move(calib_scan);
-}
-
-
-template <typename calib_t, typename Derived>
-auto PTCProc::remove_bad_dets_iter(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
-                                 Eigen::DenseBase<Derived> &nw_indices, Eigen::DenseBase<Derived> &array_indices, std::string redu_type,
-                                 std::string map_grouping) {
-
-    // make a copy of the calib class for flagging
-    calib_t calib_scan = calib;
-
-    // number of detectors
-    Eigen::Index n_dets = in.scans.data.cols();
-
-    // number of dets lower than limit
-    in.n_low_dets = 0;
-    // number of dets higher than limit
-    in.n_high_dets = 0;
-
-    // only do if config options are not zero
-    if (upper_weight_factor!=0 || lower_weight_factor!=0) {
-        SPDLOG_INFO("removing outlier weights");
-        for (Eigen::Index i=0; i<calib.n_nws; i++) {
             bool keep_going = true;
             Eigen::Index n_iter = 0;
 
             while (keep_going) {
-                SPDLOG_INFO("iteration {}", n_iter);
                 // number of unflagged detectors
                 Eigen::Index n_good_dets = 0;
 
-                // get number of unflagged detectors
-                for (Eigen::Index j=0; j<n_dets; j++) {
-                    Eigen::Index det_index = det_indices(j);
-                    if (calib_scan.apt["flag"](det_index)!=1 && calib_scan.apt["nw"](det_index)==calib_scan.nws(i)) {
+                for (Eigen::Index j=std::get<0>(grouping_limits[key]); j<std::get<1>(grouping_limits[key]); j++) {
+                    if (calib.apt["flag"](det_indices(j))!=1) {
                         n_good_dets++;
                     }
                 }
@@ -556,33 +459,32 @@ auto PTCProc::remove_bad_dets_iter(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 Eigen::Index k = 0;
 
                 // collect standard deviation from good detectors
-                for (Eigen::Index j=0; j<n_dets; j++) {
+                for (Eigen::Index j=std::get<0>(grouping_limits[key]); j<std::get<1>(grouping_limits[key]); j++) {
                     Eigen::Index det_index = det_indices(j);
-                    if (calib_scan.apt["flag"](det_index)!=1 && calib_scan.apt["nw"](det_index)==calib_scan.nws(i)) {
-
+                    if (calib.apt["flag"](det_index)!=1) {
                         // make Eigen::Maps for each detector's scan
                         Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
                             in.scans.data.col(j).data(), in.scans.data.rows());
                         Eigen::Map<Eigen::Matrix<bool, Eigen::Dynamic, 1>> flags(
                             in.flags.data.col(j).data(), in.flags.data.rows());
 
+                        // calc standard deviation
                         det_std_dev(k) = engine_utils::calc_std_dev(scans, flags);
 
+                        // convert to 1/variance
                         if (det_std_dev(k) !=0) {
                             det_std_dev(k) = std::pow(det_std_dev(k),-2);
                         }
                         else {
                             det_std_dev(k) = 0;
                         }
-                        //det_std_dev(k) = engine_utils::calc_rms(scans, flags);
 
                         dets(k) = j;
                         k++;
                     }
                 }
 
-                // get mean standard deviation
-                //double mean_std_dev = det_std_dev.mean();
+                // get median standard deviation
                 double mean_std_dev = tula::alg::median(det_std_dev);
 
                 int n_low_dets = 0;
@@ -592,11 +494,10 @@ auto PTCProc::remove_bad_dets_iter(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 for (Eigen::Index j=0; j<n_good_dets; j++) {
                     Eigen::Index det_index = det_indices(dets(j));
                     // flag those below limit
-                    if (calib_scan.apt["flag"](det_index)!=1 && calib_scan.apt["nw"](det_index)==calib_scan.nws(i)) {
+                    if (calib.apt["flag"](det_index)!=1) {
                         if ((det_std_dev(j) < (lower_weight_factor*mean_std_dev)) && lower_weight_factor!=0) {
                             if (map_grouping!="detector") {
                                 in.flags.data.col(dets(j)).setOnes();
-                                calib_scan.apt["flag"](det_index) = 1;
                             }
                             else {
                                 calib_scan.apt["flag"](det_index) = 1;
@@ -609,7 +510,6 @@ auto PTCProc::remove_bad_dets_iter(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                         if ((det_std_dev(j) > (upper_weight_factor*mean_std_dev)) && upper_weight_factor!=0) {
                             if (map_grouping!="detector") {
                                 in.flags.data.col(dets(j)).setOnes();
-                                calib_scan.apt["flag"](det_index) = 1;
                             }
                             else {
                                 calib_scan.apt["flag"](det_index) = 1;
@@ -620,19 +520,20 @@ auto PTCProc::remove_bad_dets_iter(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                     }
                 }
 
-                if ((n_low_dets==0 && n_high_dets==0) || n_iter > 10) {
+                SPDLOG_INFO("array {} iter {}: {}/{} dets below limit. {}/{} dets above limit.", key, n_iter,
+                            n_low_dets, n_good_dets, n_high_dets, n_good_dets);
+
+                // increment iteration
+                n_iter++;
+                // check if no more detectors are above limit
+                if ((n_low_dets==0 && n_high_dets==0) || n_iter > 0) {
                     keep_going = false;
                 }
-
-                n_iter++;
-
-                SPDLOG_INFO("nw{}: {}/{} dets below limit. {}/{} dets above limit.", calib.nws(i), n_low_dets, n_good_dets,
-                            n_high_dets, n_good_dets);
             }
         }
     }
 
-    // set up calib scan
+    // set up scan calib
     calib_scan.setup();
 
     return std::move(calib_scan);
