@@ -1118,7 +1118,6 @@ void Engine::create_tod_files() {
         // raw file scan indices
         netCDF::NcVar raw_scan_indices_v = fo.addVar("raw_scan_indices",netCDF::ncInt, raw_scans_dims);
         raw_scan_indices_v.putAtt("units","N/A");
-        //Eigen::MatrixXI scans_indices_transposed = telescope.scan_indices;
         raw_scan_indices_v.putVar(telescope.scan_indices.data());
 
         // scan indices for data
@@ -1188,27 +1187,27 @@ void Engine::create_tod_files() {
             tel_data_v.setChunking(chunkMode, chunkSizes);
         }
 
-        // add telescope parameters
+        // add pointing offset parameters
         for (auto const& x: pointing_offsets_arcsec) {
             netCDF::NcVar offsets_v = fo.addVar("pointing_offset_"+x.first,netCDF::ncDouble, n_pts_dim);
             offsets_v.putAtt("units","arcsec");
             offsets_v.setChunking(chunkMode, chunkSizes);
         }
 
-        // weights
+        // add weights
         if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
             std::vector<netCDF::NcDim> weight_dims = {n_scans_dim, n_dets_dim};
             netCDF::NcVar weights_v = fo.addVar("weights",netCDF::ncDouble, weight_dims);
             weights_v.putAtt("units","("+omb.sig_unit+")^-2");
         }
 
+        // add hwpr
         if (rtcproc.run_polarization) {
             if (calib.run_hwp) {
                 netCDF::NcVar hwpr_v = fo.addVar("hwpr",netCDF::ncDouble, n_pts_dim);
                 hwpr_v.putAtt("units","rad");
             }
         }
-
         fo.close();
     }
 }
