@@ -16,7 +16,7 @@ public:
         {0,"I"},
         {1,"Q"},
         {2,"U"}
-    };*/
+        };*/
 
     // toltec array mounting angle
     std::map<int, double> install_ang = {
@@ -86,7 +86,7 @@ public:
                 Eigen::Index k = 0;
                 for (Eigen::Index i=0; i<calib.n_dets; i++) {
                     // if matched, add to polarized array
-                    if (calib.apt["fg"](i)!=-1) {
+                    if (calib.apt["loc"](i)!=-1) {
                         polarized_scans.col(k) = in.scans.data.col(i);
 
                         fg(k) = calib.apt["fg"](i);

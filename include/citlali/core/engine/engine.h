@@ -1101,7 +1101,8 @@ void Engine::create_tod_files() {
         // set number of detectors for polarized timestreams
         else if ((stokes_param == "Q") || (stokes_param == "U")) {
             if (!telescope.sim_obs) {
-                n_dets = (calib.apt["fg"].array()!=-1).count();
+                n_dets = (calib.apt["loc"].array()!=-1).count();
+                //n_dets = (calib.apt["fg"].array()!=-1).count();
             }
             else {
                 n_dets = (calib.apt["fg"].array() == 0).count() + (calib.apt["fg"].array() == 1).count();
