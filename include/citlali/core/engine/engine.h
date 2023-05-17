@@ -2013,6 +2013,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         }
     }
 
+    Eigen::Index j = 0;
     for (Eigen::Index i=0; i<n_maps; i++) {
         // current array
         auto array = maps_to_arrays(i);
@@ -2060,9 +2061,18 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
 
         // explicitly destroy the fits file after we're done with it
         // check if we're moving onto a new file
-        if (i>0) {
-            if (arrays_to_maps(i) > arrays_to_maps(i-1) && rtcproc.polarization.stokes_params[maps_to_stokes(i)]!="U") {
-                f_io->at(map_index-1).pfits->destroy();
+
+        // explicitly destroy the fits file after we're done with it
+        bool close_file = true;
+        if (rtcproc.run_polarization) {
+            if (rtcproc.polarization.stokes_params[maps_to_stokes(i)]!="U") {
+                close_file = false;
+            }
+        }
+        // check if we're moving onto a new file
+        if (i<n_maps-1) {
+            if (arrays_to_maps(i+1) > arrays_to_maps(i) && close_file) {
+                f_io->at(map_index).pfits->destroy();
             }
         }
     }

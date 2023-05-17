@@ -123,7 +123,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     in_pol.fcf.data.setOnes(in_pol.scans.data.cols());
 
     // get indices for maps
-    SPDLOG_INFO("calculating map indices");
+    SPDLOG_DEBUG("calculating map indices");
     auto map_indices = calc_map_indices(calib, det_indices, nw_indices, array_indices, stokes_param, map_grouping);
 
     if (run_calibrate) {
@@ -303,7 +303,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
             out.pointing_offsets_arcsec.data[x.first] = in_pol.pointing_offsets_arcsec.data[x.first].segment(si, sl);
         }
 
-        // copy hwp angle
+        // copy hwpr angle
         if (run_polarization) {
             if (calib.run_hwp) {
                 out.hwp_angle.data = in_pol.hwp_angle.data.segment(si, sl);
