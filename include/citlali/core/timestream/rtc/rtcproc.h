@@ -226,7 +226,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     if (run_tod_filter) {
         SPDLOG_DEBUG("convolving signal with tod filter");
         filter.convolve(in_pol.scans.data);
-        filter.iir(in_pol.scans.data);
+        //filter.iir(in_pol.scans.data);
 
         // filter kernel
         if (run_kernel) {
