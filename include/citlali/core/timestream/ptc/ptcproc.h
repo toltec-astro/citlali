@@ -31,6 +31,10 @@ public:
 
     void subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &);
 
+    template <typename calib_t, typename Derived>
+    auto remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
+                             Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string, std::string);
+
     template <class calib_type, typename Derived>
     void run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
              TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_type &,
@@ -101,39 +105,39 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
         // loop through config groupings
         for (const auto & group: cleaner.grouping) {
             // map of tuples to hold detector limits
-            std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grouping_limits;
+            std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
 
             // use all detectors for cleaning
             if (group == "all") {
-                grouping_limits[0] = std::make_tuple(0,in.scans.data.cols());
+                grp_limits[0] = std::make_tuple(0,in.scans.data.cols());
             }
 
             else if (stokes_param=="I") {
                 // network cleaning
                 if (group == "nw" || group == "network") {
-                    grouping_limits = calib.nw_limits;
+                    grp_limits = calib.nw_limits;
                 }
 
                 // array cleaning
                 else if (group == "array") {
-                    grouping_limits = calib.array_limits;
+                    grp_limits = calib.array_limits;
                 }
             }
 
             else if (run_stokes_clean) {
                 Eigen::Index grp_i = calib.apt[group](det_indices(0));
-                grouping_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
+                grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
                 Eigen::Index j = 0;
                 // loop through apt table arrays, get highest index for current array
                 for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
                     auto det_index = det_indices(i);
                     if (calib.apt[group](det_index) == grp_i) {
-                        std::get<1>(grouping_limits[grp_i]) = i + 1;
+                        std::get<1>(grp_limits[grp_i]) = i + 1;
                     }
                     else {
                         grp_i = calib.apt[group](det_index);
                         j += 1;
-                        grouping_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
+                        grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
                     }
                 }
             }
@@ -141,7 +145,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
             SPDLOG_DEBUG("cleaning with {} grouping", group);
 
             if (stokes_param=="I" || run_stokes_clean) {
-                for (auto const& [key, val] : grouping_limits) {
+                for (auto const& [key, val] : grp_limits) {
 
                     Eigen::Index arr_index;
 
@@ -188,7 +192,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                     auto apt_flags = calib.apt["flag"].segment(start_index, n_dets);
 
                     // check if any good flags
-                    if ((apt_flags.array()==1).any()) {
+                    if ((apt_flags.array()==0).any()) {
                         auto [evals, evecs] = cleaner.calc_eig_values<timestream::Cleaner::SpectraBackend>(in_scans, in_flags, apt_flags,
                                                                                                            cleaner.n_eig_to_cut[arr_index](indx));
                         SPDLOG_DEBUG("evals {}", evals);
@@ -315,29 +319,30 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
     // number of detectors
     Eigen::Index n_dets = in.scans.data.cols();
 
-    std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grouping_limits;
+    std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
 
     Eigen::Index grp_i = calib.apt["array"](det_indices(0));
-    grouping_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
+    grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
+
     Eigen::Index j = 0;
     // loop through apt table arrays, get highest index for current array
     for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
         auto det_index = det_indices(i);
         if (calib.apt["array"](det_index) == grp_i) {
-            std::get<1>(grouping_limits[grp_i]) = i + 1;
+            std::get<1>(grp_limits[grp_i]) = i + 1;
         }
         else {
             grp_i = calib.apt["array"](det_index);
             j += 1;
-            grouping_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
+            grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
         }
     }
 
-    for (auto const& [key, val] : grouping_limits) {
-        auto grp_weights = in.weights.data(Eigen::seq(std::get<0>(grouping_limits[key]),
-                                                     std::get<1>(grouping_limits[key])-1));
+    for (auto const& [key, val] : grp_limits) {
+        auto grp_weights = in.weights.data(Eigen::seq(std::get<0>(grp_limits[key]),
+                                                     std::get<1>(grp_limits[key])-1));
         Eigen::Index n_good_dets = 0;
-        j = std::get<0>(grouping_limits[key]);
+        j = std::get<0>(grp_limits[key]);
         for (Eigen::Index m=0; m<grp_weights.size(); m++) {
             if (calib.apt["flag"](det_indices(j))!=1 && grp_weights(m)>0) {
                 n_good_dets++;
@@ -352,7 +357,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
             good_wt.resize(n_good_dets);
 
             // remove flagged dets
-            j = std::get<0>(grouping_limits[key]);
+            j = std::get<0>(grp_limits[key]);
             Eigen::Index k = 0;
             for (Eigen::Index m=0; m<grp_weights.size(); m++) {
                 if (calib.apt["flag"](det_indices(j))!=1 && grp_weights(m)>0) {
@@ -370,7 +375,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
 
         int outliers = 0;
 
-        j = std::get<0>(grouping_limits[key]);
+        j = std::get<0>(grp_limits[key]);
         for (Eigen::Index m=0; m<grp_weights.size(); m++) {
             if (in.weights.data(j) > med_weight_factor*med_wt) {
                 in.weights.data(j) = med_wt;
@@ -410,27 +415,28 @@ auto PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                                  Eigen::DenseBase<Derived> &nw_indices, Eigen::DenseBase<Derived> &array_indices, std::string redu_type,
                                  std::string map_grouping) {
 
+
     // make a copy of the calib class for flagging
     calib_t calib_scan = calib;
 
     // number of detectors
     Eigen::Index n_dets = in.scans.data.cols();
 
-    std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grouping_limits;
+    std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
 
     Eigen::Index grp_i = calib.apt["array"](det_indices(0));
-    grouping_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
+    grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
     Eigen::Index j = 0;
     // loop through apt table arrays, get highest index for current array
     for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
         auto det_index = det_indices(i);
         if (calib.apt["array"](det_index) == grp_i) {
-            std::get<1>(grouping_limits[grp_i]) = i + 1;
+            std::get<1>(grp_limits[grp_i]) = i + 1;
         }
         else {
             grp_i = calib.apt["array"](det_index);
             j += 1;
-            grouping_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
+            grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
         }
     }
 
@@ -439,7 +445,7 @@ auto PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
 
     // only run if limits are not zero
     if (lower_weight_factor !=0 || upper_weight_factor !=0) {
-        for (auto const& [key, val] : grouping_limits) {
+        for (auto const& [key, val] : grp_limits) {
 
             bool keep_going = true;
             Eigen::Index n_iter = 0;
@@ -448,7 +454,7 @@ auto PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                 // number of unflagged detectors
                 Eigen::Index n_good_dets = 0;
 
-                for (Eigen::Index j=std::get<0>(grouping_limits[key]); j<std::get<1>(grouping_limits[key]); j++) {
+                for (Eigen::Index j=std::get<0>(grp_limits[key]); j<std::get<1>(grp_limits[key]); j++) {
                     if (calib.apt["flag"](det_indices(j))!=1) {
                         n_good_dets++;
                     }
@@ -459,7 +465,7 @@ auto PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                 Eigen::Index k = 0;
 
                 // collect standard deviation from good detectors
-                for (Eigen::Index j=std::get<0>(grouping_limits[key]); j<std::get<1>(grouping_limits[key]); j++) {
+                for (Eigen::Index j=std::get<0>(grp_limits[key]); j<std::get<1>(grp_limits[key]); j++) {
                     Eigen::Index det_index = det_indices(j);
                     if (calib.apt["flag"](det_index)!=1) {
                         // make Eigen::Maps for each detector's scan

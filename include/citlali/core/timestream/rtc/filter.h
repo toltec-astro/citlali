@@ -19,13 +19,16 @@ public:
     Eigen::Index n_terms;
 
     std::vector<double> w0s, qs;
-    std::vector<Eigen::VectorXd> notch_a, notch_b;
+    Eigen::VectorXd notch_a, notch_b;
 
     void make_filter(double);
     void make_notch_filter(double);
 
     template <typename Derived>
     void convolve(Eigen::DenseBase<Derived> &);
+
+    template <typename Derived>
+    void iir(Eigen::DenseBase<Derived> &);
 };
 
 void Filter::make_filter(double fsmp) {
@@ -131,8 +134,8 @@ void Filter::make_notch_filter(double fsmp) {
         a << 1.0, -2.0*gain*cos(w0), (2.0*gain-1.0);
         //double a = np.array([1.0, -2.0*gain*np.cos(w0), (2.0*gain-1.0)])
 
-        notch_a.push_back(a);
-        notch_b.push_back(b);
+        notch_a = a;//.push_back(a);
+        notch_b = b;//.push_back(b);
     }
 }
 
@@ -160,6 +163,30 @@ void Filter::convolve(Eigen::DenseBase<Derived> &in) {
              in.cols()) =
         Eigen::Map<Eigen::MatrixXd>(out_tensor.data(), out_tensor.dimension(0),
                                     out_tensor.dimension(1));
+}
+
+template <typename Derived>
+void Filter::iir(Eigen::DenseBase<Derived> &in) {
+
+    Derived out(in.rows(),in.cols());
+    out.setZero();
+
+    for (Eigen::Index i=0; i < in.cols(); ++i) {
+        double x_2 = 0.;
+        double x_1 = 0.;
+        double y_2 = 0.;
+        double y_1 = 0.;
+        for (Eigen::Index j=0; j<in.rows(); j++) {
+            out(j,i) = notch_a(0) * in(j,i) + notch_a(1) * x_1 + notch_a(2) * x_2
+                        + notch_b(1) * y_1 + notch_b(2) * y_2;
+            x_2 = x_1;
+            x_1 = in(j,i);
+            y_2 = y_1;
+            y_1 = out(j,i);
+        }
+    }
+
+    in = std::move(out);
 }
 
 } // namespace timestream

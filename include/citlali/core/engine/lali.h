@@ -47,6 +47,14 @@ void Lali::setup() {
     // if filter is requested, make it here
     if (rtcproc.run_tod_filter) {
         rtcproc.filter.make_filter(telescope.fsmp);
+
+        /*
+        rtcproc.filter.w0s.clear();
+        rtcproc.filter.qs.clear();
+        rtcproc.filter.w0s.push_back(24.46);
+        rtcproc.filter.qs.push_back(0.05);
+        rtcproc.filter.make_notch_filter(telescope.fsmp);
+        */
     }
 
     // set center pointing
@@ -142,7 +150,6 @@ auto Lali::run() {
             auto [map_indices, array_indices, nw_indices, det_indices] = rtcproc.run(rtcdata, ptcdata, telescope.pixel_axes, redu_type,
                                                                                      calib, telescope, omb.pixel_size_rad, stokes_param,
                                                                                      map_grouping);
-
             // write rtc timestreams
             if (run_tod_output) {
                 if (tod_output_type == "rtc" || tod_output_type=="both") {
