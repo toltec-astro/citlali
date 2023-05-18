@@ -478,7 +478,7 @@ auto Beammap::run_loop() {
             SPDLOG_INFO("subtracting detector means");
             ptcproc.subtract_mean(ptcs[i]);
 
-            auto calib_scan = ptcproc.remove_bad_dets(ptcs[i], calib, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
+            auto calib_scan = rtcproc.remove_bad_dets(ptcs[i], calib, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
                                                       ptcs[i].array_indices.data, redu_type, map_grouping);
 
             // remove duplicate tones
