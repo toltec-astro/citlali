@@ -1946,6 +1946,14 @@ void Engine::write_stats() {
                                                     engine_utils::toltecIO::raw>
                           (obsnum_dir_name + "raw/", redu_type, "", obsnum, telescope.sim_obs);
 
+    std::map<std::string, std::string> stats_header_units {
+        {"rms", omb.sig_unit},
+        {"stddev",omb.sig_unit},
+        {"median",omb.sig_unit},
+        {"flagged_frac","N/A"},
+        {"weights","1/(" + omb.sig_unit + ")^2"},
+        };
+
     netCDF::NcFile fo(stats_filename + ".nc", netCDF::NcFile::replace);
 
     // add obsnum
@@ -1963,7 +1971,7 @@ void Engine::write_stats() {
     for (const auto &stat: diagnostics.stats_header) {
         netCDF::NcVar stat_v = fo.addVar(stat,netCDF::ncDouble, dims);
         stat_v.putVar(diagnostics.stats[stat].data());
-        stat_v.putAtt("units",omb.sig_unit);
+        stat_v.putAtt("units",stats_header_units[stat]);
     }
 
     // add apt table

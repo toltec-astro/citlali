@@ -24,6 +24,52 @@ using timestream::TCDataKind;
 
 namespace mapmaking {
 
+/*class JincMapmaker {
+public:
+    std::map<Eigen::Index, Eigen::VectorXd> shape_params;
+    double r_max;
+
+    // lambda over diameter
+    std::map<Eigen::Index,double> l_d = {
+        {0,(1.1/1000)/50},
+        {1,(1.4/1000)/50},
+        {2,(2.0/1000)/50}
+    };
+
+    auto jinc_filter(double, Eigen::Index);
+
+    template<class map_buffer_t, typename Derived, typename apt_t, typename pointing_offset_t>
+    void populate_maps(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &, map_buffer_t &,
+                       Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string &,
+                       std::string &, apt_t &, pointing_offset_t &, double, bool );
+};
+
+auto JincMapmaker::jinc_filter(double r, Eigen::Index arr) {
+    if (r!=0) {
+        double a = shape_params[arr](0);
+        double b = shape_params[arr](1);
+        double c = shape_params[arr](2);
+
+        r = r/l_d[arr];
+        auto arg0 = 2*boost::math::cyl_bessel_j(1,2*pi*r/a)/(2*pi*r/a);
+        auto arg1 = exp(-pow(2*r/b,c));
+        auto arg2 = 2*boost::math::cyl_bessel_j(1,3.831706*r/r_max)/(3.831706*r/r_max);
+
+        return arg0*arg1*arg2;
+    }
+    else {
+        return 1.0;
+    }
+}
+
+template<class map_buffer_t, typename Derived, typename apt_t, typename pointing_offset_t>
+void JincMapmaker::populate_maps(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
+                        map_buffer_t &omb, map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices, Eigen::DenseBase<Derived> &det_indices,
+                        std::string &pixel_axes, std::string &redu_type, apt_t &apt,
+                        pointing_offset_t &pointing_offsets_arcsec, double d_fsmp, bool run_noise) {
+
+}*/
+
 // jinc function
 auto jinc_func(double r, double a, double b, double c, double r_max, double l_d) {
 

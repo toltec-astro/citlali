@@ -22,7 +22,8 @@ public:
         "rms",
         "stddev",
         "median",
-        "flagged_frac"
+        "flagged_frac",
+        "weights",
     };
 
     // tpt header units
@@ -43,11 +44,19 @@ void Diagnostics::calc_stats(timestream::TCData<tcdata_kind, Eigen::MatrixXd> &i
             in.scans.data.col(i).data(), in.scans.data.rows());
         Eigen::Map<Eigen::Matrix<bool, Eigen::Dynamic, 1>> flags(
             in.flags.data.col(i).data(), in.flags.data.rows());
-        // calc rms.  divide by sqrt(sample rate) to keep units
-        stats["rms"](i,in.index.data) = engine_utils::calc_rms(scans)/sqrt(fsmp);
+        // calc rms
+        stats["rms"](i,in.index.data) = engine_utils::calc_rms(scans);
+        // calc stddev
         stats["stddev"](i,in.index.data) = engine_utils::calc_std_dev(scans);
+        // calc median
         stats["median"](i,in.index.data) = tula::alg::median(scans);
+        // fraction of detectors that were flagged
         stats["flagged_frac"](i,in.index.data) = flags.cast<double>().sum()/static_cast<double>(n_pts);
+    }
+
+    if (in.weights.data.size()!=0) {
+        // add weights
+        stats["flagged_frac"].row(in.index.data) = in.weights.data;
     }
 }
 

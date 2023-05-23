@@ -194,7 +194,7 @@ auto Lali::run() {
 
             // write ptc timestreams
             if (run_tod_output) {
-                if (tod_output_type == "ptc" || tod_output_type=="both") {
+                if (tod_output_type == "ptc" || tod_output_type == "both") {
                     SPDLOG_INFO("writing processed time chunk");
                     ptcproc.append_to_netcdf(ptcdata, tod_filename["ptc_" + stokes_param], redu_type, telescope.pixel_axes,
                                              ptcdata.pointing_offsets_arcsec.data, det_indices, calib.apt, "ptc", verbose_mode, telescope.d_fsmp);
