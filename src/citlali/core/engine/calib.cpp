@@ -17,7 +17,7 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
         if (!found) {
             missing_header_keys.push_back(apt_header_key);
         }
-
+        // look for empty headers
         else if (apt_temp[apt_header_key].size()==0) {
             empty_header_keys.push_back(apt_header_key);
         }

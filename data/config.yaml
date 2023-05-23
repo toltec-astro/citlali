@@ -148,9 +148,10 @@ mapmaking: # mapmaking parameters
   coverage_cut: 0.0 # coverage cut value for psd, hist, and coverage_bool maps
   jinc_filter: # parameters to control jinc filter shape
     r_max: 3.0 # max radius to apply filter to (max radius = r_max x lambda/diameter)
-    a: 1.1 # shape parameter
-    b: 4.75 # shape parameter
-    c: 2.0 # shape parameter
+    shape_params:
+      a1100: [1.1, 4.75, 2.0]
+      a1400: [1.1, 4.75, 2.0]
+      a2000: [1.1, 4.75, 2.0]
 runtime: # parameters to control how citlali runs
   verbose: true # extra output in terminal.  adds files to obsnum/logs/ directory. sequential mode only.
   meta:
@@ -168,6 +169,7 @@ timestream: # timestream reduction parameters
     length_sec: 10.0 # chunk length for lissajous/rastajous maps (ignored if raster map)
   polarimetry: # polarized reduction
     enabled: false # enable or disable polarized reduction
+    ignore_hwpr: auto # override automatic hwpr finding (true, false, auto)
   output: # controls options for writing out TOD as netCDF file
     subdir_name: null # optional subdirectory name for tod output files (ignored if null)
   raw_time_chunk:

@@ -188,7 +188,7 @@ public:
     // indices for hwp alignment offsets
     Eigen::Index hwpr_start_indices, hwpr_end_indices;
 
-    // xs or rs
+    // xs, rs, is, qs
     std::string tod_type;
 
     // reduction type (science, pointing, beammap)
@@ -314,6 +314,7 @@ void Engine::get_rtc_config(CT &config) {
 
     /* polarization */
     get_config_value(config, rtcproc.run_polarization, missing_keys, invalid_keys, std::tuple{"timestream","polarimetry", "enabled"});
+    get_config_value(config, calib.ignore_hwpr, missing_keys, invalid_keys, std::tuple{"timestream","polarimetry", "ignore_hwpr"});
 
     if (rtcproc.run_polarization && redu_type=="beammap") {
         SPDLOG_ERROR("Beammap reductions do not currently support polarimetry mode");

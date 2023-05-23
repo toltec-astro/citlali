@@ -512,11 +512,11 @@ int run(const rc_t &rc) {
                         */
                     }
 
-                    // get hwp if polarized reduction is requested
+                    // get hwpr if polarized reduction is requested
                     if (todproc.engine().rtcproc.run_polarization) {
                         std::string hwp_filepath;
 
-                        if (rawobs.hwpdata().has_value()) {
+                        if (rawobs.hwpdata().has_value() && todproc.engine().calib.ignore_hwpr!="true") {
                             SPDLOG_INFO("getting hwpr file");
                             hwp_filepath = rawobs.hwpdata()->filepath();
                             if (hwp_filepath != "null") {

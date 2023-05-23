@@ -20,6 +20,8 @@ public:
     Eigen::VectorXd hwp_angle, hwp_recvt;
     Eigen::MatrixXd hwp_ts;
 
+    std::string ignore_hwpr;
+
     double hwpr_fpga_freq;
 
     // apt header
