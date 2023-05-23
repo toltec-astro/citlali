@@ -56,7 +56,7 @@ void Diagnostics::calc_stats(timestream::TCData<tcdata_kind, Eigen::MatrixXd> &i
 
     if (in.weights.data.size()!=0) {
         // add weights
-        stats["weights"].row(in.index.data) = in.weights.data;
+        stats["weights"].col(in.index.data) = in.weights.data;
     }
 }
 
