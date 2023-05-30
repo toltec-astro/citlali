@@ -95,11 +95,13 @@ void Lali::setup() {
     // print basic info for obs reduction
     print_summary();
 
-    for (const auto &stat: diagnostics.stats_header) {
+    for (const auto &stat: diagnostics.det_stats_header) {
         diagnostics.stats[stat].setZero(calib.n_dets, telescope.scan_indices.cols());
     }
 
-    diagnostics.fsmp = telescope.d_fsmp;
+    for (const auto &stat: diagnostics.grp_stats_header) {
+        diagnostics.stats[stat].setZero(calib.n_arrays, telescope.scan_indices.cols());
+    }
 }
 
 auto Lali::run() {

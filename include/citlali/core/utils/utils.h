@@ -257,8 +257,7 @@ auto calc_std_dev(Eigen::DenseBase<DerivedA> &data) {
 
     // calc standard deviation
     double std_dev = std::sqrt((((data.derived().array()) -
-                                 (data.derived().array()).sum()/
-                                     n_good).square().sum()) / n_samples);
+                                 (data.derived().array().mean())).square().sum()) / n_samples);
 
     return std_dev;
 }
@@ -266,7 +265,7 @@ auto calc_std_dev(Eigen::DenseBase<DerivedA> &data) {
 template <typename DerivedA, typename DerivedB>
 auto calc_std_dev(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &flag) {
 
-    auto f = (flag.derived().template cast<double>().array() - 1).abs();
+    auto f = (1 - flag.derived().template cast<double>().array());
 
     // number of unflagged samples
     auto n_good = (f.array() == 1).count();
@@ -287,10 +286,10 @@ auto calc_std_dev(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &
         n_samples = n_good - 1;
     }
 
+    auto mean = (data.derived().array()*f.array()).mean();
+
     // calc standard deviation
-    double std_dev = std::sqrt((((data.derived().array()*f.array()) -
-                            (data.derived().array()*f.array()).sum()/
-                                n_good).square().sum()) / n_samples);
+    double std_dev = std::sqrt((((data.derived().array()*f.array()) - mean).square().sum()) / n_samples);
 
     return std_dev;
 }
@@ -458,9 +457,9 @@ double find_weight_threshold(Eigen::DenseBase<Derived> &weight, double cov) {
         // find index of upper 25 % of weights
         Eigen::Index cov_limit_index = 0.75*non_zero_weights_vec.size();
         // get weight value at cov_limit_index + size/2
-        weight_val = pivot_select(non_zero_weights_vec, cov_limit_index);
+        //weight_val = pivot_select(non_zero_weights_vec, cov_limit_index);
         // get weight index
-        double weight_index = floor((cov_limit_index + non_zero_weights_vec.size())/2.);
+        Eigen::Index weight_index = floor((cov_limit_index + non_zero_weights_vec.size())/2.);
         weight_val = pivot_select(non_zero_weights_vec, weight_index);
     }
 

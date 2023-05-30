@@ -225,6 +225,8 @@ struct TCData<TCDataKind::PTC, RefType>
     // time of ptc creation
     std::string creation_time = engine_utils::current_date_time();
 
+    std::vector<double> median_weights;
+
     bool demodulated = false;
     bool kernel_generated = false;
     bool despiked = false;

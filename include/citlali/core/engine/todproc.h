@@ -252,7 +252,7 @@ void TimeOrderedDataProc<EngineType>::get_tone_freqs_from_files(const RawObs &ra
     dfreq(0) = engine().calib.apt["tone_freq"](1) - engine().calib.apt["tone_freq"](0);
 
     // loop through tone freqs and find distance
-    for (Eigen::Index i=0; i<engine().calib.apt["tone_freq"].size(); i++) {
+    for (Eigen::Index i=1; i<engine().calib.apt["tone_freq"].size()-1; i++) {
         dfreq(i) = std::min(abs(engine().calib.apt["tone_freq"](i) - engine().calib.apt["tone_freq"](i-1)),
                             abs(engine().calib.apt["tone_freq"](i+1) - engine().calib.apt["tone_freq"](i)));
     }

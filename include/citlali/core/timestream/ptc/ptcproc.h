@@ -372,6 +372,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
         }
 
         auto med_wt = tula::alg::median(good_wt);
+        in.median_weights.push_back(med_wt);
 
         int outliers = 0;
 

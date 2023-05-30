@@ -1576,7 +1576,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     // add instrument
     fits_io->at(i).pfits->pHDU().addKey("INSTRUME", "TolTEC", "Instrument");
-    // add mean az
+    // add hwpr
     fits_io->at(i).pfits->pHDU().addKey("HWPR", calib.run_hwp, "HWPR installed");
     // add telescope
     fits_io->at(i).pfits->pHDU().addKey("TELESCOP", "LMT", "Telescope");
@@ -1614,6 +1614,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("MEAN_EL", RAD_TO_DEG*telescope.tel_data["TelElAct"].mean(), "mean elevation (deg)");
     // add mean az
     fits_io->at(i).pfits->pHDU().addKey("MEAN_AZ", RAD_TO_DEG*telescope.tel_data["TelAzAct"].mean(), "mean azimuth (deg)");
+    // add mean parallactic angle
+    fits_io->at(i).pfits->pHDU().addKey("MEAN_PA", RAD_TO_DEG*telescope.tel_data["ActParAng"].mean(), "mean Parallactic angle (deg)");
 
     // add mean tau
     Eigen::VectorXd tau_el(1);
@@ -1947,12 +1949,16 @@ void Engine::write_stats() {
                                                     engine_utils::toltecIO::raw>
                           (obsnum_dir_name + "raw/", redu_type, "", obsnum, telescope.sim_obs);
 
-    std::map<std::string, std::string> stats_header_units {
+    std::map<std::string, std::string> det_stats_header_units {
         {"rms", omb.sig_unit},
         {"stddev",omb.sig_unit},
         {"median",omb.sig_unit},
         {"flagged_frac","N/A"},
         {"weights","1/(" + omb.sig_unit + ")^2"},
+        };
+
+    std::map<std::string, std::string> grp_stats_header_units {
+        {"median_weights", "1/(" + omb.sig_unit + ")^2"},
         };
 
     netCDF::NcFile fo(stats_filename + ".nc", netCDF::NcFile::replace);
@@ -1969,10 +1975,16 @@ void Engine::write_stats() {
     std::vector<netCDF::NcDim> dims = {n_chunks_dim, n_dets_dim};
 
     // add stats
-    for (const auto &stat: diagnostics.stats_header) {
+    for (const auto &stat: diagnostics.det_stats_header) {
         netCDF::NcVar stat_v = fo.addVar(stat,netCDF::ncDouble, dims);
         stat_v.putVar(diagnostics.stats[stat].data());
-        stat_v.putAtt("units",stats_header_units[stat]);
+        stat_v.putAtt("units",det_stats_header_units[stat]);
+    }
+
+    for (const auto &stat: diagnostics.grp_stats_header) {
+        netCDF::NcVar stat_v = fo.addVar(stat,netCDF::ncDouble, dims);
+        stat_v.putVar(diagnostics.stats[stat].data());
+        stat_v.putAtt("units",grp_stats_header_units[stat]);
     }
 
     // add apt table
