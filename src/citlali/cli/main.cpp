@@ -440,10 +440,6 @@ int run(const rc_t &rc) {
                         }
                     }
 
-                    // get tone frequencies from raw files for flagging nearby tones
-                    SPDLOG_DEBUG("getting tone frequencies");
-                    todproc.get_tone_freqs_from_files(rawobs);
-
                     // calculate downsampled sample rate
                     if (todproc.engine().rtcproc.run_downsample) {
                         todproc.engine().telescope.d_fsmp = todproc.engine().telescope.fsmp/todproc.engine().rtcproc.downsampler.factor;
@@ -451,6 +447,13 @@ int run(const rc_t &rc) {
                     else {
                         todproc.engine().telescope.d_fsmp = todproc.engine().telescope.fsmp;
                     }
+
+                    // get tone frequencies from raw files for flagging nearby tones
+                    SPDLOG_DEBUG("getting tone frequencies");
+                    todproc.get_tone_freqs_from_files(rawobs);
+
+                    SPDLOG_DEBUG("getting adc snap data");
+                    todproc.get_adc_snap_from_files(rawobs);
 
                     // get obsnum
                     SPDLOG_DEBUG("getting obsnum");

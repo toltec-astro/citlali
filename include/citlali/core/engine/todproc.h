@@ -72,6 +72,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
 
     void get_apt_from_files(const RawObs &rawobs);
     void get_tone_freqs_from_files(const RawObs &rawobs);
+    void get_adc_snap_from_files(const RawObs &rawobs);
     void create_output_dir();
     void check_inputs(const RawObs &rawobs);
     void align_timestreams(const RawObs &rawobs);
@@ -275,6 +276,38 @@ void TimeOrderedDataProc<EngineType>::get_tone_freqs_from_files(const RawObs &ra
     }
 
     SPDLOG_INFO("{} nearby tones found. these will be flagged.",n_nearby_tones);
+}
+
+template <class EngineType>
+void TimeOrderedDataProc<EngineType>::get_adc_snap_from_files(const RawObs &rawobs) {
+    using namespace netCDF;
+    using namespace netCDF::exceptions;
+
+    // tone frquencies for each network
+    std::map<Eigen::Index,Eigen::MatrixXd> tone_freqs;
+
+    // loop through input files
+    for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
+        try {
+            // load data file
+            NcFile fo(data_item.filepath(), NcFile::read);
+            auto vars = fo.getVars();
+
+            Eigen::Index adcSnapDim = vars.find("Header.Toltec.AdcSnapData")->second.getDim(0).getSize();
+            Eigen::Index adcSnapDataDim = vars.find("Header.Toltec.AdcSnapData")->second.getDim(1).getSize();
+
+            Eigen::Matrix<short,Eigen::Dynamic, Eigen::Dynamic> adcsnap(adcSnapDataDim,adcSnapDim);
+
+            vars.find("Header.Toltec.AdcSnapData")->second.getVar(adcsnap.data());
+
+            engine().adc_snap_data.push_back(adcsnap);
+
+        } catch (NcException &e) {
+            SPDLOG_ERROR("{}", e.what());
+            //throw DataIOError{fmt::format(
+            //    "failed to load data from netCDF file {}", data_item.filepath())};
+        }
+    }
 }
 
 // create output directories

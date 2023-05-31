@@ -158,6 +158,9 @@ public:
     // time gaps
     std::map<std::string,int> gaps;
 
+    // adc snap data
+    std::vector<Eigen::Matrix<short, Eigen::Dynamic, Eigen::Dynamic>> adc_snap_data;
+
     // output directory and optional sub directory name
     std::string output_dir, redu_dir_name;
 
@@ -1992,6 +1995,20 @@ void Engine::write_stats() {
         netCDF::NcVar apt_v = fo.addVar("apt_" + x.first,netCDF::ncDouble, n_dets_dim);
         apt_v.putVar(x.second.data());
         apt_v.putAtt("units",calib.apt_header_units[x.first]);
+    }
+
+    if (!adc_snap_data.empty()) {
+        Eigen::Index i = 0;
+        for (auto const& x: adc_snap_data) {
+
+            netCDF::NcDim adc_snap_dim = fo.addDim("adcSnapDim", x.cols());
+            netCDF::NcDim adc_snap_data_dim = fo.addDim("adcSnapDataDim", x.rows());
+            std::vector<netCDF::NcDim> dims = {adc_snap_dim, adc_snap_data_dim};
+
+            netCDF::NcVar adc_snap_v = fo.addVar("toltec" + std::to_string(calib.nws(i)) + "_adc_snap_data",netCDF::ncDouble, dims);
+            adc_snap_v.putVar(x.data());
+            i++;
+        }
     }
 
     fo.close();
