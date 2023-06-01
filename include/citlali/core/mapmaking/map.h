@@ -126,6 +126,10 @@ public:
 
     void normalize_maps();
 
+    template <class MapFitter, typename Derived>
+    void fit_maps(MapFitter &, Eigen::DenseBase<Derived> &,
+                  Eigen::DenseBase<Derived> &);
+
     std::tuple<double, Eigen::MatrixXd, Eigen::Index, Eigen::Index> calc_cov_region(Eigen::Index);
 
     void calc_map_psd();

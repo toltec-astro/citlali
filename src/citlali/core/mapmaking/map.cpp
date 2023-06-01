@@ -1,6 +1,50 @@
 #include <citlali/core/mapmaking/map.h>
 
+#include <citlali/core/utils/toltec_io.h>
+
 namespace mapmaking {
+
+template <class MapFitter, typename Derived>
+void ObsMapBuffer::fit_maps(MapFitter &map_fitter, Eigen::DenseBase<Derived> &params,
+                            Eigen::DenseBase<Derived> &perrors) {
+
+    engine_utils::toltecIO toltec_io;
+
+    // placeholder vectors for grppi map
+    std::vector<int> map_in_vec, map_out_vec;
+
+    map_in_vec.resize(signal.size());
+    std::iota(map_in_vec.begin(), map_in_vec.end(), 0);
+    map_out_vec.resize(signal.size());
+
+    double init_row = -99;
+    double init_col = -99;
+
+    grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
+        auto array = maps_to_arrays(i);
+        // init fwhm in pixels
+        double init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/pixel_size_rad;
+        auto [map_params, map_perror, good_fit] =
+            map_fitter.fit_to_gaussian<engine_utils::mapFitter::pointing>(signal[i], weight[i], init_fwhm, init_row, init_col);
+        params.row(i) = map_params;
+        perrors.row(i) = map_perror;
+
+        if (good_fit) {
+            // rescale fit params from pixel to on-sky units
+            params(i,1) = RAD_TO_ASEC*pixel_size_rad*(params(i,1) - (n_cols)/2);
+            params(i,2) = RAD_TO_ASEC*pixel_size_rad*(params(i,2) - (n_rows)/2);
+            params(i,3) = RAD_TO_ASEC*STD_TO_FWHM*pixel_size_rad*(params(i,3));
+            params(i,4) = RAD_TO_ASEC*STD_TO_FWHM*pixel_size_rad*(params(i,4));
+
+                 // rescale fit errors from pixel to on-sky units
+            perrors(i,1) = RAD_TO_ASEC*pixel_size_rad*(perrors(i,1));
+            perrors(i,2) = RAD_TO_ASEC*pixel_size_rad*(perrors(i,2));
+            perrors(i,3) = RAD_TO_ASEC*STD_TO_FWHM*pixel_size_rad*(perrors(i,3));
+            perrors(i,4) = RAD_TO_ASEC*STD_TO_FWHM*pixel_size_rad*(perrors(i,4));
+        }
+        return 0;
+    });
+}
 
 void ObsMapBuffer::normalize_maps() {
     // placeholder vectors for grppi map

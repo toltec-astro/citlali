@@ -57,7 +57,7 @@ public:
 
     template <typename Derived, typename apt_t, typename pointing_offset_t>
     void append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, std::string, std::string, std::string &,
-                          pointing_offset_t &, Eigen::DenseBase<Derived> &, apt_t &, std::string, bool, double);
+                          pointing_offset_t &, Eigen::DenseBase<Derived> &, apt_t &, std::string, bool, double, bool);
 
     template <typename DerivedB, typename DerivedC, typename apt_t, typename pointing_offset_t>
     void add_gaussian(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, Eigen::DenseBase<DerivedB> &, std::string &,
@@ -549,7 +549,7 @@ auto PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
 template <typename Derived, typename apt_t, typename pointing_offset_t>
 void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std::string filepath, std::string redu_type,
                                std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec, Eigen::DenseBase<Derived> &det_indices,
-                               apt_t &apt, std::string tod_output_type,bool verbose_mode, double fsmp) {
+                               apt_t &apt, std::string tod_output_type,bool verbose_mode, double fsmp, bool run_hwpr) {
 
     // tangent plane pointing for each detector
     Eigen::MatrixXd lats(in.scans.data.rows(), in.scans.data.cols()), lons(in.scans.data.rows(), in.scans.data.cols());
@@ -680,7 +680,7 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
             }
 
             // append hwpr angle
-            if (in.hwp_angle.data.size()!=0) {
+            if (run_hwpr) {
                 NcVar hwpr_v = fo.getVar("hwpr");
                 hwpr_v.putVar(start_index_tel, size_tel, in.hwp_angle.data.row(i).data());
             }
