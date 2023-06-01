@@ -283,8 +283,8 @@ void TimeOrderedDataProc<EngineType>::get_adc_snap_from_files(const RawObs &rawo
     using namespace netCDF;
     using namespace netCDF::exceptions;
 
-    // tone frquencies for each network
-    std::map<Eigen::Index,Eigen::MatrixXd> tone_freqs;
+    // explicitly clear vector
+    engine().adc_snap_data.clear();
 
     // loop through input files
     for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
@@ -301,6 +301,8 @@ void TimeOrderedDataProc<EngineType>::get_adc_snap_from_files(const RawObs &rawo
             vars.find("Header.Toltec.AdcSnapData")->second.getVar(adcsnap.data());
 
             engine().adc_snap_data.push_back(adcsnap);
+
+            fo.close();
 
         } catch (NcException &e) {
             SPDLOG_ERROR("{}", e.what());
