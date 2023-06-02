@@ -473,6 +473,9 @@ void Engine::get_mapmaking_config(CT &config) {
 
     /* wcs */
 
+    // icrs or altaz
+    get_config_value(config, telescope.pixel_axes, missing_keys, invalid_keys, std::tuple{"mapmaking","pixel_axes"},{"icrs","altaz"});
+
     // pixel size
     get_config_value(config, omb.pixel_size_rad, missing_keys, invalid_keys, std::tuple{"mapmaking","pixel_size_arcsec"},{},{0});
 
@@ -480,14 +483,17 @@ void Engine::get_mapmaking_config(CT &config) {
     omb.pixel_size_rad *= ASEC_TO_RAD;
     cmb.pixel_size_rad = omb.pixel_size_rad;
 
-    omb.wcs.cdelt.push_back(-omb.pixel_size_rad);
+
+    if (telescope.pixel_axes=="icrs") {
+        omb.wcs.cdelt.push_back(-omb.pixel_size_rad);
+    }
+    else if (telescope.pixel_axes=="altaz") {
+        omb.wcs.cdelt.push_back(omb.pixel_size_rad);
+    }
     omb.wcs.cdelt.push_back(omb.pixel_size_rad);
 
     omb.wcs.cdelt.push_back(1);
     omb.wcs.cdelt.push_back(1);
-
-    // icrs or altaz
-    get_config_value(config, telescope.pixel_axes, missing_keys, invalid_keys, std::tuple{"mapmaking","pixel_axes"},{"icrs","altaz"});
 
     double wcs_double;
 
