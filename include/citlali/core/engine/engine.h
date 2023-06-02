@@ -1998,12 +1998,11 @@ void Engine::write_stats() {
     }
 
     if (!adc_snap_data.empty()) {
+        netCDF::NcDim adc_snap_dim = fo.addDim("adcSnapDim", adc_snap_data[0].cols());
+        netCDF::NcDim adc_snap_data_dim = fo.addDim("adcSnapDataDim", adc_snap_data[0].rows());
+        std::vector<netCDF::NcDim> dims = {adc_snap_dim, adc_snap_data_dim};
         Eigen::Index i = 0;
         for (auto const& x: adc_snap_data) {
-            netCDF::NcDim adc_snap_dim = fo.addDim("toltec" + std::to_string(calib.nws(i)) + "_adcSnapDim", x.cols());
-            netCDF::NcDim adc_snap_data_dim = fo.addDim("toltec" + std::to_string(calib.nws(i)) + "_adcSnapDataDim", x.rows());
-            std::vector<netCDF::NcDim> dims = {adc_snap_dim, adc_snap_data_dim};
-
             netCDF::NcVar adc_snap_v = fo.addVar("toltec" + std::to_string(calib.nws(i)) + "_adc_snap_data",netCDF::ncDouble, dims);
             adc_snap_v.putVar(x.data());
             i++;
