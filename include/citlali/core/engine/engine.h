@@ -484,12 +484,12 @@ void Engine::get_mapmaking_config(CT &config) {
     cmb.pixel_size_rad = omb.pixel_size_rad;
 
 
-    if (telescope.pixel_axes=="icrs") {
+    //if (telescope.pixel_axes=="icrs") {
         omb.wcs.cdelt.push_back(-omb.pixel_size_rad);
-    }
-    else if (telescope.pixel_axes=="altaz") {
-        omb.wcs.cdelt.push_back(omb.pixel_size_rad);
-    }
+    //}
+    //else if (telescope.pixel_axes=="altaz") {
+    //    omb.wcs.cdelt.push_back(omb.pixel_size_rad);
+    //}
     omb.wcs.cdelt.push_back(omb.pixel_size_rad);
 
     omb.wcs.cdelt.push_back(1);
