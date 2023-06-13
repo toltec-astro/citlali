@@ -123,7 +123,7 @@ public:
                                                        ang))*polarized_scans.col(i).array();
                     }
                     else if (stokes_param == "U") {
-                        out.scans.data.col(i) = sin(2*(in.tel_data.data["ActParAng"].array() +
+                        out.scans.data.col(i) = -sin(2*(in.tel_data.data["ActParAng"].array() +
                                                        in.tel_data.data["TelElAct"].array() +
                                                        ang))*polarized_scans.col(i).array();
                     }
@@ -137,7 +137,7 @@ public:
                                                                                          ang))*polarized_scans.col(i).array();
                     }
                     else if (stokes_param == "U") {
-                        out.scans.data.col(i) = sin(4*in.hwp_angle.data.array() - 2*(in.tel_data.data["ActParAng"].array() +
+                        out.scans.data.col(i) = -sin(4*in.hwp_angle.data.array() - 2*(in.tel_data.data["ActParAng"].array() +
                                                                                          in.tel_data.data["TelElAct"].array() +
                                                                                          ang))*polarized_scans.col(i).array();
                     }
