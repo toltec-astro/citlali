@@ -1979,9 +1979,11 @@ void Engine::write_stats() {
     obsnum_v.putVar(&obsnum_int);
 
     netCDF::NcDim n_dets_dim = fo.addDim("n_dets", calib.n_dets);
+    netCDF::NcDim n_arrays_dim = fo.addDim("n_arrays", calib.n_arrays);
     netCDF::NcDim n_chunks_dim = fo.addDim("n_chunks", telescope.scan_indices.cols());
 
     std::vector<netCDF::NcDim> dims = {n_chunks_dim, n_dets_dim};
+    std::vector<netCDF::NcDim> grp_dims = {n_chunks_dim, n_arrays_dim};
 
     // add stats
     for (const auto &stat: diagnostics.det_stats_header) {
@@ -1991,7 +1993,7 @@ void Engine::write_stats() {
     }
 
     for (const auto &stat: diagnostics.grp_stats_header) {
-        netCDF::NcVar stat_v = fo.addVar(stat,netCDF::ncDouble, dims);
+        netCDF::NcVar stat_v = fo.addVar(stat,netCDF::ncDouble, grp_dims);
         stat_v.putVar(diagnostics.stats[stat].data());
         stat_v.putAtt("units",grp_stats_header_units[stat]);
     }

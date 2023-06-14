@@ -58,7 +58,7 @@ void Diagnostics::calc_stats(timestream::TCData<tcdata_kind, Eigen::MatrixXd> &i
     if (in.weights.data.size()!=0) {
         // add weights
         stats["weights"].col(in.index.data) = in.weights.data;
-        stats["median_weights"].col(in.index.data) = Eigen::Map<Eigen::VectorXd>(in.median_weights.data(),in.median_weights.size());
+        //stats["median_weights"].col(in.index.data) = Eigen::Map<Eigen::VectorXd>(in.median_weights.data(),in.median_weights.size());
     }
 }
 
