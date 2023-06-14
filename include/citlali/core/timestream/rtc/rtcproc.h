@@ -181,7 +181,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
 
     if (run_despike) {
         SPDLOG_DEBUG("despiking");
-        despiker.despike(in_pol.scans.data, in_pol.flags.data, calib.apt);
+        //despiker.despike(in_pol.scans.data, in_pol.flags.data, calib.apt);
 
         std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grouping_limits;
 
