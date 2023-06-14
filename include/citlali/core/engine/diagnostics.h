@@ -27,7 +27,7 @@ public:
     };
 
     std::vector<std::string> grp_stats_header = {
-        "median_weight"
+        "median_weights"
     };
 
     template <timestream::TCDataKind tcdata_kind>
