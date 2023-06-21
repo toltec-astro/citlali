@@ -99,7 +99,6 @@ public:
                     }
                 }
             }
-
             else {
                 polarized_scans = in.scans.data;
 

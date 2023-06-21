@@ -123,7 +123,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                     grp_limits = calib.array_limits;
                 }
             }
-
+            // if cleaning polarized maps is requested
             else if (run_stokes_clean) {
                 Eigen::Index grp_i = calib.apt[group](det_indices(0));
                 grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};

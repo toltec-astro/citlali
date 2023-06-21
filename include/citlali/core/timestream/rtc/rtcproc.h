@@ -183,18 +183,36 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         SPDLOG_DEBUG("despiking");
         //despiker.despike(in_pol.scans.data, in_pol.flags.data, calib.apt);
 
-        std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grouping_limits;
+        std::string grp;
 
         // nw grouping for flag replacement
         if (despiker.grouping == "nw") {
-            grouping_limits = calib.nw_limits;
+            grp = "nw";
         }
         // array grouping for flag replacement
         else if (despiker.grouping == "array") {
-            grouping_limits = calib.array_limits;
+            grp = "array";
         }
 
-        for (auto const& [key, val] : grouping_limits) {
+        std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
+
+        Eigen::Index grp_i = calib.apt[grp](det_indices(0));
+        grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
+        Eigen::Index j = 0;
+        // loop through apt table arrays, get highest index for current array
+        for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
+            auto det_index = det_indices(i);
+            if (calib.apt[grp](det_index) == grp_i) {
+                std::get<1>(grp_limits[grp_i]) = i + 1;
+            }
+            else {
+                grp_i = calib.apt[grp](det_index);
+                j += 1;
+                grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
+            }
+        }
+
+        for (auto const& [key, val] : grp_limits) {
             // starting index
             auto start_index = std::get<0>(val);
             // size of block for each grouping
@@ -268,7 +286,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
             downsampler.downsample(in_pointing, out.pointing_offsets_arcsec.data[x.first]);
         }
 
-        // downsample hwp
+        // downsample hwpr
         if (run_polarization) {
             if (calib.run_hwp) {
                 Eigen::Ref<Eigen::VectorXd> in_hwp =
@@ -368,10 +386,10 @@ auto RTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                               std::string map_grouping) {
 
 
-         // make a copy of the calib class for flagging
+    // make a copy of the calib class for flagging
     calib_t calib_scan = calib;
 
-         // number of detectors
+    // number of detectors
     Eigen::Index n_dets = in.scans.data.cols();
 
     std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
@@ -395,7 +413,7 @@ auto RTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
     in.n_low_dets = 0;
     in.n_high_dets = 0;
 
-         // only run if limits are not zero
+    // only run if limits are not zero
     if (lower_weight_factor !=0 || upper_weight_factor !=0) {
         for (auto const& [key, val] : grp_limits) {
 
@@ -416,7 +434,7 @@ auto RTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                 Eigen::VectorXI dets(n_good_dets);
                 Eigen::Index k = 0;
 
-                     // collect standard deviation from good detectors
+                // collect standard deviation from good detectors
                 for (Eigen::Index j=std::get<0>(grp_limits[key]); j<std::get<1>(grp_limits[key]); j++) {
                     Eigen::Index det_index = det_indices(j);
                     if (calib.apt["flag"](det_index)!=1) {
@@ -426,10 +444,10 @@ auto RTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                         Eigen::Map<Eigen::Matrix<bool, Eigen::Dynamic, 1>> flags(
                             in.flags.data.col(j).data(), in.flags.data.rows());
 
-                             // calc standard deviation
+                        // calc standard deviation
                         det_std_dev(k) = engine_utils::calc_std_dev(scans, flags);
 
-                             // convert to 1/variance
+                        // convert to 1/variance
                         if (det_std_dev(k) !=0) {
                             det_std_dev(k) = std::pow(det_std_dev(k),-2);
                         }
@@ -442,13 +460,13 @@ auto RTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                     }
                 }
 
-                     // get median standard deviation
+                // get median standard deviation
                 double mean_std_dev = tula::alg::median(det_std_dev);
 
                 int n_low_dets = 0;
                 int n_high_dets = 0;
 
-                     // loop through good detectors and flag those that have std devs beyond the limits
+                // loop through good detectors and flag those that have std devs beyond the limits
                 for (Eigen::Index j=0; j<n_good_dets; j++) {
                     Eigen::Index det_index = det_indices(dets(j));
                     // flag those below limit
@@ -464,7 +482,7 @@ auto RTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                             n_low_dets++;
                         }
 
-                             // flag those above limit
+                        // flag those above limit
                         if ((det_std_dev(j) > (upper_weight_factor*mean_std_dev)) && upper_weight_factor!=0) {
                             if (map_grouping!="detector") {
                                 in.flags.data.col(dets(j)).setOnes();
@@ -481,7 +499,7 @@ auto RTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                 SPDLOG_INFO("array {} iter {}: {}/{} dets below limit. {}/{} dets above limit.", key, n_iter,
                             n_low_dets, n_good_dets, n_high_dets, n_good_dets);
 
-                     // increment iteration
+                // increment iteration
                 n_iter++;
                 // check if no more detectors are above limit
                 if ((n_low_dets==0 && n_high_dets==0) || n_iter > 0) {
@@ -491,7 +509,7 @@ auto RTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
         }
     }
 
-         // set up scan calib
+    // set up scan calib
     calib_scan.setup();
 
     return std::move(calib_scan);

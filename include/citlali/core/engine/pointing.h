@@ -199,6 +199,9 @@ void Pointing::setup() {
         }
     }
 
+    ppt_meta["M2.ZREQ"] = telescope.tel_header["HEADER.M2.ZREQ"](0);
+    ppt_meta["M1.ZernikeC"] = telescope.tel_header["Header.M1.ZernikeC"](0);
+
     // print basic info for obs reduction
     print_summary();
 
