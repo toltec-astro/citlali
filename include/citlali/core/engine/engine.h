@@ -203,6 +203,8 @@ public:
     // weight type (approximate or full)
     //std::string weighting_type;
 
+    bool write_filtered_maps_partial;
+
     // rtc or ptc types
     std::string tod_output_type, tod_output_subdir_name;
 
@@ -666,6 +668,13 @@ void Engine::get_map_filter_config(CT &config) {
         for (auto const& pair : wiener_filter.gaussian_template_fwhm_rad) {
             wiener_filter.gaussian_template_fwhm_rad[pair.first] = wiener_filter.gaussian_template_fwhm_rad[pair.first]*ASEC_TO_RAD;
         }
+    }
+
+    if (redu_type=="science") {
+        write_filtered_maps_partial = true;
+    }
+    else {
+        write_filtered_maps_partial = false;
     }
 
     // set parallelization for ffts (maintained with tod output/verbose mode)
@@ -2097,33 +2106,35 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
             mb.weight[i].noalias() = mb.weight[i]*noise_factor(i);
         }
 
-        // write maps immediately after filtering due to computation time
-        write_maps(f_io,n_io,pmb,i);
+        if (write_filtered_maps_partial) {
+            // write maps immediately after filtering due to computation time
+            write_maps(f_io,n_io,pmb,i);
 
-        SPDLOG_INFO("file has been written to:");
-        SPDLOG_INFO("{}.fits",f_io->at(map_index).filepath);
+            SPDLOG_INFO("file has been written to:");
+            SPDLOG_INFO("{}.fits",f_io->at(map_index).filepath);
 
-        // explicitly destroy the fits file after we're done with it
-        // check if we're moving onto a new file
 
-        // explicitly destroy the fits file after we're done with it
-        bool close_file = true;
-        if (rtcproc.run_polarization) {
-            if (rtcproc.polarization.stokes_params[maps_to_stokes(i)]!="U") {
-                close_file = false;
+            // explicitly destroy the fits file after we're done with it
+            bool close_file = true;
+            if (rtcproc.run_polarization) {
+                if (rtcproc.polarization.stokes_params[maps_to_stokes(i)]!="U") {
+                    close_file = false;
+                }
             }
-        }
-        // check if we're moving onto a new file
-        if (i<n_maps-1) {
-            if (arrays_to_maps(i+1) > arrays_to_maps(i) && close_file) {
-                f_io->at(map_index).pfits->destroy();
+            // check if we're moving onto a new file
+            if (i<n_maps-1) {
+                if (arrays_to_maps(i+1) > arrays_to_maps(i) && close_file) {
+                    f_io->at(map_index).pfits->destroy();
+                }
             }
         }
     }
 
-    // clear fits file vectors to ensure its closed.
-    f_io->clear();
-    n_io->clear();
+    if (write_filtered_maps_partial) {
+        // clear fits file vectors to ensure its closed.
+        f_io->clear();
+        n_io->clear();
+    }
 }
 
 template <mapmaking::MapType map_t, class map_buffer_t>

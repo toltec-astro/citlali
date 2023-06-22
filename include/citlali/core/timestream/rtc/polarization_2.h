@@ -33,6 +33,13 @@ public:
         {3,3*pi/4}
     };
 
+    std::map<int,int> coeffs = {
+        {0,1},
+        {1,-1},
+        {2,1},
+        {3,-1},
+    };
+
     template<TCDataKind td_kind, class calib_type>
     indices_t demodulate_timestream(TCData<td_kind, Eigen::MatrixXd> &in,
                                     TCData<td_kind, Eigen::MatrixXd> &out,
@@ -114,15 +121,17 @@ public:
                 // detector angle = installation angle + det orientation
                 auto ang = install_ang[array_indices(i)] + fgs[fg(i)];
 
+                auto coeff = coeffs[fg(i)];
+
                 // rotate q and u by parallactic, elevation, and detector angle
                 if (!calib.run_hwp) {
                     if (stokes_param == "Q") {
-                        out.scans.data.col(i) = cos(2*(in.tel_data.data["ActParAng"].array() +
+                        out.scans.data.col(i) = coeff*cos(2*(in.tel_data.data["ActParAng"].array() +
                                                        in.tel_data.data["TelElAct"].array() +
                                                        ang))*polarized_scans.col(i).array();
                     }
                     else if (stokes_param == "U") {
-                        out.scans.data.col(i) = -sin(2*(in.tel_data.data["ActParAng"].array() +
+                        out.scans.data.col(i) = -coeff*sin(2*(in.tel_data.data["ActParAng"].array() +
                                                        in.tel_data.data["TelElAct"].array() +
                                                        ang))*polarized_scans.col(i).array();
                     }
@@ -131,12 +140,12 @@ public:
                 // check if hwp is requested
                 else {
                     if (stokes_param == "Q") {
-                        out.scans.data.col(i) = cos(4*in.hwp_angle.data.array() - 2*(in.tel_data.data["ActParAng"].array() +
+                        out.scans.data.col(i) = coeff*cos(4*in.hwp_angle.data.array() - 2*(in.tel_data.data["ActParAng"].array() +
                                                                                          in.tel_data.data["TelElAct"].array() +
                                                                                          ang))*polarized_scans.col(i).array();
                     }
                     else if (stokes_param == "U") {
-                        out.scans.data.col(i) = -sin(4*in.hwp_angle.data.array() - 2*(in.tel_data.data["ActParAng"].array() +
+                        out.scans.data.col(i) = -coeff*sin(4*in.hwp_angle.data.array() - 2*(in.tel_data.data["ActParAng"].array() +
                                                                                          in.tel_data.data["TelElAct"].array() +
                                                                                          ang))*polarized_scans.col(i).array();
                     }

@@ -418,36 +418,36 @@ void Pointing::fit_maps() {
     std::vector<int> map_in_vec, map_out_vec;
 
     map_in_vec.resize(n_maps);
-        std::iota(map_in_vec.begin(), map_in_vec.end(), 0);
-        map_out_vec.resize(n_maps);
+    std::iota(map_in_vec.begin(), map_in_vec.end(), 0);
+    map_out_vec.resize(n_maps);
 
-        double init_row = -99;
-        double init_col = -99;
+    double init_row = -99;
+    double init_col = -99;
 
-        grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
-            auto array = maps_to_arrays(i);
-            // init fwhm in pixels
-            double init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
-            auto [map_params, map_perror, good_fit] =
-                map_fitter.fit_to_gaussian<engine_utils::mapFitter::pointing>(omb.signal[i], omb.weight[i], init_fwhm, init_row, init_col);
-            params.row(i) = map_params;
-            perrors.row(i) = map_perror;
+    grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
+        auto array = maps_to_arrays(i);
+        // init fwhm in pixels
+        double init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
+        auto [map_params, map_perror, good_fit] =
+            map_fitter.fit_to_gaussian<engine_utils::mapFitter::pointing>(omb.signal[i], omb.weight[i], init_fwhm, init_row, init_col);
+        params.row(i) = map_params;
+        perrors.row(i) = map_perror;
 
-            if (good_fit) {
-                // rescale fit params from pixel to on-sky units
-                params(i,1) = RAD_TO_ASEC*omb.pixel_size_rad*(params(i,1) - (omb.n_cols)/2);
-                params(i,2) = RAD_TO_ASEC*omb.pixel_size_rad*(params(i,2) - (omb.n_rows)/2);
-                params(i,3) = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(params(i,3));
-                params(i,4) = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(params(i,4));
+        if (good_fit) {
+            // rescale fit params from pixel to on-sky units
+            params(i,1) = RAD_TO_ASEC*omb.pixel_size_rad*(params(i,1) - (omb.n_cols)/2);
+            params(i,2) = RAD_TO_ASEC*omb.pixel_size_rad*(params(i,2) - (omb.n_rows)/2);
+            params(i,3) = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(params(i,3));
+            params(i,4) = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(params(i,4));
 
-                // rescale fit errors from pixel to on-sky units
-                perrors(i,1) = RAD_TO_ASEC*omb.pixel_size_rad*(perrors(i,1));
-                perrors(i,2) = RAD_TO_ASEC*omb.pixel_size_rad*(perrors(i,2));
-                perrors(i,3) = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(perrors(i,3));
-                perrors(i,4) = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(perrors(i,4));
-            }
-            return 0;
-        });
+            // rescale fit errors from pixel to on-sky units
+            perrors(i,1) = RAD_TO_ASEC*omb.pixel_size_rad*(perrors(i,1));
+            perrors(i,2) = RAD_TO_ASEC*omb.pixel_size_rad*(perrors(i,2));
+            perrors(i,3) = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(perrors(i,3));
+            perrors(i,4) = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(perrors(i,4));
+        }
+        return 0;
+    });
 }
 
 template <mapmaking::MapType map_type>
@@ -564,43 +564,43 @@ void Pointing::output() {
             pb.count(n_maps, 1);
             write_maps(f_io,n_io,mb,i);
 
-            if constexpr (map_type == mapmaking::RawObs) {
-                Eigen::Index map_index = arrays_to_maps(i);
+            //if constexpr (map_type == mapmaking::RawObs) {
+            Eigen::Index map_index = arrays_to_maps(i);
 
-                // check if we move from one file to the next
-                // if so go back to first hdu layer
-                if (i>0) {
-                    if (map_index > arrays_to_maps(i-1)) {
-                        k = 0;
-                    }
+            // check if we move from one file to the next
+            // if so go back to first hdu layer
+            if (i>0) {
+                if (map_index > arrays_to_maps(i-1)) {
+                    k = 0;
                 }
-                // get current hdu extension name
-                std::string extname = f_io->at(map_index).hdus.at(k)->name();
-                // see if this is a signal extension
-                std::size_t found = extname.find("signal");
-
-                // find next signal extension
-                while (found==std::string::npos && k<f_io->at(map_index).hdus.size()) {
-                    k = k + 1;
-                    // get current hdu extension name
-                    extname = f_io->at(map_index).hdus.at(k)->name();
-                    // see if this is a signal extension
-                    found = extname.find("signal");
-                }
-
-                // add ppt table
-                Eigen::Index j = 0;
-                for (auto const& key: ppt_header) {
-                    try {
-                        f_io->at(map_index).hdus.at(k)->addKey("POINTING." + key, ppt_table(i,j), key + " (" + ppt_header_units[key] + ")");
-                    }
-                    catch(...) {
-                        f_io->at(map_index).hdus.at(k)->addKey("POINTING." + key, 0, key + " (" + ppt_header_units[key] + ")");
-                    }
-                    j++;
-                }
-                k++;
             }
+            // get current hdu extension name
+            std::string extname = f_io->at(map_index).hdus.at(k)->name();
+            // see if this is a signal extension
+            std::size_t found = extname.find("signal");
+
+            // find next signal extension
+            while (found==std::string::npos && k<f_io->at(map_index).hdus.size()) {
+                k = k + 1;
+                // get current hdu extension name
+                extname = f_io->at(map_index).hdus.at(k)->name();
+                // see if this is a signal extension
+                found = extname.find("signal");
+            }
+
+            // add ppt table
+            Eigen::Index j = 0;
+            for (auto const& key: ppt_header) {
+                try {
+                    f_io->at(map_index).hdus.at(k)->addKey("POINTING." + key, ppt_table(i,j), key + " (" + ppt_header_units[key] + ")");
+                }
+                catch(...) {
+                    f_io->at(map_index).hdus.at(k)->addKey("POINTING." + key, 0, key + " (" + ppt_header_units[key] + ")");
+                }
+                j++;
+            }
+            k++;
+            //}
         }
 
         SPDLOG_INFO("files have been written to:");
