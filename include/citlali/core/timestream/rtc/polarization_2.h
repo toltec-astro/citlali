@@ -35,9 +35,9 @@ public:
 
     std::map<int,int> coeffs = {
         {0,1},
-        {1,-1},
+        {1,1},
         {2,1},
-        {3,-1},
+        {3,1},
     };
 
     template<TCDataKind td_kind, class calib_type>
