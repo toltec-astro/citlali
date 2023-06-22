@@ -1,10 +1,9 @@
 #include <citlali/core/mapmaking/map.h>
-
 #include <citlali/core/utils/toltec_io.h>
 
 namespace mapmaking {
 
-template <class MapFitter, typename Derived>
+/*template <class MapFitter, typename Derived>
 void ObsMapBuffer::fit_maps(MapFitter &map_fitter, Eigen::DenseBase<Derived> &params,
                             Eigen::DenseBase<Derived> &perrors) {
 
@@ -36,7 +35,7 @@ void ObsMapBuffer::fit_maps(MapFitter &map_fitter, Eigen::DenseBase<Derived> &pa
             params(i,3) = RAD_TO_ASEC*STD_TO_FWHM*pixel_size_rad*(params(i,3));
             params(i,4) = RAD_TO_ASEC*STD_TO_FWHM*pixel_size_rad*(params(i,4));
 
-                 // rescale fit errors from pixel to on-sky units
+            // rescale fit errors from pixel to on-sky units
             perrors(i,1) = RAD_TO_ASEC*pixel_size_rad*(perrors(i,1));
             perrors(i,2) = RAD_TO_ASEC*pixel_size_rad*(perrors(i,2));
             perrors(i,3) = RAD_TO_ASEC*STD_TO_FWHM*pixel_size_rad*(perrors(i,3));
@@ -44,7 +43,7 @@ void ObsMapBuffer::fit_maps(MapFitter &map_fitter, Eigen::DenseBase<Derived> &pa
         }
         return 0;
     });
-}
+}*/
 
 void ObsMapBuffer::normalize_maps() {
     // placeholder vectors for grppi map

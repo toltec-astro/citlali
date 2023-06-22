@@ -47,6 +47,8 @@ public:
     template <class KidsProc, class RawObs>
     void pipeline(KidsProc &, RawObs &);
 
+    void fit_maps();
+
     template <mapmaking::MapType map_type>
     void output();
 };
@@ -405,11 +407,17 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         omb.calc_map_hist();
 
         // fit maps
-        SPDLOG_INFO("fitting maps");
-        // placeholder vectors for grppi map
-        std::vector<int> map_in_vec, map_out_vec;
+        fit_maps();
+    }
+}
 
-        map_in_vec.resize(n_maps);
+void Pointing::fit_maps() {
+    // fit maps
+    SPDLOG_INFO("fitting maps");
+    // placeholder vectors for grppi map
+    std::vector<int> map_in_vec, map_out_vec;
+
+    map_in_vec.resize(n_maps);
         std::iota(map_in_vec.begin(), map_in_vec.end(), 0);
         map_out_vec.resize(n_maps);
 
@@ -440,7 +448,6 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
             }
             return 0;
         });
-    }
 }
 
 template <mapmaking::MapType map_type>
@@ -467,7 +474,7 @@ void Pointing::output() {
 
         auto ppt_filename = toltec_io.create_filename<engine_utils::toltecIO::ppt, engine_utils::toltecIO::map,
                                                       engine_utils::toltecIO::raw>
-                            (obsnum_dir_name + "raw/", redu_type, "", obsnum, telescope.sim_obs);
+                            (dir_name, redu_type, "", obsnum, telescope.sim_obs);
 
         // loop through params and add arrays
         for (const auto &stokes_param: rtcproc.polarization.stokes_params) {
@@ -496,6 +503,28 @@ void Pointing::output() {
         f_io = &filtered_fits_io_vec;
         n_io = &filtered_noise_fits_io_vec;
         dir_name = obsnum_dir_name + "filtered/";
+
+        auto ppt_filename = toltec_io.create_filename<engine_utils::toltecIO::ppt, engine_utils::toltecIO::map,
+                                                      engine_utils::toltecIO::filtered>
+                            (dir_name, redu_type, "", obsnum, telescope.sim_obs);
+
+        // loop through params and add arrays
+        for (const auto &stokes_param: rtcproc.polarization.stokes_params) {
+            for (Eigen::Index i=0; i<n_maps; i++) {
+                ppt_table(i,0) = maps_to_arrays(i);
+            }
+        }
+
+        // populate table
+        Eigen::Index j = 0;
+        for (Eigen::Index i=1; i<2*n_params; i=i+2) {
+            ppt_table.col(i) = params.col(j).cast <float> ();
+            ppt_table.col(i+1) = perrors.col(j).cast <float> ();
+            j++;
+        }
+
+        // write table
+        to_ecsv_from_matrix(ppt_filename, ppt_table, ppt_header, ppt_meta);
     }
 
     // raw coadded maps

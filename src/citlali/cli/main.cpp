@@ -667,6 +667,11 @@ int run(const rc_t &rc) {
                             todproc.engine().template find_sources<mapmaking::FilteredObs>(todproc.engine().omb);
                         }
 
+                        // if pointing, fit filtered maps
+                        if constexpr (std::is_same_v<todproc_t, TimeOrderedDataProc<Pointing>>) {
+                            todproc.engine().fit_maps();
+                        }
+
                         // output filtered maps
                         SPDLOG_INFO("outputting filtered obs files");
                         todproc.engine().template output<mapmaking::FilteredObs>();
