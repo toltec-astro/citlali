@@ -86,12 +86,12 @@ auto jinc_func(double r, double a, double b, double c, double r_max, double l_d)
     }
 }
 
-template<class map_buffer_t, typename Derived, typename apt_t, typename pointing_offset_t>
+template<class map_buffer_t, typename DerivedA, typename DerivedB, typename apt_t, typename pointing_offset_t>
 void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
-                        map_buffer_t &omb, map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices, Eigen::DenseBase<Derived> &det_indices,
+                        map_buffer_t &omb, map_buffer_t &cmb, Eigen::DenseBase<DerivedA> &map_indices, Eigen::DenseBase<DerivedA> &det_indices,
                         std::string &pixel_axes, std::string &redu_type, apt_t &apt,
                         pointing_offset_t &pointing_offsets_arcsec, double d_fsmp, bool run_noise,
-                        double r_max, double a, double b, double c) {
+                        double r_max, std::map<Eigen::Index,Eigen::DenseBase<DerivedB>> &shape_params) {
 
     // lambda over diameter
     std::map<Eigen::Index,double> l_d;
@@ -102,7 +102,11 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
     std::map<Eigen::Index,Eigen::VectorXd> jinc_weights;
     std::map<Eigen::Index, engine_utils::SplineFunction2> jinc_splines;
 
-    for (const auto &ld: l_d) {
+    for (const auto &ld: l_d) {        
+        auto a = shape_params[ld.first](0);
+        auto b = shape_params[ld.first](1);
+        auto c = shape_params[ld.first](2);
+
         auto radius = Eigen::VectorXd::LinSpaced(1000, 0, r_max*ld.second);
         jinc_weights[ld.first].resize(radius.size());
         Eigen::Index j = 0;
@@ -117,6 +121,10 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 
     std::map<Eigen::Index,Eigen::MatrixXd> jinc_weights_mat;
     for (const auto &ld: l_d) {
+        auto a = shape_params[ld.first](0);
+        auto b = shape_params[ld.first](1);
+        auto c = shape_params[ld.first](2);
+
         double r_max_pix = std::floor(r_max*ld.second/omb.pixel_size_rad);
         Eigen::VectorXd pixels = Eigen::VectorXd::LinSpaced(2*r_max_pix + 1,-r_max_pix, r_max_pix);
 
@@ -194,6 +202,10 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
             }
 
             Eigen::Index r_max_pix = std::floor(r_max*l_d[apt["array"](det_indices(i))]/omb.pixel_size_rad);
+
+            auto a = shape_params[apt["array"](det_indices(i))](0);
+            auto b = shape_params[apt["array"](det_indices(i))](1);
+            auto c = shape_params[apt["array"](det_indices(i))](2);
 
             // loop through the samples
             for (Eigen::Index j=0; j<n_pts; j++) {
@@ -326,9 +338,7 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                             // find maximum col
                             auto col_max = std::min(nmb->n_cols - 1.0 ,nmb_ic + r_max_pix + 1);
 
-
                             Eigen::Index r_max_pix = std::floor(r_max*l_d[apt["array"](det_indices(i))]/nmb->pixel_size_rad);
-
 
                             for (Eigen::Index r=-r_max_pix; r<r_max_pix+1; r++) {
                                 for (Eigen::Index c=-r_max_pix; c<r_max_pix+1; c++) {

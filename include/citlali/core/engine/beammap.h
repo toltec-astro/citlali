@@ -550,8 +550,7 @@ auto Beammap::run_loop() {
                     mapmaking::populate_maps_jinc(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
                                                   ptcs[i].det_indices.data, telescope.pixel_axes,
                                                   redu_type, calib.apt, ptcs[i].pointing_offsets_arcsec.data,
-                                                  telescope.d_fsmp, run_noise, jinc_r_max, jinc_a,
-                                                  jinc_b, jinc_c);
+                                                  telescope.d_fsmp, run_noise, jinc_r_max, jinc_shape_params);
                 }
             }
             return 0;

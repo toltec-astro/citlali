@@ -334,7 +334,7 @@ auto Pointing::run() {
                 else if (map_method=="jinc") {
                     mapmaking::populate_maps_jinc(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
                                                   redu_type, calib.apt, ptcdata.pointing_offsets_arcsec.data, telescope.d_fsmp, run_noise,
-                                                  jinc_r_max, jinc_a, jinc_b, jinc_c);
+                                                  jinc_r_max, jinc_shape_params);
                 }
             }
         }

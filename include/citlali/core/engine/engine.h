@@ -217,6 +217,8 @@ public:
     // jinc mapmaking params
     double jinc_r_max, jinc_a, jinc_b, jinc_c;
 
+    std::map<Eigen::Index,Eigen::VectorXd> jinc_shape_params;
+
     // mapping from index in map vector to array index
     Eigen::VectorXI maps_to_arrays, arrays_to_maps;
 
@@ -463,10 +465,17 @@ void Engine::get_mapmaking_config(CT &config) {
     get_config_value(config, map_method, missing_keys, invalid_keys, std::tuple{"mapmaking","method"},{"naive","jinc"});
 
     if (map_method=="jinc") {
-        get_config_value(config, jinc_r_max, missing_keys, invalid_keys, std::tuple{"mapmaking","jinc_filter","r_max"},{},{0});
+        /*get_config_value(config, jinc_r_max, missing_keys, invalid_keys, std::tuple{"mapmaking","jinc_filter","r_max"},{},{0});
         get_config_value(config, jinc_a, missing_keys, invalid_keys, std::tuple{"mapmaking","jinc_filter","a"});
         get_config_value(config, jinc_b, missing_keys, invalid_keys, std::tuple{"mapmaking","jinc_filter","b"});
         get_config_value(config, jinc_c, missing_keys, invalid_keys, std::tuple{"mapmaking","jinc_filter","c"});
+        */
+
+        // vector of eigenvalues to cut
+        for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
+            auto jinc_shape_vec = config.template get_typed<std::vector<Eigen::Index>>(std::tuple{"mapmaking","jinc_filter","shape_params",arr_name});
+            jinc_shape_params[arr_index] = (Eigen::Map<Eigen::VectorXd>(jinc_shape_vec.data(),jinc_shape_vec.size()));
+        }
     }
 
     // histogram
