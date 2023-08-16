@@ -341,7 +341,7 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                                     Eigen::Index ri = nmb_ir + r;
                                     Eigen::Index ci = nmb_ic + c;
 
-                                    if (ri > 0 && ci > 0 && ri < omb.n_rows && ci < nmb->n_cols) {
+                                    if (ri > 0 && ci > 0 && ri < nmb->n_rows && ci < nmb->n_cols) {
 
                                         Eigen::Index ji = r_max_pix + r;
                                         Eigen::Index jj = r_max_pix + c;
