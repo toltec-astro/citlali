@@ -2267,6 +2267,15 @@ void Engine::find_sources(map_buffer_t &mb) {
                     perror(3) = RAD_TO_ASEC*STD_TO_FWHM*mb.pixel_size_rad*(perror(3));
                     perror(4) = RAD_TO_ASEC*STD_TO_FWHM*mb.pixel_size_rad*(perror(4));
 
+
+                    if (telescope.pixel_axes=="icrs") {
+                        params(1) = ASEC_TO_DEG*params(1) + mb.wcs.crval[0]*RAD_TO_DEG;
+                        params(2) = ASEC_TO_DEG*params(2) + mb.wcs.crval[1]*RAD_TO_DEG;
+
+                        perrors(1) = perrors(1)*RAD_TO_DEG;
+                        perrors(2) = perrors(2)*RAD_TO_DEG;
+                    }
+
                     // add source params and errors to table
                     mb.source_params.row(k+j) = params;
                     mb.source_perror.row(k+j) = perror;
@@ -2310,6 +2319,15 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
         "angle_err"
     };
 
+    std::string pos_units;
+
+    if (telescope.pixel_axes=="icrs") {
+        pos_units = "deg";
+    }
+    else {
+        pos_units = "arcsec";
+    }
+
     // meta information for source table
     YAML::Node source_meta;
 
@@ -2336,16 +2354,16 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
     source_meta["amp_err"].push_back("units: " + mb->sig_unit);
     source_meta["amp_err"].push_back("fitted amplitude error");
     // x position
-    source_meta["x_t"].push_back("units: arcsec");
+    source_meta["x_t"].push_back("units: " + pos_units);
     source_meta["x_t"].push_back("fitted azimuthal offset");
     // x position error
-    source_meta["x_t_err"].push_back("units: arcsec");
+    source_meta["x_t_err"].push_back("units: " + pos_units);
     source_meta["x_t_err"].push_back("fitted azimuthal offset error");
     // y position
-    source_meta["y_t"].push_back("units: arcsec");
+    source_meta["y_t"].push_back("units: " + pos_units);
     source_meta["y_t"].push_back("fitted altitude offset");
     // y position error
-    source_meta["y_t_err"].push_back("units: arcsec");
+    source_meta["y_t_err"].push_back("units: " + pos_units);
     source_meta["y_t_err"].push_back("fitted altitude offset error");
     // azimuthal fwhm
     source_meta["a_fwhm"].push_back("units: arcsec");
