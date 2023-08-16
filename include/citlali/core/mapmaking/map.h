@@ -23,7 +23,7 @@ struct WCS {
     std::vector<float> cdelt;
 
     // map size in pixels
-    std::vector<float> naxis;
+    std::vector<int> naxis;
 
     // reference pixels
     std::vector<float> crpix;
@@ -40,6 +40,8 @@ struct WCS {
 
 class ObsMapBuffer {
 public:
+    // reference sky value
+    std::vector<float> crval_config;
     // parallel policy for fft
     std::string parallel_policy;
     //obsnums

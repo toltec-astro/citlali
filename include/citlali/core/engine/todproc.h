@@ -31,8 +31,9 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
     using config_t = typename Base::config_t;
     using Engine = EngineType;
     using scanindicies_t = Eigen::MatrixXI;
-    using map_extent_t = std::vector<double>;
+    using map_extent_t = std::vector<int>;
     using map_coord_t = std::vector<Eigen::VectorXd>;
+    using map_coord_abs_t = std::vector<Eigen::MatrixXd>;
     using map_count_t = std::size_t;
     using array_indices_t = std::vector<std::tuple<Eigen::Index, Eigen::Index>>;
     using det_indices_t = std::vector<std::tuple<Eigen::Index, Eigen::Index>>;
@@ -81,15 +82,15 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
     void interp_pointing();
 
     void calc_map_num();
-    void allocate_cmb(std::vector<map_extent_t> &map_extents, std::vector<map_coord_t> &map_coords);
+    void allocate_cmb(std::vector<map_extent_t> &, std::vector<map_coord_t> &, std::vector<map_coord_abs_t> &);
 
     template<class map_buffer_t>
-    void allocate_nmb(map_buffer_t &mb);
+    void allocate_nmb(map_buffer_t &);
 
-    void allocate_omb(map_extent_t &map_extent, map_coord_t &map_coord);
-    void calc_map_size(std::vector<map_extent_t> &map_extents, std::vector<map_coord_t> &map_coords);
+    void allocate_omb(map_extent_t &, map_coord_t &, map_coord_abs_t &);
+    void calc_map_size(std::vector<map_extent_t> &, std::vector<map_coord_t> &, std::vector<map_coord_abs_t> &);
     void coadd();
-    void make_index_file(std::string filepath);
+    void make_index_file(std::string);
     void setup_filenames();
 
 
@@ -607,7 +608,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
         }
     }
 
-    //
+    // if hwpr requested
     if (engine().calib.run_hwp) {
         Eigen::Index si, ei;
         auto s = (abs(engine().calib.hwp_recvt.array() - max_t0)).minCoeff(&si);
@@ -930,11 +931,11 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
 
             else if ((stokes_param == "Q") || (stokes_param == "U")) {
                 if (!engine().telescope.sim_obs) {
-                    n_dets = (engine().calib.apt["loc"].array()!=-1).count()/2;
-                    //n_dets = (engine().calib.apt["fg"].array()!=-1).count();
+                    //n_dets = (engine().calib.apt["loc"].array()!=-1).count()/2;
+                    n_dets = (engine().calib.apt["fg"].array()!=-1).count();
                 }
                 else {
-                    n_dets = (engine().calib.apt["fg"].array()==0).count() + (engine().calib.apt["fg"].array()==1).count();
+                    n_dets = engine().calib.n_dets;//["fg"].array()==0).count() + (engine().calib.apt["fg"].array()==1).count();
                 }
                 Eigen::Index j=0;
                 // loop through all detectors
@@ -969,6 +970,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
         }
     }
 
+    // calculate array index to map index
     Eigen::Index index = 0;
     engine().arrays_to_maps(0) = index;
     for (Eigen::Index i=1; i<engine().n_maps; i++) {
@@ -984,9 +986,11 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
 
 // determine the map dimensions and allocate the coadded map buffer
 template <class EngineType>
-void TimeOrderedDataProc<EngineType>::allocate_cmb(std::vector<map_extent_t> &map_extents, std::vector<map_coord_t> &map_coords) {
+void TimeOrderedDataProc<EngineType>::allocate_cmb(std::vector<map_extent_t> &map_extents, std::vector<map_coord_t> &map_coords,
+                                                   std::vector<map_coord_abs_t> &map_coords_abs) {
     // min/max rows and cols
     double min_row, max_row, min_col, max_col;
+    double min_row_abs, max_row_abs, min_col_abs, max_col_abs;
 
     // set mins and maxes to first element
     min_row = map_coords.at(0).front()(0);
@@ -995,10 +999,19 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb(std::vector<map_extent_t> &ma
     min_col = map_coords.at(0).back()(0);
     max_col = map_coords.at(0).back()(map_coords.at(0).back().size() - 1);
 
+    //min_row_abs = map_coords_abs.at(0).front().minCoeff();
+    //max_row_abs = map_coords_abs.at(0).front().maxCoeff();
+
+    //min_col_abs = map_coords_abs.at(0).back().minCoeff();
+    //max_col_abs = map_coords_abs.at(0).back().maxCoeff();
+
     // loop through physical coordinates and get min/max
     for (Eigen::Index i=0; i<map_coords.size(); i++) {
         auto rows_tan_vec = map_coords.at(i).front();
         auto cols_tan_vec = map_coords.at(i).back();
+
+        //auto rows_abs_vec = map_coords_abs.at(i).front();
+        //auto cols_abs_vec = map_coords_abs.at(i).back();
 
         auto n_pts_rows = rows_tan_vec.size();
         auto n_pts_cols = cols_tan_vec.size();
@@ -1006,43 +1019,54 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb(std::vector<map_extent_t> &ma
         // check global minimum row
         if (rows_tan_vec(0) < min_row) {
             min_row = rows_tan_vec(0);
+            //min_row_abs = rows_abs_vec.minCoeff();
         }
 
         // check global maximum row
         if (rows_tan_vec(n_pts_rows-1) > max_row) {
             max_row = rows_tan_vec(n_pts_rows-1);
+            //max_row_abs = rows_abs_vec.maxCoeff();
         }
 
         // check global minimum col
         if (cols_tan_vec(0) < min_col) {
             min_col = cols_tan_vec(0);
+            //min_col_abs = cols_abs_vec.minCoeff();
         }
 
         // check global maximum col
         if (cols_tan_vec(n_pts_cols-1) > max_col) {
             max_col = cols_tan_vec(n_pts_cols-1);
+            //max_col_abs = cols_abs_vec.maxCoeff();
         }
     }
 
+    //SPDLOG_INFO("min_row_abs {} max_row_abs {} min_col_abs {} max_col_abs {}",min_row_abs, max_row_abs, min_col_abs, max_col_abs);
+
     // calculate dimensions
-    auto calc_map_dims = [&](auto min_dim, auto max_dim) {
+    auto calc_map_dims = [&](auto min_dim, auto max_dim) {//, auto min_abs, auto max_abs) {
         auto min_pix = ceil(abs(min_dim/engine().cmb.pixel_size_rad));
         auto max_pix = ceil(abs(max_dim/engine().cmb.pixel_size_rad));
 
         max_pix = std::max(min_pix, max_pix);
         // make sure its even
-        auto n_dim = 2*max_pix + 4;
+        int n_dim = 2*max_pix + 4;
 
         // vector to store tangent plane coordinates
         Eigen::VectorXd dim_vec = (Eigen::VectorXd::LinSpaced(n_dim,0,n_dim-1).array() -
                                    (n_dim)/2.)*engine().cmb.pixel_size_rad;
 
-        return std::tuple{n_dim, std::move(dim_vec)};
+        // vector to store absolute pointing plane coordinates
+        //Eigen::VectorXd dim_abs_vec = Eigen::VectorXd::LinSpaced(n_dim,min_abs,max_abs);
+
+        return std::tuple<int, Eigen::VectorXd>{n_dim, std::move(dim_vec)};//, std::move(dim_abs_vec)};
     };
 
     // get number of rows and n_cols
-    auto [n_rows, rows_tan_vec] = calc_map_dims(min_row, max_row);
-    auto [n_cols, cols_tan_vec] = calc_map_dims(min_col, max_col);
+    auto [n_rows, rows_tan_vec] = calc_map_dims(min_row, max_row);//, min_row_abs, max_row_abs);
+    auto [n_cols, cols_tan_vec] = calc_map_dims(min_col, max_col);//, min_col_abs, max_col_abs);
+
+    //SPDLOG_INFO("rows_abs_vec {} cols_abs_vec {}",rows_abs_vec,cols_abs_vec);
 
     // clear map vectors
     engine().cmb.signal.clear();
@@ -1061,28 +1085,28 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb(std::vector<map_extent_t> &ma
     double ref_pix_cols = n_cols/2;
     double ref_pix_rows = n_rows/2;
 
-    if (engine().telescope.pixel_axes == "icrs") {
-        engine().cmb.wcs.crval[0] = cols_tan_vec(static_cast<Eigen::Index>(ref_pix_cols));
-        engine().cmb.wcs.crval[1] = rows_tan_vec(static_cast<Eigen::Index>(ref_pix_rows));
-    }
-
     // add 0.5 if even
     if ((int)ref_pix_cols == ref_pix_cols) {
         ref_pix_cols += 0.5;
-        engine().cmb.wcs.crval[0] += engine().cmb.pixel_size_rad/2;
     }
 
     // add 0.5 if even
     if ((int)ref_pix_rows == ref_pix_rows) {
         ref_pix_rows += 0.5;
-        engine().cmb.wcs.crval[1] += engine().cmb.pixel_size_rad/2;
     }
 
+    // set up crval
+    /*if (engine().telescope.pixel_axes == "icrs") {
+        int col_pix = std::floor(ref_pix_cols);
+        int row_pix = std::floor(ref_pix_rows);
+
+        engine().cmb.wcs.crval[0] = RAD_TO_DEG*(cols_abs_vec(col_pix) + (cols_abs_vec(1) - cols_abs_vec(0))/2.);
+        engine().cmb.wcs.crval[1] = RAD_TO_DEG*(rows_abs_vec(row_pix) + (rows_abs_vec(1) - rows_abs_vec(0))/2.);
+    }*/
+
+    // add crpix
     engine().cmb.wcs.crpix[0] = ref_pix_cols;
     engine().cmb.wcs.crpix[1] = ref_pix_rows;
-
-    engine().cmb.wcs.crval[0] *= RAD_TO_DEG;
-    engine().cmb.wcs.crval[1] *= RAD_TO_DEG;
 
     // loop through maps and allocate space
     for (Eigen::Index i=0; i<engine().n_maps; i++) {
@@ -1116,7 +1140,7 @@ void TimeOrderedDataProc<EngineType>::allocate_nmb(map_buffer_t &mb) {
 
 // allocate observation map buffer
 template <class EngineType>
-void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map_coord_t &map_coord) {
+void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map_coord_t &map_coord, map_coord_abs_t &map_coord_abs) {
     // clear map vectors for each obs
     engine().omb.signal.clear();
     engine().omb.weight.clear();
@@ -1128,8 +1152,8 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
     engine().omb.n_cols = map_extent[1];
 
     // set omb wcs
-    engine().omb.wcs.naxis[1] = map_extent[0];
-    engine().omb.wcs.naxis[0] = map_extent[1];
+    engine().omb.wcs.naxis[1] = engine().omb.n_rows;
+    engine().omb.wcs.naxis[0] = engine().omb.n_cols;
 
     // pixel corresponding to reference value
     double ref_pix_cols = engine().omb.n_cols/2;
@@ -1143,6 +1167,19 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
     if ((int)ref_pix_rows == ref_pix_rows) {
         ref_pix_rows += 0.5;
     }
+
+    // set up crval
+    if (engine().telescope.pixel_axes == "icrs") {
+        int row_pix = std::floor(ref_pix_rows);
+        int col_pix = std::floor(ref_pix_cols);
+
+        //engine().omb.wcs.crval[0] = RAD_TO_DEG*(map_coord_abs[1](row_pix, col_pix));
+        //engine().omb.wcs.crval[1] = RAD_TO_DEG*(map_coord_abs[0](row_pix, col_pix));
+    }
+
+    //SPDLOG_INFO("map_coord_abs[1].minCoeff() {} map_coord_abs[0].minCoeff() {}",map_coord_abs[1].minCoeff(), map_coord_abs[0].minCoeff());
+    //SPDLOG_INFO("map_coord_abs[1] {} map_coord_abs[0] {}",map_coord_abs[1], map_coord_abs[0]);
+    //SPDLOG_INFO("ref_pix_rows {} ref_pix_cols {}",ref_pix_rows,ref_pix_cols);
 
     // set crpix
     engine().omb.wcs.crpix[0] = ref_pix_cols;
@@ -1169,7 +1206,8 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
 
 // calculate map dimensions
 template <class EngineType>
-void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &map_extents, std::vector<map_coord_t> &map_coords) {
+void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &map_extents, std::vector<map_coord_t> &map_coords,
+                                                    std::vector<map_coord_abs_t> &map_coords_abs) {
     // only run if manual map sizes have not been input
     if ((engine().omb.wcs.naxis[0] <= 0) || (engine().omb.wcs.naxis[1] <= 0)) {
         // matrix to store size limits
@@ -1201,7 +1239,6 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
 
             pointing_offsets_arcsec["az"] = engine().pointing_offsets_arcsec["az"].segment(si,sl);
             pointing_offsets_arcsec["alt"] = engine().pointing_offsets_arcsec["alt"].segment(si,sl);
-
 
             if (engine().map_grouping!="detector" || engine().redu_type!="beammap") {
                 // loop through detectors
@@ -1277,24 +1314,39 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
 
             max_pix = std::max(min_pix, max_pix);
             // make sure its even
-            auto n_dim = 2*max_pix + 4;
+            int n_dim = 2*max_pix + 4;
 
             // vector for tangent plane coordinates
             Eigen::VectorXd dim_vec = (Eigen::VectorXd::LinSpaced(n_dim,0,n_dim-1).array() -
                                        (n_dim)/2.)*engine().omb.pixel_size_rad;
 
-            return std::tuple{n_dim, std::move(dim_vec)};
+            return std::tuple<int, Eigen::VectorXd>{n_dim, std::move(dim_vec)};
         };
 
         // get n_rows and n_cols
         auto [n_rows, rows_tan_vec] = calc_map_dims(map_limits(0,0), map_limits(1,0));
         auto [n_cols, cols_tan_vec] = calc_map_dims(map_limits(0,1), map_limits(1,1));
 
+        // get absolute pointing for edges
+        Eigen::MatrixXd lat_abs(n_rows, n_cols), lon_abs(n_rows, n_cols);
+
+        for (Eigen::Index i=0; i<n_rows; i++) {
+            for (Eigen::Index j=0; j<n_cols; j++) {
+                //auto [rows_abs_vec,cols_abs_vec] = engine_utils::tangent_to_abs(rows_tan_vec(i), cols_tan_vec(j),
+                //                                                                 engine().telescope.tel_header["Header.Source.Ra"](0),
+                //                                                                 engine().telescope.tel_header["Header.Source.Dec"](0));
+                //lat_abs(i,j) = rows_abs_vec(0);
+                //lon_abs(i,j) = cols_abs_vec(0);
+            }
+        }
+
         map_extent_t map_extent = {n_rows, n_cols};
         map_coord_t map_coord = {rows_tan_vec, cols_tan_vec};
+        map_coord_abs_t map_coord_abs = {lat_abs,lon_abs};
 
         map_extents.push_back(map_extent);
         map_coords.push_back(map_coord);
+        map_coords_abs.push_back(map_coord_abs);
     }
 
     else {
@@ -1307,13 +1359,30 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
                                         (n_rows)/2.)*engine().omb.pixel_size_rad;
         Eigen::VectorXd cols_tan_vec = (Eigen::VectorXd::LinSpaced(n_cols,0,n_cols-1).array() -
                                         (n_cols)/2.)*engine().omb.pixel_size_rad;
+
+        // get absolute pointing for edges
+        Eigen::MatrixXd lat_abs(n_rows, n_cols), lon_abs(n_rows, n_cols);
+
+
+        for (Eigen::Index i=0; i<n_rows; i++) {
+            for (Eigen::Index j=0; j<n_cols; j++) {
+                //auto [rows_abs_vec,cols_abs_vec] = engine_utils::tangent_to_abs(rows_tan_vec(i), cols_tan_vec(j),
+                //                                                                 engine().telescope.tel_header["Header.Source.Ra"](0),
+                //                                                                 engine().telescope.tel_header["Header.Source.Dec"](0));
+                //lat_abs(i,j) = rows_abs_vec(0);
+                //lon_abs(i,j) = cols_abs_vec(0);
+            }
+        }
+
         map_extent_t map_extent = {n_rows, n_cols};
         map_coord_t map_coord = {rows_tan_vec, cols_tan_vec};
+        map_coord_abs_t map_coord_abs = {lat_abs,lon_abs};
 
         // push back map sizes and coordinates
         map_extents.push_back(map_extent);
         map_coords.push_back(map_coord);
-    }    
+        map_coords_abs.push_back(map_coord_abs);
+    }
 }
 
 // coadd maps
@@ -1354,16 +1423,18 @@ void TimeOrderedDataProc<EngineType>::coadd() {
 
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::make_index_file(std::string filepath) {
+    // get sortedfiles and directories in filepath
     std::set<fs::path> sorted_by_name;
-
     for (auto &entry : fs::directory_iterator(filepath))
         sorted_by_name.insert(entry);
 
+    // yaml node to store names
     YAML::Node node;
     node["description"].push_back("citlali data products");
     node["date"].push_back(engine_utils::current_date_time());
     node["version"].push_back(CITLALI_GIT_VERSION);
 
+    // call make_index_file recursively if current object is directory
     for (const auto & entry : sorted_by_name) {
         std::string path_string{entry.generic_string()};
         if (fs::is_directory(entry)) {
@@ -1371,6 +1442,7 @@ void TimeOrderedDataProc<EngineType>::make_index_file(std::string filepath) {
         }
         node["files"].push_back(path_string.substr(path_string.find_last_of("/") + 1));
     }
+    // output yaml index file
     std::ofstream fout(filepath + "/index.yaml");
     fout << node;
 }

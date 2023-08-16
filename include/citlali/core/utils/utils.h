@@ -539,55 +539,53 @@ auto set_cov_cov_ranges(const Eigen::DenseBase<Derived> &weight, const double we
     return cov_ranges;
 }
 
-// box car smooth function
-template<typename DerivedA, typename DerivedB>
-void smooth_boxcar(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB> &out, int w) {
-    // ensure box-car width is odd
-    if (w % 2 == 0) {
-        w++;
-    }
+// direction of fft
+enum SmoothType {
+    boxcar = 0,
+    edge_truncate = 1
+};
 
-    Eigen::Index n_pts = in.size();
-
-    out.head((w - 1) / 2) = in.head((w - 1) / 2);
-    out.tail(n_pts - (w + 1) / 2. + 1) = in.tail(n_pts - (w + 1) / 2. + 1);
-
-    double winv = 1. / w;
-    int wm1d2 = (w - 1) / 2.;
-    int wp1d2 = (w + 1) / 2.;
-
-    for (int i = wm1d2; i <= n_pts - wp1d2; i++) {
-        out(i) = winv * in.segment(i - wm1d2, w).sum();
-    }
-}
-
-template <typename Derived>
-void smooth_edge_truncate(Eigen::DenseBase<Derived> &in, Eigen::DenseBase<Derived> &out, int w) {
+template<SmoothType smooth_type, typename DerivedA, typename DerivedB>
+void smooth(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB> &out, int w) {
     // ensure w is odd
     if (w % 2 == 0) {
         w++;
     }
 
     Eigen::Index n_pts = in.size();
+    if constexpr (smooth_type==boxcar) {
+        out.head((w - 1) / 2) = in.head((w - 1) / 2);
+        out.tail(n_pts - (w + 1) / 2. + 1) = in.tail(n_pts - (w + 1) / 2. + 1);
 
-    double w_inv = 1./w;
-    int w_mid = (w - 1)/2;
+        double winv = 1. / w;
+        int wm1d2 = (w - 1) / 2.;
+        int wp1d2 = (w + 1) / 2.;
 
-    double sum;
-    for (Eigen::Index i=0; i<n_pts; i++) {
-        sum=0;
-        for (int j=0; j<w; j++) {
-            int add_index = i + j - w_mid;
-
-            if (add_index < 0) {
-                add_index=0;
-            }
-            else if (add_index > n_pts-1) {
-                add_index = n_pts - 1;
-            }
-            sum += in(add_index);
+        for (int i = wm1d2; i <= n_pts - wp1d2; i++) {
+            out(i) = winv * in.segment(i - wm1d2, w).sum();
         }
-        out(i) = w_inv*sum;
+    }
+
+    else if constexpr (smooth_type==edge_truncate) {
+        double w_inv = 1./w;
+        int w_mid = (w - 1)/2;
+
+        double sum;
+        for (Eigen::Index i=0; i<n_pts; i++) {
+            sum=0;
+            for (int j=0; j<w; j++) {
+                int add_index = i + j - w_mid;
+
+                if (add_index < 0) {
+                    add_index=0;
+                }
+                else if (add_index > n_pts-1) {
+                    add_index = n_pts - 1;
+                }
+                sum += in(add_index);
+            }
+            out(i) = w_inv*sum;
+        }
     }
 }
 
@@ -743,7 +741,7 @@ auto calc_2D_psd(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &y
 
      // smooth the psd
      Eigen::VectorXd smoothed_psd(nn);
-     engine_utils::smooth_edge_truncate(psd, smoothed_psd, smooth_window);
+     engine_utils::smooth<edge_truncate>(psd, smoothed_psd, smooth_window);
      psd = std::move(smoothed_psd);
 
     return std::tuple<Eigen::VectorXd, Eigen::VectorXd, Eigen::MatrixXd, Eigen::MatrixXd>(psd, psd_freq, pmfq, qmap);

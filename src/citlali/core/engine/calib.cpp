@@ -113,23 +113,25 @@ void Calib::get_hwp(const std::string &filepath) {
         // check if hwp is enabled
         vars.find("Header.Toltec.HwpInstalled")->second.getVar(&run_hwp);
 
-        // get hwp signal
-        Eigen::Index n_pts = vars.find("Data.Hwp.")->second.getDim(0).getSize();
-        hwp_angle.resize(n_pts);
+        if (run_hwp) {
+            // get hwp signal
+            Eigen::Index n_pts = vars.find("Data.Hwp.")->second.getDim(0).getSize();
+            hwp_angle.resize(n_pts);
 
-        vars.find("Data.Hwp.")->second.getVar(hwp_angle.data());
+            vars.find("Data.Hwp.")->second.getVar(hwp_angle.data());
 
-        // get hwp time
-        hwp_ts.resize(n_pts,6);
+            // get hwp time
+            hwp_ts.resize(n_pts,6);
 
-        vars.find("Data.Hwp.Ts")->second.getVar(hwp_ts.data());
-        hwp_ts.transposeInPlace();
+            vars.find("Data.Hwp.Ts")->second.getVar(hwp_ts.data());
+            hwp_ts.transposeInPlace();
 
-        Eigen::Index recvt_n_pts = vars.find("Data.Hwp.Uts")->second.getDim(0).getSize();
-        hwp_recvt.resize(recvt_n_pts);
-        vars.find("Data.Hwp.Uts")->second.getVar(hwp_recvt.data());
+            Eigen::Index recvt_n_pts = vars.find("Data.Hwp.Uts")->second.getDim(0).getSize();
+            hwp_recvt.resize(recvt_n_pts);
+            vars.find("Data.Hwp.Uts")->second.getVar(hwp_recvt.data());
 
-        vars.find("Header.Toltec.FpgaFreq")->second.getVar(&hwpr_fpga_freq);
+            vars.find("Header.Toltec.FpgaFreq")->second.getVar(&hwpr_fpga_freq);
+        }
 
         fo.close();
 

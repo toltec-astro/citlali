@@ -4,7 +4,7 @@
 
 #include <citlali/core/timestream/timestream.h>
 
-#include <citlali/core/timestream/rtc/polarization_2.h>
+#include <citlali/core/timestream/rtc/polarization_3.h>
 #include <citlali/core/timestream/rtc/kernel.h>
 #include <citlali/core/timestream/rtc/despike.h>
 #include <citlali/core/timestream/rtc/filter.h>

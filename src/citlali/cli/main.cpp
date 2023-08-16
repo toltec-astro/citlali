@@ -218,12 +218,14 @@ int run(const rc_t &rc) {
                 // type definitions for map vectors
                 using map_extent_t = typename todproc_t::map_extent_t;
                 using map_coord_t = typename todproc_t::map_coord_t;
+                using map_coord_abs_t = typename todproc_t::map_coord_abs_t;
                 using map_count_t = typename todproc_t::map_count_t;
                 using array_indices_t = typename todproc_t::array_indices_t;
 
                 // create vectors for map size and grouping parameters
                 std::vector<map_extent_t> map_extents{};
                 std::vector<map_coord_t> map_coords{};
+                std::vector<map_coord_abs_t> map_coords_abs{};
                 std::vector<map_count_t> map_counts{};
 
                 // get config options from citlali_config
@@ -314,10 +316,10 @@ int run(const rc_t &rc) {
                     todproc.engine().telescope.get_tel_data(tel_path);
 
                     // overwrite map center
-                    /*if (todproc.engine().omb.wcs.crval[0]!=0 && todproc.engine().omb.wcs.crval[1]!=0) {
-                        todproc.engine().telescope.tel_header["Header.Source.Ra"].setConstant(todproc.engine().omb.wcs.crval[0]);
-                        todproc.engine().telescope.tel_header["Header.Source.Dec"].setConstant(todproc.engine().omb.wcs.crval[1]);
-                    }*/
+                    if (todproc.engine().omb.crval_config[0]!=0 && todproc.engine().omb.crval_config[1]!=0) {
+                        todproc.engine().telescope.tel_header["Header.Source.Ra"].setConstant(todproc.engine().omb.crval_config[0]);
+                        todproc.engine().telescope.tel_header["Header.Source.Dec"].setConstant(todproc.engine().omb.crval_config[1]);
+                    }
 
                     // align tod
                     if (!todproc.engine().telescope.sim_obs) {
@@ -360,14 +362,14 @@ int run(const rc_t &rc) {
 
                         // determine map sizes
                         SPDLOG_INFO("calculating map dimensions");
-                        todproc.calc_map_size(map_extents, map_coords);
+                        todproc.calc_map_size(map_extents, map_coords, map_coords_abs);
                     }
                 }
 
                 if (todproc.engine().run_coadd) {
                     // make coadd buffer
                     SPDLOG_DEBUG("allocating CMB");
-                    todproc.allocate_cmb(map_extents, map_coords);
+                    todproc.allocate_cmb(map_extents, map_coords, map_coords_abs);
                     // make noise maps for coadd map buffer
                     if (todproc.engine().run_noise) {
                         SPDLOG_DEBUG("allocating NMB");
@@ -545,10 +547,10 @@ int run(const rc_t &rc) {
                         todproc.engine().telescope.get_tel_data(tel_path);
 
                         // overwrite map center
-                        /*if (todproc.engine().omb.wcs.crval[0]!=0 && todproc.engine().omb.wcs.crval[1]!=0) {
-                            todproc.engine().telescope.tel_header["Header.Source.Ra"].setConstant(todproc.engine().omb.wcs.crval[0]);
-                            todproc.engine().telescope.tel_header["Header.Source.Dec"].setConstant(todproc.engine().omb.wcs.crval[1]);
-                        }*/
+                        if (todproc.engine().omb.crval_config[0]!=0 && todproc.engine().omb.crval_config[1]!=0) {
+                            todproc.engine().telescope.tel_header["Header.Source.Ra"].setConstant(todproc.engine().omb.crval_config[0]);
+                            todproc.engine().telescope.tel_header["Header.Source.Dec"].setConstant(todproc.engine().omb.crval_config[1]);
+                        }
 
                         // align tod
                         if (!todproc.engine().telescope.sim_obs) {
@@ -609,7 +611,7 @@ int run(const rc_t &rc) {
                     // allocate map buffer
                     if (todproc.engine().run_mapmaking) {
                         SPDLOG_INFO("allocating obs map buffer");
-                        todproc.allocate_omb(map_extents[i], map_coords[i]);
+                        todproc.allocate_omb(map_extents[i], map_coords[i], map_coords_abs[i]);
 
                         // make noise maps for observation map buffer
                         if (!todproc.engine().run_coadd) {

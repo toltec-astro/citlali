@@ -59,7 +59,7 @@ private:
 
         // set corresponding delta values to zero
         delta.segment(1,n_pts - 2) =
-            (diff.segment(1,n_pts - 2).array() > cutoff).select(1, delta.segment(1,n_pts - 2));
+            (diff.segment(1,n_pts - 2).array() > cutoff).select(0, delta.segment(1,n_pts - 2));
 
         // update difference vector and cutoff
         diff = abs(delta.derived().array() - delta.mean());
@@ -98,20 +98,17 @@ private:
             if (mx_window_index == 0) {
                 win_index_0 = 0;
                 win_index_1 = spike_loc(1);// - fsmp;
-                SPDLOG_INFO("a");
             }
             else {
                 if (mx_window_index == n_spikes) {
                     win_index_0 = spike_loc(n_spikes - 1);
                     win_index_1 = n_pts;
-                    SPDLOG_INFO("b");
                 }
                 // leave a 2 second region after the spike beginning the
                 // window and a 1 second region before the spike ending the window
                 else {
                     win_index_0 = spike_loc(mx_window_index - 1);// + 2 * fsmp;
                     win_index_1 = spike_loc(mx_window_index);// - fsmp;
-                    SPDLOG_INFO("c");
                 }
             }
         }
@@ -119,12 +116,10 @@ private:
             if (n_pts - spike_loc(0) > spike_loc(0)) {
                 win_index_0 = spike_loc(0) + 2 * fsmp;
                 win_index_1 = n_pts - 1;
-                SPDLOG_INFO("d");
             }
             else {
                 win_index_0 = 0;
                 win_index_1 = spike_loc(0) - fsmp;
-                SPDLOG_INFO("e");
             }
         }
 
@@ -276,7 +271,7 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                 Eigen::VectorXd smoothed_sub_vals = Eigen::VectorXd::Zero(win_size);
 
                 // smooth the sub-array with a box-car filter
-                engine_utils::smooth_boxcar(sub_vals, smoothed_sub_vals, size);
+                engine_utils::smooth<engine_utils::SmoothType::boxcar>(sub_vals, smoothed_sub_vals, size);
 
                 // estimate the standard deviation
                 sub_vals -= smoothed_sub_vals;

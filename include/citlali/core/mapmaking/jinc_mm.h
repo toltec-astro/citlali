@@ -326,8 +326,41 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                             // find maximum col
                             auto col_max = std::min(nmb->n_cols - 1.0 ,nmb_ic + r_max_pix + 1);
 
+
+                            Eigen::Index r_max_pix = std::floor(r_max*l_d[apt["array"](det_indices(i))]/nmb->pixel_size_rad);
+
+
+                            for (Eigen::Index r=-r_max_pix; r<r_max_pix+1; r++) {
+                                for (Eigen::Index c=-r_max_pix; c<r_max_pix+1; c++) {
+                                    // distance from current sample to pixel
+                                    //auto radius = sqrt(std::pow(lat(j) - omb.rows_tan_vec(r),2) + std::pow(lon(j) - omb.cols_tan_vec(c),2));
+                                    //SPDLOG_INFO("radius {}", radius);
+                                    //if (radius<r_max*l_d[apt["array"](det_indices(i))]) {
+                                    // jinc weighting function
+
+                                    Eigen::Index ri = nmb_ir + r;
+                                    Eigen::Index ci = nmb_ic + c;
+
+                                    if (ri > 0 && ci > 0 && ri < omb.n_rows && ci < nmb->n_cols) {
+
+                                        Eigen::Index ji = r_max_pix + r;
+                                        Eigen::Index jj = r_max_pix + c;
+
+                                        auto jinc_weight = jinc_weights_mat[apt["array"](det_indices(i))](ji,jj);
+                                        auto weight = in.weights.data(i)*jinc_weight;
+                                        signal = in.scans.data(j,i)*weight;
+
+                                        // populate signal map
+                                        for (Eigen::Index nn=0; nn<nmb->n_noise; nn++) {
+                                            nmb->noise[map_index](r,c,nn) += noise(nn,j)*weight;
+                                        }
+                                    }
+                                    //}
+                                }
+                            }
+
                             // loop through nearby rows and cols
-                            for (Eigen::Index r=row_min; r<row_max; r++) {
+                            /*for (Eigen::Index r=row_min; r<row_max; r++) {
                                 for (Eigen::Index c=col_min; c<col_max; c++) {
                                     // distance from current sample to pixel
                                     auto radius = sqrt(std::pow(lat(j) - nmb->rows_tan_vec(r),2) + std::pow(lon(j) - nmb->cols_tan_vec(c),2));
@@ -341,7 +374,7 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                                         }
                                     }
                                 }
-                            }
+                            }*/
                         }
                         //}
                     }

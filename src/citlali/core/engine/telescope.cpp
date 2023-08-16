@@ -18,9 +18,21 @@ void Telescope::get_tel_data(std::string &filepath) {
         NcFile fo(filepath, NcFile::read, NcFile::classic);
         auto vars = fo.getVars();
 
-        // get mapping pattern
-        vars.find("Header.Dcs.ObsGoal")->second.getVar(&obs_goal_char);
-        obs_goal = std::string(obs_goal_char);
+        // check if simulation job key is found.
+        try {
+            vars.find("Header.Sim.Jobkey")->second.getVar(&sim_job_key);
+            SPDLOG_WARN("found Header.Sim.Jobkey");
+            sim_obs = true;
+        } catch (NcException &e) {
+            SPDLOG_WARN("cannot find Header.Sim.Jobkey. reducing as real data.");
+            sim_obs = false;
+        }
+
+        // get obs goal
+        if (!sim_obs) {
+            vars.find("Header.Dcs.ObsGoal")->second.getVar(&obs_goal_char);
+            obs_goal = std::string(obs_goal_char);
+        }
 
         std::string::iterator end_pos = std::remove(obs_goal.begin(), obs_goal.end(), ' ');
         obs_goal.erase(end_pos, obs_goal.end());
@@ -57,16 +69,6 @@ void Telescope::get_tel_data(std::string &filepath) {
 
         end_pos = std::remove(source_name.begin(), source_name.end(), ' ');
         source_name.erase(end_pos, source_name.end());
-
-        // check if simulation job key is found.
-        try {
-            vars.find("Header.Sim.Jobkey")->second.getVar(&sim_job_key);
-            SPDLOG_WARN("found Header.Sim.Jobkey");
-            sim_obs = true;
-        } catch (NcException &e) {
-            SPDLOG_WARN("cannot find Header.Sim.Jobkey. reducing as real data.");
-            sim_obs = false;
-        }
 
         // loop through telescope data keys and populate vectors
         for (auto const& pair : tel_data_keys) {
@@ -105,19 +107,18 @@ void Telescope::get_tel_data(std::string &filepath) {
             "failed to load data from netCDF file {}", filepath)};
     }
 
-    engine_utils::fix_periodic_boundary(tel_data["TelRa"],pi, 1.99*pi,2.0*pi);
-    engine_utils::fix_periodic_boundary(tel_data["TelDec"],pi, 1.99*pi,2.0*pi);
-    engine_utils::fix_periodic_boundary(tel_data["TelAzAct"],pi, 1.99*pi,2.0*pi);
-    engine_utils::fix_periodic_boundary(tel_data["TelElAct"],pi, 1.99*pi,2.0*pi);
-    engine_utils::fix_periodic_boundary(tel_data["TelAzCor"],pi, 1.99*pi,2.0*pi);
-    engine_utils::fix_periodic_boundary(tel_data["TelElCor"],pi, 1.99*pi,2.0*pi);
-
-    engine_utils::fix_periodic_boundary(tel_data["SourceAz"],pi, 1.99*pi,2.0*pi);
-    engine_utils::fix_periodic_boundary(tel_data["SourceEl"],pi, 1.99*pi,2.0*pi);
-
     if (!sim_obs) {
         // convert TelUTC to unix time
         engine_utils::utc_to_unix(tel_data["TelUTC"],tel_header["Header.TimePlace.UTDate"]);
+        engine_utils::fix_periodic_boundary(tel_data["TelRa"],pi, 1.99*pi,2.0*pi);
+        engine_utils::fix_periodic_boundary(tel_data["TelDec"],pi, 1.99*pi,2.0*pi);
+        engine_utils::fix_periodic_boundary(tel_data["TelAzAct"],pi, 1.99*pi,2.0*pi);
+        engine_utils::fix_periodic_boundary(tel_data["TelElAct"],pi, 1.99*pi,2.0*pi);
+        engine_utils::fix_periodic_boundary(tel_data["TelAzCor"],pi, 1.99*pi,2.0*pi);
+        engine_utils::fix_periodic_boundary(tel_data["TelElCor"],pi, 1.99*pi,2.0*pi);
+
+        engine_utils::fix_periodic_boundary(tel_data["SourceAz"],pi, 1.99*pi,2.0*pi);
+        engine_utils::fix_periodic_boundary(tel_data["SourceEl"],pi, 1.99*pi,2.0*pi);
     }
 }
 

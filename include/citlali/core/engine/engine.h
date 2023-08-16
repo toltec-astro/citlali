@@ -43,7 +43,7 @@
 
 #include <citlali/core/timestream/timestream.h>
 
-#include <citlali/core/timestream/rtc/polarization_2.h>
+#include <citlali/core/timestream/rtc/polarization_3.h>
 #include <citlali/core/timestream/rtc/kernel.h>
 #include <citlali/core/timestream/rtc/despike.h>
 #include <citlali/core/timestream/rtc/filter.h>
@@ -511,11 +511,13 @@ void Engine::get_mapmaking_config(CT &config) {
 
     // crval
     get_config_value(config, wcs_double, missing_keys, invalid_keys, std::tuple{"mapmaking","crval1_J2000"});
-    omb.wcs.crval.push_back(wcs_double);
+    omb.crval_config.push_back(wcs_double);
 
     get_config_value(config, wcs_double, missing_keys, invalid_keys, std::tuple{"mapmaking","crval2_J2000"});
-    omb.wcs.crval.push_back(wcs_double);
+    omb.crval_config.push_back(wcs_double);
 
+    omb.wcs.crval.push_back(1);
+    omb.wcs.crval.push_back(1);
     omb.wcs.crval.push_back(1);
     omb.wcs.crval.push_back(1);
 
@@ -1120,8 +1122,8 @@ void Engine::create_tod_files() {
         // set number of detectors for polarized timestreams
         else if ((stokes_param == "Q") || (stokes_param == "U")) {
             if (!telescope.sim_obs) {
-                n_dets = (calib.apt["loc"].array()!=-1).count();
-                //n_dets = (calib.apt["fg"].array()!=-1).count();
+                //n_dets = (calib.apt["loc"].array()!=-1).count();
+                n_dets = (calib.apt["fg"].array()!=-1).count();
             }
             else {
                 n_dets = (calib.apt["fg"].array() == 0).count() + (calib.apt["fg"].array() == 1).count();
@@ -1425,7 +1427,7 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
             psd.segment(1, n_freqs - 2) *= 2.;
 
             Eigen::VectorXd smoothed_psd(psd.size());
-            engine_utils::smooth_edge_truncate(psd, smoothed_psd, omb.smooth_window);
+            engine_utils::smooth<engine_utils::SmoothType::edge_truncate>(psd, smoothed_psd, omb.smooth_window);
             psd = std::move(smoothed_psd);
 
             // put detector's psd into variable
