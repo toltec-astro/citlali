@@ -1889,6 +1889,38 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
         // 2d psd freq
         netCDF::NcVar psd_2d_freq_v = fo.addVar(name + "_psd_2d_freq",netCDF::ncDouble, dims);
         psd_2d_freq_v.putVar(psd_2d_freq_transposed.data());
+
+        if (!mb->noise.empty()) {
+            // add dimensions
+            netCDF::NcDim noise_psd_dim = fo.addDim(name + "_noise_nfreq",mb->noise_psds[i].size());
+            netCDF::NcDim noise_pds_2d_row_dim = fo.addDim(name + "_noise_rows",mb->noise_psd_2ds[i].rows());
+            netCDF::NcDim noise_pds_2d_col_dim = fo.addDim(name + "_noise_cols",mb->noise_psd_2ds[i].cols());
+
+            std::vector<netCDF::NcDim> noise_dims;
+            dims.push_back(noise_pds_2d_row_dim);
+            dims.push_back(noise_pds_2d_col_dim);
+
+            // noise psd
+            netCDF::NcVar noise_psd_v = fo.addVar(name + "_noise_psd",netCDF::ncDouble, noise_psd_dim);
+            noise_psd_v.putVar(mb->noise_psds[i].data());
+
+            // noise psd freq
+            netCDF::NcVar noise_psd_freq_v = fo.addVar(name + "_noise_psd_freq",netCDF::ncDouble, noise_psd_dim);
+            noise_psd_freq_v.putVar(mb->noise_psd_freqs[i].data());
+
+            // transpose 2d noise psd and freq
+            Eigen::MatrixXd noise_psd_2d_transposed = mb->noise_psd_2ds[i].transpose();
+            Eigen::MatrixXd noise_psd_2d_freq_transposed = mb->noise_psd_2d_freqs[i].transpose();
+
+            // 2d noise psd
+            netCDF::NcVar noise_psd_2d_v = fo.addVar(name + "_noise_psd_2d",netCDF::ncDouble, noise_dims);
+            noise_psd_2d_v.putVar(noise_psd_2d_transposed.data());
+
+            // 2d noise psd freq
+            netCDF::NcVar noise_psd_2d_freq_v = fo.addVar(name + "_noise_psd_2d_freq",netCDF::ncDouble, noise_dims);
+            noise_psd_2d_freq_v.putVar(noise_psd_2d_freq_transposed.data());
+        }
+
     }
     // close file
     fo.close();
@@ -1959,6 +1991,12 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
         // histogram
         netCDF::NcVar hist_v = fo.addVar(name + "_hist",netCDF::ncDouble, hist_bins_dim);
         hist_v.putVar(mb->hists[i].data());
+
+        if (!mb->noise.empty()) {
+            // noise histogram
+            netCDF::NcVar hist_v = fo.addVar(name + "_noise_hist",netCDF::ncDouble, hist_bins_dim);
+            hist_v.putVar(mb->noise_hists[i].data());
+        }
     }
     // close file
     fo.close();
