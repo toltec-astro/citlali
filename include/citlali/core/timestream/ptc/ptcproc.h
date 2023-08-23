@@ -401,7 +401,7 @@ void PTCProc::remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
     // for those flagged in apt table
     for (Eigen::Index i=0; i<n_dets; i++) {
         Eigen::Index det_index = det_indices(i);
-        if (apt["flag"](det_index)==1) {
+        if (apt["flag"](det_index)!=0) {
             in.flags.data.col(i).setOnes();
             n_flagged++;
         }

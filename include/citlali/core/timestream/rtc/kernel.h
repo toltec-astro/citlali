@@ -60,7 +60,6 @@ public:
                                           std::string &, apt_t &, pointing_offset_t &, double,
                                           Eigen::DenseBase<Derived> &,
                                           Eigen::DenseBase<Derived> &);
-
 };
 
 
@@ -145,8 +144,8 @@ void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in
 
         // get parameters for current detector
         auto amp = 1;
-        auto off_lat = 0;//apt["y_t"](det_index)*ASEC_TO_RAD;
-        auto off_lon = 0;//apt["x_t"](det_index)*ASEC_TO_RAD;
+        auto off_lat = 0;
+        auto off_lon = 0;
         auto rot_ang = apt["angle"](det_index);
 
         // calc tangent plane pointing
