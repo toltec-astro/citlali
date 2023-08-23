@@ -59,49 +59,49 @@ inputs: # list of inputs and related data
           interface: apt
         type: array_prop_table
     data_items:
-      - filepath: /path/to/data/raw/hwpr.nc # half-wave plate file.  Set to null or remove to ignore hwpr when polarimetry=true.
+      - filepath: /path/to/raw/data/hwpr.nc # half-wave plate file.  Set to null or remove to ignore hwpr when polarimetry=true.
         meta:
           interface: hwpr
-      - filepath: /path/to/data/raw/tel.nc # telescope file
+      - filepath: /path/to/raw/data/tel.nc # telescope file
         meta:
           interface: lmt
-      - filepath: /path/to/data/raw/toltec0.nc # data file for nw0
+      - filepath: /path/to/raw/data/toltec0.nc # data file for nw0
         meta:
           interface: toltec0
-      - filepath: /path/to/data/raw/toltec1.nc # data file for nw1
+      - filepath: /path/to/raw/data/toltec1.nc # data file for nw1
         meta:
           interface: toltec1
-      - filepath: /path/to/data/raw/toltec2.nc # data file for nw2
+      - filepath: /path/to/raw/data/toltec2.nc # data file for nw2
         meta:
           interface: toltec2
-      - filepath: /path/to/data/raw/toltec3.nc # data file for nw3
+      - filepath: /path/to/raw/data/toltec3.nc # data file for nw3
         meta:
           interface: toltec3
-      - filepath: /path/to/data/raw/toltec4.nc # data file for nw4
+      - filepath: /path/to/raw/data/toltec4.nc # data file for nw4
         meta:
           interface: toltec4
-      - filepath: /path/to/data/raw/toltec5.nc # data file for nw5
+      - filepath: /path/to/raw/data/toltec5.nc # data file for nw5
         meta:
           interface: toltec5
-      - filepath: /path/to/data/raw/toltec6.nc # data file for nw6
+      - filepath: /path/to/raw/data/toltec6.nc # data file for nw6
         meta:
           interface: toltec6
-      - filepath: /path/to/data/raw/toltec7.nc # data file for nw7
+      - filepath: /path/to/raw/data/toltec7.nc # data file for nw7
         meta:
           interface: toltec7
-      - filepath: /path/to/data/raw/toltec8.nc # data file for nw8
+      - filepath: /path/to/raw/data/toltec8.nc # data file for nw8
         meta:
           interface: toltec8
-      - filepath: /path/to/data/raw/toltec9.nc # data file for nw9
+      - filepath: /path/to/raw/data/toltec9.nc # data file for nw9
         meta:
           interface: toltec9
-      - filepath: /path/to/data/raw/toltec10.nc # data file for nw10
+      - filepath: /path/to/raw/data/toltec10.nc # data file for nw10
         meta:
           interface: toltec10
-      - filepath: /path/to/data/raw/toltec11.nc # data file for nw11
+      - filepath: /path/to/raw/data/toltec11.nc # data file for nw11
         meta:
           interface: toltec11
-      - filepath: /path/to/data/raw/toltec12.nc # data file for nw12
+      - filepath: /path/to/raw/data/toltec12.nc # data file for nw12
         meta:
           interface: toltec12
     meta:

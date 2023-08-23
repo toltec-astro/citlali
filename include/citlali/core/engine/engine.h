@@ -1812,7 +1812,7 @@ auto Engine::setup_filenames(std::string dir_name) {
 
 template <mapmaking::MapType map_t, class map_buffer_t>
 void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
-    std::string filename, noise_filename;
+    std::string filename;
 
     // raw obs maps
     if constexpr (map_t == mapmaking::RawObs) {
@@ -1885,6 +1885,8 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
         Eigen::MatrixXd psd_2d_transposed = mb->psd_2ds[i].transpose();
         Eigen::MatrixXd psd_2d_freq_transposed = mb->psd_2d_freqs[i].transpose();
 
+        //SPDLOG_INFO("psd_2d_transposed {} psd_2d_freq_transposed {}",psd_2d_transposed,psd_2d_freq_transposed);
+
         // 2d psd
         netCDF::NcVar psd_2d_v = fo.addVar(name + "_psd_2d",netCDF::ncDouble, dims);
         psd_2d_v.putVar(psd_2d_transposed.data());
@@ -1900,8 +1902,8 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
             netCDF::NcDim noise_pds_2d_col_dim = fo.addDim(name + "_noise_cols",mb->noise_psd_2ds[i].cols());
 
             std::vector<netCDF::NcDim> noise_dims;
-            dims.push_back(noise_pds_2d_row_dim);
-            dims.push_back(noise_pds_2d_col_dim);
+            noise_dims.push_back(noise_pds_2d_row_dim);
+            noise_dims.push_back(noise_pds_2d_col_dim);
 
             // noise psd
             netCDF::NcVar noise_psd_v = fo.addVar(name + "_noise_psd",netCDF::ncDouble, noise_psd_dim);
