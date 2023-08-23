@@ -158,7 +158,7 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
     // loop through detectors
     for (Eigen::Index det=0; det<n_dets; det++) {
         // only run if detector is good
-        if (apt["flag"](det)!=1) {
+        if (apt["flag"](det)==0) {
             // get detector's flags
             Eigen::Matrix<bool, Eigen::Dynamic, 1> det_flags = flags.col(det);
 
@@ -351,7 +351,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
     SPDLOG_INFO("n_flagged {}", n_flagged);
 
     for (Eigen::Index det = 0; det < n_dets; det++) {
-        if (apt["flag"](det + start_det)!=1) {
+        if (apt["flag"](det + start_det)==0) {
             if (spike_free(det)) {
                 // condition flags so that if there is a spike we can make
                 // one long flagged or un-flagged region.
@@ -467,7 +467,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                     }
                     else {
                         for (Eigen::Index ii=0;ii<n_dets;ii++) {
-                            if (!spike_free(ii) && apt["flag"](ii + start_det)!=1) {
+                            if (!spike_free(ii) && apt["flag"](ii + start_det)==0) {
                                 det_count++;
                             }
                         }
@@ -483,7 +483,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                     SPDLOG_INFO("si {}", si_flags);
                     int c = 0;
                     for (Eigen::Index ii = 0; ii < n_dets; ii++) {
-                        if ((spike_free(ii) || use_all_det) && apt["flag"](ii + start_det)!=1) {
+                        if ((spike_free(ii) || use_all_det) && apt["flag"](ii + start_det)==0) {
                             detm.col(c) =
                                 scans.block(si_flags(j), ii, n_flags, 1);
                             res(c) = apt["responsivity"](c + start_det);

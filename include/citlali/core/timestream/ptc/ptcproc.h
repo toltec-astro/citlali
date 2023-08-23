@@ -274,7 +274,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
 
         for (Eigen::Index i=0; i<n_dets; i++) {
             // only calculate weights if detector is unflagged
-            if (apt["flag"](det_indices(i))!=1) {
+            if (apt["flag"](det_indices(i))==0) {
                 // make Eigen::Maps for each detector's scan
                 Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
                     in.scans.data.col(i).data(), in.scans.data.rows());
@@ -303,7 +303,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
 
         for (Eigen::Index i=0; i<n_dets; i++) {
             // only calculate weights if detector is unflagged
-            if (apt["flag"](det_indices(i))!=1) {
+            if (apt["flag"](det_indices(i))==0) {
                 in.weights.data(i) = 1;
             }
             else {
@@ -344,7 +344,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
         Eigen::Index n_good_dets = 0;
         j = std::get<0>(grp_limits[key]);
         for (Eigen::Index m=0; m<grp_weights.size(); m++) {
-            if (calib.apt["flag"](det_indices(j))!=1 && grp_weights(m)>0) {
+            if (calib.apt["flag"](det_indices(j))==0 && grp_weights(m)>0) {
                 n_good_dets++;
             }
             j++;
@@ -360,7 +360,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
             j = std::get<0>(grp_limits[key]);
             Eigen::Index k = 0;
             for (Eigen::Index m=0; m<grp_weights.size(); m++) {
-                if (calib.apt["flag"](det_indices(j))!=1 && grp_weights(m)>0) {
+                if (calib.apt["flag"](det_indices(j))==0 && grp_weights(m)>0) {
                     good_wt(k) = grp_weights(m);
                     k++;
                 }
@@ -456,7 +456,7 @@ auto PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                 Eigen::Index n_good_dets = 0;
 
                 for (Eigen::Index j=std::get<0>(grp_limits[key]); j<std::get<1>(grp_limits[key]); j++) {
-                    if (calib.apt["flag"](det_indices(j))!=1) {
+                    if (calib.apt["flag"](det_indices(j))==0) {
                         n_good_dets++;
                     }
                 }
@@ -468,7 +468,7 @@ auto PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                 // collect standard deviation from good detectors
                 for (Eigen::Index j=std::get<0>(grp_limits[key]); j<std::get<1>(grp_limits[key]); j++) {
                     Eigen::Index det_index = det_indices(j);
-                    if (calib.apt["flag"](det_index)!=1) {
+                    if (calib.apt["flag"](det_index)==0) {
                         // make Eigen::Maps for each detector's scan
                         Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
                             in.scans.data.col(j).data(), in.scans.data.rows());
@@ -501,7 +501,7 @@ auto PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                 for (Eigen::Index j=0; j<n_good_dets; j++) {
                     Eigen::Index det_index = det_indices(dets(j));
                     // flag those below limit
-                    if (calib.apt["flag"](det_index)!=1) {
+                    if (calib.apt["flag"](det_index)==0) {
                         if ((det_std_dev(j) < (lower_weight_factor*mean_std_dev)) && lower_weight_factor!=0) {
                             if (map_grouping!="detector") {
                                 in.flags.data.col(dets(j)).setOnes();

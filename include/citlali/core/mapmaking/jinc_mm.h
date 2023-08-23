@@ -86,12 +86,12 @@ auto jinc_func(double r, double a, double b, double c, double r_max, double l_d)
     }
 }
 
-template<class map_buffer_t, typename DerivedA, typename DerivedB, typename apt_t, typename pointing_offset_t>
+template<class map_buffer_t, typename Derived, typename apt_t, typename pointing_offset_t>
 void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
-                        map_buffer_t &omb, map_buffer_t &cmb, Eigen::DenseBase<DerivedA> &map_indices, Eigen::DenseBase<DerivedA> &det_indices,
+                        map_buffer_t &omb, map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices, Eigen::DenseBase<Derived> &det_indices,
                         std::string &pixel_axes, std::string &redu_type, apt_t &apt,
                         pointing_offset_t &pointing_offsets_arcsec, double d_fsmp, bool run_noise,
-                        double r_max, std::map<Eigen::Index,Eigen::DenseBase<DerivedB>> &shape_params) {
+                        double r_max, std::map<Eigen::Index,Eigen::VectorXd> &shape_params) {
 
     // lambda over diameter
     std::map<Eigen::Index,double> l_d;
@@ -110,6 +110,7 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
         auto radius = Eigen::VectorXd::LinSpaced(1000, 0, r_max*ld.second);
         jinc_weights[ld.first].resize(radius.size());
         Eigen::Index j = 0;
+
         for (const auto &r: radius) {
             jinc_weights[ld.first](j) = jinc_func(r,a,b,c,r_max,ld.second);
             j++;
@@ -338,7 +339,7 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                             // find maximum col
                             auto col_max = std::min(nmb->n_cols - 1.0 ,nmb_ic + r_max_pix + 1);
 
-                            Eigen::Index r_max_pix = std::floor(r_max*l_d[apt["array"](det_indices(i))]/nmb->pixel_size_rad);
+                            r_max_pix = std::floor(r_max*l_d[apt["array"](det_indices(i))]/nmb->pixel_size_rad);
 
                             for (Eigen::Index r=-r_max_pix; r<r_max_pix+1; r++) {
                                 for (Eigen::Index c=-r_max_pix; c<r_max_pix+1; c++) {

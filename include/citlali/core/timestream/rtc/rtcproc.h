@@ -359,7 +359,7 @@ auto RTCProc::remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
         // map from data column to apt row
         Eigen::Index det_index = det_indices(i);
         // if closer than freq separation limit and unflagged, flag it
-        if (calib.apt["duplicate_tone"](det_index) && calib_scan.apt["flag"](det_index)!=1) {
+        if (calib.apt["duplicate_tone"](det_index) && calib_scan.apt["flag"](det_index)==0) {
             n_nearby_tones++;
             // increment number of nearby tones
             if (map_grouping!="detector") {
@@ -425,7 +425,7 @@ auto RTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                 Eigen::Index n_good_dets = 0;
 
                 for (Eigen::Index j=std::get<0>(grp_limits[key]); j<std::get<1>(grp_limits[key]); j++) {
-                    if (calib.apt["flag"](det_indices(j))!=1) {
+                    if (calib.apt["flag"](det_indices(j))==0) {
                         n_good_dets++;
                     }
                 }
@@ -437,7 +437,7 @@ auto RTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                 // collect standard deviation from good detectors
                 for (Eigen::Index j=std::get<0>(grp_limits[key]); j<std::get<1>(grp_limits[key]); j++) {
                     Eigen::Index det_index = det_indices(j);
-                    if (calib.apt["flag"](det_index)!=1) {
+                    if (calib.apt["flag"](det_index)==0) {
                         // make Eigen::Maps for each detector's scan
                         Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
                             in.scans.data.col(j).data(), in.scans.data.rows());
@@ -470,7 +470,7 @@ auto RTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                 for (Eigen::Index j=0; j<n_good_dets; j++) {
                     Eigen::Index det_index = det_indices(dets(j));
                     // flag those below limit
-                    if (calib.apt["flag"](det_index)!=1) {
+                    if (calib.apt["flag"](det_index)==0) {
                         if ((det_std_dev(j) < (lower_weight_factor*mean_std_dev)) && lower_weight_factor!=0) {
                             if (map_grouping!="detector") {
                                 in.flags.data.col(dets(j)).setOnes();

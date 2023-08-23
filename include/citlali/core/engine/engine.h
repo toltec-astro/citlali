@@ -465,16 +465,10 @@ void Engine::get_mapmaking_config(CT &config) {
     get_config_value(config, map_method, missing_keys, invalid_keys, std::tuple{"mapmaking","method"},{"naive","jinc"});
 
     if (map_method=="jinc") {
-        /*get_config_value(config, jinc_r_max, missing_keys, invalid_keys, std::tuple{"mapmaking","jinc_filter","r_max"},{},{0});
-        get_config_value(config, jinc_a, missing_keys, invalid_keys, std::tuple{"mapmaking","jinc_filter","a"});
-        get_config_value(config, jinc_b, missing_keys, invalid_keys, std::tuple{"mapmaking","jinc_filter","b"});
-        get_config_value(config, jinc_c, missing_keys, invalid_keys, std::tuple{"mapmaking","jinc_filter","c"});
-        */
-
         // vector of eigenvalues to cut
         for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
-            auto jinc_shape_vec = config.template get_typed<std::vector<Eigen::Index>>(std::tuple{"mapmaking","jinc_filter","shape_params",arr_name});
-            jinc_shape_params[arr_index] = (Eigen::Map<Eigen::VectorXd>(jinc_shape_vec.data(),jinc_shape_vec.size()));
+            auto jinc_shape_vec = config.template get_typed<std::vector<double>>(std::tuple{"mapmaking","jinc_filter","shape_params",arr_name});
+            jinc_shape_params[arr_index] = Eigen::Map<Eigen::VectorXd>(jinc_shape_vec.data(),jinc_shape_vec.size());
         }
     }
 
@@ -2251,7 +2245,7 @@ void Engine::find_sources(map_buffer_t &mb) {
                 double init_col = mb.col_source_locs[i](j);
 
                 // fit source
-                auto [params, perror, good_fit] =
+                auto [params, perrors, good_fit] =
                     map_fitter.fit_to_gaussian<engine_utils::mapFitter::pointing>(mb.signal[i], mb.weight[i],
                                                                                   init_fwhm, init_row, init_col);
                 if (good_fit) {
@@ -2262,15 +2256,19 @@ void Engine::find_sources(map_buffer_t &mb) {
                     params(4) = RAD_TO_ASEC*STD_TO_FWHM*mb.pixel_size_rad*(params(4));
 
                     // rescale fit errors from pixel to on-sky units
-                    perror(1) = RAD_TO_ASEC*mb.pixel_size_rad*(perror(1));
-                    perror(2) = RAD_TO_ASEC*mb.pixel_size_rad*(perror(2));
-                    perror(3) = RAD_TO_ASEC*STD_TO_FWHM*mb.pixel_size_rad*(perror(3));
-                    perror(4) = RAD_TO_ASEC*STD_TO_FWHM*mb.pixel_size_rad*(perror(4));
-
+                    perrors(1) = RAD_TO_ASEC*mb.pixel_size_rad*(perrors(1));
+                    perrors(2) = RAD_TO_ASEC*mb.pixel_size_rad*(perrors(2));
+                    perrors(3) = RAD_TO_ASEC*STD_TO_FWHM*mb.pixel_size_rad*(perrors(3));
+                    perrors(4) = RAD_TO_ASEC*STD_TO_FWHM*mb.pixel_size_rad*(perrors(4));
 
                     if (telescope.pixel_axes=="icrs") {
-                        params(1) = ASEC_TO_DEG*params(1) + mb.wcs.crval[0]*RAD_TO_DEG;
-                        params(2) = ASEC_TO_DEG*params(2) + mb.wcs.crval[1]*RAD_TO_DEG;
+                        Eigen::VectorXd lat(1), lon(1);
+                        lat << params(2);
+                        lon << params(1);
+                        auto [adec, ara] = engine_utils::tangent_to_abs(lat, lon, mb.wcs.crval[0], mb.wcs.crval[1]);
+
+                        params(1) = ara(0)*RAD_TO_DEG;
+                        params(2) = adec(0)*RAD_TO_DEG;
 
                         perrors(1) = perrors(1)*RAD_TO_DEG;
                         perrors(2) = perrors(2)*RAD_TO_DEG;
@@ -2278,7 +2276,7 @@ void Engine::find_sources(map_buffer_t &mb) {
 
                     // add source params and errors to table
                     mb.source_params.row(k+j) = params;
-                    mb.source_perror.row(k+j) = perror;
+                    mb.source_perror.row(k+j) = perrors;
                 }
                 return 0;
             });

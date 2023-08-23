@@ -197,7 +197,7 @@ timestream: # timestream reduction parameters
     flux_calibration: # flux calibration
       enabled: false # enable or disable flux calibration (ignored for beammapping)
     extinction_correction:
-      enabled: true
+      enabled: false
       extinction_model: am_q25 # model to use for tau calculation (am_q25, am_q50, am_q75)
     flagging: # controls flagging before cleaning
       delta_f_min_Hz: 60.e3 # lower limit on frequency separation for flagging tones
@@ -245,7 +245,7 @@ post_processing:
 wiener_filter: # controls for wiener filter
   template_type: kernel #  template (kernel, gaussian, airy, highpass)
   gaussian_template_fwhm_arcsec: # set fwhms for gaussian template
-    a1100: 5
+    a1100: 5.0
     a1400: 6.3
     a2000: 9.5
   lowpass_only: false # apply lowpassing only

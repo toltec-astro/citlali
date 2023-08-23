@@ -36,6 +36,8 @@ public:
     int max_loops = 500;
     // lower limit to zero out denom values
     double denom_limit = 1.e-4;
+    // psd limit
+    double psd_lim = 1.e-4;
 
     // guess fwhm for kernel map filtering
     double init_fwhm;
@@ -275,8 +277,8 @@ void WienerFilter::calc_vvq(MB &mb, const int map_index) {
     Eigen::MatrixXd psd_q(n_rows,n_cols);
 
     // psd and psd freq vectors
-    Eigen::VectorXd psd = mb.psds[map_index];
-    Eigen::VectorXd psd_freq = mb.psd_freqs[map_index];
+    Eigen::VectorXd psd = mb.noise_psds[map_index];
+    Eigen::VectorXd psd_freq = mb.noise_psd_freqs[map_index];
 
     // size of psd and psd freq vectors
     Eigen::Index n_psd = psd.size();
@@ -288,7 +290,7 @@ void WienerFilter::calc_vvq(MB &mb, const int map_index) {
     double psd_break = 0.;
 
     for (Eigen::Index i=0; i<n_psd; i++) {
-        if (psd(i)/max_psd < 1.e-4){
+        if (psd(i)/max_psd < psd_lim){
             psd_freq_break = psd_freq(i);
             break;
         }

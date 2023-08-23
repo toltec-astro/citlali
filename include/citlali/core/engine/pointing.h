@@ -123,14 +123,23 @@ void Pointing::setup() {
         cmb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0)*RAD_TO_DEG;
     }
 
+    std::string pos_units;
+
+    if (telescope.pixel_axes=="icrs") {
+        pos_units = "deg";
+    }
+    else {
+        pos_units = "arcsec";
+    }
+
     ppt_header_units = {
         {"array","N/A"},
         {"amp", omb.sig_unit},
         {"amp_err", omb.sig_unit},
-        {"x_t", "arcsec"},
-        {"x_t_err", "arcsec"},
-        {"y_t", "arcsec"},
-        {"y_t_err", "arcsec"},
+        {"x_t", pos_units},
+        {"x_t_err", pos_units},
+        {"y_t", pos_units},
+        {"y_t_err", pos_units},
         {"a_fwhm", "arcsec"},
         {"a_fwhm_err", "arcsec"},
         {"b_fwhm", "arcsec"},
@@ -163,16 +172,16 @@ void Pointing::setup() {
     ppt_meta["amp_err"].push_back("units: " + omb.sig_unit);
     ppt_meta["amp_err"].push_back("fitted amplitude error");
 
-    ppt_meta["x_t"].push_back("units: arcsec");
+    ppt_meta["x_t"].push_back("units: " + pos_units);
     ppt_meta["x_t"].push_back("fitted azimuthal offset");
 
-    ppt_meta["x_t_err"].push_back("units: arcsec");
+    ppt_meta["x_t_err"].push_back("units: " + pos_units);
     ppt_meta["x_t_err"].push_back("fitted azimuthal offset error");
 
-    ppt_meta["y_t"].push_back("units: arcsec");
+    ppt_meta["y_t"].push_back("units: " + pos_units);
     ppt_meta["y_t"].push_back("fitted altitude offset");
 
-    ppt_meta["y_t_err"].push_back("units: arcsec");
+    ppt_meta["y_t_err"].push_back("units: " + pos_units);
     ppt_meta["y_t_err"].push_back("fitted altitude offset error");
 
     ppt_meta["a_fwhm"].push_back("units: arcsec");
@@ -445,6 +454,20 @@ void Pointing::fit_maps() {
             perrors(i,2) = RAD_TO_ASEC*omb.pixel_size_rad*(perrors(i,2));
             perrors(i,3) = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(perrors(i,3));
             perrors(i,4) = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(perrors(i,4));
+
+            if (telescope.pixel_axes=="icrs") {
+                Eigen::VectorXd lat(1), lon(1);
+                lat << params(i,2);
+                lon << params(i,1);
+                auto [adec, ara] = engine_utils::tangent_to_abs(lat, lon, omb.wcs.crval[0], omb.wcs.crval[1]);
+
+                params(i,1) = ara(0)*RAD_TO_DEG;
+                params(i,2) = adec(0)*RAD_TO_DEG;
+
+                perrors(i,1) = perrors(i,1)*RAD_TO_DEG;
+                perrors(i,2) = perrors(i,2)*RAD_TO_DEG;
+            }
+
         }
         return 0;
     });
