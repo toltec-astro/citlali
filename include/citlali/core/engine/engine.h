@@ -1645,7 +1645,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     // add jinc shape params
     if (map_method=="jinc") {
-        fits_io->at(i).pfits->pHDU().addKey("JINC_R", jinc_shape_params[calib.arrays(i)][0], "jinc r max");
+        fits_io->at(i).pfits->pHDU().addKey("JINC_R", jinc_r_max, "jinc r max");
         fits_io->at(i).pfits->pHDU().addKey("JINC_A", jinc_shape_params[calib.arrays(i)][0], "jinc shape param a");
         fits_io->at(i).pfits->pHDU().addKey("JINC_B", jinc_shape_params[calib.arrays(i)][1], "jinc shape param b");
         fits_io->at(i).pfits->pHDU().addKey("JINC_C", jinc_shape_params[calib.arrays(i)][2], "jinc shape param c");
