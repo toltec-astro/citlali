@@ -1637,15 +1637,15 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     //add map tangent point dec
     fits_io->at(i).pfits->pHDU().addKey("TAN_DEC", telescope.tel_header["Header.Source.Dec"][0], "Map Tangent Point Dec (radians)");
     // add mean alt
-    fits_io->at(i).pfits->pHDU().addKey("MEAN_EL", RAD_TO_DEG*telescope.tel_data["TelElAct"].mean(), "mean elevation (deg)");
+    fits_io->at(i).pfits->pHDU().addKey("MEAN_EL", RAD_TO_DEG*telescope.tel_data["TelElAct"].mean(), "Mean Elevation (deg)");
     // add mean az
-    fits_io->at(i).pfits->pHDU().addKey("MEAN_AZ", RAD_TO_DEG*telescope.tel_data["TelAzAct"].mean(), "mean azimuth (deg)");
+    fits_io->at(i).pfits->pHDU().addKey("MEAN_AZ", RAD_TO_DEG*telescope.tel_data["TelAzAct"].mean(), "Mean Azimuth (deg)");
     // add mean parallactic angle
-    fits_io->at(i).pfits->pHDU().addKey("MEAN_PA", RAD_TO_DEG*telescope.tel_data["ActParAng"].mean(), "mean Parallactic angle (deg)");
+    fits_io->at(i).pfits->pHDU().addKey("MEAN_PA", RAD_TO_DEG*telescope.tel_data["ActParAng"].mean(), "Mean Parallactic angle (deg)");
 
     // add jinc shape params
     if (map_method=="jinc") {
-        fits_io->at(i).pfits->pHDU().addKey("JINC_A", jinc_shape_params[calib.arrays(i)][0], "jinc shape param a");
+        fits_io->at(i).pfits->pHDU().addKey("JINC_R", jinc_shape_params[calib.arrays(i)][0], "jinc r max");
         fits_io->at(i).pfits->pHDU().addKey("JINC_A", jinc_shape_params[calib.arrays(i)][0], "jinc shape param a");
         fits_io->at(i).pfits->pHDU().addKey("JINC_B", jinc_shape_params[calib.arrays(i)][1], "jinc shape param b");
         fits_io->at(i).pfits->pHDU().addKey("JINC_C", jinc_shape_params[calib.arrays(i)][2], "jinc shape param c");
