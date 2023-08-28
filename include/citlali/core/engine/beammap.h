@@ -471,9 +471,9 @@ auto Beammap::run_loop() {
                 // subtract gaussian
                 if (current_iter > 0) {
                     SPDLOG_INFO("subtracting gaussian from tod");
-                    ptcproc.add_gaussian(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt, ptcs[i].pointing_offsets_arcsec.data,
-                                         omb.pixel_size_rad, omb.n_rows, omb.n_cols, ptcs[i].map_indices.data, ptcs[i].det_indices.data,
-                                         "subtract");
+                    ptcproc.add_gaussian<PTCProc::GaussType::add>(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt,
+                                                                 ptcs[i].pointing_offsets_arcsec.data,omb.pixel_size_rad, omb.n_rows, omb.n_cols,
+                                                                 ptcs[i].map_indices.data, ptcs[i].det_indices.data);
                 }
             }
 
@@ -481,6 +481,7 @@ auto Beammap::run_loop() {
             SPDLOG_INFO("subtracting detector means");
             ptcproc.subtract_mean(ptcs[i]);
 
+            // remove bad detectors
             auto calib_scan = rtcproc.remove_bad_dets(ptcs[i], calib, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
                                                       ptcs[i].array_indices.data, redu_type, map_grouping);
 
@@ -489,9 +490,6 @@ auto Beammap::run_loop() {
                 calib_scan = rtcproc.remove_nearby_tones(ptcs[i], calib_scan, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
                                                         ptcs[i].array_indices.data, redu_type, map_grouping);
             }
-
-            // removed detectors flagged in per scan apt
-            //ptcproc.remove_flagged_dets(ptcs[i], calib_scan.apt, ptcs[i].det_indices.data);
 
             SPDLOG_INFO("processed time chunk processing");
             ptcproc.run(ptcs[i], ptcs[i], calib_scan, ptcs[i].det_indices.data, "I");
@@ -509,9 +507,9 @@ auto Beammap::run_loop() {
                 // add gaussan back
                 if (current_iter > 0) {
                     SPDLOG_INFO("adding gaussian to tod");
-                    ptcproc.add_gaussian(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt, ptcs[i].pointing_offsets_arcsec.data,
-                                         omb.pixel_size_rad, omb.n_rows, omb.n_cols, ptcs[i].map_indices.data, ptcs[i].det_indices.data,
-                                         "add");
+                    ptcproc.add_gaussian<PTCProc::GaussType::add>(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt,
+                                                                 ptcs[i].pointing_offsets_arcsec.data, omb.pixel_size_rad, omb.n_rows, omb.n_cols,
+                                                                 ptcs[i].map_indices.data, ptcs[i].det_indices.data);
                 }
             }
 
@@ -535,6 +533,7 @@ auto Beammap::run_loop() {
                 }
             }
 
+            // calc stats
             diagnostics.calc_stats(ptcs[i]);
 
             // populate maps
@@ -689,6 +688,7 @@ auto Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 template<typename array_indices_t, typename nw_indices_t>
 void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices) {
 
+    // setup bitwise flags
     flag2.resize(calib.n_dets);
     calib.apt["flag2"].resize(calib.n_dets);
 
@@ -721,7 +721,7 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
 
         // flag bad fits
         if (!good_fits(i)) {
-            if (calib.apt["flag"](i)!=1) {
+            if (calib.apt["flag"](i)==0) {
                 n_flagged_dets++;
                 calib.apt["flag"](i) = 1;
             }
@@ -729,10 +729,9 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
             calib.apt["flag2"](i) = AptFlags::BadFit;
         }
         // flag detectors with outler a_fwhm values
-        //else
         if (calib.apt["a_fwhm"](i) < lower_fwhm_arcsec[array_name] ||
             ((calib.apt["a_fwhm"](i) > upper_fwhm_arcsec[array_name]) && upper_fwhm_arcsec[array_name] > 0)) {
-            if (calib.apt["flag"](i)!=1) {
+            if (calib.apt["flag"](i)==0) {
                 n_flagged_dets++;
                 calib.apt["flag"](i) = 1;
             }
@@ -740,10 +739,9 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
             calib.apt["flag2"](i) = AptFlags::AzFWHM;
         }
         // flag detectors with outler b_fwhm values
-        //else
         if (calib.apt["b_fwhm"](i) < lower_fwhm_arcsec[array_name] ||
             ((calib.apt["b_fwhm"](i) > upper_fwhm_arcsec[array_name] && upper_fwhm_arcsec[array_name] > 0))) {
-            if (calib.apt["flag"](i)!=1) {
+            if (calib.apt["flag"](i)==0) {
                 n_flagged_dets++;
                 calib.apt["flag"](i) = 1;
             }
@@ -751,10 +749,9 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
             calib.apt["flag2"](i) = AptFlags::ElFWHM;
         }
         // flag detectors with outler S/N values
-        //else
         if ((params(i,0)/map_std_dev < lower_sig2noise[array_name]) ||
             ((params(i,0)/map_std_dev > upper_sig2noise[array_name]) && (upper_sig2noise[array_name] > 0))) {
-            if (calib.apt["flag"](i)!=1) {
+            if (calib.apt["flag"](i)==0) {
                 n_flagged_dets++;
                 calib.apt["flag"](i) = 1;
             }
@@ -787,7 +784,7 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
             Eigen::Index j = std::get<0>(calib.nw_limits[nw]);
             Eigen::Index k = 0;
             for (Eigen::Index m=0; m<sens.size(); m++) {
-                if (calib.apt["flag"](j)!=1) {
+                if (calib.apt["flag"](j)==0) {
                     sens(k) = nw_sens(m);
                     k++;
                 }
@@ -814,7 +811,7 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
         // flag outlier sensitivities
         if (calib.apt["sens"](i) < lower_sens_factor*nw_median_sens[nw_index] ||
             (calib.apt["sens"](i) > upper_sens_factor*nw_median_sens[nw_index] && upper_sens_factor > 0)) {
-            if (calib.apt["flag"](i)!=1) {
+            if (calib.apt["flag"](i)==0) {
                 calib.apt["flag"](i) = 1;
                 n_flagged_dets++;
             }
@@ -855,7 +852,7 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
             Eigen::Index j = std::get<0>(calib.array_limits[array]);
             Eigen::Index k = 0;
             for (Eigen::Index m=0; m<array_x_t.size(); m++) {
-                if (calib.apt["flag"](j)!=1) {
+                if (calib.apt["flag"](j)==0) {
                     x_t(k) = array_x_t(m);
                     y_t(k) = array_y_t(m);
                     k++;
@@ -885,7 +882,7 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
 
         // flag detectors that are further than the mean value than the distance limit
         if (dist > max_dist_arcsec[array_name] && max_dist_arcsec[array_name] > 0) {
-            if (calib.apt["flag"](i)!=1) {
+            if (calib.apt["flag"](i)==0) {
                 n_flagged_dets++;
                 calib.apt["flag"](i) = 1;
             }
@@ -976,7 +973,7 @@ void Beammap::adjust_apt() {
             Eigen::Index j = std::get<0>(calib.array_limits[array]);
             Eigen::Index k = 0;
             for (Eigen::Index i=0; i<array_x_t.size(); i++) {
-                if (calib.apt["flag"](j)!=1) {
+                if (calib.apt["flag"](j)==0) {
                     x_t(k) = array_x_t(i);
                     y_t(k) = array_y_t(i);
                     det_indices(k) = j;
@@ -1208,8 +1205,8 @@ void Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     auto [kids_models, kids_model_header] = kidsproc.load_fit_report(rawobs);
 
     Eigen::Index i = 0;
+    // loop through kids header
     for (const auto &h: kids_model_header) {
-
         std::string name = h;
         if (name=="flag") {
             name = "kids_flag";

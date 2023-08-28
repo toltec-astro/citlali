@@ -12,11 +12,7 @@ public:
     using indices_t = std::tuple<Eigen::VectorXI, Eigen::VectorXI, Eigen::VectorXI>;
 
     // stokes parameters
-    std::map<int,std::string> stokes_params;/* = {
-        {0,"I"},
-        {1,"Q"},
-        {2,"U"}
-        };*/
+    std::map<int,std::string> stokes_params;
 
     // toltec array mounting angle
     std::map<int, double> install_ang = {
@@ -99,7 +95,6 @@ public:
                         k++;
                     }
                 }
-                SPDLOG_INFO("fg {} array_indices {} det_indices {}",fg,array_indices,det_indices);
             }
             else {
                 polarized_scans = in.scans.data;
@@ -114,7 +109,7 @@ public:
             // now loop through polarized detectors
             for (Eigen::Index i=0; i<n_dets; i++) {
                 // detector angle = installation angle + det orientation
-                auto ang = install_ang[array_indices(i)];// + fgs[fg(i)];
+                auto ang = install_ang[array_indices(i)];
                 auto rot_angle = 2*(in.tel_data.data["ActParAng"].array() + in.tel_data.data["TelElAct"].array() + ang);
 
                 // rotate q and u by parallactic, elevation, and detector/array angle

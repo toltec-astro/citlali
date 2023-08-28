@@ -22,6 +22,12 @@ public:
     double med_weight_factor;
     std::string weighting_type;
 
+    // add or subtract source
+    enum GaussType {
+        add = 0,
+        subtract = 1
+    };
+
     // ptc tod proc
     timestream::Cleaner cleaner;
 
@@ -59,11 +65,10 @@ public:
     void append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, std::string, std::string, std::string &,
                           pointing_offset_t &, Eigen::DenseBase<Derived> &, apt_t &, std::string, bool, double, bool);
 
-    template <typename DerivedB, typename DerivedC, typename apt_t, typename pointing_offset_t>
+    template <GaussType gauss_type, typename DerivedB, typename DerivedC, typename apt_t, typename pointing_offset_t>
     void add_gaussian(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, Eigen::DenseBase<DerivedB> &, std::string &,
                       std::string &, apt_t &, pointing_offset_t &, double,
-                      Eigen::Index, Eigen::Index, Eigen::DenseBase<DerivedC> &, Eigen::DenseBase<DerivedC> &,
-                      std::string);
+                      Eigen::Index, Eigen::Index, Eigen::DenseBase<DerivedC> &, Eigen::DenseBase<DerivedC> &);
 };
 
 void PTCProc::subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in) {
@@ -581,14 +586,18 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         netCDF::NcFile fo(filepath, netCDF::NcFile::write);
         auto vars = fo.getVars();
 
+        // get absolute coords
         double cra, cdec;
         vars.find("SourceRa")->second.getVar(&cra);
         vars.find("SourceDec")->second.getVar(&cdec);
 
+        // get dimensions
         NcDim n_pts_dim = fo.getDim("n_pts");
         NcDim n_dets_dim = fo.getDim("n_dets");
 
+        // number of samples currently in file
         unsigned long n_pts_exists = n_pts_dim.getSize();
+        // number of detectors currently in file
         unsigned long n_dets_exists = n_dets_dim.getSize();
 
         // start indices for data
@@ -728,11 +737,11 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
     }
 }
 
-template <typename DerivedB, typename DerivedC, typename apt_t, typename pointing_offset_t>
+template <PTCProc::GaussType gauss_type, typename DerivedB, typename DerivedC, typename apt_t, typename pointing_offset_t>
 void PTCProc::add_gaussian(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::DenseBase<DerivedB> &params, std::string &pixel_axes,
                   std::string &map_grouping, apt_t &apt, pointing_offset_t &pointing_offsets_arcsec,
                   double pixel_size_rad, Eigen::Index n_rows, Eigen::Index n_cols,
-                  Eigen::DenseBase<DerivedC> &map_indices, Eigen::DenseBase<DerivedC> &det_indices, std::string type) {
+                  Eigen::DenseBase<DerivedC> &map_indices, Eigen::DenseBase<DerivedC> &det_indices) {
 
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
@@ -752,6 +761,7 @@ void PTCProc::add_gaussian(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::
             el_off = apt["y_t"](det_index);
         }
 
+        // get pointing
         auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off,
                                                           pixel_axes, pointing_offsets_arcsec);
 
@@ -765,7 +775,8 @@ void PTCProc::add_gaussian(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::
 
         double sigma = std::max(sigma_lat, sigma_lon);
 
-        if (type=="subtract") {
+        // subtract source
+        if constexpr (gauss_type == subtract) {
             amp = -amp;
         }
 
@@ -787,7 +798,7 @@ void PTCProc::add_gaussian(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::
         auto c = - 0.5 * ((sint2 / xstd2) + (cost2 / ystd2));
 
         // calculate distance to source to truncate it
-        auto distance = ((lat.array() - off_lat).pow(2) + (lon.array() - off_lon).pow(2)).sqrt();
+        auto dist = ((lat.array() - off_lat).pow(2) + (lon.array() - off_lon).pow(2)).sqrt();
 
         Eigen::VectorXd gauss(n_pts);
         // make gaussian
@@ -796,20 +807,7 @@ void PTCProc::add_gaussian(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::
                 gauss(j) = amp*exp(pow(lon(j) - off_lon, 2) * a +
                                      (lon(j) - off_lon) * (lat(j) - off_lat) * b +
                                      pow(lat(j) - off_lat, 2) * c);
-            //}
-            //else {
-            //    gauss(j) = 0;
-            //}
         }
-
-        /*for (Eigen::Index j=0; j<n_pts; j++) {
-            if (distance(j) <= 3.*(sigma_lat+sigma_lon)/2) {
-                gauss(j,i) = exp(-0.5*pow(distance(j)/(sigma_lat+sigma_lon)/2,2));
-            }
-            else {
-                gauss(j,i) = 0;
-            }
-        }*/
 
         if (!gauss.array().isNaN().any()) {
             // add gaussian to detector scan

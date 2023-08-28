@@ -133,7 +133,7 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
 
     // zero out flagged detectors in apt table (used for per scan beammap flags)
     for (Eigen::Index i=0; i<n_dets; i++) {
-        if (apt_flags.derived()(i) == 1) {
+        if (apt_flags.derived()(i)!=0) {
             f.col(i).setZero();
         }
     }
@@ -179,7 +179,6 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
             evals.head(n_ev) = eigs.eigenvalues();
             evecs.leftCols(n_ev) = eigs.eigenvectors();
         }
-
         else {
             throw std::runtime_error("spectra failed to compute eigen values");
             std::exit(EXIT_FAILURE);
@@ -198,7 +197,6 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
             evals.reverseInPlace();
             evecs.rowwise().reverseInPlace();
         }
-
         else {
             throw std::runtime_error("eigen failed to compute eigen values");
             std::exit(EXIT_FAILURE);

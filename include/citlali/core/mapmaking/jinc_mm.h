@@ -146,7 +146,7 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
     ObsMapBuffer* nmb = NULL;
 
     // matrix to hold random noise value
-    Eigen::MatrixXi noise;
+    Eigen::VectorXi noise;
 
     if (run_noise) {
         // set pointer to cmb if it has noise maps
@@ -167,7 +167,7 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 
         // rescale random values to -1 or 1
         noise =
-            Eigen::MatrixXi::Zero(nmb->n_noise, n_pts).unaryExpr([&](int dummy){return rands(eng);});
+            Eigen::VectorXi::Zero(nmb->n_noise).unaryExpr([&](int dummy){return rands(eng);});
         noise = (2.*(noise.template cast<double>().array() - 0.5)).template cast<int>();
     }
 
@@ -220,49 +220,6 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 
                     // make sure the data point is within the map
                     if ((omb_ir >= 0) && (omb_ir < omb.n_rows) && (omb_ic >= 0) && (omb_ic < omb.n_cols)) {
-                        // find minimum row
-                        /*auto row_min = std::max(static_cast<Eigen::Index>(0), omb_ir - r_max_pix);
-                        // find maximum row
-                        auto row_max = std::min(omb.n_rows, omb_ir + r_max_pix);
-
-                        // find minimum col
-                        auto col_min = std::max(static_cast<Eigen::Index>(0), omb_ic - r_max_pix);
-                        // find maximum col
-                        auto col_max = std::min(omb.n_cols, omb_ic + r_max_pix);
-
-                        // loop through nearby rows and cols
-                        for (Eigen::Index r=row_min; r<row_max+1; r++) {
-                            for (Eigen::Index c=col_min; c<col_max+1; c++) {
-                                // distance from current sample to pixel
-                                auto radius = sqrt(std::pow(lat(j) - omb.rows_tan_vec(r),2) + std::pow(lon(j) - omb.cols_tan_vec(c),2));
-                                //SPDLOG_INFO("radius {}", radius);
-                                if (radius<r_max*l_d[apt["array"](det_indices(i))]) {
-                                    // jinc weighting function
-                                    //auto jinc_weight = jinc_func(radius,a,b,c,r_max,l_d[apt["array"](det_indices(i))]);
-                                    auto jinc_weight = jinc_splines[apt["array"](det_indices(i))](radius);
-                                    auto weight = in.weights.data(i)*jinc_weight;
-
-                                    // populate signal map
-                                    signal = in.scans.data(j,i)*weight;
-                                    omb.signal[map_index](r,c) += signal;
-
-                                    // populate weight map
-                                    omb.weight[map_index](r,c) += weight;
-
-                                    // populate kernel map
-                                    if (!omb.kernel.empty()) {
-                                        auto kernel = in.kernel.data(j,i)*weight;
-                                        omb.kernel[map_index](r,c) += kernel;
-                                    }
-
-                                    // populate coverage map
-                                    if (!omb.coverage.empty()) {
-                                        omb.coverage[map_index](r,c) += (jinc_weight/d_fsmp);
-                                    }
-                                }
-                            }
-                        }*/
-
 
                         Eigen::Index mat_rows = (jinc_weights_mat[apt["array"](det_indices(i))].rows() - 1.)/2.;
                         Eigen::Index mat_cols = (jinc_weights_mat[apt["array"](det_indices(i))].cols() - 1.)/2.;
@@ -318,9 +275,7 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                             nmb_ic = omb_icol(j);
                         }
 
-                        // loop through noise maps
-                        //for (Eigen::Index nn=0; nn<nmb->n_noise; nn++) {
-                        // coadd into current noise map
+                        // loop through noise maps and coadd into current noise map
                         if ((nmb_ir >= 0) && (nmb_ir < nmb->n_rows) && (nmb_ic >= 0) && (nmb_ic < nmb->n_cols)) {
 
                             double r_max_pix = std::floor(r_max*l_d[apt["array"](det_indices(i))]/nmb->pixel_size_rad);
@@ -337,16 +292,13 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 
                                     if (ri >= 0 && ci >= 0 && ri < nmb->n_rows && ci < nmb->n_cols) {
 
-                                        Eigen::Index ji = r_max_pix + r;
-                                        Eigen::Index jj = r_max_pix + c;
-
                                         auto jinc_weight = jinc_weights_mat[apt["array"](det_indices(i))](r,c);
                                         auto weight = in.weights.data(i)*jinc_weight;
                                         signal = in.scans.data(j,i)*weight;
 
                                         // populate signal map
                                         for (Eigen::Index nn=0; nn<nmb->n_noise; nn++) {
-                                            nmb->noise[map_index](r,c,nn) += noise(nn,j)*weight;
+                                            nmb->noise[map_index](ri,ci,nn) += noise(nn)*signal;
                                         }
                                     }
                                 }

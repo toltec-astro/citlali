@@ -175,7 +175,7 @@ auto Lali::run() {
 
             // remove duplicate tones
             if (!telescope.sim_obs) {
-                calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib_scan, det_indices, nw_indices, array_indices, redu_type, map_grouping);
+                calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
             }
 
             // run cleaning
@@ -208,6 +208,7 @@ auto Lali::run() {
                 write_chunk_summary(ptcdata);
             }
 
+            // write stats
             if (stokes_param=="I") {
                 diagnostics.calc_stats(ptcdata);
             }
@@ -314,6 +315,7 @@ void Lali::output() {
     // directory name
     std::string dir_name;
 
+    // write stats
     if constexpr (map_type == mapmaking::RawObs) {
         write_stats();
     }

@@ -306,9 +306,7 @@ void TimeOrderedDataProc<EngineType>::get_adc_snap_from_files(const RawObs &rawo
             fo.close();
 
         } catch (NcException &e) {
-            SPDLOG_ERROR("{}", e.what());
-            //throw DataIOError{fmt::format(
-            //    "failed to load data from netCDF file {}", data_item.filepath())};
+            SPDLOG_ERROR("adc file not found");
         }
     }
 }

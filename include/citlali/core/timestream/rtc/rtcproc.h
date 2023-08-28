@@ -287,12 +287,10 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         }
 
         // downsample hwpr
-        if (run_polarization) {
-            if (calib.run_hwp) {
-                Eigen::Ref<Eigen::VectorXd> in_hwp =
-                    in_pol.hwp_angle.data.segment(si, sl);
-                downsampler.downsample(in_hwp, in_pol.hwp_angle.data);
-            }
+        if (run_polarization && calib.run_hwp) {
+            Eigen::Ref<Eigen::VectorXd> in_hwp =
+                in_pol.hwp_angle.data.segment(si, sl);
+            downsampler.downsample(in_hwp, in_pol.hwp_angle.data);
         }
         // downsample kernel if requested
         if (run_kernel) {

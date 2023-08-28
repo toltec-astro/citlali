@@ -433,16 +433,19 @@ void Engine::get_ptc_config(CT &config) {
 
     if (ptcproc.run_clean) {
         // vector of groupings
-        ptcproc.cleaner.grouping = config.template get_typed<std::vector<std::string>>(std::tuple{"timestream","processed_time_chunk","clean","grouping"});
+        ptcproc.cleaner.grouping = config.template get_typed<std::vector<std::string>>(std::tuple{"timestream","processed_time_chunk","clean",
+                                                                                                  "grouping"});
         // vector of eigenvalues to cut
         for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
-            auto n_eig_to_cut = config.template get_typed<std::vector<Eigen::Index>>(std::tuple{"timestream","processed_time_chunk","clean","n_eig_to_cut",arr_name});
+            auto n_eig_to_cut = config.template get_typed<std::vector<Eigen::Index>>(std::tuple{"timestream","processed_time_chunk","clean",
+                                                                                                "n_eig_to_cut",arr_name});
             ptcproc.cleaner.n_eig_to_cut[arr_index] = (Eigen::Map<Eigen::VectorXI>(n_eig_to_cut.data(),n_eig_to_cut.size()));
         }
         // map to eigen vector
         get_config_value(config, ptcproc.cleaner.stddev_limit, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk",
                                                                                                  "clean","stddev_limit"});
-        get_config_value(config, ptcproc.run_stokes_clean, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","clean","clean_polarized_time_chunks"});
+        get_config_value(config, ptcproc.run_stokes_clean, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","clean",
+                                                                                                  "clean_polarized_time_chunks"});
     }
 
 }
@@ -1125,11 +1128,10 @@ void Engine::create_tod_files() {
         // set number of detectors for polarized timestreams
         else if ((stokes_param == "Q") || (stokes_param == "U")) {
             if (!telescope.sim_obs) {
-                //n_dets = (calib.apt["loc"].array()!=-1).count();
                 n_dets = (calib.apt["fg"].array()!=-1).count();
             }
             else {
-                n_dets = (calib.apt["fg"].array() == 0).count() + (calib.apt["fg"].array() == 1).count();
+                n_dets = calib.n_dets;
             }
         }
 
@@ -2265,15 +2267,15 @@ void Engine::find_sources(map_buffer_t &mb) {
 
                     if (telescope.pixel_axes=="icrs") {
                         Eigen::VectorXd lat(1), lon(1);
-                        lat << params(2);
-                        lon << params(1);
-                        auto [adec, ara] = engine_utils::tangent_to_abs(lat, lon, mb.wcs.crval[0], mb.wcs.crval[1]);
+                        lat << params(2)*ASEC_TO_RAD;
+                        lon << params(1)*ASEC_TO_RAD;
+                        auto [adec, ara] = engine_utils::tangent_to_abs(lat, lon, mb.wcs.crval[0]*DEG_TO_RAD, mb.wcs.crval[1]*DEG_TO_RAD);
 
                         params(1) = ara(0)*RAD_TO_DEG;
                         params(2) = adec(0)*RAD_TO_DEG;
 
-                        perrors(1) = perrors(1)*RAD_TO_DEG;
-                        perrors(2) = perrors(2)*RAD_TO_DEG;
+                        perrors(1) = perrors(1)*ASEC_TO_RAD;
+                        perrors(2) = perrors(2)*ASEC_TO_RAD;
                     }
 
                     // add source params and errors to table

@@ -284,8 +284,24 @@ int run(const rc_t &rc) {
                         todproc.engine().get_photometry_config(rawobs.photometry_calib_info().config());
 
                         // if beammap generate the apt table from the files
-                        SPDLOG_INFO("making apt file from raw nc files");
-                        todproc.get_apt_from_files(rawobs);
+                        if (todproc.engine().map_grouping=="detector") {
+                            SPDLOG_INFO("making apt file from raw nc files");
+                            todproc.get_apt_from_files(rawobs);
+                        }
+                        else {
+                            auto apt_path = rawobs.array_prop_table().filepath();
+                            SPDLOG_INFO("getting array properties table {}", apt_path);
+
+                            // get raw files and interfaces
+                            std::vector<std::string> raw_filenames, interfaces;
+                            for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
+                                raw_filenames.push_back(data_item.filepath());
+                                interfaces.push_back(data_item.interface());
+                            }
+
+                            // get and setup apt table
+                            todproc.engine().calib.get_apt(apt_path, raw_filenames, interfaces);
+                        }
                     }
 
                     else {
@@ -403,8 +419,24 @@ int run(const rc_t &rc) {
                             todproc.engine().get_photometry_config(rawobs.photometry_calib_info().config());
 
                             // if beammap generate the apt table from the files
-                            SPDLOG_INFO("making apt file from raw nc files");
-                            todproc.get_apt_from_files(rawobs);
+                            if (todproc.engine().map_grouping=="detector") {
+                                SPDLOG_INFO("making apt file from raw nc files");
+                                todproc.get_apt_from_files(rawobs);
+                            }
+                            else {
+                                auto apt_path = rawobs.array_prop_table().filepath();
+                                SPDLOG_INFO("getting array properties table {}", apt_path);
+
+                                // get raw files and interfaces
+                                std::vector<std::string> raw_filenames, interfaces;
+                                for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
+                                    raw_filenames.push_back(data_item.filepath());
+                                    interfaces.push_back(data_item.interface());
+                                }
+
+                                // get and setup apt table
+                                todproc.engine().calib.get_apt(apt_path, raw_filenames, interfaces);
+                            }
                         }
 
                         // get apt file
@@ -423,6 +455,7 @@ int run(const rc_t &rc) {
                             todproc.engine().calib.get_apt(apt_path, raw_filenames, interfaces);
                         }
 
+                        // get sample rate
                         SPDLOG_DEBUG("getting sample rate");
                         todproc.engine().telescope.fsmp = rawobs_kids_meta.back().get_typed<double>("fsmp");
                     }
@@ -438,7 +471,6 @@ int run(const rc_t &rc) {
                             }
                             todproc.engine().rtcproc.downsampler.factor = std::floor(todproc.engine().telescope.fsmp /
                                                                                      todproc.engine().rtcproc.downsampler.downsampled_freq_Hz);
-                            SPDLOG_INFO("factor {}",todproc.engine().rtcproc.downsampler.factor);
                         }
                     }
 
@@ -454,6 +486,7 @@ int run(const rc_t &rc) {
                     SPDLOG_DEBUG("getting tone frequencies");
                     todproc.get_tone_freqs_from_files(rawobs);
 
+                    // get adc snap data for stats file
                     SPDLOG_DEBUG("getting adc snap data");
                     todproc.get_adc_snap_from_files(rawobs);
 

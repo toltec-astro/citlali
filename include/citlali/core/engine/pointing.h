@@ -329,6 +329,7 @@ auto Pointing::run() {
                 }
             }
 
+            // calc stats
             if (stokes_param=="I") {
                 diagnostics.calc_stats(ptcdata);
             }
@@ -457,15 +458,16 @@ void Pointing::fit_maps() {
 
             if (telescope.pixel_axes=="icrs") {
                 Eigen::VectorXd lat(1), lon(1);
-                lat << params(i,2);
-                lon << params(i,1);
-                auto [adec, ara] = engine_utils::tangent_to_abs(lat, lon, omb.wcs.crval[0], omb.wcs.crval[1]);
+                lat << params(2)*ASEC_TO_RAD;
+                lon << params(1)*ASEC_TO_RAD;
 
-                params(i,1) = ara(0)*RAD_TO_DEG;
-                params(i,2) = adec(0)*RAD_TO_DEG;
+                auto [adec, ara] = engine_utils::tangent_to_abs(lat, lon, omb.wcs.crval[0]*DEG_TO_RAD, omb.wcs.crval[1]*DEG_TO_RAD);
 
-                perrors(i,1) = perrors(i,1)*RAD_TO_DEG;
-                perrors(i,2) = perrors(i,2)*RAD_TO_DEG;
+                params(1) = ara(0)*RAD_TO_DEG;
+                params(2) = adec(0)*RAD_TO_DEG;
+
+                perrors(1) = perrors(1)*ASEC_TO_RAD;
+                perrors(2) = perrors(2)*ASEC_TO_RAD;
             }
 
         }
