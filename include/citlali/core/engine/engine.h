@@ -1642,6 +1642,13 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // add mean parallactic angle
     fits_io->at(i).pfits->pHDU().addKey("MEAN_PA", RAD_TO_DEG*telescope.tel_data["ActParAng"].mean(), "mean Parallactic angle (deg)");
 
+    // add jinc shape params
+    if (map_method=="jinc") {
+        fits_io->at(i).pfits->pHDU().addKey("JINC_A", jinc_shape_params[calib.arrays(i)][0], "jinc shape param a");
+        fits_io->at(i).pfits->pHDU().addKey("JINC_B", jinc_shape_params[calib.arrays(i)][1], "jinc shape param b");
+        fits_io->at(i).pfits->pHDU().addKey("JINC_C", jinc_shape_params[calib.arrays(i)][2], "jinc shape param c");
+    }
+
     // add mean tau
     Eigen::VectorXd tau_el(1);
     tau_el << telescope.tel_data["TelElAct"].mean();
@@ -1886,8 +1893,6 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
         // transpose 2d psd and freq
         Eigen::MatrixXd psd_2d_transposed = mb->psd_2ds[i].transpose();
         Eigen::MatrixXd psd_2d_freq_transposed = mb->psd_2d_freqs[i].transpose();
-
-        //SPDLOG_INFO("psd_2d_transposed {} psd_2d_freq_transposed {}",psd_2d_transposed,psd_2d_freq_transposed);
 
         // 2d psd
         netCDF::NcVar psd_2d_v = fo.addVar(name + "_psd_2d",netCDF::ncDouble, dims);

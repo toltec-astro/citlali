@@ -40,12 +40,14 @@ public:
         // copy rtcdata
         out = in;
 
-        array_indices = calib.apt["array"].template cast<Eigen::Index> ();
-        nw_indices = calib.apt["nw"].template cast<Eigen::Index> ();
-        det_indices = Eigen::VectorXI::LinSpaced(out.scans.data.cols(),0,out.scans.data.cols()-1);
+        if (stokes_param != "I") {
+            array_indices = calib.apt["array"].template cast<Eigen::Index> ();
+            nw_indices = calib.apt["nw"].template cast<Eigen::Index> ();
+            det_indices = Eigen::VectorXI::LinSpaced(out.scans.data.cols(),0,out.scans.data.cols()-1);
+        }
 
         // only run demodulation if not stokes I
-        if (stokes_param != "I") {
+        else {
             // number of samples
             Eigen::Index n_pts = in.scans.data.rows();
 
@@ -83,7 +85,6 @@ public:
                 Eigen::Index k = 0;
                 for (Eigen::Index i=0; i<calib.n_dets; i++) {
                     // if matched, add to polarized array
-                    //if (calib.apt["loc"](i)!=-1) {
                     if (calib.apt["fg"](i)!=-1) {
                         polarized_scans.col(k) = in.scans.data.col(i);
 
