@@ -468,6 +468,7 @@ void Engine::get_mapmaking_config(CT &config) {
     get_config_value(config, map_method, missing_keys, invalid_keys, std::tuple{"mapmaking","method"},{"naive","jinc"});
 
     if (map_method=="jinc") {
+        get_config_value(config, jinc_r_max, missing_keys, invalid_keys, std::tuple{"mapmaking","jinc_filter","r_max"});
         // vector of eigenvalues to cut
         for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
             auto jinc_shape_vec = config.template get_typed<std::vector<double>>(std::tuple{"mapmaking","jinc_filter","shape_params",arr_name});
@@ -1644,6 +1645,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     // add jinc shape params
     if (map_method=="jinc") {
+        fits_io->at(i).pfits->pHDU().addKey("JINC_A", jinc_shape_params[calib.arrays(i)][0], "jinc shape param a");
         fits_io->at(i).pfits->pHDU().addKey("JINC_A", jinc_shape_params[calib.arrays(i)][0], "jinc shape param a");
         fits_io->at(i).pfits->pHDU().addKey("JINC_B", jinc_shape_params[calib.arrays(i)][1], "jinc shape param b");
         fits_io->at(i).pfits->pHDU().addKey("JINC_C", jinc_shape_params[calib.arrays(i)][2], "jinc shape param c");
