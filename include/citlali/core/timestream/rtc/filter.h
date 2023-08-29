@@ -67,9 +67,11 @@ void Filter::make_filter(double fsmp) {
 
     // loop through and calculate coefficients
     // boost is faster than eigen/unsupported/special_functions
+
+    double i_0_alpha = boost::math::cyl_bessel_i(0, alpha);
+
     for (Eigen::Index i=0; i<n_terms; i++) {
-        coef(i) = boost::math::cyl_bessel_i(0, arg(i)) /
-                  boost::math::cyl_bessel_i(0, alpha);
+        coef(i) = boost::math::cyl_bessel_i(0, arg(i)) / i_0_alpha;
     }
 
     // generate time array
@@ -89,7 +91,7 @@ void Filter::make_filter(double fsmp) {
 
     // normalize with sum
     double filter_sum = filter.sum();
-    filter = filter.array() / filter_sum;
+    //filter = filter.array() / filter_sum;
 }
 
 void Filter::make_notch_filter(double fsmp) {

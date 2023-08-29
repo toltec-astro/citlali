@@ -290,7 +290,7 @@ void WienerFilter::calc_vvq(MB &mb, const int map_index) {
     double psd_break = 0.;
 
     for (Eigen::Index i=0; i<n_psd; i++) {
-        if (psd(i)/max_psd < psd_lim){
+        if (psd(i)/max_psd < psd_lim) {
             psd_freq_break = psd_freq(i);
             break;
         }

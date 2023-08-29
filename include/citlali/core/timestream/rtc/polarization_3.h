@@ -40,7 +40,7 @@ public:
         // copy rtcdata
         out = in;
 
-        if (stokes_param != "I") {
+        if (stokes_param == "I") {
             array_indices = calib.apt["array"].template cast<Eigen::Index> ();
             nw_indices = calib.apt["nw"].template cast<Eigen::Index> ();
             det_indices = Eigen::VectorXI::LinSpaced(out.scans.data.cols(),0,out.scans.data.cols()-1);

@@ -75,9 +75,9 @@ auto jinc_func(double r, double a, double b, double c, double r_max, double l_d)
 
     if (r!=0) {
         r = r/l_d;
-        auto arg0 = 2*boost::math::cyl_bessel_j(1,2*pi*r/a)/(2*pi*r/a);
-        auto arg1 = exp(-pow(2*r/b,c));
-        auto arg2 = 2*boost::math::cyl_bessel_j(1,3.831706*r/r_max)/(3.831706*r/r_max);
+        auto arg0 = 2.*boost::math::cyl_bessel_j(1,2.*pi*r/a)/(2.*pi*r/a);
+        auto arg1 = exp(-pow(2.*r/b,c));
+        auto arg2 = 2.*boost::math::cyl_bessel_j(1,3.831706*r/r_max)/(3.831706*r/r_max);
 
         return arg0*arg1*arg2;
     }
