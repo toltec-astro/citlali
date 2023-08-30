@@ -91,7 +91,7 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                         map_buffer_t &omb, map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices, Eigen::DenseBase<Derived> &det_indices,
                         std::string &pixel_axes, std::string &redu_type, apt_t &apt,
                         pointing_offset_t &pointing_offsets_arcsec, double d_fsmp, bool run_noise,
-                        double r_max, std::map<Eigen::Index,Eigen::VectorXd> &shape_params) {
+                        double r_max, std::map<Eigen::Index,Eigen::VectorXd> &shape_params, std::string parallel_policy) {
 
     // lambda over diameter
     std::map<Eigen::Index,double> l_d;
@@ -146,7 +146,7 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
     ObsMapBuffer* nmb = NULL;
 
     // matrix to hold random noise value
-    Eigen::VectorXi noise;
+    Eigen::Matrix<int,Eigen::Dynamic, Eigen::Dynamic> noise;
 
     if (run_noise) {
         // set pointer to cmb if it has noise maps
@@ -166,12 +166,26 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
         boost::random::uniform_int_distribution<> rands{0,1};
 
         // rescale random values to -1 or 1
-        noise =
-            Eigen::VectorXi::Zero(nmb->n_noise).unaryExpr([&](int dummy){return rands(eng);});
-        noise = (2.*(noise.template cast<double>().array() - 0.5)).template cast<int>();
+        if (nmb->randomize_dets) {
+            noise =
+                Eigen::Matrix<int,Eigen::Dynamic,Eigen::Dynamic>::Zero(nmb->n_noise, n_dets).unaryExpr([&](int dummy){return rands(eng);});
+            noise = (2.*(noise.template cast<double>().array() - 0.5)).template cast<int>();
+        }
+        else {
+            noise =
+                Eigen::Matrix<int,Eigen::Dynamic,1>::Zero(nmb->n_noise).unaryExpr([&](int dummy){return rands(eng);});
+            noise = (2.*(noise.template cast<double>().array() - 0.5)).template cast<int>();
+        }
     }
 
-    for (Eigen::Index i=0; i<n_dets; i++) {
+    std::vector<int> det_in_vec, det_out_vec;
+
+    det_in_vec.resize(n_dets);
+    std::iota(det_in_vec.begin(), det_in_vec.end(), 0);
+    det_out_vec.resize(n_dets);
+
+    grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+    //for (Eigen::Index i=0; i<n_dets; i++) {
         // skip completely flagged detectors
         if ((in.flags.data.col(i).array()==0).any()) {
             double az_off = 0;
@@ -298,7 +312,12 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 
                                         // populate signal map
                                         for (Eigen::Index nn=0; nn<nmb->n_noise; nn++) {
-                                            nmb->noise[map_index](ri,ci,nn) += noise(nn)*signal;
+                                            if (nmb->randomize_dets) {
+                                                nmb->noise[map_index](ri,ci,nn) += noise(nn,i)*signal;
+                                            }
+                                            else {
+                                                nmb->noise[map_index](ri,ci,nn) += noise(nn)*signal;
+                                            }
                                         }
                                     }
                                 }
@@ -308,6 +327,7 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 }
             }
         }
-    }
+        return 0;
+    });
 }
 } // namespace mapmaking

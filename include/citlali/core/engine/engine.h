@@ -855,6 +855,9 @@ void Engine::get_citlali_config(CT &config) {
     if (run_noise) {
         get_config_value(config, omb.n_noise, missing_keys, invalid_keys, std::tuple{"noise_maps","n_noise_maps"},{},{0},{});
         cmb.n_noise = omb.n_noise;
+
+        get_config_value(config, omb.randomize_dets, missing_keys, invalid_keys, std::tuple{"noise_maps","randomize_dets"});
+        cmb.randomize_dets = omb.randomize_dets;
     }
     else {
         omb.n_noise = 0;
@@ -2325,8 +2328,11 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
         "b_fwhm",
         "b_fwhm_err",
         "angle",
-        "angle_err"
+        "angle_err",
+        "sig2noise"
     };
+
+    int n_params = 6;
 
     std::string pos_units;
 
@@ -2392,6 +2398,9 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
     // rotation angle error
     source_meta["angle_err"].push_back("units: radians");
     source_meta["angle_err"].push_back("fitted rotation angle error");
+    // signal to noise
+    source_meta["sig2noise"].push_back("units: N/A");
+    source_meta["sig2noise"].push_back("signal to noise");
 
     // count up the total number of sources
     Eigen::Index n_sources = 0;
@@ -2400,14 +2409,20 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
     }
 
     // matrix to hold source information
-    Eigen::MatrixXf source_table(n_sources, 13);
+    Eigen::MatrixXf source_table(n_sources, 2*n_params + 2);
 
     // loop through params and add arrays
     Eigen::Index k=0;
     for (Eigen::Index i=0; i<mb->n_sources.size(); i++) {
         if (mb->n_sources[i]!=0) {
+            // calculate map standard deviation
+            double map_std_dev = engine_utils::calc_std_dev(mb->signal[i]);
+
             for (Eigen::Index j=0; j<mb->n_sources[i]; j++) {
                 source_table(k,0) = maps_to_arrays(i);
+                // set signal to noise
+                source_table(i,2*n_params + 1) = mb->source_params(k,0)/map_std_dev;
+
                 k++;
             }
         }
@@ -2415,7 +2430,7 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
 
     // populate table
     Eigen::Index j = 0;
-    for (Eigen::Index i=1; i<12; i=i+2) {
+    for (Eigen::Index i=1; i<2*n_params; i=i+2) {
         source_table.col(i) = mb->source_params.col(j).template cast <float> ();
         source_table.col(i+1) = mb->source_perror.col(j).template cast <float> ();
         j++;

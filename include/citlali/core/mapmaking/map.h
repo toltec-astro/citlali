@@ -67,6 +67,9 @@ public:
     // noise maps (n_rows, n_cols, n_noise) of length n_maps
     std::vector<Eigen::Tensor<double,3>> noise;
 
+    // randomize noise maps on detectors
+    bool randomize_dets;
+
     // coverage cut
     double cov_cut;
 

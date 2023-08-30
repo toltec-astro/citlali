@@ -181,7 +181,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
 
     if (run_despike) {
         SPDLOG_DEBUG("despiking");
-        //despiker.despike(in_pol.scans.data, in_pol.flags.data, calib.apt);
+        despiker.despike(in_pol.scans.data, in_pol.flags.data, calib.apt);
 
         std::string grp;
 
@@ -212,6 +212,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
             }
         }
 
+        SPDLOG_DEBUG("replacing spikes");
         for (auto const& [key, val] : grp_limits) {
             // starting index
             auto start_index = std::get<0>(val);
@@ -233,7 +234,6 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
                 in_flags(in_flags_ref.data(), in_flags_ref.rows(), in_flags_ref.cols(),
                          Eigen::OuterStride<>(in_flags_ref.outerStride()));
 
-            SPDLOG_DEBUG("replacing spikes");
             //despiker.replace_spikes(in_scans, in_flags, calib.apt, start_index);
         }
 

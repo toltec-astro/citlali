@@ -34,6 +34,7 @@ coadd: # coaddition controls
 noise_maps: # noise map controls (coadded noise maps if coadd enabled, obs noise maps if disabled)
   enabled: false # enable or disable noise maps
   n_noise_maps: 1 # number of noise maps (>0)
+  randomize_dets: true # randomize jackknifed noise maps on time chunks and detectors if true. only on time chunks if false.
 inputs: # list of inputs and related data
   - cal_items:
       - beammap_source: # extra information used by beammapping (not needed if redu_type!=beammap)

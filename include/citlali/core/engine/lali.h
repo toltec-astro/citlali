@@ -92,6 +92,11 @@ void Lali::setup() {
         parallel_policy = "seq";
     }
 
+    // use per detector parallelization for jinc mapmaking
+    if (map_method == "jinc") {
+        parallel_policy = "seq";
+    }
+
     // print basic info for obs reduction
     print_summary();
 
@@ -223,7 +228,7 @@ auto Lali::run() {
                 else if (map_method=="jinc") {
                     mapmaking::populate_maps_jinc(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
                                                   redu_type, calib.apt, ptcdata.pointing_offsets_arcsec.data, telescope.d_fsmp, run_noise,
-                                                  jinc_r_max, jinc_shape_params);
+                                                  jinc_r_max, jinc_shape_params, omb.parallel_policy);
                 }
             }
         }

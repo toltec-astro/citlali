@@ -193,6 +193,11 @@ void Beammap::setup() {
         parallel_policy = "seq";
     }
 
+    // use per detector parallelization for jinc mapmaking
+    if (map_method == "jinc") {
+        parallel_policy = "seq";
+    }
+
     /* update apt table meta data */
     calib.apt_meta.reset();
 
@@ -471,7 +476,7 @@ auto Beammap::run_loop() {
                 // subtract gaussian
                 if (current_iter > 0) {
                     SPDLOG_INFO("subtracting gaussian from tod");
-                    ptcproc.add_gaussian<PTCProc::GaussType::add>(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt,
+                    ptcproc.add_gaussian<PTCProc::GaussType::subtract>(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt,
                                                                  ptcs[i].pointing_offsets_arcsec.data,omb.pixel_size_rad, omb.n_rows, omb.n_cols,
                                                                  ptcs[i].map_indices.data, ptcs[i].det_indices.data);
                 }
@@ -513,9 +518,6 @@ auto Beammap::run_loop() {
                 }
             }
 
-            // update progress bar
-            pb.count(telescope.scan_indices.cols(), 1);
-
             // set weights to a constant value
             ptcs[i].weights.data.resize(ptcs[i].scans.data.cols());
             ptcs[i].weights.data.setOnes();
@@ -549,9 +551,14 @@ auto Beammap::run_loop() {
                     mapmaking::populate_maps_jinc(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
                                                   ptcs[i].det_indices.data, telescope.pixel_axes,
                                                   redu_type, calib.apt, ptcs[i].pointing_offsets_arcsec.data,
-                                                  telescope.d_fsmp, run_noise, jinc_r_max, jinc_shape_params);
+                                                  telescope.d_fsmp, run_noise, jinc_r_max, jinc_shape_params,
+                                                  omb.parallel_policy);
                 }
             }
+
+            // update progress bar
+            pb.count(telescope.scan_indices.cols(), 1);
+
             return 0;
         });
 
@@ -904,7 +911,7 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
         std::string array_name = toltec_io.array_name_map[array_index];
 
         // calc flux scale (always in mJy/beam)
-        if (params(i,0)!=0) {// && calib.apt["flag"](i)!=0) {
+        if (params(i,0)!=0) {
             //calib.apt["flxscale"](i) = exp(-tau_freq[array_index](0))*beammap_fluxes_mJy_beam[array_name]/params(i,0);
             calib.apt["flxscale"](i) = beammap_fluxes_mJy_beam[array_name]/params(i,0);
             calib.apt["sens"](i) = calib.apt["sens"](i)*calib.apt["flxscale"](i);

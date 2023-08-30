@@ -36,7 +36,8 @@ public:
         "b_fwhm",
         "b_fwhm_err",
         "angle",
-        "angle_err"
+        "angle_err",
+        "sig2noise"
     };
 
     std::map<std::string,std::string> ppt_header_units;
@@ -114,6 +115,11 @@ void Pointing::setup() {
         parallel_policy = "seq";
     }
 
+    // use per detector parallelization for jinc mapmaking
+    if (map_method == "jinc") {
+        parallel_policy = "seq";
+    }
+
     // set center pointing
     if (telescope.pixel_axes == "icrs") {
         omb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0)*RAD_TO_DEG;
@@ -145,7 +151,8 @@ void Pointing::setup() {
         {"b_fwhm", "arcsec"},
         {"b_fwhm_err", "arcsec"},
         {"angle", "rad"},
-        {"angle_err", "rad"}
+        {"angle_err", "rad"},
+        {"sig2noise", "N/A"}
     };
 
     /* populate ppt meta information */
@@ -201,6 +208,9 @@ void Pointing::setup() {
 
     ppt_meta["angle_err"].push_back("units: radians");
     ppt_meta["angle_err"].push_back("fitted rotation angle error");
+
+    ppt_meta["sig2noise"].push_back("units: N/A");
+    ppt_meta["sig2noise"].push_back("signal to noise");
 
     // add point model variables from telescope file
     for (const auto &val: telescope.tel_header) {
@@ -344,7 +354,7 @@ auto Pointing::run() {
                 else if (map_method=="jinc") {
                     mapmaking::populate_maps_jinc(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
                                                   redu_type, calib.apt, ptcdata.pointing_offsets_arcsec.data, telescope.d_fsmp, run_noise,
-                                                  jinc_r_max, jinc_shape_params);
+                                                  jinc_r_max, jinc_shape_params, omb.parallel_policy);
                 }
             }
         }
@@ -488,7 +498,7 @@ void Pointing::output() {
     std::string dir_name;
 
     // matrix to hold pointing fit values and errors
-    Eigen::MatrixXf ppt_table(n_maps, 2*n_params + 1);
+    Eigen::MatrixXf ppt_table(n_maps, 2*n_params + 2);
 
     // raw obs maps
     if constexpr (map_type == mapmaking::RawObs) {
@@ -502,11 +512,16 @@ void Pointing::output() {
                             (dir_name, redu_type, "", obsnum, telescope.sim_obs);
 
         // loop through params and add arrays
-        for (const auto &stokes_param: rtcproc.polarization.stokes_params) {
-            for (Eigen::Index i=0; i<n_maps; i++) {
-                ppt_table(i,0) = maps_to_arrays(i);
-            }
+        //for (const auto &stokes_param: rtcproc.polarization.stokes_params) {
+        for (Eigen::Index i=0; i<n_maps; i++) {
+            ppt_table(i,0) = maps_to_arrays(i);
+
+            // calculate map standard deviation
+            double map_std_dev = engine_utils::calc_std_dev(mb->signal[i]);
+            // set signal to noise
+            ppt_table(i,2*n_params + 1) = params(i,0)/map_std_dev;
         }
+        //}
 
         // populate table
         Eigen::Index j = 0;
@@ -519,6 +534,7 @@ void Pointing::output() {
         // write table
         to_ecsv_from_matrix(ppt_filename, ppt_table, ppt_header, ppt_meta);
 
+        // write stats file
         write_stats();
     }
 
@@ -534,11 +550,16 @@ void Pointing::output() {
                             (dir_name, redu_type, "", obsnum, telescope.sim_obs);
 
         // loop through params and add arrays
-        for (const auto &stokes_param: rtcproc.polarization.stokes_params) {
-            for (Eigen::Index i=0; i<n_maps; i++) {
-                ppt_table(i,0) = maps_to_arrays(i);
-            }
+        //for (const auto &stokes_param: rtcproc.polarization.stokes_params) {
+        for (Eigen::Index i=0; i<n_maps; i++) {
+            ppt_table(i,0) = maps_to_arrays(i);
+
+            // calculate map standard deviation
+            double map_std_dev = engine_utils::calc_std_dev(mb->signal[i]);
+            // set signal to noise
+            ppt_table(i,2*n_params + 1) = params(i,0)/map_std_dev;
         }
+        //}
 
         // populate table
         Eigen::Index j = 0;
