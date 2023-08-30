@@ -468,16 +468,16 @@ void Pointing::fit_maps() {
 
             if (telescope.pixel_axes=="icrs") {
                 Eigen::VectorXd lat(1), lon(1);
-                lat << params(2)*ASEC_TO_RAD;
-                lon << params(1)*ASEC_TO_RAD;
+                lat << params(i,2)*ASEC_TO_RAD;
+                lon << params(i,1)*ASEC_TO_RAD;
 
                 auto [adec, ara] = engine_utils::tangent_to_abs(lat, lon, omb.wcs.crval[0]*DEG_TO_RAD, omb.wcs.crval[1]*DEG_TO_RAD);
 
-                params(1) = ara(0)*RAD_TO_DEG;
-                params(2) = adec(0)*RAD_TO_DEG;
+                params(i,1) = ara(0)*RAD_TO_DEG;
+                params(i,2) = adec(0)*RAD_TO_DEG;
 
-                perrors(1) = perrors(1)*ASEC_TO_RAD;
-                perrors(2) = perrors(2)*ASEC_TO_RAD;
+                perrors(i,1) = perrors(i,1)*ASEC_TO_DEG;
+                perrors(i,2) = perrors(i,2)*ASEC_TO_DEG;
             }
 
         }
@@ -512,7 +512,6 @@ void Pointing::output() {
                             (dir_name, redu_type, "", obsnum, telescope.sim_obs);
 
         // loop through params and add arrays
-        //for (const auto &stokes_param: rtcproc.polarization.stokes_params) {
         for (Eigen::Index i=0; i<n_maps; i++) {
             ppt_table(i,0) = maps_to_arrays(i);
 
@@ -521,7 +520,6 @@ void Pointing::output() {
             // set signal to noise
             ppt_table(i,2*n_params + 1) = params(i,0)/map_std_dev;
         }
-        //}
 
         // populate table
         Eigen::Index j = 0;
@@ -550,7 +548,6 @@ void Pointing::output() {
                             (dir_name, redu_type, "", obsnum, telescope.sim_obs);
 
         // loop through params and add arrays
-        //for (const auto &stokes_param: rtcproc.polarization.stokes_params) {
         for (Eigen::Index i=0; i<n_maps; i++) {
             ppt_table(i,0) = maps_to_arrays(i);
 
@@ -559,7 +556,6 @@ void Pointing::output() {
             // set signal to noise
             ppt_table(i,2*n_params + 1) = params(i,0)/map_std_dev;
         }
-        //}
 
         // populate table
         Eigen::Index j = 0;
