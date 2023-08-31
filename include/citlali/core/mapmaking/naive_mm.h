@@ -23,9 +23,8 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                          std::string &pixel_axes, std::string &redu_type, apt_t &apt,
                          pointing_offset_t &pointing_offsets_arcsec, double d_fsmp, bool run_noise) {
 
-
-    Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
+    Eigen::Index n_dets = in.scans.data.cols();
 
     // pointer to map buffer with noise maps
     ObsMapBuffer* nmb = NULL;

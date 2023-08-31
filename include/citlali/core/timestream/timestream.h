@@ -215,12 +215,14 @@ struct TCData<TCDataKind::PTC, RefType>
     // fcf
     Base::data_t<Eigen::VectorXd> fcf;
     // eigenvalues for scan
-    Base::data_t<Eigen::VectorXd> evals;
+    Base::data_t<std::vector<std::vector<Eigen::VectorXd>>> evals;
+    // eigenvectors for scan
+    Base::data_t<std::vector<std::vector<Eigen::MatrixXd>>> evecs;
     // vectors for mapping apt table onto timestreams
     Base::data_t<Eigen::VectorXI> det_indices, nw_indices, array_indices, map_indices;
     // number of detectors lower than stddev limit
     int n_low_dets;
-    // number of detectors lower than stddev limit
+    // number of detectors higher than stddev limit
     int n_high_dets;
     // time of ptc creation
     std::string creation_time = engine_utils::current_date_time();

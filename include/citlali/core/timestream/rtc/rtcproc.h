@@ -40,6 +40,9 @@ public:
     // minimum allowed frequency distance between tones
     double delta_f_min_Hz;
 
+    // number of weight outlier iterations
+    int iter_lim = 0;
+
     template <class calib_t, typename Derived>
     auto calc_map_indices(calib_t &, Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &,
                           Eigen::DenseBase<Derived> &, std::string, std::string);
@@ -160,16 +163,19 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     // create kernel if requested
     if (run_kernel) {
         SPDLOG_DEBUG("creating kernel timestream");
+        // symmetric gaussian kernel
         if (kernel.type == "gaussian") {
             SPDLOG_DEBUG("creating symmetric gaussian kernel");
             kernel.create_symmetric_gaussian_kernel(in_pol, pixel_axes, redu_type, calib.apt, in_pol.pointing_offsets_arcsec.data,
                                                     det_indices);
         }
+        // airy kernel
         else if (kernel.type == "airy") {
             SPDLOG_DEBUG("creating airy kernel");
             kernel.create_airy_kernel(in_pol, pixel_axes, redu_type, calib.apt, in_pol.pointing_offsets_arcsec.data,
                                       det_indices);
         }
+        // get kernel from fits
         else if (kernel.type == "fits") {
             SPDLOG_DEBUG("getting kernel from fits");
             kernel.create_kernel_from_fits(in_pol, pixel_axes, redu_type, calib.apt, in_pol.pointing_offsets_arcsec.data,
@@ -179,34 +185,25 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         out.kernel_generated = true;
     }
 
+    // run despiking
     if (run_despike) {
         SPDLOG_DEBUG("despiking");
+        // despike data
         despiker.despike(in_pol.scans.data, in_pol.flags.data, calib.apt);
-
-        std::string grp;
-
-        // nw grouping for flag replacement
-        if (despiker.grouping == "nw") {
-            grp = "nw";
-        }
-        // array grouping for flag replacement
-        else if (despiker.grouping == "array") {
-            grp = "array";
-        }
-
+        // we want to replace spikes on a per array or network basis
         std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
 
-        Eigen::Index grp_i = calib.apt[grp](det_indices(0));
+        Eigen::Index grp_i = calib.apt[despiker.grouping](det_indices(0));
         grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
         Eigen::Index j = 0;
         // loop through apt table arrays, get highest index for current array
         for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
             auto det_index = det_indices(i);
-            if (calib.apt[grp](det_index) == grp_i) {
+            if (calib.apt[despiker.grouping](det_index) == grp_i) {
                 std::get<1>(grp_limits[grp_i]) = i + 1;
             }
             else {
-                grp_i = calib.apt[grp](det_index);
+                grp_i = calib.apt[despiker.grouping](det_index);
                 j += 1;
                 grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
             }
@@ -234,7 +231,8 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
                 in_flags(in_flags_ref.data(), in_flags_ref.rows(), in_flags_ref.cols(),
                          Eigen::OuterStride<>(in_flags_ref.outerStride()));
 
-            //despiker.replace_spikes(in_scans, in_flags, calib.apt, start_index);
+            // replace spikes
+            despiker.replace_spikes(in_scans, in_flags, calib.apt, start_index);
         }
 
         out.despiked = true;
@@ -387,32 +385,32 @@ auto RTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
     // make a copy of the calib class for flagging
     calib_t calib_scan = calib;
 
-    // number of detectors
-    Eigen::Index n_dets = in.scans.data.cols();
-
-    std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
-
-    Eigen::Index grp_i = calib.apt["array"](det_indices(0));
-    grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
-    Eigen::Index j = 0;
-    // loop through apt table arrays, get highest index for current array
-    for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
-        auto det_index = det_indices(i);
-        if (calib.apt["array"](det_index) == grp_i) {
-            std::get<1>(grp_limits[grp_i]) = i + 1;
-        }
-        else {
-            grp_i = calib.apt["array"](det_index);
-            j += 1;
-            grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
-        }
-    }
-
-    in.n_low_dets = 0;
-    in.n_high_dets = 0;
-
     // only run if limits are not zero
     if (lower_weight_factor !=0 || upper_weight_factor !=0) {
+        // number of detectors
+        Eigen::Index n_dets = in.scans.data.cols();
+
+        std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
+
+        Eigen::Index grp_i = calib.apt["array"](det_indices(0));
+        grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
+        Eigen::Index j = 0;
+        // loop through apt table arrays, get highest index for current array
+        for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
+            auto det_index = det_indices(i);
+            if (calib.apt["array"](det_index) == grp_i) {
+                std::get<1>(grp_limits[grp_i]) = i + 1;
+            }
+            else {
+                grp_i = calib.apt["array"](det_index);
+                j += 1;
+                grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
+            }
+        }
+
+        in.n_low_dets = 0;
+        in.n_high_dets = 0;
+
         for (auto const& [key, val] : grp_limits) {
 
             bool keep_going = true;
@@ -446,7 +444,7 @@ auto RTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                         det_std_dev(k) = engine_utils::calc_std_dev(scans, flags);
 
                         // convert to 1/variance
-                        if (det_std_dev(k) !=0) {
+                        if (det_std_dev(k)!=0) {
                             det_std_dev(k) = std::pow(det_std_dev(k),-2);
                         }
                         else {
@@ -500,7 +498,7 @@ auto RTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                 // increment iteration
                 n_iter++;
                 // check if no more detectors are above limit
-                if ((n_low_dets==0 && n_high_dets==0) || n_iter > 0) {
+                if ((n_low_dets==0 && n_high_dets==0) || n_iter > iter_lim) {
                     keep_going = false;
                 }
             }

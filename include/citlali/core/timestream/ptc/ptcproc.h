@@ -18,22 +18,30 @@ using timestream::TCData;
 
 class PTCProc {
 public:
+    // controls for timestream reduction
     bool run_clean, run_calibrate, run_stokes_clean;
+    // median weight factor
     double med_weight_factor;
+    // weight type (full, approximate, const)
     std::string weighting_type;
+
+    // upper and lower limits for outliers
+    double lower_weight_factor, upper_weight_factor;
+
+    // ptc tod proc
+    timestream::Cleaner cleaner;
+
+    // toltec io class for array names
+    engine_utils::toltecIO toltec_io;
+
+    // number of weight outlier iterations
+    int iter_lim = 0;
 
     // add or subtract source
     enum GaussType {
         add = 0,
         subtract = 1
     };
-
-    // ptc tod proc
-    timestream::Cleaner cleaner;
-
-    engine_utils::toltecIO toltec_io;
-
-    double lower_weight_factor, upper_weight_factor;
 
     void subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &);
 
@@ -73,6 +81,7 @@ public:
 
 void PTCProc::subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in) {
 
+    // cast flags to double and flip 1's and 0's so we can multiply by the data
     auto f = (in.flags.data.derived().array().cast <double> ().array() - 1).abs();
     // mean of each detector
     Eigen::RowVectorXd col_mean = (in.scans.data.derived().array()*f).colwise().sum()/
@@ -109,6 +118,10 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 
         // loop through config groupings
         for (const auto & group: cleaner.grouping) {
+
+            out.evals.data.push_back({});
+            out.evecs.data.push_back({});
+
             // map of tuples to hold detector limits
             std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
 
@@ -203,6 +216,14 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                         SPDLOG_DEBUG("evals {}", evals);
                         SPDLOG_DEBUG("evecs {}", evecs);
 
+                        Eigen::VectorXd ev = evals.head(cleaner.n_calc);
+                        Eigen::MatrixXd evc = evecs.leftCols(cleaner.n_calc);
+
+                        // copy to ptcdata
+                        out.evals.data[indx].push_back(std::move(ev));
+                        out.evecs.data[indx].push_back(std::move(evc));
+
+                        // remove eigenvalues from the data and reconstruct the tod
                         cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_scans, in_flags, evals, evecs, out_scans,
                                                                                        cleaner.n_eig_to_cut[arr_index](indx));
 
@@ -223,6 +244,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                                     out_kernel(out_kernel_ref.data(), out_kernel_ref.rows(), out_scans_ref.cols(),
                                                Eigen::OuterStride<>(out_kernel_ref.outerStride()));
 
+                                // remove eigenvalues from the kernel and reconstruct the tod
                                 cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_kernel, in_flags, evals, evecs, out_kernel,
                                                                                                cleaner.n_eig_to_cut[arr_index](indx));
                         }
@@ -343,6 +365,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
         }
     }
 
+    // collect detectors that are un-flagged and have non-zero weights
     for (auto const& [key, val] : grp_limits) {
         auto grp_weights = in.weights.data(Eigen::seq(std::get<0>(grp_limits[key]),
                                                      std::get<1>(grp_limits[key])-1));
@@ -376,11 +399,14 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
             good_wt = grp_weights;
         }
 
+        // get median weight
         auto med_wt = tula::alg::median(good_wt);
+        // store median weights
         in.median_weights.push_back(med_wt);
 
         int outliers = 0;
 
+        // reset high weights to median
         j = std::get<0>(grp_limits[key]);
         for (Eigen::Index m=0; m<grp_weights.size(); m++) {
             if (in.weights.data(j) > med_weight_factor*med_wt) {
@@ -425,32 +451,32 @@ auto PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
     // make a copy of the calib class for flagging
     calib_t calib_scan = calib;
 
-    // number of detectors
-    Eigen::Index n_dets = in.scans.data.cols();
-
-    std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
-
-    Eigen::Index grp_i = calib.apt["array"](det_indices(0));
-    grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
-    Eigen::Index j = 0;
-    // loop through apt table arrays, get highest index for current array
-    for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
-        auto det_index = det_indices(i);
-        if (calib.apt["array"](det_index) == grp_i) {
-            std::get<1>(grp_limits[grp_i]) = i + 1;
-        }
-        else {
-            grp_i = calib.apt["array"](det_index);
-            j += 1;
-            grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
-        }
-    }
-
-    in.n_low_dets = 0;
-    in.n_high_dets = 0;
-
     // only run if limits are not zero
     if (lower_weight_factor !=0 || upper_weight_factor !=0) {
+        // number of detectors
+        Eigen::Index n_dets = in.scans.data.cols();
+
+        std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
+
+        Eigen::Index grp_i = calib.apt["array"](det_indices(0));
+        grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
+        Eigen::Index j = 0;
+        // loop through apt table arrays, get highest index for current array
+        for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
+            auto det_index = det_indices(i);
+            if (calib.apt["array"](det_index) == grp_i) {
+                std::get<1>(grp_limits[grp_i]) = i + 1;
+            }
+            else {
+                grp_i = calib.apt["array"](det_index);
+                j += 1;
+                grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
+            }
+        }
+
+        in.n_low_dets = 0;
+        in.n_high_dets = 0;
+
         for (auto const& [key, val] : grp_limits) {
 
             bool keep_going = true;
@@ -505,8 +531,9 @@ auto PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                 // loop through good detectors and flag those that have std devs beyond the limits
                 for (Eigen::Index j=0; j<n_good_dets; j++) {
                     Eigen::Index det_index = det_indices(dets(j));
-                    // flag those below limit
+                    // only run if unflagged already
                     if (calib.apt["flag"](det_index)==0) {
+                        // flag those below limit
                         if ((det_std_dev(j) < (lower_weight_factor*mean_std_dev)) && lower_weight_factor!=0) {
                             if (map_grouping!="detector") {
                                 in.flags.data.col(dets(j)).setOnes();
@@ -538,7 +565,7 @@ auto PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
                 // increment iteration
                 n_iter++;
                 // check if no more detectors are above limit
-                if ((n_low_dets==0 && n_high_dets==0) || n_iter > 0) {
+                if ((n_low_dets==0 && n_high_dets==0) || n_iter > iter_lim) {
                     keep_going = false;
                 }
             }
@@ -559,6 +586,7 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
     // tangent plane pointing for each detector
     Eigen::MatrixXd lats(in.scans.data.rows(), in.scans.data.cols()), lons(in.scans.data.rows(), in.scans.data.cols());
 
+    // loop through detectors and get pointing
     for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
         double az_off = 0;
         double el_off = 0;
@@ -582,8 +610,10 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
     using netCDF::NcVar;
     using namespace netCDF::exceptions;
 
-    try {
+    //try {
+        // open netcdf file
         netCDF::NcFile fo(filepath, netCDF::NcFile::write);
+        // get variables
         auto vars = fo.getVars();
 
         // get absolute coords
@@ -633,9 +663,50 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
             std::vector<std::size_t> start_index_weights = {static_cast<unsigned long>(in.index.data), 0};
             std::vector<std::size_t> size_weights = {1, n_dets_exists};
 
+            // get weight variable
             NcVar weights_v = fo.getVar("weights");
 
+            // add weights to tod output
             weights_v.putVar(start_index_weights, size_weights, in.weights.data.data());
+
+            // get number of eigenvalues to save
+            NcDim n_eigs_dim = fo.getDim("n_eigs");
+
+            // loop through cleaner gropuing
+            for (Eigen::Index i=0; i<in.evals.data.size(); i++) {
+            Eigen::Index j = 0;
+            // loop through eigenvalues in current group
+                for (const auto &evals: in.evals.data[i]) {
+                    NcVar eval_v = fo.addVar("evals_" + cleaner.grouping[i] + "_" + std::to_string(i) + "_" + std::to_string(j) +
+                                             "_chunk_" + std::to_string(in.index.data), netCDF::ncDouble,n_eigs_dim);
+                    eval_v.putVar(evals.data());
+                    j++;
+                }
+            }
+
+            // number of dimensions for eigenvectors
+            std::vector<netCDF::NcDim> eig_dims = {n_dets_dim, n_eigs_dim};
+
+            // loop through cleaner gropuing
+            for (Eigen::Index i=0; i<in.evecs.data.size(); i++) {
+                // start at first row and col
+                std::vector<std::size_t> start_eig_index = {0, 0};
+
+                NcVar evec_v = fo.addVar("evecs_" + cleaner.grouping[i] + "_" + std::to_string(i) + "_chunk_" + std::to_string(in.index.data),
+                                         netCDF::ncDouble,eig_dims);
+
+                // loop through eigenvectors in current group
+                for (const auto &evecs: in.evecs.data[i]) {
+                    std::vector<std::size_t> size = {TULA_SIZET(evecs.rows()), TULA_SIZET(cleaner.n_calc)};
+
+                    // transpose eigenvectors
+                    Eigen::MatrixXd ev = evecs.transpose();
+                    evec_v.putVar(start_eig_index, size, ev.data());
+
+                    // increment start
+                    start_eig_index[0] += TULA_SIZET(evecs.rows());
+                }
+            }
         }
 
         // append data
@@ -732,9 +803,9 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         fo.sync();
         fo.close();
 
-    } catch (NcException &e) {
-        SPDLOG_ERROR("{}", e.what());
-    }
+    //} catch (NcException &e) {
+    //    SPDLOG_ERROR("{}", e.what());
+    //}
 }
 
 template <PTCProc::GaussType gauss_type, typename DerivedB, typename DerivedC, typename apt_t, typename pointing_offset_t>
@@ -773,6 +844,7 @@ void PTCProc::add_gaussian(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::
         double sigma_lon = params(map_index,3);
         double rot_ang = params(map_index,5);
 
+        // use maximum of sigmas due to atmospheric cleaning
         double sigma = std::max(sigma_lat, sigma_lon);
 
         // subtract source
@@ -784,10 +856,12 @@ void PTCProc::add_gaussian(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::
         off_lat = pixel_size_rad*(off_lat - (n_rows)/2);
         off_lon = pixel_size_rad*(off_lon - (n_cols)/2);
 
+        // convert to on-sky units
         sigma_lon = pixel_size_rad*sigma;
         sigma_lat = pixel_size_rad*sigma;
         sigma = pixel_size_rad*sigma;
 
+        // get angles
         auto cost2 = cos(rot_ang) * cos(rot_ang);
         auto sint2 = sin(rot_ang) * sin(rot_ang);
         auto sin2t = sin(2. * rot_ang);
@@ -803,7 +877,6 @@ void PTCProc::add_gaussian(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::
         Eigen::VectorXd gauss(n_pts);
         // make gaussian
         for (Eigen::Index j=0; j<n_pts; j++) {
-            //if (distance(j) < 10*(sigma_lat+sigma_lon)/2) {
                 gauss(j) = amp*exp(pow(lon(j) - off_lon, 2) * a +
                                      (lon(j) - off_lon) * (lat(j) - off_lat) * b +
                                      pow(lat(j) - off_lat, 2) * c);

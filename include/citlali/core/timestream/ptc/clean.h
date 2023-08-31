@@ -17,17 +17,15 @@ public:
         SpectraBackend = 1
     };
 
-    // number of eigenvalues to remove
-    //int n_eig_to_cut;
-
     // standard deviation limit
     double stddev_limit;
 
-    // detector grouping
-    //std::string grouping;
-
     // number of eigenvalues to remove
     std::map<Eigen::Index,Eigen::VectorXI> n_eig_to_cut;
+
+    // number of eigenvalues to calculate
+    int n_calc = 64;
+
     // grouping
     std::vector<std::string> grouping;
 
@@ -119,14 +117,10 @@ public:
 template <Cleaner::EigenSolverBackend backend, typename DerivedA, typename DerivedB, typename DerivedC>
 auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eigen::DenseBase<DerivedB> &flags,
                               Eigen::DenseBase<DerivedC> &apt_flags, const Eigen::Index group_n_eig) {
+
     // dimensions
     Eigen::Index n_pts = scans.rows();
     Eigen::Index n_dets = scans.cols();
-
-    // eigenvalues
-    Eigen::VectorXd evals;
-    // eigenvecs
-    Eigen::MatrixXd evecs;
 
     // make copy of flags
     Eigen::MatrixXd f = abs(flags.derived().template cast<double> ().array() - 1);
@@ -150,6 +144,11 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     // calculate the covariance matrix
     pca_cov.noalias() = ((det.adjoint() * det).array() / denom.array()).matrix();
 
+    // eigenvalues
+    Eigen::VectorXd evals;
+    // eigenvectors
+    Eigen::MatrixXd evecs;
+
     if constexpr (backend == SpectraBackend) {
         // number of eigenvalues to remove
         int n_ev = group_n_eig;
@@ -160,7 +159,17 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
         }
 
         // number of values to calculate
-        int n_cv = n_ev * 2.5 < n_dets?int(n_ev * 2.5):n_dets;
+        int n_cv;
+
+        if (n_calc==0) {
+            n_cv = n_ev * 2.5 < n_dets?int(n_ev * 2.5):n_dets;
+        }
+        else {
+            n_cv = n_calc * 2.5 < n_dets?int(n_calc * 2.5):n_dets;
+            n_ev = n_calc;
+        }
+
+        SPDLOG_INFO("n_ev {}, n_calc {}, n_cv {}", n_ev, n_calc, n_cv);
 
         // set up spectra
         Spectra::DenseSymMatProd<double> op(pca_cov);
@@ -242,6 +251,7 @@ auto Cleaner::remove_eig_values(const Eigen::DenseBase<DerivedA> &scans, const E
     }
 
     SPDLOG_DEBUG("removing {} largest eigenvalues", limit_index);
+    SPDLOG_INFO("removing {} largest eigenvalues", limit_index);
 
     // subtract out the desired eigenvectors
     Eigen::MatrixXd proj = scans.derived() * evecs.derived().leftCols(limit_index);

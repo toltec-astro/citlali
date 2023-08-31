@@ -1099,6 +1099,9 @@ void Engine::create_tod_files() {
         else if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
             std::string tod_output_type_name = "ptc";
             tod_output_type_var.putVar(tod_output_type_index,tod_output_type_name);
+
+            // number of eigenvalues
+            netCDF::NcDim n_eigs_dim = fo.addDim("n_eigs",ptcproc.cleaner.n_calc);
         }
 
         // add obsnum

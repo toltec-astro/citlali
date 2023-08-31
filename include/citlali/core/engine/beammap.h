@@ -186,6 +186,9 @@ void Beammap::setup() {
             create_tod_files<engine_utils::toltecIO::ptc_timestream>();
         }
     }
+    else {
+        ptcproc.cleaner.n_calc = 0;
+    }
 
     // tod output mode require sequential policy so set explicitly
     if (run_tod_output || verbose_mode) {
@@ -1208,38 +1211,41 @@ auto Beammap::loop_pipeline() {
 template <class KidsProc, class RawObs>
 void Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
-    // add kids models to apt
-    auto [kids_models, kids_model_header] = kidsproc.load_fit_report(rawobs);
+    // only get kids params if not simulation
+    if (!telescope.sim_obs) {
+        // add kids models to apt
+        auto [kids_models, kids_model_header] = kidsproc.load_fit_report(rawobs);
 
-    Eigen::Index i = 0;
-    // loop through kids header
-    for (const auto &h: kids_model_header) {
-        std::string name = h;
-        if (name=="flag") {
-            name = "kids_flag";
-        }
-        calib.apt[name].resize(calib.n_dets);
-        Eigen::Index j = 0;
-        for (const auto &v: kids_models) {
-            calib.apt[name].segment(j,v.rows()) = v.col(i);
-            j = j + v.rows();
-        }
-
-        bool found = false;
-        for (const auto &key: calib.apt_header_keys){
-            if (key==name) {
-                found = true;
+        Eigen::Index i = 0;
+        // loop through kids header
+        for (const auto &h: kids_model_header) {
+            std::string name = h;
+            if (name=="flag") {
+                name = "kids_flag";
             }
-        }
-        if (!found) {
-            calib.apt_header_keys.push_back(name);
-            calib.apt_header_units[name] = "N/A";
-        }
+            calib.apt[name].resize(calib.n_dets);
+            Eigen::Index j = 0;
+            for (const auto &v: kids_models) {
+                calib.apt[name].segment(j,v.rows()) = v.col(i);
+                j = j + v.rows();
+            }
 
-        // detector orientation
-        calib.apt_meta[name].push_back("units: N/A");
-        calib.apt_meta[name].push_back(name);
-        i++;
+            bool found = false;
+            for (const auto &key: calib.apt_header_keys){
+                if (key==name) {
+                    found = true;
+                }
+            }
+            if (!found) {
+                calib.apt_header_keys.push_back(name);
+                calib.apt_header_units[name] = "N/A";
+            }
+
+            // detector orientation
+            calib.apt_meta[name].push_back("units: N/A");
+            calib.apt_meta[name].push_back(name);
+            i++;
+        }
     }
 
     // run timestream pipeline

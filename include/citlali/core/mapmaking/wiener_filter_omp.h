@@ -384,8 +384,8 @@ void WienerFilter::calc_vvq(MB &mb, const int map_index) {
     Eigen::MatrixXd psd_q(n_rows,n_cols);
 
     // psd and psd freq vectors
-    Eigen::VectorXd psd = mb.psds[map_index];
-    Eigen::VectorXd psd_freq = mb.psd_freqs[map_index];
+    Eigen::VectorXd psd = mb.noise_psds[map_index];
+    Eigen::VectorXd psd_freq = mb.noise_psd_freqs[map_index];
 
     // size of psd and psd freq vectors
     Eigen::Index n_psd = psd.size();

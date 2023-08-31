@@ -85,6 +85,9 @@ void Lali::setup() {
             create_tod_files<engine_utils::toltecIO::ptc_timestream>();
         }
     }
+    else {
+        ptcproc.cleaner.n_calc = 0;
+    }
 
     // tod output mode require sequential policy so set explicitly
     if (run_tod_output || verbose_mode) {

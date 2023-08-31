@@ -251,10 +251,6 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                     }
                 }
 
-                SPDLOG_INFO("spike_loc {}", spike_loc);
-                SPDLOG_INFO("spike_vals {}", spike_vals);
-                SPDLOG_INFO("count {}", count);
-
                 for (Eigen::Index i=0;i<spike_loc.size();i++) {
                     std::cerr << spike_loc(i) << "\n";
                 }
@@ -290,7 +286,7 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
 
                 // exit if the decay length is too large
                 if ((decay_length.array() > size * fsmp).any()) {
-                    SPDLOG_INFO("decay length is longer than {} * fsmp.  mission "
+                    SPDLOG_ERROR("decay length is longer than {} * fsmp.  mission "
                                 "failed, we'll get em next time.",size);
                     std::exit(EXIT_FAILURE);
                 }
@@ -572,7 +568,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                     double mean_std_dev = (std_dev_ff.array().sqrt()).sum() / det_count;
 
                     // add noise to the fake signal
-                    mean_std_dev *= apt["responsivity"](det + start_det); // not used
+                    //mean_std_dev *= apt["responsivity"](det + start_det); // not used
 
                     // boost random number generator
                     boost::random::normal_distribution<> rands{0, mean_std_dev};
@@ -584,7 +580,8 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
 
                     // the noiseless fake data is then the sky model plus the
                     // flagged detectors linear offset
-                    Eigen::VectorXd fake = sky_model.array() * apt["responsivity"](det + start_det) + lin_offset.array() + error.array();
+                    //Eigen::VectorXd fake = sky_model.array() * apt["responsivity"](det + start_det) + lin_offset.array() + error.array();
+                    Eigen::VectorXd fake = sky_model.array() + lin_offset.array() + error.array();
 
                     SPDLOG_INFO("fake {}", fake);
 
