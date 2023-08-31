@@ -169,8 +169,6 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
             n_ev = n_calc;
         }
 
-        SPDLOG_INFO("n_ev {}, n_calc {}, n_cv {}", n_ev, n_calc, n_cv);
-
         // set up spectra
         Spectra::DenseSymMatProd<double> op(pca_cov);
         Spectra::SymEigsSolver<Spectra::DenseSymMatProd<double>> eigs(op, n_ev, n_cv);
@@ -251,7 +249,6 @@ auto Cleaner::remove_eig_values(const Eigen::DenseBase<DerivedA> &scans, const E
     }
 
     SPDLOG_DEBUG("removing {} largest eigenvalues", limit_index);
-    SPDLOG_INFO("removing {} largest eigenvalues", limit_index);
 
     // subtract out the desired eigenvectors
     Eigen::MatrixXd proj = scans.derived() * evecs.derived().leftCols(limit_index);
