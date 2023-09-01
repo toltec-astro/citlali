@@ -232,9 +232,8 @@ auto Lali::run() {
                                                    redu_type, calib.apt, ptcdata.pointing_offsets_arcsec.data, telescope.d_fsmp, run_noise);
                 }
                 else if (map_method=="jinc") {
-                    mapmaking::populate_maps_jinc(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
-                                                  redu_type, calib.apt, ptcdata.pointing_offsets_arcsec.data, telescope.d_fsmp, run_noise,
-                                                  jinc_r_max, jinc_shape_params, omb.parallel_policy);
+                    jinc_mm.populate_maps_jinc(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
+                                               redu_type, calib.apt, ptcdata.pointing_offsets_arcsec.data, telescope.d_fsmp, run_noise);
                 }
             }
         }

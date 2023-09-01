@@ -102,6 +102,7 @@ struct reduClasses {
     // map classes
     mapmaking::ObsMapBuffer omb;
     mapmaking::ObsMapBuffer cmb;
+    mapmaking::JincMapmaker jinc_mm;
     mapmaking::WienerFilter wiener_filter;
 };
 
@@ -213,11 +214,6 @@ public:
 
     // number of maps
     Eigen::Index n_maps;
-
-    // jinc mapmaking params
-    double jinc_r_max, jinc_a, jinc_b, jinc_c;
-
-    std::map<Eigen::Index,Eigen::VectorXd> jinc_shape_params;
 
     // mapping from index in map vector to array index
     Eigen::VectorXI maps_to_arrays, arrays_to_maps;
@@ -467,15 +463,6 @@ void Engine::get_mapmaking_config(CT &config) {
     // map_method
     get_config_value(config, map_method, missing_keys, invalid_keys, std::tuple{"mapmaking","method"},{"naive","jinc"});
 
-    if (map_method=="jinc") {
-        get_config_value(config, jinc_r_max, missing_keys, invalid_keys, std::tuple{"mapmaking","jinc_filter","r_max"});
-        // vector of eigenvalues to cut
-        for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
-            auto jinc_shape_vec = config.template get_typed<std::vector<double>>(std::tuple{"mapmaking","jinc_filter","shape_params",arr_name});
-            jinc_shape_params[arr_index] = Eigen::Map<Eigen::VectorXd>(jinc_shape_vec.data(),jinc_shape_vec.size());
-        }
-    }
-
     // histogram
     get_config_value(config, omb.hist_n_bins, missing_keys, invalid_keys, std::tuple{"post_processing","map_histogram_n_bins"},{},{0});
     cmb.hist_n_bins = omb.hist_n_bins;
@@ -596,6 +583,19 @@ void Engine::get_mapmaking_config(CT &config) {
     // set parallelization for psd filter ffts (maintained with tod output/verbose mode)
     omb.parallel_policy = parallel_policy;
     cmb.parallel_policy = parallel_policy;
+    jinc_mm.parallel_policy = parallel_policy;
+
+    if (map_method=="jinc") {
+        get_config_value(config, jinc_mm.r_max, missing_keys, invalid_keys, std::tuple{"mapmaking","jinc_filter","r_max"});
+        // vector of eigenvalues to cut
+        for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
+            auto jinc_shape_vec = config.template get_typed<std::vector<double>>(std::tuple{"mapmaking","jinc_filter","shape_params",arr_name});
+            jinc_mm.shape_params[arr_index] = Eigen::Map<Eigen::VectorXd>(jinc_shape_vec.data(),jinc_shape_vec.size());
+        }
+
+        // allocate jinc matrix
+        jinc_mm.allocate_jinc_matrix(omb.pixel_size_rad);
+    }
 }
 
 template<typename CT>
@@ -1654,10 +1654,10 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     // add jinc shape params
     if (map_method=="jinc") {
-        fits_io->at(i).pfits->pHDU().addKey("JINC_R", jinc_r_max, "jinc r max");
-        fits_io->at(i).pfits->pHDU().addKey("JINC_A", jinc_shape_params[calib.arrays(i)][0], "jinc shape param a");
-        fits_io->at(i).pfits->pHDU().addKey("JINC_B", jinc_shape_params[calib.arrays(i)][1], "jinc shape param b");
-        fits_io->at(i).pfits->pHDU().addKey("JINC_C", jinc_shape_params[calib.arrays(i)][2], "jinc shape param c");
+        fits_io->at(i).pfits->pHDU().addKey("JINC_R", jinc_mm.r_max, "jinc r max");
+        fits_io->at(i).pfits->pHDU().addKey("JINC_A", jinc_mm.shape_params[calib.arrays(i)][0], "jinc shape param a");
+        fits_io->at(i).pfits->pHDU().addKey("JINC_B", jinc_mm.shape_params[calib.arrays(i)][1], "jinc shape param b");
+        fits_io->at(i).pfits->pHDU().addKey("JINC_C", jinc_mm.shape_params[calib.arrays(i)][2], "jinc shape param c");
     }
 
     // add mean tau

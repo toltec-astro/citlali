@@ -24,55 +24,48 @@ using timestream::TCDataKind;
 
 namespace mapmaking {
 
-/*class JincMapmaker {
+class JincMapmaker {
 public:
-    std::map<Eigen::Index, Eigen::VectorXd> shape_params;
-    double r_max;
+    // parallel policy
+    std::string parallel_policy;
+
+    // method to calculate jinc weights
+    std::string mode = "matrix";
 
     // lambda over diameter
-    std::map<Eigen::Index,double> l_d = {
-        {0,(1.1/1000)/50},
-        {1,(1.4/1000)/50},
-        {2,(2.0/1000)/50}
-    };
+    std::map<Eigen::Index,double> l_d;
 
-    auto jinc_filter(double, Eigen::Index);
+    // maximum radius
+    double r_max;
+
+    // number of points for spline
+    int n_pts_splines = 1000;
+
+    // jinc filter shape parameters
+    std::map<Eigen::Index,Eigen::VectorXd> shape_params;
+
+    // matrices to hold precomputed jinc function
+    std::map<Eigen::Index,Eigen::MatrixXd> jinc_weights_mat;
+
+    // splines for jinc function
+    std::map<Eigen::Index, engine_utils::SplineFunction2> jinc_splines;
+
+    // calculate jinc weight at a given radius
+    auto jinc_func(double, double, double, double, double, double);
+
+    // precompute jinc weight matrix
+    void allocate_jinc_matrix(double);
+
+    // calculate spline function for jinc weights
+    void calculate_jinc_splines();
 
     template<class map_buffer_t, typename Derived, typename apt_t, typename pointing_offset_t>
-    void populate_maps(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &, map_buffer_t &,
-                       Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string &,
-                       std::string &, apt_t &, pointing_offset_t &, double, bool );
+    void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &, map_buffer_t &,
+                            Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &,
+                            std::string &, std::string &, apt_t &, pointing_offset_t &, double, bool);
 };
 
-auto JincMapmaker::jinc_filter(double r, Eigen::Index arr) {
-    if (r!=0) {
-        double a = shape_params[arr](0);
-        double b = shape_params[arr](1);
-        double c = shape_params[arr](2);
-
-        r = r/l_d[arr];
-        auto arg0 = 2*boost::math::cyl_bessel_j(1,2*pi*r/a)/(2*pi*r/a);
-        auto arg1 = exp(-pow(2*r/b,c));
-        auto arg2 = 2*boost::math::cyl_bessel_j(1,3.831706*r/r_max)/(3.831706*r/r_max);
-
-        return arg0*arg1*arg2;
-    }
-    else {
-        return 1.0;
-    }
-}
-
-template<class map_buffer_t, typename Derived, typename apt_t, typename pointing_offset_t>
-void JincMapmaker::populate_maps(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
-                        map_buffer_t &omb, map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices, Eigen::DenseBase<Derived> &det_indices,
-                        std::string &pixel_axes, std::string &redu_type, apt_t &apt,
-                        pointing_offset_t &pointing_offsets_arcsec, double d_fsmp, bool run_noise) {
-
-}*/
-
-// jinc function
-auto jinc_func(double r, double a, double b, double c, double r_max, double l_d) {
-
+auto JincMapmaker::jinc_func(double r, double a, double b, double c, double r_max, double l_d) {
     if (r!=0) {
         r = r/l_d;
         auto arg0 = 2.*boost::math::cyl_bessel_j(1,2.*pi*r/a)/(2.*pi*r/a);
@@ -86,58 +79,76 @@ auto jinc_func(double r, double a, double b, double c, double r_max, double l_d)
     }
 }
 
-template<class map_buffer_t, typename Derived, typename apt_t, typename pointing_offset_t>
-void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
-                        map_buffer_t &omb, map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices, Eigen::DenseBase<Derived> &det_indices,
-                        std::string &pixel_axes, std::string &redu_type, apt_t &apt,
-                        pointing_offset_t &pointing_offsets_arcsec, double d_fsmp, bool run_noise,
-                        double r_max, std::map<Eigen::Index,Eigen::VectorXd> &shape_params, std::string parallel_policy) {
-
-    // lambda over diameter
-    std::map<Eigen::Index,double> l_d;
+void JincMapmaker::allocate_jinc_matrix(double pixel_size_rad) {
     l_d[0] = (1.1/1000)/50;
     l_d[1] = (1.4/1000)/50;
     l_d[2] = (2.0/1000)/50;
 
-    std::map<Eigen::Index,Eigen::VectorXd> jinc_weights;
-    /*std::map<Eigen::Index, engine_utils::SplineFunction2> jinc_splines;
-
+    // loop through lambda/diameters
     for (const auto &ld: l_d) {
         auto a = shape_params[ld.first](0);
         auto b = shape_params[ld.first](1);
         auto c = shape_params[ld.first](2);
 
-        auto radius = Eigen::VectorXd::LinSpaced(1000, 0, r_max*ld.second);
-        jinc_weights[ld.first].resize(radius.size());
-        Eigen::Index j = 0;
+        // maximum radius in pixels
+        int r_max_pix = std::floor(r_max*ld.second/pixel_size_rad);
 
-        for (const auto &r: radius) {
-            jinc_weights[ld.first](j) = jinc_func(r,a,b,c,r_max,ld.second);
-            j++;
-        }
-        engine_utils::SplineFunction2 s;
-        s.interpolate(radius, jinc_weights[ld.first]);
-        jinc_splines[ld.first] = s;
-    }*/
-
-    std::map<Eigen::Index,Eigen::MatrixXd> jinc_weights_mat;
-    for (const auto &ld: l_d) {
-        auto a = shape_params[ld.first](0);
-        auto b = shape_params[ld.first](1);
-        auto c = shape_params[ld.first](2);
-
-        int r_max_pix = std::floor(r_max*ld.second/omb.pixel_size_rad);
+        // pixel centers within max radius
         Eigen::VectorXd pixels = Eigen::VectorXd::LinSpaced(2*r_max_pix + 1,-r_max_pix, r_max_pix);
 
+        // allocate jinc weights
         jinc_weights_mat[ld.first].setZero(2*r_max_pix + 1,2*r_max_pix + 1);
 
+        // loop through matrix rows
         for (Eigen::Index i=0; i<pixels.size(); i++) {
+            // loop through matrix cols
             for (Eigen::Index j=0; j<pixels.size(); j++) {
-                double r = omb.pixel_size_rad*sqrt(pow(pixels(i),2) + pow(pixels(j),2));
+                // radius of current pixel in radians
+                double r = pixel_size_rad*sqrt(pow(pixels(i),2) + pow(pixels(j),2));
+                // calculate jinc weight at pixel
                 jinc_weights_mat[ld.first](i,j) = jinc_func(r,a,b,c,r_max,ld.second);
             }
         }
     }
+}
+
+void JincMapmaker::calculate_jinc_splines() {
+    l_d[0] = (1.1/1000)/50;
+    l_d[1] = (1.4/1000)/50;
+    l_d[2] = (2.0/1000)/50;
+
+    // loop through lambda/diameters
+    for (const auto &ld: l_d) {
+        auto a = shape_params[ld.first](0);
+        auto b = shape_params[ld.first](1);
+        auto c = shape_params[ld.first](2);
+
+        // radius vector in radians
+        auto radius = Eigen::VectorXd::LinSpaced(n_pts_splines, 0, r_max*ld.second);
+        // jinc weights on dense vector
+        Eigen::VectorXd jinc_weights(radius.size());
+
+        Eigen::Index j = 0;
+
+        for (const auto &r: radius) {
+            // calculate jinc weights
+            jinc_weights(j) = jinc_func(r,a,b,c,r_max,ld.second);
+            j++;
+        }
+        // create spline class
+        engine_utils::SplineFunction2 s;
+        // spline interpolate
+        s.interpolate(radius, jinc_weights);
+        // store jinc spline
+        jinc_splines[ld.first] = s;
+    }
+}
+
+template<class map_buffer_t, typename Derived, typename apt_t, typename pointing_offset_t>
+void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
+                        map_buffer_t &omb, map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
+                        Eigen::DenseBase<Derived> &det_indices, std::string &pixel_axes, std::string &redu_type,
+                        apt_t &apt, pointing_offset_t &pointing_offsets_arcsec, double d_fsmp, bool run_noise) {
 
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
@@ -184,6 +195,7 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
     std::iota(det_in_vec.begin(), det_in_vec.end(), 0);
     det_out_vec.resize(n_dets);
 
+    // parallelize over detectors
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
     //for (Eigen::Index i=0; i<n_dets; i++) {
         // skip completely flagged detectors
@@ -216,12 +228,6 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 cmb_icol = lon.array()/cmb.pixel_size_rad + (cmb.n_cols)/2.;
             }
 
-            Eigen::Index r_max_pix = std::floor(r_max*l_d[apt["array"](det_indices(i))]/omb.pixel_size_rad);
-
-            auto a = shape_params[apt["array"](det_indices(i))](0);
-            auto b = shape_params[apt["array"](det_indices(i))](1);
-            auto c = shape_params[apt["array"](det_indices(i))](2);
-
             // loop through the samples
             for (Eigen::Index j=0; j<n_pts; j++) {
                 // check if sample is flagged, ignore if so
@@ -234,25 +240,29 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 
                     // make sure the data point is within the map
                     if ((omb_ir >= 0) && (omb_ir < omb.n_rows) && (omb_ic >= 0) && (omb_ic < omb.n_cols)) {
-
+                        // center of jinc matrix
                         Eigen::Index mat_rows = (jinc_weights_mat[apt["array"](det_indices(i))].rows() - 1.)/2.;
                         Eigen::Index mat_cols = (jinc_weights_mat[apt["array"](det_indices(i))].cols() - 1.)/2.;
 
                         // loop through nearby rows and cols
                         for (Eigen::Index r=0; r<jinc_weights_mat[apt["array"](det_indices(i))].rows(); r++) {
                             for (Eigen::Index c=0; c<jinc_weights_mat[apt["array"](det_indices(i))].cols(); c++) {
-
                                 // get pixel in map
                                 Eigen::Index ri = omb_ir + r - mat_rows;
                                 Eigen::Index ci = omb_ic + c - mat_cols;
 
+                                // make sure pixel is in the map
                                 if (ri >= 0 && ci >= 0 && ri < omb.n_rows && ci < omb.n_cols) {
+                                    // get radius from data point to pixel
+                                    //auto radius = sqrt(std::pow(lat(j) - omb.rows_tan_vec(ri),2) + std::pow(lon(j) - omb.cols_tan_vec(ci),2));
+                                    //auto weight = in.weights.data(i)*jinc_splines[apt["array"](det_indices(i))](radius);
 
-                                    auto jinc_weight = jinc_weights_mat[apt["array"](det_indices(i))](r,c);
-                                    auto weight = in.weights.data(i)*jinc_weight;
+                                    // det weight x jinc weight
+                                    auto weight = in.weights.data(i)*jinc_weights_mat[apt["array"](det_indices(i))](r,c);
 
-                                    // populate signal map
+                                    // data x weight
                                     signal = in.scans.data(j,i)*weight;
+                                    // populate signal map
                                     omb.signal[map_index](ri,ci) += signal;
 
                                     // populate weight map
@@ -266,7 +276,7 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 
                                     // populate coverage map
                                     if (!omb.coverage.empty()) {
-                                        omb.coverage[map_index](ri,ci) += (jinc_weight/d_fsmp);
+                                        omb.coverage[map_index](ri,ci) += jinc_weights_mat[apt["array"](det_indices(i))](r,c)/d_fsmp;
                                     }
                                 }
                             }
@@ -289,32 +299,37 @@ void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                             nmb_ic = omb_icol(j);
                         }
 
-                        // loop through noise maps and coadd into current noise map
+                        // make sure pixel is in the map
                         if ((nmb_ir >= 0) && (nmb_ir < nmb->n_rows) && (nmb_ic >= 0) && (nmb_ic < nmb->n_cols)) {
-
-                            double r_max_pix = std::floor(r_max*l_d[apt["array"](det_indices(i))]/nmb->pixel_size_rad);
-
+                            // center of jinc matrix
                             Eigen::Index mat_rows = (jinc_weights_mat[apt["array"](det_indices(i))].rows() - 1.)/2.;
                             Eigen::Index mat_cols = (jinc_weights_mat[apt["array"](det_indices(i))].cols() - 1.)/2.;
 
+                            // loop through nearby rows and cols
                             for (Eigen::Index r=0; r<jinc_weights_mat[apt["array"](det_indices(i))].rows(); r++) {
                                 for (Eigen::Index c=0; c<jinc_weights_mat[apt["array"](det_indices(i))].cols(); c++) {
-
                                     // get pixel in map
                                     Eigen::Index ri = omb_ir + r - mat_rows;
                                     Eigen::Index ci = omb_ic + c - mat_cols;
 
+                                    // make sure pixel is in the map
                                     if (ri >= 0 && ci >= 0 && ri < nmb->n_rows && ci < nmb->n_cols) {
+                                        // get radius from data point to pixel
+                                        //auto radius = sqrt(std::pow(lat(j) - nmb->rows_tan_vec(ri),2) + std::pow(lon(j) - nmb->cols_tan_vec(ci),2));
+                                        //auto weight = in.weights.data(i)*jinc_splines[apt["array"](det_indices(i))](radius);
 
-                                        auto jinc_weight = jinc_weights_mat[apt["array"](det_indices(i))](r,c);
-                                        auto weight = in.weights.data(i)*jinc_weight;
+                                        // det weight x jinc weight
+                                        auto weight = in.weights.data(i)*jinc_weights_mat[apt["array"](det_indices(i))](r,c);
+                                        // data x weight
                                         signal = in.scans.data(j,i)*weight;
 
-                                        // populate signal map
+                                        // populate noise maps
                                         for (Eigen::Index nn=0; nn<nmb->n_noise; nn++) {
+                                            // randomize on detectors
                                             if (nmb->randomize_dets) {
                                                 nmb->noise[map_index](ri,ci,nn) += noise(nn,i)*signal;
                                             }
+                                            // only randomize on scans
                                             else {
                                                 nmb->noise[map_index](ri,ci,nn) += noise(nn)*signal;
                                             }

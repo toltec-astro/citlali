@@ -554,11 +554,10 @@ auto Beammap::run_loop() {
                 }
 
                 else if (map_method=="jinc") {
-                    mapmaking::populate_maps_jinc(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
-                                                  ptcs[i].det_indices.data, telescope.pixel_axes,
-                                                  redu_type, calib.apt, ptcs[i].pointing_offsets_arcsec.data,
-                                                  telescope.d_fsmp, run_noise, jinc_r_max, jinc_shape_params,
-                                                  omb.parallel_policy);
+                    jinc_mm.populate_maps_jinc(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
+                                               ptcs[i].det_indices.data, telescope.pixel_axes,
+                                               redu_type, calib.apt, ptcs[i].pointing_offsets_arcsec.data,
+                                               telescope.d_fsmp, run_noise);
                 }
             }
 
