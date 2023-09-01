@@ -102,6 +102,7 @@ struct reduClasses {
     // map classes
     mapmaking::ObsMapBuffer omb;
     mapmaking::ObsMapBuffer cmb;
+    mapmaking::NaiveMapmaker naive_mm;
     mapmaking::JincMapmaker jinc_mm;
     mapmaking::WienerFilter wiener_filter;
 };
@@ -267,9 +268,6 @@ public:
     void create_map_files();
     template <engine_utils::toltecIO::ProdType prod_t>
     void create_tod_files();
-
-    //template <TCDataKind tc_t>
-    //void print_summary(TCData<tc_t, Eigen::MatrixXd> &);
 
     void print_summary();
 

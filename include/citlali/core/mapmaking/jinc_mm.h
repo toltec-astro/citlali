@@ -68,10 +68,13 @@ public:
 auto JincMapmaker::jinc_func(double r, double a, double b, double c, double r_max, double l_d) {
     if (r!=0) {
         r = r/l_d;
+        // first jinc function
         auto arg0 = 2.*boost::math::cyl_bessel_j(1,2.*pi*r/a)/(2.*pi*r/a);
+        // exponential
         auto arg1 = exp(-pow(2.*r/b,c));
+        // second jinc function
         auto arg2 = 2.*boost::math::cyl_bessel_j(1,3.831706*r/r_max)/(3.831706*r/r_max);
-
+        // jinc1 x exp x jinc2
         return arg0*arg1*arg2;
     }
     else {
@@ -86,6 +89,7 @@ void JincMapmaker::allocate_jinc_matrix(double pixel_size_rad) {
 
     // loop through lambda/diameters
     for (const auto &ld: l_d) {
+        // get shape params
         auto a = shape_params[ld.first](0);
         auto b = shape_params[ld.first](1);
         auto c = shape_params[ld.first](2);
@@ -119,6 +123,7 @@ void JincMapmaker::calculate_jinc_splines() {
 
     // loop through lambda/diameters
     for (const auto &ld: l_d) {
+        // get shape params
         auto a = shape_params[ld.first](0);
         auto b = shape_params[ld.first](1);
         auto c = shape_params[ld.first](2);
@@ -164,7 +169,6 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         if (!cmb.noise.empty()) {
             nmb = &cmb;
         }
-
         // otherwise set pointer to omb if it has noise maps
         else if (!omb.noise.empty()) {
             nmb = &omb;

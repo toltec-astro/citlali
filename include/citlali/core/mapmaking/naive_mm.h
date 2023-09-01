@@ -17,11 +17,20 @@ using timestream::TCDataKind;
 
 namespace mapmaking {
 
+class NaiveMapmaker {
+public:
+    template<class map_buffer_t, typename Derived, typename apt_t, typename pointing_offset_t>
+    void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &, map_buffer_t &,
+                             Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string &, std::string &,
+                             apt_t &, pointing_offset_t &, double, bool);
+};
+
 template<class map_buffer_t, typename Derived, typename apt_t, typename pointing_offset_t>
-void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
-                         map_buffer_t &omb, map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices, Eigen::DenseBase<Derived> &det_indices,
-                         std::string &pixel_axes, std::string &redu_type, apt_t &apt,
-                         pointing_offset_t &pointing_offsets_arcsec, double d_fsmp, bool run_noise) {
+void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, map_buffer_t &omb,
+                                        map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
+                                        Eigen::DenseBase<Derived> &det_indices, std::string &pixel_axes,
+                                        std::string &redu_type, apt_t &apt, pointing_offset_t &pointing_offsets_arcsec,
+                                        double d_fsmp, bool run_noise) {
 
     Eigen::Index n_pts = in.scans.data.rows();
     Eigen::Index n_dets = in.scans.data.cols();
@@ -37,7 +46,6 @@ void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
         if (!cmb.noise.empty()) {
             nmb = &cmb;
         }
-
         // otherwise set pointer to omb if it has noise maps
         else if (!omb.noise.empty()) {
             nmb = &omb;

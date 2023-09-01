@@ -547,10 +547,10 @@ auto Beammap::run_loop() {
             // populate maps
             if (run_mapmaking) {
                 if (map_method=="naive") {
-                    mapmaking::populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
-                                                   ptcs[i].det_indices.data, telescope.pixel_axes,
-                                                   redu_type, calib.apt, ptcs[i].pointing_offsets_arcsec.data,
-                                                   telescope.d_fsmp, run_noise);
+                    naive_mm.populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
+                                                 ptcs[i].det_indices.data, telescope.pixel_axes,
+                                                 redu_type, calib.apt, ptcs[i].pointing_offsets_arcsec.data,
+                                                 telescope.d_fsmp, run_noise);
                 }
 
                 else if (map_method=="jinc") {
