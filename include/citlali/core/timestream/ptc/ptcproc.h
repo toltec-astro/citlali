@@ -671,16 +671,25 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
 
             // get number of eigenvalues to save
             NcDim n_eigs_dim = fo.getDim("n_eigs");
+            netCDF::NcDim n_eig_grp_dim = fo.getDim("n_eig_grp");
+
+            if (n_eig_grp_dim.isNull()) {
+                n_eig_grp_dim = fo.addDim("n_eig_grp",in.evals.data[0].size());
+            }
+
+            std::vector<netCDF::NcDim> eval_dims = {n_eig_grp_dim, n_eigs_dim};
 
             // loop through cleaner gropuing
             for (Eigen::Index i=0; i<in.evals.data.size(); i++) {
-            Eigen::Index j = 0;
-            // loop through eigenvalues in current group
+                NcVar eval_v = fo.addVar("evals_" + cleaner.grouping[i] + "_" + std::to_string(i) +
+                                             "_chunk_" + std::to_string(in.index.data), netCDF::ncDouble,eval_dims);
+                std::vector<std::size_t> start_eig_index = {0, 0};
+                std::vector<std::size_t> size = {1, TULA_SIZET(cleaner.n_calc)};
+
+                // loop through eigenvalues in current group
                 for (const auto &evals: in.evals.data[i]) {
-                    NcVar eval_v = fo.addVar("evals_" + cleaner.grouping[i] + "_" + std::to_string(i) + "_" + std::to_string(j) +
-                                             "_chunk_" + std::to_string(in.index.data), netCDF::ncDouble,n_eigs_dim);
-                    eval_v.putVar(evals.data());
-                    j++;
+                    eval_v.putVar(start_eig_index,size,evals.data());
+                    start_eig_index[0] += 1;
                 }
             }
 
@@ -692,8 +701,8 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
                 // start at first row and col
                 std::vector<std::size_t> start_eig_index = {0, 0};
 
-                NcVar evec_v = fo.addVar("evecs_" + cleaner.grouping[i] + "_" + std::to_string(i) + "_chunk_" + std::to_string(in.index.data),
-                                         netCDF::ncDouble,eig_dims);
+                NcVar evec_v = fo.addVar("evecs_" + cleaner.grouping[i] + "_" + std::to_string(i) + "_chunk_" +
+                                             std::to_string(in.index.data),netCDF::ncDouble,eig_dims);
 
                 // loop through eigenvectors in current group
                 for (const auto &evecs: in.evecs.data[i]) {

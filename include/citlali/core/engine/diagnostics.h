@@ -17,6 +17,8 @@ public:
 
     double fsmp;
 
+    bool write_evals;
+
     // header for tpt table
     std::vector<std::string> det_stats_header = {
         "rms",
@@ -29,6 +31,8 @@ public:
     std::vector<std::string> grp_stats_header = {
         "median_weights"
     };
+
+    std::map<Eigen::Index, std::vector<std::vector<Eigen::VectorXd>>> evals;
 
     template <timestream::TCDataKind tcdata_kind>
     void calc_stats(timestream::TCData<tcdata_kind, Eigen::MatrixXd> &);
@@ -59,6 +63,11 @@ void Diagnostics::calc_stats(timestream::TCData<tcdata_kind, Eigen::MatrixXd> &i
         // add weights
         stats["weights"].col(in.index.data) = in.weights.data;
         //stats["median_weights"].col(in.index.data) = Eigen::Map<Eigen::VectorXd>(in.median_weights.data(),in.median_weights.size());
+    }
+
+    // add eigenvalues
+    if (write_evals) {
+        evals[in.index.data] = in.evals.data;
     }
 }
 

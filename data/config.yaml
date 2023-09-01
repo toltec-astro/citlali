@@ -43,7 +43,7 @@ inputs: # list of inputs and related data
               uncertainty_mJy: 0.0 # 1.1 mm flux uncertainty in mJy
               value_mJy: 0.0 # 1.1 mm flux in mJy
             - array_name: a1400
-              uncertainty_mJy: 0.0 # 1.4 mmflux uncertainty in mJy
+              uncertainty_mJy: 0.0 # 1.4 mm flux uncertainty in mJy
               value_mJy: 0.0 # 1.4 mm flux in mJy
             - array_name: a2000
               uncertainty_mJy: 0.0 # 2.0 mm flux uncertainty in mJy
@@ -147,7 +147,7 @@ mapmaking: # mapmaking parameters
   x_size_pix: 0 # manually specify number of map columns
   y_size_pix: 0 # manually specify number of map rows
   coverage_cut: 0.0 # coverage cut value for psd, hist, and coverage_bool maps
-  jinc_filter: # parameters to control jinc filter shape
+  jinc_filter: # parameters to control jinc filter shape (map_method = jinc required)
     r_max: 3.0 # max radius to apply filter to (max radius = r_max x lambda/diameter)
     shape_params: # a, b (beam-size/3), c
       a1100: [1.1, 1.67, 2.0]
@@ -173,6 +173,8 @@ timestream: # timestream reduction parameters
     ignore_hwpr: auto # override automatic hwpr finding (true, false, auto)
   output: # controls options for writing out TOD as netCDF file
     subdir_name: null # optional subdirectory name for tod output files (ignored if null)
+    stats: # controls for what variables to include in stats file
+      eigenvalues: false # include first 64 eigenvalues in stats file
   raw_time_chunk:
     despike: # remove cosmic ray spikes
       enabled: false # enable or disable despiking
@@ -197,7 +199,7 @@ timestream: # timestream reduction parameters
       type: gaussian # how to make kernel (gaussian, airy, fits)
     flux_calibration: # flux calibration
       enabled: false # enable or disable flux calibration (ignored for beammapping)
-    extinction_correction:
+    extinction_correction: # extinction correction (per sample, tau for each band calculated from fit to models)
       enabled: false
       extinction_model: am_q25 # model to use for tau calculation (am_q25, am_q50, am_q75)
     flagging: # controls flagging before cleaning
@@ -217,7 +219,7 @@ timestream: # timestream reduction parameters
         a2000: [3]
       clean_polarized_time_chunks: false # carry out cleaning on Q and U maps as well as I maps
     weighting: # how to weight data and maps
-      type: full # type of TOD weighting (full=use scan variance/approximate=use det sensitivity)
+      type: full # type of TOD weighting (full=use scan variance/approximate=use det sensitivity/const=1)
       median_weight_factor: 0 # set all weights above this factor x median of unflagged detectors to median (>=1 allowed)
     flagging: # controls flagging after cleaning
       lower_weight_factor: 0.0 # flag detectors below this weight limit (ignored if 0, weight=1/variance of TOD)
@@ -236,7 +238,7 @@ post_processing:
   map_filtering: # map filtering (if coadd enabled, filters coadded map, if disabled, filters obs maps)
     enabled: false # enable or disable map filtering
     type: wiener_filter # type of map filter (currently ignored, default is wiener filter)
-    normalize_errors: false # correct weight map errors based on noise maps
+    normalize_errors: false # correct weight map errors based on noise map rms
   map_histogram_n_bins: 20 # number of histogram bins (>0)
   source_finding: # parameters to control source finding
     enabled: false # enable or disable source finding

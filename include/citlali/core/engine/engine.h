@@ -782,9 +782,12 @@ void Engine::get_citlali_config(CT &config) {
         }
     }
 
-    if (run_tod_output) {
-        get_config_value(config, tod_output_subdir_name, missing_keys, invalid_keys, std::tuple{"timestream","output", "subdir_name"});
-    }
+    //if (run_tod_output) {
+        get_config_value(config, tod_output_subdir_name, missing_keys, invalid_keys, std::tuple{"timestream","output", "subdir_name"});        
+    //}
+
+    get_config_value(config, diagnostics.write_evals, missing_keys, invalid_keys, std::tuple{"timestream","output", "stats","eigenvalues"});
+
     get_config_value(config, telescope.time_chunk, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "length_sec"});
     get_config_value(config, telescope.force_chunk, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "force_chunking"});
 
@@ -2023,9 +2026,17 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
 }
 
 void Engine::write_stats() {
+    std::string path = obsnum_dir_name + "raw/";
+
+    if (tod_output_subdir_name!="null") {
+        if (!fs::exists(fs::status(path + tod_output_subdir_name))) {
+            fs::create_directories(path + tod_output_subdir_name);
+            path = path + tod_output_subdir_name + "/";
+        }
+    }
     auto stats_filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::stats,
                                                     engine_utils::toltecIO::raw>
-                          (obsnum_dir_name + "raw/", redu_type, "", obsnum, telescope.sim_obs);
+                          (path, redu_type, "", obsnum, telescope.sim_obs);
 
     std::map<std::string, std::string> det_stats_header_units {
         {"rms", omb.sig_unit},
@@ -2074,6 +2085,7 @@ void Engine::write_stats() {
         apt_v.putAtt("units",calib.apt_header_units[x.first]);
     }
 
+    // add adc
     if (!adc_snap_data.empty()) {
         netCDF::NcDim adc_snap_dim = fo.addDim("adcSnapDim", adc_snap_data[0].cols());
         netCDF::NcDim adc_snap_data_dim = fo.addDim("adcSnapDataDim", adc_snap_data[0].rows());
@@ -2083,6 +2095,32 @@ void Engine::write_stats() {
             netCDF::NcVar adc_snap_v = fo.addVar("toltec" + std::to_string(calib.nws(i)) + "_adc_snap_data",netCDF::ncDouble, dims);
             adc_snap_v.putVar(x.data());
             i++;
+        }
+    }
+
+    // add eigenvalues
+    if (!diagnostics.evals.empty()) {
+        netCDF::NcDim n_eigs_dim = fo.addDim("n_eigs",ptcproc.cleaner.n_calc);
+        netCDF::NcDim n_eig_grp_dim = fo.addDim("n_eig_grp",diagnostics.evals[0][0].size());
+
+        std::vector<netCDF::NcDim> eval_dims = {n_eig_grp_dim, n_eigs_dim};
+
+        // loop through chunks
+        for (const auto &[key, val]: diagnostics.evals) {
+            // loop through cleaner gropuing
+            for (Eigen::Index i=0; i<val.size(); i++) {
+
+                netCDF::NcVar eval_v = fo.addVar("evals_" + ptcproc.cleaner.grouping[i] + "_" + std::to_string(i) +
+                                             "_chunk_" + std::to_string(key), netCDF::ncDouble,eval_dims);
+                std::vector<std::size_t> start_eig_index = {0, 0};
+                std::vector<std::size_t> size = {1, TULA_SIZET(ptcproc.cleaner.n_calc)};
+
+                // loop through eigenvalues in current group
+                for (const auto &evals: val[i]) {
+                    eval_v.putVar(start_eig_index,size,evals.data());
+                    start_eig_index[0] += 1;
+                }
+            }
         }
     }
 

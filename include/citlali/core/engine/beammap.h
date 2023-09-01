@@ -186,7 +186,7 @@ void Beammap::setup() {
             create_tod_files<engine_utils::toltecIO::ptc_timestream>();
         }
     }
-    else {
+    else if (!diagnostics.write_evals) {
         ptcproc.cleaner.n_calc = 0;
     }
 
