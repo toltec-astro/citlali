@@ -367,6 +367,9 @@ void Beammap::setup() {
     for (const auto &stat: diagnostics.grp_stats_header) {
         diagnostics.stats[stat].setZero(calib.n_arrays, telescope.scan_indices.cols());
     }
+
+    // clear stored eigenvalues
+    diagnostics.evals.clear();
 }
 
 auto Beammap::run_timestream() {
