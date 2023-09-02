@@ -284,7 +284,7 @@ int run(const rc_t &rc) {
                         todproc.engine().get_photometry_config(rawobs.photometry_calib_info().config());
 
                         // if beammap generate the apt table from the files
-                        if (todproc.engine().map_grouping=="detector") {
+                        if (todproc.engine().map_grouping=="detector" || todproc.engine().map_grouping=="auto") {
                             SPDLOG_INFO("making apt file from raw nc files");
                             todproc.get_apt_from_files(rawobs);
                         }
@@ -419,7 +419,7 @@ int run(const rc_t &rc) {
                             todproc.engine().get_photometry_config(rawobs.photometry_calib_info().config());
 
                             // if beammap generate the apt table from the files
-                            if (todproc.engine().map_grouping=="detector") {
+                            if (todproc.engine().map_grouping=="detector" || todproc.engine().map_grouping=="auto") {
                                 SPDLOG_INFO("making apt file from raw nc files");
                                 todproc.get_apt_from_files(rawobs);
                             }
