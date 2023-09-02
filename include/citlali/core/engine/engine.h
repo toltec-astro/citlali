@@ -237,69 +237,93 @@ public:
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> filtered_coadd_fits_io_vec;
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> filtered_coadd_noise_fits_io_vec;
 
+    // get RTC config options
     template<typename CT>
     void get_rtc_config(CT &);
 
+    // get PTC config options
     template<typename CT>
     void get_ptc_config(CT &);
 
+    // get beammap config options
     template<typename CT>
     void get_beammap_config(CT &);
 
+    // get mapmaking config options
     template<typename CT>
     void get_mapmaking_config(CT &);
 
+    // get map filtering config options
     template<typename CT>
     void get_map_filter_config(CT &);
 
+    // get all non-input config options
     template<typename CT>
     void get_citlali_config(CT &);
 
+    // get source fluxes (beammap only)
     template<typename CT>
     void get_photometry_config(CT &);
 
+    // get pointing offsets
     template<typename CT>
     void get_astrometry_config(CT &);
 
+    // get conversion from detector number to map
     template <typename Derived>
     auto calc_map_indices(Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &,
                           Eigen::DenseBase<Derived> &, std::string);
 
+    // create fits files (does not populate them)
     void create_map_files();
+
+    // create tod files (does not populate them)
     template <engine_utils::toltecIO::ProdType prod_t>
     void create_tod_files();
 
-    void print_summary();
+    // output obs summary at command line
+    void cli_summary();
 
+    // write time chunk summary (verbose mode)
     template <TCDataKind tc_t>
     void write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &);
 
+    // write map summary (verbose mode)
     template <typename map_buffer_t>
     void write_map_summary(map_buffer_t &);
 
+    // add primary header to FITS files
     template <typename fits_io_type, class map_buffer_t>
     void add_phdu(fits_io_type &, map_buffer_t &, Eigen::Index);
 
+    // add maps to FITS files and output them
     template <typename fits_io_type, class map_buffer_t>
     void write_maps(fits_io_type &, fits_io_type &, map_buffer_t &, Eigen::Index);
 
+    // create map filename
     template <mapmaking::MapType map_t>
     auto setup_filenames(std::string);
 
+    // write map psds
     template <mapmaking::MapType map_t, class map_buffer_t>
     void write_psd(map_buffer_t &, std::string);
 
+    // write map histograms
     template <mapmaking::MapType map_t, class map_buffer_t>
     void write_hist(map_buffer_t &, std::string);
 
+    // write stats netCDF4 file
     void write_stats();
 
+    // run the wiener filter
     template <mapmaking::MapType map_t, class map_buffer_t>
     void run_wiener_filter(map_buffer_t &);
 
+    // find sources in the maps
     template <mapmaking::MapType map_t, class map_buffer_t>
     void find_sources(map_buffer_t &);
 
+    // write the sources to ecsv table
     template <mapmaking::MapType map_t, class map_buffer_t>
     void write_sources(map_buffer_t &, std::string);
 };
@@ -880,7 +904,8 @@ void Engine::get_citlali_config(CT &config) {
 
     if (run_source_finder) {
         get_config_value(config, omb.source_sigma, missing_keys, invalid_keys, std::tuple{"post_processing","source_finding","source_sigma"});
-        get_config_value(config, omb.source_window_rad, missing_keys, invalid_keys, std::tuple{"post_processing","source_finding","source_window_arcsec"});
+        get_config_value(config, omb.source_window_rad, missing_keys, invalid_keys, std::tuple{"post_processing","source_finding",
+                                                                                               "source_window_arcsec"});
         get_config_value(config, omb.source_finder_mode, missing_keys, invalid_keys, std::tuple{"post_processing","source_finding","mode"});
 
         omb.source_window_rad = omb.source_window_rad*ASEC_TO_RAD;
@@ -1247,7 +1272,7 @@ void Engine::create_tod_files() {
 }
 
 //template <TCDataKind tc_t>
-void Engine::print_summary() {
+void Engine::cli_summary() {
     SPDLOG_INFO("\n\nreduction info:\n\n");
     SPDLOG_INFO("map buffer rows: {}", omb.n_rows);
     SPDLOG_INFO("map buffer cols: {}", omb.n_cols);
@@ -2153,7 +2178,6 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
 
     for (Eigen::Index i=0; i<f_io->size(); i++) {
         // get the array for the given map
-        //Eigen::Index map_index = arrays_to_maps(i);
         // add primary hdu
         add_phdu(f_io, pmb, i);
 

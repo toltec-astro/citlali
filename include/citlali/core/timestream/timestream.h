@@ -92,8 +92,11 @@ namespace timestream {
 
 namespace internal {
 
-template <typename Derived> struct TCDataBase;
-template <TCDataKind kind_> struct TCDataBase<TCData<kind_>> {
+template <typename Derived>
+struct TCDataBase;
+
+template <TCDataKind kind_>
+struct TCDataBase<TCData<kind_>> {
     static constexpr auto kind() { return kind_; }
     //using meta_t = typename internal::impl_traits<TCData<kind_>>::meta_t;
     //meta_t meta;
@@ -148,6 +151,14 @@ struct TimeStream : internal::TCDataBase<Derived>,
     struct data_t : tula::nddata::NDData<data_t<PlainObject>> {
         PlainObject data;
     };
+
+    bool demodulated = false;
+    bool kernel_generated = false;
+    bool despiked = false;
+    bool tod_filtered = false;
+    bool downsampled = false;
+    bool calibrated = false;
+    bool cleaned = false;
 };
 
 template <typename RefType>
@@ -181,14 +192,6 @@ struct TCData<TCDataKind::RTC,RefType>
     Base::data_t<std::vector<std::vector<Eigen::MatrixXd>>> evecs;
     // time of rtc creation
     std::string creation_time = engine_utils::current_date_time();
-
-    bool demodulated = false;
-    bool kernel_generated = false;
-    bool despiked = false;
-    bool tod_filtered = false;
-    bool downsampled = false;
-    bool calibrated = false;
-    bool cleaned = false;
 };
 
 template <typename RefType>
@@ -232,14 +235,6 @@ struct TCData<TCDataKind::PTC, RefType>
     std::string creation_time = engine_utils::current_date_time();
 
     std::vector<double> median_weights;
-
-    bool demodulated = false;
-    bool kernel_generated = false;
-    bool despiked = false;
-    bool tod_filtered = false;
-    bool downsampled = false;
-    bool calibrated = false;
-    bool cleaned = false;
 };
 
 /// @brief data class of runtime variant kind.

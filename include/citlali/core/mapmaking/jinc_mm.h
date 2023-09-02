@@ -59,23 +59,24 @@ public:
     // calculate spline function for jinc weights
     void calculate_jinc_splines();
 
-    template<class map_buffer_t, typename Derived, typename apt_t, typename pointing_offset_t>
+    template<class map_buffer_t, typename Derived, typename apt_t>
     void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &, map_buffer_t &,
                             Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &,
-                            std::string &, std::string &, apt_t &, pointing_offset_t &, double, bool);
+                            std::string &, std::string &, apt_t &, double, bool);
 };
 
 auto JincMapmaker::jinc_func(double r, double a, double b, double c, double r_max, double l_d) {
     if (r!=0) {
+        // unitless radius
         r = r/l_d;
         // first jinc function
-        auto arg0 = 2.*boost::math::cyl_bessel_j(1,2.*pi*r/a)/(2.*pi*r/a);
+        auto jinc_1 = 2.*boost::math::cyl_bessel_j(1,2.*pi*r/a)/(2.*pi*r/a);
         // exponential
-        auto arg1 = exp(-pow(2.*r/b,c));
+        auto exp_func = exp(-pow(2.*r/b,c));
         // second jinc function
-        auto arg2 = 2.*boost::math::cyl_bessel_j(1,3.831706*r/r_max)/(3.831706*r/r_max);
+        auto jinc_2 = 2.*boost::math::cyl_bessel_j(1,3.831706*r/r_max)/(3.831706*r/r_max);
         // jinc1 x exp x jinc2
-        return arg0*arg1*arg2;
+        return jinc_1*exp_func*jinc_2;
     }
     else {
         return 1.0;
@@ -149,12 +150,13 @@ void JincMapmaker::calculate_jinc_splines() {
     }
 }
 
-template<class map_buffer_t, typename Derived, typename apt_t, typename pointing_offset_t>
+template<class map_buffer_t, typename Derived, typename apt_t>
 void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                         map_buffer_t &omb, map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
                         Eigen::DenseBase<Derived> &det_indices, std::string &pixel_axes, std::string &redu_type,
-                        apt_t &apt, pointing_offset_t &pointing_offsets_arcsec, double d_fsmp, bool run_noise) {
+                        apt_t &apt, double d_fsmp, bool run_noise) {
 
+    // dimensions of data
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
 
@@ -218,8 +220,8 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             Eigen::Index map_index = map_indices(i);
 
             // get detector pointing
-            auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off,
-                                                              pixel_axes, pointing_offsets_arcsec);
+            auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off, pixel_axes,
+                                                              in.pointing_offsets_arcsec.data);
 
             // get map buffer row and col indices for lat and lon vectors
             Eigen::VectorXd omb_irow = lat.array()/omb.pixel_size_rad + (omb.n_rows)/2.;

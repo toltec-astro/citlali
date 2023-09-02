@@ -100,8 +100,8 @@ void Lali::setup() {
         parallel_policy = "seq";
     }
 
-    // print basic info for obs reduction
-    print_summary();
+    // output basic info for obs reduction to command line
+    cli_summary();
 
     for (const auto &stat: diagnostics.det_stats_header) {
         diagnostics.stats[stat].setZero(calib.n_dets, telescope.scan_indices.cols());
@@ -229,11 +229,11 @@ auto Lali::run() {
                 SPDLOG_INFO("populating maps");
                 if (map_method=="naive") {
                     naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes, redu_type,
-                                                 calib.apt, ptcdata.pointing_offsets_arcsec.data, telescope.d_fsmp, run_noise);
+                                                 calib.apt, telescope.d_fsmp, run_noise);
                 }
                 else if (map_method=="jinc") {
                     jinc_mm.populate_maps_jinc(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
-                                               redu_type, calib.apt, ptcdata.pointing_offsets_arcsec.data, telescope.d_fsmp, run_noise);
+                                               redu_type, calib.apt, telescope.d_fsmp, run_noise);
                 }
             }
         }

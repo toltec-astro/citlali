@@ -19,19 +19,19 @@ namespace mapmaking {
 
 class NaiveMapmaker {
 public:
-    template<class map_buffer_t, typename Derived, typename apt_t, typename pointing_offset_t>
+    template<class map_buffer_t, typename Derived, typename apt_t>
     void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &, map_buffer_t &,
                              Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string &, std::string &,
-                             apt_t &, pointing_offset_t &, double, bool);
+                             apt_t &, double, bool);
 };
 
-template<class map_buffer_t, typename Derived, typename apt_t, typename pointing_offset_t>
+template<class map_buffer_t, typename Derived, typename apt_t>
 void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, map_buffer_t &omb,
                                         map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
                                         Eigen::DenseBase<Derived> &det_indices, std::string &pixel_axes,
-                                        std::string &redu_type, apt_t &apt, pointing_offset_t &pointing_offsets_arcsec,
-                                        double d_fsmp, bool run_noise) {
+                                        std::string &redu_type, apt_t &apt, double d_fsmp, bool run_noise) {
 
+    // dimensions of data
     Eigen::Index n_pts = in.scans.data.rows();
     Eigen::Index n_dets = in.scans.data.cols();
 
@@ -87,8 +87,8 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
             Eigen::Index map_index = map_indices(i);
 
             // get detector pointing
-            auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off,
-                                                              pixel_axes, pointing_offsets_arcsec);
+            auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off, pixel_axes,
+                                                              in.pointing_offsets_arcsec.data);
 
             // get map buffer row and col indices for lat and lon vectors
             Eigen::VectorXd omb_irow = lat.array()/omb.pixel_size_rad + (omb.n_rows)/2.;

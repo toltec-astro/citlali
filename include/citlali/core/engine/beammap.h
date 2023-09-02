@@ -357,8 +357,8 @@ void Beammap::setup() {
     // reference detector
     calib.apt_meta["reference_det"] = beammap_reference_det_found;
 
-    // print basic info for obs reduction
-    print_summary();
+    // output basic info for obs reduction to command line
+    cli_summary();
 
     for (const auto &stat: diagnostics.det_stats_header) {
         diagnostics.stats[stat].setZero(calib.n_dets, telescope.scan_indices.cols());
@@ -398,7 +398,7 @@ auto Beammap::run_timestream() {
         rtcdata.pointing_offsets_arcsec.data["az"] = pointing_offsets_arcsec["az"].segment(si,sl);
         rtcdata.pointing_offsets_arcsec.data["alt"] = pointing_offsets_arcsec["alt"].segment(si,sl);
 
-        // get hwp
+        // get hwpr
         if (rtcproc.run_polarization) {
             rtcdata.hwp_angle.data = calib.hwp_angle.segment(si + hwpr_start_indices, sl);
         }
@@ -535,8 +535,8 @@ auto Beammap::run_loop() {
                     if (current_iter == beammap_tod_output_iter) {
                         // hardcoded to stokes I for now
                         ptcproc.append_to_netcdf(ptcs[i], tod_filename["ptc_I"], redu_type, telescope.pixel_axes,
-                                                 ptcs[i].pointing_offsets_arcsec.data, ptcs[i].det_indices.data, calib.apt, "ptc", verbose_mode,
-                                                 telescope.d_fsmp, calib.run_hwp);
+                                                 ptcs[i].pointing_offsets_arcsec.data, ptcs[i].det_indices.data, calib.apt,
+                                                 "ptc", verbose_mode, telescope.d_fsmp, calib.run_hwp);
                     }
                 }
             }
@@ -549,15 +549,13 @@ auto Beammap::run_loop() {
                 if (map_method=="naive") {
                     naive_mm.populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
                                                  ptcs[i].det_indices.data, telescope.pixel_axes,
-                                                 redu_type, calib.apt, ptcs[i].pointing_offsets_arcsec.data,
-                                                 telescope.d_fsmp, run_noise);
+                                                 redu_type, calib.apt, telescope.d_fsmp, run_noise);
                 }
 
                 else if (map_method=="jinc") {
                     jinc_mm.populate_maps_jinc(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
                                                ptcs[i].det_indices.data, telescope.pixel_axes,
-                                               redu_type, calib.apt, ptcs[i].pointing_offsets_arcsec.data,
-                                               telescope.d_fsmp, run_noise);
+                                               redu_type, calib.apt,telescope.d_fsmp, run_noise);
                 }
             }
 
@@ -1208,6 +1206,15 @@ auto Beammap::loop_pipeline() {
             ptcs.clear();
         }
     }
+
+    else {
+        // calculate map psds
+        SPDLOG_INFO("calculating map psd");
+        omb.calc_map_psd();
+        // calculate map histograms
+        SPDLOG_INFO("calculating map histogram");
+        omb.calc_map_hist();
+    }
 }
 
 template <class KidsProc, class RawObs>
@@ -1421,5 +1428,11 @@ void Beammap::output() {
     // clear fits file vectors to ensure its closed.
     f_io->clear();
     n_io->clear();
+
+    if (map_grouping!="detector") {
+        // write psd and histogram files
+        write_psd<map_type>(mb, dir_name);
+        write_hist<map_type>(mb, dir_name);
+    }
 }
 

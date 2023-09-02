@@ -59,9 +59,8 @@ void get_config_value(config_t config, param_t &param, key_vec_t &missing_keys,
                std::vector<param_t> min_val={}, std::vector<param_t> max_val={}) {
 
     // check if config option exists
-    if (config.has(option_t(option))) {
-        // if it exists, try to get it with intended type
-        try {
+    try {
+        if (config.template has_typed<param_t>(option_t(option))) {
             // get the parameter from config
             param = config.template get_typed<param_t>(option_t(option));
 
@@ -74,30 +73,39 @@ void get_config_value(config_t config, param_t &param, key_vec_t &missing_keys,
             if (!min_val.empty() || !max_val.empty()) {
                 check_range(param, missing_keys, invalid_keys, min_val, max_val, option);
             }
-
-            // mark as invalid if get_typed fails
-        }  catch (YAML::TypedBadConversion<param_t>) {
-
-            // temporary vector to hold current invalid param's keys
-            std::vector<std::string> invalid_temp;
-            // push back invalid keys into temp vector
+        }
+        // else mark as missing
+        else {
+            // temporary vector to hold current missing param's keys
+            std::vector<std::string> missing_temp;
+            // push back missing keys into temp vector
             engine_utils::for_each_in_tuple(option, [&](const auto &x) {
-                invalid_temp.push_back(x);
+                missing_temp.push_back(x);
             });
-
-            // push temp invalid keys vector into invalid keys vector
-            invalid_keys.push_back(invalid_temp);
+            // push temp missing keys vector into invalid keys vector
+            missing_keys.push_back(missing_temp);
         }
     }
-    // else mark as missing
-    else {
-        // temporary vector to hold current missing param's keys
-        std::vector<std::string> missing_temp;
-        // push back missing keys into temp vector
+    catch (YAML::TypedBadConversion<param_t>) {
+        // temporary vector to hold current invalid param's keys
+        std::vector<std::string> invalid_temp;
+        // push back invalid keys into temp vector
         engine_utils::for_each_in_tuple(option, [&](const auto &x) {
-            missing_temp.push_back(x);
+            invalid_temp.push_back(x);
         });
-        // push temp missing keys vector into invalid keys vector
-        missing_keys.push_back(missing_temp);
+
+        // push temp invalid keys vector into invalid keys vector
+        invalid_keys.push_back(invalid_temp);
+    }
+    catch (YAML::InvalidNode) {
+        // temporary vector to hold current invalid param's keys
+        std::vector<std::string> invalid_temp;
+        // push back invalid keys into temp vector
+        engine_utils::for_each_in_tuple(option, [&](const auto &x) {
+            invalid_temp.push_back(x);
+        });
+
+        // push temp invalid keys vector into invalid keys vector
+        invalid_keys.push_back(invalid_temp);
     }
 }
