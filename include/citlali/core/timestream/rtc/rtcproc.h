@@ -43,9 +43,12 @@ public:
     // number of weight outlier iterations
     int iter_lim = 0;
 
+    template <typename Derived, class calib_t>
+    auto get_grouping(std::string, Eigen::DenseBase<Derived> &, calib_t &, int);
+
     template <class calib_t, typename Derived>
     auto calc_map_indices(calib_t &, Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &,
-                          Eigen::DenseBase<Derived> &, std::string, std::string);
+                          Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string, std::string);
 
 
     template<typename calib_t, typename telescope_t>
@@ -55,19 +58,43 @@ public:
 
     template <typename calib_t, typename Derived>
     auto remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
-                             Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string, std::string);
+                             std::string);
 
     template <typename calib_t, typename Derived>
     auto remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
                          Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string, std::string);
 };
 
+template <typename Derived, class calib_t>
+auto RTCProc::get_grouping(std::string grp, Eigen::DenseBase<Derived> &det_indices, calib_t &calib, int n_dets) {
+    std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
+
+    Eigen::Index grp_i = calib.apt[grp](det_indices(0));
+    grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
+    Eigen::Index j = 0;
+    // loop through apt table arrays, get highest index for current array
+    for (Eigen::Index i=0; i<n_dets; i++) {
+        auto det_index = det_indices(i);
+        if (calib.apt[grp](det_index) == grp_i) {
+            std::get<1>(grp_limits[grp_i]) = i + 1;
+        }
+        else {
+            grp_i = calib.apt[grp](det_index);
+            j += 1;
+            grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
+        }
+    }
+    return grp_limits;
+}
+
 template <class calib_t, typename Derived>
 auto RTCProc::calc_map_indices(calib_t &calib, Eigen::DenseBase<Derived> &det_indices, Eigen::DenseBase<Derived> &nw_indices,
-                               Eigen::DenseBase<Derived> &array_indices, std::string stokes_param, std::string map_grouping) {
+                               Eigen::DenseBase<Derived> &array_indices, Eigen::DenseBase<Derived> &fg_indices,
+                               std::string stokes_param, std::string map_grouping) {
     // indices for maps
     Eigen::VectorXI indices(array_indices.size()), map_indices(array_indices.size());
 
+    // number of maps from grouping
     int n_maps = 0;
 
     // overwrite map indices for networks
@@ -88,27 +115,58 @@ auto RTCProc::calc_map_indices(calib_t &calib, Eigen::DenseBase<Derived> &det_in
         n_maps = calib.n_dets;
     }
 
-    // start at 0
-    Eigen::Index map_index = 0;
-    map_indices(0) = 0;
-    // loop through and populate map indices
-    for (Eigen::Index i=0; i<indices.size()-1; i++) {
-        // if next index is larger than current index, increment map index
-        if (indices(i+1) > indices(i)) {
-            map_index++;
-        }
-        map_indices(i+1) = map_index;
+    // overwrite map indices for fg
+    else if (map_grouping == "fg") {
+        indices = fg_indices;
+        n_maps = calib.fg.size()*calib.n_arrays;
     }
 
+    // start at 0
+    if (map_grouping != "fg") {
+        Eigen::Index map_index = 0;
+        map_indices(0) = 0;
+        // loop through and populate map indices
+        for (Eigen::Index i=0; i<indices.size()-1; i++) {
+            // if next index is larger than current index, increment map index
+            if (indices(i+1) > indices(i)) {
+                map_index++;
+            }
+            map_indices(i+1) = map_index;
+        }
+    }
+    else {
+        // convert fg to indices
+        std::map<Eigen::Index, Eigen::Index> fg_to_index, array_to_index;
+
+        // get mapping from fg to map index
+        for (Eigen::Index i=0; i<calib.fg.size(); i++) {
+            fg_to_index[calib.fg(i)] = i;
+        }
+
+        // get mapping from fg to map index
+        for (Eigen::Index i=0; i<calib.arrays.size(); i++) {
+            array_to_index[calib.arrays(i)] = i;
+        }
+
+        // allocate map indices from fg
+        for (Eigen::Index i=0; i<indices.size(); i++) {
+            map_indices(i) = fg_to_index[indices(i)] + calib.fg.size()*array_to_index[array_indices(i)];
+        }
+    }
+
+    // increment if polarization is enabled
     if (run_polarization) {
         if (stokes_param == "Q") {
-            map_indices = map_indices.array() + (3*n_maps)/3;
+            // stokes Q takes the second set of n_maps
+            map_indices = map_indices.array() + n_maps;
         }
         else if (stokes_param == "U") {
-            map_indices = map_indices.array() + 2*(3*n_maps)/3;
+            // stokes U takes the third set of n_maps
+            map_indices = map_indices.array() + 2*n_maps;
         }
     }
 
+    // return the map indices
     return std::move(map_indices);
 }
 
@@ -118,20 +176,19 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
                   std::string &redu_type, calib_t &calib, telescope_t &telescope, double pixel_size_rad,
                   std::string stokes_param, std::string map_grouping) {
 
+    // new timechunk for current stokes parameter timestream
     TCData<TCDataKind::RTC,Eigen::MatrixXd> in_pol;
 
-    // demodulate
-    auto [array_indices, nw_indices, det_indices] = polarization.demodulate_timestream(in, in_pol,
-                                                                                       stokes_param,
-                                                                                       redu_type, calib,
-                                                                                       telescope.sim_obs);
+    // calculate the stokes timestream
+    auto [array_indices, nw_indices, det_indices, fg_indices] = polarization.demodulate_timestream(in, in_pol, stokes_param,
+                                                                                                   redu_type, calib, telescope.sim_obs);
 
     // resize fcf
     in_pol.fcf.data.setOnes(in_pol.scans.data.cols());
 
     // get indices for maps
     SPDLOG_DEBUG("calculating map indices");
-    auto map_indices = calc_map_indices(calib, det_indices, nw_indices, array_indices, stokes_param, map_grouping);
+    auto map_indices = calc_map_indices(calib, det_indices, nw_indices, array_indices, fg_indices, stokes_param, map_grouping);
 
     if (run_calibrate) {
         SPDLOG_DEBUG("calibrating timestream");
@@ -190,14 +247,17 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         SPDLOG_DEBUG("despiking");
         // despike data
         despiker.despike(in_pol.scans.data, in_pol.flags.data, calib.apt);
+
         // we want to replace spikes on a per array or network basis
-        std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
+        auto grp_limits = get_grouping(despiker.grouping, det_indices, calib, in_pol.scans.data.cols());
+
+        /*std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
 
         Eigen::Index grp_i = calib.apt[despiker.grouping](det_indices(0));
         grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
         Eigen::Index j = 0;
         // loop through apt table arrays, get highest index for current array
-        for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
+        for (Eigen::Index i=0; i<in_pol.scans.data.cols(); i++) {
             auto det_index = det_indices(i);
             if (calib.apt[despiker.grouping](det_index) == grp_i) {
                 std::get<1>(grp_limits[grp_i]) = i + 1;
@@ -207,7 +267,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
                 j += 1;
                 grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
             }
-        }
+        }*/
 
         SPDLOG_DEBUG("replacing spikes");
         for (auto const& [key, val] : grp_limits) {
@@ -339,8 +399,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
 
 template <typename calib_t, typename Derived>
 auto RTCProc::remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
-                                 Eigen::DenseBase<Derived> &nw_indices, Eigen::DenseBase<Derived> &array_indices, std::string redu_type,
-                                 std::string map_grouping) {
+                                  std::string map_grouping) {
 
     // make a copy of the calib class for flagging
     calib_t calib_scan = calib;
@@ -412,7 +471,6 @@ auto RTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, cali
         in.n_high_dets = 0;
 
         for (auto const& [key, val] : grp_limits) {
-
             bool keep_going = true;
             Eigen::Index n_iter = 0;
 

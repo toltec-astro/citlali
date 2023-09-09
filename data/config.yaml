@@ -140,7 +140,7 @@ mapmaking: # mapmaking parameters
   tan_ra: 0 # tangent plane ra (ignored for now)
   tan_dec: 0 # tangent plane dec (ignored for now)
   cunit: mJy/beam # units (MJy/sr or mJy/beam.  apt table flux conversion default is mJy/beam)
-  grouping: auto # mapmaking grouping (auto, detector, nw, array)
+  grouping: auto # mapmaking grouping (auto, detector, nw, array, fg)
   method: naive # mapmaking algorithm (naive or jinc)
   pixel_axes: icrs # reference frame (icrs or altaz)
   pixel_size_arcsec: 1.0 # pixel size in arceconds
@@ -217,7 +217,7 @@ timestream: # timestream reduction parameters
         a1100: [3]
         a1400: [3]
         a2000: [3]
-      clean_polarized_time_chunks: false # carry out cleaning on Q and U maps as well as I maps
+      clean_polarized_time_chunks: false # carry out cleaning on Q and U TODs as well as I TODs
     weighting: # how to weight data and maps
       type: full # type of TOD weighting (full=use scan variance/approximate=use det sensitivity/const=1)
       median_weight_factor: 0 # set all weights above this factor x median of unflagged detectors to median (>=1 allowed)
@@ -246,7 +246,7 @@ post_processing:
     source_window_arcsec: 0 # window around each source to mask
     mode: default # defines how to search for sources (default=signal map, negative=-signal map, both)
 wiener_filter: # controls for wiener filter
-  template_type: kernel #  template (kernel, gaussian, airy, highpass)
+  template_type: kernel # template (kernel, gaussian, airy, highpass)
   gaussian_template_fwhm_arcsec: # set fwhms for gaussian template
     a1100: 5.0
     a1400: 6.3

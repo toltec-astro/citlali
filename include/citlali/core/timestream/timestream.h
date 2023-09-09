@@ -152,6 +152,10 @@ struct TimeStream : internal::TCDataBase<Derived>,
         PlainObject data;
     };
 
+    // time of creation
+    std::string creation_time = engine_utils::current_date_time();
+
+    // data status
     bool demodulated = false;
     bool kernel_generated = false;
     bool despiked = false;
@@ -159,82 +163,64 @@ struct TimeStream : internal::TCDataBase<Derived>,
     bool downsampled = false;
     bool calibrated = false;
     bool cleaned = false;
+
+    // number of detectors lower than weight limit
+    int n_low_dets;
+    // number of detectors higher than weight limit
+    int n_high_dets;
+
+    // kernel timestreams
+    data_t<Eigen::MatrixXd> kernel;
+    // flag timestream
+    data_t<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> flags;
+    // bitwise flags
+    data_t<Eigen::Matrix<TimestreamFlags,Eigen::Dynamic,Eigen::Dynamic>> flags2;
+    // current scan indices
+    data_t<Eigen::Matrix<Eigen::Index,Eigen::Dynamic,1>> scan_indices;
+    // scan index
+    data_t<Eigen::Index> index;
+    // telescope data for scan
+    data_t<std::map<std::string, Eigen::VectorXd>> tel_data;
+    // pointing offsets
+    data_t<std::map<std::string, Eigen::VectorXd>> pointing_offsets_arcsec;
+    // hwp angle for scan
+    data_t<Eigen::VectorXd> hwp_angle;
+    // fcf
+    data_t<Eigen::VectorXd> fcf;
+    // vectors for mapping apt table onto timestreams
+    data_t<Eigen::VectorXI> det_indices, nw_indices, array_indices, map_indices;
 };
 
 template <typename RefType>
 struct TCData<TCDataKind::RTC,RefType>
     : TimeStream<TCData<TCDataKind::RTC>> {
     using Base = TimeStream<TCData<TCDataKind::RTC>>;
-    using data_t = std::conditional_t<tula::eigen_utils::is_plain_v<RefType>,Base::data_t<RefType>, Base::dataref_t<RefType>>;
+    using data_t = std::conditional_t<tula::eigen_utils::is_plain_v<RefType>,Base::data_t<RefType>,
+                                      Base::dataref_t<RefType>>;
+    // time chunk type
+    std::string_view name{"RTC"};
     // data timestreams
     data_t scans;
-    // kernel timestreams
-    Base::data_t<Eigen::MatrixXd> kernel;
-    // flag timestream
-    Base::data_t<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> flags;
-    // bitwise flags
-    Base::data_t<Eigen::Matrix<TimestreamFlags,Eigen::Dynamic,Eigen::Dynamic>> flags2;
-    // current scan indices
-    Base::data_t<Eigen::Matrix<Eigen::Index,Eigen::Dynamic,1>> scan_indices;
-    // scan index
-    Base::data_t<Eigen::Index> index;
-    // telescope data for scan
-    Base::data_t<std::map<std::string, Eigen::VectorXd>> tel_data;
-    // pointing offsets
-    Base::data_t<std::map<std::string, Eigen::VectorXd>> pointing_offsets_arcsec;
-    // hwp angle for scan
-    Base::data_t<Eigen::VectorXd> hwp_angle;
-    // fcf
-    Base::data_t<Eigen::VectorXd> fcf;
-    // eigenvalues for scan
-    Base::data_t<std::vector<std::vector<Eigen::VectorXd>>> evals;
-    // eigenvectors for scan
-    Base::data_t<std::vector<std::vector<Eigen::MatrixXd>>> evecs;
-    // time of rtc creation
-    std::string creation_time = engine_utils::current_date_time();
 };
 
 template <typename RefType>
 struct TCData<TCDataKind::PTC, RefType>
     : TimeStream<TCData<TCDataKind::PTC>> {
     using Base = TimeStream<TCData<TCDataKind::PTC>>;
-    using data_t = std::conditional_t<tula::eigen_utils::is_plain_v<RefType>,Base::data_t<RefType>, Base::dataref_t<RefType>>;
+    using data_t = std::conditional_t<tula::eigen_utils::is_plain_v<RefType>,Base::data_t<RefType>,
+                                      Base::dataref_t<RefType>>;
+    // time chunk type
+    std::string_view name{"PTC"};
     // data timestreams
     data_t scans;
     // weights for current scan
     Base::data_t<Eigen::VectorXd> weights;
-    // kernel timestreams
-    Base::data_t<Eigen::MatrixXd> kernel;
-    // flag timestream
-    Base::data_t<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> flags;
-    // bitwise flags
-    Base::data_t<Eigen::Matrix<TimestreamFlags,Eigen::Dynamic,Eigen::Dynamic>> flags2;
-    // scan index
-    Base::data_t<Eigen::Matrix<Eigen::Index,Eigen::Dynamic,1>> scan_indices;
-    // scan index
-    Base::data_t<Eigen::Index> index;
-    // telescope data for scan
-    Base::data_t<std::map<std::string, Eigen::VectorXd>> tel_data;
-    // pointing offsets
-    Base::data_t<std::map<std::string, Eigen::VectorXd>> pointing_offsets_arcsec;
-    // hwp angle for scan
-    Base::data_t<Eigen::VectorXd> hwp_angle;
-    // fcf
-    Base::data_t<Eigen::VectorXd> fcf;
     // eigenvalues for scan
     Base::data_t<std::vector<std::vector<Eigen::VectorXd>>> evals;
     // eigenvectors for scan
     Base::data_t<std::vector<std::vector<Eigen::MatrixXd>>> evecs;
-    // vectors for mapping apt table onto timestreams
-    Base::data_t<Eigen::VectorXI> det_indices, nw_indices, array_indices, map_indices;
-    // number of detectors lower than stddev limit
-    int n_low_dets;
-    // number of detectors higher than stddev limit
-    int n_high_dets;
-    // time of ptc creation
-    std::string creation_time = engine_utils::current_date_time();
-
-    std::vector<double> median_weights;
+    // medians of good detector weights
+    Base::data_t<std::vector<double>> median_weights;
 };
 
 /// @brief data class of runtime variant kind.

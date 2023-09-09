@@ -889,6 +889,10 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
     else if (engine().map_grouping == "detector") {
         engine().n_maps = engine().calib.n_dets;
     }
+    // overwrite map number for fg grouping
+    else if (engine().map_grouping == "fg") {
+        engine().n_maps = engine().calib.fg.size()*engine().calib.n_arrays;
+    }
 
     if (engine().rtcproc.run_polarization) {
         // multiply by number of polarizations
@@ -907,17 +911,15 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
     if (engine().map_grouping == "array") {
         Eigen::Index j = 0;
         for (const auto &[stokes_index,stokes_param]: engine().rtcproc.polarization.stokes_params) {
-            //for (Eigen::Index i=0; i<engine().n_maps; i++) {
-                engine().maps_to_arrays.segment(j,engine().calib.arrays.size()) = engine().calib.arrays;
-                engine().maps_to_stokes.segment(j,engine().calib.arrays.size()).setConstant(stokes_index);
-                j = j + engine().calib.arrays.size();
-            //}
+            engine().maps_to_arrays.segment(j,engine().calib.arrays.size()) = engine().calib.arrays;
+            engine().maps_to_stokes.segment(j,engine().calib.arrays.size()).setConstant(stokes_index);
+            j = j + engine().calib.arrays.size();
         }
     }
 
     // detector gropuing
     else if (engine().map_grouping == "detector") {
-        Eigen::Index k=0;
+        Eigen::Index k = 0;
         for (const auto &[stokes_index,stokes_param]: engine().rtcproc.polarization.stokes_params) {
             Eigen::Index n_dets;
             Eigen::VectorXI array_indices;
@@ -929,11 +931,10 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
 
             else if ((stokes_param == "Q") || (stokes_param == "U")) {
                 if (!engine().telescope.sim_obs) {
-                    //n_dets = (engine().calib.apt["loc"].array()!=-1).count()/2;
                     n_dets = (engine().calib.apt["fg"].array()!=-1).count();
                 }
                 else {
-                    n_dets = engine().calib.n_dets;//["fg"].array()==0).count() + (engine().calib.apt["fg"].array()==1).count();
+                    n_dets = engine().calib.n_dets;
                 }
                 Eigen::Index j=0;
                 // loop through all detectors
@@ -953,6 +954,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
     if (engine().map_grouping == "nw") {
         Eigen::VectorXI array_indices(engine().calib.nws.size());
 
+        // find all detectors belonging to each nw
         for (Eigen::Index i=0; i<engine().calib.nws.size(); i++) {
             for (Eigen::Index j=0; j<engine().calib.n_dets; j++) {
                 if (engine().calib.apt["nw"](j) == engine().calib.nws(i)) {
@@ -962,9 +964,30 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
         }
         Eigen::Index j = 0;
         for (const auto &[stokes_index,stokes_param]: engine().rtcproc.polarization.stokes_params) {
-            engine().maps_to_arrays.segment(j,engine().calib.nws.size()) = array_indices;
-            engine().maps_to_stokes.segment(j,engine().calib.nws.size()).setConstant(stokes_index);
-            j = j + engine().calib.nws.size();
+            engine().maps_to_arrays.segment(j,array_indices.size()) = array_indices;
+            engine().maps_to_stokes.segment(j,array_indices.size()).setConstant(stokes_index);
+            j = j + array_indices.size();
+        }
+    }
+
+    // fg grouping
+    if (engine().map_grouping == "fg") {
+
+        Eigen::VectorXI array_indices(engine().calib.fg.size()*engine().calib.n_arrays);
+
+        // find all detectors belonging to each fg
+        Eigen::Index k = 0;
+        for (Eigen::Index j=0; j<engine().calib.n_arrays; j++) {
+            for (Eigen::Index i=0; i<engine().calib.fg.size(); i++) {
+                array_indices(k) = engine().calib.arrays(j);
+                k++;
+            }
+        }
+        Eigen::Index j = 0;
+        for (const auto &[stokes_index,stokes_param]: engine().rtcproc.polarization.stokes_params) {
+            engine().maps_to_arrays.segment(j,array_indices.size()) = array_indices;
+            engine().maps_to_stokes.segment(j,array_indices.size()).setConstant(stokes_index);
+            j = j + array_indices.size();
         }
     }
 
@@ -980,6 +1003,9 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
         }
         engine().arrays_to_maps(i) = index;
     }
+
+    SPDLOG_INFO("engine().arrays_to_maps {}",engine().arrays_to_maps);
+
 }
 
 // determine the map dimensions and allocate the coadded map buffer
@@ -1138,7 +1164,8 @@ void TimeOrderedDataProc<EngineType>::allocate_nmb(map_buffer_t &mb) {
 
 // allocate observation map buffer
 template <class EngineType>
-void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map_coord_t &map_coord, map_coord_abs_t &map_coord_abs) {
+void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map_coord_t &map_coord,
+                                                   map_coord_abs_t &map_coord_abs) {
     // clear map vectors for each obs
     engine().omb.signal.clear();
     engine().omb.weight.clear();

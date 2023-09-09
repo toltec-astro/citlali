@@ -255,14 +255,12 @@ inline auto psd2sen = internal::MoveEnabledUnaryOp([](auto&& psd) {
 
 } // namespace internal
 
-template <typename PTCD, typename DerivedA, typename DerivedB>
+template <typename tc_t, typename DerivedA, typename DerivedB>
 void calc_sensitivity(
-    std::vector<PTCD> &ptcs,
+    std::vector<tc_t> &ptcs,
     Eigen::DenseBase<DerivedA> &sensitivities, // V * s^(1/2)
     Eigen::DenseBase<DerivedB> &noisefluxes,   // V, = sqrt(\int PSD df)
-    double fsmp,
-    Eigen::Index det,
-    internal::Interval<double> freqrange = {3., 5.}) {
+    double fsmp, Eigen::Index det, internal::Interval<double> freqrange = {3., 5.}) {
 
     // get psds
     Eigen::MatrixXd tpsds;

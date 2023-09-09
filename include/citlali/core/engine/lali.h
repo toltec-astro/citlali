@@ -186,7 +186,7 @@ auto Lali::run() {
 
             // remove duplicate tones
             if (!telescope.sim_obs) {
-                calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
+                calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib, det_indices, map_grouping);
             }
 
             // run cleaning
@@ -215,6 +215,7 @@ auto Lali::run() {
                 }
             }
 
+            // write out chunk summary
             if (verbose_mode) {
                 write_chunk_summary(ptcdata);
             }
@@ -238,6 +239,7 @@ auto Lali::run() {
             }
         }
 
+        // increment number of completed scans
         n_scans_done++;
         SPDLOG_INFO("done with scan {}. {}/{} scans completed", ptcdata.index.data + 1, n_scans_done, telescope.scan_indices.cols());
 

@@ -20,8 +20,13 @@ public:
     Eigen::VectorXd hwp_angle, hwp_recvt;
     Eigen::MatrixXd hwp_ts;
 
+    // detector frequency groups
+    Eigen::VectorXI fg;
+
+    // ignore the hwpr (set to true if hwpr is not installed)
     std::string ignore_hwpr;
 
+    // fpga frequency for hwpr
     double hwpr_fpga_freq;
 
     // apt header
@@ -53,6 +58,8 @@ public:
 
     // flux conversion
     Eigen::VectorXd flux_conversion_factor;
+
+    // mean flux conversion factor
     std::map<std::string, double> mean_flux_conversion_factor;
 
     // map from array index to name

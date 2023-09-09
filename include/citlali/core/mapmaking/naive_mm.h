@@ -60,7 +60,7 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
         // rescale random values to -1 or 1
         if (nmb->randomize_dets) {
             noise =
-                    Eigen::Matrix<int,Eigen::Dynamic,Eigen::Dynamic>::Zero(nmb->n_noise, n_dets).unaryExpr([&](int dummy){return rands(eng);});
+                Eigen::Matrix<int,Eigen::Dynamic,Eigen::Dynamic>::Zero(nmb->n_noise, n_dets).unaryExpr([&](int dummy){return rands(eng);});
                 noise = (2.*(noise.template cast<double>().array() - 0.5)).template cast<int>();
         }
         else {

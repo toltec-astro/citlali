@@ -151,13 +151,15 @@ void Telescope::calc_tan_pointing() {
 }
 
 void Telescope::calc_tan_icrs() {
-    // tangent plane ra
-    /*tel_data["ra_phys"] = -tel_data["az_phys"].array()*cos(tel_data["ActParAng"].array()) +
+    /*
+    // calculate tangential ra from tangential altaz (for bad tel file values)
+    tel_data["ra_phys"] = -tel_data["az_phys"].array()*cos(tel_data["ActParAng"].array()) +
                           tel_data["alt_phys"].array()*sin(tel_data["ActParAng"].array());
-    // tangent plane dec
+    // calculate tangential ra from tangential altaz
     tel_data["dec_phys"] = tel_data["az_phys"].array()*sin(tel_data["ActParAng"].array()) +
                            tel_data["alt_phys"].array()*cos(tel_data["ActParAng"].array());
 
+    // get absolute radec from tangential altaz
     tel_data["TelRa"] = tel_data["ra_phys"].array() + tel_header["Header.Source.Ra"](0);
     tel_data["TelDec"] = tel_data["dec_phys"].array() + tel_header["Header.Source.Dec"](0);
     */
@@ -294,13 +296,14 @@ void Telescope::calc_scan_indices() {
     // size of scan
     int sum = 0;
 
+    // check for bad scans
     Eigen::Matrix<bool, Eigen::Dynamic, 1> is_bad_scan(n_scans);
     for (Eigen::Index i=0; i<n_scans; i++) {
         sum = 0;
         for (Eigen::Index j=scan_indices_temp(0,i); j<(scan_indices_temp(1,i)+1); j++) {
             sum += 1;
         }
-        if(sum < 2.*fsmp) {
+        if (sum < 2.*fsmp) {
             n_bad_scans++;
             is_bad_scan(i) = 1;
         }
@@ -309,6 +312,7 @@ void Telescope::calc_scan_indices() {
         }
     }
 
+    // rebuild scan matrix excluding bad scans
     Eigen::Index c = 0;
     scan_indices.resize(4,n_scans-n_bad_scans);
     for (Eigen::Index i=0; i<n_scans; i++) {
@@ -322,8 +326,8 @@ void Telescope::calc_scan_indices() {
     // calculate the number of good scans
     n_scans = n_scans - n_bad_scans;
 
-    // set up the 3rd and 4th scan indices rows so that we don't lose data during lowpassing
-    // inner_scans_chunk is zero if lowpassing is not enabled
+    // set up the 3rd and 4th scan indices rows so that we don't lose data
+    // during lowpassing inner_scans_chunk is zero if lowpassing is not enabled
     scan_indices.row(2) = scan_indices.row(0).array() - inner_scans_chunk;
     scan_indices.row(3) = scan_indices.row(1).array() + inner_scans_chunk;
 

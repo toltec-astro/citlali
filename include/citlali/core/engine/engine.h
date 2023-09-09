@@ -272,7 +272,8 @@ public:
     // get conversion from detector number to map
     template <typename Derived>
     auto calc_map_indices(Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &,
-                          Eigen::DenseBase<Derived> &, std::string);
+                          Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &,
+                          std::string);
 
     // create fits files (does not populate them)
     void create_map_files();
@@ -470,7 +471,7 @@ void Engine::get_ptc_config(CT &config) {
 
 template<typename CT>
 void Engine::get_mapmaking_config(CT &config) {
-    get_config_value(config, map_grouping, missing_keys, invalid_keys, std::tuple{"mapmaking","grouping"},{"auto","array","nw","detector"});
+    get_config_value(config, map_grouping, missing_keys, invalid_keys, std::tuple{"mapmaking","grouping"},{"auto","array","nw","detector","fg"});
 
     // coverage cut
     get_config_value(config, omb.cov_cut, missing_keys, invalid_keys, std::tuple{"mapmaking","coverage_cut"});
@@ -972,7 +973,8 @@ void Engine::get_astrometry_config(CT &config) {
 
 template <typename Derived>
 auto Engine::calc_map_indices(Eigen::DenseBase<Derived> &det_indices, Eigen::DenseBase<Derived> &nw_indices,
-                              Eigen::DenseBase<Derived> &array_indices, std::string stokes_param) {
+                              Eigen::DenseBase<Derived> &array_indices, Eigen::DenseBase<Derived> &fg_indices,
+                              std::string stokes_param) {
     // indices for maps
     Eigen::VectorXI indices(array_indices.size()), map_indices(array_indices.size());
 
@@ -991,16 +993,36 @@ auto Engine::calc_map_indices(Eigen::DenseBase<Derived> &det_indices, Eigen::Den
         indices = det_indices;
     }
 
+    // overwrite map indices for fgs
+    else if (map_grouping == "fg") {
+        indices = fg_indices;
+    }
+
     // start at 0
-    Eigen::Index map_index = 0;
-    map_indices(0) = 0;
-    // loop through and populate map indices
-    for (Eigen::Index i=0; i<indices.size()-1; i++) {
-        // if next index is larger than current index, increment map index
-        if (indices(i+1) > indices(i)) {
-            map_index++;
+    if (map_grouping != "fg") {
+        Eigen::Index map_index = 0;
+        map_indices(0) = 0;
+        // loop through and populate map indices
+        for (Eigen::Index i=0; i<indices.size()-1; i++) {
+            // if next index is larger than current index, increment map index
+            if (indices(i+1) > indices(i)) {
+                map_index++;
+            }
+            map_indices(i+1) = map_index;
         }
-        map_indices(i+1) = map_index;
+    }
+    else {
+        // convert fg to indices
+        std::map<Eigen::Index, Eigen::Index> fg_to_index;
+
+        // get mapping from fg to map index
+        for (Eigen::Index i=0; i<calib.fg.size(); i++) {
+            fg_to_index[calib.fg(i)] = i;
+        }
+        // allocate map indices from fg
+        for (Eigen::Index i=0; i<indices.size(); i++) {
+            map_indices(i) = fg_to_index[indices(i)];
+        }
     }
 
     if (rtcproc.run_polarization) {
@@ -1375,7 +1397,7 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
 
     f.close();
 
-    using netCDF::NcDim;
+    /*using netCDF::NcDim;
     using netCDF::NcFile;
     using netCDF::NcType;
     using netCDF::NcVar;
@@ -1476,7 +1498,7 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
 
     } catch (NcException &e) {
         SPDLOG_ERROR("{}", e.what());
-    }
+    }*/
 }
 
 template <typename map_buffer_t>
@@ -1743,7 +1765,18 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         if (map_grouping=="nw") {
             map_name = map_name + "nw_" + std::to_string(calib.nws(i)) + "_";
         }
-
+        else if (map_grouping=="fg") {
+            // find all detectors belonging to each fg
+            Eigen::VectorXI array_indices(calib.fg.size()*calib.n_arrays);
+            Eigen::Index k = 0;
+            for (Eigen::Index j=0; j<calib.n_arrays; j++) {
+                for (Eigen::Index i=0; i<calib.fg.size(); i++) {
+                    array_indices(k) = calib.fg(i);
+                    k++;
+                }
+            }
+            map_name = map_name + "fg_" + std::to_string(array_indices(i)) + "_";
+        }
         else if (map_grouping=="detector") {
             map_name = map_name + "det_" + std::to_string(i) + "_";
         }
@@ -1893,7 +1926,18 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
             if (map_grouping=="nw") {
                 map_name = map_name + "nw_" + std::to_string(calib.nws(i)) + "_";
             }
-
+            else if (map_grouping=="fg") {
+                // find all detectors belonging to each fg
+                Eigen::VectorXI array_indices(calib.fg.size()*calib.n_arrays);
+                Eigen::Index k = 0;
+                for (Eigen::Index j=0; j<calib.n_arrays; j++) {
+                    for (Eigen::Index i=0; i<calib.fg.size(); i++) {
+                        array_indices(k) = calib.fg(i);
+                        k++;
+                    }
+                }
+                map_name = map_name + "fg_" + std::to_string(array_indices(i)) + "_";
+            }
             else if (map_grouping=="detector") {
                 map_name = map_name + "det_" + std::to_string(i) + "_";
             }
@@ -2017,7 +2061,18 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
             if (map_grouping=="nw") {
                 map_name = map_name + "nw_" + std::to_string(calib.nws(i)) + "_";
             }
-
+            else if (map_grouping=="fg") {
+                // find all detectors belonging to each fg
+                Eigen::VectorXI array_indices(calib.fg.size()*calib.n_arrays);
+                Eigen::Index k = 0;
+                for (Eigen::Index j=0; j<calib.n_arrays; j++) {
+                    for (Eigen::Index i=0; i<calib.fg.size(); i++) {
+                        array_indices(k) = calib.fg(i);
+                        k++;
+                    }
+                }
+                map_name = map_name + "fg_" + std::to_string(array_indices(i)) + "_";
+            }
             else if (map_grouping=="detector") {
                 map_name = map_name + "det_" + std::to_string(i) + "_";
             }

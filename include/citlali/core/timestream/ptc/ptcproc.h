@@ -37,50 +37,76 @@ public:
     // number of weight outlier iterations
     int iter_lim = 0;
 
-    // add or subtract source
+    // add or subtract gaussian source
     enum GaussType {
         add = 0,
         subtract = 1
     };
 
+    // get limits for a particular grouping
+    template <typename Derived, class calib_t>
+    auto get_grouping(std::string, Eigen::DenseBase<Derived> &, calib_t &, int);
+
+    // subtract detector means
     void subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &);
-
-    template <typename calib_t, typename Derived>
-    auto remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
-                             Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string, std::string);
-
+    // run main processing stage
     template <class calib_type, typename Derived>
     void run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
              TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_type &,
              Eigen::DenseBase<Derived> &, std::string);
 
+    // calculate detector weights
     template <typename apt_type, class tel_type, typename Derived>
     void calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, apt_type &, tel_type &,
                       Eigen::DenseBase<Derived> &);
-
+    // reset outlier weights to the median
     template <typename calib_t, typename Derived>
     auto reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &,
                        Eigen::DenseBase<Derived> &det_indices);
-
+    // remove flagged detectors
     template <typename apt_t, typename Derived>
     void remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, apt_t &, Eigen::DenseBase<Derived> &);
 
+    // remove detectors with outlier weights
     template <typename calib_t, typename Derived>
     auto remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
                             Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string, std::string);
 
+    // append time chunk to tod netcdf file
     template <typename Derived, typename apt_t, typename pointing_offset_t>
     void append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, std::string, std::string, std::string &,
                           pointing_offset_t &, Eigen::DenseBase<Derived> &, apt_t &, std::string, bool, double, bool);
 
+    // add or subtract gaussian to timestream
     template <GaussType gauss_type, typename DerivedB, typename DerivedC, typename apt_t, typename pointing_offset_t>
     void add_gaussian(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, Eigen::DenseBase<DerivedB> &, std::string &,
                       std::string &, apt_t &, pointing_offset_t &, double,
                       Eigen::Index, Eigen::Index, Eigen::DenseBase<DerivedC> &, Eigen::DenseBase<DerivedC> &);
 };
 
-void PTCProc::subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in) {
+template <typename Derived, class calib_t>
+auto PTCProc::get_grouping(std::string grp, Eigen::DenseBase<Derived> &det_indices, calib_t &calib, int n_dets) {
+    std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
 
+    Eigen::Index grp_i = calib.apt[grp](det_indices(0));
+    grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
+    Eigen::Index j = 0;
+    // loop through apt table arrays, get highest index for current array
+    for (Eigen::Index i=0; i<n_dets; i++) {
+        auto det_index = det_indices(i);
+        if (calib.apt[grp](det_index) == grp_i) {
+            std::get<1>(grp_limits[grp_i]) = i + 1;
+        }
+        else {
+            grp_i = calib.apt[grp](det_index);
+            j += 1;
+            grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
+        }
+    }
+    return grp_limits;
+}
+
+void PTCProc::subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in) {
     // cast flags to double and flip 1's and 0's so we can multiply by the data
     auto f = (in.flags.data.derived().array().cast <double> ().array() - 1).abs();
     // mean of each detector
@@ -119,6 +145,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
         // loop through config groupings
         for (const auto & group: cleaner.grouping) {
 
+            // add current group to eval/evec vectors
             out.evals.data.push_back({});
             out.evecs.data.push_back({});
 
@@ -143,7 +170,11 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
             }
             // if cleaning polarized maps is requested
             else if (run_stokes_clean) {
-                Eigen::Index grp_i = calib.apt[group](det_indices(0));
+
+                // get group limits
+                grp_limits = get_grouping(group, det_indices, calib, in.scans.data.cols());
+
+                /*Eigen::Index grp_i = calib.apt[group](det_indices(0));
                 grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
                 Eigen::Index j = 0;
                 // loop through apt table arrays, get highest index for current array
@@ -157,24 +188,27 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                         j += 1;
                         grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
                     }
-                }
+                }*/
             }
 
             SPDLOG_DEBUG("cleaning with {} grouping", group);
 
+            // only run cleaning if chunk is Stokes I or if cleaning stokes Q, U
             if (stokes_param=="I" || run_stokes_clean) {
                 for (auto const& [key, val] : grp_limits) {
 
                     Eigen::Index arr_index;
-
+                    // use all detectors
                     if (group=="all") {
                         arr_index = calib.arrays(0);
                     }
 
+                    // use network grouping
                     else if (group=="nw" || group=="network") {
                         arr_index = toltec_io.nw_to_array_map[key];
                     }
 
+                    // use array grouping
                     else if (group=="array") {
                         arr_index = key;
                     }
@@ -249,8 +283,10 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                                                                                                cleaner.n_eig_to_cut[arr_index](indx));
                         }
                     }
+                    // otherwise just copy the data
                     else {
                         out.scans.data.block(0, start_index, n_pts, n_dets) = in.scans.data.block(0, start_index, n_pts, n_dets);
+                        // copy kernel
                         if (in.kernel.data.size()!=0) {
                             out.kernel.data.block(0, start_index, n_pts, n_dets) = in.kernel.data.block(0, start_index, n_pts, n_dets);
                         }
@@ -346,7 +382,10 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
     // number of detectors
     Eigen::Index n_dets = in.scans.data.cols();
 
-    std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
+    // get group limits
+    auto grp_limits = get_grouping("array", det_indices, calib, in.scans.data.cols());
+
+    /*std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
 
     Eigen::Index grp_i = calib.apt["array"](det_indices(0));
     grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
@@ -361,16 +400,18 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
         else {
             grp_i = calib.apt["array"](det_index);
             j += 1;
-            grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
+            grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i,0};
         }
     }
+    */
 
     // collect detectors that are un-flagged and have non-zero weights
     for (auto const& [key, val] : grp_limits) {
         auto grp_weights = in.weights.data(Eigen::seq(std::get<0>(grp_limits[key]),
                                                      std::get<1>(grp_limits[key])-1));
         Eigen::Index n_good_dets = 0;
-        j = std::get<0>(grp_limits[key]);
+        Eigen::Index j = std::get<0>(grp_limits[key]);
+
         for (Eigen::Index m=0; m<grp_weights.size(); m++) {
             if (calib.apt["flag"](det_indices(j))==0 && grp_weights(m)>0) {
                 n_good_dets++;
@@ -402,7 +443,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
         // get median weight
         auto med_wt = tula::alg::median(good_wt);
         // store median weights
-        in.median_weights.push_back(med_wt);
+        in.median_weights.data.push_back(med_wt);
 
         int outliers = 0;
 
@@ -610,7 +651,7 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
     using netCDF::NcVar;
     using namespace netCDF::exceptions;
 
-    //try {
+    try {
         // open netcdf file
         netCDF::NcFile fo(filepath, netCDF::NcFile::write);
         // get variables
@@ -812,9 +853,9 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         fo.sync();
         fo.close();
 
-    //} catch (NcException &e) {
-    //    SPDLOG_ERROR("{}", e.what());
-    //}
+    } catch (NcException &e) {
+        SPDLOG_ERROR("{}", e.what());
+    }
 }
 
 template <PTCProc::GaussType gauss_type, typename DerivedB, typename DerivedC, typename apt_t, typename pointing_offset_t>
@@ -857,7 +898,7 @@ void PTCProc::add_gaussian(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::
         double sigma = std::max(sigma_lat, sigma_lon);
 
         // subtract source
-        if constexpr (gauss_type == subtract) {
+        if constexpr (gauss_type==subtract) {
             amp = -amp;
         }
 

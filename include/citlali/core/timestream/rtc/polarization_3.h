@@ -9,7 +9,7 @@ namespace timestream {
 
 class Polarization {
 public:
-    using indices_t = std::tuple<Eigen::VectorXI, Eigen::VectorXI, Eigen::VectorXI>;
+    using indices_t = std::tuple<Eigen::VectorXI, Eigen::VectorXI, Eigen::VectorXI, Eigen::VectorXI>;
 
     // stokes parameters
     std::map<int,std::string> stokes_params;
@@ -34,16 +34,21 @@ public:
                                     TCData<td_kind, Eigen::MatrixXd> &out,
                                     std::string stokes_param, std::string redu_type,
                                     calib_type &calib, bool sim_obs) {
-        // vectors of map, array, nw, and det indices
-        Eigen::VectorXI map_indices, array_indices, nw_indices, det_indices;
+        // vectors of array, nw, and det indices
+        Eigen::VectorXI array_indices, nw_indices, det_indices, fg_indices;
 
-        // copy rtcdata
+        // copy input rtcdata
         out = in;
 
         if (stokes_param == "I") {
+            // set up array indices
             array_indices = calib.apt["array"].template cast<Eigen::Index> ();
+            // set up nw indices
             nw_indices = calib.apt["nw"].template cast<Eigen::Index> ();
+            // set up detector indices
             det_indices = Eigen::VectorXI::LinSpaced(out.scans.data.cols(),0,out.scans.data.cols()-1);
+            // set up fg indices
+            fg_indices = calib.apt["fg"].template cast<Eigen::Index> ();
         }
 
         // only run demodulation if not stokes I
@@ -78,6 +83,7 @@ public:
             out.scan_indices.data = in.scan_indices.data;
             out.index.data = in.index.data;
 
+            // copy pointing offsets
             out.pointing_offsets_arcsec.data = in.pointing_offsets_arcsec.data;
 
             // loop through all detectors
@@ -88,7 +94,7 @@ public:
                     if (calib.apt["fg"](i)!=-1) {
                         polarized_scans.col(k) = in.scans.data.col(i);
 
-                        fg(k) = calib.apt["fg"](i);
+                        fg_indices(k) = calib.apt["fg"](i);
 
                         array_indices(k) = calib.apt["array"](i);
                         nw_indices(k) = calib.apt["nw"](i);
@@ -100,11 +106,10 @@ public:
             else {
                 polarized_scans = in.scans.data;
 
-                fg = calib.apt["fg"];
-
                 array_indices = calib.apt["array"].template cast<Eigen::Index> ();
                 nw_indices = calib.apt["nw"].template cast<Eigen::Index> ();
                 det_indices = Eigen::VectorXI::LinSpaced(out.scans.data.cols(),0,out.scans.data.cols()-1);
+                fg_indices = calib.apt["fg"].template cast<Eigen::Index> ();
             }
 
             // now loop through polarized detectors
@@ -184,7 +189,7 @@ public:
             out.demodulated = true;
         }
 
-        return indices_t(array_indices, nw_indices, det_indices);
+        return indices_t(array_indices, nw_indices, det_indices, fg_indices);
     }
 };
 

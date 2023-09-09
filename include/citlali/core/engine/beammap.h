@@ -440,6 +440,7 @@ auto Beammap::run_timestream() {
             ptcs0.at(ptcdata.index.data) = std::move(ptcdata);
         }
 
+        // increment number of completed scans
         n_scans_done++;
         SPDLOG_INFO("done with scan {}. {}/{} scans completed", ptcdata.index.data + 1, n_scans_done, telescope.scan_indices.cols());
 
@@ -498,8 +499,7 @@ auto Beammap::run_loop() {
 
             // remove duplicate tones
             if (!telescope.sim_obs) {
-                calib_scan = rtcproc.remove_nearby_tones(ptcs[i], calib_scan, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
-                                                        ptcs[i].array_indices.data, redu_type, map_grouping);
+                calib_scan = rtcproc.remove_nearby_tones(ptcs[i], calib_scan, ptcs[i].det_indices.data, map_grouping);
             }
 
             SPDLOG_INFO("processed time chunk processing");
@@ -508,7 +508,7 @@ auto Beammap::run_loop() {
             // remove outliers after clean
             calib_scan = ptcproc.remove_bad_dets(ptcs[i], calib, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
                                                  ptcs[i].array_indices.data, redu_type, map_grouping);
-            // write chunk summary
+            // write out chunk summary
             if (verbose_mode && current_iter==beammap_tod_output_iter) {
                 SPDLOG_DEBUG("writing chunk summary");
                 write_chunk_summary(ptcs[i]);
@@ -1019,8 +1019,8 @@ void Beammap::adjust_apt() {
     calib.apt["x_t_raw"] = calib.apt["x_t"];
     calib.apt["y_t_raw"] = calib.apt["y_t"];
 
-    // align to reference detector if specified and
-    // subtract its position from x and y
+    // align to reference detector if specified
+    // and subtract its position from x and y
     calib.apt["x_t"] =  calib.apt["x_t"].array() - ref_det_x_t;
     calib.apt["y_t"] =  calib.apt["y_t"].array() - ref_det_y_t;
 
