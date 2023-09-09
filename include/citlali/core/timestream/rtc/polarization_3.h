@@ -72,6 +72,7 @@ public:
             array_indices.resize(n_dets);
             nw_indices.resize(n_dets);
             det_indices.resize(n_dets);
+            fg_indices.resize(n_dets);
 
             // resize output scans
             out.scans.data.resize(n_pts, n_dets);
