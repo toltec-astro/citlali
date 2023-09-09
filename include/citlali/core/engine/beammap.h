@@ -1431,7 +1431,9 @@ void Beammap::output() {
 
     if (map_grouping!="detector") {
         // write psd and histogram files
+        SPDLOG_DEBUG("writing psds");
         write_psd<map_type>(mb, dir_name);
+        SPDLOG_DEBUG("writing histograms");Z
         write_hist<map_type>(mb, dir_name);
     }
 }

@@ -58,7 +58,6 @@ public:
 
             Eigen::Index n_dets;
             if (!sim_obs) {
-                //n_dets = (calib.apt["loc"].array()!=-1).count();
                 n_dets = (calib.apt["fg"].array()!=-1).count();
             }
             else {

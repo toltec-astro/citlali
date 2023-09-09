@@ -970,7 +970,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
         }
     }
 
-    // fg grouping
+    // frequency grouping
     if (engine().map_grouping == "fg") {
 
         Eigen::VectorXI array_indices(engine().calib.fg.size()*engine().calib.n_arrays);

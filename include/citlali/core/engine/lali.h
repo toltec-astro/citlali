@@ -400,11 +400,14 @@ void Lali::output() {
     n_io->clear();
 
     // write psd and histogram files
+    SPDLOG_DEBUG("writing psds");
     write_psd<map_type>(mb, dir_name);
+    SPDLOG_DEBUG("writing histograms");
     write_hist<map_type>(mb, dir_name);
 
     // write source table
     if (run_source_finder) {
+        SPDLOG_DEBUG("writing source table");
         write_sources<map_type>(mb, dir_name);
     }
 
