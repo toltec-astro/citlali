@@ -308,27 +308,18 @@ void Calib::setup() {
         array_beam_areas[key] = 2.*pi*pow(avg_array_fwhm/STD_TO_FWHM,2);
     }
 
-    // set up fg
-    Eigen::VectorXi fg_temp(5);
-    fg_temp << -1, 0, 1, 2, 3;
+    // set up frequency group
+    std::vector<Eigen::Index> fg_temp;
+    fg_temp.push_back(apt["fg"](0));
 
-    // get number of fg groups
-    int n_fgs = 0;
-    for (Eigen::Index i=0; i<fg_temp.size(); i++) {
-        if ((apt["fg"].array()==fg_temp(i)).any()) {
-            n_fgs += 1;
+    // get number of frequency groups
+    for (Eigen::Index i=1; i<apt["fg"].size(); i++) {
+        Eigen::Map<Eigen::VectorXI> x(fg_temp.data(),fg_temp.size());
+        if (!(x.array()==apt["fg"](i)).any()) {
+            fg_temp.push_back(apt["fg"](i));
         }
     }
-
-    // add fg values into fg vector
-    fg.resize(n_fgs);
-    j = 0;
-    for (Eigen::Index i=0; i<fg_temp.size(); i++) {
-        if ((apt["fg"].array()==fg_temp(i)).any()) {
-            fg(j) = fg_temp(i);
-            j++;
-        }
-    }
+    fg = Eigen::Map<Eigen::VectorXI>(fg_temp.data(),fg_temp.size());
 }
 
 } // namespace engine

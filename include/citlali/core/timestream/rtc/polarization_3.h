@@ -68,8 +68,6 @@ public:
             // q and u in the detector frame
             Eigen::MatrixXd polarized_scans(n_pts, n_dets);
 
-            // frequency group
-            Eigen::VectorXd fg(n_dets);
             // resize index vectors
             array_indices.resize(n_dets);
             nw_indices.resize(n_dets);
@@ -121,31 +119,31 @@ public:
                 // rotate q and u by parallactic, elevation, and detector/array angle
                 if (calib.run_hwp==false) {
                     if (stokes_param == "Q") {
-                        if (fg(i)==0) {
+                        if (fg_indices(i)==0) {
                             out.scans.data.col(i) = cos(rot_angle)*polarized_scans.col(i).array();
                         }
-                        else if (fg(i)==2) {
+                        else if (fg_indices(i)==2) {
                             out.scans.data.col(i) = -cos(rot_angle)*polarized_scans.col(i).array();
                         }
-                        else if (fg(i)==1) {
+                        else if (fg_indices(i)==1) {
                             out.scans.data.col(i) = sin(rot_angle)*polarized_scans.col(i).array();
                         }
-                        else if (fg(i)==3) {
+                        else if (fg_indices(i)==3) {
                             out.scans.data.col(i) = -sin(rot_angle)*polarized_scans.col(i).array();
                         }
                     }
 
                     else if (stokes_param == "U") {
-                        if (fg(i)==0) {
+                        if (fg_indices(i)==0) {
                             out.scans.data.col(i) = sin(rot_angle)*polarized_scans.col(i).array();
                         }
-                        else if (fg(i)==2) {
+                        else if (fg_indices(i)==2) {
                             out.scans.data.col(i) = -sin(rot_angle)*polarized_scans.col(i).array();
                         }
-                        else if (fg(i)==1) {
+                        else if (fg_indices(i)==1) {
                             out.scans.data.col(i) = -cos(rot_angle)*polarized_scans.col(i).array();
                         }
-                        else if (fg(i)==3) {
+                        else if (fg_indices(i)==3) {
                             out.scans.data.col(i) = cos(rot_angle)*polarized_scans.col(i).array();
                         }
                     }
@@ -154,31 +152,31 @@ public:
                 // check if hwpr is requested
                 else {
                     if (stokes_param == "Q") {
-                        if (fg(i)==0) {
+                        if (fg_indices(i)==0) {
                             out.scans.data.col(i) = cos(4*in.hwp_angle.data.array()-rot_angle)*polarized_scans.col(i).array();
                         }
-                        else if (fg(i)==2) {
+                        else if (fg_indices(i)==2) {
                             out.scans.data.col(i) = -cos(4*in.hwp_angle.data.array()-rot_angle)*polarized_scans.col(i).array();
                         }
-                        else if (fg(i)==1) {
+                        else if (fg_indices(i)==1) {
                             out.scans.data.col(i) = sin(4*in.hwp_angle.data.array()-rot_angle)*polarized_scans.col(i).array();
                         }
-                        else if (fg(i)==3) {
+                        else if (fg_indices(i)==3) {
                             out.scans.data.col(i) = -sin(4*in.hwp_angle.data.array()-rot_angle)*polarized_scans.col(i).array();
                         }
                     }
 
                     else if (stokes_param == "U") {
-                        if (fg(i)==0) {
+                        if (fg_indices(i)==0) {
                             out.scans.data.col(i) = sin(4*in.hwp_angle.data.array()-rot_angle)*polarized_scans.col(i).array();
                         }
-                        else if (fg(i)==2) {
+                        else if (fg_indices(i)==2) {
                             out.scans.data.col(i) = -sin(4*in.hwp_angle.data.array()-rot_angle)*polarized_scans.col(i).array();
                         }
-                        else if (fg(i)==1) {
+                        else if (fg_indices(i)==1) {
                             out.scans.data.col(i) = -cos(4*in.hwp_angle.data.array()-rot_angle)*polarized_scans.col(i).array();
                         }
-                        else if (fg(i)==3) {
+                        else if (fg_indices(i)==3) {
                             out.scans.data.col(i) = cos(4*in.hwp_angle.data.array()-rot_angle)*polarized_scans.col(i).array();
                         }
                     }
