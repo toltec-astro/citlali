@@ -1433,7 +1433,7 @@ void Beammap::output() {
         // write psd and histogram files
         SPDLOG_DEBUG("writing psds");
         write_psd<map_type>(mb, dir_name);
-        SPDLOG_DEBUG("writing histograms");Z
+        SPDLOG_DEBUG("writing histograms");
         write_hist<map_type>(mb, dir_name);
     }
 }
