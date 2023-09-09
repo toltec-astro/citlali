@@ -2392,8 +2392,10 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
         "sig2noise"
     };
 
+    // number of parameters
     int n_params = 6;
 
+    // units for fitted parameter centroids
     std::string pos_units;
 
     if (telescope.pixel_axes=="icrs") {
