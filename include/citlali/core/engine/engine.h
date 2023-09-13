@@ -2332,8 +2332,8 @@ void Engine::find_sources(map_buffer_t &mb) {
                                                                                   init_fwhm, init_row, init_col);
                 if (good_fit) {
                     // rescale fit params from pixel to on-sky units
-                    params(1) = RAD_TO_ASEC*mb.pixel_size_rad*(params(1) - (mb.n_cols)/2);
-                    params(2) = RAD_TO_ASEC*mb.pixel_size_rad*(params(2) - (mb.n_rows)/2);
+                    params(1) = RAD_TO_ASEC*mb.pixel_size_rad*(params(1) - (mb.n_cols - 1)/2);
+                    params(2) = RAD_TO_ASEC*mb.pixel_size_rad*(params(2) - (mb.n_rows - 1)/2);
                     params(3) = RAD_TO_ASEC*STD_TO_FWHM*mb.pixel_size_rad*(params(3));
                     params(4) = RAD_TO_ASEC*STD_TO_FWHM*mb.pixel_size_rad*(params(4));
 
