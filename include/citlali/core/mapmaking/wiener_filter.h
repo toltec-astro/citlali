@@ -64,15 +64,19 @@ public:
     // declare fitter class
     engine_utils::mapFitter map_fitter;
 
+    // make a symmetric Gaussian to use as a template
     template<class MB>
     void make_gaussian_template(MB &mb, const double);
 
+    // make an Airy pattern to use as a template
     template<class MB>
     void make_airy_template(MB &mb, const double);
 
+    // use a symmetric version of the kernel as a template
     template<class MB, class CD>
     void make_kernel_template(MB &mb, const int, CD &);
 
+    // main function to determine what template to make
     template<class MB, class CD>
     void make_template(MB &, CD &c, const double, const int);
 
@@ -80,15 +84,20 @@ public:
     void calc_rr(MB &, const int);
     template <class MB>
     void calc_vvq(MB &, const int);
+    // calculate the numerator
     void calc_numerator();
+    // calculate the denominator
     void calc_denominator();
 
+    // run the filter on the signal, weight, and kernel maps
     template<class MB>
     void run_filter(MB &, const int);
 
+    // filter a map
     template<class MB>
     void filter_maps(MB &, const int);
 
+    // filter the noise maps
     template<class MB>
     void filter_noise(MB &mb, const int, const int);
 };
@@ -195,8 +204,8 @@ void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_d
     }
 
     // rescale parameters to on-sky units
-    map_params(1) = mb.pixel_size_rad*(map_params(1) - (n_cols - 1)/2);
-    map_params(2) = mb.pixel_size_rad*(map_params(2) - (n_rows - 1)/2);
+    map_params(1) = mb.pixel_size_rad*(map_params(1) - (n_cols)/2);
+    map_params(2) = mb.pixel_size_rad*(map_params(2) - (n_rows)/2);
 
     Eigen::Index shift_row = -std::round(map_params(2)/diff_rows);
     Eigen::Index shift_col = -std::round(map_params(1)/diff_cols);
@@ -484,7 +493,7 @@ void WienerFilter::calc_denominator() {
         // initialize denominator
         denom.setZero();
 
-        in.real() = pow(vvq.array(), -1);
+        in.real() = pow(vvq.array(),-1);
         in.imag().setZero();
 
         //out = engine_utils::fft<engine_utils::inverse>(in, parallel_policy);
@@ -570,9 +579,9 @@ void WienerFilter::calc_denominator() {
 
                         for (Eigen::Index i=0; i<n_rows; i++) {
                             for (Eigen::Index j=0; j<n_cols; j++) {
-                                if (denom(i, j) > 0.01 * max_denom) {
-                                    if (abs(updater(i, j) / denom(i, j)) > max_ratio)
-                                        max_ratio = abs(updater(i, j) / denom(i, j));
+                                if (denom(i,j) > 0.01 * max_denom) {
+                                    if (abs(updater(i,j) / denom(i,j)) > max_ratio)
+                                        max_ratio = abs(updater(i,j) / denom(i,j));
                                 }
                             }
                         }

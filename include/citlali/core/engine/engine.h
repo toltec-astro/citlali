@@ -503,13 +503,7 @@ void Engine::get_mapmaking_config(CT &config) {
     omb.pixel_size_rad *= ASEC_TO_RAD;
     cmb.pixel_size_rad = omb.pixel_size_rad;
 
-
-    //if (telescope.pixel_axes=="icrs") {
-        omb.wcs.cdelt.push_back(-omb.pixel_size_rad);
-    //}
-    //else if (telescope.pixel_axes=="altaz") {
-    //    omb.wcs.cdelt.push_back(omb.pixel_size_rad);
-    //}
+    omb.wcs.cdelt.push_back(-omb.pixel_size_rad);
     omb.wcs.cdelt.push_back(omb.pixel_size_rad);
 
     omb.wcs.cdelt.push_back(1);
@@ -2201,7 +2195,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         // init fwhm in pixels
         wiener_filter.init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
         // make wiener filter template
-        wiener_filter.make_template(mb,calib.apt, wiener_filter.gaussian_template_fwhm_rad[toltec_io.array_name_map[i]],i);
+        wiener_filter.make_template(mb, calib.apt, wiener_filter.gaussian_template_fwhm_rad[toltec_io.array_name_map[i]],i);
         // run the filter for the current map
         wiener_filter.filter_maps(mb,i);
 
@@ -2332,8 +2326,8 @@ void Engine::find_sources(map_buffer_t &mb) {
                                                                                   init_fwhm, init_row, init_col);
                 if (good_fit) {
                     // rescale fit params from pixel to on-sky units
-                    params(1) = RAD_TO_ASEC*mb.pixel_size_rad*(params(1) - (mb.n_cols - 1)/2);
-                    params(2) = RAD_TO_ASEC*mb.pixel_size_rad*(params(2) - (mb.n_rows - 1)/2);
+                    params(1) = RAD_TO_ASEC*mb.pixel_size_rad*(params(1) - (mb.n_cols)/2);
+                    params(2) = RAD_TO_ASEC*mb.pixel_size_rad*(params(2) - (mb.n_rows)/2);
                     params(3) = RAD_TO_ASEC*STD_TO_FWHM*mb.pixel_size_rad*(params(3));
                     params(4) = RAD_TO_ASEC*STD_TO_FWHM*mb.pixel_size_rad*(params(4));
 

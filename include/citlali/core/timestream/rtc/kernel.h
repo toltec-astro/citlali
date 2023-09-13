@@ -40,21 +40,22 @@ public:
         }
     }
 
+    // symmetric gaussian kernel
     template<typename apt_t, typename pointing_offset_t, typename Derived>
     void create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &, std::string &,
                                           std::string &, apt_t &, pointing_offset_t &,
                                           Eigen::DenseBase<Derived> &);
-
+    // airy pattern kernel
     template<typename apt_t, typename pointing_offset_t, typename Derived>
     void create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &, std::string &,
                             std::string &, apt_t &, pointing_offset_t &,
                             Eigen::DenseBase<Derived> &);
-
+    // asymmetric elliptical gaussian kernel
     template<typename apt_t, typename pointing_offset_t, typename Derived>
     void create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &, std::string &,
                                           std::string &, apt_t &, pointing_offset_t &,
                                           Eigen::DenseBase<Derived> &);
-
+    // kernel from fits file
     template<typename apt_t, typename pointing_offset_t, typename Derived>
     void create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &, std::string &,
                                           std::string &, apt_t &, pointing_offset_t &, double,
@@ -255,8 +256,9 @@ void Kernel::create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &i
 
     in.kernel.data.resize(n_pts, n_dets);
 
+    // loop through detectors
     for (Eigen::Index i=0; i<n_dets; i++) {
-
+        // current detector index in apt
         auto det_index = det_indices(i);
 
         double az_off = 0;

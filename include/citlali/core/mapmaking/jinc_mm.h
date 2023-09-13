@@ -225,14 +225,14 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                                                               in.pointing_offsets_arcsec.data);
 
             // get map buffer row and col indices for lat and lon vectors
-            Eigen::VectorXd omb_irow = lat.array()/omb.pixel_size_rad + (omb.n_rows - 1)/2.;
-            Eigen::VectorXd omb_icol = lon.array()/omb.pixel_size_rad + (omb.n_cols - 1)/2.;
+            Eigen::VectorXd omb_irow = lat.array()/omb.pixel_size_rad + (omb.n_rows)/2.;
+            Eigen::VectorXd omb_icol = lon.array()/omb.pixel_size_rad + (omb.n_cols)/2.;
 
             Eigen::VectorXd cmb_irow, cmb_icol;
             if (!cmb.noise.empty()) {
                 // get coadded map buffer row and col indices for lat and lon vectors
-                cmb_irow = lat.array()/cmb.pixel_size_rad + (cmb.n_rows - 1)/2.;
-                cmb_icol = lon.array()/cmb.pixel_size_rad + (cmb.n_cols - 1)/2.;
+                cmb_irow = lat.array()/cmb.pixel_size_rad + (cmb.n_rows)/2.;
+                cmb_icol = lon.array()/cmb.pixel_size_rad + (cmb.n_cols)/2.;
             }
 
             // loop through the samples
