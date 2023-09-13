@@ -48,7 +48,7 @@ public:
     std::map<Eigen::Index,Eigen::MatrixXd> jinc_weights_mat;
 
     // splines for jinc function
-    std::map<Eigen::Index, engine_utils::SplineFunction2> jinc_splines;
+    std::map<Eigen::Index, engine_utils::SplineFunction> jinc_splines;
 
     // calculate jinc weight at a given radius
     auto jinc_func(double, double, double, double, double, double);
@@ -59,6 +59,7 @@ public:
     // calculate spline function for jinc weights
     void calculate_jinc_splines();
 
+    // populate the pixels in the map given a time chunk
     template<class map_buffer_t, typename Derived, typename apt_t>
     void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &, map_buffer_t &,
                             Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &,
@@ -142,7 +143,7 @@ void JincMapmaker::calculate_jinc_splines() {
             j++;
         }
         // create spline class
-        engine_utils::SplineFunction2 s;
+        engine_utils::SplineFunction s;
         // spline interpolate
         s.interpolate(radius, jinc_weights);
         // store jinc spline
@@ -224,14 +225,14 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                                                               in.pointing_offsets_arcsec.data);
 
             // get map buffer row and col indices for lat and lon vectors
-            Eigen::VectorXd omb_irow = lat.array()/omb.pixel_size_rad + (omb.n_rows)/2.;
-            Eigen::VectorXd omb_icol = lon.array()/omb.pixel_size_rad + (omb.n_cols)/2.;
+            Eigen::VectorXd omb_irow = lat.array()/omb.pixel_size_rad + (omb.n_rows - 1)/2.;
+            Eigen::VectorXd omb_icol = lon.array()/omb.pixel_size_rad + (omb.n_cols - 1)/2.;
 
             Eigen::VectorXd cmb_irow, cmb_icol;
             if (!cmb.noise.empty()) {
                 // get coadded map buffer row and col indices for lat and lon vectors
-                cmb_irow = lat.array()/cmb.pixel_size_rad + (cmb.n_rows)/2.;
-                cmb_icol = lon.array()/cmb.pixel_size_rad + (cmb.n_cols)/2.;
+                cmb_irow = lat.array()/cmb.pixel_size_rad + (cmb.n_rows - 1)/2.;
+                cmb_icol = lon.array()/cmb.pixel_size_rad + (cmb.n_cols - 1)/2.;
             }
 
             // loop through the samples

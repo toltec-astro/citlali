@@ -62,10 +62,15 @@ public:
     std::string sig_unit;
     // exposure time
     double exposure_time = 0;
+
     // maps
-    std::vector<Eigen::MatrixXd> signal, weight, kernel, coverage, flag;
+    std::vector<Eigen::MatrixXd> signal, weight, kernel, coverage;
+
     // noise maps (n_rows, n_cols, n_noise) of length n_maps
     std::vector<Eigen::Tensor<double,3>> noise;
+
+    // hold polarization terms
+    std::vector<Eigen::Tensor<double,3>> test0;
 
     // randomize noise maps on detectors
     bool randomize_dets;
@@ -129,6 +134,7 @@ public:
     Eigen::MatrixXd source_params;
     Eigen::MatrixXd source_perror;
 
+    // normalize signal and noise maps by the weight maps
     void normalize_maps();
 
     //template <class MapFitter, typename Derived>
@@ -136,13 +142,18 @@ public:
 
     std::tuple<double, Eigen::MatrixXd, Eigen::Index, Eigen::Index> calc_cov_region(Eigen::Index);
 
+    // calculate map psds
     void calc_map_psd();
+    // calculate map histograms
     void calc_map_hist();
 
+    // calculate mean square error of weight maps
     void calc_mean_err();
+    // calculate average rms of noise maps
     void calc_mean_rms();
+    // rescale weight maps
     void renormalize_errors();
-
+    // find sources in maps
     bool find_sources(Eigen::Index);
 };
 

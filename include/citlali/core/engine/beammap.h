@@ -413,7 +413,8 @@ auto Beammap::run_timestream() {
 
         // loop through polarizations
         for (const auto &[stokes_index,stokes_param]: rtcproc.polarization.stokes_params) {
-            SPDLOG_INFO("starting scan {}. {}/{} scans completed", rtcdata.index.data + 1, n_scans_done, telescope.scan_indices.cols());
+            SPDLOG_INFO("starting {} scan {}. {}/{} scans completed", stokes_param, rtcdata.index.data + 1, n_scans_done,
+                        telescope.scan_indices.cols());
 
             // run rtcproc
             SPDLOG_INFO("raw time chunk processing");
@@ -463,10 +464,11 @@ auto Beammap::run_loop() {
             omb.signal[i].setZero();
             omb.weight[i].setZero();
 
+            // clear coverage
             if (!omb.coverage.empty()) {
                 omb.coverage[i].setZero();
             }
-
+            // clear kernel
             if (rtcproc.run_kernel) {
                 omb.kernel[i].setZero();
             }
@@ -915,7 +917,6 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
 
         // calc flux scale (always in mJy/beam)
         if (params(i,0)!=0) {
-            //calib.apt["flxscale"](i) = exp(-tau_freq[array_index](0))*beammap_fluxes_mJy_beam[array_name]/params(i,0);
             calib.apt["flxscale"](i) = beammap_fluxes_mJy_beam[array_name]/params(i,0);
             calib.apt["sens"](i) = calib.apt["sens"](i)*calib.apt["flxscale"](i);
         }
@@ -958,8 +959,6 @@ void Beammap::adjust_apt() {
         // else use closest to (0,0) in a1100 (or map 0 if a1100 is missing)
         else {
             SPDLOG_INFO("finding a reference detector");
-            auto array_name = toltec_io.array_name_map[calib.apt["array"](0)];
-
             // calc x_t and y_t values from unflagged detectors for each arrays
             Eigen::Index array = calib.arrays(0);
 
@@ -1019,8 +1018,7 @@ void Beammap::adjust_apt() {
     calib.apt["x_t_raw"] = calib.apt["x_t"];
     calib.apt["y_t_raw"] = calib.apt["y_t"];
 
-    // align to reference detector if specified
-    // and subtract its position from x and y
+    // align to reference detector if specified and subtract its position from x and y
     calib.apt["x_t"] =  calib.apt["x_t"].array() - ref_det_x_t;
     calib.apt["y_t"] =  calib.apt["y_t"].array() - ref_det_y_t;
 
@@ -1065,6 +1063,7 @@ auto Beammap::loop_pipeline() {
     parallel_policy = omb.parallel_policy;
 
     SPDLOG_INFO("calculating sensitivity");
+    // parallelize on detectors
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
         Eigen::MatrixXd det_sens, noise_flux;
         // calc sensitivity within psd freq range

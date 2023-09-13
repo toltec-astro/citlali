@@ -552,13 +552,13 @@ int run(const rc_t &rc) {
 
                     // get hwpr if polarized reduction is requested
                     if (todproc.engine().rtcproc.run_polarization) {
-                        std::string hwp_filepath;
+                        std::string hwpr_filepath;
 
                         if (rawobs.hwpdata().has_value() && todproc.engine().calib.ignore_hwpr!="true") {
                             SPDLOG_INFO("getting hwpr file");
-                            hwp_filepath = rawobs.hwpdata()->filepath();
-                            if (hwp_filepath != "null") {
-                                todproc.engine().calib.get_hwp(hwp_filepath);
+                            hwpr_filepath = rawobs.hwpdata()->filepath();
+                            if (hwpr_filepath != "null") {
+                                todproc.engine().calib.get_hwpr(hwpr_filepath, todproc.engine().telescope.sim_obs);
                             }
                             else {
                                 todproc.engine().calib.run_hwp = false;
@@ -566,6 +566,10 @@ int run(const rc_t &rc) {
                         }
                         else {
                             todproc.engine().calib.run_hwp = false;
+                        }
+
+                        if (!todproc.engine().calib.run_hwp) {
+                            SPDLOG_INFO("ignoring hwpr");
                         }
                     }
 

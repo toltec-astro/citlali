@@ -302,15 +302,19 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 template <typename apt_type, class tel_type, typename Derived>
 void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_type &apt, tel_type &telescope,
                            Eigen::DenseBase<Derived> &det_indices) {
+    // number of detectors
+    Eigen::Index n_dets = in.scans.data.cols();
+
     if (weighting_type == "approximate") {
         SPDLOG_DEBUG("calculating weights using detector sensitivities");
         // resize weights to number of detectors
-        in.weights.data = Eigen::VectorXd::Zero(in.scans.data.cols());
+        in.weights.data = Eigen::VectorXd::Zero(n_dets);
 
+        // unit conversion x flux calibration factor x 1/exp(-tau)
         double conversion_factor;
 
         // loop through detectors and calculate weights
-        for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
+        for (Eigen::Index i=0; i<n_dets; i++) {
             Eigen::Index det_index = det_indices(i);
             if (run_calibrate) {
                 conversion_factor = in.fcf.data(i);
@@ -332,7 +336,6 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
     // use full weighting
     else if (weighting_type == "full"){
         SPDLOG_DEBUG("calculating weights using timestream variance");
-        Eigen::Index n_dets = in.scans.data.cols();
         in.weights.data = Eigen::VectorXd::Zero(n_dets);
 
         for (Eigen::Index i=0; i<n_dets; i++) {
@@ -361,7 +364,6 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
 
     // constant weighting
     else if (weighting_type == "const") {
-        Eigen::Index n_dets = in.scans.data.cols();
         in.weights.data = Eigen::VectorXd::Zero(n_dets);
 
         for (Eigen::Index i=0; i<n_dets; i++) {
@@ -384,26 +386,6 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
 
     // get group limits
     auto grp_limits = get_grouping("array", det_indices, calib, in.scans.data.cols());
-
-    /*std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
-
-    Eigen::Index grp_i = calib.apt["array"](det_indices(0));
-    grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
-
-    Eigen::Index j = 0;
-    // loop through apt table arrays, get highest index for current array
-    for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
-        auto det_index = det_indices(i);
-        if (calib.apt["array"](det_index) == grp_i) {
-            std::get<1>(grp_limits[grp_i]) = i + 1;
-        }
-        else {
-            grp_i = calib.apt["array"](det_index);
-            j += 1;
-            grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i,0};
-        }
-    }
-    */
 
     // collect detectors that are un-flagged and have non-zero weights
     for (auto const& [key, val] : grp_limits) {

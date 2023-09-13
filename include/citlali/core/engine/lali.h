@@ -156,7 +156,8 @@ auto Lali::run() {
 
         // loop through polarizations
         for (const auto &[stokes_index, stokes_param]: rtcproc.polarization.stokes_params) {
-            SPDLOG_INFO("starting scan {}. {}/{} scans completed", rtcdata.index.data + 1, n_scans_done, telescope.scan_indices.cols());
+            SPDLOG_INFO("starting {} scan {}. {}/{} scans completed", stokes_param, rtcdata.index.data + 1, n_scans_done,
+                        telescope.scan_indices.cols());
 
             // run rtcproc
             SPDLOG_INFO("raw time chunk processing");

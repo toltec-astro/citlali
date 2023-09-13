@@ -195,8 +195,8 @@ void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_d
     }
 
     // rescale parameters to on-sky units
-    map_params(1) = mb.pixel_size_rad*(map_params(1) - (n_cols)/2);
-    map_params(2) = mb.pixel_size_rad*(map_params(2) - (n_rows)/2);
+    map_params(1) = mb.pixel_size_rad*(map_params(1) - (n_cols - 1)/2);
+    map_params(2) = mb.pixel_size_rad*(map_params(2) - (n_rows - 1)/2);
 
     Eigen::Index shift_row = -std::round(map_params(2)/diff_rows);
     Eigen::Index shift_col = -std::round(map_params(1)/diff_cols);
@@ -611,8 +611,11 @@ void WienerFilter::calc_denominator() {
 template<class MB, class CD>
 void WienerFilter::make_template(MB &mb, CD &calib_data, const double gaussian_template_fwhm_rad, const int map_index) {
     // make sure filtered maps have even dimensions
-    n_rows = 2*(mb.n_rows/2);
-    n_cols = 2*(mb.n_cols/2);
+    //n_rows = 2*(mb.n_rows/2);
+    //n_cols = 2*(mb.n_cols/2);
+
+    n_rows = mb.n_rows;
+    n_cols = mb.n_cols;
 
     // x and y spacing should be equal
     diff_rows = abs(mb.rows_tan_vec(1) - mb.rows_tan_vec(0));

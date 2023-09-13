@@ -140,7 +140,7 @@ public:
 
     void setup();
     void get_apt(const std::string &, std::vector<std::string> &, std::vector<std::string> &);
-    void get_hwp(const std::string &);
+    void get_hwpr(const std::string &, bool);
     void calc_flux_calibration(std::string);
 };
 

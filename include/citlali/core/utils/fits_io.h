@@ -110,7 +110,7 @@ public:
             hdu->addKey("CUNIT"+std::to_string(i+1), wcs.cunit[i], "WCS Axis Unit " +std::to_string(i+1));
             hdu->addKey("CRVAL"+std::to_string(i+1), wcs.crval[i], "WCS Ref Pixel Value " +std::to_string(i+1));
             hdu->addKey("CDELT"+std::to_string(i+1), wcs.cdelt[i], "WCS Pixel Scale " +std::to_string(i+1));
-            hdu->addKey("CRPIX"+std::to_string(i+1), wcs.crpix[i], "WCS Ref Pixel " +std::to_string(i+1));
+            hdu->addKey("CRPIX"+std::to_string(i+1), wcs.crpix[i] + 1, "WCS Ref Pixel " +std::to_string(i+1));
         }
     }
 };

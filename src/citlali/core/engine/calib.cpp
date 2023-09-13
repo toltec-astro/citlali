@@ -101,7 +101,7 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
     setup();
 }
 
-void Calib::get_hwp(const std::string &filepath) {
+void Calib::get_hwpr(const std::string &filepath, bool sim_obs) {
     using namespace netCDF;
     using namespace netCDF::exceptions;
 
@@ -110,27 +110,38 @@ void Calib::get_hwp(const std::string &filepath) {
         NcFile fo(filepath, NcFile::read, NcFile::classic);
         auto vars = fo.getVars();
 
+        std::string hwpr_install_v;
+
+        if (!sim_obs) {
+            hwpr_install_v = "Header.Toltec.HwpInstalled";
+        }
+        else {
+            hwpr_install_v = "Header.Hwp.Installed";
+        }
+
         // check if hwp is enabled
-        vars.find("Header.Toltec.HwpInstalled")->second.getVar(&run_hwp);
+        vars.find(hwpr_install_v)->second.getVar(&run_hwp);
 
         if (run_hwp) {
-            // get hwp signal
+            // get hwpr signal
             Eigen::Index n_pts = vars.find("Data.Hwp.")->second.getDim(0).getSize();
             hwp_angle.resize(n_pts);
 
             vars.find("Data.Hwp.")->second.getVar(hwp_angle.data());
 
-            // get hwp time
-            hwp_ts.resize(n_pts,6);
+            if (!sim_obs) {
+                // get hwpr time for interpolation
+                hwp_ts.resize(n_pts,6);
 
-            vars.find("Data.Hwp.Ts")->second.getVar(hwp_ts.data());
-            hwp_ts.transposeInPlace();
+                vars.find("Data.Hwp.Ts")->second.getVar(hwp_ts.data());
+                hwp_ts.transposeInPlace();
 
-            Eigen::Index recvt_n_pts = vars.find("Data.Hwp.Uts")->second.getDim(0).getSize();
-            hwp_recvt.resize(recvt_n_pts);
-            vars.find("Data.Hwp.Uts")->second.getVar(hwp_recvt.data());
+                Eigen::Index recvt_n_pts = vars.find("Data.Hwp.Uts")->second.getDim(0).getSize();
+                hwp_recvt.resize(recvt_n_pts);
+                vars.find("Data.Hwp.Uts")->second.getVar(hwp_recvt.data());
 
-            vars.find("Header.Toltec.FpgaFreq")->second.getVar(&hwpr_fpga_freq);
+                vars.find("Header.Toltec.FpgaFreq")->second.getVar(&hwpr_fpga_freq);
+            }
         }
 
         fo.close();

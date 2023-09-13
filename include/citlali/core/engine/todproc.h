@@ -306,7 +306,7 @@ void TimeOrderedDataProc<EngineType>::get_adc_snap_from_files(const RawObs &rawo
             fo.close();
 
         } catch (NcException &e) {
-            SPDLOG_ERROR("adc file not found");
+            SPDLOG_ERROR("{} adc data not found",data_item.filepath());
         }
     }
 }
@@ -896,7 +896,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
 
     if (engine().rtcproc.run_polarization) {
         // multiply by number of polarizations
-        engine().n_maps = engine().n_maps*3;
+        engine().n_maps = engine().n_maps*engine().rtcproc.polarization.stokes_params.size();
     }
 
     // mapping from index in map vector to arrays
@@ -1071,11 +1071,12 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb(std::vector<map_extent_t> &ma
 
         max_pix = std::max(min_pix, max_pix);
         // make sure its even
-        int n_dim = 2*max_pix + 4;
+        //int n_dim = 2*max_pix + 4;
+        int n_dim = 2*max_pix + 5;
 
         // vector to store tangent plane coordinates
         Eigen::VectorXd dim_vec = (Eigen::VectorXd::LinSpaced(n_dim,0,n_dim-1).array() -
-                                   (n_dim)/2.)*engine().cmb.pixel_size_rad;
+                                   (n_dim - 1)/2.)*engine().cmb.pixel_size_rad;
 
         // vector to store absolute pointing plane coordinates
         //Eigen::VectorXd dim_abs_vec = Eigen::VectorXd::LinSpaced(n_dim,min_abs,max_abs);
@@ -1103,18 +1104,18 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb(std::vector<map_extent_t> &ma
     engine().cmb.wcs.naxis[0] = n_cols;
 
     // pixel corresponding to reference value
-    double ref_pix_cols = n_cols/2;
-    double ref_pix_rows = n_rows/2;
+    double ref_pix_cols = (n_cols - 1)/2;
+    double ref_pix_rows = (n_rows - 1)/2;
 
     // add 0.5 if even
-    if ((int)ref_pix_cols == ref_pix_cols) {
+    /*if ((int)ref_pix_cols == ref_pix_cols) {
         ref_pix_cols += 0.5;
     }
 
     // add 0.5 if even
     if ((int)ref_pix_rows == ref_pix_rows) {
         ref_pix_rows += 0.5;
-    }
+    }*/
 
     // set up crval
     /*if (engine().telescope.pixel_axes == "icrs") {
@@ -1141,6 +1142,11 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb(std::vector<map_extent_t> &ma
             engine().cmb.coverage.push_back(Eigen::MatrixXd::Zero(engine().cmb.n_rows, engine().cmb.n_cols));
         }
     }
+
+    /*for (Eigen::Index i=0; i<engine().calib.n_arrays; i++) {
+        mb.test0.push_back(Eigen::Tensor<double,3>(mb.n_rows, mb.n_cols, 9));
+        mb.test0.at(i).setZero();
+    }*/
 
     // set row and col vectors
     engine().cmb.rows_tan_vec = rows_tan_vec;
@@ -1178,26 +1184,26 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
     engine().omb.wcs.naxis[0] = engine().omb.n_cols;
 
     // pixel corresponding to reference value
-    double ref_pix_cols = engine().omb.n_cols/2;
-    double ref_pix_rows = engine().omb.n_rows/2;
+    double ref_pix_cols = (engine().omb.n_cols - 1)/2;
+    double ref_pix_rows = (engine().omb.n_rows - 1)/2;
 
     // add 0.5 if even
-    if ((int)ref_pix_cols == ref_pix_cols) {
+    /*if ((int)ref_pix_cols == ref_pix_cols) {
         ref_pix_cols += 0.5;
     }
     // add 0.5 if even
     if ((int)ref_pix_rows == ref_pix_rows) {
         ref_pix_rows += 0.5;
-    }
+    }*/
 
     // set up crval
-    if (engine().telescope.pixel_axes == "icrs") {
+    /*if (engine().telescope.pixel_axes == "icrs") {
         int row_pix = std::floor(ref_pix_rows);
         int col_pix = std::floor(ref_pix_cols);
 
-        //engine().omb.wcs.crval[0] = RAD_TO_DEG*(map_coord_abs[1](row_pix, col_pix));
-        //engine().omb.wcs.crval[1] = RAD_TO_DEG*(map_coord_abs[0](row_pix, col_pix));
-    }
+        engine().omb.wcs.crval[0] = RAD_TO_DEG*(map_coord_abs[1](row_pix, col_pix));
+        engine().omb.wcs.crval[1] = RAD_TO_DEG*(map_coord_abs[0](row_pix, col_pix));
+    }*/
 
     //SPDLOG_INFO("map_coord_abs[1].minCoeff() {} map_coord_abs[0].minCoeff() {}",map_coord_abs[1].minCoeff(), map_coord_abs[0].minCoeff());
     //SPDLOG_INFO("map_coord_abs[1] {} map_coord_abs[0] {}",map_coord_abs[1], map_coord_abs[0]);
@@ -1336,11 +1342,12 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
 
             max_pix = std::max(min_pix, max_pix);
             // make sure its even
-            int n_dim = 2*max_pix + 4;
+            //int n_dim = 2*max_pix + 4;
+            int n_dim = 2*max_pix + 5;
 
             // vector for tangent plane coordinates
             Eigen::VectorXd dim_vec = (Eigen::VectorXd::LinSpaced(n_dim,0,n_dim-1).array() -
-                                       (n_dim)/2.)*engine().omb.pixel_size_rad;
+                                       (n_dim - 1)/2.)*engine().omb.pixel_size_rad;
 
             return std::tuple<int, Eigen::VectorXd>{n_dim, std::move(dim_vec)};
         };
@@ -1352,15 +1359,15 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
         // get absolute pointing for edges
         Eigen::MatrixXd lat_abs(n_rows, n_cols), lon_abs(n_rows, n_cols);
 
-        for (Eigen::Index i=0; i<n_rows; i++) {
+        /*for (Eigen::Index i=0; i<n_rows; i++) {
             for (Eigen::Index j=0; j<n_cols; j++) {
-                //auto [rows_abs_vec,cols_abs_vec] = engine_utils::tangent_to_abs(rows_tan_vec(i), cols_tan_vec(j),
-                //                                                                 engine().telescope.tel_header["Header.Source.Ra"](0),
-                //                                                                 engine().telescope.tel_header["Header.Source.Dec"](0));
-                //lat_abs(i,j) = rows_abs_vec(0);
-                //lon_abs(i,j) = cols_abs_vec(0);
+                auto [rows_abs_vec,cols_abs_vec] = engine_utils::tangent_to_abs(rows_tan_vec(i), cols_tan_vec(j),
+                                                                                 engine().telescope.tel_header["Header.Source.Ra"](0),
+                                                                                 engine().telescope.tel_header["Header.Source.Dec"](0));
+                lat_abs(i,j) = rows_abs_vec(0);
+                lon_abs(i,j) = cols_abs_vec(0);
             }
-        }
+        }*/
 
         map_extent_t map_extent = {n_rows, n_cols};
         map_coord_t map_coord = {rows_tan_vec, cols_tan_vec};
@@ -1376,25 +1383,34 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
         auto n_rows = engine().omb.wcs.naxis[1];
         auto n_cols = engine().omb.wcs.naxis[0];
 
+        if (n_rows % 2==0) {
+            n_rows = n_rows + 1;
+            engine().omb.wcs.naxis[1] = engine().omb.wcs.naxis[1] + 1;
+        }
+        if (n_cols % 2==0) {
+            n_cols = n_cols + 1;
+            engine().omb.wcs.naxis[0] = engine().omb.wcs.naxis[0] + 1;
+        }
+
         // vectors to store tangent plane coordinates of each pixel
         Eigen::VectorXd rows_tan_vec = (Eigen::VectorXd::LinSpaced(n_rows,0,n_rows-1).array() -
-                                        (n_rows)/2.)*engine().omb.pixel_size_rad;
+                                        (n_rows - 1)/2.)*engine().omb.pixel_size_rad;
         Eigen::VectorXd cols_tan_vec = (Eigen::VectorXd::LinSpaced(n_cols,0,n_cols-1).array() -
-                                        (n_cols)/2.)*engine().omb.pixel_size_rad;
+                                        (n_cols - 1)/2.)*engine().omb.pixel_size_rad;
 
         // get absolute pointing for edges
         Eigen::MatrixXd lat_abs(n_rows, n_cols), lon_abs(n_rows, n_cols);
 
 
-        for (Eigen::Index i=0; i<n_rows; i++) {
+        /*for (Eigen::Index i=0; i<n_rows; i++) {
             for (Eigen::Index j=0; j<n_cols; j++) {
-                //auto [rows_abs_vec,cols_abs_vec] = engine_utils::tangent_to_abs(rows_tan_vec(i), cols_tan_vec(j),
-                //                                                                 engine().telescope.tel_header["Header.Source.Ra"](0),
-                //                                                                 engine().telescope.tel_header["Header.Source.Dec"](0));
-                //lat_abs(i,j) = rows_abs_vec(0);
-                //lon_abs(i,j) = cols_abs_vec(0);
+                auto [rows_abs_vec,cols_abs_vec] = engine_utils::tangent_to_abs(rows_tan_vec(i), cols_tan_vec(j),
+                                                                                 engine().telescope.tel_header["Header.Source.Ra"](0),
+                                                                                 engine().telescope.tel_header["Header.Source.Dec"](0));
+                lat_abs(i,j) = rows_abs_vec(0);
+                lon_abs(i,j) = cols_abs_vec(0);
             }
-        }
+        }*/
 
         map_extent_t map_extent = {n_rows, n_cols};
         map_coord_t map_coord = {rows_tan_vec, cols_tan_vec};

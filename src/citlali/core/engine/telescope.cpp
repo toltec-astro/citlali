@@ -272,7 +272,7 @@ void Telescope::calc_scan_indices() {
         // index of last scan
         Eigen::Index last_scan_i = tel_data["Hold"].size() - 1;
 
-        // period (time_chunk/fsmp in seconds/Hz)
+        // period (time_chunk x fsmp in seconds x Hz)
         Eigen::Index period_i = std::floor(time_chunk*fsmp);
 
         double period = std::floor(time_chunk*fsmp);

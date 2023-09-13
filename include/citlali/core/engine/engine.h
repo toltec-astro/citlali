@@ -534,8 +534,8 @@ void Engine::get_mapmaking_config(CT &config) {
     get_config_value(config, wcs_double, missing_keys, invalid_keys, std::tuple{"mapmaking","crval2_J2000"});
     omb.crval_config.push_back(wcs_double);
 
-    omb.wcs.crval.push_back(1);
-    omb.wcs.crval.push_back(1);
+    omb.wcs.crval.push_back(0);
+    omb.wcs.crval.push_back(0);
     omb.wcs.crval.push_back(1);
     omb.wcs.crval.push_back(1);
 

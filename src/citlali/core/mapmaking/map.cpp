@@ -100,6 +100,31 @@ void ObsMapBuffer::normalize_maps() {
             return 0;
         });
     }
+
+    /*for (Eigen::Index a=0; a<test0.size(); a++) {
+        for (Eigen::Index i=0; i<nrows; i++) {
+            for (Eigen::Index j=0; j<ncols; j++) {
+                Eigen::MatrixXd m(3,3);
+                Eigen::VectorXd d(3);
+                d(0) = signal[3*a](i,j);
+                d(1) = signal[3*a + 1](i,j);
+                d(2) = signal[3*a + 2](i,j);
+
+                Eigen::Index n = 0;
+                for (k=0; k<3; k++) {
+                    for (l=0; l<3; l++) {
+                        m(k,l) = test0[a](i,j,n);
+                        n++;
+                    }
+                }
+                auto v = m.inverse()*d;
+                signal[3*a](i,j) = v(0);
+                signal[3*a + 1](i,j) = v(1);
+                signal[3*a + 2](i,j) = v(2);
+            }
+        }
+    }*/
+
 }
 
 std::tuple<double, Eigen::MatrixXd, Eigen::Index, Eigen::Index> ObsMapBuffer::calc_cov_region(Eigen::Index i) {

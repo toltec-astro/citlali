@@ -42,7 +42,7 @@ public:
             tx_ratio_coeff["a1400"] << 0.04588952, -0.19502626,  0.31759789, -0.24297199,  1.08886782;
             tx_ratio_coeff["a2000"] << 0.43837991, -1.84767188,  2.96708103, -2.21900446,  1.77085296;
         }
-
+        // null model
         else if (extinction_model=="null") {
             tx_ratio_coeff["a1100"].setZero();
             tx_ratio_coeff["a1400"].setZero();
@@ -50,6 +50,7 @@ public:
         }
     }
 
+    // polynomial fit to transmission ratio as a function of elevation (radians)
     template <typename DerivedA, typename DerivedB>
     auto tau_polynomial(Eigen::DenseBase<DerivedA> &coeff, Eigen::DenseBase<DerivedB> &elev) {
 
@@ -117,10 +118,10 @@ void Calibration::calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &in, Eigen:
         // current array index in apt table
         Eigen::Index array_index = array_indices(i);
 
-        // factor = flux conversion factor / exp(-tau_freq)
+        // flux conversion factor for non-mJy/beam units
         auto factor = calib.flux_conversion_factor(array_index);
 
-        // flux calibration factor for sens
+        // flux calibration factor for sensitivity
         in.fcf.data(i) = factor;
 
         // data x flxscale x factor
@@ -130,7 +131,7 @@ void Calibration::calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &in, Eigen:
 
 template <TCDataKind tcdata_kind, typename Derived, class calib_t, typename tau_t>
 void Calibration::extinction_correction(TCData<tcdata_kind, Eigen::MatrixXd> &in, Eigen::DenseBase<Derived> &det_indices,
-                                Eigen::DenseBase<Derived> &array_indices, calib_t &calib, tau_t &tau_freq) {
+                                        Eigen::DenseBase<Derived> &array_indices, calib_t &calib, tau_t &tau_freq) {
 
     // loop through detectors
     for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {

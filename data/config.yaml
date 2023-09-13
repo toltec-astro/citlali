@@ -144,8 +144,8 @@ mapmaking: # mapmaking parameters
   method: naive # mapmaking algorithm (naive or jinc)
   pixel_axes: icrs # reference frame (icrs or altaz)
   pixel_size_arcsec: 1.0 # pixel size in arceconds
-  x_size_pix: 0 # manually specify number of map columns
-  y_size_pix: 0 # manually specify number of map rows
+  x_size_pix: 0 # manually specify number of map columns (forced to be odd)
+  y_size_pix: 0 # manually specify number of map rows (forced to be odd)
   coverage_cut: 0.0 # coverage cut value for psd, hist, and coverage_bool maps
   jinc_filter: # parameters to control jinc filter shape (map_method = jinc required)
     r_max: 3.0 # max radius to apply filter to (max radius = r_max x lambda/diameter)
