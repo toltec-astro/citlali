@@ -186,7 +186,7 @@ struct TimeStream : internal::TCDataBase<Derived>,
     // pointing offsets
     data_t<std::map<std::string, Eigen::VectorXd>> pointing_offsets_arcsec;
     // hwp angle for scan
-    data_t<Eigen::VectorXd> hwp_angle;
+    data_t<Eigen::VectorXd> hwpr_angle;
     // fcf
     data_t<Eigen::VectorXd> fcf;
     // vectors for mapping apt table onto timestreams
@@ -306,23 +306,8 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
         // number of detectors
         Eigen::Index n_dets = in.scans.data.cols();
 
-        std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
-
-        Eigen::Index grp_i = calib.apt["array"](det_indices(0));
-        grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
-        Eigen::Index j = 0;
-        // loop through apt table arrays, get highest index for current array
-        for (Eigen::Index i=0; i<n_dets; i++) {
-            auto det_index = det_indices(i);
-            if (calib.apt["array"](det_index) == grp_i) {
-                std::get<1>(grp_limits[grp_i]) = i + 1;
-            }
-            else {
-                grp_i = calib.apt["array"](det_index);
-                j += 1;
-                grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
-            }
-        }
+        // get grouping
+        auto grp_limits = get_grouping("array",det_indices,calib,n_dets);
 
         in.n_low_dets = 0;
         in.n_high_dets = 0;

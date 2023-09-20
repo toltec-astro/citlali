@@ -17,7 +17,7 @@ public:
     std::string apt_filepath;
     // apt table
     std::map<std::string, Eigen::VectorXd> apt;
-    Eigen::VectorXd hwp_angle, hwp_recvt;
+    Eigen::VectorXd hwpr_angle, hwp_recvt;
     Eigen::MatrixXd hwp_ts;
 
     // detector frequency groups

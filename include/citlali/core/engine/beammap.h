@@ -78,7 +78,7 @@ public:
 
     // flag detectors
     template<typename array_indices_t, typename nw_indices_t>
-    void flag_dets(array_indices_t &, nw_indices_t &);
+    void set_apt_flags(array_indices_t &, nw_indices_t &);
 
     // derotate apt and subtract reference detector
     void apt_proc();
@@ -239,7 +239,7 @@ auto Beammap::run_timestream() {
 
         // get hwpr
         if (rtcproc.run_polarization) {
-            rtcdata.hwp_angle.data = calib.hwp_angle.segment(si + hwpr_start_indices, sl);
+            rtcdata.hwpr_angle.data = calib.hwpr_angle.segment(si + hwpr_start_indices, sl);
         }
 
         // get raw tod from files
@@ -261,10 +261,10 @@ auto Beammap::run_timestream() {
                                                                                      calib, telescope, omb.pixel_size_rad, stokes_param,
                                                                                      map_grouping);
 
-            // remove bad detectors
+            // remove bad detectors (only flags calib_scan apt)
             auto calib_scan = rtcproc.remove_bad_dets(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
 
-            // remove duplicate tones
+            // remove duplicate tones (only flags calib_scan apt)
             if (!telescope.sim_obs) {
                 calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib_scan, det_indices, map_grouping);
             }
@@ -286,7 +286,7 @@ auto Beammap::run_timestream() {
 
             // move out ptcdata the PTCData vector at corresponding index
             ptcs0.at(ptcdata.index.data) = std::move(ptcdata);
-            calib_scans0[ptcdata.index.data] = std::move(calib_scan);
+            calib_scans0.at(ptcdata.index.data) = std::move(calib_scan);
         }
 
         // increment number of completed scans
@@ -346,12 +346,12 @@ auto Beammap::run_loop() {
             SPDLOG_INFO("subtracting detector means");
             ptcproc.subtract_mean(ptcs[i]);
 
-            // clean the maps
+            // clean the maps (hardcode stokes I)
             SPDLOG_INFO("processed time chunk processing");
             ptcproc.run(ptcs[i], ptcs[i], calib_scans[i], ptcs[i].det_indices.data, "I");
 
-            // remove outliers after clean
-            calib_scans[i] = ptcproc.remove_bad_dets(ptcs[i], calib, ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
+            // remove outliers after clean (only flags calib_scan apt)
+            calib_scans[i] = ptcproc.remove_bad_dets(ptcs[i], calib_scans[i], ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
                                                      ptcs[i].array_indices.data, redu_type, map_grouping);
             // write out chunk summary
             if (verbose_mode && current_iter==beammap_tod_output_iter) {
@@ -549,7 +549,7 @@ auto Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 }
 
 template<typename array_indices_t, typename nw_indices_t>
-void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices) {
+void Beammap::set_apt_flags(array_indices_t &array_indices, nw_indices_t &nw_indices) {
 
     // setup bitwise flags
     flag2.resize(calib.n_dets);
@@ -780,7 +780,7 @@ void Beammap::flag_dets(array_indices_t &array_indices, nw_indices_t &nw_indices
         return 0;
     });
 
-    // get average fwhms and beam areas
+    // re-run calib setup to get average fwhms and beam areas
     calib.setup();
 
     // calculate source flux in MJy/sr from average beamsizes
@@ -798,6 +798,7 @@ void Beammap::apt_proc() {
     double ref_det_x_t = 0;
     double ref_det_y_t = 0;
 
+    // initial reference det
     beammap_reference_det_found = -99;
 
     // if particular reference detector is requested
@@ -808,7 +809,7 @@ void Beammap::apt_proc() {
             ref_det_x_t = calib.apt["x_t"](beammap_reference_det_found);
             ref_det_y_t = calib.apt["y_t"](beammap_reference_det_found);
         }
-        // else use closest to (0,0) in a1100 (or map 0 if a1100 is missing)
+        // else use closest to (0,0) in map 0 apt
         else {
             SPDLOG_INFO("finding a reference detector");
             // calc x_t and y_t values from unflagged detectors for each arrays
@@ -843,6 +844,7 @@ void Beammap::apt_proc() {
                 j++;
             }
 
+            // distance from (0,0)
             Eigen::VectorXd dist = pow(x_t.array(),2) + pow(y_t.array(),2);
 
             // index of detector closest to zero
@@ -954,13 +956,13 @@ auto Beammap::loop_pipeline() {
         // add convergence iteration to apt table
         calib.apt["converge_iter"] = converge_iter.cast<double> ();
 
-        // flag detectors
-        flag_dets(array_indices, nw_indices);
+        // flag detectors in apt based on config limits
+        set_apt_flags(array_indices, nw_indices);
 
-        // subtract ref detector position and derotate
+        // subtract reference detector position and derotate
         apt_proc();
 
-        // add apt table to timestream files
+        // add final apt table to timestream files
         if (run_tod_output) {
             // vectors to hold tangent plane pointing
             std::vector<Eigen::MatrixXd> det_lat, det_lon;
@@ -998,7 +1000,6 @@ auto Beammap::loop_pipeline() {
             // loop through tod files
             for (const auto & [key, val]: tod_filename) {
                 netCDF::NcFile fo(val, netCDF::NcFile::write);
-                auto vars = fo.getVars();
                 // overwrite apt table
                 for (auto const& x: calib.apt) {
                     if (x.first!="flag2") {

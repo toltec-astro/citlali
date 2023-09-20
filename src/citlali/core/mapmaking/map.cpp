@@ -59,7 +59,7 @@ void ObsMapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std:
         crval_config.push_back(wcs_double);
     }
 
-    // icrs frame
+    // setup wcs for icrs frame
     if (pixel_axes == "icrs") {
         wcs.ctype.push_back("RA---TAN");
         wcs.ctype.push_back("DEC--TAN");
@@ -71,7 +71,7 @@ void ObsMapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std:
         wcs.cdelt[1] *= RAD_TO_DEG;
     }
 
-    // altaz frame
+    // setup wcs altaz frame
     else if (pixel_axes == "altaz") {
         wcs.ctype.push_back("AZOFFSET");
         wcs.ctype.push_back("ELOFFSET");
@@ -98,15 +98,15 @@ void ObsMapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std:
     wcs.cdelt.push_back(1);
 
     // set wcs crpix for frequency
-    wcs.crpix.push_back(1);
+    wcs.crpix.push_back(0);
     // set wcs crpix for stokes param
-    wcs.crpix.push_back(1);
+    wcs.crpix.push_back(0);
 
     // set wcs crval to initial defaults
     wcs.crval.push_back(0);
     wcs.crval.push_back(0);
-    wcs.crval.push_back(1);
-    wcs.crval.push_back(1);
+    wcs.crval.push_back(0);
+    wcs.crval.push_back(0);
 
     // set wcs naxis for freq and stokes
     wcs.naxis.push_back(1);

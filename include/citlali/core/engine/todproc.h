@@ -672,7 +672,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
         Eigen::VectorXd yi(min_size);
         mlinterp::interp(nd.data(), min_size, // nd, ni
                          yd.data(), yi.data(), // yd, yi
-                         engine().calib.hwp_angle.data(), xi.data()); // xd, xi
+                         engine().calib.hwpr_angle.data(), xi.data()); // xd, xi
 
     }
 }

@@ -325,17 +325,27 @@ public:
 };
 
 void Engine::obsnum_setup() {
+    // check tau (may be unnecessary)
     if (!telescope.sim_obs) {
-        // check tau calculation
         Eigen::VectorXd tau_el(1);
+        // get mean elevation
         tau_el << telescope.tel_data["TelElAct"].mean();
+        // get tau at mean elevation for each band
         auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
-
+        // loop through and make sure average tau is not negative (implies wrong model)
         for (auto const& [key, val] : tau_freq) {
             if (val[0] < 0) {
                 SPDLOG_ERROR("calculated mean {} tau {} < 0",toltec_io.array_name_map[key], val[0]);
                 std::exit(EXIT_FAILURE);
             }
+        }
+    }
+
+    // make sure there are matched fg's in apt if reducing in polarized mode
+    if (rtcproc.run_polarization) {
+        if ((calib.apt["fg"].array()!=-1).any()) {
+            SPDLOG_ERROR("no matched freq groups.  cannot run in polarized mode");
+            std::exit(EXIT_FAILURE);
         }
     }
 
@@ -416,6 +426,7 @@ void Engine::obsnum_setup() {
 
 template<typename CT>
 void Engine::get_rtc_config(CT &config) {
+    SPDLOG_INFO("getting rtc config options");
     // get rtcproc config
     rtcproc.get_config(config, missing_keys, invalid_keys);
 
@@ -441,6 +452,7 @@ void Engine::get_rtc_config(CT &config) {
 
 template<typename CT>
 void Engine::get_ptc_config(CT &config) {
+    SPDLOG_INFO("getting ptc config options");
     // get ptcproc config
     ptcproc.get_config(config, missing_keys, invalid_keys);
 
@@ -450,6 +462,7 @@ void Engine::get_ptc_config(CT &config) {
 
 template<typename CT>
 void Engine::get_mapmaking_config(CT &config) {
+    SPDLOG_INFO("getting mapmaking config options");
     // enable mapmaking?
     get_config_value(config, run_mapmaking, missing_keys, invalid_keys,
                      std::tuple{"mapmaking","enabled"});
@@ -530,6 +543,7 @@ void Engine::get_mapmaking_config(CT &config) {
 
 template<typename CT>
 void Engine::get_beammap_config(CT &config) {
+    SPDLOG_INFO("getting beammap config options");
     // max beammap iteration
     get_config_value(config, beammap_iter_max, missing_keys, invalid_keys,
                      std::tuple{"beammap","iter_max"});
@@ -593,7 +607,7 @@ void Engine::get_beammap_config(CT &config) {
 
 template<typename CT>
 void Engine::get_map_filter_config(CT &config) {
-
+    SPDLOG_INFO("getting map filtering config options");
     // get wiener filter config options
     wiener_filter.get_config(config, missing_keys, invalid_keys);
 
@@ -653,11 +667,6 @@ void Engine::get_citlali_config(CT &config) {
             auto offset = config.template get_typed<double>(std::tuple{"interface_sync_offset",i, interface_keys[i]});
             interface_sync_offset[interface_keys[i]] = offset;
         }
-    }
-
-    /* get beammap config */
-    if (redu_type=="beammap") {
-        get_beammap_config(config);
     }
 
     // verbose mode?
@@ -736,7 +745,7 @@ void Engine::get_citlali_config(CT &config) {
     /* get mapmaking config */
     get_mapmaking_config(config);
 
-    // get map filter config
+    // run map filter?
     get_config_value(config, run_map_filter, missing_keys, invalid_keys,
                      std::tuple{"post_processing","map_filtering","enabled"});
 
@@ -792,6 +801,7 @@ void Engine::get_citlali_config(CT &config) {
 
     /* get wiener filter config */
     if (run_map_filter) {
+        // needs map fitter config
         get_map_filter_config(config);
     }
 
@@ -815,6 +825,12 @@ void Engine::get_citlali_config(CT &config) {
         cmb.source_window_rad = omb.source_window_rad;
         // copy omb source_finder_mode to cmb
         cmb.source_finder_mode = omb.source_finder_mode;
+    }
+
+    /* get beammap config */
+    if (redu_type=="beammap") {
+        // needs redu_type config
+        get_beammap_config(config);
     }
 
     // disable map related keys if map-making is disabled
@@ -1476,7 +1492,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // add source flux for beammaps
     if (redu_type == "beammap") {
         fits_io->at(i).pfits->pHDU().addKey("HEADER.SOURCE.FLUX_MJYPERBEAM", beammap_fluxes_mJy_beam[name], "Source flux (mJy/beam)");
-        fits_io->at(i).pfits->pHDU().addKey("HEADER.SOURCE.FLUX_MJYPERSR", beammap_fluxes_MJy_Sr[name], "Sorce flux (MJy/sr)");
+        fits_io->at(i).pfits->pHDU().addKey("HEADER.SOURCE.FLUX_MJYPERSR", beammap_fluxes_MJy_Sr[name], "Source flux (MJy/sr)");
 
         fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.ITER_TOLERANCE", beammap_iter_tolerance, "Beammap iteration tolerance");
         fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.ITER_MAX", beammap_iter_max, "Beammap max iterations");

@@ -132,9 +132,9 @@ void Calib::get_hwpr(const std::string &filepath, bool sim_obs) {
         if (run_hwp) {
             // get hwpr signal
             Eigen::Index n_pts = vars.find("Data.Hwp.")->second.getDim(0).getSize();
-            hwp_angle.resize(n_pts);
+            hwpr_angle.resize(n_pts);
 
-            vars.find("Data.Hwp.")->second.getVar(hwp_angle.data());
+            vars.find("Data.Hwp.")->second.getVar(hwpr_angle.data());
 
             if (!sim_obs) {
                 // get hwpr time for interpolation
@@ -342,7 +342,7 @@ void Calib::setup() {
 
         double avg_array_fwhm = (std::get<0>(array_fwhms[key]) + std::get<1>(array_fwhms[key]))/2;
 
-        array_beam_areas[key] = 2.*pi*pow(avg_array_fwhm/STD_TO_FWHM,2);
+        array_beam_areas[key] = 2.*pi*pow(avg_array_fwhm*FWHM_TO_STD,2);
     }
 
     // set up frequency group

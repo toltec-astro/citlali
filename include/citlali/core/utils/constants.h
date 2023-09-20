@@ -24,7 +24,7 @@ constexpr auto pi = static_cast<double>(EIGEN_PI);
 #define ASEC_TO_DEG 1/3600.0
 
 // degrees to radians
-#define DEG_TO_RAD (pi/180.)
+#define DEG_TO_RAD pi/180.
 
 // radians to degrees
 #define RAD_TO_DEG 1./(pi/180.)
@@ -48,7 +48,7 @@ constexpr auto pi = static_cast<double>(EIGEN_PI);
 #define FWHM_TO_STD 1/sqrt(8.*log(2.))
 
 // MJy/sr to mJy/arcsec
-#define MJY_SR_TO_mJY_ASEC (1./SR_TO_DEG)/(pow(3600.0,2.0))*pow(10.0,6.0)*1000
+#define MJY_SR_TO_mJY_ASEC (DEG_TO_SR)*(pow(3600.0,-2.0))*pow(10.0,6.0)*1e3
 
 // mJy/arcsec to MJy/sr
-#define mJY_ASEC_to_MJY_SR (1./DEG_TO_SR)/(1/pow(3600.0,2.0))/pow(10.0,6.0)/1000
+#define mJY_ASEC_to_MJY_SR (SR_TO_DEG)*(pow(3600.0,2.0))*pow(10.0,-6.0)*1e-3

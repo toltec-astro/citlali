@@ -360,24 +360,6 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         // we want to replace spikes on a per array or network basis
         auto grp_limits = get_grouping(despiker.grouping, det_indices, calib, in_pol.scans.data.cols());
 
-        /*std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
-
-        Eigen::Index grp_i = calib.apt[despiker.grouping](det_indices(0));
-        grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
-        Eigen::Index j = 0;
-        // loop through apt table arrays, get highest index for current array
-        for (Eigen::Index i=0; i<in_pol.scans.data.cols(); i++) {
-            auto det_index = det_indices(i);
-            if (calib.apt[despiker.grouping](det_index) == grp_i) {
-                std::get<1>(grp_limits[grp_i]) = i + 1;
-            }
-            else {
-                grp_i = calib.apt[despiker.grouping](det_index);
-                j += 1;
-                grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
-            }
-        }*/
-
         SPDLOG_DEBUG("replacing spikes");
         for (auto const& [key, val] : grp_limits) {
             // starting index
@@ -455,9 +437,9 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
 
         // downsample hwpr
         if (run_polarization && calib.run_hwp) {
-            Eigen::Ref<Eigen::VectorXd> in_hwp =
-                in_pol.hwp_angle.data.segment(si, sl);
-            downsampler.downsample(in_hwp, in_pol.hwp_angle.data);
+            Eigen::Ref<Eigen::VectorXd> in_hwpr =
+                in_pol.hwpr_angle.data.segment(si, sl);
+            downsampler.downsample(in_hwpr, in_pol.hwpr_angle.data);
         }
         // downsample kernel if requested
         if (run_kernel) {
@@ -494,7 +476,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         // copy hwpr angle
         if (run_polarization) {
             if (calib.run_hwp) {
-                out.hwp_angle.data = in_pol.hwp_angle.data.segment(si, sl);
+                out.hwpr_angle.data = in_pol.hwpr_angle.data.segment(si, sl);
             }
         }
     }

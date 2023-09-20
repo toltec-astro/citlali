@@ -162,7 +162,7 @@ auto Pointing::run() {
         // get hwpr
         if (rtcproc.run_polarization) {
             if (calib.run_hwp) {
-                rtcdata.hwp_angle.data = calib.hwp_angle.segment(si + hwpr_start_indices, sl);
+                rtcdata.hwpr_angle.data = calib.hwpr_angle.segment(si + hwpr_start_indices, sl);
             }
         }
 

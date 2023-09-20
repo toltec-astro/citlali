@@ -135,8 +135,11 @@ auto mapFitter::ceres_fit(const Model &model,
         covariance_options.null_space_rank = -1;
         Covariance covariance(covariance_options);
 
+        // set up covariance block
         std::vector<std::pair<const double*, const double*>> covariance_blocks;
+        // populate covariance block
         covariance_blocks.push_back(std::make_pair(params.data(), params.data()));
+        // compute covariance
         auto covariance_result = covariance.Compute(covariance_blocks, problem.get());
 
         // if covariance calculation suceeded

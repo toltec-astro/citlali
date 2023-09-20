@@ -153,31 +153,31 @@ public:
                 else {
                     if (stokes_param == "Q") {
                         if (fg_indices(i)==0) {
-                            out.scans.data.col(i) = cos(4*in.hwp_angle.data.array()-rot_angle)*polarized_scans.col(i).array();
+                            out.scans.data.col(i) = cos(4*in.hwpr_angle.data.array()-rot_angle)*polarized_scans.col(i).array();
                         }
                         else if (fg_indices(i)==2) {
-                            out.scans.data.col(i) = -cos(4*in.hwp_angle.data.array()-rot_angle)*polarized_scans.col(i).array();
+                            out.scans.data.col(i) = -cos(4*in.hwpr_angle.data.array()-rot_angle)*polarized_scans.col(i).array();
                         }
                         else if (fg_indices(i)==1) {
-                            out.scans.data.col(i) = sin(4*in.hwp_angle.data.array()-rot_angle)*polarized_scans.col(i).array();
+                            out.scans.data.col(i) = sin(4*in.hwpr_angle.data.array()-rot_angle)*polarized_scans.col(i).array();
                         }
                         else if (fg_indices(i)==3) {
-                            out.scans.data.col(i) = -sin(4*in.hwp_angle.data.array()-rot_angle)*polarized_scans.col(i).array();
+                            out.scans.data.col(i) = -sin(4*in.hwpr_angle.data.array()-rot_angle)*polarized_scans.col(i).array();
                         }
                     }
 
                     else if (stokes_param == "U") {
                         if (fg_indices(i)==0) {
-                            out.scans.data.col(i) = sin(4*in.hwp_angle.data.array()-rot_angle)*polarized_scans.col(i).array();
+                            out.scans.data.col(i) = sin(4*in.hwpr_angle.data.array()-rot_angle)*polarized_scans.col(i).array();
                         }
                         else if (fg_indices(i)==2) {
-                            out.scans.data.col(i) = -sin(4*in.hwp_angle.data.array()-rot_angle)*polarized_scans.col(i).array();
+                            out.scans.data.col(i) = -sin(4*in.hwpr_angle.data.array()-rot_angle)*polarized_scans.col(i).array();
                         }
                         else if (fg_indices(i)==1) {
-                            out.scans.data.col(i) = -cos(4*in.hwp_angle.data.array()-rot_angle)*polarized_scans.col(i).array();
+                            out.scans.data.col(i) = -cos(4*in.hwpr_angle.data.array()-rot_angle)*polarized_scans.col(i).array();
                         }
                         else if (fg_indices(i)==3) {
-                            out.scans.data.col(i) = cos(4*in.hwp_angle.data.array()-rot_angle)*polarized_scans.col(i).array();
+                            out.scans.data.col(i) = cos(4*in.hwpr_angle.data.array()-rot_angle)*polarized_scans.col(i).array();
                         }
                     }
                 }

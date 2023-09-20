@@ -612,7 +612,7 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
             // append hwpr angle
             if (run_hwpr) {
                 NcVar hwpr_v = fo.getVar("hwpr");
-                hwpr_v.putVar(start_index_tel, size_tel, in.hwp_angle.data.row(i).data());
+                hwpr_v.putVar(start_index_tel, size_tel, in.hwpr_angle.data.row(i).data());
             }
         }
 
