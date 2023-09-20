@@ -11,18 +11,13 @@ using timestream::TCDataKind;
 
 class Pointing: public Engine {
 public:
-    // number of parameters for map fitting
-    Eigen::Index n_params;
-
     // fit parameters
-    Eigen::MatrixXd params;
-
-    // fit errors
-    Eigen::MatrixXd perrors;
+    Eigen::MatrixXd params, perrors;
 
     // meta information for ppt table
     YAML::Node ppt_meta;
 
+    // ppt header information
     std::vector<std::string> ppt_header = {
         "array",
         "amp",
@@ -40,107 +35,53 @@ public:
         "sig2noise"
     };
 
+    // ppt header units
     std::map<std::string,std::string> ppt_header_units;
 
+    // initial setup for each obs
     void setup();
+
+    // run the reduction for the obs
     auto run();
 
+    // main grppi pipeline
     template <class KidsProc, class RawObs>
     void pipeline(KidsProc &, RawObs &);
 
+    // fit the maps
     void fit_maps();
 
+    // output files
     template <mapmaking::MapType map_type>
     void output();
 };
 
 void Pointing::setup() {
-    if (!telescope.sim_obs) {
-        // check tau calculation
-        Eigen::VectorXd tau_el(1);
-        tau_el << telescope.tel_data["TelElAct"].mean();
-        auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
-
-        for (auto const& [key, val] : tau_freq) {
-            if (val[0] < 0) {
-                SPDLOG_ERROR("calculated mean {} tau {} < 0",toltec_io.array_name_map[key], val[0]);
-                std::exit(EXIT_FAILURE);
-            }
-        }
-    }
-
-    // set number of parameters for map fitting
-    n_params = 6;
+    // run obsnum setup
+    obsnum_setup();
 
     // resize the current fit matrix
-    params.setZero(n_maps, n_params);
-    perrors.setZero(n_maps, n_params);
-
-    // set despiker sample rate
-    rtcproc.despiker.fsmp = telescope.fsmp;
-
-    // setup kernel
-    if (rtcproc.run_kernel) {
-        rtcproc.kernel.setup(n_maps);
-    }
-
-    // if filter is requested, make it here
-    if (rtcproc.run_tod_filter) {
-        rtcproc.filter.make_filter(telescope.fsmp);
-    }
-
-    // create output map files
-    if (run_mapmaking) {
-        create_map_files();
-    }
-    // create timestream files
-    if (run_tod_output) {
-        // create tod output subdirectory if requested
-        if (tod_output_subdir_name!="null") {
-            fs::create_directories(obsnum_dir_name + "/raw/" + tod_output_subdir_name);
-        }
-        // make rtc tod output file
-        if (tod_output_type == "rtc" || tod_output_type=="both") {
-            create_tod_files<engine_utils::toltecIO::rtc_timestream>();
-        }
-        // make ptc tod output file
-        if (tod_output_type == "ptc" || tod_output_type=="both") {
-            create_tod_files<engine_utils::toltecIO::ptc_timestream>();
-        }
-    }
-    else if (!diagnostics.write_evals) {
-        ptcproc.cleaner.n_calc = 0;
-    }
-
-    // tod output mode require sequential policy so set explicitly
-    if (run_tod_output || verbose_mode) {
-        SPDLOG_WARN("tod output mode require sequential policy");
-        parallel_policy = "seq";
-    }
+    params.setZero(n_maps, map_fitter.n_params);
+    perrors.setZero(n_maps, map_fitter.n_params);
 
     // use per detector parallelization for jinc mapmaking
     if (map_method == "jinc") {
         parallel_policy = "seq";
     }
 
-    // set center pointing
-    if (telescope.pixel_axes == "icrs") {
-        omb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0)*RAD_TO_DEG;
-        omb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0)*RAD_TO_DEG;
-
-        cmb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0)*RAD_TO_DEG;
-        cmb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0)*RAD_TO_DEG;
-    }
-
+    // units for positions
     std::string pos_units;
 
+    // use degrees if in icrs
     if (telescope.pixel_axes=="icrs") {
         pos_units = "deg";
     }
+    // use arcsec if in altaz
     else {
         pos_units = "arcsec";
     }
 
+    // units for ppt header
     ppt_header_units = {
         {"array","N/A"},
         {"amp", omb.sig_unit},
@@ -173,47 +114,13 @@ void Pointing::setup() {
     // reference frame
     ppt_meta["Radesys"] = telescope.pixel_axes;
 
-    ppt_meta["array"].push_back("units: N/A");
-    ppt_meta["array"].push_back("array");
-
-    ppt_meta["amp"].push_back("units: " + omb.sig_unit);
-    ppt_meta["amp"].push_back("fitted amplitude");
-
-    ppt_meta["amp_err"].push_back("units: " + omb.sig_unit);
-    ppt_meta["amp_err"].push_back("fitted amplitude error");
-
-    ppt_meta["x_t"].push_back("units: " + pos_units);
-    ppt_meta["x_t"].push_back("fitted azimuthal offset");
-
-    ppt_meta["x_t_err"].push_back("units: " + pos_units);
-    ppt_meta["x_t_err"].push_back("fitted azimuthal offset error");
-
-    ppt_meta["y_t"].push_back("units: " + pos_units);
-    ppt_meta["y_t"].push_back("fitted altitude offset");
-
-    ppt_meta["y_t_err"].push_back("units: " + pos_units);
-    ppt_meta["y_t_err"].push_back("fitted altitude offset error");
-
-    ppt_meta["a_fwhm"].push_back("units: arcsec");
-    ppt_meta["a_fwhm"].push_back("fitted azimuthal FWHM");
-
-    ppt_meta["a_fwhm_err"].push_back("units: arcsec");
-    ppt_meta["a_fwhm_err"].push_back("fitted azimuthal FWHM error");
-
-    ppt_meta["b_fwhm"].push_back("units: arcsec");
-    ppt_meta["b_fwhm"].push_back("fitted altitude FWMH");
-
-    ppt_meta["b_fwhm_err"].push_back("units: arcsec");
-    ppt_meta["b_fwhm_err"].push_back("fitted altitude FWMH error");
-
-    ppt_meta["angle"].push_back("units: radians");
-    ppt_meta["angle"].push_back("fitted rotation angle");
-
-    ppt_meta["angle_err"].push_back("units: radians");
-    ppt_meta["angle_err"].push_back("fitted rotation angle error");
-
-    ppt_meta["sig2noise"].push_back("units: N/A");
-    ppt_meta["sig2noise"].push_back("signal to noise");
+    // populate ppt meta information
+    for (const auto &[key,val]: ppt_header_units) {
+        ppt_meta[key].push_back("units: " + val);
+        // description from apt
+        auto description = calib.apt_header_description[key];
+        ppt_meta[key].push_back(description);
+    }
 
     // add point model variables from telescope file
     for (const auto &val: telescope.tel_header) {
@@ -222,23 +129,10 @@ void Pointing::setup() {
             ppt_meta[val.first] = val.second(0);
         }
     }
-
+    // add m2 z position
     ppt_meta["Header.M2.ZReq"] = telescope.tel_header["Header.M2.ZReq"](0);
+    // add first m1 zernike coefficient
     ppt_meta["Header.M1.ZernikeC"] = telescope.tel_header["Header.M1.ZernikeC"](0);
-
-    // output basic info for obs reduction to command line
-    cli_summary();
-
-    for (const auto &stat: diagnostics.det_stats_header) {
-        diagnostics.stats[stat].setZero(calib.n_dets, telescope.scan_indices.cols());
-    }
-
-    for (const auto &stat: diagnostics.grp_stats_header) {
-        diagnostics.stats[stat].setZero(calib.n_arrays, telescope.scan_indices.cols());
-    }
-
-    // clear stored eigenvalues
-    diagnostics.evals.clear();
 }
 
 auto Pointing::run() {
@@ -265,7 +159,7 @@ auto Pointing::run() {
         rtcdata.pointing_offsets_arcsec.data["az"] = pointing_offsets_arcsec["az"].segment(si,sl);
         rtcdata.pointing_offsets_arcsec.data["alt"] = pointing_offsets_arcsec["alt"].segment(si,sl);
 
-        // get hwp
+        // get hwpr
         if (rtcproc.run_polarization) {
             if (calib.run_hwp) {
                 rtcdata.hwp_angle.data = calib.hwp_angle.segment(si + hwpr_start_indices, sl);
@@ -289,31 +183,31 @@ auto Pointing::run() {
             auto [map_indices, array_indices, nw_indices, det_indices] = rtcproc.run(rtcdata, ptcdata, telescope.pixel_axes, redu_type,
                                                                                      calib, telescope, omb.pixel_size_rad, stokes_param,
                                                                                      map_grouping);
-            // write rtc timestreams
-            if (run_tod_output) {
-                if (tod_output_type == "rtc" || tod_output_type=="both") {
-                    SPDLOG_INFO("writing raw time chunk");
-                    ptcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], redu_type, telescope.pixel_axes,
-                                             ptcdata.pointing_offsets_arcsec.data, det_indices, calib.apt, tod_output_type, verbose_mode,
-                                             telescope.d_fsmp, calib.run_hwp);
-                }
-            }
-
-            // subtract scan means
-            SPDLOG_INFO("subtracting detector means");
-            ptcproc.subtract_mean(ptcdata);
 
             // remove flagged dets
             SPDLOG_INFO("removing flagged dets");
-            ptcproc.remove_flagged_dets(ptcdata, calib.apt, det_indices);
+            rtcproc.remove_flagged_dets(ptcdata, calib.apt, det_indices);
 
-            // remove outliers
+            // remove outliers before clean
             auto calib_scan = rtcproc.remove_bad_dets(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
 
             // remove duplicate tones
             if (!telescope.sim_obs) {
                 calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib, det_indices, map_grouping);
             }
+
+            // write rtc timestreams
+            if (run_tod_output) {
+                if (tod_output_type == "rtc" || tod_output_type=="both") {
+                    SPDLOG_INFO("writing raw time chunk");
+                    ptcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], redu_type, telescope.pixel_axes,
+                                             ptcdata.pointing_offsets_arcsec.data, det_indices, calib.apt, calib.run_hwp);
+                }
+            }
+
+            // subtract scan means
+            SPDLOG_INFO("subtracting detector means");
+            ptcproc.subtract_mean(ptcdata);
 
             // run cleaning
             SPDLOG_INFO("processed time chunk processing");
@@ -341,8 +235,7 @@ auto Pointing::run() {
                 if (tod_output_type == "ptc" || tod_output_type == "both") {
                     SPDLOG_INFO("writing processed time chunk");
                     ptcproc.append_to_netcdf(ptcdata, tod_filename["ptc_" + stokes_param], redu_type, telescope.pixel_axes,
-                                             ptcdata.pointing_offsets_arcsec.data, det_indices, calib.apt, "ptc", verbose_mode,
-                                             telescope.d_fsmp, calib.run_hwp);
+                                             ptcdata.pointing_offsets_arcsec.data, det_indices, calib.apt, calib.run_hwp);
                 }
             }
 
@@ -418,7 +311,6 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
             scan = 0;
             return {};
         },
-
         run());
 
     if (run_mapmaking) {
@@ -472,6 +364,7 @@ void Pointing::fit_maps() {
             perrors(i,3) = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(perrors(i,3));
             perrors(i,4) = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(perrors(i,4));
 
+            // if in icrs calculate absolute pointing
             if (telescope.pixel_axes=="icrs") {
                 Eigen::VectorXd lat(1), lon(1);
                 lat << params(i,2)*ASEC_TO_RAD;
@@ -485,7 +378,6 @@ void Pointing::fit_maps() {
                 perrors(i,1) = perrors(i,1)*ASEC_TO_DEG;
                 perrors(i,2) = perrors(i,2)*ASEC_TO_DEG;
             }
-
         }
         return 0;
     });
@@ -504,7 +396,7 @@ void Pointing::output() {
     std::string dir_name;
 
     // matrix to hold pointing fit values and errors
-    Eigen::MatrixXf ppt_table(n_maps, 2*n_params + 2);
+    Eigen::MatrixXf ppt_table(n_maps, 2*map_fitter.n_params + 2);
 
     // raw obs maps
     if constexpr (map_type == mapmaking::RawObs) {
@@ -524,12 +416,12 @@ void Pointing::output() {
             // calculate map standard deviation
             double map_std_dev = engine_utils::calc_std_dev(mb->signal[i]);
             // set signal to noise
-            ppt_table(i,2*n_params + 1) = params(i,0)/map_std_dev;
+            ppt_table(i,2*map_fitter.n_params + 1) = params(i,0)/map_std_dev;
         }
 
         // populate table
         Eigen::Index j = 0;
-        for (Eigen::Index i=1; i<2*n_params; i=i+2) {
+        for (Eigen::Index i=1; i<2*map_fitter.n_params; i=i+2) {
             ppt_table.col(i) = params.col(j).cast <float> ();
             ppt_table.col(i+1) = perrors.col(j).cast <float> ();
             j++;
@@ -560,12 +452,12 @@ void Pointing::output() {
             // calculate map standard deviation
             double map_std_dev = engine_utils::calc_std_dev(mb->signal[i]);
             // set signal to noise
-            ppt_table(i,2*n_params + 1) = params(i,0)/map_std_dev;
+            ppt_table(i,2*map_fitter.n_params + 1) = params(i,0)/map_std_dev;
         }
 
         // populate table
         Eigen::Index j = 0;
-        for (Eigen::Index i=1; i<2*n_params; i=i+2) {
+        for (Eigen::Index i=1; i<2*map_fitter.n_params; i=i+2) {
             ppt_table.col(i) = params.col(j).cast <float> ();
             ppt_table.col(i+1) = perrors.col(j).cast <float> ();
             j++;
@@ -612,7 +504,6 @@ void Pointing::output() {
             pb.count(n_maps, 1);
             write_maps(f_io,n_io,mb,i);
 
-            //if constexpr (map_type == mapmaking::RawObs) {
             Eigen::Index map_index = arrays_to_maps(i);
 
             // check if we move from one file to the next
@@ -648,7 +539,6 @@ void Pointing::output() {
                 j++;
             }
             k++;
-            //}
         }
 
         SPDLOG_INFO("files have been written to:");

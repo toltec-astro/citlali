@@ -35,11 +35,11 @@ public:
 
     // the main despiking routine
     template <typename DerivedA, typename DerivedB, typename apt_t>
-    void despike(Eigen::DenseBase<DerivedA>&, Eigen::DenseBase<DerivedB> &, apt_t &);
+    void despike(Eigen::DenseBase<DerivedA> &, Eigen::DenseBase<DerivedB> &, apt_t &);
 
     // replace flagged data with interpolation
     template<typename DerivedA, typename DerivedB, typename apt_t>
-    void replace_spikes(Eigen::DenseBase<DerivedA>&, Eigen::DenseBase<DerivedB>&, apt_t &,
+    void replace_spikes(Eigen::DenseBase<DerivedA> &, Eigen::DenseBase<DerivedB>&, apt_t &,
                         Eigen::Index);
 
 private:

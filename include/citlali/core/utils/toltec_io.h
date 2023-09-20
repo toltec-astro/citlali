@@ -54,21 +54,28 @@ public:
     std::map<Eigen::Index, std::string> array_name_map = {
         {0,"a1100"},
         {1,"a1400"},
-        {2,"a2000"}
+        {2,"a2000"},
     };
 
     // map from array index to array wavelength
     std::map<Eigen::Index, double> array_wavelength_map = {
         {0,1.1},
         {1,1.4},
-        {2,2.0}
+        {2,2.0},
+    };
+
+    // map from array index to array frequencies
+    std::map<Eigen::Index, double> array_freq_map = {
+        {0,c_m_s/(1.1/1000)},
+        {1,c_m_s/(1.4/1000)},
+        {2,c_m_s/(2.0/1000)},
     };
 
     // expected fwhms
     std::map<Eigen::Index, double> array_fwhm_arcsec = {
         {0, 5.0},
         {1, 6.3},
-        {2, 9.5}
+        {2, 9.5},
     };    
 
     template <toltecIO::DataType data_t, toltecIO::ProdType prod_t, toltecIO::FilterType filter_t>
@@ -102,21 +109,17 @@ std::string toltecIO::create_filename(const std::string filepath, const std::str
     if (!simu_obs) {
         filename = filename + "_commissioning";
     }
-
     else {
         filename = filename + "_simu";
     }
-
     // add array name
     if (!array_name.empty()) {
         filename = filename + "_" + array_name;
     }
-
     // add redu_type
     if (!redu_type.empty()) {
         filename = filename + "_" + redu_type;
     }
-
     // add obsnum
     if (!obsnum.empty()) {
         filename = filename + "_" + obsnum;

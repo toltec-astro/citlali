@@ -21,6 +21,26 @@
 
 namespace engine_utils {
 
+// planck function (W x sr-1 x m-2 x Hz−1)
+static const double planck_nu(const double freq_Hz, const double T_K) {
+    return 2.*h_J_s*pow(freq_Hz,3)/pow(c_m_s,2)/(exp((h_J_s*freq_Hz)/(kB_J_K*T_K)) - 1.);
+}
+
+// convert flux in mJy/beam to uK/beam
+static const double mJy_beam_to_uK_beam(const double flux_mjy_beam, const double freq_Hz, const double fwhm) {
+    // planck function at T_CMB
+    auto planck = planck_nu(freq_Hz, T_cmb_K);
+    // exponent term (h x nu)/(k_B x T_cmb)
+    auto h_nu_k_T = (h_J_s*freq_Hz)/(kB_J_K*T_cmb_K);
+    // beam area in steradians
+    auto beam_area_sr = 2.*pi*pow(fwhm*FWHM_TO_STD,2);
+    // conversion from K to mJy/beam
+    auto K_to_mJy_beam = planck*exp(h_nu_k_T)/h_nu_k_T/T_cmb_K*1e26*1e3*beam_area_sr;
+
+    // flux in mJy/beam converted to micro Kelvin
+    return 1e6*flux_mjy_beam/K_to_mJy_beam;
+}
+
 // get current date/time, format is YYYY-MM-DD.HH:mm:ss
 static const std::string current_date_time() {
     time_t     now = time(0);
@@ -45,11 +65,12 @@ static const std::string unix_to_utc(double &t) {
 
 template <typename DerivedA, typename DerivedB>
 void utc_to_unix(Eigen::DenseBase<DerivedA> &tel_utc, Eigen::DenseBase<DerivedB> &ut_date) {
-
+    // size of time vector
     Eigen::Index n_pts = tel_utc.size();
 
     time_t utc_time;
 
+    // who would have guessed?
     auto days_in_year = 365.0;
 
     int year = std::floor(ut_date(0));
@@ -59,6 +80,7 @@ void utc_to_unix(Eigen::DenseBase<DerivedA> &tel_utc, Eigen::DenseBase<DerivedB>
 
     Eigen::VectorXd tel_unix(n_pts);
 
+    // loop through points
     for (Eigen::Index i=0; i<n_pts; i++) {
         auto h =(int)ut_time(i);
         auto m = (int)((ut_time(i) - h)*60);
@@ -74,13 +96,15 @@ void utc_to_unix(Eigen::DenseBase<DerivedA> &tel_utc, Eigen::DenseBase<DerivedB>
         tm_time.tm_min = m;
         tm_time.tm_hour = h;
 
+        // get UTC time
         utc_time = timegm(&tm_time);
 
         // convert UTC time to Unix timestamp
         time_t unix_time = (time_t) utc_time;
+        // add Unix time to vector
         tel_unix(i) = unix_time;
     }
-
+    // overrwite UTC time with Unix time
     tel_utc = tel_unix;
 }
 
@@ -137,10 +161,11 @@ auto fft(Eigen::DenseBase<Derived> &in, std::string parallel_policy) {
         fft.SetFlag(Eigen::FFT<double>::Unscaled);
 
         Eigen::VectorXcd temp_col(n_rows);
-
+        // forward fft
         if constexpr(direction == forward) {
             fft.fwd(temp_col, in.col(i));
         }
+        // inverse fft
         else if constexpr(direction == inverse){
             fft.inv(temp_col, in.col(i));
         }
@@ -155,10 +180,11 @@ auto fft(Eigen::DenseBase<Derived> &in, std::string parallel_policy) {
         fft.SetFlag(Eigen::FFT<double>::Unscaled);
 
         Eigen::VectorXcd temp_row(n_cols);
-
+        // forward fft
         if constexpr(direction == forward) {
             fft.fwd(temp_row, out.row(i));
         }
+        // inversee fft
         else if constexpr(direction == inverse){
             fft.inv(temp_row, out.row(i));
         }
@@ -219,22 +245,22 @@ void for_each_in_tuple(const std::tuple<Ts...> & tuple, F func, std::index_seque
 }
 
 template<class F, class...Ts>
-void for_each_in_tuple(const std::tuple<Ts...> & tuple, F func){
+void for_each_in_tuple(const std::tuple<Ts...> & tuple, F func) {
     for_each_in_tuple(tuple, func, std::make_index_sequence<sizeof...(Ts)>());
 }
 
 template<typename Derived>
-std::vector<std::tuple<double, int>> sorter(Eigen::DenseBase<Derived> &vec){
+std::vector<std::tuple<double, int>> sorter(Eigen::DenseBase<Derived> &vec) {
     std::vector<std::tuple<double, int>> vis;
     Eigen::VectorXi indices = Eigen::VectorXi::LinSpaced(vec.size(),0,vec.size()-1);
 
-    for(Eigen::Index i=0; i<vec.size(); i++){
+    for(Eigen::Index i=0; i<vec.size(); i++) {
         std::tuple<double, double> vec_and_val(vec(i), indices(i));
         vis.push_back(vec_and_val);
     }
 
     std::sort(vis.begin(), vis.end(),
-              [&](const std::tuple<double, int> &a, const std::tuple<double, int> &b) -> bool{
+              [&](const std::tuple<double, int> &a, const std::tuple<double, int> &b) -> bool {
                   return std::get<0>(a) < std::get<0>(b);
               });
 
@@ -318,6 +344,7 @@ auto calc_rms(Eigen::DenseBase<DerivedA> &data) {
 template <typename DerivedA, typename DerivedB>
 auto calc_rms(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &flag) {
 
+    // flip flags
     auto f = (flag.derived().template cast<double>().array() - 1).abs();
 
     // number of unflagged samples
@@ -368,7 +395,7 @@ static auto hanning_window(Eigen::Index n_rows, Eigen::Index n_cols) {
     return window;
 }
 
-static double pivot_select(std::vector<double> input, int index){
+static double pivot_select(std::vector<double> input, int index) {
     unsigned int pivot_index = rand() % input.size();
     double pivot_value = input[pivot_index];
     std::vector<double> left;
@@ -769,6 +796,7 @@ auto calc_hist(Eigen::DenseBase<Derived> &data, int n_bins) {
     return std::tuple<Eigen::VectorXd, Eigen::VectorXd>(hist, hist_bins);
 }
 
+// shift a vector
 template <typename Derived>
 auto shift_1D(Eigen::DenseBase<Derived> &in, std::vector<Eigen::Index> shift_indices) {
 
@@ -785,6 +813,7 @@ auto shift_1D(Eigen::DenseBase<Derived> &in, std::vector<Eigen::Index> shift_ind
     return std::move(out);
 }
 
+// shift a 2D matrix
 template <typename Derived>
 auto shift_2D(Eigen::DenseBase<Derived> &in, std::vector<Eigen::Index> shift_indices) {
     Eigen::Index n_rows = in.rows();

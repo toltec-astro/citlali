@@ -333,6 +333,8 @@ int run(const rc_t &rc) {
 
                     // overwrite map center
                     if (todproc.engine().omb.crval_config[0]!=0 && todproc.engine().omb.crval_config[1]!=0) {
+                        SPDLOG_INFO("overwriting map center to ({}, {})",todproc.engine().omb.crval_config[0],
+                                    todproc.engine().omb.crval_config[1]);
                         todproc.engine().telescope.tel_header["Header.Source.Ra"].setConstant(todproc.engine().omb.crval_config[0]);
                         todproc.engine().telescope.tel_header["Header.Source.Dec"].setConstant(todproc.engine().omb.crval_config[1]);
                     }
@@ -391,11 +393,11 @@ int run(const rc_t &rc) {
                         SPDLOG_DEBUG("allocating NMB");
                         todproc.allocate_nmb(todproc.engine().cmb);
                     }
-                }
 
-                // create output files
-                SPDLOG_DEBUG("setting up filenames");
-                todproc.setup_filenames();
+                    // create output coadded map files
+                    SPDLOG_DEBUG("create cmb filenames");
+                    todproc.create_coadded_map_files();
+                }
 
                 // run the reduction for each observation
                 for (std::size_t i=0; i<co.n_inputs(); ++i) {
@@ -503,11 +505,11 @@ int run(const rc_t &rc) {
                     // set up obsnum directory name
                     todproc.engine().obsnum_dir_name = todproc.engine().redu_dir_name + "/" + todproc.engine().obsnum +"/";
 
-                    // add obsnum to OMB for fits hdu headers
+                    // add obsnum to omb for fits hdu headers
                     todproc.engine().omb.obsnums.clear();
                     todproc.engine().omb.obsnums.push_back(todproc.engine().obsnum);
 
-                    // add current obsnum to CMB for fits hdu headers
+                    // add current obsnum to cmb for fits hdu headers
                     todproc.engine().cmb.obsnums.push_back(todproc.engine().obsnum);
 
                     // create obsnum directory
@@ -585,6 +587,8 @@ int run(const rc_t &rc) {
 
                         // overwrite map center
                         if (todproc.engine().omb.crval_config[0]!=0 && todproc.engine().omb.crval_config[1]!=0) {
+                            SPDLOG_INFO("overwriting map center to ({}, {})",todproc.engine().omb.crval_config[0],
+                                        todproc.engine().omb.crval_config[1]);
                             todproc.engine().telescope.tel_header["Header.Source.Ra"].setConstant(todproc.engine().omb.crval_config[0]);
                             todproc.engine().telescope.tel_header["Header.Source.Dec"].setConstant(todproc.engine().omb.crval_config[1]);
                         }
@@ -791,7 +795,7 @@ int main(int argc, char *argv[]) {
     // now with normal CLI interface
     tula::logging::init();
     auto rc = parse_args(argc, argv);
-    SPDLOG_TRACE("rc {}", rc.pformat());
+    SPDLOG_INFO("rc {}", rc.pformat());
     if (rc.get_node("config_file").size() > 0) {
         tula::logging::scoped_timeit TULA_X{"Citlali Process"};
         return run(rc);

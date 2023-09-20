@@ -3,47 +3,123 @@
 
 namespace mapmaking {
 
-/*template <class MapFitter, typename Derived>
-void ObsMapBuffer::fit_maps(MapFitter &map_fitter, Eigen::DenseBase<Derived> &params,
-                            Eigen::DenseBase<Derived> &perrors) {
+// get config file
+void ObsMapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std::vector<std::string>> &missing_keys,
+                              std::vector<std::vector<std::string>> &invalid_keys, std::string pixel_axes,
+                              std::string redu_type) {
 
-    engine_utils::toltecIO toltec_io;
+    // coverage cut
+    get_config_value(config, cov_cut, missing_keys, invalid_keys,
+                     std::tuple{"mapmaking","coverage_cut"});
 
-    // placeholder vectors for grppi map
-    std::vector<int> map_in_vec, map_out_vec;
+    // number of histogram bins
+    get_config_value(config, hist_n_bins, missing_keys, invalid_keys,
+                     std::tuple{"post_processing","map_histogram_n_bins"},{},{0});
 
-    map_in_vec.resize(signal.size());
-    std::iota(map_in_vec.begin(), map_in_vec.end(), 0);
-    map_out_vec.resize(signal.size());
+    // pixel size
+    get_config_value(config, pixel_size_rad, missing_keys, invalid_keys,
+                     std::tuple{"mapmaking","pixel_size_arcsec"},{},{0});
 
-    double init_row = -99;
-    double init_col = -99;
+    // map units
+    get_config_value(config, sig_unit, missing_keys, invalid_keys,
+                     std::tuple{"mapmaking","cunit"},{"mJy/beam","MJy/sr","uK/beam"});
 
-    grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
-        auto array = maps_to_arrays(i);
-        // init fwhm in pixels
-        double init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/pixel_size_rad;
-        auto [map_params, map_perror, good_fit] =
-            map_fitter.fit_to_gaussian<engine_utils::mapFitter::pointing>(signal[i], weight[i], init_fwhm, init_row, init_col);
-        params.row(i) = map_params;
-        perrors.row(i) = map_perror;
+    // convert pixel size to to radians
+    pixel_size_rad *= ASEC_TO_RAD;
 
-        if (good_fit) {
-            // rescale fit params from pixel to on-sky units
-            params(i,1) = RAD_TO_ASEC*pixel_size_rad*(params(i,1) - (n_cols)/2);
-            params(i,2) = RAD_TO_ASEC*pixel_size_rad*(params(i,2) - (n_rows)/2);
-            params(i,3) = RAD_TO_ASEC*STD_TO_FWHM*pixel_size_rad*(params(i,3));
-            params(i,4) = RAD_TO_ASEC*STD_TO_FWHM*pixel_size_rad*(params(i,4));
+    // set wcs cdelt for cols
+    wcs.cdelt.push_back(-pixel_size_rad);
+    // set wcs cdelt for rows
+    wcs.cdelt.push_back(pixel_size_rad);
 
-            // rescale fit errors from pixel to on-sky units
-            perrors(i,1) = RAD_TO_ASEC*pixel_size_rad*(perrors(i,1));
-            perrors(i,2) = RAD_TO_ASEC*pixel_size_rad*(perrors(i,2));
-            perrors(i,3) = RAD_TO_ASEC*STD_TO_FWHM*pixel_size_rad*(perrors(i,3));
-            perrors(i,4) = RAD_TO_ASEC*STD_TO_FWHM*pixel_size_rad*(perrors(i,4));
+    // variable to get wcs config options
+    double wcs_double;
+
+    // get wcs naxis
+    std::vector<std::string> naxis = {"x_size_pix","y_size_pix"};
+    for (const auto &key: naxis) {
+        get_config_value(config, wcs_double, missing_keys, invalid_keys,
+                         std::tuple{"mapmaking",key});
+        wcs.naxis.push_back(wcs_double);
+    }
+
+    // get wcs crpix
+    std::vector<std::string> crpix = {"crpix1","crpix2"};
+    for (const auto &key: crpix) {
+        get_config_value(config, wcs_double, missing_keys, invalid_keys,
+                         std::tuple{"mapmaking",key});
+        wcs.crpix.push_back(wcs_double);
+    }
+
+    // get wcs crval
+    std::vector<std::string> crval = {"crval1_J2000","crval2_J2000"};
+    for (const auto &key: crval) {
+        get_config_value(config, wcs_double, missing_keys, invalid_keys,
+                         std::tuple{"mapmaking",key});
+        crval_config.push_back(wcs_double);
+    }
+
+    // icrs frame
+    if (pixel_axes == "icrs") {
+        wcs.ctype.push_back("RA---TAN");
+        wcs.ctype.push_back("DEC--TAN");
+
+        wcs.cunit.push_back("deg");
+        wcs.cunit.push_back("deg");
+
+        wcs.cdelt[0] *= RAD_TO_DEG;
+        wcs.cdelt[1] *= RAD_TO_DEG;
+    }
+
+    // altaz frame
+    else if (pixel_axes == "altaz") {
+        wcs.ctype.push_back("AZOFFSET");
+        wcs.ctype.push_back("ELOFFSET");
+
+        // arcsec if pointing or beammap
+        if (redu_type == "pointing" || redu_type == "beammap") {
+            wcs.cunit.push_back("arcsec");
+            wcs.cunit.push_back("arcsec");
+            wcs.cdelt[0] *= RAD_TO_ASEC;
+            wcs.cdelt[1] *= RAD_TO_ASEC;
         }
-        return 0;
-    });
-}*/
+        // degrees if science
+        else {
+            wcs.cunit.push_back("deg");
+            wcs.cunit.push_back("deg");
+            wcs.cdelt[0] *= RAD_TO_DEG;
+            wcs.cdelt[1] *= RAD_TO_DEG;
+        }
+    }
+
+    // set wcs cdelt for frequency
+    wcs.cdelt.push_back(1);
+    // set wcs cdelt for stokes param
+    wcs.cdelt.push_back(1);
+
+    // set wcs crpix for frequency
+    wcs.crpix.push_back(1);
+    // set wcs crpix for stokes param
+    wcs.crpix.push_back(1);
+
+    // set wcs crval to initial defaults
+    wcs.crval.push_back(0);
+    wcs.crval.push_back(0);
+    wcs.crval.push_back(1);
+    wcs.crval.push_back(1);
+
+    // set wcs naxis for freq and stokes
+    wcs.naxis.push_back(1);
+    wcs.naxis.push_back(1);
+
+    // set wcs ctypes
+    wcs.ctype.push_back("FREQ");
+    wcs.ctype.push_back("STOKES");
+
+    // set wcs cunits
+    wcs.cunit.push_back("Hz");
+    wcs.cunit.push_back("");
+}
 
 void ObsMapBuffer::normalize_maps() {
     // placeholder vectors for grppi map
@@ -55,16 +131,22 @@ void ObsMapBuffer::normalize_maps() {
 
     // normalize science and kernel mpas
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
+        // loop through rows
         for (Eigen::Index j=0; j<n_rows; j++) {
+            // loop through cols
             for (Eigen::Index k=0; k<n_cols; k++) {
+                // weight of current pixel
                 double sig_weight = weight[i](j,k);
+                // normalize if weight is larger than zero
                 if (sig_weight > 0.) {
                     signal[i](j,k) = signal[i](j,k) / sig_weight;
 
+                    // normalize kernel
                     if (!kernel.empty()) {
                         kernel[i](j,k) = kernel[i](j,k) / sig_weight;
                     }
                 }
+                // otherwise set all to zero
                 else {
                     signal[i](j,k) = 0;
                     weight[i](j,k) = 0;
@@ -82,14 +164,20 @@ void ObsMapBuffer::normalize_maps() {
     // normalize noise maps
     if (!noise.empty()) {
         grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
+            // loop through rows
             for (Eigen::Index j=0; j<n_rows; j++) {
+                // loop through cols
                 for (Eigen::Index k=0; k<n_cols; k++) {
+                    // weight of current pixel
                     double sig_weight = weight[i](j,k);
+                    // normalize if weight is larger than zero
                     if (sig_weight > 0.) {
+                        // loop through noise maps
                         for (Eigen::Index l=0; l<n_noise; l++) {
                             noise[i](j,k,l) = noise[i](j,k,l) / sig_weight;
                         }
                     }
+                    // otherwise set all to zero
                     else {
                         for (Eigen::Index l=0; l<n_noise; l++) {
                             noise[i](j,k,l) = 0;
@@ -100,31 +188,6 @@ void ObsMapBuffer::normalize_maps() {
             return 0;
         });
     }
-
-    /*for (Eigen::Index a=0; a<test0.size(); a++) {
-        for (Eigen::Index i=0; i<nrows; i++) {
-            for (Eigen::Index j=0; j<ncols; j++) {
-                Eigen::MatrixXd m(3,3);
-                Eigen::VectorXd d(3);
-                d(0) = signal[3*a](i,j);
-                d(1) = signal[3*a + 1](i,j);
-                d(2) = signal[3*a + 2](i,j);
-
-                Eigen::Index n = 0;
-                for (k=0; k<3; k++) {
-                    for (l=0; l<3; l++) {
-                        m(k,l) = test0[a](i,j,n);
-                        n++;
-                    }
-                }
-                auto v = m.inverse()*d;
-                signal[3*a](i,j) = v(0);
-                signal[3*a + 1](i,j) = v(1);
-                signal[3*a + 2](i,j) = v(2);
-            }
-        }
-    }*/
-
 }
 
 std::tuple<double, Eigen::MatrixXd, Eigen::Index, Eigen::Index> ObsMapBuffer::calc_cov_region(Eigen::Index i) {
@@ -134,6 +197,7 @@ std::tuple<double, Eigen::MatrixXd, Eigen::Index, Eigen::Index> ObsMapBuffer::ca
     // calculate coverage ranges
     Eigen::MatrixXd cov_ranges = engine_utils::set_cov_cov_ranges(weight[i], weight_threshold);
 
+    // rows and cols of region above weight threshold
     Eigen::Index cov_n_rows = cov_ranges(1,0) - cov_ranges(0,0) + 1;
     Eigen::Index cov_n_cols = cov_ranges(1,1) - cov_ranges(0,1) + 1;
 
@@ -172,7 +236,7 @@ void ObsMapBuffer::calc_map_psd() {
             cov_n_cols--;
         }
 
-        // explicit copy
+        // explicit copy signal map within coverage region
         Eigen::MatrixXd sig = signal[i].block(cov_ranges(0,0), cov_ranges(0,1), cov_n_rows, cov_n_cols);
 
         // calculate psds
@@ -209,11 +273,13 @@ void ObsMapBuffer::calc_map_psd() {
                 // otherwise add to existing vector
                 else {
                     noise_psds.back() = noise_psds.back() + noise_p;
-                    noise_psd_2ds.back() = noise_psd_2ds.back() + noise_p_2d/n_noise;
-                    noise_psd_2d_freqs.back() = noise_psd_2d_freqs.back() + noise_pf_2d/n_noise;
+                    noise_psd_2ds.back() = noise_psd_2ds.back() + noise_p_2d;
+                    noise_psd_2d_freqs.back() = noise_psd_2d_freqs.back() + noise_pf_2d;
                 }
             }
             noise_psds.back() = noise_psds.back()/n_noise;
+            noise_psd_2ds.back() = noise_psd_2ds.back()/n_noise;
+            noise_psd_2d_freqs.back() = noise_psd_2d_freqs.back()/n_noise;
         }
     }
 }
@@ -305,24 +371,6 @@ void ObsMapBuffer::calc_mean_rms() {
         }
         // get mean rms
         mean_rms(i) = noise_rms.mean();
-        SPDLOG_INFO("mean rms {} ({})", static_cast<float>(mean_rms(i)), sig_unit);
-    }
-}
-
-void ObsMapBuffer::renormalize_errors() {
-    // get mean error from weight maps
-    calc_mean_err();
-
-    // get mean map rms from noise maps
-    calc_mean_rms();
-
-    // get rescaled normalization factor
-    auto noise_factor = (1./pow(mean_rms.array(),2.))*mean_err.array();
-
-    // loop through arrays/polarizations
-    for (Eigen::Index i=0; i<weight.size(); i++) {
-        // renormalize weights
-        weight[i].noalias() = weight[i]*noise_factor(i);
     }
 }
 
@@ -349,6 +397,7 @@ bool ObsMapBuffer::find_sources(Eigen::Index map_index) {
     // find pixels equal or above source sigma
     std::vector<int> row_index, col_index;
 
+    // search both positive and negatives
     if (source_finder_mode=="both") {
         for (Eigen::Index i=0; i<n_rows; i++) {
             for (Eigen::Index j=0; j<n_cols; j++) {

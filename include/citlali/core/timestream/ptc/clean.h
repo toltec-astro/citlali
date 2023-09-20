@@ -104,10 +104,12 @@ public:
         return limit_index;
     }
 
+    // calculate the eigenvalues from a matrix while removing flags
     template <EigenSolverBackend backend, typename DerivedA, typename DerivedB, typename DerivedC>
     auto calc_eig_values(const Eigen::DenseBase<DerivedA> &, const Eigen::DenseBase<DerivedB> &, Eigen::DenseBase<DerivedC> &,
                          const Eigen::Index);
 
+    // remove computed eigenvalues from matrix and recompute tods
     template <EigenSolverBackend backend, typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD>
     auto remove_eig_values(const Eigen::DenseBase<DerivedA> &, const Eigen::DenseBase<DerivedB> &,
                            const Eigen::DenseBase<DerivedC> &, const Eigen::DenseBase<DerivedD> &,
@@ -248,7 +250,7 @@ auto Cleaner::remove_eig_values(const Eigen::DenseBase<DerivedA> &scans, const E
         limit_index = group_n_eig;
     }
 
-    SPDLOG_DEBUG("removing {} largest eigenvalues", limit_index);
+    SPDLOG_DEBUG("removing {} largest eigenvalue(s)", limit_index);
 
     // subtract out the desired eigenvectors
     Eigen::MatrixXd proj = scans.derived() * evecs.derived().leftCols(limit_index);

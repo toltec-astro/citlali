@@ -202,9 +202,7 @@ public:
     // obsnum
     std::string obsnum;
 
-    // weight type (approximate or full)
-    //std::string weighting_type;
-
+    // write filtered maps as they complete
     bool write_filtered_maps_partial;
 
     // rtc or ptc types
@@ -226,16 +224,15 @@ public:
     std::map<std::string, Eigen::VectorXd> pointing_offsets_arcsec;
 
     // map output files
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> fits_io_vec;
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> noise_fits_io_vec;
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> filtered_fits_io_vec;
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> filtered_noise_fits_io_vec;
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> fits_io_vec, noise_fits_io_vec;
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> filtered_fits_io_vec, filtered_noise_fits_io_vec;
 
     // coadded map output files
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> coadd_fits_io_vec;
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> coadd_noise_fits_io_vec;
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> filtered_coadd_fits_io_vec;
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> filtered_coadd_noise_fits_io_vec;
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> coadd_fits_io_vec, coadd_noise_fits_io_vec;
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> filtered_coadd_fits_io_vec, filtered_coadd_noise_fits_io_vec;
+
+    // per obsnum setup common to all redu types
+    void obsnum_setup();
 
     // get RTC config options
     template<typename CT>
@@ -257,7 +254,7 @@ public:
     template<typename CT>
     void get_map_filter_config(CT &);
 
-    // get all non-input config options
+    // get all non-input config options and call other config functions
     template<typename CT>
     void get_citlali_config(CT &);
 
@@ -269,14 +266,8 @@ public:
     template<typename CT>
     void get_astrometry_config(CT &);
 
-    // get conversion from detector number to map
-    template <typename Derived>
-    auto calc_map_indices(Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &,
-                          Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &,
-                          std::string);
-
     // create fits files (does not populate them)
-    void create_map_files();
+    void create_obs_map_files();
 
     // create tod files (does not populate them)
     template <engine_utils::toltecIO::ProdType prod_t>
@@ -296,6 +287,9 @@ public:
     // add primary header to FITS files
     template <typename fits_io_type, class map_buffer_t>
     void add_phdu(fits_io_type &, map_buffer_t &, Eigen::Index);
+
+    // create variable names for maps, psds, and hists
+    auto get_map_name(int);
 
     // add maps to FITS files and output them
     template <typename fits_io_type, class map_buffer_t>
@@ -330,273 +324,158 @@ public:
     void write_sources(map_buffer_t &, std::string);
 };
 
-template<typename CT>
-void Engine::get_rtc_config(CT &config) {
-    get_config_value(config, rtcproc.lower_weight_factor, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","flagging",
-                                                                                           "lower_weight_factor"});
-    get_config_value(config, rtcproc.upper_weight_factor, missing_keys, invalid_keys, std::tuple{"timestream", "raw_time_chunk","flagging",
-                                                                                           "upper_weight_factor"});
-    get_config_value(config, rtcproc.delta_f_min_Hz, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","flagging",
-                                                                                            "delta_f_min_Hz"});
+void Engine::obsnum_setup() {
+    if (!telescope.sim_obs) {
+        // check tau calculation
+        Eigen::VectorXd tau_el(1);
+        tau_el << telescope.tel_data["TelElAct"].mean();
+        auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
 
-    /* polarization */
-    get_config_value(config, rtcproc.run_polarization, missing_keys, invalid_keys, std::tuple{"timestream","polarimetry", "enabled"});
-    get_config_value(config, calib.ignore_hwpr, missing_keys, invalid_keys, std::tuple{"timestream","polarimetry", "ignore_hwpr"});
-
-    if (rtcproc.run_polarization && redu_type=="beammap") {
-        SPDLOG_ERROR("Beammap reductions do not currently support polarimetry mode");
-        std::exit(EXIT_FAILURE);
-    }
-
-    if (rtcproc.run_polarization) {
-        rtcproc.polarization.stokes_params = {{0,"I"}, {1,"Q"}, {2,"U"}};
-    }
-    else {
-        rtcproc.polarization.stokes_params[0] = "I";
-    }
-
-    /* kernel */
-    get_config_value(config, rtcproc.run_kernel, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","kernel","enabled"});
-    if (rtcproc.run_kernel) {
-        get_config_value(config, rtcproc.kernel.filepath, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","kernel",
-                                                                                                 "filepath"});
-        get_config_value(config, rtcproc.kernel.type, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","kernel","type"});
-        get_config_value(config, rtcproc.kernel.fwhm_rad, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","kernel",
-                                                                                          "fwhm_arcsec"});
-
-        rtcproc.kernel.fwhm_rad *=ASEC_TO_RAD;
-        rtcproc.kernel.sigma_rad = rtcproc.kernel.fwhm_rad*FWHM_TO_STD;
-
-        if (rtcproc.kernel.type == "fits") {
-            auto img_ext_name_node = config.get_node(std::tuple{"timestream","raw_time_chunk","kernel", "image_ext_names"});
-            for (Eigen::Index i=0; i<img_ext_name_node.size(); i++) {
-                std::string img_ext_name = config.template get_str(std::tuple{"timestream","raw_time_chunk","kernel", "image_ext_names",
-                                                                              i, std::to_string(i)});
-                rtcproc.kernel.img_ext_names.push_back(img_ext_name);
+        for (auto const& [key, val] : tau_freq) {
+            if (val[0] < 0) {
+                SPDLOG_ERROR("calculated mean {} tau {} < 0",toltec_io.array_name_map[key], val[0]);
+                std::exit(EXIT_FAILURE);
             }
         }
     }
 
-    /* despike */
-    get_config_value(config, rtcproc.run_despike, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","despike","enabled"});
-    if (rtcproc.run_despike) {
-        get_config_value(config, rtcproc.despiker.min_spike_sigma, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk",
-                                                                                                   "despike","min_spike_sigma"});
-        get_config_value(config, rtcproc.despiker.time_constant_sec, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk",
-                                                                                                     "despike","time_constant_sec"});
-        get_config_value(config, rtcproc.despiker.window_size, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","despike",
-                                                                                               "window_size"});
-
-        rtcproc.despiker.grouping = "nw";
+    // setup kernel
+    if (rtcproc.run_kernel) {
+        rtcproc.kernel.setup(n_maps);
     }
 
-    /* filter */
-    get_config_value(config, rtcproc.run_tod_filter, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","filter","enabled"});
+    // set despiker sample rate
+    rtcproc.despiker.fsmp = telescope.fsmp;
 
-    // set scan limits
+    // if filter is requested, make it here
     if (rtcproc.run_tod_filter) {
-        get_config_value(config, rtcproc.filter.a_gibbs, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","filter","a_gibbs"});
-        get_config_value(config, rtcproc.filter.freq_low_Hz, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","filter",
-                                                                                             "freq_low_Hz"});
-        get_config_value(config, rtcproc.filter.freq_high_Hz, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","filter",
-                                                                                              "freq_high_Hz"});
-        get_config_value(config, rtcproc.filter.n_terms, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","filter","n_terms"});
+        rtcproc.filter.make_filter(telescope.fsmp);
 
-        telescope.inner_scans_chunk = rtcproc.filter.n_terms;
-        rtcproc.despiker.window_size = rtcproc.filter.n_terms;
+        /*
+        rtcproc.filter.w0s.clear();
+        rtcproc.filter.qs.clear();
+        rtcproc.filter.w0s.push_back(24.46);
+        rtcproc.filter.qs.push_back(0.05);
+        rtcproc.filter.make_notch_filter(telescope.fsmp);
+        */
     }
+
+    // set map wcs crvals to source ra/dec
+    if (telescope.pixel_axes == "icrs") {
+        omb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0)*RAD_TO_DEG;
+        omb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0)*RAD_TO_DEG;
+
+        cmb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0)*RAD_TO_DEG;
+        cmb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0)*RAD_TO_DEG;
+    }
+
+    // create output map files
+    if (run_mapmaking) {
+        create_obs_map_files();
+    }
+    // create timestream files
+    if (run_tod_output) {
+        // create tod output subdirectory if requested
+        if (tod_output_subdir_name!="null") {
+            fs::create_directories(obsnum_dir_name + "raw/" + tod_output_subdir_name);
+        }
+        // make rtc tod output file
+        if (tod_output_type == "rtc" || tod_output_type=="both") {
+            create_tod_files<engine_utils::toltecIO::rtc_timestream>();
+        }
+        // make ptc tod output file
+        if (tod_output_type == "ptc" || tod_output_type=="both") {
+            create_tod_files<engine_utils::toltecIO::ptc_timestream>();
+        }
+    }
+    // don't calculate any eigenvalues
+    else if (!diagnostics.write_evals) {
+        ptcproc.cleaner.n_calc = 0;
+    }
+
+    // tod output mode require sequential policy so set explicitly
+    if (run_tod_output || verbose_mode) {
+        SPDLOG_WARN("tod output mode require sequential policy");
+        parallel_policy = "seq";
+    }
+
+    // output basic info for obs reduction to command line
+    cli_summary();
+
+    // set up per-det stats file values
+    for (const auto &stat: diagnostics.det_stats_header) {
+        diagnostics.stats[stat].setZero(calib.n_dets, telescope.scan_indices.cols());
+    }
+    // set up per-group stats file values
+    for (const auto &stat: diagnostics.grp_stats_header) {
+        diagnostics.stats[stat].setZero(calib.n_arrays, telescope.scan_indices.cols());
+    }
+    // clear stored eigenvalues
+    diagnostics.evals.clear();
+}
+
+template<typename CT>
+void Engine::get_rtc_config(CT &config) {
+    // get rtcproc config
+    rtcproc.get_config(config, missing_keys, invalid_keys);
+
+    // offset inner chunks
+    if (rtcproc.run_tod_filter) {
+        telescope.inner_scans_chunk = rtcproc.filter.n_terms;
+    }
+    // otherwise start at zero
     else {
-        rtcproc.filter.n_terms = 0;
         telescope.inner_scans_chunk = 0;
     }
 
-    /* downsample */
-    get_config_value(config, rtcproc.run_downsample, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","downsample",
-                                                                                            "enabled"});
-    if (rtcproc.run_downsample) {
-        get_config_value(config, rtcproc.downsampler.factor, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","downsample",
-                                                                                                    "factor"},{},{0});
-        get_config_value(config, rtcproc.downsampler.downsampled_freq_Hz, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk",
-                                                                                                                 "downsample",
-                                                                                                                 "downsampled_freq_Hz"});
-    }
+    // ignore hwpr?
+    get_config_value(config, calib.ignore_hwpr, missing_keys, invalid_keys,
+                     std::tuple{"timestream","polarimetry", "ignore_hwpr"});
 
-    /* calibration */
-    get_config_value(config, rtcproc.run_calibrate, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","flux_calibration",
-                                                                                           "enabled"});
-    get_config_value(config, rtcproc.run_extinction, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","extinction_correction",
-                                                                                           "enabled"});
-    get_config_value(config, rtcproc.calibration.extinction_model, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk",
-                                                                                                          "extinction_correction",
-                                                                                                          "extinction_model"},
-                                                                                                         {"am_q25","am_q50","am_q75","null"});
-    // setup atm model
-    rtcproc.calibration.setup();
+    // polarization is disabled for beammaps
+    if (rtcproc.run_polarization && redu_type=="beammap") {
+        SPDLOG_ERROR("Beammap reductions do not currently support polarimetry mode");
+        std::exit(EXIT_FAILURE);
+    }
 }
 
 template<typename CT>
 void Engine::get_ptc_config(CT &config) {
-    get_config_value(config, ptcproc.weighting_type, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","weighting",
-                                                                                            "type"},{"full","approximate","const"});
-    get_config_value(config, ptcproc.med_weight_factor, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","weighting",
-                                                                                            "median_weight_factor"});
-    get_config_value(config, ptcproc.lower_weight_factor, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","flagging",
-                                                                                           "lower_weight_factor"});
-    get_config_value(config, ptcproc.upper_weight_factor, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","flagging",
-                                                                                           "upper_weight_factor"});
+    // get ptcproc config
+    ptcproc.get_config(config, missing_keys, invalid_keys);
 
-    // for sensitivity fcf
+    // calibration for sensitivity units
     ptcproc.run_calibrate = rtcproc.run_calibrate;
-
-    /* cleaning */
-    get_config_value(config, ptcproc.run_clean, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","clean","enabled"});
-
-    if (ptcproc.run_clean) {
-        // vector of groupings
-        ptcproc.cleaner.grouping = config.template get_typed<std::vector<std::string>>(std::tuple{"timestream","processed_time_chunk","clean",
-                                                                                                  "grouping"});
-        // vector of eigenvalues to cut
-        for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
-            auto n_eig_to_cut = config.template get_typed<std::vector<Eigen::Index>>(std::tuple{"timestream","processed_time_chunk","clean",
-                                                                                                "n_eig_to_cut",arr_name});
-            ptcproc.cleaner.n_eig_to_cut[arr_index] = (Eigen::Map<Eigen::VectorXI>(n_eig_to_cut.data(),n_eig_to_cut.size()));
-        }
-        // map to eigen vector
-        get_config_value(config, ptcproc.cleaner.stddev_limit, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk",
-                                                                                                 "clean","stddev_limit"});
-        get_config_value(config, ptcproc.run_stokes_clean, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","clean",
-                                                                                                  "clean_polarized_time_chunks"});
-    }
-
 }
 
 template<typename CT>
 void Engine::get_mapmaking_config(CT &config) {
-    get_config_value(config, map_grouping, missing_keys, invalid_keys, std::tuple{"mapmaking","grouping"},{"auto","array","nw","detector","fg"});
-
-    // coverage cut
-    get_config_value(config, omb.cov_cut, missing_keys, invalid_keys, std::tuple{"mapmaking","coverage_cut"});
-    cmb.cov_cut = omb.cov_cut;
-
-    // copy map grouping for simplicity
-    omb.map_grouping = map_grouping;
-    cmb.map_grouping = omb.map_grouping;
-
-    rtcproc.kernel.map_grouping = omb.map_grouping;
+    // enable mapmaking?
+    get_config_value(config, run_mapmaking, missing_keys, invalid_keys,
+                     std::tuple{"mapmaking","enabled"});
+    // map grouping
+    get_config_value(config, map_grouping, missing_keys, invalid_keys,
+                     std::tuple{"mapmaking","grouping"},{"auto","array","nw","detector","fg"});
 
     // map_method
-    get_config_value(config, map_method, missing_keys, invalid_keys, std::tuple{"mapmaking","method"},{"naive","jinc"});
+    get_config_value(config, map_method, missing_keys, invalid_keys,
+                     std::tuple{"mapmaking","method"},{"naive","jinc"});
 
-    // histogram
-    get_config_value(config, omb.hist_n_bins, missing_keys, invalid_keys, std::tuple{"post_processing","map_histogram_n_bins"},{},{0});
-    cmb.hist_n_bins = omb.hist_n_bins;
+    // map reference frame (icrs or altaz)
+    get_config_value(config, telescope.pixel_axes, missing_keys, invalid_keys,
+                     std::tuple{"mapmaking","pixel_axes"},{"icrs","altaz"});
 
-    /* wcs */
+    // get config for omb
+    omb.get_config(config, missing_keys, invalid_keys, telescope.pixel_axes, redu_type);
 
-    // icrs or altaz
-    get_config_value(config, telescope.pixel_axes, missing_keys, invalid_keys, std::tuple{"mapmaking","pixel_axes"},{"icrs","altaz"});
+    // re-run to get config for cmb
+    cmb.get_config(config, missing_keys, invalid_keys, telescope.pixel_axes, redu_type);
 
-    // pixel size
-    get_config_value(config, omb.pixel_size_rad, missing_keys, invalid_keys, std::tuple{"mapmaking","pixel_size_arcsec"},{},{0});
-
-    // convert to radians
-    omb.pixel_size_rad *= ASEC_TO_RAD;
-    cmb.pixel_size_rad = omb.pixel_size_rad;
-
-    omb.wcs.cdelt.push_back(-omb.pixel_size_rad);
-    omb.wcs.cdelt.push_back(omb.pixel_size_rad);
-
-    omb.wcs.cdelt.push_back(1);
-    omb.wcs.cdelt.push_back(1);
-
-    double wcs_double;
-
-    // crpix
-    get_config_value(config, wcs_double, missing_keys, invalid_keys, std::tuple{"mapmaking","crpix1"});
-    omb.wcs.crpix.push_back(wcs_double);
-
-    get_config_value(config, wcs_double, missing_keys, invalid_keys, std::tuple{"mapmaking","crpix2"});
-    omb.wcs.crpix.push_back(wcs_double);
-
-    omb.wcs.crpix.push_back(1);
-    omb.wcs.crpix.push_back(1);
-
-    // crval
-    get_config_value(config, wcs_double, missing_keys, invalid_keys, std::tuple{"mapmaking","crval1_J2000"});
-    omb.crval_config.push_back(wcs_double);
-
-    get_config_value(config, wcs_double, missing_keys, invalid_keys, std::tuple{"mapmaking","crval2_J2000"});
-    omb.crval_config.push_back(wcs_double);
-
-    omb.wcs.crval.push_back(0);
-    omb.wcs.crval.push_back(0);
-    omb.wcs.crval.push_back(1);
-    omb.wcs.crval.push_back(1);
-
-    // naxis
-    get_config_value(config, wcs_double, missing_keys, invalid_keys, std::tuple{"mapmaking","x_size_pix"});
-    omb.wcs.naxis.push_back(wcs_double);
-
-    get_config_value(config, wcs_double, missing_keys, invalid_keys, std::tuple{"mapmaking","y_size_pix"});
-    omb.wcs.naxis.push_back(wcs_double);
-
-    omb.wcs.naxis.push_back(1);
-    omb.wcs.naxis.push_back(1);
-
-    // map units
-    if (rtcproc.run_calibrate) {
-        get_config_value(config, omb.sig_unit, missing_keys, invalid_keys, std::tuple{"mapmaking","cunit"},{"mJy/beam","MJy/sr"});
-        cmb.sig_unit = omb.sig_unit;
-    }
-
-    else {
+    // if flux calibration is not enabled, use tod type units (xs, rs, is, or qs)
+    if (!rtcproc.run_calibrate) {
         omb.sig_unit = tod_type;
         cmb.sig_unit = tod_type;
     }
-
-    // icrs frame
-    if (telescope.pixel_axes == "icrs") {
-        omb.wcs.ctype.push_back("RA---TAN");
-        omb.wcs.ctype.push_back("DEC--TAN");
-        omb.wcs.ctype.push_back("FREQ");
-        omb.wcs.ctype.push_back("STOKES");
-
-        omb.wcs.cunit.push_back("deg");
-        omb.wcs.cunit.push_back("deg");
-        omb.wcs.cunit.push_back("Hz");
-        omb.wcs.cunit.push_back("");
-
-        omb.wcs.cdelt[0] *= RAD_TO_DEG;
-        omb.wcs.cdelt[1] *= RAD_TO_DEG;
-    }
-
-    // altaz frame
-    else if (telescope.pixel_axes == "altaz") {
-        omb.wcs.ctype.push_back("AZOFFSET");
-        omb.wcs.ctype.push_back("ELOFFSET");
-        omb.wcs.ctype.push_back("FREQ");
-        omb.wcs.ctype.push_back("STOKES");
-
-        // arcsec if pointing or beammap
-        if (redu_type == "pointing" || redu_type == "beammap") {
-            omb.wcs.cunit.push_back("arcsec");
-            omb.wcs.cunit.push_back("arcsec");
-            omb.wcs.cdelt[0] *= RAD_TO_ASEC;
-            omb.wcs.cdelt[1] *= RAD_TO_ASEC;
-        }
-        // degrees if science
-        else {
-            omb.wcs.cunit.push_back("deg");
-            omb.wcs.cunit.push_back("deg");
-            omb.wcs.cdelt[0] *= RAD_TO_DEG;
-            omb.wcs.cdelt[1] *= RAD_TO_DEG;
-        }
-        omb.wcs.cunit.push_back("Hz");
-        omb.wcs.cunit.push_back("");
-    }
-
-    // copy omb wcs to cmb wcs
-    cmb.wcs = omb.wcs;
 
     // set parallelization for psd filter ffts (maintained with tod output/verbose mode)
     omb.parallel_policy = parallel_policy;
@@ -604,57 +483,108 @@ void Engine::get_mapmaking_config(CT &config) {
     jinc_mm.parallel_policy = parallel_policy;
 
     if (map_method=="jinc") {
-        get_config_value(config, jinc_mm.r_max, missing_keys, invalid_keys, std::tuple{"mapmaking","jinc_filter","r_max"});
-        // vector of eigenvalues to cut
+        // maximum radius for jinc filter
+        get_config_value(config, jinc_mm.r_max, missing_keys, invalid_keys,
+                         std::tuple{"mapmaking","jinc_filter","r_max"});
+        // get jinc filter shape params
         for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
             auto jinc_shape_vec = config.template get_typed<std::vector<double>>(std::tuple{"mapmaking","jinc_filter","shape_params",arr_name});
             jinc_mm.shape_params[arr_index] = Eigen::Map<Eigen::VectorXd>(jinc_shape_vec.data(),jinc_shape_vec.size());
         }
 
-        // allocate jinc matrix
-        jinc_mm.allocate_jinc_matrix(omb.pixel_size_rad);
+        if (jinc_mm.mode=="matrix") {
+            // allocate jinc matrix
+            jinc_mm.allocate_jinc_matrix(omb.pixel_size_rad);
+        }
+        else if (jinc_mm.mode=="splines") {
+            // precompute jinc spline
+            jinc_mm.calculate_jinc_splines();
+        }
+    }
+
+    // run coaddition?
+    get_config_value(config, run_coadd, missing_keys, invalid_keys,
+                     std::tuple{"coadd","enabled"});
+
+    // make noise maps?
+    get_config_value(config, run_noise, missing_keys, invalid_keys,
+                     std::tuple{"noise_maps","enabled"});
+    if (run_noise) {
+        // number of noise maps
+        get_config_value(config, omb.n_noise, missing_keys, invalid_keys,
+                         std::tuple{"noise_maps","n_noise_maps"},{},{0},{});
+        // copy omb number of noise maps to cmb
+        cmb.n_noise = omb.n_noise;
+        // randomize noise maps on detector as well as time chunk
+        get_config_value(config, omb.randomize_dets, missing_keys, invalid_keys,
+                         std::tuple{"noise_maps","randomize_dets"});
+        // copy randomize_dets to cmb
+        cmb.randomize_dets = omb.randomize_dets;
+    }
+    // otherwise set number of noise maps to zero
+    else {
+        omb.n_noise = 0;
+        cmb.n_noise = 0;
     }
 }
 
 template<typename CT>
 void Engine::get_beammap_config(CT &config) {
-    get_config_value(config, beammap_iter_max, missing_keys, invalid_keys, std::tuple{"beammap","iter_max"});
-    get_config_value(config, beammap_iter_tolerance, missing_keys, invalid_keys, std::tuple{"beammap","iter_tolerance"});
-    get_config_value(config, beammap_reference_det, missing_keys, invalid_keys, std::tuple{"beammap","reference_det"});
-    get_config_value(config, beammap_subtract_reference, missing_keys, invalid_keys, std::tuple{"beammap","subtract_reference_det"});
-    get_config_value(config, beammap_derotate, missing_keys, invalid_keys, std::tuple{"beammap","derotate"});
+    // max beammap iteration
+    get_config_value(config, beammap_iter_max, missing_keys, invalid_keys,
+                     std::tuple{"beammap","iter_max"});
+    // beammap iteration tolerance
+    get_config_value(config, beammap_iter_tolerance, missing_keys, invalid_keys,
+                     std::tuple{"beammap","iter_tolerance"});
+    // beammap reference detector
+    get_config_value(config, beammap_reference_det, missing_keys, invalid_keys,
+                     std::tuple{"beammap","reference_det"});
+    // subtract reference detector?
+    get_config_value(config, beammap_subtract_reference, missing_keys, invalid_keys,
+                     std::tuple{"beammap","subtract_reference_det"});
+    // derotate apt?
+    get_config_value(config, beammap_derotate, missing_keys, invalid_keys,
+                     std::tuple{"beammap","derotate"});
 
     // limits for flagging
     for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
-        get_config_value(config, lower_fwhm_arcsec[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","flagging","lower_fwhm_arcsec",
-                                                                                              arr_name});
-        get_config_value(config, upper_fwhm_arcsec[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","flagging","upper_fwhm_arcsec",
-                                                                                              arr_name});
-        get_config_value(config, lower_sig2noise[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","flagging","lower_sig2noise",
-                                                                                            arr_name});
-        get_config_value(config, upper_sig2noise[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","flagging","upper_sig2noise",
-                                                                                                   arr_name});
-        get_config_value(config, max_dist_arcsec[arr_name], missing_keys, invalid_keys, std::tuple{"beammap","flagging","max_dist_arcsec",
-                                                                                            arr_name});
+        // lower fwhm limit
+        get_config_value(config, lower_fwhm_arcsec[arr_name], missing_keys, invalid_keys,
+                         std::tuple{"beammap","flagging","lower_fwhm_arcsec",arr_name});
+        // upper fwhm limit
+        get_config_value(config, upper_fwhm_arcsec[arr_name], missing_keys, invalid_keys,
+                         std::tuple{"beammap","flagging","upper_fwhm_arcsec",arr_name});
+        // lower signal-to-noise limit
+        get_config_value(config, lower_sig2noise[arr_name], missing_keys, invalid_keys,
+                         std::tuple{"beammap","flagging","lower_sig2noise",arr_name});
+        // upper signal-to-noise limit
+        get_config_value(config, upper_sig2noise[arr_name], missing_keys, invalid_keys,
+                         std::tuple{"beammap","flagging","upper_sig2noise",arr_name});
+        // maximum allowed distance limit
+        get_config_value(config, max_dist_arcsec[arr_name], missing_keys, invalid_keys,
+                         std::tuple{"beammap","flagging","max_dist_arcsec",arr_name});
     }
 
-    get_config_value(config, lower_sens_factor, missing_keys, invalid_keys, std::tuple{"beammap","flagging","lower_sens_factor"});
-    get_config_value(config, upper_sens_factor, missing_keys, invalid_keys, std::tuple{"beammap","flagging","upper_sens_factor"});
+    // lower sensitivity factor
+    get_config_value(config, lower_sens_factor, missing_keys, invalid_keys,
+                     std::tuple{"beammap","flagging","lower_sens_factor"});
+    // upper sensitivity factor
+    get_config_value(config, upper_sens_factor, missing_keys, invalid_keys,
+                     std::tuple{"beammap","flagging","upper_sens_factor"});
 
-    // sensitiivty
+    // upper and lower frequencies over which to calculate sensitivity
     sens_psd_limits.resize(2);
-    double sens;
-    get_config_value(config, sens, missing_keys, invalid_keys, std::tuple{"beammap","sens_psd_lower_limit"});
-    sens_psd_limits(0) = sens;
-
-    get_config_value(config, sens, missing_keys, invalid_keys, std::tuple{"beammap","sens_psd_upper_limit"});
-    sens_psd_limits(1) = sens;
+    get_config_value(config, sens_psd_limits(0), missing_keys, invalid_keys,
+                     std::tuple{"beammap","sens_psd_lower_limit"});
+    get_config_value(config, sens_psd_limits(1), missing_keys, invalid_keys,
+                     std::tuple{"beammap","sens_psd_upper_limit"});
 
     // if no tolerance is specified, write out max iteration tod
     if (run_tod_output) {
         if (beammap_iter_tolerance <=0) {
             beammap_tod_output_iter = beammap_iter_max;
         }
+        // otherwise write out first iteration tod
         else {
             beammap_tod_output_iter = 0;
         }
@@ -663,45 +593,33 @@ void Engine::get_beammap_config(CT &config) {
 
 template<typename CT>
 void Engine::get_map_filter_config(CT &config) {
-    get_config_value(config, wiener_filter.template_type, missing_keys, invalid_keys, std::tuple{"wiener_filter","template_type"},
-                     {"kernel","gaussian","airy","highpass"});
-    get_config_value(config, wiener_filter.run_lowpass, missing_keys, invalid_keys, std::tuple{"wiener_filter","lowpass_only"});
-    get_config_value(config, wiener_filter.normalize_error, missing_keys, invalid_keys, std::tuple{"post_processing","map_filtering",
-                                                                                                   "normalize_errors"});
+
+    // get wiener filter config options
+    wiener_filter.get_config(config, missing_keys, invalid_keys);
+
+    // if in science mode, write filtered maps as they complete
+    if (redu_type=="science") {
+        write_filtered_maps_partial = true;
+    }
+    // otherwise write at end
+    else {
+        write_filtered_maps_partial = false;
+    }
+    // check if kernel is enabled
     if (wiener_filter.template_type=="kernel") {
         if (!rtcproc.run_kernel) {
             SPDLOG_ERROR("wiener filter kernel template requires kernel");
             std::exit(EXIT_FAILURE);
         }
+        // copy the map fitter
         else {
             wiener_filter.map_fitter = map_fitter;
         }
     }
-
+    // make sure noise maps were enabled
     if (!run_noise) {
         SPDLOG_ERROR("wiener filter requires noise maps");
         std::exit(EXIT_FAILURE);
-    }
-
-    // gaussian template fwhms
-    if (wiener_filter.template_type=="gaussian" || wiener_filter.template_type=="airy") {
-        get_config_value(config, wiener_filter.gaussian_template_fwhm_rad["a1100"], missing_keys, invalid_keys,
-                   std::tuple{"wiener_filter","gaussian_template_fwhm_arcsec","a1100"});
-        get_config_value(config, wiener_filter.gaussian_template_fwhm_rad["a1400"], missing_keys, invalid_keys,
-                   std::tuple{"wiener_filter","gaussian_template_fwhm_arcsec","a1400"});
-        get_config_value(config, wiener_filter.gaussian_template_fwhm_rad["a2000"], missing_keys, invalid_keys,
-                   std::tuple{"wiener_filter","gaussian_template_fwhm_arcsec","a2000"});
-
-        for (auto const& pair : wiener_filter.gaussian_template_fwhm_rad) {
-            wiener_filter.gaussian_template_fwhm_rad[pair.first] = wiener_filter.gaussian_template_fwhm_rad[pair.first]*ASEC_TO_RAD;
-        }
-    }
-
-    if (redu_type=="science") {
-        write_filtered_maps_partial = true;
-    }
-    else {
-        write_filtered_maps_partial = false;
     }
 
     // set parallelization for ffts (maintained with tod output/verbose mode)
@@ -710,11 +628,10 @@ void Engine::get_map_filter_config(CT &config) {
 
 template<typename CT>
 void Engine::get_citlali_config(CT &config) {
-    /* interface offsets */
+    //  get interface offsets
     if (config.has(std::tuple{"interface_sync_offset"})) {
-
         auto interface_node = config.get_node(std::tuple{"interface_sync_offset"});
-
+        // interface key names
         std::vector<std::string> interface_keys = {
             "toltec0",
             "toltec1",
@@ -731,54 +648,50 @@ void Engine::get_citlali_config(CT &config) {
             "toltec12",
             "hwpr"
         };
-
+        // loop through interfaces
         for (Eigen::Index i=0; i<interface_node.size(); i++) {
-            try {
-                auto offset = config.template get_typed<double>(std::tuple{"interface_sync_offset",i, interface_keys[i]});
-                interface_sync_offset[interface_keys[i]] = offset;
-            } catch (YAML::TypedBadConversion<double>) {
-               std::vector<std::string> invalid_temp;
-                engine_utils::for_each_in_tuple(
-                    std::tuple{"interface_sync_offset", std::to_string(i), interface_keys[i]},
-                    [&](const auto &x) { invalid_temp.push_back(x); });
-                invalid_keys.push_back(invalid_temp);
-            }
-
-            catch (YAML::InvalidNode) {
-                std::vector<std::string> invalid_temp;
-                engine_utils::for_each_in_tuple(
-                    std::tuple{"interface_sync_offset", std::to_string(i), interface_keys[i]},
-                    [&](const auto &x) { invalid_temp.push_back(x); });
-                invalid_keys.push_back(invalid_temp);
-            }
+            auto offset = config.template get_typed<double>(std::tuple{"interface_sync_offset",i, interface_keys[i]});
+            interface_sync_offset[interface_keys[i]] = offset;
         }
     }
 
-    else {
-        std::vector<std::string> missing_temp;
-        engine_utils::for_each_in_tuple(
-            std::tuple{"interface_sync_offset"},
-            [&](const auto &x) { missing_temp.push_back(x); });
-        missing_keys.push_back(missing_temp);
+    /* get beammap config */
+    if (redu_type=="beammap") {
+        get_beammap_config(config);
     }
 
-    /* runtime */
-    get_config_value(config, verbose_mode, missing_keys, invalid_keys, std::tuple{"runtime","verbose"});
-    get_config_value(config, output_dir, missing_keys, invalid_keys, std::tuple{"runtime","output_dir"});
-    get_config_value(config, n_threads, missing_keys, invalid_keys, std::tuple{"runtime","n_threads"});
-    get_config_value(config, parallel_policy, missing_keys, invalid_keys, std::tuple{"runtime","parallel_policy"},{"seq","omp"});
-
-    get_config_value(config, redu_type, missing_keys, invalid_keys, std::tuple{"runtime","reduction_type"},{"science","pointing","beammap"});
-    get_config_value(config, use_subdir, missing_keys, invalid_keys, std::tuple{"runtime","use_subdir"});
-
-    /* timestream */
-    get_config_value(config, run_tod, missing_keys, invalid_keys, std::tuple{"timestream","enabled"});
-    get_config_value(config, tod_type, missing_keys, invalid_keys, std::tuple{"timestream","type"});
+    // verbose mode?
+    get_config_value(config, verbose_mode, missing_keys, invalid_keys,
+                     std::tuple{"runtime","verbose"});
+    // output directory
+    get_config_value(config, output_dir, missing_keys, invalid_keys,
+                     std::tuple{"runtime","output_dir"});
+    // number of threads to use
+    get_config_value(config, n_threads, missing_keys, invalid_keys,
+                     std::tuple{"runtime","n_threads"});
+    // overall parallel policy
+    get_config_value(config, parallel_policy, missing_keys, invalid_keys,
+                     std::tuple{"runtime","parallel_policy"},{"seq","omp"});
+    // reduction type (science, pointing, beammap)
+    get_config_value(config, redu_type, missing_keys, invalid_keys,
+                     std::tuple{"runtime","reduction_type"},{"science","pointing","beammap"});
+    // create redu00, redu01... subdirectories
+    get_config_value(config, use_subdir, missing_keys, invalid_keys,
+                     std::tuple{"runtime","use_subdir"});
+    // run tod processing
+    get_config_value(config, run_tod, missing_keys, invalid_keys,
+                     std::tuple{"timestream","enabled"});
+    // tod type (xs, rs, is, qs)
+    get_config_value(config, tod_type, missing_keys, invalid_keys,
+                     std::tuple{"timestream","type"});
 
     bool run_tod_output_rtc, run_tod_output_ptc;
-    get_config_value(config, run_tod_output_rtc, missing_keys, invalid_keys, std::tuple{"timestream","raw_time_chunk","output","enabled"});
-    get_config_value(config, run_tod_output_ptc, missing_keys, invalid_keys, std::tuple{"timestream","processed_time_chunk","output",
-                                                                                        "enabled"});
+    // output rtc
+    get_config_value(config, run_tod_output_rtc, missing_keys, invalid_keys,
+                     std::tuple{"timestream","raw_time_chunk","output","enabled"});
+    // output ptc
+    get_config_value(config, run_tod_output_ptc, missing_keys, invalid_keys,
+                     std::tuple{"timestream","processed_time_chunk","output","enabled"});
     // set tod output to false by default
     run_tod_output = false;
 
@@ -800,114 +713,107 @@ void Engine::get_citlali_config(CT &config) {
         }
     }
 
-    //if (run_tod_output) {
-        get_config_value(config, tod_output_subdir_name, missing_keys, invalid_keys, std::tuple{"timestream","output", "subdir_name"});        
-    //}
+    // tod subdirectory name
+    get_config_value(config, tod_output_subdir_name, missing_keys, invalid_keys,
+                     std::tuple{"timestream","output", "subdir_name"});
 
-    get_config_value(config, diagnostics.write_evals, missing_keys, invalid_keys, std::tuple{"timestream","output", "stats","eigenvalues"});
+    // write eigenvalues to stats file
+    get_config_value(config, diagnostics.write_evals, missing_keys, invalid_keys,
+                     std::tuple{"timestream","output", "stats","eigenvalues"});
+    // get time chunk size
+    get_config_value(config, telescope.time_chunk, missing_keys, invalid_keys,
+                     std::tuple{"timestream","chunking", "length_sec"});
+    // force chunking?
+    get_config_value(config, telescope.force_chunk, missing_keys, invalid_keys,
+                     std::tuple{"timestream","chunking", "force_chunking"});
 
-    get_config_value(config, telescope.time_chunk, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "length_sec"});
-    get_config_value(config, telescope.force_chunk, missing_keys, invalid_keys, std::tuple{"timestream","chunking", "force_chunking"});
-
-    /* rtc */
+    /* get raw time chunk config */
     get_rtc_config(config);
 
-    /* ptc */
+    /* get processed time chunk config */
     get_ptc_config(config);
 
-    /* mapmaking */
-    get_config_value(config, run_mapmaking, missing_keys, invalid_keys, std::tuple{"mapmaking","enabled"});
+    /* get mapmaking config */
     get_mapmaking_config(config);
 
-    /* map filtering */
-    get_config_value(config, run_map_filter, missing_keys, invalid_keys, std::tuple{"post_processing","map_filtering","enabled"});
+    // get map filter config
+    get_config_value(config, run_map_filter, missing_keys, invalid_keys,
+                     std::tuple{"post_processing","map_filtering","enabled"});
 
-    /* fitting */
-    if (redu_type=="pointing" || redu_type=="beammap" || run_map_filter) {
-        get_config_value(config, map_fitter.bounding_box_pix, missing_keys, invalid_keys, std::tuple{"post_processing","source_fitting",
-                                                                                                     "bounding_box_arcsec"},{},{0});
-        get_config_value(config, map_fitter.fitting_region_pix, missing_keys, invalid_keys, std::tuple{"post_processing","source_fitting",
-                                                                                                       "fitting_radius_arcsec"});
-        get_config_value(config, map_fitter.fit_angle, missing_keys, invalid_keys, std::tuple{"post_processing","source_fitting",
-                                                                                              "gauss_model","fit_rotation_angle"});
+    // run source finder?
+    get_config_value(config, run_source_finder, missing_keys, invalid_keys,
+                     std::tuple{"post_processing","source_finding","enabled"});
+
+    // map fitter options if in pointing or beammap mode or if map filtering or source finding are enabled
+    if (redu_type=="pointing" || redu_type=="beammap" || run_map_filter || run_source_finder) {
+        // size of region around found source to fit
+        get_config_value(config, map_fitter.bounding_box_pix, missing_keys, invalid_keys,
+                         std::tuple{"post_processing","source_fitting","bounding_box_arcsec"},{},{0});
+        // radius around center of map to find source within
+        get_config_value(config, map_fitter.fitting_region_pix, missing_keys, invalid_keys,
+                         std::tuple{"post_processing","source_fitting","fitting_radius_arcsec"});
+        // fit 2d gaussian rotation angle
+        get_config_value(config, map_fitter.fit_angle, missing_keys, invalid_keys,
+                         std::tuple{"post_processing","source_fitting", "gauss_model","fit_rotation_angle"});
+
+        // convert bounding box and fitting region to pixels
         map_fitter.bounding_box_pix = ASEC_TO_RAD*map_fitter.bounding_box_pix/omb.pixel_size_rad;
         map_fitter.fitting_region_pix = ASEC_TO_RAD*map_fitter.fitting_region_pix/omb.pixel_size_rad;
 
-        // temp setup to get limits
+        // fitter flux and fwhm limits
         map_fitter.flux_limits.resize(2);
         map_fitter.fwhm_limits.resize(2);
-
-        map_fitter.flux_limits(0) = config.template get_typed<double>(std::tuple{"post_processing","source_fitting","gauss_model",
-                                                                                 "amp_limits",0});
-        map_fitter.flux_limits(1) = config.template get_typed<double>(std::tuple{"post_processing","source_fitting","gauss_model",
-                                                                                 "amp_limits",1});
-
-        map_fitter.fwhm_limits(0) = config.template get_typed<double>(std::tuple{"post_processing","source_fitting","gauss_model",
-                                                                                 "fwhm_limits",0});
-        map_fitter.fwhm_limits(1) = config.template get_typed<double>(std::tuple{"post_processing","source_fitting","gauss_model",
-                                                                                 "fwhm_limits",1});
+        for (Eigen::Index i=0; i<map_fitter.flux_limits.size(); i++) {
+            // flux limit
+            map_fitter.flux_limits(i) = config.template get_typed<double>(std::tuple{"post_processing","source_fitting",
+                                                                                     "gauss_model","amp_limits",i});
+            // fwhm limit
+            map_fitter.flux_limits(i) = config.template get_typed<double>(std::tuple{"post_processing","source_fitting",
+                                                                                     "gauss_model","fwhm_limits",i});
+        }
 
         // flux lower factor
         if (map_fitter.flux_limits(0) > 0) {
             map_fitter.flux_low = map_fitter.flux_limits(0);
         }
-
         // flux lower factor
         if (map_fitter.flux_limits(1) > 0) {
             map_fitter.flux_high = map_fitter.flux_limits(1);
         }
-
         // fwhm lower factor
         if (map_fitter.fwhm_limits(0) > 0) {
             map_fitter.fwhm_low = map_fitter.fwhm_limits(0);
         }
-
         // fwhm upper factor
         if (map_fitter.fwhm_limits(1) > 0) {
             map_fitter.fwhm_high = map_fitter.fwhm_limits(1);
         }
     }
 
-    /* coaddition */
-    get_config_value(config, run_coadd, missing_keys, invalid_keys, std::tuple{"coadd","enabled"});
-
-    /* noise maps */
-    get_config_value(config, run_noise, missing_keys, invalid_keys, std::tuple{"noise_maps","enabled"});
-    if (run_noise) {
-        get_config_value(config, omb.n_noise, missing_keys, invalid_keys, std::tuple{"noise_maps","n_noise_maps"},{},{0},{});
-        cmb.n_noise = omb.n_noise;
-
-        get_config_value(config, omb.randomize_dets, missing_keys, invalid_keys, std::tuple{"noise_maps","randomize_dets"});
-        cmb.randomize_dets = omb.randomize_dets;
-    }
-    else {
-        omb.n_noise = 0;
-        cmb.n_noise = 0;
-    }
-
-    /* wiener filter */
+    /* get wiener filter config */
     if (run_map_filter) {
         get_map_filter_config(config);
     }
 
-    /* beammap */
-    if (redu_type=="beammap") {
-        get_beammap_config(config);
-    }
-
-    /* source finding */
-    get_config_value(config, run_source_finder, missing_keys, invalid_keys, std::tuple{"post_processing","source_finding","enabled"});
-
+    // get source finder config options
     if (run_source_finder) {
-        get_config_value(config, omb.source_sigma, missing_keys, invalid_keys, std::tuple{"post_processing","source_finding","source_sigma"});
-        get_config_value(config, omb.source_window_rad, missing_keys, invalid_keys, std::tuple{"post_processing","source_finding",
-                                                                                               "source_window_arcsec"});
-        get_config_value(config, omb.source_finder_mode, missing_keys, invalid_keys, std::tuple{"post_processing","source_finding","mode"});
+        // minimum found source sigma
+        get_config_value(config, omb.source_sigma, missing_keys, invalid_keys,
+                         std::tuple{"post_processing","source_finding","source_sigma"});
+        // window around source to exclude other sources
+        get_config_value(config, omb.source_window_rad, missing_keys, invalid_keys,
+                         std::tuple{"post_processing","source_finding","source_window_arcsec"});
+        // search map, negative of map, or both
+        get_config_value(config, omb.source_finder_mode, missing_keys, invalid_keys,
+                         std::tuple{"post_processing","source_finding","mode"});
 
+        // convert source window to radians
         omb.source_window_rad = omb.source_window_rad*ASEC_TO_RAD;
-
+        // copy omb source sigma to cmb
         cmb.source_sigma = omb.source_sigma;
+        // copy omb source_window_rad to cmb
         cmb.source_window_rad = omb.source_window_rad;
+        // copy omb source_finder_mode to cmb
         cmb.source_finder_mode = omb.source_finder_mode;
     }
 
@@ -924,26 +830,34 @@ void Engine::get_citlali_config(CT &config) {
 
 template<typename CT>
 void Engine::get_photometry_config(CT &config) {
-    // beammap name
-    get_config_value(config, beammap_source_name, missing_keys, invalid_keys, std::tuple{"beammap_source","name"});
+    // beammap source name
+    get_config_value(config, beammap_source_name, missing_keys, invalid_keys,
+                     std::tuple{"beammap_source","name"});
 
     // beammap source ra
-    get_config_value(config, beammap_ra_rad, missing_keys, invalid_keys, std::tuple{"beammap_source","ra_deg"});
+    get_config_value(config, beammap_ra_rad, missing_keys, invalid_keys,
+                     std::tuple{"beammap_source","ra_deg"});
+    // convert ra to radians
     beammap_ra_rad = beammap_ra_rad*DEG_TO_RAD;
 
     // beammap source dec
-    get_config_value(config, beammap_dec_rad, missing_keys, invalid_keys, std::tuple{"beammap_source","dec_deg"});
+    get_config_value(config, beammap_dec_rad, missing_keys, invalid_keys,
+                     std::tuple{"beammap_source","dec_deg"});
+    // convert dec to radians
     beammap_dec_rad = beammap_dec_rad*DEG_TO_RAD;
 
+    // number of fluxes
     Eigen::Index n_fluxes = config.get_node(std::tuple{"beammap_source","fluxes"}).size();
 
     // get source fluxes
     for (Eigen::Index i=0; i<n_fluxes; i++) {
         auto array = config.get_str(std::tuple{"beammap_source","fluxes",i,"array_name"});
-
+        // source flux in mJy/beam
         auto flux = config.template get_typed<double>(std::tuple{"beammap_source","fluxes",i,"value_mJy"});
+        // source flux uncertainty in mJy/beam
         auto uncertainty_mJy = config.template get_typed<double>(std::tuple{"beammap_source","fluxes",i,"uncertainty_mJy"});
 
+        // copy flux and uncertainty
         beammap_fluxes_mJy_beam[array] = flux;
         beammap_err_mJy_beam[array] = uncertainty_mJy;
     }
@@ -952,11 +866,13 @@ void Engine::get_photometry_config(CT &config) {
 template<typename CT>
 void Engine::get_astrometry_config(CT &config) {
 
+    // check if config file has pointing_offsets
     if (config.has("pointing_offsets")) {
         std::vector<double> offset;
+        // get az offset
         offset = config.template get_typed<std::vector<double>>(std::tuple{"pointing_offsets",0,"value_arcsec"});
         pointing_offsets_arcsec["az"] = Eigen::Map<Eigen::VectorXd>(offset.data(),offset.size());
-
+        // get el offset
         offset = config.template get_typed<std::vector<double>>(std::tuple{"pointing_offsets",1,"value_arcsec"});
         pointing_offsets_arcsec["alt"] = Eigen::Map<Eigen::VectorXd>(offset.data(),offset.size());
     }
@@ -966,124 +882,52 @@ void Engine::get_astrometry_config(CT &config) {
     }
 }
 
-template <typename Derived>
-auto Engine::calc_map_indices(Eigen::DenseBase<Derived> &det_indices, Eigen::DenseBase<Derived> &nw_indices,
-                              Eigen::DenseBase<Derived> &array_indices, Eigen::DenseBase<Derived> &fg_indices,
-                              std::string stokes_param) {
-    // indices for maps
-    Eigen::VectorXI indices(array_indices.size()), map_indices(array_indices.size());
-
-    // overwrite map indices for networks
-    if (map_grouping == "nw") {
-        indices = nw_indices;
-    }
-
-    // overwrite map indices for arrays
-    else if (map_grouping == "array") {
-        indices = array_indices;
-    }
-
-    // overwrite map indices for detectors
-    else if (map_grouping == "detector") {
-        indices = det_indices;
-    }
-
-    // overwrite map indices for fgs
-    else if (map_grouping == "fg") {
-        indices = fg_indices;
-    }
-
-    // start at 0
-    if (map_grouping != "fg") {
-        Eigen::Index map_index = 0;
-        map_indices(0) = 0;
-        // loop through and populate map indices
-        for (Eigen::Index i=0; i<indices.size()-1; i++) {
-            // if next index is larger than current index, increment map index
-            if (indices(i+1) > indices(i)) {
-                map_index++;
-            }
-            map_indices(i+1) = map_index;
-        }
-    }
-    else {
-        // convert fg to indices
-        std::map<Eigen::Index, Eigen::Index> fg_to_index;
-
-        // get mapping from fg to map index
-        for (Eigen::Index i=0; i<calib.fg.size(); i++) {
-            fg_to_index[calib.fg(i)] = i;
-        }
-        // allocate map indices from fg
-        for (Eigen::Index i=0; i<indices.size(); i++) {
-            map_indices(i) = fg_to_index[indices(i)];
-        }
-    }
-
-    if (rtcproc.run_polarization) {
-        if (stokes_param == "Q") {
-            map_indices = map_indices.array() + n_maps/3;
-        }
-        else if (stokes_param == "U") {
-            map_indices = map_indices.array() + 2*n_maps/3;
-        }
-    }
-
-    return std::move(map_indices);
-}
-
-void Engine::create_map_files() {
-    // clear for each observation
+void Engine::create_obs_map_files() {
+    // clear fits vector for each observation
     fits_io_vec.clear();
 
+    // clear noise fits vector
     if (!run_coadd) {
         if (run_noise) {
             noise_fits_io_vec.clear();
         }
     }
 
+    // loop through arrays
     for (Eigen::Index i=0; i<calib.n_arrays; i++) {
         auto array = calib.arrays[i];
         std::string array_name = toltec_io.array_name_map[array];
-        auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
-                                                  engine_utils::toltecIO::map,
+        auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::map,
                                                   engine_utils::toltecIO::raw>(obsnum_dir_name + "raw/", redu_type, array_name,
                                                                                obsnum, telescope.sim_obs);
         fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
-
         fits_io_vec.push_back(std::move(fits_io));
 
         // if noise maps are requested but coadding is not, populate noise fits vector
         if (!run_coadd) {
             if (run_noise) {
-                auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
-                                                          engine_utils::toltecIO::noise,
+                auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::noise,
                                                           engine_utils::toltecIO::raw>(obsnum_dir_name + "raw/", redu_type, array_name,
-                                                                                         obsnum, telescope.sim_obs);
+                                                                                       obsnum, telescope.sim_obs);
                 fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
-
                 noise_fits_io_vec.push_back(std::move(fits_io));
             }
 
             // map filtering
             if (run_map_filter) {
-                auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
-                                                          engine_utils::toltecIO::map,
+                auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::map,
                                                           engine_utils::toltecIO::filtered>(obsnum_dir_name + "filtered/",
                                                                                             redu_type, array_name,
                                                                                             obsnum, telescope.sim_obs);
                 fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
-
                 filtered_fits_io_vec.push_back(std::move(fits_io));
 
                 // filtered noise maps
                 if (run_noise) {
-                    auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
-                                                              engine_utils::toltecIO::noise,
+                    auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::noise,
                                                               engine_utils::toltecIO::filtered>(obsnum_dir_name + "filtered/", redu_type,
-                                                                                             array_name, obsnum, telescope.sim_obs);
+                                                                                                array_name, obsnum, telescope.sim_obs);
                     fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
-
                     filtered_noise_fits_io_vec.push_back(std::move(fits_io));
                 }
             }
@@ -1220,6 +1064,7 @@ void Engine::create_tod_files() {
         netCDF::NcVar flags_v = fo.addVar("flags",netCDF::ncDouble, dims);
         flags_v.putAtt("units","N/A");
         flags_v.setChunking(chunkMode, chunkSizes);
+
         // kernel
         if (rtcproc.run_kernel) {
             netCDF::NcVar kernel_v = fo.addVar("kernel",netCDF::ncDouble, dims);
@@ -1750,9 +1595,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     }
 }
 
-template <typename fits_io_type, class map_buffer_t>
-void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_buffer_t &mb, Eigen::Index i) {
-
+auto Engine::get_map_name(int i) {
     // get name for extension layer
     std::string map_name = "";
 
@@ -1779,13 +1622,23 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         }
     }
 
+    return map_name;
+}
+
+template <typename fits_io_type, class map_buffer_t>
+void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_buffer_t &mb, Eigen::Index i) {
+
+    // get name for extension layer
+    std::string map_name = get_map_name(i);
+
     // get the array for the given map
     Eigen::Index map_index = arrays_to_maps(i);
     // get the stokes parameter for the given map
     Eigen::Index stokes_index = maps_to_stokes(i);
 
-    // array name
-    std::string name = toltec_io.array_name_map[map_index];
+    // update wcs ctypes for frequency and stokes params
+    mb->wcs.crval[2] = toltec_io.array_freq_map[calib.arrays[maps_to_arrays(i)]];
+    mb->wcs.crval[3] = stokes_index;
 
     // signal map
     fits_io->at(map_index).add_hdu("signal_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->signal[i]);
@@ -1800,9 +1653,9 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
     // kernel map
     if (rtcproc.run_kernel) {
         fits_io->at(map_index).add_hdu("kernel_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->kernel[i]);
+        fits_io->at(map_index).hdus.back()->addKey("TYPE",rtcproc.kernel.type, "Kernel type");
         fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs);
         fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
-        fits_io->at(map_index).hdus.back()->addKey("TYPE",rtcproc.kernel.type, "Kernel type");
     }
 
     // coverage map
@@ -1889,30 +1742,8 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
 
     // loop through psd vector
     for (Eigen::Index i=0; i<mb->psds.size(); i++) {
-        std::string map_name = "";
-
-        if (map_grouping!="array") {
-            if (map_grouping=="nw") {
-                map_name = map_name + "nw_" + std::to_string(calib.nws(i)) + "_";
-            }
-            else if (map_grouping=="fg") {
-                // find all detectors belonging to each fg
-                Eigen::VectorXI array_indices(calib.fg.size()*calib.n_arrays*rtcproc.polarization.stokes_params.size());
-                Eigen::Index k = 0;
-                for (Eigen::Index j=0; j<calib.n_arrays; j++) {
-                    for (Eigen::Index l=0; l<rtcproc.polarization.stokes_params.size(); l++) {
-                        for (Eigen::Index m=0; m<calib.fg.size(); m++) {
-                            array_indices(k) = calib.fg(m);
-                            k++;
-                        }
-                    }
-                }
-                map_name = map_name + "fg_" + std::to_string(array_indices(i)) + "_";
-            }
-            else if (map_grouping=="detector") {
-                map_name = map_name + "det_" + std::to_string(i) + "_";
-            }
-        }
+        // get name for extension layer
+        std::string map_name = get_map_name(i);
 
         // get the array for the given map
         Eigen::Index map_index = arrays_to_maps(i);
@@ -1981,7 +1812,6 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
             netCDF::NcVar noise_psd_2d_freq_v = fo.addVar(name + "_noise_psd_2d_freq",netCDF::ncDouble, noise_dims);
             noise_psd_2d_freq_v.putVar(noise_psd_2d_freq_transposed.data());
         }
-
     }
     // close file
     fo.close();
@@ -1996,31 +1826,10 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
 
     // loop through stored histograms
     for (Eigen::Index i=0; i<mb->hists.size(); i++) {
+        // string to hold name
+        // get name for extension layer
+        std::string map_name = get_map_name(i);
 
-        std::string map_name = "";
-
-        if (map_grouping!="array") {
-            if (map_grouping=="nw") {
-                map_name = map_name + "nw_" + std::to_string(calib.nws(i)) + "_";
-            }
-            else if (map_grouping=="fg") {
-                // find all detectors belonging to each fg
-                Eigen::VectorXI array_indices(calib.fg.size()*calib.n_arrays*rtcproc.polarization.stokes_params.size());
-                Eigen::Index k = 0;
-                for (Eigen::Index j=0; j<calib.n_arrays; j++) {
-                    for (Eigen::Index l=0; l<rtcproc.polarization.stokes_params.size(); l++) {
-                        for (Eigen::Index m=0; m<calib.fg.size(); m++) {
-                            array_indices(k) = calib.fg(m);
-                            k++;
-                        }
-                    }
-                }
-                map_name = map_name + "fg_" + std::to_string(array_indices(i)) + "_";
-            }
-            else if (map_grouping=="detector") {
-                map_name = map_name + "det_" + std::to_string(i) + "_";
-            }
-        }
         // get the array for the given map
         Eigen::Index map_index = arrays_to_maps(i);
         // get the stokes parameter for the given map
@@ -2050,17 +1859,19 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
 
 void Engine::write_stats() {
     std::string path = obsnum_dir_name + "raw/";
-
+    // if using tod subdir, put stats file in it
     if (tod_output_subdir_name!="null") {
         if (!fs::exists(fs::status(path + tod_output_subdir_name))) {
             fs::create_directories(path + tod_output_subdir_name);
             path = path + tod_output_subdir_name + "/";
         }
     }
+    // create stats filename
     auto stats_filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::stats,
                                                     engine_utils::toltecIO::raw>
                           (path, redu_type, "", obsnum, telescope.sim_obs);
 
+    // det stats header
     std::map<std::string, std::string> det_stats_header_units {
         {"rms", omb.sig_unit},
         {"stddev",omb.sig_unit},
@@ -2068,7 +1879,7 @@ void Engine::write_stats() {
         {"flagged_frac","N/A"},
         {"weights","1/(" + omb.sig_unit + ")^2"},
         };
-
+    // group stats header
     std::map<std::string, std::string> grp_stats_header_units {
         {"median_weights", "1/(" + omb.sig_unit + ")^2"},
         };
@@ -2081,6 +1892,7 @@ void Engine::write_stats() {
     int obsnum_int = std::stoi(obsnum);
     obsnum_v.putVar(&obsnum_int);
 
+    // add dimensions
     netCDF::NcDim n_dets_dim = fo.addDim("n_dets", calib.n_dets);
     netCDF::NcDim n_arrays_dim = fo.addDim("n_arrays", calib.n_arrays);
     netCDF::NcDim n_chunks_dim = fo.addDim("n_chunks", telescope.scan_indices.cols());
@@ -2088,13 +1900,13 @@ void Engine::write_stats() {
     std::vector<netCDF::NcDim> dims = {n_chunks_dim, n_dets_dim};
     std::vector<netCDF::NcDim> grp_dims = {n_chunks_dim, n_arrays_dim};
 
-    // add stats
+    // add det stats
     for (const auto &stat: diagnostics.det_stats_header) {
         netCDF::NcVar stat_v = fo.addVar(stat,netCDF::ncDouble, dims);
         stat_v.putVar(diagnostics.stats[stat].data());
         stat_v.putAtt("units",det_stats_header_units[stat]);
     }
-
+    // add group stats
     for (const auto &stat: diagnostics.grp_stats_header) {
         netCDF::NcVar stat_v = fo.addVar(stat,netCDF::ncDouble, grp_dims);
         stat_v.putVar(diagnostics.stats[stat].data());
@@ -2146,7 +1958,6 @@ void Engine::write_stats() {
             }
         }
     }
-
     fo.close();
 }
 
@@ -2181,6 +1992,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         // add primary hdu
         add_phdu(f_io, pmb, i);
 
+        // add primary hdu to noise maps
         if (!pmb->noise.empty()) {
             add_phdu(n_io, pmb, i);
         }
@@ -2224,6 +2036,8 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
 
             // re-normalize weight map
             mb.weight[i].noalias() = mb.weight[i]*noise_factor(i);
+
+            SPDLOG_INFO("mean rms {} ({})", static_cast<float>(mb.mean_rms(i)), mb.sig_unit);
         }
 
         if (write_filtered_maps_partial) {
@@ -2262,6 +2076,7 @@ void Engine::find_sources(map_buffer_t &mb) {
     mb.n_sources.clear();
     mb.row_source_locs.clear();
     mb.col_source_locs.clear();
+    // loop through maps
     for (Eigen::Index i=0; i<n_maps; i++) {
         // update source vectors
         mb.n_sources.push_back(0);
@@ -2290,8 +2105,8 @@ void Engine::find_sources(map_buffer_t &mb) {
     }
 
     // matrix to store source parameters
-    mb.source_params.setZero(n_sources,6);
-    mb.source_perror.setZero(n_sources,6);
+    mb.source_params.setZero(n_sources,map_fitter.n_params);
+    mb.source_perror.setZero(n_sources,map_fitter.n_params);
 
     // keep track of row in total source count
     Eigen::Index k = 0;
@@ -2302,8 +2117,6 @@ void Engine::find_sources(map_buffer_t &mb) {
         if (mb.n_sources[i] > 0) {
             // current array
             auto array = maps_to_arrays(i);
-            // get file index
-            auto map_index = arrays_to_maps(i);
             // init fwhm in pixels
             auto init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/mb.pixel_size_rad;
 
@@ -2337,6 +2150,7 @@ void Engine::find_sources(map_buffer_t &mb) {
                     perrors(3) = RAD_TO_ASEC*STD_TO_FWHM*mb.pixel_size_rad*(perrors(3));
                     perrors(4) = RAD_TO_ASEC*STD_TO_FWHM*mb.pixel_size_rad*(perrors(4));
 
+                    // if in icrs calculate absolute pointing
                     if (telescope.pixel_axes=="icrs") {
                         Eigen::VectorXd lat(1), lon(1);
                         lat << params(2)*ASEC_TO_RAD;
@@ -2369,6 +2183,7 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
     std::string source_filename = setup_filenames<map_t,engine_utils::toltecIO::source,
                                                   engine_utils::toltecIO::map>(dir_name);
 
+    // source header information
     std::vector<std::string> source_header = {
         "array",
         "amp",
@@ -2386,9 +2201,6 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
         "sig2noise"
     };
 
-    // number of parameters
-    int n_params = 6;
-
     // units for fitted parameter centroids
     std::string pos_units;
 
@@ -2398,6 +2210,24 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
     else {
         pos_units = "arcsec";
     }
+
+    // units for source header
+    std::map<std::string,std::string> source_header_units = {
+        {"array","N/A"},
+        {"amp", omb.sig_unit},
+        {"amp_err", omb.sig_unit},
+        {"x_t", pos_units},
+        {"x_t_err", pos_units},
+        {"y_t", pos_units},
+        {"y_t_err", pos_units},
+        {"a_fwhm", "arcsec"},
+        {"a_fwhm_err", "arcsec"},
+        {"b_fwhm", "arcsec"},
+        {"b_fwhm_err", "arcsec"},
+        {"angle", "rad"},
+        {"angle_err", "rad"},
+        {"sig2noise", "N/A"}
+    };
 
     // meta information for source table
     YAML::Node source_meta;
@@ -2414,49 +2244,13 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
     // add date
     source_meta["Date"] = engine_utils::current_date_time();
 
-    // array
-    source_meta["array"].push_back("units: N/A");
-    source_meta["array"].push_back("array");
-
-    // amplitude
-    source_meta["amp"].push_back("units: " + mb->sig_unit);
-    source_meta["amp"].push_back("fitted amplitude");
-    // amplitude error
-    source_meta["amp_err"].push_back("units: " + mb->sig_unit);
-    source_meta["amp_err"].push_back("fitted amplitude error");
-    // x position
-    source_meta["x_t"].push_back("units: " + pos_units);
-    source_meta["x_t"].push_back("fitted azimuthal offset");
-    // x position error
-    source_meta["x_t_err"].push_back("units: " + pos_units);
-    source_meta["x_t_err"].push_back("fitted azimuthal offset error");
-    // y position
-    source_meta["y_t"].push_back("units: " + pos_units);
-    source_meta["y_t"].push_back("fitted altitude offset");
-    // y position error
-    source_meta["y_t_err"].push_back("units: " + pos_units);
-    source_meta["y_t_err"].push_back("fitted altitude offset error");
-    // azimuthal fwhm
-    source_meta["a_fwhm"].push_back("units: arcsec");
-    source_meta["a_fwhm"].push_back("fitted azimuthal FWHM");
-    // azimuthal fwhm error
-    source_meta["a_fwhm_err"].push_back("units: arcsec");
-    source_meta["a_fwhm_err"].push_back("fitted azimuthal FWHM error");
-    // elevation fwhm
-    source_meta["b_fwhm"].push_back("units: arcsec");
-    source_meta["b_fwhm"].push_back("fitted altitude FWMH");
-    // elevation fwhm error
-    source_meta["b_fwhm_err"].push_back("units: arcsec");
-    source_meta["b_fwhm_err"].push_back("fitted altitude FWMH error");
-    // rotation angle
-    source_meta["angle"].push_back("units: radians");
-    source_meta["angle"].push_back("fitted rotation angle");
-    // rotation angle error
-    source_meta["angle_err"].push_back("units: radians");
-    source_meta["angle_err"].push_back("fitted rotation angle error");
-    // signal to noise
-    source_meta["sig2noise"].push_back("units: N/A");
-    source_meta["sig2noise"].push_back("signal to noise");
+    // populate source meta information
+    for (const auto &[key,val]: source_header_units) {
+        source_meta[key].push_back("units: " + val);
+        // description from apt
+        auto description = calib.apt_header_description[key];
+        source_meta[key].push_back(description);
+    }
 
     // count up the total number of sources
     Eigen::Index n_sources = 0;
@@ -2465,7 +2259,7 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
     }
 
     // matrix to hold source information
-    Eigen::MatrixXf source_table(n_sources, 2*n_params + 2);
+    Eigen::MatrixXf source_table(n_sources, 2*map_fitter.n_params + 2);
 
     // loop through params and add arrays
     Eigen::Index k=0;
@@ -2477,21 +2271,21 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
             for (Eigen::Index j=0; j<mb->n_sources[i]; j++) {
                 source_table(k,0) = maps_to_arrays(i);
                 // set signal to noise
-                source_table(k,2*n_params + 1) = mb->source_params(k,0)/map_std_dev;
+                source_table(k,2*map_fitter.n_params + 1) = mb->source_params(k,0)/map_std_dev;
 
                 k++;
             }
         }
     }
 
-    // populate table
+    // populate source table
     Eigen::Index j = 0;
-    for (Eigen::Index i=1; i<2*n_params; i=i+2) {
+    for (Eigen::Index i=1; i<2*map_fitter.n_params; i=i+2) {
         source_table.col(i) = mb->source_params.col(j).template cast <float> ();
         source_table.col(i+1) = mb->source_perror.col(j).template cast <float> ();
         j++;
     }
 
-    // write table
+    // write source table
     to_ecsv_from_matrix(source_filename, source_table, source_header, source_meta);
 }

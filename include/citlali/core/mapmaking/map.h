@@ -5,6 +5,10 @@
 #include <Eigen/Core>
 #include <unsupported/Eigen/CXX11/Tensor>
 
+#include <tula/config/flatconfig.h>
+#include <tula/config/yamlconfig.h>
+
+#include <citlali/core/engine/config.h>
 #include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/fitting.h>
 
@@ -40,14 +44,15 @@ struct WCS {
 
 class ObsMapBuffer {
 public:
+    // wcs object
+    WCS wcs;
+
     // reference sky value
     std::vector<float> crval_config;
     // parallel policy for fft
     std::string parallel_policy;
     //obsnums
     std::vector<std::string> obsnums;
-    // wcs
-    WCS wcs;
     // map grouping
     std::string map_grouping;
     // number of rows and columns
@@ -63,14 +68,11 @@ public:
     // exposure time
     double exposure_time = 0;
 
-    // maps
+    // maps (n_rows, n_cols) of length n_maps
     std::vector<Eigen::MatrixXd> signal, weight, kernel, coverage;
 
     // noise maps (n_rows, n_cols, n_noise) of length n_maps
     std::vector<Eigen::Tensor<double,3>> noise;
-
-    // hold polarization terms
-    std::vector<Eigen::Tensor<double,3>> test0;
 
     // randomize noise maps on detectors
     bool randomize_dets;
@@ -85,38 +87,27 @@ public:
     int hist_n_bins;
 
     // vector to hold psds
-    std::vector<Eigen::VectorXd> psds;
-    // vector to hold psd freqs
-    std::vector<Eigen::VectorXd> psd_freqs;
+    std::vector<Eigen::VectorXd> psds, psd_freqs;
 
     // vector to hold 2D psds
-    std::vector<Eigen::MatrixXd> psd_2ds;
-    // vector to hold 2D psd freqs
-    std::vector<Eigen::MatrixXd> psd_2d_freqs;
+    std::vector<Eigen::MatrixXd> psd_2ds, psd_2d_freqs;
 
     // vector to hold hists
-    std::vector<Eigen::VectorXd> hists;
-    // vector to hold hist bins
-    std::vector<Eigen::VectorXd> hist_bins;
+    std::vector<Eigen::VectorXd> hists, hist_bins;
 
     // vector to hold noise psds
-    std::vector<Eigen::VectorXd> noise_psds;
-    // vector to hold noise psd freqs
-    std::vector<Eigen::VectorXd> noise_psd_freqs;
+    std::vector<Eigen::VectorXd> noise_psds, noise_psd_freqs;
 
     // vector to hold noise 2D psds
-    std::vector<Eigen::MatrixXd> noise_psd_2ds;
-    // vector to hold noise 2D psd freqs
-    std::vector<Eigen::MatrixXd> noise_psd_2d_freqs;
+    std::vector<Eigen::MatrixXd> noise_psd_2ds, noise_psd_2d_freqs;
 
     // vector to hold noise hists
-    std::vector<Eigen::VectorXd> noise_hists;
-    // vector to hold noise hist bins
-    std::vector<Eigen::VectorXd> noise_hist_bins;
+    std::vector<Eigen::VectorXd> noise_hists, noise_hist_bins;
 
     // vector to hold mean rms values
     Eigen::VectorXd mean_rms, mean_err;
 
+    // number of sources found by source finder
     std::vector<int> n_sources;
 
     // source finding mode
@@ -131,15 +122,16 @@ public:
     std::vector<Eigen::VectorXi> row_source_locs, col_source_locs;
 
     // fitted source parameters and errors [n_sources x n_params]
-    Eigen::MatrixXd source_params;
-    Eigen::MatrixXd source_perror;
+    Eigen::MatrixXd source_params, source_perror;
+
+    // get config file
+    void get_config(tula::config::YamlConfig &, std::vector<std::vector<std::string>> &,
+                    std::vector<std::vector<std::string>> &, std::string, std::string);
 
     // normalize signal and noise maps by the weight maps
     void normalize_maps();
 
-    //template <class MapFitter, typename Derived>
-    //void fit_maps(MapFitter &, Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &);
-
+    // calculate map coverage region
     std::tuple<double, Eigen::MatrixXd, Eigen::Index, Eigen::Index> calc_cov_region(Eigen::Index);
 
     // calculate map psds
@@ -151,8 +143,6 @@ public:
     void calc_mean_err();
     // calculate average rms of noise maps
     void calc_mean_rms();
-    // rescale weight maps
-    void renormalize_errors();
     // find sources in maps
     bool find_sources(Eigen::Index);
 };

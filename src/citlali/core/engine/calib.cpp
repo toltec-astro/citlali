@@ -1,7 +1,10 @@
 #include <citlali/core/utils/constants.h>
+#include <citlali/core/utils/utils.h>
 #include <citlali/core/engine/calib.h>
+#include <citlali/core/utils/toltec_io.h>
 
 namespace engine {
+
 void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_filenames, std::vector<std::string> &interfaces) {
     // store apt filepath
     apt_filepath = filepath;
@@ -35,6 +38,7 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
         std::exit(EXIT_FAILURE);
     }
 
+    // exit if reference frame is incorrect
     if (map_with_strs["Radesys"]!="altaz") {
         SPDLOG_ERROR("apt table is not in altaz reference frame");
         std::exit(EXIT_FAILURE);
@@ -61,8 +65,7 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
         fo.close();
     }
 
-    auto roach_vec = Eigen::Map<Eigen::VectorXI>(roach_indices.data(), roach_indices.size());
-
+    // vector to hold interface number
     Eigen::VectorXi interfaces_vec(interfaces.size());
 
     // get network interfaces
@@ -75,8 +78,9 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
         n_dets_temp = n_dets_temp + (apt["nw"].array() == interfaces_vec(i)).count();
     }
 
-    // populate apt temp
+    // clear apt
     apt_temp.clear();
+    // populate apt temp
     for (auto const& value: apt_header_keys) {
         apt_temp[value].setZero(n_dets_temp);
         Eigen::Index i = 0;
@@ -88,13 +92,15 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
         }
     }
 
-    // populate apt table
+    // clear apt
     apt.clear();
+    // populate apt table
     for (auto const& value: apt_header_keys) {
         apt[value].setZero(n_dets_temp);
         apt[value] = apt_temp[value];
     }
 
+    // clear temporary apt
     apt_temp.clear();
 
     // run setup on new apt table
@@ -112,6 +118,7 @@ void Calib::get_hwpr(const std::string &filepath, bool sim_obs) {
 
         std::string hwpr_install_v;
 
+        // get hwp install vector for sim or real obs
         if (!sim_obs) {
             hwpr_install_v = "Header.Toltec.HwpInstalled";
         }
@@ -133,13 +140,16 @@ void Calib::get_hwpr(const std::string &filepath, bool sim_obs) {
                 // get hwpr time for interpolation
                 hwp_ts.resize(n_pts,6);
 
+                // timing for hwpr
                 vars.find("Data.Hwp.Ts")->second.getVar(hwp_ts.data());
                 hwp_ts.transposeInPlace();
 
+                // UT time for hwpr
                 Eigen::Index recvt_n_pts = vars.find("Data.Hwp.Uts")->second.getDim(0).getSize();
                 hwp_recvt.resize(recvt_n_pts);
                 vars.find("Data.Hwp.Uts")->second.getVar(hwp_recvt.data());
 
+                // fpga frequency
                 vars.find("Header.Toltec.FpgaFreq")->second.getVar(&hwpr_fpga_freq);
             }
         }
@@ -165,14 +175,30 @@ void Calib::calc_flux_calibration(std::string units) {
     // convert to MJy/sr
     else if (units == "MJy/sr") {
         for (Eigen::Index i=0; i<n_dets; i++) {
+            // current detector's array
             auto array = apt["array"](i);
+            // det fwhm
             auto det_fwhm = (std::get<0>(array_fwhms[array]) + std::get<1>(array_fwhms[array]))/2;
+            // beam area
             auto beam_area = 2.*pi*pow(det_fwhm*FWHM_TO_STD,2);
+            // get MJy/Sr
             flux_conversion_factor(i) = mJY_ASEC_to_MJY_SR/beam_area;
         }
     }
 
-    else if (units == "uK/arcmin") {
+    // convert to uK/beam
+    else if (units == "uK/beam") {
+        engine_utils::toltecIO toltec_io;
+        for (Eigen::Index i=0; i<n_dets; i++) {
+            // current detector's array
+            auto array = apt["array"](i);
+            // array frequency
+            auto freq_Hz = c_m_s/(toltec_io.array_wavelength_map[array]/1000.);
+            // det fwhm
+            auto det_fwhm = (std::get<0>(array_fwhms[array]) + std::get<1>(array_fwhms[array]))/2;
+            // get uK/beam
+            flux_conversion_factor(i) = engine_utils::mJy_beam_to_uK_beam(1, freq_Hz, det_fwhm);
+        }
     }
 
     // get mean flux conversion factor from all unflagged detectors

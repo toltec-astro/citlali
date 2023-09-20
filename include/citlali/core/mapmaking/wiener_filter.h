@@ -16,6 +16,7 @@
 
 #include <citlali/core/utils/gauss_models.h>
 #include <citlali/core/utils/fitting.h>
+#include <citlali/core/utils/toltec_io.h>
 
 namespace mapmaking {
 
@@ -64,6 +65,10 @@ public:
     // declare fitter class
     engine_utils::mapFitter map_fitter;
 
+    // get config file
+    template <typename config_t>
+    void get_config(config_t &, std::vector<std::vector<std::string>> &, std::vector<std::vector<std::string>> &);
+
     // make a symmetric Gaussian to use as a template
     template<class MB>
     void make_gaussian_template(MB &mb, const double);
@@ -80,12 +85,17 @@ public:
     template<class MB, class CD>
     void make_template(MB &, CD &c, const double, const int);
 
+    // calculate standard deviations of each pixel
     template<class MB>
     void calc_rr(MB &, const int);
+
+    // calculate normalized noise psd
     template <class MB>
     void calc_vvq(MB &, const int);
+
     // calculate the numerator
     void calc_numerator();
+
     // calculate the denominator
     void calc_denominator();
 
@@ -102,13 +112,35 @@ public:
     void filter_noise(MB &mb, const int, const int);
 };
 
-template<class MB>
-void WienerFilter::calc_rr(MB &mb, const int map_index) {
-    if (uniform_weight) {
-        rr = Eigen::MatrixXd::Ones(n_rows,n_cols);
-    }
-    else {
-        rr = sqrt(mb.weight[map_index].array());
+// get config file
+template <typename config_t>
+void WienerFilter::get_config(config_t &config, std::vector<std::vector<std::string>> &missing_keys,
+                         std::vector<std::vector<std::string>> &invalid_keys) {
+
+    // for array names
+    engine_utils::toltecIO toltec_io;
+
+    // get template type
+    get_config_value(config, template_type, missing_keys, invalid_keys,
+                     std::tuple{"wiener_filter","template_type"},{"kernel","gaussian","airy","highpass"});
+    // run lowpass only?
+    get_config_value(config, run_lowpass, missing_keys, invalid_keys,
+                     std::tuple{"wiener_filter","lowpass_only"});
+    // re-normalize weight maps?
+    get_config_value(config, normalize_error, missing_keys, invalid_keys,
+                     std::tuple{"post_processing","map_filtering","normalize_errors"});
+
+    // gaussian or airy template fwhms
+    if (template_type=="gaussian" || template_type=="airy") {
+        // loop through array names and get fwhms
+        for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
+            get_config_value(config, gaussian_template_fwhm_rad[arr_name], missing_keys, invalid_keys,
+                             std::tuple{"wiener_filter","gaussian_template_fwhm_arcsec",arr_name});
+        }
+        // convert to radians
+        for (auto const& pair : gaussian_template_fwhm_rad) {
+            gaussian_template_fwhm_rad[pair.first] = gaussian_template_fwhm_rad[pair.first]*ASEC_TO_RAD;
+        }
     }
 }
 
@@ -280,6 +312,17 @@ void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_d
     }
 }
 
+// calculate standard deviations of each pixel
+template<class MB>
+void WienerFilter::calc_rr(MB &mb, const int map_index) {
+    if (uniform_weight) {
+        rr = Eigen::MatrixXd::Ones(n_rows,n_cols);
+    }
+    else {
+        rr = sqrt(mb.weight[map_index].array());
+    }
+}
+
 template <class MB>
 void WienerFilter::calc_vvq(MB &mb, const int map_index) {
     // resize psd_q
@@ -403,47 +446,52 @@ void WienerFilter::calc_numerator() {
     fftw_complex *b;
     fftw_plan pf, pr;
 
+    // allocate space for 2d ffts
     a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
     b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
 
+    // fftw plans
     pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
     pr = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
 
     // set up inputs and outputs
-    Eigen::MatrixXcd in(n_rows,n_cols);
-    Eigen::MatrixXcd out(n_rows,n_cols);
-
+    Eigen::MatrixXcd in(n_rows,n_cols), out(n_rows,n_cols);
+    // d x RR
     in.real() = rr.array() * filtered_map.array();
     in.imag().setZero();
 
-    //out = engine_utils::fft<engine_utils::forward>(in, parallel_policy);
+    // fft(d x RR)
     out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
 
+    // fft(d x RR) x 1/VV
     in.real() = out.real().array() / vvq.array();
     in.imag() = out.imag().array() / vvq.array();
 
-    //out = engine_utils::fft<engine_utils::inverse>(in, parallel_policy);
+    // ifft(fft(d x RR) x 1/VV)
     out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
 
+    // Q = ifft(fft(d x RR) x 1/VV) x RR
     in.real() = out.real().array() * rr.array();
     in.imag().setZero();
 
-    //out = engine_utils::fft<engine_utils::forward>(in, parallel_policy);
+    // fft(Q)
     out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
 
-    // copy of out
-    Eigen::MatrixXcd qqq = out;
+    // copy of fft(Q)
+    Eigen::MatrixXcd Q = out;
 
+    // f(x)
     in.real() = filter_template;
     in.imag().setZero();
 
-    //out = engine_utils::fft<engine_utils::forward>(in, parallel_policy);
+    // fft(f(x)) (reuse out)
     out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
 
-    in.real() = out.real().array() * qqq.real().array() + out.imag().array() * qqq.imag().array();
-    in.imag() = -out.imag().array() * qqq.real().array() + out.real().array() * qqq.imag().array();
+    // fft(f(x)) x fft(Q) (convolution)
+    in.real() = out.real().array() * Q.real().array() + out.imag().array() * Q.imag().array();
+    in.imag() = -out.imag().array() * Q.real().array() + out.real().array() * Q.imag().array();
 
-    //out = engine_utils::fft<engine_utils::inverse>(in, parallel_policy);
+    // ifft(fft(f(x)) x fft(Q))
     out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
 
     // populate numerator
@@ -464,9 +512,11 @@ void WienerFilter::calc_denominator() {
     fftw_complex *b;
     fftw_plan pf, pr;
 
+    // allocate space for 2d ffts
     a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
     b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
 
+    // fftw plans
     pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_MEASURE);
     pr = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_MEASURE);
 
@@ -474,18 +524,17 @@ void WienerFilter::calc_denominator() {
     denom.setZero(n_rows,n_cols);
 
     // inputs and outputs to ffts
-    Eigen::MatrixXcd in(n_rows,n_cols);
-    Eigen::MatrixXcd out(n_rows,n_cols);
+    Eigen::MatrixXcd in(n_rows,n_cols), out(n_rows,n_cols);
 
     // using uniform weights only
     if (uniform_weight) {
         in.real() = filter_template;
         in.imag().setZero();
 
-        //out = engine_utils::fft<engine_utils::forward>(in, parallel_policy);
+        // fft(f(x))
         out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
 
-        // set denominator
+        // set denominator = abs(fft(f(x))/VV
         denom.setConstant(((out.real().array() * out.real().array() + out.imag().array() * out.imag().array()) / vvq.array()).sum());
     }
 
@@ -493,25 +542,27 @@ void WienerFilter::calc_denominator() {
         // initialize denominator
         denom.setZero();
 
+        // 1/VV
         in.real() = pow(vvq.array(),-1);
         in.imag().setZero();
 
-        //out = engine_utils::fft<engine_utils::inverse>(in, parallel_policy);
+        // Z = ifft(1/VV)
         out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
 
-        Eigen::VectorXd zz2d(n_rows * n_cols);
+        // flattened real(Z) array
+        Eigen::VectorXd Z(n_rows * n_cols);
 
-        // vector of real components of IFFT(1/VVQ)
+        // real(Z).  do loop to make sure colmajor is preserved
         for (Eigen::Index i=0; i<n_cols; i++) {
             for (Eigen::Index j=0; j<n_rows;j++) {
                 int ii = n_rows*i+j;
-                zz2d(ii) = (out.real()(j,i));
+                Z(ii) = (out.real()(j,i));
             }
         }
 
-        // sort absolute values in ascending order
-        Eigen::VectorXd ss_ord = zz2d.array().abs();
-        auto sorted = engine_utils::sorter(ss_ord);
+        // sort absolute values of Z in ascending order
+        Eigen::VectorXd Z_abs = Z.array().abs();
+        auto Z_indices_sorted = engine_utils::sorter(Z_abs);
 
         // number of iterations for convergence
         n_loops = n_rows * n_cols / 100;
@@ -527,69 +578,78 @@ void WienerFilter::calc_denominator() {
         for (Eigen::Index k=0; k<n_cols; k++) {
             for (Eigen::Index l=0; l<n_rows; l++) {
                 if (!done) {
-                    Eigen::MatrixXcd in(n_rows,n_cols);
-                    Eigen::MatrixXcd out(n_rows,n_cols);
+                    // inputs and outputs
+                    Eigen::MatrixXcd in(n_rows,n_cols), out(n_rows,n_cols);
 
                     // current element in flattened 1d vector
                     int kk = n_rows * k + l;
-                    // get index in reverse order
-                    auto shift_index = std::get<1>(sorted[n_rows * n_cols - kk - 1]);
+                    // get index in reverse order to get largest abs(ifft(1/VV))
+                    auto shift_index = std::get<1>(Z_indices_sorted[n_rows * n_cols - kk - 1]);
 
-                    double r_shift_n = shift_index / n_rows;
-                    double c_shift_n = shift_index % n_rows;
+                    // indices to shift by
+                    std::vector<Eigen::Index> shift_indices = {static_cast<Eigen::Index>(-shift_index % n_rows),
+                                                               static_cast<Eigen::Index>(-shift_index / n_rows)};
 
-                    Eigen::Index shift_1 = -r_shift_n;
-                    Eigen::Index shift_2 = -c_shift_n;
-
-                    std::vector<Eigen::Index> shift_indices = {shift_1, shift_2};
-
+                    // f(x) x f(x-x_d)
                     Eigen::MatrixXd in_prod = filter_template.array() * engine_utils::shift_2D(filter_template, shift_indices).array();
 
+                    // populate matrices for fft
                     in.real() = in_prod;
                     in.imag().setZero();
 
-                    //out = engine_utils::fft<engine_utils::forward>(in, parallel_policy);
+                    // fft(f(x) x f(x-x_d))
                     out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
 
+                    // copy of fft(f(x) x f(x-x_d))
                     Eigen::MatrixXcd ffdq = out;
 
+                    // R(x) x R(x-x_d)
                     in_prod = rr.array() * engine_utils::shift_2D(rr, shift_indices).array();
 
+                    // populate matrices for fft
                     in.real() = in_prod;
                     in.imag().setZero();
 
-                    //out = engine_utils::fft<engine_utils::forward>(in, parallel_policy);
+                    // fft(R(x) x R(x-x_d))
                     out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
 
+                    // fft(f(x) x f(x-x_d)) x fft(R(x) x R(x-x_d))
                     in.real() = ffdq.real().array() * out.real().array() + ffdq.imag().array() * out.imag().array();
                     in.imag() = -ffdq.imag().array() * out.real().array() + ffdq.real().array() * out.imag().array();
 
-                    //out = engine_utils::fft<engine_utils::inverse>(in, parallel_policy);
+                    // G = ifft(fft(f(x) x f(x-x_d)) x fft(R(x) x R(x-x_d)))
                     out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
 
-                    Eigen::MatrixXd updater = zz2d(shift_index) * out.real()/n_rows/n_cols;
+                    // Z(x_d) x G/n_pixels
+                    Eigen::MatrixXd delta_denom = Z(shift_index) * out.real()/n_rows/n_cols;
 
-                    // update denominator
-                    denom = denom.array() + updater.array();
+                    // D = D + Z(x_d) x G/n_pixels
+                    denom = denom.array() + delta_denom.array();
 
                     // update status
                     if ((kk % 100) == 1) {
                         double max_ratio = -1;
-                        double max_denom = denom.maxCoeff();
+                        // maximum of denominator
+                        double max_denom = 0.01 * denom.maxCoeff();
 
+                        // find largest value of abs(delta_denom / denom)
                         for (Eigen::Index i=0; i<n_rows; i++) {
                             for (Eigen::Index j=0; j<n_cols; j++) {
-                                if (denom(i,j) > 0.01 * max_denom) {
-                                    if (abs(updater(i,j) / denom(i,j)) > max_ratio)
-                                        max_ratio = abs(updater(i,j) / denom(i,j));
+                                // exclude small denom values
+                                if (denom(i,j) > max_denom) {
+                                    // abs(delta_denom / denom)
+                                    auto ratio = max_ratio = abs(delta_denom(i,j) / denom(i,j));
+                                    // if absolute change in denom is > current ratio
+                                    if (ratio > max_ratio) {
+                                        // update max ratio
+                                        max_ratio = ratio;
+                                    }
                                 }
                             }
                         }
-                        // update progress bar
-                        //pb.count(max_loops/100, 1);
-                        SPDLOG_INFO("{} iteration(s) complete. ratio = {}", kk, static_cast<float>(max_ratio));
+                        SPDLOG_INFO("{} iteration(s) complete. denom ratio = {}", kk, static_cast<float>(max_ratio));
 
-                        // check if done
+                        // check if we've reached max loop or if change in denom is too small
                         if (((kk >= max_loops) && (max_ratio < 0.0002)) || max_ratio < 1e-10) {
                             done = true;
                         }
@@ -598,7 +658,7 @@ void WienerFilter::calc_denominator() {
             }
         }
 
-        // zero out extremely small weights
+        // zero out extremely small denom values
         for (Eigen::Index i=0; i<n_rows; i++) {
             for (Eigen::Index j=0; j<n_cols; j++) {
                 if (denom(i,j) < denom_limit) {
@@ -620,9 +680,6 @@ void WienerFilter::calc_denominator() {
 template<class MB, class CD>
 void WienerFilter::make_template(MB &mb, CD &calib_data, const double gaussian_template_fwhm_rad, const int map_index) {
     // make sure filtered maps have even dimensions
-    //n_rows = 2*(mb.n_rows/2);
-    //n_cols = 2*(mb.n_cols/2);
-
     n_rows = mb.n_rows;
     n_cols = mb.n_cols;
 
@@ -658,18 +715,22 @@ void WienerFilter::make_template(MB &mb, CD &calib_data, const double gaussian_t
 
 template<class MB>
 void WienerFilter::run_filter(MB &mb, const int map_index) {
+    // calculate pixel standard deviations
     SPDLOG_DEBUG("calculating rr");
     calc_rr(mb, map_index);
     SPDLOG_DEBUG("rr {}", rr);
 
+    // calculate normalized psd
     SPDLOG_DEBUG("calculating vvq");
     calc_vvq(mb, map_index);
     SPDLOG_DEBUG("vvq {}", vvq);
 
+    // calculate denominator
     SPDLOG_DEBUG("calculating denominator");
     calc_denominator();
     SPDLOG_DEBUG("denominator {}", denom);
 
+    // calculate numerator
     SPDLOG_DEBUG("calculating numerator");
     calc_numerator();
     SPDLOG_DEBUG("numerator {}", nume);
@@ -690,7 +751,7 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
                 mb.kernel[map_index](j,i)=nume(j,i)/denom(j,i);
             }
             else {
-                mb.kernel[map_index](j,i)= 0.0;
+                mb.kernel[map_index](j,i) = 0.0;
             }
         }
     }
@@ -711,7 +772,7 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
                 mb.signal[map_index](j,i) = nume(j,i)/denom(j,i);
             }
             else {
-                mb.signal[map_index](j,i)= 0.0;
+                mb.signal[map_index](j,i) = 0.0;
             }
         }
     }

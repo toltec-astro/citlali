@@ -17,6 +17,9 @@ public:
         beammap = 1,
         };
 
+    // number of parameters
+    int n_params = 6;
+
     // box around source fit
     double bounding_box_pix;
     double fitting_region_pix;
@@ -34,6 +37,7 @@ public:
     // fwhm upper limit factor
     double fwhm_high = 2.0;
 
+    // fit rotation angle?
     bool fit_angle;
 
     //lower limit on rotation angle
@@ -163,8 +167,8 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
                                 double init_fwhm, double init_row, double init_col) {
 
     // initial parameters and limits
-    Eigen::VectorXd init_params(6);
-    Eigen::MatrixXd limits(6,2);
+    Eigen::VectorXd init_params(n_params);
+    Eigen::MatrixXd limits(n_params,2);
 
     // intiial position and flux
     double init_flux = 0;
@@ -172,70 +176,23 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     // initial gaussian standard deviation
     double init_sigma = init_fwhm*FWHM_TO_STD;
 
-    // if no initial position is input
+    // if no initial position is input find peak
     if (init_row<0 && init_col<0) {
         // center positions
-        double center_row = signal.rows()/2;
-        double center_col = signal.cols()/2;
+        double center_row = (signal.rows() - 1)/2;
+        double center_col = (signal.cols() - 1)/2;
 
-        /*Eigen::Index fit_region_lower_row, fit_region_lower_col;
-        Eigen::Index fit_region_upper_row, fit_region_upper_col;
-
-        // ignore fitting region parameter
-        if (fitting_region_pix <= 0) {
-            fit_region_lower_row = 0;
-            fit_region_lower_col = 0;
-
-            fit_region_upper_row = signal.rows() - 1;
-            fit_region_upper_col = signal.cols() - 1;
-        }
-
-        else {
-            // lower limit of fitting region
-            fit_region_lower_row = std::max(0.0, center_row - fitting_region_pix);
-            fit_region_lower_col = std::max(0.0, center_col - fitting_region_pix);
-
-            // upper limit of fitting region
-            fit_region_upper_row = std::min(static_cast<double>(signal.rows()) - 1.0,
-                                            center_row + fitting_region_pix - 1);
-            fit_region_upper_col = std::min(static_cast<double>(signal.cols()) - 1.0,
-                                            center_col + fitting_region_pix - 1);
-        }
-
-        // size of fitting region
-        Eigen::Index fit_region_n_rows = fit_region_upper_row - fit_region_lower_row + 1;
-        Eigen::Index fit_region_n_cols = fit_region_upper_col - fit_region_lower_col + 1;
-
-        // signal to noise map
-        auto sig2noise = signal.derived().array()*sqrt(weight.derived().array());
-
-        // signal to noise map of fitting region
-        auto sig2noise_fit_region = sig2noise.block(fit_region_lower_row, fit_region_lower_col,
-                                                    fit_region_n_rows, fit_region_n_cols);
-
-        // max value of signal to noise map fitting region
-        sig2noise_fit_region.maxCoeff(&init_row, &init_col);
-
-        // signal to noise map of fitting region
-        auto signal_fit_region = signal.block(fit_region_lower_row, fit_region_lower_col,
-                                              fit_region_n_rows, fit_region_n_cols);
-
-        // get init flux of signal map within the fitting region
-        init_flux = signal_fit_region(static_cast<int>(init_row), static_cast<int>(init_col));
-
-        // find the positions of the peak flux in the total signal map
-        init_row = init_row + fit_region_lower_row;
-        init_col = init_col + fit_region_lower_col;
-        */
-
+        // signal-to-noise map
         auto sig2noise = signal.derived().array()*sqrt(weight.derived().array());
 
         Eigen::Index ir, ic;
 
+        // find peak in the entire map
         if (fitting_region_pix <= 0) {
             sig2noise.maxCoeff(&ir, &ic);
             init_flux = signal(ir,ic);
         }
+        // find peak within inner radius
         else {
             for (Eigen::Index i=0; i<sig2noise.rows(); i++) {
                 for (Eigen::Index j=0; j<sig2noise.cols(); j++) {
@@ -249,6 +206,7 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
                     }
                 }
             }
+            // initial guess for flux
             init_flux = signal(ir, ic);
         }
 

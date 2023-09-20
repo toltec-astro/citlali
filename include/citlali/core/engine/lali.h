@@ -11,108 +11,29 @@ using timestream::TCDataKind;
 
 class Lali: public Engine {
 public:
+    // initial setup for each obs
     void setup();
+
+    // run the reduction for the obs
     auto run();
 
+    // main grppi pipeline
     template <class KidsProc, class RawObs>
     void pipeline(KidsProc &, RawObs &);
 
+    // output files
     template <mapmaking::MapType map_type>
     void output();
 };
 
 void Lali::setup() {
-    if (!telescope.sim_obs) {
-        // check tau calculation
-        Eigen::VectorXd tau_el(1);
-        tau_el << telescope.tel_data["TelElAct"].mean();
-        auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
-
-        for (auto const& [key, val] : tau_freq) {
-            if (val[0] < 0) {
-                SPDLOG_ERROR("calculated mean {} tau {} < 0",toltec_io.array_name_map[key], val[0]);
-                std::exit(EXIT_FAILURE);
-            }
-        }
-    }
-
-    // setup kernel
-    if (rtcproc.run_kernel) {
-        rtcproc.kernel.setup(n_maps);
-    }
-
-    // set despiker sample rate
-    rtcproc.despiker.fsmp = telescope.fsmp;
-
-    // if filter is requested, make it here
-    if (rtcproc.run_tod_filter) {
-        rtcproc.filter.make_filter(telescope.fsmp);
-
-        /*
-        rtcproc.filter.w0s.clear();
-        rtcproc.filter.qs.clear();
-        rtcproc.filter.w0s.push_back(24.46);
-        rtcproc.filter.qs.push_back(0.05);
-        rtcproc.filter.make_notch_filter(telescope.fsmp);
-        */
-    }
-
-    // set center pointing
-    if (telescope.pixel_axes == "icrs") {
-        omb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0)*RAD_TO_DEG;
-        omb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0)*RAD_TO_DEG;
-
-        cmb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0)*RAD_TO_DEG;
-        cmb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0)*RAD_TO_DEG;
-    }
-
-    // create output map files
-    if (run_mapmaking) {
-        create_map_files();
-    }
-    // create timestream files
-    if (run_tod_output) {
-        // create tod output subdirectory if requested
-        if (tod_output_subdir_name!="null") {
-            fs::create_directories(obsnum_dir_name + "raw/" + tod_output_subdir_name);
-        }
-        // make rtc tod output file
-        if (tod_output_type == "rtc" || tod_output_type=="both") {
-            create_tod_files<engine_utils::toltecIO::rtc_timestream>();
-        }
-        // make ptc tod output file
-        if (tod_output_type == "ptc" || tod_output_type=="both") {
-            create_tod_files<engine_utils::toltecIO::ptc_timestream>();
-        }
-    }
-    else if (!diagnostics.write_evals) {
-        ptcproc.cleaner.n_calc = 0;
-    }
-
-    // tod output mode require sequential policy so set explicitly
-    if (run_tod_output || verbose_mode) {
-        SPDLOG_WARN("tod output mode require sequential policy");
-        parallel_policy = "seq";
-    }
+    // run obsnum setup
+    obsnum_setup();
 
     // use per detector parallelization for jinc mapmaking
     if (map_method == "jinc") {
         parallel_policy = "seq";
     }
-
-    // output basic info for obs reduction to command line
-    cli_summary();
-
-    for (const auto &stat: diagnostics.det_stats_header) {
-        diagnostics.stats[stat].setZero(calib.n_dets, telescope.scan_indices.cols());
-    }
-
-    for (const auto &stat: diagnostics.grp_stats_header) {
-        diagnostics.stats[stat].setZero(calib.n_arrays, telescope.scan_indices.cols());
-    }
-
-    // clear stored eigenvalues
-    diagnostics.evals.clear();
 }
 
 auto Lali::run() {
@@ -164,31 +85,31 @@ auto Lali::run() {
             auto [map_indices, array_indices, nw_indices, det_indices] = rtcproc.run(rtcdata, ptcdata, telescope.pixel_axes, redu_type,
                                                                                      calib, telescope, omb.pixel_size_rad, stokes_param,
                                                                                      map_grouping);
-            // write rtc timestreams
-            if (run_tod_output) {
-                if (tod_output_type == "rtc" || tod_output_type=="both") {
-                    SPDLOG_INFO("writing raw time chunk");
-                    ptcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], redu_type, telescope.pixel_axes,
-                                             ptcdata.pointing_offsets_arcsec.data, det_indices, calib.apt, tod_output_type,
-                                             verbose_mode, telescope.d_fsmp, calib.run_hwp);
-                }
-            }
-
-            // subtract scan means
-            SPDLOG_INFO("subtracting detector means");
-            ptcproc.subtract_mean(ptcdata);
 
             // remove flagged dets
             SPDLOG_INFO("removing flagged dets");
-            ptcproc.remove_flagged_dets(ptcdata, calib.apt, det_indices);
+            rtcproc.remove_flagged_dets(ptcdata, calib.apt, det_indices);
 
-            // remove outliers
+            // remove outliers before clean
             auto calib_scan = rtcproc.remove_bad_dets(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
 
             // remove duplicate tones
             if (!telescope.sim_obs) {
                 calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib, det_indices, map_grouping);
             }
+
+            // write rtc timestreams
+            if (run_tod_output) {
+                if (tod_output_type == "rtc" || tod_output_type=="both") {
+                    SPDLOG_INFO("writing raw time chunk");
+                    ptcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], redu_type, telescope.pixel_axes,
+                                             ptcdata.pointing_offsets_arcsec.data, det_indices, calib.apt, calib.run_hwp);
+                }
+            }
+
+            // subtract scan means
+            SPDLOG_INFO("subtracting detector means");
+            ptcproc.subtract_mean(ptcdata);
 
             // run cleaning
             SPDLOG_INFO("processed time chunk processing");
@@ -211,8 +132,7 @@ auto Lali::run() {
                 if (tod_output_type == "ptc" || tod_output_type == "both") {
                     SPDLOG_INFO("writing processed time chunk");
                     ptcproc.append_to_netcdf(ptcdata, tod_filename["ptc_" + stokes_param], redu_type, telescope.pixel_axes,
-                                             ptcdata.pointing_offsets_arcsec.data, det_indices, calib.apt, "ptc", verbose_mode,
-                                             telescope.d_fsmp, calib.run_hwp);
+                                             ptcdata.pointing_offsets_arcsec.data, det_indices, calib.apt, calib.run_hwp);
                 }
             }
 

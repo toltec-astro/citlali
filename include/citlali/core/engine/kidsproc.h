@@ -233,8 +233,7 @@ auto KidsDataProc::load_fit_report(const RawObs &rawobs) {
 }
 
 template <typename Derived>
-auto KidsDataProc::load_rawobs(const RawObs &rawobs,
-                               const Eigen::Index scan,
+auto KidsDataProc::load_rawobs(const RawObs &rawobs, const Eigen::Index scan,
                                Eigen::DenseBase<Derived> &scan_indices,
                                std::vector<Eigen::Index> &start_indices,
                                std::vector<Eigen::Index> &end_indices) {

@@ -16,7 +16,7 @@ namespace timestream {
 
 using timestream::TCData;
 
-class PTCProc {
+class PTCProc: public TCProc {
 public:
     // controls for timestream reduction
     bool run_clean, run_calibrate, run_stokes_clean;
@@ -25,85 +25,78 @@ public:
     // weight type (full, approximate, const)
     std::string weighting_type;
 
-    // upper and lower limits for outliers
-    double lower_weight_factor, upper_weight_factor;
-
     // ptc tod proc
     timestream::Cleaner cleaner;
 
-    // toltec io class for array names
-    engine_utils::toltecIO toltec_io;
-
-    // number of weight outlier iterations
-    int iter_lim = 0;
-
-    // add or subtract gaussian source
-    enum GaussType {
-        add = 0,
-        subtract = 1
-    };
-
-    // get limits for a particular grouping
-    template <typename Derived, class calib_t>
-    auto get_grouping(std::string, Eigen::DenseBase<Derived> &, calib_t &, int);
+    // get config file
+    template <typename config_t>
+    void get_config(config_t &, std::vector<std::vector<std::string>> &, std::vector<std::vector<std::string>> &);
 
     // subtract detector means
     void subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &);
+
     // run main processing stage
     template <class calib_type, typename Derived>
     void run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
-             TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_type &,
-             Eigen::DenseBase<Derived> &, std::string);
+             TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
+             calib_type &, Eigen::DenseBase<Derived> &,
+             std::string);
 
     // calculate detector weights
     template <typename apt_type, class tel_type, typename Derived>
     void calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, apt_type &, tel_type &,
                       Eigen::DenseBase<Derived> &);
+
     // reset outlier weights to the median
     template <typename calib_t, typename Derived>
     auto reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &,
                        Eigen::DenseBase<Derived> &det_indices);
-    // remove flagged detectors
-    template <typename apt_t, typename Derived>
-    void remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, apt_t &, Eigen::DenseBase<Derived> &);
-
-    // remove detectors with outlier weights
-    template <typename calib_t, typename Derived>
-    auto remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
-                            Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string, std::string);
 
     // append time chunk to tod netcdf file
     template <typename Derived, typename apt_t, typename pointing_offset_t>
     void append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, std::string, std::string, std::string &,
-                          pointing_offset_t &, Eigen::DenseBase<Derived> &, apt_t &, std::string, bool, double, bool);
-
-    // add or subtract gaussian to timestream
-    template <GaussType gauss_type, typename DerivedB, typename DerivedC, typename apt_t, typename pointing_offset_t>
-    void add_gaussian(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, Eigen::DenseBase<DerivedB> &, std::string &,
-                      std::string &, apt_t &, pointing_offset_t &, double,
-                      Eigen::Index, Eigen::Index, Eigen::DenseBase<DerivedC> &, Eigen::DenseBase<DerivedC> &);
+                          pointing_offset_t &, Eigen::DenseBase<Derived> &, apt_t &, bool);
 };
 
-template <typename Derived, class calib_t>
-auto PTCProc::get_grouping(std::string grp, Eigen::DenseBase<Derived> &det_indices, calib_t &calib, int n_dets) {
-    std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
+// get config file
+template <typename config_t>
+void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>> &missing_keys,
+                         std::vector<std::vector<std::string>> &invalid_keys) {
 
-    Eigen::Index grp_i = calib.apt[grp](det_indices(0));
-    grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
-    Eigen::Index j = 0;
-    // loop through apt table arrays, get highest index for current array
-    for (Eigen::Index i=0; i<n_dets; i++) {
-        auto det_index = det_indices(i);
-        if (calib.apt[grp](det_index) == grp_i) {
-            std::get<1>(grp_limits[grp_i]) = i + 1;
+    // weight type
+    get_config_value(config, weighting_type, missing_keys, invalid_keys,
+                     std::tuple{"timestream","processed_time_chunk","weighting","type"},{"full","approximate","const"});
+    // median weight factor
+    get_config_value(config, med_weight_factor, missing_keys, invalid_keys,
+                     std::tuple{"timestream","processed_time_chunk","weighting","median_weight_factor"});
+    // lower weight factor
+    get_config_value(config, lower_weight_factor, missing_keys, invalid_keys,
+                     std::tuple{"timestream","processed_time_chunk","flagging","lower_weight_factor"});
+    // upper weight factor
+    get_config_value(config, upper_weight_factor, missing_keys, invalid_keys,
+                     std::tuple{"timestream","processed_time_chunk","flagging","upper_weight_factor"});
+    // run cleaning?
+    get_config_value(config, run_clean, missing_keys, invalid_keys,
+                     std::tuple{"timestream","processed_time_chunk","clean","enabled"});
+
+    if (run_clean) {
+        // get cleaning grouping vector
+        cleaner.grouping = config.template get_typed<std::vector<std::string>>(std::tuple{"timestream","processed_time_chunk","clean","grouping"});
+        // get cleaning number of eigenvalues vector
+        for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
+            auto n_eig_to_cut = config.template get_typed<std::vector<Eigen::Index>>(std::tuple{"timestream","processed_time_chunk","clean",
+                                                                                                "n_eig_to_cut",arr_name});
+            // add eigenvalues to cleaner class
+            cleaner.n_eig_to_cut[arr_index] = (Eigen::Map<Eigen::VectorXI>(n_eig_to_cut.data(),n_eig_to_cut.size()));
         }
-        else {
-            grp_i = calib.apt[grp](det_index);
-            j += 1;
-            grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
-        }
+
+        // stddev limit
+        get_config_value(config, cleaner.stddev_limit, missing_keys, invalid_keys,
+                         std::tuple{"timestream","processed_time_chunk","clean","stddev_limit"});
+        // clean polarized tods
+        get_config_value(config, run_stokes_clean, missing_keys, invalid_keys,
+                         std::tuple{"timestream","processed_time_chunk","clean","clean_polarized_time_chunks"});
     }
-    return grp_limits;
 }
 
 void PTCProc::subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in) {
@@ -170,25 +163,8 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
             }
             // if cleaning polarized maps is requested
             else if (run_stokes_clean) {
-
                 // get group limits
                 grp_limits = get_grouping(group, det_indices, calib, in.scans.data.cols());
-
-                /*Eigen::Index grp_i = calib.apt[group](det_indices(0));
-                grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
-                Eigen::Index j = 0;
-                // loop through apt table arrays, get highest index for current array
-                for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
-                    auto det_index = det_indices(i);
-                    if (calib.apt[group](det_index) == grp_i) {
-                        std::get<1>(grp_limits[grp_i]) = i + 1;
-                    }
-                    else {
-                        grp_i = calib.apt[group](det_index);
-                        j += 1;
-                        grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
-                    }
-                }*/
             }
 
             SPDLOG_DEBUG("cleaning with {} grouping", group);
@@ -250,10 +226,11 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                         SPDLOG_DEBUG("evals {}", evals);
                         SPDLOG_DEBUG("evecs {}", evecs);
 
+                        // get first 64 eigenvalues and eigenvectors
                         Eigen::VectorXd ev = evals.head(cleaner.n_calc);
                         Eigen::MatrixXd evc = evecs.leftCols(cleaner.n_calc);
 
-                        // copy to ptcdata
+                        // copy evals and evecs to ptcdata
                         out.evals.data[indx].push_back(std::move(ev));
                         out.evecs.data[indx].push_back(std::move(evc));
 
@@ -442,169 +419,10 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
     }
 }
 
-template <typename apt_t, typename Derived>
-void PTCProc::remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_t &apt, Eigen::DenseBase<Derived> &det_indices) {
-
-    // number of detectors
-    Eigen::Index n_dets = in.scans.data.cols();
-
-    // number of detectors flagged in apt
-    Eigen::Index n_flagged = 0;
-
-    // loop through detectors and set flags to zero
-    // for those flagged in apt table
-    for (Eigen::Index i=0; i<n_dets; i++) {
-        Eigen::Index det_index = det_indices(i);
-        if (apt["flag"](det_index)!=0) {
-            in.flags.data.col(i).setOnes();
-            n_flagged++;
-        }
-    }
-
-    SPDLOG_INFO("removed {} detectors flagged in APT table ({}%)",n_flagged,
-                (static_cast<float>(n_flagged)/static_cast<float>(n_dets))*100);
-}
-
-template <typename calib_t, typename Derived>
-auto PTCProc::remove_bad_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
-                                 Eigen::DenseBase<Derived> &nw_indices, Eigen::DenseBase<Derived> &array_indices, std::string redu_type,
-                                 std::string map_grouping) {
-
-
-    // make a copy of the calib class for flagging
-    calib_t calib_scan = calib;
-
-    // only run if limits are not zero
-    if (lower_weight_factor !=0 || upper_weight_factor !=0) {
-        // number of detectors
-        Eigen::Index n_dets = in.scans.data.cols();
-
-        std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
-
-        Eigen::Index grp_i = calib.apt["array"](det_indices(0));
-        grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
-        Eigen::Index j = 0;
-        // loop through apt table arrays, get highest index for current array
-        for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
-            auto det_index = det_indices(i);
-            if (calib.apt["array"](det_index) == grp_i) {
-                std::get<1>(grp_limits[grp_i]) = i + 1;
-            }
-            else {
-                grp_i = calib.apt["array"](det_index);
-                j += 1;
-                grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
-            }
-        }
-
-        in.n_low_dets = 0;
-        in.n_high_dets = 0;
-
-        for (auto const& [key, val] : grp_limits) {
-
-            bool keep_going = true;
-            Eigen::Index n_iter = 0;
-
-            while (keep_going) {
-                // number of unflagged detectors
-                Eigen::Index n_good_dets = 0;
-
-                for (Eigen::Index j=std::get<0>(grp_limits[key]); j<std::get<1>(grp_limits[key]); j++) {
-                    if (calib.apt["flag"](det_indices(j))==0) {
-                        n_good_dets++;
-                    }
-                }
-
-                Eigen::VectorXd det_std_dev(n_good_dets);
-                Eigen::VectorXI dets(n_good_dets);
-                Eigen::Index k = 0;
-
-                // collect standard deviation from good detectors
-                for (Eigen::Index j=std::get<0>(grp_limits[key]); j<std::get<1>(grp_limits[key]); j++) {
-                    Eigen::Index det_index = det_indices(j);
-                    if (calib.apt["flag"](det_index)==0) {
-                        // make Eigen::Maps for each detector's scan
-                        Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
-                            in.scans.data.col(j).data(), in.scans.data.rows());
-                        Eigen::Map<Eigen::Matrix<bool, Eigen::Dynamic, 1>> flags(
-                            in.flags.data.col(j).data(), in.flags.data.rows());
-
-                        // calc standard deviation
-                        det_std_dev(k) = engine_utils::calc_std_dev(scans, flags);
-
-                        // convert to 1/variance
-                        if (det_std_dev(k) !=0) {
-                            det_std_dev(k) = std::pow(det_std_dev(k),-2);
-                        }
-                        else {
-                            det_std_dev(k) = 0;
-                        }
-
-                        dets(k) = j;
-                        k++;
-                    }
-                }
-
-                // get median standard deviation
-                double mean_std_dev = tula::alg::median(det_std_dev);
-
-                int n_low_dets = 0;
-                int n_high_dets = 0;
-
-                // loop through good detectors and flag those that have std devs beyond the limits
-                for (Eigen::Index j=0; j<n_good_dets; j++) {
-                    Eigen::Index det_index = det_indices(dets(j));
-                    // only run if unflagged already
-                    if (calib.apt["flag"](det_index)==0) {
-                        // flag those below limit
-                        if ((det_std_dev(j) < (lower_weight_factor*mean_std_dev)) && lower_weight_factor!=0) {
-                            if (map_grouping!="detector") {
-                                in.flags.data.col(dets(j)).setOnes();
-                            }
-                            else {
-                                calib_scan.apt["flag"](det_index) = 1;
-                            }
-                            in.n_low_dets++;
-                            n_low_dets++;
-                        }
-
-                        // flag those above limit
-                        if ((det_std_dev(j) > (upper_weight_factor*mean_std_dev)) && upper_weight_factor!=0) {
-                            if (map_grouping!="detector") {
-                                in.flags.data.col(dets(j)).setOnes();
-                            }
-                            else {
-                                calib_scan.apt["flag"](det_index) = 1;
-                            }
-                            in.n_high_dets++;
-                            n_high_dets++;
-                        }
-                    }
-                }
-
-                SPDLOG_INFO("array {} iter {}: {}/{} dets below limit. {}/{} dets above limit.", key, n_iter,
-                            n_low_dets, n_good_dets, n_high_dets, n_good_dets);
-
-                // increment iteration
-                n_iter++;
-                // check if no more detectors are above limit
-                if ((n_low_dets==0 && n_high_dets==0) || n_iter > iter_lim) {
-                    keep_going = false;
-                }
-            }
-        }
-    }
-
-    // set up scan calib
-    calib_scan.setup();
-
-    return std::move(calib_scan);
-}
-
 template <typename Derived, typename apt_t, typename pointing_offset_t>
 void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std::string filepath, std::string redu_type,
-                               std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec, Eigen::DenseBase<Derived> &det_indices,
-                               apt_t &apt, std::string tod_output_type,bool verbose_mode, double fsmp, bool run_hwpr) {
+                              std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec, Eigen::DenseBase<Derived> &det_indices,
+                              apt_t &apt, bool run_hwpr) {
 
     // tangent plane pointing for each detector
     Eigen::MatrixXd lats(in.scans.data.rows(), in.scans.data.cols()), lons(in.scans.data.rows(), in.scans.data.cols());
@@ -682,7 +500,7 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         NcVar det_dec_v = fo.getVar("det_dec");
 
         // append weights if output type is ptc
-        if (tod_output_type == "ptc") {
+        if (in.name == "ptc") {
             std::vector<std::size_t> start_index_weights = {static_cast<unsigned long>(in.index.data), 0};
             std::vector<std::size_t> size_weights = {1, n_dets_exists};
 
@@ -837,87 +655,6 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
 
     } catch (NcException &e) {
         SPDLOG_ERROR("{}", e.what());
-    }
-}
-
-template <PTCProc::GaussType gauss_type, typename DerivedB, typename DerivedC, typename apt_t, typename pointing_offset_t>
-void PTCProc::add_gaussian(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, Eigen::DenseBase<DerivedB> &params, std::string &pixel_axes,
-                  std::string &map_grouping, apt_t &apt, pointing_offset_t &pointing_offsets_arcsec,
-                  double pixel_size_rad, Eigen::Index n_rows, Eigen::Index n_cols,
-                  Eigen::DenseBase<DerivedC> &map_indices, Eigen::DenseBase<DerivedC> &det_indices) {
-
-    Eigen::Index n_dets = in.scans.data.cols();
-    Eigen::Index n_pts = in.scans.data.rows();
-
-    // loop through detectors
-    for (Eigen::Index i=0; i<n_dets; i++) {
-        double azoff, eloff;
-
-        auto det_index = det_indices(i);
-        auto map_index = map_indices(i);
-
-        double az_off = 0;
-        double el_off = 0;
-
-        if (map_grouping!="detector") {
-            az_off = apt["x_t"](det_index);
-            el_off = apt["y_t"](det_index);
-        }
-
-        // get pointing
-        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off,
-                                                          pixel_axes, pointing_offsets_arcsec);
-
-        // get parameters for current detector
-        double amp = params(map_index,0);
-        double off_lat = params(map_index,2);
-        double off_lon = params(map_index,1);
-        double sigma_lat = params(map_index,4);
-        double sigma_lon = params(map_index,3);
-        double rot_ang = params(map_index,5);
-
-        // use maximum of sigmas due to atmospheric cleaning
-        double sigma = std::max(sigma_lat, sigma_lon);
-
-        // subtract source
-        if constexpr (gauss_type==subtract) {
-            amp = -amp;
-        }
-
-        // rescale offsets and stddev to on-sky units
-        off_lat = pixel_size_rad*(off_lat - (n_rows)/2);
-        off_lon = pixel_size_rad*(off_lon - (n_cols)/2);
-
-        // convert to on-sky units
-        sigma_lon = pixel_size_rad*sigma;
-        sigma_lat = pixel_size_rad*sigma;
-        sigma = pixel_size_rad*sigma;
-
-        // get angles
-        auto cost2 = cos(rot_ang) * cos(rot_ang);
-        auto sint2 = sin(rot_ang) * sin(rot_ang);
-        auto sin2t = sin(2. * rot_ang);
-        auto xstd2 = sigma * sigma;
-        auto ystd2 = sigma * sigma;
-        auto a = - 0.5 * ((cost2 / xstd2) + (sint2 / ystd2));
-        auto b = - 0.5 * ((sin2t / xstd2) - (sin2t / ystd2));
-        auto c = - 0.5 * ((sint2 / xstd2) + (cost2 / ystd2));
-
-        // calculate distance to source to truncate it
-        auto dist = ((lat.array() - off_lat).pow(2) + (lon.array() - off_lon).pow(2)).sqrt();
-
-        Eigen::VectorXd gauss(n_pts);
-        // make gaussian
-        for (Eigen::Index j=0; j<n_pts; j++) {
-                gauss(j) = amp*exp(pow(lon(j) - off_lon, 2) * a +
-                                     (lon(j) - off_lon) * (lat(j) - off_lat) * b +
-                                     pow(lat(j) - off_lat, 2) * c);
-        }
-
-        if (!gauss.array().isNaN().any()) {
-            // add gaussian to detector scan
-            in.scans.data.col(i) = in.scans.data.col(i).array() + gauss.array();
-        }
     }
 }
 
