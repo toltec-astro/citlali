@@ -20,6 +20,10 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
     using Base = ConfigMapper<KidsDataProc>;
     using Fitter = kids::SweepFitter;
     using Solver = kids::TimeStreamSolver;
+
+    // get logger
+    std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
+
     KidsDataProc(config_t config)
         : Base{std::move(config)},
           m_fitter{Fitter::Config{
@@ -36,8 +40,11 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
 
     static auto check_config(const config_t &config)
         -> std::optional<std::string> {
+        // get logger
+        std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
+
         std::vector<std::string> missing_keys;
-        SPDLOG_DEBUG("check kids data proc config\n{}", config);
+        logger->debug("check kids data proc config\n{}", config);
         if (!config.has("fitter")) {
             missing_keys.push_back("fitter");
         }
@@ -50,24 +57,35 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
         return fmt::format("invalid or missing keys={}", missing_keys);
     }
 
+    // get data item meta data
     auto get_data_item_meta(const RawObs::DataItem &);
 
+    // get meta data from rawobs
     std::vector<kids::KidsData<>::meta_t> get_rawobs_meta(const RawObs &);
+
+    // populate rtc meta data
     auto populate_rtc_meta(const RawObs &);
+
+    // reduce data item
     auto reduce_data_item(const RawObs::DataItem &,
                           const tula::container_utils::Slice<int> &);
+    // reduce rawobs
     auto reduce_rawobs(const RawObs &rawobs,
                        const tula::container_utils::Slice<int> &);
+    // load data item
     auto load_data_item(const RawObs::DataItem &,
                         const tula::container_utils::Slice<int> &);
+    // load kids fit report
     auto load_fit_report(const RawObs &);
 
+    // load rawobs
     template <typename Derived>
     auto load_rawobs(const RawObs &, const Eigen::Index,
                      Eigen::DenseBase<Derived> &,
                      std::vector<Eigen::Index> &,
                      std::vector<Eigen::Index> &);
 
+    // populate rtc
     template <typename loaded_t, typename scanindices_t>
     auto populate_rtc(loaded_t &, scanindices_t &,
                       const int, const int, std::string);
@@ -117,7 +135,7 @@ auto KidsDataProc::populate_rtc_meta(const RawObs &rawobs) {
 
 auto KidsDataProc::reduce_data_item(const RawObs::DataItem &data_item,
                                     const tula::container_utils::Slice<int> &slice) {
-    SPDLOG_DEBUG("kids reduce data_item {}", data_item);
+    logger->debug("kids reduce data_item {}", data_item);
     // read data
     namespace kidsdata = predefs::kidsdata;
     auto source = data_item.filepath();
@@ -134,7 +152,7 @@ auto KidsDataProc::reduce_data_item(const RawObs::DataItem &data_item,
 
 auto KidsDataProc::reduce_rawobs(const RawObs &rawobs,
                                  const tula::container_utils::Slice<int> &slice) {
-    SPDLOG_DEBUG("kids reduce rawobs {}", rawobs);
+    logger->debug("kids reduce rawobs {}", rawobs);
     std::vector<kids::TimeStreamSolverResult> result;
     for (const auto &data_item : rawobs.kidsdata()) {
         result.push_back(reduce_data_item(data_item, slice));
@@ -144,7 +162,7 @@ auto KidsDataProc::reduce_rawobs(const RawObs &rawobs,
 
 auto KidsDataProc::load_data_item(const RawObs::DataItem &data_item,
                                   const tula::container_utils::Slice<int> &slice) {
-    SPDLOG_DEBUG("kids reduce data_item {}", data_item);
+    logger->debug("kids reduce data_item {}", data_item);
     // read data
     namespace kidsdata = predefs::kidsdata;
     auto source = data_item.filepath();
@@ -173,7 +191,7 @@ auto KidsDataProc::load_fit_report(const RawObs &rawobs) {
             filepath = this->solver().config.get_str("fitreportfile");
         } else if (this->solver().config.has("fitreportdir")) {
             auto dir = this->solver().config.get_str("fitreportdir");
-            SPDLOG_INFO("look for fitreport dir {} with pattern {}", dir, pattern);
+            logger->info("look for fitreport dir {} with pattern {}", dir, pattern);
             auto candidates = tula::filename_utils::find_regex(dir, pattern);
             if (!candidates.empty()) {
                 filepath = candidates[0];
@@ -185,7 +203,7 @@ auto KidsDataProc::load_fit_report(const RawObs &rawobs) {
             throw std::runtime_error(
                 fmt::format("no fit report location specified."));
         }
-        SPDLOG_INFO("use fitreport file {}", filepath);
+        logger->info("use fitreport file {}", filepath);
         //std::vector<std::string> header;
         header.clear();
         Eigen::MatrixXd table;
@@ -204,10 +222,10 @@ auto KidsDataProc::load_fit_report(const RawObs &rawobs) {
 
             kids_models.push_back(std::move(table));
             if (!meta_.IsNull()) {
-                SPDLOG_WARN("un recongnized meta:\n{}", YAML::Dump(meta_));
+                logger->warn("un recongnized meta:\n{}", YAML::Dump(meta_));
             }
         } catch (datatable::ParseError &e) {
-            SPDLOG_WARN("unable to read fitreport file as ECSV {}: {}", filepath,
+            logger->warn("unable to read fitreport file as ECSV {}: {}", filepath,
                         e.what());
             try {
                 table = datatable::read<double, datatable::Format::ascii>(filepath,
@@ -215,14 +233,14 @@ auto KidsDataProc::load_fit_report(const RawObs &rawobs) {
                 kids_models.push_back(std::move(table));
 
             } catch (datatable::ParseError &e) {
-                SPDLOG_WARN("unable to read fitreport file as ASCII {}: {}",
+                logger->warn("unable to read fitreport file as ASCII {}: {}",
                             filepath, e.what());
                 throw e;
             }
         }
-        SPDLOG_INFO("meta_cal: {}", meta_cal.pformat());
-        SPDLOG_INFO("table {}",table);
-        SPDLOG_INFO("header {}",header);
+        logger->info("meta_cal: {}", meta_cal.pformat());
+        logger->info("table {}",table);
+        logger->info("header {}",header);
 
         //return std::tuple{
         //                  kids::ToneAxis(std::move(table).transpose(), std::move(header)),
@@ -241,6 +259,7 @@ auto KidsDataProc::load_rawobs(const RawObs &rawobs, const Eigen::Index scan,
     std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> result;
     Eigen::Index i = 0;
     for (const auto &data_item : rawobs.kidsdata()) {
+        // get slice of data for current scan
         auto slice = tula::container_utils::Slice<int>{scan_indices(2,scan) + start_indices[i],
                                                        scan_indices(3,scan) + 1 + start_indices[i],
                                                        std::nullopt};
@@ -254,42 +273,50 @@ auto KidsDataProc::load_rawobs(const RawObs &rawobs, const Eigen::Index scan,
 
 template <typename loaded_t, typename scanindices_t>
 auto KidsDataProc::populate_rtc(loaded_t &loaded, scanindices_t &scanindex,
-                                const int scanlength, const int n_detectors, std::string data_type) {
-
+                                const int scanlength, const int n_detectors,
+                                std::string data_type) {
+    // resize data
     Eigen::MatrixXd data(scanlength, n_detectors);
 
     Eigen::Index i = 0;
+    // loop through raw timestream objects
     for (std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>::
-         iterator it = loaded.begin();
-         it != loaded.end(); ++it) {
+         iterator it = loaded.begin(); it != loaded.end(); ++it) {
+        // run the solver
         auto result = this->solver()(*it, Solver::Config{});
+        // get number of rows
         Eigen::Index n_rows = result.data_out.xs.data.rows();
+        // get number of cols
         Eigen::Index n_cols = result.data_out.xs.data.cols();
 
+        // get xs
         if (data_type == "xs") {
             data.block(0, i, n_rows, n_cols) = result.data_out.xs.data;
         }
+        // get rs
         else if (data_type == "rs") {
             data.block(0, i, n_rows, n_cols) = result.data_out.rs.data;
         }
+        // get is
         else if (data_type == "is") {
             data.block(0, i, n_rows, n_cols) = result.data.is.data;
         }
+        // get qs
         else if (data_type == "qs") {
             data.block(0, i, n_rows, n_cols) = result.data.qs.data;
         }
-
+        // increment columns
         i += n_cols;
     }
 
-    // check for bad values
+    // check for nans
     if ((data.array().isNaN()).any()) {
-        SPDLOG_ERROR("NaN found in data!");
+        logger->error("nan found in data!");
         std::exit(EXIT_FAILURE);
     }
-
-    else if ((data.array().isInf()).any()) {
-        SPDLOG_ERROR("Inf found in data!");
+    // check for infs
+    if ((data.array().isInf()).any()) {
+        logger->error("inf found in data!");
         std::exit(EXIT_FAILURE);
     }
 

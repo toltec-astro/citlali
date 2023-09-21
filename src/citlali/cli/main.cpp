@@ -108,7 +108,39 @@ int run(const rc_t &rc) {
     using kids::KidsData;
     using kids::KidsDataKind;
     using tula::logging::timeit;
-    SPDLOG_INFO("use KIDs data spec: {}", predefs::kidsdata::name);
+
+    // get current level
+    auto log_level = spdlog::get_level();
+
+    SPDLOG_INFO("log_level {}", log_level);
+
+    // vector to hold sink pointers
+    std::vector<spdlog::sink_ptr> sinks_default;
+    // create sink for default logger
+    auto sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+    // disable logging
+    sink->set_level(spdlog::level::off);
+    sinks_default.push_back(sink);
+    // create default logger
+    auto default_logger = std::make_shared<spdlog::logger>("console", begin(sinks_default), end(sinks_default));
+    // register logger
+    spdlog::register_logger(default_logger);
+    // overwrite default logger
+    spdlog::set_default_logger(default_logger);
+
+    // vector to hold sink pointers
+    std::vector<spdlog::sink_ptr> sinks;
+    // create console sink
+    auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+    sinks.push_back(console_sink);
+    // create citlali logger
+    auto logger = std::make_shared<spdlog::logger>("citlali_logger", begin(sinks), end(sinks));
+    spdlog::register_logger(logger);
+
+    // set global level
+    spdlog::set_level(log_level);
+
+    logger->info("use KIDs data spec: {}", predefs::kidsdata::name);
 
     std::vector<std::string> config_filepaths;
 
@@ -119,7 +151,7 @@ int run(const rc_t &rc) {
     for (const auto & n: node_config_files) {
         auto filepath = n.as<std::string>();
         config_filepaths.push_back(filepath);
-        SPDLOG_TRACE("load config from file {}", filepath);
+        logger->info("load config from file {}", filepath);
         citlali_config = tula::config::merge(citlali_config, tula::config::YamlConfig::from_filepath(filepath));
     }
 
@@ -147,21 +179,21 @@ int run(const rc_t &rc) {
 
             // check for science mode
             if (reduction_type == "science") {
-                SPDLOG_INFO("reducing in science mode");
+                logger->info("reducing in science mode");
                 todproc =
                     TimeOrderedDataProc<Lali>::from_config(citlali_config);
             }
 
             // check for pointing mode
             else if (reduction_type == "pointing") {
-                SPDLOG_INFO("reducing in pointing mode");
+                logger->info("reducing in pointing mode");
                 todproc =
                     TimeOrderedDataProc<Pointing>::from_config(citlali_config);
             }
 
             // check for beammap mode
             else if (reduction_type == "beammap") {
-                SPDLOG_INFO("reducing in beammap mode");
+                logger->info("reducing in beammap mode");
                 todproc =
                     TimeOrderedDataProc<Beammap>::from_config(citlali_config);
             }
@@ -229,7 +261,7 @@ int run(const rc_t &rc) {
                 std::vector<map_count_t> map_counts{};
 
                 // get config options from citlali_config
-                SPDLOG_INFO("getting citlali config");
+                logger->info("getting citlali config");
                 todproc.engine().get_citlali_config(citlali_config);
 
                 // exit if missing or invalid config options
@@ -243,7 +275,7 @@ int run(const rc_t &rc) {
                 // if running in verbose mode, set log level to debug
                 if (todproc.engine().verbose_mode) {
                     spdlog::set_level(spdlog::level::debug);
-                    SPDLOG_DEBUG("running in verbose mode. setting log level=debug.");
+                    logger->debug("running in verbose mode. setting log level=debug.");
                 }
 
                 // set parallelization explicitly
@@ -273,11 +305,11 @@ int run(const rc_t &rc) {
                 for (const auto &rawobs : co.inputs()) {
                     // this is needed to figure out the data sample rate
                     // and number of detectors
-                    SPDLOG_DEBUG("getting rawobs kids meta info");
+                    logger->debug("getting rawobs kids meta info");
                     auto rawobs_kids_meta = kidsproc.get_rawobs_meta(rawobs);
 
                     // get astrometry config options
-                    SPDLOG_DEBUG("getting astrometry config");
+                    logger->debug("getting astrometry config");
                     todproc.engine().get_astrometry_config(rawobs.astrometry_calib_info().config());
                     // get photometry config options
                     if constexpr (std::is_same_v<todproc_t, TimeOrderedDataProc<Beammap>>) {
@@ -285,12 +317,12 @@ int run(const rc_t &rc) {
 
                         // if beammap generate the apt table from the files
                         if (todproc.engine().map_grouping=="detector" || todproc.engine().map_grouping=="auto") {
-                            SPDLOG_INFO("making apt file from raw nc files");
+                            logger->info("making apt file from raw nc files");
                             todproc.get_apt_from_files(rawobs);
                         }
                         else {
                             auto apt_path = rawobs.array_prop_table().filepath();
-                            SPDLOG_INFO("getting array properties table {}", apt_path);
+                            logger->info("getting array properties table {}", apt_path);
 
                             // get raw files and interfaces
                             std::vector<std::string> raw_filenames, interfaces;
@@ -307,7 +339,7 @@ int run(const rc_t &rc) {
                     else {
                         // get apt table
                         auto apt_path = rawobs.array_prop_table().filepath();
-                        SPDLOG_INFO("getting array properties table {}", apt_path);
+                        logger->info("getting array properties table {}", apt_path);
 
                         std::vector<std::string> raw_filenames, interfaces;
                         for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
@@ -319,21 +351,21 @@ int run(const rc_t &rc) {
                     }
 
                     // check input files
-                    SPDLOG_DEBUG("checking inputs");
+                    logger->debug("checking inputs");
                     todproc.check_inputs(rawobs);
 
                     // get sample rate
-                    SPDLOG_DEBUG("getting sample rate");
+                    logger->debug("getting sample rate");
                     todproc.engine().telescope.fsmp = rawobs_kids_meta.back().get_typed<double>("fsmp");
 
                     // get telescope file
                     auto tel_path = rawobs.teldata().filepath();
-                    SPDLOG_INFO("getting telescope file {}", tel_path);
+                    logger->info("getting telescope file {}", tel_path);
                     todproc.engine().telescope.get_tel_data(tel_path);
 
                     // overwrite map center
                     if (todproc.engine().omb.crval_config[0]!=0 && todproc.engine().omb.crval_config[1]!=0) {
-                        SPDLOG_INFO("overwriting map center to ({}, {})",todproc.engine().omb.crval_config[0],
+                        logger->info("overwriting map center to ({}, {})",todproc.engine().omb.crval_config[0],
                                     todproc.engine().omb.crval_config[1]);
                         todproc.engine().telescope.tel_header["Header.Source.Ra"].setConstant(todproc.engine().omb.crval_config[0]);
                         todproc.engine().telescope.tel_header["Header.Source.Dec"].setConstant(todproc.engine().omb.crval_config[1]);
@@ -341,7 +373,7 @@ int run(const rc_t &rc) {
 
                     // align tod
                     if (!todproc.engine().telescope.sim_obs) {
-                        SPDLOG_INFO("aligning timestreams");
+                        logger->info("aligning timestreams");
                         todproc.align_timestreams(rawobs);
                     }
 
@@ -354,69 +386,69 @@ int run(const rc_t &rc) {
                             todproc.engine().start_indices.push_back(0);
                             todproc.engine().start_indices.push_back(0);
                         }
-
-                        if (todproc.engine().calib.run_hwp) {
+                        // set hwpr start and end indices to 0
+                        if (todproc.engine().calib.run_hwpr) {
                             todproc.engine().hwpr_start_indices = 0;
                             todproc.engine().hwpr_end_indices = 0;
                         }
                     }
 
                     // calc tangent plane pointing
-                    SPDLOG_INFO("calculating tangent plane pointing");
+                    logger->info("calculating tangent plane pointing");
                     todproc.engine().telescope.calc_tan_pointing();
 
                     // calc pointing offsets
-                    SPDLOG_INFO("calculating pointing offsets");
+                    logger->info("calculating pointing offsets");
                     todproc.interp_pointing();
 
                     // calc scan indices
-                    SPDLOG_INFO("calculating scan indices");
+                    logger->info("calculating scan indices");
                     todproc.engine().telescope.calc_scan_indices();
 
                     if (todproc.engine().run_mapmaking) {
                         // determine number of maps
-                        SPDLOG_INFO("calculating number of maps");
+                        logger->info("calculating number of maps");
                         todproc.calc_map_num();
 
                         // determine omb map sizes
-                        SPDLOG_INFO("calculating omb dimensions");
+                        logger->info("calculating omb dimensions");
                         todproc.calc_omb_size(map_extents, map_coords, map_coords_abs);
                     }
                 }
 
                 if (todproc.engine().run_coadd) {
                     // get size of coadd buffer
-                    SPDLOG_DEBUG("calculating cmb dimensions");
+                    logger->debug("calculating cmb dimensions");
                     todproc.calc_cmb_size(map_coords, map_coords_abs);
                     // make coadd buffer
-                    SPDLOG_DEBUG("allocating cmb");
+                    logger->debug("allocating cmb");
                     todproc.allocate_cmb();
                     // make noise maps for coadd map buffer
                     if (todproc.engine().run_noise) {
-                        SPDLOG_DEBUG("allocating nmb");
+                        logger->debug("allocating nmb");
                         todproc.allocate_nmb(todproc.engine().cmb);
                     }
 
                     // create output coadded map files
-                    SPDLOG_DEBUG("creating cmb filenames");
+                    logger->debug("creating cmb filenames");
                     todproc.create_coadded_map_files();
                 }
 
                 // run the reduction for each observation
                 for (std::size_t i=0; i<co.n_inputs(); ++i) {
-                    SPDLOG_INFO("starting reduction of observation {}/{}", i + 1, co.n_inputs());
+                    logger->info("starting reduction of observation {}/{}", i + 1, co.n_inputs());
 
                     // get current rawobs
                     const auto &rawobs = co.inputs()[i];
 
                     // this is needed to figure out the data sample rate
                     // and number of detectors
-                    SPDLOG_DEBUG("getting rawobs kids meta info");
+                    logger->debug("getting rawobs kids meta info");
                     auto rawobs_kids_meta = kidsproc.get_rawobs_meta(rawobs);
 
                     if (co.n_inputs() > 1) {
                         // get astrometry config options
-                        SPDLOG_DEBUG("getting astrometry config");
+                        logger->debug("getting astrometry config");
                         todproc.engine().get_astrometry_config(rawobs.astrometry_calib_info().config());
                         // get photometry config options
                         if constexpr (std::is_same_v<todproc_t, TimeOrderedDataProc<Beammap>>) {
@@ -424,12 +456,12 @@ int run(const rc_t &rc) {
 
                             // if beammap generate the apt table from the files
                             if (todproc.engine().map_grouping=="detector" || todproc.engine().map_grouping=="auto") {
-                                SPDLOG_INFO("making apt file from raw nc files");
+                                logger->info("making apt file from raw nc files");
                                 todproc.get_apt_from_files(rawobs);
                             }
                             else {
                                 auto apt_path = rawobs.array_prop_table().filepath();
-                                SPDLOG_INFO("getting array properties table {}", apt_path);
+                                logger->info("getting array properties table {}", apt_path);
 
                                 // get raw files and interfaces
                                 std::vector<std::string> raw_filenames, interfaces;
@@ -446,7 +478,7 @@ int run(const rc_t &rc) {
                         // get apt file
                         else {
                             auto apt_path = rawobs.array_prop_table().filepath();
-                            SPDLOG_INFO("getting array properties table {}", apt_path);
+                            logger->info("getting array properties table {}", apt_path);
 
                             // get raw files and interfaces
                             std::vector<std::string> raw_filenames, interfaces;
@@ -460,7 +492,7 @@ int run(const rc_t &rc) {
                         }
 
                         // get sample rate
-                        SPDLOG_DEBUG("getting sample rate");
+                        logger->debug("getting sample rate");
                         todproc.engine().telescope.fsmp = rawobs_kids_meta.back().get_typed<double>("fsmp");
                     }
 
@@ -468,9 +500,9 @@ int run(const rc_t &rc) {
                     if (todproc.engine().rtcproc.run_downsample) {
                         if (todproc.engine().rtcproc.downsampler.factor <= 0) {
                             if (todproc.engine().rtcproc.downsampler.downsampled_freq_Hz > todproc.engine().telescope.fsmp) {
-                                SPDLOG_ERROR("downsampled freq ({} Hz) must be less than sample rate ({} Hz)",
-                                             todproc.engine().rtcproc.downsampler.downsampled_freq_Hz,
-                                             todproc.engine().telescope.fsmp);
+                                logger->error("downsampled freq ({} Hz) must be less than sample rate ({} Hz)",
+                                              todproc.engine().rtcproc.downsampler.downsampled_freq_Hz,
+                                              todproc.engine().telescope.fsmp);
                                 return EXIT_FAILURE;
                             }
                             todproc.engine().rtcproc.downsampler.factor = std::floor(todproc.engine().telescope.fsmp /
@@ -487,15 +519,15 @@ int run(const rc_t &rc) {
                     }
 
                     // get tone frequencies from raw files for flagging nearby tones
-                    SPDLOG_DEBUG("getting tone frequencies");
+                    logger->debug("getting tone frequencies");
                     todproc.get_tone_freqs_from_files(rawobs);
 
                     // get adc snap data for stats file
-                    SPDLOG_DEBUG("getting adc snap data");
+                    logger->debug("getting adc snap data");
                     todproc.get_adc_snap_from_files(rawobs);
 
                     // get obsnum
-                    SPDLOG_DEBUG("getting obsnum");
+                    logger->debug("getting obsnum");
                     int obsnum = rawobs_kids_meta.back().get_typed<int>("obsid");
 
                     // convert obsnum to string with leading zeros
@@ -515,23 +547,23 @@ int run(const rc_t &rc) {
                     todproc.engine().cmb.obsnums.push_back(todproc.engine().obsnum);
 
                     // create obsnum directory
-                    SPDLOG_DEBUG("creating obsnum directory");
+                    logger->debug("creating obsnum directory");
                     fs::create_directories(todproc.engine().obsnum_dir_name);
 
                     // create raw obsnum directory
-                    SPDLOG_DEBUG("creating obsnum raw directory");
+                    logger->debug("creating obsnum raw directory");
                     fs::create_directories(todproc.engine().obsnum_dir_name + "raw/");
 
                     // create filtered obsnum directory
                     if (!todproc.engine().run_coadd) {
                         if (todproc.engine().run_map_filter) {
-                            SPDLOG_DEBUG("creating obsnum filtered directory");
+                            logger->debug("creating obsnum filtered directory");
                             fs::create_directories(todproc.engine().obsnum_dir_name + "filtered/");
                         }
                     }
                     // create log directory for verbose mode
                     if (todproc.engine().verbose_mode) {
-                        SPDLOG_DEBUG("creating obsnum logs directory");
+                        logger->debug("creating obsnum logs directory");
                         fs::create_directories(todproc.engine().obsnum_dir_name + "logs/");
 
                         /*
@@ -563,43 +595,43 @@ int run(const rc_t &rc) {
                             hwpr_filepath = rawobs.hwpdata()->filepath();
                             // if filepath is not null, get the hwpr data
                             if (hwpr_filepath != "null") {
-                                SPDLOG_INFO("getting hwpr file");
+                                logger->info("getting hwpr file");
                                 todproc.engine().calib.get_hwpr(hwpr_filepath, todproc.engine().telescope.sim_obs);
                             }
                             else {
-                                todproc.engine().calib.run_hwp = false;
+                                todproc.engine().calib.run_hwpr = false;
                             }
                         }
                         else {
-                            todproc.engine().calib.run_hwp = false;
+                            todproc.engine().calib.run_hwpr = false;
                         }
 
-                        if (!todproc.engine().calib.run_hwp) {
-                            SPDLOG_INFO("ignoring hwpr");
+                        if (!todproc.engine().calib.run_hwpr) {
+                            logger->info("ignoring hwpr");
                         }
                     }
 
                     // get flux calibration
-                    SPDLOG_INFO("calculating flux calibration");
+                    logger->info("calculating flux calibration");
                     todproc.engine().calib.calc_flux_calibration(todproc.engine().omb.sig_unit);
 
                     // get telescope file
                     if (co.n_inputs() > 1) {
                         auto tel_path = rawobs.teldata().filepath();
-                        SPDLOG_INFO("getting telescope file {}", tel_path);
+                        logger->info("getting telescope file {}", tel_path);
                         todproc.engine().telescope.get_tel_data(tel_path);
 
                         // overwrite map center
                         if (todproc.engine().omb.crval_config[0]!=0 && todproc.engine().omb.crval_config[1]!=0) {
-                            SPDLOG_INFO("overwriting map center to ({}, {})",todproc.engine().omb.crval_config[0],
-                                        todproc.engine().omb.crval_config[1]);
+                            logger->info("overwriting map center to ({}, {})",todproc.engine().omb.crval_config[0],
+                                         todproc.engine().omb.crval_config[1]);
                             todproc.engine().telescope.tel_header["Header.Source.Ra"].setConstant(todproc.engine().omb.crval_config[0]);
                             todproc.engine().telescope.tel_header["Header.Source.Dec"].setConstant(todproc.engine().omb.crval_config[1]);
                         }
 
                         // align tod
                         if (!todproc.engine().telescope.sim_obs) {
-                            SPDLOG_INFO("aligning timestreams");
+                            logger->info("aligning timestreams");
                             todproc.align_timestreams(rawobs);
                         }
 
@@ -612,7 +644,7 @@ int run(const rc_t &rc) {
                                 todproc.engine().start_indices.push_back(0);
                                 todproc.engine().start_indices.push_back(0);
 
-                                if (todproc.engine().calib.run_hwp) {
+                                if (todproc.engine().calib.run_hwpr) {
                                     todproc.engine().hwpr_start_indices = 0;
                                     todproc.engine().hwpr_end_indices = 0;
                                 }
@@ -620,11 +652,11 @@ int run(const rc_t &rc) {
                         }
 
                         // calc tangent plane pointing
-                        SPDLOG_INFO("calculating tangent plane pointing");
+                        logger->info("calculating tangent plane pointing");
                         todproc.engine().telescope.calc_tan_pointing();
 
                         // calc pointing offsets
-                        SPDLOG_INFO("calculating pointing offsets");
+                        logger->info("calculating pointing offsets");
                         todproc.interp_pointing();
                     }
 
@@ -633,15 +665,15 @@ int run(const rc_t &rc) {
 
                     // warning for gaps in data
                     if (todproc.engine().gaps.size() > 0) {
-                        SPDLOG_WARN("gaps found in obnsum {} data file timing!", todproc.engine().obsnum);
+                        logger->warn("gaps found in obnsum {} data file timing!", todproc.engine().obsnum);
                         // write gaps.log file if in verbose mode
                         if (todproc.engine().verbose_mode) {
-                            SPDLOG_DEBUG("writing gaps.log file");
+                            logger->debug("writing gaps.log file");
                             std::ofstream f;
                             f.open(todproc.engine().obsnum_dir_name+"/logs/gaps.log");
                             f << "Summary of timing gaps\n";
                             for (auto const& [key, val] : todproc.engine().gaps) {
-                                SPDLOG_DEBUG("{} gaps: {}", key, val);
+                                logger->debug("{} gaps: {}", key, val);
                                 f << "-" + key + " gaps: " << val << "\n";
                             }
                             f.close();
@@ -650,19 +682,19 @@ int run(const rc_t &rc) {
 
                     if (co.n_inputs() > 1) {
                         // calc scan indices
-                        SPDLOG_INFO("calculating scan indices");
+                        logger->info("calculating scan indices");
                         todproc.engine().telescope.calc_scan_indices();
                     }
 
                     // allocate observation map buffer
                     if (todproc.engine().run_mapmaking) {
-                        SPDLOG_INFO("allocating obs map buffer");
+                        logger->info("allocating obs map buffer");
                         todproc.allocate_omb(map_extents[i], map_coords[i], map_coords_abs[i]);
 
                         // make noise maps for observation map buffer
                         if (!todproc.engine().run_coadd) {
                             if (todproc.engine().run_noise) {
-                                SPDLOG_INFO("allocating obs noise maps");
+                                logger->info("allocating obs noise maps");
                                 todproc.allocate_nmb(todproc.engine().omb);
                             }
                         }
@@ -676,42 +708,42 @@ int run(const rc_t &rc) {
                     todproc.engine().cmb.exposure_time = todproc.engine().cmb.exposure_time + todproc.engine().omb.exposure_time;
 
                     // setup
-                    SPDLOG_INFO("pipeline setup");
+                    logger->info("pipeline setup");
                     todproc.engine().setup();
 
                     // run
                     if (todproc.engine().run_tod) {
-                        SPDLOG_INFO("running pipeline");
+                        logger->info("running pipeline");
                         todproc.engine().pipeline(kidsproc, rawobs);
                     }
 
                     // output
                     if (todproc.engine().run_mapmaking) {
-                        SPDLOG_INFO("outputting raw obs files");
+                        logger->info("outputting raw obs files");
                         todproc.engine().template output<mapmaking::RawObs>();
                     }
 
                     // coadd
                     if (todproc.engine().run_coadd) {
-                        SPDLOG_INFO("coadding");
+                        logger->info("coadding");
                         todproc.coadd();
                     }
 
                     // filter obs map
                     else if (todproc.engine().run_map_filter) {
-                        SPDLOG_INFO("filtering obs maps");
+                        logger->info("filtering obs maps");
                         todproc.engine().template run_wiener_filter<mapmaking::FilteredObs>(todproc.engine().omb);
 
                         // calculate filtered obs map psds
-                        SPDLOG_INFO("calculating filtered obs map psds");
+                        logger->info("calculating filtered obs map psds");
                         todproc.engine().omb.calc_map_psd();
                         // calculate filtered obs map histograms
-                        SPDLOG_INFO("calculating filtered obs map histograms");
+                        logger->info("calculating filtered obs map histograms");
                         todproc.engine().omb.calc_map_hist();
 
                         // find filtered obs map sources
                         if (todproc.engine().run_source_finder) {
-                            SPDLOG_INFO("finding filtered obs map sources");
+                            logger->info("finding filtered obs map sources");
                             todproc.engine().template find_sources<mapmaking::FilteredObs>(todproc.engine().omb);
                         }
 
@@ -721,55 +753,55 @@ int run(const rc_t &rc) {
                         }
 
                         // output filtered maps
-                        SPDLOG_INFO("outputting filtered obs files");
+                        logger->info("outputting filtered obs files");
                         todproc.engine().template output<mapmaking::FilteredObs>();
                     }
                 }
 
                 if (todproc.engine().run_coadd) {
                     // normalize coadded maps
-                    SPDLOG_INFO("normalizing coadded maps");
+                    logger->info("normalizing coadded maps");
                     todproc.engine().cmb.normalize_maps();
 
                     // calculate coadded map psds
-                    SPDLOG_INFO("calculating coadded map psd");
+                    logger->info("calculating coadded map psd");
                     todproc.engine().cmb.calc_map_psd();
                     // calculate coadded map histograms
-                    SPDLOG_INFO("calculating coadded map histogram");
+                    logger->info("calculating coadded map histogram");
                     todproc.engine().cmb.calc_map_hist();
 
                     // output coadded maps
-                    SPDLOG_INFO("outputting raw coadded files");
+                    logger->info("outputting raw coadded files");
                     todproc.engine().template output<mapmaking::RawCoadd>();
 
                     if (todproc.engine().run_map_filter) {
-                        SPDLOG_INFO("filtering coadded maps");
+                        logger->info("filtering coadded maps");
                         // filter coadded maps
                         todproc.engine().template run_wiener_filter<mapmaking::FilteredCoadd>(todproc.engine().cmb);
 
                         // calculate filtered coadded map psds
-                        SPDLOG_INFO("calculating filtered coadded map psds");
+                        logger->info("calculating filtered coadded map psds");
                         todproc.engine().cmb.calc_map_psd();
                         // calculate filtered coadded map histograms
-                        SPDLOG_INFO("calculating filtered coadded map histograms");
+                        logger->info("calculating filtered coadded map histograms");
                         todproc.engine().cmb.calc_map_hist();
 
                         if (todproc.engine().run_source_finder) {
                             // find coadded map sources
-                            SPDLOG_INFO("finding filtered coadded map sources");
+                            logger->info("finding filtered coadded map sources");
                             todproc.engine().template find_sources<mapmaking::FilteredCoadd>(todproc.engine().cmb);
                         }
 
                         // output filtered coadded maps
-                        SPDLOG_INFO("outputting filtered coadded files");
+                        logger->info("outputting filtered coadded files");
                         todproc.engine().template output<mapmaking::FilteredCoadd>();
                     }
                 }
 
-                SPDLOG_INFO("making index files");
+                logger->info("making index files");
                 // make index files for each directory recursively
                 todproc.make_index_file(todproc.engine().redu_dir_name);
-                SPDLOG_INFO("citlali is done!");
+                logger->info("citlali is done!");
                 return EXIT_SUCCESS;
             }
         },

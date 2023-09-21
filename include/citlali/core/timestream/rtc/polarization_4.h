@@ -73,7 +73,7 @@ public:
             auto ang = install_ang[array_indices(i)];
             auto rot_angle = in.tel_data.data["ActParAng"].array() + in.tel_data.data["TelElAct"].array() + ang;
 
-            if (calib.run_hwp==false) {
+            if (calib.run_hwpr==false) {
                 out.angle.data.col(i) = 2*rot_ang;
             }
             else {

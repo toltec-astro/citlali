@@ -22,6 +22,9 @@ namespace mapmaking {
 
 class WienerFilter {
 public:
+    // get logger
+    std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
+
     // filter template
     std::string template_type;
     // normalize filtered map errors
@@ -231,7 +234,7 @@ void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_d
 
     // if fit failed, give up
     if (!good_fit) {
-        SPDLOG_ERROR("fit to kernel map failed. try setting a small fitting_region_arcsec value.");
+        logger->error("fit to kernel map failed. try setting a small fitting_region_arcsec value.");
         std::exit(EXIT_FAILURE);
     }
 
@@ -571,7 +574,7 @@ void WienerFilter::calc_denominator() {
         bool done = false;
 
         tula::logging::progressbar pb(
-            [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 90,
+            [&](const auto &msg) { logger->info("{}", msg); }, 90,
             "calculating denom");
 
         // loop through cols and rows
@@ -647,7 +650,7 @@ void WienerFilter::calc_denominator() {
                                 }
                             }
                         }
-                        SPDLOG_INFO("{} iteration(s) complete. denom ratio = {}", kk, static_cast<float>(max_ratio));
+                        logger->info("{} iteration(s) complete. denom ratio = {}", kk, static_cast<float>(max_ratio));
 
                         // check if we've reached max loop or if change in denom is too small
                         if (((kk >= max_loops) && (max_ratio < 0.0002)) || max_ratio < 1e-10) {
@@ -689,26 +692,26 @@ void WienerFilter::make_template(MB &mb, CD &calib_data, const double gaussian_t
 
     // highpass template
     if (template_type=="highpass") {
-        SPDLOG_INFO("creating highpass template");
+        logger->info("creating highpass template");
         filter_template.setZero(n_rows,n_cols);
         filter_template(0,0) = 1;
     }
 
     // gaussian template
     else if (template_type=="gaussian") {
-        SPDLOG_INFO("creating gaussian template");
+        logger->info("creating gaussian template");
         make_gaussian_template(mb, gaussian_template_fwhm_rad);
     }
 
     // airy template
     else if (template_type=="airy") {
-        SPDLOG_INFO("creating airy template");
+        logger->info("creating airy template");
         make_airy_template(mb, gaussian_template_fwhm_rad);
     }
 
     // symmetric version of kernel template
     else {
-        SPDLOG_INFO("creating template from kernel map");
+        logger->info("creating template from kernel map");
         make_kernel_template(mb, map_index, calib_data);
     }
 }
@@ -716,30 +719,30 @@ void WienerFilter::make_template(MB &mb, CD &calib_data, const double gaussian_t
 template<class MB>
 void WienerFilter::run_filter(MB &mb, const int map_index) {
     // calculate pixel standard deviations
-    SPDLOG_DEBUG("calculating rr");
+    logger->debug("calculating rr");
     calc_rr(mb, map_index);
-    SPDLOG_DEBUG("rr {}", rr);
+    logger->debug("rr {}", rr);
 
     // calculate normalized psd
-    SPDLOG_DEBUG("calculating vvq");
+    logger->debug("calculating vvq");
     calc_vvq(mb, map_index);
-    SPDLOG_DEBUG("vvq {}", vvq);
+    logger->debug("vvq {}", vvq);
 
     // calculate denominator
-    SPDLOG_DEBUG("calculating denominator");
+    logger->debug("calculating denominator");
     calc_denominator();
-    SPDLOG_DEBUG("denominator {}", denom);
+    logger->debug("denominator {}", denom);
 
     // calculate numerator
-    SPDLOG_DEBUG("calculating numerator");
+    logger->debug("calculating numerator");
     calc_numerator();
-    SPDLOG_DEBUG("numerator {}", nume);
+    logger->debug("numerator {}", nume);
 }
 
 template<class MB>
 void WienerFilter::filter_maps(MB &mb, const int map_index) {
     // filter kernel
-    SPDLOG_INFO("filtering kernel");
+    logger->info("filtering kernel");
     filtered_map = mb.kernel[map_index];
     uniform_weight = true;
     run_filter(mb, map_index);
@@ -756,9 +759,9 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
         }
     }
 
-    SPDLOG_INFO("kernel filtering done");
+    logger->info("kernel filtering done");
 
-    SPDLOG_INFO("filtering signal");
+    logger->info("filtering signal");
     // filter signal
     filtered_map = mb.signal[map_index];
     uniform_weight = false;
@@ -779,7 +782,7 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
     // weight map is the denominator
     mb.weight[map_index] = denom;
 
-    SPDLOG_INFO("signal/weight map filtering done");
+    logger->info("signal/weight map filtering done");
 }
 
 template<class MB>

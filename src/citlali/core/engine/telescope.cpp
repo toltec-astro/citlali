@@ -21,10 +21,10 @@ void Telescope::get_tel_data(std::string &filepath) {
         // check if simulation job key is found.
         try {
             vars.find("Header.Sim.Jobkey")->second.getVar(&sim_job_key);
-            SPDLOG_WARN("found Header.Sim.Jobkey");
+            logger->warn("found Header.Sim.Jobkey");
             sim_obs = true;
         } catch (NcException &e) {
-            SPDLOG_WARN("cannot find Header.Sim.Jobkey. reducing as real data.");
+            logger->warn("cannot find Header.Sim.Jobkey. reducing as real data.");
             sim_obs = false;
         }
 
@@ -53,12 +53,12 @@ void Telescope::get_tel_data(std::string &filepath) {
         }
         // if map pattern is unsupported
         else {
-            SPDLOG_ERROR("unsupported mapping pattern {}",obs_pgm);
+            logger->error("unsupported mapping pattern {}",obs_pgm);
             std::exit(EXIT_FAILURE);
         }
         // cannot reduce in lissajous mode if chunk less than or equal to zero
         if (std::strcmp("Lissajous", obs_pgm.c_str())==0 && time_chunk<=0) {
-            SPDLOG_ERROR("mapping mode is lissajous and time chunk size is zero");
+            logger->error("mapping mode is lissajous and time chunk size is zero");
             std::exit(EXIT_FAILURE);
         }
 
@@ -77,7 +77,7 @@ void Telescope::get_tel_data(std::string &filepath) {
                 vars.find(pair.first)->second.getVar(tel_data[pair.second].data());
 
             } catch (NcException &e) {
-                SPDLOG_WARN("cannot find {}", pair.first);
+                logger->warn("cannot find {}", pair.first);
             }
         }
 
@@ -94,7 +94,7 @@ void Telescope::get_tel_data(std::string &filepath) {
                 vars.find(pair.first)->second.getVar(tel_header[pair.second].data());
 
             } catch (NcException &e) {
-                SPDLOG_WARN("cannot find {}", pair.first);
+                logger->warn("cannot find {}", pair.first);
             }
         }
 
@@ -102,7 +102,7 @@ void Telescope::get_tel_data(std::string &filepath) {
         tau_225_GHz = tel_header["Header.Radiometer.Tau"](0);
 
     } catch (NcException &e) {
-        SPDLOG_WARN("{}", e.what());
+        logger->warn("{}", e.what());
         throw DataIOError{fmt::format(
             "failed to load data from netCDF file {}", filepath)};
     }
@@ -135,14 +135,14 @@ void Telescope::calc_tan_pointing() {
 
     // set tangential projection to icrs
     if (std::strcmp("icrs", pixel_axes.c_str()) == 0) {
-        SPDLOG_INFO("using icrs frame");
+        logger->info("using icrs frame");
         tel_data["lat_phys"] = tel_data["dec_phys"];
         tel_data["lon_phys"] = tel_data["ra_phys"];
     }
 
     // set tangential projection to altaz
     else if (std::strcmp("altaz", pixel_axes.c_str()) == 0) {
-        SPDLOG_INFO("using altaz frame");
+        logger->info("using altaz frame");
         tel_data["lat_phys"] = tel_data["alt_phys"];
         tel_data["lon_phys"] = tel_data["az_phys"];
     }
@@ -219,7 +219,7 @@ void Telescope::calc_scan_indices() {
 
     // get scans for raster pattern
     if (std::strcmp("Map", obs_pgm.c_str())==0 && !force_chunk) {
-        SPDLOG_INFO("calculating scans for raster mode");
+        logger->info("calculating scans for raster mode");
 
         // convert the hold signal to a bool
         Eigen::Matrix<bool,Eigen::Dynamic,1> hold_bool = tel_data["Hold"].template cast<bool>();
@@ -262,7 +262,7 @@ void Telescope::calc_scan_indices() {
 
     // get scan indices for Lissajous/Rastajous pattern
     else if (std::strcmp("Lissajous", obs_pgm.c_str())==0 || force_chunk) {
-        SPDLOG_INFO("calculating scans for lissajous/rastajous mode");
+        logger->info("calculating scans for lissajous/rastajous mode");
 
         // index of first scan
         Eigen::Index first_scan_i = 0;

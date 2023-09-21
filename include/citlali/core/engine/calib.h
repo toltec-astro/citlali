@@ -13,6 +13,9 @@ namespace engine {
 
 class Calib {
 public:
+    // get logger
+    std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
+
     // apt filepath
     std::string apt_filepath;
     // apt table
@@ -32,8 +35,8 @@ public:
     // apt header
     YAML::Node apt_meta;
 
-    // run with hwp
-    bool run_hwp;
+    // run with hwpr?
+    bool run_hwpr;
 
     // network and array names
     Eigen::VectorXI nws, arrays;

@@ -62,7 +62,7 @@ auto Lali::run() {
 
         // get hwpr
         if (rtcproc.run_polarization) {
-            if (calib.run_hwp) {
+            if (calib.run_hwpr) {
                 rtcdata.hwpr_angle.data = calib.hwpr_angle.segment(si + hwpr_start_indices, sl);
             }
         }
@@ -77,17 +77,17 @@ auto Lali::run() {
 
         // loop through polarizations
         for (const auto &[stokes_index, stokes_param]: rtcproc.polarization.stokes_params) {
-            SPDLOG_INFO("starting {} scan {}. {}/{} scans completed", stokes_param, rtcdata.index.data + 1, n_scans_done,
+            logger->info("starting {} scan {}. {}/{} scans completed", stokes_param, rtcdata.index.data + 1, n_scans_done,
                         telescope.scan_indices.cols());
 
             // run rtcproc
-            SPDLOG_INFO("raw time chunk processing");
+            logger->info("raw time chunk processing");
             auto [map_indices, array_indices, nw_indices, det_indices] = rtcproc.run(rtcdata, ptcdata, telescope.pixel_axes, redu_type,
                                                                                      calib, telescope, omb.pixel_size_rad, stokes_param,
                                                                                      map_grouping);
 
             // remove flagged dets
-            SPDLOG_INFO("removing flagged dets");
+            logger->info("removing flagged dets");
             rtcproc.remove_flagged_dets(ptcdata, calib.apt, det_indices);
 
             // remove outliers before clean
@@ -101,25 +101,25 @@ auto Lali::run() {
             // write rtc timestreams
             if (run_tod_output) {
                 if (tod_output_type == "rtc" || tod_output_type=="both") {
-                    SPDLOG_INFO("writing raw time chunk");
+                    logger->info("writing raw time chunk");
                     rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], redu_type, telescope.pixel_axes,
                                              ptcdata.pointing_offsets_arcsec.data, det_indices, calib);
                 }
             }
 
             // subtract scan means
-            SPDLOG_INFO("subtracting detector means");
+            logger->info("subtracting detector means");
             ptcproc.subtract_mean(ptcdata);
 
             // run cleaning
-            SPDLOG_INFO("processed time chunk processing");
+            logger->info("processed time chunk processing");
             ptcproc.run(ptcdata, ptcdata, calib, det_indices, stokes_param, telescope.pixel_axes, map_grouping);
 
             // remove outliers after clean
             calib_scan = ptcproc.remove_bad_dets(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
 
             // calculate weights
-            SPDLOG_INFO("calculating weights");
+            logger->info("calculating weights");
             ptcproc.calc_weights(ptcdata, calib.apt, telescope, det_indices);
 
             // reset weights to median
@@ -130,7 +130,7 @@ auto Lali::run() {
             // write ptc timestreams
             if (run_tod_output) {
                 if (tod_output_type == "ptc" || tod_output_type == "both") {
-                    SPDLOG_INFO("writing processed time chunk");
+                    logger->info("writing processed time chunk");
                     ptcproc.append_to_netcdf(ptcdata, tod_filename["ptc_" + stokes_param], redu_type, telescope.pixel_axes,
                                              ptcdata.pointing_offsets_arcsec.data, det_indices, calib);
                 }
@@ -148,7 +148,7 @@ auto Lali::run() {
 
             // populate maps
             if (run_mapmaking) {
-                SPDLOG_INFO("populating maps");
+                logger->info("populating maps");
                 if (map_method=="naive") {
                     naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes, redu_type,
                                                  calib.apt, telescope.d_fsmp, run_noise);
@@ -162,7 +162,7 @@ auto Lali::run() {
 
         // increment number of completed scans
         n_scans_done++;
-        SPDLOG_INFO("done with scan {}. {}/{} scans completed", ptcdata.index.data + 1, n_scans_done, telescope.scan_indices.cols());
+        logger->info("done with scan {}. {}/{} scans completed", ptcdata.index.data + 1, n_scans_done, telescope.scan_indices.cols());
 
         return ptcdata;
     });
@@ -177,7 +177,7 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
     // progress bar
     tula::logging::progressbar pb(
-        [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 100, "citlali progress ");
+        [&](const auto &msg) { logger->info("{}", msg); }, 100, "citlali progress ");
 
     grppi::pipeline(tula::grppi_utils::dyn_ex(parallel_policy),
         [&]() -> std::optional<std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
@@ -199,7 +199,7 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                 // vector to store kids data
                 std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> scan_rawobs;
                 {
-                    tula::logging::scoped_loglevel<spdlog::level::off> _0;
+                    //tula::logging::scoped_loglevel<spdlog::level::off> _0;
                     // get kids data
                     scan_rawobs = kidsproc.load_rawobs(rawobs, scan, telescope.scan_indices, start_indices, end_indices);
                 }
@@ -220,13 +220,13 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
     if (run_mapmaking) {
         // normalize maps
-        SPDLOG_INFO("normalizing maps");
+        logger->info("normalizing maps");
         omb.normalize_maps();
         // calculate map psds
-        SPDLOG_INFO("calculating map psd");
+        logger->info("calculating map psd");
         omb.calc_map_psd();
         // calculate map histograms
-        SPDLOG_INFO("calculating map histogram");
+        logger->info("calculating map histogram");
         omb.calc_map_hist();
 
         // write map summary
@@ -290,7 +290,7 @@ void Lali::output() {
         {
             // progress bar
             tula::logging::progressbar pb(
-                [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 100, "output progress ");
+                [&](const auto &msg) { logger->info("{}", msg); }, 100, "output progress ");
 
             for (Eigen::Index i=0; i<f_io->size(); i++) {
                 // get the array for the given map
@@ -310,9 +310,9 @@ void Lali::output() {
             }
         }
 
-        SPDLOG_INFO("files have been written to:");
+        logger->info("files have been written to:");
         for (Eigen::Index i=0; i<f_io->size(); i++) {
-            SPDLOG_INFO("{}.fits",f_io->at(i).filepath);
+            logger->info("{}.fits",f_io->at(i).filepath);
         }
     }
 
@@ -321,14 +321,14 @@ void Lali::output() {
     n_io->clear();
 
     // write psd and histogram files
-    SPDLOG_DEBUG("writing psds");
+    logger->debug("writing psds");
     write_psd<map_type>(mb, dir_name);
-    SPDLOG_DEBUG("writing histograms");
+    logger->debug("writing histograms");
     write_hist<map_type>(mb, dir_name);
 
     // write source table
     if (run_source_finder) {
-        SPDLOG_DEBUG("writing source table");
+        logger->debug("writing source table");
         write_sources<map_type>(mb, dir_name);
     }
 

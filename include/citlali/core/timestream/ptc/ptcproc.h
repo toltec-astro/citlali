@@ -172,7 +172,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 grp_limits = get_grouping(group, det_indices, calib, in.scans.data.cols());
             }
 
-            SPDLOG_DEBUG("cleaning with {} grouping", group);
+            logger->debug("cleaning with {} grouping", group);
 
             // only run cleaning if chunk is Stokes I or if cleaning stokes Q, U
             if (stokes_param=="I" || run_stokes_clean) {
@@ -203,7 +203,6 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 
                     // mask region
                     if (mask_radius_arcsec > 0) {
-                        SPDLOG_INFO("mask_radius_arcsec {}",mask_radius_arcsec);
                         masked_flags = mask_region(in, calib, det_indices, pixel_axes, map_grouping, n_pts, n_dets, start_index);
                     }
                     else {
@@ -240,8 +239,8 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                     if ((apt_flags.array()==0).any()) {
                         auto [evals, evecs] = cleaner.calc_eig_values<timestream::Cleaner::SpectraBackend>(in_scans, masked_flags, apt_flags,
                                                                                                            cleaner.n_eig_to_cut[arr_index](indx));
-                        SPDLOG_DEBUG("evals {}", evals);
-                        SPDLOG_DEBUG("evecs {}", evecs);
+                        logger->debug("evals {}", evals);
+                        logger->debug("evecs {}", evecs);
 
                         // get first 64 eigenvalues and eigenvectors
                         Eigen::VectorXd ev = evals.head(cleaner.n_calc);
@@ -257,7 +256,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 
                         if (in.kernel.data.size()!=0) {
                             // check if any good flags
-                                SPDLOG_DEBUG("cleaning kernel");
+                                logger->debug("cleaning kernel");
                                 // get the reference block of in scans that corresponds to the current array
                                 Eigen::Ref<Eigen::MatrixXd> in_kernel_ref = in.kernel.data.block(0, start_index, n_pts, n_dets);
 
@@ -300,7 +299,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
     Eigen::Index n_dets = in.scans.data.cols();
 
     if (weighting_type == "approximate") {
-        SPDLOG_DEBUG("calculating weights using detector sensitivities");
+        logger->debug("calculating weights using detector sensitivities");
         // resize weights to number of detectors
         in.weights.data = Eigen::VectorXd::Zero(n_dets);
 
@@ -329,7 +328,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
 
     // use full weighting
     else if (weighting_type == "full"){
-        SPDLOG_DEBUG("calculating weights using timestream variance");
+        logger->debug("calculating weights using timestream variance");
         in.weights.data = Eigen::VectorXd::Zero(n_dets);
 
         for (Eigen::Index i=0; i<n_dets; i++) {
@@ -432,7 +431,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
             }
             j++;
         }
-        SPDLOG_INFO("array {} had {} outlier weights", key, outliers);
+        logger->info("array {} had {} outlier weights", key, outliers);
     }
 }
 
@@ -524,7 +523,7 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         fo.close();
 
     } catch (NcException &e) {
-        SPDLOG_ERROR("{}", e.what());
+        logger->error("{}", e.what());
     }
 }
 

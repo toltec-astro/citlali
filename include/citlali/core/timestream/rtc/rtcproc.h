@@ -301,11 +301,11 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     in_pol.fcf.data.setOnes(in_pol.scans.data.cols());
 
     // get indices for maps
-    SPDLOG_DEBUG("calculating map indices");
+    logger->debug("calculating map indices");
     auto map_indices = calc_map_indices(calib, det_indices, nw_indices, array_indices, fg_indices, stokes_param, map_grouping);
 
     if (run_calibrate) {
-        SPDLOG_DEBUG("calibrating timestream");
+        logger->debug("calibrating timestream");
         // calibrate tod
         calibration.calibrate_tod(in_pol, det_indices, array_indices, calib);
 
@@ -313,7 +313,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     }
 
     if (run_extinction) {
-        SPDLOG_DEBUG("correcting extinction");
+        logger->debug("correcting extinction");
         // calc tau at toltec frequencies
         auto tau_freq = calibration.calc_tau(in_pol.tel_data.data["TelElAct"], telescope.tau_225_GHz);
         // correct for extinction
@@ -333,22 +333,22 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
 
     // create kernel if requested
     if (run_kernel) {
-        SPDLOG_DEBUG("creating kernel timestream");
+        logger->debug("creating kernel timestream");
         // symmetric gaussian kernel
         if (kernel.type == "gaussian") {
-            SPDLOG_DEBUG("creating symmetric gaussian kernel");
+            logger->debug("creating symmetric gaussian kernel");
             kernel.create_symmetric_gaussian_kernel(in_pol, pixel_axes, redu_type, calib.apt, in_pol.pointing_offsets_arcsec.data,
                                                     det_indices);
         }
         // airy kernel
         else if (kernel.type == "airy") {
-            SPDLOG_DEBUG("creating airy kernel");
+            logger->debug("creating airy kernel");
             kernel.create_airy_kernel(in_pol, pixel_axes, redu_type, calib.apt, in_pol.pointing_offsets_arcsec.data,
                                       det_indices);
         }
         // get kernel from fits
         else if (kernel.type == "fits") {
-            SPDLOG_DEBUG("getting kernel from fits");
+            logger->debug("getting kernel from fits");
             kernel.create_kernel_from_fits(in_pol, pixel_axes, redu_type, calib.apt, in_pol.pointing_offsets_arcsec.data,
                                            pixel_size_rad, map_indices, det_indices);
         }
@@ -358,14 +358,14 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
 
     // run despiking
     if (run_despike) {
-        SPDLOG_DEBUG("despiking");
+        logger->debug("despiking");
         // despike data
         despiker.despike(in_pol.scans.data, in_pol.flags.data, calib.apt);
 
         // we want to replace spikes on a per array or network basis
         auto grp_limits = get_grouping(despiker.grouping, det_indices, calib, in_pol.scans.data.cols());
 
-        SPDLOG_DEBUG("replacing spikes");
+        logger->debug("replacing spikes");
         for (auto const& [key, val] : grp_limits) {
             // starting index
             auto start_index = std::get<0>(val);
@@ -396,13 +396,13 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
 
     // timestream filtering
     if (run_tod_filter) {
-        SPDLOG_DEBUG("convolving signal with tod filter");
+        logger->debug("convolving signal with tod filter");
         filter.convolve(in_pol.scans.data);
         //filter.iir(in_pol.scans.data);
 
         // filter kernel
         if (run_kernel) {
-            SPDLOG_DEBUG("convolving kernel with tod filter");
+            logger->debug("convolving kernel with tod filter");
             filter.convolve(in_pol.kernel.data);
         }
 
@@ -410,7 +410,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     }
 
     if (run_downsample) {
-        SPDLOG_DEBUG("downsampling data");
+        logger->debug("downsampling data");
         // get the block of out scans that corresponds to the inner scan indices
         Eigen::Ref<Eigen::Map<Eigen::MatrixXd>> in_scans =
             in_pol.scans.data.block(si, 0, sl, in_pol.scans.data.cols());
@@ -423,7 +423,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         downsampler.downsample(in_flags, out.flags.data);
 
         // loop through telescope meta data and downsample
-        SPDLOG_DEBUG("downsampling telescope");
+        logger->debug("downsampling telescope");
         for (auto const& x: in_pol.tel_data.data) {
             // get the block of in tel data that corresponds to the inner scan indices
             Eigen::Ref<Eigen::VectorXd> in_tel =
@@ -441,14 +441,14 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         }
 
         // downsample hwpr
-        if (run_polarization && calib.run_hwp) {
+        if (run_polarization && calib.run_hwpr) {
             Eigen::Ref<Eigen::VectorXd> in_hwpr =
                 in_pol.hwpr_angle.data.segment(si, sl);
             downsampler.downsample(in_hwpr, in_pol.hwpr_angle.data);
         }
         // downsample kernel if requested
         if (run_kernel) {
-            SPDLOG_DEBUG("downsampling kernel");
+            logger->debug("downsampling kernel");
             // get the block of in kernel scans that corresponds to the inner scan indices
             Eigen::Ref<Eigen::MatrixXd> in_kernel =
                 in_pol.kernel.data.block(si, 0, sl, in_pol.kernel.data.cols());
@@ -480,7 +480,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
 
         // copy hwpr angle
         if (run_polarization) {
-            if (calib.run_hwp) {
+            if (calib.run_hwpr) {
                 out.hwpr_angle.data = in_pol.hwpr_angle.data.segment(si, sl);
             }
         }
@@ -512,7 +512,7 @@ void RTCProc::remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
         }
     }
 
-    SPDLOG_INFO("removed {} detectors flagged in APT table ({}%)",n_flagged,
+    logger->info("removed {} detectors flagged in APT table ({}%)",n_flagged,
                 (static_cast<float>(n_flagged)/static_cast<float>(n_dets))*100);
 }
 
@@ -545,7 +545,7 @@ auto RTCProc::remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
         }
     }
 
-    SPDLOG_INFO("removed {}/{} ({}%) unflagged tones closer than {} kHz", n_nearby_tones, n_dets,
+    logger->info("removed {}/{} ({}%) unflagged tones closer than {} kHz", n_nearby_tones, n_dets,
                 (static_cast<float>(n_nearby_tones)/static_cast<float>(n_dets))*100, delta_f_min_Hz/1000);
 
     // set up scan calib
@@ -575,7 +575,7 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         fo.close();
 
     } catch (NcException &e) {
-        SPDLOG_ERROR("{}", e.what());
+        logger->error("{}", e.what());
     }
 }
 

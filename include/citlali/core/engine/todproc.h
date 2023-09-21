@@ -38,13 +38,19 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
     using array_indices_t = std::vector<std::tuple<Eigen::Index, Eigen::Index>>;
     using det_indices_t = std::vector<std::tuple<Eigen::Index, Eigen::Index>>;
 
+    // get logger
+    std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
+
     TimeOrderedDataProc(config_t config) : Base{std::move(config)} {}
 
     // check if config file has nodes
     static auto check_config(const config_t &config)
         -> std::optional<std::string> {
+        // get logger
+        std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
+
         std::vector<std::string> missing_keys;
-        SPDLOG_INFO("check TOD proc config\n{}", config);
+        logger->info("check TOD proc config\n{}", config);
         if (!config.has("runtime")) {
             missing_keys.push_back("runtime");
         }
@@ -160,7 +166,7 @@ void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
             fo.close();
 
         } catch (NcException &e) {
-            SPDLOG_ERROR("{}", e.what());
+            logger->error("{}", e.what());
             throw DataIOError{fmt::format(
                 "failed to load data from netCDF file {}", data_item.filepath())};
         }
@@ -241,7 +247,7 @@ void TimeOrderedDataProc<EngineType>::get_tone_freqs_from_files(const RawObs &ra
             fo.close();
 
         } catch (NcException &e) {
-            SPDLOG_ERROR("{}", e.what());
+            logger->error("{}", e.what());
             throw DataIOError{fmt::format(
                 "failed to load data from netCDF file {}", data_item.filepath())};
         }
@@ -286,7 +292,7 @@ void TimeOrderedDataProc<EngineType>::get_tone_freqs_from_files(const RawObs &ra
         }
     }
 
-    SPDLOG_INFO("{} nearby tones found. these will be flagged.",n_nearby_tones);
+    logger->info("{} nearby tones found. these will be flagged.",n_nearby_tones);
 }
 
 template <class EngineType>
@@ -316,7 +322,7 @@ void TimeOrderedDataProc<EngineType>::get_adc_snap_from_files(const RawObs &rawo
             fo.close();
 
         } catch (NcException &e) {
-            SPDLOG_ERROR("{} adc data not found",data_item.filepath());
+            logger->error("{} adc data not found",data_item.filepath());
         }
     }
 }
@@ -360,7 +366,7 @@ void TimeOrderedDataProc<EngineType>::create_output_dir() {
             fs::create_directories(engine().coadd_dir_name + "raw/");
         }
         else {
-            SPDLOG_WARN("directory {} already exists", engine().coadd_dir_name + "raw/");
+            logger->warn("directory {} already exists", engine().coadd_dir_name + "raw/");
         }
 
         // coadded filtered subdir
@@ -369,7 +375,7 @@ void TimeOrderedDataProc<EngineType>::create_output_dir() {
                 fs::create_directories(engine().coadd_dir_name + "filtered/");
             }
             else {
-                SPDLOG_WARN("directory {} already exists", engine().coadd_dir_name + "filtered/");
+                logger->warn("directory {} already exists", engine().coadd_dir_name + "filtered/");
             }
         }
     }
@@ -394,7 +400,7 @@ void TimeOrderedDataProc<EngineType>::check_inputs(const RawObs &rawobs) {
             fo.close();
 
         } catch (NcException &e) {
-            SPDLOG_ERROR("{}", e.what());
+            logger->error("{}", e.what());
             throw DataIOError{fmt::format(
                 "failed to load data from netCDF file {}", data_item.filepath())};
         }
@@ -402,7 +408,7 @@ void TimeOrderedDataProc<EngineType>::check_inputs(const RawObs &rawobs) {
 
     // check if number of detectors in apt file is equal to those in files
     if (n_dets != engine().calib.n_dets) {
-        SPDLOG_ERROR("number of detectors in data files and apt file do not match");
+        logger->error("number of detectors in data files and apt file do not match");
         std::exit(EXIT_FAILURE);
     }
 }
@@ -455,7 +461,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
 
             // check if sample rate is the same
             if (fsmp!=-1 && fsmp_roach!=fsmp) {
-                SPDLOG_ERROR("mismatched sample rate in toltec{}",roach_index);
+                logger->error("mismatched sample rate in toltec{}",roach_index);
                 std::exit(EXIT_FAILURE);
             }
             else {
@@ -539,14 +545,14 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
             fo.close();
 
         } catch (NcException &e) {
-            SPDLOG_ERROR("{}", e.what());
+            logger->error("{}", e.what());
             throw DataIOError{fmt::format(
                 "failed to load data from netCDF file {}", data_item.filepath())};
         }
     }
 
     // check if hwp starts later
-    if (engine().calib.run_hwp) {
+    if (engine().calib.run_hwpr) {
         /*auto sec0 = engine().calib.hwp_ts.template cast <double> ().col(0);
         // ClockTimeNanoSec (nsec)
         auto nsec0 = engine().calib.hwp_ts.template cast <double> ().col(5);
@@ -621,7 +627,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
     }
 
     // if hwpr requested
-    if (engine().calib.run_hwp) {
+    if (engine().calib.run_hwpr) {
         Eigen::Index si, ei;
         auto s = (abs(engine().calib.hwp_recvt.array() - max_t0)).minCoeff(&si);
 
@@ -669,7 +675,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
     engine().telescope.tel_data["TelTime"] = xi;
     engine().telescope.tel_data["TelUTC"] = xi;
 
-    if (engine().calib.run_hwp) {
+    if (engine().calib.run_hwpr) {
         Eigen::VectorXd yd = engine().calib.hwp_recvt;
         Eigen::VectorXd yi(min_size);
         mlinterp::interp(nd.data(), min_size, // nd, ni
@@ -718,7 +724,7 @@ void TimeOrderedDataProc<EngineType>::interp_pointing() {
             engine().pointing_offsets_arcsec[key] = yi;
         }
         else {
-            SPDLOG_ERROR("Only one or two values for altaz offsets are supported");
+            logger->error("Only one or two values for altaz offsets are supported");
             std::exit(EXIT_FAILURE);
         }
     }

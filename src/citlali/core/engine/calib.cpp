@@ -28,19 +28,19 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
 
     // exit if any keys are missing
     if (!missing_header_keys.empty()) {
-        SPDLOG_ERROR("apt table is missing required columns {}", missing_header_keys);
+        logger->error("apt table is missing required columns {}", missing_header_keys);
         std::exit(EXIT_FAILURE);
     }
 
     // exit if any keys are empty
     if (!empty_header_keys.empty()) {
-        SPDLOG_ERROR("apt table columns are empty {}", empty_header_keys);
+        logger->error("apt table columns are empty {}", empty_header_keys);
         std::exit(EXIT_FAILURE);
     }
 
     // exit if reference frame is incorrect
     if (map_with_strs["Radesys"]!="altaz") {
-        SPDLOG_ERROR("apt table is not in altaz reference frame");
+        logger->error("apt table is not in altaz reference frame");
         std::exit(EXIT_FAILURE);
     }
 
@@ -127,9 +127,9 @@ void Calib::get_hwpr(const std::string &filepath, bool sim_obs) {
         }
 
         // check if hwp is enabled
-        vars.find(hwpr_install_v)->second.getVar(&run_hwp);
+        vars.find(hwpr_install_v)->second.getVar(&run_hwpr);
 
-        if (run_hwp) {
+        if (run_hwpr) {
             // get hwpr signal
             Eigen::Index n_pts = vars.find("Data.Hwp.")->second.getDim(0).getSize();
             hwpr_angle.resize(n_pts);
@@ -157,7 +157,7 @@ void Calib::get_hwpr(const std::string &filepath, bool sim_obs) {
         fo.close();
 
     } catch (NcException &e) {
-        SPDLOG_ERROR("{}", e.what());
+        logger->error("{}", e.what());
         throw DataIOError{fmt::format(
             "failed to load data from netCDF file {}", filepath)};
     }

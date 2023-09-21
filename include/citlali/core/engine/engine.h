@@ -149,7 +149,11 @@ struct beammapControls {
 
 class Engine: public reduControls, public reduClasses, public beammapControls {
 public:
+    // type for missing/invalid keys
     using key_vec_t = std::vector<std::vector<std::string>>;
+
+    // get logger
+    std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
 
     // date/time of each obs
     std::vector<std::string> date_obs;
@@ -335,7 +339,7 @@ void Engine::obsnum_setup() {
         // loop through and make sure average tau is not negative (implies wrong model)
         for (auto const& [key, val] : tau_freq) {
             if (val[0] < 0) {
-                SPDLOG_ERROR("calculated mean {} tau {} < 0",toltec_io.array_name_map[key], val[0]);
+                logger->error("calculated mean {} tau {} < 0",toltec_io.array_name_map[key], val[0]);
                 std::exit(EXIT_FAILURE);
             }
         }
@@ -344,7 +348,7 @@ void Engine::obsnum_setup() {
     // make sure there are matched fg's in apt if reducing in polarized mode
     if (rtcproc.run_polarization) {
         if ((calib.apt["fg"].array()==-1).all()) {
-            SPDLOG_ERROR("no matched freq groups.  cannot run in polarized mode");
+            logger->error("no matched freq groups.  cannot run in polarized mode");
             std::exit(EXIT_FAILURE);
         }
     }
@@ -405,7 +409,7 @@ void Engine::obsnum_setup() {
 
     // tod output mode require sequential policy so set explicitly
     if (run_tod_output || verbose_mode) {
-        SPDLOG_WARN("tod output mode require sequential policy");
+        logger->warn("tod output mode require sequential policy");
         parallel_policy = "seq";
     }
 
@@ -426,7 +430,7 @@ void Engine::obsnum_setup() {
 
 template<typename CT>
 void Engine::get_rtc_config(CT &config) {
-    SPDLOG_INFO("getting rtc config options");
+    logger->info("getting rtc config options");
     // get rtcproc config
     rtcproc.get_config(config, missing_keys, invalid_keys);
 
@@ -445,14 +449,14 @@ void Engine::get_rtc_config(CT &config) {
 
     // polarization is disabled for beammaps
     if (rtcproc.run_polarization && redu_type=="beammap") {
-        SPDLOG_ERROR("Beammap reductions do not currently support polarimetry mode");
+        logger->error("Beammap reductions do not currently support polarimetry mode");
         std::exit(EXIT_FAILURE);
     }
 }
 
 template<typename CT>
 void Engine::get_ptc_config(CT &config) {
-    SPDLOG_INFO("getting ptc config options");
+    logger->info("getting ptc config options");
     // get ptcproc config
     ptcproc.get_config(config, missing_keys, invalid_keys);
 
@@ -462,7 +466,7 @@ void Engine::get_ptc_config(CT &config) {
 
 template<typename CT>
 void Engine::get_mapmaking_config(CT &config) {
-    SPDLOG_INFO("getting mapmaking config options");
+    logger->info("getting mapmaking config options");
     // enable mapmaking?
     get_config_value(config, run_mapmaking, missing_keys, invalid_keys,
                      std::tuple{"mapmaking","enabled"});
@@ -543,7 +547,7 @@ void Engine::get_mapmaking_config(CT &config) {
 
 template<typename CT>
 void Engine::get_beammap_config(CT &config) {
-    SPDLOG_INFO("getting beammap config options");
+    logger->info("getting beammap config options");
     // max beammap iteration
     get_config_value(config, beammap_iter_max, missing_keys, invalid_keys,
                      std::tuple{"beammap","iter_max"});
@@ -607,7 +611,7 @@ void Engine::get_beammap_config(CT &config) {
 
 template<typename CT>
 void Engine::get_map_filter_config(CT &config) {
-    SPDLOG_INFO("getting map filtering config options");
+    logger->info("getting map filtering config options");
     // get wiener filter config options
     wiener_filter.get_config(config, missing_keys, invalid_keys);
 
@@ -622,7 +626,7 @@ void Engine::get_map_filter_config(CT &config) {
     // check if kernel is enabled
     if (wiener_filter.template_type=="kernel") {
         if (!rtcproc.run_kernel) {
-            SPDLOG_ERROR("wiener filter kernel template requires kernel");
+            logger->error("wiener filter kernel template requires kernel");
             std::exit(EXIT_FAILURE);
         }
         // copy the map fitter
@@ -632,7 +636,7 @@ void Engine::get_map_filter_config(CT &config) {
     }
     // make sure noise maps were enabled
     if (!run_noise) {
-        SPDLOG_ERROR("wiener filter requires noise maps");
+        logger->error("wiener filter requires noise maps");
         std::exit(EXIT_FAILURE);
     }
 
@@ -894,7 +898,7 @@ void Engine::get_astrometry_config(CT &config) {
         pointing_offsets_arcsec["alt"] = Eigen::Map<Eigen::VectorXd>(offset.data(),offset.size());
     }
     else {
-        SPDLOG_ERROR("pointing_offsets not found in config");
+        logger->error("pointing_offsets not found in config");
         std::exit(EXIT_FAILURE);
     }
 }
@@ -1141,7 +1145,7 @@ void Engine::create_tod_files() {
 
         // add hwpr
         if (rtcproc.run_polarization) {
-            if (calib.run_hwp) {
+            if (calib.run_hwpr) {
                 netCDF::NcVar hwpr_v = fo.addVar("hwpr",netCDF::ncDouble, n_pts_dim);
                 hwpr_v.putAtt("units","rad");
             }
@@ -1152,12 +1156,12 @@ void Engine::create_tod_files() {
 
 //template <TCDataKind tc_t>
 void Engine::cli_summary() {
-    SPDLOG_INFO("\n\nreduction info:\n\n");
-    SPDLOG_INFO("map buffer rows: {}", omb.n_rows);
-    SPDLOG_INFO("map buffer cols: {}", omb.n_cols);
-    SPDLOG_INFO("number of maps: {}", omb.signal.size());
-    SPDLOG_INFO("map units: {}", omb.sig_unit);
-    SPDLOG_INFO("polarized reduction: {}", rtcproc.run_polarization);
+    logger->info("\n\nreduction info:\n\n");
+    logger->info("map buffer rows: {}", omb.n_rows);
+    logger->info("map buffer cols: {}", omb.n_cols);
+    logger->info("number of maps: {}", omb.signal.size());
+    logger->info("map units: {}", omb.sig_unit);
+    logger->info("polarized reduction: {}", rtcproc.run_polarization);
 
     // total size of all maps
     double mb_size_total = 0;
@@ -1166,52 +1170,52 @@ void Engine::cli_summary() {
     double omb_size = 8*omb.n_rows*omb.n_cols*(omb.signal.size() + omb.weight.size() +
                                                omb.kernel.size() + omb.coverage.size())/1e9;
 
-    SPDLOG_INFO("estimated size of map buffer {} GB", omb_size);
+    logger->info("estimated size of map buffer {} GB", omb_size);
 
     mb_size_total = mb_size_total + omb_size;
 
     // print info if coadd is requested
     if (run_coadd) {
-        SPDLOG_INFO("coadd map buffer rows: {}", cmb.n_rows);
-        SPDLOG_INFO("coadd map buffer cols: {}", cmb.n_cols);
+        logger->info("coadd map buffer rows: {}", cmb.n_rows);
+        logger->info("coadd map buffer cols: {}", cmb.n_cols);
 
         // make a rough estimate of memory usage for coadd map buffer
         double cmb_size = 8*cmb.n_rows*cmb.n_cols*(cmb.signal.size() + cmb.weight.size() +
                                                    cmb.kernel.size() + cmb.coverage.size())/1e9;
 
-        SPDLOG_INFO("estimated size of coadd buffer {} GB", cmb_size);
+        logger->info("estimated size of coadd buffer {} GB", cmb_size);
 
         mb_size_total = mb_size_total + cmb_size;
 
         // output info if coadd noise maps are requested
         if (run_noise) {
-            SPDLOG_INFO("coadd map buffer noise maps: {}", cmb.n_noise);
+            logger->info("coadd map buffer noise maps: {}", cmb.n_noise);
             // make a rough estimate of memory usage for coadd noise maps
             double nmb_size = 8*cmb.n_rows*cmb.n_cols*cmb.noise.size()*cmb.n_noise/1e9;
-            SPDLOG_INFO("estimated size of noise buffer {} GB", nmb_size);
+            logger->info("estimated size of noise buffer {} GB", nmb_size);
             mb_size_total = mb_size_total + nmb_size;
         }
     }
     else {
         // output info if obs noise maps are requested
         if (run_noise) {
-            SPDLOG_INFO("observation map buffer noise maps: {}", omb.n_noise);
+            logger->info("observation map buffer noise maps: {}", omb.n_noise);
             // make a rough estimate of memory usage for obs noise maps
             double nmb_size = 8*omb.n_rows*omb.n_cols*omb.noise.size()*omb.n_noise/1e9;
-            SPDLOG_INFO("estimated size of noise buffer {} GB", nmb_size);
+            logger->info("estimated size of noise buffer {} GB", nmb_size);
             mb_size_total = mb_size_total + nmb_size;
         }
     }
 
-    SPDLOG_INFO("estimated size of all maps {} GB", mb_size_total);
-    SPDLOG_INFO("number of scans: {}\n\n",telescope.scan_indices.cols());
+    logger->info("estimated size of all maps {} GB", mb_size_total);
+    logger->info("number of scans: {}\n\n",telescope.scan_indices.cols());
 
 }
 
 template <TCDataKind tc_t>
 void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
 
-    SPDLOG_DEBUG("writing summary files for chunk {}",in.index.data);
+    logger->debug("writing summary files for chunk {}",in.index.data);
 
     std::string filename = "chunk_summary_" + std::to_string(in.index.data);
 
@@ -1354,14 +1358,14 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
         fo.close();
 
     } catch (NcException &e) {
-        SPDLOG_ERROR("{}", e.what());
+        logger->error("{}", e.what());
     }*/
 }
 
 template <typename map_buffer_t>
 void Engine::write_map_summary(map_buffer_t &mb) {
 
-    SPDLOG_DEBUG("writing map summary files");
+    logger->debug("writing map summary files");
 
     std::string filename = "map_summary";
     std::ofstream f;
@@ -1573,7 +1577,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // add instrument
     fits_io->at(i).pfits->pHDU().addKey("INSTRUME", "TolTEC", "Instrument");
     // add hwpr
-    fits_io->at(i).pfits->pHDU().addKey("HWPR", calib.run_hwp, "HWPR installed");
+    fits_io->at(i).pfits->pHDU().addKey("HWPR", calib.run_hwpr, "HWPR installed");
     // add telescope
     fits_io->at(i).pfits->pHDU().addKey("TELESCOP", "LMT", "Telescope");
     // add wavelength
@@ -2031,7 +2035,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         // filter noise maps
         if (run_noise) {
             tula::logging::progressbar pb(
-                [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 100,
+                [&](const auto &msg) { logger->info("{}", msg); }, 100,
                 "filtering noise");
 
             for (Eigen::Index j=0; j<mb.n_noise; j++) {
@@ -2041,7 +2045,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         }
 
         if (wiener_filter.normalize_error) {
-            SPDLOG_INFO("renormalizing errors");
+            logger->info("renormalizing errors");
             // get mean error from weight maps
             mb.calc_mean_err();
 
@@ -2054,15 +2058,15 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
             // re-normalize weight map
             mb.weight[i].noalias() = mb.weight[i]*noise_factor(i);
 
-            SPDLOG_INFO("mean rms {} ({})", static_cast<float>(mb.mean_rms(i)), mb.sig_unit);
+            logger->info("mean rms {} ({})", static_cast<float>(mb.mean_rms(i)), mb.sig_unit);
         }
 
         if (write_filtered_maps_partial) {
             // write maps immediately after filtering due to computation time
             write_maps(f_io,n_io,pmb,i);
 
-            SPDLOG_INFO("file has been written to:");
-            SPDLOG_INFO("{}.fits",f_io->at(map_index).filepath);
+            logger->info("file has been written to:");
+            logger->info("{}.fits",f_io->at(map_index).filepath);
 
             // explicitly destroy the fits file after we're done with it
             bool close_file = true;
@@ -2108,10 +2112,10 @@ void Engine::find_sources(map_buffer_t &mb) {
         auto sources_found = mb.find_sources(i);
 
         if (sources_found) {
-            SPDLOG_INFO("{} source(s) found", mb.n_sources.back());
+            logger->info("{} source(s) found", mb.n_sources.back());
         }
         else {
-            SPDLOG_INFO("no sources found");
+            logger->info("no sources found");
         }
     }
 

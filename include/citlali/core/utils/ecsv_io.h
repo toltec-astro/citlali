@@ -17,6 +17,10 @@
 // create Eigen::Matrix from ecsv file
 inline auto to_matrix_from_ecsv(std::string filepath) {
     namespace fs = std::filesystem;
+
+    // get logger
+    std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
+
     std::vector<std::string> header;
     Eigen::MatrixXd table;
 
@@ -27,13 +31,13 @@ inline auto to_matrix_from_ecsv(std::string filepath) {
             filepath, &header, &meta_);
 
     } catch (datatable::ParseError &e) {
-        SPDLOG_WARN("unable to read apt table file as ECSV {}: {}", filepath,
+        logger->warn("unable to read apt table file as ECSV {}: {}", filepath,
                     e.what());
         try {
             table = datatable::read<double, datatable::Format::ascii>(filepath,
                                                                       &header);
         } catch (datatable::ParseError &e) {
-            SPDLOG_WARN("unable to read apt table file as ASCII {}: {}",
+            logger->warn("unable to read apt table file as ASCII {}: {}",
                         filepath, e.what());
             throw e;
         }
@@ -46,18 +50,21 @@ template <typename Derived>
 inline void to_ecsv_from_matrix(std::string filepath, Eigen::DenseBase<Derived> &table, std::vector<std::string> header, YAML::Node meta) {
     namespace fs = std::filesystem;
 
+    // get logger
+    std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
+
     try {
         YAML::Node meta_;
         datatable::write<datatable::Format::ecsv>(filepath + ".ecsv", table, header, std::vector<int>{}, meta);
 
     } catch (datatable::ParseError &e) {
-        SPDLOG_WARN("unable to read apt table file as ECSV {}: {}", filepath,
+        logger->warn("unable to read apt table file as ECSV {}: {}", filepath,
                     e.what());
         try {
             datatable::write<datatable::Format::ascii>(filepath + ".ascii", table, header, std::vector<int>{});
 
         } catch (datatable::ParseError &e) {
-            SPDLOG_WARN("unable to write apt table file as ASCII {}: {}",
+            logger->warn("unable to write apt table file as ASCII {}: {}",
                         filepath, e.what());
             throw e;
         }
@@ -66,6 +73,9 @@ inline void to_ecsv_from_matrix(std::string filepath, Eigen::DenseBase<Derived> 
 
 inline auto to_map_from_ecsv_mixted_type(std::string filepath) {
     using namespace tula::ecsv;
+
+    // get logger
+    std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
 
     // vector to hold header
     std::vector<std::string> header;
@@ -138,7 +148,7 @@ inline auto to_map_from_ecsv_mixted_type(std::string filepath) {
         }
     }
     catch(...) {
-        SPDLOG_ERROR("cannot open input table");
+        logger->error("cannot open input table");
         std::exit(EXIT_FAILURE);
     }
 

@@ -124,7 +124,7 @@ public:
                 auto coeff = coeffs[fg(i)];
 
                 // rotate q and u by parallactic, elevation, and detector angle
-                if (!calib.run_hwp) {
+                if (!calib.run_hwpr) {
                     if (stokes_param == "Q") {
                         out.scans.data.col(i) = coeff*cos(2*(in.tel_data.data["ActParAng"].array() +
                                                        in.tel_data.data["TelElAct"].array() +

@@ -10,6 +10,9 @@ enum file_type_enum {
 template<file_type_enum file_type, typename ext_hdu_t>
 class fitsIO {
 public:
+    // get logger
+    std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
+
     // filepath
     std::string filepath;
 
@@ -28,7 +31,7 @@ public:
                 pfits.reset( new CCfits::FITS(filepath, CCfits::Read));
             }
             catch (CCfits::FITS::CantOpen) {
-                SPDLOG_ERROR("unable to open file {}", filepath);
+                logger->error("unable to open file {}", filepath);
                 std::exit(EXIT_FAILURE);
             }
         }
@@ -39,10 +42,10 @@ public:
                 pfits.reset( new CCfits::FITS(filepath + ".fits", CCfits::Write));
                 // write date
                 pfits->pHDU().writeDate();
-                //SPDLOG_INFO("created file {}", filepath + ".fits");
+                //logger->info("created file {}", filepath + ".fits");
             }
             catch (CCfits::FITS::CantCreate) {
-                SPDLOG_ERROR("unable to create file {}", filepath);
+                logger->error("unable to create file {}", filepath);
                 std::exit(EXIT_FAILURE);
             }
         }

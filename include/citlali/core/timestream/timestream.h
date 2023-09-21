@@ -240,6 +240,9 @@ struct TCData<kind_, std::enable_if_t<tula::enum_utils::is_compound_v<kind_>>>
 // class for tod processing
 class TCProc {
 public:
+    // get logger
+    std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
+
     // toltec io class for array names
     engine_utils::toltecIO toltec_io;
 
@@ -409,7 +412,7 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
                     }
                 }
 
-                SPDLOG_INFO("array {} iter {}: {}/{} dets below limit. {}/{} dets above limit.", key, n_iter,
+                logger->info("array {} iter {}: {}/{} dets below limit. {}/{} dets above limit.", key, n_iter,
                             n_low_dets, n_good_dets, n_high_dets, n_good_dets);
 
                 // increment iteration
@@ -647,10 +650,10 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
     NcVar det_ra_v = fo.getVar("det_ra");
     NcVar det_dec_v = fo.getVar("det_dec");
 
-    // append data
+    // append data (doing this per row is way faster than transposing
+    // and populating them at once)
     for (std::size_t i=0; i<TULA_SIZET(n_pts); ++i) {
         start_index[0] = n_pts_exists + i;
-
         // append scans
         Eigen::VectorXd scans = in.scans.data.row(i);
         signal_v.putVar(start_index, size, scans.data());
@@ -666,18 +669,14 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
         }
 
         // append detector latitudes
-        Eigen::VectorXd lat_t = lat.row(i);
-        det_lat_v.putVar(start_index, size, lat_t.data());
+        Eigen::VectorXd lat_row = lat.row(i);
+        det_lat_v.putVar(start_index, size, lat_row.data());
 
         // append detector longitudes
-        Eigen::VectorXd lon_t = lon.row(i);
-        det_lon_v.putVar(start_index, size, lon_t.data());
+        Eigen::VectorXd lon_row = lon.row(i);
+        det_lon_v.putVar(start_index, size, lon_row.data());
 
         if (pixel_axes == "icrs") {
-            // get current tangent plane row
-            Eigen::VectorXd lat_row = lat.row(i);
-            Eigen::VectorXd lon_row = lon.row(i);
-
             // get absolute pointing
             auto [dec, ra] = engine_utils::tangent_to_abs(lat_row, lon_row, cra, cdec);
 
@@ -702,7 +701,7 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
     }
 
     // append hwpr angle
-    if (calib.run_hwp) {
+    if (calib.run_hwpr) {
         NcVar hwpr_v = fo.getVar("hwpr");
         hwpr_v.putVar(start_index_tel, size_tel, in.hwpr_angle.data.data());
     }

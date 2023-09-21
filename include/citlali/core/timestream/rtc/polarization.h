@@ -142,7 +142,7 @@ public:
                 }
 
                 // check if hwp is requested
-                if (calib.run_hwp) {
+                if (calib.run_hwpr) {
                     if (stokes_param == "Q") {
                         out.scans.data.col(i) = q.array()*cos(4*in.hwp_angle.data.array()) +
                                                 u.array()*sin(4*in.hwp_angle.data.array());

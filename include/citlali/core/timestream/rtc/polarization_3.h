@@ -117,7 +117,7 @@ public:
                 auto rot_angle = 2*(in.tel_data.data["ActParAng"].array() + in.tel_data.data["TelElAct"].array() + ang);
 
                 // rotate q and u by parallactic, elevation, and detector/array angle
-                if (calib.run_hwp==false) {
+                if (calib.run_hwpr==false) {
                     if (stokes_param == "Q") {
                         if (fg_indices(i)==0) {
                             out.scans.data.col(i) = cos(rot_angle)*polarized_scans.col(i).array();

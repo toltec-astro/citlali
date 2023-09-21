@@ -11,6 +11,9 @@ namespace engine {
 
 class Telescope {
 public:
+    // get logger
+    std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
+
     // mapping pattern
     char obs_pgm_char [128] = "";
     // obs goal
