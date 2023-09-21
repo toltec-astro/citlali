@@ -273,7 +273,7 @@ auto Beammap::run_timestream() {
             if (run_tod_output) {
                 if (tod_output_type == "rtc" || tod_output_type=="both") {
                     logger->info("writing raw time chunk");
-                    rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], redu_type, telescope.pixel_axes,
+                    rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], map_grouping, telescope.pixel_axes,
                                              ptcdata.pointing_offsets_arcsec.data, det_indices, calib_scan);
                 }
             }
@@ -394,7 +394,7 @@ auto Beammap::run_loop() {
                 if (current_iter == beammap_tod_output_iter) {
                     for (Eigen::Index i=0; i<telescope.scan_indices.cols(); i++) {
                         // hardcoded to stokes I for now
-                        ptcproc.append_to_netcdf(ptcs[i], tod_filename["ptc_I"], redu_type, telescope.pixel_axes,
+                        ptcproc.append_to_netcdf(ptcs[i], tod_filename["ptc_I"], map_grouping, telescope.pixel_axes,
                                                  ptcs[i].pointing_offsets_arcsec.data, ptcs[i].det_indices.data,
                                                  calib_scans[i]);
                     }
@@ -965,16 +965,16 @@ auto Beammap::loop_pipeline() {
                 Eigen::MatrixXd ptc_lon(ptcs[i].scans.data.rows(), ptcs[i].scans.data.cols());
                 // loop through detectors
                 grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto j) {
-                    double az_off = 0;
-                    double el_off = 0;
-
+                    // det indices
                     auto det_index = det_indices(j);
-                    az_off = calib.apt["x_t"](det_index);
-                    el_off = calib.apt["y_t"](det_index);
+                    double az_off = calib.apt["x_t"](det_index);
+                    double el_off = calib.apt["y_t"](det_index);
 
                     // get tangent pointing
-                    auto [det_lat, det_lon] = engine_utils::calc_det_pointing(ptcs[i].tel_data.data, az_off, el_off,
-                                                                              telescope.pixel_axes, ptcs[i].pointing_offsets_arcsec.data);
+                    auto [det_lat, det_lon] = engine_utils::calc_det_pointing(ptcs[i].tel_data.data, az_off,
+                                                                              el_off, telescope.pixel_axes,
+                                                                              ptcs[i].pointing_offsets_arcsec.data,
+                                                                              map_grouping);
                     ptc_lat.col(j) = std::move(det_lat);
                     ptc_lon.col(j) = std::move(det_lon);
 

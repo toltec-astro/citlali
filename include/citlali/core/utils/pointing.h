@@ -8,19 +8,27 @@ namespace engine_utils {
 
 // get a single detector's pointing
 template <typename tel_data_t, typename pointing_offset_t>
-auto calc_det_pointing(tel_data_t &tel_data, const double az_off, const double el_off,
-                       const std::string pixel_axes, pointing_offset_t &pointing_offsets) {
+auto calc_det_pointing(tel_data_t &tel_data, double az_off, double el_off,
+                       const std::string pixel_axes, pointing_offset_t &pointing_offsets,
+                       const std::string map_grouping) {
+
+    // if making per detector maps, set offsets to zero
+    if (map_grouping=="detector") {
+        az_off = 0;
+        el_off = 0;
+    }
 
     // rows, cols pointing vectors
     Eigen::VectorXd lat, lon;
 
-    auto derot_elev = tel_data["TelElAct"].array();
+    // elevation for rotation
+    auto elev = tel_data["TelElAct"].array();
 
     // rotate altaz offsets by elevation angle and add pointing offsets
-    Eigen::VectorXd rot_az_off = cos(derot_elev)*az_off
-                                 - sin(derot_elev)*el_off + pointing_offsets["az"].array();
-    Eigen::VectorXd rot_alt_off = cos(derot_elev)*el_off
-                                  + sin(derot_elev)*az_off + pointing_offsets["alt"].array();
+    Eigen::VectorXd rot_az_off = cos(elev)*az_off
+                                 - sin(elev)*el_off + pointing_offsets["az"].array();
+    Eigen::VectorXd rot_alt_off = cos(elev)*el_off
+                                  + sin(elev)*az_off + pointing_offsets["alt"].array();
 
     // icrs map
     if (std::strcmp("icrs", pixel_axes.c_str()) == 0) {

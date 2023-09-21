@@ -207,22 +207,16 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     //for (Eigen::Index i=0; i<n_dets; i++) {
         // skip completely flagged detectors
         if ((in.flags.data.col(i).array()==0).any()) {
-            double az_off = 0;
-            double el_off = 0;
-
             // get detector positions from apt table if not in detector mapmaking mode
-            if (omb.map_grouping!="detector" || redu_type!="beammap") {
-                auto det_index = det_indices(i);
-                az_off = apt["x_t"](det_index);
-                el_off = apt["y_t"](det_index);
-            }
-
+            auto det_index = det_indices(i);
+            double az_off = apt["x_t"](det_index);
+            double el_off = apt["y_t"](det_index);
             // which map to assign detector to
             Eigen::Index map_index = map_indices(i);
 
             // get detector pointing
             auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off, pixel_axes,
-                                                              in.pointing_offsets_arcsec.data);
+                                                              in.pointing_offsets_arcsec.data, omb.map_grouping);
 
             // get map buffer row and col indices for lat and lon vectors
             Eigen::VectorXd omb_irow = lat.array()/omb.pixel_size_rad + (omb.n_rows)/2.;

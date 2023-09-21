@@ -322,7 +322,7 @@ void TimeOrderedDataProc<EngineType>::get_adc_snap_from_files(const RawObs &rawo
             fo.close();
 
         } catch (NcException &e) {
-            logger->error("{} adc data not found",data_item.filepath());
+            logger->warn("{} adc data not found",data_item.filepath());
         }
     }
 }
@@ -895,7 +895,7 @@ void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &m
             pointing_offsets_arcsec["alt"] = engine().pointing_offsets_arcsec["alt"].segment(si,sl);
 
             // don't need to find the offsets of this is a beammap
-            if (engine().map_grouping!="detector" || engine().redu_type!="beammap") {
+            if (engine().map_grouping!="detector") {
                 // loop through detectors
                 grppi::map(tula::grppi_utils::dyn_ex(engine().parallel_policy), det_in_vec, det_out_vec, [&](auto j) {
                     double az_off = engine().calib.apt["x_t"](j);
@@ -903,7 +903,7 @@ void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &m
 
                     // get pointing
                     auto [lat, lon] = engine_utils::calc_det_pointing(tel_data, az_off, el_off, engine().telescope.pixel_axes,
-                                                                      pointing_offsets_arcsec);
+                                                                      pointing_offsets_arcsec, engine().map_grouping);
                     // check for min and max
                     if (engine().calib.apt["flag"](j)==0) {
                         if (lat.minCoeff() < det_lat_limits(j,0)) {
@@ -925,7 +925,7 @@ void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &m
             else {
                 // calculate detector pointing for first detector only since offsets are zero
                 auto [lat, lon] = engine_utils::calc_det_pointing(tel_data, 0, 0, engine().telescope.pixel_axes,
-                                                                  pointing_offsets_arcsec);
+                                                                  pointing_offsets_arcsec, engine().map_grouping);
                 if (lat.minCoeff() < det_lat_limits(0,0)) {
                     det_lat_limits.col(0).setConstant(lat.minCoeff());
                 }

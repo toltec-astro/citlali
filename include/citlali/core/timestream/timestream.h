@@ -271,10 +271,11 @@ public:
                          Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string, std::string);
 
     // add or subtract gaussian to timestream
-    template <GaussType gauss_type, TCDataKind tcdata_t, typename DerivedB, typename DerivedC, typename apt_t, typename pointing_offset_t>
+    template <GaussType gauss_type, TCDataKind tcdata_t, typename DerivedB, typename DerivedC, typename apt_t,
+             typename pointing_offset_t>
     void add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &, Eigen::DenseBase<DerivedB> &, std::string &,
-                      std::string &, apt_t &, pointing_offset_t &, double,
-                      Eigen::Index, Eigen::Index, Eigen::DenseBase<DerivedC> &, Eigen::DenseBase<DerivedC> &);
+                      std::string &, apt_t &, pointing_offset_t &, double, Eigen::Index, Eigen::Index,
+                      Eigen::DenseBase<DerivedC> &, Eigen::DenseBase<DerivedC> &);
 
     // flag a region around the center of the map
     template <TCDataKind tcdata_t, class calib_t, typename Derived>
@@ -447,24 +448,24 @@ void TCProc::add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &in, Eigen::DenseBas
         // map index
         auto map_index = map_indices(i);
 
-        double az_off = 0;
-        double el_off = 0;
-
-        if (map_grouping!="detector") {
-            az_off = apt["x_t"](det_index);
-            el_off = apt["y_t"](det_index);
-        }
+        double az_off = apt["x_t"](det_index);
+        double el_off = apt["y_t"](det_index);
 
         // get pointing
-        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off,
-                                                          pixel_axes, pointing_offsets_arcsec);
+        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off, pixel_axes,
+                                                          pointing_offsets_arcsec, map_grouping);
 
-        // get parameters for current detector
+        // get parameters from current map
         double amp = params(map_index,0);
+        // rows
         double off_lat = params(map_index,2);
+        // cols
         double off_lon = params(map_index,1);
+        // row fwhm
         double sigma_lat = params(map_index,4);
+        // col fwhm
         double sigma_lon = params(map_index,3);
+        // rot angle
         double rot_ang = params(map_index,5);
 
         // use maximum of sigmas due to atmospheric cleaning
@@ -484,7 +485,7 @@ void TCProc::add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &in, Eigen::DenseBas
         sigma_lat = pixel_size_rad*sigma;
         sigma = pixel_size_rad*sigma;
 
-        // get angles
+        // get 2d elliptical gaussian angles
         auto cost2 = cos(rot_ang) * cos(rot_ang);
         auto sint2 = sin(rot_ang) * sin(rot_ang);
         auto sin2t = sin(2. * rot_ang);
@@ -505,6 +506,7 @@ void TCProc::add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &in, Eigen::DenseBas
                                  pow(lat(j) - off_lat, 2) * c);
         }
 
+        // check for bad fit?
         if (!gauss.array().isNaN().any()) {
             // add gaussian to detector scan
             in.scans.data.col(i) = in.scans.data.col(i).array() + gauss.array();
@@ -543,18 +545,12 @@ auto TCProc::mask_region(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, 
         // current detector index in apt
         auto det_index = det_indices_copy(i);
 
-        double az_off = 0;
-        double el_off = 0;
-
-        // get offsets
-        if (map_grouping!="detector") {
-            az_off = calib.apt["x_t"](det_index);
-            el_off = calib.apt["y_t"](det_index);
-        }
+        double az_off = calib.apt["x_t"](det_index);
+        double el_off = calib.apt["y_t"](det_index);
 
         // calc tangent plane pointing
-        auto [lat, lon] = engine_utils::calc_det_pointing(tel_data_copy, az_off, el_off,
-                                                          pixel_axes, pointing_offset_copy);
+        auto [lat, lon] = engine_utils::calc_det_pointing(tel_data_copy, az_off, el_off, pixel_axes,
+                                                          pointing_offset_copy, map_grouping);
 
         // distance to center of map
         auto dist = (lat.array().pow(2) + lon.array().pow(2)).sqrt();
@@ -572,7 +568,7 @@ auto TCProc::mask_region(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, 
 }
 
 template <TCDataKind tcdata_t, typename Derived, typename calib_t, typename pointing_offset_t>
-void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::MatrixXd> &in, std::string redu_type,
+void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::MatrixXd> &in, std::string map_grouping,
                                    std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec,
                                    Eigen::DenseBase<Derived> &det_indices, calib_t &calib) {
     using netCDF::NcDim;
@@ -589,18 +585,14 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
 
     // loop through detectors and get tangent plane pointing
     for (Eigen::Index i=0; i<n_dets; i++) {
-        double az_off = 0;
-        double el_off = 0;
-
-        if (redu_type!="beammap") {
-            auto det_index = det_indices(i);
-            az_off = calib.apt["x_t"](det_index);
-            el_off = calib.apt["y_t"](det_index);
-        }
+        // detector index in apt
+        auto det_index = det_indices(i);
+        double az_off = calib.apt["x_t"](det_index);
+        double el_off = calib.apt["y_t"](det_index);
 
         // get tangent pointing
-        auto [det_lat, det_lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off,
-                                                                  pixel_axes, pointing_offsets_arcsec);
+        auto [det_lat, det_lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off, pixel_axes,
+                                                                  pointing_offsets_arcsec, map_grouping);
         lat.col(i) = std::move(det_lat);
         lon.col(i) = std::move(det_lon);
     }

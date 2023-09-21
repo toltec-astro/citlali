@@ -112,8 +112,6 @@ int run(const rc_t &rc) {
     // get current level
     auto log_level = spdlog::get_level();
 
-    SPDLOG_INFO("log_level {}", log_level);
-
     // vector to hold sink pointers
     std::vector<spdlog::sink_ptr> sinks_default;
     // create sink for default logger
@@ -139,6 +137,8 @@ int run(const rc_t &rc) {
 
     // set global level
     spdlog::set_level(log_level);
+    // set pattern for logger
+    //spdlog::set_pattern("[%H:%M:%S %z] [%s] %v");
 
     logger->info("use KIDs data spec: {}", predefs::kidsdata::name);
 
@@ -366,7 +366,7 @@ int run(const rc_t &rc) {
                     // overwrite map center
                     if (todproc.engine().omb.crval_config[0]!=0 && todproc.engine().omb.crval_config[1]!=0) {
                         logger->info("overwriting map center to ({}, {})",todproc.engine().omb.crval_config[0],
-                                    todproc.engine().omb.crval_config[1]);
+                                     todproc.engine().omb.crval_config[1]);
                         todproc.engine().telescope.tel_header["Header.Source.Ra"].setConstant(todproc.engine().omb.crval_config[0]);
                         todproc.engine().telescope.tel_header["Header.Source.Dec"].setConstant(todproc.engine().omb.crval_config[1]);
                     }

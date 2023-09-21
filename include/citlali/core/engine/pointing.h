@@ -200,7 +200,7 @@ auto Pointing::run() {
             if (run_tod_output) {
                 if (tod_output_type == "rtc" || tod_output_type=="both") {
                     logger->info("writing raw time chunk");
-                    rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], redu_type, telescope.pixel_axes,
+                    rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], map_grouping, telescope.pixel_axes,
                                              ptcdata.pointing_offsets_arcsec.data, det_indices, calib);
                 }
             }
@@ -229,7 +229,7 @@ auto Pointing::run() {
             if (run_tod_output) {
                 if (tod_output_type == "ptc" || tod_output_type == "both") {
                     logger->info("writing processed time chunk");
-                    ptcproc.append_to_netcdf(ptcdata, tod_filename["ptc_" + stokes_param], redu_type, telescope.pixel_axes,
+                    ptcproc.append_to_netcdf(ptcdata, tod_filename["ptc_" + stokes_param], map_grouping, telescope.pixel_axes,
                                              ptcdata.pointing_offsets_arcsec.data, det_indices, calib);
                 }
             }
