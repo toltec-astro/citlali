@@ -211,7 +211,7 @@ auto Pointing::run() {
 
             // run cleaning
             SPDLOG_INFO("processed time chunk processing");
-            ptcproc.run(ptcdata, ptcdata, calib, det_indices, stokes_param);
+            ptcproc.run(ptcdata, ptcdata, calib, det_indices, stokes_param, telescope.pixel_axes, map_grouping);
 
             // remove outliers after clean
             calib_scan = ptcproc.remove_bad_dets(ptcdata, calib_scan, det_indices, nw_indices, array_indices, redu_type, map_grouping);

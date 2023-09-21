@@ -30,7 +30,8 @@ public:
 
     // get config file
     template <typename config_t>
-    void get_config(config_t &, std::vector<std::vector<std::string>> &, std::vector<std::vector<std::string>> &);
+    void get_config(config_t &, std::vector<std::vector<std::string>> &,
+                    std::vector<std::vector<std::string>> &);
 
     // subtract detector means
     void subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &);
@@ -40,7 +41,7 @@ public:
     void run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
              TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
              calib_type &, Eigen::DenseBase<Derived> &,
-             std::string);
+             std::string, std::string, std::string);
 
     // calculate detector weights
     template <typename apt_type, class tel_type, typename Derived>
@@ -96,6 +97,9 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         // clean polarized tods
         get_config_value(config, run_stokes_clean, missing_keys, invalid_keys,
                          std::tuple{"timestream","processed_time_chunk","clean","clean_polarized_time_chunks"});
+        // mask radius in arcseconds
+        get_config_value(config, mask_radius_arcsec, missing_keys, invalid_keys,
+                         std::tuple{"timestream","processed_time_chunk","clean","mask_radius_arcsec"});
     }
 }
 
@@ -128,7 +132,8 @@ void PTCProc::subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in) {
 template <class calib_type, typename Derived>
 void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                   TCData<TCDataKind::PTC, Eigen::MatrixXd> &out, calib_type &calib,
-                  Eigen::DenseBase<Derived> &det_indices, std::string stokes_param) {
+                  Eigen::DenseBase<Derived> &det_indices, std::string stokes_param,
+                  std::string pixel_axes, std::string map_grouping) {
 
     if (run_clean) {
         // number of samples
@@ -194,20 +199,32 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                     // size of block for each grouping
                     auto n_dets = std::get<1>(val) - std::get<0>(val);
 
+                    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> masked_flags;
+
+                    // mask region
+                    if (mask_radius_arcsec > 0) {
+                        SPDLOG_INFO("mask_radius_arcsec {}",mask_radius_arcsec);
+                        masked_flags = mask_region(in, calib, det_indices, pixel_axes, map_grouping, n_pts, n_dets, start_index);
+                    }
+                    else {
+                        masked_flags = in.flags.data.block(0, start_index, n_pts, n_dets);
+                    }
+
+                    // get the block of in flags that corresponds to the current array
+                    /*Eigen::Ref<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> in_flags_ref =
+                        in.flags.data.block(0, start_index, n_pts, n_dets);
+
+                    Eigen::Map<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>, 0, Eigen::OuterStride<> >
+                        in_flags(in_flags_ref.data(), in_flags_ref.rows(), in_flags_ref.cols(),
+                                 Eigen::OuterStride<>(in_flags_ref.outerStride()));
+                    */
+
                     // get the reference block of in scans that corresponds to the current array
                     Eigen::Ref<Eigen::MatrixXd> in_scans_ref = in.scans.data.block(0, start_index, n_pts, n_dets);
 
                     Eigen::Map<Eigen::MatrixXd, 0, Eigen::OuterStride<>>
                         in_scans(in_scans_ref.data(), in_scans_ref.rows(), in_scans_ref.cols(),
                                  Eigen::OuterStride<>(in_scans_ref.outerStride()));
-
-                    // get the block of in flags that corresponds to the current array
-                    Eigen::Ref<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> in_flags_ref =
-                        in.flags.data.block(0, start_index, n_pts, n_dets);
-
-                    Eigen::Map<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>, 0, Eigen::OuterStride<> >
-                        in_flags(in_flags_ref.data(), in_flags_ref.rows(), in_flags_ref.cols(),
-                                 Eigen::OuterStride<>(in_flags_ref.outerStride()));
 
                     // get the block of out scans that corresponds to the current array
                     Eigen::Ref<Eigen::MatrixXd> out_scans_ref = out.scans.data.block(0, start_index, n_pts, n_dets);
@@ -221,7 +238,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 
                     // check if any good flags
                     if ((apt_flags.array()==0).any()) {
-                        auto [evals, evecs] = cleaner.calc_eig_values<timestream::Cleaner::SpectraBackend>(in_scans, in_flags, apt_flags,
+                        auto [evals, evecs] = cleaner.calc_eig_values<timestream::Cleaner::SpectraBackend>(in_scans, masked_flags, apt_flags,
                                                                                                            cleaner.n_eig_to_cut[arr_index](indx));
                         SPDLOG_DEBUG("evals {}", evals);
                         SPDLOG_DEBUG("evecs {}", evecs);
@@ -235,7 +252,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                         out.evecs.data[indx].push_back(std::move(evc));
 
                         // remove eigenvalues from the data and reconstruct the tod
-                        cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_scans, in_flags, evals, evecs, out_scans,
+                        cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_scans, masked_flags, evals, evecs, out_scans,
                                                                                        cleaner.n_eig_to_cut[arr_index](indx));
 
                         if (in.kernel.data.size()!=0) {
@@ -256,7 +273,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                                                Eigen::OuterStride<>(out_kernel_ref.outerStride()));
 
                                 // remove eigenvalues from the kernel and reconstruct the tod
-                                cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_kernel, in_flags, evals, evecs, out_kernel,
+                                cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_kernel, masked_flags, evals, evecs, out_kernel,
                                                                                                cleaner.n_eig_to_cut[arr_index](indx));
                         }
                     }

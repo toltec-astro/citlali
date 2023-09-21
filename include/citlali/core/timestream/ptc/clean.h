@@ -121,7 +121,6 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
                               Eigen::DenseBase<DerivedC> &apt_flags, const Eigen::Index group_n_eig) {
 
     // dimensions
-    Eigen::Index n_pts = scans.rows();
     Eigen::Index n_dets = scans.cols();
 
     // make copy of flags

@@ -343,7 +343,7 @@ void Engine::obsnum_setup() {
 
     // make sure there are matched fg's in apt if reducing in polarized mode
     if (rtcproc.run_polarization) {
-        if ((calib.apt["fg"].array()!=-1).any()) {
+        if ((calib.apt["fg"].array()==-1).all()) {
             SPDLOG_ERROR("no matched freq groups.  cannot run in polarized mode");
             std::exit(EXIT_FAILURE);
         }

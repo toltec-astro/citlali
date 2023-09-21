@@ -255,6 +255,9 @@ public:
     // upper and lower limits for outliers
     double lower_weight_factor, upper_weight_factor;
 
+    // mask radius in arcseconds
+    double mask_radius_arcsec;
+
     // get limits for a particular grouping
     template <typename Derived, class calib_t>
     auto get_grouping(std::string, Eigen::DenseBase<Derived> &, calib_t &, int);
@@ -269,6 +272,11 @@ public:
     void add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &, Eigen::DenseBase<DerivedB> &, std::string &,
                       std::string &, apt_t &, pointing_offset_t &, double,
                       Eigen::Index, Eigen::Index, Eigen::DenseBase<DerivedC> &, Eigen::DenseBase<DerivedC> &);
+
+    // flag a region around the center of the map
+    template <TCDataKind tcdata_t, class calib_t, typename Derived>
+    auto mask_region(TCData<tcdata_t, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
+                     std::string, std::string, int, int, int);
 
     // append time chunk params common to rtcs and ptcs
     template <TCDataKind tcdata_t, typename Derived, typename calib_t, typename pointing_offset_t>
@@ -487,7 +495,7 @@ void TCProc::add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &in, Eigen::DenseBas
         //auto dist = ((lat.array() - off_lat).pow(2) + (lon.array() - off_lon).pow(2)).sqrt();
 
         Eigen::VectorXd gauss(n_pts);
-        // make gaussian
+        // make timestream from 2d gaussian
         for (Eigen::Index j=0; j<n_pts; j++) {
             gauss(j) = amp*exp(pow(lon(j) - off_lon, 2) * a +
                                  (lon(j) - off_lon) * (lat(j) - off_lat) * b +
@@ -499,6 +507,65 @@ void TCProc::add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &in, Eigen::DenseBas
             in.scans.data.col(i) = in.scans.data.col(i).array() + gauss.array();
         }
     }
+}
+
+template <TCDataKind tcdata_t, class calib_t, typename Derived>
+auto TCProc::mask_region(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
+                         std::string pixel_axes, std::string map_grouping, int n_pts, int n_dets, int start_index) {
+
+    // copy of tel data
+    std::map<std::string, Eigen::VectorXd> tel_data_copy;
+
+    // populate copy of tel data
+    for (const auto &[key,val]: in.tel_data.data) {
+        tel_data_copy[key] = in.tel_data.data[key].segment(0,n_pts);
+    }
+
+    // make a copy of det indices
+    Eigen::VectorXI det_indices_copy = det_indices.segment(start_index,n_dets);
+
+    // copy of pointing offsets
+    std::map<std::string, Eigen::VectorXd> pointing_offset_copy;
+
+    // populate copy of pointing offsets
+    for (const auto &[key,val]: in.pointing_offsets_arcsec.data) {
+        pointing_offset_copy[key] = in.pointing_offsets_arcsec.data[key].segment(0,n_pts);
+    }
+
+    // make a copy of the timestream flags
+    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> masked_flags = in.flags.data.block(0, start_index, n_pts, n_dets);
+
+    // loop through detectors
+    for (Eigen::Index i=0; i<n_dets; i++) {
+        // current detector index in apt
+        auto det_index = det_indices_copy(i);
+
+        double az_off = 0;
+        double el_off = 0;
+
+        // get offsets
+        if (map_grouping!="detector") {
+            az_off = calib.apt["x_t"](det_index);
+            el_off = calib.apt["y_t"](det_index);
+        }
+
+        // calc tangent plane pointing
+        auto [lat, lon] = engine_utils::calc_det_pointing(tel_data_copy, az_off, el_off,
+                                                          pixel_axes, pointing_offset_copy);
+
+        // distance to center of map
+        auto dist = (lat.array().pow(2) + lon.array().pow(2)).sqrt();
+
+        // loop through samples
+        for (Eigen::Index j=0; j<n_pts; j++) {
+            // flag samples within radius as bad
+            if (dist(j) < mask_radius_arcsec*ASEC_TO_RAD) {
+                masked_flags(j,i) = 1;
+            }
+        }
+    }
+
+    return std::move(masked_flags);
 }
 
 template <TCDataKind tcdata_t, typename Derived, typename calib_t, typename pointing_offset_t>

@@ -348,7 +348,7 @@ auto Beammap::run_loop() {
 
             // clean the maps (hardcode stokes I)
             SPDLOG_INFO("processed time chunk processing");
-            ptcproc.run(ptcs[i], ptcs[i], calib_scans[i], ptcs[i].det_indices.data, "I");
+            ptcproc.run(ptcs[i], ptcs[i], calib_scans[i], ptcs[i].det_indices.data, "I", telescope.pixel_axes, map_grouping);
 
             // remove outliers after clean (only flags calib_scan apt)
             calib_scans[i] = ptcproc.remove_bad_dets(ptcs[i], calib_scans[i], ptcs[i].det_indices.data, ptcs[i].nw_indices.data,

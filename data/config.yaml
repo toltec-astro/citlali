@@ -55,7 +55,7 @@ inputs: # list of inputs and related data
           - axes_name: alt
             value_arcsec: [0.0]
         type: astrometry
-      - filepath: /path/to/data/apt.ecsv # APT table (ignored for redu_type=beammap)
+      - filepath: /path/to/data/apt.ecsv # APT table (ignored for redu_type=beammap or mapmaking grouping=det)
         meta:
           interface: apt
         type: array_prop_table
@@ -210,8 +210,9 @@ timestream: # timestream reduction parameters
       enabled: false # enable or disable rtc TOD output
   processed_time_chunk:
     clean: # remove (hopefully) the atmospheric signal
-      stddev_limit: 0.0 # standard deviation cut for cleaning (only used if >0)
       enabled: false # enable or disable cleaning
+      stddev_limit: 0.0 # standard deviation cut for cleaning (only used if >0)
+      mask_radius_arcsec: 0.0 # radius of region around the map center to mask during cleaning
       grouping: [array] # clean grouping (array, nw, all)
       n_eig_to_cut: # number of eigenvalues to remove (if stddev_limit >0, calc this many eigs, if this is 0, calc all eigs) 
         a1100: [3]
