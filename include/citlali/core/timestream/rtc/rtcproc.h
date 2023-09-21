@@ -62,6 +62,11 @@ public:
     // remove flagged detectors
     template <typename apt_t, typename Derived>
     void remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, apt_t &, Eigen::DenseBase<Derived> &);
+
+    // append time chunk to tod netcdf file
+    template <typename Derived, typename calib_t, typename pointing_offset_t>
+    void append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, std::string, std::string, std::string &,
+                          pointing_offset_t &, Eigen::DenseBase<Derived> &, calib_t &);
 };
 
 // get config file
@@ -547,6 +552,31 @@ auto RTCProc::remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
     calib_scan.setup();
 
     return std::move(calib_scan);
+}
+
+template <typename Derived, typename calib_t, typename pointing_offset_t>
+void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std::string filepath, std::string redu_type,
+                               std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec, Eigen::DenseBase<Derived> &det_indices,
+                               calib_t &calib) {
+    using netCDF::NcDim;
+    using netCDF::NcFile;
+    using netCDF::NcType;
+    using netCDF::NcVar;
+    using namespace netCDF::exceptions;
+
+    try {
+        // open netcdf file
+        NcFile fo(filepath, netCDF::NcFile::write);
+
+        // append common time chunk variables
+        append_base_to_netcdf(fo, in, redu_type, pixel_axes, pointing_offsets_arcsec, det_indices, calib);
+
+        fo.sync();
+        fo.close();
+
+    } catch (NcException &e) {
+        SPDLOG_ERROR("{}", e.what());
+    }
 }
 
 } // namespace timestream

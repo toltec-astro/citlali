@@ -53,9 +53,9 @@ public:
                        Eigen::DenseBase<Derived> &det_indices);
 
     // append time chunk to tod netcdf file
-    template <typename Derived, typename apt_t, typename pointing_offset_t>
+    template <typename Derived, typename calib_t, typename pointing_offset_t>
     void append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, std::string, std::string, std::string &,
-                          pointing_offset_t &, Eigen::DenseBase<Derived> &, apt_t &, bool);
+                          pointing_offset_t &, Eigen::DenseBase<Derived> &, calib_t &);
 };
 
 // get config file
@@ -419,31 +419,10 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
     }
 }
 
-template <typename Derived, typename apt_t, typename pointing_offset_t>
+template <typename Derived, typename calib_t, typename pointing_offset_t>
 void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std::string filepath, std::string redu_type,
                               std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec, Eigen::DenseBase<Derived> &det_indices,
-                              apt_t &apt, bool run_hwpr) {
-
-    // tangent plane pointing for each detector
-    Eigen::MatrixXd lats(in.scans.data.rows(), in.scans.data.cols()), lons(in.scans.data.rows(), in.scans.data.cols());
-
-    // loop through detectors and get pointing
-    for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
-        double az_off = 0;
-        double el_off = 0;
-
-        if (redu_type!="beammap") {
-            auto det_index = det_indices(i);
-            az_off = apt["x_t"](det_index);
-            el_off = apt["y_t"](det_index);
-        }
-
-        // get tangent pointing
-        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off,
-                                                          pixel_axes, pointing_offsets_arcsec);
-        lats.col(i) = std::move(lat);
-        lons.col(i) = std::move(lon);
-    }
+                              calib_t &calib) {
 
     using netCDF::NcDim;
     using netCDF::NcFile;
@@ -453,202 +432,76 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
 
     try {
         // open netcdf file
-        netCDF::NcFile fo(filepath, netCDF::NcFile::write);
-        // get variables
-        auto vars = fo.getVars();
+        NcFile fo(filepath, netCDF::NcFile::write);
 
-        // get absolute coords
-        double cra, cdec;
-        vars.find("SourceRa")->second.getVar(&cra);
-        vars.find("SourceDec")->second.getVar(&cdec);
+        // append common time chunk variables
+        append_base_to_netcdf(fo, in, redu_type, pixel_axes, pointing_offsets_arcsec, det_indices, calib);
 
         // get dimensions
-        NcDim n_pts_dim = fo.getDim("n_pts");
         NcDim n_dets_dim = fo.getDim("n_dets");
 
-        // number of samples currently in file
-        unsigned long n_pts_exists = n_pts_dim.getSize();
         // number of detectors currently in file
         unsigned long n_dets_exists = n_dets_dim.getSize();
 
-        // start indices for data
-        std::vector<std::size_t> start_index = {n_pts_exists, 0};
-        // size for data
-        std::vector<std::size_t> size = {1, n_dets_exists};
+        // append weights
+        std::vector<std::size_t> start_index_weights = {static_cast<unsigned long>(in.index.data), 0};
+        std::vector<std::size_t> size_weights = {1, n_dets_exists};
 
-        // start index for telescope data
-        std::vector<std::size_t> start_index_tel = {n_pts_exists};
-        // size for telescope data
-        std::vector<std::size_t> size_tel = {1};
+        // get weight variable
+        NcVar weights_v = fo.getVar("weights");
 
-        // start index for apt table
-        std::vector<std::size_t> start_index_apt = {0};
-        // size for apt
-        std::vector<std::size_t> size_apt = {1};
+        // add weights to tod output
+        weights_v.putVar(start_index_weights, size_weights, in.weights.data.data());
 
-        // get timestream variables
-        NcVar signal_v = fo.getVar("signal");
-        NcVar flags_v = fo.getVar("flags");
-        NcVar kernel_v = fo.getVar("kernel");
+        // get number of eigenvalues to save
+        NcDim n_eigs_dim = fo.getDim("n_eigs");
+        netCDF::NcDim n_eig_grp_dim = fo.getDim("n_eig_grp");
 
-        // detector tangent plane pointing
-        NcVar det_lat_v = fo.getVar("det_lat");
-        NcVar det_lon_v = fo.getVar("det_lon");
+        // if eigenvalue dimension is null, add it
+        if (n_eig_grp_dim.isNull()) {
+            n_eig_grp_dim = fo.addDim("n_eig_grp",in.evals.data[0].size());
+        }
 
-        // detector absolute pointing
-        NcVar det_ra_v = fo.getVar("det_ra");
-        NcVar det_dec_v = fo.getVar("det_dec");
+        // dimensions for eigenvalue data
+        std::vector<netCDF::NcDim> eval_dims = {n_eig_grp_dim, n_eigs_dim};
 
-        // append weights if output type is ptc
-        if (in.name == "ptc") {
-            std::vector<std::size_t> start_index_weights = {static_cast<unsigned long>(in.index.data), 0};
-            std::vector<std::size_t> size_weights = {1, n_dets_exists};
+        // loop through cleaner gropuing
+        for (Eigen::Index i=0; i<in.evals.data.size(); i++) {
+            NcVar eval_v = fo.addVar("evals_" + cleaner.grouping[i] + "_" + std::to_string(i) +
+                                         "_chunk_" + std::to_string(in.index.data), netCDF::ncDouble,eval_dims);
+            std::vector<std::size_t> start_eig_index = {0, 0};
+            std::vector<std::size_t> size = {1, TULA_SIZET(cleaner.n_calc)};
 
-            // get weight variable
-            NcVar weights_v = fo.getVar("weights");
-
-            // add weights to tod output
-            weights_v.putVar(start_index_weights, size_weights, in.weights.data.data());
-
-            // get number of eigenvalues to save
-            NcDim n_eigs_dim = fo.getDim("n_eigs");
-            netCDF::NcDim n_eig_grp_dim = fo.getDim("n_eig_grp");
-
-            if (n_eig_grp_dim.isNull()) {
-                n_eig_grp_dim = fo.addDim("n_eig_grp",in.evals.data[0].size());
-            }
-
-            std::vector<netCDF::NcDim> eval_dims = {n_eig_grp_dim, n_eigs_dim};
-
-            // loop through cleaner gropuing
-            for (Eigen::Index i=0; i<in.evals.data.size(); i++) {
-                NcVar eval_v = fo.addVar("evals_" + cleaner.grouping[i] + "_" + std::to_string(i) +
-                                             "_chunk_" + std::to_string(in.index.data), netCDF::ncDouble,eval_dims);
-                std::vector<std::size_t> start_eig_index = {0, 0};
-                std::vector<std::size_t> size = {1, TULA_SIZET(cleaner.n_calc)};
-
-                // loop through eigenvalues in current group
-                for (const auto &evals: in.evals.data[i]) {
-                    eval_v.putVar(start_eig_index,size,evals.data());
-                    start_eig_index[0] += 1;
-                }
-            }
-
-            // number of dimensions for eigenvectors
-            std::vector<netCDF::NcDim> eig_dims = {n_dets_dim, n_eigs_dim};
-
-            // loop through cleaner gropuing
-            for (Eigen::Index i=0; i<in.evecs.data.size(); i++) {
-                // start at first row and col
-                std::vector<std::size_t> start_eig_index = {0, 0};
-
-                NcVar evec_v = fo.addVar("evecs_" + cleaner.grouping[i] + "_" + std::to_string(i) + "_chunk_" +
-                                             std::to_string(in.index.data),netCDF::ncDouble,eig_dims);
-
-                // loop through eigenvectors in current group
-                for (const auto &evecs: in.evecs.data[i]) {
-                    std::vector<std::size_t> size = {TULA_SIZET(evecs.rows()), TULA_SIZET(cleaner.n_calc)};
-
-                    // transpose eigenvectors
-                    Eigen::MatrixXd ev = evecs.transpose();
-                    evec_v.putVar(start_eig_index, size, ev.data());
-
-                    // increment start
-                    start_eig_index[0] += TULA_SIZET(evecs.rows());
-                }
+            // loop through eigenvalues in current group
+            for (const auto &evals: in.evals.data[i]) {
+                eval_v.putVar(start_eig_index,size,evals.data());
+                start_eig_index[0] += 1;
             }
         }
 
-        // append data
-        for (std::size_t i=0; i<TULA_SIZET(in.scans.data.rows()); ++i) {
-            start_index[0] = n_pts_exists + i;
-            start_index_tel[0] = n_pts_exists + i;
+        // number of dimensions for eigenvectors
+        std::vector<netCDF::NcDim> eig_dims = {n_dets_dim, n_eigs_dim};
 
-            // append scans
-            Eigen::VectorXd scans = in.scans.data.row(i);
-            signal_v.putVar(start_index, size, scans.data());
+        // loop through cleaner gropuing
+        for (Eigen::Index i=0; i<in.evecs.data.size(); i++) {
+            // start at first row and col
+            std::vector<std::size_t> start_eig_index = {0, 0};
 
-            // append flags
-            Eigen::VectorXi flags_int = in.flags.data.row(i).cast<int> ();
-            flags_v.putVar(start_index, size, flags_int.data());
+            NcVar evec_v = fo.addVar("evecs_" + cleaner.grouping[i] + "_" + std::to_string(i) + "_chunk_" +
+                                         std::to_string(in.index.data),netCDF::ncDouble,eig_dims);
 
-            // append kernel
-            if (!kernel_v.isNull()) {
-                Eigen::VectorXd kernel = in.kernel.data.row(i);
-                kernel_v.putVar(start_index, size, kernel.data());
-            }
+            // loop through eigenvectors in current group
+            for (const auto &evecs: in.evecs.data[i]) {
+                std::vector<std::size_t> size = {TULA_SIZET(evecs.rows()), TULA_SIZET(cleaner.n_calc)};
 
-            // append detector latitudes
-            Eigen::VectorXd lats_row = lats.row(i);
-            det_lat_v.putVar(start_index, size, lats_row.data());
+                // transpose eigenvectors
+                Eigen::MatrixXd ev = evecs.transpose();
+                evec_v.putVar(start_eig_index, size, ev.data());
 
-            // append detector longitudes
-            Eigen::VectorXd lons_row = lons.row(i);
-            det_lon_v.putVar(start_index, size, lons_row.data());
-
-            if (pixel_axes == "icrs") {
-                // get absolute pointing
-                auto [decs, ras] = engine_utils::tangent_to_abs(lats_row, lons_row, cra, cdec);
-
-                // append detector ra
-                det_ra_v.putVar(start_index, size, ras.data());
-
-                // append detector dec
-                det_dec_v.putVar(start_index, size, decs.data());
-            }
-
-            // append telescope
-            for (auto const& x: in.tel_data.data) {
-                NcVar tel_data_v = fo.getVar(x.first);
-                tel_data_v.putVar(start_index_tel, size_tel, x.second.row(i).data());
-            }
-
-            // append pointing offsets
-            for (auto const& x: in.pointing_offsets_arcsec.data) {
-                NcVar offset_v = fo.getVar("pointing_offset_"+x.first);
-                offset_v.putVar(start_index_tel, size_tel, x.second.row(i).data());
-            }
-
-            // append hwpr angle
-            if (run_hwpr) {
-                NcVar hwpr_v = fo.getVar("hwpr");
-                hwpr_v.putVar(start_index_tel, size_tel, in.hwpr_angle.data.row(i).data());
+                // increment start
+                start_eig_index[0] += TULA_SIZET(evecs.rows());
             }
         }
-
-        // overwrite apt table
-        for (auto const& x: apt) {
-            netCDF::NcVar apt_v = fo.getVar("apt_" + x.first);
-            for (std::size_t i=0; i<TULA_SIZET(n_dets_exists); ++i) {
-                start_index_apt[0] = i;
-                apt_v.putVar(start_index_apt, size_apt, &apt[x.first](det_indices(i)));
-            }
-        }
-
-        // vector to hold current scan indices
-        Eigen::VectorXd scan_indices(2);
-
-        // if not on first scan, grab last scan and add size of current scan
-        if (in.index.data > 0) {
-            // start indices for data
-            std::vector<std::size_t> scan_indices_start_index = {TULA_SIZET(in.index.data-1), 0};
-            // size for data
-            std::vector<std::size_t> scan_indices_size = {1, 2};
-            vars.find("scan_indices")->second.getVar(scan_indices_start_index,scan_indices_size,scan_indices.data());
-
-            scan_indices = scan_indices.array() + in.scans.data.rows();
-        }
-        // otherwise, use size of this scan
-        else {
-            scan_indices(0) = 0;
-            scan_indices(1) = in.scans.data.rows() - 1;
-        }
-
-        // add current scan indices row
-        std::vector<std::size_t> scan_indices_start_index = {TULA_SIZET(in.index.data), 0};
-        std::vector<std::size_t> scan_indices_size = {1, 2};
-        NcVar scan_indices_v = fo.getVar("scan_indices");
-        scan_indices_v.putVar(scan_indices_start_index, scan_indices_size,scan_indices.data());
 
         fo.sync();
         fo.close();

@@ -378,24 +378,27 @@ int run(const rc_t &rc) {
                         SPDLOG_INFO("calculating number of maps");
                         todproc.calc_map_num();
 
-                        // determine map sizes
-                        SPDLOG_INFO("calculating map dimensions");
-                        todproc.calc_map_size(map_extents, map_coords, map_coords_abs);
+                        // determine omb map sizes
+                        SPDLOG_INFO("calculating omb dimensions");
+                        todproc.calc_omb_size(map_extents, map_coords, map_coords_abs);
                     }
                 }
 
                 if (todproc.engine().run_coadd) {
+                    // get size of coadd buffer
+                    SPDLOG_DEBUG("calculating cmb dimensions");
+                    todproc.calc_cmb_size(map_coords, map_coords_abs);
                     // make coadd buffer
-                    SPDLOG_DEBUG("allocating CMB");
-                    todproc.allocate_cmb(map_extents, map_coords, map_coords_abs);
+                    SPDLOG_DEBUG("allocating cmb");
+                    todproc.allocate_cmb();
                     // make noise maps for coadd map buffer
                     if (todproc.engine().run_noise) {
-                        SPDLOG_DEBUG("allocating NMB");
+                        SPDLOG_DEBUG("allocating nmb");
                         todproc.allocate_nmb(todproc.engine().cmb);
                     }
 
                     // create output coadded map files
-                    SPDLOG_DEBUG("create cmb filenames");
+                    SPDLOG_DEBUG("creating cmb filenames");
                     todproc.create_coadded_map_files();
                 }
 
@@ -411,7 +414,6 @@ int run(const rc_t &rc) {
                     SPDLOG_DEBUG("getting rawobs kids meta info");
                     auto rawobs_kids_meta = kidsproc.get_rawobs_meta(rawobs);
 
-                    // get sample rate
                     if (co.n_inputs() > 1) {
                         // get astrometry config options
                         SPDLOG_DEBUG("getting astrometry config");
@@ -555,11 +557,13 @@ int run(const rc_t &rc) {
                     // get hwpr if polarized reduction is requested
                     if (todproc.engine().rtcproc.run_polarization) {
                         std::string hwpr_filepath;
-
+                        // if hwpr file dict is found in config and we're not ignoring it
                         if (rawobs.hwpdata().has_value() && todproc.engine().calib.ignore_hwpr!="true") {
-                            SPDLOG_INFO("getting hwpr file");
+                            // get hwpr filepath
                             hwpr_filepath = rawobs.hwpdata()->filepath();
+                            // if filepath is not null, get the hwpr data
                             if (hwpr_filepath != "null") {
+                                SPDLOG_INFO("getting hwpr file");
                                 todproc.engine().calib.get_hwpr(hwpr_filepath, todproc.engine().telescope.sim_obs);
                             }
                             else {
@@ -624,6 +628,7 @@ int run(const rc_t &rc) {
                         todproc.interp_pointing();
                     }
 
+                    // get date time of observation
                     todproc.engine().date_obs.push_back(engine_utils::unix_to_utc(todproc.engine().telescope.tel_data["TelTime"](0)));
 
                     // warning for gaps in data
@@ -649,7 +654,7 @@ int run(const rc_t &rc) {
                         todproc.engine().telescope.calc_scan_indices();
                     }
 
-                    // allocate map buffer
+                    // allocate observation map buffer
                     if (todproc.engine().run_mapmaking) {
                         SPDLOG_INFO("allocating obs map buffer");
                         todproc.allocate_omb(map_extents[i], map_coords[i], map_coords_abs[i]);

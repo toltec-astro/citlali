@@ -6,10 +6,10 @@
 
 namespace engine_utils {
 
+// get a single detector's pointing
 template <typename tel_data_t, typename pointing_offset_t>
 auto calc_det_pointing(tel_data_t &tel_data, const double az_off, const double el_off,
-                       const std::string pixel_axes,
-                       pointing_offset_t &pointing_offsets) {
+                       const std::string pixel_axes, pointing_offset_t &pointing_offsets) {
 
     // rows, cols pointing vectors
     Eigen::VectorXd lat, lon;

@@ -16,7 +16,7 @@ using timestream::TCDataKind;
 class Beammap: public Engine {
 public:
     // parallel policies for each section
-    std::string map_parallel_policy;
+    std::string  map_parallel_policy;
 
     // vector to store each scan's PTCData
     std::vector<TCData<TCDataKind::PTC,Eigen::MatrixXd>> ptcs0, ptcs;
@@ -96,6 +96,9 @@ public:
 };
 
 void Beammap::setup() {
+    // assign parallel policies
+    map_parallel_policy = parallel_policy;
+
     // run obsnum setup
     obsnum_setup();
 
@@ -143,9 +146,6 @@ void Beammap::setup() {
     converge_iter.setConstant(1);
     // set the initial iteration
     current_iter = 0;
-
-    // assign parallel policies
-    map_parallel_policy = parallel_policy;
 
     // use per detector parallelization for jinc mapmaking
     if (map_method == "jinc") {
@@ -273,8 +273,8 @@ auto Beammap::run_timestream() {
             if (run_tod_output) {
                 if (tod_output_type == "rtc" || tod_output_type=="both") {
                     SPDLOG_INFO("writing raw time chunk");
-                    ptcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], redu_type, telescope.pixel_axes,
-                                             ptcdata.pointing_offsets_arcsec.data, det_indices, calib.apt, calib.run_hwp);
+                    rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], redu_type, telescope.pixel_axes,
+                                             ptcdata.pointing_offsets_arcsec.data, det_indices, calib_scan);
                 }
             }
 
@@ -330,7 +330,7 @@ auto Beammap::run_loop() {
             [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 100, "PTC progress ");
 
         // cleaning (separate from mapmaking loop due to jinc mapmaking parallelization)
-        grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
+        grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
 
             if (run_mapmaking) {
                 // subtract gaussian
@@ -353,11 +353,6 @@ auto Beammap::run_loop() {
             // remove outliers after clean (only flags calib_scan apt)
             calib_scans[i] = ptcproc.remove_bad_dets(ptcs[i], calib_scans[i], ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
                                                      ptcs[i].array_indices.data, redu_type, map_grouping);
-            // write out chunk summary
-            if (verbose_mode && current_iter==beammap_tod_output_iter) {
-                SPDLOG_DEBUG("writing chunk summary");
-                write_chunk_summary(ptcs[i]);
-            }
 
             if (run_mapmaking) {
                 // add gaussan back
@@ -369,40 +364,55 @@ auto Beammap::run_loop() {
                 }
             }
 
-            // set weights to a constant value
-            ptcs[i].weights.data.resize(ptcs[i].scans.data.cols());
-            ptcs[i].weights.data.setOnes();
+            if (map_grouping=="detector") {
+                // set weights to a constant value
+                ptcs[i].weights.data.resize(ptcs[i].scans.data.cols());
+                ptcs[i].weights.data.setOnes();
+            }
+            else {
+                // calculate weights
+                SPDLOG_INFO("calculating weights");
+                ptcproc.calc_weights(ptcs[i], calib.apt, telescope, ptcs[i].det_indices.data);
+            }
 
-            return 0;
-        });
-
-        // mapmaking
-        grppi::map(tula::grppi_utils::dyn_ex(map_parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
-
-            // write ptc timestreams
-            if (run_tod_output) {
-                if (tod_output_type == "ptc" || tod_output_type=="both") {
-                    SPDLOG_INFO("writing processed time chunk");
-                    if (current_iter == beammap_tod_output_iter) {
-                        // hardcoded to stokes I for now
-                        ptcproc.append_to_netcdf(ptcs[i], tod_filename["ptc_I"], redu_type, telescope.pixel_axes,
-                                                 ptcs[i].pointing_offsets_arcsec.data, ptcs[i].det_indices.data,
-                                                 calib_scans[i].apt, calib_scans[i].run_hwp);
-                    }
-                }
+            // write out chunk summary
+            if (verbose_mode && current_iter==beammap_tod_output_iter) {
+                SPDLOG_DEBUG("writing chunk summary");
+                write_chunk_summary(ptcs[i]);
             }
 
             // calc stats
             diagnostics.calc_stats(ptcs[i]);
 
+            return 0;
+        });
+
+        // write ptc timestreams
+        if (run_tod_output) {
+            if (tod_output_type == "ptc" || tod_output_type=="both") {
+                SPDLOG_INFO("writing processed time chunk");
+                if (current_iter == beammap_tod_output_iter) {
+                    for (Eigen::Index i=0; i<telescope.scan_indices.cols(); i++) {
+                        // hardcoded to stokes I for now
+                        ptcproc.append_to_netcdf(ptcs[i], tod_filename["ptc_I"], redu_type, telescope.pixel_axes,
+                                                 ptcs[i].pointing_offsets_arcsec.data, ptcs[i].det_indices.data,
+                                                 calib_scans[i]);
+                    }
+                }
+            }
+        }
+
+        // mapmaking
+        grppi::map(tula::grppi_utils::dyn_ex(map_parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
             // populate maps
             if (run_mapmaking) {
                 if (map_method=="naive") {
+                    // naive mapmaker
                     naive_mm.populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
                                                  ptcs[i].det_indices.data, telescope.pixel_axes,
                                                  redu_type, calib.apt, telescope.d_fsmp, run_noise);
                 }
-
+                // jinc mapmaker
                 else if (map_method=="jinc") {
                     jinc_mm.populate_maps_jinc(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
                                                ptcs[i].det_indices.data, telescope.pixel_axes,
@@ -426,7 +436,7 @@ auto Beammap::run_loop() {
             double init_col = -99;
 
             SPDLOG_INFO("fitting maps");
-            grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+            grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
                 // only fit if not converged
                 if (!converged(i)) {
                     // get array number
@@ -468,7 +478,7 @@ auto Beammap::run_loop() {
                 if (beammap_iter_tolerance > 0) {
                     // loop through detectors and check if it is converged
                     SPDLOG_INFO("checking convergence");
-                    grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+                    grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
                         if (!converged(i)) {
                             // get relative change from last iteration
                             auto diff = abs((params.row(i).array() - p0.row(i).array())/p0.row(i).array());
@@ -515,7 +525,6 @@ auto Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
             // variable to hold current scan
             static auto scan = 0;
             while (scan < telescope.scan_indices.cols()) {
-
                 // update progress bar
                 pb.count(telescope.scan_indices.cols(), 1);
 

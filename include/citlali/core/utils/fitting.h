@@ -119,6 +119,7 @@ auto mapFitter::ceres_fit(const Model &model,
     options.minimizer_progress_to_stdout = false;
     // output info
     Solver::Summary summary;
+    // run the fit
     Solve(options, problem.get(), &summary);
 
     // vector for storing uncertainties
@@ -133,6 +134,7 @@ auto mapFitter::ceres_fit(const Model &model,
         covariance_options.algorithm_type = ceres::CovarianceAlgorithmType::DENSE_SVD;
         // gets rid of error messages related to bad fits
         covariance_options.null_space_rank = -1;
+        // create covariance object with current covariance options
         Covariance covariance(covariance_options);
 
         // set up covariance block

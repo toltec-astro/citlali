@@ -190,7 +190,7 @@ public:
     // vectors for tod alignment offsets
     std::vector<Eigen::Index> start_indices, end_indices;
 
-    // indices for hwp alignment offsets
+    // indices for hwpr alignment offsets
     Eigen::Index hwpr_start_indices, hwpr_end_indices;
 
     // xs, rs, is, qs
@@ -284,21 +284,21 @@ public:
     template <typename map_buffer_t>
     void write_map_summary(map_buffer_t &);
 
-    // add primary header to FITS files
-    template <typename fits_io_type, class map_buffer_t>
-    void add_phdu(fits_io_type &, map_buffer_t &, Eigen::Index);
-
-    // create variable names for maps, psds, and hists
-    auto get_map_name(int);
-
-    // add maps to FITS files and output them
-    template <typename fits_io_type, class map_buffer_t>
-    void write_maps(fits_io_type &, fits_io_type &, map_buffer_t &, Eigen::Index);
-
     // create filenames
     template <mapmaking::MapType map_t, engine_utils::toltecIO::DataType data_t,
              engine_utils::toltecIO::ProdType prod_t>
     auto setup_filenames(std::string dir_name);
+
+    // create variable names for maps, psds, and hists
+    auto get_map_name(int);
+
+    // add primary header to FITS files
+    template <typename fits_io_type, class map_buffer_t>
+    void add_phdu(fits_io_type &, map_buffer_t &, Eigen::Index);
+
+    // add maps to FITS files and output them
+    template <typename fits_io_type, class map_buffer_t>
+    void write_maps(fits_io_type &, fits_io_type &, map_buffer_t &, Eigen::Index);
 
     // write map psds
     template <mapmaking::MapType map_t, class map_buffer_t>
@@ -694,6 +694,7 @@ void Engine::get_citlali_config(CT &config) {
     get_config_value(config, tod_type, missing_keys, invalid_keys,
                      std::tuple{"timestream","type"});
 
+    // run rtc or ptc tod output?
     bool run_tod_output_rtc, run_tod_output_ptc;
     // output rtc
     get_config_value(config, run_tod_output_rtc, missing_keys, invalid_keys,
@@ -1155,7 +1156,8 @@ void Engine::cli_summary() {
     SPDLOG_INFO("map buffer rows: {}", omb.n_rows);
     SPDLOG_INFO("map buffer cols: {}", omb.n_cols);
     SPDLOG_INFO("number of maps: {}", omb.signal.size());
-    SPDLOG_INFO("map units: {}",omb.sig_unit);
+    SPDLOG_INFO("map units: {}", omb.sig_unit);
+    SPDLOG_INFO("polarized reduction: {}", rtcproc.run_polarization);
 
     // total size of all maps
     double mb_size_total = 0;
@@ -1202,7 +1204,6 @@ void Engine::cli_summary() {
     }
 
     SPDLOG_INFO("estimated size of all maps {} GB", mb_size_total);
-
     SPDLOG_INFO("number of scans: {}\n\n",telescope.scan_indices.cols());
 
 }
@@ -1446,6 +1447,65 @@ void Engine::write_map_summary(map_buffer_t &mb) {
     }
 }
 
+template <mapmaking::MapType map_t, engine_utils::toltecIO::DataType data_t, engine_utils::toltecIO::ProdType prod_t>
+auto Engine::setup_filenames(std::string dir_name) {
+
+    std::string filename;
+
+    // raw obs maps
+    if constexpr (map_t == mapmaking::RawObs) {
+        filename = toltec_io.create_filename<data_t, prod_t, engine_utils::toltecIO::raw>
+                   (dir_name, redu_type, "", obsnum, telescope.sim_obs);
+    }
+    // filtered obs maps
+    else if constexpr (map_t == mapmaking::FilteredObs) {
+        filename = toltec_io.create_filename<data_t, prod_t, engine_utils::toltecIO::filtered>
+                   (dir_name, redu_type, "", obsnum, telescope.sim_obs);
+    }
+    // raw coadded maps
+    else if constexpr (map_t == mapmaking::RawCoadd) {
+        filename = toltec_io.create_filename<data_t, prod_t, engine_utils::toltecIO::raw>
+                   (dir_name, "", "", "", telescope.sim_obs);
+    }
+    // filtered coadded maps
+    else if constexpr (map_t == mapmaking::FilteredCoadd) {
+        filename = toltec_io.create_filename<data_t, prod_t, engine_utils::toltecIO::filtered>
+                   (dir_name, "", "", "", telescope.sim_obs);
+    }
+
+    return filename;
+}
+
+auto Engine::get_map_name(int i) {
+    // get name for extension layer
+    std::string map_name = "";
+
+    if (map_grouping!="array") {
+        if (map_grouping=="nw") {
+            map_name = map_name + "nw_" + std::to_string(calib.nws(i)) + "_";
+        }
+        else if (map_grouping=="fg") {
+            // find all detectors belonging to each fg
+            Eigen::VectorXI array_indices(calib.fg.size()*calib.n_arrays*rtcproc.polarization.stokes_params.size());
+            Eigen::Index k = 0;
+            for (Eigen::Index j=0; j<calib.n_arrays; j++) {
+                for (Eigen::Index l=0; l<rtcproc.polarization.stokes_params.size(); l++) {
+                    for (Eigen::Index m=0; m<calib.fg.size(); m++) {
+                        array_indices(k) = calib.fg(m);
+                        k++;
+                    }
+                }
+            }
+            map_name = map_name + "fg_" + std::to_string(array_indices(i)) + "_";
+        }
+        else if (map_grouping=="detector") {
+            map_name = map_name + "det_" + std::to_string(i) + "_";
+        }
+    }
+
+    return map_name;
+}
+
 template <typename fits_io_type, class map_buffer_t>
 void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // array name
@@ -1555,10 +1615,10 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     // add jinc shape params
     if (map_method=="jinc") {
-        fits_io->at(i).pfits->pHDU().addKey("JINC_R", jinc_mm.r_max, "jinc r max");
-        fits_io->at(i).pfits->pHDU().addKey("JINC_A", jinc_mm.shape_params[calib.arrays(i)][0], "jinc shape param a");
-        fits_io->at(i).pfits->pHDU().addKey("JINC_B", jinc_mm.shape_params[calib.arrays(i)][1], "jinc shape param b");
-        fits_io->at(i).pfits->pHDU().addKey("JINC_C", jinc_mm.shape_params[calib.arrays(i)][2], "jinc shape param c");
+        fits_io->at(i).pfits->pHDU().addKey("JINC_R", jinc_mm.r_max, "Jinc filter R_max");
+        fits_io->at(i).pfits->pHDU().addKey("JINC_A", jinc_mm.shape_params[calib.arrays(i)][0], "Jinc filter param a");
+        fits_io->at(i).pfits->pHDU().addKey("JINC_B", jinc_mm.shape_params[calib.arrays(i)][1], "Jinc filter param b");
+        fits_io->at(i).pfits->pHDU().addKey("JINC_C", jinc_mm.shape_params[calib.arrays(i)][2], "Jinc filter param c");
     }
 
     // add mean tau
@@ -1609,36 +1669,6 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
             fits_io->at(i).pfits->pHDU().addKey(key, val(0), key);
         }
     }
-}
-
-auto Engine::get_map_name(int i) {
-    // get name for extension layer
-    std::string map_name = "";
-
-    if (map_grouping!="array") {
-        if (map_grouping=="nw") {
-            map_name = map_name + "nw_" + std::to_string(calib.nws(i)) + "_";
-        }
-        else if (map_grouping=="fg") {
-            // find all detectors belonging to each fg
-            Eigen::VectorXI array_indices(calib.fg.size()*calib.n_arrays*rtcproc.polarization.stokes_params.size());
-            Eigen::Index k = 0;
-            for (Eigen::Index j=0; j<calib.n_arrays; j++) {
-                for (Eigen::Index l=0; l<rtcproc.polarization.stokes_params.size(); l++) {
-                    for (Eigen::Index m=0; m<calib.fg.size(); m++) {
-                        array_indices(k) = calib.fg(m);
-                        k++;
-                    }
-                }
-            }
-            map_name = map_name + "fg_" + std::to_string(array_indices(i)) + "_";
-        }
-        else if (map_grouping=="detector") {
-            map_name = map_name + "det_" + std::to_string(i) + "_";
-        }
-    }
-
-    return map_name;
 }
 
 template <typename fits_io_type, class map_buffer_t>
@@ -1717,35 +1747,6 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             noise_fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
         }
     }
-}
-
-template <mapmaking::MapType map_t, engine_utils::toltecIO::DataType data_t, engine_utils::toltecIO::ProdType prod_t>
-auto Engine::setup_filenames(std::string dir_name) {
-
-    std::string filename;
-
-    // raw obs maps
-    if constexpr (map_t == mapmaking::RawObs) {
-        filename = toltec_io.create_filename<data_t, prod_t, engine_utils::toltecIO::raw>
-                   (dir_name, redu_type, "", obsnum, telescope.sim_obs);
-    }
-    // filtered obs maps
-    else if constexpr (map_t == mapmaking::FilteredObs) {
-        filename = toltec_io.create_filename<data_t, prod_t, engine_utils::toltecIO::filtered>
-                   (dir_name, redu_type, "", obsnum, telescope.sim_obs);
-    }
-    // raw coadded maps
-    else if constexpr (map_t == mapmaking::RawCoadd) {
-        filename = toltec_io.create_filename<data_t, prod_t, engine_utils::toltecIO::raw>
-                   (dir_name, "", "", "", telescope.sim_obs);
-    }
-    // filtered coadded maps
-    else if constexpr (map_t == mapmaking::FilteredCoadd) {
-        filename = toltec_io.create_filename<data_t, prod_t, engine_utils::toltecIO::filtered>
-                   (dir_name, "", "", "", telescope.sim_obs);
-    }
-
-    return filename;
 }
 
 template <mapmaking::MapType map_t, class map_buffer_t>

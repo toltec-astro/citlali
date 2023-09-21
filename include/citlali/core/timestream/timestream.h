@@ -164,6 +164,7 @@ struct TimeStream : internal::TCDataBase<Derived>,
     bool tod_filtered = false;
     bool downsampled = false;
     bool calibrated = false;
+    bool extinction_corrected = false;
     bool cleaned = false;
 
     // number of detectors lower than weight limit
@@ -268,6 +269,12 @@ public:
     void add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &, Eigen::DenseBase<DerivedB> &, std::string &,
                       std::string &, apt_t &, pointing_offset_t &, double,
                       Eigen::Index, Eigen::Index, Eigen::DenseBase<DerivedC> &, Eigen::DenseBase<DerivedC> &);
+
+    // append time chunk params common to rtcs and ptcs
+    template <TCDataKind tcdata_t, typename Derived, typename calib_t, typename pointing_offset_t>
+    void append_base_to_netcdf(netCDF::NcFile &, TCData<tcdata_t, Eigen::MatrixXd> &, std::string,
+                               std::string &, pointing_offset_t &, Eigen::DenseBase<Derived> &,
+                               calib_t &);
 };
 
 template <typename Derived, class calib_t>
@@ -424,9 +431,9 @@ void TCProc::add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &in, Eigen::DenseBas
 
     // loop through detectors
     for (Eigen::Index i=0; i<n_dets; i++) {
-        double azoff, eloff;
-
+        // detector index in apt
         auto det_index = det_indices(i);
+        // map index
         auto map_index = map_indices(i);
 
         double az_off = 0;
@@ -477,7 +484,7 @@ void TCProc::add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &in, Eigen::DenseBas
         auto c = - 0.5 * ((sint2 / xstd2) + (cost2 / ystd2));
 
         // calculate distance to source to truncate it
-        auto dist = ((lat.array() - off_lat).pow(2) + (lon.array() - off_lon).pow(2)).sqrt();
+        //auto dist = ((lat.array() - off_lat).pow(2) + (lon.array() - off_lon).pow(2)).sqrt();
 
         Eigen::VectorXd gauss(n_pts);
         // make gaussian
@@ -492,6 +499,180 @@ void TCProc::add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &in, Eigen::DenseBas
             in.scans.data.col(i) = in.scans.data.col(i).array() + gauss.array();
         }
     }
+}
+
+template <TCDataKind tcdata_t, typename Derived, typename calib_t, typename pointing_offset_t>
+void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::MatrixXd> &in, std::string redu_type,
+                                   std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec,
+                                   Eigen::DenseBase<Derived> &det_indices, calib_t &calib) {
+    using netCDF::NcDim;
+    using netCDF::NcFile;
+    using netCDF::NcType;
+    using netCDF::NcVar;
+    using namespace netCDF::exceptions;
+
+    Eigen::Index n_pts = in.scans.data.rows();
+    Eigen::Index n_dets = in.scans.data.cols();
+
+    // tangent plane pointing for each detector
+    Eigen::MatrixXd lat(n_pts,n_dets), lon(n_pts,n_dets);
+
+    // loop through detectors and get tangent plane pointing
+    for (Eigen::Index i=0; i<n_dets; i++) {
+        double az_off = 0;
+        double el_off = 0;
+
+        if (redu_type!="beammap") {
+            auto det_index = det_indices(i);
+            az_off = calib.apt["x_t"](det_index);
+            el_off = calib.apt["y_t"](det_index);
+        }
+
+        // get tangent pointing
+        auto [det_lat, det_lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off,
+                                                                  pixel_axes, pointing_offsets_arcsec);
+        lat.col(i) = std::move(det_lat);
+        lon.col(i) = std::move(det_lon);
+    }
+
+    // get variables
+    auto vars = fo.getVars();
+
+    // get absolute coords
+    double cra, cdec;
+    vars.find("SourceRa")->second.getVar(&cra);
+    vars.find("SourceDec")->second.getVar(&cdec);
+
+    // get dimensions
+    NcDim n_pts_dim = fo.getDim("n_pts");
+    NcDim n_dets_dim = fo.getDim("n_dets");
+
+    // number of samples currently in file
+    unsigned long n_pts_exists = n_pts_dim.getSize();
+    // number of detectors currently in file
+    unsigned long n_dets_exists = n_dets_dim.getSize();
+
+    // start indices for data
+    std::vector<std::size_t> start_index = {n_pts_exists, 0};
+    // size for data
+    std::vector<std::size_t> size = {1, TULA_SIZET(n_dets)};
+
+    // start index for telescope data
+    std::vector<std::size_t> start_index_tel = {n_pts_exists};
+    // size for telescope data
+    std::vector<std::size_t> size_tel = {TULA_SIZET(n_pts)};
+
+    // start index for apt table
+    std::vector<std::size_t> start_index_apt = {0};
+    // size for apt
+    std::vector<std::size_t> size_apt = {1};
+
+    // get timestream variables
+    NcVar signal_v = fo.getVar("signal");
+    NcVar flags_v = fo.getVar("flags");
+    NcVar kernel_v = fo.getVar("kernel");
+
+    // detector tangent plane pointing
+    NcVar det_lat_v = fo.getVar("det_lat");
+    NcVar det_lon_v = fo.getVar("det_lon");
+
+    // detector absolute pointing
+    NcVar det_ra_v = fo.getVar("det_ra");
+    NcVar det_dec_v = fo.getVar("det_dec");
+
+    // append data
+    for (std::size_t i=0; i<TULA_SIZET(n_pts); ++i) {
+        start_index[0] = n_pts_exists + i;
+
+        // append scans
+        Eigen::VectorXd scans = in.scans.data.row(i);
+        signal_v.putVar(start_index, size, scans.data());
+
+        // append flags
+        Eigen::VectorXi flags_int = in.flags.data.row(i).template cast<int> ();
+        flags_v.putVar(start_index, size, flags_int.data());
+
+        // append kernel
+        if (!kernel_v.isNull()) {
+            Eigen::VectorXd kernel = in.kernel.data.row(i);
+            kernel_v.putVar(start_index, size, kernel.data());
+        }
+
+        // append detector latitudes
+        Eigen::VectorXd lat_t = lat.row(i);
+        det_lat_v.putVar(start_index, size, lat_t.data());
+
+        // append detector longitudes
+        Eigen::VectorXd lon_t = lon.row(i);
+        det_lon_v.putVar(start_index, size, lon_t.data());
+
+        if (pixel_axes == "icrs") {
+            // get current tangent plane row
+            Eigen::VectorXd lat_row = lat.row(i);
+            Eigen::VectorXd lon_row = lon.row(i);
+
+            // get absolute pointing
+            auto [dec, ra] = engine_utils::tangent_to_abs(lat_row, lon_row, cra, cdec);
+
+            // append detector ra
+            det_ra_v.putVar(start_index, size, ra.data());
+
+            // append detector dec
+            det_dec_v.putVar(start_index, size, dec.data());
+        }
+    }
+
+    // append telescope
+    for (auto const& x: in.tel_data.data) {
+        NcVar tel_data_v = fo.getVar(x.first);
+        tel_data_v.putVar(start_index_tel, size_tel, x.second.data());
+    }
+
+    // append pointing offsets
+    for (auto const& x: in.pointing_offsets_arcsec.data) {
+        NcVar offset_v = fo.getVar("pointing_offset_"+x.first);
+        offset_v.putVar(start_index_tel, size_tel, x.second.data());
+    }
+
+    // append hwpr angle
+    if (calib.run_hwp) {
+        NcVar hwpr_v = fo.getVar("hwpr");
+        hwpr_v.putVar(start_index_tel, size_tel, in.hwpr_angle.data.data());
+    }
+
+    // overwrite apt table (can be updated between beammap iterations)
+    for (auto const& x: calib.apt) {
+        netCDF::NcVar apt_v = fo.getVar("apt_" + x.first);
+        for (std::size_t i=0; i<TULA_SIZET(n_dets_exists); ++i) {
+            start_index_apt[0] = i;
+            apt_v.putVar(start_index_apt, size_apt, &calib.apt[x.first](det_indices(i)));
+        }
+    }
+
+    // vector to hold current scan indices
+    Eigen::VectorXd scan_indices(2);
+
+    // if not on first scan, grab last scan and add size of current scan
+    if (in.index.data > 0) {
+        // start indices for data
+        std::vector<std::size_t> scan_indices_start_index = {TULA_SIZET(in.index.data-1), 0};
+        // size for data
+        std::vector<std::size_t> scan_indices_size = {1, 2};
+        vars.find("scan_indices")->second.getVar(scan_indices_start_index,scan_indices_size,scan_indices.data());
+
+        scan_indices = scan_indices.array() + in.scans.data.rows();
+    }
+    // otherwise, use size of this scan
+    else {
+        scan_indices(0) = 0;
+        scan_indices(1) = in.scans.data.rows() - 1;
+    }
+
+    // add current scan indices row
+    std::vector<std::size_t> scan_indices_start_index = {TULA_SIZET(in.index.data), 0};
+    std::vector<std::size_t> scan_indices_size = {1, 2};
+    NcVar scan_indices_v = fo.getVar("scan_indices");
+    scan_indices_v.putVar(scan_indices_start_index, scan_indices_size,scan_indices.data());
 }
 
 } // namespace timestream

@@ -92,12 +92,14 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
     void interp_pointing();
     // calculate number of maps
     void calc_map_num();
-    // calculate number of maps
-    void calc_map_size(std::vector<map_extent_t> &, std::vector<map_coord_t> &, std::vector<map_coord_abs_t> &);
+    // calculate size of omb maps
+    void calc_omb_size(std::vector<map_extent_t> &, std::vector<map_coord_t> &, std::vector<map_coord_abs_t> &);
     // allocate observation maps
     void allocate_omb(map_extent_t &, map_coord_t &, map_coord_abs_t &);
+    // calculate size of cmb maps
+    void calc_cmb_size(std::vector<map_coord_t> &, std::vector<map_coord_abs_t> &);
     // allocate coadded maps
-    void allocate_cmb(std::vector<map_extent_t> &, std::vector<map_coord_t> &, std::vector<map_coord_abs_t> &);
+    void allocate_cmb();
     // allocate noise maps
     template<class map_buffer_t>
     void allocate_nmb(map_buffer_t &);
@@ -725,26 +727,26 @@ void TimeOrderedDataProc<EngineType>::interp_pointing() {
 // get map number
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::calc_map_num() {
-    // for science and pointing maps
-    if ((engine().redu_type == "science") || (engine().redu_type == "pointing")) {
-        engine().n_maps = engine().calib.n_arrays;
-
-        if (engine().map_grouping=="auto") {
+    // auto map grouping
+    if (engine().map_grouping=="auto") {
+        // array map grouping for science and pointing
+        if ((engine().redu_type == "science") || (engine().redu_type == "pointing")) {
             engine().map_grouping = "array";
         }
-    }
 
-    // for beammaps
-    else if ((engine().redu_type == "beammap")) {
-        engine().n_maps = engine().calib.n_dets;
-
-        if (engine().map_grouping=="auto") {
+        // detector map grouping for beammaps
+        else if ((engine().redu_type == "beammap")) {
             engine().map_grouping = "detector";
         }
     }
 
+    // overwrite map number for detectors
+    if (engine().map_grouping == "detector") {
+        engine().n_maps = engine().calib.n_dets;
+    }
+
     // overwrite map number for networks
-    if (engine().map_grouping == "nw") {
+    else if (engine().map_grouping == "nw") {
         engine().n_maps = engine().calib.n_nws;
     }
 
@@ -753,30 +755,27 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
         engine().n_maps = engine().calib.n_arrays;
     }
 
-    // overwrite map number for detectors
-    else if (engine().map_grouping == "detector") {
-        engine().n_maps = engine().calib.n_dets;
-    }
     // overwrite map number for fg grouping
     else if (engine().map_grouping == "fg") {
+        // there are potentially 4 fg's per array, so total number of maps is max 4 x n_arrays
         engine().n_maps = engine().calib.fg.size()*engine().calib.n_arrays;
     }
 
     if (engine().rtcproc.run_polarization) {
-        // multiply by number of polarizations (stokes I, Q, and U)
+        // multiply by number of polarizations (stokes I + Q + U = 3)
         engine().n_maps = engine().n_maps*engine().rtcproc.polarization.stokes_params.size();
     }
 
-    // mapping from index in map vector to arrays
+    // mapping from index in map vector to detector array index
     engine().maps_to_arrays.resize(engine().n_maps);
 
-    // mapping from index in map vector to stokes parameter
+    // mapping from index in map vector to stokes parameter index (I=0, Q=1, U=2)
     engine().maps_to_stokes.resize(engine().n_maps);
 
-    // mapping from array to index in map vectors
+    // mapping from detector array index to index in map vectors (reverse of maps_to_arrays)
     engine().arrays_to_maps.resize(engine().n_maps);
 
-    // array to hold mapping from group to index
+    // array to hold mapping from group to detector array index
     Eigen::VectorXI array_indices;
 
     // detector gropuing
@@ -785,14 +784,11 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
         for (const auto &[stokes_index,stokes_param]: engine().rtcproc.polarization.stokes_params) {
             Eigen::Index n_dets;
 
+            // only do stokes I as Q and U don't make sense for detector grouping
             if (stokes_param == "I") {
                 n_dets = engine().calib.n_dets;
                 array_indices = engine().calib.apt["array"].template cast<Eigen::Index> ();
             }
-
-            engine().maps_to_arrays.segment(k,n_dets) = array_indices;
-            engine().maps_to_stokes.segment(k,n_dets).setConstant(stokes_index);
-            k = k + n_dets;
         }
     }
 
@@ -815,7 +811,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
     else if (engine().map_grouping == "fg") {
         array_indices(engine().calib.fg.size()*engine().calib.n_arrays);
 
-        // map from fg to map
+        // map from fg to array index
         Eigen::Index j = 0;
         for (Eigen::Index i=0; i<engine().calib.n_arrays; i++) {
             array_indices.segment(j,engine().calib.fg.size()).setConstant(engine().calib.arrays(i));
@@ -823,7 +819,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
         }
     }
 
-    // populate maps_to_arrays and maps_to_stokes
+    // copy array_indices into maps_to_arrays and maps_to_stokes for each stokes param
     Eigen::Index j = 0;
     for (const auto &[stokes_index,stokes_param]: engine().rtcproc.polarization.stokes_params) {
         engine().maps_to_arrays.segment(j,array_indices.size()) = array_indices;
@@ -831,13 +827,16 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
         j = j + array_indices.size();
     }
 
-    // calculate array index to map index
+    // calculate detector array index to map index
     Eigen::Index index = 0;
+    // start at map index 0
     engine().arrays_to_maps(0) = index;
     for (Eigen::Index i=1; i<engine().n_maps; i++) {
+        // we move to the next map index when the array increments
         if (engine().maps_to_arrays(i) > engine().maps_to_arrays(i-1)) {
             index++;
         }
+        // reset to first map index when we return the an earlier array
         else if (engine().maps_to_arrays(i) < engine().maps_to_arrays(i-1)) {
             index = 0;
         }
@@ -847,14 +846,19 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
 
 // calculate map dimensions
 template <class EngineType>
-void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &map_extents, std::vector<map_coord_t> &map_coords,
+void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &map_extents, std::vector<map_coord_t> &map_coords,
                                                     std::vector<map_coord_abs_t> &map_coords_abs) {
+
+    // map rows and cols
+    int n_rows, n_cols;
+
     // only run if manual map sizes have not been input
     if ((engine().omb.wcs.naxis[0] <= 0) || (engine().omb.wcs.naxis[1] <= 0)) {
         // matrix to store size limits
         Eigen::MatrixXd det_lat_limits, det_lon_limits, map_limits;
         det_lat_limits.setZero(engine().calib.n_dets,2);
         det_lon_limits.setZero(engine().calib.n_dets,2);
+        // global min and max
         map_limits.setZero(2,2);
 
         // placeholder vectors for grppi maps
@@ -888,16 +892,11 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
             if (engine().map_grouping!="detector" || engine().redu_type!="beammap") {
                 // loop through detectors
                 grppi::map(tula::grppi_utils::dyn_ex(engine().parallel_policy), det_in_vec, det_out_vec, [&](auto j) {
-
-                    double az_off = 0;
-                    double el_off = 0;
-
-                    az_off = engine().calib.apt["x_t"](j);
-                    el_off = engine().calib.apt["y_t"](j);
+                    double az_off = engine().calib.apt["x_t"](j);
+                    double el_off = engine().calib.apt["y_t"](j);
 
                     // get pointing
-                    auto [lat, lon] = engine_utils::calc_det_pointing(tel_data, az_off, el_off,
-                                                                      engine().telescope.pixel_axes,
+                    auto [lat, lon] = engine_utils::calc_det_pointing(tel_data, az_off, el_off, engine().telescope.pixel_axes,
                                                                       pointing_offsets_arcsec);
                     // check for min and max
                     if (engine().calib.apt["flag"](j)==0) {
@@ -914,20 +913,12 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
                             det_lon_limits(j,1) = lon.maxCoeff();
                         }
                     }
-                    else {
-                        det_lat_limits(j,0) = 0;
-                        det_lat_limits(j,1) = 0;
-                        det_lon_limits(j,0) = 0;
-                        det_lon_limits(j,1) = 0;
-                    }
-
                     return 0;
                 });
             }
             else {
                 // calculate detector pointing for first detector only since offsets are zero
-                auto [lat, lon] = engine_utils::calc_det_pointing(tel_data, 0, 0,
-                                                                  engine().telescope.pixel_axes,
+                auto [lat, lon] = engine_utils::calc_det_pointing(tel_data, 0, 0, engine().telescope.pixel_axes,
                                                                   pointing_offsets_arcsec);
                 if (lat.minCoeff() < det_lat_limits(0,0)) {
                     det_lat_limits.col(0).setConstant(lat.minCoeff());
@@ -945,10 +936,10 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
         }
 
         // get the global min and max
-        map_limits(0,0)  = det_lat_limits.col(0).minCoeff();
-        map_limits(1,0)  = det_lat_limits.col(1).maxCoeff();
-        map_limits(0,1)  = det_lon_limits.col(0).minCoeff();
-        map_limits(1,1)  = det_lon_limits.col(1).maxCoeff();
+        map_limits(0,0) = det_lat_limits.col(0).minCoeff();
+        map_limits(1,0) = det_lat_limits.col(1).maxCoeff();
+        map_limits(0,1) = det_lon_limits.col(0).minCoeff();
+        map_limits(1,1) = det_lon_limits.col(1).maxCoeff();
 
         // calculate dimensions
         auto calc_map_dims = [&](auto min_dim, auto max_dim) {
@@ -956,31 +947,14 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
             auto max_pix = ceil(abs(max_dim/engine().omb.pixel_size_rad));
 
             max_pix = std::max(min_pix, max_pix);
-            // make sure its even
-            //int n_dim = 2*max_pix + 4;
-            int n_dim = 2*max_pix + 5;
+            int n_dim = 2*max_pix + 1;
 
-            // vector for tangent plane coordinates
-            Eigen::VectorXd dim_vec = (Eigen::VectorXd::LinSpaced(n_dim,0,n_dim-1).array() -
-                                       (n_dim - 1)/2.)*engine().omb.pixel_size_rad;
-
-            return std::tuple<int, Eigen::VectorXd>{n_dim, std::move(dim_vec)};
+            return n_dim;
         };
 
         // get n_rows and n_cols
-        auto [n_rows, rows_tan_vec] = calc_map_dims(map_limits(0,0), map_limits(1,0));
-        auto [n_cols, cols_tan_vec] = calc_map_dims(map_limits(0,1), map_limits(1,1));
-
-        // get absolute pointing for edges
-        Eigen::MatrixXd lat_abs(n_rows, n_cols), lon_abs(n_rows, n_cols);
-
-        map_extent_t map_extent = {n_rows, n_cols};
-        map_coord_t map_coord = {rows_tan_vec, cols_tan_vec};
-        map_coord_abs_t map_coord_abs = {lat_abs,lon_abs};
-
-        map_extents.push_back(map_extent);
-        map_coords.push_back(map_coord);
-        map_coords_abs.push_back(map_coord_abs);
+        n_rows = calc_map_dims(map_limits(0,0), map_limits(1,0));
+        n_cols = calc_map_dims(map_limits(0,1), map_limits(1,1));
     }
 
     else {
@@ -994,85 +968,28 @@ void TimeOrderedDataProc<EngineType>::calc_map_size(std::vector<map_extent_t> &m
         }
 
         // set rows and cols to manually specified sizes
-        auto n_rows = engine().omb.wcs.naxis[1];
-        auto n_cols = engine().omb.wcs.naxis[0];
-
-        // vectors to store tangent plane coordinates of each pixel
-        Eigen::VectorXd rows_tan_vec = (Eigen::VectorXd::LinSpaced(n_rows,0,n_rows-1).array() -
-                                        (n_rows - 1)/2.)*engine().omb.pixel_size_rad;
-        Eigen::VectorXd cols_tan_vec = (Eigen::VectorXd::LinSpaced(n_cols,0,n_cols-1).array() -
-                                        (n_cols - 1)/2.)*engine().omb.pixel_size_rad;
-
-        // get absolute pointing for edges
-        Eigen::MatrixXd lat_abs(n_rows, n_cols), lon_abs(n_rows, n_cols);
-
-        map_extent_t map_extent = {n_rows, n_cols};
-        map_coord_t map_coord = {rows_tan_vec, cols_tan_vec};
-        map_coord_abs_t map_coord_abs = {lat_abs,lon_abs};
-
-        // push back map sizes and coordinates
-        map_extents.push_back(map_extent);
-        map_coords.push_back(map_coord);
-        map_coords_abs.push_back(map_coord_abs);
+        n_rows = engine().omb.wcs.naxis[1];
+        n_cols = engine().omb.wcs.naxis[0];
     }
+
+    // vectors to store tangent plane coordinates of each pixel
+    Eigen::VectorXd rows_tan_vec = (Eigen::VectorXd::LinSpaced(n_rows,0,n_rows-1).array() -
+                                    (n_rows - 1)/2.)*engine().omb.pixel_size_rad;
+    Eigen::VectorXd cols_tan_vec = (Eigen::VectorXd::LinSpaced(n_cols,0,n_cols-1).array() -
+                                    (n_cols - 1)/2.)*engine().omb.pixel_size_rad;
+
+    map_extent_t map_extent = {n_rows, n_cols};
+    map_coord_t map_coord = {rows_tan_vec, cols_tan_vec};
+
+    // push back map sizes and coordinates
+    map_extents.push_back(map_extent);
+    map_coords.push_back(map_coord);
 }
 
-// allocate observation map buffer
+// determine the map dimensions of the coadded map buffer
 template <class EngineType>
-void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map_coord_t &map_coord,
-                                                   map_coord_abs_t &map_coord_abs) {
-    // clear map vectors for each obs
-    engine().omb.signal.clear();
-    engine().omb.weight.clear();
-    engine().omb.kernel.clear();
-    engine().omb.coverage.clear();
-
-    // set omb dim variables
-    engine().omb.n_rows = map_extent[0];
-    engine().omb.n_cols = map_extent[1];
-
-    // set omb wcs
-    engine().omb.wcs.naxis[1] = engine().omb.n_rows;
-    engine().omb.wcs.naxis[0] = engine().omb.n_cols;
-
-    // pixel corresponding to reference value
-    double ref_pix_cols = (engine().omb.n_cols - 1)/2;
-    double ref_pix_rows = (engine().omb.n_rows - 1)/2;
-
-    // set crpix
-    engine().omb.wcs.crpix[0] = ref_pix_cols;
-    engine().omb.wcs.crpix[1] = ref_pix_rows;
-
-    // loop through maps and allocate
-    for (Eigen::Index i=0; i<engine().n_maps; i++) {
-        engine().omb.signal.push_back(Eigen::MatrixXd::Zero(engine().omb.n_rows, engine().omb.n_cols));
-        engine().omb.weight.push_back(Eigen::MatrixXd::Zero(engine().omb.n_rows, engine().omb.n_cols));
-
-        if (engine().rtcproc.run_kernel) {
-            // allocate kernel
-            engine().omb.kernel.push_back(Eigen::MatrixXd::Zero(engine().omb.n_rows, engine().omb.n_cols));
-        }
-
-        if (engine().map_grouping!="detector" || engine().redu_type!="beammap") {
-            // allocate coverage
-            engine().omb.coverage.push_back(Eigen::MatrixXd::Zero(engine().omb.n_rows, engine().omb.n_cols));
-        }
-    }
-    engine().omb.rows_tan_vec = map_coord[0];
-    engine().omb.cols_tan_vec = map_coord[1];
-}
-
-// determine the map dimensions and allocate the coadded map buffer
-template <class EngineType>
-void TimeOrderedDataProc<EngineType>::allocate_cmb(std::vector<map_extent_t> &map_extents, std::vector<map_coord_t> &map_coords,
-                                                   std::vector<map_coord_abs_t> &map_coords_abs) {
-
-    // clear map vectors
-    engine().cmb.signal.clear();
-    engine().cmb.weight.clear();
-    engine().cmb.kernel.clear();
-    engine().cmb.coverage.clear();
-
+void TimeOrderedDataProc<EngineType>::calc_cmb_size(std::vector<map_coord_t> &map_coords,
+                                                    std::vector<map_coord_abs_t> &map_coords_abs) {
     // min/max rows and cols
     double min_row, max_row, min_col, max_col;
 
@@ -1118,8 +1035,6 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb(std::vector<map_extent_t> &ma
         auto max_pix = ceil(abs(max_dim/engine().cmb.pixel_size_rad));
 
         max_pix = std::max(min_pix, max_pix);
-        // make sure its even
-        //int n_dim = 2*max_pix + 4;
         int n_dim = 2*max_pix + 1;
 
         // vector to store tangent plane coordinates
@@ -1129,7 +1044,7 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb(std::vector<map_extent_t> &ma
         return std::tuple<int, Eigen::VectorXd>{n_dim, std::move(dim_vec)};
     };
 
-    // get number of rows and n_cols
+    // get dimensions and tangent coordinate vectorx
     auto [n_rows, rows_tan_vec] = calc_map_dims(min_row, max_row);
     auto [n_cols, cols_tan_vec] = calc_map_dims(min_col, max_col);
 
@@ -1137,6 +1052,7 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb(std::vector<map_extent_t> &ma
     engine().cmb.n_rows = n_rows;
     engine().cmb.n_cols = n_cols;
 
+    // set cmb wcs naxis
     engine().cmb.wcs.naxis[1] = n_rows;
     engine().cmb.wcs.naxis[0] = n_cols;
 
@@ -1144,26 +1060,86 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb(std::vector<map_extent_t> &ma
     double ref_pix_cols = (n_cols - 1)/2;
     double ref_pix_rows = (n_rows - 1)/2;
 
-    // add crpix
+    // add cmb wcs crpix
     engine().cmb.wcs.crpix[0] = ref_pix_cols;
     engine().cmb.wcs.crpix[1] = ref_pix_rows;
+
+    // set tangent plane coordinate vectors
+    engine().cmb.rows_tan_vec = rows_tan_vec;
+    engine().cmb.cols_tan_vec = cols_tan_vec;
+}
+
+// allocate observation map buffer
+template <class EngineType>
+void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map_coord_t &map_coord,
+                                                   map_coord_abs_t &map_coord_abs) {
+    // clear map vectors for each obs
+    engine().omb.signal.clear();
+    engine().omb.weight.clear();
+    engine().omb.kernel.clear();
+    engine().omb.coverage.clear();
+
+    // set omb dim variables
+    engine().omb.n_rows = map_extent[0];
+    engine().omb.n_cols = map_extent[1];
+
+    // set omb wcs naxis
+    engine().omb.wcs.naxis[1] = engine().omb.n_rows;
+    engine().omb.wcs.naxis[0] = engine().omb.n_cols;
+
+    // calc omb wcs crpix
+    double crpix1 = (engine().omb.n_cols - 1)/2;
+    double crpix2 = (engine().omb.n_rows - 1)/2;
+
+    // set omb wcs crpix
+    engine().omb.wcs.crpix[0] = crpix1;
+    engine().omb.wcs.crpix[1] = crpix2;
+
+    // loop through n_maps and add zero matrix
+    for (Eigen::Index i=0; i<engine().n_maps; i++) {
+        engine().omb.signal.push_back(Eigen::MatrixXd::Zero(engine().omb.n_rows, engine().omb.n_cols));
+        engine().omb.weight.push_back(Eigen::MatrixXd::Zero(engine().omb.n_rows, engine().omb.n_cols));
+
+        if (engine().rtcproc.run_kernel) {
+            // allocate kernel
+            engine().omb.kernel.push_back(Eigen::MatrixXd::Zero(engine().omb.n_rows, engine().omb.n_cols));
+        }
+
+        if (engine().map_grouping!="detector") {
+            // allocate coverage
+            engine().omb.coverage.push_back(Eigen::MatrixXd::Zero(engine().omb.n_rows, engine().omb.n_cols));
+        }
+    }
+    // set tangent plane coordinate vectors
+    engine().omb.rows_tan_vec = map_coord[0];
+    engine().omb.cols_tan_vec = map_coord[1];
+}
+
+// allocate the coadded map buffer
+template <class EngineType>
+void TimeOrderedDataProc<EngineType>::allocate_cmb() {
+
+    // clear map vectors
+    engine().cmb.signal.clear();
+    engine().cmb.weight.clear();
+    engine().cmb.kernel.clear();
+    engine().cmb.coverage.clear();
 
     // loop through maps and allocate space
     for (Eigen::Index i=0; i<engine().n_maps; i++) {
         engine().cmb.signal.push_back(Eigen::MatrixXd::Zero(engine().cmb.n_rows, engine().cmb.n_cols));
         engine().cmb.weight.push_back(Eigen::MatrixXd::Zero(engine().cmb.n_rows, engine().cmb.n_cols));
+
         if (engine().rtcproc.run_kernel) {
+            // allocate kernel
             engine().cmb.kernel.push_back(Eigen::MatrixXd::Zero(engine().cmb.n_rows, engine().cmb.n_cols));
         }
 
-        if (engine().map_grouping!="detector" || engine().redu_type!="beammap") {
+        if (engine().map_grouping!="detector") {
+            // allocate coverage
             engine().cmb.coverage.push_back(Eigen::MatrixXd::Zero(engine().cmb.n_rows, engine().cmb.n_cols));
         }
     }
-
-    // set row and col vectors
-    engine().cmb.rows_tan_vec = rows_tan_vec;
-    engine().cmb.cols_tan_vec = cols_tan_vec;
 }
 
 template <class EngineType>
@@ -1181,27 +1157,27 @@ void TimeOrderedDataProc<EngineType>::allocate_nmb(map_buffer_t &mb) {
 // coadd maps
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::coadd() {
-    // offset between cmb and omb physical coordinates
+    // offset between cmb and omb tangent plane coordinates (assumes omb and cmb are co-centered)
     int delta_row = (engine().omb.rows_tan_vec(0) - engine().cmb.rows_tan_vec(0))/engine().cmb.pixel_size_rad;
     int delta_col = (engine().omb.cols_tan_vec(0) - engine().cmb.cols_tan_vec(0))/engine().cmb.pixel_size_rad;
 
     // loop through the maps
     for (Eigen::Index i=0; i<engine().n_maps; i++) {
-        // weight += weight
+        // cmb.weight += omb.weight
         engine().cmb.weight.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols) =
             engine().cmb.weight.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols).array() +
             engine().omb.weight.at(i).array();
 
-        // signal += signal*weight
+        // cmb.signal += omb.signal*omb.weight
         engine().cmb.signal.at(i).block(delta_row, delta_col,engine().omb.n_rows, engine().omb.n_cols) =
             engine().cmb.signal.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols).array() +
-            (engine().omb.weight.at(i).array()*engine().omb.signal.at(i).array()).array();
+            (engine().omb.signal.at(i).array()*engine().omb.weight.at(i).array()).array();
 
-        // kernel += kernel*weight
+        // cmb.kernel += omb.kernel*omb.weight
         if (engine().rtcproc.run_kernel) {
             engine().cmb.kernel.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols) =
                 engine().cmb.kernel.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols).array() +
-                (engine().omb.weight.at(i).array()*engine().omb.kernel.at(i).array()).array();
+                (engine().omb.kernel.at(i).array()*engine().omb.weight.at(i).array()).array();
         }
 
         // coverage +=coverage

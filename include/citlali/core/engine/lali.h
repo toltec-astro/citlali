@@ -102,8 +102,8 @@ auto Lali::run() {
             if (run_tod_output) {
                 if (tod_output_type == "rtc" || tod_output_type=="both") {
                     SPDLOG_INFO("writing raw time chunk");
-                    ptcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], redu_type, telescope.pixel_axes,
-                                             ptcdata.pointing_offsets_arcsec.data, det_indices, calib.apt, calib.run_hwp);
+                    rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], redu_type, telescope.pixel_axes,
+                                             ptcdata.pointing_offsets_arcsec.data, det_indices, calib);
                 }
             }
 
@@ -132,7 +132,7 @@ auto Lali::run() {
                 if (tod_output_type == "ptc" || tod_output_type == "both") {
                     SPDLOG_INFO("writing processed time chunk");
                     ptcproc.append_to_netcdf(ptcdata, tod_filename["ptc_" + stokes_param], redu_type, telescope.pixel_axes,
-                                             ptcdata.pointing_offsets_arcsec.data, det_indices, calib.apt, calib.run_hwp);
+                                             ptcdata.pointing_offsets_arcsec.data, det_indices, calib);
                 }
             }
 

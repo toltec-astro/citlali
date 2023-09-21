@@ -293,7 +293,6 @@ void Kernel::create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &i
             }
         }
     }
-
 }
 
 } // namespace timestream
