@@ -309,7 +309,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         // calibrate tod
         calibration.calibrate_tod(in_pol, det_indices, array_indices, calib);
 
-        out.calibrated = true;
+        in_pol.status.calibrated = true;
     }
 
     if (run_extinction) {
@@ -318,6 +318,8 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         auto tau_freq = calibration.calc_tau(in_pol.tel_data.data["TelElAct"], telescope.tau_225_GHz);
         // correct for extinction
         calibration.extinction_correction(in_pol, det_indices, array_indices, calib, tau_freq);
+
+        in_pol.status.extinction_corrected = true;
     }
 
     // number of points in scan
@@ -353,7 +355,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
                                            pixel_size_rad, map_indices, det_indices);
         }
 
-        out.kernel_generated = true;
+        in_pol.status.kernel_generated = true;
     }
 
     // run despiking
@@ -391,7 +393,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
             despiker.replace_spikes(in_scans, in_flags, calib.apt, start_index);
         }
 
-        out.despiked = true;
+        in_pol.status.despiked = true;
     }
 
     // timestream filtering
@@ -406,7 +408,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
             filter.convolve(in_pol.kernel.data);
         }
 
-        out.tod_filtered = true;
+        in_pol.status.tod_filtered = true;
     }
 
     if (run_downsample) {
@@ -456,7 +458,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
             downsampler.downsample(in_kernel, out.kernel.data);
         }
 
-        out.downsampled = true;
+        in_pol.status.downsampled = true;
     }
 
     else {
@@ -486,9 +488,20 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         }
     }
 
+    // copy scan indices
     out.scan_indices.data = in_pol.scan_indices.data;
+    // copy scan index
     out.index.data = in_pol.index.data;
+    // copy fcf
     out.fcf.data = in_pol.fcf.data;
+    // copy chunk status
+    out.status.calibrated = in_pol.status.calibrated;
+    out.status.extinction_corrected = in_pol.status.extinction_corrected;
+    out.status.demodulated = in_pol.status.demodulated;
+    out.status.kernel_generated = in_pol.status.kernel_generated;
+    out.status.despiked = in_pol.status.despiked;
+    out.status.tod_filtered = in_pol.status.tod_filtered;
+    out.status.downsampled = in_pol.status.downsampled;
 
     return std::tuple<Eigen::VectorXI,Eigen::VectorXI,Eigen::VectorXI,Eigen::VectorXI>(map_indices, array_indices, nw_indices, det_indices);
 }
@@ -573,6 +586,8 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
 
         fo.sync();
         fo.close();
+
+        logger->info("tod chunk written to {}", filepath);
 
     } catch (NcException &e) {
         logger->error("{}", e.what());

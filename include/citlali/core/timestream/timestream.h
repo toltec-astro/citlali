@@ -158,14 +158,16 @@ struct TimeStream : internal::TCDataBase<Derived>,
     std::string creation_time = engine_utils::current_date_time();
 
     // data status
-    bool demodulated = false;
-    bool kernel_generated = false;
-    bool despiked = false;
-    bool tod_filtered = false;
-    bool downsampled = false;
-    bool calibrated = false;
-    bool extinction_corrected = false;
-    bool cleaned = false;
+    struct {
+        bool demodulated = false;
+        bool kernel_generated = false;
+        bool despiked = false;
+        bool tod_filtered = false;
+        bool downsampled = false;
+        bool calibrated = false;
+        bool extinction_corrected = false;
+        bool cleaned = false;
+    } status;
 
     // number of detectors lower than weight limit
     int n_low_dets;

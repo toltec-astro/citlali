@@ -184,7 +184,7 @@ public:
             }
 
             // set as chunk as demodulated
-            out.demodulated = true;
+            out.status.demodulated = true;
         }
 
         return indices_t(array_indices, nw_indices, det_indices, fg_indices);

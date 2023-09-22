@@ -86,6 +86,7 @@ void Telescope::get_tel_data(std::string &filepath) {
             // set for scalars
             Eigen::Index n_pts = 1;
             try {
+                // try to get dimensions, otherwise keep n_pts at 1
                 try {
                     n_pts = vars.find(pair.first)->second.getDim(0).getSize();
                 } catch(...) {}
@@ -94,7 +95,10 @@ void Telescope::get_tel_data(std::string &filepath) {
                 vars.find(pair.first)->second.getVar(tel_header[pair.second].data());
 
             } catch (NcException &e) {
-                logger->warn("cannot find {}", pair.first);
+                // ignore if simulation
+                if (!sim_obs) {
+                    logger->warn("cannot find {}", pair.first);
+                }
             }
         }
 
@@ -201,6 +205,7 @@ void Telescope::calc_tan_altaz() {
 
     // tangent plane lat (alt)
     tel_data["alt_phys"] = tel_data["TelElAct"] - tel_data["SourceEl"] - tel_data["TelElCor"];
+
     // tangent plane lon (az)
     tel_data["az_phys"] = cos(tel_data["TelElAct"].array() -
                               tel_data["TelElCor"].array())*(tel_data["TelAzAct"].array() - tel_data["SourceAz"].array()) -

@@ -484,64 +484,66 @@ void Pointing::output() {
     }
 
     if (!f_io->empty()) {
-        // progress bar
-        tula::logging::progressbar pb(
-            [&](const auto &msg) { logger->info("{}", msg); }, 100, "output progress ");
+        {
+            // progress bar
+            tula::logging::progressbar pb(
+                [&](const auto &msg) { logger->info("{}", msg); }, 100, "output progress ");
 
-        for (Eigen::Index i=0; i<f_io->size(); i++) {
-            // add primary hdu
-            add_phdu(f_io, mb, i);
+            for (Eigen::Index i=0; i<f_io->size(); i++) {
+                // add primary hdu
+                add_phdu(f_io, mb, i);
 
-            if (!mb->noise.empty()) {
-                add_phdu(n_io, mb, i);
-            }
-        }
-
-        Eigen::Index k = 0;
-
-        for (Eigen::Index i=0; i<n_maps; i++) {
-            // update progress bar
-            pb.count(n_maps, 1);
-            write_maps(f_io,n_io,mb,i);
-
-            Eigen::Index map_index = arrays_to_maps(i);
-
-            // check if we move from one file to the next
-            // if so go back to first hdu layer
-            if (i>0) {
-                if (map_index > arrays_to_maps(i-1)) {
-                    k = 0;
+                if (!mb->noise.empty()) {
+                    add_phdu(n_io, mb, i);
                 }
             }
-            // get current hdu extension name
-            std::string extname = f_io->at(map_index).hdus.at(k)->name();
-            // see if this is a signal extension
-            std::size_t found = extname.find("signal");
 
-            // find next signal extension
-            while (found==std::string::npos && k<f_io->at(map_index).hdus.size()) {
-                k = k + 1;
+            Eigen::Index k = 0;
+
+            for (Eigen::Index i=0; i<n_maps; i++) {
+                // update progress bar
+                pb.count(n_maps, 1);
+                write_maps(f_io,n_io,mb,i);
+
+                Eigen::Index map_index = arrays_to_maps(i);
+
+                // check if we move from one file to the next
+                // if so go back to first hdu layer
+                if (i>0) {
+                    if (map_index > arrays_to_maps(i-1)) {
+                        k = 0;
+                    }
+                }
                 // get current hdu extension name
-                extname = f_io->at(map_index).hdus.at(k)->name();
+                std::string extname = f_io->at(map_index).hdus.at(k)->name();
                 // see if this is a signal extension
-                found = extname.find("signal");
-            }
+                std::size_t found = extname.find("signal");
 
-            // add ppt table
-            Eigen::Index j = 0;
-            for (auto const& key: ppt_header) {
-                try {
-                    f_io->at(map_index).hdus.at(k)->addKey("POINTING." + key, ppt_table(i,j), key + " (" + ppt_header_units[key] + ")");
+                // find next signal extension
+                while (found==std::string::npos && k<f_io->at(map_index).hdus.size()) {
+                    k = k + 1;
+                    // get current hdu extension name
+                    extname = f_io->at(map_index).hdus.at(k)->name();
+                    // see if this is a signal extension
+                    found = extname.find("signal");
                 }
-                catch(...) {
-                    f_io->at(map_index).hdus.at(k)->addKey("POINTING." + key, 0, key + " (" + ppt_header_units[key] + ")");
+
+                // add ppt table
+                Eigen::Index j = 0;
+                for (auto const& key: ppt_header) {
+                    try {
+                        f_io->at(map_index).hdus.at(k)->addKey("POINTING." + key, ppt_table(i,j), key + " (" + ppt_header_units[key] + ")");
+                    }
+                    catch(...) {
+                        f_io->at(map_index).hdus.at(k)->addKey("POINTING." + key, 0, key + " (" + ppt_header_units[key] + ")");
+                    }
+                    j++;
                 }
-                j++;
+                k++;
             }
-            k++;
         }
 
-        logger->info("files have been written to:");
+        logger->info("maps have been written to:");
         for (Eigen::Index i=0; i<f_io->size(); i++) {
             logger->info("{}.fits",f_io->at(i).filepath);
         }

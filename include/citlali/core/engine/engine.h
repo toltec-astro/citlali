@@ -409,7 +409,8 @@ void Engine::obsnum_setup() {
 
     // tod output mode require sequential policy so set explicitly
     if (run_tod_output || verbose_mode) {
-        logger->warn("tod output mode require sequential policy");
+        logger->warn("tod output mode require sequential policy. "
+                     "parallelization will be disabled for some stages.");
         parallel_policy = "seq";
     }
 
@@ -1233,13 +1234,13 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
     f << "-TOD type: " << tod_type << "\n";
     f << "-TOD unit: " << omb.sig_unit << "\n";
 
-    f << "-Demodulated: " << in.demodulated << "\n";
-    f << "-Kernel Generated: " << in.kernel_generated << "\n";
-    f << "-Despiked: " << in.despiked << "\n";
-    f << "-TOD filtered: " << in.tod_filtered << "\n";
-    f << "-Downsampled: " << in.downsampled << "\n";
-    f << "-Calibrated: " << in.calibrated << "\n";
-    f << "-Cleaned: " << in.cleaned << "\n";
+    f << "-Demodulated: " << in.status.demodulated << "\n";
+    f << "-Kernel Generated: " << in.status.kernel_generated << "\n";
+    f << "-Despiked: " << in.status.despiked << "\n";
+    f << "-TOD filtered: " << in.status.tod_filtered << "\n";
+    f << "-Downsampled: " << in.status.downsampled << "\n";
+    f << "-Calibrated: " << in.status.calibrated << "\n";
+    f << "-Cleaned: " << in.status.cleaned << "\n";
 
     f << "-Scan length: " << in.scans.data.rows() << "\n";
 

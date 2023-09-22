@@ -1266,7 +1266,7 @@ void Beammap::output() {
             }
         }
 
-        logger->info("files have been written to:");
+        logger->info("maps have been written to:");
         for (Eigen::Index i=0; i<f_io->size(); i++) {
             logger->info("{}.fits",f_io->at(i).filepath);
         }

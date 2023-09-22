@@ -287,7 +287,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 }
                 indx++;
             }
-            out.cleaned = true;
+            out.status.cleaned = true;
         }
     }
 }
@@ -521,6 +521,7 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
 
         fo.sync();
         fo.close();
+        logger->info("tod chunk written to {}", filepath);
 
     } catch (NcException &e) {
         logger->error("{}", e.what());

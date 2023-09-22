@@ -1265,7 +1265,7 @@ void TimeOrderedDataProc<EngineType>::make_index_file(std::string filepath) {
         if (fs::is_directory(entry)) {
             make_index_file(path_string);
         }
-        node["files"].push_back(path_string.substr(path_string.find_last_of("/") + 1));
+        node["files/dirs"].push_back(path_string.substr(path_string.find_last_of("/") + 1));
     }
     // output yaml index file
     std::ofstream fout(filepath + "/index.yaml");
