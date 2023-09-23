@@ -21,6 +21,33 @@
 
 namespace engine_utils {
 
+static const int parseLine(char* line){
+    // this assumes that a digit will be found and the line ends in " Kb".
+    int i = strlen(line);
+    const char* p = line;
+    while (*p <'0' || *p > '9') {
+        p++;
+    }
+    line[i-3] = '\0';
+    i = atoi(p);
+    return i;
+}
+
+static const int get_phys_memory() { // note: this value is in KB!
+    FILE* file = fopen("/proc/self/status", "r");
+    int result = -1;
+    char line[128];
+
+    while (fgets(line, 128, file) != NULL){
+        if (strncmp(line, "VmRSS:", 6) == 0){
+            result = parseLine(line);
+            break;
+        }
+    }
+    fclose(file);
+    return result;
+}
+
 // planck function (W x sr-1 x m-2 x Hz−1)
 static const double planck_nu(const double freq_Hz, const double T_K) {
     return 2.*h_J_s*pow(freq_Hz,3)/pow(c_m_s,2)/(exp((h_J_s*freq_Hz)/(kB_J_K*T_K)) - 1.);

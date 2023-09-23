@@ -33,7 +33,6 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
     using scanindicies_t = Eigen::MatrixXI;
     using map_extent_t = std::vector<int>;
     using map_coord_t = std::vector<Eigen::VectorXd>;
-    using map_coord_abs_t = std::vector<Eigen::MatrixXd>;
     using map_count_t = std::size_t;
     using array_indices_t = std::vector<std::tuple<Eigen::Index, Eigen::Index>>;
     using det_indices_t = std::vector<std::tuple<Eigen::Index, Eigen::Index>>;
@@ -99,11 +98,11 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
     // calculate number of maps
     void calc_map_num();
     // calculate size of omb maps
-    void calc_omb_size(std::vector<map_extent_t> &, std::vector<map_coord_t> &, std::vector<map_coord_abs_t> &);
+    void calc_omb_size(std::vector<map_extent_t> &, std::vector<map_coord_t> &);
     // allocate observation maps
-    void allocate_omb(map_extent_t &, map_coord_t &, map_coord_abs_t &);
+    void allocate_omb(map_extent_t &, map_coord_t &);
     // calculate size of cmb maps
-    void calc_cmb_size(std::vector<map_coord_t> &, std::vector<map_coord_abs_t> &);
+    void calc_cmb_size(std::vector<map_coord_t> &);
     // allocate coadded maps
     void allocate_cmb();
     // allocate noise maps
@@ -301,7 +300,7 @@ void TimeOrderedDataProc<EngineType>::get_adc_snap_from_files(const RawObs &rawo
     using namespace netCDF::exceptions;
 
     // explicitly clear vector
-    engine().adc_snap_data.clear();
+    engine().diagnostics.adc_snap_data.clear();
 
     // loop through input files
     for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
@@ -317,7 +316,7 @@ void TimeOrderedDataProc<EngineType>::get_adc_snap_from_files(const RawObs &rawo
 
             vars.find("Header.Toltec.AdcSnapData")->second.getVar(adcsnap.data());
 
-            engine().adc_snap_data.push_back(adcsnap);
+            engine().diagnostics.adc_snap_data.push_back(adcsnap);
 
             fo.close();
 
@@ -852,8 +851,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
 
 // calculate map dimensions
 template <class EngineType>
-void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &map_extents, std::vector<map_coord_t> &map_coords,
-                                                    std::vector<map_coord_abs_t> &map_coords_abs) {
+void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &map_extents, std::vector<map_coord_t> &map_coords) {
 
     // map rows and cols
     int n_rows, n_cols;
@@ -994,8 +992,7 @@ void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &m
 
 // determine the map dimensions of the coadded map buffer
 template <class EngineType>
-void TimeOrderedDataProc<EngineType>::calc_cmb_size(std::vector<map_coord_t> &map_coords,
-                                                    std::vector<map_coord_abs_t> &map_coords_abs) {
+void TimeOrderedDataProc<EngineType>::calc_cmb_size(std::vector<map_coord_t> &map_coords) {
     // min/max rows and cols
     double min_row, max_row, min_col, max_col;
 
@@ -1077,13 +1074,13 @@ void TimeOrderedDataProc<EngineType>::calc_cmb_size(std::vector<map_coord_t> &ma
 
 // allocate observation map buffer
 template <class EngineType>
-void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map_coord_t &map_coord,
-                                                   map_coord_abs_t &map_coord_abs) {
+void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map_coord_t &map_coord) {
     // clear map vectors for each obs
     engine().omb.signal.clear();
     engine().omb.weight.clear();
     engine().omb.kernel.clear();
     engine().omb.coverage.clear();
+    engine().omb.pointing.clear();
 
     // set omb dim variables
     engine().omb.n_rows = map_extent[0];
@@ -1116,6 +1113,15 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
             engine().omb.coverage.push_back(Eigen::MatrixXd::Zero(engine().omb.n_rows, engine().omb.n_cols));
         }
     }
+
+    if (engine().rtcproc.run_polarization) {
+        // allocate pointing matrix
+        for (Eigen::Index i=0; i<engine().n_maps/engine().rtcproc.polarization.stokes_params.size(); i++) {
+            engine().omb.pointing.push_back(Eigen::Tensor<double,3>(engine().omb.n_rows, engine().omb.n_cols, 9));
+            engine().omb.pointing.at(i).setZero();
+        }
+    }
+
     // set tangent plane coordinate vectors
     engine().omb.rows_tan_vec = map_coord[0];
     engine().omb.cols_tan_vec = map_coord[1];
@@ -1124,12 +1130,12 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
 // allocate the coadded map buffer
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::allocate_cmb() {
-
     // clear map vectors
     engine().cmb.signal.clear();
     engine().cmb.weight.clear();
     engine().cmb.kernel.clear();
     engine().cmb.coverage.clear();
+    engine().cmb.pointing.clear();
 
     // loop through maps and allocate space
     for (Eigen::Index i=0; i<engine().n_maps; i++) {
@@ -1150,13 +1156,13 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb() {
 
 template <class EngineType>
 template <class map_buffer_t>
-void TimeOrderedDataProc<EngineType>::allocate_nmb(map_buffer_t &mb) {
+void TimeOrderedDataProc<EngineType>::allocate_nmb(map_buffer_t &nmb) {
     // clear noise map buffer
-    mb.noise.clear();
+    nmb.noise.clear();
     // resize noise maps (n_maps, [n_rows, n_cols, n_noise])
     for (Eigen::Index i=0; i<engine().n_maps; i++) {
-        mb.noise.push_back(Eigen::Tensor<double,3>(mb.n_rows, mb.n_cols, mb.n_noise));
-        mb.noise.at(i).setZero();
+        nmb.noise.push_back(Eigen::Tensor<double,3>(nmb.n_rows, nmb.n_cols, nmb.n_noise));
+        nmb.noise.at(i).setZero();
     }
 }
 

@@ -129,6 +129,90 @@ void ObsMapBuffer::normalize_maps() {
     std::iota(map_in_vec.begin(), map_in_vec.end(), 0);
     map_out_vec.resize(signal.size());
 
+    // calculate dimensions
+    auto calc_stokes = [&](auto &map_arr, auto &m_inv, int i, int j, int a, int step) {
+        Eigen::VectorXd d(3);
+        d(0) = map_arr[a](i,j);
+        d(1) = map_arr[a + step](i,j);
+        d(2) = map_arr[a + 2*step](i,j);
+
+        auto v = m_inv*d;
+        map_arr[a](i,j) = v(0);
+        map_arr[a + step](i,j) = v(1);
+        map_arr[a + 2*step](i,j) = v(2);
+    };
+
+    int step = pointing.size();
+
+    Eigen::MatrixXd m(3,3);
+    //Eigen::VectorXd d(3);
+
+    // loop through pointing matrices
+    for (Eigen::Index a=0; a<pointing.size(); a++) {
+        // loop through rows
+        for (Eigen::Index i=0; i<n_rows; i++) {
+            // loop through cols
+            for (Eigen::Index j=0; j<n_cols; j++) {
+                // create pointing matrix for pixel
+                Eigen::Index n = 0;
+                for (Eigen::Index k=0; k<3; k++) {
+                    for (Eigen::Index l=0; l<3; l++) {
+                        m(k,l) = pointing[a](i,j,n);
+                        n++;
+                    }
+                }
+
+                // get inverse of pixel's pointing matrix
+                auto m_inverse = m.inverse();
+
+                calc_stokes(signal, m_inverse, i, j, a, step);
+                calc_stokes(weight, m_inverse, i, j, a, step);
+                calc_stokes(kernel, m_inverse, i, j, a, step);
+                calc_stokes(coverage, m_inverse, i, j, a, step);
+
+                // signal
+                /*d(0) = signal[a](i,j);
+                d(1) = signal[a + step](i,j);
+                d(2) = signal[a + 2*step](i,j);
+
+                auto v = m_inverse*d;
+                signal[a](i,j) = v(0);
+                signal[a + step](i,j) = v(1);
+                signal[a + 2*step](i,j) = v(2);
+
+                // weight
+                d(0) = weight[a](i,j);
+                d(1) = weight[a + step](i,j);
+                d(2) = weight[a + 2*step](i,j);
+
+                v = m_inverse*d;
+                weight[a](i,j) = v(0);
+                weight[a + step](i,j) = v(1);
+                weight[a + 2*step](i,j) = v(2);
+
+                // kernel
+                d(0) = kernel[a](i,j);
+                d(1) = kernel[a + step](i,j);
+                d(2) = kernel[a + 2*step](i,j);
+
+                v = m_inverse*d;
+                kernel[a](i,j) = v(0);
+                kernel[a + step](i,j) = v(1);
+                kernel[a + 2*step](i,j) = v(2);
+
+                // coverage
+                d(0) = coverage[a](i,j);
+                d(1) = coverage[a + step](i,j);
+                d(2) = coverage[a + 2*step](i,j);
+
+                v = m_inverse*d;
+                coverage[a](i,j) = v(0);
+                coverage[a + step](i,j) = v(1);
+                coverage[a + 2*step](i,j) = v(2);*/
+            }
+        }
+    }
+
     // normalize science and kernel mpas
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
         // loop through rows

@@ -175,7 +175,8 @@ auto Pointing::run() {
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;
 
         // loop through polarizations
-        for (const auto &[stokes_index,stokes_param]: rtcproc.polarization.stokes_params) {
+        std::string stokes_param = "I";
+        //for (const auto &[stokes_index,stokes_param]: rtcproc.polarization.stokes_params) {
             logger->info("starting {} scan {}. {}/{} scans completed", stokes_param, rtcdata.index.data + 1, n_scans_done,
                         telescope.scan_indices.cols());
             // run rtcproc
@@ -256,7 +257,7 @@ auto Pointing::run() {
                                                redu_type, calib.apt, telescope.d_fsmp, run_noise);
                 }
             }
-        }
+        //}
         // increment number of completed scans
         n_scans_done++;
         logger->info("done with scan {}. {}/{} scans completed", ptcdata.index.data + 1, n_scans_done, telescope.scan_indices.cols());

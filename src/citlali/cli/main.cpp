@@ -250,14 +250,12 @@ int run(const rc_t &rc) {
                 // type definitions for map vectors
                 using map_extent_t = typename todproc_t::map_extent_t;
                 using map_coord_t = typename todproc_t::map_coord_t;
-                using map_coord_abs_t = typename todproc_t::map_coord_abs_t;
                 using map_count_t = typename todproc_t::map_count_t;
                 using array_indices_t = typename todproc_t::array_indices_t;
 
                 // create vectors for map size and grouping parameters
                 std::vector<map_extent_t> map_extents{};
                 std::vector<map_coord_t> map_coords{};
-                std::vector<map_coord_abs_t> map_coords_abs{};
                 std::vector<map_count_t> map_counts{};
 
                 // get config options from citlali_config
@@ -278,8 +276,9 @@ int run(const rc_t &rc) {
                     logger->debug("running in verbose mode. setting log level=debug.");
                 }
 
-                // set parallelization explicitly
+                // set omp parallelization explicitly
                 omp_set_num_threads(todproc.engine().n_threads);
+                // disable eigen underlying parallelization
                 Eigen::setNbThreads(1);
 
                 // set fftw threads
@@ -335,18 +334,17 @@ int run(const rc_t &rc) {
                             todproc.engine().calib.get_apt(apt_path, raw_filenames, interfaces);
                         }
                     }
-
                     else {
                         // get apt table
                         auto apt_path = rawobs.array_prop_table().filepath();
                         logger->info("getting array properties table {}", apt_path);
-
+                        // get raw filenames and interfaces
                         std::vector<std::string> raw_filenames, interfaces;
                         for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
                             raw_filenames.push_back(data_item.filepath());
                             interfaces.push_back(data_item.interface());
                         }
-
+                        // get and setup apt table
                         todproc.engine().calib.get_apt(apt_path, raw_filenames, interfaces);
                     }
 
@@ -412,14 +410,14 @@ int run(const rc_t &rc) {
 
                         // determine omb map sizes
                         logger->info("calculating omb dimensions");
-                        todproc.calc_omb_size(map_extents, map_coords, map_coords_abs);
+                        todproc.calc_omb_size(map_extents, map_coords);
                     }
                 }
 
                 if (todproc.engine().run_coadd) {
                     // get size of coadd buffer
                     logger->debug("calculating cmb dimensions");
-                    todproc.calc_cmb_size(map_coords, map_coords_abs);
+                    todproc.calc_cmb_size(map_coords);
                     // make coadd buffer
                     logger->debug("allocating cmb");
                     todproc.allocate_cmb();
@@ -480,7 +478,7 @@ int run(const rc_t &rc) {
                             auto apt_path = rawobs.array_prop_table().filepath();
                             logger->info("getting array properties table {}", apt_path);
 
-                            // get raw files and interfaces
+                            // get raw filenames and interfaces
                             std::vector<std::string> raw_filenames, interfaces;
                             for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
                                 raw_filenames.push_back(data_item.filepath());
@@ -523,8 +521,10 @@ int run(const rc_t &rc) {
                     todproc.get_tone_freqs_from_files(rawobs);
 
                     // get adc snap data for stats file
-                    logger->debug("getting adc snap data");
-                    todproc.get_adc_snap_from_files(rawobs);
+                    if (!todproc.engine().telescope.sim_obs) {
+                        logger->debug("getting adc snap data");
+                        todproc.get_adc_snap_from_files(rawobs);
+                    }
 
                     // get obsnum
                     logger->debug("getting obsnum");
@@ -543,8 +543,10 @@ int run(const rc_t &rc) {
                     todproc.engine().omb.obsnums.clear();
                     todproc.engine().omb.obsnums.push_back(todproc.engine().obsnum);
 
-                    // add current obsnum to cmb for fits hdu headers
-                    todproc.engine().cmb.obsnums.push_back(todproc.engine().obsnum);
+                    if (todproc.engine().run_coadd) {
+                        // add current obsnum to cmb for fits hdu headers
+                        todproc.engine().cmb.obsnums.push_back(todproc.engine().obsnum);
+                    }
 
                     // create obsnum directory
                     logger->debug("creating obsnum directory");
@@ -565,25 +567,6 @@ int run(const rc_t &rc) {
                     if (todproc.engine().verbose_mode) {
                         logger->debug("creating obsnum logs directory");
                         fs::create_directories(todproc.engine().obsnum_dir_name + "logs/");
-
-                        /*
-                        std::vector<spdlog::sink_ptr> sinks;
-
-                        // console sink
-                        auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-                        console_sink->set_level(spdlog::level::debug);
-                        sinks.push_back(console_sink);
-
-                        auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(todproc.engine().obsnum_dir_name +
-                                                                                                 "logs/test.txt", true);
-                        file_sink->set_level(spdlog::level::debug);
-
-                        sinks.push_back(file_sink);
-
-                        auto logger = std::make_shared<spdlog::logger>("logger", begin(sinks), end(sinks));
-                        spdlog::register_logger(logger);
-                        spdlog::set_default_logger(logger);
-                        */
                     }
 
                     // get hwpr if polarized reduction is requested
@@ -595,7 +578,7 @@ int run(const rc_t &rc) {
                             hwpr_filepath = rawobs.hwpdata()->filepath();
                             // if filepath is not null, get the hwpr data
                             if (hwpr_filepath != "null") {
-                                logger->info("getting hwpr file");
+                                logger->info("getting hwpr file {}",hwpr_filepath);
                                 todproc.engine().calib.get_hwpr(hwpr_filepath, todproc.engine().telescope.sim_obs);
                             }
                             else {
@@ -689,7 +672,7 @@ int run(const rc_t &rc) {
                     // allocate observation map buffer
                     if (todproc.engine().run_mapmaking) {
                         logger->info("allocating obs map buffer");
-                        todproc.allocate_omb(map_extents[i], map_coords[i], map_coords_abs[i]);
+                        todproc.allocate_omb(map_extents[i], map_coords[i]);
 
                         // make noise maps for observation map buffer
                         if (!todproc.engine().run_coadd) {
@@ -705,7 +688,9 @@ int run(const rc_t &rc) {
                     auto tn = todproc.engine().telescope.tel_data["TelTime"](todproc.engine().telescope.tel_data["TelTime"].size()-1);
 
                     todproc.engine().omb.exposure_time = tn - t0;
-                    todproc.engine().cmb.exposure_time = todproc.engine().cmb.exposure_time + todproc.engine().omb.exposure_time;
+                    if (todproc.engine().run_coadd) {
+                        todproc.engine().cmb.exposure_time = todproc.engine().cmb.exposure_time + todproc.engine().omb.exposure_time;
+                    }
 
                     // setup
                     logger->info("pipeline setup");
@@ -801,7 +786,7 @@ int run(const rc_t &rc) {
                 logger->info("making index files");
                 // make index files for each directory recursively
                 todproc.make_index_file(todproc.engine().redu_dir_name);
-                logger->info("citlali is done!");
+                logger->info("citlali is done!  going to sleep now...wake me when you need me.");
                 return EXIT_SUCCESS;
             }
         },

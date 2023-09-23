@@ -76,7 +76,8 @@ auto Lali::run() {
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;
 
         // loop through polarizations
-        for (const auto &[stokes_index, stokes_param]: rtcproc.polarization.stokes_params) {
+        std::string stokes_param = "I";
+        //for (const auto &[stokes_index, stokes_param]: rtcproc.polarization.stokes_params) {
             logger->info("starting {} scan {}. {}/{} scans completed", stokes_param, rtcdata.index.data + 1, n_scans_done,
                         telescope.scan_indices.cols());
 
@@ -158,7 +159,7 @@ auto Lali::run() {
                                                redu_type, calib.apt, telescope.d_fsmp, run_noise);
                 }
             }
-        }
+        //}
 
         // increment number of completed scans
         n_scans_done++;
@@ -208,7 +209,7 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                 scan++;
                 return std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
                                   std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>> (std::move(rtcdata), kidsproc,
-                                                                                                  std::move(scan_rawobs));
+                                                                                                   std::move(scan_rawobs));
             }
             // reset scan to zero for each obs
             scan = 0;

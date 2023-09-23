@@ -251,7 +251,8 @@ auto Beammap::run_timestream() {
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;
 
         // loop through polarizations
-        for (const auto &[stokes_index,stokes_param]: rtcproc.polarization.stokes_params) {
+        std::string stokes_param = "I";
+        //for (const auto &[stokes_index,stokes_param]: rtcproc.polarization.stokes_params) {
             logger->info("starting {} scan {}. {}/{} scans completed", stokes_param, rtcdata.index.data + 1, n_scans_done,
                         telescope.scan_indices.cols());
 
@@ -287,7 +288,7 @@ auto Beammap::run_timestream() {
             // move out ptcdata the PTCData vector at corresponding index
             ptcs0.at(ptcdata.index.data) = std::move(ptcdata);
             calib_scans0.at(ptcdata.index.data) = std::move(calib_scan);
-        }
+        //}
 
         // increment number of completed scans
         n_scans_done++;

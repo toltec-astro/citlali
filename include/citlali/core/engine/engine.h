@@ -1,5 +1,8 @@
 #pragma once
 
+#include "sys/types.h"
+#include "sys/sysinfo.h"
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -43,7 +46,7 @@
 
 #include <citlali/core/timestream/timestream.h>
 
-#include <citlali/core/timestream/rtc/polarization_3.h>
+#include <citlali/core/timestream/rtc/polarization_4.h>
 #include <citlali/core/timestream/rtc/kernel.h>
 #include <citlali/core/timestream/rtc/despike.h>
 #include <citlali/core/timestream/rtc/filter.h>
@@ -164,9 +167,6 @@ public:
     // time gaps
     std::map<std::string,int> gaps;
 
-    // adc snap data
-    std::vector<Eigen::Matrix<short, Eigen::Dynamic, Eigen::Dynamic>> adc_snap_data;
-
     // output directory and optional sub directory name
     std::string output_dir, redu_dir_name;
 
@@ -245,6 +245,10 @@ public:
     // get PTC config options
     template<typename CT>
     void get_ptc_config(CT &);
+
+    // get timestream config options
+    template<typename CT>
+    void get_timestream_config(CT &);
 
     // get beammap config options
     template<typename CT>
@@ -329,18 +333,25 @@ public:
 };
 
 void Engine::obsnum_setup() {
-    // check tau (may be unnecessary)
-    if (!telescope.sim_obs) {
-        Eigen::VectorXd tau_el(1);
-        // get mean elevation
-        tau_el << telescope.tel_data["TelElAct"].mean();
-        // get tau at mean elevation for each band
-        auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
-        // loop through and make sure average tau is not negative (implies wrong model)
-        for (auto const& [key, val] : tau_freq) {
-            if (val[0] < 0) {
-                logger->error("calculated mean {} tau {} < 0",toltec_io.array_name_map[key], val[0]);
-                std::exit(EXIT_FAILURE);
+    if (rtcproc.run_calibrate) {
+        // get atm model
+        rtcproc.calibration.setup(telescope.tau_225_GHz);
+
+        logger->info("using {} model for extinction correction",rtcproc.calibration.extinction_model);
+
+        // check tau (may be unnecessary)
+        if (!telescope.sim_obs) {
+            Eigen::VectorXd tau_el(1);
+            // get mean elevation
+            tau_el << telescope.tel_data["TelElAct"].mean();
+            // get tau at mean elevation for each band
+            auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
+            // loop through and make sure average tau is not negative (implies wrong model)
+            for (auto const& [key, val] : tau_freq) {
+                if (val[0] < 0) {
+                    logger->error("calculated mean {} tau {} < 0",toltec_io.array_name_map[key], val[0]);
+                    std::exit(EXIT_FAILURE);
+                }
             }
         }
     }
@@ -379,8 +390,10 @@ void Engine::obsnum_setup() {
         omb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0)*RAD_TO_DEG;
         omb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0)*RAD_TO_DEG;
 
-        cmb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0)*RAD_TO_DEG;
-        cmb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0)*RAD_TO_DEG;
+        if (run_coadd) {
+            cmb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0)*RAD_TO_DEG;
+            cmb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0)*RAD_TO_DEG;
+        }
     }
 
     // create output map files
@@ -408,7 +421,7 @@ void Engine::obsnum_setup() {
     }
 
     // tod output mode require sequential policy so set explicitly
-    if (run_tod_output || verbose_mode) {
+    if (run_tod_output) {
         logger->warn("tod output mode require sequential policy. "
                      "parallelization will be disabled for some stages.");
         parallel_policy = "seq";
@@ -448,11 +461,15 @@ void Engine::get_rtc_config(CT &config) {
     get_config_value(config, calib.ignore_hwpr, missing_keys, invalid_keys,
                      std::tuple{"timestream","polarimetry", "ignore_hwpr"});
 
-    // polarization is disabled for beammaps
-    if (rtcproc.run_polarization && redu_type=="beammap") {
+    // polarization is disabled for detector grouping
+    if (rtcproc.run_polarization && ((redu_type=="beammap" && map_grouping=="auto") || map_grouping=="detector")) {
         logger->error("Beammap reductions do not currently support polarimetry mode");
         std::exit(EXIT_FAILURE);
     }
+
+    // set mapmaker polarization
+    naive_mm.run_polarization = rtcproc.run_polarization;
+    jinc_mm.run_polarization = rtcproc.run_polarization;
 }
 
 template<typename CT>
@@ -463,6 +480,65 @@ void Engine::get_ptc_config(CT &config) {
 
     // calibration for sensitivity units
     ptcproc.run_calibrate = rtcproc.run_calibrate;
+}
+
+template<typename CT>
+void Engine::get_timestream_config(CT &config) {
+    logger->info("getting timestream config options");
+    // run tod processing
+    get_config_value(config, run_tod, missing_keys, invalid_keys,
+                     std::tuple{"timestream","enabled"});
+    // tod type (xs, rs, is, qs)
+    get_config_value(config, tod_type, missing_keys, invalid_keys,
+                     std::tuple{"timestream","type"});
+
+    // run rtc or ptc tod output?
+    bool run_tod_output_rtc, run_tod_output_ptc;
+    // output rtc
+    get_config_value(config, run_tod_output_rtc, missing_keys, invalid_keys,
+                     std::tuple{"timestream","raw_time_chunk","output","enabled"});
+    // output ptc
+    get_config_value(config, run_tod_output_ptc, missing_keys, invalid_keys,
+                     std::tuple{"timestream","processed_time_chunk","output","enabled"});
+    // set tod output to false by default
+    run_tod_output = false;
+
+    // check if rtc output is requested
+    if (run_tod_output_rtc) {
+        run_tod_output = true;
+        tod_output_type = "rtc";
+    }
+    // if ptc output is requested
+    if (run_tod_output_ptc) {
+        // check if rtc output was requested
+        if (run_tod_output == true) {
+            tod_output_type = "both";
+        }
+        // else just output ptc
+        else {
+            run_tod_output = true;
+            tod_output_type = "ptc";
+        }
+    }
+
+    // tod subdirectory name
+    get_config_value(config, tod_output_subdir_name, missing_keys, invalid_keys,
+                     std::tuple{"timestream","output", "subdir_name"});
+    // write eigenvalues to stats file
+    get_config_value(config, diagnostics.write_evals, missing_keys, invalid_keys,
+                     std::tuple{"timestream","output", "stats","eigenvalues"});
+    // get time chunk size
+    get_config_value(config, telescope.time_chunk, missing_keys, invalid_keys,
+                     std::tuple{"timestream","chunking", "length_sec"});
+    // force chunking?
+    get_config_value(config, telescope.force_chunk, missing_keys, invalid_keys,
+                     std::tuple{"timestream","chunking", "force_chunking"});
+
+    /* get raw time chunk config */
+    get_rtc_config(config);
+
+    /* get processed time chunk config */
+    get_ptc_config(config);
 }
 
 template<typename CT>
@@ -484,10 +560,18 @@ void Engine::get_mapmaking_config(CT &config) {
                      std::tuple{"mapmaking","pixel_axes"},{"icrs","altaz"});
 
     // get config for omb
+    logger->info("getting omb config options");
     omb.get_config(config, missing_keys, invalid_keys, telescope.pixel_axes, redu_type);
 
+    // run coaddition?
+    get_config_value(config, run_coadd, missing_keys, invalid_keys,
+                     std::tuple{"coadd","enabled"});
+
     // re-run to get config for cmb
-    cmb.get_config(config, missing_keys, invalid_keys, telescope.pixel_axes, redu_type);
+    if (run_coadd) {
+        logger->info("getting cmb config options");
+        cmb.get_config(config, missing_keys, invalid_keys, telescope.pixel_axes, redu_type);
+    }
 
     // if flux calibration is not enabled, use tod type units (xs, rs, is, or qs)
     if (!rtcproc.run_calibrate) {
@@ -520,10 +604,6 @@ void Engine::get_mapmaking_config(CT &config) {
         }
     }
 
-    // run coaddition?
-    get_config_value(config, run_coadd, missing_keys, invalid_keys,
-                     std::tuple{"coadd","enabled"});
-
     // make noise maps?
     get_config_value(config, run_noise, missing_keys, invalid_keys,
                      std::tuple{"noise_maps","enabled"});
@@ -531,13 +611,16 @@ void Engine::get_mapmaking_config(CT &config) {
         // number of noise maps
         get_config_value(config, omb.n_noise, missing_keys, invalid_keys,
                          std::tuple{"noise_maps","n_noise_maps"},{},{0},{});
-        // copy omb number of noise maps to cmb
-        cmb.n_noise = omb.n_noise;
         // randomize noise maps on detector as well as time chunk
         get_config_value(config, omb.randomize_dets, missing_keys, invalid_keys,
                          std::tuple{"noise_maps","randomize_dets"});
-        // copy randomize_dets to cmb
-        cmb.randomize_dets = omb.randomize_dets;
+
+        if (run_coadd) {
+            // copy omb number of noise maps to cmb
+            cmb.n_noise = omb.n_noise;
+            // copy randomize_dets to cmb
+            cmb.randomize_dets = omb.randomize_dets;
+        }
     }
     // otherwise set number of noise maps to zero
     else {
@@ -692,61 +775,9 @@ void Engine::get_citlali_config(CT &config) {
     // create redu00, redu01... subdirectories
     get_config_value(config, use_subdir, missing_keys, invalid_keys,
                      std::tuple{"runtime","use_subdir"});
-    // run tod processing
-    get_config_value(config, run_tod, missing_keys, invalid_keys,
-                     std::tuple{"timestream","enabled"});
-    // tod type (xs, rs, is, qs)
-    get_config_value(config, tod_type, missing_keys, invalid_keys,
-                     std::tuple{"timestream","type"});
 
-    // run rtc or ptc tod output?
-    bool run_tod_output_rtc, run_tod_output_ptc;
-    // output rtc
-    get_config_value(config, run_tod_output_rtc, missing_keys, invalid_keys,
-                     std::tuple{"timestream","raw_time_chunk","output","enabled"});
-    // output ptc
-    get_config_value(config, run_tod_output_ptc, missing_keys, invalid_keys,
-                     std::tuple{"timestream","processed_time_chunk","output","enabled"});
-    // set tod output to false by default
-    run_tod_output = false;
-
-    // check if rtc output is requested
-    if (run_tod_output_rtc) {
-        run_tod_output = true;
-        tod_output_type = "rtc";
-    }
-    // if ptc output is requested
-    if (run_tod_output_ptc) {
-        // check if rtc output was requested
-        if (run_tod_output == true) {
-            tod_output_type = "both";
-        }
-        // else just output ptc
-        else {
-            run_tod_output = true;
-            tod_output_type = "ptc";
-        }
-    }
-
-    // tod subdirectory name
-    get_config_value(config, tod_output_subdir_name, missing_keys, invalid_keys,
-                     std::tuple{"timestream","output", "subdir_name"});
-
-    // write eigenvalues to stats file
-    get_config_value(config, diagnostics.write_evals, missing_keys, invalid_keys,
-                     std::tuple{"timestream","output", "stats","eigenvalues"});
-    // get time chunk size
-    get_config_value(config, telescope.time_chunk, missing_keys, invalid_keys,
-                     std::tuple{"timestream","chunking", "length_sec"});
-    // force chunking?
-    get_config_value(config, telescope.force_chunk, missing_keys, invalid_keys,
-                     std::tuple{"timestream","chunking", "force_chunking"});
-
-    /* get raw time chunk config */
-    get_rtc_config(config);
-
-    /* get processed time chunk config */
-    get_ptc_config(config);
+    /* get timestream config */
+    get_timestream_config(config);
 
     /* get mapmaking config */
     get_mapmaking_config(config);
@@ -825,12 +856,15 @@ void Engine::get_citlali_config(CT &config) {
 
         // convert source window to radians
         omb.source_window_rad = omb.source_window_rad*ASEC_TO_RAD;
-        // copy omb source sigma to cmb
-        cmb.source_sigma = omb.source_sigma;
-        // copy omb source_window_rad to cmb
-        cmb.source_window_rad = omb.source_window_rad;
-        // copy omb source_finder_mode to cmb
-        cmb.source_finder_mode = omb.source_finder_mode;
+
+        if (run_coadd) {
+            // copy omb source sigma to cmb
+            cmb.source_sigma = omb.source_sigma;
+            // copy omb source_window_rad to cmb
+            cmb.source_window_rad = omb.source_window_rad;
+            // copy omb source_finder_mode to cmb
+            cmb.source_finder_mode = omb.source_finder_mode;
+        }
     }
 
     /* get beammap config */
@@ -855,7 +889,6 @@ void Engine::get_photometry_config(CT &config) {
     // beammap source name
     get_config_value(config, beammap_source_name, missing_keys, invalid_keys,
                      std::tuple{"beammap_source","name"});
-
     // beammap source ra
     get_config_value(config, beammap_ra_rad, missing_keys, invalid_keys,
                      std::tuple{"beammap_source","ra_deg"});
@@ -887,14 +920,13 @@ void Engine::get_photometry_config(CT &config) {
 
 template<typename CT>
 void Engine::get_astrometry_config(CT &config) {
-
     // check if config file has pointing_offsets
     if (config.has("pointing_offsets")) {
         std::vector<double> offset;
         // get az offset
         offset = config.template get_typed<std::vector<double>>(std::tuple{"pointing_offsets",0,"value_arcsec"});
         pointing_offsets_arcsec["az"] = Eigen::Map<Eigen::VectorXd>(offset.data(),offset.size());
-        // get el offset
+        // get alt offset
         offset = config.template get_typed<std::vector<double>>(std::tuple{"pointing_offsets",1,"value_arcsec"});
         pointing_offsets_arcsec["alt"] = Eigen::Map<Eigen::VectorXd>(offset.data(),offset.size());
     }
@@ -960,7 +992,8 @@ void Engine::create_obs_map_files() {
 template <engine_utils::toltecIO::ProdType prod_t>
 void Engine::create_tod_files() {
     // loop through stokes indices
-    for (const auto &[stokes_index,stokes_param]: rtcproc.polarization.stokes_params) {
+    std::string stokes_param = "I";
+    //for (const auto &[stokes_index,stokes_param]: rtcproc.polarization.stokes_params) {
         // name for std map
         std::string name;
         // subdirectory name
@@ -995,6 +1028,63 @@ void Engine::create_tod_files() {
 
         // create netcdf file
         netCDF::NcFile fo(tod_filename[name], netCDF::NcFile::replace);
+
+        add_netcdf_var<std::string>(fo,"INSTRUME","TolTEC");
+        add_netcdf_var(fo, "HWPR", calib.run_hwpr);
+        add_netcdf_var<std::string>(fo, "TELESCOP", "LMT");
+        add_netcdf_var<std::string>(fo, "VERSION", CITLALI_GIT_VERSION);
+        add_netcdf_var<std::string>(fo, "KIDS", KIDSCPP_GIT_VERSION);
+        add_netcdf_var<std::string>(fo, "TULA", TULA_GIT_VERSION);
+        add_netcdf_var<std::string>(fo, "GOAL", redu_type);
+        add_netcdf_var<std::string>(fo, "OBSGOAL", telescope.obs_goal);
+        add_netcdf_var<std::string>(fo, "TYPE", tod_type);
+        add_netcdf_var<std::string>(fo, "GROUPING", map_grouping);
+        add_netcdf_var<std::string>(fo, "METHOD", map_method);
+        add_netcdf_var(fo, "EXPTIME", omb.exposure_time);
+        add_netcdf_var<std::string>(fo, "RADESYS", telescope.pixel_axes);
+        add_netcdf_var(fo, "TAN_RA", telescope.tel_header["Header.Source.Ra"][0]);
+        add_netcdf_var(fo, "TAN_DEC", telescope.tel_header["Header.Source.Dec"][0]);
+        add_netcdf_var(fo, "MEAN_EL", RAD_TO_DEG*telescope.tel_data["TelElAct"].mean());
+        add_netcdf_var(fo, "MEAN_AZ", RAD_TO_DEG*telescope.tel_data["TelAzAct"].mean());
+        add_netcdf_var(fo, "MEAN_PA", RAD_TO_DEG*telescope.tel_data["ActParAng"].mean());
+
+        // add jinc shape params
+        /*if (map_method=="jinc") {
+            add_netcdf_var(fo, "JINC_R", jinc_mm.r_max);
+            add_netcdf_var(fo, "JINC_A", jinc_mm.shape_params[calib.arrays(i)][0]);
+            add_netcdf_var(fo, "JINC_B", jinc_mm.shape_params[calib.arrays(i)][0]);
+            add_netcdf_var(fo, "JINC_C", jinc_mm.shape_params[calib.arrays(i)][0]);
+        }*/
+
+        add_netcdf_var(fo, "SAMPRATE", telescope.fsmp);
+
+        // add apt table
+        std::vector<string> apt_filename;
+        std::stringstream ss(calib.apt_filepath);
+        std::string item;
+        char delim = '/';
+
+        while (getline (ss, item, delim)) {
+        apt_filename.push_back(item);
+        }
+        add_netcdf_var<std::string>(fo, "APT", apt_filename.back());
+
+        // add control/runtime parameters
+        add_netcdf_var(fo, "CONFIG.VERBOSE", verbose_mode);
+        add_netcdf_var(fo, "CONFIG.POLARIZED", rtcproc.run_polarization);
+        add_netcdf_var(fo, "CONFIG.DESPIKED", rtcproc.run_despike);
+        add_netcdf_var(fo, "CONFIG.TODFILTERED", rtcproc.run_tod_filter);
+        add_netcdf_var(fo, "CONFIG.DOWNSAMPLED", rtcproc.run_downsample);
+        add_netcdf_var(fo, "CONFIG.CALIBRATED", rtcproc.run_calibrate);
+        add_netcdf_var(fo, "CONFIG.EXTINCTION", rtcproc.run_extinction);
+        add_netcdf_var<std::string>(fo, "CONFIG.EXTINCTION.EXTMODEL", rtcproc.calibration.extinction_model);
+        add_netcdf_var<std::string>(fo, "CONFIG.WEIGHT.TYPE", ptcproc.weighting_type);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.RTC.WTLOW", rtcproc.lower_weight_factor);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.RTC.WTHIGH", rtcproc.upper_weight_factor);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTLOW", ptcproc.lower_weight_factor);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTHIGH", ptcproc.upper_weight_factor);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.MEDWTFACTOR", ptcproc.med_weight_factor);
+        add_netcdf_var(fo, "CONFIG.CLEANED", ptcproc.run_clean);
 
         // add tod output type to file
         netCDF::NcDim n_tod_output_type_dim = fo.addDim("n_tod_output_type",1);
@@ -1037,12 +1127,11 @@ void Engine::create_tod_files() {
         Eigen::Index n_dets;
 
         // set number of dets for unpolarized timestreams
-        if (stokes_param=="I") {
+        if (!rtcproc.run_polarization) {
             n_dets = calib.apt["array"].size();
         }
-
         // set number of detectors for polarized timestreams
-        else if ((stokes_param == "Q") || (stokes_param == "U")) {
+        else {
             if (!telescope.sim_obs) {
                 n_dets = (calib.apt["fg"].array()!=-1).count();
             }
@@ -1151,8 +1240,16 @@ void Engine::create_tod_files() {
                 hwpr_v.putAtt("units","rad");
             }
         }
+
+        // add tel header
+        netCDF::NcDim tel_header_dim = fo.addDim("tel_header_n_pts", 1);
+        for (const auto &[key,val]: telescope.tel_header) {
+            netCDF::NcVar tel_header_v = fo.addVar(key,netCDF::ncDouble, tel_header_dim);
+            tel_header_v.putVar(&val(0));
+        }
+
         fo.close();
-    }
+    //}
 }
 
 //template <TCDataKind tc_t>
@@ -1209,8 +1306,15 @@ void Engine::cli_summary() {
     }
 
     logger->info("estimated size of all maps {} GB", mb_size_total);
-    logger->info("number of scans: {}\n\n",telescope.scan_indices.cols());
+    logger->info("number of scans: {}",telescope.scan_indices.cols());
 
+    struct sysinfo memInfo;
+
+    long long totalPhysMem = memInfo.totalram;
+    totalPhysMem *= memInfo.mem_unit;
+
+    logger->info("total physical memory available {} GB", (totalPhysMem/1024)/1e7);
+    logger->info("physical memory used {} GB\n\n", engine_utils::get_phys_memory()/1e7);
 }
 
 template <TCDataKind tc_t>
@@ -1233,134 +1337,39 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
     f << "-Reduction type: " << redu_type << "\n";
     f << "-TOD type: " << tod_type << "\n";
     f << "-TOD unit: " << omb.sig_unit << "\n";
+    f << "-TOD chunk type: " << in.name << "\n";
 
+    f << "-Calibrated: " << in.status.calibrated << "\n";
+    f << "-Extinction Corrected: " << in.status.extinction_corrected << "\n";
     f << "-Demodulated: " << in.status.demodulated << "\n";
     f << "-Kernel Generated: " << in.status.kernel_generated << "\n";
     f << "-Despiked: " << in.status.despiked << "\n";
     f << "-TOD filtered: " << in.status.tod_filtered << "\n";
     f << "-Downsampled: " << in.status.downsampled << "\n";
-    f << "-Calibrated: " << in.status.calibrated << "\n";
     f << "-Cleaned: " << in.status.cleaned << "\n";
 
     f << "-Scan length: " << in.scans.data.rows() << "\n";
 
     f << "-Number of detectors: " << in.scans.data.cols() << "\n";
-    f << "-Number of detectors flagged in APT table: " << (calib.apt["flag"].array()==0).count() << "\n";
+    f << "-Number of detectors flagged in APT table: " << (calib.apt["flag"].array()!=0).count() << "\n";
     f << "-Number of detectors flagged below weight limit: " << in.n_low_dets <<"\n";
     f << "-Number of detectors flagged above weight limit: " << in.n_high_dets << "\n";
-    Eigen::Index n_flagged = in.n_low_dets + in.n_high_dets + (calib.apt["flag"].array()==0).count();
+    Eigen::Index n_flagged = in.n_low_dets + in.n_high_dets + (calib.apt["flag"].array()!=0).count();
     f << "-Number of detectors flagged: " << n_flagged << " (" << 100*float(n_flagged)/float(in.scans.data.cols()) << "%)\n";
 
     f << "-NaNs found: " << in.scans.data.array().isNaN().count() << "\n";
     f << "-Infs found: " << in.scans.data.array().isInf().count() << "\n";
-    f << "-Data min: " << in.scans.data.minCoeff() << "\n";
-    f << "-Data max: " << in.scans.data.maxCoeff() << "\n";
-    f << "-Data mean: " << in.scans.data.mean() << "\n";
+    f << "-Data min: " << in.scans.data.minCoeff() << " " << omb.sig_unit << "\n";
+    f << "-Data max: " << in.scans.data.maxCoeff() << " " << omb.sig_unit << "\n";
+    f << "-Data mean: " << in.scans.data.mean() << " " << omb.sig_unit << "\n";
+    f << "-Data median: " << tula::alg::median(in.scans.data) << " " << omb.sig_unit << "\n";
+    f << "-Data stddev: " << engine_utils::calc_std_dev(in.scans.data) << " " << omb.sig_unit << "\n";
+
+    if (in.status.kernel_generated) {
+        f << "-Kernel max: " << in.kernel.data.maxCoeff() << " " << omb.sig_unit << "\n";
+    }
 
     f.close();
-
-    /*using netCDF::NcDim;
-    using netCDF::NcFile;
-    using netCDF::NcType;
-    using netCDF::NcVar;
-    using namespace netCDF::exceptions;
-
-    try {
-        netCDF::NcFile fo(obsnum_dir_name+"/logs/" + filename + ".nc", netCDF::NcFile::replace);
-
-        // number of samples
-        unsigned long n_pts = in.scans.data.rows();
-
-        // make sure its even
-        if (n_pts % 2 == 1) {
-            n_pts--;
-        }
-
-        // containers for frequency domain
-        Eigen::Index n_freqs = n_pts / 2 + 1; // number of one sided freq bins
-        double d_freq = telescope.d_fsmp / n_pts;
-
-        netCDF::NcDim n_dets_dim = fo.addDim("n_dets", in.scans.data.cols());
-        netCDF::NcDim n_hist_dim = fo.addDim("n_hist_bins", omb.hist_n_bins);
-
-        // get number of bins
-        auto n_hist_bins = n_hist_dim.getSize();
-
-        std::vector<netCDF::NcDim> hist_dims = {n_dets_dim, n_hist_dim};
-
-        // histogram variable
-        netCDF::NcVar hist_var = fo.addVar("hist",netCDF::ncDouble, hist_dims);
-        // histogram bins variable
-        NcVar hist_bin_var = fo.addVar("hist_bins",netCDF::ncDouble, hist_dims);
-
-        // add psd variable
-        NcDim n_psd_dim = fo.addDim("n_psd", n_freqs);
-        std::vector<netCDF::NcDim> psd_dims = {n_dets_dim, n_psd_dim};
-
-        // psd variable
-        netCDF::NcVar psd_var = fo.addVar("psd",netCDF::ncDouble, psd_dims);
-        psd_var.putAtt("Units","V * s^(1/2)");
-        // psd freq variable
-        NcVar psd_freq_var = fo.addVar("psd_freq",netCDF::ncDouble, n_psd_dim);
-        psd_freq_var.putAtt("Units","Hz");
-
-        Eigen::VectorXd psd_freq = d_freq * Eigen::VectorXd::LinSpaced(n_freqs, 0, n_pts / 2);
-        psd_freq_var.putVar(psd_freq.data());
-
-        // start index for hist
-        std::vector<std::size_t> start_index_hist = {0,0};
-        // size for hist
-        std::vector<std::size_t> size_hist = {1,n_hist_bins};
-
-        // size for psd
-        std::vector<std::size_t> size_psd = {1,TULA_SIZET(n_freqs)};
-
-        // loop through detectors
-        for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
-            // increment starting row
-            start_index_hist[0] = i;
-            // get data for detector
-            Eigen::VectorXd scan = in.scans.data.col(i);
-            // calculate histogram
-            auto [h, h_bins] = engine_utils::calc_hist(scan, n_hist_bins);
-            // add data to histogram variable
-            hist_var.putVar(start_index_hist, size_hist, h.data());
-            // add data to histogram bins variable
-            hist_bin_var.putVar(start_index_hist, size_hist, h_bins.data());
-
-            // apply hanning window
-            Eigen::VectorXd hanning = (0.5 - 0.5 * Eigen::ArrayXd::LinSpaced(n_pts, 0, 2.0 * pi / n_pts * (n_pts - 1)).cos());
-
-            scan.noalias() = (scan.array()*hanning.array()).matrix();
-
-            // setup fft
-            Eigen::FFT<double> fft;
-            fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
-            fft.SetFlag(Eigen::FFT<double>::Unscaled);
-
-            // vector to hold fft data
-            Eigen::VectorXcd freqdata;
-
-            // do fft
-            fft.fwd(freqdata, scan.head(n_pts));
-            // calc psd
-            Eigen::VectorXd psd = freqdata.cwiseAbs2() / d_freq / n_pts / telescope.d_fsmp;
-            // account for negative freqs
-            psd.segment(1, n_freqs - 2) *= 2.;
-
-            Eigen::VectorXd smoothed_psd(psd.size());
-            engine_utils::smooth<engine_utils::SmoothType::edge_truncate>(psd, smoothed_psd, omb.smooth_window);
-            psd = std::move(smoothed_psd);
-
-            // put detector's psd into variable
-            psd_var.putVar(start_index_hist, size_psd, psd.data());
-        }
-
-        fo.close();
-
-    } catch (NcException &e) {
-        logger->error("{}", e.what());
-    }*/
 }
 
 template <typename map_buffer_t>
@@ -1678,7 +1687,6 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
 template <typename fits_io_type, class map_buffer_t>
 void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_buffer_t &mb, Eigen::Index i) {
-
     // get name for extension layer
     std::string map_name = get_map_name(i);
 
@@ -1943,12 +1951,12 @@ void Engine::write_stats() {
     }
 
     // add adc
-    if (!adc_snap_data.empty()) {
-        netCDF::NcDim adc_snap_dim = fo.addDim("adcSnapDim", adc_snap_data[0].cols());
-        netCDF::NcDim adc_snap_data_dim = fo.addDim("adcSnapDataDim", adc_snap_data[0].rows());
+    if (!diagnostics.adc_snap_data.empty()) {
+        netCDF::NcDim adc_snap_dim = fo.addDim("adcSnapDim", diagnostics.adc_snap_data[0].cols());
+        netCDF::NcDim adc_snap_data_dim = fo.addDim("adcSnapDataDim", diagnostics.adc_snap_data[0].rows());
         std::vector<netCDF::NcDim> dims = {adc_snap_dim, adc_snap_data_dim};
         Eigen::Index i = 0;
-        for (auto const& x: adc_snap_data) {
+        for (auto const& x: diagnostics.adc_snap_data) {
             netCDF::NcVar adc_snap_v = fo.addVar("toltec" + std::to_string(calib.nws(i)) + "_adc_snap_data",netCDF::ncDouble, dims);
             adc_snap_v.putVar(x.data());
             i++;

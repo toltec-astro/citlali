@@ -190,6 +190,8 @@ struct TimeStream : internal::TCDataBase<Derived>,
     data_t<std::map<std::string, Eigen::VectorXd>> pointing_offsets_arcsec;
     // hwp angle for scan
     data_t<Eigen::VectorXd> hwpr_angle;
+    // detector angle
+    data_t<Eigen::MatrixXd> angle;
     // fcf
     data_t<Eigen::VectorXd> fcf;
     // vectors for mapping apt table onto timestreams

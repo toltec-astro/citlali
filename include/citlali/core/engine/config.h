@@ -58,6 +58,8 @@ void get_config_value(config_t config, param_t &param, key_vec_t &missing_keys,
                key_vec_t &invalid_keys, option_t option, std::vector<param_t> allowed={},
                std::vector<param_t> min_val={}, std::vector<param_t> max_val={}) {
 
+    std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
+
     // check if config option exists
     try {
         if (config.template has_typed<param_t>(option_t(option))) {
@@ -73,6 +75,8 @@ void get_config_value(config_t config, param_t &param, key_vec_t &missing_keys,
             if (!min_val.empty() || !max_val.empty()) {
                 check_range(param, missing_keys, invalid_keys, min_val, max_val, option);
             }
+
+            logger->debug("got {} from config",option);
         }
         // else mark as missing
         else {

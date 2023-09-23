@@ -11,13 +11,57 @@ namespace timestream {
 
 class Calibration {
 public:
+    // get logger
+    std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
+
     // extinction model
     std::string extinction_model;
 
     // coefficients for transmission ratios fit to order 4 polynomial
     std::map<std::string,Eigen::VectorXd> tx_ratio_coeff;
 
-    void setup() {
+    std::map<std::string, double> tx_225_zenith = {
+        {"am_q25",0.9500275},
+        {"am_q50",0.9142065},
+        {"am_q75",0.8515054},
+        {"am_q95",0.7337698},
+    };
+
+    void setup(double tau_225_zenith) {
+        // cos of zenith angle
+        auto cz = cos(pi/2 - 80.0*DEG_TO_RAD);
+
+        // 1/cos(zenith angle)
+        auto secz = 1. / cz;
+        // airmass
+        auto A = secz * (1. - 0.0012 * (pow(secz, 2) - 1.));
+
+        // tau at 225 GHz at 80deg from atm model and airmass
+        Eigen::VectorXd tau_225_calc(tx_225_zenith.size());
+
+        // calc tau at 225 GHz at 80deg from each model
+        int i = 0;
+        for (const auto &[key,val]: tx_225_zenith) {
+            tau_225_calc(i) = -log(val)/A;
+            i++;
+        }
+
+        // difference between telescope tau and calculated tau at 225 GHz
+        double tau_225_diff = abs(tau_225_zenith - tau_225_calc(0));
+        // set initial model to am_q25
+        extinction_model = "am_q25";
+
+        // find model with closest tau to telescope tau and use that model
+        // for extinction correction
+        i = 0;
+        for (const auto &[key,val]: tx_225_zenith) {
+            if (abs(tau_225_zenith - tau_225_calc(i)) < tau_225_diff) {
+                extinction_model = key;
+            }
+            i++;
+        }
+
+        // allocate transmission coefficients (order 4 polynomial)
         tx_ratio_coeff["a1100"].resize(5);
         tx_ratio_coeff["a1400"].resize(5);
         tx_ratio_coeff["a2000"].resize(5);
@@ -42,11 +86,12 @@ public:
             tx_ratio_coeff["a1400"] << 0.04588952, -0.19502626,  0.31759789, -0.24297199,  1.08886782;
             tx_ratio_coeff["a2000"] << 0.43837991, -1.84767188,  2.96708103, -2.21900446,  1.77085296;
         }
-        // null model
-        else if (extinction_model=="null") {
-            tx_ratio_coeff["a1100"].setZero();
-            tx_ratio_coeff["a1400"].setZero();
-            tx_ratio_coeff["a2000"].setZero();
+
+        // am_q95
+        else if (extinction_model=="am_q95") {
+            tx_ratio_coeff["a1100"] << -0.6973269, 2.7011668, -3.93198542, 2.65377595, 0.129337;
+            tx_ratio_coeff["a1400"] << 0.2933151, -1.10126494, 1.52262009, -0.9424269, 1.25622249;
+            tx_ratio_coeff["a2000"] << 4.87342355, -17.94456945,  24.02708919, -14.06116984, 4.35136574;
         }
     }
 
@@ -54,18 +99,22 @@ public:
     template <typename DerivedA, typename DerivedB>
     auto tau_polynomial(Eigen::DenseBase<DerivedA> &coeff, Eigen::DenseBase<DerivedB> &elev) {
 
+        // p(x) = a4*x^4 + a3*x^3 + a2*x^2 + a1*x + a0
         return coeff(0)*pow(elev.derived().array(),4) + coeff(1)*pow(elev.derived().array(),3) +
                coeff(2)*pow(elev.derived().array(),2) + coeff(3)*pow(elev.derived().array(),1) +
                coeff(4);
     }
 
+    // calculate tau for each toltec band for given elevations
     template <typename Derived>
     auto calc_tau(Eigen::DenseBase<Derived> &, double);
 
+    // run flux calibration on the timestreams
     template <TCDataKind tcdata_kind, typename Derived, class calib_t>
     void calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &, Eigen::DenseBase<Derived> &,
                        Eigen::DenseBase<Derived> &, calib_t &);
 
+    // run extinction correction on the timestreams
     template <TCDataKind tcdata_kind, typename Derived, class calib_t, typename tau_t>
     void extinction_correction(TCData<tcdata_kind, Eigen::MatrixXd> &, Eigen::DenseBase<Derived> &,
                        Eigen::DenseBase<Derived> &, calib_t &, tau_t &);

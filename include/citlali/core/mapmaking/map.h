@@ -74,6 +74,9 @@ public:
     // noise maps (n_rows, n_cols, n_noise) of length n_maps
     std::vector<Eigen::Tensor<double,3>> noise;
 
+    // pointing matrix (M in Benton 2015)
+    std::vector<Eigen::Tensor<double,3>> pointing;
+
     // randomize noise maps on detectors
     bool randomize_dets;
 

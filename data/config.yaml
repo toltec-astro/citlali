@@ -198,10 +198,9 @@ timestream: # timestream reduction parameters
       image_ext_name: signal # extention name if FITS file
       type: gaussian # how to make kernel (gaussian, airy, fits)
     flux_calibration: # flux calibration
-      enabled: false # enable or disable flux calibration (ignored for beammapping)
+      enabled: false # enable or disable flux calibration
     extinction_correction: # extinction correction (per sample, tau for each band calculated from fit to models)
-      enabled: false
-      extinction_model: am_q25 # model to use for tau calculation (am_q25, am_q50, am_q75)
+      enabled: false # enable or disable extinction correction
     flagging: # controls flagging before cleaning
       delta_f_min_Hz: 60.e3 # lower limit on frequency separation for flagging tones
       lower_weight_factor: 0.0 # flag detectors below this weight limit (ignored if 0, weight=1/variance of TOD)
@@ -212,7 +211,7 @@ timestream: # timestream reduction parameters
     clean: # remove (hopefully) the atmospheric signal
       enabled: false # enable or disable cleaning
       stddev_limit: 0.0 # standard deviation cut for cleaning (only used if >0)
-      mask_radius_arcsec: 0.0 # radius of region around the map center to mask during cleaning
+      mask_radius_arcsec: 0.0 # radius of region around the map center to mask during cleaning (only used if >0)
       grouping: [array] # clean grouping (array, nw, all)
       n_eig_to_cut: # number of eigenvalues to remove (if stddev_limit >0, calc this many eigs, if this is 0, calc all eigs) 
         a1100: [3]

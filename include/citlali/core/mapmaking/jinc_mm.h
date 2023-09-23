@@ -26,6 +26,9 @@ namespace mapmaking {
 
 class JincMapmaker {
 public:
+    // run polarization?
+    bool run_polarization;
+
     // parallel policy
     std::string parallel_policy;
 

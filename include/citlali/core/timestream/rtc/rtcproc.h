@@ -4,7 +4,7 @@
 
 #include <citlali/core/timestream/timestream.h>
 
-#include <citlali/core/timestream/rtc/polarization_3.h>
+#include <citlali/core/timestream/rtc/polarization_4.h>
 #include <citlali/core/timestream/rtc/kernel.h>
 #include <citlali/core/timestream/rtc/despike.h>
 #include <citlali/core/timestream/rtc/filter.h>
@@ -192,13 +192,6 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
     // run extinction correction?
     get_config_value(config, run_extinction, missing_keys, invalid_keys,
                      std::tuple{"timestream","raw_time_chunk","extinction_correction","enabled"});
-    // extinction model
-    get_config_value(config, calibration.extinction_model, missing_keys, invalid_keys,
-                     std::tuple{"timestream","raw_time_chunk","extinction_correction","extinction_model"},
-                     {"am_q25","am_q50","am_q75","null"});
-
-    // setup atm model
-    calibration.setup();
 }
 
 template <class calib_t, typename Derived>
@@ -494,6 +487,8 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     out.index.data = in_pol.index.data;
     // copy fcf
     out.fcf.data = in_pol.fcf.data;
+    // copy angle
+    out.angle.data = in_pol.angle.data;
     // copy chunk status
     out.status.calibrated = in_pol.status.calibrated;
     out.status.extinction_corrected = in_pol.status.extinction_corrected;
