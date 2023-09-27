@@ -477,9 +477,6 @@ void Engine::get_ptc_config(CT &config) {
     logger->info("getting ptc config options");
     // get ptcproc config
     ptcproc.get_config(config, missing_keys, invalid_keys);
-
-    // calibration for sensitivity units
-    ptcproc.run_calibrate = rtcproc.run_calibrate;
 }
 
 template<typename CT>
@@ -1308,8 +1305,8 @@ void Engine::cli_summary() {
     logger->info("estimated size of all maps {} GB", mb_size_total);
     logger->info("number of scans: {}",telescope.scan_indices.cols());
 
+    // test getting memory usage for fun
     struct sysinfo memInfo;
-
     long long totalPhysMem = memInfo.totalram;
     totalPhysMem *= memInfo.mem_unit;
 
@@ -1352,9 +1349,9 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
 
     f << "-Number of detectors: " << in.scans.data.cols() << "\n";
     f << "-Number of detectors flagged in APT table: " << (calib.apt["flag"].array()!=0).count() << "\n";
-    f << "-Number of detectors flagged below weight limit: " << in.n_low_dets <<"\n";
-    f << "-Number of detectors flagged above weight limit: " << in.n_high_dets << "\n";
-    Eigen::Index n_flagged = in.n_low_dets + in.n_high_dets + (calib.apt["flag"].array()!=0).count();
+    f << "-Number of detectors flagged below weight limit: " << in.n_dets_low <<"\n";
+    f << "-Number of detectors flagged above weight limit: " << in.n_dets_high << "\n";
+    Eigen::Index n_flagged = in.n_dets_low + in.n_dets_high + (calib.apt["flag"].array()!=0).count();
     f << "-Number of detectors flagged: " << n_flagged << " (" << 100*float(n_flagged)/float(in.scans.data.cols()) << "%)\n";
 
     f << "-NaNs found: " << in.scans.data.array().isNaN().count() << "\n";
@@ -1537,6 +1534,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
             fits_io->at(i).pfits->pHDU().addKey("to_mJy/beam", 1, "Conversion to mJy/beam");
             fits_io->at(i).pfits->pHDU().addKey("to_MJy/sr", 1/(calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC),
                                                 "Conversion to MJy/sr");
+        }
+        else if (mb->sig_unit == "uk") {
         }
     }
 

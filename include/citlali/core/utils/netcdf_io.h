@@ -16,7 +16,7 @@ void add_netcdf_var(netCDF::NcFile &fo, std::string name, T data) {
 
     auto dim_name = name;
 
-    // make dimension lower case for cleanliness
+    // make dimension name lower case for cleanliness
     std::transform(dim_name.begin(), dim_name.end(), dim_name.begin(),
                    [](unsigned char c){ return std::tolower(c); });
 

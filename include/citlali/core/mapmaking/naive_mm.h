@@ -19,6 +19,9 @@ namespace mapmaking {
 
 class NaiveMapmaker {
 public:
+    // get logger
+    std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
+
     // run polarization?
     bool run_polarization;
 

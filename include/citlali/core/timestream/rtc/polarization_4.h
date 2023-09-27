@@ -85,8 +85,6 @@ public:
                 }
             }
             else {
-                out.scans.data = in.scans.data;
-
                 array_indices = calib.apt["array"].template cast<Eigen::Index> ();
                 nw_indices = calib.apt["nw"].template cast<Eigen::Index> ();
                 det_indices = Eigen::VectorXI::LinSpaced(n_dets,0,n_dets-1);

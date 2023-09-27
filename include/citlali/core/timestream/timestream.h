@@ -170,9 +170,7 @@ struct TimeStream : internal::TCDataBase<Derived>,
     } status;
 
     // number of detectors lower than weight limit
-    int n_low_dets;
-    // number of detectors higher than weight limit
-    int n_high_dets;
+    int n_dets_low, n_dets_high;
 
     // kernel timestreams
     data_t<Eigen::MatrixXd> kernel;
@@ -251,9 +249,11 @@ public:
     engine_utils::toltecIO toltec_io;
 
     // add or subtract gaussian source
-    enum GaussType {
-        add = 0,
-        subtract = 1
+    enum SourceType {
+        Gaussian = 0,
+        NegativeGaussian = 1,
+        Airy = 2,
+        NegativeAiry = 3
     };
 
     // number of weight outlier iterations
@@ -275,7 +275,7 @@ public:
                          Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string, std::string);
 
     // add or subtract gaussian to timestream
-    template <GaussType gauss_type, TCDataKind tcdata_t, typename DerivedB, typename DerivedC, typename apt_t,
+    template <SourceType source_type, TCDataKind tcdata_t, typename DerivedB, typename DerivedC, typename apt_t,
              typename pointing_offset_t>
     void add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &, Eigen::DenseBase<DerivedB> &, std::string &,
                       std::string &, apt_t &, pointing_offset_t &, double, Eigen::Index, Eigen::Index,
@@ -332,8 +332,8 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
         // get grouping
         auto grp_limits = get_grouping("array",det_indices,calib,n_dets);
 
-        in.n_low_dets = 0;
-        in.n_high_dets = 0;
+        in.n_dets_low = 0;
+        in.n_dets_high = 0;
 
         for (auto const& [key, val] : grp_limits) {
 
@@ -383,8 +383,8 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
                 // get median standard deviation
                 double mean_std_dev = tula::alg::median(det_std_dev);
 
-                int n_low_dets = 0;
-                int n_high_dets = 0;
+                int n_dets_low = 0;
+                int n_dets_high = 0;
 
                 // loop through good detectors and flag those that have std devs beyond the limits
                 for (Eigen::Index j=0; j<n_good_dets; j++) {
@@ -399,8 +399,8 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
                             else {
                                 calib_scan.apt["flag"](det_index) = 1;
                             }
-                            in.n_low_dets++;
-                            n_low_dets++;
+                            in.n_dets_low++;
+                            n_dets_low++;
                         }
 
                         // flag those above limit
@@ -411,19 +411,19 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
                             else {
                                 calib_scan.apt["flag"](det_index) = 1;
                             }
-                            in.n_high_dets++;
-                            n_high_dets++;
+                            in.n_dets_high++;
+                            n_dets_high++;
                         }
                     }
                 }
 
                 logger->info("array {} iter {}: {}/{} dets below limit. {}/{} dets above limit.", key, n_iter,
-                            n_low_dets, n_good_dets, n_high_dets, n_good_dets);
+                            n_dets_low, n_good_dets, n_dets_high, n_good_dets);
 
                 // increment iteration
                 n_iter++;
                 // check if no more detectors are above limit
-                if ((n_low_dets==0 && n_high_dets==0) || n_iter > iter_lim) {
+                if ((n_dets_low==0 && n_dets_high==0) || n_iter > iter_lim) {
                     keep_going = false;
                 }
             }
@@ -436,7 +436,7 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
     return std::move(calib_scan);
 }
 
-template <TCProc::GaussType gauss_type, TCDataKind tcdata_t, typename DerivedB, typename DerivedC, typename apt_t, typename pointing_offset_t>
+template <TCProc::SourceType source_type, TCDataKind tcdata_t, typename DerivedB, typename DerivedC, typename apt_t, typename pointing_offset_t>
 void TCProc::add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &in, Eigen::DenseBase<DerivedB> &params, std::string &pixel_axes,
                            std::string &map_grouping, apt_t &apt, pointing_offset_t &pointing_offsets_arcsec,
                            double pixel_size_rad, Eigen::Index n_rows, Eigen::Index n_cols,
@@ -476,7 +476,7 @@ void TCProc::add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &in, Eigen::DenseBas
         double sigma = std::max(sigma_lat, sigma_lon);
 
         // subtract source
-        if constexpr (gauss_type==subtract) {
+        if constexpr (source_type==NegativeGaussian) {
             amp = -amp;
         }
 

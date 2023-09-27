@@ -19,7 +19,7 @@ using timestream::TCData;
 class PTCProc: public TCProc {
 public:
     // controls for timestream reduction
-    bool run_clean, run_calibrate, run_stokes_clean;
+    bool run_clean, run_stokes_clean;
     // median weight factor
     double med_weight_factor;
     // weight type (full, approximate, const)
@@ -142,7 +142,6 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 
         // loop through config groupings
         for (const auto & group: cleaner.grouping) {
-
             // add current group to eval/evec vectors
             out.evals.data.push_back({});
             out.evecs.data.push_back({});
@@ -155,7 +154,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 grp_limits[0] = std::make_tuple(0,in.scans.data.cols());
             }
 
-            else if (stokes_param=="I") {
+            /*else if (stokes_param=="I") {
                 // network cleaning
                 if (group == "nw" || group == "network") {
                     grp_limits = calib.nw_limits;
@@ -165,17 +164,18 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 else if (group == "array") {
                     grp_limits = calib.array_limits;
                 }
-            }
+            }*/
             // if cleaning polarized maps is requested
-            else if (run_stokes_clean) {
+            else {//if (run_stokes_clean) {
                 // get group limits
                 grp_limits = get_grouping(group, det_indices, calib, in.scans.data.cols());
             }
+            //}
 
             logger->debug("cleaning with {} grouping", group);
 
             // only run cleaning if chunk is Stokes I or if cleaning stokes Q, U
-            if (stokes_param=="I" || run_stokes_clean) {
+            //if (stokes_param=="I" || run_stokes_clean) {
                 for (auto const& [key, val] : grp_limits) {
 
                     Eigen::Index arr_index;
@@ -286,7 +286,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                     }
                 }
                 indx++;
-            }
+            //}
             out.status.cleaned = true;
         }
     }
@@ -298,18 +298,18 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
     // number of detectors
     Eigen::Index n_dets = in.scans.data.cols();
 
+    // resize weights to number of detectors
+    in.weights.data = Eigen::VectorXd::Zero(n_dets);
+
     if (weighting_type == "approximate") {
         logger->debug("calculating weights using detector sensitivities");
-        // resize weights to number of detectors
-        in.weights.data = Eigen::VectorXd::Zero(n_dets);
-
         // unit conversion x flux calibration factor x 1/exp(-tau)
         double conversion_factor;
 
         // loop through detectors and calculate weights
         for (Eigen::Index i=0; i<n_dets; i++) {
             Eigen::Index det_index = det_indices(i);
-            if (run_calibrate) {
+            if (in.status.calibrated) {
                 conversion_factor = in.fcf.data(i);
             }
             else {
@@ -329,7 +329,6 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
     // use full weighting
     else if (weighting_type == "full"){
         logger->debug("calculating weights using timestream variance");
-        in.weights.data = Eigen::VectorXd::Zero(n_dets);
 
         for (Eigen::Index i=0; i<n_dets; i++) {
             // only calculate weights if detector is unflagged
@@ -357,8 +356,6 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
 
     // constant weighting
     else if (weighting_type == "const") {
-        in.weights.data = Eigen::VectorXd::Zero(n_dets);
-
         for (Eigen::Index i=0; i<n_dets; i++) {
             // only calculate weights if detector is unflagged
             if (apt["flag"](det_indices(i))==0) {
@@ -519,7 +516,9 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
             }
         }
 
+        // sync file to make sure it gets updated
         fo.sync();
+        // close file
         fo.close();
         logger->info("tod chunk written to {}", filepath);
 

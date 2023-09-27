@@ -178,6 +178,13 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
     get_config_value(config, run_downsample, missing_keys, invalid_keys,
                      std::tuple{"timestream","raw_time_chunk","downsample","enabled"});
     if (run_downsample) {
+
+        // check if tod filtering is enabled
+        if (!run_tod_filter) {
+            logger->error("running downsampling without tod filtering will lose data!");
+            std::exit(EXIT_FAILURE);
+        }
+
         // downsample factor
         get_config_value(config, downsampler.factor, missing_keys, invalid_keys,
                          std::tuple{"timestream","raw_time_chunk","downsample","factor"},{},{0});
@@ -262,7 +269,7 @@ auto RTCProc::calc_map_indices(calib_t &calib, Eigen::DenseBase<Derived> &det_in
     }
 
     // increment if polarization is enabled
-    if (run_polarization) {
+    /*if (run_polarization) {
         if (stokes_param == "Q") {
             // stokes Q takes the second set of n_maps
             map_indices = map_indices.array() + n_maps;
@@ -271,7 +278,7 @@ auto RTCProc::calc_map_indices(calib_t &calib, Eigen::DenseBase<Derived> &det_in
             // stokes U takes the third set of n_maps
             map_indices = map_indices.array() + 2*n_maps;
         }
-    }
+    }*/
 
     // return the map indices
     return std::move(map_indices);
@@ -537,7 +544,7 @@ auto RTCProc::remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
     int n_nearby_tones = 0;
 
     // loop through flag columns
-    for (Eigen::Index i=0; i<in.flags.data.cols(); i++) {
+    for (Eigen::Index i=0; i<n_dets; i++) {
         // map from data column to apt row
         Eigen::Index det_index = det_indices(i);
         // if closer than freq separation limit and unflagged, flag it
@@ -579,7 +586,9 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         // append common time chunk variables
         append_base_to_netcdf(fo, in, map_grouping, pixel_axes, pointing_offsets_arcsec, det_indices, calib);
 
+        // sync file to make sure it gets updated
         fo.sync();
+        // close file
         fo.close();
 
         logger->info("tod chunk written to {}", filepath);

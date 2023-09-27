@@ -35,78 +35,6 @@ noise_maps: # noise map controls (coadded noise maps if coadd enabled, obs noise
   enabled: false # enable or disable noise maps
   n_noise_maps: 1 # number of noise maps (>0)
   randomize_dets: true # randomize jackknifed noise maps on time chunks and detectors if true. only on time chunks if false.
-inputs: # list of inputs and related data
-  - cal_items:
-      - beammap_source: # extra information used by beammapping (not needed if redu_type!=beammap)
-          fluxes:
-            - array_name: a1100
-              uncertainty_mJy: 0.0 # 1.1 mm flux uncertainty in mJy
-              value_mJy: 0.0 # 1.1 mm flux in mJy
-            - array_name: a1400
-              uncertainty_mJy: 0.0 # 1.4 mm flux uncertainty in mJy
-              value_mJy: 0.0 # 1.4 mm flux in mJy
-            - array_name: a2000
-              uncertainty_mJy: 0.0 # 2.0 mm flux uncertainty in mJy
-              value_mJy: 0.0 # 2.0 mm flux in mJy
-        type: photometry
-      - pointing_offsets: # pointing offsets.  can provide 1 or 2 values in each dimension.  if 2, they are interpolated between.
-          - axes_name: az
-            value_arcsec: [0.0]
-          - axes_name: alt
-            value_arcsec: [0.0]
-        type: astrometry
-      - filepath: /path/to/data/apt.ecsv # APT table (ignored for redu_type=beammap or mapmaking grouping=det)
-        meta:
-          interface: apt
-        type: array_prop_table
-    data_items:
-      - filepath: /path/to/raw/data/hwpr.nc # half-wave plate file.  Set to null or remove to ignore hwpr when polarimetry=true.
-        meta:
-          interface: hwpr
-      - filepath: /path/to/raw/data/tel.nc # telescope file
-        meta:
-          interface: lmt
-      - filepath: /path/to/raw/data/toltec0.nc # data file for nw0
-        meta:
-          interface: toltec0
-      - filepath: /path/to/raw/data/toltec1.nc # data file for nw1
-        meta:
-          interface: toltec1
-      - filepath: /path/to/raw/data/toltec2.nc # data file for nw2
-        meta:
-          interface: toltec2
-      - filepath: /path/to/raw/data/toltec3.nc # data file for nw3
-        meta:
-          interface: toltec3
-      - filepath: /path/to/raw/data/toltec4.nc # data file for nw4
-        meta:
-          interface: toltec4
-      - filepath: /path/to/raw/data/toltec5.nc # data file for nw5
-        meta:
-          interface: toltec5
-      - filepath: /path/to/raw/data/toltec6.nc # data file for nw6
-        meta:
-          interface: toltec6
-      - filepath: /path/to/raw/data/toltec7.nc # data file for nw7
-        meta:
-          interface: toltec7
-      - filepath: /path/to/raw/data/toltec8.nc # data file for nw8
-        meta:
-          interface: toltec8
-      - filepath: /path/to/raw/data/toltec9.nc # data file for nw9
-        meta:
-          interface: toltec9
-      - filepath: /path/to/raw/data/toltec10.nc # data file for nw10
-        meta:
-          interface: toltec10
-      - filepath: /path/to/raw/data/toltec11.nc # data file for nw11
-        meta:
-          interface: toltec11
-      - filepath: /path/to/raw/data/toltec12.nc # data file for nw12
-        meta:
-          interface: toltec12
-    meta:
-      name: 1_0_0 # for additional information from tolteca
 interface_sync_offset: # manual timing offsets for each nw/hwpr (in seconds)
   - toltec0: 0
   - toltec1: 0
@@ -154,7 +82,7 @@ mapmaking: # mapmaking parameters
       a1400: [1.1, 2.17, 2.0]
       a2000: [1.1, 3.17, 2.0]
 runtime: # parameters to control how citlali runs
-  verbose: true # extra output in terminal.  adds files to obsnum/logs/ directory. sequential mode only.
+  verbose: true # extra debug output in terminal (same as -l debug).  adds summary files to obsnum/logs/ directory.
   meta:
     version: tolteca... # extra info from tolteca
   n_threads: 1 # number of threads to use
@@ -252,3 +180,75 @@ wiener_filter: # controls for wiener filter
     a1400: 6.3
     a2000: 9.5
   lowpass_only: false # apply lowpassing only
+inputs: # list of inputs and related data
+  - cal_items:
+      - beammap_source: # extra information used by beammapping (not needed if redu_type!=beammap)
+          fluxes:
+            - array_name: a1100
+              uncertainty_mJy: 0.0 # 1.1 mm flux uncertainty in mJy
+              value_mJy: 0.0 # 1.1 mm flux in mJy
+            - array_name: a1400
+              uncertainty_mJy: 0.0 # 1.4 mm flux uncertainty in mJy
+              value_mJy: 0.0 # 1.4 mm flux in mJy
+            - array_name: a2000
+              uncertainty_mJy: 0.0 # 2.0 mm flux uncertainty in mJy
+              value_mJy: 0.0 # 2.0 mm flux in mJy
+        type: photometry
+      - pointing_offsets: # pointing offsets.  can provide 1 or 2 values in each dimension.  if 2, they are interpolated between.
+          - axes_name: az
+            value_arcsec: [0.0]
+          - axes_name: alt
+            value_arcsec: [0.0]
+        type: astrometry
+      - filepath: /path/to/data/apt.ecsv # APT table (ignored for redu_type=beammap or mapmaking grouping=det)
+        meta:
+          interface: apt
+        type: array_prop_table
+    data_items:
+      - filepath: /path/to/raw/data/hwpr.nc # half-wave plate file.  Set to null or remove to ignore hwpr when polarimetry=true.
+        meta:
+          interface: hwpr
+      - filepath: /path/to/raw/data/tel.nc # telescope file
+        meta:
+          interface: lmt
+      - filepath: /path/to/raw/data/toltec0.nc # data file for nw0
+        meta:
+          interface: toltec0
+      - filepath: /path/to/raw/data/toltec1.nc # data file for nw1
+        meta:
+          interface: toltec1
+      - filepath: /path/to/raw/data/toltec2.nc # data file for nw2
+        meta:
+          interface: toltec2
+      - filepath: /path/to/raw/data/toltec3.nc # data file for nw3
+        meta:
+          interface: toltec3
+      - filepath: /path/to/raw/data/toltec4.nc # data file for nw4
+        meta:
+          interface: toltec4
+      - filepath: /path/to/raw/data/toltec5.nc # data file for nw5
+        meta:
+          interface: toltec5
+      - filepath: /path/to/raw/data/toltec6.nc # data file for nw6
+        meta:
+          interface: toltec6
+      - filepath: /path/to/raw/data/toltec7.nc # data file for nw7
+        meta:
+          interface: toltec7
+      - filepath: /path/to/raw/data/toltec8.nc # data file for nw8
+        meta:
+          interface: toltec8
+      - filepath: /path/to/raw/data/toltec9.nc # data file for nw9
+        meta:
+          interface: toltec9
+      - filepath: /path/to/raw/data/toltec10.nc # data file for nw10
+        meta:
+          interface: toltec10
+      - filepath: /path/to/raw/data/toltec11.nc # data file for nw11
+        meta:
+          interface: toltec11
+      - filepath: /path/to/raw/data/toltec12.nc # data file for nw12
+        meta:
+          interface: toltec12
+    meta:
+      name: 1_0_0 # for additional information from tolteca

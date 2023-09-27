@@ -89,9 +89,9 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
     void create_output_dir();
     // count up detectors from input files and check for mismatch with apt
     void check_inputs(const RawObs &rawobs);
-    // allign networks and hwpr vectors in time
+    // align networks and hwpr vectors in time
     void align_timestreams(const RawObs &rawobs);
-    // updated allignment of networks and hwpr vectors in time
+    // updated alignment of networks and hwpr vectors in time
     void align_timestreams_2(const RawObs &rawobs);
     // interpolate pointing vectors
     void interp_pointing();
@@ -262,36 +262,37 @@ void TimeOrderedDataProc<EngineType>::get_tone_freqs_from_files(const RawObs &ra
         j = j + tone_freqs[interfaces[i]].size();
     }
 
-    /* find duplicates */
+    if (!engine().telescope.sim_obs) {
+        /* find duplicates */
 
-    // frequency separation
-    Eigen::VectorXd dfreq(engine().calib.n_dets);
-    dfreq(0) = engine().calib.apt["tone_freq"](1) - engine().calib.apt["tone_freq"](0);
+        // frequency separation
+        Eigen::VectorXd dfreq(engine().calib.n_dets);
+        dfreq(0) = engine().calib.apt["tone_freq"](1) - engine().calib.apt["tone_freq"](0);
 
-    // loop through tone freqs and find distance
-    for (Eigen::Index i=1; i<engine().calib.apt["tone_freq"].size()-1; i++) {
-        dfreq(i) = std::min(abs(engine().calib.apt["tone_freq"](i) - engine().calib.apt["tone_freq"](i-1)),
-                            abs(engine().calib.apt["tone_freq"](i+1) - engine().calib.apt["tone_freq"](i)));
-    }
-    // get last distance
-    dfreq(dfreq.size()-1) = abs(engine().calib.apt["tone_freq"](dfreq.size()-1)-engine().calib.apt["tone_freq"](dfreq.size()-2));
-
-    // number of nearby tones found
-    int n_nearby_tones = 0;
-
-    // store duplicates
-    engine().calib.apt["duplicate_tone"].setZero(engine().calib.n_dets);
-
-    // loop through flag columns
-    for (Eigen::Index i=0; i<engine().calib.n_dets; i++) {
-        // if closer than freq separation limit and unflagged, flag it
-        if (dfreq(i) < engine().rtcproc.delta_f_min_Hz) {
-            engine().calib.apt["duplicate_tone"](i) = 1;
-            n_nearby_tones++;
+        // loop through tone freqs and find distance
+        for (Eigen::Index i=1; i<engine().calib.apt["tone_freq"].size()-1; i++) {
+            dfreq(i) = std::min(abs(engine().calib.apt["tone_freq"](i) - engine().calib.apt["tone_freq"](i-1)),
+                                abs(engine().calib.apt["tone_freq"](i+1) - engine().calib.apt["tone_freq"](i)));
         }
-    }
+        // get last distance
+        dfreq(dfreq.size()-1) = abs(engine().calib.apt["tone_freq"](dfreq.size()-1)-engine().calib.apt["tone_freq"](dfreq.size()-2));
 
-    logger->info("{} nearby tones found. these will be flagged.",n_nearby_tones);
+        // number of nearby tones found
+        int n_nearby_tones = 0;
+
+        // store duplicates
+        engine().calib.apt["duplicate_tone"].setZero(engine().calib.n_dets);
+
+        // loop through flag columns
+        for (Eigen::Index i=0; i<engine().calib.n_dets; i++) {
+            // if closer than freq separation limit and unflagged, flag it
+            if (dfreq(i) < engine().rtcproc.delta_f_min_Hz) {
+                engine().calib.apt["duplicate_tone"](i) = 1;
+                n_nearby_tones++;
+            }
+        }
+        logger->info("{} nearby tones found. these will be flagged.",n_nearby_tones);
+    }
 }
 
 template <class EngineType>
@@ -539,6 +540,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
                 min_tn_i = nw;
             }
 
+            // increment nw
             nw++;
 
             fo.close();
@@ -562,7 +564,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
         // PacketCount (packet ticks)
         auto count = engine().calib.hwp_ts.template cast <double> ().col(3);
         // PpsTime (clock ticks)
-        auto pps_msec = engine().calib.hwp_ts.template cast <double> ().col(4)/engine().calib.hwpr_;
+        auto pps_msec = engine().calib.hwp_ts.template cast <double> ().col(4)/engine().calib.hwpr_fpga_freq;
         // get start time
         auto t0 = sec0 + nsec0*1e-9;
 
@@ -582,11 +584,13 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
         engine().calib.hwp_recvt = start_t_dbl + pps.array() + dt.array() + engine().interface_sync_offset["hwpr"];
         */
 
+        // if hwpr init time is larger than max start time, replace max start time
         Eigen::Index hwp_ts_n_pts = engine().calib.hwp_recvt.size();
         if (engine().calib.hwp_recvt(0) > max_t0) {
             max_t0 = engine().calib.hwp_recvt(0);
         }
 
+        // if hwpr init time is smaller than min end time, replace min end time
         if (engine().calib.hwp_recvt(hwp_ts_n_pts - 1) < min_tn) {
             min_tn = engine().calib.hwp_recvt(hwp_ts_n_pts - 1);
         }
@@ -604,7 +608,6 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
         while (nw_ts[i][si] < max_t0) {
             si++;
         }
-
         engine().start_indices.push_back(si);
 
         // find end index that is smaller than min end
@@ -633,7 +636,6 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
         while (engine().calib.hwp_recvt(si) < max_t0) {
             si++;
         }
-
         engine().hwpr_start_indices = si;
 
         // find end index that is smaller than min end
@@ -641,7 +643,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
         while (engine().calib.hwp_recvt(ei) > min_tn) {
             ei--;
         }
-        engine().hwpr_start_indices = ei;
+        engine().hwpr_end_indices = ei;
 
         if ((ei - si + 1) < min_size) {
             min_size = ei - si + 1;
@@ -657,9 +659,10 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
 
     // interpolate telescope data
     for (const auto &tel_it : engine().telescope.tel_data) {
-        if (tel_it.first !="TelTime") { // && tel_it.first != "TelUTC") {
+        if (tel_it.first !="TelTime") {
             // telescope vector to interpolate
             Eigen::VectorXd yd = engine().telescope.tel_data[tel_it.first];
+            // vector to store interpolated outputs in
             Eigen::VectorXd yi(min_size);
 
             mlinterp::interp(nd.data(), min_size, // nd, ni
@@ -674,13 +677,16 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
     engine().telescope.tel_data["TelTime"] = xi;
     engine().telescope.tel_data["TelUTC"] = xi;
 
+    // interpolate hwpr data
     if (engine().calib.run_hwpr) {
-        Eigen::VectorXd yd = engine().calib.hwp_recvt;
+        Eigen::VectorXd yd = engine().calib.hwpr_angle;
+        // vector to store interpolated outputs in
         Eigen::VectorXd yi(min_size);
         mlinterp::interp(nd.data(), min_size, // nd, ni
                          yd.data(), yi.data(), // yd, yi
-                         engine().calib.hwpr_angle.data(), xi.data()); // xd, xi
+                         engine().calib.hwp_recvt.data(), xi.data()); // xd, xi
 
+        engine().calib.hwpr_angle = std::move(yi);
     }
 }
 
@@ -693,6 +699,7 @@ void TimeOrderedDataProc<EngineType>::interp_pointing() {
     // how many offsets in config file
     Eigen::Index n_offsets = engine().pointing_offsets_arcsec["az"].size();
 
+    // keys for pointing offsets
     std::vector<std::string> altaz_keys = {"alt", "az"};
 
     for (const auto &key: altaz_keys) {
@@ -710,8 +717,10 @@ void TimeOrderedDataProc<EngineType>::interp_pointing() {
             Eigen::Matrix<Eigen::Index,1,1> nd;
             nd << n_offsets;
 
+            // vector to store interpolation
             Eigen::VectorXd yi(ni);
 
+            // start and end times of observation
             Eigen::VectorXd xd(n_offsets);
             xd << engine().telescope.tel_data["TelTime"](0), engine().telescope.tel_data["TelTime"](ni-1);
 
@@ -720,10 +729,11 @@ void TimeOrderedDataProc<EngineType>::interp_pointing() {
                              engine().pointing_offsets_arcsec[key].data(), yi.data(), // yd, yi
                              xd.data(), engine().telescope.tel_data["TelTime"].data()); // xd, xi
 
+            // overwrite pointing offsets
             engine().pointing_offsets_arcsec[key] = yi;
         }
         else {
-            logger->error("Only one or two values for altaz offsets are supported");
+            logger->error("only one or two values for altaz offsets are supported");
             std::exit(EXIT_FAILURE);
         }
     }
@@ -785,7 +795,6 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
 
     // detector gropuing
     if (engine().map_grouping == "detector") {
-        Eigen::Index k = 0;
         for (const auto &[stokes_index,stokes_param]: engine().rtcproc.polarization.stokes_params) {
             Eigen::Index n_dets;
 
@@ -804,7 +813,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
 
     // network grouping
     else if (engine().map_grouping == "nw") {
-        array_indices(engine().calib.nws.size());
+        array_indices.resize(engine().calib.nws.size());
 
         // find all map from nw to arrays
         for (Eigen::Index i=0; i<engine().calib.nws.size(); i++) {
@@ -814,7 +823,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
 
     // frequency grouping
     else if (engine().map_grouping == "fg") {
-        array_indices(engine().calib.fg.size()*engine().calib.n_arrays);
+        array_indices.resize(engine().calib.fg.size()*engine().calib.n_arrays);
 
         // map from fg to array index
         Eigen::Index j = 0;

@@ -337,7 +337,7 @@ void Telescope::calc_scan_indices() {
     scan_indices(2,0) = scan_indices(0,0);
     scan_indices(3,n_scans-1) = scan_indices(1,n_scans-1);
 
-    // add/subtract the filter length from first and last inner scan positions
+    // add/subtract the filter length from first/last inner scan positions
     scan_indices(0,0) = scan_indices(0,0) + inner_scans_chunk;
     scan_indices(1,n_scans-1) = scan_indices(1,n_scans-1) - inner_scans_chunk;
 }

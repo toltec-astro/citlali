@@ -18,6 +18,7 @@ void check_allowed(param_t param, key_vec_t &missing_keys, key_vec_t &invalid_ke
         invalid_keys.push_back(invalid_temp);
     }
 }
+
 template<typename param_t, typename option_t, typename key_vec_t>
 void check_range(param_t param, key_vec_t &missing_keys, key_vec_t &invalid_keys,
                  std::vector<param_t> min_val,  std::vector<param_t> max_val,

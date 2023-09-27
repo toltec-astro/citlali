@@ -301,7 +301,11 @@ int run(const rc_t &rc) {
                 }
 
                 // set up the coadded map buffer by reading in each observation
+                int i = 0;
+                logger->info("starting initial loop through input obs");
                 for (const auto &rawobs : co.inputs()) {
+                    logger->info("starting setup of observation {}/{}", i + 1, co.n_inputs());
+                    i++;
                     // this is needed to figure out the data sample rate
                     // and number of detectors
                     logger->debug("getting rawobs kids meta info");
@@ -314,7 +318,7 @@ int run(const rc_t &rc) {
                     if constexpr (std::is_same_v<todproc_t, TimeOrderedDataProc<Beammap>>) {
                         todproc.engine().get_photometry_config(rawobs.photometry_calib_info().config());
 
-                        // if beammap generate the apt table from the files
+                        // if beammap with detector maps generate the apt table from the files
                         if (todproc.engine().map_grouping=="detector" || todproc.engine().map_grouping=="auto") {
                             logger->info("making apt file from raw nc files");
                             todproc.get_apt_from_files(rawobs);
@@ -416,14 +420,14 @@ int run(const rc_t &rc) {
 
                 if (todproc.engine().run_coadd) {
                     // get size of coadd buffer
-                    logger->debug("calculating cmb dimensions");
+                    logger->info("calculating cmb dimensions");
                     todproc.calc_cmb_size(map_coords);
                     // make coadd buffer
-                    logger->debug("allocating cmb");
+                    logger->info("allocating cmb");
                     todproc.allocate_cmb();
                     // make noise maps for coadd map buffer
                     if (todproc.engine().run_noise) {
-                        logger->debug("allocating nmb");
+                        logger->info("allocating nmb");
                         todproc.allocate_nmb(todproc.engine().cmb);
                     }
 
@@ -452,7 +456,7 @@ int run(const rc_t &rc) {
                         if constexpr (std::is_same_v<todproc_t, TimeOrderedDataProc<Beammap>>) {
                             todproc.engine().get_photometry_config(rawobs.photometry_calib_info().config());
 
-                            // if beammap generate the apt table from the files
+                            // if beammap with detector maps generate the apt table from the files
                             if (todproc.engine().map_grouping=="detector" || todproc.engine().map_grouping=="auto") {
                                 logger->info("making apt file from raw nc files");
                                 todproc.get_apt_from_files(rawobs);

@@ -186,10 +186,10 @@ auto Pointing::run() {
                                                                                      map_grouping);
 
             // remove flagged dets
-            logger->info("removing flagged dets");
             rtcproc.remove_flagged_dets(ptcdata, calib.apt, det_indices);
 
-            // remove outliers before clean
+            // remove outliers before cleaning
+            logger->info("removing outlier dets before cleaning");
             auto calib_scan = rtcproc.remove_bad_dets(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
 
             // remove duplicate tones
@@ -214,7 +214,8 @@ auto Pointing::run() {
             logger->info("processed time chunk processing");
             ptcproc.run(ptcdata, ptcdata, calib, det_indices, stokes_param, telescope.pixel_axes, map_grouping);
 
-            // remove outliers after clean
+            // remove outliers after cleaning
+            logger->info("removing outlier dets after cleaning");
             calib_scan = ptcproc.remove_bad_dets(ptcdata, calib_scan, det_indices, nw_indices, array_indices, redu_type, map_grouping);
 
             // calculate weights
@@ -306,7 +307,7 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                 scan++;
                 return std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
                                   std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>> (std::move(rtcdata), kidsproc,
-                                                                                                  std::move(scan_rawobs));
+                                                                                                   std::move(scan_rawobs));
             }
             // reset scan to zero for each obs
             scan = 0;

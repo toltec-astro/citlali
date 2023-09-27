@@ -87,11 +87,11 @@ auto Lali::run() {
                                                                                      calib, telescope, omb.pixel_size_rad, stokes_param,
                                                                                      map_grouping);
 
-            // remove flagged dets
-            logger->info("removing flagged dets");
+            // remove outliers before cleaning
             rtcproc.remove_flagged_dets(ptcdata, calib.apt, det_indices);
 
-            // remove outliers before clean
+            // remove outliers before cleaning
+            logger->info("removing outlier dets before cleaning");
             auto calib_scan = rtcproc.remove_bad_dets(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
 
             // remove duplicate tones
@@ -116,7 +116,8 @@ auto Lali::run() {
             logger->info("processed time chunk processing");
             ptcproc.run(ptcdata, ptcdata, calib, det_indices, stokes_param, telescope.pixel_axes, map_grouping);
 
-            // remove outliers after clean
+            // remove outliers after cleaning
+            logger->info("removing outlier dets after cleaning");
             calib_scan = ptcproc.remove_bad_dets(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
 
             // calculate weights

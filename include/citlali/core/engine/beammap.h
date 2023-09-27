@@ -337,9 +337,9 @@ auto Beammap::run_loop() {
                 // subtract gaussian
                 if (current_iter > 0) {
                     logger->info("subtracting gaussian from tod");
-                    ptcproc.add_gaussian<timestream::TCProc::GaussType::subtract>(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt,
-                                                                                  ptcs[i].pointing_offsets_arcsec.data,omb.pixel_size_rad, omb.n_rows,
-                                                                                  omb.n_cols, ptcs[i].map_indices.data, ptcs[i].det_indices.data);
+                    ptcproc.add_gaussian<timestream::TCProc::SourceType::NegativeGaussian>(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt,
+                                                                       ptcs[i].pointing_offsets_arcsec.data, omb.pixel_size_rad, omb.n_rows, omb.n_cols,
+                                                                       ptcs[i].map_indices.data, ptcs[i].det_indices.data);
                 }
             }
 
@@ -359,9 +359,9 @@ auto Beammap::run_loop() {
                 // add gaussan back
                 if (current_iter > 0) {
                     logger->info("adding gaussian to tod");
-                    ptcproc.add_gaussian<timestream::TCProc::GaussType::add>(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt,
-                                                                             ptcs[i].pointing_offsets_arcsec.data, omb.pixel_size_rad, omb.n_rows,
-                                                                             omb.n_cols, ptcs[i].map_indices.data, ptcs[i].det_indices.data);
+                    ptcproc.add_gaussian<timestream::TCProc::SourceType::Gaussian>(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt,
+                                                               ptcs[i].pointing_offsets_arcsec.data, omb.pixel_size_rad, omb.n_rows,
+                                                               omb.n_cols, ptcs[i].map_indices.data, ptcs[i].det_indices.data);
                 }
             }
 

@@ -187,7 +187,7 @@ void Calib::calc_flux_calibration(std::string units) {
     }
 
     // convert to uK/beam
-    else if (units == "uK/beam") {
+    else if (units == "uK") {
         engine_utils::toltecIO toltec_io;
         for (Eigen::Index i=0; i<n_dets; i++) {
             // current detector's array
@@ -196,8 +196,8 @@ void Calib::calc_flux_calibration(std::string units) {
             auto freq_Hz = c_m_s/(toltec_io.array_wavelength_map[array]/1000.);
             // det fwhm
             auto det_fwhm = (std::get<0>(array_fwhms[array]) + std::get<1>(array_fwhms[array]))/2;
-            // get uK/beam
-            flux_conversion_factor(i) = engine_utils::mJy_beam_to_uK_beam(1, freq_Hz, det_fwhm);
+            // get uK
+            flux_conversion_factor(i) = engine_utils::mJy_beam_to_uK(1, freq_Hz, det_fwhm);
         }
     }
 

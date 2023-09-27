@@ -53,18 +53,18 @@ static const double planck_nu(const double freq_Hz, const double T_K) {
     return 2.*h_J_s*pow(freq_Hz,3)/pow(c_m_s,2)/(exp((h_J_s*freq_Hz)/(kB_J_K*T_K)) - 1.);
 }
 
-// convert flux in mJy/beam to uK/beam
-static const double mJy_beam_to_uK_beam(const double flux_mjy_beam, const double freq_Hz, const double fwhm) {
+// convert flux in mJy/beam to uK
+static const double mJy_beam_to_uK(const double flux_mjy_beam, const double freq_Hz, const double fwhm) {
     // planck function at T_CMB
     auto planck = planck_nu(freq_Hz, T_cmb_K);
     // exponent term (h x nu)/(k_B x T_cmb)
     auto h_nu_k_T = (h_J_s*freq_Hz)/(kB_J_K*T_cmb_K);
     // beam area in steradians
-    auto beam_area_sr = 2.*pi*pow(fwhm*FWHM_TO_STD,2);
+    auto beam_area_rad = 2.*pi*pow(fwhm*FWHM_TO_STD,2);
     // conversion from K to mJy/beam
-    auto K_to_mJy_beam = planck*exp(h_nu_k_T)/h_nu_k_T/T_cmb_K*1e26*1e3*beam_area_sr;
+    auto K_to_mJy_beam = planck*exp(h_nu_k_T)/h_nu_k_T/T_cmb_K*1e26*1e3;//*beam_area_rad;
 
-    // flux in mJy/beam converted to micro Kelvin
+    // flux in mJy/beam converted to uK
     return 1e6*flux_mjy_beam/K_to_mJy_beam;
 }
 
