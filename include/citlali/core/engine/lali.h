@@ -250,13 +250,16 @@ void Lali::output() {
     // directory name
     std::string dir_name;
 
-    // write stats
-    if constexpr (map_type == mapmaking::RawObs) {
-        write_stats();
-    }
-
     // raw obs maps
     if constexpr (map_type == mapmaking::RawObs) {
+        // write stats
+        write_stats();
+
+        // add header informqtion to tod
+        if (run_tod_output) {
+            add_tod_header();
+        }
+
         mb = &omb;
         f_io = &fits_io_vec;
         n_io = &noise_fits_io_vec;

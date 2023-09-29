@@ -1011,8 +1011,8 @@ void Engine::add_tod_header() {
         }
 
         else {
-            add_netcdf_var(fo,"to_mJy/beam", 0);
-            add_netcdf_var(fo,"to_MJy/sr", 0);
+            add_netcdf_var(fo,"to_mJy_beam", 0);
+            add_netcdf_var(fo,"to_MJy_sr", 0);
         }
 
         // add date and time of obs

@@ -337,9 +337,10 @@ auto Beammap::run_loop() {
                 // subtract gaussian
                 if (current_iter > 0) {
                     logger->info("subtracting gaussian from tod");
-                    ptcproc.add_gaussian<timestream::TCProc::SourceType::NegativeGaussian>(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt,
-                                                                       ptcs[i].pointing_offsets_arcsec.data, omb.pixel_size_rad, omb.n_rows, omb.n_cols,
-                                                                       ptcs[i].map_indices.data, ptcs[i].det_indices.data);
+                    ptcproc.add_gaussian<timestream::TCProc::SourceType::NegativeGaussian>(ptcs[i], params, telescope.pixel_axes, map_grouping,
+                                                                                           calib.apt, ptcs[i].pointing_offsets_arcsec.data,
+                                                                                           omb.pixel_size_rad, omb.n_rows, omb.n_cols,
+                                                                                           ptcs[i].map_indices.data, ptcs[i].det_indices.data);
                 }
             }
 
@@ -360,8 +361,8 @@ auto Beammap::run_loop() {
                 if (current_iter > 0) {
                     logger->info("adding gaussian to tod");
                     ptcproc.add_gaussian<timestream::TCProc::SourceType::Gaussian>(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt,
-                                                               ptcs[i].pointing_offsets_arcsec.data, omb.pixel_size_rad, omb.n_rows,
-                                                               omb.n_cols, ptcs[i].map_indices.data, ptcs[i].det_indices.data);
+                                                                                   ptcs[i].pointing_offsets_arcsec.data, omb.pixel_size_rad, omb.n_rows,
+                                                                                   omb.n_cols, ptcs[i].map_indices.data, ptcs[i].det_indices.data);
                 }
             }
 
@@ -823,7 +824,7 @@ void Beammap::apt_proc() {
             y_t.resize(n_good_det);
             det_indices.resize(n_good_det);
 
-            // remove flagged dets
+            // get good detector positions
             Eigen::Index j = std::get<0>(calib.array_limits[array]);
             Eigen::Index k = 0;
             for (Eigen::Index i=0; i<array_x_t.size(); i++) {
@@ -1141,8 +1142,11 @@ void Beammap::output() {
         dir_name = obsnum_dir_name + "raw/";
 
         // write stats file
-        if constexpr (map_type == mapmaking::RawObs) {
-            write_stats();
+        write_stats();
+
+        // add header informqtion to tod
+        if (run_tod_output) {
+            add_tod_header();
         }
 
         // only write apt table if beammapping

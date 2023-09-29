@@ -434,6 +434,11 @@ void Pointing::output() {
 
         // write stats file
         write_stats();
+
+        // add header informqtion to tod
+        if (run_tod_output) {
+            add_tod_header();
+        }
     }
 
     // filtered obs maps
