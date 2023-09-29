@@ -997,22 +997,22 @@ void Engine::add_tod_header() {
         // add unit conversions
         if (rtcproc.run_calibrate) {
             for (const auto &val: calib.arrays) {
-                if (omb.sig_unit == "MJy_sr") {
-                    add_netcdf_var(fo,"to_mJy_beam", calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC);
-                    add_netcdf_var(fo,"to_MJy/sr", 1);
+                auto name = toltec_io.array_name_map[val];
+                if (omb.sig_unit == "MJy/sr") {
+                    add_netcdf_var(fo,"to_mJy_beam_"+name, calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC);
+                    add_netcdf_var(fo,"to_MJy_sr_"+name, 1.);
                 }
-                else if (omb.sig_unit == "mJy_beam") {
-                    add_netcdf_var(fo,"to_mJy_beam", 1);
-                    add_netcdf_var(fo,"to_MJy_sr", 1/(calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC));
+                else if (omb.sig_unit == "mJy/beam") {
+                    add_netcdf_var(fo,"to_mJy_beam_"+name, 1.);
+                    add_netcdf_var(fo,"to_MJy_sr_"+name, 1/(calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC));
                 }
                 else if (omb.sig_unit == "uk") {
                 }
+                else {
+                    add_netcdf_var(fo,"to_mJy_beam_"+name, 0.);
+                    add_netcdf_var(fo,"to_MJy_sr_"+name, 0.);
+                }
             }
-        }
-
-        else {
-            add_netcdf_var(fo,"to_mJy_beam", 0);
-            add_netcdf_var(fo,"to_MJy_sr", 0);
         }
 
         // add date and time of obs
@@ -1048,6 +1048,7 @@ void Engine::add_tod_header() {
         add_netcdf_var<std::string>(fo,"INSTRUME","TolTEC");
         add_netcdf_var(fo, "HWPR", calib.run_hwpr);
         add_netcdf_var<std::string>(fo, "TELESCOP", "LMT");
+        add_netcdf_var<std::string>(fo, "PIPELINE", "CITLALI");
         add_netcdf_var<std::string>(fo, "VERSION", CITLALI_GIT_VERSION);
         add_netcdf_var<std::string>(fo, "KIDS", KIDSCPP_GIT_VERSION);
         add_netcdf_var<std::string>(fo, "TULA", TULA_GIT_VERSION);
@@ -1668,6 +1669,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("TELESCOP", "LMT", "Telescope");
     // add wavelength
     fits_io->at(i).pfits->pHDU().addKey("WAV", name, "Wavelength");
+    // add pipeline
+    fits_io->at(i).pfits->pHDU().addKey("PIPELINE", name, "CITLALI");
     // add citlali version
     fits_io->at(i).pfits->pHDU().addKey("VERSION", CITLALI_GIT_VERSION, "CITLALI_GIT_VERSION");
     // add kids version
