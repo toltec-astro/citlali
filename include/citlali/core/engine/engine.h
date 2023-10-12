@@ -1673,7 +1673,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // add wavelength
     fits_io->at(i).pfits->pHDU().addKey("WAV", name, "Wavelength");
     // add pipeline
-    fits_io->at(i).pfits->pHDU().addKey("PIPELINE", name, "CITLALI");
+    fits_io->at(i).pfits->pHDU().addKey("PIPELINE", "CITLALI", "Redu pipeline");
     // add citlali version
     fits_io->at(i).pfits->pHDU().addKey("VERSION", CITLALI_GIT_VERSION, "CITLALI_GIT_VERSION");
     // add kids version
