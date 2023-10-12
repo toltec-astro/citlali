@@ -61,7 +61,7 @@ public:
     // pixel axes (icrs, altaz, etc)
     std::string pixel_axes;
 
-    // keys to telescope data vectors
+    // keys to telescope data vectors (angles in radians)
     std::map<std::string, std::string> tel_data_keys {
         {"Data.TelescopeBackend.TelTime", "TelTime"},
         {"Data.TelescopeBackend.TelUtc","TelUTC"},
@@ -85,7 +85,7 @@ public:
         {"Data.TelescopeBackend.TelElMap", "TelElMap"}
     };
 
-    // keys to telescope header values
+    // keys to telescope header values (angles in radians)
     std::map<std::string, std::string> tel_header_keys {
         {"Header.Source.Ra", "Header.Source.Ra"},
         {"Header.Source.Dec", "Header.Source.Dec"},

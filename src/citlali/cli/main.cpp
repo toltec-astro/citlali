@@ -245,18 +245,15 @@ int run(const rc_t &rc) {
             if constexpr (std::is_same_v<todproc_t, std::monostate>) {
                 return EXIT_FAILURE;
             }
-
             else {
                 // type definitions for map vectors
                 using map_extent_t = typename todproc_t::map_extent_t;
                 using map_coord_t = typename todproc_t::map_coord_t;
-                using map_count_t = typename todproc_t::map_count_t;
                 using array_indices_t = typename todproc_t::array_indices_t;
 
                 // create vectors for map size and grouping parameters
                 std::vector<map_extent_t> map_extents{};
                 std::vector<map_coord_t> map_coords{};
-                std::vector<map_count_t> map_counts{};
 
                 // get config options from citlali_config
                 logger->info("getting citlali config");
@@ -264,6 +261,8 @@ int run(const rc_t &rc) {
 
                 // exit if missing or invalid config options
                 if (!todproc.engine().missing_keys.empty() || !todproc.engine().invalid_keys.empty()) {
+                    logger->error("missing or invalid keys were found!");
+                    logger->error("see for default config: https://github.com/toltec-astro/citlali/blob/v3.x/data/config.yaml");
                     std::cerr << fmt::format("missing keys={}", todproc.engine().missing_keys) << "\n";
                     std::cerr << fmt::format("invalid keys={}", todproc.engine().invalid_keys) << "\n";
 
@@ -795,6 +794,9 @@ int run(const rc_t &rc) {
             }
         },
         todproc);
+
+    // re-enable default logger
+    sink->set_level(log_level);
 
     return exitcode;
 }

@@ -336,7 +336,7 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
         in.n_dets_high = 0;
 
         for (auto const& [key, val] : grp_limits) {
-
+            // control for iteration
             bool keep_going = true;
             Eigen::Index n_iter = 0;
 
@@ -428,10 +428,9 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
                 }
             }
         }
+        // set up scan calib
+        calib_scan.setup();
     }
-
-    // set up scan calib
-    calib_scan.setup();
 
     return std::move(calib_scan);
 }

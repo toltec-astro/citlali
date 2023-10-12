@@ -26,7 +26,7 @@ public:
     bool run_polarization;
 
     template <class map_buffer_t>
-    void allocate_pointing(map_buffer_t &, double, double, double, double, double, Eigen::Index, int, int);
+    void allocate_pointing(map_buffer_t &, double, double, double, double, Eigen::Index, int, int);
 
 
     template<class map_buffer_t, typename Derived, typename apt_t>
@@ -36,7 +36,7 @@ public:
 };
 
 template <class map_buffer_t>
-void NaiveMapmaker::allocate_pointing(map_buffer_t &mb, double signal, double weight, double kernel, double d_fsmp,
+void NaiveMapmaker::allocate_pointing(map_buffer_t &mb, double signal, double weight, double kernel,
                                       double angle, Eigen::Index map_index, int ir, int ic) {
 
     // step to skip to reach next stokes param
@@ -44,33 +44,23 @@ void NaiveMapmaker::allocate_pointing(map_buffer_t &mb, double signal, double we
 
     // update pointing matrix
     mb.pointing[map_index](ir,ic,0) += weight;
-    mb.pointing[map_index](ir,ic,1) += weight*cos(2*angle);
-    mb.pointing[map_index](ir,ic,2) += weight*sin(2*angle);
-    mb.pointing[map_index](ir,ic,3) += weight*cos(2*angle);
-    mb.pointing[map_index](ir,ic,4) += weight*pow(cos(2*angle),2);
-    mb.pointing[map_index](ir,ic,5) += weight*cos(2*angle)*sin(2*angle);
-    mb.pointing[map_index](ir,ic,6) += weight*sin(2*angle);
-    mb.pointing[map_index](ir,ic,7) += weight*cos(2*angle)*sin(2*angle);
-    mb.pointing[map_index](ir,ic,8) += weight*pow(sin(2*angle),2);
+    mb.pointing[map_index](ir,ic,1) += weight*cos(2.*angle);
+    mb.pointing[map_index](ir,ic,2) += weight*sin(2.*angle);
+    mb.pointing[map_index](ir,ic,3) += mb.pointing[map_index](ir,ic,1);//weight*cos(2*angle);
+    mb.pointing[map_index](ir,ic,4) += weight*pow(cos(2.*angle),2.);
+    mb.pointing[map_index](ir,ic,5) += weight*cos(2.*angle)*sin(2.*angle);
+    mb.pointing[map_index](ir,ic,6) += mb.pointing[map_index](ir,ic,2);//weight*sin(2*angle);
+    mb.pointing[map_index](ir,ic,7) += mb.pointing[map_index](ir,ic,5);//weight*cos(2*angle)*sin(2*angle);
+    mb.pointing[map_index](ir,ic,8) += weight*pow(sin(2.*angle),2.);
 
     // update signal map Q and U
-    mb.signal[map_index + step](ir,ic) += signal*cos(2*angle);
-    mb.signal[map_index + 2*step](ir,ic) += signal*sin(2*angle);
-
-    // update weight map Q and U
-    mb.weight[map_index + step](ir,ic) += weight*cos(2*angle);
-    mb.weight[map_index + 2*step](ir,ic) += weight*sin(2*angle);
+    mb.signal[map_index + step](ir,ic) += signal*cos(2.*angle);
+    mb.signal[map_index + 2*step](ir,ic) += signal*sin(2.*angle);
 
     // update kernel map Q and U
     if (!mb.kernel.empty()) {
-        mb.kernel[map_index + step](ir,ic) += kernel*cos(2*angle);
-        mb.kernel[map_index + 2*step](ir,ic) += kernel*sin(2*angle);
-    }
-
-    // update coverage map Q and U?
-    if (!mb.coverage.empty()) {
-        mb.coverage[map_index + step](ir,ic) += 1/d_fsmp*cos(2*angle);
-        mb.coverage[map_index + 2*step](ir,ic) += 1/d_fsmp*sin(2*angle);
+        mb.kernel[map_index + step](ir,ic) += kernel*cos(2.*angle);
+        mb.kernel[map_index + 2*step](ir,ic) += kernel*sin(2.*angle);
     }
 }
 
@@ -106,7 +96,7 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
         // boost random number generator (0,1)
         boost::random::uniform_int_distribution<> rands{0,1};
 
-        // rescale random values to -1 or 1
+        // generate random samples and rescale random values to -1 or 1
         if (nmb->randomize_dets) {
             noise =
                 Eigen::Matrix<int,Eigen::Dynamic,Eigen::Dynamic>::Zero(nmb->n_noise, n_dets).unaryExpr([&](int dummy){return rands(eng);});
@@ -177,7 +167,8 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                         }
 
                         if (run_polarization) {
-                            allocate_pointing(omb, signal, in.weights.data(i), kernel, d_fsmp,
+                            // calculate pointing matrix
+                            allocate_pointing(omb, signal, in.weights.data(i), kernel,
                                               in.angle.data(j,i), map_index, omb_ir, omb_ic);
                         }
                     }

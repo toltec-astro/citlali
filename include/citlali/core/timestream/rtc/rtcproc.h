@@ -290,15 +290,19 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
                   std::string &redu_type, calib_t &calib, telescope_t &telescope, double pixel_size_rad,
                   std::string stokes_param, std::string map_grouping) {
 
+    // number of points in scan
+    Eigen::Index n_pts = in.scans.data.rows();
+
+    // start index of inner scans
+    auto si = filter.n_terms;
+    // end index of inner scans
+    auto sl = in.scan_indices.data(1) - in.scan_indices.data(0) + 1;
+
     // new timechunk for current stokes parameter timestream
     TCData<TCDataKind::RTC,Eigen::MatrixXd> in_pol;
 
     // calculate the stokes timestream
-    auto [array_indices, nw_indices, det_indices, fg_indices] = polarization.demodulate_timestream(in, in_pol, stokes_param,
-                                                                                                   redu_type, calib, telescope.sim_obs);
-
-    // resize fcf
-    in_pol.fcf.data.setOnes(in_pol.scans.data.cols());
+    auto [array_indices, nw_indices, det_indices, fg_indices] = polarization.calc_angle(in, in_pol, calib, telescope.sim_obs);
 
     // get indices for maps
     logger->debug("calculating map indices");
@@ -321,14 +325,6 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
 
         in_pol.status.extinction_corrected = true;
     }
-
-    // number of points in scan
-    Eigen::Index n_pts = in_pol.scans.data.rows();
-
-    // start index of inner scans
-    auto si = filter.n_terms;
-    // end index of inner scans
-    auto sl = in_pol.scan_indices.data(1) - in_pol.scan_indices.data(0) + 1;
 
     // set up flags
     in_pol.flags.data.setZero(in_pol.scans.data.rows(), in_pol.scans.data.cols());
@@ -442,11 +438,17 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
             downsampler.downsample(in_pointing, out.pointing_offsets_arcsec.data[x.first]);
         }
 
-        // downsample hwpr
-        if (run_polarization && calib.run_hwpr) {
-            Eigen::Ref<Eigen::VectorXd> in_hwpr =
-                in_pol.hwpr_angle.data.segment(si, sl);
-            downsampler.downsample(in_hwpr, in_pol.hwpr_angle.data);
+        if (run_polarization) {
+            if (calib.run_hwpr) {
+                // downsample hwpr
+                Eigen::Ref<Eigen::VectorXd> in_hwpr =
+                    in_pol.hwpr_angle.data.segment(si, sl);
+                downsampler.downsample(in_hwpr, out.hwpr_angle.data);
+            }
+            // downsample detector angle
+            Eigen::Ref<Eigen::MatrixXd> in_angle =
+                in_pol.angle.data.block(si, 0, sl, in_pol.angle.data.cols());
+            downsampler.downsample(in_angle, out.angle.data);
         }
         // downsample kernel if requested
         if (run_kernel) {
@@ -480,11 +482,13 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
             out.pointing_offsets_arcsec.data[x.first] = in_pol.pointing_offsets_arcsec.data[x.first].segment(si, sl);
         }
 
-        // copy hwpr angle
         if (run_polarization) {
+            // copy hwpr angle
             if (calib.run_hwpr) {
                 out.hwpr_angle.data = in_pol.hwpr_angle.data.segment(si, sl);
             }
+            // copy detector angle
+            out.angle.data = in_pol.angle.data.block(si, 0, sl, in_pol.angle.data.cols());
         }
     }
 
@@ -494,8 +498,6 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     out.index.data = in_pol.index.data;
     // copy fcf
     out.fcf.data = in_pol.fcf.data;
-    // copy angle
-    out.angle.data = in_pol.angle.data;
     // copy chunk status
     out.status.calibrated = in_pol.status.calibrated;
     out.status.extinction_corrected = in_pol.status.extinction_corrected;

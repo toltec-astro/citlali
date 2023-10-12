@@ -1024,17 +1024,14 @@ void TimeOrderedDataProc<EngineType>::calc_cmb_size(std::vector<map_coord_t> &ma
         if (rows_tan_vec(0) < min_row) {
             min_row = rows_tan_vec(0);
         }
-
         // check global maximum row
         if (rows_tan_vec(n_pts_rows-1) > max_row) {
             max_row = rows_tan_vec(n_pts_rows-1);
         }
-
         // check global minimum col
         if (cols_tan_vec(0) < min_col) {
             min_col = cols_tan_vec(0);
         }
-
         // check global maximum col
         if (cols_tan_vec(n_pts_cols-1) > max_col) {
             max_col = cols_tan_vec(n_pts_cols-1);
@@ -1046,7 +1043,9 @@ void TimeOrderedDataProc<EngineType>::calc_cmb_size(std::vector<map_coord_t> &ma
         auto min_pix = ceil(abs(min_dim/engine().cmb.pixel_size_rad));
         auto max_pix = ceil(abs(max_dim/engine().cmb.pixel_size_rad));
 
+        // get maximum size for dimension
         max_pix = std::max(min_pix, max_pix);
+        // make the map odd
         int n_dim = 2*max_pix + 1;
 
         // vector to store tangent plane coordinates

@@ -463,16 +463,6 @@ void Engine::get_rtc_config(CT &config) {
     // ignore hwpr?
     get_config_value(config, calib.ignore_hwpr, missing_keys, invalid_keys,
                      std::tuple{"timestream","polarimetry", "ignore_hwpr"});
-
-    // polarization is disabled for detector grouping
-    if (rtcproc.run_polarization && ((redu_type=="beammap" && map_grouping=="auto") || map_grouping=="detector")) {
-        logger->error("Beammap reductions do not currently support polarimetry mode");
-        std::exit(EXIT_FAILURE);
-    }
-
-    // set mapmaker polarization
-    naive_mm.run_polarization = rtcproc.run_polarization;
-    jinc_mm.run_polarization = rtcproc.run_polarization;
 }
 
 template<typename CT>
@@ -551,6 +541,15 @@ void Engine::get_mapmaking_config(CT &config) {
     get_config_value(config, map_grouping, missing_keys, invalid_keys,
                      std::tuple{"mapmaking","grouping"},{"auto","array","nw","detector","fg"});
 
+    // polarization is disabled for detector grouping
+    if (rtcproc.run_polarization && ((redu_type=="beammap" && map_grouping=="auto") || map_grouping=="detector")) {
+        logger->error("Beammap reductions do not currently support polarimetry mode");
+        std::exit(EXIT_FAILURE);
+    }
+
+    // set rtcproc map_grouping
+    rtcproc.kernel.map_grouping = map_grouping;
+
     // map_method
     get_config_value(config, map_method, missing_keys, invalid_keys,
                      std::tuple{"mapmaking","method"},{"naive","jinc"});
@@ -627,6 +626,10 @@ void Engine::get_mapmaking_config(CT &config) {
         omb.n_noise = 0;
         cmb.n_noise = 0;
     }
+
+    // set mapmaker polarization
+    naive_mm.run_polarization = rtcproc.run_polarization;
+    jinc_mm.run_polarization = rtcproc.run_polarization;
 }
 
 template<typename CT>
@@ -1384,11 +1387,11 @@ void Engine::cli_summary() {
     logger->info("number of scans: {}",telescope.scan_indices.cols());
 
     // test getting memory usage for fun
-    struct sysinfo memInfo;
+    /*struct sysinfo memInfo;
     long long totalPhysMem = memInfo.totalram;
     totalPhysMem *= memInfo.mem_unit;
 
-    logger->info("total physical memory available {} GB", (totalPhysMem/1024)/1e7);
+    logger->info("total physical memory available {} GB", (totalPhysMem/1024)/1e7);*/
     logger->info("physical memory used {} GB\n\n", engine_utils::get_phys_memory()/1e7);
 }
 
@@ -1736,6 +1739,22 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         }
         fits_io->at(i).pfits->pHDU().addKey("APT", apt_filename.back(), "APT table used");
     }
+
+    // estimate rms
+    mb->calc_mean_err();
+    auto rms = 1./pow(mb->mean_err(i),-0.5);
+
+    // out-of-focus holography parameters
+    fits_io->at(i).pfits->pHDU().addKey("OOF_RMS", rms, "rms of map background (" + mb->sig_unit +")");
+    fits_io->at(i).pfits->pHDU().addKey("OOF_W", toltec_io.array_wavelength_map[calib.arrays(i)]/1000., "wavelength (m)");
+    fits_io->at(i).pfits->pHDU().addKey("OOF_ID", static_cast<int>(toltec_io.array_wavelength_map[calib.arrays(i)]*1000), "instrument id");
+    fits_io->at(i).pfits->pHDU().addKey("OOF_T", 3.0, "taper (dB)");
+    fits_io->at(i).pfits->pHDU().addKey("OOF_M2X", telescope.tel_header["Header.M2.XReq"](0)/1000.*1e6, "oof m2x (microns)");
+    fits_io->at(i).pfits->pHDU().addKey("OOF_M2Y", telescope.tel_header["Header.M2.YReq"](0)/1000.*1e6, "oof m2y (microns)");
+    fits_io->at(i).pfits->pHDU().addKey("OOF_M2Z", telescope.tel_header["Header.M2.ZReq"](0)/1000.*1e6, "oof m2x (microns)");
+
+    fits_io->at(i).pfits->pHDU().addKey("OOF_RO", 25., "outer diameter of the antenna (m)");
+    fits_io->at(i).pfits->pHDU().addKey("OOF_RI", 1.65, "inner diameter of the antenna (m)");
 
     // add control/runtime parameters
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.VERBOSE", verbose_mode, "Reduced in verbose mode");

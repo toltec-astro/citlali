@@ -234,8 +234,9 @@ auto Beammap::run_timestream() {
         }
 
         // copy pointing offsets
-        rtcdata.pointing_offsets_arcsec.data["az"] = pointing_offsets_arcsec["az"].segment(si,sl);
-        rtcdata.pointing_offsets_arcsec.data["alt"] = pointing_offsets_arcsec["alt"].segment(si,sl);
+        for (auto const& [key,val]: pointing_offsets_arcsec) {
+            rtcdata.pointing_offsets_arcsec.data[key] = val.segment(si,sl);
+        }
 
         // get hwpr
         if (rtcproc.run_polarization) {
@@ -243,9 +244,7 @@ auto Beammap::run_timestream() {
         }
 
         // get raw tod from files
-        {
-            rtcdata.scans.data = kidsproc.populate_rtc(scan_rawobs,rtcdata.scan_indices.data, sl, calib.n_dets, tod_type);
-        }
+        rtcdata.scans.data = kidsproc.populate_rtc(scan_rawobs,rtcdata.scan_indices.data, sl, calib.n_dets, tod_type);
 
         // create PTCData
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;
@@ -384,6 +383,7 @@ auto Beammap::run_loop() {
             }
 
             // calc stats
+            logger->debug("calculating stats");
             diagnostics.calc_stats(ptcs[i]);
 
             return 0;

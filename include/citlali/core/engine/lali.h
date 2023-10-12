@@ -57,8 +57,9 @@ auto Lali::run() {
         }
 
         // copy pointing offsets
-        rtcdata.pointing_offsets_arcsec.data["az"] = pointing_offsets_arcsec["az"].segment(si,sl);
-        rtcdata.pointing_offsets_arcsec.data["alt"] = pointing_offsets_arcsec["alt"].segment(si,sl);
+        for (auto const& [key,val]: pointing_offsets_arcsec) {
+            rtcdata.pointing_offsets_arcsec.data[key] = val.segment(si,sl);
+        }
 
         // get hwpr
         if (rtcproc.run_polarization) {
@@ -68,9 +69,7 @@ auto Lali::run() {
         }
 
         // get raw tod from files
-        {
-            rtcdata.scans.data = kidsproc.populate_rtc(scan_rawobs,rtcdata.scan_indices.data, sl, calib.n_dets, tod_type);
-        }
+        rtcdata.scans.data = kidsproc.populate_rtc(scan_rawobs,rtcdata.scan_indices.data, sl, calib.n_dets, tod_type);
 
         // create PTCData
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;
@@ -145,6 +144,7 @@ auto Lali::run() {
 
             // write stats
             if (stokes_param=="I") {
+                logger->debug("calculating stats");
                 diagnostics.calc_stats(ptcdata);
             }
 
@@ -241,11 +241,13 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 template <mapmaking::MapType map_type>
 void Lali::output() {
     // pointer to map buffer
-    mapmaking::ObsMapBuffer* mb = NULL;
+    mapmaking::ObsMapBuffer* mb = new mapmaking::ObsMapBuffer;
     // pointer to data file fits vector
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* f_io = NULL;
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* f_io =
+        new std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>;
     // pointer to noise file fits vector
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* n_io = NULL;
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* n_io =
+        new std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>;
 
     // directory name
     std::string dir_name;
@@ -337,7 +339,11 @@ void Lali::output() {
         write_sources<map_type>(mb, dir_name);
     }
 
+    // clean up
+    delete mb;
     mb = NULL;
+    delete f_io;
     f_io = NULL;
+    delete n_io;
     n_io = NULL;
 }

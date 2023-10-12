@@ -156,8 +156,9 @@ auto Pointing::run() {
         }
 
         // copy pointing offsets
-        rtcdata.pointing_offsets_arcsec.data["az"] = pointing_offsets_arcsec["az"].segment(si,sl);
-        rtcdata.pointing_offsets_arcsec.data["alt"] = pointing_offsets_arcsec["alt"].segment(si,sl);
+        for (auto const& [key,val]: pointing_offsets_arcsec) {
+            rtcdata.pointing_offsets_arcsec.data[key] = val.segment(si,sl);
+        }
 
         // get hwpr
         if (rtcproc.run_polarization) {
@@ -167,9 +168,7 @@ auto Pointing::run() {
         }
 
         // get raw tod from files
-        {
-            rtcdata.scans.data = kidsproc.populate_rtc(scan_rawobs,rtcdata.scan_indices.data, sl, calib.n_dets, tod_type);
-        }
+        rtcdata.scans.data = kidsproc.populate_rtc(scan_rawobs,rtcdata.scan_indices.data, sl, calib.n_dets, tod_type);
 
         // create PTCData
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;
@@ -243,6 +242,7 @@ auto Pointing::run() {
 
             // calc stats
             if (stokes_param=="I") {
+                logger->debug("calculating stats");
                 diagnostics.calc_stats(ptcdata);
             }
 
@@ -344,6 +344,7 @@ void Pointing::fit_maps() {
     double init_row = -99;
     double init_col = -99;
 
+    // loop through maps
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
         auto array = maps_to_arrays(i);
         // init fwhm in pixels
@@ -545,7 +546,7 @@ void Pointing::output() {
                         f_io->at(map_index).hdus.at(k)->addKey("POINTING." + key, 0, key + " (" + ppt_header_units[key] + ")");
                     }
                     j++;
-                }
+                }                
                 k++;
             }
         }

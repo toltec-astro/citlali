@@ -9,9 +9,10 @@ namespace timestream {
 
 class Polarization {
 public:
+    // hold outputs
     using indices_t = std::tuple<Eigen::VectorXI, Eigen::VectorXI, Eigen::VectorXI, Eigen::VectorXI>;
 
-    // stokes parameters
+    // stokes parameters (either I or I, Q, U)
     std::map<int,std::string> stokes_params;
 
     // toltec array mounting angle
@@ -30,11 +31,10 @@ public:
     };
 
     template<TCDataKind td_kind, class calib_type>
-    indices_t demodulate_timestream(TCData<td_kind, Eigen::MatrixXd> &in,
-                                    TCData<td_kind, Eigen::MatrixXd> &out,
-                                    std::string stokes_param, std::string redu_type,
-                                    calib_type &calib, bool sim_obs) {
+    indices_t calc_angle(TCData<td_kind, Eigen::MatrixXd> &in, TCData<td_kind, Eigen::MatrixXd> &out,
+                         calib_type &calib, bool sim_obs) {
 
+        // number of data points
         Eigen::Index n_pts = in.scans.data.rows();
 
         // vectors of array, nw, and det indices
@@ -68,6 +68,9 @@ public:
             // resize output scans
             out.scans.data.resize(n_pts, n_dets);
 
+            // resize angle matrix
+            out.angle.data.resize(n_pts, n_dets);
+
             // loop through all detectors
             if (!sim_obs) {
                 Eigen::Index k = 0;
@@ -91,22 +94,20 @@ public:
                 fg_indices = calib.apt["fg"].template cast<Eigen::Index> ();
             }
 
-            // resize angle matrix
-            out.angle.data.resize(n_pts, n_dets);
-
-            // rotation angle
+            // rotation angle at array center
             auto rot_angle = in.tel_data.data["ActParAng"].array() + in.tel_data.data["TelElAct"].array() +
                              in.pointing_offsets_arcsec.data["alt"].array()*ASEC_TO_RAD;
 
             // now loop through polarized detectors
             for (Eigen::Index i=0; i<n_dets; i++) {
-                // detector angle = installation angle + det orientation + rotation angle
+                // detector angle = rotation angle + installation angle + det orientation
                 auto angle = rot_angle + install_ang[array_indices(i)] + fgs[fg_indices(i)];
 
                 // if there is no hwpr
                 if (calib.run_hwpr==false) {
                     out.angle.data.col(i) = angle;
                 }
+                // if the hwpr is installed
                 else {
                     out.angle.data.col(i) = 2*in.hwpr_angle.data.array() - angle;
                 }

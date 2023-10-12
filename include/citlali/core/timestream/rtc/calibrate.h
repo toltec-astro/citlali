@@ -30,7 +30,6 @@ public:
     void setup(double tau_225_zenith) {
         // cos of zenith angle
         auto cz = cos(pi/2 - 80.0*DEG_TO_RAD);
-
         // 1/cos(zenith angle)
         auto secz = 1. / cz;
         // airmass
@@ -160,6 +159,9 @@ template <TCDataKind tcdata_kind, typename Derived, class calib_t>
 void Calibration::calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &in, Eigen::DenseBase<Derived> &det_indices,
                                 Eigen::DenseBase<Derived> &array_indices, calib_t &calib) {
 
+    // resize fcf
+    in.fcf.data.setOnes(in.scans.data.cols());
+
     // loop through detectors
     for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
         // current detector index in apt table
@@ -168,13 +170,10 @@ void Calibration::calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &in, Eigen:
         Eigen::Index array_index = array_indices(i);
 
         // flux conversion factor for non-mJy/beam units
-        auto factor = calib.flux_conversion_factor(array_index);
-
-        // flux calibration factor for sensitivity
-        in.fcf.data(i) = factor;
+        in.fcf.data(i) = calib.flux_conversion_factor(array_index);
 
         // data x flxscale x factor
-        in.scans.data.col(i) = in.scans.data.col(i).array()*factor*calib.apt["flxscale"](det_index);
+        in.scans.data.col(i) = in.scans.data.col(i).array()*in.fcf.data(i)*calib.apt["flxscale"](det_index);
     }
 }
 
