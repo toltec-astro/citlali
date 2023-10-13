@@ -17,17 +17,19 @@ public:
     // mapping pattern
     char obs_pgm_char [128] = "";
     // obs goal
-    char obs_goal_char [128] = "";
+    //char obs_goal_char [128] = "";
     // source name
-    char source_name_char [128] = "";
+    //char source_name_char [128] = "";
+    // project id
+    char project_id_char [128] = "";
 
     // simulation jobkey
     char sim_job_key [128] = "";
     // is this a simulation?
     bool sim_obs;
 
-    // strings for mapping pattern and source name
-    std::string obs_pgm, source_name, obs_goal;
+    // strings for mapping pattern, source name, obs goal, project ID
+    std::string obs_pgm, source_name, obs_goal, project_id;
 
     // tangent plane center
     //std::map<std::string, double> tan_center_rad;

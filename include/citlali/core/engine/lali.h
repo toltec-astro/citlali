@@ -241,13 +241,13 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 template <mapmaking::MapType map_type>
 void Lali::output() {
     // pointer to map buffer
-    mapmaking::ObsMapBuffer* mb = new mapmaking::ObsMapBuffer;
+    mapmaking::ObsMapBuffer* mb = NULL; //new mapmaking::ObsMapBuffer;
     // pointer to data file fits vector
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* f_io =
-        new std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>;
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* f_io = NULL;
+        //new std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>;
     // pointer to noise file fits vector
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* n_io =
-        new std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>;
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* n_io = NULL;
+        //new std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>;
 
     // directory name
     std::string dir_name;
@@ -340,10 +340,10 @@ void Lali::output() {
     }
 
     // clean up
-    delete mb;
+    /*delete mb;
     mb = NULL;
     delete f_io;
     f_io = NULL;
     delete n_io;
-    n_io = NULL;
+    n_io = NULL;*/
 }
