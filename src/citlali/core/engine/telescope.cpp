@@ -30,6 +30,8 @@ void Telescope::get_tel_data(std::string &filepath) {
 
         // get obs goal
         if (!sim_obs) {
+            int obs_goal_size = vars.find("Header.Dcs.ObsGoal")->second.getDim(0).getSize();
+            char obs_goal_char [obs_goal_size] = "";
             vars.find("Header.Dcs.ObsGoal")->second.getVar(&obs_goal_char);
             obs_goal = std::string(obs_goal_char);
         }
@@ -63,6 +65,9 @@ void Telescope::get_tel_data(std::string &filepath) {
         }
 
         // get source name
+        int source_name_size = vars.find("Header.Source.SourceName")->second.getDim(0).getSize();
+        char source_name_char [source_name_size] = "";
+
         vars.find("Header.Source.SourceName")->second.getVar(&source_name_char);
         source_name = std::string(source_name_char);
         // try and remove end characters
