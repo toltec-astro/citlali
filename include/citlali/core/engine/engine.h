@@ -336,7 +336,7 @@ public:
 };
 
 void Engine::obsnum_setup() {
-    if (rtcproc.run_calibrate) {
+    if (rtcproc.run_extinction) {
         // get atm model
         rtcproc.calibration.setup(telescope.tau_225_GHz);
 
@@ -357,6 +357,10 @@ void Engine::obsnum_setup() {
                 }
             }
         }
+    }
+
+    else {
+        rtcproc.calibration.extinction_model = "N/A";
     }
 
     // make sure there are matched fg's in apt if reducing in polarized mode
@@ -1734,11 +1738,16 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     }
 
     // add mean tau
-    Eigen::VectorXd tau_el(1);
-    tau_el << telescope.tel_data["TelElAct"].mean();
-    auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
+    if (rtcproc.run_extinction) {
+        Eigen::VectorXd tau_el(1);
+        tau_el << telescope.tel_data["TelElAct"].mean();
+        auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
 
-    fits_io->at(i).pfits->pHDU().addKey("MEAN_TAU", tau_freq[i](0), "mean tau (" + name + ")");
+        fits_io->at(i).pfits->pHDU().addKey("MEAN_TAU", tau_freq[i](0), "mean tau (" + name + ")");
+    }
+    else {
+        fits_io->at(i).pfits->pHDU().addKey("MEAN_TAU", 0, "mean tau (" + name + ")");
+    }
 
     // add sample rate
     fits_io->at(i).pfits->pHDU().addKey("SAMPRATE", telescope.fsmp, "sample rate (Hz)");
@@ -1788,8 +1797,13 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.PTC.WTHIGH", ptcproc.upper_weight_factor, "PTC upper weight cutoff");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.MEDWTFACTOR", ptcproc.med_weight_factor, "Median weight factor");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED", ptcproc.run_clean, "Cleaned");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.NEIG", ptcproc.cleaner.n_eig_to_cut[calib.arrays(i)].sum(),
-                                        "Number of eigenvalues removed");
+    if (ptcproc.run_clean) {
+        fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.NEIG", ptcproc.cleaner.n_eig_to_cut[calib.arrays(i)].sum(),
+                                            "Number of eigenvalues removed");
+    }
+    else {
+        fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.NEIG", 0, "Number of eigenvalues removed");
+    }
 
     // add telescope file header information
     if (mb->obsnums.size()==1) {
