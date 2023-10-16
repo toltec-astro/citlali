@@ -433,9 +433,25 @@ void Engine::obsnum_setup() {
     // output basic info for obs reduction to command line
     cli_summary();
 
+    int n_dets = 0;
+
+    // set number of dets for unpolarized timestreams
+    if (!rtcproc.run_polarization) {
+        n_dets = calib.apt["array"].size();
+    }
+    // set number of detectors for polarized timestreams
+    else {
+        if (!telescope.sim_obs) {
+            n_dets = (calib.apt["loc"].array()!=-1).count();
+        }
+        else {
+            n_dets = calib.n_dets;
+        }
+    }
+
     // set up per-det stats file values
     for (const auto &stat: diagnostics.det_stats_header) {
-        diagnostics.stats[stat].setZero(calib.n_dets, telescope.scan_indices.cols());
+        diagnostics.stats[stat].setZero(n_dets, telescope.scan_indices.cols());
     }
     // set up per-group stats file values
     for (const auto &stat: diagnostics.grp_stats_header) {
@@ -1211,7 +1227,7 @@ void Engine::create_tod_files() {
         // set number of detectors for polarized timestreams
         else {
             if (!telescope.sim_obs) {
-                n_dets = (calib.apt["fg"].array()!=-1).count();
+                n_dets = (calib.apt["loc"].array()!=-1).count();
             }
             else {
                 n_dets = calib.n_dets;

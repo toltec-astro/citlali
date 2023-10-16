@@ -43,6 +43,18 @@ void NaiveMapmaker::allocate_pointing(map_buffer_t &mb, double signal, double we
     int step = mb.pointing.size();
 
     // update pointing matrix
+    /*mb.pointing[map_index](ir,ic,0) += weight;
+    mb.pointing[map_index](ir,ic,1) = 0;
+    mb.pointing[map_index](ir,ic,2) = 0;
+    mb.pointing[map_index](ir,ic,3) = 0;
+    mb.pointing[map_index](ir,ic,4) += weight;
+    mb.pointing[map_index](ir,ic,5) = 0;
+    mb.pointing[map_index](ir,ic,6) = 0;
+    mb.pointing[map_index](ir,ic,7) = 0;
+    mb.pointing[map_index](ir,ic,8) += weight;
+    */
+
+    // update pointing matrix
     mb.pointing[map_index](ir,ic,0) += weight;
     mb.pointing[map_index](ir,ic,1) += weight*cos(2.*angle);
     mb.pointing[map_index](ir,ic,2) += weight*sin(2.*angle);

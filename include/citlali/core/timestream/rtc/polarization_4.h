@@ -53,7 +53,7 @@ public:
         else {
             Eigen::Index n_dets;
             if (!sim_obs) {
-                n_dets = (calib.apt["fg"].array()!=-1).count();
+                n_dets = (calib.apt["loc"].array()!=-1).count();
             }
             else {
                 n_dets = calib.n_dets;
@@ -76,7 +76,7 @@ public:
                 Eigen::Index k = 0;
                 for (Eigen::Index i=0; i<calib.n_dets; i++) {
                     // if matched, add to out scans
-                    if (calib.apt["fg"](i)!=-1) {
+                    if (calib.apt["loc"](i)!=-1) {
                         out.scans.data.col(k) = in.scans.data.col(i);
 
                         array_indices(k) = calib.apt["array"](i);
