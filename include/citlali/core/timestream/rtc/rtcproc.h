@@ -309,7 +309,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     auto [array_indices, nw_indices, det_indices, fg_indices] = polarization.calc_angle(in, in_pol, calib, telescope.sim_obs);
 
     // resize fcf
-    in.fcf.data.setOnes(in.scans.data.cols());
+    in_pol.fcf.data.setOnes(in.scans.data.cols());
 
     // get indices for maps
     logger->debug("calculating map indices");
