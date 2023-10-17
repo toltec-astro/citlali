@@ -26,8 +26,7 @@ public:
     bool run_polarization;
 
     template <class map_buffer_t>
-    void allocate_pointing(map_buffer_t &, double, double, double, double, Eigen::Index, int, int);
-
+    void allocate_pointing(map_buffer_t &, double, double, Eigen::Index, int, int);
 
     template<class map_buffer_t, typename Derived, typename apt_t>
     void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &, map_buffer_t &,
@@ -36,44 +35,18 @@ public:
 };
 
 template <class map_buffer_t>
-void NaiveMapmaker::allocate_pointing(map_buffer_t &mb, double signal, double weight, double kernel,
-                                      double angle, Eigen::Index map_index, int ir, int ic) {
-
-    // step to skip to reach next stokes param
-    int step = mb.pointing.size();
-
-    // update pointing matrix
-    /*mb.pointing[map_index](ir,ic,0) += weight;
-    mb.pointing[map_index](ir,ic,1) = 0;
-    mb.pointing[map_index](ir,ic,2) = 0;
-    mb.pointing[map_index](ir,ic,3) = 0;
-    mb.pointing[map_index](ir,ic,4) += weight;
-    mb.pointing[map_index](ir,ic,5) = 0;
-    mb.pointing[map_index](ir,ic,6) = 0;
-    mb.pointing[map_index](ir,ic,7) = 0;
-    mb.pointing[map_index](ir,ic,8) += weight;
-    */
+void NaiveMapmaker::allocate_pointing(map_buffer_t &mb, double weight, double angle, Eigen::Index map_index, int ir, int ic) {
 
     // update pointing matrix
     mb.pointing[map_index](ir,ic,0) += weight;
     mb.pointing[map_index](ir,ic,1) += weight*cos(2.*angle);
     mb.pointing[map_index](ir,ic,2) += weight*sin(2.*angle);
-    mb.pointing[map_index](ir,ic,3) += mb.pointing[map_index](ir,ic,1);//weight*cos(2*angle);
+    mb.pointing[map_index](ir,ic,3) = mb.pointing[map_index](ir,ic,1);//weight*cos(2*angle);
     mb.pointing[map_index](ir,ic,4) += weight*pow(cos(2.*angle),2.);
     mb.pointing[map_index](ir,ic,5) += weight*cos(2.*angle)*sin(2.*angle);
-    mb.pointing[map_index](ir,ic,6) += mb.pointing[map_index](ir,ic,2);//weight*sin(2*angle);
-    mb.pointing[map_index](ir,ic,7) += mb.pointing[map_index](ir,ic,5);//weight*cos(2*angle)*sin(2*angle);
+    mb.pointing[map_index](ir,ic,6) = mb.pointing[map_index](ir,ic,2);//weight*sin(2*angle);
+    mb.pointing[map_index](ir,ic,7) = mb.pointing[map_index](ir,ic,5);//weight*cos(2*angle)*sin(2*angle);
     mb.pointing[map_index](ir,ic,8) += weight*pow(sin(2.*angle),2.);
-
-    // update signal map Q and U
-    mb.signal[map_index + step](ir,ic) += signal*cos(2.*angle);
-    mb.signal[map_index + 2*step](ir,ic) += signal*sin(2.*angle);
-
-    // update kernel map Q and U
-    if (!mb.kernel.empty()) {
-        mb.kernel[map_index + step](ir,ic) += kernel*cos(2.*angle);
-        mb.kernel[map_index + 2*step](ir,ic) += kernel*sin(2.*angle);
-    }
 }
 
 template<class map_buffer_t, typename Derived, typename apt_t>
@@ -85,6 +58,9 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
     // dimensions of data
     Eigen::Index n_pts = in.scans.data.rows();
     Eigen::Index n_dets = in.scans.data.cols();
+
+    // step to skip to reach next stokes param
+    int step = omb.pointing.size();
 
     // pointer to map buffer with noise maps
     ObsMapBuffer* nmb = NULL;
@@ -154,7 +130,7 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                     Eigen::Index omb_ir = omb_irow(j);
                     Eigen::Index omb_ic = omb_icol(j);
 
-                    // signal map value
+                    // signal and kernel map values
                     double signal, kernel;
 
                     // make sure the data point is within the map
@@ -180,8 +156,17 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
 
                         if (run_polarization) {
                             // calculate pointing matrix
-                            allocate_pointing(omb, signal, in.weights.data(i), kernel,
-                                              in.angle.data(j,i), map_index, omb_ir, omb_ic);
+                            allocate_pointing(omb, in.weights.data(i), in.angle.data(j,i), map_index, omb_ir, omb_ic);
+
+                            // update signal map Q and U
+                            omb.signal[map_index + step](omb_ir, omb_ic) += signal*cos(2.*in.angle.data(j,i));
+                            omb.signal[map_index + 2*step](omb_ir, omb_ic) += signal*sin(2.*in.angle.data(j,i));
+
+                            // update kernel map Q and U
+                            if (!omb.kernel.empty()) {
+                                omb.kernel[map_index + step](omb_ir, omb_ic) += kernel*cos(2.*in.angle.data(j,i));
+                                omb.kernel[map_index + 2*step](omb_ir, omb_ic) += kernel*sin(2.*in.angle.data(j,i));
+                            }
                         }
                     }
 
@@ -201,15 +186,33 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                             nmb_ic = omb_icol(j);
                         }
 
-                        // loop through noise maps
-                        for (Eigen::Index nn=0; nn<nmb->n_noise; nn++) {
-                            // coadd into current noise map
-                            if ((nmb_ir >= 0) && (nmb_ir < nmb->n_rows) && (nmb_ic >= 0) && (nmb_ic < nmb->n_cols)) {
+                        // noise map value
+                        double noise_v;
+
+                        // coadd into current noise map
+                        if ((nmb_ir >= 0) && (nmb_ir < nmb->n_rows) && (nmb_ic >= 0) && (nmb_ic < nmb->n_cols)) {
+                            if (run_polarization) {
+                                if (!cmb.noise.empty()) {
+                                    // calculate pointing matrix for cmb
+                                    allocate_pointing(cmb, in.weights.data(i), in.angle.data(j,i), map_index, nmb_ir, nmb_ic);
+                                }
+                            }
+                            // loop through noise maps
+                            for (Eigen::Index nn=0; nn<nmb->n_noise; nn++) {
+                                // randomizing on dets
                                 if (nmb->randomize_dets) {
-                                    nmb->noise[map_index](nmb_ir,nmb_ic,nn) += noise(nn,i)*signal;
+                                    noise_v = noise(nn,i)*signal;
                                 }
                                 else {
-                                    nmb->noise[map_index](nmb_ir,nmb_ic,nn) += noise(nn)*signal;
+                                    noise_v = noise(nn)*signal;
+                                }
+                                // add noise value to current noise map
+                                nmb->noise[map_index](nmb_ir,nmb_ic,nn) += noise_v;
+
+                                if (run_polarization) {
+                                    // update signal map Q and U
+                                    nmb->noise[map_index + step](nmb_ir,nmb_ic,nn) += noise_v*cos(2.*in.angle.data(j,i));
+                                    nmb->noise[map_index + step](nmb_ir,nmb_ic,nn) += noise_v*sin(2.*in.angle.data(j,i));
                                 }
                             }
                         }

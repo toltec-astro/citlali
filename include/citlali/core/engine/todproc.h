@@ -1160,6 +1160,14 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb() {
             engine().cmb.coverage.push_back(Eigen::MatrixXd::Zero(engine().cmb.n_rows, engine().cmb.n_cols));
         }
     }
+
+    if (engine().rtcproc.run_polarization && engine().run_noise) {
+        // allocate pointing matrix
+        for (Eigen::Index i=0; i<engine().n_maps/engine().rtcproc.polarization.stokes_params.size(); i++) {
+            engine().cmb.pointing.push_back(Eigen::Tensor<double,3>(engine().cmb.n_rows, engine().cmb.n_cols, 9));
+            engine().cmb.pointing.at(i).setZero();
+        }
+    }
 }
 
 template <class EngineType>

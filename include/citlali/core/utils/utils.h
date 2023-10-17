@@ -999,4 +999,104 @@ void fix_periodic_boundary(Eigen::DenseBase<Derived>&data, double low,
     }
 }
 
+/*template <class map_class_t, class map_fitter_t>
+void calc_gaussian_transfer_func(map_class_t &mb, map_fitter_t &map_fitter, int map_index) {
+    // x and y spacing should be equal
+    diff_rows = abs(mb.rows_tan_vec(1) - mb.rows_tan_vec(0));
+    diff_cols = abs(mb.cols_tan_vec(1) - mb.cols_tan_vec(0));
+
+    // collect what we need
+    Eigen::MatrixXd temp_kernel = mb.kernel[map_index];
+
+    double init_row = -99;
+    double init_col = -99;
+
+    // carry out fit to kernel to get centroid
+    auto [map_params, map_perror, good_fit] =
+        map_fitter.fit_to_gaussian<engine_utils::mapFitter::pointing>(mb.kernel[map_index], mb.weight[map_index],
+                                                                      init_fwhm, init_row, init_col);
+
+    // if fit failed, give up
+    if (!good_fit) {
+        logger->error("fit to kernel map failed. try setting a small fitting_region_arcsec value.");
+        std::exit(EXIT_FAILURE);
+    }
+
+    // rescale parameters to on-sky units
+    map_params(1) = mb.pixel_size_rad*(map_params(1) - (n_cols)/2);
+    map_params(2) = mb.pixel_size_rad*(map_params(2) - (n_rows)/2);
+
+    Eigen::Index shift_row = -std::round(map_params(2)/diff_rows);
+    Eigen::Index shift_col = -std::round(map_params(1)/diff_cols);
+
+    std::vector<Eigen::Index> shift_indices = {shift_row,shift_col};
+    temp_kernel = engine_utils::shift_2D(temp_kernel, shift_indices);
+
+    // calculate distance
+    Eigen::MatrixXd dist(n_rows,n_cols);
+    for (Eigen::Index i=0; i<n_cols; i++) {
+        for (Eigen::Index j=0; j<n_rows; j++) {
+            dist(j,i) = sqrt(pow(mb.rows_tan_vec(j),2)+pow(mb.cols_tan_vec(i),2));
+        }
+    }
+
+    // pixel closet to tangent point
+    Eigen::Index row_index, col_index;
+    auto min_dist = dist.minCoeff(&row_index,&col_index);
+
+    // create new bins based on diff_rows
+    int n_bins = mb.rows_tan_vec(n_rows-1)/diff_rows;
+    Eigen::VectorXd bin_low = Eigen::VectorXd::LinSpaced(n_bins,0,n_bins-1)*diff_rows;
+
+    Eigen::VectorXd kernel_interp(n_bins-1);
+    kernel_interp.setZero();
+    Eigen::VectorXd dist_interp(n_bins-1);
+    dist_interp.setZero();
+
+    // radial averages
+    for (Eigen::Index i=0; i<n_bins-1; i++) {
+        int c = 0;
+        for (Eigen::Index j=0; j<n_cols; j++) {
+            for (Eigen::Index k=0; k<n_rows; k++) {
+                if (dist(k,j) >= bin_low(i) && dist(k,j) < bin_low(i+1)){
+                    c++;
+                    kernel_interp(i) += temp_kernel(k,j);
+                    dist_interp(i) += dist(k,j);
+                }
+            }
+        }
+        kernel_interp(i) /= c;
+        dist_interp(i) /= c;
+    }
+
+    // now spline interpolate to generate new template array
+    filter_template.resize(n_rows,n_cols);
+
+    // create spline function
+    engine_utils::SplineFunction s(dist_interp, kernel_interp);
+
+    // carry out the interpolation
+    for (Eigen::Index i=0; i<n_cols; i++) {
+        for (Eigen::Index j=0; j<n_rows; j++) {
+            Eigen::Index tj = (j-row_index)%n_rows;
+            Eigen::Index ti = (i-col_index)%n_cols;
+            Eigen::Index shiftj = (tj < 0) ? n_rows+tj : tj;
+            Eigen::Index shifti = (ti < 0) ? n_cols+ti : ti;
+
+            // if within limits
+            if (dist(j,i) <= s.x_max && dist(j,i) >= s.x_min) {
+                filter_template(shiftj,shifti) = s(dist(j,i));
+            }
+            // if above x limit
+            else if (dist(j,i) > s.x_max) {
+                filter_template(shiftj,shifti) = kernel_interp(kernel_interp.size()-1);
+            }
+            // if below x limit
+            else if (dist(j,i) < s.x_min) {
+                filter_template(shiftj,shifti) = kernel_interp(0);
+            }
+        }
+    }
+}*/
+
 } //namespace engine_utils

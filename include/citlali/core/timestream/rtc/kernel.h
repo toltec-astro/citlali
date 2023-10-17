@@ -40,12 +40,6 @@ public:
         }
     }
 
-    // create kernel base
-    template<typename apt_t, typename pointing_offset_t, typename Derived>
-    void create_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &, std::string &,
-                       std::string &, apt_t &, pointing_offset_t &,
-                       Eigen::DenseBase<Derived> &);
-
     // symmetric gaussian kernel
     template<typename apt_t, typename pointing_offset_t, typename Derived>
     void create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &, std::string &,
@@ -69,11 +63,6 @@ public:
                                           std::string &, apt_t &, pointing_offset_t &, double,
                                           Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &);
 };
-
-template<typename apt_t, typename pointing_offset_t, typename Derived>
-void Kernel::create_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std::string &pixel_axes,
-                           std::string &redu_type, apt_t &apt, pointing_offset_t &pointing_offsets_arcsec,
-                           Eigen::DenseBase<Derived> &det_indices) {}
 
 template<typename apt_t, typename pointing_offset_t, typename Derived>
 void Kernel::create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std::string &pixel_axes,

@@ -90,6 +90,10 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
     // add stokes I, Q, and U if polarization is enabled
     if (run_polarization) {
         polarization.stokes_params = {{0,"I"}, {1,"Q"}, {2,"U"}};
+
+        // use loc or fg?
+        get_config_value(config, polarization.grouping, missing_keys, invalid_keys,
+                         std::tuple{"timestream","polarimetry", "grouping"});
     }
     // otherwise only use stokes I
     else {
@@ -326,9 +330,6 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         in_pol.status.extinction_corrected = true;
     }
 
-    // set up flags
-    in_pol.flags.data.setZero(in_pol.scans.data.rows(), in_pol.scans.data.cols());
-
     // create kernel if requested
     if (run_kernel) {
         logger->debug("creating kernel timestream");
@@ -353,6 +354,9 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
 
         in_pol.status.kernel_generated = true;
     }
+
+    // set up flags
+    in_pol.flags.data.setZero(in_pol.scans.data.rows(), in_pol.scans.data.cols());
 
     // run despiking
     if (run_despike) {

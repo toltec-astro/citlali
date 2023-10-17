@@ -12,8 +12,11 @@ public:
     // hold outputs
     using indices_t = std::tuple<Eigen::VectorXI, Eigen::VectorXI, Eigen::VectorXI, Eigen::VectorXI>;
 
-    // stokes parameters (either I or I, Q, U)
+    // stokes parameters (either I or I, Q, and U)
     std::map<int,std::string> stokes_params;
+
+    // loc or fg
+    std::string grouping;
 
     // toltec array mounting angle
     std::map<int, double> install_ang = {
@@ -53,7 +56,7 @@ public:
         else {
             Eigen::Index n_dets;
             if (!sim_obs) {
-                n_dets = (calib.apt["loc"].array()!=-1).count();
+                n_dets = (calib.apt[grouping].array()!=-1).count();
             }
             else {
                 n_dets = calib.n_dets;
@@ -76,7 +79,7 @@ public:
                 Eigen::Index k = 0;
                 for (Eigen::Index i=0; i<calib.n_dets; i++) {
                     // if matched, add to out scans
-                    if (calib.apt["loc"](i)!=-1) {
+                    if (calib.apt[grouping](i)!=-1) {
                         out.scans.data.col(k) = in.scans.data.col(i);
 
                         array_indices(k) = calib.apt["array"](i);
@@ -88,6 +91,9 @@ public:
                 }
             }
             else {
+                // copy scans
+                out.scans.data = in.scans.data;
+
                 array_indices = calib.apt["array"].template cast<Eigen::Index> ();
                 nw_indices = calib.apt["nw"].template cast<Eigen::Index> ();
                 det_indices = Eigen::VectorXI::LinSpaced(n_dets,0,n_dets-1);

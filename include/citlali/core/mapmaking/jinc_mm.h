@@ -62,6 +62,9 @@ public:
     // calculate spline function for jinc weights
     void calculate_jinc_splines();
 
+    template <class map_buffer_t>
+    void allocate_pointing(map_buffer_t &, double, double, double, double, Eigen::Index, int, int);
+
     // populate the pixels in the map given a time chunk
     template<class map_buffer_t, typename Derived, typename apt_t>
     void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &, map_buffer_t &,
@@ -154,6 +157,35 @@ void JincMapmaker::calculate_jinc_splines() {
     }
 }
 
+template <class map_buffer_t>
+void JincMapmaker::allocate_pointing(map_buffer_t &mb, double signal, double weight, double kernel,
+                                     double angle, Eigen::Index map_index, int ir, int ic) {
+
+    // step to skip to reach next stokes param
+    int step = mb.pointing.size();
+
+    // update pointing matrix
+    mb.pointing[map_index](ir,ic,0) += weight;
+    mb.pointing[map_index](ir,ic,1) += weight*cos(2.*angle);
+    mb.pointing[map_index](ir,ic,2) += weight*sin(2.*angle);
+    mb.pointing[map_index](ir,ic,3) = mb.pointing[map_index](ir,ic,1);//weight*cos(2*angle);
+    mb.pointing[map_index](ir,ic,4) += weight*pow(cos(2.*angle),2.);
+    mb.pointing[map_index](ir,ic,5) += weight*cos(2.*angle)*sin(2.*angle);
+    mb.pointing[map_index](ir,ic,6) = mb.pointing[map_index](ir,ic,2);//weight*sin(2*angle);
+    mb.pointing[map_index](ir,ic,7) = mb.pointing[map_index](ir,ic,5);//weight*cos(2*angle)*sin(2*angle);
+    mb.pointing[map_index](ir,ic,8) += weight*pow(sin(2.*angle),2.);
+
+    // update signal map Q and U
+    mb.signal[map_index + step](ir,ic) += signal*cos(2.*angle);
+    mb.signal[map_index + 2*step](ir,ic) += signal*sin(2.*angle);
+
+    // update kernel map Q and U
+    if (!mb.kernel.empty()) {
+        mb.kernel[map_index + step](ir,ic) += kernel*cos(2.*angle);
+        mb.kernel[map_index + 2*step](ir,ic) += kernel*sin(2.*angle);
+    }
+}
+
 template<class map_buffer_t, typename Derived, typename apt_t>
 void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                         map_buffer_t &omb, map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
@@ -240,7 +272,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                     Eigen::Index omb_ic = omb_icol(j);
 
                     // signal map value
-                    double signal;
+                    double signal, kernel;
 
                     // make sure the data point is within the map
                     if ((omb_ir >= 0) && (omb_ir < omb.n_rows) && (omb_ic >= 0) && (omb_ic < omb.n_cols)) {
@@ -274,13 +306,18 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
 
                                     // populate kernel map
                                     if (!omb.kernel.empty()) {
-                                        auto kernel = in.kernel.data(j,i)*weight;
+                                        kernel = in.kernel.data(j,i)*weight;
                                         omb.kernel[map_index](ri,ci) += kernel;
                                     }
 
                                     // populate coverage map
                                     if (!omb.coverage.empty()) {
                                         omb.coverage[map_index](ri,ci) += jinc_weights_mat[apt["array"](det_indices(i))](r,c)/d_fsmp;
+                                    }
+
+                                    if (run_polarization) {
+                                        // calculate pointing matrix
+                                        allocate_pointing(omb, signal, weight, kernel, in.angle.data(j,i), map_index, ri, ci);
                                     }
                                 }
                             }

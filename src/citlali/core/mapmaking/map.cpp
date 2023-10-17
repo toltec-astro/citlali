@@ -138,16 +138,16 @@ void ObsMapBuffer::normalize_maps() {
 
     if (!pointing.empty()) {
         // calculate dimensions
-        auto calc_stokes = [&](auto &map_arr, auto &m_inv, int i, int j, int a, int step) {
+        auto calc_stokes = [&](auto &map_arr, auto &m, int i, int j, int a, int step) {
             Eigen::VectorXd d(3);
             d(0) = map_arr[a](i,j);
             d(1) = map_arr[a + step](i,j);
             d(2) = map_arr[a + 2*step](i,j);
 
-            //Eigen::VectorXd v = m_inv.colPivHouseholderQr().solve(d);
+            Eigen::VectorXd v = m.colPivHouseholderQr().solve(d);
 
-            Eigen::MatrixXd mi = m_inv.completeOrthogonalDecomposition().pseudoInverse();
-            Eigen::VectorXd v = mi*d;
+            //Eigen::MatrixXd mi = m.completeOrthogonalDecomposition().pseudoInverse();
+            //Eigen::VectorXd v = mi*d;
 
             map_arr[a](i,j) = v(0);
             map_arr[a + step](i,j) = v(1);
@@ -175,40 +175,49 @@ void ObsMapBuffer::normalize_maps() {
                         }
                     }
 
-                    if (!(m.array()==0).all()) {
-                        // get inverse of pixel's pointing matrix
-                        calc_stokes(signal,m,i,j,a,step);
-                        //calc_stokes(weight, m, i, j, a, step);
-                        if (!kernel.empty()) {
-                            calc_stokes(kernel,m,i,j,a,step);
+                    // only run if obsnum map buffer
+                    if (obsnums.size()==1) {
+                        if (!(m.array()==0).all() && m.determinant()>1e-20) {
+                            // get inverse of pixel's pointing matrix
+                            calc_stokes(signal,m,i,j,a,step);
+                            //calc_stokes(weight, m, i, j, a, step);
+                            if (!kernel.empty()) {
+                                calc_stokes(kernel,m,i,j,a,step);
+                            }
+                        }
+                        else {
+                            signal[a](i,j) = 0;
+                            //weight[a](i,j) = 0;
+                            signal[a + step](i,j) = 0;
+                            //weight[a + step](i,j) = 0;
+                            signal[a + 2*step](i,j) = 0;
+                            //weight[a + 2*step](i,j) = 0;
+
+                            if (!kernel.empty()) {
+                                kernel[a](i,j) = 0;
+                                kernel[a + step](i,j) = 0;
+                                kernel[a + 2*step](i,j) = 0;
+                            }
                         }
                     }
-                    else {
-                        signal[a](i,j) = 0;
-                        //weight[a](i,j) = 0;
-                        signal[a + step](i,j) = 0;
-                        //weight[a + step](i,j) = 0;
-                        signal[a + 2*step](i,j) = 0;
-                        //weight[a + 2*step](i,j) = 0;
+                    // run on noise maps
+                    if (!noise.empty()) {
 
-                        if (!kernel.empty()) {
-                            kernel[a](i,j) = 0;
-                            kernel[a + step](i,j) = 0;
-                            kernel[a + 2*step](i,j) = 0;
-                        }
                     }
                 }
             }
 
-            weight[a + step] = weight[a];
-            weight[a + 2*step] = weight[a];
+            // only run if obsnum map buffer
+            if (obsnums.size()==1) {
+                weight[a + step] = weight[a];
+                weight[a + 2*step] = weight[a];
 
-            // don't need to update coverage map
-            if (!coverage.empty()) {
-                coverage[a + step] = coverage[a];
-                coverage[a + 2*step] = coverage[a];
+                // don't need to update coverage map
+                if (!coverage.empty()) {
+                    coverage[a + step] = coverage[a];
+                    coverage[a + 2*step] = coverage[a];
+                }
             }
-
             return 0;
         });
     }

@@ -19,7 +19,7 @@ using timestream::TCData;
 class PTCProc: public TCProc {
 public:
     // controls for timestream reduction
-    bool run_clean, run_stokes_clean;
+    bool run_clean;
     // median weight factor
     double med_weight_factor;
     // weight type (full, approximate, const)
@@ -94,9 +94,6 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         // stddev limit
         get_config_value(config, cleaner.stddev_limit, missing_keys, invalid_keys,
                          std::tuple{"timestream","processed_time_chunk","clean","stddev_limit"});
-        // clean polarized tods
-        get_config_value(config, run_stokes_clean, missing_keys, invalid_keys,
-                         std::tuple{"timestream","processed_time_chunk","clean","clean_polarized_time_chunks"});
         // mask radius in arcseconds
         get_config_value(config, mask_radius_arcsec, missing_keys, invalid_keys,
                          std::tuple{"timestream","processed_time_chunk","clean","mask_radius_arcsec"});

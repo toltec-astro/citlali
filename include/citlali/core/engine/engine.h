@@ -446,7 +446,7 @@ void Engine::obsnum_setup() {
     // set number of detectors for polarized timestreams
     else {
         if (!telescope.sim_obs) {
-            n_dets = (calib.apt["loc"].array()!=-1).count();
+            n_dets = (calib.apt[rtcproc.polarization.grouping].array()!=-1).count();
         }
         else {
             n_dets = calib.n_dets;
@@ -1099,14 +1099,21 @@ void Engine::add_tod_header() {
         }
 
         // add mean tau
-        Eigen::VectorXd tau_el(1);
-        tau_el << telescope.tel_data["TelElAct"].mean();
-        auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
+        if (rtcproc.run_extinction) {
+            Eigen::VectorXd tau_el(1);
+            tau_el << telescope.tel_data["TelElAct"].mean();
+            auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
 
-        Eigen::Index i = 0;
-        for (auto const& [key, val] : tau_freq) {
-            add_netcdf_var(fo, "MEAN_TAU_"+toltec_io.array_name_map[i], val[0]);
-            i++;
+            Eigen::Index i = 0;
+            for (auto const& [key, val] : tau_freq) {
+                add_netcdf_var(fo, "MEAN_TAU_"+toltec_io.array_name_map[i], val[0]);
+                i++;
+            }
+        }
+        else {
+            for (Eigen::Index i=0; i<calib.arrays.size(); i++) {
+                add_netcdf_var(fo, "MEAN_TAU_"+toltec_io.array_name_map[i], 0.);
+            }
         }
 
         // add sample rate
@@ -1231,7 +1238,7 @@ void Engine::create_tod_files() {
         // set number of detectors for polarized timestreams
         else {
             if (!telescope.sim_obs) {
-                n_dets = (calib.apt["loc"].array()!=-1).count();
+                n_dets = (calib.apt[rtcproc.polarization.grouping].array()!=-1).count();
             }
             else {
                 n_dets = calib.n_dets;
@@ -1746,7 +1753,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         fits_io->at(i).pfits->pHDU().addKey("MEAN_TAU", tau_freq[i](0), "mean tau (" + name + ")");
     }
     else {
-        fits_io->at(i).pfits->pHDU().addKey("MEAN_TAU", 0, "mean tau (" + name + ")");
+        fits_io->at(i).pfits->pHDU().addKey("MEAN_TAU", 0., "mean tau (" + name + ")");
     }
 
     // add sample rate
@@ -1765,7 +1772,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         fits_io->at(i).pfits->pHDU().addKey("APT", apt_filename.back(), "APT table used");
     }
 
-    // estimate rms
+    // estimate rms from weight maps
     mb->calc_mean_err();
     auto rms = 1./pow(mb->mean_err(i),-0.5);
 

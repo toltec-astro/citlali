@@ -99,6 +99,7 @@ timestream: # timestream reduction parameters
   polarimetry: # polarized reduction
     enabled: false # enable or disable polarized reduction
     ignore_hwpr: auto # override automatic hwpr finding (true, false, auto)
+    grouping: fg # use all matched detectors (fg) or only matched detectors with a pair (loc)
   output: # controls options for writing out TOD as netCDF file
     subdir_name: null # optional subdirectory name for tod output files (ignored if null)
     stats: # controls for what variables to include in stats file
@@ -145,7 +146,6 @@ timestream: # timestream reduction parameters
         a1100: [3]
         a1400: [3]
         a2000: [3]
-      clean_polarized_time_chunks: false # carry out cleaning on Q and U TODs as well as I TODs
     weighting: # how to weight data and maps
       type: full # type of TOD weighting (full=use scan variance/approximate=use det sensitivity/const=1)
       median_weight_factor: 0 # set all weights above this factor x median of unflagged detectors to median (>=1 allowed)
