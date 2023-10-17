@@ -19,7 +19,7 @@ using timestream::TCData;
 class PTCProc: public TCProc {
 public:
     // controls for timestream reduction
-    bool run_clean;
+    bool run_clean,;
     // median weight factor
     double med_weight_factor;
     // weight type (full, approximate, const)

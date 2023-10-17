@@ -159,9 +159,6 @@ template <TCDataKind tcdata_kind, typename Derived, class calib_t>
 void Calibration::calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &in, Eigen::DenseBase<Derived> &det_indices,
                                 Eigen::DenseBase<Derived> &array_indices, calib_t &calib) {
 
-    // resize fcf
-    in.fcf.data.setOnes(in.scans.data.cols());
-
     // loop through detectors
     for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
         // current detector index in apt table
