@@ -113,12 +113,12 @@ public:
                 double az_off = calib.apt["x_t"](det_indices(i));
                 double el_off = calib.apt["y_t"](det_indices(i));
 
-                Eigen::ArrayXd rot_alt_off = cos(in.tel_data.data["TelElAct"].array())*el_off
-                                              + sin(in.tel_data.data["TelElAct"].array())*az_off;
+                //Eigen::ArrayXd rot_alt_off = cos(in.tel_data.data["TelElAct"].array())*el_off
+                //                              + sin(in.tel_data.data["TelElAct"].array())*az_off;
 
                 // if there is no hwpr
                 if (!calib.run_hwpr) {
-                    out.angle.data.col(i) = angle + rot_alt_off*ASEC_TO_RAD;
+                    out.angle.data.col(i) = angle;// + rot_alt_off*ASEC_TO_RAD;
                 }
                 // if the hwpr is installed
                 else {
