@@ -1736,6 +1736,20 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // add mean parallactic angle
     fits_io->at(i).pfits->pHDU().addKey("MEAN_PA", RAD_TO_DEG*telescope.tel_data["ActParAng"].mean(), "Mean Parallactic angle (deg)");
 
+    // add beamsizes
+    if (std::get<0>(calib.array_fwhms[calib.arrays(i)]) >= std::get<1>(calib.array_fwhms[calib.arrays(i)])) {
+        fits_io->at(i).pfits->pHDU().addKey("BMAJ", std::get<0>(calib.array_fwhms[calib.arrays(i)]), "beammaj (arcsec)");
+        fits_io->at(i).pfits->pHDU().addKey("BMIN", std::get<1>(calib.array_fwhms[calib.arrays(i)]), "beammaj (arcsec)");
+        fits_io->at(i).pfits->pHDU().addKey("BPA", calib.array_pas[calib.arrays(i)]*RAD_TO_DEG, "beampa (deg)");
+    }
+    else {
+        fits_io->at(i).pfits->pHDU().addKey("BMAJ", std::get<1>(calib.array_fwhms[calib.arrays(i)]), "beammaj (arcsec)");
+        fits_io->at(i).pfits->pHDU().addKey("BMIN", std::get<0>(calib.array_fwhms[calib.arrays(i)]), "beammin (arcsec)");
+        fits_io->at(i).pfits->pHDU().addKey("BPA", (calib.array_pas[calib.arrays(i)] + pi/2)*RAD_TO_DEG, "beampa (deg)");
+    }
+
+    fits_io->at(i).pfits->pHDU().addKey("BUNIT", mb->sig_unit, "bunit");
+
     // add jinc shape params
     if (map_method=="jinc") {
         fits_io->at(i).pfits->pHDU().addKey("JINC_R", jinc_mm.r_max, "Jinc filter R_max");

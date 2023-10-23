@@ -56,6 +56,9 @@ public:
     // average fwhms
     std::map<Eigen::Index, std::tuple<double, double>> nw_fwhms, array_fwhms;
 
+    // average pa
+    std::map<Eigen::Index, double> nw_pas, array_pas;
+
     // average beam areas
     std::map<Eigen::Index, double> nw_beam_areas, array_beam_areas;
 

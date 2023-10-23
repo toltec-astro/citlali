@@ -107,11 +107,18 @@ public:
             // now loop through polarized detectors
             for (Eigen::Index i=0; i<n_dets; i++) {
                 // detector angle = rotation angle + installation angle + det orientation
-                auto angle = rot_angle + install_ang[array_indices(i)] + fgs[fg_indices(i)];
+                auto angle = rot_angle + fgs[fg_indices(i)] + install_ang[array_indices(i)];
+
+                // rotate altaz offsets by elevation angle and add pointing offsets
+                double az_off = calib.apt["x_t"](det_indices(i));
+                double el_off = calib.apt["y_t"](det_indices(i));
+
+                Eigen::ArrayXd rot_alt_off = cos(in.tel_data.data["TelElAct"].array())*el_off
+                                              + sin(in.tel_data.data["TelElAct"].array())*az_off;
 
                 // if there is no hwpr
-                if (calib.run_hwpr==false) {
-                    out.angle.data.col(i) = angle;
+                if (!calib.run_hwpr) {
+                    out.angle.data.col(i) = angle + rot_alt_off*ASEC_TO_RAD;
                 }
                 // if the hwpr is installed
                 else {

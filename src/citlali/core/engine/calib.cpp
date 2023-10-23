@@ -293,6 +293,7 @@ void Calib::setup() {
     // set up array values
     array_limits.clear();
     array_fwhms.clear();
+    array_pas.clear();
     array_beam_areas.clear();
 
     Eigen::Index arr_i = apt["array"](0);
@@ -324,6 +325,9 @@ void Calib::setup() {
         auto array_b_fwhm = apt["b_fwhm"](Eigen::seq(std::get<0>(array_limits[key]),
                                                   std::get<1>(array_limits[key])-1));
 
+        auto array_pa = apt["angle"](Eigen::seq(std::get<0>(array_limits[key]),
+                                                     std::get<1>(array_limits[key])-1));
+
         Eigen::Index n_good_det = (apt["flag"](Eigen::seq(std::get<0>(array_limits[key]),
                                                          std::get<1>(array_limits[key])-1)).array()==0).count();
 
@@ -333,12 +337,14 @@ void Calib::setup() {
             if (apt["flag"](k)!=1) {
                 std::get<0>(array_fwhms[key]) = std::get<0>(array_fwhms[key]) + array_a_fwhm(i);
                 std::get<1>(array_fwhms[key]) = std::get<1>(array_fwhms[key]) + array_b_fwhm(i);
+                array_pas[key] = array_pas[key] + array_pa(i);
             }
             k++;
         }
 
         std::get<0>(array_fwhms[key]) = std::get<0>(array_fwhms[key])/n_good_det;
         std::get<1>(array_fwhms[key]) = std::get<1>(array_fwhms[key])/n_good_det;
+        array_pas[key] = array_pas[key]/n_good_det;
 
         double avg_array_fwhm = (std::get<0>(array_fwhms[key]) + std::get<1>(array_fwhms[key]))/2;
 
