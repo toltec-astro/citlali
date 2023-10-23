@@ -568,6 +568,9 @@ void Beammap::set_apt_flags(array_indices_t &array_indices, nw_indices_t &nw_ind
     // track number of flagged detectors
     int n_flagged_dets = 0;
 
+    // estimate rms from weight maps
+    omb.calc_mean_err();
+
     logger->info("flagging detectors");
     // first flag based on fit values and signal-to-noise
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
@@ -576,7 +579,7 @@ void Beammap::set_apt_flags(array_indices_t &array_indices, nw_indices_t &nw_ind
         std::string array_name = toltec_io.array_name_map[array_index];
 
         // calculate map standard deviation
-        double map_std_dev = engine_utils::calc_std_dev(omb.signal[i]);
+        double map_std_dev = 1./pow(omb.mean_err(i),2);
 
         // set apt signal to noise
         calib.apt["sig2noise"](i) = params(i,0)/map_std_dev;

@@ -15,7 +15,7 @@ public:
     std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
 
     // mapping pattern
-    char obs_pgm_char [128] = "";
+    //char obs_pgm_char [128] = "";
     // obs goal
     //char obs_goal_char [128] = "";
     // source name

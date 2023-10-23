@@ -30,20 +30,21 @@ void Telescope::get_tel_data(std::string &filepath) {
 
         // get obs goal
         if (!sim_obs) {
-            int obs_goal_size = vars.find("Header.Dcs.ObsGoal")->second.getDim(0).getSize();
-            char obs_goal_char [obs_goal_size] = "";
+            char obs_goal_char [129];
             vars.find("Header.Dcs.ObsGoal")->second.getVar(&obs_goal_char);
+            obs_goal_char[128] = '\0';
             obs_goal = std::string(obs_goal_char);
+            std::string::iterator end_pos = std::remove(obs_goal.begin(), obs_goal.end(), ' ');
+            obs_goal.erase(end_pos, obs_goal.end());
         }
 
-        std::string::iterator end_pos = std::remove(obs_goal.begin(), obs_goal.end(), ' ');
-        obs_goal.erase(end_pos, obs_goal.end());
-
+        char obs_pgm_char [129];
         // get mapping pattern
         vars.find("Header.Dcs.ObsPgm")->second.getVar(&obs_pgm_char);
+        obs_pgm_char[128] = '\0';
         obs_pgm = std::string(obs_pgm_char);
         // try and remove end characters
-        end_pos = std::remove(obs_pgm.begin(), obs_pgm.end(), ' ');
+        std::string::iterator end_pos = std::remove(obs_pgm.begin(), obs_pgm.end(), ' ');
         obs_pgm.erase(end_pos, obs_pgm.end());
 
         // work around for files with bad ObsPgm
@@ -65,10 +66,9 @@ void Telescope::get_tel_data(std::string &filepath) {
         }
 
         // get source name
-        int source_name_size = vars.find("Header.Source.SourceName")->second.getDim(0).getSize();
-        char source_name_char [source_name_size] = "";
-
+        char source_name_char [129];
         vars.find("Header.Source.SourceName")->second.getVar(&source_name_char);
+        obs_pgm_char[128] = '\0';
         source_name = std::string(source_name_char);
         // try and remove end characters
         end_pos = std::remove(source_name.begin(), source_name.end(), ' ');
