@@ -671,23 +671,31 @@ void Engine::get_beammap_config(CT &config) {
     get_config_value(config, beammap_derotate, missing_keys, invalid_keys,
                      std::tuple{"beammap","derotate"});
 
-    // limits for flagging
+    // lower fwhm limit
+    auto lower_fwhm_arcsec_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","flagging","lower_fwhm_arcsec"});
+    // upper fwhm limit
+    auto upper_fwhm_arcsec_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","flagging","upper_fwhm_arcsec"});
+    // lower signal-to-noise limit
+    auto lower_sig2noise_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","flagging","lower_sig2noise"});
+    // upper signal-to-noise limit
+    auto upper_sig2noise_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","flagging","upper_sig2noise"});
+    // maximum allowed distance limit
+    auto max_dist_arcsec_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","flagging","max_dist_arcsec"});
+
+    // add params to respective array values
+    Eigen::Index i = 0;
     for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
         // lower fwhm limit
-        get_config_value(config, lower_fwhm_arcsec[arr_name], missing_keys, invalid_keys,
-                         std::tuple{"beammap","flagging","lower_fwhm_arcsec",arr_name});
+        lower_fwhm_arcsec[arr_name] = lower_fwhm_arcsec_vec[i];
         // upper fwhm limit
-        get_config_value(config, upper_fwhm_arcsec[arr_name], missing_keys, invalid_keys,
-                         std::tuple{"beammap","flagging","upper_fwhm_arcsec",arr_name});
+        upper_fwhm_arcsec[arr_name] = upper_fwhm_arcsec_vec[i];
         // lower signal-to-noise limit
-        get_config_value(config, lower_sig2noise[arr_name], missing_keys, invalid_keys,
-                         std::tuple{"beammap","flagging","lower_sig2noise",arr_name});
+        lower_sig2noise[arr_name] = lower_sig2noise_vec[i];
         // upper signal-to-noise limit
-        get_config_value(config, upper_sig2noise[arr_name], missing_keys, invalid_keys,
-                         std::tuple{"beammap","flagging","upper_sig2noise",arr_name});
+        upper_sig2noise[arr_name] = upper_sig2noise_vec[i];
         // maximum allowed distance limit
-        get_config_value(config, max_dist_arcsec[arr_name], missing_keys, invalid_keys,
-                         std::tuple{"beammap","flagging","max_dist_arcsec",arr_name});
+        max_dist_arcsec[arr_name] = max_dist_arcsec_vec[i];
+        i++;
     }
 
     // lower sensitivity factor
@@ -1652,24 +1660,6 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         fits_io->at(i).pfits->pHDU().addKey("to_MJy/sr", "N/A", "Conversion to MJy/sr");
     }
 
-    // add obsnums
-    for (Eigen::Index j=0; j<mb->obsnums.size(); j++) {
-        fits_io->at(i).pfits->pHDU().addKey("OBSNUM"+std::to_string(j), mb->obsnums.at(j), "Observation Number " + std::to_string(j));
-    }
-
-    // add date and time of obs
-    if (mb->obsnums.size()==1) {
-        fits_io->at(i).pfits->pHDU().addKey("DATEOBS0", date_obs.back(), "Date and time of observation 0");
-    }
-    else {
-        for (Eigen::Index j=0; j<mb->obsnums.size(); j++) {
-            fits_io->at(i).pfits->pHDU().addKey("DATEOBS"+std::to_string(j), date_obs[j], "Date and time of observation "+std::to_string(j));
-        }
-    }
-
-    // add source
-    fits_io->at(i).pfits->pHDU().addKey("SOURCE", telescope.source_name, "Source name");
-
     // add source flux for beammaps
     if (redu_type == "beammap") {
         fits_io->at(i).pfits->pHDU().addKey("HEADER.SOURCE.FLUX_MJYPERBEAM", beammap_fluxes_mJy_beam[name], "Source flux (mJy/beam)");
@@ -1691,6 +1681,23 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         }
     }
 
+    // add obsnums
+    for (Eigen::Index j=0; j<mb->obsnums.size(); j++) {
+        fits_io->at(i).pfits->pHDU().addKey("OBSNUM"+std::to_string(j), mb->obsnums.at(j), "Observation Number " + std::to_string(j));
+    }
+
+    // add date and time of obs
+    if (mb->obsnums.size()==1) {
+        fits_io->at(i).pfits->pHDU().addKey("DATEOBS0", date_obs.back(), "Date and time of observation 0");
+    }
+    else {
+        for (Eigen::Index j=0; j<mb->obsnums.size(); j++) {
+            fits_io->at(i).pfits->pHDU().addKey("DATEOBS"+std::to_string(j), date_obs[j], "Date and time of observation "+std::to_string(j));
+        }
+    }
+
+    // add source
+    fits_io->at(i).pfits->pHDU().addKey("SOURCE", telescope.source_name, "Source name");
     // add instrument
     fits_io->at(i).pfits->pHDU().addKey("INSTRUME", "TolTEC", "Instrument");
     // add hwpr
@@ -1707,6 +1714,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("KIDS", KIDSCPP_GIT_VERSION, "KIDSCPP_GIT_VERSION");
     // add kids version
     fits_io->at(i).pfits->pHDU().addKey("TULA", TULA_GIT_VERSION, "TULA_GIT_VERSION");
+    // project id
+    fits_io->at(i).pfits->pHDU().addKey("PROJID", telescope.project_id, "Project ID");
     // add redu type
     fits_io->at(i).pfits->pHDU().addKey("GOAL", redu_type, "Reduction type");
     // add obs goal
