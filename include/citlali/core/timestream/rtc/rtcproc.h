@@ -272,18 +272,6 @@ auto RTCProc::calc_map_indices(calib_t &calib, Eigen::DenseBase<Derived> &det_in
         }
     }
 
-    // increment if polarization is enabled
-    /*if (run_polarization) {
-        if (stokes_param == "Q") {
-            // stokes Q takes the second set of n_maps
-            map_indices = map_indices.array() + n_maps;
-        }
-        else if (stokes_param == "U") {
-            // stokes U takes the third set of n_maps
-            map_indices = map_indices.array() + 2*n_maps;
-        }
-    }*/
-
     // return the map indices
     return std::move(map_indices);
 }

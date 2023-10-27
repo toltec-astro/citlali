@@ -110,8 +110,8 @@ public:
                 auto angle = rot_angle + fgs[fg_indices(i)] + install_ang[array_indices(i)];
 
                 // rotate altaz offsets by elevation angle and add pointing offsets
-                double az_off = calib.apt["x_t"](det_indices(i));
-                double el_off = calib.apt["y_t"](det_indices(i));
+                //double az_off = calib.apt["x_t"](det_indices(i));
+                //double el_off = calib.apt["y_t"](det_indices(i));
 
                 //Eigen::ArrayXd rot_alt_off = cos(in.tel_data.data["TelElAct"].array())*el_off
                 //                              + sin(in.tel_data.data["TelElAct"].array())*az_off;

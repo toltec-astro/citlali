@@ -14,15 +14,6 @@ public:
     // get logger
     std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
 
-    // mapping pattern
-    //char obs_pgm_char [128] = "";
-    // obs goal
-    //char obs_goal_char [128] = "";
-    // source name
-    //char source_name_char [128] = "";
-    // project id
-    char project_id_char [128] = "";
-
     // simulation jobkey
     char sim_job_key [128] = "";
     // is this a simulation?

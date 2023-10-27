@@ -599,7 +599,7 @@ int run(const rc_t &rc) {
 
                     // get flux calibration
                     logger->info("calculating flux calibration");
-                    todproc.engine().calib.calc_flux_calibration(todproc.engine().omb.sig_unit);
+                    todproc.engine().calib.calc_flux_calibration(todproc.engine().omb.sig_unit,todproc.engine().omb.pixel_size_rad);
 
                     // get telescope file
                     if (co.n_inputs() > 1) {

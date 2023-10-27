@@ -181,8 +181,6 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 // size of block for each grouping
                 auto n_dets = std::get<1>(val) - std::get<0>(val);
 
-                logger->debug("n_dets {} start_index {} key {}", n_dets, start_index, key);
-
                 Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> masked_flags;
 
                 // mask region

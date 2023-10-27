@@ -698,6 +698,12 @@ void Engine::get_beammap_config(CT &config) {
         i++;
     }
 
+    logger->info("lower_fwhm_arcsec {}",lower_fwhm_arcsec);
+    logger->info("upper_fwhm_arcsec {}",upper_fwhm_arcsec);
+    logger->info("lower_sig2noise {}",lower_sig2noise);
+    logger->info("upper_sig2noise {}",upper_sig2noise);
+    logger->info("max_dist_arcsec {}",max_dist_arcsec);
+
     // lower sensitivity factor
     get_config_value(config, lower_sens_factor, missing_keys, invalid_keys,
                      std::tuple{"beammap","flagging","lower_sens_factor"});
@@ -843,10 +849,10 @@ void Engine::get_citlali_config(CT &config) {
         for (Eigen::Index i=0; i<map_fitter.flux_limits.size(); i++) {
             // flux limit
             map_fitter.flux_limits(i) = config.template get_typed<double>(std::tuple{"post_processing","source_fitting",
-                                                                                     "gauss_model","amp_limits",i});
+                                                                                     "gauss_model","amp_limit_factors",i});
             // fwhm limit
             map_fitter.flux_limits(i) = config.template get_typed<double>(std::tuple{"post_processing","source_fitting",
-                                                                                     "gauss_model","fwhm_limits",i});
+                                                                                     "gauss_model","fwhm_limit_factors",i});
         }
 
         // flux lower factor
@@ -1607,7 +1613,9 @@ auto Engine::get_map_name(int i) {
     // get name for extension layer
     std::string map_name = "";
 
+    // only update name if we're not in array mode
     if (map_grouping!="array") {
+        // if in nw mode
         if (map_grouping=="nw") {
             map_name = map_name + "nw_" + std::to_string(calib.nws(i)) + "_";
         }
@@ -1623,8 +1631,10 @@ auto Engine::get_map_name(int i) {
                     }
                 }
             }
+            // if in fg mode
             map_name = map_name + "fg_" + std::to_string(array_indices(i)) + "_";
         }
+        // if in detector mode
         else if (map_grouping=="detector") {
             map_name = map_name + "det_" + std::to_string(i) + "_";
         }
@@ -1638,26 +1648,70 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // array name
     std::string name = toltec_io.array_name_map[calib.arrays(i)];
 
+    // conversion to uK
+    auto fwhm = (std::get<0>(calib.array_fwhms[calib.arrays(i)]) + std::get<1>(calib.array_fwhms[calib.arrays(i)]))/2;
+    auto mJy_beam_to_uK = engine_utils::mJy_beam_to_uK(1, toltec_io.array_freq_map[calib.arrays(i)], fwhm*ASEC_TO_RAD);
+
+    // beam area in steradians
+    auto beam_area_rad = 2.*pi*pow(fwhm*FWHM_TO_STD*ASEC_TO_RAD,2);
+    // get Jy/pixel
+    auto mJy_beam_to_Jy_px = 1e-3/beam_area_rad*pow(mb->pixel_size_rad,2);
+
     // add unit conversions
     if (rtcproc.run_calibrate) {
-        if (mb->sig_unit == "MJy/sr") {
-            fits_io->at(i).pfits->pHDU().addKey("to_mJy/beam", calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC,
-                                            "Conversion to mJy/beam");
-            fits_io->at(i).pfits->pHDU().addKey("to_MJy/sr", 1, "Conversion to MJy/sr");
-        }
-
-        else if (mb->sig_unit == "mJy/beam") {
+        if (mb->sig_unit == "mJy/beam") {
+            // conversion to mJy/beam
             fits_io->at(i).pfits->pHDU().addKey("to_mJy/beam", 1, "Conversion to mJy/beam");
+            // conversion to MJy/sr
             fits_io->at(i).pfits->pHDU().addKey("to_MJy/sr", 1/(calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC),
                                                 "Conversion to MJy/sr");
+            // conversion to uK
+            fits_io->at(i).pfits->pHDU().addKey("to_uK", mJy_beam_to_uK, "Conversion to uK");
+            // conversion to Jy/pixel
+            fits_io->at(i).pfits->pHDU().addKey("to_Jy/pixel", mJy_beam_to_Jy_px, "Conversion to Jy/pixel");
         }
-        else if (mb->sig_unit == "uk") {
+        else if (mb->sig_unit == "MJy/sr") {
+            // conversion to mJy/beam
+            fits_io->at(i).pfits->pHDU().addKey("to_mJy/beam", calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC,
+                                                "Conversion to mJy/beam");
+            // conversion to MJy/Sr
+            fits_io->at(i).pfits->pHDU().addKey("to_MJy/sr", 1, "Conversion to MJy/sr");
+            // conversion to uK
+            fits_io->at(i).pfits->pHDU().addKey("to_uK", calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC*mJy_beam_to_uK,
+                                                "Conversion to uK");
+            // conversion to Jy/pixel
+            fits_io->at(i).pfits->pHDU().addKey("to_Jy/pixel", calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC*mJy_beam_to_Jy_px,
+                                                "Conversion to Jy/pixel");
+        }
+        else if (mb->sig_unit == "uK") {
+            // conversion to mJy/beam
+            fits_io->at(i).pfits->pHDU().addKey("to_mJy/beam", 1/mJy_beam_to_uK, "Conversion to mJy/beam");
+            // conversion to MJy/sr
+            fits_io->at(i).pfits->pHDU().addKey("to_MJy/sr", 1/mJy_beam_to_uK/(calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC),
+                                                "Conversion to MJy/sr");
+            // conversion to uK
+            fits_io->at(i).pfits->pHDU().addKey("to_uK", 1, "Conversion to uK");
+            // conversion to Jy/pixel
+            fits_io->at(i).pfits->pHDU().addKey("to_Jy/pixel", (1/mJy_beam_to_uK)*mJy_beam_to_Jy_px, "Conversion to Jy/pixel");
+        }
+        else if (mb->sig_unit == "Jy/pixel") {
+            // conversion to mJy/beam
+            fits_io->at(i).pfits->pHDU().addKey("to_mJy/beam", 1/mJy_beam_to_Jy_px, "Conversion to mJy/beam");
+            // conversion to MJy/sr
+            fits_io->at(i).pfits->pHDU().addKey("to_MJy/sr", (1/mJy_beam_to_Jy_px)/(calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC),
+                                                "Conversion to MJy/sr");
+            // conversion to uK
+            fits_io->at(i).pfits->pHDU().addKey("to_uK", mJy_beam_to_uK/mJy_beam_to_Jy_px, "Conversion to uK");
+            // conversion to Jy/pixel
+            fits_io->at(i).pfits->pHDU().addKey("to_Jy/pixel", 1, "Conversion to Jy/pixel");
         }
     }
-
+    // if flux calibration is disabled
     else {
         fits_io->at(i).pfits->pHDU().addKey("to_mJy/beam", "N/A", "Conversion to mJy/beam");
         fits_io->at(i).pfits->pHDU().addKey("to_MJy/sr", "N/A", "Conversion to MJy/sr");
+        fits_io->at(i).pfits->pHDU().addKey("to_uK", "N/A", "Conversion to uK");
+        fits_io->at(i).pfits->pHDU().addKey("to_Jy/pixel", "N/A", "Conversion to Jy/pixel");
     }
 
     // add source flux for beammaps
@@ -1748,7 +1802,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // add beamsizes
     if (std::get<0>(calib.array_fwhms[calib.arrays(i)]) >= std::get<1>(calib.array_fwhms[calib.arrays(i)])) {
         fits_io->at(i).pfits->pHDU().addKey("BMAJ", std::get<0>(calib.array_fwhms[calib.arrays(i)]), "beammaj (arcsec)");
-        fits_io->at(i).pfits->pHDU().addKey("BMIN", std::get<1>(calib.array_fwhms[calib.arrays(i)]), "beammaj (arcsec)");
+        fits_io->at(i).pfits->pHDU().addKey("BMIN", std::get<1>(calib.array_fwhms[calib.arrays(i)]), "beammin (arcsec)");
         fits_io->at(i).pfits->pHDU().addKey("BPA", calib.array_pas[calib.arrays(i)]*RAD_TO_DEG, "beampa (deg)");
     }
     else {

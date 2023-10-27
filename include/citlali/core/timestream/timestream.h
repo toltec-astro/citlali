@@ -253,7 +253,9 @@ public:
         Gaussian = 0,
         NegativeGaussian = 1,
         Airy = 2,
-        NegativeAiry = 3
+        NegativeAiry = 3,
+        Map = 4,
+        NegativeMap = 5
     };
 
     // number of weight outlier iterations
@@ -268,6 +270,11 @@ public:
     // get limits for a particular grouping
     template <typename Derived, class calib_t>
     auto get_grouping(std::string, Eigen::DenseBase<Derived> &, calib_t &, int);
+
+    // translate citlali map buffer to timestream and add/subtract from TCData scans
+    template <TCProc::SourceType source_type, class mb_t, TCDataKind tcdata_t, typename calib_t, typename Derived>
+    void map_to_tod(mb_t &, TCData<tcdata_t, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
+                    Eigen::DenseBase<Derived> &, std::string, std::string);
 
     // remove detectors with outlier weights
     template <TCDataKind tcdata_t, typename calib_t, typename Derived>
@@ -313,6 +320,52 @@ auto TCProc::get_grouping(std::string grp, Eigen::DenseBase<Derived> &det_indice
         }
     }
     return grp_limits;
+}
+
+template <TCProc::SourceType source_type, class mb_t, TCDataKind tcdata_t, typename calib_t, typename Derived>
+void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
+                        Eigen::DenseBase<Derived> &map_indices, std::string pixel_axes, std::string map_grouping) {
+
+    // dimensions of data
+    Eigen::Index n_dets = in.scans.data.cols();
+    Eigen::Index n_pts = in.scans.data.rows();
+
+    // add or subtract timestream
+    int factor = 1;
+    if constexpr (source_type==NegativeMap) {
+        factor = -1;
+    }
+
+    // loop through detectors
+    for (Eigen::Index i=0; i<n_dets; i++) {
+        // current detector index in apt
+        auto det_index = det_indices(i);
+        auto map_index = map_indices(i);
+
+        double az_off = calib.apt["x_t"](det_index);
+        double el_off = calib.apt["y_t"](det_index);
+
+        // calc tangent plane pointing
+        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off, pixel_axes,
+                                                          in.pointing_offsets_arcsec.data, map_grouping);
+
+        // get map buffer row and col indices for lat and lon vectors
+        Eigen::VectorXd irows = lat.array()/mb.pixel_size_rad + (mb.n_rows)/2.;
+        Eigen::VectorXd icols = lon.array()/mb.pixel_size_rad + (mb.n_cols)/2.;
+
+        for (Eigen::Index j=0; j<n_pts; j++) {
+            // row and col pixel from signal image
+            Eigen::Index ir = irows(j);
+            Eigen::Index ic = icols(j);
+
+            // check if current sample is on the image and add to the timestream
+            if ((ir >= 0) && (ir < mb.n_rows) && (ic >= 0) && (ic < mb.n_cols)) {
+                if (mb.signal[map_index](ir,ic)*sqrt(mb.weight[map_index](ir,ic))>5) {
+                    in.scans.data(j,i) += factor*mb.signal[map_index](ir,ic);
+                }
+            }
+        }
+    }
 }
 
 template <TCDataKind tcdata_t, typename calib_t, typename Derived>
@@ -437,9 +490,9 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
 
 template <TCProc::SourceType source_type, TCDataKind tcdata_t, typename DerivedB, typename DerivedC, typename apt_t, typename pointing_offset_t>
 void TCProc::add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &in, Eigen::DenseBase<DerivedB> &params, std::string &pixel_axes,
-                           std::string &map_grouping, apt_t &apt, pointing_offset_t &pointing_offsets_arcsec,
-                           double pixel_size_rad, Eigen::Index n_rows, Eigen::Index n_cols,
-                           Eigen::DenseBase<DerivedC> &map_indices, Eigen::DenseBase<DerivedC> &det_indices) {
+                          std::string &map_grouping, apt_t &apt, pointing_offset_t &pointing_offsets_arcsec,
+                          double pixel_size_rad, Eigen::Index n_rows, Eigen::Index n_cols,
+                          Eigen::DenseBase<DerivedC> &map_indices, Eigen::DenseBase<DerivedC> &det_indices) {
 
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();

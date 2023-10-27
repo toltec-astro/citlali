@@ -22,7 +22,7 @@ void ObsMapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std:
 
     // map units
     get_config_value(config, sig_unit, missing_keys, invalid_keys,
-                     std::tuple{"mapmaking","cunit"},{"mJy/beam","MJy/sr","uK/beam"});
+                     std::tuple{"mapmaking","cunit"},{"mJy/beam","MJy/sr","uK/beam", "Jy/pixel"});
 
     // convert pixel size to to radians
     pixel_size_rad *= ASEC_TO_RAD;

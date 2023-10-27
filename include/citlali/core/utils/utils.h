@@ -60,10 +60,9 @@ static const double mJy_beam_to_uK(const double flux_mjy_beam, const double freq
     // exponent term (h x nu)/(k_B x T_cmb)
     auto h_nu_k_T = (h_J_s*freq_Hz)/(kB_J_K*T_cmb_K);
     // beam area in steradians
-    auto beam_area_rad = 2.*pi*pow(fwhm*FWHM_TO_STD,2);
+    //auto beam_area_rad = 2.*pi*pow(fwhm*FWHM_TO_STD*ASEC_TO_RAD,2);
     // conversion from K to mJy/beam
-    auto K_to_mJy_beam = planck*exp(h_nu_k_T)/h_nu_k_T/T_cmb_K*1e26*1e3;//*beam_area_rad;
-
+    auto K_to_mJy_beam = planck*exp(h_nu_k_T)/(exp(h_nu_k_T)-1)*h_nu_k_T/pow(T_cmb_K,2)*1e26*1e3;//*beam_area_rad;
     // flux in mJy/beam converted to uK
     return 1e6*flux_mjy_beam/K_to_mJy_beam;
 }

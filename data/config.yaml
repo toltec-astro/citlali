@@ -145,8 +145,8 @@ post_processing:
     fitting_radius_arcsec: 0 # radius from center map to search for source in (ignored if zero or if source finding)
     model: gaussian # model type (ignored for now)
     gauss_model: # optional fitting limits for guassian model (ignored if zero)
-      amp_limits: [0.0, 0.0] # upper and lower multiplicative factors for amplitude fitting
-      fwhm_limits: [0.0, 0.0] # upper and lower multiplicative factors for fwhm fitting
+      amp_limit_factors: [0.0, 0.0] # upper and lower multiplicative factors for amplitude fitting
+      fwhm_limit_factors: [0.0, 0.0] # upper and lower multiplicative factors for fwhm fitting
       fit_rotation_angle: false # fit the elliptical Gaussian rotation angle (note fwhms will not align with axes if enabled).
   map_filtering: # map filtering (if coadd enabled, filters coadded map, if disabled, filters obs maps)
     enabled: false # enable or disable map filtering

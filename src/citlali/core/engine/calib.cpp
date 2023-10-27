@@ -163,7 +163,7 @@ void Calib::get_hwpr(const std::string &filepath, bool sim_obs) {
     }
 }
 
-void Calib::calc_flux_calibration(std::string units) {
+void Calib::calc_flux_calibration(std::string units, double pixel_size_rad) {
     // flux conversion is per detector
     flux_conversion_factor.setOnes(n_dets);
 
@@ -193,11 +193,25 @@ void Calib::calc_flux_calibration(std::string units) {
             // current detector's array
             auto array = apt["array"](i);
             // array frequency
-            auto freq_Hz = c_m_s/(toltec_io.array_wavelength_map[array]/1000.);
+            auto freq_Hz = toltec_io.array_freq_map[array];
             // det fwhm
             auto det_fwhm = (std::get<0>(array_fwhms[array]) + std::get<1>(array_fwhms[array]))/2;
             // get uK
             flux_conversion_factor(i) = engine_utils::mJy_beam_to_uK(1, freq_Hz, det_fwhm);
+        }
+    }
+
+    // convert to Jy/pixel
+    else if (units == "Jy/pixel") {
+        for (Eigen::Index i=0; i<n_dets; i++) {
+            // current detector's array
+            auto array = apt["array"](i);
+            // det fwhm
+            auto det_fwhm = (std::get<0>(array_fwhms[array]) + std::get<1>(array_fwhms[array]))/2;
+            // beam area in steradians
+            auto beam_area_rad = 2.*pi*pow(det_fwhm*FWHM_TO_STD*ASEC_TO_RAD,2);
+            // get Jy/pixel
+            flux_conversion_factor(i) = 1e-3/beam_area_rad*pow(pixel_size_rad,2);
         }
     }
 
@@ -263,12 +277,13 @@ void Calib::setup() {
         j++;
         nw_fwhms[key] = std::tuple<double,double>{0, 0};
 
+        // nw a fwhm
         auto nw_a_fwhm = apt["a_fwhm"](Eigen::seq(std::get<0>(nw_limits[key]),
                                                 std::get<1>(nw_limits[key])-1));
-
+        // nw a fwhm
         auto nw_b_fwhm = apt["b_fwhm"](Eigen::seq(std::get<0>(nw_limits[key]),
                                                   std::get<1>(nw_limits[key])-1));
-
+        // number of good detectors
         Eigen::Index n_good_det = (apt["flag"](Eigen::seq(std::get<0>(nw_limits[key]),
                                                          std::get<1>(nw_limits[key])-1)).array()==0).count();
 
@@ -319,15 +334,16 @@ void Calib::setup() {
         j++;
         array_fwhms[key] = std::tuple<double,double>{0, 0};
 
+        // array a fwhm
         auto array_a_fwhm = apt["a_fwhm"](Eigen::seq(std::get<0>(array_limits[key]),
                                                   std::get<1>(array_limits[key])-1));
-
+        // array b fwhm
         auto array_b_fwhm = apt["b_fwhm"](Eigen::seq(std::get<0>(array_limits[key]),
                                                   std::get<1>(array_limits[key])-1));
-
+        // array rotation/position angle
         auto array_pa = apt["angle"](Eigen::seq(std::get<0>(array_limits[key]),
                                                      std::get<1>(array_limits[key])-1));
-
+        // number of good detectors
         Eigen::Index n_good_det = (apt["flag"](Eigen::seq(std::get<0>(array_limits[key]),
                                                          std::get<1>(array_limits[key])-1)).array()==0).count();
 
@@ -342,6 +358,7 @@ void Calib::setup() {
             k++;
         }
 
+        // average fwhms and PA
         std::get<0>(array_fwhms[key]) = std::get<0>(array_fwhms[key])/n_good_det;
         std::get<1>(array_fwhms[key]) = std::get<1>(array_fwhms[key])/n_good_det;
         array_pas[key] = array_pas[key]/n_good_det;

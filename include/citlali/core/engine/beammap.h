@@ -261,6 +261,11 @@ auto Beammap::run_timestream() {
                                                                                      calib, telescope, omb.pixel_size_rad, stokes_param,
                                                                                      map_grouping);
 
+            if (map_grouping!="detector") {
+                // remove outliers before cleaning
+                rtcproc.remove_flagged_dets(ptcdata, calib.apt, det_indices);
+            }
+
             // remove bad detectors (only flags calib_scan apt)
             auto calib_scan = rtcproc.remove_bad_dets(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
 
@@ -310,21 +315,6 @@ auto Beammap::run_loop() {
         // copy calibs
         calib_scans = calib_scans0;
 
-        // set maps to zero for each iteration
-        for (Eigen::Index i=0; i<n_maps; i++) {
-            omb.signal[i].setZero();
-            omb.weight[i].setZero();
-
-            // clear coverage
-            if (!omb.coverage.empty()) {
-                omb.coverage[i].setZero();
-            }
-            // clear kernel
-            if (rtcproc.run_kernel) {
-                omb.kernel[i].setZero();
-            }
-        }
-
         // progress bar
         tula::logging::progressbar pb(
             [&](const auto &msg) { logger->info("{}", msg); }, 100, "PTC progress ");
@@ -340,6 +330,9 @@ auto Beammap::run_loop() {
                                                                                            calib.apt, ptcs[i].pointing_offsets_arcsec.data,
                                                                                            omb.pixel_size_rad, omb.n_rows, omb.n_cols,
                                                                                            ptcs[i].map_indices.data, ptcs[i].det_indices.data);
+
+                    //ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(omb, ptcs[i], calib, ptcs[i].det_indices.data,
+                    //                                                                ptcs[i].map_indices.data, telescope.pixel_axes, map_grouping);
                 }
             }
 
@@ -362,6 +355,9 @@ auto Beammap::run_loop() {
                     ptcproc.add_gaussian<timestream::TCProc::SourceType::Gaussian>(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt,
                                                                                    ptcs[i].pointing_offsets_arcsec.data, omb.pixel_size_rad, omb.n_rows,
                                                                                    omb.n_cols, ptcs[i].map_indices.data, ptcs[i].det_indices.data);
+
+                    //ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(omb, ptcs[i], calib, ptcs[i].det_indices.data,
+                    //                                                        ptcs[i].map_indices.data, telescope.pixel_axes, map_grouping);
                 }
             }
 
@@ -404,31 +400,44 @@ auto Beammap::run_loop() {
             }
         }
 
-        // mapmaking
-        grppi::map(tula::grppi_utils::dyn_ex(map_parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
-            // populate maps
-            if (run_mapmaking) {
-                if (map_method=="naive") {
-                    // naive mapmaker
-                    naive_mm.populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
-                                                 ptcs[i].det_indices.data, telescope.pixel_axes,
-                                                 redu_type, calib.apt, telescope.d_fsmp, run_noise);
+        if (run_mapmaking) {
+            // set maps to zero for each iteration
+            for (Eigen::Index i=0; i<n_maps; i++) {
+                omb.signal[i].setZero();
+                omb.weight[i].setZero();
+
+                // clear coverage
+                if (!omb.coverage.empty()) {
+                    omb.coverage[i].setZero();
                 }
-                else if (map_method=="jinc") {
-                    // jinc mapmaker
-                    jinc_mm.populate_maps_jinc(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
-                                               ptcs[i].det_indices.data, telescope.pixel_axes,
-                                               redu_type, calib.apt,telescope.d_fsmp, run_noise);
+                // clear kernel
+                if (rtcproc.run_kernel) {
+                    omb.kernel[i].setZero();
                 }
             }
 
-            // update progress bar
-            pb.count(telescope.scan_indices.cols(), 1);
+            // mapmaking
+            grppi::map(tula::grppi_utils::dyn_ex(map_parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
+                // populate maps
+                    if (map_method=="naive") {
+                        // naive mapmaker
+                        naive_mm.populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
+                                                     ptcs[i].det_indices.data, telescope.pixel_axes,
+                                                     redu_type, calib.apt, telescope.d_fsmp, run_noise);
+                    }
+                    else if (map_method=="jinc") {
+                        // jinc mapmaker
+                        jinc_mm.populate_maps_jinc(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
+                                                   ptcs[i].det_indices.data, telescope.pixel_axes,
+                                                   redu_type, calib.apt,telescope.d_fsmp, run_noise);
+                    }
 
-            return 0;
-        });
+                // update progress bar
+                pb.count(telescope.scan_indices.cols(), 1);
 
-        if (run_mapmaking) {
+                return 0;
+            });
+
             // normalize maps
             logger->info("normalizing maps");
             omb.normalize_maps();
@@ -442,9 +451,9 @@ auto Beammap::run_loop() {
                 // only fit if not converged
                 if (!converged(i)) {
                     // get array number
-                    auto array_index = ptcs[0].array_indices.data(i);
+                    auto array = maps_to_arrays(i);
                     // get initial guess fwhm from theoretical fwhms for the arrays
-                    auto init_fwhm = toltec_io.array_fwhm_arcsec[array_index]*ASEC_TO_RAD/omb.pixel_size_rad;
+                    double init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
                     // fit the maps
                     auto [det_params, det_perror, good_fit] =
                         map_fitter.fit_to_gaussian<engine_utils::mapFitter::beammap>(omb.signal[i], omb.weight[i],
@@ -484,7 +493,7 @@ auto Beammap::run_loop() {
                         if (!converged(i)) {
                             // get relative change from last iteration
                             auto diff = abs((params.row(i).array() - p0.row(i).array())/p0.row(i).array());
-                            // if variable is constant, make sure no nans are present
+                            // if a variable is constant, make sure no nans are present
                             auto d = (diff.array()).isNaN().select(0,diff);
                             if ((d.array() <= beammap_iter_tolerance).all()) {
                                 // set as converged
@@ -568,9 +577,6 @@ void Beammap::set_apt_flags(array_indices_t &array_indices, nw_indices_t &nw_ind
     // track number of flagged detectors
     int n_flagged_dets = 0;
 
-    // estimate rms from weight maps
-    omb.calc_mean_err();
-
     logger->info("flagging detectors");
     // first flag based on fit values and signal-to-noise
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
@@ -579,7 +585,7 @@ void Beammap::set_apt_flags(array_indices_t &array_indices, nw_indices_t &nw_ind
         std::string array_name = toltec_io.array_name_map[array_index];
 
         // calculate map standard deviation
-        double map_std_dev = 1./pow(omb.mean_err(i),2);
+        double map_std_dev = engine_utils::calc_std_dev(omb.signal[i]);
 
         // set apt signal to noise
         calib.apt["sig2noise"](i) = params(i,0)/map_std_dev;
@@ -662,10 +668,6 @@ void Beammap::set_apt_flags(array_indices_t &array_indices, nw_indices_t &nw_ind
     // flag too low/high sensitivies based on the median unflagged sensitivity of each nw
     logger->debug("flagging sensitivities");
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
-        // get array of current detector
-        auto array_index = array_indices(i);
-        std::string array_name = toltec_io.array_name_map[array_index];
-
         // get nw of current detector
         auto nw_index = nw_indices(i);
 
@@ -699,7 +701,7 @@ void Beammap::set_apt_flags(array_indices_t &array_indices, nw_indices_t &nw_ind
                                                      std::get<1>(calib.array_limits[array])-1));
         // number of good detectors
         Eigen::Index n_good_det = (calib.apt["flag"](Eigen::seq(std::get<0>(calib.array_limits[array]),
-                                                               std::get<1>(calib.array_limits[array])-1)).array()==0).count();
+                                                                std::get<1>(calib.array_limits[array])-1)).array()==0).count();
 
         // to hold good detectors
         Eigen::VectorXd x_t, y_t;
@@ -821,27 +823,34 @@ void Beammap::apt_proc() {
             Eigen::Index n_good_det = (calib.apt["flag"](Eigen::seq(std::get<0>(calib.array_limits[array]),
                                                                     std::get<1>(calib.array_limits[array])-1)).array()==0).count();
 
-            Eigen::VectorXd x_t, y_t, det_indices;
+            Eigen::VectorXd x_t, y_t, det_indices, dist;
 
-            x_t.resize(n_good_det);
-            y_t.resize(n_good_det);
-            det_indices.resize(n_good_det);
+            if (n_good_det>0) {
+                x_t.resize(n_good_det);
+                y_t.resize(n_good_det);
+                det_indices.resize(n_good_det);
 
-            // get good detector positions
-            Eigen::Index j = std::get<0>(calib.array_limits[array]);
-            Eigen::Index k = 0;
-            for (Eigen::Index i=0; i<array_x_t.size(); i++) {
-                if (calib.apt["flag"](j)==0) {
-                    x_t(k) = array_x_t(i);
-                    y_t(k) = array_y_t(i);
-                    det_indices(k) = j;
-                    k++;
+                // get good detector positions
+                Eigen::Index j = std::get<0>(calib.array_limits[array]);
+                Eigen::Index k = 0;
+                for (Eigen::Index i=0; i<array_x_t.size(); i++) {
+                    if (calib.apt["flag"](j)==0) {
+                        x_t(k) = array_x_t(i);
+                        y_t(k) = array_y_t(i);
+                        det_indices(k) = j;
+                        k++;
+                    }
+                    j++;
                 }
-                j++;
-            }
 
-            // distance from (0,0)
-            Eigen::VectorXd dist = pow(x_t.array(),2) + pow(y_t.array(),2);
+                // distance from (0,0)
+                dist = pow(x_t.array(),2) + pow(y_t.array(),2);
+            }
+            else {
+                dist = pow(array_x_t.array(),2) + pow(array_y_t.array(),2);
+                det_indices = Eigen::VectorXd::LinSpaced(array_x_t.size(), std::get<0>(calib.array_limits[array]),
+                                                         std::get<1>(calib.array_limits[array]));
+            }
 
             // index of detector closest to zero
             auto min_dist = dist.minCoeff(&beammap_reference_det_found);
