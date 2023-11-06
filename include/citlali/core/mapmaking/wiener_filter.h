@@ -770,7 +770,7 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
 
     // divide by filtered weight
     for (Eigen::Index i=0; i<n_cols; i++) {
-        for (Eigen::Index j=0; j<n_rows; j ++) {
+        for (Eigen::Index j=0; j<n_rows; j++) {
             if (denom(j,i) != 0.0) {
                 mb.signal[map_index](j,i) = nume(j,i)/denom(j,i);
             }

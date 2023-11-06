@@ -159,7 +159,10 @@ void Beammap::setup() {
     calib.apt_meta["obsnum"] = obsnum;
 
     // add source name
-    calib.apt_meta["Source"] = telescope.source_name;
+    calib.apt_meta["source"] = telescope.source_name;
+
+    // add project id to meta data
+    calib.apt_meta["project_id"] = telescope.project_id;
 
     // add input source flux
     for (const auto &beammap_flux: beammap_fluxes_mJy_beam) {
@@ -170,7 +173,7 @@ void Beammap::setup() {
     }
 
     // add date
-    calib.apt_meta["Date"] = engine_utils::current_date_time();
+    calib.apt_meta["date"] = engine_utils::current_date_time();
 
     // reference frame
     calib.apt_meta["Radesys"] = telescope.pixel_axes;
@@ -926,7 +929,7 @@ auto Beammap::loop_pipeline() {
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
         Eigen::MatrixXd det_sens, noise_flux;
         // calc sensitivity within psd freq range
-        calc_sensitivity(ptcs, det_sens, noise_flux, telescope.d_fsmp, i, {sens_psd_limits(0), sens_psd_limits(1)});
+        calc_sensitivity(ptcs, det_sens, noise_flux, telescope.d_fsmp, i, {sens_psd_limits_Hz(0), sens_psd_limits_Hz(1)});
         // copy into apt table
         calib.apt["sens"](i) = tula::alg::median(det_sens);
 
@@ -1185,7 +1188,7 @@ void Beammap::output() {
             // write to ecsv
             to_ecsv_from_matrix(apt_filename, apt_table, calib.apt_header_keys, calib.apt_meta);
 
-            logger->info("done writing apt table");
+            logger->info("done writing apt table {}",apt_filename);
         }
     }
 

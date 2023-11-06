@@ -140,7 +140,7 @@ struct beammapControls {
     int beammap_tod_output_iter = 0;
 
     // upper and lower limits of psd for sensitivity calc
-    Eigen::VectorXd sens_psd_limits;
+    Eigen::VectorXd sens_psd_limits_Hz;
 
     // limits on fwhm, sig2noise, and distance from center for flagging
     std::map<std::string, double> lower_fwhm_arcsec, upper_fwhm_arcsec, lower_sig2noise,
@@ -698,25 +698,17 @@ void Engine::get_beammap_config(CT &config) {
         i++;
     }
 
-    logger->info("lower_fwhm_arcsec {}",lower_fwhm_arcsec);
-    logger->info("upper_fwhm_arcsec {}",upper_fwhm_arcsec);
-    logger->info("lower_sig2noise {}",lower_sig2noise);
-    logger->info("upper_sig2noise {}",upper_sig2noise);
-    logger->info("max_dist_arcsec {}",max_dist_arcsec);
-
-    // lower sensitivity factor
-    get_config_value(config, lower_sens_factor, missing_keys, invalid_keys,
-                     std::tuple{"beammap","flagging","lower_sens_factor"});
-    // upper sensitivity factor
-    get_config_value(config, upper_sens_factor, missing_keys, invalid_keys,
-                     std::tuple{"beammap","flagging","upper_sens_factor"});
+    // sensitivity factors
+    auto sens_factors_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","flagging","sens_factors"});
+    lower_sens_factor = sens_factors_vec[0];
+    upper_sens_factor = sens_factors_vec[1];
 
     // upper and lower frequencies over which to calculate sensitivity
-    sens_psd_limits.resize(2);
-    get_config_value(config, sens_psd_limits(0), missing_keys, invalid_keys,
-                     std::tuple{"beammap","sens_psd_lower_limit"});
-    get_config_value(config, sens_psd_limits(1), missing_keys, invalid_keys,
-                     std::tuple{"beammap","sens_psd_upper_limit"});
+    sens_psd_limits_Hz.resize(2);
+    // get psd limits for sens from config
+    auto sens_psd_limits_Hz_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","sens_psd_limits_Hz"});
+    // map sens limits back to Eigen vector
+    sens_psd_limits_Hz = (Eigen::Map<Eigen::VectorXd>(sens_psd_limits_Hz_vec.data(), sens_psd_limits_Hz_vec.size()));
 
     // if no tolerance is specified, write out max iteration tod
     if (run_tod_output) {
@@ -1927,6 +1919,20 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         fits_io->at(map_index).hdus.back()->addKey("TYPE",rtcproc.kernel.type, "Kernel type");
         fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs);
         fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
+
+        // add fwhm
+        if (rtcproc.kernel.type!="fits") {
+            if (rtcproc.kernel.fwhm_rad<=0) {
+                auto fwhm = (std::get<0>(calib.array_fwhms[calib.arrays(i)]) + std::get<1>(calib.array_fwhms[calib.arrays(i)]))/2;
+                fits_io->at(map_index).hdus.back()->addKey("FWHM",fwhm,"kernel fwhm (arcsec)");
+            }
+            else {
+                fits_io->at(map_index).hdus.back()->addKey("FWHM",rtcproc.kernel.fwhm_rad*RAD_TO_ASEC,"kernel fwhm (arcsec)");
+            }
+        }
+        else {
+            fits_io->at(map_index).hdus.back()->addKey("FWHM",-99,"kernel fwhm (arcsec)");
+        }
     }
 
     // coverage map
