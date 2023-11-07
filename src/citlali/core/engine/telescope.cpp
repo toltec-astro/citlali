@@ -75,13 +75,18 @@ void Telescope::get_tel_data(std::string &filepath) {
         source_name.erase(end_pos, source_name.end());
 
         // get project id
-        char project_id_name_char [129];
-        vars.find("Header.Dcs.ProjectId")->second.getVar(&project_id_name_char);
-        project_id_name_char[128] = '\0';
-        project_id = std::string(project_id_name_char);
-        // try and remove end characters
-        end_pos = std::remove(project_id.begin(), project_id.end(), ' ');
-        project_id.erase(end_pos, project_id.end());
+        if (!sim_obs) {
+            char project_id_name_char [129];
+            vars.find("Header.Dcs.ProjectId")->second.getVar(&project_id_name_char);
+            project_id_name_char[128] = '\0';
+            project_id = std::string(project_id_name_char);
+            // try and remove end characters
+            end_pos = std::remove(project_id.begin(), project_id.end(), ' ');
+            project_id.erase(end_pos, project_id.end());
+        }
+        else {
+            project_id = "simu";
+        }
 
         // loop through telescope data keys and populate vectors
         for (auto const& pair : tel_data_keys) {

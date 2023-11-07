@@ -331,79 +331,79 @@ void WienerFilter::calc_vvq(MB &mb, const int map_index) {
     // resize psd_q
     Eigen::MatrixXd psd_q(n_rows,n_cols);
 
-    // psd and psd freq vectors
-    Eigen::VectorXd psd = mb.noise_psds[map_index];
-    Eigen::VectorXd psd_freq = mb.noise_psd_freqs[map_index];
-
-    // size of psd and psd freq vectors
-    Eigen::Index n_psd = psd.size();
-
-    // modify the psd array to take out lowpassing and highpassing
-    Eigen::Index max_psd_index;
-    double max_psd = psd.maxCoeff(&max_psd_index);
-    double psd_freq_break = 0.;
-    double psd_break = 0.;
-
-    for (Eigen::Index i=0; i<n_psd; i++) {
-        if (psd(i)/max_psd < psd_lim) {
-            psd_freq_break = psd_freq(i);
-            break;
-        }
-    }
-
-    // number of frequency samples below lowpass break
-    int count = (psd_freq.array() <= 0.8*psd_freq_break).count();
-
-    // flatten the response above the lowpass break
-    if (count > 0) {
-        for (Eigen::Index i=0; i<n_psd; i++) {
-            if (psd_freq_break > 0) {
-                if (psd_freq(i) <= 0.8*psd_freq_break) {
-                    psd_break = psd(i);
-                }
-
-                if (psd_freq(i) > 0.8*psd_freq_break) {
-                    psd(i) = psd_break;
-                }
-            }
-        }
-    }
-
-    // flatten highpass response if present
-    if (max_psd_index > 0) {
-        psd.head(max_psd_index).setConstant(max_psd);
-    }
-
-    // set up q-space
-    double row_size = n_rows * diff_rows;
-    double col_size = n_cols * diff_cols;
-    double diff_qr = 1. / row_size;
-    double diff_qc = 1. / col_size;
-
-    Eigen::MatrixXd q_map(n_rows,n_cols);
-
-    // shift q_row
-    Eigen::VectorXd q_row = Eigen::VectorXd::LinSpaced(n_rows, -(n_rows - 1) / 2, (n_rows - 1) / 2 + 1) * diff_qr;
-    // shift q_col
-    Eigen::VectorXd q_col = Eigen::VectorXd::LinSpaced(n_cols, -(n_cols - 1) / 2, (n_cols - 1) / 2 + 1) * diff_qc;
-
-    std::vector<Eigen::Index> shift_1 = {-(n_rows-1)/2};
-    engine_utils::shift_1D(q_row, shift_1);
-
-    std::vector<Eigen::Index> shift_2 = {-(n_cols-1)/2};
-    engine_utils::shift_1D(q_col, shift_2);
-
-    for (Eigen::Index i=0; i<n_cols; i++) {
-        for (Eigen::Index j=0; j<n_rows; j++) {
-            q_map(j,i) = sqrt(pow(q_row(j),2)+pow(q_col(i),2));
-        }
-    }
-
     // set constant if lowpass only
     if (run_lowpass) {
         psd_q.setOnes();
     }
     else {
+        // psd and psd freq vectors
+        Eigen::VectorXd psd = mb.noise_psds[map_index];
+        Eigen::VectorXd psd_freq = mb.noise_psd_freqs[map_index];
+
+        // size of psd and psd freq vectors
+        Eigen::Index n_psd = psd.size();
+
+        // modify the psd array to take out lowpassing and highpassing
+        Eigen::Index max_psd_index;
+        double max_psd = psd.maxCoeff(&max_psd_index);
+        double psd_freq_break = 0.;
+        double psd_break = 0.;
+
+        for (Eigen::Index i=0; i<n_psd; i++) {
+            if (psd(i)/max_psd < psd_lim) {
+                psd_freq_break = psd_freq(i);
+                break;
+            }
+        }
+
+        // number of frequency samples below lowpass break
+        int count = (psd_freq.array() <= 0.8*psd_freq_break).count();
+
+        // flatten the response above the lowpass break
+        if (count > 0) {
+            for (Eigen::Index i=0; i<n_psd; i++) {
+                if (psd_freq_break > 0) {
+                    if (psd_freq(i) <= 0.8*psd_freq_break) {
+                        psd_break = psd(i);
+                    }
+
+                    if (psd_freq(i) > 0.8*psd_freq_break) {
+                        psd(i) = psd_break;
+                    }
+                }
+            }
+        }
+
+        // flatten highpass response if present
+        if (max_psd_index > 0) {
+            psd.head(max_psd_index).setConstant(max_psd);
+        }
+
+        // get spacing
+        double diff_qr = 1. / (n_rows * diff_rows);
+        double diff_qc = 1. / (n_cols * diff_cols);
+
+        Eigen::MatrixXd q_map(n_rows,n_cols);
+
+        // shift q_row
+        Eigen::VectorXd q_row = Eigen::VectorXd::LinSpaced(n_rows, -(n_rows - 1) / 2, (n_rows - 1) / 2 + 1) * diff_qr;
+        // shift q_col
+        Eigen::VectorXd q_col = Eigen::VectorXd::LinSpaced(n_cols, -(n_cols - 1) / 2, (n_cols - 1) / 2 + 1) * diff_qc;
+
+        // shift q_row
+        std::vector<Eigen::Index> shift_1 = {-(n_rows-1)/2};
+        engine_utils::shift_1D(q_row, shift_1);
+        // shift q_col
+        std::vector<Eigen::Index> shift_2 = {-(n_cols-1)/2};
+        engine_utils::shift_1D(q_col, shift_2);
+
+        for (Eigen::Index i=0; i<n_cols; i++) {
+            for (Eigen::Index j=0; j<n_rows; j++) {
+                q_map(j,i) = sqrt(pow(q_row(j),2)+pow(q_col(i),2));
+            }
+        }
+
+        // set psd q to zero
         psd_q.setZero();
 
         Eigen::Matrix<Eigen::Index, 1, 1> n_psd_matrix;
@@ -487,7 +487,7 @@ void WienerFilter::calc_numerator() {
     in.real() = filter_template;
     in.imag().setZero();
 
-    // fft(f(x)) (reuse out)
+    // fft(f(x)) (re-use out)
     out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
 
     // fft(f(x)) x fft(Q) (convolution)
@@ -497,7 +497,7 @@ void WienerFilter::calc_numerator() {
     // ifft(fft(f(x)) x fft(Q))
     out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
 
-    // populate numerator
+    // populate numerator with real(ifft(fft(f(x)) x fft(Q)))
     nume = out.real();
 
     // free fftw vectors
@@ -540,7 +540,6 @@ void WienerFilter::calc_denominator() {
         // set denominator = abs(fft(f(x))/VV
         denom.setConstant(((out.real().array() * out.real().array() + out.imag().array() * out.imag().array()) / vvq.array()).sum());
     }
-
     else {
         // initialize denominator
         denom.setZero();
@@ -745,6 +744,7 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
     logger->info("filtering kernel");
     filtered_map = mb.kernel[map_index];
     uniform_weight = true;
+    // run all filter steps
     run_filter(mb, map_index);
 
     // divide by filtered weight

@@ -334,8 +334,9 @@ auto Beammap::run_loop() {
                                                                                            omb.pixel_size_rad, omb.n_rows, omb.n_cols,
                                                                                            ptcs[i].map_indices.data, ptcs[i].det_indices.data);
 
-                    //ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(omb, ptcs[i], calib, ptcs[i].det_indices.data,
-                    //                                                                ptcs[i].map_indices.data, telescope.pixel_axes, map_grouping);
+                    /*ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(omb, ptcs[i], calib, ptcs[i].det_indices.data,
+                                                                                    ptcs[i].map_indices.data, telescope.pixel_axes,
+                                                                                    map_grouping);*/
                 }
             }
 
@@ -347,12 +348,12 @@ auto Beammap::run_loop() {
             logger->info("processed time chunk processing");
             ptcproc.run(ptcs[i], ptcs[i], calib_scans[i], ptcs[i].det_indices.data, "I", telescope.pixel_axes, map_grouping);
 
-            // remove outliers after clean (only flags calib_scan apt)
+            // remove outliers after clean (only flags calib_scans apt)
             calib_scans[i] = ptcproc.remove_bad_dets(ptcs[i], calib_scans[i], ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
                                                      ptcs[i].array_indices.data, redu_type, map_grouping);
 
             if (run_mapmaking) {
-                // add gaussan back
+                // add gaussian back
                 if (current_iter > 0) {
                     logger->info("adding gaussian to tod");
                     ptcproc.add_gaussian<timestream::TCProc::SourceType::Gaussian>(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt,
@@ -360,7 +361,8 @@ auto Beammap::run_loop() {
                                                                                    omb.n_cols, ptcs[i].map_indices.data, ptcs[i].det_indices.data);
 
                     //ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(omb, ptcs[i], calib, ptcs[i].det_indices.data,
-                    //                                                        ptcs[i].map_indices.data, telescope.pixel_axes, map_grouping);
+                    //                                                        ptcs[i].map_indices.data, telescope.pixel_axes,
+                    //                                                        map_grouping);
                 }
             }
 

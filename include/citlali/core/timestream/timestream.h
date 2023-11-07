@@ -342,26 +342,28 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
         auto det_index = det_indices(i);
         auto map_index = map_indices(i);
 
-        double az_off = calib.apt["x_t"](det_index);
-        double el_off = calib.apt["y_t"](det_index);
+        if (!calib.apt["flag"](det_index)) {
+            double az_off = calib.apt["x_t"](det_index);
+            double el_off = calib.apt["y_t"](det_index);
 
-        // calc tangent plane pointing
-        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off, pixel_axes,
-                                                          in.pointing_offsets_arcsec.data, map_grouping);
+            // calc tangent plane pointing
+            auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off, pixel_axes,
+                                                              in.pointing_offsets_arcsec.data, map_grouping);
 
-        // get map buffer row and col indices for lat and lon vectors
-        Eigen::VectorXd irows = lat.array()/mb.pixel_size_rad + (mb.n_rows)/2.;
-        Eigen::VectorXd icols = lon.array()/mb.pixel_size_rad + (mb.n_cols)/2.;
+            // get map buffer row and col indices for lat and lon vectors
+            Eigen::VectorXd irows = lat.array()/mb.pixel_size_rad + (mb.n_rows)/2.;
+            Eigen::VectorXd icols = lon.array()/mb.pixel_size_rad + (mb.n_cols)/2.;
 
-        for (Eigen::Index j=0; j<n_pts; j++) {
-            // row and col pixel from signal image
-            Eigen::Index ir = irows(j);
-            Eigen::Index ic = icols(j);
+            for (Eigen::Index j=0; j<n_pts; j++) {
+                // row and col pixel from signal image
+                Eigen::Index ir = irows(j);
+                Eigen::Index ic = icols(j);
 
-            // check if current sample is on the image and add to the timestream
-            if ((ir >= 0) && (ir < mb.n_rows) && (ic >= 0) && (ic < mb.n_cols)) {
-                if (mb.signal[map_index](ir,ic)*sqrt(mb.weight[map_index](ir,ic))>5) {
-                    in.scans.data(j,i) += factor*mb.signal[map_index](ir,ic);
+                // check if current sample is on the image and add to the timestream
+                if ((ir >= 0) && (ir < mb.n_rows) && (ic >= 0) && (ic < mb.n_cols)) {
+                    if (mb.signal[map_index](ir,ic)*sqrt(mb.weight[map_index](ir,ic))>0) {
+                        in.scans.data(j,i) += factor*mb.signal[map_index](ir,ic);
+                    }
                 }
             }
         }

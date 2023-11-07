@@ -1917,22 +1917,20 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
     if (rtcproc.run_kernel) {
         fits_io->at(map_index).add_hdu("kernel_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->kernel[i]);
         fits_io->at(map_index).hdus.back()->addKey("TYPE",rtcproc.kernel.type, "Kernel type");
-        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs);
-        fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
 
         // add fwhm
+        double fwhm = -99;
         if (rtcproc.kernel.type!="fits") {
             if (rtcproc.kernel.fwhm_rad<=0) {
-                auto fwhm = (std::get<0>(calib.array_fwhms[calib.arrays(i)]) + std::get<1>(calib.array_fwhms[calib.arrays(i)]))/2;
-                fits_io->at(map_index).hdus.back()->addKey("FWHM",fwhm,"kernel fwhm (arcsec)");
+                fwhm = (std::get<0>(calib.array_fwhms[calib.arrays(i)]) + std::get<1>(calib.array_fwhms[calib.arrays(i)]))/2;
             }
             else {
-                fits_io->at(map_index).hdus.back()->addKey("FWHM",rtcproc.kernel.fwhm_rad*RAD_TO_ASEC,"kernel fwhm (arcsec)");
+                fwhm = rtcproc.kernel.fwhm_rad*RAD_TO_ASEC;
             }
         }
-        else {
-            fits_io->at(map_index).hdus.back()->addKey("FWHM",-99,"kernel fwhm (arcsec)");
-        }
+        fits_io->at(map_index).hdus.back()->addKey("FWHM",fwhm,"Kernel fwhm (arcsec)");
+        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs);
+        fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
     }
 
     // coverage map
