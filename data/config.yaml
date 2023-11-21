@@ -137,10 +137,10 @@ timestream: # timestream reduction parameters
       upper_weight_factor: 0.0 # flag detectors above this weight limit (ignored if 0, weight=1/variance of TOD)
     output:
       enabled: false # enable or disable ptc TOD output
-  fruit_loops: # algorithm to use previous map to subtract out source before cleaning and re-add afterwards
-    enabled: false # enable or disable fruit loops algorithm (disabled)
-    path: null # paths to citlali FITS file to cast into tod (disabled)
-    lower_sig2noise_limit: 0 # lower signal-to-noise of pixels to include (>0)
+  fruit_loops: # algorithm to use previous map to subtract out source before cleaning and re-add afterwards (needs noise maps)
+    enabled: false # enable or disable fruit loops algorithm (this overwrites beammap source fitting if in beammap mode)
+    path: null # paths to citlali FITS file directory (i.e. raw or coadded) to cast into tod
+    lower_sig2noise_limit: 0 # lower limit on signal-to-noise of pixels to include (>0)
 post_processing:
   source_fitting: # parameters for source fitting
     bounding_box_arcsec: 10 # size of box in arcseconds around initial position

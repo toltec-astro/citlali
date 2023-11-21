@@ -76,7 +76,8 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
     // upper weight factor
     get_config_value(config, upper_weight_factor, missing_keys, invalid_keys,
                      std::tuple{"timestream","processed_time_chunk","flagging","upper_weight_factor"});
-    // run fruit loops
+
+    // run fruit loops?
     get_config_value(config, run_fruit_loops, missing_keys, invalid_keys,
                      std::tuple{"timestream","fruit_loops","enabled"});
 
@@ -88,6 +89,10 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         get_config_value(config, fruit_loops_sig2noise, missing_keys, invalid_keys,
                          std::tuple{"timestream","fruit_loops","lower_sig2noise_limit"});
     }
+
+    // run clean?
+    get_config_value(config, run_clean, missing_keys, invalid_keys,
+                     std::tuple{"timestream","processed_time_chunk","clean", "enabled"});
 
     if (run_clean) {
         // get cleaning grouping vector
