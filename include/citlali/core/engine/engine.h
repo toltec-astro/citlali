@@ -1096,6 +1096,7 @@ void Engine::add_tod_header() {
         add_netcdf_var<std::string>(fo, "VERSION", CITLALI_GIT_VERSION);
         add_netcdf_var<std::string>(fo, "KIDS", KIDSCPP_GIT_VERSION);
         add_netcdf_var<std::string>(fo, "TULA", TULA_GIT_VERSION);
+        add_netcdf_var<std::string>(fo, "PROJID", telescope.project_id);
         add_netcdf_var<std::string>(fo, "GOAL", redu_type);
         add_netcdf_var<std::string>(fo, "OBSGOAL", telescope.obs_goal);
         add_netcdf_var<std::string>(fo, "TYPE", tod_type);
@@ -1108,6 +1109,22 @@ void Engine::add_tod_header() {
         add_netcdf_var(fo, "MEAN_EL", RAD_TO_DEG*telescope.tel_data["TelElAct"].mean());
         add_netcdf_var(fo, "MEAN_AZ", RAD_TO_DEG*telescope.tel_data["TelAzAct"].mean());
         add_netcdf_var(fo, "MEAN_PA", RAD_TO_DEG*telescope.tel_data["ActParAng"].mean());
+
+        // add beamsizes
+        for (const auto &arr: calib.arrays) {
+            if (std::get<0>(calib.array_fwhms[arr]) >= std::get<1>(calib.array_fwhms[arr])) {
+                add_netcdf_var(fo, "BMAJ_"+toltec_io.array_name_map[arr], std::get<0>(calib.array_fwhms[arr]));
+                add_netcdf_var(fo, "BMIN_"+toltec_io.array_name_map[arr], std::get<1>(calib.array_fwhms[arr]));
+                add_netcdf_var(fo, "BPA_"+toltec_io.array_name_map[arr], calib.array_pas[arr]*RAD_TO_DEG);
+            }
+            else {
+                add_netcdf_var(fo, "BMAJ_"+toltec_io.array_name_map[arr], std::get<1>(calib.array_fwhms[arr]));
+                add_netcdf_var(fo, "BMIN_"+toltec_io.array_name_map[arr], std::get<0>(calib.array_fwhms[arr]));
+                add_netcdf_var(fo, "BPA_"+toltec_io.array_name_map[arr], (calib.array_pas[arr] + pi/2)*RAD_TO_DEG);
+            }
+        }
+
+        add_netcdf_var(fo, "BUNIT", omb.sig_unit);
 
         // add jinc shape params
         if (map_method=="jinc") {
