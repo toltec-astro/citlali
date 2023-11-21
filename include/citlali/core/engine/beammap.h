@@ -21,6 +21,9 @@ public:
     // vector to store each scan's PTCData
     std::vector<TCData<TCDataKind::PTC,Eigen::MatrixXd>> ptcs0, ptcs;
 
+    // copy of obs map buffer for map iteration
+    mapmaking::ObsMapBuffer omb_copy;
+
     // vector to store each scan's calib class
     std::vector<engine::Calib> calib_scans0, calib_scans;
 
@@ -81,7 +84,7 @@ public:
     void set_apt_flags(array_indices_t &, nw_indices_t &);
 
     // derotate apt and subtract reference detector
-    void apt_proc();
+    void process_apt();
 
     // run the loop pipeline
     auto loop_pipeline();
@@ -175,6 +178,9 @@ void Beammap::setup() {
     // add date
     calib.apt_meta["date"] = engine_utils::current_date_time();
 
+    // mean Modified Julian Date
+    calib.apt_meta["mjd"] = engine_utils::unix_to_modified_julian_date(telescope.tel_data["TelTime"].mean());
+
     // reference frame
     calib.apt_meta["Radesys"] = telescope.pixel_axes;
 
@@ -252,50 +258,45 @@ auto Beammap::run_timestream() {
         // create PTCData
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;
 
-        // loop through polarizations
-        std::string stokes_param = "I";
-        //for (const auto &[stokes_index,stokes_param]: rtcproc.polarization.stokes_params) {
-            logger->info("starting {} scan {}. {}/{} scans completed", stokes_param, rtcdata.index.data + 1, n_scans_done,
-                        telescope.scan_indices.cols());
+        logger->info("starting scan {}. {}/{} scans completed", rtcdata.index.data + 1, n_scans_done,
+                     telescope.scan_indices.cols());
 
-            // run rtcproc
-            logger->info("raw time chunk processing");
-            auto [map_indices, array_indices, nw_indices, det_indices] = rtcproc.run(rtcdata, ptcdata, telescope.pixel_axes, redu_type,
-                                                                                     calib, telescope, omb.pixel_size_rad, stokes_param,
-                                                                                     map_grouping);
+        // run rtcproc
+        logger->info("raw time chunk processing for scan {}", rtcdata.index.data + 1);
+        auto [map_indices, array_indices, nw_indices, det_indices] = rtcproc.run(rtcdata, ptcdata, telescope.pixel_axes, redu_type,
+                                                                                 calib, telescope, omb.pixel_size_rad, map_grouping);
 
-            if (map_grouping!="detector") {
-                // remove outliers before cleaning
-                rtcproc.remove_flagged_dets(ptcdata, calib.apt, det_indices);
+        if (map_grouping!="detector") {
+            // remove flagged detectors
+            rtcproc.remove_flagged_dets(ptcdata, calib.apt, det_indices);
+        }
+
+        // remove bad detectors
+        auto calib_scan = rtcproc.remove_bad_dets(ptcdata, calib, det_indices, map_grouping);
+
+        // remove duplicate tones
+        if (!telescope.sim_obs) {
+            calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib_scan, det_indices, map_grouping);
+        }
+
+        // write rtc timestreams
+        if (run_tod_output) {
+            if (tod_output_type == "rtc" || tod_output_type == "both") {
+                logger->info("writing raw time chunk");
+                rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
+                                         ptcdata.pointing_offsets_arcsec.data, det_indices, calib_scan);
             }
+        }
 
-            // remove bad detectors (only flags calib_scan apt)
-            auto calib_scan = rtcproc.remove_bad_dets(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
+        // store indices for each ptcdata
+        ptcdata.det_indices.data = std::move(det_indices);
+        ptcdata.nw_indices.data = std::move(nw_indices);
+        ptcdata.array_indices.data = std::move(array_indices);
+        ptcdata.map_indices.data = std::move(map_indices);
 
-            // remove duplicate tones (only flags calib_scan apt)
-            if (!telescope.sim_obs) {
-                calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib_scan, det_indices, map_grouping);
-            }
-
-            // write rtc timestreams
-            if (run_tod_output) {
-                if (tod_output_type == "rtc" || tod_output_type=="both") {
-                    logger->info("writing raw time chunk");
-                    rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], map_grouping, telescope.pixel_axes,
-                                             ptcdata.pointing_offsets_arcsec.data, det_indices, calib_scan);
-                }
-            }
-
-            // store indices for each ptcdata
-            ptcdata.det_indices.data = std::move(det_indices);
-            ptcdata.nw_indices.data = std::move(nw_indices);
-            ptcdata.array_indices.data = std::move(array_indices);
-            ptcdata.map_indices.data = std::move(map_indices);
-
-            // move out ptcdata the PTCData vector at corresponding index
-            ptcs0.at(ptcdata.index.data) = std::move(ptcdata);
-            calib_scans0.at(ptcdata.index.data) = std::move(calib_scan);
-        //}
+        // move out ptcdata the PTCData vector at corresponding index
+        ptcs0.at(ptcdata.index.data) = std::move(ptcdata);
+        calib_scans0.at(ptcdata.index.data) = std::move(calib_scan);
 
         // increment number of completed scans
         n_scans_done++;
@@ -313,10 +314,20 @@ auto Beammap::run_loop() {
 
     // iterative loop
     while (keep_going) {
+        logger->info("starting iter {}", current_iter);
+
         // copy ptcs
         ptcs = ptcs0;
         // copy calibs
         calib_scans = calib_scans0;
+
+        // copy signal for convergence test
+        if (ptcproc.run_fruit_loops) {
+            omb_copy.signal = omb.signal;
+            if (current_iter == 1 && !omb.noise.empty()) {
+                omb.calc_mean_rms();
+            }
+        }
 
         // progress bar
         tula::logging::progressbar pb(
@@ -326,47 +337,53 @@ auto Beammap::run_loop() {
         grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
 
             if (run_mapmaking) {
-                // subtract gaussian
                 if (current_iter > 0) {
-                    logger->info("subtracting gaussian from tod");
-                    ptcproc.add_gaussian<timestream::TCProc::SourceType::NegativeGaussian>(ptcs[i], params, telescope.pixel_axes, map_grouping,
-                                                                                           calib.apt, ptcs[i].pointing_offsets_arcsec.data,
-                                                                                           omb.pixel_size_rad, omb.n_rows, omb.n_cols,
-                                                                                           ptcs[i].map_indices.data, ptcs[i].det_indices.data);
-
-                    /*ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(omb, ptcs[i], calib, ptcs[i].det_indices.data,
-                                                                                    ptcs[i].map_indices.data, telescope.pixel_axes,
-                                                                                    map_grouping);*/
+                    if (!ptcproc.run_fruit_loops) {
+                        logger->info("subtracting gaussian from tod");
+                        // subtract gaussian
+                        ptcproc.add_gaussian<timestream::TCProc::SourceType::NegativeGaussian>(ptcs[i], params, telescope.pixel_axes, map_grouping,
+                                                                                               calib.apt, ptcs[i].pointing_offsets_arcsec.data,
+                                                                                               omb.pixel_size_rad, omb.n_rows, omb.n_cols,
+                                                                                               ptcs[i].map_indices.data, ptcs[i].det_indices.data);
+                    }
+                    else {
+                        logger->info("subtracting map from tod");
+                        // subtract map
+                        ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(omb, ptcs[i], calib, ptcs[i].det_indices.data,
+                                                                                        ptcs[i].map_indices.data, telescope.pixel_axes,
+                                                                                        map_grouping);
+                    }
                 }
             }
 
-            // subtract scan means
-            logger->info("subtracting detector means");
-            ptcproc.subtract_mean(ptcs[i]);
-
-            // clean the maps (hardcode stokes I)
-            logger->info("processed time chunk processing");
-            ptcproc.run(ptcs[i], ptcs[i], calib_scans[i], ptcs[i].det_indices.data, "I", telescope.pixel_axes, map_grouping);
-
-            // remove outliers after clean (only flags calib_scans apt)
-            calib_scans[i] = ptcproc.remove_bad_dets(ptcs[i], calib_scans[i], ptcs[i].det_indices.data, ptcs[i].nw_indices.data,
-                                                     ptcs[i].array_indices.data, redu_type, map_grouping);
+            // clean the maps
+            logger->info("processed time chunk processing for scan {}", i + 1);
+            ptcproc.run(ptcs[i], ptcs[i], calib_scans[i], ptcs[i].det_indices.data, telescope.pixel_axes, map_grouping);
 
             if (run_mapmaking) {
-                // add gaussian back
                 if (current_iter > 0) {
-                    logger->info("adding gaussian to tod");
-                    ptcproc.add_gaussian<timestream::TCProc::SourceType::Gaussian>(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt,
-                                                                                   ptcs[i].pointing_offsets_arcsec.data, omb.pixel_size_rad, omb.n_rows,
-                                                                                   omb.n_cols, ptcs[i].map_indices.data, ptcs[i].det_indices.data);
-
-                    //ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(omb, ptcs[i], calib, ptcs[i].det_indices.data,
-                    //                                                        ptcs[i].map_indices.data, telescope.pixel_axes,
-                    //                                                        map_grouping);
+                    if (!ptcproc.run_fruit_loops) {
+                        logger->info("adding gaussian to tod");
+                        // add gaussian back
+                        ptcproc.add_gaussian<timestream::TCProc::SourceType::Gaussian>(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt,
+                                                                                       ptcs[i].pointing_offsets_arcsec.data, omb.pixel_size_rad,
+                                                                                       omb.n_rows, omb.n_cols, ptcs[i].map_indices.data,
+                                                                                       ptcs[i].det_indices.data);
+                    }
+                    else {
+                        logger->info("adding map to tod");
+                        // add map back
+                        ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(omb, ptcs[i], calib, ptcs[i].det_indices.data,
+                                                                                ptcs[i].map_indices.data, telescope.pixel_axes,
+                                                                                map_grouping);
+                    }
                 }
             }
 
-            if (map_grouping=="detector") {
+            // remove outliers after clean
+            calib_scans[i] = ptcproc.remove_bad_dets(ptcs[i], calib_scans[i], ptcs[i].det_indices.data, map_grouping);
+
+            if (map_grouping == "detector") {
                 // set weights to a constant value
                 ptcs[i].weights.data.resize(ptcs[i].scans.data.cols());
                 ptcs[i].weights.data.setOnes();
@@ -375,6 +392,11 @@ auto Beammap::run_loop() {
                 // calculate weights
                 logger->info("calculating weights");
                 ptcproc.calc_weights(ptcs[i], calib.apt, telescope, ptcs[i].det_indices.data);
+
+                // reset weights to median
+                if (ptcproc.med_weight_factor >= 1) {
+                    ptcproc.reset_weights(ptcs[i], calib, ptcs[i].det_indices.data);
+                }
             }
 
             // write out chunk summary
@@ -392,12 +414,11 @@ auto Beammap::run_loop() {
 
         // write ptc timestreams
         if (run_tod_output) {
-            if (tod_output_type == "ptc" || tod_output_type=="both") {
+            if (tod_output_type == "ptc" || tod_output_type == "both") {
                 logger->info("writing processed time chunk");
                 if (current_iter == beammap_tod_output_iter) {
                     for (Eigen::Index i=0; i<telescope.scan_indices.cols(); i++) {
-                        // hardcoded to stokes I for now
-                        ptcproc.append_to_netcdf(ptcs[i], tod_filename["ptc_I"], map_grouping, telescope.pixel_axes,
+                        ptcproc.append_to_netcdf(ptcs[i], tod_filename["ptc"], map_grouping, telescope.pixel_axes,
                                                  ptcs[i].pointing_offsets_arcsec.data, ptcs[i].det_indices.data,
                                                  calib_scans[i]);
                     }
@@ -418,6 +439,10 @@ auto Beammap::run_loop() {
                 // clear kernel
                 if (rtcproc.run_kernel) {
                     omb.kernel[i].setZero();
+                }
+                // clear noise
+                if (!omb.noise.empty()) {
+                    omb.noise[i].setZero();
                 }
             }
 
@@ -447,37 +472,40 @@ auto Beammap::run_loop() {
             logger->info("normalizing maps");
             omb.normalize_maps();
 
-            // initial position for fitting
-            double init_row = -99;
-            double init_col = -99;
+            // only run fit if subtracting fitted source
+            if (!ptcproc.run_fruit_loops) {
+                // initial position for fitting
+                double init_row = -99;
+                double init_col = -99;
 
-            logger->info("fitting maps");
-            grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
-                // only fit if not converged
-                if (!converged(i)) {
-                    // get array number
-                    auto array = maps_to_arrays(i);
-                    // get initial guess fwhm from theoretical fwhms for the arrays
-                    double init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
-                    // fit the maps
-                    auto [det_params, det_perror, good_fit] =
-                        map_fitter.fit_to_gaussian<engine_utils::mapFitter::beammap>(omb.signal[i], omb.weight[i],
-                                                                                     init_fwhm, init_row, init_col);
+                logger->info("fitting maps");
+                grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+                    // only fit if not converged
+                    if (!converged(i)) {
+                        // get array number
+                        auto array = maps_to_arrays(i);
+                        // get initial guess fwhm from theoretical fwhms for the arrays
+                        double init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
+                        // fit the maps
+                        auto [det_params, det_perror, good_fit] =
+                            map_fitter.fit_to_gaussian<engine_utils::mapFitter::beammap>(omb.signal[i], omb.weight[i],
+                                                                                         init_fwhm, init_row, init_col);
 
-                    params.row(i) = det_params;
-                    perrors.row(i) = det_perror;
-                    good_fits(i) = good_fit;
-                }
-                // otherwise keep value from previous iteration
-                else {
-                    params.row(i) = p0.row(i);
-                    perrors.row(i) = perror0.row(i);
-                }
+                        params.row(i) = det_params;
+                        perrors.row(i) = det_perror;
+                        good_fits(i) = good_fit;
+                    }
+                    // otherwise keep value from previous iteration
+                    else {
+                        params.row(i) = p0.row(i);
+                        perrors.row(i) = perror0.row(i);
+                    }
 
-                return 0;
-            });
+                    return 0;
+                });
 
-            logger->info("number of good beammap fits {}/{}", good_fits.cast<double>().sum(), n_maps);
+                logger->info("number of good fits {}/{}", good_fits.cast<double>().sum(), n_maps);
+            }
         }
 
         // increment loop iteration
@@ -486,18 +514,24 @@ auto Beammap::run_loop() {
         if (current_iter < beammap_iter_max) {
             // check if all detectors are converged
             if ((converged.array() == true).all()) {
-                logger->info("all detectors converged");
+                logger->info("all maps converged");
                 keep_going = false;
             }
             else if (current_iter > 1) {
                 // only do convergence test if tolerance is above zero, otherwise run all iterations
                 if (beammap_iter_tolerance > 0) {
-                    // loop through detectors and check if it is converged
+                    // loop through maps and check if it is converged
                     logger->info("checking convergence");
                     grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
                         if (!converged(i)) {
                             // get relative change from last iteration
-                            auto diff = abs((params.row(i).array() - p0.row(i).array())/p0.row(i).array());
+                            Eigen::ArrayXd diff;
+                            if (!ptcproc.run_fruit_loops) {
+                                diff = abs((params.row(i).array() - p0.row(i).array())/p0.row(i).array());
+                            }
+                            else {
+                                diff = abs(omb_copy.signal[i].array() - omb.signal[i].array()/omb_copy.signal[i].array());
+                            }
                             // if a variable is constant, make sure no nans are present
                             auto d = (diff.array()).isNaN().select(0,diff);
                             if ((d.array() <= beammap_iter_tolerance).all()) {
@@ -509,9 +543,19 @@ auto Beammap::run_loop() {
                         }
                         return 0;
                     });
+
+                    logger->info("{} maps converged on iter {}", (converged.array() == true).count(), current_iter);
+
+                    // stop if all maps converged
+                    if ((converged.array() == true).all()) {
+                        logger->info("all maps converged");
+                        keep_going = false;
+                    }
+                }
+                else {
+                    logger->info("bypassing convergence check");
                 }
 
-                logger->info("{} detectors converged", (converged.array() == true).count());
             }
 
             // set previous iteration fits to current iteration fits
@@ -796,7 +840,7 @@ void Beammap::set_apt_flags(array_indices_t &array_indices, nw_indices_t &nw_ind
     }
 }
 
-void Beammap::apt_proc() {
+void Beammap::process_apt() {
     // reference detector x and y
     double ref_det_x_t = 0;
     double ref_det_y_t = 0;
@@ -926,17 +970,19 @@ auto Beammap::loop_pipeline() {
     // set to input parallel policy
     parallel_policy = omb.parallel_policy;
 
-    logger->info("calculating sensitivity");
-    // parallelize on detectors
-    grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
-        Eigen::MatrixXd det_sens, noise_flux;
-        // calc sensitivity within psd freq range
-        calc_sensitivity(ptcs, det_sens, noise_flux, telescope.d_fsmp, i, {sens_psd_limits_Hz(0), sens_psd_limits_Hz(1)});
-        // copy into apt table
-        calib.apt["sens"](i) = tula::alg::median(det_sens);
+    if (map_grouping=="detector") {
+        logger->info("calculating sensitivity");
+        // parallelize on detectors
+        grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+            Eigen::MatrixXd det_sens, noise_flux;
+            // calc sensitivity within psd freq range
+            calc_sensitivity(ptcs, det_sens, noise_flux, telescope.d_fsmp, i, {sens_psd_limits_Hz(0), sens_psd_limits_Hz(1)});
+            // copy into apt table
+            calib.apt["sens"](i) = tula::alg::median(det_sens);
 
-        return 0;
-    });
+            return 0;
+        });
+    }
 
     // array indices
     auto array_indices = ptcs[0].array_indices.data;
@@ -970,7 +1016,7 @@ auto Beammap::loop_pipeline() {
         set_apt_flags(array_indices, nw_indices);
 
         // subtract reference detector position and derotate
-        apt_proc();
+        process_apt();
 
         // add final apt table to timestream files
         if (run_tod_output) {
@@ -1052,7 +1098,7 @@ auto Beammap::loop_pipeline() {
                         Eigen::VectorXd lon_row = lon[i].row(j);
                         det_lon_v.putVar(start_index, size, lon_row.data());
 
-                        if (telescope.pixel_axes == "icrs") {
+                        if (telescope.pixel_axes == "radec") {
                             // get absolute pointing
                             auto [dec, ra] = engine_utils::tangent_to_abs(lat_row, lon_row, telescope.tel_header["Header.Source.Ra"](0),
                                                                           telescope.tel_header["Header.Source.Dec"](0));

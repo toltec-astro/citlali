@@ -722,7 +722,21 @@ void TimeOrderedDataProc<EngineType>::interp_pointing() {
 
             // start and end times of observation
             Eigen::VectorXd xd(n_offsets);
-            xd << engine().telescope.tel_data["TelTime"](0), engine().telescope.tel_data["TelTime"](ni-1);
+            // use start and end of current obs if julian dates not specified
+            if ((engine().pointing_offsets_modified_julian_date<=0).any()) {
+                xd << engine().telescope.tel_data["TelTime"](0), engine().telescope.tel_data["TelTime"](ni-1);
+            }
+            // else use specified modified julian dates, convert to julian dates, and calc unix time
+            else {
+                xd << engine_utils::modified_julian_date_to_unix(engine().pointing_offsets_modified_julian_date(0)),
+                    engine_utils::modified_julian_date_to_unix(engine().pointing_offsets_modified_julian_date(1));
+
+                // make sure offsets are before and after the observation
+                if (xd(0) > engine().telescope.tel_data["TelTime"](0) || xd(1) < engine().telescope.tel_data["TelTime"](ni-1)) {
+                    logger->error("offsets are out of range");
+                    std::exit(EXIT_FAILURE);
+                }
+            }
 
             // interpolate offset onto time vector
             mlinterp::interp(nd.data(), ni, // nd, ni
@@ -731,6 +745,7 @@ void TimeOrderedDataProc<EngineType>::interp_pointing() {
 
             // overwrite pointing offsets
             engine().pointing_offsets_arcsec[key] = yi;
+
         }
         else {
             logger->error("only one or two values for altaz offsets are supported");
@@ -901,7 +916,7 @@ void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &m
             pointing_offsets_arcsec["az"] = engine().pointing_offsets_arcsec["az"].segment(si,sl);
             pointing_offsets_arcsec["alt"] = engine().pointing_offsets_arcsec["alt"].segment(si,sl);
 
-            // don't need to find the offsets of this is a beammap
+            // don't need to find the offsets if in detector mode
             if (engine().map_grouping!="detector") {
                 // loop through detectors
                 grppi::map(tula::grppi_utils::dyn_ex(engine().parallel_policy), det_in_vec, det_out_vec, [&](auto j) {

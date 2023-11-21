@@ -272,11 +272,12 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     auto xy = g.meshgrid(x, y);
 
     // get map stddev
-    auto map_sigma = engine_utils::calc_std_dev(signal);
+    double map_sigma = engine_utils::calc_std_dev(signal);
 
     // standard deviation of signal map
     Eigen::MatrixXd sigma(weight.rows(), weight.cols());
 
+    // loop through pixels
     for (Eigen::Index i=0; i<weight.rows(); i++) {
         for (Eigen::Index j=0; j<weight.cols(); j++) {
             if (weight(i,j)!=0) {

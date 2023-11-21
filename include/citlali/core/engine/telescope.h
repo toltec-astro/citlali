@@ -51,7 +51,7 @@ public:
     // std map for telescope header vectors
     std::map<std::string, Eigen::VectorXd> tel_header;
 
-    // pixel axes (icrs, altaz, etc)
+    // pixel axes (radec, altaz, etc)
     std::string pixel_axes;
 
     // keys to telescope data vectors (angles in radians)
@@ -265,7 +265,7 @@ public:
 
     void get_tel_data(std::string &);
     void calc_tan_pointing();
-    void calc_tan_icrs();
+    void calc_tan_radec();
     void calc_tan_altaz();
     void calc_scan_indices();
 };

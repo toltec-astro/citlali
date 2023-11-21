@@ -1,6 +1,11 @@
 #pragma once
 
 #include <map>
+#include <filesystem>
+
+#include <unsupported/Eigen/CXX11/Tensor>
+
+#include <CCfits/CCfits>
 
 #include <tula/enum.h>
 #include <tula/nddata/labelmapper.h>
@@ -13,6 +18,8 @@
 #include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/pointing.h>
 #include <citlali/core/utils/toltec_io.h>
+
+#include <citlali/core/mapmaking/map.h>
 
 namespace timestream {
 
@@ -258,6 +265,16 @@ public:
         NegativeMap = 5
     };
 
+    // fruit loops algorithm params
+    bool run_fruit_loops;
+    std::string fruit_loops_path;
+
+    // signal-to-noise cut for fruit loops algorithm
+    double fruit_loops_sig2noise;
+
+    // map buffer for map to tod approach
+    mapmaking::ObsMapBuffer cmb;
+
     // number of weight outlier iterations
     int iter_lim = 0;
 
@@ -266,6 +283,10 @@ public:
 
     // mask radius in arcseconds
     double mask_radius_arcsec;
+
+    // create a map buffer from a citlali reduction directory
+    template <class calib_t>
+    void load_cmb(calib_t &);
 
     // get limits for a particular grouping
     template <typename Derived, class calib_t>
@@ -279,7 +300,7 @@ public:
     // remove detectors with outlier weights
     template <TCDataKind tcdata_t, typename calib_t, typename Derived>
     auto remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
-                         Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string, std::string);
+                         std::string);
 
     // add or subtract gaussian to timestream
     template <SourceType source_type, TCDataKind tcdata_t, typename DerivedB, typename DerivedC, typename apt_t,
@@ -300,19 +321,136 @@ public:
                                calib_t &);
 };
 
+template <class calib_t>
+void TCProc::load_cmb(calib_t &calib) {
+
+    namespace fs = std::filesystem;
+
+    //try {
+        // loop through arrays in current obs
+        for (const auto &arr: calib.arrays) {
+        // loop through files in redu directory
+            for (const auto& entry : fs::directory_iterator(fruit_loops_path)) {
+                // find current array obs map
+                if (entry.path().string().find(toltec_io.array_name_map[arr]) != std::string::npos) {
+                    // try catch for non fits files
+                    //try {
+                        // get fits file
+                        fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*> fits_io(entry.path().string());
+
+                        // get wcs
+                        CCfits::ExtHDU& extension = fits_io.pfits->extension(1);
+
+                        // resize wcs params
+                        cmb.wcs.naxis.resize(4,0.);
+                        cmb.wcs.crpix.resize(4,0.);
+                        cmb.wcs.crval.resize(4,0.);
+                        cmb.wcs.cdelt.resize(4,0.);
+
+                        cmb.wcs.cunit.push_back("N/A");
+                        cmb.wcs.cunit.push_back("N/A");
+
+                        // get naxis
+                        extension.readKey("NAXIS1", cmb.wcs.naxis[0]);
+                        extension.readKey("NAXIS2", cmb.wcs.naxis[1]);
+                        // get crpix
+                        extension.readKey("CRPIX1", cmb.wcs.crpix[0]);
+                        extension.readKey("CRPIX2", cmb.wcs.crpix[1]);
+                        // get crval
+                        extension.readKey("CRVAL1", cmb.wcs.crval[0]);
+                        extension.readKey("CRVAL2", cmb.wcs.crval[1]);
+                        // get cdelt
+                        extension.readKey("CDELT1", cmb.wcs.cdelt[0]);
+                        extension.readKey("CDELT2", cmb.wcs.cdelt[1]);
+                        // get cunit
+                        extension.readKey("CUNIT1", cmb.wcs.cunit[1]);
+                        extension.readKey("CUNIT2", cmb.wcs.cunit[0]);
+
+                        // get maps
+                        if (entry.path().string().find("noise") == std::string::npos) {
+                            // get signal map
+                            cmb.signal.push_back(fits_io.get_hdu("signal_I"));
+                            //cmb.signal.back() = cmb.signal.back().colwise().reverse();
+                            // get weight maps
+                            cmb.weight.push_back(fits_io.get_hdu("weight_I"));
+                            //cmb.weight.back() = cmb.weight.back().colwise().reverse();
+                        }
+                        // get noise maps
+                        else {
+                            // get number of noise maps
+                            int num_extensions = 0;
+                            bool keep_going = true;
+                            while (keep_going) {
+                                try {
+                                    // attempt to access an HDU (ignore primary hdu)
+                                    CCfits::ExtHDU& ext = fits_io.pfits->extension(num_extensions + 1);
+                                    num_extensions++;
+                                } catch (...) {
+                                    // NoSuchHDU exception is thrown when there are no more HDUs
+                                    keep_going = false;
+                                }
+                            }
+
+                            // set number of noise maps
+                            cmb.n_noise = num_extensions;
+
+                            // get number of rows and cols
+                            CCfits::ExtHDU& extension = fits_io.pfits->extension(1);
+
+                            // allocate current array noise map
+                            cmb.noise.push_back(Eigen::Tensor<double,3>(cmb.wcs.naxis[1], cmb.wcs.naxis[0], cmb.n_noise));
+
+                            // loop through noise maps for current array
+                            for (int i=0; i<cmb.n_noise; i++) {
+                                // get noise map
+                                Eigen::MatrixXd data = fits_io.get_hdu("signal_"+std::to_string(i)+"_I");
+                                // map to tensor
+                                Eigen::TensorMap<Eigen::Tensor<double, 2>> in_tensor(data.data(), data.rows(), data.cols());
+                                // overwrite tensor
+                                cmb.noise.back().chip(i,2) = in_tensor;
+                            }
+                        }
+                    //} catch (...) {}
+                }
+            }
+        }
+    //} catch (const fs::filesystem_error& err) {
+    //    logger->info("{}", err.what());
+    //}
+
+    // set dimensions
+    cmb.n_cols = cmb.wcs.naxis[0];
+    cmb.n_rows = cmb.wcs.naxis[1];
+
+    // get pixel size in radians
+    if (cmb.wcs.cunit[0] == "deg") {
+        cmb.pixel_size_rad = abs(cmb.wcs.cdelt[0])*DEG_TO_RAD;
+    }
+    else if (cmb.wcs.cunit[0] == "arcsec") {
+        cmb.pixel_size_rad = abs(cmb.wcs.cdelt[0])*ASEC_TO_RAD;
+    }
+
+    // get mean rms
+    cmb.calc_mean_rms();
+}
+
 template <typename Derived, class calib_t>
 auto TCProc::get_grouping(std::string grp, Eigen::DenseBase<Derived> &det_indices, calib_t &calib, int n_dets) {
     std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
 
+    // initial group value is value for the first det index
     Eigen::Index grp_i = calib.apt[grp](det_indices(0));
+    // set up first group
     grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
     Eigen::Index j = 0;
     // loop through apt table arrays, get highest index for current array
     for (Eigen::Index i=0; i<n_dets; i++) {
         auto det_index = det_indices(i);
+        // if we're still on the current group
         if (calib.apt[grp](det_index) == grp_i) {
             std::get<1>(grp_limits[grp_i]) = i + 1;
         }
+        // otherwise increment and start the next group
         else {
             grp_i = calib.apt[grp](det_index);
             j += 1;
@@ -342,7 +480,10 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
         auto det_index = det_indices(i);
         auto map_index = map_indices(i);
 
-        if (!calib.apt["flag"](det_index)) {
+        //double max_weight = mb.weight[map_index].maxCoeff();
+
+        // check if detector is not flagged
+        if (calib.apt["flag"](det_index)==0 && (in.flags.data.col(i).array()==0).any()) {
             double az_off = calib.apt["x_t"](det_index);
             double el_off = calib.apt["y_t"](det_index);
 
@@ -361,7 +502,8 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
 
                 // check if current sample is on the image and add to the timestream
                 if ((ir >= 0) && (ir < mb.n_rows) && (ic >= 0) && (ic < mb.n_cols)) {
-                    if (mb.signal[map_index](ir,ic)*sqrt(mb.weight[map_index](ir,ic))>0) {
+                    //if (mb.weight[map_index](ir,ic) > fruit_loops_sig2noise*max_weight) {
+                    if (mb.signal[map_index](ir,ic)/mb.mean_rms(map_index) >= fruit_loops_sig2noise) {
                         in.scans.data(j,i) += factor*mb.signal[map_index](ir,ic);
                     }
                 }
@@ -372,9 +514,7 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
 
 template <TCDataKind tcdata_t, typename calib_t, typename Derived>
 auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
-                              Eigen::DenseBase<Derived> &nw_indices, Eigen::DenseBase<Derived> &array_indices, std::string redu_type,
-                              std::string map_grouping) {
-
+                             std::string map_grouping) {
 
     // make a copy of the calib class for flagging
     calib_t calib_scan = calib;
@@ -400,7 +540,7 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
                 Eigen::Index n_good_dets = 0;
 
                 for (Eigen::Index j=std::get<0>(grp_limits[key]); j<std::get<1>(grp_limits[key]); j++) {
-                    if (calib.apt["flag"](det_indices(j))==0) {
+                    if (calib.apt["flag"](det_indices(j))==0 && (in.flags.data.col(j).array()==0).any()) {
                         n_good_dets++;
                     }
                 }
@@ -412,7 +552,7 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
                 // collect standard deviation from good detectors
                 for (Eigen::Index j=std::get<0>(grp_limits[key]); j<std::get<1>(grp_limits[key]); j++) {
                     Eigen::Index det_index = det_indices(j);
-                    if (calib.apt["flag"](det_index)==0) {
+                    if (calib.apt["flag"](det_index)==0 && (in.flags.data.col(j).array()==0).any()) {
                         // make Eigen::Maps for each detector's scan
                         Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
                             in.scans.data.col(j).data(), in.scans.data.rows());
@@ -422,7 +562,7 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
                         // calc standard deviation
                         det_std_dev(k) = engine_utils::calc_std_dev(scans, flags);
 
-                        // convert to 1/variance
+                        // convert to 1/variance so it is a weight
                         if (det_std_dev(k) !=0) {
                             det_std_dev(k) = std::pow(det_std_dev(k),-2);
                         }
@@ -726,7 +866,7 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
         Eigen::VectorXd lon_row = lon.row(i);
         det_lon_v.putVar(start_index, size, lon_row.data());
 
-        if (pixel_axes == "icrs") {
+        if (pixel_axes == "radec") {
             // get absolute pointing
             auto [dec, ra] = engine_utils::tangent_to_abs(lat_row, lon_row, cra, cdec);
 

@@ -30,8 +30,8 @@ auto calc_det_pointing(tel_data_t &tel_data, double az_off, double el_off,
     Eigen::VectorXd rot_alt_off = cos(elev)*el_off
                                   + sin(elev)*az_off + pointing_offsets["alt"].array();
 
-    // icrs map
-    if (std::strcmp("icrs", pixel_axes.c_str()) == 0) {
+    // radec map
+    if (std::strcmp("radec", pixel_axes.c_str()) == 0) {
         // get parallactic angle
         auto par_ang = -tel_data["ActParAng"].array();
 

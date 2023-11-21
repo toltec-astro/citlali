@@ -167,10 +167,10 @@ int run(const rc_t &rc) {
         std::variant<std::monostate, TimeOrderedDataProc<Lali>, TimeOrderedDataProc<Pointing>,
                      TimeOrderedDataProc<Beammap>>;
 
+    // declare todproc variable
     todproc_var_t todproc;
 
     // set todproc to variant depending on the config file reduction type
-
     // check if config file has a reduction type parameter
     if (citlali_config.has(std::tuple{"runtime", "reduction_type"})) {
         try {
@@ -412,7 +412,7 @@ int run(const rc_t &rc) {
                         todproc.calc_map_num();
 
                         // determine omb map sizes
-                        logger->info("calculating omb dimensions");
+                        logger->info("calculating obs map dimensions");
                         todproc.calc_omb_size(map_extents, map_coords);
                     }
                 }

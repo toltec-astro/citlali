@@ -59,8 +59,8 @@ void ObsMapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std:
         crval_config.push_back(wcs_double);
     }
 
-    // setup wcs for icrs frame
-    if (pixel_axes == "icrs") {
+    // setup wcs for radec frame
+    if (pixel_axes == "radec") {
         wcs.ctype.push_back("RA---TAN");
         wcs.ctype.push_back("DEC--TAN");
 
@@ -445,10 +445,10 @@ void ObsMapBuffer::calc_mean_err() {
 
 void ObsMapBuffer::calc_mean_rms() {
     // average filtered rms vector
-    mean_rms.setZero(weight.size());
+    mean_rms.setZero(noise.size());
 
     // loop through arrays/polarizations
-    for (Eigen::Index i=0; i<weight.size(); i++) {
+    for (Eigen::Index i=0; i<noise.size(); i++) {
         // vector of rms of noise maps
         Eigen::VectorXd noise_rms(n_noise);
         for (Eigen::Index j=0; j<n_noise; j++) {

@@ -41,7 +41,7 @@ public:
     void run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
              TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
              calib_type &, Eigen::DenseBase<Derived> &,
-             std::string, std::string, std::string);
+             std::string, std::string);
 
     // calculate detector weights
     template <typename apt_type, class tel_type, typename Derived>
@@ -76,9 +76,18 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
     // upper weight factor
     get_config_value(config, upper_weight_factor, missing_keys, invalid_keys,
                      std::tuple{"timestream","processed_time_chunk","flagging","upper_weight_factor"});
-    // run cleaning?
-    get_config_value(config, run_clean, missing_keys, invalid_keys,
-                     std::tuple{"timestream","processed_time_chunk","clean","enabled"});
+    // run fruit loops
+    get_config_value(config, run_fruit_loops, missing_keys, invalid_keys,
+                     std::tuple{"timestream","fruit_loops","enabled"});
+
+    if (run_fruit_loops) {
+        // fruit looops path
+        get_config_value(config, fruit_loops_path, missing_keys, invalid_keys,
+                         std::tuple{"timestream","fruit_loops","path"});
+        // fruit loops signal-to-noise
+        get_config_value(config, fruit_loops_sig2noise, missing_keys, invalid_keys,
+                         std::tuple{"timestream","fruit_loops","lower_sig2noise_limit"});
+    }
 
     if (run_clean) {
         // get cleaning grouping vector
@@ -129,8 +138,11 @@ void PTCProc::subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in) {
 template <class calib_type, typename Derived>
 void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                   TCData<TCDataKind::PTC, Eigen::MatrixXd> &out, calib_type &calib,
-                  Eigen::DenseBase<Derived> &det_indices, std::string stokes_param,
-                  std::string pixel_axes, std::string map_grouping) {
+                  Eigen::DenseBase<Derived> &det_indices, std::string pixel_axes,
+                  std::string map_grouping) {
+
+    // subtract mean from data and kernel
+    subtract_mean(in);
 
     if (run_clean) {
         // number of samples
@@ -157,7 +169,6 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 
             logger->debug("cleaning with {} grouping", group);
 
-            // only run cleaning if chunk is Stokes I or if cleaning stokes Q, U
             for (auto const& [key, val] : grp_limits) {
 
                 Eigen::Index arr_index;

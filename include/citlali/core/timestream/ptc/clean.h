@@ -126,7 +126,9 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     // make copy of flags
     Eigen::MatrixXd f = abs(flags.derived().template cast<double> ().array() - 1);
 
-    // zero out flagged detectors in apt table (used for per scan beammap flags)
+    // zero out flagged detectors in apt table.  we need to do this because we want
+    // to make maps of all detectors when in detector mode so the timestreams cannot
+    // be completely flagged.
     for (Eigen::Index i=0; i<n_dets; i++) {
         if (apt_flags.derived()(i)!=0) {
             f.col(i).setZero();

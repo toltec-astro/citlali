@@ -159,6 +159,16 @@ std::string toltecIO::create_filename(const std::string filepath, const std::str
         filename = filename + "_filtered";
     }
 
+    // add pipeline to maps
+    if constexpr (prod_t == map) {
+        filename = filename + "_citlali";
+    }
+
+    // add pipeline to noise maps
+    if constexpr (prod_t == noise) {
+        filename = filename + "_citlali";
+    }
+
     return filename;
 }
 

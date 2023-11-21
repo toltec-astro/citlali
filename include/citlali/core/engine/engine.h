@@ -96,15 +96,14 @@ struct reduClasses {
     engine::Diagnostics diagnostics;
     engine_utils::mapFitter map_fitter;
 
-    // rtc proc
+    // rtc processing class
     timestream::RTCProc rtcproc;
 
-    // ptc proc
+    // ptc processing class
     timestream::PTCProc ptcproc;
 
     // map classes
-    mapmaking::ObsMapBuffer omb;
-    mapmaking::ObsMapBuffer cmb;
+    mapmaking::ObsMapBuffer omb, cmb;
     mapmaking::NaiveMapmaker naive_mm;
     mapmaking::JincMapmaker jinc_mm;
     mapmaking::WienerFilter wiener_filter;
@@ -226,6 +225,8 @@ public:
 
     // manual pointing offsets
     std::map<std::string, Eigen::VectorXd> pointing_offsets_arcsec;
+    // modified julian dates of pointing offsets
+    Eigen::ArrayXd pointing_offsets_modified_julian_date;
 
     // map output files
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> fits_io_vec, noise_fits_io_vec;
@@ -393,7 +394,7 @@ void Engine::obsnum_setup() {
     }
 
     // set map wcs crvals to source ra/dec
-    if (telescope.pixel_axes == "icrs") {
+    if (telescope.pixel_axes == "radec") {
         omb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0)*RAD_TO_DEG;
         omb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0)*RAD_TO_DEG;
 
@@ -463,6 +464,11 @@ void Engine::obsnum_setup() {
     }
     // clear stored eigenvalues
     diagnostics.evals.clear();
+
+    // load citlali maps from file
+    if (ptcproc.run_fruit_loops && redu_type != "beammap") {
+        ptcproc.load_cmb(calib);
+    }
 }
 
 template<typename CT>
@@ -563,7 +569,7 @@ void Engine::get_mapmaking_config(CT &config) {
 
     // polarization is disabled for detector grouping
     if (rtcproc.run_polarization && ((redu_type=="beammap" && map_grouping=="auto") || map_grouping=="detector")) {
-        logger->error("Beammap reductions do not currently support polarimetry mode");
+        logger->error("Detector grouping reductions do not currently support polarimetry mode");
         std::exit(EXIT_FAILURE);
     }
 
@@ -574,9 +580,9 @@ void Engine::get_mapmaking_config(CT &config) {
     get_config_value(config, map_method, missing_keys, invalid_keys,
                      std::tuple{"mapmaking","method"},{"naive","jinc"});
 
-    // map reference frame (icrs or altaz)
+    // map reference frame (radec or altaz)
     get_config_value(config, telescope.pixel_axes, missing_keys, invalid_keys,
-                     std::tuple{"mapmaking","pixel_axes"},{"icrs","altaz"});
+                     std::tuple{"mapmaking","pixel_axes"},{"radec","altaz"});
 
     // get config for omb
     logger->info("getting omb config options");
@@ -958,6 +964,15 @@ void Engine::get_astrometry_config(CT &config) {
         // get alt offset
         offset = config.template get_typed<std::vector<double>>(std::tuple{"pointing_offsets",1,"value_arcsec"});
         pointing_offsets_arcsec["alt"] = Eigen::Map<Eigen::VectorXd>(offset.data(),offset.size());
+
+        // get julian date of pointing offsets
+        try {
+            offset = config.template get_typed<std::vector<double>>(std::tuple{"pointing_offsets",2,"modified_julian_date"});
+            pointing_offsets_modified_julian_date = Eigen::Map<Eigen::VectorXd>(offset.data(),offset.size());
+        }
+        catch (...) {
+            pointing_offsets_modified_julian_date.setZero(2);
+        }
     }
     else {
         logger->error("pointing_offsets not found in config");
@@ -1159,208 +1174,204 @@ void Engine::add_tod_header() {
 
 template <engine_utils::toltecIO::ProdType prod_t>
 void Engine::create_tod_files() {
-    // loop through stokes indices
-    std::string stokes_param = "I";
-    //for (const auto &[stokes_index,stokes_param]: rtcproc.polarization.stokes_params) {
-        // name for std map
-        std::string name;
-        // subdirectory name
-        std::string dir_name = obsnum_dir_name + "raw/";
+    // name for std map
+    std::string name;
+    // subdirectory name
+    std::string dir_name = obsnum_dir_name + "raw/";
 
-        // if config subdirectory name is specified, add it
-        if (tod_output_subdir_name != "null") {
-            dir_name = dir_name + tod_output_subdir_name + "/";
+    // if config subdirectory name is specified, add it
+    if (tod_output_subdir_name != "null") {
+        dir_name = dir_name + tod_output_subdir_name + "/";
+    }
+
+    // rtc tod output filename setup
+    if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {
+        auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
+                                                  engine_utils::toltecIO::rtc_timestream,
+                                                  engine_utils::toltecIO::raw>(dir_name, redu_type, "",
+                                                                               obsnum, telescope.sim_obs);
+
+        tod_filename["rtc"] = filename + ".nc";
+        name = "rtc";
+    }
+
+    // ptc tod output filename setup
+    else if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
+        auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
+                                                  engine_utils::toltecIO::ptc_timestream,
+                                                  engine_utils::toltecIO::raw>(dir_name, redu_type, "",
+                                                                               obsnum, telescope.sim_obs);
+
+        tod_filename["ptc"] = filename + ".nc";
+        name = "ptc";
+    }
+
+    // create netcdf file
+    netCDF::NcFile fo(tod_filename[name], netCDF::NcFile::replace);
+
+    // add tod output type to file
+    netCDF::NcDim n_tod_output_type_dim = fo.addDim("n_tod_output_type",1);
+    netCDF::NcVar tod_output_type_var = fo.addVar("tod_output_type",netCDF::ncString, n_tod_output_type_dim);
+    const std::vector<size_t> tod_output_type_index = {0};
+
+    if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {
+        std::string tod_output_type_name = "rtc";
+        tod_output_type_var.putVar(tod_output_type_index,tod_output_type_name);
+    }
+    else if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
+        std::string tod_output_type_name = "ptc";
+        tod_output_type_var.putVar(tod_output_type_index,tod_output_type_name);
+
+        // number of eigenvalues
+        netCDF::NcDim n_eigs_dim = fo.addDim("n_eigs",ptcproc.cleaner.n_calc);
+    }
+
+    // add obsnum
+    netCDF::NcVar obsnum_v = fo.addVar("obsnum",netCDF::ncInt);
+    obsnum_v.putAtt("units","N/A");
+    int obsnum_int = std::stoi(obsnum);
+    obsnum_v.putVar(&obsnum_int);
+
+    // add source ra
+    netCDF::NcVar source_ra_v = fo.addVar("SourceRa",netCDF::ncDouble);
+    source_ra_v.putAtt("units","rad");
+    source_ra_v.putVar(&telescope.tel_header["Header.Source.Ra"](0));
+
+    // add source dec
+    netCDF::NcVar source_dec_v = fo.addVar("SourceDec",netCDF::ncDouble);
+    source_dec_v.putAtt("units","rad");
+    source_dec_v.putVar(&telescope.tel_header["Header.Source.Dec"](0));
+
+    netCDF::NcDim n_pts_dim = fo.addDim("n_pts");
+    netCDF::NcDim n_raw_scan_indices_dim = fo.addDim("n_raw_scan_indices", telescope.scan_indices.rows());
+    netCDF::NcDim n_scan_indices_dim = fo.addDim("n_scan_indices", 2);
+    netCDF::NcDim n_scans_dim = fo.addDim("n_scans", telescope.scan_indices.cols());
+
+    Eigen::Index n_dets;
+
+    // set number of dets for unpolarized timestreams
+    if (!rtcproc.run_polarization) {
+        n_dets = calib.apt["array"].size();
+    }
+    // set number of detectors for polarized timestreams
+    else {
+        if (!telescope.sim_obs) {
+            n_dets = (calib.apt[rtcproc.polarization.grouping].array()!=-1).count();
         }
-
-        // rtc tod output filename setup
-        if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {
-            auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
-                                                      engine_utils::toltecIO::rtc_timestream,
-                                                      engine_utils::toltecIO::raw>(dir_name, redu_type, "",
-                                                                                   obsnum, telescope.sim_obs);
-
-            tod_filename["rtc_" + stokes_param] = filename + "_" + stokes_param + ".nc";
-            name = "rtc_" + stokes_param;
-        }
-
-        // ptc tod output filename setup
-        else if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
-            auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
-                                                      engine_utils::toltecIO::ptc_timestream,
-                                                      engine_utils::toltecIO::raw>(dir_name, redu_type, "",
-                                                                                   obsnum, telescope.sim_obs);
-
-            tod_filename["ptc_" + stokes_param] = filename + "_" + stokes_param + ".nc";
-            name = "ptc_" + stokes_param;
-        }
-
-        // create netcdf file
-        netCDF::NcFile fo(tod_filename[name], netCDF::NcFile::replace);
-
-        // add tod output type to file
-        netCDF::NcDim n_tod_output_type_dim = fo.addDim("n_tod_output_type",1);
-        netCDF::NcVar tod_output_type_var = fo.addVar("tod_output_type",netCDF::ncString, n_tod_output_type_dim);
-        const std::vector<size_t> tod_output_type_index = {0};
-
-        if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {
-            std::string tod_output_type_name = "rtc";
-            tod_output_type_var.putVar(tod_output_type_index,tod_output_type_name);
-        }
-        else if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
-            std::string tod_output_type_name = "ptc";
-            tod_output_type_var.putVar(tod_output_type_index,tod_output_type_name);
-
-            // number of eigenvalues
-            netCDF::NcDim n_eigs_dim = fo.addDim("n_eigs",ptcproc.cleaner.n_calc);
-        }
-
-        // add obsnum
-        netCDF::NcVar obsnum_v = fo.addVar("obsnum",netCDF::ncInt);
-        obsnum_v.putAtt("units","N/A");
-        int obsnum_int = std::stoi(obsnum);
-        obsnum_v.putVar(&obsnum_int);
-
-        // add source ra
-        netCDF::NcVar source_ra_v = fo.addVar("SourceRa",netCDF::ncDouble);
-        source_ra_v.putAtt("units","rad");
-        source_ra_v.putVar(&telescope.tel_header["Header.Source.Ra"](0));
-
-        // add source dec
-        netCDF::NcVar source_dec_v = fo.addVar("SourceDec",netCDF::ncDouble);
-        source_dec_v.putAtt("units","rad");
-        source_dec_v.putVar(&telescope.tel_header["Header.Source.Dec"](0));
-
-        netCDF::NcDim n_pts_dim = fo.addDim("n_pts");
-        netCDF::NcDim n_raw_scan_indices_dim = fo.addDim("n_raw_scan_indices", telescope.scan_indices.rows());
-        netCDF::NcDim n_scan_indices_dim = fo.addDim("n_scan_indices", 2);
-        netCDF::NcDim n_scans_dim = fo.addDim("n_scans", telescope.scan_indices.cols());
-
-        Eigen::Index n_dets;
-
-        // set number of dets for unpolarized timestreams
-        if (!rtcproc.run_polarization) {
-            n_dets = calib.apt["array"].size();
-        }
-        // set number of detectors for polarized timestreams
         else {
-            if (!telescope.sim_obs) {
-                n_dets = (calib.apt[rtcproc.polarization.grouping].array()!=-1).count();
-            }
-            else {
-                n_dets = calib.n_dets;
-            }
+            n_dets = calib.n_dets;
         }
+    }
 
-        netCDF::NcDim n_dets_dim = fo.addDim("n_dets", n_dets);
+    netCDF::NcDim n_dets_dim = fo.addDim("n_dets", n_dets);
 
-        std::vector<netCDF::NcDim> dims = {n_pts_dim, n_dets_dim};
-        std::vector<netCDF::NcDim> raw_scans_dims = {n_scans_dim, n_raw_scan_indices_dim};
-        std::vector<netCDF::NcDim> scans_dims = {n_scans_dim, n_scan_indices_dim};
+    std::vector<netCDF::NcDim> dims = {n_pts_dim, n_dets_dim};
+    std::vector<netCDF::NcDim> raw_scans_dims = {n_scans_dim, n_raw_scan_indices_dim};
+    std::vector<netCDF::NcDim> scans_dims = {n_scans_dim, n_scan_indices_dim};
 
-        // raw file scan indices
-        netCDF::NcVar raw_scan_indices_v = fo.addVar("raw_scan_indices",netCDF::ncInt, raw_scans_dims);
-        raw_scan_indices_v.putAtt("units","N/A");
-        raw_scan_indices_v.putVar(telescope.scan_indices.data());
+    // raw file scan indices
+    netCDF::NcVar raw_scan_indices_v = fo.addVar("raw_scan_indices",netCDF::ncInt, raw_scans_dims);
+    raw_scan_indices_v.putAtt("units","N/A");
+    raw_scan_indices_v.putVar(telescope.scan_indices.data());
 
-        // scan indices for data
-        netCDF::NcVar scan_indices_v = fo.addVar("scan_indices",netCDF::ncInt, scans_dims);
-        scan_indices_v.putAtt("units","N/A");
+    // scan indices for data
+    netCDF::NcVar scan_indices_v = fo.addVar("scan_indices",netCDF::ncInt, scans_dims);
+    scan_indices_v.putAtt("units","N/A");
 
-        // signal
-        netCDF::NcVar signal_v = fo.addVar("signal",netCDF::ncDouble, dims);
-        signal_v.putAtt("units",omb.sig_unit);
+    // signal
+    netCDF::NcVar signal_v = fo.addVar("signal",netCDF::ncDouble, dims);
+    signal_v.putAtt("units",omb.sig_unit);
 
-        // chunk sizes
-        std::vector<std::size_t> chunkSizes;
-        // set chunk mode
-        netCDF::NcVar::ChunkMode chunkMode = netCDF::NcVar::nc_CHUNKED;
+    // chunk sizes
+    std::vector<std::size_t> chunkSizes;
+    // set chunk mode
+    netCDF::NcVar::ChunkMode chunkMode = netCDF::NcVar::nc_CHUNKED;
 
-        // set chunking to mean scan size and n_dets
-        chunkSizes.push_back(((telescope.scan_indices.row(3) - telescope.scan_indices.row(2)).array() + 1).mean());
-        chunkSizes.push_back(n_dets);
+    // set chunking to mean scan size and n_dets
+    chunkSizes.push_back(((telescope.scan_indices.row(3) - telescope.scan_indices.row(2)).array() + 1).mean());
+    chunkSizes.push_back(n_dets);
 
-        // set signal chunking
-        signal_v.setChunking(chunkMode, chunkSizes);
+    // set signal chunking
+    signal_v.setChunking(chunkMode, chunkSizes);
 
-        // flags
-        netCDF::NcVar flags_v = fo.addVar("flags",netCDF::ncDouble, dims);
-        flags_v.putAtt("units","N/A");
-        flags_v.setChunking(chunkMode, chunkSizes);
+    // flags
+    netCDF::NcVar flags_v = fo.addVar("flags",netCDF::ncDouble, dims);
+    flags_v.putAtt("units","N/A");
+    flags_v.setChunking(chunkMode, chunkSizes);
 
-        // kernel
-        if (rtcproc.run_kernel) {
-            netCDF::NcVar kernel_v = fo.addVar("kernel",netCDF::ncDouble, dims);
-            kernel_v.putAtt("units","N/A");
-            kernel_v.setChunking(chunkMode, chunkSizes);
+    // kernel
+    if (rtcproc.run_kernel) {
+        netCDF::NcVar kernel_v = fo.addVar("kernel",netCDF::ncDouble, dims);
+        kernel_v.putAtt("units","N/A");
+        kernel_v.setChunking(chunkMode, chunkSizes);
+    }
+
+    // detector lat
+    netCDF::NcVar det_lat_v = fo.addVar("det_lat",netCDF::ncDouble, dims);
+    det_lat_v.putAtt("units","rad");
+    det_lat_v.setChunking(chunkMode, chunkSizes);
+
+    // detector lon
+    netCDF::NcVar det_lon_v = fo.addVar("det_lon",netCDF::ncDouble, dims);
+    det_lon_v.putAtt("units","rad");
+    det_lon_v.setChunking(chunkMode, chunkSizes);
+
+    // calc absolute pointing if in radec frame
+    if (telescope.pixel_axes == "radec") {
+        // detector absolute ra
+        netCDF::NcVar det_ra_v = fo.addVar("det_ra",netCDF::ncDouble, dims);
+        det_ra_v.putAtt("units","rad");
+        det_ra_v.setChunking(chunkMode, chunkSizes);
+
+        // detector absolute dec
+        netCDF::NcVar det_dec_v = fo.addVar("det_dec",netCDF::ncDouble, dims);
+        det_dec_v.putAtt("units","rad");
+        det_dec_v.setChunking(chunkMode, chunkSizes);
+    }
+
+    // add apt table
+    for (auto const& x: calib.apt) {
+        netCDF::NcVar apt_v = fo.addVar("apt_" + x.first,netCDF::ncDouble, n_dets_dim);
+        apt_v.putAtt("units",calib.apt_header_units[x.first]);
+    }
+
+    // add telescope parameters
+    for (auto const& x: telescope.tel_data) {
+        netCDF::NcVar tel_data_v = fo.addVar(x.first,netCDF::ncDouble, n_pts_dim);
+        tel_data_v.putAtt("units","rad");
+        tel_data_v.setChunking(chunkMode, chunkSizes);
+    }
+
+    // add pointing offset parameters
+    for (auto const& x: pointing_offsets_arcsec) {
+        netCDF::NcVar offsets_v = fo.addVar("pointing_offset_"+x.first,netCDF::ncDouble, n_pts_dim);
+        offsets_v.putAtt("units","arcsec");
+        offsets_v.setChunking(chunkMode, chunkSizes);
+    }
+
+    // add weights
+    if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
+        std::vector<netCDF::NcDim> weight_dims = {n_scans_dim, n_dets_dim};
+        netCDF::NcVar weights_v = fo.addVar("weights",netCDF::ncDouble, weight_dims);
+        weights_v.putAtt("units","("+omb.sig_unit+")^-2");
+    }
+
+    // add hwpr
+    if (rtcproc.run_polarization) {
+        if (calib.run_hwpr) {
+            netCDF::NcVar hwpr_v = fo.addVar("hwpr",netCDF::ncDouble, n_pts_dim);
+            hwpr_v.putAtt("units","rad");
         }
+    }
 
-        // detector lat
-        netCDF::NcVar det_lat_v = fo.addVar("det_lat",netCDF::ncDouble, dims);
-        det_lat_v.putAtt("units","rad");
-        det_lat_v.setChunking(chunkMode, chunkSizes);
+    // add tel header
+    netCDF::NcDim tel_header_dim = fo.addDim("tel_header_n_pts", 1);
+    for (const auto &[key,val]: telescope.tel_header) {
+        netCDF::NcVar tel_header_v = fo.addVar(key,netCDF::ncDouble, tel_header_dim);
+        tel_header_v.putVar(&val(0));
+    }
 
-        // detector lon
-        netCDF::NcVar det_lon_v = fo.addVar("det_lon",netCDF::ncDouble, dims);
-        det_lon_v.putAtt("units","rad");
-        det_lon_v.setChunking(chunkMode, chunkSizes);
-
-        // calc absolute pointing if in icrs frame
-        if (telescope.pixel_axes == "icrs") {
-            // detector absolute ra
-            netCDF::NcVar det_ra_v = fo.addVar("det_ra",netCDF::ncDouble, dims);
-            det_ra_v.putAtt("units","rad");
-            det_ra_v.setChunking(chunkMode, chunkSizes);
-
-            // detector absolute dec
-            netCDF::NcVar det_dec_v = fo.addVar("det_dec",netCDF::ncDouble, dims);
-            det_dec_v.putAtt("units","rad");
-            det_dec_v.setChunking(chunkMode, chunkSizes);
-        }
-
-        // add apt table
-        for (auto const& x: calib.apt) {
-            netCDF::NcVar apt_v = fo.addVar("apt_" + x.first,netCDF::ncDouble, n_dets_dim);
-            apt_v.putAtt("units",calib.apt_header_units[x.first]);
-        }
-
-        // add telescope parameters
-        for (auto const& x: telescope.tel_data) {
-            netCDF::NcVar tel_data_v = fo.addVar(x.first,netCDF::ncDouble, n_pts_dim);
-            tel_data_v.putAtt("units","rad");
-            tel_data_v.setChunking(chunkMode, chunkSizes);
-        }
-
-        // add pointing offset parameters
-        for (auto const& x: pointing_offsets_arcsec) {
-            netCDF::NcVar offsets_v = fo.addVar("pointing_offset_"+x.first,netCDF::ncDouble, n_pts_dim);
-            offsets_v.putAtt("units","arcsec");
-            offsets_v.setChunking(chunkMode, chunkSizes);
-        }
-
-        // add weights
-        if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
-            std::vector<netCDF::NcDim> weight_dims = {n_scans_dim, n_dets_dim};
-            netCDF::NcVar weights_v = fo.addVar("weights",netCDF::ncDouble, weight_dims);
-            weights_v.putAtt("units","("+omb.sig_unit+")^-2");
-        }
-
-        // add hwpr
-        if (rtcproc.run_polarization) {
-            if (calib.run_hwpr) {
-                netCDF::NcVar hwpr_v = fo.addVar("hwpr",netCDF::ncDouble, n_pts_dim);
-                hwpr_v.putAtt("units","rad");
-            }
-        }
-
-        // add tel header
-        netCDF::NcDim tel_header_dim = fo.addDim("tel_header_n_pts", 1);
-        for (const auto &[key,val]: telescope.tel_header) {
-            netCDF::NcVar tel_header_v = fo.addVar(key,netCDF::ncDouble, tel_header_dim);
-            tel_header_v.putVar(&val(0));
-        }
-
-        fo.close();
-    //}
+    fo.close();
 }
 
 //template <TCDataKind tc_t>
@@ -1905,12 +1916,12 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
 
     // signal map
     fits_io->at(map_index).add_hdu("signal_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->signal[i]);
-    fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs);
+    fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
     fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
 
     // weight map
     fits_io->at(map_index).add_hdu("weight_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->weight[i]);
-    fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs);
+    fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
     fits_io->at(map_index).hdus.back()->addKey("UNIT", "1/("+mb->sig_unit+")^2", "Unit of map");
 
     // kernel map
@@ -1929,14 +1940,14 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             }
         }
         fits_io->at(map_index).hdus.back()->addKey("FWHM",fwhm,"Kernel fwhm (arcsec)");
-        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs);
+        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
         fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
     }
 
     // coverage map
     if (!mb->coverage.empty()) {
         fits_io->at(map_index).add_hdu("coverage_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->coverage[i]);
-        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs);
+        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
         fits_io->at(map_index).hdus.back()->addKey("UNIT", "sec", "Unit of map");
     }
 
@@ -1953,13 +1964,13 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
 
         // coverage bool map
         fits_io->at(map_index).add_hdu("coverage_bool_" + map_name + rtcproc.polarization.stokes_params[stokes_index], coverage_bool);
-        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs);
+        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
         fits_io->at(map_index).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
 
         // signal-to-noise map
         Eigen::MatrixXd sig2noise = mb->signal[i].array()*sqrt(mb->weight[i].array());
         fits_io->at(map_index).add_hdu("sig2noise_" + map_name + rtcproc.polarization.stokes_params[stokes_index], sig2noise);
-        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs);
+        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
         fits_io->at(map_index).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
     }
 
@@ -1972,7 +1983,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             noise_fits_io->at(map_index).add_hdu("signal_" + map_name + std::to_string(n) + "_" +
                                                  rtcproc.polarization.stokes_params[stokes_index],
                                                  out_matrix);
-            noise_fits_io->at(map_index).add_wcs(noise_fits_io->at(map_index).hdus.back(),mb->wcs);
+            noise_fits_io->at(map_index).add_wcs(noise_fits_io->at(map_index).hdus.back(),mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
             noise_fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
         }
     }
@@ -2396,8 +2407,8 @@ void Engine::find_sources(map_buffer_t &mb) {
                     perrors(3) = RAD_TO_ASEC*STD_TO_FWHM*mb.pixel_size_rad*(perrors(3));
                     perrors(4) = RAD_TO_ASEC*STD_TO_FWHM*mb.pixel_size_rad*(perrors(4));
 
-                    // if in icrs calculate absolute pointing
-                    if (telescope.pixel_axes=="icrs") {
+                    // if in radec calculate absolute pointing
+                    if (telescope.pixel_axes=="radec") {
                         Eigen::VectorXd lat(1), lon(1);
                         lat << params(2)*ASEC_TO_RAD;
                         lon << params(1)*ASEC_TO_RAD;
@@ -2450,7 +2461,7 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
     // units for fitted parameter centroids
     std::string pos_units;
 
-    if (telescope.pixel_axes=="icrs") {
+    if (telescope.pixel_axes=="radec") {
         pos_units = "deg";
     }
     else {

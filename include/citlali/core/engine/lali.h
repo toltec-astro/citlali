@@ -74,93 +74,99 @@ auto Lali::run() {
         // create PTCData
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;
 
-        // loop through polarizations
-        std::string stokes_param = "I";
-        //for (const auto &[stokes_index, stokes_param]: rtcproc.polarization.stokes_params) {
-            logger->info("starting {} scan {}. {}/{} scans completed", stokes_param, rtcdata.index.data + 1, n_scans_done,
-                        telescope.scan_indices.cols());
+        logger->info("starting scan {}. {}/{} scans completed", rtcdata.index.data + 1, n_scans_done,
+                    telescope.scan_indices.cols());
 
-            // run rtcproc
-            logger->info("raw time chunk processing");
-            auto [map_indices, array_indices, nw_indices, det_indices] = rtcproc.run(rtcdata, ptcdata, telescope.pixel_axes, redu_type,
-                                                                                     calib, telescope, omb.pixel_size_rad, stokes_param,
-                                                                                     map_grouping);
+        // run rtcproc
+        logger->info("raw time chunk processing for scan {}", rtcdata.index.data + 1);
+        auto [map_indices, array_indices, nw_indices, det_indices] = rtcproc.run(rtcdata, ptcdata, telescope.pixel_axes, redu_type,
+                                                                                 calib, telescope, omb.pixel_size_rad, map_grouping);
 
-            // remove outliers before cleaning
-            rtcproc.remove_flagged_dets(ptcdata, calib.apt, det_indices);
+        // remove flagged detectors
+        rtcproc.remove_flagged_dets(ptcdata, calib.apt, det_indices);
 
-            // remove outliers before cleaning
-            logger->info("removing outlier dets before cleaning");
-            auto calib_scan = rtcproc.remove_bad_dets(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
+        // remove outliers before cleaning
+        logger->info("removing outlier dets before cleaning");
+        auto calib_scan = rtcproc.remove_bad_dets(ptcdata, calib, det_indices, map_grouping);
 
-            // remove duplicate tones
-            if (!telescope.sim_obs) {
-                calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib, det_indices, map_grouping);
+        // remove duplicate tones
+        if (!telescope.sim_obs) {
+            calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib, det_indices, map_grouping);
+        }
+
+        // write rtc timestreams
+        if (run_tod_output) {
+            if (tod_output_type == "rtc" || tod_output_type == "both") {
+                logger->info("writing raw time chunk");
+                rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
+                                         ptcdata.pointing_offsets_arcsec.data, det_indices, calib);
             }
+        }
 
-            // write rtc timestreams
-            if (run_tod_output) {
-                if (tod_output_type == "rtc" || tod_output_type=="both") {
-                    logger->info("writing raw time chunk");
-                    rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc_" + stokes_param], map_grouping, telescope.pixel_axes,
-                                             ptcdata.pointing_offsets_arcsec.data, det_indices, calib);
-                }
+        if (ptcproc.run_fruit_loops) {
+            logger->info("subtracting map from tod");
+            // subtract map
+            ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(ptcproc.cmb, ptcdata, calib, det_indices,
+                                                                            map_indices, telescope.pixel_axes,
+                                                                            map_grouping);
+        }
+
+        // run cleaning
+        logger->info("processed time chunk processing for scan {}", ptcdata.index.data + 1);
+        ptcproc.run(ptcdata, ptcdata, calib, det_indices, telescope.pixel_axes, map_grouping);
+
+        if (ptcproc.run_fruit_loops) {
+            logger->info("adding map to tod");
+            // add map back
+            ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(ptcproc.cmb, ptcdata, calib, det_indices,
+                                                                    map_indices, telescope.pixel_axes,
+                                                                    map_grouping);
+        }
+
+        // remove outliers after cleaning
+        logger->info("removing outlier dets after cleaning");
+        calib_scan = ptcproc.remove_bad_dets(ptcdata, calib, det_indices, map_grouping);
+
+
+        // calculate weights
+        logger->info("calculating weights");
+        ptcproc.calc_weights(ptcdata, calib.apt, telescope, det_indices);
+
+        // reset weights to median
+        if (ptcproc.med_weight_factor >= 1) {
+            ptcproc.reset_weights(ptcdata, calib, det_indices);
+        }
+
+        // write ptc timestreams
+        if (run_tod_output) {
+            if (tod_output_type == "ptc" || tod_output_type == "both") {
+                logger->info("writing processed time chunk");
+                ptcproc.append_to_netcdf(ptcdata, tod_filename["ptc"], map_grouping, telescope.pixel_axes,
+                                         ptcdata.pointing_offsets_arcsec.data, det_indices, calib);
             }
+        }
 
-            // subtract scan means
-            logger->info("subtracting detector means");
-            ptcproc.subtract_mean(ptcdata);
+        // write out chunk summary
+        if (verbose_mode) {
+            write_chunk_summary(ptcdata);
+        }
 
-            // run cleaning
-            logger->info("processed time chunk processing");
-            ptcproc.run(ptcdata, ptcdata, calib, det_indices, stokes_param, telescope.pixel_axes, map_grouping);
+        // write stats
+        logger->debug("calculating stats");
+        diagnostics.calc_stats(ptcdata);
 
-            // remove outliers after cleaning
-            logger->info("removing outlier dets after cleaning");
-            calib_scan = ptcproc.remove_bad_dets(ptcdata, calib, det_indices, nw_indices, array_indices, redu_type, map_grouping);
-
-            // calculate weights
-            logger->info("calculating weights");
-            ptcproc.calc_weights(ptcdata, calib.apt, telescope, det_indices);
-
-            // reset weights to median
-            if (ptcproc.med_weight_factor >= 1) {
-                ptcproc.reset_weights(ptcdata, calib, det_indices);
+        // populate maps
+        if (run_mapmaking) {
+            logger->info("populating maps");
+            if (map_method=="naive") {
+                naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
+                                             redu_type, calib.apt, telescope.d_fsmp, run_noise);
             }
-
-            // write ptc timestreams
-            if (run_tod_output) {
-                if (tod_output_type == "ptc" || tod_output_type == "both") {
-                    logger->info("writing processed time chunk");
-                    ptcproc.append_to_netcdf(ptcdata, tod_filename["ptc_" + stokes_param], map_grouping, telescope.pixel_axes,
-                                             ptcdata.pointing_offsets_arcsec.data, det_indices, calib);
-                }
+            else if (map_method=="jinc") {
+                jinc_mm.populate_maps_jinc(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
+                                           redu_type, calib.apt, telescope.d_fsmp, run_noise);
             }
-
-            // write out chunk summary
-            if (verbose_mode) {
-                write_chunk_summary(ptcdata);
-            }
-
-            // write stats
-            if (stokes_param=="I") {
-                logger->debug("calculating stats");
-                diagnostics.calc_stats(ptcdata);
-            }
-
-            // populate maps
-            if (run_mapmaking) {
-                logger->info("populating maps");
-                if (map_method=="naive") {
-                    naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
-                                                 redu_type, calib.apt, telescope.d_fsmp, run_noise);
-                }
-                else if (map_method=="jinc") {
-                    jinc_mm.populate_maps_jinc(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
-                                               redu_type, calib.apt, telescope.d_fsmp, run_noise);
-                }
-            }
-        //}
+        }
 
         // increment number of completed scans
         n_scans_done++;

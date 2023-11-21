@@ -153,12 +153,12 @@ void Telescope::calc_tan_pointing() {
     // get altaz tangent pointing
     calc_tan_altaz();
 
-    // get icrs tangent pointing
-    calc_tan_icrs();
+    // get radec tangent pointing
+    calc_tan_radec();
 
-    // set tangential projection to icrs
-    if (std::strcmp("icrs", pixel_axes.c_str()) == 0) {
-        logger->info("using icrs frame");
+    // set tangential projection to radec
+    if (std::strcmp("radec", pixel_axes.c_str()) == 0) {
+        logger->info("using radec frame");
         tel_data["lat_phys"] = tel_data["dec_phys"];
         tel_data["lon_phys"] = tel_data["ra_phys"];
     }
@@ -169,9 +169,15 @@ void Telescope::calc_tan_pointing() {
         tel_data["lat_phys"] = tel_data["alt_phys"];
         tel_data["lon_phys"] = tel_data["az_phys"];
     }
+
+    // apply elevation corrections
+    tel_data["TelElAct"] -= tel_data["TelElCor"];
+
+    // apply azimuth corrections
+    tel_data["TelAzAct"] -= tel_data["TelAzCor"];
 }
 
-void Telescope::calc_tan_icrs() {
+void Telescope::calc_tan_radec() {
     // size of data
     Eigen::Index n_pts = tel_data["TelRa"].size();
 
@@ -215,6 +221,9 @@ void Telescope::calc_tan_icrs() {
 }
 
 void Telescope::calc_tan_altaz() {
+    // subtract source az
+    auto az_diff = tel_data["TelAzAct"].array() - tel_data["SourceAz"].array();
+
     // use loop to avoid annoying eigen aliasing issues with select
     for (Eigen::Index i=0; i<tel_data["TelAzAct"].size(); i++) {
         if ((tel_data["TelAzAct"](i) - tel_data["SourceAz"](i)) > 0.9*2.0*pi) {
@@ -223,18 +232,10 @@ void Telescope::calc_tan_altaz() {
     }
 
     // tangent plane lat (alt)
-    tel_data["alt_phys"] = tel_data["TelElAct"] - tel_data["SourceEl"] - tel_data["TelElCor"];
+    tel_data["alt_phys"] = (tel_data["TelElAct"].array() - tel_data["SourceEl"].array() - tel_data["TelElCor"].array()).matrix();
 
     // tangent plane lon (az)
-    tel_data["az_phys"] = cos(tel_data["TelElAct"].array() -
-                              tel_data["TelElCor"].array())*(tel_data["TelAzAct"].array() - tel_data["SourceAz"].array()) -
-                          tel_data["TelAzCor"].array();
-
-    // apply elevation corrections
-    tel_data["TelElAct"] = tel_data["TelElAct"] - tel_data["TelElCor"];
-
-    // apply azimuth corrections
-    tel_data["TelAzAct"] = tel_data["TelAzAct"] - tel_data["TelAzCor"];
+    tel_data["az_phys"] = (cos(tel_data["TelElAct"].array() - tel_data["TelElCor"].array()) * az_diff - tel_data["TelAzCor"].array()).matrix();
 }
 
 void Telescope::calc_scan_indices() {

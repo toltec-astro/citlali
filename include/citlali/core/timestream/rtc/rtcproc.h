@@ -45,14 +45,14 @@ public:
     // get indices to map from detector to index in map vectors
     template <class calib_t, typename Derived>
     auto calc_map_indices(calib_t &, Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &,
-                          Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string, std::string);
+                          Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string);
 
     // run the main processing
     template<typename calib_t, typename telescope_t>
     auto run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &,
-             TCData<TCDataKind::PTC, Eigen::MatrixXd> &, std::string &,
-             std::string &, calib_t &, telescope_t &, double, std::string,
-             std::string);
+             TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
+             std::string &, std::string &, calib_t &,
+             telescope_t &, double, std::string);
 
     // remove nearby tones
     template <typename calib_t, typename Derived>
@@ -208,7 +208,7 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
 template <class calib_t, typename Derived>
 auto RTCProc::calc_map_indices(calib_t &calib, Eigen::DenseBase<Derived> &det_indices, Eigen::DenseBase<Derived> &nw_indices,
                                Eigen::DenseBase<Derived> &array_indices, Eigen::DenseBase<Derived> &fg_indices,
-                               std::string stokes_param, std::string map_grouping) {
+                               std::string map_grouping) {
     // indices for maps
     Eigen::VectorXI indices(array_indices.size()), map_indices(array_indices.size());
 
@@ -280,7 +280,7 @@ template<class calib_t, typename telescope_t>
 auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
                   TCData<TCDataKind::PTC, Eigen::MatrixXd> &out, std::string &pixel_axes,
                   std::string &redu_type, calib_t &calib, telescope_t &telescope, double pixel_size_rad,
-                  std::string stokes_param, std::string map_grouping) {
+                  std::string map_grouping) {
 
     // number of points in scan
     Eigen::Index n_pts = in.scans.data.rows();
@@ -301,7 +301,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
 
     // get indices for maps
     logger->debug("calculating map indices");
-    auto map_indices = calc_map_indices(calib, det_indices, nw_indices, array_indices, fg_indices, stokes_param, map_grouping);
+    auto map_indices = calc_map_indices(calib, det_indices, nw_indices, array_indices, fg_indices, map_grouping);
 
     if (run_calibrate) {
         logger->debug("calibrating timestream");
