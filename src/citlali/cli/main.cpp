@@ -705,11 +705,9 @@ int run(const rc_t &rc) {
                         todproc.engine().pipeline(kidsproc, rawobs);
                     }
 
-                    // output
-                    if (todproc.engine().run_mapmaking) {
-                        logger->info("outputting raw obs files");
-                        todproc.engine().template output<mapmaking::RawObs>();
-                    }
+                    // output files
+                    logger->info("outputting raw obs files");
+                    todproc.engine().template output<mapmaking::RawObs>();
 
                     // coadd
                     if (todproc.engine().run_coadd) {

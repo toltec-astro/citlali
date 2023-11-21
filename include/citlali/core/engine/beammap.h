@@ -1264,92 +1264,94 @@ void Beammap::output() {
         dir_name = coadd_dir_name + "filtered/";
     }
 
-    // wiener filtered maps write before this and are deleted from the vector.
-    if (!f_io->empty()) {
-        {
-            // progress bar
-            tula::logging::progressbar pb(
-                [&](const auto &msg) { logger->info("{}", msg); }, 100, "output progress ");
+    if (run_mapmaking) {
+        // wiener filtered maps write before this and are deleted from the vector.
+        if (!f_io->empty()) {
+            {
+                // progress bar
+                tula::logging::progressbar pb(
+                    [&](const auto &msg) { logger->info("{}", msg); }, 100, "output progress ");
 
-            for (Eigen::Index i=0; i<f_io->size(); i++) {
-                // get the array for the given map
-                // add primary hdu
-                add_phdu(f_io, mb, i);
+                for (Eigen::Index i=0; i<f_io->size(); i++) {
+                    // get the array for the given map
+                    // add primary hdu
+                    add_phdu(f_io, mb, i);
 
-                if (!mb->noise.empty()) {
-                    add_phdu(n_io, mb, i);
+                    if (!mb->noise.empty()) {
+                        add_phdu(n_io, mb, i);
+                    }
                 }
-            }
 
-            // write the maps
-            Eigen::Index k = 0;
-            Eigen::Index step = 2;
+                // write the maps
+                Eigen::Index k = 0;
+                Eigen::Index step = 2;
 
-            if (!mb->kernel.empty()) {
-                step++;
-            }
-            if (!mb->coverage.empty()) {
-                step++;
-            }
+                if (!mb->kernel.empty()) {
+                    step++;
+                }
+                if (!mb->coverage.empty()) {
+                    step++;
+                }
 
-            // write the maps
-            for (Eigen::Index i=0; i<n_maps; i++) {
-                // update progress bar
-                pb.count(n_maps, 1);
-                write_maps(f_io,n_io,mb,i);
+                // write the maps
+                for (Eigen::Index i=0; i<n_maps; i++) {
+                    // update progress bar
+                    pb.count(n_maps, 1);
+                    write_maps(f_io,n_io,mb,i);
 
-                if (map_grouping=="detector") {
-                    if constexpr (map_type == mapmaking::RawObs) {
-                        // get the array for the given map
-                        Eigen::Index map_index = arrays_to_maps(i);
+                    if (map_grouping=="detector") {
+                        if constexpr (map_type == mapmaking::RawObs) {
+                            // get the array for the given map
+                            Eigen::Index map_index = arrays_to_maps(i);
 
-                        // check if we move from one file to the next
-                        // if so go back to first hdu layer
-                        if (i>0) {
-                            if (map_index > arrays_to_maps(i-1)) {
-                                k = 0;
+                            // check if we move from one file to the next
+                            // if so go back to first hdu layer
+                            if (i>0) {
+                                if (map_index > arrays_to_maps(i-1)) {
+                                    k = 0;
+                                }
                             }
-                        }
 
-                        // add apt table
-                        for (auto const& key: calib.apt_header_keys) {
-                            if (key!="flag2") {
-                                try {
-                                    f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, calib.apt[key](i), key
-                                                                          + " (" + calib.apt_header_units[key] + ")");
-                                } catch(...) {
-                                    f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, 0.0, key
+                            // add apt table
+                            for (auto const& key: calib.apt_header_keys) {
+                                if (key!="flag2") {
+                                    try {
+                                        f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, calib.apt[key](i), key
+                                                                              + " (" + calib.apt_header_units[key] + ")");
+                                    } catch(...) {
+                                        f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, 0.0, key
+                                                                               + " (" + calib.apt_header_units[key] + ")");
+                                    }
+                                }
+                                else {
+                                    f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, flag2(i), key
                                                                            + " (" + calib.apt_header_units[key] + ")");
                                 }
                             }
-                            else {
-                                f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, flag2(i), key
-                                                                       + " (" + calib.apt_header_units[key] + ")");
-                            }
+                            // increment hdu layer
+                            k = k + step;
                         }
-                        // increment hdu layer
-                        k = k + step;
                     }
                 }
             }
+
+            logger->info("maps have been written to:");
+            for (Eigen::Index i=0; i<f_io->size(); i++) {
+                logger->info("{}.fits",f_io->at(i).filepath);
+            }
         }
 
-        logger->info("maps have been written to:");
-        for (Eigen::Index i=0; i<f_io->size(); i++) {
-            logger->info("{}.fits",f_io->at(i).filepath);
+        // clear fits file vectors to ensure its closed.
+        f_io->clear();
+        n_io->clear();
+
+        if (map_grouping!="detector") {
+            // write psd and histogram files
+            logger->debug("writing psds");
+            write_psd<map_type>(mb, dir_name);
+            logger->debug("writing histograms");
+            write_hist<map_type>(mb, dir_name);
         }
-    }
-
-    // clear fits file vectors to ensure its closed.
-    f_io->clear();
-    n_io->clear();
-
-    if (map_grouping!="detector") {
-        // write psd and histogram files
-        logger->debug("writing psds");
-        write_psd<map_type>(mb, dir_name);
-        logger->debug("writing histograms");
-        write_hist<map_type>(mb, dir_name);
     }
 }
 

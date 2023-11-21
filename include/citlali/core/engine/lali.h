@@ -115,13 +115,13 @@ auto Lali::run() {
         logger->info("processed time chunk processing for scan {}", ptcdata.index.data + 1);
         ptcproc.run(ptcdata, ptcdata, calib, det_indices, telescope.pixel_axes, map_grouping);
 
-        if (ptcproc.run_fruit_loops) {
+        /*if (ptcproc.run_fruit_loops) {
             logger->info("adding map to tod");
             // add map back
             ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(ptcproc.cmb, ptcdata, calib, det_indices,
                                                                     map_indices, telescope.pixel_axes,
                                                                     map_grouping);
-        }
+        }*/
 
         // remove outliers after cleaning
         logger->info("removing outlier dets after cleaning");
@@ -298,58 +298,52 @@ void Lali::output() {
         dir_name = coadd_dir_name + "filtered/";
     }
 
-    // wiener filtered maps write before this and are deleted from the vector.
-    if (!f_io->empty()) {
-        {
-            // progress bar
-            tula::logging::progressbar pb(
-                [&](const auto &msg) { logger->info("{}", msg); }, 100, "output progress ");
+    if (run_mapmaking) {
+        // wiener filtered maps write before this and are deleted from the vector.
+        if (!f_io->empty()) {
+            {
+                // progress bar
+                tula::logging::progressbar pb(
+                    [&](const auto &msg) { logger->info("{}", msg); }, 100, "output progress ");
 
-            for (Eigen::Index i=0; i<f_io->size(); i++) {
-                // get the array for the given map
-                // add primary hdu
-                add_phdu(f_io, mb, i);
+                for (Eigen::Index i=0; i<f_io->size(); i++) {
+                    // get the array for the given map
+                    // add primary hdu
+                    add_phdu(f_io, mb, i);
 
-                if (!mb->noise.empty()) {
-                    add_phdu(n_io, mb, i);
+                    if (!mb->noise.empty()) {
+                        add_phdu(n_io, mb, i);
+                    }
+                }
+
+                // write the maps
+                for (Eigen::Index i=0; i<n_maps; i++) {
+                    // update progress bar
+                    pb.count(n_maps, 1);
+                    write_maps(f_io,n_io,mb,i);
                 }
             }
 
-            // write the maps
-            for (Eigen::Index i=0; i<n_maps; i++) {
-                // update progress bar
-                pb.count(n_maps, 1);
-                write_maps(f_io,n_io,mb,i);
+            logger->info("maps have been written to:");
+            for (Eigen::Index i=0; i<f_io->size(); i++) {
+                logger->info("{}.fits",f_io->at(i).filepath);
             }
         }
 
-        logger->info("maps have been written to:");
-        for (Eigen::Index i=0; i<f_io->size(); i++) {
-            logger->info("{}.fits",f_io->at(i).filepath);
+        // clear fits file vectors to ensure its closed.
+        f_io->clear();
+        n_io->clear();
+
+        // write psd and histogram files
+        logger->debug("writing psds");
+        write_psd<map_type>(mb, dir_name);
+        logger->debug("writing histograms");
+        write_hist<map_type>(mb, dir_name);
+
+        // write source table
+        if (run_source_finder) {
+            logger->debug("writing source table");
+            write_sources<map_type>(mb, dir_name);
         }
     }
-
-    // clear fits file vectors to ensure its closed.
-    f_io->clear();
-    n_io->clear();
-
-    // write psd and histogram files
-    logger->debug("writing psds");
-    write_psd<map_type>(mb, dir_name);
-    logger->debug("writing histograms");
-    write_hist<map_type>(mb, dir_name);
-
-    // write source table
-    if (run_source_finder) {
-        logger->debug("writing source table");
-        write_sources<map_type>(mb, dir_name);
-    }
-
-    // clean up
-    /*delete mb;
-    mb = NULL;
-    delete f_io;
-    f_io = NULL;
-    delete n_io;
-    n_io = NULL;*/
 }

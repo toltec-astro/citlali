@@ -370,10 +370,10 @@ void TCProc::load_cmb(calib_t &calib) {
                         if (entry.path().string().find("noise") == std::string::npos) {
                             // get signal map
                             cmb.signal.push_back(fits_io.get_hdu("signal_I"));
-                            //cmb.signal.back() = cmb.signal.back().colwise().reverse();
+                            cmb.signal.back() = cmb.signal.back().rowwise().reverse();
                             // get weight maps
                             cmb.weight.push_back(fits_io.get_hdu("weight_I"));
-                            //cmb.weight.back() = cmb.weight.back().colwise().reverse();
+                            cmb.weight.back() = cmb.weight.back().rowwise().reverse();
                         }
                         // get noise maps
                         else {
