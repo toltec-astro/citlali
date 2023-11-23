@@ -267,7 +267,8 @@ public:
 
     // fruit loops algorithm params
     bool run_fruit_loops;
-    std::string fruit_loops_path;
+    std::string fruit_loops_path, init_fruit_loops_path;
+    int fruit_loops_iters;
 
     // signal-to-noise cut for fruit loops algorithm
     double fruit_loops_sig2noise;
@@ -286,7 +287,7 @@ public:
 
     // create a map buffer from a citlali reduction directory
     template <class calib_t>
-    void load_cmb(calib_t &);
+    void load_cmb(std::string, std::string, calib_t &);
 
     // get limits for a particular grouping
     template <typename Derived, class calib_t>
@@ -322,33 +323,42 @@ public:
 };
 
 template <class calib_t>
-void TCProc::load_cmb(calib_t &calib) {
+void TCProc::load_cmb(std::string filepath, std::string noise_filepath, calib_t &calib) {
 
     namespace fs = std::filesystem;
 
-    //try {
-        // loop through arrays in current obs
-        for (const auto &arr: calib.arrays) {
-        // loop through files in redu directory
-            for (const auto& entry : fs::directory_iterator(fruit_loops_path)) {
+    // clear cmb
+    cmb.signal.clear();
+    cmb.weight.clear();
+    cmb.noise.clear();
+
+    // resize wcs params
+    cmb.wcs.naxis.resize(4,0.);
+    cmb.wcs.crpix.resize(4,0.);
+    cmb.wcs.crval.resize(4,0.);
+    cmb.wcs.cdelt.resize(4,0.);
+
+    cmb.wcs.cunit.clear();
+    cmb.wcs.cunit.push_back("N/A");
+    cmb.wcs.cunit.push_back("N/A");
+
+    // loop through arrays in current obs
+    for (const auto &arr: calib.arrays) {
+        try {
+            // loop through files in redu directory
+            for (const auto& entry : fs::directory_iterator(filepath)) {
+                // check if fits file
+                bool fits_file = entry.path().string().find(".fits") != std::string::npos;
                 // find current array obs map
-                if (entry.path().string().find(toltec_io.array_name_map[arr]) != std::string::npos) {
-                    // try catch for non fits files
-                    //try {
+                if (entry.path().string().find(toltec_io.array_name_map[arr]) != std::string::npos && fits_file) {
+                    // get maps (if noise not in filename)
+                    if (entry.path().string().find("noise") == std::string::npos) {
+
                         // get fits file
                         fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*> fits_io(entry.path().string());
 
-                        // get wcs
+                        // get wcs (should be same for all maps)
                         CCfits::ExtHDU& extension = fits_io.pfits->extension(1);
-
-                        // resize wcs params
-                        cmb.wcs.naxis.resize(4,0.);
-                        cmb.wcs.crpix.resize(4,0.);
-                        cmb.wcs.crval.resize(4,0.);
-                        cmb.wcs.cdelt.resize(4,0.);
-
-                        cmb.wcs.cunit.push_back("N/A");
-                        cmb.wcs.cunit.push_back("N/A");
 
                         // get naxis
                         extension.readKey("NAXIS1", cmb.wcs.naxis[0]);
@@ -366,59 +376,75 @@ void TCProc::load_cmb(calib_t &calib) {
                         extension.readKey("CUNIT1", cmb.wcs.cunit[1]);
                         extension.readKey("CUNIT2", cmb.wcs.cunit[0]);
 
-                        // get maps
-                        if (entry.path().string().find("noise") == std::string::npos) {
-                            // get signal map
-                            cmb.signal.push_back(fits_io.get_hdu("signal_I"));
-                            Eigen::MatrixXd temp = cmb.signal.back().rowwise().reverse();
-                            cmb.signal.back() = temp;
-                            // get weight maps
-                            cmb.weight.push_back(fits_io.get_hdu("weight_I"));
-                            temp = cmb.weight.back().rowwise().reverse();
-                            cmb.weight.back() = temp;
-                        }
-                        // get noise maps
-                        else {
-                            // get number of noise maps
-                            int num_extensions = 0;
-                            bool keep_going = true;
-                            while (keep_going) {
-                                try {
-                                    // attempt to access an HDU (ignore primary hdu)
-                                    CCfits::ExtHDU& ext = fits_io.pfits->extension(num_extensions + 1);
-                                    num_extensions++;
-                                } catch (...) {
-                                    // NoSuchHDU exception is thrown when there are no more HDUs
-                                    keep_going = false;
-                                }
-                            }
-
-                            // set number of noise maps
-                            cmb.n_noise = num_extensions;
-
-                            // get number of rows and cols
-                            CCfits::ExtHDU& extension = fits_io.pfits->extension(1);
-
-                            // allocate current array noise map
-                            cmb.noise.push_back(Eigen::Tensor<double,3>(cmb.wcs.naxis[1], cmb.wcs.naxis[0], cmb.n_noise));
-
-                            // loop through noise maps for current array
-                            for (int i=0; i<cmb.n_noise; i++) {
-                                // get noise map
-                                Eigen::MatrixXd data = fits_io.get_hdu("signal_"+std::to_string(i)+"_I");
-                                // map to tensor
-                                Eigen::TensorMap<Eigen::Tensor<double, 2>> in_tensor(data.data(), data.rows(), data.cols());
-                                // overwrite tensor
-                                cmb.noise.back().chip(i,2) = in_tensor;
-                            }
-                        }
-                    //} catch (...) {}
+                        // get signal map
+                        cmb.signal.push_back(fits_io.get_hdu("signal_I"));
+                        //Eigen::MatrixXd temp = cmb.signal.back().rowwise().reverse();
+                        //cmb.signal.back() = temp;
+                        // get weight maps
+                        cmb.weight.push_back(fits_io.get_hdu("weight_I"));
+                        //temp = cmb.weight.back().rowwise().reverse();
+                        //cmb.weight.back() = temp;
+                    }
                 }
             }
+
+            // get noise maps
+            // loop through files in redu directory
+            for (const auto& entry : fs::directory_iterator(noise_filepath)) {
+                // check if fits file
+                bool fits_file = entry.path().string().find(".fits") != std::string::npos;
+                // find current array obs map
+                if (entry.path().string().find(toltec_io.array_name_map[arr]) != std::string::npos && fits_file) {
+                    // check if the current file is a noise map
+                    if (entry.path().string().find("noise") != std::string::npos) {
+
+                        // get fits file
+                        fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*> fits_io(entry.path().string());
+
+                        // get number of noise maps
+                        int num_extensions = 0;
+                        bool keep_going = true;
+                        while (keep_going) {
+                            try {
+                                // attempt to access an HDU (ignore primary hdu)
+                                CCfits::ExtHDU& ext = fits_io.pfits->extension(num_extensions + 1);
+                                num_extensions++;
+                            } catch (CCfits::FITS::NoSuchHDU) {
+                                // NoSuchHDU exception is thrown when there are no more HDUs
+                                keep_going = false;
+                            }
+                        }
+
+                        // set number of noise maps
+                        cmb.n_noise = num_extensions;
+
+                        // allocate current array noise map
+                        cmb.noise.push_back(Eigen::Tensor<double,3>(cmb.wcs.naxis[1], cmb.wcs.naxis[0], cmb.n_noise));
+
+                        // loop through noise maps for current array
+                        for (int i=0; i<cmb.n_noise; i++) {
+                            // get noise map
+                            Eigen::MatrixXd data = fits_io.get_hdu("signal_" + std::to_string(i) + "_I");
+                            // map to tensor
+                            Eigen::TensorMap<Eigen::Tensor<double, 2>> in_tensor(data.data(), data.rows(), data.cols());
+                            // overwrite tensor
+                            cmb.noise.back().chip(i,2) = in_tensor;
+                        }
+                    }
+                }
+            }
+
+        } catch (const fs::filesystem_error& err) {
+            logger->error("{}", err.what());
+            std::exit(EXIT_FAILURE);
         }
-    //} catch (const fs::filesystem_error& err) {
-    //    logger->info("{}", err.what());
-    //}
+    }
+
+    // check if we found any maps
+    if (cmb.signal.empty()) {
+        logger->error("no maps found in {}",filepath);
+        std::exit(EXIT_FAILURE);
+    }
 
     // set dimensions
     cmb.n_cols = cmb.wcs.naxis[0];

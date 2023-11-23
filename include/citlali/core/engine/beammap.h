@@ -324,8 +324,12 @@ auto Beammap::run_loop() {
         // copy signal for convergence test
         if (ptcproc.run_fruit_loops) {
             omb_copy.signal = omb.signal;
-            if (current_iter == 1 && !omb.noise.empty()) {
-                omb.calc_mean_rms();
+            // calc mean rms
+            if (current_iter == 1) {
+                // use obs map buffer
+                if (!omb.noise.empty()) {
+                    omb.calc_mean_rms();
+                }
             }
         }
 

@@ -103,7 +103,7 @@ auto Lali::run() {
             }
         }
 
-        if (ptcproc.run_fruit_loops) {
+        if (ptcproc.run_fruit_loops && !ptcproc.cmb.signal.empty()) {
             logger->info("subtracting map from tod");
             // subtract map
             ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(ptcproc.cmb, ptcdata, calib, det_indices,
@@ -115,7 +115,7 @@ auto Lali::run() {
         logger->info("processed time chunk processing for scan {}", ptcdata.index.data + 1);
         ptcproc.run(ptcdata, ptcdata, calib, det_indices, telescope.pixel_axes, map_grouping);
 
-        if (ptcproc.run_fruit_loops) {
+        if (ptcproc.run_fruit_loops && !ptcproc.cmb.signal.empty()) {
             logger->info("adding map to tod");
             // add map back
             ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(ptcproc.cmb, ptcdata, calib, det_indices,

@@ -169,6 +169,9 @@ public:
     // output directory and optional sub directory name
     std::string output_dir, redu_dir_name;
 
+    // reduction directory number
+    int redu_dir_num;
+
     // obsnum and coadded directory names
     std::string obsnum_dir_name, coadd_dir_name;
 
@@ -464,11 +467,6 @@ void Engine::obsnum_setup() {
     }
     // clear stored eigenvalues
     diagnostics.evals.clear();
-
-    // load citlali maps from file
-    if (ptcproc.run_fruit_loops && redu_type != "beammap") {
-        ptcproc.load_cmb(calib);
-    }
 }
 
 template<typename CT>

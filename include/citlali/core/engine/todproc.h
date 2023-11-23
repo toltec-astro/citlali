@@ -337,19 +337,19 @@ void TimeOrderedDataProc<EngineType>::create_output_dir() {
     // create reduction subdir
     if (engine().use_subdir) {
         // redu number
-        int redu_dir_num = 0;
+        engine().redu_dir_num = 0;
 
         std::stringstream ss_redu_dir_num;
-        ss_redu_dir_num << std::setfill('0') << std::setw(2) << redu_dir_num;
+        ss_redu_dir_num << std::setfill('0') << std::setw(2) << engine().redu_dir_num;
 
         std::string redu_dir_name = "redu" + ss_redu_dir_num.str();
 
         // iteratively check if current subdir with current redu number exists
         while (fs::exists(fs::status(engine().output_dir + "/" + redu_dir_name))) {
             // increment redu number if subdir exists
-            redu_dir_num++;
+            engine().redu_dir_num++;
             std::stringstream ss_redu_dir_num_i;
-            ss_redu_dir_num_i << std::setfill('0') << std::setw(2) << redu_dir_num;
+            ss_redu_dir_num_i << std::setfill('0') << std::setw(2) << engine().redu_dir_num;
             redu_dir_name = "redu" + ss_redu_dir_num_i.str();
         }
 

@@ -41,7 +41,6 @@ public:
                 pfits.reset( new CCfits::FITS(filepath + ".fits", CCfits::Write));
                 // write date
                 pfits->pHDU().writeDate();
-                //logger->info("created file {}", filepath + ".fits");
             }
             catch (CCfits::FITS::CantCreate) {
                 logger->error("unable to create file {}", filepath);
@@ -78,31 +77,42 @@ public:
     }
 
     auto get_hdu(std::string hdu_name) {
-        // add extension hdu to vector
-        CCfits::ExtHDU& hdu = pfits->extension(hdu_name);
-        std::valarray<double> contents;
+        try {
+            // get extension
+            CCfits::ExtHDU& hdu = pfits->extension(hdu_name);
 
-        // read all user-specifed, coordinate, and checksum keys in the image
-        hdu.readAllKeys();
-        hdu.read(contents);
+            // hold image data
+            std::valarray<double> contents;
 
-        // this doesn't print the data, just header info.
-        long ax1(hdu.axis(0));
-        long ax2(hdu.axis(1));
+            // read all user-specifed, coordinate, and checksum keys in the image
+            hdu.readAllKeys();
+            hdu.read(contents);
 
-        // holds the image data
-        Eigen::MatrixXd data(ax2,ax1);
+            // this doesn't print the data, just header info.
+            long ax1(hdu.axis(0));
+            long ax2(hdu.axis(1));
 
-        // loop through and copy into eigen matrix
-        Eigen::Index k = 0;
-        for (Eigen::Index i=0; i<ax2; i++) {
-            for (Eigen::Index j=0; j<ax1; j++) {
-                data(i,j) = contents[k];
-                k++;
+            // holds the image data
+            Eigen::MatrixXd data(ax2,ax1);
+
+            // loop through and copy into eigen matrix
+            Eigen::Index k = 0;
+            for (Eigen::Index i=0; i<ax2; i++) {
+                for (Eigen::Index j=0; j<ax1; j++) {
+                    data(i,j) = contents[k];
+                    k++;
+                }
             }
-        }
 
-        return std::move(data);
+            // flip to match internal orientation
+            data.rowwise().reverseInPlace();
+
+            return data;
+
+        } catch (CCfits::FITS::NoSuchHDU) {
+            logger->error("cannot find {} from {}", hdu_name, filepath);
+            std::exit(EXIT_FAILURE);
+        }
     }
 
     template <typename hdu_t, class wcs_t, typename epoch_t>
