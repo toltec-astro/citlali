@@ -115,6 +115,7 @@ auto Lali::run() {
         logger->info("processed time chunk processing for scan {}", ptcdata.index.data + 1);
         ptcproc.run(ptcdata, ptcdata, calib, det_indices, telescope.pixel_axes, map_grouping);
 
+
         if (ptcproc.run_fruit_loops && !ptcproc.cmb.signal.empty()) {
             logger->info("adding map to tod");
             // add map back

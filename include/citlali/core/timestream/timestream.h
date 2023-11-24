@@ -265,9 +265,13 @@ public:
         NegativeMap = 5
     };
 
-    // fruit loops algorithm params
+    // run fruit loops
     bool run_fruit_loops;
-    std::string fruit_loops_path, init_fruit_loops_path;
+    // path for input images
+    std::string fruit_loops_path;
+    // paths for first set of images
+    std::vector<std::string> init_fruit_loops_path;
+    // number of fruit loops iterations
     int fruit_loops_iters;
 
     // signal-to-noise cut for fruit loops algorithm
@@ -287,7 +291,7 @@ public:
 
     // create a map buffer from a citlali reduction directory
     template <class calib_t>
-    void load_cmb(std::string, std::string, calib_t &);
+    void load_mb(std::string, std::string, calib_t &);
 
     // get limits for a particular grouping
     template <typename Derived, class calib_t>
@@ -323,7 +327,7 @@ public:
 };
 
 template <class calib_t>
-void TCProc::load_cmb(std::string filepath, std::string noise_filepath, calib_t &calib) {
+void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &calib) {
 
     namespace fs = std::filesystem;
 
@@ -331,6 +335,7 @@ void TCProc::load_cmb(std::string filepath, std::string noise_filepath, calib_t 
     cmb.signal.clear();
     cmb.weight.clear();
     cmb.noise.clear();
+    cmb.wcs.cunit.clear();
 
     // resize wcs params
     cmb.wcs.naxis.resize(4,0.);
@@ -338,7 +343,6 @@ void TCProc::load_cmb(std::string filepath, std::string noise_filepath, calib_t 
     cmb.wcs.crval.resize(4,0.);
     cmb.wcs.cdelt.resize(4,0.);
 
-    cmb.wcs.cunit.clear();
     cmb.wcs.cunit.push_back("N/A");
     cmb.wcs.cunit.push_back("N/A");
 
@@ -378,12 +382,8 @@ void TCProc::load_cmb(std::string filepath, std::string noise_filepath, calib_t 
 
                         // get signal map
                         cmb.signal.push_back(fits_io.get_hdu("signal_I"));
-                        //Eigen::MatrixXd temp = cmb.signal.back().rowwise().reverse();
-                        //cmb.signal.back() = temp;
-                        // get weight maps
+                        // get weight map
                         cmb.weight.push_back(fits_io.get_hdu("weight_I"));
-                        //temp = cmb.weight.back().rowwise().reverse();
-                        //cmb.weight.back() = temp;
                     }
                 }
             }
@@ -442,7 +442,13 @@ void TCProc::load_cmb(std::string filepath, std::string noise_filepath, calib_t 
 
     // check if we found any maps
     if (cmb.signal.empty()) {
-        logger->error("no maps found in {}",filepath);
+        logger->error("no maps found in {}", filepath);
+        std::exit(EXIT_FAILURE);
+    }
+
+    // check if we found any noise maps
+    if (cmb.noise.empty()) {
+        logger->error("no noise maps found in {}", noise_filepath);
         std::exit(EXIT_FAILURE);
     }
 
@@ -503,7 +509,7 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
     }
 
     // loop through detectors
-    for (Eigen::Index i=0; i<n_dets; i++) {
+    for (Eigen::Index i=0; i<n_dets; ++i) {
         // current detector index in apt
         auto det_index = det_indices(i);
         auto map_index = map_indices(i);
@@ -511,7 +517,7 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
         //double max_weight = mb.weight[map_index].maxCoeff();
 
         // check if detector is not flagged
-        if (calib.apt["flag"](det_index)==0 && (in.flags.data.col(i).array()==0).any()) {
+        if (calib.apt["flag"](det_index) == 0 && (in.flags.data.col(i).array() == 0).any()) {
             double az_off = calib.apt["x_t"](det_index);
             double el_off = calib.apt["y_t"](det_index);
 
@@ -523,7 +529,7 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
             Eigen::VectorXd irows = lat.array()/mb.pixel_size_rad + (mb.n_rows)/2.;
             Eigen::VectorXd icols = lon.array()/mb.pixel_size_rad + (mb.n_cols)/2.;
 
-            for (Eigen::Index j=0; j<n_pts; j++) {
+            for (Eigen::Index j=0; j<n_pts; ++j) {
                 // row and col pixel from signal image
                 Eigen::Index ir = irows(j);
                 Eigen::Index ic = icols(j);

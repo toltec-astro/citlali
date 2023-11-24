@@ -117,6 +117,9 @@ public:
 
     template <typename hdu_t, class wcs_t, typename epoch_t>
     void add_wcs(hdu_t *hdu, wcs_t &wcs, const epoch_t epoch) {
+        // add equinox
+        hdu->addKey("EQUINOX", epoch, "WCS: Equinox");
+
         for (Eigen::Index i=0; i<wcs.ctype.size(); i++) {
             hdu->addKey("CTYPE"+std::to_string(i+1), wcs.ctype[i], "WCS: Projection Type " +std::to_string(i+1));
             hdu->addKey("CUNIT"+std::to_string(i+1), wcs.cunit[i], "WCS: Axis Unit " +std::to_string(i+1));
@@ -125,7 +128,5 @@ public:
             // add one to crpix due to FITS convention
             hdu->addKey("CRPIX"+std::to_string(i+1), wcs.crpix[i] + 1, "WCS: Ref Pixel " +std::to_string(i+1));
         }
-        // add equinox
-        hdu->addKey("EQUINOX", epoch, "WCS: Equinox");
     }
 };

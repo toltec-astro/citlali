@@ -418,11 +418,11 @@ void Engine::obsnum_setup() {
             fs::create_directories(obsnum_dir_name + "raw/" + tod_output_subdir_name);
         }
         // make rtc tod output file
-        if (tod_output_type == "rtc" || tod_output_type=="both") {
+        if (tod_output_type == "rtc" || tod_output_type == "both") {
             create_tod_files<engine_utils::toltecIO::rtc_timestream>();
         }
         // make ptc tod output file
-        if (tod_output_type == "ptc" || tod_output_type=="both") {
+        if (tod_output_type == "ptc" || tod_output_type == "both") {
             create_tod_files<engine_utils::toltecIO::ptc_timestream>();
         }
     }
@@ -979,51 +979,61 @@ void Engine::get_astrometry_config(CT &config) {
 }
 
 void Engine::create_obs_map_files() {
-    // clear fits vector for each observation
+    // clear fits vectors for each observation
     fits_io_vec.clear();
-
-    // clear noise fits vector
-    if (!run_coadd) {
-        if (run_noise) {
-            noise_fits_io_vec.clear();
-        }
-    }
+    noise_fits_io_vec.clear();
+    filtered_fits_io_vec.clear();
+    filtered_noise_fits_io_vec.clear();
 
     // loop through arrays
     for (Eigen::Index i=0; i<calib.n_arrays; i++) {
+        // array index
         auto array = calib.arrays[i];
+        // array name
         std::string array_name = toltec_io.array_name_map[array];
+        // map filename
         auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::map,
                                                   engine_utils::toltecIO::raw>(obsnum_dir_name + "raw/", redu_type, array_name,
                                                                                obsnum, telescope.sim_obs);
+        // create fits_io class for current array file
         fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
+        // append to fits_io vector
         fits_io_vec.push_back(std::move(fits_io));
 
         // if noise maps are requested but coadding is not, populate noise fits vector
         if (!run_coadd) {
             if (run_noise) {
+                // noise map filename
                 auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::noise,
                                                           engine_utils::toltecIO::raw>(obsnum_dir_name + "raw/", redu_type, array_name,
                                                                                        obsnum, telescope.sim_obs);
+                // create fits_io class for current array file
                 fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
+                // append to fits_io vector
                 noise_fits_io_vec.push_back(std::move(fits_io));
             }
 
             // map filtering
             if (run_map_filter) {
+                // filtered map filename
                 auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::map,
                                                           engine_utils::toltecIO::filtered>(obsnum_dir_name + "filtered/",
                                                                                             redu_type, array_name,
                                                                                             obsnum, telescope.sim_obs);
+                // create fits_io class for current array file
                 fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
+                // append to fits_io vector
                 filtered_fits_io_vec.push_back(std::move(fits_io));
 
                 // filtered noise maps
                 if (run_noise) {
+                    // filtered noise map filename
                     auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::noise,
                                                               engine_utils::toltecIO::filtered>(obsnum_dir_name + "filtered/", redu_type,
                                                                                                 array_name, obsnum, telescope.sim_obs);
+                    // create fits_io class for current array file
                     fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
+                    // append to fits_io vector
                     filtered_noise_fits_io_vec.push_back(std::move(fits_io));
                 }
             }
@@ -1395,6 +1405,7 @@ void Engine::create_tod_files() {
 //template <TCDataKind tc_t>
 void Engine::cli_summary() {
     logger->info("\n\nreduction info:\n\n");
+    logger->info("obsnum: {}", obsnum);
     logger->info("map buffer rows: {}", omb.n_rows);
     logger->info("map buffer cols: {}", omb.n_cols);
     logger->info("number of maps: {}", omb.signal.size());

@@ -402,6 +402,13 @@ int run(const rc_t &rc) {
                     }
                 }
 
+                if (todproc.engine().run_coadd) {
+                    // get size of coadd buffer
+                    logger->info("calculating cmb dimensions");
+                    todproc.calc_cmb_size(map_coords);
+                    // make coadd buffer
+                }
+
                 // current fruit loops iteration
                 int fruit_iter = 0;
                 // fruit loops convergence check
@@ -414,7 +421,6 @@ int run(const rc_t &rc) {
 
                 // loop through fruit loops iterations
                 while (fruit_iter < todproc.engine().ptcproc.fruit_loops_iters && !fruit_loops_converged) {
-
                     // setup reduction directories
                     todproc.create_output_dir();
 
@@ -433,13 +439,7 @@ int run(const rc_t &rc) {
                     // clear obs dates
                     todproc.engine().date_obs.clear();
 
-                    // reset cmb exposure time
-                    todproc.engine().cmb.exposure_time = 0;
-
                     if (todproc.engine().run_coadd) {
-                        // get size of coadd buffer
-                        logger->info("calculating cmb dimensions");
-                        todproc.calc_cmb_size(map_coords);
                         // make coadd buffer
                         logger->info("allocating cmb");
                         todproc.allocate_cmb();
@@ -455,6 +455,9 @@ int run(const rc_t &rc) {
 
                         // clear obsnums from coadd buffer
                         todproc.engine().cmb.obsnums.clear();
+
+                        // reset cmb exposure time
+                        todproc.engine().cmb.exposure_time = 0;
                     }
 
                     // run the reduction for each observation
@@ -713,6 +716,7 @@ int run(const rc_t &rc) {
                         auto tn = todproc.engine().telescope.tel_data["TelTime"](todproc.engine().telescope.tel_data["TelTime"].size()-1);
 
                         todproc.engine().omb.exposure_time = tn - t0;
+                        // add current obs exposure time to cumulative exposure time in coadded map buffer
                         if (todproc.engine().run_coadd) {
                             todproc.engine().cmb.exposure_time = todproc.engine().cmb.exposure_time + todproc.engine().omb.exposure_time;
                         }
@@ -729,11 +733,11 @@ int run(const rc_t &rc) {
 
                             // if running fruit loops on each obsnum
                             if (todproc.engine().ptcproc.fruit_loops_path == "obsnum") {
-                                fruit_dir = fruit_dir + "/" + todproc.engine().omb.obsnums.back() + "/" + "raw/";
+                                fruit_dir = fruit_dir + "/" + todproc.engine().omb.obsnums.back() + "/raw/";
                             }
-                            // if running fruit loops on the coadded map
-                            else if (todproc.engine().ptcproc.fruit_loops_path == "coadd") {
-                                fruit_dir = fruit_dir + "/coadded/" + "raw/";
+                            // if running fruit loops on the coadded maps
+                            else if (todproc.engine().ptcproc.fruit_loops_path == "coadded" || todproc.engine().ptcproc.fruit_loops_path == "coadd") {
+                                fruit_dir = fruit_dir + "/coadded/raw/";
                             }
                             // else use input directory
                             else {
@@ -742,9 +746,12 @@ int run(const rc_t &rc) {
 
                             logger->info("reading in {} for fruit loops iteration {}",fruit_dir, fruit_iter);
 
+                            // set coverage region
+                            todproc.engine().ptcproc.cmb.cov_cut = todproc.engine().omb.cov_cut;
+
                             // get map buffer from previous reduction directory
-                            todproc.engine().ptcproc.load_cmb(fruit_dir, todproc.engine().ptcproc.init_fruit_loops_path,
-                                                              todproc.engine().calib);
+                            todproc.engine().ptcproc.load_mb(fruit_dir, todproc.engine().ptcproc.init_fruit_loops_path[i],
+                                                             todproc.engine().calib);
                         }
                         // else clear ptcproc maps for each obsnum and get current redu path
                         else {
@@ -758,20 +765,21 @@ int run(const rc_t &rc) {
                             std::string redu_dir_name = "redu" + ss_redu_dir_num_i.str();
 
                             // current redu directory
-                            todproc.engine().ptcproc.init_fruit_loops_path = todproc.engine().output_dir + "/" + redu_dir_name;
+                            todproc.engine().ptcproc.init_fruit_loops_path.push_back(todproc.engine().output_dir + "/" + redu_dir_name);
 
                             // if running fruit loops on each obsnum
                             if (todproc.engine().ptcproc.fruit_loops_path == "obsnum") {
-                                todproc.engine().ptcproc.init_fruit_loops_path = todproc.engine().ptcproc.init_fruit_loops_path + "/" +
-                                                                                 todproc.engine().omb.obsnums.back() + "/" + "raw/";
+                                todproc.engine().ptcproc.init_fruit_loops_path.back() = todproc.engine().ptcproc.init_fruit_loops_path.back() + "/" +
+                                                                                 todproc.engine().omb.obsnums.back() + "/raw/";
                             }
-                            // if running fruit loops on the coadded map
-                            else if (todproc.engine().ptcproc.fruit_loops_path == "coadd") {
-                                todproc.engine().ptcproc.init_fruit_loops_path = todproc.engine().ptcproc.init_fruit_loops_path + "/coadded/" + "raw/";
+                            // if running fruit loops on the coadded maps
+                            else if (todproc.engine().ptcproc.fruit_loops_path == "coadded" || todproc.engine().ptcproc.fruit_loops_path == "coadd") {
+                                todproc.engine().ptcproc.init_fruit_loops_path.back() = todproc.engine().ptcproc.init_fruit_loops_path.back() +
+                                                                                        "/coadded/raw/";
                             }
                             // else use input directory
                             else {
-                                todproc.engine().ptcproc.init_fruit_loops_path = todproc.engine().ptcproc.fruit_loops_path;
+                                todproc.engine().ptcproc.init_fruit_loops_path.back() = todproc.engine().ptcproc.fruit_loops_path;
                             }
                         }
 
