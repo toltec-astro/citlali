@@ -457,9 +457,9 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                             ext.readKey("EXTNAME", extName);
                             // if signal I's first noise map (ignore Q, U, and extra noise maps)
                             if (extName.find("signal") != std::string::npos && extName.find("_0_I") != std::string::npos) {                                    // get mean rms for current extension
+                                // get mean rms from current extension
                                 double mean_rms;
                                 ext.readKey("MEANRMS", mean_rms);
-
                                 mean_rms_vec.push_back(mean_rms);
                                 // allocate current noise map
                                 //cmb.noise.push_back(Eigen::Tensor<double,3>(cmb.wcs.naxis[1], cmb.wcs.naxis[0], cmb.n_noise));

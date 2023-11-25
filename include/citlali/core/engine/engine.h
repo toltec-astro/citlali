@@ -1957,6 +1957,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
     fits_io->at(map_index).add_hdu("weight_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->weight[i]);
     fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
     fits_io->at(map_index).hdus.back()->addKey("UNIT", "1/("+mb->sig_unit+")^2", "Unit of map");
+    fits_io->at(map_index).hdus.back()->addKey("MEANERR", mb->mean_err(i), "Mean Square Error");
 
     // kernel map
     if (rtcproc.run_kernel) {
@@ -2019,6 +2020,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                                                  out_matrix);
             noise_fits_io->at(map_index).add_wcs(noise_fits_io->at(map_index).hdus.back(),mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
             noise_fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
+            noise_fits_io->at(map_index).hdus.back()->addKey("MEANRMS", mb->mean_rms[i], "Mean RMS of noise maps");
         }
     }
 }

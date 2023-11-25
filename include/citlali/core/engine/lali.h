@@ -238,6 +238,12 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         logger->info("calculating map histogram");
         omb.calc_map_hist();
 
+        // calculate mean error
+        omb.calc_mean_err();
+        // calculate mean rms
+        omb.calc_mean_rms();
+
+
         // write map summary
         if (verbose_mode) {
             write_map_summary(omb);

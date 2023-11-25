@@ -406,13 +406,18 @@ int run(const rc_t &rc) {
                     // get size of coadd buffer
                     logger->info("calculating cmb dimensions");
                     todproc.calc_cmb_size(map_coords);
-                    // make coadd buffer
                 }
 
                 // current fruit loops iteration
                 int fruit_iter = 0;
                 // fruit loops convergence check
                 bool fruit_loops_converged = false;
+
+                // check if noise maps are not enabled when in fruit loops mode
+                if (todproc.engine().ptcproc.run_fruit_loops && !todproc.engine().run_noise) {
+                    logger->error("fruit loops requires noise maps");
+                    std::exit(EXIT_FAILURE);
+                }
 
                 // if fruit loops not enabled or in beammap mode, only run for one iteration
                 if (!todproc.engine().ptcproc.run_fruit_loops || (todproc.engine().redu_type == "beammap")) {
@@ -843,6 +848,11 @@ int run(const rc_t &rc) {
                         // calculate coadded map histograms
                         logger->info("calculating coadded map histogram");
                         todproc.engine().cmb.calc_map_hist();
+
+                        // calculate coadded mean error
+                        todproc.engine().cmb.calc_mean_err();
+                        // calculate coadded mean rms
+                        todproc.engine().cmb.calc_mean_rms();
 
                         // output coadded maps
                         logger->info("outputting raw coadded files");
