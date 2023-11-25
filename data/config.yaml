@@ -53,7 +53,7 @@ mapmaking: # mapmaking parameters
   cunit: mJy/beam # units (mJy/beam, MJy/sr, uK, Jy/pixel.  apt table flux conversion default is mJy/beam)
   grouping: auto # mapmaking grouping (auto, detector, nw, array, fg)
   method: naive # mapmaking algorithm (naive or jinc)
-  pixel_axes: icrs # reference frame (icrs or altaz)
+  pixel_axes: radec # reference frame (radec or altaz)
   pixel_size_arcsec: 1.0 # pixel size in arceconds (used for all obs and coadded maps)
   x_size_pix: 0 # manually specify number of map columns (forced to be odd)
   y_size_pix: 0 # manually specify number of map rows (forced to be odd)
