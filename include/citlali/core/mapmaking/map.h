@@ -47,6 +47,8 @@ public:
     // wcs object
     WCS wcs;
 
+    std::string name;
+
     // reference sky value
     std::vector<float> crval_config;
     // parallel policy for fft
@@ -126,6 +128,9 @@ public:
 
     // fitted source parameters and errors [n_sources x n_params]
     Eigen::MatrixXd source_params, source_perror;
+
+    // constructor
+    ObsMapBuffer(std::string);
 
     // get config file
     void get_config(tula::config::YamlConfig &, std::vector<std::vector<std::string>> &,

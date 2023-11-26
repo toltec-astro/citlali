@@ -103,7 +103,7 @@ struct reduClasses {
     timestream::PTCProc ptcproc;
 
     // map classes
-    mapmaking::ObsMapBuffer omb, cmb;
+    mapmaking::ObsMapBuffer omb{"omb"}, cmb{"cmb"};
     mapmaking::NaiveMapmaker naive_mm;
     mapmaking::JincMapmaker jinc_mm;
     mapmaking::WienerFilter wiener_filter;
@@ -2292,6 +2292,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     }
 
     Eigen::Index j = 0;
+    // loop through maps and run wiener filter
     for (Eigen::Index i=0; i<n_maps; i++) {
         // current array
         auto array = maps_to_arrays(i);
@@ -2300,7 +2301,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         // init fwhm in pixels
         wiener_filter.init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
         // make wiener filter template
-        wiener_filter.make_template(mb, calib.apt, wiener_filter.gaussian_template_fwhm_rad[toltec_io.array_name_map[i]],i);
+        wiener_filter.make_template(mb, calib.apt, wiener_filter.template_fwhm_rad[toltec_io.array_name_map[i]],i);
         // run the filter for the current map
         wiener_filter.filter_maps(mb,i);
 
@@ -2383,6 +2384,7 @@ void Engine::find_sources(map_buffer_t &mb) {
         // run source finder
         auto sources_found = mb.find_sources(i);
 
+        // number of sources found for current map
         if (sources_found) {
             logger->info("{} source(s) found", mb.n_sources.back());
         }
@@ -2473,6 +2475,7 @@ void Engine::find_sources(map_buffer_t &mb) {
 
 template <mapmaking::MapType map_t, class map_buffer_t>
 void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
+    // get filenmame for source table
     std::string source_filename = setup_filenames<map_t,engine_utils::toltecIO::source,
                                                   engine_utils::toltecIO::map>(dir_name);
 
@@ -2507,8 +2510,8 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
     // units for source header
     std::map<std::string,std::string> source_header_units = {
         {"array","N/A"},
-        {"amp", omb.sig_unit},
-        {"amp_err", omb.sig_unit},
+        {"amp", mb->sig_unit},
+        {"amp_err", mb->sig_unit},
         {"x_t", pos_units},
         {"x_t_err", pos_units},
         {"y_t", pos_units},
@@ -2551,7 +2554,7 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
         n_sources += sources;
     }
 
-    // matrix to hold source information
+    // matrix to hold source information (floats for readability)
     Eigen::MatrixXf source_table(n_sources, 2*map_fitter.n_params + 2);
 
     // loop through params and add arrays

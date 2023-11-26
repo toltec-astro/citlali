@@ -20,8 +20,10 @@ public:
     std::string apt_filepath;
     // apt table
     std::map<std::string, Eigen::VectorXd> apt;
-    Eigen::VectorXd hwpr_angle, hwp_recvt;
-    Eigen::MatrixXd hwp_ts;
+    // hwpr angle and timing
+    Eigen::VectorXd hwpr_angle, hwpr_recvt;
+    // pps timing
+    Eigen::MatrixXd hwpr_ts;
 
     // detector frequency groups
     Eigen::VectorXI fg;
@@ -110,6 +112,7 @@ public:
         {"y_t_derot"},
     };
 
+    // map for apt header units
     std::map<std::string,std::string> apt_header_units = {
         {"uid","N/A"},
         {"tone_freq", "Hz"},
@@ -144,6 +147,7 @@ public:
         {"y_t_derot","arcsec"},
         };
 
+    // meta information for each apt column
     std::map<std::string,std::string> apt_header_description = {
         {"uid","unique id"},
         {"tone_freq", "tone frequency"},
@@ -178,9 +182,13 @@ public:
         {"y_t_derot","derot altitude offset"},
         };
 
+    // setup apt. determine nws and arrays. get groupings and mean values
     void setup();
+    // read in apt (runs setup)
     void get_apt(const std::string &, std::vector<std::string> &, std::vector<std::string> &);
+    // read in hwpr file if it exists
     void get_hwpr(const std::string &, bool);
+    // determine flux conversion factors between various supported units
     void calc_flux_calibration(std::string, double);
 };
 

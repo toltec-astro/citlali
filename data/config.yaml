@@ -163,7 +163,7 @@ post_processing:
     mode: default # defines how to search for sources (default=signal map, negative=-signal map, both)
 wiener_filter: # controls for wiener filter
   template_type: kernel # template (kernel, gaussian, airy, highpass)
-  gaussian_template_fwhm_arcsec: # set fwhms for gaussian template
+  template_fwhm_arcsec: # set fwhms for gaussian template
     a1100: 5.0
     a1400: 6.3
     a2000: 9.5

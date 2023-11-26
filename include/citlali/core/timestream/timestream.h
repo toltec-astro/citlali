@@ -273,12 +273,11 @@ public:
     std::vector<std::string> init_fruit_loops_path;
     // number of fruit loops iterations
     int fruit_loops_iters;
-
     // signal-to-noise cut for fruit loops algorithm
     double fruit_loops_sig2noise;
 
     // map buffer for map to tod approach
-    mapmaking::ObsMapBuffer cmb;
+    mapmaking::ObsMapBuffer tmb{"timestream"};
 
     // number of weight outlier iterations
     int iter_lim = 0;
@@ -331,20 +330,20 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
 
     namespace fs = std::filesystem;
 
-    // clear cmb
-    cmb.signal.clear();
-    cmb.weight.clear();
-    cmb.noise.clear();
-    cmb.wcs.cunit.clear();
+    // clear tmb
+    tmb.signal.clear();
+    tmb.weight.clear();
+    tmb.noise.clear();
+    tmb.wcs.cunit.clear();
 
     // resize wcs params
-    cmb.wcs.naxis.resize(4,0.);
-    cmb.wcs.crpix.resize(4,0.);
-    cmb.wcs.crval.resize(4,0.);
-    cmb.wcs.cdelt.resize(4,0.);
+    tmb.wcs.naxis.resize(4,0.);
+    tmb.wcs.crpix.resize(4,0.);
+    tmb.wcs.crval.resize(4,0.);
+    tmb.wcs.cdelt.resize(4,0.);
 
-    cmb.wcs.cunit.push_back("N/A");
-    cmb.wcs.cunit.push_back("N/A");
+    tmb.wcs.cunit.push_back("N/A");
+    tmb.wcs.cunit.push_back("N/A");
 
     std::vector<double> mean_rms_vec;
 
@@ -367,20 +366,20 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                         CCfits::ExtHDU& extension = fits_io.pfits->extension(1);
 
                         // get naxis
-                        extension.readKey("NAXIS1", cmb.wcs.naxis[0]);
-                        extension.readKey("NAXIS2", cmb.wcs.naxis[1]);
+                        extension.readKey("NAXIS1", tmb.wcs.naxis[0]);
+                        extension.readKey("NAXIS2", tmb.wcs.naxis[1]);
                         // get crpix
-                        extension.readKey("CRPIX1", cmb.wcs.crpix[0]);
-                        extension.readKey("CRPIX2", cmb.wcs.crpix[1]);
+                        extension.readKey("CRPIX1", tmb.wcs.crpix[0]);
+                        extension.readKey("CRPIX2", tmb.wcs.crpix[1]);
                         // get crval
-                        extension.readKey("CRVAL1", cmb.wcs.crval[0]);
-                        extension.readKey("CRVAL2", cmb.wcs.crval[1]);
+                        extension.readKey("CRVAL1", tmb.wcs.crval[0]);
+                        extension.readKey("CRVAL2", tmb.wcs.crval[1]);
                         // get cdelt
-                        extension.readKey("CDELT1", cmb.wcs.cdelt[0]);
-                        extension.readKey("CDELT2", cmb.wcs.cdelt[1]);
+                        extension.readKey("CDELT1", tmb.wcs.cdelt[0]);
+                        extension.readKey("CDELT2", tmb.wcs.cdelt[1]);
                         // get cunit
-                        extension.readKey("CUNIT1", cmb.wcs.cunit[1]);
-                        extension.readKey("CUNIT2", cmb.wcs.cunit[0]);
+                        extension.readKey("CUNIT1", tmb.wcs.cunit[1]);
+                        extension.readKey("CUNIT2", tmb.wcs.cunit[0]);
 
                         // get number of extensions other than primary extension
                         int num_extensions = 0;
@@ -403,11 +402,11 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                             ext.readKey("EXTNAME", extName);
                             // get signal I map
                             if (extName.find("signal") != std::string::npos && extName.find("_I") != std::string::npos) {
-                                cmb.signal.push_back(fits_io.get_hdu(extName));
+                                tmb.signal.push_back(fits_io.get_hdu(extName));
                             }
                             // get weight I map
                             else if (extName.find("weight") != std::string::npos && extName.find("_I") != std::string::npos) {
-                                cmb.weight.push_back(fits_io.get_hdu(extName));
+                                tmb.weight.push_back(fits_io.get_hdu(extName));
                             }
                         }
                     }
@@ -439,7 +438,7 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
 
                                 // only get stokes I
                                 if (extName.find("_I") != std::string::npos) {
-                                    cmb.n_noise++;
+                                    tmb.n_noise++;
                                 }
                                 num_extensions++;
                             } catch (CCfits::FITS::NoSuchHDU) {
@@ -462,14 +461,14 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                                 ext.readKey("MEANRMS", mean_rms);
                                 mean_rms_vec.push_back(mean_rms);
                                 // allocate current noise map
-                                //cmb.noise.push_back(Eigen::Tensor<double,3>(cmb.wcs.naxis[1], cmb.wcs.naxis[0], cmb.n_noise));
+                                //tmb.noise.push_back(Eigen::Tensor<double,3>(tmb.wcs.naxis[1], tmb.wcs.naxis[0], tmb.n_noise));
 
                                 // get noise map
                                 //Eigen::MatrixXd data = fits_io.get_hdu(extName);
                                 // map to tensor
                                 //Eigen::TensorMap<Eigen::Tensor<double, 2>> in_tensor(data.data(), data.rows(), data.cols());
                                 // overwrite tensor
-                                //cmb.noise.back().chip(i,2) = in_tensor;
+                                //tmb.noise.back().chip(i,2) = in_tensor;
                             }
                         }
                     }
@@ -483,7 +482,7 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     }
 
     // check if we found any maps
-    if (cmb.signal.empty()) {
+    if (tmb.signal.empty()) {
         logger->error("no maps found in {}", filepath);
         std::exit(EXIT_FAILURE);
     }
@@ -495,24 +494,24 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     }
 
     // set dimensions
-    cmb.n_cols = cmb.wcs.naxis[0];
-    cmb.n_rows = cmb.wcs.naxis[1];
+    tmb.n_cols = tmb.wcs.naxis[0];
+    tmb.n_rows = tmb.wcs.naxis[1];
 
     // get pixel size in radians
-    if (cmb.wcs.cunit[0] == "deg") {
-        cmb.pixel_size_rad = abs(cmb.wcs.cdelt[0])*DEG_TO_RAD;
+    if (tmb.wcs.cunit[0] == "deg") {
+        tmb.pixel_size_rad = abs(tmb.wcs.cdelt[0])*DEG_TO_RAD;
     }
-    else if (cmb.wcs.cunit[0] == "arcsec") {
-        cmb.pixel_size_rad = abs(cmb.wcs.cdelt[0])*ASEC_TO_RAD;
+    else if (tmb.wcs.cunit[0] == "arcsec") {
+        tmb.pixel_size_rad = abs(tmb.wcs.cdelt[0])*ASEC_TO_RAD;
     }
 
     // get mean rms
-    //cmb.calc_mean_rms();
-    cmb.mean_rms = Eigen::Map<Eigen::VectorXd>(mean_rms_vec.data(),mean_rms_vec.size());
+    //tmb.calc_mean_rms();
+    tmb.mean_rms = Eigen::Map<Eigen::VectorXd>(mean_rms_vec.data(),mean_rms_vec.size());
 
     // memory management
-    std::vector<Eigen::MatrixXd>().swap(cmb.weight);
-    //std::vector<Eigen::Tensor<double,3>>().swap(cmb.noise);
+    std::vector<Eigen::MatrixXd>().swap(tmb.weight);
+    //std::vector<Eigen::Tensor<double,3>>().swap(tmb.noise);
 }
 
 template <typename Derived, class calib_t>
@@ -602,6 +601,7 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
 
     // only run if limits are not zero
     if (lower_weight_factor !=0 || upper_weight_factor !=0) {
+        logger->info("removing outlier dets");
         // number of detectors
         Eigen::Index n_dets = in.scans.data.cols();
 

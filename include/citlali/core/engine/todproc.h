@@ -50,24 +50,31 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
 
         std::vector<std::string> missing_keys;
         logger->info("check TOD proc config\n{}", config);
+        // check for runtime config node
         if (!config.has("runtime")) {
             missing_keys.push_back("runtime");
         }
+        // check for timestream config node
         if (!config.has("timestream")) {
             missing_keys.push_back("timestream");
         }
+        // check for mapmaking config node
         if (!config.has("mapmaking")) {
             missing_keys.push_back("mapmaking");
         }
+        // check for beammap config node
         if (!config.has("beammap")) {
             missing_keys.push_back("beammap");
         }
+        // check for coadd config node
         if (!config.has("coadd")) {
             missing_keys.push_back("coadd");
         }
+        // check for noise map config node
         if (!config.has("noise_maps")) {
             missing_keys.push_back("noise_maps");
         }
+        // check for post processing config node
         if (!config.has("post_processing")) {
             missing_keys.push_back("post_processing");
         }
@@ -300,7 +307,7 @@ void TimeOrderedDataProc<EngineType>::get_adc_snap_from_files(const RawObs &rawo
     using namespace netCDF;
     using namespace netCDF::exceptions;
 
-    // explicitly clear vector
+    // explicitly clear adc vector
     engine().diagnostics.adc_snap_data.clear();
 
     // loop through input files
@@ -310,13 +317,16 @@ void TimeOrderedDataProc<EngineType>::get_adc_snap_from_files(const RawObs &rawo
             NcFile fo(data_item.filepath(), NcFile::read);
             auto vars = fo.getVars();
 
+            // dimension 0 of adc data
             Eigen::Index adcSnapDim = vars.find("Header.Toltec.AdcSnapData")->second.getDim(0).getSize();
+            // dimension 1 of adc data
             Eigen::Index adcSnapDataDim = vars.find("Header.Toltec.AdcSnapData")->second.getDim(1).getSize();
 
+            // matrix to hold adc data for current file
             Eigen::Matrix<short,Eigen::Dynamic, Eigen::Dynamic> adcsnap(adcSnapDataDim,adcSnapDim);
-
+            // load adc data
             vars.find("Header.Toltec.AdcSnapData")->second.getVar(adcsnap.data());
-
+            // append to vector of adc data
             engine().diagnostics.adc_snap_data.push_back(adcsnap);
 
             fo.close();
@@ -330,7 +340,6 @@ void TimeOrderedDataProc<EngineType>::get_adc_snap_from_files(const RawObs &rawo
 // create output directories
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::create_output_dir() {
-
     // redu subdir
     engine().redu_dir_name = "";
 
@@ -340,8 +349,10 @@ void TimeOrderedDataProc<EngineType>::create_output_dir() {
         engine().redu_dir_num = 0;
 
         std::stringstream ss_redu_dir_num;
+        // add leading zero to redu_dir_num (i.e., '00', '01',...)
         ss_redu_dir_num << std::setfill('0') << std::setw(2) << engine().redu_dir_num;
 
+        // create redu dir name ('redu00', 'redu01',...)
         std::string redu_dir_name = "redu" + ss_redu_dir_num.str();
 
         // iteratively check if current subdir with current redu number exists
@@ -353,8 +364,10 @@ void TimeOrderedDataProc<EngineType>::create_output_dir() {
             redu_dir_name = "redu" + ss_redu_dir_num_i.str();
         }
 
+        // final redu dir name is output directory from config + /reduNN
         engine().redu_dir_name = engine().output_dir + "/" + redu_dir_name;
 
+        // create redu dir directory
         fs::create_directories(engine().redu_dir_name);
     }
 
@@ -368,9 +381,9 @@ void TimeOrderedDataProc<EngineType>::create_output_dir() {
         else {
             logger->warn("directory {} already exists", engine().coadd_dir_name + "raw/");
         }
-
-        // coadded filtered subdir
+        // if map filtering is requested
         if (engine().run_map_filter) {
+            // coadded filtered subdir
             if (!fs::exists(fs::status(engine().coadd_dir_name + "filtered/"))) {
                 fs::create_directories(engine().coadd_dir_name + "filtered/");
             }
@@ -394,7 +407,7 @@ void TimeOrderedDataProc<EngineType>::check_inputs(const RawObs &rawobs) {
             // load data file
             NcFile fo(data_item.filepath(), NcFile::read);
             auto vars = fo.getVars();
-
+            // get number of dets from data and add to global value
             n_dets += vars.find("Data.Toltec.Is")->second.getDim(1).getSize();
 
             fo.close();
@@ -441,7 +454,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
 
     // set network
     Eigen::Index nw = 0;
-
+    // sample rate
     double fsmp = -1;
 
     // loop through input files
@@ -459,7 +472,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
             double fsmp_roach;
             vars.find("Header.Toltec.SampleFreq")->second.getVar(&fsmp_roach);
 
-            // check if sample rate is the same
+            // check if sample rate is the same and exit if not
             if (fsmp!=-1 && fsmp_roach!=fsmp) {
                 logger->error("mismatched sample rate in toltec{}",roach_index);
                 std::exit(EXIT_FAILURE);
@@ -506,18 +519,16 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
             // get start time
             auto t0 = sec0 + nsec0*1e-9;
 
-            // shift start time
+            // shift start time (offset determined empirically)
             int start_t = int(t0[0] - 0.5);
             //int start_t = int(t0[0]);
 
             // convert start time to double
             double start_t_dbl = start_t;
-
+            // clock count - clock ticks
             Eigen::VectorXd dt = msec - pps_msec;
-
             // remove overflow due to int32
             dt = (dt.array() < 0).select(msec.array() - pps_msec.array() + (pow(2.0,32)-1)/fpga_freq,msec - pps_msec);
-
             // get network time and add offsets
             nw_ts.push_back(start_t_dbl + pps.array() + dt.array() +
                             engine().interface_sync_offset["toltec"+std::to_string(roach_index)]);
@@ -552,19 +563,19 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
         }
     }
 
-    // check if hwp starts later
+    // get hwpr timing
     if (engine().calib.run_hwpr) {
-        /*auto sec0 = engine().calib.hwp_ts.template cast <double> ().col(0);
+        /*auto sec0 = engine().calib.hwpr_ts.template cast <double> ().col(0);
         // ClockTimeNanoSec (nsec)
-        auto nsec0 = engine().calib.hwp_ts.template cast <double> ().col(5);
+        auto nsec0 = engine().calib.hwpr_ts.template cast <double> ().col(5);
         // PpsCount (pps ticks)
-        auto pps = engine().calib.hwp_ts.template cast <double> ().col(1);
+        auto pps = engine().calib.hwpr_ts.template cast <double> ().col(1);
         // ClockCount (clock ticks)
-        auto msec = engine().calib.hwp_ts.template cast <double> ().col(2)/engine().calib.hwpr_fpga_freq;
+        auto msec = engine().calib.hwpr_ts.template cast <double> ().col(2)/engine().calib.hwpr_fpga_freq;
         // PacketCount (packet ticks)
-        auto count = engine().calib.hwp_ts.template cast <double> ().col(3);
+        auto count = engine().calib.hwpr_ts.template cast <double> ().col(3);
         // PpsTime (clock ticks)
-        auto pps_msec = engine().calib.hwp_ts.template cast <double> ().col(4)/engine().calib.hwpr_fpga_freq;
+        auto pps_msec = engine().calib.hwpr_ts.template cast <double> ().col(4)/engine().calib.hwpr_fpga_freq;
         // get start time
         auto t0 = sec0 + nsec0*1e-9;
 
@@ -581,18 +592,18 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
         dt = (dt.array() < 0).select(msec.array() - pps_msec.array() + (pow(2.0,32)-1)/engine().calib.hwpr_,msec - pps_msec);
 
         // get network time and add offsets
-        engine().calib.hwp_recvt = start_t_dbl + pps.array() + dt.array() + engine().interface_sync_offset["hwpr"];
+        engine().calib.hwpr_recvt = start_t_dbl + pps.array() + dt.array() + engine().interface_sync_offset["hwpr"];
         */
 
-        // if hwpr init time is larger than max start time, replace max start time
-        Eigen::Index hwp_ts_n_pts = engine().calib.hwp_recvt.size();
-        if (engine().calib.hwp_recvt(0) > max_t0) {
-            max_t0 = engine().calib.hwp_recvt(0);
+        // if hwpr init time is larger than max start time, replace global max start time
+        Eigen::Index hwpr_ts_n_pts = engine().calib.hwpr_recvt.size();
+        if (engine().calib.hwpr_recvt(0) > max_t0) {
+            max_t0 = engine().calib.hwpr_recvt(0);
         }
 
-        // if hwpr init time is smaller than min end time, replace min end time
-        if (engine().calib.hwp_recvt(hwp_ts_n_pts - 1) < min_tn) {
-            min_tn = engine().calib.hwp_recvt(hwp_ts_n_pts - 1);
+        // if hwpr init time is smaller than min end time, replace global min end time
+        if (engine().calib.hwpr_recvt(hwpr_ts_n_pts - 1) < min_tn) {
+            min_tn = engine().calib.hwpr_recvt(hwpr_ts_n_pts - 1);
         }
     }
 
@@ -603,26 +614,36 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
     for (Eigen::Index i=0; i<nw_ts.size(); i++) {
         // find start index that is larger than max start
         Eigen::Index si, ei;
+        // find index closest to max start time
         auto s = (abs(nw_ts[i].array() - max_t0)).minCoeff(&si);
 
+        // if closest index is smaller than max start time
+        // incrememnt index until it is larger or equal
         while (nw_ts[i][si] < max_t0) {
             si++;
         }
+        // pushback start index on start index vector
         engine().start_indices.push_back(si);
 
         // find end index that is smaller than min end
         auto e = (abs(nw_ts[i].array() - min_tn)).minCoeff(&ei);
+        // if closest index is larger than min end time
+        // incrememnt index until it is smaller or equal
         while (nw_ts[i][ei] > min_tn) {
             ei--;
         }
+        // pushback end index on end index vector
         engine().end_indices.push_back(ei);
     }
 
     // get min size
     for (Eigen::Index i=0; i<nw_ts.size(); i++) {
+        // start indices
         auto si = engine().start_indices[i];
+        // end indices
         auto ei = engine().end_indices[i];
 
+        // if smallest length, update min_size
         if ((ei - si + 1) < min_size) {
             min_size = ei - si + 1;
         }
@@ -631,20 +652,28 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
     // if hwpr requested
     if (engine().calib.run_hwpr) {
         Eigen::Index si, ei;
-        auto s = (abs(engine().calib.hwp_recvt.array() - max_t0)).minCoeff(&si);
+        // find start index that is larger than max start for hwpr
+        auto s = (abs(engine().calib.hwpr_recvt.array() - max_t0)).minCoeff(&si);
 
-        while (engine().calib.hwp_recvt(si) < max_t0) {
+        // if closest index is smaller than max start time
+        // incrememnt index until it is larger or equal
+        while (engine().calib.hwpr_recvt(si) < max_t0) {
             si++;
         }
+        // pushback start index on hwpr start index vector
         engine().hwpr_start_indices = si;
 
-        // find end index that is smaller than min end
-        auto e = (abs(engine().calib.hwp_recvt.array() - min_tn)).minCoeff(&ei);
-        while (engine().calib.hwp_recvt(ei) > min_tn) {
+        // find end index that is smaller than min end for hwpr
+        auto e = (abs(engine().calib.hwpr_recvt.array() - min_tn)).minCoeff(&ei);
+        // if closest index is larger than min end time
+        // incrememnt index until it is smaller or equal
+        while (engine().calib.hwpr_recvt(ei) > min_tn) {
             ei--;
         }
+        // pushback end index on hwpr end index vector
         engine().hwpr_end_indices = ei;
 
+        // update min_size for all time vectors if hwpr data is shorter (data and hwpr)
         if ((ei - si + 1) < min_size) {
             min_size = ei - si + 1;
         }
@@ -669,6 +698,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
                              yd.data(), yi.data(), // yd, yi
                              engine().telescope.tel_data["TelTime"].data(), xi.data()); // xd, xi
 
+            // move back into tel_data vector
             engine().telescope.tel_data[tel_it.first] = std::move(yi);
         }
     }
@@ -684,8 +714,9 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
         Eigen::VectorXd yi(min_size);
         mlinterp::interp(nd.data(), min_size, // nd, ni
                          yd.data(), yi.data(), // yd, yi
-                         engine().calib.hwp_recvt.data(), xi.data()); // xd, xi
+                         engine().calib.hwpr_recvt.data(), xi.data()); // xd, xi
 
+        // move back into hwpr angle
         engine().calib.hwpr_angle = std::move(yi);
     }
 }
@@ -797,12 +828,18 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
     }
 
     // mapping from index in map vector to detector array index
+    // if stokes I array grouping with all arrays, this will be [0,1,2]
+    // if missing array 0, this will be [1,2]
     engine().maps_to_arrays.resize(engine().n_maps);
 
     // mapping from index in map vector to stokes parameter index (I=0, Q=1, U=2)
+    // if array grouping with all arrays this will be [0,0,0,1,1,2,2,2]
+    // and maps_to_arrays will be [0,1,2,0,1,2,0,1,2]
     engine().maps_to_stokes.resize(engine().n_maps);
 
-    // mapping from detector array index to index in map vectors (reverse of maps_to_arrays)
+    // mapping from array index to index in map vectors (reverse of maps_to_arrays)
+    // if stokes I array grouping with all arrays, this will also be [0,1,2]
+    // if missing array 0, this will be [0,1]
     engine().arrays_to_maps.resize(engine().n_maps);
 
     // array to hold mapping from group to detector array index
@@ -810,49 +847,59 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
 
     // detector gropuing
     if (engine().map_grouping == "detector") {
-        for (const auto &[stokes_index,stokes_param]: engine().rtcproc.polarization.stokes_params) {
-            Eigen::Index n_dets;
-
-            // only do stokes I as Q and U don't make sense for detector grouping
-            if (stokes_param == "I") {
-                n_dets = engine().calib.n_dets;
-                array_indices = engine().calib.apt["array"].template cast<Eigen::Index> ();
-            }
-        }
+        // only do stokes I as Q and U don't make sense for detector grouping
+        // this is just a copy of the array indices from the apt
+        array_indices = engine().calib.apt["array"].template cast<Eigen::Index> ();
     }
 
     // array grouping
     else if (engine().map_grouping == "array") {
+        // if all arrays are included this will be [0,1,2]
         array_indices = engine().calib.arrays;
     }
 
     // network grouping
     else if (engine().map_grouping == "nw") {
+        // if all nws/arrays are included this will be:
+        // [0,0,0,0,0,0,0,0,1,1,1,1,2,2]
+        // nws are ordered automatically when files are read in
         array_indices.resize(engine().calib.nws.size());
 
         // find all map from nw to arrays
         for (Eigen::Index i=0; i<engine().calib.nws.size(); i++) {
+            // get array for current nw
             array_indices(i) = engine().toltec_io.nw_to_array_map[engine().calib.nws(i)];
         }
     }
 
     // frequency grouping
     else if (engine().map_grouping == "fg") {
+        // size of array indices is number of fg's x number of arrays
+        // if all fgs are included, this will be:
+        // [0,0,0,0,0,1,1,1,1,1,2,2,2,2,2]
+        // the order of the fgs will vary depending on the apt, but this is irrelevant
         array_indices.resize(engine().calib.fg.size()*engine().calib.n_arrays);
 
         // map from fg to array index
         Eigen::Index j = 0;
+        // loop through arrays
         for (Eigen::Index i=0; i<engine().calib.n_arrays; i++) {
+            // append current array index to all elements within a segment of fg size
             array_indices.segment(j,engine().calib.fg.size()).setConstant(engine().calib.arrays(i));
+            // increment by fg size
             j = j + engine().calib.fg.size();
         }
     }
 
     // copy array_indices into maps_to_arrays and maps_to_stokes for each stokes param
     Eigen::Index j = 0;
+    // loop through stokes params
     for (const auto &[stokes_index,stokes_param]: engine().rtcproc.polarization.stokes_params) {
+        // for each stokes param append all array indices in order
         engine().maps_to_arrays.segment(j,array_indices.size()) = array_indices;
+        // for each stokes param append current stokes index
         engine().maps_to_stokes.segment(j,array_indices.size()).setConstant(stokes_index);
+        // increment by array index size
         j = j + array_indices.size();
     }
 

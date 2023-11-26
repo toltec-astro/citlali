@@ -47,7 +47,7 @@ public:
     double init_fwhm;
 
     // fwhms for gaussian template
-    std::map<std::string, double> gaussian_template_fwhm_rad;
+    std::map<std::string, double> template_fwhm_rad;
 
     // size of maps
     int n_rows, n_cols;
@@ -137,18 +137,18 @@ void WienerFilter::get_config(config_t &config, std::vector<std::vector<std::str
     if (template_type=="gaussian" || template_type=="airy") {
         // loop through array names and get fwhms
         for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
-            get_config_value(config, gaussian_template_fwhm_rad[arr_name], missing_keys, invalid_keys,
-                             std::tuple{"wiener_filter","gaussian_template_fwhm_arcsec",arr_name});
+            get_config_value(config, template_fwhm_rad[arr_name], missing_keys, invalid_keys,
+                             std::tuple{"wiener_filter","template_fwhm_arcsec",arr_name});
         }
         // convert to radians
-        for (auto const& pair : gaussian_template_fwhm_rad) {
-            gaussian_template_fwhm_rad[pair.first] = gaussian_template_fwhm_rad[pair.first]*ASEC_TO_RAD;
+        for (auto const& pair : template_fwhm_rad) {
+            template_fwhm_rad[pair.first] = template_fwhm_rad[pair.first]*ASEC_TO_RAD;
         }
     }
 }
 
 template<class MB>
-void WienerFilter::make_gaussian_template(MB &mb, const double gaussian_template_fwhm_rad) {
+void WienerFilter::make_gaussian_template(MB &mb, const double template_fwhm_rad) {
     // distance from tangent point
     Eigen::MatrixXd dist(n_rows,n_cols);
 
@@ -165,7 +165,7 @@ void WienerFilter::make_gaussian_template(MB &mb, const double gaussian_template
     // minimum distance
     double min_dist = dist.minCoeff(&row_index,&col_index);
     // standard deviation
-    double sigma = gaussian_template_fwhm_rad*FWHM_TO_STD;
+    double sigma = template_fwhm_rad*FWHM_TO_STD;
 
     // shift indices
     std::vector<Eigen::Index> shift_indices = {-row_index, -col_index};
@@ -177,7 +177,7 @@ void WienerFilter::make_gaussian_template(MB &mb, const double gaussian_template
 }
 
 template<class MB>
-void WienerFilter::make_airy_template(MB &mb, const double gaussian_template_fwhm_rad) {
+void WienerFilter::make_airy_template(MB &mb, const double template_fwhm_rad) {
     // distance from tangent point
     Eigen::MatrixXd dist(n_rows,n_cols);
 
@@ -198,7 +198,7 @@ void WienerFilter::make_airy_template(MB &mb, const double gaussian_template_fwh
     std::vector<Eigen::Index> shift_indices = {-row_index, -col_index};
 
     // calculate template
-    double factor = pi*(1.028/gaussian_template_fwhm_rad);
+    double factor = pi*(1.028/template_fwhm_rad);
 
     // resize template
     filter_template.resize(n_rows, n_cols);
@@ -680,7 +680,7 @@ void WienerFilter::calc_denominator() {
 }
 
 template<class MB, class CD>
-void WienerFilter::make_template(MB &mb, CD &calib_data, const double gaussian_template_fwhm_rad, const int map_index) {
+void WienerFilter::make_template(MB &mb, CD &calib_data, const double template_fwhm_rad, const int map_index) {
     // make sure filtered maps have even dimensions
     n_rows = mb.n_rows;
     n_cols = mb.n_cols;
@@ -699,13 +699,13 @@ void WienerFilter::make_template(MB &mb, CD &calib_data, const double gaussian_t
     // gaussian template
     else if (template_type=="gaussian") {
         logger->info("creating gaussian template");
-        make_gaussian_template(mb, gaussian_template_fwhm_rad);
+        make_gaussian_template(mb, template_fwhm_rad);
     }
 
     // airy template
     else if (template_type=="airy") {
         logger->info("creating airy template");
-        make_airy_template(mb, gaussian_template_fwhm_rad);
+        make_airy_template(mb, template_fwhm_rad);
     }
 
     // symmetric version of kernel template

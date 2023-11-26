@@ -38,7 +38,7 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
         std::exit(EXIT_FAILURE);
     }
 
-    // exit if reference frame is incorrect
+    // exit if apt reference frame is not altaz (required for pointing calculations)
     if (map_with_strs["Radesys"]!="altaz") {
         logger->error("apt table is not in altaz reference frame");
         std::exit(EXIT_FAILURE);
@@ -116,6 +116,7 @@ void Calib::get_hwpr(const std::string &filepath, bool sim_obs) {
         NcFile fo(filepath, NcFile::read, NcFile::classic);
         auto vars = fo.getVars();
 
+        // variable for whether or not hwpr is installed
         std::string hwpr_install_v;
 
         // get hwp install vector for sim or real obs
@@ -126,28 +127,30 @@ void Calib::get_hwpr(const std::string &filepath, bool sim_obs) {
             hwpr_install_v = "Header.Hwp.Installed";
         }
 
-        // check if hwp is enabled
+        // check if hwpr is enabled
         vars.find(hwpr_install_v)->second.getVar(&run_hwpr);
 
+        // if not enabled or running
         if (run_hwpr) {
             // get hwpr signal
             Eigen::Index n_pts = vars.find("Data.Hwp.")->second.getDim(0).getSize();
             hwpr_angle.resize(n_pts);
-
+            // hwpr signal
             vars.find("Data.Hwp.")->second.getVar(hwpr_angle.data());
 
+            // if real data
             if (!sim_obs) {
                 // get hwpr time for interpolation
-                hwp_ts.resize(n_pts,6);
+                hwpr_ts.resize(n_pts,6);
 
-                // timing for hwpr
-                vars.find("Data.Hwp.Ts")->second.getVar(hwp_ts.data());
-                hwp_ts.transposeInPlace();
+                // timing for hwpr (temporary)
+                vars.find("Data.Hwp.Ts")->second.getVar(hwpr_ts.data());
+                hwpr_ts.transposeInPlace();
 
                 // UT time for hwpr
                 Eigen::Index recvt_n_pts = vars.find("Data.Hwp.Uts")->second.getDim(0).getSize();
-                hwp_recvt.resize(recvt_n_pts);
-                vars.find("Data.Hwp.Uts")->second.getVar(hwp_recvt.data());
+                hwpr_recvt.resize(recvt_n_pts);
+                vars.find("Data.Hwp.Uts")->second.getVar(hwpr_recvt.data());
 
                 // fpga frequency
                 vars.find("Header.Toltec.FpgaFreq")->second.getVar(&hwpr_fpga_freq);
@@ -167,7 +170,7 @@ void Calib::calc_flux_calibration(std::string units, double pixel_size_rad) {
     // flux conversion is per detector
     flux_conversion_factor.setOnes(n_dets);
 
-    // default is mJy/beam
+    // default is mJy/beam (apt should always be in mJy/beam)
     if (units == "mJy/beam") {
         flux_conversion_factor.setOnes();
     }
@@ -218,20 +221,23 @@ void Calib::calc_flux_calibration(std::string units, double pixel_size_rad) {
     // get mean flux conversion factor from all unflagged detectors
     for (Eigen::Index i=0; i<n_arrays; i++) {
         auto array = arrays[i];
-
+        // start indices for current array
         Eigen::Index start = std::get<0>(array_limits[array]);
+        // end indices for current array
         Eigen::Index end = std::get<1>(array_limits[array]);
-
+        // number of good detectors
         Eigen::Index n_good_dets = 0;
-
+        // name of array
         std::string name = array_name_map[array];
-
+        // loop through detectors in current array
         for (Eigen::Index j=start; j<end; j++) {
+            // if good
             if (apt["flag"](j)!=1) {
                 mean_flux_conversion_factor[name] += flux_conversion_factor(j);
                 n_good_dets++;
             }
         }
+        // calculate mean flux conversion factor
         mean_flux_conversion_factor[name] = mean_flux_conversion_factor[name]/n_good_dets;
     }
 }
@@ -239,14 +245,14 @@ void Calib::calc_flux_calibration(std::string units, double pixel_size_rad) {
 void Calib::setup() {
     // get number of detectors
     n_dets = apt["uid"].size();
-
     // get number of networks
     n_nws = ((apt["nw"].tail(n_dets - 1) - apt["nw"].head(n_dets - 1)).array() > 0).count() + 1;
-
     // get number of arrays
     n_arrays = ((apt["array"].tail(n_dets - 1) - apt["array"].head(n_dets - 1)).array() > 0).count() + 1;
 
+    // stores nw number
     nws.setZero(n_nws);
+    // stores array number
     arrays.setZero(n_arrays);
 
     // set up network values
@@ -280,7 +286,7 @@ void Calib::setup() {
         // nw a fwhm
         auto nw_a_fwhm = apt["a_fwhm"](Eigen::seq(std::get<0>(nw_limits[key]),
                                                 std::get<1>(nw_limits[key])-1));
-        // nw a fwhm
+        // nw b fwhm
         auto nw_b_fwhm = apt["b_fwhm"](Eigen::seq(std::get<0>(nw_limits[key]),
                                                   std::get<1>(nw_limits[key])-1));
         // number of good detectors
@@ -300,8 +306,9 @@ void Calib::setup() {
         std::get<0>(nw_fwhms[key]) = std::get<0>(nw_fwhms[key])/n_good_det;
         std::get<1>(nw_fwhms[key]) = std::get<1>(nw_fwhms[key])/n_good_det;
 
+        // average of nw fwhms in both axes
         double avg_nw_fwhm = (std::get<0>(nw_fwhms[key]) + std::get<1>(nw_fwhms[key]))/2;
-
+        // average nw beam area
         nw_beam_areas[key] = 2.*pi*pow(avg_nw_fwhm/STD_TO_FWHM,2);
     }
 
@@ -329,6 +336,7 @@ void Calib::setup() {
 
     // get average fwhms for arrays
     j = 0;
+    // loop through arrays
     for (auto const& [key, val] : array_limits) {
         arrays(j) = key;
         j++;
@@ -362,23 +370,28 @@ void Calib::setup() {
         std::get<0>(array_fwhms[key]) = std::get<0>(array_fwhms[key])/n_good_det;
         std::get<1>(array_fwhms[key]) = std::get<1>(array_fwhms[key])/n_good_det;
         array_pas[key] = array_pas[key]/n_good_det;
-
+        // average of array fwhms in both axes
         double avg_array_fwhm = (std::get<0>(array_fwhms[key]) + std::get<1>(array_fwhms[key]))/2;
-
+        // average array beam area
         array_beam_areas[key] = 2.*pi*pow(avg_array_fwhm*FWHM_TO_STD,2);
     }
 
-    // set up frequency group
+    // vector to hold unique fg's in apt
     std::vector<Eigen::Index> fg_temp;
+    // init fg
     fg_temp.push_back(apt["fg"](0));
 
-    // get number of frequency groups
+    // loop through detectors
     for (Eigen::Index i=1; i<apt["fg"].size(); i++) {
+        // map to Eigen::Vector to use any()
         Eigen::Map<Eigen::VectorXI> x(fg_temp.data(),fg_temp.size());
-        if (!(x.array()==apt["fg"](i)).any()) {
+        // if current fg is not in fg_temp
+        if (!(x.array() == apt["fg"](i)).any()) {
+            // append to fg_temp
             fg_temp.push_back(apt["fg"](i));
         }
     }
+    // allocate fg_temp to fg vector
     fg = Eigen::Map<Eigen::VectorXI>(fg_temp.data(),fg_temp.size());
 }
 

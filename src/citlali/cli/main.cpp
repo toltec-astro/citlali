@@ -752,7 +752,7 @@ int run(const rc_t &rc) {
                             logger->info("reading in {} for fruit loops iteration {}",fruit_dir, fruit_iter);
 
                             // set coverage region
-                            todproc.engine().ptcproc.cmb.cov_cut = todproc.engine().omb.cov_cut;
+                            todproc.engine().ptcproc.tmb.cov_cut = todproc.engine().omb.cov_cut;
 
                             // get map buffer from previous reduction directory
                             todproc.engine().ptcproc.load_mb(fruit_dir, todproc.engine().ptcproc.init_fruit_loops_path[i],
@@ -760,9 +760,9 @@ int run(const rc_t &rc) {
                         }
                         // else clear ptcproc maps for each obsnum and get current redu path
                         else {
-                            todproc.engine().ptcproc.cmb.signal.clear();
-                            todproc.engine().ptcproc.cmb.weight.clear();
-                            todproc.engine().ptcproc.cmb.noise.clear();
+                            todproc.engine().ptcproc.tmb.signal.clear();
+                            todproc.engine().ptcproc.tmb.weight.clear();
+                            todproc.engine().ptcproc.tmb.noise.clear();
 
                             // set up init fruit loops path for noise maps
                             std::stringstream ss_redu_dir_num_i;

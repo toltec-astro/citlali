@@ -81,10 +81,6 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
     get_config_value(config, run_fruit_loops, missing_keys, invalid_keys,
                      std::tuple{"timestream","fruit_loops","enabled"});
 
-    // maximum fruit loops iterations
-    get_config_value(config, fruit_loops_iters, missing_keys, invalid_keys,
-                     std::tuple{"timestream","fruit_loops","max_iters"});
-
     if (run_fruit_loops) {
         // fruit looops path
         get_config_value(config, fruit_loops_path, missing_keys, invalid_keys,
@@ -92,6 +88,9 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         // fruit loops signal-to-noise
         get_config_value(config, fruit_loops_sig2noise, missing_keys, invalid_keys,
                          std::tuple{"timestream","fruit_loops","lower_sig2noise_limit"});
+        // maximum fruit loops iterations
+        get_config_value(config, fruit_loops_iters, missing_keys, invalid_keys,
+                         std::tuple{"timestream","fruit_loops","max_iters"});
     }
 
     // run clean?
@@ -156,10 +155,14 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
     if (run_clean) {
         // number of samples
         Eigen::Index n_pts = in.scans.data.rows();
+        // index for number of cleaning groups in vectors
         Eigen::Index indx = 0;
 
         // loop through config groupings
         for (const auto & group: cleaner.grouping) {
+
+            logger->debug("cleaning with {} grouping", group);
+
             // add current group to eval/evec vectors
             out.evals.data.push_back({});
             out.evecs.data.push_back({});
@@ -175,11 +178,8 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 // get group limits
                 grp_limits = get_grouping(group, det_indices, calib, in.scans.data.cols());
             }
-
-            logger->debug("cleaning with {} grouping", group);
-
+            // loop through cleaning groups
             for (auto const& [key, val] : grp_limits) {
-
                 Eigen::Index arr_index;
                 // use all detectors
                 if (group=="all") {
@@ -201,26 +201,29 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 // size of block for each grouping
                 auto n_dets = std::get<1>(val) - std::get<0>(val);
 
+                // matrix for flags so we don't overwrite the raw flags
                 Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> masked_flags;
 
-                // mask region
+                // mask region if radius is >0
                 if (mask_radius_arcsec > 0) {
+                    // samples that were masked will be flagged
                     masked_flags = mask_region(in, calib, det_indices, pixel_axes, map_grouping, n_pts, n_dets, start_index);
                 }
+                // otherwise just use input flags
                 else {
                     masked_flags = in.flags.data.block(0, start_index, n_pts, n_dets);
                 }
 
                 // get the reference block of in scans that corresponds to the current array
                 Eigen::Ref<Eigen::MatrixXd> in_scans_ref = in.scans.data.block(0, start_index, n_pts, n_dets);
-
+                // eigen map to reference for input scans
                 Eigen::Map<Eigen::MatrixXd, 0, Eigen::OuterStride<>>
                     in_scans(in_scans_ref.data(), in_scans_ref.rows(), in_scans_ref.cols(),
                              Eigen::OuterStride<>(in_scans_ref.outerStride()));
 
                 // get the block of out scans that corresponds to the current array
                 Eigen::Ref<Eigen::MatrixXd> out_scans_ref = out.scans.data.block(0, start_index, n_pts, n_dets);
-
+                // eigen map to reference for output scans
                 Eigen::Map<Eigen::MatrixXd, 0, Eigen::OuterStride<>>
                     out_scans(out_scans_ref.data(), out_scans_ref.rows(), out_scans_ref.cols(),
                               Eigen::OuterStride<>(out_scans_ref.outerStride()));
@@ -230,6 +233,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 
                 // check if any good flags
                 if ((apt_flags.array()==0).any()) {
+                    // calculate eigenvalues and eigenvalues
                     auto [evals, evecs] = cleaner.calc_eig_values<timestream::Cleaner::SpectraBackend>(in_scans, masked_flags, apt_flags,
                                                                                                        cleaner.n_eig_to_cut[arr_index](indx));
                     logger->debug("evals {}", evals);
@@ -252,14 +256,14 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                             logger->debug("cleaning kernel");
                             // get the reference block of in scans that corresponds to the current array
                             Eigen::Ref<Eigen::MatrixXd> in_kernel_ref = in.kernel.data.block(0, start_index, n_pts, n_dets);
-
+                            // eigen map to reference for input kernel
                             Eigen::Map<Eigen::MatrixXd, 0, Eigen::OuterStride<>>
                                 in_kernel(in_kernel_ref.data(), in_kernel_ref.rows(), in_kernel_ref.cols(),
                                           Eigen::OuterStride<>(in_kernel_ref.outerStride()));
 
                             // get the block of out scans that corresponds to the current array
                             Eigen::Ref<Eigen::MatrixXd> out_kernel_ref = out.kernel.data.block(0, start_index, n_pts, n_dets);
-
+                            // eigen map to reference for output kernel
                             Eigen::Map<Eigen::MatrixXd, 0, Eigen::OuterStride<> >
                                 out_kernel(out_kernel_ref.data(), out_kernel_ref.rows(), out_scans_ref.cols(),
                                            Eigen::OuterStride<>(out_kernel_ref.outerStride()));
@@ -271,6 +275,8 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 }
                 // otherwise just copy the data
                 else {
+                    logger->debug("no good detectors found. skipping clean.");
+                    // copy scans
                     out.scans.data.block(0, start_index, n_pts, n_dets) = in.scans.data.block(0, start_index, n_pts, n_dets);
                     // copy kernel
                     if (in.kernel.data.size()!=0) {
@@ -279,6 +285,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 }
             }
             indx++;
+            // set as cleaned
             out.status.cleaned = true;
         }
     }
@@ -293,6 +300,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
     // resize weights to number of detectors
     in.weights.data = Eigen::VectorXd::Zero(n_dets);
 
+    // approximate weighting
     if (weighting_type == "approximate") {
         logger->debug("calculating weights using detector sensitivities");
         // unit conversion x flux calibration factor x 1/exp(-tau)
@@ -300,10 +308,13 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
 
         // loop through detectors and calculate weights
         for (Eigen::Index i=0; i<n_dets; i++) {
+            // current detector index
             Eigen::Index det_index = det_indices(i);
+            // if flux calibrated, get flux conversion factor
             if (in.status.calibrated) {
                 conversion_factor = in.fcf.data(i);
             }
+            // otherwise fcf is unity
             else {
                 conversion_factor = 1;
             }
@@ -317,11 +328,11 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
             }
         }
     }
-
     // use full weighting
     else if (weighting_type == "full"){
         logger->debug("calculating weights using timestream variance");
 
+        // loop through detectors
         for (Eigen::Index i=0; i<n_dets; i++) {
             // only calculate weights if detector is unflagged
             if (apt["flag"](det_indices(i))==0) {
@@ -331,21 +342,24 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
                 Eigen::Map<Eigen::Matrix<bool, Eigen::Dynamic, 1>> flags(
                     in.flags.data.col(i).data(), in.flags.data.rows());
 
+                // unflagged detector stddev
                 double det_std_dev = engine_utils::calc_std_dev(scans, flags);
-
+                // if stddev is not zero
                 if (det_std_dev !=0) {
+                    // weight = 1/(stddev)^2
                     in.weights.data(i) = pow(det_std_dev,-2);
                 }
+                // otherwise weight = 0 (not included in maps)
                 else {
                     in.weights.data(i) = 0;
                 }
             }
+            // otherwise weight = 0 (not included in maps)
             else {
                 in.weights.data(i) = 0;
             }
         }
     }
-
     // constant weighting
     else if (weighting_type == "const") {
         for (Eigen::Index i=0; i<n_dets; i++) {
@@ -353,6 +367,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
             if (apt["flag"](det_indices(i))==0) {
                 in.weights.data(i) = 1;
             }
+            // otherwise set to zero
             else {
                 in.weights.data(i) = 0;
             }
@@ -363,64 +378,78 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
 template <typename calib_t, typename Derived>
 auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib,
                             Eigen::DenseBase<Derived> &det_indices) {
-    // number of detectors
-    Eigen::Index n_dets = in.scans.data.cols();
 
-    // get group limits
-    auto grp_limits = get_grouping("array", det_indices, calib, n_dets);
+    // only need to run if median weight factor >=1
+    if (med_weight_factor >= 1) {
+        // number of detectors
+        Eigen::Index n_dets = in.scans.data.cols();
 
-    // collect detectors that are un-flagged and have non-zero weights
-    for (auto const& [key, val] : grp_limits) {
-        auto grp_weights = in.weights.data(Eigen::seq(std::get<0>(grp_limits[key]),
-                                                     std::get<1>(grp_limits[key])-1));
-        Eigen::Index n_good_dets = 0;
-        Eigen::Index j = std::get<0>(grp_limits[key]);
+        // get group limits
+        auto grp_limits = get_grouping("array", det_indices, calib, n_dets);
 
-        for (Eigen::Index m=0; m<grp_weights.size(); m++) {
-            if (calib.apt["flag"](det_indices(j))==0 && grp_weights(m)>0) {
-                n_good_dets++;
-            }
-            j++;
-        }
+        // collect detectors that are un-flagged and have non-zero weights
+        for (auto const& [key, val] : grp_limits) {
+            // weights for current group
+            auto grp_weights = in.weights.data(Eigen::seq(std::get<0>(grp_limits[key]),
+                                                         std::get<1>(grp_limits[key])-1));
+            // number of good detectors
+            Eigen::Index n_good_dets = 0;
+            // start index of current group
+            Eigen::Index j = std::get<0>(grp_limits[key]);
 
-        // to hold good detectors
-        Eigen::VectorXd good_wt;
-
-        if (n_good_dets>0) {
-            good_wt.resize(n_good_dets);
-
-            // remove flagged dets
-            j = std::get<0>(grp_limits[key]);
-            Eigen::Index k = 0;
+            // loop through detectors in current group
             for (Eigen::Index m=0; m<grp_weights.size(); m++) {
+                // if detector is good and weight is not zero
                 if (calib.apt["flag"](det_indices(j))==0 && grp_weights(m)>0) {
-                    good_wt(k) = grp_weights(m);
-                    k++;
+                    n_good_dets++;
                 }
                 j++;
             }
-        }
-        else {
-            good_wt = grp_weights;
-        }
 
-        // get median weight
-        auto med_wt = tula::alg::median(good_wt);
-        // store median weights
-        in.median_weights.data.push_back(med_wt);
+            // to hold good detectors
+            Eigen::VectorXd good_wt;
 
-        int outliers = 0;
+            // if good detectors were found
+            if (n_good_dets>0) {
+                good_wt.resize(n_good_dets);
 
-        // reset high weights to median
-        j = std::get<0>(grp_limits[key]);
-        for (Eigen::Index m=0; m<grp_weights.size(); m++) {
-            if (in.weights.data(j) > med_weight_factor*med_wt) {
-                in.weights.data(j) = med_wt;
-                outliers++;
+                // remove flagged dets
+                j = std::get<0>(grp_limits[key]);
+                Eigen::Index k = 0;
+                for (Eigen::Index m=0; m<grp_weights.size(); m++) {
+                    if (calib.apt["flag"](det_indices(j))==0 && grp_weights(m)>0) {
+                        good_wt(k) = grp_weights(m);
+                        k++;
+                    }
+                    j++;
+                }
             }
-            j++;
+            // otherwise just use all detectors
+            else {
+                good_wt = grp_weights;
+            }
+
+            // get median weight
+            auto med_wt = tula::alg::median(good_wt);
+            // store median weights
+            in.median_weights.data.push_back(med_wt);
+
+            int outliers = 0;
+
+            // start index of current group
+            j = std::get<0>(grp_limits[key]);
+            // loop through detectors in current group
+            for (Eigen::Index m=0; m<grp_weights.size(); m++) {
+                // if detector weight is med_weight_factor times larger than med_wt
+                if (in.weights.data(j) > med_weight_factor*med_wt) {
+                    // reset high weights to median
+                    in.weights.data(j) = med_wt;
+                    outliers++;
+                }
+                j++;
+            }
+            logger->info("array {} had {} outlier weights", key, outliers);
         }
-        logger->info("array {} had {} outlier weights", key, outliers);
     }
 }
 

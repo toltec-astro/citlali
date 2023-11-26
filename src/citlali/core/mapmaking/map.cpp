@@ -3,6 +3,9 @@
 
 namespace mapmaking {
 
+// constructor
+ObsMapBuffer::ObsMapBuffer(std::string _n): name(_n) {}
+
 // get config file
 void ObsMapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std::vector<std::string>> &missing_keys,
                               std::vector<std::vector<std::string>> &invalid_keys, std::string pixel_axes,
@@ -77,7 +80,7 @@ void ObsMapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std:
         wcs.ctype.push_back("ELOFFSET");
 
         // arcsec if pointing or beammap
-        if (redu_type == "pointing" || redu_type == "beammap") {
+        if (redu_type != "science") {
             wcs.cunit.push_back("arcsec");
             wcs.cunit.push_back("arcsec");
             wcs.cdelt[0] *= RAD_TO_ASEC;
@@ -92,33 +95,23 @@ void ObsMapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std:
         }
     }
 
-    // set wcs cdelt for frequency
-    wcs.cdelt.push_back(1);
-    // set wcs cdelt for stokes param
-    wcs.cdelt.push_back(1);
+    // set wcs cdelt for freq and stokes
+    wcs.cdelt.insert(wcs.cdelt.end(),{1,1});
 
-    // set wcs crpix for frequency
-    wcs.crpix.push_back(0);
-    // set wcs crpix for stokes param
-    wcs.crpix.push_back(0);
+    // set wcs crpix for freq and stokes
+    wcs.crpix.insert(wcs.crpix.end(),{0,0});
 
     // set wcs crval to initial defaults
-    wcs.crval.push_back(0);
-    wcs.crval.push_back(0);
-    wcs.crval.push_back(0);
-    wcs.crval.push_back(0);
+    wcs.crval.resize(4,0.);
 
     // set wcs naxis for freq and stokes
-    wcs.naxis.push_back(1);
-    wcs.naxis.push_back(1);
+    wcs.naxis.insert(wcs.naxis.end(),{1,1});
 
-    // set wcs ctypes
-    wcs.ctype.push_back("FREQ");
-    wcs.ctype.push_back("STOKES");
+    // set wcs ctypes for freq and stokes
+    wcs.ctype.insert(wcs.ctype.end(),{"FREQ","STOKES"});
 
-    // set wcs cunits
-    wcs.cunit.push_back("Hz");
-    wcs.cunit.push_back("");
+    // set wcs cunits for freq and stokes
+    wcs.cunit.insert(wcs.cunit.end(),{"Hz",""});
 }
 
 void ObsMapBuffer::normalize_maps() {
@@ -128,101 +121,18 @@ void ObsMapBuffer::normalize_maps() {
     // placeholder vectors for grppi map
     std::vector<int> map_in_vec, map_out_vec, pointing_in_vec, pointing_out_vec;
 
+    // vectors for maps
     map_in_vec.resize(signal.size());
     std::iota(map_in_vec.begin(), map_in_vec.end(), 0);
     map_out_vec.resize(signal.size());
 
+    // vectors for pointing
     pointing_in_vec.resize(pointing.size());
     std::iota(pointing_in_vec.begin(), pointing_in_vec.end(), 0);
     pointing_out_vec.resize(pointing.size());
 
-    if (!pointing.empty()) {
-        // calculate dimensions
-        auto calc_stokes = [&](auto &map_arr, auto &m, int i, int j, int a, int step) {
-            Eigen::VectorXd d(3);
-            d(0) = map_arr[a](i,j);
-            d(1) = map_arr[a + step](i,j);
-            d(2) = map_arr[a + 2*step](i,j);
-
-            Eigen::VectorXd v = m.colPivHouseholderQr().solve(d);
-
-            //Eigen::MatrixXd mi = m.completeOrthogonalDecomposition().pseudoInverse();
-            //Eigen::VectorXd v = mi*d;
-
-            map_arr[a](i,j) = v(0);
-            map_arr[a + step](i,j) = v(1);
-            map_arr[a + 2*step](i,j) = v(2);
-        };
-
-        // number of maps to step over to get to next stokes param
-        int step = pointing.size();
-
-        // loop through pointing matrices
-        grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), pointing_in_vec, pointing_out_vec, [&](auto a) {
-            // pointing matrix for pixel
-            Eigen::MatrixXd m(3,3);
-
-            // loop through rows
-            for (Eigen::Index i=0; i<n_rows; i++) {
-                // loop through cols
-                for (Eigen::Index j=0; j<n_cols; j++) {
-                    // create pointing matrix for pixel
-                    Eigen::Index n = 0;
-                    for (Eigen::Index k=0; k<3; k++) {
-                        for (Eigen::Index l=0; l<3; l++) {
-                            m(k,l) = pointing[a](i,j,n);
-                            n++;
-                        }
-                    }
-
-                    // only run if obsnum map buffer
-                    if (obsnums.size()==1) {
-                        if (!(m.array()==0).all() && m.determinant()>1e-20) {
-                            // get inverse of pixel's pointing matrix
-                            calc_stokes(signal,m,i,j,a,step);
-                            //calc_stokes(weight, m, i, j, a, step);
-                            if (!kernel.empty()) {
-                                calc_stokes(kernel,m,i,j,a,step);
-                            }
-                        }
-                        else {
-                            signal[a](i,j) = 0;
-                            //weight[a](i,j) = 0;
-                            signal[a + step](i,j) = 0;
-                            //weight[a + step](i,j) = 0;
-                            signal[a + 2*step](i,j) = 0;
-                            //weight[a + 2*step](i,j) = 0;
-
-                            if (!kernel.empty()) {
-                                kernel[a](i,j) = 0;
-                                kernel[a + step](i,j) = 0;
-                                kernel[a + 2*step](i,j) = 0;
-                            }
-                        }
-                    }
-                    // run on noise maps
-                    if (!noise.empty()) {
-
-                    }
-                }
-            }
-
-            // only run if obsnum map buffer
-            if (obsnums.size()==1) {
-                weight[a + step] = weight[a];
-                weight[a + 2*step] = weight[a];
-
-                // don't need to update coverage map
-                if (!coverage.empty()) {
-                    coverage[a + step] = coverage[a];
-                    coverage[a + 2*step] = coverage[a];
-                }
-            }
-            return 0;
-        });
-    }
-
-    else {
+    // if not in polarized mode or coadded map, use default normalization for signal and kernel
+    if (pointing.empty() || obsnums.size() > 1) {
         // normalize science and kernel mpas
         grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
             // loop through rows
@@ -254,7 +164,138 @@ void ObsMapBuffer::normalize_maps() {
 
             return 0;
         });
+    }
 
+    // if pointing matrix is not empty normalize signal, kernel (obsnum only) and noise maps
+    if (!pointing.empty()) {
+        // calculate dimensions
+        auto calc_stokes = [&](auto &map_vec, auto &m, int i, int j, int a, int step) {
+            Eigen::VectorXd d(3);
+            // I
+            d(0) = map_vec[a](i,j);
+            // Q
+            d(1) = map_vec[a + step](i,j);
+            // U
+            d(2) = map_vec[a + 2*step](i,j);
+
+            // solve the equation d = Mv for v
+            Eigen::VectorXd v = m.colPivHouseholderQr().solve(d);
+
+            // I
+            map_vec[a](i,j) = v(0);
+            // Q
+            map_vec[a + step](i,j) = v(1);
+            // U
+            map_vec[a + 2*step](i,j) = v(2);
+        };
+
+        // number of maps to step over to get to next stokes param
+        int step = pointing.size();
+
+        // loop through pointing matrices
+        grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), pointing_in_vec, pointing_out_vec, [&](auto a) {
+            // pointing matrix for pixel
+            Eigen::MatrixXd m(3,3);
+
+            // loop through rows
+            for (Eigen::Index i=0; i<n_rows; i++) {
+                // loop through cols
+                for (Eigen::Index j=0; j<n_cols; j++) {
+                    // create pointing matrix for pixel
+                    Eigen::Index n = 0;
+                    for (Eigen::Index k=0; k<3; k++) {
+                        for (Eigen::Index l=0; l<3; l++) {
+                            m(k,l) = pointing[a](i,j,n);
+                            n++;
+                        }
+                    }
+                    // if m array is not zero and invertible
+                    if ((m.array() != 0).all() && m.determinant() > 1e-20) {
+
+                        // only run on signal and kernel of obsnum map
+                        if (obsnums.size() == 1) {
+                            // calc stokes values for signal map
+                            calc_stokes(signal,m,i,j,a,step);
+
+                            if (!kernel.empty()) {
+                                // calc stokes values for kernel map
+                                calc_stokes(kernel,m,i,j,a,step);
+                            }
+                        }
+
+                        // if running noise maps
+                        if (!noise.empty()) {
+                            // loop through noise map
+                            for (Eigen::Index nn=0; nn<n_noise; ++nn) {
+                                // vector to hold noise map values
+                                std::vector<Eigen::MatrixXd> noise_vec(noise.size());
+                                // only store current pixel to save memory
+                                Eigen::MatrixXd noise_map(1,1);
+                                // I
+                                noise_map(0,0) = noise[a](i,j,nn);
+                                noise_vec[a] = noise_map;
+                                // Q
+                                noise_map(0,0) = noise[a + step](i,j,nn);
+                                noise_vec[a + step] = noise_map;
+                                // U
+                                noise_map(0,0) = noise[a + 2*step](i,j,nn);
+                                noise_vec[a + 2*step] = noise_map;
+
+                                // calc stokes values for noise map
+                                calc_stokes(noise_vec,m,0,0,a,step);
+
+                                // repopulate noise vector
+                                noise[a](i,j,nn) = noise_vec[a](0,0);
+                                noise[a + step](i,j,nn) = noise_vec[a + step](0,0);
+                                noise[a + 2*step](i,j,nn) = noise_vec[a + 2*step](0,0);
+                            }
+                        }
+                    }
+                    // otherwise set all stokes values to zero
+                    else {
+                        // only run on signal and kernel of obsnum map
+                        if (obsnums.size() == 1) {
+                            signal[a](i,j) = 0.;
+                            signal[a + step](i,j) = 0.;
+                            signal[a + 2*step](i,j) = 0.;
+
+                            if (!kernel.empty()) {
+                                kernel[a](i,j) = 0.;
+                                kernel[a + step](i,j) = 0.;
+                                kernel[a + 2*step](i,j) = 0.;
+                            }
+                        }
+
+                        // if running noise maps
+                        if (!noise.empty()) {
+                            // loop through noise map
+                            for (Eigen::Index nn=0; nn<n_noise; ++nn) {
+                                // repopulate noise vector
+                                noise[a](i,j,nn) = 0.;
+                                noise[a + step](i,j,nn) = 0.;
+                                noise[a + 2*step](i,j,nn) = 0.;
+                            }
+                        }
+                    }
+                }
+            }
+            // only run on signal and kernel of obsnum map
+            if (obsnums.size() == 1) {
+                // don't need to update weight maps
+                weight[a + step] = weight[a];
+                weight[a + 2*step] = weight[a];
+
+                // don't need to update coverage map
+                if (!coverage.empty()) {
+                    coverage[a + step] = coverage[a];
+                    coverage[a + 2*step] = coverage[a];
+                }
+            }
+            return 0;
+        });
+    }
+    // otherwise normalize noise maps normally
+    else {
         // normalize noise maps
         if (!noise.empty()) {
             grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
@@ -268,6 +309,7 @@ void ObsMapBuffer::normalize_maps() {
                         if (sig_weight > 0.) {
                             // loop through noise maps
                             for (Eigen::Index l=0; l<n_noise; l++) {
+                                // normalize by weight
                                 noise[i](j,k,l) = noise[i](j,k,l) / sig_weight;
                             }
                         }

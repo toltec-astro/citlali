@@ -120,6 +120,11 @@ void Pointing::setup() {
     // reference frame
     ppt_meta["Radesys"] = telescope.pixel_axes;
 
+    // add array mapping
+    for (const auto &[arr_index,arr_name]: toltec_io.array_name_map) {
+        ppt_meta["array_order"].push_back(arr_index + ": " + arr_name);
+    }
+
     // populate ppt meta information
     for (const auto &[key,val]: ppt_header_units) {
         ppt_meta[key].push_back("units: " + val);
@@ -191,7 +196,6 @@ auto Pointing::run() {
         rtcproc.remove_flagged_dets(ptcdata, calib.apt, det_indices);
 
         // remove outliers before cleaning
-        logger->info("removing outlier dets before cleaning");
         auto calib_scan = rtcproc.remove_bad_dets(ptcdata, calib, det_indices, map_grouping);
 
         // remove duplicate tones
@@ -208,10 +212,10 @@ auto Pointing::run() {
             }
         }
 
-        if (ptcproc.run_fruit_loops && !ptcproc.cmb.signal.empty()) {
+        if (ptcproc.run_fruit_loops && !ptcproc.tmb.signal.empty()) {
             logger->info("subtracting map from tod");
             // subtract map
-            ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(ptcproc.cmb, ptcdata, calib, det_indices,
+            ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(ptcproc.tmb, ptcdata, calib, det_indices,
                                                                             map_indices, telescope.pixel_axes,
                                                                             map_grouping);
         }
@@ -220,16 +224,15 @@ auto Pointing::run() {
         logger->info("processed time chunk processing for scan {}", ptcdata.index.data + 1);
         ptcproc.run(ptcdata, ptcdata, calib, det_indices, telescope.pixel_axes, map_grouping);
 
-        if (ptcproc.run_fruit_loops && !ptcproc.cmb.signal.empty()) {
+        if (ptcproc.run_fruit_loops && !ptcproc.tmb.signal.empty()) {
             logger->info("adding map to tod");
             // add map back
-            ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(ptcproc.cmb, ptcdata, calib, det_indices,
+            ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(ptcproc.tmb, ptcdata, calib, det_indices,
                                                                     map_indices, telescope.pixel_axes,
                                                                     map_grouping);
         }
 
         // remove outliers after cleaning
-        logger->info("removing outlier dets after cleaning");
         calib_scan = ptcproc.remove_bad_dets(ptcdata, calib_scan, det_indices, map_grouping);
 
         // calculate weights
@@ -237,9 +240,7 @@ auto Pointing::run() {
         ptcproc.calc_weights(ptcdata, calib.apt, telescope, det_indices);
 
         // reset weights to median
-        if (ptcproc.med_weight_factor >= 1) {
-            ptcproc.reset_weights(ptcdata, calib, det_indices);
-        }
+        ptcproc.reset_weights(ptcdata, calib, det_indices);
 
         // write ptc timestreams
         if (run_tod_output) {
@@ -309,11 +310,8 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
                 // vector to store kids data
                 std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> scan_rawobs;
-                {
-                    //tula::logging::scoped_loglevel<spdlog::level::off> _0;
-                    // get kids data
-                    scan_rawobs = kidsproc.load_rawobs(rawobs, scan, telescope.scan_indices, start_indices, end_indices);
-                }
+                // get kids data
+                scan_rawobs = kidsproc.load_rawobs(rawobs, scan, telescope.scan_indices, start_indices, end_indices);
 
                 // increment scan
                 scan++;
@@ -337,6 +335,11 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         // calculate map histograms
         logger->info("calculating map histogram");
         omb.calc_map_hist();
+
+        // calculate mean error
+        omb.calc_mean_err();
+        // calculate mean rms
+        omb.calc_mean_rms();
 
         // fit maps
         fit_maps();

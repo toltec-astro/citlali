@@ -22,7 +22,7 @@ public:
     std::vector<TCData<TCDataKind::PTC,Eigen::MatrixXd>> ptcs0, ptcs;
 
     // copy of obs map buffer for map iteration
-    mapmaking::ObsMapBuffer omb_copy;
+    mapmaking::ObsMapBuffer omb_copy{"omb"};
 
     // vector to store each scan's calib class
     std::vector<engine::Calib> calib_scans0, calib_scans;
@@ -208,6 +208,11 @@ void Beammap::setup() {
     calib.apt_meta["flag2"].push_back("Sens=5");
     calib.apt_meta["flag2"].push_back("Position=6");
 
+    // add array mapping
+    for (const auto &[arr_index,arr_name]: toltec_io.array_name_map) {
+        calib.apt_meta["array_order"].push_back(arr_index + ": " + arr_name);
+    }
+
     calib.apt_header_units["flag2"] = "N/A";
     calib.apt_header_keys.push_back("flag2");
 
@@ -271,7 +276,7 @@ auto Beammap::run_timestream() {
             rtcproc.remove_flagged_dets(ptcdata, calib.apt, det_indices);
         }
 
-        // remove bad detectors
+        // remove outliers before cleaning
         auto calib_scan = rtcproc.remove_bad_dets(ptcdata, calib, det_indices, map_grouping);
 
         // remove duplicate tones
@@ -398,9 +403,8 @@ auto Beammap::run_loop() {
                 ptcproc.calc_weights(ptcs[i], calib.apt, telescope, ptcs[i].det_indices.data);
 
                 // reset weights to median
-                if (ptcproc.med_weight_factor >= 1) {
-                    ptcproc.reset_weights(ptcs[i], calib, ptcs[i].det_indices.data);
-                }
+                ptcproc.reset_weights(ptcs[i], calib, ptcs[i].det_indices.data);
+
             }
 
             // write out chunk summary
@@ -601,11 +605,8 @@ auto Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
                 // vector to store kids data
                 std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> scan_rawobs;
-                {
-                    //tula::logging::scoped_loglevel<spdlog::level::off> _0;
-                    // get kids data
-                    scan_rawobs = kidsproc.load_rawobs(rawobs, scan, telescope.scan_indices, start_indices, end_indices);
-                }
+                // get kids data
+                scan_rawobs = kidsproc.load_rawobs(rawobs, scan, telescope.scan_indices, start_indices, end_indices);
 
                 // increment scan
                 scan++;

@@ -86,7 +86,6 @@ auto Lali::run() {
         rtcproc.remove_flagged_dets(ptcdata, calib.apt, det_indices);
 
         // remove outliers before cleaning
-        logger->info("removing outlier dets before cleaning");
         auto calib_scan = rtcproc.remove_bad_dets(ptcdata, calib, det_indices, map_grouping);
 
         // remove duplicate tones
@@ -103,10 +102,10 @@ auto Lali::run() {
             }
         }
 
-        if (ptcproc.run_fruit_loops && !ptcproc.cmb.signal.empty()) {
+        if (ptcproc.run_fruit_loops && !ptcproc.tmb.signal.empty()) {
             logger->info("subtracting map from tod");
             // subtract map
-            ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(ptcproc.cmb, ptcdata, calib, det_indices,
+            ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(ptcproc.tmb, ptcdata, calib, det_indices,
                                                                             map_indices, telescope.pixel_axes,
                                                                             map_grouping);
         }
@@ -116,16 +115,15 @@ auto Lali::run() {
         ptcproc.run(ptcdata, ptcdata, calib, det_indices, telescope.pixel_axes, map_grouping);
 
 
-        if (ptcproc.run_fruit_loops && !ptcproc.cmb.signal.empty()) {
+        if (ptcproc.run_fruit_loops && !ptcproc.tmb.signal.empty()) {
             logger->info("adding map to tod");
             // add map back
-            ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(ptcproc.cmb, ptcdata, calib, det_indices,
+            ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(ptcproc.tmb, ptcdata, calib, det_indices,
                                                                     map_indices, telescope.pixel_axes,
                                                                     map_grouping);
         }
 
         // remove outliers after cleaning
-        logger->info("removing outlier dets after cleaning");
         calib_scan = ptcproc.remove_bad_dets(ptcdata, calib, det_indices, map_grouping);
 
 
@@ -134,9 +132,7 @@ auto Lali::run() {
         ptcproc.calc_weights(ptcdata, calib.apt, telescope, det_indices);
 
         // reset weights to median
-        if (ptcproc.med_weight_factor >= 1) {
-            ptcproc.reset_weights(ptcdata, calib, det_indices);
-        }
+        ptcproc.reset_weights(ptcdata, calib, det_indices);
 
         // write ptc timestreams
         if (run_tod_output) {
@@ -207,11 +203,8 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
                 // vector to store kids data
                 std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> scan_rawobs;
-                {
-                    //tula::logging::scoped_loglevel<spdlog::level::off> _0;
-                    // get kids data
-                    scan_rawobs = kidsproc.load_rawobs(rawobs, scan, telescope.scan_indices, start_indices, end_indices);
-                }
+                // get kids data
+                scan_rawobs = kidsproc.load_rawobs(rawobs, scan, telescope.scan_indices, start_indices, end_indices);
 
                 // increment scan
                 scan++;
@@ -242,7 +235,6 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         omb.calc_mean_err();
         // calculate mean rms
         omb.calc_mean_rms();
-
 
         // write map summary
         if (verbose_mode) {

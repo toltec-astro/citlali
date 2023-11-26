@@ -220,25 +220,21 @@ auto RTCProc::calc_map_indices(calib_t &calib, Eigen::DenseBase<Derived> &det_in
         indices = nw_indices;
         n_maps = calib.n_nws;
     }
-
     // overwrite map indices for arrays
     else if (map_grouping == "array") {
         indices = array_indices;
         n_maps = calib.n_arrays;
     }
-
     // overwrite map indices for detectors
     else if (map_grouping == "detector") {
         indices = det_indices;
         n_maps = calib.n_dets;
     }
-
     // overwrite map indices for fg
     else if (map_grouping == "fg") {
         indices = fg_indices;
         n_maps = calib.fg.size()*calib.n_arrays;
     }
-
     // start at 0
     if (map_grouping != "fg") {
         Eigen::Index map_index = 0;
@@ -260,12 +256,10 @@ auto RTCProc::calc_map_indices(calib_t &calib, Eigen::DenseBase<Derived> &det_in
         for (Eigen::Index i=0; i<calib.fg.size(); i++) {
             fg_to_index[calib.fg(i)] = i;
         }
-
         // get mapping from fg to map index
         for (Eigen::Index i=0; i<calib.arrays.size(); i++) {
             array_to_index[calib.arrays(i)] = i;
         }
-
         // allocate map indices from fg
         for (Eigen::Index i=0; i<indices.size(); i++) {
             map_indices(i) = fg_to_index[indices(i)] + calib.fg.size()*array_to_index[array_indices(i)];
@@ -367,7 +361,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
 
             // get the reference block of in scans that corresponds to the current array
             Eigen::Ref<Eigen::MatrixXd> in_scans_ref = in_pol.scans.data.block(0, start_index, n_pts, n_dets);
-
+            // eigen map to reference for input scans
             Eigen::Map<Eigen::MatrixXd, 0, Eigen::OuterStride<>>
                 in_scans(in_scans_ref.data(), in_scans_ref.rows(), in_scans_ref.cols(),
                          Eigen::OuterStride<>(in_scans_ref.outerStride()));
@@ -375,7 +369,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
             // get the block of in flags that corresponds to the current array
             Eigen::Ref<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> in_flags_ref =
                 in_pol.flags.data.block(0, start_index, n_pts, n_dets);
-
+            // eigen map to reference for input flags
             Eigen::Map<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>, 0, Eigen::OuterStride<> >
                 in_flags(in_flags_ref.data(), in_flags_ref.rows(), in_flags_ref.cols(),
                          Eigen::OuterStride<>(in_flags_ref.outerStride()));
@@ -412,7 +406,9 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         Eigen::Ref<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> in_flags =
             in_pol.flags.data.block(si, 0, sl, in_pol.flags.data.cols());
 
+        // downsample scans
         downsampler.downsample(in_scans, out.scans.data);
+        // downsample flags
         downsampler.downsample(in_flags, out.flags.data);
 
         // loop through telescope meta data and downsample
@@ -514,7 +510,7 @@ void RTCProc::remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
     // number of detectors flagged in apt
     Eigen::Index n_flagged = 0;
 
-    // loop through detectors and set flags to zero
+    // loop through detectors and set flags to one
     // for those flagged in apt table
     for (Eigen::Index i=0; i<n_dets; i++) {
         Eigen::Index det_index = det_indices(i);
