@@ -135,7 +135,6 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
 
                     // make sure the data point is within the map
                     if ((omb_ir >= 0) && (omb_ir < omb.n_rows) && (omb_ic >= 0) && (omb_ic < omb.n_cols)) {
-
                         // populate signal map
                         signal = in.scans.data(j,i)*in.weights.data(i);
                         omb.signal[map_index](omb_ir, omb_ic) += signal;
@@ -210,9 +209,10 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                                 nmb->noise[map_index](nmb_ir,nmb_ic,nn) += noise_v;
 
                                 if (run_polarization) {
-                                    // update signal map Q and U
+                                    // update noise map Q
                                     nmb->noise[map_index + step](nmb_ir,nmb_ic,nn) += noise_v*cos(2.*in.angle.data(j,i));
-                                    nmb->noise[map_index + step](nmb_ir,nmb_ic,nn) += noise_v*sin(2.*in.angle.data(j,i));
+                                    // update noise map U
+                                    nmb->noise[map_index + 2*step](nmb_ir,nmb_ic,nn) += noise_v*sin(2.*in.angle.data(j,i));
                                 }
                             }
                         }

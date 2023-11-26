@@ -47,6 +47,7 @@ public:
     // wcs object
     WCS wcs;
 
+    // name of map buffer (i.e. omb, cmb)
     std::string name;
 
     // reference sky value
