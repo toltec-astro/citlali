@@ -62,10 +62,11 @@ public:
     // calculate spline function for jinc weights
     void calculate_jinc_splines();
 
+    // allocate pointing matrix for polarization reduction
     template <class map_buffer_t>
-    void allocate_pointing(map_buffer_t &, double, double, double, double, Eigen::Index, int, int);
+    void allocate_pointing(map_buffer_t &, double, double, Eigen::Index, int, int);
 
-    // populate the pixels in the map given a time chunk
+    // populate maps with a time chunk (signal, kernel, coverage, and noise)
     template<class map_buffer_t, typename Derived, typename apt_t>
     void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &, map_buffer_t &,
                             Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &,
@@ -158,11 +159,7 @@ void JincMapmaker::calculate_jinc_splines() {
 }
 
 template <class map_buffer_t>
-void JincMapmaker::allocate_pointing(map_buffer_t &mb, double signal, double weight, double kernel,
-                                     double angle, Eigen::Index map_index, int ir, int ic) {
-
-    // step to skip to reach next stokes param
-    int step = mb.pointing.size();
+void JincMapmaker::allocate_pointing(map_buffer_t &mb, double weight, double angle, Eigen::Index map_index, int ir, int ic) {
 
     // update pointing matrix
     mb.pointing[map_index](ir,ic,0) += weight;
@@ -174,16 +171,6 @@ void JincMapmaker::allocate_pointing(map_buffer_t &mb, double signal, double wei
     mb.pointing[map_index](ir,ic,6) = mb.pointing[map_index](ir,ic,2);//weight*sin(2*angle);
     mb.pointing[map_index](ir,ic,7) = mb.pointing[map_index](ir,ic,5);//weight*cos(2*angle)*sin(2*angle);
     mb.pointing[map_index](ir,ic,8) += weight*pow(sin(2.*angle),2.);
-
-    // update signal map Q and U
-    mb.signal[map_index + step](ir,ic) += signal*cos(2.*angle);
-    mb.signal[map_index + 2*step](ir,ic) += signal*sin(2.*angle);
-
-    // update kernel map Q and U
-    if (!mb.kernel.empty()) {
-        mb.kernel[map_index + step](ir,ic) += kernel*cos(2.*angle);
-        mb.kernel[map_index + 2*step](ir,ic) += kernel*sin(2.*angle);
-    }
 }
 
 template<class map_buffer_t, typename Derived, typename apt_t>
@@ -195,6 +182,9 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     // dimensions of data
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
+
+    // step to skip to reach next stokes param
+    int step = omb.pointing.size();
 
     // pointer to map buffer with noise maps
     ObsMapBuffer* nmb = NULL;
@@ -317,7 +307,17 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
 
                                     if (run_polarization) {
                                         // calculate pointing matrix
-                                        allocate_pointing(omb, signal, weight, kernel, in.angle.data(j,i), map_index, ri, ci);
+                                        allocate_pointing(omb, weight, in.angle.data(j,i), map_index, ri, ci);
+
+                                        // update signal map Q and U
+                                        omb.signal[map_index + step](ri,ci) += signal*cos(2.*in.angle.data(j,i));
+                                        omb.signal[map_index + 2*step](ri,ci) += signal*sin(2.*in.angle.data(j,i));
+
+                                        // update kernel map Q and U
+                                        if (!omb.kernel.empty()) {
+                                            omb.kernel[map_index + step](ri,ci) += kernel*cos(2.*in.angle.data(j,i));
+                                            omb.kernel[map_index + 2*step](ri,ci) += kernel*sin(2.*in.angle.data(j,i));
+                                        }
                                     }
                                 }
                             }
@@ -339,6 +339,8 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                             nmb_ir = omb_irow(j);
                             nmb_ic = omb_icol(j);
                         }
+
+                        double noise_v;
 
                         // make sure pixel is in the map
                         if ((nmb_ir >= 0) && (nmb_ir < nmb->n_rows) && (nmb_ic >= 0) && (nmb_ic < nmb->n_cols)) {
@@ -364,15 +366,29 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                                         // data x weight
                                         signal = in.scans.data(j,i)*weight;
 
+                                        if (run_polarization) {
+                                            if (!cmb.noise.empty()) {
+                                                // calculate pointing matrix for cmb
+                                                allocate_pointing(cmb, weight, in.angle.data(j,i), map_index, ri, ci);
+                                            }
+                                        }
                                         // populate noise maps
                                         for (Eigen::Index nn=0; nn<nmb->n_noise; nn++) {
-                                            // randomize on detectors
+                                            // randomizing on dets
                                             if (nmb->randomize_dets) {
-                                                nmb->noise[map_index](ri,ci,nn) += noise(nn,i)*signal;
+                                                noise_v = noise(nn,i)*signal;
                                             }
-                                            // only randomize on scans
                                             else {
-                                                nmb->noise[map_index](ri,ci,nn) += noise(nn)*signal;
+                                                noise_v = noise(nn)*signal;
+                                            }
+                                            // randomize on detectors
+                                            nmb->noise[map_index](ri,ci,nn) += noise_v;
+
+                                            if (run_polarization) {
+                                                // update noise map Q
+                                                nmb->noise[map_index + step](ri,ci,nn) += noise_v*cos(2.*in.angle.data(j,i));
+                                                // update noise map U
+                                                nmb->noise[map_index + 2*step](ri,ci,nn) += noise_v*sin(2.*in.angle.data(j,i));
                                             }
                                         }
                                     }

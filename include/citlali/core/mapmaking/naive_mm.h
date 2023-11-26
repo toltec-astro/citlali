@@ -25,9 +25,11 @@ public:
     // run polarization?
     bool run_polarization;
 
+    // allocate pointing matrix for polarization reduction
     template <class map_buffer_t>
     void allocate_pointing(map_buffer_t &, double, double, Eigen::Index, int, int);
 
+    // populate maps with a time chunk (signal, kernel, coverage, and noise)
     template<class map_buffer_t, typename Derived, typename apt_t>
     void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &, map_buffer_t &,
                              Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string &, std::string &,
