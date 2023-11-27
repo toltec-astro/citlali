@@ -1073,7 +1073,7 @@ void Engine::add_tod_header() {
                     // conversion to mJy/beam
                     add_netcdf_var(fo, "to_mJy_beam_"+name, calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC);
                     // conversion to MJy/Sr
-                    add_netcdf_var(fo, "to_MJy/sr_"+name, 1);
+                    add_netcdf_var(fo, "to_MJy_sr_"+name, 1);
                     // conversion to uK
                     add_netcdf_var(fo, "to_uK_"+name, calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC*mJy_beam_to_uK);
                     // conversion to Jy/pixel
