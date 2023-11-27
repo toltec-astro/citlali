@@ -1061,43 +1061,43 @@ void Engine::add_tod_header() {
 
                 if (omb.sig_unit == "mJy/beam") {
                     // conversion to mJy/beam
-                    add_netcdf_var(fo, "to_mJy/beam_"+name, 1);
+                    add_netcdf_var(fo, "to_mJy_beam_"+name, 1);
                     // conversion to MJy/sr
-                    add_netcdf_var(fo, "to_MJy/sr_"+name, 1/(calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC));
+                    add_netcdf_var(fo, "to_MJy_sr_"+name, 1/(calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC));
                     // conversion to uK
                     add_netcdf_var(fo, "to_uK_"+name, mJy_beam_to_uK);
                     // conversion to Jy/pixel
-                    add_netcdf_var(fo, "to_Jy/pixel_"+name, mJy_beam_to_Jy_px);
+                    add_netcdf_var(fo, "to_Jy_pixel_"+name, mJy_beam_to_Jy_px);
                 }
                 else if (omb.sig_unit == "MJy/sr") {
                     // conversion to mJy/beam
-                    add_netcdf_var(fo, "to_mJy/beam_"+name, calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC);
+                    add_netcdf_var(fo, "to_mJy_beam_"+name, calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC);
                     // conversion to MJy/Sr
                     add_netcdf_var(fo, "to_MJy/sr_"+name, 1);
                     // conversion to uK
                     add_netcdf_var(fo, "to_uK_"+name, calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC*mJy_beam_to_uK);
                     // conversion to Jy/pixel
-                    add_netcdf_var(fo, "to_Jy/pixel_"+name, calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC*mJy_beam_to_Jy_px);
+                    add_netcdf_var(fo, "to_Jy_pixel_"+name, calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC*mJy_beam_to_Jy_px);
                 }
                 else if (omb.sig_unit == "uK") {
                     // conversion to mJy/beam
-                    add_netcdf_var(fo, "to_mJy/beam_"+name, 1/mJy_beam_to_uK);
+                    add_netcdf_var(fo, "to_mJy_beam_"+name, 1/mJy_beam_to_uK);
                     // conversion to MJy/sr
-                    add_netcdf_var(fo, "to_MJy/sr_"+name, 1/mJy_beam_to_uK/(calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC));
+                    add_netcdf_var(fo, "to_MJy_sr_"+name, 1/mJy_beam_to_uK/(calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC));
                     // conversion to uK
                     add_netcdf_var(fo, "to_uK_"+name, 1);
                     // conversion to Jy/pixel
-                    add_netcdf_var(fo, "to_Jy/pixel_"+name, (1/mJy_beam_to_uK)*mJy_beam_to_Jy_px);
+                    add_netcdf_var(fo, "to_Jy_pixel_"+name, (1/mJy_beam_to_uK)*mJy_beam_to_Jy_px);
                 }
                 else if (omb.sig_unit == "Jy/pixel") {
                     // conversion to mJy/beam
-                    add_netcdf_var(fo, "to_mJy/beam_"+name, 1/mJy_beam_to_Jy_px);
+                    add_netcdf_var(fo, "to_mJy_beam_"+name, 1/mJy_beam_to_Jy_px);
                     // conversion to MJy/sr
-                    add_netcdf_var(fo, "to_MJy/sr_"+name, (1/mJy_beam_to_Jy_px)/(calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC));
+                    add_netcdf_var(fo, "to_MJy_sr_"+name, (1/mJy_beam_to_Jy_px)/(calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC));
                     // conversion to uK
                     add_netcdf_var(fo, "to_uK_"+name, mJy_beam_to_uK/mJy_beam_to_Jy_px);
                     // conversion to Jy/pixel
-                    add_netcdf_var(fo, "to_Jy/pixel_"+name, 1);
+                    add_netcdf_var(fo, "to_Jy_pixel_"+name, 1);
                 }
             }
         }

@@ -426,6 +426,10 @@ int run(const rc_t &rc) {
 
                 // loop through fruit loops iterations
                 while (fruit_iter < todproc.engine().ptcproc.fruit_loops_iters && !fruit_loops_converged) {
+                    // output current fruit loops iteraton
+                    if (todproc.engine().ptcproc.run_fruit_loops) {
+                        logger->info("starting fruit loops iteration {}", fruit_iter);
+                    }
                     // setup reduction directories
                     todproc.create_output_dir();
 
@@ -656,7 +660,7 @@ int run(const rc_t &rc) {
                             else {
                                 todproc.engine().start_indices.clear();
                                 todproc.engine().end_indices.clear();
-
+                                // loop through data times and populate start and end indices
                                 for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
                                     todproc.engine().start_indices.push_back(0);
                                     todproc.engine().start_indices.push_back(0);
