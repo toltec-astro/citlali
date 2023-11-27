@@ -399,8 +399,6 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                             try {
                                 // attempt to access an HDU (ignore primary hdu)
                                 CCfits::ExtHDU& ext = fits_io.pfits->extension(num_extensions + 1);
-                                logger->info("h");
-
                                 num_extensions++;
                             } catch (CCfits::FITS::NoSuchHDU) {
                                 // NoSuchHDU exception is thrown when there are no more HDUs
@@ -416,12 +414,12 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                             // get signal I map
                             if (extName.find("signal") != std::string::npos && extName.find("_I") != std::string::npos) {
                                 tmb.signal.push_back(fits_io.get_hdu(extName));
-                                logger->info("got signal map");
+                                logger->info("found {} {}", filename, extName);
                             }
                             // get weight I map
                             else if (extName.find("weight") != std::string::npos && extName.find("_I") != std::string::npos) {
                                 tmb.weight.push_back(fits_io.get_hdu(extName));
-                                logger->info("got weight map");
+                                logger->info("found {} {}", filename, extName);
                             }
                         }
                     }
@@ -482,6 +480,7 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                                 double mean_rms;
                                 ext.readKey("MEANRMS", mean_rms);
                                 mean_rms_vec.push_back(mean_rms);
+                                logger->info("found {} {}", filename, extName);
                                 // allocate current noise map
                                 //tmb.noise.push_back(Eigen::Tensor<double,3>(tmb.wcs.naxis[1], tmb.wcs.naxis[0], tmb.n_noise));
 

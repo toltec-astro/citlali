@@ -614,14 +614,15 @@ int run(const rc_t &rc) {
                                     logger->info("getting hwpr file {}",hwpr_filepath);
                                     todproc.engine().calib.get_hwpr(hwpr_filepath, todproc.engine().telescope.sim_obs);
                                 }
+                                // if filepath is null, ignore hwpr
                                 else {
                                     todproc.engine().calib.run_hwpr = false;
                                 }
                             }
+                            // if hwpr either not found or ignored
                             else {
                                 todproc.engine().calib.run_hwpr = false;
                             }
-
                             if (!todproc.engine().calib.run_hwpr) {
                                 logger->info("ignoring hwpr");
                             }
@@ -755,7 +756,7 @@ int run(const rc_t &rc) {
                             todproc.engine().ptcproc.tmb.cov_cut = todproc.engine().omb.cov_cut;
 
                             // get map buffer from previous reduction directory
-                            todproc.engine().ptcproc.load_mb(fruit_dir, todproc.engine().ptcproc.init_fruit_loops_path[i],
+                            todproc.engine().ptcproc.load_mb(fruit_dir, fruit_dir, //todproc.engine().ptcproc.init_fruit_loops_path[i],
                                                              todproc.engine().calib);
                         }
                         // else clear ptcproc maps for each obsnum and get current redu path
