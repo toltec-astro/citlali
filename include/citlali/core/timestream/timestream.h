@@ -356,9 +356,16 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                 bool fits_file = entry.path().string().find(".fits") != std::string::npos;
                 // find current array obs map
                 if (entry.path().string().find(toltec_io.array_name_map[arr]) != std::string::npos && fits_file) {
-                    // get maps (if noise not in filename)
-                    if (entry.path().string().find("noise") == std::string::npos) {
 
+                    // get filename
+                    std::string filename;
+                    size_t lastSlashPos = entry.path().string().find_last_of("/");
+                    if (lastSlashPos != std::string::npos) {
+                        filename = entry.path().string().substr(lastSlashPos + 1);
+                    }
+
+                    // get maps (if noise not in filename)
+                    if (filename.find("noise") == std::string::npos) {
                         // get fits file
                         fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*> fits_io(entry.path().string());
 
@@ -368,15 +375,19 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                         // get naxis
                         extension.readKey("NAXIS1", tmb.wcs.naxis[0]);
                         extension.readKey("NAXIS2", tmb.wcs.naxis[1]);
+
                         // get crpix
                         extension.readKey("CRPIX1", tmb.wcs.crpix[0]);
                         extension.readKey("CRPIX2", tmb.wcs.crpix[1]);
+
                         // get crval
                         extension.readKey("CRVAL1", tmb.wcs.crval[0]);
                         extension.readKey("CRVAL2", tmb.wcs.crval[1]);
+
                         // get cdelt
                         extension.readKey("CDELT1", tmb.wcs.cdelt[0]);
                         extension.readKey("CDELT2", tmb.wcs.cdelt[1]);
+
                         // get cunit
                         extension.readKey("CUNIT1", tmb.wcs.cunit[1]);
                         extension.readKey("CUNIT2", tmb.wcs.cunit[0]);
@@ -388,6 +399,8 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                             try {
                                 // attempt to access an HDU (ignore primary hdu)
                                 CCfits::ExtHDU& ext = fits_io.pfits->extension(num_extensions + 1);
+                                logger->info("h");
+
                                 num_extensions++;
                             } catch (CCfits::FITS::NoSuchHDU) {
                                 // NoSuchHDU exception is thrown when there are no more HDUs
@@ -403,10 +416,12 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                             // get signal I map
                             if (extName.find("signal") != std::string::npos && extName.find("_I") != std::string::npos) {
                                 tmb.signal.push_back(fits_io.get_hdu(extName));
+                                logger->info("got signal map");
                             }
                             // get weight I map
                             else if (extName.find("weight") != std::string::npos && extName.find("_I") != std::string::npos) {
                                 tmb.weight.push_back(fits_io.get_hdu(extName));
+                                logger->info("got weight map");
                             }
                         }
                     }
@@ -420,9 +435,16 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                 bool fits_file = entry.path().string().find(".fits") != std::string::npos;
                 // find current array obs map
                 if (entry.path().string().find(toltec_io.array_name_map[arr]) != std::string::npos && fits_file) {
-                    // check if the current file is a noise map
-                    if (entry.path().string().find("noise") != std::string::npos) {
 
+                    // get filename
+                    std::string filename;
+                    size_t lastSlashPos = entry.path().string().find_last_of("/");
+                    if (lastSlashPos != std::string::npos) {
+                        filename = entry.path().string().substr(lastSlashPos + 1);
+                    }
+
+                    // check if the current file is a noise map
+                    if (filename.find("_noise_citlali.fits") != std::string::npos) {
                         // get fits file
                         fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*> fits_io(entry.path().string());
 

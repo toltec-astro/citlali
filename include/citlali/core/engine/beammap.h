@@ -344,10 +344,10 @@ auto Beammap::run_loop() {
 
         // cleaning (separate from mapmaking loop due to jinc mapmaking parallelization)
         grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
-
             if (run_mapmaking) {
                 if (current_iter > 0) {
                     if (!ptcproc.run_fruit_loops) {
+                        // if not running fruit loops use source fit
                         logger->info("subtracting gaussian from tod");
                         // subtract gaussian
                         ptcproc.add_gaussian<timestream::TCProc::SourceType::NegativeGaussian>(ptcs[i], params, telescope.pixel_axes, map_grouping,
@@ -371,6 +371,7 @@ auto Beammap::run_loop() {
 
             if (run_mapmaking) {
                 if (current_iter > 0) {
+                    // if not running fruit loops use source fit
                     if (!ptcproc.run_fruit_loops) {
                         logger->info("adding gaussian to tod");
                         // add gaussian back
@@ -456,18 +457,19 @@ auto Beammap::run_loop() {
 
             // mapmaking
             grppi::map(tula::grppi_utils::dyn_ex(map_parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
+                bool run_omb = true;
                 // populate maps
                     if (map_method=="naive") {
                         // naive mapmaker
                         naive_mm.populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
                                                      ptcs[i].det_indices.data, telescope.pixel_axes,
-                                                     redu_type, calib.apt, telescope.d_fsmp, run_noise);
+                                                     calib.apt, telescope.d_fsmp, run_omb, run_noise);
                     }
                     else if (map_method=="jinc") {
                         // jinc mapmaker
                         jinc_mm.populate_maps_jinc(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
                                                    ptcs[i].det_indices.data, telescope.pixel_axes,
-                                                   redu_type, calib.apt,telescope.d_fsmp, run_noise);
+                                                   calib.apt,telescope.d_fsmp, run_omb, run_noise);
                     }
 
                 // update progress bar

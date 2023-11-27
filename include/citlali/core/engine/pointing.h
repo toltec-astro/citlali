@@ -212,6 +212,7 @@ auto Pointing::run() {
             }
         }
 
+        // if running fruit loops and a map has been read in
         if (ptcproc.run_fruit_loops && !ptcproc.tmb.signal.empty()) {
             logger->info("subtracting map from tod");
             // subtract map
@@ -224,7 +225,28 @@ auto Pointing::run() {
         logger->info("processed time chunk processing for scan {}", ptcdata.index.data + 1);
         ptcproc.run(ptcdata, ptcdata, calib, det_indices, telescope.pixel_axes, map_grouping);
 
+        // if running fruit loops and a map has been read in
         if (ptcproc.run_fruit_loops && !ptcproc.tmb.signal.empty()) {
+            // calculate weights
+            logger->info("calculating weights");
+            ptcproc.calc_weights(ptcdata, calib.apt, telescope, det_indices);
+
+            // reset weights to median
+            ptcproc.reset_weights(ptcdata, calib, det_indices);
+
+            // populate maps
+            if (run_mapmaking) {
+                bool run_omb = false;
+                logger->info("populating noise maps");
+                if (map_method=="naive") {
+                    naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
+                                                 calib.apt, telescope.d_fsmp, run_omb, run_noise);
+                }
+                else if (map_method=="jinc") {
+                    jinc_mm.populate_maps_jinc(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
+                                               calib.apt, telescope.d_fsmp, run_omb, run_noise);
+                }
+            }
             logger->info("adding map to tod");
             // add map back
             ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(ptcproc.tmb, ptcdata, calib, det_indices,
@@ -262,14 +284,23 @@ auto Pointing::run() {
 
         // populate maps
         if (run_mapmaking) {
+            bool run_omb = true;
+            bool run_noise_fruit;
+
+            if (ptcproc.run_fruit_loops && !ptcproc.tmb.signal.empty()) {
+                run_noise_fruit = false;
+            }
+            else {
+                run_noise_fruit = true;
+            }
             logger->info("populating maps");
             if (map_method=="naive") {
-                naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes, redu_type,
-                                             calib.apt, telescope.d_fsmp, run_noise);
+                naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
+                                             calib.apt, telescope.d_fsmp, run_omb, run_noise_fruit);
             }
             else if (map_method=="jinc") {
                 jinc_mm.populate_maps_jinc(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
-                                           redu_type, calib.apt, telescope.d_fsmp, run_noise);
+                                           calib.apt, telescope.d_fsmp, run_omb, run_noise_fruit);
             }
         }
         // increment number of completed scans

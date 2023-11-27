@@ -28,7 +28,7 @@ public:
         if constexpr (file_type==file_type_enum::read_fits) {
             try {
                 pfits.reset( new CCfits::FITS(filepath, CCfits::Read));
-                logger->info("openend FITS file {}", filepath);
+                logger->info("opened FITS file {}", filepath);
             }
             catch (CCfits::FITS::CantOpen) {
                 logger->error("unable to open file {}", filepath);

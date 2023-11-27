@@ -69,8 +69,8 @@ public:
     // populate maps with a time chunk (signal, kernel, coverage, and noise)
     template<class map_buffer_t, typename Derived, typename apt_t>
     void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &, map_buffer_t &,
-                            Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &,
-                            std::string &, std::string &, apt_t &, double, bool);
+                            Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string &,
+                            apt_t &, double, bool, bool);
 };
 
 auto JincMapmaker::jinc_func(double r, double a, double b, double c, double r_max, double l_d) {
@@ -176,8 +176,8 @@ void JincMapmaker::allocate_pointing(map_buffer_t &mb, double weight, double ang
 template<class map_buffer_t, typename Derived, typename apt_t>
 void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                         map_buffer_t &omb, map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
-                        Eigen::DenseBase<Derived> &det_indices, std::string &pixel_axes, std::string &redu_type,
-                        apt_t &apt, double d_fsmp, bool run_noise) {
+                        Eigen::DenseBase<Derived> &det_indices, std::string &pixel_axes, apt_t &apt,
+                        double d_fsmp, bool run_omb, bool run_noise) {
 
     // dimensions of data
     Eigen::Index n_dets = in.scans.data.cols();
@@ -264,59 +264,61 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                     // signal map value
                     double signal, kernel;
 
-                    // make sure the data point is within the map
-                    if ((omb_ir >= 0) && (omb_ir < omb.n_rows) && (omb_ic >= 0) && (omb_ic < omb.n_cols)) {
-                        // center of jinc matrix
-                        Eigen::Index mat_rows = (jinc_weights_mat[apt["array"](det_indices(i))].rows() - 1.)/2.;
-                        Eigen::Index mat_cols = (jinc_weights_mat[apt["array"](det_indices(i))].cols() - 1.)/2.;
+                    if (run_omb) {
+                        // make sure the data point is within the map
+                        if ((omb_ir >= 0) && (omb_ir < omb.n_rows) && (omb_ic >= 0) && (omb_ic < omb.n_cols)) {
+                            // center of jinc matrix
+                            Eigen::Index mat_rows = (jinc_weights_mat[apt["array"](det_indices(i))].rows() - 1.)/2.;
+                            Eigen::Index mat_cols = (jinc_weights_mat[apt["array"](det_indices(i))].cols() - 1.)/2.;
 
-                        // loop through nearby rows and cols
-                        for (Eigen::Index r=0; r<jinc_weights_mat[apt["array"](det_indices(i))].rows(); r++) {
-                            for (Eigen::Index c=0; c<jinc_weights_mat[apt["array"](det_indices(i))].cols(); c++) {
-                                // get pixel in map
-                                Eigen::Index ri = omb_ir + r - mat_rows;
-                                Eigen::Index ci = omb_ic + c - mat_cols;
+                            // loop through nearby rows and cols
+                            for (Eigen::Index r=0; r<jinc_weights_mat[apt["array"](det_indices(i))].rows(); r++) {
+                                for (Eigen::Index c=0; c<jinc_weights_mat[apt["array"](det_indices(i))].cols(); c++) {
+                                    // get pixel in map
+                                    Eigen::Index ri = omb_ir + r - mat_rows;
+                                    Eigen::Index ci = omb_ic + c - mat_cols;
 
-                                // make sure pixel is in the map
-                                if (ri >= 0 && ci >= 0 && ri < omb.n_rows && ci < omb.n_cols) {
-                                    // get radius from data point to pixel
-                                    //auto radius = sqrt(std::pow(lat(j) - omb.rows_tan_vec(ri),2) + std::pow(lon(j) - omb.cols_tan_vec(ci),2));
-                                    //auto weight = in.weights.data(i)*jinc_splines[apt["array"](det_indices(i))](radius);
+                                    // make sure pixel is in the map
+                                    if (ri >= 0 && ci >= 0 && ri < omb.n_rows && ci < omb.n_cols) {
+                                        // get radius from data point to pixel
+                                        //auto radius = sqrt(std::pow(lat(j) - omb.rows_tan_vec(ri),2) + std::pow(lon(j) - omb.cols_tan_vec(ci),2));
+                                        //auto weight = in.weights.data(i)*jinc_splines[apt["array"](det_indices(i))](radius);
 
-                                    // det weight x jinc weight
-                                    auto weight = in.weights.data(i)*jinc_weights_mat[apt["array"](det_indices(i))](r,c);
+                                        // det weight x jinc weight
+                                        auto weight = in.weights.data(i)*jinc_weights_mat[apt["array"](det_indices(i))](r,c);
 
-                                    // data x weight
-                                    signal = in.scans.data(j,i)*weight;
-                                    // populate signal map
-                                    omb.signal[map_index](ri,ci) += signal;
+                                        // data x weight
+                                        signal = in.scans.data(j,i)*weight;
+                                        // populate signal map
+                                        omb.signal[map_index](ri,ci) += signal;
 
-                                    // populate weight map
-                                    omb.weight[map_index](ri,ci) += weight;
+                                        // populate weight map
+                                        omb.weight[map_index](ri,ci) += weight;
 
-                                    // populate kernel map
-                                    if (!omb.kernel.empty()) {
-                                        kernel = in.kernel.data(j,i)*weight;
-                                        omb.kernel[map_index](ri,ci) += kernel;
-                                    }
-
-                                    // populate coverage map
-                                    if (!omb.coverage.empty()) {
-                                        omb.coverage[map_index](ri,ci) += jinc_weights_mat[apt["array"](det_indices(i))](r,c)/d_fsmp;
-                                    }
-
-                                    if (run_polarization) {
-                                        // calculate pointing matrix
-                                        allocate_pointing(omb, weight, in.angle.data(j,i), map_index, ri, ci);
-
-                                        // update signal map Q and U
-                                        omb.signal[map_index + step](ri,ci) += signal*cos(2.*in.angle.data(j,i));
-                                        omb.signal[map_index + 2*step](ri,ci) += signal*sin(2.*in.angle.data(j,i));
-
-                                        // update kernel map Q and U
+                                        // populate kernel map
                                         if (!omb.kernel.empty()) {
-                                            omb.kernel[map_index + step](ri,ci) += kernel*cos(2.*in.angle.data(j,i));
-                                            omb.kernel[map_index + 2*step](ri,ci) += kernel*sin(2.*in.angle.data(j,i));
+                                            kernel = in.kernel.data(j,i)*weight;
+                                            omb.kernel[map_index](ri,ci) += kernel;
+                                        }
+
+                                        // populate coverage map
+                                        if (!omb.coverage.empty()) {
+                                            omb.coverage[map_index](ri,ci) += jinc_weights_mat[apt["array"](det_indices(i))](r,c)/d_fsmp;
+                                        }
+
+                                        if (run_polarization) {
+                                            // calculate pointing matrix
+                                            allocate_pointing(omb, weight, in.angle.data(j,i), map_index, ri, ci);
+
+                                            // update signal map Q and U
+                                            omb.signal[map_index + step](ri,ci) += signal*cos(2.*in.angle.data(j,i));
+                                            omb.signal[map_index + 2*step](ri,ci) += signal*sin(2.*in.angle.data(j,i));
+
+                                            // update kernel map Q and U
+                                            if (!omb.kernel.empty()) {
+                                                omb.kernel[map_index + step](ri,ci) += kernel*cos(2.*in.angle.data(j,i));
+                                                omb.kernel[map_index + 2*step](ri,ci) += kernel*sin(2.*in.angle.data(j,i));
+                                            }
                                         }
                                     }
                                 }
@@ -367,7 +369,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                                         signal = in.scans.data(j,i)*weight;
 
                                         if (run_polarization) {
-                                            if (!cmb.noise.empty()) {
+                                            if (!cmb.pointing.empty()) {
                                                 // calculate pointing matrix for cmb
                                                 allocate_pointing(cmb, weight, in.angle.data(j,i), map_index, ri, ci);
                                             }

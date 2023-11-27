@@ -1050,19 +1050,54 @@ void Engine::add_tod_header() {
         if (rtcproc.run_calibrate) {
             for (const auto &val: calib.arrays) {
                 auto name = toltec_io.array_name_map[val];
-                if (omb.sig_unit == "MJy/sr") {
-                    add_netcdf_var(fo,"to_mJy_beam_"+name, calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC);
-                    add_netcdf_var(fo,"to_MJy_sr_"+name, 1.);
+                // conversion to uK
+                auto fwhm = (std::get<0>(calib.array_fwhms[val]) + std::get<1>(calib.array_fwhms[val]))/2;
+                auto mJy_beam_to_uK = engine_utils::mJy_beam_to_uK(1, toltec_io.array_freq_map[val], fwhm*ASEC_TO_RAD);
+
+                // beam area in steradians
+                auto beam_area_rad = 2.*pi*pow(fwhm*FWHM_TO_STD*ASEC_TO_RAD,2);
+                // get Jy/pixel
+                auto mJy_beam_to_Jy_px = 1e-3/beam_area_rad*pow(omb.pixel_size_rad,2);
+
+                if (omb.sig_unit == "mJy/beam") {
+                    // conversion to mJy/beam
+                    add_netcdf_var(fo, "to_mJy/beam_"+name, 1);
+                    // conversion to MJy/sr
+                    add_netcdf_var(fo, "to_MJy/sr_"+name, 1/(calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC));
+                    // conversion to uK
+                    add_netcdf_var(fo, "to_uK_"+name, mJy_beam_to_uK);
+                    // conversion to Jy/pixel
+                    add_netcdf_var(fo, "to_Jy/pixel_"+name, mJy_beam_to_Jy_px);
                 }
-                else if (omb.sig_unit == "mJy/beam") {
-                    add_netcdf_var(fo,"to_mJy_beam_"+name, 1.);
-                    add_netcdf_var(fo,"to_MJy_sr_"+name, 1/(calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC));
+                else if (omb.sig_unit == "MJy/sr") {
+                    // conversion to mJy/beam
+                    add_netcdf_var(fo, "to_mJy/beam_"+name, calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC);
+                    // conversion to MJy/Sr
+                    add_netcdf_var(fo, "to_MJy/sr_"+name, 1);
+                    // conversion to uK
+                    add_netcdf_var(fo, "to_uK_"+name, calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC*mJy_beam_to_uK);
+                    // conversion to Jy/pixel
+                    add_netcdf_var(fo, "to_Jy/pixel_"+name, calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC*mJy_beam_to_Jy_px);
                 }
-                else if (omb.sig_unit == "uk") {
+                else if (omb.sig_unit == "uK") {
+                    // conversion to mJy/beam
+                    add_netcdf_var(fo, "to_mJy/beam_"+name, 1/mJy_beam_to_uK);
+                    // conversion to MJy/sr
+                    add_netcdf_var(fo, "to_MJy/sr_"+name, 1/mJy_beam_to_uK/(calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC));
+                    // conversion to uK
+                    add_netcdf_var(fo, "to_uK_"+name, 1);
+                    // conversion to Jy/pixel
+                    add_netcdf_var(fo, "to_Jy/pixel_"+name, (1/mJy_beam_to_uK)*mJy_beam_to_Jy_px);
                 }
-                else {
-                    add_netcdf_var(fo,"to_mJy_beam_"+name, 0.);
-                    add_netcdf_var(fo,"to_MJy_sr_"+name, 0.);
+                else if (omb.sig_unit == "Jy/pixel") {
+                    // conversion to mJy/beam
+                    add_netcdf_var(fo, "to_mJy/beam_"+name, 1/mJy_beam_to_Jy_px);
+                    // conversion to MJy/sr
+                    add_netcdf_var(fo, "to_MJy/sr_"+name, (1/mJy_beam_to_Jy_px)/(calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC));
+                    // conversion to uK
+                    add_netcdf_var(fo, "to_uK_"+name, mJy_beam_to_uK/mJy_beam_to_Jy_px);
+                    // conversion to Jy/pixel
+                    add_netcdf_var(fo, "to_Jy/pixel_"+name, 1);
                 }
             }
         }
@@ -1152,13 +1187,13 @@ void Engine::add_tod_header() {
 
             Eigen::Index i = 0;
             for (auto const& [key, val] : tau_freq) {
-                add_netcdf_var(fo, "MEAN_TAU_"+toltec_io.array_name_map[i], val[0]);
+                add_netcdf_var(fo, "MEAN_TAU_"+toltec_io.array_name_map[calib.arrays(i)], val[0]);
                 i++;
             }
         }
         else {
             for (Eigen::Index i=0; i<calib.arrays.size(); i++) {
-                add_netcdf_var(fo, "MEAN_TAU_"+toltec_io.array_name_map[i], 0.);
+                add_netcdf_var(fo, "MEAN_TAU_"+toltec_io.array_name_map[calib.arrays(i)], 0.);
             }
         }
 
@@ -1192,9 +1227,21 @@ void Engine::add_tod_header() {
         add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTHIGH", ptcproc.upper_weight_factor);
         add_netcdf_var(fo, "CONFIG.WEIGHT.MEDWTFACTOR", ptcproc.med_weight_factor);
         add_netcdf_var(fo, "CONFIG.CLEANED", ptcproc.run_clean);
+
+        for (Eigen::Index i=0; i<calib.arrays.size(); i++) {
+            if (ptcproc.run_clean) {
+                add_netcdf_var(fo, "CONFIG.CLEANED.NEIG_"+toltec_io.array_name_map[calib.arrays(i)],
+                                                    ptcproc.cleaner.n_eig_to_cut[calib.arrays(i)].sum());
+            }
+            else {
+                add_netcdf_var(fo, "CONFIG.CLEANED.NEIG_"+toltec_io.array_name_map[calib.arrays(i)], 0);
+            }
+        }
+
         add_netcdf_var(fo, "CONFIG.FRUITLOOPS", ptcproc.run_fruit_loops);
-        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.PATH", ptcproc.fruit_loops_path);
+        add_netcdf_var<std::string>(fo, "CONFIG.FRUITLOOPS.PATH", ptcproc.fruit_loops_path);
         add_netcdf_var(fo, "CONFIG.FRUITLOOPS.S2N", ptcproc.fruit_loops_sig2noise);
+        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.MAXITER", ptcproc.fruit_loops_iters);
 
         fo.close();
     }
@@ -1404,7 +1451,7 @@ void Engine::create_tod_files() {
 
 //template <TCDataKind tc_t>
 void Engine::cli_summary() {
-    logger->info("\n\nreduction info:\n\n");
+    logger->info("reduction info");
     logger->info("obsnum: {}", obsnum);
     logger->info("map buffer rows: {}", omb.n_rows);
     logger->info("map buffer cols: {}", omb.n_cols);
@@ -1465,7 +1512,7 @@ void Engine::cli_summary() {
     totalPhysMem *= memInfo.mem_unit;
 
     logger->info("total physical memory available {} GB", (totalPhysMem/1024)/1e7);*/
-    logger->info("physical memory used {} GB\n\n", engine_utils::get_phys_memory()/1e7);
+    logger->info("physical memory used {} GB", engine_utils::get_phys_memory()/1e7);
 }
 
 template <TCDataKind tc_t>
@@ -1924,6 +1971,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS", ptcproc.run_fruit_loops, "Fruit loops");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.PATH", ptcproc.fruit_loops_path, "Fruit loops path");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.S2N", ptcproc.fruit_loops_sig2noise, "Fruit loops S/N");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.MAXITER", ptcproc.fruit_loops_iters, "Fruit loops iterations");
 
 
     // add telescope file header information
@@ -2301,7 +2349,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         // init fwhm in pixels
         wiener_filter.init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
         // make wiener filter template
-        wiener_filter.make_template(mb, calib.apt, wiener_filter.template_fwhm_rad[toltec_io.array_name_map[i]],i);
+        wiener_filter.make_template(mb, calib.apt, wiener_filter.template_fwhm_rad[toltec_io.array_name_map[array]],i);
         // run the filter for the current map
         wiener_filter.filter_maps(mb,i);
 
