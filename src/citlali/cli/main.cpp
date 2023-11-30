@@ -819,7 +819,12 @@ int run(const rc_t &rc) {
                         }
                         // save maps to memory if not writing all iterations
                         if (!todproc.engine().ptcproc.save_all_iters && todproc.engine().ptcproc.fruit_loops_path == "obsnum") {
-                            ombs[i] = todproc.engine().omb;
+                            ombs[i].signal = todproc.engine().omb.signal;
+                            ombs[i].weight = todproc.engine().omb.weight;
+                            ombs[i].cov_cut = todproc.engine().omb.cov_cut;
+                            ombs[i].mean_err = todproc.engine().omb.mean_err;
+                            ombs[i].mean_rms = todproc.engine().omb.mean_rms;
+                            ombs[i].wcs = todproc.engine().omb.wcs;
                         }
 
                         // coadd
@@ -883,7 +888,12 @@ int run(const rc_t &rc) {
                         }
                         // save maps to memory if not writing all iterations
                         if (!todproc.engine().ptcproc.save_all_iters && todproc.engine().ptcproc.fruit_loops_path == "coadded" || todproc.engine().ptcproc.fruit_loops_path == "coadd") {
-                            cmb = todproc.engine().cmb;
+                            cmb.signal = todproc.engine().cmb.signal;
+                            cmb.weight = todproc.engine().cmb.weight;
+                            cmb.cov_cut = todproc.engine().cmb.cov_cut;
+                            cmb.mean_err = todproc.engine().cmb.mean_err;
+                            cmb.mean_rms = todproc.engine().cmb.mean_rms;
+                            cmb.wcs = todproc.engine().cmb.wcs;
                         }
 
                         if (todproc.engine().run_map_filter) {
