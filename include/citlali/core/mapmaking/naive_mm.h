@@ -99,7 +99,7 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
         }
     }
 
-    for (Eigen::Index i=0; i<n_dets; i++) {
+    for (Eigen::Index i=0; i<n_dets; ++i) {
         // skip completely flagged detectors
         if ((in.flags.data.col(i).array()==0).any()) {
             // get detector positions from apt table
@@ -126,7 +126,7 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
             }
 
             // loop through the samples
-            for (Eigen::Index j=0; j<n_pts; j++) {
+            for (Eigen::Index j=0; j<n_pts; ++j) {
                 // check if sample is flagged, ignore if so
                 if (!in.flags.data(j,i)) {
                     Eigen::Index omb_ir = omb_irow(j);
@@ -201,7 +201,7 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                                 }
                             }
                             // loop through noise maps
-                            for (Eigen::Index nn=0; nn<nmb->n_noise; nn++) {
+                            for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
                                 // randomizing on dets
                                 if (nmb->randomize_dets) {
                                     noise_v = noise(nn,i)*in.scans.data(j,i)*in.weights.data(i);;

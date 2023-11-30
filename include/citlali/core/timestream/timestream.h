@@ -275,6 +275,8 @@ public:
     int fruit_loops_iters;
     // signal-to-noise cut for fruit loops algorithm
     double fruit_loops_sig2noise;
+    // flux density cut for fruit loops algorithm
+    double fruit_loops_flux;
     // save all iterations
     bool save_all_iters;
 
@@ -409,7 +411,7 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                         }
 
                         // get I maps, including all fg maps
-                        for (int i=0; i<num_extensions; i++) {
+                        for (int i=0; i<num_extensions; ++i) {
                             CCfits::ExtHDU& ext = fits_io.pfits->extension(i+1);
                             std::string extName;
                             ext.readKey("EXTNAME", extName);
@@ -462,6 +464,7 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                                 if (extName.find("_I") != std::string::npos) {
                                     tmb.n_noise++;
                                 }
+                                // if extension found, add to total number
                                 num_extensions++;
                             } catch (CCfits::FITS::NoSuchHDU) {
                                 // NoSuchHDU exception is thrown when there are no more HDUs
@@ -470,7 +473,7 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                         }
 
                         // loop through noise maps for current array
-                        for (int i=0; i<num_extensions; i++) {
+                        for (int i=0; i<num_extensions; ++i) {
                             // get current extension
                             CCfits::ExtHDU& ext = fits_io.pfits->extension(i+1);
                             // get extension name
@@ -483,15 +486,6 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                                 ext.readKey("MEANRMS", mean_rms);
                                 mean_rms_vec.push_back(mean_rms);
                                 logger->info("found {} [{}]", filename, extName);
-                                // allocate current noise map
-                                //tmb.noise.push_back(Eigen::Tensor<double,3>(tmb.wcs.naxis[1], tmb.wcs.naxis[0], tmb.n_noise));
-
-                                // get noise map
-                                //Eigen::MatrixXd data = fits_io.get_hdu(extName);
-                                // map to tensor
-                                //Eigen::TensorMap<Eigen::Tensor<double, 2>> in_tensor(data.data(), data.rows(), data.cols());
-                                // overwrite tensor
-                                //tmb.noise.back().chip(i,2) = in_tensor;
                             }
                         }
                     }
@@ -506,7 +500,7 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
 
     // check if we found any maps
     if (tmb.signal.empty()) {
-        logger->error("no maps found in {}", filepath);
+        logger->error("no signal maps found in {}", filepath);
         std::exit(EXIT_FAILURE);
     }
 
@@ -532,9 +526,21 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     //tmb.calc_mean_rms();
     tmb.mean_rms = Eigen::Map<Eigen::VectorXd>(mean_rms_vec.data(),mean_rms_vec.size());
 
+    // calculate coverage bool map
+    for (int i=0; i<tmb.weight.size(); ++i) {
+        Eigen::MatrixXd ones, zeros;
+        ones.setOnes(tmb.weight[i].rows(), tmb.weight[i].cols());
+        zeros.setZero(tmb.weight[i].rows(), tmb.weight[i].cols());
+
+        // get weight threshold for current map
+        auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = tmb.calc_cov_region(i);
+        // if weight is less than threshold, set to zero, otherwise set to one
+        auto cov_bool = (tmb.weight[i].array() < weight_threshold).select(zeros,ones);
+        tmb.weight[i] = std::move(cov_bool);
+    }
+
     // memory management
-    std::vector<Eigen::MatrixXd>().swap(tmb.weight);
-    //std::vector<Eigen::Tensor<double,3>>().swap(tmb.noise);
+    //std::vector<Eigen::MatrixXd>().swap(tmb.weight);
 }
 
 template <typename Derived, class calib_t>
@@ -547,7 +553,7 @@ auto TCProc::get_grouping(std::string grp, Eigen::DenseBase<Derived> &det_indice
     grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
     Eigen::Index j = 0;
     // loop through apt table arrays, get highest index for current array
-    for (Eigen::Index i=0; i<n_dets; i++) {
+    for (Eigen::Index i=0; i<n_dets; ++i) {
         auto det_index = det_indices(i);
         // if we're still on the current group
         if (calib.apt[grp](det_index) == grp_i) {
@@ -605,8 +611,10 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
 
                 // check if current sample is on the image and add to the timestream
                 if ((ir >= 0) && (ir < mb.n_rows) && (ic >= 0) && (ic < mb.n_cols)) {
-                    //if (mb.weight[map_index](ir,ic) > fruit_loops_sig2noise*max_weight) {
-                    if (mb.signal[map_index](ir,ic)/mb.mean_rms(map_index) >= fruit_loops_sig2noise) {
+                    // if signal flux is higher than S/N limit, flux limit, and is included in coverage bool map (stored in weight maps)
+                    if (mb.signal[map_index](ir,ic)/mb.mean_rms(map_index) >= fruit_loops_sig2noise && mb.weight[map_index](ir,ic) == 1 &&
+                        mb.signal[map_index](ir,ic) >= fruit_loops_flux) {
+                        // add/subtract signal pixel from sample
                         in.scans.data(j,i) += factor*mb.signal[map_index](ir,ic);
                     }
                 }
@@ -744,7 +752,7 @@ void TCProc::add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &in, Eigen::DenseBas
     Eigen::Index n_pts = in.scans.data.rows();
 
     // loop through detectors
-    for (Eigen::Index i=0; i<n_dets; i++) {
+    for (Eigen::Index i=0; i<n_dets; ++i) {
         // detector index in apt
         auto det_index = det_indices(i);
         // map index
@@ -843,7 +851,7 @@ auto TCProc::mask_region(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, 
     Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> masked_flags = in.flags.data.block(0, start_index, n_pts, n_dets);
 
     // loop through detectors
-    for (Eigen::Index i=0; i<n_dets; i++) {
+    for (Eigen::Index i=0; i<n_dets; ++i) {
         // current detector index in apt
         auto det_index = det_indices_copy(i);
 
@@ -886,7 +894,7 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
     Eigen::MatrixXd lat(n_pts,n_dets), lon(n_pts,n_dets);
 
     // loop through detectors and get tangent plane pointing
-    for (Eigen::Index i=0; i<n_dets; i++) {
+    for (Eigen::Index i=0; i<n_dets; ++i) {
         // detector index in apt
         auto det_index = det_indices(i);
         double az_off = calib.apt["x_t"](det_index);

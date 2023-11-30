@@ -140,7 +140,8 @@ timestream: # timestream reduction parameters
   fruit_loops: # algorithm to use previous map to subtract out source before cleaning and re-add afterwards (needs noise maps)
     enabled: false # enable or disable fruit loops algorithm (this overwrites beammap source fitting if in beammap mode)
     path: null # path for maps to cast into tods.  options are 'obsnum,' 'coadded,' or a path to a citlali directory (not used for beammap mode)
-    lower_sig2noise_limit: 0 # lower limit on signal-to-noise of pixels to include (>0)
+    lower_sig2noise_limit: 0 # lower limit on signal-to-noise of pixels to include
+    lower_flux_limit: 0 # lower limit on signal flux density of pixels to include (in map units)
     max_iters: 1 # total number of iterations to run for if no convergence is reached (not used for beammap mode)
     save_all_iters: false # save all iterations or only the last one to save disk space
 post_processing:

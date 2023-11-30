@@ -113,9 +113,9 @@ void JincMapmaker::allocate_jinc_matrix(double pixel_size_rad) {
         jinc_weights_mat[ld.first].setZero(2*r_max_pix + 1,2*r_max_pix + 1);
 
         // loop through matrix rows
-        for (Eigen::Index i=0; i<pixels.size(); i++) {
+        for (Eigen::Index i=0; i<pixels.size(); ++i) {
             // loop through matrix cols
-            for (Eigen::Index j=0; j<pixels.size(); j++) {
+            for (Eigen::Index j=0; j<pixels.size(); ++j) {
                 // radius of current pixel in radians
                 double r = pixel_size_rad*sqrt(pow(pixels(i),2) + pow(pixels(j),2));
                 // calculate jinc weight at pixel
@@ -147,7 +147,7 @@ void JincMapmaker::calculate_jinc_splines() {
         for (const auto &r: radius) {
             // calculate jinc weights
             jinc_weights(j) = jinc_func(r,a,b,c,r_max,ld.second);
-            j++;
+            ++j;
         }
         // create spline class
         engine_utils::SplineFunction s;
@@ -229,7 +229,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
 
     // parallelize over detectors
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
-    //for (Eigen::Index i=0; i<n_dets; i++) {
+    //for (Eigen::Index i=0; i<n_dets; ++i) {
         // skip completely flagged detectors
         if ((in.flags.data.col(i).array()==0).any()) {
             // get detector positions from apt table if not in detector mapmaking mode
@@ -260,7 +260,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             }
 
             // loop through the samples
-            for (Eigen::Index j=0; j<n_pts; j++) {
+            for (Eigen::Index j=0; j<n_pts; ++j) {
                 // check if sample is flagged, ignore if so
                 if (!in.flags.data(j,i)) {
                     Eigen::Index omb_ir = omb_irow(j);
@@ -273,8 +273,8 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                         // make sure the data point is within the map
                         if ((omb_ir >= 0) && (omb_ir < omb.n_rows) && (omb_ic >= 0) && (omb_ic < omb.n_cols)) {
                             // loop through nearby rows and cols
-                            for (Eigen::Index r=0; r<jinc_weights_mat[apt["array"](det_index)].rows(); r++) {
-                                for (Eigen::Index c=0; c<jinc_weights_mat[apt["array"](det_index)].cols(); c++) {
+                            for (Eigen::Index r=0; r<jinc_weights_mat[apt["array"](det_index)].rows(); ++r) {
+                                for (Eigen::Index c=0; c<jinc_weights_mat[apt["array"](det_index)].cols(); ++c) {
                                     // get pixel in map
                                     Eigen::Index ri = omb_ir + r - mat_rows;
                                     Eigen::Index ci = omb_ic + c - mat_cols;
@@ -348,8 +348,8 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                         // make sure pixel is in the map
                         if ((nmb_ir >= 0) && (nmb_ir < nmb->n_rows) && (nmb_ic >= 0) && (nmb_ic < nmb->n_cols)) {
                             // loop through nearby rows and cols
-                            for (Eigen::Index r=0; r<jinc_weights_mat[apt["array"](det_index)].rows(); r++) {
-                                for (Eigen::Index c=0; c<jinc_weights_mat[apt["array"](det_index)].cols(); c++) {
+                            for (Eigen::Index r=0; r<jinc_weights_mat[apt["array"](det_index)].rows(); ++r) {
+                                for (Eigen::Index c=0; c<jinc_weights_mat[apt["array"](det_index)].cols(); ++c) {
                                     // get pixel in map
                                     Eigen::Index ri = nmb_ir + r - mat_rows;
                                     Eigen::Index ci = nmb_ic + c - mat_cols;
@@ -372,7 +372,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                                             }
                                         }
                                         // populate noise maps
-                                        for (Eigen::Index nn=0; nn<nmb->n_noise; nn++) {
+                                        for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
                                             // randomizing on dets
                                             if (nmb->randomize_dets) {
                                                 noise_v = noise(nn,i)*signal;
@@ -380,7 +380,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                                             else {
                                                 noise_v = noise(nn)*signal;
                                             }
-                                            // randomize on detectors
+                                            // allocate pixel for current noise map
                                             nmb->noise[map_index](ri,ci,nn) += noise_v;
 
                                             if (run_polarization) {

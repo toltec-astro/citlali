@@ -443,6 +443,7 @@ int run(const rc_t &rc) {
 
                         // copy config files to reduction directory
                         for (std::string &config_filepath : config_filepaths) {
+                            logger->debug("copying config files into redu directory");
                             std::size_t found = config_filepath.rfind("/");
                             if (found!=std::string::npos) {
                                 std::string config_name = config_filepath.substr(found);
@@ -795,7 +796,7 @@ int run(const rc_t &rc) {
                                     todproc.engine().ptcproc.tmb = cmb;
                                 }
                                 else {
-                                    // get map buffer from previous reduction directory
+                                    // get map buffer from from path even if only saving last iteration
                                     todproc.engine().ptcproc.load_mb(fruit_dir, fruit_dir, //todproc.engine().ptcproc.init_fruit_loops_path[i],
                                                                      todproc.engine().calib);
                                 }
@@ -817,14 +818,31 @@ int run(const rc_t &rc) {
                             logger->info("outputting raw obs files");
                             todproc.engine().template output<mapmaking::RawObs>();
                         }
+
                         // save maps to memory if not writing all iterations
                         if (!todproc.engine().ptcproc.save_all_iters && todproc.engine().ptcproc.fruit_loops_path == "obsnum") {
                             ombs[i].signal = todproc.engine().omb.signal;
                             ombs[i].weight = todproc.engine().omb.weight;
+                            ombs[i].n_rows = todproc.engine().omb.n_rows;
+                            ombs[i].n_cols = todproc.engine().omb.n_cols;
                             ombs[i].cov_cut = todproc.engine().omb.cov_cut;
                             ombs[i].mean_err = todproc.engine().omb.mean_err;
                             ombs[i].mean_rms = todproc.engine().omb.mean_rms;
                             ombs[i].wcs = todproc.engine().omb.wcs;
+                            ombs[i].pixel_size_rad = todproc.engine().omb.pixel_size_rad;
+
+                            // calculate coverage bool map and store in weight maps for memory saving
+                            for (int j=0; j<ombs[i].weight.size(); ++j) {
+                                Eigen::MatrixXd ones, zeros;
+                                ones.setOnes(ombs[i].n_rows, ombs[i].n_cols);
+                                zeros.setZero(ombs[i].n_rows, ombs[i].n_cols);
+
+                                // get weight threshold for current map
+                                auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = ombs[i].calc_cov_region(j);
+                                // if weight is less than threshold, set to zero, otherwise set to one
+                                auto cov_bool = (ombs[i].weight[j].array() < weight_threshold).select(zeros,ones);
+                                ombs[i].weight[j] = std::move(cov_bool);
+                            }
                         }
 
                         // coadd
@@ -890,10 +908,26 @@ int run(const rc_t &rc) {
                         if (!todproc.engine().ptcproc.save_all_iters && todproc.engine().ptcproc.fruit_loops_path == "coadded" || todproc.engine().ptcproc.fruit_loops_path == "coadd") {
                             cmb.signal = todproc.engine().cmb.signal;
                             cmb.weight = todproc.engine().cmb.weight;
+                            cmb.n_rows = todproc.engine().cmb.n_rows;
+                            cmb.n_cols = todproc.engine().cmb.n_cols;
                             cmb.cov_cut = todproc.engine().cmb.cov_cut;
                             cmb.mean_err = todproc.engine().cmb.mean_err;
                             cmb.mean_rms = todproc.engine().cmb.mean_rms;
                             cmb.wcs = todproc.engine().cmb.wcs;
+                            cmb.pixel_size_rad = todproc.engine().cmb.pixel_size_rad;
+
+                            // calculate coverage bool map and store in weight maps for memory saving
+                            for (int j=0; j<cmb.weight.size(); ++j) {
+                                Eigen::MatrixXd ones, zeros;
+                                ones.setOnes(cmb.n_rows, cmb.n_cols);
+                                zeros.setZero(cmb.n_rows, cmb.n_cols);
+
+                                // get weight threshold for current map
+                                auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = cmb.calc_cov_region(j);
+                                // if weight is less than threshold, set to zero, otherwise set to one
+                                auto cov_bool = (cmb.weight[j].array() < weight_threshold).select(zeros,ones);
+                                cmb.weight[j] = std::move(cov_bool);
+                            }
                         }
 
                         if (todproc.engine().run_map_filter) {

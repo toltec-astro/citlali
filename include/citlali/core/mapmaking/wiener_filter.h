@@ -153,8 +153,8 @@ void WienerFilter::make_gaussian_template(MB &mb, const double template_fwhm_rad
     Eigen::MatrixXd dist(n_rows,n_cols);
 
     // calculate distance
-    for (Eigen::Index i=0; i<n_cols; i++) {
-        for (Eigen::Index j=0; j<n_rows; j++) {
+    for (Eigen::Index i=0; i<n_cols; ++i) {
+        for (Eigen::Index j=0; j<n_rows; ++j) {
             dist(j,i) = sqrt(pow(mb.rows_tan_vec(j),2) + pow(mb.cols_tan_vec(i),2));
         }
     }
@@ -182,8 +182,8 @@ void WienerFilter::make_airy_template(MB &mb, const double template_fwhm_rad) {
     Eigen::MatrixXd dist(n_rows,n_cols);
 
     // calculate distance
-    for (Eigen::Index i=0; i<n_cols; i++) {
-        for (Eigen::Index j=0; j<n_rows; j++) {
+    for (Eigen::Index i=0; i<n_cols; ++i) {
+        for (Eigen::Index j=0; j<n_rows; ++j) {
             dist(j,i) = sqrt(pow(mb.rows_tan_vec(j),2) + pow(mb.cols_tan_vec(i),2));
         }
     }
@@ -204,8 +204,8 @@ void WienerFilter::make_airy_template(MB &mb, const double template_fwhm_rad) {
     filter_template.resize(n_rows, n_cols);
 
     // populate template
-    for (Eigen::Index i=0; i<n_cols; i++) {
-        for (Eigen::Index j=0; j<n_rows; j++) {
+    for (Eigen::Index i=0; i<n_cols; ++i) {
+        for (Eigen::Index j=0; j<n_rows; ++j) {
             if (dist(j,i)!=0) {
             filter_template(j,i) = pow(2*boost::math::cyl_bessel_j(1,factor*dist(j,i))/(factor*dist(j,i)),2);
             }
@@ -250,8 +250,8 @@ void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_d
 
     // calculate distance
     Eigen::MatrixXd dist(n_rows,n_cols);
-    for (Eigen::Index i=0; i<n_cols; i++) {
-        for (Eigen::Index j=0; j<n_rows; j++) {
+    for (Eigen::Index i=0; i<n_cols; ++i) {
+        for (Eigen::Index j=0; j<n_rows; ++j) {
             dist(j,i) = sqrt(pow(mb.rows_tan_vec(j),2)+pow(mb.cols_tan_vec(i),2));
         }
     }
@@ -270,10 +270,10 @@ void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_d
     dist_interp.setZero();
 
     // radial averages
-    for (Eigen::Index i=0; i<n_bins-1; i++) {
+    for (Eigen::Index i=0; i<n_bins-1; ++i) {
         int c = 0;
-        for (Eigen::Index j=0; j<n_cols; j++) {
-            for (Eigen::Index k=0; k<n_rows; k++) {
+        for (Eigen::Index j=0; j<n_cols; ++j) {
+            for (Eigen::Index k=0; k<n_rows; ++k) {
                 if (dist(k,j) >= bin_low(i) && dist(k,j) < bin_low(i+1)){
                     c++;
                     kernel_interp(i) += temp_kernel(k,j);
@@ -292,8 +292,8 @@ void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_d
     engine_utils::SplineFunction s(dist_interp, kernel_interp);
 
     // carry out the interpolation
-    for (Eigen::Index i=0; i<n_cols; i++) {
-        for (Eigen::Index j=0; j<n_rows; j++) {
+    for (Eigen::Index i=0; i<n_cols; ++i) {
+        for (Eigen::Index j=0; j<n_rows; ++j) {
             Eigen::Index tj = (j-row_index)%n_rows;
             Eigen::Index ti = (i-col_index)%n_cols;
             Eigen::Index shiftj = (tj < 0) ? n_rows+tj : tj;
@@ -349,7 +349,7 @@ void WienerFilter::calc_vvq(MB &mb, const int map_index) {
         double psd_freq_break = 0.;
         double psd_break = 0.;
 
-        for (Eigen::Index i=0; i<n_psd; i++) {
+        for (Eigen::Index i=0; i<n_psd; ++i) {
             if (psd(i)/max_psd < psd_lim) {
                 psd_freq_break = psd_freq(i);
                 break;
@@ -361,7 +361,7 @@ void WienerFilter::calc_vvq(MB &mb, const int map_index) {
 
         // flatten the response above the lowpass break
         if (count > 0) {
-            for (Eigen::Index i=0; i<n_psd; i++) {
+            for (Eigen::Index i=0; i<n_psd; ++i) {
                 if (psd_freq_break > 0) {
                     if (psd_freq(i) <= 0.8*psd_freq_break) {
                         psd_break = psd(i);
@@ -397,8 +397,8 @@ void WienerFilter::calc_vvq(MB &mb, const int map_index) {
         std::vector<Eigen::Index> shift_2 = {-(n_cols-1)/2};
         engine_utils::shift_1D(q_col, shift_2);
 
-        for (Eigen::Index i=0; i<n_cols; i++) {
-            for (Eigen::Index j=0; j<n_rows; j++) {
+        for (Eigen::Index i=0; i<n_cols; ++i) {
+            for (Eigen::Index j=0; j<n_rows; ++j) {
                 q_map(j,i) = sqrt(pow(q_row(j),2)+pow(q_col(i),2));
             }
         }
@@ -411,8 +411,8 @@ void WienerFilter::calc_vvq(MB &mb, const int map_index) {
 
         // interpolate onto psd_q
         Eigen::Index interp_pts = 1;
-        for (Eigen::Index i=0; i<n_cols; i++) {
-            for (Eigen::Index j=0; j<n_rows; j++) {
+        for (Eigen::Index i=0; i<n_cols; ++i) {
+            for (Eigen::Index j=0; j<n_rows; ++j) {
                 if ((q_map(j,i) <= psd_freq(psd_freq.size() - 1)) && (q_map(j,i) >= psd_freq(0))) {
                     mlinterp::interp<mlinterp::rnatord>(n_psd_matrix.data(), interp_pts,
                                      psd.data(), psd_q.data() + n_rows * i + j,
@@ -430,8 +430,8 @@ void WienerFilter::calc_vvq(MB &mb, const int map_index) {
         // find the minimum value of psd
         auto psd_min = psd.minCoeff();
 
-        for (Eigen::Index i=0; i<n_cols; i++) {
-            for (Eigen::Index j=0; j<n_rows; j++) {
+        for (Eigen::Index i=0; i<n_cols; ++i) {
+            for (Eigen::Index j=0; j<n_rows; ++j) {
                 if (psd_q(j,i) < psd_min) {
                     psd_q(j,i) = psd_min;
                 }
@@ -555,8 +555,8 @@ void WienerFilter::calc_denominator() {
         Eigen::VectorXd Z(n_rows * n_cols);
 
         // real(Z).  do loop to make sure colmajor is preserved
-        for (Eigen::Index i=0; i<n_cols; i++) {
-            for (Eigen::Index j=0; j<n_rows;j++) {
+        for (Eigen::Index i=0; i<n_cols; ++i) {
+            for (Eigen::Index j=0; j<n_rows;++j) {
                 int ii = n_rows*i+j;
                 Z(ii) = (out.real()(j,i));
             }
@@ -577,7 +577,7 @@ void WienerFilter::calc_denominator() {
             "calculating denom");
 
         // loop through cols and rows
-        for (Eigen::Index k=0; k<n_cols; k++) {
+        for (Eigen::Index k=0; k<n_cols; ++k) {
             for (Eigen::Index l=0; l<n_rows; l++) {
                 if (!done) {
                     // inputs and outputs
@@ -635,8 +635,8 @@ void WienerFilter::calc_denominator() {
                         double max_denom = 0.01 * denom.maxCoeff();
 
                         // find largest value of abs(delta_denom / denom)
-                        for (Eigen::Index i=0; i<n_rows; i++) {
-                            for (Eigen::Index j=0; j<n_cols; j++) {
+                        for (Eigen::Index i=0; i<n_rows; ++i) {
+                            for (Eigen::Index j=0; j<n_cols; ++j) {
                                 // exclude small denom values
                                 if (denom(i,j) > max_denom) {
                                     // abs(delta_denom / denom)
@@ -661,8 +661,8 @@ void WienerFilter::calc_denominator() {
         }
 
         // zero out extremely small denom values
-        for (Eigen::Index i=0; i<n_rows; i++) {
-            for (Eigen::Index j=0; j<n_cols; j++) {
+        for (Eigen::Index i=0; i<n_rows; ++i) {
+            for (Eigen::Index j=0; j<n_cols; ++j) {
                 if (denom(i,j) < denom_limit) {
                     denom(i,j) = 0;
                 }
@@ -748,8 +748,8 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
     run_filter(mb, map_index);
 
     // divide by filtered weight
-    for (Eigen::Index i=0; i<n_cols; i++) {
-        for (Eigen::Index j=0; j<n_rows; j++) {
+    for (Eigen::Index i=0; i<n_cols; ++i) {
+        for (Eigen::Index j=0; j<n_rows; ++j) {
             if (denom(j,i) != 0.0) {
                 mb.kernel[map_index](j,i)=nume(j,i)/denom(j,i);
             }
@@ -769,8 +769,8 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
     run_filter(mb, map_index);
 
     // divide by filtered weight
-    for (Eigen::Index i=0; i<n_cols; i++) {
-        for (Eigen::Index j=0; j<n_rows; j++) {
+    for (Eigen::Index i=0; i<n_cols; ++i) {
+        for (Eigen::Index j=0; j<n_rows; ++j) {
             if (denom(j,i) != 0.0) {
                 mb.signal[map_index](j,i) = nume(j,i)/denom(j,i);
             }
@@ -795,8 +795,8 @@ void WienerFilter::filter_noise(MB &mb, const int map_index, const int noise_num
     Eigen::MatrixXd ratio(n_rows,n_cols);
 
     // divide by filtered weight
-    for (Eigen::Index i=0; i<n_cols; i++) {
-        for (Eigen::Index j=0; j<n_rows; j++) {
+    for (Eigen::Index i=0; i<n_cols; ++i) {
+        for (Eigen::Index j=0; j<n_rows; ++j) {
             if (denom(j,i) != 0.0) {
                 ratio(j,i) = nume(j,i)/denom(j,i);
             }

@@ -153,6 +153,8 @@ public:
     void calc_mean_err();
     // calculate average rms of noise maps
     void calc_mean_rms();
+    // calculate mean rms of signal maps within an annulus
+    void calc_mean_rms_annulus(double, double);
     // find sources in maps
     bool find_sources(Eigen::Index);
 };

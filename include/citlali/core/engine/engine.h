@@ -788,7 +788,7 @@ void Engine::get_citlali_config(CT &config) {
             "hwpr"
         };
         // loop through interfaces
-        for (Eigen::Index i=0; i<interface_node.size(); i++) {
+        for (Eigen::Index i=0; i<interface_node.size(); ++i) {
             auto offset = config.template get_typed<double>(std::tuple{"interface_sync_offset",i, interface_keys[i]});
             interface_sync_offset[interface_keys[i]] = offset;
         }
@@ -846,7 +846,7 @@ void Engine::get_citlali_config(CT &config) {
         // fitter flux and fwhm limits
         map_fitter.flux_limits.resize(2);
         map_fitter.fwhm_limits.resize(2);
-        for (Eigen::Index i=0; i<map_fitter.flux_limits.size(); i++) {
+        for (Eigen::Index i=0; i<map_fitter.flux_limits.size(); ++i) {
             // flux limit
             map_fitter.flux_limits(i) = config.template get_typed<double>(std::tuple{"post_processing","source_fitting",
                                                                                      "gauss_model","amp_limit_factors",i});
@@ -942,7 +942,7 @@ void Engine::get_photometry_config(CT &config) {
     Eigen::Index n_fluxes = config.get_node(std::tuple{"beammap_source","fluxes"}).size();
 
     // get source fluxes
-    for (Eigen::Index i=0; i<n_fluxes; i++) {
+    for (Eigen::Index i=0; i<n_fluxes; ++i) {
         auto array = config.get_str(std::tuple{"beammap_source","fluxes",i,"array_name"});
         // source flux in mJy/beam
         auto flux = config.template get_typed<double>(std::tuple{"beammap_source","fluxes",i,"value_mJy"});
@@ -990,7 +990,7 @@ void Engine::create_obs_map_files() {
     filtered_noise_fits_io_vec.clear();
 
     // loop through arrays
-    for (Eigen::Index i=0; i<calib.n_arrays; i++) {
+    for (Eigen::Index i=0; i<calib.n_arrays; ++i) {
         // array index
         auto array = calib.arrays[i];
         // array name
@@ -1196,7 +1196,7 @@ void Engine::add_tod_header() {
             }
         }
         else {
-            for (Eigen::Index i=0; i<calib.arrays.size(); i++) {
+            for (Eigen::Index i=0; i<calib.arrays.size(); ++i) {
                 add_netcdf_var(fo, "MEAN_TAU_"+toltec_io.array_name_map[calib.arrays(i)], 0.);
             }
         }
@@ -1233,7 +1233,7 @@ void Engine::add_tod_header() {
         add_netcdf_var(fo, "CONFIG.CLEANED", ptcproc.run_clean);
 
         // loop through arrays and add number of eigenvalues removed
-        for (Eigen::Index i=0; i<calib.arrays.size(); i++) {
+        for (Eigen::Index i=0; i<calib.arrays.size(); ++i) {
             if (ptcproc.run_clean) {
                 add_netcdf_var(fo, "CONFIG.CLEANED.NEIG_"+toltec_io.array_name_map[calib.arrays(i)],
                                                     ptcproc.cleaner.n_eig_to_cut[calib.arrays(i)].sum());
@@ -1620,7 +1620,7 @@ void Engine::write_map_summary(map_buffer_t &mb) {
     n_infs["noise"] = 0;
 
     // loop through maps and count up nans and infs
-    for (Eigen::Index i=0; i<mb.signal.size(); i++) {
+    for (Eigen::Index i=0; i<mb.signal.size(); ++i) {
         n_nans["signal"] = n_nans["signal"] + mb.signal[i].array().isNaN().count();
         n_nans["weight"] = n_nans["weight"] + mb.weight[i].array().isNaN().count();
 
@@ -1647,7 +1647,7 @@ void Engine::write_map_summary(map_buffer_t &mb) {
 
         // loop through noise maps and check for nans and infs
         if (!mb.noise.empty()) {
-            for (Eigen::Index j=0; j<mb.noise.size(); j++) {
+            for (Eigen::Index j=0; j<mb.noise.size(); ++j) {
                 Eigen::Tensor<double,2> out = mb.noise[i].chip(j,2);
                 auto out_matrix = Eigen::Map<Eigen::MatrixXd>(out.data(), out.dimension(0), out.dimension(1));
                 n_nans["noise"] = n_nans["noise"] + out_matrix.array().isNaN().count();
@@ -1708,9 +1708,9 @@ auto Engine::get_map_name(int i) {
             // find all detectors belonging to each fg
             Eigen::VectorXI array_indices(calib.fg.size()*calib.n_arrays*rtcproc.polarization.stokes_params.size());
             Eigen::Index k = 0;
-            for (Eigen::Index j=0; j<calib.n_arrays; j++) {
-                for (Eigen::Index l=0; l<rtcproc.polarization.stokes_params.size(); l++) {
-                    for (Eigen::Index m=0; m<calib.fg.size(); m++) {
+            for (Eigen::Index j=0; j<calib.n_arrays; ++j) {
+                for (Eigen::Index l=0; l<rtcproc.polarization.stokes_params.size(); ++l) {
+                    for (Eigen::Index m=0; m<calib.fg.size(); ++m) {
                         array_indices(k) = calib.fg(m);
                         k++;
                     }
@@ -1821,7 +1821,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     }
 
     // add obsnums
-    for (Eigen::Index j=0; j<mb->obsnums.size(); j++) {
+    for (Eigen::Index j=0; j<mb->obsnums.size(); ++j) {
         fits_io->at(i).pfits->pHDU().addKey("OBSNUM"+std::to_string(j), mb->obsnums.at(j), "Observation Number " + std::to_string(j));
     }
 
@@ -1830,7 +1830,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         fits_io->at(i).pfits->pHDU().addKey("DATEOBS0", date_obs.back(), "Date and time of observation 0");
     }
     else {
-        for (Eigen::Index j=0; j<mb->obsnums.size(); j++) {
+        for (Eigen::Index j=0; j<mb->obsnums.size(); ++j) {
             fits_io->at(i).pfits->pHDU().addKey("DATEOBS"+std::to_string(j), date_obs[j], "Date and time of observation "+std::to_string(j));
         }
     }
@@ -2065,7 +2065,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
 
     // write noise maps
     if (!mb->noise.empty()) {
-        for (Eigen::Index n=0; n<mb->n_noise; n++) {
+        for (Eigen::Index n=0; n<mb->n_noise; ++n) {
             Eigen::Tensor<double,2> out = mb->noise[i].chip(n,2);
             auto out_matrix = Eigen::Map<Eigen::MatrixXd>(out.data(), out.dimension(0), out.dimension(1));
 
@@ -2088,7 +2088,7 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
     netCDF::NcFile fo(filename + ".nc", netCDF::NcFile::replace);
 
     // loop through psd vector
-    for (Eigen::Index i=0; i<mb->psds.size(); i++) {
+    for (Eigen::Index i=0; i<mb->psds.size(); ++i) {
         // get name for extension layer
         std::string map_name = get_map_name(i);
 
@@ -2172,7 +2172,7 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
     netCDF::NcDim hist_bins_dim = fo.addDim("n_bins", mb->hist_n_bins);
 
     // loop through stored histograms
-    for (Eigen::Index i=0; i<mb->hists.size(); i++) {
+    for (Eigen::Index i=0; i<mb->hists.size(); ++i) {
         // string to hold name
         // get name for extension layer
         std::string map_name = get_map_name(i);
@@ -2290,7 +2290,7 @@ void Engine::write_stats() {
         // loop through chunks
         for (const auto &[key, val]: diagnostics.evals) {
             // loop through cleaner gropuing
-            for (Eigen::Index i=0; i<val.size(); i++) {
+            for (Eigen::Index i=0; i<val.size(); ++i) {
 
                 netCDF::NcVar eval_v = fo.addVar("evals_" + ptcproc.cleaner.grouping[i] + "_" + std::to_string(i) +
                                                      "_chunk_" + std::to_string(key), netCDF::ncDouble,eval_dims);
@@ -2334,7 +2334,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb, int fruit_iter) {
         dir_name = coadd_dir_name + "filtered/";
     }
 
-    for (Eigen::Index i=0; i<f_io->size(); i++) {
+    for (Eigen::Index i=0; i<f_io->size(); ++i) {
         // get the array for the given map
         // add primary hdu
         add_phdu(f_io, pmb, i);
@@ -2347,7 +2347,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb, int fruit_iter) {
 
     Eigen::Index j = 0;
     // loop through maps and run wiener filter
-    for (Eigen::Index i=0; i<n_maps; i++) {
+    for (Eigen::Index i=0; i<n_maps; ++i) {
         // current array
         auto array = maps_to_arrays(i);
         // get file index
@@ -2365,7 +2365,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb, int fruit_iter) {
                 [&](const auto &msg) { logger->info("{}", msg); }, 100,
                 "filtering noise");
 
-            for (Eigen::Index j=0; j<mb.n_noise; j++) {
+            for (Eigen::Index j=0; j<mb.n_noise; ++j) {
                 wiener_filter.filter_noise(mb, i, j);
                 pb.count(mb.n_noise, mb.n_noise / 100);
             }
@@ -2428,7 +2428,7 @@ void Engine::find_sources(map_buffer_t &mb) {
     mb.row_source_locs.clear();
     mb.col_source_locs.clear();
     // loop through maps
-    for (Eigen::Index i=0; i<n_maps; i++) {
+    for (Eigen::Index i=0; i<n_maps; ++i) {
         // update source vectors
         mb.n_sources.push_back(0);
         mb.row_source_locs.push_back(Eigen::VectorXi::Ones(1));
@@ -2464,7 +2464,7 @@ void Engine::find_sources(map_buffer_t &mb) {
     Eigen::Index k = 0;
 
     // now loop through and fit the sources
-    for (Eigen::Index i=0; i<n_maps; i++) {
+    for (Eigen::Index i=0; i<n_maps; ++i) {
         // skip map if no sources found
         if (mb.n_sources[i] > 0) {
             // current array
@@ -2579,7 +2579,7 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
     YAML::Node source_meta;
 
     // add obsnums
-    for (Eigen::Index i=0; i<mb->obsnums.size(); i++) {
+    for (Eigen::Index i=0; i<mb->obsnums.size(); ++i) {
         // add obsnum to meta data
         source_meta["obsnum" + std::to_string(i)] = mb->obsnums[i];
     }
@@ -2609,12 +2609,12 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
 
     // loop through params and add arrays
     Eigen::Index k=0;
-    for (Eigen::Index i=0; i<mb->n_sources.size(); i++) {
+    for (Eigen::Index i=0; i<mb->n_sources.size(); ++i) {
         if (mb->n_sources[i]!=0) {
             // calculate map standard deviation
             double map_std_dev = engine_utils::calc_std_dev(mb->signal[i]);
 
-            for (Eigen::Index j=0; j<mb->n_sources[i]; j++) {
+            for (Eigen::Index j=0; j<mb->n_sources[i]; ++j) {
                 source_table(k,0) = maps_to_arrays(i);
                 // set signal to noise
                 source_table(k,2*map_fitter.n_params + 1) = mb->source_params(k,0)/map_std_dev;

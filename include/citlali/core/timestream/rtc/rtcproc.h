@@ -125,7 +125,7 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             // get extension name vector
             auto img_ext_name_node = config.get_node(std::tuple{"timestream","raw_time_chunk","kernel", "image_ext_names"});
             // get images
-            for (Eigen::Index i=0; i<img_ext_name_node.size(); i++) {
+            for (Eigen::Index i=0; i<img_ext_name_node.size(); ++i) {
                 std::string img_ext_name = config.template get_str(std::tuple{"timestream","raw_time_chunk","kernel", "image_ext_names",
                                                                               i, std::to_string(i)});
                 kernel.img_ext_names.push_back(img_ext_name);
@@ -240,7 +240,7 @@ auto RTCProc::calc_map_indices(calib_t &calib, Eigen::DenseBase<Derived> &det_in
         Eigen::Index map_index = 0;
         map_indices(0) = 0;
         // loop through and populate map indices
-        for (Eigen::Index i=0; i<indices.size()-1; i++) {
+        for (Eigen::Index i=0; i<indices.size()-1; ++i) {
             // if next index is larger than current index, increment map index
             if (indices(i+1) > indices(i)) {
                 map_index++;
@@ -253,15 +253,15 @@ auto RTCProc::calc_map_indices(calib_t &calib, Eigen::DenseBase<Derived> &det_in
         std::map<Eigen::Index, Eigen::Index> fg_to_index, array_to_index;
 
         // get mapping from fg to map index
-        for (Eigen::Index i=0; i<calib.fg.size(); i++) {
+        for (Eigen::Index i=0; i<calib.fg.size(); ++i) {
             fg_to_index[calib.fg(i)] = i;
         }
         // get mapping from fg to map index
-        for (Eigen::Index i=0; i<calib.arrays.size(); i++) {
+        for (Eigen::Index i=0; i<calib.arrays.size(); ++i) {
             array_to_index[calib.arrays(i)] = i;
         }
         // allocate map indices from fg
-        for (Eigen::Index i=0; i<indices.size(); i++) {
+        for (Eigen::Index i=0; i<indices.size(); ++i) {
             map_indices(i) = fg_to_index[indices(i)] + calib.fg.size()*array_to_index[array_indices(i)];
         }
     }
@@ -512,7 +512,7 @@ void RTCProc::remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
 
     // loop through detectors and set flags to one
     // for those flagged in apt table
-    for (Eigen::Index i=0; i<n_dets; i++) {
+    for (Eigen::Index i=0; i<n_dets; ++i) {
         Eigen::Index det_index = det_indices(i);
         if (apt["flag"](det_index)!=0) {
             in.flags.data.col(i).setOnes();
@@ -537,7 +537,7 @@ auto RTCProc::remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
     int n_nearby_tones = 0;
 
     // loop through flag columns
-    for (Eigen::Index i=0; i<n_dets; i++) {
+    for (Eigen::Index i=0; i<n_dets; ++i) {
         // map from data column to apt row
         Eigen::Index det_index = det_indices(i);
         // if closer than freq separation limit and unflagged, flag it

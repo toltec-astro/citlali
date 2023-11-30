@@ -107,7 +107,7 @@ void utc_to_unix(Eigen::DenseBase<DerivedA> &tel_utc, Eigen::DenseBase<DerivedB>
     Eigen::VectorXd tel_unix(n_pts);
 
     // loop through points
-    for (Eigen::Index i=0; i<n_pts; i++) {
+    for (Eigen::Index i=0; i<n_pts; ++i) {
         auto h =(int)ut_time(i);
         auto m = (int)((ut_time(i) - h)*60);
         auto s = (((ut_time(i) - h)*60 - m)*60);
@@ -260,7 +260,7 @@ auto fft2(Eigen::DenseBase<Derived> &in, fftw_plan_t &plan, fftw_complex* a, fft
     Eigen::MatrixXcd out(n_rows, n_cols);
 
     // copy data from input (row major?)
-    for (Eigen::Index i=0; i< n_rows; i++) {
+    for (Eigen::Index i=0; i< n_rows; ++i) {
         for (Eigen::Index j=0; j<n_cols; j++) {
             int ii = n_cols*i + j;
             a[ii][0] = in(i,j).real();
@@ -271,7 +271,7 @@ auto fft2(Eigen::DenseBase<Derived> &in, fftw_plan_t &plan, fftw_complex* a, fft
     fftw_execute(plan);
 
     // copy data to output (row major?)
-    for (Eigen::Index i=0; i< n_rows; i++) {
+    for (Eigen::Index i=0; i< n_rows; ++i) {
         for (Eigen::Index j=0; j<n_cols; j++) {
             int ii = n_cols*i + j;
             out.real()(i,j) = b[ii][0];
@@ -303,7 +303,7 @@ std::vector<std::tuple<double, int>> sorter(Eigen::DenseBase<Derived> &vec) {
     std::vector<std::tuple<double, int>> vis;
     Eigen::VectorXi indices = Eigen::VectorXi::LinSpaced(vec.size(),0,vec.size()-1);
 
-    for(Eigen::Index i=0; i<vec.size(); i++) {
+    for(Eigen::Index i=0; i<vec.size(); ++i) {
         std::tuple<double, double> vec_and_val(vec(i), indices(i));
         vis.push_back(vec_and_val);
     }
@@ -435,7 +435,7 @@ static auto hanning_window(Eigen::Index n_rows, Eigen::Index n_cols) {
 
     Eigen::MatrixXd window(n_rows, n_cols);
 
-    for (Eigen::Index i=0; i<n_cols; i++) {
+    for (Eigen::Index i=0; i<n_cols; ++i) {
         for (Eigen::Index j=0; j<n_rows; j++) {
             window(j,i) = row(j)*col(i);
         }
@@ -449,7 +449,7 @@ static double pivot_select(std::vector<double> input, int index) {
     double pivot_value = input[pivot_index];
     std::vector<double> left;
     std::vector<double> right;
-    for (unsigned int i = 0; i < input.size(); i++) {
+    for (unsigned int i = 0; i < input.size(); ++i) {
         if (i != pivot_index) {
             if (input[i] > pivot_value) {
                 right.push_back(input[i]);
@@ -493,7 +493,7 @@ double find_weight_threshold(Eigen::DenseBase<Derived> &weight, double cov) {
 
     Eigen::Index k = 0;
     // populate vector with non-zero elements
-    for (Eigen::Index i=0; i<weight.rows(); i++) {
+    for (Eigen::Index i=0; i<weight.rows(); ++i) {
         for (Eigen::Index j=0; j<weight.cols(); j++) {
             if (weight(i,j) > 0) {
                 //non_zero_weights(k) = weight(i,j);
@@ -554,7 +554,7 @@ auto set_cov_cov_ranges(const Eigen::DenseBase<Derived> &weight, const double we
 
     // find lower row bound
     bool flag = false;
-    for (Eigen::Index i=0; i<weight.rows(); i++) {
+    for (Eigen::Index i=0; i<weight.rows(); ++i) {
         for (Eigen::Index j=0; j<weight.cols(); j++) {
             if (weight(i,j) >= weight_threshold) {
                 cov_ranges(0,0) = i;
@@ -584,7 +584,7 @@ auto set_cov_cov_ranges(const Eigen::DenseBase<Derived> &weight, const double we
 
     // find lower column bound
     flag = false;
-    for (Eigen::Index i=0; i<weight.cols(); i++) {
+    for (Eigen::Index i=0; i<weight.cols(); ++i) {
         for (Eigen::Index j = cov_ranges(0,0); j < cov_ranges(1,0) + 1; j++) {
             if (weight(j,i) >= weight_threshold) {
                 cov_ranges(0,1) = i;
@@ -637,7 +637,7 @@ void smooth(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB> &out, int
         int wm1d2 = (w - 1) / 2.;
         int wp1d2 = (w + 1) / 2.;
 
-        for (int i = wm1d2; i <= n_pts - wp1d2; i++) {
+        for (int i = wm1d2; i <= n_pts - wp1d2; ++i) {
             out(i) = winv * in.segment(i - wm1d2, w).sum();
         }
     }
@@ -647,7 +647,7 @@ void smooth(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB> &out, int
         int w_mid = (w - 1)/2;
 
         double sum;
-        for (Eigen::Index i=0; i<n_pts; i++) {
+        for (Eigen::Index i=0; i<n_pts; ++i) {
             sum=0;
             for (int j=0; j<w; j++) {
                 int add_index = i + j - w_mid;
@@ -703,7 +703,6 @@ auto calc_2D_psd(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &y
     //in = engine_utils::fft<engine_utils::forward>(in, parallel_policy);
     in = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
 
-
     // free fftw vectors
     fftw_free(a);
     fftw_free(b);
@@ -722,7 +721,7 @@ auto calc_2D_psd(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &y
     // shift q_rows
     Eigen::Index index;
     Eigen::Index shift = n_rows/2 - 1;
-    for (Eigen::Index i=0; i<n_rows; i++) {
+    for (Eigen::Index i=0; i<n_rows; ++i) {
         index = i-shift;
         if (index < 0) {
             index += n_rows;
@@ -732,7 +731,7 @@ auto calc_2D_psd(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &y
 
     // shift q_cols
     shift = n_cols/2 - 1;
-    for (Eigen::Index i=0; i<n_cols; i++) {
+    for (Eigen::Index i=0; i<n_cols; ++i) {
         index = i-shift;
         if (index < 0) {
             index += n_cols;
@@ -744,7 +743,7 @@ auto calc_2D_psd(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &y
     Eigen::MatrixXd pmfq = out.block(1,1,n_rows-1,n_cols-1);
 
     // shift rows over by 1
-    for (Eigen::Index i=0; i<n_rows-1; i++) {
+    for (Eigen::Index i=0; i<n_rows-1; ++i) {
         q_rows(i) = q_rows(i+1);
     }
 
@@ -757,7 +756,7 @@ auto calc_2D_psd(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &y
     Eigen::MatrixXd qmap(n_rows-1,n_cols-1);
     Eigen::MatrixXd qsymm(n_rows-1,n_cols-1);
 
-    for (Eigen::Index i=1; i<n_cols; i++) {
+    for (Eigen::Index i=1; i<n_cols; ++i) {
         for(Eigen::Index j=1; j<n_rows; j++) {
             qmap(j-1,i-1) = sqrt(pow(q_rows(j),2) + pow(q_cols(i),2));
             qsymm(j-1,i-1) = q_rows(j)*q_cols(i);
@@ -788,7 +787,7 @@ auto calc_2D_psd(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &y
 
     // do the fft over the cols (parallelized for large maps)
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy),psd_vec_in,psd_vec_out,[&](auto i) {
-    //for (Eigen::Index i=0; i<nn; i++) {
+    //for (Eigen::Index i=0; i<nn; ++i) {
         int count_s = 0;
         int count_a = 0;
         double psdarr_s = 0.;
@@ -853,7 +852,7 @@ auto shift_1D(Eigen::DenseBase<Derived> &in, std::vector<Eigen::Index> shift_ind
 
     Derived out(n_pts);
 
-    for (Eigen::Index i=0; i<n_pts; i++) {
+    for (Eigen::Index i=0; i<n_pts; ++i) {
         Eigen::Index ti = (i+shift_indices[0])%n_pts;
         Eigen::Index shift_index = (ti < 0) ? n_pts+ti : ti;
         out(shift_index) = in(i);
@@ -870,7 +869,7 @@ auto shift_2D(Eigen::DenseBase<Derived> &in, std::vector<Eigen::Index> shift_ind
 
     Derived out(n_rows,n_cols);
 
-    for (Eigen::Index i=0; i<n_cols; i++) {
+    for (Eigen::Index i=0; i<n_cols; ++i) {
         for (Eigen::Index j=0; j<n_rows; j++) {
             Eigen::Index ti = (i+shift_indices[1]) % n_cols;
             Eigen::Index tj = (j+shift_indices[0]) % n_rows;
@@ -1013,7 +1012,7 @@ void fix_periodic_boundary(Eigen::DenseBase<Derived>&data, double low,
     double max = data.maxCoeff();
     double min = data.minCoeff();
     if (max > high && min < low) {
-        for (Eigen::Index i=0; i<n_pts; i++) {
+        for (Eigen::Index i=0; i<n_pts; ++i) {
             if (data(i) < low) {
                 data(i) += upper_limit;
             }
@@ -1056,7 +1055,7 @@ void calc_gaussian_transfer_func(map_class_t &mb, map_fitter_t &map_fitter, int 
 
     // calculate distance
     Eigen::MatrixXd dist(n_rows,n_cols);
-    for (Eigen::Index i=0; i<n_cols; i++) {
+    for (Eigen::Index i=0; i<n_cols; ++i) {
         for (Eigen::Index j=0; j<n_rows; j++) {
             dist(j,i) = sqrt(pow(mb.rows_tan_vec(j),2)+pow(mb.cols_tan_vec(i),2));
         }
@@ -1076,7 +1075,7 @@ void calc_gaussian_transfer_func(map_class_t &mb, map_fitter_t &map_fitter, int 
     dist_interp.setZero();
 
     // radial averages
-    for (Eigen::Index i=0; i<n_bins-1; i++) {
+    for (Eigen::Index i=0; i<n_bins-1; ++i) {
         int c = 0;
         for (Eigen::Index j=0; j<n_cols; j++) {
             for (Eigen::Index k=0; k<n_rows; k++) {
@@ -1098,7 +1097,7 @@ void calc_gaussian_transfer_func(map_class_t &mb, map_fitter_t &map_fitter, int 
     engine_utils::SplineFunction s(dist_interp, kernel_interp);
 
     // carry out the interpolation
-    for (Eigen::Index i=0; i<n_cols; i++) {
+    for (Eigen::Index i=0; i<n_cols; ++i) {
         for (Eigen::Index j=0; j<n_rows; j++) {
             Eigen::Index tj = (j-row_index)%n_rows;
             Eigen::Index ti = (i-col_index)%n_cols;

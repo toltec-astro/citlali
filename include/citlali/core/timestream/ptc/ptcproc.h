@@ -91,6 +91,9 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         // fruit loops signal-to-noise
         get_config_value(config, fruit_loops_sig2noise, missing_keys, invalid_keys,
                          std::tuple{"timestream","fruit_loops","lower_sig2noise_limit"});
+        // fruit loops flux density limit
+        get_config_value(config, fruit_loops_flux, missing_keys, invalid_keys,
+                         std::tuple{"timestream","fruit_loops","lower_flux_limit"});
         // maximum fruit loops iterations
         get_config_value(config, fruit_loops_iters, missing_keys, invalid_keys,
                          std::tuple{"timestream","fruit_loops","max_iters"});
@@ -310,7 +313,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
         double conversion_factor;
 
         // loop through detectors and calculate weights
-        for (Eigen::Index i=0; i<n_dets; i++) {
+        for (Eigen::Index i=0; i<n_dets; ++i) {
             // current detector index
             Eigen::Index det_index = det_indices(i);
             // if flux calibrated, get flux conversion factor
@@ -336,7 +339,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
         logger->debug("calculating weights using timestream variance");
 
         // loop through detectors
-        for (Eigen::Index i=0; i<n_dets; i++) {
+        for (Eigen::Index i=0; i<n_dets; ++i) {
             // only calculate weights if detector is unflagged
             if (apt["flag"](det_indices(i))==0) {
                 // make Eigen::Maps for each detector's scan
@@ -365,7 +368,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
     }
     // constant weighting
     else if (weighting_type == "const") {
-        for (Eigen::Index i=0; i<n_dets; i++) {
+        for (Eigen::Index i=0; i<n_dets; ++i) {
             // only calculate weights if detector is unflagged
             if (apt["flag"](det_indices(i))==0) {
                 in.weights.data(i) = 1;
@@ -503,7 +506,7 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         std::vector<netCDF::NcDim> eval_dims = {n_eig_grp_dim, n_eigs_dim};
 
         // loop through cleaner gropuing
-        for (Eigen::Index i=0; i<in.evals.data.size(); i++) {
+        for (Eigen::Index i=0; i<in.evals.data.size(); ++i) {
             NcVar eval_v = fo.addVar("evals_" + cleaner.grouping[i] + "_" + std::to_string(i) +
                                          "_chunk_" + std::to_string(in.index.data), netCDF::ncDouble,eval_dims);
             std::vector<std::size_t> start_eig_index = {0, 0};
@@ -520,7 +523,7 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         std::vector<netCDF::NcDim> eig_dims = {n_dets_dim, n_eigs_dim};
 
         // loop through cleaner gropuing
-        for (Eigen::Index i=0; i<in.evecs.data.size(); i++) {
+        for (Eigen::Index i=0; i<in.evecs.data.size(); ++i) {
             // start at first row and col
             std::vector<std::size_t> start_eig_index = {0, 0};
 

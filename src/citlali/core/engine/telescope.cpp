@@ -205,7 +205,7 @@ void Telescope::calc_tan_radec() {
                 cos(center_dec)*cos(dec.array())*cos(ra.array() - center_ra);
 
     // calc tangent coordinates
-    for (Eigen::Index i=0; i<n_pts; i++) {
+    for (Eigen::Index i=0; i<n_pts; ++i) {
         if (cosc(i)==0.) {
             tel_data["dec_phys"](i) = 0.;
             tel_data["ra_phys"](i) = 0.;
@@ -225,7 +225,7 @@ void Telescope::calc_tan_altaz() {
     auto az_diff = tel_data["TelAzAct"].array() - tel_data["SourceAz"].array();
 
     // use loop to avoid annoying eigen aliasing issues with select
-    for (Eigen::Index i=0; i<tel_data["TelAzAct"].size(); i++) {
+    for (Eigen::Index i=0; i<tel_data["TelAzAct"].size(); ++i) {
         if ((tel_data["TelAzAct"](i) - tel_data["SourceAz"](i)) > 0.9*2.0*pi) {
             tel_data["TelAzAct"](i) = tel_data["TelAzAct"](i) - 2.0*pi;
         }
@@ -250,7 +250,7 @@ void Telescope::calc_scan_indices() {
         Eigen::Matrix<bool,Eigen::Dynamic,1> hold_bool = tel_data["Hold"].template cast<bool>();
 
         // find where the change in the hold signal is 1 and increment scans
-        for (Eigen::Index i=1; i<hold_bool.size(); i++) {
+        for (Eigen::Index i=1; i<hold_bool.size(); ++i) {
             if (hold_bool(i) - hold_bool(i-1) == 1) {
                 n_scans++;
             }
@@ -270,7 +270,7 @@ void Telescope::calc_scan_indices() {
             counter++;
         }
 
-        for (Eigen::Index i=1; i<hold_bool.size(); i++) {
+        for (Eigen::Index i=1; i<hold_bool.size(); ++i) {
             // get start of scan
             if (hold_bool(i) - hold_bool(i-1) < 0) {
                 counter++;
@@ -320,7 +320,7 @@ void Telescope::calc_scan_indices() {
 
     // check for bad scans
     Eigen::Matrix<bool, Eigen::Dynamic, 1> is_bad_scan(n_scans);
-    for (Eigen::Index i=0; i<n_scans; i++) {
+    for (Eigen::Index i=0; i<n_scans; ++i) {
         sum = 0;
         for (Eigen::Index j=scan_indices_temp(0,i); j<(scan_indices_temp(1,i)+1); j++) {
             sum += 1;
@@ -337,7 +337,7 @@ void Telescope::calc_scan_indices() {
     // rebuild scan matrix excluding bad scans
     Eigen::Index c = 0;
     scan_indices.resize(4,n_scans-n_bad_scans);
-    for (Eigen::Index i=0; i<n_scans; i++) {
+    for (Eigen::Index i=0; i<n_scans; ++i) {
         if (!is_bad_scan(i)) {
             scan_indices(0,c) = scan_indices_temp(0,i);
             scan_indices(1,c) = scan_indices_temp(1,i);

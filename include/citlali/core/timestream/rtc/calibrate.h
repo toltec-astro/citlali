@@ -160,7 +160,7 @@ void Calibration::calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &in, Eigen:
                                 Eigen::DenseBase<Derived> &array_indices, calib_t &calib) {
 
     // loop through detectors
-    for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
+    for (Eigen::Index i=0; i<in.scans.data.cols(); ++i) {
         // current detector index in apt table
         Eigen::Index det_index = det_indices(i);
         // current array index in apt table
@@ -179,7 +179,7 @@ void Calibration::extinction_correction(TCData<tcdata_kind, Eigen::MatrixXd> &in
                                         Eigen::DenseBase<Derived> &array_indices, calib_t &calib, tau_t &tau_freq) {
 
     // loop through detectors
-    for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
+    for (Eigen::Index i=0; i<in.scans.data.cols(); ++i) {
         // current detector index in apt table
         Eigen::Index det_index = det_indices(i);
         // current array index in apt table
@@ -195,5 +195,4 @@ void Calibration::extinction_correction(TCData<tcdata_kind, Eigen::MatrixXd> &in
         in.scans.data.col(i) = in.scans.data.col(i).array()*factor.array();
     }
 }
-
 } // namespace timestream

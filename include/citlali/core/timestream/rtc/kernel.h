@@ -76,7 +76,7 @@ void Kernel::create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::Mat
     // resize kernel to match data size
     in.kernel.data.resize(n_pts, n_dets);
 
-    for (Eigen::Index i=0; i<n_dets; i++) {
+    for (Eigen::Index i=0; i<n_dets; ++i) {
         // detector in apt
         auto det_index = det_indices(i);
 
@@ -103,7 +103,7 @@ void Kernel::create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::Mat
         }
 
         // loop through samples and calculate
-        for (Eigen::Index j=0; j<n_pts; j++) {
+        for (Eigen::Index j=0; j<n_pts; ++j) {
             // truncate within radius
             if (dist(j) <= sigma_limit*sigma) {
                 in.kernel.data(j,i) = exp(-0.5*pow(dist(j)/sigma,2));
@@ -127,7 +127,7 @@ void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in
     // resize kernel to match data size
     in.kernel.data.resize(n_pts, n_dets);
 
-    for (Eigen::Index i=0; i<n_dets; i++) {
+    for (Eigen::Index i=0; i<n_dets; ++i) {
         // detector in apt
         auto det_index = det_indices(i);
 
@@ -171,7 +171,7 @@ void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in
         auto c = - 0.5 * ((sint2 / xstd2) + (cost2 / ystd2));
 
         // make elliptical gaussian
-        for (Eigen::Index j=0; j<n_pts; j++) {
+        for (Eigen::Index j=0; j<n_pts; ++j) {
             // truncate within radius
             if (dist(j) <= sigma_limit*(sigma_lat + sigma_lon)/2) {
                 in.kernel.data(j,i) = amp*exp(pow(lon(j) - off_lon, 2) * a +
@@ -195,7 +195,7 @@ void Kernel::create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, st
     in.kernel.data.resize(n_pts, n_dets);
 
     // loop through detectors
-    for (Eigen::Index i=0; i<n_dets; i++) {
+    for (Eigen::Index i=0; i<n_dets; ++i) {
 
         // current detector in apt
         auto det_index = det_indices(i);
@@ -222,7 +222,7 @@ void Kernel::create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, st
 
         double factor = pi*(1.028/fwhm);
 
-        for (Eigen::Index j=0; j<n_pts; j++) {
+        for (Eigen::Index j=0; j<n_pts; ++j) {
             if (dist(j) <= 3.*fwhm) {
                 in.kernel.data(j,i) = pow(2*boost::math::cyl_bessel_j(1,factor*dist(j))/(factor*dist(j)),2);
             }
@@ -245,7 +245,7 @@ void Kernel::create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &i
     in.kernel.data.resize(n_pts, n_dets);
 
     // loop through detectors
-    for (Eigen::Index i=0; i<n_dets; i++) {
+    for (Eigen::Index i=0; i<n_dets; ++i) {
         // current detector index in apt
         auto det_index = det_indices(i);
 
@@ -266,7 +266,7 @@ void Kernel::create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &i
         Eigen::VectorXd irows = lat.array()/pixel_size_rad + (images[map_index].rows())/2.;
         Eigen::VectorXd icols = lon.array()/pixel_size_rad + (images[map_index].cols())/2.;
 
-        for (Eigen::Index si = 0; si<n_pts; si++) {
+        for (Eigen::Index si = 0; si<n_pts; ++si) {
             // row and col pixel for kernel image
             Eigen::Index ir = (irows(si));
             Eigen::Index ic = (icols(si));

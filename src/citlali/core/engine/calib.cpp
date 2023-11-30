@@ -55,7 +55,7 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
     Eigen::Index n_dets_temp = 0;
 
     // get roach indices from raw data files
-    for (Eigen::Index i=0; i<raw_filenames.size(); i++) {
+    for (Eigen::Index i=0; i<raw_filenames.size(); ++i) {
         netCDF::NcFile fo(raw_filenames[i], netCDF::NcFile::read);
         auto vars = fo.getVars();
         // get roach index
@@ -69,12 +69,12 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
     Eigen::VectorXi interfaces_vec(interfaces.size());
 
     // get network interfaces
-    for (Eigen::Index i=0; i<interfaces.size(); i++) {
+    for (Eigen::Index i=0; i<interfaces.size(); ++i) {
         interfaces_vec(i) = std::stoi(interfaces[i].substr(6));
     }
 
     // count up number of detectors
-    for (Eigen::Index i=0; i<interfaces.size(); i++) {
+    for (Eigen::Index i=0; i<interfaces.size(); ++i) {
         n_dets_temp = n_dets_temp + (apt["nw"].array() == interfaces_vec(i)).count();
     }
 
@@ -84,7 +84,7 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
     for (auto const& value: apt_header_keys) {
         apt_temp[value].setZero(n_dets_temp);
         Eigen::Index i = 0;
-        for (Eigen::Index j=0; j<apt["nw"].size(); j++) {
+        for (Eigen::Index j=0; j<apt["nw"].size(); ++j) {
             if ((apt["nw"](j) == interfaces_vec.array()).any()) {
                 apt_temp[value](i) = apt[value](j);
                 i++;
@@ -177,7 +177,7 @@ void Calib::calc_flux_calibration(std::string units, double pixel_size_rad) {
 
     // convert to MJy/sr
     else if (units == "MJy/sr") {
-        for (Eigen::Index i=0; i<n_dets; i++) {
+        for (Eigen::Index i=0; i<n_dets; ++i) {
             // current detector's array
             auto array = apt["array"](i);
             // det fwhm
@@ -192,7 +192,7 @@ void Calib::calc_flux_calibration(std::string units, double pixel_size_rad) {
     // convert to uK/beam
     else if (units == "uK") {
         engine_utils::toltecIO toltec_io;
-        for (Eigen::Index i=0; i<n_dets; i++) {
+        for (Eigen::Index i=0; i<n_dets; ++i) {
             // current detector's array
             auto array = apt["array"](i);
             // array frequency
@@ -206,7 +206,7 @@ void Calib::calc_flux_calibration(std::string units, double pixel_size_rad) {
 
     // convert to Jy/pixel
     else if (units == "Jy/pixel") {
-        for (Eigen::Index i=0; i<n_dets; i++) {
+        for (Eigen::Index i=0; i<n_dets; ++i) {
             // current detector's array
             auto array = apt["array"](i);
             // det fwhm
@@ -219,7 +219,7 @@ void Calib::calc_flux_calibration(std::string units, double pixel_size_rad) {
     }
 
     // get mean flux conversion factor from all unflagged detectors
-    for (Eigen::Index i=0; i<n_arrays; i++) {
+    for (Eigen::Index i=0; i<n_arrays; ++i) {
         auto array = arrays[i];
         // start indices for current array
         Eigen::Index start = std::get<0>(array_limits[array]);
@@ -230,7 +230,7 @@ void Calib::calc_flux_calibration(std::string units, double pixel_size_rad) {
         // name of array
         std::string name = array_name_map[array];
         // loop through detectors in current array
-        for (Eigen::Index j=start; j<end; j++) {
+        for (Eigen::Index j=start; j<end; ++j) {
             // if good
             if (apt["flag"](j)!=1) {
                 mean_flux_conversion_factor[name] += flux_conversion_factor(j);
@@ -265,7 +265,7 @@ void Calib::setup() {
     nw_limits[nw_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
 
     // loop through apt table networks, get highest index for current networks
-    for (Eigen::Index i=0; i<apt["nw"].size(); i++) {
+    for (Eigen::Index i=0; i<apt["nw"].size(); ++i) {
         if (apt["nw"](i) == nw_i) {
             std::get<1>(nw_limits[nw_i]) = i + 1;
         }
@@ -295,7 +295,7 @@ void Calib::setup() {
 
         // remove flagged dets
         Eigen::Index k = std::get<0>(array_limits[key]);
-        for (Eigen::Index i=0; i<nw_a_fwhm.size(); i++) {
+        for (Eigen::Index i=0; i<nw_a_fwhm.size(); ++i) {
             if (apt["flag"](k)!=1) {
                 std::get<0>(nw_fwhms[key]) = std::get<0>(nw_fwhms[key]) + nw_a_fwhm(i);
                 std::get<1>(nw_fwhms[key]) = std::get<1>(nw_fwhms[key]) + nw_b_fwhm(i);
@@ -323,7 +323,7 @@ void Calib::setup() {
 
     j = 0;
     // loop through apt table arrays, get highest index for current array
-    for (Eigen::Index i=0; i<apt["array"].size(); i++) {
+    for (Eigen::Index i=0; i<apt["array"].size(); ++i) {
         if (apt["array"](i) == arr_i) {
             std::get<1>(array_limits[arr_i]) = i+1;
         }
@@ -357,7 +357,7 @@ void Calib::setup() {
 
         // remove flagged dets
         Eigen::Index k = std::get<0>(array_limits[key]);
-        for (Eigen::Index i=0; i<array_a_fwhm.size(); i++) {
+        for (Eigen::Index i=0; i<array_a_fwhm.size(); ++i) {
             if (apt["flag"](k)!=1) {
                 std::get<0>(array_fwhms[key]) = std::get<0>(array_fwhms[key]) + array_a_fwhm(i);
                 std::get<1>(array_fwhms[key]) = std::get<1>(array_fwhms[key]) + array_b_fwhm(i);
@@ -382,7 +382,7 @@ void Calib::setup() {
     fg_temp.push_back(apt["fg"](0));
 
     // loop through detectors
-    for (Eigen::Index i=1; i<apt["fg"].size(); i++) {
+    for (Eigen::Index i=1; i<apt["fg"].size(); ++i) {
         // map to Eigen::Vector to use any()
         Eigen::Map<Eigen::VectorXI> x(fg_temp.data(),fg_temp.size());
         // if current fg is not in fg_temp

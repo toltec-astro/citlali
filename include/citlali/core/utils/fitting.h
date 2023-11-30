@@ -199,8 +199,8 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
         }
         // find peak within inner radius
         else {
-            for (Eigen::Index i=0; i<sig2noise.rows(); i++) {
-                for (Eigen::Index j=0; j<sig2noise.cols(); j++) {
+            for (Eigen::Index i=0; i<sig2noise.rows(); ++i) {
+                for (Eigen::Index j=0; j<sig2noise.cols(); ++j) {
                     auto dist = sqrt(pow(i - center_row,2) + pow(j - center_col,2));
                     if (dist < fitting_region_pix) {
                         if (sig2noise(i,j) > init_flux) {
@@ -278,8 +278,8 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     Eigen::MatrixXd sigma(weight.rows(), weight.cols());
 
     // loop through pixels
-    for (Eigen::Index i=0; i<weight.rows(); i++) {
-        for (Eigen::Index j=0; j<weight.cols(); j++) {
+    for (Eigen::Index i=0; i<weight.rows(); ++i) {
+        for (Eigen::Index j=0; j<weight.cols(); ++j) {
             if (weight(i,j)!=0) {
                 // use map sigma for beammaps
                 if constexpr (fit_mode == FitMode::beammap) {

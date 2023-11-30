@@ -191,7 +191,7 @@ void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
 
     // add the nws and arrays to the apt table
     Eigen::Index j = 0;
-    for (Eigen::Index i=0; i<nws.size(); i++) {
+    for (Eigen::Index i=0; i<nws.size(); ++i) {
         engine().calib.apt["nw"].segment(j,dets[i]).setConstant(nws[i]);
         engine().calib.apt["array"].segment(j,dets[i]).setConstant(arrays[i]);
 
@@ -263,7 +263,7 @@ void TimeOrderedDataProc<EngineType>::get_tone_freqs_from_files(const RawObs &ra
 
     // add the nws and arrays to the apt table
     Eigen::Index j = 0;
-    for (Eigen::Index i=0; i<engine().calib.nws.size(); i++) {
+    for (Eigen::Index i=0; i<engine().calib.nws.size(); ++i) {
         engine().calib.apt["tone_freq"].segment(j,tone_freqs[interfaces[i]].size()) = tone_freqs[interfaces[i]];
 
         j = j + tone_freqs[interfaces[i]].size();
@@ -277,7 +277,7 @@ void TimeOrderedDataProc<EngineType>::get_tone_freqs_from_files(const RawObs &ra
         dfreq(0) = engine().calib.apt["tone_freq"](1) - engine().calib.apt["tone_freq"](0);
 
         // loop through tone freqs and find distance
-        for (Eigen::Index i=1; i<engine().calib.apt["tone_freq"].size()-1; i++) {
+        for (Eigen::Index i=1; i<engine().calib.apt["tone_freq"].size()-1; ++i) {
             dfreq(i) = std::min(abs(engine().calib.apt["tone_freq"](i) - engine().calib.apt["tone_freq"](i-1)),
                                 abs(engine().calib.apt["tone_freq"](i+1) - engine().calib.apt["tone_freq"](i)));
         }
@@ -291,7 +291,7 @@ void TimeOrderedDataProc<EngineType>::get_tone_freqs_from_files(const RawObs &ra
         engine().calib.apt["duplicate_tone"].setZero(engine().calib.n_dets);
 
         // loop through flag columns
-        for (Eigen::Index i=0; i<engine().calib.n_dets; i++) {
+        for (Eigen::Index i=0; i<engine().calib.n_dets; ++i) {
             // if closer than freq separation limit and unflagged, flag it
             if (dfreq(i) < engine().rtcproc.delta_f_min_Hz) {
                 engine().calib.apt["duplicate_tone"](i) = 1;
@@ -611,7 +611,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
     Eigen::Index min_size = nw_ts[0].size();
 
     // loop through time vectors and get the smallest
-    for (Eigen::Index i=0; i<nw_ts.size(); i++) {
+    for (Eigen::Index i=0; i<nw_ts.size(); ++i) {
         // find start index that is larger than max start
         Eigen::Index si, ei;
         // find index closest to max start time
@@ -637,7 +637,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
     }
 
     // get min size
-    for (Eigen::Index i=0; i<nw_ts.size(); i++) {
+    for (Eigen::Index i=0; i<nw_ts.size(); ++i) {
         // start indices
         auto si = engine().start_indices[i];
         // end indices
@@ -866,7 +866,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
         array_indices.resize(engine().calib.nws.size());
 
         // find all map from nw to arrays
-        for (Eigen::Index i=0; i<engine().calib.nws.size(); i++) {
+        for (Eigen::Index i=0; i<engine().calib.nws.size(); ++i) {
             // get array for current nw
             array_indices(i) = engine().toltec_io.nw_to_array_map[engine().calib.nws(i)];
         }
@@ -883,7 +883,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
         // map from fg to array index
         Eigen::Index j = 0;
         // loop through arrays
-        for (Eigen::Index i=0; i<engine().calib.n_arrays; i++) {
+        for (Eigen::Index i=0; i<engine().calib.n_arrays; ++i) {
             // append current array index to all elements within a segment of fg size
             array_indices.segment(j,engine().calib.fg.size()).setConstant(engine().calib.arrays(i));
             // increment by fg size
@@ -907,7 +907,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
     Eigen::Index index = 0;
     // start at map index 0
     engine().arrays_to_maps(0) = index;
-    for (Eigen::Index i=1; i<engine().n_maps; i++) {
+    for (Eigen::Index i=1; i<engine().n_maps; ++i) {
         // we move to the next map index when the array increments
         if (engine().maps_to_arrays(i) > engine().maps_to_arrays(i-1)) {
             index++;
@@ -948,7 +948,7 @@ void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &m
         std::map<std::string, Eigen::VectorXd> pointing_offsets_arcsec;
 
         // loop through scans
-        for (Eigen::Index i=0; i<engine().telescope.scan_indices.cols(); i++) {
+        for (Eigen::Index i=0; i<engine().telescope.scan_indices.cols(); ++i) {
             // lower scan index
             auto si = engine().telescope.scan_indices(0,i);
             // upper scan index
@@ -1075,7 +1075,7 @@ void TimeOrderedDataProc<EngineType>::calc_cmb_size(std::vector<map_coord_t> &ma
     max_col = map_coords.at(0).back()(map_coords.at(0).back().size() - 1);
 
     // loop through physical coordinates and get min/max
-    for (Eigen::Index i=0; i<map_coords.size(); i++) {
+    for (Eigen::Index i=0; i<map_coords.size(); ++i) {
         auto rows_tan_vec = map_coords.at(i).front();
         auto cols_tan_vec = map_coords.at(i).back();
 
@@ -1169,7 +1169,7 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
     engine().omb.wcs.crpix[1] = crpix2;
 
     // loop through n_maps and add zero matrix
-    for (Eigen::Index i=0; i<engine().n_maps; i++) {
+    for (Eigen::Index i=0; i<engine().n_maps; ++i) {
         engine().omb.signal.push_back(Eigen::MatrixXd::Zero(engine().omb.n_rows, engine().omb.n_cols));
         engine().omb.weight.push_back(Eigen::MatrixXd::Zero(engine().omb.n_rows, engine().omb.n_cols));
 
@@ -1186,7 +1186,7 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
 
     if (engine().rtcproc.run_polarization) {
         // allocate pointing matrix
-        for (Eigen::Index i=0; i<engine().n_maps/engine().rtcproc.polarization.stokes_params.size(); i++) {
+        for (Eigen::Index i=0; i<engine().n_maps/engine().rtcproc.polarization.stokes_params.size(); ++i) {
             engine().omb.pointing.push_back(Eigen::Tensor<double,3>(engine().omb.n_rows, engine().omb.n_cols, 9));
             engine().omb.pointing.at(i).setZero();
         }
@@ -1208,7 +1208,7 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb() {
     engine().cmb.pointing.clear();
 
     // loop through maps and allocate space
-    for (Eigen::Index i=0; i<engine().n_maps; i++) {
+    for (Eigen::Index i=0; i<engine().n_maps; ++i) {
         engine().cmb.signal.push_back(Eigen::MatrixXd::Zero(engine().cmb.n_rows, engine().cmb.n_cols));
         engine().cmb.weight.push_back(Eigen::MatrixXd::Zero(engine().cmb.n_rows, engine().cmb.n_cols));
 
@@ -1225,7 +1225,7 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb() {
 
     if (engine().rtcproc.run_polarization && engine().run_noise) {
         // allocate pointing matrix
-        for (Eigen::Index i=0; i<engine().n_maps/engine().rtcproc.polarization.stokes_params.size(); i++) {
+        for (Eigen::Index i=0; i<engine().n_maps/engine().rtcproc.polarization.stokes_params.size(); ++i) {
             engine().cmb.pointing.push_back(Eigen::Tensor<double,3>(engine().cmb.n_rows, engine().cmb.n_cols, 9));
             engine().cmb.pointing.at(i).setZero();
         }
@@ -1238,7 +1238,7 @@ void TimeOrderedDataProc<EngineType>::allocate_nmb(map_buffer_t &nmb) {
     // clear noise map buffer
     nmb.noise.clear();
     // resize noise maps (n_maps, [n_rows, n_cols, n_noise])
-    for (Eigen::Index i=0; i<engine().n_maps; i++) {
+    for (Eigen::Index i=0; i<engine().n_maps; ++i) {
         nmb.noise.push_back(Eigen::Tensor<double,3>(nmb.n_rows, nmb.n_cols, nmb.n_noise));
         nmb.noise.at(i).setZero();
     }
@@ -1252,7 +1252,7 @@ void TimeOrderedDataProc<EngineType>::coadd() {
     int delta_col = (engine().omb.cols_tan_vec(0) - engine().cmb.cols_tan_vec(0))/engine().cmb.pixel_size_rad;
 
     // loop through the maps
-    for (Eigen::Index i=0; i<engine().n_maps; i++) {
+    for (Eigen::Index i=0; i<engine().n_maps; ++i) {
         // cmb.weight += omb.weight
         engine().cmb.weight.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols) =
             engine().cmb.weight.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols).array() +
@@ -1290,7 +1290,7 @@ void TimeOrderedDataProc<EngineType>::create_coadded_map_files() {
         engine().filtered_coadd_noise_fits_io_vec.clear();
 
         // loop through arrays
-        for (Eigen::Index i=0; i<engine().calib.n_arrays; i++) {
+        for (Eigen::Index i=0; i<engine().calib.n_arrays; ++i) {
             // array index
             auto array = engine().calib.arrays[i];
             // array name
@@ -1322,7 +1322,7 @@ void TimeOrderedDataProc<EngineType>::create_coadded_map_files() {
         // if map filtering are requested
         if (engine().run_map_filter) {
             // loop through arrays
-            for (Eigen::Index i=0; i<engine().calib.n_arrays; i++) {
+            for (Eigen::Index i=0; i<engine().calib.n_arrays; ++i) {
                 // array index
                 auto array = engine().calib.arrays[i];
                 // array name

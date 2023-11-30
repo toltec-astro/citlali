@@ -139,9 +139,9 @@ void ObsMapBuffer::normalize_maps() {
         // normalize science and kernel mpas
         grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
             // loop through rows
-            for (Eigen::Index j=0; j<n_rows; j++) {
+            for (Eigen::Index j=0; j<n_rows; ++j) {
                 // loop through cols
-                for (Eigen::Index k=0; k<n_cols; k++) {
+                for (Eigen::Index k=0; k<n_cols; ++k) {
                     // weight of current pixel
                     double sig_weight = weight[i](j,k);
                     // normalize if weight is larger than zero
@@ -201,12 +201,12 @@ void ObsMapBuffer::normalize_maps() {
             Eigen::MatrixXd m(3,3);
 
             // loop through rows
-            for (Eigen::Index i=0; i<n_rows; i++) {
+            for (Eigen::Index i=0; i<n_rows; ++i) {
                 // loop through cols
-                for (Eigen::Index j=0; j<n_cols; j++) {
+                for (Eigen::Index j=0; j<n_cols; ++j) {
                     // create pointing matrix for pixel
                     Eigen::Index n = 0;
-                    for (Eigen::Index k=0; k<3; k++) {
+                    for (Eigen::Index k=0; k<3; ++k) {
                         for (Eigen::Index l=0; l<3; l++) {
                             m(k,l) = pointing[a](i,j,n);
                             n++;
@@ -303,9 +303,9 @@ void ObsMapBuffer::normalize_maps() {
         if (!noise.empty()) {
             grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
                 // loop through rows
-                for (Eigen::Index j=0; j<n_rows; j++) {
+                for (Eigen::Index j=0; j<n_rows; ++j) {
                     // loop through cols
-                    for (Eigen::Index k=0; k<n_cols; k++) {
+                    for (Eigen::Index k=0; k<n_cols; ++k) {
                         // weight of current pixel
                         double sig_weight = weight[i](j,k);
                         // normalize if weight is larger than zero
@@ -360,7 +360,7 @@ void ObsMapBuffer::calc_map_psd() {
     noise_psd_2d_freqs.clear();
 
     // loop through maps
-    for (Eigen::Index i=0; i<signal.size(); i++) {
+    for (Eigen::Index i=0; i<signal.size(); ++i) {
         // calculate weight threshold
         auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = calc_cov_region(i);
 
@@ -390,7 +390,7 @@ void ObsMapBuffer::calc_map_psd() {
 
         // get average noise psd if noise maps are requested
         if (!noise.empty()) {
-            for (Eigen::Index j=0; j<n_noise; j++) {
+            for (Eigen::Index j=0; j<n_noise; ++j) {
                 // get noise map
                 Eigen::Tensor<double, 2> noise_tensor = noise[i].chip(j, 2);
                 // map to eigen matrix
@@ -433,7 +433,7 @@ void ObsMapBuffer::calc_map_hist() {
     noise_hist_bins.clear();
 
     // loop through maps
-    for (Eigen::Index i=0; i<signal.size(); i++) {
+    for (Eigen::Index i=0; i<signal.size(); ++i) {
         // calculate weight threshold
         auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = calc_cov_region(i);
 
@@ -448,7 +448,7 @@ void ObsMapBuffer::calc_map_hist() {
 
         // get average noise psd if noise maps are requested
         if (!noise.empty()) {
-            for (Eigen::Index j=0; j<n_noise; j++) {
+            for (Eigen::Index j=0; j<n_noise; ++j) {
                 // get noise map
                 Eigen::Tensor<double, 2> noise_tensor = noise[i].chip(j,2);
                 // map to eigen matrix
@@ -476,7 +476,7 @@ void ObsMapBuffer::calc_map_hist() {
 void ObsMapBuffer::calc_mean_err() {
     // resize mean errors
     mean_err.setZero(weight.size());
-    for (Eigen::Index i=0; i<weight.size(); i++) {
+    for (Eigen::Index i=0; i<weight.size(); ++i) {
         // calculate weight threshold
         auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = calc_cov_region(i);
 
@@ -493,10 +493,10 @@ void ObsMapBuffer::calc_mean_rms() {
     mean_rms.setZero(noise.size());
 
     // loop through arrays/polarizations
-    for (Eigen::Index i=0; i<noise.size(); i++) {
+    for (Eigen::Index i=0; i<noise.size(); ++i) {
         // vector of rms of noise maps
         Eigen::VectorXd noise_rms(n_noise);
-        for (Eigen::Index j=0; j<n_noise; j++) {
+        for (Eigen::Index j=0; j<n_noise; ++j) {
             // calculate weight threshold
             auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = calc_cov_region(i);
 
@@ -511,6 +511,37 @@ void ObsMapBuffer::calc_mean_rms() {
         }
         // get mean rms
         mean_rms(i) = noise_rms.mean();
+    }
+}
+
+void ObsMapBuffer::calc_mean_rms_annulus(double inner_radius_rad, double outer_radius_rad) {
+    // average filtered rms vector
+    mean_rms.setZero(weight.size());
+
+    // distance to each pixel
+    Eigen::MatrixXd dist(n_rows,n_cols);
+
+    // calculate distance to each pixel from center (same for all maps)
+    for (Eigen::Index i=0; i<n_cols; ++i) {
+        for (Eigen::Index j=0; j<n_rows; ++j) {
+            dist(j,i) = sqrt(pow(rows_tan_vec(j),2) + pow(cols_tan_vec(i),2));
+        }
+    }
+
+    // loop through maps
+    for (Eigen::Index i=0; i<signal.size(); ++i) {
+        int n_pts = 0;
+        // loop through pixels
+        for (Eigen::Index j=0; j<n_rows; ++j) {
+            for (Eigen::Index k=0; k<n_cols; ++k) {
+                if (dist(j,k) > inner_radius_rad && dist(j,k) <= outer_radius_rad) {
+                    n_pts++;
+                    mean_rms(i) += signal[i](j,k);
+                }
+            }
+        }
+        // get mean
+        mean_rms(i) /= n_pts;
     }
 }
 
@@ -539,8 +570,8 @@ bool ObsMapBuffer::find_sources(Eigen::Index map_index) {
 
     // search both positive and negatives
     if (source_finder_mode=="both") {
-        for (Eigen::Index i=0; i<n_rows; i++) {
-            for (Eigen::Index j=0; j<n_cols; j++) {
+        for (Eigen::Index i=0; i<n_rows; ++i) {
+            for (Eigen::Index j=0; j<n_cols; ++j) {
                 if (cov_bool(i,j) == 1) {
                     if (abs(sig2noise(i,j)) >= source_sigma) {
                         row_index.push_back(i);
@@ -551,8 +582,8 @@ bool ObsMapBuffer::find_sources(Eigen::Index map_index) {
         }
     }
     else {
-        for (Eigen::Index i=0; i<n_rows; i++) {
-            for (Eigen::Index j=0; j<n_cols; j++) {
+        for (Eigen::Index i=0; i<n_rows; ++i) {
+            for (Eigen::Index j=0; j<n_cols; ++j) {
                 if (cov_bool(i,j) == 1) {
                     if (sig2noise(i,j) >= source_sigma) {
                         row_index.push_back(i);
@@ -571,13 +602,13 @@ bool ObsMapBuffer::find_sources(Eigen::Index map_index) {
     // make sure source extremum is within good coverage region by
     // searching in index boxes of +/- 1 pixel around hot pixels
     std::vector<int> row_source_index, col_source_index;
-    for (unsigned int i=0; i<row_index.size(); i++) {
+    for (unsigned int i=0; i<row_index.size(); ++i) {
         double extremum;
         if (source_finder_mode=="both" && signal[map_index](row_index[i],col_index[i]) < 0.0) {
             extremum = signal[map_index](row_index[i],col_index[i]);
             // find minimum within index box
-            for (Eigen::Index j=row_index[i]-1; j<row_index[i]+2; j++) {
-                for (Eigen::Index k=col_index[i]-1; k<col_index[i]+2; k++) {
+            for (Eigen::Index j=row_index[i]-1; j<row_index[i]+2; ++j) {
+                for (Eigen::Index k=col_index[i]-1; k<col_index[i]+2; ++k) {
                     if (signal[map_index](j,k) < extremum) {
                         extremum = signal[map_index](j,k);
                     }
@@ -587,8 +618,8 @@ bool ObsMapBuffer::find_sources(Eigen::Index map_index) {
         else {
             extremum = signal[map_index](row_index[i],col_index[i]);
             // find maximum within index box
-            for (Eigen::Index j=row_index[i]-1; j<row_index[i]+2; j++) {
-                for (Eigen::Index k=col_index[i]-1; k<col_index[i]+2; k++) {
+            for (Eigen::Index j=row_index[i]-1; j<row_index[i]+2; ++j) {
+                for (Eigen::Index k=col_index[i]-1; k<col_index[i]+2; ++k) {
                     if (signal[map_index](j,k) > extremum) {
                         extremum = signal[map_index](j,k);
                     }
@@ -615,8 +646,8 @@ bool ObsMapBuffer::find_sources(Eigen::Index map_index) {
     // find indices of hot pixels close together
     std::vector<int> row_dist_index, col_dist_index;
 
-    for (Eigen::Index i=0; i<n_raw_sources; i++) {
-        for (Eigen::Index j=0; j<n_raw_sources; j++) {
+    for (Eigen::Index i=0; i<n_raw_sources; ++i) {
+        for (Eigen::Index j=0; j<n_raw_sources; ++j) {
             unsigned int row_sep = pow(row_source_index[i] - row_source_index[j],2);
             unsigned int col_sep = pow(col_source_index[i] - col_source_index[j],2);
             double hot_dist = sqrt(row_sep + col_sep);
@@ -629,7 +660,7 @@ bool ObsMapBuffer::find_sources(Eigen::Index map_index) {
 
     // flag non-maximum hot pixel indices
     if (row_dist_index.size() != 0) {
-        for (unsigned int i=0; i<row_dist_index.size(); i++) {
+        for (unsigned int i=0; i<row_dist_index.size(); ++i) {
             if (row_source_index[row_dist_index[i]] == -1 || col_source_index[col_dist_index[i]] == -1) {
                 continue;
             }
@@ -666,7 +697,7 @@ bool ObsMapBuffer::find_sources(Eigen::Index map_index) {
 
     // get rows/cols of each source
     std::vector<int> row_source_loc, col_source_loc;
-    for (Eigen::Index i=0; i<n_raw_sources; i++) {
+    for (Eigen::Index i=0; i<n_raw_sources; ++i) {
         if ((row_source_index[i] != -1) && (col_source_index[i] != -1)) {
             row_source_loc.push_back(row_source_index[i]);
             col_source_loc.push_back(col_source_index[i]);

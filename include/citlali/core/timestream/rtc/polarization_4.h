@@ -77,7 +77,7 @@ public:
             // loop through all detectors
             if (!sim_obs) {
                 Eigen::Index k = 0;
-                for (Eigen::Index i=0; i<calib.n_dets; i++) {
+                for (Eigen::Index i=0; i<calib.n_dets; ++i) {
                     // if matched, add to out scans
                     if (calib.apt[grouping](i)!=-1) {
                         out.scans.data.col(k) = in.scans.data.col(i);
@@ -105,7 +105,7 @@ public:
                              in.pointing_offsets_arcsec.data["alt"].array()*ASEC_TO_RAD;
 
             // now loop through polarized detectors
-            for (Eigen::Index i=0; i<n_dets; i++) {
+            for (Eigen::Index i=0; i<n_dets; ++i) {
                 // detector angle = rotation angle + installation angle + det orientation
                 auto angle = rot_angle + fgs[fg_indices(i)] + install_ang[array_indices(i)];
 
