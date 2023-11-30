@@ -275,6 +275,8 @@ public:
     int fruit_loops_iters;
     // signal-to-noise cut for fruit loops algorithm
     double fruit_loops_sig2noise;
+    // save all iterations
+    bool save_all_iters;
 
     // map buffer for map to tod approach
     mapmaking::ObsMapBuffer tmb{"timestream"};
@@ -414,12 +416,12 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                             // get signal I map
                             if (extName.find("signal") != std::string::npos && extName.find("_I") != std::string::npos) {
                                 tmb.signal.push_back(fits_io.get_hdu(extName));
-                                logger->info("found {} {}", filename, extName);
+                                logger->info("found {} [{}]", filename, extName);
                             }
                             // get weight I map
                             else if (extName.find("weight") != std::string::npos && extName.find("_I") != std::string::npos) {
                                 tmb.weight.push_back(fits_io.get_hdu(extName));
-                                logger->info("found {} {}", filename, extName);
+                                logger->info("found {} [{}]", filename, extName);
                             }
                         }
                     }
@@ -480,7 +482,7 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                                 double mean_rms;
                                 ext.readKey("MEANRMS", mean_rms);
                                 mean_rms_vec.push_back(mean_rms);
-                                logger->info("found {} {}", filename, extName);
+                                logger->info("found {} [{}]", filename, extName);
                                 // allocate current noise map
                                 //tmb.noise.push_back(Eigen::Tensor<double,3>(tmb.wcs.naxis[1], tmb.wcs.naxis[0], tmb.n_noise));
 

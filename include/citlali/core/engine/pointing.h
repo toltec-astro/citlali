@@ -39,7 +39,7 @@ public:
     std::map<std::string,std::string> ppt_header_units;
 
     // initial setup for each obs
-    void setup();
+    void setup(int);
 
     // run the reduction for the obs
     auto run();
@@ -56,9 +56,9 @@ public:
     void output();
 };
 
-void Pointing::setup() {
+void Pointing::setup(int fruit_iter) {
     // run obsnum setup
-    obsnum_setup();
+    obsnum_setup(fruit_iter);
 
     // resize the current fit matrix
     params.setZero(n_maps, map_fitter.n_params);
@@ -70,16 +70,7 @@ void Pointing::setup() {
     }
 
     // units for positions
-    std::string pos_units;
-
-    // use degrees if in radec
-    if (telescope.pixel_axes=="radec") {
-        pos_units = "deg";
-    }
-    // use arcsec if in altaz
-    else {
-        pos_units = "arcsec";
-    }
+    std::string pos_units = (telescope.pixel_axes == "radec") ? "deg" : "arcsec";
 
     // units for ppt header
     ppt_header_units = {
@@ -204,7 +195,7 @@ auto Pointing::run() {
         }
 
         // write rtc timestreams
-        if (run_tod_output) {
+        if (run_tod_output && !tod_filename.empty()) {
             if (tod_output_type == "rtc" || tod_output_type == "both") {
                 logger->info("writing raw time chunk");
                 rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
@@ -265,7 +256,7 @@ auto Pointing::run() {
         ptcproc.reset_weights(ptcdata, calib, det_indices);
 
         // write ptc timestreams
-        if (run_tod_output) {
+        if (run_tod_output && !tod_filename.empty()) {
             if (tod_output_type == "ptc" || tod_output_type == "both") {
                 logger->info("writing processed time chunk");
                 ptcproc.append_to_netcdf(ptcdata, tod_filename["ptc"], map_grouping, telescope.pixel_axes,
@@ -483,7 +474,7 @@ void Pointing::output() {
         write_stats();
 
         // add header informqtion to tod
-        if (run_tod_output) {
+        if (run_tod_output && !tod_filename.empty()) {
             add_tod_header();
         }
     }

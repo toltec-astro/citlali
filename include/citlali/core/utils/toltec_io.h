@@ -79,94 +79,39 @@ public:
     };    
 
     template <toltecIO::DataType data_t, toltecIO::ProdType prod_t, toltecIO::FilterType filter_t>
-    std::string create_filename(const std::string filepath, const std::string, std::string, std::string, const bool);
+    std::string create_filename(const std::string, const std::string, std::string, std::string, const bool);
 };
 
 template <toltecIO::DataType data_t, toltecIO::ProdType prod_t, toltecIO::FilterType filter_t>
 std::string toltecIO::create_filename(const std::string filepath, const std::string redu_type,
                                       std::string array_name, std::string obsnum, const bool simu_obs) {
-
     std::string filename = filepath;
 
-    /* data type */
-    if constexpr (data_t == toltec) {
-        filename  = filename + "toltec";
-    }
-    // apt table
-    else if constexpr (data_t == apt) {
-        filename  = filename + "apt";
-    }
-    // ppt table (pointing table)
-    else if constexpr (data_t == ppt) {
-        filename  = filename + "ppt";
-    }
-    // source table
-    else if constexpr (data_t == source) {
-        filename  = filename + "source";
-    }
+    // data type
+    if constexpr (data_t == toltec) filename += "toltec";
+    else if constexpr (data_t == apt) filename += "apt";
+    else if constexpr (data_t == ppt) filename += "ppt";
+    else if constexpr (data_t == source) filename += "source";
 
-    /* real data or simulation */
-    if (!simu_obs) {
-        filename = filename + "_commissioning";
-    }
-    else {
-        filename = filename + "_simu";
-    }
-    // add array name
-    if (!array_name.empty()) {
-        filename = filename + "_" + array_name;
-    }
-    // add redu_type
-    if (!redu_type.empty()) {
-        filename = filename + "_" + redu_type;
-    }
-    // add obsnum
-    if (!obsnum.empty()) {
-        filename = filename + "_" + obsnum;
-    }
+    // real data or simulation
+    filename += simu_obs ? "_simu" : "_commissioning";
 
-    /* prod type */
-    // noise map
-    if constexpr (prod_t == noise) {
-        filename = filename + "_noise";
-    }
-    // psd file
-    else if constexpr (prod_t == psd) {
-        filename = filename + "_psd";
-    }
-    // histogram file
-    else if constexpr (prod_t == hist) {
-        filename = filename + "_hist";
-    }
+    // add array name, redu_type, and obsnum if they are not empty
+    if (!array_name.empty()) filename += "_" + array_name;
+    if (!redu_type.empty()) filename += "_" + redu_type;
+    if (!obsnum.empty()) filename += "_" + obsnum;
 
-    // raw time chunk file
-    else if constexpr (prod_t == rtc_timestream) {
-        filename = filename + "_rtc_timestream";
-    }
+    // product type
+    if constexpr (prod_t == noise) filename += "_noise";
+    else if constexpr (prod_t == psd) filename += "_psd";
+    else if constexpr (prod_t == hist) filename += "_hist";
+    else if constexpr (prod_t == rtc_timestream) filename += "_rtc_timestream";
+    else if constexpr (prod_t == ptc_timestream) filename += "_ptc_timestream";
+    else if constexpr (prod_t == stats) filename += "_stats";
 
-    // processed time chunk file
-    else if constexpr (prod_t == ptc_timestream) {
-        filename = filename + "_ptc_timestream";
-    }
-
-    // time chunk summary file
-    else if constexpr (prod_t == stats) {
-        filename = filename + "_stats";
-    }
-
-    // filtered map
-    if constexpr (filter_t == filtered) {
-        filename = filename + "_filtered";
-    }
-
-    // add pipeline to maps
-    if constexpr (prod_t == map) {
-        filename = filename + "_citlali";
-    }
-
-    // add pipeline to noise maps
-    if constexpr (prod_t == noise) {
-        filename = filename + "_citlali";
+    // filtered map or add pipeline to maps or noise maps
+    if constexpr (filter_t == filtered || prod_t == map || prod_t == noise) {
+        filename += "_citlali";
     }
 
     return filename;

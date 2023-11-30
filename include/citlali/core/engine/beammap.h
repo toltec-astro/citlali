@@ -67,7 +67,7 @@ public:
     std::vector<int> det_in_vec, det_out_vec;
 
     // initial setup for each obs
-    void setup();
+    void setup(int);
 
     // run the raw time chunk processing
     auto run_timestream();
@@ -98,12 +98,12 @@ public:
     void output();
 };
 
-void Beammap::setup() {
+void Beammap::setup(int fruit_iter) {
     // assign parallel policies
     map_parallel_policy = parallel_policy;
 
     // run obsnum setup
-    obsnum_setup();
+    obsnum_setup(fruit_iter);
 
     // create kids tone apt row
     calib.apt["kids_tone"].resize(calib.n_dets);
@@ -285,7 +285,7 @@ auto Beammap::run_timestream() {
         }
 
         // write rtc timestreams
-        if (run_tod_output) {
+        if (run_tod_output && !tod_filename.empty()) {
             if (tod_output_type == "rtc" || tod_output_type == "both") {
                 logger->info("writing raw time chunk");
                 rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
@@ -422,7 +422,7 @@ auto Beammap::run_loop() {
         });
 
         // write ptc timestreams
-        if (run_tod_output) {
+        if (run_tod_output && !tod_filename.empty()) {
             if (tod_output_type == "ptc" || tod_output_type == "both") {
                 logger->info("writing processed time chunk");
                 if (current_iter == beammap_tod_output_iter) {
@@ -1026,7 +1026,7 @@ auto Beammap::loop_pipeline() {
         process_apt();
 
         // add final apt table to timestream files
-        if (run_tod_output) {
+        if (run_tod_output && !tod_filename.empty()) {
             // vectors to hold tangent plane pointing for all ptcs (n_chunks x [n_pts x n_dets])
             std::vector<Eigen::MatrixXd> lat, lon;
 
@@ -1215,7 +1215,7 @@ void Beammap::output() {
         write_stats();
 
         // add header informqtion to tod
-        if (run_tod_output) {
+        if (run_tod_output && !tod_filename.empty()) {
             add_tod_header();
         }
 

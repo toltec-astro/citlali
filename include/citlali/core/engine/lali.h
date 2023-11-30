@@ -12,7 +12,7 @@ using timestream::TCDataKind;
 class Lali: public Engine {
 public:
     // initial setup for each obs
-    void setup();
+    void setup(int);
 
     // run the reduction for the obs
     auto run();
@@ -26,9 +26,9 @@ public:
     void output();
 };
 
-void Lali::setup() {
+void Lali::setup(int fruit_iter) {
     // run obsnum setup
-    obsnum_setup();
+    obsnum_setup(fruit_iter);
 
     // use per detector parallelization for jinc mapmaking
     if (map_method == "jinc") {
@@ -94,7 +94,7 @@ auto Lali::run() {
         }
 
         // write rtc timestreams
-        if (run_tod_output) {
+        if (run_tod_output && !tod_filename.empty()) {
             if (tod_output_type == "rtc" || tod_output_type == "both") {
                 logger->info("writing raw time chunk");
                 rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
@@ -155,7 +155,7 @@ auto Lali::run() {
         ptcproc.reset_weights(ptcdata, calib, det_indices);
 
         // write ptc timestreams
-        if (run_tod_output) {
+        if (run_tod_output && !tod_filename.empty()) {
             if (tod_output_type == "ptc" || tod_output_type == "both") {
                 logger->info("writing processed time chunk");
                 ptcproc.append_to_netcdf(ptcdata, tod_filename["ptc"], map_grouping, telescope.pixel_axes,
@@ -293,7 +293,7 @@ void Lali::output() {
         write_stats();
 
         // add header informqtion to tod
-        if (run_tod_output) {
+        if (run_tod_output && !tod_filename.empty()) {
             add_tod_header();
         }
 

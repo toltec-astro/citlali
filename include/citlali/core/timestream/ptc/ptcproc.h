@@ -80,6 +80,9 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
     // run fruit loops?
     get_config_value(config, run_fruit_loops, missing_keys, invalid_keys,
                      std::tuple{"timestream","fruit_loops","enabled"});
+    // save all fruit loops iterations?
+    get_config_value(config, save_all_iters, missing_keys, invalid_keys,
+                     std::tuple{"timestream","fruit_loops","save_all_iters"});
 
     if (run_fruit_loops) {
         // fruit looops path

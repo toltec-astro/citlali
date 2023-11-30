@@ -240,7 +240,7 @@ public:
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> filtered_coadd_fits_io_vec, filtered_coadd_noise_fits_io_vec;
 
     // per obsnum setup common to all redu types
-    void obsnum_setup();
+    void obsnum_setup(int);
 
     // get RTC config options
     template<typename CT>
@@ -328,7 +328,7 @@ public:
 
     // run the wiener filter
     template <mapmaking::MapType map_t, class map_buffer_t>
-    void run_wiener_filter(map_buffer_t &);
+    void run_wiener_filter(map_buffer_t &, int);
 
     // find sources in the maps
     template <mapmaking::MapType map_t, class map_buffer_t>
@@ -339,7 +339,7 @@ public:
     void write_sources(map_buffer_t &, std::string);
 };
 
-void Engine::obsnum_setup() {
+void Engine::obsnum_setup(int fruit_iter) {
     if (rtcproc.run_extinction) {
         // get atm model
         rtcproc.calibration.setup(telescope.tau_225_GHz);
@@ -409,21 +409,25 @@ void Engine::obsnum_setup() {
 
     // create output map files
     if (run_mapmaking) {
+        if (ptcproc.save_all_iters || fruit_iter == ptcproc.fruit_loops_iters - 1) {
         create_obs_map_files();
+        }
     }
     // create timestream files
     if (run_tod_output) {
-        // create tod output subdirectory if requested
-        if (tod_output_subdir_name!="null") {
-            fs::create_directories(obsnum_dir_name + "raw/" + tod_output_subdir_name);
-        }
-        // make rtc tod output file
-        if (tod_output_type == "rtc" || tod_output_type == "both") {
-            create_tod_files<engine_utils::toltecIO::rtc_timestream>();
-        }
-        // make ptc tod output file
-        if (tod_output_type == "ptc" || tod_output_type == "both") {
-            create_tod_files<engine_utils::toltecIO::ptc_timestream>();
+        if (ptcproc.save_all_iters || fruit_iter == ptcproc.fruit_loops_iters - 1) {
+            // create tod output subdirectory if requested
+            if (tod_output_subdir_name!="null") {
+                fs::create_directories(obsnum_dir_name + "raw/" + tod_output_subdir_name);
+            }
+            // make rtc tod output file
+            if (tod_output_type == "rtc" || tod_output_type == "both") {
+                create_tod_files<engine_utils::toltecIO::rtc_timestream>();
+            }
+            // make ptc tod output file
+            if (tod_output_type == "ptc" || tod_output_type == "both") {
+                create_tod_files<engine_utils::toltecIO::ptc_timestream>();
+            }
         }
     }
     // don't calculate any eigenvalues
@@ -1228,6 +1232,7 @@ void Engine::add_tod_header() {
         add_netcdf_var(fo, "CONFIG.WEIGHT.MEDWTFACTOR", ptcproc.med_weight_factor);
         add_netcdf_var(fo, "CONFIG.CLEANED", ptcproc.run_clean);
 
+        // loop through arrays and add number of eigenvalues removed
         for (Eigen::Index i=0; i<calib.arrays.size(); i++) {
             if (ptcproc.run_clean) {
                 add_netcdf_var(fo, "CONFIG.CLEANED.NEIG_"+toltec_io.array_name_map[calib.arrays(i)],
@@ -1238,6 +1243,7 @@ void Engine::add_tod_header() {
             }
         }
 
+        // fruit loops parameters
         add_netcdf_var(fo, "CONFIG.FRUITLOOPS", ptcproc.run_fruit_loops);
         add_netcdf_var<std::string>(fo, "CONFIG.FRUITLOOPS.PATH", ptcproc.fruit_loops_path);
         add_netcdf_var(fo, "CONFIG.FRUITLOOPS.S2N", ptcproc.fruit_loops_sig2noise);
@@ -2303,7 +2309,7 @@ void Engine::write_stats() {
 }
 
 template <mapmaking::MapType map_t, class map_buffer_t>
-void Engine::run_wiener_filter(map_buffer_t &mb) {
+void Engine::run_wiener_filter(map_buffer_t &mb, int fruit_iter) {
     // pointer to map buffer
     mapmaking::ObsMapBuffer* pmb = &mb;
     // pointer to data file fits vector
@@ -2383,6 +2389,8 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         }
 
         if (write_filtered_maps_partial) {
+            // only write if saving all iterations or on last iteration
+            if (ptcproc.save_all_iters || fruit_iter == ptcproc.fruit_loops_iters - 1) {
             // write maps immediately after filtering due to computation time
             write_maps(f_io,n_io,pmb,i);
 
@@ -2402,6 +2410,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
                     f_io->at(map_index).pfits->destroy();
                 }
             }
+        }
         }
     }
 
@@ -2546,14 +2555,7 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
     };
 
     // units for fitted parameter centroids
-    std::string pos_units;
-
-    if (telescope.pixel_axes=="radec") {
-        pos_units = "deg";
-    }
-    else {
-        pos_units = "arcsec";
-    }
+    std::string pos_units = (telescope.pixel_axes == "radec") ? "deg" : "arcsec";
 
     // units for source header
     std::map<std::string,std::string> source_header_units = {

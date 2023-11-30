@@ -4,6 +4,9 @@
 namespace mapmaking {
 
 // constructor
+ObsMapBuffer::ObsMapBuffer() {}
+
+// constructor
 ObsMapBuffer::ObsMapBuffer(std::string _n): name(_n) {}
 
 // get config file

@@ -131,6 +131,7 @@ public:
     Eigen::MatrixXd source_params, source_perror;
 
     // constructor
+    ObsMapBuffer();
     ObsMapBuffer(std::string);
 
     // get config file
