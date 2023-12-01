@@ -174,9 +174,13 @@ auto Lali::run() {
 
         // populate maps
         if (run_mapmaking) {
+            // make signal, weight, kernel, and coverage maps
             bool run_omb = true;
             bool run_noise_fruit;
 
+            // if running fruit loops, noise maps are made on source
+            // subtracted timestreams so don't make them here unless
+            // on first iteration
             if (ptcproc.run_fruit_loops && !ptcproc.tod_mb.signal.empty()) {
                 run_noise_fruit = false;
             }
@@ -214,6 +218,7 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     tula::logging::progressbar pb(
         [&](const auto &msg) { logger->info("{}", msg); }, 100, "citlali progress ");
 
+    // grppi generator function. gets time chunk data from files sequentially and passes them to grppi::farm
     grppi::pipeline(tula::grppi_utils::dyn_ex(parallel_policy),
         [&]() -> std::optional<std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
                                           std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>> {
@@ -238,6 +243,7 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
                 // increment scan
                 scan++;
+                // return rtcdata, kidsproc, and raw data
                 return std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
                                   std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>> (std::move(rtcdata), kidsproc,
                                                                                                    std::move(scan_rawobs));
@@ -276,55 +282,35 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 template <mapmaking::MapType map_type>
 void Lali::output() {
     // pointer to map buffer
-    mapmaking::ObsMapBuffer* mb = NULL; //new mapmaking::ObsMapBuffer;
+    mapmaking::ObsMapBuffer* mb = nullptr;
     // pointer to data file fits vector
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* f_io = NULL;
-        //new std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>;
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* f_io = nullptr;
     // pointer to noise file fits vector
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* n_io = NULL;
-        //new std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>;
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* n_io = nullptr;
 
     // directory name
     std::string dir_name;
 
-    // raw obs maps
-    if constexpr (map_type == mapmaking::RawObs) {
-        // write stats
-        write_stats();
+    // set common variables depending on map_type
+    if constexpr (map_type == mapmaking::RawObs || map_type == mapmaking::FilteredObs) {
+        mb = &omb;
+        dir_name = obsnum_dir_name + (map_type == mapmaking::RawObs ? "raw/" : "filtered/");
+        f_io = (map_type == mapmaking::RawObs) ? &fits_io_vec : &filtered_fits_io_vec;
+        n_io = (map_type == mapmaking::RawObs) ? &noise_fits_io_vec : &filtered_noise_fits_io_vec;
 
-        // add header informqtion to tod
-        if (run_tod_output && !tod_filename.empty()) {
-            add_tod_header();
+        if constexpr (map_type == mapmaking::RawObs) {
+            // write stats file
+            write_stats();
+            if (run_tod_output && !tod_filename.empty()) {
+                // add tod header information
+                add_tod_header();
+            }
         }
-
-        mb = &omb;
-        f_io = &fits_io_vec;
-        n_io = &noise_fits_io_vec;
-        dir_name = obsnum_dir_name + "raw/";
-    }
-
-    // filtered obs maps
-    else if constexpr (map_type == mapmaking::FilteredObs) {
-        mb = &omb;
-        f_io = &filtered_fits_io_vec;
-        n_io = &filtered_noise_fits_io_vec;
-        dir_name = obsnum_dir_name + "filtered/";
-    }
-
-    // raw coadded maps
-    else if constexpr (map_type == mapmaking::RawCoadd) {
+    } else if constexpr (map_type == mapmaking::RawCoadd || map_type == mapmaking::FilteredCoadd) {
         mb = &cmb;
-        f_io = &coadd_fits_io_vec;
-        n_io = &coadd_noise_fits_io_vec;
-        dir_name = coadd_dir_name + "raw/";
-    }
-
-    // filtered coadded maps
-    else if constexpr (map_type == mapmaking::FilteredCoadd) {
-        mb = &cmb;
-        f_io = &filtered_coadd_fits_io_vec;
-        n_io = &filtered_coadd_noise_fits_io_vec;
-        dir_name = coadd_dir_name + "filtered/";
+        dir_name = coadd_dir_name + (map_type == mapmaking::RawCoadd ? "raw/" : "filtered/");
+        f_io = (map_type == mapmaking::RawCoadd) ? &coadd_fits_io_vec : &filtered_coadd_fits_io_vec;
+        n_io = (map_type == mapmaking::RawCoadd) ? &coadd_noise_fits_io_vec : &filtered_coadd_noise_fits_io_vec;
     }
 
     if (run_mapmaking) {

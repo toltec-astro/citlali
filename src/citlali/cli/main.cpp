@@ -423,12 +423,13 @@ int run(const rc_t &rc) {
 
                 // vector to hold previous iteration obs map buffers
                 std::vector<mapmaking::ObsMapBuffer> ombs;
+                // resize obs map vector if not saving all iterations and in obsnum mode
                 if (!todproc.engine().ptcproc.save_all_iters && todproc.engine().ptcproc.fruit_loops_path == "obsnum") {
                     ombs.resize(co.n_inputs());
                 }
 
                 // hold cmb for previous iterations
-                mapmaking::ObsMapBuffer cmb("cmb");
+                mapmaking::ObsMapBuffer cmb;
 
                 // save outputs on this iteration?
                 bool save_outputs = false;
@@ -440,7 +441,7 @@ int run(const rc_t &rc) {
 
                 // loop through fruit loops iterations
                 while (fruit_iter < todproc.engine().ptcproc.fruit_loops_iters && !fruit_loops_converged) {
-                    // check if on last iteration
+                    // check if on last iteration and save outputs
                     if (fruit_iter == todproc.engine().ptcproc.fruit_loops_iters - 1) {
                         save_outputs = true;
                     }
@@ -636,7 +637,7 @@ int run(const rc_t &rc) {
                             }
                         }
 
-                        // get hwpr if polarized reduction is requested
+                        // get hwpr data if polarized reduction is requested
                         if (todproc.engine().rtcproc.run_polarization) {
                             std::string hwpr_filepath;
                             // if hwpr file dict is found in config and we're not ignoring it
@@ -763,35 +764,47 @@ int run(const rc_t &rc) {
                             todproc.engine().cmb.exposure_time = todproc.engine().cmb.exposure_time + todproc.engine().omb.exposure_time;
                         }
 
+                        if (fruit_iter == 0 && todproc.engine().ptcproc.run_fruit_loops) {
+                            if (todproc.engine().ptcproc.fruit_loops_path != "obsnum" && todproc.engine().ptcproc.fruit_loops_path != "coadd") {
+                                // set coverage region
+                                todproc.engine().ptcproc.tod_mb.cov_cut = todproc.engine().omb.cov_cut;
+                                // get map buffer from from path even if only saving last iteration
+                                todproc.engine().ptcproc.load_mb(todproc.engine().ptcproc.fruit_loops_path,
+                                                                 todproc.engine().ptcproc.fruit_loops_path,
+                                                                 todproc.engine().calib);
+                            }
+                        }
+
                         // if on iteration >0 and not in beammap mode, get the maps from the previous iteration
                         if (fruit_iter > 0 && !(todproc.engine().redu_type == "beammap")) {
-                            // get previous iteration's reduction directory
-                            std::stringstream ss_redu_dir_num_i;
-                            ss_redu_dir_num_i << std::setfill('0') << std::setw(2) << todproc.engine().redu_dir_num - 1;
-                            std::string redu_dir_name = "redu" + ss_redu_dir_num_i.str();
-
-                            // previous redu directory
-                            std::string fruit_dir = todproc.engine().output_dir + "/" + redu_dir_name;
-
-                            // if running fruit loops on each obsnum
-                            if (todproc.engine().ptcproc.fruit_loops_path == "obsnum") {
-                                fruit_dir = fruit_dir + "/" + todproc.engine().omb.obsnums.back() + "/raw/";
-                            }
-                            // if running fruit loops on the coadded maps
-                            else if (todproc.engine().ptcproc.fruit_loops_path == "coadd") {
-                                fruit_dir = fruit_dir + "/coadded/raw/";
-                            }
-                            // else use input directory
-                            else {
-                                fruit_dir = todproc.engine().ptcproc.fruit_loops_path;
-                            }
                             // get maps from files if saving all iterations
                             if (todproc.engine().ptcproc.save_all_iters) {
-                                logger->info("reading in {} for fruit loops iteration {}",fruit_dir, fruit_iter);
+                                // get previous iteration's reduction directory
+                                std::stringstream ss_redu_dir_num_i;
+                                ss_redu_dir_num_i << std::setfill('0') << std::setw(2) << todproc.engine().redu_dir_num - 1;
+                                std::string redu_dir_name = "redu" + ss_redu_dir_num_i.str();
+
+                                // previous redu directory
+                                std::string fruit_dir = todproc.engine().output_dir + "/" + redu_dir_name;
+
+                                // if running fruit loops on each obsnum
+                                if (todproc.engine().ptcproc.fruit_loops_path == "obsnum") {
+                                    fruit_dir = fruit_dir + "/" + todproc.engine().omb.obsnums.back() + "/raw/";
+                                }
+                                // if running fruit loops on the coadded maps
+                                else if (todproc.engine().ptcproc.fruit_loops_path == "coadd") {
+                                    fruit_dir = fruit_dir + "/coadded/raw/";
+                                }
+                                // else use input directory
+                                else {
+                                    fruit_dir = todproc.engine().ptcproc.fruit_loops_path;
+                                }
+
                                 // set coverage region
                                 todproc.engine().ptcproc.tod_mb.cov_cut = todproc.engine().omb.cov_cut;
 
                                 // get map buffer from reduction directory
+                                logger->info("reading in {} for fruit loops iteration {}",fruit_dir, fruit_iter);
                                 todproc.engine().ptcproc.load_mb(fruit_dir, fruit_dir, todproc.engine().calib);
                             }
                             // otherwise use stored maps
@@ -808,7 +821,9 @@ int run(const rc_t &rc) {
                                     // set coverage region
                                     todproc.engine().ptcproc.tod_mb.cov_cut = todproc.engine().omb.cov_cut;
                                     // get map buffer from from path even if only saving last iteration
-                                    todproc.engine().ptcproc.load_mb(fruit_dir, fruit_dir, todproc.engine().calib);
+                                    todproc.engine().ptcproc.load_mb(todproc.engine().ptcproc.fruit_loops_path,
+                                                                     todproc.engine().ptcproc.fruit_loops_path,
+                                                                     todproc.engine().calib);
                                 }
                             }
                         }
@@ -829,9 +844,10 @@ int run(const rc_t &rc) {
                             todproc.engine().template output<mapmaking::RawObs>();
                         }
 
-                        // save maps to memory if not writing all iterations
+                        // save maps to memory if not writing all iterations (before filtering)
                         if (!todproc.engine().ptcproc.save_all_iters && todproc.engine().ptcproc.fruit_loops_path == "obsnum") {
                             ombs[i] = todproc.engine().omb;
+                            // erase noise maps
                             std::vector<Eigen::Tensor<double,3>>().swap(ombs[i].noise);
 
                             // calculate coverage bool map and store in weight maps for memory saving
@@ -844,6 +860,7 @@ int run(const rc_t &rc) {
                                 auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = ombs[i].calc_cov_region(j);
                                 // if weight is less than threshold, set to zero, otherwise set to one
                                 auto cov_bool = (ombs[i].weight[j].array() < weight_threshold).select(zeros,ones);
+                                // overwrite weight map with coverage bool map
                                 ombs[i].weight[j] = std::move(cov_bool);
                             }
                         }
@@ -865,6 +882,11 @@ int run(const rc_t &rc) {
                             // calculate filtered obs map histograms
                             logger->info("calculating filtered obs map histograms");
                             todproc.engine().omb.calc_map_hist();
+
+                            // calculate filtered obs map mean error
+                            todproc.engine().omb.calc_mean_err();
+                            // calculate filtered obs map mean rms
+                            todproc.engine().omb.calc_mean_rms();
 
                             // find filtered obs map sources
                             if (todproc.engine().run_source_finder) {
@@ -897,9 +919,9 @@ int run(const rc_t &rc) {
                         logger->info("calculating coadded map histogram");
                         todproc.engine().cmb.calc_map_hist();
 
-                        // calculate coadded mean error
+                        // calculate coadded map mean error
                         todproc.engine().cmb.calc_mean_err();
-                        // calculate coadded mean rms
+                        // calculate coadded map mean rms
                         todproc.engine().cmb.calc_mean_rms();
 
                         if (save_outputs) {
@@ -907,9 +929,10 @@ int run(const rc_t &rc) {
                             logger->info("outputting raw coadded files");
                             todproc.engine().template output<mapmaking::RawCoadd>();
                         }
-                        // save maps to memory if not writing all iterations
+                        // save maps to memory if not writing all iterations (before filtering)
                         if (!todproc.engine().ptcproc.save_all_iters && todproc.engine().ptcproc.fruit_loops_path == "coadd") {
                             cmb = todproc.engine().cmb;
+                            // erase noise maps
                             std::vector<Eigen::Tensor<double,3>>().swap(cmb.noise);
 
                             // calculate coverage bool map and store in weight maps for memory saving
@@ -922,6 +945,7 @@ int run(const rc_t &rc) {
                                 auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = cmb.calc_cov_region(j);
                                 // if weight is less than threshold, set to zero, otherwise set to one
                                 auto cov_bool = (cmb.weight[j].array() < weight_threshold).select(zeros,ones);
+                                // overwrite weight map with coverage bool map
                                 cmb.weight[j] = std::move(cov_bool);
                             }
                         }
@@ -937,6 +961,11 @@ int run(const rc_t &rc) {
                             // calculate filtered coadded map histograms
                             logger->info("calculating filtered coadded map histograms");
                             todproc.engine().cmb.calc_map_hist();
+
+                            // calculate coadded map mean error
+                            todproc.engine().cmb.calc_mean_err();
+                            // calculate coadded map mean rms
+                            todproc.engine().cmb.calc_mean_rms();
 
                             if (todproc.engine().run_source_finder) {
                                 // find coadded map sources

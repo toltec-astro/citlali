@@ -2042,6 +2042,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
 
     /* coverage bool and signal-to-noise maps */
     if (!mb->coverage.empty()) {
+        // need these to use eigen select
         Eigen::MatrixXd ones, zeros;
         ones.setOnes(mb->weight[i].rows(), mb->weight[i].cols());
         zeros.setZero(mb->weight[i].rows(), mb->weight[i].cols());
@@ -2525,7 +2526,7 @@ void Engine::find_sources(map_buffer_t &mb) {
             });
 
             // update row
-            k = k + mb.n_sources[i];
+            k += mb.n_sources[i];
         }
     }
 }

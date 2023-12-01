@@ -278,6 +278,9 @@ auto Pointing::run() {
             bool run_omb = true;
             bool run_noise_fruit;
 
+            // if running fruit loops, noise maps are made on source
+            // subtracted timestreams so don't make them here unless
+            // on first iteration
             if (ptcproc.run_fruit_loops && !ptcproc.tod_mb.signal.empty()) {
                 run_noise_fruit = false;
             }
@@ -313,13 +316,14 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     tula::logging::progressbar pb(
         [&](const auto &msg) { logger->info("{}", msg); }, 100, "citlali progress ");
 
+    // grppi generator function. gets time chunk data from files sequentially and passes them to grppi::farm
     grppi::pipeline(tula::grppi_utils::dyn_ex(parallel_policy),
         [&]() -> std::optional<std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
                                           std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>> {
             // variable to hold current scan
             static auto scan = 0;
+            // loop through scans
             while (scan < telescope.scan_indices.cols()) {
-
                 // update progress bar
                 pb.count(telescope.scan_indices.cols(), 1);
 
@@ -337,6 +341,7 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
                 // increment scan
                 scan++;
+                // return rtcdata, kidsproc, and raw data
                 return std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
                                   std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>> (std::move(rtcdata), kidsproc,
                                                                                                    std::move(scan_rawobs));
@@ -426,106 +431,61 @@ void Pointing::fit_maps() {
 template <mapmaking::MapType map_type>
 void Pointing::output() {
     // pointer to map buffer
-    mapmaking::ObsMapBuffer* mb = NULL;
+    mapmaking::ObsMapBuffer* mb = nullptr;
     // pointer to data file fits vector
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* f_io = NULL;
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* f_io = nullptr;
     // pointer to noise file fits vector
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* n_io = NULL;
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* n_io = nullptr;
 
     // directory name
     std::string dir_name;
 
-    // matrix to hold pointing fit values and errors
-    Eigen::MatrixXf ppt_table(n_maps, 2*map_fitter.n_params + 2);
+    // matrix to hold pointing fit values and errors (n_params + 2 for array and S/N)
+    Eigen::MatrixXf ppt_table(n_maps, 2 * map_fitter.n_params + 2);
 
-    // raw obs maps
-    if constexpr (map_type == mapmaking::RawObs) {
+    // determine pointers and directory name based on map_type
+    if constexpr (map_type == mapmaking::RawObs || map_type == mapmaking::FilteredObs) {
         mb = &omb;
-        f_io = &fits_io_vec;
-        n_io = &noise_fits_io_vec;
-        dir_name = obsnum_dir_name + "raw/";
+        dir_name = obsnum_dir_name + (map_type == mapmaking::RawObs ? "raw/" : "filtered/");
+        f_io = (map_type == mapmaking::RawObs) ? &fits_io_vec : &filtered_fits_io_vec;
+        n_io = (map_type == mapmaking::RawObs) ? &noise_fits_io_vec : &filtered_noise_fits_io_vec;
 
+        // filename for ppt table
         auto ppt_filename = toltec_io.create_filename<engine_utils::toltecIO::ppt, engine_utils::toltecIO::map,
-                                                      engine_utils::toltecIO::raw>
+                                                      (map_type == mapmaking::RawObs ? engine_utils::toltecIO::raw : engine_utils::toltecIO::filtered)>
                             (dir_name, redu_type, "", obsnum, telescope.sim_obs);
 
-        // loop through params and add arrays
-        for (Eigen::Index i=0; i<n_maps; i++) {
-            ppt_table(i,0) = maps_to_arrays(i);
-
-            // calculate map standard deviation
+        // add array and S/N to ppt
+        for (Eigen::Index i = 0; i < n_maps; ++i) {
+            ppt_table(i, 0) = maps_to_arrays(i);
             double map_std_dev = engine_utils::calc_std_dev(mb->signal[i]);
-            // set signal to noise
-            ppt_table(i,2*map_fitter.n_params + 1) = params(i,0)/map_std_dev;
+            ppt_table(i, 2 * map_fitter.n_params + 1) = params(i, 0) / map_std_dev;
         }
 
-        // populate table
         Eigen::Index j = 0;
-        for (Eigen::Index i=1; i<2*map_fitter.n_params; i=i+2) {
-            ppt_table.col(i) = params.col(j).cast <float> ();
-            ppt_table.col(i+1) = perrors.col(j).cast <float> ();
+        // populate ppt with fitted parameters and errors
+        for (Eigen::Index i = 1; i < 2 * map_fitter.n_params; i += 2) {
+            ppt_table.col(i) = params.col(j).cast<float>();
+            ppt_table.col(i + 1) = perrors.col(j).cast<float>();
             j++;
         }
 
-        // write table
+        // write ppt
         to_ecsv_from_matrix(ppt_filename, ppt_table, ppt_header, ppt_meta);
 
-        // write stats file
-        write_stats();
-
-        // add header informqtion to tod
-        if (run_tod_output && !tod_filename.empty()) {
-            add_tod_header();
+        if constexpr (map_type == mapmaking::RawObs) {
+            // write stats file
+            write_stats();
+            if (run_tod_output && !tod_filename.empty()) {
+                // add tod header information
+                add_tod_header();
+            }
         }
-    }
-
-    // filtered obs maps
-    else if constexpr (map_type == mapmaking::FilteredObs) {
-        mb = &omb;
-        f_io = &filtered_fits_io_vec;
-        n_io = &filtered_noise_fits_io_vec;
-        dir_name = obsnum_dir_name + "filtered/";
-
-        auto ppt_filename = toltec_io.create_filename<engine_utils::toltecIO::ppt, engine_utils::toltecIO::map,
-                                                      engine_utils::toltecIO::filtered>
-                            (dir_name, redu_type, "", obsnum, telescope.sim_obs);
-
-        // loop through params and add arrays
-        for (Eigen::Index i=0; i<n_maps; i++) {
-            ppt_table(i,0) = maps_to_arrays(i);
-
-            // calculate map standard deviation
-            double map_std_dev = engine_utils::calc_std_dev(mb->signal[i]);
-            // set signal to noise
-            ppt_table(i,2*map_fitter.n_params + 1) = params(i,0)/map_std_dev;
-        }
-
-        // populate table
-        Eigen::Index j = 0;
-        for (Eigen::Index i=1; i<2*map_fitter.n_params; i=i+2) {
-            ppt_table.col(i) = params.col(j).cast <float> ();
-            ppt_table.col(i+1) = perrors.col(j).cast <float> ();
-            j++;
-        }
-
-        // write table
-        to_ecsv_from_matrix(ppt_filename, ppt_table, ppt_header, ppt_meta);
-    }
-
-    // raw coadded maps
-    else if constexpr (map_type == mapmaking::RawCoadd) {
+    } else if constexpr (map_type == mapmaking::RawCoadd || map_type == mapmaking::FilteredCoadd) {
         mb = &cmb;
-        f_io = &coadd_fits_io_vec;
-        n_io = &coadd_noise_fits_io_vec;
-        dir_name = coadd_dir_name + "raw/";
-    }
-
-    // filtered coadded maps
-    else if constexpr (map_type == mapmaking::FilteredCoadd) {
-        mb = &cmb;
-        f_io = &filtered_coadd_fits_io_vec;
-        n_io = &filtered_coadd_noise_fits_io_vec;
-        dir_name = coadd_dir_name + "filtered/";
+        dir_name = coadd_dir_name + (map_type == mapmaking::RawCoadd ? "raw/" : "filtered/");
+        f_io = (map_type == mapmaking::RawCoadd) ? &coadd_fits_io_vec : &filtered_coadd_fits_io_vec;
+        n_io = (map_type == mapmaking::RawCoadd) ? &coadd_noise_fits_io_vec : &filtered_coadd_noise_fits_io_vec;
     }
 
     if (run_mapmaking) {
@@ -575,23 +535,21 @@ void Pointing::output() {
                     }
 
                     // add ppt table
-                    Eigen::Index j = 0;
-                    for (auto const& key: ppt_header) {
+                    for (Eigen::Index j = 0; j < ppt_header.size(); ++j) {
+                        const auto& key = ppt_header[j];
                         try {
-                            f_io->at(map_index).hdus.at(k)->addKey("POINTING." + key, ppt_table(i,j), key + " (" + ppt_header_units[key] + ")");
-                        }
-                        catch(...) {
+                            f_io->at(map_index).hdus.at(k)->addKey("POINTING." + key, ppt_table(i, j), key + " (" + ppt_header_units[key] + ")");
+                        } catch (...) {
                             f_io->at(map_index).hdus.at(k)->addKey("POINTING." + key, 0, key + " (" + ppt_header_units[key] + ")");
                         }
-                        j++;
                     }
-                    k++;
+                    ++k; // Move to next extension
                 }
             }
 
             logger->info("maps have been written to:");
-            for (Eigen::Index i=0; i<f_io->size(); i++) {
-                logger->info("{}.fits",f_io->at(i).filepath);
+            for (const auto& file: *f_io) {
+                logger->info("{}.fits", file.filepath);
             }
         }
 

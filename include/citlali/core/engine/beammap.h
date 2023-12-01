@@ -588,12 +588,14 @@ auto Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     tula::logging::progressbar pb(
         [&](const auto &msg) { logger->info("{}", msg); }, 100, "RTC progress ");
 
+    // grppi generator function. gets time chunk data from files sequentially and passes them to grppi::farm
     grppi::pipeline(tula::grppi_utils::dyn_ex(parallel_policy),
         [&]() -> std::optional<std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
                                           std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>> {
 
             // variable to hold current scan
             static auto scan = 0;
+            // loop through scans
             while (scan < telescope.scan_indices.cols()) {
                 // update progress bar
                 pb.count(telescope.scan_indices.cols(), 1);
@@ -612,6 +614,7 @@ auto Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
                 // increment scan
                 scan++;
+                // return rtcdata, kidsproc, and raw data
                 return std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
                                   std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>> (std::move(rtcdata), kidsproc,
                                                                                                    std::move(scan_rawobs));
@@ -1195,11 +1198,11 @@ void Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 template <mapmaking::MapType map_type>
 void Beammap::output() {
     // pointer to map buffer
-    mapmaking::ObsMapBuffer* mb = NULL;
+    mapmaking::ObsMapBuffer* mb = nullptr;
     // pointer to data file fits vector
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* f_io = NULL;
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* f_io = nullptr;
     // pointer to noise file fits vector
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* n_io = NULL;
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* n_io = nullptr;
 
     // directory name
     std::string dir_name;
