@@ -2081,7 +2081,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
 
 template <mapmaking::MapType map_t, class map_buffer_t>
 void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
-
+    // get filename
     std::string filename = setup_filenames<map_t,engine_utils::toltecIO::toltec,engine_utils::toltecIO::psd>(dir_name);
 
     // create file

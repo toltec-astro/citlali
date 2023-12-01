@@ -204,10 +204,10 @@ auto Pointing::run() {
         }
 
         // if running fruit loops and a map has been read in
-        if (ptcproc.run_fruit_loops && !ptcproc.tmb.signal.empty()) {
+        if (ptcproc.run_fruit_loops && !ptcproc.tod_mb.signal.empty()) {
             logger->info("subtracting map from tod");
             // subtract map
-            ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(ptcproc.tmb, ptcdata, calib, det_indices,
+            ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(ptcproc.tod_mb, ptcdata, calib, det_indices,
                                                                             map_indices, telescope.pixel_axes,
                                                                             map_grouping);
         }
@@ -217,7 +217,7 @@ auto Pointing::run() {
         ptcproc.run(ptcdata, ptcdata, calib, det_indices, telescope.pixel_axes, map_grouping);
 
         // if running fruit loops and a map has been read in
-        if (ptcproc.run_fruit_loops && !ptcproc.tmb.signal.empty()) {
+        if (ptcproc.run_fruit_loops && !ptcproc.tod_mb.signal.empty()) {
             // calculate weights
             logger->info("calculating weights");
             ptcproc.calc_weights(ptcdata, calib.apt, telescope, det_indices);
@@ -240,7 +240,7 @@ auto Pointing::run() {
             }
             logger->info("adding map to tod");
             // add map back
-            ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(ptcproc.tmb, ptcdata, calib, det_indices,
+            ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(ptcproc.tod_mb, ptcdata, calib, det_indices,
                                                                     map_indices, telescope.pixel_axes,
                                                                     map_grouping);
         }
@@ -278,11 +278,11 @@ auto Pointing::run() {
             bool run_omb = true;
             bool run_noise_fruit;
 
-            if (ptcproc.run_fruit_loops && !ptcproc.tmb.signal.empty()) {
+            if (ptcproc.run_fruit_loops && !ptcproc.tod_mb.signal.empty()) {
                 run_noise_fruit = false;
             }
             else {
-                run_noise_fruit = true;
+                run_noise_fruit = run_noise;
             }
             logger->info("populating maps");
             if (map_method=="naive") {

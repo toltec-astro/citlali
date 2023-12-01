@@ -281,7 +281,7 @@ public:
     bool save_all_iters;
 
     // map buffer for map to tod approach
-    mapmaking::ObsMapBuffer tmb{"timestream"};
+    mapmaking::ObsMapBuffer tod_mb;
 
     // number of weight outlier iterations
     int iter_lim = 0;
@@ -334,20 +334,21 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
 
     namespace fs = std::filesystem;
 
-    // clear tmb
-    tmb.signal.clear();
-    tmb.weight.clear();
-    tmb.noise.clear();
-    tmb.wcs.cunit.clear();
+    // clear map buffer
+    tod_mb.signal.clear();
+    tod_mb.weight.clear();
+    tod_mb.noise.clear();
+    tod_mb.wcs.cunit.clear();
+    tod_mb.mean_rms.resize(0);
 
     // resize wcs params
-    tmb.wcs.naxis.resize(4,0.);
-    tmb.wcs.crpix.resize(4,0.);
-    tmb.wcs.crval.resize(4,0.);
-    tmb.wcs.cdelt.resize(4,0.);
+    tod_mb.wcs.naxis.resize(4,0.);
+    tod_mb.wcs.crpix.resize(4,0.);
+    tod_mb.wcs.crval.resize(4,0.);
+    tod_mb.wcs.cdelt.resize(4,0.);
 
-    tmb.wcs.cunit.push_back("N/A");
-    tmb.wcs.cunit.push_back("N/A");
+    tod_mb.wcs.cunit.push_back("N/A");
+    tod_mb.wcs.cunit.push_back("N/A");
 
     std::vector<double> mean_rms_vec;
 
@@ -377,24 +378,20 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                         CCfits::ExtHDU& extension = fits_io.pfits->extension(1);
 
                         // get naxis
-                        extension.readKey("NAXIS1", tmb.wcs.naxis[0]);
-                        extension.readKey("NAXIS2", tmb.wcs.naxis[1]);
-
+                        extension.readKey("NAXIS1", tod_mb.wcs.naxis[0]);
+                        extension.readKey("NAXIS2", tod_mb.wcs.naxis[1]);
                         // get crpix
-                        extension.readKey("CRPIX1", tmb.wcs.crpix[0]);
-                        extension.readKey("CRPIX2", tmb.wcs.crpix[1]);
-
+                        extension.readKey("CRPIX1", tod_mb.wcs.crpix[0]);
+                        extension.readKey("CRPIX2", tod_mb.wcs.crpix[1]);
                         // get crval
-                        extension.readKey("CRVAL1", tmb.wcs.crval[0]);
-                        extension.readKey("CRVAL2", tmb.wcs.crval[1]);
-
+                        extension.readKey("CRVAL1", tod_mb.wcs.crval[0]);
+                        extension.readKey("CRVAL2", tod_mb.wcs.crval[1]);
                         // get cdelt
-                        extension.readKey("CDELT1", tmb.wcs.cdelt[0]);
-                        extension.readKey("CDELT2", tmb.wcs.cdelt[1]);
-
+                        extension.readKey("CDELT1", tod_mb.wcs.cdelt[0]);
+                        extension.readKey("CDELT2", tod_mb.wcs.cdelt[1]);
                         // get cunit
-                        extension.readKey("CUNIT1", tmb.wcs.cunit[1]);
-                        extension.readKey("CUNIT2", tmb.wcs.cunit[0]);
+                        extension.readKey("CUNIT1", tod_mb.wcs.cunit[0]);
+                        extension.readKey("CUNIT2", tod_mb.wcs.cunit[1]);
 
                         // get number of extensions other than primary extension
                         int num_extensions = 0;
@@ -417,12 +414,12 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                             ext.readKey("EXTNAME", extName);
                             // get signal I map
                             if (extName.find("signal") != std::string::npos && extName.find("_I") != std::string::npos) {
-                                tmb.signal.push_back(fits_io.get_hdu(extName));
+                                tod_mb.signal.push_back(fits_io.get_hdu(extName));
                                 logger->info("found {} [{}]", filename, extName);
                             }
                             // get weight I map
                             else if (extName.find("weight") != std::string::npos && extName.find("_I") != std::string::npos) {
-                                tmb.weight.push_back(fits_io.get_hdu(extName));
+                                tod_mb.weight.push_back(fits_io.get_hdu(extName));
                                 logger->info("found {} [{}]", filename, extName);
                             }
                         }
@@ -462,7 +459,7 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
 
                                 // only get stokes I
                                 if (extName.find("_I") != std::string::npos) {
-                                    tmb.n_noise++;
+                                    tod_mb.n_noise++;
                                 }
                                 // if extension found, add to total number
                                 num_extensions++;
@@ -499,48 +496,40 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     }
 
     // check if we found any maps
-    if (tmb.signal.empty()) {
+    if (tod_mb.signal.empty()) {
         logger->error("no signal maps found in {}", filepath);
         std::exit(EXIT_FAILURE);
     }
 
-    // check if we found any noise maps
-    if (mean_rms_vec.empty()) {
-        logger->error("no noise maps found in {}", noise_filepath);
-        std::exit(EXIT_FAILURE);
+    if (!mean_rms_vec.empty()) {
+        // get mean rms
+        tod_mb.mean_rms = Eigen::Map<Eigen::VectorXd>(mean_rms_vec.data(),mean_rms_vec.size());
     }
 
     // set dimensions
-    tmb.n_cols = tmb.wcs.naxis[0];
-    tmb.n_rows = tmb.wcs.naxis[1];
+    tod_mb.n_cols = tod_mb.wcs.naxis[0];
+    tod_mb.n_rows = tod_mb.wcs.naxis[1];
 
     // get pixel size in radians
-    if (tmb.wcs.cunit[0] == "deg") {
-        tmb.pixel_size_rad = abs(tmb.wcs.cdelt[0])*DEG_TO_RAD;
+    if (tod_mb.wcs.cunit[0] == "deg") {
+        tod_mb.pixel_size_rad = abs(tod_mb.wcs.cdelt[0])*DEG_TO_RAD;
     }
-    else if (tmb.wcs.cunit[0] == "arcsec") {
-        tmb.pixel_size_rad = abs(tmb.wcs.cdelt[0])*ASEC_TO_RAD;
+    else if (tod_mb.wcs.cunit[0] == "arcsec") {
+        tod_mb.pixel_size_rad = abs(tod_mb.wcs.cdelt[0])*ASEC_TO_RAD;
     }
-
-    // get mean rms
-    //tmb.calc_mean_rms();
-    tmb.mean_rms = Eigen::Map<Eigen::VectorXd>(mean_rms_vec.data(),mean_rms_vec.size());
 
     // calculate coverage bool map
-    for (int i=0; i<tmb.weight.size(); ++i) {
+    for (int i=0; i<tod_mb.weight.size(); ++i) {
         Eigen::MatrixXd ones, zeros;
-        ones.setOnes(tmb.weight[i].rows(), tmb.weight[i].cols());
-        zeros.setZero(tmb.weight[i].rows(), tmb.weight[i].cols());
+        ones.setOnes(tod_mb.weight[i].rows(), tod_mb.weight[i].cols());
+        zeros.setZero(tod_mb.weight[i].rows(), tod_mb.weight[i].cols());
 
         // get weight threshold for current map
-        auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = tmb.calc_cov_region(i);
+        auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = tod_mb.calc_cov_region(i);
         // if weight is less than threshold, set to zero, otherwise set to one
-        auto cov_bool = (tmb.weight[i].array() < weight_threshold).select(zeros,ones);
-        tmb.weight[i] = std::move(cov_bool);
+        auto cov_bool = (tod_mb.weight[i].array() < weight_threshold).select(zeros,ones);
+        tod_mb.weight[i] = std::move(cov_bool);
     }
-
-    // memory management
-    //std::vector<Eigen::MatrixXd>().swap(tmb.weight);
 }
 
 template <typename Derived, class calib_t>
@@ -609,11 +598,21 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                 Eigen::Index ir = irows(j);
                 Eigen::Index ic = icols(j);
 
+                // check whether we should include pixel
+                bool run_pix_s2n = true;
+                bool run_pix_flux;
+
+                // if noise maps were found
+                if (!mb.mean_rms.size() == 0) {
+                    run_pix_s2n = mb.signal[map_index](ir,ic)/mb.mean_rms(map_index) >= fruit_loops_sig2noise;
+                }
+                // if using flux limit
+                run_pix_flux = mb.signal[map_index](ir,ic) >= fruit_loops_flux;
+
                 // check if current sample is on the image and add to the timestream
                 if ((ir >= 0) && (ir < mb.n_rows) && (ic >= 0) && (ic < mb.n_cols)) {
                     // if signal flux is higher than S/N limit, flux limit, and is included in coverage bool map (stored in weight maps)
-                    if (mb.signal[map_index](ir,ic)/mb.mean_rms(map_index) >= fruit_loops_sig2noise && mb.weight[map_index](ir,ic) == 1 &&
-                        mb.signal[map_index](ir,ic) >= fruit_loops_flux) {
+                    if (run_pix_s2n && run_pix_flux && mb.weight[map_index](ir,ic) == 1) {
                         // add/subtract signal pixel from sample
                         in.scans.data(j,i) += factor*mb.signal[map_index](ir,ic);
                     }
