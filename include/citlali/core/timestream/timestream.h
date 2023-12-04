@@ -271,6 +271,8 @@ public:
     std::string fruit_loops_path;
     // paths for first set of images
     std::vector<std::string> init_fruit_loops_path;
+    // fruit loops type
+    std::string fruit_loops_type;
     // number of fruit loops iterations
     int fruit_loops_iters;
     // signal-to-noise cut for fruit loops algorithm

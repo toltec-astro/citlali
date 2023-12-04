@@ -386,6 +386,7 @@ void Engine::obsnum_setup(int fruit_iter) {
     // if filter is requested, make it here
     if (rtcproc.run_tod_filter) {
         rtcproc.filter.make_filter(telescope.fsmp);
+
         /*
         rtcproc.filter.w0s.clear();
         rtcproc.filter.qs.clear();
@@ -1158,18 +1159,19 @@ void Engine::add_tod_header() {
 
         // add beamsizes
         for (const auto &arr: calib.arrays) {
-            if (std::get<0>(calib.array_fwhms[arr]) >= std::get<1>(calib.array_fwhms[arr])) {
-                add_netcdf_var(fo, "BMAJ_"+toltec_io.array_name_map[arr], std::get<0>(calib.array_fwhms[arr]));
-                add_netcdf_var(fo, "BMIN_"+toltec_io.array_name_map[arr], std::get<1>(calib.array_fwhms[arr]));
-                add_netcdf_var(fo, "BPA_"+toltec_io.array_name_map[arr], calib.array_pas[arr]*RAD_TO_DEG);
-            }
-            else {
-                add_netcdf_var(fo, "BMAJ_"+toltec_io.array_name_map[arr], std::get<1>(calib.array_fwhms[arr]));
-                add_netcdf_var(fo, "BMIN_"+toltec_io.array_name_map[arr], std::get<0>(calib.array_fwhms[arr]));
-                add_netcdf_var(fo, "BPA_"+toltec_io.array_name_map[arr], (calib.array_pas[arr] + pi/2)*RAD_TO_DEG);
-            }
-        }
+            // determine BMAJ, BMIN, and BPA
+            auto [fwhm1, fwhm2] = calib.array_fwhms[arr];
+            double BMAJ = std::max(fwhm1, fwhm2);
+            double BMIN = std::min(fwhm1, fwhm2);
+            double BPA = fwhm1 >= fwhm2 ? calib.array_pas[arr] * RAD_TO_DEG
+                                        : (calib.array_pas[arr] + pi / 2) * RAD_TO_DEG;
 
+            // add netcdf variables
+            add_netcdf_var(fo, "BMAJ_" + toltec_io.array_name_map[arr], BMAJ);
+            add_netcdf_var(fo, "BMIN_" + toltec_io.array_name_map[arr], BMIN);
+            add_netcdf_var(fo, "BPA_" + toltec_io.array_name_map[arr], BPA);
+        }
+        // add beam units
         add_netcdf_var(fo, "BUNIT", omb.sig_unit);
 
         // add jinc shape params
@@ -1669,26 +1671,17 @@ auto Engine::setup_filenames(std::string dir_name) {
 
     std::string filename;
 
-    // raw obs maps
-    if constexpr (map_t == mapmaking::RawObs) {
-        filename = toltec_io.create_filename<data_t, prod_t, engine_utils::toltecIO::raw>
-                   (dir_name, redu_type, "", obsnum, telescope.sim_obs);
-    }
-    // filtered obs maps
-    else if constexpr (map_t == mapmaking::FilteredObs) {
-        filename = toltec_io.create_filename<data_t, prod_t, engine_utils::toltecIO::filtered>
-                   (dir_name, redu_type, "", obsnum, telescope.sim_obs);
-    }
-    // raw coadded maps
-    else if constexpr (map_t == mapmaking::RawCoadd) {
-        filename = toltec_io.create_filename<data_t, prod_t, engine_utils::toltecIO::raw>
-                   (dir_name, "", "", "", telescope.sim_obs);
-    }
-    // filtered coadded maps
-    else if constexpr (map_t == mapmaking::FilteredCoadd) {
-        filename = toltec_io.create_filename<data_t, prod_t, engine_utils::toltecIO::filtered>
-                   (dir_name, "", "", "", telescope.sim_obs);
-    }
+    // determine the filter type based on map_t
+    engine_utils::toltecIO::FilterType filter_type =
+        (map_t == mapmaking::RawObs || map_t == mapmaking::RawCoadd) ?
+            engine_utils::toltecIO::raw : engine_utils::toltecIO::filtered;
+
+    // determine if additional parameters are needed based on map_t
+    bool is_obs_map = (map_t == mapmaking::RawObs || map_t == mapmaking::FilteredObs);
+
+    // create filename
+    filename = toltec_io.create_filename<data_t, prod_t, filter_type>
+               (dir_name, is_obs_map ? redu_type : "", "", is_obs_map ? obsnum : "", telescope.sim_obs);
 
     return filename;
 }
@@ -1701,26 +1694,18 @@ auto Engine::get_map_name(int i) {
     if (map_grouping!="array") {
         // if in nw mode
         if (map_grouping=="nw") {
-            map_name = map_name + "nw_" + std::to_string(calib.nws(i)) + "_";
+            map_name += "nw_" + std::to_string(calib.nws(i)) + "_";
         }
+        // if in fg mode
         else if (map_grouping=="fg") {
-            // find all detectors belonging to each fg
-            Eigen::VectorXI array_indices(calib.fg.size()*calib.n_arrays*rtcproc.polarization.stokes_params.size());
-            Eigen::Index k = 0;
-            for (Eigen::Index j=0; j<calib.n_arrays; ++j) {
-                for (Eigen::Index l=0; l<rtcproc.polarization.stokes_params.size(); ++l) {
-                    for (Eigen::Index m=0; m<calib.fg.size(); ++m) {
-                        array_indices(k) = calib.fg(m);
-                        k++;
-                    }
-                }
-            }
-            // if in fg mode
-            map_name = map_name + "fg_" + std::to_string(array_indices(i)) + "_";
+            Eigen::Index fg_index = calib.n_arrays * rtcproc.polarization.stokes_params.size() * calib.fg.size();
+            fg_index = fg_index % calib.fg.size();
+            map_name += "fg_" + std::to_string(calib.fg(fg_index)) + "_";
+
         }
         // if in detector mode
         else if (map_grouping=="detector") {
-            map_name = map_name + "det_" + std::to_string(i) + "_";
+            map_name += "det_" + std::to_string(i) + "_";
         }
     }
 
@@ -1731,6 +1716,9 @@ template <typename fits_io_type, class map_buffer_t>
 void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // array name
     std::string name = toltec_io.array_name_map[calib.arrays(i)];
+
+    // get reference to primary header for clarity
+    auto &pHDU = fits_io->at(i).pfits->pHDU();
 
     // conversion to uK
     auto fwhm = (std::get<0>(calib.array_fwhms[calib.arrays(i)]) + std::get<1>(calib.array_fwhms[calib.arrays(i)]))/2;
@@ -1745,164 +1733,164 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     if (rtcproc.run_calibrate) {
         if (mb->sig_unit == "mJy/beam") {
             // conversion to mJy/beam
-            fits_io->at(i).pfits->pHDU().addKey("to_mJy/beam", 1, "Conversion to mJy/beam");
+            pHDU.addKey("to_mJy/beam", 1, "Conversion to mJy/beam");
             // conversion to MJy/sr
-            fits_io->at(i).pfits->pHDU().addKey("to_MJy/sr", 1/(calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC),
+            pHDU.addKey("to_MJy/sr", 1/(calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC),
                                                 "Conversion to MJy/sr");
             // conversion to uK
-            fits_io->at(i).pfits->pHDU().addKey("to_uK", mJy_beam_to_uK, "Conversion to uK");
+            pHDU.addKey("to_uK", mJy_beam_to_uK, "Conversion to uK");
             // conversion to Jy/pixel
-            fits_io->at(i).pfits->pHDU().addKey("to_Jy/pixel", mJy_beam_to_Jy_px, "Conversion to Jy/pixel");
+            pHDU.addKey("to_Jy/pixel", mJy_beam_to_Jy_px, "Conversion to Jy/pixel");
         }
         else if (mb->sig_unit == "MJy/sr") {
             // conversion to mJy/beam
-            fits_io->at(i).pfits->pHDU().addKey("to_mJy/beam", calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC,
+            pHDU.addKey("to_mJy/beam", calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC,
                                                 "Conversion to mJy/beam");
             // conversion to MJy/Sr
-            fits_io->at(i).pfits->pHDU().addKey("to_MJy/sr", 1, "Conversion to MJy/sr");
+            pHDU.addKey("to_MJy/sr", 1, "Conversion to MJy/sr");
             // conversion to uK
-            fits_io->at(i).pfits->pHDU().addKey("to_uK", calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC*mJy_beam_to_uK,
+            pHDU.addKey("to_uK", calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC*mJy_beam_to_uK,
                                                 "Conversion to uK");
             // conversion to Jy/pixel
-            fits_io->at(i).pfits->pHDU().addKey("to_Jy/pixel", calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC*mJy_beam_to_Jy_px,
+            pHDU.addKey("to_Jy/pixel", calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC*mJy_beam_to_Jy_px,
                                                 "Conversion to Jy/pixel");
         }
         else if (mb->sig_unit == "uK") {
             // conversion to mJy/beam
-            fits_io->at(i).pfits->pHDU().addKey("to_mJy/beam", 1/mJy_beam_to_uK, "Conversion to mJy/beam");
+            pHDU.addKey("to_mJy/beam", 1/mJy_beam_to_uK, "Conversion to mJy/beam");
             // conversion to MJy/sr
-            fits_io->at(i).pfits->pHDU().addKey("to_MJy/sr", 1/mJy_beam_to_uK/(calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC),
+            pHDU.addKey("to_MJy/sr", 1/mJy_beam_to_uK/(calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC),
                                                 "Conversion to MJy/sr");
             // conversion to uK
-            fits_io->at(i).pfits->pHDU().addKey("to_uK", 1, "Conversion to uK");
+            pHDU.addKey("to_uK", 1, "Conversion to uK");
             // conversion to Jy/pixel
-            fits_io->at(i).pfits->pHDU().addKey("to_Jy/pixel", (1/mJy_beam_to_uK)*mJy_beam_to_Jy_px, "Conversion to Jy/pixel");
+            pHDU.addKey("to_Jy/pixel", (1/mJy_beam_to_uK)*mJy_beam_to_Jy_px, "Conversion to Jy/pixel");
         }
         else if (mb->sig_unit == "Jy/pixel") {
             // conversion to mJy/beam
-            fits_io->at(i).pfits->pHDU().addKey("to_mJy/beam", 1/mJy_beam_to_Jy_px, "Conversion to mJy/beam");
+            pHDU.addKey("to_mJy/beam", 1/mJy_beam_to_Jy_px, "Conversion to mJy/beam");
             // conversion to MJy/sr
-            fits_io->at(i).pfits->pHDU().addKey("to_MJy/sr", (1/mJy_beam_to_Jy_px)/(calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC),
+            pHDU.addKey("to_MJy/sr", (1/mJy_beam_to_Jy_px)/(calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC),
                                                 "Conversion to MJy/sr");
             // conversion to uK
-            fits_io->at(i).pfits->pHDU().addKey("to_uK", mJy_beam_to_uK/mJy_beam_to_Jy_px, "Conversion to uK");
+            pHDU.addKey("to_uK", mJy_beam_to_uK/mJy_beam_to_Jy_px, "Conversion to uK");
             // conversion to Jy/pixel
-            fits_io->at(i).pfits->pHDU().addKey("to_Jy/pixel", 1, "Conversion to Jy/pixel");
+            pHDU.addKey("to_Jy/pixel", 1, "Conversion to Jy/pixel");
         }
     }
     // if flux calibration is disabled
     else {
-        fits_io->at(i).pfits->pHDU().addKey("to_mJy/beam", "N/A", "Conversion to mJy/beam");
-        fits_io->at(i).pfits->pHDU().addKey("to_MJy/sr", "N/A", "Conversion to MJy/sr");
-        fits_io->at(i).pfits->pHDU().addKey("to_uK", "N/A", "Conversion to uK");
-        fits_io->at(i).pfits->pHDU().addKey("to_Jy/pixel", "N/A", "Conversion to Jy/pixel");
+        pHDU.addKey("to_mJy/beam", "N/A", "Conversion to mJy/beam");
+        pHDU.addKey("to_MJy/sr", "N/A", "Conversion to MJy/sr");
+        pHDU.addKey("to_uK", "N/A", "Conversion to uK");
+        pHDU.addKey("to_Jy/pixel", "N/A", "Conversion to Jy/pixel");
     }
 
     // add source flux for beammaps
     if (redu_type == "beammap") {
-        fits_io->at(i).pfits->pHDU().addKey("HEADER.SOURCE.FLUX_MJYPERBEAM", beammap_fluxes_mJy_beam[name], "Source flux (mJy/beam)");
-        fits_io->at(i).pfits->pHDU().addKey("HEADER.SOURCE.FLUX_MJYPERSR", beammap_fluxes_MJy_Sr[name], "Source flux (MJy/sr)");
+        pHDU.addKey("HEADER.SOURCE.FLUX_MJYPERBEAM", beammap_fluxes_mJy_beam[name], "Source flux (mJy/beam)");
+        pHDU.addKey("HEADER.SOURCE.FLUX_MJYPERSR", beammap_fluxes_MJy_Sr[name], "Source flux (MJy/sr)");
 
-        fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.ITER_TOLERANCE", beammap_iter_tolerance, "Beammap iteration tolerance");
-        fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.ITER_MAX", beammap_iter_max, "Beammap max iterations");
-        fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.IS_DEROTATED", beammap_derotate, "Beammap derotated");
+        pHDU.addKey("BEAMMAP.ITER_TOLERANCE", beammap_iter_tolerance, "Beammap iteration tolerance");
+        pHDU.addKey("BEAMMAP.ITER_MAX", beammap_iter_max, "Beammap max iterations");
+        pHDU.addKey("BEAMMAP.IS_DEROTATED", beammap_derotate, "Beammap derotated");
         // add reference detector information
         if (beammap_subtract_reference) {
-            fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_DET_INDEX", beammap_reference_det, "Beammap Reference det (rotation center)");
-            fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_X_T", calib.apt["x_t"](beammap_reference_det), "Az rotation center (arcsec)");
-            fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_Y_T", calib.apt["y_t"](beammap_reference_det), "Alt rotation center (arcsec)");
+            pHDU.addKey("BEAMMAP.REF_DET_INDEX", beammap_reference_det, "Beammap Reference det (rotation center)");
+            pHDU.addKey("BEAMMAP.REF_X_T", calib.apt["x_t"](beammap_reference_det), "Az rotation center (arcsec)");
+            pHDU.addKey("BEAMMAP.REF_Y_T", calib.apt["y_t"](beammap_reference_det), "Alt rotation center (arcsec)");
         }
         else {
-            fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_DET_INDEX", -99, "Beammap Reference det (rotation center)");
-            fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_X_T", "N/A", "Az rotation center (arcsec)");
-            fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_Y_T", "N/A", "Alt rotation center (arcsec)");
+            pHDU.addKey("BEAMMAP.REF_DET_INDEX", -99, "Beammap Reference det (rotation center)");
+            pHDU.addKey("BEAMMAP.REF_X_T", "N/A", "Az rotation center (arcsec)");
+            pHDU.addKey("BEAMMAP.REF_Y_T", "N/A", "Alt rotation center (arcsec)");
         }
     }
 
     // add obsnums
     for (Eigen::Index j=0; j<mb->obsnums.size(); ++j) {
-        fits_io->at(i).pfits->pHDU().addKey("OBSNUM"+std::to_string(j), mb->obsnums.at(j), "Observation Number " + std::to_string(j));
+        pHDU.addKey("OBSNUM"+std::to_string(j), mb->obsnums.at(j), "Observation Number " + std::to_string(j));
     }
 
     // add date and time of obs
     if (mb->obsnums.size()==1) {
-        fits_io->at(i).pfits->pHDU().addKey("DATEOBS0", date_obs.back(), "Date and time of observation 0");
+        pHDU.addKey("DATEOBS0", date_obs.back(), "Date and time of observation 0");
     }
     else {
         for (Eigen::Index j=0; j<mb->obsnums.size(); ++j) {
-            fits_io->at(i).pfits->pHDU().addKey("DATEOBS"+std::to_string(j), date_obs[j], "Date and time of observation "+std::to_string(j));
+            pHDU.addKey("DATEOBS"+std::to_string(j), date_obs[j], "Date and time of observation "+std::to_string(j));
         }
     }
 
     // add source
-    fits_io->at(i).pfits->pHDU().addKey("SOURCE", telescope.source_name, "Source name");
+    pHDU.addKey("SOURCE", telescope.source_name, "Source name");
     // add instrument
-    fits_io->at(i).pfits->pHDU().addKey("INSTRUME", "TolTEC", "Instrument");
+    pHDU.addKey("INSTRUME", "TolTEC", "Instrument");
     // add hwpr
-    fits_io->at(i).pfits->pHDU().addKey("HWPR", calib.run_hwpr, "HWPR installed");
+    pHDU.addKey("HWPR", calib.run_hwpr, "HWPR installed");
     // add telescope
-    fits_io->at(i).pfits->pHDU().addKey("TELESCOP", "LMT", "Telescope");
+    pHDU.addKey("TELESCOP", "LMT", "Telescope");
     // add wavelength
-    fits_io->at(i).pfits->pHDU().addKey("WAV", name, "Wavelength");
+    pHDU.addKey("WAV", name, "Wavelength");
     // add pipeline
-    fits_io->at(i).pfits->pHDU().addKey("PIPELINE", "CITLALI", "Redu pipeline");
+    pHDU.addKey("PIPELINE", "CITLALI", "Redu pipeline");
     // add citlali version
-    fits_io->at(i).pfits->pHDU().addKey("VERSION", CITLALI_GIT_VERSION, "CITLALI_GIT_VERSION");
+    pHDU.addKey("VERSION", CITLALI_GIT_VERSION, "CITLALI_GIT_VERSION");
     // add kids version
-    fits_io->at(i).pfits->pHDU().addKey("KIDS", KIDSCPP_GIT_VERSION, "KIDSCPP_GIT_VERSION");
+    pHDU.addKey("KIDS", KIDSCPP_GIT_VERSION, "KIDSCPP_GIT_VERSION");
     // add kids version
-    fits_io->at(i).pfits->pHDU().addKey("TULA", TULA_GIT_VERSION, "TULA_GIT_VERSION");
+    pHDU.addKey("TULA", TULA_GIT_VERSION, "TULA_GIT_VERSION");
     // project id
-    fits_io->at(i).pfits->pHDU().addKey("PROJID", telescope.project_id, "Project ID");
+    pHDU.addKey("PROJID", telescope.project_id, "Project ID");
     // add redu type
-    fits_io->at(i).pfits->pHDU().addKey("GOAL", redu_type, "Reduction type");
+    pHDU.addKey("GOAL", redu_type, "Reduction type");
     // add obs goal
-    fits_io->at(i).pfits->pHDU().addKey("OBSGOAL", telescope.obs_goal, "Obs goal");
+    pHDU.addKey("OBSGOAL", telescope.obs_goal, "Obs goal");
     // add tod type
-    fits_io->at(i).pfits->pHDU().addKey("TYPE", tod_type, "TOD Type");
+    pHDU.addKey("TYPE", tod_type, "TOD Type");
     // add map grouping
-    fits_io->at(i).pfits->pHDU().addKey("GROUPING", map_grouping, "Map grouping");
+    pHDU.addKey("GROUPING", map_grouping, "Map grouping");
     // add map grouping
-    fits_io->at(i).pfits->pHDU().addKey("METHOD", map_method, "Map method");
+    pHDU.addKey("METHOD", map_method, "Map method");
     // add exposure time
-    fits_io->at(i).pfits->pHDU().addKey("EXPTIME", mb->exposure_time, "Exposure time (sec)");
+    pHDU.addKey("EXPTIME", mb->exposure_time, "Exposure time (sec)");
     // add pixel axes
-    fits_io->at(i).pfits->pHDU().addKey("RADESYS", telescope.pixel_axes, "Coord Reference Frame");
+    pHDU.addKey("RADESYS", telescope.pixel_axes, "Coord Reference Frame");
     // add source ra
-    fits_io->at(i).pfits->pHDU().addKey("SRC_RA", telescope.tel_header["Header.Source.Ra"][0], "Source RA (radians)");
+    pHDU.addKey("SRC_RA", telescope.tel_header["Header.Source.Ra"][0], "Source RA (radians)");
     // add source dec
-    fits_io->at(i).pfits->pHDU().addKey("SRC_DEC", telescope.tel_header["Header.Source.Dec"][0], "Source Dec (radians)");
+    pHDU.addKey("SRC_DEC", telescope.tel_header["Header.Source.Dec"][0], "Source Dec (radians)");
     // add map tangent point ra
-    fits_io->at(i).pfits->pHDU().addKey("TAN_RA", telescope.tel_header["Header.Source.Ra"][0], "Map Tangent Point RA (radians)");
+    pHDU.addKey("TAN_RA", telescope.tel_header["Header.Source.Ra"][0], "Map Tangent Point RA (radians)");
     //add map tangent point dec
-    fits_io->at(i).pfits->pHDU().addKey("TAN_DEC", telescope.tel_header["Header.Source.Dec"][0], "Map Tangent Point Dec (radians)");
+    pHDU.addKey("TAN_DEC", telescope.tel_header["Header.Source.Dec"][0], "Map Tangent Point Dec (radians)");
     // add mean alt
-    fits_io->at(i).pfits->pHDU().addKey("MEAN_EL", RAD_TO_DEG*telescope.tel_data["TelElAct"].mean(), "Mean Elevation (deg)");
+    pHDU.addKey("MEAN_EL", RAD_TO_DEG*telescope.tel_data["TelElAct"].mean(), "Mean Elevation (deg)");
     // add mean az
-    fits_io->at(i).pfits->pHDU().addKey("MEAN_AZ", RAD_TO_DEG*telescope.tel_data["TelAzAct"].mean(), "Mean Azimuth (deg)");
+    pHDU.addKey("MEAN_AZ", RAD_TO_DEG*telescope.tel_data["TelAzAct"].mean(), "Mean Azimuth (deg)");
     // add mean parallactic angle
-    fits_io->at(i).pfits->pHDU().addKey("MEAN_PA", RAD_TO_DEG*telescope.tel_data["ActParAng"].mean(), "Mean Parallactic angle (deg)");
+    pHDU.addKey("MEAN_PA", RAD_TO_DEG*telescope.tel_data["ActParAng"].mean(), "Mean Parallactic angle (deg)");
 
     // add beamsizes
-    if (std::get<0>(calib.array_fwhms[calib.arrays(i)]) >= std::get<1>(calib.array_fwhms[calib.arrays(i)])) {
-        fits_io->at(i).pfits->pHDU().addKey("BMAJ", std::get<0>(calib.array_fwhms[calib.arrays(i)]), "beammaj (arcsec)");
-        fits_io->at(i).pfits->pHDU().addKey("BMIN", std::get<1>(calib.array_fwhms[calib.arrays(i)]), "beammin (arcsec)");
-        fits_io->at(i).pfits->pHDU().addKey("BPA", calib.array_pas[calib.arrays(i)]*RAD_TO_DEG, "beampa (deg)");
-    }
-    else {
-        fits_io->at(i).pfits->pHDU().addKey("BMAJ", std::get<1>(calib.array_fwhms[calib.arrays(i)]), "beammaj (arcsec)");
-        fits_io->at(i).pfits->pHDU().addKey("BMIN", std::get<0>(calib.array_fwhms[calib.arrays(i)]), "beammin (arcsec)");
-        fits_io->at(i).pfits->pHDU().addKey("BPA", (calib.array_pas[calib.arrays(i)] + pi/2)*RAD_TO_DEG, "beampa (deg)");
-    }
+    auto [fwhm1, fwhm2] = calib.array_fwhms[calib.arrays(i)];
+    double BMAJ = std::max(fwhm1, fwhm2);
+    double BMIN = std::min(fwhm1, fwhm2);
+    double BPA = fwhm1 >= fwhm2 ? calib.array_pas[calib.arrays(i)] * RAD_TO_DEG
+                                : (calib.array_pas[calib.arrays(i)] + pi / 2) * RAD_TO_DEG;
 
-    fits_io->at(i).pfits->pHDU().addKey("BUNIT", mb->sig_unit, "bunit");
+    pHDU.addKey("BMAJ", BMAJ, "beammaj (arcsec)");
+    pHDU.addKey("BMIN", BMIN, "beammin (arcsec)");
+    pHDU.addKey("BPA", BPA, "beampa (deg)");
+
+    // add beam units
+    pHDU.addKey("BUNIT", mb->sig_unit, "bunit");
 
     // add jinc shape params
     if (map_method=="jinc") {
-        fits_io->at(i).pfits->pHDU().addKey("JINC_R", jinc_mm.r_max, "Jinc filter R_max");
-        fits_io->at(i).pfits->pHDU().addKey("JINC_A", jinc_mm.shape_params[calib.arrays(i)][0], "Jinc filter param a");
-        fits_io->at(i).pfits->pHDU().addKey("JINC_B", jinc_mm.shape_params[calib.arrays(i)][1], "Jinc filter param b");
-        fits_io->at(i).pfits->pHDU().addKey("JINC_C", jinc_mm.shape_params[calib.arrays(i)][2], "Jinc filter param c");
+        pHDU.addKey("JINC_R", jinc_mm.r_max, "Jinc filter R_max");
+        pHDU.addKey("JINC_A", jinc_mm.shape_params[calib.arrays(i)][0], "Jinc filter param a");
+        pHDU.addKey("JINC_B", jinc_mm.shape_params[calib.arrays(i)][1], "Jinc filter param b");
+        pHDU.addKey("JINC_C", jinc_mm.shape_params[calib.arrays(i)][2], "Jinc filter param c");
     }
 
     // add mean tau
@@ -1911,14 +1899,14 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         tau_el << telescope.tel_data["TelElAct"].mean();
         auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
 
-        fits_io->at(i).pfits->pHDU().addKey("MEAN_TAU", tau_freq[i](0), "mean tau (" + name + ")");
+        pHDU.addKey("MEAN_TAU", tau_freq[i](0), "mean tau (" + name + ")");
     }
     else {
-        fits_io->at(i).pfits->pHDU().addKey("MEAN_TAU", 0., "mean tau (" + name + ")");
+        pHDU.addKey("MEAN_TAU", 0., "mean tau (" + name + ")");
     }
 
     // add sample rate
-    fits_io->at(i).pfits->pHDU().addKey("SAMPRATE", telescope.fsmp, "sample rate (Hz)");
+    pHDU.addKey("SAMPRATE", telescope.fsmp, "sample rate (Hz)");
 
     // add apt table to header
     if (mb->obsnums.size()==1) {
@@ -1930,7 +1918,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         while (getline (ss, item, delim)) {
             apt_filename.push_back(item);
         }
-        fits_io->at(i).pfits->pHDU().addKey("APT", apt_filename.back(), "APT table used");
+        pHDU.addKey("APT", apt_filename.back(), "APT table used");
     }
 
     // estimate rms from weight maps
@@ -1938,51 +1926,50 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     auto rms = 1./pow(mb->mean_err(i),-0.5);
 
     // out-of-focus holography parameters
-    fits_io->at(i).pfits->pHDU().addKey("OOF_RMS", rms, "rms of map background (" + mb->sig_unit +")");
-    fits_io->at(i).pfits->pHDU().addKey("OOF_W", toltec_io.array_wavelength_map[calib.arrays(i)]/1000., "wavelength (m)");
-    fits_io->at(i).pfits->pHDU().addKey("OOF_ID", static_cast<int>(toltec_io.array_wavelength_map[calib.arrays(i)]*1000), "instrument id");
-    fits_io->at(i).pfits->pHDU().addKey("OOF_T", 3.0, "taper (dB)");
-    fits_io->at(i).pfits->pHDU().addKey("OOF_M2X", telescope.tel_header["Header.M2.XReq"](0)/1000.*1e6, "oof m2x (microns)");
-    fits_io->at(i).pfits->pHDU().addKey("OOF_M2Y", telescope.tel_header["Header.M2.YReq"](0)/1000.*1e6, "oof m2y (microns)");
-    fits_io->at(i).pfits->pHDU().addKey("OOF_M2Z", telescope.tel_header["Header.M2.ZReq"](0)/1000.*1e6, "oof m2x (microns)");
+    pHDU.addKey("OOF_RMS", rms, "rms of map background (" + mb->sig_unit +")");
+    pHDU.addKey("OOF_W", toltec_io.array_wavelength_map[calib.arrays(i)]/1000., "wavelength (m)");
+    pHDU.addKey("OOF_ID", static_cast<int>(toltec_io.array_wavelength_map[calib.arrays(i)]*1000), "instrument id");
+    pHDU.addKey("OOF_T", 3.0, "taper (dB)");
+    pHDU.addKey("OOF_M2X", telescope.tel_header["Header.M2.XReq"](0)/1000.*1e6, "oof m2x (microns)");
+    pHDU.addKey("OOF_M2Y", telescope.tel_header["Header.M2.YReq"](0)/1000.*1e6, "oof m2y (microns)");
+    pHDU.addKey("OOF_M2Z", telescope.tel_header["Header.M2.ZReq"](0)/1000.*1e6, "oof m2x (microns)");
 
-    fits_io->at(i).pfits->pHDU().addKey("OOF_RO", 25., "outer diameter of the antenna (m)");
-    fits_io->at(i).pfits->pHDU().addKey("OOF_RI", 1.65, "inner diameter of the antenna (m)");
+    pHDU.addKey("OOF_RO", 25., "outer diameter of the antenna (m)");
+    pHDU.addKey("OOF_RI", 1.65, "inner diameter of the antenna (m)");
 
     // add control/runtime parameters
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.VERBOSE", verbose_mode, "Reduced in verbose mode");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.POLARIZED", rtcproc.run_polarization, "Polarized Obs");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKED", rtcproc.run_despike, "Despiked");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODFILTERED", rtcproc.run_tod_filter, "TOD Filtered");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DOWNSAMPLED", rtcproc.run_downsample, "Downsampled");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CALIBRATED", rtcproc.run_calibrate, "Calibrated");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.EXTINCTION", rtcproc.run_extinction, "Extinction corrected");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.EXTINCTION.EXTMODEL", rtcproc.calibration.extinction_model, "Extinction model");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.TYPE", ptcproc.weighting_type, "Weighting scheme");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.RTC.WTLOW", rtcproc.lower_weight_factor, "RTC lower weight cutoff");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.RTC.WTHIGH", rtcproc.upper_weight_factor, "RTC upper weight cutoff");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.PTC.WTLOW", ptcproc.lower_weight_factor, "PTC lower weight cutoff");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.PTC.WTHIGH", ptcproc.upper_weight_factor, "PTC upper weight cutoff");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.MEDWTFACTOR", ptcproc.med_weight_factor, "Median weight factor");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED", ptcproc.run_clean, "Cleaned");
+    pHDU.addKey("CONFIG.VERBOSE", verbose_mode, "Reduced in verbose mode");
+    pHDU.addKey("CONFIG.POLARIZED", rtcproc.run_polarization, "Polarized Obs");
+    pHDU.addKey("CONFIG.DESPIKED", rtcproc.run_despike, "Despiked");
+    pHDU.addKey("CONFIG.TODFILTERED", rtcproc.run_tod_filter, "TOD Filtered");
+    pHDU.addKey("CONFIG.DOWNSAMPLED", rtcproc.run_downsample, "Downsampled");
+    pHDU.addKey("CONFIG.CALIBRATED", rtcproc.run_calibrate, "Calibrated");
+    pHDU.addKey("CONFIG.EXTINCTION", rtcproc.run_extinction, "Extinction corrected");
+    pHDU.addKey("CONFIG.EXTINCTION.EXTMODEL", rtcproc.calibration.extinction_model, "Extinction model");
+    pHDU.addKey("CONFIG.WEIGHT.TYPE", ptcproc.weighting_type, "Weighting scheme");
+    pHDU.addKey("CONFIG.WEIGHT.RTC.WTLOW", rtcproc.lower_weight_factor, "RTC lower weight cutoff");
+    pHDU.addKey("CONFIG.WEIGHT.RTC.WTHIGH", rtcproc.upper_weight_factor, "RTC upper weight cutoff");
+    pHDU.addKey("CONFIG.WEIGHT.PTC.WTLOW", ptcproc.lower_weight_factor, "PTC lower weight cutoff");
+    pHDU.addKey("CONFIG.WEIGHT.PTC.WTHIGH", ptcproc.upper_weight_factor, "PTC upper weight cutoff");
+    pHDU.addKey("CONFIG.WEIGHT.MEDWTFACTOR", ptcproc.med_weight_factor, "Median weight factor");
+    pHDU.addKey("CONFIG.CLEANED", ptcproc.run_clean, "Cleaned");
     if (ptcproc.run_clean) {
-        fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.NEIG", ptcproc.cleaner.n_eig_to_cut[calib.arrays(i)].sum(),
+        pHDU.addKey("CONFIG.CLEANED.NEIG", ptcproc.cleaner.n_eig_to_cut[calib.arrays(i)].sum(),
                                             "Number of eigenvalues removed");
     }
     else {
-        fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.NEIG", 0, "Number of eigenvalues removed");
+        pHDU.addKey("CONFIG.CLEANED.NEIG", 0, "Number of eigenvalues removed");
     }
 
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS", ptcproc.run_fruit_loops, "Fruit loops");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.PATH", ptcproc.fruit_loops_path, "Fruit loops path");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.S2N", ptcproc.fruit_loops_sig2noise, "Fruit loops S/N");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.MAXITER", ptcproc.fruit_loops_iters, "Fruit loops iterations");
-
+    pHDU.addKey("CONFIG.FRUITLOOPS", ptcproc.run_fruit_loops, "Fruit loops");
+    pHDU.addKey("CONFIG.FRUITLOOPS.PATH", ptcproc.fruit_loops_path, "Fruit loops path");
+    pHDU.addKey("CONFIG.FRUITLOOPS.S2N", ptcproc.fruit_loops_sig2noise, "Fruit loops S/N");
+    pHDU.addKey("CONFIG.FRUITLOOPS.MAXITER", ptcproc.fruit_loops_iters, "Fruit loops iterations");
 
     // add telescope file header information
     if (mb->obsnums.size()==1) {
         for (auto const& [key, val] : telescope.tel_header) {
-            fits_io->at(i).pfits->pHDU().addKey(key, val(0), key);
+            pHDU.addKey(key, val(0), key);
         }
     }
 }
@@ -2166,40 +2153,40 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
 
 template <mapmaking::MapType map_t, class map_buffer_t>
 void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
-    std::string filename = setup_filenames<map_t,engine_utils::toltecIO::toltec,engine_utils::toltecIO::hist>(dir_name);
+    //lambda function to fill variables
+    auto create_and_fill_var = [&](const std::string& varName, const Eigen::VectorXd& data, const netCDF::NcDim& dim) {
+        netCDF::NcVar var = fo.addVar(varName, netCDF::ncDouble, dim);
+        var.putVar(data.data());
+    };
 
+    std::string filename = setup_filenames<map_t, engine_utils::toltecIO::toltec, engine_utils::toltecIO::hist>(dir_name);
     netCDF::NcFile fo(filename + ".nc", netCDF::NcFile::replace);
     netCDF::NcDim hist_bins_dim = fo.addDim("n_bins", mb->hist_n_bins);
 
     // loop through stored histograms
-    for (Eigen::Index i=0; i<mb->hists.size(); ++i) {
-        // string to hold name
+    for (Eigen::Index i = 0; i < mb->hists.size(); ++i) {
         // get name for extension layer
         std::string map_name = get_map_name(i);
 
-        // get the array for the given map
+        // get the array and stokes parameter for the given map
         Eigen::Index map_index = arrays_to_maps(i);
-        // get the stokes parameter for the given map
+        // stokes param index
         Eigen::Index stokes_index = maps_to_stokes(i);
-
-        // array index
+        // current array
         auto array = calib.arrays[map_index];
+        // variable name (array_map_stokes)
         std::string name = toltec_io.array_name_map[array] + "_" + map_name + rtcproc.polarization.stokes_params[stokes_index];
 
-        // histogram bins
-        netCDF::NcVar hist_bins_v = fo.addVar(name + "_bins",netCDF::ncDouble, hist_bins_dim);
-        hist_bins_v.putVar(mb->hist_bins[i].data());
+        // create and fill histogram bins and histogram variables
+        create_and_fill_var(name + "_bins", mb->hist_bins[i], hist_bins_dim);
+        create_and_fill_var(name + "_hist", mb->hists[i], hist_bins_dim);
 
-        // histogram
-        netCDF::NcVar hist_v = fo.addVar(name + "_hist",netCDF::ncDouble, hist_bins_dim);
-        hist_v.putVar(mb->hists[i].data());
-
+        // handle noise data if present
         if (!mb->noise.empty()) {
-            // average noise histogram
-            netCDF::NcVar hist_v = fo.addVar(name + "_noise_hist",netCDF::ncDouble, hist_bins_dim);
-            hist_v.putVar(mb->noise_hists[i].data());
+            create_and_fill_var(name + "_noise_hist", mb->noise_hists[i], hist_bins_dim);
         }
     }
+
     // close file
     fo.close();
 }

@@ -80,17 +80,20 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
     // run fruit loops?
     get_config_value(config, run_fruit_loops, missing_keys, invalid_keys,
                      std::tuple{"timestream","fruit_loops","enabled"});
-    // save all fruit loops iterations?
-    get_config_value(config, save_all_iters, missing_keys, invalid_keys,
-                     std::tuple{"timestream","fruit_loops","save_all_iters"});
 
     if (run_fruit_loops) {
+        // save all fruit loops iterations?
+        get_config_value(config, save_all_iters, missing_keys, invalid_keys,
+                         std::tuple{"timestream","fruit_loops","save_all_iters"});
         // fruit looops path
         get_config_value(config, fruit_loops_path, missing_keys, invalid_keys,
                          std::tuple{"timestream","fruit_loops","path"});
+        // fruit looops type
+        get_config_value(config, fruit_loops_type, missing_keys, invalid_keys,
+                         std::tuple{"timestream","fruit_loops","type"});
         // let user specify "coadd" or "coadded"
-        if (fruit_loops_path == "coadded") {
-            fruit_loops_path = "coadd";
+        if (fruit_loops_type == "coadded") {
+            fruit_loops_type = "coadd";
         }
         // fruit loops signal-to-noise
         get_config_value(config, fruit_loops_sig2noise, missing_keys, invalid_keys,
