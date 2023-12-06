@@ -362,7 +362,6 @@ void Engine::obsnum_setup(int fruit_iter) {
             }
         }
     }
-
     else {
         rtcproc.calibration.extinction_model = "N/A";
     }
@@ -409,7 +408,7 @@ void Engine::obsnum_setup(int fruit_iter) {
     // create output map files
     if (run_mapmaking) {
         if (ptcproc.save_all_iters || fruit_iter == ptcproc.fruit_loops_iters - 1) {
-        create_obs_map_files();
+            create_obs_map_files();
         }
     }
     // create timestream files
@@ -1944,7 +1943,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("OOF_T", 3.0, "taper (dB)");
     fits_io->at(i).pfits->pHDU().addKey("OOF_M2X", telescope.tel_header["Header.M2.XReq"](0)/1000.*1e6, "oof m2x (microns)");
     fits_io->at(i).pfits->pHDU().addKey("OOF_M2Y", telescope.tel_header["Header.M2.YReq"](0)/1000.*1e6, "oof m2y (microns)");
-    fits_io->at(i).pfits->pHDU().addKey("OOF_M2Z", telescope.tel_header["Header.M2.ZReq"](0)/1000.*1e6, "oof m2x (microns)");
+    fits_io->at(i).pfits->pHDU().addKey("OOF_M2Z", telescope.tel_header["Header.M2.ZReq"](0)/1000.*1e6, "oof m2z (microns)");
 
     fits_io->at(i).pfits->pHDU().addKey("OOF_RO", 25., "outer diameter of the antenna (m)");
     fits_io->at(i).pfits->pHDU().addKey("OOF_RI", 1.65, "inner diameter of the antenna (m)");
@@ -1975,7 +1974,9 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS", ptcproc.run_fruit_loops, "Fruit loops");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.PATH", ptcproc.fruit_loops_path, "Fruit loops path");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.TYPE", ptcproc.fruit_loops_type, "Fruit loops type");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.S2N", ptcproc.fruit_loops_sig2noise, "Fruit loops S/N");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.FLUX", ptcproc.fruit_loops_flux, "Fruit loops flux (" + mb->sig_unit + ")");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.MAXITER", ptcproc.fruit_loops_iters, "Fruit loops iterations");
 
 

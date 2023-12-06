@@ -339,6 +339,7 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     // clear map buffer
     tod_mb.signal.clear();
     tod_mb.weight.clear();
+    tod_mb.kernel.clear();
     tod_mb.noise.clear();
     tod_mb.wcs.cunit.clear();
     tod_mb.mean_rms.resize(0);
@@ -422,6 +423,11 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                             // get weight I map
                             else if (extName.find("weight") != std::string::npos && extName.find("_I") != std::string::npos) {
                                 tod_mb.weight.push_back(fits_io.get_hdu(extName));
+                                logger->info("found {} [{}]", filename, extName);
+                            }
+                            // get kernel I map
+                            else if (extName.find("kernel") != std::string::npos && extName.find("_I") != std::string::npos) {
+                                tod_mb.kernel.push_back(fits_io.get_hdu(extName));
                                 logger->info("found {} [{}]", filename, extName);
                             }
                         }
@@ -574,13 +580,16 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
         factor = -1;
     }
 
+    // run kernel through fruit loops
+    bool run_kernel = in.kernel.data.size() !=0;
+    // if mean rms is filled use S/N limit
+    bool run_noise = mb.mean_rms.size() != 0;
+
     // loop through detectors
     for (Eigen::Index i=0; i<n_dets; ++i) {
         // current detector index in apt
         auto det_index = det_indices(i);
         auto map_index = map_indices(i);
-
-        //double max_weight = mb.weight[map_index].maxCoeff();
 
         // check if detector is not flagged
         if (calib.apt["flag"](det_index) == 0 && (in.flags.data.col(i).array() == 0).any()) {
@@ -595,6 +604,7 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
             Eigen::VectorXd irows = lat.array()/mb.pixel_size_rad + (mb.n_rows)/2.;
             Eigen::VectorXd icols = lon.array()/mb.pixel_size_rad + (mb.n_cols)/2.;
 
+            // loop through data points
             for (Eigen::Index j=0; j<n_pts; ++j) {
                 // row and col pixel from signal image
                 Eigen::Index ir = irows(j);
@@ -605,7 +615,7 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                 bool run_pix_flux;
 
                 // if noise maps were found
-                if (!mb.mean_rms.size() == 0) {
+                if (run_noise) {
                     run_pix_s2n = mb.signal[map_index](ir,ic)/mb.mean_rms(map_index) >= fruit_loops_sig2noise;
                 }
                 // if using flux limit
@@ -614,9 +624,13 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                 // check if current sample is on the image and add to the timestream
                 if ((ir >= 0) && (ir < mb.n_rows) && (ic >= 0) && (ic < mb.n_cols)) {
                     // if signal flux is higher than S/N limit, flux limit, and is included in coverage bool map (stored in weight maps)
-                    if (run_pix_s2n && run_pix_flux && mb.weight[map_index](ir,ic) == 1) {
-                        // add/subtract signal pixel from sample
+                    if (run_pix_s2n && run_pix_flux) {// && mb.weight[map_index](ir,ic) == 1) {
+                        // add/subtract signal pixel from signal timestream
                         in.scans.data(j,i) += factor*mb.signal[map_index](ir,ic);
+                        // add/subtract kernel pixel from kernel timestream
+                        if (run_kernel) {
+                            in.kernel.data(j,i) += factor*mb.kernel[map_index](ir,ic);
+                        }
                     }
                 }
             }

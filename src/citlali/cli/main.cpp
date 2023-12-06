@@ -768,17 +768,18 @@ int run(const rc_t &rc) {
                         }
 
                         // if on first fruit loops iteration and not in path or coadd fruit loops mode
-                        if (fruit_iter == 0 && todproc.engine().ptcproc.run_fruit_loops) {
+                        if (todproc.engine().ptcproc.run_fruit_loops && fruit_iter == 0) {
                             if (todproc.engine().ptcproc.fruit_loops_path != "null") {
-
-                                // path to
+                                // path to data
                                 std::string fruit_dir;
 
+                                // per obsnum
                                 if (todproc.engine().ptcproc.fruit_loops_type == "obsnum") {
                                     fruit_dir = todproc.engine().ptcproc.fruit_loops_path + "/" + todproc.engine().omb.obsnums.back() + "/raw/";
                                 }
+                                // coadd
                                 else if (todproc.engine().ptcproc.fruit_loops_type == "coadd") {
-                                    fruit_dir = todproc.engine().ptcproc.fruit_loops_path + "/" + "/coadded/raw/";
+                                    fruit_dir = todproc.engine().ptcproc.fruit_loops_path + "/coadded/raw/";
                                 }
 
                                 // set coverage region
@@ -831,6 +832,7 @@ int run(const rc_t &rc) {
                             }
                             // otherwise use stored maps
                             else {
+                                logger->info("loading previous iter maps for fruit loops iteration {}", fruit_iter);
                                 // if running fruit loops on each obsnum
                                 if (todproc.engine().ptcproc.fruit_loops_type == "obsnum") {
                                     todproc.engine().ptcproc.tod_mb = ombs[i];
@@ -876,7 +878,6 @@ int run(const rc_t &rc) {
                             ombs[i] = todproc.engine().omb;
                             // erase noise maps
                             std::vector<Eigen::Tensor<double,3>>().swap(ombs[i].noise);
-
                             // calculate coverage bool map and store in weight maps for memory saving
                             for (int j=0; j<ombs[i].weight.size(); ++j) {
                                 Eigen::MatrixXd ones, zeros;

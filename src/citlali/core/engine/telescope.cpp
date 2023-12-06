@@ -147,6 +147,11 @@ void Telescope::get_tel_data(std::string &filepath) {
             engine_utils::fix_periodic_boundary(tel_data[key],pi,1.99*pi,2.0*pi);
         }
     }
+
+    // manually set epoch to J2000 for simulations
+    if (sim_obs) {
+        tel_header["Header.Source.Epoch"](0) = 2000.0;
+    }
 }
 
 void Telescope::calc_tan_pointing() {

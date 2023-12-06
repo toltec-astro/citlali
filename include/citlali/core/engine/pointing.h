@@ -113,7 +113,7 @@ void Pointing::setup(int fruit_iter) {
 
     // add array mapping
     for (const auto &[arr_index,arr_name]: toltec_io.array_name_map) {
-        ppt_meta["array_order"].push_back(arr_index + ": " + arr_name);
+        ppt_meta["array_order"].push_back(std::to_string(arr_index) + ": " + arr_name);
     }
 
     // populate ppt meta information

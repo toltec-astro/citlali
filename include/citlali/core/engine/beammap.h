@@ -110,7 +110,7 @@ void Beammap::setup(int fruit_iter) {
 
     Eigen::Index j = 0;
     calib.apt["kids_tone"](0) = 0;
-    for (Eigen::Index i=1; i<calib.n_dets; i++) {
+    for (Eigen::Index i=1; i<calib.n_dets; ++i) {
         if (calib.apt["nw"](i) > calib.apt["nw"](i-1)) {
             j = 0;
         }
@@ -210,7 +210,7 @@ void Beammap::setup(int fruit_iter) {
 
     // add array mapping
     for (const auto &[arr_index,arr_name]: toltec_io.array_name_map) {
-        calib.apt_meta["array_order"].push_back(arr_index + ": " + arr_name);
+        calib.apt_meta["array_order"].push_back(std::to_string(arr_index) + ": " + arr_name);
     }
 
     calib.apt_header_units["flag2"] = "N/A";
@@ -426,7 +426,7 @@ auto Beammap::run_loop() {
             if (tod_output_type == "ptc" || tod_output_type == "both") {
                 logger->info("writing processed time chunk");
                 if (current_iter == beammap_tod_output_iter) {
-                    for (Eigen::Index i=0; i<telescope.scan_indices.cols(); i++) {
+                    for (Eigen::Index i=0; i<telescope.scan_indices.cols(); ++i) {
                         ptcproc.append_to_netcdf(ptcs[i], tod_filename["ptc"], map_grouping, telescope.pixel_axes,
                                                  ptcs[i].pointing_offsets_arcsec.data, ptcs[i].det_indices.data,
                                                  calib_scans[i]);
@@ -437,7 +437,7 @@ auto Beammap::run_loop() {
 
         if (run_mapmaking) {
             // set maps to zero for each iteration
-            for (Eigen::Index i=0; i<n_maps; i++) {
+            for (Eigen::Index i=0; i<n_maps; ++i) {
                 omb.signal[i].setZero();
                 omb.weight[i].setZero();
 
@@ -692,7 +692,7 @@ void Beammap::set_apt_flags(array_indices_t &array_indices, nw_indices_t &nw_ind
 
     // calc median sens from unflagged detectors for each nw
     logger->debug("calculating mean sensitivities");
-    for (Eigen::Index i=0; i<calib.n_nws; i++) {
+    for (Eigen::Index i=0; i<calib.n_nws; ++i) {
         Eigen::Index nw = calib.nws(i);
 
         // nw sensitivity
@@ -748,7 +748,7 @@ void Beammap::set_apt_flags(array_indices_t &array_indices, nw_indices_t &nw_ind
 
     // calc median x_t and y_t values from unflagged detectors for each arrays
     logger->debug("calculating array median positions");
-    for (Eigen::Index i=0; i<calib.n_arrays; i++) {
+    for (Eigen::Index i=0; i<calib.n_arrays; ++i) {
         Eigen::Index array = calib.arrays(i);
         std::string array_name = toltec_io.array_name_map[array];
 
@@ -841,7 +841,7 @@ void Beammap::set_apt_flags(array_indices_t &array_indices, nw_indices_t &nw_ind
     calib.setup();
 
     // calculate source flux in MJy/sr from average beamsizes
-    for (Eigen::Index i=0; i<calib.n_arrays; i++) {
+    for (Eigen::Index i=0; i<calib.n_arrays; ++i) {
         Eigen::Index array = calib.arrays(i);
         std::string array_name = toltec_io.array_name_map[array];
 
@@ -892,7 +892,7 @@ void Beammap::process_apt() {
                 // get good detector positions
                 Eigen::Index j = std::get<0>(calib.array_limits[array]);
                 Eigen::Index k = 0;
-                for (Eigen::Index i=0; i<array_x_t.size(); i++) {
+                for (Eigen::Index i=0; i<array_x_t.size(); ++i) {
                     if (calib.apt["flag"](j)==0) {
                         x_t(k) = array_x_t(i);
                         y_t(k) = array_y_t(i);
@@ -1034,7 +1034,7 @@ auto Beammap::loop_pipeline() {
             std::vector<Eigen::MatrixXd> lat, lon;
 
             // recalculate tangent plane pointing for tod output
-            for (Eigen::Index i=0; i<ptcs.size(); i++) {
+            for (Eigen::Index i=0; i<ptcs.size(); ++i) {
                 // tangent plane pointing for each detector
                 Eigen::MatrixXd ptc_lat(ptcs[i].scans.data.rows(), ptcs[i].scans.data.cols());
                 Eigen::MatrixXd ptc_lon(ptcs[i].scans.data.rows(), ptcs[i].scans.data.cols());
@@ -1095,7 +1095,7 @@ auto Beammap::loop_pipeline() {
                 std::vector<std::size_t> size = {1, TULA_SIZET(calib.n_dets)};
                 std::size_t k = 0;
                 // loop through ptcs
-                for (Eigen::Index i=0; i<lat.size(); i++) {
+                for (Eigen::Index i=0; i<lat.size(); ++i) {
                     // loop through n_pts
                     for (std::size_t j=0; j < TULA_SIZET(lat[i].rows()); ++j) {
                         start_index[0] = k;
@@ -1282,7 +1282,7 @@ void Beammap::output() {
                 tula::logging::progressbar pb(
                     [&](const auto &msg) { logger->info("{}", msg); }, 100, "output progress ");
 
-                for (Eigen::Index i=0; i<f_io->size(); i++) {
+                for (Eigen::Index i=0; i<f_io->size(); ++i) {
                     // get the array for the given map
                     // add primary hdu
                     add_phdu(f_io, mb, i);
@@ -1304,7 +1304,7 @@ void Beammap::output() {
                 }
 
                 // write the maps
-                for (Eigen::Index i=0; i<n_maps; i++) {
+                for (Eigen::Index i=0; i<n_maps; ++i) {
                     // update progress bar
                     pb.count(n_maps, 1);
                     write_maps(f_io,n_io,mb,i);
@@ -1346,7 +1346,7 @@ void Beammap::output() {
             }
 
             logger->info("maps have been written to:");
-            for (Eigen::Index i=0; i<f_io->size(); i++) {
+            for (Eigen::Index i=0; i<f_io->size(); ++i) {
                 logger->info("{}.fits",f_io->at(i).filepath);
             }
         }

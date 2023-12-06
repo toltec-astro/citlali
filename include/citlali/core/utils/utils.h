@@ -148,13 +148,9 @@ static long long modified_julian_date_to_unix(double jd) {
 }
 
 static long long unix_to_modified_julian_date(double unix_time) {
-    // unix epoch in julian date
-    const double UNIX_EPOCH_JD = 2440587.5;
-
-    long long diff = static_cast<long long>(unix_time / 86400.0);
-    long long jd = diff + UNIX_EPOCH_JD - 2400000.5;
-
-    return jd;
+    const double seconds_per_day = 86400.0;
+    const double mjd_offset = 40587.0;
+    return unix_time / seconds_per_day + mjd_offset;
 }
 
 template <typename Derived>
