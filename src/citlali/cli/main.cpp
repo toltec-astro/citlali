@@ -422,15 +422,15 @@ int run(const rc_t &rc) {
                 }
 
                 // vector to hold previous iteration obs map buffers
-                std::vector<mapmaking::ObsMapBuffer> ombs;
+                /*std::vector<mapmaking::ObsMapBuffer> ombs;
                 // resize obs map vector if not saving all iterations and in obsnum mode
                 if (!todproc.engine().ptcproc.save_all_iters && todproc.engine().ptcproc.fruit_loops_type == "obsnum" &&
                     todproc.engine().ptcproc.fruit_loops_path == "null") {
                     ombs.resize(co.n_inputs());
-                }
+                }*/
 
                 // hold cmb for previous iterations
-                mapmaking::ObsMapBuffer cmb;
+                //mapmaking::ObsMapBuffer cmb;
 
                 // save outputs on this iteration?
                 bool save_outputs = false;
@@ -810,7 +810,7 @@ int run(const rc_t &rc) {
                                     fruit_dir = todproc.engine().output_dir + "/" + redu_dir_name;
 
                                     // if no input path is given
-                                    if (todproc.engine().ptcproc.fruit_loops_path == "null") {
+                                    //if (todproc.engine().ptcproc.fruit_loops_path == "null") {
                                         // if running fruit loops on each obsnum
                                         if (todproc.engine().ptcproc.fruit_loops_type == "obsnum") {
                                             fruit_dir += "/" + todproc.engine().omb.obsnums.back() + "/raw/";
@@ -819,16 +819,16 @@ int run(const rc_t &rc) {
                                         else if (todproc.engine().ptcproc.fruit_loops_type == "coadd") {
                                             fruit_dir += "/coadded/raw/";
                                         }
-                                    }
+                                    //}
                                     // else use input directory
-                                    else {
+                                    /*else {
                                         if (todproc.engine().ptcproc.fruit_loops_type == "obsnum") {
                                             fruit_dir = todproc.engine().ptcproc.fruit_loops_path + "/" + todproc.engine().omb.obsnums.back() + "/raw/";
                                         }
                                         else if (todproc.engine().ptcproc.fruit_loops_type == "coadd") {
                                             fruit_dir = todproc.engine().ptcproc.fruit_loops_path + "/coadded/raw/";
                                         }
-                                    }
+                                    }*/
                                 }
                                 // otherwise use stored maps
                                 else {
@@ -845,14 +845,14 @@ int run(const rc_t &rc) {
                                         //todproc.engine().ptcproc.tod_mb = cmb;
                                     }
                                     // else use input directory
-                                    else {
+                                    /*else {
                                         if (todproc.engine().ptcproc.fruit_loops_type == "obsnum") {
                                             fruit_dir = todproc.engine().ptcproc.fruit_loops_path + "/" + todproc.engine().omb.obsnums.back() + "/raw/";
                                         }
                                         else if (todproc.engine().ptcproc.fruit_loops_type == "coadd") {
                                             fruit_dir = todproc.engine().ptcproc.fruit_loops_path + "/coadded/raw/";
                                         }
-                                    }
+                                    }*/
                                 }
                                 // set coverage region
                                 todproc.engine().ptcproc.tod_mb.cov_cut = todproc.engine().omb.cov_cut;
