@@ -113,6 +113,18 @@ struct TCDataBase<TCData<kind_>> {
 
 } // namespace internal
 
+// data status
+struct Status {
+    bool demodulated = false;
+    bool kernel_generated = false;
+    bool despiked = false;
+    bool tod_filtered = false;
+    bool downsampled = false;
+    bool calibrated = false;
+    bool extinction_corrected = false;
+    bool cleaned = false;
+};
+
 // wcs objects
 struct DetectorAxis : wcs::Axis<DetectorAxis, wcs::CoordsKind::Column>,
                       wcs::LabeledData<DetectorAxis> {
@@ -150,7 +162,7 @@ template <typename Derived>
 struct TimeStream : internal::TCDataBase<Derived>,
                     tula::nddata::NDData<TimeStream<Derived>> {
     TimeStreamFrame wcs;
-    // The timestream is stored in row major for efficient r/w
+    // the timestream is stored in row major for efficient r/w
     template <typename PlainObject>
     struct dataref_t : tula::nddata::NDData<dataref_t<PlainObject>> {
         PlainObject data{nullptr, 0, 0};
@@ -164,20 +176,11 @@ struct TimeStream : internal::TCDataBase<Derived>,
     // time of creation
     std::string creation_time = engine_utils::current_date_time();
 
-    // data status
-    struct {
-        bool demodulated = false;
-        bool kernel_generated = false;
-        bool despiked = false;
-        bool tod_filtered = false;
-        bool downsampled = false;
-        bool calibrated = false;
-        bool extinction_corrected = false;
-        bool cleaned = false;
-    } status;
-
     // number of detectors lower than weight limit
     int n_dets_low, n_dets_high;
+
+    // data status struct
+    Status status;
 
     // kernel timestreams
     data_t<Eigen::MatrixXd> kernel;
@@ -193,7 +196,7 @@ struct TimeStream : internal::TCDataBase<Derived>,
     data_t<std::map<std::string, Eigen::VectorXd>> tel_data;
     // pointing offsets
     data_t<std::map<std::string, Eigen::VectorXd>> pointing_offsets_arcsec;
-    // hwp angle for scan
+    // hwpr angle for scan
     data_t<Eigen::VectorXd> hwpr_angle;
     // detector angle
     data_t<Eigen::MatrixXd> angle;
@@ -201,6 +204,8 @@ struct TimeStream : internal::TCDataBase<Derived>,
     data_t<Eigen::VectorXd> fcf;
     // vectors for mapping apt table onto timestreams
     data_t<Eigen::VectorXI> det_indices, nw_indices, array_indices, map_indices;
+    // detector pointing
+    data_t<std::map<std::string, Eigen::MatrixXd>> pointing;
 };
 
 template <typename RefType>
@@ -302,13 +307,18 @@ public:
     template <typename Derived, class calib_t>
     auto get_grouping(std::string, Eigen::DenseBase<Derived> &, calib_t &, int);
 
+    // compute and store pointing of all detectors
+    template <TCDataKind tcdata_t, class calib_t, typename Derived>
+    void precompute_pointing(TCData<tcdata_t, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
+                             std::string, std::string);
+
     // translate citlali map buffer to timestream and add/subtract from TCData scans
-    template <TCProc::SourceType source_type, class mb_t, TCDataKind tcdata_t, typename calib_t, typename Derived>
+    template <TCProc::SourceType source_type, class mb_t, TCDataKind tcdata_t, class calib_t, typename Derived>
     void map_to_tod(mb_t &, TCData<tcdata_t, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
                     Eigen::DenseBase<Derived> &, std::string, std::string);
 
     // remove detectors with outlier weights
-    template <TCDataKind tcdata_t, typename calib_t, typename Derived>
+    template <TCDataKind tcdata_t, class calib_t, typename Derived>
     auto remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
                          std::string);
 
@@ -325,7 +335,7 @@ public:
                      std::string, std::string, int, int, int);
 
     // append time chunk params common to rtcs and ptcs
-    template <TCDataKind tcdata_t, typename Derived, typename calib_t, typename pointing_offset_t>
+    template <TCDataKind tcdata_t, typename Derived, class calib_t, typename pointing_offset_t>
     void append_base_to_netcdf(netCDF::NcFile &, TCData<tcdata_t, Eigen::MatrixXd> &, std::string,
                                std::string &, pointing_offset_t &, Eigen::DenseBase<Derived> &,
                                calib_t &);
@@ -349,10 +359,10 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     tod_mb.wcs.crpix.resize(4,0.);
     tod_mb.wcs.crval.resize(4,0.);
     tod_mb.wcs.cdelt.resize(4,0.);
-
     tod_mb.wcs.cunit.push_back("N/A");
     tod_mb.wcs.cunit.push_back("N/A");
 
+    // vector to hold mean rms
     std::vector<double> mean_rms_vec;
 
     // loop through arrays in current obs
@@ -367,9 +377,9 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
 
                     // get filename
                     std::string filename;
-                    size_t lastSlashPos = entry.path().string().find_last_of("/");
-                    if (lastSlashPos != std::string::npos) {
-                        filename = entry.path().string().substr(lastSlashPos + 1);
+                    size_t last_slash_pos = entry.path().string().find_last_of("/");
+                    if (last_slash_pos != std::string::npos) {
+                        filename = entry.path().string().substr(last_slash_pos + 1);
                     }
 
                     // get maps (if noise not in filename)
@@ -504,13 +514,13 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     }
 
     // check if we found any maps
-    if (tod_mb.signal.empty()) {
+    if (tod_mb.signal.empty() || tod_mb.weight.empty()) {
         logger->error("no signal maps found in {}", filepath);
         std::exit(EXIT_FAILURE);
     }
 
     if (!mean_rms_vec.empty()) {
-        // get mean rms
+        // map mean rms from fits files vector to map buffer vector
         tod_mb.mean_rms = Eigen::Map<Eigen::VectorXd>(mean_rms_vec.data(),mean_rms_vec.size());
     }
 
@@ -536,8 +546,13 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
         auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = tod_mb.calc_cov_region(i);
         // if weight is less than threshold, set to zero, otherwise set to one
         auto cov_bool = (tod_mb.weight[i].array() < weight_threshold).select(zeros,ones);
-        tod_mb.weight[i] = std::move(cov_bool);
+        tod_mb.signal[i] = tod_mb.signal[i].array() * cov_bool.array();
+        if (!tod_mb.kernel.empty()) {
+            tod_mb.kernel[i] = tod_mb.kernel[i].array() * cov_bool.array();
+        }
     }
+    // clear weight vectors to save memory
+    std::vector<Eigen::MatrixXd>().swap(tod_mb.weight);
 }
 
 template <typename Derived, class calib_t>
@@ -560,13 +575,40 @@ auto TCProc::get_grouping(std::string grp, Eigen::DenseBase<Derived> &det_indice
         else {
             grp_i = calib.apt[grp](det_index);
             j += 1;
-            grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
+            grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i,0};
         }
     }
     return grp_limits;
 }
 
-template <TCProc::SourceType source_type, class mb_t, TCDataKind tcdata_t, typename calib_t, typename Derived>
+// compute pointing for all detectors
+template <TCDataKind tcdata_t, class calib_t, typename Derived>
+void TCProc::precompute_pointing(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
+                                 std::string pixel_axes, std::string map_grouping) {
+
+    // dimensions of data
+    Eigen::Index n_dets = in.scans.data.cols();
+    Eigen::Index n_pts = in.scans.data.rows();
+
+    in.pointing.data["lat"].resize(n_pts,n_dets);
+    in.pointing.data["lon"].resize(n_pts,n_dets);
+
+    for (Eigen::Index i=0; i<n_dets; ++i) {
+        // current detector index in apt
+        auto det_index = det_indices(i);
+        double az_off = calib.apt["x_t"](det_index);
+        double el_off = calib.apt["y_t"](det_index);
+
+        // get detector pointing
+        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off, pixel_axes,
+                                                          in.pointing_offsets_arcsec.data, map_grouping);
+
+        in.pointing.data["lat"].col(i) = std::move(lat);
+        in.pointing.data["lon"].col(i) = std::move(lon);
+    }
+}
+
+template <TCProc::SourceType source_type, class mb_t, TCDataKind tcdata_t, class calib_t, typename Derived>
 void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
                         Eigen::DenseBase<Derived> &map_indices, std::string pixel_axes, std::string map_grouping) {
 
@@ -610,26 +652,20 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                 Eigen::Index ir = irows(j);
                 Eigen::Index ic = icols(j);
 
-                // check whether we should include pixel
-                bool run_pix_s2n = true;
-                bool run_pix_flux;
-
-                // if noise maps were found
-                if (run_noise) {
-                    run_pix_s2n = mb.signal[map_index](ir,ic)/mb.mean_rms(map_index) >= fruit_loops_sig2noise;
-                }
-                // if using flux limit
-                run_pix_flux = mb.signal[map_index](ir,ic) >= fruit_loops_flux;
-
                 // check if current sample is on the image and add to the timestream
                 if ((ir >= 0) && (ir < mb.n_rows) && (ic >= 0) && (ic < mb.n_cols)) {
-                    // if signal flux is higher than S/N limit, flux limit, and is included in coverage bool map (stored in weight maps)
-                    if (run_pix_s2n && run_pix_flux) {// && mb.weight[map_index](ir,ic) == 1) {
+                    double signal = mb.signal[map_index](ir,ic);
+                    // check whether we should include pixel
+                    bool run_pix_s2n = run_noise ? signal / mb.mean_rms(map_index) >= fruit_loops_sig2noise : true;
+                    bool run_pix_flux = signal >= fruit_loops_flux;
+
+                    // if signal flux is higher than S/N limit, flux limit
+                    if (run_pix_s2n && run_pix_flux) {
                         // add/subtract signal pixel from signal timestream
-                        in.scans.data(j,i) += factor*mb.signal[map_index](ir,ic);
+                        in.scans.data(j,i) += factor * signal;
                         // add/subtract kernel pixel from kernel timestream
                         if (run_kernel) {
-                            in.kernel.data(j,i) += factor*mb.kernel[map_index](ir,ic);
+                            in.kernel.data(j,i) += factor * mb.kernel[map_index](ir,ic);
                         }
                     }
                 }
@@ -638,7 +674,7 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
     }
 }
 
-template <TCDataKind tcdata_t, typename calib_t, typename Derived>
+template <TCDataKind tcdata_t, class calib_t, typename Derived>
 auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
                              std::string map_grouping) {
 
@@ -657,6 +693,7 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
         in.n_dets_low = 0;
         in.n_dets_high = 0;
 
+        // loop through group limits
         for (auto const& [key, val] : grp_limits) {
             // control for iteration
             bool keep_going = true;
@@ -666,6 +703,7 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
                 // number of unflagged detectors
                 Eigen::Index n_good_dets = 0;
 
+                // get good dets in group
                 for (Eigen::Index j=std::get<0>(grp_limits[key]); j<std::get<1>(grp_limits[key]); j++) {
                     if (calib.apt["flag"](det_indices(j))==0 && (in.flags.data.col(j).array()==0).any()) {
                         n_good_dets++;
@@ -892,7 +930,7 @@ auto TCProc::mask_region(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, 
     return std::move(masked_flags);
 }
 
-template <TCDataKind tcdata_t, typename Derived, typename calib_t, typename pointing_offset_t>
+template <TCDataKind tcdata_t, typename Derived, class calib_t, typename pointing_offset_t>
 void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::MatrixXd> &in, std::string map_grouping,
                                    std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec,
                                    Eigen::DenseBase<Derived> &det_indices, calib_t &calib) {

@@ -371,6 +371,10 @@ void TimeOrderedDataProc<EngineType>::create_output_dir() {
         fs::create_directories(engine().redu_dir_name);
     }
 
+    else {
+        engine().redu_dir_name = engine().output_dir + "/";
+    }
+
     // coadded subdir
     if (engine().run_coadd) {
         engine().coadd_dir_name = engine().redu_dir_name + "/coadded/";

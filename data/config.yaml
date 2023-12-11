@@ -76,6 +76,7 @@ runtime: # parameters to control how citlali runs
 timestream: # timestream reduction parameters
   type: xs # type of TOD (xs, rs, is, qs)
   enabled: true # enable or disable TOD processing (to be implemented)
+  precompute_pointing: false # compute detector pointing once (ignored for now)
   chunking: # how to chunk timestreams
     force_chunking: false # ignore map pattern chunking and use config file chunk length
     length_sec: 10.0 # chunk length for lissajous/rastajous maps (ignored if raster map)
@@ -139,7 +140,7 @@ timestream: # timestream reduction parameters
       enabled: false # enable or disable ptc TOD output
   fruit_loops: # algorithm to use input maps to subtract out source before cleaning and re-add afterwards
     enabled: false # enable or disable fruit loops algorithm (this overwrites beammap source fitting if in beammap mode)
-    path: null # path for maps.  If null, previou redu maps are used.
+    path: null # path for maps.  If null use maps that were generated in previous iter.  If path, use maps in that redu dir.
     type: obsnum # how to apply maps.  options are 'obsnum' (looks for obsnum dir) or 'coadd' (same map for all obsnums)
     lower_sig2noise_limit: 0 # lower limit on signal-to-noise of pixels to include (ignored if noise maps are disabled or none are found in path)
     lower_flux_limit: 0 # lower limit on signal flux density of pixels to include (in map units)

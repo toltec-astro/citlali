@@ -19,6 +19,7 @@ class RTCProc: public TCProc {
 public:
     // controls for timestream reduction
     bool run_timestream;
+    bool run_pointing;
     bool run_polarization;
     bool run_kernel;
     bool run_despike;
@@ -73,6 +74,9 @@ public:
 template <typename config_t>
 void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>> &missing_keys,
                          std::vector<std::vector<std::string>> &invalid_keys) {
+    // precompute pointing
+    //get_config_value(config, run_pointing, missing_keys, invalid_keys,
+    //                 std::tuple{"timestream","precompute_pointing"});
     // lower weight factor
     get_config_value(config, lower_weight_factor, missing_keys, invalid_keys,
                      std::tuple{"timestream","raw_time_chunk","flagging","lower_weight_factor"});
@@ -85,15 +89,13 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
 
     // run polarization?
     get_config_value(config, run_polarization, missing_keys, invalid_keys,
-                     std::tuple{"timestream","polarimetry", "enabled"});
-
+                     std::tuple{"timestream","polarimetry","enabled"});
     // add stokes I, Q, and U if polarization is enabled
     if (run_polarization) {
         polarization.stokes_params = {{0,"I"}, {1,"Q"}, {2,"U"}};
-
         // use loc or fg?
         get_config_value(config, polarization.grouping, missing_keys, invalid_keys,
-                         std::tuple{"timestream","polarimetry", "grouping"});
+                         std::tuple{"timestream","polarimetry","grouping"});
     }
     // otherwise only use stokes I
     else {
@@ -103,7 +105,6 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
     // run kernel?
     get_config_value(config, run_kernel, missing_keys, invalid_keys,
                      std::tuple{"timestream","raw_time_chunk","kernel","enabled"});
-
     if (run_kernel) {
         // filepath to kernel
         get_config_value(config, kernel.filepath, missing_keys, invalid_keys,
@@ -136,7 +137,6 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
     // run despike?
     get_config_value(config, run_despike, missing_keys, invalid_keys,
                      std::tuple{"timestream","raw_time_chunk","despike","enabled"});
-
     if (run_despike) {
         // minimum spike sigma
         get_config_value(config, despiker.min_spike_sigma, missing_keys, invalid_keys,
@@ -155,7 +155,6 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
     // run filter?
     get_config_value(config, run_tod_filter, missing_keys, invalid_keys,
                      std::tuple{"timestream","raw_time_chunk","filter","enabled"});
-
     if (run_tod_filter) {
         // tod filter gibbs param
         get_config_value(config, filter.a_gibbs, missing_keys, invalid_keys,
@@ -182,13 +181,11 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
     get_config_value(config, run_downsample, missing_keys, invalid_keys,
                      std::tuple{"timestream","raw_time_chunk","downsample","enabled"});
     if (run_downsample) {
-
         // check if tod filtering is enabled
         if (!run_tod_filter) {
             logger->error("running downsampling without tod filtering will lose data!");
             std::exit(EXIT_FAILURE);
         }
-
         // downsample factor
         get_config_value(config, downsampler.factor, missing_keys, invalid_keys,
                          std::tuple{"timestream","raw_time_chunk","downsample","factor"},{},{0});
@@ -287,7 +284,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     // new timechunk for current stokes parameter timestream
     TCData<TCDataKind::RTC,Eigen::MatrixXd> in_pol;
 
-    // calculate the stokes timestream
+    // calculate the stokes timestream (populates in_pol)
     auto [array_indices, nw_indices, det_indices, fg_indices] = polarization.calc_angle(in, in_pol, calib, telescope.sim_obs);
 
     // resize fcf
@@ -321,20 +318,17 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         // symmetric gaussian kernel
         if (kernel.type == "gaussian") {
             logger->debug("creating symmetric gaussian kernel");
-            kernel.create_symmetric_gaussian_kernel(in_pol, pixel_axes, redu_type, calib.apt, in_pol.pointing_offsets_arcsec.data,
-                                                    det_indices);
+            kernel.create_symmetric_gaussian_kernel(in_pol, pixel_axes, redu_type, calib.apt, det_indices);
         }
         // airy kernel
         else if (kernel.type == "airy") {
             logger->debug("creating airy kernel");
-            kernel.create_airy_kernel(in_pol, pixel_axes, redu_type, calib.apt, in_pol.pointing_offsets_arcsec.data,
-                                      det_indices);
+            kernel.create_airy_kernel(in_pol, pixel_axes, redu_type, calib.apt, det_indices);
         }
         // get kernel from fits
         else if (kernel.type == "fits") {
             logger->debug("getting kernel from fits");
-            kernel.create_kernel_from_fits(in_pol, pixel_axes, redu_type, calib.apt, in_pol.pointing_offsets_arcsec.data,
-                                           pixel_size_rad, map_indices, det_indices);
+            kernel.create_kernel_from_fits(in_pol, pixel_axes, redu_type, calib.apt, pixel_size_rad, map_indices, det_indices);
         }
 
         in_pol.status.kernel_generated = true;
@@ -416,7 +410,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         for (auto const& x: in_pol.tel_data.data) {
             // get the block of in tel data that corresponds to the inner scan indices
             Eigen::Ref<Eigen::VectorXd> in_tel =
-                in_pol.tel_data.data[x.first].segment(si, sl);
+                in_pol.tel_data.data[x.first].segment(si,sl);
 
             downsampler.downsample(in_tel, out.tel_data.data[x.first]);
         }
@@ -424,7 +418,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         // downsample pointing
         for (auto const& x: in_pol.pointing_offsets_arcsec.data) {
         Eigen::Ref<Eigen::VectorXd> in_pointing =
-            in_pol.pointing_offsets_arcsec.data[x.first].segment(si, sl);
+            in_pol.pointing_offsets_arcsec.data[x.first].segment(si,sl);
 
             downsampler.downsample(in_pointing, out.pointing_offsets_arcsec.data[x.first]);
         }
@@ -433,7 +427,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
             if (calib.run_hwpr) {
                 // downsample hwpr
                 Eigen::Ref<Eigen::VectorXd> in_hwpr =
-                    in_pol.hwpr_angle.data.segment(si, sl);
+                    in_pol.hwpr_angle.data.segment(si,sl);
                 downsampler.downsample(in_hwpr, out.hwpr_angle.data);
             }
             // downsample detector angle
@@ -465,18 +459,17 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         }
         // copy telescope data
         for (auto const& x: in_pol.tel_data.data) {
-            out.tel_data.data[x.first] = in_pol.tel_data.data[x.first].segment(si, sl);
+            out.tel_data.data[x.first] = in_pol.tel_data.data[x.first].segment(si,sl);
         }
-
         // copy pointing offsets
         for (auto const& x: in_pol.pointing_offsets_arcsec.data) {
-            out.pointing_offsets_arcsec.data[x.first] = in_pol.pointing_offsets_arcsec.data[x.first].segment(si, sl);
+            out.pointing_offsets_arcsec.data[x.first] = in_pol.pointing_offsets_arcsec.data[x.first].segment(si,sl);
         }
 
         if (run_polarization) {
             // copy hwpr angle
             if (calib.run_hwpr) {
-                out.hwpr_angle.data = in_pol.hwpr_angle.data.segment(si, sl);
+                out.hwpr_angle.data = in_pol.hwpr_angle.data.segment(si,sl);
             }
             // copy detector angle
             out.angle.data = in_pol.angle.data.block(si, 0, sl, in_pol.angle.data.cols());
@@ -490,13 +483,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     // copy fcf
     out.fcf.data = in_pol.fcf.data;
     // copy chunk status
-    out.status.calibrated = in_pol.status.calibrated;
-    out.status.extinction_corrected = in_pol.status.extinction_corrected;
-    out.status.demodulated = in_pol.status.demodulated;
-    out.status.kernel_generated = in_pol.status.kernel_generated;
-    out.status.despiked = in_pol.status.despiked;
-    out.status.tod_filtered = in_pol.status.tod_filtered;
-    out.status.downsampled = in_pol.status.downsampled;
+    out.status = in.status;
 
     return std::tuple<Eigen::VectorXI,Eigen::VectorXI,Eigen::VectorXI,Eigen::VectorXI>(map_indices, array_indices, nw_indices, det_indices);
 }

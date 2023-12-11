@@ -407,13 +407,13 @@ void Engine::obsnum_setup(int fruit_iter) {
 
     // create output map files
     if (run_mapmaking) {
-        if (ptcproc.save_all_iters || fruit_iter == ptcproc.fruit_loops_iters - 1) {
+        //if (ptcproc.save_all_iters || fruit_iter == ptcproc.fruit_loops_iters - 1) {
             create_obs_map_files();
-        }
+        //}
     }
     // create timestream files
     if (run_tod_output) {
-        if (ptcproc.save_all_iters || fruit_iter == ptcproc.fruit_loops_iters - 1) {
+        //if (ptcproc.save_all_iters || fruit_iter == ptcproc.fruit_loops_iters - 1) {
             // create tod output subdirectory if requested
             if (tod_output_subdir_name!="null") {
                 fs::create_directories(obsnum_dir_name + "raw/" + tod_output_subdir_name);
@@ -426,7 +426,7 @@ void Engine::obsnum_setup(int fruit_iter) {
             if (tod_output_type == "ptc" || tod_output_type == "both") {
                 create_tod_files<engine_utils::toltecIO::ptc_timestream>();
             }
-        }
+        //}
     }
     // don't calculate any eigenvalues
     else if (!diagnostics.write_evals) {
@@ -1934,7 +1934,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     // estimate rms from weight maps
     mb->calc_mean_err();
-    auto rms = 1./pow(mb->mean_err(i),-0.5);
+    auto rms = pow(mb->mean_err(i),0.5);
 
     // out-of-focus holography parameters
     fits_io->at(i).pfits->pHDU().addKey("OOF_RMS", rms, "rms of map background (" + mb->sig_unit +")");
@@ -2011,7 +2011,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
     fits_io->at(map_index).add_hdu("weight_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->weight[i]);
     fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
     fits_io->at(map_index).hdus.back()->addKey("UNIT", "1/("+mb->sig_unit+")^2", "Unit of map");
-    fits_io->at(map_index).hdus.back()->addKey("MEANERR", mb->mean_err(i), "Mean Square Error");
+    fits_io->at(map_index).hdus.back()->addKey("MEANERR", pow(mb->mean_err(i),0.5), "Mean Error ("+mb->sig_unit+")");
 
     // kernel map
     if (rtcproc.run_kernel) {
@@ -2391,7 +2391,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb, int fruit_iter) {
 
         if (write_filtered_maps_partial) {
             // only write if saving all iterations or on last iteration
-            if (ptcproc.save_all_iters || fruit_iter == ptcproc.fruit_loops_iters - 1) {
+            //if (ptcproc.save_all_iters || fruit_iter == ptcproc.fruit_loops_iters - 1) {
             // write maps immediately after filtering due to computation time
             write_maps(f_io,n_io,pmb,i);
 
@@ -2411,7 +2411,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb, int fruit_iter) {
                     f_io->at(map_index).pfits->destroy();
                 }
             }
-        }
+        //}
         }
     }
 

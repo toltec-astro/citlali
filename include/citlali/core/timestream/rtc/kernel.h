@@ -24,82 +24,74 @@ public:
     // limit on distance to calc sigma to
     double sigma_limit = 3;
 
+    // map grouping
     std::string map_grouping;
 
-    void setup(Eigen::Index n_maps) {
-        if (type == "fits") {
-            if (img_ext_names.size()!=n_maps && img_ext_names.size()!=1) {
-                SPDLOG_INFO("mismatch for number of kernel images");
-                std::exit(EXIT_FAILURE);
-            }
-
-            fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*> fits_io(filepath);
-            for (auto & img_ext_name : img_ext_names) {
-                images.push_back(fits_io.get_hdu(img_ext_name));
-            }
-        }
-    }
+    // initial setup
+    void setup(Eigen::Index);
 
     // symmetric gaussian kernel
-    template<typename apt_t, typename pointing_offset_t, typename Derived>
+    template<typename apt_t, typename Derived>
     void create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &, std::string &,
-                                          std::string &, apt_t &, pointing_offset_t &,
-                                          Eigen::DenseBase<Derived> &);
+                                          std::string &, apt_t &, Eigen::DenseBase<Derived> &);
 
     // asymmetric elliptical gaussian kernel
-    template<typename apt_t, typename pointing_offset_t, typename Derived>
+    template<typename apt_t, typename Derived>
     void create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &, std::string &,
-                                std::string &, apt_t &, pointing_offset_t &,
-                                Eigen::DenseBase<Derived> &);
+                                std::string &, apt_t &, Eigen::DenseBase<Derived> &);
     // airy pattern kernel
-    template<typename apt_t, typename pointing_offset_t, typename Derived>
+    template<typename apt_t, typename Derived>
     void create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &, std::string &,
-                            std::string &, apt_t &, pointing_offset_t &,
-                            Eigen::DenseBase<Derived> &);
+                            std::string &, apt_t &, Eigen::DenseBase<Derived> &);
 
     // kernel from fits file
-    template<typename apt_t, typename pointing_offset_t, typename Derived>
+    template<typename apt_t, typename Derived>
     void create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &, std::string &,
-                                          std::string &, apt_t &, pointing_offset_t &, double,
-                                          Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &);
+                                 std::string &, apt_t &, double, Eigen::DenseBase<Derived> &,
+                                 Eigen::DenseBase<Derived> &);
 };
 
-template<typename apt_t, typename pointing_offset_t, typename Derived>
+void Kernel::setup(Eigen::Index n_maps) {
+    if (type == "fits") {
+        if (img_ext_names.size()!=n_maps && img_ext_names.size()!=1) {
+            SPDLOG_INFO("mismatch for number of kernel images");
+            std::exit(EXIT_FAILURE);
+        }
+
+        fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*> fits_io(filepath);
+        for (auto & img_ext_name : img_ext_names) {
+            images.push_back(fits_io.get_hdu(img_ext_name));
+        }
+    }
+}
+
+template<typename apt_t, typename Derived>
 void Kernel::create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std::string &pixel_axes,
-                                              std::string &redu_type, apt_t &apt, pointing_offset_t &pointing_offsets_arcsec,
-                                              Eigen::DenseBase<Derived> &det_indices) {
+                                              std::string &redu_type, apt_t &apt, Eigen::DenseBase<Derived> &det_indices) {
 
     // dimensions of scan
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
 
     // resize kernel to match data size
-    in.kernel.data.resize(n_pts, n_dets);
+    in.kernel.data.resize(n_pts,n_dets);
+
+    double sigma = sigma_rad;
 
     for (Eigen::Index i=0; i<n_dets; ++i) {
         // detector in apt
         auto det_index = det_indices(i);
 
-        double az_off = apt["x_t"](det_index);
-        double el_off = apt["y_t"](det_index);
-
         // calc tangent plane pointing
-        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off, pixel_axes,
-                                                          pointing_offsets_arcsec, map_grouping);
+        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](det_index), apt["y_t"](det_index),
+                                                          pixel_axes, in.pointing_offsets_arcsec.data, map_grouping);
 
-        // distance to center of map
-        auto dist = (lat.array().pow(2) + lon.array().pow(2)).sqrt();
-
-        // beam standard deviation
-        double sigma;
+        // distance to source to truncate it
+        auto dist = ((lat.array()).pow(2) + (lon.array()).pow(2)).sqrt();
 
         // calculate stddev from apt table if config stddev <=0
         if (sigma_rad <= 0) {
-            sigma = FWHM_TO_STD*ASEC_TO_RAD*(apt["a_fwhm"](det_index) + apt["b_fwhm"](det_index))/2;
-        }
-        // otherwise use config file stddev
-        else {
-            sigma = sigma_rad;
+            sigma = FWHM_TO_STD * ASEC_TO_RAD*(apt["a_fwhm"](det_index) + apt["b_fwhm"](det_index))/2;
         }
 
         // loop through samples and calculate
@@ -115,51 +107,45 @@ void Kernel::create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::Mat
     }
 }
 
-template<typename apt_t, typename pointing_offset_t, typename Derived>
+template<typename apt_t, typename Derived>
 void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std::string &pixel_axes,
-                                    std::string &redu_type, apt_t &apt, pointing_offset_t &pointing_offsets_arcsec,
-                                    Eigen::DenseBase<Derived> &det_indices) {
+                                    std::string &redu_type, apt_t &apt, Eigen::DenseBase<Derived> &det_indices) {
 
     // dimensions of scan
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
 
     // resize kernel to match data size
-    in.kernel.data.resize(n_pts, n_dets);
+    in.kernel.data.resize(n_pts,n_dets);
+
+    // get parameters for current detector
+    double amp = 1.0;
+    double off_lat = 0.0;
+    double off_lon = 0.0;
+
+    // beam standard deviations
+    double sigma_lat = sigma_rad;
+    double sigma_lon = sigma_rad;
 
     for (Eigen::Index i=0; i<n_dets; ++i) {
         // detector in apt
         auto det_index = det_indices(i);
 
-        double az_off = apt["x_t"](det_index);
-        double el_off = apt["y_t"](det_index);
-
         // calc tangent plane pointing
-        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off, pixel_axes,
-                                                          pointing_offsets_arcsec, map_grouping);
-
-        // get parameters for current detector
-        auto amp = 1;
-        auto off_lat = 0;
-        auto off_lon = 0;
-        auto rot_ang = apt["angle"](det_index);
+        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](det_index), apt["y_t"](det_index),
+                                                          pixel_axes, in.pointing_offsets_arcsec.data, map_grouping);
 
         // distance to source to truncate it
         auto dist = ((lat.array()).pow(2) + (lon.array()).pow(2)).sqrt();
 
-        // beam standard deviations
-        double sigma_lat, sigma_lon;
-
         // calculate stddev from apt table if config stddev <=0
         if (sigma_rad <= 0) {
-            sigma_lat = FWHM_TO_STD*ASEC_TO_RAD*apt["b_fwhm"](det_index);
-            sigma_lon = FWHM_TO_STD*ASEC_TO_RAD*apt["a_fwhm"](det_index);
+            sigma_lat = FWHM_TO_STD * ASEC_TO_RAD * apt["b_fwhm"](det_index);
+            sigma_lon = FWHM_TO_STD * ASEC_TO_RAD * apt["a_fwhm"](det_index);
         }
-        // otherwise use config file stddev
-        else {
-            sigma_lat = sigma_rad;
-            sigma_lon = sigma_rad;
-        }
+
+        // rotation angle
+        double rot_ang = apt["angle"](det_index);
 
         auto cost2 = cos(rot_ang) * cos(rot_ang);
         auto sint2 = sin(rot_ang) * sin(rot_ang);
@@ -170,10 +156,12 @@ void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in
         auto b = - 0.5 * ((sin2t / xstd2) - (sin2t / ystd2));
         auto c = - 0.5 * ((sint2 / xstd2) + (cost2 / ystd2));
 
+        double sigma_limit_det = sigma_limit * (sigma_lat + sigma_lon)/2;
+
         // make elliptical gaussian
         for (Eigen::Index j=0; j<n_pts; ++j) {
             // truncate within radius
-            if (dist(j) <= sigma_limit*(sigma_lat + sigma_lon)/2) {
+            if (dist(j) <= sigma_limit_det) {
                 in.kernel.data(j,i) = amp*exp(pow(lon(j) - off_lon, 2) * a +
                                      (lon(j) - off_lon) * (lat(j) - off_lat) * b +
                                      pow(lat(j) - off_lat, 2) * c);
@@ -185,45 +173,39 @@ void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in
     }
 }
 
-template<typename apt_t, typename pointing_offset_t, typename Derived>
+template<typename apt_t, typename Derived>
 void Kernel::create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std::string &pixel_axes,
-                                              std::string &redu_type, apt_t &apt, pointing_offset_t &pointing_offsets_arcsec,
-                                              Eigen::DenseBase<Derived> &det_indices) {
+                                std::string &redu_type, apt_t &apt, Eigen::DenseBase<Derived> &det_indices) {
+
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
 
-    in.kernel.data.resize(n_pts, n_dets);
+    in.kernel.data.resize(n_pts,n_dets);
+
+    double fwhm = fwhm_rad;
 
     // loop through detectors
     for (Eigen::Index i=0; i<n_dets; ++i) {
-
         // current detector in apt
         auto det_index = det_indices(i);
 
-        double az_off = apt["x_t"](det_index);
-        double el_off = apt["y_t"](det_index);
-
         // calc tangent plane pointing
-        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off, pixel_axes,
-                                                          pointing_offsets_arcsec, map_grouping);
+        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](det_index), apt["y_t"](det_index),
+                                                          pixel_axes, in.pointing_offsets_arcsec.data, map_grouping);
 
-        auto dist = (lat.array().pow(2) + lon.array().pow(2)).sqrt();
-
-        double fwhm;
+        // distance to source to truncate it
+        auto dist = ((lat.array()).pow(2) + (lon.array()).pow(2)).sqrt();
 
         // get fwhm from apt if config file fwhm is <= 0
         if (fwhm_rad <= 0) {
             fwhm = ASEC_TO_RAD*(apt["a_fwhm"](det_index) + apt["b_fwhm"](det_index))/2;
         }
-        // else use config file fwhm
-        else {
-            fwhm = fwhm_rad;
-        }
 
+        // airy pattern factor
         double factor = pi*(1.028/fwhm);
 
         for (Eigen::Index j=0; j<n_pts; ++j) {
-            if (dist(j) <= 3.*fwhm) {
+            if (dist(j) <= sigma_limit*fwhm) {
                 in.kernel.data(j,i) = pow(2*boost::math::cyl_bessel_j(1,factor*dist(j))/(factor*dist(j)),2);
             }
             else {
@@ -233,30 +215,26 @@ void Kernel::create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, st
     }
 }
 
-template<typename apt_t, typename pointing_offset_t, typename Derived>
+template<typename apt_t, typename Derived>
 void Kernel::create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std::string &pixel_axes,
-                                     std::string &redu_type, apt_t &apt, pointing_offset_t &pointing_offsets_arcsec,
-                                     double pixel_size_rad, Eigen::DenseBase<Derived> &map_indices,
-                                     Eigen::DenseBase<Derived> &det_indices) {
+                                     std::string &redu_type, apt_t &apt, double pixel_size_rad,
+                                     Eigen::DenseBase<Derived> &map_indices, Eigen::DenseBase<Derived> &det_indices) {
 
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
 
-    in.kernel.data.resize(n_pts, n_dets);
+    in.kernel.data.resize(n_pts,n_dets);
+
+    Eigen::Index map_index = 0;
 
     // loop through detectors
     for (Eigen::Index i=0; i<n_dets; ++i) {
         // current detector index in apt
         auto det_index = det_indices(i);
 
-        double az_off = apt["x_t"](det_index);
-        double el_off = apt["y_t"](det_index);
-
         // calc tangent plane pointing
-        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off, pixel_axes,
-                                                          pointing_offsets_arcsec, map_grouping);
-
-        Eigen::Index map_index = 0;
+        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](det_index), apt["y_t"](det_index),
+                                                          pixel_axes, in.pointing_offsets_arcsec.data, map_grouping);
 
         if (images.size() > 1) {
             map_index = map_indices(i);
@@ -266,17 +244,16 @@ void Kernel::create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &i
         Eigen::VectorXd irows = lat.array()/pixel_size_rad + (images[map_index].rows())/2.;
         Eigen::VectorXd icols = lon.array()/pixel_size_rad + (images[map_index].cols())/2.;
 
-        for (Eigen::Index si = 0; si<n_pts; ++si) {
+        for (Eigen::Index j = 0; j<n_pts; ++j) {
             // row and col pixel for kernel image
-            Eigen::Index ir = (irows(si));
-            Eigen::Index ic = (icols(si));
+            Eigen::Index ir = irows(j);
+            Eigen::Index ic = icols(j);
 
             // check if current sample is on the image and add to the timestream
             if ((ir >= 0) && (ir < images[map_index].rows()) && (ic >= 0) && (ic < images[map_index].cols())) {
-                in.kernel.data(si,i) = images[map_index](ir,ic);
+                in.kernel.data(j,i) = images[map_index](ir,ic);
             }
         }
     }
 }
-
 } // namespace timestream
