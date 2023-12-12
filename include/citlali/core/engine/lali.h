@@ -306,7 +306,8 @@ void Lali::output() {
                 add_tod_header();
             }
         }
-    } else if constexpr (map_type == mapmaking::RawCoadd || map_type == mapmaking::FilteredCoadd) {
+    }
+    else if constexpr (map_type == mapmaking::RawCoadd || map_type == mapmaking::FilteredCoadd) {
         mb = &cmb;
         dir_name = coadd_dir_name + (map_type == mapmaking::RawCoadd ? "raw/" : "filtered/");
         f_io = (map_type == mapmaking::RawCoadd) ? &coadd_fits_io_vec : &filtered_coadd_fits_io_vec;
@@ -321,7 +322,7 @@ void Lali::output() {
                 tula::logging::progressbar pb(
                     [&](const auto &msg) { logger->info("{}", msg); }, 100, "output progress ");
 
-                for (Eigen::Index i=0; i<f_io->size(); i++) {
+                for (Eigen::Index i=0; i<f_io->size(); ++i) {
                     // get the array for the given map
                     // add primary hdu
                     add_phdu(f_io, mb, i);
@@ -332,7 +333,7 @@ void Lali::output() {
                 }
 
                 // write the maps
-                for (Eigen::Index i=0; i<n_maps; i++) {
+                for (Eigen::Index i=0; i<n_maps; ++i) {
                     // update progress bar
                     pb.count(n_maps, 1);
                     write_maps(f_io,n_io,mb,i);
@@ -340,7 +341,7 @@ void Lali::output() {
             }
 
             logger->info("maps have been written to:");
-            for (Eigen::Index i=0; i<f_io->size(); i++) {
+            for (Eigen::Index i=0; i<f_io->size(); ++i) {
                 logger->info("{}.fits",f_io->at(i).filepath);
             }
         }

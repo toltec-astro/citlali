@@ -370,7 +370,6 @@ void TimeOrderedDataProc<EngineType>::create_output_dir() {
         // create redu dir directory
         fs::create_directories(engine().redu_dir_name);
     }
-
     else {
         engine().redu_dir_name = engine().output_dir + "/";
     }

@@ -387,6 +387,25 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                         // get fits file
                         fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*> fits_io(entry.path().string());
 
+                        // get number of extensions other than primary extension
+                        int num_extensions = 0;
+                        bool keep_going = true;
+                        while (keep_going) {
+                            try {
+                                // attempt to access an HDU (ignore primary hdu)
+                                CCfits::ExtHDU& ext = fits_io.pfits->extension(num_extensions + 1);
+                                num_extensions++;
+                            } catch (CCfits::FITS::NoSuchHDU) {
+                                // NoSuchHDU exception is thrown when there are no more HDUs
+                                keep_going = false;
+                            }
+                        }
+
+                        if (num_extensions == 0) {
+                            logger->error("{} is empty",filename);
+                            std::exit(EXIT_FAILURE);
+                        }
+
                         // get wcs (should be same for all maps)
                         CCfits::ExtHDU& extension = fits_io.pfits->extension(1);
 
@@ -405,20 +424,6 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                         // get cunit
                         extension.readKey("CUNIT1", tod_mb.wcs.cunit[0]);
                         extension.readKey("CUNIT2", tod_mb.wcs.cunit[1]);
-
-                        // get number of extensions other than primary extension
-                        int num_extensions = 0;
-                        bool keep_going = true;
-                        while (keep_going) {
-                            try {
-                                // attempt to access an HDU (ignore primary hdu)
-                                CCfits::ExtHDU& ext = fits_io.pfits->extension(num_extensions + 1);
-                                num_extensions++;
-                            } catch (CCfits::FITS::NoSuchHDU) {
-                                // NoSuchHDU exception is thrown when there are no more HDUs
-                                keep_going = false;
-                            }
-                        }
 
                         // get I maps, including all fg maps
                         for (int i=0; i<num_extensions; ++i) {
@@ -485,6 +490,11 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                                 // NoSuchHDU exception is thrown when there are no more HDUs
                                 keep_going = false;
                             }
+                        }
+
+                        if (num_extensions == 0) {
+                            logger->error("{} is empty",filename);
+                            std::exit(EXIT_FAILURE);
                         }
 
                         // loop through noise maps for current array

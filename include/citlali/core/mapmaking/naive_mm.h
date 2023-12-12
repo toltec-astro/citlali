@@ -70,7 +70,7 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
     int step = omb.pointing.size();
 
     // pointer to map buffer with noise maps
-    ObsMapBuffer* nmb = NULL;
+    ObsMapBuffer* nmb = nullptr;
 
     // matrix to hold random noise value
     Eigen::Matrix<int,Eigen::Dynamic, Eigen::Dynamic> noise;

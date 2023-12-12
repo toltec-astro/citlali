@@ -39,6 +39,7 @@ public:
         // create file
         else if constexpr (file_type==file_type_enum::write_fits) {
             try {
+                // ! is the overwrite flag
                 pfits.reset( new CCfits::FITS("!" + filepath + ".fits", CCfits::Write));
                 // write date
                 pfits->pHDU().writeDate();
