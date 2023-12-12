@@ -334,6 +334,22 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                 // current scan
                 rtcdata.index.data = scan;
 
+                if (run_noise) {
+                    // declare random number generator
+                    thread_local boost::random::mt19937 eng;
+
+                    // boost random number generator (0,1)
+                    boost::random::uniform_int_distribution<> rands{0,1};
+
+                    if (omb.randomize_dets) {
+                        rtcdata.noise.data = Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic>::Zero(omb.n_noise, calib.n_dets)
+                                                 .unaryExpr([&](int dummy){ return 2 * rands(eng) - 1; });
+                    } else {
+                        rtcdata.noise.data = Eigen::Matrix<int, Eigen::Dynamic, 1>::Zero(omb.n_noise)
+                                                 .unaryExpr([&](int dummy){ return 2 * rands(eng) - 1; });
+                    }
+                }
+
                 // vector to store kids data
                 std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> scan_rawobs;
                 // get kids data

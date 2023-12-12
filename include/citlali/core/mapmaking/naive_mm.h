@@ -72,27 +72,8 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
     // pointer to map buffer with noise maps
     ObsMapBuffer* nmb = nullptr;
 
-    // matrix to hold random noise value
-    Eigen::Matrix<int,Eigen::Dynamic, Eigen::Dynamic> noise;
-
     if (run_noise) {
-        // declare random number generator
-        thread_local boost::random::mt19937 eng;
-
-        // boost random number generator (0,1)
-        boost::random::uniform_int_distribution<> rands{0,1};
-
-        // set pointer to cmb or omb for noise maps
         nmb = use_cmb ? &cmb : (use_omb ? &omb : nullptr);
-        if (nmb) {
-            if (nmb->randomize_dets) {
-                noise = Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic>::Zero(nmb->n_noise, n_dets)
-                            .unaryExpr([&](int dummy){ return 2 * rands(eng) - 1; });
-            } else {
-                noise = Eigen::Matrix<int, Eigen::Dynamic, 1>::Zero(nmb->n_noise)
-                            .unaryExpr([&](int dummy){ return 2 * rands(eng) - 1; });
-            }
-        }
     }
 
     // signal and kernel map values
@@ -209,10 +190,10 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                             for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
                                 // randomizing on dets
                                 if (nmb->randomize_dets) {
-                                    noise_v = noise(nn,i)*in.scans.data(j,i)*in.weights.data(i);
+                                    noise_v = in.noise.data(nn,i)*in.scans.data(j,i)*in.weights.data(i);
                                 }
                                 else {
-                                    noise_v = noise(nn)*in.scans.data(j,i)*in.weights.data(i);
+                                    noise_v = in.noise.data(nn)*in.scans.data(j,i)*in.weights.data(i);
                                 }
                                 // add noise value to current noise map
                                 nmb->noise[map_index](nmb_ir,nmb_ic,nn) += noise_v;

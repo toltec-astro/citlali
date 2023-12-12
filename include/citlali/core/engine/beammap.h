@@ -185,12 +185,12 @@ void Beammap::setup(int fruit_iter) {
     calib.apt_meta["Radesys"] = telescope.pixel_axes;
 
     // add apt header keys
-    for (const auto &[key,val]: calib.apt_header_units) {
-        calib.apt_meta[key].push_back("units: " + val);
+    for (const auto &[param,unit]: calib.apt_header_units) {
+        calib.apt_meta[param].push_back("units: " + unit);
     }
     // add apt header descriptions
-    for (const auto &[key,val]: calib.apt_header_description) {
-        calib.apt_meta[key].push_back(val);
+    for (const auto &[param,description]: calib.apt_header_description) {
+        calib.apt_meta[param].push_back(description);
     }
 
     // kids tone
@@ -248,8 +248,8 @@ auto Beammap::run_timestream() {
         }
 
         // copy pointing offsets
-        for (auto const& [key,val]: pointing_offsets_arcsec) {
-            rtcdata.pointing_offsets_arcsec.data[key] = val.segment(si,sl);
+        for (auto const& [axis,offset]: pointing_offsets_arcsec) {
+            rtcdata.pointing_offsets_arcsec.data[axis] = offset.segment(si,sl);
         }
 
         // get hwpr
@@ -351,9 +351,7 @@ auto Beammap::run_loop() {
                         logger->info("subtracting gaussian from tod");
                         // subtract gaussian
                         ptcproc.add_gaussian<timestream::TCProc::SourceType::NegativeGaussian>(ptcs[i], params, telescope.pixel_axes, map_grouping,
-                                                                                               calib.apt, ptcs[i].pointing_offsets_arcsec.data,
-                                                                                               omb.pixel_size_rad, omb.n_rows, omb.n_cols,
-                                                                                               ptcs[i].map_indices.data, ptcs[i].det_indices.data);
+                                                                                               calib.apt,omb.pixel_size_rad, omb.n_rows, omb.n_cols);
                     }
                     else {
                         logger->info("subtracting map from tod");
@@ -376,9 +374,7 @@ auto Beammap::run_loop() {
                         logger->info("adding gaussian to tod");
                         // add gaussian back
                         ptcproc.add_gaussian<timestream::TCProc::SourceType::Gaussian>(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt,
-                                                                                       ptcs[i].pointing_offsets_arcsec.data, omb.pixel_size_rad,
-                                                                                       omb.n_rows, omb.n_cols, ptcs[i].map_indices.data,
-                                                                                       ptcs[i].det_indices.data);
+                                                                                       omb.pixel_size_rad,omb.n_rows, omb.n_cols);
                     }
                     else {
                         logger->info("adding map to tod");
@@ -405,7 +401,6 @@ auto Beammap::run_loop() {
 
                 // reset weights to median
                 ptcproc.reset_weights(ptcs[i], calib, ptcs[i].det_indices.data);
-
             }
 
             // write out chunk summary
@@ -452,6 +447,24 @@ auto Beammap::run_loop() {
                 // clear noise
                 if (!omb.noise.empty()) {
                     omb.noise[i].setZero();
+                }
+
+                if (run_noise) {
+                    // declare random number generator
+                    thread_local boost::random::mt19937 eng;
+
+                    // boost random number generator (0,1)
+                    boost::random::uniform_int_distribution<> rands{0,1};
+
+                    for (auto& ptcdata: ptcs) {
+                        if (omb.randomize_dets) {
+                            ptcdata.noise.data = Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic>::Zero(omb.n_noise, calib.n_dets)
+                                                     .unaryExpr([&](int dummy){ return 2 * rands(eng) - 1; });
+                        } else {
+                            ptcdata.noise.data = Eigen::Matrix<int, Eigen::Dynamic, 1>::Zero(omb.n_noise)
+                                                     .unaryExpr([&](int dummy){ return 2 * rands(eng) - 1; });
+                        }
+                    }
                 }
             }
 

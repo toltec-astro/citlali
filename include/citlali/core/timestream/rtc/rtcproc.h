@@ -281,14 +281,11 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     // end index of inner scans
     auto sl = in.scan_indices.data(1) - in.scan_indices.data(0) + 1;
 
-    // new timechunk for current stokes parameter timestream
-    TCData<TCDataKind::RTC,Eigen::MatrixXd> in_pol;
-
-    // calculate the stokes timestream (populates in_pol)
-    auto [array_indices, nw_indices, det_indices, fg_indices] = polarization.calc_angle(in, in_pol, calib, telescope.sim_obs);
+    // calculate the stokes timestream (populates in)
+    auto [array_indices, nw_indices, det_indices, fg_indices] = polarization.calc_angle(in, calib, telescope.sim_obs);
 
     // resize fcf
-    in_pol.fcf.data.setOnes(in.scans.data.cols());
+    in.fcf.data.setOnes(in.scans.data.cols());
 
     // get indices for maps
     logger->debug("calculating map indices");
@@ -297,19 +294,19 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     if (run_calibrate) {
         logger->debug("calibrating timestream");
         // calibrate tod
-        calibration.calibrate_tod(in_pol, det_indices, array_indices, calib);
+        calibration.calibrate_tod(in, det_indices, array_indices, calib);
 
-        in_pol.status.calibrated = true;
+        in.status.calibrated = true;
     }
 
     if (run_extinction) {
         logger->debug("correcting extinction");
         // calc tau at toltec frequencies
-        auto tau_freq = calibration.calc_tau(in_pol.tel_data.data["TelElAct"], telescope.tau_225_GHz);
+        auto tau_freq = calibration.calc_tau(in.tel_data.data["TelElAct"], telescope.tau_225_GHz);
         // correct for extinction
-        calibration.extinction_correction(in_pol, det_indices, array_indices, calib, tau_freq);
+        calibration.extinction_correction(in, det_indices, array_indices, calib, tau_freq);
 
-        in_pol.status.extinction_corrected = true;
+        in.status.extinction_corrected = true;
     }
 
     // create kernel if requested
@@ -318,33 +315,33 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         // symmetric gaussian kernel
         if (kernel.type == "gaussian") {
             logger->debug("creating symmetric gaussian kernel");
-            kernel.create_symmetric_gaussian_kernel(in_pol, pixel_axes, redu_type, calib.apt, det_indices);
+            kernel.create_symmetric_gaussian_kernel(in, pixel_axes, redu_type, calib.apt, det_indices);
         }
         // airy kernel
         else if (kernel.type == "airy") {
             logger->debug("creating airy kernel");
-            kernel.create_airy_kernel(in_pol, pixel_axes, redu_type, calib.apt, det_indices);
+            kernel.create_airy_kernel(in, pixel_axes, redu_type, calib.apt, det_indices);
         }
         // get kernel from fits
         else if (kernel.type == "fits") {
             logger->debug("getting kernel from fits");
-            kernel.create_kernel_from_fits(in_pol, pixel_axes, redu_type, calib.apt, pixel_size_rad, map_indices, det_indices);
+            kernel.create_kernel_from_fits(in, pixel_axes, redu_type, calib.apt, pixel_size_rad, map_indices, det_indices);
         }
 
-        in_pol.status.kernel_generated = true;
+        in.status.kernel_generated = true;
     }
 
     // set up flags
-    in_pol.flags.data.setZero(in_pol.scans.data.rows(), in_pol.scans.data.cols());
+    in.flags.data.setZero(n_pts, in.scans.data.cols());
 
     // run despiking
     if (run_despike) {
         logger->debug("despiking");
         // despike data
-        despiker.despike(in_pol.scans.data, in_pol.flags.data, calib.apt);
+        despiker.despike(in.scans.data, in.flags.data, calib.apt);
 
         // we want to replace spikes on a per array or network basis
-        auto grp_limits = get_grouping(despiker.grouping, det_indices, calib, in_pol.scans.data.cols());
+        auto grp_limits = get_grouping(despiker.grouping, det_indices, calib, in.scans.data.cols());
 
         logger->debug("replacing spikes");
         for (auto const& [key, val] : grp_limits) {
@@ -354,7 +351,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
             auto n_dets = std::get<1>(val) - std::get<0>(val);
 
             // get the reference block of in scans that corresponds to the current array
-            Eigen::Ref<Eigen::MatrixXd> in_scans_ref = in_pol.scans.data.block(0, start_index, n_pts, n_dets);
+            Eigen::Ref<Eigen::MatrixXd> in_scans_ref = in.scans.data.block(0, start_index, n_pts, n_dets);
             // eigen map to reference for input scans
             Eigen::Map<Eigen::MatrixXd, 0, Eigen::OuterStride<>>
                 in_scans(in_scans_ref.data(), in_scans_ref.rows(), in_scans_ref.cols(),
@@ -362,7 +359,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
 
             // get the block of in flags that corresponds to the current array
             Eigen::Ref<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> in_flags_ref =
-                in_pol.flags.data.block(0, start_index, n_pts, n_dets);
+                in.flags.data.block(0, start_index, n_pts, n_dets);
             // eigen map to reference for input flags
             Eigen::Map<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>, 0, Eigen::OuterStride<> >
                 in_flags(in_flags_ref.data(), in_flags_ref.rows(), in_flags_ref.cols(),
@@ -372,33 +369,33 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
             despiker.replace_spikes(in_scans, in_flags, calib.apt, start_index);
         }
 
-        in_pol.status.despiked = true;
+        in.status.despiked = true;
     }
 
     // timestream filtering
     if (run_tod_filter) {
         logger->debug("convolving signal with tod filter");
-        filter.convolve(in_pol.scans.data);
-        //filter.iir(in_pol.scans.data);
+        filter.convolve(in.scans.data);
+        //filter.iir(in.scans.data);
 
         // filter kernel
         if (run_kernel) {
             logger->debug("convolving kernel with tod filter");
-            filter.convolve(in_pol.kernel.data);
+            filter.convolve(in.kernel.data);
         }
 
-        in_pol.status.tod_filtered = true;
+        in.status.tod_filtered = true;
     }
 
     if (run_downsample) {
         logger->debug("downsampling data");
         // get the block of out scans that corresponds to the inner scan indices
         Eigen::Ref<Eigen::Map<Eigen::MatrixXd>> in_scans =
-            in_pol.scans.data.block(si, 0, sl, in_pol.scans.data.cols());
+            in.scans.data.block(si, 0, sl, in.scans.data.cols());
 
         // get the block of in flags that corresponds to the inner scan indices
         Eigen::Ref<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> in_flags =
-            in_pol.flags.data.block(si, 0, sl, in_pol.flags.data.cols());
+            in.flags.data.block(si, 0, sl, in.flags.data.cols());
 
         // downsample scans
         downsampler.downsample(in_scans, out.scans.data);
@@ -407,18 +404,18 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
 
         // loop through telescope meta data and downsample
         logger->debug("downsampling telescope");
-        for (auto const& x: in_pol.tel_data.data) {
+        for (auto const& x: in.tel_data.data) {
             // get the block of in tel data that corresponds to the inner scan indices
             Eigen::Ref<Eigen::VectorXd> in_tel =
-                in_pol.tel_data.data[x.first].segment(si,sl);
+                in.tel_data.data[x.first].segment(si,sl);
 
             downsampler.downsample(in_tel, out.tel_data.data[x.first]);
         }
 
         // downsample pointing
-        for (auto const& x: in_pol.pointing_offsets_arcsec.data) {
+        for (auto const& x: in.pointing_offsets_arcsec.data) {
         Eigen::Ref<Eigen::VectorXd> in_pointing =
-            in_pol.pointing_offsets_arcsec.data[x.first].segment(si,sl);
+            in.pointing_offsets_arcsec.data[x.first].segment(si,sl);
 
             downsampler.downsample(in_pointing, out.pointing_offsets_arcsec.data[x.first]);
         }
@@ -427,12 +424,12 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
             if (calib.run_hwpr) {
                 // downsample hwpr
                 Eigen::Ref<Eigen::VectorXd> in_hwpr =
-                    in_pol.hwpr_angle.data.segment(si,sl);
+                    in.hwpr_angle.data.segment(si,sl);
                 downsampler.downsample(in_hwpr, out.hwpr_angle.data);
             }
             // downsample detector angle
             Eigen::Ref<Eigen::MatrixXd> in_angle =
-                in_pol.angle.data.block(si, 0, sl, in_pol.angle.data.cols());
+                in.angle.data.block(si, 0, sl, in.angle.data.cols());
             downsampler.downsample(in_angle, out.angle.data);
         }
         // downsample kernel if requested
@@ -440,50 +437,53 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
             logger->debug("downsampling kernel");
             // get the block of in kernel scans that corresponds to the inner scan indices
             Eigen::Ref<Eigen::MatrixXd> in_kernel =
-                in_pol.kernel.data.block(si, 0, sl, in_pol.kernel.data.cols());
+                in.kernel.data.block(si, 0, sl, in.kernel.data.cols());
 
             downsampler.downsample(in_kernel, out.kernel.data);
         }
 
-        in_pol.status.downsampled = true;
+        in.status.downsampled = true;
     }
 
     else {
         // copy data
-        out.scans.data = in_pol.scans.data.block(si, 0, sl, in_pol.scans.data.cols());
+        out.scans.data = in.scans.data.block(si, 0, sl, in.scans.data.cols());
         // copy flags
-        out.flags.data = in_pol.flags.data.block(si, 0, sl, in_pol.flags.data.cols());
+        out.flags.data = in.flags.data.block(si, 0, sl, in.flags.data.cols());
         // copy kernel
         if (run_kernel) {
-            out.kernel.data = in_pol.kernel.data.block(si, 0, sl, in_pol.kernel.data.cols());
+            out.kernel.data = in.kernel.data.block(si, 0, sl, in.kernel.data.cols());
         }
         // copy telescope data
-        for (auto const& x: in_pol.tel_data.data) {
-            out.tel_data.data[x.first] = in_pol.tel_data.data[x.first].segment(si,sl);
+        for (auto const& x: in.tel_data.data) {
+            out.tel_data.data[x.first] = in.tel_data.data[x.first].segment(si,sl);
         }
         // copy pointing offsets
-        for (auto const& x: in_pol.pointing_offsets_arcsec.data) {
-            out.pointing_offsets_arcsec.data[x.first] = in_pol.pointing_offsets_arcsec.data[x.first].segment(si,sl);
+        for (auto const& x: in.pointing_offsets_arcsec.data) {
+            out.pointing_offsets_arcsec.data[x.first] = in.pointing_offsets_arcsec.data[x.first].segment(si,sl);
         }
 
         if (run_polarization) {
             // copy hwpr angle
             if (calib.run_hwpr) {
-                out.hwpr_angle.data = in_pol.hwpr_angle.data.segment(si,sl);
+                out.hwpr_angle.data = in.hwpr_angle.data.segment(si,sl);
             }
             // copy detector angle
-            out.angle.data = in_pol.angle.data.block(si, 0, sl, in_pol.angle.data.cols());
+            out.angle.data = in.angle.data.block(si, 0, sl, in.angle.data.cols());
         }
     }
 
     // copy scan indices
-    out.scan_indices.data = in_pol.scan_indices.data;
+    out.scan_indices.data = in.scan_indices.data;
     // copy scan index
-    out.index.data = in_pol.index.data;
+    out.index.data = in.index.data;
     // copy fcf
-    out.fcf.data = in_pol.fcf.data;
+    out.fcf.data = in.fcf.data;
     // copy chunk status
     out.status = in.status;
+
+    // copy noise
+    out.noise.data = in.noise.data;
 
     return std::tuple<Eigen::VectorXI,Eigen::VectorXI,Eigen::VectorXI,Eigen::VectorXI>(map_indices, array_indices, nw_indices, det_indices);
 }

@@ -260,7 +260,6 @@ void Calib::setup() {
     nw_fwhms.clear();
     nw_beam_areas.clear();
 
-    Eigen::Index j = 0;
     Eigen::Index nw_i = apt["nw"](0);
     nw_limits[nw_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
 
@@ -271,13 +270,12 @@ void Calib::setup() {
         }
         else {
             nw_i = apt["nw"](i);
-            j += 1;
             nw_limits[nw_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
         }
     }
 
     // get average fwhms for networks
-    j = 0;
+    Eigen::Index j = 0;
     for (auto const& [key, val] : nw_limits) {
         nws(j) = key;
         j++;

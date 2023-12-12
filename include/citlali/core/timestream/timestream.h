@@ -186,6 +186,8 @@ struct TimeStream : internal::TCDataBase<Derived>,
     data_t<Eigen::MatrixXd> kernel;
     // flag timestream
     data_t<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>> flags;
+    // noise timestreams
+    data_t<Eigen::MatrixXi> noise;
     // bitwise flags
     data_t<Eigen::Matrix<TimestreamFlags,Eigen::Dynamic,Eigen::Dynamic>> flags2;
     // current scan indices
@@ -323,11 +325,9 @@ public:
                          std::string);
 
     // add or subtract gaussian to timestream
-    template <SourceType source_type, TCDataKind tcdata_t, typename DerivedB, typename DerivedC, typename apt_t,
-             typename pointing_offset_t>
-    void add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &, Eigen::DenseBase<DerivedB> &, std::string &,
-                      std::string &, apt_t &, pointing_offset_t &, double, Eigen::Index, Eigen::Index,
-                      Eigen::DenseBase<DerivedC> &, Eigen::DenseBase<DerivedC> &);
+    template <SourceType source_type, TCDataKind tcdata_t, typename Derived, typename apt_t>
+    void add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &, Eigen::DenseBase<Derived> &, std::string &,
+                      std::string &, apt_t &, double, Eigen::Index, Eigen::Index);
 
     // flag a region around the center of the map
     template <TCDataKind tcdata_t, class calib_t, typename Derived>
@@ -714,7 +714,7 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
                 Eigen::Index n_good_dets = 0;
 
                 // get good dets in group
-                for (Eigen::Index j=std::get<0>(grp_limits[key]); j<std::get<1>(grp_limits[key]); j++) {
+                for (Eigen::Index j=std::get<0>(grp_limits[key]); j<std::get<1>(grp_limits[key]); ++j) {
                     if (calib.apt["flag"](det_indices(j))==0 && (in.flags.data.col(j).array()==0).any()) {
                         n_good_dets++;
                     }
@@ -725,7 +725,7 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
                 Eigen::Index k = 0;
 
                 // collect standard deviation from good detectors
-                for (Eigen::Index j=std::get<0>(grp_limits[key]); j<std::get<1>(grp_limits[key]); j++) {
+                for (Eigen::Index j=std::get<0>(grp_limits[key]); j<std::get<1>(grp_limits[key]); ++j) {
                     Eigen::Index det_index = det_indices(j);
                     if (calib.apt["flag"](det_index)==0 && (in.flags.data.col(j).array()==0).any()) {
                         // make Eigen::Maps for each detector's scan
@@ -757,7 +757,7 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
                 int n_dets_high = 0;
 
                 // loop through good detectors and flag those that have std devs beyond the limits
-                for (Eigen::Index j=0; j<n_good_dets; j++) {
+                for (Eigen::Index j=0; j<n_good_dets; ++j) {
                     Eigen::Index det_index = det_indices(dets(j));
                     // only run if unflagged already
                     if (calib.apt["flag"](det_index)==0) {
@@ -805,11 +805,9 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
     return std::move(calib_scan);
 }
 
-template <TCProc::SourceType source_type, TCDataKind tcdata_t, typename DerivedB, typename DerivedC, typename apt_t, typename pointing_offset_t>
-void TCProc::add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &in, Eigen::DenseBase<DerivedB> &params, std::string &pixel_axes,
-                          std::string &map_grouping, apt_t &apt, pointing_offset_t &pointing_offsets_arcsec,
-                          double pixel_size_rad, Eigen::Index n_rows, Eigen::Index n_cols,
-                          Eigen::DenseBase<DerivedC> &map_indices, Eigen::DenseBase<DerivedC> &det_indices) {
+template <TCProc::SourceType source_type, TCDataKind tcdata_t, typename Derived, typename apt_t>
+void TCProc::add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &in, Eigen::DenseBase<Derived> &params, std::string &pixel_axes,
+                          std::string &map_grouping, apt_t &apt, double pixel_size_rad, Eigen::Index n_rows, Eigen::Index n_cols) {
 
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
@@ -817,16 +815,16 @@ void TCProc::add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &in, Eigen::DenseBas
     // loop through detectors
     for (Eigen::Index i=0; i<n_dets; ++i) {
         // detector index in apt
-        auto det_index = det_indices(i);
+        auto det_index = in.det_indices.data(i);
         // map index
-        auto map_index = map_indices(i);
+        auto map_index = in.map_indices.data(i);
 
         double az_off = apt["x_t"](det_index);
         double el_off = apt["y_t"](det_index);
 
         // get pointing
         auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off, pixel_axes,
-                                                          pointing_offsets_arcsec, map_grouping);
+                                                          in.pointing_offsets_arcsec.data, map_grouping);
 
         // get parameters from current map
         double amp = params(map_index,0);
@@ -873,7 +871,7 @@ void TCProc::add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &in, Eigen::DenseBas
 
         Eigen::VectorXd gauss(n_pts);
         // make timestream from 2d gaussian
-        for (Eigen::Index j=0; j<n_pts; j++) {
+        for (Eigen::Index j=0; j<n_pts; ++j) {
             gauss(j) = amp*exp(pow(lon(j) - off_lon, 2) * a +
                                  (lon(j) - off_lon) * (lat(j) - off_lat) * b +
                                  pow(lat(j) - off_lat, 2) * c);
@@ -929,7 +927,7 @@ auto TCProc::mask_region(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, 
         auto dist = (lat.array().pow(2) + lon.array().pow(2)).sqrt();
 
         // loop through samples
-        for (Eigen::Index j=0; j<n_pts; j++) {
+        for (Eigen::Index j=0; j<n_pts; ++j) {
             // flag samples within radius as bad
             if (dist(j) < mask_radius_arcsec*ASEC_TO_RAD) {
                 masked_flags(j,i) = 1;

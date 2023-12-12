@@ -787,8 +787,15 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
 
 template<class MB>
 void WienerFilter::filter_noise(MB &mb, const int map_index, const int noise_num) {
-    Eigen::Tensor<double,2> out = mb.noise[map_index].chip(noise_num,2);
-    filtered_map = Eigen::Map<Eigen::MatrixXd>(out.data(),out.dimension(0),out.dimension(1));
+    //Eigen::Tensor<double,2> out = mb.noise[map_index].chip(noise_num,2);
+    //filtered_map = Eigen::Map<Eigen::MatrixXd>(out.data(),out.dimension(0),out.dimension(1));
+
+    //Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(mb->noise[i].data() + n * mb->n_rows * mb->n_cols,
+    //                                                                               mb->n_rows, mb->n_cols);
+
+    filtered_map = Eigen::Map<Eigen::MatrixXd>(mb.noise[map_index].data() + noise_num * mb.n_rows * mb.n_cols,
+                                               mb.n_rows, mb.n_cols);
+
     // don't need to run through the whole filter, just the numerator
     calc_numerator();
 

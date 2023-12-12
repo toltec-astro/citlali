@@ -938,7 +938,7 @@ int run(const rc_t &rc) {
 }
 
 int main(int argc, char *argv[]) {
-    // to do the dump_config, we need to make sure the output is
+     // to do the dump_config, we need to make sure the output is
     // not contaminated with any logging message. Therefore this has
     // to go first
     bool exit_dump_config{false};

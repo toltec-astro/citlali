@@ -927,17 +927,16 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &map_extents, std::vector<map_coord_t> &map_coords) {
 
-    // map rows and cols
-    int n_rows, n_cols;
+    // reference to map buffer
+    auto& omb = engine().omb;
 
     // only run if manual map sizes have not been input
     if ((engine().omb.wcs.naxis[0] <= 0) || (engine().omb.wcs.naxis[1] <= 0)) {
         // matrix to store size limits
-        Eigen::MatrixXd det_lat_limits, det_lon_limits, map_limits;
-        det_lat_limits.setZero(engine().calib.n_dets,2);
-        det_lon_limits.setZero(engine().calib.n_dets,2);
-        // global min and max
-        map_limits.setZero(2,2);
+        Eigen::MatrixXd det_lat_limits(engine().calib.n_dets, 2);
+        Eigen::MatrixXd det_lon_limits(engine().calib.n_dets, 2);
+        det_lat_limits.setZero();
+        det_lon_limits.setZero();
 
         // placeholder vectors for grppi maps
         std::vector<int> det_in_vec, det_out_vec;
@@ -946,6 +945,9 @@ void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &m
         det_in_vec.resize(engine().calib.n_dets);
         std::iota(det_in_vec.begin(), det_in_vec.end(), 0);
         det_out_vec.resize(engine().calib.n_dets);
+
+        // get telescope meta data for current scan
+        std::map<std::string, Eigen::VectorXd> tel_data;
 
         // pointing offsets
         std::map<std::string, Eigen::VectorXd> pointing_offsets_arcsec;
@@ -957,11 +959,10 @@ void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &m
             // upper scan index
             auto sl = engine().telescope.scan_indices(1,i) - engine().telescope.scan_indices(0,i) + 1;
 
-            // get telescope meta data for current scan
-            std::map<std::string, Eigen::VectorXd> tel_data;
             for (auto const& x: engine().telescope.tel_data) {
                 tel_data[x.first] = engine().telescope.tel_data[x.first].segment(si,sl);
             }
+
             // get pointing offsets for current scan
             pointing_offsets_arcsec["az"] = engine().pointing_offsets_arcsec["az"].segment(si,sl);
             pointing_offsets_arcsec["alt"] = engine().pointing_offsets_arcsec["alt"].segment(si,sl);
@@ -970,12 +971,10 @@ void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &m
             if (engine().map_grouping!="detector") {
                 // loop through detectors
                 grppi::map(tula::grppi_utils::dyn_ex(engine().parallel_policy), det_in_vec, det_out_vec, [&](auto j) {
-                    double az_off = engine().calib.apt["x_t"](j);
-                    double el_off = engine().calib.apt["y_t"](j);
 
                     // get pointing
-                    auto [lat, lon] = engine_utils::calc_det_pointing(tel_data, az_off, el_off, engine().telescope.pixel_axes,
-                                                                      pointing_offsets_arcsec, engine().map_grouping);
+                    auto [lat, lon] = engine_utils::calc_det_pointing(tel_data, engine().calib.apt["x_t"](j), engine().calib.apt["y_t"](j),
+                                                                      engine().telescope.pixel_axes, pointing_offsets_arcsec, engine().map_grouping);
                     // check for min and max
                     if (engine().calib.apt["flag"](j)==0) {
                         if (lat.minCoeff() < det_lat_limits(j,0)) {
@@ -996,7 +995,7 @@ void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &m
             }
             else {
                 // calculate detector pointing for first detector only since offsets are zero
-                auto [lat, lon] = engine_utils::calc_det_pointing(tel_data, 0, 0, engine().telescope.pixel_axes,
+                auto [lat, lon] = engine_utils::calc_det_pointing(tel_data, 0., 0., engine().telescope.pixel_axes,
                                                                   pointing_offsets_arcsec, engine().map_grouping);
                 if (lat.minCoeff() < det_lat_limits(0,0)) {
                     det_lat_limits.col(0).setConstant(lat.minCoeff());
@@ -1014,190 +1013,132 @@ void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &m
         }
 
         // get the global min and max
-        map_limits(0,0) = det_lat_limits.col(0).minCoeff();
-        map_limits(1,0) = det_lat_limits.col(1).maxCoeff();
-        map_limits(0,1) = det_lon_limits.col(0).minCoeff();
-        map_limits(1,1) = det_lon_limits.col(1).maxCoeff();
+        double min_lat = det_lat_limits.col(0).minCoeff();
+        double max_lat = det_lat_limits.col(1).maxCoeff();
+        double min_lon = det_lon_limits.col(0).minCoeff();
+        double max_lon = det_lon_limits.col(1).maxCoeff();
 
         // calculate dimensions
-        auto calc_map_dims = [&](auto min_dim, auto max_dim) {
-            auto min_pix = ceil(abs(min_dim/engine().omb.pixel_size_rad));
-            auto max_pix = ceil(abs(max_dim/engine().omb.pixel_size_rad));
-
-            max_pix = std::max(min_pix, max_pix);
-            int n_dim = 2*max_pix + 1;
-
-            return n_dim;
+        auto calc_map_dims = [&](double min_dim, double max_dim) {
+            int min_pix = static_cast<int>(ceil(abs(min_dim / omb.pixel_size_rad)));
+            int max_pix = static_cast<int>(ceil(abs(max_dim / omb.pixel_size_rad)));
+            return 2 * std::max(min_pix, max_pix) + 1;
         };
 
         // get n_rows and n_cols
-        n_rows = calc_map_dims(map_limits(0,0), map_limits(1,0));
-        n_cols = calc_map_dims(map_limits(0,1), map_limits(1,1));
+        omb.n_rows = calc_map_dims(min_lat, max_lat);
+        omb.n_cols = calc_map_dims(min_lon, max_lon);
     }
 
     else {
-        // add one to rows if input value is even
-        if (engine().omb.wcs.naxis[0] % 2==0) {
-            engine().omb.wcs.naxis[0] = engine().omb.wcs.naxis[0] + 1;
-        }
-        // add one to cols if input value is even
-        if (engine().omb.wcs.naxis[1] % 2==0) {
-            engine().omb.wcs.naxis[1] = engine().omb.wcs.naxis[1] + 1;
-        }
-
-        // set rows and cols to manually specified sizes
-        n_rows = engine().omb.wcs.naxis[1];
-        n_cols = engine().omb.wcs.naxis[0];
+        // Ensure odd dimensions
+        omb.n_rows = (omb.wcs.naxis[1] % 2 == 0) ? omb.wcs.naxis[1] + 1 : omb.wcs.naxis[1];
+        omb.n_cols = (omb.wcs.naxis[0] % 2 == 0) ? omb.wcs.naxis[0] + 1 : omb.wcs.naxis[0];
     }
 
-    // vectors to store tangent plane coordinates of each pixel
-    Eigen::VectorXd rows_tan_vec = (Eigen::VectorXd::LinSpaced(n_rows,0,n_rows-1).array() -
-                                    (n_rows - 1)/2.)*engine().omb.pixel_size_rad;
-    Eigen::VectorXd cols_tan_vec = (Eigen::VectorXd::LinSpaced(n_cols,0,n_cols-1).array() -
-                                    (n_cols - 1)/2.)*engine().omb.pixel_size_rad;
+    Eigen::VectorXd rows_tan_vec = Eigen::VectorXd::LinSpaced(omb.n_rows, 0, omb.n_rows - 1).array() * omb.pixel_size_rad -
+                                   (omb.n_rows - 1) / 2.0 * omb.pixel_size_rad;
+    Eigen::VectorXd cols_tan_vec = Eigen::VectorXd::LinSpaced(omb.n_cols, 0, omb.n_cols - 1).array() * omb.pixel_size_rad -
+                                   (omb.n_cols - 1) / 2.0 * omb.pixel_size_rad;
 
-    map_extent_t map_extent = {n_rows, n_cols};
-    map_coord_t map_coord = {rows_tan_vec, cols_tan_vec};
 
     // push back map sizes and coordinates
-    map_extents.push_back(map_extent);
-    map_coords.push_back(map_coord);
+    map_extents.push_back({static_cast<int>(omb.n_rows), static_cast<int>(omb.n_cols)});
+    map_coords.push_back({std::move(rows_tan_vec), std::move(cols_tan_vec)});
 }
 
 // determine the map dimensions of the coadded map buffer
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::calc_cmb_size(std::vector<map_coord_t> &map_coords) {
-    // min/max rows and cols
-    double min_row, max_row, min_col, max_col;
+    auto& cmb = engine().cmb;
 
-    // set mins and maxes to first element
-    min_row = map_coords.at(0).front()(0);
-    max_row = map_coords.at(0).front()(map_coords.at(0).front().size() - 1);
+    // Initialize min/max values
+    double min_row = std::numeric_limits<double>::max();
+    double max_row = std::numeric_limits<double>::lowest();
+    double min_col = min_row;
+    double max_col = max_row;
 
-    min_col = map_coords.at(0).back()(0);
-    max_col = map_coords.at(0).back()(map_coords.at(0).back().size() - 1);
-
-    // loop through physical coordinates and get min/max
-    for (Eigen::Index i=0; i<map_coords.size(); ++i) {
-        auto rows_tan_vec = map_coords.at(i).front();
-        auto cols_tan_vec = map_coords.at(i).back();
-
-        auto n_pts_rows = rows_tan_vec.size();
-        auto n_pts_cols = cols_tan_vec.size();
-
-        // check global minimum row
-        if (rows_tan_vec(0) < min_row) {
-            min_row = rows_tan_vec(0);
-        }
-        // check global maximum row
-        if (rows_tan_vec(n_pts_rows-1) > max_row) {
-            max_row = rows_tan_vec(n_pts_rows-1);
-        }
-        // check global minimum col
-        if (cols_tan_vec(0) < min_col) {
-            min_col = cols_tan_vec(0);
-        }
-        // check global maximum col
-        if (cols_tan_vec(n_pts_cols-1) > max_col) {
-            max_col = cols_tan_vec(n_pts_cols-1);
-        }
+    // Find global min/max for rows and columns
+    for (const auto& coord : map_coords) {
+        min_row = std::min(min_row, coord.front().minCoeff());
+        max_row = std::max(max_row, coord.front().maxCoeff());
+        min_col = std::min(min_col, coord.back().minCoeff());
+        max_col = std::max(max_col, coord.back().maxCoeff());
     }
 
     // calculate dimensions
     auto calc_map_dims = [&](auto min_dim, auto max_dim) {
-        auto min_pix = ceil(abs(min_dim/engine().cmb.pixel_size_rad));
-        auto max_pix = ceil(abs(max_dim/engine().cmb.pixel_size_rad));
+        int min_pix = static_cast<int>(ceil(abs(min_dim / engine().cmb.pixel_size_rad)));
+        int max_pix = static_cast<int>(ceil(abs(max_dim / engine().cmb.pixel_size_rad)));
 
-        // get maximum size for dimension
-        max_pix = std::max(min_pix, max_pix);
-        // make the map odd
-        int n_dim = 2*max_pix + 1;
+        int n_dim = 2 * std::max(min_pix, max_pix) + 1;
+        Eigen::VectorXd dim_vec = Eigen::VectorXd::LinSpaced(n_dim, 0, n_dim - 1)
+                                          .array() * engine().cmb.pixel_size_rad - (n_dim - 1) / 2.0 * engine().cmb.pixel_size_rad;
 
-        // vector to store tangent plane coordinates
-        Eigen::VectorXd dim_vec = (Eigen::VectorXd::LinSpaced(n_dim,0,n_dim-1).array() -
-                                   (n_dim - 1)/2.)*engine().cmb.pixel_size_rad;
-
-        return std::tuple<int, Eigen::VectorXd>{n_dim, std::move(dim_vec)};
+        return std::make_tuple(n_dim, std::move(dim_vec));
     };
 
     // get dimensions and tangent coordinate vectorx
     auto [n_rows, rows_tan_vec] = calc_map_dims(min_row, max_row);
     auto [n_cols, cols_tan_vec] = calc_map_dims(min_col, max_col);
 
-    // set number of rows and cols
-    engine().cmb.n_rows = n_rows;
-    engine().cmb.n_cols = n_cols;
-
-    // set cmb wcs naxis
-    engine().cmb.wcs.naxis[1] = n_rows;
-    engine().cmb.wcs.naxis[0] = n_cols;
-
-    // pixel corresponding to reference value
-    double ref_pix_cols = (n_cols - 1)/2;
-    double ref_pix_rows = (n_rows - 1)/2;
-
-    // add cmb wcs crpix
-    engine().cmb.wcs.crpix[0] = ref_pix_cols;
-    engine().cmb.wcs.crpix[1] = ref_pix_rows;
-
-    // set tangent plane coordinate vectors
-    engine().cmb.rows_tan_vec = rows_tan_vec;
-    engine().cmb.cols_tan_vec = cols_tan_vec;
+    // Set dimensions and wcs parameters
+    cmb.n_rows = n_rows;
+    cmb.n_cols = n_cols;
+    cmb.wcs.naxis[1] = n_rows;
+    cmb.wcs.naxis[0] = n_cols;
+    cmb.wcs.crpix[0] = (n_cols - 1) / 2.0;
+    cmb.wcs.crpix[1] = (n_rows - 1) / 2.0;
+    cmb.rows_tan_vec = std::move(rows_tan_vec);
+    cmb.cols_tan_vec = std::move(cols_tan_vec);
 }
 
 // allocate observation map buffer
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map_coord_t &map_coord) {
-    // clear map vectors for each obs
-    engine().omb.signal.clear();
-    engine().omb.weight.clear();
-    engine().omb.kernel.clear();
-    engine().omb.coverage.clear();
-    engine().omb.pointing.clear();
+    auto& omb = engine().omb;
 
-    // set omb dim variables
-    engine().omb.n_rows = map_extent[0];
-    engine().omb.n_cols = map_extent[1];
+    omb.signal.clear();
+    omb.weight.clear();
+    omb.kernel.clear();
+    omb.coverage.clear();
+    omb.pointing.clear();
 
-    // set omb wcs naxis
-    engine().omb.wcs.naxis[1] = engine().omb.n_rows;
-    engine().omb.wcs.naxis[0] = engine().omb.n_cols;
+    // set omb dimensions and wcs parameters
+    omb.n_rows = map_extent[0];
+    omb.n_cols = map_extent[1];
+    omb.wcs.naxis[1] = omb.n_rows;
+    omb.wcs.naxis[0] = omb.n_cols;
+    omb.wcs.crpix[0] = (omb.n_cols - 1) / 2.0;
+    omb.wcs.crpix[1] = (omb.n_rows - 1) / 2.0;
 
-    // calc omb wcs crpix
-    double crpix1 = (engine().omb.n_cols - 1)/2;
-    double crpix2 = (engine().omb.n_rows - 1)/2;
+    // allocate and initialize matrices
+    Eigen::MatrixXd zero_matrix = Eigen::MatrixXd::Zero(omb.n_rows, omb.n_cols);
 
-    // set omb wcs crpix
-    engine().omb.wcs.crpix[0] = crpix1;
-    engine().omb.wcs.crpix[1] = crpix2;
-
-    // loop through n_maps and add zero matrix
     for (Eigen::Index i=0; i<engine().n_maps; ++i) {
-        engine().omb.signal.push_back(Eigen::MatrixXd::Zero(engine().omb.n_rows, engine().omb.n_cols));
-        engine().omb.weight.push_back(Eigen::MatrixXd::Zero(engine().omb.n_rows, engine().omb.n_cols));
+        omb.signal.push_back(zero_matrix);
+        omb.weight.push_back(zero_matrix);
 
         if (engine().rtcproc.run_kernel) {
-            // allocate kernel
-            engine().omb.kernel.push_back(Eigen::MatrixXd::Zero(engine().omb.n_rows, engine().omb.n_cols));
+            omb.kernel.push_back(zero_matrix);
         }
 
-        if (engine().map_grouping!="detector") {
-            // allocate coverage
-            engine().omb.coverage.push_back(Eigen::MatrixXd::Zero(engine().omb.n_rows, engine().omb.n_cols));
+        if (engine().map_grouping != "detector") {
+            omb.coverage.push_back(zero_matrix);
         }
     }
 
     if (engine().rtcproc.run_polarization) {
         // allocate pointing matrix
         for (Eigen::Index i=0; i<engine().n_maps/engine().rtcproc.polarization.stokes_params.size(); ++i) {
-            engine().omb.pointing.push_back(Eigen::Tensor<double,3>(engine().omb.n_rows, engine().omb.n_cols, 9));
-            engine().omb.pointing.at(i).setZero();
+            omb.pointing.emplace_back(omb.n_rows, omb.n_cols, 9);
+            engine().omb.pointing.back().setZero();
         }
     }
 
     // set tangent plane coordinate vectors
-    engine().omb.rows_tan_vec = map_coord[0];
-    engine().omb.cols_tan_vec = map_coord[1];
+    omb.rows_tan_vec = map_coord[0];
+    omb.cols_tan_vec = map_coord[1];
 }
 
 // allocate the coadded map buffer
@@ -1250,34 +1191,32 @@ void TimeOrderedDataProc<EngineType>::allocate_nmb(map_buffer_t &nmb) {
 // coadd maps
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::coadd() {
-    // offset between cmb and omb tangent plane coordinates (assumes omb and cmb are co-centered)
-    int delta_row = (engine().omb.rows_tan_vec(0) - engine().cmb.rows_tan_vec(0))/engine().cmb.pixel_size_rad;
-    int delta_col = (engine().omb.cols_tan_vec(0) - engine().cmb.cols_tan_vec(0))/engine().cmb.pixel_size_rad;
+    // calculate the offset between cmb and omb tangent plane coordinates
+    int delta_row = (engine().omb.rows_tan_vec(0) - engine().cmb.rows_tan_vec(0)) / engine().cmb.pixel_size_rad;
+    int delta_col = (engine().omb.cols_tan_vec(0) - engine().cmb.cols_tan_vec(0)) / engine().cmb.pixel_size_rad;
 
     // loop through the maps
     for (Eigen::Index i=0; i<engine().n_maps; ++i) {
-        // cmb.weight += omb.weight
-        engine().cmb.weight.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols) =
-            engine().cmb.weight.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols).array() +
-            engine().omb.weight.at(i).array();
+        // define common block references
+        auto cmb_weight_block = engine().cmb.weight.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols);
+        auto cmb_signal_block = engine().cmb.signal.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols);
 
-        // cmb.signal += omb.signal*omb.weight
-        engine().cmb.signal.at(i).block(delta_row, delta_col,engine().omb.n_rows, engine().omb.n_cols) =
-            engine().cmb.signal.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols).array() +
-            (engine().omb.signal.at(i).array()*engine().omb.weight.at(i).array()).array();
+        // update cmb.weight with omb.weight
+        cmb_weight_block += engine().omb.weight.at(i);
 
-        // cmb.kernel += omb.kernel*omb.weight
+        // update cmb.signal with omb.signal * omb.weight
+        cmb_signal_block += (engine().omb.signal.at(i).array() * engine().omb.weight.at(i).array()).matrix();
+
+        // update cmb.kernel with omb.kernel * omb.weight
         if (engine().rtcproc.run_kernel) {
-            engine().cmb.kernel.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols) =
-                engine().cmb.kernel.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols).array() +
-                (engine().omb.kernel.at(i).array()*engine().omb.weight.at(i).array()).array();
+            auto cmb_kernel_block = engine().cmb.kernel.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols);
+            cmb_kernel_block += (engine().omb.kernel.at(i).array() * engine().omb.weight.at(i).array()).matrix();
         }
 
-        // coverage +=coverage
+        // update coverage
         if (!engine().cmb.coverage.empty()) {
-            engine().cmb.coverage.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols) =
-                engine().cmb.coverage.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols).array() +
-                engine().omb.coverage.at(i).array();
+            auto cmb_coverage_block = engine().cmb.coverage.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols);
+            cmb_coverage_block += engine().omb.coverage.at(i);
         }
     }
 }

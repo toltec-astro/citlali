@@ -1646,10 +1646,14 @@ void Engine::write_map_summary(map_buffer_t &mb) {
         // loop through noise maps and check for nans and infs
         if (!mb.noise.empty()) {
             for (Eigen::Index j=0; j<mb.noise.size(); ++j) {
-                Eigen::Tensor<double,2> out = mb.noise[i].chip(j,2);
-                auto out_matrix = Eigen::Map<Eigen::MatrixXd>(out.data(), out.dimension(0), out.dimension(1));
-                n_nans["noise"] = n_nans["noise"] + out_matrix.array().isNaN().count();
-                n_infs["noise"] = n_infs["noise"] + out_matrix.array().isInf().count();
+                //Eigen::Tensor<double,2> out = mb.noise[i].chip(j,2);
+                //auto out_matrix = Eigen::Map<Eigen::MatrixXd>(out.data(), out.dimension(0), out.dimension(1));
+
+                Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(mb.noise[i].data() + j * mb.n_rows * mb.n_cols,
+                                                                                               mb.n_rows, mb.n_cols);
+
+                n_nans["noise"] = n_nans["noise"] + noise_matrix.array().isNaN().count();
+                n_infs["noise"] = n_infs["noise"] + noise_matrix.array().isInf().count();
             }
         }
     }
@@ -2067,12 +2071,14 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
     // write noise maps
     if (!mb->noise.empty()) {
         for (Eigen::Index n=0; n<mb->n_noise; ++n) {
-            Eigen::Tensor<double,2> out = mb->noise[i].chip(n,2);
-            auto out_matrix = Eigen::Map<Eigen::MatrixXd>(out.data(), out.dimension(0), out.dimension(1));
+            //Eigen::Tensor<double,2> out = mb->noise[i].chip(n,2);
+            //auto out_matrix = Eigen::Map<Eigen::MatrixXd>(out.data(), out.dimension(0), out.dimension(1));
 
-            noise_fits_io->at(map_index).add_hdu("signal_" + map_name + std::to_string(n) + "_" +
-                                                 rtcproc.polarization.stokes_params[stokes_index],
-                                                 out_matrix);
+            Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(mb->noise[i].data() + n * mb->n_rows * mb->n_cols,
+                                                                                           mb->n_rows, mb->n_cols);
+
+            noise_fits_io->at(map_index).add_hdu("signal_" + map_name + std::to_string(n) + "_" + rtcproc.polarization.stokes_params[stokes_index],
+                                                 noise_matrix);
             noise_fits_io->at(map_index).add_wcs(noise_fits_io->at(map_index).hdus.back(),mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
             noise_fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
             noise_fits_io->at(map_index).hdus.back()->addKey("MEANRMS", mb->mean_rms[i], "Mean RMS of noise maps");

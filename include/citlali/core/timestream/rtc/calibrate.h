@@ -127,10 +127,6 @@ auto Calibration::calc_tau(Eigen::DenseBase<Derived> &elev, double tau_225_GHz) 
 
     // zenith angle
     auto cz = cos(pi/2 - elev.derived().array());
-
-    // David Tholen’s approximation for airmass
-    //auto A = sqrt(235225.0*cz*cz + 970.0 + 1.0) - 485*cz;
-
     auto secz = 1. / cz;
     auto A = secz * (1. - 0.0012 * (pow(secz.array(), 2) - 1.));
 

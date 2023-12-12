@@ -194,27 +194,9 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     // pointer to map buffer with noise maps
     ObsMapBuffer* nmb = nullptr;
 
-    // matrix to hold random noise value
-    Eigen::Matrix<int,Eigen::Dynamic, Eigen::Dynamic> noise;
-
     if (run_noise) {
-        // declare random number generator
-        thread_local boost::random::mt19937 eng;
-
-        // boost random number generator (0,1)
-        boost::random::uniform_int_distribution<> rands{0,1};
-
         // set pointer to cmb or omb for noise maps
         nmb = use_cmb ? &cmb : (use_omb ? &omb : nullptr);
-        if (nmb) {
-            if (nmb->randomize_dets) {
-                noise = Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic>::Zero(nmb->n_noise, n_dets)
-                            .unaryExpr([&](int dummy){ return 2 * rands(eng) - 1; });
-            } else {
-                noise = Eigen::Matrix<int, Eigen::Dynamic, 1>::Zero(nmb->n_noise)
-                            .unaryExpr([&](int dummy){ return 2 * rands(eng) - 1; });
-            }
-        }
     }
 
     // placeholder vectors for grppi loop
@@ -283,8 +265,47 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                     if (run_omb) {
                         // make sure the data point is within the map
                         if ((omb_ir >= 0) && (omb_ir < omb.n_rows) && (omb_ic >= 0) && (omb_ic < omb.n_cols)) {
+
+                            int lower_row = omb_ir - mat_rows_center;
+                            int upper_row = omb_ir + mat_rows - 1 - mat_rows_center;
+                            int lower_col = omb_ic - mat_cols_center;
+                            int upper_col = omb_ic + mat_cols - 1 - mat_cols_center;
+
+                            int jinc_lower_row = abs(std::min(0, lower_row));
+                            int jinc_lower_col = abs(std::min(0, lower_col));
+
+                            lower_row = std::max(0,lower_row);
+                            upper_row = std::min(static_cast<int>(omb.n_rows - 1),upper_row);
+                            lower_col = std::max(0,lower_col);
+                            upper_col = std::min(static_cast<int>(omb.n_cols - 1),upper_col);
+
+                            int size_rows = upper_row - lower_row + 1;
+                            int size_cols = upper_col - lower_col + 1;
+
+                            auto sig_block = omb.signal[map_index].block(lower_row,lower_col,size_rows,size_cols);
+                            auto wt_block = omb.weight[map_index].block(lower_row,lower_col,size_rows,size_cols);
+                            auto cov_block = omb.coverage[map_index].block(lower_row,lower_col,size_rows,size_cols);
+
+                            const auto mat_block = jinc_weights_mat[array_index].block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
+
+                            // populate signal map
+                            sig_block += mat_block*in.weights.data(i)*in.scans.data(j,i);
+                            // populate weight map
+                            wt_block += mat_block*in.weights.data(i);
+
+                            // populate coverage map
+                            if (run_coverage) {
+                                cov_block += mat_block/d_fsmp;
+                            }
+
+                            // populate kernel map
+                            if (run_kernel) {
+                                auto ker_block = omb.kernel[map_index].block(lower_row,lower_col,size_rows,size_cols);
+                                ker_block += mat_block*in.weights.data(i)*in.kernel.data(j,i);
+                            }
+
                             // loop through nearby rows and cols
-                            for (Eigen::Index r=0; r<mat_rows; ++r) {
+                            /*for (Eigen::Index r=0; r<mat_rows; ++r) {
                                 for (Eigen::Index c=0; c<mat_cols; ++c) {
                                     // get pixel in map
                                     Eigen::Index ri = omb_ir + r - mat_rows_center;
@@ -334,7 +355,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                                         }
                                     }
                                 }
-                            }
+                            }*/
                         }
                     }
 
@@ -354,8 +375,42 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
 
                         // make sure pixel is in the map
                         if ((nmb_ir >= 0) && (nmb_ir < nmb->n_rows) && (nmb_ic >= 0) && (nmb_ic < nmb->n_cols)) {
+
+                            int lower_row = nmb_ir - mat_rows_center;
+                            int upper_row = nmb_ir + mat_rows - 1 - mat_rows_center;
+                            int lower_col = nmb_ic - mat_cols_center;
+                            int upper_col = nmb_ic + mat_cols - 1 - mat_cols_center;
+
+                            int jinc_lower_row = abs(std::min(0, lower_row));
+                            int jinc_lower_col = abs(std::min(0, lower_col));
+
+                            lower_row = std::max(0,lower_row);
+                            upper_row = std::min(static_cast<int>(nmb->n_rows - 1),upper_row);
+                            lower_col = std::max(0,lower_col);
+                            upper_col = std::min(static_cast<int>(nmb->n_cols - 1),upper_col);
+
+                            int size_rows = upper_row - lower_row + 1;
+                            int size_cols = upper_col - lower_col + 1;
+
+                            const auto mat_block = jinc_weights_mat[array_index].block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
+                            signal = in.scans.data(j,i)*in.weights.data(i);
+
+                            for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
+                                // randomizing on dets
+                                if (nmb->randomize_dets) {
+                                    noise_v = in.noise.data(nn,i)*signal;
+                                }
+                                else {
+                                    noise_v = in.noise.data(nn)*signal;
+                                }
+                                Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(nmb->noise[map_index].data() + nn * nmb->n_rows * nmb->n_cols,
+                                                                                                               nmb->n_rows, nmb->n_cols);
+                                auto noise_block = noise_matrix.block(lower_row,lower_col,size_rows,size_cols);
+                                noise_block += mat_block*noise_v;
+                            }
+
                             // loop through nearby rows and cols
-                            for (Eigen::Index r=0; r<mat_rows; ++r) {
+                            /*for (Eigen::Index r=0; r<mat_rows; ++r) {
                                 for (Eigen::Index c=0; c<mat_cols; ++c) {
                                     // get pixel in map
                                     Eigen::Index ri = nmb_ir + r - mat_rows_center;
@@ -382,10 +437,10 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                                         for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
                                             // randomizing on dets
                                             if (nmb->randomize_dets) {
-                                                noise_v = noise(nn,i)*signal;
+                                                noise_v = in.noise.data(nn,i)*signal;
                                             }
                                             else {
-                                                noise_v = noise(nn)*signal;
+                                                noise_v = in.noise.data(nn)*signal;
                                             }
                                             // allocate pixel for current noise map
                                             nmb->noise[map_index](ri,ci,nn) += noise_v;
@@ -399,7 +454,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                                         }
                                     }
                                 }
-                            }
+                            }*/
                         }
                     }
                 }

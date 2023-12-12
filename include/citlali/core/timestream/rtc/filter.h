@@ -46,51 +46,43 @@ void Filter::make_filter(double fsmp) {
     // determine alpha parameter based on Gibbs factor
     double alpha;
 
-    if (a_gibbs < 21.) {
-        alpha = 0.;
+    if (a_gibbs < 21.0) {
+        alpha = 0.0;
     }
-    if (a_gibbs > 50) {
+    else if (a_gibbs > 50.0) {
         alpha = 0.1102 * (a_gibbs - 8.7);
     }
-    if (a_gibbs >= 21. && a_gibbs <= 50) {
-        alpha = 0.5842 * std::pow(a_gibbs - 21., 0.4) + 0.07886 * (a_gibbs - 21.);
+    else {
+        alpha = 0.5842 * std::pow(a_gibbs - 21.0, 0.4) + 0.07886 * (a_gibbs - 21.0);
     }
 
     // argument for bessel function
-    Eigen::VectorXd arg(n_terms);
-    arg.setLinSpaced(n_terms, 1, n_terms);
-    arg = alpha * sqrt(1. - (arg / n_terms).cwiseAbs2().array());
+    Eigen::VectorXd arg = Eigen::VectorXd::LinSpaced(n_terms, 1, n_terms);
+    arg = alpha * (1.0 - (arg / n_terms).cwiseAbs2().array()).sqrt();
 
-    // calculate the coefficients from bessel functions.  a loop appears to
-    // be required here.
-    Eigen::VectorXd coef(n_terms);
-
-    // loop through and calculate coefficients
-    // boost is faster than eigen/unsupported/special_functions
-
+    // calculate the coefficients from bessel functions.
     double i_0_alpha = boost::math::cyl_bessel_i(0, alpha);
 
-    for (Eigen::Index i=0; i<n_terms; i++) {
-        coef(i) = boost::math::cyl_bessel_i(0, arg(i)) / i_0_alpha;
-    }
+    Eigen::VectorXd coef = arg.unaryExpr([i_0_alpha](double x) {
+        return boost::math::cyl_bessel_i(0, x) / i_0_alpha;
+    });
 
     // generate time array
-    Eigen::VectorXd t(n_terms);
-    t.setLinSpaced(n_terms, 1, n_terms);
-    t = t*pi;
+   Eigen::VectorXd t = Eigen::VectorXd::LinSpaced(n_terms, 1, n_terms) * pi;
 
     // multiply coefficients by time array trig functions
     coef = coef.array()*(sin(t.array()*f_high) - sin(t.array()*f_low)) /
            t.array();
 
     // populate the filter vector
-    filter.setZero(2*n_terms + 1);
+    filter.resize(2 * n_terms + 1);
+    filter.setZero();
     filter.head(n_terms) = coef.reverse();
     filter(n_terms) = f_high - f_low - f_stop;
     filter.tail(n_terms) = coef;
 
     // normalize with sum
-    double filter_sum = filter.sum();
+    //double filter_sum = filter.sum();
     //filter = filter.array() / filter_sum;
 }
 
@@ -178,7 +170,7 @@ void Filter::iir(Eigen::DenseBase<Derived> &in) {
         double x_1 = 0.;
         double y_2 = 0.;
         double y_1 = 0.;
-        for (Eigen::Index j=0; j<in.rows(); j++) {
+        for (Eigen::Index j=0; j<in.rows(); ++j) {
             out(j,i) = notch_a(0) * in(j,i) + notch_a(1) * x_1 + notch_a(2) * x_2
                         + notch_b(1) * y_1 + notch_b(2) * y_2;
             x_2 = x_1;
