@@ -117,11 +117,11 @@ void Pointing::setup(int fruit_iter) {
     }
 
     // populate ppt meta information
-    for (const auto &[key,val]: ppt_header_units) {
-        ppt_meta[key].push_back("units: " + val);
+    for (const auto &[param,unit]: ppt_header_units) {
+        ppt_meta[param].push_back("units: " + unit);
         // description from apt
-        auto description = calib.apt_header_description[key];
-        ppt_meta[key].push_back(description);
+        auto description = calib.apt_header_description[unit];
+        ppt_meta[param].push_back(description);
     }
 
     // add point model variables from telescope file
@@ -158,8 +158,8 @@ auto Pointing::run() {
         }
 
         // copy pointing offsets
-        for (auto const& [key,val]: pointing_offsets_arcsec) {
-            rtcdata.pointing_offsets_arcsec.data[key] = val.segment(si,sl);
+        for (auto const& [axis,offset]: pointing_offsets_arcsec) {
+            rtcdata.pointing_offsets_arcsec.data[axis] = offset.segment(si,sl);
         }
 
         // get hwpr
@@ -461,6 +461,10 @@ void Pointing::output() {
 
     // determine pointers and directory name based on map_type
     if constexpr (map_type == mapmaking::RawObs || map_type == mapmaking::FilteredObs) {
+        // create output map files
+        if (run_mapmaking) {
+            create_obs_map_files();
+        }
         mb = &omb;
         dir_name = obsnum_dir_name + (map_type == mapmaking::RawObs ? "raw/" : "filtered/");
         f_io = (map_type == mapmaking::RawObs) ? &fits_io_vec : &filtered_fits_io_vec;

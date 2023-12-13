@@ -481,9 +481,17 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     out.fcf.data = in.fcf.data;
     // copy chunk status
     out.status = in.status;
-
     // copy noise
     out.noise.data = in.noise.data;
+
+    // empty rtcdata
+    in.scans.data.resize(0,0);
+    in.flags.data.resize(0,0);
+    in.kernel.data.resize(0,0);
+    in.tel_data.data.clear();
+    in.pointing_offsets_arcsec.data.clear();
+    in.hwpr_angle.data.resize(0);
+    in.angle.data.resize(0,0);
 
     return std::tuple<Eigen::VectorXI,Eigen::VectorXI,Eigen::VectorXI,Eigen::VectorXI>(map_indices, array_indices, nw_indices, det_indices);
 }

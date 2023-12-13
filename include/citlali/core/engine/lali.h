@@ -57,8 +57,8 @@ auto Lali::run() {
         }
 
         // copy pointing offsets
-        for (auto const& [key,val]: pointing_offsets_arcsec) {
-            rtcdata.pointing_offsets_arcsec.data[key] = val.segment(si,sl);
+        for (auto const& [axis,offset]: pointing_offsets_arcsec) {
+            rtcdata.pointing_offsets_arcsec.data[axis] = offset.segment(si,sl);
         }
 
         // get hwpr
@@ -309,6 +309,11 @@ void Lali::output() {
 
     // set common variables depending on map_type
     if constexpr (map_type == mapmaking::RawObs || map_type == mapmaking::FilteredObs) {
+        // create output map files
+        if (run_mapmaking) {
+            create_obs_map_files();
+        }
+
         mb = &omb;
         dir_name = obsnum_dir_name + (map_type == mapmaking::RawObs ? "raw/" : "filtered/");
         f_io = (map_type == mapmaking::RawObs) ? &fits_io_vec : &filtered_fits_io_vec;

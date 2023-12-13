@@ -405,12 +405,6 @@ void Engine::obsnum_setup(int fruit_iter) {
         }
     }
 
-    // create output map files
-    if (run_mapmaking) {
-        //if (ptcproc.save_all_iters || fruit_iter == ptcproc.fruit_loops_iters - 1) {
-            create_obs_map_files();
-        //}
-    }
     // create timestream files
     if (run_tod_output) {
         //if (ptcproc.save_all_iters || fruit_iter == ptcproc.fruit_loops_iters - 1) {
@@ -469,6 +463,7 @@ void Engine::obsnum_setup(int fruit_iter) {
     }
     // clear stored eigenvalues
     diagnostics.evals.clear();
+    std::map<Eigen::Index, std::vector<std::vector<Eigen::VectorXd>>>().swap(diagnostics.evals);
 }
 
 template<typename CT>
@@ -496,6 +491,10 @@ void Engine::get_ptc_config(CT &config) {
     logger->info("getting ptc config options");
     // get ptcproc config
     ptcproc.get_config(config, missing_keys, invalid_keys);
+
+    // copy tod output bool for eigenvalues
+    ptcproc.run_tod_output = run_tod_output;
+    ptcproc.write_evals = diagnostics.write_evals;
 }
 
 template<typename CT>

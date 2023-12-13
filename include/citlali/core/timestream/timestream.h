@@ -272,6 +272,9 @@ public:
         NegativeMap = 5
     };
 
+    // tod output
+    bool run_tod_output, write_evals;
+
     // run fruit loops
     bool run_fruit_loops;
     // path for input images
@@ -347,11 +350,12 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     namespace fs = std::filesystem;
 
     // clear map buffer
-    tod_mb.signal.clear();
-    tod_mb.weight.clear();
-    tod_mb.kernel.clear();
-    tod_mb.noise.clear();
-    tod_mb.wcs.cunit.clear();
+    std::vector<Eigen::MatrixXd>().swap(tod_mb.signal);
+    std::vector<Eigen::MatrixXd>().swap(tod_mb.weight);
+    std::vector<Eigen::MatrixXd>().swap(tod_mb.kernel);
+    std::vector<Eigen::Tensor<double,3>>().swap(tod_mb.noise);
+    std::vector<std::string>().swap(tod_mb.wcs.cunit);
+
     tod_mb.mean_rms.resize(0);
 
     // resize wcs params

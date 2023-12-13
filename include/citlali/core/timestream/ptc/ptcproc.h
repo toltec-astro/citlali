@@ -176,9 +176,11 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 
             logger->debug("cleaning with {} grouping", group);
 
-            // add current group to eval/evec vectors
-            out.evals.data.push_back({});
-            out.evecs.data.push_back({});
+            if (run_tod_output || write_evals) {
+                // add current group to eval/evec vectors
+                out.evals.data.emplace_back();
+                out.evecs.data.emplace_back();
+            }
 
             // map of tuples to hold detector limits
             std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
@@ -198,21 +200,17 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 if (group=="all") {
                     arr_index = calib.arrays(0);
                 }
-
                 // use network grouping
                 else if (group=="nw" || group=="network") {
                     arr_index = toltec_io.nw_to_array_map[key];
                 }
-
                 // use array grouping
                 else if (group=="array") {
                     arr_index = key;
                 }
 
-                // starting index
-                auto start_index = std::get<0>(val);
-                // size of block for each grouping
-                auto n_dets = std::get<1>(val) - std::get<0>(val);
+                // start index and number of detectors
+                auto [start_index, n_dets] = std::make_tuple(std::get<0>(val), std::get<1>(val) - std::get<0>(val));
 
                 // matrix for flags so we don't overwrite the raw flags
                 Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> masked_flags;
@@ -226,6 +224,9 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 else {
                     masked_flags = in.flags.data.block(0, start_index, n_pts, n_dets);
                 }
+
+                auto in_scans_block = in.scans.data.block(0, start_index, n_pts, n_dets);
+                auto out_scans_block = out.scans.data.block(0, start_index, n_pts, n_dets);
 
                 // get the reference block of in scans that corresponds to the current array
                 Eigen::Ref<Eigen::MatrixXd> in_scans_ref = in.scans.data.block(0, start_index, n_pts, n_dets);
@@ -241,27 +242,30 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                     out_scans(out_scans_ref.data(), out_scans_ref.rows(), out_scans_ref.cols(),
                               Eigen::OuterStride<>(out_scans_ref.outerStride()));
 
+
                 // get the block of out scans that corresponds to the current array
                 auto apt_flags = calib.apt["flag"].segment(start_index, n_dets);
 
                 // check if any good flags
                 if ((apt_flags.array()==0).any()) {
                     // calculate eigenvalues and eigenvalues
-                    auto [evals, evecs] = cleaner.calc_eig_values<timestream::Cleaner::SpectraBackend>(in_scans, masked_flags, apt_flags,
+                    auto [evals, evecs] = cleaner.calc_eig_values<timestream::Cleaner::SpectraBackend>(in_scans_block, masked_flags, apt_flags,
                                                                                                        cleaner.n_eig_to_cut[arr_index](indx));
                     logger->debug("evals {}", evals);
                     logger->debug("evecs {}", evecs);
 
-                    // get first 64 eigenvalues and eigenvectors
-                    Eigen::VectorXd ev = evals.head(cleaner.n_calc);
-                    Eigen::MatrixXd evc = evecs.leftCols(cleaner.n_calc);
+                    if (run_tod_output || write_evals) {
+                        // get first 64 eigenvalues and eigenvectors
+                        Eigen::VectorXd ev = evals.head(cleaner.n_calc);
+                        Eigen::MatrixXd evc = evecs.leftCols(cleaner.n_calc);
 
-                    // copy evals and evecs to ptcdata
-                    out.evals.data[indx].push_back(std::move(ev));
-                    out.evecs.data[indx].push_back(std::move(evc));
+                        // copy evals and evecs to ptcdata
+                        out.evals.data[indx].push_back(std::move(ev));
+                        out.evecs.data[indx].push_back(std::move(evc));
+                    }
 
                     // remove eigenvalues from the data and reconstruct the tod
-                    cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_scans, masked_flags, evals, evecs, out_scans,
+                    cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_scans_block, masked_flags, evals, evecs, out_scans_block,
                                                                                    cleaner.n_eig_to_cut[arr_index](indx));
 
                     if (in.kernel.data.size()!=0) {
@@ -281,8 +285,11 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                                 out_kernel(out_kernel_ref.data(), out_kernel_ref.rows(), out_scans_ref.cols(),
                                            Eigen::OuterStride<>(out_kernel_ref.outerStride()));
 
+                            auto in_kernel_block = in.kernel.data.block(0, start_index, n_pts, n_dets);
+                            auto out_kernel_block = in.kernel.data.block(0, start_index, n_pts, n_dets);
+
                             // remove eigenvalues from the kernel and reconstruct the tod
-                            cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_kernel, masked_flags, evals, evecs, out_kernel,
+                            cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_kernel_block, masked_flags, evals, evecs, out_kernel_block,
                                                                                            cleaner.n_eig_to_cut[arr_index](indx));
                     }
                 }

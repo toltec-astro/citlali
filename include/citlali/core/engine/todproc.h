@@ -1098,11 +1098,11 @@ template <class EngineType>
 void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map_coord_t &map_coord) {
     auto& omb = engine().omb;
 
-    omb.signal.clear();
-    omb.weight.clear();
-    omb.kernel.clear();
-    omb.coverage.clear();
-    omb.pointing.clear();
+    std::vector<Eigen::MatrixXd>().swap(omb.signal);
+    std::vector<Eigen::MatrixXd>().swap(omb.weight);
+    std::vector<Eigen::MatrixXd>().swap(omb.kernel);
+    std::vector<Eigen::MatrixXd>().swap(omb.coverage);
+    std::vector<Eigen::Tensor<double,3>>().swap(omb.pointing);
 
     // set omb dimensions and wcs parameters
     omb.n_rows = map_extent[0];
@@ -1144,34 +1144,36 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
 // allocate the coadded map buffer
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::allocate_cmb() {
+    auto& cmb = engine().cmb;
+
     // clear map vectors
-    engine().cmb.signal.clear();
-    engine().cmb.weight.clear();
-    engine().cmb.kernel.clear();
-    engine().cmb.coverage.clear();
-    engine().cmb.pointing.clear();
+    std::vector<Eigen::MatrixXd>().swap(cmb.signal);
+    std::vector<Eigen::MatrixXd>().swap(cmb.weight);
+    std::vector<Eigen::MatrixXd>().swap(cmb.kernel);
+    std::vector<Eigen::MatrixXd>().swap(cmb.coverage);
+    std::vector<Eigen::Tensor<double,3>>().swap(cmb.pointing);
 
     // loop through maps and allocate space
     for (Eigen::Index i=0; i<engine().n_maps; ++i) {
-        engine().cmb.signal.push_back(Eigen::MatrixXd::Zero(engine().cmb.n_rows, engine().cmb.n_cols));
-        engine().cmb.weight.push_back(Eigen::MatrixXd::Zero(engine().cmb.n_rows, engine().cmb.n_cols));
+        cmb.signal.push_back(Eigen::MatrixXd::Zero(cmb.n_rows, cmb.n_cols));
+        cmb.weight.push_back(Eigen::MatrixXd::Zero(cmb.n_rows, cmb.n_cols));
 
         if (engine().rtcproc.run_kernel) {
             // allocate kernel
-            engine().cmb.kernel.push_back(Eigen::MatrixXd::Zero(engine().cmb.n_rows, engine().cmb.n_cols));
+            cmb.kernel.push_back(Eigen::MatrixXd::Zero(cmb.n_rows, cmb.n_cols));
         }
 
         if (engine().map_grouping!="detector") {
             // allocate coverage
-            engine().cmb.coverage.push_back(Eigen::MatrixXd::Zero(engine().cmb.n_rows, engine().cmb.n_cols));
+            cmb.coverage.push_back(Eigen::MatrixXd::Zero(cmb.n_rows, cmb.n_cols));
         }
     }
 
     if (engine().rtcproc.run_polarization && engine().run_noise) {
         // allocate pointing matrix
         for (Eigen::Index i=0; i<engine().n_maps/engine().rtcproc.polarization.stokes_params.size(); ++i) {
-            engine().cmb.pointing.push_back(Eigen::Tensor<double,3>(engine().cmb.n_rows, engine().cmb.n_cols, 9));
-            engine().cmb.pointing.at(i).setZero();
+            cmb.pointing.push_back(Eigen::Tensor<double,3>(cmb.n_rows, cmb.n_cols, 9));
+            cmb.pointing.at(i).setZero();
         }
     }
 }
@@ -1180,10 +1182,11 @@ template <class EngineType>
 template <class map_buffer_t>
 void TimeOrderedDataProc<EngineType>::allocate_nmb(map_buffer_t &nmb) {
     // clear noise map buffer
-    nmb.noise.clear();
+    std::vector<Eigen::Tensor<double,3>>().swap(nmb.noise);
+
     // resize noise maps (n_maps, [n_rows, n_cols, n_noise])
     for (Eigen::Index i=0; i<engine().n_maps; ++i) {
-        nmb.noise.push_back(Eigen::Tensor<double,3>(nmb.n_rows, nmb.n_cols, nmb.n_noise));
+        nmb.noise.emplace_back(nmb.n_rows, nmb.n_cols, nmb.n_noise);
         nmb.noise.at(i).setZero();
     }
 }
@@ -1223,74 +1226,71 @@ void TimeOrderedDataProc<EngineType>::coadd() {
 
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::create_coadded_map_files() {
-    // if coaddition is requested
-    if (engine().run_coadd) {
-        // clear fits_io vectors
-        engine().coadd_fits_io_vec.clear();
-        engine().coadd_noise_fits_io_vec.clear();
-        engine().filtered_coadd_fits_io_vec.clear();
-        engine().filtered_coadd_noise_fits_io_vec.clear();
+    // clear fits_io vectors
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>().swap(engine().coadd_fits_io_vec);
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>().swap(engine().coadd_noise_fits_io_vec);
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>().swap(engine().filtered_coadd_fits_io_vec);
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>().swap(engine().filtered_coadd_noise_fits_io_vec);
 
-        // loop through arrays
-        for (Eigen::Index i=0; i<engine().calib.n_arrays; ++i) {
-            // array index
-            auto array = engine().calib.arrays[i];
-            // array name
-            std::string array_name = engine().toltec_io.array_name_map[array];
-            // map filename
-            auto filename = engine().toltec_io.template create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::map,
+    // loop through arrays
+    for (Eigen::Index i=0; i<engine().calib.n_arrays; ++i) {
+        // array index
+        auto array = engine().calib.arrays[i];
+        // array name
+        std::string array_name = engine().toltec_io.array_name_map[array];
+        // map filename
+        auto filename = engine().toltec_io.template create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::map,
+                                                                    engine_utils::toltecIO::raw>(engine().coadd_dir_name + "raw/",
+                                                                                                 "", array_name, "",
+                                                                                                 engine().telescope.sim_obs);
+        // create fits_io class for current array file
+        fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
+        // append to fits_io vector
+        engine().coadd_fits_io_vec.push_back(std::move(fits_io));
+
+        // if noise maps requested
+        if (engine().run_noise) {
+            // noise map filename
+            auto filename = engine().toltec_io.template create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::noise,
                                                                         engine_utils::toltecIO::raw>(engine().coadd_dir_name + "raw/",
                                                                                                      "", array_name, "",
                                                                                                      engine().telescope.sim_obs);
             // create fits_io class for current array file
             fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
             // append to fits_io vector
-            engine().coadd_fits_io_vec.push_back(std::move(fits_io));
+            engine().coadd_noise_fits_io_vec.push_back(std::move(fits_io));
+        }
+    }
+
+    // if map filtering are requested
+    if (engine().run_map_filter) {
+        // loop through arrays
+        for (Eigen::Index i=0; i<engine().calib.n_arrays; ++i) {
+            // array index
+            auto array = engine().calib.arrays[i];
+            // array name
+            std::string array_name = engine().toltec_io.array_name_map[array];
+            // filtered map filename
+            auto filename = engine().toltec_io.template create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::map,
+                                                                        engine_utils::toltecIO::filtered>(engine().coadd_dir_name +
+                                                                                                          "filtered/","", array_name,
+                                                                                                          "", engine().telescope.sim_obs);
+            // create fits_io class for current array file
+            fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
+            // append to fits_io vector
+            engine().filtered_coadd_fits_io_vec.push_back(std::move(fits_io));
 
             // if noise maps requested
             if (engine().run_noise) {
-                // noise map filename
+                // filtered noise map filename
                 auto filename = engine().toltec_io.template create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::noise,
-                                                                            engine_utils::toltecIO::raw>(engine().coadd_dir_name + "raw/",
-                                                                                                         "", array_name, "",
-                                                                                                         engine().telescope.sim_obs);
-                // create fits_io class for current array file
-                fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
-                // append to fits_io vector
-                engine().coadd_noise_fits_io_vec.push_back(std::move(fits_io));
-            }
-        }
-
-        // if map filtering are requested
-        if (engine().run_map_filter) {
-            // loop through arrays
-            for (Eigen::Index i=0; i<engine().calib.n_arrays; ++i) {
-                // array index
-                auto array = engine().calib.arrays[i];
-                // array name
-                std::string array_name = engine().toltec_io.array_name_map[array];
-                // filtered map filename
-                auto filename = engine().toltec_io.template create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::map,
                                                                             engine_utils::toltecIO::filtered>(engine().coadd_dir_name +
                                                                                                               "filtered/","", array_name,
                                                                                                               "", engine().telescope.sim_obs);
                 // create fits_io class for current array file
                 fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
                 // append to fits_io vector
-                engine().filtered_coadd_fits_io_vec.push_back(std::move(fits_io));
-
-                // if noise maps requested
-                if (engine().run_noise) {
-                    // filtered noise map filename
-                    auto filename = engine().toltec_io.template create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::noise,
-                                                                                engine_utils::toltecIO::filtered>(engine().coadd_dir_name +
-                                                                                                                  "filtered/","", array_name,
-                                                                                                                  "", engine().telescope.sim_obs);
-                    // create fits_io class for current array file
-                    fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
-                    // append to fits_io vector
-                    engine().filtered_coadd_noise_fits_io_vec.push_back(std::move(fits_io));
-                }
+                engine().filtered_coadd_noise_fits_io_vec.push_back(std::move(fits_io));
             }
         }
     }

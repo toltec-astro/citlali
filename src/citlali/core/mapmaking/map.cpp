@@ -348,16 +348,16 @@ std::tuple<double, Eigen::MatrixXd, Eigen::Index, Eigen::Index> ObsMapBuffer::ca
 // loop through maps
 void ObsMapBuffer::calc_map_psd() {
     // clear psd vectors
-    psds.clear();
-    psd_freqs.clear();
-    psd_2ds.clear();
-    psd_2d_freqs.clear();
+    std::vector<Eigen::VectorXd>().swap(psds);
+    std::vector<Eigen::VectorXd>().swap(psd_freqs);
+    std::vector<Eigen::MatrixXd>().swap(psd_2ds);
+    std::vector<Eigen::MatrixXd>().swap(psd_2d_freqs);
 
     // clear noise psd vectors
-    noise_psds.clear();
-    noise_psd_freqs.clear();
-    noise_psd_2ds.clear();
-    noise_psd_2d_freqs.clear();
+    std::vector<Eigen::VectorXd>().swap(noise_psds);
+    std::vector<Eigen::VectorXd>().swap(noise_psd_freqs);
+    std::vector<Eigen::MatrixXd>().swap(noise_psd_2ds);
+    std::vector<Eigen::MatrixXd>().swap(noise_psd_2d_freqs);
 
     // loop through maps
     for (Eigen::Index i=0; i<signal.size(); ++i) {
@@ -425,12 +425,11 @@ void ObsMapBuffer::calc_map_psd() {
 }
 
 void ObsMapBuffer::calc_map_hist() {
-    // clear storage vectors
-    hists.clear();
-    hist_bins.clear();
-
-    noise_hists.clear();
-    noise_hist_bins.clear();
+    // clear vectors
+    std::vector<Eigen::VectorXd>().swap(hists);
+    std::vector<Eigen::VectorXd>().swap(hist_bins);
+    std::vector<Eigen::VectorXd>().swap(noise_hists);
+    std::vector<Eigen::VectorXd>().swap(noise_hist_bins);
 
     // loop through maps
     for (Eigen::Index i=0; i<signal.size(); ++i) {

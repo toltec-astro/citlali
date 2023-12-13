@@ -153,13 +153,8 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     Eigen::MatrixXd evecs;
 
     if constexpr (backend == SpectraBackend) {
-        // number of eigenvalues to remove
-        int n_ev = group_n_eig;
-
         // if using std dev limit and n_eig_to_cut is zero, use all detectors (-1 for spectra requirement)
-        if (stddev_limit > 0 && group_n_eig==0) {
-            n_ev = n_dets - 1;
-        }
+        int n_ev = (stddev_limit > 0 && group_n_eig==0) ? n_dets - 1: group_n_eig;
 
         // number of values to calculate
         int n_cv;
@@ -191,7 +186,6 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
         }
         else {
             throw std::runtime_error("spectra failed to compute eigen values");
-            std::exit(EXIT_FAILURE);
         }
     }
 
@@ -209,7 +203,6 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
         }
         else {
             throw std::runtime_error("eigen failed to compute eigen values");
-            std::exit(EXIT_FAILURE);
         }
     }
 
