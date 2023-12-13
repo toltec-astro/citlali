@@ -1212,6 +1212,8 @@ void Engine::add_tod_header() {
         }
         add_netcdf_var<std::string>(fo, "APT", apt_filename.back());
 
+        add_netcdf_var(fo, "FRUITLOOPS_ITER", fruit_iter);
+
         // add control/runtime parameters
         add_netcdf_var(fo, "CONFIG.VERBOSE", verbose_mode);
         add_netcdf_var(fo, "CONFIG.POLARIZED", rtcproc.run_polarization);
@@ -1245,7 +1247,6 @@ void Engine::add_tod_header() {
         add_netcdf_var<std::string>(fo, "CONFIG.FRUITLOOPS.PATH", ptcproc.fruit_loops_path);
         add_netcdf_var(fo, "CONFIG.FRUITLOOPS.S2N", ptcproc.fruit_loops_sig2noise);
         add_netcdf_var(fo, "CONFIG.FRUITLOOPS.MAXITER", ptcproc.fruit_loops_iters);
-        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.ITER", fruit_iter);
 
         fo.close();
     }
@@ -1952,6 +1953,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("OOF_RO", 25., "outer diameter of the antenna (m)");
     fits_io->at(i).pfits->pHDU().addKey("OOF_RI", 1.65, "inner diameter of the antenna (m)");
 
+    fits_io->at(i).pfits->pHDU().addKey("FRUITLOOPS_ITER", fruit_iter, "Current fruit loops iteration");
+
     // add control/runtime parameters
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.VERBOSE", verbose_mode, "Reduced in verbose mode");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.POLARIZED", rtcproc.run_polarization, "Polarized Obs");
@@ -1982,7 +1985,6 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.S2N", ptcproc.fruit_loops_sig2noise, "Fruit loops S/N");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.FLUX", ptcproc.fruit_loops_flux, "Fruit loops flux (" + mb->sig_unit + ")");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.MAXITER", ptcproc.fruit_loops_iters, "Fruit loops iterations");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.ITER", fruit_iter, "Current fruit loops iteration");
 
     // add telescope file header information
     if (mb->obsnums.size()==1) {
@@ -2008,12 +2010,12 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
 
     // signal map
     fits_io->at(map_index).add_hdu("signal_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->signal[i]);
-    fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
+    fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
     fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
 
     // weight map
     fits_io->at(map_index).add_hdu("weight_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->weight[i]);
-    fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
+    fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
     fits_io->at(map_index).hdus.back()->addKey("UNIT", "1/("+mb->sig_unit+")^2", "Unit of map");
     fits_io->at(map_index).hdus.back()->addKey("MEANERR", pow(mb->mean_err(i),0.5), "Mean Error ("+mb->sig_unit+")");
 
@@ -2033,14 +2035,14 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             }
         }
         fits_io->at(map_index).hdus.back()->addKey("FWHM",fwhm,"Kernel fwhm (arcsec)");
-        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
+        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
         fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
     }
 
     // coverage map
     if (!mb->coverage.empty()) {
         fits_io->at(map_index).add_hdu("coverage_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->coverage[i]);
-        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
+        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
         fits_io->at(map_index).hdus.back()->addKey("UNIT", "sec", "Unit of map");
     }
 
@@ -2058,28 +2060,25 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
 
         // coverage bool map
         fits_io->at(map_index).add_hdu("coverage_bool_" + map_name + rtcproc.polarization.stokes_params[stokes_index], coverage_bool);
-        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
+        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
         fits_io->at(map_index).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
 
         // signal-to-noise map
         Eigen::MatrixXd sig2noise = mb->signal[i].array()*sqrt(mb->weight[i].array());
         fits_io->at(map_index).add_hdu("sig2noise_" + map_name + rtcproc.polarization.stokes_params[stokes_index], sig2noise);
-        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(),mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
+        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
         fits_io->at(map_index).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
     }
 
     // write noise maps
     if (!mb->noise.empty()) {
         for (Eigen::Index n=0; n<mb->n_noise; ++n) {
-            //Eigen::Tensor<double,2> out = mb->noise[i].chip(n,2);
-            //auto out_matrix = Eigen::Map<Eigen::MatrixXd>(out.data(), out.dimension(0), out.dimension(1));
-
             Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(mb->noise[i].data() + n * mb->n_rows * mb->n_cols,
                                                                                            mb->n_rows, mb->n_cols);
 
             noise_fits_io->at(map_index).add_hdu("signal_" + map_name + std::to_string(n) + "_" + rtcproc.polarization.stokes_params[stokes_index],
                                                  noise_matrix);
-            noise_fits_io->at(map_index).add_wcs(noise_fits_io->at(map_index).hdus.back(),mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
+            noise_fits_io->at(map_index).add_wcs(noise_fits_io->at(map_index).hdus.back(), mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
             noise_fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
             noise_fits_io->at(map_index).hdus.back()->addKey("MEANRMS", mb->mean_rms[i], "Mean RMS of noise maps");
         }
