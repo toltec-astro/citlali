@@ -67,7 +67,7 @@ public:
     std::vector<int> det_in_vec, det_out_vec;
 
     // initial setup for each obs
-    void setup(int);
+    void setup();
 
     // run the raw time chunk processing
     auto run_timestream();
@@ -98,12 +98,12 @@ public:
     void output();
 };
 
-void Beammap::setup(int fruit_iter) {
+void Beammap::setup() {
     // assign parallel policies
     map_parallel_policy = parallel_policy;
 
     // run obsnum setup
-    obsnum_setup(fruit_iter);
+    obsnum_setup();
 
     // create kids tone apt row
     calib.apt["kids_tone"].resize(calib.n_dets);

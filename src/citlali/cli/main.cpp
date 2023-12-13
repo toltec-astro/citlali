@@ -406,7 +406,7 @@ int run(const rc_t &rc) {
                 }
 
                 // current fruit loops iteration
-                int fruit_iter = 0;
+                todproc.engine().fruit_iter = 0;
                 // fruit loops convergence check
                 bool fruit_loops_converged = false;
 
@@ -422,14 +422,14 @@ int run(const rc_t &rc) {
                 }
 
                 // loop through fruit loops iterations
-                while ((fruit_iter < todproc.engine().ptcproc.fruit_loops_iters) && !fruit_loops_converged) {
+                while ((todproc.engine().fruit_iter < todproc.engine().ptcproc.fruit_loops_iters) && !fruit_loops_converged) {
                     // output current fruit loops iteraton
                     if (todproc.engine().ptcproc.run_fruit_loops) {
-                        logger->info("starting fruit loops iteration {}", fruit_iter);
+                        logger->info("starting fruit loops iteration {}", todproc.engine().fruit_iter);
                     }
 
                     // setup redu dirs if saving outputs or on first iter
-                    if (todproc.engine().ptcproc.save_all_iters || fruit_iter == 0) {
+                    if (todproc.engine().ptcproc.save_all_iters || todproc.engine().fruit_iter == 0) {
                         // setup reduction directories
                         todproc.create_output_dir();
 
@@ -743,7 +743,7 @@ int run(const rc_t &rc) {
 
                         if constexpr (!std::is_same_v<todproc_t, TimeOrderedDataProc<Beammap>>) {
                             // if on first fruit loops iteration and a path is specified
-                            if (todproc.engine().ptcproc.run_fruit_loops && fruit_iter == 0) {
+                            if (todproc.engine().ptcproc.run_fruit_loops && todproc.engine().fruit_iter == 0) {
                                 if (todproc.engine().ptcproc.fruit_loops_path != "null") {
                                     // path to data
                                     std::string fruit_dir;
@@ -765,7 +765,7 @@ int run(const rc_t &rc) {
                             }
 
                             // if on iteration >0 get the maps from the previous iteration
-                            if (fruit_iter > 0) {
+                            if (todproc.engine().fruit_iter > 0) {
                                 std::string fruit_dir;
                                 // get maps from files if saving all iterations
                                 if (todproc.engine().ptcproc.save_all_iters) {
@@ -790,7 +790,7 @@ int run(const rc_t &rc) {
                                 // otherwise use stored maps
                                 else {
                                     fruit_dir = todproc.engine().redu_dir_name;
-                                    logger->info("loading previous iter maps for fruit loops iteration {}", fruit_iter);
+                                    logger->info("loading previous iter maps for fruit loops iteration {}", todproc.engine().fruit_iter);
                                     // if running fruit loops on each obsnum
                                     if (todproc.engine().ptcproc.fruit_loops_type == "obsnum") {
                                         fruit_dir += "/" + todproc.engine().omb.obsnums.back() + "/raw/";
@@ -804,14 +804,14 @@ int run(const rc_t &rc) {
                                 todproc.engine().ptcproc.tod_mb.cov_cut = todproc.engine().omb.cov_cut;
 
                                 // get map buffer from reduction directory
-                                logger->info("reading in {} for fruit loops iteration {}",fruit_dir, fruit_iter);
+                                logger->info("reading in {} for fruit loops iteration {}",fruit_dir, todproc.engine().fruit_iter);
                                 todproc.engine().ptcproc.load_mb(fruit_dir, fruit_dir, todproc.engine().calib);
                             }
                         }
 
                         // setup
                         logger->info("pipeline setup");
-                        todproc.engine().setup(fruit_iter);
+                        todproc.engine().setup();
 
                         // run
                         if (todproc.engine().run_tod) {
@@ -832,7 +832,7 @@ int run(const rc_t &rc) {
                         // filter obs map
                         else if (todproc.engine().run_map_filter) {
                             logger->info("filtering obs maps");
-                            todproc.engine().template run_wiener_filter<mapmaking::FilteredObs>(todproc.engine().omb, fruit_iter);
+                            todproc.engine().template run_wiener_filter<mapmaking::FilteredObs>(todproc.engine().omb, todproc.engine().fruit_iter);
 
                             // calculate filtered obs map psds
                             logger->info("calculating filtered obs map psds");
@@ -891,7 +891,7 @@ int run(const rc_t &rc) {
                         if (todproc.engine().run_map_filter) {
                             logger->info("filtering coadded maps");
                             // filter coadded maps
-                            todproc.engine().template run_wiener_filter<mapmaking::FilteredCoadd>(todproc.engine().cmb, fruit_iter);
+                            todproc.engine().template run_wiener_filter<mapmaking::FilteredCoadd>(todproc.engine().cmb, todproc.engine().fruit_iter);
 
                             // calculate filtered coadded map psds
                             logger->info("calculating filtered coadded map psds");
@@ -922,7 +922,7 @@ int run(const rc_t &rc) {
                     todproc.make_index_file(todproc.engine().redu_dir_name);
 
                     // increment fruit loops iteration
-                    fruit_iter++;
+                    todproc.engine().fruit_iter++;
                 }
 
                 logger->info("citlali is done!  going to sleep now...wake me when you need me.");

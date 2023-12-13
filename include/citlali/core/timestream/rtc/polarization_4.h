@@ -59,7 +59,8 @@ public:
             det_indices.resize(n_dets);
             fg_indices.resize(n_dets);
 
-            // resize output scans
+            // temporary copy of data
+            Eigen::MatrixXd scans_copy = in.scans.data;
             in.scans.data.resize(n_pts,n_dets);
             // resize angle matrix
             in.angle.data.resize(n_pts,n_dets);
@@ -70,7 +71,7 @@ public:
                 for (Eigen::Index i=0; i<calib.n_dets; ++i) {
                     // if matched, add to out scans
                     if (calib.apt[grouping](i)!=-1) {
-                        in.scans.data.col(k) = in.scans.data.col(i);
+                        in.scans.data.col(k) = scans_copy.col(i);
 
                         array_indices(k) = calib.apt["array"](i);
                         nw_indices(k) = calib.apt["nw"](i);

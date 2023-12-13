@@ -226,6 +226,9 @@ public:
     // mapping from index in map vector to array index
     Eigen::VectorXI maps_to_stokes;
 
+    // current fruit loops iteration
+    int fruit_iter;
+
     // manual pointing offsets
     std::map<std::string, Eigen::VectorXd> pointing_offsets_arcsec;
     // modified julian dates of pointing offsets
@@ -240,7 +243,7 @@ public:
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> filtered_coadd_fits_io_vec, filtered_coadd_noise_fits_io_vec;
 
     // per obsnum setup common to all redu types
-    void obsnum_setup(int);
+    void obsnum_setup();
 
     // get RTC config options
     template<typename CT>
@@ -339,7 +342,7 @@ public:
     void write_sources(map_buffer_t &, std::string);
 };
 
-void Engine::obsnum_setup(int fruit_iter) {
+void Engine::obsnum_setup() {
     if (rtcproc.run_extinction) {
         // get atm model
         rtcproc.calibration.setup(telescope.tau_225_GHz);
@@ -407,20 +410,18 @@ void Engine::obsnum_setup(int fruit_iter) {
 
     // create timestream files
     if (run_tod_output) {
-        //if (ptcproc.save_all_iters || fruit_iter == ptcproc.fruit_loops_iters - 1) {
-            // create tod output subdirectory if requested
-            if (tod_output_subdir_name!="null") {
-                fs::create_directories(obsnum_dir_name + "raw/" + tod_output_subdir_name);
-            }
-            // make rtc tod output file
-            if (tod_output_type == "rtc" || tod_output_type == "both") {
-                create_tod_files<engine_utils::toltecIO::rtc_timestream>();
-            }
-            // make ptc tod output file
-            if (tod_output_type == "ptc" || tod_output_type == "both") {
-                create_tod_files<engine_utils::toltecIO::ptc_timestream>();
-            }
-        //}
+        // create tod output subdirectory if requested
+        if (tod_output_subdir_name!="null") {
+            fs::create_directories(obsnum_dir_name + "raw/" + tod_output_subdir_name);
+        }
+        // make rtc tod output file
+        if (tod_output_type == "rtc" || tod_output_type == "both") {
+            create_tod_files<engine_utils::toltecIO::rtc_timestream>();
+        }
+        // make ptc tod output file
+        if (tod_output_type == "ptc" || tod_output_type == "both") {
+            create_tod_files<engine_utils::toltecIO::ptc_timestream>();
+        }
     }
     // don't calculate any eigenvalues
     else if (!diagnostics.write_evals) {
@@ -462,7 +463,6 @@ void Engine::obsnum_setup(int fruit_iter) {
         diagnostics.stats[stat].setZero(calib.n_arrays, telescope.scan_indices.cols());
     }
     // clear stored eigenvalues
-    diagnostics.evals.clear();
     std::map<Eigen::Index, std::vector<std::vector<Eigen::VectorXd>>>().swap(diagnostics.evals);
 }
 
@@ -1245,6 +1245,7 @@ void Engine::add_tod_header() {
         add_netcdf_var<std::string>(fo, "CONFIG.FRUITLOOPS.PATH", ptcproc.fruit_loops_path);
         add_netcdf_var(fo, "CONFIG.FRUITLOOPS.S2N", ptcproc.fruit_loops_sig2noise);
         add_netcdf_var(fo, "CONFIG.FRUITLOOPS.MAXITER", ptcproc.fruit_loops_iters);
+        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.ITER", fruit_iter);
 
         fo.close();
     }
@@ -1981,7 +1982,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.S2N", ptcproc.fruit_loops_sig2noise, "Fruit loops S/N");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.FLUX", ptcproc.fruit_loops_flux, "Fruit loops flux (" + mb->sig_unit + ")");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.MAXITER", ptcproc.fruit_loops_iters, "Fruit loops iterations");
-
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.ITER", fruit_iter, "Current fruit loops iteration");
 
     // add telescope file header information
     if (mb->obsnums.size()==1) {

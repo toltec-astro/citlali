@@ -12,7 +12,7 @@ using timestream::TCDataKind;
 class Lali: public Engine {
 public:
     // initial setup for each obs
-    void setup(int);
+    void setup();
 
     // run the reduction for the obs
     auto run();
@@ -26,9 +26,9 @@ public:
     void output();
 };
 
-void Lali::setup(int fruit_iter) {
+void Lali::setup() {
     // run obsnum setup
-    obsnum_setup(fruit_iter);
+    obsnum_setup();
 
     // use per detector parallelization for jinc mapmaking
     if (map_method == "jinc") {

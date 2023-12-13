@@ -39,7 +39,7 @@ public:
     std::map<std::string,std::string> ppt_header_units;
 
     // initial setup for each obs
-    void setup(int);
+    void setup();
 
     // run the reduction for the obs
     auto run();
@@ -56,9 +56,9 @@ public:
     void output();
 };
 
-void Pointing::setup(int fruit_iter) {
+void Pointing::setup() {
     // run obsnum setup
-    obsnum_setup(fruit_iter);
+    obsnum_setup();
 
     // resize the current fit matrix
     params.setZero(n_maps, map_fitter.n_params);

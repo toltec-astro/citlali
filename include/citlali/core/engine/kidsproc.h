@@ -88,7 +88,7 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
     // populate rtc
     template <typename loaded_t, typename scanindices_t>
     auto populate_rtc(loaded_t &, scanindices_t &,
-                      const int, const int, std::string);
+                      const int, const int, const std::string);
 
     // TODO fix the const correctness
     Fitter &fitter() { return m_fitter; }
@@ -273,10 +273,10 @@ auto KidsDataProc::load_rawobs(const RawObs &rawobs, const Eigen::Index scan,
 
 template <typename loaded_t, typename scanindices_t>
 auto KidsDataProc::populate_rtc(loaded_t &loaded, scanindices_t &scanindex,
-                                const int scanlength, const int n_detectors,
-                                std::string data_type) {
+                                const int scanlength, const int n_det,
+                                const std::string data_type) {
     // resize data
-    Eigen::MatrixXd data(scanlength, n_detectors);
+    Eigen::MatrixXd data(scanlength, n_det);
 
     Eigen::Index i = 0;
     // loop through raw timestream objects
@@ -320,5 +320,5 @@ auto KidsDataProc::populate_rtc(loaded_t &loaded, scanindices_t &scanindex,
         std::exit(EXIT_FAILURE);
     }
 
-    return std::move(data);
+    return data;
 }
