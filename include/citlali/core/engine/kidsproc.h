@@ -268,15 +268,15 @@ auto KidsDataProc::load_rawobs(const RawObs &rawobs, const Eigen::Index scan,
         i++;
     }
 
-    return std::move(result);
+    return result;
 }
 
 template <typename loaded_t, typename scanindices_t>
 auto KidsDataProc::populate_rtc(loaded_t &loaded, scanindices_t &scanindex,
-                                const int scanlength, const int n_det,
+                                const int n_pts, const int n_det,
                                 const std::string data_type) {
     // resize data
-    Eigen::MatrixXd data(scanlength, n_det);
+    Eigen::MatrixXd data(n_pts, n_det);
 
     Eigen::Index i = 0;
     // loop through raw timestream objects

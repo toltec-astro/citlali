@@ -227,11 +227,11 @@ void Beammap::setup() {
 auto Beammap::run_timestream() {
     auto farm = grppi::farm(n_threads,[&](auto &input_tuple) -> TCData<TCDataKind::PTC,Eigen::MatrixXd> {
         // RTCData input
-        auto rtcdata = std::get<0>(input_tuple);
+        auto& rtcdata = std::get<0>(input_tuple);
         // kidsproc
-        auto kidsproc = std::get<1>(input_tuple);
+        auto& kidsproc = std::get<1>(input_tuple);
         // start index input
-        auto scan_rawobs = std::get<2>(input_tuple);
+        auto& scan_rawobs = std::get<2>(input_tuple);
 
         // allocate up bitwise timestream flags
         rtcdata.flags2.data.setConstant(timestream::TimestreamFlags::Good);
@@ -259,6 +259,7 @@ auto Beammap::run_timestream() {
 
         // get raw tod from files
         rtcdata.scans.data = kidsproc.populate_rtc(scan_rawobs,rtcdata.scan_indices.data, sl, calib.n_dets, tod_type);
+        std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>().swap(scan_rawobs);
 
         // create PTCData
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;

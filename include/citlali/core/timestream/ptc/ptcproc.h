@@ -228,21 +228,6 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 auto in_scans_block = in.scans.data.block(0, start_index, n_pts, n_dets);
                 auto out_scans_block = out.scans.data.block(0, start_index, n_pts, n_dets);
 
-                // get the reference block of in scans that corresponds to the current array
-                Eigen::Ref<Eigen::MatrixXd> in_scans_ref = in.scans.data.block(0, start_index, n_pts, n_dets);
-                // eigen map to reference for input scans
-                Eigen::Map<Eigen::MatrixXd, 0, Eigen::OuterStride<>>
-                    in_scans(in_scans_ref.data(), in_scans_ref.rows(), in_scans_ref.cols(),
-                             Eigen::OuterStride<>(in_scans_ref.outerStride()));
-
-                // get the block of out scans that corresponds to the current array
-                Eigen::Ref<Eigen::MatrixXd> out_scans_ref = out.scans.data.block(0, start_index, n_pts, n_dets);
-                // eigen map to reference for output scans
-                Eigen::Map<Eigen::MatrixXd, 0, Eigen::OuterStride<>>
-                    out_scans(out_scans_ref.data(), out_scans_ref.rows(), out_scans_ref.cols(),
-                              Eigen::OuterStride<>(out_scans_ref.outerStride()));
-
-
                 // get the block of out scans that corresponds to the current array
                 auto apt_flags = calib.apt["flag"].segment(start_index, n_dets);
 
@@ -271,20 +256,6 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                     if (in.kernel.data.size()!=0) {
                         // check if any good flags
                             logger->debug("cleaning kernel");
-                            // get the reference block of in scans that corresponds to the current array
-                            Eigen::Ref<Eigen::MatrixXd> in_kernel_ref = in.kernel.data.block(0, start_index, n_pts, n_dets);
-                            // eigen map to reference for input kernel
-                            Eigen::Map<Eigen::MatrixXd, 0, Eigen::OuterStride<>>
-                                in_kernel(in_kernel_ref.data(), in_kernel_ref.rows(), in_kernel_ref.cols(),
-                                          Eigen::OuterStride<>(in_kernel_ref.outerStride()));
-
-                            // get the block of out scans that corresponds to the current array
-                            Eigen::Ref<Eigen::MatrixXd> out_kernel_ref = out.kernel.data.block(0, start_index, n_pts, n_dets);
-                            // eigen map to reference for output kernel
-                            Eigen::Map<Eigen::MatrixXd, 0, Eigen::OuterStride<> >
-                                out_kernel(out_kernel_ref.data(), out_kernel_ref.rows(), out_scans_ref.cols(),
-                                           Eigen::OuterStride<>(out_kernel_ref.outerStride()));
-
                             auto in_kernel_block = in.kernel.data.block(0, start_index, n_pts, n_dets);
                             auto out_kernel_block = in.kernel.data.block(0, start_index, n_pts, n_dets);
 

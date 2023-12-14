@@ -137,14 +137,96 @@ void Pointing::setup() {
     ppt_meta["Header.M1.ZernikeC"] = telescope.tel_header["Header.M1.ZernikeC"](0);
 }
 
+template <class KidsProc, class RawObs>
+void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
+    // initialize number of completed scans
+    n_scans_done = 0;
+
+    // progress bar
+    tula::logging::progressbar pb(
+        [&](const auto &msg) { logger->info("{}", msg); }, 100, "citlali progress ");
+
+    // grppi generator function. gets time chunk data from files sequentially and passes them to grppi::farm
+    grppi::pipeline(tula::grppi_utils::dyn_ex(parallel_policy),
+        [&]() -> std::optional<std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
+                                          std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>> {
+            // variable to hold current scan
+            static auto scan = 0;
+            // loop through scans
+            while (scan < telescope.scan_indices.cols()) {
+                // update progress bar
+                pb.count(telescope.scan_indices.cols(), 1);
+
+                // create rtcdata
+                TCData<TCDataKind::RTC, Eigen::MatrixXd> rtcdata;
+                // get scan indices
+                rtcdata.scan_indices.data = telescope.scan_indices.col(scan);
+                // current scan
+                rtcdata.index.data = scan;
+
+                if (run_noise) {
+                    // declare random number generator
+                    thread_local boost::random::mt19937 eng;
+
+                    // boost random number generator (0,1)
+                    boost::random::uniform_int_distribution<> rands{0,1};
+
+                    if (omb.randomize_dets) {
+                        rtcdata.noise.data = Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic>::Zero(omb.n_noise, calib.n_dets)
+                                                 .unaryExpr([&](int dummy){ return 2 * rands(eng) - 1; });
+                    } else {
+                        rtcdata.noise.data = Eigen::Matrix<int, Eigen::Dynamic, 1>::Zero(omb.n_noise)
+                                                 .unaryExpr([&](int dummy){ return 2 * rands(eng) - 1; });
+                    }
+                }
+
+                // vector to store kids data
+                std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> scan_rawobs;
+                // get kids data
+                scan_rawobs = kidsproc.load_rawobs(rawobs, scan, telescope.scan_indices, start_indices, end_indices);
+
+                // increment scan
+                scan++;
+                // return rtcdata, kidsproc, and raw data
+                return std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
+                                  std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>> (std::move(rtcdata), kidsproc,
+                                                                                                   std::move(scan_rawobs));
+            }
+            // reset scan to zero for each obs
+            scan = 0;
+            return {};
+        },
+        run());
+
+    if (run_mapmaking) {
+        // normalize maps
+        logger->info("normalizing maps");
+        omb.normalize_maps();
+        // calculate map psds
+        logger->info("calculating map psd");
+        omb.calc_map_psd();
+        // calculate map histograms
+        logger->info("calculating map histogram");
+        omb.calc_map_hist();
+
+        // calculate mean error
+        omb.calc_mean_err();
+        // calculate mean rms
+        omb.calc_mean_rms();
+
+        // fit maps
+        fit_maps();
+    }
+}
+
 auto Pointing::run() {
-    auto farm = grppi::farm(n_threads,[&](auto &input_tuple) -> TCData<TCDataKind::PTC,Eigen::MatrixXd> {
+    auto farm = grppi::farm(n_threads,[&](auto &input_tuple) {
         // RTCData input
-        auto rtcdata = std::get<0>(input_tuple);
+        auto& rtcdata = std::get<0>(input_tuple);
         // kidsproc
-        auto kidsproc = std::get<1>(input_tuple);
+        auto& kidsproc = std::get<1>(input_tuple);
         // start index input
-        auto scan_rawobs = std::get<2>(input_tuple);
+        auto& scan_rawobs = std::get<2>(input_tuple);
 
         // starting index for scan
         Eigen::Index si = rtcdata.scan_indices.data(2);
@@ -171,12 +253,13 @@ auto Pointing::run() {
 
         // get raw tod from files
         rtcdata.scans.data = kidsproc.populate_rtc(scan_rawobs,rtcdata.scan_indices.data, sl, calib.n_dets, tod_type);
+        std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>().swap(scan_rawobs);
 
         // create PTCData
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;
 
         logger->info("starting scan {}. {}/{} scans completed", rtcdata.index.data + 1, n_scans_done,
-                    telescope.scan_indices.cols());
+                     telescope.scan_indices.cols());
 
         // run rtcproc
         logger->info("raw time chunk processing for scan {}", rtcdata.index.data + 1);
@@ -305,88 +388,6 @@ auto Pointing::run() {
     });
 
     return farm;
-}
-
-template <class KidsProc, class RawObs>
-void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
-    // initialize number of completed scans
-    n_scans_done = 0;
-
-    // progress bar
-    tula::logging::progressbar pb(
-        [&](const auto &msg) { logger->info("{}", msg); }, 100, "citlali progress ");
-
-    // grppi generator function. gets time chunk data from files sequentially and passes them to grppi::farm
-    grppi::pipeline(tula::grppi_utils::dyn_ex(parallel_policy),
-        [&]() -> std::optional<std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
-                                          std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>> {
-            // variable to hold current scan
-            static auto scan = 0;
-            // loop through scans
-            while (scan < telescope.scan_indices.cols()) {
-                // update progress bar
-                pb.count(telescope.scan_indices.cols(), 1);
-
-                // create rtcdata
-                TCData<TCDataKind::RTC, Eigen::MatrixXd> rtcdata;
-                // get scan indices
-                rtcdata.scan_indices.data = telescope.scan_indices.col(scan);
-                // current scan
-                rtcdata.index.data = scan;
-
-                if (run_noise) {
-                    // declare random number generator
-                    thread_local boost::random::mt19937 eng;
-
-                    // boost random number generator (0,1)
-                    boost::random::uniform_int_distribution<> rands{0,1};
-
-                    if (omb.randomize_dets) {
-                        rtcdata.noise.data = Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic>::Zero(omb.n_noise, calib.n_dets)
-                                                 .unaryExpr([&](int dummy){ return 2 * rands(eng) - 1; });
-                    } else {
-                        rtcdata.noise.data = Eigen::Matrix<int, Eigen::Dynamic, 1>::Zero(omb.n_noise)
-                                                 .unaryExpr([&](int dummy){ return 2 * rands(eng) - 1; });
-                    }
-                }
-
-                // vector to store kids data
-                std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> scan_rawobs;
-                // get kids data
-                scan_rawobs = kidsproc.load_rawobs(rawobs, scan, telescope.scan_indices, start_indices, end_indices);
-
-                // increment scan
-                scan++;
-                // return rtcdata, kidsproc, and raw data
-                return std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
-                                  std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>> (std::move(rtcdata), kidsproc,
-                                                                                                   std::move(scan_rawobs));
-            }
-            // reset scan to zero for each obs
-            scan = 0;
-            return {};
-        },
-        run());
-
-    if (run_mapmaking) {
-        // normalize maps
-        logger->info("normalizing maps");
-        omb.normalize_maps();
-        // calculate map psds
-        logger->info("calculating map psd");
-        omb.calc_map_psd();
-        // calculate map histograms
-        logger->info("calculating map histogram");
-        omb.calc_map_hist();
-
-        // calculate mean error
-        omb.calc_mean_err();
-        // calculate mean rms
-        omb.calc_mean_rms();
-
-        // fit maps
-        fit_maps();
-    }
 }
 
 void Pointing::fit_maps() {

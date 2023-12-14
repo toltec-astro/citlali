@@ -31,7 +31,7 @@ auto calc_det_pointing(tel_data_t &tel_data, double az_off, double el_off,
                                   + sin(elev)*az_off + pointing_offsets["alt"].array();
 
     // radec map
-    if (std::strcmp("radec", pixel_axes.c_str()) == 0) {
+    if (pixel_axes=="radec") {
         // get parallactic angle
         auto par_ang = -tel_data["ActParAng"].array();
 
@@ -44,7 +44,7 @@ auto calc_det_pointing(tel_data_t &tel_data, double az_off, double el_off,
     }
 
     // altaz map
-    else if (std::strcmp("altaz", pixel_axes.c_str()) == 0) {
+    else if (pixel_axes=="altaz") {
         // alt
         lat = (rot_alt_off.array()*ASEC_TO_RAD) + tel_data["alt_phys"].array();
         // az

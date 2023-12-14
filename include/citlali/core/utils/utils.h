@@ -257,7 +257,7 @@ auto fft2(Eigen::DenseBase<Derived> &in, fftw_plan_t &plan, fftw_complex* a, fft
 
     // copy data from input (row major?)
     for (Eigen::Index i=0; i< n_rows; ++i) {
-        for (Eigen::Index j=0; j<n_cols; j++) {
+        for (Eigen::Index j=0; j<n_cols; ++j) {
             int ii = n_cols*i + j;
             a[ii][0] = in(i,j).real();
             a[ii][1] = in(i,j).imag();
@@ -268,7 +268,7 @@ auto fft2(Eigen::DenseBase<Derived> &in, fftw_plan_t &plan, fftw_complex* a, fft
 
     // copy data to output (row major?)
     for (Eigen::Index i=0; i< n_rows; ++i) {
-        for (Eigen::Index j=0; j<n_cols; j++) {
+        for (Eigen::Index j=0; j<n_cols; ++j) {
             int ii = n_cols*i + j;
             out.real()(i,j) = b[ii][0];
             out.imag()(i,j) = b[ii][1];
@@ -432,7 +432,7 @@ static auto hanning_window(Eigen::Index n_rows, Eigen::Index n_cols) {
     Eigen::MatrixXd window(n_rows, n_cols);
 
     for (Eigen::Index i=0; i<n_cols; ++i) {
-        for (Eigen::Index j=0; j<n_rows; j++) {
+        for (Eigen::Index j=0; j<n_rows; ++j) {
             window(j,i) = row(j)*col(i);
         }
     }
@@ -490,7 +490,7 @@ double find_weight_threshold(Eigen::DenseBase<Derived> &weight, double cov) {
     Eigen::Index k = 0;
     // populate vector with non-zero elements
     for (Eigen::Index i=0; i<weight.rows(); ++i) {
-        for (Eigen::Index j=0; j<weight.cols(); j++) {
+        for (Eigen::Index j=0; j<weight.cols(); ++j) {
             if (weight(i,j) > 0) {
                 //non_zero_weights(k) = weight(i,j);
                 non_zero_weights_vec.push_back(weight(i,j));
@@ -551,7 +551,7 @@ auto set_cov_cov_ranges(const Eigen::DenseBase<Derived> &weight, const double we
     // find lower row bound
     bool flag = false;
     for (Eigen::Index i=0; i<weight.rows(); ++i) {
-        for (Eigen::Index j=0; j<weight.cols(); j++) {
+        for (Eigen::Index j=0; j<weight.cols(); ++j) {
             if (weight(i,j) >= weight_threshold) {
                 cov_ranges(0,0) = i;
                 flag = true;
@@ -566,7 +566,7 @@ auto set_cov_cov_ranges(const Eigen::DenseBase<Derived> &weight, const double we
     // find upper row bound
     flag = false;
     for (Eigen::Index i=weight.rows()-1; i>-1; i--) {
-        for (Eigen::Index j = 0; j < weight.cols(); j++) {
+        for (Eigen::Index j = 0; j < weight.cols(); ++j) {
             if (weight(i,j) >= weight_threshold) {
                 cov_ranges(1,0) = i;
                 flag = true;
@@ -581,7 +581,7 @@ auto set_cov_cov_ranges(const Eigen::DenseBase<Derived> &weight, const double we
     // find lower column bound
     flag = false;
     for (Eigen::Index i=0; i<weight.cols(); ++i) {
-        for (Eigen::Index j = cov_ranges(0,0); j < cov_ranges(1,0) + 1; j++) {
+        for (Eigen::Index j = cov_ranges(0,0); j < cov_ranges(1,0) + 1; ++j) {
             if (weight(j,i) >= weight_threshold) {
                 cov_ranges(0,1) = i;
                 flag = true;
@@ -596,7 +596,7 @@ auto set_cov_cov_ranges(const Eigen::DenseBase<Derived> &weight, const double we
      // find upper column bound
     flag = false;
     for (Eigen::Index i=weight.cols()-1; i>-1; i--) {
-        for (Eigen::Index j = cov_ranges(0,0); j < cov_ranges(1,0) + 1; j++) {
+        for (Eigen::Index j = cov_ranges(0,0); j < cov_ranges(1,0) + 1; ++j) {
             if (weight(j,i) >= weight_threshold) {
                 cov_ranges(1,1) = i;
                 flag = true;
@@ -645,7 +645,7 @@ void smooth(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB> &out, int
         double sum;
         for (Eigen::Index i=0; i<n_pts; ++i) {
             sum=0;
-            for (int j=0; j<w; j++) {
+            for (int j=0; j<w; ++j) {
                 int add_index = i + j - w_mid;
 
                 if (add_index < 0) {
@@ -744,7 +744,7 @@ auto calc_2D_psd(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &y
     }
 
     // shift cols over by 1
-    for (Eigen::Index j=0; j<n_cols-1; j++) {
+    for (Eigen::Index j=0; j<n_cols-1; ++j) {
         q_cols(j) = q_cols(j+1);
     }
 
@@ -753,7 +753,7 @@ auto calc_2D_psd(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &y
     Eigen::MatrixXd qsymm(n_rows-1,n_cols-1);
 
     for (Eigen::Index i=1; i<n_cols; ++i) {
-        for(Eigen::Index j=1; j<n_rows; j++) {
+        for(Eigen::Index j=1; j<n_rows; ++j) {
             qmap(j-1,i-1) = sqrt(pow(q_rows(j),2) + pow(q_cols(i),2));
             qsymm(j-1,i-1) = q_rows(j)*q_cols(i);
         }
@@ -788,8 +788,8 @@ auto calc_2D_psd(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &y
         int count_a = 0;
         double psdarr_s = 0.;
         double psdarr_a = 0.;
-        for (int j=0; j<n_cols-1; j++) {
-            for (int k=0; k<n_rows-1; k++) {
+        for (int j=0; j<n_cols-1; ++j) {
+            for (int k=0; k<n_rows-1; ++k) {
                 if ((int) (qmap(k,j) / diff_q) == i && qsymm(k,j) >= 0.){
                     count_s++;
                     psdarr_s += pmfq(k,j);
@@ -833,7 +833,7 @@ auto calc_hist(Eigen::DenseBase<Derived> &data, int n_bins) {
     hist.setZero(n_bins);
 
     // loop through bins and count up values
-    for (Eigen::Index j=0; j<n_bins-1; j++) {
+    for (Eigen::Index j=0; j<n_bins-1; ++j) {
         hist(j) = ((data.derived().array() >= hist_bins(j)) && (data.derived().array() < hist_bins(j+1))).count();
     }
 
@@ -854,7 +854,7 @@ auto shift_1D(Eigen::DenseBase<Derived> &in, std::vector<Eigen::Index> shift_ind
         out(shift_index) = in(i);
     }
 
-    return std::move(out);
+    return out;
 }
 
 // shift a 2D matrix
@@ -866,8 +866,8 @@ auto shift_2D(Eigen::DenseBase<Derived> &in, std::vector<Eigen::Index> shift_ind
     Derived out(n_rows,n_cols);
 
     for (Eigen::Index i=0; i<n_cols; ++i) {
-        for (Eigen::Index j=0; j<n_rows; j++) {
-            Eigen::Index ti = (i+shift_indices[1]) % n_cols;
+        Eigen::Index ti = (i+shift_indices[1]) % n_cols;
+        for (Eigen::Index j=0; j<n_rows; ++j) {
             Eigen::Index tj = (j+shift_indices[0]) % n_rows;
             Eigen::Index shift_col = (ti < 0) ? n_cols+ti : ti;
             Eigen::Index shift_row = (tj < 0) ? n_rows+tj : tj;
@@ -875,7 +875,7 @@ auto shift_2D(Eigen::DenseBase<Derived> &in, std::vector<Eigen::Index> shift_ind
         }
     }
 
-    return std::move(out);
+    return out;
 }
 
 /*
@@ -1052,7 +1052,7 @@ void calc_gaussian_transfer_func(map_class_t &mb, map_fitter_t &map_fitter, int 
     // calculate distance
     Eigen::MatrixXd dist(n_rows,n_cols);
     for (Eigen::Index i=0; i<n_cols; ++i) {
-        for (Eigen::Index j=0; j<n_rows; j++) {
+        for (Eigen::Index j=0; j<n_rows; ++j) {
             dist(j,i) = sqrt(pow(mb.rows_tan_vec(j),2)+pow(mb.cols_tan_vec(i),2));
         }
     }
@@ -1073,8 +1073,8 @@ void calc_gaussian_transfer_func(map_class_t &mb, map_fitter_t &map_fitter, int 
     // radial averages
     for (Eigen::Index i=0; i<n_bins-1; ++i) {
         int c = 0;
-        for (Eigen::Index j=0; j<n_cols; j++) {
-            for (Eigen::Index k=0; k<n_rows; k++) {
+        for (Eigen::Index j=0; j<n_cols; ++j) {
+            for (Eigen::Index k=0; k<n_rows; ++k) {
                 if (dist(k,j) >= bin_low(i) && dist(k,j) < bin_low(i+1)){
                     c++;
                     kernel_interp(i) += temp_kernel(k,j);
@@ -1094,7 +1094,7 @@ void calc_gaussian_transfer_func(map_class_t &mb, map_fitter_t &map_fitter, int 
 
     // carry out the interpolation
     for (Eigen::Index i=0; i<n_cols; ++i) {
-        for (Eigen::Index j=0; j<n_rows; j++) {
+        for (Eigen::Index j=0; j<n_rows; ++j) {
             Eigen::Index tj = (j-row_index)%n_rows;
             Eigen::Index ti = (i-col_index)%n_cols;
             Eigen::Index shiftj = (tj < 0) ? n_rows+tj : tj;
@@ -1115,5 +1115,43 @@ void calc_gaussian_transfer_func(map_class_t &mb, map_fitter_t &map_fitter, int 
         }
     }
 }*/
+
+/// @brief Return the current time.
+inline auto now() { return std::chrono::high_resolution_clock::now(); }
+
+/// @brief Return the time elapsed since given time.
+inline auto elapsed_since(
+    const std::chrono::time_point<std::chrono::high_resolution_clock> &t0) {
+    return now() - t0;
+}
+
+/// @brief An RAII class to report the lifetime of itself.
+struct scoped_timeit {
+    scoped_timeit(std::string_view msg_, double *elapsed_msec_ = nullptr)
+        : msg(msg_), elapsed_msec(elapsed_msec_) {
+        logger->info("**timeit** {}", msg);
+    }
+    ~scoped_timeit() {
+        auto t = elapsed_since(t0);
+        constexpr auto s_to_ms = 1e3;
+        if (this->elapsed_msec != nullptr) {
+            *(this->elapsed_msec) =
+                std::chrono::duration_cast<std::chrono::duration<double>>(t)
+                    .count() *
+                s_to_ms;
+        }
+        logger->info("**timeit** {} finished in {}", msg, t);
+    }
+    scoped_timeit(const scoped_timeit &) = delete;
+    scoped_timeit(scoped_timeit &&) = delete;
+    auto operator=(const scoped_timeit &) -> scoped_timeit & = delete;
+    auto operator=(scoped_timeit &&) -> scoped_timeit & = delete;
+
+    std::chrono::time_point<std::chrono::high_resolution_clock> t0{now()};
+    std::string_view msg;
+    double *elapsed_msec{nullptr};
+    std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
+
+};
 
 } //namespace engine_utils

@@ -208,7 +208,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
     //for (Eigen::Index i=0; i<n_dets; ++i) {
         // skip completely flagged detectors
-        if ((in.flags.data.col(i).array()==0).any()) {
+        if ((in.flags.data.col(i).array()==false).any()) {
             // get detector positions from apt table if not in detector mapmaking mode
             auto det_index = det_indices(i);
 

@@ -60,7 +60,7 @@ void Telescope::get_tel_data(std::string &filepath) {
             std::exit(EXIT_FAILURE);
         }
         // cannot reduce in lissajous mode if chunk less than or equal to zero
-        if (std::strcmp("Lissajous", obs_pgm.c_str())==0 && time_chunk<=0) {
+        if (obs_pgm=="Lissajous" && time_chunk<=0) {
             logger->error("mapping mode is lissajous and time chunk size is zero");
             std::exit(EXIT_FAILURE);
         }
@@ -162,14 +162,14 @@ void Telescope::calc_tan_pointing() {
     calc_tan_radec();
 
     // set tangential projection to radec
-    if (std::strcmp("radec", pixel_axes.c_str()) == 0) {
+    if (pixel_axes=="radec") {
         logger->info("using radec frame");
         tel_data["lat_phys"] = tel_data["dec_phys"];
         tel_data["lon_phys"] = tel_data["ra_phys"];
     }
 
     // set tangential projection to altaz
-    else if (std::strcmp("altaz", pixel_axes.c_str()) == 0) {
+    else if (pixel_axes=="altaz") {
         logger->info("using altaz frame");
         tel_data["lat_phys"] = tel_data["alt_phys"];
         tel_data["lon_phys"] = tel_data["az_phys"];
@@ -248,7 +248,7 @@ void Telescope::calc_scan_indices() {
     Eigen::Index n_scans = 0;
 
     // get scans for raster pattern
-    if (std::strcmp("Map", obs_pgm.c_str())==0 && !force_chunk) {
+    if (obs_pgm=="Map" && !force_chunk) {
         logger->info("calculating scans for raster mode");
 
         // convert the hold signal to a bool
@@ -291,7 +291,7 @@ void Telescope::calc_scan_indices() {
     }
 
     // get scan indices for Lissajous/Rastajous pattern
-    else if (std::strcmp("Lissajous", obs_pgm.c_str())==0 || force_chunk) {
+    else if ("Lissajous"==obs_pgm || force_chunk) {
         logger->info("calculating scans for lissajous/rastajous mode");
 
         // index of first scan
