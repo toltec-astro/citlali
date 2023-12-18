@@ -71,10 +71,11 @@ public:
 
     // timestream grppi pipeline
     template <class KidsProc, class RawObs>
-    auto timestream_pipeline(KidsProc &, RawObs &);
+    void timestream_pipeline(KidsProc &, RawObs &);
 
     // run the raw time chunk processing
-    auto run_timestream();
+    template <class KidsProc>
+    auto run_timestream(KidsProc &);
 
     // run the loop pipeline
     void loop_pipeline();
@@ -283,7 +284,9 @@ void Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 }
 
 template <class KidsProc, class RawObs>
-auto Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
+void Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
+    using tuple_t = std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>,
+                               std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>;
     // initialize number of completed scans
     n_scans_done = 0;
 
@@ -293,8 +296,7 @@ auto Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
     // grppi generator function. gets time chunk data from files sequentially and passes them to grppi::farm
     grppi::pipeline(tula::grppi_utils::dyn_ex(parallel_policy),
-        [&]() -> std::optional<std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
-                                          std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>> {
+        [&]() -> std::optional<tuple_t> {
 
             // variable to hold current scan
             static int scan = 0;
@@ -318,26 +320,23 @@ auto Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                 // increment scan
                 scan++;
                 // return rtcdata, kidsproc, and raw data
-                return std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
-                                  std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>> (std::move(rtcdata), kidsproc,
-                                                                                                  std::move(scan_rawobs));
+                return tuple_t(rtcdata,scan_rawobs);
             }
             // reset scan to zero for each obs
             scan = 0;
             return {};
         },
         // run the raw time chunk processing
-        run_timestream());
+        run_timestream(kidsproc));
 }
 
-auto Beammap::run_timestream() {
+template <class KidsProc>
+auto Beammap::run_timestream(KidsProc &kidsproc) {
     auto farm = grppi::farm(n_threads,[&](auto &input_tuple) -> TCData<TCDataKind::PTC,Eigen::MatrixXd> {
         // RTCData input
-        auto& rtcdata = std::get<0>(input_tuple);
-        // kidsproc
-        auto& kidsproc = std::get<1>(input_tuple);
+        auto rtcdata = std::get<0>(input_tuple);
         // start index input
-        auto& scan_rawobs = std::get<2>(input_tuple);
+        auto scan_rawobs = std::get<1>(input_tuple);
 
         // allocate up bitwise timestream flags
         rtcdata.flags2.data.setConstant(timestream::TimestreamFlags::Good);
@@ -349,12 +348,12 @@ auto Beammap::run_timestream() {
         Eigen::Index sl = rtcdata.scan_indices.data(3) - rtcdata.scan_indices.data(2) + 1;
 
         // copy scan's telescope vectors
-        for (auto const& x: telescope.tel_data) {
+        for (const auto& x: telescope.tel_data) {
             rtcdata.tel_data.data[x.first] = telescope.tel_data[x.first].segment(si,sl);
         }
 
         // copy pointing offsets
-        for (auto const& [axis,offset]: pointing_offsets_arcsec) {
+        for (const auto& [axis,offset]: pointing_offsets_arcsec) {
             rtcdata.pointing_offsets_arcsec.data[axis] = offset.segment(si,sl);
         }
 

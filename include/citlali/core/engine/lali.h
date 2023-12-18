@@ -127,7 +127,7 @@ template <class KidsProc>
 auto Lali::run(KidsProc &kidsproc) {
     using tuple_t = std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>,
                                std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>;
-    auto farm = grppi::farm(n_threads,[&](tuple_t input_tuple) {
+    auto farm = grppi::farm(n_threads,[&](tuple_t& input_tuple) {
         // RTCData input
         auto rtcdata = std::get<0>(input_tuple);
         // start index input

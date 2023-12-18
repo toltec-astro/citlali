@@ -41,12 +41,13 @@ public:
     // initial setup for each obs
     void setup();
 
-    // run the reduction for the obs
-    auto run();
-
     // main grppi pipeline
     template <class KidsProc, class RawObs>
     void pipeline(KidsProc &, RawObs &);
+
+    // run the reduction for the obs
+    template <class KidsProc>
+    auto run(KidsProc &);
 
     // fit the maps
     void fit_maps();
@@ -139,6 +140,8 @@ void Pointing::setup() {
 
 template <class KidsProc, class RawObs>
 void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
+    using tuple_t = std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>,
+                               std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>;
     // initialize number of completed scans
     n_scans_done = 0;
 
@@ -154,8 +157,7 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
     // grppi generator function. gets time chunk data from files sequentially and passes them to grppi::farm
     grppi::pipeline(tula::grppi_utils::dyn_ex(parallel_policy),
-        [&]() -> std::optional<std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
-                                          std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>> {
+        [&]() -> std::optional<tuple_t> {
             // variable to hold current scan
             static int scan = 0;
             // loop through scans
@@ -189,15 +191,13 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                 // increment scan
                 scan++;
                 // return rtcdata, kidsproc, and raw data
-                return std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
-                                  std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>> (std::move(rtcdata), kidsproc,
-                                                                                                   std::move(scan_rawobs));
+                return tuple_t(rtcdata,scan_rawobs);
             }
             // reset scan to zero for each obs
             scan = 0;
             return {};
         },
-        run());
+        run(kidsproc));
 
     if (run_mapmaking) {
         // normalize maps
@@ -220,14 +220,13 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     }
 }
 
-auto Pointing::run() {
+template <class KidsProc>
+auto Pointing::run(KidsProc &kidsproc) {
     auto farm = grppi::farm(n_threads,[&](auto &input_tuple) {
         // RTCData input
-        auto& rtcdata = std::get<0>(input_tuple);
-        // kidsproc
-        auto& kidsproc = std::get<1>(input_tuple);
+        auto rtcdata = std::get<0>(input_tuple);
         // start index input
-        auto& scan_rawobs = std::get<2>(input_tuple);
+        auto scan_rawobs = std::get<1>(input_tuple);
 
         // starting index for scan
         Eigen::Index si = rtcdata.scan_indices.data(2);

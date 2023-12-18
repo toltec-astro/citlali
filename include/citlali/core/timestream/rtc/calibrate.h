@@ -163,10 +163,10 @@ void Calibration::calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &in, Eigen:
         Eigen::Index array_index = array_indices(i);
 
         // flux conversion factor for non-mJy/beam units
-        in.fcf.data(i) = calib.flux_conversion_factor(array_index);
+        in.fcf.data(i) = calib.flux_conversion_factor(array_index)*calib.apt["flxscale"](det_index);;
 
         // data x flxscale x factor
-        in.scans.data.col(i) = in.scans.data.col(i).array()*in.fcf.data(i)*calib.apt["flxscale"](det_index);
+        in.scans.data.col(i) = in.scans.data.col(i).array()*in.fcf.data(i);
     }
 }
 
@@ -185,7 +185,7 @@ void Calibration::extinction_correction(TCData<tcdata_kind, Eigen::MatrixXd> &in
         auto factor = 1/(-tau_freq[array_index]).array().exp();
 
         // apply extinction correction to fcf
-        //in.fcf.data(i) = (in.fcf.data(i)*factor).mean();
+        in.fcf.data(i) = (in.fcf.data(i)*factor).mean();
 
         // data x factor
         in.scans.data.col(i) = in.scans.data.col(i).array()*factor.array();
