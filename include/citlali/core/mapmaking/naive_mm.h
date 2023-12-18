@@ -22,6 +22,9 @@ public:
     // get logger
     std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
 
+    // pointer to noise map buffer
+    std::unique_ptr<ObsMapBuffer> nmb;
+
     // run polarization?
     bool run_polarization;
 
@@ -70,7 +73,7 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
     int step = omb.pointing.size();
 
     // pointer to map buffer with noise maps
-    ObsMapBuffer* nmb = nullptr;
+    ObsMapBuffer *nmb;
 
     if (run_noise) {
         nmb = use_cmb ? &cmb : (use_omb ? &omb : nullptr);

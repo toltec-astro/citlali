@@ -89,7 +89,7 @@ void Telescope::get_tel_data(std::string &filepath) {
         }
 
         // loop through telescope data keys and populate vectors
-        for (auto const& pair : tel_data_keys) {
+        for (const auto& pair : tel_data_keys) {
             try {
                 Eigen::Index n_pts = vars.find(pair.first)->second.getDim(0).getSize();
                 tel_data[pair.second].resize(n_pts);
@@ -101,7 +101,7 @@ void Telescope::get_tel_data(std::string &filepath) {
         }
 
         // loop through telescope header keys and populate vectors
-        for (auto const& pair : tel_header_keys) {
+        for (const auto& pair : tel_header_keys) {
             // set for scalars
             Eigen::Index n_pts = 1;
             try {
@@ -175,10 +175,8 @@ void Telescope::calc_tan_pointing() {
         tel_data["lon_phys"] = tel_data["az_phys"];
     }
 
-    // apply elevation corrections
+    // apply corrections
     tel_data["TelElAct"] -= tel_data["TelElCor"];
-
-    // apply azimuth corrections
     tel_data["TelAzAct"] -= tel_data["TelAzCor"];
 }
 
@@ -190,9 +188,8 @@ void Telescope::calc_tan_radec() {
     tel_data["dec_phys"].resize(n_pts);
     tel_data["ra_phys"].resize(n_pts);
 
-    // copy ra
+    // copy radec
     Eigen::VectorXd ra = tel_data["TelRa"];
-    // copy dec
     Eigen::VectorXd dec = tel_data["TelDec"];
 
     // rescale ra

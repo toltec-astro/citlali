@@ -168,7 +168,7 @@ void Calib::get_hwpr(const std::string &filepath, bool sim_obs) {
 
 void Calib::calc_flux_calibration(std::string units, double pixel_size_rad) {
     // flux conversion is per detector
-    flux_conversion_factor.setOnes(n_dets);
+    flux_conversion_factor.resize(n_dets);
 
     // default is mJy/beam (apt should always be in mJy/beam)
     if (units == "mJy/beam") {

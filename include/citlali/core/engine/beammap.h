@@ -69,15 +69,18 @@ public:
     // initial setup for each obs
     void setup();
 
-    // run the raw time chunk processing
-    auto run_timestream();
-
-    // run the iterative stage
-    auto run_loop();
-
     // timestream grppi pipeline
     template <class KidsProc, class RawObs>
     auto timestream_pipeline(KidsProc &, RawObs &);
+
+    // run the raw time chunk processing
+    auto run_timestream();
+
+    // run the loop pipeline
+    void loop_pipeline();
+
+    // run the iterative stage
+    void run_loop();
 
     // flag detectors
     template<typename array_indices_t, typename nw_indices_t>
@@ -85,9 +88,6 @@ public:
 
     // derotate apt and subtract reference detector
     void process_apt();
-
-    // run the loop pipeline
-    auto loop_pipeline();
 
     // main pipeline process
     template <class KidsProc, class RawObs>
@@ -224,6 +224,112 @@ void Beammap::setup() {
     calib.apt_meta["reference_det"] = beammap_reference_det_found;
 }
 
+template <class KidsProc, class RawObs>
+void Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
+    // only get kids params if not simulation
+    if (!telescope.sim_obs) {
+        // add kids models to apt
+        auto [kids_models, kids_model_header] = kidsproc.load_fit_report(rawobs);
+
+        Eigen::Index i = 0;
+        // loop through kids header
+        for (const auto &h: kids_model_header) {
+            std::string name = h;
+            if (name=="flag") {
+                name = "kids_flag";
+            }
+            calib.apt[name].resize(calib.n_dets);
+            Eigen::Index j = 0;
+            for (const auto &v: kids_models) {
+                calib.apt[name].segment(j,v.rows()) = v.col(i);
+                j = j + v.rows();
+            }
+
+            // search for key
+            bool found = false;
+            for (const auto &key: calib.apt_header_keys){
+                if (key==name) {
+                    found = true;
+                }
+            }
+            // if not found, push back placeholder
+            if (!found) {
+                calib.apt_header_keys.push_back(name);
+                calib.apt_header_units[name] = "N/A";
+            }
+
+            // detector orientation
+            calib.apt_meta[name].push_back("units: N/A");
+            calib.apt_meta[name].push_back(name);
+            i++;
+        }
+    }
+
+    // run timestream pipeline
+    timestream_pipeline(kidsproc, rawobs);
+
+    // placeholder vectors of size nscans for grppi maps
+    scan_in_vec.resize(ptcs0.size());
+    std::iota(scan_in_vec.begin(), scan_in_vec.end(), 0);
+    scan_out_vec.resize(ptcs0.size());
+
+    // placeholder vectors of size ndet for grppi maps
+    det_in_vec.resize(n_maps);
+    std::iota(det_in_vec.begin(), det_in_vec.end(), 0);
+    det_out_vec.resize(n_maps);
+
+    // run iterative pipeline
+    loop_pipeline();
+}
+
+template <class KidsProc, class RawObs>
+auto Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
+    // initialize number of completed scans
+    n_scans_done = 0;
+
+    // progress bar
+    tula::logging::progressbar pb(
+        [&](const auto &msg) { logger->info("{}", msg); }, 100, "RTC progress ");
+
+    // grppi generator function. gets time chunk data from files sequentially and passes them to grppi::farm
+    grppi::pipeline(tula::grppi_utils::dyn_ex(parallel_policy),
+        [&]() -> std::optional<std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
+                                          std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>> {
+
+            // variable to hold current scan
+            static int scan = 0;
+            // loop through scans
+            while (scan < telescope.scan_indices.cols()) {
+                // update progress bar
+                pb.count(telescope.scan_indices.cols(), 1);
+
+                // create rtcdata
+                TCData<TCDataKind::RTC, Eigen::MatrixXd> rtcdata;
+                // get scan indices
+                rtcdata.scan_indices.data = telescope.scan_indices.col(scan);
+                // current scan
+                rtcdata.index.data = scan;
+
+                // vector to store kids data
+                std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> scan_rawobs;
+                // get kids data
+                scan_rawobs = kidsproc.load_rawobs(rawobs, scan, telescope.scan_indices, start_indices, end_indices);
+
+                // increment scan
+                scan++;
+                // return rtcdata, kidsproc, and raw data
+                return std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
+                                  std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>> (std::move(rtcdata), kidsproc,
+                                                                                                  std::move(scan_rawobs));
+            }
+            // reset scan to zero for each obs
+            scan = 0;
+            return {};
+        },
+        // run the raw time chunk processing
+        run_timestream());
+}
+
 auto Beammap::run_timestream() {
     auto farm = grppi::farm(n_threads,[&](auto &input_tuple) -> TCData<TCDataKind::PTC,Eigen::MatrixXd> {
         // RTCData input
@@ -314,9 +420,188 @@ auto Beammap::run_timestream() {
     return farm;
 }
 
-auto Beammap::run_loop() {
+void Beammap::loop_pipeline() {
+    // run iterative stage
+    run_loop();
+
+    // write map summary
+    if (verbose_mode) {
+        write_map_summary(omb);
+    }
+
+    // empty initial ptcdata vector to save memory
+    ptcs0.clear();
+
+    // set to input parallel policy
+    parallel_policy = omb.parallel_policy;
+
+    if (map_grouping=="detector") {
+        logger->info("calculating sensitivity");
+        // parallelize on detectors
+        grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+            Eigen::MatrixXd det_sens, noise_flux;
+            // calc sensitivity within psd freq range
+            calc_sensitivity(ptcs, det_sens, noise_flux, telescope.d_fsmp, i, {sens_psd_limits_Hz(0), sens_psd_limits_Hz(1)});
+            // copy into apt table
+            calib.apt["sens"](i) = tula::alg::median(det_sens);
+
+            return 0;
+        });
+    }
+
+    // array indices
+    auto array_indices = ptcs[0].array_indices.data;
+    // nw indices
+    auto nw_indices = ptcs[0].nw_indices.data;
+    // detector indices
+    auto det_indices = ptcs[0].det_indices.data;
+
+    // apt and sensitivity only relevant if beammapping
+    if (map_grouping=="detector") {
+        // rescale fit params from pixel to on-sky units
+        calib.apt["amp"] = params.col(0);
+        calib.apt["x_t"] = RAD_TO_ASEC*omb.pixel_size_rad*(params.col(1).array() - (omb.n_cols)/2);
+        calib.apt["y_t"] = RAD_TO_ASEC*omb.pixel_size_rad*(params.col(2).array() - (omb.n_rows)/2);
+        calib.apt["a_fwhm"] = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(params.col(3));
+        calib.apt["b_fwhm"] = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(params.col(4));
+        calib.apt["angle"] = params.col(5);
+
+        // rescale fit errors from pixel to on-sky units
+        calib.apt["amp_err"] = perrors.col(0);
+        calib.apt["x_t_err"] = RAD_TO_ASEC*omb.pixel_size_rad*(perrors.col(1));
+        calib.apt["y_t_err"] = RAD_TO_ASEC*omb.pixel_size_rad*(perrors.col(2));
+        calib.apt["a_fwhm_err"] = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(perrors.col(3));
+        calib.apt["b_fwhm_err"] = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(perrors.col(4));
+        calib.apt["angle_err"] = perrors.col(5);
+
+        // add convergence iteration to apt table
+        calib.apt["converge_iter"] = converge_iter.cast<double> ();
+
+        // flag detectors in apt based on config limits
+        set_apt_flags(array_indices, nw_indices);
+
+        // subtract reference detector position and derotate
+        process_apt();
+
+        // add final apt table to timestream files
+        if (run_tod_output && !tod_filename.empty()) {
+            // vectors to hold tangent plane pointing for all ptcs (n_chunks x [n_pts x n_dets])
+            std::vector<Eigen::MatrixXd> lat, lon;
+
+            // recalculate tangent plane pointing for tod output
+            for (Eigen::Index i=0; i<ptcs.size(); ++i) {
+                // tangent plane pointing for each detector
+                Eigen::MatrixXd ptc_lat(ptcs[i].scans.data.rows(), ptcs[i].scans.data.cols());
+                Eigen::MatrixXd ptc_lon(ptcs[i].scans.data.rows(), ptcs[i].scans.data.cols());
+                // loop through detectors
+                grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto j) {
+                    // det indices
+                    auto det_index = det_indices(j);
+                    double az_off = calib.apt["x_t"](det_index);
+                    double el_off = calib.apt["y_t"](det_index);
+
+                    // get tangent pointing
+                    auto [det_lat, det_lon] = engine_utils::calc_det_pointing(ptcs[i].tel_data.data, az_off,
+                                                                              el_off, telescope.pixel_axes,
+                                                                              ptcs[i].pointing_offsets_arcsec.data,
+                                                                              map_grouping);
+                    ptc_lat.col(j) = std::move(det_lat);
+                    ptc_lon.col(j) = std::move(det_lon);
+
+                    return 0;
+                });
+                lat.push_back(std::move(ptc_lat));
+                lon.push_back(std::move(ptc_lon));
+            }
+
+            // set parallel policy to sequential for tod output
+            parallel_policy = "seq";
+
+            logger->info("adding final apt and detector pointing to tod files");
+            // loop through tod files
+            for (const auto & [key, val]: tod_filename) {
+                netCDF::NcFile fo(val, netCDF::NcFile::write);
+                // overwrite apt table
+                for (auto const& x: calib.apt) {
+                    if (x.first!="flag2") {
+                        // start index for apt table
+                        std::vector<std::size_t> start_index_apt = {0};
+                        // size for apt
+                        std::vector<std::size_t> size_apt = {1};
+                        netCDF::NcVar apt_v = fo.getVar("apt_" + x.first);
+                        for (std::size_t i=0; i< TULA_SIZET(calib.n_dets); ++i) {
+                            start_index_apt[0] = i;
+                            apt_v.putVar(start_index_apt, size_apt, &calib.apt[x.first](det_indices(i)));
+                        }
+                    }
+                }
+
+                // detector tangent plane pointing
+                netCDF::NcVar det_lat_v = fo.getVar("det_lat");
+                netCDF::NcVar det_lon_v = fo.getVar("det_lon");
+
+                // detector absolute pointing
+                netCDF::NcVar det_ra_v = fo.getVar("det_ra");
+                netCDF::NcVar det_dec_v = fo.getVar("det_dec");
+
+                // start indices for data
+                std::vector<std::size_t> start_index = {0, 0};
+                // size for data
+                std::vector<std::size_t> size = {1, TULA_SIZET(calib.n_dets)};
+                std::size_t k = 0;
+                // loop through ptcs
+                for (Eigen::Index i=0; i<lat.size(); ++i) {
+                    // loop through n_pts
+                    for (std::size_t j=0; j < TULA_SIZET(lat[i].rows()); ++j) {
+                        start_index[0] = k;
+                        k++;
+                        // append detector latitudes
+                        Eigen::VectorXd lat_row = lat[i].row(j);
+                        det_lat_v.putVar(start_index, size, lat_row.data());
+
+                        // append detector longitudes
+                        Eigen::VectorXd lon_row = lon[i].row(j);
+                        det_lon_v.putVar(start_index, size, lon_row.data());
+
+                        if (telescope.pixel_axes == "radec") {
+                            // get absolute pointing
+                            auto [dec, ra] = engine_utils::tangent_to_abs(lat_row, lon_row, telescope.tel_header["Header.Source.Ra"](0),
+                                                                          telescope.tel_header["Header.Source.Dec"](0));
+                            // append detector ra
+                            det_ra_v.putVar(start_index, size, ra.data());
+
+                            // append detector dec
+                            det_dec_v.putVar(start_index, size, dec.data());
+                        }
+                    }
+                }
+            }
+
+            // empty ptcdata vector to save memory
+            ptcs.clear();
+        }
+    }
+
+    else {
+        // calculate map psds
+        logger->info("calculating map psd");
+        omb.calc_map_psd();
+        // calculate map histograms
+        logger->info("calculating map histogram");
+        omb.calc_map_hist();
+    }
+}
+
+
+void Beammap::run_loop() {
     // variable to control iteration
     bool keep_going = true;
+
+    // declare random number generator
+    boost::random::mt19937 eng;
+
+    // boost random number generator (0,1)
+    boost::random::uniform_int_distribution<> rands{0,1};
 
     // iterative loop
     while (keep_going) {
@@ -451,12 +736,6 @@ auto Beammap::run_loop() {
                 }
 
                 if (run_noise) {
-                    // declare random number generator
-                    thread_local boost::random::mt19937 eng;
-
-                    // boost random number generator (0,1)
-                    boost::random::uniform_int_distribution<> rands{0,1};
-
                     for (auto& ptcdata: ptcs) {
                         if (omb.randomize_dets) {
                             ptcdata.noise.data = Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic>::Zero(omb.n_noise, calib.n_dets)
@@ -491,6 +770,8 @@ auto Beammap::run_loop() {
 
                 return 0;
             });
+
+            logger->info("array_index {}",ptcs[0].array_indices.data);
 
             // normalize maps
             logger->info("normalizing maps");
@@ -591,54 +872,6 @@ auto Beammap::run_loop() {
             keep_going = false;
         }
     }
-}
-
-template <class KidsProc, class RawObs>
-auto Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
-    // initialize number of completed scans
-    n_scans_done = 0;
-
-    // progress bar
-    tula::logging::progressbar pb(
-        [&](const auto &msg) { logger->info("{}", msg); }, 100, "RTC progress ");
-
-    // grppi generator function. gets time chunk data from files sequentially and passes them to grppi::farm
-    grppi::pipeline(tula::grppi_utils::dyn_ex(parallel_policy),
-        [&]() -> std::optional<std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
-                                          std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>> {
-
-            // variable to hold current scan
-            static auto scan = 0;
-            // loop through scans
-            while (scan < telescope.scan_indices.cols()) {
-                // update progress bar
-                pb.count(telescope.scan_indices.cols(), 1);
-
-                // create rtcdata
-                TCData<TCDataKind::RTC, Eigen::MatrixXd> rtcdata;
-                // get scan indices
-                rtcdata.scan_indices.data = telescope.scan_indices.col(scan);
-                // current scan
-                rtcdata.index.data = scan;
-
-                // vector to store kids data
-                std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> scan_rawobs;
-                // get kids data
-                scan_rawobs = kidsproc.load_rawobs(rawobs, scan, telescope.scan_indices, start_indices, end_indices);
-
-                // increment scan
-                scan++;
-                // return rtcdata, kidsproc, and raw data
-                return std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
-                                  std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>> (std::move(rtcdata), kidsproc,
-                                                                                                   std::move(scan_rawobs));
-            }
-            // reset scan to zero for each obs
-            scan = 0;
-            return {};
-        },
-        // run the raw time chunk processing
-        run_timestream());
 }
 
 template<typename array_indices_t, typename nw_indices_t>
@@ -977,236 +1210,6 @@ void Beammap::process_apt() {
         calib.apt["x_t"] = calib.apt["x_t_derot"];
         calib.apt["y_t"] = calib.apt["y_t_derot"];
     }
-}
-
-auto Beammap::loop_pipeline() {
-    // run iterative stage
-    run_loop();
-
-    // write map summary
-    if (verbose_mode) {
-        write_map_summary(omb);
-    }
-
-    // empty initial ptcdata vector to save memory
-    ptcs0.clear();
-
-    // set to input parallel policy
-    parallel_policy = omb.parallel_policy;
-
-    if (map_grouping=="detector") {
-        logger->info("calculating sensitivity");
-        // parallelize on detectors
-        grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
-            Eigen::MatrixXd det_sens, noise_flux;
-            // calc sensitivity within psd freq range
-            calc_sensitivity(ptcs, det_sens, noise_flux, telescope.d_fsmp, i, {sens_psd_limits_Hz(0), sens_psd_limits_Hz(1)});
-            // copy into apt table
-            calib.apt["sens"](i) = tula::alg::median(det_sens);
-
-            return 0;
-        });
-    }
-
-    // array indices
-    auto array_indices = ptcs[0].array_indices.data;
-    // nw indices
-    auto nw_indices = ptcs[0].nw_indices.data;
-    // detector indices
-    auto det_indices = ptcs[0].det_indices.data;
-
-    // apt and sensitivity only relevant if beammapping
-    if (map_grouping=="detector") {
-        // rescale fit params from pixel to on-sky units
-        calib.apt["amp"] = params.col(0);
-        calib.apt["x_t"] = RAD_TO_ASEC*omb.pixel_size_rad*(params.col(1).array() - (omb.n_cols)/2);
-        calib.apt["y_t"] = RAD_TO_ASEC*omb.pixel_size_rad*(params.col(2).array() - (omb.n_rows)/2);
-        calib.apt["a_fwhm"] = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(params.col(3));
-        calib.apt["b_fwhm"] = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(params.col(4));
-        calib.apt["angle"] = params.col(5);
-
-         // rescale fit errors from pixel to on-sky units
-        calib.apt["amp_err"] = perrors.col(0);
-        calib.apt["x_t_err"] = RAD_TO_ASEC*omb.pixel_size_rad*(perrors.col(1));
-        calib.apt["y_t_err"] = RAD_TO_ASEC*omb.pixel_size_rad*(perrors.col(2));
-        calib.apt["a_fwhm_err"] = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(perrors.col(3));
-        calib.apt["b_fwhm_err"] = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(perrors.col(4));
-        calib.apt["angle_err"] = perrors.col(5);
-
-        // add convergence iteration to apt table
-        calib.apt["converge_iter"] = converge_iter.cast<double> ();
-
-        // flag detectors in apt based on config limits
-        set_apt_flags(array_indices, nw_indices);
-
-        // subtract reference detector position and derotate
-        process_apt();
-
-        // add final apt table to timestream files
-        if (run_tod_output && !tod_filename.empty()) {
-            // vectors to hold tangent plane pointing for all ptcs (n_chunks x [n_pts x n_dets])
-            std::vector<Eigen::MatrixXd> lat, lon;
-
-            // recalculate tangent plane pointing for tod output
-            for (Eigen::Index i=0; i<ptcs.size(); ++i) {
-                // tangent plane pointing for each detector
-                Eigen::MatrixXd ptc_lat(ptcs[i].scans.data.rows(), ptcs[i].scans.data.cols());
-                Eigen::MatrixXd ptc_lon(ptcs[i].scans.data.rows(), ptcs[i].scans.data.cols());
-                // loop through detectors
-                grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto j) {
-                    // det indices
-                    auto det_index = det_indices(j);
-                    double az_off = calib.apt["x_t"](det_index);
-                    double el_off = calib.apt["y_t"](det_index);
-
-                    // get tangent pointing
-                    auto [det_lat, det_lon] = engine_utils::calc_det_pointing(ptcs[i].tel_data.data, az_off,
-                                                                              el_off, telescope.pixel_axes,
-                                                                              ptcs[i].pointing_offsets_arcsec.data,
-                                                                              map_grouping);
-                    ptc_lat.col(j) = std::move(det_lat);
-                    ptc_lon.col(j) = std::move(det_lon);
-
-                    return 0;
-                });
-                lat.push_back(std::move(ptc_lat));
-                lon.push_back(std::move(ptc_lon));
-            }
-
-            // set parallel policy to sequential for tod output
-            parallel_policy = "seq";
-
-            logger->info("adding final apt and detector pointing to tod files");
-            // loop through tod files
-            for (const auto & [key, val]: tod_filename) {
-                netCDF::NcFile fo(val, netCDF::NcFile::write);
-                // overwrite apt table
-                for (auto const& x: calib.apt) {
-                    if (x.first!="flag2") {
-                        // start index for apt table
-                        std::vector<std::size_t> start_index_apt = {0};
-                        // size for apt
-                        std::vector<std::size_t> size_apt = {1};
-                        netCDF::NcVar apt_v = fo.getVar("apt_" + x.first);
-                        for (std::size_t i=0; i< TULA_SIZET(calib.n_dets); ++i) {
-                            start_index_apt[0] = i;
-                            apt_v.putVar(start_index_apt, size_apt, &calib.apt[x.first](det_indices(i)));
-                        }
-                    }
-                }
-
-                // detector tangent plane pointing
-                netCDF::NcVar det_lat_v = fo.getVar("det_lat");
-                netCDF::NcVar det_lon_v = fo.getVar("det_lon");
-
-                // detector absolute pointing
-                netCDF::NcVar det_ra_v = fo.getVar("det_ra");
-                netCDF::NcVar det_dec_v = fo.getVar("det_dec");
-
-                // start indices for data
-                std::vector<std::size_t> start_index = {0, 0};
-                // size for data
-                std::vector<std::size_t> size = {1, TULA_SIZET(calib.n_dets)};
-                std::size_t k = 0;
-                // loop through ptcs
-                for (Eigen::Index i=0; i<lat.size(); ++i) {
-                    // loop through n_pts
-                    for (std::size_t j=0; j < TULA_SIZET(lat[i].rows()); ++j) {
-                        start_index[0] = k;
-                        k++;
-                        // append detector latitudes
-                        Eigen::VectorXd lat_row = lat[i].row(j);
-                        det_lat_v.putVar(start_index, size, lat_row.data());
-
-                        // append detector longitudes
-                        Eigen::VectorXd lon_row = lon[i].row(j);
-                        det_lon_v.putVar(start_index, size, lon_row.data());
-
-                        if (telescope.pixel_axes == "radec") {
-                            // get absolute pointing
-                            auto [dec, ra] = engine_utils::tangent_to_abs(lat_row, lon_row, telescope.tel_header["Header.Source.Ra"](0),
-                                                                          telescope.tel_header["Header.Source.Dec"](0));
-                            // append detector ra
-                            det_ra_v.putVar(start_index, size, ra.data());
-
-                            // append detector dec
-                            det_dec_v.putVar(start_index, size, dec.data());
-                        }
-                    }
-                }
-            }
-
-            // empty ptcdata vector to save memory
-            ptcs.clear();
-        }
-    }
-
-    else {
-        // calculate map psds
-        logger->info("calculating map psd");
-        omb.calc_map_psd();
-        // calculate map histograms
-        logger->info("calculating map histogram");
-        omb.calc_map_hist();
-    }
-}
-
-template <class KidsProc, class RawObs>
-void Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
-    // only get kids params if not simulation
-    if (!telescope.sim_obs) {
-        // add kids models to apt
-        auto [kids_models, kids_model_header] = kidsproc.load_fit_report(rawobs);
-
-        Eigen::Index i = 0;
-        // loop through kids header
-        for (const auto &h: kids_model_header) {
-            std::string name = h;
-            if (name=="flag") {
-                name = "kids_flag";
-            }
-            calib.apt[name].resize(calib.n_dets);
-            Eigen::Index j = 0;
-            for (const auto &v: kids_models) {
-                calib.apt[name].segment(j,v.rows()) = v.col(i);
-                j = j + v.rows();
-            }
-
-            // search for key
-            bool found = false;
-            for (const auto &key: calib.apt_header_keys){
-                if (key==name) {
-                    found = true;
-                }
-            }
-            // if not found, push back placeholder
-            if (!found) {
-                calib.apt_header_keys.push_back(name);
-                calib.apt_header_units[name] = "N/A";
-            }
-
-            // detector orientation
-            calib.apt_meta[name].push_back("units: N/A");
-            calib.apt_meta[name].push_back(name);
-            i++;
-        }
-    }
-
-    // run timestream pipeline
-    timestream_pipeline(kidsproc, rawobs);
-
-    // placeholder vectors of size nscans for grppi maps
-    scan_in_vec.resize(ptcs0.size());
-    std::iota(scan_in_vec.begin(), scan_in_vec.end(), 0);
-    scan_out_vec.resize(ptcs0.size());
-
-    // placeholder vectors of size ndet for grppi maps
-    det_in_vec.resize(n_maps);
-    std::iota(det_in_vec.begin(), det_in_vec.end(), 0);
-    det_out_vec.resize(n_maps);
-
-    // run iterative pipeline
-    loop_pipeline();
 }
 
 template <mapmaking::MapType map_type>

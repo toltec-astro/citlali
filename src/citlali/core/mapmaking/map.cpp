@@ -17,15 +17,12 @@ void ObsMapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std:
     // coverage cut
     get_config_value(config, cov_cut, missing_keys, invalid_keys,
                      std::tuple{"mapmaking","coverage_cut"});
-
     // number of histogram bins
     get_config_value(config, hist_n_bins, missing_keys, invalid_keys,
                      std::tuple{"post_processing","map_histogram_n_bins"},{},{0});
-
     // pixel size
     get_config_value(config, pixel_size_rad, missing_keys, invalid_keys,
                      std::tuple{"mapmaking","pixel_size_arcsec"},{},{0});
-
     // map units
     get_config_value(config, sig_unit, missing_keys, invalid_keys,
                      std::tuple{"mapmaking","cunit"},{"mJy/beam","MJy/sr","uK", "Jy/pixel"});
@@ -100,27 +97,19 @@ void ObsMapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std:
 
     // set wcs cdelt for freq and stokes
     wcs.cdelt.insert(wcs.cdelt.end(),{1,1});
-
     // set wcs crpix for freq and stokes
     wcs.crpix.insert(wcs.crpix.end(),{0,0});
-
     // set wcs crval to initial defaults
     wcs.crval.resize(4,0.);
-
     // set wcs naxis for freq and stokes
     wcs.naxis.insert(wcs.naxis.end(),{1,1});
-
     // set wcs ctypes for freq and stokes
     wcs.ctype.insert(wcs.ctype.end(),{"FREQ","STOKES"});
-
     // set wcs cunits for freq and stokes
     wcs.cunit.insert(wcs.cunit.end(),{"Hz",""});
 }
 
 void ObsMapBuffer::normalize_maps() {
-    // get logger
-    std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
-
     // placeholder vectors for grppi map
     std::vector<int> map_in_vec, map_out_vec, pointing_in_vec, pointing_out_vec;
 
@@ -392,9 +381,8 @@ void ObsMapBuffer::calc_map_psd() {
         if (!noise.empty()) {
             for (Eigen::Index j=0; j<n_noise; ++j) {
                 // get noise map
-                Eigen::Tensor<double, 2> noise_tensor = noise[i].chip(j, 2);
-                // map to eigen matrix
-                Eigen::Map<Eigen::MatrixXd> noise_matrix(noise_tensor.data(), noise_tensor.dimension(0), noise_tensor.dimension(1));
+                Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(noise[i].data() + j * n_rows * n_cols,
+                                                                                               n_rows, n_cols);
                 sig = noise_matrix.block(cov_ranges(0,0), cov_ranges(0,1), cov_n_rows, cov_n_cols);
 
                 // calculate psds
@@ -449,9 +437,8 @@ void ObsMapBuffer::calc_map_hist() {
         if (!noise.empty()) {
             for (Eigen::Index j=0; j<n_noise; ++j) {
                 // get noise map
-                Eigen::Tensor<double, 2> noise_tensor = noise[i].chip(j,2);
-                // map to eigen matrix
-                Eigen::Map<Eigen::MatrixXd> noise_matrix(noise_tensor.data(), noise_tensor.dimension(0), noise_tensor.dimension(1));
+                Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(noise[i].data() + j * n_rows * n_cols,
+                                                                                               n_rows, n_cols);
                 sig = noise_matrix.block(cov_ranges(0,0), cov_ranges(0,1), cov_n_rows, cov_n_cols);
 
                 // calculate histogram and bins

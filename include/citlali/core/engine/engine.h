@@ -188,7 +188,7 @@ public:
     std::string parallel_policy;
 
     // number of scans completed
-    Eigen::Index n_scans_done;
+    int n_scans_done;
 
     // manual offsets for nws and hwp
     std::map<std::string,double> interface_sync_offset;
@@ -218,7 +218,7 @@ public:
     std::string map_grouping, map_method;
 
     // number of maps
-    Eigen::Index n_maps;
+    int n_maps;
 
     // mapping from index in map vector to array index
     Eigen::VectorXI maps_to_arrays, arrays_to_maps;
@@ -848,7 +848,7 @@ void Engine::get_citlali_config(CT &config) {
             map_fitter.flux_limits(i) = config.template get_typed<double>(std::tuple{"post_processing","source_fitting",
                                                                                      "gauss_model","amp_limit_factors",i});
             // fwhm limit
-            map_fitter.flux_limits(i) = config.template get_typed<double>(std::tuple{"post_processing","source_fitting",
+            map_fitter.fwhm_limits(i) = config.template get_typed<double>(std::tuple{"post_processing","source_fitting",
                                                                                      "gauss_model","fwhm_limit_factors",i});
         }
 

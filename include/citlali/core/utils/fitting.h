@@ -12,6 +12,8 @@ namespace engine_utils {
 
 class mapFitter {
 public:
+    std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
+
     enum FitMode {
         pointing = 0,
         beammap = 1,

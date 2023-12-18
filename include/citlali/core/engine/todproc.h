@@ -1037,9 +1037,9 @@ void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &m
     }
 
     Eigen::VectorXd rows_tan_vec = Eigen::VectorXd::LinSpaced(omb.n_rows, 0, omb.n_rows - 1).array() * omb.pixel_size_rad -
-                                   (omb.n_rows - 1) / 2.0 * omb.pixel_size_rad;
+                                   (omb.n_rows / 2.0) * omb.pixel_size_rad;
     Eigen::VectorXd cols_tan_vec = Eigen::VectorXd::LinSpaced(omb.n_cols, 0, omb.n_cols - 1).array() * omb.pixel_size_rad -
-                                   (omb.n_cols - 1) / 2.0 * omb.pixel_size_rad;
+                                   (omb.n_cols / 2.0) * omb.pixel_size_rad;
 
 
     // push back map sizes and coordinates
@@ -1073,7 +1073,7 @@ void TimeOrderedDataProc<EngineType>::calc_cmb_size(std::vector<map_coord_t> &ma
 
         int n_dim = 2 * std::max(min_pix, max_pix) + 1;
         Eigen::VectorXd dim_vec = Eigen::VectorXd::LinSpaced(n_dim, 0, n_dim - 1)
-                                          .array() * engine().cmb.pixel_size_rad - (n_dim - 1) / 2.0 * engine().cmb.pixel_size_rad;
+                                          .array() * engine().cmb.pixel_size_rad - (n_dim / 2.0) * engine().cmb.pixel_size_rad;
 
         return std::make_tuple(n_dim, std::move(dim_vec));
     };
@@ -1085,10 +1085,11 @@ void TimeOrderedDataProc<EngineType>::calc_cmb_size(std::vector<map_coord_t> &ma
     // Set dimensions and wcs parameters
     cmb.n_rows = n_rows;
     cmb.n_cols = n_cols;
-    cmb.wcs.naxis[1] = n_rows;
     cmb.wcs.naxis[0] = n_cols;
+    cmb.wcs.naxis[1] = n_rows;
     cmb.wcs.crpix[0] = (n_cols - 1) / 2.0;
     cmb.wcs.crpix[1] = (n_rows - 1) / 2.0;
+    // set tangent plane coordinate vectors
     cmb.rows_tan_vec = std::move(rows_tan_vec);
     cmb.cols_tan_vec = std::move(cols_tan_vec);
 }
@@ -1107,12 +1108,14 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
     // set omb dimensions and wcs parameters
     omb.n_rows = map_extent[0];
     omb.n_cols = map_extent[1];
-    omb.wcs.naxis[1] = omb.n_rows;
     omb.wcs.naxis[0] = omb.n_cols;
+    omb.wcs.naxis[1] = omb.n_rows;
     omb.wcs.crpix[0] = (omb.n_cols - 1) / 2.0;
     omb.wcs.crpix[1] = (omb.n_rows - 1) / 2.0;
+    // set tangent plane coordinate vectors
+    omb.rows_tan_vec = map_coord[0];
+    omb.cols_tan_vec = map_coord[1];
 
-    // allocate and initialize matrices
     Eigen::MatrixXd zero_matrix = Eigen::MatrixXd::Zero(omb.n_rows, omb.n_cols);
 
     for (Eigen::Index i=0; i<engine().n_maps; ++i) {
@@ -1135,10 +1138,6 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
             engine().omb.pointing.back().setZero();
         }
     }
-
-    // set tangent plane coordinate vectors
-    omb.rows_tan_vec = map_coord[0];
-    omb.cols_tan_vec = map_coord[1];
 }
 
 // allocate the coadded map buffer
@@ -1153,27 +1152,29 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb() {
     std::vector<Eigen::MatrixXd>().swap(cmb.coverage);
     std::vector<Eigen::Tensor<double,3>>().swap(cmb.pointing);
 
+    Eigen::MatrixXd zero_matrix = Eigen::MatrixXd::Zero(cmb.n_rows, cmb.n_cols);
+
     // loop through maps and allocate space
     for (Eigen::Index i=0; i<engine().n_maps; ++i) {
-        cmb.signal.push_back(Eigen::MatrixXd::Zero(cmb.n_rows, cmb.n_cols));
-        cmb.weight.push_back(Eigen::MatrixXd::Zero(cmb.n_rows, cmb.n_cols));
+        cmb.signal.push_back(zero_matrix);
+        cmb.weight.push_back(zero_matrix);
 
         if (engine().rtcproc.run_kernel) {
             // allocate kernel
-            cmb.kernel.push_back(Eigen::MatrixXd::Zero(cmb.n_rows, cmb.n_cols));
+            cmb.kernel.push_back(zero_matrix);
         }
 
         if (engine().map_grouping!="detector") {
             // allocate coverage
-            cmb.coverage.push_back(Eigen::MatrixXd::Zero(cmb.n_rows, cmb.n_cols));
+            cmb.coverage.push_back(zero_matrix);
         }
     }
 
     if (engine().rtcproc.run_polarization && engine().run_noise) {
         // allocate pointing matrix
         for (Eigen::Index i=0; i<engine().n_maps/engine().rtcproc.polarization.stokes_params.size(); ++i) {
-            cmb.pointing.push_back(Eigen::Tensor<double,3>(cmb.n_rows, cmb.n_cols, 9));
-            cmb.pointing.at(i).setZero();
+            cmb.pointing.emplace_back(cmb.n_rows, cmb.n_cols, 9);
+            cmb.pointing.back().setZero();
         }
     }
 }
@@ -1194,9 +1195,9 @@ void TimeOrderedDataProc<EngineType>::allocate_nmb(map_buffer_t &nmb) {
 // coadd maps
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::coadd() {
-    // calculate the offset between cmb and omb tangent plane coordinates
-    int delta_row = (engine().omb.rows_tan_vec(0) - engine().cmb.rows_tan_vec(0)) / engine().cmb.pixel_size_rad;
-    int delta_col = (engine().omb.cols_tan_vec(0) - engine().cmb.cols_tan_vec(0)) / engine().cmb.pixel_size_rad;
+    // calculate the offset between cmb and omb
+    int delta_row = 0.5*(engine().cmb.n_rows - engine().omb.n_rows);
+    int delta_col= 0.5*(engine().cmb.n_cols - engine().omb.n_cols);
 
     // loop through the maps
     for (Eigen::Index i=0; i<engine().n_maps; ++i) {

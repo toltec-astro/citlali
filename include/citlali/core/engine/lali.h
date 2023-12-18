@@ -19,7 +19,8 @@ public:
     void pipeline(KidsProc &, RawObs &);
 
     // run the reduction for the obs
-    auto run();
+    template <class KidsProc>
+    auto run(KidsProc &);
 
     // output files
     template <mapmaking::MapType map_type>
@@ -38,11 +39,14 @@ void Lali::setup() {
 
 template <class KidsProc, class RawObs>
 void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
+    using tuple_t = std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>,
+                               std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>;
+
     // initialize number of completed scans
     n_scans_done = 0;
 
     // declare random number generator
-    thread_local boost::random::mt19937 eng;
+    boost::random::mt19937 eng;
 
     // boost random number generator (0,1)
     boost::random::uniform_int_distribution<> rands{0,1};
@@ -53,8 +57,7 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
     // grppi generator function. gets time chunk data from files sequentially and passes them to grppi::farm
     grppi::pipeline(tula::grppi_utils::dyn_ex(parallel_policy),
-        [&]() -> std::optional<std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
-                                          std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>> {
+        [&]() -> std::optional<tuple_t> {
             // variable to hold current scan
             static int scan = 0;
             // loop through scans
@@ -88,8 +91,7 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                 // increment scan
                 scan++;
                 // return rtcdata, kidsproc, and raw data
-                return std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
-                                  std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>> (rtcdata, kidsproc, scan_rawobs);
+                return std::move(tuple_t(rtcdata, scan_rawobs));
             }
             // reset scan to zero for each obs
             scan = 0;
@@ -97,7 +99,7 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         },
 
         // run the farm
-        run());
+        run(kidsproc));
 
     if (run_mapmaking) {
         // normalize maps
@@ -109,7 +111,6 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         // calculate map histograms
         logger->info("calculating map histogram");
         omb.calc_map_hist();
-
         // calculate mean error
         omb.calc_mean_err();
         // calculate mean rms
@@ -122,14 +123,15 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     }
 }
 
-auto Lali::run() {
-    auto farm = grppi::farm(n_threads,[&](auto& input_tuple) {
+template <class KidsProc>
+auto Lali::run(KidsProc &kidsproc) {
+    using tuple_t = std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>,
+                               std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>;
+    auto farm = grppi::farm(n_threads,[&](tuple_t input_tuple) {
         // RTCData input
-        auto& rtcdata = std::get<0>(input_tuple);
-        // kidsproc
-        auto& kidsproc = std::get<1>(input_tuple);
+        auto rtcdata = std::get<0>(input_tuple);
         // start index input
-        auto& scan_rawobs = std::get<2>(input_tuple);
+        auto scan_rawobs = std::get<1>(input_tuple);
 
         // starting index for scan
         Eigen::Index si = rtcdata.scan_indices.data(2);
@@ -138,12 +140,12 @@ auto Lali::run() {
         Eigen::Index sl = rtcdata.scan_indices.data(3) - rtcdata.scan_indices.data(2) + 1;
 
         // copy scan's telescope vectors
-        for (auto const& x: telescope.tel_data) {
+        for (const auto& x: telescope.tel_data) {
             rtcdata.tel_data.data[x.first] = telescope.tel_data[x.first].segment(si,sl);
         }
 
         // copy pointing offsets
-        for (auto const& [axis,offset]: pointing_offsets_arcsec) {
+        for (const auto& [axis,offset]: pointing_offsets_arcsec) {
             rtcdata.pointing_offsets_arcsec.data[axis] = offset.segment(si,sl);
         }
 
@@ -155,7 +157,7 @@ auto Lali::run() {
         }
 
         // get raw tod from files
-        rtcdata.scans.data = kidsproc.populate_rtc(scan_rawobs,rtcdata.scan_indices.data, sl, calib.n_dets, tod_type);
+        rtcdata.scans.data = kidsproc.populate_rtc(scan_rawobs, rtcdata.scan_indices.data, sl, calib.n_dets, tod_type);
         std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>().swap(scan_rawobs);
 
         // create PTCData
@@ -204,15 +206,15 @@ auto Lali::run() {
 
         // if running fruit loops and a map has been read in
         if (ptcproc.run_fruit_loops && !ptcproc.tod_mb.signal.empty()) {
-            // calculate weights
-            logger->info("calculating weights");
-            ptcproc.calc_weights(ptcdata, calib.apt, telescope, det_indices);
+            if (run_mapmaking && run_noise) {
+                // calculate weights
+                logger->info("calculating weights");
+                ptcproc.calc_weights(ptcdata, calib.apt, telescope, det_indices);
 
-            // reset weights to median
-            ptcproc.reset_weights(ptcdata, calib, det_indices);
+                // reset weights to median
+                ptcproc.reset_weights(ptcdata, calib, det_indices);
 
-            // populate maps
-            if (run_mapmaking) {
+                // populate maps
                 bool run_omb = false;
                 logger->info("populating noise maps");
                 if (map_method=="naive") {
@@ -263,16 +265,13 @@ auto Lali::run() {
         if (run_mapmaking) {
             // make signal, weight, kernel, and coverage maps
             bool run_omb = true;
-            bool run_noise_fruit;
+            bool run_noise_fruit = run_noise;
 
             // if running fruit loops, noise maps are made on source
             // subtracted timestreams so don't make them here unless
             // on first iteration
             if (ptcproc.run_fruit_loops && !ptcproc.tod_mb.signal.empty()) {
                 run_noise_fruit = false;
-            }
-            else {
-                run_noise_fruit = run_noise;
             }
 
             logger->info("populating maps");
@@ -289,6 +288,7 @@ auto Lali::run() {
         // increment number of completed scans
         n_scans_done++;
         logger->info("done with scan {}. {}/{} scans completed", ptcdata.index.data + 1, n_scans_done, telescope.scan_indices.cols());
+
     });
 
     return farm;
@@ -367,8 +367,8 @@ void Lali::output() {
         }
 
         // clear fits file vectors to ensure its closed.
-        f_io->clear();
-        n_io->clear();
+        std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>().swap(*f_io);
+        std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>().swap(*n_io);
 
         // write psd and histogram files
         logger->debug("writing psds");

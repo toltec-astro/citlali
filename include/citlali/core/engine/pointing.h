@@ -142,6 +142,12 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     // initialize number of completed scans
     n_scans_done = 0;
 
+    // declare random number generator
+    boost::random::mt19937 eng;
+
+    // boost random number generator (0,1)
+    boost::random::uniform_int_distribution<> rands{0,1};
+
     // progress bar
     tula::logging::progressbar pb(
         [&](const auto &msg) { logger->info("{}", msg); }, 100, "citlali progress ");
@@ -151,7 +157,7 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         [&]() -> std::optional<std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>, KidsProc,
                                           std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>> {
             // variable to hold current scan
-            static auto scan = 0;
+            static int scan = 0;
             // loop through scans
             while (scan < telescope.scan_indices.cols()) {
                 // update progress bar
@@ -164,13 +170,8 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                 // current scan
                 rtcdata.index.data = scan;
 
+                // populate noise matrix
                 if (run_noise) {
-                    // declare random number generator
-                    thread_local boost::random::mt19937 eng;
-
-                    // boost random number generator (0,1)
-                    boost::random::uniform_int_distribution<> rands{0,1};
-
                     if (omb.randomize_dets) {
                         rtcdata.noise.data = Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic>::Zero(omb.n_noise, calib.n_dets)
                                                  .unaryExpr([&](int dummy){ return 2 * rands(eng) - 1; });

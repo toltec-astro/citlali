@@ -21,9 +21,10 @@ public:
     // vector of hdu's for easy access
     std::vector<ext_hdu_t> hdus;
 
+    fitsIO() {}
+
     // constructor
-    fitsIO(std::string _f) {
-        filepath = _f;
+    fitsIO(std::string _f) : filepath(_f) {
         // read in file
         if constexpr (file_type==file_type_enum::read_fits) {
             try {

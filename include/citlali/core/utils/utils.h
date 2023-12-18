@@ -245,6 +245,13 @@ auto fft(Eigen::DenseBase<Derived> &in, std::string parallel_policy) {
     return out;
 }
 
+// function to compute the nearest power of two greater than or equal to n
+static int nearest_power_of_two(int n) {
+    if (n < 1) return 1;
+    int power = std::ceil(std::log2(n));
+    return std::pow(2, power);
+}
+
 // parallelized 2d fft using eigen
 template <FFTDirection direction, typename Derived, typename fftw_plan_t>
 auto fft2(Eigen::DenseBase<Derived> &in, fftw_plan_t &plan, fftw_complex* a, fftw_complex*b){
@@ -998,7 +1005,6 @@ private:
     // spline of one-dimensional points.
     Eigen::Spline<double, 1> spline_;
 };
-
 
 template <typename Derived>
 void fix_periodic_boundary(Eigen::DenseBase<Derived>&data, double low,

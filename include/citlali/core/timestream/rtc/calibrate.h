@@ -185,7 +185,7 @@ void Calibration::extinction_correction(TCData<tcdata_kind, Eigen::MatrixXd> &in
         auto factor = 1/(-tau_freq[array_index]).array().exp();
 
         // apply extinction correction to fcf
-        in.fcf.data(i) = (in.fcf.data(i)*factor).mean();
+        //in.fcf.data(i) = (in.fcf.data(i)*factor).mean();
 
         // data x factor
         in.scans.data.col(i) = in.scans.data.col(i).array()*factor.array();
