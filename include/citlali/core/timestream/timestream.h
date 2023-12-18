@@ -670,7 +670,7 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                 if ((ir >= 0) && (ir < mb.n_rows) && (ic >= 0) && (ic < mb.n_cols)) {
                     double signal = mb.signal[map_index](ir,ic);
                     // check whether we should include pixel
-                    bool run_pix_s2n = run_noise ? signal / mb.mean_rms(map_index) >= fruit_loops_sig2noise : true;
+                    bool run_pix_s2n = run_noise && (signal / mb.mean_rms(map_index) >= fruit_loops_sig2noise);
                     bool run_pix_flux = signal >= fruit_loops_flux;
 
                     // if signal flux is higher than S/N limit, flux limit
