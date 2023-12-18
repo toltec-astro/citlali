@@ -2062,7 +2062,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         fits_io->at(map_index).add_hdu("coverage_bool_" + map_name + rtcproc.polarization.stokes_params[stokes_index], coverage_bool);
         fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
         fits_io->at(map_index).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
-        fits_io->at(map_index).hdus.back()->addKey("WTLIMIT", weight_threshold, "Weight threshold");
+        fits_io->at(map_index).hdus.back()->addKey("WTTHRESH", weight_threshold, "Weight threshold");
 
         // signal-to-noise map
         Eigen::MatrixXd sig2noise = mb->signal[i].array()*sqrt(mb->weight[i].array());

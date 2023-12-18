@@ -163,10 +163,10 @@ void Calibration::calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &in, Eigen:
         Eigen::Index array_index = array_indices(i);
 
         // flux conversion factor for non-mJy/beam units
-        in.fcf.data(i) = calib.flux_conversion_factor(array_index)*calib.apt["flxscale"](det_index);;
+        in.fcf.data(i) = calib.flux_conversion_factor(array_index);
 
         // data x flxscale x factor
-        in.scans.data.col(i) = in.scans.data.col(i).array()*in.fcf.data(i);
+        in.scans.data.col(i) = in.scans.data.col(i).array()*in.fcf.data(i)*calib.apt["flxscale"](det_index);
     }
 }
 
