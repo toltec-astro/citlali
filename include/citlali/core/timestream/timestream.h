@@ -356,7 +356,7 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     std::vector<Eigen::Tensor<double,3>>().swap(tod_mb.noise);
     std::vector<std::string>().swap(tod_mb.wcs.cunit);
 
-    tod_mb.mean_rms.resize(0);
+    tod_mb.median_rms.resize(0);
 
     // resize wcs params
     tod_mb.wcs.naxis.resize(4,0.);
@@ -367,7 +367,7 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     tod_mb.wcs.cunit.push_back("N/A");
 
     // vector to hold mean rms
-    std::vector<double> mean_rms_vec;
+    std::vector<double> median_rms_vec;
 
     // loop through arrays in current obs
     for (const auto &arr: calib.arrays) {
@@ -510,10 +510,10 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                             ext.readKey("EXTNAME", extName);
                             // if signal I's first noise map (ignore Q, U, and extra noise maps)
                             if (extName.find("signal") != std::string::npos && extName.find("_0_I") != std::string::npos) {                                    // get mean rms for current extension
-                                // get mean rms from current extension
-                                double mean_rms;
-                                ext.readKey("MEANRMS", mean_rms);
-                                mean_rms_vec.push_back(mean_rms);
+                                // get median rms from current extension
+                                double median_rms;
+                                ext.readKey("MEDRMS", median_rms);
+                                median_rms_vec.push_back(median_rms);
                                 logger->info("found {} [{}]", filename, extName);
                             }
                         }
@@ -533,9 +533,9 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
         std::exit(EXIT_FAILURE);
     }
 
-    if (!mean_rms_vec.empty()) {
-        // map mean rms from fits files vector to map buffer vector
-        tod_mb.mean_rms = Eigen::Map<Eigen::VectorXd>(mean_rms_vec.data(),mean_rms_vec.size());
+    if (!median_rms_vec.empty()) {
+        // map median rms from fits files vector to map buffer vector
+        tod_mb.median_rms = Eigen::Map<Eigen::VectorXd>(median_rms_vec.data(),median_rms_vec.size());
     }
 
     // set dimensions
@@ -565,7 +565,7 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
             tod_mb.kernel[i] = tod_mb.kernel[i].array() * cov_bool.array();
         }
     }
-    // clear weight vectors to save memory
+    // clear weight maps to save memory
     std::vector<Eigen::MatrixXd>().swap(tod_mb.weight);
 }
 
@@ -639,7 +639,7 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
     // run kernel through fruit loops
     bool run_kernel = in.kernel.data.size() !=0;
     // if mean rms is filled use S/N limit
-    bool run_noise = mb.mean_rms.size() != 0;
+    bool run_noise = mb.median_rms.size() != 0;
 
     // loop through detectors
     for (Eigen::Index i=0; i<n_dets; ++i) {
@@ -670,7 +670,7 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                 if ((ir >= 0) && (ir < mb.n_rows) && (ic >= 0) && (ic < mb.n_cols)) {
                     double signal = mb.signal[map_index](ir,ic);
                     // check whether we should include pixel
-                    bool run_pix_s2n = run_noise && (signal / mb.mean_rms(map_index) >= fruit_loops_sig2noise);
+                    bool run_pix_s2n = run_noise && (signal / mb.median_rms(map_index) >= fruit_loops_sig2noise);
                     bool run_pix_flux = signal >= fruit_loops_flux;
 
                     // if signal flux is higher than S/N limit, flux limit

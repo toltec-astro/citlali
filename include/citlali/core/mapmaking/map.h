@@ -111,7 +111,7 @@ public:
     std::vector<Eigen::VectorXd> noise_hists, noise_hist_bins;
 
     // vector to hold mean rms values
-    Eigen::VectorXd mean_rms, mean_err;
+    Eigen::VectorXd median_rms, median_err;
 
     // number of sources found by source finder
     std::vector<int> n_sources;
@@ -150,11 +150,11 @@ public:
     void calc_map_hist();
 
     // calculate mean square error of weight maps
-    void calc_mean_err();
+    void calc_median_err();
     // calculate average rms of noise maps
-    void calc_mean_rms();
+    void calc_median_rms();
     // calculate mean rms of signal maps within an annulus
-    void calc_mean_rms_annulus(double, double);
+    void calc_median_rms_annulus(double, double);
     // find sources in maps
     bool find_sources(Eigen::Index);
 };

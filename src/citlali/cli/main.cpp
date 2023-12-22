@@ -819,6 +819,11 @@ int run(const rc_t &rc) {
                             todproc.engine().pipeline(kidsproc, rawobs);
                         }
 
+                        // create output map files
+                        if (todproc.engine().run_mapmaking) {
+                            todproc.engine().create_obs_map_files();
+                        }
+
                         // output files
                         logger->info("outputting raw obs files");
                         todproc.engine().template output<mapmaking::RawObs>();
@@ -832,7 +837,7 @@ int run(const rc_t &rc) {
                         // filter obs map
                         else if (todproc.engine().run_map_filter) {
                             logger->info("filtering obs maps");
-                            todproc.engine().template run_wiener_filter<mapmaking::FilteredObs>(todproc.engine().omb, todproc.engine().fruit_iter);
+                            todproc.engine().template run_wiener_filter<mapmaking::FilteredObs>(todproc.engine().omb);
 
                             // calculate filtered obs map psds
                             logger->info("calculating filtered obs map psds");
@@ -841,10 +846,10 @@ int run(const rc_t &rc) {
                             logger->info("calculating filtered obs map histograms");
                             todproc.engine().omb.calc_map_hist();
 
-                            // calculate filtered obs map mean error
-                            todproc.engine().omb.calc_mean_err();
-                            // calculate filtered obs map mean rms
-                            todproc.engine().omb.calc_mean_rms();
+                            // calculate filtered obs map median error
+                            todproc.engine().omb.calc_median_err();
+                            // calculate filtered obs map median rms
+                            todproc.engine().omb.calc_median_rms();
 
                             // find filtered obs map sources
                             if (todproc.engine().run_source_finder) {
@@ -879,10 +884,10 @@ int run(const rc_t &rc) {
                         logger->info("calculating coadded map histogram");
                         todproc.engine().cmb.calc_map_hist();
 
-                        // calculate coadded map mean error
-                        todproc.engine().cmb.calc_mean_err();
-                        // calculate coadded map mean rms
-                        todproc.engine().cmb.calc_mean_rms();
+                        // calculate coadded map median error
+                        todproc.engine().cmb.calc_median_err();
+                        // calculate coadded map median rms
+                        todproc.engine().cmb.calc_median_rms();
 
                         // output coadded maps
                         logger->info("outputting raw coadded files");
@@ -891,7 +896,7 @@ int run(const rc_t &rc) {
                         if (todproc.engine().run_map_filter) {
                             logger->info("filtering coadded maps");
                             // filter coadded maps
-                            todproc.engine().template run_wiener_filter<mapmaking::FilteredCoadd>(todproc.engine().cmb, todproc.engine().fruit_iter);
+                            todproc.engine().template run_wiener_filter<mapmaking::FilteredCoadd>(todproc.engine().cmb);
 
                             // calculate filtered coadded map psds
                             logger->info("calculating filtered coadded map psds");
@@ -900,10 +905,10 @@ int run(const rc_t &rc) {
                             logger->info("calculating filtered coadded map histograms");
                             todproc.engine().cmb.calc_map_hist();
 
-                            // calculate coadded map mean error
-                            todproc.engine().cmb.calc_mean_err();
-                            // calculate coadded map mean rms
-                            todproc.engine().cmb.calc_mean_rms();
+                            // calculate coadded map median error
+                            todproc.engine().cmb.calc_median_err();
+                            // calculate coadded map median rms
+                            todproc.engine().cmb.calc_median_rms();
 
                             if (todproc.engine().run_source_finder) {
                                 // find coadded map sources

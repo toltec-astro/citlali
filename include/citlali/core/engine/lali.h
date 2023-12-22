@@ -112,9 +112,9 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         logger->info("calculating map histogram");
         omb.calc_map_hist();
         // calculate mean error
-        omb.calc_mean_err();
+        omb.calc_median_err();
         // calculate mean rms
-        omb.calc_mean_rms();
+        omb.calc_median_rms();
 
         // write map summary
         if (verbose_mode) {
@@ -135,7 +135,6 @@ auto Lali::run(KidsProc &kidsproc) {
 
         // starting index for scan
         Eigen::Index si = rtcdata.scan_indices.data(2);
-
         // current length of outer scans
         Eigen::Index sl = rtcdata.scan_indices.data(3) - rtcdata.scan_indices.data(2) + 1;
 
@@ -308,11 +307,6 @@ void Lali::output() {
 
     // set common variables depending on map_type
     if constexpr (map_type == mapmaking::RawObs || map_type == mapmaking::FilteredObs) {
-        // create output map files
-        if (run_mapmaking) {
-            create_obs_map_files();
-        }
-
         mb = &omb;
         dir_name = obsnum_dir_name + (map_type == mapmaking::RawObs ? "raw/" : "filtered/");
         f_io = (map_type == mapmaking::RawObs) ? &fits_io_vec : &filtered_fits_io_vec;

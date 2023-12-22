@@ -304,7 +304,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         // calc tau at toltec frequencies
         auto tau_freq = calibration.calc_tau(in.tel_data.data["TelElAct"], telescope.tau_225_GHz);
         // correct for extinction
-        calibration.extinction_correction(in, det_indices, array_indices, calib, tau_freq);
+        calibration.extinction_correction(in, det_indices, array_indices, tau_freq);
 
         in.status.extinction_corrected = true;
     }

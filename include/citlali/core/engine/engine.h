@@ -331,7 +331,7 @@ public:
 
     // run the wiener filter
     template <mapmaking::MapType map_t, class map_buffer_t>
-    void run_wiener_filter(map_buffer_t &, int);
+    void run_wiener_filter(map_buffer_t &);
 
     // find sources in the maps
     template <mapmaking::MapType map_t, class map_buffer_t>
@@ -1938,8 +1938,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     }
 
     // estimate rms from weight maps
-    mb->calc_mean_err();
-    auto rms = pow(mb->mean_err(i),0.5);
+    mb->calc_median_err();
+    auto rms = pow(mb->median_err(i),0.5);
 
     // out-of-focus holography parameters
     fits_io->at(i).pfits->pHDU().addKey("OOF_RMS", rms, "rms of map background (" + mb->sig_unit +")");
@@ -2017,7 +2017,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
     fits_io->at(map_index).add_hdu("weight_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->weight[i]);
     fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
     fits_io->at(map_index).hdus.back()->addKey("UNIT", "1/("+mb->sig_unit+")^2", "Unit of map");
-    fits_io->at(map_index).hdus.back()->addKey("MEANERR", pow(mb->mean_err(i),0.5), "Mean Error ("+mb->sig_unit+")");
+    fits_io->at(map_index).hdus.back()->addKey("MEDERR", pow(mb->median_err(i),0.5), "Median Error ("+mb->sig_unit+")");
 
     // kernel map
     if (rtcproc.run_kernel) {
@@ -2081,7 +2081,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                                                  noise_matrix);
             noise_fits_io->at(map_index).add_wcs(noise_fits_io->at(map_index).hdus.back(), mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
             noise_fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
-            noise_fits_io->at(map_index).hdus.back()->addKey("MEANRMS", mb->mean_rms[i], "Mean RMS of noise maps");
+            noise_fits_io->at(map_index).hdus.back()->addKey("MEDRMS", mb->median_rms[i], "Median RMS of noise maps");
         }
     }
 }
@@ -2316,14 +2316,13 @@ void Engine::write_stats() {
 }
 
 template <mapmaking::MapType map_t, class map_buffer_t>
-void Engine::run_wiener_filter(map_buffer_t &mb, int fruit_iter) {
+void Engine::run_wiener_filter(map_buffer_t &mb) {
     // pointer to map buffer
     mapmaking::ObsMapBuffer* pmb = &mb;
     // pointer to data file fits vector
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* f_io = NULL;
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* f_io = nullptr;
     // pointer to noise file fits vector
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* n_io = NULL;
-
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* n_io = nullptr;
     // directory name
     std::string dir_name;
 
@@ -2352,7 +2351,6 @@ void Engine::run_wiener_filter(map_buffer_t &mb, int fruit_iter) {
         }
     }
 
-    Eigen::Index j = 0;
     // loop through maps and run wiener filter
     for (Eigen::Index i=0; i<n_maps; ++i) {
         // current array
@@ -2360,7 +2358,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb, int fruit_iter) {
         // get file index
         auto map_index = arrays_to_maps(i);
         // init fwhm in pixels
-        wiener_filter.init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
+        wiener_filter.init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/mb.pixel_size_rad;
         // make wiener filter template
         wiener_filter.make_template(mb, calib.apt, wiener_filter.template_fwhm_rad[toltec_io.array_name_map[array]],i);
         // run the filter for the current map
@@ -2380,24 +2378,21 @@ void Engine::run_wiener_filter(map_buffer_t &mb, int fruit_iter) {
 
         if (wiener_filter.normalize_error) {
             logger->info("renormalizing errors");
-            // get mean error from weight maps
-            mb.calc_mean_err();
-
-            // get mean map rms from noise maps
-            mb.calc_mean_rms();
+            // get median error from weight maps
+            mb.calc_median_err();
+            // get median map rms from noise maps
+            mb.calc_median_rms();
 
             // get rescaled normalization factor
-            auto noise_factor = (1./pow(mb.mean_rms.array(),2.))*mb.mean_err.array();
-
+            auto noise_factor = (1./pow(mb.median_rms.array(),2.))*mb.median_err.array();
             // re-normalize weight map
             mb.weight[i].noalias() = mb.weight[i]*noise_factor(i);
 
-            logger->info("mean rms {} ({})", static_cast<float>(mb.mean_rms(i)), mb.sig_unit);
+            logger->info("median rms {} ({})", static_cast<float>(mb.median_rms(i)), mb.sig_unit);
         }
 
         if (write_filtered_maps_partial) {
             // only write if saving all iterations or on last iteration
-            //if (ptcproc.save_all_iters || fruit_iter == ptcproc.fruit_loops_iters - 1) {
             // write maps immediately after filtering due to computation time
             write_maps(f_io,n_io,pmb,i);
 
@@ -2417,7 +2412,6 @@ void Engine::run_wiener_filter(map_buffer_t &mb, int fruit_iter) {
                     f_io->at(map_index).pfits->destroy();
                 }
             }
-        //}
         }
     }
 

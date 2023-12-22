@@ -459,24 +459,23 @@ void ObsMapBuffer::calc_map_hist() {
     }
 }
 
-void ObsMapBuffer::calc_mean_err() {
+void ObsMapBuffer::calc_median_err() {
     // resize mean errors
-    mean_err.setZero(weight.size());
+    median_err.setZero(weight.size());
     for (Eigen::Index i=0; i<weight.size(); ++i) {
         // calculate weight threshold
         auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = calc_cov_region(i);
 
-        int counter = (weight[i].array()>=weight_threshold).count();
-        double mean_sqerr = ((weight[i].array()>=weight_threshold).select(1/weight[i].array(),0)).sum();
+        auto mean_sqerr = ((weight[i].array()>=weight_threshold).select(1/weight[i].array(),0));
 
         // get mean square error
-        mean_err(i) = mean_sqerr/counter;
+        median_err(i) = tula::alg::median(mean_sqerr);
     }
 }
 
-void ObsMapBuffer::calc_mean_rms() {
+void ObsMapBuffer::calc_median_rms() {
     // average filtered rms vector
-    mean_rms.setZero(noise.size());
+    median_rms.setZero(noise.size());
 
     // loop through arrays/polarizations
     for (Eigen::Index i=0; i<noise.size(); ++i) {
@@ -486,31 +485,30 @@ void ObsMapBuffer::calc_mean_rms() {
             // calculate weight threshold
             auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = calc_cov_region(i);
 
-            // get matrix of current noise map
-            Eigen::Tensor<double,2> out = noise[i].chip(j,2);
-            auto out_matrix = Eigen::Map<Eigen::MatrixXd>(out.data(), out.dimension(0), out.dimension(1));
+            Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(noise[i].data() + j * n_rows * n_cols,
+                                                                                           n_rows, n_cols);
 
             int counter = (weight[i].array()>=weight_threshold).count();
-            double rms = ((weight[i].array()>=weight_threshold).select(pow(out_matrix.array(),2),0)).sum();
+            double rms = ((weight[i].array()>=weight_threshold).select(pow(noise_matrix.array(),2),0)).sum();
 
             noise_rms(j) = sqrt(rms/counter);
         }
         // get mean rms
-        mean_rms(i) = noise_rms.mean();
+        median_rms(i) = tula::alg::median(noise_rms);
     }
 }
 
-void ObsMapBuffer::calc_mean_rms_annulus(double inner_radius_rad, double outer_radius_rad) {
+void ObsMapBuffer::calc_median_rms_annulus(double inner_radius_rad, double outer_radius_rad) {
     // average filtered rms vector
-    mean_rms.setZero(weight.size());
+    median_rms.setZero(weight.size());
 
     // distance to each pixel
     Eigen::MatrixXd dist(n_rows,n_cols);
 
     // calculate distance to each pixel from center (same for all maps)
-    for (Eigen::Index i=0; i<n_cols; ++i) {
-        for (Eigen::Index j=0; j<n_rows; ++j) {
-            dist(j,i) = sqrt(pow(rows_tan_vec(j),2) + pow(cols_tan_vec(i),2));
+    for (Eigen::Index i=0; i<n_rows; ++i) {
+        for (Eigen::Index j=0; j<n_cols; ++j) {
+            dist(i,j) = sqrt(pow(rows_tan_vec(i) + 0.5*pixel_size_rad,2) + pow(cols_tan_vec(j) + 0.5*pixel_size_rad,2));
         }
     }
 
@@ -522,12 +520,12 @@ void ObsMapBuffer::calc_mean_rms_annulus(double inner_radius_rad, double outer_r
             for (Eigen::Index k=0; k<n_cols; ++k) {
                 if (dist(j,k) > inner_radius_rad && dist(j,k) <= outer_radius_rad) {
                     n_pts++;
-                    mean_rms(i) += signal[i](j,k);
+                    median_rms(i) += signal[i](j,k);
                 }
             }
         }
         // get mean
-        mean_rms(i) /= n_pts;
+        median_rms(i) /= n_pts;
     }
 }
 

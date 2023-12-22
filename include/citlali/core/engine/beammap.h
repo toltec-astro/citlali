@@ -618,7 +618,7 @@ void Beammap::run_loop() {
             if (current_iter == 1) {
                 // use obs map buffer
                 if (!omb.noise.empty()) {
-                    omb.calc_mean_rms();
+                    omb.calc_median_rms();
                 }
             }
         }
@@ -1225,10 +1225,6 @@ void Beammap::output() {
 
     // raw obs maps
     if constexpr (map_type == mapmaking::RawObs) {
-        // create output map files
-        if (run_mapmaking) {
-            create_obs_map_files();
-        }
         mb = &omb;
         f_io = &fits_io_vec;
         n_io = &noise_fits_io_vec;
