@@ -1,3 +1,5 @@
+#include <Eigen/Sparse>
+
 #include <citlali/core/mapmaking/map.h>
 #include <citlali/core/utils/toltec_io.h>
 
@@ -466,10 +468,19 @@ void ObsMapBuffer::calc_median_err() {
         // calculate weight threshold
         auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = calc_cov_region(i);
 
-        auto mean_sqerr = ((weight[i].array()>=weight_threshold).select(1/weight[i].array(),0));
+        Eigen::MatrixXd mean_sqerr = ((weight[i].array()>=weight_threshold).select(1/weight[i].array(),0));
+
+        // construct a sparse matrix
+        Eigen::SparseMatrix<double> sparse_err(mean_sqerr.sparseView());
+
+        // construct a dense map
+        Eigen::Map<Eigen::VectorXd> dense_map(sparse_err.valuePtr(), sparse_err.nonZeros());
+
+        // construct a dense vector
+        Eigen::VectorXd dense_vector(dense_map);
 
         // get mean square error
-        median_err(i) = tula::alg::median(mean_sqerr);
+        median_err(i) = tula::alg::median(dense_vector);
     }
 }
 

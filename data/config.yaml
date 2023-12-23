@@ -193,7 +193,7 @@ inputs: # list of inputs and related data
             value_arcsec: [0.0]
           - modified_julian_date: [0.0] # MJD of pointing observations in seconds for interpolation (ignored if <=0 or only 1 offset)
         type: astrometry
-      - filepath: /path/to/data/apt.ecsv # APT table (ignored for redu_type=beammap or mapmaking grouping=det)
+      - filepath: /path/to/data/apt.ecsv # APT table (ignored for redu_type=beammap with mapmaking grouping=det)
         meta:
           interface: apt
         type: array_prop_table

@@ -204,13 +204,13 @@ void WienerFilter::make_airy_template(MB &mb, const double template_fwhm_rad) {
     filter_template.resize(n_rows, n_cols);
 
     // populate template
-    for (Eigen::Index i=0; i<n_cols; ++i) {
-        for (Eigen::Index j=0; j<n_rows; ++j) {
-            if (dist(j,i)!=0) {
-            filter_template(j,i) = pow(2*boost::math::cyl_bessel_j(1,factor*dist(j,i))/(factor*dist(j,i)),2);
+    for (Eigen::Index i=0; i<n_rows; ++i) {
+        for (Eigen::Index j=0; j<n_cols; ++j) {
+            if (dist(i,j)!=0) {
+            filter_template(i,j) = pow(2*boost::math::cyl_bessel_j(1,factor*dist(i,j))/(factor*dist(i,j)),2);
             }
             else {
-                filter_template(j,i) = 1;
+                filter_template(i,j) = 1;
             }
         }
     }
@@ -431,8 +431,14 @@ void WienerFilter::calc_vvq(MB &mb, const int map_index) {
         // find the minimum value of psd
         auto psd_min = psd.minCoeff();
 
-        psd_q = psd_q.array().max(psd_min).matrix();
-
+        for (Eigen::Index i=0; i<n_rows; ++i) {
+            for (Eigen::Index j=0; j<n_cols; ++j) {
+                if (psd_q(i,j) < psd_min) {
+                    psd_q(i,j) = psd_min;
+                }
+            }
+        }
+        //psd_q = psd_q.array().max(psd_min).matrix();
     }
 
     // normalize the power spectrum psd_q and place into vvq
@@ -746,7 +752,7 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
     // divide by filtered weight
     for (Eigen::Index i=0; i<n_rows; ++i) {
         for (Eigen::Index j=0; j<n_cols; ++j) {
-            if (denom(j,i) != 0.0) {
+            if (denom(i,j) != 0.0) {
                 mb.kernel[map_index](i,j) = nume(i,j)/denom(i,j);
             }
             else {
@@ -767,7 +773,7 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
     // divide by filtered weight
     for (Eigen::Index i=0; i<n_rows; ++i) {
         for (Eigen::Index j=0; j<n_cols; ++j) {
-            if (denom(j,i) != 0.0) {
+            if (denom(i,j) != 0.0) {
                 mb.signal[map_index](i,j) = nume(i,j)/denom(i,j);
             }
             else {
@@ -777,7 +783,6 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
     }
     // weight map is the denominator
     mb.weight[map_index] = denom;
-
 
     logger->info("signal/weight map filtering done");
 }
@@ -794,13 +799,13 @@ void WienerFilter::filter_noise(MB &mb, const int map_index, const int noise_num
     Eigen::MatrixXd ratio(n_rows,n_cols);
 
     // divide by filtered weight
-    for (Eigen::Index i=0; i<n_cols; ++i) {
-        for (Eigen::Index j=0; j<n_rows; ++j) {
-            if (denom(j,i) != 0.0) {
-                ratio(j,i) = nume(j,i)/denom(j,i);
+    for (Eigen::Index i=0; i<n_rows; ++i) {
+        for (Eigen::Index j=0; j<n_cols; ++j) {
+            if (denom(i,j) != 0.0) {
+                ratio(i,j) = nume(i,j)/denom(i,j);
             }
             else {
-                ratio(j,i)= 0.0;
+                ratio(i,j)= 0.0;
             }
         }
     }

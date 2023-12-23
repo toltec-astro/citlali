@@ -288,7 +288,7 @@ void Telescope::calc_scan_indices() {
     }
 
     // get scan indices for Lissajous/Rastajous pattern
-    else if ("Lissajous"==obs_pgm || force_chunk) {
+    else if (obs_pgm=="Lissajous" || force_chunk) {
         logger->info("calculating scans for lissajous/rastajous mode");
 
         // index of first scan
