@@ -52,7 +52,7 @@ mapmaking: # mapmaking parameters
   tan_dec: 0 # tangent plane dec (ignored for now)
   cunit: mJy/beam # units (mJy/beam, MJy/sr, uK, Jy/pixel.  apt table flux conversion default is mJy/beam)
   grouping: auto # mapmaking grouping (auto, detector, nw, array, fg)
-  method: naive # mapmaking algorithm (naive or jinc)
+  method: naive # mapmaking algorithm (naive, jinc, maximum_likelihood)
   pixel_axes: radec # reference frame (radec or altaz)
   pixel_size_arcsec: 1.0 # pixel size in arceconds (used for all obs and coadded maps)
   x_size_pix: 0 # manually specify number of map columns (forced to be odd)
@@ -64,6 +64,9 @@ mapmaking: # mapmaking parameters
       a1100: [1.1, 1.67, 2.0] # default: [1.1, 1.67, 2.0]
       a1400: [1.1, 2.17, 2.0] # default: [1.1, 2.17, 2.0]
       a2000: [1.1, 3.17, 2.0] # default: [1.1, 3.17, 2.0]
+  maximum_likelihood: # controls for built in maximum-likelihood mapmaker
+    max_iterations: 50 # maximum number of iterations to run conjugate gradient for
+    tolerance: 1e-20 # tolerance
 runtime: # parameters to control how citlali runs
   verbose: true # extra debug output in terminal (same as -l debug).  adds summary files to obsnum/logs/ directory.
   meta:
