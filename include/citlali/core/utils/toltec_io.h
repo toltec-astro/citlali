@@ -109,8 +109,12 @@ std::string toltecIO::create_filename(const std::string filepath, const std::str
     else if constexpr (prod_t == ptc_timestream) filename += "_ptc_timestream";
     else if constexpr (prod_t == stats) filename += "_stats";
 
+    if constexpr (filter_t == filtered) {
+        filename += "_filtered";
+    }
+
     // filtered map or add pipeline to maps or noise maps
-    if constexpr (filter_t == filtered || prod_t == map || prod_t == noise) {
+    if constexpr (prod_t == map || prod_t == noise) {
         filename += "_citlali";
     }
 

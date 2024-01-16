@@ -62,6 +62,7 @@
 #include <citlali/core/mapmaking/map.h>
 #include <citlali/core/mapmaking/naive_mm.h>
 #include <citlali/core/mapmaking/jinc_mm.h>
+#include <citlali/core/mapmaking/ml_mm.h>
 #include <citlali/core/mapmaking/wiener_filter.h>
 
 #include <citlali/core/engine/io.h>
@@ -106,6 +107,7 @@ struct reduClasses {
     mapmaking::ObsMapBuffer omb{"omb"}, cmb{"cmb"};
     mapmaking::NaiveMapmaker naive_mm;
     mapmaking::JincMapmaker jinc_mm;
+    mapmaking::MLMapmaker ml_mm;
     mapmaking::WienerFilter wiener_filter;
 };
 
@@ -577,7 +579,7 @@ void Engine::get_mapmaking_config(CT &config) {
 
     // map_method
     get_config_value(config, map_method, missing_keys, invalid_keys,
-                     std::tuple{"mapmaking","method"},{"naive","jinc"});
+                     std::tuple{"mapmaking","method"},{"naive","jinc","maximum_likelihood"});
 
     // map reference frame (radec or altaz)
     get_config_value(config, telescope.pixel_axes, missing_keys, invalid_keys,
@@ -626,6 +628,13 @@ void Engine::get_mapmaking_config(CT &config) {
             // precompute jinc spline
             jinc_mm.calculate_jinc_splines();
         }
+    }
+
+    else if (map_method=="maximum_likelihood") {
+        get_config_value(config, ml_mm.tolerance, missing_keys, invalid_keys,
+                         std::tuple{"mapmaking","maximum_likelihood","tolerance"});
+        get_config_value(config, ml_mm.max_iterations, missing_keys, invalid_keys,
+                         std::tuple{"mapmaking","maximum_likelihood","max_iterations"});
     }
 
     // make noise maps?

@@ -472,13 +472,10 @@ void ObsMapBuffer::calc_median_err() {
 
         // construct a sparse matrix
         Eigen::SparseMatrix<double> sparse_err(mean_sqerr.sparseView());
-
         // construct a dense map
         Eigen::Map<Eigen::VectorXd> dense_map(sparse_err.valuePtr(), sparse_err.nonZeros());
-
         // construct a dense vector
         Eigen::VectorXd dense_vector(dense_map);
-
         // get mean square error
         median_err(i) = tula::alg::median(dense_vector);
     }

@@ -104,7 +104,9 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     if (run_mapmaking) {
         // normalize maps
         logger->info("normalizing maps");
-        omb.normalize_maps();
+        if (map_method != "maximum_likelihood") {
+            omb.normalize_maps();
+        }
         // calculate map psds
         logger->info("calculating map psd");
         omb.calc_map_psd();
@@ -281,6 +283,10 @@ auto Lali::run(KidsProc &kidsproc) {
             else if (map_method=="jinc") {
                 jinc_mm.populate_maps_jinc(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
                                            calib.apt, telescope.d_fsmp, run_omb, run_noise_fruit);
+            }
+            else if (map_method=="maximum_likelihood") {
+                ml_mm.populate_maps_ml(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
+                                       calib, telescope.d_fsmp, run_omb, run_noise_fruit);
             }
         }
 

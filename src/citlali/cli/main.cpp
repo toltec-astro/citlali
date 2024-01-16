@@ -259,7 +259,7 @@ int run(const rc_t &rc) {
                 // exit if missing or invalid config options
                 if (!todproc.engine().missing_keys.empty() || !todproc.engine().invalid_keys.empty()) {
                     logger->error("missing or invalid keys were found!");
-                    logger->error("see for default config: https://github.com/toltec-astro/citlali/blob/v3.x/data/config.yaml");
+                    logger->error("see for default config: https://github.com/toltec-astro/citlali/blob/v4.x/data/config.yaml");
                     std::cerr << fmt::format("missing keys={}", todproc.engine().missing_keys) << "\n";
                     std::cerr << fmt::format("invalid keys={}", todproc.engine().invalid_keys) << "\n";
 
