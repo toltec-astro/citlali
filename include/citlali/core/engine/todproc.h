@@ -1103,7 +1103,7 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
     std::vector<Eigen::MatrixXd>().swap(omb.weight);
     std::vector<Eigen::MatrixXd>().swap(omb.kernel);
     std::vector<Eigen::MatrixXd>().swap(omb.coverage);
-    std::vector<Eigen::Tensor<double,3>>().swap(omb.pointing);
+    std::vector<Eigen::MatrixXd>().swap(omb.pointing);
 
     // set omb dimensions and wcs parameters
     omb.n_rows = map_extent[0];
@@ -1134,7 +1134,7 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
     if (engine().rtcproc.run_polarization) {
         // allocate pointing matrix
         for (Eigen::Index i=0; i<engine().n_maps/engine().rtcproc.polarization.stokes_params.size(); ++i) {
-            omb.pointing.emplace_back(omb.n_rows, omb.n_cols, 9);
+            omb.pointing.emplace_back(omb.n_rows*omb.n_cols, 9);
             engine().omb.pointing.back().setZero();
         }
     }
@@ -1150,7 +1150,7 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb() {
     std::vector<Eigen::MatrixXd>().swap(cmb.weight);
     std::vector<Eigen::MatrixXd>().swap(cmb.kernel);
     std::vector<Eigen::MatrixXd>().swap(cmb.coverage);
-    std::vector<Eigen::Tensor<double,3>>().swap(cmb.pointing);
+    std::vector<Eigen::MatrixXd>().swap(cmb.pointing);
 
     Eigen::MatrixXd zero_matrix = Eigen::MatrixXd::Zero(cmb.n_rows, cmb.n_cols);
 
@@ -1173,7 +1173,7 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb() {
     if (engine().rtcproc.run_polarization && engine().run_noise) {
         // allocate pointing matrix
         for (Eigen::Index i=0; i<engine().n_maps/engine().rtcproc.polarization.stokes_params.size(); ++i) {
-            cmb.pointing.emplace_back(cmb.n_rows, cmb.n_cols, 9);
+            cmb.pointing.emplace_back(cmb.n_rows*cmb.n_cols, 9);
             cmb.pointing.back().setZero();
         }
     }

@@ -21,6 +21,10 @@
 
 namespace engine_utils {
 
+/*int next_power_of_two(int n) {
+    return pow(2,std::ceil(std::log2(n)));
+}*/
+
 static const int parseLine(char* line){
     // this assumes that a digit will be found and the line ends in " Kb".
     int i = strlen(line);
@@ -243,13 +247,6 @@ auto fft(Eigen::DenseBase<Derived> &in, std::string parallel_policy) {
     }
 
     return out;
-}
-
-// function to compute the nearest power of two greater than or equal to n
-static int nearest_power_of_two(int n) {
-    if (n < 1) return 1;
-    int power = std::ceil(std::log2(n));
-    return std::pow(2, power);
 }
 
 // parallelized 2d fft using eigen

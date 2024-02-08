@@ -161,16 +161,17 @@ void JincMapmaker::calculate_jinc_splines() {
 template <class map_buffer_t>
 void JincMapmaker::allocate_pointing(map_buffer_t &mb, double weight, double cos_2angle, double sin_2angle,
                                      Eigen::Index map_index, int ir, int ic) {
+    int pix = mb.n_rows*ic + ir;
     // update pointing matrix
-    mb.pointing[map_index](ir,ic,0) += weight;
-    mb.pointing[map_index](ir,ic,1) += weight*cos_2angle;
-    mb.pointing[map_index](ir,ic,2) += weight*sin_2angle;
-    mb.pointing[map_index](ir,ic,3) = mb.pointing[map_index](ir,ic,1);//weight*cos(2*angle);
-    mb.pointing[map_index](ir,ic,4) += weight*pow(cos_2angle,2.);
-    mb.pointing[map_index](ir,ic,5) += weight*cos_2angle*sin_2angle;
-    mb.pointing[map_index](ir,ic,6) = mb.pointing[map_index](ir,ic,2);//weight*sin(2*angle);
-    mb.pointing[map_index](ir,ic,7) = mb.pointing[map_index](ir,ic,5);//weight*cos(2*angle)*sin(2*angle);
-    mb.pointing[map_index](ir,ic,8) += weight*pow(sin_2angle,2.);
+    mb.pointing[map_index](pix,0) += weight;
+    mb.pointing[map_index](pix,1) += weight*cos_2angle;
+    mb.pointing[map_index](pix,2) += weight*sin_2angle;
+    mb.pointing[map_index](pix,3) = mb.pointing[map_index](pix,1);//weight*cos(2*angle);
+    mb.pointing[map_index](pix,4) += weight*pow(cos_2angle,2.);
+    mb.pointing[map_index](pix,5) += weight*cos_2angle*sin_2angle;
+    mb.pointing[map_index](pix,6) = mb.pointing[map_index](pix,2);//weight*sin(2*angle);
+    mb.pointing[map_index](pix,7) = mb.pointing[map_index](pix,5);//weight*cos(2*angle)*sin(2*angle);
+    mb.pointing[map_index](pix,8) += weight*pow(sin_2angle,2.);
 }
 
 template<class map_buffer_t, typename Derived, typename apt_t>

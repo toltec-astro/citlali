@@ -320,7 +320,7 @@ void Telescope::calc_scan_indices() {
     // size of scan
     int sum = 0;
 
-    // check for bad scans
+    // check for small scans
     Eigen::Matrix<bool, Eigen::Dynamic, 1> is_bad_scan(n_scans);
     for (Eigen::Index i=0; i<n_scans; ++i) {
         sum = 0;

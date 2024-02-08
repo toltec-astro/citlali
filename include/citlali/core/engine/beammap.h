@@ -110,6 +110,7 @@ void Beammap::setup() {
     calib.apt["kids_tone"].resize(calib.n_dets);
 
     Eigen::Index j = 0;
+    // set kids tone (det number on network)
     calib.apt["kids_tone"](0) = 0;
     for (Eigen::Index i=1; i<calib.n_dets; ++i) {
         if (calib.apt["nw"](i) > calib.apt["nw"](i-1)) {
@@ -334,9 +335,9 @@ template <class KidsProc>
 auto Beammap::run_timestream(KidsProc &kidsproc) {
     auto farm = grppi::farm(n_threads,[&](auto &input_tuple) -> TCData<TCDataKind::PTC,Eigen::MatrixXd> {
         // RTCData input
-        auto rtcdata = std::get<0>(input_tuple);
+        auto& rtcdata = std::get<0>(input_tuple);
         // start index input
-        auto scan_rawobs = std::get<1>(input_tuple);
+        auto& scan_rawobs = std::get<1>(input_tuple);
 
         // allocate up bitwise timestream flags
         rtcdata.flags2.data.setConstant(timestream::TimestreamFlags::Good);
@@ -903,7 +904,7 @@ void Beammap::set_apt_flags(array_indices_t &array_indices, nw_indices_t &nw_ind
             }
             flag2(i) |= AptFlags::BadFit;
         }
-        // flag detectors with outler a_fwhm values
+        // flag detectors with outlier a_fwhm values
         if (calib.apt["a_fwhm"](i) < lower_fwhm_arcsec[array_name] ||
             ((calib.apt["a_fwhm"](i) > upper_fwhm_arcsec[array_name]) && upper_fwhm_arcsec[array_name] > 0)) {
             if (calib.apt["flag"](i)==0) {
@@ -912,7 +913,7 @@ void Beammap::set_apt_flags(array_indices_t &array_indices, nw_indices_t &nw_ind
             }
             flag2(i) |= AptFlags::AzFWHM;
         }
-        // flag detectors with outler b_fwhm values
+        // flag detectors with outlier b_fwhm values
         if (calib.apt["b_fwhm"](i) < lower_fwhm_arcsec[array_name] ||
             ((calib.apt["b_fwhm"](i) > upper_fwhm_arcsec[array_name] && upper_fwhm_arcsec[array_name] > 0))) {
             if (calib.apt["flag"](i)==0) {
@@ -921,7 +922,7 @@ void Beammap::set_apt_flags(array_indices_t &array_indices, nw_indices_t &nw_ind
             }
             flag2(i) |= AptFlags::ElFWHM;
         }
-        // flag detectors with outler S/N values
+        // flag detectors with outlier S/N values
         if ((params(i,0)/map_std_dev < lower_sig2noise[array_name]) ||
             ((params(i,0)/map_std_dev > upper_sig2noise[array_name]) && (upper_sig2noise[array_name] > 0))) {
             if (calib.apt["flag"](i)==0) {

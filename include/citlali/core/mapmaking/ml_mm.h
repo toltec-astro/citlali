@@ -39,24 +39,12 @@ void MLMapmaker::populate_maps_ml(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
                                   Eigen::DenseBase<Derived> &map_indices, Eigen::DenseBase<Derived> &det_indices,
                                   std::string &pixel_axes, calib_t &calib, double d_fsmp, bool run_omb, bool run_noise) {
 
-
-    //Eigen::setNbThreads(10);
     const bool use_cmb = !cmb.noise.empty();
     const bool use_omb = !omb.noise.empty();
     const bool run_kernel = !omb.kernel.empty();
     const bool run_coverage = !omb.coverage.empty();
 
     Eigen::Index n_pixels = omb.n_rows * omb.n_cols;
-
-    // fftw setup
-    /*fftw_complex *fftw_a, *fftw_b;
-    fftw_plan pf, pr;
-
-    fftw_a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*in.scans.data.rows());
-    fftw_b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*in.scans.data.rows());
-
-    pf = fftw_plan_dft_1d(in.scans.data.rows(), fftw_a, fftw_b, FFTW_FORWARD, FFTW_ESTIMATE);
-    pr = fftw_plan_dft_1d(in.scans.data.rows(), fftw_a, fftw_b, FFTW_BACKWARD, FFTW_ESTIMATE);*/
 
     for (Eigen::Index arr=0; arr<calib.n_arrays; ++arr) {
         logger->info("making map for array {}/{}",arr + 1,calib.n_arrays);
@@ -78,21 +66,26 @@ void MLMapmaker::populate_maps_ml(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
         //    }
         //}
 
+        // total number of data points
         Eigen::Index n_pts = n_good_det*in.scans.data.rows();
 
         logger->info("start {} end {} n_pts {} n_pixels {} n_good_det {} n_rows {}", start, end, n_pts, n_pixels, n_good_det, in.scans.data.rows());
 
+        // signal and kernel timestreams
         Eigen::VectorXd b(n_pts), b2(n_pts);
+        // pointing matrix
         Eigen::SparseMatrix<double> A(n_pts,n_pixels);
 
+        // hold the values for the pointing matrix
         std::vector<Eigen::Triplet<double>> triplet_list;
         triplet_list.reserve(n_pts);
 
+        // keep track of what index next detector starts at
         Eigen::Index k = 0;
 
         for (Eigen::Index i=start; i<end; ++i) {
             auto det_index = det_indices(i);
-            if (calib.apt["flag"](det_index)==0) {// && !((in.flags.data.col(i).array() ==1).all())) {
+            if (calib.apt["flag"](det_index)==0) {// && !((in.flags.data.col(i).array()==1).all())) {
                 // get detector pointing
                 auto [lat,lon] = engine_utils::calc_det_pointing(in.tel_data.data, calib.apt["x_t"](det_index), calib.apt["y_t"](det_index),
                                                                  pixel_axes, in.pointing_offsets_arcsec.data, omb.map_grouping);
@@ -101,30 +94,27 @@ void MLMapmaker::populate_maps_ml(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
                 Eigen::VectorXd omb_irow = lat.array()/omb.pixel_size_rad + (omb.n_rows)/2.;
                 Eigen::VectorXd omb_icol = lon.array()/omb.pixel_size_rad + (omb.n_cols)/2.;
 
-                /*for (Eigen::Index j=0; j<in.scans.data.rows(); ++j) {
-                    fftw_a[j][0] = in.scans.data(j,i);
-                    fftw_a[j][1] = 0;
-                }*/
-
+                // loop through current detector chunk
                 for (Eigen::Index j=0; j<in.scans.data.rows(); ++j) {
                     Eigen::Index omb_ir = omb_irow(j);
                     Eigen::Index omb_ic = omb_icol(j);
                     Eigen::Index index = omb.n_rows * omb_ic + omb_ir;
-
+                    // get pointing matrix value
                     triplet_list.push_back(Eigen::Triplet<double>(j + k,index,in.weights.data(i)));
                 }
+                // get signal values
                 b.segment(k,in.scans.data.rows()) = in.scans.data.col(i)*in.weights.data(i);
 
                 if (run_kernel) {
+                    // get kernel values
                     b2.segment(k,in.scans.data.rows()) = in.kernel.data.col(i)*in.weights.data(i);
                 }
-
+                // move onto the next detector
                 k += in.scans.data.rows();
             }
         }
 
-        logger->info("b {}",b);
-
+        // initialize sparse matrix
         A.setFromTriplets(triplet_list.begin(), triplet_list.end());
 
         logger->info("running conjugate gradient for array {}/{}",arr + 1,calib.n_arrays);
@@ -134,22 +124,35 @@ void MLMapmaker::populate_maps_ml(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
         cg.setMaxIterations(max_iterations);
         cg.setTolerance(tolerance);
 
+        // compute pointing matrix
         cg.compute(A);
+
+        // solve for signal map
         auto x = cg.solve(b).eval();
-
-        logger->info("iterations {}",cg.iterations());
-        logger->info("error {}",cg.error());
-
-        logger->info("x {}",x);
+        // populate signal map
         omb.signal[map_index] += Eigen::Map<Eigen::MatrixXd>(x.data(),omb.n_rows, omb.n_cols);
-        logger->info("omb.signal[{}] {}",map_index,omb.signal[map_index]);
+        logger->info("signal iterations {}",cg.iterations());
+        logger->info("signal error {}",cg.error());
+        logger->info("signal[{}] {}",map_index,omb.signal[map_index]);
 
-        x = cg.solve(b2).eval();
-        omb.kernel[map_index] += Eigen::Map<Eigen::MatrixXd>(x.data(),omb.n_rows, omb.n_cols);
+        if (run_kernel) {
+            // solve for kernel map
+            x = cg.solve(b2).eval();
+            // populate kernel map
+            omb.kernel[map_index] += Eigen::Map<Eigen::MatrixXd>(x.data(),omb.n_rows, omb.n_cols);
+            logger->info("kernel iterations {}",cg.iterations());
+            logger->info("kernel error {}",cg.error());
+            logger->info("kernel[{}] {}",map_index,omb.signal[map_index]);
+        }
 
         b2.setOnes();
+        // solve for weight map
         x = cg.solve(b2).eval();
+        // populate weight map
         omb.weight[map_index] += Eigen::Map<Eigen::MatrixXd>(x.data(),omb.n_rows, omb.n_cols);
+        logger->info("weight iterations {}",cg.iterations());
+        logger->info("weight error {}",cg.error());
+        logger->info("weight[{}] {}",map_index,omb.signal[map_index]);
     }
 
     // free fftw vectors

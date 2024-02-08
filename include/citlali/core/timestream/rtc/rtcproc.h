@@ -281,7 +281,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     // end index of inner scans
     auto sl = in.scan_indices.data(1) - in.scan_indices.data(0) + 1;
 
-    // calculate the stokes timestream (populates in)
+    // calculate the stokes timestream (re-populates in)
     auto [array_indices, nw_indices, det_indices, fg_indices] = polarization.calc_angle(in, calib, telescope.sim_obs);
 
     // resize fcf

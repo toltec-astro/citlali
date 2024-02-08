@@ -223,9 +223,9 @@ template <class KidsProc>
 auto Pointing::run(KidsProc &kidsproc) {
     auto farm = grppi::farm(n_threads,[&](auto &input_tuple) {
         // RTCData input
-        auto rtcdata = std::get<0>(input_tuple);
+        auto& rtcdata = std::get<0>(input_tuple);
         // start index input
-        auto scan_rawobs = std::get<1>(input_tuple);
+        auto& scan_rawobs = std::get<1>(input_tuple);
 
         // starting index for scan
         Eigen::Index si = rtcdata.scan_indices.data(2);

@@ -72,12 +72,14 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                 // current scan
                 rtcdata.index.data = scan;
 
-                // populate noise matrix
+                // populate noise matrix (do outside of parallelized region for thread safety)
                 if (run_noise) {
                     if (omb.randomize_dets) {
+                        // n_noise x n_dets
                         rtcdata.noise.data = Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic>::Zero(omb.n_noise, calib.n_dets)
                                     .unaryExpr([&](int dummy){ return 2 * rands(eng) - 1; });
                     } else {
+                        // n_noise
                         rtcdata.noise.data = Eigen::Matrix<int, Eigen::Dynamic, 1>::Zero(omb.n_noise)
                                     .unaryExpr([&](int dummy){ return 2 * rands(eng) - 1; });
                     }
@@ -91,7 +93,7 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                 // increment scan
                 scan++;
                 // return rtcdata, kidsproc, and raw data
-                return std::move(tuple_t(rtcdata, scan_rawobs));
+                return tuple_t(rtcdata, scan_rawobs);
             }
             // reset scan to zero for each obs
             scan = 0;
@@ -131,9 +133,9 @@ auto Lali::run(KidsProc &kidsproc) {
                                std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>;
     auto farm = grppi::farm(n_threads,[&](tuple_t& input_tuple) {
         // RTCData input
-        auto rtcdata = std::get<0>(input_tuple);
+        auto &rtcdata = std::get<0>(input_tuple);
         // start index input
-        auto scan_rawobs = std::get<1>(input_tuple);
+        auto &scan_rawobs = std::get<1>(input_tuple);
 
         // starting index for scan
         Eigen::Index si = rtcdata.scan_indices.data(2);
@@ -347,6 +349,7 @@ void Lali::output() {
                     // add primary hdu
                     add_phdu(f_io, mb, i);
 
+                    // add primary hdu to noise maps
                     if (!mb->noise.empty()) {
                         add_phdu(n_io, mb, i);
                     }

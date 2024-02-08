@@ -195,16 +195,12 @@ void ObsMapBuffer::normalize_maps() {
             for (Eigen::Index i=0; i<n_rows; ++i) {
                 // loop through cols
                 for (Eigen::Index j=0; j<n_cols; ++j) {
+                    int pix = n_rows*j + i;
                     // create pointing matrix for pixel
-                    Eigen::Index n = 0;
-                    for (Eigen::Index k=0; k<3; ++k) {
-                        for (Eigen::Index l=0; l<3; l++) {
-                            m(k,l) = pointing[a](i,j,n);
-                            n++;
-                        }
-                    }
+                    Eigen::VectorXd temp = pointing[a].row(pix);
+                    m = Eigen::Map<Eigen::MatrixXd>(temp.data(),3,3);
                     // if m array is not zero and invertible
-                    if ((m.array() != 0).all() && m.determinant() > 1e-20) {
+                    if ((m.array()!=0).all() && m.determinant() > 1e-20) {
 
                         // only run on signal and kernel of obsnum map
                         if (obsnums.size() == 1) {
