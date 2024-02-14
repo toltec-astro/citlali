@@ -686,15 +686,15 @@ void Engine::get_beammap_config(CT &config) {
                      std::tuple{"beammap","derotate"});
 
     // lower fwhm limit
-    auto lower_fwhm_arcsec_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","flagging","lower_fwhm_arcsec"});
+    auto lower_fwhm_arcsec_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","flagging","array_lower_fwhm_arcsec"});
     // upper fwhm limit
-    auto upper_fwhm_arcsec_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","flagging","upper_fwhm_arcsec"});
+    auto upper_fwhm_arcsec_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","flagging","array_upper_fwhm_arcsec"});
     // lower signal-to-noise limit
-    auto lower_sig2noise_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","flagging","lower_sig2noise"});
+    auto lower_sig2noise_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","flagging","array_lower_sig2noise"});
     // upper signal-to-noise limit
-    auto upper_sig2noise_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","flagging","upper_sig2noise"});
+    auto upper_sig2noise_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","flagging","array_upper_sig2noise"});
     // maximum allowed distance limit
-    auto max_dist_arcsec_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","flagging","max_dist_arcsec"});
+    auto max_dist_arcsec_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","flagging","array_max_dist_arcsec"});
 
     // add params to respective array values
     Eigen::Index i = 0;
@@ -1255,6 +1255,10 @@ void Engine::add_tod_header() {
         add_netcdf_var(fo, "CONFIG.FRUITLOOPS", ptcproc.run_fruit_loops);
         add_netcdf_var<std::string>(fo, "CONFIG.FRUITLOOPS.PATH", ptcproc.fruit_loops_path);
         add_netcdf_var(fo, "CONFIG.FRUITLOOPS.S2N", ptcproc.fruit_loops_sig2noise);
+        for (Eigen::Index i=0; i<calib.arrays.size(); ++i) {
+            add_netcdf_var(fo, "CONFIG.FRUITLOOPS.FLUX_"+toltec_io.array_name_map[calib.arrays(i)], ptcproc.fruit_loops_flux(calib.arrays(i)));
+        }
+
         add_netcdf_var(fo, "CONFIG.FRUITLOOPS.MAXITER", ptcproc.fruit_loops_iters);
 
         fo.close();
@@ -1992,7 +1996,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.PATH", ptcproc.fruit_loops_path, "Fruit loops path");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.TYPE", ptcproc.fruit_loops_type, "Fruit loops type");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.S2N", ptcproc.fruit_loops_sig2noise, "Fruit loops S/N");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.FLUX", ptcproc.fruit_loops_flux, "Fruit loops flux (" + mb->sig_unit + ")");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.FLUX", ptcproc.fruit_loops_flux(calib.arrays(i)), "Fruit loops flux (" + mb->sig_unit + ")");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.MAXITER", ptcproc.fruit_loops_iters, "Fruit loops iterations");
 
     // add telescope file header information

@@ -99,8 +99,9 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         get_config_value(config, fruit_loops_sig2noise, missing_keys, invalid_keys,
                          std::tuple{"timestream","fruit_loops","lower_sig2noise_limit"});
         // fruit loops flux density limit
-        get_config_value(config, fruit_loops_flux, missing_keys, invalid_keys,
-                         std::tuple{"timestream","fruit_loops","lower_flux_limit"});
+        auto fruit_loops_flux_vec = config.template get_typed<std::vector<double>>(std::tuple{"timestream","fruit_loops","array_lower_flux_limit"});
+        fruit_loops_flux = Eigen::Map<Eigen::VectorXd>(fruit_loops_flux_vec.data(), fruit_loops_flux_vec.size());
+
         // maximum fruit loops iterations
         get_config_value(config, fruit_loops_iters, missing_keys, invalid_keys,
                          std::tuple{"timestream","fruit_loops","max_iters"});

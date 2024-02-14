@@ -156,8 +156,8 @@ int run(const rc_t &rc) {
     auto co = SeqIOCoordinator::from_config(citlali_config);
 
     // set up KIDs data proc
-    auto kidsproc =
-        KidsDataProc::from_config(citlali_config.get_config("kids"));
+    //auto kidsproc =
+    //    KidsDataProc::from_config(citlali_config.get_config("kids"));
 
     // set up todproc
     using todproc_var_t =
@@ -286,6 +286,9 @@ int run(const rc_t &rc) {
                 logger->info("starting initial loop through input obs");
                 for (const auto &rawobs : co.inputs()) {
                     logger->info("starting setup of observation {}/{}", i + 1, co.n_inputs());
+                    // set up KIDs data proc
+                    auto kidsproc =
+                        KidsDataProc::from_config(citlali_config.get_config("kids"));
                     i++;
                     // this is needed to figure out the data sample rate
                     // and number of detectors
@@ -474,6 +477,9 @@ int run(const rc_t &rc) {
                     // run the reduction for each observation
                     for (std::size_t i=0; i<co.n_inputs(); ++i) {
                         logger->info("starting reduction of observation {}/{}", i + 1, co.n_inputs());
+                        // set up KIDs data proc
+                        auto kidsproc =
+                            KidsDataProc::from_config(citlali_config.get_config("kids"));
 
                         // get current rawobs
                         const auto &rawobs = co.inputs()[i];

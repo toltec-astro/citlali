@@ -6,11 +6,11 @@ beammap: # beammap controls (node required, but options ignored if not beammappi
   iter_tolerance: 0.0 # tolerance for iterations (if 0 all iterations are performed, tod output will be for last iteration)
   sens_psd_limits_Hz: [0,0] # lower and upper limits for psd in sensitivity calculation
   flagging: # these parameters control how the beammapping algorithm flags bad detectors (array order for flagging is [1.1, 1.4, 2.0])
-    lower_fwhm_arcsec: [0,0,0] # lower limits for fitted array fwhm values (used for flagging only)
-    upper_fwhm_arcsec: [99,99,99] # upper limits for fitted array fwhm values (ignored if <0, flagging only)
-    lower_sig2noise: [0,0,0] # lower limits for fitted array S/N values (used for flagging only)
-    upper_sig2noise: [0,0,0] # upper limits for fitted array S/N values (ignored if <0, flagging only)
-    max_dist_arcsec: [0,0,0] # max allowed distance from mean of all positions for each array (ignored if <0, flagging only)
+    array_lower_fwhm_arcsec: [0,0,0] # lower limits for fitted array fwhm values (used for flagging only)
+    array_upper_fwhm_arcsec: [99,99,99] # upper limits for fitted array fwhm values (ignored if <0, flagging only)
+    array_lower_sig2noise: [0,0,0] # lower limits for fitted array S/N values (used for flagging only)
+    array_upper_sig2noise: [0,0,0] # upper limits for fitted array S/N values (ignored if <0, flagging only)
+    array_max_dist_arcsec: [0,0,0] # max allowed distance from mean of all positions for each array (ignored if <0, flagging only)
     sens_factors: [0,0] # per network lower and upper multiplicative factors on median sensitivty (ignored if 0, flagging only)
 coadd: # coaddition controls
   enabled: false # enable or disable coaddition
@@ -64,7 +64,7 @@ mapmaking: # mapmaking parameters
       a1100: [1.1, 1.67, 2.0] # default: [1.1, 1.67, 2.0]
       a1400: [1.1, 2.17, 2.0] # default: [1.1, 2.17, 2.0]
       a2000: [1.1, 3.17, 2.0] # default: [1.1, 3.17, 2.0]
-  maximum_likelihood: # controls for built in maximum-likelihood mapmaker
+  maximum_likelihood: # controls for built in maximum-likelihood mapmaker (under development)
     max_iterations: 50 # maximum number of iterations to run conjugate gradient for
     tolerance: 1e-20 # tolerance
 runtime: # parameters to control how citlali runs
@@ -142,11 +142,11 @@ timestream: # timestream reduction parameters
     output:
       enabled: false # enable or disable ptc TOD output
   fruit_loops: # algorithm to use input maps to subtract out source before cleaning and re-add afterwards
-    enabled: false # enable or disable fruit loops algorithm (this overwrites beammap source fitting if in beammap mode)
+    enabled: false # enable or disable fruit loops algorithm (this overrides beammap source fitting if in beammap mode)
     path: null # path for maps.  If null use maps that were generated in previous iter.  If path, use maps in that redu dir.
     type: obsnum # how to apply maps.  options are 'obsnum' (looks for obsnum dir) or 'coadd' (same map for all obsnums)
     lower_sig2noise_limit: 0 # lower limit on signal-to-noise of pixels to include (ignored if noise maps are disabled or none are found in path)
-    lower_flux_limit: 0 # lower limit on signal flux density of pixels to include (in map units)
+    array_lower_flux_limit: [0,0,0] # lower limit on signal flux density of pixels to include for each array (in map units)
     max_iters: 1 # total number of iterations to run for if no convergence is reached
     save_all_iters: false # save all iterations or only the last one to save disk space (overwrites output files for each iter if true)
 post_processing:

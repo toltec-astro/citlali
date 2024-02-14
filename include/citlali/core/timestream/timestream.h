@@ -288,7 +288,7 @@ public:
     // signal-to-noise cut for fruit loops algorithm
     double fruit_loops_sig2noise;
     // flux density cut for fruit loops algorithm
-    double fruit_loops_flux;
+    Eigen::VectorXd fruit_loops_flux;
     // save all iterations
     bool save_all_iters;
 
@@ -646,6 +646,7 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
         // current detector index in apt
         auto det_index = det_indices(i);
         auto map_index = map_indices(i);
+        int array_index = calib.apt["array"](det_index);
 
         // check if detector is not flagged
         if (calib.apt["flag"](det_index) == 0 && (in.flags.data.col(i).array() == 0).any()) {
@@ -671,7 +672,7 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                     double signal = mb.signal[map_index](ir,ic);
                     // check whether we should include pixel
                     bool run_pix_s2n = run_noise && (signal / mb.median_rms(map_index) >= fruit_loops_sig2noise);
-                    bool run_pix_flux = signal >= fruit_loops_flux;
+                    bool run_pix_flux = signal >= fruit_loops_flux(array_index);
 
                     // if signal flux is higher than S/N limit, flux limit
                     if (run_pix_s2n && run_pix_flux) {

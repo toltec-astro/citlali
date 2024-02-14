@@ -161,7 +161,7 @@ auto Lali::run(KidsProc &kidsproc) {
 
         // get raw tod from files
         rtcdata.scans.data = kidsproc.populate_rtc(scan_rawobs, rtcdata.scan_indices.data, sl, calib.n_dets, tod_type);
-        std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>().swap(scan_rawobs);
+        std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>().swap(std::get<1>(input_tuple));
 
         // create PTCData
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;
