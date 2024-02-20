@@ -1,0 +1,4 @@
+<map id="engine_utils::elapsed_since" name="engine_utils::elapsed_since">
+<area shape="rect" id="node1" title="Return the time elapsed since given time." alt="" coords="5,5,165,47"/>
+<area shape="rect" id="node2" href="$dd/d06/namespaceengine__utils.html#a392b455508f8ccfaf2af66c841dd7055" title="Return the current time." alt="" coords="213,13,349,39"/>
+</map>

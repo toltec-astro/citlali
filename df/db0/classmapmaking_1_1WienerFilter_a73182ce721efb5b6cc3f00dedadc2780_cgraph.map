@@ -1,0 +1,10 @@
+<map id="mapmaking::WienerFilter::make_template" name="mapmaking::WienerFilter::make_template">
+<area shape="rect" id="node1" title=" " alt="" coords="5,71,192,112"/>
+<area shape="rect" id="node2" href="$df/db0/classmapmaking_1_1WienerFilter.html#a16e654e6fad7b842e9fd4ca5dab67415" title=" " alt="" coords="245,5,432,47"/>
+<area shape="rect" id="node4" href="$df/db0/classmapmaking_1_1WienerFilter.html#a868e70ff478492337a5bea35004df498" title=" " alt="" coords="240,71,437,112"/>
+<area shape="rect" id="node5" href="$df/db0/classmapmaking_1_1WienerFilter.html#aeae5d1232649676a98008b41d30faf53" title=" " alt="" coords="245,136,432,177"/>
+<area shape="rect" id="node3" href="$dd/d06/namespaceengine__utils.html#a0764cb525f21c83c7caf0ade7675d8e5" title=" " alt="" coords="490,78,653,105"/>
+<area shape="rect" id="node6" href="$d9/dbd/classengine__utils_1_1mapFitter.html#a26c3e6b6d90d22afc33001e01967fe54" title=" " alt="" coords="485,136,657,177"/>
+<area shape="rect" id="node7" href="$dd/d06/namespaceengine__utils.html#ad9c640b3ad780cec01b1644b15f1ac58" title=" " alt="" coords="724,103,859,144"/>
+<area shape="rect" id="node8" href="$d9/dbd/classengine__utils_1_1mapFitter.html#a42f361491f2fb5dc6c55922921e6b891" title=" " alt="" coords="705,168,877,209"/>
+</map>

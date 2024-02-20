@@ -1,11 +1,7 @@
 var searchData=
 [
-  ['scalar_723',['Scalar',['../structeigeniter_1_1_eigen_iter.html#a1c5481861ede6423966b849917ca37b6',1,'eigeniter::EigenIter']]],
-  ['scalar_5ft_724',['scalar_t',['../namespacemeta.html#af9f63ccb27d410c0e756918de7d03424',1,'meta']]],
-  ['scoped_5fquiet_725',['scoped_quiet',['../namespacelogging.html#a565feeed098c848ef04932d0340d5717',1,'logging']]],
-  ['select_5ft_726',['select_t',['../namespacemeta.html#add9c7e04f9300c3ea4c2b41283854487',1,'meta']]],
-  ['self_727',['self',['../structeigeniter_1_1_eigen_iter.html#a37d68775d09b6d1060cd380beaf19352',1,'eigeniter::EigenIter::self()'],['../structgrppiex_1_1_modes.html#a0f15f7418bceedcaead282a38c78cb87',1,'grppiex::Modes::self()']]],
-  ['size_5ftype_728',['size_type',['../structeigen__utils_1_1_pre_allocator.html#a46f8417f14dd3d1d60ac1fbb6cac784e',1,'eigen_utils::PreAllocator']]],
-  ['storage_5ft_729',['storage_t',['../classconfig_1_1_config.html#a382fdaa81404f057ec4d46e99f7ae318',1,'config::Config']]],
-  ['switch_5ft_730',['switch_t',['../namespacemeta.html#af15770a9cb6367230fa65d11571987f3',1,'meta']]]
+  ['map_5fcoord_5ft_2325',['map_coord_t',['../de/d16/structTimeOrderedDataProc.html#a9027c306835861d5938dd6581d6a8f62',1,'TimeOrderedDataProc::map_coord_t()'],['../de/d16/structTimeOrderedDataProc.html#a9027c306835861d5938dd6581d6a8f62',1,'TimeOrderedDataProc::map_coord_t()']]],
+  ['map_5fcount_5ft_2326',['map_count_t',['../de/d16/structTimeOrderedDataProc.html#a70f58327dfa94ceda87f3d8027965c92',1,'TimeOrderedDataProc::map_count_t()'],['../de/d16/structTimeOrderedDataProc.html#a70f58327dfa94ceda87f3d8027965c92',1,'TimeOrderedDataProc::map_count_t()']]],
+  ['map_5fextent_5ft_2327',['map_extent_t',['../de/d16/structTimeOrderedDataProc.html#ae7ba3ee9739dd98b154565f408cab885',1,'TimeOrderedDataProc::map_extent_t()'],['../de/d16/structTimeOrderedDataProc.html#ad9feb148bcc6bcaaedc2c337dc7d6f00',1,'TimeOrderedDataProc::map_extent_t()']]],
+  ['model_2328',['Model',['../d8/de2/structengine__utils_1_1Fitter.html#a2eb7fc37b0ad044781867d63f008c155',1,'engine_utils::Fitter']]]
 ];

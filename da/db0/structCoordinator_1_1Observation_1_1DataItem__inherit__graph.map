@@ -1,0 +1,5 @@
+<map id="Coordinator::Observation::DataItem" name="Coordinator::Observation::DataItem">
+<area shape="rect" id="node1" title="The DataItem struct This represent a single data item that belongs to a particular observation." alt="" coords="8,360,193,525"/>
+<area shape="rect" id="node2" href="$da/def/structConfigMixin.html" title=" " alt="" coords="5,189,196,311"/>
+<area shape="rect" id="node3" href="$da/def/structConfigMixin.html" title="The mixin class for config handling." alt="" coords="11,5,191,127"/>
+</map>

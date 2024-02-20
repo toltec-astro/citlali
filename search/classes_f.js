@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['winmemorymodel_5fmeta_448',['WinMemoryModel_meta',['../structmpi__utils_1_1env_1_1_win_memory_model__meta.html',1,'mpi_utils::env']]]
+  ['observation_1276',['Observation',['../d8/d84/structCoordinator_1_1Observation.html',1,'Coordinator']]],
+  ['obsmapbuffer_1277',['ObsMapBuffer',['../d1/d45/classmapmaking_1_1ObsMapBuffer.html',1,'mapmaking']]]
 ];

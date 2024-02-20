@@ -1,9 +1,6 @@
 var searchData=
 [
-  ['ncdim_713',['NcDim',['../structnc__utils_1_1_nc_node_mapper.html#a4f0dd37a5c5fdc02ba7657173ff26ed9',1,'nc_utils::NcNodeMapper']]],
-  ['ncfile_714',['NcFile',['../structnc__utils_1_1_nc_node_mapper.html#a4f3c422b7e9fbc7ae5df75bc015f160e',1,'nc_utils::NcNodeMapper']]],
-  ['ncgroupatt_715',['NcGroupAtt',['../structnc__utils_1_1_nc_node_mapper.html#ae6cfd1ecfa40cf4e9d9fc2b4cdecedab',1,'nc_utils::NcNodeMapper']]],
-  ['ncvar_716',['NcVar',['../structnc__utils_1_1_nc_node_mapper.html#ab83c7db962a4deacc041052e3814d63f',1,'nc_utils::NcNodeMapper']]],
-  ['node_5ft_717',['node_t',['../structnc__utils_1_1_nc_node_mapper.html#a95fe8e3938d3fb9d08037fe1431a5489',1,'nc_utils::NcNodeMapper']]],
-  ['nodemap_5ft_718',['nodemap_t',['../structnc__utils_1_1_nc_node_mapper.html#a9e45215d1030dbe9b0217bfedcc900bf',1,'nc_utils::NcNodeMapper']]]
+  ['finder_2310',['Finder',['../de/df2/structfinder__options.html#a37af4cdfb893f3216552ac898f71ca06',1,'finder_options']]],
+  ['fitter_2311',['Fitter',['../d8/d10/structKidsDataProc.html#aa165241192587aa751568c8c2bb9fb7b',1,'KidsDataProc::Fitter()'],['../d4/d78/structfitter__options.html#af067cc73cd1e004a462a1effd52a9290',1,'fitter_options::Fitter()'],['../d8/d10/structKidsDataProc.html#aa165241192587aa751568c8c2bb9fb7b',1,'KidsDataProc::Fitter()']]],
+  ['freqstat_2312',['FreqStat',['../d5/d40/namespaceinternal.html#a32d548afd4d267068da16f9f09d1bbc1',1,'internal']]]
 ];

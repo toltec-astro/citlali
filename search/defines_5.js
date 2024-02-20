@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['mpi_5futils_5fdecltype_791',['MPI_UTILS_DECLTYPE',['../mpi_8h.html#a3a3881637fe254fc351909477546f42d',1,'mpi.h']]],
-  ['mpi_5futils_5fgettype_792',['MPI_UTILS_GETTYPE',['../mpi_8h.html#a55061147af0ee727fc11c83d34d1e79e',1,'mpi.h']]]
+  ['kb_5fj_5fk_2426',['kB_J_K',['../d2/d6f/constants_8h.html#a3b47e7abac75acaa82fe5e22b6db60c7',1,'constants.h']]]
 ];

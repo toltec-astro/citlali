@@ -1,0 +1,6 @@
+<map id="Coordinator::Observation::DataItem" name="Coordinator::Observation::DataItem">
+<area shape="rect" id="node1" title="The DataItem struct This represent a single data item that belongs to a particular observation." alt="" coords="8,647,193,812"/>
+<area shape="rect" id="node2" href="$da/def/structConfigMixin.html" title=" " alt="" coords="5,476,196,597"/>
+<area shape="rect" id="node3" href="$d8/db6/structYamlConfig.html" title="The YamlConfig struct This is a thin wrapper around YAML::Node." alt="" coords="32,5,169,229"/>
+<area shape="rect" id="node4" href="$da/def/structConfigMixin.html" title="The mixin class for config handling." alt="" coords="173,292,353,413"/>
+</map>

@@ -1,0 +1,17 @@
+<map id="Beammap::setup" name="Beammap::setup">
+<area shape="rect" id="node1" title=" " alt="" coords="5,181,139,208"/>
+<area shape="rect" id="node2" href="$dd/d06/namespaceengine__utils.html#a78bc2d77504839570aefed6a0bca233f" title=" " alt="" coords="202,57,357,98"/>
+<area shape="rect" id="node4" href="$d1/db6/classEngine.html#a03b9f9d69c7e1f1d61e127662e0bb81b" title=" " alt="" coords="195,181,364,208"/>
+<area shape="rect" id="node15" href="$dd/d06/namespaceengine__utils.html#a5890f063a686cbd772bf640cf3209c2e" title=" " alt="" coords="187,233,372,274"/>
+<area shape="rect" id="node3" href="$dd/d06/namespaceengine__utils.html#a392b455508f8ccfaf2af66c841dd7055" title="Return the current time." alt="" coords="441,5,577,32"/>
+<area shape="rect" id="node5" href="$dc/df8/classtimestream_1_1Calibration.html#a3509201b7d75db76c78874f10821a78c" title=" " alt="" coords="420,57,597,98"/>
+<area shape="rect" id="node7" href="$d1/db6/classEngine.html#aa4aa6c4ccc792f0230390f84be095c6a" title=" " alt="" coords="429,123,588,149"/>
+<area shape="rect" id="node10" href="$da/d7a/classtimestream_1_1Filter.html#ae4b87635c99a72402d08c61814efe16e" title=" " alt="" coords="439,174,578,215"/>
+<area shape="rect" id="node11" href="$dc/df8/classtimestream_1_1Calibration.html#a4e50829ba652df84ff223d734bbc5018" title=" " alt="" coords="420,239,597,281"/>
+<area shape="rect" id="node12" href="$d2/d89/classtimestream_1_1Kernel.html#add47307e67ff42f044d059d8db78d5f3" title=" " alt="" coords="435,305,582,346"/>
+<area shape="rect" id="node14" href="$d5/d40/namespaceinternal.html#a4d40fc6b08d3c37ac2e1242929561686" title=" " alt="" coords="456,371,561,397"/>
+<area shape="rect" id="node6" href="$dc/df8/classtimestream_1_1Calibration.html#abddada68012ebe27c247a311a27e28cf" title=" " alt="" coords="645,54,823,95"/>
+<area shape="rect" id="node8" href="$dd/d06/namespaceengine__utils.html#a57528ebe2f2c88901b401cbcb7463739" title=" " alt="" coords="650,119,818,161"/>
+<area shape="rect" id="node9" href="$dd/d06/namespaceengine__utils.html#a91920d6a671f21ee464dfa4c55068b7d" title=" " alt="" coords="871,127,1043,153"/>
+<area shape="rect" id="node13" href="$df/d8d/classfitsIO.html#a681b60e0e266b924966ab2d740558054" title=" " alt="" coords="676,312,792,339"/>
+</map>

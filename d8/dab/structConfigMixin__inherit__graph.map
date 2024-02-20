@@ -1,0 +1,9 @@
+<map id="ConfigMixin&lt; Derived &gt;" name="ConfigMixin&lt; Derived &gt;">
+<area shape="rect" id="node1" title="The mixin class for config handling." alt="" coords="243,5,423,127"/>
+<area shape="rect" id="node2" href="$da/def/structConfigMixin.html" title=" " alt="" coords="5,189,213,311"/>
+<area shape="rect" id="node4" href="$da/def/structConfigMixin.html" title=" " alt="" coords="238,189,429,311"/>
+<area shape="rect" id="node6" href="$da/def/structConfigMixin.html" title=" " alt="" coords="457,189,663,311"/>
+<area shape="rect" id="node3" href="$d8/d84/structCoordinator_1_1Observation.html" title="The Observation struct This represents a single observation that contains a set of data items." alt="" coords="17,529,202,621"/>
+<area shape="rect" id="node5" href="$d1/dba/structCoordinator_1_1Observation_1_1DataItem.html" title="The DataItem struct This represent a single data item that belongs to a particular observation." alt="" coords="233,492,418,657"/>
+<area shape="rect" id="node7" href="$d5/ddb/structCoordinator.html" title="The Coordinator struct This wraps around the config object and provides high level methods in various..." alt="" coords="443,360,683,789"/>
+</map>

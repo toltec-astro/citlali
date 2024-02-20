@@ -1,12 +1,9 @@
 var searchData=
 [
-  ['find_5fregex_530',['find_regex',['../namespacefilename__utils.html#a80c93eba55bd8164b14c28a72ff51d6a',1,'filename_utils']]],
-  ['fls_531',['fls',['../namespacebits__utils.html#adb87cfface85fccf78bff72c445cba6b',1,'bits_utils']]],
-  ['format_532',['format',['../structfmt_1_1formatter_3_01mpi__utils_1_1env_00_01char_01_4.html#afdc4e0cc46a3fb7c69208cb34dcf0a74',1,'fmt::formatter&lt; mpi_utils::env, char &gt;::format()'],['../structfmt_1_1formatter_3_01mpi__utils_1_1_span_3_01_ts_8_8_8_01_4_00_01char_01_4.html#a340fc2ee159a968a0b7841b4e5cf2f17',1,'fmt::formatter&lt; mpi_utils::Span&lt; Ts... &gt;, char &gt;::format()']]],
-  ['format_5fncdim_533',['format_ncdim',['../structnc__utils_1_1pprint.html#ad3d280bb00b3b14900e4650e95651d4d',1,'nc_utils::pprint']]],
-  ['format_5fncfile_534',['format_ncfile',['../structnc__utils_1_1pprint.html#af90e9f7c66004bd4262366cf3fd3be97',1,'nc_utils::pprint']]],
-  ['format_5fncvar_535',['format_ncvar',['../structnc__utils_1_1pprint.html#a30b66b7a2a0d8589949c9e70f1134e8e',1,'nc_utils::pprint']]],
-  ['format_5fncvaratt_536',['format_ncvaratt',['../structnc__utils_1_1pprint.html#a02c1b9308d46dd137c78dadb0cd47997',1,'nc_utils::pprint']]],
-  ['from_5fname_537',['from_name',['../structgrppiex_1_1_modes.html#a2d17784d2e09901e5cb7a33e7bd70fdf',1,'grppiex::Modes']]],
-  ['fwd_5fcapture_5fimpl_538',['fwd_capture_impl',['../namespacemeta_1_1internal.html#a1c07e5855592693bfd0c56d55542d4de',1,'meta::internal']]]
+  ['ei_5fnullptr_1528',['ei_nullptr',['../d5/d40/namespaceinternal.html#ad8d987401fb8a73948f2739a84841bee',1,'internal']]],
+  ['elapsed_5fsince_1529',['elapsed_since',['../dd/d06/namespaceengine__utils.html#a582a54460566fa6a468a6e5902f552e9',1,'engine_utils']]],
+  ['engine_1530',['engine',['../de/d16/structTimeOrderedDataProc.html#ade7884cad3434b143b5b2df4a0486a67',1,'TimeOrderedDataProc::engine()'],['../de/d16/structTimeOrderedDataProc.html#af3b2fa245fec3c75a3ac29fff3bd2caf',1,'TimeOrderedDataProc::engine() const'],['../de/d16/structTimeOrderedDataProc.html#ade7884cad3434b143b5b2df4a0486a67',1,'TimeOrderedDataProc::engine()'],['../de/d16/structTimeOrderedDataProc.html#af3b2fa245fec3c75a3ac29fff3bd2caf',1,'TimeOrderedDataProc::engine() const']]],
+  ['errorbar_1531',['errorbar',['../d7/df7/namespacematplotlibcpp.html#a44ccb9a7b34bc240b8cc8b3095dd8537',1,'matplotlibcpp']]],
+  ['eval_1532',['eval',['../d0/d1e/structengine__utils_1_1Gaussian1D.html#aa0c0241d3068e73df45fc818441d7aec',1,'engine_utils::Gaussian1D::eval()'],['../d1/da5/structengine__utils_1_1Gaussian2D.html#a733cdbcfa73c3ea2991c0c1badc6d44a',1,'engine_utils::Gaussian2D::eval()'],['../da/d36/structengine__utils_1_1SymmetricGaussian2D.html#a23530741573ec517eaf7f960c9c95061',1,'engine_utils::SymmetricGaussian2D::eval()']]],
+  ['extinction_5fcorrection_1533',['extinction_correction',['../dc/df8/classtimestream_1_1Calibration.html#aafca5391acb468ee6201025ed02ea416',1,'timestream::Calibration']]]
 ];

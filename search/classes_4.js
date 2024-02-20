@@ -1,5 +1,28 @@
 var searchData=
 [
-  ['formatter_3c_20mpi_5futils_3a_3aenv_2c_20char_20_3e_403',['formatter&lt; mpi_utils::env, char &gt;',['../structfmt_1_1formatter_3_01mpi__utils_1_1env_00_01char_01_4.html',1,'fmt']]],
-  ['formatter_3c_20mpi_5futils_3a_3aspan_3c_20ts_2e_2e_2e_20_3e_2c_20char_20_3e_404',['formatter&lt; mpi_utils::Span&lt; Ts... &gt;, char &gt;',['../structfmt_1_1formatter_3_01mpi__utils_1_1_span_3_01_ts_8_8_8_01_4_00_01char_01_4.html',1,'fmt']]]
+  ['data_5ft_1212',['data_t',['../de/d41/structtimestream_1_1TimeStream_1_1data__t.html',1,'timestream::TimeStream']]],
+  ['data_5ft_3c_20eigen_3a_3aindex_20_3e_1213',['data_t&lt; Eigen::Index &gt;',['../de/d41/structtimestream_1_1TimeStream_1_1data__t.html',1,'timestream::TimeStream']]],
+  ['data_5ft_3c_20eigen_3a_3amatrix_3c_20bool_2c_20eigen_3a_3adynamic_2c_20eigen_3a_3adynamic_20_3e_20_3e_1214',['data_t&lt; Eigen::Matrix&lt; bool, Eigen::Dynamic, Eigen::Dynamic &gt; &gt;',['../de/d41/structtimestream_1_1TimeStream_1_1data__t.html',1,'timestream::TimeStream']]],
+  ['data_5ft_3c_20eigen_3a_3amatrix_3c_20eigen_3a_3aindex_2c_20eigen_3a_3adynamic_2c_201_20_3e_20_3e_1215',['data_t&lt; Eigen::Matrix&lt; Eigen::Index, Eigen::Dynamic, 1 &gt; &gt;',['../de/d41/structtimestream_1_1TimeStream_1_1data__t.html',1,'timestream::TimeStream']]],
+  ['data_5ft_3c_20eigen_3a_3amatrix_3c_20timestreamflags_2c_20eigen_3a_3adynamic_2c_20eigen_3a_3adynamic_20_3e_20_3e_1216',['data_t&lt; Eigen::Matrix&lt; TimestreamFlags, Eigen::Dynamic, Eigen::Dynamic &gt; &gt;',['../de/d41/structtimestream_1_1TimeStream_1_1data__t.html',1,'timestream::TimeStream']]],
+  ['data_5ft_3c_20eigen_3a_3amatrixxd_20_3e_1217',['data_t&lt; Eigen::MatrixXd &gt;',['../de/d41/structtimestream_1_1TimeStream_1_1data__t.html',1,'timestream::TimeStream']]],
+  ['data_5ft_3c_20eigen_3a_3amatrixxi_20_3e_1218',['data_t&lt; Eigen::MatrixXi &gt;',['../de/d41/structtimestream_1_1TimeStream_1_1data__t.html',1,'timestream::TimeStream']]],
+  ['data_5ft_3c_20eigen_3a_3avectorxd_20_3e_1219',['data_t&lt; Eigen::VectorXd &gt;',['../de/d41/structtimestream_1_1TimeStream_1_1data__t.html',1,'timestream::TimeStream']]],
+  ['data_5ft_3c_20eigen_3a_3avectorxi_20_3e_1220',['data_t&lt; Eigen::VectorXI &gt;',['../de/d41/structtimestream_1_1TimeStream_1_1data__t.html',1,'timestream::TimeStream']]],
+  ['data_5ft_3c_20std_3a_3amap_3c_20std_3a_3astring_2c_20eigen_3a_3amatrixxd_20_3e_20_3e_1221',['data_t&lt; std::map&lt; std::string, Eigen::MatrixXd &gt; &gt;',['../de/d41/structtimestream_1_1TimeStream_1_1data__t.html',1,'timestream::TimeStream']]],
+  ['data_5ft_3c_20std_3a_3amap_3c_20std_3a_3astring_2c_20eigen_3a_3avectorxd_20_3e_20_3e_1222',['data_t&lt; std::map&lt; std::string, Eigen::VectorXd &gt; &gt;',['../de/d41/structtimestream_1_1TimeStream_1_1data__t.html',1,'timestream::TimeStream']]],
+  ['dataioerror_1223',['DataIOError',['../dd/d91/structDataIOError.html',1,'']]],
+  ['dataitem_1224',['DataItem',['../d1/dba/structCoordinator_1_1Observation_1_1DataItem.html',1,'Coordinator::Observation::DataItem'],['../d7/ddd/structRawObs_1_1DataItem.html',1,'RawObs::DataItem']]],
+  ['dataref_5ft_1225',['dataref_t',['../dc/da4/structtimestream_1_1TimeStream_1_1dataref__t.html',1,'timestream::TimeStream']]],
+  ['densefunctor_1226',['DenseFunctor',['../dc/dcf/structengine__utils_1_1DenseFunctor.html',1,'engine_utils']]],
+  ['densefunctor_3c_20double_2c_20eigen_3a_3adynamic_2c_20eigen_3a_3adynamic_20_3e_1227',['DenseFunctor&lt; double, Eigen::Dynamic, Eigen::Dynamic &gt;',['../dc/dcf/structengine__utils_1_1DenseFunctor.html',1,'engine_utils']]],
+  ['densefunctor_3c_20double_2c_20np_2c_20eigen_3a_3adynamic_20_3e_1228',['DenseFunctor&lt; double, NP, Eigen::Dynamic &gt;',['../dc/dcf/structengine__utils_1_1DenseFunctor.html',1,'engine_utils']]],
+  ['derived_1229',['Derived',['../d7/d12/structmatplotlibcpp_1_1detail_1_1is__callable__impl_3_01true_00_01T_01_4_1_1Derived.html',1,'matplotlibcpp::detail::is_callable_impl&lt; true, T &gt;']]],
+  ['derived_5fhas_5fvalidate_5fconfig_1230',['derived_has_validate_config',['../df/dc0/structConfigMixin_1_1derived__has__validate__config.html',1,'ConfigMixin']]],
+  ['despiker_1231',['Despiker',['../dd/d57/classtimestream_1_1Despiker.html',1,'timestream']]],
+  ['detectoraxis_1232',['DetectorAxis',['../d1/dbc/structtimestream_1_1DetectorAxis.html',1,'timestream']]],
+  ['diagnostics_1233',['Diagnostics',['../d2/d39/classengine_1_1Diagnostics.html',1,'engine']]],
+  ['dispatcher_5fimpl_1234',['dispatcher_impl',['../d1/d94/structInterfaceRegistry_1_1dispatcher__impl.html',1,'InterfaceRegistry']]],
+  ['downsampler_1235',['Downsampler',['../d2/d66/classtimestream_1_1Downsampler.html',1,'timestream']]],
+  ['dummyengine_1236',['DummyEngine',['../d1/d70/structDummyEngine.html',1,'']]]
 ];

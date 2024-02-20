@@ -1,12 +1,12 @@
 var searchData=
 [
-  ['call_5fif_500',['call_if',['../classconfig_1_1_config.html#ab553052df0decf6adb7915801040e15d',1,'config::Config']]],
-  ['call_5fwith_5fnode_5franks_501',['call_with_node_ranks',['../namespacempi__utils.html#adaa0f62de04be315b44db6a36a207400',1,'mpi_utils']]],
-  ['comm_502',['comm',['../structmpi__utils_1_1comm.html#aaea6150149f2c11cabadf6f81da6dfd4',1,'mpi_utils::comm']]],
-  ['config_503',['Config',['../classconfig_1_1_config.html#ac5f4a9d98831945e6334b3d327241acd',1,'config::Config::Config()=default'],['../classconfig_1_1_config.html#a8c8341900613328f755122e22cf7c422',1,'config::Config::Config(storage_t config)'],['../classconfig_1_1_config.html#ae1ef1548e94f06248cfc612e423d2814',1,'config::Config::Config(const std::initializer_list&lt; storage_t::value_type &gt; &amp;config)']]],
-  ['construct_504',['construct',['../structeigen__utils_1_1_pre_allocator.html#a91c6e6a0bbba64054b337a76c03e2158',1,'eigen_utils::PreAllocator']]],
-  ['copy_505',['copy',['../structmeta_1_1explicit__copy__mixin.html#a0da5586aecad18f4f2c0e0bcaacd38a8',1,'meta::explicit_copy_mixin']]],
-  ['count_506',['count',['../classlogging_1_1progressbar.html#a4754487d2c0a3204a556988b4cf23405',1,'logging::progressbar::count()'],['../namespacebits__utils.html#a85d9699b42ed2ed5829b9f80906681d4',1,'bits_utils::count()']]],
-  ['create_507',['create',['../namespacecontainer__utils.html#a8fbdb152ec96db99576d98c29b1f9c80',1,'container_utils']]],
-  ['create_5fdir_5fif_5fnot_5fexist_508',['create_dir_if_not_exist',['../namespacefilename__utils.html#ab76d8b5abb266840ede8b2d07aa3e883',1,'filename_utils']]]
+  ['backend_1436',['backend',['../d7/df7/namespacematplotlibcpp.html#a7c176020a3312c69b4af6fa80113e53b',1,'matplotlibcpp']]],
+  ['bar_1437',['bar',['../d7/df7/namespacematplotlibcpp.html#a74ced83539862d0a6456935b507e9864',1,'matplotlibcpp::bar(const std::vector&lt; Numeric &gt; &amp;x, const std::vector&lt; Numeric &gt; &amp;y, std::string ec=&quot;black&quot;, std::string ls=&quot;-&quot;, double lw=1.0, const std::map&lt; std::string, std::string &gt; &amp;keywords={})'],['../d7/df7/namespacematplotlibcpp.html#a61e468c9ffbf0eb5f85bbe69d9f5ecd2',1,'matplotlibcpp::bar(const std::vector&lt; Numeric &gt; &amp;y, std::string ec=&quot;black&quot;, std::string ls=&quot;-&quot;, double lw=1.0, const std::map&lt; std::string, std::string &gt; &amp;keywords={})']]],
+  ['barh_1438',['barh',['../d7/df7/namespacematplotlibcpp.html#af92a54960e14b533229719bb85f04ee0',1,'matplotlibcpp']]],
+  ['bins_1439',['bins',['../d5/d00/structBlockAccessor.html#a44a6370b32e354bb991d8ef84cafa341',1,'BlockAccessor']]],
+  ['block_1440',['block',['../d5/d00/structBlockAccessor.html#a00ef2f6b5c2976e9d7bc2e1a4ad0bc33',1,'BlockAccessor::block(index_t i)'],['../d5/d00/structBlockAccessor.html#a76a0852cd14bda2035fcb1a50afd51bb',1,'BlockAccessor::block(index_t i, index_t j)']]],
+  ['blockaccessor_1441',['BlockAccessor',['../d5/d00/structBlockAccessor.html#a00a1be946ea6c78bade223ebd7a4bfd0',1,'BlockAccessor']]],
+  ['boxplot_1442',['boxplot',['../d7/df7/namespacematplotlibcpp.html#a22ede3febeee832b620c90a8c2e55854',1,'matplotlibcpp::boxplot(const std::vector&lt; std::vector&lt; Numeric &gt;&gt; &amp;data, const std::vector&lt; std::string &gt; &amp;labels={}, const std::map&lt; std::string, std::string &gt; &amp;keywords={})'],['../d7/df7/namespacematplotlibcpp.html#a97d82f6044902f9120a16f55bfcbf7a0',1,'matplotlibcpp::boxplot(const std::vector&lt; Numeric &gt; &amp;data, const std::map&lt; std::string, std::string &gt; &amp;keywords={})']]],
+  ['buffer_5fshape_1443',['buffer_shape',['../d1/dba/structCoordinator_1_1Observation_1_1DataItem.html#af31f9bb1f91f810bbd0791812771ded6',1,'Coordinator::Observation::DataItem']]],
+  ['buffer_5fsize_1444',['buffer_size',['../d1/dba/structCoordinator_1_1Observation_1_1DataItem.html#a5afd44806d6cced610a62d9a84a91b85',1,'Coordinator::Observation::DataItem']]]
 ];

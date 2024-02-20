@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['winmemorymodel_744',['WinMemoryModel',['../structmpi__utils_1_1env.html#af65fb984f2cc27809d32eaa1b824af59',1,'mpi_utils::env']]]
+  ['eigensolverbackend_2347',['EigenSolverBackend',['../da/de2/classtimestream_1_1Cleaner.html#a9ee367e1bbf16c25521544979dd252c9',1,'timestream::Cleaner']]]
 ];

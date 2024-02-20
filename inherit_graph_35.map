@@ -1,3 +1,12 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structmeta_1_1scalar__sequence.html" title=" " alt="" coords="5,5,165,44"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,208,117,235"/>
+<area shape="rect" id="node2" href="$d8/d10/structKidsDataProc.html" title=" " alt="" coords="219,5,329,32"/>
+<area shape="rect" id="node3" href="$dc/dcf/structRawObs.html" title="The raw obs struct This represents a single observation that contains a set of data items and calibra..." alt="" coords="237,56,311,83"/>
+<area shape="rect" id="node4" href="$d2/d2e/structRawObs_1_1ArrayPropTable.html" title=" " alt="" coords="183,107,365,133"/>
+<area shape="rect" id="node5" href="$d0/d37/structRawObs_1_1AstrometryCalibInfo.html" title=" " alt="" coords="167,157,381,184"/>
+<area shape="rect" id="node6" href="$de/dc9/structRawObs_1_1CalItem.html" title="@breif a generic cal item holder" alt="" coords="207,208,341,235"/>
+<area shape="rect" id="node7" href="$d7/ddd/structRawObs_1_1DataItem.html" title="The DataItem struct This represent a single data item that belongs to a particular observation." alt="" coords="202,259,346,285"/>
+<area shape="rect" id="node8" href="$d0/d2f/structRawObs_1_1PhotometryCalibInfo.html" title=" " alt="" coords="165,309,383,336"/>
+<area shape="rect" id="node9" href="$d4/ded/structSeqIOCoordinator.html" title="The Coordinator struct This wraps around the config object and provides high level methods in various..." alt="" coords="206,360,342,387"/>
+<area shape="rect" id="node10" href="$de/d16/structTimeOrderedDataProc.html" title="The time ordered data processing struct This wraps around the lali config." alt="" coords="191,411,357,453"/>
 </map>
