@@ -304,7 +304,7 @@ auto Lali::run(KidsProc &kidsproc) {
 template <mapmaking::MapType map_type>
 void Lali::output() {
     // pointer to map buffer
-    mapmaking::ObsMapBuffer* mb = nullptr;
+    mapmaking::MapBuffer* mb = nullptr;
     // pointer to data file fits vector
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* f_io = nullptr;
     // pointer to noise file fits vector

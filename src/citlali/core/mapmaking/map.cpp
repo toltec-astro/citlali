@@ -6,13 +6,13 @@
 namespace mapmaking {
 
 // constructor
-ObsMapBuffer::ObsMapBuffer() {}
+MapBuffer::MapBuffer() {}
 
 // constructor
-ObsMapBuffer::ObsMapBuffer(std::string _n): name(_n) {}
+MapBuffer::MapBuffer(std::string _n): name(_n) {}
 
 // get config file
-void ObsMapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std::vector<std::string>> &missing_keys,
+void MapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std::vector<std::string>> &missing_keys,
                               std::vector<std::vector<std::string>> &invalid_keys, std::string pixel_axes,
                               std::string redu_type) {
 
@@ -111,7 +111,7 @@ void ObsMapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std:
     wcs.cunit.insert(wcs.cunit.end(),{"Hz",""});
 }
 
-void ObsMapBuffer::normalize_maps() {
+void MapBuffer::normalize_maps() {
     // placeholder vectors for grppi map
     std::vector<int> map_in_vec, map_out_vec, pointing_in_vec, pointing_out_vec;
 
@@ -317,7 +317,7 @@ void ObsMapBuffer::normalize_maps() {
     }
 }
 
-std::tuple<double, Eigen::MatrixXd, Eigen::Index, Eigen::Index> ObsMapBuffer::calc_cov_region(Eigen::Index i) {
+std::tuple<double, Eigen::MatrixXd, Eigen::Index, Eigen::Index> MapBuffer::calc_cov_region(Eigen::Index i) {
     // calculate weight threshold
     double weight_threshold = engine_utils::find_weight_threshold(weight[i], cov_cut);
 
@@ -333,7 +333,7 @@ std::tuple<double, Eigen::MatrixXd, Eigen::Index, Eigen::Index> ObsMapBuffer::ca
 }
 
 // loop through maps
-void ObsMapBuffer::calc_map_psd() {
+void MapBuffer::calc_map_psd() {
     // clear psd vectors
     std::vector<Eigen::VectorXd>().swap(psds);
     std::vector<Eigen::VectorXd>().swap(psd_freqs);
@@ -410,7 +410,7 @@ void ObsMapBuffer::calc_map_psd() {
     }
 }
 
-void ObsMapBuffer::calc_map_hist() {
+void MapBuffer::calc_map_hist() {
     // clear vectors
     std::vector<Eigen::VectorXd>().swap(hists);
     std::vector<Eigen::VectorXd>().swap(hist_bins);
@@ -457,7 +457,7 @@ void ObsMapBuffer::calc_map_hist() {
     }
 }
 
-void ObsMapBuffer::calc_median_err() {
+void MapBuffer::calc_median_err() {
     // resize mean errors
     median_err.setZero(weight.size());
     for (Eigen::Index i=0; i<weight.size(); ++i) {
@@ -477,7 +477,7 @@ void ObsMapBuffer::calc_median_err() {
     }
 }
 
-void ObsMapBuffer::calc_median_rms() {
+void MapBuffer::calc_median_rms() {
     // average filtered rms vector
     median_rms.setZero(noise.size());
 
@@ -502,7 +502,7 @@ void ObsMapBuffer::calc_median_rms() {
     }
 }
 
-void ObsMapBuffer::calc_median_rms_annulus(double inner_radius_rad, double outer_radius_rad) {
+void MapBuffer::calc_median_rms_annulus(double inner_radius_rad, double outer_radius_rad) {
     // average filtered rms vector
     median_rms.setZero(weight.size());
 
@@ -533,7 +533,7 @@ void ObsMapBuffer::calc_median_rms_annulus(double inner_radius_rad, double outer
     }
 }
 
-bool ObsMapBuffer::find_sources(Eigen::Index map_index) {
+bool MapBuffer::find_sources(Eigen::Index map_index) {
     // calc coverage bool map
     Eigen::MatrixXd ones, zeros;
 

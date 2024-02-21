@@ -42,7 +42,7 @@ struct WCS {
     std::vector<std::string> ctype;
 };
 
-class ObsMapBuffer {
+class MapBuffer {
 public:
     // wcs object
     WCS wcs;
@@ -131,8 +131,8 @@ public:
     Eigen::MatrixXd source_params, source_perror;
 
     // constructor
-    ObsMapBuffer();
-    ObsMapBuffer(std::string);
+    MapBuffer();
+    MapBuffer(std::string);
 
     // get config file
     void get_config(tula::config::YamlConfig &, std::vector<std::vector<std::string>> &,

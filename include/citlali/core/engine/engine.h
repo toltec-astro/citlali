@@ -104,7 +104,7 @@ struct reduClasses {
     timestream::PTCProc ptcproc;
 
     // map classes
-    mapmaking::ObsMapBuffer omb{"omb"}, cmb{"cmb"};
+    mapmaking::MapBuffer omb{"omb"}, cmb{"cmb"};
     mapmaking::NaiveMapmaker naive_mm;
     mapmaking::JincMapmaker jinc_mm;
     mapmaking::MLMapmaker ml_mm;
@@ -1256,7 +1256,12 @@ void Engine::add_tod_header() {
         add_netcdf_var<std::string>(fo, "CONFIG.FRUITLOOPS.PATH", ptcproc.fruit_loops_path);
         add_netcdf_var(fo, "CONFIG.FRUITLOOPS.S2N", ptcproc.fruit_loops_sig2noise);
         for (Eigen::Index i=0; i<calib.arrays.size(); ++i) {
+            if (ptcproc.run_fruit_loops) {
             add_netcdf_var(fo, "CONFIG.FRUITLOOPS.FLUX_"+toltec_io.array_name_map[calib.arrays(i)], ptcproc.fruit_loops_flux(calib.arrays(i)));
+            }
+            else {
+                add_netcdf_var(fo, "CONFIG.FRUITLOOPS.FLUX_"+toltec_io.array_name_map[calib.arrays(i)], 0);
+            }
         }
 
         add_netcdf_var(fo, "CONFIG.FRUITLOOPS.MAXITER", ptcproc.fruit_loops_iters);
@@ -1996,7 +2001,12 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.PATH", ptcproc.fruit_loops_path, "Fruit loops path");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.TYPE", ptcproc.fruit_loops_type, "Fruit loops type");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.S2N", ptcproc.fruit_loops_sig2noise, "Fruit loops S/N");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.FLUX", ptcproc.fruit_loops_flux(calib.arrays(i)), "Fruit loops flux (" + mb->sig_unit + ")");
+    if (ptcproc.run_fruit_loops) {
+        fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.FLUX", ptcproc.fruit_loops_flux(calib.arrays(i)), "Fruit loops flux (" + mb->sig_unit + ")");
+    }
+    else {
+        fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.FLUX", 0, "Fruit loops flux (" + mb->sig_unit + ")");
+    }
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.MAXITER", ptcproc.fruit_loops_iters, "Fruit loops iterations");
 
     // add telescope file header information
@@ -2331,7 +2341,7 @@ void Engine::write_stats() {
 template <mapmaking::MapType map_t, class map_buffer_t>
 void Engine::run_wiener_filter(map_buffer_t &mb) {
     // pointer to map buffer
-    mapmaking::ObsMapBuffer* pmb = &mb;
+    mapmaking::MapBuffer* pmb = &mb;
     // pointer to data file fits vector
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* f_io = nullptr;
     // pointer to noise file fits vector

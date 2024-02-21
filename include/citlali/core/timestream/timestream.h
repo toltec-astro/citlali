@@ -284,16 +284,16 @@ public:
     // fruit loops type
     std::string fruit_loops_type;
     // number of fruit loops iterations
-    int fruit_loops_iters;
+    int fruit_loops_iters = 0;
     // signal-to-noise cut for fruit loops algorithm
-    double fruit_loops_sig2noise;
+    double fruit_loops_sig2noise = 0;
     // flux density cut for fruit loops algorithm
     Eigen::VectorXd fruit_loops_flux;
     // save all iterations
     bool save_all_iters;
 
     // map buffer for map to tod approach
-    mapmaking::ObsMapBuffer tod_mb;
+    mapmaking::MapBuffer tod_mb;
 
     // number of weight outlier iterations
     int iter_lim = 0;

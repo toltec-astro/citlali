@@ -42,6 +42,7 @@ kids: # kids fitting parameters
   solver:
     fitreportdir: /path/to/fit/report/directory/ # directory to grab fit report from
     parallel_policy: seq # parallel policy for kids solver (independent of citlali parallel_policy)
+    extra_output: false
 mapmaking: # mapmaking parameters
   enabled: true # enable or disable mapmaking (useful when TOD processing only)
   crpix1: 0 # ref pixel 1 (ignored if 0)

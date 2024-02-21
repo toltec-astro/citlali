@@ -193,7 +193,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     int step = omb.pointing.size();
 
     // pointer to map buffer with noise maps
-    ObsMapBuffer* nmb = nullptr;
+    map_buffer_t* nmb = nullptr;
 
     if (run_noise) {
         // set pointer to cmb or omb for noise maps

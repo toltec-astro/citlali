@@ -22,7 +22,7 @@ public:
     std::vector<TCData<TCDataKind::PTC,Eigen::MatrixXd>> ptcs0, ptcs;
 
     // copy of obs map buffer for map iteration
-    mapmaking::ObsMapBuffer omb_copy{"omb"};
+    mapmaking::MapBuffer omb_copy{"omb"};
 
     // vector to store each scan's calib class
     std::vector<engine::Calib> calib_scans0, calib_scans;
@@ -1215,7 +1215,7 @@ void Beammap::process_apt() {
 template <mapmaking::MapType map_type>
 void Beammap::output() {
     // pointer to map buffer
-    mapmaking::ObsMapBuffer* mb = nullptr;
+    mapmaking::MapBuffer* mb = nullptr;
     // pointer to data file fits vector
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* f_io = nullptr;
     // pointer to noise file fits vector
