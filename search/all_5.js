@@ -21,7 +21,7 @@ var searchData=
   ['eval_311',['eval',['../d0/d1e/structengine__utils_1_1Gaussian1D.html#aa0c0241d3068e73df45fc818441d7aec',1,'engine_utils::Gaussian1D::eval()'],['../d1/da5/structengine__utils_1_1Gaussian2D.html#a733cdbcfa73c3ea2991c0c1badc6d44a',1,'engine_utils::Gaussian2D::eval()'],['../da/d36/structengine__utils_1_1SymmetricGaussian2D.html#a23530741573ec517eaf7f960c9c95061',1,'engine_utils::SymmetricGaussian2D::eval()']]],
   ['evals_312',['evals',['../d2/d39/classengine_1_1Diagnostics.html#a1645996c1fdda29318691a3115929596',1,'engine::Diagnostics::evals()'],['../dc/d5d/structtimestream_1_1TCData_3_01TCDataKind_1_1PTC_00_01RefType_01_4.html#aef824301dd084053a829ef95646a3daf',1,'timestream::TCData&lt; TCDataKind::PTC, RefType &gt;::evals()']]],
   ['evecs_313',['evecs',['../dc/d5d/structtimestream_1_1TCData_3_01TCDataKind_1_1PTC_00_01RefType_01_4.html#aec1200d3670572b7e8fb837b17c893ad',1,'timestream::TCData&lt; TCDataKind::PTC, RefType &gt;']]],
-  ['exposure_5ftime_314',['exposure_time',['../d1/d45/classmapmaking_1_1ObsMapBuffer.html#a4f2ffca322e8107d5f18d5780179d38b',1,'mapmaking::ObsMapBuffer']]],
+  ['exposure_5ftime_314',['exposure_time',['../df/d1c/classmapmaking_1_1MapBuffer.html#a19303d8a2264aefbe72b54a338fd75eb',1,'mapmaking::MapBuffer']]],
   ['extinction_5fcorrected_315',['extinction_corrected',['../dc/d00/structtimestream_1_1Status.html#aadbc98c2c5b41f0a6f09641b0d626e38',1,'timestream::Status']]],
   ['extinction_5fcorrection_316',['extinction_correction',['../dc/df8/classtimestream_1_1Calibration.html#aafca5391acb468ee6201025ed02ea416',1,'timestream::Calibration']]],
   ['extinction_5fmodel_317',['extinction_model',['../dc/df8/classtimestream_1_1Calibration.html#aee060f6dac32b3e41f27c58d0b51682d',1,'timestream::Calibration']]],

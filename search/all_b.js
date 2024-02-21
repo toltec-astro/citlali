@@ -1,7 +1,7 @@
 var searchData=
 [
   ['kb_5fj_5fk_527',['kB_J_K',['../d2/d6f/constants_8h.html#a3b47e7abac75acaa82fe5e22b6db60c7',1,'constants.h']]],
-  ['kernel_528',['kernel',['../d1/d45/classmapmaking_1_1ObsMapBuffer.html#a9f5c9e9ea8d528be34dfe77b8e3844aa',1,'mapmaking::ObsMapBuffer::kernel()'],['../d9/d8c/classtimestream_1_1RTCProc.html#afccc1391781a8b623b917efeb3be17bb',1,'timestream::RTCProc::kernel()'],['../de/d07/structtimestream_1_1TimeStream.html#a949eb6056eb89f2d1b14d72f9dc91a64',1,'timestream::TimeStream::kernel()']]],
+  ['kernel_528',['kernel',['../df/d1c/classmapmaking_1_1MapBuffer.html#abf51bcef78eee9360a82b16778d4a37a',1,'mapmaking::MapBuffer::kernel()'],['../d9/d8c/classtimestream_1_1RTCProc.html#afccc1391781a8b623b917efeb3be17bb',1,'timestream::RTCProc::kernel()'],['../de/d07/structtimestream_1_1TimeStream.html#a949eb6056eb89f2d1b14d72f9dc91a64',1,'timestream::TimeStream::kernel()']]],
   ['kernel_529',['Kernel',['../d2/d89/classtimestream_1_1Kernel.html',1,'timestream']]],
   ['kernel_2eh_530',['kernel.h',['../d0/daa/kernel_8h.html',1,'']]],
   ['kernel_5fgenerated_531',['kernel_generated',['../dc/d00/structtimestream_1_1Status.html#a3fd09b7dee3af040c38ce6777b8bb788',1,'timestream::Status']]],

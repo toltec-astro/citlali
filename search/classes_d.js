@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['mapbuffer_1267',['MapBuffer',['../df/d1c/classmapmaking_1_1MapBuffer.html',1,'mapmaking']]],
   ['mapfitter_1268',['mapFitter',['../d9/dbd/classengine__utils_1_1mapFitter.html',1,'engine_utils']]],
   ['mlmapmaker_1269',['MLMapmaker',['../d9/d4e/classmapmaking_1_1MLMapmaker.html',1,'mapmaking']]],
   ['model_1270',['Model',['../d3/d9d/structengine__utils_1_1Model.html',1,'engine_utils']]],

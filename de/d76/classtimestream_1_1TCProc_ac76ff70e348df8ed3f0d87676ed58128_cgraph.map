@@ -1,8 +1,8 @@
 <map id="timestream::TCProc::load_mb" name="timestream::TCProc::load_mb">
 <area shape="rect" id="node1" title=" " alt="" coords="5,67,156,108"/>
-<area shape="rect" id="node2" href="$d1/d45/classmapmaking_1_1ObsMapBuffer.html#ada821d80cf223bbbf0dc1fa9640be37b" title=" " alt="" coords="204,37,404,79"/>
-<area shape="rect" id="node6" href="$df/d8d/classfitsIO.html#a681b60e0e266b924966ab2d740558054" title=" " alt="" coords="246,103,362,130"/>
-<area shape="rect" id="node3" href="$dd/d06/namespaceengine__utils.html#a4d36010ae0dbf2c6ceb791a76a83286b" title=" " alt="" coords="461,5,602,47"/>
-<area shape="rect" id="node5" href="$dd/d06/namespaceengine__utils.html#a673942090d70d086550a1b3f3b5f5542" title=" " alt="" coords="452,71,611,112"/>
-<area shape="rect" id="node4" href="$dd/d06/namespaceengine__utils.html#a7da306ab0db4144fc70aca47734d9c2e" title=" " alt="" coords="659,5,801,47"/>
+<area shape="rect" id="node2" href="$df/d1c/classmapmaking_1_1MapBuffer.html#a18dc45983c4b7028c13924efe17a9d7b" title=" " alt="" coords="204,37,379,79"/>
+<area shape="rect" id="node6" href="$df/d8d/classfitsIO.html#a681b60e0e266b924966ab2d740558054" title=" " alt="" coords="233,103,349,130"/>
+<area shape="rect" id="node3" href="$dd/d06/namespaceengine__utils.html#a4d36010ae0dbf2c6ceb791a76a83286b" title=" " alt="" coords="435,5,577,47"/>
+<area shape="rect" id="node5" href="$dd/d06/namespaceengine__utils.html#a673942090d70d086550a1b3f3b5f5542" title=" " alt="" coords="427,71,585,112"/>
+<area shape="rect" id="node4" href="$dd/d06/namespaceengine__utils.html#a7da306ab0db4144fc70aca47734d9c2e" title=" " alt="" coords="633,5,776,47"/>
 </map>

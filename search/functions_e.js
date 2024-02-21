@@ -15,6 +15,6 @@ var searchData=
   ['named_5fsemilogy_1662',['named_semilogy',['../d7/df7/namespacematplotlibcpp.html#a529c059f3fca364b9fcb3b2e09cce36b',1,'matplotlibcpp']]],
   ['node_5findex_1663',['node_index',['../d5/ddb/structCoordinator.html#af444e06e7d7843af994272e61936b7ce',1,'Coordinator']]],
   ['node_5fname_1664',['node_name',['../d5/ddb/structCoordinator.html#a93e86eb754a38c096a22fb541617b18c',1,'Coordinator']]],
-  ['normalize_5fmaps_1665',['normalize_maps',['../d1/d45/classmapmaking_1_1ObsMapBuffer.html#abfc2af95b423975bd6656b8609bb1ee0',1,'mapmaking::ObsMapBuffer']]],
+  ['normalize_5fmaps_1665',['normalize_maps',['../df/d1c/classmapmaking_1_1MapBuffer.html#ade6b0c65677564eadf0b2125d25122a9',1,'mapmaking::MapBuffer']]],
   ['now_1666',['now',['../dd/d06/namespaceengine__utils.html#a392b455508f8ccfaf2af66c841dd7055',1,'engine_utils']]]
 ];

@@ -1,10 +1,10 @@
 <map id="Beammap::run_loop" name="Beammap::run_loop">
 <area shape="rect" id="node1" title=" " alt="" coords="5,566,159,593"/>
 <area shape="rect" id="node2" href="$d7/d4f/classtimestream_1_1PTCProc.html#a4ae4cdff382f63138786437c26a49cbb" title=" " alt="" coords="235,35,393,76"/>
-<area shape="rect" id="node6" href="$d1/d45/classmapmaking_1_1ObsMapBuffer.html#abd0eef22c2d7e9b3aefbcf3bf09396c5" title=" " alt="" coords="214,748,414,789"/>
+<area shape="rect" id="node6" href="$df/d1c/classmapmaking_1_1MapBuffer.html#a0b18138544e9f2cf663b75e15c682772" title=" " alt="" coords="227,748,401,789"/>
 <area shape="rect" id="node11" href="$d2/d39/classengine_1_1Diagnostics.html#a96c520bdb162c3b816514fb9323029cf" title=" " alt="" coords="239,683,389,724"/>
 <area shape="rect" id="node14" href="$d7/d4f/classtimestream_1_1PTCProc.html#ae5236df7969b214d50e188eb4ad8420e" title=" " alt="" coords="740,567,899,608"/>
-<area shape="rect" id="node15" href="$d1/d45/classmapmaking_1_1ObsMapBuffer.html#abfc2af95b423975bd6656b8609bb1ee0" title=" " alt="" coords="214,813,414,855"/>
+<area shape="rect" id="node15" href="$df/d1c/classmapmaking_1_1MapBuffer.html#ade6b0c65677564eadf0b2125d25122a9" title=" " alt="" coords="227,813,401,855"/>
 <area shape="rect" id="node16" href="$db/d8e/classmapmaking_1_1JincMapmaker.html#aec1698fa7c7c343e5444bde4175a49ed" title=" " alt="" coords="214,879,414,920"/>
 <area shape="rect" id="node17" href="$dd/db4/classmapmaking_1_1NaiveMapmaker.html#a3d5ab909c9ae5c0ab64711f00f574d7c" title=" " alt="" coords="207,129,421,171"/>
 <area shape="rect" id="node19" href="$de/d76/classtimestream_1_1TCProc.html#aef5324bb43d43b2f6340e4044fa3614b" title=" " alt="" coords="239,500,389,541"/>
@@ -14,7 +14,7 @@
 <area shape="rect" id="node3" href="$de/d76/classtimestream_1_1TCProc.html#acd3b6b7c6d31ebb11898e598d6923ff6" title=" " alt="" coords="485,5,669,47"/>
 <area shape="rect" id="node4" href="$dd/d06/namespaceengine__utils.html#a0d6c922376faca4b84cc135d29354af8" title=" " alt="" coords="752,129,887,171"/>
 <area shape="rect" id="node5" href="$dd/d06/namespaceengine__utils.html#a25c3470ab740166d1ecffb0f89b9fe60" title=" " alt="" coords="740,5,899,47"/>
-<area shape="rect" id="node7" href="$d1/d45/classmapmaking_1_1ObsMapBuffer.html#ada821d80cf223bbbf0dc1fa9640be37b" title=" " alt="" coords="477,836,677,877"/>
+<area shape="rect" id="node7" href="$df/d1c/classmapmaking_1_1MapBuffer.html#a18dc45983c4b7028c13924efe17a9d7b" title=" " alt="" coords="489,836,664,877"/>
 <area shape="rect" id="node8" href="$dd/d06/namespaceengine__utils.html#a4d36010ae0dbf2c6ceb791a76a83286b" title=" " alt="" coords="749,901,890,943"/>
 <area shape="rect" id="node10" href="$dd/d06/namespaceengine__utils.html#a673942090d70d086550a1b3f3b5f5542" title=" " alt="" coords="740,836,899,877"/>
 <area shape="rect" id="node9" href="$dd/d06/namespaceengine__utils.html#a7da306ab0db4144fc70aca47734d9c2e" title=" " alt="" coords="955,901,1097,943"/>

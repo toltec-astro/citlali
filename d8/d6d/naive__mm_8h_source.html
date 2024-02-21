@@ -93,209 +93,204 @@ $(function() {
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="comment">// get logger</span></div>
 <div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a1308333b8214ee242d65c84e50d5131f">   23</a></span>&#160;    std::shared_ptr&lt;spdlog::logger&gt; <a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a1308333b8214ee242d65c84e50d5131f">logger</a> = spdlog::get(<span class="stringliteral">&quot;citlali_logger&quot;</span>);</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="comment">// pointer to noise map buffer</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a88fbc72c8e182e73126c6115fb407676">   26</a></span>&#160;    std::unique_ptr&lt;ObsMapBuffer&gt; <a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a88fbc72c8e182e73126c6115fb407676">nmb</a>;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="comment">// run polarization?</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#ab527679d127409130f38a14d396c117a">   26</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#ab527679d127409130f38a14d396c117a">run_polarization</a>;</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="comment">// run polarization?</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#ab527679d127409130f38a14d396c117a">   29</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#ab527679d127409130f38a14d396c117a">run_polarization</a>;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="comment">// allocate pointing matrix for polarization reduction</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> map_buffer_t&gt;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a18b9ba677dbf22bf07f56fbd41498bbb">allocate_pointing</a>(map_buffer_t &amp;, <span class="keywordtype">double</span>, <span class="keywordtype">double</span>, <span class="keywordtype">double</span>, Eigen::Index, <span class="keywordtype">int</span>, <span class="keywordtype">int</span>);</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="comment">// populate maps with a time chunk (signal, kernel, coverage, and noise)</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">class</span> map_buffer_t, <span class="keyword">typename</span> Derived, <span class="keyword">typename</span> apt_t&gt;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a3d5ab909c9ae5c0ab64711f00f574d7c">populate_maps_naive</a>(<a class="code" href="../../dd/d75/structtimestream_1_1TCData.html">TCData&lt;TCDataKind::PTC, Eigen::MatrixXd&gt;</a> &amp;, map_buffer_t &amp;, map_buffer_t &amp;,</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                             Eigen::DenseBase&lt;Derived&gt; &amp;, Eigen::DenseBase&lt;Derived&gt; &amp;, std::string &amp;,</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                             apt_t &amp;, <span class="keywordtype">double</span>, <span class="keywordtype">bool</span>, <span class="keywordtype">bool</span>);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;};</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> map_buffer_t&gt;</div>
-<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a18b9ba677dbf22bf07f56fbd41498bbb">   43</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a18b9ba677dbf22bf07f56fbd41498bbb">NaiveMapmaker::allocate_pointing</a>(map_buffer_t &amp;mb, <span class="keywordtype">double</span> weight, <span class="keywordtype">double</span> cos_2angle, <span class="keywordtype">double</span> sin_2angle,</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                                      Eigen::Index map_index, <span class="keywordtype">int</span> ir, <span class="keywordtype">int</span> ic) {</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordtype">int</span> pix = mb.n_rows*ic + ir;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="comment">// update pointing matrix</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    mb.pointing[map_index](pix,0) += weight;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    mb.pointing[map_index](pix,1) += weight*cos_2angle;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    mb.pointing[map_index](pix,2) += weight*sin_2angle;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    mb.pointing[map_index](pix,3) = mb.pointing[map_index](pix,1);<span class="comment">//weight*cos(2*angle);</span></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    mb.pointing[map_index](pix,4) += weight*pow(cos_2angle,2.);</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    mb.pointing[map_index](pix,5) += weight*cos_2angle*sin_2angle;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    mb.pointing[map_index](pix,6) = mb.pointing[map_index](pix,2);<span class="comment">//weight*sin(2*angle);</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    mb.pointing[map_index](pix,7) = mb.pointing[map_index](pix,5);<span class="comment">//weight*cos(2*angle)*sin(2*angle);</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    mb.pointing[map_index](pix,8) += weight*pow(sin_2angle,2.);</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;}</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">class</span> map_buffer_t, <span class="keyword">typename</span> Derived, <span class="keyword">typename</span> apt_t&gt;</div>
-<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a3d5ab909c9ae5c0ab64711f00f574d7c">   60</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a3d5ab909c9ae5c0ab64711f00f574d7c">NaiveMapmaker::populate_maps_naive</a>(<a class="code" href="../../dd/d75/structtimestream_1_1TCData.html">TCData&lt;TCDataKind::PTC, Eigen::MatrixXd&gt;</a> &amp;in, map_buffer_t &amp;omb,</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                                        map_buffer_t &amp;cmb, Eigen::DenseBase&lt;Derived&gt; &amp;map_indices,</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                                        Eigen::DenseBase&lt;Derived&gt; &amp;det_indices, std::string &amp;pixel_axes,</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                                        apt_t &amp;apt, <span class="keywordtype">double</span> d_fsmp, <span class="keywordtype">bool</span> run_omb, <span class="keywordtype">bool</span> run_noise) {</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> use_cmb = !cmb.noise.empty();</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> use_omb = !omb.noise.empty();</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> run_kernel = !omb.kernel.empty();</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> run_coverage = !omb.coverage.empty();</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="comment">// dimensions of data</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    Eigen::Index n_pts = in.scans.data.rows();</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    Eigen::Index n_dets = in.scans.data.cols();</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="comment">// allocate pointing matrix for polarization reduction</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> map_buffer_t&gt;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a18b9ba677dbf22bf07f56fbd41498bbb">allocate_pointing</a>(map_buffer_t &amp;, <span class="keywordtype">double</span>, <span class="keywordtype">double</span>, <span class="keywordtype">double</span>, Eigen::Index, <span class="keywordtype">int</span>, <span class="keywordtype">int</span>);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="comment">// populate maps with a time chunk (signal, kernel, coverage, and noise)</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">class</span> map_buffer_t, <span class="keyword">typename</span> Derived, <span class="keyword">typename</span> apt_t&gt;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a3d5ab909c9ae5c0ab64711f00f574d7c">populate_maps_naive</a>(<a class="code" href="../../dd/d75/structtimestream_1_1TCData.html">TCData&lt;TCDataKind::PTC, Eigen::MatrixXd&gt;</a> &amp;, map_buffer_t &amp;, map_buffer_t &amp;,</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                             Eigen::DenseBase&lt;Derived&gt; &amp;, Eigen::DenseBase&lt;Derived&gt; &amp;, std::string &amp;,</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                             apt_t &amp;, <span class="keywordtype">double</span>, <span class="keywordtype">bool</span>, <span class="keywordtype">bool</span>);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;};</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> map_buffer_t&gt;</div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a18b9ba677dbf22bf07f56fbd41498bbb">   40</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a18b9ba677dbf22bf07f56fbd41498bbb">NaiveMapmaker::allocate_pointing</a>(map_buffer_t &amp;mb, <span class="keywordtype">double</span> weight, <span class="keywordtype">double</span> cos_2angle, <span class="keywordtype">double</span> sin_2angle,</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                                      Eigen::Index map_index, <span class="keywordtype">int</span> ir, <span class="keywordtype">int</span> ic) {</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordtype">int</span> pix = mb.n_rows*ic + ir;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="comment">// update pointing matrix</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    mb.pointing[map_index](pix,0) += weight;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    mb.pointing[map_index](pix,1) += weight*cos_2angle;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    mb.pointing[map_index](pix,2) += weight*sin_2angle;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    mb.pointing[map_index](pix,3) = mb.pointing[map_index](pix,1);<span class="comment">//weight*cos(2*angle);</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    mb.pointing[map_index](pix,4) += weight*pow(cos_2angle,2.);</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    mb.pointing[map_index](pix,5) += weight*cos_2angle*sin_2angle;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    mb.pointing[map_index](pix,6) = mb.pointing[map_index](pix,2);<span class="comment">//weight*sin(2*angle);</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    mb.pointing[map_index](pix,7) = mb.pointing[map_index](pix,5);<span class="comment">//weight*cos(2*angle)*sin(2*angle);</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    mb.pointing[map_index](pix,8) += weight*pow(sin_2angle,2.);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;}</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">class</span> map_buffer_t, <span class="keyword">typename</span> Derived, <span class="keyword">typename</span> apt_t&gt;</div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a3d5ab909c9ae5c0ab64711f00f574d7c">   57</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a3d5ab909c9ae5c0ab64711f00f574d7c">NaiveMapmaker::populate_maps_naive</a>(<a class="code" href="../../dd/d75/structtimestream_1_1TCData.html">TCData&lt;TCDataKind::PTC, Eigen::MatrixXd&gt;</a> &amp;in, map_buffer_t &amp;omb,</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                                        map_buffer_t &amp;cmb, Eigen::DenseBase&lt;Derived&gt; &amp;map_indices,</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                                        Eigen::DenseBase&lt;Derived&gt; &amp;det_indices, std::string &amp;pixel_axes,</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                                        apt_t &amp;apt, <span class="keywordtype">double</span> d_fsmp, <span class="keywordtype">bool</span> run_omb, <span class="keywordtype">bool</span> run_noise) {</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> use_cmb = !cmb.noise.empty();</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> use_omb = !omb.noise.empty();</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> run_kernel = !omb.kernel.empty();</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> run_coverage = !omb.coverage.empty();</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="comment">// dimensions of data</span></div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    Eigen::Index n_pts = in.scans.data.rows();</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    Eigen::Index n_dets = in.scans.data.cols();</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="comment">// step to skip to reach next stokes param</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keywordtype">int</span> step = omb.pointing.size();</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="comment">// step to skip to reach next stokes param</span></div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keywordtype">int</span> step = omb.pointing.size();</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="comment">// pointer to map buffer with noise maps</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    map_buffer_t *nmb;</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="comment">// pointer to map buffer with noise maps</span></div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <a class="code" href="../../d1/d45/classmapmaking_1_1ObsMapBuffer.html">ObsMapBuffer</a> *<a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a88fbc72c8e182e73126c6115fb407676">nmb</a>;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keywordflow">if</span> (run_noise) {</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a88fbc72c8e182e73126c6115fb407676">nmb</a> = use_cmb ? &amp;cmb : (use_omb ? &amp;omb : <span class="keyword">nullptr</span>);</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    }</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keywordflow">if</span> (run_noise) {</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        nmb = use_cmb ? &amp;cmb : (use_omb ? &amp;omb : <span class="keyword">nullptr</span>);</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    }</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <span class="comment">// signal and kernel map values</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keywordtype">double</span> signal, kernel;</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="comment">// signal and kernel map values</span></div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keywordtype">double</span> signal, kernel;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="comment">// noise map value</span></div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keywordtype">double</span> noise_v;</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="comment">// noise map value</span></div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="keywordtype">double</span> noise_v;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="comment">// noise map indices</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    Eigen::Index nmb_ir, nmb_ic;</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="comment">// noise map indices</span></div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    Eigen::Index nmb_ir, nmb_ic;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="comment">// cosine and sine of angles</span></div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <span class="keywordtype">double</span> cos_2angle, sin_2angle;</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="comment">// cosine and sine of angles</span></div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <span class="keywordtype">double</span> cos_2angle, sin_2angle;</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;n_dets; ++i) {</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        <span class="comment">// skip completely flagged detectors</span></div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        <span class="keywordflow">if</span> ((in.flags.data.col(i).array()==0).any()) {</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;            <span class="comment">// which map to assign detector to</span></div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;            Eigen::Index map_index = map_indices(i);</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;            <span class="comment">// indices for Q and U maps</span></div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;            <span class="keywordtype">int</span> q_index = map_index + step;</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;            <span class="keywordtype">int</span> u_index = map_index + 2 * step;</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            <span class="comment">// get detector positions from apt table</span></div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;            <span class="keyword">auto</span> det_index = det_indices(i);</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;            <span class="comment">// get detector pointing</span></div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;            <span class="keyword">auto</span> [lat, lon] = <a class="code" href="../../dd/d06/namespaceengine__utils.html#a0d6c922376faca4b84cc135d29354af8">engine_utils::calc_det_pointing</a>(in.tel_data.data, apt[<span class="stringliteral">&quot;x_t&quot;</span>](det_index), apt[<span class="stringliteral">&quot;y_t&quot;</span>](det_index),</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                                                              pixel_axes, in.pointing_offsets_arcsec.data, omb.map_grouping);</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;            <span class="comment">// get map buffer row and col indices for lat and lon vectors</span></div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;            Eigen::VectorXd omb_irow = lat.array()/omb.pixel_size_rad + (omb.n_rows)/2.;</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;            Eigen::VectorXd omb_icol = lon.array()/omb.pixel_size_rad + (omb.n_cols)/2.;</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;            Eigen::VectorXd cmb_irow, cmb_icol;</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;            <span class="keywordflow">if</span> (use_cmb) {</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;                <span class="comment">// get coadded map buffer row and col indices for lat and lon vectors</span></div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;                cmb_irow = lat.array()/cmb.pixel_size_rad + (cmb.n_rows)/2.;</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;                cmb_icol = lon.array()/cmb.pixel_size_rad + (cmb.n_cols)/2.;</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;            }</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;            <span class="comment">// loop through the samples</span></div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;            <span class="keywordflow">for</span> (Eigen::Index j=0; j&lt;n_pts; ++j) {</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;                <span class="comment">// check if sample is flagged, ignore if so</span></div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;                <span class="keywordflow">if</span> (!in.flags.data(j,i)) {</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;                    Eigen::Index omb_ir = omb_irow(j);</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;                    Eigen::Index omb_ic = omb_icol(j);</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160; </div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;                    <span class="keywordflow">if</span> (<a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#ab527679d127409130f38a14d396c117a">run_polarization</a>) {</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;                        cos_2angle = cos(2.*in.angle.data(j,i));</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;                        sin_2angle = sin(2.*in.angle.data(j,i));</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;                    }</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160; </div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;                    <span class="keywordflow">if</span> (run_omb) {</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;                        <span class="comment">// make sure the data point is within the map</span></div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;                        <span class="keywordflow">if</span> ((omb_ir &gt;= 0) &amp;&amp; (omb_ir &lt; omb.n_rows) &amp;&amp; (omb_ic &gt;= 0) &amp;&amp; (omb_ic &lt; omb.n_cols)) {</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;                            <span class="comment">// populate signal map</span></div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;                            signal = in.scans.data(j,i)*in.weights.data(i);</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;                            omb.signal[map_index](omb_ir,omb_ic) += signal;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;n_dets; ++i) {</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        <span class="comment">// skip completely flagged detectors</span></div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        <span class="keywordflow">if</span> ((in.flags.data.col(i).array()==0).any()) {</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;            <span class="comment">// which map to assign detector to</span></div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;            Eigen::Index map_index = map_indices(i);</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;            <span class="comment">// indices for Q and U maps</span></div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;            <span class="keywordtype">int</span> q_index = map_index + step;</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;            <span class="keywordtype">int</span> u_index = map_index + 2 * step;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;            <span class="comment">// get detector positions from apt table</span></div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;            <span class="keyword">auto</span> det_index = det_indices(i);</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;            <span class="comment">// get detector pointing</span></div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            <span class="keyword">auto</span> [lat, lon] = <a class="code" href="../../dd/d06/namespaceengine__utils.html#a0d6c922376faca4b84cc135d29354af8">engine_utils::calc_det_pointing</a>(in.tel_data.data, apt[<span class="stringliteral">&quot;x_t&quot;</span>](det_index), apt[<span class="stringliteral">&quot;y_t&quot;</span>](det_index),</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;                                                              pixel_axes, in.pointing_offsets_arcsec.data, omb.map_grouping);</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;            <span class="comment">// get map buffer row and col indices for lat and lon vectors</span></div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;            Eigen::VectorXd omb_irow = lat.array()/omb.pixel_size_rad + (omb.n_rows)/2.;</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;            Eigen::VectorXd omb_icol = lon.array()/omb.pixel_size_rad + (omb.n_cols)/2.;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;            Eigen::VectorXd cmb_irow, cmb_icol;</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;            <span class="keywordflow">if</span> (use_cmb) {</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;                <span class="comment">// get coadded map buffer row and col indices for lat and lon vectors</span></div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;                cmb_irow = lat.array()/cmb.pixel_size_rad + (cmb.n_rows)/2.;</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;                cmb_icol = lon.array()/cmb.pixel_size_rad + (cmb.n_cols)/2.;</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;            }</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;            <span class="comment">// loop through the samples</span></div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;            <span class="keywordflow">for</span> (Eigen::Index j=0; j&lt;n_pts; ++j) {</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;                <span class="comment">// check if sample is flagged, ignore if so</span></div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                <span class="keywordflow">if</span> (!in.flags.data(j,i)) {</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;                    Eigen::Index omb_ir = omb_irow(j);</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;                    Eigen::Index omb_ic = omb_icol(j);</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160; </div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;                    <span class="keywordflow">if</span> (<a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#ab527679d127409130f38a14d396c117a">run_polarization</a>) {</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;                        cos_2angle = cos(2.*in.angle.data(j,i));</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;                        sin_2angle = sin(2.*in.angle.data(j,i));</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;                    }</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160; </div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;                    <span class="keywordflow">if</span> (run_omb) {</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;                        <span class="comment">// make sure the data point is within the map</span></div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;                        <span class="keywordflow">if</span> ((omb_ir &gt;= 0) &amp;&amp; (omb_ir &lt; omb.n_rows) &amp;&amp; (omb_ic &gt;= 0) &amp;&amp; (omb_ic &lt; omb.n_cols)) {</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;                            <span class="comment">// populate signal map</span></div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;                            signal = in.scans.data(j,i)*in.weights.data(i);</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;                            omb.signal[map_index](omb_ir,omb_ic) += signal;</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160; </div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;                            <span class="comment">// populate weight map</span></div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;                            omb.weight[map_index](omb_ir,omb_ic) += in.weights.data(i);</div>
 <div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160; </div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;                            <span class="comment">// populate weight map</span></div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;                            omb.weight[map_index](omb_ir,omb_ic) += in.weights.data(i);</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160; </div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;                            <span class="comment">// populate kernel map</span></div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;                            <span class="keywordflow">if</span> (run_kernel) {</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;                                kernel = in.kernel.data(j,i)*in.weights.data(i);</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;                                omb.kernel[map_index](omb_ir,omb_ic) += kernel;</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;                            }</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160; </div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;                            <span class="comment">// populate coverage map</span></div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;                            <span class="keywordflow">if</span> (run_coverage) {</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;                                omb.coverage[map_index](omb_ir,omb_ic) += 1./d_fsmp;</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;                            }</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160; </div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;                            <span class="keywordflow">if</span> (<a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#ab527679d127409130f38a14d396c117a">run_polarization</a>) {</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;                                <span class="comment">// calculate pointing matrix</span></div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;                                <a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a18b9ba677dbf22bf07f56fbd41498bbb">allocate_pointing</a>(omb, in.weights.data(i), cos_2angle, sin_2angle, map_index, omb_ir,omb_ic);</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160; </div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;                                <span class="comment">// update signal map Q and U</span></div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;                                omb.signal[q_index](omb_ir,omb_ic) += signal*cos_2angle;</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;                                omb.signal[u_index](omb_ir,omb_ic) += signal*sin_2angle;</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160; </div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;                                <span class="comment">// update kernel map Q and U</span></div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;                                <span class="keywordflow">if</span> (run_kernel) {</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;                                    omb.kernel[q_index](omb_ir,omb_ic) += kernel*cos_2angle;</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;                                    omb.kernel[u_index](omb_ir,omb_ic) += kernel*sin_2angle;</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;                                }</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;                            }</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;                        }</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;                    }</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160; </div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;                    <span class="comment">// check if noise maps requested</span></div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;                    <span class="keywordflow">if</span> (run_noise) {</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;                        <span class="comment">// if coaddition is enabled</span></div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;                        <span class="keywordflow">if</span> (use_cmb) {</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;                            nmb_ir = cmb_irow(j);</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;                            nmb_ic = cmb_icol(j);</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;                        }</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;                        <span class="comment">// else make noise maps for obs</span></div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;                        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (use_omb) {</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;                            nmb_ir = omb_irow(j);</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;                            nmb_ic = omb_icol(j);</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;                        }</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160; </div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;                        <span class="comment">// coadd into current noise map</span></div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;                        <span class="keywordflow">if</span> ((nmb_ir &gt;= 0) &amp;&amp; (nmb_ir &lt; nmb-&gt;n_rows) &amp;&amp; (nmb_ic &gt;= 0) &amp;&amp; (nmb_ic &lt; nmb-&gt;n_cols)) {</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;                            <span class="keywordflow">if</span> (<a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#ab527679d127409130f38a14d396c117a">run_polarization</a>) {</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;                                <span class="keywordflow">if</span> (use_cmb) {</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;                                    <span class="comment">// calculate pointing matrix for cmb</span></div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;                                    <a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a18b9ba677dbf22bf07f56fbd41498bbb">allocate_pointing</a>(cmb, in.weights.data(i), cos_2angle, sin_2angle, map_index, nmb_ir, nmb_ic);</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;                                }</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;                            }</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;                            <span class="comment">// loop through noise maps</span></div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;                            <span class="keywordflow">for</span> (Eigen::Index nn=0; nn&lt;<a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a88fbc72c8e182e73126c6115fb407676">nmb</a>-&gt;n_noise; ++nn) {</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;                                <span class="comment">// randomizing on dets</span></div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;                                <span class="keywordflow">if</span> (<a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a88fbc72c8e182e73126c6115fb407676">nmb</a>-&gt;randomize_dets) {</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;                                    noise_v = in.noise.data(nn,i)*in.scans.data(j,i)*in.weights.data(i);</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;                            <span class="comment">// populate kernel map</span></div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;                            <span class="keywordflow">if</span> (run_kernel) {</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;                                kernel = in.kernel.data(j,i)*in.weights.data(i);</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;                                omb.kernel[map_index](omb_ir,omb_ic) += kernel;</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;                            }</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; </div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;                            <span class="comment">// populate coverage map</span></div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;                            <span class="keywordflow">if</span> (run_coverage) {</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;                                omb.coverage[map_index](omb_ir,omb_ic) += 1./d_fsmp;</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;                            }</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160; </div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;                            <span class="keywordflow">if</span> (<a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#ab527679d127409130f38a14d396c117a">run_polarization</a>) {</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;                                <span class="comment">// calculate pointing matrix</span></div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;                                <a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a18b9ba677dbf22bf07f56fbd41498bbb">allocate_pointing</a>(omb, in.weights.data(i), cos_2angle, sin_2angle, map_index, omb_ir,omb_ic);</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160; </div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;                                <span class="comment">// update signal map Q and U</span></div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;                                omb.signal[q_index](omb_ir,omb_ic) += signal*cos_2angle;</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;                                omb.signal[u_index](omb_ir,omb_ic) += signal*sin_2angle;</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160; </div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;                                <span class="comment">// update kernel map Q and U</span></div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;                                <span class="keywordflow">if</span> (run_kernel) {</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;                                    omb.kernel[q_index](omb_ir,omb_ic) += kernel*cos_2angle;</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;                                    omb.kernel[u_index](omb_ir,omb_ic) += kernel*sin_2angle;</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;                                }</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;                            }</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;                        }</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;                    }</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160; </div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;                    <span class="comment">// check if noise maps requested</span></div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;                    <span class="keywordflow">if</span> (run_noise) {</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;                        <span class="comment">// if coaddition is enabled</span></div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;                        <span class="keywordflow">if</span> (use_cmb) {</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;                            nmb_ir = cmb_irow(j);</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;                            nmb_ic = cmb_icol(j);</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;                        }</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;                        <span class="comment">// else make noise maps for obs</span></div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;                        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (use_omb) {</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;                            nmb_ir = omb_irow(j);</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;                            nmb_ic = omb_icol(j);</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;                        }</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160; </div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;                        <span class="comment">// coadd into current noise map</span></div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;                        <span class="keywordflow">if</span> ((nmb_ir &gt;= 0) &amp;&amp; (nmb_ir &lt; nmb-&gt;n_rows) &amp;&amp; (nmb_ic &gt;= 0) &amp;&amp; (nmb_ic &lt; nmb-&gt;n_cols)) {</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;                            <span class="keywordflow">if</span> (<a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#ab527679d127409130f38a14d396c117a">run_polarization</a>) {</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;                                <span class="keywordflow">if</span> (use_cmb) {</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;                                    <span class="comment">// calculate pointing matrix for cmb</span></div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;                                    <a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a18b9ba677dbf22bf07f56fbd41498bbb">allocate_pointing</a>(cmb, in.weights.data(i), cos_2angle, sin_2angle, map_index, nmb_ir, nmb_ic);</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;                                }</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;                            }</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;                            <span class="comment">// loop through noise maps</span></div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;                            <span class="keywordflow">for</span> (Eigen::Index nn=0; nn&lt;nmb-&gt;n_noise; ++nn) {</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;                                <span class="comment">// randomizing on dets</span></div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;                                <span class="keywordflow">if</span> (nmb-&gt;randomize_dets) {</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;                                    noise_v = in.noise.data(nn,i)*in.scans.data(j,i)*in.weights.data(i);</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;                                }</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;                                <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;                                    noise_v = in.noise.data(nn)*in.scans.data(j,i)*in.weights.data(i);</div>
 <div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;                                }</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;                                <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;                                    noise_v = in.noise.data(nn)*in.scans.data(j,i)*in.weights.data(i);</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;                                }</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;                                <span class="comment">// add noise value to current noise map</span></div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;                                <a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a88fbc72c8e182e73126c6115fb407676">nmb</a>-&gt;noise[map_index](nmb_ir,nmb_ic,nn) += noise_v;</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160; </div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;                                <span class="keywordflow">if</span> (<a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#ab527679d127409130f38a14d396c117a">run_polarization</a>) {</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;                                    <span class="comment">// update noise map Q</span></div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;                                    <a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a88fbc72c8e182e73126c6115fb407676">nmb</a>-&gt;noise[q_index](nmb_ir,nmb_ic,nn) += noise_v*cos_2angle;</div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;                                    <span class="comment">// update noise map U</span></div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;                                    <a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a88fbc72c8e182e73126c6115fb407676">nmb</a>-&gt;noise[u_index](nmb_ir,nmb_ic,nn) += noise_v*sin_2angle;</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;                                }</div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;                            }</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;                        }</div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;                    }</div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;                }</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;            }</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;        }</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;    }</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;}</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;} <span class="comment">// namespace mapmaking</span></div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;                                <span class="comment">// add noise value to current noise map</span></div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;                                nmb-&gt;noise[map_index](nmb_ir,nmb_ic,nn) += noise_v;</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160; </div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;                                <span class="keywordflow">if</span> (<a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#ab527679d127409130f38a14d396c117a">run_polarization</a>) {</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;                                    <span class="comment">// update noise map Q</span></div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;                                    nmb-&gt;noise[q_index](nmb_ir,nmb_ic,nn) += noise_v*cos_2angle;</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;                                    <span class="comment">// update noise map U</span></div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;                                    nmb-&gt;noise[u_index](nmb_ir,nmb_ic,nn) += noise_v*sin_2angle;</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;                                }</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;                            }</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;                        }</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;                    }</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;                }</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;            }</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;        }</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;    }</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;}</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;} <span class="comment">// namespace mapmaking</span></div>
 <div class="ttc" id="aclassmapmaking_1_1NaiveMapmaker_html"><div class="ttname"><a href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html">mapmaking::NaiveMapmaker</a></div><div class="ttdef"><b>Definition:</b> naive_mm.h:20</div></div>
 <div class="ttc" id="aclassmapmaking_1_1NaiveMapmaker_html_a1308333b8214ee242d65c84e50d5131f"><div class="ttname"><a href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a1308333b8214ee242d65c84e50d5131f">mapmaking::NaiveMapmaker::logger</a></div><div class="ttdeci">std::shared_ptr&lt; spdlog::logger &gt; logger</div><div class="ttdef"><b>Definition:</b> naive_mm.h:23</div></div>
-<div class="ttc" id="aclassmapmaking_1_1NaiveMapmaker_html_a18b9ba677dbf22bf07f56fbd41498bbb"><div class="ttname"><a href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a18b9ba677dbf22bf07f56fbd41498bbb">mapmaking::NaiveMapmaker::allocate_pointing</a></div><div class="ttdeci">void allocate_pointing(map_buffer_t &amp;, double, double, double, Eigen::Index, int, int)</div><div class="ttdef"><b>Definition:</b> naive_mm.h:43</div></div>
-<div class="ttc" id="aclassmapmaking_1_1NaiveMapmaker_html_a3d5ab909c9ae5c0ab64711f00f574d7c"><div class="ttname"><a href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a3d5ab909c9ae5c0ab64711f00f574d7c">mapmaking::NaiveMapmaker::populate_maps_naive</a></div><div class="ttdeci">void populate_maps_naive(TCData&lt; TCDataKind::PTC, Eigen::MatrixXd &gt; &amp;, map_buffer_t &amp;, map_buffer_t &amp;, Eigen::DenseBase&lt; Derived &gt; &amp;, Eigen::DenseBase&lt; Derived &gt; &amp;, std::string &amp;, apt_t &amp;, double, bool, bool)</div><div class="ttdef"><b>Definition:</b> naive_mm.h:60</div></div>
-<div class="ttc" id="aclassmapmaking_1_1NaiveMapmaker_html_a88fbc72c8e182e73126c6115fb407676"><div class="ttname"><a href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a88fbc72c8e182e73126c6115fb407676">mapmaking::NaiveMapmaker::nmb</a></div><div class="ttdeci">std::unique_ptr&lt; ObsMapBuffer &gt; nmb</div><div class="ttdef"><b>Definition:</b> naive_mm.h:26</div></div>
-<div class="ttc" id="aclassmapmaking_1_1NaiveMapmaker_html_ab527679d127409130f38a14d396c117a"><div class="ttname"><a href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#ab527679d127409130f38a14d396c117a">mapmaking::NaiveMapmaker::run_polarization</a></div><div class="ttdeci">bool run_polarization</div><div class="ttdef"><b>Definition:</b> naive_mm.h:29</div></div>
-<div class="ttc" id="aclassmapmaking_1_1ObsMapBuffer_html"><div class="ttname"><a href="../../d1/d45/classmapmaking_1_1ObsMapBuffer.html">mapmaking::ObsMapBuffer</a></div><div class="ttdef"><b>Definition:</b> map.h:45</div></div>
+<div class="ttc" id="aclassmapmaking_1_1NaiveMapmaker_html_a18b9ba677dbf22bf07f56fbd41498bbb"><div class="ttname"><a href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a18b9ba677dbf22bf07f56fbd41498bbb">mapmaking::NaiveMapmaker::allocate_pointing</a></div><div class="ttdeci">void allocate_pointing(map_buffer_t &amp;, double, double, double, Eigen::Index, int, int)</div><div class="ttdef"><b>Definition:</b> naive_mm.h:40</div></div>
+<div class="ttc" id="aclassmapmaking_1_1NaiveMapmaker_html_a3d5ab909c9ae5c0ab64711f00f574d7c"><div class="ttname"><a href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a3d5ab909c9ae5c0ab64711f00f574d7c">mapmaking::NaiveMapmaker::populate_maps_naive</a></div><div class="ttdeci">void populate_maps_naive(TCData&lt; TCDataKind::PTC, Eigen::MatrixXd &gt; &amp;, map_buffer_t &amp;, map_buffer_t &amp;, Eigen::DenseBase&lt; Derived &gt; &amp;, Eigen::DenseBase&lt; Derived &gt; &amp;, std::string &amp;, apt_t &amp;, double, bool, bool)</div><div class="ttdef"><b>Definition:</b> naive_mm.h:57</div></div>
+<div class="ttc" id="aclassmapmaking_1_1NaiveMapmaker_html_ab527679d127409130f38a14d396c117a"><div class="ttname"><a href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#ab527679d127409130f38a14d396c117a">mapmaking::NaiveMapmaker::run_polarization</a></div><div class="ttdeci">bool run_polarization</div><div class="ttdef"><b>Definition:</b> naive_mm.h:26</div></div>
 <div class="ttc" id="amap_8h_html"><div class="ttname"><a href="../../dc/db7/map_8h.html">map.h</a></div></div>
 <div class="ttc" id="anamespaceengine__utils_html_a0d6c922376faca4b84cc135d29354af8"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a0d6c922376faca4b84cc135d29354af8">engine_utils::calc_det_pointing</a></div><div class="ttdeci">auto calc_det_pointing(tel_data_t &amp;tel_data, double az_off, double el_off, const std::string pixel_axes, pointing_offset_t &amp;pointing_offsets, const std::string map_grouping)</div><div class="ttdef"><b>Definition:</b> pointing.h:11</div></div>
 <div class="ttc" id="anamespacemapmaking_html"><div class="ttname"><a href="../../df/da9/namespacemapmaking.html">mapmaking</a></div><div class="ttdef"><b>Definition:</b> jinc_mm.h:25</div></div>

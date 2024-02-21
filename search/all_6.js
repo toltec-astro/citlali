@@ -30,7 +30,7 @@ var searchData=
   ['filteredcoadd_346',['FilteredCoadd',['../df/da9/namespacemapmaking.html#af52c40b611f64c975c702b5ed3b8c6a9ab4b3f1ce96cba39980b3a1c83187c0a3',1,'mapmaking']]],
   ['filteredobs_347',['FilteredObs',['../df/da9/namespacemapmaking.html#af52c40b611f64c975c702b5ed3b8c6a9a79c7228e4cd1938d60611009d6a315f4',1,'mapmaking']]],
   ['filtertype_348',['FilterType',['../dc/d1a/classengine__utils_1_1toltecIO.html#a6222ed9557ef6f2d8663f8c76e4674e7',1,'engine_utils::toltecIO']]],
-  ['find_5fsources_349',['find_sources',['../d1/db6/classEngine.html#ac65f74452312d88174170858bcd4c677',1,'Engine::find_sources()'],['../d1/d45/classmapmaking_1_1ObsMapBuffer.html#a829faaa643f465401903d6b445c2e0c8',1,'mapmaking::ObsMapBuffer::find_sources()'],['../d1/db6/classEngine.html#ac65f74452312d88174170858bcd4c677',1,'Engine::find_sources()']]],
+  ['find_5fsources_349',['find_sources',['../d1/db6/classEngine.html#ac65f74452312d88174170858bcd4c677',1,'Engine::find_sources()'],['../df/d1c/classmapmaking_1_1MapBuffer.html#a0284087cbdf23277a108fc3f3e5dd673',1,'mapmaking::MapBuffer::find_sources()'],['../d1/db6/classEngine.html#ac65f74452312d88174170858bcd4c677',1,'Engine::find_sources()']]],
   ['find_5fweight_5fthreshold_350',['find_weight_threshold',['../dd/d06/namespaceengine__utils.html#a4d36010ae0dbf2c6ceb791a76a83286b',1,'engine_utils']]],
   ['finder_351',['Finder',['../de/df2/structfinder__options.html#a37af4cdfb893f3216552ac898f71ca06',1,'finder_options']]],
   ['finder_352',['finder',['../de/df2/structfinder__options.html#a1287bb98eef051ecd9bf3c552c465606',1,'finder_options']]],
