@@ -550,68 +550,70 @@ $(function() {
 <div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;        <span class="comment">// add weights to tod output</span></div>
 <div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;        weights_v.putVar(start_index_weights, size_weights, in.weights.data.data());</div>
 <div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160; </div>
-<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;        <span class="comment">// get number of eigenvalues to save</span></div>
-<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;        NcDim n_eigs_dim = fo.getDim(<span class="stringliteral">&quot;n_eigs&quot;</span>);</div>
-<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;        netCDF::NcDim n_eig_grp_dim = fo.getDim(<span class="stringliteral">&quot;n_eig_grp&quot;</span>);</div>
-<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160; </div>
-<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;        <span class="comment">// if eigenvalue dimension is null, add it</span></div>
-<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;        <span class="keywordflow">if</span> (n_eig_grp_dim.isNull()) {</div>
-<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;            n_eig_grp_dim = fo.addDim(<span class="stringliteral">&quot;n_eig_grp&quot;</span>,in.evals.data[0].size());</div>
-<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;        }</div>
-<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160; </div>
-<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;        <span class="comment">// dimensions for eigenvalue data</span></div>
-<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;        std::vector&lt;netCDF::NcDim&gt; eval_dims = {n_eig_grp_dim, n_eigs_dim};</div>
-<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160; </div>
-<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;        <span class="comment">// loop through cleaner gropuing</span></div>
-<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;        <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;in.evals.data.size(); ++i) {</div>
-<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;            NcVar eval_v = fo.addVar(<span class="stringliteral">&quot;evals_&quot;</span> + <a class="code" href="../../d7/d4f/classtimestream_1_1PTCProc.html#a454b205a1381b6025e4613239b74a142">cleaner</a>.<a class="code" href="../../da/de2/classtimestream_1_1Cleaner.html#af6b55c69cbea4d8c2db73de705c331d1">grouping</a>[i] + <span class="stringliteral">&quot;_&quot;</span> + std::to_string(i) +</div>
-<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;                                         <span class="stringliteral">&quot;_chunk_&quot;</span> + std::to_string(in.index.data), netCDF::ncDouble,eval_dims);</div>
-<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;            std::vector&lt;std::size_t&gt; start_eig_index = {0, 0};</div>
-<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;            std::vector&lt;std::size_t&gt; size = {1, TULA_SIZET(<a class="code" href="../../d7/d4f/classtimestream_1_1PTCProc.html#a454b205a1381b6025e4613239b74a142">cleaner</a>.<a class="code" href="../../da/de2/classtimestream_1_1Cleaner.html#a852f04f3d0cbe2e56e42c52937bd816a">n_calc</a>)};</div>
-<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160; </div>
-<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;            <span class="comment">// loop through eigenvalues in current group</span></div>
-<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;            <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;evals: in.evals.data[i]) {</div>
-<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;                eval_v.putVar(start_eig_index,size,evals.data());</div>
-<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;                start_eig_index[0] += 1;</div>
-<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;            }</div>
-<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;        }</div>
-<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160; </div>
-<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;        <span class="comment">// number of dimensions for eigenvectors</span></div>
-<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;        std::vector&lt;netCDF::NcDim&gt; eig_dims = {n_dets_dim, n_eigs_dim};</div>
-<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160; </div>
-<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;        <span class="comment">// loop through cleaner gropuing</span></div>
-<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;        <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;in.evecs.data.size(); ++i) {</div>
-<div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;            <span class="comment">// start at first row and col</span></div>
-<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;            std::vector&lt;std::size_t&gt; start_eig_index = {0, 0};</div>
-<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160; </div>
-<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;            NcVar evec_v = fo.addVar(<span class="stringliteral">&quot;evecs_&quot;</span> + <a class="code" href="../../d7/d4f/classtimestream_1_1PTCProc.html#a454b205a1381b6025e4613239b74a142">cleaner</a>.<a class="code" href="../../da/de2/classtimestream_1_1Cleaner.html#af6b55c69cbea4d8c2db73de705c331d1">grouping</a>[i] + <span class="stringliteral">&quot;_&quot;</span> + std::to_string(i) + <span class="stringliteral">&quot;_chunk_&quot;</span> +</div>
-<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;                                         std::to_string(in.index.data),netCDF::ncDouble,eig_dims);</div>
-<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160; </div>
-<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;            <span class="comment">// loop through eigenvectors in current group</span></div>
-<div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160;            <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;evecs: in.evecs.data[i]) {</div>
-<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160;                std::vector&lt;std::size_t&gt; size = {TULA_SIZET(evecs.rows()), TULA_SIZET(<a class="code" href="../../d7/d4f/classtimestream_1_1PTCProc.html#a454b205a1381b6025e4613239b74a142">cleaner</a>.<a class="code" href="../../da/de2/classtimestream_1_1Cleaner.html#a852f04f3d0cbe2e56e42c52937bd816a">n_calc</a>)};</div>
-<div class="line"><a name="l00522"></a><span class="lineno">  522</span>&#160; </div>
-<div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160;                <span class="comment">// transpose eigenvectors</span></div>
-<div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160;                Eigen::MatrixXd ev = evecs.transpose();</div>
-<div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160;                evec_v.putVar(start_eig_index, size, ev.data());</div>
-<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160; </div>
-<div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160;                <span class="comment">// increment start</span></div>
-<div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;                start_eig_index[0] += TULA_SIZET(evecs.rows());</div>
-<div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160;            }</div>
-<div class="line"><a name="l00530"></a><span class="lineno">  530</span>&#160;        }</div>
-<div class="line"><a name="l00531"></a><span class="lineno">  531</span>&#160; </div>
-<div class="line"><a name="l00532"></a><span class="lineno">  532</span>&#160;        <span class="comment">// sync file to make sure it gets updated</span></div>
-<div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160;        fo.sync();</div>
-<div class="line"><a name="l00534"></a><span class="lineno">  534</span>&#160;        <span class="comment">// close file</span></div>
-<div class="line"><a name="l00535"></a><span class="lineno">  535</span>&#160;        fo.close();</div>
-<div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;        <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a1a97f70901676ef77f38d9e94f918be6">logger</a>-&gt;info(<span class="stringliteral">&quot;tod chunk written to {}&quot;</span>, filepath);</div>
-<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160; </div>
-<div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160;    } <span class="keywordflow">catch</span> (NcException &amp;e) {</div>
-<div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160;        <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a1a97f70901676ef77f38d9e94f918be6">logger</a>-&gt;error(<span class="stringliteral">&quot;{}&quot;</span>, e.what());</div>
-<div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160;    }</div>
-<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160;}</div>
-<div class="line"><a name="l00542"></a><span class="lineno">  542</span>&#160; </div>
-<div class="line"><a name="l00543"></a><span class="lineno">  543</span>&#160;} <span class="comment">// namespace timestream</span></div>
+<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a6282cc8286b8881b57f3cc62ce3ec441">write_evals</a>) {</div>
+<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;            <span class="comment">// get number of eigenvalues to save</span></div>
+<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;            NcDim n_eigs_dim = fo.getDim(<span class="stringliteral">&quot;n_eigs&quot;</span>);</div>
+<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;            netCDF::NcDim n_eig_grp_dim = fo.getDim(<span class="stringliteral">&quot;n_eig_grp&quot;</span>);</div>
+<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160; </div>
+<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;            <span class="comment">// if eigenvalue dimension is null, add it</span></div>
+<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;            <span class="keywordflow">if</span> (n_eig_grp_dim.isNull()) {</div>
+<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;                n_eig_grp_dim = fo.addDim(<span class="stringliteral">&quot;n_eig_grp&quot;</span>,in.evals.data[0].size());</div>
+<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;            }</div>
+<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160; </div>
+<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;            <span class="comment">// dimensions for eigenvalue data</span></div>
+<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;            std::vector&lt;netCDF::NcDim&gt; eval_dims = {n_eig_grp_dim, n_eigs_dim};</div>
+<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160; </div>
+<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;            <span class="comment">// loop through cleaner gropuing</span></div>
+<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;            <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;in.evals.data.size(); ++i) {</div>
+<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;                NcVar eval_v = fo.addVar(<span class="stringliteral">&quot;evals_&quot;</span> + <a class="code" href="../../d7/d4f/classtimestream_1_1PTCProc.html#a454b205a1381b6025e4613239b74a142">cleaner</a>.<a class="code" href="../../da/de2/classtimestream_1_1Cleaner.html#af6b55c69cbea4d8c2db73de705c331d1">grouping</a>[i] + <span class="stringliteral">&quot;_&quot;</span> + std::to_string(i) +</div>
+<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;                                             <span class="stringliteral">&quot;_chunk_&quot;</span> + std::to_string(in.index.data), netCDF::ncDouble,eval_dims);</div>
+<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;                std::vector&lt;std::size_t&gt; start_eig_index = {0, 0};</div>
+<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;                std::vector&lt;std::size_t&gt; size = {1, TULA_SIZET(<a class="code" href="../../d7/d4f/classtimestream_1_1PTCProc.html#a454b205a1381b6025e4613239b74a142">cleaner</a>.<a class="code" href="../../da/de2/classtimestream_1_1Cleaner.html#a852f04f3d0cbe2e56e42c52937bd816a">n_calc</a>)};</div>
+<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160; </div>
+<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;                <span class="comment">// loop through eigenvalues in current group</span></div>
+<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;                <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;evals: in.evals.data[i]) {</div>
+<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;                    eval_v.putVar(start_eig_index,size,evals.data());</div>
+<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;                    start_eig_index[0] += 1;</div>
+<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;                }</div>
+<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;            }</div>
+<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160; </div>
+<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;            <span class="comment">// number of dimensions for eigenvectors</span></div>
+<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;            std::vector&lt;netCDF::NcDim&gt; eig_dims = {n_dets_dim, n_eigs_dim};</div>
+<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160; </div>
+<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;            <span class="comment">// loop through cleaner gropuing</span></div>
+<div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;            <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;in.evecs.data.size(); ++i) {</div>
+<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;                <span class="comment">// start at first row and col</span></div>
+<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160;                std::vector&lt;std::size_t&gt; start_eig_index = {0, 0};</div>
+<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160; </div>
+<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;                NcVar evec_v = fo.addVar(<span class="stringliteral">&quot;evecs_&quot;</span> + <a class="code" href="../../d7/d4f/classtimestream_1_1PTCProc.html#a454b205a1381b6025e4613239b74a142">cleaner</a>.<a class="code" href="../../da/de2/classtimestream_1_1Cleaner.html#af6b55c69cbea4d8c2db73de705c331d1">grouping</a>[i] + <span class="stringliteral">&quot;_&quot;</span> + std::to_string(i) + <span class="stringliteral">&quot;_chunk_&quot;</span> +</div>
+<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160;                                             std::to_string(in.index.data),netCDF::ncDouble,eig_dims);</div>
+<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160; </div>
+<div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160;                <span class="comment">// loop through eigenvectors in current group</span></div>
+<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160;                <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;evecs: in.evecs.data[i]) {</div>
+<div class="line"><a name="l00522"></a><span class="lineno">  522</span>&#160;                    std::vector&lt;std::size_t&gt; size = {TULA_SIZET(evecs.rows()), TULA_SIZET(<a class="code" href="../../d7/d4f/classtimestream_1_1PTCProc.html#a454b205a1381b6025e4613239b74a142">cleaner</a>.<a class="code" href="../../da/de2/classtimestream_1_1Cleaner.html#a852f04f3d0cbe2e56e42c52937bd816a">n_calc</a>)};</div>
+<div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160; </div>
+<div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160;                    <span class="comment">// transpose eigenvectors</span></div>
+<div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160;                    Eigen::MatrixXd ev = evecs.transpose();</div>
+<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;                    evec_v.putVar(start_eig_index, size, ev.data());</div>
+<div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160; </div>
+<div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;                    <span class="comment">// increment start</span></div>
+<div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160;                    start_eig_index[0] += TULA_SIZET(evecs.rows());</div>
+<div class="line"><a name="l00530"></a><span class="lineno">  530</span>&#160;                }</div>
+<div class="line"><a name="l00531"></a><span class="lineno">  531</span>&#160;            }</div>
+<div class="line"><a name="l00532"></a><span class="lineno">  532</span>&#160;        }</div>
+<div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160; </div>
+<div class="line"><a name="l00534"></a><span class="lineno">  534</span>&#160;        <span class="comment">// sync file to make sure it gets updated</span></div>
+<div class="line"><a name="l00535"></a><span class="lineno">  535</span>&#160;        fo.sync();</div>
+<div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;        <span class="comment">// close file</span></div>
+<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;        fo.close();</div>
+<div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160;        <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a1a97f70901676ef77f38d9e94f918be6">logger</a>-&gt;info(<span class="stringliteral">&quot;tod chunk written to {}&quot;</span>, filepath);</div>
+<div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160; </div>
+<div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160;    } <span class="keywordflow">catch</span> (NcException &amp;e) {</div>
+<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160;        <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a1a97f70901676ef77f38d9e94f918be6">logger</a>-&gt;error(<span class="stringliteral">&quot;{}&quot;</span>, e.what());</div>
+<div class="line"><a name="l00542"></a><span class="lineno">  542</span>&#160;    }</div>
+<div class="line"><a name="l00543"></a><span class="lineno">  543</span>&#160;}</div>
+<div class="line"><a name="l00544"></a><span class="lineno">  544</span>&#160; </div>
+<div class="line"><a name="l00545"></a><span class="lineno">  545</span>&#160;} <span class="comment">// namespace timestream</span></div>
 <div class="ttc" id="aclassengine__utils_1_1toltecIO_html_a02acf06bde7d19f865b91f9d985ae0c3"><div class="ttname"><a href="../../dc/d1a/classengine__utils_1_1toltecIO.html#a02acf06bde7d19f865b91f9d985ae0c3">engine_utils::toltecIO::array_name_map</a></div><div class="ttdeci">std::map&lt; Eigen::Index, std::string &gt; array_name_map</div><div class="ttdef"><b>Definition:</b> toltec_io.h:54</div></div>
 <div class="ttc" id="aclassengine__utils_1_1toltecIO_html_aa0e69e065b99f1538c67632f6e069e12"><div class="ttname"><a href="../../dc/d1a/classengine__utils_1_1toltecIO.html#aa0e69e065b99f1538c67632f6e069e12">engine_utils::toltecIO::nw_to_array_map</a></div><div class="ttdeci">std::map&lt; Eigen::Index, Eigen::Index &gt; nw_to_array_map</div><div class="ttdef"><b>Definition:</b> toltec_io.h:37</div></div>
 <div class="ttc" id="aclasstimestream_1_1Cleaner_html"><div class="ttname"><a href="../../da/de2/classtimestream_1_1Cleaner.html">timestream::Cleaner</a></div><div class="ttdef"><b>Definition:</b> clean.h:12</div></div>

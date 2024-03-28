@@ -1142,42 +1142,47 @@ $(function() {
 <div class="line"><a name="l01074"></a><span class="lineno"> 1074</span>&#160;        hwpr_v.putVar(start_index_tel, size_tel, in.hwpr_angle.data.data());</div>
 <div class="line"><a name="l01075"></a><span class="lineno"> 1075</span>&#160;    }</div>
 <div class="line"><a name="l01076"></a><span class="lineno"> 1076</span>&#160; </div>
-<div class="line"><a name="l01077"></a><span class="lineno"> 1077</span>&#160;    <span class="comment">// overwrite apt table (can be updated between beammap iterations)</span></div>
-<div class="line"><a name="l01078"></a><span class="lineno"> 1078</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; x: calib.apt) {</div>
-<div class="line"><a name="l01079"></a><span class="lineno"> 1079</span>&#160;        netCDF::NcVar apt_v = fo.getVar(<span class="stringliteral">&quot;apt_&quot;</span> + x.first);</div>
-<div class="line"><a name="l01080"></a><span class="lineno"> 1080</span>&#160;        <span class="keywordflow">for</span> (std::size_t i=0; i&lt;TULA_SIZET(n_dets_exists); ++i) {</div>
-<div class="line"><a name="l01081"></a><span class="lineno"> 1081</span>&#160;            start_index_apt[0] = i;</div>
-<div class="line"><a name="l01082"></a><span class="lineno"> 1082</span>&#160;            apt_v.putVar(start_index_apt, size_apt, &amp;calib.apt[x.first](det_indices(i)));</div>
-<div class="line"><a name="l01083"></a><span class="lineno"> 1083</span>&#160;        }</div>
-<div class="line"><a name="l01084"></a><span class="lineno"> 1084</span>&#160;    }</div>
-<div class="line"><a name="l01085"></a><span class="lineno"> 1085</span>&#160; </div>
-<div class="line"><a name="l01086"></a><span class="lineno"> 1086</span>&#160;    <span class="comment">// vector to hold current scan indices</span></div>
-<div class="line"><a name="l01087"></a><span class="lineno"> 1087</span>&#160;    Eigen::VectorXd scan_indices(2);</div>
+<div class="line"><a name="l01077"></a><span class="lineno"> 1077</span>&#160; </div>
+<div class="line"><a name="l01078"></a><span class="lineno"> 1078</span>&#160;    <span class="comment">// overwrite apt table (can be updated between beammap iterations)</span></div>
+<div class="line"><a name="l01079"></a><span class="lineno"> 1079</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; x: calib.apt) {</div>
+<div class="line"><a name="l01080"></a><span class="lineno"> 1080</span>&#160;        netCDF::NcVar apt_v = fo.getVar(<span class="stringliteral">&quot;apt_&quot;</span> + x.first);</div>
+<div class="line"><a name="l01081"></a><span class="lineno"> 1081</span>&#160;        <span class="keywordflow">if</span> (!apt_v.isNull()) {</div>
+<div class="line"><a name="l01082"></a><span class="lineno"> 1082</span>&#160;            <span class="keywordflow">for</span> (std::size_t i=0; i&lt;TULA_SIZET(n_dets_exists); ++i) {</div>
+<div class="line"><a name="l01083"></a><span class="lineno"> 1083</span>&#160;                start_index_apt[0] = i;</div>
+<div class="line"><a name="l01084"></a><span class="lineno"> 1084</span>&#160;                apt_v.putVar(start_index_apt, size_apt, &amp;calib.apt[x.first](det_indices(i)));</div>
+<div class="line"><a name="l01085"></a><span class="lineno"> 1085</span>&#160;            }</div>
+<div class="line"><a name="l01086"></a><span class="lineno"> 1086</span>&#160;        }</div>
+<div class="line"><a name="l01087"></a><span class="lineno"> 1087</span>&#160;    }</div>
 <div class="line"><a name="l01088"></a><span class="lineno"> 1088</span>&#160; </div>
-<div class="line"><a name="l01089"></a><span class="lineno"> 1089</span>&#160;    <span class="comment">// if not on first scan, grab last scan and add size of current scan</span></div>
-<div class="line"><a name="l01090"></a><span class="lineno"> 1090</span>&#160;    <span class="keywordflow">if</span> (in.index.data &gt; 0) {</div>
-<div class="line"><a name="l01091"></a><span class="lineno"> 1091</span>&#160;        <span class="comment">// start indices for data</span></div>
-<div class="line"><a name="l01092"></a><span class="lineno"> 1092</span>&#160;        std::vector&lt;std::size_t&gt; scan_indices_start_index = {TULA_SIZET(in.index.data-1), 0};</div>
-<div class="line"><a name="l01093"></a><span class="lineno"> 1093</span>&#160;        <span class="comment">// size for data</span></div>
-<div class="line"><a name="l01094"></a><span class="lineno"> 1094</span>&#160;        std::vector&lt;std::size_t&gt; scan_indices_size = {1, 2};</div>
-<div class="line"><a name="l01095"></a><span class="lineno"> 1095</span>&#160;        vars.find(<span class="stringliteral">&quot;scan_indices&quot;</span>)-&gt;second.getVar(scan_indices_start_index,scan_indices_size,scan_indices.data());</div>
-<div class="line"><a name="l01096"></a><span class="lineno"> 1096</span>&#160; </div>
-<div class="line"><a name="l01097"></a><span class="lineno"> 1097</span>&#160;        scan_indices = scan_indices.array() + in.scans.data.rows();</div>
-<div class="line"><a name="l01098"></a><span class="lineno"> 1098</span>&#160;    }</div>
-<div class="line"><a name="l01099"></a><span class="lineno"> 1099</span>&#160;    <span class="comment">// otherwise, use size of this scan</span></div>
-<div class="line"><a name="l01100"></a><span class="lineno"> 1100</span>&#160;    <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l01101"></a><span class="lineno"> 1101</span>&#160;        scan_indices(0) = 0;</div>
-<div class="line"><a name="l01102"></a><span class="lineno"> 1102</span>&#160;        scan_indices(1) = in.scans.data.rows() - 1;</div>
-<div class="line"><a name="l01103"></a><span class="lineno"> 1103</span>&#160;    }</div>
-<div class="line"><a name="l01104"></a><span class="lineno"> 1104</span>&#160; </div>
-<div class="line"><a name="l01105"></a><span class="lineno"> 1105</span>&#160;    <span class="comment">// add current scan indices row</span></div>
-<div class="line"><a name="l01106"></a><span class="lineno"> 1106</span>&#160;    std::vector&lt;std::size_t&gt; scan_indices_start_index = {TULA_SIZET(in.index.data), 0};</div>
-<div class="line"><a name="l01107"></a><span class="lineno"> 1107</span>&#160;    std::vector&lt;std::size_t&gt; scan_indices_size = {1, 2};</div>
-<div class="line"><a name="l01108"></a><span class="lineno"> 1108</span>&#160;    NcVar scan_indices_v = fo.getVar(<span class="stringliteral">&quot;scan_indices&quot;</span>);</div>
-<div class="line"><a name="l01109"></a><span class="lineno"> 1109</span>&#160;    scan_indices_v.putVar(scan_indices_start_index, scan_indices_size,scan_indices.data());</div>
-<div class="line"><a name="l01110"></a><span class="lineno"> 1110</span>&#160;}</div>
-<div class="line"><a name="l01111"></a><span class="lineno"> 1111</span>&#160; </div>
-<div class="line"><a name="l01112"></a><span class="lineno"> 1112</span>&#160;} <span class="comment">// namespace timestream</span></div>
+<div class="line"><a name="l01089"></a><span class="lineno"> 1089</span>&#160;    <span class="comment">// vector to hold current scan indices</span></div>
+<div class="line"><a name="l01090"></a><span class="lineno"> 1090</span>&#160;    Eigen::VectorXd scan_indices(2);</div>
+<div class="line"><a name="l01091"></a><span class="lineno"> 1091</span>&#160; </div>
+<div class="line"><a name="l01092"></a><span class="lineno"> 1092</span>&#160;    <span class="comment">// if not on first scan, grab last scan and add size of current scan</span></div>
+<div class="line"><a name="l01093"></a><span class="lineno"> 1093</span>&#160;    <span class="keywordflow">if</span> (in.index.data &gt; 0) {</div>
+<div class="line"><a name="l01094"></a><span class="lineno"> 1094</span>&#160;        <span class="comment">// start indices for data</span></div>
+<div class="line"><a name="l01095"></a><span class="lineno"> 1095</span>&#160;        std::vector&lt;std::size_t&gt; scan_indices_start_index = {TULA_SIZET(in.index.data-1), 0};</div>
+<div class="line"><a name="l01096"></a><span class="lineno"> 1096</span>&#160;        <span class="comment">// size for data</span></div>
+<div class="line"><a name="l01097"></a><span class="lineno"> 1097</span>&#160;        std::vector&lt;std::size_t&gt; scan_indices_size = {1, 2};</div>
+<div class="line"><a name="l01098"></a><span class="lineno"> 1098</span>&#160;        vars.find(<span class="stringliteral">&quot;scan_indices&quot;</span>)-&gt;second.getVar(scan_indices_start_index,scan_indices_size,scan_indices.data());</div>
+<div class="line"><a name="l01099"></a><span class="lineno"> 1099</span>&#160; </div>
+<div class="line"><a name="l01100"></a><span class="lineno"> 1100</span>&#160;        scan_indices = scan_indices.array() + in.scans.data.rows();</div>
+<div class="line"><a name="l01101"></a><span class="lineno"> 1101</span>&#160;    }</div>
+<div class="line"><a name="l01102"></a><span class="lineno"> 1102</span>&#160; </div>
+<div class="line"><a name="l01103"></a><span class="lineno"> 1103</span>&#160;    <span class="comment">// otherwise, use size of this scan</span></div>
+<div class="line"><a name="l01104"></a><span class="lineno"> 1104</span>&#160;    <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l01105"></a><span class="lineno"> 1105</span>&#160;        scan_indices(0) = 0;</div>
+<div class="line"><a name="l01106"></a><span class="lineno"> 1106</span>&#160;        scan_indices(1) = in.scans.data.rows() - 1;</div>
+<div class="line"><a name="l01107"></a><span class="lineno"> 1107</span>&#160;    }</div>
+<div class="line"><a name="l01108"></a><span class="lineno"> 1108</span>&#160; </div>
+<div class="line"><a name="l01109"></a><span class="lineno"> 1109</span>&#160;    <span class="comment">// add current scan indices row</span></div>
+<div class="line"><a name="l01110"></a><span class="lineno"> 1110</span>&#160;    std::vector&lt;std::size_t&gt; scan_indices_start_index = {TULA_SIZET(in.index.data), 0};</div>
+<div class="line"><a name="l01111"></a><span class="lineno"> 1111</span>&#160;    std::vector&lt;std::size_t&gt; scan_indices_size = {1, 2};</div>
+<div class="line"><a name="l01112"></a><span class="lineno"> 1112</span>&#160;    NcVar scan_indices_v = fo.getVar(<span class="stringliteral">&quot;scan_indices&quot;</span>);</div>
+<div class="line"><a name="l01113"></a><span class="lineno"> 1113</span>&#160;    scan_indices_v.putVar(scan_indices_start_index, scan_indices_size,scan_indices.data());</div>
+<div class="line"><a name="l01114"></a><span class="lineno"> 1114</span>&#160;}</div>
+<div class="line"><a name="l01115"></a><span class="lineno"> 1115</span>&#160; </div>
+<div class="line"><a name="l01116"></a><span class="lineno"> 1116</span>&#160; </div>
+<div class="line"><a name="l01117"></a><span class="lineno"> 1117</span>&#160;} <span class="comment">// namespace timestream</span></div>
 <div class="ttc" id="aclassengine__utils_1_1toltecIO_html"><div class="ttname"><a href="../../dc/d1a/classengine__utils_1_1toltecIO.html">engine_utils::toltecIO</a></div><div class="ttdef"><b>Definition:</b> toltec_io.h:10</div></div>
 <div class="ttc" id="aclassengine__utils_1_1toltecIO_html_a02acf06bde7d19f865b91f9d985ae0c3"><div class="ttname"><a href="../../dc/d1a/classengine__utils_1_1toltecIO.html#a02acf06bde7d19f865b91f9d985ae0c3">engine_utils::toltecIO::array_name_map</a></div><div class="ttdeci">std::map&lt; Eigen::Index, std::string &gt; array_name_map</div><div class="ttdef"><b>Definition:</b> toltec_io.h:54</div></div>
 <div class="ttc" id="aclassfitsIO_html"><div class="ttname"><a href="../../df/d8d/classfitsIO.html">fitsIO</a></div><div class="ttdef"><b>Definition:</b> fits_io.h:10</div></div>

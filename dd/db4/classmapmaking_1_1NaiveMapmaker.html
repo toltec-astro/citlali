@@ -80,7 +80,7 @@ Collaboration diagram for mapmaking::NaiveMapmaker:</div>
 <div class="dyncontent">
 <div class="center"><img src="../../db/d58/classmapmaking_1_1NaiveMapmaker__coll__graph.png" border="0" usemap="#amapmaking_1_1NaiveMapmaker_coll__map" alt="Collaboration graph"/></div>
 <map name="amapmaking_1_1NaiveMapmaker_coll__map" id="amapmaking_1_1NaiveMapmaker_coll__map">
-<area shape="rect" title=" " alt="" coords="5,5,220,112"/>
+<area shape="rect" title=" " alt="" coords="5,5,220,141"/>
 </map>
 </div>
 <table class="memberdecls">
@@ -92,17 +92,23 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a3d5ab909c9ae5c0ab64711f00f574d7c"><td class="memTemplParams" colspan="2">template&lt;class map_buffer_t , typename Derived , typename apt_t &gt; </td></tr>
 <tr class="memitem:a3d5ab909c9ae5c0ab64711f00f574d7c"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a3d5ab909c9ae5c0ab64711f00f574d7c">populate_maps_naive</a> (<a class="el" href="../../dd/d75/structtimestream_1_1TCData.html">TCData</a>&lt; TCDataKind::PTC, Eigen::MatrixXd &gt; &amp;, map_buffer_t &amp;, map_buffer_t &amp;, Eigen::DenseBase&lt; Derived &gt; &amp;, Eigen::DenseBase&lt; Derived &gt; &amp;, std::string &amp;, apt_t &amp;, double, bool, bool)</td></tr>
 <tr class="separator:a3d5ab909c9ae5c0ab64711f00f574d7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18b9ba677dbf22bf07f56fbd41498bbb"><td class="memTemplParams" colspan="2">template&lt;class map_buffer_t &gt; </td></tr>
+<tr class="memitem:a18b9ba677dbf22bf07f56fbd41498bbb"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a18b9ba677dbf22bf07f56fbd41498bbb">allocate_pointing</a> (map_buffer_t &amp;, double, double, double, Eigen::Index, int, int)</td></tr>
+<tr class="separator:a18b9ba677dbf22bf07f56fbd41498bbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d5ab909c9ae5c0ab64711f00f574d7c"><td class="memTemplParams" colspan="2">template&lt;class map_buffer_t , typename Derived , typename apt_t &gt; </td></tr>
+<tr class="memitem:a3d5ab909c9ae5c0ab64711f00f574d7c"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a3d5ab909c9ae5c0ab64711f00f574d7c">populate_maps_naive</a> (<a class="el" href="../../dd/d75/structtimestream_1_1TCData.html">TCData</a>&lt; TCDataKind::PTC, Eigen::MatrixXd &gt; &amp;, map_buffer_t &amp;, map_buffer_t &amp;, Eigen::DenseBase&lt; Derived &gt; &amp;, Eigen::DenseBase&lt; Derived &gt; &amp;, std::string &amp;, apt_t &amp;, double, bool, bool)</td></tr>
+<tr class="separator:a3d5ab909c9ae5c0ab64711f00f574d7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a1308333b8214ee242d65c84e50d5131f"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; spdlog::logger &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a1308333b8214ee242d65c84e50d5131f">logger</a> = spdlog::get(&quot;citlali_logger&quot;)</td></tr>
-<tr class="separator:a1308333b8214ee242d65c84e50d5131f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2aa8fb981f113af338819f09c1e131d4"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; spdlog::logger &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a2aa8fb981f113af338819f09c1e131d4">logger</a> = spdlog::get(&quot;citlali_logger&quot;)</td></tr>
+<tr class="separator:a2aa8fb981f113af338819f09c1e131d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab527679d127409130f38a14d396c117a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#ab527679d127409130f38a14d396c117a">run_polarization</a></td></tr>
 <tr class="separator:ab527679d127409130f38a14d396c117a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="a18b9ba677dbf22bf07f56fbd41498bbb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a18b9ba677dbf22bf07f56fbd41498bbb">&#9670;&nbsp;</a></span>allocate_pointing()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a18b9ba677dbf22bf07f56fbd41498bbb">&#9670;&nbsp;</a></span>allocate_pointing() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -175,8 +181,68 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
+<a id="a18b9ba677dbf22bf07f56fbd41498bbb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a18b9ba677dbf22bf07f56fbd41498bbb">&#9670;&nbsp;</a></span>allocate_pointing() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class map_buffer_t &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void mapmaking::NaiveMapmaker::allocate_pointing </td>
+          <td>(</td>
+          <td class="paramtype">map_buffer_t &amp;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Index&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a3d5ab909c9ae5c0ab64711f00f574d7c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3d5ab909c9ae5c0ab64711f00f574d7c">&#9670;&nbsp;</a></span>populate_maps_naive()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d5ab909c9ae5c0ab64711f00f574d7c">&#9670;&nbsp;</a></span>populate_maps_naive() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -276,15 +342,93 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
+<a id="a3d5ab909c9ae5c0ab64711f00f574d7c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d5ab909c9ae5c0ab64711f00f574d7c">&#9670;&nbsp;</a></span>populate_maps_naive() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class map_buffer_t , typename Derived , typename apt_t &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void mapmaking::NaiveMapmaker::populate_maps_naive </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../dd/d75/structtimestream_1_1TCData.html">TCData</a>&lt; TCDataKind::PTC, Eigen::MatrixXd &gt; &amp;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">map_buffer_t &amp;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">map_buffer_t &amp;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::DenseBase&lt; Derived &gt; &amp;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::DenseBase&lt; Derived &gt; &amp;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string &amp;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">apt_t &amp;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a1308333b8214ee242d65c84e50d5131f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1308333b8214ee242d65c84e50d5131f">&#9670;&nbsp;</a></span>logger</h2>
+<a id="a2aa8fb981f113af338819f09c1e131d4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2aa8fb981f113af338819f09c1e131d4">&#9670;&nbsp;</a></span>logger</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::shared_ptr&lt;spdlog::logger&gt; mapmaking::NaiveMapmaker::logger = spdlog::get(&quot;citlali_logger&quot;)</td>
+          <td class="memname">std::shared_ptr&lt; spdlog::logger &gt; mapmaking::NaiveMapmaker::logger = spdlog::get(&quot;citlali_logger&quot;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -305,8 +449,9 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li>include/citlali/core/mapmaking/<a class="el" href="../../d8/d6d/naive__mm_8h_source.html">naive_mm.h</a></li>
+<li>include/citlali/core/mapmaking/<a class="el" href="../../db/d2a/naive__mm__2_8h_source.html">naive_mm_2.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
