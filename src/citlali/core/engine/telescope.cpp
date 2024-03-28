@@ -190,7 +190,7 @@ void Telescope::calc_tan_radec() {
 
     // copy radec
     Eigen::VectorXd ra = tel_data["TelRa"];
-    Eigen::VectorXd dec = tel_data["TelDec"];
+    auto dec = tel_data["TelDec"];
 
     // rescale ra
     (ra.array() > pi).select(tel_data["TelRa"].array() - 2.0*pi, tel_data["TelRa"].array());
@@ -223,15 +223,15 @@ void Telescope::calc_tan_radec() {
 }
 
 void Telescope::calc_tan_altaz() {
-    // subtract source az
-    auto az_diff = tel_data["TelAzAct"].array() - tel_data["SourceAz"].array();
-
     // use loop to avoid annoying eigen aliasing issues with select
     for (Eigen::Index i=0; i<tel_data["TelAzAct"].size(); ++i) {
         if ((tel_data["TelAzAct"](i) - tel_data["SourceAz"](i)) > 0.9*2.0*pi) {
             tel_data["TelAzAct"](i) = tel_data["TelAzAct"](i) - 2.0*pi;
         }
     }
+
+    // subtract source az
+    auto az_diff = tel_data["TelAzAct"].array() - tel_data["SourceAz"].array();
 
     // tangent plane lat (alt)
     tel_data["alt_phys"] = (tel_data["TelElAct"].array() - tel_data["SourceEl"].array() - tel_data["TelElCor"].array()).matrix();

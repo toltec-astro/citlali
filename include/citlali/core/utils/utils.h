@@ -151,7 +151,7 @@ static long long modified_julian_date_to_unix(double jd) {
     return unix_time;
 }
 
-static long long unix_to_modified_julian_date(double unix_time) {
+static double unix_to_modified_julian_date(double unix_time) {
     const double seconds_per_day = 86400.0;
     const double mjd_offset = 40587.0;
     return unix_time / seconds_per_day + mjd_offset;

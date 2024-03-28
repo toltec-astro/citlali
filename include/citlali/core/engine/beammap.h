@@ -529,9 +529,11 @@ void Beammap::loop_pipeline() {
                         // size for apt
                         std::vector<std::size_t> size_apt = {1};
                         netCDF::NcVar apt_v = fo.getVar("apt_" + x.first);
-                        for (std::size_t i=0; i< TULA_SIZET(calib.n_dets); ++i) {
-                            start_index_apt[0] = i;
-                            apt_v.putVar(start_index_apt, size_apt, &calib.apt[x.first](det_indices(i)));
+                        if (!apt_v.isNull()) {
+                            for (std::size_t i=0; i< TULA_SIZET(calib.n_dets); ++i) {
+                                start_index_apt[0] = i;
+                                apt_v.putVar(start_index_apt, size_apt, &calib.apt[x.first](det_indices(i)));
+                            }
                         }
                     }
                 }
@@ -770,8 +772,6 @@ void Beammap::run_loop() {
 
                 return 0;
             });
-
-            logger->info("array_index {}",ptcs[0].array_indices.data);
 
             // normalize maps
             logger->info("normalizing maps");

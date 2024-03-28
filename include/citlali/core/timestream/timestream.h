@@ -1074,12 +1074,15 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
         hwpr_v.putVar(start_index_tel, size_tel, in.hwpr_angle.data.data());
     }
 
+
     // overwrite apt table (can be updated between beammap iterations)
     for (auto const& x: calib.apt) {
         netCDF::NcVar apt_v = fo.getVar("apt_" + x.first);
-        for (std::size_t i=0; i<TULA_SIZET(n_dets_exists); ++i) {
-            start_index_apt[0] = i;
-            apt_v.putVar(start_index_apt, size_apt, &calib.apt[x.first](det_indices(i)));
+        if (!apt_v.isNull()) {
+            for (std::size_t i=0; i<TULA_SIZET(n_dets_exists); ++i) {
+                start_index_apt[0] = i;
+                apt_v.putVar(start_index_apt, size_apt, &calib.apt[x.first](det_indices(i)));
+            }
         }
     }
 
@@ -1096,6 +1099,7 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
 
         scan_indices = scan_indices.array() + in.scans.data.rows();
     }
+
     // otherwise, use size of this scan
     else {
         scan_indices(0) = 0;
@@ -1108,5 +1112,6 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
     NcVar scan_indices_v = fo.getVar("scan_indices");
     scan_indices_v.putVar(scan_indices_start_index, scan_indices_size,scan_indices.data());
 }
+
 
 } // namespace timestream

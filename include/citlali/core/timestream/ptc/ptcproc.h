@@ -479,53 +479,55 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         // add weights to tod output
         weights_v.putVar(start_index_weights, size_weights, in.weights.data.data());
 
-        // get number of eigenvalues to save
-        NcDim n_eigs_dim = fo.getDim("n_eigs");
-        netCDF::NcDim n_eig_grp_dim = fo.getDim("n_eig_grp");
+        if (write_evals) {
+            // get number of eigenvalues to save
+            NcDim n_eigs_dim = fo.getDim("n_eigs");
+            netCDF::NcDim n_eig_grp_dim = fo.getDim("n_eig_grp");
 
-        // if eigenvalue dimension is null, add it
-        if (n_eig_grp_dim.isNull()) {
-            n_eig_grp_dim = fo.addDim("n_eig_grp",in.evals.data[0].size());
-        }
-
-        // dimensions for eigenvalue data
-        std::vector<netCDF::NcDim> eval_dims = {n_eig_grp_dim, n_eigs_dim};
-
-        // loop through cleaner gropuing
-        for (Eigen::Index i=0; i<in.evals.data.size(); ++i) {
-            NcVar eval_v = fo.addVar("evals_" + cleaner.grouping[i] + "_" + std::to_string(i) +
-                                         "_chunk_" + std::to_string(in.index.data), netCDF::ncDouble,eval_dims);
-            std::vector<std::size_t> start_eig_index = {0, 0};
-            std::vector<std::size_t> size = {1, TULA_SIZET(cleaner.n_calc)};
-
-            // loop through eigenvalues in current group
-            for (const auto &evals: in.evals.data[i]) {
-                eval_v.putVar(start_eig_index,size,evals.data());
-                start_eig_index[0] += 1;
+            // if eigenvalue dimension is null, add it
+            if (n_eig_grp_dim.isNull()) {
+                n_eig_grp_dim = fo.addDim("n_eig_grp",in.evals.data[0].size());
             }
-        }
 
-        // number of dimensions for eigenvectors
-        std::vector<netCDF::NcDim> eig_dims = {n_dets_dim, n_eigs_dim};
+            // dimensions for eigenvalue data
+            std::vector<netCDF::NcDim> eval_dims = {n_eig_grp_dim, n_eigs_dim};
 
-        // loop through cleaner gropuing
-        for (Eigen::Index i=0; i<in.evecs.data.size(); ++i) {
-            // start at first row and col
-            std::vector<std::size_t> start_eig_index = {0, 0};
+            // loop through cleaner gropuing
+            for (Eigen::Index i=0; i<in.evals.data.size(); ++i) {
+                NcVar eval_v = fo.addVar("evals_" + cleaner.grouping[i] + "_" + std::to_string(i) +
+                                             "_chunk_" + std::to_string(in.index.data), netCDF::ncDouble,eval_dims);
+                std::vector<std::size_t> start_eig_index = {0, 0};
+                std::vector<std::size_t> size = {1, TULA_SIZET(cleaner.n_calc)};
 
-            NcVar evec_v = fo.addVar("evecs_" + cleaner.grouping[i] + "_" + std::to_string(i) + "_chunk_" +
-                                         std::to_string(in.index.data),netCDF::ncDouble,eig_dims);
+                // loop through eigenvalues in current group
+                for (const auto &evals: in.evals.data[i]) {
+                    eval_v.putVar(start_eig_index,size,evals.data());
+                    start_eig_index[0] += 1;
+                }
+            }
 
-            // loop through eigenvectors in current group
-            for (const auto &evecs: in.evecs.data[i]) {
-                std::vector<std::size_t> size = {TULA_SIZET(evecs.rows()), TULA_SIZET(cleaner.n_calc)};
+            // number of dimensions for eigenvectors
+            std::vector<netCDF::NcDim> eig_dims = {n_dets_dim, n_eigs_dim};
 
-                // transpose eigenvectors
-                Eigen::MatrixXd ev = evecs.transpose();
-                evec_v.putVar(start_eig_index, size, ev.data());
+            // loop through cleaner gropuing
+            for (Eigen::Index i=0; i<in.evecs.data.size(); ++i) {
+                // start at first row and col
+                std::vector<std::size_t> start_eig_index = {0, 0};
 
-                // increment start
-                start_eig_index[0] += TULA_SIZET(evecs.rows());
+                NcVar evec_v = fo.addVar("evecs_" + cleaner.grouping[i] + "_" + std::to_string(i) + "_chunk_" +
+                                             std::to_string(in.index.data),netCDF::ncDouble,eig_dims);
+
+                // loop through eigenvectors in current group
+                for (const auto &evecs: in.evecs.data[i]) {
+                    std::vector<std::size_t> size = {TULA_SIZET(evecs.rows()), TULA_SIZET(cleaner.n_calc)};
+
+                    // transpose eigenvectors
+                    Eigen::MatrixXd ev = evecs.transpose();
+                    evec_v.putVar(start_eig_index, size, ev.data());
+
+                    // increment start
+                    start_eig_index[0] += TULA_SIZET(evecs.rows());
+                }
             }
         }
 
