@@ -725,6 +725,9 @@ int run(const rc_t &rc) {
 
                         // allocate observation map buffer
                         if (todproc.engine().run_mapmaking) {
+                            // determine number of maps
+                            logger->info("calculating number of maps");
+                            todproc.calc_map_num();
                             logger->info("allocating obs map buffer");
                             todproc.allocate_omb(map_extents[i], map_coords[i]);
 

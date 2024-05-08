@@ -17,7 +17,7 @@ public:
     // extinction model
     std::string extinction_model;
 
-    // coefficients for transmission ratios fit to order 4 polynomial
+    // coefficients for transmission ratios fit to order 6 polynomial
     std::map<std::string,Eigen::VectorXd> tx_ratio_coeff;
 
     std::map<std::string, double> tx_225_zenith = {
@@ -53,10 +53,17 @@ public:
         // find model with closest tau to telescope tau and use that model
         // for extinction correction
         i = 0;
-        for (const auto &[key,val]: tx_225_zenith) {
+        /*for (const auto &[key,val]: tx_225_zenith) {
             if (abs(tau_225_zenith - tau_225_calc(i)) < tau_225_diff) {
                 extinction_model = key;
                 tau_225_diff = abs(tau_225_zenith - tau_225_calc(i));
+            }
+            i++;
+        }*/
+
+        for (const auto &[key,val]: tx_225_zenith) {
+            if (tau_225_calc(i) <= tau_225_zenith) {
+                extinction_model = key;
             }
             i++;
         }
@@ -157,11 +164,11 @@ auto Calibration::calc_tau(Eigen::DenseBase<Derived> &elev, double tau_225_GHz) 
     tau_freq[0] = -(tx_a1100.array().log())/A.array();
 
     // a1400
-    auto tx_a1400 = tau_polynomial(tx_ratio_coeff["a1400"],elev)*tx.array();
+    auto tx_a1400 = tau_polynomial(tx_ratio_coeff["a1400"],elev).array()*tx.array();
     tau_freq[1] = -(tx_a1400.array().log())/A.array();
 
     // a2000
-    auto tx_a2000 = tau_polynomial(tx_ratio_coeff["a2000"],elev)*tx.array();
+    auto tx_a2000 = tau_polynomial(tx_ratio_coeff["a2000"],elev).array()*tx.array();
     tau_freq[2] = -(tx_a2000.array().log())/A.array();
 
     return tau_freq;

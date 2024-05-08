@@ -47,8 +47,15 @@ void Telescope::get_tel_data(std::string &filepath) {
         std::string::iterator end_pos = std::remove(obs_pgm.begin(), obs_pgm.end(), ' ');
         obs_pgm.erase(end_pos, obs_pgm.end());
 
+        if (obs_pgm=="Map") {
+            vars.find("Header.Map.ExecMode")->second.getVar(&exec_mode);
+        }
+        else {
+            exec_mode = 1;
+        }
+
         // work around for files with bad ObsPgm
-        if (!obs_pgm.find("Lissajous")) {
+        /*if (!obs_pgm.find("Lissajous")) {
             obs_pgm = "Lissajous";
         }
         else if (!obs_pgm.find("Map")) {
@@ -58,9 +65,9 @@ void Telescope::get_tel_data(std::string &filepath) {
         else {
             logger->error("unsupported mapping pattern {}",obs_pgm);
             std::exit(EXIT_FAILURE);
-        }
+        }*/
         // cannot reduce in lissajous mode if chunk less than or equal to zero
-        if (obs_pgm=="Lissajous" && time_chunk<=0) {
+        if ((obs_pgm=="Lissajous" || (obs_pgm=="Map" && exec_mode==1)) && time_chunk<=0) {
             logger->error("mapping mode is lissajous and time chunk size is zero");
             std::exit(EXIT_FAILURE);
         }
@@ -245,7 +252,7 @@ void Telescope::calc_scan_indices() {
     Eigen::Index n_scans = 0;
 
     // get scans for raster pattern
-    if (obs_pgm=="Map" && !force_chunk) {
+    if ((obs_pgm=="Map" && exec_mode==0) && !force_chunk) {
         logger->info("calculating scans for raster mode");
 
         // convert the hold signal to a bool
@@ -288,7 +295,7 @@ void Telescope::calc_scan_indices() {
     }
 
     // get scan indices for Lissajous/Rastajous pattern
-    else if (obs_pgm=="Lissajous" || force_chunk) {
+    else if (obs_pgm=="Lissajous" || (obs_pgm=="Map" && exec_mode==1) || force_chunk) {
         logger->info("calculating scans for lissajous/rastajous mode");
 
         // index of first scan

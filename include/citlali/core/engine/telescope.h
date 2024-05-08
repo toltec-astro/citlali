@@ -22,6 +22,8 @@ public:
     // strings for mapping pattern, source name, obs goal, project ID
     std::string obs_pgm, source_name, obs_goal, project_id;
 
+    bool exec_mode;
+
     // tangent plane center
     //std::map<std::string, double> tan_center_rad;
 

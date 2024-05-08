@@ -767,7 +767,7 @@ void TimeOrderedDataProc<EngineType>::interp_pointing() {
 
                 // make sure offsets are before and after the observation
                 if (xd(0) > engine().telescope.tel_data["TelTime"](0) || xd(1) < engine().telescope.tel_data["TelTime"](ni-1)) {
-                    logger->error("offsets are out of range");
+                    logger->error("MJD range is invalid");
                     std::exit(EXIT_FAILURE);
                 }
             }
@@ -779,7 +779,6 @@ void TimeOrderedDataProc<EngineType>::interp_pointing() {
 
             // overwrite pointing offsets
             engine().pointing_offsets_arcsec[key] = yi;
-
         }
         else {
             logger->error("only one or two values for altaz offsets are supported");

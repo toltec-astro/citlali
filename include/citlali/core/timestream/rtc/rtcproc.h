@@ -262,7 +262,6 @@ auto RTCProc::calc_map_indices(calib_t &calib, Eigen::DenseBase<Derived> &det_in
             map_indices(i) = fg_to_index[indices(i)] + calib.fg.size()*array_to_index[array_indices(i)];
         }
     }
-
     // return the map indices
     return std::move(map_indices);
 }

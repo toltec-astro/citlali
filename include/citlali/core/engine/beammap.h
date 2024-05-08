@@ -718,6 +718,8 @@ void Beammap::run_loop() {
             }
         }
 
+        logger->info("starting mapmaking");
+
         if (run_mapmaking) {
             // set maps to zero for each iteration
             for (Eigen::Index i=0; i<n_maps; ++i) {
@@ -749,6 +751,8 @@ void Beammap::run_loop() {
                     }
                 }
             }
+
+            logger->info("running mapmaking");
 
             // mapmaking
             grppi::map(tula::grppi_utils::dyn_ex(map_parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
