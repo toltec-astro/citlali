@@ -80,7 +80,7 @@ Collaboration diagram for mapmaking::NaiveMapmaker:</div>
 <div class="dyncontent">
 <div class="center"><img src="../../db/d58/classmapmaking_1_1NaiveMapmaker__coll__graph.png" border="0" usemap="#amapmaking_1_1NaiveMapmaker_coll__map" alt="Collaboration graph"/></div>
 <map name="amapmaking_1_1NaiveMapmaker_coll__map" id="amapmaking_1_1NaiveMapmaker_coll__map">
-<area shape="rect" title=" " alt="" coords="5,5,220,141"/>
+<area shape="rect" title=" " alt="" coords="5,5,220,156"/>
 </map>
 </div>
 <table class="memberdecls">
@@ -103,6 +103,8 @@ Public Member Functions</h2></td></tr>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a2aa8fb981f113af338819f09c1e131d4"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; spdlog::logger &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a2aa8fb981f113af338819f09c1e131d4">logger</a> = spdlog::get(&quot;citlali_logger&quot;)</td></tr>
 <tr class="separator:a2aa8fb981f113af338819f09c1e131d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa485c05a266ba5797884e5f42f8e355e"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; std::mutex &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#aa485c05a266ba5797884e5f42f8e355e">test_mutex</a> = std::make_unique&lt;std::mutex&gt;()</td></tr>
+<tr class="separator:aa485c05a266ba5797884e5f42f8e355e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab527679d127409130f38a14d396c117a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#ab527679d127409130f38a14d396c117a">run_polarization</a></td></tr>
 <tr class="separator:ab527679d127409130f38a14d396c117a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -443,6 +445,20 @@ template&lt;class map_buffer_t , typename Derived , typename apt_t &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">bool mapmaking::NaiveMapmaker::run_polarization</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa485c05a266ba5797884e5f42f8e355e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa485c05a266ba5797884e5f42f8e355e">&#9670;&nbsp;</a></span>test_mutex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;std::mutex&gt; mapmaking::NaiveMapmaker::test_mutex = std::make_unique&lt;std::mutex&gt;()</td>
         </tr>
       </table>
 </div><div class="memdoc">
