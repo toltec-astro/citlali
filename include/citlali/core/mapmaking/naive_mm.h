@@ -4,6 +4,7 @@
 #include <boost/random/random_device.hpp>
 
 #include <thread>
+#include <mutex>
 
 #include <citlali/core/timestream/timestream.h>
 
@@ -21,6 +22,8 @@ class NaiveMapmaker {
 public:
     // get logger
     std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
+
+    std::unique_ptr<std::mutex> test_mutex = std::make_unique<std::mutex>();
 
     // run polarization?
     bool run_polarization;
@@ -134,34 +137,37 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                         if ((omb_ir >= 0) && (omb_ir < omb.n_rows) && (omb_ic >= 0) && (omb_ic < omb.n_cols)) {
                             // populate signal map
                             signal = in.scans.data(j,i)*in.weights.data(i);
-                            omb.signal[map_index](omb_ir,omb_ic) += signal;
+                            {
+                                std::scoped_lock<std::mutex> lk(*test_mutex);
+                                omb.signal[map_index](omb_ir,omb_ic) += signal;
 
-                            // populate weight map
-                            omb.weight[map_index](omb_ir,omb_ic) += in.weights.data(i);
+                                // populate weight map
+                                omb.weight[map_index](omb_ir,omb_ic) += in.weights.data(i);
 
-                            // populate kernel map
-                            if (run_kernel) {
-                                kernel = in.kernel.data(j,i)*in.weights.data(i);
-                                omb.kernel[map_index](omb_ir,omb_ic) += kernel;
-                            }
-
-                            // populate coverage map
-                            if (run_coverage) {
-                                omb.coverage[map_index](omb_ir,omb_ic) += 1./d_fsmp;
-                            }
-
-                            if (run_polarization) {
-                                // calculate pointing matrix
-                                allocate_pointing(omb, in.weights.data(i), cos_2angle, sin_2angle, map_index, omb_ir,omb_ic);
-
-                                // update signal map Q and U
-                                omb.signal[q_index](omb_ir,omb_ic) += signal*cos_2angle;
-                                omb.signal[u_index](omb_ir,omb_ic) += signal*sin_2angle;
-
-                                // update kernel map Q and U
+                                // populate kernel map
                                 if (run_kernel) {
-                                    omb.kernel[q_index](omb_ir,omb_ic) += kernel*cos_2angle;
-                                    omb.kernel[u_index](omb_ir,omb_ic) += kernel*sin_2angle;
+                                    kernel = in.kernel.data(j,i)*in.weights.data(i);
+                                    omb.kernel[map_index](omb_ir,omb_ic) += kernel;
+                                }
+
+                                // populate coverage map
+                                if (run_coverage) {
+                                    omb.coverage[map_index](omb_ir,omb_ic) += 1./d_fsmp;
+                                }
+
+                                if (run_polarization) {
+                                    // calculate pointing matrix
+                                    allocate_pointing(omb, in.weights.data(i), cos_2angle, sin_2angle, map_index, omb_ir,omb_ic);
+
+                                    // update signal map Q and U
+                                    omb.signal[q_index](omb_ir,omb_ic) += signal*cos_2angle;
+                                    omb.signal[u_index](omb_ir,omb_ic) += signal*sin_2angle;
+
+                                    // update kernel map Q and U
+                                    if (run_kernel) {
+                                        omb.kernel[q_index](omb_ir,omb_ic) += kernel*cos_2angle;
+                                        omb.kernel[u_index](omb_ir,omb_ic) += kernel*sin_2angle;
+                                    }
                                 }
                             }
                         }
@@ -197,14 +203,17 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                                 else {
                                     noise_v = in.noise.data(nn)*in.scans.data(j,i)*in.weights.data(i);
                                 }
-                                // add noise value to current noise map
-                                nmb->noise[map_index](nmb_ir,nmb_ic,nn) += noise_v;
+                                {
+                                    std::scoped_lock<std::mutex> lk(*test_mutex);
+                                    // add noise value to current noise map
+                                    nmb->noise[map_index](nmb_ir,nmb_ic,nn) += noise_v;
 
-                                if (run_polarization) {
-                                    // update noise map Q
-                                    nmb->noise[q_index](nmb_ir,nmb_ic,nn) += noise_v*cos_2angle;
-                                    // update noise map U
-                                    nmb->noise[u_index](nmb_ir,nmb_ic,nn) += noise_v*sin_2angle;
+                                    if (run_polarization) {
+                                        // update noise map Q
+                                        nmb->noise[q_index](nmb_ir,nmb_ic,nn) += noise_v*cos_2angle;
+                                        // update noise map U
+                                        nmb->noise[u_index](nmb_ir,nmb_ic,nn) += noise_v*sin_2angle;
+                                    }
                                 }
                             }
                         }
