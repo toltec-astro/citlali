@@ -74,6 +74,12 @@ public:
     void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &, map_buffer_t &,
                             Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string &,
                             apt_t &, double, bool, bool);
+
+    // populate maps with a time chunk (signal, kernel, coverage, and noise)
+    template<class map_buffer_t, typename Derived, typename apt_t>
+    void populate_maps_jinc_2(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &, map_buffer_t &,
+                            Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string &,
+                            apt_t &, double, bool, bool);
 };
 
 auto JincMapmaker::jinc_func(double r, double a, double b, double c, double r_max, double l_d) {
@@ -209,8 +215,210 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     std::vector<int> det_out_vec(n_dets);
 
     // parallelize over detectors
+    //grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+    for (Eigen::Index i=0; i<n_dets; ++i) {
+        // skip completely flagged detectors
+        if ((in.flags.data.col(i).array()==false).any()) {
+            // get detector positions from apt table if not in detector mapmaking mode
+            auto det_index = det_indices(i);
+
+            // which map to assign detector to
+            Eigen::Index map_index = map_indices(i);
+            // indices for Q and U maps
+            int q_index = map_index + step;
+            int u_index = map_index + 2 * step;
+            Eigen::Index array_index = apt["array"](det_index);
+            Eigen::Index mat_rows = jinc_weights_mat[array_index].rows();
+            Eigen::Index mat_cols = jinc_weights_mat[array_index].cols();
+            Eigen::Index mat_rows_center = (mat_rows - 1.)/2.;
+            Eigen::Index mat_cols_center = (mat_cols - 1.)/2.;
+
+            // get detector pointing
+            auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](det_index), apt["y_t"](det_index),
+                                                              pixel_axes, in.pointing_offsets_arcsec.data, omb.map_grouping);
+
+            // get map buffer row and col indices for lat and lon vectors
+            Eigen::VectorXd omb_irow = lat.array()/omb.pixel_size_rad + (omb.n_rows)/2.;
+            Eigen::VectorXd omb_icol = lon.array()/omb.pixel_size_rad + (omb.n_cols)/2.;
+
+            Eigen::VectorXd cmb_irow, cmb_icol;
+            if (use_cmb) {
+                // get coadded map buffer row and col indices for lat and lon vectors
+                cmb_irow = lat.array()/cmb.pixel_size_rad + (cmb.n_rows)/2.;
+                cmb_icol = lon.array()/cmb.pixel_size_rad + (cmb.n_cols)/2.;
+            }
+
+            // signal map value
+            double signal, kernel;
+
+            // noise map value
+            double noise_v;
+
+            // noise map indices
+            Eigen::Index nmb_ir, nmb_ic;
+
+            // cosine and sine of angles
+            double cos_2angle, sin_2angle;
+
+            // loop through the samples
+            for (Eigen::Index j=0; j<n_pts; ++j) {
+                // check if sample is flagged, ignore if so
+                if (!in.flags.data(j,i)) {
+                    Eigen::Index omb_ir = omb_irow(j);
+                    Eigen::Index omb_ic = omb_icol(j);
+
+                    if (run_polarization) {
+                        cos_2angle = cos(2.*in.angle.data(j,i));
+                        sin_2angle = sin(2.*in.angle.data(j,i));
+                    }
+
+                    if (run_omb) {
+                        // make sure the data point is within the map
+                        if ((omb_ir >= 0) && (omb_ir < omb.n_rows) && (omb_ic >= 0) && (omb_ic < omb.n_cols)) {
+
+                            int lower_row = omb_ir - mat_rows_center;
+                            int upper_row = omb_ir + mat_rows - 1 - mat_rows_center;
+                            int lower_col = omb_ic - mat_cols_center;
+                            int upper_col = omb_ic + mat_cols - 1 - mat_cols_center;
+
+                            int jinc_lower_row = abs(std::min(0, lower_row));
+                            int jinc_lower_col = abs(std::min(0, lower_col));
+
+                            lower_row = std::max(0,lower_row);
+                            upper_row = std::min(static_cast<int>(omb.n_rows - 1),upper_row);
+                            lower_col = std::max(0,lower_col);
+                            upper_col = std::min(static_cast<int>(omb.n_cols - 1),upper_col);
+
+                            int size_rows = upper_row - lower_row + 1;
+                            int size_cols = upper_col - lower_col + 1;
+
+                            const auto mat_block = jinc_weights_mat[array_index].block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
+
+                            {
+                                //std::scoped_lock<std::mutex> lk(*test_mutex_jinc);
+
+                                auto sig_block = omb.signal[map_index].block(lower_row,lower_col,size_rows,size_cols);
+                                auto wt_block = omb.weight[map_index].block(lower_row,lower_col,size_rows,size_cols);
+                                auto cov_block = omb.coverage[map_index].block(lower_row,lower_col,size_rows,size_cols);
+
+                                // populate signal map
+                                sig_block = sig_block + mat_block*in.weights.data(i)*in.scans.data(j,i);
+                                //sig_block += (mat_block * in.weights.data(i) * in.scans.data(j, i)).eval();
+
+                                // populate weight map
+                                wt_block = wt_block + mat_block*in.weights.data(i);
+                                //wt_block += (mat_block * in.weights.data(i)).eval();
+
+                                // populate coverage map
+                                if (run_coverage) {
+                                    cov_block += mat_block/d_fsmp;
+                                }
+
+                                // populate kernel map
+                                if (run_kernel) {
+                                    auto ker_block = omb.kernel[map_index].block(lower_row,lower_col,size_rows,size_cols);
+                                    ker_block = ker_block + mat_block*in.weights.data(i)*in.kernel.data(j,i);
+                                }
+                            }
+                        }
+                    }
+
+                    // check if noise maps requested
+                    if (run_noise) {
+                        // if coaddition is enabled
+                        if (use_cmb) {
+                            nmb_ir = cmb_irow(j);
+                            nmb_ic = cmb_icol(j);
+                        }
+
+                        // else make noise maps for obs
+                        else if (use_omb) {
+                            nmb_ir = omb_irow(j);
+                            nmb_ic = omb_icol(j);
+                        }
+
+                        // make sure pixel is in the map
+                        if ((nmb_ir >= 0) && (nmb_ir < nmb->n_rows) && (nmb_ic >= 0) && (nmb_ic < nmb->n_cols)) {
+
+                            int lower_row = nmb_ir - mat_rows_center;
+                            int upper_row = nmb_ir + mat_rows - 1 - mat_rows_center;
+                            int lower_col = nmb_ic - mat_cols_center;
+                            int upper_col = nmb_ic + mat_cols - 1 - mat_cols_center;
+
+                            int jinc_lower_row = abs(std::min(0, lower_row));
+                            int jinc_lower_col = abs(std::min(0, lower_col));
+
+                            lower_row = std::max(0,lower_row);
+                            upper_row = std::min(static_cast<int>(nmb->n_rows - 1),upper_row);
+                            lower_col = std::max(0,lower_col);
+                            upper_col = std::min(static_cast<int>(nmb->n_cols - 1),upper_col);
+
+                            int size_rows = upper_row - lower_row + 1;
+                            int size_cols = upper_col - lower_col + 1;
+
+                            const auto mat_block = jinc_weights_mat[array_index].block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
+                            signal = in.scans.data(j,i)*in.weights.data(i);
+
+                            for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
+                                // randomizing on dets
+                                if (nmb->randomize_dets) {
+                                    noise_v = in.noise.data(nn,i)*signal;
+                                }
+                                else {
+                                    noise_v = in.noise.data(nn)*signal;
+                                }
+                                Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(nmb->noise[map_index].data() + nn * nmb->n_rows * nmb->n_cols,
+                                                                                                               nmb->n_rows, nmb->n_cols);
+
+                                {
+                                    auto noise_block = noise_matrix.block(lower_row,lower_col,size_rows,size_cols);
+                                    //std::scoped_lock<std::mutex> lk(*test_mutex_jinc);
+                                    noise_block += mat_block*noise_v;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //return 0;
+    }//);
+}
+
+template<class map_buffer_t, typename Derived, typename apt_t>
+void JincMapmaker::populate_maps_jinc_2(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
+                                      map_buffer_t &omb, map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
+                                      Eigen::DenseBase<Derived> &det_indices, std::string &pixel_axes, apt_t &apt,
+                                      double d_fsmp, bool run_omb, bool run_noise) {
+
+    const bool use_cmb = !cmb.noise.empty();
+    const bool use_omb = !omb.noise.empty();
+    const bool run_kernel = !omb.kernel.empty();
+    const bool run_coverage = !omb.coverage.empty();
+
+    // dimensions of data
+    Eigen::Index n_dets = in.scans.data.cols();
+    Eigen::Index n_pts = in.scans.data.rows();
+
+    // step to skip to reach next stokes param
+    int step = omb.pointing.size();
+
+    // pointer to map buffer with noise maps
+    map_buffer_t* nmb = nullptr;
+
+    if (run_noise) {
+        // set pointer to cmb or omb for noise maps
+        nmb = use_cmb ? &cmb : (use_omb ? &omb : nullptr);
+    }
+
+    // placeholder vectors for grppi loop
+    std::vector<int> det_in_vec(n_dets);
+    std::iota(det_in_vec.begin(), det_in_vec.end(), 0);
+    std::vector<int> det_out_vec(n_dets);
+
+    // parallelize over detectors
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
-    //for (Eigen::Index i=0; i<n_dets; ++i) {
+        //for (Eigen::Index i=0; i<n_dets; ++i) {
         // skip completely flagged detectors
         if ((in.flags.data.col(i).array()==false).any()) {
             // get detector positions from apt table if not in detector mapmaking mode
@@ -378,4 +586,6 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         return 0;
     });
 }
+
+
 } // namespace mapmaking

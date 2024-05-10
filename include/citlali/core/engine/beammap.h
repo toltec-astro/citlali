@@ -760,13 +760,13 @@ void Beammap::run_loop() {
                 // populate maps
                     if (map_method=="naive") {
                         // naive mapmaker
-                        naive_mm.populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
+                        naive_mm.populate_maps_naive_2(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
                                                      ptcs[i].det_indices.data, telescope.pixel_axes,
                                                      calib.apt, telescope.d_fsmp, run_omb, run_noise);
                     }
                     else if (map_method=="jinc") {
                         // jinc mapmaker
-                        jinc_mm.populate_maps_jinc(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
+                        jinc_mm.populate_maps_jinc_2(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
                                                    ptcs[i].det_indices.data, telescope.pixel_axes,
                                                    calib.apt,telescope.d_fsmp, run_omb, run_noise);
                     }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <mutex>
+
 #include <citlali/core/engine/engine.h>
 
 using timestream::TCData;
@@ -11,6 +13,8 @@ using timestream::TCDataKind;
 
 class Pointing: public Engine {
 public:
+    std::unique_ptr<std::mutex> test_mutex = std::make_unique<std::mutex>();
+
     // fit parameters
     Eigen::MatrixXd params, perrors;
 
@@ -233,6 +237,46 @@ auto Pointing::run(KidsProc &kidsproc) {
         // current length of outer scans
         Eigen::Index sl = rtcdata.scan_indices.data(3) - rtcdata.scan_indices.data(2) + 1;
 
+        // copy map buffers
+        mapmaking::MapBuffer omb_copy = omb;
+        mapmaking::MapBuffer cmb_copy = cmb;
+
+        for (Eigen::Index i=0; i<n_maps; ++i) {
+            omb_copy.signal[i].setZero();
+            omb_copy.weight[i].setZero();
+
+            // clear coverage
+            if (!omb.coverage.empty()) {
+                omb_copy.coverage[i].setZero();
+            }
+            // clear kernel
+            if (rtcproc.run_kernel) {
+                omb_copy.kernel[i].setZero();
+            }
+            // clear noise
+            if (!omb.noise.empty()) {
+                omb_copy.noise[i].setZero();
+            }
+
+            if (run_coadd) {
+                cmb_copy.signal[i].setZero();
+                cmb_copy.weight[i].setZero();
+
+                // clear coverage
+                if (!cmb.coverage.empty()) {
+                    cmb_copy.coverage[i].setZero();
+                }
+                // clear kernel
+                if (rtcproc.run_kernel) {
+                    cmb_copy.kernel[i].setZero();
+                }
+                // clear noise
+                if (!cmb.noise.empty()) {
+                    cmb_copy.noise[i].setZero();
+                }
+            }
+        }
+
         // copy scan's telescope vectors
         for (auto const& x: telescope.tel_data) {
             rtcdata.tel_data.data[x.first] = telescope.tel_data[x.first].segment(si,sl);
@@ -371,19 +415,49 @@ auto Pointing::run(KidsProc &kidsproc) {
             }
             logger->info("populating maps");
             if (map_method=="naive") {
-                naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
+                naive_mm.populate_maps_naive(ptcdata, omb_copy, cmb_copy, map_indices, det_indices, telescope.pixel_axes,
                                              calib.apt, telescope.d_fsmp, run_omb, run_noise_fruit);
             }
             else if (map_method=="jinc") {
-                jinc_mm.populate_maps_jinc(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
+                jinc_mm.populate_maps_jinc(ptcdata, omb_copy, cmb_copy, map_indices, det_indices, telescope.pixel_axes,
                                            calib.apt, telescope.d_fsmp, run_omb, run_noise_fruit);
+            }
+
+            {
+                std::scoped_lock<std::mutex> lk(*test_mutex);
+
+                for (int i = 0; i < omb.signal.size(); ++i) {
+                    omb.signal[i] += omb_copy.signal[i];
+                    omb.weight[i] += omb_copy.weight[i];
+
+                    if (!omb.kernel.empty()) {
+                        omb.kernel[i] += omb_copy.kernel[i];
+                    }
+                    if (!omb.coverage.empty()) {
+                        omb.coverage[i] += omb_copy.coverage[i];
+                    }
+                }
+
+                // pointer to map buffer with noise maps
+                mapmaking::MapBuffer *nmb, *nmb_copy;
+
+                const bool use_cmb = !cmb.noise.empty();
+                const bool use_omb = !omb.noise.empty();
+
+                if (run_noise) {
+                    nmb = use_cmb ? &cmb : (use_omb ? &omb : nullptr);
+                    nmb_copy = use_cmb ? &cmb_copy : (use_omb ? &omb_copy : nullptr);
+                }
+
+                for (int i = 0; i < nmb->noise.size(); ++i) {
+                    nmb->noise[i] += nmb_copy->noise[i];
+                }
             }
         }
         // increment number of completed scans
         n_scans_done++;
         logger->info("done with scan {}. {}/{} scans completed", ptcdata.index.data + 1, n_scans_done, telescope.scan_indices.cols());
 
-        return ptcdata;
     });
 
     return farm;
