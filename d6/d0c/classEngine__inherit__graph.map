@@ -1,9 +1,9 @@
 <map id="Engine" name="Engine">
-<area shape="rect" id="node1" title=" " alt="" coords="176,424,381,1968"/>
+<area shape="rect" id="node1" title=" " alt="" coords="183,424,388,1968"/>
 <area shape="rect" id="node5" href="$dc/d9e/classBeammap.html" title=" " alt="" coords="5,2016,205,2504"/>
-<area shape="rect" id="node6" href="$d9/def/classLali.html" title=" " alt="" coords="229,2199,328,2321"/>
-<area shape="rect" id="node7" href="$d2/dbe/classPointing.html" title=" " alt="" coords="352,2163,501,2357"/>
-<area shape="rect" id="node2" href="$d1/d74/structreduControls.html" title=" " alt="" coords="43,101,195,281"/>
-<area shape="rect" id="node3" href="$d0/dd5/structreduClasses.html" title=" " alt="" coords="219,49,338,332"/>
-<area shape="rect" id="node4" href="$d9/d2b/structbeammapControls.html" title=" " alt="" coords="363,5,595,376"/>
+<area shape="rect" id="node6" href="$d9/def/classLali.html" title=" " alt="" coords="230,2199,341,2321"/>
+<area shape="rect" id="node7" href="$d2/dbe/classPointing.html" title=" " alt="" coords="365,2155,515,2365"/>
+<area shape="rect" id="node2" href="$d1/d74/structreduControls.html" title=" " alt="" coords="49,101,201,281"/>
+<area shape="rect" id="node3" href="$d0/dd5/structreduClasses.html" title=" " alt="" coords="226,49,345,332"/>
+<area shape="rect" id="node4" href="$d9/d2b/structbeammapControls.html" title=" " alt="" coords="369,5,601,376"/>
 </map>
