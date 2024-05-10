@@ -71,7 +71,7 @@ void Pointing::setup() {
 
     // use per detector parallelization for jinc mapmaking
     if (map_method == "jinc") {
-        parallel_policy = "seq";
+        //parallel_policy = "seq";
     }
 
     // units for positions
