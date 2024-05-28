@@ -294,31 +294,29 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
 
                             const auto mat_block = jinc_weights_mat[array_index].block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
 
-                            {
-                                //std::scoped_lock<std::mutex> lk(*test_mutex_jinc);
+                            //std::scoped_lock<std::mutex> lk(*test_mutex_jinc);
 
-                                auto sig_block = omb.signal[map_index].block(lower_row,lower_col,size_rows,size_cols);
-                                auto wt_block = omb.weight[map_index].block(lower_row,lower_col,size_rows,size_cols);
-                                auto cov_block = omb.coverage[map_index].block(lower_row,lower_col,size_rows,size_cols);
+                            auto sig_block = omb.signal[map_index].block(lower_row,lower_col,size_rows,size_cols);
+                            auto wt_block = omb.weight[map_index].block(lower_row,lower_col,size_rows,size_cols);
+                            auto cov_block = omb.coverage[map_index].block(lower_row,lower_col,size_rows,size_cols);
 
-                                // populate signal map
-                                sig_block = sig_block + mat_block*in.weights.data(i)*in.scans.data(j,i);
-                                //sig_block += (mat_block * in.weights.data(i) * in.scans.data(j, i)).eval();
+                            // populate signal map
+                            //sig_block = sig_block + mat_block*in.weights.data(i)*in.scans.data(j,i);
+                            sig_block += (mat_block * in.weights.data(i) * in.scans.data(j, i)).eval();
 
-                                // populate weight map
-                                wt_block = wt_block + mat_block*in.weights.data(i);
-                                //wt_block += (mat_block * in.weights.data(i)).eval();
+                            // populate weight map
+                            //wt_block = wt_block + mat_block*in.weights.data(i);
+                            wt_block += (mat_block * in.weights.data(i)).eval();
 
-                                // populate coverage map
-                                if (run_coverage) {
-                                    cov_block += mat_block/d_fsmp;
-                                }
+                            // populate coverage map
+                            if (run_coverage) {
+                                cov_block += mat_block/d_fsmp;
+                            }
 
-                                // populate kernel map
-                                if (run_kernel) {
-                                    auto ker_block = omb.kernel[map_index].block(lower_row,lower_col,size_rows,size_cols);
-                                    ker_block = ker_block + mat_block*in.weights.data(i)*in.kernel.data(j,i);
-                                }
+                            // populate kernel map
+                            if (run_kernel) {
+                                auto ker_block = omb.kernel[map_index].block(lower_row,lower_col,size_rows,size_cols);
+                                ker_block += mat_block*in.weights.data(i)*in.kernel.data(j,i);
                             }
                         }
                     }
@@ -369,12 +367,9 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                                 }
                                 Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(nmb->noise[map_index].data() + nn * nmb->n_rows * nmb->n_cols,
                                                                                                                nmb->n_rows, nmb->n_cols);
-
-                                {
                                     auto noise_block = noise_matrix.block(lower_row,lower_col,size_rows,size_cols);
                                     //std::scoped_lock<std::mutex> lk(*test_mutex_jinc);
                                     noise_block += mat_block*noise_v;
-                                }
                             }
                         }
                     }

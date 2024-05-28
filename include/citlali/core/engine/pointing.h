@@ -70,9 +70,9 @@ void Pointing::setup() {
     perrors.setZero(n_maps, map_fitter.n_params);
 
     // use per detector parallelization for jinc mapmaking
-    if (map_method == "jinc") {
+    //if (map_method == "jinc") {
         //parallel_policy = "seq";
-    }
+    //}
 
     // units for positions
     std::string pos_units = (telescope.pixel_axes == "radec") ? "deg" : "arcsec";
@@ -356,11 +356,11 @@ auto Pointing::run(KidsProc &kidsproc) {
                 bool run_omb = false;
                 logger->info("populating noise maps");
                 if (map_method=="naive") {
-                    naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
+                    naive_mm.populate_maps_naive(ptcdata, omb_copy, cmb_copy, map_indices, det_indices, telescope.pixel_axes,
                                                  calib.apt, telescope.d_fsmp, run_omb, run_noise);
                 }
                 else if (map_method=="jinc") {
-                    jinc_mm.populate_maps_jinc(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
+                    jinc_mm.populate_maps_jinc(ptcdata, omb_copy, cmb_copy, map_indices, det_indices, telescope.pixel_axes,
                                                calib.apt, telescope.d_fsmp, run_omb, run_noise);
                 }
             }
@@ -426,7 +426,7 @@ auto Pointing::run(KidsProc &kidsproc) {
             {
                 std::scoped_lock<std::mutex> lk(*test_mutex);
 
-                for (int i = 0; i < omb.signal.size(); ++i) {
+                for (int i=0; i<omb.signal.size(); ++i) {
                     omb.signal[i] += omb_copy.signal[i];
                     omb.weight[i] += omb_copy.weight[i];
 
@@ -447,10 +447,10 @@ auto Pointing::run(KidsProc &kidsproc) {
                 if (run_noise) {
                     nmb = use_cmb ? &cmb : (use_omb ? &omb : nullptr);
                     nmb_copy = use_cmb ? &cmb_copy : (use_omb ? &omb_copy : nullptr);
-                }
 
-                for (int i = 0; i < nmb->noise.size(); ++i) {
-                    nmb->noise[i] += nmb_copy->noise[i];
+                    for (int i = 0; i < nmb->noise.size(); ++i) {
+                        nmb->noise[i] += nmb_copy->noise[i];
+                    }
                 }
             }
         }

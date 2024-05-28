@@ -35,9 +35,9 @@ void Lali::setup() {
     obsnum_setup();
 
     // use per detector parallelization for jinc mapmaking
-    if (map_method == "jinc") {
+    //if (map_method == "jinc") {
         //parallel_policy = "seq";
-    }
+    //}
 }
 
 template <class KidsProc, class RawObs>
@@ -265,11 +265,11 @@ auto Lali::run(KidsProc &kidsproc) {
                 bool run_omb = false;
                 logger->info("populating noise maps");
                 if (map_method=="naive") {
-                    naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
+                    naive_mm.populate_maps_naive(ptcdata, omb_copy, cmb_copy, map_indices, det_indices, telescope.pixel_axes,
                                                  calib.apt, telescope.d_fsmp, run_omb, run_noise);
                 }
                 else if (map_method=="jinc") {
-                    jinc_mm.populate_maps_jinc(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
+                    jinc_mm.populate_maps_jinc(ptcdata, omb_copy, cmb_copy, map_indices, det_indices, telescope.pixel_axes,
                                                calib.apt, telescope.d_fsmp, run_omb, run_noise);
                 }
             }
@@ -360,10 +360,10 @@ auto Lali::run(KidsProc &kidsproc) {
                 if (run_noise) {
                     nmb = use_cmb ? &cmb : (use_omb ? &omb : nullptr);
                     nmb_copy = use_cmb ? &cmb_copy : (use_omb ? &omb_copy : nullptr);
-                }
 
-                for (int i = 0; i < nmb->noise.size(); ++i) {
-                    nmb->noise[i] += nmb_copy->noise[i];
+                    for (int i = 0; i < nmb->noise.size(); ++i) {
+                        nmb->noise[i] += nmb_copy->noise[i];
+                    }
                 }
             }
         }

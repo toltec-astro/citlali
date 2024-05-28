@@ -305,5 +305,4 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     // do the fit and return
     return ceres_fit(g, init_params, xy, _signal, _sigma, limits);
 }
-
 } //namespace engine_utils
