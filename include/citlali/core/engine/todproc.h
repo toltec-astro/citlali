@@ -183,7 +183,12 @@ void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
 
     // resize the apt vectors
     for (auto const& key : engine().calib.apt_header_keys) {
-        engine().calib.apt[key].setOnes(n_dets);
+        if (key=="x_t" || key=="y_t") {
+            engine().calib.apt[key].setZero(n_dets);
+        }
+        else {
+            engine().calib.apt[key].setOnes(n_dets);
+        }
     }
 
     // set all flags to good

@@ -2612,8 +2612,12 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
     // add source name
     source_meta["Source"] = telescope.source_name;
 
-    // add date
-    source_meta["Date"] = engine_utils::current_date_time();
+    // add date of file creation
+    source_meta["creation_date"] = engine_utils::current_date_time();
+
+    // add observation date
+    source_meta["date"] = date_obs.back();
+
 
     // populate source meta information
     for (const auto &[key,val]: source_header_units) {

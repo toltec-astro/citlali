@@ -15,6 +15,7 @@ using timestream::TCDataKind;
 
 class Beammap: public Engine {
 public:
+    //std::unique_ptr<std::mutex> test_mutex = std::make_unique<std::mutex>();
     // parallel policies for each section
     std::string  map_parallel_policy;
 
@@ -177,8 +178,11 @@ void Beammap::setup() {
         calib.apt_meta[key].push_back(beammap_flux.first + " flux density");
     }
 
-    // add date
-    calib.apt_meta["date"] = engine_utils::current_date_time();
+    // add date of file creation
+    calib.apt_meta["creation_date"] = engine_utils::current_date_time();
+
+    // add observation date
+    calib.apt_meta["date"] = date_obs.back();
 
     // mean Modified Julian Date
     calib.apt_meta["mjd"] = engine_utils::unix_to_modified_julian_date(telescope.tel_data["TelTime"].mean());
@@ -756,20 +760,55 @@ void Beammap::run_loop() {
 
             // mapmaking
             grppi::map(tula::grppi_utils::dyn_ex(map_parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
+
+
+                //mapmaking::MapBuffer omb_copy;
+                //mapmaking::MapBuffer cmb_copy;
+
+                //omb_copy.signal.reserve()
+
+
                 bool run_omb = true;
                 // populate maps
-                    if (map_method=="naive") {
-                        // naive mapmaker
-                        naive_mm.populate_maps_naive_2(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
-                                                     ptcs[i].det_indices.data, telescope.pixel_axes,
-                                                     calib.apt, telescope.d_fsmp, run_omb, run_noise);
+                if (map_method=="naive") {
+                    // naive mapmaker
+                    naive_mm.populate_maps_naive_2(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
+                                                 ptcs[i].det_indices.data, telescope.pixel_axes,
+                                                 calib.apt, telescope.d_fsmp, run_omb, run_noise);
+                }
+                else if (map_method=="jinc") {
+                    // jinc mapmaker
+                    jinc_mm.populate_maps_jinc_2(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
+                                               ptcs[i].det_indices.data, telescope.pixel_axes,
+                                               calib.apt,telescope.d_fsmp, run_omb, run_noise);
+                }
+
+                /*{
+                    std::scoped_lock<std::mutex> lk(*test_mutex);
+
+                        omb.signal[i] += omb_copy.signal[i];
+                        omb.weight[i] += omb_copy.weight[i];
+
+                        if (!omb.kernel.empty()) {
+                            omb.kernel[i] += omb_copy.kernel[i];
+                        }
+                        if (!omb.coverage.empty()) {
+                            omb.coverage[i] += omb_copy.coverage[i];
+                        }
+
+                    // pointer to map buffer with noise maps
+                    mapmaking::MapBuffer *nmb, *nmb_copy;
+
+                    const bool use_cmb = !cmb.noise.empty();
+                    const bool use_omb = !omb.noise.empty();
+
+                    if (run_noise) {
+                        nmb = use_cmb ? &cmb : (use_omb ? &omb : nullptr);
+                        nmb_copy = use_cmb ? &cmb_copy : (use_omb ? &omb_copy : nullptr);
+
+                        nmb->noise[j] += nmb_copy->noise[j];
                     }
-                    else if (map_method=="jinc") {
-                        // jinc mapmaker
-                        jinc_mm.populate_maps_jinc_2(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
-                                                   ptcs[i].det_indices.data, telescope.pixel_axes,
-                                                   calib.apt,telescope.d_fsmp, run_omb, run_noise);
-                    }
+                }*/
 
                 // update progress bar
                 pb.count(telescope.scan_indices.cols(), 1);
