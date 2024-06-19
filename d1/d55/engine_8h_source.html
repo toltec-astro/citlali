@@ -2683,54 +2683,58 @@ $(function() {
 <div class="line"><a name="l02612"></a><span class="lineno"> 2612</span>&#160;    <span class="comment">// add source name</span></div>
 <div class="line"><a name="l02613"></a><span class="lineno"> 2613</span>&#160;    source_meta[<span class="stringliteral">&quot;Source&quot;</span>] = <a class="code" href="../../d0/dd5/structreduClasses.html#a1d1ddf771e654d7bc41de649e4ff7e43">telescope</a>.<a class="code" href="../../d2/d8b/classengine_1_1Telescope.html#a5232dacff14214c5a6fd01e2e2f66bdc">source_name</a>;</div>
 <div class="line"><a name="l02614"></a><span class="lineno"> 2614</span>&#160; </div>
-<div class="line"><a name="l02615"></a><span class="lineno"> 2615</span>&#160;    <span class="comment">// add date</span></div>
-<div class="line"><a name="l02616"></a><span class="lineno"> 2616</span>&#160;    source_meta[<span class="stringliteral">&quot;Date&quot;</span>] = <a class="code" href="../../dd/d06/namespaceengine__utils.html#a78bc2d77504839570aefed6a0bca233f">engine_utils::current_date_time</a>();</div>
+<div class="line"><a name="l02615"></a><span class="lineno"> 2615</span>&#160;    <span class="comment">// add date of file creation</span></div>
+<div class="line"><a name="l02616"></a><span class="lineno"> 2616</span>&#160;    source_meta[<span class="stringliteral">&quot;creation_date&quot;</span>] = <a class="code" href="../../dd/d06/namespaceengine__utils.html#a78bc2d77504839570aefed6a0bca233f">engine_utils::current_date_time</a>();</div>
 <div class="line"><a name="l02617"></a><span class="lineno"> 2617</span>&#160; </div>
-<div class="line"><a name="l02618"></a><span class="lineno"> 2618</span>&#160;    <span class="comment">// populate source meta information</span></div>
-<div class="line"><a name="l02619"></a><span class="lineno"> 2619</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;[key,val]: source_header_units) {</div>
-<div class="line"><a name="l02620"></a><span class="lineno"> 2620</span>&#160;        source_meta[key].push_back(<span class="stringliteral">&quot;units: &quot;</span> + val);</div>
-<div class="line"><a name="l02621"></a><span class="lineno"> 2621</span>&#160;        <span class="comment">// description from apt</span></div>
-<div class="line"><a name="l02622"></a><span class="lineno"> 2622</span>&#160;        <span class="keyword">auto</span> description = <a class="code" href="../../d0/dd5/structreduClasses.html#af701f5160f153ba7d9e7ed330fd4ec31">calib</a>.<a class="code" href="../../d3/dff/classengine_1_1Calib.html#ab98ee7e925d98e685b954d3852a564b5">apt_header_description</a>[key];</div>
-<div class="line"><a name="l02623"></a><span class="lineno"> 2623</span>&#160;        source_meta[key].push_back(description);</div>
-<div class="line"><a name="l02624"></a><span class="lineno"> 2624</span>&#160;    }</div>
-<div class="line"><a name="l02625"></a><span class="lineno"> 2625</span>&#160; </div>
-<div class="line"><a name="l02626"></a><span class="lineno"> 2626</span>&#160;    <span class="comment">// count up the total number of sources</span></div>
-<div class="line"><a name="l02627"></a><span class="lineno"> 2627</span>&#160;    Eigen::Index n_sources = 0;</div>
-<div class="line"><a name="l02628"></a><span class="lineno"> 2628</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;sources: mb-&gt;n_sources) {</div>
-<div class="line"><a name="l02629"></a><span class="lineno"> 2629</span>&#160;        n_sources += sources;</div>
-<div class="line"><a name="l02630"></a><span class="lineno"> 2630</span>&#160;    }</div>
-<div class="line"><a name="l02631"></a><span class="lineno"> 2631</span>&#160; </div>
-<div class="line"><a name="l02632"></a><span class="lineno"> 2632</span>&#160;    <span class="comment">// matrix to hold source information (floats for readability)</span></div>
-<div class="line"><a name="l02633"></a><span class="lineno"> 2633</span>&#160;    Eigen::MatrixXf source_table(n_sources, 2*<a class="code" href="../../d0/dd5/structreduClasses.html#a501e59746cb132a25053a6c1d5dce8b3">map_fitter</a>.<a class="code" href="../../d9/dbd/classengine__utils_1_1mapFitter.html#a27d72bebfb46b21d8d422e703e3238e5">n_params</a> + 2);</div>
-<div class="line"><a name="l02634"></a><span class="lineno"> 2634</span>&#160; </div>
-<div class="line"><a name="l02635"></a><span class="lineno"> 2635</span>&#160;    <span class="comment">// loop through params and add arrays</span></div>
-<div class="line"><a name="l02636"></a><span class="lineno"> 2636</span>&#160;    Eigen::Index k=0;</div>
-<div class="line"><a name="l02637"></a><span class="lineno"> 2637</span>&#160;    <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;mb-&gt;n_sources.size(); ++i) {</div>
-<div class="line"><a name="l02638"></a><span class="lineno"> 2638</span>&#160;        <span class="keywordflow">if</span> (mb-&gt;n_sources[i]!=0) {</div>
-<div class="line"><a name="l02639"></a><span class="lineno"> 2639</span>&#160;            <span class="comment">// calculate map standard deviation</span></div>
-<div class="line"><a name="l02640"></a><span class="lineno"> 2640</span>&#160;            <span class="keywordtype">double</span> map_std_dev = <a class="code" href="../../dd/d06/namespaceengine__utils.html#ad9c640b3ad780cec01b1644b15f1ac58">engine_utils::calc_std_dev</a>(mb-&gt;signal[i]);</div>
-<div class="line"><a name="l02641"></a><span class="lineno"> 2641</span>&#160; </div>
-<div class="line"><a name="l02642"></a><span class="lineno"> 2642</span>&#160;            <span class="keywordflow">for</span> (Eigen::Index j=0; j&lt;mb-&gt;n_sources[i]; ++j) {</div>
-<div class="line"><a name="l02643"></a><span class="lineno"> 2643</span>&#160;                source_table(k,0) = <a class="code" href="../../d1/db6/classEngine.html#a458f181f4773e9762be2f75618d88c7f">maps_to_arrays</a>(i);</div>
-<div class="line"><a name="l02644"></a><span class="lineno"> 2644</span>&#160;                <span class="comment">// set signal to noise</span></div>
-<div class="line"><a name="l02645"></a><span class="lineno"> 2645</span>&#160;                source_table(k,2*<a class="code" href="../../d0/dd5/structreduClasses.html#a501e59746cb132a25053a6c1d5dce8b3">map_fitter</a>.<a class="code" href="../../d9/dbd/classengine__utils_1_1mapFitter.html#a27d72bebfb46b21d8d422e703e3238e5">n_params</a> + 1) = mb-&gt;source_params(k,0)/map_std_dev;</div>
-<div class="line"><a name="l02646"></a><span class="lineno"> 2646</span>&#160; </div>
-<div class="line"><a name="l02647"></a><span class="lineno"> 2647</span>&#160;                k++;</div>
-<div class="line"><a name="l02648"></a><span class="lineno"> 2648</span>&#160;            }</div>
-<div class="line"><a name="l02649"></a><span class="lineno"> 2649</span>&#160;        }</div>
-<div class="line"><a name="l02650"></a><span class="lineno"> 2650</span>&#160;    }</div>
-<div class="line"><a name="l02651"></a><span class="lineno"> 2651</span>&#160; </div>
-<div class="line"><a name="l02652"></a><span class="lineno"> 2652</span>&#160;    <span class="comment">// populate source table</span></div>
-<div class="line"><a name="l02653"></a><span class="lineno"> 2653</span>&#160;    Eigen::Index j = 0;</div>
-<div class="line"><a name="l02654"></a><span class="lineno"> 2654</span>&#160;    <span class="keywordflow">for</span> (Eigen::Index i=1; i&lt;2*<a class="code" href="../../d0/dd5/structreduClasses.html#a501e59746cb132a25053a6c1d5dce8b3">map_fitter</a>.<a class="code" href="../../d9/dbd/classengine__utils_1_1mapFitter.html#a27d72bebfb46b21d8d422e703e3238e5">n_params</a>; i=i+2) {</div>
-<div class="line"><a name="l02655"></a><span class="lineno"> 2655</span>&#160;        source_table.col(i) = mb-&gt;source_params.col(j).template cast &lt;float&gt; ();</div>
-<div class="line"><a name="l02656"></a><span class="lineno"> 2656</span>&#160;        source_table.col(i+1) = mb-&gt;source_perror.col(j).template cast &lt;float&gt; ();</div>
-<div class="line"><a name="l02657"></a><span class="lineno"> 2657</span>&#160;        j++;</div>
-<div class="line"><a name="l02658"></a><span class="lineno"> 2658</span>&#160;    }</div>
-<div class="line"><a name="l02659"></a><span class="lineno"> 2659</span>&#160; </div>
-<div class="line"><a name="l02660"></a><span class="lineno"> 2660</span>&#160;    <span class="comment">// write source table</span></div>
-<div class="line"><a name="l02661"></a><span class="lineno"> 2661</span>&#160;    <a class="code" href="../../d1/d90/ecsv__io_8h.html#abf821b96f96f34c89096d9c4a58dea77">to_ecsv_from_matrix</a>(source_filename, source_table, source_header, source_meta);</div>
-<div class="line"><a name="l02662"></a><span class="lineno"> 2662</span>&#160;}</div>
+<div class="line"><a name="l02618"></a><span class="lineno"> 2618</span>&#160;    <span class="comment">// add observation date</span></div>
+<div class="line"><a name="l02619"></a><span class="lineno"> 2619</span>&#160;    source_meta[<span class="stringliteral">&quot;date&quot;</span>] = <a class="code" href="../../d1/db6/classEngine.html#a515e7939d538a0cb9a930e238148884d">date_obs</a>.back();</div>
+<div class="line"><a name="l02620"></a><span class="lineno"> 2620</span>&#160; </div>
+<div class="line"><a name="l02621"></a><span class="lineno"> 2621</span>&#160; </div>
+<div class="line"><a name="l02622"></a><span class="lineno"> 2622</span>&#160;    <span class="comment">// populate source meta information</span></div>
+<div class="line"><a name="l02623"></a><span class="lineno"> 2623</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;[key,val]: source_header_units) {</div>
+<div class="line"><a name="l02624"></a><span class="lineno"> 2624</span>&#160;        source_meta[key].push_back(<span class="stringliteral">&quot;units: &quot;</span> + val);</div>
+<div class="line"><a name="l02625"></a><span class="lineno"> 2625</span>&#160;        <span class="comment">// description from apt</span></div>
+<div class="line"><a name="l02626"></a><span class="lineno"> 2626</span>&#160;        <span class="keyword">auto</span> description = <a class="code" href="../../d0/dd5/structreduClasses.html#af701f5160f153ba7d9e7ed330fd4ec31">calib</a>.<a class="code" href="../../d3/dff/classengine_1_1Calib.html#ab98ee7e925d98e685b954d3852a564b5">apt_header_description</a>[key];</div>
+<div class="line"><a name="l02627"></a><span class="lineno"> 2627</span>&#160;        source_meta[key].push_back(description);</div>
+<div class="line"><a name="l02628"></a><span class="lineno"> 2628</span>&#160;    }</div>
+<div class="line"><a name="l02629"></a><span class="lineno"> 2629</span>&#160; </div>
+<div class="line"><a name="l02630"></a><span class="lineno"> 2630</span>&#160;    <span class="comment">// count up the total number of sources</span></div>
+<div class="line"><a name="l02631"></a><span class="lineno"> 2631</span>&#160;    Eigen::Index n_sources = 0;</div>
+<div class="line"><a name="l02632"></a><span class="lineno"> 2632</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;sources: mb-&gt;n_sources) {</div>
+<div class="line"><a name="l02633"></a><span class="lineno"> 2633</span>&#160;        n_sources += sources;</div>
+<div class="line"><a name="l02634"></a><span class="lineno"> 2634</span>&#160;    }</div>
+<div class="line"><a name="l02635"></a><span class="lineno"> 2635</span>&#160; </div>
+<div class="line"><a name="l02636"></a><span class="lineno"> 2636</span>&#160;    <span class="comment">// matrix to hold source information (floats for readability)</span></div>
+<div class="line"><a name="l02637"></a><span class="lineno"> 2637</span>&#160;    Eigen::MatrixXf source_table(n_sources, 2*<a class="code" href="../../d0/dd5/structreduClasses.html#a501e59746cb132a25053a6c1d5dce8b3">map_fitter</a>.<a class="code" href="../../d9/dbd/classengine__utils_1_1mapFitter.html#a27d72bebfb46b21d8d422e703e3238e5">n_params</a> + 2);</div>
+<div class="line"><a name="l02638"></a><span class="lineno"> 2638</span>&#160; </div>
+<div class="line"><a name="l02639"></a><span class="lineno"> 2639</span>&#160;    <span class="comment">// loop through params and add arrays</span></div>
+<div class="line"><a name="l02640"></a><span class="lineno"> 2640</span>&#160;    Eigen::Index k=0;</div>
+<div class="line"><a name="l02641"></a><span class="lineno"> 2641</span>&#160;    <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;mb-&gt;n_sources.size(); ++i) {</div>
+<div class="line"><a name="l02642"></a><span class="lineno"> 2642</span>&#160;        <span class="keywordflow">if</span> (mb-&gt;n_sources[i]!=0) {</div>
+<div class="line"><a name="l02643"></a><span class="lineno"> 2643</span>&#160;            <span class="comment">// calculate map standard deviation</span></div>
+<div class="line"><a name="l02644"></a><span class="lineno"> 2644</span>&#160;            <span class="keywordtype">double</span> map_std_dev = <a class="code" href="../../dd/d06/namespaceengine__utils.html#ad9c640b3ad780cec01b1644b15f1ac58">engine_utils::calc_std_dev</a>(mb-&gt;signal[i]);</div>
+<div class="line"><a name="l02645"></a><span class="lineno"> 2645</span>&#160; </div>
+<div class="line"><a name="l02646"></a><span class="lineno"> 2646</span>&#160;            <span class="keywordflow">for</span> (Eigen::Index j=0; j&lt;mb-&gt;n_sources[i]; ++j) {</div>
+<div class="line"><a name="l02647"></a><span class="lineno"> 2647</span>&#160;                source_table(k,0) = <a class="code" href="../../d1/db6/classEngine.html#a458f181f4773e9762be2f75618d88c7f">maps_to_arrays</a>(i);</div>
+<div class="line"><a name="l02648"></a><span class="lineno"> 2648</span>&#160;                <span class="comment">// set signal to noise</span></div>
+<div class="line"><a name="l02649"></a><span class="lineno"> 2649</span>&#160;                source_table(k,2*<a class="code" href="../../d0/dd5/structreduClasses.html#a501e59746cb132a25053a6c1d5dce8b3">map_fitter</a>.<a class="code" href="../../d9/dbd/classengine__utils_1_1mapFitter.html#a27d72bebfb46b21d8d422e703e3238e5">n_params</a> + 1) = mb-&gt;source_params(k,0)/map_std_dev;</div>
+<div class="line"><a name="l02650"></a><span class="lineno"> 2650</span>&#160; </div>
+<div class="line"><a name="l02651"></a><span class="lineno"> 2651</span>&#160;                k++;</div>
+<div class="line"><a name="l02652"></a><span class="lineno"> 2652</span>&#160;            }</div>
+<div class="line"><a name="l02653"></a><span class="lineno"> 2653</span>&#160;        }</div>
+<div class="line"><a name="l02654"></a><span class="lineno"> 2654</span>&#160;    }</div>
+<div class="line"><a name="l02655"></a><span class="lineno"> 2655</span>&#160; </div>
+<div class="line"><a name="l02656"></a><span class="lineno"> 2656</span>&#160;    <span class="comment">// populate source table</span></div>
+<div class="line"><a name="l02657"></a><span class="lineno"> 2657</span>&#160;    Eigen::Index j = 0;</div>
+<div class="line"><a name="l02658"></a><span class="lineno"> 2658</span>&#160;    <span class="keywordflow">for</span> (Eigen::Index i=1; i&lt;2*<a class="code" href="../../d0/dd5/structreduClasses.html#a501e59746cb132a25053a6c1d5dce8b3">map_fitter</a>.<a class="code" href="../../d9/dbd/classengine__utils_1_1mapFitter.html#a27d72bebfb46b21d8d422e703e3238e5">n_params</a>; i=i+2) {</div>
+<div class="line"><a name="l02659"></a><span class="lineno"> 2659</span>&#160;        source_table.col(i) = mb-&gt;source_params.col(j).template cast &lt;float&gt; ();</div>
+<div class="line"><a name="l02660"></a><span class="lineno"> 2660</span>&#160;        source_table.col(i+1) = mb-&gt;source_perror.col(j).template cast &lt;float&gt; ();</div>
+<div class="line"><a name="l02661"></a><span class="lineno"> 2661</span>&#160;        j++;</div>
+<div class="line"><a name="l02662"></a><span class="lineno"> 2662</span>&#160;    }</div>
+<div class="line"><a name="l02663"></a><span class="lineno"> 2663</span>&#160; </div>
+<div class="line"><a name="l02664"></a><span class="lineno"> 2664</span>&#160;    <span class="comment">// write source table</span></div>
+<div class="line"><a name="l02665"></a><span class="lineno"> 2665</span>&#160;    <a class="code" href="../../d1/d90/ecsv__io_8h.html#abf821b96f96f34c89096d9c4a58dea77">to_ecsv_from_matrix</a>(source_filename, source_table, source_header, source_meta);</div>
+<div class="line"><a name="l02666"></a><span class="lineno"> 2666</span>&#160;}</div>
 <div class="ttc" id="acalib_8h_html"><div class="ttname"><a href="../../d5/d49/calib_8h.html">calib.h</a></div></div>
 <div class="ttc" id="acalibrate_8h_html"><div class="ttname"><a href="../../d7/dbb/calibrate_8h.html">calibrate.h</a></div></div>
 <div class="ttc" id="aclassEngine_html"><div class="ttname"><a href="../../d1/db6/classEngine.html">Engine</a></div><div class="ttdef"><b>Definition:</b> engine.h:154</div></div>
@@ -2872,13 +2876,13 @@ $(function() {
 <div class="ttc" id="aclassengine__utils_1_1toltecIO_html_ae8da06cb949553d32ed0e61c602113ce"><div class="ttname"><a href="../../dc/d1a/classengine__utils_1_1toltecIO.html#ae8da06cb949553d32ed0e61c602113ce">engine_utils::toltecIO::array_fwhm_arcsec</a></div><div class="ttdeci">std::map&lt; Eigen::Index, double &gt; array_fwhm_arcsec</div><div class="ttdef"><b>Definition:</b> toltec_io.h:75</div></div>
 <div class="ttc" id="aclassfitsIO_html"><div class="ttname"><a href="../../df/d8d/classfitsIO.html">fitsIO</a></div><div class="ttdef"><b>Definition:</b> fits_io.h:10</div></div>
 <div class="ttc" id="aclassmapmaking_1_1JincMapmaker_html"><div class="ttname"><a href="../../db/d8e/classmapmaking_1_1JincMapmaker.html">mapmaking::JincMapmaker</a></div><div class="ttdef"><b>Definition:</b> jinc_mm.h:27</div></div>
-<div class="ttc" id="aclassmapmaking_1_1JincMapmaker_html_a08cfb701fbb61338777d44e9a237617c"><div class="ttname"><a href="../../db/d8e/classmapmaking_1_1JincMapmaker.html#a08cfb701fbb61338777d44e9a237617c">mapmaking::JincMapmaker::calculate_jinc_splines</a></div><div class="ttdeci">void calculate_jinc_splines()</div><div class="ttdef"><b>Definition:</b> jinc_mm.h:137</div></div>
-<div class="ttc" id="aclassmapmaking_1_1JincMapmaker_html_a4524941607487bcb56de8f81ffb58386"><div class="ttname"><a href="../../db/d8e/classmapmaking_1_1JincMapmaker.html#a4524941607487bcb56de8f81ffb58386">mapmaking::JincMapmaker::mode</a></div><div class="ttdeci">std::string mode</div><div class="ttdef"><b>Definition:</b> jinc_mm.h:39</div></div>
-<div class="ttc" id="aclassmapmaking_1_1JincMapmaker_html_a5b5154dadaad9554af7b5c099c91a990"><div class="ttname"><a href="../../db/d8e/classmapmaking_1_1JincMapmaker.html#a5b5154dadaad9554af7b5c099c91a990">mapmaking::JincMapmaker::shape_params</a></div><div class="ttdeci">std::map&lt; Eigen::Index, Eigen::VectorXd &gt; shape_params</div><div class="ttdef"><b>Definition:</b> jinc_mm.h:51</div></div>
-<div class="ttc" id="aclassmapmaking_1_1JincMapmaker_html_a6372f0dcc558b36717bd43db53111792"><div class="ttname"><a href="../../db/d8e/classmapmaking_1_1JincMapmaker.html#a6372f0dcc558b36717bd43db53111792">mapmaking::JincMapmaker::r_max</a></div><div class="ttdeci">double r_max</div><div class="ttdef"><b>Definition:</b> jinc_mm.h:45</div></div>
-<div class="ttc" id="aclassmapmaking_1_1JincMapmaker_html_a828b9aaec1ea19dc7afb890827f1f62e"><div class="ttname"><a href="../../db/d8e/classmapmaking_1_1JincMapmaker.html#a828b9aaec1ea19dc7afb890827f1f62e">mapmaking::JincMapmaker::allocate_jinc_matrix</a></div><div class="ttdeci">void allocate_jinc_matrix(double)</div><div class="ttdef"><b>Definition:</b> jinc_mm.h:103</div></div>
-<div class="ttc" id="aclassmapmaking_1_1JincMapmaker_html_acfe431e1e655e05ed2e6653e00d2de48"><div class="ttname"><a href="../../db/d8e/classmapmaking_1_1JincMapmaker.html#acfe431e1e655e05ed2e6653e00d2de48">mapmaking::JincMapmaker::parallel_policy</a></div><div class="ttdeci">std::string parallel_policy</div><div class="ttdef"><b>Definition:</b> jinc_mm.h:36</div></div>
-<div class="ttc" id="aclassmapmaking_1_1JincMapmaker_html_af46d437f520aee9fdd072be530ab0fb1"><div class="ttname"><a href="../../db/d8e/classmapmaking_1_1JincMapmaker.html#af46d437f520aee9fdd072be530ab0fb1">mapmaking::JincMapmaker::run_polarization</a></div><div class="ttdeci">bool run_polarization</div><div class="ttdef"><b>Definition:</b> jinc_mm.h:33</div></div>
+<div class="ttc" id="aclassmapmaking_1_1JincMapmaker_html_a08cfb701fbb61338777d44e9a237617c"><div class="ttname"><a href="../../db/d8e/classmapmaking_1_1JincMapmaker.html#a08cfb701fbb61338777d44e9a237617c">mapmaking::JincMapmaker::calculate_jinc_splines</a></div><div class="ttdeci">void calculate_jinc_splines()</div><div class="ttdef"><b>Definition:</b> jinc_mm.h:139</div></div>
+<div class="ttc" id="aclassmapmaking_1_1JincMapmaker_html_a4524941607487bcb56de8f81ffb58386"><div class="ttname"><a href="../../db/d8e/classmapmaking_1_1JincMapmaker.html#a4524941607487bcb56de8f81ffb58386">mapmaking::JincMapmaker::mode</a></div><div class="ttdeci">std::string mode</div><div class="ttdef"><b>Definition:</b> jinc_mm.h:41</div></div>
+<div class="ttc" id="aclassmapmaking_1_1JincMapmaker_html_a5b5154dadaad9554af7b5c099c91a990"><div class="ttname"><a href="../../db/d8e/classmapmaking_1_1JincMapmaker.html#a5b5154dadaad9554af7b5c099c91a990">mapmaking::JincMapmaker::shape_params</a></div><div class="ttdeci">std::map&lt; Eigen::Index, Eigen::VectorXd &gt; shape_params</div><div class="ttdef"><b>Definition:</b> jinc_mm.h:53</div></div>
+<div class="ttc" id="aclassmapmaking_1_1JincMapmaker_html_a6372f0dcc558b36717bd43db53111792"><div class="ttname"><a href="../../db/d8e/classmapmaking_1_1JincMapmaker.html#a6372f0dcc558b36717bd43db53111792">mapmaking::JincMapmaker::r_max</a></div><div class="ttdeci">double r_max</div><div class="ttdef"><b>Definition:</b> jinc_mm.h:47</div></div>
+<div class="ttc" id="aclassmapmaking_1_1JincMapmaker_html_a828b9aaec1ea19dc7afb890827f1f62e"><div class="ttname"><a href="../../db/d8e/classmapmaking_1_1JincMapmaker.html#a828b9aaec1ea19dc7afb890827f1f62e">mapmaking::JincMapmaker::allocate_jinc_matrix</a></div><div class="ttdeci">void allocate_jinc_matrix(double)</div><div class="ttdef"><b>Definition:</b> jinc_mm.h:105</div></div>
+<div class="ttc" id="aclassmapmaking_1_1JincMapmaker_html_acfe431e1e655e05ed2e6653e00d2de48"><div class="ttname"><a href="../../db/d8e/classmapmaking_1_1JincMapmaker.html#acfe431e1e655e05ed2e6653e00d2de48">mapmaking::JincMapmaker::parallel_policy</a></div><div class="ttdeci">std::string parallel_policy</div><div class="ttdef"><b>Definition:</b> jinc_mm.h:38</div></div>
+<div class="ttc" id="aclassmapmaking_1_1JincMapmaker_html_af46d437f520aee9fdd072be530ab0fb1"><div class="ttname"><a href="../../db/d8e/classmapmaking_1_1JincMapmaker.html#af46d437f520aee9fdd072be530ab0fb1">mapmaking::JincMapmaker::run_polarization</a></div><div class="ttdeci">bool run_polarization</div><div class="ttdef"><b>Definition:</b> jinc_mm.h:35</div></div>
 <div class="ttc" id="aclassmapmaking_1_1MLMapmaker_html"><div class="ttname"><a href="../../d9/d4e/classmapmaking_1_1MLMapmaker.html">mapmaking::MLMapmaker</a></div><div class="ttdef"><b>Definition:</b> ml_mm.h:22</div></div>
 <div class="ttc" id="aclassmapmaking_1_1MLMapmaker_html_a0edbe0ee34253e5f8b9966490235e274"><div class="ttname"><a href="../../d9/d4e/classmapmaking_1_1MLMapmaker.html#a0edbe0ee34253e5f8b9966490235e274">mapmaking::MLMapmaker::tolerance</a></div><div class="ttdeci">double tolerance</div><div class="ttdef"><b>Definition:</b> ml_mm.h:27</div></div>
 <div class="ttc" id="aclassmapmaking_1_1MLMapmaker_html_a5e41c9b74c7fe5789d0f92527ca60882"><div class="ttname"><a href="../../d9/d4e/classmapmaking_1_1MLMapmaker.html#a5e41c9b74c7fe5789d0f92527ca60882">mapmaking::MLMapmaker::max_iterations</a></div><div class="ttdeci">int max_iterations</div><div class="ttdef"><b>Definition:</b> ml_mm.h:28</div></div>
