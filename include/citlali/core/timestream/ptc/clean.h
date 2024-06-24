@@ -11,6 +11,9 @@ namespace timestream {
 
 class Cleaner {
 public:
+    // get logger
+    std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
+
     // eigen solver backend to use
     enum EigenSolverBackend {
         EigenBackend = 0,
@@ -25,6 +28,9 @@ public:
 
     // number of eigenvalues to calculate
     int n_calc = 64;
+
+    // tolerance for strength of correlation
+    double tau;
 
     // grouping
     std::vector<std::string> grouping;
@@ -146,6 +152,31 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
 
     // calculate the covariance matrix
     pca_cov.noalias() = ((det.adjoint() * det).array() / denom.array()).matrix();
+
+    Eigen::VectorXd avg_corrs(n_dets);
+    avg_corrs.setZero();
+
+    // remove weakly correlated detectors
+    for (Eigen::Index i=0; i<n_dets; i++) {
+        for (Eigen::Index j=0; j<n_dets; j++) {
+            if (i!=j) {
+                avg_corrs(i) += pca_cov(i,j);
+            }
+        }
+        avg_corrs(i) /= (n_dets - 1);
+    }
+
+    double mean_corr = avg_corrs.mean();
+
+    logger->info("average correlations {}", avg_corrs);
+    logger->info("mean global correlation {}", mean_corr);
+
+    for (Eigen::Index i=0; i<n_dets; i++) {
+        if (avg_corrs(i) < tau*mean_corr) {
+            pca_cov.row(i).setZero();
+            pca_cov.col(i).setZero();
+        }
+    }
 
     // eigenvalues
     Eigen::VectorXd evals;

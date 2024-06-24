@@ -761,12 +761,10 @@ void Beammap::run_loop() {
             // mapmaking
             grppi::map(tula::grppi_utils::dyn_ex(map_parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
 
-
                 //mapmaking::MapBuffer omb_copy;
                 //mapmaking::MapBuffer cmb_copy;
 
-                //omb_copy.signal.reserve()
-
+                //omb_copy.signal.reserve();
 
                 bool run_omb = true;
                 // populate maps
@@ -821,7 +819,7 @@ void Beammap::run_loop() {
             omb.normalize_maps();
 
             // only run fit if subtracting fitted source
-            if (!ptcproc.run_fruit_loops) {
+            //if (!ptcproc.run_fruit_loops) {
                 // initial position for fitting
                 double init_row = -99;
                 double init_col = -99;
@@ -853,7 +851,7 @@ void Beammap::run_loop() {
                 });
 
                 logger->info("number of good fits {}/{}", good_fits.cast<double>().sum(), n_maps);
-            }
+            //}
         }
 
         // increment loop iteration
@@ -937,7 +935,7 @@ void Beammap::set_apt_flags(array_indices_t &array_indices, nw_indices_t &nw_ind
         double map_std_dev = engine_utils::calc_std_dev(omb.signal[i]);
 
         // set apt signal to noise
-        calib.apt["sig2noise"](i) = params(i,0)/map_std_dev;
+        calib.apt["sig2noise"](i) = params(i,0)/perrors(i,0);
 
         // flag bad fits
         if (!good_fits(i)) {
@@ -1306,7 +1304,7 @@ void Beammap::output() {
             // write to ecsv
             to_ecsv_from_matrix(apt_filename, apt_table, calib.apt_header_keys, calib.apt_meta);
 
-            logger->info("done writing apt table {}",apt_filename);
+            logger->info("done writing apt table {}.ecsv",apt_filename);
         }
     }
 
@@ -1345,12 +1343,16 @@ void Beammap::output() {
                 for (Eigen::Index i=0; i<f_io->size(); ++i) {
                     // get the array for the given map
                     // add primary hdu
+                    logger->debug("adding primary header to file {}",i);
                     add_phdu(f_io, mb, i);
 
                     if (!mb->noise.empty()) {
+                        logger->debug("adding primary header to noise file {}",i);
                         add_phdu(n_io, mb, i);
                     }
                 }
+
+                logger->debug("done adding primary headers");
 
                 // write the maps
                 Eigen::Index k = 0;
@@ -1367,6 +1369,7 @@ void Beammap::output() {
                 for (Eigen::Index i=0; i<n_maps; ++i) {
                     // update progress bar
                     pb.count(n_maps, 1);
+                    logger->debug("adding map");
                     write_maps(f_io,n_io,mb,i);
 
                     if (map_grouping=="detector") {
@@ -1383,6 +1386,7 @@ void Beammap::output() {
                             }
 
                             // add apt table
+                            logger->debug("adding beammap header keys");
                             for (auto const& key: calib.apt_header_keys) {
                                 if (key!="flag2") {
                                     try {

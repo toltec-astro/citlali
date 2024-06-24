@@ -128,6 +128,10 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         // mask radius in arcseconds
         get_config_value(config, mask_radius_arcsec, missing_keys, invalid_keys,
                          std::tuple{"timestream","processed_time_chunk","clean","mask_radius_arcsec"});
+
+        // upper weight factor
+        get_config_value(config, cleaner.tau, missing_keys, invalid_keys,
+                         std::tuple{"timestream","processed_time_chunk","clean","tau"});
     }
 }
 
