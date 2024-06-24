@@ -1,8 +1,9 @@
 var searchData=
 [
-  ['t0_2251',['t0',['../d5/dcd/structengine__utils_1_1scoped__timeit.html#a1f8c57584e3b6d707514cb8ec000855e',1,'engine_utils::scoped_timeit']]],
+  ['t0_2250',['t0',['../d5/dcd/structengine__utils_1_1scoped__timeit.html#a1f8c57584e3b6d707514cb8ec000855e',1,'engine_utils::scoped_timeit']]],
+  ['tau_2251',['tau',['../da/de2/classtimestream_1_1Cleaner.html#a5fc7ed62b42711f2956c62046164d819',1,'timestream::Cleaner']]],
   ['tau_5f225_5fghz_2252',['tau_225_GHz',['../d2/d8b/classengine_1_1Telescope.html#a6d027576f34bed02381bba267b92cee4',1,'engine::Telescope']]],
-  ['tel_5fdata_2253',['tel_data',['../de/d07/structtimestream_1_1TimeStream.html#a12e1667fd7fec14bc2d3443ac22cb277',1,'timestream::TimeStream::tel_data()'],['../d2/d8b/classengine_1_1Telescope.html#a0252cd34b2b66b62bb296c2d124b17e9',1,'engine::Telescope::tel_data()']]],
+  ['tel_5fdata_2253',['tel_data',['../d2/d8b/classengine_1_1Telescope.html#a0252cd34b2b66b62bb296c2d124b17e9',1,'engine::Telescope::tel_data()'],['../de/d07/structtimestream_1_1TimeStream.html#a12e1667fd7fec14bc2d3443ac22cb277',1,'timestream::TimeStream::tel_data()']]],
   ['tel_5fdata_5fkeys_2254',['tel_data_keys',['../d2/d8b/classengine_1_1Telescope.html#a30611d43f878041735f98dc7c949f03c',1,'engine::Telescope']]],
   ['tel_5fheader_2255',['tel_header',['../d2/d8b/classengine_1_1Telescope.html#ab09b391453df682b303e169c3b4ffb4b',1,'engine::Telescope']]],
   ['tel_5fheader_5fkeys_2256',['tel_header_keys',['../d2/d8b/classengine_1_1Telescope.html#a313ff394ec5db6e8dd302af3ad0e4469',1,'engine::Telescope']]],

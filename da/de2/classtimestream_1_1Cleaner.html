@@ -81,7 +81,7 @@ Collaboration diagram for timestream::Cleaner:</div>
 <div class="dyncontent">
 <div class="center"><img src="../../d3/de9/classtimestream_1_1Cleaner__coll__graph.png" border="0" usemap="#atimestream_1_1Cleaner_coll__map" alt="Collaboration graph"/></div>
 <map name="atimestream_1_1Cleaner_coll__map" id="atimestream_1_1Cleaner_coll__map">
-<area shape="rect" title=" " alt="" coords="5,5,180,156"/>
+<area shape="rect" title=" " alt="" coords="5,5,180,185"/>
 </map>
 </div>
 <table class="memberdecls">
@@ -106,12 +106,16 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
+<tr class="memitem:af4b4bf6ff627cd2cef679b4bf8250bf5"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; spdlog::logger &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/de2/classtimestream_1_1Cleaner.html#af4b4bf6ff627cd2cef679b4bf8250bf5">logger</a> = spdlog::get(&quot;citlali_logger&quot;)</td></tr>
+<tr class="separator:af4b4bf6ff627cd2cef679b4bf8250bf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3fb0045d212528b312ea82da31c37558"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/de2/classtimestream_1_1Cleaner.html#a3fb0045d212528b312ea82da31c37558">stddev_limit</a></td></tr>
 <tr class="separator:a3fb0045d212528b312ea82da31c37558"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a65bfb9a6da75959e25dfa829bfcd5362"><td class="memItemLeft" align="right" valign="top">std::map&lt; Eigen::Index, Eigen::VectorXI &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/de2/classtimestream_1_1Cleaner.html#a65bfb9a6da75959e25dfa829bfcd5362">n_eig_to_cut</a></td></tr>
 <tr class="separator:a65bfb9a6da75959e25dfa829bfcd5362"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a852f04f3d0cbe2e56e42c52937bd816a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/de2/classtimestream_1_1Cleaner.html#a852f04f3d0cbe2e56e42c52937bd816a">n_calc</a> = 64</td></tr>
 <tr class="separator:a852f04f3d0cbe2e56e42c52937bd816a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fc7ed62b42711f2956c62046164d819"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/de2/classtimestream_1_1Cleaner.html#a5fc7ed62b42711f2956c62046164d819">tau</a></td></tr>
+<tr class="separator:a5fc7ed62b42711f2956c62046164d819"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af6b55c69cbea4d8c2db73de705c331d1"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/de2/classtimestream_1_1Cleaner.html#af6b55c69cbea4d8c2db73de705c331d1">grouping</a></td></tr>
 <tr class="separator:af6b55c69cbea4d8c2db73de705c331d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -346,6 +350,20 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
+<a id="af4b4bf6ff627cd2cef679b4bf8250bf5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4b4bf6ff627cd2cef679b4bf8250bf5">&#9670;&nbsp;</a></span>logger</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;spdlog::logger&gt; timestream::Cleaner::logger = spdlog::get(&quot;citlali_logger&quot;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a852f04f3d0cbe2e56e42c52937bd816a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a852f04f3d0cbe2e56e42c52937bd816a">&#9670;&nbsp;</a></span>n_calc</h2>
 
@@ -382,6 +400,20 @@ Here is the caller graph for this function:</div>
       <table class="memname">
         <tr>
           <td class="memname">double timestream::Cleaner::stddev_limit</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5fc7ed62b42711f2956c62046164d819"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5fc7ed62b42711f2956c62046164d819">&#9670;&nbsp;</a></span>tau</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double timestream::Cleaner::tau</td>
         </tr>
       </table>
 </div><div class="memdoc">
