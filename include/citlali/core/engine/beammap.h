@@ -198,13 +198,13 @@ void Beammap::setup() {
 
         Eigen::Index i = 0;
         for (auto const& [key, val] : tau_freq) {
-            calib.apt_meta["tau_"+toltec_io.array_name_map[calib.arrays(i)]] = val[0];
+            calib.apt_meta[toltec_io.array_name_map[calib.arrays(i)]+"_tau"] = val[0];
             i++;
         }
     }
     else {
         for (Eigen::Index i=0; i<calib.arrays.size(); ++i) {
-            calib.apt_meta["tau_"+toltec_io.array_name_map[calib.arrays(i)]] = 0.;
+            calib.apt_meta[toltec_io.array_name_map[calib.arrays(i)]+"_tau"] = 0.;
         }
     }
 
