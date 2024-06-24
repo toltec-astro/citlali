@@ -190,6 +190,24 @@ void Beammap::setup() {
     // reference frame
     calib.apt_meta["Radesys"] = telescope.pixel_axes;
 
+    // add mean tau to apt meta
+    if (rtcproc.run_extinction) {
+        Eigen::VectorXd tau_el(1);
+        tau_el << telescope.tel_data["TelElAct"].mean();
+        auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
+
+        Eigen::Index i = 0;
+        for (auto const& [key, val] : tau_freq) {
+            calib.apt_meta["tau_"+toltec_io.array_name_map[calib.arrays(i)]] = val[0];
+            i++;
+        }
+    }
+    else {
+        for (Eigen::Index i=0; i<calib.arrays.size(); ++i) {
+            calib.apt_meta["tau_"+toltec_io.array_name_map[calib.arrays(i)]] = 0.;
+        }
+    }
+
     // add apt header keys
     for (const auto &[param,unit]: calib.apt_header_units) {
         calib.apt_meta[param].push_back("units: " + unit);
