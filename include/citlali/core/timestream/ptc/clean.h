@@ -171,12 +171,12 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     logger->info("average correlations {}", avg_corrs);
     logger->info("mean global correlation {}", mean_corr);
 
-    for (Eigen::Index i=0; i<n_dets; i++) {
+    /*for (Eigen::Index i=0; i<n_dets; i++) {
         if (avg_corrs(i) < tau*mean_corr) {
             pca_cov.row(i).setZero();
             pca_cov.col(i).setZero();
         }
-    }
+    }*/
 
     // eigenvalues
     Eigen::VectorXd evals;
