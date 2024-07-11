@@ -308,6 +308,11 @@ void Telescope::calc_scan_indices() {
 
         double period = std::floor(time_chunk*fsmp);
 
+        if (period > (last_scan_i - first_scan_i + 1)) {
+            period = last_scan_i - first_scan_i + 1;
+            period_i = last_scan_i - first_scan_i + 1;
+        }
+
         // calculate number of scans
         n_scans = std::floor((last_scan_i - first_scan_i + 1)*1./period);
 
