@@ -1755,6 +1755,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // array name
     std::string name = toltec_io.array_name_map[calib.arrays(i)];
 
+    logger->debug("adding unit conversions");
+
     // conversion to uK
     auto fwhm = (std::get<0>(calib.array_fwhms[calib.arrays(i)]) + std::get<1>(calib.array_fwhms[calib.arrays(i)]))/2;
     auto mJy_beam_to_uK = engine_utils::mJy_beam_to_uK(1, toltec_io.array_freq_map[calib.arrays(i)], fwhm*ASEC_TO_RAD);
@@ -1842,6 +1844,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         }
     }
 
+    logger->debug("adding obsnums");
+
     // add obsnums
     for (Eigen::Index j=0; j<mb->obsnums.size(); ++j) {
         fits_io->at(i).pfits->pHDU().addKey("OBSNUM"+std::to_string(j), mb->obsnums.at(j), "Observation Number " + std::to_string(j));
@@ -1856,6 +1860,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
             fits_io->at(i).pfits->pHDU().addKey("DATEOBS"+std::to_string(j), date_obs[j], "Date and time of observation "+std::to_string(j));
         }
     }
+
+    logger->debug("adding obs info");
 
     // add source
     fits_io->at(i).pfits->pHDU().addKey("SOURCE", telescope.source_name, "Source name");
@@ -1906,6 +1912,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // add mean parallactic angle
     fits_io->at(i).pfits->pHDU().addKey("MEAN_PA", RAD_TO_DEG*telescope.tel_data["ActParAng"].mean(), "Mean Parallactic angle (deg)");
 
+    logger->debug("adding beamsizes");
+
     // add beamsizes
     if (std::get<0>(calib.array_fwhms[calib.arrays(i)]) >= std::get<1>(calib.array_fwhms[calib.arrays(i)])) {
         fits_io->at(i).pfits->pHDU().addKey("BMAJ", std::get<0>(calib.array_fwhms[calib.arrays(i)]), "beammaj (arcsec)");
@@ -1922,6 +1930,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     // add jinc shape params
     if (map_method=="jinc") {
+        logger->debug("adding jinc params");
+
         fits_io->at(i).pfits->pHDU().addKey("JINC_R", jinc_mm.r_max, "Jinc filter R_max");
         fits_io->at(i).pfits->pHDU().addKey("JINC_A", jinc_mm.shape_params[calib.arrays(i)][0], "Jinc filter param a");
         fits_io->at(i).pfits->pHDU().addKey("JINC_B", jinc_mm.shape_params[calib.arrays(i)][1], "Jinc filter param b");
@@ -1929,6 +1939,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     }
 
     // add mean tau
+    logger->debug("adding extinction");
     if (rtcproc.run_extinction) {
         Eigen::VectorXd tau_el(1);
         tau_el << telescope.tel_data["TelElAct"].mean();
@@ -1967,7 +1978,10 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         rms = 0.0;
     }
 
+    logger->info("rms {}", rms);
+
     // out-of-focus holography parameters
+    logger->debug("adding oof params");
     fits_io->at(i).pfits->pHDU().addKey("OOF_RMS", rms, "rms of map background (" + mb->sig_unit +")");
     fits_io->at(i).pfits->pHDU().addKey("OOF_W", toltec_io.array_wavelength_map[calib.arrays(i)]/1000., "wavelength (m)");
     fits_io->at(i).pfits->pHDU().addKey("OOF_ID", static_cast<int>(toltec_io.array_wavelength_map[calib.arrays(i)]*1000), "instrument id");
@@ -1982,6 +1996,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("FRUITLOOPS_ITER", fruit_iter, "Current fruit loops iteration");
 
     // add control/runtime parameters
+    logger->debug("adding config params");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.VERBOSE", verbose_mode, "Reduced in verbose mode");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.POLARIZED", rtcproc.run_polarization, "Polarized Obs");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKED", rtcproc.run_despike, "Despiked");
@@ -2019,6 +2034,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     // add telescope file header information
     if (mb->obsnums.size()==1) {
+        logger->debug("adding tel params");
         for (auto const& [key, val] : telescope.tel_header) {
             fits_io->at(i).pfits->pHDU().addKey(key, val(0), key);
         }

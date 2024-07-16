@@ -38,7 +38,7 @@ public:
     };
 
     template<TCDataKind td_kind, class calib_type>
-    indices_t calc_angle(TCData<td_kind, Eigen::MatrixXd> &in, calib_type &calib, bool sim_obs) {
+    indices_t calc_angle(TCData<td_kind, Eigen::MatrixXd> &in, calib_type &calib) {
 
         // number of data points
         Eigen::Index n_pts = in.scans.data.rows();

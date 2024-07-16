@@ -28,6 +28,7 @@ class JincMapmaker {
 public:
     // get logger
     std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
+    std::unique_ptr<std::mutex> jinc_mutex = std::make_unique<std::mutex>();
 
     // toltec array mounting angle
     std::map<int, double> install_ang = {
@@ -214,12 +215,41 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     // step to skip to reach next stokes param
     int step = omb.pointing.size();
 
+    map_buffer_t omb_copy = omb;
+
+    for (Eigen::Index i=0; i<omb.signal.size(); ++i) {
+        omb_copy.signal[i].setZero();
+        omb_copy.weight[i].setZero();
+
+        // clear coverage
+        if (run_coverage) {
+            omb_copy.coverage[i].setZero();
+        }
+        // clear kernel
+        if (run_kernel) {
+            omb_copy.kernel[i].setZero();
+        }
+        // clear noise
+        if (use_omb) {
+            omb_copy.noise[i].setZero();
+        }
+    }
+    map_buffer_t cmb_copy;
+    cmb_copy.n_rows = cmb.n_rows;
+    cmb_copy.n_cols = cmb.n_cols;
+
+    if (use_cmb) {
+        for (Eigen::Index i=0; i<cmb.noise.size(); ++i) {
+            cmb_copy.noise[i].setZero();
+        }
+    }
+
     // pointer to map buffer with noise maps
-    map_buffer_t* nmb = nullptr;
+    map_buffer_t *nmb, *nmb_copy;
 
     if (run_noise) {
-        // set pointer to cmb or omb for noise maps
         nmb = use_cmb ? &cmb : (use_omb ? &omb : nullptr);
+        nmb_copy = use_cmb ? &cmb_copy : (use_omb ? &omb_copy : nullptr);
     }
 
     // parallelize over detectors
@@ -308,24 +338,24 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
 
                             const auto mat_block = jinc_weights_mat[array_index].block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);                            
 
-                            auto sig_block = omb.signal[map_index].block(lower_row,lower_col,size_rows,size_cols);
-                            auto wt_block = omb.weight[map_index].block(lower_row,lower_col,size_rows,size_cols);
+                            auto sig_block = omb_copy.signal[map_index].block(lower_row,lower_col,size_rows,size_cols);
+                            auto wt_block = omb_copy.weight[map_index].block(lower_row,lower_col,size_rows,size_cols);
 
                             // populate signal map
-                            sig_block += (mat_block * in.weights.data(i) * in.scans.data(j, i)).eval();
+                            sig_block += (mat_block * in.weights.data(i) * in.scans.data(j,i)).eval();
 
                             // populate weight map
                             wt_block += (mat_block * in.weights.data(i)).eval();
 
                             // populate coverage map
                             if (run_coverage) {
-                                auto cov_block = omb.coverage[map_index].block(lower_row,lower_col,size_rows,size_cols);
+                                auto cov_block = omb_copy.coverage[map_index].block(lower_row,lower_col,size_rows,size_cols);
                                 cov_block += mat_block/d_fsmp;
                             }
 
                             // populate kernel map
                             if (run_kernel) {
-                                auto ker_block = omb.kernel[map_index].block(lower_row,lower_col,size_rows,size_cols);
+                                auto ker_block = omb_copy.kernel[map_index].block(lower_row,lower_col,size_rows,size_cols);
                                 ker_block += mat_block*in.weights.data(i)*in.kernel.data(j,i);
                             }
                         }
@@ -375,15 +405,34 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                                 else {
                                     noise_v = in.noise.data(nn)*signal;
                                 }
-                                Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(nmb->noise[map_index].data() + nn * nmb->n_rows * nmb->n_cols,
+                                Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(nmb_copy->noise[map_index].data() + nn * nmb->n_rows * nmb->n_cols,
                                                                                                                nmb->n_rows, nmb->n_cols);
-                                    auto noise_block = noise_matrix.block(lower_row,lower_col,size_rows,size_cols);
-                                    noise_block += mat_block*noise_v;
+                                auto noise_block = noise_matrix.block(lower_row,lower_col,size_rows,size_cols);
+                                noise_block += mat_block*noise_v;
                             }
                         }
                     }
                 }
             }
+        }
+    }
+
+    {
+        std::scoped_lock<std::mutex> lk(*jinc_mutex);
+        if (run_omb) {
+            std::transform(omb.signal.begin(), omb.signal.end(), omb_copy.signal.begin(), omb.signal.begin(), std::plus<Eigen::MatrixXd>());
+            std::transform(omb.weight.begin(), omb.weight.end(), omb_copy.weight.begin(), omb.weight.begin(), std::plus<Eigen::MatrixXd>());
+
+            if (run_kernel) {
+                std::transform(omb.kernel.begin(), omb.kernel.end(), omb_copy.kernel.begin(), omb.kernel.begin(), std::plus<Eigen::MatrixXd>());
+            }
+            if (run_coverage) {
+                std::transform(omb.coverage.begin(), omb.coverage.end(), omb_copy.coverage.begin(), omb.coverage.begin(), std::plus<Eigen::MatrixXd>());
+            }
+        }
+
+        if (run_noise) {
+            std::transform(nmb->noise.begin(), nmb->noise.end(), nmb_copy->noise.begin(), nmb->noise.begin(), std::plus<Eigen::Tensor<double,3>>());
         }
     }
 }

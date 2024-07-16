@@ -281,7 +281,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     auto sl = in.scan_indices.data(1) - in.scan_indices.data(0) + 1;
 
     // calculate the stokes timestream (re-populates in)
-    auto [array_indices, nw_indices, det_indices, fg_indices] = polarization.calc_angle(in, calib, telescope.sim_obs);
+    auto [array_indices, nw_indices, det_indices, fg_indices] = polarization.calc_angle(in, calib);
 
     // resize fcf
     in.fcf.data.setOnes(in.scans.data.cols());
@@ -428,7 +428,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
                 downsampler.downsample(in_hwpr, out.hwpr_angle.data);
             }
             // downsample detector angle
-            Eigen::Ref<Eigen::MatrixXd> in_angle =
+            Eigen::Ref<Eigen::VectorXd> in_angle =
                 in.angle.data.segment(si, sl);
             downsampler.downsample(in_angle, out.angle.data);
         }

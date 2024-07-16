@@ -13,7 +13,7 @@ using timestream::TCDataKind;
 
 class Pointing: public Engine {
 public:
-    std::unique_ptr<std::mutex> test_mutex = std::make_unique<std::mutex>();
+    //std::unique_ptr<std::mutex> test_mutex = std::make_unique<std::mutex>();
 
     // fit parameters
     Eigen::MatrixXd params, perrors;
@@ -241,7 +241,7 @@ auto Pointing::run(KidsProc &kidsproc) {
         Eigen::Index sl = rtcdata.scan_indices.data(3) - rtcdata.scan_indices.data(2) + 1;
 
         // copy map buffers
-        mapmaking::MapBuffer omb_copy = omb;
+        /*mapmaking::MapBuffer omb_copy = omb;
         mapmaking::MapBuffer cmb_copy = cmb;
 
         for (Eigen::Index i=0; i<n_maps; ++i) {
@@ -262,23 +262,23 @@ auto Pointing::run(KidsProc &kidsproc) {
             }
 
             if (run_coadd) {
-                cmb_copy.signal[i].setZero();
-                cmb_copy.weight[i].setZero();
+                cmb_copy.signal[i].resize(0,0);
+                cmb_copy.weight[i].resize(0,0);
 
                 // clear coverage
                 if (!cmb.coverage.empty()) {
-                    cmb_copy.coverage[i].setZero();
+                    cmb_copy.coverage[i].resize(0,0);
                 }
                 // clear kernel
                 if (rtcproc.run_kernel) {
-                    cmb_copy.kernel[i].setZero();
+                    cmb_copy.kernel[i].resize(0,0);
                 }
                 // clear noise
                 if (!cmb.noise.empty()) {
                     cmb_copy.noise[i].setZero();
                 }
             }
-        }
+        }*/
 
         // copy scan's telescope vectors
         for (auto const& x: telescope.tel_data) {
@@ -359,11 +359,11 @@ auto Pointing::run(KidsProc &kidsproc) {
                 bool run_omb = false;
                 logger->info("populating noise maps");
                 if (map_method=="naive") {
-                    naive_mm.populate_maps_naive(ptcdata, omb_copy, cmb_copy, map_indices, det_indices, fg_indices, telescope.pixel_axes,
+                    naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, fg_indices, telescope.pixel_axes,
                                                  calib.apt, telescope.d_fsmp, run_omb, run_noise);
                 }
                 else if (map_method=="jinc") {
-                    jinc_mm.populate_maps_jinc(ptcdata, omb_copy, cmb_copy, map_indices, det_indices, fg_indices, telescope.pixel_axes,
+                    jinc_mm.populate_maps_jinc(ptcdata, omb, cmb, map_indices, det_indices, fg_indices, telescope.pixel_axes,
                                                calib.apt, telescope.d_fsmp, run_omb, run_noise);
                 }
             }
@@ -418,15 +418,15 @@ auto Pointing::run(KidsProc &kidsproc) {
             }
             logger->info("populating maps");
             if (map_method=="naive") {
-                naive_mm.populate_maps_naive(ptcdata, omb_copy, cmb_copy, map_indices, det_indices, fg_indices, telescope.pixel_axes,
+                naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, fg_indices, telescope.pixel_axes,
                                              calib.apt, telescope.d_fsmp, run_omb, run_noise_fruit);
             }
             else if (map_method=="jinc") {
-                jinc_mm.populate_maps_jinc(ptcdata, omb_copy, cmb_copy, map_indices, det_indices, fg_indices, telescope.pixel_axes,
+                jinc_mm.populate_maps_jinc(ptcdata, omb, cmb, map_indices, det_indices, fg_indices, telescope.pixel_axes,
                                            calib.apt, telescope.d_fsmp, run_omb, run_noise_fruit);
             }
 
-            {
+            /*{
                 std::scoped_lock<std::mutex> lk(*test_mutex);
 
                 for (int i=0; i<omb.signal.size(); ++i) {
@@ -455,7 +455,7 @@ auto Pointing::run(KidsProc &kidsproc) {
                         nmb->noise[i] += nmb_copy->noise[i];
                     }
                 }
-            }
+            }*/
         }
         // increment number of completed scans
         n_scans_done++;

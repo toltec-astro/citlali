@@ -13,7 +13,7 @@ using timestream::TCDataKind;
 
 class Lali: public Engine {
 public:
-    std::unique_ptr<std::mutex> test_mutex = std::make_unique<std::mutex>();
+    //std::unique_ptr<std::mutex> test_mutex = std::make_unique<std::mutex>();
     // initial setup for each obs
     void setup();
 
@@ -147,7 +147,7 @@ auto Lali::run(KidsProc &kidsproc) {
         Eigen::Index sl = rtcdata.scan_indices.data(3) - rtcdata.scan_indices.data(2) + 1;
 
         // copy map buffers
-        mapmaking::MapBuffer omb_copy = omb;
+        /*mapmaking::MapBuffer omb_copy = omb;
         mapmaking::MapBuffer cmb_copy = cmb;
 
         for (Eigen::Index i=0; i<n_maps; ++i) {
@@ -168,23 +168,23 @@ auto Lali::run(KidsProc &kidsproc) {
             }
 
             if (run_coadd) {
-                cmb_copy.signal[i].setZero();
-                cmb_copy.weight[i].setZero();
+                cmb_copy.signal[i].resize(0,0);
+                cmb_copy.weight[i].resize(0,0);
 
                 // clear coverage
                 if (!cmb.coverage.empty()) {
-                    cmb_copy.coverage[i].setZero();
+                    cmb_copy.coverage[i].resize(0,0);
                 }
                 // clear kernel
                 if (rtcproc.run_kernel) {
-                    cmb_copy.kernel[i].setZero();
+                    cmb_copy.kernel[i].resize(0,0);
                 }
                 // clear noise
                 if (!cmb.noise.empty()) {
                     cmb_copy.noise[i].setZero();
                 }
             }
-        }
+        }*/
 
         // copy scan's telescope vectors
         for (const auto& x: telescope.tel_data) {
@@ -265,11 +265,11 @@ auto Lali::run(KidsProc &kidsproc) {
                 bool run_omb = false;
                 logger->info("populating noise maps");
                 if (map_method=="naive") {
-                    naive_mm.populate_maps_naive(ptcdata, omb_copy, cmb_copy, map_indices, det_indices, fg_indices, telescope.pixel_axes,
+                    naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, fg_indices, telescope.pixel_axes,
                                                  calib.apt, telescope.d_fsmp, run_omb, run_noise);
                 }
                 else if (map_method=="jinc") {
-                    jinc_mm.populate_maps_jinc(ptcdata, omb_copy, cmb_copy, map_indices, det_indices, fg_indices, telescope.pixel_axes,
+                    jinc_mm.populate_maps_jinc(ptcdata, omb, cmb, map_indices, det_indices, fg_indices, telescope.pixel_axes,
                                                calib.apt, telescope.d_fsmp, run_omb, run_noise);
                 }
             }
@@ -323,20 +323,20 @@ auto Lali::run(KidsProc &kidsproc) {
 
             logger->info("populating maps");
             if (map_method=="naive") {
-                naive_mm.populate_maps_naive(ptcdata, omb_copy, cmb_copy, map_indices, det_indices, fg_indices, telescope.pixel_axes,
+                naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, fg_indices, telescope.pixel_axes,
                                              calib.apt, telescope.d_fsmp, run_omb, run_noise_fruit);
             }
             else if (map_method=="jinc") {
-                jinc_mm.populate_maps_jinc(ptcdata, omb_copy, cmb_copy, map_indices, det_indices, fg_indices, telescope.pixel_axes,
+                jinc_mm.populate_maps_jinc(ptcdata, omb, cmb, map_indices, det_indices, fg_indices, telescope.pixel_axes,
                                            calib.apt, telescope.d_fsmp, run_omb, run_noise_fruit);
             }
             else if (map_method=="maximum_likelihood") {
-                ml_mm.populate_maps_ml(ptcdata, omb_copy, cmb_copy, map_indices, det_indices, telescope.pixel_axes,
+                ml_mm.populate_maps_ml(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
                                        calib, telescope.d_fsmp, run_omb, run_noise_fruit);
             }
 
 
-            {
+            /*{
                 std::scoped_lock<std::mutex> lk(*test_mutex);
 
                 for (int i = 0; i < omb.signal.size(); ++i) {
@@ -365,7 +365,7 @@ auto Lali::run(KidsProc &kidsproc) {
                         nmb->noise[i] += nmb_copy->noise[i];
                     }
                 }
-            }
+            }*/
         }
 
         // increment number of completed scans
@@ -422,13 +422,17 @@ void Lali::output() {
                 for (Eigen::Index i=0; i<f_io->size(); ++i) {
                     // get the array for the given map
                     // add primary hdu
+                    logger->debug("adding primary header to file {}",i);
                     add_phdu(f_io, mb, i);
 
                     // add primary hdu to noise maps
                     if (!mb->noise.empty()) {
+                        logger->debug("adding primary header to noise file {}",i);
                         add_phdu(n_io, mb, i);
                     }
                 }
+
+                logger->debug("done adding primary headers");
 
                 // write the maps
                 for (Eigen::Index i=0; i<n_maps; ++i) {

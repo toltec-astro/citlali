@@ -783,15 +783,15 @@ void Beammap::run_loop() {
                 // populate maps
                 if (map_method=="naive") {
                     // naive mapmaker
-                    naive_mm.populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
-                                                 ptcs[i].det_indices.data, ptcs[i].fg_indices.data, telescope.pixel_axes,
-                                                 calib.apt, telescope.d_fsmp, run_omb, run_noise);
+                    naive_mm.populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data, ptcs[i].det_indices.data,
+                                                 ptcs[i].fg_indices.data, telescope.pixel_axes, calib.apt, telescope.d_fsmp,
+                                                 run_omb, run_noise);
                 }
                 else if (map_method=="jinc") {
                     // jinc mapmaker
-                    jinc_mm.populate_maps_jinc(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
-                                               ptcs[i].det_indices.data, ptcs[i].fg_indices.data, telescope.pixel_axes,
-                                               calib.apt,telescope.d_fsmp, run_omb, run_noise);
+                    jinc_mm.populate_maps_jinc(ptcs[i], omb, cmb, ptcs[i].map_indices.data, ptcs[i].det_indices.data,
+                                               ptcs[i].fg_indices.data, telescope.pixel_axes, calib.apt, telescope.d_fsmp,
+                                               run_omb, run_noise);
                 }
 
                 // update progress bar
@@ -804,40 +804,37 @@ void Beammap::run_loop() {
             logger->info("normalizing maps");
             omb.normalize_maps();
 
-            // only run fit if subtracting fitted source
-            //if (!ptcproc.run_fruit_loops) {
-                // initial position for fitting
-                double init_row = -99;
-                double init_col = -99;
+            // initial position for fitting
+            double init_row = -99;
+            double init_col = -99;
 
-                logger->info("fitting maps");
-                grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
-                    // only fit if not converged
-                    if (!converged(i)) {
-                        // get array number
-                        auto array = maps_to_arrays(i);
-                        // get initial guess fwhm from theoretical fwhms for the arrays
-                        double init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
-                        // fit the maps
-                        auto [det_params, det_perror, good_fit] =
-                            map_fitter.fit_to_gaussian<engine_utils::mapFitter::beammap>(omb.signal[i], omb.weight[i],
-                                                                                         init_fwhm, init_row, init_col);
+            logger->info("fitting maps");
+            grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+                // only fit if not converged
+                if (!converged(i)) {
+                    // get array number
+                    auto array = maps_to_arrays(i);
+                    // get initial guess fwhm from theoretical fwhms for the arrays
+                    double init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
+                    // fit the maps
+                    auto [det_params, det_perror, good_fit] =
+                        map_fitter.fit_to_gaussian<engine_utils::mapFitter::beammap>(omb.signal[i], omb.weight[i],
+                                                                                     init_fwhm, init_row, init_col);
 
-                        params.row(i) = det_params;
-                        perrors.row(i) = det_perror;
-                        good_fits(i) = good_fit;
-                    }
-                    // otherwise keep value from previous iteration
-                    else {
-                        params.row(i) = p0.row(i);
-                        perrors.row(i) = perror0.row(i);
-                    }
+                    params.row(i) = det_params;
+                    perrors.row(i) = det_perror;
+                    good_fits(i) = good_fit;
+                }
+                // otherwise keep value from previous iteration
+                else {
+                    params.row(i) = p0.row(i);
+                    perrors.row(i) = perror0.row(i);
+                }
 
-                    return 0;
-                });
+                return 0;
+            });
 
-                logger->info("number of good fits {}/{}", good_fits.cast<double>().sum(), n_maps);
-            //}
+            logger->info("number of good fits {}/{}", good_fits.cast<double>().sum(), n_maps);
         }
 
         // increment loop iteration
@@ -887,7 +884,6 @@ void Beammap::run_loop() {
                 else {
                     logger->info("bypassing convergence check");
                 }
-
             }
 
             // set previous iteration fits to current iteration fits
