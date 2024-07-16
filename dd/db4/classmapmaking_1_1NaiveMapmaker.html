@@ -80,12 +80,15 @@ Collaboration diagram for mapmaking::NaiveMapmaker:</div>
 <div class="dyncontent">
 <div class="center"><img src="../../db/d58/classmapmaking_1_1NaiveMapmaker__coll__graph.png" border="0" usemap="#amapmaking_1_1NaiveMapmaker_coll__map" alt="Collaboration graph"/></div>
 <map name="amapmaking_1_1NaiveMapmaker_coll__map" id="amapmaking_1_1NaiveMapmaker_coll__map">
-<area shape="rect" title=" " alt="" coords="5,5,220,171"/>
+<area shape="rect" title=" " alt="" coords="5,5,220,200"/>
 </map>
 </div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a998102c965d6ff1c382aec73bc791a42"><td class="memTemplParams" colspan="2">template&lt;typename Derived &gt; </td></tr>
+<tr class="memitem:a998102c965d6ff1c382aec73bc791a42"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a998102c965d6ff1c382aec73bc791a42">add_sparse_to_dense</a> (std::vector&lt; Eigen::Triplet&lt; double &gt;&gt; &amp;triplets, Eigen::DenseBase&lt; Derived &gt; &amp;dense_matrix)</td></tr>
+<tr class="separator:a998102c965d6ff1c382aec73bc791a42"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18b9ba677dbf22bf07f56fbd41498bbb"><td class="memTemplParams" colspan="2">template&lt;class map_buffer_t &gt; </td></tr>
 <tr class="memitem:a18b9ba677dbf22bf07f56fbd41498bbb"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a18b9ba677dbf22bf07f56fbd41498bbb">allocate_pointing</a> (map_buffer_t &amp;, double, double, double, Eigen::Index, int, int)</td></tr>
 <tr class="separator:a18b9ba677dbf22bf07f56fbd41498bbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -103,6 +106,8 @@ Public Member Functions</h2></td></tr>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a2aa8fb981f113af338819f09c1e131d4"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; spdlog::logger &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a2aa8fb981f113af338819f09c1e131d4">logger</a> = spdlog::get(&quot;citlali_logger&quot;)</td></tr>
 <tr class="separator:a2aa8fb981f113af338819f09c1e131d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a521b62798f53270279b88a9696d1d935"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; std::mutex &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a521b62798f53270279b88a9696d1d935">naive_mutex</a> = std::make_unique&lt;std::mutex&gt;()</td></tr>
+<tr class="separator:a521b62798f53270279b88a9696d1d935"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e7180da3199a46dec85111d31b12866"><td class="memItemLeft" align="right" valign="top">std::map&lt; int, double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a6e7180da3199a46dec85111d31b12866">install_ang</a></td></tr>
 <tr class="separator:a6e7180da3199a46dec85111d31b12866"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e53a0f8db1a5edc0e26fac72853cdde"><td class="memItemLeft" align="right" valign="top">std::map&lt; int, double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a0e53a0f8db1a5edc0e26fac72853cdde">fgs</a></td></tr>
@@ -111,6 +116,58 @@ Public Attributes</h2></td></tr>
 <tr class="separator:ab527679d127409130f38a14d396c117a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a998102c965d6ff1c382aec73bc791a42"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a998102c965d6ff1c382aec73bc791a42">&#9670;&nbsp;</a></span>add_sparse_to_dense()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Derived &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mapmaking::NaiveMapmaker::add_sparse_to_dense </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; Eigen::Triplet&lt; double &gt;&gt; &amp;&#160;</td>
+          <td class="paramname"><em>triplets</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::DenseBase&lt; Derived &gt; &amp;&#160;</td>
+          <td class="paramname"><em>dense_matrix</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="../../dd/db4/classmapmaking_1_1NaiveMapmaker_a998102c965d6ff1c382aec73bc791a42_icgraph.png" border="0" usemap="#add/db4/classmapmaking_1_1NaiveMapmaker_a998102c965d6ff1c382aec73bc791a42_icgraph" alt=""/></div>
+<map name="add/db4/classmapmaking_1_1NaiveMapmaker_a998102c965d6ff1c382aec73bc791a42_icgraph" id="add/db4/classmapmaking_1_1NaiveMapmaker_a998102c965d6ff1c382aec73bc791a42_icgraph">
+<area shape="rect" title=" " alt="" coords="899,49,1113,90"/>
+<area shape="rect" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#aa5fb1845fd4e27a5d0f203bd75875a2d" title=" " alt="" coords="636,49,851,90"/>
+<area shape="rect" href="../../d9/def/classLali.html#ab9e79e00732ea442711e082547c7c527" title=" " alt="" coords="474,5,549,32"/>
+<area shape="rect" href="../../d2/dbe/classPointing.html#aa5b7a23dbdce6699ef2a1cd23b54c9b6" title=" " alt="" coords="459,56,563,83"/>
+<area shape="rect" href="../../dc/d9e/classBeammap.html#a3015679afa0f29bbb4253b45faa5cb30" title=" " alt="" coords="435,107,588,133"/>
+<area shape="rect" href="../../dc/d9e/classBeammap.html#a7651fe4687746596facaf17bbeb8bcdb" title=" " alt="" coords="203,107,387,133"/>
+<area shape="rect" href="../../dc/d9e/classBeammap.html#a5d30a47c11b4749b5c1c692872a9cf8e" title=" " alt="" coords="5,107,155,133"/>
+</map>
+</div>
+
+</div>
+</div>
 <a id="a18b9ba677dbf22bf07f56fbd41498bbb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a18b9ba677dbf22bf07f56fbd41498bbb">&#9670;&nbsp;</a></span>allocate_pointing() <span class="overload">[1/2]</span></h2>
 
@@ -331,9 +388,10 @@ Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="../../dd/db4/classmapmaking_1_1NaiveMapmaker_aa5fb1845fd4e27a5d0f203bd75875a2d_cgraph.png" border="0" usemap="#add/db4/classmapmaking_1_1NaiveMapmaker_aa5fb1845fd4e27a5d0f203bd75875a2d_cgraph" alt=""/></div>
 <map name="add/db4/classmapmaking_1_1NaiveMapmaker_aa5fb1845fd4e27a5d0f203bd75875a2d_cgraph" id="add/db4/classmapmaking_1_1NaiveMapmaker_aa5fb1845fd4e27a5d0f203bd75875a2d_cgraph">
-<area shape="rect" title=" " alt="" coords="5,39,220,80"/>
-<area shape="rect" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a18b9ba677dbf22bf07f56fbd41498bbb" title=" " alt="" coords="268,5,483,47"/>
-<area shape="rect" href="../../dd/d06/namespaceengine__utils.html#a0d6c922376faca4b84cc135d29354af8" title=" " alt="" coords="308,71,443,112"/>
+<area shape="rect" title=" " alt="" coords="5,71,220,112"/>
+<area shape="rect" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a998102c965d6ff1c382aec73bc791a42" title=" " alt="" coords="268,5,483,47"/>
+<area shape="rect" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a18b9ba677dbf22bf07f56fbd41498bbb" title=" " alt="" coords="268,71,483,112"/>
+<area shape="rect" href="../../dd/d06/namespaceengine__utils.html#a0d6c922376faca4b84cc135d29354af8" title=" " alt="" coords="308,136,443,177"/>
 </map>
 </div>
 <div class="dynheader">
@@ -490,6 +548,20 @@ Here is the call graph for this function:</div>
       <table class="memname">
         <tr>
           <td class="memname">std::shared_ptr&lt; spdlog::logger &gt; mapmaking::NaiveMapmaker::logger = spdlog::get(&quot;citlali_logger&quot;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a521b62798f53270279b88a9696d1d935"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a521b62798f53270279b88a9696d1d935">&#9670;&nbsp;</a></span>naive_mutex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;std::mutex&gt; mapmaking::NaiveMapmaker::naive_mutex = std::make_unique&lt;std::mutex&gt;()</td>
         </tr>
       </table>
 </div><div class="memdoc">

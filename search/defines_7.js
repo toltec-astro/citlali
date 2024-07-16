@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['npy_5fno_5fdeprecated_5fapi_2442',['NPY_NO_DEPRECATED_API',['../da/df7/matplotlibcpp_8h.html#ab6e6ee86736f9ebb56e74ae21bf3ff8a',1,'matplotlibcpp.h']]]
+  ['npy_5fno_5fdeprecated_5fapi_2448',['NPY_NO_DEPRECATED_API',['../da/df7/matplotlibcpp_8h.html#ab6e6ee86736f9ebb56e74ae21bf3ff8a',1,'matplotlibcpp.h']]]
 ];

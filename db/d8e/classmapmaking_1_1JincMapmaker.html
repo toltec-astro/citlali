@@ -80,7 +80,7 @@ Collaboration diagram for mapmaking::JincMapmaker:</div>
 <div class="dyncontent">
 <div class="center"><img src="../../df/d38/classmapmaking_1_1JincMapmaker__coll__graph.png" border="0" usemap="#amapmaking_1_1JincMapmaker_coll__map" alt="Collaboration graph"/></div>
 <map name="amapmaking_1_1JincMapmaker_coll__map" id="amapmaking_1_1JincMapmaker_coll__map">
-<area shape="rect" title=" " alt="" coords="5,5,205,303"/>
+<area shape="rect" title=" " alt="" coords="5,5,205,317"/>
 </map>
 </div>
 <table class="memberdecls">
@@ -103,6 +103,8 @@ Public Member Functions</h2></td></tr>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a7bcf5538c300f690c1a56c8a38cc9d84"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; spdlog::logger &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/d8e/classmapmaking_1_1JincMapmaker.html#a7bcf5538c300f690c1a56c8a38cc9d84">logger</a> = spdlog::get(&quot;citlali_logger&quot;)</td></tr>
 <tr class="separator:a7bcf5538c300f690c1a56c8a38cc9d84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ee640ce25f58aacbc888a025a99510b"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; std::mutex &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/d8e/classmapmaking_1_1JincMapmaker.html#a3ee640ce25f58aacbc888a025a99510b">jinc_mutex</a> = std::make_unique&lt;std::mutex&gt;()</td></tr>
+<tr class="separator:a3ee640ce25f58aacbc888a025a99510b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a33d8245f3871b5083f059a232148d690"><td class="memItemLeft" align="right" valign="top">std::map&lt; int, double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/d8e/classmapmaking_1_1JincMapmaker.html#a33d8245f3871b5083f059a232148d690">install_ang</a></td></tr>
 <tr class="separator:a33d8245f3871b5083f059a232148d690"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab15a20dc2fc278ca8769bd5ba4598db8"><td class="memItemLeft" align="right" valign="top">std::map&lt; int, double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/d8e/classmapmaking_1_1JincMapmaker.html#ab15a20dc2fc278ca8769bd5ba4598db8">fgs</a></td></tr>
@@ -474,6 +476,20 @@ Here is the caller graph for this function:</div>
 <div class="line">        {2,-<a class="code" href="../../d2/d6f/constants_8h.html#a95ed8d1f751904d69454dbb31f1f247d">pi</a>/2},</div>
 <div class="line">        }</div>
 </div><!-- fragment -->
+</div>
+</div>
+<a id="a3ee640ce25f58aacbc888a025a99510b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ee640ce25f58aacbc888a025a99510b">&#9670;&nbsp;</a></span>jinc_mutex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;std::mutex&gt; mapmaking::JincMapmaker::jinc_mutex = std::make_unique&lt;std::mutex&gt;()</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
 </div>
 </div>
 <a id="a3cf918a907bddc4dcbf5b4ef30413b63"></a>
