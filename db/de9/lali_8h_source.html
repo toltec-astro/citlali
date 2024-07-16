@@ -406,136 +406,135 @@ $(function() {
 <div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;                                       <a class="code" href="../../d0/dd5/structreduClasses.html#af701f5160f153ba7d9e7ed330fd4ec31">calib</a>, <a class="code" href="../../d0/dd5/structreduClasses.html#a1d1ddf771e654d7bc41de649e4ff7e43">telescope</a>.<a class="code" href="../../d2/d8b/classengine_1_1Telescope.html#a61c58e36d7dcb4bf1ab5e6519f16dc92">d_fsmp</a>, run_omb, run_noise_fruit);</div>
 <div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;            }</div>
 <div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160; </div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160; </div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;            <span class="comment">/*{</span></div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;<span class="comment">                std::scoped_lock&lt;std::mutex&gt; lk(*test_mutex);</span></div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;<span class="comment">                for (int i = 0; i &lt; omb.signal.size(); ++i) {</span></div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;<span class="comment">                    omb.signal[i] += omb_copy.signal[i];</span></div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;<span class="comment">                    omb.weight[i] += omb_copy.weight[i];</span></div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;<span class="comment">                    if (!omb.kernel.empty()) {</span></div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;<span class="comment">                        omb.kernel[i] += omb_copy.kernel[i];</span></div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;<span class="comment">                    }</span></div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;<span class="comment">                    if (!omb.coverage.empty()) {</span></div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;<span class="comment">                        omb.coverage[i] += omb_copy.coverage[i];</span></div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;<span class="comment">                    }</span></div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;<span class="comment">                }</span></div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;<span class="comment">                // pointer to map buffer with noise maps</span></div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;<span class="comment">                mapmaking::MapBuffer *nmb, *nmb_copy;</span></div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;<span class="comment">                const bool use_cmb = !cmb.noise.empty();</span></div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;<span class="comment">                const bool use_omb = !omb.noise.empty();</span></div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;<span class="comment">                if (run_noise) {</span></div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;<span class="comment">                    nmb = use_cmb ? &amp;cmb : (use_omb ? &amp;omb : nullptr);</span></div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;<span class="comment">                    nmb_copy = use_cmb ? &amp;cmb_copy : (use_omb ? &amp;omb_copy : nullptr);</span></div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;<span class="comment">                    for (int i = 0; i &lt; nmb-&gt;noise.size(); ++i) {</span></div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;<span class="comment">                        nmb-&gt;noise[i] += nmb_copy-&gt;noise[i];</span></div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;<span class="comment">                    }</span></div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;<span class="comment">                }</span></div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;<span class="comment">            }*/</span></div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;        }</div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160; </div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;        <span class="comment">// increment number of completed scans</span></div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;        <a class="code" href="../../d1/db6/classEngine.html#a559073f45f44410ad2d5adce6082fa25">n_scans_done</a>++;</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;        <a class="code" href="../../d1/db6/classEngine.html#a39b2a6ab7ceed3c38cba0cb1bb1682e8">logger</a>-&gt;info(<span class="stringliteral">&quot;done with scan {}. {}/{} scans completed&quot;</span>, ptcdata.index.data + 1, <a class="code" href="../../d1/db6/classEngine.html#a559073f45f44410ad2d5adce6082fa25">n_scans_done</a>, <a class="code" href="../../d0/dd5/structreduClasses.html#a1d1ddf771e654d7bc41de649e4ff7e43">telescope</a>.<a class="code" href="../../d2/d8b/classengine_1_1Telescope.html#a6e43207abb13de636ce882dbccff2115">scan_indices</a>.cols());</div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;    });</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160; </div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;    <span class="keywordflow">return</span> farm;</div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;}</div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160; </div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;<span class="keyword">template</span> &lt;mapmaking::MapType map_type&gt;</div>
-<div class="line"><a name="l00380"></a><span class="lineno"><a class="line" href="../../d9/def/classLali.html#a210b9f35a91e807ccea7caa5a9e2dcde">  380</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d9/def/classLali.html#a210b9f35a91e807ccea7caa5a9e2dcde">Lali::output</a>() {</div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;    <span class="comment">// pointer to map buffer</span></div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;    <a class="code" href="../../df/d1c/classmapmaking_1_1MapBuffer.html">mapmaking::MapBuffer</a>* mb = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;    <span class="comment">// pointer to data file fits vector</span></div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;    std::vector&lt;fitsIO&lt;file_type_enum::write_fits, CCfits::ExtHDU*&gt;&gt;* f_io = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;    <span class="comment">// pointer to noise file fits vector</span></div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;    std::vector&lt;fitsIO&lt;file_type_enum::write_fits, CCfits::ExtHDU*&gt;&gt;* n_io = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160; </div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;    <span class="comment">// directory name</span></div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;    std::string dir_name;</div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160; </div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;    <span class="comment">// set common variables depending on map_type</span></div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;    <span class="keywordflow">if</span> constexpr (map_type == <a class="code" href="../../df/da9/namespacemapmaking.html#af52c40b611f64c975c702b5ed3b8c6a9ac598b171a1ef0ff17d218b9c5fc2db7f">mapmaking::RawObs</a> || map_type == <a class="code" href="../../df/da9/namespacemapmaking.html#af52c40b611f64c975c702b5ed3b8c6a9a79c7228e4cd1938d60611009d6a315f4">mapmaking::FilteredObs</a>) {</div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;        mb = &amp;<a class="code" href="../../d0/dd5/structreduClasses.html#aac76f7f5408ffcbffa8ab2ebd3ecf320">omb</a>;</div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;        dir_name = <a class="code" href="../../d1/db6/classEngine.html#a0704d50461a65cdf132cf6c6bda43b6c">obsnum_dir_name</a> + (map_type == <a class="code" href="../../df/da9/namespacemapmaking.html#af52c40b611f64c975c702b5ed3b8c6a9ac598b171a1ef0ff17d218b9c5fc2db7f">mapmaking::RawObs</a> ? <span class="stringliteral">&quot;raw/&quot;</span> : <span class="stringliteral">&quot;filtered/&quot;</span>);</div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;        f_io = (map_type == <a class="code" href="../../df/da9/namespacemapmaking.html#af52c40b611f64c975c702b5ed3b8c6a9ac598b171a1ef0ff17d218b9c5fc2db7f">mapmaking::RawObs</a>) ? &amp;<a class="code" href="../../d1/db6/classEngine.html#a13517b7a19cf52aefdb2f3d5cd1a4452">fits_io_vec</a> : &amp;<a class="code" href="../../d1/db6/classEngine.html#a6ffe93236a97db291e56a20e4a9d42e7">filtered_fits_io_vec</a>;</div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;        n_io = (map_type == <a class="code" href="../../df/da9/namespacemapmaking.html#af52c40b611f64c975c702b5ed3b8c6a9ac598b171a1ef0ff17d218b9c5fc2db7f">mapmaking::RawObs</a>) ? &amp;<a class="code" href="../../d1/db6/classEngine.html#a575ea7868d5384a35f791ff382a7e32d">noise_fits_io_vec</a> : &amp;<a class="code" href="../../d1/db6/classEngine.html#a0823f7763fa05b6b3c01084a61b87d80">filtered_noise_fits_io_vec</a>;</div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160; </div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;        <span class="keywordflow">if</span> constexpr (map_type == <a class="code" href="../../df/da9/namespacemapmaking.html#af52c40b611f64c975c702b5ed3b8c6a9ac598b171a1ef0ff17d218b9c5fc2db7f">mapmaking::RawObs</a>) {</div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;            <span class="comment">// write stats file</span></div>
-<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;            <a class="code" href="../../d1/db6/classEngine.html#a0d9494a8ed917e104a562cb939855255">write_stats</a>();</div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;            <span class="keywordflow">if</span> (<a class="code" href="../../d1/d74/structreduControls.html#aac8aba53ce7323738224ffa15a5c0cdf">run_tod_output</a> &amp;&amp; !<a class="code" href="../../d1/db6/classEngine.html#a7b7937450639a63243bd7a1dff177a77">tod_filename</a>.empty()) {</div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;                <span class="comment">// add tod header information</span></div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;                <a class="code" href="../../d1/db6/classEngine.html#a61c876707413921568013dd67a9f1de7">add_tod_header</a>();</div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;            }</div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;        }</div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;    }</div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr (map_type == <a class="code" href="../../df/da9/namespacemapmaking.html#af52c40b611f64c975c702b5ed3b8c6a9af5768d84e6e019c8d35a804c3203072d">mapmaking::RawCoadd</a> || map_type == <a class="code" href="../../df/da9/namespacemapmaking.html#af52c40b611f64c975c702b5ed3b8c6a9ab4b3f1ce96cba39980b3a1c83187c0a3">mapmaking::FilteredCoadd</a>) {</div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;        mb = &amp;<a class="code" href="../../d0/dd5/structreduClasses.html#ae91e29e30c36b99f1fe392c96d154c5b">cmb</a>;</div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;        dir_name = <a class="code" href="../../d1/db6/classEngine.html#a419700276ad0f67aa557dcf74c714eff">coadd_dir_name</a> + (map_type == <a class="code" href="../../df/da9/namespacemapmaking.html#af52c40b611f64c975c702b5ed3b8c6a9af5768d84e6e019c8d35a804c3203072d">mapmaking::RawCoadd</a> ? <span class="stringliteral">&quot;raw/&quot;</span> : <span class="stringliteral">&quot;filtered/&quot;</span>);</div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;        f_io = (map_type == <a class="code" href="../../df/da9/namespacemapmaking.html#af52c40b611f64c975c702b5ed3b8c6a9af5768d84e6e019c8d35a804c3203072d">mapmaking::RawCoadd</a>) ? &amp;<a class="code" href="../../d1/db6/classEngine.html#aa3780ee917fc34dc61f8c4feb071692d">coadd_fits_io_vec</a> : &amp;<a class="code" href="../../d1/db6/classEngine.html#aede0c4a704b0e04142129967a18a1bbb">filtered_coadd_fits_io_vec</a>;</div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;        n_io = (map_type == <a class="code" href="../../df/da9/namespacemapmaking.html#af52c40b611f64c975c702b5ed3b8c6a9af5768d84e6e019c8d35a804c3203072d">mapmaking::RawCoadd</a>) ? &amp;<a class="code" href="../../d1/db6/classEngine.html#aa0880823b60dbbc4dcbccdf0b490defb">coadd_noise_fits_io_vec</a> : &amp;<a class="code" href="../../d1/db6/classEngine.html#a74b5b53fe98029751818d336e09b8e8c">filtered_coadd_noise_fits_io_vec</a>;</div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;    }</div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160; </div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="../../d1/d74/structreduControls.html#acd10fec33ee1021304b83acd96da24af">run_mapmaking</a>) {</div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;        <span class="comment">// wiener filtered maps write before this and are deleted from the vector.</span></div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;        <span class="keywordflow">if</span> (!f_io-&gt;empty()) {</div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;            {</div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;                <span class="comment">// progress bar</span></div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;                tula::logging::progressbar pb(</div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;                    [&amp;](<span class="keyword">const</span> <span class="keyword">auto</span> &amp;msg) { <a class="code" href="../../d1/db6/classEngine.html#a39b2a6ab7ceed3c38cba0cb1bb1682e8">logger</a>-&gt;info(<span class="stringliteral">&quot;{}&quot;</span>, msg); }, 100, <span class="stringliteral">&quot;output progress &quot;</span>);</div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160; </div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;                <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;f_io-&gt;size(); ++i) {</div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;                    <span class="comment">// get the array for the given map</span></div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;                    <span class="comment">// add primary hdu</span></div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;                    <a class="code" href="../../d1/db6/classEngine.html#a39b2a6ab7ceed3c38cba0cb1bb1682e8">logger</a>-&gt;debug(<span class="stringliteral">&quot;adding primary header to file {}&quot;</span>,i);</div>
-<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;                    <a class="code" href="../../d1/db6/classEngine.html#a87f030609fa38fc38bb5e7ea66d31e29">add_phdu</a>(f_io, mb, i);</div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160; </div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;                    <span class="comment">// add primary hdu to noise maps</span></div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;                    <span class="keywordflow">if</span> (!mb-&gt;<a class="code" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#af5030a66f350a00e6f884d54ee15b075">noise</a>.empty()) {</div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;                        <a class="code" href="../../d1/db6/classEngine.html#a39b2a6ab7ceed3c38cba0cb1bb1682e8">logger</a>-&gt;debug(<span class="stringliteral">&quot;adding primary header to noise file {}&quot;</span>,i);</div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;                        <a class="code" href="../../d1/db6/classEngine.html#a87f030609fa38fc38bb5e7ea66d31e29">add_phdu</a>(n_io, mb, i);</div>
-<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;                    }</div>
-<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;                }</div>
-<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160; </div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;                <a class="code" href="../../d1/db6/classEngine.html#a39b2a6ab7ceed3c38cba0cb1bb1682e8">logger</a>-&gt;debug(<span class="stringliteral">&quot;done adding primary headers&quot;</span>);</div>
-<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160; </div>
-<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;                <span class="comment">// write the maps</span></div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;                <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;<a class="code" href="../../d1/db6/classEngine.html#a4d57f59a69415817363dfb4282558dbd">n_maps</a>; ++i) {</div>
-<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;                    <span class="comment">// update progress bar</span></div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;                    pb.count(<a class="code" href="../../d1/db6/classEngine.html#a4d57f59a69415817363dfb4282558dbd">n_maps</a>, 1);</div>
-<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;                    <a class="code" href="../../d1/db6/classEngine.html#afd2f730f0cc0552c290d1ab49cbae3cd">write_maps</a>(f_io,n_io,mb,i);</div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;                }</div>
-<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;            }</div>
-<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160; </div>
-<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;            <a class="code" href="../../d1/db6/classEngine.html#a39b2a6ab7ceed3c38cba0cb1bb1682e8">logger</a>-&gt;info(<span class="stringliteral">&quot;maps have been written to:&quot;</span>);</div>
-<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;            <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;f_io-&gt;size(); ++i) {</div>
-<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;                <a class="code" href="../../d1/db6/classEngine.html#a39b2a6ab7ceed3c38cba0cb1bb1682e8">logger</a>-&gt;info(<span class="stringliteral">&quot;{}.fits&quot;</span>,f_io-&gt;at(i).filepath);</div>
-<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;            }</div>
-<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;        }</div>
-<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160; </div>
-<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;        <span class="comment">// clear fits file vectors to ensure its closed.</span></div>
-<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;        std::vector&lt;fitsIO&lt;file_type_enum::write_fits, CCfits::ExtHDU*&gt;&gt;().swap(*f_io);</div>
-<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;        std::vector&lt;fitsIO&lt;file_type_enum::write_fits, CCfits::ExtHDU*&gt;&gt;().swap(*n_io);</div>
-<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160; </div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;        <span class="comment">// write psd and histogram files</span></div>
-<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;        <a class="code" href="../../d1/db6/classEngine.html#a39b2a6ab7ceed3c38cba0cb1bb1682e8">logger</a>-&gt;debug(<span class="stringliteral">&quot;writing psds&quot;</span>);</div>
-<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;        write_psd&lt;map_type&gt;(mb, dir_name);</div>
-<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;        <a class="code" href="../../d1/db6/classEngine.html#a39b2a6ab7ceed3c38cba0cb1bb1682e8">logger</a>-&gt;debug(<span class="stringliteral">&quot;writing histograms&quot;</span>);</div>
-<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;        write_hist&lt;map_type&gt;(mb, dir_name);</div>
-<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160; </div>
-<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;        <span class="comment">// write source table</span></div>
-<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="../../d1/d74/structreduControls.html#aa2f306d077e54d8c4153911a27d2780a">run_source_finder</a>) {</div>
-<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;            <a class="code" href="../../d1/db6/classEngine.html#a39b2a6ab7ceed3c38cba0cb1bb1682e8">logger</a>-&gt;debug(<span class="stringliteral">&quot;writing source table&quot;</span>);</div>
-<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;            write_sources&lt;map_type&gt;(mb, dir_name);</div>
-<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;        }</div>
-<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;    }</div>
-<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;}</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;            <span class="comment">/*{</span></div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;<span class="comment">                std::scoped_lock&lt;std::mutex&gt; lk(*test_mutex);</span></div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;<span class="comment">                for (int i = 0; i &lt; omb.signal.size(); ++i) {</span></div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;<span class="comment">                    omb.signal[i] += omb_copy.signal[i];</span></div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;<span class="comment">                    omb.weight[i] += omb_copy.weight[i];</span></div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;<span class="comment">                    if (!omb.kernel.empty()) {</span></div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;<span class="comment">                        omb.kernel[i] += omb_copy.kernel[i];</span></div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;<span class="comment">                    }</span></div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;<span class="comment">                    if (!omb.coverage.empty()) {</span></div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;<span class="comment">                        omb.coverage[i] += omb_copy.coverage[i];</span></div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;<span class="comment">                    }</span></div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;<span class="comment">                }</span></div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;<span class="comment">                // pointer to map buffer with noise maps</span></div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;<span class="comment">                mapmaking::MapBuffer *nmb, *nmb_copy;</span></div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;<span class="comment">                const bool use_cmb = !cmb.noise.empty();</span></div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;<span class="comment">                const bool use_omb = !omb.noise.empty();</span></div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;<span class="comment">                if (run_noise) {</span></div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;<span class="comment">                    nmb = use_cmb ? &amp;cmb : (use_omb ? &amp;omb : nullptr);</span></div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;<span class="comment">                    nmb_copy = use_cmb ? &amp;cmb_copy : (use_omb ? &amp;omb_copy : nullptr);</span></div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;<span class="comment">                    for (int i = 0; i &lt; nmb-&gt;noise.size(); ++i) {</span></div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;<span class="comment">                        nmb-&gt;noise[i] += nmb_copy-&gt;noise[i];</span></div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;<span class="comment">                    }</span></div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;<span class="comment">                }</span></div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;<span class="comment">            }*/</span></div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;        }</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160; </div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;        <span class="comment">// increment number of completed scans</span></div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;        <a class="code" href="../../d1/db6/classEngine.html#a559073f45f44410ad2d5adce6082fa25">n_scans_done</a>++;</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;        <a class="code" href="../../d1/db6/classEngine.html#a39b2a6ab7ceed3c38cba0cb1bb1682e8">logger</a>-&gt;info(<span class="stringliteral">&quot;done with scan {}. {}/{} scans completed&quot;</span>, ptcdata.index.data + 1, <a class="code" href="../../d1/db6/classEngine.html#a559073f45f44410ad2d5adce6082fa25">n_scans_done</a>, <a class="code" href="../../d0/dd5/structreduClasses.html#a1d1ddf771e654d7bc41de649e4ff7e43">telescope</a>.<a class="code" href="../../d2/d8b/classengine_1_1Telescope.html#a6e43207abb13de636ce882dbccff2115">scan_indices</a>.cols());</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;    });</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160; </div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;    <span class="keywordflow">return</span> farm;</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;}</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160; </div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;<span class="keyword">template</span> &lt;mapmaking::MapType map_type&gt;</div>
+<div class="line"><a name="l00379"></a><span class="lineno"><a class="line" href="../../d9/def/classLali.html#a210b9f35a91e807ccea7caa5a9e2dcde">  379</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d9/def/classLali.html#a210b9f35a91e807ccea7caa5a9e2dcde">Lali::output</a>() {</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;    <span class="comment">// pointer to map buffer</span></div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;    <a class="code" href="../../df/d1c/classmapmaking_1_1MapBuffer.html">mapmaking::MapBuffer</a>* mb = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;    <span class="comment">// pointer to data file fits vector</span></div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;    std::vector&lt;fitsIO&lt;file_type_enum::write_fits, CCfits::ExtHDU*&gt;&gt;* f_io = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;    <span class="comment">// pointer to noise file fits vector</span></div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;    std::vector&lt;fitsIO&lt;file_type_enum::write_fits, CCfits::ExtHDU*&gt;&gt;* n_io = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160; </div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;    <span class="comment">// directory name</span></div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;    std::string dir_name;</div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160; </div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;    <span class="comment">// set common variables depending on map_type</span></div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;    <span class="keywordflow">if</span> constexpr (map_type == <a class="code" href="../../df/da9/namespacemapmaking.html#af52c40b611f64c975c702b5ed3b8c6a9ac598b171a1ef0ff17d218b9c5fc2db7f">mapmaking::RawObs</a> || map_type == <a class="code" href="../../df/da9/namespacemapmaking.html#af52c40b611f64c975c702b5ed3b8c6a9a79c7228e4cd1938d60611009d6a315f4">mapmaking::FilteredObs</a>) {</div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;        mb = &amp;<a class="code" href="../../d0/dd5/structreduClasses.html#aac76f7f5408ffcbffa8ab2ebd3ecf320">omb</a>;</div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;        dir_name = <a class="code" href="../../d1/db6/classEngine.html#a0704d50461a65cdf132cf6c6bda43b6c">obsnum_dir_name</a> + (map_type == <a class="code" href="../../df/da9/namespacemapmaking.html#af52c40b611f64c975c702b5ed3b8c6a9ac598b171a1ef0ff17d218b9c5fc2db7f">mapmaking::RawObs</a> ? <span class="stringliteral">&quot;raw/&quot;</span> : <span class="stringliteral">&quot;filtered/&quot;</span>);</div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;        f_io = (map_type == <a class="code" href="../../df/da9/namespacemapmaking.html#af52c40b611f64c975c702b5ed3b8c6a9ac598b171a1ef0ff17d218b9c5fc2db7f">mapmaking::RawObs</a>) ? &amp;<a class="code" href="../../d1/db6/classEngine.html#a13517b7a19cf52aefdb2f3d5cd1a4452">fits_io_vec</a> : &amp;<a class="code" href="../../d1/db6/classEngine.html#a6ffe93236a97db291e56a20e4a9d42e7">filtered_fits_io_vec</a>;</div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;        n_io = (map_type == <a class="code" href="../../df/da9/namespacemapmaking.html#af52c40b611f64c975c702b5ed3b8c6a9ac598b171a1ef0ff17d218b9c5fc2db7f">mapmaking::RawObs</a>) ? &amp;<a class="code" href="../../d1/db6/classEngine.html#a575ea7868d5384a35f791ff382a7e32d">noise_fits_io_vec</a> : &amp;<a class="code" href="../../d1/db6/classEngine.html#a0823f7763fa05b6b3c01084a61b87d80">filtered_noise_fits_io_vec</a>;</div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160; </div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;        <span class="keywordflow">if</span> constexpr (map_type == <a class="code" href="../../df/da9/namespacemapmaking.html#af52c40b611f64c975c702b5ed3b8c6a9ac598b171a1ef0ff17d218b9c5fc2db7f">mapmaking::RawObs</a>) {</div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;            <span class="comment">// write stats file</span></div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;            <a class="code" href="../../d1/db6/classEngine.html#a0d9494a8ed917e104a562cb939855255">write_stats</a>();</div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;            <span class="keywordflow">if</span> (<a class="code" href="../../d1/d74/structreduControls.html#aac8aba53ce7323738224ffa15a5c0cdf">run_tod_output</a> &amp;&amp; !<a class="code" href="../../d1/db6/classEngine.html#a7b7937450639a63243bd7a1dff177a77">tod_filename</a>.empty()) {</div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;                <span class="comment">// add tod header information</span></div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;                <a class="code" href="../../d1/db6/classEngine.html#a61c876707413921568013dd67a9f1de7">add_tod_header</a>();</div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;            }</div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;        }</div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;    }</div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr (map_type == <a class="code" href="../../df/da9/namespacemapmaking.html#af52c40b611f64c975c702b5ed3b8c6a9af5768d84e6e019c8d35a804c3203072d">mapmaking::RawCoadd</a> || map_type == <a class="code" href="../../df/da9/namespacemapmaking.html#af52c40b611f64c975c702b5ed3b8c6a9ab4b3f1ce96cba39980b3a1c83187c0a3">mapmaking::FilteredCoadd</a>) {</div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;        mb = &amp;<a class="code" href="../../d0/dd5/structreduClasses.html#ae91e29e30c36b99f1fe392c96d154c5b">cmb</a>;</div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;        dir_name = <a class="code" href="../../d1/db6/classEngine.html#a419700276ad0f67aa557dcf74c714eff">coadd_dir_name</a> + (map_type == <a class="code" href="../../df/da9/namespacemapmaking.html#af52c40b611f64c975c702b5ed3b8c6a9af5768d84e6e019c8d35a804c3203072d">mapmaking::RawCoadd</a> ? <span class="stringliteral">&quot;raw/&quot;</span> : <span class="stringliteral">&quot;filtered/&quot;</span>);</div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;        f_io = (map_type == <a class="code" href="../../df/da9/namespacemapmaking.html#af52c40b611f64c975c702b5ed3b8c6a9af5768d84e6e019c8d35a804c3203072d">mapmaking::RawCoadd</a>) ? &amp;<a class="code" href="../../d1/db6/classEngine.html#aa3780ee917fc34dc61f8c4feb071692d">coadd_fits_io_vec</a> : &amp;<a class="code" href="../../d1/db6/classEngine.html#aede0c4a704b0e04142129967a18a1bbb">filtered_coadd_fits_io_vec</a>;</div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;        n_io = (map_type == <a class="code" href="../../df/da9/namespacemapmaking.html#af52c40b611f64c975c702b5ed3b8c6a9af5768d84e6e019c8d35a804c3203072d">mapmaking::RawCoadd</a>) ? &amp;<a class="code" href="../../d1/db6/classEngine.html#aa0880823b60dbbc4dcbccdf0b490defb">coadd_noise_fits_io_vec</a> : &amp;<a class="code" href="../../d1/db6/classEngine.html#a74b5b53fe98029751818d336e09b8e8c">filtered_coadd_noise_fits_io_vec</a>;</div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;    }</div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160; </div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="../../d1/d74/structreduControls.html#acd10fec33ee1021304b83acd96da24af">run_mapmaking</a>) {</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;        <span class="comment">// wiener filtered maps write before this and are deleted from the vector.</span></div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;        <span class="keywordflow">if</span> (!f_io-&gt;empty()) {</div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;            {</div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;                <span class="comment">// progress bar</span></div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;                tula::logging::progressbar pb(</div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;                    [&amp;](<span class="keyword">const</span> <span class="keyword">auto</span> &amp;msg) { <a class="code" href="../../d1/db6/classEngine.html#a39b2a6ab7ceed3c38cba0cb1bb1682e8">logger</a>-&gt;info(<span class="stringliteral">&quot;{}&quot;</span>, msg); }, 100, <span class="stringliteral">&quot;output progress &quot;</span>);</div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160; </div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;                <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;f_io-&gt;size(); ++i) {</div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;                    <span class="comment">// get the array for the given map</span></div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;                    <span class="comment">// add primary hdu</span></div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;                    <a class="code" href="../../d1/db6/classEngine.html#a39b2a6ab7ceed3c38cba0cb1bb1682e8">logger</a>-&gt;debug(<span class="stringliteral">&quot;adding primary header to file {}&quot;</span>,i);</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;                    <a class="code" href="../../d1/db6/classEngine.html#a87f030609fa38fc38bb5e7ea66d31e29">add_phdu</a>(f_io, mb, i);</div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160; </div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;                    <span class="comment">// add primary hdu to noise maps</span></div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;                    <span class="keywordflow">if</span> (!mb-&gt;<a class="code" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#af5030a66f350a00e6f884d54ee15b075">noise</a>.empty()) {</div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;                        <a class="code" href="../../d1/db6/classEngine.html#a39b2a6ab7ceed3c38cba0cb1bb1682e8">logger</a>-&gt;debug(<span class="stringliteral">&quot;adding primary header to noise file {}&quot;</span>,i);</div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;                        <a class="code" href="../../d1/db6/classEngine.html#a87f030609fa38fc38bb5e7ea66d31e29">add_phdu</a>(n_io, mb, i);</div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;                    }</div>
+<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;                }</div>
+<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160; </div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;                <a class="code" href="../../d1/db6/classEngine.html#a39b2a6ab7ceed3c38cba0cb1bb1682e8">logger</a>-&gt;debug(<span class="stringliteral">&quot;done adding primary headers&quot;</span>);</div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160; </div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;                <span class="comment">// write the maps</span></div>
+<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;                <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;<a class="code" href="../../d1/db6/classEngine.html#a4d57f59a69415817363dfb4282558dbd">n_maps</a>; ++i) {</div>
+<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;                    <span class="comment">// update progress bar</span></div>
+<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;                    pb.count(<a class="code" href="../../d1/db6/classEngine.html#a4d57f59a69415817363dfb4282558dbd">n_maps</a>, 1);</div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;                    <a class="code" href="../../d1/db6/classEngine.html#afd2f730f0cc0552c290d1ab49cbae3cd">write_maps</a>(f_io,n_io,mb,i);</div>
+<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;                }</div>
+<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;            }</div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160; </div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;            <a class="code" href="../../d1/db6/classEngine.html#a39b2a6ab7ceed3c38cba0cb1bb1682e8">logger</a>-&gt;info(<span class="stringliteral">&quot;maps have been written to:&quot;</span>);</div>
+<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;            <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;f_io-&gt;size(); ++i) {</div>
+<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;                <a class="code" href="../../d1/db6/classEngine.html#a39b2a6ab7ceed3c38cba0cb1bb1682e8">logger</a>-&gt;info(<span class="stringliteral">&quot;{}.fits&quot;</span>,f_io-&gt;at(i).filepath);</div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;            }</div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;        }</div>
+<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160; </div>
+<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;        <span class="comment">// clear fits file vectors to ensure its closed.</span></div>
+<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;        std::vector&lt;fitsIO&lt;file_type_enum::write_fits, CCfits::ExtHDU*&gt;&gt;().swap(*f_io);</div>
+<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;        std::vector&lt;fitsIO&lt;file_type_enum::write_fits, CCfits::ExtHDU*&gt;&gt;().swap(*n_io);</div>
+<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160; </div>
+<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;        <span class="comment">// write psd and histogram files</span></div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;        <a class="code" href="../../d1/db6/classEngine.html#a39b2a6ab7ceed3c38cba0cb1bb1682e8">logger</a>-&gt;debug(<span class="stringliteral">&quot;writing psds&quot;</span>);</div>
+<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;        write_psd&lt;map_type&gt;(mb, dir_name);</div>
+<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;        <a class="code" href="../../d1/db6/classEngine.html#a39b2a6ab7ceed3c38cba0cb1bb1682e8">logger</a>-&gt;debug(<span class="stringliteral">&quot;writing histograms&quot;</span>);</div>
+<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;        write_hist&lt;map_type&gt;(mb, dir_name);</div>
+<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160; </div>
+<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;        <span class="comment">// write source table</span></div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="../../d1/d74/structreduControls.html#aa2f306d077e54d8c4153911a27d2780a">run_source_finder</a>) {</div>
+<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;            <a class="code" href="../../d1/db6/classEngine.html#a39b2a6ab7ceed3c38cba0cb1bb1682e8">logger</a>-&gt;debug(<span class="stringliteral">&quot;writing source table&quot;</span>);</div>
+<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;            write_sources&lt;map_type&gt;(mb, dir_name);</div>
+<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;        }</div>
+<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;    }</div>
+<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;}</div>
 <div class="ttc" id="aclassEngine_html"><div class="ttname"><a href="../../d1/db6/classEngine.html">Engine</a></div><div class="ttdef"><b>Definition:</b> engine.h:154</div></div>
 <div class="ttc" id="aclassEngine_html_a0094594dc40934d970909d2f53f8ba2d"><div class="ttname"><a href="../../d1/db6/classEngine.html#a0094594dc40934d970909d2f53f8ba2d">Engine::hwpr_start_indices</a></div><div class="ttdeci">Eigen::Index hwpr_start_indices</div><div class="ttdef"><b>Definition:</b> engine.h:202</div></div>
 <div class="ttc" id="aclassEngine_html_a03b9f9d69c7e1f1d61e127662e0bb81b"><div class="ttname"><a href="../../d1/db6/classEngine.html#a03b9f9d69c7e1f1d61e127662e0bb81b">Engine::obsnum_setup</a></div><div class="ttdeci">void obsnum_setup()</div><div class="ttdef"><b>Definition:</b> engine.h:347</div></div>
@@ -571,7 +570,7 @@ $(function() {
 <div class="ttc" id="aclassEngine_html_afd2f730f0cc0552c290d1ab49cbae3cd"><div class="ttname"><a href="../../d1/db6/classEngine.html#afd2f730f0cc0552c290d1ab49cbae3cd">Engine::write_maps</a></div><div class="ttdeci">void write_maps(fits_io_type &amp;, fits_io_type &amp;, map_buffer_t &amp;, Eigen::Index)</div><div class="ttdef"><b>Definition:</b> engine.h:2045</div></div>
 <div class="ttc" id="aclassLali_html"><div class="ttname"><a href="../../d9/def/classLali.html">Lali</a></div><div class="ttdef"><b>Definition:</b> lali.h:14</div></div>
 <div class="ttc" id="aclassLali_html_a1d8a03e4170348d459c644380ada6d1c"><div class="ttname"><a href="../../d9/def/classLali.html#a1d8a03e4170348d459c644380ada6d1c">Lali::setup</a></div><div class="ttdeci">void setup()</div><div class="ttdef"><b>Definition:</b> lali.h:33</div></div>
-<div class="ttc" id="aclassLali_html_a210b9f35a91e807ccea7caa5a9e2dcde"><div class="ttname"><a href="../../d9/def/classLali.html#a210b9f35a91e807ccea7caa5a9e2dcde">Lali::output</a></div><div class="ttdeci">void output()</div><div class="ttdef"><b>Definition:</b> lali.h:380</div></div>
+<div class="ttc" id="aclassLali_html_a210b9f35a91e807ccea7caa5a9e2dcde"><div class="ttname"><a href="../../d9/def/classLali.html#a210b9f35a91e807ccea7caa5a9e2dcde">Lali::output</a></div><div class="ttdeci">void output()</div><div class="ttdef"><b>Definition:</b> lali.h:379</div></div>
 <div class="ttc" id="aclassLali_html_a96849f681c259cbaef927d57fe9697dd"><div class="ttname"><a href="../../d9/def/classLali.html#a96849f681c259cbaef927d57fe9697dd">Lali::pipeline</a></div><div class="ttdeci">void pipeline(KidsProc &amp;, RawObs &amp;)</div><div class="ttdef"><b>Definition:</b> lali.h:44</div></div>
 <div class="ttc" id="aclassLali_html_ab9e79e00732ea442711e082547c7c527"><div class="ttname"><a href="../../d9/def/classLali.html#ab9e79e00732ea442711e082547c7c527">Lali::run</a></div><div class="ttdeci">auto run(KidsProc &amp;)</div><div class="ttdef"><b>Definition:</b> lali.h:135</div></div>
 <div class="ttc" id="aclassengine_1_1Calib_html_a2d13ea2ff310d451c01d6173ef8292d2"><div class="ttname"><a href="../../d3/dff/classengine_1_1Calib.html#a2d13ea2ff310d451c01d6173ef8292d2">engine::Calib::run_hwpr</a></div><div class="ttdeci">bool run_hwpr</div><div class="ttdef"><b>Definition:</b> calib.h:41</div></div>
