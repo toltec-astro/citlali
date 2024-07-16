@@ -397,7 +397,7 @@ auto Beammap::run_timestream(KidsProc &kidsproc) {
 
         // run rtcproc
         logger->info("raw time chunk processing for scan {}", rtcdata.index.data + 1);
-        auto [map_indices, array_indices, nw_indices, det_indices] = rtcproc.run(rtcdata, ptcdata, telescope.pixel_axes, redu_type,
+        auto [map_indices, array_indices, nw_indices, det_indices, fg_indices] = rtcproc.run(rtcdata, ptcdata, telescope.pixel_axes, redu_type,
                                                                                  calib, telescope, omb.pixel_size_rad, map_grouping);
 
         if (map_grouping!="detector") {
@@ -427,6 +427,7 @@ auto Beammap::run_timestream(KidsProc &kidsproc) {
         ptcdata.nw_indices.data = std::move(nw_indices);
         ptcdata.array_indices.data = std::move(array_indices);
         ptcdata.map_indices.data = std::move(map_indices);
+        ptcdata.fg_indices.data = std::move(fg_indices);
 
         // move out ptcdata the PTCData vector at corresponding index
         ptcs0.at(ptcdata.index.data) = std::move(ptcdata);
@@ -778,53 +779,20 @@ void Beammap::run_loop() {
 
             // mapmaking
             grppi::map(tula::grppi_utils::dyn_ex(map_parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
-
-                //mapmaking::MapBuffer omb_copy;
-                //mapmaking::MapBuffer cmb_copy;
-
-                //omb_copy.signal.reserve();
-
                 bool run_omb = true;
                 // populate maps
                 if (map_method=="naive") {
                     // naive mapmaker
-                    naive_mm.populate_maps_naive_2(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
-                                                 ptcs[i].det_indices.data, telescope.pixel_axes,
+                    naive_mm.populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
+                                                 ptcs[i].det_indices.data, ptcs[i].fg_indices.data, telescope.pixel_axes,
                                                  calib.apt, telescope.d_fsmp, run_omb, run_noise);
                 }
                 else if (map_method=="jinc") {
                     // jinc mapmaker
-                    jinc_mm.populate_maps_jinc_2(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
-                                               ptcs[i].det_indices.data, telescope.pixel_axes,
+                    jinc_mm.populate_maps_jinc(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
+                                               ptcs[i].det_indices.data, ptcs[i].fg_indices.data, telescope.pixel_axes,
                                                calib.apt,telescope.d_fsmp, run_omb, run_noise);
                 }
-
-                /*{
-                    std::scoped_lock<std::mutex> lk(*test_mutex);
-
-                        omb.signal[i] += omb_copy.signal[i];
-                        omb.weight[i] += omb_copy.weight[i];
-
-                        if (!omb.kernel.empty()) {
-                            omb.kernel[i] += omb_copy.kernel[i];
-                        }
-                        if (!omb.coverage.empty()) {
-                            omb.coverage[i] += omb_copy.coverage[i];
-                        }
-
-                    // pointer to map buffer with noise maps
-                    mapmaking::MapBuffer *nmb, *nmb_copy;
-
-                    const bool use_cmb = !cmb.noise.empty();
-                    const bool use_omb = !omb.noise.empty();
-
-                    if (run_noise) {
-                        nmb = use_cmb ? &cmb : (use_omb ? &omb : nullptr);
-                        nmb_copy = use_cmb ? &cmb_copy : (use_omb ? &omb_copy : nullptr);
-
-                        nmb->noise[j] += nmb_copy->noise[j];
-                    }
-                }*/
 
                 // update progress bar
                 pb.count(telescope.scan_indices.cols(), 1);

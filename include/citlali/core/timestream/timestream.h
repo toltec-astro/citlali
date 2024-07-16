@@ -201,11 +201,11 @@ struct TimeStream : internal::TCDataBase<Derived>,
     // hwpr angle for scan
     data_t<Eigen::VectorXd> hwpr_angle;
     // detector angle
-    data_t<Eigen::MatrixXd> angle;
+    data_t<Eigen::VectorXd> angle;
     // fcf
     data_t<Eigen::VectorXd> fcf;
     // vectors for mapping apt table onto timestreams
-    data_t<Eigen::VectorXI> det_indices, nw_indices, array_indices, map_indices;
+    data_t<Eigen::VectorXI> det_indices, nw_indices, array_indices, map_indices, fg_indices;
     // detector pointing
     data_t<std::map<std::string, Eigen::MatrixXd>> pointing;
 };

@@ -215,7 +215,7 @@ auto Lali::run(KidsProc &kidsproc) {
 
         // run rtcproc
         logger->info("raw time chunk processing for scan {}", rtcdata.index.data + 1);
-        auto [map_indices, array_indices, nw_indices, det_indices] = rtcproc.run(rtcdata, ptcdata, telescope.pixel_axes, redu_type,
+        auto [map_indices, array_indices, nw_indices, det_indices, fg_indices] = rtcproc.run(rtcdata, ptcdata, telescope.pixel_axes, redu_type,
                                                                                  calib, telescope, omb.pixel_size_rad, map_grouping);
 
         // remove flagged detectors
@@ -265,11 +265,11 @@ auto Lali::run(KidsProc &kidsproc) {
                 bool run_omb = false;
                 logger->info("populating noise maps");
                 if (map_method=="naive") {
-                    naive_mm.populate_maps_naive(ptcdata, omb_copy, cmb_copy, map_indices, det_indices, telescope.pixel_axes,
+                    naive_mm.populate_maps_naive(ptcdata, omb_copy, cmb_copy, map_indices, det_indices, fg_indices, telescope.pixel_axes,
                                                  calib.apt, telescope.d_fsmp, run_omb, run_noise);
                 }
                 else if (map_method=="jinc") {
-                    jinc_mm.populate_maps_jinc(ptcdata, omb_copy, cmb_copy, map_indices, det_indices, telescope.pixel_axes,
+                    jinc_mm.populate_maps_jinc(ptcdata, omb_copy, cmb_copy, map_indices, det_indices, fg_indices, telescope.pixel_axes,
                                                calib.apt, telescope.d_fsmp, run_omb, run_noise);
                 }
             }
@@ -323,11 +323,11 @@ auto Lali::run(KidsProc &kidsproc) {
 
             logger->info("populating maps");
             if (map_method=="naive") {
-                naive_mm.populate_maps_naive(ptcdata, omb_copy, cmb_copy, map_indices, det_indices, telescope.pixel_axes,
+                naive_mm.populate_maps_naive(ptcdata, omb_copy, cmb_copy, map_indices, det_indices, fg_indices, telescope.pixel_axes,
                                              calib.apt, telescope.d_fsmp, run_omb, run_noise_fruit);
             }
             else if (map_method=="jinc") {
-                jinc_mm.populate_maps_jinc(ptcdata, omb_copy, cmb_copy, map_indices, det_indices, telescope.pixel_axes,
+                jinc_mm.populate_maps_jinc(ptcdata, omb_copy, cmb_copy, map_indices, det_indices, fg_indices, telescope.pixel_axes,
                                            calib.apt, telescope.d_fsmp, run_omb, run_noise_fruit);
             }
             else if (map_method=="maximum_likelihood") {

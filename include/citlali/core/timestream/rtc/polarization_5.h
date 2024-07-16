@@ -46,38 +46,19 @@ public:
         // vectors of array, nw, and det indices
         Eigen::VectorXI array_indices, nw_indices, det_indices, fg_indices;
 
-            array_indices = calib.apt["array"].template cast<Eigen::Index> ();
-            nw_indices = calib.apt["nw"].template cast<Eigen::Index> ();
-            det_indices = Eigen::VectorXI::LinSpaced(in.scans.data.cols(),0,in.scans.data.cols()-1);
-            fg_indices = calib.apt["fg"].template cast<Eigen::Index> ();
+        array_indices = calib.apt["array"].template cast<Eigen::Index> ();
+        nw_indices = calib.apt["nw"].template cast<Eigen::Index> ();
+        det_indices = Eigen::VectorXI::LinSpaced(in.scans.data.cols(),0,in.scans.data.cols()-1);
+        fg_indices = calib.apt["fg"].template cast<Eigen::Index> ();
 
+        // rotation angle at array center
+        in.angle.data = in.tel_data.data["ActParAng"].array() + in.tel_data.data["TelElAct"].array() +
+                         in.pointing_offsets_arcsec.data["alt"].array()*ASEC_TO_RAD;
 
-            // rotation angle at array center
-            auto rot_angle = in.tel_data.data["ActParAng"].array() + in.tel_data.data["TelElAct"].array() +
-                             in.pointing_offsets_arcsec.data["alt"].array()*ASEC_TO_RAD;
-
-            in.angle.data.resize(n_pts,calib.n_dets);
-
-            for (Eigen::Index i=0; i<calib.n_dets; ++i) {
-                if (fg_indices(i) != -1) {
-                    auto angle = rot_angle + fgs[fg_indices(i)] + install_ang[array_indices(i)];
-                    if (calib.run_hwpr) {
-                        in.angle.data.col(i) = 2*in.hwpr_angle.data.array() - angle;
-                    }
-                    else {
-                        in.angle.data.col(i) = angle;
-                    }
-                }
-                else {
-                    in.angle.data.col(i).setConstant(0);
-                }
-            }
-
-            // set as chunk as demodulated
-            in.status.demodulated = true;
+        // set as chunk as demodulated
+        in.status.demodulated = true;
 
         return indices_t(array_indices, nw_indices, det_indices, fg_indices);
     }
 };
-
 } // namespace timestream

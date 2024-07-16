@@ -4,7 +4,7 @@
 
 #include <citlali/core/timestream/timestream.h>
 
-#include <citlali/core/timestream/rtc/polarization_4.h>
+#include <citlali/core/timestream/rtc/polarization_5.h>
 #include <citlali/core/timestream/rtc/kernel.h>
 #include <citlali/core/timestream/rtc/despike.h>
 #include <citlali/core/timestream/rtc/filter.h>
@@ -429,7 +429,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
             }
             // downsample detector angle
             Eigen::Ref<Eigen::MatrixXd> in_angle =
-                in.angle.data.block(si, 0, sl, in.angle.data.cols());
+                in.angle.data.segment(si, sl);
             downsampler.downsample(in_angle, out.angle.data);
         }
         // downsample kernel if requested
@@ -469,7 +469,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
                 out.hwpr_angle.data = in.hwpr_angle.data.segment(si,sl);
             }
             // copy detector angle
-            out.angle.data = in.angle.data.block(si, 0, sl, in.angle.data.cols());
+            out.angle.data = in.angle.data.segment(si,sl);
         }
     }
 
@@ -491,9 +491,10 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     in.tel_data.data.clear();
     in.pointing_offsets_arcsec.data.clear();
     in.hwpr_angle.data.resize(0);
-    in.angle.data.resize(0,0);
+    in.angle.data.resize(0);
 
-    return std::tuple<Eigen::VectorXI,Eigen::VectorXI,Eigen::VectorXI,Eigen::VectorXI>(map_indices, array_indices, nw_indices, det_indices);
+    return std::tuple<Eigen::VectorXI,Eigen::VectorXI,Eigen::VectorXI,Eigen::VectorXI, Eigen::VectorXI>(map_indices, array_indices,
+                                                                                                        nw_indices, det_indices, fg_indices);
 }
 
 template <typename apt_t, typename Derived>
