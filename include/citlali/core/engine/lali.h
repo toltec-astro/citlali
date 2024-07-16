@@ -335,7 +335,6 @@ auto Lali::run(KidsProc &kidsproc) {
                                        calib, telescope.d_fsmp, run_omb, run_noise_fruit);
             }
 
-
             /*{
                 std::scoped_lock<std::mutex> lk(*test_mutex);
 

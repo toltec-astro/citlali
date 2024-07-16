@@ -345,7 +345,7 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
         }
 
         if (run_noise) {
-            //std::transform(nmb->noise.begin(), nmb->noise.end(), nmb_copy->noise.begin(), nmb->noise.begin(), std::plus<Eigen::Tensor<double,3>>());
+            std::transform(nmb->noise.begin(), nmb->noise.end(), nmb_copy->noise.begin(), nmb->noise.begin(), std::plus<Eigen::Tensor<double,3>>());
         }
     }
 }
