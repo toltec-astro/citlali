@@ -258,6 +258,36 @@ void Telescope::calc_scan_indices() {
         // convert the hold signal to a bool
         Eigen::Matrix<bool,Eigen::Dynamic,1> hold_bool = tel_data["Hold"].template cast<bool>();
 
+        // get velocities
+        /*auto x_vel = engine_utils::compute_numerical_derivative(tel_data["TelTime"],tel_data["az_phys"]);
+        auto y_vel = engine_utils::compute_numerical_derivative(tel_data["TelTime"],tel_data["alt_phys"]);
+
+        auto vel = sqrt(pow(x_vel.array(),2) + pow(y_vel.array(),2));
+
+        double med_vel = tula::alg::median(vel);
+
+        for (Eigen::Index i=0; i<vel.size(); ++i) {
+            if (vel(i) < 0.5*med_vel) {
+                //hold_bool(i) = 1;
+            }
+        }*/
+
+        for (Eigen::Index i=0; i<hold_bool.size(); ++i) {
+            if (pixel_axes=="radec") {
+                if (engine_utils::is_point_in_box(tel_data["ra_phys"](i), tel_data["dec_phys"](i),
+                                                   tel_header["Header.Map.XLength"](0), tel_header["Header.Map.YLength"](0))==false) {
+                    hold_bool(i) = 1;
+                }
+            }
+
+            else if (pixel_axes=="altaz") {
+                if (engine_utils::is_point_in_box(tel_data["az_phys"](i), tel_data["alt_phys"](i),
+                                                   tel_header["Header.Map.XLength"](0), tel_header["Header.Map.YLength"](0))==false) {
+                    hold_bool(i) = 1;
+                }
+            }
+        }
+
         // find where the change in the hold signal is 1 and increment scans
         for (Eigen::Index i=1; i<hold_bool.size(); ++i) {
             if (hold_bool(i) - hold_bool(i-1) == 1) {
@@ -266,7 +296,7 @@ void Telescope::calc_scan_indices() {
         }
 
         // increment scan number if last element is zero
-        if (hold_bool(hold_bool.size()-1) == 0){
+        if (hold_bool(hold_bool.size()-1) == 0) {
             n_scans++;
         }
         // resize matrix to hold scans
@@ -290,8 +320,11 @@ void Telescope::calc_scan_indices() {
                 scan_indices(1,counter) = i - 1;
             }
         }
-        // populate final scan
-        scan_indices(1,n_scans - 1) = hold_bool.size() - 1;
+
+        if (hold_bool(hold_bool.size()-1) == 0) {
+            // populate final scan
+            scan_indices(1,n_scans - 1) = hold_bool.size() - 1;
+        }
     }
 
     // get scan indices for Lissajous/Rastajous pattern
@@ -336,7 +369,7 @@ void Telescope::calc_scan_indices() {
     Eigen::Matrix<bool, Eigen::Dynamic, 1> is_bad_scan(n_scans);
     for (Eigen::Index i=0; i<n_scans; ++i) {
         sum = 0;
-        for (Eigen::Index j=scan_indices_temp(0,i); j<(scan_indices_temp(1,i)+1); j++) {
+        for (Eigen::Index j=scan_indices_temp(0,i); j<(scan_indices_temp(1,i)+1); ++j) {
             sum += 1;
         }
         if (sum < 2.*fsmp) {
@@ -374,6 +407,8 @@ void Telescope::calc_scan_indices() {
     // add/subtract the filter length from first/last inner scan positions
     scan_indices(0,0) = scan_indices(0,0) + inner_scans_chunk;
     scan_indices(1,n_scans-1) = scan_indices(1,n_scans-1) - inner_scans_chunk;
+
+    logger->info("scan_indices {}",scan_indices);
 }
 
 } // namespace engine

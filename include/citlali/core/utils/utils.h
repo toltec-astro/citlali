@@ -1156,4 +1156,42 @@ struct scoped_timeit {
 
 };
 
+// Function to compute numerical derivatives using central difference
+template <typename Derived>
+Eigen::VectorXd compute_numerical_derivative(const Eigen::DenseBase<Derived>& times, const Eigen::DenseBase<Derived>& values) {
+    if (times.size() != values.size()) {
+        throw std::invalid_argument("Time vector and value vector must have the same number of elements.");
+    }
+
+    Eigen::VectorXd derivatives(values.size());
+    double dt;
+
+    // Calculate derivatives
+    for (int i = 0; i < values.size(); ++i) {
+        if (i == 0) {  // forward difference for the first point
+            dt = times(i + 1) - times(i);
+            derivatives(i) = (values(i + 1) - values(i)) / dt;
+        } else if (i == values.size() - 1) {  // backward difference for the last point
+            dt = times(i) - times(i - 1);
+            derivatives(i) = (values(i) - values(i - 1)) / dt;
+        } else {  // central difference for other points
+            dt = times(i + 1) - times(i - 1);
+            derivatives(i) = (values(i + 1) - values(i - 1)) / (2 * dt);
+        }
+    }
+
+    return derivatives;
+}
+
+static const bool is_point_in_box(double a, double b, double x, double y) {
+    // Check horizontal bounds
+    if (-x / 2 <= a && a <= x / 2) {
+        // Check vertical bounds
+        if (-y / 2 <= b && b <= y / 2) {
+            return true;
+        }
+    }
+    return false;
+}
+
 } //namespace engine_utils

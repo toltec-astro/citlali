@@ -313,7 +313,7 @@ void NaiveMapmaker::populate_maps_naive_2(TCData<TCDataKind::PTC, Eigen::MatrixX
                             // populate signal map
                             signal = in.scans.data(j,i)*in.weights.data(i);
                             {
-                                std::scoped_lock<std::mutex> lk(*test_mutex);
+                                //std::scoped_lock<std::mutex> lk(*test_mutex);
                                 omb.signal[map_index](omb_ir,omb_ic) += signal;
 
                                 // populate weight map

@@ -153,7 +153,7 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     // calculate the covariance matrix
     pca_cov.noalias() = ((det.adjoint() * det).array() / denom.array()).matrix();
 
-    Eigen::VectorXd avg_corrs(n_dets);
+    /*Eigen::VectorXd avg_corrs(n_dets);
     avg_corrs.setZero();
 
     // remove weakly correlated detectors
@@ -167,9 +167,10 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     }
 
     double mean_corr = avg_corrs.mean();
+*/
 
-    logger->info("average correlations {}", avg_corrs);
-    logger->info("mean global correlation {}", mean_corr);
+    //logger->info("average correlations {}", avg_corrs);
+    //logger->info("mean global correlation {}", mean_corr);
 
     /*for (Eigen::Index i=0; i<n_dets; i++) {
         if (avg_corrs(i) < tau*mean_corr) {
