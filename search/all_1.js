@@ -18,7 +18,7 @@ var searchData=
   ['allocate_5fomb_17',['allocate_omb',['../de/d16/structTimeOrderedDataProc.html#a47e79ee1547ea753c308e40993f38ec0',1,'TimeOrderedDataProc']]],
   ['allocate_5fpayloads_5fbuffer_18',['allocate_payloads_buffer',['../d5/ddb/structCoordinator.html#ad5b899edf3d60cd960a6652d070db28a',1,'Coordinator']]],
   ['allocate_5fpointing_19',['allocate_pointing',['../db/d8e/classmapmaking_1_1JincMapmaker.html#a30547edc43892c6ff43007c23471d494',1,'mapmaking::JincMapmaker::allocate_pointing()'],['../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a18b9ba677dbf22bf07f56fbd41498bbb',1,'mapmaking::NaiveMapmaker::allocate_pointing(map_buffer_t &amp;, double, double, double, Eigen::Index, int, int)'],['../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a18b9ba677dbf22bf07f56fbd41498bbb',1,'mapmaking::NaiveMapmaker::allocate_pointing(map_buffer_t &amp;, double, double, double, Eigen::Index, int, int)']]],
-  ['angle_20',['angle',['../de/d07/structtimestream_1_1TimeStream.html#a588efb14787c2111549de9d5c9b63e26',1,'timestream::TimeStream']]],
+  ['angle_20',['angle',['../de/d07/structtimestream_1_1TimeStream.html#a3cdb09b2400d05c7aa8cad7b8d786734',1,'timestream::TimeStream']]],
   ['angle_5fhigh_21',['angle_high',['../d9/dbd/classengine__utils_1_1mapFitter.html#a808b184410d79dd2753eff9119bac41e',1,'engine_utils::mapFitter']]],
   ['angle_5flow_22',['angle_low',['../d9/dbd/classengine__utils_1_1mapFitter.html#a664effe9c448331cf0661a32da6af090',1,'engine_utils::mapFitter']]],
   ['annotate_23',['annotate',['../d7/df7/namespacematplotlibcpp.html#a4854fc237468144bd46809ea7ce8f2a0',1,'matplotlibcpp']]],

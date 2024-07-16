@@ -8,7 +8,7 @@ var searchData=
   ['init_5ffruit_5floops_5fpath_1982',['init_fruit_loops_path',['../de/d76/classtimestream_1_1TCProc.html#a4653fa2a783c4482eb31b0b247f8ad5b',1,'timestream::TCProc']]],
   ['init_5ffwhm_1983',['init_fwhm',['../df/db0/classmapmaking_1_1WienerFilter.html#a60243ce8a4ccdb0169812599d1a5448f',1,'mapmaking::WienerFilter']]],
   ['inner_5fscans_5fchunk_1984',['inner_scans_chunk',['../d2/d8b/classengine_1_1Telescope.html#ace71fc04172dd950d56fec6f1de5c0ea',1,'engine::Telescope']]],
-  ['install_5fang_1985',['install_ang',['../d3/d24/classtimestream_1_1Polarization.html#afa0b1ba05bd038a7839db8b4bc8a654b',1,'timestream::Polarization']]],
+  ['install_5fang_1985',['install_ang',['../db/d8e/classmapmaking_1_1JincMapmaker.html#a33d8245f3871b5083f059a232148d690',1,'mapmaking::JincMapmaker::install_ang()'],['../d3/d24/classtimestream_1_1Polarization.html#afa0b1ba05bd038a7839db8b4bc8a654b',1,'timestream::Polarization::install_ang()'],['../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a6e7180da3199a46dec85111d31b12866',1,'mapmaking::NaiveMapmaker::install_ang()']]],
   ['interface_1986',['interface',['../d1/dba/structCoordinator_1_1Observation_1_1DataItem.html#a0be2ab2988b9a5195763ab0750da2922',1,'Coordinator::Observation::DataItem']]],
   ['interface_5fsync_5foffset_1987',['interface_sync_offset',['../d1/db6/classEngine.html#acdcb97bec5f1786974331c9d81d90d2f',1,'Engine']]],
   ['invalid_5fkeys_1988',['invalid_keys',['../d1/db6/classEngine.html#a378e3327bd69f8f63ed2872493d6cffb',1,'Engine']]],
