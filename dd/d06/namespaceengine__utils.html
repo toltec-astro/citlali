@@ -207,6 +207,11 @@ Functions</h2></td></tr>
 <tr class="memitem:a582a54460566fa6a468a6e5902f552e9"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/d06/namespaceengine__utils.html#a582a54460566fa6a468a6e5902f552e9">elapsed_since</a> (const std::chrono::time_point&lt; std::chrono::high_resolution_clock &gt; &amp;t0)</td></tr>
 <tr class="memdesc:a582a54460566fa6a468a6e5902f552e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the time elapsed since given time.  <a href="../../dd/d06/namespaceengine__utils.html#a582a54460566fa6a468a6e5902f552e9">More...</a><br /></td></tr>
 <tr class="separator:a582a54460566fa6a468a6e5902f552e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b4e6bb0092c5f884059ef26011bf8dc"><td class="memTemplParams" colspan="2">template&lt;typename Derived &gt; </td></tr>
+<tr class="memitem:a6b4e6bb0092c5f884059ef26011bf8dc"><td class="memTemplItemLeft" align="right" valign="top">Eigen::VectorXd&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="../../dd/d06/namespaceengine__utils.html#a6b4e6bb0092c5f884059ef26011bf8dc">compute_numerical_derivative</a> (const Eigen::DenseBase&lt; Derived &gt; &amp;times, const Eigen::DenseBase&lt; Derived &gt; &amp;values)</td></tr>
+<tr class="separator:a6b4e6bb0092c5f884059ef26011bf8dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab528a778af0d214b408a053e08f8d5dd"><td class="memItemLeft" align="right" valign="top">static const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/d06/namespaceengine__utils.html#ab528a778af0d214b408a053e08f8d5dd">is_point_in_box</a> (double a, double b, double x, double y)</td></tr>
+<tr class="separator:ab528a778af0d214b408a053e08f8d5dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="ab90ba5d476fa7a82560c7af8318d0f90"></a>
@@ -673,6 +678,36 @@ template&lt;typename DerivedA , typename DerivedB &gt; </div>
           <td></td>
           <td class="paramtype">Eigen::DenseBase&lt; DerivedB &gt; &amp;&#160;</td>
           <td class="paramname"><em>flag</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6b4e6bb0092c5f884059ef26011bf8dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6b4e6bb0092c5f884059ef26011bf8dc">&#9670;&nbsp;</a></span>compute_numerical_derivative()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Derived &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::VectorXd engine_utils::compute_numerical_derivative </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::DenseBase&lt; Derived &gt; &amp;&#160;</td>
+          <td class="paramname"><em>times</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::DenseBase&lt; Derived &gt; &amp;&#160;</td>
+          <td class="paramname"><em>values</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1179,6 +1214,63 @@ Here is the caller graph for this function:</div>
 <area shape="rect" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#a7b53c79539613b9611221b77e83374f8" title=" " alt="" coords="435,5,609,47"/>
 <area shape="rect" href="../../dc/d9e/classBeammap.html#a7651fe4687746596facaf17bbeb8bcdb" title=" " alt="" coords="203,13,387,39"/>
 <area shape="rect" href="../../dc/d9e/classBeammap.html#a5d30a47c11b4749b5c1c692872a9cf8e" title=" " alt="" coords="5,13,155,39"/>
+</map>
+</div>
+
+</div>
+</div>
+<a id="ab528a778af0d214b408a053e08f8d5dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab528a778af0d214b408a053e08f8d5dd">&#9670;&nbsp;</a></span>is_point_in_box()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static const bool engine_utils::is_point_in_box </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>y</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="../../dd/d06/namespaceengine__utils_ab528a778af0d214b408a053e08f8d5dd_icgraph.png" border="0" usemap="#add/d06/namespaceengine__utils_ab528a778af0d214b408a053e08f8d5dd_icgraph" alt=""/></div>
+<map name="add/d06/namespaceengine__utils_ab528a778af0d214b408a053e08f8d5dd_icgraph" id="add/d06/namespaceengine__utils_ab528a778af0d214b408a053e08f8d5dd_icgraph">
+<area shape="rect" title=" " alt="" coords="200,5,360,47"/>
+<area shape="rect" href="../../d2/d8b/classengine_1_1Telescope.html#a6c3b3338a00f31864108f63cf5db12ba" title=" " alt="" coords="5,5,152,47"/>
 </map>
 </div>
 

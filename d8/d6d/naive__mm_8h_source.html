@@ -384,7 +384,7 @@ $(function() {
 <div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;                            <span class="comment">// populate signal map</span></div>
 <div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;                            signal = in.scans.data(j,i)*in.weights.data(i);</div>
 <div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;                            {</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;                                std::scoped_lock&lt;std::mutex&gt; lk(*<a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#aa485c05a266ba5797884e5f42f8e355e">test_mutex</a>);</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;                                <span class="comment">//std::scoped_lock&lt;std::mutex&gt; lk(*test_mutex);</span></div>
 <div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;                                omb.signal[map_index](omb_ir,omb_ic) += signal;</div>
 <div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160; </div>
 <div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;                                <span class="comment">// populate weight map</span></div>
