@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['gauss_5fmodels_2ecpp_1374',['gauss_models.cpp',['../d8/d62/gauss__models_8cpp.html',1,'']]],
-  ['gauss_5fmodels_2eh_1375',['gauss_models.h',['../d1/dcd/gauss__models_8h.html',1,'']]],
-  ['gaussian_5ffilter_2eh_1376',['gaussian_filter.h',['../d8/dd4/gaussian__filter_8h.html',1,'']]]
+  ['gauss_5fmodels_2ecpp_1362',['gauss_models.cpp',['../d8/d62/gauss__models_8cpp.html',1,'']]],
+  ['gauss_5fmodels_2eh_1363',['gauss_models.h',['../d1/dcd/gauss__models_8h.html',1,'']]],
+  ['gaussian_5ffilter_2eh_1364',['gaussian_filter.h',['../d8/dd4/gaussian__filter_8h.html',1,'']]]
 ];
