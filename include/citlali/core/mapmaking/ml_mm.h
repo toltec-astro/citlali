@@ -117,7 +117,7 @@ void MLMapmaker::populate_maps_ml(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
         // initialize sparse matrix
         A.setFromTriplets(triplet_list.begin(), triplet_list.end());
 
-        logger->info("running conjugate gradient for array {}/{}",arr + 1,calib.n_arrays);
+        logger->info("running conjugate gradient for array {}/{}", arr + 1, calib.n_arrays);
 
         //Eigen::ConjugateGradient<Eigen::SparseMatrix<double>, Eigen::Lower|Eigen::Upper> cg;
         Eigen::LeastSquaresConjugateGradient<Eigen::SparseMatrix<double> > cg;

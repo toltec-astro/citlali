@@ -20,23 +20,6 @@ public:
     // loc or fg
     std::string grouping;
 
-    // toltec array mounting angle
-    std::map<int, double> install_ang = {
-        {-1,-1},
-        {0,pi/2},
-        {1,-pi/2},
-        {2,-pi/2},
-        };
-
-    // toltec detector orientation angles
-    std::map<int, double> fgs = {
-        {-1,-1},
-        {0,0},
-        {1,pi/4},
-        {2,pi/2},
-        {3,3*pi/4}
-    };
-
     template<TCDataKind td_kind, class calib_type>
     indices_t calc_angle(TCData<td_kind, Eigen::MatrixXd> &in, calib_type &calib) {
 

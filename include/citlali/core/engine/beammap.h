@@ -154,9 +154,9 @@ void Beammap::setup() {
     current_iter = 0;
 
     // use per detector parallelization for jinc mapmaking
-    if (map_method == "jinc") {
-        map_parallel_policy = "seq";
-    }
+    //if (map_method == "jinc") {
+    //    map_parallel_policy = "seq";
+    //}
 
     /* update apt table meta data */
     calib.apt_meta.reset();

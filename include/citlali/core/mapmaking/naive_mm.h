@@ -112,28 +112,13 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
 
     if (use_omb) {
         omb_copy.noise = omb.noise;
-    }
 
-    for (Eigen::Index i=0; i<omb.signal.size(); ++i) {
-        /*omb_copy.signal[i].setZero();
-        omb_copy.weight[i].setZero();
-
-        // clear coverage
-        if (run_coverage) {
-            omb_copy.coverage[i].setZero();
-        }
-        // clear kernel
-        if (run_kernel) {
-            omb_copy.kernel[i].setZero();
-        }*/
-        // clear noise
-        if (use_omb) {
+        for (Eigen::Index i=0; i<omb.signal.size(); ++i) {
             omb_copy.noise[i].setZero();
         }
     }
+
     map_buffer_t cmb_copy;
-    cmb_copy.n_rows = cmb.n_rows;
-    cmb_copy.n_cols = cmb.n_cols;
 
     if (use_cmb) {
         cmb_copy.noise = cmb.noise;
@@ -223,33 +208,20 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                         if ((omb_ir >= 0) && (omb_ir < omb.n_rows) && (omb_ic >= 0) && (omb_ic < omb.n_cols)) {
                             // populate signal map
                             signal = in.scans.data(j,i)*in.weights.data(i);
-
-                            //omb.signal[map_index](omb_ir,omb_ic) += signal;
-                            //omb_copy.signal[map_index](omb_ir,omb_ic) += signal;
                             signals[map_index].push_back(T(omb_ir,omb_ic,signal));
-                            //signals(omb_ir, omb_ic) += signal;
 
                             // populate weight map
-                            //omb.weight[map_index](omb_ir,omb_ic) += in.weights.data(i);
                             weights[map_index].push_back(T(omb_ir,omb_ic,in.weights.data(i)));
-                            //weights(omb_ir, omb_ic) += in.weights.data(i);
 
                             // populate kernel map
                             if (run_kernel) {
                                 kernel = in.kernel.data(j,i)*in.weights.data(i);
-                                //omb.kernel[map_index](omb_ir,omb_ic) += kernel;
-                                //kernels[map_index](omb_ir,omb_ic) += kernel;
                                 kernels[map_index].push_back(T(omb_ir,omb_ic,kernel));
-
-                                //kernels(omb_ir, omb_ic) += kernel;
                             }
 
                             // populate coverage map
                             if (run_coverage) {
-                                //omb.coverage[map_index](omb_ir,omb_ic) += 1./d_fsmp;
-                                //coverages[map_index](omb_ir,omb_ic) += 1./d_fsmp;
                                 coverages[map_index].push_back(T(omb_ir,omb_ic,1./d_fsmp));
-                                //coverages(omb_ir,omb_ic) += 1./d_fsmp;
                             }
 
                             if (run_polarization) {
@@ -257,13 +229,13 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                                 allocate_pointing(omb, in.weights.data(i), cos_2angle, sin_2angle, map_index, omb_ir,omb_ic);
 
                                 // update signal map Q and U
-                                omb_copy.signal[q_index](omb_ir,omb_ic) += signal*cos_2angle;
-                                omb_copy.signal[u_index](omb_ir,omb_ic) += signal*sin_2angle;
+                                signals[q_index].push_back(T(omb_ir,omb_ic,signal*cos_2angle));
+                                signals[u_index].push_back(T(omb_ir,omb_ic,signal*sin_2angle));
 
                                 // update kernel map Q and U
                                 if (run_kernel) {
-                                    omb_copy.kernel[q_index](omb_ir,omb_ic) += kernel*cos_2angle;
-                                    omb_copy.kernel[u_index](omb_ir,omb_ic) += kernel*sin_2angle;
+                                    kernels[q_index].push_back(T(omb_ir,omb_ic,kernel*cos_2angle));
+                                    kernels[u_index].push_back(T(omb_ir,omb_ic,kernel*sin_2angle));
                                 }
                             }
                         }
@@ -301,7 +273,6 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                                 }
                                 // add noise value to current noise map
                                 nmb_copy->noise[map_index](nmb_ir,nmb_ic,nn) += noise_v;
-                                //noises(nmb_ir,nmb_ic,nn) += noise_v;
 
                                 if (run_polarization) {
                                     // update noise map Q
@@ -332,20 +303,13 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                     add_sparse_to_dense(coverages[i],omb.coverage[i]);
                 }
             }
-
-            //std::transform(omb.signal.begin(), omb.signal.end(), omb_copy.signal.begin(), omb.signal.begin(), std::plus<Eigen::MatrixXd>());
-            //std::transform(omb.weight.begin(), omb.weight.end(), omb_copy.weight.begin(), omb.weight.begin(), std::plus<Eigen::MatrixXd>());
-
-            /*if (run_kernel) {
-                std::transform(omb.kernel.begin(), omb.kernel.end(), omb_copy.kernel.begin(), omb.kernel.begin(), std::plus<Eigen::MatrixXd>());
-            }
-            if (run_coverage) {
-                std::transform(omb.coverage.begin(), omb.coverage.end(), omb_copy.coverage.begin(), omb.coverage.begin(), std::plus<Eigen::MatrixXd>());
-            }*/
         }
 
         if (run_noise) {
-            std::transform(nmb->noise.begin(), nmb->noise.end(), nmb_copy->noise.begin(), nmb->noise.begin(), std::plus<Eigen::Tensor<double,3>>());
+            for (int i=0; i<omb.noise.size(); ++i) {
+                nmb->noise[i] += nmb_copy->noise[i];
+            }
+            //std::transform(nmb->noise.begin(), nmb->noise.end(), nmb_copy->noise.begin(), nmb->noise.begin(), std::plus<Eigen::Tensor<double,3>>());
         }
     }
 }

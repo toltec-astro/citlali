@@ -1978,8 +1978,6 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         rms = 0.0;
     }
 
-    logger->info("rms {}", rms);
-
     // out-of-focus holography parameters
     logger->debug("adding oof params");
     fits_io->at(i).pfits->pHDU().addKey("OOF_RMS", rms, "rms of map background (" + mb->sig_unit +")");

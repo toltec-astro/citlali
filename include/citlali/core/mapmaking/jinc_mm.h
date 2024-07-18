@@ -2,11 +2,10 @@
 
 #include <thread>
 
-#include <boost/random.hpp>
-#include <boost/random/random_device.hpp>
 #include <boost/math/special_functions/bessel.hpp>
 
 #include <unsupported/Eigen/Splines>
+#include <Eigen/Sparse>
 
 #include <citlali/core/utils/constants.h>
 #include <citlali/core/utils/utils.h>
@@ -73,6 +72,18 @@ public:
 
     // splines for jinc function
     std::map<Eigen::Index, engine_utils::SplineFunction> jinc_splines;
+
+    template <typename Derived>
+    void add_sparse_to_dense(std::vector<Eigen::Triplet<double>> &triplets, Eigen::DenseBase<Derived> &dense_matrix) {
+        Eigen::SparseMatrix<double> sparse_matrix(dense_matrix.rows(),dense_matrix.cols());
+        sparse_matrix.setFromTriplets(triplets.begin(), triplets.end());
+
+        for (int k = 0; k < sparse_matrix.outerSize(); ++k) {
+            for (Eigen::SparseMatrix<double>::InnerIterator it(sparse_matrix, k); it; ++it) {
+                dense_matrix(it.row(), it.col()) += it.value();
+            }
+        }
+    }
 
     // calculate jinc weight at a given radius
     auto jinc_func(double, double, double, double, double, double);
@@ -420,19 +431,24 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     {
         std::scoped_lock<std::mutex> lk(*jinc_mutex);
         if (run_omb) {
-            std::transform(omb.signal.begin(), omb.signal.end(), omb_copy.signal.begin(), omb.signal.begin(), std::plus<Eigen::MatrixXd>());
-            std::transform(omb.weight.begin(), omb.weight.end(), omb_copy.weight.begin(), omb.weight.begin(), std::plus<Eigen::MatrixXd>());
+            for (int i=0; i<omb.signal.size(); ++i) {
+                omb.signal[i] += omb_copy.signal[i];
+                omb.weight[i] += omb_copy.weight[i];
 
-            if (run_kernel) {
-                std::transform(omb.kernel.begin(), omb.kernel.end(), omb_copy.kernel.begin(), omb.kernel.begin(), std::plus<Eigen::MatrixXd>());
-            }
-            if (run_coverage) {
-                std::transform(omb.coverage.begin(), omb.coverage.end(), omb_copy.coverage.begin(), omb.coverage.begin(), std::plus<Eigen::MatrixXd>());
+                if (run_coverage) {
+                    omb.coverage[i] += omb_copy.coverage[i];
+                }
+
+                if (run_kernel) {
+                    omb.kernel[i] += omb_copy.kernel[i];
+                }
             }
         }
 
         if (run_noise) {
-            std::transform(nmb->noise.begin(), nmb->noise.end(), nmb_copy->noise.begin(), nmb->noise.begin(), std::plus<Eigen::Tensor<double,3>>());
+            for (int i=0; i<omb.noise.size(); ++i) {
+                nmb->noise[i] += nmb_copy->noise[i];
+            }
         }
     }
 }
