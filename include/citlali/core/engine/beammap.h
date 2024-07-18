@@ -15,7 +15,6 @@ using timestream::TCDataKind;
 
 class Beammap: public Engine {
 public:
-    //std::unique_ptr<std::mutex> test_mutex = std::make_unique<std::mutex>();
     // parallel policies for each section
     std::string  map_parallel_policy;
 
@@ -85,8 +84,7 @@ public:
     void run_loop();
 
     // flag detectors
-    template<typename array_indices_t, typename nw_indices_t>
-    void set_apt_flags(array_indices_t &, nw_indices_t &);
+    void set_apt_flags();
 
     // derotate apt and subtract reference detector
     void process_apt();
@@ -152,11 +150,6 @@ void Beammap::setup() {
     converge_iter.setConstant(1);
     // set the initial iteration
     current_iter = 0;
-
-    // use per detector parallelization for jinc mapmaking
-    //if (map_method == "jinc") {
-    //    map_parallel_policy = "seq";
-    //}
 
     /* update apt table meta data */
     calib.apt_meta.reset();
@@ -397,20 +390,19 @@ auto Beammap::run_timestream(KidsProc &kidsproc) {
 
         // run rtcproc
         logger->info("raw time chunk processing for scan {}", rtcdata.index.data + 1);
-        auto [map_indices, array_indices, nw_indices, det_indices, fg_indices] = rtcproc.run(rtcdata, ptcdata, telescope.pixel_axes, redu_type,
-                                                                                 calib, telescope, omb.pixel_size_rad, map_grouping);
+        auto map_indices = rtcproc.run(rtcdata, ptcdata, telescope.pixel_axes, calib, telescope, omb.pixel_size_rad, map_grouping);
 
         if (map_grouping!="detector") {
             // remove flagged detectors
-            rtcproc.remove_flagged_dets(ptcdata, calib.apt, det_indices);
+            rtcproc.remove_flagged_dets(ptcdata, calib.apt);
         }
 
         // remove outliers before cleaning
-        auto calib_scan = rtcproc.remove_bad_dets(ptcdata, calib, det_indices, map_grouping);
+        auto calib_scan = rtcproc.remove_bad_dets(ptcdata, calib, map_grouping);
 
         // remove duplicate tones
         if (!telescope.sim_obs) {
-            calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib_scan, det_indices, map_grouping);
+            calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib_scan, map_grouping);
         }
 
         // write rtc timestreams
@@ -418,16 +410,12 @@ auto Beammap::run_timestream(KidsProc &kidsproc) {
             if (tod_output_type == "rtc" || tod_output_type == "both") {
                 logger->info("writing raw time chunk");
                 rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
-                                         ptcdata.pointing_offsets_arcsec.data, det_indices, calib_scan);
+                                         ptcdata.pointing_offsets_arcsec.data, calib_scan);
             }
         }
 
         // store indices for each ptcdata
-        ptcdata.det_indices.data = std::move(det_indices);
-        ptcdata.nw_indices.data = std::move(nw_indices);
-        ptcdata.array_indices.data = std::move(array_indices);
         ptcdata.map_indices.data = std::move(map_indices);
-        ptcdata.fg_indices.data = std::move(fg_indices);
 
         // move out ptcdata the PTCData vector at corresponding index
         ptcs0.at(ptcdata.index.data) = std::move(ptcdata);
@@ -472,13 +460,6 @@ void Beammap::loop_pipeline() {
         });
     }
 
-    // array indices
-    auto array_indices = ptcs[0].array_indices.data;
-    // nw indices
-    auto nw_indices = ptcs[0].nw_indices.data;
-    // detector indices
-    auto det_indices = ptcs[0].det_indices.data;
-
     // apt and sensitivity only relevant if beammapping
     if (map_grouping=="detector") {
         // rescale fit params from pixel to on-sky units
@@ -501,7 +482,7 @@ void Beammap::loop_pipeline() {
         calib.apt["converge_iter"] = converge_iter.cast<double> ();
 
         // flag detectors in apt based on config limits
-        set_apt_flags(array_indices, nw_indices);
+        set_apt_flags();
 
         // subtract reference detector position and derotate
         process_apt();
@@ -519,7 +500,7 @@ void Beammap::loop_pipeline() {
                 // loop through detectors
                 grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto j) {
                     // det indices
-                    auto det_index = det_indices(j);
+                    auto det_index = j;
                     double az_off = calib.apt["x_t"](det_index);
                     double el_off = calib.apt["y_t"](det_index);
 
@@ -555,7 +536,7 @@ void Beammap::loop_pipeline() {
                         if (!apt_v.isNull()) {
                             for (std::size_t i=0; i< TULA_SIZET(calib.n_dets); ++i) {
                                 start_index_apt[0] = i;
-                                apt_v.putVar(start_index_apt, size_apt, &calib.apt[x.first](det_indices(i)));
+                                apt_v.putVar(start_index_apt, size_apt, &calib.apt[x.first](i));
                             }
                         }
                     }
@@ -667,8 +648,7 @@ void Beammap::run_loop() {
                     else {
                         logger->info("subtracting map from tod");
                         // subtract map
-                        ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(omb, ptcs[i], calib, ptcs[i].det_indices.data,
-                                                                                        ptcs[i].map_indices.data, telescope.pixel_axes,
+                        ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(omb, ptcs[i], calib, ptcs[i].map_indices.data, telescope.pixel_axes,
                                                                                         map_grouping);
                     }
                 }
@@ -676,7 +656,7 @@ void Beammap::run_loop() {
 
             // clean the maps
             logger->info("processed time chunk processing for scan {}", i + 1);
-            ptcproc.run(ptcs[i], ptcs[i], calib_scans[i], ptcs[i].det_indices.data, telescope.pixel_axes, map_grouping);
+            ptcproc.run(ptcs[i], ptcs[i], calib_scans[i], telescope.pixel_axes, map_grouping);
 
             if (run_mapmaking) {
                 if (current_iter > 0) {
@@ -690,15 +670,14 @@ void Beammap::run_loop() {
                     else {
                         logger->info("adding map to tod");
                         // add map back
-                        ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(omb, ptcs[i], calib, ptcs[i].det_indices.data,
-                                                                                ptcs[i].map_indices.data, telescope.pixel_axes,
+                        ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(omb, ptcs[i], calib, ptcs[i].map_indices.data, telescope.pixel_axes,
                                                                                 map_grouping);
                     }
                 }
             }
 
             // remove outliers after clean
-            calib_scans[i] = ptcproc.remove_bad_dets(ptcs[i], calib_scans[i], ptcs[i].det_indices.data, map_grouping);
+            calib_scans[i] = ptcproc.remove_bad_dets(ptcs[i], calib_scans[i], map_grouping);
 
             if (map_grouping == "detector") {
                 // set weights to a constant value
@@ -708,10 +687,10 @@ void Beammap::run_loop() {
             else {
                 // calculate weights
                 logger->info("calculating weights");
-                ptcproc.calc_weights(ptcs[i], calib.apt, telescope, ptcs[i].det_indices.data);
+                ptcproc.calc_weights(ptcs[i], calib.apt, telescope);
 
                 // reset weights to median
-                ptcproc.reset_weights(ptcs[i], calib, ptcs[i].det_indices.data);
+                ptcproc.reset_weights(ptcs[i], calib);
             }
 
             // write out chunk summary
@@ -734,8 +713,7 @@ void Beammap::run_loop() {
                 if (current_iter == beammap_tod_output_iter) {
                     for (Eigen::Index i=0; i<telescope.scan_indices.cols(); ++i) {
                         ptcproc.append_to_netcdf(ptcs[i], tod_filename["ptc"], map_grouping, telescope.pixel_axes,
-                                                 ptcs[i].pointing_offsets_arcsec.data, ptcs[i].det_indices.data,
-                                                 calib_scans[i]);
+                                                 ptcs[i].pointing_offsets_arcsec.data, calib_scans[i]);
                     }
                 }
             }
@@ -783,15 +761,13 @@ void Beammap::run_loop() {
                 // populate maps
                 if (map_method=="naive") {
                     // naive mapmaker
-                    naive_mm.populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data, ptcs[i].det_indices.data,
-                                                 ptcs[i].fg_indices.data, telescope.pixel_axes, calib.apt, telescope.d_fsmp,
-                                                 run_omb, run_noise);
+                    naive_mm.populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data, telescope.pixel_axes,
+                                                 calib.apt, telescope.d_fsmp, run_omb, run_noise);
                 }
                 else if (map_method=="jinc") {
                     // jinc mapmaker
-                    jinc_mm.populate_maps_jinc(ptcs[i], omb, cmb, ptcs[i].map_indices.data, ptcs[i].det_indices.data,
-                                               ptcs[i].fg_indices.data, telescope.pixel_axes, calib.apt, telescope.d_fsmp,
-                                               run_omb, run_noise);
+                    jinc_mm.populate_maps_jinc(ptcs[i], omb, cmb, ptcs[i].map_indices.data, telescope.pixel_axes,
+                                               calib.apt, telescope.d_fsmp, run_omb, run_noise);
                 }
 
                 // update progress bar
@@ -897,8 +873,7 @@ void Beammap::run_loop() {
     }
 }
 
-template<typename array_indices_t, typename nw_indices_t>
-void Beammap::set_apt_flags(array_indices_t &array_indices, nw_indices_t &nw_indices) {
+void Beammap::set_apt_flags() {
     // setup bitwise flags
     flag2.resize(calib.n_dets);
     flag2.setConstant(AptFlags::Good);
@@ -910,7 +885,7 @@ void Beammap::set_apt_flags(array_indices_t &array_indices, nw_indices_t &nw_ind
     // first flag based on fit values and signal-to-noise
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
         // get array of current detector
-        auto array_index = array_indices(i);
+        auto array_index = calib.apt["array"](i);
         std::string array_name = toltec_io.array_name_map[array_index];
 
         // calculate map standard deviation
@@ -963,7 +938,7 @@ void Beammap::set_apt_flags(array_indices_t &array_indices, nw_indices_t &nw_ind
     // calc median sens from unflagged detectors for each nw
     logger->debug("calculating mean sensitivities");
     for (Eigen::Index i=0; i<calib.n_nws; ++i) {
-        Eigen::Index nw = calib.nws(i);
+        Eigen::Index nw = calib.apt["nw"](i);
 
         // nw sensitivity
         auto nw_sens = calib.apt["sens"](Eigen::seq(std::get<0>(calib.nw_limits[nw]),
@@ -998,7 +973,7 @@ void Beammap::set_apt_flags(array_indices_t &array_indices, nw_indices_t &nw_ind
     logger->debug("flagging sensitivities");
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
         // get nw of current detector
-        auto nw_index = nw_indices(i);
+        auto nw_index = calib.apt["nw"](i);
 
         // flag outlier sensitivities
         if (calib.apt["sens"](i) < lower_sens_factor*nw_median_sens[nw_index] ||
@@ -1065,7 +1040,7 @@ void Beammap::set_apt_flags(array_indices_t &array_indices, nw_indices_t &nw_ind
     logger->debug("flagging detector positions");
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
         // get array of current detector
-        auto array_index = array_indices(i);
+        auto array_index = calib.apt["array"](i);
         std::string array_name = toltec_io.array_name_map[array_index];
 
         // calculate distance of detector from mean position of all detectors
@@ -1091,7 +1066,7 @@ void Beammap::set_apt_flags(array_indices_t &array_indices, nw_indices_t &nw_ind
     logger->debug("calculating flux conversion factors");
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
         // get array of current detector
-        auto array_index = array_indices(i);
+        auto array_index = calib.apt["array"](i);
         std::string array_name = toltec_io.array_name_map[array_index];
 
         // calc flux scale (always in mJy/beam)

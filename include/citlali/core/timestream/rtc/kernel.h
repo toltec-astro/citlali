@@ -31,24 +31,20 @@ public:
     void setup(Eigen::Index);
 
     // symmetric gaussian kernel
-    template<typename apt_t, typename Derived>
+    template<typename apt_t>
     void create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &, std::string &,
-                                          std::string &, apt_t &, Eigen::DenseBase<Derived> &);
-
+                                          apt_t &);
     // asymmetric elliptical gaussian kernel
-    template<typename apt_t, typename Derived>
-    void create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &, std::string &,
-                                std::string &, apt_t &, Eigen::DenseBase<Derived> &);
+    template<typename apt_t>
+    void create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &, std::string &, apt_t &);
     // airy pattern kernel
-    template<typename apt_t, typename Derived>
-    void create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &, std::string &,
-                            std::string &, apt_t &, Eigen::DenseBase<Derived> &);
+    template<typename apt_t>
+    void create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &, std::string &, apt_t &);
 
     // kernel from fits file
     template<typename apt_t, typename Derived>
     void create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &, std::string &,
-                                 std::string &, apt_t &, double, Eigen::DenseBase<Derived> &,
-                                 Eigen::DenseBase<Derived> &);
+                                 apt_t &, double, Eigen::DenseBase<Derived> &);
 };
 
 void Kernel::setup(Eigen::Index n_maps) {
@@ -65,9 +61,8 @@ void Kernel::setup(Eigen::Index n_maps) {
     }
 }
 
-template<typename apt_t, typename Derived>
-void Kernel::create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std::string &pixel_axes,
-                                              std::string &redu_type, apt_t &apt, Eigen::DenseBase<Derived> &det_indices) {
+template<typename apt_t>
+void Kernel::create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std::string &pixel_axes, apt_t &apt) {
 
     // dimensions of scan
     Eigen::Index n_dets = in.scans.data.cols();
@@ -80,7 +75,7 @@ void Kernel::create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::Mat
 
     for (Eigen::Index i=0; i<n_dets; ++i) {
         // detector in apt
-        auto det_index = det_indices(i);
+        auto det_index = i;
 
         // calc tangent plane pointing
         auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](det_index), apt["y_t"](det_index),
@@ -107,9 +102,8 @@ void Kernel::create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::Mat
     }
 }
 
-template<typename apt_t, typename Derived>
-void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std::string &pixel_axes,
-                                    std::string &redu_type, apt_t &apt, Eigen::DenseBase<Derived> &det_indices) {
+template<typename apt_t>
+void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std::string &pixel_axes, apt_t &apt) {
 
     // dimensions of scan
     Eigen::Index n_dets = in.scans.data.cols();
@@ -129,7 +123,7 @@ void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in
 
     for (Eigen::Index i=0; i<n_dets; ++i) {
         // detector in apt
-        auto det_index = det_indices(i);
+        auto det_index = i;
 
         // calc tangent plane pointing
         auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](det_index), apt["y_t"](det_index),
@@ -173,9 +167,8 @@ void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in
     }
 }
 
-template<typename apt_t, typename Derived>
-void Kernel::create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std::string &pixel_axes,
-                                std::string &redu_type, apt_t &apt, Eigen::DenseBase<Derived> &det_indices) {
+template<typename apt_t>
+void Kernel::create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std::string &pixel_axes, apt_t &apt) {
 
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
@@ -187,7 +180,7 @@ void Kernel::create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, st
     // loop through detectors
     for (Eigen::Index i=0; i<n_dets; ++i) {
         // current detector in apt
-        auto det_index = det_indices(i);
+        auto det_index = i;
 
         // calc tangent plane pointing
         auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](det_index), apt["y_t"](det_index),
@@ -216,9 +209,8 @@ void Kernel::create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, st
 }
 
 template<typename apt_t, typename Derived>
-void Kernel::create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std::string &pixel_axes,
-                                     std::string &redu_type, apt_t &apt, double pixel_size_rad,
-                                     Eigen::DenseBase<Derived> &map_indices, Eigen::DenseBase<Derived> &det_indices) {
+void Kernel::create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std::string &pixel_axes, apt_t &apt,
+                                     double pixel_size_rad, Eigen::DenseBase<Derived> &map_indices) {
 
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
@@ -230,7 +222,7 @@ void Kernel::create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &i
     // loop through detectors
     for (Eigen::Index i=0; i<n_dets; ++i) {
         // current detector index in apt
-        auto det_index = det_indices(i);
+        auto det_index = i;
 
         // calc tangent plane pointing
         auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](det_index), apt["y_t"](det_index),

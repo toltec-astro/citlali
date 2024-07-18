@@ -205,7 +205,7 @@ struct TimeStream : internal::TCDataBase<Derived>,
     // fcf
     data_t<Eigen::VectorXd> fcf;
     // vectors for mapping apt table onto timestreams
-    data_t<Eigen::VectorXI> det_indices, nw_indices, array_indices, map_indices, fg_indices;
+    data_t<Eigen::VectorXI> map_indices;
     // detector pointing
     data_t<std::map<std::string, Eigen::MatrixXd>> pointing;
 };
@@ -309,28 +309,24 @@ public:
     void load_mb(std::string, std::string, calib_t &);
 
     // get limits for a particular grouping
-    template <typename Derived, class calib_t>
-    auto get_grouping(std::string, Eigen::DenseBase<Derived> &, calib_t &, int);
+    template <class calib_t>
+    auto get_grouping(std::string, calib_t &, int);
 
     // compute and store pointing of all detectors
-    template <TCDataKind tcdata_t, class calib_t, typename Derived>
-    void precompute_pointing(TCData<tcdata_t, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
-                             std::string, std::string);
+    template <TCDataKind tcdata_t, class calib_t>
+    void precompute_pointing(TCData<tcdata_t, Eigen::MatrixXd> &, calib_t &, std::string, std::string);
 
     // translate citlali map buffer to timestream and add/subtract from TCData scans
     template <TCProc::SourceType source_type, class mb_t, TCDataKind tcdata_t, class calib_t, typename Derived>
-    void map_to_tod(mb_t &, TCData<tcdata_t, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
-                    Eigen::DenseBase<Derived> &, std::string, std::string);
+    void map_to_tod(mb_t &, TCData<tcdata_t, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &, std::string, std::string);
 
     // remove detectors with outlier weights
-    template <TCDataKind tcdata_t, class calib_t, typename Derived>
-    auto remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
-                         std::string);
+    template <TCDataKind tcdata_t, class calib_t>
+    auto remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &, calib_t &, std::string);
 
     // remove detectors with small correlations
     template <TCDataKind tcdata_t, class calib_t, typename Derived>
-    auto remove_uncorrelated(TCData<tcdata_t, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
-                             std::string);
+    auto remove_uncorrelated(TCData<tcdata_t, Eigen::MatrixXd> &, calib_t &, std::string);
 
     // add or subtract gaussian to timestream
     template <SourceType source_type, TCDataKind tcdata_t, typename Derived, typename apt_t>
@@ -338,15 +334,13 @@ public:
                       std::string &, apt_t &, double, Eigen::Index, Eigen::Index);
 
     // flag a region around the center of the map
-    template <TCDataKind tcdata_t, class calib_t, typename Derived>
-    auto mask_region(TCData<tcdata_t, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
-                     std::string, std::string, int, int, int);
+    template <TCDataKind tcdata_t, class calib_t>
+    auto mask_region(TCData<tcdata_t, Eigen::MatrixXd> &, calib_t &, std::string, std::string, int, int, int);
 
     // append time chunk params common to rtcs and ptcs
-    template <TCDataKind tcdata_t, typename Derived, class calib_t, typename pointing_offset_t>
+    template <TCDataKind tcdata_t, class calib_t, typename pointing_offset_t>
     void append_base_to_netcdf(netCDF::NcFile &, TCData<tcdata_t, Eigen::MatrixXd> &, std::string,
-                               std::string &, pointing_offset_t &, Eigen::DenseBase<Derived> &,
-                               calib_t &);
+                               std::string &, pointing_offset_t &, calib_t &);
 };
 
 template <class calib_t>
@@ -574,18 +568,18 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     std::vector<Eigen::MatrixXd>().swap(tod_mb.weight);
 }
 
-template <typename Derived, class calib_t>
-auto TCProc::get_grouping(std::string grp, Eigen::DenseBase<Derived> &det_indices, calib_t &calib, int n_dets) {
+template <class calib_t>
+auto TCProc::get_grouping(std::string grp, calib_t &calib, int n_dets) {
     std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
 
     // initial group value is value for the first det index
-    Eigen::Index grp_i = calib.apt[grp](det_indices(0));
+    Eigen::Index grp_i = calib.apt[grp](0);
     // set up first group
     grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
     Eigen::Index j = 0;
     // loop through apt table arrays, get highest index for current array
     for (Eigen::Index i=0; i<n_dets; ++i) {
-        auto det_index = det_indices(i);
+        auto det_index = i;
         // if we're still on the current group
         if (calib.apt[grp](det_index) == grp_i) {
             std::get<1>(grp_limits[grp_i]) = i + 1;
@@ -601,9 +595,8 @@ auto TCProc::get_grouping(std::string grp, Eigen::DenseBase<Derived> &det_indice
 }
 
 // compute pointing for all detectors
-template <TCDataKind tcdata_t, class calib_t, typename Derived>
-void TCProc::precompute_pointing(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
-                                 std::string pixel_axes, std::string map_grouping) {
+template <TCDataKind tcdata_t, class calib_t>
+void TCProc::precompute_pointing(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, std::string pixel_axes, std::string map_grouping) {
 
     // dimensions of data
     Eigen::Index n_dets = in.scans.data.cols();
@@ -614,7 +607,7 @@ void TCProc::precompute_pointing(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t 
 
     for (Eigen::Index i=0; i<n_dets; ++i) {
         // current detector index in apt
-        auto det_index = det_indices(i);
+        auto det_index = i;
         double az_off = calib.apt["x_t"](det_index);
         double el_off = calib.apt["y_t"](det_index);
 
@@ -628,7 +621,7 @@ void TCProc::precompute_pointing(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t 
 }
 
 template <TCProc::SourceType source_type, class mb_t, TCDataKind tcdata_t, class calib_t, typename Derived>
-void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
+void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib,
                         Eigen::DenseBase<Derived> &map_indices, std::string pixel_axes, std::string map_grouping) {
 
     // dimensions of data
@@ -649,7 +642,7 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
     // loop through detectors
     for (Eigen::Index i=0; i<n_dets; ++i) {
         // current detector index in apt
-        auto det_index = det_indices(i);
+        auto det_index = i;
         auto map_index = map_indices(i);
         int array_index = calib.apt["array"](det_index);
 
@@ -694,9 +687,8 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
     }
 }
 
-template <TCDataKind tcdata_t, class calib_t, typename Derived>
-auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
-                             std::string map_grouping) {
+template <TCDataKind tcdata_t, class calib_t>
+auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, std::string map_grouping) {
 
     // make a copy of the calib class for flagging
     calib_t calib_scan = calib;
@@ -708,7 +700,7 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
         Eigen::Index n_dets = in.scans.data.cols();
 
         // get grouping
-        auto grp_limits = get_grouping("array",det_indices,calib,n_dets);
+        auto grp_limits = get_grouping("array", calib, n_dets);
 
         in.n_dets_low = 0;
         in.n_dets_high = 0;
@@ -725,7 +717,7 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
 
                 // get good dets in group
                 for (Eigen::Index j=std::get<0>(grp_limits[key]); j<std::get<1>(grp_limits[key]); ++j) {
-                    if (calib.apt["flag"](det_indices(j))==0 && (in.flags.data.col(j).array()==0).any()) {
+                    if (calib.apt["flag"](j)==0 && (in.flags.data.col(j).array()==0).any()) {
                         n_good_dets++;
                     }
                 }
@@ -736,7 +728,7 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
 
                 // collect standard deviation from good detectors
                 for (Eigen::Index j=std::get<0>(grp_limits[key]); j<std::get<1>(grp_limits[key]); ++j) {
-                    Eigen::Index det_index = det_indices(j);
+                    Eigen::Index det_index = j;
                     if (calib.apt["flag"](det_index)==0 && (in.flags.data.col(j).array()==0).any()) {
                         // make Eigen::Maps for each detector's scan
                         Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
@@ -768,7 +760,7 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
 
                 // loop through good detectors and flag those that have std devs beyond the limits
                 for (Eigen::Index j=0; j<n_good_dets; ++j) {
-                    Eigen::Index det_index = det_indices(dets(j));
+                    Eigen::Index det_index = dets(j);
                     // only run if unflagged already
                     if (calib.apt["flag"](det_index)==0) {
                         // flag those below limit
@@ -816,8 +808,7 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
 }
 
 template <TCDataKind tcdata_t, class calib_t, typename Derived>
-auto TCProc::remove_uncorrelated(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
-                             std::string map_grouping) {
+auto TCProc::remove_uncorrelated(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, std::string map_grouping) {
     //Eigen::Index n_dets = in.scans.data.cols();
     //Eigen::Index n_pts = in.scans.data.rows();
 
@@ -841,7 +832,7 @@ void TCProc::add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &in, Eigen::DenseBas
     // loop through detectors
     for (Eigen::Index i=0; i<n_dets; ++i) {
         // detector index in apt
-        auto det_index = in.det_indices.data(i);
+        auto det_index = i;
         // map index
         auto map_index = in.map_indices.data(i);
 
@@ -911,9 +902,9 @@ void TCProc::add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &in, Eigen::DenseBas
     }
 }
 
-template <TCDataKind tcdata_t, class calib_t, typename Derived>
-auto TCProc::mask_region(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
-                         std::string pixel_axes, std::string map_grouping, int n_pts, int n_dets, int start_index) {
+template <TCDataKind tcdata_t, class calib_t>
+auto TCProc::mask_region(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, std::string pixel_axes, std::string map_grouping,
+                         int n_pts, int n_dets, int start_index) {
 
     // copy of tel data
     std::map<std::string, Eigen::VectorXd> tel_data_copy;
@@ -922,9 +913,6 @@ auto TCProc::mask_region(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, 
     for (const auto &[key,val]: in.tel_data.data) {
         tel_data_copy[key] = in.tel_data.data[key].segment(0,n_pts);
     }
-
-    // make a copy of det indices
-    Eigen::VectorXI det_indices_copy = det_indices.segment(start_index,n_dets);
 
     // copy of pointing offsets
     std::map<std::string, Eigen::VectorXd> pointing_offset_copy;
@@ -940,7 +928,7 @@ auto TCProc::mask_region(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, 
     // loop through detectors
     for (Eigen::Index i=0; i<n_dets; ++i) {
         // current detector index in apt
-        auto det_index = det_indices_copy(i);
+        auto det_index = i + start_index;
 
         double az_off = calib.apt["x_t"](det_index);
         double el_off = calib.apt["y_t"](det_index);
@@ -964,10 +952,9 @@ auto TCProc::mask_region(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, 
     return std::move(masked_flags);
 }
 
-template <TCDataKind tcdata_t, typename Derived, class calib_t, typename pointing_offset_t>
+template <TCDataKind tcdata_t, class calib_t, typename pointing_offset_t>
 void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::MatrixXd> &in, std::string map_grouping,
-                                   std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec,
-                                   Eigen::DenseBase<Derived> &det_indices, calib_t &calib) {
+                                   std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec, calib_t &calib) {
     using netCDF::NcDim;
     using netCDF::NcFile;
     using netCDF::NcType;
@@ -983,7 +970,7 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
     // loop through detectors and get tangent plane pointing
     for (Eigen::Index i=0; i<n_dets; ++i) {
         // detector index in apt
-        auto det_index = det_indices(i);
+        auto det_index = i;
         double az_off = calib.apt["x_t"](det_index);
         double el_off = calib.apt["y_t"](det_index);
 
@@ -1102,7 +1089,7 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
         if (!apt_v.isNull()) {
             for (std::size_t i=0; i<TULA_SIZET(n_dets_exists); ++i) {
                 start_index_apt[0] = i;
-                apt_v.putVar(start_index_apt, size_apt, &calib.apt[x.first](det_indices(i)));
+                apt_v.putVar(start_index_apt, size_apt, &calib.apt[x.first](i));
             }
         }
     }
@@ -1133,6 +1120,4 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
     NcVar scan_indices_v = fo.getVar("scan_indices");
     scan_indices_v.putVar(scan_indices_start_index, scan_indices_size,scan_indices.data());
 }
-
-
 } // namespace timestream

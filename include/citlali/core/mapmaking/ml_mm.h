@@ -30,14 +30,13 @@ public:
     // populate maps with a time chunk (signal, kernel, coverage, and noise)
     template<class map_buffer_t, typename Derived, typename calib_t>
     void populate_maps_ml(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &, map_buffer_t &,
-                            Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string &,
-                            calib_t &, double, bool, bool);
+                            Eigen::DenseBase<Derived> &, std::string &, calib_t &, double, bool, bool);
 };
 
 template<class map_buffer_t, typename Derived, typename calib_t>
 void MLMapmaker::populate_maps_ml(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, map_buffer_t &omb, map_buffer_t &cmb,
-                                  Eigen::DenseBase<Derived> &map_indices, Eigen::DenseBase<Derived> &det_indices,
-                                  std::string &pixel_axes, calib_t &calib, double d_fsmp, bool run_omb, bool run_noise) {
+                                  Eigen::DenseBase<Derived> &map_indices, std::string &pixel_axes, calib_t &calib, double d_fsmp,
+                                  bool run_omb, bool run_noise) {
 
     const bool use_cmb = !cmb.noise.empty();
     const bool use_omb = !omb.noise.empty();
@@ -84,7 +83,7 @@ void MLMapmaker::populate_maps_ml(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
         Eigen::Index k = 0;
 
         for (Eigen::Index i=start; i<end; ++i) {
-            auto det_index = det_indices(i);
+            auto det_index = i;
             if (calib.apt["flag"](det_index)==0) {// && !((in.flags.data.col(i).array()==1).all())) {
                 // get detector pointing
                 auto [lat,lon] = engine_utils::calc_det_pointing(in.tel_data.data, calib.apt["x_t"](det_index), calib.apt["y_t"](det_index),

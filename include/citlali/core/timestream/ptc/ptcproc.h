@@ -37,26 +37,22 @@ public:
     void subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &);
 
     // run main processing stage
-    template <class calib_type, typename Derived>
-    void run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
-             TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
-             calib_type &, Eigen::DenseBase<Derived> &,
-             std::string, std::string);
+    template <class calib_type>
+    void run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
+             calib_type &, std::string, std::string);
 
     // calculate detector weights
-    template <typename apt_type, class tel_type, typename Derived>
-    void calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, apt_type &, tel_type &,
-                      Eigen::DenseBase<Derived> &);
+    template <typename apt_type, class tel_type>
+    void calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, apt_type &, tel_type &);
 
     // reset outlier weights to the median
-    template <typename calib_t, typename Derived>
-    auto reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &,
-                       Eigen::DenseBase<Derived> &det_indices);
+    template <typename calib_t>
+    auto reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &);
 
     // append time chunk to tod netcdf file
-    template <typename Derived, typename calib_t, typename pointing_offset_t>
+    template <typename calib_t, typename pointing_offset_t>
     void append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, std::string, std::string, std::string &,
-                          pointing_offset_t &, Eigen::DenseBase<Derived> &, calib_t &);
+                          pointing_offset_t &, calib_t &);
 };
 
 // get config file
@@ -161,11 +157,9 @@ void PTCProc::subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in) {
     }
 }
 
-template <class calib_type, typename Derived>
-void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
-                  TCData<TCDataKind::PTC, Eigen::MatrixXd> &out, calib_type &calib,
-                  Eigen::DenseBase<Derived> &det_indices, std::string pixel_axes,
-                  std::string map_grouping) {
+template <class calib_type>
+void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKind::PTC, Eigen::MatrixXd> &out,
+                  calib_type &calib, std::string pixel_axes, std::string map_grouping) {
 
     // subtract mean from data and kernel
     subtract_mean(in);
@@ -196,7 +190,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
             }
             else {
                 // get group limits
-                grp_limits = get_grouping(group, det_indices, calib, in.scans.data.cols());
+                grp_limits = get_grouping(group, calib, in.scans.data.cols());
             }
             // loop through cleaning groups
             for (auto const& [key, val] : grp_limits) {
@@ -223,7 +217,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                 // mask region if radius is >0
                 if (mask_radius_arcsec > 0) {
                     // samples that were masked will be flagged
-                    masked_flags = mask_region(in, calib, det_indices, pixel_axes, map_grouping, n_pts, n_dets, start_index);
+                    masked_flags = mask_region(in, calib, pixel_axes, map_grouping, n_pts, n_dets, start_index);
                 }
                 // otherwise just use input flags
                 else {
@@ -287,9 +281,8 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
     }
 }
 
-template <typename apt_type, class tel_type, typename Derived>
-void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_type &apt, tel_type &telescope,
-                           Eigen::DenseBase<Derived> &det_indices) {
+template <typename apt_type, class tel_type>
+void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_type &apt, tel_type &telescope) {
     // number of detectors
     Eigen::Index n_dets = in.scans.data.cols();
 
@@ -305,7 +298,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
         // loop through detectors and calculate weights
         for (Eigen::Index i=0; i<n_dets; ++i) {
             // current detector index
-            Eigen::Index det_index = det_indices(i);
+            Eigen::Index det_index = i;
             // if flux calibrated, get flux conversion factor
             if (in.status.calibrated) {
                 conversion_factor = in.fcf.data(i);
@@ -331,7 +324,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
         // loop through detectors
         for (Eigen::Index i=0; i<n_dets; ++i) {
             // only calculate weights if detector is unflagged
-            if (apt["flag"](det_indices(i))==0) {
+            if (apt["flag"](i)==0) {
                 // make Eigen::Maps for each detector's scan
                 Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
                     in.scans.data.col(i).data(), in.scans.data.rows());
@@ -360,7 +353,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
     else if (weighting_type == "const") {
         for (Eigen::Index i=0; i<n_dets; ++i) {
             // only calculate weights if detector is unflagged
-            if (apt["flag"](det_indices(i))==0) {
+            if (apt["flag"](i)==0) {
                 in.weights.data(i) = 1;
             }
             // otherwise set to zero
@@ -371,9 +364,8 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
     }
 }
 
-template <typename calib_t, typename Derived>
-auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib,
-                            Eigen::DenseBase<Derived> &det_indices) {
+template <typename calib_t>
+auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib) {
 
     // only need to run if median weight factor >=1
     if (med_weight_factor >= 1) {
@@ -381,7 +373,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
         Eigen::Index n_dets = in.scans.data.cols();
 
         // get group limits
-        auto grp_limits = get_grouping("array", det_indices, calib, n_dets);
+        auto grp_limits = get_grouping("array", calib, n_dets);
 
         // collect detectors that are un-flagged and have non-zero weights
         for (auto const& [key, val] : grp_limits) {
@@ -396,7 +388,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
             // loop through detectors in current group
             for (Eigen::Index m=0; m<grp_weights.size(); m++) {
                 // if detector is good and weight is not zero
-                if (calib.apt["flag"](det_indices(j))==0 && grp_weights(m)>0) {
+                if (calib.apt["flag"](j)==0 && grp_weights(m)>0) {
                     n_good_dets++;
                 }
                 j++;
@@ -413,7 +405,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
                 j = std::get<0>(grp_limits[key]);
                 Eigen::Index k = 0;
                 for (Eigen::Index m=0; m<grp_weights.size(); m++) {
-                    if (calib.apt["flag"](det_indices(j))==0 && grp_weights(m)>0) {
+                    if (calib.apt["flag"](j)==0 && grp_weights(m)>0) {
                         good_wt(k) = grp_weights(m);
                         k++;
                     }
@@ -449,10 +441,9 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
     }
 }
 
-template <typename Derived, typename calib_t, typename pointing_offset_t>
+template <typename calib_t, typename pointing_offset_t>
 void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std::string filepath, std::string map_grouping,
-                              std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec, Eigen::DenseBase<Derived> &det_indices,
-                              calib_t &calib) {
+                              std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec, calib_t &calib) {
 
     using netCDF::NcDim;
     using netCDF::NcFile;
@@ -465,7 +456,7 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         NcFile fo(filepath, netCDF::NcFile::write);
 
         // append common time chunk variables
-        append_base_to_netcdf(fo, in, map_grouping, pixel_axes, pointing_offsets_arcsec, det_indices, calib);
+        append_base_to_netcdf(fo, in, map_grouping, pixel_axes, pointing_offsets_arcsec, calib);
 
         // get dimensions
         NcDim n_dets_dim = fo.getDim("n_dets");

@@ -46,7 +46,7 @@
 
 #include <citlali/core/timestream/timestream.h>
 
-#include <citlali/core/timestream/rtc/polarization_5.h>
+#include <citlali/core/timestream/rtc/polarization.h>
 #include <citlali/core/timestream/rtc/kernel.h>
 #include <citlali/core/timestream/rtc/despike.h>
 #include <citlali/core/timestream/rtc/filter.h>
@@ -1666,9 +1666,6 @@ void Engine::write_map_summary(map_buffer_t &mb) {
         // loop through noise maps and check for nans and infs
         if (!mb.noise.empty()) {
             for (Eigen::Index j=0; j<mb.noise.size(); ++j) {
-                //Eigen::Tensor<double,2> out = mb.noise[i].chip(j,2);
-                //auto out_matrix = Eigen::Map<Eigen::MatrixXd>(out.data(), out.dimension(0), out.dimension(1));
-
                 Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(mb.noise[i].data() + j * mb.n_rows * mb.n_cols,
                                                                                                mb.n_rows, mb.n_cols);
 

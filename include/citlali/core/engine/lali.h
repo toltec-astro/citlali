@@ -13,7 +13,6 @@ using timestream::TCDataKind;
 
 class Lali: public Engine {
 public:
-    //std::unique_ptr<std::mutex> test_mutex = std::make_unique<std::mutex>();
     // initial setup for each obs
     void setup();
 
@@ -33,11 +32,6 @@ public:
 void Lali::setup() {
     // run obsnum setup
     obsnum_setup();
-
-    // use per detector parallelization for jinc mapmaking
-    //if (map_method == "jinc") {
-        //parallel_policy = "seq";
-    //}
 }
 
 template <class KidsProc, class RawObs>
@@ -175,18 +169,17 @@ auto Lali::run(KidsProc &kidsproc) {
 
         // run rtcproc
         logger->info("raw time chunk processing for scan {}", rtcdata.index.data + 1);
-        auto [map_indices, array_indices, nw_indices, det_indices, fg_indices] = rtcproc.run(rtcdata, ptcdata, telescope.pixel_axes, redu_type,
-                                                                                 calib, telescope, omb.pixel_size_rad, map_grouping);
+        auto map_indices = rtcproc.run(rtcdata, ptcdata, telescope.pixel_axes, calib, telescope, omb.pixel_size_rad, map_grouping);
 
         // remove flagged detectors
-        rtcproc.remove_flagged_dets(ptcdata, calib.apt, det_indices);
+        rtcproc.remove_flagged_dets(ptcdata, calib.apt);
 
         // remove outliers before cleaning
-        auto calib_scan = rtcproc.remove_bad_dets(ptcdata, calib, det_indices, map_grouping);
+        auto calib_scan = rtcproc.remove_bad_dets(ptcdata, calib, map_grouping);
 
         // remove duplicate tones
         if (!telescope.sim_obs) {
-            calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib, det_indices, map_grouping);
+            calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib, map_grouping);
         }
 
         // write rtc timestreams
@@ -194,7 +187,7 @@ auto Lali::run(KidsProc &kidsproc) {
             if (tod_output_type == "rtc" || tod_output_type == "both") {
                 logger->info("writing raw time chunk");
                 rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
-                                         ptcdata.pointing_offsets_arcsec.data, det_indices, calib);
+                                         ptcdata.pointing_offsets_arcsec.data, calib);
             }
         }
 
@@ -202,60 +195,60 @@ auto Lali::run(KidsProc &kidsproc) {
         if (ptcproc.run_fruit_loops && !ptcproc.tod_mb.signal.empty()) {
             logger->info("subtracting map from tod");
             // subtract map
-            ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(ptcproc.tod_mb, ptcdata, calib, det_indices,
+            ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(ptcproc.tod_mb, ptcdata, calib,
                                                                             map_indices, telescope.pixel_axes,
                                                                             map_grouping);
         }
 
         // run cleaning
         logger->info("processed time chunk processing for scan {}", ptcdata.index.data + 1);
-        ptcproc.run(ptcdata, ptcdata, calib, det_indices, telescope.pixel_axes, map_grouping);
+        ptcproc.run(ptcdata, ptcdata, calib, telescope.pixel_axes, map_grouping);
 
         // if running fruit loops and a map has been read in
         if (ptcproc.run_fruit_loops && !ptcproc.tod_mb.signal.empty()) {
             if (run_mapmaking && run_noise) {
                 // calculate weights
                 logger->info("calculating weights");
-                ptcproc.calc_weights(ptcdata, calib.apt, telescope, det_indices);
+                ptcproc.calc_weights(ptcdata, calib.apt, telescope);
 
                 // reset weights to median
-                ptcproc.reset_weights(ptcdata, calib, det_indices);
+                ptcproc.reset_weights(ptcdata, calib);
 
                 // populate maps
                 bool run_omb = false;
                 logger->info("populating noise maps");
                 if (map_method=="naive") {
-                    naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, fg_indices, telescope.pixel_axes,
+                    naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, telescope.pixel_axes,
                                                  calib.apt, telescope.d_fsmp, run_omb, run_noise);
                 }
                 else if (map_method=="jinc") {
-                    jinc_mm.populate_maps_jinc(ptcdata, omb, cmb, map_indices, det_indices, fg_indices, telescope.pixel_axes,
+                    jinc_mm.populate_maps_jinc(ptcdata, omb, cmb, map_indices, telescope.pixel_axes,
                                                calib.apt, telescope.d_fsmp, run_omb, run_noise);
                 }
             }
             logger->info("adding map to tod");
             // add map back
-            ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(ptcproc.tod_mb, ptcdata, calib, det_indices,
+            ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(ptcproc.tod_mb, ptcdata, calib,
                                                                     map_indices, telescope.pixel_axes,
                                                                     map_grouping);
         }
 
         // remove outliers after cleaning
-        calib_scan = ptcproc.remove_bad_dets(ptcdata, calib, det_indices, map_grouping);
+        calib_scan = ptcproc.remove_bad_dets(ptcdata, calib, map_grouping);
 
         // calculate weights
         logger->info("calculating weights");
-        ptcproc.calc_weights(ptcdata, calib.apt, telescope, det_indices);
+        ptcproc.calc_weights(ptcdata, calib.apt, telescope);
 
         // reset weights to median
-        ptcproc.reset_weights(ptcdata, calib, det_indices);
+        ptcproc.reset_weights(ptcdata, calib);
 
         // write ptc timestreams
         if (run_tod_output && !tod_filename.empty()) {
             if (tod_output_type == "ptc" || tod_output_type == "both") {
                 logger->info("writing processed time chunk");
                 ptcproc.append_to_netcdf(ptcdata, tod_filename["ptc"], map_grouping, telescope.pixel_axes,
-                                         ptcdata.pointing_offsets_arcsec.data, det_indices, calib);
+                                         ptcdata.pointing_offsets_arcsec.data, calib);
             }
         }
 
@@ -283,15 +276,15 @@ auto Lali::run(KidsProc &kidsproc) {
 
             logger->info("populating maps");
             if (map_method=="naive") {
-                naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, det_indices, fg_indices, telescope.pixel_axes,
+                naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, telescope.pixel_axes,
                                              calib.apt, telescope.d_fsmp, run_omb, run_noise_fruit);
             }
             else if (map_method=="jinc") {
-                jinc_mm.populate_maps_jinc(ptcdata, omb, cmb, map_indices, det_indices, fg_indices, telescope.pixel_axes,
+                jinc_mm.populate_maps_jinc(ptcdata, omb, cmb, map_indices, telescope.pixel_axes,
                                            calib.apt, telescope.d_fsmp, run_omb, run_noise_fruit);
             }
             else if (map_method=="maximum_likelihood") {
-                ml_mm.populate_maps_ml(ptcdata, omb, cmb, map_indices, det_indices, telescope.pixel_axes,
+                ml_mm.populate_maps_ml(ptcdata, omb, cmb, map_indices, telescope.pixel_axes,
                                        calib, telescope.d_fsmp, run_omb, run_noise_fruit);
             }
         }

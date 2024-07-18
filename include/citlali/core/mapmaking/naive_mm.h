@@ -62,8 +62,7 @@ public:
     // populate maps with a time chunk (signal, kernel, coverage, and noise)
     template<class map_buffer_t, typename Derived, typename apt_t>
     void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &, map_buffer_t &,
-                             Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &,
-                             std::string &, apt_t &, double, bool, bool);
+                             Eigen::DenseBase<Derived> &, std::string &, apt_t &, double, bool, bool);
 };
 
 template <class map_buffer_t>
@@ -75,19 +74,19 @@ void NaiveMapmaker::allocate_pointing(map_buffer_t &mb, double weight, double co
     mb.pointing[map_index](pix,0) += weight;
     mb.pointing[map_index](pix,1) += weight*cos_2angle;
     mb.pointing[map_index](pix,2) += weight*sin_2angle;
-    mb.pointing[map_index](pix,3) = mb.pointing[map_index](pix,1);//weight*cos(2*angle);
+    mb.pointing[map_index](pix,3) = mb.pointing[map_index](pix,1);
     mb.pointing[map_index](pix,4) += weight*pow(cos_2angle,2.);
     mb.pointing[map_index](pix,5) += weight*cos_2angle*sin_2angle;
-    mb.pointing[map_index](pix,6) = mb.pointing[map_index](pix,2);//weight*sin(2*angle);
-    mb.pointing[map_index](pix,7) = mb.pointing[map_index](pix,5);//weight*cos(2*angle)*sin(2*angle);
+    mb.pointing[map_index](pix,6) = mb.pointing[map_index](pix,2);
+    mb.pointing[map_index](pix,7) = mb.pointing[map_index](pix,5);
     mb.pointing[map_index](pix,8) += weight*pow(sin_2angle,2.);
 }
 
 template<class map_buffer_t, typename Derived, typename apt_t>
 void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, map_buffer_t &omb,
                                         map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
-                                        Eigen::DenseBase<Derived> &det_indices, Eigen::DenseBase<Derived> &fg_indices,
-                                        std::string &pixel_axes, apt_t &apt, double d_fsmp, bool run_omb, bool run_noise) {
+                                        std::string &pixel_axes, apt_t &apt, double d_fsmp,
+                                        bool run_omb, bool run_noise) {
 
     const bool use_cmb = !cmb.noise.empty();
     const bool use_omb = !omb.noise.empty();
@@ -98,14 +97,16 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
     typedef Eigen::Triplet<double> T;
     std::vector<std::vector<T>> signals, weights, kernels, coverages;
 
-    signals.resize(omb.signal.size());
-    weights.resize(omb.signal.size());
+    if (run_omb) {
+        signals.resize(omb.signal.size());
+        weights.resize(omb.signal.size());
 
-    if (run_kernel) {
-        kernels.resize(omb.signal.size());
-    }
-    if (run_coverage) {
-        coverages.resize(omb.signal.size());
+        if (run_kernel) {
+            kernels.resize(omb.signal.size());
+        }
+        if (run_coverage) {
+            coverages.resize(omb.signal.size());
+        }
     }
 
     map_buffer_t omb_copy;
@@ -113,7 +114,7 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
     if (use_omb) {
         omb_copy.noise = omb.noise;
 
-        for (Eigen::Index i=0; i<omb.signal.size(); ++i) {
+        for (Eigen::Index i=0; i<omb.noise.size(); ++i) {
             omb_copy.noise[i].setZero();
         }
     }
@@ -121,6 +122,9 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
     map_buffer_t cmb_copy;
 
     if (use_cmb) {
+        cmb_copy.n_rows = cmb.n_rows;
+        cmb_copy.n_cols = cmb.n_cols;
+
         cmb_copy.noise = cmb.noise;
 
         for (Eigen::Index i=0; i<cmb.noise.size(); ++i) {
@@ -166,7 +170,7 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
             int u_index = map_index + 2 * step;
 
             // get detector positions from apt table
-            auto det_index = det_indices(i);
+            auto det_index = i;
             // array index
             Eigen::Index array_index = apt["array"](det_index);
             // get detector pointing
@@ -192,11 +196,12 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                     Eigen::Index omb_ic = omb_icol(j);
 
                     if (run_polarization) {
+                        auto fg_index = apt["fg"](det_index);
                         if (run_hwpr) {
-                            angle = 2*in.hwpr_angle.data(j) - (in.angle.data(j) + fgs[fg_indices(det_index)] + install_ang[array_index]);
+                            angle = 2*in.hwpr_angle.data(j) - (in.angle.data(j) + fgs[fg_index] + install_ang[array_index]);
                         }
                         else {
-                            angle = in.angle.data(j) + fgs[fg_indices(det_index)] + install_ang[array_index];
+                            angle = in.angle.data(j) + fgs[fg_index] + install_ang[array_index];
                         }
 
                         cos_2angle = cos(2.*angle);
@@ -249,7 +254,7 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                             nmb_ic = cmb_icol(j);
                         }
                         // else make noise maps for obs
-                        else if (use_omb) {
+                        else {
                             nmb_ir = omb_irow(j);
                             nmb_ic = omb_icol(j);
                         }
@@ -309,7 +314,6 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
             for (int i=0; i<omb.noise.size(); ++i) {
                 nmb->noise[i] += nmb_copy->noise[i];
             }
-            //std::transform(nmb->noise.begin(), nmb->noise.end(), nmb_copy->noise.begin(), nmb->noise.begin(), std::plus<Eigen::Tensor<double,3>>());
         }
     }
 }

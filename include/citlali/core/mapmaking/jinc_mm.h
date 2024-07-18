@@ -73,18 +73,6 @@ public:
     // splines for jinc function
     std::map<Eigen::Index, engine_utils::SplineFunction> jinc_splines;
 
-    template <typename Derived>
-    void add_sparse_to_dense(std::vector<Eigen::Triplet<double>> &triplets, Eigen::DenseBase<Derived> &dense_matrix) {
-        Eigen::SparseMatrix<double> sparse_matrix(dense_matrix.rows(),dense_matrix.cols());
-        sparse_matrix.setFromTriplets(triplets.begin(), triplets.end());
-
-        for (int k = 0; k < sparse_matrix.outerSize(); ++k) {
-            for (Eigen::SparseMatrix<double>::InnerIterator it(sparse_matrix, k); it; ++it) {
-                dense_matrix(it.row(), it.col()) += it.value();
-            }
-        }
-    }
-
     // calculate jinc weight at a given radius
     auto jinc_func(double, double, double, double, double, double);
 
@@ -101,8 +89,7 @@ public:
     // populate maps with a time chunk (signal, kernel, coverage, and noise)
     template<class map_buffer_t, typename Derived, typename apt_t>
     void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &, map_buffer_t &,
-                            Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &,
-                            std::string &, apt_t &, double, bool, bool);
+                            Eigen::DenseBase<Derived> &, std::string &, apt_t &, double, bool, bool);
 };
 
 auto JincMapmaker::jinc_func(double r, double a, double b, double c, double r_max, double l_d) {
@@ -209,14 +196,12 @@ void JincMapmaker::allocate_pointing(map_buffer_t &mb, double weight, double cos
 template<class map_buffer_t, typename Derived, typename apt_t>
 void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                         map_buffer_t &omb, map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
-                        Eigen::DenseBase<Derived> &det_indices, Eigen::DenseBase<Derived> &fg_indices,
                         std::string &pixel_axes, apt_t &apt, double d_fsmp, bool run_omb, bool run_noise) {
 
     const bool use_cmb = !cmb.noise.empty();
     const bool use_omb = !omb.noise.empty();
     const bool run_kernel = !omb.kernel.empty();
     const bool run_coverage = !omb.coverage.empty();
-
     const bool run_hwpr = in.hwpr_angle.data.size()!=0;
 
     // dimensions of data
@@ -226,30 +211,39 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     // step to skip to reach next stokes param
     int step = omb.pointing.size();
 
-    map_buffer_t omb_copy = omb;
+    map_buffer_t omb_copy;
+    omb_copy.n_rows = omb.n_rows;
+    omb_copy.n_cols = omb.n_cols;
 
     for (Eigen::Index i=0; i<omb.signal.size(); ++i) {
-        omb_copy.signal[i].setZero();
-        omb_copy.weight[i].setZero();
+        if (run_omb) {
+            omb_copy.signal.emplace_back(Eigen::MatrixXd::Zero(omb.n_rows, omb.n_cols));
+            omb_copy.weight.emplace_back(Eigen::MatrixXd::Zero(omb.n_rows, omb.n_cols));
 
-        // clear coverage
-        if (run_coverage) {
-            omb_copy.coverage[i].setZero();
-        }
-        // clear kernel
-        if (run_kernel) {
-            omb_copy.kernel[i].setZero();
+            // clear coverage
+            if (run_coverage) {
+                omb_copy.coverage.emplace_back(Eigen::MatrixXd::Zero(omb.n_rows, omb.n_cols));
+            }
+            // clear kernel
+            if (run_kernel) {
+                omb_copy.kernel.emplace_back(Eigen::MatrixXd::Zero(omb.n_rows, omb.n_cols));
+            }
         }
         // clear noise
         if (use_omb) {
+            omb_copy.noise = omb.noise;
             omb_copy.noise[i].setZero();
         }
     }
+
     map_buffer_t cmb_copy;
-    cmb_copy.n_rows = cmb.n_rows;
-    cmb_copy.n_cols = cmb.n_cols;
 
     if (use_cmb) {
+        cmb_copy.n_rows = cmb.n_rows;
+        cmb_copy.n_cols = cmb.n_cols;
+
+        cmb_copy.noise = cmb.noise;
+
         for (Eigen::Index i=0; i<cmb.noise.size(); ++i) {
             cmb_copy.noise[i].setZero();
         }
@@ -268,7 +262,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         // skip completely flagged detectors
         if ((in.flags.data.col(i).array()==false).any()) {
             // get detector positions from apt table if not in detector mapmaking mode
-            auto det_index = det_indices(i);
+            auto det_index = i;
 
             // which map to assign detector to
             Eigen::Index map_index = map_indices(i);
@@ -316,11 +310,12 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                     Eigen::Index omb_ic = omb_icol(j);
 
                     if (run_polarization) {
+                        auto fg_index = apt["fg"](det_index);
                         if (run_hwpr) {
-                            angle = 2*in.hwpr_angle.data(j) - (in.angle.data(j) + fgs[fg_indices(det_index)] + install_ang[array_index]);
+                            angle = 2*in.hwpr_angle.data(j) - (in.angle.data(j) + fgs[fg_index] + install_ang[array_index]);
                         }
                         else {
-                            angle = in.angle.data(j) + fgs[fg_indices(det_index)] + install_ang[array_index];
+                            angle = in.angle.data(j) + fgs[fg_index] + install_ang[array_index];
                         }
 
                         cos_2angle = cos(2.*angle);
@@ -381,7 +376,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                         }
 
                         // else make noise maps for obs
-                        else if (use_omb) {
+                        else {
                             nmb_ir = omb_irow(j);
                             nmb_ic = omb_icol(j);
                         }

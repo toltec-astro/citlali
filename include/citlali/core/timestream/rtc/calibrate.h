@@ -132,14 +132,12 @@ public:
     auto calc_tau(Eigen::DenseBase<Derived> &, double);
 
     // run flux calibration on the timestreams
-    template <TCDataKind tcdata_kind, typename Derived, class calib_t>
-    void calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &, Eigen::DenseBase<Derived> &,
-                       Eigen::DenseBase<Derived> &, calib_t &);
+    template <TCDataKind tcdata_kind, class calib_t>
+    void calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &, calib_t &);
 
     // run extinction correction on the timestreams
-    template <TCDataKind tcdata_kind, typename Derived, typename tau_t>
-    void extinction_correction(TCData<tcdata_kind, Eigen::MatrixXd> &, Eigen::DenseBase<Derived> &,
-                       Eigen::DenseBase<Derived> &, tau_t &);
+    template <TCDataKind tcdata_kind, class calib_t, typename tau_t>
+    void extinction_correction(TCData<tcdata_kind, Eigen::MatrixXd> &, calib_t &, tau_t &);
 };
 
 template <typename Derived>
@@ -174,16 +172,15 @@ auto Calibration::calc_tau(Eigen::DenseBase<Derived> &elev, double tau_225_GHz) 
     return tau_freq;
 }
 
-template <TCDataKind tcdata_kind, typename Derived, class calib_t>
-void Calibration::calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &in, Eigen::DenseBase<Derived> &det_indices,
-                                Eigen::DenseBase<Derived> &array_indices, calib_t &calib) {
+template <TCDataKind tcdata_kind, class calib_t>
+void Calibration::calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &in, calib_t &calib) {
 
     // loop through detectors
     for (Eigen::Index i=0; i<in.scans.data.cols(); ++i) {
         // current detector index in apt table
-        Eigen::Index det_index = det_indices(i);
+        Eigen::Index det_index = i;
         // current array index in apt table
-        Eigen::Index array_index = array_indices(i);
+        Eigen::Index array_index = calib.apt["array"](i);
 
         // flux conversion factor for non-mJy/beam units
         in.fcf.data(i) = calib.flux_conversion_factor(array_index);
@@ -193,16 +190,15 @@ void Calibration::calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &in, Eigen:
     }
 }
 
-template <TCDataKind tcdata_kind, typename Derived, typename tau_t>
-void Calibration::extinction_correction(TCData<tcdata_kind, Eigen::MatrixXd> &in, Eigen::DenseBase<Derived> &det_indices,
-                                        Eigen::DenseBase<Derived> &array_indices, tau_t &tau_freq) {
+template <TCDataKind tcdata_kind, class calib_t, typename tau_t>
+void Calibration::extinction_correction(TCData<tcdata_kind, Eigen::MatrixXd> &in, calib_t &calib, tau_t &tau_freq) {
 
     // loop through detectors
     for (Eigen::Index i=0; i<in.scans.data.cols(); ++i) {
         // current detector index in apt table
-        Eigen::Index det_index = det_indices(i);
+        Eigen::Index det_index = i;
         // current array index in apt table
-        Eigen::Index array_index = array_indices(i);
+        Eigen::Index array_index = calib.apt["array"](i);
 
         // factor = 1 / exp(-tau_freq)
         auto factor = 1./(-tau_freq[array_index]).array().exp();

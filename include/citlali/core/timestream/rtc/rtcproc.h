@@ -4,7 +4,7 @@
 
 #include <citlali/core/timestream/timestream.h>
 
-#include <citlali/core/timestream/rtc/polarization_5.h>
+#include <citlali/core/timestream/rtc/polarization.h>
 #include <citlali/core/timestream/rtc/kernel.h>
 #include <citlali/core/timestream/rtc/despike.h>
 #include <citlali/core/timestream/rtc/filter.h>
@@ -44,39 +44,32 @@ public:
     void get_config(config_t &, std::vector<std::vector<std::string>> &, std::vector<std::vector<std::string>> &);
 
     // get indices to map from detector to index in map vectors
-    template <class calib_t, typename Derived>
-    auto calc_map_indices(calib_t &, Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &,
-                          Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &, std::string);
+    template <class calib_t>
+    auto calc_map_indices(calib_t &, std::string);
 
     // run the main processing
     template<typename calib_t, typename telescope_t>
-    auto run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &,
-             TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
-             std::string &, std::string &, calib_t &,
-             telescope_t &, double, std::string);
+    auto run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &, TCData<TCDataKind::PTC, Eigen::MatrixXd> &, std::string &,
+             calib_t &, telescope_t &, double, std::string);
 
     // remove nearby tones
-    template <typename calib_t, typename Derived>
-    auto remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &,
-                             std::string);
+    template <typename calib_t>
+    auto remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, std::string);
 
     // remove flagged detectors
-    template <typename apt_t, typename Derived>
-    void remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, apt_t &, Eigen::DenseBase<Derived> &);
+    template <typename apt_t>
+    void remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, apt_t &);
 
     // append time chunk to tod netcdf file
-    template <typename Derived, typename calib_t, typename pointing_offset_t>
+    template <typename calib_t, typename pointing_offset_t>
     void append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, std::string, std::string, std::string &,
-                          pointing_offset_t &, Eigen::DenseBase<Derived> &, calib_t &);
+                          pointing_offset_t &, calib_t &);
 };
 
 // get config file
 template <typename config_t>
 void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>> &missing_keys,
                          std::vector<std::vector<std::string>> &invalid_keys) {
-    // precompute pointing
-    //get_config_value(config, run_pointing, missing_keys, invalid_keys,
-    //                 std::tuple{"timestream","precompute_pointing"});
     // lower weight factor
     get_config_value(config, lower_weight_factor, missing_keys, invalid_keys,
                      std::tuple{"timestream","raw_time_chunk","flagging","lower_weight_factor"});
@@ -202,34 +195,32 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                      std::tuple{"timestream","raw_time_chunk","extinction_correction","enabled"});
 }
 
-template <class calib_t, typename Derived>
-auto RTCProc::calc_map_indices(calib_t &calib, Eigen::DenseBase<Derived> &det_indices, Eigen::DenseBase<Derived> &nw_indices,
-                               Eigen::DenseBase<Derived> &array_indices, Eigen::DenseBase<Derived> &fg_indices,
-                               std::string map_grouping) {
+template <class calib_t>
+auto RTCProc::calc_map_indices(calib_t &calib, std::string map_grouping) {
     // indices for maps
-    Eigen::VectorXI indices(array_indices.size()), map_indices(array_indices.size());
+    Eigen::VectorXI indices(calib.n_dets), map_indices(calib.n_dets);
 
     // number of maps from grouping
     int n_maps = 0;
 
     // overwrite map indices for networks
     if (map_grouping == "nw") {
-        indices = nw_indices;
+        indices = calib.apt["nw"].template cast<Eigen::Index> ();
         n_maps = calib.n_nws;
     }
     // overwrite map indices for arrays
     else if (map_grouping == "array") {
-        indices = array_indices;
+        indices = calib.apt["array"].template cast<Eigen::Index> ();
         n_maps = calib.n_arrays;
     }
     // overwrite map indices for detectors
     else if (map_grouping == "detector") {
-        indices = det_indices;
+        indices = Eigen::VectorXI::LinSpaced(calib.n_dets,0,calib.n_dets-1);
         n_maps = calib.n_dets;
     }
     // overwrite map indices for fg
     else if (map_grouping == "fg") {
-        indices = fg_indices;
+        indices = calib.apt["fg"].template cast<Eigen::Index> ();
         n_maps = calib.fg.size()*calib.n_arrays;
     }
     // start at 0
@@ -259,7 +250,7 @@ auto RTCProc::calc_map_indices(calib_t &calib, Eigen::DenseBase<Derived> &det_in
         }
         // allocate map indices from fg
         for (Eigen::Index i=0; i<indices.size(); ++i) {
-            map_indices(i) = fg_to_index[indices(i)] + calib.fg.size()*array_to_index[array_indices(i)];
+            map_indices(i) = fg_to_index[indices(i)] + calib.fg.size()*array_to_index[calib.apt["array"](i)];
         }
     }
     // return the map indices
@@ -267,10 +258,8 @@ auto RTCProc::calc_map_indices(calib_t &calib, Eigen::DenseBase<Derived> &det_in
 }
 
 template<class calib_t, typename telescope_t>
-auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
-                  TCData<TCDataKind::PTC, Eigen::MatrixXd> &out, std::string &pixel_axes,
-                  std::string &redu_type, calib_t &calib, telescope_t &telescope, double pixel_size_rad,
-                  std::string map_grouping) {
+auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKind::PTC, Eigen::MatrixXd> &out, std::string &pixel_axes,
+                  calib_t &calib, telescope_t &telescope, double pixel_size_rad, std::string map_grouping) {
 
     // number of points in scan
     Eigen::Index n_pts = in.scans.data.rows();
@@ -280,20 +269,20 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     // end index of inner scans
     auto sl = in.scan_indices.data(1) - in.scan_indices.data(0) + 1;
 
-    // calculate the stokes timestream (re-populates in)
-    auto [array_indices, nw_indices, det_indices, fg_indices] = polarization.calc_angle(in, calib);
+    // calculate the polarization angle
+    polarization.calc_angle(in, calib);
 
     // resize fcf
     in.fcf.data.setOnes(in.scans.data.cols());
 
     // get indices for maps
     logger->debug("calculating map indices");
-    auto map_indices = calc_map_indices(calib, det_indices, nw_indices, array_indices, fg_indices, map_grouping);
+    auto map_indices = calc_map_indices(calib, map_grouping);
 
     if (run_calibrate) {
         logger->debug("calibrating timestream");
         // calibrate tod
-        calibration.calibrate_tod(in, det_indices, array_indices, calib);
+        calibration.calibrate_tod(in, calib);
 
         in.status.calibrated = true;
     }
@@ -303,7 +292,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         // calc tau at toltec frequencies
         auto tau_freq = calibration.calc_tau(in.tel_data.data["TelElAct"], telescope.tau_225_GHz);
         // correct for extinction
-        calibration.extinction_correction(in, det_indices, array_indices, tau_freq);
+        calibration.extinction_correction(in, calib, tau_freq);
 
         in.status.extinction_corrected = true;
     }
@@ -314,17 +303,17 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         // symmetric gaussian kernel
         if (kernel.type == "gaussian") {
             logger->debug("creating symmetric gaussian kernel");
-            kernel.create_symmetric_gaussian_kernel(in, pixel_axes, redu_type, calib.apt, det_indices);
+            kernel.create_symmetric_gaussian_kernel(in, pixel_axes, calib.apt);
         }
         // airy kernel
         else if (kernel.type == "airy") {
             logger->debug("creating airy kernel");
-            kernel.create_airy_kernel(in, pixel_axes, redu_type, calib.apt, det_indices);
+            kernel.create_airy_kernel(in, pixel_axes, calib.apt);
         }
         // get kernel from fits
         else if (kernel.type == "fits") {
             logger->debug("getting kernel from fits");
-            kernel.create_kernel_from_fits(in, pixel_axes, redu_type, calib.apt, pixel_size_rad, map_indices, det_indices);
+            kernel.create_kernel_from_fits(in, pixel_axes, calib.apt, pixel_size_rad, map_indices);
         }
 
         in.status.kernel_generated = true;
@@ -341,7 +330,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
         despiker.despike(in.scans.data, in.flags.data, calib.apt);
 
         // we want to replace spikes on a per array or network basis
-        auto grp_limits = get_grouping(despiker.grouping, det_indices, calib, in.scans.data.cols());
+        auto grp_limits = get_grouping(despiker.grouping, calib, in.scans.data.cols());
 
         logger->debug("replacing spikes");
         for (auto const& [key, val] : grp_limits) {
@@ -493,12 +482,11 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
     in.hwpr_angle.data.resize(0);
     in.angle.data.resize(0);
 
-    return std::tuple<Eigen::VectorXI,Eigen::VectorXI,Eigen::VectorXI,Eigen::VectorXI, Eigen::VectorXI>(map_indices, array_indices,
-                                                                                                        nw_indices, det_indices, fg_indices);
+    return map_indices;
 }
 
-template <typename apt_t, typename Derived>
-void RTCProc::remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_t &apt, Eigen::DenseBase<Derived> &det_indices) {
+template <typename apt_t>
+void RTCProc::remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_t &apt) {
 
     // number of detectors
     Eigen::Index n_dets = in.scans.data.cols();
@@ -509,7 +497,7 @@ void RTCProc::remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
     // loop through detectors and set flags to one
     // for those flagged in apt table
     for (Eigen::Index i=0; i<n_dets; ++i) {
-        Eigen::Index det_index = det_indices(i);
+        Eigen::Index det_index = i;
         if (apt["flag"](det_index)!=0) {
             in.flags.data.col(i).setOnes();
             n_flagged++;
@@ -520,9 +508,8 @@ void RTCProc::remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
                 (static_cast<float>(n_flagged)/static_cast<float>(n_dets))*100);
 }
 
-template <typename calib_t, typename Derived>
-auto RTCProc::remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib, Eigen::DenseBase<Derived> &det_indices,
-                                  std::string map_grouping) {
+template <typename calib_t>
+auto RTCProc::remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib, std::string map_grouping) {
 
     // make a copy of the calib class for flagging
     calib_t calib_scan = calib;
@@ -535,7 +522,7 @@ auto RTCProc::remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
     // loop through flag columns
     for (Eigen::Index i=0; i<n_dets; ++i) {
         // map from data column to apt row
-        Eigen::Index det_index = det_indices(i);
+        Eigen::Index det_index = i;
         // if closer than freq separation limit and unflagged, flag it
         if (calib.apt["duplicate_tone"](det_index) && calib_scan.apt["flag"](det_index)==0) {
             n_nearby_tones++;
@@ -558,10 +545,9 @@ auto RTCProc::remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
     return std::move(calib_scan);
 }
 
-template <typename Derived, typename calib_t, typename pointing_offset_t>
+template <typename calib_t, typename pointing_offset_t>
 void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std::string filepath, std::string map_grouping,
-                               std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec, Eigen::DenseBase<Derived> &det_indices,
-                               calib_t &calib) {
+                               std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec, calib_t &calib) {
     using netCDF::NcDim;
     using netCDF::NcFile;
     using netCDF::NcType;
@@ -573,7 +559,7 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         NcFile fo(filepath, netCDF::NcFile::write);
 
         // append common time chunk variables
-        append_base_to_netcdf(fo, in, map_grouping, pixel_axes, pointing_offsets_arcsec, det_indices, calib);
+        append_base_to_netcdf(fo, in, map_grouping, pixel_axes, pointing_offsets_arcsec, calib);
 
         // sync file to make sure it gets updated
         fo.sync();
