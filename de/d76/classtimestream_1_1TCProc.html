@@ -81,9 +81,9 @@ Inheritance diagram for timestream::TCProc:</div>
 <div class="dyncontent">
 <div class="center"><img src="../../d1/d70/classtimestream_1_1TCProc__inherit__graph.png" border="0" usemap="#atimestream_1_1TCProc_inherit__map" alt="Inheritance graph"/></div>
 <map name="atimestream_1_1TCProc_inherit__map" id="atimestream_1_1TCProc_inherit__map">
-<area shape="rect" title=" " alt="" coords="86,5,287,420"/>
-<area shape="rect" href="../../d7/d4f/classtimestream_1_1PTCProc.html" title=" " alt="" coords="5,556,168,751"/>
-<area shape="rect" href="../../d9/d8c/classtimestream_1_1RTCProc.html" title=" " alt="" coords="192,468,384,839"/>
+<area shape="rect" title=" " alt="" coords="86,5,287,435"/>
+<area shape="rect" href="../../d7/d4f/classtimestream_1_1PTCProc.html" title=" " alt="" coords="5,571,168,765"/>
+<area shape="rect" href="../../d9/d8c/classtimestream_1_1RTCProc.html" title=" " alt="" coords="192,483,384,853"/>
 </map>
 </div>
 <div class="dynheader">
@@ -91,7 +91,7 @@ Collaboration diagram for timestream::TCProc:</div>
 <div class="dyncontent">
 <div class="center"><img src="../../d6/d97/classtimestream_1_1TCProc__coll__graph.png" border="0" usemap="#atimestream_1_1TCProc_coll__map" alt="Collaboration graph"/></div>
 <map name="atimestream_1_1TCProc_coll__map" id="atimestream_1_1TCProc_coll__map">
-<area shape="rect" title=" " alt="" coords="129,1151,330,1536"/>
+<area shape="rect" title=" " alt="" coords="129,1151,330,1551"/>
 <area shape="rect" href="../../df/d1c/classmapmaking_1_1MapBuffer.html" title=" " alt="" coords="5,219,224,1088"/>
 <area shape="rect" href="../../d1/dda/structmapmaking_1_1WCS.html" title=" " alt="" coords="45,5,184,156"/>
 <area shape="rect" href="../../dc/d1a/classengine__utils_1_1toltecIO.html" title=" " alt="" coords="249,585,439,721"/>
@@ -129,6 +129,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aef5324bb43d43b2f6340e4044fa3614b"><td class="memTemplParams" colspan="2">template&lt;TCDataKind tcdata_t, class calib_t , typename Derived &gt; </td></tr>
 <tr class="memitem:aef5324bb43d43b2f6340e4044fa3614b"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="../../de/d76/classtimestream_1_1TCProc.html#aef5324bb43d43b2f6340e4044fa3614b">remove_bad_dets</a> (<a class="el" href="../../dd/d75/structtimestream_1_1TCData.html">TCData</a>&lt; tcdata_t, Eigen::MatrixXd &gt; &amp;, calib_t &amp;, Eigen::DenseBase&lt; Derived &gt; &amp;, std::string)</td></tr>
 <tr class="separator:aef5324bb43d43b2f6340e4044fa3614b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8401fb8ee436b5bd6fb730a9fdda12f3"><td class="memTemplParams" colspan="2">template&lt;TCDataKind tcdata_t, class calib_t , typename Derived &gt; </td></tr>
+<tr class="memitem:a8401fb8ee436b5bd6fb730a9fdda12f3"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="../../de/d76/classtimestream_1_1TCProc.html#a8401fb8ee436b5bd6fb730a9fdda12f3">remove_uncorrelated</a> (<a class="el" href="../../dd/d75/structtimestream_1_1TCData.html">TCData</a>&lt; tcdata_t, Eigen::MatrixXd &gt; &amp;, calib_t &amp;, Eigen::DenseBase&lt; Derived &gt; &amp;, std::string)</td></tr>
+<tr class="separator:a8401fb8ee436b5bd6fb730a9fdda12f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af76c4d4ef82813ff324d368b4be6828d"><td class="memTemplParams" colspan="2">template&lt;SourceType source_type, TCDataKind tcdata_t, typename Derived , typename apt_t &gt; </td></tr>
 <tr class="memitem:af76c4d4ef82813ff324d368b4be6828d"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="../../de/d76/classtimestream_1_1TCProc.html#af76c4d4ef82813ff324d368b4be6828d">add_gaussian</a> (<a class="el" href="../../dd/d75/structtimestream_1_1TCData.html">TCData</a>&lt; tcdata_t, Eigen::MatrixXd &gt; &amp;, Eigen::DenseBase&lt; Derived &gt; &amp;, std::string &amp;, std::string &amp;, apt_t &amp;, double, Eigen::Index, Eigen::Index)</td></tr>
 <tr class="separator:af76c4d4ef82813ff324d368b4be6828d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -761,6 +764,48 @@ Here is the caller graph for this function:</div>
 <area shape="rect" href="../../dc/d9e/classBeammap.html#a58e3b98fd0e2d25a88228e58720efe9f" title=" " alt="" coords="208,155,381,197"/>
 </map>
 </div>
+
+</div>
+</div>
+<a id="a8401fb8ee436b5bd6fb730a9fdda12f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8401fb8ee436b5bd6fb730a9fdda12f3">&#9670;&nbsp;</a></span>remove_uncorrelated()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;TCDataKind tcdata_t, class calib_t , typename Derived &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">auto timestream::TCProc::remove_uncorrelated </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../dd/d75/structtimestream_1_1TCData.html">TCData</a>&lt; tcdata_t, Eigen::MatrixXd &gt; &amp;&#160;</td>
+          <td class="paramname"><em>in</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">calib_t &amp;&#160;</td>
+          <td class="paramname"><em>calib</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::DenseBase&lt; Derived &gt; &amp;&#160;</td>
+          <td class="paramname"><em>det_indices</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>map_grouping</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>

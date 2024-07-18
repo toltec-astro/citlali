@@ -91,56 +91,36 @@ $(function() {
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="comment">// loc or fg</span></div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    std::string <a class="code" href="../../d3/d24/classtimestream_1_1Polarization.html#a5625d293774ddc82765c67f1a70191d9">grouping</a>;</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="comment">// toltec array mounting angle</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    std::map&lt;int, double&gt; <a class="code" href="../../d3/d24/classtimestream_1_1Polarization.html#afa0b1ba05bd038a7839db8b4bc8a654b">install_ang</a> = {</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        {-1,-1},</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        {0,<a class="code" href="../../d2/d6f/constants_8h.html#a95ed8d1f751904d69454dbb31f1f247d">pi</a>/2},</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        {1,-<a class="code" href="../../d2/d6f/constants_8h.html#a95ed8d1f751904d69454dbb31f1f247d">pi</a>/2},</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        {2,-<a class="code" href="../../d2/d6f/constants_8h.html#a95ed8d1f751904d69454dbb31f1f247d">pi</a>/2},</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        };</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="comment">// toltec detector orientation angles</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    std::map&lt;int, double&gt; <a class="code" href="../../d3/d24/classtimestream_1_1Polarization.html#ac1b85f932675399fae5ea15e972d153a">fgs</a> = {</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        {-1,-1},</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        {0,0},</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        {1,<a class="code" href="../../d2/d6f/constants_8h.html#a95ed8d1f751904d69454dbb31f1f247d">pi</a>/4},</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        {2,<a class="code" href="../../d2/d6f/constants_8h.html#a95ed8d1f751904d69454dbb31f1f247d">pi</a>/2},</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        {3,3*<a class="code" href="../../d2/d6f/constants_8h.html#a95ed8d1f751904d69454dbb31f1f247d">pi</a>/4}</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    };</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keyword">template</span>&lt;TCDataKind td_kind, <span class="keyword">class</span> calib_type&gt;</div>
-<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="../../d3/d24/classtimestream_1_1Polarization.html#a5d0ddffcee856427a86152312d321730">   41</a></span>&#160;    <a class="code" href="../../d3/d24/classtimestream_1_1Polarization.html#a542ca5c7508fb384adf514a73caa74fa">indices_t</a> <a class="code" href="../../d3/d24/classtimestream_1_1Polarization.html#a5d0ddffcee856427a86152312d321730">calc_angle</a>(<a class="code" href="../../dd/d75/structtimestream_1_1TCData.html">TCData&lt;td_kind, Eigen::MatrixXd&gt;</a> &amp;in, calib_type &amp;calib) {</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="comment">// number of data points</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        Eigen::Index n_pts = in.scans.data.rows();</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="comment">// vectors of array, nw, and det indices</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        Eigen::VectorXI array_indices, nw_indices, det_indices, fg_indices;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        array_indices = calib.apt[<span class="stringliteral">&quot;array&quot;</span>].template cast&lt;Eigen::Index&gt; ();</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        nw_indices = calib.apt[<span class="stringliteral">&quot;nw&quot;</span>].template cast&lt;Eigen::Index&gt; ();</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        det_indices = Eigen::VectorXI::LinSpaced(in.scans.data.cols(),0,in.scans.data.cols()-1);</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        fg_indices = calib.apt[<span class="stringliteral">&quot;fg&quot;</span>].template cast&lt;Eigen::Index&gt; ();</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="comment">// rotation angle at array center</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        in.angle.data = in.tel_data.data[<span class="stringliteral">&quot;ActParAng&quot;</span>].array() + in.tel_data.data[<span class="stringliteral">&quot;TelElAct&quot;</span>].array() +</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                         in.pointing_offsets_arcsec.data[<span class="stringliteral">&quot;alt&quot;</span>].array()*<a class="code" href="../../d2/d6f/constants_8h.html#a81269dd83ed58e0412ffbf63b57b94df">ASEC_TO_RAD</a>;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="comment">// set as chunk as demodulated</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        in.status.demodulated = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="../../d3/d24/classtimestream_1_1Polarization.html#a542ca5c7508fb384adf514a73caa74fa">indices_t</a>(array_indices, nw_indices, det_indices, fg_indices);</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    }</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;};</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;} <span class="comment">// namespace timestream</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keyword">template</span>&lt;TCDataKind td_kind, <span class="keyword">class</span> calib_type&gt;</div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="../../d3/d24/classtimestream_1_1Polarization.html#a5d0ddffcee856427a86152312d321730">   24</a></span>&#160;    <a class="code" href="../../d3/d24/classtimestream_1_1Polarization.html#a542ca5c7508fb384adf514a73caa74fa">indices_t</a> <a class="code" href="../../d3/d24/classtimestream_1_1Polarization.html#a5d0ddffcee856427a86152312d321730">calc_angle</a>(<a class="code" href="../../dd/d75/structtimestream_1_1TCData.html">TCData&lt;td_kind, Eigen::MatrixXd&gt;</a> &amp;in, calib_type &amp;calib) {</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        <span class="comment">// number of data points</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        Eigen::Index n_pts = in.scans.data.rows();</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="comment">// vectors of array, nw, and det indices</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        Eigen::VectorXI array_indices, nw_indices, det_indices, fg_indices;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        array_indices = calib.apt[<span class="stringliteral">&quot;array&quot;</span>].template cast&lt;Eigen::Index&gt; ();</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        nw_indices = calib.apt[<span class="stringliteral">&quot;nw&quot;</span>].template cast&lt;Eigen::Index&gt; ();</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        det_indices = Eigen::VectorXI::LinSpaced(in.scans.data.cols(),0,in.scans.data.cols()-1);</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        fg_indices = calib.apt[<span class="stringliteral">&quot;fg&quot;</span>].template cast&lt;Eigen::Index&gt; ();</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="comment">// rotation angle at array center</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        in.angle.data = in.tel_data.data[<span class="stringliteral">&quot;ActParAng&quot;</span>].array() + in.tel_data.data[<span class="stringliteral">&quot;TelElAct&quot;</span>].array() +</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                         in.pointing_offsets_arcsec.data[<span class="stringliteral">&quot;alt&quot;</span>].array()*<a class="code" href="../../d2/d6f/constants_8h.html#a81269dd83ed58e0412ffbf63b57b94df">ASEC_TO_RAD</a>;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="comment">// set as chunk as demodulated</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        in.status.demodulated = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="../../d3/d24/classtimestream_1_1Polarization.html#a542ca5c7508fb384adf514a73caa74fa">indices_t</a>(array_indices, nw_indices, det_indices, fg_indices);</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    }</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;};</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;} <span class="comment">// namespace timestream</span></div>
 <div class="ttc" id="aclasstimestream_1_1Polarization_html_a542ca5c7508fb384adf514a73caa74fa"><div class="ttname"><a href="../../d3/d24/classtimestream_1_1Polarization.html#a542ca5c7508fb384adf514a73caa74fa">timestream::Polarization::indices_t</a></div><div class="ttdeci">std::tuple&lt; Eigen::VectorXI, Eigen::VectorXI, Eigen::VectorXI &gt; indices_t</div><div class="ttdef"><b>Definition:</b> polarization.h:12</div></div>
 <div class="ttc" id="aclasstimestream_1_1Polarization_html_a5625d293774ddc82765c67f1a70191d9"><div class="ttname"><a href="../../d3/d24/classtimestream_1_1Polarization.html#a5625d293774ddc82765c67f1a70191d9">timestream::Polarization::grouping</a></div><div class="ttdeci">std::string grouping</div><div class="ttdef"><b>Definition:</b> polarization_4.h:19</div></div>
 <div class="ttc" id="aclasstimestream_1_1Polarization_html_a57204a8ff39b231cd913baec414ddb27"><div class="ttname"><a href="../../d3/d24/classtimestream_1_1Polarization.html#a57204a8ff39b231cd913baec414ddb27">timestream::Polarization::stokes_params</a></div><div class="ttdeci">std::map&lt; int, std::string &gt; stokes_params</div><div class="ttdef"><b>Definition:</b> polarization.h:15</div></div>
-<div class="ttc" id="aclasstimestream_1_1Polarization_html_a5d0ddffcee856427a86152312d321730"><div class="ttname"><a href="../../d3/d24/classtimestream_1_1Polarization.html#a5d0ddffcee856427a86152312d321730">timestream::Polarization::calc_angle</a></div><div class="ttdeci">indices_t calc_angle(TCData&lt; td_kind, Eigen::MatrixXd &gt; &amp;in, calib_type &amp;calib)</div><div class="ttdef"><b>Definition:</b> polarization_5.h:41</div></div>
-<div class="ttc" id="aclasstimestream_1_1Polarization_html_ac1b85f932675399fae5ea15e972d153a"><div class="ttname"><a href="../../d3/d24/classtimestream_1_1Polarization.html#ac1b85f932675399fae5ea15e972d153a">timestream::Polarization::fgs</a></div><div class="ttdeci">std::map&lt; int, double &gt; fgs</div><div class="ttdef"><b>Definition:</b> polarization.h:29</div></div>
-<div class="ttc" id="aclasstimestream_1_1Polarization_html_afa0b1ba05bd038a7839db8b4bc8a654b"><div class="ttname"><a href="../../d3/d24/classtimestream_1_1Polarization.html#afa0b1ba05bd038a7839db8b4bc8a654b">timestream::Polarization::install_ang</a></div><div class="ttdeci">std::map&lt; int, double &gt; install_ang</div><div class="ttdef"><b>Definition:</b> polarization.h:22</div></div>
+<div class="ttc" id="aclasstimestream_1_1Polarization_html_a5d0ddffcee856427a86152312d321730"><div class="ttname"><a href="../../d3/d24/classtimestream_1_1Polarization.html#a5d0ddffcee856427a86152312d321730">timestream::Polarization::calc_angle</a></div><div class="ttdeci">indices_t calc_angle(TCData&lt; td_kind, Eigen::MatrixXd &gt; &amp;in, calib_type &amp;calib)</div><div class="ttdef"><b>Definition:</b> polarization_5.h:24</div></div>
 <div class="ttc" id="aconstants_8h_html_a81269dd83ed58e0412ffbf63b57b94df"><div class="ttname"><a href="../../d2/d6f/constants_8h.html#a81269dd83ed58e0412ffbf63b57b94df">ASEC_TO_RAD</a></div><div class="ttdeci">#define ASEC_TO_RAD</div><div class="ttdef"><b>Definition:</b> constants.h:33</div></div>
-<div class="ttc" id="aconstants_8h_html_a95ed8d1f751904d69454dbb31f1f247d"><div class="ttname"><a href="../../d2/d6f/constants_8h.html#a95ed8d1f751904d69454dbb31f1f247d">pi</a></div><div class="ttdeci">constexpr auto pi</div><div class="ttdef"><b>Definition:</b> constants.h:6</div></div>
 <div class="ttc" id="anamespacetimestream_html"><div class="ttname"><a href="../../d4/de4/namespacetimestream.html">timestream</a></div><div class="ttdef"><b>Definition:</b> clean.h:10</div></div>
 <div class="ttc" id="astructtimestream_1_1TCData_html"><div class="ttname"><a href="../../dd/d75/structtimestream_1_1TCData.html">timestream::TCData</a></div><div class="ttdoc">TC data class.</div><div class="ttdef"><b>Definition:</b> timestream.h:55</div></div>
 <div class="ttc" id="atimestream_8h_html"><div class="ttname"><a href="../../d5/deb/timestream_8h.html">timestream.h</a></div></div>

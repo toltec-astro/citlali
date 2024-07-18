@@ -6,7 +6,7 @@ var searchData=
   ['add_5fhdu_5',['add_hdu',['../df/d8d/classfitsIO.html#a9aa0aadcc4d5b20c5439706107115498',1,'fitsIO']]],
   ['add_5fnetcdf_5fvar_6',['add_netcdf_var',['../d9/dc8/netcdf__io_8h.html#a7e9238264b408d10ef22ce3f7fb6ef0b',1,'netcdf_io.h']]],
   ['add_5fphdu_7',['add_phdu',['../d1/db6/classEngine.html#a87f030609fa38fc38bb5e7ea66d31e29',1,'Engine::add_phdu(fits_io_type &amp;, map_buffer_t &amp;, Eigen::Index)'],['../d1/db6/classEngine.html#a87f030609fa38fc38bb5e7ea66d31e29',1,'Engine::add_phdu(fits_io_type &amp;, map_buffer_t &amp;, Eigen::Index)']]],
-  ['add_5fsparse_5fto_5fdense_8',['add_sparse_to_dense',['../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a998102c965d6ff1c382aec73bc791a42',1,'mapmaking::NaiveMapmaker']]],
+  ['add_5fsparse_5fto_5fdense_8',['add_sparse_to_dense',['../db/d8e/classmapmaking_1_1JincMapmaker.html#ad2e398c8449edac14412eea4b3278d74',1,'mapmaking::JincMapmaker::add_sparse_to_dense()'],['../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a998102c965d6ff1c382aec73bc791a42',1,'mapmaking::NaiveMapmaker::add_sparse_to_dense()']]],
   ['add_5ftod_5fheader_9',['add_tod_header',['../d1/db6/classEngine.html#a61c876707413921568013dd67a9f1de7',1,'Engine::add_tod_header()'],['../d1/db6/classEngine.html#a61c876707413921568013dd67a9f1de7',1,'Engine::add_tod_header()']]],
   ['add_5fwcs_10',['add_wcs',['../df/d8d/classfitsIO.html#a469485eac543d4727b96d00c4ce188d5',1,'fitsIO']]],
   ['airy_11',['Airy',['../de/d76/classtimestream_1_1TCProc.html#ac502f770ba4426077b5aa859b9df7ebaab8d9e95e1b14aabf30fe4ff4aade3d3a',1,'timestream::TCProc']]],
