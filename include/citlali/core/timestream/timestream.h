@@ -556,8 +556,8 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     }
 
     Eigen::MatrixXd ones, zeros;
-    ones.setOnes(tod_mb.weight[i].rows(), tod_mb.weight[i].cols());
-    zeros.setZero(tod_mb.weight[i].rows(), tod_mb.weight[i].cols());
+    ones.setOnes(tod_mb.weight[0].rows(), tod_mb.weight[0].cols());
+    zeros.setZero(tod_mb.weight[0].rows(), tod_mb.weight[0].cols());
 
     // calculate coverage bool map
     for (int i=0; i<tod_mb.weight.size(); ++i) {
