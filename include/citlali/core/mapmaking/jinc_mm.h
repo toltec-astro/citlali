@@ -441,7 +441,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         }
 
         if (run_noise) {
-            for (int i=0; i<omb.noise.size(); ++i) {
+            for (int i=0; i<nmb->noise.size(); ++i) {
                 nmb->noise[i] += nmb_copy->noise[i];
             }
         }

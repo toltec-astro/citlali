@@ -142,6 +142,7 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
     // pointer to map buffer with noise maps
     map_buffer_t *nmb, *nmb_copy;
 
+    // get pointer to map buffer for noise maps
     if (run_noise) {
         nmb = use_cmb ? &cmb : (use_omb ? &omb : nullptr);
         nmb_copy = use_cmb ? &cmb_copy : (use_omb ? &omb_copy : nullptr);
@@ -159,9 +160,20 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
     // cosine and sine of angles
     double angle, cos_2angle, sin_2angle;
 
+    // add detector to map?
+    bool run_det;
+
     for (Eigen::Index i=0; i<n_dets; ++i) {
+        // skip fg = -1 if in polarization mode
+        if (run_polarization && apt["fg"](i)==-1) {
+            run_det = false;
+        }
+        else {
+            run_det = true;
+        }
+
         // skip completely flagged detectors
-        if ((in.flags.data.col(i).array()==0).any()) {
+        if ((in.flags.data.col(i).array()==0).any() && run_det) {
             // which map to assign detector to
             Eigen::Index map_index = map_indices(i);
 
@@ -311,7 +323,7 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
         }
 
         if (run_noise) {
-            for (int i=0; i<omb.noise.size(); ++i) {
+            for (int i=0; i<nmb->noise.size(); ++i) {
                 nmb->noise[i] += nmb_copy->noise[i];
             }
         }
