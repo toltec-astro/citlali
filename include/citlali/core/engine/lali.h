@@ -21,8 +21,8 @@ public:
     void pipeline(KidsProc &, RawObs &);
 
     // run the reduction for the obs
-    template <class KidsProc>
-    auto run(KidsProc &);
+    //template <class KidsProc>
+    auto run();//KidsProc &);
 
     // output files
     template <mapmaking::MapType map_type>
@@ -36,8 +36,9 @@ void Lali::setup() {
 
 template <class KidsProc, class RawObs>
 void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
-    using tuple_t = std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>,
-                               std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>;
+    //using tuple_t = std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>,
+    //                           std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>;
+    using tuple_t = TCData<TCDataKind::RTC, Eigen::MatrixXd>;
     using map_tuple_t = std::tuple<mapmaking::MapBuffer,mapmaking::MapBuffer>;
 
     // initialize number of completed scans
@@ -82,16 +83,25 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                                     .unaryExpr([&](int dummy){ return 2 * rands(eng) - 1; });
                     }
                 }
-
                 // vector to store kids data
                 std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> scan_rawobs;
                 // get kids data
                 scan_rawobs = kidsproc.load_rawobs(rawobs, scan, telescope.scan_indices, start_indices, end_indices);
 
+                // starting index for scan
+                Eigen::Index si = rtcdata.scan_indices.data(2);
+                // current length of outer scans
+                Eigen::Index sl = rtcdata.scan_indices.data(3) - rtcdata.scan_indices.data(2) + 1;
+
+                // get raw tod from files
+                rtcdata.scans.data = kidsproc.populate_rtc(scan_rawobs, sl, calib.n_dets, tod_type);
+                // try and clear input vector
+                std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>().swap(scan_rawobs);
+
                 // increment scan
                 scan++;
                 // return rtcdata, kidsproc, and raw data
-                return tuple_t(rtcdata, scan_rawobs);
+                return rtcdata;
             }
             // reset scan to zero for each obs
             scan = 0;
@@ -99,7 +109,7 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         },
 
         // run the farm
-        run(kidsproc));
+        run());
 
     if (run_mapmaking) {
         // normalize maps
@@ -125,20 +135,27 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     }
 }
 
-template <class KidsProc>
-auto Lali::run(KidsProc &kidsproc) {
-    using tuple_t = std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>,
-                               std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>;
-    auto farm = grppi::farm(n_threads,[&](tuple_t& input_tuple) {
+//template <class KidsProc>
+auto Lali::run() {//KidsProc &kidsproc) {
+    //using tuple_t = std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>,
+    //                           std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>;
+    using tuple_t = TCData<TCDataKind::RTC, Eigen::MatrixXd>;
+
+    auto farm = grppi::farm(n_threads,[&](tuple_t &rtcdata) {
         // RTCData input
-        auto &rtcdata = std::get<0>(input_tuple);
+        //auto &rtcdata = std::get<0>(input_tuple);
         // start index input
-        auto &scan_rawobs = std::get<1>(input_tuple);
+        //auto &scan_rawobs = std::get<1>(input_tuple);
 
         // starting index for scan
         Eigen::Index si = rtcdata.scan_indices.data(2);
         // current length of outer scans
         Eigen::Index sl = rtcdata.scan_indices.data(3) - rtcdata.scan_indices.data(2) + 1;
+
+        // get raw tod from files
+        //rtcdata.scans.data = kidsproc.populate_rtc(scan_rawobs, sl, calib.n_dets, tod_type);
+        // try and clear input vector
+        //std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>().swap(scan_rawobs);
 
         // copy scan's telescope vectors
         for (const auto& x: telescope.tel_data) {
@@ -157,10 +174,6 @@ auto Lali::run(KidsProc &kidsproc) {
             }
         }
 
-        // get raw tod from files
-        rtcdata.scans.data = kidsproc.populate_rtc(scan_rawobs, rtcdata.scan_indices.data, sl, calib.n_dets, tod_type);
-        std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>().swap(std::get<1>(input_tuple));
-
         // create PTCData
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;
 
@@ -169,7 +182,7 @@ auto Lali::run(KidsProc &kidsproc) {
 
         // run rtcproc
         logger->info("raw time chunk processing for scan {}", rtcdata.index.data + 1);
-        auto map_indices = rtcproc.run(rtcdata, ptcdata, telescope.pixel_axes, calib, telescope, omb.pixel_size_rad, map_grouping);
+        auto map_indices = rtcproc.run(rtcdata, ptcdata, calib, telescope, omb.pixel_size_rad, map_grouping);
 
         // remove flagged detectors
         rtcproc.remove_flagged_dets(ptcdata, calib.apt);
@@ -268,12 +281,12 @@ auto Lali::run(KidsProc &kidsproc) {
             bool run_noise_fruit = run_noise;
 
             // if running fruit loops, noise maps are made on source
-            // subtracted timestreams so don't make them here unless
-            // on first iteration
+            // subtracted timestreams so don't make them here
             if (ptcproc.run_fruit_loops && !ptcproc.tod_mb.signal.empty()) {
                 run_noise_fruit = false;
             }
 
+            // populate maps with current time chunk
             logger->info("populating maps");
             if (map_method=="naive") {
                 naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, telescope.pixel_axes,

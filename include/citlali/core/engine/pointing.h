@@ -251,7 +251,7 @@ auto Pointing::run(KidsProc &kidsproc) {
         }
 
         // get raw tod from files
-        rtcdata.scans.data = kidsproc.populate_rtc(scan_rawobs,rtcdata.scan_indices.data, sl, calib.n_dets, tod_type);
+        rtcdata.scans.data = kidsproc.populate_rtc(scan_rawobs, sl, calib.n_dets, tod_type);
         std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>().swap(scan_rawobs);
 
         // create PTCData
@@ -262,7 +262,7 @@ auto Pointing::run(KidsProc &kidsproc) {
 
         // run rtcproc
         logger->info("raw time chunk processing for scan {}", rtcdata.index.data + 1);
-        auto map_indices = rtcproc.run(rtcdata, ptcdata, telescope.pixel_axes, calib, telescope, omb.pixel_size_rad, map_grouping);
+        auto map_indices = rtcproc.run(rtcdata, ptcdata, calib, telescope, omb.pixel_size_rad, map_grouping);
 
         // remove flagged detectors
         rtcproc.remove_flagged_dets(ptcdata, calib.apt);

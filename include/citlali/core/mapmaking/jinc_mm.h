@@ -141,6 +141,7 @@ void JincMapmaker::allocate_jinc_matrix(double pixel_size_rad) {
                 jinc_weights_mat[ld.first](i,j) = jinc_func(r,a,b,c,r_max,ld.second);
             }
         }
+        logger->info("jinc_weights_mat[{}] {}",ld.first,jinc_weights_mat[ld.first]);
     }
 }
 
@@ -229,9 +230,11 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                 omb_copy.kernel.emplace_back(Eigen::MatrixXd::Zero(omb.n_rows, omb.n_cols));
             }
         }
-        // clear noise
-        if (use_omb) {
-            omb_copy.noise = omb.noise;
+    }
+    // clear noise
+    if (use_omb) {
+        omb_copy.noise = omb.noise;
+        for (Eigen::Index i=0; i<omb.signal.size(); ++i) {
             omb_copy.noise[i].setZero();
         }
     }
@@ -257,8 +260,19 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         nmb_copy = use_cmb ? &cmb_copy : (use_omb ? &omb_copy : nullptr);
     }
 
+    // add detector to map?
+    bool run_det;
+
     // parallelize over detectors
     for (Eigen::Index i=0; i<n_dets; ++i) {
+        // skip fg = -1 if in polarization mode
+        if (run_polarization && apt["fg"](i)==-1) {
+            run_det = false;
+        }
+        else {
+            run_det = true;
+        }
+
         // skip completely flagged detectors
         if ((in.flags.data.col(i).array()==false).any()) {
             // get detector positions from apt table if not in detector mapmaking mode

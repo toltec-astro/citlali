@@ -86,9 +86,9 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
                      std::vector<Eigen::Index> &);
 
     // populate rtc
-    template <typename loaded_t, typename scanindices_t>
-    auto populate_rtc(loaded_t &, scanindices_t &,
-                      const int, const int, const std::string);
+    template <typename loaded_t>
+    auto populate_rtc(loaded_t &, const int, const int,
+                      const std::string);
 
     // TODO fix the const correctness
     Fitter &fitter() { return m_fitter; }
@@ -271,8 +271,8 @@ auto KidsDataProc::load_rawobs(const RawObs &rawobs, const Eigen::Index scan,
     return result;
 }
 
-template <typename loaded_t, typename scanindices_t>
-auto KidsDataProc::populate_rtc(loaded_t &loaded, scanindices_t &scanindex,
+template <typename loaded_t>
+auto KidsDataProc::populate_rtc(loaded_t &loaded,
                                 const int n_pts, const int n_det,
                                 const std::string data_type) {
     // resize data

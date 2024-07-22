@@ -165,6 +165,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     subtract_mean(in);
 
     if (run_clean) {
+        logger->info("cleaning");
         // number of samples
         Eigen::Index n_pts = in.scans.data.rows();
         // index for number of cleaning groups in vectors

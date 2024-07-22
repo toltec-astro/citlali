@@ -49,7 +49,7 @@ public:
 
     // run the main processing
     template<typename calib_t, typename telescope_t>
-    auto run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &, TCData<TCDataKind::PTC, Eigen::MatrixXd> &, std::string &,
+    auto run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &, TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
              calib_t &, telescope_t &, double, std::string);
 
     // remove nearby tones
@@ -258,7 +258,7 @@ auto RTCProc::calc_map_indices(calib_t &calib, std::string map_grouping) {
 }
 
 template<class calib_t, typename telescope_t>
-auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKind::PTC, Eigen::MatrixXd> &out, std::string &pixel_axes,
+auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKind::PTC, Eigen::MatrixXd> &out,
                   calib_t &calib, telescope_t &telescope, double pixel_size_rad, std::string map_grouping) {
 
     // number of points in scan
@@ -270,7 +270,9 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     auto sl = in.scan_indices.data(1) - in.scan_indices.data(0) + 1;
 
     // calculate the polarization angle
-    polarization.calc_angle(in, calib);
+    if (run_polarization) {
+        polarization.calc_angle(in, calib);
+    }
 
     // resize fcf
     in.fcf.data.setOnes(in.scans.data.cols());
@@ -303,17 +305,17 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         // symmetric gaussian kernel
         if (kernel.type == "gaussian") {
             logger->debug("creating symmetric gaussian kernel");
-            kernel.create_symmetric_gaussian_kernel(in, pixel_axes, calib.apt);
+            kernel.create_symmetric_gaussian_kernel(in, telescope.pixel_axes, calib.apt);
         }
         // airy kernel
         else if (kernel.type == "airy") {
             logger->debug("creating airy kernel");
-            kernel.create_airy_kernel(in, pixel_axes, calib.apt);
+            kernel.create_airy_kernel(in, telescope.pixel_axes, calib.apt);
         }
         // get kernel from fits
         else if (kernel.type == "fits") {
             logger->debug("getting kernel from fits");
-            kernel.create_kernel_from_fits(in, pixel_axes, calib.apt, pixel_size_rad, map_indices);
+            kernel.create_kernel_from_fits(in, telescope.pixel_axes, calib.apt, pixel_size_rad, map_indices);
         }
 
         in.status.kernel_generated = true;
@@ -479,8 +481,12 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     in.kernel.data.resize(0,0);
     in.tel_data.data.clear();
     in.pointing_offsets_arcsec.data.clear();
-    in.hwpr_angle.data.resize(0);
-    in.angle.data.resize(0);
+    if (run_polarization) {
+        in.hwpr_angle.data.resize(0);
+        in.angle.data.resize(0);
+    }
+
+    in.noise.data.resize(0,0);
 
     return map_indices;
 }

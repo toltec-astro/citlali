@@ -29,7 +29,7 @@ public:
         {0,pi/2},
         {1,-pi/2},
         {2,-pi/2},
-        };
+    };
 
     // toltec detector orientation angles
     std::map<int, double> fgs = {
@@ -44,12 +44,8 @@ public:
     void add_sparse_to_dense(std::vector<Eigen::Triplet<double>> &triplets, Eigen::DenseBase<Derived> &dense_matrix) {
         Eigen::SparseMatrix<double> sparse_matrix(dense_matrix.rows(),dense_matrix.cols());
         sparse_matrix.setFromTriplets(triplets.begin(), triplets.end());
-
-        for (int k = 0; k < sparse_matrix.outerSize(); ++k) {
-            for (Eigen::SparseMatrix<double>::InnerIterator it(sparse_matrix, k); it; ++it) {
-                dense_matrix(it.row(), it.col()) += it.value();
-            }
-        }
+        dense_matrix += sparse_matrix;
+        std::vector<Eigen::Triplet<double>>().swap(triplets);
     }
 
     // run polarization?
@@ -327,6 +323,9 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                 nmb->noise[i] += nmb_copy->noise[i];
             }
         }
+
+        nmb = nullptr;
+        nmb_copy = nullptr;
     }
 }
 } // namespace mapmaking

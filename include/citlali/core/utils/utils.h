@@ -25,6 +25,22 @@ namespace engine_utils {
     return pow(2,std::ceil(std::log2(n)));
 }*/
 
+/*void output_memory_usage() {
+    std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
+    std::string line;
+    std::ifstream procStatus("/proc/self/status");
+
+    while (std::getline(procStatus, line)) {
+        // Check for memory usage entries
+        if (line.substr(0, 6) == "VmSize") { // Virtual memory size
+            logger->info("Total memory used: {}", line.substr(7));
+        }
+        if (line.substr(0, 6) == "VmRSS") { // Resident set size
+            logger->info("Resident set size (actual physical memory): {}", line.substr(7));
+        }
+    }
+}*/
+
 static const int parseLine(char* line){
     // this assumes that a digit will be found and the line ends in " Kb".
     int i = strlen(line);
