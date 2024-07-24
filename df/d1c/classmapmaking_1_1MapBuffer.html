@@ -80,7 +80,7 @@ Collaboration diagram for mapmaking::MapBuffer:</div>
 <div class="dyncontent">
 <div class="center"><img src="../../df/d62/classmapmaking_1_1MapBuffer__coll__graph.png" border="0" usemap="#amapmaking_1_1MapBuffer_coll__map" alt="Collaboration graph"/></div>
 <map name="amapmaking_1_1MapBuffer_coll__map" id="amapmaking_1_1MapBuffer_coll__map">
-<area shape="rect" title=" " alt="" coords="5,219,224,1088"/>
+<area shape="rect" title=" " alt="" coords="5,219,224,1205"/>
 <area shape="rect" href="../../d1/dda/structmapmaking_1_1WCS.html" title=" " alt="" coords="45,5,184,156"/>
 </map>
 </div>
@@ -95,6 +95,16 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a29f5f25512e511dd1f00ded7989553b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade6b0c65677564eadf0b2125d25122a9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#ade6b0c65677564eadf0b2125d25122a9">normalize_maps</a> ()</td></tr>
 <tr class="separator:ade6b0c65677564eadf0b2125d25122a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3971cce10163c81b6c5e8216f379a324"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#a3971cce10163c81b6c5e8216f379a324">calculate_stokes</a> (std::vector&lt; Eigen::MatrixXd &gt; &amp;, const Eigen::MatrixXd &amp;, Eigen::Index, Eigen::Index, int, int)</td></tr>
+<tr class="separator:a3971cce10163c81b6c5e8216f379a324"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ef7897283b19db85a53c3ad71c549af"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#a2ef7897283b19db85a53c3ad71c549af">calculate_stokes</a> (std::vector&lt; Eigen::Tensor&lt; double, 3 &gt;&gt; &amp;, const Eigen::MatrixXd &amp;, Eigen::Index, Eigen::Index, int, int)</td></tr>
+<tr class="separator:a2ef7897283b19db85a53c3ad71c549af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ee754c60141aaaee4ca0c1cfaf3b20b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#a0ee754c60141aaaee4ca0c1cfaf3b20b">process_maps_for_pixel</a> (Eigen::Index, Eigen::Index, int, int, const Eigen::MatrixXd &amp;)</td></tr>
+<tr class="separator:a0ee754c60141aaaee4ca0c1cfaf3b20b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4d7fdf57587bc5999501931d8a6798a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#ad4d7fdf57587bc5999501931d8a6798a">zero_out_maps</a> (Eigen::Index, Eigen::Index, int, int)</td></tr>
+<tr class="separator:ad4d7fdf57587bc5999501931d8a6798a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a681e814910184960eb926a1c7d2eebe0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#a681e814910184960eb926a1c7d2eebe0">normalize_polarized_maps</a> ()</td></tr>
+<tr class="separator:a681e814910184960eb926a1c7d2eebe0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18dc45983c4b7028c13924efe17a9d7b"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; double, Eigen::MatrixXd, Eigen::Index, Eigen::Index &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#a18dc45983c4b7028c13924efe17a9d7b">calc_cov_region</a> (Eigen::Index)</td></tr>
 <tr class="separator:a18dc45983c4b7028c13924efe17a9d7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7b53c79539613b9611221b77e83374f8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#a7b53c79539613b9611221b77e83374f8">calc_map_psd</a> ()</td></tr>
@@ -114,6 +124,10 @@ Public Member Functions</h2></td></tr>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a15aaa9ea7a18818e50d7d279e0546d43"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d1/dda/structmapmaking_1_1WCS.html">WCS</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#a15aaa9ea7a18818e50d7d279e0546d43">wcs</a></td></tr>
 <tr class="separator:a15aaa9ea7a18818e50d7d279e0546d43"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28a770226bd4734eef0001358796aee8"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#a28a770226bd4734eef0001358796aee8">map_in_vec</a></td></tr>
+<tr class="separator:a28a770226bd4734eef0001358796aee8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a615a9a367b19277756a4ec98fb55d0aa"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#a615a9a367b19277756a4ec98fb55d0aa">map_out_vec</a></td></tr>
+<tr class="separator:a615a9a367b19277756a4ec98fb55d0aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a59c704d0646de23bfdfe929b6e9b3c0c"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#a59c704d0646de23bfdfe929b6e9b3c0c">name</a></td></tr>
 <tr class="separator:a59c704d0646de23bfdfe929b6e9b3c0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a89e339c466d84058ca372828e8d7079f"><td class="memItemLeft" align="right" valign="top">std::vector&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#a89e339c466d84058ca372828e8d7079f">crval_config</a></td></tr>
@@ -477,6 +491,120 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
+<a id="a3971cce10163c81b6c5e8216f379a324"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3971cce10163c81b6c5e8216f379a324">&#9670;&nbsp;</a></span>calculate_stokes() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mapmaking::MapBuffer::calculate_stokes </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; Eigen::MatrixXd &gt; &amp;&#160;</td>
+          <td class="paramname"><em>map_vec</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::MatrixXd &amp;&#160;</td>
+          <td class="paramname"><em>m</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Index&#160;</td>
+          <td class="paramname"><em>i</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Index&#160;</td>
+          <td class="paramname"><em>j</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>step</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="../../df/d1c/classmapmaking_1_1MapBuffer_a3971cce10163c81b6c5e8216f379a324_icgraph.png" border="0" usemap="#adf/d1c/classmapmaking_1_1MapBuffer_a3971cce10163c81b6c5e8216f379a324_icgraph" alt=""/></div>
+<map name="adf/d1c/classmapmaking_1_1MapBuffer_a3971cce10163c81b6c5e8216f379a324_icgraph" id="adf/d1c/classmapmaking_1_1MapBuffer_a3971cce10163c81b6c5e8216f379a324_icgraph">
+<area shape="rect" title=" " alt="" coords="493,5,668,47"/>
+<area shape="rect" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#a0ee754c60141aaaee4ca0c1cfaf3b20b" title=" " alt="" coords="259,5,445,47"/>
+<area shape="rect" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#a681e814910184960eb926a1c7d2eebe0" title=" " alt="" coords="5,5,211,47"/>
+</map>
+</div>
+
+</div>
+</div>
+<a id="a2ef7897283b19db85a53c3ad71c549af"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2ef7897283b19db85a53c3ad71c549af">&#9670;&nbsp;</a></span>calculate_stokes() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mapmaking::MapBuffer::calculate_stokes </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; Eigen::Tensor&lt; double, 3 &gt;&gt; &amp;&#160;</td>
+          <td class="paramname"><em>map_vec</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::MatrixXd &amp;&#160;</td>
+          <td class="paramname"><em>m</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Index&#160;</td>
+          <td class="paramname"><em>i</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Index&#160;</td>
+          <td class="paramname"><em>j</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>step</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a0284087cbdf23277a108fc3f3e5dd673"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0284087cbdf23277a108fc3f3e5dd673">&#9670;&nbsp;</a></span>find_sources()</h2>
 
@@ -595,6 +723,147 @@ Here is the caller graph for this function:</div>
 <area shape="rect" href="../../dc/d9e/classBeammap.html#a3015679afa0f29bbb4253b45faa5cb30" title=" " alt="" coords="435,13,588,39"/>
 <area shape="rect" href="../../dc/d9e/classBeammap.html#a7651fe4687746596facaf17bbeb8bcdb" title=" " alt="" coords="203,13,387,39"/>
 <area shape="rect" href="../../dc/d9e/classBeammap.html#a5d30a47c11b4749b5c1c692872a9cf8e" title=" " alt="" coords="5,13,155,39"/>
+</map>
+</div>
+
+</div>
+</div>
+<a id="a681e814910184960eb926a1c7d2eebe0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a681e814910184960eb926a1c7d2eebe0">&#9670;&nbsp;</a></span>normalize_polarized_maps()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mapmaking::MapBuffer::normalize_polarized_maps </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="../../df/d1c/classmapmaking_1_1MapBuffer_a681e814910184960eb926a1c7d2eebe0_cgraph.png" border="0" usemap="#adf/d1c/classmapmaking_1_1MapBuffer_a681e814910184960eb926a1c7d2eebe0_cgraph" alt=""/></div>
+<map name="adf/d1c/classmapmaking_1_1MapBuffer_a681e814910184960eb926a1c7d2eebe0_cgraph" id="adf/d1c/classmapmaking_1_1MapBuffer_a681e814910184960eb926a1c7d2eebe0_cgraph">
+<area shape="rect" title=" " alt="" coords="5,39,211,80"/>
+<area shape="rect" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#a0ee754c60141aaaee4ca0c1cfaf3b20b" title=" " alt="" coords="259,5,445,47"/>
+<area shape="rect" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#ad4d7fdf57587bc5999501931d8a6798a" title=" " alt="" coords="265,71,439,112"/>
+<area shape="rect" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#a3971cce10163c81b6c5e8216f379a324" title=" " alt="" coords="493,5,668,47"/>
+</map>
+</div>
+
+</div>
+</div>
+<a id="a0ee754c60141aaaee4ca0c1cfaf3b20b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ee754c60141aaaee4ca0c1cfaf3b20b">&#9670;&nbsp;</a></span>process_maps_for_pixel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mapmaking::MapBuffer::process_maps_for_pixel </td>
+          <td>(</td>
+          <td class="paramtype">Eigen::Index&#160;</td>
+          <td class="paramname"><em>i</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Index&#160;</td>
+          <td class="paramname"><em>j</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>step</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::MatrixXd &amp;&#160;</td>
+          <td class="paramname"><em>m</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="../../df/d1c/classmapmaking_1_1MapBuffer_a0ee754c60141aaaee4ca0c1cfaf3b20b_cgraph.png" border="0" usemap="#adf/d1c/classmapmaking_1_1MapBuffer_a0ee754c60141aaaee4ca0c1cfaf3b20b_cgraph" alt=""/></div>
+<map name="adf/d1c/classmapmaking_1_1MapBuffer_a0ee754c60141aaaee4ca0c1cfaf3b20b_cgraph" id="adf/d1c/classmapmaking_1_1MapBuffer_a0ee754c60141aaaee4ca0c1cfaf3b20b_cgraph">
+<area shape="rect" title=" " alt="" coords="5,5,192,47"/>
+<area shape="rect" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#a3971cce10163c81b6c5e8216f379a324" title=" " alt="" coords="240,5,415,47"/>
+</map>
+</div>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="../../df/d1c/classmapmaking_1_1MapBuffer_a0ee754c60141aaaee4ca0c1cfaf3b20b_icgraph.png" border="0" usemap="#adf/d1c/classmapmaking_1_1MapBuffer_a0ee754c60141aaaee4ca0c1cfaf3b20b_icgraph" alt=""/></div>
+<map name="adf/d1c/classmapmaking_1_1MapBuffer_a0ee754c60141aaaee4ca0c1cfaf3b20b_icgraph" id="adf/d1c/classmapmaking_1_1MapBuffer_a0ee754c60141aaaee4ca0c1cfaf3b20b_icgraph">
+<area shape="rect" title=" " alt="" coords="259,5,445,47"/>
+<area shape="rect" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#a681e814910184960eb926a1c7d2eebe0" title=" " alt="" coords="5,5,211,47"/>
+</map>
+</div>
+
+</div>
+</div>
+<a id="ad4d7fdf57587bc5999501931d8a6798a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad4d7fdf57587bc5999501931d8a6798a">&#9670;&nbsp;</a></span>zero_out_maps()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mapmaking::MapBuffer::zero_out_maps </td>
+          <td>(</td>
+          <td class="paramtype">Eigen::Index&#160;</td>
+          <td class="paramname"><em>i</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Index&#160;</td>
+          <td class="paramname"><em>j</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>step</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="../../df/d1c/classmapmaking_1_1MapBuffer_ad4d7fdf57587bc5999501931d8a6798a_icgraph.png" border="0" usemap="#adf/d1c/classmapmaking_1_1MapBuffer_ad4d7fdf57587bc5999501931d8a6798a_icgraph" alt=""/></div>
+<map name="adf/d1c/classmapmaking_1_1MapBuffer_ad4d7fdf57587bc5999501931d8a6798a_icgraph" id="adf/d1c/classmapmaking_1_1MapBuffer_ad4d7fdf57587bc5999501931d8a6798a_icgraph">
+<area shape="rect" title=" " alt="" coords="259,5,433,47"/>
+<area shape="rect" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#a681e814910184960eb926a1c7d2eebe0" title=" " alt="" coords="5,5,211,47"/>
 </map>
 </div>
 
@@ -749,6 +1018,34 @@ Here is the caller graph for this function:</div>
       <table class="memname">
         <tr>
           <td class="memname">std::string mapmaking::MapBuffer::map_grouping</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a28a770226bd4734eef0001358796aee8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a28a770226bd4734eef0001358796aee8">&#9670;&nbsp;</a></span>map_in_vec</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;int&gt; mapmaking::MapBuffer::map_in_vec</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a615a9a367b19277756a4ec98fb55d0aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a615a9a367b19277756a4ec98fb55d0aa">&#9670;&nbsp;</a></span>map_out_vec</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;int&gt; mapmaking::MapBuffer::map_out_vec</td>
         </tr>
       </table>
 </div><div class="memdoc">
