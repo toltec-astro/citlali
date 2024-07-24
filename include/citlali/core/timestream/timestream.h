@@ -642,14 +642,13 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
     // loop through detectors
     for (Eigen::Index i=0; i<n_dets; ++i) {
         // current detector index in apt
-        auto det_index = i;
         auto map_index = map_indices(i);
-        int array_index = calib.apt["array"](det_index);
+        int array_index = calib.apt["array"](i);
 
         // check if detector is not flagged
-        if (calib.apt["flag"](det_index) == 0 && (in.flags.data.col(i).array() == 0).any()) {
-            double az_off = calib.apt["x_t"](det_index);
-            double el_off = calib.apt["y_t"](det_index);
+        if (calib.apt["flag"](i) == 0 && (in.flags.data.col(i).array() == 0).any()) {
+            double az_off = calib.apt["x_t"](i);
+            double el_off = calib.apt["y_t"](i);
 
             // calc tangent plane pointing
             auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off, pixel_axes,
@@ -672,8 +671,8 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                     bool run_pix_s2n = run_noise && (signal / mb.median_rms(map_index) >= fruit_loops_sig2noise);
                     bool run_pix_flux = signal >= fruit_loops_flux(array_index);
 
-                    // if signal flux is higher than S/N limit, flux limit
-                    if (run_pix_s2n && run_pix_flux) {
+                    // if signal flux is higher than S/N limit or flux limit
+                    if (run_pix_s2n || run_pix_flux) {
                         // add/subtract signal pixel from signal timestream
                         in.scans.data(j,i) += factor * signal;
                         // add/subtract kernel pixel from kernel timestream
