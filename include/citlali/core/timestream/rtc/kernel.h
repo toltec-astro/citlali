@@ -74,11 +74,8 @@ void Kernel::create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::Mat
     double sigma = sigma_rad;
 
     for (Eigen::Index i=0; i<n_dets; ++i) {
-        // detector in apt
-        auto det_index = i;
-
         // calc tangent plane pointing
-        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](det_index), apt["y_t"](det_index),
+        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
                                                           pixel_axes, in.pointing_offsets_arcsec.data, map_grouping);
 
         // distance to source to truncate it
@@ -86,7 +83,7 @@ void Kernel::create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::Mat
 
         // calculate stddev from apt table if config stddev <=0
         if (sigma_rad <= 0) {
-            sigma = FWHM_TO_STD * ASEC_TO_RAD*(apt["a_fwhm"](det_index) + apt["b_fwhm"](det_index))/2;
+            sigma = FWHM_TO_STD * ASEC_TO_RAD*(apt["a_fwhm"](i) + apt["b_fwhm"](i))/2;
         }
 
         // loop through samples and calculate
@@ -122,11 +119,8 @@ void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in
     double sigma_lon = sigma_rad;
 
     for (Eigen::Index i=0; i<n_dets; ++i) {
-        // detector in apt
-        auto det_index = i;
-
         // calc tangent plane pointing
-        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](det_index), apt["y_t"](det_index),
+        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
                                                           pixel_axes, in.pointing_offsets_arcsec.data, map_grouping);
 
         // distance to source to truncate it
@@ -134,12 +128,12 @@ void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in
 
         // calculate stddev from apt table if config stddev <=0
         if (sigma_rad <= 0) {
-            sigma_lat = FWHM_TO_STD * ASEC_TO_RAD * apt["b_fwhm"](det_index);
-            sigma_lon = FWHM_TO_STD * ASEC_TO_RAD * apt["a_fwhm"](det_index);
+            sigma_lat = FWHM_TO_STD * ASEC_TO_RAD * apt["b_fwhm"](i);
+            sigma_lon = FWHM_TO_STD * ASEC_TO_RAD * apt["a_fwhm"](i);
         }
 
         // rotation angle
-        double rot_ang = apt["angle"](det_index);
+        double rot_ang = apt["angle"](i);
 
         auto cost2 = cos(rot_ang) * cos(rot_ang);
         auto sint2 = sin(rot_ang) * sin(rot_ang);
@@ -179,11 +173,8 @@ void Kernel::create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, st
 
     // loop through detectors
     for (Eigen::Index i=0; i<n_dets; ++i) {
-        // current detector in apt
-        auto det_index = i;
-
         // calc tangent plane pointing
-        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](det_index), apt["y_t"](det_index),
+        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
                                                           pixel_axes, in.pointing_offsets_arcsec.data, map_grouping);
 
         // distance to source to truncate it
@@ -191,7 +182,7 @@ void Kernel::create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, st
 
         // get fwhm from apt if config file fwhm is <= 0
         if (fwhm_rad <= 0) {
-            fwhm = ASEC_TO_RAD*(apt["a_fwhm"](det_index) + apt["b_fwhm"](det_index))/2;
+            fwhm = ASEC_TO_RAD*(apt["a_fwhm"](i) + apt["b_fwhm"](i))/2;
         }
 
         // airy pattern factor
@@ -221,11 +212,8 @@ void Kernel::create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &i
 
     // loop through detectors
     for (Eigen::Index i=0; i<n_dets; ++i) {
-        // current detector index in apt
-        auto det_index = i;
-
         // calc tangent plane pointing
-        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](det_index), apt["y_t"](det_index),
+        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
                                                           pixel_axes, in.pointing_offsets_arcsec.data, map_grouping);
 
         if (images.size() > 1) {

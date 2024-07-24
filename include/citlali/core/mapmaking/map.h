@@ -47,6 +47,9 @@ public:
     // wcs object
     WCS wcs;
 
+    // placeholder vectors for grppi map
+    std::vector<int> map_in_vec, map_out_vec;
+
     // name of map buffer (i.e. omb, cmb)
     std::string name;
 
@@ -140,6 +143,14 @@ public:
 
     // normalize signal and noise maps by the weight maps
     void normalize_maps();
+    void calculate_stokes(std::vector<Eigen::MatrixXd>&, const Eigen::MatrixXd&,
+                          Eigen::Index, Eigen::Index, int, int);
+    void calculate_stokes(std::vector<Eigen::Tensor<double,3>>&, const Eigen::MatrixXd&,
+                          Eigen::Index, Eigen::Index, int, int);
+    void process_maps_for_pixel(Eigen::Index, Eigen::Index, int, int, const Eigen::MatrixXd&);
+    void zero_out_maps(Eigen::Index, Eigen::Index, int, int);
+    // normalize polarized maps
+    void normalize_polarized_maps();
 
     // calculate map coverage region
     std::tuple<double, Eigen::MatrixXd, Eigen::Index, Eigen::Index> calc_cov_region(Eigen::Index);

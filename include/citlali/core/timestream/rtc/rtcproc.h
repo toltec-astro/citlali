@@ -482,7 +482,9 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     in.tel_data.data.clear();
     in.pointing_offsets_arcsec.data.clear();
     if (run_polarization) {
-        in.hwpr_angle.data.resize(0);
+        if (calib.run_hwpr) {
+            in.hwpr_angle.data.resize(0);
+        }
         in.angle.data.resize(0);
     }
 

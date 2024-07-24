@@ -233,16 +233,19 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
 
                 // check if any good flags
                 if ((apt_flags.array()==0).any()) {
+                    logger->info("cleaning {} {}", group, key);
                     // calculate eigenvalues and eigenvalues
                     auto [evals, evecs] = cleaner.calc_eig_values<timestream::Cleaner::SpectraBackend>(in_scans_block, masked_flags, apt_flags,
                                                                                                        cleaner.n_eig_to_cut[arr_index](indx));
-                    logger->debug("evals {}", evals);
-                    logger->debug("evecs {}", evecs);
+
 
                     if (run_tod_output || write_evals) {
                         // get first 64 eigenvalues and eigenvectors
                         Eigen::VectorXd ev = evals.head(cleaner.n_calc);
                         Eigen::MatrixXd evc = evecs.leftCols(cleaner.n_calc);
+
+                        logger->debug("evals {}", ev);
+                        logger->debug("evecs {}", evc);
 
                         // copy evals and evecs to ptcdata
                         out.evals.data[indx].push_back(std::move(ev));
@@ -387,7 +390,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
             Eigen::Index j = std::get<0>(grp_limits[key]);
 
             // loop through detectors in current group
-            for (Eigen::Index m=0; m<grp_weights.size(); m++) {
+            for (Eigen::Index m=0; m<grp_weights.size(); ++m) {
                 // if detector is good and weight is not zero
                 if (calib.apt["flag"](j)==0 && grp_weights(m)>0) {
                     n_good_dets++;
@@ -405,7 +408,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
                 // remove flagged dets
                 j = std::get<0>(grp_limits[key]);
                 Eigen::Index k = 0;
-                for (Eigen::Index m=0; m<grp_weights.size(); m++) {
+                for (Eigen::Index m=0; m<grp_weights.size(); ++m) {
                     if (calib.apt["flag"](j)==0 && grp_weights(m)>0) {
                         good_wt(k) = grp_weights(m);
                         k++;
@@ -428,7 +431,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
             // start index of current group
             j = std::get<0>(grp_limits[key]);
             // loop through detectors in current group
-            for (Eigen::Index m=0; m<grp_weights.size(); m++) {
+            for (Eigen::Index m=0; m<grp_weights.size(); ++m) {
                 // if detector weight is med_weight_factor times larger than med_wt
                 if (in.weights.data(j) > med_weight_factor*med_wt) {
                     // reset high weights to median

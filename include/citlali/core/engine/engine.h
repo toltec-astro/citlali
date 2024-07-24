@@ -440,21 +440,7 @@ void Engine::obsnum_setup() {
     // output basic info for obs reduction to command line
     cli_summary();
 
-    int n_dets = 0;
-
-    // set number of dets for unpolarized timestreams
-    if (!rtcproc.run_polarization) {
-        n_dets = calib.apt["array"].size();
-    }
-    // set number of detectors for polarized timestreams
-    else {
-        if (!telescope.sim_obs) {
-            n_dets = (calib.apt[rtcproc.polarization.grouping].array()!=-1).count();
-        }
-        else {
-            n_dets = calib.n_dets;
-        }
-    }
+    int n_dets = calib.apt["array"].size();
 
     // set up per-det stats file values
     for (const auto &stat: diagnostics.det_stats_header) {
@@ -1345,21 +1331,7 @@ void Engine::create_tod_files() {
     netCDF::NcDim n_scan_indices_dim = fo.addDim("n_scan_indices", 2);
     netCDF::NcDim n_scans_dim = fo.addDim("n_scans", telescope.scan_indices.cols());
 
-    Eigen::Index n_dets;
-
-    // set number of dets for unpolarized timestreams
-    if (!rtcproc.run_polarization) {
-        n_dets = calib.apt["array"].size();
-    }
-    // set number of detectors for polarized timestreams
-    else {
-        if (!telescope.sim_obs) {
-            n_dets = (calib.apt[rtcproc.polarization.grouping].array()!=-1).count();
-        }
-        else {
-            n_dets = calib.n_dets;
-        }
-    }
+    Eigen::Index n_dets = calib.n_dets;
 
     netCDF::NcDim n_dets_dim = fo.addDim("n_dets", n_dets);
 
@@ -1968,7 +1940,6 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     if (redu_type != "beammap") {
         // estimate rms from weight maps
-        mb->calc_median_err();
         rms = pow(mb->median_err(i),0.5);
     }
     else {
@@ -2059,8 +2030,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
     fits_io->at(map_index).add_hdu("weight_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->weight[i]);
     fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
     fits_io->at(map_index).hdus.back()->addKey("UNIT", "1/("+mb->sig_unit+")^2", "Unit of map");
-    if (redu_type != "beammap") {
-        fits_io->at(map_index).hdus.back()->addKey("MEDERR", pow(mb->median_err(i),0.5), "Median Error ("+mb->sig_unit+")");
+    if (redu_type != "beammap" && mb->median_err(i) != 0) {
+        //fits_io->at(map_index).hdus.back()->addKey("MEDERR", pow(mb->median_err(i),0.5), "Median Error ("+mb->sig_unit+")");
     }
     else {
         fits_io->at(map_index).hdus.back()->addKey("MEDERR", 0.0, "Median Error ("+mb->sig_unit+")");

@@ -460,5 +460,10 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             }
         }
     }
+
+    if (run_noise) {
+        nmb = nullptr;
+        nmb_copy = nullptr;
+    }
 }
 } // namespace mapmaking

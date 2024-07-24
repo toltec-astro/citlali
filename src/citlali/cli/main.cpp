@@ -840,7 +840,9 @@ int run(const rc_t &rc) {
                         // coadd
                         if (todproc.engine().run_coadd) {
                             logger->info("coadding");
-                            todproc.coadd();
+                            if (!todproc.engine().rtcproc.run_polarization) {
+                                todproc.coadd();
+                            }
                         }
 
                         // filter obs map
@@ -884,7 +886,12 @@ int run(const rc_t &rc) {
 
                         // normalize coadded maps
                         logger->info("normalizing coadded maps");
-                        todproc.engine().cmb.normalize_maps();
+                        if (todproc.engine().rtcproc.run_polarization) {
+                            todproc.engine().cmb.normalize_polarized_maps();
+                        }
+                        else {
+                            todproc.engine().cmb.normalize_maps();
+                        }
 
                         // calculate coadded map psds
                         logger->info("calculating coadded map psd");

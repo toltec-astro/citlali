@@ -21,8 +21,7 @@ public:
     void pipeline(KidsProc &, RawObs &);
 
     // run the reduction for the obs
-    //template <class KidsProc>
-    auto run();//KidsProc &);
+    auto run();
 
     // output files
     template <mapmaking::MapType map_type>
@@ -36,10 +35,7 @@ void Lali::setup() {
 
 template <class KidsProc, class RawObs>
 void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
-    //using tuple_t = std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>,
-    //                           std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>;
     using tuple_t = TCData<TCDataKind::RTC, Eigen::MatrixXd>;
-    using map_tuple_t = std::tuple<mapmaking::MapBuffer,mapmaking::MapBuffer>;
 
     // initialize number of completed scans
     n_scans_done = 0;
@@ -88,8 +84,6 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                 // get kids data
                 scan_rawobs = kidsproc.load_rawobs(rawobs, scan, telescope.scan_indices, start_indices, end_indices);
 
-                // starting index for scan
-                Eigen::Index si = rtcdata.scan_indices.data(2);
                 // current length of outer scans
                 Eigen::Index sl = rtcdata.scan_indices.data(3) - rtcdata.scan_indices.data(2) + 1;
 
@@ -100,7 +94,7 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
                 // increment scan
                 scan++;
-                // return rtcdata, kidsproc, and raw data
+                // return rtcdata
                 return rtcdata;
             }
             // reset scan to zero for each obs
@@ -115,7 +109,12 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         // normalize maps
         logger->info("normalizing maps");
         if (map_method != "maximum_likelihood") {
-            omb.normalize_maps();
+            if (rtcproc.run_polarization) {
+                omb.normalize_polarized_maps();
+            }
+            else {
+                omb.normalize_maps();
+            }
         }
         // calculate map psds
         logger->info("calculating map psd");
@@ -135,27 +134,14 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     }
 }
 
-//template <class KidsProc>
-auto Lali::run() {//KidsProc &kidsproc) {
-    //using tuple_t = std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>,
-    //                           std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>;
-    using tuple_t = TCData<TCDataKind::RTC, Eigen::MatrixXd>;
+auto Lali::run() {
+    using input_t = TCData<TCDataKind::RTC, Eigen::MatrixXd>;
 
-    auto farm = grppi::farm(n_threads,[&](tuple_t &rtcdata) {
-        // RTCData input
-        //auto &rtcdata = std::get<0>(input_tuple);
-        // start index input
-        //auto &scan_rawobs = std::get<1>(input_tuple);
-
+    auto farm = grppi::farm(n_threads,[&](input_t &rtcdata) {
         // starting index for scan
         Eigen::Index si = rtcdata.scan_indices.data(2);
         // current length of outer scans
         Eigen::Index sl = rtcdata.scan_indices.data(3) - rtcdata.scan_indices.data(2) + 1;
-
-        // get raw tod from files
-        //rtcdata.scans.data = kidsproc.populate_rtc(scan_rawobs, sl, calib.n_dets, tod_type);
-        // try and clear input vector
-        //std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>().swap(scan_rawobs);
 
         // copy scan's telescope vectors
         for (const auto& x: telescope.tel_data) {

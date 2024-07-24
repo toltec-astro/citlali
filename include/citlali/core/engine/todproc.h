@@ -1167,14 +1167,13 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb() {
             // allocate kernel
             cmb.kernel.push_back(zero_matrix);
         }
-
         if (engine().map_grouping!="detector") {
             // allocate coverage
             cmb.coverage.push_back(zero_matrix);
         }
     }
 
-    if (engine().rtcproc.run_polarization && engine().run_noise) {
+    if (engine().rtcproc.run_polarization) {// && engine().run_noise) {
         // allocate pointing matrix
         for (Eigen::Index i=0; i<engine().n_maps/engine().rtcproc.polarization.stokes_params.size(); ++i) {
             cmb.pointing.emplace_back(cmb.n_rows*cmb.n_cols, 9);

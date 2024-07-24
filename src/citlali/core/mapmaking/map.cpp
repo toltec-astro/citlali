@@ -112,208 +112,129 @@ void MapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std::ve
 }
 
 void MapBuffer::normalize_maps() {
-    // placeholder vectors for grppi map
-    std::vector<int> map_in_vec, map_out_vec, pointing_in_vec, pointing_out_vec;
-
     // vectors for maps
     map_in_vec.resize(signal.size());
     std::iota(map_in_vec.begin(), map_in_vec.end(), 0);
     map_out_vec.resize(signal.size());
 
-    // vectors for pointing
-    pointing_in_vec.resize(pointing.size());
-    std::iota(pointing_in_vec.begin(), pointing_in_vec.end(), 0);
-    pointing_out_vec.resize(pointing.size());
+    // normalize science and kernel mpas
+    grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
+        // Compute masks for elements where weight > 0
+        Eigen::MatrixXd mask = (weight[i].array() > 0.0).template cast <double> ();;
 
-    // if not in polarized mode or coadded map, use default normalization for signal and kernel
-    if (pointing.empty() || obsnums.size() > 1) {
-        // normalize science and kernel mpas
-        grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
-            // loop through rows
-            for (Eigen::Index j=0; j<n_rows; ++j) {
-                // loop through cols
-                for (Eigen::Index k=0; k<n_cols; ++k) {
-                    // weight of current pixel
-                    double sig_weight = weight[i](j,k);
-                    // normalize if weight is larger than zero
-                    if (sig_weight > 0.) {
-                        signal[i](j,k) = signal[i](j,k) / sig_weight;
+        // vectorized operation to divide elements where weight > 0
+        signal[i] = (signal[i].array() * mask.array()) / weight[i].array().max(1e-8);
 
-                        // normalize kernel
-                        if (!kernel.empty()) {
-                            kernel[i](j,k) = kernel[i](j,k) / sig_weight;
-                        }
-                    }
-                    // otherwise set all to zero
-                    else {
-                        signal[i](j,k) = 0;
-                        weight[i](j,k) = 0;
-
-                        if (!kernel.empty()) {
-                            kernel[i](j,k) = 0;
-                        }
-                    }
-                }
-            }
-
-            return 0;
-        });
-    }
-
-    // if pointing matrix is not empty normalize signal, kernel (obsnum only) and noise maps
-    if (!pointing.empty()) {
-        // calculate dimensions
-        auto calc_stokes = [&](auto &map_vec, auto &m, int i, int j, int a, int step) {
-            Eigen::VectorXd d(3);
-            // I
-            d(0) = map_vec[a](i,j);
-            // Q
-            d(1) = map_vec[a + step](i,j);
-            // U
-            d(2) = map_vec[a + 2*step](i,j);
-
-            // solve the equation d = Mv for v
-            Eigen::VectorXd v = m.colPivHouseholderQr().solve(d);
-
-            // I
-            map_vec[a](i,j) = v(0);
-            // Q
-            map_vec[a + step](i,j) = v(1);
-            // U
-            map_vec[a + 2*step](i,j) = v(2);
-        };
-
-        // number of maps to step over to get to next stokes param
-        int step = pointing.size();
-
-        // loop through pointing matrices
-        grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), pointing_in_vec, pointing_out_vec, [&](auto a) {
-            // pointing matrix for pixel
-            Eigen::MatrixXd m(3,3);
-
-            // loop through rows
-            for (Eigen::Index i=0; i<n_rows; ++i) {
-                // loop through cols
-                for (Eigen::Index j=0; j<n_cols; ++j) {
-                    int pix = n_rows*j + i;
-                    // create pointing matrix for pixel
-                    Eigen::VectorXd temp = pointing[a].row(pix);
-                    m = Eigen::Map<Eigen::MatrixXd>(temp.data(),3,3);
-                    // if m array is not zero and invertible
-                    if ((m.array()!=0).all() && m.determinant() > 1e-20) {
-
-                        // only run on signal and kernel of obsnum map
-                        if (obsnums.size() == 1) {
-                            // calc stokes values for signal map
-                            calc_stokes(signal,m,i,j,a,step);
-
-                            if (!kernel.empty()) {
-                                // calc stokes values for kernel map
-                                calc_stokes(kernel,m,i,j,a,step);
-                            }
-                        }
-
-                        // if running noise maps
-                        if (!noise.empty()) {
-                            // loop through noise map
-                            for (Eigen::Index nn=0; nn<n_noise; ++nn) {
-                                // vector to hold noise map values
-                                std::vector<Eigen::MatrixXd> noise_vec(noise.size());
-                                // only store current pixel to save memory
-                                Eigen::MatrixXd noise_map(1,1);
-                                // I
-                                noise_map(0,0) = noise[a](i,j,nn);
-                                noise_vec[a] = noise_map;
-                                // Q
-                                noise_map(0,0) = noise[a + step](i,j,nn);
-                                noise_vec[a + step] = noise_map;
-                                // U
-                                noise_map(0,0) = noise[a + 2*step](i,j,nn);
-                                noise_vec[a + 2*step] = noise_map;
-
-                                // calc stokes values for noise map
-                                calc_stokes(noise_vec,m,0,0,a,step);
-
-                                // repopulate noise vector
-                                noise[a](i,j,nn) = noise_vec[a](0,0);
-                                noise[a + step](i,j,nn) = noise_vec[a + step](0,0);
-                                noise[a + 2*step](i,j,nn) = noise_vec[a + 2*step](0,0);
-                            }
-                        }
-                    }
-                    // otherwise set all stokes values to zero
-                    else {
-                        // only run on signal and kernel of obsnum map
-                        if (obsnums.size() == 1) {
-                            signal[a](i,j) = 0.;
-                            signal[a + step](i,j) = 0.;
-                            signal[a + 2*step](i,j) = 0.;
-
-                            if (!kernel.empty()) {
-                                kernel[a](i,j) = 0.;
-                                kernel[a + step](i,j) = 0.;
-                                kernel[a + 2*step](i,j) = 0.;
-                            }
-                        }
-
-                        // if running noise maps
-                        if (!noise.empty()) {
-                            // loop through noise map
-                            for (Eigen::Index nn=0; nn<n_noise; ++nn) {
-                                // repopulate noise vector
-                                noise[a](i,j,nn) = 0.;
-                                noise[a + step](i,j,nn) = 0.;
-                                noise[a + 2*step](i,j,nn) = 0.;
-                            }
-                        }
-                    }
-                }
-            }
-            // only run on signal and kernel of obsnum map
-            if (obsnums.size() == 1) {
-                // don't need to update weight maps
-                weight[a + step] = weight[a];
-                weight[a + 2*step] = weight[a];
-
-                // don't need to update coverage map
-                if (!coverage.empty()) {
-                    coverage[a + step] = coverage[a];
-                    coverage[a + 2*step] = coverage[a];
-                }
-            }
-            return 0;
-        });
-    }
-    // otherwise normalize noise maps normally
-    else {
-        // normalize noise maps
-        if (!noise.empty()) {
-            grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
-                // loop through rows
-                for (Eigen::Index j=0; j<n_rows; ++j) {
-                    // loop through cols
-                    for (Eigen::Index k=0; k<n_cols; ++k) {
-                        // weight of current pixel
-                        double sig_weight = weight[i](j,k);
-                        // normalize if weight is larger than zero
-                        if (sig_weight > 0.) {
-                            // loop through noise maps
-                            for (Eigen::Index l=0; l<n_noise; l++) {
-                                // normalize by weight
-                                noise[i](j,k,l) = noise[i](j,k,l) / sig_weight;
-                            }
-                        }
-                        // otherwise set all to zero
-                        else {
-                            for (Eigen::Index l=0; l<n_noise; l++) {
-                                noise[i](j,k,l) = 0;
-                            }
-                        }
-                    }
-                }
-                return 0;
-            });
+        // apply the same for kernel if it's not empty
+        if (!kernel.empty()) {
+            kernel[i] = (kernel[i].array() * mask.array()) / weight[i].array().max(1e-8);
         }
+
+        // apply the same for noise if it's not empty
+        if (!noise.empty()) {
+            for (Eigen::Index n = 0; n < n_noise; ++n) {
+                Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(noise[i].data() + n * n_rows * n_cols,
+                                                                                               n_rows, n_cols);
+                noise_matrix = (noise_matrix.array() * mask.array()) / weight[i].array().max(1e-8);
+            }
+        }
+
+        // set elements to zero where weight is zero or less
+        signal[i] = (signal[i].array() * mask.array()).matrix();
+        weight[i] = (weight[i].array() * mask.array()).matrix();
+
+        if (!kernel.empty()) {
+            kernel[i] = (kernel[i].array() * mask.array()).matrix();
+        }
+
+        if (!noise.empty()) {
+            for (Eigen::Index n = 0; n < n_noise; ++n) {
+                Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(noise[i].data() + n * n_rows * n_cols,
+                                                                                               n_rows, n_cols);
+                noise_matrix = (noise_matrix.array() * mask.array()).matrix();
+            }
+        }
+        return 0;
+    });
+}
+
+void MapBuffer::calculate_stokes(std::vector<Eigen::MatrixXd>& map_vec, const Eigen::MatrixXd& m, Eigen::Index i, Eigen::Index j,
+                                 int index, int step) {
+    Eigen::VectorXd d(3);
+    d(0) = map_vec[index](i, j);
+    d(1) = map_vec[index + step](i, j);
+    d(2) = map_vec[index + 2 * step](i, j);
+    Eigen::VectorXd v = m.ldlt().solve(d);//m.colPivHouseholderQr().solve(d);
+    map_vec[index](i, j) = v(0);
+    map_vec[index + step](i, j) = v(1);
+    map_vec[index + 2 * step](i, j) = v(2);
+}
+
+void MapBuffer::calculate_stokes(std::vector<Eigen::Tensor<double,3>>& map_vec, const Eigen::MatrixXd& m, Eigen::Index i,
+                                 Eigen::Index j, int index, int step) {
+    Eigen::VectorXd d(3);
+    for (Eigen::Index n = 0; n < n_noise; ++n) {
+        d(0) = map_vec[index](i, j, n);
+        d(1) = map_vec[index + step](i, j, n);
+        d(2) = map_vec[index + 2 * step](i, j, n);
+        Eigen::VectorXd v = m.colPivHouseholderQr().solve(d);
+        map_vec[index](i, j, n) = v(0);
+        map_vec[index + step](i, j, n) = v(1);
+        map_vec[index + 2 * step](i, j, n) = v(2);
+    }
+}
+
+void MapBuffer::process_maps_for_pixel(Eigen::Index i, Eigen::Index j, int a, int step, const Eigen::MatrixXd& m) {
+    calculate_stokes(signal, m, i, j, a, step);
+    if (!kernel.empty()) {
+        calculate_stokes(kernel, m, i, j, a, step);
+    }
+    if (!noise.empty()) {
+        calculate_stokes(noise, m, i, j, a, step);
+    }
+}
+
+void MapBuffer::zero_out_maps(Eigen::Index i, Eigen::Index j, int index, int step) {
+    signal[index](i, j) = 0;
+    signal[index + step](i, j) = 0;
+    signal[index + 2 * step](i, j) = 0;
+    if (!kernel.empty()) {
+        kernel[index](i, j) = 0;
+        kernel[index + step](i, j) = 0;
+        kernel[index + 2 * step](i, j) = 0;
+    }
+    if (!noise.empty()) {
+        for (Eigen::Index n = 0; n < n_noise; ++n) {
+            noise[index](i, j, n) = 0;
+            noise[index + step](i, j, n) = 0;
+            noise[index + 2 * step](i, j, n) = 0;
+        }
+    }
+}
+
+void MapBuffer::normalize_polarized_maps() {
+    int step = pointing.size();
+    for (Eigen::Index index = 0; index < pointing.size(); ++index) {
+        Eigen::MatrixXd m(3, 3);
+        for (Eigen::Index i = 0; i < n_rows; ++i) {
+            for (Eigen::Index j = 0; j < n_cols; ++j) {
+                int pix = n_rows * j + i;
+                Eigen::VectorXd temp = pointing[index].row(pix);
+                m = Eigen::Map<Eigen::MatrixXd>(temp.data(), 3, 3);
+                Eigen::FullPivLU<Eigen::MatrixXd> lu_decomp(m);
+                if ((m.array() != 0).all() && lu_decomp.isInvertible()) {
+                    process_maps_for_pixel(i, j, index, step, m);
+                }
+                else {
+                    zero_out_maps(i, j, index, step);
+                }
+            }
+        }
+        weight[index + step] = weight[index];
+        weight[index + 2 * step] = weight[index];
+
+        coverage[index + step] = coverage[index];
+        coverage[index + 2 * step] = coverage[index];
     }
 }
 
