@@ -38,6 +38,7 @@ void Telescope::get_tel_data(std::string &filepath) {
             obs_goal.erase(end_pos, obs_goal.end());
         }
 
+        // get map pattern
         char obs_pgm_char [129];
         // get mapping pattern
         vars.find("Header.Dcs.ObsPgm")->second.getVar(&obs_pgm_char);
@@ -54,23 +55,21 @@ void Telescope::get_tel_data(std::string &filepath) {
             exec_mode = 1;
         }
 
-        // work around for files with bad ObsPgm
-        /*if (!obs_pgm.find("Lissajous")) {
-            obs_pgm = "Lissajous";
-        }
-        else if (!obs_pgm.find("Map")) {
-            obs_pgm = "Map";
-        }
-        // if map pattern is unsupported
-        else {
-            logger->error("unsupported mapping pattern {}",obs_pgm);
-            std::exit(EXIT_FAILURE);
-        }*/
         // cannot reduce in lissajous mode if chunk less than or equal to zero
         if ((obs_pgm=="Lissajous" || (obs_pgm=="Map" && exec_mode==1)) && time_chunk<=0) {
             logger->error("mapping mode is lissajous and time chunk size is zero");
             std::exit(EXIT_FAILURE);
         }
+
+        // get map coord
+        char map_coord_char [129];
+        // get mapping pattern
+        vars.find("Header.Map.MapCoord")->second.getVar(&map_coord_char);
+        map_coord_char[128] = '\0';
+        map_coord = std::string(map_coord_char);
+        // try and remove end characters
+        end_pos = std::remove(map_coord.begin(), map_coord.end(), ' ');
+        map_coord.erase(end_pos, map_coord.end());
 
         // get source name
         char source_name_char [129];
@@ -273,16 +272,17 @@ void Telescope::calc_scan_indices() {
         }*/
 
         for (Eigen::Index i=0; i<hold_bool.size(); ++i) {
-            if (pixel_axes=="radec") {
+            if (map_coord=="Ra") {
                 if (engine_utils::is_point_in_box(tel_data["ra_phys"](i), tel_data["dec_phys"](i),
-                                                   tel_header["Header.Map.XLength"](0), tel_header["Header.Map.YLength"](0))==false) {
+                                                  tel_header["Header.Map.XLength"](0), tel_header["Header.Map.YLength"](0),
+                                                  tel_header["Header.Map.ScanAngle"](0))==false) {
                     hold_bool(i) = 1;
                 }
             }
-
-            else if (pixel_axes=="altaz") {
+            else if (map_coord=="Az") {
                 if (engine_utils::is_point_in_box(tel_data["az_phys"](i), tel_data["alt_phys"](i),
-                                                   tel_header["Header.Map.XLength"](0), tel_header["Header.Map.YLength"](0))==false) {
+                                                  tel_header["Header.Map.XLength"](0), tel_header["Header.Map.YLength"](0),
+                                                  tel_header["Header.Map.ScanAngle"](0))==false) {
                     hold_bool(i) = 1;
                 }
             }

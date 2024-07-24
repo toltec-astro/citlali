@@ -20,7 +20,7 @@ public:
     bool sim_obs;
 
     // strings for mapping pattern, source name, obs goal, project ID
-    std::string obs_pgm, source_name, obs_goal, project_id;
+    std::string obs_pgm, source_name, obs_goal, project_id, map_coord;
 
     bool exec_mode;
 

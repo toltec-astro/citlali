@@ -1199,11 +1199,16 @@ Eigen::VectorXd compute_numerical_derivative(const Eigen::DenseBase<Derived>& ti
     return derivatives;
 }
 
-static const bool is_point_in_box(double a, double b, double x, double y) {
+static const bool is_point_in_box(double a, double b, double x, double y, double theta) {
+
+    // rotate point (a, b) by -theta
+    double xp = a * std::cos(theta) + b * std::sin(theta);
+    double yp = -a * std::sin(theta) + b * std::cos(theta);
+
     // Check horizontal bounds
-    if (-x / 2 <= a && a <= x / 2) {
+    if (-x / 2 <= xp && xp <= x / 2) {
         // Check vertical bounds
-        if (-y / 2 <= b && b <= y / 2) {
+        if (-y / 2 <= yp && yp <= y / 2) {
             return true;
         }
     }
