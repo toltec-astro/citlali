@@ -99,7 +99,7 @@ void Telescope::get_tel_data(std::string &filepath) {
         // loop through telescope data keys and populate vectors
         for (const auto& pair : tel_data_keys) {
             try {
-                logger->info("tel_data_keys {}",pair);
+                logger->info("tel_data key {}",pair.first);
                 Eigen::Index n_pts = vars.find(pair.first)->second.getDim(0).getSize();
                 tel_data[pair.second].resize(n_pts);
                 vars.find(pair.first)->second.getVar(tel_data[pair.second].data());

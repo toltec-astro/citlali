@@ -141,7 +141,6 @@ void JincMapmaker::allocate_jinc_matrix(double pixel_size_rad) {
                 jinc_weights_mat[ld.first](i,j) = jinc_func(r,a,b,c,r_max,ld.second);
             }
         }
-        logger->info("jinc_weights_mat[{}] {}",ld.first,jinc_weights_mat[ld.first]);
     }
 }
 
