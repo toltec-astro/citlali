@@ -97,6 +97,18 @@ void MapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std::ve
         }
     }
 
+    // setup wcs altaz frame
+    else if (pixel_axes == "lb") {
+        wcs.ctype.push_back("GLON-TAN");
+        wcs.ctype.push_back("GLAT-TAN");
+
+        wcs.cunit.push_back("deg");
+        wcs.cunit.push_back("deg");
+
+        wcs.cdelt[0] *= RAD_TO_DEG;
+        wcs.cdelt[1] *= RAD_TO_DEG;
+    }
+
     // set wcs cdelt for freq and stokes
     wcs.cdelt.insert(wcs.cdelt.end(),{1,1});
     // set wcs crpix for freq and stokes

@@ -65,8 +65,8 @@ public:
 
         // copy the data (flip in x direction)
         int k = 0;
-        for (int i=0; i<data.rows(); i++){
-            for (int j=0; j<data.cols(); j++) {
+        for (int i=0; i<data.rows(); ++i){
+            for (int j=0; j<data.cols(); ++j) {
                 temp_data[k] = data(i, data.cols() - j - 1);
                 k++;
             }
@@ -100,8 +100,8 @@ public:
 
             // loop through and copy into eigen matrix
             Eigen::Index k = 0;
-            for (Eigen::Index i=0; i<ax2; i++) {
-                for (Eigen::Index j=0; j<ax1; j++) {
+            for (Eigen::Index i=0; i<ax2; ++i) {
+                for (Eigen::Index j=0; j<ax1; ++j) {
                     data(i,j) = contents[k];
                     k++;
                 }
@@ -123,7 +123,7 @@ public:
         // add equinox
         hdu->addKey("EQUINOX", epoch, "WCS: Equinox");
 
-        for (Eigen::Index i=0; i<wcs.ctype.size(); i++) {
+        for (Eigen::Index i=0; i<wcs.ctype.size(); ++i) {
             hdu->addKey("CTYPE"+std::to_string(i+1), wcs.ctype[i], "WCS: Projection Type " +std::to_string(i+1));
             hdu->addKey("CUNIT"+std::to_string(i+1), wcs.cunit[i], "WCS: Axis Unit " +std::to_string(i+1));
             hdu->addKey("CRVAL"+std::to_string(i+1), wcs.crval[i], "WCS: Ref Pixel Value " +std::to_string(i+1));

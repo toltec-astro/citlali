@@ -62,6 +62,8 @@ public:
         {"Data.TelescopeBackend.TelUtc","TelUTC"},
         {"Data.TelescopeBackend.TelRaAct", "TelRa"},
         {"Data.TelescopeBackend.TelDecAct", "TelDec"},
+        {"Data.TelescopeBackend.SourceLAct", "TelL"},
+        {"Data.TelescopeBackend.SourceBAct", "TelB"},
         {"Data.TelescopeBackend.SourceRaAct", "TelRa"},
         {"Data.TelescopeBackend.SourceDecAct", "TelDec"},
         {"Data.TelescopeBackend.TelAzAct", "TelAzAct"},
@@ -69,7 +71,7 @@ public:
         {"Data.TelescopeBackend.SourceAz", "SourceAz"},
         {"Data.TelescopeBackend.SourceEl", "SourceEl"},
         {"Data.TelescopeBackend.ActParAng", "ActParAng"},
-        {"Data.TelescopeBackend.ParAng", "ParAng"},
+        {"Data.TelescopeBackend.ActGalAng", "ActGalAng"},
         {"Data.TelescopeBackend.Hold", "Hold"},
         {"Data.TelescopeBackend.TelAzCor", "TelAzCor"},
         {"Data.TelescopeBackend.TelElCor", "TelElCor"},
@@ -84,6 +86,8 @@ public:
     std::map<std::string, std::string> tel_header_keys {
         {"Header.Source.Ra", "Header.Source.Ra"},
         {"Header.Source.Dec", "Header.Source.Dec"},
+        {"Header.Source.L","Header.Source.L"},
+        {"Header.Source.B","Header.Source.B"},
         {"Header.Source.Epoch", "Header.Source.Epoch"},
         {"Header.Source.CoordSys", "Header.Source.CoordSys"},
         {"Header.Source.Velocity", "Header.Source.Velocity"},
@@ -269,6 +273,7 @@ public:
     void calc_tan_pointing();
     void calc_tan_radec();
     void calc_tan_altaz();
+    void calc_tan_lb();
     void calc_scan_indices();
 };
 

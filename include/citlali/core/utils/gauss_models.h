@@ -27,8 +27,7 @@ struct DenseFunctor {
     using ValueType = Eigen::Matrix<Scalar,ValuesAtCompileTime, 1>;
 
     constexpr static std::string_view name = "functor";
-    DenseFunctor(int inputs, int values) : m_inputs(inputs), m_values(values) {
-    }
+    DenseFunctor(int inputs, int values) : m_inputs(inputs), m_values(values) {}
     // default
     DenseFunctor(): DenseFunctor(InputsAtCompileTime, ValuesAtCompileTime) {}
 
@@ -84,7 +83,7 @@ struct Model: DenseFunctor<double, NP, Eigen::Dynamic> {
     // should be defined to take (ndata, ndim) mesh and return vector of (ndata, 1)
 
     // meshgrid()
-    // maybe be defined to covert input of (ndata_dim1, ... ndata_dimn) to (ndata, ndim) mesh
+    // maybe be defined to convert input of (ndata_dim1, ... ndata_dimn) to (ndata, ndim) mesh
 
     // operator()
     // cound be defined to perform eval in nd shapes
@@ -222,7 +221,7 @@ struct Fitter: _Model::_Base {
     const Eigen::Map<const typename Fitter::ValueType>* ydata = nullptr;
     const Eigen::Map<const typename Fitter::ValueType>* sigma = nullptr;
 
-    //int operator()(const InputType &x, ValueType& fvec) { }
+    // int operator()(const InputType &x, ValueType& fvec) { }
     // should be defined in derived classes
 
 private:

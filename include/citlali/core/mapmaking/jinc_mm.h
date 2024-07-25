@@ -181,17 +181,26 @@ void JincMapmaker::calculate_jinc_splines() {
 template <class map_buffer_t>
 void JincMapmaker::allocate_pointing(map_buffer_t &mb, double weight, double cos_2angle, double sin_2angle,
                                      Eigen::Index map_index, int ir, int ic) {
-    int pix = mb.n_rows*ic + ir;
+    int pix = mb.n_rows * ic + ir;
+    Eigen::MatrixXd& matrix = mb.pointing[map_index];
+
+    // calculate reused expressions
+    double weight_cos_2angle = weight * cos_2angle;
+    double weight_sin_2angle = weight * sin_2angle;
+    double weight_cos2_2angle = weight * std::pow(cos_2angle, 2);
+    double weight_sin2_2angle = weight * std::pow(sin_2angle, 2);
+    double weight_cos_sin_2angle = weight * cos_2angle * sin_2angle;
+
     // update pointing matrix
-    mb.pointing[map_index](pix,0) += weight;
-    mb.pointing[map_index](pix,1) += weight*cos_2angle;
-    mb.pointing[map_index](pix,2) += weight*sin_2angle;
-    mb.pointing[map_index](pix,3) = mb.pointing[map_index](pix,1);
-    mb.pointing[map_index](pix,4) += weight*pow(cos_2angle,2.);
-    mb.pointing[map_index](pix,5) += weight*cos_2angle*sin_2angle;
-    mb.pointing[map_index](pix,6) = mb.pointing[map_index](pix,2);
-    mb.pointing[map_index](pix,7) = mb.pointing[map_index](pix,5);
-    mb.pointing[map_index](pix,8) += weight*pow(sin_2angle,2.);
+    matrix(pix, 0) += weight;
+    matrix(pix, 1) += weight_cos_2angle;
+    matrix(pix, 2) += weight_sin_2angle;
+    matrix(pix, 3) = matrix(pix, 1);  // previously set to += weight*cos_2angle, then directly assigned here
+    matrix(pix, 4) += weight_cos2_2angle;
+    matrix(pix, 5) += weight_cos_sin_2angle;
+    matrix(pix, 6) = matrix(pix, 2);  // previously set to += weight*sin_2angle, then directly assigned here
+    matrix(pix, 7) = matrix(pix, 5);  // reuse the result from matrix(pix,5)
+    matrix(pix, 8) += weight_sin2_2angle;
 }
 
 template<class map_buffer_t, typename Derived, typename apt_t>

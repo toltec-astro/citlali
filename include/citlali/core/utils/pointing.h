@@ -33,13 +33,13 @@ auto calc_det_pointing(tel_data_t &tel_data, double az_off, double el_off,
     // radec map
     if (pixel_axes=="radec") {
         // get parallactic angle
-        auto par_ang = -tel_data["ActParAng"].array();
+        auto& par_ang = tel_data["ActParAng"];
 
         // dec
-        lat = (-rot_az_off.array()*sin(par_ang) + rot_alt_off.array()*cos(par_ang))*ASEC_TO_RAD
+        lat = (rot_az_off.array()*sin(par_ang.array()) + rot_alt_off.array()*cos(par_ang.array()))*ASEC_TO_RAD
               + tel_data["dec_phys"].array();
         // ra
-        lon = (-rot_az_off.array()*cos(par_ang) - rot_alt_off.array()*sin(par_ang))*ASEC_TO_RAD
+        lon = (-rot_az_off.array()*cos(par_ang.array()) + rot_alt_off.array()*sin(par_ang.array()))*ASEC_TO_RAD
               + tel_data["ra_phys"].array();
     }
 
@@ -49,6 +49,18 @@ auto calc_det_pointing(tel_data_t &tel_data, double az_off, double el_off,
         lat = (rot_alt_off.array()*ASEC_TO_RAD) + tel_data["alt_phys"].array();
         // az
         lon = (rot_az_off.array()*ASEC_TO_RAD) + tel_data["az_phys"].array();
+    }
+
+    else if (pixel_axes=="lb") {
+        // get parallactic angle
+        auto ang = tel_data["ActParAng"] + tel_data["ActGalAng"];
+
+        // b
+        lat = (rot_az_off.array()*sin(ang.array()) + rot_alt_off.array()*cos(ang.array()))*ASEC_TO_RAD
+              + tel_data["b_phys"].array();
+        // l
+        lon = (-rot_az_off.array()*cos(ang.array()) + rot_alt_off.array()*sin(ang.array()))*ASEC_TO_RAD
+              + tel_data["l_phys"].array();
     }
 
     return std::tuple<Eigen::VectorXd, Eigen::VectorXd>{lat,lon};
@@ -65,7 +77,7 @@ auto calc_par_ang_from_coords(const double lat, const double lon, Eigen::DenseBa
 
     Eigen::VectorXd par_ang(alt.size());
 
-    for (Eigen::Index i=0; i<alt.size(); i++) {
+    for (Eigen::Index i=0; i<alt.size(); ++i) {
         par_ang(i) = atan2(sinha(i), (tan(lat)* cos(dec(i)) - sin(dec(i)) * cosha(i)));
     }
 
@@ -80,7 +92,7 @@ auto tangent_to_abs(Eigen::DenseBase<Derived>& lat, Eigen::DenseBase<Derived>& l
 
     // lat/lon = dec/ra = y/x (map axes)
     Eigen::VectorXd abs_lat(n_pts), abs_lon(n_pts);
-    for (Eigen::Index i=0; i<n_pts; i++) {
+    for (Eigen::Index i=0; i<n_pts; ++i) {
         double rho = sqrt(pow(lat(i),2) + pow(lon(i),2));
         double c = atan(rho);
         if (c == 0.) {
@@ -101,5 +113,54 @@ auto tangent_to_abs(Eigen::DenseBase<Derived>& lat, Eigen::DenseBase<Derived>& l
     }
     return std::tuple<Eigen::VectorXd, Eigen::VectorXd>{abs_lat,abs_lon};
 }
+
+// function to calculate the gnomonic projection for vectors
+template <typename Derived>
+void gnomonic_projection(const Eigen::DenseBase<Derived> &l, const Eigen::DenseBase<Derived> &b,
+                         double l0, double b0, Eigen::DenseBase<Derived> &x, Eigen::DenseBase<Derived> &y) {
+
+    // precompute cosines and sines
+    Eigen::VectorXd cos_b = b.derived().array().cos();
+    Eigen::VectorXd sin_b = b.derived().array().sin();
+    double cos_b0 = std::cos(b0);
+    double sin_b0 = std::sin(b0);
+
+    // calculate angular distance c
+    Eigen::VectorXd cos_c = sin_b.array() * sin_b0 + cos_b.array() * cos_b0 * (l.derived().array() - l0).cos();
+
+    // avoid division by zero or near zero
+    for (int i = 0; i < cos_c.size(); ++i) {
+        if (std::abs(cos_c(i)) < std::numeric_limits<double>::epsilon()) {
+            x(i) = 0;
+            y(i) = 0;
+        }
+        else {
+            x(i) = cos_b(i) * std::sin(l(i) - l0) / cos_c(i);
+            y(i) = (cos_b0 * sin_b(i) - sin_b0 * cos_b(i) * std::cos(l(i) - l0)) / cos_c(i);
+        }
+    }
+}
+
+// function to convert equatorial coordinates (RA, Dec) to galactic coordinates (l, b)
+static const void equatorial_to_galactic(const double ra, const double dec, double& l, double& b) {
+    // Constants (all angles in radians)
+    double ra_NGP = 192.859508*DEG_TO_RAD;   // Right Ascension of North Galactic Pole
+    double dec_NGP = 27.128336*DEG_TO_RAD;   // Declination of North Galactic Pole
+    double l_NCP = 122.931919*DEG_TO_RAD;    // Longitude of North Celestial Pole in Galactic coordinates
+
+    // calculate b, the Galactic latitude
+    double sin_b = std::sin(dec_NGP) * std::sin(dec) + std::cos(dec_NGP) * std::cos(dec) * std::cos(ra - ra_NGP);
+    b = std::asin(sin_b);  // inverse sine to get the latitude
+
+    // calculate l, the Galactic longitude
+    double sin_l_ncp_minus_l = std::cos(dec) * std::sin(ra - ra_NGP) / std::cos(b);
+    double cos_l_ncp_minus_l = (std::cos(dec_NGP) * std::sin(dec) - std::sin(dec_NGP) * std::cos(dec) * std::cos(ra - ra_NGP)) / std::cos(b);
+    double l_ncp_minus_l = std::atan2(sin_l_ncp_minus_l, cos_l_ncp_minus_l);
+    l = l_NCP - l_ncp_minus_l;
+
+    // normalize l to be within the range [0, 2*pi)
+    l = std::fmod(l, 2 * M_PI);
+}
+
 
 } // namespace engine_utils

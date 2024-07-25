@@ -7,8 +7,10 @@
 #include <string>
 #include <vector>
 #include <omp.h>
-#include <Eigen/Core>
 #include <fstream>
+#include <limits>
+
+#include <Eigen/Core>
 
 #include <citlali_config/config.h>
 #include <citlali_config/gitversion.h>
@@ -38,12 +40,9 @@
 #include <citlali/core/utils/fitting.h>
 
 #include <citlali/core/engine/config.h>
-
 #include <citlali/core/engine/calib.h>
 #include <citlali/core/engine/telescope.h>
-
 #include <citlali/core/engine/diagnostics.h>
-
 #include <citlali/core/timestream/timestream.h>
 
 #include <citlali/core/timestream/rtc/polarization.h>
@@ -351,7 +350,7 @@ void Engine::obsnum_setup() {
 
         logger->info("using {} model for extinction correction",rtcproc.calibration.extinction_model);
 
-        // check tau (may be unnecessary)
+        // check tau (may be unnecessary now)
         if (!telescope.sim_obs) {
             Eigen::VectorXd tau_el(1);
             // get mean elevation
@@ -410,6 +409,17 @@ void Engine::obsnum_setup() {
         }
     }
 
+    // set map wcs crvals to source l/b
+    else if (telescope.pixel_axes == "lb") {
+        omb.wcs.crval[0] = telescope.tel_header["Header.Source.L"](0)*RAD_TO_DEG;
+        omb.wcs.crval[1] = telescope.tel_header["Header.Source.B"](0)*RAD_TO_DEG;
+
+        if (run_coadd) {
+            cmb.wcs.crval[0] = telescope.tel_header["Header.Source.L"](0)*RAD_TO_DEG;
+            cmb.wcs.crval[1] = telescope.tel_header["Header.Source.B"](0)*RAD_TO_DEG;
+        }
+    }
+
     // create timestream files
     if (run_tod_output) {
         // create tod output subdirectory if requested
@@ -440,11 +450,9 @@ void Engine::obsnum_setup() {
     // output basic info for obs reduction to command line
     cli_summary();
 
-    int n_dets = calib.apt["array"].size();
-
     // set up per-det stats file values
     for (const auto &stat: diagnostics.det_stats_header) {
-        diagnostics.stats[stat].setZero(n_dets, telescope.scan_indices.cols());
+        diagnostics.stats[stat].setZero(calib.n_dets, telescope.scan_indices.cols());
     }
     // set up per-group stats file values
     for (const auto &stat: diagnostics.grp_stats_header) {
@@ -567,9 +575,9 @@ void Engine::get_mapmaking_config(CT &config) {
     get_config_value(config, map_method, missing_keys, invalid_keys,
                      std::tuple{"mapmaking","method"},{"naive","jinc","maximum_likelihood"});
 
-    // map reference frame (radec or altaz)
+    // map reference frame (radec, altaz, lb)
     get_config_value(config, telescope.pixel_axes, missing_keys, invalid_keys,
-                     std::tuple{"mapmaking","pixel_axes"},{"radec","altaz"});
+                     std::tuple{"mapmaking","pixel_axes"},{"radec","altaz", "lb"});
 
     // get config for omb
     logger->info("getting omb config options");
@@ -1331,9 +1339,7 @@ void Engine::create_tod_files() {
     netCDF::NcDim n_scan_indices_dim = fo.addDim("n_scan_indices", 2);
     netCDF::NcDim n_scans_dim = fo.addDim("n_scans", telescope.scan_indices.cols());
 
-    Eigen::Index n_dets = calib.n_dets;
-
-    netCDF::NcDim n_dets_dim = fo.addDim("n_dets", n_dets);
+    netCDF::NcDim n_dets_dim = fo.addDim("n_dets", calib.n_dets);
 
     std::vector<netCDF::NcDim> dims = {n_pts_dim, n_dets_dim};
     std::vector<netCDF::NcDim> raw_scans_dims = {n_scans_dim, n_raw_scan_indices_dim};
@@ -1359,7 +1365,7 @@ void Engine::create_tod_files() {
 
     // set chunking to mean scan size and n_dets
     chunkSizes.push_back(((telescope.scan_indices.row(3) - telescope.scan_indices.row(2)).array() + 1).mean());
-    chunkSizes.push_back(n_dets);
+    chunkSizes.push_back(calib.n_dets);
 
     // set signal chunking
     signal_v.setChunking(chunkMode, chunkSizes);
@@ -2030,8 +2036,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
     fits_io->at(map_index).add_hdu("weight_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->weight[i]);
     fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
     fits_io->at(map_index).hdus.back()->addKey("UNIT", "1/("+mb->sig_unit+")^2", "Unit of map");
-    if (redu_type != "beammap" && mb->median_err(i) != 0) {
-        //fits_io->at(map_index).hdus.back()->addKey("MEDERR", pow(mb->median_err(i),0.5), "Median Error ("+mb->sig_unit+")");
+    if (redu_type != "beammap" && std::fabs(mb->median_err(i)) > std::numeric_limits<double>::epsilon()) {
+        fits_io->at(map_index).hdus.back()->addKey("MEDERR", pow(mb->median_err(i),0.5), "Median Error ("+mb->sig_unit+")");
     }
     else {
         fits_io->at(map_index).hdus.back()->addKey("MEDERR", 0.0, "Median Error ("+mb->sig_unit+")");

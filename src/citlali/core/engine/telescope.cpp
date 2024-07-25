@@ -62,14 +62,16 @@ void Telescope::get_tel_data(std::string &filepath) {
         }
 
         // get map coord
-        char map_coord_char [129];
-        // get mapping pattern
-        vars.find("Header.Map.MapCoord")->second.getVar(&map_coord_char);
-        map_coord_char[128] = '\0';
-        map_coord = std::string(map_coord_char);
-        // try and remove end characters
-        end_pos = std::remove(map_coord.begin(), map_coord.end(), ' ');
-        map_coord.erase(end_pos, map_coord.end());
+        if (obs_pgm == "Map") {
+            char map_coord_char [129];
+            // get mapping pattern
+            vars.find("Header.Map.MapCoord")->second.getVar(&map_coord_char);
+            map_coord_char[128] = '\0';
+            map_coord = std::string(map_coord_char);
+            // try and remove end characters
+            end_pos = std::remove(map_coord.begin(), map_coord.end(), ' ');
+            map_coord.erase(end_pos, map_coord.end());
+        }
 
         // get source name
         char source_name_char [129];
@@ -97,6 +99,7 @@ void Telescope::get_tel_data(std::string &filepath) {
         // loop through telescope data keys and populate vectors
         for (const auto& pair : tel_data_keys) {
             try {
+                logger->info("tel_data_keys {}",pair);
                 Eigen::Index n_pts = vars.find(pair.first)->second.getDim(0).getSize();
                 tel_data[pair.second].resize(n_pts);
                 vars.find(pair.first)->second.getVar(tel_data[pair.second].data());
@@ -130,6 +133,9 @@ void Telescope::get_tel_data(std::string &filepath) {
         // set tau 225 GHz
         tau_225_GHz = tel_header["Header.Radiometer.Tau"](0);
 
+        // close netcdf file
+        fo.close();
+
     } catch (NcException &e) {
         logger->warn("{}", e.what());
         throw DataIOError{fmt::format(
@@ -141,18 +147,25 @@ void Telescope::get_tel_data(std::string &filepath) {
         engine_utils::utc_to_unix(tel_data["TelUTC"],tel_header["Header.TimePlace.UTDate"]);
 
         // keys for fixing periodic boundary conditions
-        std::vector<std::string> perodic_keys = {
+        std::vector<std::string> periodic_keys = {
             "TelRa","TelDec",
+            "TelL", "TelB",
             "TelAzAct","TelElAct",
             "TelAzCor","TelElCor",
             "SourceAz","SourceEl",
         };
 
         // fix periodic boundary conditions
-        for (const auto &key: perodic_keys) {
+        for (const auto &key: periodic_keys) {
             engine_utils::fix_periodic_boundary(tel_data[key],pi,1.99*pi,2.0*pi);
         }
     }
+
+    // calculate galactic l and b for source
+    engine_utils::equatorial_to_galactic(tel_header["Header.Source.Ra"](0),
+                                         tel_header["Header.Source.Dec"](0),
+                                         tel_header["Header.Source.L"](0),
+                                         tel_header["Header.Source.B"](0));
 
     // manually set epoch to J2000 for simulations
     if (sim_obs) {
@@ -161,11 +174,12 @@ void Telescope::get_tel_data(std::string &filepath) {
 }
 
 void Telescope::calc_tan_pointing() {
-    // get altaz tangent pointing
-    calc_tan_altaz();
-
     // get radec tangent pointing
     calc_tan_radec();
+    // get altaz tangent pointing
+    calc_tan_altaz();
+    // get lb tangent pointing
+    calc_tan_lb();
 
     // set tangential projection to radec
     if (pixel_axes=="radec") {
@@ -173,12 +187,17 @@ void Telescope::calc_tan_pointing() {
         tel_data["lat_phys"] = tel_data["dec_phys"];
         tel_data["lon_phys"] = tel_data["ra_phys"];
     }
-
     // set tangential projection to altaz
     else if (pixel_axes=="altaz") {
         logger->info("using altaz frame");
         tel_data["lat_phys"] = tel_data["alt_phys"];
         tel_data["lon_phys"] = tel_data["az_phys"];
+    }
+    // set tangential projection to lb
+    else if (pixel_axes=="lb") {
+        logger->info("using galactic frame");
+        tel_data["lat_phys"] = tel_data["b_phys"];
+        tel_data["lon_phys"] = tel_data["l_phys"];
     }
 
     // apply corrections
@@ -202,30 +221,14 @@ void Telescope::calc_tan_radec() {
     (ra.array() > pi).select(tel_data["TelRa"].array() - 2.0*pi, tel_data["TelRa"].array());
 
     // center positions
-    double center_ra = tel_header["Header.Source.Ra"](0);
-    double center_dec = tel_header["Header.Source.Dec"](0);
+    double ra0 = tel_header["Header.Source.Ra"](0);
+    double dec0 = tel_header["Header.Source.Dec"](0);
 
     // rescale center ra
-    center_ra = (center_ra > pi) ? center_ra - (2.0*pi) : center_ra;
+    ra0 = (ra0 > pi) ? ra0 - (2.0*pi) : ra0;
 
-    // denominator term
-    Eigen::VectorXd cosc = sin(center_dec)*sin(dec.array()) +
-                cos(center_dec)*cos(dec.array())*cos(ra.array() - center_ra);
-
-    // calc tangent coordinates
-    for (Eigen::Index i=0; i<n_pts; ++i) {
-        if (cosc(i)==0.) {
-            tel_data["dec_phys"](i) = 0.;
-            tel_data["ra_phys"](i) = 0.;
-        }
-        else {
-            // tangent plane lat (dec)
-            tel_data["dec_phys"](i) = (cos(center_dec)*sin(dec(i)) -
-                                       sin(center_dec)*cos(dec(i))*cos(ra(i)-center_ra))/cosc(i);
-            // tangent plane lon (ra)
-            tel_data["ra_phys"](i) = cos(dec(i))*sin(ra(i)-center_ra)/cosc(i);
-        }
-    }
+    // calculate gnomonic projection
+    engine_utils::gnomonic_projection(ra, dec, ra0, dec0, tel_data["ra_phys"], tel_data["dec_phys"]);
 }
 
 void Telescope::calc_tan_altaz() {
@@ -244,6 +247,32 @@ void Telescope::calc_tan_altaz() {
 
     // tangent plane lon (az)
     tel_data["az_phys"] = (cos(tel_data["TelElAct"].array() - tel_data["TelElCor"].array()) * az_diff - tel_data["TelAzCor"].array()).matrix();
+}
+
+void Telescope::calc_tan_lb() {
+    // size of data
+    Eigen::Index n_pts = tel_data["TelL"].size();
+
+    // vectors to hold physical (tangent plane) coordinates
+    tel_data["l_phys"].resize(n_pts);
+    tel_data["b_phys"].resize(n_pts);
+
+    // copy lb
+    Eigen::VectorXd l = tel_data["TelL"];
+    auto b = tel_data["TelB"];
+
+    // rescale l
+    (l.array() > pi).select(tel_data["TelL"].array() - 2.0*pi, tel_data["TelL"].array());
+
+    // center positions
+    double l0 = tel_header["Header.Source.L"](0);
+    double b0 = tel_header["Header.Source.B"](0);
+
+    // rescale center l
+    l0 = (l0 > pi) ? l0 - (2.0*pi) : l0;
+
+    // calculate gnomonic projection
+    engine_utils::gnomonic_projection(l, b, l0, b0, tel_data["l_phys"], tel_data["b_phys"]);
 }
 
 void Telescope::calc_scan_indices() {
@@ -271,20 +300,21 @@ void Telescope::calc_scan_indices() {
             }
         }*/
 
-        for (Eigen::Index i=0; i<hold_bool.size(); ++i) {
-            if (map_coord=="Ra") {
-                if (engine_utils::is_point_in_box(tel_data["ra_phys"](i), tel_data["dec_phys"](i),
-                                                  tel_header["Header.Map.XLength"](0), tel_header["Header.Map.YLength"](0),
-                                                  tel_header["Header.Map.ScanAngle"](0))==false) {
-                    hold_bool(i) = 1;
-                }
-            }
-            else if (map_coord=="Az") {
-                if (engine_utils::is_point_in_box(tel_data["az_phys"](i), tel_data["alt_phys"](i),
-                                                  tel_header["Header.Map.XLength"](0), tel_header["Header.Map.YLength"](0),
-                                                  tel_header["Header.Map.ScanAngle"](0))==false) {
-                    hold_bool(i) = 1;
-                }
+        std::string coord1_key, coord2_key;
+        if (map_coord == "Ra") {
+            coord1_key = "ra_phys";
+            coord2_key = "dec_phys";
+        }
+        else if (map_coord == "Az") {
+            coord1_key = "az_phys";
+            coord2_key = "alt_phys";
+        }
+
+        for (Eigen::Index i = 0; i < hold_bool.size(); ++i) {
+            if (!engine_utils::is_point_in_box(tel_data[coord1_key](i), tel_data[coord2_key](i),
+                                              tel_header["Header.Map.XLength"](0), tel_header["Header.Map.YLength"](0),
+                                              tel_header["Header.Map.ScanAngle"](0))) {
+                hold_bool(i) = 1;
             }
         }
 
@@ -296,7 +326,7 @@ void Telescope::calc_scan_indices() {
         }
 
         // increment scan number if last element is zero
-        if (hold_bool(hold_bool.size()-1) == 0) {
+        if (hold_bool(hold_bool.size() - 1) == 0) {
             n_scans++;
         }
         // resize matrix to hold scans

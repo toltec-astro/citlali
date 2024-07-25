@@ -213,7 +213,7 @@ auto Lali::run() {
                 // reset weights to median
                 ptcproc.reset_weights(ptcdata, calib);
 
-                // populate maps
+                // populate noise maps only
                 bool run_omb = false;
                 logger->info("populating noise maps");
                 if (map_method=="naive") {

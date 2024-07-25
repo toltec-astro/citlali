@@ -190,7 +190,7 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
 
     for (Eigen::Index i=0; i<n_dets; ++i) {
         // skip fg = -1 if in polarization mode
-        if (run_polarization && apt["fg"](i)==-1) {
+        if (run_polarization && apt["loc"](i)==-1) {
             run_det = false;
         }
         else {
@@ -345,12 +345,12 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
 
                         // coadd into current noise map
                         if ((nmb_ir >= 0) && (nmb_ir < nmb->n_rows) && (nmb_ic >= 0) && (nmb_ic < nmb->n_cols)) {
-                            if (run_polarization) {
+                            //if (run_polarization) {
                                 //if (use_cmb) {
                                     // calculate pointing matrix for cmb
                                   //  allocate_pointing(cmb_copy, in.weights.data(i), cos_2angle, sin_2angle, map_index, nmb_ir, nmb_ic);
                                 //}
-                            }
+                            //}
                             // loop through noise maps
                             for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
                                 // randomizing on dets

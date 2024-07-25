@@ -99,7 +99,6 @@ auto mapFitter::ceres_fit(const Model &model,
     }
 
     // vector to store indices of parameters to keep constant
-
     if (!fit_angle) {
         std::vector<int> sspv;
         sspv.push_back(limits.rows()-1);

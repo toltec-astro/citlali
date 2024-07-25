@@ -758,12 +758,20 @@ int run(const rc_t &rc) {
                                     std::string fruit_dir;
 
                                     // per obsnum path
-                                    if (todproc.engine().ptcproc.fruit_loops_type == "obsnum") {
+                                    if (todproc.engine().ptcproc.fruit_loops_type == "obsnum/raw") {
                                         fruit_dir = todproc.engine().ptcproc.fruit_loops_path + "/" + todproc.engine().omb.obsnums.back() + "/raw/";
                                     }
-                                    // coadd path
-                                    else if (todproc.engine().ptcproc.fruit_loops_type == "coadd") {
+                                    // per obsnum path
+                                    else if (todproc.engine().ptcproc.fruit_loops_type == "obsnum/filtered") {
+                                        fruit_dir = todproc.engine().ptcproc.fruit_loops_path + "/" + todproc.engine().omb.obsnums.back() + "/filtered/";
+                                    }
+                                    // raw coadd path
+                                    else if (todproc.engine().ptcproc.fruit_loops_type == "coadd/raw") {
                                         fruit_dir = todproc.engine().ptcproc.fruit_loops_path + "/coadded/raw/";
+                                    }
+                                    // filtered coadd path
+                                    else if (todproc.engine().ptcproc.fruit_loops_type == "coadd/filtered") {
+                                        fruit_dir = todproc.engine().ptcproc.fruit_loops_path + "/coadded/filtered/";
                                     }
 
                                     // set coverage region
@@ -788,12 +796,19 @@ int run(const rc_t &rc) {
 
                                     // if no input path is given
                                     // if running fruit loops on each obsnum
-                                    if (todproc.engine().ptcproc.fruit_loops_type == "obsnum") {
+                                    if (todproc.engine().ptcproc.fruit_loops_type == "obsnum/raw") {
                                         fruit_dir += "/" + todproc.engine().omb.obsnums.back() + "/raw/";
                                     }
-                                    // if running fruit loops on the coadded maps
-                                    else if (todproc.engine().ptcproc.fruit_loops_type == "coadd") {
+                                    if (todproc.engine().ptcproc.fruit_loops_type == "obsnum/filtered") {
+                                        fruit_dir += "/" + todproc.engine().omb.obsnums.back() + "/filtered/";
+                                    }
+                                    // if running fruit loops on the raw coadded maps
+                                    else if (todproc.engine().ptcproc.fruit_loops_type == "coadd/raw") {
                                         fruit_dir += "/coadded/raw/";
+                                    }
+                                    // if running fruit loops on the filtered coadded maps
+                                    else if (todproc.engine().ptcproc.fruit_loops_type == "coadd/filtered") {
+                                        fruit_dir += "/coadded/filtered/";
                                     }
                                 }
                                 // otherwise use stored maps
@@ -801,12 +816,19 @@ int run(const rc_t &rc) {
                                     fruit_dir = todproc.engine().redu_dir_name;
                                     logger->info("loading previous iter maps for fruit loops iteration {}", todproc.engine().fruit_iter);
                                     // if running fruit loops on each obsnum
-                                    if (todproc.engine().ptcproc.fruit_loops_type == "obsnum") {
+                                    if (todproc.engine().ptcproc.fruit_loops_type == "obsnum/raw") {
                                         fruit_dir += "/" + todproc.engine().omb.obsnums.back() + "/raw/";
                                     }
-                                    // if running fruit loops on the coadded maps
-                                    else if (todproc.engine().ptcproc.fruit_loops_type == "coadd") {
+                                    else if (todproc.engine().ptcproc.fruit_loops_type == "obsnum/filtered") {
+                                        fruit_dir += "/" + todproc.engine().omb.obsnums.back() + "/filtered/";
+                                    }
+                                    // if running fruit loops on the raw coadded maps
+                                    else if (todproc.engine().ptcproc.fruit_loops_type == "coadd/raw") {
                                         fruit_dir += "/coadded/raw/";
+                                    }
+                                    // if running fruit loops on the filtered coadded maps
+                                    else if (todproc.engine().ptcproc.fruit_loops_type == "coadd/filtered") {
+                                        fruit_dir += "/coadded/filtered/";
                                     }
                                 }
                                 // set coverage region
