@@ -261,7 +261,7 @@ $(function() {
 <div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160; </div>
 <div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;    <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;n_dets; ++i) {</div>
 <div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;        <span class="comment">// skip fg = -1 if in polarization mode</span></div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#ab527679d127409130f38a14d396c117a">run_polarization</a> &amp;&amp; apt[<span class="stringliteral">&quot;fg&quot;</span>](i)==-1) {</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#ab527679d127409130f38a14d396c117a">run_polarization</a> &amp;&amp; apt[<span class="stringliteral">&quot;loc&quot;</span>](i)==-1) {</div>
 <div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;            run_det = <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;        }</div>
 <div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;        <span class="keywordflow">else</span> {</div>
@@ -416,12 +416,12 @@ $(function() {
 <div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160; </div>
 <div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;                        <span class="comment">// coadd into current noise map</span></div>
 <div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;                        <span class="keywordflow">if</span> ((nmb_ir &gt;= 0) &amp;&amp; (nmb_ir &lt; nmb-&gt;n_rows) &amp;&amp; (nmb_ic &gt;= 0) &amp;&amp; (nmb_ic &lt; nmb-&gt;n_cols)) {</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;                            <span class="keywordflow">if</span> (<a class="code" href="../../dd/db4/classmapmaking_1_1NaiveMapmaker.html#ab527679d127409130f38a14d396c117a">run_polarization</a>) {</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;                            <span class="comment">//if (run_polarization) {</span></div>
 <div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;                                <span class="comment">//if (use_cmb) {</span></div>
 <div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;                                    <span class="comment">// calculate pointing matrix for cmb</span></div>
 <div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;                                  <span class="comment">//  allocate_pointing(cmb_copy, in.weights.data(i), cos_2angle, sin_2angle, map_index, nmb_ir, nmb_ic);</span></div>
 <div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;                                <span class="comment">//}</span></div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;                            }</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;                            <span class="comment">//}</span></div>
 <div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;                            <span class="comment">// loop through noise maps</span></div>
 <div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;                            <span class="keywordflow">for</span> (Eigen::Index nn=0; nn&lt;nmb-&gt;n_noise; ++nn) {</div>
 <div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;                                <span class="comment">// randomizing on dets</span></div>

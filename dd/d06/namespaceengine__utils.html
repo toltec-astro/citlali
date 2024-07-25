@@ -121,6 +121,11 @@ Functions</h2></td></tr>
 <tr class="memitem:a25c3470ab740166d1ecffb0f89b9fe60"><td class="memTemplParams" colspan="2">template&lt;typename Derived &gt; </td></tr>
 <tr class="memitem:a25c3470ab740166d1ecffb0f89b9fe60"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="../../dd/d06/namespaceengine__utils.html#a25c3470ab740166d1ecffb0f89b9fe60">tangent_to_abs</a> (Eigen::DenseBase&lt; Derived &gt; &amp;lat, Eigen::DenseBase&lt; Derived &gt; &amp;lon, const double cra, const double cdec)</td></tr>
 <tr class="separator:a25c3470ab740166d1ecffb0f89b9fe60"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aafa22a7a45db7ec585b7b9dc136b888a"><td class="memTemplParams" colspan="2">template&lt;typename Derived &gt; </td></tr>
+<tr class="memitem:aafa22a7a45db7ec585b7b9dc136b888a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="../../dd/d06/namespaceengine__utils.html#aafa22a7a45db7ec585b7b9dc136b888a">gnomonic_projection</a> (const Eigen::DenseBase&lt; Derived &gt; &amp;l, const Eigen::DenseBase&lt; Derived &gt; &amp;b, double l0, double b0, Eigen::DenseBase&lt; Derived &gt; &amp;x, Eigen::DenseBase&lt; Derived &gt; &amp;y)</td></tr>
+<tr class="separator:aafa22a7a45db7ec585b7b9dc136b888a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af821d4cf88b6cfd077c8706005904637"><td class="memItemLeft" align="right" valign="top">static const void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/d06/namespaceengine__utils.html#af821d4cf88b6cfd077c8706005904637">equatorial_to_galactic</a> (const double ra, const double dec, double &amp;l, double &amp;b)</td></tr>
+<tr class="separator:af821d4cf88b6cfd077c8706005904637"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a91920d6a671f21ee464dfa4c55068b7d"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/d06/namespaceengine__utils.html#a91920d6a671f21ee464dfa4c55068b7d">parseLine</a> (char *line)</td></tr>
 <tr class="separator:a91920d6a671f21ee464dfa4c55068b7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a57528ebe2f2c88901b401cbcb7463739"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/d06/namespaceengine__utils.html#a57528ebe2f2c88901b401cbcb7463739">get_phys_memory</a> ()</td></tr>
@@ -835,6 +840,63 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
+<a id="af821d4cf88b6cfd077c8706005904637"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af821d4cf88b6cfd077c8706005904637">&#9670;&nbsp;</a></span>equatorial_to_galactic()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static const void engine_utils::equatorial_to_galactic </td>
+          <td>(</td>
+          <td class="paramtype">const double&#160;</td>
+          <td class="paramname"><em>ra</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const double&#160;</td>
+          <td class="paramname"><em>dec</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double &amp;&#160;</td>
+          <td class="paramname"><em>l</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double &amp;&#160;</td>
+          <td class="paramname"><em>b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="../../dd/d06/namespaceengine__utils_af821d4cf88b6cfd077c8706005904637_icgraph.png" border="0" usemap="#add/d06/namespaceengine__utils_af821d4cf88b6cfd077c8706005904637_icgraph" alt=""/></div>
+<map name="add/d06/namespaceengine__utils_af821d4cf88b6cfd077c8706005904637_icgraph" id="add/d06/namespaceengine__utils_af821d4cf88b6cfd077c8706005904637_icgraph">
+<area shape="rect" title=" " alt="" coords="200,5,375,47"/>
+<area shape="rect" href="../../d2/d8b/classengine_1_1Telescope.html#a916980ccdbc238c5c8a41f2f2bb7d2be" title=" " alt="" coords="5,5,152,47"/>
+</map>
+</div>
+
+</div>
+</div>
 <a id="a897866435fdd625110b3d88a51a939b1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a897866435fdd625110b3d88a51a939b1">&#9670;&nbsp;</a></span>fft()</h2>
 
@@ -1163,6 +1225,71 @@ Here is the caller graph for this function:</div>
 <area shape="rect" href="../../dc/d9e/classBeammap.html#a4a37f834019ca58ec17674cc4effc60f" title=" " alt="" coords="5,5,139,32"/>
 <area shape="rect" href="../../d9/def/classLali.html#a1d8a03e4170348d459c644380ada6d1c" title=" " alt="" coords="27,56,117,83"/>
 <area shape="rect" href="../../d2/dbe/classPointing.html#aaeb9d7b3bcf3d3cbac5bb473d02e26e8" title=" " alt="" coords="13,107,131,133"/>
+</map>
+</div>
+
+</div>
+</div>
+<a id="aafa22a7a45db7ec585b7b9dc136b888a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aafa22a7a45db7ec585b7b9dc136b888a">&#9670;&nbsp;</a></span>gnomonic_projection()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Derived &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void engine_utils::gnomonic_projection </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::DenseBase&lt; Derived &gt; &amp;&#160;</td>
+          <td class="paramname"><em>l</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::DenseBase&lt; Derived &gt; &amp;&#160;</td>
+          <td class="paramname"><em>b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>l0</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>b0</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::DenseBase&lt; Derived &gt; &amp;&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::DenseBase&lt; Derived &gt; &amp;&#160;</td>
+          <td class="paramname"><em>y</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="../../dd/d06/namespaceengine__utils_aafa22a7a45db7ec585b7b9dc136b888a_icgraph.png" border="0" usemap="#add/d06/namespaceengine__utils_aafa22a7a45db7ec585b7b9dc136b888a_icgraph" alt=""/></div>
+<map name="add/d06/namespaceengine__utils_aafa22a7a45db7ec585b7b9dc136b888a_icgraph" id="add/d06/namespaceengine__utils_aafa22a7a45db7ec585b7b9dc136b888a_icgraph">
+<area shape="rect" title=" " alt="" coords="395,39,568,80"/>
+<area shape="rect" href="../../d2/d8b/classengine_1_1Telescope.html#a246c2142209835886630a347172c567a" title=" " alt="" coords="200,5,347,47"/>
+<area shape="rect" href="../../d2/d8b/classengine_1_1Telescope.html#a49b54acd07850448a8edf85a93f1f760" title=" " alt="" coords="200,71,347,112"/>
+<area shape="rect" href="../../d2/d8b/classengine_1_1Telescope.html#aacf66a5adcbe58720a25446cc17e4987" title=" " alt="" coords="5,39,152,80"/>
 </map>
 </div>
 

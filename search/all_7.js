@@ -43,9 +43,10 @@ var searchData=
   ['get_5ftone_5ffreqs_5ffrom_5ffiles_444',['get_tone_freqs_from_files',['../de/d16/structTimeOrderedDataProc.html#a16ba9dfcc2a3d5db40557a9be7e0fe3e',1,'TimeOrderedDataProc']]],
   ['get_5ftyped_445',['get_typed',['../d8/db6/structYamlConfig.html#ab259fc64eae2e449fe1e18c613f0df0c',1,'YamlConfig::get_typed(const key_t &amp;key) const'],['../d8/db6/structYamlConfig.html#ae5b014dc7b54c0b70d2170e6f724f5ed',1,'YamlConfig::get_typed(const key_t &amp;key, T &amp;&amp;defval) const']]],
   ['ginput_446',['ginput',['../d7/df7/namespacematplotlibcpp.html#a87735abbf7838f42c035013eeb017e31',1,'matplotlibcpp']]],
-  ['good_447',['Good',['../dc/d9e/classBeammap.html#a4df957dca7b44063477fb1a7bba0b303a657312b7e842d9f5768501d5cb5cc953',1,'Beammap::Good()'],['../d4/de4/namespacetimestream.html#a358fcec33b86776985d1b8f6238827a7a3650cc4500ed7bf9b8e3e5f52f1edc94',1,'timestream::Good()']]],
-  ['good_5ffits_448',['good_fits',['../dc/d9e/classBeammap.html#a90da34cfb50e69a2d7c6adb835f50d45',1,'Beammap']]],
-  ['grid_449',['grid',['../d7/df7/namespacematplotlibcpp.html#ae0bbf80e73099a91df28e4fb871b166a',1,'matplotlibcpp']]],
-  ['grouping_450',['grouping',['../d3/d24/classtimestream_1_1Polarization.html#a5625d293774ddc82765c67f1a70191d9',1,'timestream::Polarization::grouping()'],['../dd/d57/classtimestream_1_1Despiker.html#a5af11f175c55c012d7a58ac8ac7dfad4',1,'timestream::Despiker::grouping()'],['../da/de2/classtimestream_1_1Cleaner.html#af6b55c69cbea4d8c2db73de705c331d1',1,'timestream::Cleaner::grouping()']]],
-  ['grp_5fstats_5fheader_451',['grp_stats_header',['../d2/d39/classengine_1_1Diagnostics.html#a5216839f86c88a0c1e3d621eb412a692',1,'engine::Diagnostics']]]
+  ['gnomonic_5fprojection_447',['gnomonic_projection',['../dd/d06/namespaceengine__utils.html#aafa22a7a45db7ec585b7b9dc136b888a',1,'engine_utils']]],
+  ['good_448',['Good',['../dc/d9e/classBeammap.html#a4df957dca7b44063477fb1a7bba0b303a657312b7e842d9f5768501d5cb5cc953',1,'Beammap::Good()'],['../d4/de4/namespacetimestream.html#a358fcec33b86776985d1b8f6238827a7a3650cc4500ed7bf9b8e3e5f52f1edc94',1,'timestream::Good()']]],
+  ['good_5ffits_449',['good_fits',['../dc/d9e/classBeammap.html#a90da34cfb50e69a2d7c6adb835f50d45',1,'Beammap']]],
+  ['grid_450',['grid',['../d7/df7/namespacematplotlibcpp.html#ae0bbf80e73099a91df28e4fb871b166a',1,'matplotlibcpp']]],
+  ['grouping_451',['grouping',['../d3/d24/classtimestream_1_1Polarization.html#a5625d293774ddc82765c67f1a70191d9',1,'timestream::Polarization::grouping()'],['../dd/d57/classtimestream_1_1Despiker.html#a5af11f175c55c012d7a58ac8ac7dfad4',1,'timestream::Despiker::grouping()'],['../da/de2/classtimestream_1_1Cleaner.html#af6b55c69cbea4d8c2db73de705c331d1',1,'timestream::Cleaner::grouping()']]],
+  ['grp_5fstats_5fheader_452',['grp_stats_header',['../d2/d39/classengine_1_1Diagnostics.html#a5216839f86c88a0c1e3d621eb412a692',1,'engine::Diagnostics']]]
 ];
