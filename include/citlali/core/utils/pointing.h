@@ -51,7 +51,7 @@ auto calc_det_pointing(tel_data_t &tel_data, double az_off, double el_off,
         lon = (rot_az_off.array()*ASEC_TO_RAD) + tel_data["az_phys"].array();
     }
 
-    else if (pixel_axes=="lb") {
+    else if (pixel_axes=="galactic") {
         // get parallactic angle
         auto ang = tel_data["ActParAng"] + tel_data["ActGalAng"];
 

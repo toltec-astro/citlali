@@ -749,7 +749,7 @@ void Engine::get_map_filter_config(CT &config) {
         }
     }
     // make sure noise maps were enabled
-    if (!run_noise) {
+    if (!run_noise && (!wiener_filter.run_lowpass && wiener_filter.filter_type=="wiener_filter")) {
         logger->error("wiener filter requires noise maps");
         std::exit(EXIT_FAILURE);
     }
@@ -2391,21 +2391,21 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
                 wiener_filter.filter_noise(mb, i, j);
                 pb.count(mb.n_noise, mb.n_noise / 100);
             }
-        }
 
-        if (wiener_filter.normalize_error) {
-            logger->info("renormalizing errors");
-            // get median error from weight maps
-            mb.calc_median_err();
-            // get median map rms from noise maps
-            mb.calc_median_rms();
+            if (wiener_filter.normalize_error) {
+                logger->info("renormalizing errors");
+                // get median error from weight maps
+                mb.calc_median_err();
+                // get median map rms from noise maps
+                mb.calc_median_rms();
 
-            // get rescaled normalization factor
-            auto noise_factor = (1./pow(mb.median_rms.array(),2.))*mb.median_err.array();
-            // re-normalize weight map
-            mb.weight[i].noalias() = mb.weight[i]*noise_factor(i);
+                // get rescaled normalization factor
+                auto noise_factor = (1./pow(mb.median_rms.array(),2.))*mb.median_err.array();
+                // re-normalize weight map
+                mb.weight[i].noalias() = mb.weight[i]*noise_factor(i);
 
-            logger->info("median rms {} ({})", static_cast<float>(mb.median_rms(i)), mb.sig_unit);
+                logger->info("median rms {} ({})", static_cast<float>(mb.median_rms(i)), mb.sig_unit);
+            }
         }
 
         if (write_filtered_maps_partial) {
