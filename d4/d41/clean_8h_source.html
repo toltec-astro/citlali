@@ -347,7 +347,7 @@ $(function() {
 <div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;        limit_index = group_n_eig;</div>
 <div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;    }</div>
 <div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160; </div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;    SPDLOG_DEBUG(<span class="stringliteral">&quot;removing {} largest eigenvalue(s)&quot;</span>, limit_index);</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;    <a class="code" href="../../da/de2/classtimestream_1_1Cleaner.html#af4b4bf6ff627cd2cef679b4bf8250bf5">logger</a>-&gt;debug(<span class="stringliteral">&quot;removing {} largest eigenvalue(s)&quot;</span>, limit_index);</div>
 <div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160; </div>
 <div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;    <span class="comment">// subtract out the desired eigenvectors</span></div>
 <div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;    Eigen::MatrixXd proj = scans.derived() * evecs.derived().leftCols(limit_index);</div>

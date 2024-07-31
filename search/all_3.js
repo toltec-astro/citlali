@@ -31,7 +31,7 @@ var searchData=
   ['calc_5fstats_125',['calc_stats',['../d2/d39/classengine_1_1Diagnostics.html#a96c520bdb162c3b816514fb9323029cf',1,'engine::Diagnostics']]],
   ['calc_5fstd_5fdev_126',['calc_std_dev',['../dd/d06/namespaceengine__utils.html#ad9c640b3ad780cec01b1644b15f1ac58',1,'engine_utils::calc_std_dev(Eigen::DenseBase&lt; DerivedA &gt; &amp;data)'],['../dd/d06/namespaceengine__utils.html#a0be793cb0a7d141ccc243d31b4b01ab9',1,'engine_utils::calc_std_dev(Eigen::DenseBase&lt; DerivedA &gt; &amp;data, Eigen::DenseBase&lt; DerivedB &gt; &amp;flag)']]],
   ['calc_5ftan_5faltaz_127',['calc_tan_altaz',['../d2/d8b/classengine_1_1Telescope.html#aa2f46caf456909ae1864315b4d40e9df',1,'engine::Telescope']]],
-  ['calc_5ftan_5flb_128',['calc_tan_lb',['../d2/d8b/classengine_1_1Telescope.html#a246c2142209835886630a347172c567a',1,'engine::Telescope']]],
+  ['calc_5ftan_5fgalactic_128',['calc_tan_galactic',['../d2/d8b/classengine_1_1Telescope.html#a5a414cc5f45f88ea3a255949dccffce3',1,'engine::Telescope']]],
   ['calc_5ftan_5fpointing_129',['calc_tan_pointing',['../d2/d8b/classengine_1_1Telescope.html#aacf66a5adcbe58720a25446cc17e4987',1,'engine::Telescope']]],
   ['calc_5ftan_5fradec_130',['calc_tan_radec',['../d2/d8b/classengine_1_1Telescope.html#a49b54acd07850448a8edf85a93f1f760',1,'engine::Telescope']]],
   ['calc_5ftau_131',['calc_tau',['../dc/df8/classtimestream_1_1Calibration.html#a3509201b7d75db76c78874f10821a78c',1,'timestream::Calibration']]],

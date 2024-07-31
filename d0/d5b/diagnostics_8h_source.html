@@ -133,7 +133,7 @@ $(function() {
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    Eigen::Index n_pts = in.scans.data.rows();</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    Eigen::Index n_dets = in.scans.data.cols();</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;n_dets; i++) {</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;n_dets; ++i) {</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="comment">// make Eigen::Maps for each detector&#39;s scan</span></div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        Eigen::Map&lt;Eigen::Matrix&lt;double, Eigen::Dynamic, 1&gt;&gt; scans(</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;            in.scans.data.col(i).data(), in.scans.data.rows());</div>
@@ -163,7 +163,7 @@ $(function() {
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="keyword">template</span> &lt;timestream::TCDataKind tcdata_kind&gt;</div>
 <div class="line"><a name="l00094"></a><span class="lineno"><a class="line" href="../../d2/d39/classengine_1_1Diagnostics.html#a2eb0915555843ac19bf2c414c9964a57">   94</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d2/d39/classengine_1_1Diagnostics.html#a2eb0915555843ac19bf2c414c9964a57">Diagnostics::calc_tod_hist</a>(<a class="code" href="../../dd/d75/structtimestream_1_1TCData.html">timestream::TCData&lt;tcdata_kind, Eigen::MatrixXd&gt;</a> &amp;in) {</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;in.scans.data.cols(); i++) {</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;in.scans.data.cols(); ++i) {</div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        <span class="comment">// get data for detector</span></div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        Eigen::VectorXd scan = in.scans.data.col(i);</div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        <span class="comment">// calculate histogram</span></div>
@@ -192,7 +192,7 @@ $(function() {
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;<span class="comment">    Eigen::VectorXd hanning = (0.5 - 0.5 * Eigen::ArrayXd::LinSpaced(n_pts, 0, 2.0 * pi / n_pts * (n_pts - 1)).cos());</span></div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="comment"></span> </div>
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="comment">    // loop through detectors</span></div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;<span class="comment">    for (Eigen::Index i=0; i&lt;in.scans.data.cols(); i++) {</span></div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;<span class="comment">    for (Eigen::Index i=0; i&lt;in.scans.data.cols(); ++i) {</span></div>
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;<span class="comment"></span> </div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;<span class="comment">        // get data for detector</span></div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;<span class="comment">        Eigen::VectorXd scan = in.scans.data.col(i).array()*hanning.array();</span></div>
