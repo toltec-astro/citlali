@@ -273,7 +273,7 @@ public:
     void calc_tan_pointing();
     void calc_tan_radec();
     void calc_tan_altaz();
-    void calc_tan_lb();
+    void calc_tan_galactic();
     void calc_scan_indices();
 };
 

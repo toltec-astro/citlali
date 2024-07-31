@@ -62,7 +62,7 @@ void Diagnostics::calc_stats(timestream::TCData<tcdata_kind, Eigen::MatrixXd> &i
     Eigen::Index n_pts = in.scans.data.rows();
     Eigen::Index n_dets = in.scans.data.cols();
 
-    for (Eigen::Index i=0; i<n_dets; i++) {
+    for (Eigen::Index i=0; i<n_dets; ++i) {
         // make Eigen::Maps for each detector's scan
         Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
             in.scans.data.col(i).data(), in.scans.data.rows());
@@ -92,7 +92,7 @@ void Diagnostics::calc_stats(timestream::TCData<tcdata_kind, Eigen::MatrixXd> &i
 
 template <timestream::TCDataKind tcdata_kind>
 void Diagnostics::calc_tod_hist(timestream::TCData<tcdata_kind, Eigen::MatrixXd> &in) {
-    for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
+    for (Eigen::Index i=0; i<in.scans.data.cols(); ++i) {
         // get data for detector
         Eigen::VectorXd scan = in.scans.data.col(i);
         // calculate histogram
@@ -121,7 +121,7 @@ void Diagnostics::calc_tod_psd(timestream::TCData<tcdata_kind, Eigen::MatrixXd> 
     Eigen::VectorXd hanning = (0.5 - 0.5 * Eigen::ArrayXd::LinSpaced(n_pts, 0, 2.0 * pi / n_pts * (n_pts - 1)).cos());
 
     // loop through detectors
-    for (Eigen::Index i=0; i<in.scans.data.cols(); i++) {
+    for (Eigen::Index i=0; i<in.scans.data.cols(); ++i) {
 
         // get data for detector
         Eigen::VectorXd scan = in.scans.data.col(i).array()*hanning.array();

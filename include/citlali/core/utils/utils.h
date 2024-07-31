@@ -272,9 +272,6 @@ auto fft2(Eigen::DenseBase<Derived> &in, fftw_plan_t &plan, fftw_complex* a, fft
     Eigen::Index n_rows = in.rows();
     Eigen::Index n_cols = in.cols();
 
-    // output matrix
-    Eigen::MatrixXcd out(n_rows, n_cols);
-
     // copy data from input (row major?)
     for (Eigen::Index i=0; i< n_rows; ++i) {
         for (Eigen::Index j=0; j<n_cols; ++j) {
@@ -286,8 +283,11 @@ auto fft2(Eigen::DenseBase<Derived> &in, fftw_plan_t &plan, fftw_complex* a, fft
 
     fftw_execute(plan);
 
+    // output matrix
+    Eigen::MatrixXcd out(n_rows, n_cols);
+
     // copy data to output (row major?)
-    for (Eigen::Index i=0; i< n_rows; ++i) {
+    for (Eigen::Index i=0; i<n_rows; ++i) {
         for (Eigen::Index j=0; j<n_cols; ++j) {
             int ii = n_cols*i + j;
             out.real()(i,j) = b[ii][0];

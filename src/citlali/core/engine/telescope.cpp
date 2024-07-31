@@ -50,6 +50,15 @@ void Telescope::get_tel_data(std::string &filepath) {
 
         if (obs_pgm=="Map") {
             vars.find("Header.Map.ExecMode")->second.getVar(&exec_mode);
+
+            char map_coord_char [129];
+            // get mapping pattern
+            vars.find("Header.Map.MapCoord")->second.getVar(&map_coord_char);
+            map_coord_char[128] = '\0';
+            map_coord = std::string(map_coord_char);
+            // try and remove end characters
+            end_pos = std::remove(map_coord.begin(), map_coord.end(), ' ');
+            map_coord.erase(end_pos, map_coord.end());
         }
         else {
             exec_mode = 1;
@@ -59,18 +68,6 @@ void Telescope::get_tel_data(std::string &filepath) {
         if ((obs_pgm=="Lissajous" || (obs_pgm=="Map" && exec_mode==1)) && time_chunk<=0) {
             logger->error("mapping mode is lissajous and time chunk size is zero");
             std::exit(EXIT_FAILURE);
-        }
-
-        // get map coord
-        if (obs_pgm == "Map") {
-            char map_coord_char [129];
-            // get mapping pattern
-            vars.find("Header.Map.MapCoord")->second.getVar(&map_coord_char);
-            map_coord_char[128] = '\0';
-            map_coord = std::string(map_coord_char);
-            // try and remove end characters
-            end_pos = std::remove(map_coord.begin(), map_coord.end(), ' ');
-            map_coord.erase(end_pos, map_coord.end());
         }
 
         // get source name
@@ -178,8 +175,8 @@ void Telescope::calc_tan_pointing() {
     calc_tan_radec();
     // get altaz tangent pointing
     calc_tan_altaz();
-    // get lb tangent pointing
-    calc_tan_lb();
+    // get galactic tangent pointing
+    calc_tan_galactic();
 
     // set tangential projection to radec
     if (pixel_axes=="radec") {
@@ -193,8 +190,8 @@ void Telescope::calc_tan_pointing() {
         tel_data["lat_phys"] = tel_data["alt_phys"];
         tel_data["lon_phys"] = tel_data["az_phys"];
     }
-    // set tangential projection to lb
-    else if (pixel_axes=="lb") {
+    // set tangential projection to galactic
+    else if (pixel_axes=="galactic") {
         logger->info("using galactic frame");
         tel_data["lat_phys"] = tel_data["b_phys"];
         tel_data["lon_phys"] = tel_data["l_phys"];
@@ -249,7 +246,7 @@ void Telescope::calc_tan_altaz() {
     tel_data["az_phys"] = (cos(tel_data["TelElAct"].array() - tel_data["TelElCor"].array()) * az_diff - tel_data["TelAzCor"].array()).matrix();
 }
 
-void Telescope::calc_tan_lb() {
+void Telescope::calc_tan_galactic() {
     // size of data
     Eigen::Index n_pts = tel_data["TelL"].size();
 

@@ -389,13 +389,6 @@ void Engine::obsnum_setup() {
     // if filter is requested, make it here
     if (rtcproc.run_tod_filter) {
         rtcproc.filter.make_filter(telescope.fsmp);
-        /*
-        rtcproc.filter.w0s.clear();
-        rtcproc.filter.qs.clear();
-        rtcproc.filter.w0s.push_back(24.46);
-        rtcproc.filter.qs.push_back(0.05);
-        rtcproc.filter.make_notch_filter(telescope.fsmp);
-        */
     }
 
     // set map wcs crvals to source ra/dec
@@ -410,7 +403,7 @@ void Engine::obsnum_setup() {
     }
 
     // set map wcs crvals to source l/b
-    else if (telescope.pixel_axes == "lb") {
+    else if (telescope.pixel_axes == "galactic") {
         omb.wcs.crval[0] = telescope.tel_header["Header.Source.L"](0)*RAD_TO_DEG;
         omb.wcs.crval[1] = telescope.tel_header["Header.Source.B"](0)*RAD_TO_DEG;
 
@@ -575,9 +568,9 @@ void Engine::get_mapmaking_config(CT &config) {
     get_config_value(config, map_method, missing_keys, invalid_keys,
                      std::tuple{"mapmaking","method"},{"naive","jinc","maximum_likelihood"});
 
-    // map reference frame (radec, altaz, lb)
+    // map reference frame (radec, altaz, galactic)
     get_config_value(config, telescope.pixel_axes, missing_keys, invalid_keys,
-                     std::tuple{"mapmaking","pixel_axes"},{"radec","altaz", "lb"});
+                     std::tuple{"mapmaking","pixel_axes"},{"radec","altaz", "galactic"});
 
     // get config for omb
     logger->info("getting omb config options");

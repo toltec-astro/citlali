@@ -45,22 +45,12 @@ public:
             i++;
         }
 
-        // difference between telescope tau and calculated tau at 225 GHz
-        double tau_225_diff = abs(tau_225_zenith - tau_225_calc(0));
         // set initial model to am_q25
         extinction_model = "am_q25";
 
         // find model with closest tau to telescope tau and use that model
         // for extinction correction
         i = 0;
-        /*for (const auto &[key,val]: tx_225_zenith) {
-            if (abs(tau_225_zenith - tau_225_calc(i)) < tau_225_diff) {
-                extinction_model = key;
-                tau_225_diff = abs(tau_225_zenith - tau_225_calc(i));
-            }
-            i++;
-        }*/
-
         for (const auto &[key,val]: tx_225_zenith) {
             if (tau_225_calc(i) <= tau_225_zenith) {
                 extinction_model = key;
@@ -115,12 +105,6 @@ public:
     template <typename DerivedA, typename DerivedB>
     auto tau_polynomial(Eigen::DenseBase<DerivedA> &coeff, Eigen::DenseBase<DerivedB> &elev) {
 
-        // p(x) = a4*x^4 + a3*x^3 + a2*x^2 + a1*x + a0
-        /*return coeff(0)*pow(elev.derived().array(),4) + coeff(1)*pow(elev.derived().array(),3) +
-               coeff(2)*pow(elev.derived().array(),2) + coeff(3)*pow(elev.derived().array(),1) +
-               coeff(4);*/
-
-        // p(x) = a6*x^6 + a5*x^5 + a4*x^4 + a3*x^3 + a2*x^2 + a1*x + a0
         return coeff(0)*pow(elev.derived().array(),6) + coeff(1)*pow(elev.derived().array(),5) +
                coeff(2)*pow(elev.derived().array(),4) + coeff(3)*pow(elev.derived().array(),3) +
                coeff(4)*pow(elev.derived().array(),2) + coeff(5)*pow(elev.derived().array(),1) +
@@ -177,8 +161,6 @@ void Calibration::calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &in, calib_
 
     // loop through detectors
     for (Eigen::Index i=0; i<in.scans.data.cols(); ++i) {
-        // current detector index in apt table
-        Eigen::Index det_index = i;
         // current array index in apt table
         Eigen::Index array_index = calib.apt["array"](i);
 
@@ -186,7 +168,7 @@ void Calibration::calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &in, calib_
         in.fcf.data(i) = calib.flux_conversion_factor(array_index);
 
         // data x flxscale x factor
-        in.scans.data.col(i) = in.scans.data.col(i).array()*in.fcf.data(i)*calib.apt["flxscale"](det_index);
+        in.scans.data.col(i) = in.scans.data.col(i).array()*in.fcf.data(i)*calib.apt["flxscale"](i);
     }
 }
 
@@ -195,8 +177,6 @@ void Calibration::extinction_correction(TCData<tcdata_kind, Eigen::MatrixXd> &in
 
     // loop through detectors
     for (Eigen::Index i=0; i<in.scans.data.cols(); ++i) {
-        // current detector index in apt table
-        Eigen::Index det_index = i;
         // current array index in apt table
         Eigen::Index array_index = calib.apt["array"](i);
 

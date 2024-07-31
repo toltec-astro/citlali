@@ -26,7 +26,7 @@ public:
     std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
 
     // filter template
-    std::string template_type;
+    std::string template_type, filter_type;
     // normalize filtered map errors
     bool normalize_error;
     // uniform weighting
@@ -106,6 +106,9 @@ public:
     template<class MB>
     void run_filter(MB &, const int);
 
+    // simple convolution with template
+    void run_convolve();
+
     // filter a map
     template<class MB>
     void filter_maps(MB &, const int);
@@ -123,6 +126,9 @@ void WienerFilter::get_config(config_t &config, std::vector<std::vector<std::str
     // for array names
     engine_utils::toltecIO toltec_io;
 
+    // get filter type
+    get_config_value(config, filter_type, missing_keys, invalid_keys,
+                     std::tuple{"post_processing","map_filtering","type"},{"wiener_filter","convolve"});
     // get template type
     get_config_value(config, template_type, missing_keys, invalid_keys,
                      std::tuple{"wiener_filter","template_type"},{"kernel","gaussian","airy","highpass"});
@@ -580,7 +586,7 @@ void WienerFilter::calc_denominator() {
 
         // loop through cols and rows
         for (Eigen::Index k=0; k<n_cols; ++k) {
-            for (Eigen::Index l=0; l<n_rows; l++) {
+            for (Eigen::Index l=0; l<n_rows; ++l) {
                 if (!done) {
                     // inputs and outputs
                     Eigen::MatrixXcd in(n_rows,n_cols), out(n_rows,n_cols);
@@ -740,14 +746,72 @@ void WienerFilter::run_filter(MB &mb, const int map_index) {
     logger->debug("numerator {}", nume);
 }
 
+void WienerFilter::run_convolve() {
+    // set up fftw
+    fftw_complex *a;
+    fftw_complex *b;
+    fftw_plan pf, pr;
+
+    // allocate space for 2d ffts
+    a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
+    b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
+
+    // fftw plans
+    pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
+    pr = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
+
+    // inputs and outputs to ffts
+    Eigen::MatrixXcd in(n_rows,n_cols), out(n_rows,n_cols);
+
+    filter_template /= filter_template.sum();
+
+    in.real() = filter_template;
+    in.imag().setZero();
+
+    // fft(f(x))
+    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
+    out = out*n_rows*n_cols;
+
+    Eigen::MatrixXcd fft_filter = out;
+
+    in.real() = filtered_map;
+    in.imag().setZero();
+
+    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
+    out = out*n_rows*n_cols;
+
+    // convolution
+    in.real() = out.real().array() * fft_filter.real().array() - out.imag().array() * fft_filter.imag().array();
+    in.imag() = out.imag().array() * fft_filter.real().array() + out.real().array() * fft_filter.imag().array();
+
+    out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
+    out = out/n_rows/n_cols;
+
+    nume = out.real();
+    denom.setOnes(n_rows,n_cols);
+
+    // free fftw vectors
+    fftw_free(a);
+    fftw_free(b);
+
+    // destroy fftw plans
+    fftw_destroy_plan(pf);
+    fftw_destroy_plan(pr);
+}
+
 template<class MB>
 void WienerFilter::filter_maps(MB &mb, const int map_index) {
     // filter kernel
     logger->info("filtering kernel");
     filtered_map = mb.kernel[map_index];
-    uniform_weight = true;
     // run all filter steps
-    run_filter(mb, map_index);
+    if (filter_type=="wiener_filter") {
+        uniform_weight = true;
+        run_filter(mb, map_index);
+    }
+    else if (filter_type=="convolve") {
+        run_convolve();
+    }
 
     // divide by filtered weight
     for (Eigen::Index i=0; i<n_rows; ++i) {
@@ -766,9 +830,13 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
     logger->info("filtering signal");
     // filter signal
     filtered_map = mb.signal[map_index];
-    uniform_weight = false;
-    // run all filter steps
-    run_filter(mb, map_index);
+    if (filter_type=="wiener_filter") {
+        uniform_weight = false;
+        run_filter(mb, map_index);
+    }
+    else if (filter_type=="convolve") {
+        run_convolve();
+    }
 
     // divide by filtered weight
     for (Eigen::Index i=0; i<n_rows; ++i) {
@@ -781,8 +849,15 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
             }
         }
     }
-    // weight map is the denominator
-    mb.weight[map_index] = denom;
+    if (filter_type=="wiener_filter") {
+        // weight map is the denominator
+        mb.weight[map_index] = denom;
+    }
+    else if (filter_type=="convolve") {
+        filtered_map = mb.weight[map_index];
+        run_convolve();
+        mb.weight[map_index] = nume;
+    }
 
     logger->info("signal/weight map filtering done");
 }
@@ -794,7 +869,12 @@ void WienerFilter::filter_noise(MB &mb, const int map_index, const int noise_num
                                                mb.n_rows, mb.n_cols);
 
     // don't need to run through the whole filter, just the numerator
-    calc_numerator();
+    if (filter_type=="wiener_filter") {
+        calc_numerator();
+    }
+    else if (filter_type=="convolve") {
+        run_convolve();
+    }
 
     Eigen::MatrixXd ratio(n_rows,n_cols);
 
@@ -805,7 +885,7 @@ void WienerFilter::filter_noise(MB &mb, const int map_index, const int noise_num
                 ratio(i,j) = nume(i,j)/denom(i,j);
             }
             else {
-                ratio(i,j)= 0.0;
+                ratio(i,j) = 0.0;
             }
         }
     }

@@ -92,6 +92,49 @@ void GaussianFilter::make_gaussian_template(MB &mb, const double template_fwhm_r
 }
 
 template<class MB>
-void GaussianFilter::filter(MB &mb, const int map_index) {
+void WienerFilter::run_gaussian_filter(MB &mb, const int map_index) {
+    // set up fftw
+    fftw_complex *a;
+    fftw_complex *b;
+    fftw_plan pf, pr;
 
+    // allocate space for 2d ffts
+    a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
+    b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
+
+    // fftw plans
+    pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
+    pr = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
+
+    // inputs and outputs to ffts
+    Eigen::MatrixXcd in(n_rows,n_cols), out(n_rows,n_cols);
+
+    in.real() = filter_template;
+    in.imag().setZero();
+
+    // fft(f(x))
+    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
+
+    Eigen::MatrixXcd fft_filter = out;
+
+    in.real() = filtered_map;
+    in.imag().setZero();
+
+    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
+
+    // fft(f(x)) x fft(Q) (convolution)
+    in.real() = out.real().array() * fft_filter.real().array() + out.imag().array() * fft_filter.imag().array();
+    in.imag() = -out.imag().array() * fft_filter.real().array() + out.real().array() * fft_filter.imag().array();
+
+    out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
+
+    nume = out.real();
+
+    // free fftw vectors
+    fftw_free(a);
+    fftw_free(b);
+
+    // destroy fftw plans
+    fftw_destroy_plan(pf);
+    fftw_destroy_plan(pr);
 }

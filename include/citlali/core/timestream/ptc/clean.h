@@ -276,7 +276,7 @@ auto Cleaner::remove_eig_values(const Eigen::DenseBase<DerivedA> &scans, const E
         limit_index = group_n_eig;
     }
 
-    SPDLOG_DEBUG("removing {} largest eigenvalue(s)", limit_index);
+    logger->debug("removing {} largest eigenvalue(s)", limit_index);
 
     // subtract out the desired eigenvectors
     Eigen::MatrixXd proj = scans.derived() * evecs.derived().leftCols(limit_index);

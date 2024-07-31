@@ -93,15 +93,14 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                                         bool run_omb, bool run_noise) {
 
     typedef Eigen::Triplet<double> T;
+    std::vector<std::vector<T>> signals, weights, kernels, coverages;
+    std::vector<std::vector<T>> cmb_signals, cmb_weights, cmb_kernels, cmb_coverages;
 
     const bool use_cmb = !cmb.noise.empty();
     const bool use_omb = !omb.noise.empty();
     const bool run_kernel = !omb.kernel.empty();
     const bool run_coverage = !omb.coverage.empty();
     const bool run_hwpr = in.hwpr_angle.data.size()!=0;
-
-    std::vector<std::vector<T>> signals, weights, kernels, coverages;
-    std::vector<std::vector<T>> cmb_signals, cmb_weights, cmb_kernels, cmb_coverages;
 
     if (run_omb) {
         signals.resize(omb.signal.size());
@@ -166,7 +165,7 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
         }
     }
 
-    if (!cmb.pointing.empty()) {
+    if (!cmb.pointing.empty() && run_omb) {
         for (Eigen::Index i=0; i<cmb.pointing.size(); ++i) {
             cmb_copy.pointing.emplace_back(Eigen::MatrixXd::Zero(cmb.pointing[i].rows(), cmb.pointing[i].cols()));
         }
@@ -291,7 +290,7 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                         }
                     }
 
-                    if (run_polarization && !cmb.signal.empty()) {
+                    if (run_polarization && !cmb.signal.empty() && run_omb) {
                         Eigen::Index cmb_ir = cmb_irow(j);
                         Eigen::Index cmb_ic = cmb_icol(j);
 
@@ -418,15 +417,9 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
             for (int i=0; i<nmb->noise.size(); ++i) {
                 nmb->noise[i] += nmb_copy->noise[i];
             }
-
-            //if (!cmb.pointing.empty()) {// && use_cmb) {
-              //  for (int i=0; i<cmb.pointing.size(); ++i) {
-                //    cmb.pointing[i] += cmb_copy.pointing[i];
-                //}
-            //}
         }
 
-        if (!cmb.pointing.empty()) {// && use_cmb) {
+        if (!cmb.pointing.empty() && run_omb) {
             for (int i=0; i<cmb.pointing.size(); ++i) {
                 cmb.pointing[i] += cmb_copy.pointing[i];
             }

@@ -98,7 +98,7 @@ void MapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std::ve
     }
 
     // setup wcs altaz frame
-    else if (pixel_axes == "lb") {
+    else if (pixel_axes == "galactic") {
         wcs.ctype.push_back("GLON-TAN");
         wcs.ctype.push_back("GLAT-TAN");
 

@@ -162,7 +162,7 @@ post_processing:
       fit_rotation_angle: false # fit the elliptical Gaussian rotation angle (note fwhms will not align with axes if enabled).
   map_filtering: # map filtering (if coadd enabled, filters coadded map, if disabled, filters obs maps)
     enabled: false # enable or disable map filtering
-    type: wiener_filter # type of map filter (currently ignored, default is wiener filter)
+    type: wiener_filter # type of map filter (wiener filter or convolve)
     normalize_errors: false # correct weight map errors based on noise map rms
   map_histogram_n_bins: 20 # number of histogram bins (>0)
   source_finding: # parameters to control source finding
