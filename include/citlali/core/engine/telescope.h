@@ -266,6 +266,8 @@ public:
         {"Header.Lissajous.ExecMode", "Header.Lissajous.ExecMode"},
         {"Header.ScanFile.Valid", "Header.ScanFile.Valid"},
         {"Header.M1.ZernikeC","Header.M1.ZernikeC"},
+        {"Header.M1.ActPos","Header.M1.ActPos"},
+        {"Header.M1.CmdPos","Header.M1.CmdPos"},
         {"Header.Sim.Jobkey","Header.Sim.Jobkey"}
     };
 

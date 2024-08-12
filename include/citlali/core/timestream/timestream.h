@@ -428,23 +428,23 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                         extension.readKey("CUNIT1", tod_mb.wcs.cunit[0]);
                         extension.readKey("CUNIT2", tod_mb.wcs.cunit[1]);
 
-                        // get I maps, including all fg maps
+                        // get maps, including all fg maps
                         for (int i=0; i<num_extensions; ++i) {
                             CCfits::ExtHDU& ext = fits_io.pfits->extension(i+1);
                             std::string extName;
                             ext.readKey("EXTNAME", extName);
-                            // get signal I map
-                            if (extName.find("signal") != std::string::npos && extName.find("_I") != std::string::npos) {
+                            // get signal map
+                            if (extName.find("signal") != std::string::npos) {
                                 tod_mb.signal.push_back(fits_io.get_hdu(extName));
                                 logger->info("found {} [{}]", filename, extName);
                             }
-                            // get weight I map
-                            else if (extName.find("weight") != std::string::npos && extName.find("_I") != std::string::npos) {
+                            // get weight map
+                            else if (extName.find("weight") != std::string::npos) {
                                 tod_mb.weight.push_back(fits_io.get_hdu(extName));
                                 logger->info("found {} [{}]", filename, extName);
                             }
-                            // get kernel I map
-                            else if (extName.find("kernel") != std::string::npos && extName.find("_I") != std::string::npos) {
+                            // get kernel map
+                            else if (extName.find("kernel") != std::string::npos) {
                                 tod_mb.kernel.push_back(fits_io.get_hdu(extName));
                                 logger->info("found {} [{}]", filename, extName);
                             }
@@ -622,7 +622,8 @@ void TCProc::precompute_pointing(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t 
 
 template <TCProc::SourceType source_type, class mb_t, TCDataKind tcdata_t, class calib_t, typename Derived>
 void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib,
-                        Eigen::DenseBase<Derived> &map_indices, std::string pixel_axes, std::string map_grouping) {
+                        Eigen::DenseBase<Derived> &map_indices, std::string pixel_axes,
+                        std::string map_grouping) {
 
     // dimensions of data
     Eigen::Index n_dets = in.scans.data.cols();

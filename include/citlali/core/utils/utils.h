@@ -726,8 +726,6 @@ auto calc_2D_psd(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &y
     // destroy fftw plan
     fftw_destroy_plan(pf);
 
-    //in = in/n_rows/n_cols;
-
     // get power
     Eigen::MatrixXd out = diffq_rows*diffq_cols*(in.real().array().pow(2) + in.imag().array().pow(2));
 

@@ -136,6 +136,11 @@ void Pointing::setup() {
     ppt_meta["Header.M2.ZReq"] = telescope.tel_header["Header.M2.ZReq"](0);
     // add first m1 zernike coefficient
     ppt_meta["Header.M1.ZernikeC"] = telescope.tel_header["Header.M1.ZernikeC"](0);
+
+    for (int i=0; i< telescope.tel_header["Header.M1.ActPos"].size(); ++i) {
+        ppt_meta["Header.M1.ActPos"].push_back(telescope.tel_header["Header.M1.ActPos"](i));
+        ppt_meta["Header.M1.CmdPos"].push_back(telescope.tel_header["Header.M1.CmdPos"](i));
+    }
 }
 
 template <class KidsProc, class RawObs>

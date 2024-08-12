@@ -109,6 +109,9 @@ public:
     // simple convolution with template
     void run_convolve();
 
+    // test destriper
+    void destripe(double);
+
     // filter a map
     template<class MB>
     void filter_maps(MB &, const int);
@@ -128,7 +131,7 @@ void WienerFilter::get_config(config_t &config, std::vector<std::vector<std::str
 
     // get filter type
     get_config_value(config, filter_type, missing_keys, invalid_keys,
-                     std::tuple{"post_processing","map_filtering","type"},{"wiener_filter","convolve"});
+                     std::tuple{"post_processing","map_filtering","type"},{"wiener_filter","convolve","destripe"});
     // get template type
     get_config_value(config, template_type, missing_keys, invalid_keys,
                      std::tuple{"wiener_filter","template_type"},{"kernel","gaussian","airy","highpass"});
@@ -799,8 +802,78 @@ void WienerFilter::run_convolve() {
     fftw_destroy_plan(pr);
 }
 
+void WienerFilter::destripe(double threshold_factor) {
+
+    // allocate FFTW plans and buffers
+    fftw_complex *in, *out;
+    fftw_plan p_forward, p_backward;
+
+    in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * n_rows * n_cols);
+    out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * n_rows * n_cols);
+
+    // create plans
+    p_forward = fftw_plan_dft_2d(n_rows, n_cols, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+    p_backward = fftw_plan_dft_2d(n_rows, n_cols, out, in, FFTW_BACKWARD, FFTW_ESTIMATE);
+
+    // copy the image to the in buffer and set imaginary parts to zero
+    for (int i = 0; i < n_rows; ++i) {
+        for (int j = 0; j < n_cols; ++j) {
+            in[i * n_cols + j][0] = filtered_map(i, j);
+            in[i * n_cols + j][1] = 0.0;
+        }
+    }
+
+    // perform the forward FFT
+    fftw_execute(p_forward);
+
+    // compute the magnitude and find the maximum
+    double max_magnitude = 0.0;
+    for (int i = 0; i < n_rows * n_cols; ++i) {
+        double magnitude = std::sqrt(out[i][0] * out[i][0] + out[i][1] * out[i][1]);
+        if (magnitude > max_magnitude) {
+            max_magnitude = magnitude;
+        }
+    }
+
+    // threshold and zero out coefficients below threshold
+    double threshold = threshold_factor * max_magnitude;
+    int n_pixels = 0;
+    for (int i = 0; i < n_rows * n_cols; ++i) {
+        double magnitude = std::sqrt(out[i][0] * out[i][0] + out[i][1] * out[i][1]);
+        if (magnitude < threshold) {
+            out[i][0] = 0.0;
+            out[i][1] = 0.0;
+            n_pixels++;
+        }
+    }
+
+    logger->info("number of pixels below threshold {}", n_pixels);
+
+    // perform the inverse FFT
+    fftw_execute(p_backward);
+
+    // copy the normalized real part back to the Eigen matrix
+    for (int i = 0; i < n_rows; ++i) {
+        for (int j = 0; j < n_cols; ++j) {
+            filtered_map(i, j) = in[i * n_cols + j][0] / (n_rows * n_cols);
+        }
+    }
+
+    // cleanup
+    fftw_destroy_plan(p_forward);
+    fftw_destroy_plan(p_backward);
+    fftw_free(in);
+    fftw_free(out);
+}
+
 template<class MB>
 void WienerFilter::filter_maps(MB &mb, const int map_index) {
+    /*if (filter_type=="destripe") {
+        filtered_map = mb.signal[map_index];
+        destripe(0.5);
+        mb.signal[map_index] = filtered_map;
+    }*/
+
     // filter kernel
     logger->info("filtering kernel");
     filtered_map = mb.kernel[map_index];
