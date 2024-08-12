@@ -496,23 +496,23 @@ $(function() {
 <div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;                        extension.readKey(<span class="stringliteral">&quot;CUNIT1&quot;</span>, <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#ae1116553a62a1dd362ba8cbe9fd2e39a">tod_mb</a>.<a class="code" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#a15aaa9ea7a18818e50d7d279e0546d43">wcs</a>.<a class="code" href="../../d1/dda/structmapmaking_1_1WCS.html#a29f1e72579a52653f70a61ecfca31e57">cunit</a>[0]);</div>
 <div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;                        extension.readKey(<span class="stringliteral">&quot;CUNIT2&quot;</span>, <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#ae1116553a62a1dd362ba8cbe9fd2e39a">tod_mb</a>.<a class="code" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#a15aaa9ea7a18818e50d7d279e0546d43">wcs</a>.<a class="code" href="../../d1/dda/structmapmaking_1_1WCS.html#a29f1e72579a52653f70a61ecfca31e57">cunit</a>[1]);</div>
 <div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160; </div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;                        <span class="comment">// get I maps, including all fg maps</span></div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;                        <span class="comment">// get maps, including all fg maps</span></div>
 <div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;                        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i=0; i&lt;num_extensions; ++i) {</div>
 <div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;                            CCfits::ExtHDU&amp; ext = fits_io.<a class="code" href="../../df/d8d/classfitsIO.html#aa26c9d63c399b2604b19463a74349b2b">pfits</a>-&gt;extension(i+1);</div>
 <div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;                            std::string extName;</div>
 <div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;                            ext.readKey(<span class="stringliteral">&quot;EXTNAME&quot;</span>, extName);</div>
-<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;                            <span class="comment">// get signal I map</span></div>
-<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;                            <span class="keywordflow">if</span> (extName.find(<span class="stringliteral">&quot;signal&quot;</span>) != std::string::npos &amp;&amp; extName.find(<span class="stringliteral">&quot;_I&quot;</span>) != std::string::npos) {</div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;                            <span class="comment">// get signal map</span></div>
+<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;                            <span class="keywordflow">if</span> (extName.find(<span class="stringliteral">&quot;signal&quot;</span>) != std::string::npos) {</div>
 <div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;                                <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#ae1116553a62a1dd362ba8cbe9fd2e39a">tod_mb</a>.<a class="code" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#a91f225bdd8f1bee57e2671f7cf981b0d">signal</a>.push_back(fits_io.<a class="code" href="../../df/d8d/classfitsIO.html#a681b60e0e266b924966ab2d740558054">get_hdu</a>(extName));</div>
 <div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;                                <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a1a97f70901676ef77f38d9e94f918be6">logger</a>-&gt;info(<span class="stringliteral">&quot;found {} [{}]&quot;</span>, filename, extName);</div>
 <div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;                            }</div>
-<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;                            <span class="comment">// get weight I map</span></div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;                            <span class="keywordflow">else</span> <span class="keywordflow">if</span> (extName.find(<span class="stringliteral">&quot;weight&quot;</span>) != std::string::npos &amp;&amp; extName.find(<span class="stringliteral">&quot;_I&quot;</span>) != std::string::npos) {</div>
+<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;                            <span class="comment">// get weight map</span></div>
+<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;                            <span class="keywordflow">else</span> <span class="keywordflow">if</span> (extName.find(<span class="stringliteral">&quot;weight&quot;</span>) != std::string::npos) {</div>
 <div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;                                <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#ae1116553a62a1dd362ba8cbe9fd2e39a">tod_mb</a>.<a class="code" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#ab13d1ba8cf61a871ade163479fea9c68">weight</a>.push_back(fits_io.<a class="code" href="../../df/d8d/classfitsIO.html#a681b60e0e266b924966ab2d740558054">get_hdu</a>(extName));</div>
 <div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;                                <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a1a97f70901676ef77f38d9e94f918be6">logger</a>-&gt;info(<span class="stringliteral">&quot;found {} [{}]&quot;</span>, filename, extName);</div>
 <div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;                            }</div>
-<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;                            <span class="comment">// get kernel I map</span></div>
-<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;                            <span class="keywordflow">else</span> <span class="keywordflow">if</span> (extName.find(<span class="stringliteral">&quot;kernel&quot;</span>) != std::string::npos &amp;&amp; extName.find(<span class="stringliteral">&quot;_I&quot;</span>) != std::string::npos) {</div>
+<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;                            <span class="comment">// get kernel map</span></div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;                            <span class="keywordflow">else</span> <span class="keywordflow">if</span> (extName.find(<span class="stringliteral">&quot;kernel&quot;</span>) != std::string::npos) {</div>
 <div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;                                <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#ae1116553a62a1dd362ba8cbe9fd2e39a">tod_mb</a>.<a class="code" href="../../df/d1c/classmapmaking_1_1MapBuffer.html#abf51bcef78eee9360a82b16778d4a37a">kernel</a>.push_back(fits_io.<a class="code" href="../../df/d8d/classfitsIO.html#a681b60e0e266b924966ab2d740558054">get_hdu</a>(extName));</div>
 <div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;                                <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a1a97f70901676ef77f38d9e94f918be6">logger</a>-&gt;info(<span class="stringliteral">&quot;found {} [{}]&quot;</span>, filename, extName);</div>
 <div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;                            }</div>
@@ -690,504 +690,505 @@ $(function() {
 <div class="line"><a name="l00622"></a><span class="lineno">  622</span>&#160; </div>
 <div class="line"><a name="l00623"></a><span class="lineno">  623</span>&#160;<span class="keyword">template</span> &lt;TCProc::SourceType source_type, <span class="keyword">class</span> mb_t, TCDataKind tcdata_t, <span class="keyword">class</span> calib_t, <span class="keyword">typename</span> Derived&gt;</div>
 <div class="line"><a name="l00624"></a><span class="lineno"><a class="line" href="../../de/d76/classtimestream_1_1TCProc.html#a4e5de409684a1bfb2a89419027e55aa7">  624</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a4e5de409684a1bfb2a89419027e55aa7">TCProc::map_to_tod</a>(mb_t &amp;mb, <a class="code" href="../../dd/d75/structtimestream_1_1TCData.html">TCData&lt;tcdata_t, Eigen::MatrixXd&gt;</a> &amp;in, calib_t &amp;calib,</div>
-<div class="line"><a name="l00625"></a><span class="lineno">  625</span>&#160;                        Eigen::DenseBase&lt;Derived&gt; &amp;map_indices, std::string pixel_axes, std::string map_grouping) {</div>
-<div class="line"><a name="l00626"></a><span class="lineno">  626</span>&#160; </div>
-<div class="line"><a name="l00627"></a><span class="lineno">  627</span>&#160;    <span class="comment">// dimensions of data</span></div>
-<div class="line"><a name="l00628"></a><span class="lineno">  628</span>&#160;    Eigen::Index n_dets = in.scans.data.cols();</div>
-<div class="line"><a name="l00629"></a><span class="lineno">  629</span>&#160;    Eigen::Index n_pts = in.scans.data.rows();</div>
-<div class="line"><a name="l00630"></a><span class="lineno">  630</span>&#160; </div>
-<div class="line"><a name="l00631"></a><span class="lineno">  631</span>&#160;    <span class="comment">// add or subtract timestream</span></div>
-<div class="line"><a name="l00632"></a><span class="lineno">  632</span>&#160;    <span class="keywordtype">int</span> factor = 1;</div>
-<div class="line"><a name="l00633"></a><span class="lineno">  633</span>&#160;    <span class="keywordflow">if</span> constexpr (source_type==<a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#ac502f770ba4426077b5aa859b9df7ebaa766668e90fea608322dedddd90a7771a">NegativeMap</a>) {</div>
-<div class="line"><a name="l00634"></a><span class="lineno">  634</span>&#160;        factor = -1;</div>
-<div class="line"><a name="l00635"></a><span class="lineno">  635</span>&#160;    }</div>
-<div class="line"><a name="l00636"></a><span class="lineno">  636</span>&#160; </div>
-<div class="line"><a name="l00637"></a><span class="lineno">  637</span>&#160;    <span class="comment">// run kernel through fruit loops</span></div>
-<div class="line"><a name="l00638"></a><span class="lineno">  638</span>&#160;    <span class="keywordtype">bool</span> run_kernel = in.kernel.data.size() !=0;</div>
-<div class="line"><a name="l00639"></a><span class="lineno">  639</span>&#160;    <span class="comment">// if mean rms is filled use S/N limit</span></div>
-<div class="line"><a name="l00640"></a><span class="lineno">  640</span>&#160;    <span class="keywordtype">bool</span> run_noise = mb.median_rms.size() != 0;</div>
-<div class="line"><a name="l00641"></a><span class="lineno">  641</span>&#160; </div>
-<div class="line"><a name="l00642"></a><span class="lineno">  642</span>&#160;    <span class="comment">// loop through detectors</span></div>
-<div class="line"><a name="l00643"></a><span class="lineno">  643</span>&#160;    <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;n_dets; ++i) {</div>
-<div class="line"><a name="l00644"></a><span class="lineno">  644</span>&#160;        <span class="comment">// current detector index in apt</span></div>
-<div class="line"><a name="l00645"></a><span class="lineno">  645</span>&#160;        <span class="keyword">auto</span> map_index = map_indices(i);</div>
-<div class="line"><a name="l00646"></a><span class="lineno">  646</span>&#160;        <span class="keywordtype">int</span> array_index = calib.apt[<span class="stringliteral">&quot;array&quot;</span>](i);</div>
-<div class="line"><a name="l00647"></a><span class="lineno">  647</span>&#160; </div>
-<div class="line"><a name="l00648"></a><span class="lineno">  648</span>&#160;        <span class="comment">// check if detector is not flagged</span></div>
-<div class="line"><a name="l00649"></a><span class="lineno">  649</span>&#160;        <span class="keywordflow">if</span> (calib.apt[<span class="stringliteral">&quot;flag&quot;</span>](i) == 0 &amp;&amp; (in.flags.data.col(i).array() == 0).any()) {</div>
-<div class="line"><a name="l00650"></a><span class="lineno">  650</span>&#160;            <span class="keywordtype">double</span> az_off = calib.apt[<span class="stringliteral">&quot;x_t&quot;</span>](i);</div>
-<div class="line"><a name="l00651"></a><span class="lineno">  651</span>&#160;            <span class="keywordtype">double</span> el_off = calib.apt[<span class="stringliteral">&quot;y_t&quot;</span>](i);</div>
-<div class="line"><a name="l00652"></a><span class="lineno">  652</span>&#160; </div>
-<div class="line"><a name="l00653"></a><span class="lineno">  653</span>&#160;            <span class="comment">// calc tangent plane pointing</span></div>
-<div class="line"><a name="l00654"></a><span class="lineno">  654</span>&#160;            <span class="keyword">auto</span> [lat, lon] = <a class="code" href="../../dd/d06/namespaceengine__utils.html#a0d6c922376faca4b84cc135d29354af8">engine_utils::calc_det_pointing</a>(in.tel_data.data, az_off, el_off, pixel_axes,</div>
-<div class="line"><a name="l00655"></a><span class="lineno">  655</span>&#160;                                                              in.pointing_offsets_arcsec.data, map_grouping);</div>
-<div class="line"><a name="l00656"></a><span class="lineno">  656</span>&#160; </div>
-<div class="line"><a name="l00657"></a><span class="lineno">  657</span>&#160;            <span class="comment">// get map buffer row and col indices for lat and lon vectors</span></div>
-<div class="line"><a name="l00658"></a><span class="lineno">  658</span>&#160;            Eigen::VectorXd irows = lat.array()/mb.pixel_size_rad + (mb.n_rows)/2.;</div>
-<div class="line"><a name="l00659"></a><span class="lineno">  659</span>&#160;            Eigen::VectorXd icols = lon.array()/mb.pixel_size_rad + (mb.n_cols)/2.;</div>
-<div class="line"><a name="l00660"></a><span class="lineno">  660</span>&#160; </div>
-<div class="line"><a name="l00661"></a><span class="lineno">  661</span>&#160;            <span class="comment">// loop through data points</span></div>
-<div class="line"><a name="l00662"></a><span class="lineno">  662</span>&#160;            <span class="keywordflow">for</span> (Eigen::Index j=0; j&lt;n_pts; ++j) {</div>
-<div class="line"><a name="l00663"></a><span class="lineno">  663</span>&#160;                <span class="comment">// row and col pixel from signal image</span></div>
-<div class="line"><a name="l00664"></a><span class="lineno">  664</span>&#160;                Eigen::Index ir = irows(j);</div>
-<div class="line"><a name="l00665"></a><span class="lineno">  665</span>&#160;                Eigen::Index ic = icols(j);</div>
-<div class="line"><a name="l00666"></a><span class="lineno">  666</span>&#160; </div>
-<div class="line"><a name="l00667"></a><span class="lineno">  667</span>&#160;                <span class="comment">// check if current sample is on the image and add to the timestream</span></div>
-<div class="line"><a name="l00668"></a><span class="lineno">  668</span>&#160;                <span class="keywordflow">if</span> ((ir &gt;= 0) &amp;&amp; (ir &lt; mb.n_rows) &amp;&amp; (ic &gt;= 0) &amp;&amp; (ic &lt; mb.n_cols)) {</div>
-<div class="line"><a name="l00669"></a><span class="lineno">  669</span>&#160;                    <span class="keywordtype">double</span> signal = mb.signal[map_index](ir,ic);</div>
-<div class="line"><a name="l00670"></a><span class="lineno">  670</span>&#160;                    <span class="comment">// check whether we should include pixel</span></div>
-<div class="line"><a name="l00671"></a><span class="lineno">  671</span>&#160;                    <span class="keywordtype">bool</span> run_pix_s2n = run_noise &amp;&amp; (signal / mb.median_rms(map_index) &gt;= <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a1df6a0c19bd3c23a03fc9e08d6942dc0">fruit_loops_sig2noise</a>);</div>
-<div class="line"><a name="l00672"></a><span class="lineno">  672</span>&#160;                    <span class="keywordtype">bool</span> run_pix_flux = signal &gt;= <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#ae5c02c1e76daa5742d4ca24c3fe4b704">fruit_loops_flux</a>(array_index);</div>
-<div class="line"><a name="l00673"></a><span class="lineno">  673</span>&#160; </div>
-<div class="line"><a name="l00674"></a><span class="lineno">  674</span>&#160;                    <span class="comment">// if signal flux is higher than S/N limit or flux limit</span></div>
-<div class="line"><a name="l00675"></a><span class="lineno">  675</span>&#160;                    <span class="keywordflow">if</span> (run_pix_s2n || run_pix_flux) {</div>
-<div class="line"><a name="l00676"></a><span class="lineno">  676</span>&#160;                        <span class="comment">// add/subtract signal pixel from signal timestream</span></div>
-<div class="line"><a name="l00677"></a><span class="lineno">  677</span>&#160;                        in.scans.data(j,i) += factor * signal;</div>
-<div class="line"><a name="l00678"></a><span class="lineno">  678</span>&#160;                        <span class="comment">// add/subtract kernel pixel from kernel timestream</span></div>
-<div class="line"><a name="l00679"></a><span class="lineno">  679</span>&#160;                        <span class="keywordflow">if</span> (run_kernel) {</div>
-<div class="line"><a name="l00680"></a><span class="lineno">  680</span>&#160;                            in.kernel.data(j,i) += factor * mb.kernel[map_index](ir,ic);</div>
-<div class="line"><a name="l00681"></a><span class="lineno">  681</span>&#160;                        }</div>
-<div class="line"><a name="l00682"></a><span class="lineno">  682</span>&#160;                    }</div>
-<div class="line"><a name="l00683"></a><span class="lineno">  683</span>&#160;                }</div>
-<div class="line"><a name="l00684"></a><span class="lineno">  684</span>&#160;            }</div>
-<div class="line"><a name="l00685"></a><span class="lineno">  685</span>&#160;        }</div>
-<div class="line"><a name="l00686"></a><span class="lineno">  686</span>&#160;    }</div>
-<div class="line"><a name="l00687"></a><span class="lineno">  687</span>&#160;}</div>
-<div class="line"><a name="l00688"></a><span class="lineno">  688</span>&#160; </div>
-<div class="line"><a name="l00689"></a><span class="lineno">  689</span>&#160;<span class="keyword">template</span> &lt;TCDataKind tcdata_t, <span class="keyword">class</span> calib_t&gt;</div>
-<div class="line"><a name="l00690"></a><span class="lineno"><a class="line" href="../../de/d76/classtimestream_1_1TCProc.html#ab9aee88fa87eab13e14b9c95fbbaee13">  690</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#ab9aee88fa87eab13e14b9c95fbbaee13">TCProc::remove_bad_dets</a>(<a class="code" href="../../dd/d75/structtimestream_1_1TCData.html">TCData&lt;tcdata_t, Eigen::MatrixXd&gt;</a> &amp;in, calib_t &amp;calib, std::string map_grouping) {</div>
-<div class="line"><a name="l00691"></a><span class="lineno">  691</span>&#160; </div>
-<div class="line"><a name="l00692"></a><span class="lineno">  692</span>&#160;    <span class="comment">// make a copy of the calib class for flagging</span></div>
-<div class="line"><a name="l00693"></a><span class="lineno">  693</span>&#160;    calib_t calib_scan = calib;</div>
-<div class="line"><a name="l00694"></a><span class="lineno">  694</span>&#160; </div>
-<div class="line"><a name="l00695"></a><span class="lineno">  695</span>&#160;    <span class="comment">// only run if limits are not zero</span></div>
-<div class="line"><a name="l00696"></a><span class="lineno">  696</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a4a39a6fedec09eedc9a3dacb2f901a57">lower_weight_factor</a> !=0 || <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a0ad1153d234d586426bfaf2de84727a4">upper_weight_factor</a> !=0) {</div>
-<div class="line"><a name="l00697"></a><span class="lineno">  697</span>&#160;        <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a1a97f70901676ef77f38d9e94f918be6">logger</a>-&gt;info(<span class="stringliteral">&quot;removing outlier dets&quot;</span>);</div>
-<div class="line"><a name="l00698"></a><span class="lineno">  698</span>&#160;        <span class="comment">// number of detectors</span></div>
-<div class="line"><a name="l00699"></a><span class="lineno">  699</span>&#160;        Eigen::Index n_dets = in.scans.data.cols();</div>
-<div class="line"><a name="l00700"></a><span class="lineno">  700</span>&#160; </div>
-<div class="line"><a name="l00701"></a><span class="lineno">  701</span>&#160;        <span class="comment">// get grouping</span></div>
-<div class="line"><a name="l00702"></a><span class="lineno">  702</span>&#160;        <span class="keyword">auto</span> grp_limits = <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a0aad485249f27f9e2bfee82e111eb9d5">get_grouping</a>(<span class="stringliteral">&quot;array&quot;</span>, calib, n_dets);</div>
-<div class="line"><a name="l00703"></a><span class="lineno">  703</span>&#160; </div>
-<div class="line"><a name="l00704"></a><span class="lineno">  704</span>&#160;        in.n_dets_low = 0;</div>
-<div class="line"><a name="l00705"></a><span class="lineno">  705</span>&#160;        in.n_dets_high = 0;</div>
-<div class="line"><a name="l00706"></a><span class="lineno">  706</span>&#160; </div>
-<div class="line"><a name="l00707"></a><span class="lineno">  707</span>&#160;        <span class="comment">// loop through group limits</span></div>
-<div class="line"><a name="l00708"></a><span class="lineno">  708</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; [key, val] : grp_limits) {</div>
-<div class="line"><a name="l00709"></a><span class="lineno">  709</span>&#160;            <span class="comment">// control for iteration</span></div>
-<div class="line"><a name="l00710"></a><span class="lineno">  710</span>&#160;            <span class="keywordtype">bool</span> keep_going = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00711"></a><span class="lineno">  711</span>&#160;            Eigen::Index n_iter = 0;</div>
-<div class="line"><a name="l00712"></a><span class="lineno">  712</span>&#160; </div>
-<div class="line"><a name="l00713"></a><span class="lineno">  713</span>&#160;            <span class="keywordflow">while</span> (keep_going) {</div>
-<div class="line"><a name="l00714"></a><span class="lineno">  714</span>&#160;                <span class="comment">// number of unflagged detectors</span></div>
-<div class="line"><a name="l00715"></a><span class="lineno">  715</span>&#160;                Eigen::Index n_good_dets = 0;</div>
-<div class="line"><a name="l00716"></a><span class="lineno">  716</span>&#160; </div>
-<div class="line"><a name="l00717"></a><span class="lineno">  717</span>&#160;                <span class="comment">// get good dets in group</span></div>
-<div class="line"><a name="l00718"></a><span class="lineno">  718</span>&#160;                <span class="keywordflow">for</span> (Eigen::Index j=std::get&lt;0&gt;(grp_limits[key]); j&lt;std::get&lt;1&gt;(grp_limits[key]); ++j) {</div>
-<div class="line"><a name="l00719"></a><span class="lineno">  719</span>&#160;                    <span class="keywordflow">if</span> (calib.apt[<span class="stringliteral">&quot;flag&quot;</span>](j)==0 &amp;&amp; (in.flags.data.col(j).array()==0).any()) {</div>
-<div class="line"><a name="l00720"></a><span class="lineno">  720</span>&#160;                        n_good_dets++;</div>
-<div class="line"><a name="l00721"></a><span class="lineno">  721</span>&#160;                    }</div>
-<div class="line"><a name="l00722"></a><span class="lineno">  722</span>&#160;                }</div>
-<div class="line"><a name="l00723"></a><span class="lineno">  723</span>&#160; </div>
-<div class="line"><a name="l00724"></a><span class="lineno">  724</span>&#160;                Eigen::VectorXd det_std_dev(n_good_dets);</div>
-<div class="line"><a name="l00725"></a><span class="lineno">  725</span>&#160;                Eigen::VectorXI dets(n_good_dets);</div>
-<div class="line"><a name="l00726"></a><span class="lineno">  726</span>&#160;                Eigen::Index k = 0;</div>
-<div class="line"><a name="l00727"></a><span class="lineno">  727</span>&#160; </div>
-<div class="line"><a name="l00728"></a><span class="lineno">  728</span>&#160;                <span class="comment">// collect standard deviation from good detectors</span></div>
-<div class="line"><a name="l00729"></a><span class="lineno">  729</span>&#160;                <span class="keywordflow">for</span> (Eigen::Index j=std::get&lt;0&gt;(grp_limits[key]); j&lt;std::get&lt;1&gt;(grp_limits[key]); ++j) {</div>
-<div class="line"><a name="l00730"></a><span class="lineno">  730</span>&#160;                    Eigen::Index det_index = j;</div>
-<div class="line"><a name="l00731"></a><span class="lineno">  731</span>&#160;                    <span class="keywordflow">if</span> (calib.apt[<span class="stringliteral">&quot;flag&quot;</span>](det_index)==0 &amp;&amp; (in.flags.data.col(j).array()==0).any()) {</div>
-<div class="line"><a name="l00732"></a><span class="lineno">  732</span>&#160;                        <span class="comment">// make Eigen::Maps for each detector&#39;s scan</span></div>
-<div class="line"><a name="l00733"></a><span class="lineno">  733</span>&#160;                        Eigen::Map&lt;Eigen::Matrix&lt;double, Eigen::Dynamic, 1&gt;&gt; scans(</div>
-<div class="line"><a name="l00734"></a><span class="lineno">  734</span>&#160;                            in.scans.data.col(j).data(), in.scans.data.rows());</div>
-<div class="line"><a name="l00735"></a><span class="lineno">  735</span>&#160;                        Eigen::Map&lt;Eigen::Matrix&lt;bool, Eigen::Dynamic, 1&gt;&gt; flags(</div>
-<div class="line"><a name="l00736"></a><span class="lineno">  736</span>&#160;                            in.flags.data.col(j).data(), in.flags.data.rows());</div>
-<div class="line"><a name="l00737"></a><span class="lineno">  737</span>&#160; </div>
-<div class="line"><a name="l00738"></a><span class="lineno">  738</span>&#160;                        <span class="comment">// calc standard deviation</span></div>
-<div class="line"><a name="l00739"></a><span class="lineno">  739</span>&#160;                        det_std_dev(k) = <a class="code" href="../../dd/d06/namespaceengine__utils.html#ad9c640b3ad780cec01b1644b15f1ac58">engine_utils::calc_std_dev</a>(scans, flags);</div>
-<div class="line"><a name="l00740"></a><span class="lineno">  740</span>&#160; </div>
-<div class="line"><a name="l00741"></a><span class="lineno">  741</span>&#160;                        <span class="comment">// convert to 1/variance so it is a weight</span></div>
-<div class="line"><a name="l00742"></a><span class="lineno">  742</span>&#160;                        <span class="keywordflow">if</span> (det_std_dev(k) !=0) {</div>
-<div class="line"><a name="l00743"></a><span class="lineno">  743</span>&#160;                            det_std_dev(k) = std::pow(det_std_dev(k),-2);</div>
-<div class="line"><a name="l00744"></a><span class="lineno">  744</span>&#160;                        }</div>
-<div class="line"><a name="l00745"></a><span class="lineno">  745</span>&#160;                        <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00746"></a><span class="lineno">  746</span>&#160;                            det_std_dev(k) = 0;</div>
-<div class="line"><a name="l00747"></a><span class="lineno">  747</span>&#160;                        }</div>
-<div class="line"><a name="l00748"></a><span class="lineno">  748</span>&#160; </div>
-<div class="line"><a name="l00749"></a><span class="lineno">  749</span>&#160;                        dets(k) = j;</div>
-<div class="line"><a name="l00750"></a><span class="lineno">  750</span>&#160;                        k++;</div>
-<div class="line"><a name="l00751"></a><span class="lineno">  751</span>&#160;                    }</div>
-<div class="line"><a name="l00752"></a><span class="lineno">  752</span>&#160;                }</div>
-<div class="line"><a name="l00753"></a><span class="lineno">  753</span>&#160; </div>
-<div class="line"><a name="l00754"></a><span class="lineno">  754</span>&#160;                <span class="comment">// get median standard deviation</span></div>
-<div class="line"><a name="l00755"></a><span class="lineno">  755</span>&#160;                <span class="keywordtype">double</span> mean_std_dev = tula::alg::median(det_std_dev);</div>
-<div class="line"><a name="l00756"></a><span class="lineno">  756</span>&#160; </div>
-<div class="line"><a name="l00757"></a><span class="lineno">  757</span>&#160;                <span class="keywordtype">int</span> n_dets_low = 0;</div>
-<div class="line"><a name="l00758"></a><span class="lineno">  758</span>&#160;                <span class="keywordtype">int</span> n_dets_high = 0;</div>
-<div class="line"><a name="l00759"></a><span class="lineno">  759</span>&#160; </div>
-<div class="line"><a name="l00760"></a><span class="lineno">  760</span>&#160;                <span class="comment">// loop through good detectors and flag those that have std devs beyond the limits</span></div>
-<div class="line"><a name="l00761"></a><span class="lineno">  761</span>&#160;                <span class="keywordflow">for</span> (Eigen::Index j=0; j&lt;n_good_dets; ++j) {</div>
-<div class="line"><a name="l00762"></a><span class="lineno">  762</span>&#160;                    Eigen::Index det_index = dets(j);</div>
-<div class="line"><a name="l00763"></a><span class="lineno">  763</span>&#160;                    <span class="comment">// only run if unflagged already</span></div>
-<div class="line"><a name="l00764"></a><span class="lineno">  764</span>&#160;                    <span class="keywordflow">if</span> (calib.apt[<span class="stringliteral">&quot;flag&quot;</span>](det_index)==0) {</div>
-<div class="line"><a name="l00765"></a><span class="lineno">  765</span>&#160;                        <span class="comment">// flag those below limit</span></div>
-<div class="line"><a name="l00766"></a><span class="lineno">  766</span>&#160;                        <span class="keywordflow">if</span> ((det_std_dev(j) &lt; (<a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a4a39a6fedec09eedc9a3dacb2f901a57">lower_weight_factor</a>*mean_std_dev)) &amp;&amp; <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a4a39a6fedec09eedc9a3dacb2f901a57">lower_weight_factor</a>!=0) {</div>
-<div class="line"><a name="l00767"></a><span class="lineno">  767</span>&#160;                            <span class="keywordflow">if</span> (map_grouping!=<span class="stringliteral">&quot;detector&quot;</span>) {</div>
-<div class="line"><a name="l00768"></a><span class="lineno">  768</span>&#160;                                in.flags.data.col(dets(j)).setOnes();</div>
-<div class="line"><a name="l00769"></a><span class="lineno">  769</span>&#160;                            }</div>
-<div class="line"><a name="l00770"></a><span class="lineno">  770</span>&#160;                            <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00771"></a><span class="lineno">  771</span>&#160;                                calib_scan.apt[<span class="stringliteral">&quot;flag&quot;</span>](det_index) = 1;</div>
-<div class="line"><a name="l00772"></a><span class="lineno">  772</span>&#160;                            }</div>
-<div class="line"><a name="l00773"></a><span class="lineno">  773</span>&#160;                            in.n_dets_low++;</div>
-<div class="line"><a name="l00774"></a><span class="lineno">  774</span>&#160;                            n_dets_low++;</div>
-<div class="line"><a name="l00775"></a><span class="lineno">  775</span>&#160;                        }</div>
-<div class="line"><a name="l00776"></a><span class="lineno">  776</span>&#160; </div>
-<div class="line"><a name="l00777"></a><span class="lineno">  777</span>&#160;                        <span class="comment">// flag those above limit</span></div>
-<div class="line"><a name="l00778"></a><span class="lineno">  778</span>&#160;                        <span class="keywordflow">if</span> ((det_std_dev(j) &gt; (<a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a0ad1153d234d586426bfaf2de84727a4">upper_weight_factor</a>*mean_std_dev)) &amp;&amp; <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a0ad1153d234d586426bfaf2de84727a4">upper_weight_factor</a>!=0) {</div>
-<div class="line"><a name="l00779"></a><span class="lineno">  779</span>&#160;                            <span class="keywordflow">if</span> (map_grouping!=<span class="stringliteral">&quot;detector&quot;</span>) {</div>
-<div class="line"><a name="l00780"></a><span class="lineno">  780</span>&#160;                                in.flags.data.col(dets(j)).setOnes();</div>
-<div class="line"><a name="l00781"></a><span class="lineno">  781</span>&#160;                            }</div>
-<div class="line"><a name="l00782"></a><span class="lineno">  782</span>&#160;                            <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00783"></a><span class="lineno">  783</span>&#160;                                calib_scan.apt[<span class="stringliteral">&quot;flag&quot;</span>](det_index) = 1;</div>
-<div class="line"><a name="l00784"></a><span class="lineno">  784</span>&#160;                            }</div>
-<div class="line"><a name="l00785"></a><span class="lineno">  785</span>&#160;                            in.n_dets_high++;</div>
-<div class="line"><a name="l00786"></a><span class="lineno">  786</span>&#160;                            n_dets_high++;</div>
-<div class="line"><a name="l00787"></a><span class="lineno">  787</span>&#160;                        }</div>
-<div class="line"><a name="l00788"></a><span class="lineno">  788</span>&#160;                    }</div>
-<div class="line"><a name="l00789"></a><span class="lineno">  789</span>&#160;                }</div>
-<div class="line"><a name="l00790"></a><span class="lineno">  790</span>&#160; </div>
-<div class="line"><a name="l00791"></a><span class="lineno">  791</span>&#160;                <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a1a97f70901676ef77f38d9e94f918be6">logger</a>-&gt;info(<span class="stringliteral">&quot;array {} iter {}: {}/{} dets below limit. {}/{} dets above limit.&quot;</span>, key, n_iter,</div>
-<div class="line"><a name="l00792"></a><span class="lineno">  792</span>&#160;                            n_dets_low, n_good_dets, n_dets_high, n_good_dets);</div>
-<div class="line"><a name="l00793"></a><span class="lineno">  793</span>&#160; </div>
-<div class="line"><a name="l00794"></a><span class="lineno">  794</span>&#160;                <span class="comment">// increment iteration</span></div>
-<div class="line"><a name="l00795"></a><span class="lineno">  795</span>&#160;                n_iter++;</div>
-<div class="line"><a name="l00796"></a><span class="lineno">  796</span>&#160;                <span class="comment">// check if no more detectors are above limit</span></div>
-<div class="line"><a name="l00797"></a><span class="lineno">  797</span>&#160;                <span class="keywordflow">if</span> ((n_dets_low==0 &amp;&amp; n_dets_high==0) || n_iter &gt; <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a714967fba886255d6347e1920f970a90">iter_lim</a>) {</div>
-<div class="line"><a name="l00798"></a><span class="lineno">  798</span>&#160;                    keep_going = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00799"></a><span class="lineno">  799</span>&#160;                }</div>
-<div class="line"><a name="l00800"></a><span class="lineno">  800</span>&#160;            }</div>
-<div class="line"><a name="l00801"></a><span class="lineno">  801</span>&#160;        }</div>
-<div class="line"><a name="l00802"></a><span class="lineno">  802</span>&#160;        <span class="comment">// set up scan calib</span></div>
-<div class="line"><a name="l00803"></a><span class="lineno">  803</span>&#160;        calib_scan.setup();</div>
-<div class="line"><a name="l00804"></a><span class="lineno">  804</span>&#160;    }</div>
-<div class="line"><a name="l00805"></a><span class="lineno">  805</span>&#160; </div>
-<div class="line"><a name="l00806"></a><span class="lineno">  806</span>&#160;    <span class="keywordflow">return</span> std::move(calib_scan);</div>
-<div class="line"><a name="l00807"></a><span class="lineno">  807</span>&#160;}</div>
-<div class="line"><a name="l00808"></a><span class="lineno">  808</span>&#160; </div>
-<div class="line"><a name="l00809"></a><span class="lineno">  809</span>&#160;<span class="keyword">template</span> &lt;TCDataKind tcdata_t, <span class="keyword">class</span> calib_t, <span class="keyword">typename</span> Derived&gt;</div>
-<div class="line"><a name="l00810"></a><span class="lineno"><a class="line" href="../../de/d76/classtimestream_1_1TCProc.html#a9d8562e7ccb7d73e21a1a6f4146afef5">  810</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a9d8562e7ccb7d73e21a1a6f4146afef5">TCProc::remove_uncorrelated</a>(<a class="code" href="../../dd/d75/structtimestream_1_1TCData.html">TCData&lt;tcdata_t, Eigen::MatrixXd&gt;</a> &amp;in, calib_t &amp;calib, std::string map_grouping) {</div>
-<div class="line"><a name="l00811"></a><span class="lineno">  811</span>&#160;    <span class="comment">//Eigen::Index n_dets = in.scans.data.cols();</span></div>
-<div class="line"><a name="l00812"></a><span class="lineno">  812</span>&#160;    <span class="comment">//Eigen::Index n_pts = in.scans.data.rows();</span></div>
-<div class="line"><a name="l00813"></a><span class="lineno">  813</span>&#160; </div>
-<div class="line"><a name="l00814"></a><span class="lineno">  814</span>&#160;    <span class="comment">// make copy of flags</span></div>
-<div class="line"><a name="l00815"></a><span class="lineno">  815</span>&#160;    <span class="comment">//Eigen::MatrixXd f = abs(flags.derived().template cast&lt;double&gt; ().array() - 1);</span></div>
-<div class="line"><a name="l00816"></a><span class="lineno">  816</span>&#160; </div>
-<div class="line"><a name="l00817"></a><span class="lineno">  817</span>&#160;    <span class="comment">// container for covariance matrix</span></div>
-<div class="line"><a name="l00818"></a><span class="lineno">  818</span>&#160;    <span class="comment">//Eigen::MatrixXd pca_cov(n_dets, n_dets);</span></div>
-<div class="line"><a name="l00819"></a><span class="lineno">  819</span>&#160; </div>
-<div class="line"><a name="l00820"></a><span class="lineno">  820</span>&#160;    <span class="comment">// calculate the covariance matrix</span></div>
-<div class="line"><a name="l00821"></a><span class="lineno">  821</span>&#160;    <span class="comment">//pca_cov.noalias() = ((scans.adjoint() * scans).array()).matrix();// / denom.array()).matrix();</span></div>
-<div class="line"><a name="l00822"></a><span class="lineno">  822</span>&#160;}</div>
-<div class="line"><a name="l00823"></a><span class="lineno">  823</span>&#160; </div>
-<div class="line"><a name="l00824"></a><span class="lineno">  824</span>&#160;<span class="keyword">template</span> &lt;TCProc::SourceType source_type, TCDataKind tcdata_t, <span class="keyword">typename</span> Derived, <span class="keyword">typename</span> apt_t&gt;</div>
-<div class="line"><a name="l00825"></a><span class="lineno"><a class="line" href="../../de/d76/classtimestream_1_1TCProc.html#af76c4d4ef82813ff324d368b4be6828d">  825</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#af76c4d4ef82813ff324d368b4be6828d">TCProc::add_gaussian</a>(<a class="code" href="../../dd/d75/structtimestream_1_1TCData.html">TCData&lt;tcdata_t, Eigen::MatrixXd&gt;</a> &amp;in, Eigen::DenseBase&lt;Derived&gt; &amp;params, std::string &amp;pixel_axes,</div>
-<div class="line"><a name="l00826"></a><span class="lineno">  826</span>&#160;                          std::string &amp;map_grouping, apt_t &amp;apt, <span class="keywordtype">double</span> pixel_size_rad, Eigen::Index n_rows, Eigen::Index n_cols) {</div>
-<div class="line"><a name="l00827"></a><span class="lineno">  827</span>&#160; </div>
-<div class="line"><a name="l00828"></a><span class="lineno">  828</span>&#160;    Eigen::Index n_dets = in.scans.data.cols();</div>
-<div class="line"><a name="l00829"></a><span class="lineno">  829</span>&#160;    Eigen::Index n_pts = in.scans.data.rows();</div>
-<div class="line"><a name="l00830"></a><span class="lineno">  830</span>&#160; </div>
-<div class="line"><a name="l00831"></a><span class="lineno">  831</span>&#160;    <span class="comment">// loop through detectors</span></div>
-<div class="line"><a name="l00832"></a><span class="lineno">  832</span>&#160;    <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;n_dets; ++i) {</div>
-<div class="line"><a name="l00833"></a><span class="lineno">  833</span>&#160;        <span class="comment">// detector index in apt</span></div>
-<div class="line"><a name="l00834"></a><span class="lineno">  834</span>&#160;        <span class="keyword">auto</span> det_index = i;</div>
-<div class="line"><a name="l00835"></a><span class="lineno">  835</span>&#160;        <span class="comment">// map index</span></div>
-<div class="line"><a name="l00836"></a><span class="lineno">  836</span>&#160;        <span class="keyword">auto</span> map_index = in.map_indices.data(i);</div>
-<div class="line"><a name="l00837"></a><span class="lineno">  837</span>&#160; </div>
-<div class="line"><a name="l00838"></a><span class="lineno">  838</span>&#160;        <span class="keywordtype">double</span> az_off = apt[<span class="stringliteral">&quot;x_t&quot;</span>](det_index);</div>
-<div class="line"><a name="l00839"></a><span class="lineno">  839</span>&#160;        <span class="keywordtype">double</span> el_off = apt[<span class="stringliteral">&quot;y_t&quot;</span>](det_index);</div>
-<div class="line"><a name="l00840"></a><span class="lineno">  840</span>&#160; </div>
-<div class="line"><a name="l00841"></a><span class="lineno">  841</span>&#160;        <span class="comment">// get pointing</span></div>
-<div class="line"><a name="l00842"></a><span class="lineno">  842</span>&#160;        <span class="keyword">auto</span> [lat, lon] = <a class="code" href="../../dd/d06/namespaceengine__utils.html#a0d6c922376faca4b84cc135d29354af8">engine_utils::calc_det_pointing</a>(in.tel_data.data, az_off, el_off, pixel_axes,</div>
-<div class="line"><a name="l00843"></a><span class="lineno">  843</span>&#160;                                                          in.pointing_offsets_arcsec.data, map_grouping);</div>
-<div class="line"><a name="l00844"></a><span class="lineno">  844</span>&#160; </div>
-<div class="line"><a name="l00845"></a><span class="lineno">  845</span>&#160;        <span class="comment">// get parameters from current map</span></div>
-<div class="line"><a name="l00846"></a><span class="lineno">  846</span>&#160;        <span class="keywordtype">double</span> amp = params(map_index,0);</div>
-<div class="line"><a name="l00847"></a><span class="lineno">  847</span>&#160;        <span class="comment">// rows</span></div>
-<div class="line"><a name="l00848"></a><span class="lineno">  848</span>&#160;        <span class="keywordtype">double</span> off_lat = params(map_index,2);</div>
-<div class="line"><a name="l00849"></a><span class="lineno">  849</span>&#160;        <span class="comment">// cols</span></div>
-<div class="line"><a name="l00850"></a><span class="lineno">  850</span>&#160;        <span class="keywordtype">double</span> off_lon = params(map_index,1);</div>
-<div class="line"><a name="l00851"></a><span class="lineno">  851</span>&#160;        <span class="comment">// row fwhm</span></div>
-<div class="line"><a name="l00852"></a><span class="lineno">  852</span>&#160;        <span class="keywordtype">double</span> sigma_lat = params(map_index,4);</div>
-<div class="line"><a name="l00853"></a><span class="lineno">  853</span>&#160;        <span class="comment">// col fwhm</span></div>
-<div class="line"><a name="l00854"></a><span class="lineno">  854</span>&#160;        <span class="keywordtype">double</span> sigma_lon = params(map_index,3);</div>
-<div class="line"><a name="l00855"></a><span class="lineno">  855</span>&#160;        <span class="comment">// rot angle</span></div>
-<div class="line"><a name="l00856"></a><span class="lineno">  856</span>&#160;        <span class="keywordtype">double</span> rot_ang = params(map_index,5);</div>
-<div class="line"><a name="l00857"></a><span class="lineno">  857</span>&#160; </div>
-<div class="line"><a name="l00858"></a><span class="lineno">  858</span>&#160;        <span class="comment">// use maximum of sigmas due to atmospheric cleaning</span></div>
-<div class="line"><a name="l00859"></a><span class="lineno">  859</span>&#160;        <span class="keywordtype">double</span> sigma = std::max(sigma_lat, sigma_lon);</div>
-<div class="line"><a name="l00860"></a><span class="lineno">  860</span>&#160; </div>
-<div class="line"><a name="l00861"></a><span class="lineno">  861</span>&#160;        <span class="comment">// subtract source</span></div>
-<div class="line"><a name="l00862"></a><span class="lineno">  862</span>&#160;        <span class="keywordflow">if</span> constexpr (source_type==<a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#ac502f770ba4426077b5aa859b9df7ebaa60e8bd60f6785fc23b128b93ba20576c">NegativeGaussian</a>) {</div>
-<div class="line"><a name="l00863"></a><span class="lineno">  863</span>&#160;            amp = -amp;</div>
-<div class="line"><a name="l00864"></a><span class="lineno">  864</span>&#160;        }</div>
-<div class="line"><a name="l00865"></a><span class="lineno">  865</span>&#160; </div>
-<div class="line"><a name="l00866"></a><span class="lineno">  866</span>&#160;        <span class="comment">// rescale offsets and stddev to on-sky units</span></div>
-<div class="line"><a name="l00867"></a><span class="lineno">  867</span>&#160;        off_lat = pixel_size_rad*(off_lat - (n_rows)/2);</div>
-<div class="line"><a name="l00868"></a><span class="lineno">  868</span>&#160;        off_lon = pixel_size_rad*(off_lon - (n_cols)/2);</div>
-<div class="line"><a name="l00869"></a><span class="lineno">  869</span>&#160; </div>
-<div class="line"><a name="l00870"></a><span class="lineno">  870</span>&#160;        <span class="comment">// convert to on-sky units</span></div>
-<div class="line"><a name="l00871"></a><span class="lineno">  871</span>&#160;        sigma_lon = pixel_size_rad*sigma;</div>
-<div class="line"><a name="l00872"></a><span class="lineno">  872</span>&#160;        sigma_lat = pixel_size_rad*sigma;</div>
-<div class="line"><a name="l00873"></a><span class="lineno">  873</span>&#160;        sigma = pixel_size_rad*sigma;</div>
-<div class="line"><a name="l00874"></a><span class="lineno">  874</span>&#160; </div>
-<div class="line"><a name="l00875"></a><span class="lineno">  875</span>&#160;        <span class="comment">// get 2d elliptical gaussian angles</span></div>
-<div class="line"><a name="l00876"></a><span class="lineno">  876</span>&#160;        <span class="keyword">auto</span> cost2 = cos(rot_ang) * cos(rot_ang);</div>
-<div class="line"><a name="l00877"></a><span class="lineno">  877</span>&#160;        <span class="keyword">auto</span> sint2 = sin(rot_ang) * sin(rot_ang);</div>
-<div class="line"><a name="l00878"></a><span class="lineno">  878</span>&#160;        <span class="keyword">auto</span> sin2t = sin(2. * rot_ang);</div>
-<div class="line"><a name="l00879"></a><span class="lineno">  879</span>&#160;        <span class="keyword">auto</span> xstd2 = sigma * sigma;</div>
-<div class="line"><a name="l00880"></a><span class="lineno">  880</span>&#160;        <span class="keyword">auto</span> ystd2 = sigma * sigma;</div>
-<div class="line"><a name="l00881"></a><span class="lineno">  881</span>&#160;        <span class="keyword">auto</span> a = - 0.5 * ((cost2 / xstd2) + (sint2 / ystd2));</div>
-<div class="line"><a name="l00882"></a><span class="lineno">  882</span>&#160;        <span class="keyword">auto</span> b = - 0.5 * ((sin2t / xstd2) - (sin2t / ystd2));</div>
-<div class="line"><a name="l00883"></a><span class="lineno">  883</span>&#160;        <span class="keyword">auto</span> c = - 0.5 * ((sint2 / xstd2) + (cost2 / ystd2));</div>
-<div class="line"><a name="l00884"></a><span class="lineno">  884</span>&#160; </div>
-<div class="line"><a name="l00885"></a><span class="lineno">  885</span>&#160;        <span class="comment">// calculate distance to source to truncate it</span></div>
-<div class="line"><a name="l00886"></a><span class="lineno">  886</span>&#160;        <span class="comment">//auto dist = ((lat.array() - off_lat).pow(2) + (lon.array() - off_lon).pow(2)).sqrt();</span></div>
-<div class="line"><a name="l00887"></a><span class="lineno">  887</span>&#160; </div>
-<div class="line"><a name="l00888"></a><span class="lineno">  888</span>&#160;        Eigen::VectorXd gauss(n_pts);</div>
-<div class="line"><a name="l00889"></a><span class="lineno">  889</span>&#160;        <span class="comment">// make timestream from 2d gaussian</span></div>
-<div class="line"><a name="l00890"></a><span class="lineno">  890</span>&#160;        <span class="keywordflow">for</span> (Eigen::Index j=0; j&lt;n_pts; ++j) {</div>
-<div class="line"><a name="l00891"></a><span class="lineno">  891</span>&#160;            gauss(j) = amp*exp(pow(lon(j) - off_lon, 2) * a +</div>
-<div class="line"><a name="l00892"></a><span class="lineno">  892</span>&#160;                                 (lon(j) - off_lon) * (lat(j) - off_lat) * b +</div>
-<div class="line"><a name="l00893"></a><span class="lineno">  893</span>&#160;                                 pow(lat(j) - off_lat, 2) * c);</div>
-<div class="line"><a name="l00894"></a><span class="lineno">  894</span>&#160;        }</div>
-<div class="line"><a name="l00895"></a><span class="lineno">  895</span>&#160; </div>
-<div class="line"><a name="l00896"></a><span class="lineno">  896</span>&#160;        <span class="comment">// check for bad fit?</span></div>
-<div class="line"><a name="l00897"></a><span class="lineno">  897</span>&#160;        <span class="keywordflow">if</span> (!gauss.array().isNaN().any()) {</div>
-<div class="line"><a name="l00898"></a><span class="lineno">  898</span>&#160;            <span class="comment">// add gaussian to detector scan</span></div>
-<div class="line"><a name="l00899"></a><span class="lineno">  899</span>&#160;            in.scans.data.col(i) = in.scans.data.col(i).array() + gauss.array();</div>
-<div class="line"><a name="l00900"></a><span class="lineno">  900</span>&#160;        }</div>
-<div class="line"><a name="l00901"></a><span class="lineno">  901</span>&#160;    }</div>
-<div class="line"><a name="l00902"></a><span class="lineno">  902</span>&#160;}</div>
-<div class="line"><a name="l00903"></a><span class="lineno">  903</span>&#160; </div>
-<div class="line"><a name="l00904"></a><span class="lineno">  904</span>&#160;<span class="keyword">template</span> &lt;TCDataKind tcdata_t, <span class="keyword">class</span> calib_t&gt;</div>
-<div class="line"><a name="l00905"></a><span class="lineno"><a class="line" href="../../de/d76/classtimestream_1_1TCProc.html#a0253c6cbf62ed4593790938217dc2691">  905</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a0253c6cbf62ed4593790938217dc2691">TCProc::mask_region</a>(<a class="code" href="../../dd/d75/structtimestream_1_1TCData.html">TCData&lt;tcdata_t, Eigen::MatrixXd&gt;</a> &amp;in, calib_t &amp;calib, std::string pixel_axes, std::string map_grouping,</div>
-<div class="line"><a name="l00906"></a><span class="lineno">  906</span>&#160;                         <span class="keywordtype">int</span> n_pts, <span class="keywordtype">int</span> n_dets, <span class="keywordtype">int</span> start_index) {</div>
-<div class="line"><a name="l00907"></a><span class="lineno">  907</span>&#160; </div>
-<div class="line"><a name="l00908"></a><span class="lineno">  908</span>&#160;    <span class="comment">// copy of tel data</span></div>
-<div class="line"><a name="l00909"></a><span class="lineno">  909</span>&#160;    std::map&lt;std::string, Eigen::VectorXd&gt; tel_data_copy;</div>
-<div class="line"><a name="l00910"></a><span class="lineno">  910</span>&#160; </div>
-<div class="line"><a name="l00911"></a><span class="lineno">  911</span>&#160;    <span class="comment">// populate copy of tel data</span></div>
-<div class="line"><a name="l00912"></a><span class="lineno">  912</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;[key,val]: in.tel_data.data) {</div>
-<div class="line"><a name="l00913"></a><span class="lineno">  913</span>&#160;        tel_data_copy[key] = in.tel_data.data[key].segment(0,n_pts);</div>
-<div class="line"><a name="l00914"></a><span class="lineno">  914</span>&#160;    }</div>
-<div class="line"><a name="l00915"></a><span class="lineno">  915</span>&#160; </div>
-<div class="line"><a name="l00916"></a><span class="lineno">  916</span>&#160;    <span class="comment">// copy of pointing offsets</span></div>
-<div class="line"><a name="l00917"></a><span class="lineno">  917</span>&#160;    std::map&lt;std::string, Eigen::VectorXd&gt; pointing_offset_copy;</div>
-<div class="line"><a name="l00918"></a><span class="lineno">  918</span>&#160; </div>
-<div class="line"><a name="l00919"></a><span class="lineno">  919</span>&#160;    <span class="comment">// populate copy of pointing offsets</span></div>
-<div class="line"><a name="l00920"></a><span class="lineno">  920</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;[key,val]: in.pointing_offsets_arcsec.data) {</div>
-<div class="line"><a name="l00921"></a><span class="lineno">  921</span>&#160;        pointing_offset_copy[key] = in.pointing_offsets_arcsec.data[key].segment(0,n_pts);</div>
-<div class="line"><a name="l00922"></a><span class="lineno">  922</span>&#160;    }</div>
-<div class="line"><a name="l00923"></a><span class="lineno">  923</span>&#160; </div>
-<div class="line"><a name="l00924"></a><span class="lineno">  924</span>&#160;    <span class="comment">// make a copy of the timestream flags</span></div>
-<div class="line"><a name="l00925"></a><span class="lineno">  925</span>&#160;    Eigen::Matrix&lt;bool, Eigen::Dynamic, Eigen::Dynamic&gt; masked_flags = in.flags.data.block(0, start_index, n_pts, n_dets);</div>
-<div class="line"><a name="l00926"></a><span class="lineno">  926</span>&#160; </div>
-<div class="line"><a name="l00927"></a><span class="lineno">  927</span>&#160;    <span class="comment">// loop through detectors</span></div>
-<div class="line"><a name="l00928"></a><span class="lineno">  928</span>&#160;    <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;n_dets; ++i) {</div>
-<div class="line"><a name="l00929"></a><span class="lineno">  929</span>&#160;        <span class="comment">// current detector index in apt</span></div>
-<div class="line"><a name="l00930"></a><span class="lineno">  930</span>&#160;        <span class="keyword">auto</span> det_index = i + start_index;</div>
-<div class="line"><a name="l00931"></a><span class="lineno">  931</span>&#160; </div>
-<div class="line"><a name="l00932"></a><span class="lineno">  932</span>&#160;        <span class="keywordtype">double</span> az_off = calib.apt[<span class="stringliteral">&quot;x_t&quot;</span>](det_index);</div>
-<div class="line"><a name="l00933"></a><span class="lineno">  933</span>&#160;        <span class="keywordtype">double</span> el_off = calib.apt[<span class="stringliteral">&quot;y_t&quot;</span>](det_index);</div>
-<div class="line"><a name="l00934"></a><span class="lineno">  934</span>&#160; </div>
-<div class="line"><a name="l00935"></a><span class="lineno">  935</span>&#160;        <span class="comment">// calc tangent plane pointing</span></div>
-<div class="line"><a name="l00936"></a><span class="lineno">  936</span>&#160;        <span class="keyword">auto</span> [lat, lon] = <a class="code" href="../../dd/d06/namespaceengine__utils.html#a0d6c922376faca4b84cc135d29354af8">engine_utils::calc_det_pointing</a>(tel_data_copy, az_off, el_off, pixel_axes,</div>
-<div class="line"><a name="l00937"></a><span class="lineno">  937</span>&#160;                                                          pointing_offset_copy, map_grouping);</div>
-<div class="line"><a name="l00938"></a><span class="lineno">  938</span>&#160; </div>
-<div class="line"><a name="l00939"></a><span class="lineno">  939</span>&#160;        <span class="comment">// distance to center of map</span></div>
-<div class="line"><a name="l00940"></a><span class="lineno">  940</span>&#160;        <span class="keyword">auto</span> dist = (lat.array().pow(2) + lon.array().pow(2)).sqrt();</div>
-<div class="line"><a name="l00941"></a><span class="lineno">  941</span>&#160; </div>
-<div class="line"><a name="l00942"></a><span class="lineno">  942</span>&#160;        <span class="comment">// loop through samples</span></div>
-<div class="line"><a name="l00943"></a><span class="lineno">  943</span>&#160;        <span class="keywordflow">for</span> (Eigen::Index j=0; j&lt;n_pts; ++j) {</div>
-<div class="line"><a name="l00944"></a><span class="lineno">  944</span>&#160;            <span class="comment">// flag samples within radius as bad</span></div>
-<div class="line"><a name="l00945"></a><span class="lineno">  945</span>&#160;            <span class="keywordflow">if</span> (dist(j) &lt; <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a2475a278749730cd867d84c898814d82">mask_radius_arcsec</a>*<a class="code" href="../../d2/d6f/constants_8h.html#a81269dd83ed58e0412ffbf63b57b94df">ASEC_TO_RAD</a>) {</div>
-<div class="line"><a name="l00946"></a><span class="lineno">  946</span>&#160;                masked_flags(j,i) = 1;</div>
-<div class="line"><a name="l00947"></a><span class="lineno">  947</span>&#160;            }</div>
-<div class="line"><a name="l00948"></a><span class="lineno">  948</span>&#160;        }</div>
-<div class="line"><a name="l00949"></a><span class="lineno">  949</span>&#160;    }</div>
-<div class="line"><a name="l00950"></a><span class="lineno">  950</span>&#160; </div>
-<div class="line"><a name="l00951"></a><span class="lineno">  951</span>&#160;    <span class="keywordflow">return</span> std::move(masked_flags);</div>
-<div class="line"><a name="l00952"></a><span class="lineno">  952</span>&#160;}</div>
-<div class="line"><a name="l00953"></a><span class="lineno">  953</span>&#160; </div>
-<div class="line"><a name="l00954"></a><span class="lineno">  954</span>&#160;<span class="keyword">template</span> &lt;TCDataKind tcdata_t, <span class="keyword">class</span> calib_t, <span class="keyword">typename</span> po<span class="keywordtype">int</span>ing_offset_t&gt;</div>
-<div class="line"><a name="l00955"></a><span class="lineno"><a class="line" href="../../de/d76/classtimestream_1_1TCProc.html#a37adceb5e1d72571472ff2d469c2b443">  955</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a37adceb5e1d72571472ff2d469c2b443">TCProc::append_base_to_netcdf</a>(netCDF::NcFile &amp;fo, <a class="code" href="../../dd/d75/structtimestream_1_1TCData.html">TCData&lt;tcdata_t, Eigen::MatrixXd&gt;</a> &amp;in, std::string map_grouping,</div>
-<div class="line"><a name="l00956"></a><span class="lineno">  956</span>&#160;                                   std::string &amp;pixel_axes, pointing_offset_t &amp;pointing_offsets_arcsec, calib_t &amp;calib) {</div>
-<div class="line"><a name="l00957"></a><span class="lineno">  957</span>&#160;    <span class="keyword">using</span> netCDF::NcDim;</div>
-<div class="line"><a name="l00958"></a><span class="lineno">  958</span>&#160;    <span class="keyword">using</span> netCDF::NcFile;</div>
-<div class="line"><a name="l00959"></a><span class="lineno">  959</span>&#160;    <span class="keyword">using</span> netCDF::NcType;</div>
-<div class="line"><a name="l00960"></a><span class="lineno">  960</span>&#160;    <span class="keyword">using</span> netCDF::NcVar;</div>
-<div class="line"><a name="l00961"></a><span class="lineno">  961</span>&#160;    <span class="keyword">using namespace </span>netCDF::exceptions;</div>
-<div class="line"><a name="l00962"></a><span class="lineno">  962</span>&#160; </div>
-<div class="line"><a name="l00963"></a><span class="lineno">  963</span>&#160;    Eigen::Index n_pts = in.scans.data.rows();</div>
-<div class="line"><a name="l00964"></a><span class="lineno">  964</span>&#160;    Eigen::Index n_dets = in.scans.data.cols();</div>
-<div class="line"><a name="l00965"></a><span class="lineno">  965</span>&#160; </div>
-<div class="line"><a name="l00966"></a><span class="lineno">  966</span>&#160;    <span class="comment">// tangent plane pointing for each detector</span></div>
-<div class="line"><a name="l00967"></a><span class="lineno">  967</span>&#160;    Eigen::MatrixXd lat(n_pts,n_dets), lon(n_pts,n_dets);</div>
-<div class="line"><a name="l00968"></a><span class="lineno">  968</span>&#160; </div>
-<div class="line"><a name="l00969"></a><span class="lineno">  969</span>&#160;    <span class="comment">// loop through detectors and get tangent plane pointing</span></div>
-<div class="line"><a name="l00970"></a><span class="lineno">  970</span>&#160;    <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;n_dets; ++i) {</div>
-<div class="line"><a name="l00971"></a><span class="lineno">  971</span>&#160;        <span class="comment">// detector index in apt</span></div>
-<div class="line"><a name="l00972"></a><span class="lineno">  972</span>&#160;        <span class="keyword">auto</span> det_index = i;</div>
-<div class="line"><a name="l00973"></a><span class="lineno">  973</span>&#160;        <span class="keywordtype">double</span> az_off = calib.apt[<span class="stringliteral">&quot;x_t&quot;</span>](det_index);</div>
-<div class="line"><a name="l00974"></a><span class="lineno">  974</span>&#160;        <span class="keywordtype">double</span> el_off = calib.apt[<span class="stringliteral">&quot;y_t&quot;</span>](det_index);</div>
-<div class="line"><a name="l00975"></a><span class="lineno">  975</span>&#160; </div>
-<div class="line"><a name="l00976"></a><span class="lineno">  976</span>&#160;        <span class="comment">// get tangent pointing</span></div>
-<div class="line"><a name="l00977"></a><span class="lineno">  977</span>&#160;        <span class="keyword">auto</span> [det_lat, det_lon] = <a class="code" href="../../dd/d06/namespaceengine__utils.html#a0d6c922376faca4b84cc135d29354af8">engine_utils::calc_det_pointing</a>(in.tel_data.data, az_off, el_off, pixel_axes,</div>
-<div class="line"><a name="l00978"></a><span class="lineno">  978</span>&#160;                                                                  pointing_offsets_arcsec, map_grouping);</div>
-<div class="line"><a name="l00979"></a><span class="lineno">  979</span>&#160;        lat.col(i) = std::move(det_lat);</div>
-<div class="line"><a name="l00980"></a><span class="lineno">  980</span>&#160;        lon.col(i) = std::move(det_lon);</div>
-<div class="line"><a name="l00981"></a><span class="lineno">  981</span>&#160;    }</div>
-<div class="line"><a name="l00982"></a><span class="lineno">  982</span>&#160; </div>
-<div class="line"><a name="l00983"></a><span class="lineno">  983</span>&#160;    <span class="comment">// get variables</span></div>
-<div class="line"><a name="l00984"></a><span class="lineno">  984</span>&#160;    <span class="keyword">auto</span> vars = fo.getVars();</div>
-<div class="line"><a name="l00985"></a><span class="lineno">  985</span>&#160; </div>
-<div class="line"><a name="l00986"></a><span class="lineno">  986</span>&#160;    <span class="comment">// get absolute coords</span></div>
-<div class="line"><a name="l00987"></a><span class="lineno">  987</span>&#160;    <span class="keywordtype">double</span> cra, cdec;</div>
-<div class="line"><a name="l00988"></a><span class="lineno">  988</span>&#160;    vars.find(<span class="stringliteral">&quot;SourceRa&quot;</span>)-&gt;second.getVar(&amp;cra);</div>
-<div class="line"><a name="l00989"></a><span class="lineno">  989</span>&#160;    vars.find(<span class="stringliteral">&quot;SourceDec&quot;</span>)-&gt;second.getVar(&amp;cdec);</div>
-<div class="line"><a name="l00990"></a><span class="lineno">  990</span>&#160; </div>
-<div class="line"><a name="l00991"></a><span class="lineno">  991</span>&#160;    <span class="comment">// get dimensions</span></div>
-<div class="line"><a name="l00992"></a><span class="lineno">  992</span>&#160;    NcDim n_pts_dim = fo.getDim(<span class="stringliteral">&quot;n_pts&quot;</span>);</div>
-<div class="line"><a name="l00993"></a><span class="lineno">  993</span>&#160;    NcDim n_dets_dim = fo.getDim(<span class="stringliteral">&quot;n_dets&quot;</span>);</div>
-<div class="line"><a name="l00994"></a><span class="lineno">  994</span>&#160; </div>
-<div class="line"><a name="l00995"></a><span class="lineno">  995</span>&#160;    <span class="comment">// number of samples currently in file</span></div>
-<div class="line"><a name="l00996"></a><span class="lineno">  996</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> n_pts_exists = n_pts_dim.getSize();</div>
-<div class="line"><a name="l00997"></a><span class="lineno">  997</span>&#160;    <span class="comment">// number of detectors currently in file</span></div>
-<div class="line"><a name="l00998"></a><span class="lineno">  998</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> n_dets_exists = n_dets_dim.getSize();</div>
-<div class="line"><a name="l00999"></a><span class="lineno">  999</span>&#160; </div>
-<div class="line"><a name="l01000"></a><span class="lineno"> 1000</span>&#160;    <span class="comment">// start indices for data</span></div>
-<div class="line"><a name="l01001"></a><span class="lineno"> 1001</span>&#160;    std::vector&lt;std::size_t&gt; start_index = {n_pts_exists, 0};</div>
-<div class="line"><a name="l01002"></a><span class="lineno"> 1002</span>&#160;    <span class="comment">// size for data</span></div>
-<div class="line"><a name="l01003"></a><span class="lineno"> 1003</span>&#160;    std::vector&lt;std::size_t&gt; size = {1, TULA_SIZET(n_dets)};</div>
-<div class="line"><a name="l01004"></a><span class="lineno"> 1004</span>&#160; </div>
-<div class="line"><a name="l01005"></a><span class="lineno"> 1005</span>&#160;    <span class="comment">// start index for telescope data</span></div>
-<div class="line"><a name="l01006"></a><span class="lineno"> 1006</span>&#160;    std::vector&lt;std::size_t&gt; start_index_tel = {n_pts_exists};</div>
-<div class="line"><a name="l01007"></a><span class="lineno"> 1007</span>&#160;    <span class="comment">// size for telescope data</span></div>
-<div class="line"><a name="l01008"></a><span class="lineno"> 1008</span>&#160;    std::vector&lt;std::size_t&gt; size_tel = {TULA_SIZET(n_pts)};</div>
-<div class="line"><a name="l01009"></a><span class="lineno"> 1009</span>&#160; </div>
-<div class="line"><a name="l01010"></a><span class="lineno"> 1010</span>&#160;    <span class="comment">// start index for apt table</span></div>
-<div class="line"><a name="l01011"></a><span class="lineno"> 1011</span>&#160;    std::vector&lt;std::size_t&gt; start_index_apt = {0};</div>
-<div class="line"><a name="l01012"></a><span class="lineno"> 1012</span>&#160;    <span class="comment">// size for apt</span></div>
-<div class="line"><a name="l01013"></a><span class="lineno"> 1013</span>&#160;    std::vector&lt;std::size_t&gt; size_apt = {1};</div>
-<div class="line"><a name="l01014"></a><span class="lineno"> 1014</span>&#160; </div>
-<div class="line"><a name="l01015"></a><span class="lineno"> 1015</span>&#160;    <span class="comment">// get timestream variables</span></div>
-<div class="line"><a name="l01016"></a><span class="lineno"> 1016</span>&#160;    NcVar signal_v = fo.getVar(<span class="stringliteral">&quot;signal&quot;</span>);</div>
-<div class="line"><a name="l01017"></a><span class="lineno"> 1017</span>&#160;    NcVar flags_v = fo.getVar(<span class="stringliteral">&quot;flags&quot;</span>);</div>
-<div class="line"><a name="l01018"></a><span class="lineno"> 1018</span>&#160;    NcVar kernel_v = fo.getVar(<span class="stringliteral">&quot;kernel&quot;</span>);</div>
-<div class="line"><a name="l01019"></a><span class="lineno"> 1019</span>&#160; </div>
-<div class="line"><a name="l01020"></a><span class="lineno"> 1020</span>&#160;    <span class="comment">// detector tangent plane pointing</span></div>
-<div class="line"><a name="l01021"></a><span class="lineno"> 1021</span>&#160;    NcVar det_lat_v = fo.getVar(<span class="stringliteral">&quot;det_lat&quot;</span>);</div>
-<div class="line"><a name="l01022"></a><span class="lineno"> 1022</span>&#160;    NcVar det_lon_v = fo.getVar(<span class="stringliteral">&quot;det_lon&quot;</span>);</div>
-<div class="line"><a name="l01023"></a><span class="lineno"> 1023</span>&#160; </div>
-<div class="line"><a name="l01024"></a><span class="lineno"> 1024</span>&#160;    <span class="comment">// detector absolute pointing</span></div>
-<div class="line"><a name="l01025"></a><span class="lineno"> 1025</span>&#160;    NcVar det_ra_v = fo.getVar(<span class="stringliteral">&quot;det_ra&quot;</span>);</div>
-<div class="line"><a name="l01026"></a><span class="lineno"> 1026</span>&#160;    NcVar det_dec_v = fo.getVar(<span class="stringliteral">&quot;det_dec&quot;</span>);</div>
-<div class="line"><a name="l01027"></a><span class="lineno"> 1027</span>&#160; </div>
-<div class="line"><a name="l01028"></a><span class="lineno"> 1028</span>&#160;    <span class="comment">// append data (doing this per row is way faster than transposing</span></div>
-<div class="line"><a name="l01029"></a><span class="lineno"> 1029</span>&#160;    <span class="comment">// and populating them at once)</span></div>
-<div class="line"><a name="l01030"></a><span class="lineno"> 1030</span>&#160;    <span class="keywordflow">for</span> (std::size_t i=0; i&lt;TULA_SIZET(n_pts); ++i) {</div>
-<div class="line"><a name="l01031"></a><span class="lineno"> 1031</span>&#160;        start_index[0] = n_pts_exists + i;</div>
-<div class="line"><a name="l01032"></a><span class="lineno"> 1032</span>&#160;        <span class="comment">// append scans</span></div>
-<div class="line"><a name="l01033"></a><span class="lineno"> 1033</span>&#160;        Eigen::VectorXd scans = in.scans.data.row(i);</div>
-<div class="line"><a name="l01034"></a><span class="lineno"> 1034</span>&#160;        signal_v.putVar(start_index, size, scans.data());</div>
-<div class="line"><a name="l01035"></a><span class="lineno"> 1035</span>&#160; </div>
-<div class="line"><a name="l01036"></a><span class="lineno"> 1036</span>&#160;        <span class="comment">// append flags</span></div>
-<div class="line"><a name="l01037"></a><span class="lineno"> 1037</span>&#160;        Eigen::VectorXi flags_int = in.flags.data.row(i).template cast&lt;int&gt; ();</div>
-<div class="line"><a name="l01038"></a><span class="lineno"> 1038</span>&#160;        flags_v.putVar(start_index, size, flags_int.data());</div>
-<div class="line"><a name="l01039"></a><span class="lineno"> 1039</span>&#160; </div>
-<div class="line"><a name="l01040"></a><span class="lineno"> 1040</span>&#160;        <span class="comment">// append kernel</span></div>
-<div class="line"><a name="l01041"></a><span class="lineno"> 1041</span>&#160;        <span class="keywordflow">if</span> (!kernel_v.isNull()) {</div>
-<div class="line"><a name="l01042"></a><span class="lineno"> 1042</span>&#160;            Eigen::VectorXd kernel = in.kernel.data.row(i);</div>
-<div class="line"><a name="l01043"></a><span class="lineno"> 1043</span>&#160;            kernel_v.putVar(start_index, size, kernel.data());</div>
-<div class="line"><a name="l01044"></a><span class="lineno"> 1044</span>&#160;        }</div>
-<div class="line"><a name="l01045"></a><span class="lineno"> 1045</span>&#160; </div>
-<div class="line"><a name="l01046"></a><span class="lineno"> 1046</span>&#160;        <span class="comment">// append detector latitudes</span></div>
-<div class="line"><a name="l01047"></a><span class="lineno"> 1047</span>&#160;        Eigen::VectorXd lat_row = lat.row(i);</div>
-<div class="line"><a name="l01048"></a><span class="lineno"> 1048</span>&#160;        det_lat_v.putVar(start_index, size, lat_row.data());</div>
-<div class="line"><a name="l01049"></a><span class="lineno"> 1049</span>&#160; </div>
-<div class="line"><a name="l01050"></a><span class="lineno"> 1050</span>&#160;        <span class="comment">// append detector longitudes</span></div>
-<div class="line"><a name="l01051"></a><span class="lineno"> 1051</span>&#160;        Eigen::VectorXd lon_row = lon.row(i);</div>
-<div class="line"><a name="l01052"></a><span class="lineno"> 1052</span>&#160;        det_lon_v.putVar(start_index, size, lon_row.data());</div>
-<div class="line"><a name="l01053"></a><span class="lineno"> 1053</span>&#160; </div>
-<div class="line"><a name="l01054"></a><span class="lineno"> 1054</span>&#160;        <span class="keywordflow">if</span> (pixel_axes == <span class="stringliteral">&quot;radec&quot;</span>) {</div>
-<div class="line"><a name="l01055"></a><span class="lineno"> 1055</span>&#160;            <span class="comment">// get absolute pointing</span></div>
-<div class="line"><a name="l01056"></a><span class="lineno"> 1056</span>&#160;            <span class="keyword">auto</span> [dec, ra] = <a class="code" href="../../dd/d06/namespaceengine__utils.html#a25c3470ab740166d1ecffb0f89b9fe60">engine_utils::tangent_to_abs</a>(lat_row, lon_row, cra, cdec);</div>
-<div class="line"><a name="l01057"></a><span class="lineno"> 1057</span>&#160; </div>
-<div class="line"><a name="l01058"></a><span class="lineno"> 1058</span>&#160;            <span class="comment">// append detector ra</span></div>
-<div class="line"><a name="l01059"></a><span class="lineno"> 1059</span>&#160;            det_ra_v.putVar(start_index, size, ra.data());</div>
-<div class="line"><a name="l01060"></a><span class="lineno"> 1060</span>&#160; </div>
-<div class="line"><a name="l01061"></a><span class="lineno"> 1061</span>&#160;            <span class="comment">// append detector dec</span></div>
-<div class="line"><a name="l01062"></a><span class="lineno"> 1062</span>&#160;            det_dec_v.putVar(start_index, size, dec.data());</div>
-<div class="line"><a name="l01063"></a><span class="lineno"> 1063</span>&#160;        }</div>
-<div class="line"><a name="l01064"></a><span class="lineno"> 1064</span>&#160;    }</div>
-<div class="line"><a name="l01065"></a><span class="lineno"> 1065</span>&#160; </div>
-<div class="line"><a name="l01066"></a><span class="lineno"> 1066</span>&#160;    <span class="comment">// append telescope</span></div>
-<div class="line"><a name="l01067"></a><span class="lineno"> 1067</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; x: in.tel_data.data) {</div>
-<div class="line"><a name="l01068"></a><span class="lineno"> 1068</span>&#160;        NcVar tel_data_v = fo.getVar(x.first);</div>
-<div class="line"><a name="l01069"></a><span class="lineno"> 1069</span>&#160;        tel_data_v.putVar(start_index_tel, size_tel, x.second.data());</div>
-<div class="line"><a name="l01070"></a><span class="lineno"> 1070</span>&#160;    }</div>
-<div class="line"><a name="l01071"></a><span class="lineno"> 1071</span>&#160; </div>
-<div class="line"><a name="l01072"></a><span class="lineno"> 1072</span>&#160;    <span class="comment">// append pointing offsets</span></div>
-<div class="line"><a name="l01073"></a><span class="lineno"> 1073</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; x: in.pointing_offsets_arcsec.data) {</div>
-<div class="line"><a name="l01074"></a><span class="lineno"> 1074</span>&#160;        NcVar offset_v = fo.getVar(<span class="stringliteral">&quot;pointing_offset_&quot;</span>+x.first);</div>
-<div class="line"><a name="l01075"></a><span class="lineno"> 1075</span>&#160;        offset_v.putVar(start_index_tel, size_tel, x.second.data());</div>
-<div class="line"><a name="l01076"></a><span class="lineno"> 1076</span>&#160;    }</div>
-<div class="line"><a name="l01077"></a><span class="lineno"> 1077</span>&#160; </div>
-<div class="line"><a name="l01078"></a><span class="lineno"> 1078</span>&#160;    <span class="comment">// append hwpr angle</span></div>
-<div class="line"><a name="l01079"></a><span class="lineno"> 1079</span>&#160;    <span class="keywordflow">if</span> (calib.run_hwpr) {</div>
-<div class="line"><a name="l01080"></a><span class="lineno"> 1080</span>&#160;        NcVar hwpr_v = fo.getVar(<span class="stringliteral">&quot;hwpr&quot;</span>);</div>
-<div class="line"><a name="l01081"></a><span class="lineno"> 1081</span>&#160;        hwpr_v.putVar(start_index_tel, size_tel, in.hwpr_angle.data.data());</div>
-<div class="line"><a name="l01082"></a><span class="lineno"> 1082</span>&#160;    }</div>
-<div class="line"><a name="l01083"></a><span class="lineno"> 1083</span>&#160; </div>
+<div class="line"><a name="l00625"></a><span class="lineno">  625</span>&#160;                        Eigen::DenseBase&lt;Derived&gt; &amp;map_indices, std::string pixel_axes,</div>
+<div class="line"><a name="l00626"></a><span class="lineno">  626</span>&#160;                        std::string map_grouping) {</div>
+<div class="line"><a name="l00627"></a><span class="lineno">  627</span>&#160; </div>
+<div class="line"><a name="l00628"></a><span class="lineno">  628</span>&#160;    <span class="comment">// dimensions of data</span></div>
+<div class="line"><a name="l00629"></a><span class="lineno">  629</span>&#160;    Eigen::Index n_dets = in.scans.data.cols();</div>
+<div class="line"><a name="l00630"></a><span class="lineno">  630</span>&#160;    Eigen::Index n_pts = in.scans.data.rows();</div>
+<div class="line"><a name="l00631"></a><span class="lineno">  631</span>&#160; </div>
+<div class="line"><a name="l00632"></a><span class="lineno">  632</span>&#160;    <span class="comment">// add or subtract timestream</span></div>
+<div class="line"><a name="l00633"></a><span class="lineno">  633</span>&#160;    <span class="keywordtype">int</span> factor = 1;</div>
+<div class="line"><a name="l00634"></a><span class="lineno">  634</span>&#160;    <span class="keywordflow">if</span> constexpr (source_type==<a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#ac502f770ba4426077b5aa859b9df7ebaa766668e90fea608322dedddd90a7771a">NegativeMap</a>) {</div>
+<div class="line"><a name="l00635"></a><span class="lineno">  635</span>&#160;        factor = -1;</div>
+<div class="line"><a name="l00636"></a><span class="lineno">  636</span>&#160;    }</div>
+<div class="line"><a name="l00637"></a><span class="lineno">  637</span>&#160; </div>
+<div class="line"><a name="l00638"></a><span class="lineno">  638</span>&#160;    <span class="comment">// run kernel through fruit loops</span></div>
+<div class="line"><a name="l00639"></a><span class="lineno">  639</span>&#160;    <span class="keywordtype">bool</span> run_kernel = in.kernel.data.size() !=0;</div>
+<div class="line"><a name="l00640"></a><span class="lineno">  640</span>&#160;    <span class="comment">// if mean rms is filled use S/N limit</span></div>
+<div class="line"><a name="l00641"></a><span class="lineno">  641</span>&#160;    <span class="keywordtype">bool</span> run_noise = mb.median_rms.size() != 0;</div>
+<div class="line"><a name="l00642"></a><span class="lineno">  642</span>&#160; </div>
+<div class="line"><a name="l00643"></a><span class="lineno">  643</span>&#160;    <span class="comment">// loop through detectors</span></div>
+<div class="line"><a name="l00644"></a><span class="lineno">  644</span>&#160;    <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;n_dets; ++i) {</div>
+<div class="line"><a name="l00645"></a><span class="lineno">  645</span>&#160;        <span class="comment">// current detector index in apt</span></div>
+<div class="line"><a name="l00646"></a><span class="lineno">  646</span>&#160;        <span class="keyword">auto</span> map_index = map_indices(i);</div>
+<div class="line"><a name="l00647"></a><span class="lineno">  647</span>&#160;        <span class="keywordtype">int</span> array_index = calib.apt[<span class="stringliteral">&quot;array&quot;</span>](i);</div>
+<div class="line"><a name="l00648"></a><span class="lineno">  648</span>&#160; </div>
+<div class="line"><a name="l00649"></a><span class="lineno">  649</span>&#160;        <span class="comment">// check if detector is not flagged</span></div>
+<div class="line"><a name="l00650"></a><span class="lineno">  650</span>&#160;        <span class="keywordflow">if</span> (calib.apt[<span class="stringliteral">&quot;flag&quot;</span>](i) == 0 &amp;&amp; (in.flags.data.col(i).array() == 0).any()) {</div>
+<div class="line"><a name="l00651"></a><span class="lineno">  651</span>&#160;            <span class="keywordtype">double</span> az_off = calib.apt[<span class="stringliteral">&quot;x_t&quot;</span>](i);</div>
+<div class="line"><a name="l00652"></a><span class="lineno">  652</span>&#160;            <span class="keywordtype">double</span> el_off = calib.apt[<span class="stringliteral">&quot;y_t&quot;</span>](i);</div>
+<div class="line"><a name="l00653"></a><span class="lineno">  653</span>&#160; </div>
+<div class="line"><a name="l00654"></a><span class="lineno">  654</span>&#160;            <span class="comment">// calc tangent plane pointing</span></div>
+<div class="line"><a name="l00655"></a><span class="lineno">  655</span>&#160;            <span class="keyword">auto</span> [lat, lon] = <a class="code" href="../../dd/d06/namespaceengine__utils.html#a0d6c922376faca4b84cc135d29354af8">engine_utils::calc_det_pointing</a>(in.tel_data.data, az_off, el_off, pixel_axes,</div>
+<div class="line"><a name="l00656"></a><span class="lineno">  656</span>&#160;                                                              in.pointing_offsets_arcsec.data, map_grouping);</div>
+<div class="line"><a name="l00657"></a><span class="lineno">  657</span>&#160; </div>
+<div class="line"><a name="l00658"></a><span class="lineno">  658</span>&#160;            <span class="comment">// get map buffer row and col indices for lat and lon vectors</span></div>
+<div class="line"><a name="l00659"></a><span class="lineno">  659</span>&#160;            Eigen::VectorXd irows = lat.array()/mb.pixel_size_rad + (mb.n_rows)/2.;</div>
+<div class="line"><a name="l00660"></a><span class="lineno">  660</span>&#160;            Eigen::VectorXd icols = lon.array()/mb.pixel_size_rad + (mb.n_cols)/2.;</div>
+<div class="line"><a name="l00661"></a><span class="lineno">  661</span>&#160; </div>
+<div class="line"><a name="l00662"></a><span class="lineno">  662</span>&#160;            <span class="comment">// loop through data points</span></div>
+<div class="line"><a name="l00663"></a><span class="lineno">  663</span>&#160;            <span class="keywordflow">for</span> (Eigen::Index j=0; j&lt;n_pts; ++j) {</div>
+<div class="line"><a name="l00664"></a><span class="lineno">  664</span>&#160;                <span class="comment">// row and col pixel from signal image</span></div>
+<div class="line"><a name="l00665"></a><span class="lineno">  665</span>&#160;                Eigen::Index ir = irows(j);</div>
+<div class="line"><a name="l00666"></a><span class="lineno">  666</span>&#160;                Eigen::Index ic = icols(j);</div>
+<div class="line"><a name="l00667"></a><span class="lineno">  667</span>&#160; </div>
+<div class="line"><a name="l00668"></a><span class="lineno">  668</span>&#160;                <span class="comment">// check if current sample is on the image and add to the timestream</span></div>
+<div class="line"><a name="l00669"></a><span class="lineno">  669</span>&#160;                <span class="keywordflow">if</span> ((ir &gt;= 0) &amp;&amp; (ir &lt; mb.n_rows) &amp;&amp; (ic &gt;= 0) &amp;&amp; (ic &lt; mb.n_cols)) {</div>
+<div class="line"><a name="l00670"></a><span class="lineno">  670</span>&#160;                    <span class="keywordtype">double</span> signal = mb.signal[map_index](ir,ic);</div>
+<div class="line"><a name="l00671"></a><span class="lineno">  671</span>&#160;                    <span class="comment">// check whether we should include pixel</span></div>
+<div class="line"><a name="l00672"></a><span class="lineno">  672</span>&#160;                    <span class="keywordtype">bool</span> run_pix_s2n = run_noise &amp;&amp; (signal / mb.median_rms(map_index) &gt;= <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a1df6a0c19bd3c23a03fc9e08d6942dc0">fruit_loops_sig2noise</a>);</div>
+<div class="line"><a name="l00673"></a><span class="lineno">  673</span>&#160;                    <span class="keywordtype">bool</span> run_pix_flux = signal &gt;= <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#ae5c02c1e76daa5742d4ca24c3fe4b704">fruit_loops_flux</a>(array_index);</div>
+<div class="line"><a name="l00674"></a><span class="lineno">  674</span>&#160; </div>
+<div class="line"><a name="l00675"></a><span class="lineno">  675</span>&#160;                    <span class="comment">// if signal flux is higher than S/N limit or flux limit</span></div>
+<div class="line"><a name="l00676"></a><span class="lineno">  676</span>&#160;                    <span class="keywordflow">if</span> (run_pix_s2n || run_pix_flux) {</div>
+<div class="line"><a name="l00677"></a><span class="lineno">  677</span>&#160;                        <span class="comment">// add/subtract signal pixel from signal timestream</span></div>
+<div class="line"><a name="l00678"></a><span class="lineno">  678</span>&#160;                        in.scans.data(j,i) += factor * signal;</div>
+<div class="line"><a name="l00679"></a><span class="lineno">  679</span>&#160;                        <span class="comment">// add/subtract kernel pixel from kernel timestream</span></div>
+<div class="line"><a name="l00680"></a><span class="lineno">  680</span>&#160;                        <span class="keywordflow">if</span> (run_kernel) {</div>
+<div class="line"><a name="l00681"></a><span class="lineno">  681</span>&#160;                            in.kernel.data(j,i) += factor * mb.kernel[map_index](ir,ic);</div>
+<div class="line"><a name="l00682"></a><span class="lineno">  682</span>&#160;                        }</div>
+<div class="line"><a name="l00683"></a><span class="lineno">  683</span>&#160;                    }</div>
+<div class="line"><a name="l00684"></a><span class="lineno">  684</span>&#160;                }</div>
+<div class="line"><a name="l00685"></a><span class="lineno">  685</span>&#160;            }</div>
+<div class="line"><a name="l00686"></a><span class="lineno">  686</span>&#160;        }</div>
+<div class="line"><a name="l00687"></a><span class="lineno">  687</span>&#160;    }</div>
+<div class="line"><a name="l00688"></a><span class="lineno">  688</span>&#160;}</div>
+<div class="line"><a name="l00689"></a><span class="lineno">  689</span>&#160; </div>
+<div class="line"><a name="l00690"></a><span class="lineno">  690</span>&#160;<span class="keyword">template</span> &lt;TCDataKind tcdata_t, <span class="keyword">class</span> calib_t&gt;</div>
+<div class="line"><a name="l00691"></a><span class="lineno"><a class="line" href="../../de/d76/classtimestream_1_1TCProc.html#ab9aee88fa87eab13e14b9c95fbbaee13">  691</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#ab9aee88fa87eab13e14b9c95fbbaee13">TCProc::remove_bad_dets</a>(<a class="code" href="../../dd/d75/structtimestream_1_1TCData.html">TCData&lt;tcdata_t, Eigen::MatrixXd&gt;</a> &amp;in, calib_t &amp;calib, std::string map_grouping) {</div>
+<div class="line"><a name="l00692"></a><span class="lineno">  692</span>&#160; </div>
+<div class="line"><a name="l00693"></a><span class="lineno">  693</span>&#160;    <span class="comment">// make a copy of the calib class for flagging</span></div>
+<div class="line"><a name="l00694"></a><span class="lineno">  694</span>&#160;    calib_t calib_scan = calib;</div>
+<div class="line"><a name="l00695"></a><span class="lineno">  695</span>&#160; </div>
+<div class="line"><a name="l00696"></a><span class="lineno">  696</span>&#160;    <span class="comment">// only run if limits are not zero</span></div>
+<div class="line"><a name="l00697"></a><span class="lineno">  697</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a4a39a6fedec09eedc9a3dacb2f901a57">lower_weight_factor</a> !=0 || <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a0ad1153d234d586426bfaf2de84727a4">upper_weight_factor</a> !=0) {</div>
+<div class="line"><a name="l00698"></a><span class="lineno">  698</span>&#160;        <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a1a97f70901676ef77f38d9e94f918be6">logger</a>-&gt;info(<span class="stringliteral">&quot;removing outlier dets&quot;</span>);</div>
+<div class="line"><a name="l00699"></a><span class="lineno">  699</span>&#160;        <span class="comment">// number of detectors</span></div>
+<div class="line"><a name="l00700"></a><span class="lineno">  700</span>&#160;        Eigen::Index n_dets = in.scans.data.cols();</div>
+<div class="line"><a name="l00701"></a><span class="lineno">  701</span>&#160; </div>
+<div class="line"><a name="l00702"></a><span class="lineno">  702</span>&#160;        <span class="comment">// get grouping</span></div>
+<div class="line"><a name="l00703"></a><span class="lineno">  703</span>&#160;        <span class="keyword">auto</span> grp_limits = <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a0aad485249f27f9e2bfee82e111eb9d5">get_grouping</a>(<span class="stringliteral">&quot;array&quot;</span>, calib, n_dets);</div>
+<div class="line"><a name="l00704"></a><span class="lineno">  704</span>&#160; </div>
+<div class="line"><a name="l00705"></a><span class="lineno">  705</span>&#160;        in.n_dets_low = 0;</div>
+<div class="line"><a name="l00706"></a><span class="lineno">  706</span>&#160;        in.n_dets_high = 0;</div>
+<div class="line"><a name="l00707"></a><span class="lineno">  707</span>&#160; </div>
+<div class="line"><a name="l00708"></a><span class="lineno">  708</span>&#160;        <span class="comment">// loop through group limits</span></div>
+<div class="line"><a name="l00709"></a><span class="lineno">  709</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; [key, val] : grp_limits) {</div>
+<div class="line"><a name="l00710"></a><span class="lineno">  710</span>&#160;            <span class="comment">// control for iteration</span></div>
+<div class="line"><a name="l00711"></a><span class="lineno">  711</span>&#160;            <span class="keywordtype">bool</span> keep_going = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00712"></a><span class="lineno">  712</span>&#160;            Eigen::Index n_iter = 0;</div>
+<div class="line"><a name="l00713"></a><span class="lineno">  713</span>&#160; </div>
+<div class="line"><a name="l00714"></a><span class="lineno">  714</span>&#160;            <span class="keywordflow">while</span> (keep_going) {</div>
+<div class="line"><a name="l00715"></a><span class="lineno">  715</span>&#160;                <span class="comment">// number of unflagged detectors</span></div>
+<div class="line"><a name="l00716"></a><span class="lineno">  716</span>&#160;                Eigen::Index n_good_dets = 0;</div>
+<div class="line"><a name="l00717"></a><span class="lineno">  717</span>&#160; </div>
+<div class="line"><a name="l00718"></a><span class="lineno">  718</span>&#160;                <span class="comment">// get good dets in group</span></div>
+<div class="line"><a name="l00719"></a><span class="lineno">  719</span>&#160;                <span class="keywordflow">for</span> (Eigen::Index j=std::get&lt;0&gt;(grp_limits[key]); j&lt;std::get&lt;1&gt;(grp_limits[key]); ++j) {</div>
+<div class="line"><a name="l00720"></a><span class="lineno">  720</span>&#160;                    <span class="keywordflow">if</span> (calib.apt[<span class="stringliteral">&quot;flag&quot;</span>](j)==0 &amp;&amp; (in.flags.data.col(j).array()==0).any()) {</div>
+<div class="line"><a name="l00721"></a><span class="lineno">  721</span>&#160;                        n_good_dets++;</div>
+<div class="line"><a name="l00722"></a><span class="lineno">  722</span>&#160;                    }</div>
+<div class="line"><a name="l00723"></a><span class="lineno">  723</span>&#160;                }</div>
+<div class="line"><a name="l00724"></a><span class="lineno">  724</span>&#160; </div>
+<div class="line"><a name="l00725"></a><span class="lineno">  725</span>&#160;                Eigen::VectorXd det_std_dev(n_good_dets);</div>
+<div class="line"><a name="l00726"></a><span class="lineno">  726</span>&#160;                Eigen::VectorXI dets(n_good_dets);</div>
+<div class="line"><a name="l00727"></a><span class="lineno">  727</span>&#160;                Eigen::Index k = 0;</div>
+<div class="line"><a name="l00728"></a><span class="lineno">  728</span>&#160; </div>
+<div class="line"><a name="l00729"></a><span class="lineno">  729</span>&#160;                <span class="comment">// collect standard deviation from good detectors</span></div>
+<div class="line"><a name="l00730"></a><span class="lineno">  730</span>&#160;                <span class="keywordflow">for</span> (Eigen::Index j=std::get&lt;0&gt;(grp_limits[key]); j&lt;std::get&lt;1&gt;(grp_limits[key]); ++j) {</div>
+<div class="line"><a name="l00731"></a><span class="lineno">  731</span>&#160;                    Eigen::Index det_index = j;</div>
+<div class="line"><a name="l00732"></a><span class="lineno">  732</span>&#160;                    <span class="keywordflow">if</span> (calib.apt[<span class="stringliteral">&quot;flag&quot;</span>](det_index)==0 &amp;&amp; (in.flags.data.col(j).array()==0).any()) {</div>
+<div class="line"><a name="l00733"></a><span class="lineno">  733</span>&#160;                        <span class="comment">// make Eigen::Maps for each detector&#39;s scan</span></div>
+<div class="line"><a name="l00734"></a><span class="lineno">  734</span>&#160;                        Eigen::Map&lt;Eigen::Matrix&lt;double, Eigen::Dynamic, 1&gt;&gt; scans(</div>
+<div class="line"><a name="l00735"></a><span class="lineno">  735</span>&#160;                            in.scans.data.col(j).data(), in.scans.data.rows());</div>
+<div class="line"><a name="l00736"></a><span class="lineno">  736</span>&#160;                        Eigen::Map&lt;Eigen::Matrix&lt;bool, Eigen::Dynamic, 1&gt;&gt; flags(</div>
+<div class="line"><a name="l00737"></a><span class="lineno">  737</span>&#160;                            in.flags.data.col(j).data(), in.flags.data.rows());</div>
+<div class="line"><a name="l00738"></a><span class="lineno">  738</span>&#160; </div>
+<div class="line"><a name="l00739"></a><span class="lineno">  739</span>&#160;                        <span class="comment">// calc standard deviation</span></div>
+<div class="line"><a name="l00740"></a><span class="lineno">  740</span>&#160;                        det_std_dev(k) = <a class="code" href="../../dd/d06/namespaceengine__utils.html#ad9c640b3ad780cec01b1644b15f1ac58">engine_utils::calc_std_dev</a>(scans, flags);</div>
+<div class="line"><a name="l00741"></a><span class="lineno">  741</span>&#160; </div>
+<div class="line"><a name="l00742"></a><span class="lineno">  742</span>&#160;                        <span class="comment">// convert to 1/variance so it is a weight</span></div>
+<div class="line"><a name="l00743"></a><span class="lineno">  743</span>&#160;                        <span class="keywordflow">if</span> (det_std_dev(k) !=0) {</div>
+<div class="line"><a name="l00744"></a><span class="lineno">  744</span>&#160;                            det_std_dev(k) = std::pow(det_std_dev(k),-2);</div>
+<div class="line"><a name="l00745"></a><span class="lineno">  745</span>&#160;                        }</div>
+<div class="line"><a name="l00746"></a><span class="lineno">  746</span>&#160;                        <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00747"></a><span class="lineno">  747</span>&#160;                            det_std_dev(k) = 0;</div>
+<div class="line"><a name="l00748"></a><span class="lineno">  748</span>&#160;                        }</div>
+<div class="line"><a name="l00749"></a><span class="lineno">  749</span>&#160; </div>
+<div class="line"><a name="l00750"></a><span class="lineno">  750</span>&#160;                        dets(k) = j;</div>
+<div class="line"><a name="l00751"></a><span class="lineno">  751</span>&#160;                        k++;</div>
+<div class="line"><a name="l00752"></a><span class="lineno">  752</span>&#160;                    }</div>
+<div class="line"><a name="l00753"></a><span class="lineno">  753</span>&#160;                }</div>
+<div class="line"><a name="l00754"></a><span class="lineno">  754</span>&#160; </div>
+<div class="line"><a name="l00755"></a><span class="lineno">  755</span>&#160;                <span class="comment">// get median standard deviation</span></div>
+<div class="line"><a name="l00756"></a><span class="lineno">  756</span>&#160;                <span class="keywordtype">double</span> mean_std_dev = tula::alg::median(det_std_dev);</div>
+<div class="line"><a name="l00757"></a><span class="lineno">  757</span>&#160; </div>
+<div class="line"><a name="l00758"></a><span class="lineno">  758</span>&#160;                <span class="keywordtype">int</span> n_dets_low = 0;</div>
+<div class="line"><a name="l00759"></a><span class="lineno">  759</span>&#160;                <span class="keywordtype">int</span> n_dets_high = 0;</div>
+<div class="line"><a name="l00760"></a><span class="lineno">  760</span>&#160; </div>
+<div class="line"><a name="l00761"></a><span class="lineno">  761</span>&#160;                <span class="comment">// loop through good detectors and flag those that have std devs beyond the limits</span></div>
+<div class="line"><a name="l00762"></a><span class="lineno">  762</span>&#160;                <span class="keywordflow">for</span> (Eigen::Index j=0; j&lt;n_good_dets; ++j) {</div>
+<div class="line"><a name="l00763"></a><span class="lineno">  763</span>&#160;                    Eigen::Index det_index = dets(j);</div>
+<div class="line"><a name="l00764"></a><span class="lineno">  764</span>&#160;                    <span class="comment">// only run if unflagged already</span></div>
+<div class="line"><a name="l00765"></a><span class="lineno">  765</span>&#160;                    <span class="keywordflow">if</span> (calib.apt[<span class="stringliteral">&quot;flag&quot;</span>](det_index)==0) {</div>
+<div class="line"><a name="l00766"></a><span class="lineno">  766</span>&#160;                        <span class="comment">// flag those below limit</span></div>
+<div class="line"><a name="l00767"></a><span class="lineno">  767</span>&#160;                        <span class="keywordflow">if</span> ((det_std_dev(j) &lt; (<a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a4a39a6fedec09eedc9a3dacb2f901a57">lower_weight_factor</a>*mean_std_dev)) &amp;&amp; <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a4a39a6fedec09eedc9a3dacb2f901a57">lower_weight_factor</a>!=0) {</div>
+<div class="line"><a name="l00768"></a><span class="lineno">  768</span>&#160;                            <span class="keywordflow">if</span> (map_grouping!=<span class="stringliteral">&quot;detector&quot;</span>) {</div>
+<div class="line"><a name="l00769"></a><span class="lineno">  769</span>&#160;                                in.flags.data.col(dets(j)).setOnes();</div>
+<div class="line"><a name="l00770"></a><span class="lineno">  770</span>&#160;                            }</div>
+<div class="line"><a name="l00771"></a><span class="lineno">  771</span>&#160;                            <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00772"></a><span class="lineno">  772</span>&#160;                                calib_scan.apt[<span class="stringliteral">&quot;flag&quot;</span>](det_index) = 1;</div>
+<div class="line"><a name="l00773"></a><span class="lineno">  773</span>&#160;                            }</div>
+<div class="line"><a name="l00774"></a><span class="lineno">  774</span>&#160;                            in.n_dets_low++;</div>
+<div class="line"><a name="l00775"></a><span class="lineno">  775</span>&#160;                            n_dets_low++;</div>
+<div class="line"><a name="l00776"></a><span class="lineno">  776</span>&#160;                        }</div>
+<div class="line"><a name="l00777"></a><span class="lineno">  777</span>&#160; </div>
+<div class="line"><a name="l00778"></a><span class="lineno">  778</span>&#160;                        <span class="comment">// flag those above limit</span></div>
+<div class="line"><a name="l00779"></a><span class="lineno">  779</span>&#160;                        <span class="keywordflow">if</span> ((det_std_dev(j) &gt; (<a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a0ad1153d234d586426bfaf2de84727a4">upper_weight_factor</a>*mean_std_dev)) &amp;&amp; <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a0ad1153d234d586426bfaf2de84727a4">upper_weight_factor</a>!=0) {</div>
+<div class="line"><a name="l00780"></a><span class="lineno">  780</span>&#160;                            <span class="keywordflow">if</span> (map_grouping!=<span class="stringliteral">&quot;detector&quot;</span>) {</div>
+<div class="line"><a name="l00781"></a><span class="lineno">  781</span>&#160;                                in.flags.data.col(dets(j)).setOnes();</div>
+<div class="line"><a name="l00782"></a><span class="lineno">  782</span>&#160;                            }</div>
+<div class="line"><a name="l00783"></a><span class="lineno">  783</span>&#160;                            <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00784"></a><span class="lineno">  784</span>&#160;                                calib_scan.apt[<span class="stringliteral">&quot;flag&quot;</span>](det_index) = 1;</div>
+<div class="line"><a name="l00785"></a><span class="lineno">  785</span>&#160;                            }</div>
+<div class="line"><a name="l00786"></a><span class="lineno">  786</span>&#160;                            in.n_dets_high++;</div>
+<div class="line"><a name="l00787"></a><span class="lineno">  787</span>&#160;                            n_dets_high++;</div>
+<div class="line"><a name="l00788"></a><span class="lineno">  788</span>&#160;                        }</div>
+<div class="line"><a name="l00789"></a><span class="lineno">  789</span>&#160;                    }</div>
+<div class="line"><a name="l00790"></a><span class="lineno">  790</span>&#160;                }</div>
+<div class="line"><a name="l00791"></a><span class="lineno">  791</span>&#160; </div>
+<div class="line"><a name="l00792"></a><span class="lineno">  792</span>&#160;                <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a1a97f70901676ef77f38d9e94f918be6">logger</a>-&gt;info(<span class="stringliteral">&quot;array {} iter {}: {}/{} dets below limit. {}/{} dets above limit.&quot;</span>, key, n_iter,</div>
+<div class="line"><a name="l00793"></a><span class="lineno">  793</span>&#160;                            n_dets_low, n_good_dets, n_dets_high, n_good_dets);</div>
+<div class="line"><a name="l00794"></a><span class="lineno">  794</span>&#160; </div>
+<div class="line"><a name="l00795"></a><span class="lineno">  795</span>&#160;                <span class="comment">// increment iteration</span></div>
+<div class="line"><a name="l00796"></a><span class="lineno">  796</span>&#160;                n_iter++;</div>
+<div class="line"><a name="l00797"></a><span class="lineno">  797</span>&#160;                <span class="comment">// check if no more detectors are above limit</span></div>
+<div class="line"><a name="l00798"></a><span class="lineno">  798</span>&#160;                <span class="keywordflow">if</span> ((n_dets_low==0 &amp;&amp; n_dets_high==0) || n_iter &gt; <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a714967fba886255d6347e1920f970a90">iter_lim</a>) {</div>
+<div class="line"><a name="l00799"></a><span class="lineno">  799</span>&#160;                    keep_going = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00800"></a><span class="lineno">  800</span>&#160;                }</div>
+<div class="line"><a name="l00801"></a><span class="lineno">  801</span>&#160;            }</div>
+<div class="line"><a name="l00802"></a><span class="lineno">  802</span>&#160;        }</div>
+<div class="line"><a name="l00803"></a><span class="lineno">  803</span>&#160;        <span class="comment">// set up scan calib</span></div>
+<div class="line"><a name="l00804"></a><span class="lineno">  804</span>&#160;        calib_scan.setup();</div>
+<div class="line"><a name="l00805"></a><span class="lineno">  805</span>&#160;    }</div>
+<div class="line"><a name="l00806"></a><span class="lineno">  806</span>&#160; </div>
+<div class="line"><a name="l00807"></a><span class="lineno">  807</span>&#160;    <span class="keywordflow">return</span> std::move(calib_scan);</div>
+<div class="line"><a name="l00808"></a><span class="lineno">  808</span>&#160;}</div>
+<div class="line"><a name="l00809"></a><span class="lineno">  809</span>&#160; </div>
+<div class="line"><a name="l00810"></a><span class="lineno">  810</span>&#160;<span class="keyword">template</span> &lt;TCDataKind tcdata_t, <span class="keyword">class</span> calib_t, <span class="keyword">typename</span> Derived&gt;</div>
+<div class="line"><a name="l00811"></a><span class="lineno"><a class="line" href="../../de/d76/classtimestream_1_1TCProc.html#a9d8562e7ccb7d73e21a1a6f4146afef5">  811</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a9d8562e7ccb7d73e21a1a6f4146afef5">TCProc::remove_uncorrelated</a>(<a class="code" href="../../dd/d75/structtimestream_1_1TCData.html">TCData&lt;tcdata_t, Eigen::MatrixXd&gt;</a> &amp;in, calib_t &amp;calib, std::string map_grouping) {</div>
+<div class="line"><a name="l00812"></a><span class="lineno">  812</span>&#160;    <span class="comment">//Eigen::Index n_dets = in.scans.data.cols();</span></div>
+<div class="line"><a name="l00813"></a><span class="lineno">  813</span>&#160;    <span class="comment">//Eigen::Index n_pts = in.scans.data.rows();</span></div>
+<div class="line"><a name="l00814"></a><span class="lineno">  814</span>&#160; </div>
+<div class="line"><a name="l00815"></a><span class="lineno">  815</span>&#160;    <span class="comment">// make copy of flags</span></div>
+<div class="line"><a name="l00816"></a><span class="lineno">  816</span>&#160;    <span class="comment">//Eigen::MatrixXd f = abs(flags.derived().template cast&lt;double&gt; ().array() - 1);</span></div>
+<div class="line"><a name="l00817"></a><span class="lineno">  817</span>&#160; </div>
+<div class="line"><a name="l00818"></a><span class="lineno">  818</span>&#160;    <span class="comment">// container for covariance matrix</span></div>
+<div class="line"><a name="l00819"></a><span class="lineno">  819</span>&#160;    <span class="comment">//Eigen::MatrixXd pca_cov(n_dets, n_dets);</span></div>
+<div class="line"><a name="l00820"></a><span class="lineno">  820</span>&#160; </div>
+<div class="line"><a name="l00821"></a><span class="lineno">  821</span>&#160;    <span class="comment">// calculate the covariance matrix</span></div>
+<div class="line"><a name="l00822"></a><span class="lineno">  822</span>&#160;    <span class="comment">//pca_cov.noalias() = ((scans.adjoint() * scans).array()).matrix();// / denom.array()).matrix();</span></div>
+<div class="line"><a name="l00823"></a><span class="lineno">  823</span>&#160;}</div>
+<div class="line"><a name="l00824"></a><span class="lineno">  824</span>&#160; </div>
+<div class="line"><a name="l00825"></a><span class="lineno">  825</span>&#160;<span class="keyword">template</span> &lt;TCProc::SourceType source_type, TCDataKind tcdata_t, <span class="keyword">typename</span> Derived, <span class="keyword">typename</span> apt_t&gt;</div>
+<div class="line"><a name="l00826"></a><span class="lineno"><a class="line" href="../../de/d76/classtimestream_1_1TCProc.html#af76c4d4ef82813ff324d368b4be6828d">  826</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#af76c4d4ef82813ff324d368b4be6828d">TCProc::add_gaussian</a>(<a class="code" href="../../dd/d75/structtimestream_1_1TCData.html">TCData&lt;tcdata_t, Eigen::MatrixXd&gt;</a> &amp;in, Eigen::DenseBase&lt;Derived&gt; &amp;params, std::string &amp;pixel_axes,</div>
+<div class="line"><a name="l00827"></a><span class="lineno">  827</span>&#160;                          std::string &amp;map_grouping, apt_t &amp;apt, <span class="keywordtype">double</span> pixel_size_rad, Eigen::Index n_rows, Eigen::Index n_cols) {</div>
+<div class="line"><a name="l00828"></a><span class="lineno">  828</span>&#160; </div>
+<div class="line"><a name="l00829"></a><span class="lineno">  829</span>&#160;    Eigen::Index n_dets = in.scans.data.cols();</div>
+<div class="line"><a name="l00830"></a><span class="lineno">  830</span>&#160;    Eigen::Index n_pts = in.scans.data.rows();</div>
+<div class="line"><a name="l00831"></a><span class="lineno">  831</span>&#160; </div>
+<div class="line"><a name="l00832"></a><span class="lineno">  832</span>&#160;    <span class="comment">// loop through detectors</span></div>
+<div class="line"><a name="l00833"></a><span class="lineno">  833</span>&#160;    <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;n_dets; ++i) {</div>
+<div class="line"><a name="l00834"></a><span class="lineno">  834</span>&#160;        <span class="comment">// detector index in apt</span></div>
+<div class="line"><a name="l00835"></a><span class="lineno">  835</span>&#160;        <span class="keyword">auto</span> det_index = i;</div>
+<div class="line"><a name="l00836"></a><span class="lineno">  836</span>&#160;        <span class="comment">// map index</span></div>
+<div class="line"><a name="l00837"></a><span class="lineno">  837</span>&#160;        <span class="keyword">auto</span> map_index = in.map_indices.data(i);</div>
+<div class="line"><a name="l00838"></a><span class="lineno">  838</span>&#160; </div>
+<div class="line"><a name="l00839"></a><span class="lineno">  839</span>&#160;        <span class="keywordtype">double</span> az_off = apt[<span class="stringliteral">&quot;x_t&quot;</span>](det_index);</div>
+<div class="line"><a name="l00840"></a><span class="lineno">  840</span>&#160;        <span class="keywordtype">double</span> el_off = apt[<span class="stringliteral">&quot;y_t&quot;</span>](det_index);</div>
+<div class="line"><a name="l00841"></a><span class="lineno">  841</span>&#160; </div>
+<div class="line"><a name="l00842"></a><span class="lineno">  842</span>&#160;        <span class="comment">// get pointing</span></div>
+<div class="line"><a name="l00843"></a><span class="lineno">  843</span>&#160;        <span class="keyword">auto</span> [lat, lon] = <a class="code" href="../../dd/d06/namespaceengine__utils.html#a0d6c922376faca4b84cc135d29354af8">engine_utils::calc_det_pointing</a>(in.tel_data.data, az_off, el_off, pixel_axes,</div>
+<div class="line"><a name="l00844"></a><span class="lineno">  844</span>&#160;                                                          in.pointing_offsets_arcsec.data, map_grouping);</div>
+<div class="line"><a name="l00845"></a><span class="lineno">  845</span>&#160; </div>
+<div class="line"><a name="l00846"></a><span class="lineno">  846</span>&#160;        <span class="comment">// get parameters from current map</span></div>
+<div class="line"><a name="l00847"></a><span class="lineno">  847</span>&#160;        <span class="keywordtype">double</span> amp = params(map_index,0);</div>
+<div class="line"><a name="l00848"></a><span class="lineno">  848</span>&#160;        <span class="comment">// rows</span></div>
+<div class="line"><a name="l00849"></a><span class="lineno">  849</span>&#160;        <span class="keywordtype">double</span> off_lat = params(map_index,2);</div>
+<div class="line"><a name="l00850"></a><span class="lineno">  850</span>&#160;        <span class="comment">// cols</span></div>
+<div class="line"><a name="l00851"></a><span class="lineno">  851</span>&#160;        <span class="keywordtype">double</span> off_lon = params(map_index,1);</div>
+<div class="line"><a name="l00852"></a><span class="lineno">  852</span>&#160;        <span class="comment">// row fwhm</span></div>
+<div class="line"><a name="l00853"></a><span class="lineno">  853</span>&#160;        <span class="keywordtype">double</span> sigma_lat = params(map_index,4);</div>
+<div class="line"><a name="l00854"></a><span class="lineno">  854</span>&#160;        <span class="comment">// col fwhm</span></div>
+<div class="line"><a name="l00855"></a><span class="lineno">  855</span>&#160;        <span class="keywordtype">double</span> sigma_lon = params(map_index,3);</div>
+<div class="line"><a name="l00856"></a><span class="lineno">  856</span>&#160;        <span class="comment">// rot angle</span></div>
+<div class="line"><a name="l00857"></a><span class="lineno">  857</span>&#160;        <span class="keywordtype">double</span> rot_ang = params(map_index,5);</div>
+<div class="line"><a name="l00858"></a><span class="lineno">  858</span>&#160; </div>
+<div class="line"><a name="l00859"></a><span class="lineno">  859</span>&#160;        <span class="comment">// use maximum of sigmas due to atmospheric cleaning</span></div>
+<div class="line"><a name="l00860"></a><span class="lineno">  860</span>&#160;        <span class="keywordtype">double</span> sigma = std::max(sigma_lat, sigma_lon);</div>
+<div class="line"><a name="l00861"></a><span class="lineno">  861</span>&#160; </div>
+<div class="line"><a name="l00862"></a><span class="lineno">  862</span>&#160;        <span class="comment">// subtract source</span></div>
+<div class="line"><a name="l00863"></a><span class="lineno">  863</span>&#160;        <span class="keywordflow">if</span> constexpr (source_type==<a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#ac502f770ba4426077b5aa859b9df7ebaa60e8bd60f6785fc23b128b93ba20576c">NegativeGaussian</a>) {</div>
+<div class="line"><a name="l00864"></a><span class="lineno">  864</span>&#160;            amp = -amp;</div>
+<div class="line"><a name="l00865"></a><span class="lineno">  865</span>&#160;        }</div>
+<div class="line"><a name="l00866"></a><span class="lineno">  866</span>&#160; </div>
+<div class="line"><a name="l00867"></a><span class="lineno">  867</span>&#160;        <span class="comment">// rescale offsets and stddev to on-sky units</span></div>
+<div class="line"><a name="l00868"></a><span class="lineno">  868</span>&#160;        off_lat = pixel_size_rad*(off_lat - (n_rows)/2);</div>
+<div class="line"><a name="l00869"></a><span class="lineno">  869</span>&#160;        off_lon = pixel_size_rad*(off_lon - (n_cols)/2);</div>
+<div class="line"><a name="l00870"></a><span class="lineno">  870</span>&#160; </div>
+<div class="line"><a name="l00871"></a><span class="lineno">  871</span>&#160;        <span class="comment">// convert to on-sky units</span></div>
+<div class="line"><a name="l00872"></a><span class="lineno">  872</span>&#160;        sigma_lon = pixel_size_rad*sigma;</div>
+<div class="line"><a name="l00873"></a><span class="lineno">  873</span>&#160;        sigma_lat = pixel_size_rad*sigma;</div>
+<div class="line"><a name="l00874"></a><span class="lineno">  874</span>&#160;        sigma = pixel_size_rad*sigma;</div>
+<div class="line"><a name="l00875"></a><span class="lineno">  875</span>&#160; </div>
+<div class="line"><a name="l00876"></a><span class="lineno">  876</span>&#160;        <span class="comment">// get 2d elliptical gaussian angles</span></div>
+<div class="line"><a name="l00877"></a><span class="lineno">  877</span>&#160;        <span class="keyword">auto</span> cost2 = cos(rot_ang) * cos(rot_ang);</div>
+<div class="line"><a name="l00878"></a><span class="lineno">  878</span>&#160;        <span class="keyword">auto</span> sint2 = sin(rot_ang) * sin(rot_ang);</div>
+<div class="line"><a name="l00879"></a><span class="lineno">  879</span>&#160;        <span class="keyword">auto</span> sin2t = sin(2. * rot_ang);</div>
+<div class="line"><a name="l00880"></a><span class="lineno">  880</span>&#160;        <span class="keyword">auto</span> xstd2 = sigma * sigma;</div>
+<div class="line"><a name="l00881"></a><span class="lineno">  881</span>&#160;        <span class="keyword">auto</span> ystd2 = sigma * sigma;</div>
+<div class="line"><a name="l00882"></a><span class="lineno">  882</span>&#160;        <span class="keyword">auto</span> a = - 0.5 * ((cost2 / xstd2) + (sint2 / ystd2));</div>
+<div class="line"><a name="l00883"></a><span class="lineno">  883</span>&#160;        <span class="keyword">auto</span> b = - 0.5 * ((sin2t / xstd2) - (sin2t / ystd2));</div>
+<div class="line"><a name="l00884"></a><span class="lineno">  884</span>&#160;        <span class="keyword">auto</span> c = - 0.5 * ((sint2 / xstd2) + (cost2 / ystd2));</div>
+<div class="line"><a name="l00885"></a><span class="lineno">  885</span>&#160; </div>
+<div class="line"><a name="l00886"></a><span class="lineno">  886</span>&#160;        <span class="comment">// calculate distance to source to truncate it</span></div>
+<div class="line"><a name="l00887"></a><span class="lineno">  887</span>&#160;        <span class="comment">//auto dist = ((lat.array() - off_lat).pow(2) + (lon.array() - off_lon).pow(2)).sqrt();</span></div>
+<div class="line"><a name="l00888"></a><span class="lineno">  888</span>&#160; </div>
+<div class="line"><a name="l00889"></a><span class="lineno">  889</span>&#160;        Eigen::VectorXd gauss(n_pts);</div>
+<div class="line"><a name="l00890"></a><span class="lineno">  890</span>&#160;        <span class="comment">// make timestream from 2d gaussian</span></div>
+<div class="line"><a name="l00891"></a><span class="lineno">  891</span>&#160;        <span class="keywordflow">for</span> (Eigen::Index j=0; j&lt;n_pts; ++j) {</div>
+<div class="line"><a name="l00892"></a><span class="lineno">  892</span>&#160;            gauss(j) = amp*exp(pow(lon(j) - off_lon, 2) * a +</div>
+<div class="line"><a name="l00893"></a><span class="lineno">  893</span>&#160;                                 (lon(j) - off_lon) * (lat(j) - off_lat) * b +</div>
+<div class="line"><a name="l00894"></a><span class="lineno">  894</span>&#160;                                 pow(lat(j) - off_lat, 2) * c);</div>
+<div class="line"><a name="l00895"></a><span class="lineno">  895</span>&#160;        }</div>
+<div class="line"><a name="l00896"></a><span class="lineno">  896</span>&#160; </div>
+<div class="line"><a name="l00897"></a><span class="lineno">  897</span>&#160;        <span class="comment">// check for bad fit?</span></div>
+<div class="line"><a name="l00898"></a><span class="lineno">  898</span>&#160;        <span class="keywordflow">if</span> (!gauss.array().isNaN().any()) {</div>
+<div class="line"><a name="l00899"></a><span class="lineno">  899</span>&#160;            <span class="comment">// add gaussian to detector scan</span></div>
+<div class="line"><a name="l00900"></a><span class="lineno">  900</span>&#160;            in.scans.data.col(i) = in.scans.data.col(i).array() + gauss.array();</div>
+<div class="line"><a name="l00901"></a><span class="lineno">  901</span>&#160;        }</div>
+<div class="line"><a name="l00902"></a><span class="lineno">  902</span>&#160;    }</div>
+<div class="line"><a name="l00903"></a><span class="lineno">  903</span>&#160;}</div>
+<div class="line"><a name="l00904"></a><span class="lineno">  904</span>&#160; </div>
+<div class="line"><a name="l00905"></a><span class="lineno">  905</span>&#160;<span class="keyword">template</span> &lt;TCDataKind tcdata_t, <span class="keyword">class</span> calib_t&gt;</div>
+<div class="line"><a name="l00906"></a><span class="lineno"><a class="line" href="../../de/d76/classtimestream_1_1TCProc.html#a0253c6cbf62ed4593790938217dc2691">  906</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a0253c6cbf62ed4593790938217dc2691">TCProc::mask_region</a>(<a class="code" href="../../dd/d75/structtimestream_1_1TCData.html">TCData&lt;tcdata_t, Eigen::MatrixXd&gt;</a> &amp;in, calib_t &amp;calib, std::string pixel_axes, std::string map_grouping,</div>
+<div class="line"><a name="l00907"></a><span class="lineno">  907</span>&#160;                         <span class="keywordtype">int</span> n_pts, <span class="keywordtype">int</span> n_dets, <span class="keywordtype">int</span> start_index) {</div>
+<div class="line"><a name="l00908"></a><span class="lineno">  908</span>&#160; </div>
+<div class="line"><a name="l00909"></a><span class="lineno">  909</span>&#160;    <span class="comment">// copy of tel data</span></div>
+<div class="line"><a name="l00910"></a><span class="lineno">  910</span>&#160;    std::map&lt;std::string, Eigen::VectorXd&gt; tel_data_copy;</div>
+<div class="line"><a name="l00911"></a><span class="lineno">  911</span>&#160; </div>
+<div class="line"><a name="l00912"></a><span class="lineno">  912</span>&#160;    <span class="comment">// populate copy of tel data</span></div>
+<div class="line"><a name="l00913"></a><span class="lineno">  913</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;[key,val]: in.tel_data.data) {</div>
+<div class="line"><a name="l00914"></a><span class="lineno">  914</span>&#160;        tel_data_copy[key] = in.tel_data.data[key].segment(0,n_pts);</div>
+<div class="line"><a name="l00915"></a><span class="lineno">  915</span>&#160;    }</div>
+<div class="line"><a name="l00916"></a><span class="lineno">  916</span>&#160; </div>
+<div class="line"><a name="l00917"></a><span class="lineno">  917</span>&#160;    <span class="comment">// copy of pointing offsets</span></div>
+<div class="line"><a name="l00918"></a><span class="lineno">  918</span>&#160;    std::map&lt;std::string, Eigen::VectorXd&gt; pointing_offset_copy;</div>
+<div class="line"><a name="l00919"></a><span class="lineno">  919</span>&#160; </div>
+<div class="line"><a name="l00920"></a><span class="lineno">  920</span>&#160;    <span class="comment">// populate copy of pointing offsets</span></div>
+<div class="line"><a name="l00921"></a><span class="lineno">  921</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;[key,val]: in.pointing_offsets_arcsec.data) {</div>
+<div class="line"><a name="l00922"></a><span class="lineno">  922</span>&#160;        pointing_offset_copy[key] = in.pointing_offsets_arcsec.data[key].segment(0,n_pts);</div>
+<div class="line"><a name="l00923"></a><span class="lineno">  923</span>&#160;    }</div>
+<div class="line"><a name="l00924"></a><span class="lineno">  924</span>&#160; </div>
+<div class="line"><a name="l00925"></a><span class="lineno">  925</span>&#160;    <span class="comment">// make a copy of the timestream flags</span></div>
+<div class="line"><a name="l00926"></a><span class="lineno">  926</span>&#160;    Eigen::Matrix&lt;bool, Eigen::Dynamic, Eigen::Dynamic&gt; masked_flags = in.flags.data.block(0, start_index, n_pts, n_dets);</div>
+<div class="line"><a name="l00927"></a><span class="lineno">  927</span>&#160; </div>
+<div class="line"><a name="l00928"></a><span class="lineno">  928</span>&#160;    <span class="comment">// loop through detectors</span></div>
+<div class="line"><a name="l00929"></a><span class="lineno">  929</span>&#160;    <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;n_dets; ++i) {</div>
+<div class="line"><a name="l00930"></a><span class="lineno">  930</span>&#160;        <span class="comment">// current detector index in apt</span></div>
+<div class="line"><a name="l00931"></a><span class="lineno">  931</span>&#160;        <span class="keyword">auto</span> det_index = i + start_index;</div>
+<div class="line"><a name="l00932"></a><span class="lineno">  932</span>&#160; </div>
+<div class="line"><a name="l00933"></a><span class="lineno">  933</span>&#160;        <span class="keywordtype">double</span> az_off = calib.apt[<span class="stringliteral">&quot;x_t&quot;</span>](det_index);</div>
+<div class="line"><a name="l00934"></a><span class="lineno">  934</span>&#160;        <span class="keywordtype">double</span> el_off = calib.apt[<span class="stringliteral">&quot;y_t&quot;</span>](det_index);</div>
+<div class="line"><a name="l00935"></a><span class="lineno">  935</span>&#160; </div>
+<div class="line"><a name="l00936"></a><span class="lineno">  936</span>&#160;        <span class="comment">// calc tangent plane pointing</span></div>
+<div class="line"><a name="l00937"></a><span class="lineno">  937</span>&#160;        <span class="keyword">auto</span> [lat, lon] = <a class="code" href="../../dd/d06/namespaceengine__utils.html#a0d6c922376faca4b84cc135d29354af8">engine_utils::calc_det_pointing</a>(tel_data_copy, az_off, el_off, pixel_axes,</div>
+<div class="line"><a name="l00938"></a><span class="lineno">  938</span>&#160;                                                          pointing_offset_copy, map_grouping);</div>
+<div class="line"><a name="l00939"></a><span class="lineno">  939</span>&#160; </div>
+<div class="line"><a name="l00940"></a><span class="lineno">  940</span>&#160;        <span class="comment">// distance to center of map</span></div>
+<div class="line"><a name="l00941"></a><span class="lineno">  941</span>&#160;        <span class="keyword">auto</span> dist = (lat.array().pow(2) + lon.array().pow(2)).sqrt();</div>
+<div class="line"><a name="l00942"></a><span class="lineno">  942</span>&#160; </div>
+<div class="line"><a name="l00943"></a><span class="lineno">  943</span>&#160;        <span class="comment">// loop through samples</span></div>
+<div class="line"><a name="l00944"></a><span class="lineno">  944</span>&#160;        <span class="keywordflow">for</span> (Eigen::Index j=0; j&lt;n_pts; ++j) {</div>
+<div class="line"><a name="l00945"></a><span class="lineno">  945</span>&#160;            <span class="comment">// flag samples within radius as bad</span></div>
+<div class="line"><a name="l00946"></a><span class="lineno">  946</span>&#160;            <span class="keywordflow">if</span> (dist(j) &lt; <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a2475a278749730cd867d84c898814d82">mask_radius_arcsec</a>*<a class="code" href="../../d2/d6f/constants_8h.html#a81269dd83ed58e0412ffbf63b57b94df">ASEC_TO_RAD</a>) {</div>
+<div class="line"><a name="l00947"></a><span class="lineno">  947</span>&#160;                masked_flags(j,i) = 1;</div>
+<div class="line"><a name="l00948"></a><span class="lineno">  948</span>&#160;            }</div>
+<div class="line"><a name="l00949"></a><span class="lineno">  949</span>&#160;        }</div>
+<div class="line"><a name="l00950"></a><span class="lineno">  950</span>&#160;    }</div>
+<div class="line"><a name="l00951"></a><span class="lineno">  951</span>&#160; </div>
+<div class="line"><a name="l00952"></a><span class="lineno">  952</span>&#160;    <span class="keywordflow">return</span> std::move(masked_flags);</div>
+<div class="line"><a name="l00953"></a><span class="lineno">  953</span>&#160;}</div>
+<div class="line"><a name="l00954"></a><span class="lineno">  954</span>&#160; </div>
+<div class="line"><a name="l00955"></a><span class="lineno">  955</span>&#160;<span class="keyword">template</span> &lt;TCDataKind tcdata_t, <span class="keyword">class</span> calib_t, <span class="keyword">typename</span> po<span class="keywordtype">int</span>ing_offset_t&gt;</div>
+<div class="line"><a name="l00956"></a><span class="lineno"><a class="line" href="../../de/d76/classtimestream_1_1TCProc.html#a37adceb5e1d72571472ff2d469c2b443">  956</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../de/d76/classtimestream_1_1TCProc.html#a37adceb5e1d72571472ff2d469c2b443">TCProc::append_base_to_netcdf</a>(netCDF::NcFile &amp;fo, <a class="code" href="../../dd/d75/structtimestream_1_1TCData.html">TCData&lt;tcdata_t, Eigen::MatrixXd&gt;</a> &amp;in, std::string map_grouping,</div>
+<div class="line"><a name="l00957"></a><span class="lineno">  957</span>&#160;                                   std::string &amp;pixel_axes, pointing_offset_t &amp;pointing_offsets_arcsec, calib_t &amp;calib) {</div>
+<div class="line"><a name="l00958"></a><span class="lineno">  958</span>&#160;    <span class="keyword">using</span> netCDF::NcDim;</div>
+<div class="line"><a name="l00959"></a><span class="lineno">  959</span>&#160;    <span class="keyword">using</span> netCDF::NcFile;</div>
+<div class="line"><a name="l00960"></a><span class="lineno">  960</span>&#160;    <span class="keyword">using</span> netCDF::NcType;</div>
+<div class="line"><a name="l00961"></a><span class="lineno">  961</span>&#160;    <span class="keyword">using</span> netCDF::NcVar;</div>
+<div class="line"><a name="l00962"></a><span class="lineno">  962</span>&#160;    <span class="keyword">using namespace </span>netCDF::exceptions;</div>
+<div class="line"><a name="l00963"></a><span class="lineno">  963</span>&#160; </div>
+<div class="line"><a name="l00964"></a><span class="lineno">  964</span>&#160;    Eigen::Index n_pts = in.scans.data.rows();</div>
+<div class="line"><a name="l00965"></a><span class="lineno">  965</span>&#160;    Eigen::Index n_dets = in.scans.data.cols();</div>
+<div class="line"><a name="l00966"></a><span class="lineno">  966</span>&#160; </div>
+<div class="line"><a name="l00967"></a><span class="lineno">  967</span>&#160;    <span class="comment">// tangent plane pointing for each detector</span></div>
+<div class="line"><a name="l00968"></a><span class="lineno">  968</span>&#160;    Eigen::MatrixXd lat(n_pts,n_dets), lon(n_pts,n_dets);</div>
+<div class="line"><a name="l00969"></a><span class="lineno">  969</span>&#160; </div>
+<div class="line"><a name="l00970"></a><span class="lineno">  970</span>&#160;    <span class="comment">// loop through detectors and get tangent plane pointing</span></div>
+<div class="line"><a name="l00971"></a><span class="lineno">  971</span>&#160;    <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;n_dets; ++i) {</div>
+<div class="line"><a name="l00972"></a><span class="lineno">  972</span>&#160;        <span class="comment">// detector index in apt</span></div>
+<div class="line"><a name="l00973"></a><span class="lineno">  973</span>&#160;        <span class="keyword">auto</span> det_index = i;</div>
+<div class="line"><a name="l00974"></a><span class="lineno">  974</span>&#160;        <span class="keywordtype">double</span> az_off = calib.apt[<span class="stringliteral">&quot;x_t&quot;</span>](det_index);</div>
+<div class="line"><a name="l00975"></a><span class="lineno">  975</span>&#160;        <span class="keywordtype">double</span> el_off = calib.apt[<span class="stringliteral">&quot;y_t&quot;</span>](det_index);</div>
+<div class="line"><a name="l00976"></a><span class="lineno">  976</span>&#160; </div>
+<div class="line"><a name="l00977"></a><span class="lineno">  977</span>&#160;        <span class="comment">// get tangent pointing</span></div>
+<div class="line"><a name="l00978"></a><span class="lineno">  978</span>&#160;        <span class="keyword">auto</span> [det_lat, det_lon] = <a class="code" href="../../dd/d06/namespaceengine__utils.html#a0d6c922376faca4b84cc135d29354af8">engine_utils::calc_det_pointing</a>(in.tel_data.data, az_off, el_off, pixel_axes,</div>
+<div class="line"><a name="l00979"></a><span class="lineno">  979</span>&#160;                                                                  pointing_offsets_arcsec, map_grouping);</div>
+<div class="line"><a name="l00980"></a><span class="lineno">  980</span>&#160;        lat.col(i) = std::move(det_lat);</div>
+<div class="line"><a name="l00981"></a><span class="lineno">  981</span>&#160;        lon.col(i) = std::move(det_lon);</div>
+<div class="line"><a name="l00982"></a><span class="lineno">  982</span>&#160;    }</div>
+<div class="line"><a name="l00983"></a><span class="lineno">  983</span>&#160; </div>
+<div class="line"><a name="l00984"></a><span class="lineno">  984</span>&#160;    <span class="comment">// get variables</span></div>
+<div class="line"><a name="l00985"></a><span class="lineno">  985</span>&#160;    <span class="keyword">auto</span> vars = fo.getVars();</div>
+<div class="line"><a name="l00986"></a><span class="lineno">  986</span>&#160; </div>
+<div class="line"><a name="l00987"></a><span class="lineno">  987</span>&#160;    <span class="comment">// get absolute coords</span></div>
+<div class="line"><a name="l00988"></a><span class="lineno">  988</span>&#160;    <span class="keywordtype">double</span> cra, cdec;</div>
+<div class="line"><a name="l00989"></a><span class="lineno">  989</span>&#160;    vars.find(<span class="stringliteral">&quot;SourceRa&quot;</span>)-&gt;second.getVar(&amp;cra);</div>
+<div class="line"><a name="l00990"></a><span class="lineno">  990</span>&#160;    vars.find(<span class="stringliteral">&quot;SourceDec&quot;</span>)-&gt;second.getVar(&amp;cdec);</div>
+<div class="line"><a name="l00991"></a><span class="lineno">  991</span>&#160; </div>
+<div class="line"><a name="l00992"></a><span class="lineno">  992</span>&#160;    <span class="comment">// get dimensions</span></div>
+<div class="line"><a name="l00993"></a><span class="lineno">  993</span>&#160;    NcDim n_pts_dim = fo.getDim(<span class="stringliteral">&quot;n_pts&quot;</span>);</div>
+<div class="line"><a name="l00994"></a><span class="lineno">  994</span>&#160;    NcDim n_dets_dim = fo.getDim(<span class="stringliteral">&quot;n_dets&quot;</span>);</div>
+<div class="line"><a name="l00995"></a><span class="lineno">  995</span>&#160; </div>
+<div class="line"><a name="l00996"></a><span class="lineno">  996</span>&#160;    <span class="comment">// number of samples currently in file</span></div>
+<div class="line"><a name="l00997"></a><span class="lineno">  997</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> n_pts_exists = n_pts_dim.getSize();</div>
+<div class="line"><a name="l00998"></a><span class="lineno">  998</span>&#160;    <span class="comment">// number of detectors currently in file</span></div>
+<div class="line"><a name="l00999"></a><span class="lineno">  999</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> n_dets_exists = n_dets_dim.getSize();</div>
+<div class="line"><a name="l01000"></a><span class="lineno"> 1000</span>&#160; </div>
+<div class="line"><a name="l01001"></a><span class="lineno"> 1001</span>&#160;    <span class="comment">// start indices for data</span></div>
+<div class="line"><a name="l01002"></a><span class="lineno"> 1002</span>&#160;    std::vector&lt;std::size_t&gt; start_index = {n_pts_exists, 0};</div>
+<div class="line"><a name="l01003"></a><span class="lineno"> 1003</span>&#160;    <span class="comment">// size for data</span></div>
+<div class="line"><a name="l01004"></a><span class="lineno"> 1004</span>&#160;    std::vector&lt;std::size_t&gt; size = {1, TULA_SIZET(n_dets)};</div>
+<div class="line"><a name="l01005"></a><span class="lineno"> 1005</span>&#160; </div>
+<div class="line"><a name="l01006"></a><span class="lineno"> 1006</span>&#160;    <span class="comment">// start index for telescope data</span></div>
+<div class="line"><a name="l01007"></a><span class="lineno"> 1007</span>&#160;    std::vector&lt;std::size_t&gt; start_index_tel = {n_pts_exists};</div>
+<div class="line"><a name="l01008"></a><span class="lineno"> 1008</span>&#160;    <span class="comment">// size for telescope data</span></div>
+<div class="line"><a name="l01009"></a><span class="lineno"> 1009</span>&#160;    std::vector&lt;std::size_t&gt; size_tel = {TULA_SIZET(n_pts)};</div>
+<div class="line"><a name="l01010"></a><span class="lineno"> 1010</span>&#160; </div>
+<div class="line"><a name="l01011"></a><span class="lineno"> 1011</span>&#160;    <span class="comment">// start index for apt table</span></div>
+<div class="line"><a name="l01012"></a><span class="lineno"> 1012</span>&#160;    std::vector&lt;std::size_t&gt; start_index_apt = {0};</div>
+<div class="line"><a name="l01013"></a><span class="lineno"> 1013</span>&#160;    <span class="comment">// size for apt</span></div>
+<div class="line"><a name="l01014"></a><span class="lineno"> 1014</span>&#160;    std::vector&lt;std::size_t&gt; size_apt = {1};</div>
+<div class="line"><a name="l01015"></a><span class="lineno"> 1015</span>&#160; </div>
+<div class="line"><a name="l01016"></a><span class="lineno"> 1016</span>&#160;    <span class="comment">// get timestream variables</span></div>
+<div class="line"><a name="l01017"></a><span class="lineno"> 1017</span>&#160;    NcVar signal_v = fo.getVar(<span class="stringliteral">&quot;signal&quot;</span>);</div>
+<div class="line"><a name="l01018"></a><span class="lineno"> 1018</span>&#160;    NcVar flags_v = fo.getVar(<span class="stringliteral">&quot;flags&quot;</span>);</div>
+<div class="line"><a name="l01019"></a><span class="lineno"> 1019</span>&#160;    NcVar kernel_v = fo.getVar(<span class="stringliteral">&quot;kernel&quot;</span>);</div>
+<div class="line"><a name="l01020"></a><span class="lineno"> 1020</span>&#160; </div>
+<div class="line"><a name="l01021"></a><span class="lineno"> 1021</span>&#160;    <span class="comment">// detector tangent plane pointing</span></div>
+<div class="line"><a name="l01022"></a><span class="lineno"> 1022</span>&#160;    NcVar det_lat_v = fo.getVar(<span class="stringliteral">&quot;det_lat&quot;</span>);</div>
+<div class="line"><a name="l01023"></a><span class="lineno"> 1023</span>&#160;    NcVar det_lon_v = fo.getVar(<span class="stringliteral">&quot;det_lon&quot;</span>);</div>
+<div class="line"><a name="l01024"></a><span class="lineno"> 1024</span>&#160; </div>
+<div class="line"><a name="l01025"></a><span class="lineno"> 1025</span>&#160;    <span class="comment">// detector absolute pointing</span></div>
+<div class="line"><a name="l01026"></a><span class="lineno"> 1026</span>&#160;    NcVar det_ra_v = fo.getVar(<span class="stringliteral">&quot;det_ra&quot;</span>);</div>
+<div class="line"><a name="l01027"></a><span class="lineno"> 1027</span>&#160;    NcVar det_dec_v = fo.getVar(<span class="stringliteral">&quot;det_dec&quot;</span>);</div>
+<div class="line"><a name="l01028"></a><span class="lineno"> 1028</span>&#160; </div>
+<div class="line"><a name="l01029"></a><span class="lineno"> 1029</span>&#160;    <span class="comment">// append data (doing this per row is way faster than transposing</span></div>
+<div class="line"><a name="l01030"></a><span class="lineno"> 1030</span>&#160;    <span class="comment">// and populating them at once)</span></div>
+<div class="line"><a name="l01031"></a><span class="lineno"> 1031</span>&#160;    <span class="keywordflow">for</span> (std::size_t i=0; i&lt;TULA_SIZET(n_pts); ++i) {</div>
+<div class="line"><a name="l01032"></a><span class="lineno"> 1032</span>&#160;        start_index[0] = n_pts_exists + i;</div>
+<div class="line"><a name="l01033"></a><span class="lineno"> 1033</span>&#160;        <span class="comment">// append scans</span></div>
+<div class="line"><a name="l01034"></a><span class="lineno"> 1034</span>&#160;        Eigen::VectorXd scans = in.scans.data.row(i);</div>
+<div class="line"><a name="l01035"></a><span class="lineno"> 1035</span>&#160;        signal_v.putVar(start_index, size, scans.data());</div>
+<div class="line"><a name="l01036"></a><span class="lineno"> 1036</span>&#160; </div>
+<div class="line"><a name="l01037"></a><span class="lineno"> 1037</span>&#160;        <span class="comment">// append flags</span></div>
+<div class="line"><a name="l01038"></a><span class="lineno"> 1038</span>&#160;        Eigen::VectorXi flags_int = in.flags.data.row(i).template cast&lt;int&gt; ();</div>
+<div class="line"><a name="l01039"></a><span class="lineno"> 1039</span>&#160;        flags_v.putVar(start_index, size, flags_int.data());</div>
+<div class="line"><a name="l01040"></a><span class="lineno"> 1040</span>&#160; </div>
+<div class="line"><a name="l01041"></a><span class="lineno"> 1041</span>&#160;        <span class="comment">// append kernel</span></div>
+<div class="line"><a name="l01042"></a><span class="lineno"> 1042</span>&#160;        <span class="keywordflow">if</span> (!kernel_v.isNull()) {</div>
+<div class="line"><a name="l01043"></a><span class="lineno"> 1043</span>&#160;            Eigen::VectorXd kernel = in.kernel.data.row(i);</div>
+<div class="line"><a name="l01044"></a><span class="lineno"> 1044</span>&#160;            kernel_v.putVar(start_index, size, kernel.data());</div>
+<div class="line"><a name="l01045"></a><span class="lineno"> 1045</span>&#160;        }</div>
+<div class="line"><a name="l01046"></a><span class="lineno"> 1046</span>&#160; </div>
+<div class="line"><a name="l01047"></a><span class="lineno"> 1047</span>&#160;        <span class="comment">// append detector latitudes</span></div>
+<div class="line"><a name="l01048"></a><span class="lineno"> 1048</span>&#160;        Eigen::VectorXd lat_row = lat.row(i);</div>
+<div class="line"><a name="l01049"></a><span class="lineno"> 1049</span>&#160;        det_lat_v.putVar(start_index, size, lat_row.data());</div>
+<div class="line"><a name="l01050"></a><span class="lineno"> 1050</span>&#160; </div>
+<div class="line"><a name="l01051"></a><span class="lineno"> 1051</span>&#160;        <span class="comment">// append detector longitudes</span></div>
+<div class="line"><a name="l01052"></a><span class="lineno"> 1052</span>&#160;        Eigen::VectorXd lon_row = lon.row(i);</div>
+<div class="line"><a name="l01053"></a><span class="lineno"> 1053</span>&#160;        det_lon_v.putVar(start_index, size, lon_row.data());</div>
+<div class="line"><a name="l01054"></a><span class="lineno"> 1054</span>&#160; </div>
+<div class="line"><a name="l01055"></a><span class="lineno"> 1055</span>&#160;        <span class="keywordflow">if</span> (pixel_axes == <span class="stringliteral">&quot;radec&quot;</span>) {</div>
+<div class="line"><a name="l01056"></a><span class="lineno"> 1056</span>&#160;            <span class="comment">// get absolute pointing</span></div>
+<div class="line"><a name="l01057"></a><span class="lineno"> 1057</span>&#160;            <span class="keyword">auto</span> [dec, ra] = <a class="code" href="../../dd/d06/namespaceengine__utils.html#a25c3470ab740166d1ecffb0f89b9fe60">engine_utils::tangent_to_abs</a>(lat_row, lon_row, cra, cdec);</div>
+<div class="line"><a name="l01058"></a><span class="lineno"> 1058</span>&#160; </div>
+<div class="line"><a name="l01059"></a><span class="lineno"> 1059</span>&#160;            <span class="comment">// append detector ra</span></div>
+<div class="line"><a name="l01060"></a><span class="lineno"> 1060</span>&#160;            det_ra_v.putVar(start_index, size, ra.data());</div>
+<div class="line"><a name="l01061"></a><span class="lineno"> 1061</span>&#160; </div>
+<div class="line"><a name="l01062"></a><span class="lineno"> 1062</span>&#160;            <span class="comment">// append detector dec</span></div>
+<div class="line"><a name="l01063"></a><span class="lineno"> 1063</span>&#160;            det_dec_v.putVar(start_index, size, dec.data());</div>
+<div class="line"><a name="l01064"></a><span class="lineno"> 1064</span>&#160;        }</div>
+<div class="line"><a name="l01065"></a><span class="lineno"> 1065</span>&#160;    }</div>
+<div class="line"><a name="l01066"></a><span class="lineno"> 1066</span>&#160; </div>
+<div class="line"><a name="l01067"></a><span class="lineno"> 1067</span>&#160;    <span class="comment">// append telescope</span></div>
+<div class="line"><a name="l01068"></a><span class="lineno"> 1068</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; x: in.tel_data.data) {</div>
+<div class="line"><a name="l01069"></a><span class="lineno"> 1069</span>&#160;        NcVar tel_data_v = fo.getVar(x.first);</div>
+<div class="line"><a name="l01070"></a><span class="lineno"> 1070</span>&#160;        tel_data_v.putVar(start_index_tel, size_tel, x.second.data());</div>
+<div class="line"><a name="l01071"></a><span class="lineno"> 1071</span>&#160;    }</div>
+<div class="line"><a name="l01072"></a><span class="lineno"> 1072</span>&#160; </div>
+<div class="line"><a name="l01073"></a><span class="lineno"> 1073</span>&#160;    <span class="comment">// append pointing offsets</span></div>
+<div class="line"><a name="l01074"></a><span class="lineno"> 1074</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; x: in.pointing_offsets_arcsec.data) {</div>
+<div class="line"><a name="l01075"></a><span class="lineno"> 1075</span>&#160;        NcVar offset_v = fo.getVar(<span class="stringliteral">&quot;pointing_offset_&quot;</span>+x.first);</div>
+<div class="line"><a name="l01076"></a><span class="lineno"> 1076</span>&#160;        offset_v.putVar(start_index_tel, size_tel, x.second.data());</div>
+<div class="line"><a name="l01077"></a><span class="lineno"> 1077</span>&#160;    }</div>
+<div class="line"><a name="l01078"></a><span class="lineno"> 1078</span>&#160; </div>
+<div class="line"><a name="l01079"></a><span class="lineno"> 1079</span>&#160;    <span class="comment">// append hwpr angle</span></div>
+<div class="line"><a name="l01080"></a><span class="lineno"> 1080</span>&#160;    <span class="keywordflow">if</span> (calib.run_hwpr) {</div>
+<div class="line"><a name="l01081"></a><span class="lineno"> 1081</span>&#160;        NcVar hwpr_v = fo.getVar(<span class="stringliteral">&quot;hwpr&quot;</span>);</div>
+<div class="line"><a name="l01082"></a><span class="lineno"> 1082</span>&#160;        hwpr_v.putVar(start_index_tel, size_tel, in.hwpr_angle.data.data());</div>
+<div class="line"><a name="l01083"></a><span class="lineno"> 1083</span>&#160;    }</div>
 <div class="line"><a name="l01084"></a><span class="lineno"> 1084</span>&#160; </div>
-<div class="line"><a name="l01085"></a><span class="lineno"> 1085</span>&#160;    <span class="comment">// overwrite apt table (can be updated between beammap iterations)</span></div>
-<div class="line"><a name="l01086"></a><span class="lineno"> 1086</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; x: calib.apt) {</div>
-<div class="line"><a name="l01087"></a><span class="lineno"> 1087</span>&#160;        netCDF::NcVar apt_v = fo.getVar(<span class="stringliteral">&quot;apt_&quot;</span> + x.first);</div>
-<div class="line"><a name="l01088"></a><span class="lineno"> 1088</span>&#160;        <span class="keywordflow">if</span> (!apt_v.isNull()) {</div>
-<div class="line"><a name="l01089"></a><span class="lineno"> 1089</span>&#160;            <span class="keywordflow">for</span> (std::size_t i=0; i&lt;TULA_SIZET(n_dets_exists); ++i) {</div>
-<div class="line"><a name="l01090"></a><span class="lineno"> 1090</span>&#160;                start_index_apt[0] = i;</div>
-<div class="line"><a name="l01091"></a><span class="lineno"> 1091</span>&#160;                apt_v.putVar(start_index_apt, size_apt, &amp;calib.apt[x.first](i));</div>
-<div class="line"><a name="l01092"></a><span class="lineno"> 1092</span>&#160;            }</div>
-<div class="line"><a name="l01093"></a><span class="lineno"> 1093</span>&#160;        }</div>
-<div class="line"><a name="l01094"></a><span class="lineno"> 1094</span>&#160;    }</div>
-<div class="line"><a name="l01095"></a><span class="lineno"> 1095</span>&#160; </div>
-<div class="line"><a name="l01096"></a><span class="lineno"> 1096</span>&#160;    <span class="comment">// vector to hold current scan indices</span></div>
-<div class="line"><a name="l01097"></a><span class="lineno"> 1097</span>&#160;    Eigen::VectorXd scan_indices(2);</div>
-<div class="line"><a name="l01098"></a><span class="lineno"> 1098</span>&#160; </div>
-<div class="line"><a name="l01099"></a><span class="lineno"> 1099</span>&#160;    <span class="comment">// if not on first scan, grab last scan and add size of current scan</span></div>
-<div class="line"><a name="l01100"></a><span class="lineno"> 1100</span>&#160;    <span class="keywordflow">if</span> (in.index.data &gt; 0) {</div>
-<div class="line"><a name="l01101"></a><span class="lineno"> 1101</span>&#160;        <span class="comment">// start indices for data</span></div>
-<div class="line"><a name="l01102"></a><span class="lineno"> 1102</span>&#160;        std::vector&lt;std::size_t&gt; scan_indices_start_index = {TULA_SIZET(in.index.data-1), 0};</div>
-<div class="line"><a name="l01103"></a><span class="lineno"> 1103</span>&#160;        <span class="comment">// size for data</span></div>
-<div class="line"><a name="l01104"></a><span class="lineno"> 1104</span>&#160;        std::vector&lt;std::size_t&gt; scan_indices_size = {1, 2};</div>
-<div class="line"><a name="l01105"></a><span class="lineno"> 1105</span>&#160;        vars.find(<span class="stringliteral">&quot;scan_indices&quot;</span>)-&gt;second.getVar(scan_indices_start_index,scan_indices_size,scan_indices.data());</div>
-<div class="line"><a name="l01106"></a><span class="lineno"> 1106</span>&#160; </div>
-<div class="line"><a name="l01107"></a><span class="lineno"> 1107</span>&#160;        scan_indices = scan_indices.array() + in.scans.data.rows();</div>
-<div class="line"><a name="l01108"></a><span class="lineno"> 1108</span>&#160;    }</div>
-<div class="line"><a name="l01109"></a><span class="lineno"> 1109</span>&#160; </div>
-<div class="line"><a name="l01110"></a><span class="lineno"> 1110</span>&#160;    <span class="comment">// otherwise, use size of this scan</span></div>
-<div class="line"><a name="l01111"></a><span class="lineno"> 1111</span>&#160;    <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l01112"></a><span class="lineno"> 1112</span>&#160;        scan_indices(0) = 0;</div>
-<div class="line"><a name="l01113"></a><span class="lineno"> 1113</span>&#160;        scan_indices(1) = in.scans.data.rows() - 1;</div>
-<div class="line"><a name="l01114"></a><span class="lineno"> 1114</span>&#160;    }</div>
-<div class="line"><a name="l01115"></a><span class="lineno"> 1115</span>&#160; </div>
-<div class="line"><a name="l01116"></a><span class="lineno"> 1116</span>&#160;    <span class="comment">// add current scan indices row</span></div>
-<div class="line"><a name="l01117"></a><span class="lineno"> 1117</span>&#160;    std::vector&lt;std::size_t&gt; scan_indices_start_index = {TULA_SIZET(in.index.data), 0};</div>
-<div class="line"><a name="l01118"></a><span class="lineno"> 1118</span>&#160;    std::vector&lt;std::size_t&gt; scan_indices_size = {1, 2};</div>
-<div class="line"><a name="l01119"></a><span class="lineno"> 1119</span>&#160;    NcVar scan_indices_v = fo.getVar(<span class="stringliteral">&quot;scan_indices&quot;</span>);</div>
-<div class="line"><a name="l01120"></a><span class="lineno"> 1120</span>&#160;    scan_indices_v.putVar(scan_indices_start_index, scan_indices_size,scan_indices.data());</div>
-<div class="line"><a name="l01121"></a><span class="lineno"> 1121</span>&#160;}</div>
-<div class="line"><a name="l01122"></a><span class="lineno"> 1122</span>&#160;} <span class="comment">// namespace timestream</span></div>
+<div class="line"><a name="l01085"></a><span class="lineno"> 1085</span>&#160; </div>
+<div class="line"><a name="l01086"></a><span class="lineno"> 1086</span>&#160;    <span class="comment">// overwrite apt table (can be updated between beammap iterations)</span></div>
+<div class="line"><a name="l01087"></a><span class="lineno"> 1087</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; x: calib.apt) {</div>
+<div class="line"><a name="l01088"></a><span class="lineno"> 1088</span>&#160;        netCDF::NcVar apt_v = fo.getVar(<span class="stringliteral">&quot;apt_&quot;</span> + x.first);</div>
+<div class="line"><a name="l01089"></a><span class="lineno"> 1089</span>&#160;        <span class="keywordflow">if</span> (!apt_v.isNull()) {</div>
+<div class="line"><a name="l01090"></a><span class="lineno"> 1090</span>&#160;            <span class="keywordflow">for</span> (std::size_t i=0; i&lt;TULA_SIZET(n_dets_exists); ++i) {</div>
+<div class="line"><a name="l01091"></a><span class="lineno"> 1091</span>&#160;                start_index_apt[0] = i;</div>
+<div class="line"><a name="l01092"></a><span class="lineno"> 1092</span>&#160;                apt_v.putVar(start_index_apt, size_apt, &amp;calib.apt[x.first](i));</div>
+<div class="line"><a name="l01093"></a><span class="lineno"> 1093</span>&#160;            }</div>
+<div class="line"><a name="l01094"></a><span class="lineno"> 1094</span>&#160;        }</div>
+<div class="line"><a name="l01095"></a><span class="lineno"> 1095</span>&#160;    }</div>
+<div class="line"><a name="l01096"></a><span class="lineno"> 1096</span>&#160; </div>
+<div class="line"><a name="l01097"></a><span class="lineno"> 1097</span>&#160;    <span class="comment">// vector to hold current scan indices</span></div>
+<div class="line"><a name="l01098"></a><span class="lineno"> 1098</span>&#160;    Eigen::VectorXd scan_indices(2);</div>
+<div class="line"><a name="l01099"></a><span class="lineno"> 1099</span>&#160; </div>
+<div class="line"><a name="l01100"></a><span class="lineno"> 1100</span>&#160;    <span class="comment">// if not on first scan, grab last scan and add size of current scan</span></div>
+<div class="line"><a name="l01101"></a><span class="lineno"> 1101</span>&#160;    <span class="keywordflow">if</span> (in.index.data &gt; 0) {</div>
+<div class="line"><a name="l01102"></a><span class="lineno"> 1102</span>&#160;        <span class="comment">// start indices for data</span></div>
+<div class="line"><a name="l01103"></a><span class="lineno"> 1103</span>&#160;        std::vector&lt;std::size_t&gt; scan_indices_start_index = {TULA_SIZET(in.index.data-1), 0};</div>
+<div class="line"><a name="l01104"></a><span class="lineno"> 1104</span>&#160;        <span class="comment">// size for data</span></div>
+<div class="line"><a name="l01105"></a><span class="lineno"> 1105</span>&#160;        std::vector&lt;std::size_t&gt; scan_indices_size = {1, 2};</div>
+<div class="line"><a name="l01106"></a><span class="lineno"> 1106</span>&#160;        vars.find(<span class="stringliteral">&quot;scan_indices&quot;</span>)-&gt;second.getVar(scan_indices_start_index,scan_indices_size,scan_indices.data());</div>
+<div class="line"><a name="l01107"></a><span class="lineno"> 1107</span>&#160; </div>
+<div class="line"><a name="l01108"></a><span class="lineno"> 1108</span>&#160;        scan_indices = scan_indices.array() + in.scans.data.rows();</div>
+<div class="line"><a name="l01109"></a><span class="lineno"> 1109</span>&#160;    }</div>
+<div class="line"><a name="l01110"></a><span class="lineno"> 1110</span>&#160; </div>
+<div class="line"><a name="l01111"></a><span class="lineno"> 1111</span>&#160;    <span class="comment">// otherwise, use size of this scan</span></div>
+<div class="line"><a name="l01112"></a><span class="lineno"> 1112</span>&#160;    <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l01113"></a><span class="lineno"> 1113</span>&#160;        scan_indices(0) = 0;</div>
+<div class="line"><a name="l01114"></a><span class="lineno"> 1114</span>&#160;        scan_indices(1) = in.scans.data.rows() - 1;</div>
+<div class="line"><a name="l01115"></a><span class="lineno"> 1115</span>&#160;    }</div>
+<div class="line"><a name="l01116"></a><span class="lineno"> 1116</span>&#160; </div>
+<div class="line"><a name="l01117"></a><span class="lineno"> 1117</span>&#160;    <span class="comment">// add current scan indices row</span></div>
+<div class="line"><a name="l01118"></a><span class="lineno"> 1118</span>&#160;    std::vector&lt;std::size_t&gt; scan_indices_start_index = {TULA_SIZET(in.index.data), 0};</div>
+<div class="line"><a name="l01119"></a><span class="lineno"> 1119</span>&#160;    std::vector&lt;std::size_t&gt; scan_indices_size = {1, 2};</div>
+<div class="line"><a name="l01120"></a><span class="lineno"> 1120</span>&#160;    NcVar scan_indices_v = fo.getVar(<span class="stringliteral">&quot;scan_indices&quot;</span>);</div>
+<div class="line"><a name="l01121"></a><span class="lineno"> 1121</span>&#160;    scan_indices_v.putVar(scan_indices_start_index, scan_indices_size,scan_indices.data());</div>
+<div class="line"><a name="l01122"></a><span class="lineno"> 1122</span>&#160;}</div>
+<div class="line"><a name="l01123"></a><span class="lineno"> 1123</span>&#160;} <span class="comment">// namespace timestream</span></div>
 <div class="ttc" id="aclassengine__utils_1_1toltecIO_html"><div class="ttname"><a href="../../dc/d1a/classengine__utils_1_1toltecIO.html">engine_utils::toltecIO</a></div><div class="ttdef"><b>Definition:</b> toltec_io.h:10</div></div>
 <div class="ttc" id="aclassengine__utils_1_1toltecIO_html_a02acf06bde7d19f865b91f9d985ae0c3"><div class="ttname"><a href="../../dc/d1a/classengine__utils_1_1toltecIO.html#a02acf06bde7d19f865b91f9d985ae0c3">engine_utils::toltecIO::array_name_map</a></div><div class="ttdeci">std::map&lt; Eigen::Index, std::string &gt; array_name_map</div><div class="ttdef"><b>Definition:</b> toltec_io.h:54</div></div>
 <div class="ttc" id="aclassfitsIO_html"><div class="ttname"><a href="../../df/d8d/classfitsIO.html">fitsIO</a></div><div class="ttdef"><b>Definition:</b> fits_io.h:10</div></div>
@@ -1206,7 +1207,7 @@ $(function() {
 <div class="ttc" id="aclassmapmaking_1_1MapBuffer_html_af5030a66f350a00e6f884d54ee15b075"><div class="ttname"><a href="../../df/d1c/classmapmaking_1_1MapBuffer.html#af5030a66f350a00e6f884d54ee15b075">mapmaking::MapBuffer::noise</a></div><div class="ttdeci">std::vector&lt; Eigen::Tensor&lt; double, 3 &gt; &gt; noise</div><div class="ttdef"><b>Definition:</b> map.h:81</div></div>
 <div class="ttc" id="aclassmapmaking_1_1MapBuffer_html_af5d7306d6d808eca43e0890e4614e5ec"><div class="ttname"><a href="../../df/d1c/classmapmaking_1_1MapBuffer.html#af5d7306d6d808eca43e0890e4614e5ec">mapmaking::MapBuffer::pixel_size_rad</a></div><div class="ttdeci">double pixel_size_rad</div><div class="ttdef"><b>Definition:</b> map.h:69</div></div>
 <div class="ttc" id="aclasstimestream_1_1TCProc_html"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html">timestream::TCProc</a></div><div class="ttdef"><b>Definition:</b> timestream.h:257</div></div>
-<div class="ttc" id="aclasstimestream_1_1TCProc_html_a0253c6cbf62ed4593790938217dc2691"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#a0253c6cbf62ed4593790938217dc2691">timestream::TCProc::mask_region</a></div><div class="ttdeci">auto mask_region(TCData&lt; tcdata_t, Eigen::MatrixXd &gt; &amp;, calib_t &amp;, std::string, std::string, int, int, int)</div><div class="ttdef"><b>Definition:</b> timestream.h:905</div></div>
+<div class="ttc" id="aclasstimestream_1_1TCProc_html_a0253c6cbf62ed4593790938217dc2691"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#a0253c6cbf62ed4593790938217dc2691">timestream::TCProc::mask_region</a></div><div class="ttdeci">auto mask_region(TCData&lt; tcdata_t, Eigen::MatrixXd &gt; &amp;, calib_t &amp;, std::string, std::string, int, int, int)</div><div class="ttdef"><b>Definition:</b> timestream.h:906</div></div>
 <div class="ttc" id="aclasstimestream_1_1TCProc_html_a0aad485249f27f9e2bfee82e111eb9d5"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#a0aad485249f27f9e2bfee82e111eb9d5">timestream::TCProc::get_grouping</a></div><div class="ttdeci">auto get_grouping(std::string, calib_t &amp;, int)</div><div class="ttdef"><b>Definition:</b> timestream.h:572</div></div>
 <div class="ttc" id="aclasstimestream_1_1TCProc_html_a0ad1153d234d586426bfaf2de84727a4"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#a0ad1153d234d586426bfaf2de84727a4">timestream::TCProc::upper_weight_factor</a></div><div class="ttdeci">double upper_weight_factor</div><div class="ttdef"><b>Definition:</b> timestream.h:302</div></div>
 <div class="ttc" id="aclasstimestream_1_1TCProc_html_a11bf4325eea81f7b57e68cab1affc2aa"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#a11bf4325eea81f7b57e68cab1affc2aa">timestream::TCProc::fruit_loops_path</a></div><div class="ttdeci">std::string fruit_loops_path</div><div class="ttdef"><b>Definition:</b> timestream.h:281</div></div>
@@ -1215,16 +1216,16 @@ $(function() {
 <div class="ttc" id="aclasstimestream_1_1TCProc_html_a1e309acc33df9d201138a213955d3be6"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#a1e309acc33df9d201138a213955d3be6">timestream::TCProc::save_all_iters</a></div><div class="ttdeci">bool save_all_iters</div><div class="ttdef"><b>Definition:</b> timestream.h:293</div></div>
 <div class="ttc" id="aclasstimestream_1_1TCProc_html_a2475a278749730cd867d84c898814d82"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#a2475a278749730cd867d84c898814d82">timestream::TCProc::mask_radius_arcsec</a></div><div class="ttdeci">double mask_radius_arcsec</div><div class="ttdef"><b>Definition:</b> timestream.h:305</div></div>
 <div class="ttc" id="aclasstimestream_1_1TCProc_html_a34a2a1e1665aa887a1fece66b8b3adc8"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#a34a2a1e1665aa887a1fece66b8b3adc8">timestream::TCProc::run_tod_output</a></div><div class="ttdeci">bool run_tod_output</div><div class="ttdef"><b>Definition:</b> timestream.h:276</div></div>
-<div class="ttc" id="aclasstimestream_1_1TCProc_html_a37adceb5e1d72571472ff2d469c2b443"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#a37adceb5e1d72571472ff2d469c2b443">timestream::TCProc::append_base_to_netcdf</a></div><div class="ttdeci">void append_base_to_netcdf(netCDF::NcFile &amp;, TCData&lt; tcdata_t, Eigen::MatrixXd &gt; &amp;, std::string, std::string &amp;, pointing_offset_t &amp;, calib_t &amp;)</div><div class="ttdef"><b>Definition:</b> timestream.h:955</div></div>
+<div class="ttc" id="aclasstimestream_1_1TCProc_html_a37adceb5e1d72571472ff2d469c2b443"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#a37adceb5e1d72571472ff2d469c2b443">timestream::TCProc::append_base_to_netcdf</a></div><div class="ttdeci">void append_base_to_netcdf(netCDF::NcFile &amp;, TCData&lt; tcdata_t, Eigen::MatrixXd &gt; &amp;, std::string, std::string &amp;, pointing_offset_t &amp;, calib_t &amp;)</div><div class="ttdef"><b>Definition:</b> timestream.h:956</div></div>
 <div class="ttc" id="aclasstimestream_1_1TCProc_html_a4653fa2a783c4482eb31b0b247f8ad5b"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#a4653fa2a783c4482eb31b0b247f8ad5b">timestream::TCProc::init_fruit_loops_path</a></div><div class="ttdeci">std::vector&lt; std::string &gt; init_fruit_loops_path</div><div class="ttdef"><b>Definition:</b> timestream.h:283</div></div>
 <div class="ttc" id="aclasstimestream_1_1TCProc_html_a4a39a6fedec09eedc9a3dacb2f901a57"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#a4a39a6fedec09eedc9a3dacb2f901a57">timestream::TCProc::lower_weight_factor</a></div><div class="ttdeci">double lower_weight_factor</div><div class="ttdef"><b>Definition:</b> timestream.h:302</div></div>
 <div class="ttc" id="aclasstimestream_1_1TCProc_html_a4e5de409684a1bfb2a89419027e55aa7"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#a4e5de409684a1bfb2a89419027e55aa7">timestream::TCProc::map_to_tod</a></div><div class="ttdeci">void map_to_tod(mb_t &amp;, TCData&lt; tcdata_t, Eigen::MatrixXd &gt; &amp;, calib_t &amp;, Eigen::DenseBase&lt; Derived &gt; &amp;, std::string, std::string)</div><div class="ttdef"><b>Definition:</b> timestream.h:624</div></div>
 <div class="ttc" id="aclasstimestream_1_1TCProc_html_a6282cc8286b8881b57f3cc62ce3ec441"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#a6282cc8286b8881b57f3cc62ce3ec441">timestream::TCProc::write_evals</a></div><div class="ttdeci">bool write_evals</div><div class="ttdef"><b>Definition:</b> timestream.h:276</div></div>
 <div class="ttc" id="aclasstimestream_1_1TCProc_html_a714967fba886255d6347e1920f970a90"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#a714967fba886255d6347e1920f970a90">timestream::TCProc::iter_lim</a></div><div class="ttdeci">int iter_lim</div><div class="ttdef"><b>Definition:</b> timestream.h:299</div></div>
-<div class="ttc" id="aclasstimestream_1_1TCProc_html_a9d8562e7ccb7d73e21a1a6f4146afef5"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#a9d8562e7ccb7d73e21a1a6f4146afef5">timestream::TCProc::remove_uncorrelated</a></div><div class="ttdeci">auto remove_uncorrelated(TCData&lt; tcdata_t, Eigen::MatrixXd &gt; &amp;, calib_t &amp;, std::string)</div><div class="ttdef"><b>Definition:</b> timestream.h:810</div></div>
+<div class="ttc" id="aclasstimestream_1_1TCProc_html_a9d8562e7ccb7d73e21a1a6f4146afef5"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#a9d8562e7ccb7d73e21a1a6f4146afef5">timestream::TCProc::remove_uncorrelated</a></div><div class="ttdeci">auto remove_uncorrelated(TCData&lt; tcdata_t, Eigen::MatrixXd &gt; &amp;, calib_t &amp;, std::string)</div><div class="ttdef"><b>Definition:</b> timestream.h:811</div></div>
 <div class="ttc" id="aclasstimestream_1_1TCProc_html_aa43031fd1197ab0c2c76f9863a90f330"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#aa43031fd1197ab0c2c76f9863a90f330">timestream::TCProc::toltec_io</a></div><div class="ttdeci">engine_utils::toltecIO toltec_io</div><div class="ttdef"><b>Definition:</b> timestream.h:263</div></div>
 <div class="ttc" id="aclasstimestream_1_1TCProc_html_aa8c95e7342a71ebef0c5f95374fc990d"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#aa8c95e7342a71ebef0c5f95374fc990d">timestream::TCProc::precompute_pointing</a></div><div class="ttdeci">void precompute_pointing(TCData&lt; tcdata_t, Eigen::MatrixXd &gt; &amp;, calib_t &amp;, std::string, std::string)</div><div class="ttdef"><b>Definition:</b> timestream.h:599</div></div>
-<div class="ttc" id="aclasstimestream_1_1TCProc_html_ab9aee88fa87eab13e14b9c95fbbaee13"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#ab9aee88fa87eab13e14b9c95fbbaee13">timestream::TCProc::remove_bad_dets</a></div><div class="ttdeci">auto remove_bad_dets(TCData&lt; tcdata_t, Eigen::MatrixXd &gt; &amp;, calib_t &amp;, std::string)</div><div class="ttdef"><b>Definition:</b> timestream.h:690</div></div>
+<div class="ttc" id="aclasstimestream_1_1TCProc_html_ab9aee88fa87eab13e14b9c95fbbaee13"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#ab9aee88fa87eab13e14b9c95fbbaee13">timestream::TCProc::remove_bad_dets</a></div><div class="ttdeci">auto remove_bad_dets(TCData&lt; tcdata_t, Eigen::MatrixXd &gt; &amp;, calib_t &amp;, std::string)</div><div class="ttdef"><b>Definition:</b> timestream.h:691</div></div>
 <div class="ttc" id="aclasstimestream_1_1TCProc_html_abe69a66edc08d660de4e706a62aa0b11"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#abe69a66edc08d660de4e706a62aa0b11">timestream::TCProc::fruit_loops_iters</a></div><div class="ttdeci">int fruit_loops_iters</div><div class="ttdef"><b>Definition:</b> timestream.h:287</div></div>
 <div class="ttc" id="aclasstimestream_1_1TCProc_html_ac502f770ba4426077b5aa859b9df7eba"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#ac502f770ba4426077b5aa859b9df7eba">timestream::TCProc::SourceType</a></div><div class="ttdeci">SourceType</div><div class="ttdef"><b>Definition:</b> timestream.h:266</div></div>
 <div class="ttc" id="aclasstimestream_1_1TCProc_html_ac502f770ba4426077b5aa859b9df7ebaa60e8bd60f6785fc23b128b93ba20576c"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#ac502f770ba4426077b5aa859b9df7ebaa60e8bd60f6785fc23b128b93ba20576c">timestream::TCProc::NegativeGaussian</a></div><div class="ttdeci">@ NegativeGaussian</div><div class="ttdef"><b>Definition:</b> timestream.h:268</div></div>
@@ -1237,7 +1238,7 @@ $(function() {
 <div class="ttc" id="aclasstimestream_1_1TCProc_html_ad97308a31d29fb8b5105076301e6b0c9"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#ad97308a31d29fb8b5105076301e6b0c9">timestream::TCProc::run_fruit_loops</a></div><div class="ttdeci">bool run_fruit_loops</div><div class="ttdef"><b>Definition:</b> timestream.h:279</div></div>
 <div class="ttc" id="aclasstimestream_1_1TCProc_html_ae1116553a62a1dd362ba8cbe9fd2e39a"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#ae1116553a62a1dd362ba8cbe9fd2e39a">timestream::TCProc::tod_mb</a></div><div class="ttdeci">mapmaking::MapBuffer tod_mb</div><div class="ttdef"><b>Definition:</b> timestream.h:296</div></div>
 <div class="ttc" id="aclasstimestream_1_1TCProc_html_ae5c02c1e76daa5742d4ca24c3fe4b704"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#ae5c02c1e76daa5742d4ca24c3fe4b704">timestream::TCProc::fruit_loops_flux</a></div><div class="ttdeci">Eigen::VectorXd fruit_loops_flux</div><div class="ttdef"><b>Definition:</b> timestream.h:291</div></div>
-<div class="ttc" id="aclasstimestream_1_1TCProc_html_af76c4d4ef82813ff324d368b4be6828d"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#af76c4d4ef82813ff324d368b4be6828d">timestream::TCProc::add_gaussian</a></div><div class="ttdeci">void add_gaussian(TCData&lt; tcdata_t, Eigen::MatrixXd &gt; &amp;, Eigen::DenseBase&lt; Derived &gt; &amp;, std::string &amp;, std::string &amp;, apt_t &amp;, double, Eigen::Index, Eigen::Index)</div><div class="ttdef"><b>Definition:</b> timestream.h:825</div></div>
+<div class="ttc" id="aclasstimestream_1_1TCProc_html_af76c4d4ef82813ff324d368b4be6828d"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#af76c4d4ef82813ff324d368b4be6828d">timestream::TCProc::add_gaussian</a></div><div class="ttdeci">void add_gaussian(TCData&lt; tcdata_t, Eigen::MatrixXd &gt; &amp;, Eigen::DenseBase&lt; Derived &gt; &amp;, std::string &amp;, std::string &amp;, apt_t &amp;, double, Eigen::Index, Eigen::Index)</div><div class="ttdef"><b>Definition:</b> timestream.h:826</div></div>
 <div class="ttc" id="aclasstimestream_1_1TCProc_html_afd6eee8fc2ab59a150971e0c77f0b98f"><div class="ttname"><a href="../../de/d76/classtimestream_1_1TCProc.html#afd6eee8fc2ab59a150971e0c77f0b98f">timestream::TCProc::fruit_loops_type</a></div><div class="ttdeci">std::string fruit_loops_type</div><div class="ttdef"><b>Definition:</b> timestream.h:285</div></div>
 <div class="ttc" id="aconstants_8h_html_a212460e743fecb084d717bb2180c5a56"><div class="ttname"><a href="../../d2/d6f/constants_8h.html#a212460e743fecb084d717bb2180c5a56">DEG_TO_RAD</a></div><div class="ttdeci">#define DEG_TO_RAD</div><div class="ttdef"><b>Definition:</b> constants.h:27</div></div>
 <div class="ttc" id="aconstants_8h_html_a81269dd83ed58e0412ffbf63b57b94df"><div class="ttname"><a href="../../d2/d6f/constants_8h.html#a81269dd83ed58e0412ffbf63b57b94df">ASEC_TO_RAD</a></div><div class="ttdeci">#define ASEC_TO_RAD</div><div class="ttdef"><b>Definition:</b> constants.h:33</div></div>
