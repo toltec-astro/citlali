@@ -156,16 +156,16 @@ void Telescope::get_tel_data(std::string &filepath) {
         for (const auto &key: periodic_keys) {
             engine_utils::fix_periodic_boundary(tel_data[key],pi,1.99*pi,2.0*pi);
         }
+
+        // calculate galactic l and b for source
+        engine_utils::equatorial_to_galactic(tel_header["Header.Source.Ra"](0),
+                                             tel_header["Header.Source.Dec"](0),
+                                             tel_header["Header.Source.L"](0),
+                                             tel_header["Header.Source.B"](0));
     }
 
-    // calculate galactic l and b for source
-    engine_utils::equatorial_to_galactic(tel_header["Header.Source.Ra"](0),
-                                         tel_header["Header.Source.Dec"](0),
-                                         tel_header["Header.Source.L"](0),
-                                         tel_header["Header.Source.B"](0));
-
     // manually set epoch to J2000 for simulations
-    if (sim_obs) {
+    else {
         tel_header["Header.Source.Epoch"](0) = 2000.0;
     }
 }
@@ -175,8 +175,11 @@ void Telescope::calc_tan_pointing() {
     calc_tan_radec();
     // get altaz tangent pointing
     calc_tan_altaz();
-    // get galactic tangent pointing
-    calc_tan_galactic();
+
+    if (!sim_obs) {
+        // get galactic tangent pointing
+        calc_tan_galactic();
+    }
 
     // set tangential projection to radec
     if (pixel_axes=="radec") {
@@ -212,7 +215,7 @@ void Telescope::calc_tan_radec() {
 
     // copy radec
     Eigen::VectorXd ra = tel_data["TelRa"];
-    auto dec = tel_data["TelDec"];
+    auto& dec = tel_data["TelDec"];
 
     // rescale ra
     (ra.array() > pi).select(tel_data["TelRa"].array() - 2.0*pi, tel_data["TelRa"].array());
