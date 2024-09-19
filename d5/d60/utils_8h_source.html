@@ -879,419 +879,421 @@ $(function() {
 <div class="line"><a name="l00808"></a><span class="lineno">  808</span>&#160;        <span class="keywordtype">double</span> psdarr_a = 0.;</div>
 <div class="line"><a name="l00809"></a><span class="lineno">  809</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> j=0; j&lt;n_cols-1; ++j) {</div>
 <div class="line"><a name="l00810"></a><span class="lineno">  810</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> k=0; k&lt;n_rows-1; ++k) {</div>
-<div class="line"><a name="l00811"></a><span class="lineno">  811</span>&#160;                <span class="keywordflow">if</span> ((<span class="keywordtype">int</span>) (qmap(k,j) / diff_q) == i &amp;&amp; qsymm(k,j) &gt;= 0.){</div>
-<div class="line"><a name="l00812"></a><span class="lineno">  812</span>&#160;                    count_s++;</div>
-<div class="line"><a name="l00813"></a><span class="lineno">  813</span>&#160;                    psdarr_s += pmfq(k,j);</div>
-<div class="line"><a name="l00814"></a><span class="lineno">  814</span>&#160;                }</div>
-<div class="line"><a name="l00815"></a><span class="lineno">  815</span>&#160;                <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00816"></a><span class="lineno">  816</span>&#160;                    count_a++;</div>
-<div class="line"><a name="l00817"></a><span class="lineno">  817</span>&#160;                    psdarr_a += pmfq(k,j);</div>
-<div class="line"><a name="l00818"></a><span class="lineno">  818</span>&#160;                }</div>
-<div class="line"><a name="l00819"></a><span class="lineno">  819</span>&#160;            }</div>
-<div class="line"><a name="l00820"></a><span class="lineno">  820</span>&#160;        }</div>
-<div class="line"><a name="l00821"></a><span class="lineno">  821</span>&#160;        <span class="keywordflow">if</span> (count_s != 0) {</div>
-<div class="line"><a name="l00822"></a><span class="lineno">  822</span>&#160;            psdarr_s /= count_s;</div>
-<div class="line"><a name="l00823"></a><span class="lineno">  823</span>&#160;        }</div>
-<div class="line"><a name="l00824"></a><span class="lineno">  824</span>&#160;        <span class="keywordflow">if</span> (count_a != 0) {</div>
-<div class="line"><a name="l00825"></a><span class="lineno">  825</span>&#160;            psdarr_a /= count_a;</div>
-<div class="line"><a name="l00826"></a><span class="lineno">  826</span>&#160;        }</div>
-<div class="line"><a name="l00827"></a><span class="lineno">  827</span>&#160;        <a class="code" href="../../d5/d40/namespaceinternal.html#ae1c7c89eba2ace8cda23cad2d54259cd">psd</a>(i) = std::min(psdarr_s,psdarr_a);</div>
-<div class="line"><a name="l00828"></a><span class="lineno">  828</span>&#160;        <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00829"></a><span class="lineno">  829</span>&#160;    });</div>
-<div class="line"><a name="l00830"></a><span class="lineno">  830</span>&#160; </div>
-<div class="line"><a name="l00831"></a><span class="lineno">  831</span>&#160;     <span class="comment">// smooth the psd</span></div>
-<div class="line"><a name="l00832"></a><span class="lineno">  832</span>&#160;     Eigen::VectorXd smoothed_psd(nn);</div>
-<div class="line"><a name="l00833"></a><span class="lineno">  833</span>&#160;     engine_utils::smooth&lt;edge_truncate&gt;(<a class="code" href="../../d5/d40/namespaceinternal.html#ae1c7c89eba2ace8cda23cad2d54259cd">psd</a>, smoothed_psd, smooth_window);</div>
-<div class="line"><a name="l00834"></a><span class="lineno">  834</span>&#160;     <a class="code" href="../../d5/d40/namespaceinternal.html#ae1c7c89eba2ace8cda23cad2d54259cd">psd</a> = std::move(smoothed_psd);</div>
-<div class="line"><a name="l00835"></a><span class="lineno">  835</span>&#160; </div>
-<div class="line"><a name="l00836"></a><span class="lineno">  836</span>&#160;    <span class="keywordflow">return</span> std::tuple&lt;Eigen::VectorXd, Eigen::VectorXd, Eigen::MatrixXd, Eigen::MatrixXd&gt;(<a class="code" href="../../d5/d40/namespaceinternal.html#ae1c7c89eba2ace8cda23cad2d54259cd">psd</a>, psd_freq, pmfq, qmap);</div>
-<div class="line"><a name="l00837"></a><span class="lineno">  837</span>&#160;}</div>
-<div class="line"><a name="l00838"></a><span class="lineno">  838</span>&#160; </div>
-<div class="line"><a name="l00839"></a><span class="lineno">  839</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Derived&gt;</div>
-<div class="line"><a name="l00840"></a><span class="lineno"><a class="line" href="../../dd/d06/namespaceengine__utils.html#a480f8c7619a52d7e51c6e122d0a3cb47">  840</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="../../dd/d06/namespaceengine__utils.html#a480f8c7619a52d7e51c6e122d0a3cb47">calc_hist</a>(Eigen::DenseBase&lt;Derived&gt; &amp;data, <span class="keywordtype">int</span> n_bins) {</div>
-<div class="line"><a name="l00841"></a><span class="lineno">  841</span>&#160;    <span class="keywordtype">double</span> min_data = data.minCoeff();</div>
-<div class="line"><a name="l00842"></a><span class="lineno">  842</span>&#160;    <span class="keywordtype">double</span> max_data = data.maxCoeff();</div>
-<div class="line"><a name="l00843"></a><span class="lineno">  843</span>&#160; </div>
-<div class="line"><a name="l00844"></a><span class="lineno">  844</span>&#160;    <span class="comment">// force the histogram to be symmetric about 0</span></div>
-<div class="line"><a name="l00845"></a><span class="lineno">  845</span>&#160;    <span class="keywordtype">double</span> rg = (abs(min_data) &gt; abs(max_data)) ? abs(min_data) : abs(max_data);</div>
-<div class="line"><a name="l00846"></a><span class="lineno">  846</span>&#160; </div>
-<div class="line"><a name="l00847"></a><span class="lineno">  847</span>&#160;    <span class="comment">// set up hist bins</span></div>
-<div class="line"><a name="l00848"></a><span class="lineno">  848</span>&#160;    Eigen::VectorXd hist_bins = Eigen::VectorXd::LinSpaced(n_bins,-rg,rg);</div>
-<div class="line"><a name="l00849"></a><span class="lineno">  849</span>&#160;    <span class="comment">// set size of hist values</span></div>
-<div class="line"><a name="l00850"></a><span class="lineno">  850</span>&#160;    Eigen::VectorXd <a class="code" href="../../d7/df7/namespacematplotlibcpp.html#aeaf80309ad11083ec57bd6b246f6e4dc">hist</a>;</div>
-<div class="line"><a name="l00851"></a><span class="lineno">  851</span>&#160;    <a class="code" href="../../d7/df7/namespacematplotlibcpp.html#aeaf80309ad11083ec57bd6b246f6e4dc">hist</a>.setZero(n_bins);</div>
-<div class="line"><a name="l00852"></a><span class="lineno">  852</span>&#160; </div>
-<div class="line"><a name="l00853"></a><span class="lineno">  853</span>&#160;    <span class="comment">// loop through bins and count up values</span></div>
-<div class="line"><a name="l00854"></a><span class="lineno">  854</span>&#160;    <span class="keywordflow">for</span> (Eigen::Index j=0; j&lt;n_bins-1; ++j) {</div>
-<div class="line"><a name="l00855"></a><span class="lineno">  855</span>&#160;        <a class="code" href="../../d7/df7/namespacematplotlibcpp.html#aeaf80309ad11083ec57bd6b246f6e4dc">hist</a>(j) = ((data.derived().array() &gt;= hist_bins(j)) &amp;&amp; (data.derived().array() &lt; hist_bins(j+1))).count();</div>
-<div class="line"><a name="l00856"></a><span class="lineno">  856</span>&#160;    }</div>
-<div class="line"><a name="l00857"></a><span class="lineno">  857</span>&#160; </div>
-<div class="line"><a name="l00858"></a><span class="lineno">  858</span>&#160;    <span class="keywordflow">return</span> std::tuple&lt;Eigen::VectorXd, Eigen::VectorXd&gt;(<a class="code" href="../../d7/df7/namespacematplotlibcpp.html#aeaf80309ad11083ec57bd6b246f6e4dc">hist</a>, hist_bins);</div>
-<div class="line"><a name="l00859"></a><span class="lineno">  859</span>&#160;}</div>
-<div class="line"><a name="l00860"></a><span class="lineno">  860</span>&#160; </div>
-<div class="line"><a name="l00861"></a><span class="lineno">  861</span>&#160;<span class="comment">// shift a vector</span></div>
-<div class="line"><a name="l00862"></a><span class="lineno">  862</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Derived&gt;</div>
-<div class="line"><a name="l00863"></a><span class="lineno"><a class="line" href="../../dd/d06/namespaceengine__utils.html#a54fff21be4fbf637e78bdda6d87183a4">  863</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="../../dd/d06/namespaceengine__utils.html#a54fff21be4fbf637e78bdda6d87183a4">shift_1D</a>(Eigen::DenseBase&lt;Derived&gt; &amp;in, std::vector&lt;Eigen::Index&gt; shift_indices) {</div>
-<div class="line"><a name="l00864"></a><span class="lineno">  864</span>&#160; </div>
-<div class="line"><a name="l00865"></a><span class="lineno">  865</span>&#160;    Eigen::Index n_pts = in.size();</div>
+<div class="line"><a name="l00811"></a><span class="lineno">  811</span>&#160;                <span class="keywordflow">if</span> ((<span class="keywordtype">int</span>) (qmap(k,j) / diff_q) == i) {</div>
+<div class="line"><a name="l00812"></a><span class="lineno">  812</span>&#160;                    <span class="keywordflow">if</span> (qsymm(k,j) &gt;= 0.){</div>
+<div class="line"><a name="l00813"></a><span class="lineno">  813</span>&#160;                        count_s++;</div>
+<div class="line"><a name="l00814"></a><span class="lineno">  814</span>&#160;                        psdarr_s += pmfq(k,j);</div>
+<div class="line"><a name="l00815"></a><span class="lineno">  815</span>&#160;                    }</div>
+<div class="line"><a name="l00816"></a><span class="lineno">  816</span>&#160;                    <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00817"></a><span class="lineno">  817</span>&#160;                        count_a++;</div>
+<div class="line"><a name="l00818"></a><span class="lineno">  818</span>&#160;                        psdarr_a += pmfq(k,j);</div>
+<div class="line"><a name="l00819"></a><span class="lineno">  819</span>&#160;                    }</div>
+<div class="line"><a name="l00820"></a><span class="lineno">  820</span>&#160;                }</div>
+<div class="line"><a name="l00821"></a><span class="lineno">  821</span>&#160;            }</div>
+<div class="line"><a name="l00822"></a><span class="lineno">  822</span>&#160;        }</div>
+<div class="line"><a name="l00823"></a><span class="lineno">  823</span>&#160;        <span class="keywordflow">if</span> (count_s != 0) {</div>
+<div class="line"><a name="l00824"></a><span class="lineno">  824</span>&#160;            psdarr_s /= count_s;</div>
+<div class="line"><a name="l00825"></a><span class="lineno">  825</span>&#160;        }</div>
+<div class="line"><a name="l00826"></a><span class="lineno">  826</span>&#160;        <span class="keywordflow">if</span> (count_a != 0) {</div>
+<div class="line"><a name="l00827"></a><span class="lineno">  827</span>&#160;            psdarr_a /= count_a;</div>
+<div class="line"><a name="l00828"></a><span class="lineno">  828</span>&#160;        }</div>
+<div class="line"><a name="l00829"></a><span class="lineno">  829</span>&#160;        <a class="code" href="../../d5/d40/namespaceinternal.html#ae1c7c89eba2ace8cda23cad2d54259cd">psd</a>(i) = std::min(psdarr_s,psdarr_a);</div>
+<div class="line"><a name="l00830"></a><span class="lineno">  830</span>&#160;        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00831"></a><span class="lineno">  831</span>&#160;    });</div>
+<div class="line"><a name="l00832"></a><span class="lineno">  832</span>&#160; </div>
+<div class="line"><a name="l00833"></a><span class="lineno">  833</span>&#160;     <span class="comment">// smooth the psd</span></div>
+<div class="line"><a name="l00834"></a><span class="lineno">  834</span>&#160;     Eigen::VectorXd smoothed_psd(nn);</div>
+<div class="line"><a name="l00835"></a><span class="lineno">  835</span>&#160;     engine_utils::smooth&lt;edge_truncate&gt;(<a class="code" href="../../d5/d40/namespaceinternal.html#ae1c7c89eba2ace8cda23cad2d54259cd">psd</a>, smoothed_psd, smooth_window);</div>
+<div class="line"><a name="l00836"></a><span class="lineno">  836</span>&#160;     <a class="code" href="../../d5/d40/namespaceinternal.html#ae1c7c89eba2ace8cda23cad2d54259cd">psd</a> = std::move(smoothed_psd);</div>
+<div class="line"><a name="l00837"></a><span class="lineno">  837</span>&#160; </div>
+<div class="line"><a name="l00838"></a><span class="lineno">  838</span>&#160;    <span class="keywordflow">return</span> std::tuple&lt;Eigen::VectorXd, Eigen::VectorXd, Eigen::MatrixXd, Eigen::MatrixXd&gt;(<a class="code" href="../../d5/d40/namespaceinternal.html#ae1c7c89eba2ace8cda23cad2d54259cd">psd</a>, psd_freq, pmfq, qmap);</div>
+<div class="line"><a name="l00839"></a><span class="lineno">  839</span>&#160;}</div>
+<div class="line"><a name="l00840"></a><span class="lineno">  840</span>&#160; </div>
+<div class="line"><a name="l00841"></a><span class="lineno">  841</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Derived&gt;</div>
+<div class="line"><a name="l00842"></a><span class="lineno"><a class="line" href="../../dd/d06/namespaceengine__utils.html#a480f8c7619a52d7e51c6e122d0a3cb47">  842</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="../../dd/d06/namespaceengine__utils.html#a480f8c7619a52d7e51c6e122d0a3cb47">calc_hist</a>(Eigen::DenseBase&lt;Derived&gt; &amp;data, <span class="keywordtype">int</span> n_bins) {</div>
+<div class="line"><a name="l00843"></a><span class="lineno">  843</span>&#160;    <span class="keywordtype">double</span> min_data = data.minCoeff();</div>
+<div class="line"><a name="l00844"></a><span class="lineno">  844</span>&#160;    <span class="keywordtype">double</span> max_data = data.maxCoeff();</div>
+<div class="line"><a name="l00845"></a><span class="lineno">  845</span>&#160; </div>
+<div class="line"><a name="l00846"></a><span class="lineno">  846</span>&#160;    <span class="comment">// force the histogram to be symmetric about 0</span></div>
+<div class="line"><a name="l00847"></a><span class="lineno">  847</span>&#160;    <span class="keywordtype">double</span> rg = (abs(min_data) &gt; abs(max_data)) ? abs(min_data) : abs(max_data);</div>
+<div class="line"><a name="l00848"></a><span class="lineno">  848</span>&#160; </div>
+<div class="line"><a name="l00849"></a><span class="lineno">  849</span>&#160;    <span class="comment">// set up hist bins</span></div>
+<div class="line"><a name="l00850"></a><span class="lineno">  850</span>&#160;    Eigen::VectorXd hist_bins = Eigen::VectorXd::LinSpaced(n_bins,-rg,rg);</div>
+<div class="line"><a name="l00851"></a><span class="lineno">  851</span>&#160;    <span class="comment">// set size of hist values</span></div>
+<div class="line"><a name="l00852"></a><span class="lineno">  852</span>&#160;    Eigen::VectorXd <a class="code" href="../../d7/df7/namespacematplotlibcpp.html#aeaf80309ad11083ec57bd6b246f6e4dc">hist</a>;</div>
+<div class="line"><a name="l00853"></a><span class="lineno">  853</span>&#160;    <a class="code" href="../../d7/df7/namespacematplotlibcpp.html#aeaf80309ad11083ec57bd6b246f6e4dc">hist</a>.setZero(n_bins);</div>
+<div class="line"><a name="l00854"></a><span class="lineno">  854</span>&#160; </div>
+<div class="line"><a name="l00855"></a><span class="lineno">  855</span>&#160;    <span class="comment">// loop through bins and count up values</span></div>
+<div class="line"><a name="l00856"></a><span class="lineno">  856</span>&#160;    <span class="keywordflow">for</span> (Eigen::Index j=0; j&lt;n_bins-1; ++j) {</div>
+<div class="line"><a name="l00857"></a><span class="lineno">  857</span>&#160;        <a class="code" href="../../d7/df7/namespacematplotlibcpp.html#aeaf80309ad11083ec57bd6b246f6e4dc">hist</a>(j) = ((data.derived().array() &gt;= hist_bins(j)) &amp;&amp; (data.derived().array() &lt; hist_bins(j+1))).count();</div>
+<div class="line"><a name="l00858"></a><span class="lineno">  858</span>&#160;    }</div>
+<div class="line"><a name="l00859"></a><span class="lineno">  859</span>&#160; </div>
+<div class="line"><a name="l00860"></a><span class="lineno">  860</span>&#160;    <span class="keywordflow">return</span> std::tuple&lt;Eigen::VectorXd, Eigen::VectorXd&gt;(<a class="code" href="../../d7/df7/namespacematplotlibcpp.html#aeaf80309ad11083ec57bd6b246f6e4dc">hist</a>, hist_bins);</div>
+<div class="line"><a name="l00861"></a><span class="lineno">  861</span>&#160;}</div>
+<div class="line"><a name="l00862"></a><span class="lineno">  862</span>&#160; </div>
+<div class="line"><a name="l00863"></a><span class="lineno">  863</span>&#160;<span class="comment">// shift a vector</span></div>
+<div class="line"><a name="l00864"></a><span class="lineno">  864</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Derived&gt;</div>
+<div class="line"><a name="l00865"></a><span class="lineno"><a class="line" href="../../dd/d06/namespaceengine__utils.html#a54fff21be4fbf637e78bdda6d87183a4">  865</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="../../dd/d06/namespaceengine__utils.html#a54fff21be4fbf637e78bdda6d87183a4">shift_1D</a>(Eigen::DenseBase&lt;Derived&gt; &amp;in, std::vector&lt;Eigen::Index&gt; shift_indices) {</div>
 <div class="line"><a name="l00866"></a><span class="lineno">  866</span>&#160; </div>
-<div class="line"><a name="l00867"></a><span class="lineno">  867</span>&#160;    Derived out(n_pts);</div>
+<div class="line"><a name="l00867"></a><span class="lineno">  867</span>&#160;    Eigen::Index n_pts = in.size();</div>
 <div class="line"><a name="l00868"></a><span class="lineno">  868</span>&#160; </div>
-<div class="line"><a name="l00869"></a><span class="lineno">  869</span>&#160;    <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;n_pts; ++i) {</div>
-<div class="line"><a name="l00870"></a><span class="lineno">  870</span>&#160;        Eigen::Index ti = (i+shift_indices[0])%n_pts;</div>
-<div class="line"><a name="l00871"></a><span class="lineno">  871</span>&#160;        Eigen::Index shift_index = (ti &lt; 0) ? n_pts+ti : ti;</div>
-<div class="line"><a name="l00872"></a><span class="lineno">  872</span>&#160;        out(shift_index) = in(i);</div>
-<div class="line"><a name="l00873"></a><span class="lineno">  873</span>&#160;    }</div>
-<div class="line"><a name="l00874"></a><span class="lineno">  874</span>&#160; </div>
-<div class="line"><a name="l00875"></a><span class="lineno">  875</span>&#160;    <span class="keywordflow">return</span> out;</div>
-<div class="line"><a name="l00876"></a><span class="lineno">  876</span>&#160;}</div>
-<div class="line"><a name="l00877"></a><span class="lineno">  877</span>&#160; </div>
-<div class="line"><a name="l00878"></a><span class="lineno">  878</span>&#160;<span class="comment">// shift a 2D matrix</span></div>
-<div class="line"><a name="l00879"></a><span class="lineno">  879</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Derived&gt;</div>
-<div class="line"><a name="l00880"></a><span class="lineno"><a class="line" href="../../dd/d06/namespaceengine__utils.html#a0764cb525f21c83c7caf0ade7675d8e5">  880</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="../../dd/d06/namespaceengine__utils.html#a0764cb525f21c83c7caf0ade7675d8e5">shift_2D</a>(Eigen::DenseBase&lt;Derived&gt; &amp;in, std::vector&lt;Eigen::Index&gt; shift_indices) {</div>
-<div class="line"><a name="l00881"></a><span class="lineno">  881</span>&#160;    Eigen::Index n_rows = in.rows();</div>
-<div class="line"><a name="l00882"></a><span class="lineno">  882</span>&#160;    Eigen::Index n_cols = in.cols();</div>
-<div class="line"><a name="l00883"></a><span class="lineno">  883</span>&#160; </div>
-<div class="line"><a name="l00884"></a><span class="lineno">  884</span>&#160;    Derived out(n_rows,n_cols);</div>
+<div class="line"><a name="l00869"></a><span class="lineno">  869</span>&#160;    Derived out(n_pts);</div>
+<div class="line"><a name="l00870"></a><span class="lineno">  870</span>&#160; </div>
+<div class="line"><a name="l00871"></a><span class="lineno">  871</span>&#160;    <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;n_pts; ++i) {</div>
+<div class="line"><a name="l00872"></a><span class="lineno">  872</span>&#160;        Eigen::Index ti = (i+shift_indices[0])%n_pts;</div>
+<div class="line"><a name="l00873"></a><span class="lineno">  873</span>&#160;        Eigen::Index shift_index = (ti &lt; 0) ? n_pts+ti : ti;</div>
+<div class="line"><a name="l00874"></a><span class="lineno">  874</span>&#160;        out(shift_index) = in(i);</div>
+<div class="line"><a name="l00875"></a><span class="lineno">  875</span>&#160;    }</div>
+<div class="line"><a name="l00876"></a><span class="lineno">  876</span>&#160; </div>
+<div class="line"><a name="l00877"></a><span class="lineno">  877</span>&#160;    <span class="keywordflow">return</span> out;</div>
+<div class="line"><a name="l00878"></a><span class="lineno">  878</span>&#160;}</div>
+<div class="line"><a name="l00879"></a><span class="lineno">  879</span>&#160; </div>
+<div class="line"><a name="l00880"></a><span class="lineno">  880</span>&#160;<span class="comment">// shift a 2D matrix</span></div>
+<div class="line"><a name="l00881"></a><span class="lineno">  881</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Derived&gt;</div>
+<div class="line"><a name="l00882"></a><span class="lineno"><a class="line" href="../../dd/d06/namespaceengine__utils.html#a0764cb525f21c83c7caf0ade7675d8e5">  882</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="../../dd/d06/namespaceengine__utils.html#a0764cb525f21c83c7caf0ade7675d8e5">shift_2D</a>(Eigen::DenseBase&lt;Derived&gt; &amp;in, std::vector&lt;Eigen::Index&gt; shift_indices) {</div>
+<div class="line"><a name="l00883"></a><span class="lineno">  883</span>&#160;    Eigen::Index n_rows = in.rows();</div>
+<div class="line"><a name="l00884"></a><span class="lineno">  884</span>&#160;    Eigen::Index n_cols = in.cols();</div>
 <div class="line"><a name="l00885"></a><span class="lineno">  885</span>&#160; </div>
-<div class="line"><a name="l00886"></a><span class="lineno">  886</span>&#160;    <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;n_cols; ++i) {</div>
-<div class="line"><a name="l00887"></a><span class="lineno">  887</span>&#160;        Eigen::Index ti = (i+shift_indices[1]) % n_cols;</div>
-<div class="line"><a name="l00888"></a><span class="lineno">  888</span>&#160;        Eigen::Index shift_col = (ti &lt; 0) ? n_cols+ti : ti;</div>
-<div class="line"><a name="l00889"></a><span class="lineno">  889</span>&#160;        <span class="keywordflow">for</span> (Eigen::Index j=0; j&lt;n_rows; ++j) {</div>
-<div class="line"><a name="l00890"></a><span class="lineno">  890</span>&#160;            Eigen::Index tj = (j+shift_indices[0]) % n_rows;</div>
-<div class="line"><a name="l00891"></a><span class="lineno">  891</span>&#160;            Eigen::Index shift_row = (tj &lt; 0) ? n_rows+tj : tj;</div>
-<div class="line"><a name="l00892"></a><span class="lineno">  892</span>&#160;            out(shift_row,shift_col) = in(j,i);</div>
-<div class="line"><a name="l00893"></a><span class="lineno">  893</span>&#160;        }</div>
-<div class="line"><a name="l00894"></a><span class="lineno">  894</span>&#160;    }</div>
-<div class="line"><a name="l00895"></a><span class="lineno">  895</span>&#160;    <span class="keywordflow">return</span> out;</div>
-<div class="line"><a name="l00896"></a><span class="lineno">  896</span>&#160;}</div>
-<div class="line"><a name="l00897"></a><span class="lineno">  897</span>&#160; </div>
-<div class="line"><a name="l00898"></a><span class="lineno">  898</span>&#160;<span class="comment">/*</span></div>
-<div class="line"><a name="l00899"></a><span class="lineno">  899</span>&#160;<span class="comment">void abort_(const char * s, ...) {</span></div>
-<div class="line"><a name="l00900"></a><span class="lineno">  900</span>&#160;<span class="comment">    va_list args;</span></div>
-<div class="line"><a name="l00901"></a><span class="lineno">  901</span>&#160;<span class="comment">    va_start(args, s);</span></div>
-<div class="line"><a name="l00902"></a><span class="lineno">  902</span>&#160;<span class="comment">    vfprintf(stderr, s, args);</span></div>
-<div class="line"><a name="l00903"></a><span class="lineno">  903</span>&#160;<span class="comment">    fprintf(stderr, &quot;\n&quot;);</span></div>
-<div class="line"><a name="l00904"></a><span class="lineno">  904</span>&#160;<span class="comment">    va_end(args);</span></div>
-<div class="line"><a name="l00905"></a><span class="lineno">  905</span>&#160;<span class="comment">    abort();</span></div>
-<div class="line"><a name="l00906"></a><span class="lineno">  906</span>&#160;<span class="comment">}</span></div>
-<div class="line"><a name="l00907"></a><span class="lineno">  907</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00908"></a><span class="lineno">  908</span>&#160;<span class="comment">void write_png_file(char* file_name, int width, int height) {</span></div>
+<div class="line"><a name="l00886"></a><span class="lineno">  886</span>&#160;    Derived out(n_rows,n_cols);</div>
+<div class="line"><a name="l00887"></a><span class="lineno">  887</span>&#160; </div>
+<div class="line"><a name="l00888"></a><span class="lineno">  888</span>&#160;    <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;n_cols; ++i) {</div>
+<div class="line"><a name="l00889"></a><span class="lineno">  889</span>&#160;        Eigen::Index ti = (i+shift_indices[1]) % n_cols;</div>
+<div class="line"><a name="l00890"></a><span class="lineno">  890</span>&#160;        Eigen::Index shift_col = (ti &lt; 0) ? n_cols+ti : ti;</div>
+<div class="line"><a name="l00891"></a><span class="lineno">  891</span>&#160;        <span class="keywordflow">for</span> (Eigen::Index j=0; j&lt;n_rows; ++j) {</div>
+<div class="line"><a name="l00892"></a><span class="lineno">  892</span>&#160;            Eigen::Index tj = (j+shift_indices[0]) % n_rows;</div>
+<div class="line"><a name="l00893"></a><span class="lineno">  893</span>&#160;            Eigen::Index shift_row = (tj &lt; 0) ? n_rows+tj : tj;</div>
+<div class="line"><a name="l00894"></a><span class="lineno">  894</span>&#160;            out(shift_row,shift_col) = in(j,i);</div>
+<div class="line"><a name="l00895"></a><span class="lineno">  895</span>&#160;        }</div>
+<div class="line"><a name="l00896"></a><span class="lineno">  896</span>&#160;    }</div>
+<div class="line"><a name="l00897"></a><span class="lineno">  897</span>&#160;    <span class="keywordflow">return</span> out;</div>
+<div class="line"><a name="l00898"></a><span class="lineno">  898</span>&#160;}</div>
+<div class="line"><a name="l00899"></a><span class="lineno">  899</span>&#160; </div>
+<div class="line"><a name="l00900"></a><span class="lineno">  900</span>&#160;<span class="comment">/*</span></div>
+<div class="line"><a name="l00901"></a><span class="lineno">  901</span>&#160;<span class="comment">void abort_(const char * s, ...) {</span></div>
+<div class="line"><a name="l00902"></a><span class="lineno">  902</span>&#160;<span class="comment">    va_list args;</span></div>
+<div class="line"><a name="l00903"></a><span class="lineno">  903</span>&#160;<span class="comment">    va_start(args, s);</span></div>
+<div class="line"><a name="l00904"></a><span class="lineno">  904</span>&#160;<span class="comment">    vfprintf(stderr, s, args);</span></div>
+<div class="line"><a name="l00905"></a><span class="lineno">  905</span>&#160;<span class="comment">    fprintf(stderr, &quot;\n&quot;);</span></div>
+<div class="line"><a name="l00906"></a><span class="lineno">  906</span>&#160;<span class="comment">    va_end(args);</span></div>
+<div class="line"><a name="l00907"></a><span class="lineno">  907</span>&#160;<span class="comment">    abort();</span></div>
+<div class="line"><a name="l00908"></a><span class="lineno">  908</span>&#160;<span class="comment">}</span></div>
 <div class="line"><a name="l00909"></a><span class="lineno">  909</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00910"></a><span class="lineno">  910</span>&#160;<span class="comment">    int x, y;</span></div>
+<div class="line"><a name="l00910"></a><span class="lineno">  910</span>&#160;<span class="comment">void write_png_file(char* file_name, int width, int height) {</span></div>
 <div class="line"><a name="l00911"></a><span class="lineno">  911</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00912"></a><span class="lineno">  912</span>&#160;<span class="comment">    png_byte color_type;</span></div>
-<div class="line"><a name="l00913"></a><span class="lineno">  913</span>&#160;<span class="comment">    png_byte bit_depth;</span></div>
-<div class="line"><a name="l00914"></a><span class="lineno">  914</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00915"></a><span class="lineno">  915</span>&#160;<span class="comment">    png_structp png_ptr;</span></div>
-<div class="line"><a name="l00916"></a><span class="lineno">  916</span>&#160;<span class="comment">    png_infop info_ptr;</span></div>
-<div class="line"><a name="l00917"></a><span class="lineno">  917</span>&#160;<span class="comment">    int number_of_passes;</span></div>
-<div class="line"><a name="l00918"></a><span class="lineno">  918</span>&#160;<span class="comment">    png_bytep * row_pointers;</span></div>
-<div class="line"><a name="l00919"></a><span class="lineno">  919</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00920"></a><span class="lineno">  920</span>&#160;<span class="comment">    // create file</span></div>
-<div class="line"><a name="l00921"></a><span class="lineno">  921</span>&#160;<span class="comment">    FILE *fp = fopen(file_name, &quot;wb&quot;);</span></div>
-<div class="line"><a name="l00922"></a><span class="lineno">  922</span>&#160;<span class="comment">    if (!fp)</span></div>
-<div class="line"><a name="l00923"></a><span class="lineno">  923</span>&#160;<span class="comment">        abort_(&quot;[write_png_file] File %s could not be opened for writing&quot;, file_name);</span></div>
-<div class="line"><a name="l00924"></a><span class="lineno">  924</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00925"></a><span class="lineno">  925</span>&#160;<span class="comment">    // initialize stuff</span></div>
-<div class="line"><a name="l00926"></a><span class="lineno">  926</span>&#160;<span class="comment">    png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);</span></div>
-<div class="line"><a name="l00927"></a><span class="lineno">  927</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00928"></a><span class="lineno">  928</span>&#160;<span class="comment">    if (!png_ptr)</span></div>
-<div class="line"><a name="l00929"></a><span class="lineno">  929</span>&#160;<span class="comment">        abort_(&quot;[write_png_file] png_create_write_struct failed&quot;);</span></div>
-<div class="line"><a name="l00930"></a><span class="lineno">  930</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00931"></a><span class="lineno">  931</span>&#160;<span class="comment">    info_ptr = png_create_info_struct(png_ptr);</span></div>
-<div class="line"><a name="l00932"></a><span class="lineno">  932</span>&#160;<span class="comment">    if (!info_ptr)</span></div>
-<div class="line"><a name="l00933"></a><span class="lineno">  933</span>&#160;<span class="comment">        abort_(&quot;[write_png_file] png_create_info_struct failed&quot;);</span></div>
-<div class="line"><a name="l00934"></a><span class="lineno">  934</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00935"></a><span class="lineno">  935</span>&#160;<span class="comment">    if (setjmp(png_jmpbuf(png_ptr)))</span></div>
-<div class="line"><a name="l00936"></a><span class="lineno">  936</span>&#160;<span class="comment">        abort_(&quot;[write_png_file] Error during init_io&quot;);</span></div>
-<div class="line"><a name="l00937"></a><span class="lineno">  937</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00938"></a><span class="lineno">  938</span>&#160;<span class="comment">    png_init_io(png_ptr, fp);</span></div>
+<div class="line"><a name="l00912"></a><span class="lineno">  912</span>&#160;<span class="comment">    int x, y;</span></div>
+<div class="line"><a name="l00913"></a><span class="lineno">  913</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00914"></a><span class="lineno">  914</span>&#160;<span class="comment">    png_byte color_type;</span></div>
+<div class="line"><a name="l00915"></a><span class="lineno">  915</span>&#160;<span class="comment">    png_byte bit_depth;</span></div>
+<div class="line"><a name="l00916"></a><span class="lineno">  916</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00917"></a><span class="lineno">  917</span>&#160;<span class="comment">    png_structp png_ptr;</span></div>
+<div class="line"><a name="l00918"></a><span class="lineno">  918</span>&#160;<span class="comment">    png_infop info_ptr;</span></div>
+<div class="line"><a name="l00919"></a><span class="lineno">  919</span>&#160;<span class="comment">    int number_of_passes;</span></div>
+<div class="line"><a name="l00920"></a><span class="lineno">  920</span>&#160;<span class="comment">    png_bytep * row_pointers;</span></div>
+<div class="line"><a name="l00921"></a><span class="lineno">  921</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00922"></a><span class="lineno">  922</span>&#160;<span class="comment">    // create file</span></div>
+<div class="line"><a name="l00923"></a><span class="lineno">  923</span>&#160;<span class="comment">    FILE *fp = fopen(file_name, &quot;wb&quot;);</span></div>
+<div class="line"><a name="l00924"></a><span class="lineno">  924</span>&#160;<span class="comment">    if (!fp)</span></div>
+<div class="line"><a name="l00925"></a><span class="lineno">  925</span>&#160;<span class="comment">        abort_(&quot;[write_png_file] File %s could not be opened for writing&quot;, file_name);</span></div>
+<div class="line"><a name="l00926"></a><span class="lineno">  926</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00927"></a><span class="lineno">  927</span>&#160;<span class="comment">    // initialize stuff</span></div>
+<div class="line"><a name="l00928"></a><span class="lineno">  928</span>&#160;<span class="comment">    png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);</span></div>
+<div class="line"><a name="l00929"></a><span class="lineno">  929</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00930"></a><span class="lineno">  930</span>&#160;<span class="comment">    if (!png_ptr)</span></div>
+<div class="line"><a name="l00931"></a><span class="lineno">  931</span>&#160;<span class="comment">        abort_(&quot;[write_png_file] png_create_write_struct failed&quot;);</span></div>
+<div class="line"><a name="l00932"></a><span class="lineno">  932</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00933"></a><span class="lineno">  933</span>&#160;<span class="comment">    info_ptr = png_create_info_struct(png_ptr);</span></div>
+<div class="line"><a name="l00934"></a><span class="lineno">  934</span>&#160;<span class="comment">    if (!info_ptr)</span></div>
+<div class="line"><a name="l00935"></a><span class="lineno">  935</span>&#160;<span class="comment">        abort_(&quot;[write_png_file] png_create_info_struct failed&quot;);</span></div>
+<div class="line"><a name="l00936"></a><span class="lineno">  936</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00937"></a><span class="lineno">  937</span>&#160;<span class="comment">    if (setjmp(png_jmpbuf(png_ptr)))</span></div>
+<div class="line"><a name="l00938"></a><span class="lineno">  938</span>&#160;<span class="comment">        abort_(&quot;[write_png_file] Error during init_io&quot;);</span></div>
 <div class="line"><a name="l00939"></a><span class="lineno">  939</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00940"></a><span class="lineno">  940</span>&#160;<span class="comment">    // write header</span></div>
-<div class="line"><a name="l00941"></a><span class="lineno">  941</span>&#160;<span class="comment">    if (setjmp(png_jmpbuf(png_ptr)))</span></div>
-<div class="line"><a name="l00942"></a><span class="lineno">  942</span>&#160;<span class="comment">        abort_(&quot;[write_png_file] Error during writing header&quot;);</span></div>
-<div class="line"><a name="l00943"></a><span class="lineno">  943</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00944"></a><span class="lineno">  944</span>&#160;<span class="comment">    png_set_IHDR(png_ptr, info_ptr, width, height,</span></div>
-<div class="line"><a name="l00945"></a><span class="lineno">  945</span>&#160;<span class="comment">                 bit_depth, color_type, PNG_INTERLACE_NONE,</span></div>
-<div class="line"><a name="l00946"></a><span class="lineno">  946</span>&#160;<span class="comment">                 PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);</span></div>
-<div class="line"><a name="l00947"></a><span class="lineno">  947</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00948"></a><span class="lineno">  948</span>&#160;<span class="comment">    png_write_info(png_ptr, info_ptr);</span></div>
+<div class="line"><a name="l00940"></a><span class="lineno">  940</span>&#160;<span class="comment">    png_init_io(png_ptr, fp);</span></div>
+<div class="line"><a name="l00941"></a><span class="lineno">  941</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00942"></a><span class="lineno">  942</span>&#160;<span class="comment">    // write header</span></div>
+<div class="line"><a name="l00943"></a><span class="lineno">  943</span>&#160;<span class="comment">    if (setjmp(png_jmpbuf(png_ptr)))</span></div>
+<div class="line"><a name="l00944"></a><span class="lineno">  944</span>&#160;<span class="comment">        abort_(&quot;[write_png_file] Error during writing header&quot;);</span></div>
+<div class="line"><a name="l00945"></a><span class="lineno">  945</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00946"></a><span class="lineno">  946</span>&#160;<span class="comment">    png_set_IHDR(png_ptr, info_ptr, width, height,</span></div>
+<div class="line"><a name="l00947"></a><span class="lineno">  947</span>&#160;<span class="comment">                 bit_depth, color_type, PNG_INTERLACE_NONE,</span></div>
+<div class="line"><a name="l00948"></a><span class="lineno">  948</span>&#160;<span class="comment">                 PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);</span></div>
 <div class="line"><a name="l00949"></a><span class="lineno">  949</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00950"></a><span class="lineno">  950</span>&#160;<span class="comment">    // write bytes</span></div>
-<div class="line"><a name="l00951"></a><span class="lineno">  951</span>&#160;<span class="comment">    if (setjmp(png_jmpbuf(png_ptr)))</span></div>
-<div class="line"><a name="l00952"></a><span class="lineno">  952</span>&#160;<span class="comment">        abort_(&quot;[write_png_file] Error during writing bytes&quot;);</span></div>
-<div class="line"><a name="l00953"></a><span class="lineno">  953</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00954"></a><span class="lineno">  954</span>&#160;<span class="comment">    png_write_image(png_ptr, row_pointers);</span></div>
+<div class="line"><a name="l00950"></a><span class="lineno">  950</span>&#160;<span class="comment">    png_write_info(png_ptr, info_ptr);</span></div>
+<div class="line"><a name="l00951"></a><span class="lineno">  951</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00952"></a><span class="lineno">  952</span>&#160;<span class="comment">    // write bytes</span></div>
+<div class="line"><a name="l00953"></a><span class="lineno">  953</span>&#160;<span class="comment">    if (setjmp(png_jmpbuf(png_ptr)))</span></div>
+<div class="line"><a name="l00954"></a><span class="lineno">  954</span>&#160;<span class="comment">        abort_(&quot;[write_png_file] Error during writing bytes&quot;);</span></div>
 <div class="line"><a name="l00955"></a><span class="lineno">  955</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00956"></a><span class="lineno">  956</span>&#160;<span class="comment">    // end write</span></div>
-<div class="line"><a name="l00957"></a><span class="lineno">  957</span>&#160;<span class="comment">    if (setjmp(png_jmpbuf(png_ptr)))</span></div>
-<div class="line"><a name="l00958"></a><span class="lineno">  958</span>&#160;<span class="comment">        abort_(&quot;[write_png_file] Error during end of write&quot;);</span></div>
-<div class="line"><a name="l00959"></a><span class="lineno">  959</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00960"></a><span class="lineno">  960</span>&#160;<span class="comment">    png_write_end(png_ptr, NULL);</span></div>
+<div class="line"><a name="l00956"></a><span class="lineno">  956</span>&#160;<span class="comment">    png_write_image(png_ptr, row_pointers);</span></div>
+<div class="line"><a name="l00957"></a><span class="lineno">  957</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00958"></a><span class="lineno">  958</span>&#160;<span class="comment">    // end write</span></div>
+<div class="line"><a name="l00959"></a><span class="lineno">  959</span>&#160;<span class="comment">    if (setjmp(png_jmpbuf(png_ptr)))</span></div>
+<div class="line"><a name="l00960"></a><span class="lineno">  960</span>&#160;<span class="comment">        abort_(&quot;[write_png_file] Error during end of write&quot;);</span></div>
 <div class="line"><a name="l00961"></a><span class="lineno">  961</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00962"></a><span class="lineno">  962</span>&#160;<span class="comment">    // cleanup heap allocation</span></div>
-<div class="line"><a name="l00963"></a><span class="lineno">  963</span>&#160;<span class="comment">    for (y=0; y&lt;height; y++)</span></div>
-<div class="line"><a name="l00964"></a><span class="lineno">  964</span>&#160;<span class="comment">        free(row_pointers[y]);</span></div>
-<div class="line"><a name="l00965"></a><span class="lineno">  965</span>&#160;<span class="comment">    free(row_pointers);</span></div>
-<div class="line"><a name="l00966"></a><span class="lineno">  966</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00967"></a><span class="lineno">  967</span>&#160;<span class="comment">    fclose(fp);</span></div>
-<div class="line"><a name="l00968"></a><span class="lineno">  968</span>&#160;<span class="comment">}*/</span></div>
-<div class="line"><a name="l00969"></a><span class="lineno">  969</span>&#160; </div>
-<div class="line"><a name="l00970"></a><span class="lineno"><a class="line" href="../../d0/d96/classengine__utils_1_1SplineFunction.html">  970</a></span>&#160;<span class="keyword">class </span><a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html">SplineFunction</a> {</div>
-<div class="line"><a name="l00971"></a><span class="lineno">  971</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00972"></a><span class="lineno"><a class="line" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a272808822e1611f141638d4e2bdb4bb7">  972</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a272808822e1611f141638d4e2bdb4bb7">x_min</a>;</div>
-<div class="line"><a name="l00973"></a><span class="lineno"><a class="line" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a2cfbcc34567a614e31419dcf7e6854de">  973</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a2cfbcc34567a614e31419dcf7e6854de">x_max</a>;</div>
-<div class="line"><a name="l00974"></a><span class="lineno">  974</span>&#160; </div>
-<div class="line"><a name="l00975"></a><span class="lineno"><a class="line" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#affbb06049b16a2f1c5255bfc4a327262">  975</a></span>&#160;    <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#affbb06049b16a2f1c5255bfc4a327262">SplineFunction</a>(Eigen::VectorXd <span class="keyword">const</span> &amp;x_vec,</div>
-<div class="line"><a name="l00976"></a><span class="lineno">  976</span>&#160;                   Eigen::VectorXd <span class="keyword">const</span> &amp;y_vec)</div>
-<div class="line"><a name="l00977"></a><span class="lineno">  977</span>&#160;        : <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a272808822e1611f141638d4e2bdb4bb7">x_min</a>(x_vec.minCoeff()),</div>
-<div class="line"><a name="l00978"></a><span class="lineno">  978</span>&#160;          <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a2cfbcc34567a614e31419dcf7e6854de">x_max</a>(x_vec.maxCoeff()),</div>
-<div class="line"><a name="l00979"></a><span class="lineno">  979</span>&#160;          <span class="comment">// spline fitting here. X values are scaled down to [0, 1] for this.</span></div>
-<div class="line"><a name="l00980"></a><span class="lineno">  980</span>&#160;          <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ad0fa6d4f99bb9ac16663c40389c97d23">spline_</a>(Eigen::SplineFitting&lt;Eigen::Spline&lt;double, 1&gt;&gt;::Interpolate(</div>
-<div class="line"><a name="l00981"></a><span class="lineno">  981</span>&#160;              y_vec.transpose(),</div>
-<div class="line"><a name="l00982"></a><span class="lineno">  982</span>&#160;              <span class="comment">// no more than cubic spline, but accept short vectors.</span></div>
-<div class="line"><a name="l00983"></a><span class="lineno">  983</span>&#160;              <a class="code" href="../../d8/dcc/namespacestd.html">std</a>::min&lt;int&gt;(x_vec.rows() - 1, 3),</div>
-<div class="line"><a name="l00984"></a><span class="lineno">  984</span>&#160;              <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a3190903eb1fb8776a6e34a962c4f3794">scaled_values</a>(x_vec))) {}</div>
-<div class="line"><a name="l00985"></a><span class="lineno">  985</span>&#160; </div>
-<div class="line"><a name="l00986"></a><span class="lineno"><a class="line" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ae2f5e656e61cee0da849a8563e322b67">  986</a></span>&#160;    <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ae2f5e656e61cee0da849a8563e322b67">SplineFunction</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00962"></a><span class="lineno">  962</span>&#160;<span class="comment">    png_write_end(png_ptr, NULL);</span></div>
+<div class="line"><a name="l00963"></a><span class="lineno">  963</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00964"></a><span class="lineno">  964</span>&#160;<span class="comment">    // cleanup heap allocation</span></div>
+<div class="line"><a name="l00965"></a><span class="lineno">  965</span>&#160;<span class="comment">    for (y=0; y&lt;height; y++)</span></div>
+<div class="line"><a name="l00966"></a><span class="lineno">  966</span>&#160;<span class="comment">        free(row_pointers[y]);</span></div>
+<div class="line"><a name="l00967"></a><span class="lineno">  967</span>&#160;<span class="comment">    free(row_pointers);</span></div>
+<div class="line"><a name="l00968"></a><span class="lineno">  968</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00969"></a><span class="lineno">  969</span>&#160;<span class="comment">    fclose(fp);</span></div>
+<div class="line"><a name="l00970"></a><span class="lineno">  970</span>&#160;<span class="comment">}*/</span></div>
+<div class="line"><a name="l00971"></a><span class="lineno">  971</span>&#160; </div>
+<div class="line"><a name="l00972"></a><span class="lineno"><a class="line" href="../../d0/d96/classengine__utils_1_1SplineFunction.html">  972</a></span>&#160;<span class="keyword">class </span><a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html">SplineFunction</a> {</div>
+<div class="line"><a name="l00973"></a><span class="lineno">  973</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00974"></a><span class="lineno"><a class="line" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a272808822e1611f141638d4e2bdb4bb7">  974</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a272808822e1611f141638d4e2bdb4bb7">x_min</a>;</div>
+<div class="line"><a name="l00975"></a><span class="lineno"><a class="line" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a2cfbcc34567a614e31419dcf7e6854de">  975</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a2cfbcc34567a614e31419dcf7e6854de">x_max</a>;</div>
+<div class="line"><a name="l00976"></a><span class="lineno">  976</span>&#160; </div>
+<div class="line"><a name="l00977"></a><span class="lineno"><a class="line" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#affbb06049b16a2f1c5255bfc4a327262">  977</a></span>&#160;    <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#affbb06049b16a2f1c5255bfc4a327262">SplineFunction</a>(Eigen::VectorXd <span class="keyword">const</span> &amp;x_vec,</div>
+<div class="line"><a name="l00978"></a><span class="lineno">  978</span>&#160;                   Eigen::VectorXd <span class="keyword">const</span> &amp;y_vec)</div>
+<div class="line"><a name="l00979"></a><span class="lineno">  979</span>&#160;        : <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a272808822e1611f141638d4e2bdb4bb7">x_min</a>(x_vec.minCoeff()),</div>
+<div class="line"><a name="l00980"></a><span class="lineno">  980</span>&#160;          <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a2cfbcc34567a614e31419dcf7e6854de">x_max</a>(x_vec.maxCoeff()),</div>
+<div class="line"><a name="l00981"></a><span class="lineno">  981</span>&#160;          <span class="comment">// spline fitting here. X values are scaled down to [0, 1] for this.</span></div>
+<div class="line"><a name="l00982"></a><span class="lineno">  982</span>&#160;          <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ad0fa6d4f99bb9ac16663c40389c97d23">spline_</a>(Eigen::SplineFitting&lt;Eigen::Spline&lt;double, 1&gt;&gt;::Interpolate(</div>
+<div class="line"><a name="l00983"></a><span class="lineno">  983</span>&#160;              y_vec.transpose(),</div>
+<div class="line"><a name="l00984"></a><span class="lineno">  984</span>&#160;              <span class="comment">// no more than cubic spline, but accept short vectors.</span></div>
+<div class="line"><a name="l00985"></a><span class="lineno">  985</span>&#160;              <a class="code" href="../../d8/dcc/namespacestd.html">std</a>::min&lt;int&gt;(x_vec.rows() - 1, 3),</div>
+<div class="line"><a name="l00986"></a><span class="lineno">  986</span>&#160;              <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a3190903eb1fb8776a6e34a962c4f3794">scaled_values</a>(x_vec))) {}</div>
 <div class="line"><a name="l00987"></a><span class="lineno">  987</span>&#160; </div>
-<div class="line"><a name="l00988"></a><span class="lineno"><a class="line" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ad94a68b7997bd35522636c692523c12d">  988</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ad94a68b7997bd35522636c692523c12d">interpolate</a>(Eigen::VectorXd <span class="keyword">const</span> &amp;x_vec,</div>
-<div class="line"><a name="l00989"></a><span class="lineno">  989</span>&#160;                     Eigen::VectorXd <span class="keyword">const</span> &amp;y_vec) {</div>
-<div class="line"><a name="l00990"></a><span class="lineno">  990</span>&#160;        <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a272808822e1611f141638d4e2bdb4bb7">x_min</a> = x_vec.minCoeff();</div>
-<div class="line"><a name="l00991"></a><span class="lineno">  991</span>&#160;        <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a2cfbcc34567a614e31419dcf7e6854de">x_max</a> = x_vec.maxCoeff();</div>
-<div class="line"><a name="l00992"></a><span class="lineno">  992</span>&#160;        <span class="comment">// spline fitting here. X values are scaled down to [0, 1] for this.</span></div>
-<div class="line"><a name="l00993"></a><span class="lineno">  993</span>&#160;        <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ad0fa6d4f99bb9ac16663c40389c97d23">spline_</a> = Eigen::SplineFitting&lt;Eigen::Spline&lt;double, 1&gt;&gt;::Interpolate(</div>
-<div class="line"><a name="l00994"></a><span class="lineno">  994</span>&#160;            y_vec.transpose(),</div>
-<div class="line"><a name="l00995"></a><span class="lineno">  995</span>&#160;            <span class="comment">// no more than cubic spline, but accept short vectors.</span></div>
-<div class="line"><a name="l00996"></a><span class="lineno">  996</span>&#160;            std::min&lt;int&gt;(x_vec.rows() - 1, 3),</div>
-<div class="line"><a name="l00997"></a><span class="lineno">  997</span>&#160;            <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a3190903eb1fb8776a6e34a962c4f3794">scaled_values</a>(x_vec));</div>
-<div class="line"><a name="l00998"></a><span class="lineno">  998</span>&#160;    }</div>
-<div class="line"><a name="l00999"></a><span class="lineno">  999</span>&#160; </div>
-<div class="line"><a name="l01000"></a><span class="lineno"><a class="line" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a5ae81e481d2c888c76fbf2fe38bc5511"> 1000</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a5ae81e481d2c888c76fbf2fe38bc5511">operator()</a>(<span class="keywordtype">double</span> x)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l01001"></a><span class="lineno"> 1001</span>&#160;        <span class="comment">// x values need to be scaled down in extraction as well.</span></div>
-<div class="line"><a name="l01002"></a><span class="lineno"> 1002</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ad0fa6d4f99bb9ac16663c40389c97d23">spline_</a>(<a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ac17565d024bb8435255453823d1d9509">scaled_value</a>(x))(0);</div>
-<div class="line"><a name="l01003"></a><span class="lineno"> 1003</span>&#160;    }</div>
-<div class="line"><a name="l01004"></a><span class="lineno"> 1004</span>&#160; </div>
-<div class="line"><a name="l01005"></a><span class="lineno"> 1005</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l01006"></a><span class="lineno"> 1006</span>&#160;    <span class="comment">// helpers to scale x values down to [0, 1]</span></div>
-<div class="line"><a name="l01007"></a><span class="lineno"><a class="line" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ac17565d024bb8435255453823d1d9509"> 1007</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ac17565d024bb8435255453823d1d9509">scaled_value</a>(<span class="keywordtype">double</span> x)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l01008"></a><span class="lineno"> 1008</span>&#160;        <span class="keywordflow">return</span> (x - <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a272808822e1611f141638d4e2bdb4bb7">x_min</a>) / (<a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a2cfbcc34567a614e31419dcf7e6854de">x_max</a> - <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a272808822e1611f141638d4e2bdb4bb7">x_min</a>);</div>
-<div class="line"><a name="l01009"></a><span class="lineno"> 1009</span>&#160;    }</div>
-<div class="line"><a name="l01010"></a><span class="lineno"> 1010</span>&#160; </div>
-<div class="line"><a name="l01011"></a><span class="lineno"><a class="line" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a3190903eb1fb8776a6e34a962c4f3794"> 1011</a></span>&#160;    Eigen::RowVectorXd <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a3190903eb1fb8776a6e34a962c4f3794">scaled_values</a>(Eigen::VectorXd <span class="keyword">const</span> &amp;x_vec)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l01012"></a><span class="lineno"> 1012</span>&#160;        <span class="keywordflow">return</span> x_vec.unaryExpr([<span class="keyword">this</span>](<span class="keywordtype">double</span> x) { <span class="keywordflow">return</span> <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ac17565d024bb8435255453823d1d9509">scaled_value</a>(x); }).transpose();</div>
-<div class="line"><a name="l01013"></a><span class="lineno"> 1013</span>&#160;    }</div>
-<div class="line"><a name="l01014"></a><span class="lineno"> 1014</span>&#160; </div>
-<div class="line"><a name="l01015"></a><span class="lineno"> 1015</span>&#160;    <span class="comment">// spline of one-dimensional points.</span></div>
-<div class="line"><a name="l01016"></a><span class="lineno"><a class="line" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ad0fa6d4f99bb9ac16663c40389c97d23"> 1016</a></span>&#160;    Eigen::Spline&lt;double, 1&gt; <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ad0fa6d4f99bb9ac16663c40389c97d23">spline_</a>;</div>
-<div class="line"><a name="l01017"></a><span class="lineno"> 1017</span>&#160;};</div>
-<div class="line"><a name="l01018"></a><span class="lineno"> 1018</span>&#160; </div>
-<div class="line"><a name="l01019"></a><span class="lineno"> 1019</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Derived&gt;</div>
-<div class="line"><a name="l01020"></a><span class="lineno"><a class="line" href="../../dd/d06/namespaceengine__utils.html#a0d4e852f4708cf9fc1a75eb98a3bed67"> 1020</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../dd/d06/namespaceengine__utils.html#a0d4e852f4708cf9fc1a75eb98a3bed67">fix_periodic_boundary</a>(Eigen::DenseBase&lt;Derived&gt;&amp;data, <span class="keywordtype">double</span> low,</div>
-<div class="line"><a name="l01021"></a><span class="lineno"> 1021</span>&#160;                           <span class="keywordtype">double</span> high, <span class="keywordtype">double</span> upper_limit) {</div>
-<div class="line"><a name="l01022"></a><span class="lineno"> 1022</span>&#160; </div>
-<div class="line"><a name="l01023"></a><span class="lineno"> 1023</span>&#160;    Eigen::Index n_pts = data.size();</div>
-<div class="line"><a name="l01024"></a><span class="lineno"> 1024</span>&#160;    <span class="keywordtype">double</span> max = data.maxCoeff();</div>
-<div class="line"><a name="l01025"></a><span class="lineno"> 1025</span>&#160;    <span class="keywordtype">double</span> min = data.minCoeff();</div>
-<div class="line"><a name="l01026"></a><span class="lineno"> 1026</span>&#160;    <span class="keywordflow">if</span> (max &gt; high &amp;&amp; min &lt; low) {</div>
-<div class="line"><a name="l01027"></a><span class="lineno"> 1027</span>&#160;        <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;n_pts; ++i) {</div>
-<div class="line"><a name="l01028"></a><span class="lineno"> 1028</span>&#160;            <span class="keywordflow">if</span> (data(i) &lt; low) {</div>
-<div class="line"><a name="l01029"></a><span class="lineno"> 1029</span>&#160;                data(i) += upper_limit;</div>
-<div class="line"><a name="l01030"></a><span class="lineno"> 1030</span>&#160;            }</div>
-<div class="line"><a name="l01031"></a><span class="lineno"> 1031</span>&#160;        }</div>
-<div class="line"><a name="l01032"></a><span class="lineno"> 1032</span>&#160;    }</div>
-<div class="line"><a name="l01033"></a><span class="lineno"> 1033</span>&#160;}</div>
-<div class="line"><a name="l01034"></a><span class="lineno"> 1034</span>&#160; </div>
-<div class="line"><a name="l01035"></a><span class="lineno"> 1035</span>&#160;<span class="comment">/*template &lt;class map_class_t, class map_fitter_t&gt;</span></div>
-<div class="line"><a name="l01036"></a><span class="lineno"> 1036</span>&#160;<span class="comment">void calc_gaussian_transfer_func(map_class_t &amp;mb, map_fitter_t &amp;map_fitter, int map_index) {</span></div>
-<div class="line"><a name="l01037"></a><span class="lineno"> 1037</span>&#160;<span class="comment">    // x and y spacing should be equal</span></div>
-<div class="line"><a name="l01038"></a><span class="lineno"> 1038</span>&#160;<span class="comment">    diff_rows = abs(mb.rows_tan_vec(1) - mb.rows_tan_vec(0));</span></div>
-<div class="line"><a name="l01039"></a><span class="lineno"> 1039</span>&#160;<span class="comment">    diff_cols = abs(mb.cols_tan_vec(1) - mb.cols_tan_vec(0));</span></div>
-<div class="line"><a name="l01040"></a><span class="lineno"> 1040</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l01041"></a><span class="lineno"> 1041</span>&#160;<span class="comment">    // collect what we need</span></div>
-<div class="line"><a name="l01042"></a><span class="lineno"> 1042</span>&#160;<span class="comment">    Eigen::MatrixXd temp_kernel = mb.kernel[map_index];</span></div>
-<div class="line"><a name="l01043"></a><span class="lineno"> 1043</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l01044"></a><span class="lineno"> 1044</span>&#160;<span class="comment">    double init_row = -99;</span></div>
-<div class="line"><a name="l01045"></a><span class="lineno"> 1045</span>&#160;<span class="comment">    double init_col = -99;</span></div>
-<div class="line"><a name="l01046"></a><span class="lineno"> 1046</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l01047"></a><span class="lineno"> 1047</span>&#160;<span class="comment">    // carry out fit to kernel to get centroid</span></div>
-<div class="line"><a name="l01048"></a><span class="lineno"> 1048</span>&#160;<span class="comment">    auto [map_params, map_perror, good_fit] =</span></div>
-<div class="line"><a name="l01049"></a><span class="lineno"> 1049</span>&#160;<span class="comment">        map_fitter.fit_to_gaussian&lt;engine_utils::mapFitter::pointing&gt;(mb.kernel[map_index], mb.weight[map_index],</span></div>
-<div class="line"><a name="l01050"></a><span class="lineno"> 1050</span>&#160;<span class="comment">                                                                      init_fwhm, init_row, init_col);</span></div>
-<div class="line"><a name="l01051"></a><span class="lineno"> 1051</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l01052"></a><span class="lineno"> 1052</span>&#160;<span class="comment">    // if fit failed, give up</span></div>
-<div class="line"><a name="l01053"></a><span class="lineno"> 1053</span>&#160;<span class="comment">    if (!good_fit) {</span></div>
-<div class="line"><a name="l01054"></a><span class="lineno"> 1054</span>&#160;<span class="comment">        logger-&gt;error(&quot;fit to kernel map failed. try setting a small fitting_region_arcsec value.&quot;);</span></div>
-<div class="line"><a name="l01055"></a><span class="lineno"> 1055</span>&#160;<span class="comment">        std::exit(EXIT_FAILURE);</span></div>
-<div class="line"><a name="l01056"></a><span class="lineno"> 1056</span>&#160;<span class="comment">    }</span></div>
-<div class="line"><a name="l01057"></a><span class="lineno"> 1057</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l01058"></a><span class="lineno"> 1058</span>&#160;<span class="comment">    // rescale parameters to on-sky units</span></div>
-<div class="line"><a name="l01059"></a><span class="lineno"> 1059</span>&#160;<span class="comment">    map_params(1) = mb.pixel_size_rad*(map_params(1) - (n_cols)/2);</span></div>
-<div class="line"><a name="l01060"></a><span class="lineno"> 1060</span>&#160;<span class="comment">    map_params(2) = mb.pixel_size_rad*(map_params(2) - (n_rows)/2);</span></div>
-<div class="line"><a name="l01061"></a><span class="lineno"> 1061</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l01062"></a><span class="lineno"> 1062</span>&#160;<span class="comment">    Eigen::Index shift_row = -std::round(map_params(2)/diff_rows);</span></div>
-<div class="line"><a name="l01063"></a><span class="lineno"> 1063</span>&#160;<span class="comment">    Eigen::Index shift_col = -std::round(map_params(1)/diff_cols);</span></div>
-<div class="line"><a name="l01064"></a><span class="lineno"> 1064</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l01065"></a><span class="lineno"> 1065</span>&#160;<span class="comment">    std::vector&lt;Eigen::Index&gt; shift_indices = {shift_row,shift_col};</span></div>
-<div class="line"><a name="l01066"></a><span class="lineno"> 1066</span>&#160;<span class="comment">    temp_kernel = engine_utils::shift_2D(temp_kernel, shift_indices);</span></div>
-<div class="line"><a name="l01067"></a><span class="lineno"> 1067</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l01068"></a><span class="lineno"> 1068</span>&#160;<span class="comment">    // calculate distance</span></div>
-<div class="line"><a name="l01069"></a><span class="lineno"> 1069</span>&#160;<span class="comment">    Eigen::MatrixXd dist(n_rows,n_cols);</span></div>
-<div class="line"><a name="l01070"></a><span class="lineno"> 1070</span>&#160;<span class="comment">    for (Eigen::Index i=0; i&lt;n_cols; ++i) {</span></div>
-<div class="line"><a name="l01071"></a><span class="lineno"> 1071</span>&#160;<span class="comment">        for (Eigen::Index j=0; j&lt;n_rows; ++j) {</span></div>
-<div class="line"><a name="l01072"></a><span class="lineno"> 1072</span>&#160;<span class="comment">            dist(j,i) = sqrt(pow(mb.rows_tan_vec(j),2)+pow(mb.cols_tan_vec(i),2));</span></div>
-<div class="line"><a name="l01073"></a><span class="lineno"> 1073</span>&#160;<span class="comment">        }</span></div>
-<div class="line"><a name="l01074"></a><span class="lineno"> 1074</span>&#160;<span class="comment">    }</span></div>
-<div class="line"><a name="l01075"></a><span class="lineno"> 1075</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l01076"></a><span class="lineno"> 1076</span>&#160;<span class="comment">    // pixel closet to tangent point</span></div>
-<div class="line"><a name="l01077"></a><span class="lineno"> 1077</span>&#160;<span class="comment">    Eigen::Index row_index, col_index;</span></div>
-<div class="line"><a name="l01078"></a><span class="lineno"> 1078</span>&#160;<span class="comment">    auto min_dist = dist.minCoeff(&amp;row_index,&amp;col_index);</span></div>
-<div class="line"><a name="l01079"></a><span class="lineno"> 1079</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l01080"></a><span class="lineno"> 1080</span>&#160;<span class="comment">    // create new bins based on diff_rows</span></div>
-<div class="line"><a name="l01081"></a><span class="lineno"> 1081</span>&#160;<span class="comment">    int n_bins = mb.rows_tan_vec(n_rows-1)/diff_rows;</span></div>
-<div class="line"><a name="l01082"></a><span class="lineno"> 1082</span>&#160;<span class="comment">    Eigen::VectorXd bin_low = Eigen::VectorXd::LinSpaced(n_bins,0,n_bins-1)*diff_rows;</span></div>
-<div class="line"><a name="l01083"></a><span class="lineno"> 1083</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l01084"></a><span class="lineno"> 1084</span>&#160;<span class="comment">    Eigen::VectorXd kernel_interp(n_bins-1);</span></div>
-<div class="line"><a name="l01085"></a><span class="lineno"> 1085</span>&#160;<span class="comment">    kernel_interp.setZero();</span></div>
-<div class="line"><a name="l01086"></a><span class="lineno"> 1086</span>&#160;<span class="comment">    Eigen::VectorXd dist_interp(n_bins-1);</span></div>
-<div class="line"><a name="l01087"></a><span class="lineno"> 1087</span>&#160;<span class="comment">    dist_interp.setZero();</span></div>
-<div class="line"><a name="l01088"></a><span class="lineno"> 1088</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l01089"></a><span class="lineno"> 1089</span>&#160;<span class="comment">    // radial averages</span></div>
-<div class="line"><a name="l01090"></a><span class="lineno"> 1090</span>&#160;<span class="comment">    for (Eigen::Index i=0; i&lt;n_bins-1; ++i) {</span></div>
-<div class="line"><a name="l01091"></a><span class="lineno"> 1091</span>&#160;<span class="comment">        int c = 0;</span></div>
-<div class="line"><a name="l01092"></a><span class="lineno"> 1092</span>&#160;<span class="comment">        for (Eigen::Index j=0; j&lt;n_cols; ++j) {</span></div>
-<div class="line"><a name="l01093"></a><span class="lineno"> 1093</span>&#160;<span class="comment">            for (Eigen::Index k=0; k&lt;n_rows; ++k) {</span></div>
-<div class="line"><a name="l01094"></a><span class="lineno"> 1094</span>&#160;<span class="comment">                if (dist(k,j) &gt;= bin_low(i) &amp;&amp; dist(k,j) &lt; bin_low(i+1)){</span></div>
-<div class="line"><a name="l01095"></a><span class="lineno"> 1095</span>&#160;<span class="comment">                    c++;</span></div>
-<div class="line"><a name="l01096"></a><span class="lineno"> 1096</span>&#160;<span class="comment">                    kernel_interp(i) += temp_kernel(k,j);</span></div>
-<div class="line"><a name="l01097"></a><span class="lineno"> 1097</span>&#160;<span class="comment">                    dist_interp(i) += dist(k,j);</span></div>
-<div class="line"><a name="l01098"></a><span class="lineno"> 1098</span>&#160;<span class="comment">                }</span></div>
-<div class="line"><a name="l01099"></a><span class="lineno"> 1099</span>&#160;<span class="comment">            }</span></div>
-<div class="line"><a name="l01100"></a><span class="lineno"> 1100</span>&#160;<span class="comment">        }</span></div>
-<div class="line"><a name="l01101"></a><span class="lineno"> 1101</span>&#160;<span class="comment">        kernel_interp(i) /= c;</span></div>
-<div class="line"><a name="l01102"></a><span class="lineno"> 1102</span>&#160;<span class="comment">        dist_interp(i) /= c;</span></div>
-<div class="line"><a name="l01103"></a><span class="lineno"> 1103</span>&#160;<span class="comment">    }</span></div>
-<div class="line"><a name="l01104"></a><span class="lineno"> 1104</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l01105"></a><span class="lineno"> 1105</span>&#160;<span class="comment">    // now spline interpolate to generate new template array</span></div>
-<div class="line"><a name="l01106"></a><span class="lineno"> 1106</span>&#160;<span class="comment">    filter_template.resize(n_rows,n_cols);</span></div>
-<div class="line"><a name="l01107"></a><span class="lineno"> 1107</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l01108"></a><span class="lineno"> 1108</span>&#160;<span class="comment">    // create spline function</span></div>
-<div class="line"><a name="l01109"></a><span class="lineno"> 1109</span>&#160;<span class="comment">    engine_utils::SplineFunction s(dist_interp, kernel_interp);</span></div>
-<div class="line"><a name="l01110"></a><span class="lineno"> 1110</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l01111"></a><span class="lineno"> 1111</span>&#160;<span class="comment">    // carry out the interpolation</span></div>
-<div class="line"><a name="l01112"></a><span class="lineno"> 1112</span>&#160;<span class="comment">    for (Eigen::Index i=0; i&lt;n_cols; ++i) {</span></div>
-<div class="line"><a name="l01113"></a><span class="lineno"> 1113</span>&#160;<span class="comment">        for (Eigen::Index j=0; j&lt;n_rows; ++j) {</span></div>
-<div class="line"><a name="l01114"></a><span class="lineno"> 1114</span>&#160;<span class="comment">            Eigen::Index tj = (j-row_index)%n_rows;</span></div>
-<div class="line"><a name="l01115"></a><span class="lineno"> 1115</span>&#160;<span class="comment">            Eigen::Index ti = (i-col_index)%n_cols;</span></div>
-<div class="line"><a name="l01116"></a><span class="lineno"> 1116</span>&#160;<span class="comment">            Eigen::Index shiftj = (tj &lt; 0) ? n_rows+tj : tj;</span></div>
-<div class="line"><a name="l01117"></a><span class="lineno"> 1117</span>&#160;<span class="comment">            Eigen::Index shifti = (ti &lt; 0) ? n_cols+ti : ti;</span></div>
-<div class="line"><a name="l01118"></a><span class="lineno"> 1118</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l01119"></a><span class="lineno"> 1119</span>&#160;<span class="comment">            // if within limits</span></div>
-<div class="line"><a name="l01120"></a><span class="lineno"> 1120</span>&#160;<span class="comment">            if (dist(j,i) &lt;= s.x_max &amp;&amp; dist(j,i) &gt;= s.x_min) {</span></div>
-<div class="line"><a name="l01121"></a><span class="lineno"> 1121</span>&#160;<span class="comment">                filter_template(shiftj,shifti) = s(dist(j,i));</span></div>
-<div class="line"><a name="l01122"></a><span class="lineno"> 1122</span>&#160;<span class="comment">            }</span></div>
-<div class="line"><a name="l01123"></a><span class="lineno"> 1123</span>&#160;<span class="comment">            // if above x limit</span></div>
-<div class="line"><a name="l01124"></a><span class="lineno"> 1124</span>&#160;<span class="comment">            else if (dist(j,i) &gt; s.x_max) {</span></div>
-<div class="line"><a name="l01125"></a><span class="lineno"> 1125</span>&#160;<span class="comment">                filter_template(shiftj,shifti) = kernel_interp(kernel_interp.size()-1);</span></div>
-<div class="line"><a name="l01126"></a><span class="lineno"> 1126</span>&#160;<span class="comment">            }</span></div>
-<div class="line"><a name="l01127"></a><span class="lineno"> 1127</span>&#160;<span class="comment">            // if below x limit</span></div>
-<div class="line"><a name="l01128"></a><span class="lineno"> 1128</span>&#160;<span class="comment">            else if (dist(j,i) &lt; s.x_min) {</span></div>
-<div class="line"><a name="l01129"></a><span class="lineno"> 1129</span>&#160;<span class="comment">                filter_template(shiftj,shifti) = kernel_interp(0);</span></div>
-<div class="line"><a name="l01130"></a><span class="lineno"> 1130</span>&#160;<span class="comment">            }</span></div>
-<div class="line"><a name="l01131"></a><span class="lineno"> 1131</span>&#160;<span class="comment">        }</span></div>
-<div class="line"><a name="l01132"></a><span class="lineno"> 1132</span>&#160;<span class="comment">    }</span></div>
-<div class="line"><a name="l01133"></a><span class="lineno"> 1133</span>&#160;<span class="comment">}*/</span></div>
-<div class="line"><a name="l01134"></a><span class="lineno"> 1134</span>&#160; </div>
-<div class="line"><a name="l01136"></a><span class="lineno"><a class="line" href="../../dd/d06/namespaceengine__utils.html#a392b455508f8ccfaf2af66c841dd7055"> 1136</a></span>&#160;<span class="keyword">inline</span> <span class="keyword">auto</span> <a class="code" href="../../dd/d06/namespaceengine__utils.html#a392b455508f8ccfaf2af66c841dd7055">now</a>() { <span class="keywordflow">return</span> <a class="code" href="../../dd/d06/namespaceengine__utils.html#a392b455508f8ccfaf2af66c841dd7055">std::chrono::high_resolution_clock::now</a>(); }</div>
-<div class="line"><a name="l01137"></a><span class="lineno"> 1137</span>&#160; </div>
-<div class="line"><a name="l01139"></a><span class="lineno"><a class="line" href="../../dd/d06/namespaceengine__utils.html#a582a54460566fa6a468a6e5902f552e9"> 1139</a></span>&#160;<span class="keyword">inline</span> <span class="keyword">auto</span> <a class="code" href="../../dd/d06/namespaceengine__utils.html#a582a54460566fa6a468a6e5902f552e9">elapsed_since</a>(</div>
-<div class="line"><a name="l01140"></a><span class="lineno"> 1140</span>&#160;    <span class="keyword">const</span> std::chrono::time_point&lt;std::chrono::high_resolution_clock&gt; &amp;t0) {</div>
-<div class="line"><a name="l01141"></a><span class="lineno"> 1141</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="../../dd/d06/namespaceengine__utils.html#a392b455508f8ccfaf2af66c841dd7055">now</a>() - t0;</div>
-<div class="line"><a name="l01142"></a><span class="lineno"> 1142</span>&#160;}</div>
-<div class="line"><a name="l01143"></a><span class="lineno"> 1143</span>&#160; </div>
-<div class="line"><a name="l01145"></a><span class="lineno"><a class="line" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html"> 1145</a></span>&#160;<span class="keyword">struct </span><a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html">scoped_timeit</a> {</div>
-<div class="line"><a name="l01146"></a><span class="lineno"><a class="line" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#af80d370fc55971e420743de1fe136233"> 1146</a></span>&#160;    <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#af80d370fc55971e420743de1fe136233">scoped_timeit</a>(std::string_view msg_, <span class="keywordtype">double</span> *elapsed_msec_ = <span class="keyword">nullptr</span>)</div>
-<div class="line"><a name="l01147"></a><span class="lineno"> 1147</span>&#160;        : <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#acf302d6b6be7c5fe68599d41e951884a">msg</a>(msg_), <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a142a1fca4efe1e16bc7d5d350f3c385d">elapsed_msec</a>(elapsed_msec_) {</div>
-<div class="line"><a name="l01148"></a><span class="lineno"> 1148</span>&#160;        <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#abb898cc61368dca7ed3b2b30c64376c3">logger</a>-&gt;info(<span class="stringliteral">&quot;**timeit** {}&quot;</span>, <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#acf302d6b6be7c5fe68599d41e951884a">msg</a>);</div>
-<div class="line"><a name="l01149"></a><span class="lineno"> 1149</span>&#160;    }</div>
-<div class="line"><a name="l01150"></a><span class="lineno"><a class="line" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a4363fa23362e92266556d18eca65c21d"> 1150</a></span>&#160;    <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a4363fa23362e92266556d18eca65c21d">~scoped_timeit</a>() {</div>
-<div class="line"><a name="l01151"></a><span class="lineno"> 1151</span>&#160;        <span class="keyword">auto</span> t = <a class="code" href="../../dd/d06/namespaceengine__utils.html#a582a54460566fa6a468a6e5902f552e9">elapsed_since</a>(<a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a1f8c57584e3b6d707514cb8ec000855e">t0</a>);</div>
-<div class="line"><a name="l01152"></a><span class="lineno"> 1152</span>&#160;        constexpr <span class="keyword">auto</span> s_to_ms = 1e3;</div>
-<div class="line"><a name="l01153"></a><span class="lineno"> 1153</span>&#160;        <span class="keywordflow">if</span> (this-&gt;<a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a142a1fca4efe1e16bc7d5d350f3c385d">elapsed_msec</a> != <span class="keyword">nullptr</span>) {</div>
-<div class="line"><a name="l01154"></a><span class="lineno"> 1154</span>&#160;            *(this-&gt;<a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a142a1fca4efe1e16bc7d5d350f3c385d">elapsed_msec</a>) =</div>
-<div class="line"><a name="l01155"></a><span class="lineno"> 1155</span>&#160;                std::chrono::duration_cast&lt;std::chrono::duration&lt;double&gt;&gt;(t)</div>
-<div class="line"><a name="l01156"></a><span class="lineno"> 1156</span>&#160;                    .count() *</div>
-<div class="line"><a name="l01157"></a><span class="lineno"> 1157</span>&#160;                s_to_ms;</div>
-<div class="line"><a name="l01158"></a><span class="lineno"> 1158</span>&#160;        }</div>
-<div class="line"><a name="l01159"></a><span class="lineno"> 1159</span>&#160;        <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#abb898cc61368dca7ed3b2b30c64376c3">logger</a>-&gt;info(<span class="stringliteral">&quot;**timeit** {} finished in {}&quot;</span>, <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#acf302d6b6be7c5fe68599d41e951884a">msg</a>, t);</div>
-<div class="line"><a name="l01160"></a><span class="lineno"> 1160</span>&#160;    }</div>
-<div class="line"><a name="l01161"></a><span class="lineno"><a class="line" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a863cbafa9e8aa565b64f8c092ce43eb5"> 1161</a></span>&#160;    <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a863cbafa9e8aa565b64f8c092ce43eb5">scoped_timeit</a>(<span class="keyword">const</span> <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html">scoped_timeit</a> &amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l01162"></a><span class="lineno"><a class="line" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a9d21fc81d69a5a669b5b3b9bebd0b662"> 1162</a></span>&#160;    <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a9d21fc81d69a5a669b5b3b9bebd0b662">scoped_timeit</a>(<a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html">scoped_timeit</a> &amp;&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l01163"></a><span class="lineno"><a class="line" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#aec3adb08d9cd77d6dbb38b4eef8e56b5"> 1163</a></span>&#160;    <span class="keyword">auto</span> <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#aec3adb08d9cd77d6dbb38b4eef8e56b5">operator=</a>(<span class="keyword">const</span> <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html">scoped_timeit</a> &amp;) -&gt; <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html">scoped_timeit</a> &amp; = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l01164"></a><span class="lineno"><a class="line" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a8050fa7b1c56c06d7e769fd597c20f96"> 1164</a></span>&#160;    <span class="keyword">auto</span> <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a8050fa7b1c56c06d7e769fd597c20f96">operator=</a>(<a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html">scoped_timeit</a> &amp;&amp;) -&gt; <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html">scoped_timeit</a> &amp; = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l01165"></a><span class="lineno"> 1165</span>&#160; </div>
-<div class="line"><a name="l01166"></a><span class="lineno"><a class="line" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a1f8c57584e3b6d707514cb8ec000855e"> 1166</a></span>&#160;    std::chrono::time_point&lt;std::chrono::high_resolution_clock&gt; <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a1f8c57584e3b6d707514cb8ec000855e">t0</a>{<a class="code" href="../../dd/d06/namespaceengine__utils.html#a392b455508f8ccfaf2af66c841dd7055">now</a>()};</div>
-<div class="line"><a name="l01167"></a><span class="lineno"><a class="line" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#acf302d6b6be7c5fe68599d41e951884a"> 1167</a></span>&#160;    std::string_view <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#acf302d6b6be7c5fe68599d41e951884a">msg</a>;</div>
-<div class="line"><a name="l01168"></a><span class="lineno"><a class="line" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a142a1fca4efe1e16bc7d5d350f3c385d"> 1168</a></span>&#160;    <span class="keywordtype">double</span> *<a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a142a1fca4efe1e16bc7d5d350f3c385d">elapsed_msec</a>{<span class="keyword">nullptr</span>};</div>
-<div class="line"><a name="l01169"></a><span class="lineno"><a class="line" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#abb898cc61368dca7ed3b2b30c64376c3"> 1169</a></span>&#160;    std::shared_ptr&lt;spdlog::logger&gt; <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#abb898cc61368dca7ed3b2b30c64376c3">logger</a> = spdlog::get(<span class="stringliteral">&quot;citlali_logger&quot;</span>);</div>
-<div class="line"><a name="l01170"></a><span class="lineno"> 1170</span>&#160; </div>
-<div class="line"><a name="l01171"></a><span class="lineno"> 1171</span>&#160;};</div>
+<div class="line"><a name="l00988"></a><span class="lineno"><a class="line" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ae2f5e656e61cee0da849a8563e322b67">  988</a></span>&#160;    <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ae2f5e656e61cee0da849a8563e322b67">SplineFunction</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00989"></a><span class="lineno">  989</span>&#160; </div>
+<div class="line"><a name="l00990"></a><span class="lineno"><a class="line" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ad94a68b7997bd35522636c692523c12d">  990</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ad94a68b7997bd35522636c692523c12d">interpolate</a>(Eigen::VectorXd <span class="keyword">const</span> &amp;x_vec,</div>
+<div class="line"><a name="l00991"></a><span class="lineno">  991</span>&#160;                     Eigen::VectorXd <span class="keyword">const</span> &amp;y_vec) {</div>
+<div class="line"><a name="l00992"></a><span class="lineno">  992</span>&#160;        <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a272808822e1611f141638d4e2bdb4bb7">x_min</a> = x_vec.minCoeff();</div>
+<div class="line"><a name="l00993"></a><span class="lineno">  993</span>&#160;        <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a2cfbcc34567a614e31419dcf7e6854de">x_max</a> = x_vec.maxCoeff();</div>
+<div class="line"><a name="l00994"></a><span class="lineno">  994</span>&#160;        <span class="comment">// spline fitting here. X values are scaled down to [0, 1] for this.</span></div>
+<div class="line"><a name="l00995"></a><span class="lineno">  995</span>&#160;        <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ad0fa6d4f99bb9ac16663c40389c97d23">spline_</a> = Eigen::SplineFitting&lt;Eigen::Spline&lt;double, 1&gt;&gt;::Interpolate(</div>
+<div class="line"><a name="l00996"></a><span class="lineno">  996</span>&#160;            y_vec.transpose(),</div>
+<div class="line"><a name="l00997"></a><span class="lineno">  997</span>&#160;            <span class="comment">// no more than cubic spline, but accept short vectors.</span></div>
+<div class="line"><a name="l00998"></a><span class="lineno">  998</span>&#160;            std::min&lt;int&gt;(x_vec.rows() - 1, 3),</div>
+<div class="line"><a name="l00999"></a><span class="lineno">  999</span>&#160;            <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a3190903eb1fb8776a6e34a962c4f3794">scaled_values</a>(x_vec));</div>
+<div class="line"><a name="l01000"></a><span class="lineno"> 1000</span>&#160;    }</div>
+<div class="line"><a name="l01001"></a><span class="lineno"> 1001</span>&#160; </div>
+<div class="line"><a name="l01002"></a><span class="lineno"><a class="line" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a5ae81e481d2c888c76fbf2fe38bc5511"> 1002</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a5ae81e481d2c888c76fbf2fe38bc5511">operator()</a>(<span class="keywordtype">double</span> x)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l01003"></a><span class="lineno"> 1003</span>&#160;        <span class="comment">// x values need to be scaled down in extraction as well.</span></div>
+<div class="line"><a name="l01004"></a><span class="lineno"> 1004</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ad0fa6d4f99bb9ac16663c40389c97d23">spline_</a>(<a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ac17565d024bb8435255453823d1d9509">scaled_value</a>(x))(0);</div>
+<div class="line"><a name="l01005"></a><span class="lineno"> 1005</span>&#160;    }</div>
+<div class="line"><a name="l01006"></a><span class="lineno"> 1006</span>&#160; </div>
+<div class="line"><a name="l01007"></a><span class="lineno"> 1007</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l01008"></a><span class="lineno"> 1008</span>&#160;    <span class="comment">// helpers to scale x values down to [0, 1]</span></div>
+<div class="line"><a name="l01009"></a><span class="lineno"><a class="line" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ac17565d024bb8435255453823d1d9509"> 1009</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ac17565d024bb8435255453823d1d9509">scaled_value</a>(<span class="keywordtype">double</span> x)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l01010"></a><span class="lineno"> 1010</span>&#160;        <span class="keywordflow">return</span> (x - <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a272808822e1611f141638d4e2bdb4bb7">x_min</a>) / (<a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a2cfbcc34567a614e31419dcf7e6854de">x_max</a> - <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a272808822e1611f141638d4e2bdb4bb7">x_min</a>);</div>
+<div class="line"><a name="l01011"></a><span class="lineno"> 1011</span>&#160;    }</div>
+<div class="line"><a name="l01012"></a><span class="lineno"> 1012</span>&#160; </div>
+<div class="line"><a name="l01013"></a><span class="lineno"><a class="line" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a3190903eb1fb8776a6e34a962c4f3794"> 1013</a></span>&#160;    Eigen::RowVectorXd <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a3190903eb1fb8776a6e34a962c4f3794">scaled_values</a>(Eigen::VectorXd <span class="keyword">const</span> &amp;x_vec)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l01014"></a><span class="lineno"> 1014</span>&#160;        <span class="keywordflow">return</span> x_vec.unaryExpr([<span class="keyword">this</span>](<span class="keywordtype">double</span> x) { <span class="keywordflow">return</span> <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ac17565d024bb8435255453823d1d9509">scaled_value</a>(x); }).transpose();</div>
+<div class="line"><a name="l01015"></a><span class="lineno"> 1015</span>&#160;    }</div>
+<div class="line"><a name="l01016"></a><span class="lineno"> 1016</span>&#160; </div>
+<div class="line"><a name="l01017"></a><span class="lineno"> 1017</span>&#160;    <span class="comment">// spline of one-dimensional points.</span></div>
+<div class="line"><a name="l01018"></a><span class="lineno"><a class="line" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ad0fa6d4f99bb9ac16663c40389c97d23"> 1018</a></span>&#160;    Eigen::Spline&lt;double, 1&gt; <a class="code" href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ad0fa6d4f99bb9ac16663c40389c97d23">spline_</a>;</div>
+<div class="line"><a name="l01019"></a><span class="lineno"> 1019</span>&#160;};</div>
+<div class="line"><a name="l01020"></a><span class="lineno"> 1020</span>&#160; </div>
+<div class="line"><a name="l01021"></a><span class="lineno"> 1021</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Derived&gt;</div>
+<div class="line"><a name="l01022"></a><span class="lineno"><a class="line" href="../../dd/d06/namespaceengine__utils.html#a0d4e852f4708cf9fc1a75eb98a3bed67"> 1022</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../dd/d06/namespaceengine__utils.html#a0d4e852f4708cf9fc1a75eb98a3bed67">fix_periodic_boundary</a>(Eigen::DenseBase&lt;Derived&gt;&amp;data, <span class="keywordtype">double</span> low,</div>
+<div class="line"><a name="l01023"></a><span class="lineno"> 1023</span>&#160;                           <span class="keywordtype">double</span> high, <span class="keywordtype">double</span> upper_limit) {</div>
+<div class="line"><a name="l01024"></a><span class="lineno"> 1024</span>&#160; </div>
+<div class="line"><a name="l01025"></a><span class="lineno"> 1025</span>&#160;    Eigen::Index n_pts = data.size();</div>
+<div class="line"><a name="l01026"></a><span class="lineno"> 1026</span>&#160;    <span class="keywordtype">double</span> max = data.maxCoeff();</div>
+<div class="line"><a name="l01027"></a><span class="lineno"> 1027</span>&#160;    <span class="keywordtype">double</span> min = data.minCoeff();</div>
+<div class="line"><a name="l01028"></a><span class="lineno"> 1028</span>&#160;    <span class="keywordflow">if</span> (max &gt; high &amp;&amp; min &lt; low) {</div>
+<div class="line"><a name="l01029"></a><span class="lineno"> 1029</span>&#160;        <span class="keywordflow">for</span> (Eigen::Index i=0; i&lt;n_pts; ++i) {</div>
+<div class="line"><a name="l01030"></a><span class="lineno"> 1030</span>&#160;            <span class="keywordflow">if</span> (data(i) &lt; low) {</div>
+<div class="line"><a name="l01031"></a><span class="lineno"> 1031</span>&#160;                data(i) += upper_limit;</div>
+<div class="line"><a name="l01032"></a><span class="lineno"> 1032</span>&#160;            }</div>
+<div class="line"><a name="l01033"></a><span class="lineno"> 1033</span>&#160;        }</div>
+<div class="line"><a name="l01034"></a><span class="lineno"> 1034</span>&#160;    }</div>
+<div class="line"><a name="l01035"></a><span class="lineno"> 1035</span>&#160;}</div>
+<div class="line"><a name="l01036"></a><span class="lineno"> 1036</span>&#160; </div>
+<div class="line"><a name="l01037"></a><span class="lineno"> 1037</span>&#160;<span class="comment">/*template &lt;class map_class_t, class map_fitter_t&gt;</span></div>
+<div class="line"><a name="l01038"></a><span class="lineno"> 1038</span>&#160;<span class="comment">void calc_gaussian_transfer_func(map_class_t &amp;mb, map_fitter_t &amp;map_fitter, int map_index) {</span></div>
+<div class="line"><a name="l01039"></a><span class="lineno"> 1039</span>&#160;<span class="comment">    // x and y spacing should be equal</span></div>
+<div class="line"><a name="l01040"></a><span class="lineno"> 1040</span>&#160;<span class="comment">    diff_rows = abs(mb.rows_tan_vec(1) - mb.rows_tan_vec(0));</span></div>
+<div class="line"><a name="l01041"></a><span class="lineno"> 1041</span>&#160;<span class="comment">    diff_cols = abs(mb.cols_tan_vec(1) - mb.cols_tan_vec(0));</span></div>
+<div class="line"><a name="l01042"></a><span class="lineno"> 1042</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l01043"></a><span class="lineno"> 1043</span>&#160;<span class="comment">    // collect what we need</span></div>
+<div class="line"><a name="l01044"></a><span class="lineno"> 1044</span>&#160;<span class="comment">    Eigen::MatrixXd temp_kernel = mb.kernel[map_index];</span></div>
+<div class="line"><a name="l01045"></a><span class="lineno"> 1045</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l01046"></a><span class="lineno"> 1046</span>&#160;<span class="comment">    double init_row = -99;</span></div>
+<div class="line"><a name="l01047"></a><span class="lineno"> 1047</span>&#160;<span class="comment">    double init_col = -99;</span></div>
+<div class="line"><a name="l01048"></a><span class="lineno"> 1048</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l01049"></a><span class="lineno"> 1049</span>&#160;<span class="comment">    // carry out fit to kernel to get centroid</span></div>
+<div class="line"><a name="l01050"></a><span class="lineno"> 1050</span>&#160;<span class="comment">    auto [map_params, map_perror, good_fit] =</span></div>
+<div class="line"><a name="l01051"></a><span class="lineno"> 1051</span>&#160;<span class="comment">        map_fitter.fit_to_gaussian&lt;engine_utils::mapFitter::pointing&gt;(mb.kernel[map_index], mb.weight[map_index],</span></div>
+<div class="line"><a name="l01052"></a><span class="lineno"> 1052</span>&#160;<span class="comment">                                                                      init_fwhm, init_row, init_col);</span></div>
+<div class="line"><a name="l01053"></a><span class="lineno"> 1053</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l01054"></a><span class="lineno"> 1054</span>&#160;<span class="comment">    // if fit failed, give up</span></div>
+<div class="line"><a name="l01055"></a><span class="lineno"> 1055</span>&#160;<span class="comment">    if (!good_fit) {</span></div>
+<div class="line"><a name="l01056"></a><span class="lineno"> 1056</span>&#160;<span class="comment">        logger-&gt;error(&quot;fit to kernel map failed. try setting a small fitting_region_arcsec value.&quot;);</span></div>
+<div class="line"><a name="l01057"></a><span class="lineno"> 1057</span>&#160;<span class="comment">        std::exit(EXIT_FAILURE);</span></div>
+<div class="line"><a name="l01058"></a><span class="lineno"> 1058</span>&#160;<span class="comment">    }</span></div>
+<div class="line"><a name="l01059"></a><span class="lineno"> 1059</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l01060"></a><span class="lineno"> 1060</span>&#160;<span class="comment">    // rescale parameters to on-sky units</span></div>
+<div class="line"><a name="l01061"></a><span class="lineno"> 1061</span>&#160;<span class="comment">    map_params(1) = mb.pixel_size_rad*(map_params(1) - (n_cols)/2);</span></div>
+<div class="line"><a name="l01062"></a><span class="lineno"> 1062</span>&#160;<span class="comment">    map_params(2) = mb.pixel_size_rad*(map_params(2) - (n_rows)/2);</span></div>
+<div class="line"><a name="l01063"></a><span class="lineno"> 1063</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l01064"></a><span class="lineno"> 1064</span>&#160;<span class="comment">    Eigen::Index shift_row = -std::round(map_params(2)/diff_rows);</span></div>
+<div class="line"><a name="l01065"></a><span class="lineno"> 1065</span>&#160;<span class="comment">    Eigen::Index shift_col = -std::round(map_params(1)/diff_cols);</span></div>
+<div class="line"><a name="l01066"></a><span class="lineno"> 1066</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l01067"></a><span class="lineno"> 1067</span>&#160;<span class="comment">    std::vector&lt;Eigen::Index&gt; shift_indices = {shift_row,shift_col};</span></div>
+<div class="line"><a name="l01068"></a><span class="lineno"> 1068</span>&#160;<span class="comment">    temp_kernel = engine_utils::shift_2D(temp_kernel, shift_indices);</span></div>
+<div class="line"><a name="l01069"></a><span class="lineno"> 1069</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l01070"></a><span class="lineno"> 1070</span>&#160;<span class="comment">    // calculate distance</span></div>
+<div class="line"><a name="l01071"></a><span class="lineno"> 1071</span>&#160;<span class="comment">    Eigen::MatrixXd dist(n_rows,n_cols);</span></div>
+<div class="line"><a name="l01072"></a><span class="lineno"> 1072</span>&#160;<span class="comment">    for (Eigen::Index i=0; i&lt;n_cols; ++i) {</span></div>
+<div class="line"><a name="l01073"></a><span class="lineno"> 1073</span>&#160;<span class="comment">        for (Eigen::Index j=0; j&lt;n_rows; ++j) {</span></div>
+<div class="line"><a name="l01074"></a><span class="lineno"> 1074</span>&#160;<span class="comment">            dist(j,i) = sqrt(pow(mb.rows_tan_vec(j),2)+pow(mb.cols_tan_vec(i),2));</span></div>
+<div class="line"><a name="l01075"></a><span class="lineno"> 1075</span>&#160;<span class="comment">        }</span></div>
+<div class="line"><a name="l01076"></a><span class="lineno"> 1076</span>&#160;<span class="comment">    }</span></div>
+<div class="line"><a name="l01077"></a><span class="lineno"> 1077</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l01078"></a><span class="lineno"> 1078</span>&#160;<span class="comment">    // pixel closet to tangent point</span></div>
+<div class="line"><a name="l01079"></a><span class="lineno"> 1079</span>&#160;<span class="comment">    Eigen::Index row_index, col_index;</span></div>
+<div class="line"><a name="l01080"></a><span class="lineno"> 1080</span>&#160;<span class="comment">    auto min_dist = dist.minCoeff(&amp;row_index,&amp;col_index);</span></div>
+<div class="line"><a name="l01081"></a><span class="lineno"> 1081</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l01082"></a><span class="lineno"> 1082</span>&#160;<span class="comment">    // create new bins based on diff_rows</span></div>
+<div class="line"><a name="l01083"></a><span class="lineno"> 1083</span>&#160;<span class="comment">    int n_bins = mb.rows_tan_vec(n_rows-1)/diff_rows;</span></div>
+<div class="line"><a name="l01084"></a><span class="lineno"> 1084</span>&#160;<span class="comment">    Eigen::VectorXd bin_low = Eigen::VectorXd::LinSpaced(n_bins,0,n_bins-1)*diff_rows;</span></div>
+<div class="line"><a name="l01085"></a><span class="lineno"> 1085</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l01086"></a><span class="lineno"> 1086</span>&#160;<span class="comment">    Eigen::VectorXd kernel_interp(n_bins-1);</span></div>
+<div class="line"><a name="l01087"></a><span class="lineno"> 1087</span>&#160;<span class="comment">    kernel_interp.setZero();</span></div>
+<div class="line"><a name="l01088"></a><span class="lineno"> 1088</span>&#160;<span class="comment">    Eigen::VectorXd dist_interp(n_bins-1);</span></div>
+<div class="line"><a name="l01089"></a><span class="lineno"> 1089</span>&#160;<span class="comment">    dist_interp.setZero();</span></div>
+<div class="line"><a name="l01090"></a><span class="lineno"> 1090</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l01091"></a><span class="lineno"> 1091</span>&#160;<span class="comment">    // radial averages</span></div>
+<div class="line"><a name="l01092"></a><span class="lineno"> 1092</span>&#160;<span class="comment">    for (Eigen::Index i=0; i&lt;n_bins-1; ++i) {</span></div>
+<div class="line"><a name="l01093"></a><span class="lineno"> 1093</span>&#160;<span class="comment">        int c = 0;</span></div>
+<div class="line"><a name="l01094"></a><span class="lineno"> 1094</span>&#160;<span class="comment">        for (Eigen::Index j=0; j&lt;n_cols; ++j) {</span></div>
+<div class="line"><a name="l01095"></a><span class="lineno"> 1095</span>&#160;<span class="comment">            for (Eigen::Index k=0; k&lt;n_rows; ++k) {</span></div>
+<div class="line"><a name="l01096"></a><span class="lineno"> 1096</span>&#160;<span class="comment">                if (dist(k,j) &gt;= bin_low(i) &amp;&amp; dist(k,j) &lt; bin_low(i+1)){</span></div>
+<div class="line"><a name="l01097"></a><span class="lineno"> 1097</span>&#160;<span class="comment">                    c++;</span></div>
+<div class="line"><a name="l01098"></a><span class="lineno"> 1098</span>&#160;<span class="comment">                    kernel_interp(i) += temp_kernel(k,j);</span></div>
+<div class="line"><a name="l01099"></a><span class="lineno"> 1099</span>&#160;<span class="comment">                    dist_interp(i) += dist(k,j);</span></div>
+<div class="line"><a name="l01100"></a><span class="lineno"> 1100</span>&#160;<span class="comment">                }</span></div>
+<div class="line"><a name="l01101"></a><span class="lineno"> 1101</span>&#160;<span class="comment">            }</span></div>
+<div class="line"><a name="l01102"></a><span class="lineno"> 1102</span>&#160;<span class="comment">        }</span></div>
+<div class="line"><a name="l01103"></a><span class="lineno"> 1103</span>&#160;<span class="comment">        kernel_interp(i) /= c;</span></div>
+<div class="line"><a name="l01104"></a><span class="lineno"> 1104</span>&#160;<span class="comment">        dist_interp(i) /= c;</span></div>
+<div class="line"><a name="l01105"></a><span class="lineno"> 1105</span>&#160;<span class="comment">    }</span></div>
+<div class="line"><a name="l01106"></a><span class="lineno"> 1106</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l01107"></a><span class="lineno"> 1107</span>&#160;<span class="comment">    // now spline interpolate to generate new template array</span></div>
+<div class="line"><a name="l01108"></a><span class="lineno"> 1108</span>&#160;<span class="comment">    filter_template.resize(n_rows,n_cols);</span></div>
+<div class="line"><a name="l01109"></a><span class="lineno"> 1109</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l01110"></a><span class="lineno"> 1110</span>&#160;<span class="comment">    // create spline function</span></div>
+<div class="line"><a name="l01111"></a><span class="lineno"> 1111</span>&#160;<span class="comment">    engine_utils::SplineFunction s(dist_interp, kernel_interp);</span></div>
+<div class="line"><a name="l01112"></a><span class="lineno"> 1112</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l01113"></a><span class="lineno"> 1113</span>&#160;<span class="comment">    // carry out the interpolation</span></div>
+<div class="line"><a name="l01114"></a><span class="lineno"> 1114</span>&#160;<span class="comment">    for (Eigen::Index i=0; i&lt;n_cols; ++i) {</span></div>
+<div class="line"><a name="l01115"></a><span class="lineno"> 1115</span>&#160;<span class="comment">        for (Eigen::Index j=0; j&lt;n_rows; ++j) {</span></div>
+<div class="line"><a name="l01116"></a><span class="lineno"> 1116</span>&#160;<span class="comment">            Eigen::Index tj = (j-row_index)%n_rows;</span></div>
+<div class="line"><a name="l01117"></a><span class="lineno"> 1117</span>&#160;<span class="comment">            Eigen::Index ti = (i-col_index)%n_cols;</span></div>
+<div class="line"><a name="l01118"></a><span class="lineno"> 1118</span>&#160;<span class="comment">            Eigen::Index shiftj = (tj &lt; 0) ? n_rows+tj : tj;</span></div>
+<div class="line"><a name="l01119"></a><span class="lineno"> 1119</span>&#160;<span class="comment">            Eigen::Index shifti = (ti &lt; 0) ? n_cols+ti : ti;</span></div>
+<div class="line"><a name="l01120"></a><span class="lineno"> 1120</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l01121"></a><span class="lineno"> 1121</span>&#160;<span class="comment">            // if within limits</span></div>
+<div class="line"><a name="l01122"></a><span class="lineno"> 1122</span>&#160;<span class="comment">            if (dist(j,i) &lt;= s.x_max &amp;&amp; dist(j,i) &gt;= s.x_min) {</span></div>
+<div class="line"><a name="l01123"></a><span class="lineno"> 1123</span>&#160;<span class="comment">                filter_template(shiftj,shifti) = s(dist(j,i));</span></div>
+<div class="line"><a name="l01124"></a><span class="lineno"> 1124</span>&#160;<span class="comment">            }</span></div>
+<div class="line"><a name="l01125"></a><span class="lineno"> 1125</span>&#160;<span class="comment">            // if above x limit</span></div>
+<div class="line"><a name="l01126"></a><span class="lineno"> 1126</span>&#160;<span class="comment">            else if (dist(j,i) &gt; s.x_max) {</span></div>
+<div class="line"><a name="l01127"></a><span class="lineno"> 1127</span>&#160;<span class="comment">                filter_template(shiftj,shifti) = kernel_interp(kernel_interp.size()-1);</span></div>
+<div class="line"><a name="l01128"></a><span class="lineno"> 1128</span>&#160;<span class="comment">            }</span></div>
+<div class="line"><a name="l01129"></a><span class="lineno"> 1129</span>&#160;<span class="comment">            // if below x limit</span></div>
+<div class="line"><a name="l01130"></a><span class="lineno"> 1130</span>&#160;<span class="comment">            else if (dist(j,i) &lt; s.x_min) {</span></div>
+<div class="line"><a name="l01131"></a><span class="lineno"> 1131</span>&#160;<span class="comment">                filter_template(shiftj,shifti) = kernel_interp(0);</span></div>
+<div class="line"><a name="l01132"></a><span class="lineno"> 1132</span>&#160;<span class="comment">            }</span></div>
+<div class="line"><a name="l01133"></a><span class="lineno"> 1133</span>&#160;<span class="comment">        }</span></div>
+<div class="line"><a name="l01134"></a><span class="lineno"> 1134</span>&#160;<span class="comment">    }</span></div>
+<div class="line"><a name="l01135"></a><span class="lineno"> 1135</span>&#160;<span class="comment">}*/</span></div>
+<div class="line"><a name="l01136"></a><span class="lineno"> 1136</span>&#160; </div>
+<div class="line"><a name="l01138"></a><span class="lineno"><a class="line" href="../../dd/d06/namespaceengine__utils.html#a392b455508f8ccfaf2af66c841dd7055"> 1138</a></span>&#160;<span class="keyword">inline</span> <span class="keyword">auto</span> <a class="code" href="../../dd/d06/namespaceengine__utils.html#a392b455508f8ccfaf2af66c841dd7055">now</a>() { <span class="keywordflow">return</span> <a class="code" href="../../dd/d06/namespaceengine__utils.html#a392b455508f8ccfaf2af66c841dd7055">std::chrono::high_resolution_clock::now</a>(); }</div>
+<div class="line"><a name="l01139"></a><span class="lineno"> 1139</span>&#160; </div>
+<div class="line"><a name="l01141"></a><span class="lineno"><a class="line" href="../../dd/d06/namespaceengine__utils.html#a582a54460566fa6a468a6e5902f552e9"> 1141</a></span>&#160;<span class="keyword">inline</span> <span class="keyword">auto</span> <a class="code" href="../../dd/d06/namespaceengine__utils.html#a582a54460566fa6a468a6e5902f552e9">elapsed_since</a>(</div>
+<div class="line"><a name="l01142"></a><span class="lineno"> 1142</span>&#160;    <span class="keyword">const</span> std::chrono::time_point&lt;std::chrono::high_resolution_clock&gt; &amp;t0) {</div>
+<div class="line"><a name="l01143"></a><span class="lineno"> 1143</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="../../dd/d06/namespaceengine__utils.html#a392b455508f8ccfaf2af66c841dd7055">now</a>() - t0;</div>
+<div class="line"><a name="l01144"></a><span class="lineno"> 1144</span>&#160;}</div>
+<div class="line"><a name="l01145"></a><span class="lineno"> 1145</span>&#160; </div>
+<div class="line"><a name="l01147"></a><span class="lineno"><a class="line" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html"> 1147</a></span>&#160;<span class="keyword">struct </span><a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html">scoped_timeit</a> {</div>
+<div class="line"><a name="l01148"></a><span class="lineno"><a class="line" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#af80d370fc55971e420743de1fe136233"> 1148</a></span>&#160;    <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#af80d370fc55971e420743de1fe136233">scoped_timeit</a>(std::string_view msg_, <span class="keywordtype">double</span> *elapsed_msec_ = <span class="keyword">nullptr</span>)</div>
+<div class="line"><a name="l01149"></a><span class="lineno"> 1149</span>&#160;        : <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#acf302d6b6be7c5fe68599d41e951884a">msg</a>(msg_), <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a142a1fca4efe1e16bc7d5d350f3c385d">elapsed_msec</a>(elapsed_msec_) {</div>
+<div class="line"><a name="l01150"></a><span class="lineno"> 1150</span>&#160;        <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#abb898cc61368dca7ed3b2b30c64376c3">logger</a>-&gt;info(<span class="stringliteral">&quot;**timeit** {}&quot;</span>, <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#acf302d6b6be7c5fe68599d41e951884a">msg</a>);</div>
+<div class="line"><a name="l01151"></a><span class="lineno"> 1151</span>&#160;    }</div>
+<div class="line"><a name="l01152"></a><span class="lineno"><a class="line" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a4363fa23362e92266556d18eca65c21d"> 1152</a></span>&#160;    <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a4363fa23362e92266556d18eca65c21d">~scoped_timeit</a>() {</div>
+<div class="line"><a name="l01153"></a><span class="lineno"> 1153</span>&#160;        <span class="keyword">auto</span> t = <a class="code" href="../../dd/d06/namespaceengine__utils.html#a582a54460566fa6a468a6e5902f552e9">elapsed_since</a>(<a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a1f8c57584e3b6d707514cb8ec000855e">t0</a>);</div>
+<div class="line"><a name="l01154"></a><span class="lineno"> 1154</span>&#160;        constexpr <span class="keyword">auto</span> s_to_ms = 1e3;</div>
+<div class="line"><a name="l01155"></a><span class="lineno"> 1155</span>&#160;        <span class="keywordflow">if</span> (this-&gt;<a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a142a1fca4efe1e16bc7d5d350f3c385d">elapsed_msec</a> != <span class="keyword">nullptr</span>) {</div>
+<div class="line"><a name="l01156"></a><span class="lineno"> 1156</span>&#160;            *(this-&gt;<a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a142a1fca4efe1e16bc7d5d350f3c385d">elapsed_msec</a>) =</div>
+<div class="line"><a name="l01157"></a><span class="lineno"> 1157</span>&#160;                std::chrono::duration_cast&lt;std::chrono::duration&lt;double&gt;&gt;(t)</div>
+<div class="line"><a name="l01158"></a><span class="lineno"> 1158</span>&#160;                    .count() *</div>
+<div class="line"><a name="l01159"></a><span class="lineno"> 1159</span>&#160;                s_to_ms;</div>
+<div class="line"><a name="l01160"></a><span class="lineno"> 1160</span>&#160;        }</div>
+<div class="line"><a name="l01161"></a><span class="lineno"> 1161</span>&#160;        <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#abb898cc61368dca7ed3b2b30c64376c3">logger</a>-&gt;info(<span class="stringliteral">&quot;**timeit** {} finished in {}&quot;</span>, <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#acf302d6b6be7c5fe68599d41e951884a">msg</a>, t);</div>
+<div class="line"><a name="l01162"></a><span class="lineno"> 1162</span>&#160;    }</div>
+<div class="line"><a name="l01163"></a><span class="lineno"><a class="line" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a863cbafa9e8aa565b64f8c092ce43eb5"> 1163</a></span>&#160;    <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a863cbafa9e8aa565b64f8c092ce43eb5">scoped_timeit</a>(<span class="keyword">const</span> <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html">scoped_timeit</a> &amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l01164"></a><span class="lineno"><a class="line" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a9d21fc81d69a5a669b5b3b9bebd0b662"> 1164</a></span>&#160;    <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a9d21fc81d69a5a669b5b3b9bebd0b662">scoped_timeit</a>(<a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html">scoped_timeit</a> &amp;&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l01165"></a><span class="lineno"><a class="line" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#aec3adb08d9cd77d6dbb38b4eef8e56b5"> 1165</a></span>&#160;    <span class="keyword">auto</span> <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#aec3adb08d9cd77d6dbb38b4eef8e56b5">operator=</a>(<span class="keyword">const</span> <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html">scoped_timeit</a> &amp;) -&gt; <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html">scoped_timeit</a> &amp; = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l01166"></a><span class="lineno"><a class="line" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a8050fa7b1c56c06d7e769fd597c20f96"> 1166</a></span>&#160;    <span class="keyword">auto</span> <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a8050fa7b1c56c06d7e769fd597c20f96">operator=</a>(<a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html">scoped_timeit</a> &amp;&amp;) -&gt; <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html">scoped_timeit</a> &amp; = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l01167"></a><span class="lineno"> 1167</span>&#160; </div>
+<div class="line"><a name="l01168"></a><span class="lineno"><a class="line" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a1f8c57584e3b6d707514cb8ec000855e"> 1168</a></span>&#160;    std::chrono::time_point&lt;std::chrono::high_resolution_clock&gt; <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a1f8c57584e3b6d707514cb8ec000855e">t0</a>{<a class="code" href="../../dd/d06/namespaceengine__utils.html#a392b455508f8ccfaf2af66c841dd7055">now</a>()};</div>
+<div class="line"><a name="l01169"></a><span class="lineno"><a class="line" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#acf302d6b6be7c5fe68599d41e951884a"> 1169</a></span>&#160;    std::string_view <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#acf302d6b6be7c5fe68599d41e951884a">msg</a>;</div>
+<div class="line"><a name="l01170"></a><span class="lineno"><a class="line" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a142a1fca4efe1e16bc7d5d350f3c385d"> 1170</a></span>&#160;    <span class="keywordtype">double</span> *<a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a142a1fca4efe1e16bc7d5d350f3c385d">elapsed_msec</a>{<span class="keyword">nullptr</span>};</div>
+<div class="line"><a name="l01171"></a><span class="lineno"><a class="line" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#abb898cc61368dca7ed3b2b30c64376c3"> 1171</a></span>&#160;    std::shared_ptr&lt;spdlog::logger&gt; <a class="code" href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#abb898cc61368dca7ed3b2b30c64376c3">logger</a> = spdlog::get(<span class="stringliteral">&quot;citlali_logger&quot;</span>);</div>
 <div class="line"><a name="l01172"></a><span class="lineno"> 1172</span>&#160; </div>
-<div class="line"><a name="l01173"></a><span class="lineno"> 1173</span>&#160;<span class="comment">// Function to compute numerical derivatives using central difference</span></div>
-<div class="line"><a name="l01174"></a><span class="lineno"> 1174</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Derived&gt;</div>
-<div class="line"><a name="l01175"></a><span class="lineno"><a class="line" href="../../dd/d06/namespaceengine__utils.html#a6b4e6bb0092c5f884059ef26011bf8dc"> 1175</a></span>&#160;Eigen::VectorXd <a class="code" href="../../dd/d06/namespaceengine__utils.html#a6b4e6bb0092c5f884059ef26011bf8dc">compute_numerical_derivative</a>(<span class="keyword">const</span> Eigen::DenseBase&lt;Derived&gt;&amp; times, <span class="keyword">const</span> Eigen::DenseBase&lt;Derived&gt;&amp; values) {</div>
-<div class="line"><a name="l01176"></a><span class="lineno"> 1176</span>&#160;    <span class="keywordflow">if</span> (times.size() != values.size()) {</div>
-<div class="line"><a name="l01177"></a><span class="lineno"> 1177</span>&#160;        <span class="keywordflow">throw</span> std::invalid_argument(<span class="stringliteral">&quot;Time vector and value vector must have the same number of elements.&quot;</span>);</div>
-<div class="line"><a name="l01178"></a><span class="lineno"> 1178</span>&#160;    }</div>
-<div class="line"><a name="l01179"></a><span class="lineno"> 1179</span>&#160; </div>
-<div class="line"><a name="l01180"></a><span class="lineno"> 1180</span>&#160;    Eigen::VectorXd derivatives(values.size());</div>
-<div class="line"><a name="l01181"></a><span class="lineno"> 1181</span>&#160;    <span class="keywordtype">double</span> dt;</div>
-<div class="line"><a name="l01182"></a><span class="lineno"> 1182</span>&#160; </div>
-<div class="line"><a name="l01183"></a><span class="lineno"> 1183</span>&#160;    <span class="comment">// Calculate derivatives</span></div>
-<div class="line"><a name="l01184"></a><span class="lineno"> 1184</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; values.size(); ++i) {</div>
-<div class="line"><a name="l01185"></a><span class="lineno"> 1185</span>&#160;        <span class="keywordflow">if</span> (i == 0) {  <span class="comment">// forward difference for the first point</span></div>
-<div class="line"><a name="l01186"></a><span class="lineno"> 1186</span>&#160;            dt = times(i + 1) - times(i);</div>
-<div class="line"><a name="l01187"></a><span class="lineno"> 1187</span>&#160;            derivatives(i) = (values(i + 1) - values(i)) / dt;</div>
-<div class="line"><a name="l01188"></a><span class="lineno"> 1188</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (i == values.size() - 1) {  <span class="comment">// backward difference for the last point</span></div>
-<div class="line"><a name="l01189"></a><span class="lineno"> 1189</span>&#160;            dt = times(i) - times(i - 1);</div>
-<div class="line"><a name="l01190"></a><span class="lineno"> 1190</span>&#160;            derivatives(i) = (values(i) - values(i - 1)) / dt;</div>
-<div class="line"><a name="l01191"></a><span class="lineno"> 1191</span>&#160;        } <span class="keywordflow">else</span> {  <span class="comment">// central difference for other points</span></div>
-<div class="line"><a name="l01192"></a><span class="lineno"> 1192</span>&#160;            dt = times(i + 1) - times(i - 1);</div>
-<div class="line"><a name="l01193"></a><span class="lineno"> 1193</span>&#160;            derivatives(i) = (values(i + 1) - values(i - 1)) / (2 * dt);</div>
-<div class="line"><a name="l01194"></a><span class="lineno"> 1194</span>&#160;        }</div>
-<div class="line"><a name="l01195"></a><span class="lineno"> 1195</span>&#160;    }</div>
-<div class="line"><a name="l01196"></a><span class="lineno"> 1196</span>&#160; </div>
-<div class="line"><a name="l01197"></a><span class="lineno"> 1197</span>&#160;    <span class="keywordflow">return</span> derivatives;</div>
-<div class="line"><a name="l01198"></a><span class="lineno"> 1198</span>&#160;}</div>
-<div class="line"><a name="l01199"></a><span class="lineno"> 1199</span>&#160; </div>
-<div class="line"><a name="l01200"></a><span class="lineno"><a class="line" href="../../dd/d06/namespaceengine__utils.html#a364ac707e0426402b3c6b0f13edf4738"> 1200</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">bool</span> <a class="code" href="../../dd/d06/namespaceengine__utils.html#a364ac707e0426402b3c6b0f13edf4738">is_point_in_box</a>(<span class="keywordtype">double</span> a, <span class="keywordtype">double</span> b, <span class="keywordtype">double</span> x, <span class="keywordtype">double</span> y, <span class="keywordtype">double</span> theta) {</div>
+<div class="line"><a name="l01173"></a><span class="lineno"> 1173</span>&#160;};</div>
+<div class="line"><a name="l01174"></a><span class="lineno"> 1174</span>&#160; </div>
+<div class="line"><a name="l01175"></a><span class="lineno"> 1175</span>&#160;<span class="comment">// Function to compute numerical derivatives using central difference</span></div>
+<div class="line"><a name="l01176"></a><span class="lineno"> 1176</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Derived&gt;</div>
+<div class="line"><a name="l01177"></a><span class="lineno"><a class="line" href="../../dd/d06/namespaceengine__utils.html#a6b4e6bb0092c5f884059ef26011bf8dc"> 1177</a></span>&#160;Eigen::VectorXd <a class="code" href="../../dd/d06/namespaceengine__utils.html#a6b4e6bb0092c5f884059ef26011bf8dc">compute_numerical_derivative</a>(<span class="keyword">const</span> Eigen::DenseBase&lt;Derived&gt;&amp; times, <span class="keyword">const</span> Eigen::DenseBase&lt;Derived&gt;&amp; values) {</div>
+<div class="line"><a name="l01178"></a><span class="lineno"> 1178</span>&#160;    <span class="keywordflow">if</span> (times.size() != values.size()) {</div>
+<div class="line"><a name="l01179"></a><span class="lineno"> 1179</span>&#160;        <span class="keywordflow">throw</span> std::invalid_argument(<span class="stringliteral">&quot;Time vector and value vector must have the same number of elements.&quot;</span>);</div>
+<div class="line"><a name="l01180"></a><span class="lineno"> 1180</span>&#160;    }</div>
+<div class="line"><a name="l01181"></a><span class="lineno"> 1181</span>&#160; </div>
+<div class="line"><a name="l01182"></a><span class="lineno"> 1182</span>&#160;    Eigen::VectorXd derivatives(values.size());</div>
+<div class="line"><a name="l01183"></a><span class="lineno"> 1183</span>&#160;    <span class="keywordtype">double</span> dt;</div>
+<div class="line"><a name="l01184"></a><span class="lineno"> 1184</span>&#160; </div>
+<div class="line"><a name="l01185"></a><span class="lineno"> 1185</span>&#160;    <span class="comment">// Calculate derivatives</span></div>
+<div class="line"><a name="l01186"></a><span class="lineno"> 1186</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; values.size(); ++i) {</div>
+<div class="line"><a name="l01187"></a><span class="lineno"> 1187</span>&#160;        <span class="keywordflow">if</span> (i == 0) {  <span class="comment">// forward difference for the first point</span></div>
+<div class="line"><a name="l01188"></a><span class="lineno"> 1188</span>&#160;            dt = times(i + 1) - times(i);</div>
+<div class="line"><a name="l01189"></a><span class="lineno"> 1189</span>&#160;            derivatives(i) = (values(i + 1) - values(i)) / dt;</div>
+<div class="line"><a name="l01190"></a><span class="lineno"> 1190</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (i == values.size() - 1) {  <span class="comment">// backward difference for the last point</span></div>
+<div class="line"><a name="l01191"></a><span class="lineno"> 1191</span>&#160;            dt = times(i) - times(i - 1);</div>
+<div class="line"><a name="l01192"></a><span class="lineno"> 1192</span>&#160;            derivatives(i) = (values(i) - values(i - 1)) / dt;</div>
+<div class="line"><a name="l01193"></a><span class="lineno"> 1193</span>&#160;        } <span class="keywordflow">else</span> {  <span class="comment">// central difference for other points</span></div>
+<div class="line"><a name="l01194"></a><span class="lineno"> 1194</span>&#160;            dt = times(i + 1) - times(i - 1);</div>
+<div class="line"><a name="l01195"></a><span class="lineno"> 1195</span>&#160;            derivatives(i) = (values(i + 1) - values(i - 1)) / (2 * dt);</div>
+<div class="line"><a name="l01196"></a><span class="lineno"> 1196</span>&#160;        }</div>
+<div class="line"><a name="l01197"></a><span class="lineno"> 1197</span>&#160;    }</div>
+<div class="line"><a name="l01198"></a><span class="lineno"> 1198</span>&#160; </div>
+<div class="line"><a name="l01199"></a><span class="lineno"> 1199</span>&#160;    <span class="keywordflow">return</span> derivatives;</div>
+<div class="line"><a name="l01200"></a><span class="lineno"> 1200</span>&#160;}</div>
 <div class="line"><a name="l01201"></a><span class="lineno"> 1201</span>&#160; </div>
-<div class="line"><a name="l01202"></a><span class="lineno"> 1202</span>&#160;    <span class="comment">// rotate point (a, b) by -theta</span></div>
-<div class="line"><a name="l01203"></a><span class="lineno"> 1203</span>&#160;    <span class="keywordtype">double</span> xp = a * std::cos(theta) + b * std::sin(theta);</div>
-<div class="line"><a name="l01204"></a><span class="lineno"> 1204</span>&#160;    <span class="keywordtype">double</span> yp = -a * std::sin(theta) + b * std::cos(theta);</div>
-<div class="line"><a name="l01205"></a><span class="lineno"> 1205</span>&#160; </div>
-<div class="line"><a name="l01206"></a><span class="lineno"> 1206</span>&#160;    <span class="comment">// Check horizontal bounds</span></div>
-<div class="line"><a name="l01207"></a><span class="lineno"> 1207</span>&#160;    <span class="keywordflow">if</span> (-x / 2 &lt;= xp &amp;&amp; xp &lt;= x / 2) {</div>
-<div class="line"><a name="l01208"></a><span class="lineno"> 1208</span>&#160;        <span class="comment">// Check vertical bounds</span></div>
-<div class="line"><a name="l01209"></a><span class="lineno"> 1209</span>&#160;        <span class="keywordflow">if</span> (-y / 2 &lt;= yp &amp;&amp; yp &lt;= y / 2) {</div>
-<div class="line"><a name="l01210"></a><span class="lineno"> 1210</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l01211"></a><span class="lineno"> 1211</span>&#160;        }</div>
-<div class="line"><a name="l01212"></a><span class="lineno"> 1212</span>&#160;    }</div>
-<div class="line"><a name="l01213"></a><span class="lineno"> 1213</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l01214"></a><span class="lineno"> 1214</span>&#160;}</div>
-<div class="line"><a name="l01215"></a><span class="lineno"> 1215</span>&#160; </div>
-<div class="line"><a name="l01216"></a><span class="lineno"> 1216</span>&#160;} <span class="comment">//namespace engine_utils</span></div>
-<div class="ttc" id="aclassengine__utils_1_1SplineFunction_html"><div class="ttname"><a href="../../d0/d96/classengine__utils_1_1SplineFunction.html">engine_utils::SplineFunction</a></div><div class="ttdef"><b>Definition:</b> utils.h:970</div></div>
-<div class="ttc" id="aclassengine__utils_1_1SplineFunction_html_a272808822e1611f141638d4e2bdb4bb7"><div class="ttname"><a href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a272808822e1611f141638d4e2bdb4bb7">engine_utils::SplineFunction::x_min</a></div><div class="ttdeci">double x_min</div><div class="ttdef"><b>Definition:</b> utils.h:972</div></div>
-<div class="ttc" id="aclassengine__utils_1_1SplineFunction_html_a2cfbcc34567a614e31419dcf7e6854de"><div class="ttname"><a href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a2cfbcc34567a614e31419dcf7e6854de">engine_utils::SplineFunction::x_max</a></div><div class="ttdeci">double x_max</div><div class="ttdef"><b>Definition:</b> utils.h:973</div></div>
-<div class="ttc" id="aclassengine__utils_1_1SplineFunction_html_a3190903eb1fb8776a6e34a962c4f3794"><div class="ttname"><a href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a3190903eb1fb8776a6e34a962c4f3794">engine_utils::SplineFunction::scaled_values</a></div><div class="ttdeci">Eigen::RowVectorXd scaled_values(Eigen::VectorXd const &amp;x_vec) const</div><div class="ttdef"><b>Definition:</b> utils.h:1011</div></div>
-<div class="ttc" id="aclassengine__utils_1_1SplineFunction_html_a5ae81e481d2c888c76fbf2fe38bc5511"><div class="ttname"><a href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a5ae81e481d2c888c76fbf2fe38bc5511">engine_utils::SplineFunction::operator()</a></div><div class="ttdeci">double operator()(double x) const</div><div class="ttdef"><b>Definition:</b> utils.h:1000</div></div>
-<div class="ttc" id="aclassengine__utils_1_1SplineFunction_html_ac17565d024bb8435255453823d1d9509"><div class="ttname"><a href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ac17565d024bb8435255453823d1d9509">engine_utils::SplineFunction::scaled_value</a></div><div class="ttdeci">double scaled_value(double x) const</div><div class="ttdef"><b>Definition:</b> utils.h:1007</div></div>
-<div class="ttc" id="aclassengine__utils_1_1SplineFunction_html_ad0fa6d4f99bb9ac16663c40389c97d23"><div class="ttname"><a href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ad0fa6d4f99bb9ac16663c40389c97d23">engine_utils::SplineFunction::spline_</a></div><div class="ttdeci">Eigen::Spline&lt; double, 1 &gt; spline_</div><div class="ttdef"><b>Definition:</b> utils.h:1016</div></div>
-<div class="ttc" id="aclassengine__utils_1_1SplineFunction_html_ad94a68b7997bd35522636c692523c12d"><div class="ttname"><a href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ad94a68b7997bd35522636c692523c12d">engine_utils::SplineFunction::interpolate</a></div><div class="ttdeci">void interpolate(Eigen::VectorXd const &amp;x_vec, Eigen::VectorXd const &amp;y_vec)</div><div class="ttdef"><b>Definition:</b> utils.h:988</div></div>
+<div class="line"><a name="l01202"></a><span class="lineno"><a class="line" href="../../dd/d06/namespaceengine__utils.html#a364ac707e0426402b3c6b0f13edf4738"> 1202</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">bool</span> <a class="code" href="../../dd/d06/namespaceengine__utils.html#a364ac707e0426402b3c6b0f13edf4738">is_point_in_box</a>(<span class="keywordtype">double</span> a, <span class="keywordtype">double</span> b, <span class="keywordtype">double</span> x, <span class="keywordtype">double</span> y, <span class="keywordtype">double</span> theta) {</div>
+<div class="line"><a name="l01203"></a><span class="lineno"> 1203</span>&#160; </div>
+<div class="line"><a name="l01204"></a><span class="lineno"> 1204</span>&#160;    <span class="comment">// rotate point (a, b) by -theta</span></div>
+<div class="line"><a name="l01205"></a><span class="lineno"> 1205</span>&#160;    <span class="keywordtype">double</span> xp = a * std::cos(theta) + b * std::sin(theta);</div>
+<div class="line"><a name="l01206"></a><span class="lineno"> 1206</span>&#160;    <span class="keywordtype">double</span> yp = -a * std::sin(theta) + b * std::cos(theta);</div>
+<div class="line"><a name="l01207"></a><span class="lineno"> 1207</span>&#160; </div>
+<div class="line"><a name="l01208"></a><span class="lineno"> 1208</span>&#160;    <span class="comment">// Check horizontal bounds</span></div>
+<div class="line"><a name="l01209"></a><span class="lineno"> 1209</span>&#160;    <span class="keywordflow">if</span> (-x / 2 &lt;= xp &amp;&amp; xp &lt;= x / 2) {</div>
+<div class="line"><a name="l01210"></a><span class="lineno"> 1210</span>&#160;        <span class="comment">// Check vertical bounds</span></div>
+<div class="line"><a name="l01211"></a><span class="lineno"> 1211</span>&#160;        <span class="keywordflow">if</span> (-y / 2 &lt;= yp &amp;&amp; yp &lt;= y / 2) {</div>
+<div class="line"><a name="l01212"></a><span class="lineno"> 1212</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l01213"></a><span class="lineno"> 1213</span>&#160;        }</div>
+<div class="line"><a name="l01214"></a><span class="lineno"> 1214</span>&#160;    }</div>
+<div class="line"><a name="l01215"></a><span class="lineno"> 1215</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l01216"></a><span class="lineno"> 1216</span>&#160;}</div>
+<div class="line"><a name="l01217"></a><span class="lineno"> 1217</span>&#160; </div>
+<div class="line"><a name="l01218"></a><span class="lineno"> 1218</span>&#160;} <span class="comment">//namespace engine_utils</span></div>
+<div class="ttc" id="aclassengine__utils_1_1SplineFunction_html"><div class="ttname"><a href="../../d0/d96/classengine__utils_1_1SplineFunction.html">engine_utils::SplineFunction</a></div><div class="ttdef"><b>Definition:</b> utils.h:972</div></div>
+<div class="ttc" id="aclassengine__utils_1_1SplineFunction_html_a272808822e1611f141638d4e2bdb4bb7"><div class="ttname"><a href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a272808822e1611f141638d4e2bdb4bb7">engine_utils::SplineFunction::x_min</a></div><div class="ttdeci">double x_min</div><div class="ttdef"><b>Definition:</b> utils.h:974</div></div>
+<div class="ttc" id="aclassengine__utils_1_1SplineFunction_html_a2cfbcc34567a614e31419dcf7e6854de"><div class="ttname"><a href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a2cfbcc34567a614e31419dcf7e6854de">engine_utils::SplineFunction::x_max</a></div><div class="ttdeci">double x_max</div><div class="ttdef"><b>Definition:</b> utils.h:975</div></div>
+<div class="ttc" id="aclassengine__utils_1_1SplineFunction_html_a3190903eb1fb8776a6e34a962c4f3794"><div class="ttname"><a href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a3190903eb1fb8776a6e34a962c4f3794">engine_utils::SplineFunction::scaled_values</a></div><div class="ttdeci">Eigen::RowVectorXd scaled_values(Eigen::VectorXd const &amp;x_vec) const</div><div class="ttdef"><b>Definition:</b> utils.h:1013</div></div>
+<div class="ttc" id="aclassengine__utils_1_1SplineFunction_html_a5ae81e481d2c888c76fbf2fe38bc5511"><div class="ttname"><a href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a5ae81e481d2c888c76fbf2fe38bc5511">engine_utils::SplineFunction::operator()</a></div><div class="ttdeci">double operator()(double x) const</div><div class="ttdef"><b>Definition:</b> utils.h:1002</div></div>
+<div class="ttc" id="aclassengine__utils_1_1SplineFunction_html_ac17565d024bb8435255453823d1d9509"><div class="ttname"><a href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ac17565d024bb8435255453823d1d9509">engine_utils::SplineFunction::scaled_value</a></div><div class="ttdeci">double scaled_value(double x) const</div><div class="ttdef"><b>Definition:</b> utils.h:1009</div></div>
+<div class="ttc" id="aclassengine__utils_1_1SplineFunction_html_ad0fa6d4f99bb9ac16663c40389c97d23"><div class="ttname"><a href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ad0fa6d4f99bb9ac16663c40389c97d23">engine_utils::SplineFunction::spline_</a></div><div class="ttdeci">Eigen::Spline&lt; double, 1 &gt; spline_</div><div class="ttdef"><b>Definition:</b> utils.h:1018</div></div>
+<div class="ttc" id="aclassengine__utils_1_1SplineFunction_html_ad94a68b7997bd35522636c692523c12d"><div class="ttname"><a href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ad94a68b7997bd35522636c692523c12d">engine_utils::SplineFunction::interpolate</a></div><div class="ttdeci">void interpolate(Eigen::VectorXd const &amp;x_vec, Eigen::VectorXd const &amp;y_vec)</div><div class="ttdef"><b>Definition:</b> utils.h:990</div></div>
 <div class="ttc" id="aclassengine__utils_1_1SplineFunction_html_ae2f5e656e61cee0da849a8563e322b67"><div class="ttname"><a href="../../d0/d96/classengine__utils_1_1SplineFunction.html#ae2f5e656e61cee0da849a8563e322b67">engine_utils::SplineFunction::SplineFunction</a></div><div class="ttdeci">SplineFunction()=default</div></div>
-<div class="ttc" id="aclassengine__utils_1_1SplineFunction_html_affbb06049b16a2f1c5255bfc4a327262"><div class="ttname"><a href="../../d0/d96/classengine__utils_1_1SplineFunction.html#affbb06049b16a2f1c5255bfc4a327262">engine_utils::SplineFunction::SplineFunction</a></div><div class="ttdeci">SplineFunction(Eigen::VectorXd const &amp;x_vec, Eigen::VectorXd const &amp;y_vec)</div><div class="ttdef"><b>Definition:</b> utils.h:975</div></div>
+<div class="ttc" id="aclassengine__utils_1_1SplineFunction_html_affbb06049b16a2f1c5255bfc4a327262"><div class="ttname"><a href="../../d0/d96/classengine__utils_1_1SplineFunction.html#affbb06049b16a2f1c5255bfc4a327262">engine_utils::SplineFunction::SplineFunction</a></div><div class="ttdeci">SplineFunction(Eigen::VectorXd const &amp;x_vec, Eigen::VectorXd const &amp;y_vec)</div><div class="ttdef"><b>Definition:</b> utils.h:977</div></div>
 <div class="ttc" id="aconstants_8h_html"><div class="ttname"><a href="../../d2/d6f/constants_8h.html">constants.h</a></div></div>
 <div class="ttc" id="aconstants_8h_html_a03a1936eec1a5bcce23ed5cc58587cb1"><div class="ttname"><a href="../../d2/d6f/constants_8h.html#a03a1936eec1a5bcce23ed5cc58587cb1">c_m_s</a></div><div class="ttdeci">#define c_m_s</div><div class="ttdef"><b>Definition:</b> constants.h:12</div></div>
 <div class="ttc" id="aconstants_8h_html_a3b47e7abac75acaa82fe5e22b6db60c7"><div class="ttname"><a href="../../d2/d6f/constants_8h.html#a3b47e7abac75acaa82fe5e22b6db60c7">kB_J_K</a></div><div class="ttdeci">#define kB_J_K</div><div class="ttdef"><b>Definition:</b> constants.h:15</div></div>
@@ -1299,27 +1301,27 @@ $(function() {
 <div class="ttc" id="aconstants_8h_html_a9cf5c7a057d690de0317ffe8857465a5"><div class="ttname"><a href="../../d2/d6f/constants_8h.html#a9cf5c7a057d690de0317ffe8857465a5">T_cmb_K</a></div><div class="ttdeci">#define T_cmb_K</div><div class="ttdef"><b>Definition:</b> constants.h:18</div></div>
 <div class="ttc" id="aconstants_8h_html_ac3ce2363b2416e30855ed2fae46c6afb"><div class="ttname"><a href="../../d2/d6f/constants_8h.html#ac3ce2363b2416e30855ed2fae46c6afb">h_J_s</a></div><div class="ttdeci">#define h_J_s</div><div class="ttdef"><b>Definition:</b> constants.h:9</div></div>
 <div class="ttc" id="anamespaceengine__utils_html"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html">engine_utils</a></div><div class="ttdef"><b>Definition:</b> fitting.h:11</div></div>
-<div class="ttc" id="anamespaceengine__utils_html_a0764cb525f21c83c7caf0ade7675d8e5"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a0764cb525f21c83c7caf0ade7675d8e5">engine_utils::shift_2D</a></div><div class="ttdeci">auto shift_2D(Eigen::DenseBase&lt; Derived &gt; &amp;in, std::vector&lt; Eigen::Index &gt; shift_indices)</div><div class="ttdef"><b>Definition:</b> utils.h:880</div></div>
+<div class="ttc" id="anamespaceengine__utils_html_a0764cb525f21c83c7caf0ade7675d8e5"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a0764cb525f21c83c7caf0ade7675d8e5">engine_utils::shift_2D</a></div><div class="ttdeci">auto shift_2D(Eigen::DenseBase&lt; Derived &gt; &amp;in, std::vector&lt; Eigen::Index &gt; shift_indices)</div><div class="ttdef"><b>Definition:</b> utils.h:882</div></div>
 <div class="ttc" id="anamespaceengine__utils_html_a076b4cedf6e230db2e8fcf914a564ad7"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a076b4cedf6e230db2e8fcf914a564ad7">engine_utils::unix_to_modified_julian_date</a></div><div class="ttdeci">static double unix_to_modified_julian_date(double unix_time)</div><div class="ttdef"><b>Definition:</b> utils.h:170</div></div>
-<div class="ttc" id="anamespaceengine__utils_html_a0d4e852f4708cf9fc1a75eb98a3bed67"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a0d4e852f4708cf9fc1a75eb98a3bed67">engine_utils::fix_periodic_boundary</a></div><div class="ttdeci">void fix_periodic_boundary(Eigen::DenseBase&lt; Derived &gt; &amp;data, double low, double high, double upper_limit)</div><div class="ttdef"><b>Definition:</b> utils.h:1020</div></div>
+<div class="ttc" id="anamespaceengine__utils_html_a0d4e852f4708cf9fc1a75eb98a3bed67"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a0d4e852f4708cf9fc1a75eb98a3bed67">engine_utils::fix_periodic_boundary</a></div><div class="ttdeci">void fix_periodic_boundary(Eigen::DenseBase&lt; Derived &gt; &amp;data, double low, double high, double upper_limit)</div><div class="ttdef"><b>Definition:</b> utils.h:1022</div></div>
 <div class="ttc" id="anamespaceengine__utils_html_a17d3d5ac0ee60762b7ce109bee800af3"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a17d3d5ac0ee60762b7ce109bee800af3">engine_utils::mJy_beam_to_uK</a></div><div class="ttdeci">static const double mJy_beam_to_uK(const double flux_mjy_beam, const double freq_Hz, const double fwhm)</div><div class="ttdef"><b>Definition:</b> utils.h:77</div></div>
-<div class="ttc" id="anamespaceengine__utils_html_a364ac707e0426402b3c6b0f13edf4738"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a364ac707e0426402b3c6b0f13edf4738">engine_utils::is_point_in_box</a></div><div class="ttdeci">static const bool is_point_in_box(double a, double b, double x, double y, double theta)</div><div class="ttdef"><b>Definition:</b> utils.h:1200</div></div>
-<div class="ttc" id="anamespaceengine__utils_html_a392b455508f8ccfaf2af66c841dd7055"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a392b455508f8ccfaf2af66c841dd7055">engine_utils::now</a></div><div class="ttdeci">auto now()</div><div class="ttdoc">Return the current time.</div><div class="ttdef"><b>Definition:</b> utils.h:1136</div></div>
+<div class="ttc" id="anamespaceengine__utils_html_a364ac707e0426402b3c6b0f13edf4738"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a364ac707e0426402b3c6b0f13edf4738">engine_utils::is_point_in_box</a></div><div class="ttdeci">static const bool is_point_in_box(double a, double b, double x, double y, double theta)</div><div class="ttdef"><b>Definition:</b> utils.h:1202</div></div>
+<div class="ttc" id="anamespaceengine__utils_html_a392b455508f8ccfaf2af66c841dd7055"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a392b455508f8ccfaf2af66c841dd7055">engine_utils::now</a></div><div class="ttdeci">auto now()</div><div class="ttdoc">Return the current time.</div><div class="ttdef"><b>Definition:</b> utils.h:1138</div></div>
 <div class="ttc" id="anamespaceengine__utils_html_a3984d08902ccc268f7ba7878ebe1e2de"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a3984d08902ccc268f7ba7878ebe1e2de">engine_utils::calc_rms</a></div><div class="ttdeci">auto calc_rms(Eigen::DenseBase&lt; DerivedA &gt; &amp;data)</div><div class="ttdef"><b>Definition:</b> utils.h:389</div></div>
 <div class="ttc" id="anamespaceengine__utils_html_a44952875697628350ac19716b94a81d7"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a44952875697628350ac19716b94a81d7">engine_utils::calc_mad</a></div><div class="ttdeci">double calc_mad(Eigen::DenseBase&lt; Derived &gt; &amp;data)</div><div class="ttdef"><b>Definition:</b> utils.h:434</div></div>
-<div class="ttc" id="anamespaceengine__utils_html_a480f8c7619a52d7e51c6e122d0a3cb47"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a480f8c7619a52d7e51c6e122d0a3cb47">engine_utils::calc_hist</a></div><div class="ttdeci">auto calc_hist(Eigen::DenseBase&lt; Derived &gt; &amp;data, int n_bins)</div><div class="ttdef"><b>Definition:</b> utils.h:840</div></div>
+<div class="ttc" id="anamespaceengine__utils_html_a480f8c7619a52d7e51c6e122d0a3cb47"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a480f8c7619a52d7e51c6e122d0a3cb47">engine_utils::calc_hist</a></div><div class="ttdeci">auto calc_hist(Eigen::DenseBase&lt; Derived &gt; &amp;data, int n_bins)</div><div class="ttdef"><b>Definition:</b> utils.h:842</div></div>
 <div class="ttc" id="anamespaceengine__utils_html_a4b980702386147b8e5ff74c3d340a922"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a4b980702386147b8e5ff74c3d340a922">engine_utils::utc_to_unix</a></div><div class="ttdeci">void utc_to_unix(Eigen::DenseBase&lt; DerivedA &gt; &amp;tel_utc, Eigen::DenseBase&lt; DerivedB &gt; &amp;ut_date)</div><div class="ttdef"><b>Definition:</b> utils.h:113</div></div>
 <div class="ttc" id="anamespaceengine__utils_html_a4d36010ae0dbf2c6ceb791a76a83286b"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a4d36010ae0dbf2c6ceb791a76a83286b">engine_utils::find_weight_threshold</a></div><div class="ttdeci">double find_weight_threshold(Eigen::DenseBase&lt; Derived &gt; &amp;weight, double cov)</div><div class="ttdef"><b>Definition:</b> utils.h:490</div></div>
-<div class="ttc" id="anamespaceengine__utils_html_a54fff21be4fbf637e78bdda6d87183a4"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a54fff21be4fbf637e78bdda6d87183a4">engine_utils::shift_1D</a></div><div class="ttdeci">auto shift_1D(Eigen::DenseBase&lt; Derived &gt; &amp;in, std::vector&lt; Eigen::Index &gt; shift_indices)</div><div class="ttdef"><b>Definition:</b> utils.h:863</div></div>
+<div class="ttc" id="anamespaceengine__utils_html_a54fff21be4fbf637e78bdda6d87183a4"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a54fff21be4fbf637e78bdda6d87183a4">engine_utils::shift_1D</a></div><div class="ttdeci">auto shift_1D(Eigen::DenseBase&lt; Derived &gt; &amp;in, std::vector&lt; Eigen::Index &gt; shift_indices)</div><div class="ttdef"><b>Definition:</b> utils.h:865</div></div>
 <div class="ttc" id="anamespaceengine__utils_html_a57528ebe2f2c88901b401cbcb7463739"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a57528ebe2f2c88901b401cbcb7463739">engine_utils::get_phys_memory</a></div><div class="ttdeci">static const int get_phys_memory()</div><div class="ttdef"><b>Definition:</b> utils.h:56</div></div>
-<div class="ttc" id="anamespaceengine__utils_html_a582a54460566fa6a468a6e5902f552e9"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a582a54460566fa6a468a6e5902f552e9">engine_utils::elapsed_since</a></div><div class="ttdeci">auto elapsed_since(const std::chrono::time_point&lt; std::chrono::high_resolution_clock &gt; &amp;t0)</div><div class="ttdoc">Return the time elapsed since given time.</div><div class="ttdef"><b>Definition:</b> utils.h:1139</div></div>
+<div class="ttc" id="anamespaceengine__utils_html_a582a54460566fa6a468a6e5902f552e9"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a582a54460566fa6a468a6e5902f552e9">engine_utils::elapsed_since</a></div><div class="ttdeci">auto elapsed_since(const std::chrono::time_point&lt; std::chrono::high_resolution_clock &gt; &amp;t0)</div><div class="ttdoc">Return the time elapsed since given time.</div><div class="ttdef"><b>Definition:</b> utils.h:1141</div></div>
 <div class="ttc" id="anamespaceengine__utils_html_a5d302607681350992ba5de1af17ab4e2"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a5d302607681350992ba5de1af17ab4e2">engine_utils::SmoothType</a></div><div class="ttdeci">SmoothType</div><div class="ttdef"><b>Definition:</b> utils.h:635</div></div>
 <div class="ttc" id="anamespaceengine__utils_html_a5d302607681350992ba5de1af17ab4e2a14bb02aa1cc3129c7b36cab8557a4b60"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a5d302607681350992ba5de1af17ab4e2a14bb02aa1cc3129c7b36cab8557a4b60">engine_utils::edge_truncate</a></div><div class="ttdeci">@ edge_truncate</div><div class="ttdef"><b>Definition:</b> utils.h:637</div></div>
 <div class="ttc" id="anamespaceengine__utils_html_a5d302607681350992ba5de1af17ab4e2acf6dbdc992a7a46fae5c0a945caa2292"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a5d302607681350992ba5de1af17ab4e2acf6dbdc992a7a46fae5c0a945caa2292">engine_utils::boxcar</a></div><div class="ttdeci">@ boxcar</div><div class="ttdef"><b>Definition:</b> utils.h:636</div></div>
 <div class="ttc" id="anamespaceengine__utils_html_a673942090d70d086550a1b3f3b5f5542"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a673942090d70d086550a1b3f3b5f5542">engine_utils::set_cov_cov_ranges</a></div><div class="ttdeci">auto set_cov_cov_ranges(const Eigen::DenseBase&lt; Derived &gt; &amp;weight, const double weight_threshold)</div><div class="ttdef"><b>Definition:</b> utils.h:563</div></div>
 <div class="ttc" id="anamespaceengine__utils_html_a695c8acaca56e7b33daddac1f4cd0cd0"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a695c8acaca56e7b33daddac1f4cd0cd0">engine_utils::for_each_in_tuple</a></div><div class="ttdeci">void for_each_in_tuple(const std::tuple&lt; Ts... &gt; &amp;tuple, F func, std::index_sequence&lt; Is... &gt;)</div><div class="ttdef"><b>Definition:</b> utils.h:307</div></div>
 <div class="ttc" id="anamespaceengine__utils_html_a69c1934beb221128d2ca69744fe64f51"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a69c1934beb221128d2ca69744fe64f51">engine_utils::modified_julian_date_to_unix</a></div><div class="ttdeci">static long long modified_julian_date_to_unix(double jd)</div><div class="ttdef"><b>Definition:</b> utils.h:157</div></div>
-<div class="ttc" id="anamespaceengine__utils_html_a6b4e6bb0092c5f884059ef26011bf8dc"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a6b4e6bb0092c5f884059ef26011bf8dc">engine_utils::compute_numerical_derivative</a></div><div class="ttdeci">Eigen::VectorXd compute_numerical_derivative(const Eigen::DenseBase&lt; Derived &gt; &amp;times, const Eigen::DenseBase&lt; Derived &gt; &amp;values)</div><div class="ttdef"><b>Definition:</b> utils.h:1175</div></div>
+<div class="ttc" id="anamespaceengine__utils_html_a6b4e6bb0092c5f884059ef26011bf8dc"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a6b4e6bb0092c5f884059ef26011bf8dc">engine_utils::compute_numerical_derivative</a></div><div class="ttdeci">Eigen::VectorXd compute_numerical_derivative(const Eigen::DenseBase&lt; Derived &gt; &amp;times, const Eigen::DenseBase&lt; Derived &gt; &amp;values)</div><div class="ttdef"><b>Definition:</b> utils.h:1177</div></div>
 <div class="ttc" id="anamespaceengine__utils_html_a6daa007cc65a7dd898061e944a21475e"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a6daa007cc65a7dd898061e944a21475e">engine_utils::fft2</a></div><div class="ttdeci">auto fft2(Eigen::DenseBase&lt; Derived &gt; &amp;in, fftw_plan_t &amp;plan, fftw_complex *a, fftw_complex *b)</div><div class="ttdef"><b>Definition:</b> utils.h:270</div></div>
 <div class="ttc" id="anamespaceengine__utils_html_a725d953034ed9362c3a675539495c76c"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a725d953034ed9362c3a675539495c76c">engine_utils::sorter</a></div><div class="ttdeci">std::vector&lt; std::tuple&lt; double, int &gt; &gt; sorter(Eigen::DenseBase&lt; Derived &gt; &amp;vec)</div><div class="ttdef"><b>Definition:</b> utils.h:318</div></div>
 <div class="ttc" id="anamespaceengine__utils_html_a78bc2d77504839570aefed6a0bca233f"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a78bc2d77504839570aefed6a0bca233f">engine_utils::current_date_time</a></div><div class="ttdeci">static const std::string current_date_time()</div><div class="ttdef"><b>Definition:</b> utils.h:91</div></div>
@@ -1339,17 +1341,17 @@ $(function() {
 <div class="ttc" id="anamespaceinternal_html_ae1c7c89eba2ace8cda23cad2d54259cd"><div class="ttname"><a href="../../d5/d40/namespaceinternal.html#ae1c7c89eba2ace8cda23cad2d54259cd">internal::psd</a></div><div class="ttdeci">FreqStat psd(const Eigen::DenseBase&lt; DerivedA &gt; &amp;_scan, Eigen::DenseBase&lt; DerivedB &gt; &amp;psd, Eigen::DenseBase&lt; DerivedC &gt; *freqs, double fsmp)</div><div class="ttdef"><b>Definition:</b> sensitivity.h:152</div></div>
 <div class="ttc" id="anamespacematplotlibcpp_html_aeaf80309ad11083ec57bd6b246f6e4dc"><div class="ttname"><a href="../../d7/df7/namespacematplotlibcpp.html#aeaf80309ad11083ec57bd6b246f6e4dc">matplotlibcpp::hist</a></div><div class="ttdeci">bool hist(const std::vector&lt; Numeric &gt; &amp;y, long bins=10, std::string color=&quot;b&quot;, double alpha=1.0, bool cumulative=false)</div><div class="ttdef"><b>Definition:</b> matplotlibcpp.h:887</div></div>
 <div class="ttc" id="anamespacestd_html"><div class="ttname"><a href="../../d8/dcc/namespacestd.html">std</a></div><div class="ttdef"><b>Definition:</b> timestream.h:59</div></div>
-<div class="ttc" id="astructengine__utils_1_1scoped__timeit_html"><div class="ttname"><a href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html">engine_utils::scoped_timeit</a></div><div class="ttdoc">An RAII class to report the lifetime of itself.</div><div class="ttdef"><b>Definition:</b> utils.h:1145</div></div>
-<div class="ttc" id="astructengine__utils_1_1scoped__timeit_html_a142a1fca4efe1e16bc7d5d350f3c385d"><div class="ttname"><a href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a142a1fca4efe1e16bc7d5d350f3c385d">engine_utils::scoped_timeit::elapsed_msec</a></div><div class="ttdeci">double * elapsed_msec</div><div class="ttdef"><b>Definition:</b> utils.h:1168</div></div>
-<div class="ttc" id="astructengine__utils_1_1scoped__timeit_html_a1f8c57584e3b6d707514cb8ec000855e"><div class="ttname"><a href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a1f8c57584e3b6d707514cb8ec000855e">engine_utils::scoped_timeit::t0</a></div><div class="ttdeci">std::chrono::time_point&lt; std::chrono::high_resolution_clock &gt; t0</div><div class="ttdef"><b>Definition:</b> utils.h:1166</div></div>
-<div class="ttc" id="astructengine__utils_1_1scoped__timeit_html_a4363fa23362e92266556d18eca65c21d"><div class="ttname"><a href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a4363fa23362e92266556d18eca65c21d">engine_utils::scoped_timeit::~scoped_timeit</a></div><div class="ttdeci">~scoped_timeit()</div><div class="ttdef"><b>Definition:</b> utils.h:1150</div></div>
+<div class="ttc" id="astructengine__utils_1_1scoped__timeit_html"><div class="ttname"><a href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html">engine_utils::scoped_timeit</a></div><div class="ttdoc">An RAII class to report the lifetime of itself.</div><div class="ttdef"><b>Definition:</b> utils.h:1147</div></div>
+<div class="ttc" id="astructengine__utils_1_1scoped__timeit_html_a142a1fca4efe1e16bc7d5d350f3c385d"><div class="ttname"><a href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a142a1fca4efe1e16bc7d5d350f3c385d">engine_utils::scoped_timeit::elapsed_msec</a></div><div class="ttdeci">double * elapsed_msec</div><div class="ttdef"><b>Definition:</b> utils.h:1170</div></div>
+<div class="ttc" id="astructengine__utils_1_1scoped__timeit_html_a1f8c57584e3b6d707514cb8ec000855e"><div class="ttname"><a href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a1f8c57584e3b6d707514cb8ec000855e">engine_utils::scoped_timeit::t0</a></div><div class="ttdeci">std::chrono::time_point&lt; std::chrono::high_resolution_clock &gt; t0</div><div class="ttdef"><b>Definition:</b> utils.h:1168</div></div>
+<div class="ttc" id="astructengine__utils_1_1scoped__timeit_html_a4363fa23362e92266556d18eca65c21d"><div class="ttname"><a href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a4363fa23362e92266556d18eca65c21d">engine_utils::scoped_timeit::~scoped_timeit</a></div><div class="ttdeci">~scoped_timeit()</div><div class="ttdef"><b>Definition:</b> utils.h:1152</div></div>
 <div class="ttc" id="astructengine__utils_1_1scoped__timeit_html_a8050fa7b1c56c06d7e769fd597c20f96"><div class="ttname"><a href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a8050fa7b1c56c06d7e769fd597c20f96">engine_utils::scoped_timeit::operator=</a></div><div class="ttdeci">auto operator=(scoped_timeit &amp;&amp;) -&gt; scoped_timeit &amp;=delete</div></div>
 <div class="ttc" id="astructengine__utils_1_1scoped__timeit_html_a863cbafa9e8aa565b64f8c092ce43eb5"><div class="ttname"><a href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a863cbafa9e8aa565b64f8c092ce43eb5">engine_utils::scoped_timeit::scoped_timeit</a></div><div class="ttdeci">scoped_timeit(const scoped_timeit &amp;)=delete</div></div>
 <div class="ttc" id="astructengine__utils_1_1scoped__timeit_html_a9d21fc81d69a5a669b5b3b9bebd0b662"><div class="ttname"><a href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#a9d21fc81d69a5a669b5b3b9bebd0b662">engine_utils::scoped_timeit::scoped_timeit</a></div><div class="ttdeci">scoped_timeit(scoped_timeit &amp;&amp;)=delete</div></div>
-<div class="ttc" id="astructengine__utils_1_1scoped__timeit_html_abb898cc61368dca7ed3b2b30c64376c3"><div class="ttname"><a href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#abb898cc61368dca7ed3b2b30c64376c3">engine_utils::scoped_timeit::logger</a></div><div class="ttdeci">std::shared_ptr&lt; spdlog::logger &gt; logger</div><div class="ttdef"><b>Definition:</b> utils.h:1169</div></div>
-<div class="ttc" id="astructengine__utils_1_1scoped__timeit_html_acf302d6b6be7c5fe68599d41e951884a"><div class="ttname"><a href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#acf302d6b6be7c5fe68599d41e951884a">engine_utils::scoped_timeit::msg</a></div><div class="ttdeci">std::string_view msg</div><div class="ttdef"><b>Definition:</b> utils.h:1167</div></div>
+<div class="ttc" id="astructengine__utils_1_1scoped__timeit_html_abb898cc61368dca7ed3b2b30c64376c3"><div class="ttname"><a href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#abb898cc61368dca7ed3b2b30c64376c3">engine_utils::scoped_timeit::logger</a></div><div class="ttdeci">std::shared_ptr&lt; spdlog::logger &gt; logger</div><div class="ttdef"><b>Definition:</b> utils.h:1171</div></div>
+<div class="ttc" id="astructengine__utils_1_1scoped__timeit_html_acf302d6b6be7c5fe68599d41e951884a"><div class="ttname"><a href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#acf302d6b6be7c5fe68599d41e951884a">engine_utils::scoped_timeit::msg</a></div><div class="ttdeci">std::string_view msg</div><div class="ttdef"><b>Definition:</b> utils.h:1169</div></div>
 <div class="ttc" id="astructengine__utils_1_1scoped__timeit_html_aec3adb08d9cd77d6dbb38b4eef8e56b5"><div class="ttname"><a href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#aec3adb08d9cd77d6dbb38b4eef8e56b5">engine_utils::scoped_timeit::operator=</a></div><div class="ttdeci">auto operator=(const scoped_timeit &amp;) -&gt; scoped_timeit &amp;=delete</div></div>
-<div class="ttc" id="astructengine__utils_1_1scoped__timeit_html_af80d370fc55971e420743de1fe136233"><div class="ttname"><a href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#af80d370fc55971e420743de1fe136233">engine_utils::scoped_timeit::scoped_timeit</a></div><div class="ttdeci">scoped_timeit(std::string_view msg_, double *elapsed_msec_=nullptr)</div><div class="ttdef"><b>Definition:</b> utils.h:1146</div></div>
+<div class="ttc" id="astructengine__utils_1_1scoped__timeit_html_af80d370fc55971e420743de1fe136233"><div class="ttname"><a href="../../d5/dcd/structengine__utils_1_1scoped__timeit.html#af80d370fc55971e420743de1fe136233">engine_utils::scoped_timeit::scoped_timeit</a></div><div class="ttdeci">scoped_timeit(std::string_view msg_, double *elapsed_msec_=nullptr)</div><div class="ttdef"><b>Definition:</b> utils.h:1148</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
