@@ -808,13 +808,15 @@ auto calc_2D_psd(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &y
         double psdarr_a = 0.;
         for (int j=0; j<n_cols-1; ++j) {
             for (int k=0; k<n_rows-1; ++k) {
-                if ((int) (qmap(k,j) / diff_q) == i && qsymm(k,j) >= 0.){
-                    count_s++;
-                    psdarr_s += pmfq(k,j);
-                }
-                else {
-                    count_a++;
-                    psdarr_a += pmfq(k,j);
+                if ((int) (qmap(k,j) / diff_q) == i) {
+                    if (qsymm(k,j) >= 0.){
+                        count_s++;
+                        psdarr_s += pmfq(k,j);
+                    }
+                    else {
+                        count_a++;
+                        psdarr_a += pmfq(k,j);
+                    }
                 }
             }
         }
