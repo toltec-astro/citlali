@@ -11,7 +11,7 @@ include(FetchContent)
 FetchContent_Declare(
   kidscpp
   GIT_REPOSITORY https://github.com/toltec-astro/kidscpp.git
-  GIT_TAG        "v0.1.x"
+  GIT_TAG        "v1.x"
 )
 FetchContent_MakeAvailable(kidscpp)
 

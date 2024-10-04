@@ -69,7 +69,7 @@ struct variant_alternative<_Np, timestream::TCData<kind>>
     : variant_alternative<_Np, typename timestream::TCData<kind>::variant_t> {};
 
 #if defined(__GNUC__) && !defined(__clang__)
-#if (__GNUC__ >= 9)
+#if (__GNUC__ >= 9 && __GNUC__ < 13)
 // this is need to allow inherit from std::variant on GCC
 namespace __detail {
 namespace __variant {

@@ -137,13 +137,6 @@ struct RawObs : ConfigMapper<RawObs> {
         }
         const std::string &filepath() const { return m_filepath; }
 
-        template <typename OStream>
-        friend auto operator<<(OStream &os, const ArrayPropTable &d)
-            -> decltype(auto) {
-            return os << fmt::format("ArrayPropTable(filepath={})",
-                                     d.filepath());
-        }
-
     private:
         std::string m_filepath{};
     };
@@ -229,16 +222,6 @@ struct RawObs : ConfigMapper<RawObs> {
         template <auto type_>
         auto get() const -> const auto & {
             return std::get<cal_item_t<type_>>(m_cal_item);
-        }
-
-        template <typename OStream>
-        friend auto operator<<(OStream &os, const CalItem &d)
-            -> decltype(auto) {
-            // SPDLOG_DEBUG("calitem type: {}", d.type());
-            // return os << fmt::format("CalItem(type={}, typestr={})",
-            // d.type(),
-            //                          d.typestr());
-            return os << fmt::format("CalItem(typestr={})", d.typestr());
         }
 
     private:
@@ -345,20 +328,20 @@ TULA_ENUM_REGISTER(RawObs::CalItemType);
 namespace fmt {
 
 template <typename T>
-struct formatter<std::reference_wrapper<T>, char, void>
+struct formatter<std::reference_wrapper<T>>
     : tula::fmt_utils::nullspec_formatter_base {
     template <typename FormatContext>
     auto format(const std::reference_wrapper<T> &ref,
-                FormatContext &ctx) noexcept -> decltype(ctx.out()) {
+                FormatContext &ctx) const noexcept -> decltype(ctx.out()) {
         return format_to(ctx.out(), "{}", ref.get());
     }
 };
 
 template <>
-struct formatter<RawObs, char, void>
+struct formatter<RawObs>
     : tula::fmt_utils::nullspec_formatter_base {
     template <typename FormatContext>
-    auto format(const RawObs &obs, FormatContext &ctx) noexcept
+    auto format(const RawObs &obs, FormatContext &ctx) const noexcept
         -> decltype(ctx.out()) {
         return format_to(ctx.out(), "RawObs(name={}, n_data_items={})",
                          obs.name(), obs.n_data_items());
@@ -366,13 +349,35 @@ struct formatter<RawObs, char, void>
 };
 
 template <>
-struct formatter<RawObs::DataItem, char, void>
+struct formatter<RawObs::DataItem>
     : tula::fmt_utils::nullspec_formatter_base {
     template <typename FormatContext>
-    auto format(const RawObs::DataItem &item, FormatContext &ctx) noexcept
+    auto format(const RawObs::DataItem &item, FormatContext &ctx) const noexcept
         -> decltype(ctx.out()) {
         return format_to(ctx.out(), "DataItem(interface={}, filepath={})",
                          item.interface(), item.filepath());
+    }
+};
+
+template <>
+struct formatter<RawObs::CalItem>
+    : tula::fmt_utils::nullspec_formatter_base {
+    template <typename FormatContext>
+    auto format(const RawObs::CalItem &item, FormatContext &ctx) const noexcept
+        -> decltype(ctx.out()) {
+        return format_to(ctx.out(), "CalItem(typestr={})",
+                         item.typestr());
+    }
+};
+
+template <>
+struct formatter<RawObs::ArrayPropTable>
+    : tula::fmt_utils::nullspec_formatter_base {
+    template <typename FormatContext>
+    auto format(const RawObs::ArrayPropTable &apt, FormatContext &ctx) const noexcept
+        -> decltype(ctx.out()) {
+        return format_to(ctx.out(), "ArrayPropTable(filepath={})",
+                         apt.filepath());
     }
 };
 
