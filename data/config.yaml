@@ -83,7 +83,8 @@ timestream: # timestream reduction parameters
   precompute_pointing: false # compute detector pointing once (ignored for now)
   chunking: # how to chunk timestreams
     force_chunking: false # ignore map pattern chunking and use config file chunk length
-    length_sec: 10.0 # chunk length for lissajous/rastajous maps (ignored if raster map)
+    value: 10.0 # either chunk length or number of chunks for lissajous/rastajous maps (ignored if raster map)
+    chunk_mode: duration # how to subdivide chunks, either by time (duration) or number (number)
   polarimetry: # polarized reduction
     enabled: false # enable or disable polarized reduction
     ignore_hwpr: auto # override automatic hwpr finding (true, false, auto)
