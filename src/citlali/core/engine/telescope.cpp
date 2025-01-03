@@ -65,7 +65,7 @@ void Telescope::get_tel_data(std::string &filepath) {
         }
 
         // cannot reduce in lissajous mode if chunk less than or equal to zero
-        if ((obs_pgm=="Lissajous" || (obs_pgm=="Map" && exec_mode==1)) && time_chunk<=0) {
+        if ((obs_pgm=="Lissajous" || (obs_pgm=="Map" && exec_mode==1)) && chunking_value<=0) {
             logger->error("mapping mode is lissajous and time chunk size is zero");
             std::exit(EXIT_FAILURE);
         }
@@ -366,18 +366,30 @@ void Telescope::calc_scan_indices() {
         // index of last scan
         Eigen::Index last_scan_i = tel_data["Hold"].size() - 1;
 
-        // period (time_chunk x fsmp in seconds x Hz)
-        Eigen::Index period_i = std::floor(time_chunk*fsmp);
+        double period;
+        Eigen::Index period_i;
 
-        double period = std::floor(time_chunk*fsmp);
+        if (chunk_mode == "duration") {
 
-        if (period > (last_scan_i - first_scan_i + 1)) {
-            period = last_scan_i - first_scan_i + 1;
-            period_i = last_scan_i - first_scan_i + 1;
+            // period (time_chunk x fsmp in seconds x Hz)
+            period_i = std::floor(chunking_value*fsmp);
+
+            period = std::floor(chunking_value*fsmp);
+
+            if (period > (last_scan_i - first_scan_i + 1)) {
+                period = last_scan_i - first_scan_i + 1;
+                period_i = last_scan_i - first_scan_i + 1;
+            }
+
+            // calculate number of scans
+            n_scans = std::floor((last_scan_i - first_scan_i + 1)*1./period);
         }
+        else if (chunk_mode == "number") {
+            n_scans = chunking_value;
 
-        // calculate number of scans
-        n_scans = std::floor((last_scan_i - first_scan_i + 1)*1./period);
+            period = (last_scan_i - first_scan_i + 1) / n_scans;
+            period_i = (last_scan_i - first_scan_i + 1) / n_scans;
+        }
 
         // assign scans to scan_indices matrix
         scan_indices.resize(4,n_scans);

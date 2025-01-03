@@ -532,8 +532,11 @@ void Engine::get_timestream_config(CT &config) {
     get_config_value(config, diagnostics.write_evals, missing_keys, invalid_keys,
                      std::tuple{"timestream","output", "stats","eigenvalues"});
     // get time chunk size
-    get_config_value(config, telescope.time_chunk, missing_keys, invalid_keys,
-                     std::tuple{"timestream","chunking", "length_sec"});
+    get_config_value(config, telescope.chunk_mode, missing_keys, invalid_keys,
+                     std::tuple{"timestream","chunking", "chunk_mode"});
+    // get time chunk size
+    get_config_value(config, telescope.chunking_value, missing_keys, invalid_keys,
+                     std::tuple{"timestream","chunking", "value"});
     // force chunking?
     get_config_value(config, telescope.force_chunk, missing_keys, invalid_keys,
                      std::tuple{"timestream","chunking", "force_chunking"});
