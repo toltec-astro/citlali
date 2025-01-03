@@ -81,10 +81,11 @@ var searchData=
   ['fruit_5floops_5fpath_402',['fruit_loops_path',['../de/d76/classtimestream_1_1TCProc.html#a11bf4325eea81f7b57e68cab1affc2aa',1,'timestream::TCProc']]],
   ['fruit_5floops_5fsig2noise_403',['fruit_loops_sig2noise',['../de/d76/classtimestream_1_1TCProc.html#a1df6a0c19bd3c23a03fc9e08d6942dc0',1,'timestream::TCProc']]],
   ['fruit_5floops_5ftype_404',['fruit_loops_type',['../de/d76/classtimestream_1_1TCProc.html#afd6eee8fc2ab59a150971e0c77f0b98f',1,'timestream::TCProc']]],
-  ['fsmp_405',['fsmp',['../d2/d39/classengine_1_1Diagnostics.html#a99b6149a11cb195b0a5264be2ec2963c',1,'engine::Diagnostics::fsmp()'],['../dd/d57/classtimestream_1_1Despiker.html#a2394d8c9bc68c8336709b655eff57dbd',1,'timestream::Despiker::fsmp()'],['../d2/d8b/classengine_1_1Telescope.html#a091e42bfe3ccf1c4ecae8efd2713659b',1,'engine::Telescope::fsmp()']]],
-  ['fwhm_5fhigh_406',['fwhm_high',['../d9/dbd/classengine__utils_1_1mapFitter.html#ab6407ff257ce8797a1cb137f3d857d86',1,'engine_utils::mapFitter']]],
-  ['fwhm_5flimits_407',['fwhm_limits',['../d9/dbd/classengine__utils_1_1mapFitter.html#af1a21fef6cb989ff9a4b67d457777760',1,'engine_utils::mapFitter']]],
-  ['fwhm_5flow_408',['fwhm_low',['../d9/dbd/classengine__utils_1_1mapFitter.html#a28a7a65df7aee4dbacacba91a3209bba',1,'engine_utils::mapFitter']]],
-  ['fwhm_5frad_409',['fwhm_rad',['../d2/d89/classtimestream_1_1Kernel.html#aa596f216935fe75473822007b082b552',1,'timestream::Kernel']]],
-  ['fwhm_5fto_5fstd_410',['FWHM_TO_STD',['../d2/d6f/constants_8h.html#a406d993bd52e821d87cfcc81a9250590',1,'constants.h']]]
+  ['fruit_5fmode_405',['fruit_mode',['../de/d76/classtimestream_1_1TCProc.html#ae0f71f73faec0f94e951eb987f0b521c',1,'timestream::TCProc']]],
+  ['fsmp_406',['fsmp',['../d2/d39/classengine_1_1Diagnostics.html#a99b6149a11cb195b0a5264be2ec2963c',1,'engine::Diagnostics::fsmp()'],['../dd/d57/classtimestream_1_1Despiker.html#a2394d8c9bc68c8336709b655eff57dbd',1,'timestream::Despiker::fsmp()'],['../d2/d8b/classengine_1_1Telescope.html#a091e42bfe3ccf1c4ecae8efd2713659b',1,'engine::Telescope::fsmp()']]],
+  ['fwhm_5fhigh_407',['fwhm_high',['../d9/dbd/classengine__utils_1_1mapFitter.html#ab6407ff257ce8797a1cb137f3d857d86',1,'engine_utils::mapFitter']]],
+  ['fwhm_5flimits_408',['fwhm_limits',['../d9/dbd/classengine__utils_1_1mapFitter.html#af1a21fef6cb989ff9a4b67d457777760',1,'engine_utils::mapFitter']]],
+  ['fwhm_5flow_409',['fwhm_low',['../d9/dbd/classengine__utils_1_1mapFitter.html#a28a7a65df7aee4dbacacba91a3209bba',1,'engine_utils::mapFitter']]],
+  ['fwhm_5frad_410',['fwhm_rad',['../d2/d89/classtimestream_1_1Kernel.html#aa596f216935fe75473822007b082b552',1,'timestream::Kernel']]],
+  ['fwhm_5fto_5fstd_411',['FWHM_TO_STD',['../d2/d6f/constants_8h.html#a406d993bd52e821d87cfcc81a9250590',1,'constants.h']]]
 ];

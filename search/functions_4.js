@@ -1,14 +1,14 @@
 var searchData=
 [
-  ['data_5fitems_1534',['data_items',['../dc/dcf/structRawObs.html#adcc3d68f45e714c22b5e126e55e5c7ac',1,'RawObs::data_items() const'],['../dc/dcf/structRawObs.html#adcc3d68f45e714c22b5e126e55e5c7ac',1,'RawObs::data_items() const']]],
-  ['dataitem_1535',['DataItem',['../d7/ddd/structRawObs_1_1DataItem.html#abc809c11fd36e63766e7d6f5918b9dd5',1,'RawObs::DataItem::DataItem(config_t config)'],['../d7/ddd/structRawObs_1_1DataItem.html#abc809c11fd36e63766e7d6f5918b9dd5',1,'RawObs::DataItem::DataItem(config_t config)'],['../d1/dba/structCoordinator_1_1Observation_1_1DataItem.html#a91538d66dda29c659c0ccc075db30c86',1,'Coordinator::Observation::DataItem::DataItem()']]],
-  ['decref_1536',['decref',['../df/d6c/classmatplotlibcpp_1_1Plot.html#abb79f574f69ff150c39a9c25d16ec519',1,'matplotlibcpp::Plot']]],
-  ['define_5fhas_5fmember_5ftraits_1537',['define_has_member_traits',['../df/dc0/structConfigMixin_1_1derived__has__validate__config.html#a89ac2abc66b45c68eb67b0876757542e',1,'ConfigMixin::derived_has_validate_config']]],
-  ['densefunctor_1538',['DenseFunctor',['../dc/dcf/structengine__utils_1_1DenseFunctor.html#ad31f2ba6aafed7065100424f74a554fa',1,'engine_utils::DenseFunctor::DenseFunctor()'],['../dc/dcf/structengine__utils_1_1DenseFunctor.html#a964e46e89827ac2f63ef7aa23760a87a',1,'engine_utils::DenseFunctor::DenseFunctor(int inputs, int values)']]],
-  ['despike_1539',['despike',['../dd/d57/classtimestream_1_1Despiker.html#a46acda018674aee51b678cefdca7ffc7',1,'timestream::Despiker::despike()'],['../da/d55/classtimestream_1_1Despiker2.html#a0b60a1217e6dd55c555bf9022a198626',1,'timestream::Despiker2::despike()']]],
-  ['destripe_1540',['destripe',['../df/db0/classmapmaking_1_1WienerFilter.html#aa0e880f1581ad03ba7210072c1531a58',1,'mapmaking::WienerFilter']]],
-  ['detectoraxis_1541',['DetectorAxis',['../d1/dbc/structtimestream_1_1DetectorAxis.html#ab0d6d3de413db6465099c6c5a048c91a',1,'timestream::DetectorAxis::DetectorAxis()=default'],['../d1/dbc/structtimestream_1_1DetectorAxis.html#a08fe7a994f054714651e09066e90cfd6',1,'timestream::DetectorAxis::DetectorAxis(Eigen::MatrixXd data_, tula::nddata::LabelMapper&lt; DetectorAxis &gt; row_labels_)']]],
-  ['downsample_1542',['downsample',['../d2/d66/classtimestream_1_1Downsampler.html#acadbf651c73ba593a14980950f556c92',1,'timestream::Downsampler']]],
-  ['draw_1543',['draw',['../d7/df7/namespacematplotlibcpp.html#acd9fc5bb7916c735390c2056214b12be',1,'matplotlibcpp']]],
-  ['dump_5fto_5fstr_1544',['dump_to_str',['../d8/db6/structYamlConfig.html#ab7a25173680f44b18be0293ceaca375e',1,'YamlConfig']]]
+  ['data_5fitems_1535',['data_items',['../dc/dcf/structRawObs.html#adcc3d68f45e714c22b5e126e55e5c7ac',1,'RawObs::data_items() const'],['../dc/dcf/structRawObs.html#adcc3d68f45e714c22b5e126e55e5c7ac',1,'RawObs::data_items() const']]],
+  ['dataitem_1536',['DataItem',['../d7/ddd/structRawObs_1_1DataItem.html#abc809c11fd36e63766e7d6f5918b9dd5',1,'RawObs::DataItem::DataItem(config_t config)'],['../d7/ddd/structRawObs_1_1DataItem.html#abc809c11fd36e63766e7d6f5918b9dd5',1,'RawObs::DataItem::DataItem(config_t config)'],['../d1/dba/structCoordinator_1_1Observation_1_1DataItem.html#a91538d66dda29c659c0ccc075db30c86',1,'Coordinator::Observation::DataItem::DataItem()']]],
+  ['decref_1537',['decref',['../df/d6c/classmatplotlibcpp_1_1Plot.html#abb79f574f69ff150c39a9c25d16ec519',1,'matplotlibcpp::Plot']]],
+  ['define_5fhas_5fmember_5ftraits_1538',['define_has_member_traits',['../df/dc0/structConfigMixin_1_1derived__has__validate__config.html#a89ac2abc66b45c68eb67b0876757542e',1,'ConfigMixin::derived_has_validate_config']]],
+  ['densefunctor_1539',['DenseFunctor',['../dc/dcf/structengine__utils_1_1DenseFunctor.html#ad31f2ba6aafed7065100424f74a554fa',1,'engine_utils::DenseFunctor::DenseFunctor()'],['../dc/dcf/structengine__utils_1_1DenseFunctor.html#a964e46e89827ac2f63ef7aa23760a87a',1,'engine_utils::DenseFunctor::DenseFunctor(int inputs, int values)']]],
+  ['despike_1540',['despike',['../dd/d57/classtimestream_1_1Despiker.html#a46acda018674aee51b678cefdca7ffc7',1,'timestream::Despiker::despike()'],['../da/d55/classtimestream_1_1Despiker2.html#a0b60a1217e6dd55c555bf9022a198626',1,'timestream::Despiker2::despike()']]],
+  ['destripe_1541',['destripe',['../df/db0/classmapmaking_1_1WienerFilter.html#aa0e880f1581ad03ba7210072c1531a58',1,'mapmaking::WienerFilter']]],
+  ['detectoraxis_1542',['DetectorAxis',['../d1/dbc/structtimestream_1_1DetectorAxis.html#ab0d6d3de413db6465099c6c5a048c91a',1,'timestream::DetectorAxis::DetectorAxis()=default'],['../d1/dbc/structtimestream_1_1DetectorAxis.html#a08fe7a994f054714651e09066e90cfd6',1,'timestream::DetectorAxis::DetectorAxis(Eigen::MatrixXd data_, tula::nddata::LabelMapper&lt; DetectorAxis &gt; row_labels_)']]],
+  ['downsample_1543',['downsample',['../d2/d66/classtimestream_1_1Downsampler.html#acadbf651c73ba593a14980950f556c92',1,'timestream::Downsampler']]],
+  ['draw_1544',['draw',['../d7/df7/namespacematplotlibcpp.html#acd9fc5bb7916c735390c2056214b12be',1,'matplotlibcpp']]],
+  ['dump_5fto_5fstr_1545',['dump_to_str',['../d8/db6/structYamlConfig.html#ab7a25173680f44b18be0293ceaca375e',1,'YamlConfig']]]
 ];
