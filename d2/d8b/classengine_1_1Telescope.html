@@ -80,7 +80,7 @@ Collaboration diagram for engine::Telescope:</div>
 <div class="dyncontent">
 <div class="center"><img src="../../d1/d09/classengine_1_1Telescope__coll__graph.png" border="0" usemap="#aengine_1_1Telescope_coll__map" alt="Collaboration graph"/></div>
 <map name="aengine_1_1Telescope_coll__map" id="aengine_1_1Telescope_coll__map">
-<area shape="rect" title=" " alt="" coords="5,5,168,464"/>
+<area shape="rect" title=" " alt="" coords="5,5,168,479"/>
 </map>
 </div>
 <table class="memberdecls">
@@ -119,8 +119,10 @@ Public Attributes</h2></td></tr>
 <tr class="separator:abed1c29eed144c870002a53e153d13de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a58be6ab94e0ccbf68c47f49234f30b58"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d8b/classengine_1_1Telescope.html#a58be6ab94e0ccbf68c47f49234f30b58">exec_mode</a></td></tr>
 <tr class="separator:a58be6ab94e0ccbf68c47f49234f30b58"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a28cc09bb986de0c0a91ed95c4ab1ec03"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d8b/classengine_1_1Telescope.html#a28cc09bb986de0c0a91ed95c4ab1ec03">time_chunk</a></td></tr>
-<tr class="separator:a28cc09bb986de0c0a91ed95c4ab1ec03"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37ba0f2d9db8a81bf7be96e3d8b2602b"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d8b/classengine_1_1Telescope.html#a37ba0f2d9db8a81bf7be96e3d8b2602b">chunk_mode</a></td></tr>
+<tr class="separator:a37ba0f2d9db8a81bf7be96e3d8b2602b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac93d7e61e429d6c62d96c627168f5c25"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d8b/classengine_1_1Telescope.html#ac93d7e61e429d6c62d96c627168f5c25">chunking_value</a></td></tr>
+<tr class="separator:ac93d7e61e429d6c62d96c627168f5c25"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a907e68b1bf41fb49fc6bfbbf6e8cbe5d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d8b/classengine_1_1Telescope.html#a907e68b1bf41fb49fc6bfbbf6e8cbe5d">force_chunk</a></td></tr>
 <tr class="separator:a907e68b1bf41fb49fc6bfbbf6e8cbe5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9699fd1de3c85475434bdcee6cba4f61"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d8b/classengine_1_1Telescope.html#a9699fd1de3c85475434bdcee6cba4f61">velocity_limit</a></td></tr>
@@ -328,6 +330,34 @@ Here is the call graph for this function:</div>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a37ba0f2d9db8a81bf7be96e3d8b2602b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a37ba0f2d9db8a81bf7be96e3d8b2602b">&#9670;&nbsp;</a></span>chunk_mode</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string engine::Telescope::chunk_mode</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac93d7e61e429d6c62d96c627168f5c25"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac93d7e61e429d6c62d96c627168f5c25">&#9670;&nbsp;</a></span>chunking_value</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double engine::Telescope::chunking_value</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a61c58e36d7dcb4bf1ab5e6519f16dc92"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a61c58e36d7dcb4bf1ab5e6519f16dc92">&#9670;&nbsp;</a></span>d_fsmp</h2>
 
@@ -626,20 +656,6 @@ Here is the call graph for this function:</div>
       <table class="memname">
         <tr>
           <td class="memname">std::map&lt;std::string, std::string&gt; engine::Telescope::tel_header_keys</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a28cc09bb986de0c0a91ed95c4ab1ec03"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a28cc09bb986de0c0a91ed95c4ab1ec03">&#9670;&nbsp;</a></span>time_chunk</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">double engine::Telescope::time_chunk</td>
         </tr>
       </table>
 </div><div class="memdoc">
