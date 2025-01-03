@@ -281,8 +281,8 @@ public:
     std::string fruit_loops_path;
     // paths for first set of images
     std::vector<std::string> init_fruit_loops_path;
-    // fruit loops type
-    std::string fruit_loops_type;
+    // fruit loops type and mode
+    std::string fruit_loops_type, fruit_mode;
     // number of fruit loops iterations
     int fruit_loops_iters = 0;
     // signal-to-noise cut for fruit loops algorithm
@@ -669,8 +669,20 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                 if ((ir >= 0) && (ir < mb.n_rows) && (ic >= 0) && (ic < mb.n_cols)) {
                     double signal = mb.signal[map_index](ir,ic);
                     // check whether we should include pixel
-                    bool run_pix_s2n = run_noise && (signal / mb.median_rms(map_index) >= fruit_loops_sig2noise);
-                    bool run_pix_flux = signal >= fruit_loops_flux(array_index);
+		    bool run_pix_s2n = false;
+		    bool run_pix_flux = false;
+		    if (fruit_mode == "upper") {
+                    	run_pix_s2n = run_noise && (signal / mb.median_rms(map_index) >= fruit_loops_sig2noise);
+                    	run_pix_flux = signal >= fruit_loops_flux(array_index);
+		    }
+		    else if (fruit_mode == "lower") {
+			run_pix_s2n = run_noise && (signal / mb.median_rms(map_index) <= fruit_loops_sig2noise);
+                        run_pix_flux = signal <= fruit_loops_flux(array_index);
+		    }
+		    else if (fruit_mode == "both") {
+			run_pix_s2n = run_noise && (abs(signal / mb.median_rms(map_index)) >= abs(fruit_loops_sig2noise));
+                        run_pix_flux = abs(signal) >= abs(fruit_loops_flux(array_index));
+		    }
 
                     // if signal flux is higher than S/N limit or flux limit
                     if (run_pix_s2n || run_pix_flux) {

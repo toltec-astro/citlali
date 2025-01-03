@@ -87,15 +87,18 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         // fruit looops type
         get_config_value(config, fruit_loops_type, missing_keys, invalid_keys,
                          std::tuple{"timestream","fruit_loops","type"});
+	// fruit looops mode
+        get_config_value(config, fruit_mode, missing_keys, invalid_keys,
+                         std::tuple{"timestream","fruit_loops","mode"}, {"upper", "lower", "both"});
         // let user specify "coadd" or "coadded"
         if (fruit_loops_type == "coadded") {
             fruit_loops_type = "coadd";
         }
         // fruit loops signal-to-noise
         get_config_value(config, fruit_loops_sig2noise, missing_keys, invalid_keys,
-                         std::tuple{"timestream","fruit_loops","lower_sig2noise_limit"});
+                         std::tuple{"timestream","fruit_loops", "sig2noise_limit"});
         // fruit loops flux density limit
-        auto fruit_loops_flux_vec = config.template get_typed<std::vector<double>>(std::tuple{"timestream","fruit_loops","array_lower_flux_limit"});
+        auto fruit_loops_flux_vec = config.template get_typed<std::vector<double>>(std::tuple{"timestream","fruit_loops","array_flux_limit"});
         fruit_loops_flux = Eigen::Map<Eigen::VectorXd>(fruit_loops_flux_vec.data(), fruit_loops_flux_vec.size());
 
         // maximum fruit loops iterations
