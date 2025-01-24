@@ -1,0 +1,7 @@
+#pragma once
+
+namespace citlali {
+
+constexpr static auto citlali_default_config_content = R"zzz(@CITLALI_DEFAULT_CONFIG_CONTENT@)zzz";
+
+} // namespace citlali

@@ -1,0 +1,84 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "unity_debug",
+      "description": "",
+      "displayName": "",
+      "generator": "Unix Makefiles",
+      "inherits": [
+          "linux-gcc-debug"
+      ],
+      "cacheVariables": {
+          "FETCHCONTENT_SOURCE_DIR_TULA": "${sourceParentDir}/tula"
+      }
+    },
+    {
+      "name": "unity_release",
+      "description": "",
+      "displayName": "",
+      "generator": "Unix Makefiles",
+      "inherits": [
+          "linux-gcc-release"
+      ],
+      "cacheVariables": {
+          "FETCHCONTENT_SOURCE_DIR_TULA": "${sourceParentDir}/tula"
+      }
+    },
+    {
+      "name": "brew_llvm_release_dev",
+      "description": "",
+      "displayName": "",
+      "generator": "Unix Makefiles",
+      "inherits": [
+          "brew-llvm-release"
+      ],
+      "cacheVariables": {
+          "FETCHCONTENT_SOURCE_DIR_TULA": "${sourceParentDir}/tula",
+          "USE_INSTALLED_BOOST": "ON"
+      }
+    },
+    {
+      "name": "wsl_debug",
+      "description": "",
+      "displayName": "",
+      "generator": "Unix Makefiles",
+      "inherits": [
+          "linux-gcc-debug"
+      ],
+      "cacheVariables": {
+          "FETCHCONTENT_SOURCE_DIR_TULA": "${sourceParentDir}/tula",
+          "USE_INSTALLED_NETCDF": "ON",
+          "KIDS_WITH_PLOTTING": "ON"
+      }
+    },
+    {
+      "name": "wsl_release",
+      "description": "",
+      "displayName": "",
+      "generator": "Unix Makefiles",
+      "inherits": [
+          "linux-gcc-release"
+      ],
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+          "USE_INSTALLED_NETCDF": "ON",
+          "FETCHCONTENT_SOURCE_DIR_TULA": "${sourceParentDir}/tula",
+          "KIDS_WITH_PLOTTING": "OFF"
+      }
+    },
+    {
+      "name": "clips_release",
+      "description": "",
+      "displayName": "",
+      "generator": "Unix Makefiles",
+      "inherits": [
+          "linux-gcc-release"
+      ],
+      "cacheVariables": {
+          "FETCHCONTENT_SOURCE_DIR_TULA": "${sourceParentDir}/tula",
+	  "USE_INSTALLED_NETCDF": "ON"
+      }
+    }
+  ]
+}
