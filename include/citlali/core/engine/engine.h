@@ -1223,8 +1223,10 @@ void Engine::add_tod_header() {
         add_netcdf_var(fo, "CONFIG.EXTINCTION", rtcproc.run_extinction);
         add_netcdf_var<std::string>(fo, "CONFIG.EXTINCTION.EXTMODEL", rtcproc.calibration.extinction_model);
         add_netcdf_var<std::string>(fo, "CONFIG.WEIGHT.TYPE", ptcproc.weighting_type);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.RTC.WTLOW", rtcproc.lower_weight_factor);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.RTC.WTHIGH", rtcproc.upper_weight_factor);
+        add_netcdf_var(fo, "CONFIG.INV_VAR.RTC.WTLOW", rtcproc.lower_inv_var_factor);
+        add_netcdf_var(fo, "CONFIG.INV_VAR.RTC.WTHIGH", rtcproc.upper_inv_var_factor);
+        add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTLOW", ptcproc.lower_inv_var_factor);
+        add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTHIGH", ptcproc.upper_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTLOW", ptcproc.lower_weight_factor);
         add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTHIGH", ptcproc.upper_weight_factor);
         add_netcdf_var(fo, "CONFIG.WEIGHT.MEDWTFACTOR", ptcproc.med_weight_factor);
@@ -1974,8 +1976,10 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.EXTINCTION", rtcproc.run_extinction, "Extinction corrected");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.EXTINCTION.EXTMODEL", rtcproc.calibration.extinction_model, "Extinction model");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.TYPE", ptcproc.weighting_type, "Weighting scheme");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.RTC.WTLOW", rtcproc.lower_weight_factor, "RTC lower weight cutoff");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.RTC.WTHIGH", rtcproc.upper_weight_factor, "RTC upper weight cutoff");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.INV_VAR.RTC.WTLOW", rtcproc.lower_inv_var_factor, "RTC lower inv var cutoff");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.INV_VAR.RTC.WTHIGH", rtcproc.upper_inv_var_factor, "RTC upper inv var cutoff");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.INV_VAR.PTC.WTLOW", ptcproc.lower_inv_var_factor, "PTC lower inv var cutoff");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.INV_VAR.PTC.WTHIGH", ptcproc.upper_inv_var_factor, "PTC upper inv var cutoff");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.PTC.WTLOW", ptcproc.lower_weight_factor, "PTC lower weight cutoff");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.PTC.WTHIGH", ptcproc.upper_weight_factor, "PTC upper weight cutoff");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.MEDWTFACTOR", ptcproc.med_weight_factor, "Median weight factor");

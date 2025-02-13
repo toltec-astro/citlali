@@ -690,7 +690,7 @@ void Beammap::run_loop() {
                 ptcproc.calc_weights(ptcs[i], calib.apt, telescope);
 
                 // reset weights to median
-                ptcproc.reset_weights(ptcs[i], calib);
+                calib_scans[i] = ptcproc.reset_weights(ptcs[i], calib_scans[i], map_grouping);
             }
 
             // write out chunk summary

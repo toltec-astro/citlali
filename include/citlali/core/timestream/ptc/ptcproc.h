@@ -22,6 +22,8 @@ public:
     bool run_clean;
     // median weight factor
     double med_weight_factor;
+    // upper and lower weight limits for outliers
+    double lower_weight_factor, upper_weight_factor;
     // weight type (full, approximate, const)
     std::string weighting_type;
 
@@ -47,7 +49,7 @@ public:
 
     // reset outlier weights to the median
     template <typename calib_t>
-    auto reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &);
+    auto reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, std::string);
 
     // append time chunk to tod netcdf file
     template <typename calib_t, typename pointing_offset_t>
@@ -65,13 +67,20 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                      std::tuple{"timestream","processed_time_chunk","weighting","type"},{"full","approximate","const"});
     // median weight factor
     get_config_value(config, med_weight_factor, missing_keys, invalid_keys,
-                     std::tuple{"timestream","processed_time_chunk","weighting","median_weight_factor"});
+                     std::tuple{"timestream","processed_time_chunk","weighting","median_map_weight_factor"});
+    // lower inv var factor
+    get_config_value(config, lower_inv_var_factor, missing_keys, invalid_keys,
+                     std::tuple{"timestream","processed_time_chunk","flagging","lower_tod_inv_var_factor"});
+    // upper inv var factor
+    get_config_value(config, upper_inv_var_factor, missing_keys, invalid_keys,
+                     std::tuple{"timestream","processed_time_chunk","flagging","upper_tod_inv_var_factor"});
+
     // lower weight factor
     get_config_value(config, lower_weight_factor, missing_keys, invalid_keys,
-                     std::tuple{"timestream","processed_time_chunk","flagging","lower_weight_factor"});
+                     std::tuple{"timestream","processed_time_chunk","weighting","lower_map_weight_factor"});
     // upper weight factor
     get_config_value(config, upper_weight_factor, missing_keys, invalid_keys,
-                     std::tuple{"timestream","processed_time_chunk","flagging","upper_weight_factor"});
+                     std::tuple{"timestream","processed_time_chunk","weighting","upper_map_weight_factor"});
 
     // run fruit loops?
     get_config_value(config, run_fruit_loops, missing_keys, invalid_keys,
@@ -372,10 +381,13 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
 }
 
 template <typename calib_t>
-auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib) {
+auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib, std::string map_grouping) {
+
+    // make a copy of the calib class for flagging
+    calib_t calib_scan = calib;
 
     // only need to run if median weight factor >=1
-    if (med_weight_factor >= 1) {
+    if (med_weight_factor >= 1 || lower_weight_factor > 0 || upper_weight_factor > 0) {
         // number of detectors
         Eigen::Index n_dets = in.scans.data.cols();
 
@@ -430,22 +442,57 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
             in.median_weights.data.push_back(med_wt);
 
             int outliers = 0;
+            int n_dets_low = 0;
+            int n_dets_high = 0;
 
             // start index of current group
             j = std::get<0>(grp_limits[key]);
             // loop through detectors in current group
             for (Eigen::Index m=0; m<grp_weights.size(); ++m) {
                 // if detector weight is med_weight_factor times larger than med_wt
-                if (in.weights.data(j) > med_weight_factor*med_wt) {
+                if (med_weight_factor >=1 && in.weights.data(j) > med_weight_factor*med_wt) {
                     // reset high weights to median
                     in.weights.data(j) = med_wt;
                     outliers++;
                 }
+
+                // only run if unflagged already
+                if (calib.apt["flag"](j)==0) {
+                    // flag those below limit
+                    if ((in.weights.data(j) < (lower_weight_factor*med_wt)) && lower_weight_factor!=0) {
+                        if (map_grouping!="detector") {
+                            in.flags.data.col(j).setOnes();
+                        }
+                        else {
+                            calib_scan.apt["flag"](j) = 1;
+                        }
+                        in.n_dets_low++;
+                        n_dets_low++;
+                    }
+
+                    // flag those above limit
+                    if ((in.weights.data(j) > (upper_weight_factor*med_wt)) && upper_weight_factor!=0) {
+                        if (map_grouping!="detector") {
+                            in.flags.data.col(j).setOnes();
+                        }
+                        else {
+                            calib_scan.apt["flag"](j) = 1;
+                        }
+                        in.n_dets_high++;
+                        n_dets_high++;
+                    }
+                }
                 j++;
             }
             logger->info("array {} had {} outlier weights", key, outliers);
+            logger->info("array {}: {}/{} dets below weight limit. {}/{} dets above weight limit.", key,
+            n_dets_low, n_good_dets, n_dets_high, n_good_dets);
         }
+
+        // set up scan calib
+        calib_scan.setup();
     }
+    return std::move(calib_scan);
 }
 
 template <typename calib_t, typename pointing_offset_t>

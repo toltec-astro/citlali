@@ -70,12 +70,12 @@ public:
 template <typename config_t>
 void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>> &missing_keys,
                          std::vector<std::vector<std::string>> &invalid_keys) {
-    // lower weight factor
-    get_config_value(config, lower_weight_factor, missing_keys, invalid_keys,
-                     std::tuple{"timestream","raw_time_chunk","flagging","lower_weight_factor"});
-    // upper weight factor
-    get_config_value(config, upper_weight_factor, missing_keys, invalid_keys,
-                     std::tuple{"timestream", "raw_time_chunk","flagging","upper_weight_factor"});
+    // lower inv var factor
+    get_config_value(config, lower_inv_var_factor, missing_keys, invalid_keys,
+                     std::tuple{"timestream","raw_time_chunk","flagging","lower_tod_inv_var_factor"});
+    // upper inv var factor
+    get_config_value(config, upper_inv_var_factor, missing_keys, invalid_keys,
+                     std::tuple{"timestream", "raw_time_chunk","flagging","upper_tod_inv_var_factor"});
     // minimum allowed frequency separation between tones
     get_config_value(config, delta_f_min_Hz, missing_keys, invalid_keys,
                      std::tuple{"timestream","raw_time_chunk","flagging","delta_f_min_Hz"});

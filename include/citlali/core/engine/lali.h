@@ -211,7 +211,7 @@ auto Lali::run() {
                 ptcproc.calc_weights(ptcdata, calib.apt, telescope);
 
                 // reset weights to median
-                ptcproc.reset_weights(ptcdata, calib);
+                auto calib_scans = ptcproc.reset_weights(ptcdata, calib, map_grouping);
 
                 // populate noise maps only
                 bool run_omb = false;
@@ -240,7 +240,7 @@ auto Lali::run() {
         ptcproc.calc_weights(ptcdata, calib.apt, telescope);
 
         // reset weights to median
-        ptcproc.reset_weights(ptcdata, calib);
+        calib_scan = ptcproc.reset_weights(ptcdata, calib, map_grouping);
 
         // write ptc timestreams
         if (run_tod_output && !tod_filename.empty()) {

@@ -298,8 +298,8 @@ public:
     // number of weight outlier iterations
     int iter_lim = 0;
 
-    // upper and lower limits for outliers
-    double lower_weight_factor, upper_weight_factor;
+    // upper and lower inv var limits for outliers
+    double lower_inv_var_factor, upper_inv_var_factor;
 
     // mask radius in arcseconds
     double mask_radius_arcsec;
@@ -706,7 +706,7 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
     calib_t calib_scan = calib;
 
     // only run if limits are not zero
-    if (lower_weight_factor !=0 || upper_weight_factor !=0) {
+    if (lower_inv_var_factor !=0 || upper_inv_var_factor !=0) {
         logger->info("removing outlier dets");
         // number of detectors
         Eigen::Index n_dets = in.scans.data.cols();
@@ -765,7 +765,7 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
                 }
 
                 // get median standard deviation
-                double mean_std_dev = tula::alg::median(det_std_dev);
+                double median_std_dev = tula::alg::median(det_std_dev);
 
                 int n_dets_low = 0;
                 int n_dets_high = 0;
@@ -776,7 +776,7 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
                     // only run if unflagged already
                     if (calib.apt["flag"](det_index)==0) {
                         // flag those below limit
-                        if ((det_std_dev(j) < (lower_weight_factor*mean_std_dev)) && lower_weight_factor!=0) {
+                        if ((det_std_dev(j) < (lower_inv_var_factor*median_std_dev)) && lower_inv_var_factor!=0) {
                             if (map_grouping!="detector") {
                                 in.flags.data.col(dets(j)).setOnes();
                             }
@@ -788,7 +788,7 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
                         }
 
                         // flag those above limit
-                        if ((det_std_dev(j) > (upper_weight_factor*mean_std_dev)) && upper_weight_factor!=0) {
+                        if ((det_std_dev(j) > (upper_inv_var_factor*median_std_dev)) && upper_inv_var_factor!=0) {
                             if (map_grouping!="detector") {
                                 in.flags.data.col(dets(j)).setOnes();
                             }
@@ -801,7 +801,7 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
                     }
                 }
 
-                logger->info("array {} iter {}: {}/{} dets below limit. {}/{} dets above limit.", key, n_iter,
+                logger->info("array {} iter {}: {}/{} dets below inv var limit. {}/{} dets above inv var limit.", key, n_iter,
                             n_dets_low, n_good_dets, n_dets_high, n_good_dets);
 
                 // increment iteration
