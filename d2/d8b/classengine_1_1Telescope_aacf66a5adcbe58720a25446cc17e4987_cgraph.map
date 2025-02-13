@@ -1,7 +1,12 @@
 <map id="engine::Telescope::calc_tan_pointing" name="engine::Telescope::calc_tan_pointing">
-<area shape="rect" id="node1" title=" " alt="" coords="5,71,152,112"/>
-<area shape="rect" id="node2" href="$d2/d8b/classengine_1_1Telescope.html#aa2f46caf456909ae1864315b4d40e9df" title=" " alt="" coords="200,5,347,47"/>
-<area shape="rect" id="node3" href="$d2/d8b/classengine_1_1Telescope.html#a5a414cc5f45f88ea3a255949dccffce3" title=" " alt="" coords="200,71,347,112"/>
-<area shape="rect" id="node5" href="$d2/d8b/classengine_1_1Telescope.html#a49b54acd07850448a8edf85a93f1f760" title=" " alt="" coords="200,136,347,177"/>
-<area shape="rect" id="node4" href="$dd/d06/namespaceengine__utils.html#aafa22a7a45db7ec585b7b9dc136b888a" title=" " alt="" coords="395,104,568,145"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,69,152,109"/>
+<area shape="rect" id="Node000002" href="$d2/d8b/classengine_1_1Telescope.html#aa2f46caf456909ae1864315b4d40e9df" title=" " alt="" coords="200,5,347,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="139,67,198,47,200,52,141,72"/>
+<area shape="rect" id="Node000003" href="$d2/d8b/classengine_1_1Telescope.html#a5a414cc5f45f88ea3a255949dccffce3" title=" " alt="" coords="200,69,347,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="152,87,186,87,186,92,152,92"/>
+<area shape="rect" id="Node000005" href="$d2/d8b/classengine_1_1Telescope.html#a49b54acd07850448a8edf85a93f1f760" title=" " alt="" coords="200,133,347,173"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="141,107,200,126,198,131,139,112"/>
+<area shape="rect" id="Node000004" href="$dd/d06/namespaceengine__utils.html#aafa22a7a45db7ec585b7b9dc136b888a" title=" " alt="" coords="395,101,568,141"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="347,98,382,103,381,109,347,103"/>
+<area shape="poly" id="edge5_Node000005_Node000004" title=" " alt="" coords="347,139,381,134,382,139,347,145"/>
 </map>

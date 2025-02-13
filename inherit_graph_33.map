@@ -1,4 +1,10 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" title=" " alt="" coords="5,13,107,39"/>
-<area shape="rect" id="node2" href="$dd/dc9/classinternal_1_1Interval.html" title=" " alt="" coords="155,5,285,47"/>
+<area shape="rect" id="Node000000" title=" " alt="" coords="32,5,151,31"/>
+<area shape="rect" id="Node000001" href="$d1/dbc/structtimestream_1_1DetectorAxis.html" title=" " alt="" coords="225,5,416,31"/>
+<area shape="poly" id="edge33_Node000000_Node000001" title=" " alt="" coords="165,15,225,15,225,21,165,21"/>
+<area shape="rect" id="Node000003" href="$d6/da2/structtimestream_1_1TimeAxis.html" title=" " alt="" coords="237,55,404,80"/>
+<area shape="poly" id="edge34_Node000000_Node000003" title=" " alt="" coords="165,31,261,52,260,57,164,36"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,55,177,80"/>
+<area shape="poly" id="edge35_Node000002_Node000001" title=" " alt="" coords="164,49,260,28,261,33,165,54"/>
+<area shape="poly" id="edge36_Node000002_Node000003" title=" " alt="" coords="191,65,237,65,237,70,191,70"/>
 </map>

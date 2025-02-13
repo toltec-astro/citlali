@@ -1,4 +1,6 @@
 <map id="SeqIOCoordinator" name="SeqIOCoordinator">
-<area shape="rect" id="node1" title="The Coordinator struct This wraps around the config object and provides high level methods in various..." alt="" coords="53,131,214,340"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,5,261,83"/>
+<area shape="rect" id="Node000001" title="The Coordinator struct This wraps around the config object and provides high level methods in various..." alt="" coords="53,119,206,364"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,253,71"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="124,84,123,118,118,118,119,84"/>
+<area shape="poly" id="edge2_Node000001_Node000002" title=" " alt="" coords="140,84,141,118,135,118,134,84"/>
 </map>

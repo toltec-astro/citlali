@@ -1,6 +1,10 @@
 <map id="engine_utils::gnomonic_projection" name="engine_utils::gnomonic_projection">
-<area shape="rect" id="node1" title=" " alt="" coords="395,39,568,80"/>
-<area shape="rect" id="node2" href="$d2/d8b/classengine_1_1Telescope.html#a5a414cc5f45f88ea3a255949dccffce3" title=" " alt="" coords="200,5,347,47"/>
-<area shape="rect" id="node4" href="$d2/d8b/classengine_1_1Telescope.html#a49b54acd07850448a8edf85a93f1f760" title=" " alt="" coords="200,71,347,112"/>
-<area shape="rect" id="node3" href="$d2/d8b/classengine_1_1Telescope.html#aacf66a5adcbe58720a25446cc17e4987" title=" " alt="" coords="5,39,152,80"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="395,37,568,77"/>
+<area shape="rect" id="Node000002" href="$d2/d8b/classengine_1_1Telescope.html#a5a414cc5f45f88ea3a255949dccffce3" title=" " alt="" coords="200,5,347,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="380,45,347,39,348,34,381,39"/>
+<area shape="rect" id="Node000004" href="$d2/d8b/classengine_1_1Telescope.html#a49b54acd07850448a8edf85a93f1f760" title=" " alt="" coords="200,69,347,109"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="381,75,348,81,347,75,380,70"/>
+<area shape="rect" id="Node000003" href="$d2/d8b/classengine_1_1Telescope.html#aacf66a5adcbe58720a25446cc17e4987" title=" " alt="" coords="5,37,152,77"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="187,42,153,48,152,43,186,37"/>
+<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="186,78,152,72,153,67,187,72"/>
 </map>

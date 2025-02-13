@@ -1,5 +1,7 @@
 <map id="Engine::get_ptc_config" name="Engine::get_ptc_config">
-<area shape="rect" id="node1" title=" " alt="" coords="5,13,173,39"/>
-<area shape="rect" id="node2" href="$d7/d4f/classtimestream_1_1PTCProc.html#aea7beff43a99f77b459fafcecebe0b3f" title=" " alt="" coords="221,5,380,47"/>
-<area shape="rect" id="node3" href="$db/d16/config_8h.html#a4353353bcb6b84fa30420c315108b9c3" title=" " alt="" coords="428,13,560,39"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,13,173,38"/>
+<area shape="rect" id="Node000002" href="$d7/d4f/classtimestream_1_1PTCProc.html#a2c87c182bc27eec56a85d9dadc9f5ccd" title=" " alt="" coords="221,5,380,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="174,23,208,23,208,28,174,28"/>
+<area shape="rect" id="Node000003" href="$db/d16/config_8h.html#a4353353bcb6b84fa30420c315108b9c3" title=" " alt="" coords="428,13,560,38"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="380,23,414,23,414,28,380,28"/>
 </map>

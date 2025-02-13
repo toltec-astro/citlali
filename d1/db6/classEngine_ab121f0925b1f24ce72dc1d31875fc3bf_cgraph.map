@@ -1,4 +1,5 @@
 <map id="Engine::get_photometry_config" name="Engine::get_photometry_config">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,184,47"/>
-<area shape="rect" id="node2" href="$db/d16/config_8h.html#a4353353bcb6b84fa30420c315108b9c3" title=" " alt="" coords="232,13,364,39"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,184,45"/>
+<area shape="rect" id="Node000002" href="$db/d16/config_8h.html#a4353353bcb6b84fa30420c315108b9c3" title=" " alt="" coords="232,13,364,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="184,23,218,23,218,28,184,28"/>
 </map>

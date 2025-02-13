@@ -1,0 +1,20 @@
+<map id="Coordinator::rank_local" name="Coordinator::rank_local">
+<area shape="rect" id="Node000001" title=" " alt="" coords="629,70,803,95"/>
+<area shape="rect" id="Node000002" href="$d5/ddb/structCoordinator.html#a859d63557f80e2191991a6551a021d0e" title=" " alt="" coords="10,5,159,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="648,70,516,43,362,21,287,18,212,21,160,23,160,18,212,16,287,13,363,16,517,38,649,64"/>
+<area shape="rect" id="Node000003" href="$d5/ddb/structCoordinator.html#a3be9e5110c48e6dc56c8aa9139aea4f2" title=" " alt="" coords="411,120,581,160"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="654,101,574,123,572,117,653,96"/>
+<area shape="rect" id="Node000007" href="$d5/ddb/structCoordinator.html#aa2353f320a530c1c247d835b46ee8322" title=" " alt="" coords="212,63,363,103"/>
+<area shape="poly" id="edge11_Node000001_Node000007" title=" " alt="" coords="615,85,363,85,363,80,615,80"/>
+<area shape="poly" id="edge6_Node000003_Node000002" title=" " alt="" coords="461,113,416,80,362,53,311,39,258,30,160,25,160,20,258,25,312,34,364,48,418,76,464,109"/>
+<area shape="rect" id="Node000004" href="$d5/ddb/structCoordinator.html#ad5b899edf3d60cd960a6652d070db28a" title=" " alt="" coords="5,104,164,144"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="397,139,164,130,164,124,397,134"/>
+<area shape="rect" id="Node000005" href="$d5/ddb/structCoordinator.html#a3269380f072283d1903507a5268e1335" title=" " alt="" coords="213,228,362,268"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="446,169,364,212,328,230,326,226,361,207,443,164"/>
+<area shape="rect" id="Node000006" href="$d5/ddb/structCoordinator.html#acfeaf5fb608fbfa15170d7cdf7e3b7a7" title=" " alt="" coords="17,194,153,219"/>
+<area shape="poly" id="edge7_Node000003_Node000006" title=" " alt="" coords="398,159,154,198,153,193,397,153"/>
+<area shape="poly" id="edge8_Node000003_Node000007" title=" " alt="" coords="409,119,360,105,361,100,410,114"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="199,233,147,222,148,217,200,227"/>
+<area shape="poly" id="edge10_Node000007_Node000002" title=" " alt="" coords="202,61,155,48,157,43,204,56"/>
+<area shape="poly" id="edge9_Node000007_Node000004" title=" " alt="" coords="199,103,165,110,164,105,198,98"/>
+</map>

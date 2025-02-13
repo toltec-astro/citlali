@@ -1,5 +1,7 @@
 <map id="mapmaking::MapBuffer::calc_map_hist" name="mapmaking::MapBuffer::calc_map_hist">
-<area shape="rect" id="node1" title=" " alt="" coords="435,5,609,47"/>
-<area shape="rect" id="node2" href="$dc/d9e/classBeammap.html#a7651fe4687746596facaf17bbeb8bcdb" title=" " alt="" coords="203,13,387,39"/>
-<area shape="rect" id="node3" href="$dc/d9e/classBeammap.html#a5d30a47c11b4749b5c1c692872a9cf8e" title=" " alt="" coords="5,13,155,39"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="435,5,609,45"/>
+<area shape="rect" id="Node000002" href="$dc/d9e/classBeammap.html#a7651fe4687746596facaf17bbeb8bcdb" title=" " alt="" coords="203,13,387,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="421,28,387,28,387,23,421,23"/>
+<area shape="rect" id="Node000003" href="$dc/d9e/classBeammap.html#a5d30a47c11b4749b5c1c692872a9cf8e" title=" " alt="" coords="5,13,155,38"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="188,28,155,28,155,23,188,23"/>
 </map>

@@ -1,6 +1,10 @@
 <map id="include/citlali/core/utils/gauss_models.h" name="include/citlali/core/utils/gauss_models.h">
-<area shape="rect" id="node1" title=" " alt="" coords="70,5,233,47"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,102,113,129"/>
-<area shape="rect" id="node3" title=" " alt="" coords="155,184,247,211"/>
-<area shape="rect" id="node4" href="$d2/d6f/constants_8h.html" title=" " alt="" coords="189,95,311,136"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="70,5,233,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,101,113,126"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="133,48,84,93,80,89,129,44"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="155,181,247,207"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="157,45,179,133,192,168,187,169,174,134,152,46"/>
+<area shape="rect" id="Node000004" href="$d2/d6f/constants_8h.html" title=" " alt="" coords="189,93,311,133"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="175,44,220,82,216,86,171,48"/>
+<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="240,135,217,171,213,168,236,132"/>
 </map>

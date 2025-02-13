@@ -1,7 +1,13 @@
 <map id="include/citlali/core/engine/engine.h" name="include/citlali/core/engine/engine.h">
-<area shape="rect" id="node1" title=" " alt="" coords="181,5,323,47"/>
-<area shape="rect" id="node2" href="$d8/d4f/beammap_8h.html" title=" " alt="" coords="5,95,157,136"/>
-<area shape="rect" id="node4" href="$db/de9/lali_8h.html" title=" " alt="" coords="181,95,323,136"/>
-<area shape="rect" id="node5" href="$da/dc5/engine_2pointing_8h.html" title=" " alt="" coords="347,95,488,136"/>
-<area shape="rect" id="node3" href="$d8/d57/src_2citlali_2cli_2main_8cpp.html" title=" " alt="" coords="170,184,334,211"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="181,5,323,45"/>
+<area shape="rect" id="Node000002" href="$d8/d4f/beammap_8h.html" title=" " alt="" coords="5,93,157,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="204,54,120,96,118,91,201,49"/>
+<area shape="rect" id="Node000004" href="$db/de9/lali_8h.html" title=" " alt="" coords="181,93,323,133"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="255,59,255,93,249,93,249,59"/>
+<area shape="rect" id="Node000005" href="$da/dc5/engine_2pointing_8h.html" title=" " alt="" coords="347,93,488,133"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="302,49,382,91,380,96,299,54"/>
+<area shape="rect" id="Node000003" href="$d8/d57/src_2citlali_2cli_2main_8cpp.html" title=" " alt="" coords="170,181,334,207"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="136,137,228,179,226,184,133,141"/>
+<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="255,147,255,181,249,181,249,147"/>
+<area shape="poly" id="edge6_Node000005_Node000003" title=" " alt="" coords="367,142,278,184,275,179,364,137"/>
 </map>

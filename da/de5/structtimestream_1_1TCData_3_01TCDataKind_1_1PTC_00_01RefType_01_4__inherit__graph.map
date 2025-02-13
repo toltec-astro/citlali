@@ -1,9 +1,15 @@
 <map id="timestream::TCData&lt; TCDataKind::PTC, RefType &gt;" name="timestream::TCData&lt; TCDataKind::PTC, RefType &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="197,999,417,1164"/>
-<area shape="rect" id="node2" href="$de/d07/structtimestream_1_1TimeStream.html" title=" " alt="" coords="212,593,403,949"/>
-<area shape="rect" id="node3" href="$d6/d8a/structtimestream_1_1internal_1_1TCDataBase.html" title=" " alt="" coords="13,292,188,399"/>
-<area shape="rect" id="node4" href="$d6/d8a/structtimestream_1_1internal_1_1TCDataBase.html" title=" " alt="" coords="5,5,196,97"/>
-<area shape="rect" id="node6" href="$de/d07/structtimestream_1_1TimeStream.html" title="base class for time stream data" alt="" coords="212,175,403,516"/>
-<area shape="rect" id="node5" title=" " alt="" coords="427,292,617,399"/>
-<area shape="rect" id="node7" title=" " alt="" coords="221,5,434,97"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="200,1116,412,1296"/>
+<area shape="rect" id="Node000002" href="$de/d07/structtimestream_1_1TimeStream.html" title=" " alt="" coords="215,632,397,1067"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="309,1080,309,1116,303,1116,303,1080"/>
+<area shape="rect" id="Node000003" href="$d6/d8a/structtimestream_1_1internal_1_1TCDataBase.html" title=" " alt="" coords="5,305,188,385"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="121,397,218,631,213,633,116,399"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="213,297,399,392"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="309,406,309,632,303,632,303,406"/>
+<area shape="rect" id="Node000005" href="$de/d07/structtimestream_1_1TimeStream.html" title="base class for time stream data" alt="" coords="423,135,605,555"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="425,568,398,633,393,631,420,566"/>
+<area shape="rect" id="Node000006" href="$d6/d8a/structtimestream_1_1internal_1_1TCDataBase.html" title=" " alt="" coords="313,5,496,85"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="426,97,439,133,434,135,421,99"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="521,5,726,85"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="607,99,594,135,589,133,602,97"/>
 </map>

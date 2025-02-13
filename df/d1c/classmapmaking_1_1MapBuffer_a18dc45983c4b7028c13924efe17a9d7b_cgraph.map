@@ -1,6 +1,10 @@
 <map id="mapmaking::MapBuffer::calc_cov_region" name="mapmaking::MapBuffer::calc_cov_region">
-<area shape="rect" id="node1" title=" " alt="" coords="5,39,180,80"/>
-<area shape="rect" id="node2" href="$dd/d06/namespaceengine__utils.html#a4d36010ae0dbf2c6ceb791a76a83286b" title=" " alt="" coords="237,5,378,47"/>
-<area shape="rect" id="node4" href="$dd/d06/namespaceengine__utils.html#a673942090d70d086550a1b3f3b5f5542" title=" " alt="" coords="228,71,387,112"/>
-<area shape="rect" id="node3" href="$dd/d06/namespaceengine__utils.html#a7da306ab0db4144fc70aca47734d9c2e" title=" " alt="" coords="435,5,577,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,61,180,101"/>
+<area shape="rect" id="Node000002" href="$dd/d06/namespaceengine__utils.html#a4d36010ae0dbf2c6ceb791a76a83286b" title=" " alt="" coords="237,29,378,69"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="180,66,222,59,223,65,181,71"/>
+<area shape="rect" id="Node000004" href="$dd/d06/namespaceengine__utils.html#a673942090d70d086550a1b3f3b5f5542" title=" " alt="" coords="228,93,387,133"/>
+<area shape="poly" id="edge4_Node000001_Node000004" title=" " alt="" coords="181,92,215,97,214,102,180,97"/>
+<area shape="rect" id="Node000003" href="$dd/d06/namespaceengine__utils.html#a7da306ab0db4144fc70aca47734d9c2e" title=" " alt="" coords="435,29,577,69"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="378,47,421,47,421,52,378,52"/>
+<area shape="poly" id="edge3_Node000003_Node000003" title=" " alt="" coords="469,30,467,20,472,11,486,5,506,3,529,6,542,13,539,18,528,11,506,8,487,10,476,15,472,21,474,28"/>
 </map>

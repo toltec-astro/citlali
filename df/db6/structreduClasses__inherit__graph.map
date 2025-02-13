@@ -1,7 +1,11 @@
 <map id="reduClasses" name="reduClasses">
-<area shape="rect" id="node1" title=" " alt="" coords="219,5,338,259"/>
-<area shape="rect" id="node2" href="$d1/db6/classEngine.html" title=" " alt="" coords="176,307,381,1440"/>
-<area shape="rect" id="node3" href="$dc/d9e/classBeammap.html" title=" " alt="" coords="5,1488,205,1976"/>
-<area shape="rect" id="node4" href="$d9/def/classLali.html" title=" " alt="" coords="229,1671,328,1793"/>
-<area shape="rect" id="node5" href="$d2/dbe/classPointing.html" title=" " alt="" coords="352,1635,501,1829"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="212,5,321,311"/>
+<area shape="rect" id="Node000002" href="$d1/db6/classEngine.html" title=" " alt="" coords="168,359,365,1837"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="269,325,269,358,264,358,264,325"/>
+<area shape="rect" id="Node000003" href="$dc/d9e/classBeammap.html" title=" " alt="" coords="5,1885,197,2505"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="169,1766,151,1885,145,1884,163,1766"/>
+<area shape="rect" id="Node000004" href="$d9/def/classLali.html" title=" " alt="" coords="221,2133,312,2258"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="269,1851,269,2133,264,2133,264,1851"/>
+<area shape="rect" id="Node000005" href="$d2/dbe/classPointing.html" title=" " alt="" coords="336,2083,477,2308"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="365,1850,395,2082,390,2083,360,1851"/>
 </map>

@@ -1,4 +1,6 @@
 <map id="KidsDataProc" name="KidsDataProc">
-<area shape="rect" id="node1" title=" " alt="" coords="29,131,211,619"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,5,235,83"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="29,119,203,744"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,227,71"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="113,85,111,119,106,118,107,85"/>
+<area shape="poly" id="edge2_Node000001_Node000002" title=" " alt="" coords="125,85,126,118,121,119,119,85"/>
 </map>

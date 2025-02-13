@@ -1,0 +1,48 @@
+<map id="matplotlibcpp::detail::get_array" name="matplotlibcpp::detail::get_array">
+<area shape="rect" id="Node000001" title=" " alt="" coords="452,529,609,569"/>
+<area shape="rect" id="Node000002" href="$d7/df7/namespacematplotlibcpp.html#a00a57926330764f8490142b3ce06bd2e" title=" " alt="" coords="237,5,373,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="523,516,508,409,483,267,466,196,447,132,426,80,402,45,389,35,372,28,375,23,391,30,406,42,430,78,452,131,471,195,488,266,513,408,528,515"/>
+<area shape="rect" id="Node000003" href="$d7/df7/namespacematplotlibcpp.html#a928fb4c83f29554b1b37aeea7af9bb73" title=" " alt="" coords="237,55,373,95"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="527,515,523,433,506,325,490,267,468,210,439,156,402,109,388,98,372,90,375,85,391,94,406,105,444,153,473,208,495,265,511,323,528,433,533,514"/>
+<area shape="rect" id="Node000004" href="$d8/da2/namespacematplotlibcpp_1_1detail.html#a1c63bb33fcb50b92875df3884670a1c5" title=" " alt="" coords="227,119,384,159"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="525,515,518,445,498,353,482,304,461,257,435,212,402,173,382,159,386,155,406,169,439,209,466,254,487,303,503,352,523,444,531,515"/>
+<area shape="rect" id="Node000005" href="$d7/df7/namespacematplotlibcpp.html#aeaf80309ad11083ec57bd6b246f6e4dc" title=" " alt="" coords="233,184,377,209"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="524,515,514,452,493,373,477,332,457,292,432,255,402,223,376,208,379,203,406,219,437,251,462,289,482,330,498,371,519,451,529,514"/>
+<area shape="rect" id="Node000006" href="$d7/df7/namespacematplotlibcpp.html#a6cfa8cba00f52a2c4614fa7a8a0bcd2b" title=" " alt="" coords="225,233,385,259"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="521,516,509,462,486,396,452,329,429,298,402,272,384,261,387,256,406,268,433,295,456,326,491,394,514,461,527,515"/>
+<area shape="rect" id="Node000007" href="$d7/df7/namespacematplotlibcpp.html#a2851ef02b92b32ee7d3dd8f8fd065ae3" title=" " alt="" coords="207,283,403,308"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="518,516,502,472,478,420,445,367,425,343,402,323,381,310,383,306,406,319,429,340,450,364,483,417,507,470,523,515"/>
+<area shape="rect" id="Node000008" href="$d7/df7/namespacematplotlibcpp.html#a9482856fd165f21001420e712d0d2312" title=" " alt="" coords="223,333,388,373"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="510,518,467,451,437,417,402,387,382,375,385,371,406,382,441,413,471,448,515,515"/>
+<area shape="rect" id="Node000009" href="$d7/df7/namespacematplotlibcpp.html#a6461c03041d9947a0e3b3593b5b72c95" title=" " alt="" coords="207,397,404,423"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="502,520,458,476,432,455,403,436,376,425,378,420,405,432,435,450,462,472,506,516"/>
+<area shape="rect" id="Node000010" href="$d7/df7/namespacematplotlibcpp.html#a9147bd13de56cbe3e3dfbb61713c144c" title=" " alt="" coords="207,447,404,472"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="482,524,403,487,363,475,365,469,405,482,484,519"/>
+<area shape="rect" id="Node000011" href="$d7/df7/namespacematplotlibcpp.html#ae32c097d32b89445a995727d05446843" title=" " alt="" coords="223,497,388,537"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="437,538,388,531,389,526,438,533"/>
+<area shape="rect" id="Node000012" href="$d7/df7/namespacematplotlibcpp.html#a529c059f3fca364b9fcb3b2e09cce36b" title=" " alt="" coords="223,561,388,601"/>
+<area shape="poly" id="edge11_Node000001_Node000012" title=" " alt="" coords="438,564,389,572,388,566,437,559"/>
+<area shape="rect" id="Node000013" href="$df/d6c/classmatplotlibcpp_1_1Plot.html#a6ab809f4fc44d6e4eadb100cba5b519e" title=" " alt="" coords="233,625,378,665"/>
+<area shape="poly" id="edge12_Node000001_Node000013" title=" " alt="" coords="482,578,405,615,374,627,372,622,403,610,480,573"/>
+<area shape="rect" id="Node000014" href="$d7/df7/namespacematplotlibcpp.html#a06ac86c6fecaa5a9b3fb566bc31d6a3b" title=" " alt="" coords="233,689,378,715"/>
+<area shape="poly" id="edge13_Node000001_Node000014" title=" " alt="" coords="509,581,465,632,436,657,405,679,376,692,374,687,403,674,433,653,461,628,505,578"/>
+<area shape="rect" id="Node000015" href="$d7/df7/namespacematplotlibcpp.html#a19804a8cbd413b15c8d07848d7a5890e" title=" " alt="" coords="233,739,378,764"/>
+<area shape="poly" id="edge14_Node000001_Node000015" title=" " alt="" coords="517,583,499,617,474,657,443,695,405,728,380,741,377,737,403,724,439,692,470,654,494,615,512,581"/>
+<area shape="rect" id="Node000016" href="$d7/df7/namespacematplotlibcpp.html#a107bbc57e93a929c75baf1c60a712d8b" title=" " alt="" coords="229,812,382,837"/>
+<area shape="poly" id="edge15_Node000001_Node000016" title=" " alt="" coords="521,583,504,625,479,677,446,730,406,777,376,799,345,814,343,809,374,794,402,773,442,727,474,674,499,623,516,581"/>
+<area shape="rect" id="Node000017" href="$d7/df7/namespacematplotlibcpp.html#ad25d4429577dbdd8c087a0ba6869840b" title=" " alt="" coords="215,861,395,887"/>
+<area shape="poly" id="edge17_Node000001_Node000017" title=" " alt="" coords="528,583,516,641,494,713,478,751,458,787,434,821,406,851,385,863,383,859,402,847,430,818,454,785,473,749,489,711,511,640,522,582"/>
+<area shape="rect" id="Node000018" href="$d7/df7/namespacematplotlibcpp.html#a4dce9b4c1c16c1dab0cffd11588d4db8" title=" " alt="" coords="215,911,395,936"/>
+<area shape="poly" id="edge18_Node000001_Node000018" title=" " alt="" coords="530,582,521,649,501,735,485,780,464,824,438,864,406,900,386,913,383,908,402,896,434,861,460,821,480,778,496,733,516,648,525,582"/>
+<area shape="rect" id="Node000019" href="$d7/df7/namespacematplotlibcpp.html#ae3c91bdfbe011133346dcc4f31ec5932" title=" " alt="" coords="229,960,382,985"/>
+<area shape="poly" id="edge19_Node000001_Node000019" title=" " alt="" coords="532,583,526,658,508,757,492,809,470,860,442,908,406,949,383,964,381,959,402,945,437,904,465,858,487,807,503,755,521,657,526,582"/>
+<area shape="rect" id="Node000021" href="$d7/df7/namespacematplotlibcpp.html#a02a1939d1d0b7b61878bd7cf2d8cd7f3" title=" " alt="" coords="229,1009,382,1035"/>
+<area shape="poly" id="edge21_Node000001_Node000021" title=" " alt="" coords="533,583,530,666,524,720,514,778,498,838,476,896,445,951,406,999,384,1013,381,1009,402,995,441,948,471,894,493,836,509,777,519,719,525,666,528,583"/>
+<area shape="rect" id="Node000022" href="$df/d6c/classmatplotlibcpp_1_1Plot.html#ac515760537365754e3437322e87cfc79" title=" " alt="" coords="233,1059,378,1099"/>
+<area shape="poly" id="edge22_Node000001_Node000022" title=" " alt="" coords="528,583,512,688,486,827,470,897,451,961,430,1013,406,1049,380,1067,377,1063,402,1045,425,1010,446,959,465,896,481,826,507,687,522,582"/>
+<area shape="poly" id="edge16_Node000016_Node000016" title=" " alt="" coords="345,802,334,794,305,791,282,793,269,798,267,803,273,810,269,814,261,804,265,794,280,788,305,785,336,789,348,798"/>
+<area shape="rect" id="Node000020" href="$d7/df7/namespacematplotlibcpp.html#a40ac4e0d416fad21899637dcf8d281c6" title=" " alt="" coords="5,960,159,985"/>
+<area shape="poly" id="edge20_Node000019_Node000020" title=" " alt="" coords="215,975,159,975,159,970,215,970"/>
+<area shape="rect" id="Node000023" href="$df/d6c/classmatplotlibcpp_1_1Plot.html#a177f13fea5b50e991a373bdbea36fb59" title=" " alt="" coords="9,1059,155,1099"/>
+<area shape="poly" id="edge23_Node000022_Node000023" title=" " alt="" coords="219,1082,155,1082,155,1077,219,1077"/>
+</map>

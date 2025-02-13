@@ -1,7 +1,12 @@
 <map id="mapmaking::MapBuffer::calc_median_err" name="mapmaking::MapBuffer::calc_median_err">
-<area shape="rect" id="node1" title=" " alt="" coords="5,39,180,80"/>
-<area shape="rect" id="node2" href="$df/d1c/classmapmaking_1_1MapBuffer.html#a18dc45983c4b7028c13924efe17a9d7b" title=" " alt="" coords="228,39,403,80"/>
-<area shape="rect" id="node3" href="$dd/d06/namespaceengine__utils.html#a4d36010ae0dbf2c6ceb791a76a83286b" title=" " alt="" coords="459,5,601,47"/>
-<area shape="rect" id="node5" href="$dd/d06/namespaceengine__utils.html#a673942090d70d086550a1b3f3b5f5542" title=" " alt="" coords="451,71,609,112"/>
-<area shape="rect" id="node4" href="$dd/d06/namespaceengine__utils.html#a7da306ab0db4144fc70aca47734d9c2e" title=" " alt="" coords="657,5,800,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,61,180,101"/>
+<area shape="rect" id="Node000002" href="$df/d1c/classmapmaking_1_1MapBuffer.html#a18dc45983c4b7028c13924efe17a9d7b" title=" " alt="" coords="228,61,403,101"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="180,79,214,79,214,84,180,84"/>
+<area shape="rect" id="Node000003" href="$dd/d06/namespaceengine__utils.html#a4d36010ae0dbf2c6ceb791a76a83286b" title=" " alt="" coords="459,29,601,69"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="402,66,445,59,446,65,403,71"/>
+<area shape="rect" id="Node000005" href="$dd/d06/namespaceengine__utils.html#a673942090d70d086550a1b3f3b5f5542" title=" " alt="" coords="451,93,609,133"/>
+<area shape="poly" id="edge5_Node000002_Node000005" title=" " alt="" coords="403,92,438,97,437,102,402,97"/>
+<area shape="rect" id="Node000004" href="$dd/d06/namespaceengine__utils.html#a7da306ab0db4144fc70aca47734d9c2e" title=" " alt="" coords="657,29,800,69"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="601,47,644,47,644,52,601,52"/>
+<area shape="poly" id="edge4_Node000004_Node000004" title=" " alt="" coords="691,30,689,20,695,11,708,5,729,3,752,6,765,13,762,18,750,11,729,8,710,10,699,15,694,21,697,28"/>
 </map>

@@ -1,9 +1,15 @@
 <map id="fitsIO::get_hdu" name="fitsIO::get_hdu">
-<area shape="rect" id="node1" title=" " alt="" coords="603,46,719,73"/>
-<area shape="rect" id="node2" href="$de/d76/classtimestream_1_1TCProc.html#ac76ff70e348df8ed3f0d87676ed58128" title=" " alt="" coords="404,5,555,47"/>
-<area shape="rect" id="node3" href="$d2/d89/classtimestream_1_1Kernel.html#add47307e67ff42f044d059d8db78d5f3" title=" " alt="" coords="406,71,553,112"/>
-<area shape="rect" id="node4" href="$d1/db6/classEngine.html#a03b9f9d69c7e1f1d61e127662e0bb81b" title=" " alt="" coords="187,78,356,105"/>
-<area shape="rect" id="node5" href="$dc/d9e/classBeammap.html#a4a37f834019ca58ec17674cc4effc60f" title=" " alt="" coords="5,27,139,54"/>
-<area shape="rect" id="node6" href="$d9/def/classLali.html#a1d8a03e4170348d459c644380ada6d1c" title=" " alt="" coords="27,78,117,105"/>
-<area shape="rect" id="node7" href="$d2/dbe/classPointing.html#aaeb9d7b3bcf3d3cbac5bb473d02e26e8" title=" " alt="" coords="13,129,131,155"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="603,45,719,70"/>
+<area shape="rect" id="Node000002" href="$de/d76/classtimestream_1_1TCProc.html#ac76ff70e348df8ed3f0d87676ed58128" title=" " alt="" coords="404,5,555,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="588,47,554,41,555,36,589,42"/>
+<area shape="rect" id="Node000003" href="$d2/d89/classtimestream_1_1Kernel.html#add47307e67ff42f044d059d8db78d5f3" title=" " alt="" coords="406,69,553,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="590,73,553,79,552,74,589,67"/>
+<area shape="rect" id="Node000004" href="$d1/db6/classEngine.html#a03b9f9d69c7e1f1d61e127662e0bb81b" title=" " alt="" coords="187,77,356,102"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="392,92,356,92,356,87,392,87"/>
+<area shape="rect" id="Node000005" href="$dc/d9e/classBeammap.html#a4a37f834019ca58ec17674cc4effc60f" title=" " alt="" coords="5,27,139,53"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="206,76,124,55,125,50,207,71"/>
+<area shape="rect" id="Node000006" href="$d9/def/classLali.html#a1d8a03e4170348d459c644380ada6d1c" title=" " alt="" coords="27,77,117,102"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="173,92,117,92,117,87,173,87"/>
+<area shape="rect" id="Node000007" href="$d2/dbe/classPointing.html#aaeb9d7b3bcf3d3cbac5bb473d02e26e8" title=" " alt="" coords="13,126,131,151"/>
+<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="207,108,125,129,124,123,206,103"/>
 </map>

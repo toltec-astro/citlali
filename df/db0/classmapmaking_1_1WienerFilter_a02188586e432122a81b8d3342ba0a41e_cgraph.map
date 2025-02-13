@@ -1,5 +1,7 @@
 <map id="mapmaking::WienerFilter::filter_noise" name="mapmaking::WienerFilter::filter_noise">
-<area shape="rect" id="node1" title=" " alt="" coords="5,39,192,80"/>
-<area shape="rect" id="node2" href="$df/db0/classmapmaking_1_1WienerFilter.html#a37c9cd317cfc5e1ca04a5f82fec03a99" title=" " alt="" coords="240,5,427,47"/>
-<area shape="rect" id="node3" href="$df/db0/classmapmaking_1_1WienerFilter.html#a9e556a90880f2ef1e528ef947f6102f2" title=" " alt="" coords="240,71,427,112"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,37,192,77"/>
+<area shape="rect" id="Node000002" href="$df/db0/classmapmaking_1_1WienerFilter.html#a37c9cd317cfc5e1ca04a5f82fec03a99" title=" " alt="" coords="240,5,427,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="192,42,226,37,227,43,192,47"/>
+<area shape="rect" id="Node000003" href="$df/db0/classmapmaking_1_1WienerFilter.html#a9e556a90880f2ef1e528ef947f6102f2" title=" " alt="" coords="240,69,427,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="192,67,227,72,226,77,192,73"/>
 </map>

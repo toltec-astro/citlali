@@ -1,4 +1,6 @@
 <map id="RawObs::ArrayPropTable" name="RawObs::ArrayPropTable">
-<area shape="rect" id="node1" title=" " alt="" coords="35,131,216,281"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,5,245,83"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="35,119,208,284"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,237,71"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="116,84,115,118,110,118,111,84"/>
+<area shape="poly" id="edge2_Node000001_Node000002" title=" " alt="" coords="132,84,133,118,128,118,127,84"/>
 </map>

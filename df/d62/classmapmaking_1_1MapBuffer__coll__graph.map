@@ -1,4 +1,5 @@
 <map id="mapmaking::MapBuffer" name="mapmaking::MapBuffer">
-<area shape="rect" id="node1" title=" " alt="" coords="5,219,224,1205"/>
-<area shape="rect" id="node2" href="$d1/dda/structmapmaking_1_1WCS.html" title=" " alt="" coords="45,5,184,156"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,233,216,1533"/>
+<area shape="rect" id="Node000002" href="$d1/dda/structmapmaking_1_1WCS.html" title=" " alt="" coords="45,5,176,171"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="113,171,113,217,108,217,108,171"/>
 </map>

@@ -1,5 +1,7 @@
 <map id="Coordinator" name="Coordinator">
-<area shape="rect" id="node1" title="The Coordinator struct This wraps around the config object and provides high level methods in various..." alt="" coords="5,360,245,789"/>
-<area shape="rect" id="node2" href="$da/def/structConfigMixin.html" title=" " alt="" coords="23,189,228,311"/>
-<area shape="rect" id="node3" href="$da/def/structConfigMixin.html" title="The mixin class for config handling." alt="" coords="35,5,215,127"/>
+<area shape="rect" id="Node000001" title="The Coordinator struct This wraps around the config object and provides high level methods in various..." alt="" coords="5,368,237,913"/>
+<area shape="rect" id="Node000002" href="$da/def/structConfigMixin.html" title=" " alt="" coords="23,193,220,319"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="124,332,124,368,119,368,119,332"/>
+<area shape="rect" id="Node000003" href="$da/def/structConfigMixin.html" title="The mixin class for config handling." alt="" coords="35,5,207,131"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="124,144,124,193,119,193,119,144"/>
 </map>

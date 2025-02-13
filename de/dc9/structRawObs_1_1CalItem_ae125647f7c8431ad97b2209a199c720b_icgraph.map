@@ -1,0 +1,13 @@
+<map id="RawObs::CalItem::typestr" name="RawObs::CalItem::typestr">
+<area shape="rect" id="Node000001" title=" " alt="" coords="704,55,892,80"/>
+<area shape="rect" id="Node000002" href="$de/dc9/structRawObs_1_1CalItem.html#a0f40461f20fe03458f215d8917ba2d12" title=" " alt="" coords="485,55,656,80"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="691,70,656,70,656,65,691,65"/>
+<area shape="rect" id="Node000003" href="$de/dc9/structRawObs_1_1CalItem.html#a3a836a3a619b0404ae7c3a41edb587e0" title=" " alt="" coords="247,5,437,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="497,54,401,33,402,28,498,49"/>
+<area shape="rect" id="Node000004" href="$de/dc9/structRawObs_1_1CalItem.html#a339eaefd75befcdc068c9e099efd91ac" title=" " alt="" coords="247,55,437,80"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="472,70,437,70,437,65,472,65"/>
+<area shape="rect" id="Node000005" href="$de/dc9/structRawObs_1_1CalItem.html#a0367bac45cdec3a0d6642884895f25ad" title=" " alt="" coords="247,104,437,129"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="498,86,402,107,401,101,497,80"/>
+<area shape="rect" id="Node000006" href="$de/dc9/structRawObs_1_1CalItem.html#a4b30047818ff1c43e12fc7e93d4a0a05" title=" " alt="" coords="5,104,199,129"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="233,119,199,119,199,114,233,114"/>
+</map>

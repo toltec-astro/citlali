@@ -1,4 +1,41 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,155,32"/>
-<area shape="rect" id="node2" href="$d2/d51/structtimestream_1_1TimeStreamFrame.html" title=" " alt="" coords="203,5,429,32"/>
+<area shape="rect" id="Node000000" title=" " alt="" coords="21,603,180,628"/>
+<area shape="rect" id="Node000001" href="$de/d07/structtimestream_1_1TimeStream.html" title=" " alt="" coords="285,5,471,60"/>
+<area shape="poly" id="edge50_Node000000_Node000001" title=" " alt="" coords="103,589,120,477,149,322,168,242,190,170,215,110,242,70,261,54,283,44,286,48,264,59,246,73,220,113,195,172,174,244,154,323,125,478,108,589"/>
+<area shape="rect" id="Node000004" href="$de/d07/structtimestream_1_1TimeStream.html" title=" " alt="" coords="285,84,471,139"/>
+<area shape="poly" id="edge52_Node000000_Node000004" title=" " alt="" coords="99,589,104,505,112,449,124,387,142,323,166,260,200,201,242,149,261,134,283,124,286,129,264,139,246,153,204,204,171,263,147,325,129,388,117,449,110,505,105,589"/>
+<area shape="rect" id="Node000007" href="$de/d41/structtimestream_1_1TimeStream_1_1data__t.html" title=" " alt="" coords="277,983,479,1037"/>
+<area shape="poly" id="edge54_Node000000_Node000007" title=" " alt="" coords="107,641,119,707,143,795,161,842,184,888,212,931,246,968,278,988,275,993,242,972,208,934,179,891,156,844,138,797,113,709,102,642"/>
+<area shape="rect" id="Node000008" href="$de/d41/structtimestream_1_1TimeStream_1_1data__t.html" title=" " alt="" coords="263,1062,493,1131"/>
+<area shape="poly" id="edge55_Node000000_Node000008" title=" " alt="" coords="106,642,113,720,135,828,152,887,176,944,207,999,246,1047,265,1062,261,1066,242,1051,203,1002,172,947,147,889,129,830,108,721,100,642"/>
+<area shape="rect" id="Node000009" href="$de/d41/structtimestream_1_1TimeStream_1_1data__t.html" title=" " alt="" coords="277,1156,479,1211"/>
+<area shape="poly" id="edge56_Node000000_Node000009" title=" " alt="" coords="108,641,126,749,156,900,175,976,196,1046,220,1103,246,1141,278,1163,275,1168,242,1145,216,1106,191,1048,170,978,150,901,120,750,103,642"/>
+<area shape="rect" id="Node000010" href="$de/d41/structtimestream_1_1TimeStream_1_1data__t.html" title=" " alt="" coords="244,227,512,297"/>
+<area shape="poly" id="edge57_Node000000_Node000010" title=" " alt="" coords="104,588,119,530,145,455,163,415,186,376,212,339,242,307,258,295,261,299,246,311,216,343,190,379,168,418,150,457,124,532,110,589"/>
+<area shape="rect" id="Node000011" href="$de/d41/structtimestream_1_1TimeStream_1_1data__t.html" title=" " alt="" coords="273,321,483,390"/>
+<area shape="poly" id="edge58_Node000000_Node000011" title=" " alt="" coords="110,588,130,547,159,497,196,445,242,400,271,382,274,387,246,404,200,448,163,500,134,550,115,591"/>
+<area shape="rect" id="Node000012" href="$de/d41/structtimestream_1_1TimeStream_1_1data__t.html" title=" " alt="" coords="277,415,479,469"/>
+<area shape="poly" id="edge59_Node000000_Node000012" title=" " alt="" coords="119,590,171,535,205,505,243,480,275,464,278,469,245,484,208,510,175,539,123,594"/>
+<area shape="rect" id="Node000013" href="$de/d41/structtimestream_1_1TimeStream_1_1data__t.html" title=" " alt="" coords="285,494,471,563"/>
+<area shape="poly" id="edge60_Node000000_Node000013" title=" " alt="" coords="155,596,283,555,285,560,156,601"/>
+<area shape="rect" id="Node000014" href="$de/d41/structtimestream_1_1TimeStream_1_1data__t.html" title=" " alt="" coords="277,588,479,643"/>
+<area shape="poly" id="edge61_Node000000_Node000014" title=" " alt="" coords="194,613,277,613,277,618,194,618"/>
+<area shape="rect" id="Node000015" href="$de/d41/structtimestream_1_1TimeStream_1_1data__t.html" title=" " alt="" coords="277,667,479,721"/>
+<area shape="poly" id="edge62_Node000000_Node000015" title=" " alt="" coords="160,629,281,664,280,669,159,634"/>
+<area shape="rect" id="Node000016" href="$de/d41/structtimestream_1_1TimeStream_1_1data__t.html" title=" " alt="" coords="285,746,471,815"/>
+<area shape="poly" id="edge63_Node000000_Node000016" title=" " alt="" coords="126,636,178,683,245,730,286,750,283,754,243,735,175,687,123,640"/>
+<area shape="rect" id="Node000006" href="$de/d07/structtimestream_1_1TimeStream.html" title="base class for time stream data" alt="" coords="285,163,471,203"/>
+<area shape="poly" id="edge64_Node000000_Node000006" title=" " alt="" coords="100,589,108,514,130,413,148,359,172,306,203,256,242,213,262,200,283,191,285,195,264,204,246,217,208,259,177,308,153,361,135,414,114,515,106,589"/>
+<area shape="rect" id="Node000017" href="$de/d41/structtimestream_1_1TimeStream_1_1data__t.html" title=" " alt="" coords="250,839,506,879"/>
+<area shape="poly" id="edge65_Node000000_Node000017" title=" " alt="" coords="114,640,133,681,161,732,199,783,221,805,245,825,267,837,264,842,243,830,218,809,195,786,157,735,128,684,109,642"/>
+<area shape="rect" id="Node000018" href="$dc/da4/structtimestream_1_1TimeStream_1_1dataref__t.html" title=" " alt="" coords="285,904,471,959"/>
+<area shape="poly" id="edge66_Node000000_Node000018" title=" " alt="" coords="111,641,126,693,153,761,193,830,217,862,246,889,264,902,285,912,283,916,262,907,242,893,213,865,188,833,148,763,121,695,106,643"/>
+<area shape="rect" id="Node000002" href="$dc/d5d/structtimestream_1_1TCData_3_01TCDataKind_1_1PTC_00_01RefType_01_4.html" title=" " alt="" coords="560,13,780,53"/>
+<area shape="poly" id="edge51_Node000001_Node000002" title=" " alt="" coords="485,30,560,30,560,35,485,35"/>
+<area shape="rect" id="Node000005" href="$da/d37/structtimestream_1_1TCData_3_01TCDataKind_1_1RTC_00_01RefType_01_4.html" title=" " alt="" coords="560,91,780,131"/>
+<area shape="poly" id="edge53_Node000004_Node000005" title=" " alt="" coords="485,109,560,109,560,114,485,114"/>
+<area shape="rect" id="Node000003" href="$d6/d8a/structtimestream_1_1internal_1_1TCDataBase.html" title=" " alt="" coords="5,91,196,131"/>
+<area shape="poly" id="edge67_Node000003_Node000001" title=" " alt="" coords="184,85,284,57,285,62,186,90"/>
+<area shape="poly" id="edge68_Node000003_Node000004" title=" " alt="" coords="210,109,285,109,285,114,210,114"/>
+<area shape="poly" id="edge69_Node000003_Node000006" title=" " alt="" coords="188,132,245,147,297,161,295,166,243,153,187,138"/>
 </map>

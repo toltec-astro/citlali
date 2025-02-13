@@ -1,4 +1,6 @@
 <map id="TimeOrderedDataProc&lt; EngineType &gt;" name="TimeOrderedDataProc&lt; EngineType &gt;">
-<area shape="rect" id="node1" title="The time ordered data processing struct This wraps around the lali config." alt="" coords="6,145,217,707"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,5,217,97"/>
+<area shape="rect" id="Node000001" title="The time ordered data processing struct This wraps around the lali config." alt="" coords="7,133,208,843"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,209,85"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="104,99,103,133,97,133,99,99"/>
+<area shape="poly" id="edge2_Node000001_Node000002" title=" " alt="" coords="116,99,117,133,112,133,111,99"/>
 </map>

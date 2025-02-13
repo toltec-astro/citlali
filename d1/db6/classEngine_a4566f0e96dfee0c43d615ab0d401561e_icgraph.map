@@ -1,4 +1,5 @@
 <map id="Engine::get_mapmaking_config" name="Engine::get_mapmaking_config">
-<area shape="rect" id="node1" title=" " alt="" coords="192,5,372,47"/>
-<area shape="rect" id="node2" href="$d1/db6/classEngine.html#a9698c573d1a436c6d405b614c592b0af" title=" " alt="" coords="5,5,144,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="192,5,372,45"/>
+<area shape="rect" id="Node000002" href="$d1/db6/classEngine.html#a9698c573d1a436c6d405b614c592b0af" title=" " alt="" coords="5,5,144,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="178,28,145,28,145,23,178,23"/>
 </map>

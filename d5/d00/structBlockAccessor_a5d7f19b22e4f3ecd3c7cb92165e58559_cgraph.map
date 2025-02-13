@@ -1,0 +1,5 @@
+<map id="BlockAccessor::set_bins" name="BlockAccessor::set_bins">
+<area shape="rect" id="Node000001" title="Set bins with vector of bin edges of size (nbins + 1)." alt="" coords="5,5,184,31"/>
+<area shape="rect" id="Node000002" href="$d5/d00/structBlockAccessor.html#a5c25305923e7c21c3fcea8b3bbd308cd" title="Return the number of bins for dim." alt="" coords="232,5,399,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="184,15,219,15,219,21,184,21"/>
+</map>

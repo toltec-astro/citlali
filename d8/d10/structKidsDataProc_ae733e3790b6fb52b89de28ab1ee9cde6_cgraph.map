@@ -1,4 +1,5 @@
 <map id="KidsDataProc::populate_rtc" name="KidsDataProc::populate_rtc">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,204,32"/>
-<area shape="rect" id="node2" href="$d8/d10/structKidsDataProc.html#a5729f8cd403c07780b9485fdbe8ea5b6" title=" " alt="" coords="252,5,409,32"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,204,31"/>
+<area shape="rect" id="Node000002" href="$d8/d10/structKidsDataProc.html#a0106fa30a7f97446bdbc97a3c3993aa8" title=" " alt="" coords="252,5,409,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="205,15,238,15,238,21,205,21"/>
 </map>

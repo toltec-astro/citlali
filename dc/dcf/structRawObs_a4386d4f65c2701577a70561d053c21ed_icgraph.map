@@ -1,5 +1,7 @@
 <map id="RawObs::n_data_items" name="RawObs::n_data_items">
-<area shape="rect" id="node1" title=" " alt="" coords="400,13,571,39"/>
-<area shape="rect" id="node2" href="$dc/dcf/structRawObs.html#a5cc5f0dd4e050ef7689f7ba19346fe5f" title=" " alt="" coords="189,5,352,47"/>
-<area shape="rect" id="node3" href="$dc/dcf/structRawObs.html#a3aebbcf64b5bdc3c9990145e0bf59f71" title=" " alt="" coords="5,13,141,39"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="400,13,571,38"/>
+<area shape="rect" id="Node000002" href="$dc/dcf/structRawObs.html#a5cc5f0dd4e050ef7689f7ba19346fe5f" title=" " alt="" coords="189,5,352,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="386,28,352,28,352,23,386,23"/>
+<area shape="rect" id="Node000003" href="$dc/dcf/structRawObs.html#a3aebbcf64b5bdc3c9990145e0bf59f71" title=" " alt="" coords="5,13,141,38"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="176,28,142,28,142,23,176,23"/>
 </map>

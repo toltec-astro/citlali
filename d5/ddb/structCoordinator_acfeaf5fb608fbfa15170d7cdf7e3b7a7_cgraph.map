@@ -1,0 +1,36 @@
+<map id="Coordinator::sync" name="Coordinator::sync">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,257,141,282"/>
+<area shape="rect" id="Node000002" href="$d5/ddb/structCoordinator.html#a3269380f072283d1903507a5268e1335" title=" " alt="" coords="211,115,360,155"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="86,255,129,215,188,172,215,158,218,163,191,177,133,220,89,259"/>
+<area shape="rect" id="Node000003" href="$da/def/structConfigMixin.html#af614f888ac1cafdccc2a916bb5ae88a2" title=" " alt="" coords="429,5,620,45"/>
+<area shape="poly" id="edge9_Node000001_Node000003" title=" " alt="" coords="77,255,91,224,115,181,147,137,188,100,242,71,301,50,360,36,415,28,416,33,361,41,302,55,244,76,191,105,151,141,119,184,96,226,82,258"/>
+<area shape="rect" id="Node000004" href="$d5/ddb/structCoordinator.html#a3be9e5110c48e6dc56c8aa9139aea4f2" title=" " alt="" coords="439,219,610,259"/>
+<area shape="poly" id="edge14_Node000001_Node000004" title=" " alt="" coords="95,254,137,233,189,216,250,208,312,206,372,210,426,217,425,222,371,215,312,212,250,213,190,221,139,238,97,259"/>
+<area shape="rect" id="Node000010" href="$d8/db6/structYamlConfig.html#ab7a25173680f44b18be0293ceaca375e" title=" " alt="" coords="194,231,377,257"/>
+<area shape="poly" id="edge10_Node000001_Node000010" title=" " alt="" coords="141,259,180,254,181,259,142,264"/>
+<area shape="rect" id="Node000011" href="$d5/ddb/structCoordinator.html#a0e34c6a9af97b55f4ecb615583a20c09" title=" " alt="" coords="200,333,371,358"/>
+<area shape="poly" id="edge11_Node000001_Node000011" title=" " alt="" coords="108,280,190,311,233,326,231,331,188,316,106,285"/>
+<area shape="rect" id="Node000012" href="$d5/ddb/structCoordinator.html#a9456a1588acb0e6b25df6f02f57475cf" title=" " alt="" coords="431,283,619,309"/>
+<area shape="poly" id="edge17_Node000001_Node000012" title=" " alt="" coords="142,271,417,287,417,292,141,276"/>
+<area shape="rect" id="Node000014" href="$d8/db6/structYamlConfig.html#ae4ed223c6362777a3885d0a17408de3d" title=" " alt="" coords="189,382,381,407"/>
+<area shape="poly" id="edge15_Node000001_Node000014" title=" " alt="" coords="87,280,130,324,159,348,191,368,205,375,203,380,188,373,156,352,126,328,83,284"/>
+<area shape="rect" id="Node000016" href="$da/def/structConfigMixin.html#a8e9e2c56bb202d21f29841d1c71d2061" title=" " alt="" coords="190,432,381,472"/>
+<area shape="poly" id="edge18_Node000001_Node000016" title=" " alt="" coords="83,281,123,346,154,385,191,418,199,423,197,428,188,422,150,388,119,349,79,284"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="319,112,370,84,428,55,446,48,448,53,430,60,372,88,321,117"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="340,152,383,172,407,188,431,203,449,211,446,216,428,208,404,192,380,177,337,157"/>
+<area shape="rect" id="Node000007" href="$d5/ddb/structCoordinator.html#a2421c4131374dce001351e6895f8d74f" title=" " alt="" coords="445,70,605,95"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="360,116,452,96,453,101,361,121"/>
+<area shape="rect" id="Node000008" href="$d5/ddb/structCoordinator.html#af444e06e7d7843af994272e61936b7ce" title=" " alt="" coords="434,119,615,145"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="360,131,420,130,420,136,360,137"/>
+<area shape="rect" id="Node000009" href="$d5/ddb/structCoordinator.html#af826cc27caba702601e64fe144ca21c5" title=" " alt="" coords="433,169,616,194"/>
+<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="361,147,446,163,445,169,360,152"/>
+<area shape="rect" id="Node000005" href="$d5/ddb/structCoordinator.html#a5491f00bc55b2ac2a3b0647cf8d2aab5" title=" " alt="" coords="679,191,831,231"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="610,226,664,219,665,224,610,231"/>
+<area shape="rect" id="Node000006" href="$d5/ddb/structCoordinator.html#a5a306e9ff6dc84ae6fcfde82198812ca" title=" " alt="" coords="668,255,841,281"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="610,247,655,253,654,258,610,252"/>
+<area shape="poly" id="edge12_Node000011_Node000012" title=" " alt="" coords="347,330,448,309,450,314,348,335"/>
+<area shape="rect" id="Node000013" href="$d5/ddb/structCoordinator.html#a055986e0c155b18604c63cf15037689d" title=" " alt="" coords="457,333,592,358"/>
+<area shape="poly" id="edge13_Node000011_Node000013" title=" " alt="" coords="371,343,443,343,443,348,371,348"/>
+<area shape="rect" id="Node000015" href="$d8/db6/structYamlConfig.html#a13985ed02e18c67ccd90b9ed5d1baf0a" title=" " alt="" coords="437,382,612,407"/>
+<area shape="poly" id="edge16_Node000014_Node000015" title=" " alt="" coords="382,392,423,392,423,397,382,397"/>
+</map>

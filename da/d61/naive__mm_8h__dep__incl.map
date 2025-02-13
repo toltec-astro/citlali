@@ -1,8 +1,15 @@
 <map id="include/citlali/core/mapmaking/naive_mm.h" name="include/citlali/core/mapmaking/naive_mm.h">
-<area shape="rect" id="node1" title=" " alt="" coords="157,5,347,47"/>
-<area shape="rect" id="node2" href="$d1/d55/engine_8h.html" title=" " alt="" coords="181,95,323,136"/>
-<area shape="rect" id="node3" href="$d8/d4f/beammap_8h.html" title=" " alt="" coords="5,184,157,225"/>
-<area shape="rect" id="node5" href="$db/de9/lali_8h.html" title=" " alt="" coords="181,184,323,225"/>
-<area shape="rect" id="node6" href="$da/dc5/engine_2pointing_8h.html" title=" " alt="" coords="347,184,488,225"/>
-<area shape="rect" id="node4" href="$d8/d57/src_2citlali_2cli_2main_8cpp.html" title=" " alt="" coords="170,273,334,300"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="157,5,347,45"/>
+<area shape="rect" id="Node000002" href="$d1/d55/engine_8h.html" title=" " alt="" coords="181,93,323,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="255,59,255,93,249,93,249,59"/>
+<area shape="rect" id="Node000003" href="$d8/d4f/beammap_8h.html" title=" " alt="" coords="5,181,157,221"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="204,142,120,184,118,179,201,137"/>
+<area shape="rect" id="Node000005" href="$db/de9/lali_8h.html" title=" " alt="" coords="181,181,323,221"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="255,147,255,181,249,181,249,147"/>
+<area shape="rect" id="Node000006" href="$da/dc5/engine_2pointing_8h.html" title=" " alt="" coords="347,181,488,221"/>
+<area shape="poly" id="edge6_Node000002_Node000006" title=" " alt="" coords="302,137,382,179,380,184,299,142"/>
+<area shape="rect" id="Node000004" href="$d8/d57/src_2citlali_2cli_2main_8cpp.html" title=" " alt="" coords="170,269,334,295"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="136,225,228,267,226,272,133,229"/>
+<area shape="poly" id="edge5_Node000005_Node000004" title=" " alt="" coords="255,235,255,269,249,269,249,235"/>
+<area shape="poly" id="edge7_Node000006_Node000004" title=" " alt="" coords="367,230,278,272,275,267,364,225"/>
 </map>

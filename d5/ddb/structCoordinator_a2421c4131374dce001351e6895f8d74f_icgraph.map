@@ -1,0 +1,7 @@
+<map id="Coordinator::n_nodes" name="Coordinator::n_nodes">
+<area shape="rect" id="Node000001" title=" " alt="" coords="387,13,547,38"/>
+<area shape="rect" id="Node000002" href="$d5/ddb/structCoordinator.html#a3269380f072283d1903507a5268e1335" title=" " alt="" coords="189,5,339,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="373,28,339,28,339,23,373,23"/>
+<area shape="rect" id="Node000003" href="$d5/ddb/structCoordinator.html#acfeaf5fb608fbfa15170d7cdf7e3b7a7" title=" " alt="" coords="5,13,141,38"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="176,28,141,28,141,23,176,23"/>
+</map>

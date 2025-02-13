@@ -1,0 +1,17 @@
+<map id="Coordinator::collect_inputs" name="Coordinator::collect_inputs">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,127,155,167"/>
+<area shape="rect" id="Node000002" href="$da/def/structConfigMixin.html#af614f888ac1cafdccc2a916bb5ae88a2" title=" " alt="" coords="203,5,393,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="102,124,147,90,201,55,216,48,218,53,204,60,150,94,106,129"/>
+<area shape="rect" id="Node000003" href="$d5/ddb/structCoordinator.html#a3be9e5110c48e6dc56c8aa9139aea4f2" title=" " alt="" coords="213,69,383,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="154,125,207,110,209,116,156,130"/>
+<area shape="rect" id="Node000006" href="$d5/ddb/structCoordinator.html#a2421c4131374dce001351e6895f8d74f" title=" " alt="" coords="218,134,378,159"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="155,144,204,144,204,149,155,149"/>
+<area shape="rect" id="Node000007" href="$d5/ddb/structCoordinator.html#af444e06e7d7843af994272e61936b7ce" title=" " alt="" coords="207,183,389,209"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="155,161,228,178,227,183,154,166"/>
+<area shape="rect" id="Node000008" href="$d5/ddb/structCoordinator.html#af826cc27caba702601e64fe144ca21c5" title=" " alt="" coords="207,233,389,258"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="110,164,153,193,204,219,223,226,222,231,202,224,150,197,107,169"/>
+<area shape="rect" id="Node000004" href="$d5/ddb/structCoordinator.html#a5491f00bc55b2ac2a3b0647cf8d2aab5" title=" " alt="" coords="452,41,604,81"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="383,76,438,70,438,75,384,82"/>
+<area shape="rect" id="Node000005" href="$d5/ddb/structCoordinator.html#a5a306e9ff6dc84ae6fcfde82198812ca" title=" " alt="" coords="441,106,615,131"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="384,98,428,103,427,109,383,103"/>
+</map>

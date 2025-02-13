@@ -1,7 +1,13 @@
 <map id="matplotlibcpp::named_plot" name="matplotlibcpp::named_plot">
-<area shape="rect" id="node1" title=" " alt="" coords="5,46,203,73"/>
-<area shape="rect" id="node2" href="$d9/d02/structmatplotlibcpp_1_1detail_1_1__interpreter.html#a3ddc4e50c23738307da3dc64c47cdbc0" title=" " alt="" coords="251,5,408,47"/>
-<area shape="rect" id="node5" href="$d8/da2/namespacematplotlibcpp_1_1detail.html#a9bcca44556cf0ddbbf147a423d9a9496" title=" " alt="" coords="251,71,408,112"/>
-<area shape="rect" id="node3" href="$d9/d02/structmatplotlibcpp_1_1detail_1_1__interpreter.html#accf36ff8fd9f1bd757d028fa4a14be40" title=" " alt="" coords="456,5,644,47"/>
-<area shape="rect" id="node4" href="$d9/d02/structmatplotlibcpp_1_1detail_1_1__interpreter.html#abd9d036f154de95f507d8be310569d20" title=" " alt="" coords="692,5,893,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,45,203,70"/>
+<area shape="rect" id="Node000002" href="$d9/d02/structmatplotlibcpp_1_1detail_1_1__interpreter.html#a46fa5e29f74065df085dd3a808fa4dc4" title=" " alt="" coords="251,5,408,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="194,42,237,36,237,41,194,47"/>
+<area shape="rect" id="Node000005" href="$d8/da2/namespacematplotlibcpp_1_1detail.html#a308ba28ff465029ff7687477669c9b39" title=" " alt="" coords="251,69,408,109"/>
+<area shape="poly" id="edge6_Node000001_Node000005" title=" " alt="" coords="194,67,237,74,237,79,194,73"/>
+<area shape="rect" id="Node000003" href="$d9/d02/structmatplotlibcpp_1_1detail_1_1__interpreter.html#a32cb66eeebd22a4b8477aa682163ec2b" title=" " alt="" coords="456,5,644,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="408,31,442,32,442,37,408,37"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="456,19,422,19,422,14,456,14"/>
+<area shape="rect" id="Node000004" href="$d9/d02/structmatplotlibcpp_1_1detail_1_1__interpreter.html#abd9d036f154de95f507d8be310569d20" title=" " alt="" coords="692,35,893,75"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="644,34,679,38,678,43,644,39"/>
+<area shape="poly" id="edge5_Node000004_Node000002" title=" " alt="" coords="692,65,578,68,456,60,409,51,410,46,456,55,578,62,692,60"/>
 </map>

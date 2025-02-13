@@ -1,4 +1,5 @@
 <map id="KidsDataProc::reduce_data_item" name="KidsDataProc::reduce_data_item">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,167,47"/>
-<area shape="rect" id="node2" href="$d7/ddd/structRawObs_1_1DataItem.html#a7077c2137411502fe1398dd979e1050c" title=" " alt="" coords="215,13,416,39"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,167,45"/>
+<area shape="rect" id="Node000002" href="$d7/ddd/structRawObs_1_1DataItem.html#a7d3b45ff623f5cf173a636481099d29f" title=" " alt="" coords="215,13,416,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="167,23,201,23,201,28,167,28"/>
 </map>

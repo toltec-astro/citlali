@@ -1,13 +1,21 @@
 <map id="Engine::obsnum_setup" name="Engine::obsnum_setup">
-<area shape="rect" id="node1" title=" " alt="" coords="5,167,175,194"/>
-<area shape="rect" id="node2" href="$dc/df8/classtimestream_1_1Calibration.html#a3509201b7d75db76c78874f10821a78c" title=" " alt="" coords="223,7,400,48"/>
-<area shape="rect" id="node4" href="$d1/db6/classEngine.html#aa4aa6c4ccc792f0230390f84be095c6a" title=" " alt="" coords="232,75,391,102"/>
-<area shape="rect" id="node7" href="$da/d7a/classtimestream_1_1Filter.html#ae4b87635c99a72402d08c61814efe16e" title=" " alt="" coords="242,127,381,168"/>
-<area shape="rect" id="node8" href="$dc/df8/classtimestream_1_1Calibration.html#a4e50829ba652df84ff223d734bbc5018" title=" " alt="" coords="223,192,400,233"/>
-<area shape="rect" id="node9" href="$d2/d89/classtimestream_1_1Kernel.html#add47307e67ff42f044d059d8db78d5f3" title=" " alt="" coords="238,257,385,299"/>
-<area shape="rect" id="node11" href="$d5/d40/namespaceinternal.html#a4d40fc6b08d3c37ac2e1242929561686" title=" " alt="" coords="259,323,364,350"/>
-<area shape="rect" id="node3" href="$dc/df8/classtimestream_1_1Calibration.html#abddada68012ebe27c247a311a27e28cf" title=" " alt="" coords="448,5,625,47"/>
-<area shape="rect" id="node5" href="$dd/d06/namespaceengine__utils.html#a57528ebe2f2c88901b401cbcb7463739" title=" " alt="" coords="453,71,621,112"/>
-<area shape="rect" id="node6" href="$dd/d06/namespaceengine__utils.html#a91920d6a671f21ee464dfa4c55068b7d" title=" " alt="" coords="673,78,845,105"/>
-<area shape="rect" id="node10" href="$df/d8d/classfitsIO.html#a681b60e0e266b924966ab2d740558054" title=" " alt="" coords="479,265,595,291"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,131,175,157"/>
+<area shape="rect" id="Node000002" href="$dc/df8/classtimestream_1_1Calibration.html#a3509201b7d75db76c78874f10821a78c" title=" " alt="" coords="223,7,400,47"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="108,129,158,96,221,59,241,50,243,55,224,64,161,100,111,133"/>
+<area shape="rect" id="Node000004" href="$d1/db6/classEngine.html#aa4aa6c4ccc792f0230390f84be095c6a" title=" " alt="" coords="232,74,391,99"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="139,129,248,100,249,105,141,134"/>
+<area shape="rect" id="Node000007" href="$da/d7a/classtimestream_1_1Filter.html#ae4b87635c99a72402d08c61814efe16e" title=" " alt="" coords="242,124,381,164"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="175,141,228,141,228,147,175,147"/>
+<area shape="rect" id="Node000008" href="$dc/df8/classtimestream_1_1Calibration.html#a4e50829ba652df84ff223d734bbc5018" title=" " alt="" coords="223,188,400,228"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="136,154,229,182,228,187,134,159"/>
+<area shape="rect" id="Node000009" href="$d2/d89/classtimestream_1_1Kernel.html#add47307e67ff42f044d059d8db78d5f3" title=" " alt="" coords="238,252,385,292"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="107,155,157,194,224,238,237,244,235,249,221,242,154,199,104,159"/>
+<area shape="rect" id="Node000003" href="$dc/df8/classtimestream_1_1Calibration.html#abddada68012ebe27c247a311a27e28cf" title=" " alt="" coords="448,5,625,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="400,23,434,23,434,29,400,29"/>
+<area shape="rect" id="Node000005" href="$dd/d06/namespaceengine__utils.html#a57528ebe2f2c88901b401cbcb7463739" title=" " alt="" coords="453,69,621,109"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="391,85,439,86,439,91,391,90"/>
+<area shape="rect" id="Node000006" href="$dd/d06/namespaceengine__utils.html#a91920d6a671f21ee464dfa4c55068b7d" title=" " alt="" coords="673,77,845,102"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="621,87,660,87,660,92,621,92"/>
+<area shape="rect" id="Node000010" href="$df/d8d/classfitsIO.html#a681b60e0e266b924966ab2d740558054" title=" " alt="" coords="479,259,595,285"/>
+<area shape="poly" id="edge9_Node000009_Node000010" title=" " alt="" coords="385,269,465,269,465,275,385,275"/>
 </map>

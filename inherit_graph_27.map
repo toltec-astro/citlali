@@ -1,4 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$de/d03/structInterfaceBase.html" title=" " alt="" coords="5,5,224,47"/>
-<area shape="rect" id="node2" href="$de/de8/structHwpInterface.html" title="@ brief Interface to HWP" alt="" coords="272,13,381,39"/>
+<area shape="rect" id="Node000000" href="$de/d03/structInterfaceBase.html" title=" " alt="" coords="5,5,224,45"/>
+<area shape="rect" id="Node000001" href="$de/de8/structHwpInterface.html" title="@ brief Interface to HWP" alt="" coords="272,13,381,38"/>
+<area shape="poly" id="edge30_Node000000_Node000001" title=" " alt="" coords="238,23,272,23,272,28,238,28"/>
 </map>

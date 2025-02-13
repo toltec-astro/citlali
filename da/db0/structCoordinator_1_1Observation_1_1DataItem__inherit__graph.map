@@ -1,5 +1,7 @@
 <map id="Coordinator::Observation::DataItem" name="Coordinator::Observation::DataItem">
-<area shape="rect" id="node1" title="The DataItem struct This represent a single data item that belongs to a particular observation." alt="" coords="8,360,193,525"/>
-<area shape="rect" id="node2" href="$da/def/structConfigMixin.html" title=" " alt="" coords="5,189,196,311"/>
-<area shape="rect" id="node3" href="$da/def/structConfigMixin.html" title="The mixin class for config handling." alt="" coords="11,5,191,127"/>
+<area shape="rect" id="Node000001" title="The DataItem struct This represent a single data item that belongs to a particular observation." alt="" coords="8,368,185,548"/>
+<area shape="rect" id="Node000002" href="$da/def/structConfigMixin.html" title=" " alt="" coords="5,193,188,319"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="99,332,99,368,94,368,94,332"/>
+<area shape="rect" id="Node000003" href="$da/def/structConfigMixin.html" title="The mixin class for config handling." alt="" coords="11,5,183,131"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="99,144,99,193,94,193,94,144"/>
 </map>

@@ -1,8 +1,13 @@
 <map id="timestream::PTCProc" name="timestream::PTCProc">
-<area shape="rect" id="node1" title=" " alt="" coords="253,1745,416,1925"/>
-<area shape="rect" id="node2" href="$de/d76/classtimestream_1_1TCProc.html" title=" " alt="" coords="129,1268,330,1683"/>
-<area shape="rect" id="node3" href="$df/d1c/classmapmaking_1_1MapBuffer.html" title=" " alt="" coords="5,219,224,1205"/>
-<area shape="rect" id="node4" href="$d1/dda/structmapmaking_1_1WCS.html" title=" " alt="" coords="45,5,184,156"/>
-<area shape="rect" id="node5" href="$dc/d1a/classengine__utils_1_1toltecIO.html" title=" " alt="" coords="249,644,439,780"/>
-<area shape="rect" id="node6" href="$da/de2/classtimestream_1_1Cleaner.html" title=" " alt="" coords="354,1385,529,1565"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="167,2184,329,2429"/>
+<area shape="rect" id="Node000002" href="$de/d76/classtimestream_1_1TCProc.html" title=" " alt="" coords="50,1596,243,2121"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="212,2135,223,2183,218,2184,207,2136"/>
+<area shape="rect" id="Node000003" href="$dc/d1a/classengine__utils_1_1toltecIO.html" title=" " alt="" coords="5,811,187,956"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="102,956,135,1579,130,1579,97,956"/>
+<area shape="rect" id="Node000004" href="$df/d1c/classmapmaking_1_1MapBuffer.html" title=" " alt="" coords="211,233,421,1533"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="219,1534,212,1572,210,1581,205,1580,207,1572,214,1533"/>
+<area shape="rect" id="Node000005" href="$d1/dda/structmapmaking_1_1WCS.html" title=" " alt="" coords="251,5,381,171"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="319,171,319,217,313,217,313,171"/>
+<area shape="rect" id="Node000006" href="$da/de2/classtimestream_1_1Cleaner.html" title=" " alt="" coords="268,1756,433,1961"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="330,1962,282,2169,277,2168,325,1961"/>
 </map>

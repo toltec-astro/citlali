@@ -1,12 +1,24 @@
 <map id="engine_utils::DenseFunctor&lt; _Scalar, NX, NY &gt;" name="engine_utils::DenseFunctor&lt; _Scalar, NX, NY &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="291,5,490,171"/>
-<area shape="rect" id="node2" href="$dc/dcf/structengine__utils_1_1DenseFunctor.html" title=" " alt="" coords="381,492,613,657"/>
-<area shape="rect" id="node9" href="$dc/dcf/structengine__utils_1_1DenseFunctor.html" title=" " alt="" coords="182,248,381,428"/>
-<area shape="rect" id="node3" href="$d3/d9d/structengine__utils_1_1Model.html" title=" " alt="" coords="81,735,241,929"/>
-<area shape="rect" id="node5" href="$d3/d9d/structengine__utils_1_1Model.html" title=" " alt="" coords="449,735,609,929"/>
-<area shape="rect" id="node7" href="$d3/d9d/structengine__utils_1_1Model.html" title=" " alt="" coords="265,735,425,929"/>
-<area shape="rect" id="node4" href="$d0/d1e/structengine__utils_1_1Gaussian1D.html" title=" " alt="" coords="5,1001,192,1137"/>
-<area shape="rect" id="node6" href="$d1/da5/structengine__utils_1_1Gaussian2D.html" title=" " alt="" coords="499,979,685,1159"/>
-<area shape="rect" id="node8" href="$da/d36/structengine__utils_1_1SymmetricGaussian2D.html" title=" " alt="" coords="216,993,475,1144"/>
-<area shape="rect" id="node10" href="$d3/d9d/structengine__utils_1_1Model.html" title=" " alt="" coords="197,477,357,672"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="321,5,511,185"/>
+<area shape="rect" id="Node000002" href="$d3/d9d/structengine__utils_1_1Model.html" title=" " alt="" coords="340,263,492,483"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="419,199,419,263,413,263,413,199"/>
+<area shape="rect" id="Node000009" href="$dc/dcf/structengine__utils_1_1DenseFunctor.html" title=" " alt="" coords="92,283,316,463"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="312,175,279,211,256,246,238,284,233,281,252,243,275,208,308,172"/>
+<area shape="rect" id="Node000010" href="$dc/dcf/structengine__utils_1_1DenseFunctor.html" title=" " alt="" coords="517,275,707,470"/>
+<area shape="poly" id="edge12_Node000001_Node000010" title=" " alt="" coords="489,195,546,274,541,277,485,198"/>
+<area shape="rect" id="Node000003" href="$d3/d9d/structengine__utils_1_1Model.html" title=" " alt="" coords="81,545,233,765"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="332,482,330,485,307,504,288,516,269,529,247,547,235,559,231,556,244,543,266,524,285,512,304,499,326,481,329,478"/>
+<area shape="rect" id="Node000005" href="$d3/d9d/structengine__utils_1_1Model.html" title=" " alt="" coords="433,545,585,765"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="459,495,476,544,471,546,454,497"/>
+<area shape="rect" id="Node000007" href="$d3/d9d/structengine__utils_1_1Model.html" title=" " alt="" coords="257,545,409,765"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="383,497,368,546,363,544,377,495"/>
+<area shape="rect" id="Node000004" href="$d0/d1e/structengine__utils_1_1Gaussian1D.html" title=" " alt="" coords="5,845,184,990"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="130,779,115,845,109,844,125,778"/>
+<area shape="rect" id="Node000006" href="$d1/da5/structengine__utils_1_1Gaussian2D.html" title=" " alt="" coords="483,815,661,1020"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="541,778,550,814,545,815,536,779"/>
+<area shape="rect" id="Node000008" href="$da/d36/structengine__utils_1_1SymmetricGaussian2D.html" title=" " alt="" coords="208,835,459,1000"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="336,779,336,835,331,835,331,779"/>
+<area shape="poly" id="edge9_Node000009_Node000003" title=" " alt="" coords="190,477,178,546,173,545,184,476"/>
+<area shape="poly" id="edge10_Node000009_Node000005" title=" " alt="" coords="315,469,330,481,423,543,435,555,431,559,420,547,326,485,312,474"/>
+<area shape="poly" id="edge11_Node000009_Node000007" title=" " alt="" coords="240,475,258,520,270,544,265,546,254,522,235,477"/>
 </map>

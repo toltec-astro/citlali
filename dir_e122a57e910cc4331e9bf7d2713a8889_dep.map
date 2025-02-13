@@ -1,9 +1,11 @@
 <map id="src/citlali" name="src/citlali">
-<area shape="rect" id="node2" href="dir_e2b5dc2d34479b093b8acee6ba89a083.html" title="cli" alt="" coords="133,63,205,111"/>
-<area shape="rect" id="node4" href="dir_d44c64559bbebec7f509842c48db8b23.html" title="include" alt="" coords="85,159,157,207"/>
-<area shape="rect" id="edge2-headlabel" href="dir_000011_000000.html" title="5" alt="" coords="144,139,154,154"/>
-<area shape="rect" id="node3" href="dir_f80d04a5b36f66d5b7aee11e3f1325bd.html" title="core" alt="" coords="37,63,109,111"/>
-<area shape="rect" id="edge1-headlabel" href="dir_000013_000000.html" title="12" alt="" coords="100,131,117,146"/>
-<area shape="rect" id="clust2" href="dir_e122a57e910cc4331e9bf7d2713a8889.html" alt="" coords="27,52,312,121"/>
-<area shape="rect" id="clust1" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html" title="src" alt="" coords="16,16,323,132"/>
+<area shape="rect" id="node2" href="dir_e2b5dc2d34479b093b8acee6ba89a083.html" title="cli" alt="" coords="113,63,151,88"/>
+<area shape="rect" id="node4" href="dir_d44c64559bbebec7f509842c48db8b23.html" title="include" alt="" coords="63,136,132,161"/>
+<area shape="poly" id="edge1" href="dir_000002_000007.html" alt="" coords="129,90,111,125,107,122,124,87"/>
+<area shape="rect" id="edge1-headlabel" href="dir_000002_000007.html" title="5" alt="" coords="114,116,123,131"/>
+<area shape="rect" id="node3" href="dir_f80d04a5b36f66d5b7aee11e3f1325bd.html" title="core" alt="" coords="37,63,88,88"/>
+<area shape="poly" id="edge2" href="dir_000004_000007.html" alt="" coords="71,87,88,122,83,125,66,90"/>
+<area shape="rect" id="edge2-headlabel" href="dir_000004_000007.html" title="12" alt="" coords="83,109,100,123"/>
+<area shape="rect" id="clust2" href="dir_e122a57e910cc4331e9bf7d2713a8889.html" alt="" coords="27,52,245,99"/>
+<area shape="rect" id="clust1" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html" title="src" alt="" coords="16,16,256,109"/>
 </map>

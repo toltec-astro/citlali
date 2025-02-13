@@ -1,8 +1,14 @@
 <map id="include/citlali/core/engine/telescope.h" name="include/citlali/core/engine/telescope.h">
-<area shape="rect" id="node1" title=" " alt="" coords="66,5,215,47"/>
-<area shape="rect" id="node2" title=" " alt="" coords="66,184,129,211"/>
-<area shape="rect" id="node3" title=" " alt="" coords="24,102,123,129"/>
-<area shape="rect" id="node4" href="$d9/dc8/netcdf__io_8h.html" title=" " alt="" coords="147,95,270,136"/>
-<area shape="rect" id="node5" href="$d2/d6f/constants_8h.html" title=" " alt="" coords="294,95,416,136"/>
-<area shape="rect" id="node6" title=" " alt="" coords="309,184,401,211"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="65,5,215,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="66,181,129,207"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="74,48,40,67,26,80,14,95,8,113,14,132,33,155,58,173,55,177,30,159,10,135,3,113,10,92,22,76,37,63,72,43"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="24,101,123,126"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="127,47,93,91,89,88,123,44"/>
+<area shape="rect" id="Node000004" href="$d9/dc8/netcdf__io_8h.html" title=" " alt="" coords="147,93,269,133"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="157,44,187,81,182,84,153,47"/>
+<area shape="rect" id="Node000005" href="$d2/d6f/constants_8h.html" title=" " alt="" coords="293,93,416,133"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="188,43,296,86,294,91,186,48"/>
+<area shape="poly" id="edge4_Node000004_Node000002" title=" " alt="" coords="183,136,126,175,123,171,180,131"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="309,181,401,207"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="357,134,357,167,352,167,352,134"/>
 </map>

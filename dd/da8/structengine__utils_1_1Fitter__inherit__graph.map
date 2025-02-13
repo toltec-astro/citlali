@@ -1,6 +1,9 @@
 <map id="engine_utils::Fitter&lt; _Model &gt;" name="engine_utils::Fitter&lt; _Model &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="33,132,176,297"/>
-<area shape="rect" id="node3" href="$d8/de2/structengine__utils_1_1Fitter.html" title=" " alt="" coords="33,360,176,525"/>
-<area shape="rect" id="node2" title=" " alt="" coords="47,5,163,83"/>
-<area shape="rect" id="node4" href="$d2/da9/structengine__utils_1_1CeresAutoDiffFitter.html" title=" " alt="" coords="5,575,204,681"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="33,120,168,300"/>
+<area shape="rect" id="Node000003" href="$d8/de2/structengine__utils_1_1Fitter.html" title=" " alt="" coords="33,363,168,543"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="103,314,103,363,98,363,98,314"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="47,5,155,71"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="103,84,103,120,98,120,98,84"/>
+<area shape="rect" id="Node000004" href="$d2/da9/structengine__utils_1_1CeresAutoDiffFitter.html" title=" " alt="" coords="5,592,196,692"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="103,557,103,592,98,592,98,557"/>
 </map>

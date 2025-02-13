@@ -1,6 +1,9 @@
 <map id="KidsDataProc::populate_rtc_meta" name="KidsDataProc::populate_rtc_meta">
-<area shape="rect" id="node1" title=" " alt="" coords="5,35,180,76"/>
-<area shape="rect" id="node2" href="$d8/d10/structKidsDataProc.html#a80ad24a8eaa524a6c6fc6e49af0f11a6" title=" " alt="" coords="228,5,403,47"/>
-<area shape="rect" id="node4" href="$dc/dcf/structRawObs.html#a7804170dfb92be1d6e89cab044119cc8" title=" " alt="" coords="246,71,385,98"/>
-<area shape="rect" id="node3" href="$d7/ddd/structRawObs_1_1DataItem.html#a7077c2137411502fe1398dd979e1050c" title=" " alt="" coords="451,13,652,39"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,35,180,75"/>
+<area shape="rect" id="Node000002" href="$d8/d10/structKidsDataProc.html#a80ad24a8eaa524a6c6fc6e49af0f11a6" title=" " alt="" coords="228,5,403,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="180,41,214,36,215,41,181,46"/>
+<area shape="rect" id="Node000004" href="$dc/dcf/structRawObs.html#a7804170dfb92be1d6e89cab044119cc8" title=" " alt="" coords="246,70,385,95"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="181,63,233,70,232,75,180,68"/>
+<area shape="rect" id="Node000003" href="$d7/ddd/structRawObs_1_1DataItem.html#a7d3b45ff623f5cf173a636481099d29f" title=" " alt="" coords="451,13,652,38"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="403,23,437,23,437,28,403,28"/>
 </map>

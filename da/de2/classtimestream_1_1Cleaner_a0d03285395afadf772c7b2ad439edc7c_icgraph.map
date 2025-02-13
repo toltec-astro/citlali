@@ -1,9 +1,17 @@
 <map id="timestream::Cleaner::get_stddev_index" name="timestream::Cleaner::get_stddev_index">
-<area shape="rect" id="node1" title=" " alt="" coords="1076,23,1232,65"/>
-<area shape="rect" id="node2" href="$da/de2/classtimestream_1_1Cleaner.html#a512c49dc5cc21d34b0250bd3a990c53d" title=" " alt="" coords="871,23,1028,65"/>
-<area shape="rect" id="node3" href="$d7/d4f/classtimestream_1_1PTCProc.html#a7e1c5b1a1e8a43979958e6b76d603334" title=" " alt="" coords="636,31,823,57"/>
-<area shape="rect" id="node4" href="$d2/dbe/classPointing.html#aa5b7a23dbdce6699ef2a1cd23b54c9b6" title=" " alt="" coords="459,5,563,32"/>
-<area shape="rect" id="node5" href="$dc/d9e/classBeammap.html#a3015679afa0f29bbb4253b45faa5cb30" title=" " alt="" coords="435,56,588,83"/>
-<area shape="rect" id="node6" href="$dc/d9e/classBeammap.html#a7651fe4687746596facaf17bbeb8bcdb" title=" " alt="" coords="203,56,387,83"/>
-<area shape="rect" id="node7" href="$dc/d9e/classBeammap.html#a5d30a47c11b4749b5c1c692872a9cf8e" title=" " alt="" coords="5,56,155,83"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="1076,47,1232,87"/>
+<area shape="rect" id="Node000002" href="$da/de2/classtimestream_1_1Cleaner.html#a512c49dc5cc21d34b0250bd3a990c53d" title=" " alt="" coords="871,47,1028,87"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1062,70,1028,70,1028,65,1062,65"/>
+<area shape="rect" id="Node000003" href="$d7/d4f/classtimestream_1_1PTCProc.html#a7e1c5b1a1e8a43979958e6b76d603334" title=" " alt="" coords="636,55,823,80"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="857,70,823,70,823,65,857,65"/>
+<area shape="rect" id="Node000004" href="$d9/def/classLali.html#a4a430cd11ba469770e21af79b0199a69" title=" " alt="" coords="474,5,549,31"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="659,54,548,29,550,24,660,49"/>
+<area shape="rect" id="Node000005" href="$d2/dbe/classPointing.html#aa5b7a23dbdce6699ef2a1cd23b54c9b6" title=" " alt="" coords="459,55,563,80"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="622,70,564,70,564,65,622,65"/>
+<area shape="rect" id="Node000006" href="$dc/d9e/classBeammap.html#a3015679afa0f29bbb4253b45faa5cb30" title=" " alt="" coords="435,104,588,129"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="660,86,569,107,568,101,659,80"/>
+<area shape="rect" id="Node000007" href="$dc/d9e/classBeammap.html#a7651fe4687746596facaf17bbeb8bcdb" title=" " alt="" coords="203,104,387,129"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="421,119,387,119,387,114,421,114"/>
+<area shape="rect" id="Node000008" href="$dc/d9e/classBeammap.html#a5d30a47c11b4749b5c1c692872a9cf8e" title=" " alt="" coords="5,104,155,129"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="188,119,155,119,155,114,188,114"/>
 </map>

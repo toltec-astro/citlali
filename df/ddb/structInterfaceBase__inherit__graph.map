@@ -1,9 +1,15 @@
 <map id="InterfaceBase&lt; Derived, IO_ &gt;" name="InterfaceBase&lt; Derived, IO_ &gt;">
-<area shape="rect" id="node1" title="Interface base class." alt="" coords="273,5,455,97"/>
-<area shape="rect" id="node2" href="$de/d03/structInterfaceBase.html" title=" " alt="" coords="5,175,232,267"/>
-<area shape="rect" id="node4" href="$de/d03/structInterfaceBase.html" title=" " alt="" coords="257,175,471,267"/>
-<area shape="rect" id="node6" href="$de/d03/structInterfaceBase.html" title=" " alt="" coords="496,175,715,267"/>
-<area shape="rect" id="node3" href="$de/deb/structToltecInterface.html" title="@ brief Interface to TolTEC detector network" alt="" coords="59,316,178,393"/>
-<area shape="rect" id="node5" href="$df/da2/structLmtInterface.html" title="@ brief Interface to LMT" alt="" coords="311,316,417,393"/>
-<area shape="rect" id="node7" href="$de/de8/structHwpInterface.html" title="@ brief Interface to HWP" alt="" coords="551,316,660,393"/>
+<area shape="rect" id="Node000001" title="Interface base class." alt="" coords="257,5,431,85"/>
+<area shape="rect" id="Node000002" href="$de/d03/structInterfaceBase.html" title=" " alt="" coords="5,163,216,243"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="245,83,194,112,165,136,141,164,137,160,161,133,190,107,243,78"/>
+<area shape="rect" id="Node000004" href="$de/d03/structInterfaceBase.html" title=" " alt="" coords="241,163,447,243"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="347,99,347,162,341,162,341,99"/>
+<area shape="rect" id="Node000006" href="$de/d03/structInterfaceBase.html" title=" " alt="" coords="472,163,691,243"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="446,80,493,107,525,133,552,161,548,164,521,137,491,112,443,85"/>
+<area shape="rect" id="Node000003" href="$de/de8/structHwpInterface.html" title="@ brief Interface to HWP" alt="" coords="60,292,161,357"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="113,257,113,292,108,292,108,257"/>
+<area shape="rect" id="Node000005" href="$df/da2/structLmtInterface.html" title="@ brief Interface to LMT" alt="" coords="295,292,393,357"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="347,257,347,292,341,292,341,257"/>
+<area shape="rect" id="Node000007" href="$de/deb/structToltecInterface.html" title="@ brief Interface to TolTEC detector network" alt="" coords="526,292,637,357"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="584,257,584,292,579,292,579,257"/>
 </map>

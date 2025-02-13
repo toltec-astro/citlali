@@ -1,3 +1,15 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$d9/dbd/classengine__utils_1_1mapFitter.html" title=" " alt="" coords="5,5,177,32"/>
+<area shape="rect" id="Node000000" href="$dc/dcf/structengine__utils_1_1DenseFunctor.html" title=" " alt="" coords="5,69,237,109"/>
+<area shape="rect" id="Node000001" href="$d3/d9d/structengine__utils_1_1Model.html" title=" " alt="" coords="285,5,435,45"/>
+<area shape="poly" id="edge24_Node000000_Node000001" title=" " alt="" coords="209,63,285,43,286,48,211,68"/>
+<area shape="rect" id="Node000003" href="$d3/d9d/structengine__utils_1_1Model.html" title=" " alt="" coords="285,69,435,109"/>
+<area shape="poly" id="edge26_Node000000_Node000003" title=" " alt="" coords="251,87,285,87,285,92,251,92"/>
+<area shape="rect" id="Node000005" href="$d3/d9d/structengine__utils_1_1Model.html" title=" " alt="" coords="285,133,435,173"/>
+<area shape="poly" id="edge28_Node000000_Node000005" title=" " alt="" coords="211,110,286,131,285,136,209,116"/>
+<area shape="rect" id="Node000002" href="$d0/d1e/structengine__utils_1_1Gaussian1D.html" title=" " alt="" coords="519,13,705,38"/>
+<area shape="poly" id="edge25_Node000001_Node000002" title=" " alt="" coords="449,23,518,23,518,28,449,28"/>
+<area shape="rect" id="Node000004" href="$d1/da5/structengine__utils_1_1Gaussian2D.html" title=" " alt="" coords="519,77,705,102"/>
+<area shape="poly" id="edge27_Node000003_Node000004" title=" " alt="" coords="449,87,518,87,518,92,449,92"/>
+<area shape="rect" id="Node000006" href="$da/d36/structengine__utils_1_1SymmetricGaussian2D.html" title=" " alt="" coords="483,141,741,166"/>
+<area shape="poly" id="edge29_Node000005_Node000006" title=" " alt="" coords="448,151,483,151,483,156,448,156"/>
 </map>

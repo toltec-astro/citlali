@@ -1,8 +1,13 @@
 <map id="timestream::RTCProc::remove_flagged_dets" name="timestream::RTCProc::remove_flagged_dets">
-<area shape="rect" id="node1" title=" " alt="" coords="673,49,844,90"/>
-<area shape="rect" id="node2" href="$d9/def/classLali.html#a4a430cd11ba469770e21af79b0199a69" title=" " alt="" coords="487,5,562,32"/>
-<area shape="rect" id="node3" href="$d2/dbe/classPointing.html#aa5b7a23dbdce6699ef2a1cd23b54c9b6" title=" " alt="" coords="473,56,577,83"/>
-<area shape="rect" id="node4" href="$dc/d9e/classBeammap.html#af6c7c69600b4550b84eba0d29b15133e" title=" " alt="" coords="424,107,625,133"/>
-<area shape="rect" id="node5" href="$dc/d9e/classBeammap.html#a58e3b98fd0e2d25a88228e58720efe9f" title=" " alt="" coords="203,99,376,141"/>
-<area shape="rect" id="node6" href="$dc/d9e/classBeammap.html#a5d30a47c11b4749b5c1c692872a9cf8e" title=" " alt="" coords="5,107,155,133"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="673,47,844,87"/>
+<area shape="rect" id="Node000002" href="$d9/def/classLali.html#a4a430cd11ba469770e21af79b0199a69" title=" " alt="" coords="487,5,562,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="659,49,562,28,563,23,661,44"/>
+<area shape="rect" id="Node000003" href="$d2/dbe/classPointing.html#aa5b7a23dbdce6699ef2a1cd23b54c9b6" title=" " alt="" coords="473,55,577,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="660,70,577,70,577,65,660,65"/>
+<area shape="rect" id="Node000004" href="$dc/d9e/classBeammap.html#af6c7c69600b4550b84eba0d29b15133e" title=" " alt="" coords="424,104,625,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="661,91,586,107,585,101,659,85"/>
+<area shape="rect" id="Node000005" href="$dc/d9e/classBeammap.html#a58e3b98fd0e2d25a88228e58720efe9f" title=" " alt="" coords="203,97,376,137"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="410,119,376,119,376,114,410,114"/>
+<area shape="rect" id="Node000006" href="$dc/d9e/classBeammap.html#a5d30a47c11b4749b5c1c692872a9cf8e" title=" " alt="" coords="5,104,155,129"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="189,119,155,119,155,114,189,114"/>
 </map>

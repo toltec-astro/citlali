@@ -1,17 +1,29 @@
 <map id="Pointing::setup" name="Pointing::setup">
-<area shape="rect" id="node1" title=" " alt="" coords="5,181,124,208"/>
-<area shape="rect" id="node2" href="$dd/d06/namespaceengine__utils.html#a78bc2d77504839570aefed6a0bca233f" title=" " alt="" coords="187,57,342,98"/>
-<area shape="rect" id="node4" href="$d1/db6/classEngine.html#a03b9f9d69c7e1f1d61e127662e0bb81b" title=" " alt="" coords="180,181,349,208"/>
-<area shape="rect" id="node15" href="$dd/d06/namespaceengine__utils.html#a076b4cedf6e230db2e8fcf914a564ad7" title=" " alt="" coords="172,233,357,274"/>
-<area shape="rect" id="node3" href="$dd/d06/namespaceengine__utils.html#a392b455508f8ccfaf2af66c841dd7055" title="Return the current time." alt="" coords="426,5,562,32"/>
-<area shape="rect" id="node5" href="$dc/df8/classtimestream_1_1Calibration.html#a3509201b7d75db76c78874f10821a78c" title=" " alt="" coords="405,57,583,98"/>
-<area shape="rect" id="node7" href="$d1/db6/classEngine.html#aa4aa6c4ccc792f0230390f84be095c6a" title=" " alt="" coords="415,123,573,149"/>
-<area shape="rect" id="node10" href="$da/d7a/classtimestream_1_1Filter.html#ae4b87635c99a72402d08c61814efe16e" title=" " alt="" coords="425,174,563,215"/>
-<area shape="rect" id="node11" href="$dc/df8/classtimestream_1_1Calibration.html#a4e50829ba652df84ff223d734bbc5018" title=" " alt="" coords="405,239,583,281"/>
-<area shape="rect" id="node12" href="$d2/d89/classtimestream_1_1Kernel.html#add47307e67ff42f044d059d8db78d5f3" title=" " alt="" coords="421,305,567,346"/>
-<area shape="rect" id="node14" href="$d5/d40/namespaceinternal.html#a4d40fc6b08d3c37ac2e1242929561686" title=" " alt="" coords="441,371,547,397"/>
-<area shape="rect" id="node6" href="$dc/df8/classtimestream_1_1Calibration.html#abddada68012ebe27c247a311a27e28cf" title=" " alt="" coords="631,54,808,95"/>
-<area shape="rect" id="node8" href="$dd/d06/namespaceengine__utils.html#a57528ebe2f2c88901b401cbcb7463739" title=" " alt="" coords="635,119,803,161"/>
-<area shape="rect" id="node9" href="$dd/d06/namespaceengine__utils.html#a91920d6a671f21ee464dfa4c55068b7d" title=" " alt="" coords="856,127,1028,153"/>
-<area shape="rect" id="node13" href="$df/d8d/classfitsIO.html#a681b60e0e266b924966ab2d740558054" title=" " alt="" coords="661,312,777,339"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,149,124,175"/>
+<area shape="rect" id="Node000002" href="$dd/d06/namespaceengine__utils.html#a78bc2d77504839570aefed6a0bca233f" title=" " alt="" coords="187,27,342,67"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="87,147,215,72,218,77,89,152"/>
+<area shape="rect" id="Node000004" href="$d1/db6/classEngine.html#a03b9f9d69c7e1f1d61e127662e0bb81b" title=" " alt="" coords="180,149,349,175"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="124,159,166,159,166,165,124,165"/>
+<area shape="rect" id="Node000014" href="$dd/d06/namespaceengine__utils.html#a076b4cedf6e230db2e8fcf914a564ad7" title=" " alt="" coords="172,199,357,239"/>
+<area shape="poly" id="edge13_Node000001_Node000014" title=" " alt="" coords="111,172,182,193,181,198,109,177"/>
+<area shape="rect" id="Node000003" href="$dd/d06/namespaceengine__utils.html#a392b455508f8ccfaf2af66c841dd7055" title="Return the current time." alt="" coords="426,5,562,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="342,35,412,26,413,31,342,40"/>
+<area shape="rect" id="Node000005" href="$dc/df8/classtimestream_1_1Calibration.html#a3509201b7d75db76c78874f10821a78c" title=" " alt="" coords="405,55,583,95"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="297,147,404,105,424,98,426,103,406,110,299,152"/>
+<area shape="rect" id="Node000007" href="$d1/db6/classEngine.html#aa4aa6c4ccc792f0230390f84be095c6a" title=" " alt="" coords="415,120,573,145"/>
+<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="349,149,401,142,401,147,350,154"/>
+<area shape="rect" id="Node000010" href="$da/d7a/classtimestream_1_1Filter.html#ae4b87635c99a72402d08c61814efe16e" title=" " alt="" coords="425,170,563,210"/>
+<area shape="poly" id="edge9_Node000004_Node000010" title=" " alt="" coords="350,170,411,177,411,183,349,175"/>
+<area shape="rect" id="Node000011" href="$dc/df8/classtimestream_1_1Calibration.html#a4e50829ba652df84ff223d734bbc5018" title=" " alt="" coords="405,234,583,274"/>
+<area shape="poly" id="edge10_Node000004_Node000011" title=" " alt="" coords="325,172,359,185,383,202,407,220,420,226,418,231,404,224,380,206,356,190,323,177"/>
+<area shape="rect" id="Node000012" href="$d2/d89/classtimestream_1_1Kernel.html#add47307e67ff42f044d059d8db78d5f3" title=" " alt="" coords="421,298,567,338"/>
+<area shape="poly" id="edge11_Node000004_Node000012" title=" " alt="" coords="338,172,359,185,371,198,378,210,384,235,390,260,397,272,407,284,412,288,409,293,403,288,392,275,385,262,379,237,373,212,367,201,356,189,335,177"/>
+<area shape="rect" id="Node000006" href="$dc/df8/classtimestream_1_1Calibration.html#abddada68012ebe27c247a311a27e28cf" title=" " alt="" coords="631,53,808,93"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="583,72,617,71,617,77,583,77"/>
+<area shape="rect" id="Node000008" href="$dd/d06/namespaceengine__utils.html#a57528ebe2f2c88901b401cbcb7463739" title=" " alt="" coords="635,117,803,157"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="574,131,622,132,622,138,574,137"/>
+<area shape="rect" id="Node000009" href="$dd/d06/namespaceengine__utils.html#a91920d6a671f21ee464dfa4c55068b7d" title=" " alt="" coords="856,124,1028,149"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="804,134,843,134,843,139,804,139"/>
+<area shape="rect" id="Node000013" href="$df/d8d/classfitsIO.html#a681b60e0e266b924966ab2d740558054" title=" " alt="" coords="661,305,777,331"/>
+<area shape="poly" id="edge12_Node000012_Node000013" title=" " alt="" coords="568,315,648,315,648,321,568,321"/>
 </map>

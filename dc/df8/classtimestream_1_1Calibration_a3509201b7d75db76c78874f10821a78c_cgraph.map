@@ -1,4 +1,5 @@
 <map id="timestream::Calibration::calc_tau" name="timestream::Calibration::calc_tau">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,183,47"/>
-<area shape="rect" id="node2" href="$dc/df8/classtimestream_1_1Calibration.html#abddada68012ebe27c247a311a27e28cf" title=" " alt="" coords="231,5,408,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,183,45"/>
+<area shape="rect" id="Node000002" href="$dc/df8/classtimestream_1_1Calibration.html#abddada68012ebe27c247a311a27e28cf" title=" " alt="" coords="231,5,408,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="183,23,217,23,217,28,183,28"/>
 </map>

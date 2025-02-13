@@ -1,10 +1,17 @@
 <map id="RawObs::RawObs" name="RawObs::RawObs">
-<area shape="rect" id="node1" title=" " alt="" coords="5,141,141,167"/>
-<area shape="rect" id="node2" href="$dc/dcf/structRawObs.html#a79f9bc0ca786ca441d655f76bbb90104" title=" " alt="" coords="195,83,347,124"/>
-<area shape="rect" id="node6" href="$dc/dcf/structRawObs.html#a5cc5f0dd4e050ef7689f7ba19346fe5f" title=" " alt="" coords="189,165,352,207"/>
-<area shape="rect" id="node3" href="$dc/dcf/structRawObs.html#afad5a43c346ee28e8a461cb146ed82ac" title=" " alt="" coords="409,5,562,47"/>
-<area shape="rect" id="node4" href="$dc/dcf/structRawObs.html#ac1c36cbf644dfcd18282c6286691ac6f" title=" " alt="" coords="412,71,559,98"/>
-<area shape="rect" id="node5" href="$dc/dcf/structRawObs.html#accdeabc5c7b2817b3d3483173ebe80d7" title=" " alt="" coords="405,122,566,149"/>
-<area shape="rect" id="node7" href="$dc/dcf/structRawObs.html#adcc3d68f45e714c22b5e126e55e5c7ac" title=" " alt="" coords="407,173,563,199"/>
-<area shape="rect" id="node8" href="$dc/dcf/structRawObs.html#a4386d4f65c2701577a70561d053c21ed" title=" " alt="" coords="400,223,571,250"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,137,141,162"/>
+<area shape="rect" id="Node000002" href="$dc/dcf/structRawObs.html#a79f9bc0ca786ca441d655f76bbb90104" title=" " alt="" coords="195,80,347,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="124,134,180,120,182,125,125,139"/>
+<area shape="rect" id="Node000006" href="$dc/dcf/structRawObs.html#a5cc5f0dd4e050ef7689f7ba19346fe5f" title=" " alt="" coords="189,161,352,201"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="142,158,176,163,175,169,141,163"/>
+<area shape="rect" id="Node000003" href="$dc/dcf/structRawObs.html#a6a9d66d57f8422742d1b120f157688a1" title=" " alt="" coords="409,5,562,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="328,77,413,47,415,52,330,83"/>
+<area shape="rect" id="Node000004" href="$dc/dcf/structRawObs.html#a60fab861e326cc62b0e0b2912db8afe1" title=" " alt="" coords="412,70,559,95"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="347,91,398,87,398,92,347,97"/>
+<area shape="rect" id="Node000005" href="$dc/dcf/structRawObs.html#accdeabc5c7b2817b3d3483173ebe80d7" title=" " alt="" coords="405,119,566,145"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="347,109,391,115,391,121,346,114"/>
+<area shape="rect" id="Node000007" href="$dc/dcf/structRawObs.html#af6261a69af71ddbea93c1d432ed6e399" title=" " alt="" coords="407,169,563,194"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="352,179,394,179,394,184,352,184"/>
+<area shape="rect" id="Node000008" href="$dc/dcf/structRawObs.html#a4386d4f65c2701577a70561d053c21ed" title=" " alt="" coords="400,218,571,243"/>
+<area shape="poly" id="edge7_Node000006_Node000008" title=" " alt="" coords="353,197,417,212,416,218,352,203"/>
 </map>

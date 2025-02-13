@@ -1,9 +1,16 @@
 <map id="include/citlali/core/timestream/ptc/sensitivity.h" name="include/citlali/core/timestream/ptc/sensitivity.h">
-<area shape="rect" id="node1" title=" " alt="" coords="214,5,422,47"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,102,60,129"/>
-<area shape="rect" id="node3" title=" " alt="" coords="400,184,492,211"/>
-<area shape="rect" id="node4" title=" " alt="" coords="135,102,306,129"/>
-<area shape="rect" id="node5" title=" " alt="" coords="330,95,503,136"/>
-<area shape="rect" id="node6" title=" " alt="" coords="527,102,709,129"/>
-<area shape="rect" id="node7" href="$d2/d6f/constants_8h.html" title=" " alt="" coords="733,95,855,136"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="214,5,422,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,101,60,126"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="244,48,80,96,73,98,72,93,79,91,242,43"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="400,181,492,207"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="220,48,173,63,135,82,123,93,117,104,117,117,125,132,142,145,167,156,236,172,315,183,386,188,386,193,314,188,235,178,166,161,139,149,121,135,112,119,112,103,119,89,132,77,171,58,218,43"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="135,101,306,126"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="298,48,246,93,242,89,295,44"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="330,93,503,133"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="342,44,386,82,383,86,338,48"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="527,101,709,126"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="385,43,566,94,564,100,383,48"/>
+<area shape="rect" id="Node000007" href="$d2/d6f/constants_8h.html" title=" " alt="" coords="733,93,855,133"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="423,39,560,61,720,91,719,96,559,66,422,44"/>
+<area shape="poly" id="edge7_Node000007_Node000003" title=" " alt="" coords="733,133,721,136,506,183,505,178,720,131,732,128"/>
 </map>

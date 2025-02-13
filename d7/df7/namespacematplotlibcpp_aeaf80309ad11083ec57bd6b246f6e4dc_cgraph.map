@@ -1,7 +1,13 @@
 <map id="matplotlibcpp::hist" name="matplotlibcpp::hist">
-<area shape="rect" id="node1" title=" " alt="" coords="5,46,149,73"/>
-<area shape="rect" id="node2" href="$d9/d02/structmatplotlibcpp_1_1detail_1_1__interpreter.html#a3ddc4e50c23738307da3dc64c47cdbc0" title=" " alt="" coords="197,5,355,47"/>
-<area shape="rect" id="node5" href="$d8/da2/namespacematplotlibcpp_1_1detail.html#a9bcca44556cf0ddbbf147a423d9a9496" title=" " alt="" coords="197,71,355,112"/>
-<area shape="rect" id="node3" href="$d9/d02/structmatplotlibcpp_1_1detail_1_1__interpreter.html#accf36ff8fd9f1bd757d028fa4a14be40" title=" " alt="" coords="403,5,591,47"/>
-<area shape="rect" id="node4" href="$d9/d02/structmatplotlibcpp_1_1detail_1_1__interpreter.html#abd9d036f154de95f507d8be310569d20" title=" " alt="" coords="639,5,840,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,45,149,70"/>
+<area shape="rect" id="Node000002" href="$d9/d02/structmatplotlibcpp_1_1detail_1_1__interpreter.html#a46fa5e29f74065df085dd3a808fa4dc4" title=" " alt="" coords="197,5,355,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="149,43,183,38,184,43,150,48"/>
+<area shape="rect" id="Node000005" href="$d8/da2/namespacematplotlibcpp_1_1detail.html#a308ba28ff465029ff7687477669c9b39" title=" " alt="" coords="197,69,355,109"/>
+<area shape="poly" id="edge6_Node000001_Node000005" title=" " alt="" coords="150,66,184,72,183,77,149,72"/>
+<area shape="rect" id="Node000003" href="$d9/d02/structmatplotlibcpp_1_1detail_1_1__interpreter.html#a32cb66eeebd22a4b8477aa682163ec2b" title=" " alt="" coords="403,5,591,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="355,31,389,32,389,37,355,37"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="402,19,368,19,368,14,402,14"/>
+<area shape="rect" id="Node000004" href="$d9/d02/structmatplotlibcpp_1_1detail_1_1__interpreter.html#abd9d036f154de95f507d8be310569d20" title=" " alt="" coords="639,35,840,75"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="591,34,625,38,625,43,590,39"/>
+<area shape="poly" id="edge5_Node000004_Node000002" title=" " alt="" coords="639,65,525,68,402,60,356,51,357,46,403,55,525,62,638,60"/>
 </map>

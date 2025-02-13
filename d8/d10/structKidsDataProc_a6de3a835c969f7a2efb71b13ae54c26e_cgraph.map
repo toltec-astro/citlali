@@ -1,4 +1,5 @@
 <map id="KidsDataProc::get_rawobs_meta" name="KidsDataProc::get_rawobs_meta">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,239,32"/>
-<area shape="rect" id="node2" href="$dc/dcf/structRawObs.html#a7804170dfb92be1d6e89cab044119cc8" title=" " alt="" coords="287,5,425,32"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,239,31"/>
+<area shape="rect" id="Node000002" href="$dc/dcf/structRawObs.html#a7804170dfb92be1d6e89cab044119cc8" title=" " alt="" coords="287,5,425,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="239,15,273,15,273,21,239,21"/>
 </map>

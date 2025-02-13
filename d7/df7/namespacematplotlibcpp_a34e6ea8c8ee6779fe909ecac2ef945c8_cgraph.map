@@ -1,6 +1,11 @@
 <map id="matplotlibcpp::figure" name="matplotlibcpp::figure">
-<area shape="rect" id="node1" title=" " alt="" coords="5,13,163,39"/>
-<area shape="rect" id="node2" href="$d9/d02/structmatplotlibcpp_1_1detail_1_1__interpreter.html#a3ddc4e50c23738307da3dc64c47cdbc0" title=" " alt="" coords="211,5,368,47"/>
-<area shape="rect" id="node3" href="$d9/d02/structmatplotlibcpp_1_1detail_1_1__interpreter.html#accf36ff8fd9f1bd757d028fa4a14be40" title=" " alt="" coords="416,5,604,47"/>
-<area shape="rect" id="node4" href="$d9/d02/structmatplotlibcpp_1_1detail_1_1__interpreter.html#abd9d036f154de95f507d8be310569d20" title=" " alt="" coords="652,5,853,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,13,163,38"/>
+<area shape="rect" id="Node000002" href="$d9/d02/structmatplotlibcpp_1_1detail_1_1__interpreter.html#a46fa5e29f74065df085dd3a808fa4dc4" title=" " alt="" coords="211,5,368,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="163,23,197,23,197,28,163,28"/>
+<area shape="rect" id="Node000003" href="$d9/d02/structmatplotlibcpp_1_1detail_1_1__interpreter.html#a32cb66eeebd22a4b8477aa682163ec2b" title=" " alt="" coords="416,5,604,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="368,31,402,32,402,37,368,37"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="416,19,382,19,382,14,416,14"/>
+<area shape="rect" id="Node000004" href="$d9/d02/structmatplotlibcpp_1_1detail_1_1__interpreter.html#abd9d036f154de95f507d8be310569d20" title=" " alt="" coords="652,35,853,75"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="604,34,639,38,638,43,604,39"/>
+<area shape="poly" id="edge5_Node000004_Node000002" title=" " alt="" coords="652,65,538,68,416,60,369,51,370,46,416,55,538,62,652,60"/>
 </map>

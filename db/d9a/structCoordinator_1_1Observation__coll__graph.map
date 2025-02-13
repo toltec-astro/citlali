@@ -1,6 +1,10 @@
 <map id="Coordinator::Observation" name="Coordinator::Observation">
-<area shape="rect" id="node1" title="The Observation struct This represents a single observation that contains a set of data items." alt="" coords="17,647,202,739"/>
-<area shape="rect" id="node2" href="$da/def/structConfigMixin.html" title=" " alt="" coords="5,476,213,597"/>
-<area shape="rect" id="node3" href="$d8/db6/structYamlConfig.html" title="The YamlConfig struct This is a thin wrapper around YAML::Node." alt="" coords="41,5,178,229"/>
-<area shape="rect" id="node4" href="$da/def/structConfigMixin.html" title="The mixin class for config handling." alt="" coords="182,292,362,413"/>
+<area shape="rect" id="Node000001" title="The Observation struct This represents a single observation that contains a set of data items." alt="" coords="17,696,194,781"/>
+<area shape="rect" id="Node000002" href="$da/def/structConfigMixin.html" title=" " alt="" coords="5,521,205,647"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="108,660,108,696,103,696,103,660"/>
+<area shape="rect" id="Node000003" href="$d8/db6/structYamlConfig.html" title="The YamlConfig struct This is a thin wrapper around YAML::Node." alt="" coords="41,5,170,271"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="101,271,100,459,102,505,97,505,95,459,96,271"/>
+<area shape="rect" id="Node000004" href="$da/def/structConfigMixin.html" title="The mixin class for config handling." alt="" coords="178,333,350,459"/>
+<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="172,242,220,318,215,321,168,245"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="204,471,160,523,156,519,200,468"/>
 </map>

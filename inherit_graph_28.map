@@ -1,4 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$de/d03/structInterfaceBase.html" title=" " alt="" coords="5,5,220,47"/>
-<area shape="rect" id="node2" href="$df/da2/structLmtInterface.html" title="@ brief Interface to LMT" alt="" coords="268,13,373,39"/>
+<area shape="rect" id="Node000000" href="$de/d03/structInterfaceBase.html" title=" " alt="" coords="5,5,220,45"/>
+<area shape="rect" id="Node000001" href="$df/da2/structLmtInterface.html" title="@ brief Interface to LMT" alt="" coords="268,13,373,38"/>
+<area shape="poly" id="edge31_Node000000_Node000001" title=" " alt="" coords="234,23,268,23,268,28,234,28"/>
 </map>

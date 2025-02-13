@@ -1,9 +1,16 @@
 <map id="src/citlali/core/utils/gauss_models.cpp" name="src/citlali/core/utils/gauss_models.cpp">
-<area shape="rect" id="node1" title=" " alt="" coords="92,5,239,47"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,102,85,129"/>
-<area shape="rect" id="node3" title=" " alt="" coords="110,102,221,129"/>
-<area shape="rect" id="node4" href="$d1/dcd/gauss__models_8h.html" title=" " alt="" coords="245,95,376,136"/>
-<area shape="rect" id="node5" title=" " alt="" coords="165,191,273,218"/>
-<area shape="rect" id="node6" title=" " alt="" coords="314,273,406,300"/>
-<area shape="rect" id="node7" href="$d2/d6f/constants_8h.html" title=" " alt="" coords="348,184,471,225"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="92,5,239,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,101,85,126"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="140,48,74,95,71,90,137,43"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="110,101,221,126"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="168,46,168,87,163,87,163,46"/>
+<area shape="rect" id="Node000004" href="$d1/dcd/gauss__models_8h.html" title=" " alt="" coords="245,93,376,133"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="199,43,268,84,266,89,196,48"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="165,189,273,214"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="292,136,243,181,240,177,288,132"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="314,269,406,295"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="317,133,339,221,352,256,347,257,333,222,312,134"/>
+<area shape="rect" id="Node000007" href="$d2/d6f/constants_8h.html" title=" " alt="" coords="348,181,471,221"/>
+<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="334,132,379,170,376,174,331,136"/>
+<area shape="poly" id="edge7_Node000007_Node000006" title=" " alt="" coords="400,223,377,259,372,256,395,220"/>
 </map>

@@ -1,11 +1,21 @@
 <map id="src/citlali/core/timestream/ptc/sensitivity.cpp" name="src/citlali/core/timestream/ptc/sensitivity.cpp">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,199,47"/>
-<area shape="rect" id="node2" title=" " alt="" coords="16,273,108,300"/>
-<area shape="rect" id="node3" title=" " alt="" coords="65,102,139,129"/>
-<area shape="rect" id="node4" href="$d4/d8d/sensitivity_8h.html" title=" " alt="" coords="179,95,350,136"/>
-<area shape="rect" id="node5" title=" " alt="" coords="100,191,155,218"/>
-<area shape="rect" id="node6" title=" " alt="" coords="179,191,350,218"/>
-<area shape="rect" id="node7" title=" " alt="" coords="374,184,547,225"/>
-<area shape="rect" id="node8" title=" " alt="" coords="571,191,753,218"/>
-<area shape="rect" id="node9" href="$d2/d6f/constants_8h.html" title=" " alt="" coords="777,184,899,225"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,199,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="16,269,108,295"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="85,47,68,69,55,94,47,138,46,182,58,256,53,257,41,182,41,137,50,92,63,66,81,44"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="65,101,139,126"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="105,46,105,87,99,87,99,46"/>
+<area shape="rect" id="Node000004" href="$d4/d8d/sensitivity_8h.html" title=" " alt="" coords="179,93,350,133"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="139,43,218,85,216,89,136,48"/>
+<area shape="poly" id="edge5_Node000004_Node000002" title=" " alt="" coords="180,132,131,151,109,166,89,183,78,200,71,219,65,256,60,255,66,217,73,197,85,180,105,161,129,147,178,127"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="100,189,155,214"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="236,136,159,184,156,179,233,131"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="179,189,350,214"/>
+<area shape="poly" id="edge6_Node000004_Node000006" title=" " alt="" coords="267,134,267,175,262,175,262,134"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="374,181,547,221"/>
+<area shape="poly" id="edge7_Node000004_Node000007" title=" " alt="" coords="309,131,406,173,404,178,307,136"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="571,189,753,214"/>
+<area shape="poly" id="edge8_Node000004_Node000008" title=" " alt="" coords="351,130,596,183,595,188,350,136"/>
+<area shape="rect" id="Node000009" href="$d2/d6f/constants_8h.html" title=" " alt="" coords="777,181,899,221"/>
+<area shape="poly" id="edge9_Node000004_Node000009" title=" " alt="" coords="350,120,536,142,764,179,763,184,535,148,350,126"/>
+<area shape="poly" id="edge10_Node000009_Node000002" title=" " alt="" coords="777,222,765,224,582,249,401,266,122,282,122,276,400,261,581,244,764,219,776,216"/>
 </map>

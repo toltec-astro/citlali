@@ -1,4 +1,13 @@
 <map id="timestream::TCProc::map_to_tod" name="timestream::TCProc::map_to_tod">
-<area shape="rect" id="node1" title=" " alt="" coords="157,5,308,47"/>
-<area shape="rect" id="node2" href="$d2/dbe/classPointing.html#aa5b7a23dbdce6699ef2a1cd23b54c9b6" title=" " alt="" coords="5,13,109,39"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="636,47,787,87"/>
+<area shape="rect" id="Node000002" href="$d9/def/classLali.html#a4a430cd11ba469770e21af79b0199a69" title=" " alt="" coords="474,5,549,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="622,48,548,30,550,24,624,43"/>
+<area shape="rect" id="Node000003" href="$d2/dbe/classPointing.html#aa5b7a23dbdce6699ef2a1cd23b54c9b6" title=" " alt="" coords="459,55,563,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="622,70,564,70,564,65,622,65"/>
+<area shape="rect" id="Node000004" href="$dc/d9e/classBeammap.html#a3015679afa0f29bbb4253b45faa5cb30" title=" " alt="" coords="435,104,588,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="623,92,564,106,563,101,622,87"/>
+<area shape="rect" id="Node000005" href="$dc/d9e/classBeammap.html#a7651fe4687746596facaf17bbeb8bcdb" title=" " alt="" coords="203,104,387,129"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="421,119,387,119,387,114,421,114"/>
+<area shape="rect" id="Node000006" href="$dc/d9e/classBeammap.html#a5d30a47c11b4749b5c1c692872a9cf8e" title=" " alt="" coords="5,104,155,129"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="188,119,155,119,155,114,188,114"/>
 </map>

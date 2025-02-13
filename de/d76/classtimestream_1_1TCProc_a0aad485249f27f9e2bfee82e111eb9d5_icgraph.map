@@ -1,14 +1,35 @@
 <map id="timestream::TCProc::get_grouping" name="timestream::TCProc::get_grouping">
-<area shape="rect" id="node1" title=" " alt="" coords="919,90,1069,131"/>
-<area shape="rect" id="node2" href="$de/d76/classtimestream_1_1TCProc.html#ab9aee88fa87eab13e14b9c95fbbaee13" title=" " alt="" coords="702,57,853,98"/>
-<area shape="rect" id="node10" href="$d7/d4f/classtimestream_1_1PTCProc.html#a5f960c743ddcf5007920b5ea1238d97f" title=" " alt="" coords="698,122,857,163"/>
-<area shape="rect" id="node11" href="$d7/d4f/classtimestream_1_1PTCProc.html#a7e1c5b1a1e8a43979958e6b76d603334" title=" " alt="" coords="684,188,871,215"/>
-<area shape="rect" id="node12" href="$d9/d8c/classtimestream_1_1RTCProc.html#aecdfb307216d34b2d2b9e88950edf287" title=" " alt="" coords="684,5,871,32"/>
-<area shape="rect" id="node3" href="$d9/def/classLali.html#a4a430cd11ba469770e21af79b0199a69" title=" " alt="" coords="498,5,573,32"/>
-<area shape="rect" id="node4" href="$d2/dbe/classPointing.html#aa5b7a23dbdce6699ef2a1cd23b54c9b6" title=" " alt="" coords="483,107,587,133"/>
-<area shape="rect" id="node5" href="$dc/d9e/classBeammap.html#a3015679afa0f29bbb4253b45faa5cb30" title=" " alt="" coords="459,157,612,184"/>
-<area shape="rect" id="node8" href="$dc/d9e/classBeammap.html#af6c7c69600b4550b84eba0d29b15133e" title=" " alt="" coords="435,56,636,83"/>
-<area shape="rect" id="node6" href="$dc/d9e/classBeammap.html#a7651fe4687746596facaf17bbeb8bcdb" title=" " alt="" coords="203,136,387,163"/>
-<area shape="rect" id="node7" href="$dc/d9e/classBeammap.html#a5d30a47c11b4749b5c1c692872a9cf8e" title=" " alt="" coords="5,107,155,133"/>
-<area shape="rect" id="node9" href="$dc/d9e/classBeammap.html#a58e3b98fd0e2d25a88228e58720efe9f" title=" " alt="" coords="208,59,381,101"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="919,92,1069,132"/>
+<area shape="rect" id="Node000002" href="$de/d76/classtimestream_1_1TCProc.html#ab9aee88fa87eab13e14b9c95fbbaee13" title=" " alt="" coords="702,120,853,160"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="905,126,853,133,852,128,904,121"/>
+<area shape="rect" id="Node000010" href="$d7/d4f/classtimestream_1_1PTCProc.html#ac289d82825a93b74f1190e6bad73c07b" title=" " alt="" coords="698,5,857,45"/>
+<area shape="poly" id="edge10_Node000001_Node000010" title=" " alt="" coords="937,89,870,60,838,48,840,43,872,55,939,84"/>
+<area shape="rect" id="Node000011" href="$d7/d4f/classtimestream_1_1PTCProc.html#a7e1c5b1a1e8a43979958e6b76d603334" title=" " alt="" coords="684,70,871,95"/>
+<area shape="poly" id="edge14_Node000001_Node000011" title=" " alt="" coords="905,103,871,98,871,93,905,97"/>
+<area shape="rect" id="Node000012" href="$d9/d8c/classtimestream_1_1RTCProc.html#aecdfb307216d34b2d2b9e88950edf287" title=" " alt="" coords="684,185,871,210"/>
+<area shape="poly" id="edge18_Node000001_Node000012" title=" " alt="" coords="945,141,872,174,833,187,831,182,870,170,943,136"/>
+<area shape="rect" id="Node000003" href="$d9/def/classLali.html#a4a430cd11ba469770e21af79b0199a69" title=" " alt="" coords="498,78,573,103"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="688,125,572,101,573,96,689,119"/>
+<area shape="rect" id="Node000004" href="$d2/dbe/classPointing.html#aa5b7a23dbdce6699ef2a1cd23b54c9b6" title=" " alt="" coords="483,127,587,153"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="688,143,588,143,588,137,688,137"/>
+<area shape="rect" id="Node000005" href="$dc/d9e/classBeammap.html#a3015679afa0f29bbb4253b45faa5cb30" title=" " alt="" coords="459,29,612,54"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="698,117,683,109,668,98,658,87,649,77,635,68,607,57,609,52,637,63,652,73,662,84,672,94,685,104,700,112"/>
+<area shape="rect" id="Node000008" href="$dc/d9e/classBeammap.html#af6c7c69600b4550b84eba0d29b15133e" title=" " alt="" coords="435,177,636,202"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="689,161,599,179,598,174,688,155"/>
+<area shape="rect" id="Node000006" href="$dc/d9e/classBeammap.html#a7651fe4687746596facaf17bbeb8bcdb" title=" " alt="" coords="203,51,387,77"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="445,53,387,58,387,53,444,47"/>
+<area shape="rect" id="Node000007" href="$dc/d9e/classBeammap.html#a5d30a47c11b4749b5c1c692872a9cf8e" title=" " alt="" coords="5,103,155,129"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="229,83,134,106,132,101,228,77"/>
+<area shape="rect" id="Node000009" href="$dc/d9e/classBeammap.html#a58e3b98fd0e2d25a88228e58720efe9f" title=" " alt="" coords="208,124,381,164"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="453,177,381,163,382,158,454,171"/>
+<area shape="poly" id="edge9_Node000009_Node000007" title=" " alt="" coords="194,134,154,128,155,123,195,128"/>
+<area shape="poly" id="edge11_Node000010_Node000003" title=" " alt="" coords="695,52,637,68,574,84,572,79,635,63,694,47"/>
+<area shape="poly" id="edge12_Node000010_Node000004" title=" " alt="" coords="694,54,686,59,671,73,663,88,654,103,637,117,613,129,588,136,587,131,612,124,635,112,649,99,658,85,667,70,682,55,692,49"/>
+<area shape="poly" id="edge13_Node000010_Node000005" title=" " alt="" coords="684,34,613,39,612,34,684,29"/>
+<area shape="poly" id="edge15_Node000011_Node000003" title=" " alt="" coords="670,89,573,92,573,87,670,84"/>
+<area shape="poly" id="edge16_Node000011_Node000004" title=" " alt="" coords="710,101,588,130,587,125,709,96"/>
+<area shape="poly" id="edge17_Node000011_Node000005" title=" " alt="" coords="689,70,610,57,611,51,689,65"/>
+<area shape="poly" id="edge19_Node000012_Node000003" title=" " alt="" coords="697,182,682,174,667,160,658,145,649,130,635,117,604,104,572,96,573,91,606,98,637,112,654,127,662,142,671,156,686,170,699,177"/>
+<area shape="poly" id="edge20_Node000012_Node000004" title=" " alt="" coords="709,184,587,155,588,150,710,179"/>
+<area shape="poly" id="edge21_Node000012_Node000008" title=" " alt="" coords="670,196,636,195,636,190,670,191"/>
 </map>

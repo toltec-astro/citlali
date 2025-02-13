@@ -1,4 +1,5 @@
 <map id="check_allowed" name="check_allowed">
-<area shape="rect" id="node1" title=" " alt="" coords="5,13,124,39"/>
-<area shape="rect" id="node2" href="$dd/d06/namespaceengine__utils.html#a695c8acaca56e7b33daddac1f4cd0cd0" title=" " alt="" coords="172,5,337,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,13,124,38"/>
+<area shape="rect" id="Node000002" href="$dd/d06/namespaceengine__utils.html#a695c8acaca56e7b33daddac1f4cd0cd0" title=" " alt="" coords="172,5,337,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="124,23,158,23,158,28,124,28"/>
 </map>

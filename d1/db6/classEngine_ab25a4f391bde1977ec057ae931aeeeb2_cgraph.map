@@ -1,5 +1,8 @@
 <map id="Engine::get_rtc_config" name="Engine::get_rtc_config">
-<area shape="rect" id="node1" title=" " alt="" coords="5,42,171,69"/>
-<area shape="rect" id="node2" href="$d9/d8c/classtimestream_1_1RTCProc.html#a40474eb20c40662452b05dcaa76012b9" title=" " alt="" coords="219,5,377,47"/>
-<area shape="rect" id="node3" href="$db/d16/config_8h.html#a4353353bcb6b84fa30420c315108b9c3" title=" " alt="" coords="425,42,557,69"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,42,171,67"/>
+<area shape="rect" id="Node000002" href="$d9/d8c/classtimestream_1_1RTCProc.html#a64e500a08b3c64b155f34e9f13547081" title=" " alt="" coords="219,5,377,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="170,41,205,36,206,41,171,46"/>
+<area shape="rect" id="Node000003" href="$db/d16/config_8h.html#a4353353bcb6b84fa30420c315108b9c3" title=" " alt="" coords="425,42,557,67"/>
+<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="171,54,219,55,377,55,412,54,412,59,377,60,219,60,171,59"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="378,35,412,40,411,45,377,40"/>
 </map>

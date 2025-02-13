@@ -1,7 +1,11 @@
 <map id="KidsDataProc::reduce_rawobs" name="KidsDataProc::reduce_rawobs">
-<area shape="rect" id="node1" title=" " alt="" coords="5,27,167,69"/>
-<area shape="rect" id="node2" href="$dc/dcf/structRawObs.html#a7804170dfb92be1d6e89cab044119cc8" title=" " alt="" coords="226,5,365,32"/>
-<area shape="rect" id="node3" href="$d8/d10/structKidsDataProc.html#aa795ee8ca31a31d608b25270d80515b7" title=" " alt="" coords="215,57,376,98"/>
-<area shape="rect" id="node4" href="$d7/ddd/structRawObs_1_1DataItem.html#a7077c2137411502fe1398dd979e1050c" title=" " alt="" coords="424,39,625,65"/>
-<area shape="rect" id="node5" href="$d8/d10/structKidsDataProc.html#a5729f8cd403c07780b9485fdbe8ea5b6" title=" " alt="" coords="446,89,603,116"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,27,167,67"/>
+<area shape="rect" id="Node000002" href="$dc/dcf/structRawObs.html#a7804170dfb92be1d6e89cab044119cc8" title=" " alt="" coords="226,5,365,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="167,33,212,27,213,32,168,39"/>
+<area shape="rect" id="Node000003" href="$d8/d10/structKidsDataProc.html#aa795ee8ca31a31d608b25270d80515b7" title=" " alt="" coords="215,55,376,95"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="168,56,202,60,201,65,167,61"/>
+<area shape="rect" id="Node000004" href="$d7/ddd/structRawObs_1_1DataItem.html#a7d3b45ff623f5cf173a636481099d29f" title=" " alt="" coords="424,37,625,63"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="376,64,410,60,411,65,377,69"/>
+<area shape="rect" id="Node000005" href="$d8/d10/structKidsDataProc.html#a0106fa30a7f97446bdbc97a3c3993aa8" title=" " alt="" coords="446,87,603,112"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="377,81,433,87,432,92,376,86"/>
 </map>

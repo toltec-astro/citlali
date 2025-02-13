@@ -1,4 +1,5 @@
 <map id="timestream::RTCProc" name="timestream::RTCProc">
-<area shape="rect" id="node1" title=" " alt="" coords="10,497,202,868"/>
-<area shape="rect" id="node2" href="$de/d76/classtimestream_1_1TCProc.html" title=" " alt="" coords="5,5,207,449"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="10,619,194,1084"/>
+<area shape="rect" id="Node000002" href="$de/d76/classtimestream_1_1TCProc.html" title=" " alt="" coords="5,5,199,571"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="105,584,105,619,99,619,99,584"/>
 </map>

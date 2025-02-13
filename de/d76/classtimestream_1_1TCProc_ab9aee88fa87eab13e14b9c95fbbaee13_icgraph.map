@@ -1,10 +1,18 @@
 <map id="timestream::TCProc::remove_bad_dets" name="timestream::TCProc::remove_bad_dets">
-<area shape="rect" id="node1" title=" " alt="" coords="684,74,835,115"/>
-<area shape="rect" id="node2" href="$d9/def/classLali.html#a4a430cd11ba469770e21af79b0199a69" title=" " alt="" coords="498,5,573,32"/>
-<area shape="rect" id="node3" href="$d2/dbe/classPointing.html#aa5b7a23dbdce6699ef2a1cd23b54c9b6" title=" " alt="" coords="483,56,587,83"/>
-<area shape="rect" id="node4" href="$dc/d9e/classBeammap.html#a3015679afa0f29bbb4253b45faa5cb30" title=" " alt="" coords="459,107,612,133"/>
-<area shape="rect" id="node7" href="$dc/d9e/classBeammap.html#af6c7c69600b4550b84eba0d29b15133e" title=" " alt="" coords="435,159,636,185"/>
-<area shape="rect" id="node5" href="$dc/d9e/classBeammap.html#a7651fe4687746596facaf17bbeb8bcdb" title=" " alt="" coords="203,104,387,131"/>
-<area shape="rect" id="node6" href="$dc/d9e/classBeammap.html#a5d30a47c11b4749b5c1c692872a9cf8e" title=" " alt="" coords="5,133,155,160"/>
-<area shape="rect" id="node8" href="$dc/d9e/classBeammap.html#a58e3b98fd0e2d25a88228e58720efe9f" title=" " alt="" coords="208,155,381,197"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="684,73,835,113"/>
+<area shape="rect" id="Node000002" href="$d9/def/classLali.html#a4a430cd11ba469770e21af79b0199a69" title=" " alt="" coords="498,5,573,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="701,70,635,45,572,28,574,23,637,39,703,65"/>
+<area shape="rect" id="Node000003" href="$d2/dbe/classPointing.html#aa5b7a23dbdce6699ef2a1cd23b54c9b6" title=" " alt="" coords="483,55,587,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="670,85,587,76,588,70,670,80"/>
+<area shape="rect" id="Node000004" href="$dc/d9e/classBeammap.html#a3015679afa0f29bbb4253b45faa5cb30" title=" " alt="" coords="459,104,612,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="670,105,613,111,612,106,670,100"/>
+<area shape="rect" id="Node000007" href="$dc/d9e/classBeammap.html#af6c7c69600b4550b84eba0d29b15133e" title=" " alt="" coords="435,155,636,180"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="700,121,637,145,593,157,591,152,635,139,699,116"/>
+<area shape="rect" id="Node000005" href="$dc/d9e/classBeammap.html#a7651fe4687746596facaf17bbeb8bcdb" title=" " alt="" coords="203,101,387,127"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="445,118,387,118,387,112,445,113"/>
+<area shape="rect" id="Node000006" href="$dc/d9e/classBeammap.html#a5d30a47c11b4749b5c1c692872a9cf8e" title=" " alt="" coords="5,131,155,156"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="189,131,156,136,155,130,188,126"/>
+<area shape="rect" id="Node000008" href="$dc/d9e/classBeammap.html#a58e3b98fd0e2d25a88228e58720efe9f" title=" " alt="" coords="208,151,381,191"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="421,172,382,173,382,167,421,167"/>
+<area shape="poly" id="edge8_Node000008_Node000006" title=" " alt="" coords="194,161,154,156,155,150,195,156"/>
 </map>

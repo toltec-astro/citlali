@@ -1,9 +1,15 @@
 <map id="timestream::TimeStream&lt; Derived &gt;" name="timestream::TimeStream&lt; Derived &gt;">
-<area shape="rect" id="node1" title="base class for time stream data" alt="" coords="135,147,325,488"/>
-<area shape="rect" id="node4" href="$de/d07/structtimestream_1_1TimeStream.html" title=" " alt="" coords="28,565,219,921"/>
-<area shape="rect" id="node6" href="$de/d07/structtimestream_1_1TimeStream.html" title=" " alt="" coords="257,565,448,921"/>
-<area shape="rect" id="node2" href="$d6/d8a/structtimestream_1_1internal_1_1TCDataBase.html" title=" " alt="" coords="21,5,212,97"/>
-<area shape="rect" id="node3" title=" " alt="" coords="237,5,450,97"/>
-<area shape="rect" id="node5" href="$da/d37/structtimestream_1_1TCData_3_01TCDataKind_1_1RTC_00_01RefType_01_4.html" title=" " alt="" coords="5,1000,225,1107"/>
-<area shape="rect" id="node7" href="$dc/d5d/structtimestream_1_1TCData_3_01TCDataKind_1_1PTC_00_01RefType_01_4.html" title=" " alt="" coords="249,971,469,1136"/>
+<area shape="rect" id="Node000001" title="base class for time stream data" alt="" coords="130,135,311,555"/>
+<area shape="rect" id="Node000004" href="$de/d07/structtimestream_1_1TimeStream.html" title=" " alt="" coords="29,632,210,1067"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="145,569,143,579,134,632,129,631,138,578,140,568"/>
+<area shape="rect" id="Node000006" href="$de/d07/structtimestream_1_1TimeStream.html" title=" " alt="" coords="249,632,430,1067"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="298,567,301,578,312,631,307,632,295,579,293,569"/>
+<area shape="rect" id="Node000002" href="$d6/d8a/structtimestream_1_1internal_1_1TCDataBase.html" title=" " alt="" coords="20,5,203,85"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="133,97,146,133,141,135,128,99"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="227,5,433,85"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="314,99,300,135,295,133,309,97"/>
+<area shape="rect" id="Node000005" href="$dc/d5d/structtimestream_1_1TCData_3_01TCDataKind_1_1PTC_00_01RefType_01_4.html" title=" " alt="" coords="5,1116,217,1296"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="117,1080,116,1116,111,1116,111,1080"/>
+<area shape="rect" id="Node000007" href="$da/d37/structtimestream_1_1TCData_3_01TCDataKind_1_1RTC_00_01RefType_01_4.html" title=" " alt="" coords="241,1156,453,1256"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="347,1080,349,1155,344,1155,342,1080"/>
 </map>

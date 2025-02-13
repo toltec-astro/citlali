@@ -1,4 +1,5 @@
 <map id="timestream::TCData&lt; kind_, std::enable_if_t&lt; tula::enum_utils::is_compound_v&lt; kind_ &gt; &gt; &gt;" name="timestream::TCData&lt; kind_, std::enable_if_t&lt; tula::enum_utils::is_compound_v&lt; kind_ &gt; &gt; &gt;">
-<area shape="rect" id="node1" title="data class of runtime variant kind." alt="" coords="5,160,232,296"/>
-<area shape="rect" id="node2" title=" " alt="" coords="33,5,205,112"/>
+<area shape="rect" id="Node000001" title="data class of runtime variant kind." alt="" coords="5,148,224,277"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="33,5,197,100"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="117,114,117,148,112,148,112,114"/>
 </map>

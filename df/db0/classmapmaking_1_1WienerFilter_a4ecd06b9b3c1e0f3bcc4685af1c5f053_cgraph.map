@@ -1,10 +1,19 @@
 <map id="mapmaking::WienerFilter::make_template" name="mapmaking::WienerFilter::make_template">
-<area shape="rect" id="node1" title=" " alt="" coords="5,71,192,112"/>
-<area shape="rect" id="node2" href="$df/db0/classmapmaking_1_1WienerFilter.html#a16e654e6fad7b842e9fd4ca5dab67415" title=" " alt="" coords="245,5,432,47"/>
-<area shape="rect" id="node4" href="$df/db0/classmapmaking_1_1WienerFilter.html#a868e70ff478492337a5bea35004df498" title=" " alt="" coords="240,71,437,112"/>
-<area shape="rect" id="node5" href="$df/db0/classmapmaking_1_1WienerFilter.html#aeae5d1232649676a98008b41d30faf53" title=" " alt="" coords="245,136,432,177"/>
-<area shape="rect" id="node3" href="$dd/d06/namespaceengine__utils.html#a0764cb525f21c83c7caf0ade7675d8e5" title=" " alt="" coords="490,78,653,105"/>
-<area shape="rect" id="node6" href="$d9/dbd/classengine__utils_1_1mapFitter.html#a26c3e6b6d90d22afc33001e01967fe54" title=" " alt="" coords="485,136,657,177"/>
-<area shape="rect" id="node7" href="$dd/d06/namespaceengine__utils.html#ad9c640b3ad780cec01b1644b15f1ac58" title=" " alt="" coords="724,103,859,144"/>
-<area shape="rect" id="node8" href="$d9/dbd/classengine__utils_1_1mapFitter.html#a42f361491f2fb5dc6c55922921e6b891" title=" " alt="" coords="705,168,877,209"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,69,192,109"/>
+<area shape="rect" id="Node000002" href="$df/db0/classmapmaking_1_1WienerFilter.html#a16e654e6fad7b842e9fd4ca5dab67415" title=" " alt="" coords="245,5,432,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="174,67,249,46,251,51,175,72"/>
+<area shape="rect" id="Node000004" href="$df/db0/classmapmaking_1_1WienerFilter.html#a868e70ff478492337a5bea35004df498" title=" " alt="" coords="240,69,437,109"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="192,87,226,87,226,92,192,92"/>
+<area shape="rect" id="Node000005" href="$df/db0/classmapmaking_1_1WienerFilter.html#aeae5d1232649676a98008b41d30faf53" title=" " alt="" coords="245,133,432,173"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="175,107,251,127,249,132,174,112"/>
+<area shape="rect" id="Node000003" href="$dd/d06/namespaceengine__utils.html#a0764cb525f21c83c7caf0ade7675d8e5" title=" " alt="" coords="490,77,653,102"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="413,43,512,70,511,76,411,48"/>
+<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="438,87,476,87,476,92,438,92"/>
+<area shape="poly" id="edge9_Node000005_Node000003" title=" " alt="" coords="411,131,511,103,512,108,413,136"/>
+<area shape="rect" id="Node000006" href="$d9/dbd/classengine__utils_1_1mapFitter.html#a26c3e6b6d90d22afc33001e01967fe54" title=" " alt="" coords="485,133,657,173"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="432,151,472,151,472,156,432,156"/>
+<area shape="rect" id="Node000007" href="$dd/d06/namespaceengine__utils.html#ad9c640b3ad780cec01b1644b15f1ac58" title=" " alt="" coords="724,101,859,141"/>
+<area shape="poly" id="edge7_Node000006_Node000007" title=" " alt="" coords="658,138,710,130,711,136,658,143"/>
+<area shape="rect" id="Node000008" href="$d9/dbd/classengine__utils_1_1mapFitter.html#a42f361491f2fb5dc6c55922921e6b891" title=" " alt="" coords="705,165,877,205"/>
+<area shape="poly" id="edge8_Node000006_Node000008" title=" " alt="" coords="658,163,692,168,692,174,658,169"/>
 </map>

@@ -1,0 +1,15 @@
+<map id="mapmaking::NaiveMapmaker::add_sparse_to_dense" name="mapmaking::NaiveMapmaker::add_sparse_to_dense">
+<area shape="rect" id="Node000001" title=" " alt="" coords="899,47,1113,87"/>
+<area shape="rect" id="Node000002" href="$dd/db4/classmapmaking_1_1NaiveMapmaker.html#aa50ab57bfbb0688c7b9d94e01ca983f2" title=" " alt="" coords="636,47,851,87"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="885,70,851,70,851,65,885,65"/>
+<area shape="rect" id="Node000003" href="$d9/def/classLali.html#a4a430cd11ba469770e21af79b0199a69" title=" " alt="" coords="474,5,549,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="635,47,549,28,550,23,636,42"/>
+<area shape="rect" id="Node000004" href="$d2/dbe/classPointing.html#aa5b7a23dbdce6699ef2a1cd23b54c9b6" title=" " alt="" coords="459,55,563,80"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="622,70,564,70,564,65,622,65"/>
+<area shape="rect" id="Node000005" href="$dc/d9e/classBeammap.html#a3015679afa0f29bbb4253b45faa5cb30" title=" " alt="" coords="435,104,588,129"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="636,93,572,107,571,101,635,88"/>
+<area shape="rect" id="Node000006" href="$dc/d9e/classBeammap.html#a7651fe4687746596facaf17bbeb8bcdb" title=" " alt="" coords="203,104,387,129"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="421,119,387,119,387,114,421,114"/>
+<area shape="rect" id="Node000007" href="$dc/d9e/classBeammap.html#a5d30a47c11b4749b5c1c692872a9cf8e" title=" " alt="" coords="5,104,155,129"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="188,119,155,119,155,114,188,114"/>
+</map>

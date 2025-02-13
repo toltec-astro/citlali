@@ -1,6 +1,9 @@
 <map id="main" name="main">
-<area shape="rect" id="node1" title=" " alt="" coords="5,56,60,83"/>
-<area shape="rect" id="node2" href="$db/dc7/kids__main_8cpp.html#ad001abee502c804346b96729f7f27891" title=" " alt="" coords="115,5,208,32"/>
-<area shape="rect" id="node3" href="$db/dc7/kids__main_8cpp.html#ab28d8bea96ed3376cf5b57beefa7dbcb" title=" " alt="" coords="108,56,215,83"/>
-<area shape="rect" id="node4" href="$db/dc7/kids__main_8cpp.html#afdb892c59afbf844b94cc2b6b94f602a" title=" " alt="" coords="116,107,207,133"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,55,60,80"/>
+<area shape="rect" id="Node000002" href="$db/dc7/kids__main_8cpp.html#ad001abee502c804346b96729f7f27891" title=" " alt="" coords="115,5,208,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="59,55,113,33,115,38,61,60"/>
+<area shape="rect" id="Node000003" href="$db/dc7/kids__main_8cpp.html#ab28d8bea96ed3376cf5b57beefa7dbcb" title=" " alt="" coords="108,55,215,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="60,65,94,65,94,70,60,70"/>
+<area shape="rect" id="Node000004" href="$db/dc7/kids__main_8cpp.html#afdb892c59afbf844b94cc2b6b94f602a" title=" " alt="" coords="116,104,207,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="61,75,115,96,113,101,59,80"/>
 </map>

@@ -1,5 +1,7 @@
 <map id="engine::Diagnostics::calc_stats" name="engine::Diagnostics::calc_stats">
-<area shape="rect" id="node1" title=" " alt="" coords="5,27,156,69"/>
-<area shape="rect" id="node2" href="$dd/d06/namespaceengine__utils.html#a3984d08902ccc268f7ba7878ebe1e2de" title=" " alt="" coords="204,5,371,32"/>
-<area shape="rect" id="node3" href="$dd/d06/namespaceengine__utils.html#ad9c640b3ad780cec01b1644b15f1ac58" title=" " alt="" coords="220,57,355,98"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,27,156,67"/>
+<area shape="rect" id="Node000002" href="$dd/d06/namespaceengine__utils.html#a3984d08902ccc268f7ba7878ebe1e2de" title=" " alt="" coords="204,5,371,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="156,34,190,29,191,34,157,39"/>
+<area shape="rect" id="Node000003" href="$dd/d06/namespaceengine__utils.html#ad9c640b3ad780cec01b1644b15f1ac58" title=" " alt="" coords="220,55,355,95"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="157,55,207,62,206,67,156,60"/>
 </map>

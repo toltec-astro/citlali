@@ -1,4 +1,7 @@
 <map id="RawObs::CalItem::type" name="RawObs::CalItem::type">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,176,32"/>
-<area shape="rect" id="node2" href="$de/dc9/structRawObs_1_1CalItem.html#ac4c1f49180854248e6f0eff52d27fa14" title=" " alt="" coords="224,5,412,32"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,31,176,56"/>
+<area shape="rect" id="Node000002" href="$de/dc9/structRawObs_1_1CalItem.html#ab8f74a210f0499edeaf4cb36903fc0ee" title=" " alt="" coords="237,5,399,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="176,31,223,26,223,31,177,36"/>
+<area shape="rect" id="Node000003" href="$de/dc9/structRawObs_1_1CalItem.html#ae125647f7c8431ad97b2209a199c720b" title=" " alt="" coords="224,55,412,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="177,50,211,53,210,59,176,55"/>
 </map>

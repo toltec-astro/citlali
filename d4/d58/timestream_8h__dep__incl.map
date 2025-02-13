@@ -1,18 +1,47 @@
 <map id="include/citlali/core/timestream/timestream.h" name="include/citlali/core/timestream/timestream.h">
-<area shape="rect" id="node1" title=" " alt="" coords="437,5,632,47"/>
-<area shape="rect" id="node2" href="$d0/d5b/diagnostics_8h.html" title=" " alt="" coords="5,184,165,225"/>
-<area shape="rect" id="node3" href="$d1/d55/engine_8h.html" title=" " alt="" coords="671,273,812,315"/>
-<area shape="rect" id="node8" href="$dc/dac/io_8h.html" title=" " alt="" coords="240,95,381,136"/>
-<area shape="rect" id="node10" href="$de/d23/jinc__mm_8h.html" title=" " alt="" coords="456,184,632,225"/>
-<area shape="rect" id="node11" href="$db/d5c/ml__mm_8h.html" title=" " alt="" coords="656,184,827,225"/>
-<area shape="rect" id="node12" href="$d8/d6d/naive__mm_8h.html" title=" " alt="" coords="507,95,696,136"/>
-<area shape="rect" id="node13" href="$dd/da0/ptcproc_8h.html" title=" " alt="" coords="721,95,911,136"/>
-<area shape="rect" id="node14" href="$d7/dbb/calibrate_8h.html" title=" " alt="" coords="935,95,1131,136"/>
-<area shape="rect" id="node15" href="$d8/d80/rtcproc_8h.html" title=" " alt="" coords="1056,184,1240,225"/>
-<area shape="rect" id="node16" href="$d6/d71/polarization_8h.html" title=" " alt="" coords="1207,95,1423,136"/>
-<area shape="rect" id="node4" href="$d8/d4f/beammap_8h.html" title=" " alt="" coords="495,363,647,404"/>
-<area shape="rect" id="node6" href="$db/de9/lali_8h.html" title=" " alt="" coords="671,363,812,404"/>
-<area shape="rect" id="node7" href="$da/dc5/engine_2pointing_8h.html" title=" " alt="" coords="836,363,977,404"/>
-<area shape="rect" id="node5" href="$d8/d57/src_2citlali_2cli_2main_8cpp.html" title=" " alt="" coords="659,452,823,479"/>
-<area shape="rect" id="node9" href="$d4/dbd/kidsproc_8h.html" title=" " alt="" coords="291,184,432,225"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="437,5,632,45"/>
+<area shape="rect" id="Node000002" href="$d0/d5b/diagnostics_8h.html" title=" " alt="" coords="5,181,165,221"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="424,33,366,39,305,51,243,70,185,96,158,115,134,138,99,183,95,180,130,134,155,111,183,91,241,65,304,46,366,34,423,27"/>
+<area shape="rect" id="Node000003" href="$d1/d55/engine_8h.html" title=" " alt="" coords="671,269,812,309"/>
+<area shape="poly" id="edge9_Node000001_Node000003" title=" " alt="" coords="424,39,365,47,307,59,259,75,242,85,230,95,225,104,225,112,231,133,240,182,249,201,267,219,297,235,339,248,448,268,567,279,671,284,671,289,567,284,447,273,338,254,295,240,264,223,244,204,235,184,225,134,220,112,220,102,226,92,239,80,257,70,305,54,364,42,424,34"/>
+<area shape="rect" id="Node000008" href="$dc/dac/io_8h.html" title=" " alt="" coords="240,93,381,133"/>
+<area shape="poly" id="edge10_Node000001_Node000008" title=" " alt="" coords="474,53,361,96,359,91,472,48"/>
+<area shape="rect" id="Node000010" href="$de/d23/jinc__mm_8h.html" title=" " alt="" coords="456,181,632,221"/>
+<area shape="poly" id="edge14_Node000001_Node000010" title=" " alt="" coords="488,55,468,73,453,94,447,113,453,132,475,159,503,179,500,183,471,163,448,135,442,113,448,92,464,69,485,51"/>
+<area shape="rect" id="Node000011" href="$db/d5c/ml__mm_8h.html" title=" " alt="" coords="656,181,827,221"/>
+<area shape="poly" id="edge16_Node000001_Node000011" title=" " alt="" coords="511,58,500,76,492,96,490,115,497,132,516,142,555,155,656,180,655,185,553,160,514,147,493,135,485,115,486,94,495,74,506,55"/>
+<area shape="rect" id="Node000012" href="$d8/d6d/naive__mm_8h.html" title=" " alt="" coords="507,93,696,133"/>
+<area shape="poly" id="edge18_Node000001_Node000012" title=" " alt="" coords="560,55,589,91,584,95,556,58"/>
+<area shape="rect" id="Node000013" href="$dd/da0/ptcproc_8h.html" title=" " alt="" coords="721,93,911,133"/>
+<area shape="poly" id="edge20_Node000001_Node000013" title=" " alt="" coords="610,47,755,91,754,96,609,52"/>
+<area shape="rect" id="Node000014" href="$d7/dbb/calibrate_8h.html" title=" " alt="" coords="935,93,1131,133"/>
+<area shape="poly" id="edge22_Node000001_Node000014" title=" " alt="" coords="647,43,936,93,935,98,646,48"/>
+<area shape="rect" id="Node000015" href="$d8/d80/rtcproc_8h.html" title=" " alt="" coords="1056,181,1240,221"/>
+<area shape="poly" id="edge29_Node000001_Node000015" title=" " alt="" coords="646,29,789,37,944,49,1075,67,1119,78,1145,91,1157,113,1161,137,1156,181,1151,181,1156,137,1152,114,1141,95,1118,83,1074,72,944,55,789,42,646,34"/>
+<area shape="rect" id="Node000016" href="$d6/d71/polarization_8h.html" title=" " alt="" coords="1207,93,1423,133"/>
+<area shape="poly" id="edge26_Node000001_Node000016" title=" " alt="" coords="646,34,895,58,1188,91,1207,93,1206,98,1188,96,894,63,645,39"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="179,218,184,219,453,255,671,278,670,284,452,260,184,224,178,223"/>
+<area shape="rect" id="Node000004" href="$d8/d4f/beammap_8h.html" title=" " alt="" coords="495,357,647,397"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="693,318,609,360,607,355,690,313"/>
+<area shape="rect" id="Node000006" href="$db/de9/lali_8h.html" title=" " alt="" coords="671,357,812,397"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="744,323,744,357,739,357,739,323"/>
+<area shape="rect" id="Node000007" href="$da/dc5/engine_2pointing_8h.html" title=" " alt="" coords="836,357,977,397"/>
+<area shape="poly" id="edge7_Node000003_Node000007" title=" " alt="" coords="791,313,872,355,869,360,789,318"/>
+<area shape="rect" id="Node000005" href="$d8/d57/src_2citlali_2cli_2main_8cpp.html" title=" " alt="" coords="659,445,823,471"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="625,401,717,443,715,448,623,405"/>
+<area shape="poly" id="edge6_Node000006_Node000005" title=" " alt="" coords="744,411,744,445,739,445,739,411"/>
+<area shape="poly" id="edge8_Node000007_Node000005" title=" " alt="" coords="856,406,767,448,765,443,854,401"/>
+<area shape="poly" id="edge11_Node000008_Node000003" title=" " alt="" coords="290,146,280,165,273,184,273,203,281,220,306,238,345,253,394,265,450,274,567,283,670,286,670,291,567,289,449,279,393,270,344,259,304,243,277,223,268,204,268,183,275,163,286,144"/>
+<area shape="rect" id="Node000009" href="$d4/dbd/kidsproc_8h.html" title=" " alt="" coords="291,181,432,221"/>
+<area shape="poly" id="edge12_Node000008_Node000009" title=" " alt="" coords="331,144,352,180,348,182,327,147"/>
+<area shape="poly" id="edge13_Node000009_Node000003" title=" " alt="" coords="446,219,671,270,670,275,445,224"/>
+<area shape="poly" id="edge15_Node000010_Node000003" title=" " alt="" coords="601,224,699,267,697,272,599,229"/>
+<area shape="poly" id="edge17_Node000011_Node000003" title=" " alt="" coords="744,235,744,269,739,269,739,235"/>
+<area shape="poly" id="edge19_Node000012_Node000003" title=" " alt="" coords="701,134,790,157,823,169,841,180,847,193,848,207,834,232,810,254,781,272,778,267,806,249,830,228,843,205,842,194,837,183,821,174,788,162,699,139"/>
+<area shape="poly" id="edge21_Node000013_Node000003" title=" " alt="" coords="855,141,872,159,885,179,891,201,885,223,871,240,853,254,814,274,811,269,850,250,867,236,880,220,886,201,880,181,868,162,851,145"/>
+<area shape="poly" id="edge23_Node000014_Node000003" title=" " alt="" coords="1006,145,961,185,907,224,853,251,801,272,799,267,851,246,904,219,958,181,1003,141"/>
+<area shape="poly" id="edge24_Node000014_Node000015" title=" " alt="" coords="1071,140,1124,179,1121,183,1068,144"/>
+<area shape="poly" id="edge25_Node000015_Node000003" title=" " alt="" coords="1046,227,813,276,812,271,1045,222"/>
+<area shape="poly" id="edge27_Node000016_Node000003" title=" " alt="" coords="1307,148,1287,188,1272,208,1253,224,1219,240,1171,253,1052,272,923,284,812,289,812,284,922,278,1051,267,1170,248,1217,235,1251,219,1268,204,1282,185,1302,145"/>
+<area shape="poly" id="edge28_Node000016_Node000015" title=" " alt="" coords="1267,142,1186,184,1183,179,1265,137"/>
 </map>

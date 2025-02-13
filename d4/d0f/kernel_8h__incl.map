@@ -1,11 +1,20 @@
 <map id="include/citlali/core/timestream/rtc/kernel.h" name="include/citlali/core/timestream/rtc/kernel.h">
-<area shape="rect" id="node1" title=" " alt="" coords="199,5,377,47"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,102,64,129"/>
-<area shape="rect" id="node3" title=" " alt="" coords="88,95,251,136"/>
-<area shape="rect" id="node4" href="$d2/d6f/constants_8h.html" title=" " alt="" coords="227,184,349,225"/>
-<area shape="rect" id="node6" href="$dd/d2c/utils_2pointing_8h.html" title=" " alt="" coords="325,95,448,136"/>
-<area shape="rect" id="node8" href="$d0/dc5/fits__io_8h.html" title=" " alt="" coords="472,95,595,136"/>
-<area shape="rect" id="node5" title=" " alt="" coords="242,273,334,300"/>
-<area shape="rect" id="node7" title=" " alt="" coords="373,191,424,218"/>
-<area shape="rect" id="node9" title=" " alt="" coords="482,191,585,218"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="199,5,377,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,101,64,126"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="222,48,77,96,72,98,70,93,75,91,221,43"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="88,93,251,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="263,48,208,87,205,83,260,43"/>
+<area shape="rect" id="Node000004" href="$d2/d6f/constants_8h.html" title=" " alt="" coords="227,181,349,221"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="291,46,291,168,285,168,285,46"/>
+<area shape="rect" id="Node000006" href="$dd/d2c/utils_2pointing_8h.html" title=" " alt="" coords="325,93,448,133"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="312,44,356,82,353,86,308,48"/>
+<area shape="rect" id="Node000008" href="$d0/dc5/fits__io_8h.html" title=" " alt="" coords="472,93,595,133"/>
+<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="343,43,468,86,466,91,341,48"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="242,269,334,295"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="291,222,291,255,285,255,285,222"/>
+<area shape="poly" id="edge7_Node000006_Node000004" title=" " alt="" coords="367,136,322,174,318,170,363,132"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="373,189,424,214"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="392,133,398,174,392,175,387,134"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="482,189,585,214"/>
+<area shape="poly" id="edge9_Node000008_Node000009" title=" " alt="" coords="536,134,536,175,531,175,531,134"/>
 </map>

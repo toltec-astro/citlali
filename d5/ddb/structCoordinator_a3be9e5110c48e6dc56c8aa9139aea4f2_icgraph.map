@@ -1,0 +1,16 @@
+<map id="Coordinator::is_master_local" name="Coordinator::is_master_local">
+<area shape="rect" id="Node000001" title=" " alt="" coords="411,113,581,153"/>
+<area shape="rect" id="Node000002" href="$d5/ddb/structCoordinator.html#ad5b899edf3d60cd960a6652d070db28a" title=" " alt="" coords="5,123,164,163"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="397,138,164,144,164,138,397,133"/>
+<area shape="rect" id="Node000003" href="$d5/ddb/structCoordinator.html#a3269380f072283d1903507a5268e1335" title=" " alt="" coords="213,5,362,45"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="443,109,361,66,326,48,328,43,364,62,446,105"/>
+<area shape="rect" id="Node000004" href="$d5/ddb/structCoordinator.html#acfeaf5fb608fbfa15170d7cdf7e3b7a7" title=" " alt="" coords="17,62,153,87"/>
+<area shape="poly" id="edge5_Node000001_Node000004" title=" " alt="" coords="397,122,153,87,154,82,398,117"/>
+<area shape="rect" id="Node000005" href="$d5/ddb/structCoordinator.html#a859d63557f80e2191991a6551a021d0e" title=" " alt="" coords="10,208,159,248"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="465,165,419,198,392,214,363,225,311,237,258,243,159,240,160,235,257,237,310,232,362,220,390,209,416,194,462,160"/>
+<area shape="rect" id="Node000006" href="$d5/ddb/structCoordinator.html#aa2353f320a530c1c247d835b46ee8322" title=" " alt="" coords="212,171,363,211"/>
+<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="410,160,361,173,360,168,409,154"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="200,49,138,65,137,59,199,44"/>
+<area shape="poly" id="edge7_Node000006_Node000002" title=" " alt="" coords="198,172,164,164,165,159,199,167"/>
+<area shape="poly" id="edge8_Node000006_Node000005" title=" " alt="" coords="199,210,160,217,159,212,198,204"/>
+</map>

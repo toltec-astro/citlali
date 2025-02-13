@@ -1,9 +1,17 @@
 <map id="engine_utils::mapFitter::ceres_fit" name="engine_utils::mapFitter::ceres_fit">
-<area shape="rect" id="node1" title=" " alt="" coords="889,49,1061,90"/>
-<area shape="rect" id="node2" href="$d9/dbd/classengine__utils_1_1mapFitter.html#a26c3e6b6d90d22afc33001e01967fe54" title=" " alt="" coords="669,49,841,90"/>
-<area shape="rect" id="node3" href="$d1/db6/classEngine.html#ac65f74452312d88174170858bcd4c677" title=" " alt="" coords="451,5,605,32"/>
-<area shape="rect" id="node4" href="$d2/dbe/classPointing.html#a84415ac10315902d2826871e7ea52305" title=" " alt="" coords="459,56,597,83"/>
-<area shape="rect" id="node5" href="$df/db0/classmapmaking_1_1WienerFilter.html#aeae5d1232649676a98008b41d30faf53" title=" " alt="" coords="435,107,621,149"/>
-<area shape="rect" id="node6" href="$df/db0/classmapmaking_1_1WienerFilter.html#a73182ce721efb5b6cc3f00dedadc2780" title=" " alt="" coords="200,107,387,149"/>
-<area shape="rect" id="node7" href="$d1/db6/classEngine.html#a5518173dd3e71b5c54e18ddb165c12e8" title=" " alt="" coords="5,107,152,149"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="889,47,1061,87"/>
+<area shape="rect" id="Node000002" href="$d9/dbd/classengine__utils_1_1mapFitter.html#a26c3e6b6d90d22afc33001e01967fe54" title=" " alt="" coords="669,47,841,87"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="875,70,841,70,841,65,875,65"/>
+<area shape="rect" id="Node000003" href="$d1/db6/classEngine.html#ac65f74452312d88174170858bcd4c677" title=" " alt="" coords="451,5,605,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="655,48,587,33,588,28,656,43"/>
+<area shape="rect" id="Node000004" href="$d2/dbe/classPointing.html#a84415ac10315902d2826871e7ea52305" title=" " alt="" coords="459,55,597,80"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="656,70,598,70,598,65,656,65"/>
+<area shape="rect" id="Node000005" href="$df/db0/classmapmaking_1_1WienerFilter.html#aeae5d1232649676a98008b41d30faf53" title=" " alt="" coords="435,105,621,145"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="663,93,609,107,607,102,662,88"/>
+<area shape="rect" id="Node000006" href="$df/db0/classmapmaking_1_1WienerFilter.html#a73182ce721efb5b6cc3f00dedadc2780" title=" " alt="" coords="200,73,387,113"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="421,113,387,108,387,103,422,107"/>
+<area shape="rect" id="Node000008" href="$df/db0/classmapmaking_1_1WienerFilter.html#a4ecd06b9b3c1e0f3bcc4685af1c5f053" title=" " alt="" coords="200,137,387,177"/>
+<area shape="poly" id="edge7_Node000005_Node000008" title=" " alt="" coords="422,142,387,147,387,141,421,137"/>
+<area shape="rect" id="Node000007" href="$d1/db6/classEngine.html#a5518173dd3e71b5c54e18ddb165c12e8" title=" " alt="" coords="5,73,152,113"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="186,95,152,95,152,90,186,90"/>
 </map>

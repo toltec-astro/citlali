@@ -1,4 +1,3 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$da/def/structConfigMixin.html" title=" " alt="" coords="5,5,211,32"/>
-<area shape="rect" id="node2" href="$d5/ddb/structCoordinator.html" title="The Coordinator struct This wraps around the config object and provides high level methods in various..." alt="" coords="259,5,357,32"/>
+<area shape="rect" id="Node000000" href="$d5/d00/structBlockAccessor.html" title="The BlockAccessor struct This provides methods to access array in block notions." alt="" coords="5,5,176,45"/>
 </map>

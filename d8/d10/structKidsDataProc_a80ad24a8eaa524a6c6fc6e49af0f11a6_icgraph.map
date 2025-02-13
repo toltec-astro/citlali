@@ -1,6 +1,9 @@
 <map id="KidsDataProc::get_data_item_meta" name="KidsDataProc::get_data_item_meta">
-<area shape="rect" id="node1" title=" " alt="" coords="287,57,461,98"/>
-<area shape="rect" id="node2" href="$d8/d10/structKidsDataProc.html#ab62b334993c1997bab55f9f1417220ea" title=" " alt="" coords="5,5,239,32"/>
-<area shape="rect" id="node3" href="$d8/d10/structKidsDataProc.html#a85a5c773a4e2f4fbd9a7e4b188458c5d" title=" " alt="" coords="49,57,195,98"/>
-<area shape="rect" id="node4" href="$d8/d10/structKidsDataProc.html#a8694582d3b2d5a4f7bf8a870ce214a38" title=" " alt="" coords="35,122,209,163"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="287,55,461,95"/>
+<area shape="rect" id="Node000002" href="$d8/d10/structKidsDataProc.html#ab62b334993c1997bab55f9f1417220ea" title=" " alt="" coords="5,5,239,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="276,55,238,46,181,33,183,28,239,41,277,50"/>
+<area shape="rect" id="Node000003" href="$d8/d10/structKidsDataProc.html#a85a5c773a4e2f4fbd9a7e4b188458c5d" title=" " alt="" coords="49,55,195,95"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="273,78,195,78,195,73,273,73"/>
+<area shape="rect" id="Node000004" href="$d8/d10/structKidsDataProc.html#a8694582d3b2d5a4f7bf8a870ce214a38" title=" " alt="" coords="35,119,209,159"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="282,101,202,122,201,117,281,96"/>
 </map>

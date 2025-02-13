@@ -1,6 +1,9 @@
 <map id="Engine::write_chunk_summary" name="Engine::write_chunk_summary">
-<area shape="rect" id="node1" title=" " alt="" coords="5,39,159,80"/>
-<area shape="rect" id="node2" href="$dd/d06/namespaceengine__utils.html#ad9c640b3ad780cec01b1644b15f1ac58" title=" " alt="" coords="217,5,351,47"/>
-<area shape="rect" id="node3" href="$dd/d06/namespaceengine__utils.html#a78bc2d77504839570aefed6a0bca233f" title=" " alt="" coords="207,71,361,112"/>
-<area shape="rect" id="node4" href="$dd/d06/namespaceengine__utils.html#a392b455508f8ccfaf2af66c841dd7055" title="Return the current time." alt="" coords="409,78,545,105"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,37,159,77"/>
+<area shape="rect" id="Node000002" href="$dd/d06/namespaceengine__utils.html#ad9c640b3ad780cec01b1644b15f1ac58" title=" " alt="" coords="217,5,351,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="158,43,203,35,204,41,159,48"/>
+<area shape="rect" id="Node000003" href="$dd/d06/namespaceengine__utils.html#a78bc2d77504839570aefed6a0bca233f" title=" " alt="" coords="207,69,361,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="159,67,194,72,193,78,158,72"/>
+<area shape="rect" id="Node000004" href="$dd/d06/namespaceengine__utils.html#a392b455508f8ccfaf2af66c841dd7055" title="Return the current time." alt="" coords="409,77,545,102"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="362,87,395,87,395,92,362,92"/>
 </map>

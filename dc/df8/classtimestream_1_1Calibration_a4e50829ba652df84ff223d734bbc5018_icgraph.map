@@ -1,7 +1,11 @@
 <map id="timestream::Calibration::setup" name="timestream::Calibration::setup">
-<area shape="rect" id="node1" title=" " alt="" coords="404,49,581,90"/>
-<area shape="rect" id="node2" href="$d1/db6/classEngine.html#a03b9f9d69c7e1f1d61e127662e0bb81b" title=" " alt="" coords="187,56,356,83"/>
-<area shape="rect" id="node3" href="$dc/d9e/classBeammap.html#a4a37f834019ca58ec17674cc4effc60f" title=" " alt="" coords="5,5,139,32"/>
-<area shape="rect" id="node4" href="$d9/def/classLali.html#a1d8a03e4170348d459c644380ada6d1c" title=" " alt="" coords="27,56,117,83"/>
-<area shape="rect" id="node5" href="$d2/dbe/classPointing.html#aaeb9d7b3bcf3d3cbac5bb473d02e26e8" title=" " alt="" coords="13,107,131,133"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="404,47,581,87"/>
+<area shape="rect" id="Node000002" href="$d1/db6/classEngine.html#a03b9f9d69c7e1f1d61e127662e0bb81b" title=" " alt="" coords="187,55,356,80"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="390,70,356,70,356,65,390,65"/>
+<area shape="rect" id="Node000003" href="$dc/d9e/classBeammap.html#a4a37f834019ca58ec17674cc4effc60f" title=" " alt="" coords="5,5,139,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="206,54,124,33,125,28,207,49"/>
+<area shape="rect" id="Node000004" href="$d9/def/classLali.html#a1d8a03e4170348d459c644380ada6d1c" title=" " alt="" coords="27,55,117,80"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="173,70,117,70,117,65,173,65"/>
+<area shape="rect" id="Node000005" href="$d2/dbe/classPointing.html#aaeb9d7b3bcf3d3cbac5bb473d02e26e8" title=" " alt="" coords="13,104,131,129"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="207,86,125,107,124,101,206,81"/>
 </map>
