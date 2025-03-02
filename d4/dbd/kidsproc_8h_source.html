@@ -414,12 +414,12 @@ $(document).ready(function() { init_codefold(1); });
 <div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span> </div>
 <div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span>    <span class="comment">// check for nans</span></div>
 <div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>    <span class="keywordflow">if</span> ((data.array().isNaN()).any()) {</div>
-<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>        <a class="code hl_variable" href="../../d8/d10/structKidsDataProc.html#a961332293964a35b19897df41f8d0aba">logger</a>-&gt;error(<span class="stringliteral">&quot;nan found in data!&quot;</span>);</div>
+<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>        <a class="code hl_variable" href="../../d8/d10/structKidsDataProc.html#a961332293964a35b19897df41f8d0aba">logger</a>-&gt;error(<span class="stringliteral">&quot;nan found in data! Check that your KIDs data dir is correct.&quot;</span>);</div>
 <div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>        std::exit(EXIT_FAILURE);</div>
 <div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>    }</div>
 <div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>    <span class="comment">// check for infs</span></div>
 <div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>    <span class="keywordflow">if</span> ((data.array().isInf()).any()) {</div>
-<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>        <a class="code hl_variable" href="../../d8/d10/structKidsDataProc.html#a961332293964a35b19897df41f8d0aba">logger</a>-&gt;error(<span class="stringliteral">&quot;inf found in data!&quot;</span>);</div>
+<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>        <a class="code hl_variable" href="../../d8/d10/structKidsDataProc.html#a961332293964a35b19897df41f8d0aba">logger</a>-&gt;error(<span class="stringliteral">&quot;inf found in data! Check that your KIDs data dir is correct.&quot;</span>);</div>
 <div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>        std::exit(EXIT_FAILURE);</div>
 <div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>    }</div>
 <div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span> </div>
