@@ -2008,6 +2008,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     if (mb->obsnums.size()==1) {
         logger->debug("adding tel params");
         for (auto const& [key, val] : telescope.tel_header) {
+            logger->debug("adding {}: {}", key, val);
             fits_io->at(i).pfits->pHDU().addKey(key, val(0), key);
         }
     }

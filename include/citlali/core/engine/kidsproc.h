@@ -311,12 +311,12 @@ auto KidsDataProc::populate_rtc(loaded_t &loaded,
 
     // check for nans
     if ((data.array().isNaN()).any()) {
-        logger->error("nan found in data!");
+        logger->error("nan found in data! Check that your KIDs data dir is correct.");
         std::exit(EXIT_FAILURE);
     }
     // check for infs
     if ((data.array().isInf()).any()) {
-        logger->error("inf found in data!");
+        logger->error("inf found in data! Check that your KIDs data dir is correct.");
         std::exit(EXIT_FAILURE);
     }
 
