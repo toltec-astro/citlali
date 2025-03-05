@@ -99,7 +99,9 @@ void Telescope::get_tel_data(std::string &filepath) {
                 logger->info("tel_data key {}",pair.first);
                 Eigen::Index n_pts = vars.find(pair.first)->second.getDim(0).getSize();
                 tel_data[pair.second].resize(n_pts);
-                vars.find(pair.first)->second.getVar(tel_data[pair.second].data());
+                Eigen::VectorXd data_temp(n_pts);
+                vars.find(pair.first)->second.getVar(data_temp.data());
+                tel_data[pair.second] = data_temp;
 
             } catch (NcException &e) {
                 logger->warn("cannot find {}", pair.first);
@@ -116,8 +118,9 @@ void Telescope::get_tel_data(std::string &filepath) {
                     n_pts = vars.find(pair.first)->second.getDim(0).getSize();
                 } catch(...) {}
 
-                tel_header[pair.second].resize(n_pts);
-                vars.find(pair.first)->second.getVar(tel_header[pair.second].data());
+                Eigen::VectorXd header_temp(n_pts);
+                vars.find(pair.first)->second.getVar(header_temp.data());
+                tel_header[pair.second] = header_temp;
 
             } catch (NcException &e) {
                 // ignore if simulation
