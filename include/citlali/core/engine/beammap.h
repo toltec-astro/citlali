@@ -756,31 +756,44 @@ void Beammap::run_loop() {
 
             logger->info("running mapmaking");
 
-            if (map_method == "jinc") {
+            if (map_grouping == "detector") {
                 bool run_omb = true;
                 for (auto& ptc : ptcs) {
-                    // jinc mapmaker
-                    jinc_mm.populate_maps_jinc_parallel(ptc, omb, cmb, ptc.map_indices.data, telescope.pixel_axes,
-                                                        calib.apt, telescope.d_fsmp, run_omb, run_noise);
+                    if (map_method == "naive") {
+                        // naive mapmaker
+                        naive_mm.populate_maps_naive_parallel(ptc, omb, cmb, ptc.map_indices.data, telescope.pixel_axes,
+                                                              calib.apt, telescope.d_fsmp, run_omb, run_noise);
+                    }
+                    else if (map_method == "jinc") {
+                        // jinc mapmaker
+                        jinc_mm.populate_maps_jinc_parallel(ptc, omb, cmb, ptc.map_indices.data, telescope.pixel_axes,
+                                                            calib.apt, telescope.d_fsmp, run_omb, run_noise);
+                    }
                     // update progress bar
                     pb.count(telescope.scan_indices.cols(), 1);
                 }
             }
 
-            else if (map_method == "naive") {
+            else {
                 // mapmaking
                 grppi::map(tula::grppi_utils::dyn_ex(map_parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
                     bool run_omb = true;
                     // naive mapmaker
-                    naive_mm.populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data, telescope.pixel_axes,
-                                                calib.apt, telescope.d_fsmp, run_omb, run_noise);
+                    if (map_method == "naive") {
+                        naive_mm.populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data, telescope.pixel_axes,
+                                                    calib.apt, telescope.d_fsmp, run_omb, run_noise);
+                    }
+                    else if (map_method == "jinc") {
+                        jinc_mm.populate_maps_jinc(ptcs[i], omb, cmb, ptcs[i].map_indices.data, telescope.pixel_axes,
+                                                   calib.apt, telescope.d_fsmp, run_omb, run_noise);
+                    }
 
                     // update progress bar
                     pb.count(telescope.scan_indices.cols(), 1);
 
                     return 0;
                 });
-        }
+            }
 
             // normalize maps
             logger->info("normalizing maps");
@@ -944,21 +957,16 @@ void Beammap::set_apt_flags() {
 
     // calc median sens from unflagged detectors for each nw
     logger->debug("calculating mean sensitivities");
-    logger->debug("calib.n_nws {}", calib.n_nws);
     for (Eigen::Index i=0; i<calib.n_nws; ++i) {
-        Eigen::Index nw = calib.apt["nw"](i);
+        Eigen::Index nw = calib.nws(i);
 
         // nw sensitivity
         auto nw_sens = calib.apt["sens"](Eigen::seq(std::get<0>(calib.nw_limits[nw]),
                                                     std::get<1>(calib.nw_limits[nw])-1));
 
-        logger->debug("nw_sens {}", nw_sens);
-
         // number of good detectors
         Eigen::Index n_good_det = (calib.apt["flag"](Eigen::seq(std::get<0>(calib.nw_limits[nw]),
                                                                std::get<1>(calib.nw_limits[nw])-1)).array()==0).count();
-
-       logger->debug("n_good_det {}", n_good_det);
 
         if (n_good_det>0) {
             // to hold good detectors
@@ -966,7 +974,6 @@ void Beammap::set_apt_flags() {
 
             // remove flagged dets
             Eigen::Index j = std::get<0>(calib.nw_limits[nw]);
-            logger->debug("j {}", j);
             Eigen::Index k = 0;
             for (Eigen::Index m=0; m<sens.size(); m++) {
                 if (calib.apt["flag"](j)==0) {
@@ -975,14 +982,12 @@ void Beammap::set_apt_flags() {
                 }
                 j++;
             }
-            logger->debug("sens {}", sens);
             // calculate median sens
             nw_median_sens[nw] = tula::alg::median(sens);
         }
         else {
             nw_median_sens[nw] = tula::alg::median(nw_sens);
         }
-        logger->debug("mean sens {}", nw_median_sens[nw]);
     }
 
 
