@@ -395,18 +395,21 @@ void MapBuffer::calc_median_err() {
     median_err.setZero(weight.size());
     for (Eigen::Index i=0; i<weight.size(); ++i) {
         // calculate weight threshold
-        auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = calc_cov_region(i);
-
-        Eigen::MatrixXd mean_sqerr = ((weight[i].array()>=weight_threshold).select(1/weight[i].array(),0));
-
-        // construct a sparse matrix
-        Eigen::SparseMatrix<double> sparse_err(mean_sqerr.sparseView());
-        // construct a dense map
-        Eigen::Map<Eigen::VectorXd> dense_map(sparse_err.valuePtr(), sparse_err.nonZeros());
-        // construct a dense vector
-        Eigen::VectorXd dense_vector(dense_map);
-        // get mean square error
-        median_err(i) = tula::alg::median(dense_vector);
+	if (weight[i].maxCoeff() == weight[i].minCoeff()) {
+		median_err(i) = 0;
+	}
+	else {
+        	auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = calc_cov_region(i);
+        	Eigen::MatrixXd mean_sqerr = ((weight[i].array()>=weight_threshold).select(1/weight[i].array(),0));
+        	// construct a sparse matrix
+        	Eigen::SparseMatrix<double> sparse_err(mean_sqerr.sparseView());
+        	// construct a dense map
+        	Eigen::Map<Eigen::VectorXd> dense_map(sparse_err.valuePtr(), sparse_err.nonZeros());
+        	// construct a dense vector
+        	Eigen::VectorXd dense_vector(dense_map);
+        	// get mean square error
+        	median_err(i) = tula::alg::median(dense_vector);
+	}
     }
 }
 
