@@ -1,6 +1,8 @@
-# pragma once
+#pragma once
 
 #include <mutex>
+
+using namespace citlali::config::options;
 
 // Naive Mapmaker
 template <typename TCDataType>
@@ -9,154 +11,169 @@ public:
     // get logger
     std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
 
-    DataMapsContainer& obs_maps, coadd_maps;
-    NoiseMapsContainer& noise_maps;
+    std::unique_ptr<std::mutex> mutex = std::make_unique<std::mutex>();
+
     Instrument& toltec;
     Telescope& telescope;
 
-    bool randomize_dets;
-    bool run_noise;
+    ObsMaps<MapKey>& obs_maps, coadd_maps;
+    ObsMaps<MapKey, std::vector<ObsMatrix<MapKey>>>& noise_maps;
 
-    MapMode map_type;
-
-    // for adding thread local map values to map containers
-    std::unique_ptr<std::mutex> naive_mutex = std::make_unique<std::mutex>();
+    MapMode map_mode;
 
     template <typename ConfigType>
-    NaiveMapmaker(MapMode _map_type, Instrument& toltec_ref, Telescope& telescope_ref, DataMapsContainer& obs_map_ref,
-                  DataMapsContainer& coadd_map_ref, NoiseMapsContainer& noise_map_ref, ConfigType& config)
-        : map_type(_map_type), toltec(toltec_ref), telescope(telescope_ref), obs_maps(obs_map_ref), coadd_maps(coadd_map_ref), noise_maps(noise_map_ref) {
+    NaiveMapmaker(Instrument& toltec_, Telescope& telescope_, ObsMaps<>& om_, ObsMaps<>& cm_, ObsMaps<MapKey, std::vector<ObsMatrix<MapKey>>>& nm_,
+                  MapMode mm_, ConfigType& config)
+        : toltec(toltec_), telescope(telescope_), obs_maps(om_), coadd_maps(cm_), noise_maps(nm_), map_mode(mm_) {}
 
-        config.get(randomize_dets, std::tuple{"noise_maps","randomize_dets"});
-    }
-
-    void init() {}
-    void add_chunk_to_map(TCDataType&);
+    void init() override {}
 
     void process(TCDataType& tcdata) override {
         logger->info("naive mapmaker processing");
-        add_chunk_to_map(tcdata);
+
+        bool run_obs_maps = get_map_mode(map_mode, MapMode::Obs) || get_map_mode(map_mode, MapMode::Both);
+        bool run_noise_maps = (get_map_mode(map_mode, MapMode::Noise) || get_map_mode(map_mode, MapMode::Both)) && (noise_maps.signal.size() > 0);
+        bool run_coverage = obs_maps.coverage.size() > 0;
+
+        auto [n_pts, n_dets] = tcdata.dims();
+
+        // if calibration beammapping (no coverage) clear apt flags so all maps are made
+        if (obs_maps.coverage.empty()) {
+            tcdata.apt_flag.setZero();
+        }
+
+        ObsMaps<MapKey, ObsSparse<>> sp_obs_maps;
+        ObsMaps<MapKey, std::vector<ObsSparse<>>> sp_noise_maps;
+
+        for (const auto& [key, index] : obs_maps.signal_lookup) {
+            sp_obs_maps.add(key, {static_cast<int>(n_pts), static_cast<int>(n_dets)}, true, run_kernel, run_coverage);
+
+            if (run_noise_maps) {
+                sp_noise_maps.add(key, {static_cast<int>(n_pts), static_cast<int>(n_dets), n_noise_maps}, false, false, false);
+            }
+        }
+
+        Eigen::MatrixXi signs;
+
+        if (run_noise_maps) {
+            if (randomize_dets) {
+                signs.resize(n_noise_maps, n_dets);
+            } else {
+                signs.resize(n_noise_maps, 1);
+            }
+            tcdata.random_sign(signs);
+        }
+
+        // auto [in, out] = citlali::utils::threads::get_grppi_vectors(n_dets);
+        // auto exec_mode = citlali::utils::threads::get_chunk_remainder_exec_mode();
+
+        // if (map_grouping != "uid") {
+        //     exec_mode = citlali::utils::threads::get_seq_exec_mode();
+        // }
+
+        // grppi::map(exec_mode, in, out, [&](int det) {
+        for (int det = 0; det < n_dets; ++det) {
+            // don't run detectors flagged for this chunk
+            if (!tcdata.apt_flag(det)) {
+                // get indices of maps
+                int sig_i_index = obs_maps.signal_lookup.at(MapKey(toltec.apt["array"].data(det), toltec.apt[map_grouping].data(det), "I"));
+                int sig_q_index, sig_u_index;
+
+                if (run_polarization) {
+                    sig_q_index = obs_maps.signal_lookup.at(MapKey(toltec.apt["array"].data(det), toltec.apt[map_grouping].data(det), "Q"));
+                    sig_u_index = obs_maps.signal_lookup.at(MapKey(toltec.apt["array"].data(det), toltec.apt[map_grouping].data(det), "U"));
+                }
+
+                int kernel_i_index, coverage_i_index;
+
+                if (run_kernel) {
+                    kernel_i_index = obs_maps.kernel_lookup.at(MapKey(toltec.apt["array"].data(det), toltec.apt[map_grouping].data(det), "I"));
+                }
+                if (run_coverage) {
+                    coverage_i_index = obs_maps.coverage_lookup.at(MapKey(toltec.apt["array"].data(det), toltec.apt[map_grouping].data(det), "I"));
+                }
+
+                // get detector pointing
+                auto xy = calc_pointing(toltec.apt["x_t"].data(det), toltec.apt["y_t"].data(det), tcdata.tel_data, telescope.pixel_axes);
+
+                // pixels for obs maps
+                Eigen::VectorXI pix_x, pix_y;
+                if (run_obs_maps) {
+                    pix_x = (xy.first.array() / pix_size_radians + obs_maps.wcs.naxis[0] / 2.0).template cast<Eigen::Index>();
+                    pix_y = (xy.second.array() / pix_size_radians + obs_maps.wcs.naxis[1] / 2.0).template cast<Eigen::Index>();
+                }
+
+                // pixels for noise maps
+                Eigen::VectorXI noise_pix_x, noise_pix_y;
+                if (run_noise_maps) {
+                    noise_pix_x = (xy.first.array() / pix_size_radians + noise_maps.wcs.naxis[0] / 2.0).template cast<Eigen::Index>();
+                    noise_pix_y = (xy.second.array() / pix_size_radians + noise_maps.wcs.naxis[1] / 2.0).template cast<Eigen::Index>();
+                }
+
+                for (int i = 0; i < n_pts; ++i) {
+                    // don't run flagged samples
+                    if (tcdata.flag(i, det)) continue;
+
+                    if (run_obs_maps) {
+                        if (pix_x(i) >= 0 && pix_x(i) < obs_maps.wcs.naxis[0] && pix_y(i) >= 0 && pix_y(i) < obs_maps.wcs.naxis[1]) {
+                            sp_obs_maps.signal[sig_i_index](pix_y(i), pix_x(i), tcdata.signal(i, det) * tcdata.weight(det));
+                            sp_obs_maps.weight[sig_i_index](pix_y(i), pix_x(i), tcdata.weight(det));
+
+                            if (run_kernel) {
+                                sp_obs_maps.kernel[kernel_i_index](pix_y(i), pix_x(i), tcdata.kernel(i, det) * tcdata.weight(det));
+                            }
+
+                            if (run_coverage) {
+                                sp_obs_maps.coverage[coverage_i_index](pix_y(i), pix_x(i), 1.0 / tcdata.data_fs_hz);
+                            }
+
+                            if (run_polarization) {
+                                sp_obs_maps.signal[sig_q_index](pix_y(i), pix_x(i), tcdata.signal_q.value()(i, det) * tcdata.weight_q.value()(det));
+                                sp_obs_maps.weight[sig_q_index](pix_y(i), pix_x(i), tcdata.weight_q.value()(det));
+                                sp_obs_maps.signal[sig_u_index](pix_y(i), pix_x(i), tcdata.signal_u.value()(i, det) * tcdata.weight_u.value()(det));
+                                sp_obs_maps.weight[sig_u_index](pix_y(i), pix_x(i), tcdata.weight_u.value()(det));
+                            }
+                        }
+                    }
+
+                    if (run_noise_maps) {
+                        if (noise_pix_x(i) >= 0 && noise_pix_x(i) < noise_maps.wcs.naxis[0] && noise_pix_y(i) >= 0 && noise_pix_y(i) < noise_maps.wcs.naxis[1]) {
+                            double signal = tcdata.signal(i,det) * tcdata.weight(det);
+                            double signal_q, signal_u;
+
+                            if (run_polarization) {
+                                signal_q = (*tcdata.signal_q)(i, det) * (*tcdata.weight_q)(det);
+                                signal_u = (*tcdata.signal_u)(i, det) * (*tcdata.weight_u)(det);
+                            }
+
+                            for (int n = 0; n < n_noise_maps; ++n) {
+                                int sign;
+                                if (randomize_dets) {
+                                    sign = signs(n, det);
+                                } else {
+                                    sign = signs(n);
+                                }
+                                sp_noise_maps.signal[sig_i_index][n](noise_pix_y(i), noise_pix_x(i), sign*signal);
+
+                                if (run_polarization) {
+                                    sp_noise_maps.signal[sig_q_index][n](noise_pix_y(i), noise_pix_x(i), sign*signal_q);
+                                    sp_noise_maps.signal[sig_u_index][n](noise_pix_y(i), noise_pix_x(i), sign*signal_u);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        //     return 0;
+        // });
+        }
+
+        {
+            std::scoped_lock<std::mutex> lock(*mutex);
+            obs_maps += sp_obs_maps;
+            if (run_noise_maps) {
+                noise_maps += sp_noise_maps;
+            }
+        }
     }
 };
-
-// populate map
-template <typename TCDataType>
-void NaiveMapmaker<TCDataType>::add_chunk_to_map(TCDataType& tcdata) {
-    int n_dets = tcdata.n_dets();
-    int n_pts = tcdata.n_pts();
-
-    // if calibration beammapping (no coverage) clear flags so all maps are made
-    if (!obs_maps[toltec.apt["array"].data(0)][toltec.apt[obs_maps.map_grouping].data(0)].coverage.i.size() > 0) {
-        tcdata.apt_flag.setZero();
-    }
-
-    DataMapsContainer chunk_maps(obs_maps);
-    NoiseMapsContainer chunk_noise_maps(noise_maps);
-
-    // 1 or -1 vector or matrix for noise timestreams
-    Eigen::MatrixXi noise;
-    if (noise_maps.n_noise_maps > 0) {
-        if (randomize_dets) {
-            noise.resize(noise_maps.n_noise_maps, n_dets);
-        } else {
-            noise.resize(noise_maps.n_noise_maps, 1);
-        }
-        // populates noise
-        tcdata.generate_noise(noise);
-    }
-
-    // loop through dets
-    for (int det = 0; det < n_dets; ++det) {
-        // don't run detectors flagged for this chunk
-        if (tcdata.apt_flag(det)) continue;
-
-        // keys of current detector
-        int array = toltec.apt["array"].data(det);
-        int group = toltec.apt[obs_maps.map_grouping].data(det);
-
-        // which map detector belongs to
-        auto& obs_map = obs_maps[array][group];
-
-        // get detector pointing
-        auto xy = telescope.calc_pointing(toltec.apt["x_t"].data(det), toltec.apt["y_t"].data(det), tcdata.tel_data);
-
-        // pixels for samples
-        Eigen::VectorXI pix_x = (xy.first.array() / obs_maps.pix_size_radians + obs_maps.n_cols / 2.0).template cast<Eigen::Index>();
-        Eigen::VectorXI pix_y = (xy.second.array() / obs_maps.pix_size_radians + obs_maps.n_rows / 2.0).template cast<Eigen::Index>();
-
-        // pixels in noise maps
-        Eigen::VectorXI noise_pix_x, noise_pix_y;
-        if (noise_maps.n_noise_maps > 0) {
-            noise_pix_x = (xy.first.array() / noise_maps.pix_size_radians + noise_maps.n_cols / 2.0).template cast<Eigen::Index>();
-            noise_pix_y = (xy.second.array() / noise_maps.pix_size_radians + noise_maps.n_rows / 2.0).template cast<Eigen::Index>();
-        }
-
-        // loop through data points
-        for (int i = 0; i < n_pts; ++i) {
-            // don't run flagged detectors
-            if (tcdata.flag(i, det)) continue;
-
-            // if pixel in map
-            if (map_type == MapMode::Obs || map_type == MapMode::Both) {
-                if (pix_x(i) >= 0 && pix_x(i) < obs_maps.n_cols && pix_y(i) >= 0 && pix_y(i) < obs_maps.n_rows) {
-                    chunk_maps[array][group].signal.i(pix_y(i), pix_x(i)) += tcdata.signal(i, det) * tcdata.weight(det);
-                    chunk_maps[array][group].weight.i(pix_y(i), pix_x(i)) += tcdata.weight(det);
-
-                    if (obs_map.kernel.i.size() > 0) {
-                        chunk_maps[array][group].kernel.i(pix_y(i), pix_x(i)) += tcdata.kernel(i, det) * tcdata.weight(det);
-                    }
-                    if (obs_map.coverage.i.size() > 0) {
-                        chunk_maps[array][group].coverage.i(pix_y(i), pix_x(i)) += 1.0 / tcdata.data_fs_hz;
-                    }
-
-                    // only add to stokes maps if loc != -1
-                    if (toltec.apt["loc"].data(det) != -1) {
-                        if (obs_map.signal.q.size() > 0) {
-                            chunk_maps[array][group].signal.q(pix_y(i), pix_x(i)) += (*tcdata.signal_q)(i, det) * (*tcdata.weight_q)(det);
-                        }
-                        if (obs_map.signal.u.size() > 0) {
-                            chunk_maps[array][group].signal.u(pix_y(i), pix_x(i)) += (*tcdata.signal_u)(i, det) * (*tcdata.weight_u)(det);
-                        }
-                        if (obs_map.weight.q.size() > 0) {
-                            chunk_maps[array][group].weight.q(pix_y(i), pix_x(i)) += (*tcdata.weight_q)(det);
-                        }
-                        if (obs_map.weight.u.size() > 0) {
-                            chunk_maps[array][group].weight.u(pix_y(i), pix_x(i)) += (*tcdata.weight_u)(det);
-                        }
-                    }
-                }
-            }
-
-            // populate noise maps
-            if (noise_maps.n_noise_maps > 0) {
-                if (noise_pix_x(i) >= 0 && noise_pix_x(i) < noise_maps.n_cols && noise_pix_y(i) >= 0 && noise_pix_y(i) < noise_maps.n_rows) {
-                    // same for all noise maps
-                    double signal = tcdata.signal(i, det) * tcdata.weight(det);
-                    // loop through noise maps
-                    for (int k = 0; k < noise_maps.n_noise_maps; ++k) {
-                        int sign_value;
-
-                        if (randomize_dets) {
-                            sign_value = noise(k, det);
-                        } else {
-                            sign_value = noise(k);
-                        }
-
-                        chunk_noise_maps[array][group].noise.i[k](noise_pix_y(i), noise_pix_x(i)) += sign_value * signal;
-                    }
-                }
-            }
-        }
-    }
-
-    {
-        // lock thread while adding into map
-        std::scoped_lock<std::mutex> lock(*naive_mutex);
-
-        obs_maps += chunk_maps;
-
-        if (noise_maps.n_noise_maps > 0) {
-            noise_maps += chunk_noise_maps;
-        }
-    }
-}

@@ -12,18 +12,23 @@ public:
     Telescope& telescope;
 
     template <typename ConfigType>
-    MapPsd(InstrumentContainer& toltec_ref, Telescope& telescope_ref, ConfigType& config)
-        : toltec(toltec_ref), telescope(telescope_ref) {}
+    MapPsd(Instrument& toltec_, Telescope& telescope_, ConfigType& config)
+        : toltec(toltec_), telescope(telescope_) {}
 
     void init() {}
     void process(MapType& maps) override {
         logger->info("psd processing");
 
-        double dx = 1. / (maps.pix_size_radians * maps.n_cols);
-        double dy = 1. / (maps.pix_size_radians * maps.n_rows);
+        double dx = 1. / (pix_size_radians * maps.wcs.naxis[0]);
+        double dy = 1. / (pix_size_radians * maps.wcs.naxis[1]);
 
-        for (int i = 0; i < maps.signal_map.size(); ++i) {
-            auto [radial_psd, radial_freqs, psd, freqs] = citlali::utils::fft::calc_psd_2d(maps.signal_map[i], dy, dx);
+        for (int i = 0; i < maps.signal.size(); ++i) {
+            auto [radial_psd, radial_freqs, psd, freqs] = citlali::utils::fft::calc_psd_2d(maps.signal[i].data, dy, dx);
+
+            maps.radial_psd.push_back(radial_psd);
+            maps.radial_freqs.push_back(radial_freqs);
+            maps.psd.push_back(psd);
+            maps.freqs.push_back(freqs);
         }
     }
 };

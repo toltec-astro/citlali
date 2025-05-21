@@ -19,6 +19,12 @@ public:
         for (int i = 0; i < keys.size(); ++i) {
             const auto& [value, comment] = headers[i];
             std::visit([&](auto&& arg) {
+                // check for NaN in floating-point types
+                if constexpr (std::is_floating_point_v<std::decay_t<decltype(arg)>>) {
+                    if (std::isnan(arg)) {
+                        throw std::runtime_error("Encountered NaN value while writing to FITS.");
+                    }
+                }
                 add_key_to_fits(hdu, keys[i], arg, comment);
             }, value);
         }
@@ -84,8 +90,8 @@ public:
         int n_rows = data.rows();
         int n_cols = data.cols();
 
-        // axes in reverse order (cols, rows, pol, freq)
-        std::vector<long> naxes{n_cols, n_rows, 1, 1};
+        // axes in reverse order (cols, rows)
+        std::vector<long> naxes{n_cols, n_rows};
 
         // add an extension hdu to vector
         hdus.push_back((pfits->addImage(hdu_name, DOUBLE_IMG, naxes)));
@@ -177,7 +183,7 @@ public:
             hdu->addKey("CUNIT" + std::to_string(i + 1), wcs.cunit[i], "wcs: axis units " + std::to_string(i + 1));
             hdu->addKey("CRVAL" + std::to_string(i + 1), wcs.crval[i], "wcs: reference pixel value " + std::to_string(i + 1));
             hdu->addKey("CDELT" + std::to_string(i + 1), wcs.cdelt[i], "wcs: pixel scale " + std::to_string(i + 1));
-            hdu->addKey("CRPIX" + std::to_string(i + 1), wcs.crpix[i] + 1, "wcs: reference pixel " + std::to_string(i + 1));
+            hdu->addKey("CRPIX" + std::to_string(i + 1), wcs.crpix[i], "wcs: reference pixel " + std::to_string(i + 1));
         }
     }
 
@@ -186,17 +192,22 @@ public:
         CCfits::ExtHDU& hdu = pfits->extension(hdu_name);
 
         WCS wcs;
+        wcs.ctype.resize(2);
+        wcs.cunit.resize(2);
+        wcs.crval.resize(2);
+        wcs.cdelt.resize(2);
+        wcs.crpix.resize(2);
 
         try {
             hdu.readKey("EQUINOX", wcs.epoch);
 
             std::vector<int> dims = {1, 2};
             for (const auto& dim : dims) {
-                hdu.readKey("CTYPE" + std::to_string(dim), wcs.ctype[dim]);
-                hdu.readKey("CUNIT" + std::to_string(dim), wcs.cunit[dim]);
-                hdu.readKey("CRVAL" + std::to_string(dim), wcs.crval[dim]);
-                hdu.readKey("CDELT" + std::to_string(dim), wcs.cdelt[dim]);
-                hdu.readKey("CRPIX" + std::to_string(dim), wcs.crpix[dim]);
+                hdu.readKey("CTYPE" + std::to_string(dim), wcs.ctype[dim-1]);
+                hdu.readKey("CUNIT" + std::to_string(dim), wcs.cunit[dim-1]);
+                hdu.readKey("CRVAL" + std::to_string(dim), wcs.crval[dim-1]);
+                hdu.readKey("CDELT" + std::to_string(dim), wcs.cdelt[dim-1]);
+                hdu.readKey("CRPIX" + std::to_string(dim), wcs.crpix[dim-1]);
             }
 
         } catch (CCfits::HDU::NoSuchKeyword& e) {

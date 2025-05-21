@@ -15,7 +15,7 @@ public:
     // get logger
     std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
 
-    DataMapsContainer fruit_maps;
+    ObsMaps<> fruit_maps;
 
     bool save_all_fruit_iters;
     std::string fruit_path;
@@ -169,13 +169,19 @@ public:
 
             // keys of current detector
             int array = toltec.apt["array"].data(det);
-            int group = toltec.apt[obs_maps.map_grouping].data(det);
+            int group = toltec.apt[fruit_maps.map_grouping].data(det);
 
-            // which map detector belongs to
-            auto& obs_map = fruit_maps[array][group];
+            // get indices of maps
+            int sig_i_index = fruit_maps.signal_lookup.at(MapKey(toltec.apt["array"].data(det), toltec.apt[map_grouping].data(det), "I"));
+            int sig_q_index, sig_u_index;
 
-            auto xy = telescope.calc_pointing(toltec.apt["x_t"].data(det), toltec.apt["y_t"].data(det), tcdata.tel_data);
+            if (run_polarization) {
+                sig_q_index = fruit_maps.signal_lookup.at(MapKey(toltec.apt["array"].data(det), toltec.apt[map_grouping].data(det), "Q"));
+                sig_u_index = fruit_maps.signal_lookup.at(MapKey(toltec.apt["array"].data(det), toltec.apt[map_grouping].data(det), "U"));
+            }
 
+            auto xy = calc_pointing(toltec.apt["x_t"].data(det), toltec.apt["y_t"].data(det), tcdata.tel_data,
+                                    telescope.pixel_axes);
             // pixels for samples
             Eigen::VectorXI pix_x = (xy.first.array() / fruit_maps.pix_size_radians + fruit_maps.n_cols / 2.0).template cast<Eigen::Index>();
             Eigen::VectorXI pix_y = (xy.second.array() / fruit_maps.pix_size_radians + fruit_maps.n_rows / 2.0).template cast<Eigen::Index>();
@@ -188,28 +194,28 @@ public:
                 // if pixel in map
                 if (pix_x(i) >= 0 && pix_x(i) < fruit_maps.n_cols && pix_y(i) >= 0 && pix_y(i) < fruit_maps.n_rows) {
                     // check whether we should include pixel
-                    bool run_pix_s2n_I = run_noise && (obs_map.signal.i(pix_y(i), pix_x(i)) / median_rms_I[array][group] >= fruit_sig2noise);
+                    bool run_pix_s2n_I = run_noise && (obs_map.signal[sig_i_index](pix_y(i), pix_x(i)) / median_rms_I[array][group] >= fruit_sig2noise);
                     bool run_pix_flux_I = obs_map.signal.i(pix_y(i), pix_x(i)) >= fruit_loops_flux(array);
 
                     if (run_pix_s2n_I || run_pix_flux_I) {
-                        tcdata.signal(j, i) += add_subtract_factor * obs_map.signal.i(pix_y(i), pix_x(i));
+                        tcdata.signal(j, i) += add_subtract_factor * obs_map.signal[sig_i_index](pix_y(i), pix_x(i));
                     }
 
                     if (tcdata.signal_q) {
                         // check whether we should include pixel
-                        bool run_pix_s2n_Q = run_noise && (obs_map.signal.q(pix_y(i), pix_x(i)) / median_rms_Q[array][group] >= fruit_sig2noise);
+                        bool run_pix_s2n_Q = run_noise && (obs_map.signal[sig_q_index](pix_y(i), pix_x(i)) / median_rms_Q[array][group] >= fruit_sig2noise);
                         bool run_pix_flux_Q = obs_map.signal.q(pix_y(i), pix_x(i)) >= fruit_loops_flux(array);
                         if (run_pix_s2n_Q || run_pix_flux_Q) {
-                            tcdata.signal_q(j, i) += add_subtract_factor * obs_map.signal.q(pix_y(i), pix_x(i));
+                            tcdata.signal_q(j, i) += add_subtract_factor * obs_map.signal[sig_q_index](pix_y(i), pix_x(i));
                         }
                     }
 
                     if (tcdata.signal_u) {
                         // check whether we should include pixel
-                        bool run_pix_s2n_U = run_noise && (obs_map.signal.u(pix_y(i), pix_x(i)) / median_rms_U[array][group] >= fruit_sig2noise);
+                        bool run_pix_s2n_U = run_noise && (obs_map.signal[sig_u_index](pix_y(i), pix_x(i)) / median_rms_U[array][group] >= fruit_sig2noise);
                         bool run_pix_flux_U = obs_map.signal.u(pix_y(i), pix_x(i)) >= fruit_loops_flux(array);
                         if (run_pix_s2n_U || run_pix_flux_U) {
-                            tcdata.signal_u(j, i) += add_subtract_factor * obs_map.signal.u(pix_y(i), pix_x(i));
+                            tcdata.signal_u(j, i) += add_subtract_factor * obs_map.signal[sig_u_index](pix_y(i), pix_x(i));
                         }
                     }
                 }

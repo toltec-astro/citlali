@@ -56,7 +56,8 @@ void Kernel<TCDataType>::add_gaussian_beam_to_time_chunk(TCDataType& tcdata) {
     for (int det = 0; det < n_dets; ++det) {
         if (tcdata.apt_flag(det)) continue;
 
-        auto xy = telescope.calc_pointing(toltec.apt["x_t"].data(det), toltec.apt["y_t"].data(det), tcdata.tel_data);
+        auto xy = calc_pointing(toltec.apt["x_t"].data(det), toltec.apt["y_t"].data(det), tcdata.tel_data,
+                                telescope.pixel_axes);
 
         Eigen::VectorXd beam_params(6);
         for (int i = 0; i < n_pts; ++i) {
@@ -78,7 +79,8 @@ void Kernel<TCDataType>::add_airy_beam_to_time_chunk(TCDataType& tcdata) {
     for (int det = 0; det < n_dets; ++det) {
         if (tcdata.apt_flag(det)) continue;
 
-        auto xy = telescope.calc_pointing(toltec.apt["x_t"].data(det), toltec.apt["y_t"].data(det), tcdata.tel_data);
+        auto xy = calc_pointing(toltec.apt["x_t"].data(det), toltec.apt["y_t"].data(det), tcdata.tel_data,
+                                telescope.pixel_axes);
 
         Eigen::VectorXd beam_params(4);
         for (int i = 0; i < n_pts; ++i) {
@@ -100,7 +102,8 @@ void Kernel<TCDataType>::add_elliptical_gaussian_beam_to_time_chunk(TCDataType& 
     for (int det = 0; det < n_dets; ++det) {
         if (tcdata.apt_flag(det)) continue;
 
-        auto xy = telescope.calc_pointing(toltec.apt["x_t"].data(det), toltec.apt["y_t"].data(det), tcdata.tel_data);
+        auto xy = calc_pointing(toltec.apt["x_t"].data(det), toltec.apt["y_t"].data(det), tcdata.tel_data,
+                                telescope.pixel_axes);
 
         Eigen::VectorXd beam_params(6);
         for (int i = 0; i < n_pts; ++i) {

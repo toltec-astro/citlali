@@ -9,7 +9,7 @@ public:
 
     Instrument& toltec;
     Telescope& telescope;
-    double lower_weight_factor, upper_weight_factor;
+    double lower_inv_var_factor, upper_inv_var_factor;
     int max_iters;
 
     std::string type_;
@@ -18,8 +18,8 @@ public:
     TodFlagging(std::string type, Instrument& toltec_ref, Telescope& telescope_ref, ConfigType& config)
         : type_(type), toltec(toltec_ref), telescope(telescope_ref) {
 
-        config.get(lower_weight_factor, std::tuple{"timestream",type_,"flagging","lower_weight_factor"});
-        config.get(upper_weight_factor, std::tuple{"timestream",type_,"flagging","upper_weight_factor"});
+        config.get(lower_inv_var_factor, std::tuple{"timestream",type_,"flagging","lower_inv_var_factor"});
+        config.get(upper_inv_var_factor, std::tuple{"timestream",type_,"flagging","upper_inv_var_factor"});
         config.get(max_iters, std::tuple{"timestream",type_,"flagging","max_iters"});
     }
 
@@ -28,7 +28,7 @@ public:
         logger->info("tod flagging processing");
 
         // only run if one factor is greater than zero
-        if (lower_weight_factor > 0 || upper_weight_factor > 0) {
+        if (lower_inv_var_factor > 0 || upper_inv_var_factor > 0) {
             flag_by_variance(tcdata);
         }
     }
@@ -54,22 +54,22 @@ void TodFlagging<TCDataType>::flag_by_variance(TCDataType& tcdata) {
                 }
             }
 
-            Eigen::VectorXd weights(n_good);
+            Eigen::VectorXd inv_var(n_good);
 
-            // find weights (1/variance) of good detectors
+            // find inv_var (1/variance) of good detectors
             int j = 0;
             for (int det = start; det <= end; ++det) {
                 if (!tcdata.apt_flag(det) && (tcdata.flag.col(det).array() == false).any()) {
                     double variance = flagged_variance(tcdata.signal.col(det), tcdata.flag.col(det));
-                    weights(j++) = variance > 0 ? 1. / variance : 0;
+                    inv_var(j++) = variance > 0 ? 1. / variance : 0;
                 }
             }
 
             // median weight of good detectors
-            double median_weights = tula::alg::median(weights);
+            double median_inv_var = tula::alg::median(inv_var);
 
-            double lower_bound = lower_weight_factor * median_weights;
-            double upper_bound = upper_weight_factor * median_weights;
+            double lower_bound = lower_inv_var_factor * median_inv_var;
+            double upper_bound = upper_inv_var_factor * median_inv_var;
 
             int n_dets_low = 0;
             int n_dets_high = 0;
@@ -78,8 +78,8 @@ void TodFlagging<TCDataType>::flag_by_variance(TCDataType& tcdata) {
             j = 0;
             for (int det = start; det <= end; ++det) {
                 if (!tcdata.apt_flag(det) && (tcdata.flag.col(det).array() == false).any()) {
-                    bool low_weight = weights(j) < lower_bound;
-                    bool high_weight  = (weights(j) > upper_bound) && (upper_weight_factor > 0) ;
+                    bool low_weight = inv_var(j) < lower_bound;
+                    bool high_weight  = (inv_var(j) > upper_bound) && (upper_inv_var_factor > 0) ;
                     if (low_weight) {
                         tcdata.apt_flag(det) = 1;
                         n_dets_low++;
@@ -92,7 +92,7 @@ void TodFlagging<TCDataType>::flag_by_variance(TCDataType& tcdata) {
                 }
             }
 
-            logger->info("array {} iter {}: {}/{} low weights | {}/{} high weights.", toltec.apt.arrays(i), n_iter,
+            logger->info("array {} iter {}: {}/{} low inv_var | {}/{} high inv_var.", toltec.apt.arrays(i), n_iter,
                          n_dets_low, n_good, n_dets_high, n_good);
 
             n_dets_iter += (n_dets_low + n_dets_high);

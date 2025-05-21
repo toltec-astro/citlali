@@ -11,35 +11,41 @@ Eigen::MatrixXd pad_matrix(const Eigen::MatrixXd& matrix, int n_rows, int n_cols
     return padded;
 }
 
-// function to create a hanning window
-Eigen::VectorXd hanning_window_1d(int n_pts) {
-    Eigen::VectorXd window  = 0.5 * (1.0 - (2.0 * pi * Eigen::ArrayXd::LinSpaced(n_pts, 0, n_pts - 1) / (n_pts - 1)).cos());
+// create a hanning window
+template <typename Scalar>
+Eigen::Matrix<Scalar, Eigen::Dynamic, 1> hanning_window_1d(int n_pts) {
+    Eigen::Array<Scalar, Eigen::Dynamic, 1> indices = Eigen::Array<Scalar, Eigen::Dynamic, 1>::LinSpaced(n_pts, 0, n_pts - 1);
+
+    Eigen::Matrix<Scalar, Eigen::Dynamic, 1> window =
+        (0.5 * (1.0 - (2.0 * pi * indices / static_cast<Scalar>(n_pts - 1)).cos())).matrix();
 
     return window;
 }
 
-Eigen::MatrixXd hanning_window_2d(int n_rows, int n_cols) {
+template <typename Scalar>
+Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> hanning_window_2d(int n_rows, int n_cols) {
     double a = 2.0 * pi / n_rows;
     double b = 2.0 * pi / n_cols;
 
     // generate and calculate the row and column windows in a single step
-    Eigen::ArrayXd row_window = (-0.5 * (Eigen::ArrayXd::LinSpaced(n_rows, 0, n_rows - 1) * a).cos() + 0.5);
-    Eigen::ArrayXd col_window = (-0.5 * (Eigen::ArrayXd::LinSpaced(n_cols, 0, n_cols - 1) * b).cos() + 0.5);
+    Eigen::Array<Scalar, Eigen::Dynamic, 1> row_window = (-0.5 * (Eigen::Array<Scalar, Eigen::Dynamic, 1>::LinSpaced(n_rows, 0, n_rows - 1) * a).cos() + 0.5);
+    Eigen::Array<Scalar, Eigen::Dynamic, 1> col_window = (-0.5 * (Eigen::Array<Scalar, Eigen::Dynamic, 1>::LinSpaced(n_cols, 0, n_cols - 1) * b).cos() + 0.5);
 
     // create a matrix where each row is a copy of the row_window
-    Eigen::MatrixXd row_matrix = row_window.replicate(1, n_cols);
+    Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> row_matrix = row_window.replicate(1, n_cols);
 
     // create a matrix where each column is a copy of the col_window
-    Eigen::MatrixXd col_matrix = col_window.replicate(n_rows, 1);
+    Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> col_matrix = col_window.replicate(n_rows, 1);
 
     // multiply row_matrix and col_matrix element-wise
-    Eigen::MatrixXd window = row_matrix.cwiseProduct(col_matrix);
+    Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> window = row_matrix.cwiseProduct(col_matrix);
 
     return window;
 }
 
-Eigen::VectorXd fftfreq(int n, double d) {
-    Eigen::VectorXd freqs = Eigen::VectorXd::LinSpaced(n, 0, n - 1);
+template <typename Scalar>
+Eigen::Matrix<Scalar, Eigen::Dynamic, 1> fftfreq(int n, double d) {
+    Eigen::Matrix<Scalar, Eigen::Dynamic, 1> freqs = Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::LinSpaced(n, 0, n - 1);
 
     int half_n = (n + 1) / 2;
 
@@ -49,7 +55,7 @@ Eigen::VectorXd fftfreq(int n, double d) {
     return freqs;
 }
 
-// function to perform 2d convolution in frequency domain
+// function to perform 2d convolution
 Eigen::MatrixXd convolve_fft_2d(const Eigen::MatrixXd& data, const Eigen::MatrixXd& kernel,
                                 fftw_plan forward_plan = nullptr, fftw_plan inverse_plan = nullptr) {
 
@@ -120,7 +126,7 @@ std::pair<Eigen::VectorXd, Eigen::VectorXd> calc_psd_1d(const Eigen::VectorXd& s
     int n_pts = signal.size();
 
     // create a hanning window and apply it to the signal
-    Eigen::VectorXd window = hanning_window_1d(n_pts);
+    Eigen::VectorXd window = hanning_window_1d<double>(n_pts);
     Eigen::VectorXd windowed_signal = signal.array() * window.array();
 
     // fftw output will be complex (n_pts/2+1 values due to symmetry)
@@ -164,6 +170,13 @@ std::pair<Eigen::VectorXd, Eigen::VectorXd> calc_psd_1d(const Eigen::VectorXd& s
     return {psd, frequencies};
 }
 
+// function to compute the welch psd using fftw and eigen, with a hanning window applied
+// std::pair<Eigen::VectorXd, Eigen::VectorXd> welch(const Eigen::VectorXd& signal, const double fs_hz,
+//                                                   const int n_perseg, fftw_plan plan = nullptr) {
+
+// }
+
+
 // function to compute 2D PSD
 auto calc_psd_2d(const Eigen::MatrixXd& data, const double dy, const double dx, fftw_plan forward_plan = nullptr) {
 
@@ -196,8 +209,8 @@ auto calc_psd_2d(const Eigen::MatrixXd& data, const double dy, const double dx, 
     psd /= (n_rows * n_cols);
 
     // get frequencies, throw away 0
-    Eigen::VectorXd row_freqs = fftfreq(n_rows, dx).tail(n_rows - 1);
-    Eigen::VectorXd col_freqs = fftfreq(n_cols, dy).tail(n_cols - 1);
+    Eigen::VectorXd row_freqs = fftfreq<double>(n_rows, dx).tail(n_rows - 1);
+    Eigen::VectorXd col_freqs = fftfreq<double>(n_cols, dy).tail(n_cols - 1);
 
     Eigen::MatrixXd freqs = (row_freqs.array().square().replicate(1, n_cols - 1) +
                              col_freqs.array().square().transpose().replicate(n_rows - 1, 1)).sqrt();

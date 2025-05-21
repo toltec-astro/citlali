@@ -1,342 +1,247 @@
 #pragma once
 
-#include <citlali/core/mapmaking/wcs.h>
+#include <vector>
+#include <unordered_map>
+#include <memory>
+#include <type_traits>
+#include <string>
+#include <unordered_map>
+#include <functional>
+
+#include <Eigen/Dense>
+#include <Eigen/Sparse>
+
+template<typename T>
+struct is_std_vector : std::false_type {};
+
+template<typename T, typename Alloc>
+struct is_std_vector<std::vector<T, Alloc>> : std::true_type {};
 
 // which maps to make
-enum MapMode {
+enum class MapMode : int {
     None = 0,
-    Obs = 2,
-    Noise = 3,
-    Both = 4
+    Obs = 1 << 0,
+    Noise = 2 << 0,
+    Both = Obs | Noise
 };
 
-template <typename DataType>
-struct StokesBase {
-    DataType i, q, u;
-};
+inline MapMode operator|(MapMode lhs, MapMode rhs) {
+    return static_cast<MapMode>(static_cast<int>(lhs) | static_cast<int>(rhs));
+}
 
-struct DataMaps {
-    StokesBase<Eigen::MatrixXd> signal, weight;
-    StokesBase<Eigen::MatrixXd> kernel;
-    StokesBase<Eigen::MatrixXd> coverage;
+inline MapMode operator&(MapMode lhs, MapMode rhs) {
+    return static_cast<MapMode>(static_cast<int>(lhs) & static_cast<int>(rhs));
+}
 
-    void init(int n_rows, int n_cols, bool include_kernel,
-              bool include_coverage, bool include_polarization) {
-        signal.i = Eigen::MatrixXd::Zero(n_rows, n_cols);
-        weight.i = Eigen::MatrixXd::Zero(n_rows, n_cols);
+inline MapMode operator^(MapMode lhs, MapMode rhs) {
+    return static_cast<MapMode>(static_cast<int>(lhs) ^ static_cast<int>(rhs));
+}
 
-        if (include_kernel) {
-            kernel.i = Eigen::MatrixXd::Zero(n_rows, n_cols);
-        }
-        if (include_coverage) {
-            coverage.i = Eigen::MatrixXd::Zero(n_rows, n_cols);
-        }
-        if (include_polarization) {
-            signal.q = Eigen::MatrixXd::Zero(n_rows, n_cols);
-            weight.q = Eigen::MatrixXd::Zero(n_rows, n_cols);
-            signal.u = Eigen::MatrixXd::Zero(n_rows, n_cols);
-            weight.u = Eigen::MatrixXd::Zero(n_rows, n_cols);
-        }
-    }
+inline MapMode& operator|=(MapMode& lhs, MapMode rhs) {
+    lhs = lhs | rhs;
+    return lhs;
+}
 
-    DataMaps& operator+=(const DataMaps& other) {
+inline MapMode& operator&=(MapMode& lhs, MapMode rhs) {
+    lhs = lhs & rhs;
+    return lhs;
+}
 
-        signal.i += other.signal.i;
-        weight.i += other.weight.i;
+inline MapMode& operator^=(MapMode& lhs, MapMode rhs) {
+    lhs = lhs ^ rhs;
+    return lhs;
+}
 
-        if (kernel.i.size() > 0) {
-            kernel.i += other.kernel.i;
-        }
+inline bool get_map_mode(MapMode value, MapMode flag) {
+    return (static_cast<int>(value) & static_cast<int>(flag)) != 0;
+}
 
-        if (coverage.i.size() > 0) {
-            coverage.i += other.coverage.i;
-        }
+// key for unordered maps
+struct MapKey {
+    int array_index;
+    int group_index;
+    std::string stokes;
 
-        if (signal.q.size() > 0 && weight.q.size() > 0) {
-            signal.q += other.signal.q;
-            weight.q += other.weight.q;
-        }
+    MapKey(int ai, int gi, const std::string& s)
+        : array_index(ai), group_index(gi), stokes(s) {}
 
-        if (signal.u.size() > 0 && weight.u.size() > 0) {
-            signal.u += other.signal.u;
-            weight.u += other.weight.u;
-        }
-
-        return *this;
+    bool operator==(const MapKey& other) const {
+        return array_index == other.array_index &&
+               group_index == other.group_index &&
+               stokes == other.stokes;
     }
 };
 
-struct NoiseMaps {
-    StokesBase<std::vector<Eigen::MatrixXd>> noise;
 
-    void init(int n_rows, int n_cols, int n_noise_maps, bool include_polarization) {
-        noise.i.reserve(n_noise_maps);
+namespace std {
+template <>
+struct hash<MapKey> {
+    std::size_t operator()(const MapKey& k) const {
+        std::size_t h1 = std::hash<int>{}(k.array_index);
+        std::size_t h2 = std::hash<int>{}(k.group_index);
+        std::size_t h3 = std::hash<std::string>{}(k.stokes);
 
-        if (include_polarization) {
-            noise.q.reserve(n_noise_maps);
-            noise.u.reserve(n_noise_maps);
-        }
-
-        for (int i = 0; i < n_noise_maps; ++i) {
-            noise.i[i] = Eigen::MatrixXd::Zero(n_rows, n_cols);
-
-            if (include_polarization) {
-                noise.q[i] = Eigen::MatrixXd::Zero(n_rows, n_cols);
-                noise.u[i] = Eigen::MatrixXd::Zero(n_rows, n_cols);
-            }
-        }
-    }
-
-    NoiseMaps& operator+=(const NoiseMaps& other) {
-
-        for (int i = 0; i < noise.i.size(); ++i) {
-            noise.i[i] += other.noise.i[i];
-
-            if (!noise.q.empty()) {
-                noise.q[i] += other.noise.q[i];
-            }
-
-            if (!noise.u.empty()) {
-                noise.u[i] += other.noise.u[i];
-            }
-        }
-
-        return *this;
+        // Combine hashes using boost::hash_combine-like technique
+        std::size_t seed = h1;
+        seed ^= h2 + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+        seed ^= h3 + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+        return seed;
     }
 };
+}
 
-struct MapPsds {
-    StokesBase<Eigen::VectorXd> radial_psd, radial_freqs;
-    StokesBase<Eigen::MatrixXd> psd, freqs;
-};
+using DefaultMapKeyType = MapKey;
 
-struct MapsHists {
-    StokesBase<Eigen::VectorXd> bins;
-    StokesBase<Eigen::VectorXi> hist;
-};
+template <typename MapKeyType = DefaultMapKeyType>
+struct ObsSparse {
+    MapKeyType key;
+    std::vector<Eigen::Triplet<double, Eigen::Index>> data;
+    int n;
 
-struct MapFit {
-    StokesBase<Eigen::VectorXd> params, errors;
+    ObsSparse(const MapKeyType& k, const std::vector<int>& dims)
+        : key(k), n(dims[0]*dims[1]) {
+        data.reserve(n);
+    }
 
-    void init(int n_params, bool include_polarization) {
-        params.i.setZero(n_params);
-        errors.i.setZero(n_params);
+    void operator()(int row, int col, double value) {
+        data.emplace_back(row, col, value);
+    }
 
-        if (include_polarization) {
-            params.q.setZero(n_params);
-            errors.q.setZero(n_params);
+    template <typename OtherMapKeyType>
+    void operator+=(const ObsSparse<OtherMapKeyType>& other) {
+        data.insert(data.end(), other.data.begin(), other.data.end());
+    }
 
-            params.u.setZero(n_params);
-            errors.u.setZero(n_params);
-        }
+    void set_zero() {
+        data.clear();
+        data.reserve(n);
     }
 };
 
-template <typename MapType>
-class MapsBase {
+template <typename MapKeyType = DefaultMapKeyType>
+struct ObsMatrix {
+    MapKeyType key;
+    Eigen::MatrixXd data;
+    Eigen::Index n_rows, n_cols;
+
+    ObsMatrix(const MapKeyType& k, const std::vector<int>& dims)
+    : key(k), n_rows(dims[0]), n_cols(dims[1]) {
+        data = Eigen::MatrixXd::Zero(n_rows, n_cols);
+    }
+
+    void operator()(int row, int col, double value) {
+        data(row, col) += value;
+    }
+
+    template <typename OtherMapKeyType>
+    void operator+=(const ObsMatrix<OtherMapKeyType>& other) {
+        data += other.data;
+    }
+
+    template <typename OtherMapKeyType>
+    void operator+=(const ObsSparse<OtherMapKeyType>& other) {
+        Eigen::SparseMatrix<double> sparse(n_rows, n_cols);
+        sparse.setFromTriplets(other.data.begin(), other.data.end());
+        data += sparse;
+    }
+
+    void set_zero() {
+        data.setZero();
+    }
+};
+
+
+template <typename MapKeyType = DefaultMapKeyType, typename MapType = ObsMatrix<MapKeyType>>
+class ObsMaps {
 public:
-    // map of maps to allow duplicate keys
-    std::map<int, std::map<int, MapType>> maps;
-    std::map<int, std::map<int, MapPsds>> psds;
-    std::map<int, std::map<int, MapsHists>> hists;
-    std::vector<int> arrays, groups;
+    std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
 
-    int n_rows, n_cols, n_pixels;
-    double pix_size_radians;
-    std::string map_grouping;
-    // wcs shared for all maps
+    ObsMaps() = default;
+    std::vector<MapType> signal, weight, kernel, coverage;
+    std::unordered_map<MapKeyType, int> signal_lookup, weight_lookup, kernel_lookup, coverage_lookup;
+
+    int n_maps = 0;
+
+    Eigen::VectorXd rows, cols;
+
     WCS wcs;
 
-    Eigen::VectorXd row_coords, col_coords;
-    Eigen::VectorXi keys;
+    // n_params x n_maps
+    Eigen::MatrixXd params, errors;
+    std::vector<Eigen::VectorXd> radial_psd, radial_freqs;
+    std::vector<Eigen::MatrixXd> psd, freqs;
+    std::vector<Eigen::VectorXd> bins;
+    std::vector<Eigen::VectorXi> counts;
 
-    bool include_polarization;
+    void add(MapKeyType key, const std::vector<int>& dims, bool add_weight = true,
+             bool add_kernel = false, bool add_coverage = false) {
 
-    // overload the [] operator to access maps at a particular index
-    std::map<int, MapType>& operator[](int key) {
-        return maps[key];
+        add_to(signal, signal_lookup, key, dims);
+
+        if (add_weight) add_to(weight, weight_lookup, key, dims);
+        if (add_kernel) add_to(kernel, kernel_lookup, key, dims);
+        if (add_coverage) add_to(coverage, coverage_lookup, key, dims);
+
+        n_maps++;
     }
 
-    // const version of the operator[] for const objects
-    const std::map<int, MapType>& operator[](int key) const {
-        return maps.at(key);
+    void set_zero() {
+        zero_container(signal);
+        zero_container(weight);
+        zero_container(kernel);
+        zero_container(coverage);
     }
 
-    MapsBase<MapType>& operator+=(MapsBase<MapType>& other) {
-        for (auto &[key, upper_map] : maps) {
-            for (auto& [lower_key, key_map] : upper_map) {
-                key_map += other[key][lower_key];
+    template <typename OtherMapKeyType, typename OtherMapType>
+    void operator+=(ObsMaps<OtherMapKeyType, OtherMapType> &other) {
+        add_containers(signal, other.signal);
+        add_containers(weight, other.weight);
+        add_containers(kernel, other.kernel);
+        add_containers(coverage, other.coverage);
+    }
+
+private:
+    template <typename Container>
+    void add_to(Container& container,
+                std::unordered_map<MapKeyType, int>& lookup,
+                const MapKeyType& key, const std::vector<int>& dims) {
+        if constexpr (is_std_vector<MapType>::value) {
+            container.emplace_back();
+            for (int i = 0; i < dims[2]; ++i) {
+                container.back().emplace_back(key, dims);
             }
         }
-        return *this;
+        else {
+            container.emplace_back(key, dims);
+        }
+
+        lookup[key] = static_cast<int>(container.size()) - 1;
     }
-};
 
-class DataMapsContainer : public MapsBase<DataMaps> {
-public:
-    std::map<int, std::map<int, MapFit>> fits;
-
-    bool include_kernel, include_coverage;
-    int n_params = 0;
-
-    std::vector<Eigen::Map<Eigen::MatrixXd>> signal_map, weight_map, kernel_map, coverage_map;
-    std::vector<Eigen::Map<Eigen::VectorXd>> params_map, errors_map;
-
-    DataMapsContainer() {}
-    DataMapsContainer(DataMapsContainer& other) {
-        n_rows = other.n_rows;
-        n_cols = other.n_cols;
-        n_params = other.n_params;
-        wcs = other.wcs;
-        row_coords = other.row_coords;
-        col_coords = other.col_coords;
-
-        include_kernel = other.include_kernel;
-        include_coverage = other.include_coverage;
-        include_polarization = other.include_polarization;
-
-        for (const auto& [key, other_map] : other.maps) {
-            Eigen::VectorXi lower_keys(other_map.size());
-            int i = 0;
-            for (const auto& [lower_key, other_key_map] : other_map) {
-                lower_keys(i) = lower_key;
-                i++;
+    template <typename Container0, typename Container1>
+    void add_containers(Container0& lhs, const Container1& rhs) {
+        for (int i = 0; i < lhs.size(); ++i) {
+            if constexpr (is_std_vector<MapType>::value) {
+                for (int j = 0; j < lhs[i].size(); ++j) {
+                    lhs[i][j] += rhs[i][j];
+                }
             }
-
-            init_array(key, lower_keys);
-            init_fit(key, lower_keys);
-        }
-    }
-
-    template <typename Derived>
-    void init_array(int key, Eigen::DenseBase<Derived>& lower_keys) {
-        for (const auto &lower_key : lower_keys) {
-            auto& key_map = maps[key][lower_key];
-            key_map.init(n_rows, n_cols, include_kernel, include_coverage, include_polarization);
-        }
-    }
-
-    template <typename Derived>
-    void init_fit(int key, Eigen::DenseBase<Derived>& lower_keys) {
-        for (const auto &lower_key : lower_keys) {
-            fits[key][lower_key].init(n_params, include_polarization);
-        }
-    }
-
-    void build_vectors() {
-        arrays.clear();
-        groups.clear();
-        signal_map.clear();
-        weight_map.clear();
-        kernel_map.clear();
-        coverage_map.clear();
-        params_map.clear();
-        errors_map.clear();
-
-        for (const auto& [key, lower_keys] : maps) {
-            for (const auto& [lower_key, lower_key_map] : lower_keys) {
-                auto& key_map = maps[key][lower_key];
-
-                arrays.push_back(key);
-                groups.push_back(lower_key);
-
-                signal_map.push_back(Eigen::Map<Eigen::MatrixXd>(key_map.signal.i.data(), n_rows, n_cols));
-                weight_map.push_back(Eigen::Map<Eigen::MatrixXd>(key_map.weight.i.data(), n_rows, n_cols));
-
-                params_map.push_back(Eigen::Map<Eigen::VectorXd>(fits[key][lower_key].params.i.data(), n_params));
-                errors_map.push_back(Eigen::Map<Eigen::VectorXd>(fits[key][lower_key].errors.i.data(), n_params));
-
-                if (include_kernel) {
-                    kernel_map.push_back(Eigen::Map<Eigen::MatrixXd>(key_map.kernel.i.data(), n_rows, n_cols));
-                }
-
-                if (include_coverage) {
-                    coverage_map.push_back(Eigen::Map<Eigen::MatrixXd>(key_map.coverage.i.data(), n_rows, n_cols));
-                }
-
-                if (include_polarization) {
-                    arrays.push_back(key);
-                    groups.push_back(lower_key);
-                    signal_map.push_back(Eigen::Map<Eigen::MatrixXd>(key_map.signal.q.data(), n_rows, n_cols));
-                    weight_map.push_back(Eigen::Map<Eigen::MatrixXd>(key_map.weight.q.data(), n_rows, n_cols));
-
-                    arrays.push_back(key);
-                    groups.push_back(lower_key);
-                    signal_map.push_back(Eigen::Map<Eigen::MatrixXd>(key_map.signal.u.data(), n_rows, n_cols));
-                    weight_map.push_back(Eigen::Map<Eigen::MatrixXd>(key_map.weight.u.data(), n_rows, n_cols));
-
-                    params_map.push_back(Eigen::Map<Eigen::VectorXd>(fits[key][lower_key].params.q.data(), n_params));
-                    errors_map.push_back(Eigen::Map<Eigen::VectorXd>(fits[key][lower_key].errors.q.data(), n_params));
-                    params_map.push_back(Eigen::Map<Eigen::VectorXd>(fits[key][lower_key].params.u.data(), n_params));
-                    errors_map.push_back(Eigen::Map<Eigen::VectorXd>(fits[key][lower_key].errors.u.data(), n_params));
-                }
+            else {
+                lhs[i] += rhs[i];
             }
         }
     }
-};
 
-class NoiseMapsContainer : public MapsBase<NoiseMaps> {
-public:
-    int n_noise_maps = 0;
-
-    std::vector<Eigen::Map<Eigen::MatrixXd>> noise_map;
-
-    NoiseMapsContainer() {}
-    NoiseMapsContainer(NoiseMapsContainer& other) {
-        n_rows = other.n_rows;
-        n_cols = other.n_cols;
-        n_noise_maps = other.n_noise_maps;
-        wcs = other.wcs;
-        row_coords = other.row_coords;
-        col_coords = other.col_coords;
-
-        include_polarization = other.include_polarization;
-
-        for (const auto& [key, other_map] : other.maps) {
-            Eigen::VectorXi lower_keys(other_map.size());
-            int i = 0;
-            for (const auto& [lower_key, other_key_map] : other_map) {
-                lower_keys(i) = lower_key;
-                i++;
-            }
-
-            init_array(key, lower_keys);
-        }
-    }
-
-    template <typename Derived>
-    void init_array(int key, Eigen::DenseBase<Derived>& lower_keys) {
-        for (const auto &lower_key : lower_keys) {
-            auto& key_map = maps[key][lower_key];
-
-            key_map.init(n_rows, n_cols, n_noise_maps, include_polarization);
-        }
-    }
-
-    void build_vectors() {
-        arrays.clear();
-        groups.clear();
-        noise_map.clear();
-
-        for (const auto& [key, lower_keys] : maps) {
-            for (const auto& [lower_key, lower_key_map] : lower_keys) {
-                auto& key_map = maps[key][lower_key];
-
-                for (int i = 0; i < n_noise_maps; ++i) {
-                    arrays.push_back(key);
-                    groups.push_back(lower_key);
-                    noise_map.push_back(Eigen::Map<Eigen::MatrixXd>(key_map.noise.i[i].data(), n_rows, n_cols));
-
-                    if (include_polarization) {
-                        arrays.push_back(key);
-                        groups.push_back(lower_key);
-                        noise_map.push_back(Eigen::Map<Eigen::MatrixXd>(key_map.noise.q[i].data(), n_rows, n_cols));
-
-                        arrays.push_back(key);
-                        groups.push_back(lower_key);
-                        noise_map.push_back(Eigen::Map<Eigen::MatrixXd>(key_map.noise.u[i].data(), n_rows, n_cols));
-                    }
+    template <typename Container>
+    void zero_container(Container& container) {
+        for (int i = 0; i < container.size(); ++i) {
+            if constexpr (is_std_vector<MapType>::value) {
+                for (int j = 0; j < container[i].size(); ++j) {
+                    container[i][j].set_zero();
                 }
+            }
+            else {
+                container[i].set_zero();
             }
         }
     }

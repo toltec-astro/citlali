@@ -11,7 +11,7 @@ struct CostFunction1D {
     template <typename T>
     bool operator()(const T* const params, T* residuals) const {
         for (int i = 0; i < x_.size(); ++i) {
-            if (weights_[i] == 0.0) {
+            if (weights_[i] <= 0.0) {
                 residuals[i] = T(0.0);  // set residual to 0 if the weight is 0
             } else {
                 T predicted_y = Model::eval(T(x_[i]), params);  // evaluate the model
@@ -38,7 +38,7 @@ struct CostFunction2D {
     template <typename T>
     bool operator()(const T* const params, T* residuals) const {
         for (int i = 0; i < x_.size(); ++i) {
-            if (weights_(i) == T(0.0)) {
+            if (weights_(i) <= T(0.0)) {
                 residuals[i] = T(0.0);  // set residual to 0 if the weight is 0
             } else {
                 T predicted_z = Model::eval(T(x_(i)), T(y_(i)), params);  // evaluate the model

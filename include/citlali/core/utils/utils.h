@@ -181,7 +181,7 @@ std::tuple<int, int> find_bounding_limits(int pix_coord, int bounding_size, int 
     return std::make_tuple(lower_bound, upper_bound);
 }
 
-// create the FIR filter based on the sampling frequency
+// create FIR filter based on the sampling frequency
 auto create_kaiser_filter(const double data_fs_hz, const int filter_order, const double gibbs_factor,
                           const double low_cutoff_Hz, const double high_cutoff_Hz) {
 
@@ -254,5 +254,31 @@ void convolve_filter(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB
     // the first and last filter_order samples are not overwritten
     data.block(filter_order, 0, convolved_data.dimension(0), data.cols()) =
         Eigen::Map<Eigen::MatrixXd>(convolved_data.data(), convolved_data.dimension(0), convolved_data.dimension(1));
+}
+
+// check if a point is within a convex hull polygon
+bool is_inside_convex_hull(const std::vector<std::pair<double, double>>& hull, double px, double py) {
+    int n = hull.size();
+
+    bool inside = false;
+    for (int i = 0, j = n - 1; i < n; j = i++) {
+        double x1 = hull[i].first, y1 = hull[i].second;
+        double x2 = hull[j].first, y2 = hull[j].second;
+
+        // check if point is inside the polygon using ray-casting algorithm
+        if (((y1 > py) != (y2 > py)) && (px < (x2 - x1) * (py - y1) / (y2 - y1) + x1)) {
+            inside = !inside;
+        }
+    }
+    return inside;
+}
+
+template <typename Derived>
+typename Derived::Scalar  threshold(Eigen::DenseBase<Derived>&data, typename Derived::Scalar value, typename Derived::Scalar lower) {
+    Eigen::Array<bool, Eigen::Dynamic, Eigen::Dynamic> mask = (data > lower);
+    Eigen::Array<typename Derived::Scalar, Eigen::Dynamic, Eigen::Dynamic> filtered_data
+        = data.array() * mask.cast<typename Derived::Scalar>();
+
+    return (filtered_data - value * filtered_data.maxCoeff()).abs().minCoeff();
 }
 

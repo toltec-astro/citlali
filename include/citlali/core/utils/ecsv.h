@@ -118,7 +118,7 @@ Eigen::VectorXd filter_by_condition(const Eigen::DenseBase<Derived>& source, con
 
 class DataColumn {
 public:
-    // data associated with this column (e.g., Eigen vector)
+    // data associated with this column
     Eigen::VectorXd data;
 
     // unit and description of the column

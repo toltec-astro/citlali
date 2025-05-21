@@ -166,7 +166,8 @@ void JincMapmaker<TCDataType>::add_chunk_to_map(TCDataType& tcdata) {
         auto& obs_map = obs_maps[array][group];
 
         // get detector pointing
-        auto xy = telescope.calc_pointing(toltec.apt["x_t"].data(det), toltec.apt["y_t"].data(det), tcdata.tel_data);
+        auto xy = calc_pointing(toltec.apt["x_t"].data(det), toltec.apt["y_t"].data(det), tcdata.tel_data,
+                                telescope.pixel_axes);
 
         // pixels for samples
         Eigen::VectorXI pix_x = (xy.first.array() / obs_maps.pix_size_radians + obs_maps.n_cols / 2.0).template cast<Eigen::Index>();
@@ -209,7 +210,7 @@ void JincMapmaker<TCDataType>::add_chunk_to_map(TCDataType& tcdata) {
                     }
 
                     // only add to stokes maps if loc != -1
-                    if (toltec.apt["loc"].data(det) != -1) {
+                    if (obs_maps.include_polarization && toltec.apt["loc"].data(det) != -1) {
                         if (obs_map.signal.q.size() > 0) {
                             auto signal_q_block = chunk_maps[array][group].signal.q.block(map_start_row, map_start_col, map_size_row, map_size_col);
                             signal_q_block += jinc_block * (*tcdata.signal_q)(i, det) * (*tcdata.weight_q)(det);
@@ -241,6 +242,14 @@ void JincMapmaker<TCDataType>::add_chunk_to_map(TCDataType& tcdata) {
 
                     // same for all noise maps
                     double signal = tcdata.signal(i, det) * tcdata.weight(det);
+                    double signal_q, signal_u;
+
+                    if (!noise_maps[array][group].noise.q.empty()) {
+                        signal_q = (*tcdata.signal_q)(i, det) * (*tcdata.weight_q)(det);
+                    }
+                    if (!noise_maps[array][group].noise.q.empty()) {
+                        signal_u = (*tcdata.signal_u)(i, det) * (*tcdata.weight_u)(det);
+                    }
                     // loop through noise maps
                     for (int k = 0; k < noise_maps.n_noise_maps; ++k) {
                         int sign_value;
@@ -253,6 +262,17 @@ void JincMapmaker<TCDataType>::add_chunk_to_map(TCDataType& tcdata) {
 
                         auto noise_block = chunk_noise_maps[array][group].noise.i[k].block(map_start_row, map_start_col, map_size_row, map_size_col);
                         noise_block += sign_value * jinc_block * signal;
+
+                        if (noise_maps.include_polarization && toltec.apt["loc"].data(det) != -1) {
+                            if (!noise_maps[array][group].noise.q.empty()) {
+                                noise_block = chunk_noise_maps[array][group].noise.q[k].block(map_start_row, map_start_col, map_size_row, map_size_col);
+                                noise_block += sign_value * jinc_block * signal_q;
+                            }
+                            if (!noise_maps[array][group].noise.u.empty()) {
+                                noise_block = chunk_noise_maps[array][group].noise.u[k].block(map_start_row, map_start_col, map_size_row, map_size_col);
+                                noise_block += sign_value * jinc_block * signal_u;
+                            }
+                        }
                     }
                 }
             }

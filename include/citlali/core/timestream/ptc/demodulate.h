@@ -54,7 +54,7 @@ public:
             if (tcdata.apt_flag(det)) continue;
 
             // get detector altaz
-            auto xy = telescope.calc_pointing(toltec.apt["x_t"].data(det), toltec.apt["y_t"].data(det), tcdata.tel_data, "altaz");
+            auto xy = calc_pointing(toltec.apt["x_t"].data(det), toltec.apt["y_t"].data(det), tcdata.tel_data, "altaz");
 
             // total angle for detector (PA + El_boresight + El_det + fg_angle + array_angle
             det_angle = base_angle.array() + xy.first.array() + toltec.fg_to_detector_angle[toltec.apt["fg"].data(det)]

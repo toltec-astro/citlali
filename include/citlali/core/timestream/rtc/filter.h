@@ -29,9 +29,8 @@ public:
     }
 
     void init() override {
-        // uses toltec.data_fs_hz
         filter = create_kaiser_filter(toltec.data_fs_hz, filter_order, gibbs_factor,
-                                        low_cutoff_Hz, high_cutoff_Hz);
+                                      low_cutoff_Hz, high_cutoff_Hz);
     }
 
     // process method that integrates the filter stage into a data processing pipeline

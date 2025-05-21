@@ -30,7 +30,7 @@ public:
     }
 
     void init() {}
-    void process(TCDataType& tcdata) override {
+    void process(TCDataType& tcdata) override {        
         logger->info("pca clean processing");
         subtract_mean(tcdata);
         pca(tcdata);
@@ -40,16 +40,19 @@ public:
 
     void subtract_mean(TCDataType& tcdata) {
         for (int det = 0; det < tcdata.n_dets(); ++det) {
-            double mean = tcdata.signal.col(det).mean();
+            auto mask = (tcdata.flag.col(det).array() == false).matrix().template cast<double>();
+            int n_pts =  mask.sum();
+            double mean = (tcdata.signal.col(det).array() * mask.array()).sum() / n_pts;
             tcdata.signal.col(det) = tcdata.signal.col(det).array() - mean;
 
             if (tcdata.kernel.size() > 0) {
-                tcdata.kernel.array().col(det) = tcdata.kernel.array().col(det).array() - tcdata.kernel.col(det).mean();
+                mean = (tcdata.kernel.col(det).array() * mask.array()).sum() / n_pts;
+                tcdata.kernel.array().col(det) = tcdata.kernel.array().col(det).array() - mean;
             }
         }
     }
 
-    // function to calculate the top k largest eigenvalues and eigenvectors
+    // function to calculate the top n_eig largest eigenvalues and eigenvectors
     template <typename DerivedA, typename DerivedB>
     std::tuple<Eigen::VectorXd, Eigen::MatrixXd> calculate_eigenvalues(Eigen::DenseBase<DerivedA>& matrix,
                                                                        Eigen::DenseBase<DerivedB>& flag,
@@ -76,7 +79,6 @@ public:
             throw std::runtime_error("Spectra failed to compute eigenvalues.");
         }
 
-        // get the top k eigenvalues and corresponding eigenvectors
         Eigen::VectorXd eigenvalues = eigs.eigenvalues();
         Eigen::MatrixXd eigenvectors = eigs.eigenvectors();
 
@@ -94,18 +96,11 @@ public:
 template <typename TCDataType>
 void PcaClean<TCDataType>::pca(TCDataType& tcdata) {
 
-    // for det-based grppi maps
-    std::vector<int> in, out;
-    in.resize(groups.size());
-    std::iota(in.begin(), in.end(), 0);
-    out.resize(groups.size());
-
-    auto exec_mode = tula::grppi_utils::dyn_ex(citlali::utils::threads::det_exec_mode,
-                                               citlali::utils::threads::n_det_threads);
+    auto [in, out] = citlali::utils::threads::get_grppi_vectors(groups.size());
+    auto exec_mode = citlali::utils::threads::get_chunk_remainder_exec_mode();
 
     // loop through cleaning groups
     grppi::map(exec_mode, in, out, [&](int i) {
-
         std::vector<std::pair<int, int>> indices;
 
         if (groups[i] == "nw") {
@@ -117,7 +112,7 @@ void PcaClean<TCDataType>::pca(TCDataType& tcdata) {
         }
 
         int j = 0;
-        // lop through indices for current cleaning group
+        // loop through indices for current cleaning group
         for (const auto& [start, end]: indices) {
             int array_index;
             if (groups[i] == "nw") {
@@ -128,28 +123,8 @@ void PcaClean<TCDataType>::pca(TCDataType& tcdata) {
                 array_index = toltec.apt.arrays(0);
             }
 
-            // array to store good indices
-            Eigen::ArrayXi good_indices;
-
-            int n_good = 0;
-
-            // find number of good detectors
-            for (int k = start; k <= end; ++k) {
-                if (!tcdata.apt_flag(k) && (tcdata.flag.col(k).array() == false).any()) {
-                    n_good++;
-                }
-            }
-
-            good_indices.resize(n_good);
-
-            // populate good indices
-            int m = 0;
-            for (int k = start; k <= end; ++k) {
-                if (!tcdata.apt_flag(k) && (tcdata.flag.col(k).array() == false).any()) {
-                    good_indices(m) = k;
-                    m++;
-                }
-            }
+            // good detector indices
+            auto good_indices = tcdata.get_good_indices(start, end);
 
             // signal matrix for current cleaning group
             auto signal = tcdata.signal(Eigen::all, good_indices);

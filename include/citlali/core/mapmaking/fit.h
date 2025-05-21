@@ -21,7 +21,7 @@ auto find_peak(const Eigen::DenseBase<Derived> &data, double radius, int boundin
 
 template <typename DerivedA, typename DerivedB>
 auto fit_to_gaussian(const Eigen::DenseBase<DerivedA> &signal,
-                     const Eigen::DenseBase<DerivedB> &sigma,
+                     const Eigen::DenseBase<DerivedB> &weight,
                      const double fitting_radius_pix,
                      const int bounding_box_pix,
                      const double amp_lower, const double amp_upper,
@@ -31,15 +31,16 @@ auto fit_to_gaussian(const Eigen::DenseBase<DerivedA> &signal,
     using model = citlali::utils::models::Gaussian2DModel;
     using citlali::utils::fitting::fit_model;
 
-    // calculate S/N map
-    auto sig2noise = signal.derived().array() * sigma.derived().array().sqrt();
+    auto sig2noise = signal.derived().binaryExpr(weight.derived(), [](double num, double denom) {
+        return (denom != 0) ? (num / denom) : 0.0;
+    });
 
     // define box around peak
     auto [max_x, max_y, x_lower, x_upper, y_lower, y_upper, XY] = find_peak(sig2noise, fitting_radius_pix, bounding_box_pix);
 
     // extract the subarray of signal and weight within the bounding box
     auto signal_block = signal.block(y_lower, x_lower, y_upper - y_lower + 1, x_upper - x_lower + 1);
-    auto sigma_block = sigma.block(y_lower, x_lower, y_upper - y_lower + 1, x_upper - x_lower + 1);
+    auto weight_block = weight.block(y_lower, x_lower, y_upper - y_lower + 1, x_upper - x_lower + 1);
 
     Eigen::VectorXd params_initial(model::nparams);
     Eigen::MatrixXd bounds(model::nparams, 2);
@@ -59,13 +60,13 @@ auto fit_to_gaussian(const Eigen::DenseBase<DerivedA> &signal,
         fixed_params(model::nparams - 1) = true;
     }
 
-    return fit_model<model>(XY.col(0), XY.col(1), signal_block, sigma_block, params_initial,
+    return fit_model<model>(XY.col(0), XY.col(1), signal_block, weight_block, params_initial,
                             bounds.col(0), bounds.col(1), fixed_params);
 }
 
 template <typename Derived>
 auto fit_to_airy(const Eigen::DenseBase<Derived> &signal,
-                 const Eigen::DenseBase<Derived> &sigma,
+                 const Eigen::DenseBase<Derived> &weight,
                  const double fitting_radius_pix,
                  const int bounding_box_pix,
                  const double amp_lower, const double amp_upper,
@@ -76,14 +77,16 @@ auto fit_to_airy(const Eigen::DenseBase<Derived> &signal,
     using citlali::utils::fitting::fit_model;
 
     // calculate S/N map
-    auto sig2noise = signal.derived().array() * sigma.derived().array();
+    auto sig2noise = signal.derived().binaryExpr(weight.derived(), [](double num, double denom) {
+        return (denom != 0) ? (num / denom) : 0.0;
+    });
 
     // define box around peak
     auto [max_x, max_y, x_lower, x_upper, y_lower, y_upper, XY] = find_peak(sig2noise, fitting_radius_pix, bounding_box_pix);
 
     // extract the subarray of signal and weight within the bounding box
     auto signal_block = signal.block(y_lower, x_lower, y_upper - y_lower + 1, x_upper - x_lower + 1);
-    auto sigma_block = sigma.block(y_lower, x_lower, y_upper - y_lower + 1, x_upper - x_lower + 1);
+    auto weight_block = weight.block(y_lower, x_lower, y_upper - y_lower + 1, x_upper - x_lower + 1);
 
     Eigen::VectorXd params_initial(model::nparams);
     Eigen::MatrixXd bounds(model::nparams, 2);
@@ -98,7 +101,7 @@ auto fit_to_airy(const Eigen::DenseBase<Derived> &signal,
     bounds.col(1) << amp_upper * signal(max_y, max_x), x_upper, y_upper,
         fwhm_upper * init_fwhm * FWHM_TO_STD;
 
-    return fit_model<model>(XY.col(0), XY.col(1), signal_block, sigma_block, params_initial,
+    return fit_model<model>(XY.col(0), XY.col(1), signal_block, weight_block, params_initial,
                             bounds.col(0), bounds.col(1), fixed_params);
 }
 
@@ -120,9 +123,11 @@ public:
     double fwhm_lower, fwhm_upper;
     double pix_size_arcsec;
 
+    std::string redu_type;
+
     template <typename ConfigType>
-    Fit(Instrument& toltec_ref, Telescope& telescope_ref, ConfigType& config)
-        : toltec(toltec_ref), telescope(telescope_ref) {
+    Fit(Instrument& toltec_, Telescope& telescope_, ConfigType& config)
+        : toltec(toltec_), telescope(telescope_) {
 
         // get amplitude and FWHM limit factors
         std::vector<double> amp_limits, fwhm_limits;
@@ -134,6 +139,7 @@ public:
         config.get(fitting_radius_arcsec, std::tuple{"post_processing", "source_fitting", "fitting_radius_arcsec"});
         config.get(fit_theta, std::tuple{"post_processing", "source_fitting", "gauss_model", "fit_rotation_angle"});
         config.get(pix_size_arcsec, std::tuple{"mapmaking", "pixel_size_arcsec"});
+        config.get(redu_type, std::tuple{"runtime", "reduction_type"});
 
         // stop if any config options were not read in
         if (config.missing_keys.empty() && config.invalid_keys.empty()) {
@@ -161,19 +167,30 @@ public:
         auto exec_mode = tula::grppi_utils::dyn_ex(exec_mode, n_threads);
         */
 
+        maps.params.resize(citlali::utils::models::Gaussian2DModel::nparams, maps.n_maps);
+        maps.errors.resize(citlali::utils::models::Gaussian2DModel::nparams, maps.n_maps);
+
         // loop through maps and fit
-        for (int i = 0; i < maps.signal_map.size(); ++i) {
-            double init_fwhm = toltec.apt.array_fwhms.at(maps.arrays[i]);
+        for (const auto& [map_key, i] : maps.signal_lookup) {
+            double init_fwhm = toltec.array_index_to_fwhm.at(map_key.array_index) / pix_size_arcsec;
 
-            Eigen::MatrixXd inv_sigma = maps.weight_map[i].cwiseSqrt();
+            Eigen::MatrixXd weight;
 
-            auto [p, err] = fit_to_gaussian(maps.signal_map[i], inv_sigma, fitting_radius_pix, bounding_box_pix,
-                                          amp_lower, amp_upper, fwhm_lower, fwhm_upper, init_fwhm,
-                                          fit_theta);
+            if (redu_type == "beammap") {
+                Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> mask = (maps.weight[i].data.array() == 0);
+                weight.resize(maps.wcs.naxis[1], maps.wcs.naxis[0]);
+                weight.setConstant(1. / flagged_variance(maps.signal[i].data, mask));
+            } else {
+                weight = maps.weight[i].data;
+            }
 
-            // rescale fit params from pixel to on-sky units
-            p(1) = pix_size_arcsec * (p(1) - (maps.n_cols) / 2);
-            p(2) = pix_size_arcsec * (p(2) - (maps.n_rows) / 2);
+            auto [p, err] = fit_to_gaussian(maps.signal[i].data, weight, fitting_radius_pix, bounding_box_pix,
+                                            amp_lower, amp_upper, fwhm_lower, fwhm_upper, init_fwhm,
+                                            fit_theta);
+
+            // rescale fit params from pixel to arcsec
+            p(1) = pix_size_arcsec * (p(1) - (maps.wcs.naxis[0]) / 2);
+            p(2) = pix_size_arcsec * (p(2) - (maps.wcs.naxis[1]) / 2);
             p(3) = STD_TO_FWHM * pix_size_arcsec*(p(3));
             p(4) = STD_TO_FWHM * pix_size_arcsec*(p(4));
 
@@ -183,8 +200,8 @@ public:
             err(3) = STD_TO_FWHM * pix_size_arcsec * err(3);
             err(4) = STD_TO_FWHM * pix_size_arcsec * err(4);
 
-            maps.params_map[i] = p;
-            maps.errors_map[i] = err;
+            maps.params.col(i) = p;
+            maps.errors.col(i) = err;
         }
     }
 };

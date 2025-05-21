@@ -42,8 +42,9 @@ namespace citlali::config::options {
     bool run_map_filter;
     // maps
     WCS config_wcs;
-    double pix_size_arcsec;
+    double pix_size_arcsec, pix_size_radians;
     int n_noise_maps;
+    bool randomize_dets;
     // beammap
     Eigen::Matrix<bool, Eigen::Dynamic, 1> converged;
     Eigen::VectorXi convergence_iter;
@@ -104,6 +105,8 @@ namespace citlali::config::options {
 
         config.get(pix_size_arcsec, std::tuple{"mapmaking", "pixel_size_arcsec"});
         config.get(n_noise_maps, std::tuple{"noise_maps", "n_noise_maps"});
+        config.get(randomize_dets, std::tuple{"noise_maps", "randomize_dets"});
+
 
         double wcs_double;
         // get wcs naxis
@@ -154,13 +157,6 @@ namespace citlali::config::options {
         logger->debug("{}", config);
 
         try {
-            //source name
-            //bmp_source_name = config.template get_typed<double>(std::tuple{"beammap_source", "name"});
-
-            // beammap source coordinates
-            //bmp_ra_radians = config.template get_typed<double>(std::tuple{"beammap_source", "ra_deg"}) * DEG_TO_RAD;
-            //bmp_dec_radians = config.template get_typed<double>(std::tuple{"beammap_source", "dec_deg"}) * DEG_TO_RAD;
-
             // retrieve fluxes and errors for each array
             const auto& fluxes_node = config.get_node(std::tuple{"beammap_source", "fluxes"});
             for (int i = 0; i < fluxes_node.size(); ++i) {

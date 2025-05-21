@@ -27,8 +27,8 @@
 #include <tula/switch_invoke.h>
 #include <tula/algorithm/mlinterp/mlinterp.hpp>
 
-#include <citlali/core/utils/threads.h>
 #include <citlali/core/pipeline/controls.h>
+#include <citlali/core/utils/threads.h>
 #include <citlali/core/pipeline/engine.h>
 
 #include <citlali/core/pipeline/io.h>
@@ -221,9 +221,9 @@ int run(const rc_t& rc) {
         logger->info("running obs setup");
         todproc.setup_obs_tod(rawobs);
 
-        // run obs map setup for current observation
+        // calc number and size of obs map for current observation
         logger->info("calculating obs map number and dimensions");
-        todproc.setup_obs_maps();
+        todproc.calc_obs_map_dims();
     }
 
     // only one iteration if not running fruit loops
@@ -288,47 +288,77 @@ int run(const rc_t& rc) {
                 todproc.setup_obs_tod(rawobs);
             }
 
-            // allocate obs maps (other parameters remain constant for all obs)
-            engine.obs_maps.n_rows = todproc.map_extents[i].first;
-            engine.obs_maps.n_cols = todproc.map_extents[i].second;
-            if (redu_type != "science") {
-                engine.obs_maps.n_params = citlali::utils::models::Gaussian2DModel::nparams;
-            }
-            engine.obs_maps.row_coords = todproc.map_coords[i].first;
-            engine.obs_maps.col_coords = todproc.map_coords[i].second;
-
             logger->info("allocating obs maps");
+            // reset maps
+            engine.obs_maps = ObsMaps<>();
             for (const auto& array: engine.toltec.apt.arrays) {
-                engine.obs_maps.init_array(array, todproc.unique_map_keys[array]);
+                for (const auto& unique_key : todproc.unique_map_keys[array]) {
+                    MapKey i_key(array, unique_key, "I");
+                    engine.obs_maps.add(i_key, {todproc.map_extents[i].first, todproc.map_extents[i].second},
+                                        true, run_kernel, map_grouping !="uid");
 
-                if (redu_type != "science") {
-                    engine.obs_maps.init_fit(array, todproc.unique_map_keys[array]);
+                    if (run_polarization) {
+                        MapKey q_key(array, unique_key, "Q");
+                        engine.obs_maps.add(q_key, {todproc.map_extents[i].first, todproc.map_extents[i].second},
+                                            true, false, false);
+
+                        MapKey u_key(array, unique_key, "U");
+                        engine.obs_maps.add(u_key, {todproc.map_extents[i].first, todproc.map_extents[i].second},
+                                            true, false, false);
+                    }
                 }
             }
+
+            // setup map wcs
+            engine.obs_maps.wcs.set(engine.telescope.pixel_axes, engine.telescope.x0, engine.telescope.y0,
+                                    todproc.map_extents[i].first, todproc.map_extents[i].second, pix_size_radians,
+                                    engine.telescope.header.at("Source.Epoch")(0));
+
+            // absolute coordinates
+            engine.obs_maps.rows = todproc.map_coords[i].first;
+            engine.obs_maps.cols = todproc.map_coords[i].second;
 
             // allocate noise maps if not coadding
             if (!run_map_coadd && run_noise_maps) {
                 logger->info("setting up and allocating obs noise maps");
+                // reset maps
+                engine.noise_maps = ObsMaps<MapKey, std::vector<ObsMatrix<MapKey>>>();
                 todproc.allocate_noise_maps(engine.obs_maps);
             }
 
-            // build eigen map vectors to signal, weight, kernel, and coverage maps
-            engine.obs_maps.build_vectors();
-
-            // divide threads between chunks and detectors
-            citlali::utils::threads::set_optimal_threads(n_threads, engine.telescope.n_chunks, exec_mode);
-            logger->debug("using {} threads for outer loops", citlali::utils::threads::n_chunk_threads);
-            logger->debug("using {} threads for inner loops", citlali::utils::threads::n_det_threads);
+            // divide threads between chunks, maps, and detectors
+            citlali::utils::threads::set_optimal_threads(n_threads, engine.telescope.n_chunks, engine.obs_maps.n_maps, exec_mode);
+            logger->debug("using {} thread(s) for time chunks", citlali::utils::threads::n_chunk_threads);
+            logger->debug("using {} thread(s) for time chunk remainder", citlali::utils::threads::n_chunk_remainder_threads);
+            logger->debug("using {} thread(s) for maps", citlali::utils::threads::n_map_threads);
+            logger->debug("using {} thread(s) for map remainder", citlali::utils::threads::n_map_remainder_threads);
 
             // run the pipelines
             logger->info("running pipelines");
-            engine.run(kidsproc, rawobs);
+            engine.run_obs(kidsproc, rawobs);
+
+            // output obs maps
+            logger->info("outputting obs maps");
+            todproc.output_maps(engine.obs_maps, "obs_maps", false);
+
+            if (!run_map_coadd && run_noise_maps) {
+                // output obs noise maps
+                logger->info("outputting obs noise maps");
+                todproc.output_maps(engine.noise_maps, "obs_noise", false);
+            }
         }
 
         // run the map pipeline on the coadded maps
         if (run_map_coadd) {
             logger->info("processing coadded maps");
-            engine.process_coadd();
+            engine.run_coadd();
+            todproc.output_maps(engine.coadd_maps, "coadd_maps", false);
+
+            if (run_map_coadd && run_noise_maps) {
+                // output coadd noise maps
+                logger->info("outputting coadd noise maps");
+                todproc.output_maps(engine.noise_maps, "coadd_noise", false);
+            }
         }
 
         logger->info("making index files");

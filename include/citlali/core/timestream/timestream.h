@@ -18,11 +18,20 @@ enum TimestreamFlags {
 };
 
 struct TCData {
-
     // default constructor
     TCData() {
         // set seed
         rng = gsl_rng_alloc(gsl_rng_mt19937);
+    }
+
+    void set_seed(int seed) {
+        // auto now = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+        // auto tid = std::hash<std::thread::id>{}(std::this_thread::get_id());
+        // unsigned long seed = static_cast<unsigned long>(now ^ tid);
+
+        if (rng) {
+            gsl_rng_set(rng, static_cast<unsigned long>(seed));
+        }
     }
 
     Eigen::MatrixXd signal, kernel; // data and kernel
@@ -32,7 +41,7 @@ struct TCData {
     std::optional<Eigen::VectorXd> weight_q, weight_u; // vectors for q and u weights
     Eigen::VectorXd fcf;  // a copy of the apt fcf to account for per chunk extinction
 
-    // copy of apt flags to be set by weight flagging
+    // copy of apt flags to be set by weight and inverse variance flagging
     Eigen::VectorXd apt_flag;
 
     // chunk number in observation (0 is the first chunk)
@@ -59,16 +68,47 @@ struct TCData {
         return signal.cols();
     }
 
+    std::tuple<Eigen::Index, Eigen::Index> dims() {
+        return std::make_tuple(n_pts(), n_dets());
+    }
+
     // get random +1/-1 for a vector or matrix
-    template<typename Derived>
-    void generate_noise(const Eigen::MatrixBase<Derived>& input) {
-        input.unaryExpr([&](typename Derived::Scalar) {
+    template <typename Derived>
+    void random_sign(Eigen::MatrixBase<Derived>& output) {
+        output = output.unaryExpr([&](typename Derived::Scalar) {
             return gsl_rng_uniform(rng) < 0.5 ? -1 : 1;
         });
     }
 
     void gsl_free() {
         gsl_rng_free(rng);
+    }
+
+    auto get_good_indices(const int start, const int end) {
+        // array to store good indices
+        Eigen::ArrayXi good_indices;
+
+        int n_good = 0;
+
+        // find number of good detectors
+        for (int k = start; k <= end; ++k) {
+            if (!apt_flag(k) && (flag.col(k).array() == false).any()) {
+                n_good++;
+            }
+        }
+
+        good_indices.resize(n_good);
+
+        // populate good indices
+        int m = 0;
+        for (int k = start; k <= end; ++k) {
+            if (!apt_flag(k) && (flag.col(k).array() == false).any()) {
+                good_indices(m) = k;
+                m++;
+            }
+        }
+
+        return good_indices;
     }
 
     void shrink(int start, int size) {
@@ -110,5 +150,4 @@ private:
     // random number generator for noise maps
     // hopefully thread safe
     gsl_rng *rng = nullptr;
-
 };

@@ -1,7 +1,6 @@
 #pragma once
 
 bool is_point_in_box(double a, double b, double x, double y, double theta) {
-
     // rotate point (a, b) by -theta
     double xp = a * std::cos(theta) + b * std::sin(theta);
     double yp = -a * std::sin(theta) + b * std::cos(theta);
@@ -153,6 +152,8 @@ public:
 
     // std map for telescope data and header
     std::map<std::string, Eigen::VectorXd> data, header;
+    // center of map
+    double x0, y0;
     // number of time chunks
     int n_chunks;
     // simulated obs or not
@@ -190,7 +191,6 @@ public:
     void calc_raster_chunk_indices();
     void calc_time_chunk_indices(const double);
     void calc_chunk_indices(const double, const Eigen::Index);
-    auto calc_pointing(const double, const double, const std::map<std::string, Eigen::VectorXd> &, std::string);
 };
 
 void Telescope::load_telescope(const std::string &filepath) {
@@ -415,12 +415,23 @@ void Telescope::calc_tangent_plane_pointing() {
     if (pixel_axes == "radec") {
         data["x"] = data.at("ra_tan");
         data["y"] = data.at("dec_tan");
+
+        x0 = header.at("Source.RA")(0);
+        y0 = header.at("Source.DEC")(0);
+
     } else if (pixel_axes == "altaz") {
         data["x"] = data.at("az_tan");
         data["y"] = data.at("alt_tan");
+
+        x0 = 0.0;
+        y0 = 0.0;
+
     } else if (pixel_axes == "galactic") {
         data["x"] = data.at("l_tan");
         data["y"] = data.at("b_tan");
+
+        x0 = header.at("Source.L")(0);
+        y0 = header.at("Source.B")(0);
     }
 
     // apply corrections
@@ -588,62 +599,3 @@ void Telescope::calc_chunk_indices(const double data_fs_hz, const Eigen::Index t
     // log the final chunk indices
     logger->debug("chunk_indices {}", chunk_indices);
 }
-
-auto Telescope::calc_pointing(const double xd, const double yd, const std::map<std::string, Eigen::VectorXd>& tel_data,
-                              std::string _pixel_axes = "default") {
-
-    if (_pixel_axes == "default") {
-        _pixel_axes = pixel_axes;
-    }
-
-    // reference to elevation
-    const auto& e = tel_data.at("TelElAct");
-
-    // Precompute sin and cos of elevation for efficiency
-    const auto cos_e = cos(e.array());
-    const auto sin_e = sin(e.array());
-
-    // Rotate offsets to sample elevation
-    Eigen::VectorXd xd_rot = (cos_e * xd - sin_e * yd) + tel_data.at("pointing_offset_az_arcsec").array();
-    Eigen::VectorXd yd_rot = (cos_e * yd + sin_e * xd) + tel_data.at("pointing_offset_alt_arcsec").array();
-
-    Eigen::VectorXd x, y;
-
-    if (_pixel_axes == "radec") {
-        // Rotate around -pa
-        const auto& pa = tel_data.at("ActParAng");
-
-        // ra
-        x = (-xd_rot.array() * cos(pa.array()) + yd_rot.array() * sin(pa.array())) * ASEC_TO_RAD
-            + tel_data.at("ra_tan").array();
-        // dec
-        y = (xd_rot.array() * sin(pa.array()) + yd_rot.array() * cos(pa.array())) * ASEC_TO_RAD
-            + tel_data.at("dec_tan").array();
-
-    } else if (_pixel_axes == "altaz") {
-        // azimuth
-        x = xd_rot.array() * ASEC_TO_RAD + tel_data.at("az_tan").array();
-        // altitude
-        y = yd_rot.array() * ASEC_TO_RAD + tel_data.at("alt_tan").array();
-
-    } else if (_pixel_axes == "galactic") {
-        // rotate around -(pa + ga)
-        const auto& pa = tel_data.at("ActParAng");
-        const auto& ga = tel_data.at("ActGalAng");
-        const auto theta = pa.array() + ga.array();
-
-        // galactic longitude (l)
-        x = (-xd_rot.array() * cos(theta) + yd_rot.array() * sin(theta)) * ASEC_TO_RAD
-            + tel_data.at("l_tan").array();
-        // galactic latitude (b)
-        y = (xd_rot.array() * sin(theta) + yd_rot.array() * cos(theta)) * ASEC_TO_RAD
-            + tel_data.at("b_tan").array();
-
-    } else {
-        // handle unsupported coordinate systems
-        throw std::runtime_error("Unsupported pixel_axes coordinate system: " + pixel_axes);
-    }
-
-    return std::make_pair(x, y);
-}
-

@@ -38,9 +38,8 @@ public:
 
 class Instrument {
 public:
-    // APT
+    std::string name = "TolTEC";
     ArrayPropertyTable apt;
-
     Hwpr hwpr;
 
     // map of arrays in this instrument
@@ -54,6 +53,13 @@ public:
         {0, "a1100"},
         {1, "a1400"},
         {2, "a2000"}
+    };
+
+    // array names
+    std::map<int, double> array_index_to_fwhm = {
+        {0, 5.0},
+        {1, 6.3},
+        {2, 9.5}
     };
 
     // array wavelengths
@@ -148,7 +154,7 @@ public:
                                 const std::string& redu_type,
                                 const std::string& array_name,
                                 const std::string& obsnum,
-                                bool simu_obs) {
+                                const bool simu_obs) {
         std::string filename = filepath;
 
         // append data type
@@ -161,8 +167,6 @@ public:
         if (!array_name.empty()) filename += "_" + array_name;
         if (!redu_type.empty()) filename += "_" + redu_type;
         if (!obsnum.empty()) filename += "_" + obsnum;
-
-        // append product type
         if (!prod_type.empty()) filename += "_" + prod_type;
 
         // append filter type
@@ -171,7 +175,7 @@ public:
         }
 
         // append pipeline information for maps or noise maps
-        if (prod_type == "map" || prod_type == "noise") {
+        if (prod_type == "" || prod_type == "noise") {
             filename += "_citlali";
         }
 
