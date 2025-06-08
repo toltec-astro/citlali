@@ -11,12 +11,6 @@
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 
-template<typename T>
-struct is_std_vector : std::false_type {};
-
-template<typename T, typename Alloc>
-struct is_std_vector<std::vector<T, Alloc>> : std::true_type {};
-
 // which maps to make
 enum class MapMode : int {
     None = 0,
@@ -135,7 +129,7 @@ struct ObsMatrix {
 
     template <typename OtherMapKeyType>
     void operator+=(const ObsMatrix<OtherMapKeyType>& other) {
-        data += other.data;
+        data.array() += other.data.array();
     }
 
     template <typename OtherMapKeyType>

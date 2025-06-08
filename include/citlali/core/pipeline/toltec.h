@@ -55,18 +55,25 @@ public:
         {2, "a2000"}
     };
 
-    // array names
+    // array to fwhm in arcseconds
     std::map<int, double> array_index_to_fwhm = {
         {0, 5.0},
         {1, 6.3},
         {2, 9.5}
     };
 
-    // array wavelengths
+    // array wavelengths in meters
     std::map<int, double> array_index_to_wavelength = {
         {0, 0.0011},
         {1, 0.0014},
         {2, 0.0020}
+    };
+
+    // array frequencies in GHz
+    std::map<int, double> array_index_to_freq_GHz = {
+        {0, 272.7},
+        {1, 214.3},
+        {2, 150.0}
     };
 
     std::map<int, int> nw_to_array = {
@@ -79,7 +86,7 @@ public:
         {12, 2}
     };
 
-    // toltec array mounting angle
+    // toltec array mounting angle in radians
     std::map<int, double> array_index_to_install_angle = {
         {-1, -1},
         {0, pi/2},
@@ -87,7 +94,7 @@ public:
         {2, -pi/2},
     };
 
-    // toltec detector orientation angles
+    // toltec detector orientation angles in radians
     std::map<int, double> fg_to_detector_angle = {
         {-1, -1},
         {0, 0},

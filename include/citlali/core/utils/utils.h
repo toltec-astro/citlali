@@ -4,6 +4,12 @@
 
 #include <gsl/gsl_sf_bessel.h>
 
+template<typename T>
+struct is_std_vector : std::false_type {};
+
+template<typename T, typename Alloc>
+struct is_std_vector<std::vector<T, Alloc>> : std::true_type {};
+
 template <typename Derived>
 struct is_eigen_vector {
     static constexpr bool value = (Eigen::internal::traits<Derived>::RowsAtCompileTime == 1 ||
@@ -234,7 +240,7 @@ auto create_kaiser_filter(const double data_fs_hz, const int filter_order, const
     return filter;
 }
 
-// apply the FIR filter using convolution on the input data
+// apply FIR filter
 template <typename DerivedA, typename DerivedB>
 void convolve_filter(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &filter) {
     int filter_order = (filter.size() - 1) / 2;
@@ -273,6 +279,7 @@ bool is_inside_convex_hull(const std::vector<std::pair<double, double>>& hull, d
     return inside;
 }
 
+// find index of element nearest to some factor times the max value
 template <typename Derived>
 typename Derived::Scalar  threshold(Eigen::DenseBase<Derived>&data, typename Derived::Scalar value, typename Derived::Scalar lower) {
     Eigen::Array<bool, Eigen::Dynamic, Eigen::Dynamic> mask = (data > lower);

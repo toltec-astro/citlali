@@ -37,3 +37,8 @@ constexpr double FWHM_TO_STD = 1 / sqrt(8. * log(2.));
 constexpr double MJY_SR_TO_mJY_ASEC = (DEG_TO_SR) * (pow(3600.0, -2.0)) * pow(10.0, 6.0) * 1e3;
 // mJy/arcsec to MJy/sr
 constexpr double mJY_ASEC_to_MJY_SR = (SR_TO_DEG) * (pow(3600.0, 2.0)) * pow(10.0, -6.0) * 1e-3;
+
+// planck function
+double planck_nu(const double nu_Hz, const double T_K) {
+    return 2. * h_J_s* std::pow(nu_Hz, 3) / std::pow(c_m_s, 2) / (std::exp((h_J_s * nu_Hz) / (kB_J_K * T_K)) - 1.);
+}

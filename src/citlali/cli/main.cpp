@@ -234,20 +234,25 @@ int run(const rc_t& rc) {
 
     // fruit loops iterations
     for (int iter = 0; iter < fruit_iters; ++iter) {
+        logger->info("starting fruit iteration {}", iter);
         // allocate coadd maps
         if (run_map_coadd) {
             logger->info("setting up and allocating coadded maps");
+            // reset maps
+            engine.coadd_maps = ObsMaps<>();
             todproc.allocate_coadded_maps();
 
-            // allocate noise maps
+            // allocate coadd noise maps
             if (run_noise_maps) {
                 logger->info("setting up and allocating coadded noise maps");
+                // reset maps
+                engine.noise_maps = ObsMaps<MapKey, std::vector<ObsMatrix<MapKey>>>();
                 todproc.allocate_noise_maps(engine.coadd_maps);
             }
         }
 
         // create reduction directories
-        if (save_all_fruit_iters || fruit_iters == 0) {
+        if (save_all_fruit_iters || iter == 0) {
             logger->info("creating output directories");
             todproc.setup_directories();
 
@@ -270,6 +275,54 @@ int run(const rc_t& rc) {
 
             // copy obsnum
             engine.obsnum = todproc.obsnums[i];
+
+            // get fruit loops path
+            if (run_fruit_loops) {
+                auto result = engine.ptc_pipeline.get_component("FruitLoops");
+                if (result) {
+                    auto& [index, component] = result.value();
+                    auto fruit_ptr = dynamic_cast<FruitLoops<TCData>*>(component);
+
+                    if (fruit_ptr) {
+                        fruit_ptr->fruit_iter = iter;
+                        std::string base_path;
+
+                        if (iter == 0 && fruit_ptr->fruit_path != "null") {
+                            const auto& fruit_source = fruit_ptr->fruit_source;
+                            const std::string& fruit_path = fruit_ptr->fruit_path;
+
+                            if (fruit_source == "obsnum/raw") {
+                                base_path = fruit_path + "/" + engine.obsnum + "/raw/";
+                            } else if (fruit_source == "obsnum/filtered") {
+                                base_path = fruit_path + "/" + engine.obsnum + "/filtered/";
+                            } else if (fruit_source == "coadded/raw") {
+                                base_path = fruit_path + "/coadded/raw/";
+                            } else if (fruit_source == "coadded/filtered") {
+                                base_path = fruit_path + "/coadded/filtered/";
+                            }
+                        } else {
+                            std::string redu_path = engine.reduction_directory;
+                            if (save_all_fruit_iters) {
+                                redu_path = redu_path.substr(0, redu_path.size() - 2) +
+                                            fmt::format("{:02}", std::stoi(redu_path.substr(redu_path.size() - 2)) - 1);
+                            }
+
+                            const auto& fruit_source = fruit_ptr->fruit_source;
+                            if (fruit_source == "obsnum/raw") {
+                                base_path = redu_path + "/" + engine.obsnum + "/raw/";
+                            } else if (fruit_source == "obsnum/filtered") {
+                                base_path = redu_path + "/" + engine.obsnum + "/filtered/";
+                            } else if (fruit_source == "coadded/raw") {
+                                base_path = redu_path + "/coadded/raw/";
+                            } else if (fruit_source == "coadded/filtered") {
+                                base_path = redu_path + "/coadded/filtered/";
+                            }
+                        }
+
+                        fruit_ptr->curr_fruit_dir = base_path;
+                    }
+                }
+            }
 
             // get current rawobs
             const auto& rawobs = co.inputs()[i];

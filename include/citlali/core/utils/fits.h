@@ -211,7 +211,7 @@ public:
             }
 
         } catch (CCfits::HDU::NoSuchKeyword& e) {
-            throw std::runtime_error(fmt::format("cannot find wcs header keys in {}: {}", hdu_name, e));
+            throw std::runtime_error(fmt::format("cannot find wcs header keys in {}: {}", hdu_name, e.message()));
         }
 
         return wcs;

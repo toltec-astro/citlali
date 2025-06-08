@@ -99,13 +99,13 @@ std::vector<std::pair<int, int>> find_edges(const Eigen::VectorXd& data) {
 template <typename Derived>
 Eigen::VectorXd filter_by_condition(const Eigen::DenseBase<Derived>& source, const Eigen::DenseBase<Derived>& condition,
                                     int target_value) {
-    // Count how many elements match the condition
+    // count how many elements match the condition
     int count = (condition.derived().array() == target_value).count();
 
-    // Allocate the filtered vector
+    // allocate the filtered vector
     Eigen::VectorXd filtered(count);
 
-    // Fill the filtered vector
+    // fill the filtered vector
     int index = 0;
     for (int i = 0; i < condition.size(); ++i) {
         if (condition(i) == target_value) {

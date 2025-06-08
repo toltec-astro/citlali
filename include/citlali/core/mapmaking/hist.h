@@ -10,9 +10,19 @@ public:
     Telescope& telescope;
 
     template <typename ConfigType>
-    MapHist(Instrument& toltec_ref, Telescope& telescope_ref, ConfigType& config)
-        : toltec(toltec_ref), telescope(telescope_ref) {}
+    MapHist(Instrument& toltec_, Telescope& telescope_, ConfigType& config)
+        : toltec(toltec_), telescope(telescope_) {}
 
-    void init() {}
-    void process(MapType& maps) override {}
+    void init() override {}
+    void process(MapType& maps) override {
+        logger->info("hist processing");
+
+        for (int i = 0; i < maps.signal.size(); ++i) {
+            if constexpr (is_std_vector<decltype(maps.signal[i])>::value) {
+                for (int j = 0; j < maps.signal[i].size(); ++j) {
+
+                }
+            }
+        }
+    }
 };

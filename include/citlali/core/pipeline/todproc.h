@@ -171,7 +171,6 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                 // cast to double
                 Eigen::MatrixXd ts_double = ts.cast<double>();
 
-                // extract columns with descriptive names
                 auto sec = ts_double.col(0);        // ClockTime (sec)
                 auto nsec = ts_double.col(5);       // ClockTimeNanoSec (nsec)
                 auto pps = ts_double.col(1);        // PpsCount (pps ticks)
@@ -601,7 +600,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
         // populate network classes within array classes
         i = 0;
         for (const auto& nw: engine().toltec.apt.nws) {
-            // get array name for current network.
+            // get array name for current network
             int array = engine().toltec.nw_to_array.at(nw);
             engine().toltec.arrays[array].networks[nw] = NetworkContainer(nw, engine().toltec.apt.filter_dets("nw", nw));
             engine().toltec.arrays[array].networks[nw].apt.init();
@@ -919,59 +918,6 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
         /**
          * @brief output maps.
         */
-        FitsHeader phdu;
-
-        if (map_type == "obs_maps" || map_type == "obs_noise") {
-            phdu.add_key("OBSNUM0", obsnums.back(), "Observation number");
-        } else {
-            for (int i = 0; i < obsnums.size(); ++i) {
-                phdu.add_key("OBSNUM" + std::to_string(i), obsnums[i], "Observation number");
-            }
-        }
-        phdu.add_key("SOURCE", engine().telescope.source_name, "Source name");
-        phdu.add_key("INSTRUME", engine().toltec.name, "Instrument");
-        phdu.add_key("TELESCOP", "LMT", "Telescope");
-        phdu.add_key("HWPR", engine().toltec.hwpr.run_hwpr, "HWPR installed");
-        phdu.add_key("PIPELINE", "CITLALI", "Redu pipeline");
-        phdu.add_key("VERSION", CITLALI_GIT_VERSION, "CITLALI_GIT_VERSION");
-        phdu.add_key("KIDS", KIDSCPP_GIT_VERSION, "KIDSCPP_GIT_VERSION");
-        phdu.add_key("TULA", TULA_GIT_VERSION, "TULA_GIT_VERSION");
-        phdu.add_key("PROJID", engine().telescope.project_id, "Project ID");
-        phdu.add_key("GOAL", redu_type, "Reduction type");
-        phdu.add_key("OBSGOAL", engine().telescope.obs_goal, "Obs goal");
-        phdu.add_key("TYPE", tod_type, "TOD Type");
-        phdu.add_key("GROUPING", map_grouping, "Map grouping");
-        phdu.add_key("METHOD", map_method, "Map method");
-        phdu.add_key("RADESYS", engine().telescope.pixel_axes, "Coord Reference Frame");
-        phdu.add_key("SRC_RA", engine().telescope.header.at("Source.Ra")(0), "Source RA (radians)");
-        phdu.add_key("SRC_DEC", engine().telescope.header.at("Source.Dec")(0), "Source Dec (radians)");
-        phdu.add_key("MEAN_EL", RAD_TO_DEG*engine().telescope.data.at("TelElAct").mean(), "Mean Elevation (deg)");
-        phdu.add_key("MEAN_AZ", RAD_TO_DEG*engine().telescope.data.at("TelAzAct").mean(), "Mean Azimuth (deg)");
-        phdu.add_key("MEAN_PA", RAD_TO_DEG*engine().telescope.data.at("ActParAng").mean(), "Mean Parallactic angle (deg)");;
-
-        phdu.add_key("CONFIG.VERBOSE", verbose, "Reduced in verbose mode");
-        phdu.add_key("CONFIG.POLARIZED", run_polarization, "Polarized Obs");
-        phdu.add_key("CONFIG.DESPIKED", run_despike, "Despiked");
-        phdu.add_key("CONFIG.TODFILTERED", run_tod_filter, "TOD Filtered");
-        phdu.add_key("CONFIG.DOWNSAMPLED", run_downsample, "Downsampled");
-        phdu.add_key("CONFIG.CALIBRATED", run_flux_calib, "Calibrated");
-        phdu.add_key("CONFIG.EXTINCTION", run_extinction, "Extinction corrected");
-        phdu.add_key("CONFIG.CLEANED", run_pca_clean, "Cleaned");
-        phdu.add_key("CONFIG.RTCTODOUT", run_tod_output_rtc, "RTC Output");
-        phdu.add_key("CONFIG.PTCTODOUT", run_tod_output_ptc, "PTC Output");
-        phdu.add_key("CONFIG.MAPMAKING", run_mapmaking, "Mapmaking");
-        phdu.add_key("CONFIG.NOISEMAPS", run_noise_maps, "Noise Maps");
-        phdu.add_key("CONFIG.COADDED", run_map_coadd, "Coadd");
-        phdu.add_key("CONFIG.MAPFILTER", run_map_filter, "Map filter");
-        phdu.add_key("CONFIG.FRUITLOOPED", run_fruit_loops, "Fruit looped");
-
-        // add telescope header if per obs
-        if (map_type == "obs_maps" || map_type == "obs_noise") {
-            for (auto const& [key, val] : engine().telescope.header) {
-                phdu.add_key("HEADER." + key, val(0), key);
-            }
-        }
-
         for (const auto& array: engine().toltec.apt.arrays) {
             std::string map_dir = engine().reduction_directory;
             std::string obsnum = "";
@@ -1001,12 +947,68 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
                                                             filter_type, redu_type, prod_type, obsnum, engine().telescope.sim_obs);
             logger->info("outputting maps to {}", filename + ".fits");
             fitsIO<FitsMode::WriteFits, CCfits::ExtHDU*> fits_io(filename + ".fits");
+            FitsHeader phdu;
+
+            if (map_type == "obs_maps" || map_type == "obs_noise") {
+                phdu.add_key("OBSNUM0", obsnums.back(), "Observation number");
+            } else {
+                for (int i = 0; i < obsnums.size(); ++i) {
+                    phdu.add_key("OBSNUM" + std::to_string(i), obsnums[i], "Observation number");
+                }
+            }
+            phdu.add_key("SOURCE", engine().telescope.source_name, "Source name");
+            phdu.add_key("INSTRUME", engine().toltec.name, "Instrument");
+            phdu.add_key("TELESCOP", "LMT", "Telescope");
+            phdu.add_key("HWPR", engine().toltec.hwpr.run_hwpr, "HWPR installed");
+            phdu.add_key("PIPELINE", "CITLALI", "Redu pipeline");
+            phdu.add_key("VERSION", CITLALI_GIT_VERSION, "CITLALI_GIT_VERSION");
+            phdu.add_key("KIDS", KIDSCPP_GIT_VERSION, "KIDSCPP_GIT_VERSION");
+            phdu.add_key("TULA", TULA_GIT_VERSION, "TULA_GIT_VERSION");
+            phdu.add_key("PROJID", engine().telescope.project_id, "Project ID");
+            phdu.add_key("GOAL", redu_type, "Reduction type");
+            phdu.add_key("OBSGOAL", engine().telescope.obs_goal, "Obs goal");
+            phdu.add_key("TYPE", tod_type, "TOD Type");
+            phdu.add_key("GROUPING", map_grouping, "Map grouping");
+            phdu.add_key("METHOD", map_method, "Map method");
+            phdu.add_key("RADESYS", engine().telescope.pixel_axes, "Coord Reference Frame");
+            phdu.add_key("SRC_RA", engine().telescope.header.at("Source.Ra")(0), "Source RA (radians)");
+            phdu.add_key("SRC_DEC", engine().telescope.header.at("Source.Dec")(0), "Source Dec (radians)");
+            phdu.add_key("MEAN_EL", RAD_TO_DEG*engine().telescope.data.at("TelElAct").mean(), "Mean Elevation (deg)");
+            phdu.add_key("MEAN_AZ", RAD_TO_DEG*engine().telescope.data.at("TelAzAct").mean(), "Mean Azimuth (deg)");
+            phdu.add_key("MEAN_PA", RAD_TO_DEG*engine().telescope.data.at("ActParAng").mean(), "Mean Parallactic angle (deg)");;
+
+            phdu.add_key("CONFIG.VERBOSE", verbose, "Reduced in verbose mode");
+            phdu.add_key("CONFIG.POLARIZED", run_polarization, "Polarized Obs");
+            phdu.add_key("CONFIG.KERNEL", run_kernel, "Kernel");
+            phdu.add_key("CONFIG.DESPIKED", run_despike, "Despiked");
+            phdu.add_key("CONFIG.TODFILTERED", run_tod_filter, "TOD Filtered");
+            phdu.add_key("CONFIG.DOWNSAMPLED", run_downsample, "Downsampled");
+            phdu.add_key("CONFIG.CALIBRATED", run_flux_calib, "Calibrated");
+            phdu.add_key("CONFIG.EXTINCTION", run_extinction, "Extinction corrected");
+            phdu.add_key("CONFIG.CLEANED", run_pca_clean, "Cleaned");
+            phdu.add_key("CONFIG.RTCTODOUT", run_tod_output_rtc, "RTC Output");
+            phdu.add_key("CONFIG.PTCTODOUT", run_tod_output_ptc, "PTC Output");
+            phdu.add_key("CONFIG.MAPMAKING", run_mapmaking, "Mapmaking");
+            phdu.add_key("CONFIG.NOISEMAPS", run_noise_maps, "Noise Maps");
+            phdu.add_key("CONFIG.COADDED", run_map_coadd, "Coadd");
+            phdu.add_key("CONFIG.MAPFILTER", run_map_filter, "Map filter");
+            phdu.add_key("CONFIG.FRUITLOOPED", run_fruit_loops, "Fruit looped");
+
+            // add telescope header if per obs
+            if (map_type == "obs_maps" || map_type == "obs_noise") {
+                for (auto const& [key, val] : engine().telescope.header) {
+                    phdu.add_key("HEADER." + key, val(0), key);
+                }
+            }
+
             phdu.write_to_fits(fits_io.pfits->pHDU());
 
+            int i = 0;
             for (const auto& unique_key : unique_map_keys.at(array)) {
                 std::string group_name = "";
                 if (map_grouping != "array") {
-                    group_name += "_" + map_grouping;
+                    group_name += "_" + map_grouping + "_" + std::to_string(i);
+                    i++;
                 }
 
                 int sig_I_index = maps.signal_lookup.at(MapKey(array, unique_key, "I"));

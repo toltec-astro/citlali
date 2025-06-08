@@ -64,7 +64,6 @@ Eigen::VectorXd Hwpr::calc_time_vector(double offset) {
     // cast once to double
     Eigen::MatrixXd hwpr_ts_double = hwpr_ts.cast<double>();
 
-    // extract columns with descriptive names
     Eigen::VectorXd sec = hwpr_ts_double.col(0);        // ClockTime (sec)
     Eigen::VectorXd nsec = hwpr_ts_double.col(5);       // ClockTimeNanoSec (nsec)
     Eigen::VectorXd pps = hwpr_ts_double.col(1);        // PpsCount (pps ticks)

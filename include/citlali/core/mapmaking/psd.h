@@ -23,12 +23,27 @@ public:
         double dy = 1. / (pix_size_radians * maps.wcs.naxis[1]);
 
         for (int i = 0; i < maps.signal.size(); ++i) {
-            auto [radial_psd, radial_freqs, psd, freqs] = citlali::utils::fft::calc_psd_2d(maps.signal[i].data, dy, dx);
+            if constexpr (is_std_vector<decltype(maps.signal[i])>::value) {
+                for (int j = 0; j < maps.signal[i].size(); ++j) {
+                    auto [radial_psd, radial_freqs, psd, freqs] = citlali::utils::fft::calc_psd_2d(maps.signal[i][j].data, dy, dx);
 
-            maps.radial_psd.push_back(radial_psd);
-            maps.radial_freqs.push_back(radial_freqs);
-            maps.psd.push_back(psd);
-            maps.freqs.push_back(freqs);
+                    if (j == 0) {
+                        maps.radial_psd.push_back(radial_psd);
+                        maps.radial_freqs.push_back(radial_freqs);
+                        maps.psd.push_back(psd);
+                        maps.freqs.push_back(freqs);
+                    } else {
+                        maps.radial_psd.back() += radial_psd;
+                        maps.psd.back() += psd;
+                    }
+                }
+            } else {
+                auto [radial_psd, radial_freqs, psd, freqs] = citlali::utils::fft::calc_psd_2d(maps.signal[i].data, dy, dx);
+                maps.radial_psd.push_back(radial_psd);
+                maps.radial_freqs.push_back(radial_freqs);
+                maps.psd.push_back(psd);
+                maps.freqs.push_back(freqs);
+            }
         }
     }
 };

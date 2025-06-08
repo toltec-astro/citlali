@@ -10,12 +10,10 @@ class NaiveMapmaker : public PipelineComponent<TCDataType> {
 public:
     // get logger
     std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
-
     std::unique_ptr<std::mutex> mutex = std::make_unique<std::mutex>();
 
     Instrument& toltec;
     Telescope& telescope;
-
     ObsMaps<MapKey>& obs_maps, coadd_maps;
     ObsMaps<MapKey, std::vector<ObsMatrix<MapKey>>>& noise_maps;
 
@@ -31,6 +29,9 @@ public:
     void process(TCDataType& tcdata) override {
         logger->info("naive mapmaker processing");
 
+        ObsMaps<MapKey, ObsSparse<>> sp_obs_maps;
+        ObsMaps<MapKey, std::vector<ObsSparse<>>> sp_noise_maps;
+
         bool run_obs_maps = get_map_mode(map_mode, MapMode::Obs) || get_map_mode(map_mode, MapMode::Both);
         bool run_noise_maps = (get_map_mode(map_mode, MapMode::Noise) || get_map_mode(map_mode, MapMode::Both)) && (noise_maps.signal.size() > 0);
         bool run_coverage = obs_maps.coverage.size() > 0;
@@ -42,9 +43,7 @@ public:
             tcdata.apt_flag.setZero();
         }
 
-        ObsMaps<MapKey, ObsSparse<>> sp_obs_maps;
-        ObsMaps<MapKey, std::vector<ObsSparse<>>> sp_noise_maps;
-
+        // allocate maps for current chunk
         for (const auto& [key, index] : obs_maps.signal_lookup) {
             sp_obs_maps.add(key, {static_cast<int>(n_pts), static_cast<int>(n_dets)}, true, run_kernel, run_coverage);
 
@@ -53,6 +52,7 @@ public:
             }
         }
 
+        // random sign values for noise maps
         Eigen::MatrixXi signs;
 
         if (run_noise_maps) {
@@ -167,7 +167,6 @@ public:
         //     return 0;
         // });
         }
-
         {
             std::scoped_lock<std::mutex> lock(*mutex);
             obs_maps += sp_obs_maps;

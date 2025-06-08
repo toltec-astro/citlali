@@ -22,6 +22,8 @@ public:
     Eigen::VectorXi nws, arrays, fgs;
     // average fwhms
     std::map<int, double> nw_fwhms, array_fwhms;
+    // conversions from mJy/beam to other units for each array
+    std::map<std::string, std::map<int, double>> unit_conversions;
 
     // start and end of each nw and array for convenience
     std::vector<std::pair<int, int>> nw_indices, array_indices;
@@ -217,6 +219,15 @@ void ArrayPropertyTable::init() {
             );
         i++;
     }
+
+    // for (const auto& array : arrays) {
+    //     // array average beam area
+    //     auto beam_area_arcsec = 2.*pi*pow(array_fwhms[array] * FWHM_TO_STD, 2);
+
+    //     unit_conversions["MJy/Sr"][array] = mJY_ASEC_to_MJY_SR / beam_area_arcsec;
+    //     unit_conversions["Jy/px"][array] = 1e-3 / (beam_area_arcsec * std::pow(ASEC_TO_RAD * pix_size_radians, 2));
+    //     unit_conversions["uK_cmb"][array]
+    // }
 }
 
 void ArrayPropertyTable::rescale_fcf(const std::string units, const double pix_size_radians) {
@@ -240,7 +251,19 @@ void ArrayPropertyTable::rescale_fcf(const std::string units, const double pix_s
             (*this)["flxscale"].data(det) *= 1e-3 / beam_area_pix;
         }
     } else if (units == "uK_cmb") {
+        for (int det = 0; det < n_dets; ++det) {
+            // auto array = (*this)["array"].data(det);
+            // // frequency of band
+            // auto nu_Hz = 1e9 * toltec.array_index_to_freq_GHZ[array];
 
+            // // get B_nu(T_cmb)
+            // double B_nu_T_cmb = planck_nu(nu_Hz, T_cmb_K);
+            // double x = (h_J_s * nu_Hz) / (kB_J_K * T_cmb_K);
+            // // conversion from T_cmb_K to mJy/beam
+            // double K_mJy_beam = 1e26 * 1e3 * B_nu_T_cmb * std::exp(x) / (std::exp(x - 1) * x / std::pow(T_cmb_K, 2.));
+
+            // (*this)["flxscale"].data(det) *= 1e6 / K_mJy_beam;
+        }
     }
 }
 

@@ -41,19 +41,20 @@
 #include <citlali/core/timestream/ptc/demodulate.h>
 #include <citlali/core/timestream/ptc/weights.h>
 #include <citlali/core/timestream/ptc/pca_clean.h>
-// #include <citlali/core/timestream/ptc/source.h>
-//#include <citlali/core/timestream/ptc/fruit_loops.h>
+#include <citlali/core/timestream/ptc/source.h>
+#include <citlali/core/timestream/ptc/fruit_loops.h>
 //#include <citlali/core/timestream/ptc/sensitivity.h>
 
 //#include <citlali/core/timestream/output.h>
 
 #include <citlali/core/mapmaking/naive_mm.h>
-//#include <citlali/core/mapmaking/jinc_mm.h>
+#include <citlali/core/mapmaking/jinc_mm.h>
+#include <citlali/core/mapmaking/bilinear_mm.h>
 #include <citlali/core/mapmaking/normalize.h>
 #include <citlali/core/mapmaking/fit.h>
 #include <citlali/core/mapmaking/psd.h>
-/*#include <citlali/core/mapmaking/hist.h>
-//#include <citlali/core/mapmaking/filter.h>*/
+//#include <citlali/core/mapmaking/hist.h>
+//#include <citlali/core/mapmaking/filter.h>
 #include <citlali/core/mapmaking/coadd.h>
 
 using namespace citlali::config::options;
@@ -72,9 +73,10 @@ public:
     ObsMaps<MapKey> obs_maps, coadd_maps;
     ObsMaps<MapKey, std::vector<ObsMatrix<MapKey>>> noise_maps;
 
-    // main pipelines
+    // pipelines
     Pipeline<TCData> rtc_pipeline, ptc_pipeline;
-    Pipeline<ObsMaps<>> obs_map_pipeline, coadd_map_pipeline, map_process_pipeline;
+    Pipeline<ObsMaps<>> obs_map_pipeline, coadd_map_pipeline;
+    Pipeline<ObsMaps<MapKey, std::vector<ObsMatrix<MapKey>>>> noise_map_pipeline;
 
     // vectors to hold initial and final indices for each network and hwpr (last index if hwpr.run_hwpr)
     Eigen::VectorXI init_indices, final_indices;
@@ -143,41 +145,50 @@ public:
         rtc_pipeline.add_component("TodFlagging", std::make_shared<TodFlagging<TCData>>(
             "raw_time_chunk", toltec, telescope, config));
 
-        // // add Source (Beammap)
-        // if (redu_type == "beammap") {
-        //     ptc_pipeline.add_component("Source", std::make_shared<Source<TCData>>(
-        //         SourceType::Subtract, toltec, telescope, obs_maps, config));
-        // }
-        //else if (run_fruit_loops) {
-        //    ptc_pipeline.add_component("FruitLoops", std::make_shared<FruitLoops<TCData>>(
-        //        FruitType::Subtract, toltec, telescope, config));
-        //}
+        // add Source (Beammap)
+        if (redu_type == "beammap") {
+            ptc_pipeline.add_component("Source", std::make_shared<Source<TCData>>(
+                SourceMode::Subtract, toltec, telescope, obs_maps, config));
+        }
+        else if (run_fruit_loops) {
+            ptc_pipeline.add_component("FruitLoops", std::make_shared<FruitLoops<TCData>>(
+                FruitMode::Subtract, toltec, telescope, config));
+        }
 
         // add PCA Clean
         if (run_pca_clean) {
             ptc_pipeline.add_component("PcaClean", std::make_shared<PcaClean<TCData>>(
                 toltec, telescope, config));
         }
+        // add Weights
+        ptc_pipeline.add_component("Weights", std::make_shared<Weights<TCData>>(
+                toltec, telescope, config));
+
         // add Source (Beammap)
-        // if (redu_type == "beammap") {
-        //     ptc_pipeline.add_component("Source", std::make_shared<Source<TCData>>(
-        //         SourceType::Add, toltec, telescope, obs_maps, config));
-        // }
-        /*else if (run_fruit_loops) {
+        if (redu_type == "beammap") {
+            ptc_pipeline.add_component("Source", std::make_shared<Source<TCData>>(
+                SourceMode::Add, toltec, telescope, obs_maps, config));
+        }
+        else if (run_fruit_loops) {
             // Make noise maps after source subtraction and cleaning
             if (run_mapmaking) {
+                MapMode map_mode = MapMode::Noise;
                 if (map_method == "naive") {
                     ptc_pipeline.add_component("NaiveMapMaker", std::make_shared<NaiveMapmaker<TCData>>(
-                        MapType::Noise, toltec, telescope, obs_maps, coadd_maps, config));
+                         toltec, telescope, obs_maps, coadd_maps, noise_maps, map_mode, config));
                 }
                 else if (map_method == "jinc") {
                     ptc_pipeline.add_component("JincMapmaker", std::make_shared<JincMapmaker<TCData>>(
-                        MapType::Noise, toltec, telescope, obs_maps, coadd_maps, config));
+                        toltec, telescope, obs_maps, coadd_maps, noise_maps, map_mode, config));
+                }
+                else if (map_method == "bilinear") {
+                    ptc_pipeline.add_component("BilinearMapmaker", std::make_shared<BilinearMapmaker<TCData>>(
+                        toltec, telescope, obs_maps, coadd_maps, noise_maps, map_mode, config));
                 }
             }
             ptc_pipeline.add_component("FruitLoops", std::make_shared<FruitLoops<TCData>>(
-                FruitType::Add, toltec, telescope, config));
-        }*/
+                FruitMode::Add, toltec, telescope, config));
+        }
         // add TodFlagging to ptc pipeline (checks flags itself)
         ptc_pipeline.add_component("TodFlagging", std::make_shared<TodFlagging<TCData>>(
             "processed_time_chunk", toltec, telescope, config));
@@ -187,25 +198,26 @@ public:
             ptc_pipeline.add_component("Demodulate", std::make_shared<Demodulate<TCData>>(
                 toltec, telescope, config));
         }
-        // add Weights
-        ptc_pipeline.add_component("Weights", std::make_shared<Weights<TCData>>(
-            toltec, telescope, config));
 
         // // add Mapmaking Components
         if (run_mapmaking) {
             MapMode map_mode = MapMode::Both;
 
-        //     if (run_fruit_loops) {
-        //         map_type = MapMode::Obs;
-        //     }
+            if (run_fruit_loops) {
+                map_mode = MapMode::Obs;
+            }
             if (map_method == "naive") {
                 ptc_pipeline.add_component("NaiveMapMaker", std::make_shared<NaiveMapmaker<TCData>>(
                     toltec, telescope, obs_maps, coadd_maps, noise_maps, map_mode, config));
             }
-            // else if (map_method == "jinc") {
-            //     ptc_pipeline.add_component("JincMapmaker", std::make_shared<JincMapmaker<TCData>>(
-            //         map_type, toltec, telescope, obs_maps, coadd_maps, noise_maps, config));
-            // }
+            else if (map_method == "jinc") {
+                ptc_pipeline.add_component("JincMapmaker", std::make_shared<JincMapmaker<TCData>>(
+                    toltec, telescope, obs_maps, coadd_maps, noise_maps, map_mode, config));
+            }
+            else if (map_method == "bilinear") {
+                ptc_pipeline.add_component("BilinearMapmaker", std::make_shared<BilinearMapmaker<TCData>>(
+                    toltec, telescope, obs_maps, coadd_maps, noise_maps, map_mode, config));
+            }
             // add Normalize
             obs_map_pipeline.add_component("Normalize", std::make_shared<Normalize<ObsMaps<>>>(
                     toltec, telescope, config));
@@ -234,14 +246,47 @@ public:
         }
     }
 
-    // Process input through the pipeline
+    void output_ppt() {
+        PointingPropertyTable ppt;
+
+        for (const auto& column : ppt.column_order) {
+            ppt[column].data.resize(obs_maps.params.cols());
+        }
+
+        // populate apt with fits and errors
+        for (int i = 0; i < obs_maps.params.cols(); ++i) {
+            ppt["array"].data(i) = obs_maps.signal[i].key.array_index;
+            ppt["amp"].data(i) = obs_maps.params(0, i);
+            ppt["x_t"].data(i) = obs_maps.params(1, i);
+            ppt["y_t"].data(i) = obs_maps.params(2, i);
+            ppt["a_fwhm"].data(i) = obs_maps.params(3, i);
+            ppt["b_fwhm"].data(i) = obs_maps.params(4, i);
+            ppt["angle"].data(i) = obs_maps.params(5, i);
+
+            ppt["amp_err"].data(i) = obs_maps.errors(0, i);
+            ppt["x_t_err"].data(i) = obs_maps.errors(1, i);
+            ppt["y_t_err"].data(i) = obs_maps.errors(2, i);
+            ppt["a_fwhm_err"].data(i) = obs_maps.errors(3, i);
+            ppt["b_fwhm_err"].data(i) = obs_maps.errors(4, i);
+            ppt["angle_err"].data(i) = obs_maps.errors(5, i);
+        }
+
+        ppt["sig2noise"].data = ppt["amp"].data.array() / ppt["amp_err"].data.array();
+
+        // write ppt
+        auto filename = toltec.create_filename(reduction_directory + obsnum + "/", "ppt", "", "raw",
+                                               redu_type, "", obsnum, telescope.sim_obs);
+
+        logger->info("outputting ppt to {}", filename + ".ecsv");
+        ppt.write(filename);
+    }
+
     template <class KidsProc, class RawObs>
     void run_obs(KidsProc& kidsproc, RawObs& rawobs) {
         // run initialize on all pipelines
         rtc_pipeline.init();
         ptc_pipeline.init();
         obs_map_pipeline.init();
-        coadd_map_pipeline.init();
 
         // vector to store time chunks for beammap mode
         std::vector<TCData> tc_vector;
@@ -265,12 +310,13 @@ public:
                 static int current_chunk = 0;
                 while (current_chunk < telescope.n_chunks) {
                     logger->info("beginning reduction of chunk {}/{}", current_chunk, telescope.n_chunks);
-
                     // declare time chunk data class
                     TCData tcdata;
                     // set random seed to chunk number
                     tcdata.set_seed(current_chunk);
+                    // set chunk
                     tcdata.chunk = current_chunk;
+                    // set current chunk inner and outer indices
                     tcdata.chunk_indices = telescope.chunk_indices.col(current_chunk);
 
                     // vector to store kids data
@@ -353,38 +399,7 @@ public:
             obs_map_pipeline.process(obs_maps);
 
             if (redu_type == "pointing") {
-                PointingPropertyTable ppt;
-
-                for (const auto& column : ppt.column_order) {
-                    ppt[column].data.resize(obs_maps.params.cols());
-                }
-
-                // populate apt with fits and errors
-                for (int i = 0; i < obs_maps.params.cols(); ++i) {
-                    ppt["array"].data(i) = obs_maps.signal[i].key.array_index;
-                    ppt["amp"].data(i) = obs_maps.params(0, i);
-                    ppt["x_t"].data(i) = obs_maps.params(1, i);
-                    ppt["y_t"].data(i) = obs_maps.params(2, i);
-                    ppt["a_fwhm"].data(i) = obs_maps.params(3, i);
-                    ppt["b_fwhm"].data(i) = obs_maps.params(4, i);
-                    ppt["angle"].data(i) = obs_maps.params(5, i);
-
-                    ppt["amp_err"].data(i) = obs_maps.errors(0, i);
-                    ppt["x_t_err"].data(i) = obs_maps.errors(1, i);
-                    ppt["y_t_err"].data(i) = obs_maps.errors(2, i);
-                    ppt["a_fwhm_err"].data(i) = obs_maps.errors(3, i);
-                    ppt["b_fwhm_err"].data(i) = obs_maps.errors(4, i);
-                    ppt["angle_err"].data(i) = obs_maps.errors(5, i);
-                }
-
-                ppt["sig2noise"].data = ppt["amp"].data.array() / ppt["amp_err"].data.array();
-
-                // write ppt
-                auto filename = toltec.create_filename(reduction_directory + obsnum + "/", "ppt", "", "raw",
-                                                       redu_type, "", obsnum, telescope.sim_obs);
-
-                logger->info("outputting ppt to {}", filename + ".ecsv");
-                ppt.write(filename);
+                output_ppt();
             }
 
         } else {
@@ -406,8 +421,10 @@ public:
                 params_copy = obs_maps.params;
 
                 // clear maps
-                obs_maps.set_zero();
-                noise_maps.set_zero();
+                if (bmp_iter > 0) {
+                    obs_maps.set_zero();
+                    noise_maps.set_zero();
+                }
 
                 // run the processed time chunk pipeline
                 grppi::map(tula::grppi_utils::dyn_ex(exec_mode), tc_in, tc_out, [&](int i) {
@@ -460,12 +477,13 @@ public:
                              logger->info("all maps converged");
                              keep_going = false;
                          }
+
                     } else if (bmp_iter_tolerance > 0) {
                         logger->info("done with iteration {}", bmp_iter);
-                        bmp_iter++;
                     } else {
                         logger->info("bypassing convergence check");
                     }
+                    bmp_iter++;
                 } else {
                     logger->info("max iteration reached");
                     keep_going = false;
@@ -501,24 +519,31 @@ public:
                 reference_coord = std::make_pair(0.0, 0.0);
             }
 
+            auto [in, out] = citlali::utils::threads::get_grppi_vectors(toltec.apt.n_dets);
+            auto exec_mode = citlali::utils::threads::get_map_exec_mode();
+
             // angle to rotate apt x_t_raw and y_t_raw by
             Eigen::VectorXd theta(toltec.apt.n_dets);
             // use mean telescope boresight elevation
             if (bmp_derotate_apt) {
+                logger->info("derotating apt");
                 theta.resize(toltec.apt.n_dets);
-                for (int det = 0; det < toltec.apt.n_dets; ++det) {
+                grppi::map(exec_mode, in, out, [&](int det) {
+                //for (int det = 0; det < toltec.apt.n_dets; ++det) {
                     // get detector altaz
                     auto xy = calc_pointing(toltec.apt["x_t"].data(det), toltec.apt["y_t"].data(det), telescope.data, "altaz");
                     theta(det) = -(xy.second + telescope.data.at("TelElAct")).mean();
-                }
-                //theta = Eigen::VectorXd::Constant(toltec.apt.n_dets, -telescope.data.at("TelElAct").mean());
+                    return 0;
+                });
             } else {
                 theta.setZero();
             }
             // subtract reference det and derotate apt
+            logger->info("derotating apt and subtracting det at ({}, {})", reference_coord.first, reference_coord.second);
             toltec.apt.rotate(theta, reference_coord);
 
             // flag detectors by fwhm and sig2noise
+            logger->info("flagging fwhm and sig2noise");
             for (int i = 0; i < toltec.apt.n_dets; ++i) {
                 int array_index = toltec.apt["array"].data(i);
                 if (toltec.apt["a_fwhm"].data(i) < bmp_fwhm_lower[array_index] || toltec.apt["a_fwhm"].data(i) > bmp_fwhm_upper[array_index]) {
@@ -527,8 +552,20 @@ public:
                 if (toltec.apt["b_fwhm"].data(i) < bmp_fwhm_lower[array_index] || toltec.apt["b_fwhm"].data(i) > bmp_fwhm_upper[array_index]) {
                     toltec.apt["flag"].data(i) = true;
                 }
-                if (toltec.apt["sig2noise"].data(i) < bmp_sig2noise_lower[array_index]
-                    || toltec.apt["sig2noise"].data(i) > bmp_sig2noise_upper[array_index]) {
+                if (toltec.apt["sig2noise"].data(i) < bmp_sig2noise_lower[array_index]) {
+                    toltec.apt["flag"].data(i) = true;
+                }
+            }
+
+            // array median positions
+            auto array_median_x_t = toltec.apt.calc_median("x_t", "array");
+            auto array_median_y_t = toltec.apt.calc_median("y_t", "array");
+            // flag footprint
+            for (int i = 0; i < toltec.apt.n_dets; ++i) {
+                int array_index = toltec.apt["array"].data(i);
+                double dist = sqrt(pow(toltec.apt["x_t"].data(i) - array_median_x_t[array_index],2)
+                                   + pow(toltec.apt["y_t"].data(i) - array_median_y_t[array_index],2));
+                if (dist > bmp_dist_max_arcsec[array_index]) {
                     toltec.apt["flag"].data(i) = true;
                 }
             }
@@ -545,46 +582,24 @@ public:
             //     }
             // }
 
-            // logger->info("flag {}", toltec.apt["flag"].data);
 
-            // logger->info("sens");
-
-
-            // // array median positions
-            // auto array_median_x_t = toltec.apt.calc_median("x_t", "array");
-            // auto array_median_y_t = toltec.apt.calc_median("y_t", "array");
-            // // flag footprint
-            // for (int i = 0; i < toltec.apt.n_dets; ++i) {
-            //     int array_index = toltec.apt["array"].data(i);
-            //     double dist = sqrt(pow(toltec.apt["x_t"].data(i) - array_median_x_t[array_index],2)
-            //                        + pow(toltec.apt["y_t"].data(i) - array_median_y_t[array_index],2));
-            //     if (dist > bmp_dist_max_arcsec[array_index]) {
-            //         toltec.apt["flag"].data(i) = true;
-            //     }
-            // }
-
-            // logger->info("footprint");
-
-
-            // // calculate flux scale
-            // int i = 0;
-            // for (const auto& pair : toltec.apt.array_indices) {
-            //     auto flxscale = toltec.apt["flxscale"].data(Eigen::seq(pair.first, pair.second - 1));
-            //     auto amp = toltec.apt["amp"].data(Eigen::seq(pair.first, pair.second - 1));
-            //     auto sens = toltec.apt["sens"].data(Eigen::seq(pair.first, pair.second - 1));
-            //     // Calculate the flux scale, setting it to 0 if flagged
-            //     flxscale = (toltec.apt["flags"]
-            //                     .data(Eigen::seq(pair.first, pair.second - 1))
-            //                     .array() == false)
-            //                    .select(0.0, amp / bmp_flux_mJy_beam[toltec.array_index_to_name[toltec.apt.arrays(i)]]);
-            //     sens = (toltec.apt["flags"]
-            //                     .data(Eigen::seq(pair.first, pair.second - 1))
-            //                     .array() == false)
-            //                    .select(0.0, sens * flxscale);
-            //     i++;
-            // }
-
-            // logger->info("flxscale");
+            // calculate flux scale
+            int i = 0;
+            for (const auto& pair : toltec.apt.array_indices) {
+                auto flxscale = toltec.apt["flxscale"].data(Eigen::seq(pair.first, pair.second - 1));
+                auto amp = toltec.apt["amp"].data(Eigen::seq(pair.first, pair.second - 1));
+                auto sens = toltec.apt["sens"].data(Eigen::seq(pair.first, pair.second - 1));
+                // Calculate the flux scale, setting it to 0 if flagged
+                flxscale = (toltec.apt["flag"]
+                                .data(Eigen::seq(pair.first, pair.second - 1))
+                                .array() == true)
+                               .select(0.0, amp / bmp_flux_mJy_beam[toltec.array_index_to_name[toltec.apt.arrays(i)]]);
+                sens = (toltec.apt["flag"]
+                                .data(Eigen::seq(pair.first, pair.second - 1))
+                                .array() == true)
+                               .select(0.0, sens * flxscale);
+                i++;
+            }
 
             // clear vector of time chunks
             std::vector<TCData>().swap(tc_vector);
@@ -599,6 +614,7 @@ public:
     }
 
     void run_coadd() {
+        coadd_map_pipeline.init();
         coadd_map_pipeline.process(coadd_maps);
     }
 };

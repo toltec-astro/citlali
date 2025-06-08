@@ -7,8 +7,8 @@ public:
     // get logger
     std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
 
-    TodOutput(std::string type_, Instrument& toltec_ref, Telescope& telescope_ref)
-        : type(type_), toltec(toltec_ref), telescope(telescope_ref) {}
+    TodOutput(std::string type_, Instrument& toltec_, Telescope& telescope_)
+        : type(type_), toltec(toltec_), telescope(telescope_) {}
 
     void init() {
         // create netcdf file
@@ -33,6 +33,4 @@ private:
     Telescope& telescope;
 
     std::string type, filepath;
-    int factor;
-
 };

@@ -153,55 +153,54 @@ public:
         }
     }
 
-    void init() {}
+    void init() override {}
 
     void process(MapType& maps) override {
         logger->info("fit processing");
 
-        // for map-based grppi maps
-        /*std::vector<int> in, out;
-        in.resize(maps.signal_map.size());
-        std::iota(in.begin(), in.end(), 0);
-        out.resize(maps.signal_map.size());
-
-        auto exec_mode = tula::grppi_utils::dyn_ex(exec_mode, n_threads);
-        */
-
         maps.params.resize(citlali::utils::models::Gaussian2DModel::nparams, maps.n_maps);
         maps.errors.resize(citlali::utils::models::Gaussian2DModel::nparams, maps.n_maps);
 
+        auto [in, out] = citlali::utils::threads::get_grppi_vectors(maps.signal.size());
+        auto exec_mode = citlali::utils::threads::get_map_exec_mode();
+
         // loop through maps and fit
-        for (const auto& [map_key, i] : maps.signal_lookup) {
-            double init_fwhm = toltec.array_index_to_fwhm.at(map_key.array_index) / pix_size_arcsec;
+        grppi::map(exec_mode, in, out, [&](int i) {
+            if (!converged(i)) {
+                auto map_key = maps.signal[i].key;
+                double init_fwhm = toltec.array_index_to_fwhm.at(map_key.array_index) / pix_size_arcsec;
 
-            Eigen::MatrixXd weight;
+                Eigen::MatrixXd weight;
 
-            if (redu_type == "beammap") {
-                Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> mask = (maps.weight[i].data.array() == 0);
-                weight.resize(maps.wcs.naxis[1], maps.wcs.naxis[0]);
-                weight.setConstant(1. / flagged_variance(maps.signal[i].data, mask));
-            } else {
-                weight = maps.weight[i].data;
+                if (redu_type == "beammap") {
+                    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> mask = (maps.weight[i].data.array() == 0);
+                    weight.resize(maps.wcs.naxis[1], maps.wcs.naxis[0]);
+                    weight.setConstant(1. / std::sqrt(flagged_variance(maps.signal[i].data, mask)));
+                } else {
+                    weight = maps.weight[i].data.cwiseSqrt();
+                }
+
+                auto [p, err] = fit_to_gaussian(maps.signal[i].data, weight, fitting_radius_pix, bounding_box_pix,
+                                                amp_lower, amp_upper, fwhm_lower, fwhm_upper, init_fwhm,
+                                                fit_theta);
+
+                // rescale fit params from pixel to arcsec
+                p(1) = pix_size_arcsec * (p(1) - (maps.wcs.naxis[0]) / 2);
+                p(2) = pix_size_arcsec * (p(2) - (maps.wcs.naxis[1]) / 2);
+                p(3) = STD_TO_FWHM * pix_size_arcsec*(p(3));
+                p(4) = STD_TO_FWHM * pix_size_arcsec*(p(4));
+
+                // rescale fit errors from pixel to on-sky units
+                err(1) = pix_size_arcsec * err(1);
+                err(2) = pix_size_arcsec * err(2);
+                err(3) = STD_TO_FWHM * pix_size_arcsec * err(3);
+                err(4) = STD_TO_FWHM * pix_size_arcsec * err(4);
+
+                maps.params.col(i) = p;
+                maps.errors.col(i) = err;
             }
 
-            auto [p, err] = fit_to_gaussian(maps.signal[i].data, weight, fitting_radius_pix, bounding_box_pix,
-                                            amp_lower, amp_upper, fwhm_lower, fwhm_upper, init_fwhm,
-                                            fit_theta);
-
-            // rescale fit params from pixel to arcsec
-            p(1) = pix_size_arcsec * (p(1) - (maps.wcs.naxis[0]) / 2);
-            p(2) = pix_size_arcsec * (p(2) - (maps.wcs.naxis[1]) / 2);
-            p(3) = STD_TO_FWHM * pix_size_arcsec*(p(3));
-            p(4) = STD_TO_FWHM * pix_size_arcsec*(p(4));
-
-            // rescale fit errors from pixel to on-sky units
-            err(1) = pix_size_arcsec * err(1);
-            err(2) = pix_size_arcsec * err(2);
-            err(3) = STD_TO_FWHM * pix_size_arcsec * err(3);
-            err(4) = STD_TO_FWHM * pix_size_arcsec * err(4);
-
-            maps.params.col(i) = p;
-            maps.errors.col(i) = err;
-        }
+            return 0;
+        });
     }
 };
