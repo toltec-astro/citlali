@@ -1,11 +1,11 @@
 <map id="beammapControls" name="beammapControls">
 <area shape="rect" id="Node000001" title=" " alt="" coords="155,5,379,471"/>
-<area shape="rect" id="Node000002" href="$d1/db6/classEngine.html" title=" " alt="" coords="168,519,365,1997"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="269,484,269,518,264,518,264,484"/>
-<area shape="rect" id="Node000003" href="$dc/d9e/classBeammap.html" title=" " alt="" coords="5,2045,197,2665"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="169,1926,151,2045,145,2044,163,1926"/>
-<area shape="rect" id="Node000004" href="$d9/def/classLali.html" title=" " alt="" coords="221,2293,312,2418"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="269,2011,269,2293,264,2293,264,2011"/>
-<area shape="rect" id="Node000005" href="$d2/dbe/classPointing.html" title=" " alt="" coords="336,2243,477,2468"/>
-<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="365,2010,395,2242,390,2243,360,2011"/>
+<area shape="rect" id="Node000002" href="$d1/db6/classEngine.html" title=" " alt="" coords="168,519,365,2057"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="269,485,269,519,264,519,264,485"/>
+<area shape="rect" id="Node000003" href="$dc/d9e/classBeammap.html" title=" " alt="" coords="5,2105,197,2725"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="169,1974,149,2105,144,2104,163,1974"/>
+<area shape="rect" id="Node000004" href="$d9/def/classLali.html" title=" " alt="" coords="221,2353,312,2478"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="269,2071,269,2352,264,2352,264,2071"/>
+<area shape="rect" id="Node000005" href="$d2/dbe/classPointing.html" title=" " alt="" coords="336,2303,477,2528"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="367,2070,395,2302,390,2303,361,2071"/>
 </map>

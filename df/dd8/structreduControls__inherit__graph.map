@@ -1,11 +1,11 @@
 <map id="reduControls" name="reduControls">
-<area shape="rect" id="Node000001" title=" " alt="" coords="195,5,339,211"/>
-<area shape="rect" id="Node000002" href="$d1/db6/classEngine.html" title=" " alt="" coords="168,259,365,1737"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="269,224,269,258,264,258,264,224"/>
-<area shape="rect" id="Node000003" href="$dc/d9e/classBeammap.html" title=" " alt="" coords="5,1785,197,2405"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="169,1666,151,1785,145,1784,163,1666"/>
-<area shape="rect" id="Node000004" href="$d9/def/classLali.html" title=" " alt="" coords="221,2033,312,2158"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="269,1751,269,2033,264,2033,264,1751"/>
-<area shape="rect" id="Node000005" href="$d2/dbe/classPointing.html" title=" " alt="" coords="336,1983,477,2208"/>
-<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="365,1750,395,1982,390,1983,360,1751"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="195,5,339,231"/>
+<area shape="rect" id="Node000002" href="$d1/db6/classEngine.html" title=" " alt="" coords="168,279,365,1817"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="269,244,269,278,264,278,264,244"/>
+<area shape="rect" id="Node000003" href="$dc/d9e/classBeammap.html" title=" " alt="" coords="5,1865,197,2485"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="169,1734,149,1865,144,1864,163,1734"/>
+<area shape="rect" id="Node000004" href="$d9/def/classLali.html" title=" " alt="" coords="221,2113,312,2238"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="269,1831,269,2112,264,2112,264,1831"/>
+<area shape="rect" id="Node000005" href="$d2/dbe/classPointing.html" title=" " alt="" coords="336,2063,477,2288"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="367,1830,395,2062,390,2063,361,1831"/>
 </map>

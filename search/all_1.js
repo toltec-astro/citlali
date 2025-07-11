@@ -11,7 +11,7 @@ var searchData=
   ['add_5fwcs_8',['add_wcs',['../df/d8d/classfitsIO.html#a469485eac543d4727b96d00c4ce188d5',1,'fitsIO']]],
   ['airy_9',['Airy',['../de/d76/classtimestream_1_1TCProc.html#ac502f770ba4426077b5aa859b9df7ebaab8d9e95e1b14aabf30fe4ff4aade3d3a',1,'timestream::TCProc']]],
   ['align_5ftimestreams_10',['align_timestreams',['../de/d16/structTimeOrderedDataProc.html#aff8f86271d6e8e071570dcc1f6613170',1,'TimeOrderedDataProc']]],
-  ['align_5ftimestreams_5f2_11',['align_timestreams_2',['../de/d16/structTimeOrderedDataProc.html#abe91a935f00650d606ee56aaea7be1cd',1,'TimeOrderedDataProc']]],
+  ['align_5ftimestreams_5fgaps_11',['align_timestreams_gaps',['../de/d16/structTimeOrderedDataProc.html#ab077b0101efb1c6245cb5730d77c8f3e',1,'TimeOrderedDataProc']]],
   ['all_5fbins_12',['all_bins',['../d5/d00/structBlockAccessor.html#aaa14aca03aa60a747fbe777983e8fdd0',1,'BlockAccessor']]],
   ['allocate_5fcmb_13',['allocate_cmb',['../de/d16/structTimeOrderedDataProc.html#ae427ec9fdde7717eb91c5dbcc8118fa0',1,'TimeOrderedDataProc']]],
   ['allocate_5fjinc_5fmatrix_14',['allocate_jinc_matrix',['../db/d8e/classmapmaking_1_1JincMapmaker.html#a828b9aaec1ea19dc7afb890827f1f62e',1,'mapmaking::JincMapmaker']]],

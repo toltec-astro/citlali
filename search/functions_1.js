@@ -8,7 +8,7 @@ var searchData=
   ['add_5ftod_5fheader_5',['add_tod_header',['../d1/db6/classEngine.html#a61c876707413921568013dd67a9f1de7',1,'Engine']]],
   ['add_5fwcs_6',['add_wcs',['../df/d8d/classfitsIO.html#a469485eac543d4727b96d00c4ce188d5',1,'fitsIO']]],
   ['align_5ftimestreams_7',['align_timestreams',['../de/d16/structTimeOrderedDataProc.html#aff8f86271d6e8e071570dcc1f6613170',1,'TimeOrderedDataProc']]],
-  ['align_5ftimestreams_5f2_8',['align_timestreams_2',['../de/d16/structTimeOrderedDataProc.html#abe91a935f00650d606ee56aaea7be1cd',1,'TimeOrderedDataProc']]],
+  ['align_5ftimestreams_5fgaps_8',['align_timestreams_gaps',['../de/d16/structTimeOrderedDataProc.html#ab077b0101efb1c6245cb5730d77c8f3e',1,'TimeOrderedDataProc']]],
   ['allocate_5fcmb_9',['allocate_cmb',['../de/d16/structTimeOrderedDataProc.html#ae427ec9fdde7717eb91c5dbcc8118fa0',1,'TimeOrderedDataProc']]],
   ['allocate_5fjinc_5fmatrix_10',['allocate_jinc_matrix',['../db/d8e/classmapmaking_1_1JincMapmaker.html#a828b9aaec1ea19dc7afb890827f1f62e',1,'mapmaking::JincMapmaker']]],
   ['allocate_5fnmb_11',['allocate_nmb',['../de/d16/structTimeOrderedDataProc.html#af9758af1f9d09cd1bce9ca884d3b1a3a',1,'TimeOrderedDataProc']]],

@@ -65,7 +65,7 @@ var searchData=
   ['formatter_3c_20rawobs_3a_3adataitem_20_3e_62',['formatter&lt; RawObs::DataItem &gt;',['../dc/d16/structfmt_1_1formatter_3_01RawObs_1_1DataItem_01_4.html',1,'fmt']]],
   ['formatter_3c_20std_3a_3areference_5fwrapper_3c_20t_20_3e_20_3e_63',['formatter&lt; std::reference_wrapper&lt; T &gt; &gt;',['../d4/d14/structfmt_1_1formatter_3_01std_1_1reference__wrapper_3_01T_01_4_01_4.html',1,'fmt']]],
   ['forward_64',['forward',['../dd/d06/namespaceengine__utils.html#ab90ba5d476fa7a82560c7af8318d0f90a78ba13bd304f089df4aee1195ab05a21',1,'engine_utils']]],
-  ['freq_65',['freq',['../d5/d40/namespaceinternal.html#a2932aa27d2f9b0ca64ac187eae4d03fa',1,'internal::freq()'],['../d4/de4/namespacetimestream.html#a358fcec33b86776985d1b8f6238827a7aa8cdc2549221579d607d9728814d544d',1,'timestream::Freq']]],
+  ['freq_65',['freq',['../d4/de4/namespacetimestream.html#a358fcec33b86776985d1b8f6238827a7aa8cdc2549221579d607d9728814d544d',1,'timestream::Freq'],['../d5/d40/namespaceinternal.html#a2932aa27d2f9b0ca64ac187eae4d03fa',1,'internal::freq()']]],
   ['freq_5fhigh_5fhz_66',['freq_high_Hz',['../da/d7a/classtimestream_1_1Filter.html#a4289a74855bc3e69aa88024e29f825e6',1,'timestream::Filter']]],
   ['freq_5flow_5fhz_67',['freq_low_Hz',['../da/d7a/classtimestream_1_1Filter.html#aa9ae310a3f85f9e38b8974723e381c7b',1,'timestream::Filter']]],
   ['freqstat_68',['FreqStat',['../d5/d40/namespaceinternal.html#a32d548afd4d267068da16f9f09d1bbc1',1,'internal']]],

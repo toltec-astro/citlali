@@ -7,6 +7,7 @@ var searchData=
   ['load_5ffrom_5fstr_4',['load_from_str',['../d8/db6/structYamlConfig.html#ae4ed223c6362777a3885d0a17408de3d',1,'YamlConfig']]],
   ['load_5fmb_5',['load_mb',['../de/d76/classtimestream_1_1TCProc.html#ac76ff70e348df8ed3f0d87676ed58128',1,'timestream::TCProc']]],
   ['load_5frawobs_6',['load_rawobs',['../d8/d10/structKidsDataProc.html#ad64bbe924e2997a3b94262b3f341798e',1,'KidsDataProc']]],
-  ['loglog_7',['loglog',['../d7/df7/namespacematplotlibcpp.html#a6cfa8cba00f52a2c4614fa7a8a0bcd2b',1,'matplotlibcpp']]],
-  ['loop_5fpipeline_8',['loop_pipeline',['../dc/d9e/classBeammap.html#a7651fe4687746596facaf17bbeb8bcdb',1,'Beammap']]]
+  ['load_5frawobs_5f2_7',['load_rawobs_2',['../d8/d10/structKidsDataProc.html#a6bdac32b165fa2daf7eddcbca086c9b6',1,'KidsDataProc']]],
+  ['loglog_8',['loglog',['../d7/df7/namespacematplotlibcpp.html#a6cfa8cba00f52a2c4614fa7a8a0bcd2b',1,'matplotlibcpp']]],
+  ['loop_5fpipeline_9',['loop_pipeline',['../dc/d9e/classBeammap.html#a7651fe4687746596facaf17bbeb8bcdb',1,'Beammap']]]
 ];

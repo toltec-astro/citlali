@@ -1,13 +1,9 @@
 <map id="timestream::RTCProc::run" name="timestream::RTCProc::run">
-<area shape="rect" id="Node000001" title=" " alt="" coords="673,55,860,80"/>
-<area shape="rect" id="Node000002" href="$d9/def/classLali.html#a4a430cd11ba469770e21af79b0199a69" title=" " alt="" coords="487,5,562,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="690,54,562,28,563,23,691,49"/>
-<area shape="rect" id="Node000003" href="$d2/dbe/classPointing.html#aa5b7a23dbdce6699ef2a1cd23b54c9b6" title=" " alt="" coords="473,55,577,80"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="660,70,577,70,577,65,660,65"/>
-<area shape="rect" id="Node000004" href="$dc/d9e/classBeammap.html#af6c7c69600b4550b84eba0d29b15133e" title=" " alt="" coords="424,104,625,129"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="691,85,588,107,587,101,690,80"/>
-<area shape="rect" id="Node000005" href="$dc/d9e/classBeammap.html#a58e3b98fd0e2d25a88228e58720efe9f" title=" " alt="" coords="203,97,376,137"/>
-<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="410,119,376,119,376,114,410,114"/>
-<area shape="rect" id="Node000006" href="$dc/d9e/classBeammap.html#a5d30a47c11b4749b5c1c692872a9cf8e" title=" " alt="" coords="5,104,155,129"/>
-<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="189,119,155,119,155,114,189,114"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="255,55,441,80"/>
+<area shape="rect" id="Node000002" href="$d9/def/classLali.html#a4a430cd11ba469770e21af79b0199a69" title=" " alt="" coords="69,5,143,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="271,54,143,28,144,23,272,49"/>
+<area shape="rect" id="Node000003" href="$d2/dbe/classPointing.html#aa5b7a23dbdce6699ef2a1cd23b54c9b6" title=" " alt="" coords="54,55,158,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="241,70,158,70,158,65,241,65"/>
+<area shape="rect" id="Node000004" href="$dc/d9e/classBeammap.html#af6c7c69600b4550b84eba0d29b15133e" title=" " alt="" coords="5,104,207,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="272,85,170,107,169,101,271,80"/>
 </map>

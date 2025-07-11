@@ -11,7 +11,8 @@ var searchData=
   ['install_5fang_8',['install_ang',['../db/d8e/classmapmaking_1_1JincMapmaker.html#a33d8245f3871b5083f059a232148d690',1,'mapmaking::JincMapmaker::install_ang'],['../dd/db4/classmapmaking_1_1NaiveMapmaker.html#a6e7180da3199a46dec85111d31b12866',1,'mapmaking::NaiveMapmaker::install_ang']]],
   ['interface_9',['interface',['../d1/dba/structCoordinator_1_1Observation_1_1DataItem.html#a0be2ab2988b9a5195763ab0750da2922',1,'Coordinator::Observation::DataItem']]],
   ['interface_5fsync_5foffset_10',['interface_sync_offset',['../d1/db6/classEngine.html#ad20b2069059ffe413598af6a74363cb4',1,'Engine']]],
-  ['invalid_5fkeys_11',['invalid_keys',['../d1/db6/classEngine.html#a378e3327bd69f8f63ed2872493d6cffb',1,'Engine']]],
-  ['io_12',['io',['../de/d03/structInterfaceBase.html#a448e08e2399d063a8fde45d27c00ea31',1,'InterfaceBase::io'],['../d1/dba/structCoordinator_1_1Observation_1_1DataItem.html#af285628e91a11672b5c691b402a5bb56',1,'Coordinator::Observation::DataItem::io']]],
-  ['iter_5flim_13',['iter_lim',['../de/d76/classtimestream_1_1TCProc.html#a714967fba886255d6347e1920f970a90',1,'timestream::TCProc']]]
+  ['interp_5fover_5fgaps_11',['interp_over_gaps',['../d1/d74/structreduControls.html#a80b2744aeb8fe6a4202121775fa5fcd4',1,'reduControls']]],
+  ['invalid_5fkeys_12',['invalid_keys',['../d1/db6/classEngine.html#a378e3327bd69f8f63ed2872493d6cffb',1,'Engine']]],
+  ['io_13',['io',['../de/d03/structInterfaceBase.html#a448e08e2399d063a8fde45d27c00ea31',1,'InterfaceBase::io'],['../d1/dba/structCoordinator_1_1Observation_1_1DataItem.html#af285628e91a11672b5c691b402a5bb56',1,'Coordinator::Observation::DataItem::io']]],
+  ['iter_5flim_14',['iter_lim',['../de/d76/classtimestream_1_1TCProc.html#a714967fba886255d6347e1920f970a90',1,'timestream::TCProc']]]
 ];

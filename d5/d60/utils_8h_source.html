@@ -1383,7 +1383,64 @@ $(document).ready(function() { init_codefold(1); });
 <div class="line"><a id="l01216" name="l01216"></a><span class="lineno"> 1216</span>}</div>
 </div>
 <div class="line"><a id="l01217" name="l01217"></a><span class="lineno"> 1217</span> </div>
-<div class="line"><a id="l01218" name="l01218"></a><span class="lineno"> 1218</span>} <span class="comment">//namespace engine_utils</span></div>
+<div class="foldopen" id="foldopen01218" data-start="{" data-end="}">
+<div class="line"><a id="l01218" name="l01218"></a><span class="lineno"><a class="line" href="../../dd/d06/namespaceengine__utils.html#a1934dfaaaed56c7e834544de3ac54749"> 1218</a></span><span class="keyword">static</span> Eigen::MatrixXd <a class="code hl_function" href="../../dd/d06/namespaceengine__utils.html#a1934dfaaaed56c7e834544de3ac54749">interp_data</a>(</div>
+<div class="line"><a id="l01219" name="l01219"></a><span class="lineno"> 1219</span>    <span class="keyword">const</span> Eigen::VectorXd &amp;t_common,</div>
+<div class="line"><a id="l01220" name="l01220"></a><span class="lineno"> 1220</span>    <span class="keyword">const</span> Eigen::VectorXi &amp;mask,</div>
+<div class="line"><a id="l01221" name="l01221"></a><span class="lineno"> 1221</span>    <span class="keyword">const</span> Eigen::VectorXd &amp;t_valid,</div>
+<div class="line"><a id="l01222" name="l01222"></a><span class="lineno"> 1222</span>    <span class="keyword">const</span> Eigen::MatrixXd &amp;data_valid) {</div>
+<div class="line"><a id="l01223" name="l01223"></a><span class="lineno"> 1223</span> </div>
+<div class="line"><a id="l01224" name="l01224"></a><span class="lineno"> 1224</span>    std::shared_ptr&lt;spdlog::logger&gt; logger = spdlog::get(<span class="stringliteral">&quot;citlali_logger&quot;</span>);</div>
+<div class="line"><a id="l01225" name="l01225"></a><span class="lineno"> 1225</span> </div>
+<div class="line"><a id="l01226" name="l01226"></a><span class="lineno"> 1226</span>    <span class="keywordtype">int</span> n_samps = t_common.size();</div>
+<div class="line"><a id="l01227" name="l01227"></a><span class="lineno"> 1227</span>    <span class="keywordtype">int</span> n_dets = data_valid.cols();</div>
+<div class="line"><a id="l01228" name="l01228"></a><span class="lineno"> 1228</span> </div>
+<div class="line"><a id="l01229" name="l01229"></a><span class="lineno"> 1229</span>    Eigen::MatrixXd result = Eigen::MatrixXd::Zero(n_samps, n_dets);</div>
+<div class="line"><a id="l01230" name="l01230"></a><span class="lineno"> 1230</span> </div>
+<div class="line"><a id="l01231" name="l01231"></a><span class="lineno"> 1231</span>    std::vector&lt;int&gt; valid_indices;</div>
+<div class="line"><a id="l01232" name="l01232"></a><span class="lineno"> 1232</span> </div>
+<div class="line"><a id="l01233" name="l01233"></a><span class="lineno"> 1233</span>    <span class="keywordtype">int</span> valid_idx = 0;</div>
+<div class="line"><a id="l01234" name="l01234"></a><span class="lineno"> 1234</span>    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; n_samps; ++i) {</div>
+<div class="line"><a id="l01235" name="l01235"></a><span class="lineno"> 1235</span>        <span class="keywordflow">if</span> (mask(i)) {</div>
+<div class="line"><a id="l01236" name="l01236"></a><span class="lineno"> 1236</span>            result.row(i) = data_valid.row(valid_idx);</div>
+<div class="line"><a id="l01237" name="l01237"></a><span class="lineno"> 1237</span>            valid_indices.push_back(i);</div>
+<div class="line"><a id="l01238" name="l01238"></a><span class="lineno"> 1238</span>            ++valid_idx;</div>
+<div class="line"><a id="l01239" name="l01239"></a><span class="lineno"> 1239</span>        }</div>
+<div class="line"><a id="l01240" name="l01240"></a><span class="lineno"> 1240</span>    }</div>
+<div class="line"><a id="l01241" name="l01241"></a><span class="lineno"> 1241</span> </div>
+<div class="line"><a id="l01242" name="l01242"></a><span class="lineno"> 1242</span>    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> j = 0; j &lt; n_dets; ++j) {</div>
+<div class="line"><a id="l01243" name="l01243"></a><span class="lineno"> 1243</span>        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; n_samps; ++i) {</div>
+<div class="line"><a id="l01244" name="l01244"></a><span class="lineno"> 1244</span>            <span class="keywordflow">if</span> (mask(i)) <span class="keywordflow">continue</span>;</div>
+<div class="line"><a id="l01245" name="l01245"></a><span class="lineno"> 1245</span> </div>
+<div class="line"><a id="l01246" name="l01246"></a><span class="lineno"> 1246</span>            <span class="comment">// find left and right valid sample</span></div>
+<div class="line"><a id="l01247" name="l01247"></a><span class="lineno"> 1247</span>            <span class="keyword">auto</span> it_right = std::lower_bound(valid_indices.begin(), valid_indices.end(), i);</div>
+<div class="line"><a id="l01248" name="l01248"></a><span class="lineno"> 1248</span>            <span class="keywordflow">if</span> (it_right == valid_indices.end() || it_right == valid_indices.begin()) {</div>
+<div class="line"><a id="l01249" name="l01249"></a><span class="lineno"> 1249</span>                <span class="comment">// extrapolation: copy nearest valid</span></div>
+<div class="line"><a id="l01250" name="l01250"></a><span class="lineno"> 1250</span>                <span class="keywordtype">int</span> idx_nearest = (it_right == valid_indices.end()) ? valid_indices.back() : valid_indices.front();</div>
+<div class="line"><a id="l01251" name="l01251"></a><span class="lineno"> 1251</span>                result(i, j) = result(idx_nearest, j);</div>
+<div class="line"><a id="l01252" name="l01252"></a><span class="lineno"> 1252</span>                <span class="keywordflow">continue</span>;</div>
+<div class="line"><a id="l01253" name="l01253"></a><span class="lineno"> 1253</span>            }</div>
+<div class="line"><a id="l01254" name="l01254"></a><span class="lineno"> 1254</span> </div>
+<div class="line"><a id="l01255" name="l01255"></a><span class="lineno"> 1255</span>            <span class="keywordtype">int</span> ir = *it_right;</div>
+<div class="line"><a id="l01256" name="l01256"></a><span class="lineno"> 1256</span>            <span class="keywordtype">int</span> il = *(it_right - 1);</div>
+<div class="line"><a id="l01257" name="l01257"></a><span class="lineno"> 1257</span> </div>
+<div class="line"><a id="l01258" name="l01258"></a><span class="lineno"> 1258</span>            <span class="keywordtype">double</span> t_il = t_common(il);</div>
+<div class="line"><a id="l01259" name="l01259"></a><span class="lineno"> 1259</span>            <span class="keywordtype">double</span> t_ir = t_common(ir);</div>
+<div class="line"><a id="l01260" name="l01260"></a><span class="lineno"> 1260</span>            <span class="keywordtype">double</span> t_i = t_common(i);</div>
+<div class="line"><a id="l01261" name="l01261"></a><span class="lineno"> 1261</span> </div>
+<div class="line"><a id="l01262" name="l01262"></a><span class="lineno"> 1262</span>            <span class="keywordtype">double</span> v_il = result(il, j);</div>
+<div class="line"><a id="l01263" name="l01263"></a><span class="lineno"> 1263</span>            <span class="keywordtype">double</span> v_ir = result(ir, j);</div>
+<div class="line"><a id="l01264" name="l01264"></a><span class="lineno"> 1264</span> </div>
+<div class="line"><a id="l01265" name="l01265"></a><span class="lineno"> 1265</span>            <span class="keywordtype">double</span> frac = (t_i - t_il) / (t_ir - t_il);</div>
+<div class="line"><a id="l01266" name="l01266"></a><span class="lineno"> 1266</span>            result(i, j) = (1.0 - frac) * v_il + frac * v_ir;</div>
+<div class="line"><a id="l01267" name="l01267"></a><span class="lineno"> 1267</span>        }</div>
+<div class="line"><a id="l01268" name="l01268"></a><span class="lineno"> 1268</span>    }</div>
+<div class="line"><a id="l01269" name="l01269"></a><span class="lineno"> 1269</span> </div>
+<div class="line"><a id="l01270" name="l01270"></a><span class="lineno"> 1270</span>    <span class="keywordflow">return</span> result;</div>
+<div class="line"><a id="l01271" name="l01271"></a><span class="lineno"> 1271</span>}</div>
+</div>
+<div class="line"><a id="l01272" name="l01272"></a><span class="lineno"> 1272</span> </div>
+<div class="line"><a id="l01273" name="l01273"></a><span class="lineno"> 1273</span>} <span class="comment">//namespace engine_utils</span></div>
 <div class="ttc" id="aclassengine__utils_1_1SplineFunction_html"><div class="ttname"><a href="../../d0/d96/classengine__utils_1_1SplineFunction.html">engine_utils::SplineFunction</a></div><div class="ttdef"><b>Definition</b> utils.h:972</div></div>
 <div class="ttc" id="aclassengine__utils_1_1SplineFunction_html_a272808822e1611f141638d4e2bdb4bb7"><div class="ttname"><a href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a272808822e1611f141638d4e2bdb4bb7">engine_utils::SplineFunction::x_min</a></div><div class="ttdeci">double x_min</div><div class="ttdef"><b>Definition</b> utils.h:974</div></div>
 <div class="ttc" id="aclassengine__utils_1_1SplineFunction_html_a2cfbcc34567a614e31419dcf7e6854de"><div class="ttname"><a href="../../d0/d96/classengine__utils_1_1SplineFunction.html#a2cfbcc34567a614e31419dcf7e6854de">engine_utils::SplineFunction::x_max</a></div><div class="ttdeci">double x_max</div><div class="ttdef"><b>Definition</b> utils.h:975</div></div>
@@ -1406,6 +1463,7 @@ $(document).ready(function() { init_codefold(1); });
 <div class="ttc" id="anamespaceengine__utils_html_a076b4cedf6e230db2e8fcf914a564ad7"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a076b4cedf6e230db2e8fcf914a564ad7">engine_utils::unix_to_modified_julian_date</a></div><div class="ttdeci">static double unix_to_modified_julian_date(double unix_time)</div><div class="ttdef"><b>Definition</b> utils.h:170</div></div>
 <div class="ttc" id="anamespaceengine__utils_html_a0d4e852f4708cf9fc1a75eb98a3bed67"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a0d4e852f4708cf9fc1a75eb98a3bed67">engine_utils::fix_periodic_boundary</a></div><div class="ttdeci">void fix_periodic_boundary(Eigen::DenseBase&lt; Derived &gt; &amp;data, double low, double high, double upper_limit)</div><div class="ttdef"><b>Definition</b> utils.h:1022</div></div>
 <div class="ttc" id="anamespaceengine__utils_html_a17d3d5ac0ee60762b7ce109bee800af3"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a17d3d5ac0ee60762b7ce109bee800af3">engine_utils::mJy_beam_to_uK</a></div><div class="ttdeci">static const double mJy_beam_to_uK(const double flux_mjy_beam, const double freq_Hz, const double fwhm)</div><div class="ttdef"><b>Definition</b> utils.h:77</div></div>
+<div class="ttc" id="anamespaceengine__utils_html_a1934dfaaaed56c7e834544de3ac54749"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a1934dfaaaed56c7e834544de3ac54749">engine_utils::interp_data</a></div><div class="ttdeci">static Eigen::MatrixXd interp_data(const Eigen::VectorXd &amp;t_common, const Eigen::VectorXi &amp;mask, const Eigen::VectorXd &amp;t_valid, const Eigen::MatrixXd &amp;data_valid)</div><div class="ttdef"><b>Definition</b> utils.h:1218</div></div>
 <div class="ttc" id="anamespaceengine__utils_html_a364ac707e0426402b3c6b0f13edf4738"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a364ac707e0426402b3c6b0f13edf4738">engine_utils::is_point_in_box</a></div><div class="ttdeci">static const bool is_point_in_box(double a, double b, double x, double y, double theta)</div><div class="ttdef"><b>Definition</b> utils.h:1202</div></div>
 <div class="ttc" id="anamespaceengine__utils_html_a392b455508f8ccfaf2af66c841dd7055"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a392b455508f8ccfaf2af66c841dd7055">engine_utils::now</a></div><div class="ttdeci">auto now()</div><div class="ttdoc">Return the current time.</div><div class="ttdef"><b>Definition</b> utils.h:1138</div></div>
 <div class="ttc" id="anamespaceengine__utils_html_a3984d08902ccc268f7ba7878ebe1e2de"><div class="ttname"><a href="../../dd/d06/namespaceengine__utils.html#a3984d08902ccc268f7ba7878ebe1e2de">engine_utils::calc_rms</a></div><div class="ttdeci">auto calc_rms(Eigen::DenseBase&lt; DerivedA &gt; &amp;data)</div><div class="ttdef"><b>Definition</b> utils.h:389</div></div>
