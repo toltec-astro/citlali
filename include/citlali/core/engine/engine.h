@@ -69,6 +69,8 @@
 #include <citlali/core/engine/todproc.h>
 
 struct reduControls {
+    // interpolate over gaps in timestreams
+    bool interp_over_gaps;
     // create reduction subdirectories
     bool use_subdir;
 
@@ -157,6 +159,11 @@ public:
 
     // get logger
     std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
+
+    // for timing
+    Eigen::VectorXd t_common;
+    std::vector<Eigen::VectorXi> masks;
+    std::vector<Eigen::VectorXd> nw_times;
 
     // date/time of each obs
     std::vector<std::string> date_obs;
@@ -808,6 +815,9 @@ void Engine::get_citlali_config(CT &config) {
     // create redu00, redu01... subdirectories
     get_config_value(config, use_subdir, missing_keys, invalid_keys,
                      std::tuple{"runtime","use_subdir"});
+    // interp over gaps in align_timestream
+    get_config_value(config, interp_over_gaps, missing_keys, invalid_keys,
+                     std::tuple{"runtime","interp_over_gaps"});
 
     /* get timestream config */
     get_timestream_config(config);

@@ -360,7 +360,12 @@ int run(const rc_t &rc) {
                     // align tod
                     if (!todproc.engine().telescope.sim_obs) {
                         logger->info("aligning timestreams");
-                        todproc.align_timestreams(rawobs);
+                        if (todproc.engine().interp_over_gaps) {
+                            todproc.align_timestreams_gaps(rawobs);
+                        }
+                        else {
+                            todproc.align_timestreams(rawobs);
+                        }
                     }
 
                     // if simu, set start and end indices to 0
@@ -667,7 +672,12 @@ int run(const rc_t &rc) {
                             // align tod
                             if (!todproc.engine().telescope.sim_obs) {
                                 logger->info("aligning timestreams");
-                                todproc.align_timestreams(rawobs);
+                                if (todproc.engine().interp_over_gaps) {
+                                    todproc.align_timestreams_gaps(rawobs);
+                                }
+                                else {
+                                    todproc.align_timestreams(rawobs);
+                                }
                             }
 
                             // if simu, set start and end indices to 0

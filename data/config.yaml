@@ -70,6 +70,7 @@ mapmaking: # mapmaking parameters
     tolerance: 1e-20 # tolerance
 runtime: # parameters to control how citlali runs
   verbose: true # extra debug output in terminal (same as -l debug).  adds summary files to obsnum/logs/ directory.
+  interp_over_gaps: true # find and interpolate over gaps in the timestreams
   meta:
     version: tolteca... # extra info from tolteca
   n_threads: 1 # number of threads to use
@@ -132,7 +133,7 @@ timestream: # timestream reduction parameters
       mask_radius_arcsec: 0.0 # radius of region around the map center to mask during cleaning (only used if >0)
       grouping: [array] # clean grouping (array, nw, all)
       tau: 0.0 # tolerance for detector correlations (fraction of mean correlation for current group)
-      n_eig_to_cut: # number of eigenvalues to remove (if stddev_limit >0, calc this many eigs, if this is 0, calc all eigs) 
+      n_eig_to_cut: # number of eigenvalues to remove (if stddev_limit >0, calc this many eigs, if this is 0, calc all eigs)
         a1100: [3]
         a1400: [3]
         a2000: [3]

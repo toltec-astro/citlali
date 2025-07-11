@@ -1215,4 +1215,59 @@ static const bool is_point_in_box(double a, double b, double x, double y, double
     return false;
 }
 
+static Eigen::MatrixXd interp_data(
+    const Eigen::VectorXd &t_common,
+    const Eigen::VectorXi &mask,
+    const Eigen::VectorXd &t_valid,
+    const Eigen::MatrixXd &data_valid) {
+
+    std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
+
+    int n_samps = t_common.size();
+    int n_dets = data_valid.cols();
+
+    Eigen::MatrixXd result = Eigen::MatrixXd::Zero(n_samps, n_dets);
+
+    std::vector<int> valid_indices;
+
+    int valid_idx = 0;
+    for (int i = 0; i < n_samps; ++i) {
+        if (mask(i)) {
+            result.row(i) = data_valid.row(valid_idx);
+            valid_indices.push_back(i);
+            ++valid_idx;
+        }
+    }
+
+    for (int j = 0; j < n_dets; ++j) {
+        for (int i = 0; i < n_samps; ++i) {
+            if (mask(i)) continue;
+
+            // find left and right valid sample
+            auto it_right = std::lower_bound(valid_indices.begin(), valid_indices.end(), i);
+            if (it_right == valid_indices.end() || it_right == valid_indices.begin()) {
+                // extrapolation: copy nearest valid
+                int idx_nearest = (it_right == valid_indices.end()) ? valid_indices.back() : valid_indices.front();
+                result(i, j) = result(idx_nearest, j);
+                continue;
+            }
+
+            int ir = *it_right;
+            int il = *(it_right - 1);
+
+            double t_il = t_common(il);
+            double t_ir = t_common(ir);
+            double t_i = t_common(i);
+
+            double v_il = result(il, j);
+            double v_ir = result(ir, j);
+
+            double frac = (t_i - t_il) / (t_ir - t_il);
+            result(i, j) = (1.0 - frac) * v_il + frac * v_ir;
+        }
+    }
+
+    return result;
+}
+
 } //namespace engine_utils

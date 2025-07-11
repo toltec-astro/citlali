@@ -98,8 +98,8 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
     void check_inputs(const RawObs &rawobs);
     // align networks and hwpr vectors in time
     void align_timestreams(const RawObs &rawobs);
-    // updated alignment of networks and hwpr vectors in time
-    void align_timestreams_2(const RawObs &rawobs);
+    // updated alignment of networks and hwpr vectors in time that accounts for gaps
+    void align_timestreams_gaps(const RawObs &rawobs);
     // interpolate pointing vectors
     void interp_pointing();
     // calculate number of maps
@@ -573,36 +573,6 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
 
     // get hwpr timing
     if (engine().calib.run_hwpr) {
-        /*auto sec0 = engine().calib.hwpr_ts.template cast <double> ().col(0);
-        // ClockTimeNanoSec (nsec)
-        auto nsec0 = engine().calib.hwpr_ts.template cast <double> ().col(5);
-        // PpsCount (pps ticks)
-        auto pps = engine().calib.hwpr_ts.template cast <double> ().col(1);
-        // ClockCount (clock ticks)
-        auto msec = engine().calib.hwpr_ts.template cast <double> ().col(2)/engine().calib.hwpr_fpga_freq;
-        // PacketCount (packet ticks)
-        auto count = engine().calib.hwpr_ts.template cast <double> ().col(3);
-        // PpsTime (clock ticks)
-        auto pps_msec = engine().calib.hwpr_ts.template cast <double> ().col(4)/engine().calib.hwpr_fpga_freq;
-        // get start time
-        auto t0 = sec0 + nsec0*1e-9;
-
-        // shift start time
-        int start_t = int(t0[0] - 0.5);
-        //int start_t = int(t0[0]);
-
-        // convert start time to double
-        double start_t_dbl = start_t;
-
-        Eigen::VectorXd dt = msec - pps_msec;
-
-        // remove overflow due to int32
-        dt = (dt.array() < 0).select(msec.array() - pps_msec.array() + (pow(2.0,32)-1)/engine().calib.hwpr_,msec - pps_msec);
-
-        // get network time and add offsets
-        engine().calib.hwpr_recvt = start_t_dbl + pps.array() + dt.array() + engine().interface_sync_offset["hwpr"];
-        */
-
         // if hwpr init time is larger than max start time, replace global max start time
         Eigen::Index hwpr_ts_n_pts = engine().calib.hwpr_recvt.size();
         if (engine().calib.hwpr_recvt(0) > max_t0) {
@@ -731,7 +701,220 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
 
 // upgraded alignment of tod with telescope
 template <class EngineType>
-void TimeOrderedDataProc<EngineType>::align_timestreams_2(const RawObs &rawobs) {}
+void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawobs) {
+    using namespace netCDF;
+    using namespace netCDF::exceptions;
+
+    // clear start and end indices for each observation
+    engine().start_indices.clear();
+    engine().end_indices.clear();
+
+    std::vector<Eigen::VectorXd> nw_times(rawobs.kidsdata().size());
+
+    // clear gaps
+    engine().gaps.clear();
+
+    // loop through networks and build time vectors
+    int i = 0;
+    double f_smp_roach;
+    for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
+        try {
+            const RawObs::DataItem &data_item = rawobs.kidsdata()[i];
+            // load data file
+            NcFile fo(data_item.filepath(), NcFile::read);
+            auto vars = fo.getVars();
+
+            // get roach sample rate
+            vars.find("Header.Toltec.SampleFreq")->second.getVar(&f_smp_roach);
+
+            // get roach index for offsets
+            int roach_index;
+            vars.find("Header.Toltec.RoachIndex")->second.getVar(&roach_index);
+
+            // get dimensions for time matrix
+            Eigen::Index n_pts = vars.find("Data.Toltec.Ts")->second.getDim(0).getSize();
+            Eigen::Index n_times = vars.find("Data.Toltec.Ts")->second.getDim(1).getSize();
+
+            // get time matrix
+            //Eigen::MatrixXi ts(n_times, n_pts);
+            Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> ts(n_pts, n_times);
+            vars.find("Data.Toltec.Ts")->second.getVar(ts.data());
+
+            // get fpga frequency
+            double fpga_freq;
+            vars.find("Header.Toltec.FpgaFreq")->second.getVar(&fpga_freq);
+
+            // cast to double
+            Eigen::MatrixXd ts_double = ts.cast<double>();
+
+            Eigen::MatrixXi ts_t = ts.transpose();
+
+            // find gaps
+            int gaps = ((ts.block(1,3,n_pts,1).array() - ts.block(0,3,n_pts-1,1).array()).array() > 1).count();
+
+            // add gaps to engine map
+            if (gaps>0) {
+                engine().gaps["Toltec" + std::to_string(roach_index)] = gaps;
+            }
+
+            auto sec = ts_double.col(0);        // ClockTime (sec)
+            auto nsec = ts_double.col(5);       // ClockTimeNanoSec (nsec)
+            auto pps = ts_double.col(1);        // PpsCount (pps ticks)
+            auto msec = ts_double.col(2) / fpga_freq;  // ClockCount (clock ticks) to seconds
+            //Eigen::VectorXd count = ts_double.col(3);      // PacketCount (packet ticks)
+            auto pps_msec = ts_double.col(4) / fpga_freq; // PpsTime (clock ticks) to seconds
+
+            // determine start time with empirical offset
+            double start_time_dbl = sec[0] + nsec[0] * 1e-9;
+            int start_time = int(start_time_dbl - 0.5);
+            start_time_dbl = start_time;
+
+            // calculate clock count difference (dt)
+            Eigen::VectorXd dt = msec - pps_msec;
+
+            // handle overflow due to int32, using Eigen array logic
+            dt = (dt.array() < 0).select(msec.array() - pps_msec.array() + (pow(2.0, 32) - 1) / fpga_freq, msec - pps_msec);
+
+            // build the time vector for the current network
+            Eigen::VectorXd nw_time = start_time_dbl + pps.array() + dt.array()
+                                        + engine().interface_sync_offset["toltec"+std::to_string(roach_index)];
+
+            // store all time vectors
+            nw_times[i] = std::move(nw_time);
+            i++;
+
+            fo.close();
+
+        } catch (NcException &e) {
+            throw std::runtime_error(fmt::format("unable to open file : {}", "data_item.filepath()", e.what()));
+        }
+    }
+
+    // get hwpr times if not ignored
+    if (engine().calib.run_hwpr) {
+        logger->debug("calculating hwpr time");
+        // hwpr gets added alongside networks
+        nw_times.push_back(engine().calib.hwpr_recvt);
+    }
+
+    // latest starting time of all networks
+    double max_init_time = std::numeric_limits<double>::lowest();
+    // earliest final time of all networks
+    double min_final_time = std::numeric_limits<double>::max();
+
+    // indices for max_init_time and min_final_time
+    Eigen::Index max_init_idx = 0;
+    Eigen::Index min_final_idx = 0;
+
+    // get global max init and min final times and indices
+    for (Eigen::Index i = 0; i < nw_times.size(); ++i) {
+        double initial_time = nw_times[i](0);
+        double final_time = nw_times[i](nw_times[i].size() - 1);
+
+        // get latest starting network
+        if (initial_time > max_init_time) {
+            max_init_time = initial_time;
+            max_init_idx = i;
+        }
+        // get earliest ending network
+        if (final_time < min_final_time) {
+            min_final_time = final_time;
+            min_final_idx = i;
+        }
+    }
+
+    for (Eigen::Index i = 0; i < nw_times.size(); ++i) {
+        Eigen::Index nw_init_idx, nw_final_idx;
+
+        // find index where current nw time is closest to max start time
+        (nw_times[i].array() - max_init_time).abs().minCoeff(&nw_init_idx);
+        // make sure it starts after the latest starting time
+        while (nw_times[i](nw_init_idx) < max_init_time) {
+            nw_init_idx += 1;
+        }
+
+        engine().start_indices.push_back(nw_init_idx);
+
+        // find index where current nw time is closest to min final time
+        (nw_times[i].array() - min_final_time).abs().minCoeff(&nw_final_idx);
+        // make sure it ends before the latest starting time
+        while (nw_times[i](nw_final_idx) > min_final_time) {
+            nw_final_idx -= 1;
+        }
+
+        engine().end_indices.push_back(nw_final_idx);
+    }
+
+    double dt = 1.0 / f_smp_roach;
+    Eigen::Index n_samples = static_cast<int>((min_final_time - max_init_time) / dt) + 1;
+
+    Eigen::VectorXd t_common = Eigen::VectorXd::LinSpaced(n_samples, max_init_time, max_init_time + dt * (n_samples - 1));
+
+    double tol = dt / 2.0;
+
+    std::vector<Eigen::VectorXi> masks;
+    masks.reserve(nw_times.size());
+
+    for (const auto &t : nw_times) {
+        Eigen::VectorXi mask = Eigen::VectorXi::Zero(n_samples);
+
+        for (int i = 0; i < t.size(); ++i) {
+            double time = t(i);
+            int idx = static_cast<int>(std::round((time - max_init_time) / dt));
+            if (idx >= 0 && idx < n_samples && std::abs(time - t_common(idx)) <= tol) {
+                mask(idx) = 1;
+            }
+        }
+
+        masks.push_back(std::move(mask));
+    }
+
+    // size of telescope data
+    Eigen::Matrix<Eigen::Index,1,1> nd;
+    nd << engine().telescope.tel_data["TelTime"].size();
+
+    // interpolate telescope data onto data timestream
+    for (const auto &tel_it : engine().telescope.tel_data) {
+        // don't interpolate telescope time itself
+        if (tel_it.first !="TelTime" && tel_it.first !="TelUTC") {
+            // telescope vector to interpolate
+            Eigen::VectorXd yd = engine().telescope.tel_data.at(tel_it.first);
+            // vector to store interpolated outputs in
+            Eigen::VectorXd yi(n_samples);
+
+            mlinterp::interp(nd.data(), n_samples, // nd, ni
+                                yd.data(), yi.data(), // yd, yi
+                                engine().telescope.tel_data.at("TelTime").data(), t_common.data()); // xd, xi
+
+            // move back into data vector
+            engine().telescope.tel_data[tel_it.first] = std::move(yi);
+        }
+    }
+
+    // replace telescope time vectors
+    engine().telescope.tel_data.at("TelTime") = t_common;
+    engine().telescope.tel_data.at("TelUTC") = t_common;
+
+    // interpolate hwpr
+    if (engine().calib.run_hwpr) {
+        logger->debug("interpolating hwpr angle");
+        int n_times = nw_times.size();
+        nd << nw_times[n_times - 1].size();
+
+        // vector to store interpolated outputs in
+        Eigen::VectorXd yi(n_samples);
+
+        mlinterp::interp(nd.data(), n_samples, // nd, ni
+                            engine().calib.hwpr_angle.data(), yi.data(), // yd, yi
+                            nw_times[n_times - 1].data(), t_common.data()); // xd, xi
+
+        engine().calib.hwpr_angle = std::move(yi);
+    }
+
+    engine().t_common = t_common;
+    engine().masks = masks;
+    engine().nw_times = nw_times;
+}
 
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::interp_pointing() {

@@ -90,6 +90,24 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
     auto populate_rtc(loaded_t &, const int, const int,
                       const std::string);
 
+    // load rawobs with gaps
+    template <typename DerivedA, typename DerivedB, typename DerivedC>
+    auto load_rawobs_2(const RawObs &, const Eigen::Index,
+                       Eigen::DenseBase<DerivedA>&,
+                       std::vector<Eigen::Index>&,
+                       Eigen::DenseBase<DerivedB>&,
+                       std::vector<DerivedC>&,
+                       const double);
+
+    // populate rtc with gaps
+    template <typename LoadedType, typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD>
+    auto populate_rtc_2(LoadedType &, Eigen::DenseBase<DerivedA>&,
+                        std::vector<DerivedB>&,
+                        std::vector<DerivedC>&,
+                        const int, const double,
+                        Eigen::DenseBase<DerivedD>&,
+                        const int, const int, const std::string);
+
     // TODO fix the const correctness
     Fitter &fitter() { return m_fitter; }
     Solver &solver() { return m_solver; }
@@ -318,6 +336,113 @@ auto KidsDataProc::populate_rtc(loaded_t &loaded,
     if ((data.array().isInf()).any()) {
         logger->error("inf found in data! Check that your KIDs data dir is correct.");
         std::exit(EXIT_FAILURE);
+    }
+
+    return data;
+}
+
+template <typename DerivedA, typename DerivedB, typename DerivedC>
+auto KidsDataProc::load_rawobs_2(const RawObs &rawobs, const Eigen::Index scan,
+                                Eigen::DenseBase<DerivedA>& scan_indices,
+                                std::vector<Eigen::Index>& start_indices,
+                                Eigen::DenseBase<DerivedB>& t_common,
+                                std::vector<DerivedC>& times,
+                                const double tol) {
+
+    std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> result;
+
+    double t0 = t_common(scan_indices(2, scan));
+    double t1 = t_common(scan_indices(3, scan));
+
+    int i = 0;
+    for (const auto &data_item : rawobs.kidsdata()) {
+        Eigen::Index i_start = 0;
+        while (i_start < times[i].size() && std::abs(times[i](i_start) - t0) > tol) {
+            ++i_start;
+        }
+
+        Eigen::Index i_end = i_start;
+        while (i_end < times[i].size() && std::abs(times[i](i_end) - t1) > tol) {
+            ++i_end;
+        }
+
+        // get slice of data for current scan
+        auto slice = tula::container_utils::Slice<int>{i_start, i_end,
+                                                       std::nullopt};
+        result.push_back(load_data_item(data_item, slice));
+
+        ++i;
+    }
+
+    return result;
+}
+
+template <typename LoadedType, typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD>
+auto KidsDataProc::populate_rtc_2(LoadedType &loaded, Eigen::DenseBase<DerivedA>& t_common,
+                                  std::vector<DerivedB>& times,
+                                  std::vector<DerivedC>& masks,
+                                  const int scan,
+                                  const double tol,
+                                  Eigen::DenseBase<DerivedD>& scan_indices,
+                                  const int n_pts, const int n_det, const std::string data_type) {
+    // resize data
+    Eigen::MatrixXd data(n_pts, n_det);
+
+    double t0 = t_common(scan_indices(2, scan));
+    double t1 = t_common(scan_indices(3, scan));
+
+    Eigen::Index i = 0, j = 0;;
+    // loop through raw timestream objects
+    for (std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>::
+         iterator it = loaded.begin(); it != loaded.end(); ++it) {
+        // run the solver
+        auto result = this->solver()(*it, Solver::Config{});
+        // get number of rows
+        Eigen::Index n_rows = result.data_out.xs.data.rows();
+        // get number of cols
+        Eigen::Index n_cols = result.data_out.xs.data.cols();
+
+        Eigen::MatrixXd block(n_rows, n_cols);
+
+        // get xs
+        if (data_type == "xs") {
+            block = result.data_out.xs.data;
+        } else if (data_type == "rs") {
+            block = result.data_out.rs.data;
+        } else if (data_type == "is") {
+            block = result.data.is.data;
+        } else if (data_type == "qs") {
+            block = result.data.qs.data;
+        }
+
+        Eigen::Index i_start = 0;
+        while (i_start < times[j].size() && std::abs(times[j](i_start) - t0) > tol) {
+            ++i_start;
+        }
+
+        Eigen::Index i_end = i_start;
+        while (i_end < times[j].size() && std::abs(times[j](i_end) - t1) > tol) {
+            ++i_end;
+        }
+
+        block = engine_utils::interp_data(t_common.segment(scan_indices(2,scan), n_pts),
+                                          masks[j].segment(i_start, i_end - i_start),
+                                          times[j].segment(i_start, i_end - i_start),
+                                          block);
+
+        data.block(0, i, n_rows, n_cols) = block;
+        // increment columns
+        i += n_cols;
+        j++;
+    }
+
+    // check for nans
+    if ((data.array().isNaN()).any()) {
+        throw std::runtime_error("nan found in data!");
+    }
+    // check for infs
+    if ((data.array().isInf()).any()) {
+        throw std::runtime_error("inf found in data!");
     }
 
     return data;

@@ -321,10 +321,6 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         in.status.kernel_generated = true;
     }
 
-    // set up flags
-    in.flags.data.resize(n_pts, in.scans.data.cols());
-    in.flags.data.setConstant(false);
-
     // run despiking
     if (run_despike) {
         logger->debug("despiking");

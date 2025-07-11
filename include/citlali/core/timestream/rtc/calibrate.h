@@ -21,10 +21,11 @@ public:
     std::map<std::string,Eigen::VectorXd> tx_ratio_coeff;
 
     std::map<std::string, double> tx_225_zenith = {
-        {"am_q25",0.9500275},
-        {"am_q50",0.9142065},
-        {"am_q75",0.8515054},
-        {"am_q95",0.7337698},
+        {"am_q0", 1.0},
+        {"am_q25", 0.9500275},
+        {"am_q50", 0.9142065},
+        {"am_q75", 0.8515054},
+        {"am_q95", 0.7337698},
     };
 
     void setup(double tau_225_zenith) {
@@ -45,8 +46,8 @@ public:
             i++;
         }
 
-        // set initial model to am_q25
-        extinction_model = "am_q25";
+        // set initial model to am_q0
+        extinction_model = "am_q0";
 
         // find model with closest tau to telescope tau and use that model
         // for extinction correction
@@ -62,6 +63,13 @@ public:
         tx_ratio_coeff["a1100"].resize(7);
         tx_ratio_coeff["a1400"].resize(7);
         tx_ratio_coeff["a2000"].resize(7);
+
+        // am_q0
+        if (extinction_model=="am_q0") {
+            tx_ratio_coeff["a1100"] << 0, 0, 0, 0, 0, 0, 1;
+            tx_ratio_coeff["a1400"] << 0, 0, 0, 0, 0, 0, 1;
+            tx_ratio_coeff["a2000"] << 0, 0, 0, 0, 0, 0, 1;
+        }
 
         // am_q25
         if (extinction_model=="am_q25") {

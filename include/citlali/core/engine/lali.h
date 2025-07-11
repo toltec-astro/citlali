@@ -82,13 +82,23 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                 // vector to store kids data
                 std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> scan_rawobs;
                 // get kids data
-                scan_rawobs = kidsproc.load_rawobs(rawobs, scan, telescope.scan_indices, start_indices, end_indices);
-
+                if (!interp_over_gaps) {
+                    scan_rawobs = kidsproc.load_rawobs(rawobs, scan, telescope.scan_indices, start_indices, end_indices);
+                }
+                else {
+                    scan_rawobs = kidsproc.load_rawobs_2(rawobs, scan, telescope.scan_indices, start_indices, t_common, nw_times, 1 / (2 * telescope.fsmp));
+                }
                 // current length of outer scans
                 Eigen::Index sl = rtcdata.scan_indices.data(3) - rtcdata.scan_indices.data(2) + 1;
 
                 // get raw tod from files
-                rtcdata.scans.data = kidsproc.populate_rtc(scan_rawobs, sl, calib.n_dets, tod_type);
+                if (!interp_over_gaps) {
+                    rtcdata.scans.data = kidsproc.populate_rtc(scan_rawobs, sl, calib.n_dets, tod_type);
+                }
+                else {
+                    rtcdata.scans.data = kidsproc.populate_rtc_2(scan_rawobs, t_common, nw_times, masks, scan, 1 / (2 * telescope.fsmp),
+                                                                telescope.scan_indices, sl, calib.n_dets, tod_type);
+                }
                 // try and clear input vector
                 std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>().swap(scan_rawobs);
 
@@ -157,6 +167,27 @@ auto Lali::run() {
         if (rtcproc.run_polarization) {
             if (calib.run_hwpr) {
                 rtcdata.hwpr_angle.data = calib.hwpr_angle.segment(si + hwpr_start_indices, sl);
+            }
+        }
+
+        // set up flags
+        rtcdata.flags.data.resize(rtcdata.scans.data.rows(), rtcdata.scans.data.cols());
+        rtcdata.flags.data.setConstant(false);
+
+        if (interp_over_gaps) {
+            int i = 0;
+            for (auto const& [key, val] : calib.nw_limits) {
+                auto& mask = masks[i];
+
+                Eigen::Index start = std::get<0>(calib.nw_limits[key]);
+                Eigen::Index end = std::get<1>(calib.nw_limits[key]) - 1;
+
+                for (int j = 0; j < rtcdata.flags.data.rows(); ++j) {
+                    if (!mask(j)) {
+                        rtcdata.flags.data.block(0, start, rtcdata.flags.data.rows(), end - start + 1).setOnes();
+                    }
+                }
+                i++;
             }
         }
 

@@ -250,7 +250,6 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                     auto [evals, evecs] = cleaner.calc_eig_values<timestream::Cleaner::SpectraBackend>(in_scans_block, masked_flags, apt_flags,
                                                                                                        cleaner.n_eig_to_cut[arr_index](indx));
 
-
                     if (run_tod_output || write_evals) {
                         // get first 64 eigenvalues and eigenvectors
                         Eigen::VectorXd ev = evals.head(cleaner.n_calc);
