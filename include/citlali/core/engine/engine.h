@@ -1961,17 +1961,19 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     }
 
     // out-of-focus holography parameters
-    logger->debug("adding oof params");
-    fits_io->at(i).pfits->pHDU().addKey("OOF_RMS", rms, "rms of map background (" + mb->sig_unit +")");
-    fits_io->at(i).pfits->pHDU().addKey("OOF_W", toltec_io.array_wavelength_map[calib.arrays(i)]/1000., "wavelength (m)");
-    fits_io->at(i).pfits->pHDU().addKey("OOF_ID", static_cast<int>(toltec_io.array_wavelength_map[calib.arrays(i)]*1000), "instrument id");
-    fits_io->at(i).pfits->pHDU().addKey("OOF_T", 3.0, "taper (dB)");
-    fits_io->at(i).pfits->pHDU().addKey("OOF_M2X", telescope.tel_header["Header.M2.XReq"](0)/1000.*1e6, "oof m2x (microns)");
-    fits_io->at(i).pfits->pHDU().addKey("OOF_M2Y", telescope.tel_header["Header.M2.YReq"](0)/1000.*1e6, "oof m2y (microns)");
-    fits_io->at(i).pfits->pHDU().addKey("OOF_M2Z", telescope.tel_header["Header.M2.ZReq"](0)/1000.*1e6, "oof m2z (microns)");
+    if (! telescope.sim_obs) {
+	    logger->debug("adding oof params");
+	    fits_io->at(i).pfits->pHDU().addKey("OOF_RMS", rms, "rms of map background (" + mb->sig_unit +")");
+	    fits_io->at(i).pfits->pHDU().addKey("OOF_W", toltec_io.array_wavelength_map[calib.arrays(i)]/1000., "wavelength (m)");
+	    fits_io->at(i).pfits->pHDU().addKey("OOF_ID", static_cast<int>(toltec_io.array_wavelength_map[calib.arrays(i)]*1000), "instrument id");
+	    fits_io->at(i).pfits->pHDU().addKey("OOF_T", 3.0, "taper (dB)");
+	    fits_io->at(i).pfits->pHDU().addKey("OOF_M2X", telescope.tel_header["Header.M2.XReq"](0)/1000.*1e6, "oof m2x (microns)");
+	    fits_io->at(i).pfits->pHDU().addKey("OOF_M2Y", telescope.tel_header["Header.M2.YReq"](0)/1000.*1e6, "oof m2y (microns)");
+	    fits_io->at(i).pfits->pHDU().addKey("OOF_M2Z", telescope.tel_header["Header.M2.ZReq"](0)/1000.*1e6, "oof m2z (microns)");
 
-    fits_io->at(i).pfits->pHDU().addKey("OOF_RO", 25., "outer diameter of the antenna (m)");
-    fits_io->at(i).pfits->pHDU().addKey("OOF_RI", 1.65, "inner diameter of the antenna (m)");
+	    fits_io->at(i).pfits->pHDU().addKey("OOF_RO", 25., "outer diameter of the antenna (m)");
+	    fits_io->at(i).pfits->pHDU().addKey("OOF_RI", 1.65, "inner diameter of the antenna (m)");
+    }
 
     fits_io->at(i).pfits->pHDU().addKey("FRUITLOOPS_ITER", fruit_iter, "Current fruit loops iteration");
 
