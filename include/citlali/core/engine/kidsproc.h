@@ -357,12 +357,20 @@ auto KidsDataProc::load_rawobs_2(const RawObs &rawobs, const Eigen::Index scan,
     int i = 0;
     for (const auto &data_item : rawobs.kidsdata()) {
         Eigen::Index i_start = 0;
-        while (i_start < times[i].size() && std::abs(times[i](i_start) - t0) > tol) {
+        while (i_start < times[i].size()) {
+            double t = times[i](i_start);
+            if (t >= t0 - tol) {
+                break;
+            }
             ++i_start;
         }
 
         Eigen::Index i_end = i_start;
-        while (i_end < times[i].size() && std::abs(times[i](i_end) - t1) > tol) {
+        while (i_end < times[i].size()) {
+            double t = times[i](i_end);
+            if (t >= t1 - tol) {
+                break;
+            }
             ++i_end;
         }
 
@@ -416,12 +424,20 @@ auto KidsDataProc::populate_rtc_2(LoadedType &loaded, Eigen::DenseBase<DerivedA>
         }
 
         Eigen::Index i_start = 0;
-        while (i_start < times[j].size() && std::abs(times[j](i_start) - t0) > tol) {
+        while (i_start < times[j].size()) {
+            double t = times[j](i_start);
+            if (t >= t0 - tol) {
+                break;
+            }
             ++i_start;
         }
 
         Eigen::Index i_end = i_start;
-        while (i_end < times[j].size() && std::abs(times[j](i_end) - t1) > tol) {
+        while (i_end < times[j].size()) {
+            double t = times[j](i_end);
+            if (t >= t1 - tol) {
+                break;
+            }
             ++i_end;
         }
 

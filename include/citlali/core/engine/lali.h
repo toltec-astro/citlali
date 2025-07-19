@@ -172,7 +172,7 @@ auto Lali::run() {
 
         // set up flags
         rtcdata.flags.data.resize(rtcdata.scans.data.rows(), rtcdata.scans.data.cols());
-        rtcdata.flags.data.setConstant(false);
+        rtcdata.flags.data.setConstant(0);
 
         if (interp_over_gaps) {
             int i = 0;
