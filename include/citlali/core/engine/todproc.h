@@ -847,9 +847,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
 
     double dt = 1.0 / f_smp_roach;
     Eigen::Index n_samples = static_cast<int>((min_final_time - max_init_time) / dt) + 1;
-
     Eigen::VectorXd t_common = Eigen::VectorXd::LinSpaced(n_samples, max_init_time, max_init_time + dt * (n_samples - 1));
-
     double tol = dt / 2.0;
 
     std::vector<Eigen::VectorXi> masks;
