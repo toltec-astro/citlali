@@ -360,6 +360,9 @@ auto KidsDataProc::load_rawobs_2(const RawObs &rawobs, const Eigen::Index scan,
         while (i_start < times[i].size()) {
             double t = times[i](i_start);
             if (t >= t0 - tol) {
+                if (t > t0 + tol) {
+                    i_start--;
+                }
                 break;
             }
             ++i_start;
@@ -369,13 +372,16 @@ auto KidsDataProc::load_rawobs_2(const RawObs &rawobs, const Eigen::Index scan,
         while (i_end < times[i].size()) {
             double t = times[i](i_end);
             if (t >= t1 - tol) {
+                if (t > t1 + tol) {
+                    i_end--;
+                }
                 break;
             }
             ++i_end;
         }
 
         // get slice of data for current scan
-        auto slice = tula::container_utils::Slice<int>{i_start, i_end,
+        auto slice = tula::container_utils::Slice<int>{i_start, i_end + 1,
                                                        std::nullopt};
         result.push_back(load_data_item(data_item, slice));
 
@@ -399,7 +405,7 @@ auto KidsDataProc::populate_rtc_2(LoadedType &loaded, Eigen::DenseBase<DerivedA>
     double t0 = t_common(scan_indices(2, scan));
     double t1 = t_common(scan_indices(3, scan));
 
-    Eigen::Index i = 0, j = 0;;
+    Eigen::Index i = 0, j = 0;
     // loop through raw timestream objects
     for (std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>::
          iterator it = loaded.begin(); it != loaded.end(); ++it) {
@@ -427,6 +433,9 @@ auto KidsDataProc::populate_rtc_2(LoadedType &loaded, Eigen::DenseBase<DerivedA>
         while (i_start < times[j].size()) {
             double t = times[j](i_start);
             if (t >= t0 - tol) {
+                 if (t > t0 + tol) {
+                    i_start--;
+                }
                 break;
             }
             ++i_start;
@@ -436,17 +445,20 @@ auto KidsDataProc::populate_rtc_2(LoadedType &loaded, Eigen::DenseBase<DerivedA>
         while (i_end < times[j].size()) {
             double t = times[j](i_end);
             if (t >= t1 - tol) {
+                if (t > t1 + tol) {
+                    i_end--;
+                }
                 break;
             }
             ++i_end;
         }
 
         block = engine_utils::interp_data(t_common.segment(scan_indices(2,scan), n_pts),
-                                          masks[j].segment(i_start, i_end - i_start),
-                                          times[j].segment(i_start, i_end - i_start),
+                                          masks[j].segment(i_start, i_end - i_start + 1),
+                                          times[j].segment(i_start, i_end - i_start + 1),
                                           block);
 
-        data.block(0, i, n_rows, n_cols) = block;
+        data.block(0, i, n_pts, n_cols) = block;
         // increment columns
         i += n_cols;
         j++;

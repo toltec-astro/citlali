@@ -722,7 +722,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
             const RawObs::DataItem &data_item = rawobs.kidsdata()[i];
             // load data file
             NcFile fo(data_item.filepath(), NcFile::read);
-            auto vars = fo.getVars();
+\            auto vars = fo.getVars();
 
             // get roach sample rate
             vars.find("Header.Toltec.SampleFreq")->second.getVar(&f_smp_roach);
@@ -823,27 +823,27 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
         }
     }
 
-    for (Eigen::Index i = 0; i < nw_times.size(); ++i) {
-        Eigen::Index nw_init_idx, nw_final_idx;
+    // for (Eigen::Index i = 0; i < nw_times.size(); ++i) {
+    //     Eigen::Index nw_init_idx, nw_final_idx;
 
-        // find index where current nw time is closest to max start time
-        (nw_times[i].array() - max_init_time).abs().minCoeff(&nw_init_idx);
-        // make sure it starts after the latest starting time
-        while (nw_times[i](nw_init_idx) < max_init_time) {
-            nw_init_idx += 1;
-        }
+    //     // find index where current nw time is closest to max start time
+    //     (nw_times[i].array() - max_init_time).abs().minCoeff(&nw_init_idx);
+    //     // make sure it starts after the latest starting time
+    //     while (nw_times[i](nw_init_idx) < max_init_time) {
+    //         nw_init_idx += 1;
+    //     }
 
-        engine().start_indices.push_back(nw_init_idx);
+    //     engine().start_indices.push_back(nw_init_idx);
 
-        // find index where current nw time is closest to min final time
-        (nw_times[i].array() - min_final_time).abs().minCoeff(&nw_final_idx);
-        // make sure it ends before the latest starting time
-        while (nw_times[i](nw_final_idx) > min_final_time) {
-            nw_final_idx -= 1;
-        }
+    //     // find index where current nw time is closest to min final time
+    //     (nw_times[i].array() - min_final_time).abs().minCoeff(&nw_final_idx);
+    //     // make sure it ends before the latest starting time
+    //     while (nw_times[i](nw_final_idx) > min_final_time) {
+    //         nw_final_idx -= 1;
+    //     }
 
-        engine().end_indices.push_back(nw_final_idx);
-    }
+    //     engine().end_indices.push_back(nw_final_idx);
+    // }
 
     double dt = 1.0 / f_smp_roach;
     Eigen::Index n_samples = static_cast<int>((min_final_time - max_init_time) / dt) + 1;
