@@ -823,7 +823,7 @@ $(document).ready(function() { init_codefold(1); });
 <div class="line"><a id="l00722" name="l00722"></a><span class="lineno">  722</span>            <span class="keyword">const</span> <a class="code hl_struct" href="../../d7/ddd/structRawObs_1_1DataItem.html">RawObs::DataItem</a> &amp;data_item = rawobs.<a class="code hl_function" href="../../dc/dcf/structRawObs.html#a7804170dfb92be1d6e89cab044119cc8">kidsdata</a>()[i];</div>
 <div class="line"><a id="l00723" name="l00723"></a><span class="lineno">  723</span>            <span class="comment">// load data file</span></div>
 <div class="line"><a id="l00724" name="l00724"></a><span class="lineno">  724</span>            NcFile fo(data_item.<a class="code hl_function" href="../../d7/ddd/structRawObs_1_1DataItem.html#a7d3b45ff623f5cf173a636481099d29f">filepath</a>(), NcFile::read);</div>
-<div class="line"><a id="l00725" name="l00725"></a><span class="lineno">  725</span>\            <span class="keyword">auto</span> vars = fo.getVars();</div>
+<div class="line"><a id="l00725" name="l00725"></a><span class="lineno">  725</span>            <span class="keyword">auto</span> vars = fo.getVars();</div>
 <div class="line"><a id="l00726" name="l00726"></a><span class="lineno">  726</span> </div>
 <div class="line"><a id="l00727" name="l00727"></a><span class="lineno">  727</span>            <span class="comment">// get roach sample rate</span></div>
 <div class="line"><a id="l00728" name="l00728"></a><span class="lineno">  728</span>            vars.find(<span class="stringliteral">&quot;Header.Toltec.SampleFreq&quot;</span>)-&gt;second.getVar(&amp;f_smp_roach);</div>
