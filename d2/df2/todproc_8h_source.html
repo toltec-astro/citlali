@@ -823,7 +823,7 @@ $(document).ready(function() { init_codefold(1); });
 <div class="line"><a id="l00722" name="l00722"></a><span class="lineno">  722</span>            <span class="keyword">const</span> <a class="code hl_struct" href="../../d7/ddd/structRawObs_1_1DataItem.html">RawObs::DataItem</a> &amp;data_item = rawobs.<a class="code hl_function" href="../../dc/dcf/structRawObs.html#a7804170dfb92be1d6e89cab044119cc8">kidsdata</a>()[i];</div>
 <div class="line"><a id="l00723" name="l00723"></a><span class="lineno">  723</span>            <span class="comment">// load data file</span></div>
 <div class="line"><a id="l00724" name="l00724"></a><span class="lineno">  724</span>            NcFile fo(data_item.<a class="code hl_function" href="../../d7/ddd/structRawObs_1_1DataItem.html#a7d3b45ff623f5cf173a636481099d29f">filepath</a>(), NcFile::read);</div>
-<div class="line"><a id="l00725" name="l00725"></a><span class="lineno">  725</span>            <span class="keyword">auto</span> vars = fo.getVars();</div>
+<div class="line"><a id="l00725" name="l00725"></a><span class="lineno">  725</span>\            <span class="keyword">auto</span> vars = fo.getVars();</div>
 <div class="line"><a id="l00726" name="l00726"></a><span class="lineno">  726</span> </div>
 <div class="line"><a id="l00727" name="l00727"></a><span class="lineno">  727</span>            <span class="comment">// get roach sample rate</span></div>
 <div class="line"><a id="l00728" name="l00728"></a><span class="lineno">  728</span>            vars.find(<span class="stringliteral">&quot;Header.Toltec.SampleFreq&quot;</span>)-&gt;second.getVar(&amp;f_smp_roach);</div>
@@ -924,27 +924,27 @@ $(document).ready(function() { init_codefold(1); });
 <div class="line"><a id="l00823" name="l00823"></a><span class="lineno">  823</span>        }</div>
 <div class="line"><a id="l00824" name="l00824"></a><span class="lineno">  824</span>    }</div>
 <div class="line"><a id="l00825" name="l00825"></a><span class="lineno">  825</span> </div>
-<div class="line"><a id="l00826" name="l00826"></a><span class="lineno">  826</span>    <span class="keywordflow">for</span> (Eigen::Index i = 0; i &lt; nw_times.size(); ++i) {</div>
-<div class="line"><a id="l00827" name="l00827"></a><span class="lineno">  827</span>        Eigen::Index nw_init_idx, nw_final_idx;</div>
+<div class="line"><a id="l00826" name="l00826"></a><span class="lineno">  826</span>    <span class="comment">// for (Eigen::Index i = 0; i &lt; nw_times.size(); ++i) {</span></div>
+<div class="line"><a id="l00827" name="l00827"></a><span class="lineno">  827</span>    <span class="comment">//     Eigen::Index nw_init_idx, nw_final_idx;</span></div>
 <div class="line"><a id="l00828" name="l00828"></a><span class="lineno">  828</span> </div>
-<div class="line"><a id="l00829" name="l00829"></a><span class="lineno">  829</span>        <span class="comment">// find index where current nw time is closest to max start time</span></div>
-<div class="line"><a id="l00830" name="l00830"></a><span class="lineno">  830</span>        (nw_times[i].array() - max_init_time).abs().minCoeff(&amp;nw_init_idx);</div>
-<div class="line"><a id="l00831" name="l00831"></a><span class="lineno">  831</span>        <span class="comment">// make sure it starts after the latest starting time</span></div>
-<div class="line"><a id="l00832" name="l00832"></a><span class="lineno">  832</span>        <span class="keywordflow">while</span> (nw_times[i](nw_init_idx) &lt; max_init_time) {</div>
-<div class="line"><a id="l00833" name="l00833"></a><span class="lineno">  833</span>            nw_init_idx += 1;</div>
-<div class="line"><a id="l00834" name="l00834"></a><span class="lineno">  834</span>        }</div>
+<div class="line"><a id="l00829" name="l00829"></a><span class="lineno">  829</span>    <span class="comment">//     // find index where current nw time is closest to max start time</span></div>
+<div class="line"><a id="l00830" name="l00830"></a><span class="lineno">  830</span>    <span class="comment">//     (nw_times[i].array() - max_init_time).abs().minCoeff(&amp;nw_init_idx);</span></div>
+<div class="line"><a id="l00831" name="l00831"></a><span class="lineno">  831</span>    <span class="comment">//     // make sure it starts after the latest starting time</span></div>
+<div class="line"><a id="l00832" name="l00832"></a><span class="lineno">  832</span>    <span class="comment">//     while (nw_times[i](nw_init_idx) &lt; max_init_time) {</span></div>
+<div class="line"><a id="l00833" name="l00833"></a><span class="lineno">  833</span>    <span class="comment">//         nw_init_idx += 1;</span></div>
+<div class="line"><a id="l00834" name="l00834"></a><span class="lineno">  834</span>    <span class="comment">//     }</span></div>
 <div class="line"><a id="l00835" name="l00835"></a><span class="lineno">  835</span> </div>
-<div class="line"><a id="l00836" name="l00836"></a><span class="lineno">  836</span>        <a class="code hl_namespace" href="../../dc/d3f/namespaceengine.html">engine</a>().start_indices.push_back(nw_init_idx);</div>
+<div class="line"><a id="l00836" name="l00836"></a><span class="lineno">  836</span>    <span class="comment">//     engine().start_indices.push_back(nw_init_idx);</span></div>
 <div class="line"><a id="l00837" name="l00837"></a><span class="lineno">  837</span> </div>
-<div class="line"><a id="l00838" name="l00838"></a><span class="lineno">  838</span>        <span class="comment">// find index where current nw time is closest to min final time</span></div>
-<div class="line"><a id="l00839" name="l00839"></a><span class="lineno">  839</span>        (nw_times[i].array() - min_final_time).abs().minCoeff(&amp;nw_final_idx);</div>
-<div class="line"><a id="l00840" name="l00840"></a><span class="lineno">  840</span>        <span class="comment">// make sure it ends before the latest starting time</span></div>
-<div class="line"><a id="l00841" name="l00841"></a><span class="lineno">  841</span>        <span class="keywordflow">while</span> (nw_times[i](nw_final_idx) &gt; min_final_time) {</div>
-<div class="line"><a id="l00842" name="l00842"></a><span class="lineno">  842</span>            nw_final_idx -= 1;</div>
-<div class="line"><a id="l00843" name="l00843"></a><span class="lineno">  843</span>        }</div>
+<div class="line"><a id="l00838" name="l00838"></a><span class="lineno">  838</span>    <span class="comment">//     // find index where current nw time is closest to min final time</span></div>
+<div class="line"><a id="l00839" name="l00839"></a><span class="lineno">  839</span>    <span class="comment">//     (nw_times[i].array() - min_final_time).abs().minCoeff(&amp;nw_final_idx);</span></div>
+<div class="line"><a id="l00840" name="l00840"></a><span class="lineno">  840</span>    <span class="comment">//     // make sure it ends before the latest starting time</span></div>
+<div class="line"><a id="l00841" name="l00841"></a><span class="lineno">  841</span>    <span class="comment">//     while (nw_times[i](nw_final_idx) &gt; min_final_time) {</span></div>
+<div class="line"><a id="l00842" name="l00842"></a><span class="lineno">  842</span>    <span class="comment">//         nw_final_idx -= 1;</span></div>
+<div class="line"><a id="l00843" name="l00843"></a><span class="lineno">  843</span>    <span class="comment">//     }</span></div>
 <div class="line"><a id="l00844" name="l00844"></a><span class="lineno">  844</span> </div>
-<div class="line"><a id="l00845" name="l00845"></a><span class="lineno">  845</span>        <a class="code hl_namespace" href="../../dc/d3f/namespaceengine.html">engine</a>().end_indices.push_back(nw_final_idx);</div>
-<div class="line"><a id="l00846" name="l00846"></a><span class="lineno">  846</span>    }</div>
+<div class="line"><a id="l00845" name="l00845"></a><span class="lineno">  845</span>    <span class="comment">//     engine().end_indices.push_back(nw_final_idx);</span></div>
+<div class="line"><a id="l00846" name="l00846"></a><span class="lineno">  846</span>    <span class="comment">// }</span></div>
 <div class="line"><a id="l00847" name="l00847"></a><span class="lineno">  847</span> </div>
 <div class="line"><a id="l00848" name="l00848"></a><span class="lineno">  848</span>    <span class="keywordtype">double</span> dt = 1.0 / f_smp_roach;</div>
 <div class="line"><a id="l00849" name="l00849"></a><span class="lineno">  849</span>    Eigen::Index n_samples = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>((min_final_time - max_init_time) / dt) + 1;</div>
