@@ -722,7 +722,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
             const RawObs::DataItem &data_item = rawobs.kidsdata()[i];
             // load data file
             NcFile fo(data_item.filepath(), NcFile::read);
-\            auto vars = fo.getVars();
+            auto vars = fo.getVars();
 
             // get roach sample rate
             vars.find("Header.Toltec.SampleFreq")->second.getVar(&f_smp_roach);
