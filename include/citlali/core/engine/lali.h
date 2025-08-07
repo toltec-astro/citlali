@@ -86,7 +86,8 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                     scan_rawobs = kidsproc.load_rawobs(rawobs, scan, telescope.scan_indices, start_indices, end_indices);
                 }
                 else {
-                    scan_rawobs = kidsproc.load_rawobs_2(rawobs, scan, telescope.scan_indices, start_indices, t_common, nw_times, 1 / (2 * telescope.fsmp));
+                    scan_rawobs = kidsproc.load_rawobs_gaps(rawobs, scan, telescope.scan_indices, start_indices,
+                        t_common, nw_times, 1 / (2 * telescope.fsmp));
                 }
                 // current length of outer scans
                 Eigen::Index sl = rtcdata.scan_indices.data(3) - rtcdata.scan_indices.data(2) + 1;
@@ -96,7 +97,7 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                     rtcdata.scans.data = kidsproc.populate_rtc(scan_rawobs, sl, calib.n_dets, tod_type);
                 }
                 else {
-                    rtcdata.scans.data = kidsproc.populate_rtc_2(scan_rawobs, t_common, nw_times, masks, scan, 1 / (2 * telescope.fsmp),
+                    rtcdata.scans.data = kidsproc.populate_rtc_gaps(scan_rawobs, t_common, nw_times, masks, scan, 1 / (2 * telescope.fsmp),
                                                                 telescope.scan_indices, sl, calib.n_dets, tod_type);
                 }
                 // try and clear input vector
@@ -184,7 +185,7 @@ auto Lali::run() {
 
                 for (int j = 0; j < rtcdata.flags.data.rows(); ++j) {
                     if (!mask(j)) {
-                        rtcdata.flags.data.block(0, start, rtcdata.flags.data.rows(), end - start + 1).setOnes();
+                        rtcdata.flags.data.block(j, start, 1, end - start + 1).setOnes();
                     }
                 }
                 i++;

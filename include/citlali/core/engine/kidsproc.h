@@ -92,21 +92,21 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
 
     // load rawobs with gaps
     template <typename DerivedA, typename DerivedB, typename DerivedC>
-    auto load_rawobs_2(const RawObs &, const Eigen::Index,
-                       Eigen::DenseBase<DerivedA>&,
-                       std::vector<Eigen::Index>&,
-                       Eigen::DenseBase<DerivedB>&,
-                       std::vector<DerivedC>&,
-                       const double);
+    auto load_rawobs_gaps(const RawObs &, const Eigen::Index,
+                          Eigen::DenseBase<DerivedA>&,
+                          std::vector<Eigen::Index>&,
+                          Eigen::DenseBase<DerivedB>&,
+                          std::vector<DerivedC>&,
+                          const double);
 
     // populate rtc with gaps
     template <typename LoadedType, typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD>
-    auto populate_rtc_2(LoadedType &, Eigen::DenseBase<DerivedA>&,
-                        std::vector<DerivedB>&,
-                        std::vector<DerivedC>&,
-                        const int, const double,
-                        Eigen::DenseBase<DerivedD>&,
-                        const int, const int, const std::string);
+    auto populate_rtc_gaps(LoadedType &, Eigen::DenseBase<DerivedA>&,
+                          std::vector<DerivedB>&,
+                          std::vector<DerivedC>&,
+                          const int, const double,
+                          Eigen::DenseBase<DerivedD>&,
+                          const int, const int, const std::string);
 
     // TODO fix the const correctness
     Fitter &fitter() { return m_fitter; }
@@ -342,12 +342,12 @@ auto KidsDataProc::populate_rtc(loaded_t &loaded,
 }
 
 template <typename DerivedA, typename DerivedB, typename DerivedC>
-auto KidsDataProc::load_rawobs_2(const RawObs &rawobs, const Eigen::Index scan,
-                                Eigen::DenseBase<DerivedA>& scan_indices,
-                                std::vector<Eigen::Index>& start_indices,
-                                Eigen::DenseBase<DerivedB>& t_common,
-                                std::vector<DerivedC>& times,
-                                const double tol) {
+auto KidsDataProc::load_rawobs_gaps(const RawObs &rawobs, const Eigen::Index scan,
+                                    Eigen::DenseBase<DerivedA>& scan_indices,
+                                    std::vector<Eigen::Index>& start_indices,
+                                    Eigen::DenseBase<DerivedB>& t_common,
+                                    std::vector<DerivedC>& times,
+                                    const double tol) {
 
     std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> result;
 
@@ -392,13 +392,13 @@ auto KidsDataProc::load_rawobs_2(const RawObs &rawobs, const Eigen::Index scan,
 }
 
 template <typename LoadedType, typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD>
-auto KidsDataProc::populate_rtc_2(LoadedType &loaded, Eigen::DenseBase<DerivedA>& t_common,
-                                  std::vector<DerivedB>& times,
-                                  std::vector<DerivedC>& masks,
-                                  const int scan,
-                                  const double tol,
-                                  Eigen::DenseBase<DerivedD>& scan_indices,
-                                  const int n_pts, const int n_det, const std::string data_type) {
+auto KidsDataProc::populate_rtc_gaps(LoadedType &loaded, Eigen::DenseBase<DerivedA>& t_common,
+                                     std::vector<DerivedB>& times,
+                                     std::vector<DerivedC>& masks,
+                                     const int scan,
+                                     const double tol,
+                                     Eigen::DenseBase<DerivedD>& scan_indices,
+                                     const int n_pts, const int n_det, const std::string data_type) {
     // resize data
     Eigen::MatrixXd data(n_pts, n_det);
 
@@ -466,11 +466,13 @@ auto KidsDataProc::populate_rtc_2(LoadedType &loaded, Eigen::DenseBase<DerivedA>
 
     // check for nans
     if ((data.array().isNaN()).any()) {
-        throw std::runtime_error("nan found in data!");
+        logger->error("nan found in data! Check that your KIDs data dir is correct.");
+        std::exit(EXIT_FAILURE);
     }
     // check for infs
     if ((data.array().isInf()).any()) {
-        throw std::runtime_error("inf found in data!");
+        logger->error("inf found in data! Check that your KIDs data dir is correct.");
+        std::exit(EXIT_FAILURE);
     }
 
     return data;
