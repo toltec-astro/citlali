@@ -408,11 +408,18 @@ auto Beammap::run_timestream(KidsProc &kidsproc) {
                 Eigen::Index end = std::get<1>(calib.nw_limits[key]) - 1;
 
                 for (int j = 0; j < rtcdata.flags.data.rows(); ++j) {
-                    if (!mask(j + si)) {
-                        rtcdata.flags.data.block(j, start, 1, end - start + 1).setOnes();
+                    int start_index = j;
+                    int size = 1;
+                    if (rtcproc.run_tod_filter) {
+                        start_index = std::max(j, static_cast<int>(j - rtcproc.filter.n_terms));
+                        int end_index = std::min(j + rtcproc.filter.n_terms, rtcdata.flags.data.rows() - 1);
+                        size = end_index - start_index + 1;
+                    }
+                    if (mask(j + si) == 0) {
+                        rtcdata.flags.data.block(start_index, start, size, end - start + 1).setOnes();
                     }
                 }
-                logger->info("{}/{} gaps flagged", rtcdata.flags.data.col(start).template cast<int>().sum(), rtcdata.flags.data.rows());
+                logger->debug("{}/{} gaps flagged", rtcdata.flags.data.col(start).template cast<int>().sum(), rtcdata.flags.data.rows());
                 i++;
             }
         }

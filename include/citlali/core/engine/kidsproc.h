@@ -454,7 +454,7 @@ auto KidsDataProc::populate_rtc_gaps(LoadedType &loaded, Eigen::DenseBase<Derive
         }
 
         block = engine_utils::interp_data(t_common.segment(scan_indices(2,scan), n_pts),
-                                          masks[j].segment(i_start, i_end - i_start + 1),
+                                          masks[j].segment(scan_indices(2,scan), n_pts),
                                           times[j].segment(i_start, i_end - i_start + 1),
                                           block);
 
