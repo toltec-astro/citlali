@@ -66,13 +66,13 @@ public:
 
         // am_q0
         if (extinction_model=="am_q0") {
-            tx_ratio_coeff["a1100"] << 0, 0, 0, 0, 0, 0, 1;
-            tx_ratio_coeff["a1400"] << 0, 0, 0, 0, 0, 0, 1;
-            tx_ratio_coeff["a2000"] << 0, 0, 0, 0, 0, 0, 1;
+            tx_ratio_coeff["a1100"] << 0, 0, 0, 0, 0, 0, 0;
+            tx_ratio_coeff["a1400"] << 0, 0, 0, 0, 0, 0, 0;
+            tx_ratio_coeff["a2000"] << 0, 0, 0, 0, 0, 0, 0;
         }
 
         // am_q25
-        if (extinction_model=="am_q25") {
+        else if (extinction_model=="am_q25") {
             tx_ratio_coeff["a1100"] << -0.12008024,  0.72422015, -1.81734478,  2.45313012, -1.92159695,  0.86918801, 0.78604295;
             tx_ratio_coeff["a1400"] << 0.02619509, -0.15757661, 0.39400473, -0.52912696, 0.411213, -0.18360141, 1.04398466;
             tx_ratio_coeff["a2000"] << 0.16726241, -1.00436302,  2.50507317, -3.35219659, 2.59080373, -1.14622096, 1.26931683;
@@ -137,6 +137,14 @@ auto Calibration::calc_tau(Eigen::DenseBase<Derived> &elev, double tau_225_GHz) 
 
     // tau at toltec freqs
     std::map<int,Eigen::VectorXd> tau_freq;
+
+    if (extinction_model=="am_q0") {
+        tau_freq[0] = Eigen::VectorXd::Zero(elev.size());
+        tau_freq[1] = Eigen::VectorXd::Zero(elev.size());
+        tau_freq[2] = Eigen::VectorXd::Zero(elev.size());
+
+        return tau_freq;
+    }
 
     // zenith angle
     auto cz = cos(pi/2 - elev.derived().array());
