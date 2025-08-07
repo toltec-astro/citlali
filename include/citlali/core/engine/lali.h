@@ -188,7 +188,7 @@ auto Lali::run() {
                         rtcdata.flags.data.block(j, start, 1, end - start + 1).setOnes();
                     }
                 }
-                logger->info("{}/{} gaps flagged", rtcdata.flags.data.col(start).cast<int>().sum(), rtcdata.flags.data.rows());
+                logger->info("{}/{} gaps flagged", rtcdata.flags.data.col(start).template cast<int>().sum(), rtcdata.flags.data.rows());
                 i++;
             }
         }
