@@ -18,7 +18,7 @@ var searchData=
   ['populate_5fmaps_5fnaive_15',['populate_maps_naive',['../dd/db4/classmapmaking_1_1NaiveMapmaker.html#aa50ab57bfbb0688c7b9d94e01ca983f2',1,'mapmaking::NaiveMapmaker']]],
   ['populate_5fmaps_5fnaive_5fparallel_16',['populate_maps_naive_parallel',['../dd/db4/classmapmaking_1_1NaiveMapmaker.html#af5dc2bba789b343648c027875695c30d',1,'mapmaking::NaiveMapmaker']]],
   ['populate_5frtc_17',['populate_rtc',['../d8/d10/structKidsDataProc.html#aae4fdcc2b6dc9a1e27663bdd267083f1',1,'KidsDataProc::populate_rtc(const RawObs &amp;rawobs, scanindices_t &amp;scanindex, const int scanlength, const int n_detectors)'],['../d8/d10/structKidsDataProc.html#ae733e3790b6fb52b89de28ab1ee9cde6',1,'KidsDataProc::populate_rtc(loaded_t &amp;, const int, const int, const std::string)']]],
-  ['populate_5frtc_5f2_18',['populate_rtc_2',['../d8/d10/structKidsDataProc.html#aefd2fabcc5aa9383c0a09376897df50a',1,'KidsDataProc']]],
+  ['populate_5frtc_5fgaps_18',['populate_rtc_gaps',['../d8/d10/structKidsDataProc.html#aea3ce0facf9d674e8acddad335e30c17',1,'KidsDataProc']]],
   ['populate_5frtc_5fmeta_19',['populate_rtc_meta',['../d8/d10/structKidsDataProc.html#a21532c298cd7853b0e4ac9aa148406f3',1,'KidsDataProc::populate_rtc_meta(const RawObs &amp;rawobs)'],['../d8/d10/structKidsDataProc.html#a8694582d3b2d5a4f7bf8a870ce214a38',1,'KidsDataProc::populate_rtc_meta(const RawObs &amp;)']]],
   ['precompute_5fpointing_20',['precompute_pointing',['../de/d76/classtimestream_1_1TCProc.html#aa8c95e7342a71ebef0c5f95374fc990d',1,'timestream::TCProc']]],
   ['process_5fapt_21',['process_apt',['../dc/d9e/classBeammap.html#aec8519fb72e4b432386556b1e7473100',1,'Beammap']]],

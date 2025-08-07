@@ -1,4 +1,4 @@
-<map id="KidsDataProc::load_rawobs_2" name="KidsDataProc::load_rawobs_2">
+<map id="KidsDataProc::load_rawobs_gaps" name="KidsDataProc::load_rawobs_gaps">
 <area shape="rect" id="Node000001" title=" " alt="" coords="5,27,151,67"/>
 <area shape="rect" id="Node000002" href="$dc/dcf/structRawObs.html#a7804170dfb92be1d6e89cab044119cc8" title=" " alt="" coords="202,5,341,31"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="150,34,188,28,189,33,151,39"/>
