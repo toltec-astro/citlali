@@ -278,7 +278,7 @@ $(document).ready(function() { init_codefold(1); });
 <div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>                        rtcdata.flags.data.block(j, start, 1, end - start + 1).setOnes();</div>
 <div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>                    }</div>
 <div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>                }</div>
-<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>                <a class="code hl_variable" href="../../d1/db6/classEngine.html#a903f49e550f38f424bde9fd0ed367a17">logger</a>-&gt;info(<span class="stringliteral">&quot;{}/{} gaps flagged&quot;</span>, rtcdata.flags.data.col(start).cast&lt;<span class="keywordtype">int</span>&gt;().sum(), rtcdata.flags.data.rows());</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>                <a class="code hl_variable" href="../../d1/db6/classEngine.html#a903f49e550f38f424bde9fd0ed367a17">logger</a>-&gt;info(<span class="stringliteral">&quot;{}/{} gaps flagged&quot;</span>, rtcdata.flags.data.col(start).template cast&lt;int&gt;().sum(), rtcdata.flags.data.rows());</div>
 <div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>                i++;</div>
 <div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>            }</div>
 <div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>        }</div>
