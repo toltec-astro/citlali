@@ -1221,17 +1221,15 @@ static Eigen::MatrixXd interp_data(
     const Eigen::VectorXd &t_valid,
     const Eigen::MatrixXd &data_valid) {
 
-    std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
-
-    int n_samps = t_common.size();
+    int n_pts = t_common.size();
     int n_dets = data_valid.cols();
 
-    Eigen::MatrixXd result = Eigen::MatrixXd::Zero(n_samps, n_dets);
+    Eigen::MatrixXd result = Eigen::MatrixXd::Zero(n_pts, n_dets);
 
     std::vector<int> valid_indices;
 
     int valid_idx = 0;
-    for (int i = 0; i < n_samps; ++i) {
+    for (int i = 0; i < n_pts; ++i) {
         if (mask(i)) {
             result.row(i) = data_valid.row(valid_idx);
             valid_indices.push_back(i);
@@ -1239,14 +1237,18 @@ static Eigen::MatrixXd interp_data(
         }
     }
 
+    if (valid_indices.size() == n_pts) {
+        return result;
+    }
+
     for (int j = 0; j < n_dets; ++j) {
-        for (int i = 0; i < n_samps; ++i) {
+        for (int i = 0; i < n_pts; ++i) {
             if (mask(i)) continue;
 
             // find left and right valid sample
             auto it_right = std::lower_bound(valid_indices.begin(), valid_indices.end(), i);
             if (it_right == valid_indices.end() || it_right == valid_indices.begin()) {
-                // extrapolation: copy nearest valid
+                // extrapolate
                 int idx_nearest = (it_right == valid_indices.end()) ? valid_indices.back() : valid_indices.front();
                 result(i, j) = result(idx_nearest, j);
                 continue;

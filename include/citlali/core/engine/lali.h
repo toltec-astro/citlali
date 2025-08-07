@@ -184,10 +184,11 @@ auto Lali::run() {
                 Eigen::Index end = std::get<1>(calib.nw_limits[key]) - 1;
 
                 for (int j = 0; j < rtcdata.flags.data.rows(); ++j) {
-                    if (!mask(j)) {
+                    if (!mask(j + si)) {
                         rtcdata.flags.data.block(j, start, 1, end - start + 1).setOnes();
                     }
                 }
+                logger->info("{}/{} gaps flagged", rtcdata.flags.data.col(start).cast<int>().sum(), rtcdata.flags.data.rows());
                 i++;
             }
         }
