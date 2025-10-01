@@ -113,8 +113,8 @@ int run(const rc_t &rc) {
     std::vector<spdlog::sink_ptr> sinks_default;
     // create sink for default logger
     auto sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-    // disable logging
-    sink->set_level(spdlog::level::off);
+    // only show kidscpp critical logs
+    sink->set_level(spdlog::level::critical);
     sinks_default.push_back(sink);
     // create default logger
     auto default_logger = std::make_shared<spdlog::logger>("console", begin(sinks_default), end(sinks_default));
