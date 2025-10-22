@@ -293,7 +293,8 @@ public:
     void create_obs_map_files();
 
     // add FITS header values to tod files
-    void add_tod_header();
+    template <class map_buffer_t>
+    void add_tod_header(map_buffer_t &);
 
     // create tod files (does not populate them)
     template <engine_utils::toltecIO::ProdType prod_t>
@@ -1051,7 +1052,8 @@ void Engine::create_obs_map_files() {
     }
 }
 
-void Engine::add_tod_header() {
+template <class map_buffer_t>
+void Engine::add_tod_header(map_buffer_t &mb) {
     // loop through viles
     for (const auto & [fkey, fval]: tod_filename) {
         netCDF::NcFile fo(fval, netCDF::NcFile::write);
@@ -1250,6 +1252,31 @@ void Engine::add_tod_header() {
             }
             else {
                 add_netcdf_var(fo, "CONFIG.CLEANED.NEIG_"+toltec_io.array_name_map[calib.arrays(i)], 0);
+            }
+        }
+
+        // out-of-focus holography parameters
+        if (! telescope.sim_obs) {
+            add_netcdf_var(fo, "OOF_T", 3.0);
+            add_netcdf_var(fo, "OOF_M2X", telescope.tel_header["Header.M2.XReq"](0)/1000.*1e6);
+            add_netcdf_var(fo, "OOF_M2Y", telescope.tel_header["Header.M2.YReq"](0)/1000.*1e6);
+            add_netcdf_var(fo, "OOF_M2Z", telescope.tel_header["Header.M2.ZReq"](0)/1000.*1e6);
+
+            add_netcdf_var(fo, "OOF_RO", 25.);
+            add_netcdf_var(fo, "OOF_RI", 1.65);
+            for (int i = 0; i < calib.arrays.size(); ++i) {
+                double rms;
+
+                if (redu_type != "beammap") {
+                    rms = pow(mb->median_err(i),0.5);
+                }
+                else {
+                    rms = 0.0;
+                }
+                auto name = toltec_io.array_name_map[calib.arrays(i)];
+                add_netcdf_var(fo, "OOF_RMS_" + name, rms);
+                add_netcdf_var(fo, "OOF_W_" + name, toltec_io.array_wavelength_map[calib.arrays(i)]/1000.);
+                add_netcdf_var(fo, "OOF_ID_" + name, static_cast<int>(toltec_io.array_wavelength_map[calib.arrays(i)]*1000));
             }
         }
 

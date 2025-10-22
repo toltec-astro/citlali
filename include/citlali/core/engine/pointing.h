@@ -540,7 +540,7 @@ void Pointing::output() {
             write_stats();
             if (run_tod_output && !tod_filename.empty()) {
                 // add tod header information
-                add_tod_header();
+                add_tod_header(mb);
             }
         }
     } else if constexpr (map_type == mapmaking::RawCoadd || map_type == mapmaking::FilteredCoadd) {
