@@ -1298,7 +1298,7 @@ void Beammap::output() {
 
         // add header informqtion to tod
         if (run_tod_output && !tod_filename.empty()) {
-            add_tod_header();
+            add_tod_header(mb);
         }
 
         // only write apt table if beammapping
