@@ -1267,8 +1267,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             for (int i = 0; i < calib.arrays.size(); ++i) {
                 double rms;
 
-                if (redu_type != "beammap") {
-                    rms = pow(mb->median_err(i),0.5);
+                if (redu_type != "beammap" && run_mapmaking) {
+                    rms = pow(mb->median_err(i), 0.5);
                 }
                 else {
                     rms = 0.0;
