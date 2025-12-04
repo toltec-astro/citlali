@@ -376,6 +376,9 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
 
     if (run_downsample) {
         logger->debug("downsampling data");
+        // warn about potential aliasing if filter cutoff not adjusted for downsampling
+        logger->warn("ensure filter freq_high_Hz {} Hz is below Nyquist of downsampled rate {}", filter.freq_high_Hz,
+                     downsampler.downsampled_freq_Hz/2.0);
         // get the block of out scans that corresponds to the inner scan indices
         Eigen::Ref<Eigen::Map<Eigen::MatrixXd>> in_scans =
             in.scans.data.block(si, 0, sl, in.scans.data.cols());

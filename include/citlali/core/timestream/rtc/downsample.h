@@ -23,8 +23,17 @@ public:
         auto rows = in.rows();
         auto cols = in.cols();
 
-        out = EigenStrideMap (in.derived().data(), (rows+(factor-1))/factor, cols, Stride<Dynamic,
-                                                                                         Dynamic>(in.outerStride(),in.innerStride()*factor));
+        // sanity check to avoid invalid stride construction
+        if (factor <= 0) {
+            throw std::invalid_argument("downsample factor must be > 0");
+        }
+
+        // floor to avoid reading past the end when rows % factor != 0
+        auto out_rows = rows / factor;
+
+        // stride-map view that picks every `factor`-th sample; truncates tail samples
+        out = EigenStrideMap (in.derived().data(), out_rows, cols,
+                              Stride<Dynamic, Dynamic>(in.outerStride(), in.innerStride()*factor));
     }
 };
 

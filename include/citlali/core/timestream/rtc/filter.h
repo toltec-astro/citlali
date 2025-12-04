@@ -7,6 +7,8 @@
 #include <cmath>
 #include <boost/math/special_functions/bessel.hpp>
 
+#include <tula/logging.h>
+
 #include <citlali/core/utils/constants.h>
 
 namespace timestream {
@@ -19,7 +21,8 @@ public:
     Eigen::Index n_terms;
 
     std::vector<double> w0s, qs;
-    Eigen::VectorXd notch_a, notch_b;
+    // one biquad per notch
+    std::vector<Eigen::VectorXd> notch_a_vec, notch_b_vec;
 
     void make_filter(double);
     void make_notch_filter(double);
@@ -32,16 +35,25 @@ public:
 };
 
 void Filter::make_filter(double fsmp) {
+    auto logger = spdlog::get("citlali_logger");
+
     // calculate nyquist frequency
     double nyquist = fsmp / 2.;
-    // scale upper frequency cutoff to Nyquist frequency
+    // scale cutoffs to Nyquist frequency (names: freq_low_Hz=f_low, freq_high_Hz=f_high)
     auto f_low = freq_low_Hz / nyquist;
-    // scale lower frequency cutoff to Nyquist frequency
     auto f_high = freq_high_Hz / nyquist;
+
+    // enforce ordering to avoid negative DC term
+    if (f_high < f_low) {
+        std::swap(f_low, f_high);
+        if (logger) {
+            logger->warn("swapping freq_low/freq_high to enforce f_low <= f_high ({} <= {})", f_low*nyquist, f_high*nyquist);
+        }
+    }
 
     // check if upper frequency limit (lowpass)
     // is larger than lower frequency limit (highpass)
-    double f_stop = (f_high < f_low) ? 1. : 0.;
+    // (names are kept as-is, see comment above)
 
     // determine alpha parameter based on Gibbs factor
     double alpha;
@@ -78,18 +90,38 @@ void Filter::make_filter(double fsmp) {
     filter.resize(2 * n_terms + 1);
     filter.setZero();
     filter.head(n_terms) = coef.reverse();
-    filter(n_terms) = f_high - f_low - f_stop;
+    filter(n_terms) = f_high - f_low;
     filter.tail(n_terms) = coef;
 
-    // normalize with sum
-    //double filter_sum = filter.sum();
-    //filter = filter.array() / filter_sum;
+    // normalize overall gain to avoid amplitude scaling
+    double filter_sum = filter.sum();
+    if (filter_sum != 0.) {
+        filter /= filter_sum;
+    } else if (logger) {
+        logger->warn("filter sum is zero; skipping normalization");
+    }
 }
 
 void Filter::make_notch_filter(double fsmp) {
+    auto logger = spdlog::get("citlali_logger");
+    notch_a_vec.clear();
+    notch_b_vec.clear();
+
     for (Eigen::Index i=0; i<w0s.size(); i++) {
         double w0 = w0s[i];
         double Q = qs[i];
+        if (Q <= 0.) {
+            if (logger) {
+                logger->warn("invalid notch Q {} at index {}; skipping", Q, i);
+            }
+            continue;
+        }
+        if (w0 <= 0. || w0 >= fsmp/2.) {
+            if (logger) {
+                logger->warn("invalid notch center freq {} Hz (fsmp {}), skipping", w0, fsmp);
+            }
+            continue;
+        }
         w0 = 2*w0/fsmp;
 
         // Get bandwidth
@@ -128,8 +160,8 @@ void Filter::make_notch_filter(double fsmp) {
         a << 1.0, -2.0*gain*cos(w0), (2.0*gain-1.0);
         //double a = np.array([1.0, -2.0*gain*np.cos(w0), (2.0*gain-1.0)])
 
-        notch_a = a;//.push_back(a);
-        notch_b = b;//.push_back(b);
+        notch_a_vec.push_back(a);
+        notch_b_vec.push_back(b);
     }
 }
 
@@ -152,11 +184,18 @@ void Filter::convolve(Eigen::DenseBase<Derived> &in) {
     out_tensor = in_tensor.convolve(filter_tensor, dims);
 
     // replace the scan data with the filtered data through an Eigen::Map
-    // the first and last nterms samples are not overwritten
+    // the first and last n_terms samples are not overwritten; copy boundary values to avoid mixing filtered/unfiltered edges
     in.block(n_terms, 0, out_tensor.dimension(0),
              in.cols()) =
         Eigen::Map<Eigen::MatrixXd>(out_tensor.data(), out_tensor.dimension(0),
                                     out_tensor.dimension(1));
+    // pad edges with nearest filtered value to avoid raw/unfiltered samples
+    for (Eigen::Index c=0; c<in.cols(); ++c) {
+        double first_val = in(n_terms, c);
+        double last_val = in(n_terms + out_tensor.dimension(0) - 1, c);
+        in.block(0, c, n_terms, 1).setConstant(first_val);
+        in.block(n_terms + out_tensor.dimension(0), c, n_terms, 1).setConstant(last_val);
+    }
 }
 
 template <typename Derived>
@@ -166,18 +205,28 @@ void Filter::iir(Eigen::DenseBase<Derived> &in) {
     out.setZero();
 
     for (Eigen::Index i=0; i < in.cols(); ++i) {
-        double x_2 = 0.;
-        double x_1 = 0.;
-        double y_2 = 0.;
-        double y_1 = 0.;
-        for (Eigen::Index j=0; j<in.rows(); ++j) {
-            out(j,i) = notch_a(0) * in(j,i) + notch_a(1) * x_1 + notch_a(2) * x_2
-                        + notch_b(1) * y_1 + notch_b(2) * y_2;
-            x_2 = x_1;
-            x_1 = in(j,i);
-            y_2 = y_1;
-            y_1 = out(j,i);
+        // cascade all notches sequentially
+        Eigen::VectorXd stage_in = in.col(i);
+        Eigen::VectorXd stage_out(in.rows());
+        for (std::size_t sec = 0; sec < notch_a_vec.size(); ++sec) {
+            const auto& a = notch_a_vec[sec];
+            const auto& b = notch_b_vec[sec];
+
+            double x_2 = 0.;
+            double x_1 = 0.;
+            double y_2 = 0.;
+            double y_1 = 0.;
+            for (Eigen::Index j=0; j<stage_in.size(); ++j) {
+                stage_out(j) = a(0) * stage_in(j) + a(1) * x_1 + a(2) * x_2
+                               + b(1) * y_1 + b(2) * y_2;
+                x_2 = x_1;
+                x_1 = stage_in(j);
+                y_2 = y_1;
+                y_1 = stage_out(j);
+            }
+            stage_in.swap(stage_out);
         }
+        out.col(i) = stage_in;
     }
 
     in = std::move(out);
