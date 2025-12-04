@@ -322,13 +322,14 @@ auto Cleaner::remove_eig_values(const Eigen::DenseBase<DerivedA> &scans, const E
     }
 
     // cap removal to avoid over-cleaning small groups
-    Eigen::Index max_modes = std::max<Eigen::Index>(1, n_dets / 5); // leave at least ~80% of modes
+    // cap removal to avoid over-cleaning small groups and retain signal
+    Eigen::Index max_modes = std::max<Eigen::Index>(1, n_dets / 10); // leave at least ~90% of modes
     limit_index = std::min<Eigen::Index>(limit_index, max_modes);
     if (limit_index > n_dets) {
         limit_index = n_dets;
     }
 
-    logger->info("removing {} largest eigenvalue(s)", limit_index);
+    logger->info("removing {} largest eigenvalue(s) (n_dets={}, cap={})", limit_index, n_dets, max_modes);
 
     // subtract out the desired eigenvectors
     Eigen::MatrixXd proj = scans.derived() * evecs.derived().leftCols(limit_index);
