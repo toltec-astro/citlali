@@ -151,42 +151,16 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     // multiply scans by flags to remove flagged signal
     Eigen::MatrixXd det = (scans.derived().array()*f.array()).matrix();
 
-    // calculate per-detector stddev on masked data to build a correlation matrix
-    Eigen::VectorXd stddev(n_dets);
-    Eigen::Matrix<bool, Eigen::Dynamic, 1> keep(n_dets);
-    keep.setOnes();
-    for (Eigen::Index i=0; i<n_dets; ++i) {
-        double wsum = f.col(i).sum();
-        if (wsum > 1) {
-            double m = (det.col(i).array() * f.col(i).array()).sum() / wsum;
-            Eigen::ArrayXd diff = det.col(i).array() - m;
-            double v = (diff.square() * f.col(i).array()).sum() / (wsum - 1.);
-            stddev(i) = std::sqrt(std::max(v, 0.0));
-        } else {
-            stddev(i) = 0.;
-        }
-        if (stddev(i) <= std::numeric_limits<double>::epsilon() || !std::isfinite(stddev(i))) {
-            // zero-variance channels are dropped from PCA
-            keep(i) = false;
-            stddev(i) = 1.0;
-        }
-    }
-
-    // normalize to unit variance (correlation) so large-variance dets don’t dominate
-    for (Eigen::Index i=0; i<n_dets; ++i) {
-        if (keep(i)) {
-            det.col(i) /= stddev(i);
-        } else {
-            det.col(i).setZero();
-        }
-    }
-
-    // guard divide-by-zero in overlaps: replace nonpositive overlaps with 1 to avoid killing covariance structure
+    // guard divide-by-zero in overlaps: replace nonpositive overlaps with 1
     denom = (denom <= 0).select(Eigen::ArrayXXd::Ones(denom.rows(), denom.cols()), denom);
+    double denom_min = denom.minCoeff();
+    double denom_max = denom.maxCoeff();
 
-    // calculate the (correlation) covariance matrix
+    // calculate the covariance matrix (no variance normalization to preserve baseline behaviour)
     Eigen::ArrayXXd cov_arr = (det.adjoint() * det).array() / denom;
     pca_cov = cov_arr.matrix();
+
+    logger->debug("PCA cov: n_dets {} denom[min,max]=[{},{}]", n_dets, denom_min, denom_max);
 
     /*Eigen::VectorXd avg_corrs(n_dets);
     avg_corrs.setZero();
@@ -253,6 +227,7 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
         if (eigs.info() == Spectra::CompInfo::Successful) {
             evals.head(n_ev) = eigs.eigenvalues();
             evecs.leftCols(n_ev) = eigs.eigenvectors();
+            logger->debug("PCA evals (top {} of {}): {}", std::min<int>(5,n_ev), n_ev, evals.head(std::min<int>(5,n_ev)));
         }
         else {
             throw std::runtime_error("spectra failed to compute eigen values");
@@ -270,6 +245,7 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
 
             evals.reverseInPlace();
             evecs.rowwise().reverseInPlace();
+            logger->debug("PCA evals (top {}): {}", std::min<int>(5, static_cast<int>(evals.size())), evals.head(std::min<int>(5, static_cast<int>(evals.size()))));
         }
         else {
             throw std::runtime_error("eigen failed to compute eigen values");
