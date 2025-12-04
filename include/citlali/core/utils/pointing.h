@@ -35,11 +35,14 @@ auto calc_det_pointing(tel_data_t &tel_data, double az_off, double el_off,
         // get parallactic angle
         auto& par_ang = tel_data["ActParAng"];
 
+        // cos(dec) at tangent point to keep RA offsets on the projected x-axis scale
+        const double cos_dec0 = std::cos(tel_data["dec_phys"].mean());
+
         // dec
         lat = (rot_az_off.array()*sin(par_ang.array()) + rot_alt_off.array()*cos(par_ang.array()))*ASEC_TO_RAD
               + tel_data["dec_phys"].array();
         // ra
-        lon = (-rot_az_off.array()*cos(par_ang.array()) + rot_alt_off.array()*sin(par_ang.array()))*ASEC_TO_RAD
+        lon = ((-rot_az_off.array()*cos(par_ang.array()) + rot_alt_off.array()*sin(par_ang.array()))*cos_dec0)*ASEC_TO_RAD
               + tel_data["ra_phys"].array();
     }
 
