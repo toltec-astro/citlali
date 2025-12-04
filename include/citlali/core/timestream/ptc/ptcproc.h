@@ -210,6 +210,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                 Eigen::Index arr_index;
                 // use all detectors
                 if (group=="all") {
+                    // use first array index by default; could be generalized if needed
                     arr_index = calib.arrays(0);
                 }
                 // use network grouping
@@ -271,7 +272,8 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                         // check if any good flags
                             logger->debug("cleaning kernel");
                             auto in_kernel_block = in.kernel.data.block(0, start_index, n_pts, n_dets);
-                            auto out_kernel_block = in.kernel.data.block(0, start_index, n_pts, n_dets);
+                            // write cleaned kernel to output (not back into input)
+                            auto out_kernel_block = out.kernel.data.block(0, start_index, n_pts, n_dets);
 
                             // remove eigenvalues from the kernel and reconstruct the tod
                             cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_kernel_block, masked_flags, evals, evecs, out_kernel_block,
