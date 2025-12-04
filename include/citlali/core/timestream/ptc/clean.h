@@ -149,7 +149,7 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     Eigen::ArrayXXd denom = (f.adjoint() * f).array() - 1;
 
     // multiply scans by flags to remove flagged signal
-    auto det = (scans.derived().array()*f.array()).matrix();
+    Eigen::MatrixXd det = (scans.derived().array()*f.array()).matrix();
 
     // calculate per-detector stddev on masked data to build a correlation matrix
     Eigen::VectorXd stddev(n_dets);
