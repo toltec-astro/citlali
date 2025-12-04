@@ -160,7 +160,7 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     Eigen::ArrayXXd cov_arr = (det.adjoint() * det).array() / denom;
     pca_cov = cov_arr.matrix();
 
-    logger->debug("PCA cov: n_dets {} denom[min,max]=[{},{}]", n_dets, denom_min, denom_max);
+    logger->info("PCA cov: n_dets {} denom[min,max]=[{},{}]", n_dets, denom_min, denom_max);
 
     /*Eigen::VectorXd avg_corrs(n_dets);
     avg_corrs.setZero();
@@ -227,7 +227,7 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
         if (eigs.info() == Spectra::CompInfo::Successful) {
             evals.head(n_ev) = eigs.eigenvalues();
             evecs.leftCols(n_ev) = eigs.eigenvectors();
-            logger->debug("PCA evals (top {} of {}): {}", std::min<int>(5,n_ev), n_ev, evals.head(std::min<int>(5,n_ev)));
+            logger->info("PCA evals (top {} of {}): {}", std::min<int>(5,n_ev), n_ev, evals.head(std::min<int>(5,n_ev)));
         }
         else {
             throw std::runtime_error("spectra failed to compute eigen values");
@@ -245,7 +245,7 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
 
             evals.reverseInPlace();
             evecs.rowwise().reverseInPlace();
-            logger->debug("PCA evals (top {}): {}", std::min<int>(5, static_cast<int>(evals.size())), evals.head(std::min<int>(5, static_cast<int>(evals.size()))));
+            logger->info("PCA evals (top {}): {}", std::min<int>(5, static_cast<int>(evals.size())), evals.head(std::min<int>(5, static_cast<int>(evals.size()))));
         }
         else {
             throw std::runtime_error("eigen failed to compute eigen values");
