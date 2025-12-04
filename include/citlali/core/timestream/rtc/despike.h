@@ -65,8 +65,15 @@ private:
             (diff.segment(1,n_pts - 2).array() > cutoff).select(0, delta.segment(1,n_pts - 2));
 
         // update difference vector and cutoff
-        diff = abs(delta.derived().array() - delta.mean());
-        cutoff = min_spike_sigma * engine_utils::calc_std_dev(delta);
+        // compute mean/std over unflagged samples only to avoid collapsing sigma
+        auto unflag_mask = (flags.segment(1, n_pts - 2).array() == 0).template cast<double>();
+        double wsum = unflag_mask.sum();
+        double mean = (delta.segment(1, n_pts - 2).array() * unflag_mask).sum() / (wsum > 0 ? wsum : 1.);
+        Eigen::ArrayXd diff_arr = delta.segment(1, n_pts - 2).array() - mean;
+        double var = (diff_arr.square() * unflag_mask).sum() / ((wsum > 1) ? (wsum - 1.) : 1.);
+        double stddev = std::sqrt(var);
+        diff = abs(delta.derived().array() - mean);
+        cutoff = min_spike_sigma * stddev;
     }
 
     template <typename Derived>
@@ -100,7 +107,7 @@ private:
             // set the starting and ending indices for the window
             if (mx_window_index == 0) {
                 win_index_0 = 0;
-                win_index_1 = spike_loc(1);// - fsmp;
+                win_index_1 = spike_loc(0);// - fsmp;
             }
             else {
                 if (mx_window_index == n_spikes) {
@@ -203,9 +210,13 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                 if (det_flags(i) == 1) {
                     int size_loop = size;
                     // check the size of the region to set un_flagged if a flag is found.
-                    if ((n_pts - i - 1) < size_loop) {
-                        logger->info("rng {} {} {}", (n_pts - i - 1), size,i );
-                        size_loop = n_pts - i - 1;
+                    int remaining = n_pts - i - 1;
+                    if (remaining <= 0) {
+                        break;
+                    }
+                    if (remaining < size_loop) {
+                        logger->info("rng {} {} {}", remaining, size,i );
+                        size_loop = remaining;
                     }
 
                     // count up the flags in the region
@@ -285,9 +296,8 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
 
                 // exit if the decay length is too large
                 if ((decay_length.array() > size * fsmp).any()) {
-                    logger->error("decay length is longer than {} * fsmp.  mission "
-                                "failed, we'll get em next time.",size);
-                    std::exit(EXIT_FAILURE);
+                    logger->warn("decay length longer than {} * fsmp, clamping to limit", size);
+                    decay_length = decay_length.cwiseMin(static_cast<double>(size * fsmp));
                 }
 
                 // due to filtering later, we flag a region with the size of the filter
@@ -300,7 +310,7 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                         if (spike_loc(i) - decay_window >= 0 &&
                             spike_loc(i) + decay_window + 1 < n_pts) {
                             det_flags
-                                .segment(spike_loc(i) - decay_window, 2*window_size + 1)
+                                .segment(spike_loc(i) - decay_window, 2*decay_window + 1)
                                 .setOnes();
                         }
                     }
@@ -308,6 +318,8 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
 
                 // if lowpassing/highpassing skipped, use the decay length instead
                 else {
+                    // clamp overly long decays instead of aborting
+                    decay_length = decay_length.cwiseMin(static_cast<double>(size * fsmp));
                     for (Eigen::Index i=0; i<n_spikes; ++i) {
                         if (spike_loc(i) - decay_length(i) >= 0 &&
                             spike_loc(i) + decay_length(i) + 1 < n_pts) {
@@ -481,7 +493,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                         if ((spike_free(ii) || use_all_det) && apt["flag"](ii + start_det)==0) {
                             detm.col(c) =
                                 scans.block(si_flags(j), ii, n_flags, 1);
-                            res(c) = apt["responsivity"](c + start_det);
+                            res(c) = apt["responsivity"](ii + start_det);
                             c++;
                         }
                     }
