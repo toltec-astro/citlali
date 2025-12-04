@@ -146,7 +146,7 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     Eigen::MatrixXd pca_cov(n_dets, n_dets);
 
     // number of unflagged samples
-    auto denom = (f.adjoint() * f).array() - 1;
+    Eigen::ArrayXXd denom = (f.adjoint() * f).array() - 1;
 
     // multiply scans by flags to remove flagged signal
     auto det = (scans.derived().array()*f.array()).matrix();
@@ -183,9 +183,7 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
 
     // guard divide-by-zero in overlaps
     {
-        Eigen::ArrayXXd denom_arr = denom.array();
-        denom_arr = (denom_arr <= 0).select(Eigen::ArrayXXd::Constant(denom.rows(), denom.cols(), std::numeric_limits<double>::infinity()), denom_arr);
-        denom = denom_arr.matrix();
+        denom = (denom <= 0).select(Eigen::ArrayXXd::Constant(denom.rows(), denom.cols(), std::numeric_limits<double>::infinity()), denom);
     }
 
     // calculate the (correlation) covariance matrix
