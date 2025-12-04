@@ -317,15 +317,15 @@ d593dcb3 update submodules
 [INFO] _fix_tel: SourceDecAct changed with diff (arcsec): min=0.8127669592694176 max=0.28989635880307674 mean=0.38067434642743936 std=0.04046662177902891
 [INFO] CitlaliExec: run CitlaliExec(version=v4.0.0) cmd: /work/toltec/citlali_dev/citlali/build/bin/citlali -l info /work/toltec/wilson/citlali_testing/serpens_small/new/reduced/citlali_o130196_0_2_c1.yaml
 ** logging ** Configured with level=trace; available levels: ["trace", "debug", "info", "warning", "error", "critical", "off"].
-[2025-12-04 21:29:25.558] [info] [main.cpp:95] reconfigure logger to level=info
-[2025-12-04 21:29:25.558] [info] [main.cpp:1015] rc config_file:
+[2025-12-04 21:45:50.473] [info] [main.cpp:95] reconfigure logger to level=info
+[2025-12-04 21:45:50.473] [info] [main.cpp:1015] rc config_file:
   - /work/toltec/wilson/citlali_testing/serpens_small/new/reduced/citlali_o130196_0_2_c1.yaml
 grppiex: omp
-[2025-12-04 21:29:25.558] [info] [logging.h:96] **timeit** Citlali Process
-[2025-12-04 21:29:25.558] [citlali_logger] [info] use KIDs data spec: toltec.1
-[2025-12-04 21:29:25.558] [citlali_logger] [info] load config from file /work/toltec/wilson/citlali_testing/serpens_small/new/reduced/citlali_o130196_0_2_c1.yaml
-[2025-12-04 21:29:25.561] [citlali_logger] [info] reducing in science mode
-[2025-12-04 21:29:25.563] [citlali_logger] [info] check TOD proc config
+[2025-12-04 21:45:50.473] [info] [logging.h:96] **timeit** Citlali Process
+[2025-12-04 21:45:50.473] [citlali_logger] [info] use KIDs data spec: toltec.1
+[2025-12-04 21:45:50.473] [citlali_logger] [info] load config from file /work/toltec/wilson/citlali_testing/serpens_small/new/reduced/citlali_o130196_0_2_c1.yaml
+[2025-12-04 21:45:50.477] [citlali_logger] [info] reducing in science mode
+[2025-12-04 21:45:50.478] [citlali_logger] [info] check TOD proc config
 beammap:
   derotate: yes
   flagging:
@@ -517,6 +517,7 @@ post_processing:
     model: gaussian
 runtime:
   interp_over_gaps: yes
+  log_level: debug
   meta:
     version: tolteca...
   n_threads: 16
@@ -619,1099 +620,535 @@ wiener_filter:
     a2000: 4
   template_type: kernel
 <config filepath: (nullopt)>
-[2025-12-04 21:29:25.563] [citlali_logger] [info] getting citlali config
-[2025-12-04 21:29:25.563] [citlali_logger] [info] getting timestream config options
-[2025-12-04 21:29:25.563] [citlali_logger] [info] getting rtc config options
-[2025-12-04 21:29:25.563] [citlali_logger] [info] getting ptc config options
-[2025-12-04 21:29:25.563] [citlali_logger] [info] getting mapmaking config options
-[2025-12-04 21:29:25.563] [citlali_logger] [info] getting omb config options
-[2025-12-04 21:29:25.563] [citlali_logger] [info] getting cmb config options
-[2025-12-04 21:29:25.563] [citlali_logger] [info] getting map filtering config options
-[2025-12-04 21:29:25.564] [citlali_logger] [info] starting initial loop through input obs
-[2025-12-04 21:29:25.564] [citlali_logger] [info] starting setup of observation 1/1
-[2025-12-04 21:29:25.652] [citlali_logger] [info] getting array properties table /work/toltec/commissioning2025-test/2025-C1-COM-06/apts/apt_130196_matched.ecsv
-[2025-12-04 21:29:26.064] [citlali_logger] [info] getting telescope file /work/toltec/wilson/citlali_testing/serpens_small/new/reduced/tel_toltec_2025-03-11_130196_00_0002_recomputed.nc
-[2025-12-04 21:29:26.090] [citlali_logger] [warning] cannot find Header.Sim.Jobkey. reducing as real data.
-[2025-12-04 21:29:26.090] [citlali_logger] [info] tel_data key Data.TelescopeBackend.ActGalAng
-[2025-12-04 21:29:26.222] [citlali_logger] [info] tel_data key Data.TelescopeBackend.ActParAng
-[2025-12-04 21:29:26.245] [citlali_logger] [info] tel_data key Data.TelescopeBackend.Hold
-[2025-12-04 21:29:26.262] [citlali_logger] [info] tel_data key Data.TelescopeBackend.PpsTime
-[2025-12-04 21:29:26.275] [citlali_logger] [info] tel_data key Data.TelescopeBackend.SourceAz
-[2025-12-04 21:29:26.287] [citlali_logger] [info] tel_data key Data.TelescopeBackend.SourceBAct
-[2025-12-04 21:29:26.297] [citlali_logger] [info] tel_data key Data.TelescopeBackend.SourceDecAct
-[2025-12-04 21:29:26.306] [citlali_logger] [info] tel_data key Data.TelescopeBackend.SourceEl
-[2025-12-04 21:29:26.315] [citlali_logger] [info] tel_data key Data.TelescopeBackend.SourceLAct
-[2025-12-04 21:29:26.324] [citlali_logger] [info] tel_data key Data.TelescopeBackend.SourceRaAct
-[2025-12-04 21:29:26.333] [citlali_logger] [info] tel_data key Data.TelescopeBackend.TelAzAct
-[2025-12-04 21:29:26.342] [citlali_logger] [info] tel_data key Data.TelescopeBackend.TelAzCor
-[2025-12-04 21:29:26.351] [citlali_logger] [info] tel_data key Data.TelescopeBackend.TelAzDes
-[2025-12-04 21:29:26.360] [citlali_logger] [info] tel_data key Data.TelescopeBackend.TelAzMap
-[2025-12-04 21:29:26.369] [citlali_logger] [info] tel_data key Data.TelescopeBackend.TelDecAct
-[2025-12-04 21:29:26.369] [citlali_logger] [warning] cannot find Data.TelescopeBackend.TelDecAct
-[2025-12-04 21:29:26.369] [citlali_logger] [info] tel_data key Data.TelescopeBackend.TelElAct
-[2025-12-04 21:29:26.378] [citlali_logger] [info] tel_data key Data.TelescopeBackend.TelElCor
-[2025-12-04 21:29:26.387] [citlali_logger] [info] tel_data key Data.TelescopeBackend.TelElDes
-[2025-12-04 21:29:26.396] [citlali_logger] [info] tel_data key Data.TelescopeBackend.TelElMap
-[2025-12-04 21:29:26.405] [citlali_logger] [info] tel_data key Data.TelescopeBackend.TelRaAct
-[2025-12-04 21:29:26.405] [citlali_logger] [warning] cannot find Data.TelescopeBackend.TelRaAct
-[2025-12-04 21:29:26.405] [citlali_logger] [info] tel_data key Data.TelescopeBackend.TelTime
-[2025-12-04 21:29:26.414] [citlali_logger] [info] tel_data key Data.TelescopeBackend.TelUtc
-[2025-12-04 21:29:26.424] [citlali_logger] [warning] cannot find Header.Sim.Jobkey
-[2025-12-04 21:29:26.433] [citlali_logger] [info] aligning timestreams
-[2025-12-04 21:29:28.183] [citlali_logger] [warning] 0/183367 samples were not aligned to the common time grid
-[2025-12-04 21:29:28.184] [citlali_logger] [warning] 0/183367 samples were not aligned to the common time grid
-[2025-12-04 21:29:28.186] [citlali_logger] [warning] 0/183367 samples were not aligned to the common time grid
-[2025-12-04 21:29:28.187] [citlali_logger] [warning] 0/183367 samples were not aligned to the common time grid
-[2025-12-04 21:29:28.188] [citlali_logger] [warning] 0/183367 samples were not aligned to the common time grid
-[2025-12-04 21:29:28.190] [citlali_logger] [warning] 0/183367 samples were not aligned to the common time grid
-[2025-12-04 21:29:28.191] [citlali_logger] [warning] 0/183367 samples were not aligned to the common time grid
-[2025-12-04 21:29:28.193] [citlali_logger] [warning] 0/183367 samples were not aligned to the common time grid
-[2025-12-04 21:29:28.194] [citlali_logger] [warning] 1/183367 samples were not aligned to the common time grid
-[2025-12-04 21:29:28.195] [citlali_logger] [warning] 0/183367 samples were not aligned to the common time grid
-[2025-12-04 21:29:28.197] [citlali_logger] [warning] 0/183367 samples were not aligned to the common time grid
-[2025-12-04 21:29:28.198] [citlali_logger] [warning] 0/183367 samples were not aligned to the common time grid
-[2025-12-04 21:29:28.404] [citlali_logger] [info] calculating tangent plane pointing
-[2025-12-04 21:29:28.441] [citlali_logger] [info] using radec frame
-[2025-12-04 21:29:28.442] [citlali_logger] [info] calculating pointing offsets
-[2025-12-04 21:29:28.442] [citlali_logger] [info] calculating scan indices
-[2025-12-04 21:29:28.442] [citlali_logger] [info] calculating scans for lissajous/rastajous mode
-[2025-12-04 21:29:28.442] [citlali_logger] [info] scan_indices (4,50)[
+[2025-12-04 21:45:50.485] [citlali_logger] [info] getting citlali config
+[2025-12-04 21:45:50.485] [citlali_logger] [info] getting timestream config options
+[2025-12-04 21:45:50.485] [citlali_logger] [info] getting rtc config options
+[2025-12-04 21:45:50.486] [citlali_logger] [info] getting ptc config options
+[2025-12-04 21:45:50.486] [citlali_logger] [info] getting mapmaking config options
+[2025-12-04 21:45:50.486] [citlali_logger] [info] getting omb config options
+[2025-12-04 21:45:50.490] [citlali_logger] [info] getting cmb config options
+[2025-12-04 21:45:50.491] [citlali_logger] [info] getting map filtering config options
+[2025-12-04 21:45:50.524] [citlali_logger] [info] starting initial loop through input obs
+[2025-12-04 21:45:50.524] [citlali_logger] [info] starting setup of observation 1/1
+[2025-12-04 21:45:50.670] [citlali_logger] [info] getting array properties table /work/toltec/commissioning2025-test/2025-C1-COM-06/apts/apt_130196_matched.ecsv
+[2025-12-04 21:45:51.094] [citlali_logger] [info] getting telescope file /work/toltec/wilson/citlali_testing/serpens_small/new/reduced/tel_toltec_2025-03-11_130196_00_0002_recomputed.nc
+[2025-12-04 21:45:51.120] [citlali_logger] [warning] cannot find Header.Sim.Jobkey. reducing as real data.
+[2025-12-04 21:45:51.120] [citlali_logger] [info] tel_data key Data.TelescopeBackend.ActGalAng
+[2025-12-04 21:45:51.214] [citlali_logger] [info] tel_data key Data.TelescopeBackend.ActParAng
+[2025-12-04 21:45:51.231] [citlali_logger] [info] tel_data key Data.TelescopeBackend.Hold
+[2025-12-04 21:45:51.245] [citlali_logger] [info] tel_data key Data.TelescopeBackend.PpsTime
+[2025-12-04 21:45:51.257] [citlali_logger] [info] tel_data key Data.TelescopeBackend.SourceAz
+[2025-12-04 21:45:51.267] [citlali_logger] [info] tel_data key Data.TelescopeBackend.SourceBAct
+[2025-12-04 21:45:51.276] [citlali_logger] [info] tel_data key Data.TelescopeBackend.SourceDecAct
+[2025-12-04 21:45:51.285] [citlali_logger] [info] tel_data key Data.TelescopeBackend.SourceEl
+[2025-12-04 21:45:51.294] [citlali_logger] [info] tel_data key Data.TelescopeBackend.SourceLAct
+[2025-12-04 21:45:51.303] [citlali_logger] [info] tel_data key Data.TelescopeBackend.SourceRaAct
+[2025-12-04 21:45:51.312] [citlali_logger] [info] tel_data key Data.TelescopeBackend.TelAzAct
+[2025-12-04 21:45:51.321] [citlali_logger] [info] tel_data key Data.TelescopeBackend.TelAzCor
+[2025-12-04 21:45:51.330] [citlali_logger] [info] tel_data key Data.TelescopeBackend.TelAzDes
+[2025-12-04 21:45:51.339] [citlali_logger] [info] tel_data key Data.TelescopeBackend.TelAzMap
+[2025-12-04 21:45:51.348] [citlali_logger] [info] tel_data key Data.TelescopeBackend.TelDecAct
+[2025-12-04 21:45:51.348] [citlali_logger] [warning] cannot find Data.TelescopeBackend.TelDecAct
+[2025-12-04 21:45:51.348] [citlali_logger] [info] tel_data key Data.TelescopeBackend.TelElAct
+[2025-12-04 21:45:51.357] [citlali_logger] [info] tel_data key Data.TelescopeBackend.TelElCor
+[2025-12-04 21:45:51.366] [citlali_logger] [info] tel_data key Data.TelescopeBackend.TelElDes
+[2025-12-04 21:45:51.375] [citlali_logger] [info] tel_data key Data.TelescopeBackend.TelElMap
+[2025-12-04 21:45:51.384] [citlali_logger] [info] tel_data key Data.TelescopeBackend.TelRaAct
+[2025-12-04 21:45:51.384] [citlali_logger] [warning] cannot find Data.TelescopeBackend.TelRaAct
+[2025-12-04 21:45:51.384] [citlali_logger] [info] tel_data key Data.TelescopeBackend.TelTime
+[2025-12-04 21:45:51.393] [citlali_logger] [info] tel_data key Data.TelescopeBackend.TelUtc
+[2025-12-04 21:45:51.402] [citlali_logger] [warning] cannot find Header.Sim.Jobkey
+[2025-12-04 21:45:51.410] [citlali_logger] [info] aligning timestreams
+[2025-12-04 21:45:53.163] [citlali_logger] [warning] 0/183367 samples were not aligned to the common time grid
+[2025-12-04 21:45:53.164] [citlali_logger] [warning] 0/183367 samples were not aligned to the common time grid
+[2025-12-04 21:45:53.165] [citlali_logger] [warning] 0/183367 samples were not aligned to the common time grid
+[2025-12-04 21:45:53.167] [citlali_logger] [warning] 0/183367 samples were not aligned to the common time grid
+[2025-12-04 21:45:53.168] [citlali_logger] [warning] 0/183367 samples were not aligned to the common time grid
+[2025-12-04 21:45:53.170] [citlali_logger] [warning] 0/183367 samples were not aligned to the common time grid
+[2025-12-04 21:45:53.171] [citlali_logger] [warning] 0/183367 samples were not aligned to the common time grid
+[2025-12-04 21:45:53.172] [citlali_logger] [warning] 0/183367 samples were not aligned to the common time grid
+[2025-12-04 21:45:53.174] [citlali_logger] [warning] 1/183367 samples were not aligned to the common time grid
+[2025-12-04 21:45:53.175] [citlali_logger] [warning] 0/183367 samples were not aligned to the common time grid
+[2025-12-04 21:45:53.177] [citlali_logger] [warning] 0/183367 samples were not aligned to the common time grid
+[2025-12-04 21:45:53.178] [citlali_logger] [warning] 0/183367 samples were not aligned to the common time grid
+[2025-12-04 21:45:53.384] [citlali_logger] [info] calculating tangent plane pointing
+[2025-12-04 21:45:53.421] [citlali_logger] [info] using radec frame
+[2025-12-04 21:45:53.421] [citlali_logger] [info] calculating pointing offsets
+[2025-12-04 21:45:53.422] [citlali_logger] [info] calculating scan indices
+[2025-12-04 21:45:53.422] [citlali_logger] [info] calculating scans for lissajous/rastajous mode
+[2025-12-04 21:45:53.422] [citlali_logger] [info] scan_indices (4,50)[
  [    32,   3662, ..., 175776, 179438]
  [  3661,   7323, ..., 179437, 183067]
  [     0,   3630, ..., 175744, 179406]
  [  3693,   7355, ..., 179469, 183099]]
-[2025-12-04 21:29:28.442] [citlali_logger] [info] calculating number of maps
-[2025-12-04 21:29:28.442] [citlali_logger] [info] calculating obs map dimensions
-[2025-12-04 21:29:42.529] [citlali_logger] [info] calculating cmb dimensions
-[2025-12-04 21:29:42.568] [citlali_logger] [info] allocating cmb
-[2025-12-04 21:29:42.582] [citlali_logger] [info] allocating nmb
-[2025-12-04 21:29:42.661] [citlali_logger] [info] starting reduction of observation 1/1
-[2025-12-04 21:29:42.745] [citlali_logger] [info] 294 nearby tones found. these will be flagged.
-[2025-12-04 21:29:42.783] [citlali_logger] [info] calculating flux calibration
-[2025-12-04 21:29:42.784] [citlali_logger] [warning] gaps found in obnsum 130196 data file timing!
-[2025-12-04 21:29:42.784] [citlali_logger] [info] calculating number of maps
-[2025-12-04 21:29:42.784] [citlali_logger] [info] allocating obs map buffer
-[2025-12-04 21:29:42.795] [citlali_logger] [info] pipeline setup
-[2025-12-04 21:29:42.800] [citlali_logger] [info] using am_q50 model for extinction correction
-[2025-12-04 21:29:42.800] [citlali_logger] [info] reduction info
-[2025-12-04 21:29:42.800] [citlali_logger] [info] obsnum: 130196
-[2025-12-04 21:29:42.800] [citlali_logger] [info] map buffer rows: 555
-[2025-12-04 21:29:42.800] [citlali_logger] [info] map buffer cols: 479
-[2025-12-04 21:29:42.800] [citlali_logger] [info] number of maps: 3
-[2025-12-04 21:29:42.800] [citlali_logger] [info] map units: mJy/beam
-[2025-12-04 21:29:42.800] [citlali_logger] [info] polarized reduction: false
-[2025-12-04 21:29:42.800] [citlali_logger] [info] estimated size of map buffer 0.02552112 GB
-[2025-12-04 21:29:42.800] [citlali_logger] [info] coadd map buffer rows: 557
-[2025-12-04 21:29:42.800] [citlali_logger] [info] coadd map buffer cols: 481
-[2025-12-04 21:29:42.800] [citlali_logger] [info] estimated size of coadd buffer 0.025720032 GB
-[2025-12-04 21:29:42.800] [citlali_logger] [info] coadd map buffer noise maps: 10
-[2025-12-04 21:29:42.800] [citlali_logger] [info] estimated size of noise buffer 0.06430008 GB
-[2025-12-04 21:29:42.800] [citlali_logger] [info] estimated size of all maps 0.115541232 GB
-[2025-12-04 21:29:42.800] [citlali_logger] [info] number of scans: 50
-[2025-12-04 21:29:42.800] [citlali_logger] [info] physical memory used 0.0214752 GB
-[2025-12-04 21:29:42.807] [citlali_logger] [info] running pipeline
-[2025-12-04 21:29:42.807] [citlali_logger] [info] citlali progress .                                                                          [  2%]
-[2025-12-04 21:29:47.781] [citlali_logger] [info] citlali progress ...                                                                        [  4%]
-[2025-12-04 21:29:47.815] [citlali_logger] [info] starting scan 1. 0/50 scans completed
-[2025-12-04 21:29:47.815] [citlali_logger] [info] raw time chunk processing for scan 1
-[2025-12-04 21:29:52.013] [citlali_logger] [info] citlali progress ....                                                                       [  6%]
-[2025-12-04 21:29:52.040] [citlali_logger] [info] starting scan 2. 0/50 scans completed
-[2025-12-04 21:29:52.041] [citlali_logger] [info] raw time chunk processing for scan 2
-[2025-12-04 21:29:55.623] [citlali_logger] [info] citlali progress ......                                                                     [  8%]
-[2025-12-04 21:29:55.640] [citlali_logger] [info] starting scan 3. 0/50 scans completed
-[2025-12-04 21:29:55.640] [citlali_logger] [info] raw time chunk processing for scan 3
-[2025-12-04 21:29:57.529] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:29:57.726] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:29:57.727] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:29:57.754] [citlali_logger] [info] array 0 iter 0: 19/2643 dets below inv var limit. 71/2643 dets above inv var limit.
-[2025-12-04 21:29:57.762] [citlali_logger] [info] array 1 iter 0: 8/857 dets below inv var limit. 11/857 dets above inv var limit.
-[2025-12-04 21:29:57.771] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 3/847 dets above inv var limit.
-[2025-12-04 21:29:57.774] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:29:57.777] [citlali_logger] [info] processed time chunk processing for scan 1
-[2025-12-04 21:29:57.857] [citlali_logger] [info] cleaning
-[2025-12-04 21:29:57.858] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:29:58.272] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:29:58.678] [citlali_logger] [info] citlali progress .......                                                                    [ 10%]
-[2025-12-04 21:29:58.704] [citlali_logger] [info] starting scan 4. 0/50 scans completed
-[2025-12-04 21:29:58.705] [citlali_logger] [info] raw time chunk processing for scan 4
-[2025-12-04 21:29:58.713] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:29:58.962] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:29:59.364] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:29:59.721] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:29:59.931] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:29:59.961] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:30:00.182] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:30:00.562] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:30:01.014] [citlali_logger] [info] cleaning nw 11
-[2025-12-04 21:30:01.200] [citlali_logger] [info] cleaning nw 12
-[2025-12-04 21:30:01.458] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:01.483] [citlali_logger] [info] array 0 iter 0: 0/2474 dets below inv var limit. 21/2474 dets above inv var limit.
-[2025-12-04 21:30:01.491] [citlali_logger] [info] array 1 iter 0: 0/825 dets below inv var limit. 15/825 dets above inv var limit.
-[2025-12-04 21:30:01.500] [citlali_logger] [info] array 2 iter 0: 0/840 dets below inv var limit. 9/840 dets above inv var limit.
-[2025-12-04 21:30:01.502] [citlali_logger] [info] calculating weights
-[2025-12-04 21:30:01.504] [citlali_logger] [info] array 0 had 47 outlier weights
-[2025-12-04 21:30:01.504] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
-[2025-12-04 21:30:01.504] [citlali_logger] [info] array 1 had 46 outlier weights
-[2025-12-04 21:30:01.504] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
-[2025-12-04 21:30:01.505] [citlali_logger] [info] array 2 had 72 outlier weights
-[2025-12-04 21:30:01.505] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
-[2025-12-04 21:30:01.602] [citlali_logger] [info] citlali progress .........                                                                  [ 12%]
-[2025-12-04 21:30:01.624] [citlali_logger] [info] starting scan 5. 0/50 scans completed
-[2025-12-04 21:30:01.629] [citlali_logger] [info] raw time chunk processing for scan 5
-[2025-12-04 21:30:01.702] [citlali_logger] [info] populating maps
-[2025-12-04 21:30:02.547] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:30:02.743] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:30:02.744] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:02.770] [citlali_logger] [info] array 0 iter 0: 22/2643 dets below inv var limit. 85/2643 dets above inv var limit.
-[2025-12-04 21:30:02.778] [citlali_logger] [info] array 1 iter 0: 10/857 dets below inv var limit. 10/857 dets above inv var limit.
-[2025-12-04 21:30:02.787] [citlali_logger] [info] array 2 iter 0: 3/847 dets below inv var limit. 3/847 dets above inv var limit.
-[2025-12-04 21:30:02.790] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:30:02.793] [citlali_logger] [info] processed time chunk processing for scan 3
-[2025-12-04 21:30:02.939] [citlali_logger] [info] cleaning
-[2025-12-04 21:30:02.945] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:30:03.637] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:30:03.880] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:30:04.099] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:30:04.490] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:30:04.768] [citlali_logger] [info] citlali progress ..........                                                                 [ 14%]
-[2025-12-04 21:30:04.797] [citlali_logger] [info] starting scan 6. 0/50 scans completed
-[2025-12-04 21:30:04.797] [citlali_logger] [info] raw time chunk processing for scan 6
-[2025-12-04 21:30:04.953] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:30:05.295] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:30:05.357] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:30:05.599] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:30:05.981] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:30:06.382] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:30:06.408] [citlali_logger] [info] cleaning nw 11
-[2025-12-04 21:30:06.743] [citlali_logger] [info] cleaning nw 12
-[2025-12-04 21:30:07.013] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:07.037] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:30:07.038] [citlali_logger] [info] array 0 iter 0: 0/2456 dets below inv var limit. 19/2456 dets above inv var limit.
-[2025-12-04 21:30:07.045] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:07.060] [citlali_logger] [info] array 1 iter 0: 0/824 dets below inv var limit. 13/824 dets above inv var limit.
-[2025-12-04 21:30:07.076] [citlali_logger] [info] array 2 iter 0: 0/839 dets below inv var limit. 7/839 dets above inv var limit.
-[2025-12-04 21:30:07.083] [citlali_logger] [info] calculating weights
-[2025-12-04 21:30:07.085] [citlali_logger] [info] array 0 had 47 outlier weights
-[2025-12-04 21:30:07.088] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
-[2025-12-04 21:30:07.089] [citlali_logger] [info] array 1 had 46 outlier weights
-[2025-12-04 21:30:07.089] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
-[2025-12-04 21:30:07.089] [citlali_logger] [info] array 2 had 72 outlier weights
-[2025-12-04 21:30:07.089] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
-[2025-12-04 21:30:07.156] [citlali_logger] [info] array 0 iter 0: 14/2643 dets below inv var limit. 83/2643 dets above inv var limit.
-[2025-12-04 21:30:07.188] [citlali_logger] [info] array 1 iter 0: 9/857 dets below inv var limit. 8/857 dets above inv var limit.
-[2025-12-04 21:30:07.218] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 1/847 dets above inv var limit.
-[2025-12-04 21:30:07.232] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:30:07.245] [citlali_logger] [info] processed time chunk processing for scan 2
-[2025-12-04 21:30:07.392] [citlali_logger] [info] populating maps
-[2025-12-04 21:30:07.568] [citlali_logger] [info] cleaning
-[2025-12-04 21:30:07.569] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:30:07.904] [citlali_logger] [info] citlali progress ............                                                               [ 16%]
-[2025-12-04 21:30:07.930] [citlali_logger] [info] starting scan 7. 0/50 scans completed
-[2025-12-04 21:30:07.931] [citlali_logger] [info] raw time chunk processing for scan 7
-[2025-12-04 21:30:09.006] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:30:09.833] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:30:10.371] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:30:10.500] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:30:10.948] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:30:10.956] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:11.051] [citlali_logger] [info] array 0 iter 0: 19/2643 dets below inv var limit. 77/2643 dets above inv var limit.
-[2025-12-04 21:30:11.092] [citlali_logger] [info] array 1 iter 0: 9/857 dets below inv var limit. 8/857 dets above inv var limit.
-[2025-12-04 21:30:11.116] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 1/847 dets above inv var limit.
-[2025-12-04 21:30:11.125] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:30:11.127] [citlali_logger] [info] processed time chunk processing for scan 4
-[2025-12-04 21:30:11.289] [citlali_logger] [info] cleaning
-[2025-12-04 21:30:11.293] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:30:11.460] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:30:11.764] [citlali_logger] [info] citlali progress .............                                                              [ 18%]
-[2025-12-04 21:30:11.788] [citlali_logger] [info] starting scan 8. 0/50 scans completed
-[2025-12-04 21:30:11.791] [citlali_logger] [info] raw time chunk processing for scan 8
-[2025-12-04 21:30:12.037] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:30:12.413] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:30:12.514] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:30:13.294] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:30:13.316] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:30:13.466] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:30:13.875] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:30:13.891] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:30:14.096] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:30:14.185] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:30:14.186] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:14.221] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:30:14.265] [citlali_logger] [info] array 0 iter 0: 19/2643 dets below inv var limit. 85/2643 dets above inv var limit.
-[2025-12-04 21:30:14.294] [citlali_logger] [info] array 1 iter 0: 10/857 dets below inv var limit. 9/857 dets above inv var limit.
-[2025-12-04 21:30:14.316] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 1/847 dets above inv var limit.
-[2025-12-04 21:30:14.325] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:30:14.327] [citlali_logger] [info] processed time chunk processing for scan 6
-[2025-12-04 21:30:14.461] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:30:14.536] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:30:14.544] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:14.548] [citlali_logger] [info] cleaning
-[2025-12-04 21:30:14.552] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:30:14.620] [citlali_logger] [info] array 0 iter 0: 22/2643 dets below inv var limit. 75/2643 dets above inv var limit.
-[2025-12-04 21:30:14.646] [citlali_logger] [info] array 1 iter 0: 10/857 dets below inv var limit. 12/857 dets above inv var limit.
-[2025-12-04 21:30:14.668] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 1/847 dets above inv var limit.
-[2025-12-04 21:30:14.682] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:30:14.685] [citlali_logger] [info] processed time chunk processing for scan 5
-[2025-12-04 21:30:14.765] [citlali_logger] [info] cleaning
-[2025-12-04 21:30:14.767] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:30:14.807] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:30:15.120] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:30:15.157] [citlali_logger] [info] cleaning nw 11
-[2025-12-04 21:30:15.246] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:30:15.340] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:30:15.453] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:30:15.537] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:30:15.560] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:30:15.688] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:30:15.724] [citlali_logger] [info] cleaning nw 12
-[2025-12-04 21:30:15.804] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:30:15.907] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:30:16.037] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:30:16.128] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:30:16.139] [citlali_logger] [info] citlali progress ...............                                                            [ 20%]
-[2025-12-04 21:30:16.172] [citlali_logger] [info] starting scan 9. 0/50 scans completed
-[2025-12-04 21:30:16.176] [citlali_logger] [info] raw time chunk processing for scan 9
-[2025-12-04 21:30:16.311] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:30:16.341] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:30:16.468] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:30:16.509] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:16.536] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:30:16.584] [citlali_logger] [info] array 0 iter 0: 0/2467 dets below inv var limit. 19/2467 dets above inv var limit.
-[2025-12-04 21:30:16.613] [citlali_logger] [info] array 1 iter 0: 0/827 dets below inv var limit. 15/827 dets above inv var limit.
-[2025-12-04 21:30:16.624] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:30:16.636] [citlali_logger] [info] array 2 iter 0: 0/842 dets below inv var limit. 11/842 dets above inv var limit.
-[2025-12-04 21:30:16.642] [citlali_logger] [info] calculating weights
-[2025-12-04 21:30:16.651] [citlali_logger] [info] array 0 had 47 outlier weights
-[2025-12-04 21:30:16.651] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
-[2025-12-04 21:30:16.651] [citlali_logger] [info] array 1 had 46 outlier weights
-[2025-12-04 21:30:16.651] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
-[2025-12-04 21:30:16.651] [citlali_logger] [info] array 2 had 72 outlier weights
-[2025-12-04 21:30:16.651] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
-[2025-12-04 21:30:17.033] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:30:17.097] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:30:17.106] [citlali_logger] [info] populating maps
-[2025-12-04 21:30:17.178] [citlali_logger] [info] cleaning nw 11
-[2025-12-04 21:30:17.525] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:30:17.563] [citlali_logger] [info] cleaning nw 11
-[2025-12-04 21:30:17.584] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:30:17.742] [citlali_logger] [info] cleaning nw 12
-[2025-12-04 21:30:17.834] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:30:18.206] [citlali_logger] [info] cleaning nw 12
-[2025-12-04 21:30:18.215] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:30:18.532] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:18.611] [citlali_logger] [info] array 0 iter 0: 0/2467 dets below inv var limit. 18/2467 dets above inv var limit.
-[2025-12-04 21:30:18.634] [citlali_logger] [info] array 1 iter 0: 0/827 dets below inv var limit. 17/827 dets above inv var limit.
-[2025-12-04 21:30:18.664] [citlali_logger] [info] array 2 iter 0: 0/842 dets below inv var limit. 9/842 dets above inv var limit.
-[2025-12-04 21:30:18.666] [citlali_logger] [info] calculating weights
-[2025-12-04 21:30:18.672] [citlali_logger] [info] array 0 had 47 outlier weights
-[2025-12-04 21:30:18.675] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
-[2025-12-04 21:30:18.676] [citlali_logger] [info] array 1 had 46 outlier weights
-[2025-12-04 21:30:18.676] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
-[2025-12-04 21:30:18.676] [citlali_logger] [info] array 2 had 72 outlier weights
-[2025-12-04 21:30:18.676] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
-[2025-12-04 21:30:18.865] [citlali_logger] [info] cleaning nw 11
-[2025-12-04 21:30:18.924] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:30:19.002] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:19.078] [citlali_logger] [info] array 0 iter 0: 0/2467 dets below inv var limit. 15/2467 dets above inv var limit.
-[2025-12-04 21:30:19.105] [citlali_logger] [info] array 1 iter 0: 0/822 dets below inv var limit. 13/822 dets above inv var limit.
-[2025-12-04 21:30:19.125] [citlali_logger] [info] array 2 iter 0: 0/842 dets below inv var limit. 12/842 dets above inv var limit.
-[2025-12-04 21:30:19.136] [citlali_logger] [info] calculating weights
-[2025-12-04 21:30:19.129] [citlali_logger] [info] populating maps
-[2025-12-04 21:30:19.137] [citlali_logger] [info] array 0 had 47 outlier weights
-[2025-12-04 21:30:19.137] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
-[2025-12-04 21:30:19.137] [citlali_logger] [info] array 1 had 46 outlier weights
-[2025-12-04 21:30:19.137] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
-[2025-12-04 21:30:19.142] [citlali_logger] [info] array 2 had 72 outlier weights
-[2025-12-04 21:30:19.142] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
-[2025-12-04 21:30:19.388] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:30:19.388] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:19.435] [citlali_logger] [info] cleaning nw 12
-[2025-12-04 21:30:19.463] [citlali_logger] [info] array 0 iter 0: 24/2643 dets below inv var limit. 83/2643 dets above inv var limit.
-[2025-12-04 21:30:19.487] [citlali_logger] [info] array 1 iter 0: 10/857 dets below inv var limit. 9/857 dets above inv var limit.
-[2025-12-04 21:30:19.517] [citlali_logger] [info] array 2 iter 0: 3/847 dets below inv var limit. 3/847 dets above inv var limit.
-[2025-12-04 21:30:19.527] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:30:19.529] [citlali_logger] [info] processed time chunk processing for scan 7
-[2025-12-04 21:30:19.600] [citlali_logger] [info] populating maps
-[2025-12-04 21:30:19.776] [citlali_logger] [info] cleaning
-[2025-12-04 21:30:19.777] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:30:19.899] [citlali_logger] [info] citlali progress ................                                                           [ 22%]
-[2025-12-04 21:30:19.923] [citlali_logger] [info] starting scan 10. 0/50 scans completed
-[2025-12-04 21:30:19.924] [citlali_logger] [info] raw time chunk processing for scan 10
-[2025-12-04 21:30:20.227] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:20.303] [citlali_logger] [info] array 0 iter 0: 0/2460 dets below inv var limit. 21/2460 dets above inv var limit.
-[2025-12-04 21:30:20.327] [citlali_logger] [info] array 1 iter 0: 0/825 dets below inv var limit. 14/825 dets above inv var limit.
-[2025-12-04 21:30:20.351] [citlali_logger] [info] array 2 iter 0: 0/842 dets below inv var limit. 11/842 dets above inv var limit.
-[2025-12-04 21:30:20.353] [citlali_logger] [info] calculating weights
-[2025-12-04 21:30:20.366] [citlali_logger] [info] array 0 had 47 outlier weights
-[2025-12-04 21:30:20.366] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
-[2025-12-04 21:30:20.366] [citlali_logger] [info] array 1 had 46 outlier weights
-[2025-12-04 21:30:20.366] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
-[2025-12-04 21:30:20.366] [citlali_logger] [info] array 2 had 72 outlier weights
-[2025-12-04 21:30:20.366] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
-[2025-12-04 21:30:20.825] [citlali_logger] [info] populating maps
-[2025-12-04 21:30:20.829] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:30:21.495] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:30:22.161] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:30:22.899] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:30:23.607] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:30:24.250] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:30:24.287] [citlali_logger] [info] citlali progress ..................                                                         [ 24%]
-[2025-12-04 21:30:24.330] [citlali_logger] [info] starting scan 11. 0/50 scans completed
-[2025-12-04 21:30:24.330] [citlali_logger] [info] raw time chunk processing for scan 11
-[2025-12-04 21:30:24.340] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:30:24.716] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:30:24.792] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:30:25.298] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:30:25.302] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:25.319] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:30:25.380] [citlali_logger] [info] array 0 iter 0: 22/2643 dets below inv var limit. 77/2643 dets above inv var limit.
-[2025-12-04 21:30:25.405] [citlali_logger] [info] array 1 iter 0: 9/857 dets below inv var limit. 12/857 dets above inv var limit.
-[2025-12-04 21:30:25.432] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 1/847 dets above inv var limit.
-[2025-12-04 21:30:25.435] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:30:25.444] [citlali_logger] [info] processed time chunk processing for scan 8
-[2025-12-04 21:30:25.661] [citlali_logger] [info] cleaning
-[2025-12-04 21:30:25.661] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:30:26.011] [citlali_logger] [info] cleaning nw 11
-[2025-12-04 21:30:26.573] [citlali_logger] [info] cleaning nw 12
-[2025-12-04 21:30:26.679] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:30:27.040] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:30:27.325] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:30:27.353] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:30:27.354] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:27.361] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:27.406] [citlali_logger] [info] array 0 iter 0: 26/2643 dets below inv var limit. 79/2643 dets above inv var limit.
-[2025-12-04 21:30:27.423] [citlali_logger] [info] array 1 iter 0: 11/857 dets below inv var limit. 9/857 dets above inv var limit.
-[2025-12-04 21:30:27.438] [citlali_logger] [info] array 2 iter 0: 3/847 dets below inv var limit. 2/847 dets above inv var limit.
-[2025-12-04 21:30:27.446] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:30:27.440] [citlali_logger] [info] array 0 iter 0: 0/2457 dets below inv var limit. 21/2457 dets above inv var limit.
-[2025-12-04 21:30:27.453] [citlali_logger] [info] processed time chunk processing for scan 9
-[2025-12-04 21:30:27.469] [citlali_logger] [info] array 1 iter 0: 0/825 dets below inv var limit. 14/825 dets above inv var limit.
-[2025-12-04 21:30:27.493] [citlali_logger] [info] array 2 iter 0: 0/839 dets below inv var limit. 10/839 dets above inv var limit.
-[2025-12-04 21:30:27.503] [citlali_logger] [info] calculating weights
-[2025-12-04 21:30:27.504] [citlali_logger] [info] array 0 had 47 outlier weights
-[2025-12-04 21:30:27.508] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
-[2025-12-04 21:30:27.509] [citlali_logger] [info] array 1 had 46 outlier weights
-[2025-12-04 21:30:27.509] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
-[2025-12-04 21:30:27.509] [citlali_logger] [info] array 2 had 72 outlier weights
-[2025-12-04 21:30:27.509] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
-[2025-12-04 21:30:27.616] [citlali_logger] [info] cleaning
-[2025-12-04 21:30:27.616] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:30:27.733] [citlali_logger] [info] citlali progress ...................                                                        [ 26%]
-[2025-12-04 21:30:27.779] [citlali_logger] [info] starting scan 12. 0/50 scans completed
-[2025-12-04 21:30:27.779] [citlali_logger] [info] raw time chunk processing for scan 12
-[2025-12-04 21:30:27.962] [citlali_logger] [info] populating maps
-[2025-12-04 21:30:28.022] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:30:28.347] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:30:28.784] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:30:28.793] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:30:29.372] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:30:29.494] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:30:30.027] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:30:30.141] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:30:30.231] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:30:30.572] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:30:30.598] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:30:31.178] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:30:31.213] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:30:31.303] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:30:31.425] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:30:31.469] [citlali_logger] [info] citlali progress .....................                                                      [ 28%]
-[2025-12-04 21:30:31.505] [citlali_logger] [info] starting scan 13. 0/50 scans completed
-[2025-12-04 21:30:31.505] [citlali_logger] [info] raw time chunk processing for scan 13
-[2025-12-04 21:30:31.617] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:30:31.937] [citlali_logger] [info] cleaning nw 11
-[2025-12-04 21:30:31.960] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:30:31.960] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:32.014] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:30:32.038] [citlali_logger] [info] array 0 iter 0: 29/2643 dets below inv var limit. 88/2643 dets above inv var limit.
-[2025-12-04 21:30:32.062] [citlali_logger] [info] array 1 iter 0: 12/857 dets below inv var limit. 7/857 dets above inv var limit.
-[2025-12-04 21:30:32.097] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 1/847 dets above inv var limit.
-[2025-12-04 21:30:32.107] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:30:32.110] [citlali_logger] [info] processed time chunk processing for scan 10
-[2025-12-04 21:30:32.191] [citlali_logger] [info] done with scan 1. 1/50 scans completed
-[2025-12-04 21:30:32.383] [citlali_logger] [info] cleaning
-[2025-12-04 21:30:32.384] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:30:32.494] [citlali_logger] [info] cleaning nw 11
-[2025-12-04 21:30:32.502] [citlali_logger] [info] cleaning nw 12
-[2025-12-04 21:30:32.870] [citlali_logger] [info] cleaning nw 12
-[2025-12-04 21:30:33.034] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:33.084] [citlali_logger] [info] array 0 iter 0: 0/2465 dets below inv var limit. 24/2465 dets above inv var limit.
-[2025-12-04 21:30:33.098] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:30:33.101] [citlali_logger] [info] array 1 iter 0: 0/823 dets below inv var limit. 16/823 dets above inv var limit.
-[2025-12-04 21:30:33.115] [citlali_logger] [info] array 2 iter 0: 0/842 dets below inv var limit. 10/842 dets above inv var limit.
-[2025-12-04 21:30:33.122] [citlali_logger] [info] calculating weights
-[2025-12-04 21:30:33.127] [citlali_logger] [info] array 0 had 47 outlier weights
-[2025-12-04 21:30:33.127] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
-[2025-12-04 21:30:33.127] [citlali_logger] [info] array 1 had 46 outlier weights
-[2025-12-04 21:30:33.127] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
-[2025-12-04 21:30:33.127] [citlali_logger] [info] array 2 had 72 outlier weights
-[2025-12-04 21:30:33.127] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
-[2025-12-04 21:30:33.402] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:33.435] [citlali_logger] [info] populating maps
-[2025-12-04 21:30:33.454] [citlali_logger] [info] array 0 iter 0: 0/2459 dets below inv var limit. 19/2459 dets above inv var limit.
-[2025-12-04 21:30:33.474] [citlali_logger] [info] array 1 iter 0: 0/824 dets below inv var limit. 14/824 dets above inv var limit.
-[2025-12-04 21:30:33.486] [citlali_logger] [info] array 2 iter 0: 0/840 dets below inv var limit. 8/840 dets above inv var limit.
-[2025-12-04 21:30:33.492] [citlali_logger] [info] calculating weights
-[2025-12-04 21:30:33.497] [citlali_logger] [info] array 0 had 47 outlier weights
-[2025-12-04 21:30:33.497] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
-[2025-12-04 21:30:33.497] [citlali_logger] [info] array 1 had 46 outlier weights
-[2025-12-04 21:30:33.497] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
-[2025-12-04 21:30:33.497] [citlali_logger] [info] array 2 had 72 outlier weights
-[2025-12-04 21:30:33.497] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
-[2025-12-04 21:30:33.552] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:30:33.806] [citlali_logger] [info] populating maps
-[2025-12-04 21:30:34.073] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:30:34.808] [citlali_logger] [info] citlali progress ......................                                                     [ 30%]
-[2025-12-04 21:30:34.811] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:30:34.840] [citlali_logger] [info] starting scan 14. 1/50 scans completed
-[2025-12-04 21:30:34.840] [citlali_logger] [info] raw time chunk processing for scan 14
-[2025-12-04 21:30:35.548] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:30:36.199] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:30:36.287] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:30:36.507] [citlali_logger] [info] done with scan 3. 2/50 scans completed
-[2025-12-04 21:30:36.655] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:30:37.238] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:30:37.929] [citlali_logger] [info] cleaning nw 11
-[2025-12-04 21:30:38.062] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:30:38.518] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:30:38.518] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:38.552] [citlali_logger] [info] cleaning nw 12
-[2025-12-04 21:30:38.587] [citlali_logger] [info] array 0 iter 0: 20/2643 dets below inv var limit. 94/2643 dets above inv var limit.
-[2025-12-04 21:30:38.604] [citlali_logger] [info] array 1 iter 0: 8/857 dets below inv var limit. 10/857 dets above inv var limit.
-[2025-12-04 21:30:38.620] [citlali_logger] [info] array 2 iter 0: 4/847 dets below inv var limit. 3/847 dets above inv var limit.
-[2025-12-04 21:30:38.626] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:30:38.633] [citlali_logger] [info] processed time chunk processing for scan 11
-[2025-12-04 21:30:38.795] [citlali_logger] [info] cleaning
-[2025-12-04 21:30:38.796] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:30:38.798] [citlali_logger] [info] citlali progress ........................                                                   [ 32%]
-[2025-12-04 21:30:38.837] [citlali_logger] [info] starting scan 15. 2/50 scans completed
-[2025-12-04 21:30:38.837] [citlali_logger] [info] raw time chunk processing for scan 15
-[2025-12-04 21:30:39.446] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:39.547] [citlali_logger] [info] array 0 iter 0: 0/2448 dets below inv var limit. 17/2448 dets above inv var limit.
-[2025-12-04 21:30:39.578] [citlali_logger] [info] array 1 iter 0: 0/824 dets below inv var limit. 14/824 dets above inv var limit.
-[2025-12-04 21:30:39.621] [citlali_logger] [info] array 2 iter 0: 0/842 dets below inv var limit. 8/842 dets above inv var limit.
-[2025-12-04 21:30:39.623] [citlali_logger] [info] calculating weights
-[2025-12-04 21:30:39.636] [citlali_logger] [info] array 0 had 47 outlier weights
-[2025-12-04 21:30:39.636] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
-[2025-12-04 21:30:39.636] [citlali_logger] [info] array 1 had 46 outlier weights
-[2025-12-04 21:30:39.636] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
-[2025-12-04 21:30:39.636] [citlali_logger] [info] array 2 had 72 outlier weights
-[2025-12-04 21:30:39.636] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
-[2025-12-04 21:30:39.853] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:30:40.242] [citlali_logger] [info] populating maps
-[2025-12-04 21:30:40.442] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:30:40.884] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:30:41.634] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:30:42.189] [citlali_logger] [info] starting scan 16. 2/50 scans completed
-[2025-12-04 21:30:42.189] [citlali_logger] [info] raw time chunk processing for scan 16
-[2025-12-04 21:30:42.190] [citlali_logger] [info] citlali progress .........................                                                  [ 34%]
-[2025-12-04 21:30:42.346] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:30:42.633] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:30:42.775] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:30:42.979] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:30:42.980] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:43.116] [citlali_logger] [info] array 0 iter 0: 20/2643 dets below inv var limit. 94/2643 dets above inv var limit.
-[2025-12-04 21:30:43.148] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:30:43.148] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:43.150] [citlali_logger] [info] array 1 iter 0: 9/857 dets below inv var limit. 12/857 dets above inv var limit.
-[2025-12-04 21:30:43.174] [citlali_logger] [info] array 0 iter 0: 15/2643 dets below inv var limit. 95/2643 dets above inv var limit.
-[2025-12-04 21:30:43.183] [citlali_logger] [info] array 1 iter 0: 10/857 dets below inv var limit. 10/857 dets above inv var limit.
-[2025-12-04 21:30:43.191] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 1/847 dets above inv var limit.
-[2025-12-04 21:30:43.195] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:30:43.197] [citlali_logger] [info] processed time chunk processing for scan 14
-[2025-12-04 21:30:43.207] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 1/847 dets above inv var limit.
-[2025-12-04 21:30:43.224] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:30:43.226] [citlali_logger] [info] processed time chunk processing for scan 12
-[2025-12-04 21:30:43.313] [citlali_logger] [info] cleaning
-[2025-12-04 21:30:43.317] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:30:43.555] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:30:43.565] [citlali_logger] [info] cleaning
-[2025-12-04 21:30:43.565] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:30:43.684] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:30:44.012] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:30:44.175] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:30:44.230] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:30:44.672] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:30:44.706] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:30:44.780] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:30:45.020] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:30:45.292] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:30:45.357] [citlali_logger] [info] cleaning nw 11
-[2025-12-04 21:30:45.452] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:30:45.486] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:30:45.495] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:45.571] [citlali_logger] [info] array 0 iter 0: 19/2643 dets below inv var limit. 86/2643 dets above inv var limit.
-[2025-12-04 21:30:45.594] [citlali_logger] [info] array 1 iter 0: 10/857 dets below inv var limit. 10/857 dets above inv var limit.
-[2025-12-04 21:30:45.624] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 2/847 dets above inv var limit.
-[2025-12-04 21:30:45.635] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:30:45.641] [citlali_logger] [info] processed time chunk processing for scan 13
-[2025-12-04 21:30:45.764] [citlali_logger] [info] cleaning nw 12
-[2025-12-04 21:30:45.881] [citlali_logger] [info] cleaning
-[2025-12-04 21:30:45.893] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:30:45.933] [citlali_logger] [info] citlali progress ...........................                                                [ 36%]
-[2025-12-04 21:30:45.944] [citlali_logger] [info] starting scan 17. 2/50 scans completed
-[2025-12-04 21:30:45.944] [citlali_logger] [info] raw time chunk processing for scan 17
-[2025-12-04 21:30:46.034] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:30:46.159] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:30:46.356] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:46.434] [citlali_logger] [info] done with scan 6. 3/50 scans completed
-[2025-12-04 21:30:46.436] [citlali_logger] [info] array 0 iter 0: 0/2450 dets below inv var limit. 21/2450 dets above inv var limit.
-[2025-12-04 21:30:46.455] [citlali_logger] [info] array 1 iter 0: 0/826 dets below inv var limit. 18/826 dets above inv var limit.
-[2025-12-04 21:30:46.478] [citlali_logger] [info] array 2 iter 0: 0/838 dets below inv var limit. 7/838 dets above inv var limit.
-[2025-12-04 21:30:46.488] [citlali_logger] [info] calculating weights
-[2025-12-04 21:30:46.489] [citlali_logger] [info] array 0 had 47 outlier weights
-[2025-12-04 21:30:46.489] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
-[2025-12-04 21:30:46.499] [citlali_logger] [info] array 1 had 46 outlier weights
-[2025-12-04 21:30:46.499] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
-[2025-12-04 21:30:46.500] [citlali_logger] [info] array 2 had 72 outlier weights
-[2025-12-04 21:30:46.500] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
-[2025-12-04 21:30:46.772] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:30:46.861] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:30:46.861] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:30:46.887] [citlali_logger] [info] populating maps
-[2025-12-04 21:30:46.991] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:30:47.241] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:30:47.500] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:30:47.540] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:30:47.654] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:30:47.982] [citlali_logger] [info] cleaning nw 11
-[2025-12-04 21:30:48.079] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:30:48.081] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:30:48.169] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:30:48.323] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:30:48.324] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:30:48.331] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:48.383] [citlali_logger] [info] array 0 iter 0: 18/2643 dets below inv var limit. 95/2643 dets above inv var limit.
-[2025-12-04 21:30:48.400] [citlali_logger] [info] array 1 iter 0: 10/857 dets below inv var limit. 9/857 dets above inv var limit.
-[2025-12-04 21:30:48.416] [citlali_logger] [info] array 2 iter 0: 4/847 dets below inv var limit. 4/847 dets above inv var limit.
-[2025-12-04 21:30:48.422] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:30:48.429] [citlali_logger] [info] processed time chunk processing for scan 15
-[2025-12-04 21:30:48.480] [citlali_logger] [info] done with scan 2. 4/50 scans completed
-[2025-12-04 21:30:48.536] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:30:48.588] [citlali_logger] [info] cleaning nw 12
-[2025-12-04 21:30:48.632] [citlali_logger] [info] cleaning
-[2025-12-04 21:30:48.632] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:30:49.068] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:30:49.100] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:30:49.459] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:30:49.494] [citlali_logger] [info] starting scan 18. 4/50 scans completed
-[2025-12-04 21:30:49.494] [citlali_logger] [info] raw time chunk processing for scan 18
-[2025-12-04 21:30:49.504] [citlali_logger] [info] citlali progress ............................                                               [ 38%]
-[2025-12-04 21:30:49.536] [citlali_logger] [info] done with scan 4. 5/50 scans completed
-[2025-12-04 21:30:49.568] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:49.687] [citlali_logger] [info] array 0 iter 0: 0/2456 dets below inv var limit. 18/2456 dets above inv var limit.
-[2025-12-04 21:30:49.708] [citlali_logger] [info] cleaning nw 11
-[2025-12-04 21:30:49.729] [citlali_logger] [info] array 1 iter 0: 0/824 dets below inv var limit. 17/824 dets above inv var limit.
-[2025-12-04 21:30:49.777] [citlali_logger] [info] array 2 iter 0: 0/842 dets below inv var limit. 9/842 dets above inv var limit.
-[2025-12-04 21:30:49.779] [citlali_logger] [info] calculating weights
-[2025-12-04 21:30:49.786] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:30:49.794] [citlali_logger] [info] array 0 had 47 outlier weights
-[2025-12-04 21:30:49.794] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
-[2025-12-04 21:30:49.794] [citlali_logger] [info] array 1 had 46 outlier weights
-[2025-12-04 21:30:49.794] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
-[2025-12-04 21:30:49.794] [citlali_logger] [info] array 2 had 72 outlier weights
-[2025-12-04 21:30:49.794] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
-[2025-12-04 21:30:49.924] [citlali_logger] [info] cleaning nw 12
-[2025-12-04 21:30:50.225] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:50.250] [citlali_logger] [info] array 0 iter 0: 0/2450 dets below inv var limit. 14/2450 dets above inv var limit.
-[2025-12-04 21:30:50.259] [citlali_logger] [info] array 1 iter 0: 0/823 dets below inv var limit. 14/823 dets above inv var limit.
-[2025-12-04 21:30:50.267] [citlali_logger] [info] array 2 iter 0: 0/842 dets below inv var limit. 11/842 dets above inv var limit.
-[2025-12-04 21:30:50.270] [citlali_logger] [info] calculating weights
-[2025-12-04 21:30:50.271] [citlali_logger] [info] array 0 had 47 outlier weights
-[2025-12-04 21:30:50.271] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
-[2025-12-04 21:30:50.272] [citlali_logger] [info] array 1 had 46 outlier weights
-[2025-12-04 21:30:50.272] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
-[2025-12-04 21:30:50.272] [citlali_logger] [info] array 2 had 72 outlier weights
-[2025-12-04 21:30:50.272] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
-[2025-12-04 21:30:50.276] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:30:50.333] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:30:50.339] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:30:50.392] [citlali_logger] [info] populating maps
-[2025-12-04 21:30:50.570] [citlali_logger] [info] populating maps
-[2025-12-04 21:30:50.588] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:30:50.970] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:30:50.999] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:30:51.437] [citlali_logger] [info] cleaning nw 11
-[2025-12-04 21:30:51.833] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:30:51.913] [citlali_logger] [info] cleaning nw 12
-[2025-12-04 21:30:52.445] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:52.496] [citlali_logger] [info] array 0 iter 0: 0/2460 dets below inv var limit. 18/2460 dets above inv var limit.
-[2025-12-04 21:30:52.513] [citlali_logger] [info] array 1 iter 0: 0/824 dets below inv var limit. 17/824 dets above inv var limit.
-[2025-12-04 21:30:52.533] [citlali_logger] [info] array 2 iter 0: 0/841 dets below inv var limit. 9/841 dets above inv var limit.
-[2025-12-04 21:30:52.539] [citlali_logger] [info] calculating weights
-[2025-12-04 21:30:52.541] [citlali_logger] [info] array 0 had 47 outlier weights
-[2025-12-04 21:30:52.541] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
-[2025-12-04 21:30:52.541] [citlali_logger] [info] array 1 had 46 outlier weights
-[2025-12-04 21:30:52.541] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
-[2025-12-04 21:30:52.541] [citlali_logger] [info] array 2 had 72 outlier weights
-[2025-12-04 21:30:52.541] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
-[2025-12-04 21:30:52.580] [citlali_logger] [info] starting scan 19. 5/50 scans completed
-[2025-12-04 21:30:52.584] [citlali_logger] [info] raw time chunk processing for scan 19
-[2025-12-04 21:30:52.590] [citlali_logger] [info] citlali progress ..............................                                             [ 40%]
-[2025-12-04 21:30:52.889] [citlali_logger] [info] populating maps
-[2025-12-04 21:30:53.020] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:30:53.371] [citlali_logger] [info] done with scan 5. 6/50 scans completed
-[2025-12-04 21:30:53.852] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:30:53.942] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:30:54.300] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:30:54.769] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:30:55.502] [citlali_logger] [info] cleaning nw 11
-[2025-12-04 21:30:56.069] [citlali_logger] [info] cleaning nw 12
-[2025-12-04 21:30:56.681] [citlali_logger] [info] starting scan 20. 6/50 scans completed
-[2025-12-04 21:30:56.681] [citlali_logger] [info] raw time chunk processing for scan 20
-[2025-12-04 21:30:56.695] [citlali_logger] [info] citlali progress ...............................                                            [ 42%]
-[2025-12-04 21:30:56.894] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:56.979] [citlali_logger] [info] array 0 iter 0: 0/2450 dets below inv var limit. 18/2450 dets above inv var limit.
-[2025-12-04 21:30:57.012] [citlali_logger] [info] array 1 iter 0: 0/825 dets below inv var limit. 18/825 dets above inv var limit.
-[2025-12-04 21:30:57.034] [citlali_logger] [info] array 2 iter 0: 0/837 dets below inv var limit. 7/837 dets above inv var limit.
-[2025-12-04 21:30:57.043] [citlali_logger] [info] calculating weights
-[2025-12-04 21:30:57.044] [citlali_logger] [info] array 0 had 47 outlier weights
-[2025-12-04 21:30:57.044] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
-[2025-12-04 21:30:57.045] [citlali_logger] [info] array 1 had 46 outlier weights
-[2025-12-04 21:30:57.045] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
-[2025-12-04 21:30:57.045] [citlali_logger] [info] array 2 had 72 outlier weights
-[2025-12-04 21:30:57.045] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
-[2025-12-04 21:30:57.459] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:30:57.509] [citlali_logger] [info] populating maps
-[2025-12-04 21:30:57.902] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:30:57.902] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:57.982] [citlali_logger] [info] array 0 iter 0: 16/2643 dets below inv var limit. 87/2643 dets above inv var limit.
-[2025-12-04 21:30:58.014] [citlali_logger] [info] array 1 iter 0: 10/857 dets below inv var limit. 17/857 dets above inv var limit.
-[2025-12-04 21:30:58.038] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 1/847 dets above inv var limit.
-[2025-12-04 21:30:58.049] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:30:58.051] [citlali_logger] [info] processed time chunk processing for scan 16
-[2025-12-04 21:30:58.297] [citlali_logger] [info] cleaning
-[2025-12-04 21:30:58.297] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:30:59.170] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:30:59.342] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:30:59.635] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:30:59.635] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:30:59.714] [citlali_logger] [info] array 0 iter 0: 19/2643 dets below inv var limit. 95/2643 dets above inv var limit.
-[2025-12-04 21:30:59.738] [citlali_logger] [info] array 1 iter 0: 9/857 dets below inv var limit. 13/857 dets above inv var limit.
-[2025-12-04 21:30:59.767] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 1/847 dets above inv var limit.
-[2025-12-04 21:30:59.778] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:30:59.780] [citlali_logger] [info] processed time chunk processing for scan 17
-[2025-12-04 21:30:59.878] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:31:00.002] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:31:00.055] [citlali_logger] [info] starting scan 21. 6/50 scans completed
-[2025-12-04 21:31:00.061] [citlali_logger] [info] raw time chunk processing for scan 21
-[2025-12-04 21:31:00.065] [citlali_logger] [info] citlali progress .................................                                          [ 44%]
-[2025-12-04 21:31:00.076] [citlali_logger] [info] cleaning
-[2025-12-04 21:31:00.077] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:31:00.327] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:31:00.327] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:31:00.398] [citlali_logger] [info] array 0 iter 0: 14/2643 dets below inv var limit. 99/2643 dets above inv var limit.
-[2025-12-04 21:31:00.428] [citlali_logger] [info] array 1 iter 0: 9/857 dets below inv var limit. 8/857 dets above inv var limit.
-[2025-12-04 21:31:00.450] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 1/847 dets above inv var limit.
-[2025-12-04 21:31:00.461] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:31:00.470] [citlali_logger] [info] processed time chunk processing for scan 18
-[2025-12-04 21:31:00.667] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:31:00.715] [citlali_logger] [info] cleaning
-[2025-12-04 21:31:00.716] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:31:01.410] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:31:01.493] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:31:01.747] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:31:02.131] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:31:02.288] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:31:02.403] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:31:02.777] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:31:02.870] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:31:02.953] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:31:03.015] [citlali_logger] [info] done with scan 7. 7/50 scans completed
-[2025-12-04 21:31:03.043] [citlali_logger] [info] citlali progress ..................................                                         [ 46%]
-[2025-12-04 21:31:03.058] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:31:03.069] [citlali_logger] [info] starting scan 22. 7/50 scans completed
-[2025-12-04 21:31:03.069] [citlali_logger] [info] raw time chunk processing for scan 22
-[2025-12-04 21:31:03.236] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:31:03.551] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:31:03.706] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:31:03.820] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:31:04.022] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:31:04.438] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:31:04.453] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:31:04.495] [citlali_logger] [info] done with scan 9. 8/50 scans completed
-[2025-12-04 21:31:04.514] [citlali_logger] [info] cleaning nw 11
-[2025-12-04 21:31:04.515] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:31:04.763] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:31:04.859] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:31:05.089] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:31:05.090] [citlali_logger] [info] cleaning nw 12
-[2025-12-04 21:31:05.148] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:31:05.179] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:31:05.307] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:31:05.307] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:31:05.385] [citlali_logger] [info] array 0 iter 0: 21/2643 dets below inv var limit. 106/2643 dets above inv var limit.
-[2025-12-04 21:31:05.412] [citlali_logger] [info] array 1 iter 0: 11/857 dets below inv var limit. 10/857 dets above inv var limit.
-[2025-12-04 21:31:05.435] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 2/847 dets above inv var limit.
-[2025-12-04 21:31:05.442] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:31:05.448] [citlali_logger] [info] processed time chunk processing for scan 19
-[2025-12-04 21:31:05.553] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:31:05.609] [citlali_logger] [info] cleaning nw 11
-[2025-12-04 21:31:05.693] [citlali_logger] [info] cleaning
-[2025-12-04 21:31:05.700] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:31:05.836] [citlali_logger] [info] done with scan 8. 9/50 scans completed
-[2025-12-04 21:31:05.883] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:31:05.958] [citlali_logger] [info] array 0 iter 0: 0/2461 dets below inv var limit. 22/2461 dets above inv var limit.
-[2025-12-04 21:31:05.985] [citlali_logger] [info] array 1 iter 0: 0/817 dets below inv var limit. 18/817 dets above inv var limit.
-[2025-12-04 21:31:05.988] [citlali_logger] [info] cleaning nw 12
-[2025-12-04 21:31:06.008] [citlali_logger] [info] array 2 iter 0: 0/842 dets below inv var limit. 7/842 dets above inv var limit.
-[2025-12-04 21:31:06.017] [citlali_logger] [info] calculating weights
-[2025-12-04 21:31:06.019] [citlali_logger] [info] array 0 had 47 outlier weights
-[2025-12-04 21:31:06.019] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
-[2025-12-04 21:31:06.019] [citlali_logger] [info] array 1 had 46 outlier weights
-[2025-12-04 21:31:06.019] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
-[2025-12-04 21:31:06.019] [citlali_logger] [info] array 2 had 72 outlier weights
-[2025-12-04 21:31:06.019] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
-[2025-12-04 21:31:06.129] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:31:06.471] [citlali_logger] [info] starting scan 23. 9/50 scans completed
-[2025-12-04 21:31:06.480] [citlali_logger] [info] raw time chunk processing for scan 23
-[2025-12-04 21:31:06.480] [citlali_logger] [info] populating maps
-[2025-12-04 21:31:06.480] [citlali_logger] [info] citlali progress ....................................                                       [ 48%]
-[2025-12-04 21:31:06.526] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:31:06.574] [citlali_logger] [info] array 0 iter 0: 0/2451 dets below inv var limit. 21/2451 dets above inv var limit.
-[2025-12-04 21:31:06.590] [citlali_logger] [info] array 1 iter 0: 0/827 dets below inv var limit. 20/827 dets above inv var limit.
-[2025-12-04 21:31:06.606] [citlali_logger] [info] array 2 iter 0: 0/842 dets below inv var limit. 7/842 dets above inv var limit.
-[2025-12-04 21:31:06.612] [citlali_logger] [info] calculating weights
-[2025-12-04 21:31:06.617] [citlali_logger] [info] array 0 had 47 outlier weights
-[2025-12-04 21:31:06.617] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
-[2025-12-04 21:31:06.618] [citlali_logger] [info] array 1 had 46 outlier weights
-[2025-12-04 21:31:06.618] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
-[2025-12-04 21:31:06.618] [citlali_logger] [info] array 2 had 72 outlier weights
-[2025-12-04 21:31:06.618] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
-[2025-12-04 21:31:06.652] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:31:06.730] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:31:06.829] [citlali_logger] [info] cleaning nw 11
-[2025-12-04 21:31:06.921] [citlali_logger] [info] populating maps
-[2025-12-04 21:31:07.094] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:31:07.094] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:31:07.174] [citlali_logger] [info] array 0 iter 0: 28/2643 dets below inv var limit. 98/2643 dets above inv var limit.
-[2025-12-04 21:31:07.198] [citlali_logger] [info] array 1 iter 0: 11/857 dets below inv var limit. 10/857 dets above inv var limit.
-[2025-12-04 21:31:07.227] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 1/847 dets above inv var limit.
-[2025-12-04 21:31:07.237] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:31:07.240] [citlali_logger] [info] processed time chunk processing for scan 20
-[2025-12-04 21:31:07.394] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:31:07.399] [citlali_logger] [info] cleaning nw 12
-[2025-12-04 21:31:07.489] [citlali_logger] [info] cleaning
-[2025-12-04 21:31:07.489] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:31:08.054] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:31:08.196] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:31:08.266] [citlali_logger] [info] array 0 iter 0: 0/2449 dets below inv var limit. 24/2449 dets above inv var limit.
-[2025-12-04 21:31:08.296] [citlali_logger] [info] array 1 iter 0: 0/822 dets below inv var limit. 19/822 dets above inv var limit.
-[2025-12-04 21:31:08.318] [citlali_logger] [info] array 2 iter 0: 0/842 dets below inv var limit. 7/842 dets above inv var limit.
-[2025-12-04 21:31:08.320] [citlali_logger] [info] calculating weights
-[2025-12-04 21:31:08.329] [citlali_logger] [info] array 0 had 47 outlier weights
-[2025-12-04 21:31:08.329] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
-[2025-12-04 21:31:08.329] [citlali_logger] [info] array 1 had 46 outlier weights
-[2025-12-04 21:31:08.329] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
-[2025-12-04 21:31:08.329] [citlali_logger] [info] array 2 had 72 outlier weights
-[2025-12-04 21:31:08.329] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
-[2025-12-04 21:31:08.552] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:31:08.793] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:31:08.798] [citlali_logger] [info] populating maps
-[2025-12-04 21:31:09.203] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:31:09.463] [citlali_logger] [info] starting scan 24. 9/50 scans completed
-[2025-12-04 21:31:09.463] [citlali_logger] [info] raw time chunk processing for scan 24
-[2025-12-04 21:31:09.471] [citlali_logger] [info] citlali progress .....................................                                      [ 50%]
-[2025-12-04 21:31:09.512] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:31:09.908] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:31:10.268] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:31:10.383] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:31:10.790] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:31:10.794] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:31:10.909] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:31:11.197] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:31:11.197] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:31:11.254] [citlali_logger] [info] array 0 iter 0: 20/2643 dets below inv var limit. 98/2643 dets above inv var limit.
-[2025-12-04 21:31:11.269] [citlali_logger] [info] array 1 iter 0: 11/857 dets below inv var limit. 7/857 dets above inv var limit.
-[2025-12-04 21:31:11.285] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 1/847 dets above inv var limit.
-[2025-12-04 21:31:11.292] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:31:11.294] [citlali_logger] [info] processed time chunk processing for scan 22
-[2025-12-04 21:31:11.372] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:31:11.461] [citlali_logger] [info] cleaning
-[2025-12-04 21:31:11.465] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:31:11.506] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:31:12.065] [citlali_logger] [info] cleaning nw 11
-[2025-12-04 21:31:12.146] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:31:12.161] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:31:12.246] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:31:12.586] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:31:12.600] [citlali_logger] [info] done with scan 10. 10/50 scans completed
-[2025-12-04 21:31:12.618] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:31:12.635] [citlali_logger] [info] cleaning nw 12
-[2025-12-04 21:31:12.759] [citlali_logger] [info] starting scan 25. 10/50 scans completed
-[2025-12-04 21:31:12.766] [citlali_logger] [info] raw time chunk processing for scan 25
-[2025-12-04 21:31:12.771] [citlali_logger] [info] citlali progress .......................................                                    [ 52%]
-[2025-12-04 21:31:12.906] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:31:13.110] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:31:13.240] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:31:13.255] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:31:13.257] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:31:13.258] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:31:13.284] [citlali_logger] [info] array 0 iter 0: 17/2643 dets below inv var limit. 100/2643 dets above inv var limit.
-[2025-12-04 21:31:13.292] [citlali_logger] [info] array 1 iter 0: 9/857 dets below inv var limit. 12/857 dets above inv var limit.
-[2025-12-04 21:31:13.301] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 1/847 dets above inv var limit.
-[2025-12-04 21:31:13.304] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:31:13.306] [citlali_logger] [info] processed time chunk processing for scan 21
-[2025-12-04 21:31:13.388] [citlali_logger] [info] cleaning
-[2025-12-04 21:31:13.389] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:31:13.505] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:31:13.557] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:31:13.596] [citlali_logger] [info] array 0 iter 0: 0/2435 dets below inv var limit. 21/2435 dets above inv var limit.
-[2025-12-04 21:31:13.622] [citlali_logger] [info] array 1 iter 0: 0/823 dets below inv var limit. 13/823 dets above inv var limit.
-[2025-12-04 21:31:13.644] [citlali_logger] [info] array 2 iter 0: 0/841 dets below inv var limit. 6/841 dets above inv var limit.
-[2025-12-04 21:31:13.653] [citlali_logger] [info] calculating weights
-[2025-12-04 21:31:13.663] [citlali_logger] [info] array 0 had 47 outlier weights
-[2025-12-04 21:31:13.663] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
-[2025-12-04 21:31:13.663] [citlali_logger] [info] array 1 had 46 outlier weights
-[2025-12-04 21:31:13.663] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
-[2025-12-04 21:31:13.663] [citlali_logger] [info] array 2 had 72 outlier weights
-[2025-12-04 21:31:13.663] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
-[2025-12-04 21:31:13.735] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:31:13.773] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:31:13.803] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:31:13.926] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:31:13.970] [citlali_logger] [info] cleaning nw 11
-[2025-12-04 21:31:14.053] [citlali_logger] [info] done with scan 11. 11/50 scans completed
-[2025-12-04 21:31:14.129] [citlali_logger] [info] populating maps
-[2025-12-04 21:31:14.171] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:31:14.226] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:31:14.591] [citlali_logger] [info] cleaning nw 12
-[2025-12-04 21:31:14.653] [citlali_logger] [info] cleaning nw 11
-[2025-12-04 21:31:14.933] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:31:15.192] [citlali_logger] [info] cleaning nw 12
-[2025-12-04 21:31:15.383] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:31:15.458] [citlali_logger] [info] array 0 iter 0: 0/2437 dets below inv var limit. 21/2437 dets above inv var limit.
-[2025-12-04 21:31:15.489] [citlali_logger] [info] array 1 iter 0: 0/823 dets below inv var limit. 14/823 dets above inv var limit.
-[2025-12-04 21:31:15.516] [citlali_logger] [info] array 2 iter 0: 0/842 dets below inv var limit. 7/842 dets above inv var limit.
-[2025-12-04 21:31:15.526] [citlali_logger] [info] calculating weights
-[2025-12-04 21:31:15.527] [citlali_logger] [info] array 0 had 47 outlier weights
-[2025-12-04 21:31:15.527] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
-[2025-12-04 21:31:15.527] [citlali_logger] [info] array 1 had 46 outlier weights
-[2025-12-04 21:31:15.527] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
-[2025-12-04 21:31:15.527] [citlali_logger] [info] array 2 had 72 outlier weights
-[2025-12-04 21:31:15.527] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
-[2025-12-04 21:31:15.554] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:31:15.790] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:31:15.838] [citlali_logger] [info] done with scan 12. 12/50 scans completed
-[2025-12-04 21:31:15.916] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:31:16.004] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:31:16.022] [citlali_logger] [info] array 0 iter 0: 0/2446 dets below inv var limit. 22/2446 dets above inv var limit.
-[2025-12-04 21:31:16.034] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:31:16.049] [citlali_logger] [info] array 1 iter 0: 0/826 dets below inv var limit. 18/826 dets above inv var limit.
-[2025-12-04 21:31:16.078] [citlali_logger] [info] array 2 iter 0: 0/842 dets below inv var limit. 7/842 dets above inv var limit.
-[2025-12-04 21:31:16.080] [citlali_logger] [info] calculating weights
-[2025-12-04 21:31:16.088] [citlali_logger] [info] array 0 had 47 outlier weights
-[2025-12-04 21:31:16.088] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
-[2025-12-04 21:31:16.088] [citlali_logger] [info] array 1 had 46 outlier weights
-[2025-12-04 21:31:16.091] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
-[2025-12-04 21:31:16.092] [citlali_logger] [info] array 2 had 72 outlier weights
-[2025-12-04 21:31:16.092] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
-[2025-12-04 21:31:16.088] [citlali_logger] [info] populating maps
-[2025-12-04 21:31:16.279] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:31:16.435] [citlali_logger] [info] populating maps
-[2025-12-04 21:31:16.775] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:31:16.924] [citlali_logger] [info] starting scan 26. 12/50 scans completed
-[2025-12-04 21:31:16.927] [citlali_logger] [info] raw time chunk processing for scan 26
-[2025-12-04 21:31:16.947] [citlali_logger] [info] citlali progress ........................................                                   [ 54%]
-[2025-12-04 21:31:17.438] [citlali_logger] [info] cleaning nw 11
-[2025-12-04 21:31:17.626] [citlali_logger] [info] cleaning nw 12
-[2025-12-04 21:31:17.990] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:31:18.067] [citlali_logger] [info] array 0 iter 0: 0/2446 dets below inv var limit. 22/2446 dets above inv var limit.
-[2025-12-04 21:31:18.093] [citlali_logger] [info] array 1 iter 0: 0/823 dets below inv var limit. 17/823 dets above inv var limit.
-[2025-12-04 21:31:18.118] [citlali_logger] [info] array 2 iter 0: 0/842 dets below inv var limit. 7/842 dets above inv var limit.
-[2025-12-04 21:31:18.121] [citlali_logger] [info] calculating weights
-[2025-12-04 21:31:18.129] [citlali_logger] [info] array 0 had 47 outlier weights
-[2025-12-04 21:31:18.132] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
-[2025-12-04 21:31:18.133] [citlali_logger] [info] array 1 had 46 outlier weights
-[2025-12-04 21:31:18.133] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
-[2025-12-04 21:31:18.133] [citlali_logger] [info] array 2 had 72 outlier weights
-[2025-12-04 21:31:18.133] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
-[2025-12-04 21:31:18.463] [citlali_logger] [info] populating maps
-[2025-12-04 21:31:19.908] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:31:20.244] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:31:20.245] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:31:20.312] [citlali_logger] [info] array 0 iter 0: 27/2643 dets below inv var limit. 92/2643 dets above inv var limit.
-[2025-12-04 21:31:20.332] [citlali_logger] [info] array 1 iter 0: 10/857 dets below inv var limit. 9/857 dets above inv var limit.
-[2025-12-04 21:31:20.344] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 2/847 dets above inv var limit.
-[2025-12-04 21:31:20.354] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:31:20.357] [citlali_logger] [info] processed time chunk processing for scan 23
-[2025-12-04 21:31:20.562] [citlali_logger] [info] cleaning
-[2025-12-04 21:31:20.563] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:31:20.944] [citlali_logger] [info] starting scan 27. 12/50 scans completed
-[2025-12-04 21:31:20.955] [citlali_logger] [info] raw time chunk processing for scan 27
-[2025-12-04 21:31:20.963] [citlali_logger] [info] citlali progress ..........................................                                 [ 56%]
-[2025-12-04 21:31:21.183] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:31:21.190] [citlali_logger] [info] done with scan 14. 13/50 scans completed
-[2025-12-04 21:31:21.423] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:31:21.810] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:31:22.401] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:31:22.642] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:31:22.996] [citlali_logger] [info] done with scan 13. 14/50 scans completed
-[2025-12-04 21:31:23.283] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:31:23.376] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:31:23.464] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:31:23.747] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:31:23.787] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:31:23.787] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:31:23.838] [citlali_logger] [info] array 0 iter 0: 19/2643 dets below inv var limit. 99/2643 dets above inv var limit.
-[2025-12-04 21:31:23.859] [citlali_logger] [info] array 1 iter 0: 10/857 dets below inv var limit. 10/857 dets above inv var limit.
-[2025-12-04 21:31:23.871] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 1/847 dets above inv var limit.
-[2025-12-04 21:31:23.878] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:31:23.885] [citlali_logger] [info] processed time chunk processing for scan 24
-[2025-12-04 21:31:24.056] [citlali_logger] [info] cleaning
-[2025-12-04 21:31:24.063] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:31:24.195] [citlali_logger] [info] starting scan 28. 14/50 scans completed
-[2025-12-04 21:31:24.195] [citlali_logger] [info] raw time chunk processing for scan 28
-[2025-12-04 21:31:24.228] [citlali_logger] [info] citlali progress ...........................................                                [ 58%]
-[2025-12-04 21:31:24.326] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:31:24.598] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:31:24.936] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:31:25.023] [citlali_logger] [info] cleaning nw 11
-[2025-12-04 21:31:25.281] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:31:25.527] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:31:25.622] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:31:25.690] [citlali_logger] [info] cleaning nw 12
-[2025-12-04 21:31:25.764] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:31:25.978] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:31:26.014] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:31:26.111] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:31:26.112] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:31:26.190] [citlali_logger] [info] array 0 iter 0: 18/2643 dets below inv var limit. 74/2643 dets above inv var limit.
-[2025-12-04 21:31:26.219] [citlali_logger] [info] array 1 iter 0: 10/857 dets below inv var limit. 9/857 dets above inv var limit.
-[2025-12-04 21:31:26.238] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 1/847 dets above inv var limit.
-[2025-12-04 21:31:26.255] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:31:26.258] [citlali_logger] [info] processed time chunk processing for scan 25
-[2025-12-04 21:31:26.300] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:31:26.503] [citlali_logger] [info] cleaning
-[2025-12-04 21:31:26.507] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:31:26.787] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:31:26.803] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:31:26.907] [citlali_logger] [info] array 0 iter 0: 0/2443 dets below inv var limit. 18/2443 dets above inv var limit.
-[2025-12-04 21:31:26.937] [citlali_logger] [info] array 1 iter 0: 0/825 dets below inv var limit. 19/825 dets above inv var limit.
-[2025-12-04 21:31:26.968] [citlali_logger] [info] array 2 iter 0: 0/841 dets below inv var limit. 6/841 dets above inv var limit.
-[2025-12-04 21:31:26.970] [citlali_logger] [info] calculating weights
-[2025-12-04 21:31:26.984] [citlali_logger] [info] array 0 had 47 outlier weights
-[2025-12-04 21:31:26.984] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
-[2025-12-04 21:31:26.984] [citlali_logger] [info] array 1 had 46 outlier weights
-[2025-12-04 21:31:26.984] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
-[2025-12-04 21:31:26.984] [citlali_logger] [info] array 2 had 72 outlier weights
-[2025-12-04 21:31:26.984] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
-[2025-12-04 21:31:27.249] [citlali_logger] [info] cleaning nw 11
-[2025-12-04 21:31:27.470] [citlali_logger] [info] populating maps
-[2025-12-04 21:31:27.535] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:31:27.580] [citlali_logger] [info] starting scan 29. 14/50 scans completed
-[2025-12-04 21:31:27.580] [citlali_logger] [info] raw time chunk processing for scan 29
-[2025-12-04 21:31:27.598] [citlali_logger] [info] citlali progress .............................................                              [ 60%]
-[2025-12-04 21:31:27.646] [citlali_logger] [info] cleaning nw 12
-[2025-12-04 21:31:28.235] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:31:28.463] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:31:28.531] [citlali_logger] [info] array 0 iter 0: 0/2444 dets below inv var limit. 23/2444 dets above inv var limit.
-[2025-12-04 21:31:28.562] [citlali_logger] [info] array 1 iter 0: 0/824 dets below inv var limit. 21/824 dets above inv var limit.
-[2025-12-04 21:31:28.587] [citlali_logger] [info] array 2 iter 0: 0/842 dets below inv var limit. 5/842 dets above inv var limit.
-[2025-12-04 21:31:28.589] [citlali_logger] [info] calculating weights
-[2025-12-04 21:31:28.598] [citlali_logger] [info] array 0 had 47 outlier weights
-[2025-12-04 21:31:28.598] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
-[2025-12-04 21:31:28.598] [citlali_logger] [info] array 1 had 46 outlier weights
-[2025-12-04 21:31:28.598] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
-[2025-12-04 21:31:28.598] [citlali_logger] [info] array 2 had 72 outlier weights
-[2025-12-04 21:31:28.598] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
-[2025-12-04 21:31:28.896] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:31:29.048] [citlali_logger] [info] populating maps
-[2025-12-04 21:31:29.716] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:31:29.868] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:31:30.172] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:31:30.177] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:31:30.312] [citlali_logger] [info] array 0 iter 0: 21/2643 dets below inv var limit. 96/2643 dets above inv var limit.
-[2025-12-04 21:31:30.321] [citlali_logger] [info] array 1 iter 0: 9/857 dets below inv var limit. 8/857 dets above inv var limit.
-[2025-12-04 21:31:30.330] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 1/847 dets above inv var limit.
-[2025-12-04 21:31:30.333] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:31:30.335] [citlali_logger] [info] processed time chunk processing for scan 26
-[2025-12-04 21:31:30.417] [citlali_logger] [info] cleaning
-[2025-12-04 21:31:30.418] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:31:30.449] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:31:30.758] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:31:30.881] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:31:30.943] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:31:30.979] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:31:31.189] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:31:31.330] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:31:31.520] [citlali_logger] [info] citlali progress ..............................................                             [ 62%]
-[2025-12-04 21:31:31.574] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:31:31.998] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:31:32.287] [citlali_logger] [info] done with scan 15. 15/50 scans completed
-[2025-12-04 21:31:32.326] [citlali_logger] [info] starting scan 30. 15/50 scans completed
-[2025-12-04 21:31:32.329] [citlali_logger] [info] raw time chunk processing for scan 30
-[2025-12-04 21:31:32.422] [citlali_logger] [info] cleaning nw 11
-[2025-12-04 21:31:32.977] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:31:33.126] [citlali_logger] [info] cleaning nw 12
-[2025-12-04 21:31:33.500] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:31:33.596] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:31:33.656] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:31:33.901] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:31:34.119] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:31:34.120] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:31:34.131] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:31:34.205] [citlali_logger] [info] array 0 iter 0: 0/2472 dets below inv var limit. 20/2472 dets above inv var limit.
-[2025-12-04 21:31:34.222] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:31:34.226] [citlali_logger] [info] array 0 iter 0: 17/2643 dets below inv var limit. 80/2643 dets above inv var limit.
-[2025-12-04 21:31:34.234] [citlali_logger] [info] array 1 iter 0: 0/825 dets below inv var limit. 18/825 dets above inv var limit.
-[2025-12-04 21:31:34.256] [citlali_logger] [info] array 2 iter 0: 0/842 dets below inv var limit. 9/842 dets above inv var limit.
-[2025-12-04 21:31:34.256] [citlali_logger] [info] array 1 iter 0: 10/857 dets below inv var limit. 10/857 dets above inv var limit.
-[2025-12-04 21:31:34.261] [citlali_logger] [info] calculating weights
-[2025-12-04 21:31:34.271] [citlali_logger] [info] array 0 had 47 outlier weights
-[2025-12-04 21:31:34.271] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
-[2025-12-04 21:31:34.271] [citlali_logger] [info] array 1 had 46 outlier weights
-[2025-12-04 21:31:34.271] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
-[2025-12-04 21:31:34.271] [citlali_logger] [info] array 2 had 72 outlier weights
-[2025-12-04 21:31:34.271] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
-[2025-12-04 21:31:34.286] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 1/847 dets above inv var limit.
-[2025-12-04 21:31:34.299] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:31:34.313] [citlali_logger] [info] processed time chunk processing for scan 27
-[2025-12-04 21:31:34.629] [citlali_logger] [info] cleaning
-[2025-12-04 21:31:34.630] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:31:34.702] [citlali_logger] [info] cleaning nw 11
-[2025-12-04 21:31:34.730] [citlali_logger] [info] populating maps
-[2025-12-04 21:31:35.108] [citlali_logger] [info] cleaning nw 12
-[2025-12-04 21:31:35.427] [citlali_logger] [info] citlali progress ................................................                           [ 64%]
-[2025-12-04 21:31:35.721] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:31:35.893] [citlali_logger] [info] done with scan 18. 16/50 scans completed
-[2025-12-04 21:31:35.926] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:31:35.935] [citlali_logger] [info] starting scan 31. 16/50 scans completed
-[2025-12-04 21:31:35.935] [citlali_logger] [info] raw time chunk processing for scan 31
-[2025-12-04 21:31:35.998] [citlali_logger] [info] array 0 iter 0: 0/2448 dets below inv var limit. 16/2448 dets above inv var limit.
-[2025-12-04 21:31:36.021] [citlali_logger] [info] array 1 iter 0: 0/827 dets below inv var limit. 19/827 dets above inv var limit.
-[2025-12-04 21:31:36.054] [citlali_logger] [info] array 2 iter 0: 0/842 dets below inv var limit. 5/842 dets above inv var limit.
-[2025-12-04 21:31:36.056] [citlali_logger] [info] calculating weights
-[2025-12-04 21:31:36.066] [citlali_logger] [info] array 0 had 47 outlier weights
-[2025-12-04 21:31:36.066] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
-[2025-12-04 21:31:36.066] [citlali_logger] [info] array 1 had 46 outlier weights
-[2025-12-04 21:31:36.066] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
-[2025-12-04 21:31:36.066] [citlali_logger] [info] array 2 had 72 outlier weights
-[2025-12-04 21:31:36.066] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
-[2025-12-04 21:31:36.393] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:31:36.580] [citlali_logger] [info] populating maps
-[2025-12-04 21:31:37.060] [citlali_logger] [info] cleaning nw 3
-[2025-12-04 21:31:37.258] [citlali_logger] [info] done with scan 16. 17/50 scans completed
-[2025-12-04 21:31:37.379] [citlali_logger] [info] done with scan 17. 18/50 scans completed
-[2025-12-04 21:31:37.660] [citlali_logger] [info] cleaning nw 4
-[2025-12-04 21:31:37.685] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
-[2025-12-04 21:31:38.123] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
-[2025-12-04 21:31:38.128] [citlali_logger] [info] removing outlier dets
-[2025-12-04 21:31:38.129] [citlali_logger] [info] cleaning nw 5
-[2025-12-04 21:31:38.200] [citlali_logger] [info] array 0 iter 0: 24/2643 dets below inv var limit. 80/2643 dets above inv var limit.
-[2025-12-04 21:31:38.216] [citlali_logger] [info] array 1 iter 0: 9/857 dets below inv var limit. 10/857 dets above inv var limit.
-[2025-12-04 21:31:38.235] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 1/847 dets above inv var limit.
-[2025-12-04 21:31:38.238] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
-[2025-12-04 21:31:38.244] [citlali_logger] [info] processed time chunk processing for scan 28
-[2025-12-04 21:31:38.408] [citlali_logger] [info] cleaning
-[2025-12-04 21:31:38.408] [citlali_logger] [info] cleaning nw 0
-[2025-12-04 21:31:38.559] [citlali_logger] [info] cleaning nw 6
-[2025-12-04 21:31:38.618] [citlali_logger] [info] cleaning nw 7
-[2025-12-04 21:31:38.866] [citlali_logger] [info] cleaning nw 8
-[2025-12-04 21:31:39.089] [citlali_logger] [info] cleaning nw 1
-[2025-12-04 21:31:39.245] [citlali_logger] [info] cleaning nw 9
-[2025-12-04 21:31:39.318] [citlali_logger] [info] starting scan 32. 18/50 scans completed
-[2025-12-04 21:31:39.321] [citlali_logger] [info] raw time chunk processing for scan 32
-[2025-12-04 21:31:39.375] [citlali_logger] [info] citlali progress .................................................                          [ 66%]
-[2025-12-04 21:31:39.546] [citlali_logger] [info] cleaning nw 2
-[2025-12-04 21:31:39.662] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
+[2025-12-04 21:45:53.422] [citlali_logger] [info] calculating number of maps
+[2025-12-04 21:45:53.422] [citlali_logger] [info] calculating obs map dimensions
+[2025-12-04 21:46:07.521] [citlali_logger] [info] calculating cmb dimensions
+[2025-12-04 21:46:07.543] [citlali_logger] [info] allocating cmb
+[2025-12-04 21:46:07.557] [citlali_logger] [info] allocating nmb
+[2025-12-04 21:46:07.636] [citlali_logger] [info] starting reduction of observation 1/1
+[2025-12-04 21:46:07.715] [citlali_logger] [info] 294 nearby tones found. these will be flagged.
+[2025-12-04 21:46:07.760] [citlali_logger] [info] calculating flux calibration
+[2025-12-04 21:46:07.761] [citlali_logger] [warning] gaps found in obnsum 130196 data file timing!
+[2025-12-04 21:46:07.761] [citlali_logger] [info] calculating number of maps
+[2025-12-04 21:46:07.761] [citlali_logger] [info] allocating obs map buffer
+[2025-12-04 21:46:07.772] [citlali_logger] [info] pipeline setup
+[2025-12-04 21:46:07.778] [citlali_logger] [info] using am_q50 model for extinction correction
+[2025-12-04 21:46:07.778] [citlali_logger] [info] reduction info
+[2025-12-04 21:46:07.778] [citlali_logger] [info] obsnum: 130196
+[2025-12-04 21:46:07.778] [citlali_logger] [info] map buffer rows: 555
+[2025-12-04 21:46:07.778] [citlali_logger] [info] map buffer cols: 479
+[2025-12-04 21:46:07.778] [citlali_logger] [info] number of maps: 3
+[2025-12-04 21:46:07.778] [citlali_logger] [info] map units: mJy/beam
+[2025-12-04 21:46:07.778] [citlali_logger] [info] polarized reduction: false
+[2025-12-04 21:46:07.778] [citlali_logger] [info] estimated size of map buffer 0.02552112 GB
+[2025-12-04 21:46:07.778] [citlali_logger] [info] coadd map buffer rows: 557
+[2025-12-04 21:46:07.778] [citlali_logger] [info] coadd map buffer cols: 481
+[2025-12-04 21:46:07.778] [citlali_logger] [info] estimated size of coadd buffer 0.025720032 GB
+[2025-12-04 21:46:07.778] [citlali_logger] [info] coadd map buffer noise maps: 10
+[2025-12-04 21:46:07.778] [citlali_logger] [info] estimated size of noise buffer 0.06430008 GB
+[2025-12-04 21:46:07.778] [citlali_logger] [info] estimated size of all maps 0.115541232 GB
+[2025-12-04 21:46:07.778] [citlali_logger] [info] number of scans: 50
+[2025-12-04 21:46:07.778] [citlali_logger] [info] physical memory used 0.0214712 GB
+[2025-12-04 21:46:07.785] [citlali_logger] [info] running pipeline
+[2025-12-04 21:46:07.785] [citlali_logger] [info] citlali progress .                                                                          [  2%]
+[2025-12-04 21:46:12.144] [citlali_logger] [info] citlali progress ...                                                                        [  4%]
+[2025-12-04 21:46:12.164] [citlali_logger] [info] starting scan 1. 0/50 scans completed
+[2025-12-04 21:46:12.164] [citlali_logger] [info] raw time chunk processing for scan 1
+[2025-12-04 21:46:16.903] [citlali_logger] [info] citlali progress ....                                                                       [  6%]
+[2025-12-04 21:46:16.933] [citlali_logger] [info] starting scan 2. 0/50 scans completed
+[2025-12-04 21:46:16.933] [citlali_logger] [info] raw time chunk processing for scan 2
+[2025-12-04 21:46:21.226] [citlali_logger] [info] citlali progress ......                                                                     [  8%]
+[2025-12-04 21:46:21.264] [citlali_logger] [info] starting scan 3. 0/50 scans completed
+[2025-12-04 21:46:21.264] [citlali_logger] [info] raw time chunk processing for scan 3
+[2025-12-04 21:46:24.218] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
+[2025-12-04 21:46:24.646] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
+[2025-12-04 21:46:24.655] [citlali_logger] [info] removing outlier dets
+[2025-12-04 21:46:24.725] [citlali_logger] [info] array 0 iter 0: 19/2643 dets below inv var limit. 71/2643 dets above inv var limit.
+[2025-12-04 21:46:24.758] [citlali_logger] [info] array 1 iter 0: 8/857 dets below inv var limit. 11/857 dets above inv var limit.
+[2025-12-04 21:46:24.777] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 3/847 dets above inv var limit.
+[2025-12-04 21:46:24.791] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
+[2025-12-04 21:46:24.801] [citlali_logger] [info] processed time chunk processing for scan 1
+[2025-12-04 21:46:25.033] [citlali_logger] [info] cleaning
+[2025-12-04 21:46:25.037] [citlali_logger] [info] cleaning nw 0
+[2025-12-04 21:46:25.238] [citlali_logger] [info] citlali progress .......                                                                    [ 10%]
+[2025-12-04 21:46:25.273] [citlali_logger] [info] starting scan 4. 0/50 scans completed
+[2025-12-04 21:46:25.283] [citlali_logger] [info] raw time chunk processing for scan 4
+[2025-12-04 21:46:25.992] [citlali_logger] [info] PCA cov: n_dets 647 denom[min,max]=[1,1814]
+[2025-12-04 21:46:26.011] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[3.58447e+07, 2.13473e+07, 2.0536e+06, 1.46025e+06, 1.11049e+06]
+[2025-12-04 21:46:26.071] [citlali_logger] [info] cleaning nw 1
+[2025-12-04 21:46:26.486] [citlali_logger] [info] PCA cov: n_dets 514 denom[min,max]=[1,1814]
+[2025-12-04 21:46:26.502] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[1.58492e+07, 2.72818e+06, 1.66973e+06, 971812, 798024]
+[2025-12-04 21:46:26.544] [citlali_logger] [info] cleaning nw 2
+[2025-12-04 21:46:26.986] [citlali_logger] [info] PCA cov: n_dets 516 denom[min,max]=[1,1814]
+[2025-12-04 21:46:27.007] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[2.70405e+07, 2.92035e+06, 2.26768e+06, 2.10337e+06, 2.06694e+06]
+[2025-12-04 21:46:27.055] [citlali_logger] [info] cleaning nw 3
+[2025-12-04 21:46:27.591] [citlali_logger] [info] PCA cov: n_dets 545 denom[min,max]=[1,1814]
+[2025-12-04 21:46:27.612] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[2.59168e+07, 3.41647e+06, 1.67746e+06, 1.5145e+06, 1.04221e+06]
+[2025-12-04 21:46:27.691] [citlali_logger] [info] cleaning nw 4
+[2025-12-04 21:46:28.322] [citlali_logger] [info] PCA cov: n_dets 536 denom[min,max]=[1,1814]
+[2025-12-04 21:46:28.338] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[1.88559e+07, 3.90511e+06, 1.7719e+06, 1.05849e+06, 996018]
+[2025-12-04 21:46:28.412] [citlali_logger] [info] cleaning nw 5
+[2025-12-04 21:46:28.485] [citlali_logger] [info] citlali progress .........                                                                  [ 12%]
+[2025-12-04 21:46:28.520] [citlali_logger] [info] starting scan 5. 0/50 scans completed
+[2025-12-04 21:46:28.527] [citlali_logger] [info] raw time chunk processing for scan 5
+[2025-12-04 21:46:28.969] [citlali_logger] [info] PCA cov: n_dets 506 denom[min,max]=[1,1814]
+[2025-12-04 21:46:28.991] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[5.31617e+07, 1.48702e+07, 5.24407e+06, 2.24511e+06, 1.93191e+06]
+[2025-12-04 21:46:29.060] [citlali_logger] [info] cleaning nw 6
+[2025-12-04 21:46:29.116] [citlali_logger] [info] PCA cov: n_dets 168 denom[min,max]=[1,1814]
+[2025-12-04 21:46:29.126] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[9.22596e+06, 2.31839e+06, 854057, 612127, 538572]
+[2025-12-04 21:46:29.140] [citlali_logger] [info] cleaning nw 7
+[2025-12-04 21:46:29.363] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
+[2025-12-04 21:46:29.427] [citlali_logger] [info] PCA cov: n_dets 376 denom[min,max]=[1,1814]
+[2025-12-04 21:46:29.434] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[9.19568e+06, 3.26484e+06, 1.41124e+06, 946169, 662803]
+[2025-12-04 21:46:29.465] [citlali_logger] [info] cleaning nw 8
+[2025-12-04 21:46:29.806] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
+[2025-12-04 21:46:29.815] [citlali_logger] [info] removing outlier dets
+[2025-12-04 21:46:29.911] [citlali_logger] [info] array 0 iter 0: 14/2643 dets below inv var limit. 83/2643 dets above inv var limit.
+[2025-12-04 21:46:29.938] [citlali_logger] [info] PCA cov: n_dets 475 denom[min,max]=[1,1814]
+[2025-12-04 21:46:29.940] [citlali_logger] [info] array 1 iter 0: 9/857 dets below inv var limit. 8/857 dets above inv var limit.
+[2025-12-04 21:46:29.957] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 1/847 dets above inv var limit.
+[2025-12-04 21:46:29.960] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
+[2025-12-04 21:46:29.967] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[7.41349e+06, 1.86348e+06, 1.43196e+06, 1.12003e+06, 918228]
+[2025-12-04 21:46:29.967] [citlali_logger] [info] processed time chunk processing for scan 2
+[2025-12-04 21:46:30.042] [citlali_logger] [info] cleaning nw 9
+[2025-12-04 21:46:30.164] [citlali_logger] [info] cleaning
+[2025-12-04 21:46:30.168] [citlali_logger] [info] cleaning nw 0
+[2025-12-04 21:46:30.420] [citlali_logger] [info] PCA cov: n_dets 526 denom[min,max]=[1,1814]
+[2025-12-04 21:46:30.428] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[1.17591e+07, 1.99725e+06, 1.27558e+06, 755788, 517236]
+[2025-12-04 21:46:30.450] [citlali_logger] [info] cleaning nw 11
+[2025-12-04 21:46:30.759] [citlali_logger] [info] PCA cov: n_dets 473 denom[min,max]=[1,1814]
+[2025-12-04 21:46:30.776] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[8.75676e+06, 1.99764e+06, 1.04913e+06, 721743, 601057]
+[2025-12-04 21:46:30.837] [citlali_logger] [info] cleaning nw 12
+[2025-12-04 21:46:31.113] [citlali_logger] [info] PCA cov: n_dets 647 denom[min,max]=[1,1830]
+[2025-12-04 21:46:31.148] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[2.86975e+08, 9.67527e+06, 2.18273e+06, 2.03651e+06, 1.39328e+06]
+[2025-12-04 21:46:31.288] [citlali_logger] [info] cleaning nw 1
+[2025-12-04 21:46:31.526] [citlali_logger] [info] PCA cov: n_dets 568 denom[min,max]=[1,1814]
+[2025-12-04 21:46:31.550] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[1.13165e+07, 1.06169e+06, 658422, 569930, 422392]
+[2025-12-04 21:46:31.623] [citlali_logger] [info] removing outlier dets
+[2025-12-04 21:46:31.698] [citlali_logger] [info] array 0 iter 0: 0/2474 dets below inv var limit. 21/2474 dets above inv var limit.
+[2025-12-04 21:46:31.720] [citlali_logger] [info] array 1 iter 0: 0/825 dets below inv var limit. 15/825 dets above inv var limit.
+[2025-12-04 21:46:31.737] [citlali_logger] [info] array 2 iter 0: 0/840 dets below inv var limit. 9/840 dets above inv var limit.
+[2025-12-04 21:46:31.743] [citlali_logger] [info] calculating weights
+[2025-12-04 21:46:31.744] [citlali_logger] [info] array 0 had 47 outlier weights
+[2025-12-04 21:46:31.744] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
+[2025-12-04 21:46:31.745] [citlali_logger] [info] array 1 had 46 outlier weights
+[2025-12-04 21:46:31.745] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
+[2025-12-04 21:46:31.745] [citlali_logger] [info] array 2 had 72 outlier weights
+[2025-12-04 21:46:31.745] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
+[2025-12-04 21:46:31.870] [citlali_logger] [info] PCA cov: n_dets 514 denom[min,max]=[1,1830]
+[2025-12-04 21:46:31.888] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[1.85096e+08, 2.51058e+06, 1.82644e+06, 1.53948e+06, 823164]
+[2025-12-04 21:46:31.964] [citlali_logger] [info] cleaning nw 2
+[2025-12-04 21:46:32.125] [citlali_logger] [info] populating maps
+[2025-12-04 21:46:32.570] [citlali_logger] [info] PCA cov: n_dets 516 denom[min,max]=[1,1830]
+[2025-12-04 21:46:32.588] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[2.54516e+08, 1.07581e+07, 6.83024e+06, 3.89506e+06, 2.13393e+06]
+[2025-12-04 21:46:32.658] [citlali_logger] [info] cleaning nw 3
+[2025-12-04 21:46:32.763] [citlali_logger] [info] citlali progress ..........                                                                 [ 14%]
+[2025-12-04 21:46:32.793] [citlali_logger] [info] starting scan 6. 0/50 scans completed
+[2025-12-04 21:46:32.793] [citlali_logger] [info] raw time chunk processing for scan 6
+[2025-12-04 21:46:33.164] [citlali_logger] [info] PCA cov: n_dets 545 denom[min,max]=[1,1830]
+[2025-12-04 21:46:33.181] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[1.7085e+08, 6.75134e+06, 1.24731e+06, 798424, 679522]
+[2025-12-04 21:46:33.238] [citlali_logger] [info] cleaning nw 4
+[2025-12-04 21:46:33.805] [citlali_logger] [info] PCA cov: n_dets 536 denom[min,max]=[1,1830]
+[2025-12-04 21:46:33.827] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[1.56785e+08, 6.44874e+06, 942870, 854504, 725583]
+[2025-12-04 21:46:33.901] [citlali_logger] [info] cleaning nw 5
+[2025-12-04 21:46:34.421] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
+[2025-12-04 21:46:34.460] [citlali_logger] [info] PCA cov: n_dets 506 denom[min,max]=[1,1830]
+[2025-12-04 21:46:34.483] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[5.98357e+08, 2.18855e+07, 1.81496e+07, 5.16836e+06, 3.27788e+06]
+[2025-12-04 21:46:34.554] [citlali_logger] [info] cleaning nw 6
+[2025-12-04 21:46:34.610] [citlali_logger] [info] PCA cov: n_dets 168 denom[min,max]=[1,1830]
+[2025-12-04 21:46:34.620] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[8.16805e+07, 2.42339e+07, 2.64191e+06, 810382, 587388]
+[2025-12-04 21:46:34.627] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
+[2025-12-04 21:46:34.628] [citlali_logger] [info] removing outlier dets
+[2025-12-04 21:46:34.638] [citlali_logger] [info] cleaning nw 7
+[2025-12-04 21:46:34.654] [citlali_logger] [info] array 0 iter 0: 22/2643 dets below inv var limit. 85/2643 dets above inv var limit.
+[2025-12-04 21:46:34.663] [citlali_logger] [info] array 1 iter 0: 10/857 dets below inv var limit. 10/857 dets above inv var limit.
+[2025-12-04 21:46:34.671] [citlali_logger] [info] array 2 iter 0: 3/847 dets below inv var limit. 3/847 dets above inv var limit.
+[2025-12-04 21:46:34.675] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
+[2025-12-04 21:46:34.677] [citlali_logger] [info] processed time chunk processing for scan 3
+[2025-12-04 21:46:34.759] [citlali_logger] [info] cleaning
+[2025-12-04 21:46:34.760] [citlali_logger] [info] cleaning nw 0
+[2025-12-04 21:46:34.946] [citlali_logger] [info] PCA cov: n_dets 376 denom[min,max]=[1,1830]
+[2025-12-04 21:46:34.966] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[1.8616e+07, 4.49953e+06, 2.09967e+06, 1.42575e+06, 527020]
+[2025-12-04 21:46:35.012] [citlali_logger] [info] cleaning nw 8
+[2025-12-04 21:46:35.510] [citlali_logger] [info] PCA cov: n_dets 475 denom[min,max]=[1,1830]
+[2025-12-04 21:46:35.524] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[1.63349e+07, 2.52319e+06, 1.48172e+06, 1.14281e+06, 891968]
+[2025-12-04 21:46:35.589] [citlali_logger] [info] cleaning nw 9
+[2025-12-04 21:46:35.663] [citlali_logger] [info] PCA cov: n_dets 647 denom[min,max]=[1,1830]
+[2025-12-04 21:46:35.696] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[1.42254e+08, 4.14762e+07, 1.67372e+06, 1.55035e+06, 1.03776e+06]
+[2025-12-04 21:46:35.782] [citlali_logger] [info] cleaning nw 1
+[2025-12-04 21:46:36.151] [citlali_logger] [info] PCA cov: n_dets 526 denom[min,max]=[1,1830]
+[2025-12-04 21:46:36.176] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[2.84899e+07, 2.24414e+06, 748909, 380498, 305161]
+[2025-12-04 21:46:36.245] [citlali_logger] [info] cleaning nw 11
+[2025-12-04 21:46:36.323] [citlali_logger] [info] citlali progress ............                                                               [ 16%]
+[2025-12-04 21:46:36.356] [citlali_logger] [info] starting scan 7. 0/50 scans completed
+[2025-12-04 21:46:36.356] [citlali_logger] [info] raw time chunk processing for scan 7
+[2025-12-04 21:46:36.380] [citlali_logger] [info] PCA cov: n_dets 514 denom[min,max]=[1,1830]
+[2025-12-04 21:46:36.409] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[9.46123e+07, 2.5966e+06, 1.95856e+06, 1.46609e+06, 861346]
+[2025-12-04 21:46:36.482] [citlali_logger] [info] cleaning nw 2
+[2025-12-04 21:46:36.782] [citlali_logger] [info] PCA cov: n_dets 473 denom[min,max]=[1,1830]
+[2025-12-04 21:46:36.799] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[5.21245e+07, 2.73341e+06, 1.96944e+06, 694759, 645297]
+[2025-12-04 21:46:36.880] [citlali_logger] [info] cleaning nw 12
+[2025-12-04 21:46:37.124] [citlali_logger] [info] PCA cov: n_dets 516 denom[min,max]=[1,1830]
+[2025-12-04 21:46:37.153] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[9.11358e+07, 1.11168e+07, 5.26623e+06, 3.58265e+06, 2.01237e+06]
+[2025-12-04 21:46:37.214] [citlali_logger] [info] cleaning nw 3
+[2025-12-04 21:46:37.596] [citlali_logger] [info] PCA cov: n_dets 568 denom[min,max]=[1,1830]
+[2025-12-04 21:46:37.628] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[7.66938e+07, 1.79166e+06, 701352, 601828, 538902]
+[2025-12-04 21:46:37.705] [citlali_logger] [info] removing outlier dets
+[2025-12-04 21:46:37.778] [citlali_logger] [info] array 0 iter 0: 0/2467 dets below inv var limit. 19/2467 dets above inv var limit.
+[2025-12-04 21:46:37.807] [citlali_logger] [info] array 1 iter 0: 0/827 dets below inv var limit. 15/827 dets above inv var limit.
+[2025-12-04 21:46:37.830] [citlali_logger] [info] array 2 iter 0: 0/842 dets below inv var limit. 11/842 dets above inv var limit.
+[2025-12-04 21:46:37.839] [citlali_logger] [info] calculating weights
+[2025-12-04 21:46:37.840] [citlali_logger] [info] array 0 had 47 outlier weights
+[2025-12-04 21:46:37.840] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
+[2025-12-04 21:46:37.840] [citlali_logger] [info] array 1 had 46 outlier weights
+[2025-12-04 21:46:37.840] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
+[2025-12-04 21:46:37.841] [citlali_logger] [info] array 2 had 72 outlier weights
+[2025-12-04 21:46:37.841] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
+[2025-12-04 21:46:37.831] [citlali_logger] [info] PCA cov: n_dets 545 denom[min,max]=[1,1830]
+[2025-12-04 21:46:37.875] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[6.92151e+07, 5.86996e+06, 1.42651e+06, 1.03136e+06, 797044]
+[2025-12-04 21:46:37.962] [citlali_logger] [info] cleaning nw 4
+[2025-12-04 21:46:38.278] [citlali_logger] [info] populating maps
+[2025-12-04 21:46:38.439] [citlali_logger] [info] PCA cov: n_dets 536 denom[min,max]=[1,1830]
+[2025-12-04 21:46:38.455] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[5.61228e+07, 4.87015e+06, 2.58701e+06, 952854, 890391]
+[2025-12-04 21:46:38.496] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
+[2025-12-04 21:46:38.503] [citlali_logger] [info] cleaning nw 5
+[2025-12-04 21:46:38.878] [citlali_logger] [info] PCA cov: n_dets 506 denom[min,max]=[1,1830]
+[2025-12-04 21:46:38.897] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[2.03998e+08, 1.67304e+07, 1.60028e+07, 1.08351e+07, 2.19176e+06]
+[2025-12-04 21:46:38.939] [citlali_logger] [info] cleaning nw 6
+[2025-12-04 21:46:38.976] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
+[2025-12-04 21:46:38.977] [citlali_logger] [info] removing outlier dets
+[2025-12-04 21:46:39.006] [citlali_logger] [info] PCA cov: n_dets 168 denom[min,max]=[1,1830]
+[2025-12-04 21:46:39.012] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[3.01024e+07, 2.38329e+06, 667437, 611690, 544882]
+[2025-12-04 21:46:39.035] [citlali_logger] [info] cleaning nw 7
+[2025-12-04 21:46:39.075] [citlali_logger] [info] array 0 iter 0: 19/2643 dets below inv var limit. 77/2643 dets above inv var limit.
+[2025-12-04 21:46:39.104] [citlali_logger] [info] array 1 iter 0: 9/857 dets below inv var limit. 8/857 dets above inv var limit.
+[2025-12-04 21:46:39.126] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 1/847 dets above inv var limit.
+[2025-12-04 21:46:39.138] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
+[2025-12-04 21:46:39.141] [citlali_logger] [info] processed time chunk processing for scan 4
+[2025-12-04 21:46:39.351] [citlali_logger] [info] PCA cov: n_dets 376 denom[min,max]=[1,1830]
+[2025-12-04 21:46:39.359] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[7.30888e+06, 2.94076e+06, 1.36871e+06, 724232, 541250]
+[2025-12-04 21:46:39.407] [citlali_logger] [info] cleaning
+[2025-12-04 21:46:39.409] [citlali_logger] [info] cleaning nw 8
+[2025-12-04 21:46:39.415] [citlali_logger] [info] cleaning nw 0
+[2025-12-04 21:46:39.903] [citlali_logger] [info] PCA cov: n_dets 475 denom[min,max]=[1,1830]
+[2025-12-04 21:46:39.925] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[5.09389e+06, 2.02461e+06, 1.52328e+06, 1.12273e+06, 1.01294e+06]
+[2025-12-04 21:46:39.986] [citlali_logger] [info] cleaning nw 9
+[2025-12-04 21:46:40.073] [citlali_logger] [info] citlali progress .............                                                              [ 18%]
+[2025-12-04 21:46:40.108] [citlali_logger] [info] starting scan 8. 0/50 scans completed
+[2025-12-04 21:46:40.108] [citlali_logger] [info] raw time chunk processing for scan 8
+[2025-12-04 21:46:40.299] [citlali_logger] [info] PCA cov: n_dets 647 denom[min,max]=[1,1830]
+[2025-12-04 21:46:40.319] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[1.44159e+08, 5.94994e+07, 1.83794e+06, 1.48403e+06, 1.21094e+06]
+[2025-12-04 21:46:40.401] [citlali_logger] [info] cleaning nw 1
+[2025-12-04 21:46:40.627] [citlali_logger] [info] PCA cov: n_dets 526 denom[min,max]=[1,1830]
+[2025-12-04 21:46:40.654] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[8.75897e+06, 1.95639e+06, 770585, 415802, 352697]
+[2025-12-04 21:46:40.745] [citlali_logger] [info] cleaning nw 11
+[2025-12-04 21:46:40.984] [citlali_logger] [info] PCA cov: n_dets 514 denom[min,max]=[1,1830]
+[2025-12-04 21:46:41.000] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[8.931e+07, 2.75984e+06, 2.57302e+06, 1.89157e+06, 1.48956e+06]
+[2025-12-04 21:46:41.068] [citlali_logger] [info] cleaning nw 2
+[2025-12-04 21:46:41.270] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
+[2025-12-04 21:46:41.295] [citlali_logger] [info] PCA cov: n_dets 473 denom[min,max]=[1,1830]
+[2025-12-04 21:46:41.321] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[5.45373e+06, 1.49254e+06, 941731, 647833, 400508]
+[2025-12-04 21:46:41.386] [citlali_logger] [info] cleaning nw 12
+[2025-12-04 21:46:41.482] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
+[2025-12-04 21:46:41.482] [citlali_logger] [info] removing outlier dets
+[2025-12-04 21:46:41.535] [citlali_logger] [info] array 0 iter 0: 22/2643 dets below inv var limit. 75/2643 dets above inv var limit.
+[2025-12-04 21:46:41.550] [citlali_logger] [info] array 1 iter 0: 10/857 dets below inv var limit. 12/857 dets above inv var limit.
+[2025-12-04 21:46:41.569] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 1/847 dets above inv var limit.
+[2025-12-04 21:46:41.577] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
+[2025-12-04 21:46:41.583] [citlali_logger] [info] processed time chunk processing for scan 5
+[2025-12-04 21:46:41.661] [citlali_logger] [info] PCA cov: n_dets 516 denom[min,max]=[1,1830]
+[2025-12-04 21:46:41.677] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[1.01568e+08, 1.0241e+07, 5.48598e+06, 3.80145e+06, 2.21961e+06]
+[2025-12-04 21:46:41.751] [citlali_logger] [info] cleaning
+[2025-12-04 21:46:41.752] [citlali_logger] [info] cleaning nw 0
+[2025-12-04 21:46:41.752] [citlali_logger] [info] cleaning nw 3
+[2025-12-04 21:46:42.095] [citlali_logger] [info] PCA cov: n_dets 568 denom[min,max]=[1,1830]
+[2025-12-04 21:46:42.122] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[7.75719e+06, 1.45434e+06, 617013, 587307, 417005]
+[2025-12-04 21:46:42.197] [citlali_logger] [info] removing outlier dets
+[2025-12-04 21:46:42.271] [citlali_logger] [info] array 0 iter 0: 0/2456 dets below inv var limit. 19/2456 dets above inv var limit.
+[2025-12-04 21:46:42.299] [citlali_logger] [info] array 1 iter 0: 0/824 dets below inv var limit. 13/824 dets above inv var limit.
+[2025-12-04 21:46:42.324] [citlali_logger] [info] array 2 iter 0: 0/839 dets below inv var limit. 7/839 dets above inv var limit.
+[2025-12-04 21:46:42.334] [citlali_logger] [info] calculating weights
+[2025-12-04 21:46:42.335] [citlali_logger] [info] array 0 had 47 outlier weights
+[2025-12-04 21:46:42.335] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
+[2025-12-04 21:46:42.336] [citlali_logger] [info] array 1 had 46 outlier weights
+[2025-12-04 21:46:42.336] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
+[2025-12-04 21:46:42.336] [citlali_logger] [info] array 2 had 72 outlier weights
+[2025-12-04 21:46:42.336] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
+[2025-12-04 21:46:42.394] [citlali_logger] [info] PCA cov: n_dets 545 denom[min,max]=[1,1830]
+[2025-12-04 21:46:42.425] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[7.7048e+07, 3.3489e+06, 1.46232e+06, 998964, 920435]
+[2025-12-04 21:46:42.494] [citlali_logger] [info] PCA cov: n_dets 647 denom[min,max]=[1,1830]
+[2025-12-04 21:46:42.496] [citlali_logger] [info] cleaning nw 4
+[2025-12-04 21:46:42.523] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[1.07498e+08, 2.30515e+07, 1.65402e+06, 1.53144e+06, 1.06208e+06]
+[2025-12-04 21:46:42.607] [citlali_logger] [info] cleaning nw 1
+[2025-12-04 21:46:42.797] [citlali_logger] [info] populating maps
+[2025-12-04 21:46:43.217] [citlali_logger] [info] PCA cov: n_dets 536 denom[min,max]=[1,1830]
+[2025-12-04 21:46:43.231] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[6.18896e+07, 3.35414e+06, 1.97356e+06, 1.10461e+06, 957064]
+[2025-12-04 21:46:43.287] [citlali_logger] [info] PCA cov: n_dets 514 denom[min,max]=[1,1830]
+[2025-12-04 21:46:43.306] [citlali_logger] [info] cleaning nw 5
+[2025-12-04 21:46:43.313] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[4.0775e+07, 2.63829e+06, 1.60788e+06, 941680, 792130]
+[2025-12-04 21:46:43.382] [citlali_logger] [info] cleaning nw 2
+[2025-12-04 21:46:43.666] [citlali_logger] [info] citlali progress ...............                                                            [ 20%]
+[2025-12-04 21:46:43.706] [citlali_logger] [info] starting scan 9. 0/50 scans completed
+[2025-12-04 21:46:43.706] [citlali_logger] [info] raw time chunk processing for scan 9
+[2025-12-04 21:46:43.858] [citlali_logger] [info] PCA cov: n_dets 516 denom[min,max]=[1,1830]
+[2025-12-04 21:46:43.887] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[6.40499e+07, 6.14389e+06, 3.22797e+06, 2.19695e+06, 1.99778e+06]
+[2025-12-04 21:46:43.906] [citlali_logger] [info] PCA cov: n_dets 506 denom[min,max]=[1,1830]
+[2025-12-04 21:46:43.922] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[2.43781e+08, 1.56604e+07, 1.3079e+07, 3.201e+06, 3.0978e+06]
+[2025-12-04 21:46:43.957] [citlali_logger] [info] cleaning nw 3
+[2025-12-04 21:46:43.975] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
+[2025-12-04 21:46:43.992] [citlali_logger] [info] cleaning nw 6
+[2025-12-04 21:46:44.055] [citlali_logger] [info] PCA cov: n_dets 168 denom[min,max]=[1,1830]
+[2025-12-04 21:46:44.066] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[3.6481e+07, 1.78913e+06, 688878, 580862, 558648]
+[2025-12-04 21:46:44.087] [citlali_logger] [info] cleaning nw 7
+[2025-12-04 21:46:44.423] [citlali_logger] [info] PCA cov: n_dets 376 denom[min,max]=[1,1830]
+[2025-12-04 21:46:44.435] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[1.16131e+07, 2.16434e+06, 1.30327e+06, 721730, 594784]
+[2025-12-04 21:46:44.436] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
+[2025-12-04 21:46:44.436] [citlali_logger] [info] removing outlier dets
+[2025-12-04 21:46:44.482] [citlali_logger] [info] cleaning nw 8
+[2025-12-04 21:46:44.514] [citlali_logger] [info] array 0 iter 0: 19/2643 dets below inv var limit. 85/2643 dets above inv var limit.
+[2025-12-04 21:46:44.537] [citlali_logger] [info] array 1 iter 0: 10/857 dets below inv var limit. 9/857 dets above inv var limit.
+[2025-12-04 21:46:44.568] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 1/847 dets above inv var limit.
+[2025-12-04 21:46:44.575] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
+[2025-12-04 21:46:44.584] [citlali_logger] [info] processed time chunk processing for scan 6
+[2025-12-04 21:46:44.658] [citlali_logger] [info] PCA cov: n_dets 545 denom[min,max]=[1,1830]
+[2025-12-04 21:46:44.678] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[4.52299e+07, 4.25279e+06, 1.47235e+06, 1.27445e+06, 927469]
+[2025-12-04 21:46:44.726] [citlali_logger] [info] cleaning nw 4
+[2025-12-04 21:46:44.829] [citlali_logger] [info] cleaning
+[2025-12-04 21:46:44.830] [citlali_logger] [info] cleaning nw 0
+[2025-12-04 21:46:45.027] [citlali_logger] [info] PCA cov: n_dets 475 denom[min,max]=[1,1830]
+[2025-12-04 21:46:45.045] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[8.39367e+06, 1.73442e+06, 1.44355e+06, 1.09125e+06, 968975]
+[2025-12-04 21:46:45.117] [citlali_logger] [info] cleaning nw 9
+[2025-12-04 21:46:45.199] [citlali_logger] [info] PCA cov: n_dets 536 denom[min,max]=[1,1830]
+[2025-12-04 21:46:45.206] [citlali_logger] [info] PCA cov: n_dets 647 denom[min,max]=[1,1830]
+[2025-12-04 21:46:45.216] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[4.12714e+07, 3.68435e+06, 1.31623e+06, 895953, 849895]
+[2025-12-04 21:46:45.231] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[3.06016e+08, 1.6378e+07, 1.90629e+06, 1.68239e+06, 1.23854e+06]
+[2025-12-04 21:46:45.287] [citlali_logger] [info] cleaning nw 5
+[2025-12-04 21:46:45.338] [citlali_logger] [info] cleaning nw 1
+[2025-12-04 21:46:45.746] [citlali_logger] [info] PCA cov: n_dets 514 denom[min,max]=[1,1830]
+[2025-12-04 21:46:45.761] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[2.18821e+08, 9.0662e+06, 2.50318e+06, 2.03492e+06, 927551]
+[2025-12-04 21:46:45.769] [citlali_logger] [info] PCA cov: n_dets 506 denom[min,max]=[1,1830]
+[2025-12-04 21:46:45.784] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[1.53194e+08, 1.15655e+07, 3.21679e+06, 2.2415e+06, 1.89082e+06]
+[2025-12-04 21:46:45.810] [citlali_logger] [info] cleaning nw 2
+[2025-12-04 21:46:45.830] [citlali_logger] [info] cleaning nw 6
+[2025-12-04 21:46:45.834] [citlali_logger] [info] PCA cov: n_dets 526 denom[min,max]=[1,1830]
+[2025-12-04 21:46:45.866] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[1.60222e+07, 1.78476e+06, 998893, 757036, 527486]
+[2025-12-04 21:46:45.868] [citlali_logger] [info] PCA cov: n_dets 168 denom[min,max]=[1,1830]
+[2025-12-04 21:46:45.874] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[2.12892e+07, 1.3545e+06, 722220, 630160, 546622]
+[2025-12-04 21:46:45.889] [citlali_logger] [info] cleaning nw 7
+[2025-12-04 21:46:45.937] [citlali_logger] [info] cleaning nw 11
+[2025-12-04 21:46:46.094] [citlali_logger] [info] PCA cov: n_dets 376 denom[min,max]=[1,1830]
+[2025-12-04 21:46:46.114] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[5.35013e+06, 2.39611e+06, 1.20186e+06, 713396, 531954]
+[2025-12-04 21:46:46.161] [citlali_logger] [info] cleaning nw 8
+[2025-12-04 21:46:46.231] [citlali_logger] [info] PCA cov: n_dets 516 denom[min,max]=[1,1830]
+[2025-12-04 21:46:46.247] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[2.42313e+08, 1.17171e+07, 5.57215e+06, 3.55867e+06, 2.733e+06]
+[2025-12-04 21:46:46.293] [citlali_logger] [info] cleaning nw 3
+[2025-12-04 21:46:46.515] [citlali_logger] [info] PCA cov: n_dets 473 denom[min,max]=[1,1830]
+[2025-12-04 21:46:46.544] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[2.57796e+07, 2.4312e+06, 1.98696e+06, 726321, 592612]
+[2025-12-04 21:46:46.599] [citlali_logger] [info] PCA cov: n_dets 475 denom[min,max]=[1,1830]
+[2025-12-04 21:46:46.614] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[3.62618e+06, 2.36977e+06, 1.45633e+06, 1.16555e+06, 891264]
+[2025-12-04 21:46:46.636] [citlali_logger] [info] cleaning nw 12
+[2025-12-04 21:46:46.653] [citlali_logger] [info] cleaning nw 9
+[2025-12-04 21:46:46.830] [citlali_logger] [info] PCA cov: n_dets 545 denom[min,max]=[1,1830]
+[2025-12-04 21:46:46.846] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[1.57512e+08, 3.91639e+06, 2.46062e+06, 1.21223e+06, 860761]
+[2025-12-04 21:46:46.896] [citlali_logger] [info] cleaning nw 4
+[2025-12-04 21:46:47.088] [citlali_logger] [info] PCA cov: n_dets 526 denom[min,max]=[1,1830]
+[2025-12-04 21:46:47.106] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[6.33131e+06, 1.75383e+06, 821853, 803288, 427714]
+[2025-12-04 21:46:47.175] [citlali_logger] [info] cleaning nw 11
+[2025-12-04 21:46:47.327] [citlali_logger] [info] PCA cov: n_dets 536 denom[min,max]=[1,1830]
+[2025-12-04 21:46:47.342] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[1.34285e+08, 3.16897e+06, 1.97609e+06, 1.06011e+06, 850695]
+[2025-12-04 21:46:47.386] [citlali_logger] [info] cleaning nw 5
+[2025-12-04 21:46:47.470] [citlali_logger] [info] PCA cov: n_dets 568 denom[min,max]=[1,1830]
+[2025-12-04 21:46:47.499] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[3.79144e+07, 1.33949e+06, 630791, 513314, 357549]
+[2025-12-04 21:46:47.575] [citlali_logger] [info] removing outlier dets
+[2025-12-04 21:46:47.585] [citlali_logger] [info] PCA cov: n_dets 473 denom[min,max]=[1,1830]
+[2025-12-04 21:46:47.593] [citlali_logger] [info] citlali progress ................                                                           [ 22%]
+[2025-12-04 21:46:47.606] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[1.76218e+07, 5.84856e+06, 1.99784e+06, 685544, 463103]
+[2025-12-04 21:46:47.616] [citlali_logger] [info] starting scan 10. 0/50 scans completed
+[2025-12-04 21:46:47.616] [citlali_logger] [info] raw time chunk processing for scan 10
+[2025-12-04 21:46:47.649] [citlali_logger] [info] array 0 iter 0: 0/2467 dets below inv var limit. 18/2467 dets above inv var limit.
+[2025-12-04 21:46:47.665] [citlali_logger] [info] cleaning nw 12
+[2025-12-04 21:46:47.672] [citlali_logger] [info] array 1 iter 0: 0/827 dets below inv var limit. 17/827 dets above inv var limit.
+[2025-12-04 21:46:47.709] [citlali_logger] [info] array 2 iter 0: 0/842 dets below inv var limit. 9/842 dets above inv var limit.
+[2025-12-04 21:46:47.711] [citlali_logger] [info] calculating weights
+[2025-12-04 21:46:47.720] [citlali_logger] [info] array 0 had 47 outlier weights
+[2025-12-04 21:46:47.720] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
+[2025-12-04 21:46:47.720] [citlali_logger] [info] array 1 had 46 outlier weights
+[2025-12-04 21:46:47.720] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
+[2025-12-04 21:46:47.720] [citlali_logger] [info] array 2 had 72 outlier weights
+[2025-12-04 21:46:47.721] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
+[2025-12-04 21:46:47.790] [citlali_logger] [info] PCA cov: n_dets 506 denom[min,max]=[1,1830]
+[2025-12-04 21:46:47.805] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[4.66047e+08, 1.67091e+07, 1.24066e+07, 5.41923e+06, 3.98818e+06]
+[2025-12-04 21:46:47.862] [citlali_logger] [info] cleaning nw 6
+[2025-12-04 21:46:47.924] [citlali_logger] [info] PCA cov: n_dets 168 denom[min,max]=[1,1830]
+[2025-12-04 21:46:47.934] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[6.16587e+07, 2.49262e+07, 1.64133e+06, 743656, 570790]
+[2025-12-04 21:46:47.950] [citlali_logger] [info] cleaning nw 7
+[2025-12-04 21:46:48.076] [citlali_logger] [info] populating maps
+[2025-12-04 21:46:48.214] [citlali_logger] [info] PCA cov: n_dets 376 denom[min,max]=[1,1830]
+[2025-12-04 21:46:48.222] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[9.16549e+06, 4.02779e+06, 1.80605e+06, 1.18431e+06, 321073]
+[2025-12-04 21:46:48.250] [citlali_logger] [info] cleaning nw 8
+[2025-12-04 21:46:48.312] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
+[2025-12-04 21:46:48.381] [citlali_logger] [info] PCA cov: n_dets 568 denom[min,max]=[1,1830]
+[2025-12-04 21:46:48.409] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[2.24961e+07, 3.04192e+06, 653187, 495455, 336948]
+[2025-12-04 21:46:48.493] [citlali_logger] [info] removing outlier dets
+[2025-12-04 21:46:48.567] [citlali_logger] [info] array 0 iter 0: 0/2467 dets below inv var limit. 15/2467 dets above inv var limit.
+[2025-12-04 21:46:48.591] [citlali_logger] [info] array 1 iter 0: 0/822 dets below inv var limit. 13/822 dets above inv var limit.
+[2025-12-04 21:46:48.616] [citlali_logger] [info] array 2 iter 0: 0/842 dets below inv var limit. 12/842 dets above inv var limit.
+[2025-12-04 21:46:48.634] [citlali_logger] [info] calculating weights
+[2025-12-04 21:46:48.636] [citlali_logger] [info] array 0 had 47 outlier weights
+[2025-12-04 21:46:48.636] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
+[2025-12-04 21:46:48.636] [citlali_logger] [info] array 1 had 46 outlier weights
+[2025-12-04 21:46:48.636] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
+[2025-12-04 21:46:48.636] [citlali_logger] [info] array 2 had 72 outlier weights
+[2025-12-04 21:46:48.636] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
+[2025-12-04 21:46:48.641] [citlali_logger] [info] PCA cov: n_dets 475 denom[min,max]=[1,1830]
+[2025-12-04 21:46:48.666] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[1.1387e+07, 1.67332e+06, 1.41759e+06, 1.03838e+06, 960739]
+[2025-12-04 21:46:48.718] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
+[2025-12-04 21:46:48.718] [citlali_logger] [info] removing outlier dets
+[2025-12-04 21:46:48.732] [citlali_logger] [info] cleaning nw 9
+[2025-12-04 21:46:48.769] [citlali_logger] [info] array 0 iter 0: 24/2643 dets below inv var limit. 83/2643 dets above inv var limit.
+[2025-12-04 21:46:48.785] [citlali_logger] [info] array 1 iter 0: 10/857 dets below inv var limit. 9/857 dets above inv var limit.
+[2025-12-04 21:46:48.802] [citlali_logger] [info] array 2 iter 0: 3/847 dets below inv var limit. 3/847 dets above inv var limit.
+[2025-12-04 21:46:48.809] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
+[2025-12-04 21:46:48.811] [citlali_logger] [info] processed time chunk processing for scan 7
+[2025-12-04 21:46:48.975] [citlali_logger] [info] cleaning
+[2025-12-04 21:46:48.976] [citlali_logger] [info] cleaning nw 0
+[2025-12-04 21:46:49.019] [citlali_logger] [info] populating maps
+[2025-12-04 21:46:49.220] [citlali_logger] [info] PCA cov: n_dets 526 denom[min,max]=[1,1830]
+[2025-12-04 21:46:49.235] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[2.54459e+07, 1.5662e+06, 1.05701e+06, 606499, 453455]
+[2025-12-04 21:46:49.288] [citlali_logger] [info] cleaning nw 11
+[2025-12-04 21:46:49.773] [citlali_logger] [info] PCA cov: n_dets 473 denom[min,max]=[1,1830]
+[2025-12-04 21:46:49.794] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[6.2362e+07, 5.11137e+06, 2.00132e+06, 872340, 643627]
+[2025-12-04 21:46:49.850] [citlali_logger] [info] cleaning nw 12
+[2025-12-04 21:46:49.906] [citlali_logger] [info] PCA cov: n_dets 647 denom[min,max]=[1,1830]
+[2025-12-04 21:46:49.939] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[1.07399e+08, 1.15131e+07, 3.23323e+06, 2.70223e+06, 1.1108e+06]
+[2025-12-04 21:46:50.027] [citlali_logger] [info] cleaning nw 1
+[2025-12-04 21:46:50.521] [citlali_logger] [info] PCA cov: n_dets 514 denom[min,max]=[1,1830]
+[2025-12-04 21:46:50.540] [citlali_logger] [info] PCA cov: n_dets 568 denom[min,max]=[1,1830]
+[2025-12-04 21:46:50.543] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[6.49284e+07, 3.32918e+06, 2.53698e+06, 1.90069e+06, 834819]
+[2025-12-04 21:46:50.566] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[9.77288e+07, 3.79575e+06, 618197, 521696, 410492]
+[2025-12-04 21:46:50.613] [citlali_logger] [info] cleaning nw 2
+[2025-12-04 21:46:50.642] [citlali_logger] [info] removing outlier dets
+[2025-12-04 21:46:50.732] [citlali_logger] [info] array 0 iter 0: 0/2460 dets below inv var limit. 21/2460 dets above inv var limit.
+[2025-12-04 21:46:50.768] [citlali_logger] [info] array 1 iter 0: 0/825 dets below inv var limit. 14/825 dets above inv var limit.
+[2025-12-04 21:46:50.787] [citlali_logger] [info] array 2 iter 0: 0/842 dets below inv var limit. 11/842 dets above inv var limit.
+[2025-12-04 21:46:50.796] [citlali_logger] [info] calculating weights
+[2025-12-04 21:46:50.805] [citlali_logger] [info] array 0 had 47 outlier weights
+[2025-12-04 21:46:50.808] [citlali_logger] [info] array 0: 0/2643 dets below weight limit. 0/2643 dets above weight limit.
+[2025-12-04 21:46:50.809] [citlali_logger] [info] array 1 had 46 outlier weights
+[2025-12-04 21:46:50.809] [citlali_logger] [info] array 1: 3/857 dets below weight limit. 0/857 dets above weight limit.
+[2025-12-04 21:46:50.809] [citlali_logger] [info] array 2 had 72 outlier weights
+[2025-12-04 21:46:50.809] [citlali_logger] [info] array 2: 2/847 dets below weight limit. 0/847 dets above weight limit.
+[2025-12-04 21:46:51.266] [citlali_logger] [info] citlali progress ..................                                                         [ 24%]
+[2025-12-04 21:46:51.304] [citlali_logger] [info] starting scan 11. 0/50 scans completed
+[2025-12-04 21:46:51.304] [citlali_logger] [info] raw time chunk processing for scan 11
+[2025-12-04 21:46:51.337] [citlali_logger] [info] PCA cov: n_dets 516 denom[min,max]=[1,1830]
+[2025-12-04 21:46:51.362] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[9.03133e+07, 1.18956e+07, 6.34994e+06, 5.7312e+06, 5.23238e+06]
+[2025-12-04 21:46:51.386] [citlali_logger] [info] populating maps
+[2025-12-04 21:46:51.456] [citlali_logger] [info] cleaning nw 3
+[2025-12-04 21:46:52.119] [citlali_logger] [info] PCA cov: n_dets 545 denom[min,max]=[1,1830]
+[2025-12-04 21:46:52.135] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[7.5499e+07, 7.40766e+06, 2.99855e+06, 1.44049e+06, 925819]
+[2025-12-04 21:46:52.179] [citlali_logger] [info] cleaning nw 4
+[2025-12-04 21:46:52.590] [citlali_logger] [info] PCA cov: n_dets 536 denom[min,max]=[1,1830]
+[2025-12-04 21:46:52.610] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[6.62878e+07, 6.70333e+06, 1.95327e+06, 1.55176e+06, 1.15564e+06]
+[2025-12-04 21:46:52.655] [citlali_logger] [info] cleaning nw 5
+[2025-12-04 21:46:52.964] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
+[2025-12-04 21:46:53.091] [citlali_logger] [info] PCA cov: n_dets 506 denom[min,max]=[1,1830]
+[2025-12-04 21:46:53.120] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[2.32508e+08, 2.46442e+07, 1.37313e+07, 7.82733e+06, 2.62052e+06]
+[2025-12-04 21:46:53.208] [citlali_logger] [info] cleaning nw 6
+[2025-12-04 21:46:53.282] [citlali_logger] [info] PCA cov: n_dets 168 denom[min,max]=[1,1830]
+[2025-12-04 21:46:53.284] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[3.30528e+07, 3.60172e+06, 681792, 627639, 515822]
+[2025-12-04 21:46:53.299] [citlali_logger] [info] cleaning nw 7
+[2025-12-04 21:46:53.467] [citlali_logger] [info] removed 1503 detectors flagged in APT table (25.692308%)
+[2025-12-04 21:46:53.467] [citlali_logger] [info] removing outlier dets
+[2025-12-04 21:46:53.515] [citlali_logger] [info] array 0 iter 0: 22/2643 dets below inv var limit. 77/2643 dets above inv var limit.
+[2025-12-04 21:46:53.532] [citlali_logger] [info] array 1 iter 0: 9/857 dets below inv var limit. 12/857 dets above inv var limit.
+[2025-12-04 21:46:53.547] [citlali_logger] [info] array 2 iter 0: 2/847 dets below inv var limit. 1/847 dets above inv var limit.
+[2025-12-04 21:46:53.553] [citlali_logger] [info] removed 105/5850 (1.7948719%) unflagged tones closer than 60 kHz
+[2025-12-04 21:46:53.560] [citlali_logger] [info] processed time chunk processing for scan 8
+[2025-12-04 21:46:53.617] [citlali_logger] [info] PCA cov: n_dets 376 denom[min,max]=[1,1830]
+[2025-12-04 21:46:53.626] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[1.13959e+07, 3.665e+06, 1.35258e+06, 387187, 358874]
+[2025-12-04 21:46:53.674] [citlali_logger] [info] cleaning nw 8
+[2025-12-04 21:46:53.762] [citlali_logger] [info] cleaning
+[2025-12-04 21:46:53.766] [citlali_logger] [info] cleaning nw 0
+[2025-12-04 21:46:54.188] [citlali_logger] [info] PCA cov: n_dets 475 denom[min,max]=[1,1830]
+[2025-12-04 21:46:54.218] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[9.98769e+06, 2.20587e+06, 1.55211e+06, 1.17883e+06, 954186]
+[2025-12-04 21:46:54.271] [citlali_logger] [info] cleaning nw 9
+[2025-12-04 21:46:54.836] [citlali_logger] [info] citlali progress ...................                                                        [ 26%]
+[2025-12-04 21:46:54.865] [citlali_logger] [info] starting scan 12. 0/50 scans completed
+[2025-12-04 21:46:54.865] [citlali_logger] [info] raw time chunk processing for scan 12
+[2025-12-04 21:46:54.868] [citlali_logger] [info] PCA cov: n_dets 647 denom[min,max]=[1,1830]
+[2025-12-04 21:46:54.890] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[3.43199e+07, 1.48809e+07, 2.76972e+06, 2.02352e+06, 1.21533e+06]
+[2025-12-04 21:46:54.904] [citlali_logger] [info] PCA cov: n_dets 526 denom[min,max]=[1,1830]
+[2025-12-04 21:46:54.945] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[1.39053e+07, 3.91376e+06, 1.1097e+06, 662357, 565538]
+[2025-12-04 21:46:54.948] [citlali_logger] [info] cleaning nw 1
+[2025-12-04 21:46:55.012] [citlali_logger] [info] cleaning nw 11
+[2025-12-04 21:46:55.450] [citlali_logger] [info] PCA cov: n_dets 514 denom[min,max]=[1,1830]
+[2025-12-04 21:46:55.475] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[2.56071e+07, 3.72171e+06, 2.53869e+06, 2.01926e+06, 1.25066e+06]
+[2025-12-04 21:46:55.516] [citlali_logger] [info] PCA cov: n_dets 473 denom[min,max]=[1,1830]
+[2025-12-04 21:46:55.530] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[5.90222e+06, 3.79169e+06, 808997, 793883, 631881]
+[2025-12-04 21:46:55.548] [citlali_logger] [info] cleaning nw 2
+[2025-12-04 21:46:55.573] [citlali_logger] [info] cleaning nw 12
+[2025-12-04 21:46:56.137] [citlali_logger] [info] PCA cov: n_dets 516 denom[min,max]=[1,1830]
+[2025-12-04 21:46:56.149] [citlali_logger] [warning] ensure filter freq_high_Hz 16 Hz is below Nyquist of downsampled rate 0
+[2025-12-04 21:46:56.160] [citlali_logger] [info] PCA evals (top 5 of 20): (5,1)[2.77078e+07, 5.84142e+06, 5.18051e+06, 2.90454e+06, 2.05355e+06]

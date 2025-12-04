@@ -2,6 +2,7 @@
 
 #include <string>
 #include <limits>
+#include <algorithm>
 #include <Eigen/Core>
 #include <Eigen/Eigenvalues>
 #include <Spectra/SymEigsSolver.h>
@@ -151,12 +152,42 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     // multiply scans by flags to remove flagged signal
     Eigen::MatrixXd det = (scans.derived().array()*f.array()).matrix();
 
+    // calculate per-detector stddev on masked data to build a correlation matrix
+    // Rationale: correlation (unit variance per detector) prevents high-variance dets from dominating modes.
+    Eigen::VectorXd stddev(n_dets);
+    Eigen::Matrix<bool, Eigen::Dynamic, 1> keep(n_dets);
+    keep.setOnes();
+    for (Eigen::Index i=0; i<n_dets; ++i) {
+        double wsum = f.col(i).sum();
+        if (wsum > 1) {
+            double m = (det.col(i).array() * f.col(i).array()).sum() / wsum;
+            Eigen::ArrayXd diff = det.col(i).array() - m;
+            double v = (diff.square() * f.col(i).array()).sum() / (wsum - 1.);
+            stddev(i) = std::sqrt(std::max(v, 0.0));
+        } else {
+            stddev(i) = 0.;
+        }
+        if (stddev(i) <= std::numeric_limits<double>::epsilon() || !std::isfinite(stddev(i))) {
+            keep(i) = false;
+            stddev(i) = 1.0; // avoid divide-by-zero
+        }
+    }
+
+    // normalize to unit variance; drop zero-variance channels from PCA contribution
+    for (Eigen::Index i=0; i<n_dets; ++i) {
+        if (keep(i)) {
+            det.col(i) /= stddev(i);
+        } else {
+            det.col(i).setZero();
+        }
+    }
+
     // guard divide-by-zero in overlaps: replace nonpositive overlaps with 1
     denom = (denom <= 0).select(Eigen::ArrayXXd::Ones(denom.rows(), denom.cols()), denom);
     double denom_min = denom.minCoeff();
     double denom_max = denom.maxCoeff();
 
-    // calculate the covariance matrix (no variance normalization to preserve baseline behaviour)
+    // calculate the covariance matrix (correlation due to unit variance normalization)
     Eigen::ArrayXXd cov_arr = (det.adjoint() * det).array() / denom;
     pca_cov = cov_arr.matrix();
 
@@ -290,12 +321,14 @@ auto Cleaner::remove_eig_values(const Eigen::DenseBase<DerivedA> &scans, const E
         limit_index = group_n_eig;
     }
 
-    // enforce bounds
+    // cap removal to avoid over-cleaning small groups
+    Eigen::Index max_modes = std::max<Eigen::Index>(1, n_dets / 5); // leave at least ~80% of modes
+    limit_index = std::min<Eigen::Index>(limit_index, max_modes);
     if (limit_index > n_dets) {
         limit_index = n_dets;
     }
 
-    logger->debug("removing {} largest eigenvalue(s)", limit_index);
+    logger->info("removing {} largest eigenvalue(s)", limit_index);
 
     // subtract out the desired eigenvectors
     Eigen::MatrixXd proj = scans.derived() * evecs.derived().leftCols(limit_index);
