@@ -181,8 +181,8 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
         }
     }
 
-    // guard divide-by-zero in overlaps
-    denom = (denom <= 0).select(Eigen::ArrayXXd::Constant(denom.rows(), denom.cols(), std::numeric_limits<double>::infinity()), denom);
+    // guard divide-by-zero in overlaps: replace nonpositive overlaps with 1 to avoid killing covariance structure
+    denom = (denom <= 0).select(Eigen::ArrayXXd::Ones(denom.rows(), denom.cols()), denom);
 
     // calculate the (correlation) covariance matrix
     Eigen::ArrayXXd cov_arr = (det.adjoint() * det).array() / denom;
