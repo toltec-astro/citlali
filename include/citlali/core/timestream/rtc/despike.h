@@ -286,9 +286,12 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                     sigest = sigest_lim;
                 }
 
-                // calculate the decay length of all the spikes
+                // calculate the decay length of all the spikes; guard zero/inf
+                Eigen::ArrayXd spike_abs = spike_vals.array().abs();
+                // avoid division by zero for tiny spikes
+                spike_abs = (spike_abs < std::numeric_limits<double>::epsilon()).select(std::numeric_limits<double>::epsilon(), spike_abs);
                 Eigen::VectorXd decay_length = -fsmp * time_constant_sec *
-                                               ((sigest / spike_vals.array()).abs()).log();
+                                               ((sigest / spike_abs).abs()).log();
 
                 // if a decay length is less than 6, set it to 6
                 decay_length = (decay_length.array() < 6.).select(6., decay_length);
@@ -389,7 +392,8 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                     += ((flags.col(det).tail(n_pts - 1) - flags.col(det).head(n_pts - 1)).array() < 0)
                            .count()/ 2;
                 if (n_flagged_regions == 0) {
-                    break;
+                    // nothing to replace for this detector; move to next detector
+                    continue;
                 }
 
                 logger->info("n_flagged_regions {}",n_flagged_regions);
@@ -482,6 +486,10 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                     }
 
                     logger->info("det_count {}", det_count);
+                    if (det_count == 0) {
+                        logger->warn("no reference detectors available for spike replacement; leaving data flagged");
+                        continue;
+                    }
 
                     Eigen::MatrixXd detm(n_flags, det_count);
                     detm.setConstant(-99);
