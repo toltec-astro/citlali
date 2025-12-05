@@ -177,22 +177,22 @@ int run(const rc_t &rc) {
             // check for science mode
             if (reduction_type == "science") {
                 logger->info("reducing in science mode");
-                todproc =
-                    TimeOrderedDataProc<Lali>::from_config(citlali_config);
+                auto proc = TimeOrderedDataProc<Lali>::from_config(citlali_config);
+                todproc.template emplace<TimeOrderedDataProc<Lali>>(std::move(proc));
             }
 
             // check for pointing mode
             else if (reduction_type == "pointing") {
                 logger->info("reducing in pointing mode");
-                todproc =
-                    TimeOrderedDataProc<Pointing>::from_config(citlali_config);
+                auto proc = TimeOrderedDataProc<Pointing>::from_config(citlali_config);
+                todproc.template emplace<TimeOrderedDataProc<Pointing>>(std::move(proc));
             }
 
             // check for beammap mode
             else if (reduction_type == "beammap") {
                 logger->info("reducing in beammap mode");
-                todproc =
-                    TimeOrderedDataProc<Beammap>::from_config(citlali_config);
+                auto proc = TimeOrderedDataProc<Beammap>::from_config(citlali_config);
+                todproc.template emplace<TimeOrderedDataProc<Beammap>>(std::move(proc));
             }
 
             else {
