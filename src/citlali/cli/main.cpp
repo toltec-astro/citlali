@@ -565,7 +565,17 @@ int run(const rc_t &rc) {
 
                         // calculate downsampled sample rate
                         if (todproc.engine().rtcproc.run_downsample) {
-                            todproc.engine().telescope.d_fsmp = todproc.engine().telescope.fsmp/todproc.engine().rtcproc.downsampler.factor;
+                            // prefer explicit downsampled_freq_Hz when provided, otherwise derive from factor
+                            if (todproc.engine().rtcproc.downsampler.downsampled_freq_Hz > 0) {
+                                todproc.engine().telescope.d_fsmp = todproc.engine().rtcproc.downsampler.downsampled_freq_Hz;
+                            }
+                            else {
+                                todproc.engine().telescope.d_fsmp = todproc.engine().telescope.fsmp/
+                                                                    todproc.engine().rtcproc.downsampler.factor;
+                            }
+                            logger->info("using downsampled sample rate {} Hz (factor {})",
+                                         todproc.engine().telescope.d_fsmp,
+                                         todproc.engine().rtcproc.downsampler.factor);
                         }
                         else {
                             todproc.engine().telescope.d_fsmp = todproc.engine().telescope.fsmp;
