@@ -30,7 +30,6 @@ public:
     // get logger
     std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
     std::unique_ptr<std::mutex> jinc_mutex = std::make_unique<std::mutex>();
-    std::unique_ptr<std::mutex> jinc_mutex = std::make_unique<std::mutex>();
 
     // toltec array mounting angle
     std::map<int, double> install_ang = {
