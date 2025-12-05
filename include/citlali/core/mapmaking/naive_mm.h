@@ -501,7 +501,7 @@ void NaiveMapmaker::populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::
         if ((in.flags.data.col(i).array()==0).any() && run_det) {
             double w_det = in.weights.data(i);
             if (!std::isfinite(w_det) || w_det==0) {
-                return;
+                return 0;
             }
             // which map to assign detector to
             Eigen::Index map_index = map_indices(i);
