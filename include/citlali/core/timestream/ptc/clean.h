@@ -173,6 +173,16 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
         }
     }
 
+    // drop very low-variance channels relative to median
+    double med_std = engine_utils::calc_median(stddev);
+    double rel_floor = 1e-2 * med_std;
+    for (Eigen::Index i=0; i<n_dets; ++i) {
+        if (stddev(i) < rel_floor) {
+            keep(i) = false;
+            det.col(i).setZero();
+        }
+    }
+
     // normalize to unit variance; drop zero-variance channels from PCA contribution
     for (Eigen::Index i=0; i<n_dets; ++i) {
         if (keep(i)) {
@@ -323,7 +333,7 @@ auto Cleaner::remove_eig_values(const Eigen::DenseBase<DerivedA> &scans, const E
 
     // cap removal to avoid over-cleaning small groups
     // cap removal to avoid over-cleaning small groups and retain signal
-    Eigen::Index max_modes = std::max<Eigen::Index>(1, n_dets / 10); // leave at least ~90% of modes
+    Eigen::Index max_modes = std::max<Eigen::Index>(1, n_dets / 8); // leave at least ~87.5% of modes
     limit_index = std::min<Eigen::Index>(limit_index, max_modes);
     if (limit_index > n_dets) {
         limit_index = n_dets;
