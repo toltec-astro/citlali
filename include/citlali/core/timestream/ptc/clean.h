@@ -175,7 +175,7 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
 
     // drop very low-variance channels relative to median
     double med_std = engine_utils::calc_mad(stddev);
-    double rel_floor = 1e-2 * med_std;
+    double rel_floor = 0.2 * med_std;
     for (Eigen::Index i=0; i<n_dets; ++i) {
         if (stddev(i) < rel_floor) {
             keep(i) = false;
