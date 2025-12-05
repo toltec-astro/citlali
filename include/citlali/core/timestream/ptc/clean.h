@@ -155,6 +155,7 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     // calculate per-detector stddev on masked data to build a correlation matrix
     // Rationale: correlation (unit variance per detector) prevents high-variance dets from dominating modes.
     Eigen::VectorXd stddev(n_dets);
+    Eigen::VectorXd stddev_raw(n_dets);
     Eigen::Matrix<bool, Eigen::Dynamic, 1> keep(n_dets);
     keep.setOnes();
     for (Eigen::Index i=0; i<n_dets; ++i) {
@@ -163,18 +164,30 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
             double m = (det.col(i).array() * f.col(i).array()).sum() / wsum;
             Eigen::ArrayXd diff = det.col(i).array() - m;
             double v = (diff.square() * f.col(i).array()).sum() / (wsum - 1.);
-            stddev(i) = std::sqrt(std::max(v, 0.0));
+            stddev_raw(i) = std::sqrt(std::max(v, 0.0));
         } else {
-            stddev(i) = 0.;
+            stddev_raw(i) = 0.;
         }
+        stddev(i) = stddev_raw(i);
         if (stddev(i) <= std::numeric_limits<double>::epsilon() || !std::isfinite(stddev(i))) {
             keep(i) = false;
             stddev(i) = 1.0; // avoid divide-by-zero
         }
     }
 
-    // drop very low-variance channels relative to median
-    double med_std = engine_utils::calc_mad(stddev);
+    // drop very low-variance channels relative to median (computed on finite, nonzero stddev_raw)
+    std::vector<double> finite_stddev;
+    finite_stddev.reserve(n_dets);
+    for (Eigen::Index i=0; i<n_dets; ++i) {
+        if (std::isfinite(stddev_raw(i)) && stddev_raw(i) > std::numeric_limits<double>::epsilon()) {
+            finite_stddev.push_back(stddev_raw(i));
+        }
+    }
+    double med_std = 0.;
+    if (!finite_stddev.empty()) {
+        std::nth_element(finite_stddev.begin(), finite_stddev.begin() + finite_stddev.size()/2, finite_stddev.end());
+        med_std = finite_stddev[finite_stddev.size()/2];
+    }
     double rel_floor = 0.2 * med_std;
     for (Eigen::Index i=0; i<n_dets; ++i) {
         if (stddev(i) < rel_floor) {
