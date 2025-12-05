@@ -3,6 +3,7 @@
 #include <tula/logging.h>
 #include <tula/nc.h>
 #include <tula/algorithm/ei_stats.h>
+#include <cmath>
 
 #include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/pointing.h>
@@ -316,6 +317,11 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
         for (Eigen::Index i=0; i<n_dets; ++i) {
             // current detector index
             Eigen::Index det_index = i;
+            // skip flagged detectors
+            if (apt["flag"](det_index)!=0) {
+                in.weights.data(i) = 0;
+                continue;
+            }
             // if flux calibrated, get flux conversion factor
             if (in.status.calibrated) {
                 conversion_factor = in.fcf.data(i);
@@ -325,7 +331,8 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
                 conversion_factor = 1;
             }
             // make sure flux conversion is not zero (otherwise weight=0)
-            if (conversion_factor*apt["sens"](det_index)!=0) {
+            if (conversion_factor*apt["sens"](det_index)!=0 &&
+                std::isfinite(conversion_factor) && std::isfinite(apt["sens"](det_index))) {
                 // calculate weights while applying flux calibration
                 in.weights.data(i) = pow(sqrt(telescope.d_fsmp)*apt["sens"](det_index)*conversion_factor,-2.0);
             }
@@ -350,8 +357,8 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
 
                 // unflagged detector stddev
                 double det_std_dev = engine_utils::calc_std_dev(scans, flags);
-                // if stddev is not zero
-                if (det_std_dev !=0) {
+                // if stddev is not zero/finite
+                if (det_std_dev !=0 && std::isfinite(det_std_dev)) {
                     // weight = 1/(stddev)^2
                     in.weights.data(i) = pow(det_std_dev,-2);
                 }
@@ -437,8 +444,17 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
                 good_wt = grp_weights;
             }
 
+            if (good_wt.size() == 0) {
+                logger->warn("array {} has no finite/non-zero weights; skipping median-based clipping for this group", key);
+                continue;
+            }
+
             // get median weight
             auto med_wt = tula::alg::median(good_wt);
+            if (!std::isfinite(med_wt) || med_wt == 0) {
+                logger->warn("array {} median weight is non-finite or zero; skipping clipping for this group", key);
+                continue;
+            }
             // store median weights
             in.median_weights.data.push_back(med_wt);
 

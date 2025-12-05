@@ -377,10 +377,11 @@ auto calc_std_dev(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &
         n_samples = n_good - 1;
     }
 
-    auto mean = (data.derived().array()*f.array()).mean();
-
-    // calc standard deviation
-    double std_dev = std::sqrt((((data.derived().array()*f.array()) - mean).square().sum()) / n_samples);
+    // compute mean and variance using only unflagged samples (avoid bias from masked points)
+    auto masked = data.derived().array() * f.array();
+    double mean = masked.sum() / static_cast<double>(n_good);
+    double var = ((masked - mean).square() * f.array()).sum() / n_samples;
+    double std_dev = std::sqrt(var);
 
     return std_dev;
 }
