@@ -1,6 +1,7 @@
 #pragma once
 
 #include <thread>
+#include <mutex>
 #include <cmath>
 
 #include <boost/math/special_functions/bessel.hpp>
@@ -28,6 +29,7 @@ class JincMapmaker {
 public:
     // get logger
     std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
+    std::unique_ptr<std::mutex> jinc_mutex = std::make_unique<std::mutex>();
     std::unique_ptr<std::mutex> jinc_mutex = std::make_unique<std::mutex>();
 
     // toltec array mounting angle
@@ -293,6 +295,8 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             if (!std::isfinite(w_det) || w_det==0) {
                 continue;
             }
+            // serialize writes to shared map buffers (ensures thread safety when using parallel policy)
+            std::lock_guard<std::mutex> lock(*jinc_mutex);
             // get detector positions from apt table if not in detector mapmaking mode
             auto det_index = i;
 
