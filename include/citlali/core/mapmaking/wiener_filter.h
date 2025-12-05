@@ -3,7 +3,6 @@
 #include <string>
 
 #include <boost/math/special_functions/bessel.hpp>
-#include <cmath>
 
 #include <Eigen/Core>
 #include <unsupported/Eigen/CXX11/Tensor>
@@ -18,8 +17,6 @@
 #include <citlali/core/utils/gauss_models.h>
 #include <citlali/core/utils/fitting.h>
 #include <citlali/core/utils/toltec_io.h>
-#include <fftw3.h>
-#include <mutex>
 
 namespace mapmaking {
 
@@ -57,29 +54,6 @@ public:
 
     // size of pixel in each dimension
     double diff_rows, diff_cols;
-
-    // cached fftw plans/buffers for denominator (most frequent path)
-    fftw_complex *denom_a = nullptr, *denom_b = nullptr;
-    fftw_plan denom_pf = nullptr, denom_pr = nullptr;
-    int denom_plan_rows = 0, denom_plan_cols = 0;
-    std::mutex denom_plan_mutex;
-
-    void ensure_denom_plans(int rows, int cols) {
-        std::lock_guard<std::mutex> lock(denom_plan_mutex);
-        if (rows == denom_plan_rows && cols == denom_plan_cols && denom_pf && denom_pr && denom_a && denom_b) {
-            return;
-        }
-        if (denom_pf) fftw_destroy_plan(denom_pf);
-        if (denom_pr) fftw_destroy_plan(denom_pr);
-        if (denom_a) fftw_free(denom_a);
-        if (denom_b) fftw_free(denom_b);
-        denom_a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*rows*cols);
-        denom_b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*rows*cols);
-        denom_pf = fftw_plan_dft_2d(rows, cols, denom_a, denom_b, FFTW_FORWARD, FFTW_ESTIMATE);
-        denom_pr = fftw_plan_dft_2d(rows, cols, denom_b, denom_a, FFTW_BACKWARD, FFTW_ESTIMATE);
-        denom_plan_rows = rows;
-        denom_plan_cols = cols;
-    }
 
     // parallelization for ffts
     std::string parallel_policy;
@@ -145,13 +119,6 @@ public:
     // filter the noise maps
     template<class MB>
     void filter_noise(MB &mb, const int, const int);
-
-    ~WienerFilter() {
-        if (denom_pf) fftw_destroy_plan(denom_pf);
-        if (denom_pr) fftw_destroy_plan(denom_pr);
-        if (denom_a) fftw_free(denom_a);
-        if (denom_b) fftw_free(denom_b);
-    }
 };
 
 // get config file
@@ -483,14 +450,8 @@ void WienerFilter::calc_vvq(MB &mb, const int map_index) {
         //psd_q = psd_q.array().max(psd_min).matrix();
     }
 
-    // normalize the power spectrum psd_q and place into vvq with a floor to avoid inf/NaN
-    double psd_sum = psd_q.sum();
-    double floor = 1e-12;
-    if (psd_sum <= 0 || !std::isfinite(psd_sum)) {
-        psd_sum = 1.0;
-    }
-    vvq = psd_q/psd_sum;
-    vvq = vvq.array().max(floor).matrix();
+    // normalize the power spectrum psd_q and place into vvq
+    vvq = psd_q/psd_q.sum();
 }
 
 void WienerFilter::calc_numerator() {
@@ -560,12 +521,18 @@ void WienerFilter::calc_numerator() {
 }
 
 void WienerFilter::calc_denominator() {
-    // set up (or reuse) fftw
-    ensure_denom_plans(n_rows, n_cols);
-    fftw_complex *a = denom_a;
-    fftw_complex *b = denom_b;
-    fftw_plan pf = denom_pf;
-    fftw_plan pr = denom_pr;
+    // set up fftw
+    fftw_complex *a;
+    fftw_complex *b;
+    fftw_plan pf, pr;
+
+    // allocate space for 2d ffts
+    a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
+    b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
+
+    // fftw plans
+    pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
+    pr = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
 
     // resize denominator
     denom.setZero(n_rows,n_cols);
@@ -581,26 +548,15 @@ void WienerFilter::calc_denominator() {
         // fft(f(x))
         out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
 
-        // frequency-domain power of template
-        Eigen::MatrixXd power = out.real().array().square() + out.imag().array().square();
-        // avoid divide-by-zero
-        Eigen::MatrixXd vvq_safe = vvq.array().max(1e-12);
-        // denominator in freq domain
-        in.real() = power.array()/vvq_safe.array();
-        in.imag().setZero();
-
-        // bring back to image domain
-        out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
-        denom = out.real();
-        // zero small/negative values
-        denom = (denom.array() < denom_limit).select(0.0, denom.array());
+        // set denominator = abs(fft(f(x))/VV
+        denom.setConstant(((out.real().array() * out.real().array() + out.imag().array() * out.imag().array()) / vvq.array()).sum());
     }
     else {
         // initialize denominator
         denom.setZero();
 
         // 1/VV
-        in.real() = pow(vvq.array().max(1e-12),-1);
+        in.real() = pow(vvq.array(),-1);
         in.imag().setZero();
 
         // Z = ifft(1/VV)
@@ -725,6 +681,13 @@ void WienerFilter::calc_denominator() {
         }
     }
 
+    // free fftw vectors
+    fftw_free(a);
+    fftw_free(b);
+
+    // destroy fftw plans
+    fftw_destroy_plan(pf);
+    fftw_destroy_plan(pr);
 }
 
 template<class MB, class CD>
@@ -765,12 +728,6 @@ void WienerFilter::make_template(MB &mb, CD &calib_data, const double template_f
 
 template<class MB>
 void WienerFilter::run_filter(MB &mb, const int map_index) {
-    // normalize template to avoid arbitrary scaling
-    double fsum = filter_template.sum();
-    if (fsum != 0.0 && std::isfinite(fsum)) {
-        filter_template /= fsum;
-    }
-
     // calculate pixel standard deviations
     logger->debug("calculating rr");
     calc_rr(mb, map_index);

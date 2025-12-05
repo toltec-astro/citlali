@@ -177,22 +177,22 @@ int run(const rc_t &rc) {
             // check for science mode
             if (reduction_type == "science") {
                 logger->info("reducing in science mode");
-                todproc.template emplace<TimeOrderedDataProc<Lali>>(
-                    TimeOrderedDataProc<Lali>::from_config(citlali_config));
+                todproc =
+                    TimeOrderedDataProc<Lali>::from_config(citlali_config);
             }
 
             // check for pointing mode
             else if (reduction_type == "pointing") {
                 logger->info("reducing in pointing mode");
-                todproc.template emplace<TimeOrderedDataProc<Pointing>>(
-                    TimeOrderedDataProc<Pointing>::from_config(citlali_config));
+                todproc =
+                    TimeOrderedDataProc<Pointing>::from_config(citlali_config);
             }
 
             // check for beammap mode
             else if (reduction_type == "beammap") {
                 logger->info("reducing in beammap mode");
-                todproc.template emplace<TimeOrderedDataProc<Beammap>>(
-                    TimeOrderedDataProc<Beammap>::from_config(citlali_config));
+                todproc =
+                    TimeOrderedDataProc<Beammap>::from_config(citlali_config);
             }
 
             else {
@@ -565,17 +565,7 @@ int run(const rc_t &rc) {
 
                         // calculate downsampled sample rate
                         if (todproc.engine().rtcproc.run_downsample) {
-                            // prefer explicit downsampled_freq_Hz when provided, otherwise derive from factor
-                            if (todproc.engine().rtcproc.downsampler.downsampled_freq_Hz > 0) {
-                                todproc.engine().telescope.d_fsmp = todproc.engine().rtcproc.downsampler.downsampled_freq_Hz;
-                            }
-                            else {
-                                todproc.engine().telescope.d_fsmp = todproc.engine().telescope.fsmp/
-                                                                    todproc.engine().rtcproc.downsampler.factor;
-                            }
-                            logger->info("using downsampled sample rate {} Hz (factor {})",
-                                         todproc.engine().telescope.d_fsmp,
-                                         todproc.engine().rtcproc.downsampler.factor);
+                            todproc.engine().telescope.d_fsmp = todproc.engine().telescope.fsmp/todproc.engine().rtcproc.downsampler.factor;
                         }
                         else {
                             todproc.engine().telescope.d_fsmp = todproc.engine().telescope.fsmp;

@@ -4,6 +4,7 @@
 #include <tula/nc.h>
 #include <tula/algorithm/ei_stats.h>
 #include <cmath>
+#include <cmath>
 
 #include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/pointing.h>
