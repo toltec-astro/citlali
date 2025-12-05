@@ -2,6 +2,7 @@
 
 #include <Eigen/Sparse>
 #include <fftw3.h>
+#include <cmath>
 
 #include <citlali/core/timestream/timestream.h>
 
@@ -71,7 +72,8 @@ void MLMapmaker::populate_maps_ml(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
         logger->info("start {} end {} n_pts {} n_pixels {} n_good_det {} n_rows {}", start, end, n_pts, n_pixels, n_good_det, in.scans.data.rows());
 
         // signal and kernel timestreams
-        Eigen::VectorXd b(n_pts), b2(n_pts);
+        Eigen::VectorXd b = Eigen::VectorXd::Zero(n_pts);
+        Eigen::VectorXd b2 = Eigen::VectorXd::Zero(n_pts);
         // pointing matrix
         Eigen::SparseMatrix<double> A(n_pts,n_pixels);
 
@@ -95,18 +97,33 @@ void MLMapmaker::populate_maps_ml(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
 
                 // loop through current detector chunk
                 for (Eigen::Index j=0; j<in.scans.data.rows(); ++j) {
+                    Eigen::Index row_idx = j + k;
+                    double w = in.weights.data(i);
+
+                    // ignore flagged samples or non-finite weights
+                    if (in.flags.data(j,i) || !std::isfinite(w) || w==0) {
+                        continue;
+                    }
+
                     Eigen::Index omb_ir = omb_irow(j);
                     Eigen::Index omb_ic = omb_icol(j);
+
+                    // skip samples that fall outside the map bounds
+                    if (omb_ir < 0 || omb_ir >= omb.n_rows || omb_ic < 0 || omb_ic >= omb.n_cols) {
+                        continue;
+                    }
+
                     Eigen::Index index = omb.n_rows * omb_ic + omb_ir;
                     // get pointing matrix value
-                    triplet_list.push_back(Eigen::Triplet<double>(j + k,index,in.weights.data(i)));
-                }
-                // get signal values
-                b.segment(k,in.scans.data.rows()) = in.scans.data.col(i)*in.weights.data(i);
+                    triplet_list.push_back(Eigen::Triplet<double>(row_idx,index,w));
 
-                if (run_kernel) {
-                    // get kernel values
-                    b2.segment(k,in.scans.data.rows()) = in.kernel.data.col(i)*in.weights.data(i);
+                    // get signal values
+                    b(row_idx) = in.scans.data(j,i)*w;
+
+                    if (run_kernel) {
+                        // get kernel values
+                        b2(row_idx) = in.kernel.data(j,i)*w;
+                    }
                 }
                 // move onto the next detector
                 k += in.scans.data.rows();

@@ -2,6 +2,7 @@
 
 #include <thread>
 #include <mutex>
+#include <cmath>
 
 #include <Eigen/Sparse>
 
@@ -203,6 +204,10 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
 
         // skip completely flagged detectors
         if ((in.flags.data.col(i).array()==0).any() && run_det) {
+            double w_det = in.weights.data(i);
+            if (!std::isfinite(w_det) || w_det==0) {
+                continue;
+            }
             // which map to assign detector to
             Eigen::Index map_index = map_indices(i);
 
@@ -261,15 +266,15 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                         // make sure the data point is within the map
                         if ((omb_ir >= 0) && (omb_ir < omb.n_rows) && (omb_ic >= 0) && (omb_ic < omb.n_cols)) {
                             // populate signal map
-                            signal = in.scans.data(j,i)*in.weights.data(i);
+                            signal = in.scans.data(j,i)*w_det;
                             signals[map_index].push_back(T(omb_ir,omb_ic,signal));
 
                             // populate weight map
-                            weights[map_index].push_back(T(omb_ir,omb_ic,in.weights.data(i)));
+                            weights[map_index].push_back(T(omb_ir,omb_ic,w_det));
 
                             // populate kernel map
                             if (run_kernel) {
-                                kernel = in.kernel.data(j,i)*in.weights.data(i);
+                                kernel = in.kernel.data(j,i)*w_det;
                                 kernels[map_index].push_back(T(omb_ir,omb_ic,kernel));
                             }
 
@@ -280,7 +285,7 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
 
                             if (run_polarization) {
                                 // calculate pointing matrix
-                                allocate_pointing(omb_copy, in.weights.data(i), cos_2angle, sin_2angle, map_index, omb_ir, omb_ic);
+                                allocate_pointing(omb_copy, w_det, cos_2angle, sin_2angle, map_index, omb_ir, omb_ic);
 
                                 // update signal map Q and U
                                 signals[q_index].push_back(T(omb_ir,omb_ic,signal*cos_2angle));
@@ -302,15 +307,15 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                         // make sure the data point is within the map
                         if ((cmb_ir >= 0) && (cmb_ir < cmb.n_rows) && (cmb_ic >= 0) && (cmb_ic < cmb.n_cols)) {
                             // populate signal map
-                            signal = in.scans.data(j,i)*in.weights.data(i);
+                            signal = in.scans.data(j,i)*w_det;
                             cmb_signals[map_index].push_back(T(cmb_ir,cmb_ic,signal));
 
                             // populate weight map
-                            cmb_weights[map_index].push_back(T(cmb_ir,cmb_ic,in.weights.data(i)));
+                            cmb_weights[map_index].push_back(T(cmb_ir,cmb_ic,w_det));
 
                             // populate kernel map
                             if (run_kernel) {
-                                kernel = in.kernel.data(j,i)*in.weights.data(i);
+                                kernel = in.kernel.data(j,i)*w_det;
                                 cmb_kernels[map_index].push_back(T(cmb_ir,cmb_ic,kernel));
                             }
 
@@ -320,7 +325,7 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                             }
 
                             // calculate pointing matrix
-                            allocate_pointing(cmb_copy, in.weights.data(i), cos_2angle, sin_2angle, map_index, cmb_ir, cmb_ic);
+                            allocate_pointing(cmb_copy, w_det, cos_2angle, sin_2angle, map_index, cmb_ir, cmb_ic);
 
                             // update signal map Q and U
                             cmb_signals[q_index].push_back(T(cmb_ir,cmb_ic,signal*cos_2angle));
@@ -359,10 +364,10 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                             for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
                                 // randomizing on dets
                                 if (nmb->randomize_dets) {
-                                    noise_v = in.noise.data(nn,i)*in.scans.data(j,i)*in.weights.data(i);
+                                    noise_v = in.noise.data(nn,i)*in.scans.data(j,i)*w_det;
                                 }
                                 else {
-                                    noise_v = in.noise.data(nn)*in.scans.data(j,i)*in.weights.data(i);
+                                    noise_v = in.noise.data(nn)*in.scans.data(j,i)*w_det;
                                 }
                                 // add noise value to current noise map
                                 nmb_copy->noise[map_index](nmb_ir,nmb_ic,nn) += noise_v;
@@ -494,6 +499,10 @@ void NaiveMapmaker::populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::
 
         // skip completely flagged detectors
         if ((in.flags.data.col(i).array()==0).any() && run_det) {
+            double w_det = in.weights.data(i);
+            if (!std::isfinite(w_det) || w_det==0) {
+                return;
+            }
             // which map to assign detector to
             Eigen::Index map_index = map_indices(i);
 
@@ -552,17 +561,17 @@ void NaiveMapmaker::populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::
                         // make sure the data point is within the map
                         if ((omb_ir >= 0) && (omb_ir < omb.n_rows) && (omb_ic >= 0) && (omb_ic < omb.n_cols)) {
                             // populate signal map
-                            signal = in.scans.data(j,i)*in.weights.data(i);
+                            signal = in.scans.data(j,i)*w_det;
                             omb.signal[map_index](omb_ir, omb_ic) += signal;
                             //signals[map_index].push_back(T(omb_ir,omb_ic,signal));
 
                             // populate weight map
                             //weights[map_index].push_back(T(omb_ir,omb_ic,in.weights.data(i)));
-                            omb.weight[map_index](omb_ir, omb_ic) += in.weights.data(i);
+                            omb.weight[map_index](omb_ir, omb_ic) += w_det;
 
                             // populate kernel map
                             if (run_kernel) {
-                                kernel = in.kernel.data(j,i)*in.weights.data(i);
+                                kernel = in.kernel.data(j,i)*w_det;
                                 //kernels[map_index].push_back(T(omb_ir,omb_ic,kernel));
                                 omb.kernel[map_index](omb_ir, omb_ic) += kernel;
                             }
@@ -575,7 +584,7 @@ void NaiveMapmaker::populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::
 
                             if (run_polarization) {
                                 // calculate pointing matrix
-                                allocate_pointing(omb, in.weights.data(i), cos_2angle, sin_2angle, map_index, omb_ir, omb_ic);
+                                allocate_pointing(omb, w_det, cos_2angle, sin_2angle, map_index, omb_ir, omb_ic);
 
                                 // update signal map Q and U
                                 //signals[q_index].push_back(T(omb_ir,omb_ic,signal*cos_2angle));
@@ -603,17 +612,17 @@ void NaiveMapmaker::populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::
                         // make sure the data point is within the map
                         if ((cmb_ir >= 0) && (cmb_ir < cmb.n_rows) && (cmb_ic >= 0) && (cmb_ic < cmb.n_cols)) {
                             // populate signal map
-                            signal = in.scans.data(j,i)*in.weights.data(i);
+                            signal = in.scans.data(j,i)*w_det;
                             //cmb_signals[map_index].push_back(T(cmb_ir,cmb_ic,signal));
                             cmb.signal[map_index](cmb_ir, cmb_ic) += signal;
 
                             // populate weight map
                             //cmb_weights[map_index].push_back(T(cmb_ir,cmb_ic,in.weights.data(i)));
-                            cmb.weight[map_index](cmb_ir, cmb_ic) += in.weights.data(i);
+                            cmb.weight[map_index](cmb_ir, cmb_ic) += w_det;
 
                             // populate kernel map
                             if (run_kernel) {
-                                kernel = in.kernel.data(j,i)*in.weights.data(i);
+                                kernel = in.kernel.data(j,i)*w_det;
                                 //cmb_kernels[map_index].push_back(T(cmb_ir,cmb_ic,kernel));
                                 cmb.kernel[map_index](cmb_ir, cmb_ic) += kernel;
                             }
@@ -625,7 +634,7 @@ void NaiveMapmaker::populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::
                             }
 
                             // calculate pointing matrix
-                            allocate_pointing(cmb, in.weights.data(i), cos_2angle, sin_2angle, map_index, cmb_ir, cmb_ic);
+                            allocate_pointing(cmb, w_det, cos_2angle, sin_2angle, map_index, cmb_ir, cmb_ic);
 
                             // update signal map Q and U
                             //cmb_signals[q_index].push_back(T(cmb_ir,cmb_ic,signal*cos_2angle));
@@ -670,10 +679,10 @@ void NaiveMapmaker::populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::
                             for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
                                 // randomizing on dets
                                 if (nmb->randomize_dets) {
-                                    noise_v = in.noise.data(nn,i)*in.scans.data(j,i)*in.weights.data(i);
+                                    noise_v = in.noise.data(nn,i)*in.scans.data(j,i)*w_det;
                                 }
                                 else {
-                                    noise_v = in.noise.data(nn)*in.scans.data(j,i)*in.weights.data(i);
+                                    noise_v = in.noise.data(nn)*in.scans.data(j,i)*w_det;
                                 }
                                 // add noise value to current noise map
                                 nmb->noise[map_index](nmb_ir,nmb_ic,nn) += noise_v;

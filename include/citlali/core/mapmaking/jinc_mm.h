@@ -1,6 +1,7 @@
 #pragma once
 
 #include <thread>
+#include <cmath>
 
 #include <boost/math/special_functions/bessel.hpp>
 
@@ -288,6 +289,10 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
 
         // skip completely flagged detectors
         if ((in.flags.data.col(i).array()==false).any()) {
+            double w_det = in.weights.data(i);
+            if (!std::isfinite(w_det) || w_det==0) {
+                continue;
+            }
             // get detector positions from apt table if not in detector mapmaking mode
             auto det_index = i;
 
@@ -375,10 +380,10 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                             auto wt_block = omb_copy.weight[map_index].block(lower_row,lower_col,size_rows,size_cols);
 
                             // populate signal map
-                            sig_block += (mat_block * in.weights.data(i) * in.scans.data(j,i)).eval();
+                            sig_block += (mat_block * w_det * in.scans.data(j,i)).eval();
 
                             // populate weight map
-                            wt_block += (mat_block * in.weights.data(i)).eval();
+                            wt_block += (mat_block * w_det).eval();
 
                             // populate coverage map
                             if (run_coverage) {
@@ -389,7 +394,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                             // populate kernel map
                             if (run_kernel) {
                                 auto ker_block = omb_copy.kernel[map_index].block(lower_row,lower_col,size_rows,size_cols);
-                                ker_block += mat_block*in.weights.data(i)*in.kernel.data(j,i);
+                                ker_block += mat_block*w_det*in.kernel.data(j,i);
                             }
                         }
                     }
@@ -428,7 +433,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                             int size_cols = upper_col - lower_col + 1;
 
                             const auto mat_block = jinc_weights_mat[array_index].block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
-                            signal = in.scans.data(j,i)*in.weights.data(i);
+                            signal = in.scans.data(j,i)*w_det;
 
                             for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
                                 // randomizing on dets
@@ -615,10 +620,10 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                             auto wt_block = omb.weight[map_index].block(lower_row,lower_col,size_rows,size_cols);
 
                             // populate signal map
-                            sig_block += (mat_block * in.weights.data(i) * in.scans.data(j,i)).eval();
+                            sig_block += (mat_block * w_det * in.scans.data(j,i)).eval();
 
                             // populate weight map
-                            wt_block += (mat_block * in.weights.data(i)).eval();
+                            wt_block += (mat_block * w_det).eval();
 
                             // populate coverage map
                             if (run_coverage) {
@@ -629,7 +634,7 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                             // populate kernel map
                             if (run_kernel) {
                                 auto ker_block = omb.kernel[map_index].block(lower_row,lower_col,size_rows,size_cols);
-                                ker_block += mat_block*in.weights.data(i)*in.kernel.data(j,i);
+                                ker_block += mat_block*w_det*in.kernel.data(j,i);
                             }
                         }
                     }
@@ -668,7 +673,7 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                             int size_cols = upper_col - lower_col + 1;
 
                             const auto mat_block = jinc_weights_mat[array_index].block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
-                            signal = in.scans.data(j,i)*in.weights.data(i);
+                            signal = in.scans.data(j,i)*w_det;
 
                             for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
                                 // randomizing on dets
