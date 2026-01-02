@@ -500,8 +500,8 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
             // transpose due to row-major order
             ts.transposeInPlace();
 
-            // find gaps
-            int gaps = ((ts.block(1,3,n_pts,1).array() - ts.block(0,3,n_pts-1,1).array()).array() > 1).count();
+            // find gaps (use n_pts-1 to avoid reading past the last sample)
+            int gaps = ((ts.block(1,3,n_pts-1,1).array() - ts.block(0,3,n_pts-1,1).array()).array() > 1).count();
 
             // add gaps to engine map
             if (gaps>0) {
@@ -583,6 +583,12 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
         if (engine().calib.hwpr_recvt(hwpr_ts_n_pts - 1) < min_tn) {
             min_tn = engine().calib.hwpr_recvt(hwpr_ts_n_pts - 1);
         }
+    }
+
+    // guard against empty overlap across networks (and hwpr if present)
+    if (max_t0 >= min_tn) {
+        logger->error("no overlapping time range across networks (max start {} >= min end {})", max_t0, min_tn);
+        std::exit(EXIT_FAILURE);
     }
 
     // size of smallest data time vector
@@ -716,7 +722,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
 
     // loop through networks and build time vectors
     int i = 0;
-    double f_smp_roach;
+    double fsmp = -1;
     for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
         try {
             const RawObs::DataItem &data_item = rawobs.kidsdata()[i];
@@ -725,7 +731,16 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
             auto vars = fo.getVars();
 
             // get roach sample rate
-            vars.find("Header.Toltec.SampleFreq")->second.getVar(&f_smp_roach);
+            double fsmp_roach;
+            vars.find("Header.Toltec.SampleFreq")->second.getVar(&fsmp_roach);
+            // enforce a single fsmp across all roaches to keep alignment consistent
+            if (fsmp == -1) {
+                fsmp = fsmp_roach;
+            }
+            else if (fsmp_roach != fsmp) {
+                logger->error("mismatched sample rate in toltec roaches ({} Hz vs {} Hz)", fsmp, fsmp_roach);
+                std::exit(EXIT_FAILURE);
+            }
 
             // get roach index for offsets
             int roach_index;
@@ -749,8 +764,8 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
 
             Eigen::MatrixXi ts_t = ts.transpose();
 
-            // find gaps
-            int gaps = ((ts.block(1,3,n_pts,1).array() - ts.block(0,3,n_pts-1,1).array()).array() > 1).count();
+            // find gaps (use n_pts-1 to avoid reading past the last sample)
+            int gaps = ((ts.block(1,3,n_pts-1,1).array() - ts.block(0,3,n_pts-1,1).array()).array() > 1).count();
 
             // add gaps to engine map
             if (gaps>0) {
@@ -823,7 +838,13 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
         }
     }
 
-    double dt = 1.0 / f_smp_roach;
+    // guard against empty overlap across networks (and hwpr if present)
+    if (max_init_time >= min_final_time) {
+        logger->error("no overlapping time range across networks (max start {} >= min end {})", max_init_time, min_final_time);
+        std::exit(EXIT_FAILURE);
+    }
+
+    double dt = 1.0 / fsmp;
     Eigen::Index n_samples = static_cast<int>((min_final_time - max_init_time) / dt) + 1;
     Eigen::VectorXd t_common = Eigen::VectorXd::LinSpaced(n_samples, max_init_time, max_init_time + dt * (n_samples - 1));
     double tol = dt / 2.0;
