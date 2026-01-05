@@ -1256,9 +1256,9 @@ void Beammap::process_apt() {
         dist2_best.setConstant(std::numeric_limits<double>::infinity());
 
         for (const auto &ptc : ptcs) {
-            const auto &alt = ptc.tel_data.data["alt_phys"];
-            const auto &az = ptc.tel_data.data["az_phys"];
-            const auto &el = ptc.tel_data.data["TelElAct"];
+            const auto &alt = ptc.tel_data.data.at("alt_phys");
+            const auto &az = ptc.tel_data.data.at("az_phys");
+            const auto &el = ptc.tel_data.data.at("TelElAct");
             for (Eigen::Index k = 0; k < alt.size(); ++k) {
                 double row = alt(k) / omb.pixel_size_rad + (omb.n_rows) / 2.0;
                 double col = az(k) / omb.pixel_size_rad + (omb.n_cols) / 2.0;
