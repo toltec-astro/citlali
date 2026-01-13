@@ -241,8 +241,8 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
             for (Eigen::Index j=0; j<n_pts; ++j) {
                 // check if sample is flagged, ignore if so
                 if (!in.flags.data(j,i)) {
-                    Eigen::Index omb_ir = omb_irow(j);
-                    Eigen::Index omb_ic = omb_icol(j);
+                    Eigen::Index omb_ir = static_cast<Eigen::Index>(std::llround(omb_irow(j)));
+                    Eigen::Index omb_ic = static_cast<Eigen::Index>(std::llround(omb_icol(j)));
 
                     if (run_polarization) {
                         auto fg_index = apt["fg"](i);
@@ -296,8 +296,8 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                     }
 
                     if (run_polarization && !cmb.signal.empty() && run_omb) {
-                        Eigen::Index cmb_ir = cmb_irow(j);
-                        Eigen::Index cmb_ic = cmb_icol(j);
+                        Eigen::Index cmb_ir = static_cast<Eigen::Index>(std::llround(cmb_irow(j)));
+                        Eigen::Index cmb_ic = static_cast<Eigen::Index>(std::llround(cmb_icol(j)));
 
                         // make sure the data point is within the map
                         if ((cmb_ir >= 0) && (cmb_ir < cmb.n_rows) && (cmb_ic >= 0) && (cmb_ic < cmb.n_cols)) {
@@ -338,13 +338,13 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                     if (run_noise) {
                         // if coaddition is enabled
                         if (use_cmb) {
-                            nmb_ir = cmb_irow(j);
-                            nmb_ic = cmb_icol(j);
+                            nmb_ir = static_cast<Eigen::Index>(std::llround(cmb_irow(j)));
+                            nmb_ic = static_cast<Eigen::Index>(std::llround(cmb_icol(j)));
                         }
                         // else make noise maps for obs
                         else {
-                            nmb_ir = omb_irow(j);
-                            nmb_ic = omb_icol(j);
+                            nmb_ir = static_cast<Eigen::Index>(std::llround(omb_irow(j)));
+                            nmb_ic = static_cast<Eigen::Index>(std::llround(omb_icol(j)));
                         }
 
                         // coadd into current noise map
@@ -532,8 +532,8 @@ void NaiveMapmaker::populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::
             for (Eigen::Index j=0; j<n_pts; ++j) {
                 // check if sample is flagged, ignore if so
                 if (!in.flags.data(j,i)) {
-                    Eigen::Index omb_ir = omb_irow(j);
-                    Eigen::Index omb_ic = omb_icol(j);
+                    Eigen::Index omb_ir = static_cast<Eigen::Index>(std::llround(omb_irow(j)));
+                    Eigen::Index omb_ic = static_cast<Eigen::Index>(std::llround(omb_icol(j)));
 
                     if (run_polarization) {
                         auto fg_index = apt["fg"](i);
@@ -597,8 +597,8 @@ void NaiveMapmaker::populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::
                     }
 
                     if (run_polarization && !cmb.signal.empty() && run_omb) {
-                        Eigen::Index cmb_ir = cmb_irow(j);
-                        Eigen::Index cmb_ic = cmb_icol(j);
+                        Eigen::Index cmb_ir = static_cast<Eigen::Index>(std::llround(cmb_irow(j)));
+                        Eigen::Index cmb_ic = static_cast<Eigen::Index>(std::llround(cmb_icol(j)));
 
                         // make sure the data point is within the map
                         if ((cmb_ir >= 0) && (cmb_ir < cmb.n_rows) && (cmb_ic >= 0) && (cmb_ic < cmb.n_cols)) {
@@ -649,13 +649,13 @@ void NaiveMapmaker::populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::
                     if (run_noise) {
                         // if coaddition is enabled
                         if (use_cmb) {
-                            nmb_ir = cmb_irow(j);
-                            nmb_ic = cmb_icol(j);
+                            nmb_ir = static_cast<Eigen::Index>(std::llround(cmb_irow(j)));
+                            nmb_ic = static_cast<Eigen::Index>(std::llround(cmb_icol(j)));
                         }
                         // else make noise maps for obs
                         else {
-                            nmb_ir = omb_irow(j);
-                            nmb_ic = omb_icol(j);
+                            nmb_ir = static_cast<Eigen::Index>(std::llround(omb_irow(j)));
+                            nmb_ic = static_cast<Eigen::Index>(std::llround(omb_icol(j)));
                         }
 
                         // coadd into current noise map

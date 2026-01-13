@@ -333,8 +333,8 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             for (Eigen::Index j=0; j<n_pts; ++j) {
                 // check if sample is flagged, ignore if so
                 if (!in.flags.data(j,i)) {
-                    Eigen::Index omb_ir = omb_irow(j);
-                    Eigen::Index omb_ic = omb_icol(j);
+                    Eigen::Index omb_ir = static_cast<Eigen::Index>(std::llround(omb_irow(j)));
+                    Eigen::Index omb_ic = static_cast<Eigen::Index>(std::llround(omb_icol(j)));
 
                     if (run_polarization) {
                         auto fg_index = apt["fg"](det_index);
@@ -398,14 +398,14 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                     if (run_noise) {
                         // if coaddition is enabled
                         if (use_cmb) {
-                            nmb_ir = cmb_irow(j);
-                            nmb_ic = cmb_icol(j);
+                            nmb_ir = static_cast<Eigen::Index>(std::llround(cmb_irow(j)));
+                            nmb_ic = static_cast<Eigen::Index>(std::llround(cmb_icol(j)));
                         }
 
                         // else make noise maps for obs
                         else {
-                            nmb_ir = omb_irow(j);
-                            nmb_ic = omb_icol(j);
+                            nmb_ir = static_cast<Eigen::Index>(std::llround(omb_irow(j)));
+                            nmb_ic = static_cast<Eigen::Index>(std::llround(omb_icol(j)));
                         }
 
                         // make sure pixel is in the map
@@ -573,8 +573,8 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
             for (Eigen::Index j=0; j<n_pts; ++j) {
                 // check if sample is flagged, ignore if so
                 if (!in.flags.data(j,i)) {
-                    Eigen::Index omb_ir = omb_irow(j);
-                    Eigen::Index omb_ic = omb_icol(j);
+                    Eigen::Index omb_ir = static_cast<Eigen::Index>(std::llround(omb_irow(j)));
+                    Eigen::Index omb_ic = static_cast<Eigen::Index>(std::llround(omb_icol(j)));
 
                     if (run_polarization) {
                         auto fg_index = apt["fg"](det_index);
@@ -638,14 +638,14 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                     if (run_noise) {
                         // if coaddition is enabled
                         if (use_cmb) {
-                            nmb_ir = cmb_irow(j);
-                            nmb_ic = cmb_icol(j);
+                            nmb_ir = static_cast<Eigen::Index>(std::llround(cmb_irow(j)));
+                            nmb_ic = static_cast<Eigen::Index>(std::llround(cmb_icol(j)));
                         }
 
                         // else make noise maps for obs
                         else {
-                            nmb_ir = omb_irow(j);
-                            nmb_ic = omb_icol(j);
+                            nmb_ir = static_cast<Eigen::Index>(std::llround(omb_irow(j)));
+                            nmb_ic = static_cast<Eigen::Index>(std::llround(omb_icol(j)));
                         }
 
                         // make sure pixel is in the map
