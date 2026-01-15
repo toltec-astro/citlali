@@ -388,7 +388,7 @@ void Engine::obsnum_setup() {
 
     // setup kernel
     if (rtcproc.run_kernel) {
-        rtcproc.kernel.setup(n_maps);
+        rtcproc.kernel.setup(n_maps, telescope.pixel_axes);
     }
 
     // set despiker sample rate
@@ -1007,7 +1007,7 @@ void Engine::create_obs_map_files() {
                                                   engine_utils::toltecIO::raw>(obsnum_dir_name + "raw/", redu_type, array_name,
                                                                                obsnum, telescope.sim_obs);
         // create fits_io class for current array file
-        fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
+        fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename, telescope.pixel_axes);
         // append to fits_io vector
         fits_io_vec.push_back(std::move(fits_io));
 
@@ -1019,7 +1019,7 @@ void Engine::create_obs_map_files() {
                                                           engine_utils::toltecIO::raw>(obsnum_dir_name + "raw/", redu_type, array_name,
                                                                                        obsnum, telescope.sim_obs);
                 // create fits_io class for current array file
-                fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
+                fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename, telescope.pixel_axes);
                 // append to fits_io vector
                 noise_fits_io_vec.push_back(std::move(fits_io));
             }
@@ -1032,7 +1032,7 @@ void Engine::create_obs_map_files() {
                                                                                             redu_type, array_name,
                                                                                             obsnum, telescope.sim_obs);
                 // create fits_io class for current array file
-                fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
+                fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename, telescope.pixel_axes);
                 // append to fits_io vector
                 filtered_fits_io_vec.push_back(std::move(fits_io));
 
@@ -1043,7 +1043,7 @@ void Engine::create_obs_map_files() {
                                                               engine_utils::toltecIO::filtered>(obsnum_dir_name + "filtered/", redu_type,
                                                                                                 array_name, obsnum, telescope.sim_obs);
                     // create fits_io class for current array file
-                    fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
+                    fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename, telescope.pixel_axes);
                     // append to fits_io vector
                     filtered_noise_fits_io_vec.push_back(std::move(fits_io));
                 }

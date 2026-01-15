@@ -1409,7 +1409,7 @@ void TimeOrderedDataProc<EngineType>::create_coadded_map_files() {
                                                                                                  "", array_name, "",
                                                                                                  engine().telescope.sim_obs);
         // create fits_io class for current array file
-        fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
+        fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename, engine().telescope.pixel_axes);
         // append to fits_io vector
         engine().coadd_fits_io_vec.push_back(std::move(fits_io));
 
@@ -1421,7 +1421,7 @@ void TimeOrderedDataProc<EngineType>::create_coadded_map_files() {
                                                                                                      "", array_name, "",
                                                                                                      engine().telescope.sim_obs);
             // create fits_io class for current array file
-            fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
+            fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename, engine().telescope.pixel_axes);
             // append to fits_io vector
             engine().coadd_noise_fits_io_vec.push_back(std::move(fits_io));
         }
@@ -1441,7 +1441,7 @@ void TimeOrderedDataProc<EngineType>::create_coadded_map_files() {
                                                                                                           "filtered/","", array_name,
                                                                                                           "", engine().telescope.sim_obs);
             // create fits_io class for current array file
-            fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
+            fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename, engine().telescope.pixel_axes);
             // append to fits_io vector
             engine().filtered_coadd_fits_io_vec.push_back(std::move(fits_io));
 
@@ -1453,7 +1453,7 @@ void TimeOrderedDataProc<EngineType>::create_coadded_map_files() {
                                                                                                               "filtered/","", array_name,
                                                                                                               "", engine().telescope.sim_obs);
                 // create fits_io class for current array file
-                fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
+                fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename, engine().telescope.pixel_axes);
                 // append to fits_io vector
                 engine().filtered_coadd_noise_fits_io_vec.push_back(std::move(fits_io));
             }

@@ -306,7 +306,7 @@ public:
 
     // create a map buffer from a citlali reduction directory
     template <class calib_t>
-    void load_mb(std::string, std::string, calib_t &);
+    void load_mb(std::string, std::string, calib_t &, std::string);
 
     // get limits for a particular grouping
     template <class calib_t>
@@ -344,7 +344,7 @@ public:
 };
 
 template <class calib_t>
-void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &calib) {
+void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &calib, std::string pixel_axes) {
 
     namespace fs = std::filesystem;
 
@@ -388,7 +388,7 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                     // get maps (if noise not in filename)
                     if (filename.find("noise") == std::string::npos) {
                         // get fits file
-                        fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*> fits_io(entry.path().string());
+                        fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*> fits_io(entry.path().string(), pixel_axes);
 
                         // get number of extensions other than primary extension
                         int num_extensions = 0;
@@ -471,7 +471,7 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                     // check if the current file is a noise map
                     if (filename.find("_noise_citlali.fits") != std::string::npos) {
                         // get fits file
-                        fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*> fits_io(entry.path().string());
+                        fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*> fits_io(entry.path().string(), pixel_axes);
 
                         // get number of noise maps
                         int num_extensions = 0;
