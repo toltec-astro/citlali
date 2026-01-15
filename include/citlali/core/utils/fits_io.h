@@ -21,10 +21,12 @@ public:
     // vector of hdu's for easy access
     std::vector<ext_hdu_t> hdus;
 
+    std::string pixel_axes;
+
     fitsIO() {}
 
     // constructor
-    fitsIO(std::string _f) : filepath(_f) {
+    fitsIO(std::string _f, std::string _a) : filepath(_f), pixel_axes(_a) {
         // read in file
         if constexpr (file_type==file_type_enum::read_fits) {
             try {
@@ -63,11 +65,17 @@ public:
         // valarray to copy data into (seems to be necessary)
         std::valarray<double> temp_data(data.size());
 
-        // copy the data (flip in x direction)
+        // copy the data
         int k = 0;
         for (int i=0; i<data.rows(); ++i){
             for (int j=0; j<data.cols(); ++j) {
-                temp_data[k] = data(i, data.cols() - j - 1);
+                if (pixel_axes != "altaz") {
+                    // flip in x direction)
+                    temp_data[k] = data(i, data.cols() - j - 1);
+                }
+                else {
+                    temp_data[k] = data(i,j);
+                }
                 k++;
             }
         }
@@ -108,7 +116,9 @@ public:
             }
 
             // flip to match internal orientation
-            data.rowwise().reverseInPlace();
+            if (pixel_axes != "altaz") {
+                data.rowwise().reverseInPlace();
+            }
 
             return data;
 

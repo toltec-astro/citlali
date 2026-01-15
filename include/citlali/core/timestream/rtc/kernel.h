@@ -28,7 +28,7 @@ public:
     std::string map_grouping;
 
     // initial setup
-    void setup(Eigen::Index);
+    void setup(Eigen::Index, std::string);
 
     // symmetric gaussian kernel
     template<typename apt_t>
@@ -47,14 +47,14 @@ public:
                                  apt_t &, double, Eigen::DenseBase<Derived> &);
 };
 
-void Kernel::setup(Eigen::Index n_maps) {
+void Kernel::setup(Eigen::Index n_maps, std::string pixel_axes) {
     if (type == "fits") {
         if (img_ext_names.size()!=n_maps && img_ext_names.size()!=1) {
             SPDLOG_INFO("mismatch for number of kernel images");
             std::exit(EXIT_FAILURE);
         }
 
-        fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*> fits_io(filepath);
+        fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*> fits_io(filepath, pixel_axes);
         for (auto & img_ext_name : img_ext_names) {
             images.push_back(fits_io.get_hdu(img_ext_name));
         }

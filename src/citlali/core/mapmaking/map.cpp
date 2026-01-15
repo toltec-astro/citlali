@@ -33,7 +33,12 @@ void MapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std::ve
     pixel_size_rad *= ASEC_TO_RAD;
 
     // set wcs cdelt for cols
-    wcs.cdelt.push_back(-pixel_size_rad);
+    if (pixel_axes == "radec" || pixel_axes == "galactic") {
+        wcs.cdelt.push_back(-pixel_size_rad);
+    }
+    else {
+        wcs.cdelt.push_back(pixel_size_rad);
+    }
     // set wcs cdelt for rows
     wcs.cdelt.push_back(pixel_size_rad);
 
@@ -97,7 +102,7 @@ void MapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std::ve
         }
     }
 
-    // setup wcs altaz frame
+    // setup wcs galactic frame
     else if (pixel_axes == "galactic") {
         wcs.ctype.push_back("GLON-TAN");
         wcs.ctype.push_back("GLAT-TAN");

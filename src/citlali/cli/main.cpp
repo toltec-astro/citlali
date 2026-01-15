@@ -787,7 +787,8 @@ int run(const rc_t &rc) {
                                     // set coverage region
                                     todproc.engine().ptcproc.tod_mb.cov_cut = todproc.engine().omb.cov_cut;
                                     // get map buffer from from path even if only saving last iteration
-                                    todproc.engine().ptcproc.load_mb(fruit_dir, fruit_dir, todproc.engine().calib);
+                                    todproc.engine().ptcproc.load_mb(fruit_dir, fruit_dir, todproc.engine().calib,
+                                                                    todproc.engine().telescope.pixel_axes);
                                 }
                             }
 
@@ -846,7 +847,8 @@ int run(const rc_t &rc) {
 
                                 // get map buffer from reduction directory
                                 logger->info("reading in {} for fruit loops iteration {}",fruit_dir, todproc.engine().fruit_iter);
-                                todproc.engine().ptcproc.load_mb(fruit_dir, fruit_dir, todproc.engine().calib);
+                                todproc.engine().ptcproc.load_mb(fruit_dir, fruit_dir, todproc.engine().calib,
+                                                                todproc.engine().telescope.pixel_axes);
                             }
                         }
 
