@@ -83,7 +83,7 @@ Collaboration diagram for fitsIO&lt; file_type, ext_hdu_t &gt;:</div>
 <div class="dyncontent">
 <div class="center"><img src="../../d2/d9c/classfitsIO__coll__graph.png" border="0" usemap="#afitsIO_3_01file__type_00_01ext__hdu__t_01_4_coll__map" alt="Collaboration graph"/></div>
 <map name="afitsIO_3_01file__type_00_01ext__hdu__t_01_4_coll__map" id="afitsIO_3_01file__type_00_01ext__hdu__t_01_4_coll__map">
-<area shape="rect" title=" " alt="" coords="5,5,128,225"/>
+<area shape="rect" title=" " alt="" coords="5,5,128,245"/>
 </map>
 </div>
 <table class="memberdecls">
@@ -91,8 +91,8 @@ Collaboration diagram for fitsIO&lt; file_type, ext_hdu_t &gt;:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a3ce9e9220e55ede9683043c20ae9267a" id="r_a3ce9e9220e55ede9683043c20ae9267a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d8d/classfitsIO.html#a3ce9e9220e55ede9683043c20ae9267a">fitsIO</a> ()</td></tr>
 <tr class="separator:a3ce9e9220e55ede9683043c20ae9267a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac141dabcc673d94288cda6efd7d345a4" id="r_ac141dabcc673d94288cda6efd7d345a4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d8d/classfitsIO.html#ac141dabcc673d94288cda6efd7d345a4">fitsIO</a> (std::string _f)</td></tr>
-<tr class="separator:ac141dabcc673d94288cda6efd7d345a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab98f6afa09a26ae56bb238c439929396" id="r_ab98f6afa09a26ae56bb238c439929396"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d8d/classfitsIO.html#ab98f6afa09a26ae56bb238c439929396">fitsIO</a> (std::string _f, std::string _a)</td></tr>
+<tr class="separator:ab98f6afa09a26ae56bb238c439929396"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9aa0aadcc4d5b20c5439706107115498" id="r_a9aa0aadcc4d5b20c5439706107115498"><td class="memTemplParams" colspan="2">template&lt;typename Derived &gt; </td></tr>
 <tr class="memitem:a9aa0aadcc4d5b20c5439706107115498"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="../../df/d8d/classfitsIO.html#a9aa0aadcc4d5b20c5439706107115498">add_hdu</a> (std::string hdu_name, Eigen::DenseBase&lt; Derived &gt; &amp;data)</td></tr>
 <tr class="separator:a9aa0aadcc4d5b20c5439706107115498"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -112,6 +112,8 @@ Public Attributes</h2></td></tr>
 <tr class="separator:aa26c9d63c399b2604b19463a74349b2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a798cc46739c029bc6fca929876c69154" id="r_a798cc46739c029bc6fca929876c69154"><td class="memItemLeft" align="right" valign="top">std::vector&lt; ext_hdu_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d8d/classfitsIO.html#a798cc46739c029bc6fca929876c69154">hdus</a></td></tr>
 <tr class="separator:a798cc46739c029bc6fca929876c69154"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44ddddc8a59cc6691c6e3c58c138fc1d" id="r_a44ddddc8a59cc6691c6e3c58c138fc1d"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d8d/classfitsIO.html#a44ddddc8a59cc6691c6e3c58c138fc1d">pixel_axes</a></td></tr>
+<tr class="separator:a44ddddc8a59cc6691c6e3c58c138fc1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a3ce9e9220e55ede9683043c20ae9267a" name="a3ce9e9220e55ede9683043c20ae9267a"></a>
@@ -141,8 +143,8 @@ template&lt;<a class="el" href="../../d0/dc5/fits__io_8h.html#a947dce1a952245447
 
 </div>
 </div>
-<a id="ac141dabcc673d94288cda6efd7d345a4" name="ac141dabcc673d94288cda6efd7d345a4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac141dabcc673d94288cda6efd7d345a4">&#9670;&#160;</a></span>fitsIO() <span class="overload">[2/2]</span></h2>
+<a id="ab98f6afa09a26ae56bb238c439929396" name="ab98f6afa09a26ae56bb238c439929396"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab98f6afa09a26ae56bb238c439929396">&#9670;&#160;</a></span>fitsIO() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -156,8 +158,18 @@ template&lt;<a class="el" href="../../d0/dc5/fits__io_8h.html#a947dce1a952245447
           <td class="memname"><a class="el" href="../../df/d8d/classfitsIO.html">fitsIO</a>&lt; file_type, ext_hdu_t &gt;<a class="el" href="../../df/d8d/classfitsIO.html">::fitsIO</a> </td>
           <td>(</td>
           <td class="paramtype">std::string&#160;</td>
-          <td class="paramname"><em>_f</em></td><td>)</td>
+          <td class="paramname"><em>_f</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>_a</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -287,9 +299,9 @@ Here is the caller graph for this function:</div>
 <div class="center"><img src="../../df/d8d/classfitsIO_a681b60e0e266b924966ab2d740558054_icgraph.png" border="0" usemap="#adf/d8d/classfitsIO_a681b60e0e266b924966ab2d740558054_icgraph" alt=""/></div>
 <map name="adf/d8d/classfitsIO_a681b60e0e266b924966ab2d740558054_icgraph" id="adf/d8d/classfitsIO_a681b60e0e266b924966ab2d740558054_icgraph">
 <area shape="rect" title=" " alt="" coords="603,45,719,70"/>
-<area shape="rect" href="../../de/d76/classtimestream_1_1TCProc.html#ac76ff70e348df8ed3f0d87676ed58128" title=" " alt="" coords="404,5,555,45"/>
+<area shape="rect" href="../../de/d76/classtimestream_1_1TCProc.html#a4f88e2b88cec9129540ff5fdea22062f" title=" " alt="" coords="404,5,555,45"/>
 <area shape="poly" title=" " alt="" coords="588,47,554,41,555,36,589,42"/>
-<area shape="rect" href="../../d2/d89/classtimestream_1_1Kernel.html#add47307e67ff42f044d059d8db78d5f3" title=" " alt="" coords="406,69,553,109"/>
+<area shape="rect" href="../../d2/d89/classtimestream_1_1Kernel.html#a136315c08ef4526d2449bb3bff669f5a" title=" " alt="" coords="406,69,553,109"/>
 <area shape="poly" title=" " alt="" coords="590,73,553,79,552,74,589,67"/>
 <area shape="rect" href="../../d1/db6/classEngine.html#a03b9f9d69c7e1f1d61e127662e0bb81b" title=" " alt="" coords="187,77,356,102"/>
 <area shape="poly" title=" " alt="" coords="392,92,356,92,356,87,392,87"/>
@@ -363,6 +375,22 @@ template&lt;<a class="el" href="../../d0/dc5/fits__io_8h.html#a947dce1a952245447
       <table class="memname">
         <tr>
           <td class="memname">std::unique_ptr&lt;CCfits::FITS&gt; <a class="el" href="../../df/d8d/classfitsIO.html">fitsIO</a>&lt; file_type, ext_hdu_t &gt;::pfits</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a44ddddc8a59cc6691c6e3c58c138fc1d" name="a44ddddc8a59cc6691c6e3c58c138fc1d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44ddddc8a59cc6691c6e3c58c138fc1d">&#9670;&#160;</a></span>pixel_axes</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;<a class="el" href="../../d0/dc5/fits__io_8h.html#a947dce1a952245447346ae6be87a49c4">file_type_enum</a> file_type, typename ext_hdu_t &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string <a class="el" href="../../df/d8d/classfitsIO.html">fitsIO</a>&lt; file_type, ext_hdu_t &gt;::pixel_axes</td>
         </tr>
       </table>
 </div><div class="memdoc">

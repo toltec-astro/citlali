@@ -1,8 +1,8 @@
 <map id="fitsIO::get_hdu" name="fitsIO::get_hdu">
 <area shape="rect" id="Node000001" title=" " alt="" coords="603,45,719,70"/>
-<area shape="rect" id="Node000002" href="$de/d76/classtimestream_1_1TCProc.html#ac76ff70e348df8ed3f0d87676ed58128" title=" " alt="" coords="404,5,555,45"/>
+<area shape="rect" id="Node000002" href="$de/d76/classtimestream_1_1TCProc.html#a4f88e2b88cec9129540ff5fdea22062f" title=" " alt="" coords="404,5,555,45"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="588,47,554,41,555,36,589,42"/>
-<area shape="rect" id="Node000003" href="$d2/d89/classtimestream_1_1Kernel.html#add47307e67ff42f044d059d8db78d5f3" title=" " alt="" coords="406,69,553,109"/>
+<area shape="rect" id="Node000003" href="$d2/d89/classtimestream_1_1Kernel.html#a136315c08ef4526d2449bb3bff669f5a" title=" " alt="" coords="406,69,553,109"/>
 <area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="590,73,553,79,552,74,589,67"/>
 <area shape="rect" id="Node000004" href="$d1/db6/classEngine.html#a03b9f9d69c7e1f1d61e127662e0bb81b" title=" " alt="" coords="187,77,356,102"/>
 <area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="392,92,356,92,356,87,392,87"/>

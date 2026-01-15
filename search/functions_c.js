@@ -5,7 +5,7 @@ var searchData=
   ['load_5fdata_5fitem_2',['load_data_item',['../d8/d10/structKidsDataProc.html#ac72996cb69eb471e37cabf9724f145b4',1,'KidsDataProc']]],
   ['load_5ffit_5freport_3',['load_fit_report',['../d8/d10/structKidsDataProc.html#a85a5c773a4e2f4fbd9a7e4b188458c5d',1,'KidsDataProc']]],
   ['load_5ffrom_5fstr_4',['load_from_str',['../d8/db6/structYamlConfig.html#ae4ed223c6362777a3885d0a17408de3d',1,'YamlConfig']]],
-  ['load_5fmb_5',['load_mb',['../de/d76/classtimestream_1_1TCProc.html#ac76ff70e348df8ed3f0d87676ed58128',1,'timestream::TCProc']]],
+  ['load_5fmb_5',['load_mb',['../de/d76/classtimestream_1_1TCProc.html#a4f88e2b88cec9129540ff5fdea22062f',1,'timestream::TCProc']]],
   ['load_5frawobs_6',['load_rawobs',['../d8/d10/structKidsDataProc.html#ad64bbe924e2997a3b94262b3f341798e',1,'KidsDataProc']]],
   ['load_5frawobs_5fgaps_7',['load_rawobs_gaps',['../d8/d10/structKidsDataProc.html#a316fdde265ef6a648697202df39f3dde',1,'KidsDataProc']]],
   ['loglog_8',['loglog',['../d7/df7/namespacematplotlibcpp.html#a6cfa8cba00f52a2c4614fa7a8a0bcd2b',1,'matplotlibcpp']]],
