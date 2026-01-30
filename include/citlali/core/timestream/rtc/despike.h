@@ -94,13 +94,19 @@ private:
             delta_spike_loc.maxCoeff(&mx_window_index);
 
             logger->info("delta_spike_loc {} fsmp {} mx_window_index {}",delta_spike_loc,fsmp,mx_window_index);
-            logger->info("spike_loc(mx_window_index) {} spike_loc(mx_window_index-1) {}",spike_loc(mx_window_index),
-                        spike_loc(mx_window_index-1));
+            if (mx_window_index == 0) {
+                logger->info("spike_loc(mx_window_index) {} spike_loc(mx_window_index-1) {}",
+                             spike_loc(mx_window_index), spike_loc(0));
+            }
+            else {
+                logger->info("spike_loc(mx_window_index) {} spike_loc(mx_window_index-1) {}",
+                             spike_loc(mx_window_index), spike_loc(mx_window_index-1));
+            }
 
             // set the starting and ending indices for the window
             if (mx_window_index == 0) {
                 win_index_0 = 0;
-                win_index_1 = spike_loc(1);// - fsmp;
+                win_index_1 = spike_loc(0);// - fsmp;
             }
             else {
                 if (mx_window_index == n_spikes) {
@@ -249,7 +255,7 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                 for (Eigen::Index i = 0; i < n_pts - 1; ++i) {
                     if (det_flags(i) == 1) {
                         spike_loc(count) = i + 1;
-                        spike_vals(count) = scans(det,i+1) - scans(det,i);
+                        spike_vals(count) = scans(i+1, det) - scans(i, det);
                         count++;
                     }
                 }
@@ -294,13 +300,13 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                 // around each spike
                 if (run_filter) {
                     // half of the total despike window - 1
-                    int decay_window = (window_size - 1) / 2;
+                    int decay_window = window_size;
 
                     for (Eigen::Index i=0; i<n_spikes; ++i) {
                         if (spike_loc(i) - decay_window >= 0 &&
                             spike_loc(i) + decay_window + 1 < n_pts) {
                             det_flags
-                                .segment(spike_loc(i) - decay_window, 2*window_size + 1)
+                                .segment(spike_loc(i) - decay_window, 2*decay_window + 1)
                                 .setOnes();
                         }
                     }
@@ -353,13 +359,13 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                 // first do spikes from 0 to 1
                 for (Eigen::Index j = 1; j < n_pts - 1; ++j) {
                     if (flags(j, det) == 0 && flags(j - 1, det) == 1 && flags(j + 1, det) == 1) {
-                        flags(j, det) = 0;
+                        flags(j, det) = 1;
                     }
                 }
                 // now do spikes from 1 to 0
                 for (Eigen::Index j = 1; j < n_pts - 1; ++j) {
                     if (flags(j, det) == 1 && flags(j - 1, det) == 0 && flags(j + 1, det) == 0) {
-                        flags(j, det) = 1;
+                        flags(j, det) = 0;
                     }
                 }
                 // and the first and last samples
@@ -481,7 +487,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                         if ((spike_free(ii) || use_all_det) && apt["flag"](ii + start_det)==0) {
                             detm.col(c) =
                                 scans.block(si_flags(j), ii, n_flags, 1);
-                            res(c) = apt["responsivity"](c + start_det);
+                            res(c) = apt["responsivity"](ii + start_det);
                             c++;
                         }
                     }
