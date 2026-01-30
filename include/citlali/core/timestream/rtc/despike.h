@@ -409,12 +409,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                         flags(j, det) = 1;
                     }
                 }
-                // now do spikes from 1 to 0
-                for (Eigen::Index j = 1; j < n_pts - 1; ++j) {
-                    if (flags(j, det) == 1 && flags(j - 1, det) == 0 && flags(j + 1, det) == 0) {
-                        flags(j, det) = 0;
-                    }
-                }
+                // keep isolated flags (e.g., single-sample outliers) intact
                 // and the first and last samples
                 flags(0, det) = flags(1, det);
                 flags(n_pts - 1, det) = flags(n_pts - 2, det);
@@ -455,7 +450,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                             samp_count++;
                             j++;
                         }
-                        if (samp_count > 1) {
+                        if (samp_count >= 1) {
                             si_flags(count) = jstart;
                             ei_flags(count) = j - 1;
                             count++;
