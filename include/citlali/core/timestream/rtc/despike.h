@@ -1,9 +1,9 @@
 #pragma once
 
 #include <boost/random.hpp>
-#include <boost/random/random_device.hpp>
 
 #include <algorithm>
+#include <random>
 #include <vector>
 #include <Eigen/Core>
 
@@ -407,8 +407,8 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
     thread_local boost::random::mt19937 eng;
     thread_local bool seeded = false;
     if (!seeded) {
-        boost::random::random_device rd;
-        eng.seed(rd());
+        std::random_device rd;
+        eng.seed(static_cast<boost::random::mt19937::result_type>(rd()));
         seeded = true;
     }
 
