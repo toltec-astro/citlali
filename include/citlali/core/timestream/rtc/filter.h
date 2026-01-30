@@ -171,8 +171,9 @@ void Filter::iir(Eigen::DenseBase<Derived> &in) {
         double y_2 = 0.;
         double y_1 = 0.;
         for (Eigen::Index j=0; j<in.rows(); ++j) {
-            out(j,i) = notch_a(0) * in(j,i) + notch_a(1) * x_1 + notch_a(2) * x_2
-                        + notch_b(1) * y_1 + notch_b(2) * y_2;
+            // Direct-form I with a0 assumed 1.0
+            out(j,i) = notch_b(0) * in(j,i) + notch_b(1) * x_1 + notch_b(2) * x_2
+                        - notch_a(1) * y_1 - notch_a(2) * y_2;
             x_2 = x_1;
             x_1 = in(j,i);
             y_2 = y_1;
