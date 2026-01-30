@@ -206,6 +206,11 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         run_tod_notch = false;
     }
 
+    // keep despike filter-aware
+    if (run_despike) {
+        despiker.run_filter = run_tod_filter;
+    }
+
     // run downsampling?
     get_config_value(config, run_downsample, missing_keys, invalid_keys,
                      std::tuple{"timestream","raw_time_chunk","downsample","enabled"});

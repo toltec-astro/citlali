@@ -4,6 +4,7 @@
 #include <boost/random/random_device.hpp>
 
 #include <algorithm>
+#include <vector>
 #include <Eigen/Core>
 
 #include <tula/logging.h>
@@ -25,8 +26,10 @@ public:
     // for window size
     bool run_filter = false;
 
-    // size of region to merge flags
+    // size of region to merge flags (samples)
     int size = 10;
+    // maximum window length (seconds) for sigma estimation
+    double max_window_sec = 10.0;
 
     // standard deviation limit
     double sigest_lim = 0;//1e-8;
@@ -140,8 +143,11 @@ private:
         logger->info("win_index_1 {}", win_index_1);
 
         // limit the maximum window size
-        if ((win_index_1 - win_index_0 - 1) / fsmp > size) {
-            win_index_1 = win_index_0 + size * fsmp + 1;
+        if (max_window_sec > 0) {
+            int max_window_samples = static_cast<int>(max_window_sec * fsmp);
+            if (max_window_samples > 0 && (win_index_1 - win_index_0 - 1) > max_window_samples) {
+                win_index_1 = win_index_0 + max_window_samples + 1;
+            }
         }
 
         win_size = win_index_1 - win_index_0 - 1;
@@ -174,21 +180,12 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
         if (apt["flag"](det)==0) {
             // get detector's flags
             Eigen::Matrix<bool, Eigen::Dynamic, 1> det_flags = flags.col(det);
+            Eigen::Matrix<bool, Eigen::Dynamic, 1> base_flags = det_flags;
+            Eigen::Matrix<bool, Eigen::Dynamic, 1> raw_flags =
+                Eigen::Matrix<bool, Eigen::Dynamic, 1>::Zero(n_pts);
 
             // total number of spikes
             int n_spikes = 0;
-
-            // array of delta's between adjacent points
-            Eigen::VectorXd delta = scans.col(det).tail(n_pts - 1) - scans.col(det).head(n_pts - 1);
-
-            // minimum amplitude of spike
-            double cutoff = min_spike_sigma * engine_utils::calc_std_dev(delta);
-
-            // mean subtracted delta array
-            Eigen::VectorXd diff = abs(delta.array() - delta.mean());
-
-            // run the spike finder,
-            spike_finder(det_flags, delta, diff, n_spikes, cutoff);
 
             // also flag single-sample outliers in the raw signal (robust MAD)
             {
@@ -201,17 +198,27 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                     sigma = sigest_lim;
                 }
                 double raw_cutoff = min_spike_sigma * sigma;
-                det_flags = (abs_dev.array() > raw_cutoff).select(1, det_flags);
-
-                // keep delta-based stats consistent with raw flags
-                for (Eigen::Index i = 0; i < n_pts - 1; ++i) {
-                    if (det_flags(i) == 1 || det_flags(i + 1) == 1) {
-                        delta(i) = 0;
-                    }
-                }
-                diff = abs(delta.derived().array() - delta.mean());
-                cutoff = min_spike_sigma * engine_utils::calc_std_dev(delta);
+                raw_flags = (abs_dev.array() > raw_cutoff).select(1, raw_flags);
             }
+
+            // array of delta's between adjacent points
+            Eigen::VectorXd delta = scans.col(det).tail(n_pts - 1) - scans.col(det).head(n_pts - 1);
+            // mask deltas adjacent to pre-existing or raw-flagged samples
+            for (Eigen::Index i = 0; i < n_pts - 1; ++i) {
+                if (base_flags(i) == 1 || base_flags(i + 1) == 1 ||
+                    raw_flags(i) == 1 || raw_flags(i + 1) == 1) {
+                    delta(i) = 0;
+                }
+            }
+
+            // minimum amplitude of spike
+            double cutoff = min_spike_sigma * engine_utils::calc_std_dev(delta);
+
+            // mean subtracted delta array
+            Eigen::VectorXd diff = abs(delta.array() - delta.mean());
+
+            // run the spike finder,
+            spike_finder(det_flags, delta, diff, n_spikes, cutoff);
 
             // variable to control spike_finder while loop
             bool new_spikes_found = ((diff.segment(1,n_pts - 2).array() > cutoff).count() > 0) ? 1 : 0;
@@ -254,8 +261,8 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                     if (c > 0) {
                         // remove those flags from the total count
                         n_spikes -= c;
-                        // set region to un_flagged
-                        det_flags.segment(i + 1, size_loop).setZero();
+                        // set region to un_flagged (including current sample)
+                        det_flags.segment(i, size_loop + 1).setZero();
 
                         // is this a bug?  if n_pts - i <= size/2, i + size/2 >= n_pts
                         // for now, let's limit it to i + size/2 < n_pts since the
@@ -311,44 +318,8 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                 auto [win_index_0, win_index_1, win_size] =
                     make_window(spike_loc, n_spikes, n_pts);
 
-                // create a sub-array with values from the largest spike-free window
-                Eigen::VectorXd sub_vals =
-                    scans.col(det).segment(win_index_0, win_size);
-
-                // copy of the sub-array for smoothing
-                Eigen::VectorXd smoothed_sub_vals = Eigen::VectorXd::Zero(win_size);
-
-                // smooth the sub-array with a box-car filter
-                engine_utils::smooth<engine_utils::SmoothType::boxcar>(sub_vals, smoothed_sub_vals, size);
-
-                // estimate the standard deviation
-                sub_vals -= smoothed_sub_vals;
-                auto sigest = engine_utils::calc_std_dev(sub_vals);
-                if (sigest < sigest_lim) {
-                    sigest = sigest_lim;
-                }
-
-                // calculate the decay length of all the spikes
-                Eigen::VectorXd decay_length = -fsmp * time_constant_sec *
-                                               ((sigest / spike_vals.array()).abs()).log();
-
-                // if a decay length is less than 6, set it to 6
-                decay_length = (decay_length.array() < 6.).select(6., decay_length);
-
-
-                // exit if the decay length is too large
-                if ((decay_length.array() > size * fsmp).any()) {
-                    logger->error("decay length is longer than {} * fsmp.  mission "
-                                "failed, we'll get em next time.",size);
-                    std::exit(EXIT_FAILURE);
-                }
-
-                // due to filtering later, we flag a region with the size of the filter
-                // around each spike
                 if (run_filter) {
-                    // half of the total despike window - 1
-                    int decay_window = window_size;
-
+                    int decay_window = static_cast<int>(window_size);
                     for (Eigen::Index i=0; i<n_spikes; ++i) {
                         if (spike_loc(i) - decay_window >= 0 &&
                             spike_loc(i) + decay_window + 1 < n_pts) {
@@ -358,9 +329,42 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                         }
                     }
                 }
-
-                // if lowpassing/highpassing skipped, use the decay length instead
                 else {
+                    // create a sub-array with values from the largest spike-free window
+                    Eigen::VectorXd sub_vals =
+                        scans.col(det).segment(win_index_0, win_size);
+
+                    // copy of the sub-array for smoothing
+                    Eigen::VectorXd smoothed_sub_vals = Eigen::VectorXd::Zero(win_size);
+
+                    // smooth the sub-array with a box-car filter
+                    engine_utils::smooth<engine_utils::SmoothType::boxcar>(sub_vals, smoothed_sub_vals, size);
+
+                    // estimate the standard deviation
+                    sub_vals -= smoothed_sub_vals;
+                    auto sigest = engine_utils::calc_std_dev(sub_vals);
+                    if (sigest < sigest_lim) {
+                        sigest = sigest_lim;
+                    }
+
+                    // calculate the decay length of all the spikes
+                    Eigen::VectorXd decay_length = -fsmp * time_constant_sec *
+                                                   ((sigest / spike_vals.array()).abs()).log();
+
+                    // if a decay length is less than 6, set it to 6
+                    decay_length = (decay_length.array() < 6.).select(6., decay_length);
+
+                    // exit if the decay length is too large
+                    if (max_window_sec > 0) {
+                        double max_len = max_window_sec * fsmp;
+                        if ((decay_length.array() > max_len).any()) {
+                            logger->error("decay length is longer than {} * fsmp.  mission "
+                                        "failed, we'll get em next time.",max_window_sec);
+                            std::exit(EXIT_FAILURE);
+                        }
+                    }
+
+                    // use the decay length to flag a region around each spike
                     for (Eigen::Index i=0; i<n_spikes; ++i) {
                         if (spike_loc(i) - decay_length(i) >= 0 &&
                             spike_loc(i) + decay_length(i) + 1 < n_pts) {
@@ -372,6 +376,24 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                 }
 
             } // end of "if (n_spikes > 0)" loop
+
+            // apply raw-sample flags after delta-based spike handling
+            if ((raw_flags.array() == 1).any()) {
+                det_flags = (raw_flags.array() == 1).select(1, det_flags);
+                if (run_filter) {
+                    int decay_window = static_cast<int>(window_size);
+                    for (Eigen::Index i = 0; i < n_pts; ++i) {
+                        if (raw_flags(i) == 1) {
+                            if (i - decay_window >= 0 && i + decay_window + 1 < n_pts) {
+                                det_flags.segment(i - decay_window, 2*decay_window + 1).setOnes();
+                            }
+                        }
+                    }
+                }
+            }
+
+            // preserve any pre-existing flags
+            det_flags = (base_flags.array() == 1).select(1, det_flags);
             flags.col(det) = det_flags;
         } // end of apt["flag"] loop
     } // end of "for (Eigen::Index det = 0; det < n_dets; det++)" loop
@@ -383,9 +405,16 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
 
     // declare random number generator
     thread_local boost::random::mt19937 eng;
+    thread_local bool seeded = false;
+    if (!seeded) {
+        boost::random::random_device rd;
+        eng.seed(rd());
+        seeded = true;
+    }
 
     Eigen::Index n_dets = flags.cols();
     Eigen::Index n_pts = flags.rows();
+    Eigen::MatrixXd scans_ref = scans;
 
     // figure out if there are any flag-free detectors
     Eigen::Index n_flagged = 0;
@@ -406,54 +435,37 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                 flags(0, det) = flags(1, det);
                 flags(n_pts - 1, det) = flags(n_pts - 2, det);
 
-                // count up the number of flagged regions of data in the scan
-                Eigen::Index n_flagged_regions = 0;
-
-                if (flags(n_pts - 1, det) == 1) {
-                    n_flagged_regions++;
-                }
-
-            n_flagged_regions
-                += ((flags.col(det).tail(n_pts - 1) - flags.col(det).head(n_pts - 1)).array() > 0)
-                       .count();
-            if (n_flagged_regions == 0) {
-                continue;
-            }
-
-                logger->info("n_flagged_regions {}",n_flagged_regions);
-
                 // find the start and end index for each flagged region
-                Eigen::Matrix<int, Eigen::Dynamic, 1> si_flags(n_flagged_regions);
-                Eigen::Matrix<int, Eigen::Dynamic, 1> ei_flags(n_flagged_regions);
+                std::vector<int> si_flags_vec;
+                std::vector<int> ei_flags_vec;
 
-                si_flags.setConstant(-1);
-                ei_flags.setConstant(-1);
-
-                int count = 0;
                 Eigen::Index j = 0;
-
                 while (j < n_pts) {
                     if (flags(j, det) == 1) {
                         int jstart = j;
-                        int samp_count = 0;
-
                         while (j < n_pts && flags(j, det) == 1) {
-                            samp_count++;
                             j++;
                         }
-                        if (samp_count >= 1) {
-                            si_flags(count) = jstart;
-                            ei_flags(count) = j - 1;
-                            count++;
-                        } else {
-                            j++;
-                        }
+                        si_flags_vec.push_back(jstart);
+                        ei_flags_vec.push_back(j - 1);
                     } else {
                         j++;
                     }
                 }
 
-                logger->info("count {}", count);
+                Eigen::Index n_flagged_regions = static_cast<Eigen::Index>(si_flags_vec.size());
+                if (n_flagged_regions == 0) {
+                    continue;
+                }
+
+                logger->info("n_flagged_regions {}", n_flagged_regions);
+
+                Eigen::Matrix<int, Eigen::Dynamic, 1> si_flags(n_flagged_regions);
+                Eigen::Matrix<int, Eigen::Dynamic, 1> ei_flags(n_flagged_regions);
+                for (Eigen::Index i = 0; i < n_flagged_regions; ++i) {
+                    si_flags(i) = si_flags_vec[i];
+                    ei_flags(i) = ei_flags_vec[i];
+                }
 
                 // now loop on the number of flagged regions for the fix
                 Eigen::VectorXd xx(2);
@@ -468,22 +480,22 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                     Eigen::VectorXd lin_offset(n_flags);
 
                     if (si_flags(j) == 0 && ei_flags(j) == n_pts - 1) {
-                        lin_offset.setConstant(scans(0, det));
+                        lin_offset.setConstant(scans_ref(0, det));
                     }
                     else if (si_flags(j) == 0) {
-                        lin_offset.setConstant(scans(ei_flags(j) + 1, det));
+                        lin_offset.setConstant(scans_ref(ei_flags(j) + 1, det));
                     }
 
                     else if (ei_flags(j) == n_pts - 1) {
-                        lin_offset.setConstant(scans(si_flags(j) - 1, det));
+                        lin_offset.setConstant(scans_ref(si_flags(j) - 1, det));
                     }
 
                     else {
                         // linearly interpolate between the before and after good samples
                         xx(0) = si_flags(j) - 1;
                         xx(1) = ei_flags(j) + 1;
-                        yy(0) = scans(si_flags(j) - 1, det);
-                        yy(1) = scans(ei_flags(j) + 1, det);
+                        yy(0) = scans_ref(si_flags(j) - 1, det);
+                        yy(1) = scans_ref(ei_flags(j) + 1, det);
 
                         Eigen::VectorXd xlin_offset =
                             Eigen::VectorXd::LinSpaced(n_flags, si_flags(j), si_flags(j) + n_flags - 1);
@@ -525,7 +537,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                     for (Eigen::Index ii = 0; ii < n_dets; ii++) {
                         if ((use_all_det || !spike_free(ii)) && apt["flag"](ii + start_det)==0) {
                             detm.col(c) =
-                                scans.block(si_flags(j), ii, n_flags, 1);
+                                scans_ref.block(si_flags(j), ii, n_flags, 1);
                             res(c) = apt["responsivity"](ii + start_det);
                             c++;
                         }
@@ -597,7 +609,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                     Eigen::VectorXd std_dev_ff = Eigen::VectorXd::Zero(det_count);
 
                     for (Eigen::Index ii = 0; ii < det_count; ii++) {
-                        Eigen::VectorXd tmp_vec = detm.row(ii).array() / res.array() - sky_model.transpose().array();
+                        Eigen::VectorXd tmp_vec = detm.row(ii).array() / res(ii) - sky_model.transpose().array();
 
                         double tmp_mean = tmp_vec.mean();
 
