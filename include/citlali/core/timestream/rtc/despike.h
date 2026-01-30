@@ -93,14 +93,17 @@ private:
             Eigen::Index mx_window_index;
             delta_spike_loc.maxCoeff(&mx_window_index);
 
-            logger->info("delta_spike_loc {} fsmp {} mx_window_index {}",delta_spike_loc,fsmp,mx_window_index);
+            logger->info("delta_spike_loc {} fsmp {} mx_window_index {} n_spikes {}",
+                         delta_spike_loc, fsmp, mx_window_index, n_spikes);
             if (mx_window_index == 0) {
-                logger->info("spike_loc(mx_window_index) {} spike_loc(mx_window_index-1) {}",
-                             spike_loc(mx_window_index), spike_loc(0));
+                logger->info("spike_loc(0) {}", spike_loc(0));
+            }
+            else if (mx_window_index == n_spikes) {
+                logger->info("spike_loc(n_spikes-1) {}", spike_loc(n_spikes - 1));
             }
             else {
                 logger->info("spike_loc(mx_window_index) {} spike_loc(mx_window_index-1) {}",
-                             spike_loc(mx_window_index), spike_loc(mx_window_index-1));
+                             spike_loc(mx_window_index), spike_loc(mx_window_index - 1));
             }
 
             // set the starting and ending indices for the window
