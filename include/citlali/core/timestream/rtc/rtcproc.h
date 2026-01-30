@@ -388,8 +388,8 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                 in_flags(in_flags_ref.data(), in_flags_ref.rows(), in_flags_ref.cols(),
                          Eigen::OuterStride<>(in_flags_ref.outerStride()));
 
-            // replace spikes (disabled to test flag-only path)
-            // despiker.replace_spikes(in_scans, in_flags, calib.apt, start_index);
+            // replace spikes
+            despiker.replace_spikes(in_scans, in_flags, calib.apt, start_index);
         }
 
         in.status.despiked = true;

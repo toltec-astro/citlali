@@ -186,6 +186,20 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
             // run the spike finder,
             spike_finder(det_flags, delta, diff, n_spikes, cutoff);
 
+            // also flag single-sample outliers in the raw signal (robust MAD)
+            {
+                Eigen::VectorXd raw = scans.col(det);
+                double med = tula::alg::median(raw);
+                Eigen::VectorXd abs_dev = (raw.array() - med).abs();
+                double mad = tula::alg::median(abs_dev);
+                double sigma = 1.4826 * mad;
+                if (sigma < sigest_lim) {
+                    sigma = sigest_lim;
+                }
+                double raw_cutoff = min_spike_sigma * sigma;
+                det_flags = (abs_dev.array() > raw_cutoff).select(1, det_flags);
+            }
+
             // variable to control spike_finder while loop
             bool new_spikes_found = ((diff.segment(1,n_pts - 2).array() > cutoff).count() > 0) ? 1 : 0;
 
