@@ -430,7 +430,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                 for (Eigen::Index j = 0; j < n_flagged_regions; ++j) {
                     // determine the linear baseline for flagged region
                     //but use flat level if flagged at endpoints
-                    Eigen::Index n_flags = ei_flags(j) - si_flags(j);
+                    Eigen::Index n_flags = ei_flags(j) - si_flags(j) + 1;
                     Eigen::VectorXd lin_offset(n_flags);
 
                     if (si_flags(j) == 0) {
@@ -472,10 +472,12 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                                 det_count++;
                             }
                         }
-                        //det_count = spike_free.template cast<int>().sum();
                     }
 
                     logger->info("det_count {}", det_count);
+                    if (det_count == 0) {
+                        continue;
+                    }
 
                     Eigen::MatrixXd detm(n_flags, det_count);
                     detm.setConstant(-99);
@@ -484,7 +486,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                     logger->info("si {}", si_flags);
                     int c = 0;
                     for (Eigen::Index ii = 0; ii < n_dets; ii++) {
-                        if ((spike_free(ii) || use_all_det) && apt["flag"](ii + start_det)==0) {
+                        if ((use_all_det || !spike_free(ii)) && apt["flag"](ii + start_det)==0) {
                             detm.col(c) =
                                 scans.block(si_flags(j), ii, n_flags, 1);
                             res(c) = apt["responsivity"](ii + start_det);
