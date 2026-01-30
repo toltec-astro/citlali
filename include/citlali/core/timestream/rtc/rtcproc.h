@@ -24,6 +24,7 @@ public:
     bool run_kernel;
     bool run_despike;
     bool run_tod_filter;
+    bool run_tod_notch;
     bool run_downsample;
     bool run_calibrate;
     bool run_extinction;
@@ -164,10 +165,45 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
 
         // replace despiker window size
         despiker.window_size = filter.n_terms;
+
+        // optional notch filtering (applied after FIR)
+        run_tod_notch = false;
+        if (config.has(std::tuple{"timestream","raw_time_chunk","filter","notch"})) {
+            get_config_value(config, run_tod_notch, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","filter","notch","enabled"});
+            if (run_tod_notch) {
+                auto freqs = config.template get_typed<std::vector<double>>(
+                    std::tuple{"timestream","raw_time_chunk","filter","notch","freqs_Hz"});
+                auto deltas = config.template get_typed<std::vector<double>>(
+                    std::tuple{"timestream","raw_time_chunk","filter","notch","delta_f_Hz"});
+                if (freqs.empty()) {
+                    logger->error("notch enabled but freqs_Hz is empty");
+                    std::exit(EXIT_FAILURE);
+                }
+                if (deltas.size() == 1 && freqs.size() > 1) {
+                    deltas.resize(freqs.size(), deltas[0]);
+                }
+                if (deltas.size() != freqs.size()) {
+                    logger->error("notch freqs_Hz and delta_f_Hz must have same length (or delta_f_Hz length 1)");
+                    std::exit(EXIT_FAILURE);
+                }
+                filter.w0s.clear();
+                filter.qs.clear();
+                for (std::size_t i = 0; i < freqs.size(); ++i) {
+                    if (freqs[i] <= 0.0 || deltas[i] <= 0.0) {
+                        logger->error("notch freqs_Hz and delta_f_Hz must be > 0");
+                        std::exit(EXIT_FAILURE);
+                    }
+                    filter.w0s.push_back(freqs[i]);
+                    filter.qs.push_back(freqs[i] / deltas[i]);
+                }
+            }
+        }
     }
     else {
         // explicitly set filter size to zero for inner time chunks
         filter.n_terms = 0;
+        run_tod_notch = false;
     }
 
     // run downsampling?
@@ -363,7 +399,10 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     if (run_tod_filter) {
         logger->debug("convolving signal with tod filter");
         filter.convolve(in.scans.data);
-        //filter.iir(in.scans.data);
+        if (run_tod_notch) {
+            logger->debug("applying notch filter to signal");
+            filter.iir(in.scans.data);
+        }
 
         // filter kernel
         if (run_kernel) {

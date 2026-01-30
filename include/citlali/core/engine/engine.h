@@ -397,6 +397,9 @@ void Engine::obsnum_setup() {
     // if filter is requested, make it here
     if (rtcproc.run_tod_filter) {
         rtcproc.filter.make_filter(telescope.fsmp);
+        if (rtcproc.run_tod_notch) {
+            rtcproc.filter.make_notch_filter(telescope.fsmp);
+        }
     }
 
     // set map wcs crvals to source ra/dec

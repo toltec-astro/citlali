@@ -110,6 +110,10 @@ timestream: # timestream reduction parameters
       freq_high_Hz: 16.0 # upper freq limit
       freq_low_Hz: 0.0 # lower freq limit
       n_terms: 32 # size of filter in samples
+      notch: # optional notch filtering (applied after FIR)
+        enabled: false # enable or disable notch filtering
+        freqs_Hz: [10.5] # notch center frequencies in Hz
+        delta_f_Hz: [1.0] # notch widths in Hz (per freq)
     kernel: # make synthetic timestreams for reduction characterization
       enabled: false # enable or disable kernel generation
       filepath: null # filepath to FITS file with kernel
