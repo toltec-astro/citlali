@@ -777,10 +777,8 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
                     if (calib.apt["flag"](det_index)==0) {
                         // flag those below limit
                         if ((det_std_dev(j) < (lower_inv_var_factor*median_std_dev)) && lower_inv_var_factor!=0) {
-                            if (map_grouping!="detector") {
-                                in.flags.data.col(dets(j)).setOnes();
-                            }
-                            else {
+                            in.flags.data.col(dets(j)).setOnes();
+                            if (map_grouping=="detector") {
                                 calib_scan.apt["flag"](det_index) = 1;
                             }
                             in.n_dets_low++;
@@ -789,10 +787,8 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
 
                         // flag those above limit
                         if ((det_std_dev(j) > (upper_inv_var_factor*median_std_dev)) && upper_inv_var_factor!=0) {
-                            if (map_grouping!="detector") {
-                                in.flags.data.col(dets(j)).setOnes();
-                            }
-                            else {
+                            in.flags.data.col(dets(j)).setOnes();
+                            if (map_grouping=="detector") {
                                 calib_scan.apt["flag"](det_index) = 1;
                             }
                             in.n_dets_high++;

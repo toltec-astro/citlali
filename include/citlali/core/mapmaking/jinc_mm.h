@@ -287,7 +287,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         }
 
         // skip completely flagged detectors
-        if ((in.flags.data.col(i).array()==false).any()) {
+        if (apt["flag"](i)==0 && (in.flags.data.col(i).array()==false).any()) {
             // get detector positions from apt table if not in detector mapmaking mode
             auto det_index = i;
 
@@ -527,7 +527,7 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
         }
 
         // skip completely flagged detectors
-        if ((in.flags.data.col(i).array()==false).any()) {
+        if (apt["flag"](i)==0 && (in.flags.data.col(i).array()==false).any()) {
             // get detector positions from apt table if not in detector mapmaking mode
             auto det_index = i;
 

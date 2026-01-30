@@ -202,7 +202,7 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
         }
 
         // skip completely flagged detectors
-        if ((in.flags.data.col(i).array()==0).any() && run_det) {
+        if (apt["flag"](i)==0 && (in.flags.data.col(i).array()==0).any() && run_det) {
             // which map to assign detector to
             Eigen::Index map_index = map_indices(i);
 
@@ -493,7 +493,7 @@ void NaiveMapmaker::populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::
         }
 
         // skip completely flagged detectors
-        if ((in.flags.data.col(i).array()==0).any() && run_det) {
+        if (apt["flag"](i)==0 && (in.flags.data.col(i).array()==0).any() && run_det) {
             // which map to assign detector to
             Eigen::Index map_index = map_indices(i);
 

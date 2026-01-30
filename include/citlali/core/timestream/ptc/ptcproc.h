@@ -314,6 +314,10 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
         for (Eigen::Index i=0; i<n_dets; ++i) {
             // current detector index
             Eigen::Index det_index = i;
+            if (apt["flag"](det_index)!=0) {
+                in.weights.data(i) = 0;
+                continue;
+            }
             // if flux calibrated, get flux conversion factor
             if (in.status.calibrated) {
                 conversion_factor = in.fcf.data(i);

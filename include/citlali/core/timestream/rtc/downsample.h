@@ -26,6 +26,31 @@ public:
         out = EigenStrideMap (in.derived().data(), (rows+(factor-1))/factor, cols, Stride<Dynamic,
                                                                                          Dynamic>(in.outerStride(),in.innerStride()*factor));
     }
+
+    template <typename DerivedA, typename DerivedB>
+    void downsample_flags(Eigen::DenseBase<DerivedA> &in, Eigen::DenseBase<DerivedB> &out) {
+        auto rows = in.rows();
+        auto cols = in.cols();
+        auto out_rows = (rows + (factor - 1)) / factor;
+
+        out.derived().resize(out_rows, cols);
+        out.derived().setZero();
+
+        for (Eigen::Index r = 0; r < out_rows; ++r) {
+            Eigen::Index start = r * factor;
+            Eigen::Index end = std::min<Eigen::Index>(start + factor, rows);
+            for (Eigen::Index c = 0; c < cols; ++c) {
+                bool any_flag = false;
+                for (Eigen::Index rr = start; rr < end; ++rr) {
+                    if (in(rr, c)) {
+                        any_flag = true;
+                        break;
+                    }
+                }
+                out(r, c) = any_flag;
+            }
+        }
+    }
 };
 
 } // namespace timestream

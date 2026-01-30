@@ -426,7 +426,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         // downsample scans
         downsampler.downsample(in_scans, out.scans.data);
         // downsample flags
-        downsampler.downsample(in_flags, out.flags.data);
+        downsampler.downsample_flags(in_flags, out.flags.data);
 
         // loop through telescope meta data and downsample
         logger->debug("downsampling telescope");
