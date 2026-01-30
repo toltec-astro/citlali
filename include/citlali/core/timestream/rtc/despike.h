@@ -413,7 +413,6 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                     n_flagged_regions++;
                 }
 
-            n_flagged_regions += (flags(0, det) == 1) ? 1 : 0;
             n_flagged_regions
                 += ((flags.col(det).tail(n_pts - 1) - flags.col(det).head(n_pts - 1)).array() > 0)
                        .count();
