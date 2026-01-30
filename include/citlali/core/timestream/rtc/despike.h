@@ -274,6 +274,20 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                     }
                 }
 
+                // sanity check spike locations before windowing/replacement
+                bool bad_spike_loc = false;
+                for (Eigen::Index i = 0; i < spike_loc.size(); ++i) {
+                    if (spike_loc(i) < 0 || spike_loc(i) >= n_pts) {
+                        bad_spike_loc = true;
+                        break;
+                    }
+                }
+                if (bad_spike_loc || count != n_spikes) {
+                    logger->error("despike invalid spike_loc: det {} n_pts {} n_spikes {} count {} spike_loc {}",
+                                  det, n_pts, n_spikes, count, spike_loc.transpose());
+                    continue;
+                }
+
                 // get the largest window that is without spikes
                 auto [win_index_0, win_index_1, win_size] =
                     make_window(spike_loc, n_spikes, n_pts);
