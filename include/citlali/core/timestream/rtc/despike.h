@@ -401,15 +401,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
     for (Eigen::Index det = 0; det < n_dets; det++) {
         if (apt["flag"](det + start_det)==0) {
             if (spike_free(det)) {
-                // condition flags so that if there is a spike we can make
-                // one long flagged or un-flagged region.
-                // first do spikes from 0 to 1
-                for (Eigen::Index j = 1; j < n_pts - 1; ++j) {
-                    if (flags(j, det) == 0 && flags(j - 1, det) == 1 && flags(j + 1, det) == 1) {
-                        flags(j, det) = 1;
-                    }
-                }
-                // keep isolated flags (e.g., single-sample outliers) intact
+                // keep original flag structure (do not morph regions)
                 // and the first and last samples
                 flags(0, det) = flags(1, det);
                 flags(n_pts - 1, det) = flags(n_pts - 2, det);
