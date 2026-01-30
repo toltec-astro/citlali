@@ -34,7 +34,7 @@ public:
     std::string grouping;
 
     // use all detectors in replacing flagged scans
-    bool use_all_det = true;
+    bool use_all_det = false;
 
     // the main despiking routine
     template <typename DerivedA, typename DerivedB, typename apt_t>
@@ -585,14 +585,16 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
 
                     // the noiseless fake data is then the sky model plus the
                     // flagged detectors linear offset
-                    //Eigen::VectorXd fake = sky_model.array() * apt["responsivity"](det + start_det) + lin_offset.array() + error.array();
-                    Eigen::VectorXd fake = sky_model.array() + lin_offset.array() + error.array();
+                    Eigen::VectorXd fake =
+                        (sky_model.array() + error.array()) * apt["responsivity"](det + start_det) +
+                        lin_offset.array();
 
                     logger->info("fake {}", fake);
 
                     logger->info("mean std dev {}", mean_std_dev);
 
                     scans.col(det).segment(si_flags(j), n_flags) = fake;
+                    flags.col(det).segment(si_flags(j), n_flags).setOnes();
                 } // flagged regions
             } // if it has spikes
         } // apt flag
