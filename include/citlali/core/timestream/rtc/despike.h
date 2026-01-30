@@ -3,6 +3,7 @@
 #include <boost/random.hpp>
 #include <boost/random/random_device.hpp>
 
+#include <algorithm>
 #include <Eigen/Core>
 
 #include <tula/logging.h>
@@ -201,6 +202,15 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                 }
                 double raw_cutoff = min_spike_sigma * sigma;
                 det_flags = (abs_dev.array() > raw_cutoff).select(1, det_flags);
+
+                // keep delta-based stats consistent with raw flags
+                for (Eigen::Index i = 0; i < n_pts - 1; ++i) {
+                    if (det_flags(i) == 1 || det_flags(i + 1) == 1) {
+                        delta(i) = 0;
+                    }
+                }
+                diff = abs(delta.derived().array() - delta.mean());
+                cutoff = min_spike_sigma * engine_utils::calc_std_dev(delta);
             }
 
             // variable to control spike_finder while loop
@@ -222,13 +232,19 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
 
             // if there are other spikes within set number of samples after a spike, set only the
             // center value to be a spike
-            for (Eigen::Index i = 0; i < n_pts; ++i) {
+            for (Eigen::Index i = 0; i < n_pts - 1; ++i) {
                 if (det_flags(i) == 1) {
-                    int size_loop = size;
+                    if (i >= n_pts - 1) {
+                        break;
+                    }
+                    int size_loop = std::min(size, static_cast<int>(n_pts - i - 1));
                     // check the size of the region to set un_flagged if a flag is found.
                     if ((n_pts - i - 1) < size_loop) {
                         logger->info("rng {} {} {}", (n_pts - i - 1), size,i );
                         size_loop = n_pts - i - 1;
+                    }
+                    if (size_loop <= 0) {
+                        break;
                     }
 
                     // count up the flags in the region
@@ -410,12 +426,13 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                     n_flagged_regions++;
                 }
 
-                n_flagged_regions
-                    += ((flags.col(det).tail(n_pts - 1) - flags.col(det).head(n_pts - 1)).array() < 0)
-                           .count()/ 2;
-                if (n_flagged_regions == 0) {
-                    break;
-                }
+            n_flagged_regions += (flags(0, det) == 1) ? 1 : 0;
+            n_flagged_regions
+                += ((flags.col(det).tail(n_pts - 1) - flags.col(det).head(n_pts - 1)).array() > 0)
+                       .count();
+            if (n_flagged_regions == 0) {
+                continue;
+            }
 
                 logger->info("n_flagged_regions {}",n_flagged_regions);
 
@@ -434,7 +451,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                         int jstart = j;
                         int samp_count = 0;
 
-                        while (flags(j, det) == 1 && j <= n_pts - 1) {
+                        while (j < n_pts && flags(j, det) == 1) {
                             samp_count++;
                             j++;
                         }
@@ -464,7 +481,10 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                     Eigen::Index n_flags = ei_flags(j) - si_flags(j) + 1;
                     Eigen::VectorXd lin_offset(n_flags);
 
-                    if (si_flags(j) == 0) {
+                    if (si_flags(j) == 0 && ei_flags(j) == n_pts - 1) {
+                        lin_offset.setConstant(scans(0, det));
+                    }
+                    else if (si_flags(j) == 0) {
                         lin_offset.setConstant(scans(ei_flags(j) + 1, det));
                     }
 
