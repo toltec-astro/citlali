@@ -241,40 +241,37 @@ auto RTCProc::calc_map_indices(calib_t &calib, std::string map_grouping) {
     // indices for maps
     Eigen::VectorXI indices(calib.n_dets), map_indices(calib.n_dets);
 
-    // number of maps from grouping
-    int n_maps = 0;
-
     // overwrite map indices for networks
     if (map_grouping == "nw") {
         indices = calib.apt["nw"].template cast<Eigen::Index> ();
-        n_maps = calib.n_nws;
     }
     // overwrite map indices for arrays
     else if (map_grouping == "array") {
         indices = calib.apt["array"].template cast<Eigen::Index> ();
-        n_maps = calib.n_arrays;
     }
     // overwrite map indices for detectors
     else if (map_grouping == "detector") {
         indices = Eigen::VectorXI::LinSpaced(calib.n_dets,0,calib.n_dets-1);
-        n_maps = calib.n_dets;
     }
     // overwrite map indices for fg
     else if (map_grouping == "fg") {
         indices = calib.apt["fg"].template cast<Eigen::Index> ();
-        n_maps = calib.fg.size()*calib.n_arrays;
     }
     // start at 0
     if (map_grouping != "fg") {
-        Eigen::Index map_index = 0;
-        map_indices(0) = 0;
-        // loop through and populate map indices
-        for (Eigen::Index i=0; i<indices.size()-1; ++i) {
-            // if next index is larger than current index, increment map index
-            if (indices(i+1) > indices(i)) {
-                map_index++;
+        std::unordered_map<Eigen::Index, Eigen::Index> group_to_index;
+        Eigen::Index next_index = 0;
+        for (Eigen::Index i=0; i<indices.size(); ++i) {
+            const auto key = indices(i);
+            auto it = group_to_index.find(key);
+            if (it == group_to_index.end()) {
+                group_to_index[key] = next_index;
+                map_indices(i) = next_index;
+                next_index++;
             }
-            map_indices(i+1) = map_index;
+            else {
+                map_indices(i) = it->second;
+            }
         }
     }
     else {

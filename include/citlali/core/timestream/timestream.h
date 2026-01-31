@@ -1,8 +1,15 @@
 #pragma once
 
 #include <map>
+#include <unordered_map>
 #include <unordered_set>
 #include <filesystem>
+#include <optional>
+#include <algorithm>
+#include <sstream>
+#include <limits>
+#include <cctype>
+#include <cmath>
 
 #include <unsupported/Eigen/CXX11/Tensor>
 
@@ -307,7 +314,8 @@ public:
 
     // create a map buffer from a citlali reduction directory
     template <class calib_t>
-    void load_mb(std::string, std::string, calib_t &);
+    void load_mb(std::string, std::string, calib_t &, const std::string &,
+                 const std::string & = "", double = 0.0);
 
     // get limits for a particular grouping
     template <class calib_t>
@@ -345,9 +353,16 @@ public:
 };
 
 template <class calib_t>
-void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &calib) {
+void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &calib,
+                     const std::string &expected_map_grouping, const std::string &expected_pixel_axes,
+                     double expected_pixel_size_rad) {
 
     namespace fs = std::filesystem;
+
+    if (expected_map_grouping.empty()) {
+        logger->error("expected map grouping not provided for fruit loops map loading");
+        std::exit(EXIT_FAILURE);
+    }
 
     // clear map buffer
     std::vector<Eigen::MatrixXd>().swap(tod_mb.signal);
@@ -357,167 +372,406 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     std::vector<std::string>().swap(tod_mb.wcs.cunit);
 
     tod_mb.median_rms.resize(0);
+    tod_mb.n_noise = 0;
+    tod_mb.map_grouping = expected_map_grouping;
 
     // resize wcs params
     tod_mb.wcs.naxis.resize(4,0.);
     tod_mb.wcs.crpix.resize(4,0.);
     tod_mb.wcs.crval.resize(4,0.);
     tod_mb.wcs.cdelt.resize(4,0.);
-    tod_mb.wcs.cunit.push_back("N/A");
-    tod_mb.wcs.cunit.push_back("N/A");
+    tod_mb.wcs.cunit.resize(2, "N/A");
 
-    // vector to hold mean rms
-    std::vector<double> median_rms_vec;
+    auto to_lower = [](std::string s) {
+        std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c){ return std::tolower(c); });
+        return s;
+    };
+
+    auto split_tokens = [](const std::string &s) {
+        std::vector<std::string> tokens;
+        std::stringstream ss(s);
+        std::string item;
+        while (std::getline(ss, item, '_')) {
+            if (!item.empty()) {
+                tokens.push_back(item);
+            }
+        }
+        return tokens;
+    };
+
+    const auto grouping = to_lower(expected_map_grouping);
+    Eigen::Index expected_n_maps = 0;
+    if (grouping == "array") {
+        expected_n_maps = calib.arrays.size();
+    }
+    else if (grouping == "nw") {
+        expected_n_maps = calib.nws.size();
+    }
+    else if (grouping == "fg") {
+        expected_n_maps = calib.fg.size() * calib.arrays.size();
+    }
+    else if (grouping == "detector") {
+        expected_n_maps = calib.n_dets;
+    }
+    else {
+        logger->error("unsupported map grouping '{}' for fruit loops", expected_map_grouping);
+        std::exit(EXIT_FAILURE);
+    }
+
+    std::unordered_map<Eigen::Index, Eigen::Index> array_to_index;
+    for (Eigen::Index i=0; i<calib.arrays.size(); ++i) {
+        array_to_index[calib.arrays(i)] = i;
+    }
+
+    std::unordered_map<Eigen::Index, Eigen::Index> nw_to_index;
+    for (Eigen::Index i=0; i<calib.nws.size(); ++i) {
+        nw_to_index[calib.nws(i)] = i;
+    }
+
+    std::unordered_map<Eigen::Index, Eigen::Index> fg_to_index;
+    for (Eigen::Index i=0; i<calib.fg.size(); ++i) {
+        fg_to_index[calib.fg(i)] = i;
+    }
+
+    auto parse_map_index = [&](const std::string &ext_name, const std::string &prefix,
+                               Eigen::Index array_id) -> std::optional<Eigen::Index> {
+        if (ext_name.rfind(prefix + "_", 0) != 0) {
+            return std::nullopt;
+        }
+        auto tokens = split_tokens(ext_name);
+        if (tokens.size() < 2) {
+            return std::nullopt;
+        }
+        const auto stokes = tokens.back();
+        if (stokes != "I") {
+            return std::nullopt;
+        }
+
+        if (grouping == "array") {
+            if (tokens.size() != 2) {
+                return std::nullopt;
+            }
+            auto it = array_to_index.find(array_id);
+            if (it == array_to_index.end()) {
+                logger->error("array {} not found in calib arrays for fruit loops", array_id);
+                std::exit(EXIT_FAILURE);
+            }
+            return it->second;
+        }
+
+        if (tokens.size() < 4) {
+            return std::nullopt;
+        }
+
+        const auto &group_token = tokens[1];
+        Eigen::Index group_id = -1;
+        try {
+            group_id = static_cast<Eigen::Index>(std::stol(tokens[2]));
+        } catch (const std::exception &) {
+            return std::nullopt;
+        }
+
+        if (grouping == "nw") {
+            if (group_token != "nw") {
+                return std::nullopt;
+            }
+            auto it = nw_to_index.find(group_id);
+            if (it == nw_to_index.end()) {
+                logger->error("nw {} not found in calib nws for fruit loops", group_id);
+                std::exit(EXIT_FAILURE);
+            }
+            return it->second;
+        }
+        if (grouping == "fg") {
+            if (group_token != "fg") {
+                return std::nullopt;
+            }
+            auto fg_it = fg_to_index.find(group_id);
+            if (fg_it == fg_to_index.end()) {
+                logger->error("fg {} not found in calib fgs for fruit loops", group_id);
+                std::exit(EXIT_FAILURE);
+            }
+            auto arr_it = array_to_index.find(array_id);
+            if (arr_it == array_to_index.end()) {
+                logger->error("array {} not found in calib arrays for fruit loops", array_id);
+                std::exit(EXIT_FAILURE);
+            }
+            return fg_it->second + calib.fg.size() * arr_it->second;
+        }
+        if (grouping == "detector") {
+            if (group_token != "det") {
+                return std::nullopt;
+            }
+            if (group_id < 0 || group_id >= expected_n_maps) {
+                logger->error("detector map id {} out of range for fruit loops", group_id);
+                std::exit(EXIT_FAILURE);
+            }
+            return group_id;
+        }
+        return std::nullopt;
+    };
+
+    std::vector<std::optional<Eigen::MatrixXd>> signal_maps(expected_n_maps);
+    std::vector<std::optional<Eigen::MatrixXd>> weight_maps(expected_n_maps);
+    std::vector<std::optional<Eigen::MatrixXd>> kernel_maps(expected_n_maps);
+    bool any_kernel = false;
+
+    bool wcs_set = false;
+    std::string file_grouping_lower;
+    std::string file_pixel_axes_lower;
+
+    // vector to hold mean rms per array
+    std::vector<double> median_rms_vec(calib.arrays.size(),
+                                       std::numeric_limits<double>::quiet_NaN());
+    bool found_any_rms = false;
 
     // loop through arrays in current obs
     for (const auto &arr: calib.arrays) {
         try {
-            // loop through files in redu directory
+            std::vector<fs::path> map_files;
             for (const auto& entry : fs::directory_iterator(filepath)) {
-                // check if fits file
-                bool fits_file = entry.path().string().find(".fits") != std::string::npos;
-                // find current array obs map
-                if (entry.path().string().find(toltec_io.array_name_map[arr]) != std::string::npos && fits_file) {
+                if (!entry.is_regular_file()) {
+                    continue;
+                }
+                auto path_str = entry.path().string();
+                if (path_str.find(".fits") == std::string::npos) {
+                    continue;
+                }
+                if (path_str.find("_citlali") == std::string::npos) {
+                    continue;
+                }
+                if (path_str.find("_noise") != std::string::npos) {
+                    continue;
+                }
+                if (path_str.find(toltec_io.array_name_map[arr]) == std::string::npos) {
+                    continue;
+                }
+                map_files.push_back(entry.path());
+            }
+            std::sort(map_files.begin(), map_files.end());
+            if (map_files.empty()) {
+                logger->error("no map FITS found for array {} in {}", toltec_io.array_name_map[arr], filepath);
+                std::exit(EXIT_FAILURE);
+            }
+            if (map_files.size() > 1) {
+                logger->error("multiple map FITS found for array {} in {}", toltec_io.array_name_map[arr], filepath);
+                std::exit(EXIT_FAILURE);
+            }
 
-                    // get filename
-                    std::string filename;
-                    size_t last_slash_pos = entry.path().string().find_last_of("/");
-                    if (last_slash_pos != std::string::npos) {
-                        filename = entry.path().string().substr(last_slash_pos + 1);
+            auto map_path = map_files.front();
+            fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*> fits_io(map_path.string());
+
+            // read grouping and pixel axes from primary hdu if present
+            try {
+                std::string grouping_key;
+                fits_io.pfits->pHDU().readKey("GROUPING", grouping_key);
+                if (!grouping_key.empty()) {
+                    auto grouping_lower = to_lower(grouping_key);
+                    if (!file_grouping_lower.empty() && grouping_lower != file_grouping_lower) {
+                        logger->error("mismatched GROUPING across fruit loops maps: {} vs {}", file_grouping_lower, grouping_lower);
+                        std::exit(EXIT_FAILURE);
                     }
+                    file_grouping_lower = grouping_lower;
+                    if (grouping_lower != grouping) {
+                        logger->error("fruit loops maps GROUPING '{}' does not match expected '{}'",
+                                      grouping_key, expected_map_grouping);
+                        std::exit(EXIT_FAILURE);
+                    }
+                }
+            } catch (...) {
+                // ignore if missing
+            }
 
-                    // get maps (if noise not in filename)
-                    if (filename.find("noise") == std::string::npos) {
-                        // get fits file
-                        fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*> fits_io(entry.path().string());
+            try {
+                std::string axes_key;
+                fits_io.pfits->pHDU().readKey("RADESYS", axes_key);
+                if (!axes_key.empty()) {
+                    auto axes_lower = to_lower(axes_key);
+                    if (!file_pixel_axes_lower.empty() && axes_lower != file_pixel_axes_lower) {
+                        logger->error("mismatched RADESYS across fruit loops maps: {} vs {}", file_pixel_axes_lower, axes_lower);
+                        std::exit(EXIT_FAILURE);
+                    }
+                    file_pixel_axes_lower = axes_lower;
+                    if (!expected_pixel_axes.empty() && axes_lower != to_lower(expected_pixel_axes)) {
+                        logger->error("fruit loops maps RADESYS '{}' does not match expected '{}'",
+                                      axes_key, expected_pixel_axes);
+                        std::exit(EXIT_FAILURE);
+                    }
+                }
+            } catch (...) {
+                // ignore if missing
+            }
 
-                        // get number of extensions other than primary extension
-                        int num_extensions = 0;
-                        bool keep_going = true;
-                        while (keep_going) {
-                            try {
-                                // attempt to access an HDU (ignore primary hdu)
-                                CCfits::ExtHDU& ext = fits_io.pfits->extension(num_extensions + 1);
-                                num_extensions++;
-                            } catch (CCfits::FITS::NoSuchHDU) {
-                                // NoSuchHDU exception is thrown when there are no more HDUs
-                                keep_going = false;
-                            }
-                        }
+            // get number of extensions other than primary extension
+            int num_extensions = 0;
+            bool keep_going = true;
+            while (keep_going) {
+                try {
+                    CCfits::ExtHDU& ext = fits_io.pfits->extension(num_extensions + 1);
+                    num_extensions++;
+                } catch (CCfits::FITS::NoSuchHDU) {
+                    keep_going = false;
+                }
+            }
 
-                        if (num_extensions == 0) {
-                            logger->error("{} is empty",filename);
+            if (num_extensions == 0) {
+                logger->error("{} is empty", map_path.string());
+                std::exit(EXIT_FAILURE);
+            }
+
+            // get wcs (should be same for all maps)
+            CCfits::ExtHDU& extension = fits_io.pfits->extension(1);
+            long naxis1 = 0;
+            long naxis2 = 0;
+            double crpix1 = 0.0;
+            double crpix2 = 0.0;
+            double crval1 = 0.0;
+            double crval2 = 0.0;
+            double cdelt1 = 0.0;
+            double cdelt2 = 0.0;
+            std::string cunit1;
+            std::string cunit2;
+            extension.readKey("NAXIS1", naxis1);
+            extension.readKey("NAXIS2", naxis2);
+            extension.readKey("CRPIX1", crpix1);
+            extension.readKey("CRPIX2", crpix2);
+            extension.readKey("CRVAL1", crval1);
+            extension.readKey("CRVAL2", crval2);
+            extension.readKey("CDELT1", cdelt1);
+            extension.readKey("CDELT2", cdelt2);
+            extension.readKey("CUNIT1", cunit1);
+            extension.readKey("CUNIT2", cunit2);
+
+            // convert CRPIX to 0-based
+            crpix1 -= 1.0;
+            crpix2 -= 1.0;
+
+            if (!wcs_set) {
+                tod_mb.wcs.naxis[0] = static_cast<int>(naxis1);
+                tod_mb.wcs.naxis[1] = static_cast<int>(naxis2);
+                tod_mb.wcs.crpix[0] = crpix1;
+                tod_mb.wcs.crpix[1] = crpix2;
+                tod_mb.wcs.crval[0] = crval1;
+                tod_mb.wcs.crval[1] = crval2;
+                tod_mb.wcs.cdelt[0] = cdelt1;
+                tod_mb.wcs.cdelt[1] = cdelt2;
+                tod_mb.wcs.cunit[0] = cunit1;
+                tod_mb.wcs.cunit[1] = cunit2;
+                wcs_set = true;
+            }
+            else {
+                if (tod_mb.wcs.naxis[0] != naxis1 || tod_mb.wcs.naxis[1] != naxis2) {
+                    logger->error("inconsistent map dimensions across fruit loops maps");
+                    std::exit(EXIT_FAILURE);
+                }
+                double cdelt0_diff = std::abs(std::abs(tod_mb.wcs.cdelt[0]) - std::abs(cdelt1));
+                double cdelt1_diff = std::abs(std::abs(tod_mb.wcs.cdelt[1]) - std::abs(cdelt2));
+                if (cdelt0_diff > 1e-12 || cdelt1_diff > 1e-12) {
+                    logger->error("inconsistent CDELT across fruit loops maps");
+                    std::exit(EXIT_FAILURE);
+                }
+                if (to_lower(tod_mb.wcs.cunit[0]) != to_lower(cunit1) ||
+                    to_lower(tod_mb.wcs.cunit[1]) != to_lower(cunit2)) {
+                    logger->error("inconsistent CUNIT across fruit loops maps");
+                    std::exit(EXIT_FAILURE);
+                }
+            }
+
+            // get maps, including all fg maps
+            for (int i=0; i<num_extensions; ++i) {
+                CCfits::ExtHDU& ext = fits_io.pfits->extension(i+1);
+                std::string extName;
+                ext.readKey("EXTNAME", extName);
+
+                if (extName.rfind("signal_", 0) == 0) {
+                    auto map_index = parse_map_index(extName, "signal", arr);
+                    if (map_index) {
+                        if (signal_maps[*map_index].has_value()) {
+                            logger->error("duplicate signal map index {} in {}", *map_index, map_path.string());
                             std::exit(EXIT_FAILURE);
                         }
-
-                        // get wcs (should be same for all maps)
-                        CCfits::ExtHDU& extension = fits_io.pfits->extension(1);
-
-                        // get naxis
-                        extension.readKey("NAXIS1", tod_mb.wcs.naxis[0]);
-                        extension.readKey("NAXIS2", tod_mb.wcs.naxis[1]);
-                        // get crpix
-                        extension.readKey("CRPIX1", tod_mb.wcs.crpix[0]);
-                        extension.readKey("CRPIX2", tod_mb.wcs.crpix[1]);
-                        // get crval
-                        extension.readKey("CRVAL1", tod_mb.wcs.crval[0]);
-                        extension.readKey("CRVAL2", tod_mb.wcs.crval[1]);
-                        // get cdelt
-                        extension.readKey("CDELT1", tod_mb.wcs.cdelt[0]);
-                        extension.readKey("CDELT2", tod_mb.wcs.cdelt[1]);
-                        // get cunit
-                        extension.readKey("CUNIT1", tod_mb.wcs.cunit[0]);
-                        extension.readKey("CUNIT2", tod_mb.wcs.cunit[1]);
-
-                        // get maps, including all fg maps
-                        for (int i=0; i<num_extensions; ++i) {
-                            CCfits::ExtHDU& ext = fits_io.pfits->extension(i+1);
-                            std::string extName;
-                            ext.readKey("EXTNAME", extName);
-                            // get signal map
-                            if (extName.find("signal") != std::string::npos) {
-                                tod_mb.signal.push_back(fits_io.get_hdu(extName));
-                                logger->info("found {} [{}]", filename, extName);
-                            }
-                            // get weight map
-                            else if (extName.find("weight") != std::string::npos) {
-                                tod_mb.weight.push_back(fits_io.get_hdu(extName));
-                                logger->info("found {} [{}]", filename, extName);
-                            }
-                            // get kernel map
-                            else if (extName.find("kernel") != std::string::npos) {
-                                tod_mb.kernel.push_back(fits_io.get_hdu(extName));
-                                logger->info("found {} [{}]", filename, extName);
-                            }
+                        signal_maps[*map_index] = fits_io.get_hdu(extName);
+                        logger->info("found {} [{}]", map_path.filename().string(), extName);
+                    }
+                }
+                else if (extName.rfind("weight_", 0) == 0) {
+                    auto map_index = parse_map_index(extName, "weight", arr);
+                    if (map_index) {
+                        if (weight_maps[*map_index].has_value()) {
+                            logger->error("duplicate weight map index {} in {}", *map_index, map_path.string());
+                            std::exit(EXIT_FAILURE);
                         }
+                        weight_maps[*map_index] = fits_io.get_hdu(extName);
+                        logger->info("found {} [{}]", map_path.filename().string(), extName);
+                    }
+                }
+                else if (extName.rfind("kernel_", 0) == 0) {
+                    auto map_index = parse_map_index(extName, "kernel", arr);
+                    if (map_index) {
+                        if (kernel_maps[*map_index].has_value()) {
+                            logger->error("duplicate kernel map index {} in {}", *map_index, map_path.string());
+                            std::exit(EXIT_FAILURE);
+                        }
+                        kernel_maps[*map_index] = fits_io.get_hdu(extName);
+                        any_kernel = true;
+                        logger->info("found {} [{}]", map_path.filename().string(), extName);
                     }
                 }
             }
 
-            // get noise maps
-            // loop through files in redu directory
+            // get noise maps for median rms
+            std::vector<fs::path> noise_files;
             for (const auto& entry : fs::directory_iterator(noise_filepath)) {
-                // check if fits file
-                bool fits_file = entry.path().string().find(".fits") != std::string::npos;
-                // find current array obs map
-                if (entry.path().string().find(toltec_io.array_name_map[arr]) != std::string::npos && fits_file) {
+                if (!entry.is_regular_file()) {
+                    continue;
+                }
+                auto path_str = entry.path().string();
+                if (path_str.find(".fits") == std::string::npos) {
+                    continue;
+                }
+                if (path_str.find("_noise_citlali.fits") == std::string::npos) {
+                    continue;
+                }
+                if (path_str.find(toltec_io.array_name_map[arr]) == std::string::npos) {
+                    continue;
+                }
+                noise_files.push_back(entry.path());
+            }
+            std::sort(noise_files.begin(), noise_files.end());
+            if (!noise_files.empty()) {
+                // only use the first noise file for this array
+                fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*> noise_io(noise_files.front().string());
 
-                    // get filename
-                    std::string filename;
-                    size_t lastSlashPos = entry.path().string().find_last_of("/");
-                    if (lastSlashPos != std::string::npos) {
-                        filename = entry.path().string().substr(lastSlashPos + 1);
+                int num_noise_ext = 0;
+                keep_going = true;
+                while (keep_going) {
+                    try {
+                        CCfits::ExtHDU& ext = noise_io.pfits->extension(num_noise_ext + 1);
+                        num_noise_ext++;
+                    } catch (CCfits::FITS::NoSuchHDU) {
+                        keep_going = false;
                     }
+                }
 
-                    // check if the current file is a noise map
-                    if (filename.find("_noise_citlali.fits") != std::string::npos) {
-                        // get fits file
-                        fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*> fits_io(entry.path().string());
+                if (num_noise_ext == 0) {
+                    logger->error("{} is empty", noise_files.front().string());
+                    std::exit(EXIT_FAILURE);
+                }
 
-                        // get number of noise maps
-                        int num_extensions = 0;
-                        bool keep_going = true;
-                        while (keep_going) {
-                            try {
-                                // attempt to access an HDU (ignore primary hdu)
-                                CCfits::ExtHDU& ext = fits_io.pfits->extension(num_extensions + 1);
-                                std::string extName;
-                                ext.readKey("EXTNAME", extName);
-
-                                // only get stokes I
-                                if (extName.find("_I") != std::string::npos) {
-                                    tod_mb.n_noise++;
-                                }
-                                // if extension found, add to total number
-                                num_extensions++;
-                            } catch (CCfits::FITS::NoSuchHDU) {
-                                // NoSuchHDU exception is thrown when there are no more HDUs
-                                keep_going = false;
-                            }
-                        }
-
-                        if (num_extensions == 0) {
-                            logger->error("{} is empty",filename);
-                            std::exit(EXIT_FAILURE);
-                        }
-
-                        // loop through noise maps for current array
-                        for (int i=0; i<num_extensions; ++i) {
-                            // get current extension
-                            CCfits::ExtHDU& ext = fits_io.pfits->extension(i+1);
-                            // get extension name
-                            std::string extName;
-                            ext.readKey("EXTNAME", extName);
-                            // if signal I's first noise map (ignore Q, U, and extra noise maps)
-                            if (extName.find("signal") != std::string::npos && extName.find("_0_I") != std::string::npos) {                                    // get mean rms for current extension
-                                // get median rms from current extension
-                                double median_rms;
-                                ext.readKey("MEDRMS", median_rms);
-                                median_rms_vec.push_back(median_rms);
-                                logger->info("found {} [{}]", filename, extName);
-                            }
-                        }
+                double median_rms = std::numeric_limits<double>::quiet_NaN();
+                for (int i=0; i<num_noise_ext; ++i) {
+                    CCfits::ExtHDU& ext = noise_io.pfits->extension(i+1);
+                    std::string extName;
+                    ext.readKey("EXTNAME", extName);
+                    if (extName.find("signal") != std::string::npos && extName.find("_0_I") != std::string::npos) {
+                        ext.readKey("MEDRMS", median_rms);
+                        found_any_rms = true;
+                        break;
                     }
+                }
+                auto arr_it = array_to_index.find(arr);
+                if (arr_it != array_to_index.end()) {
+                    median_rms_vec[arr_it->second] = median_rms;
                 }
             }
 
@@ -528,14 +782,43 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     }
 
     // check if we found any maps
-    if (tod_mb.signal.empty() || tod_mb.weight.empty()) {
-        logger->error("no signal maps found in {}", filepath);
+    if (expected_n_maps == 0) {
+        logger->error("no maps expected for fruit loops");
         std::exit(EXIT_FAILURE);
     }
 
-    if (!median_rms_vec.empty()) {
-        // map median rms from fits files vector to map buffer vector
-        tod_mb.median_rms = Eigen::Map<Eigen::VectorXd>(median_rms_vec.data(),median_rms_vec.size());
+    for (Eigen::Index i=0; i<expected_n_maps; ++i) {
+        if (!signal_maps[i].has_value()) {
+            logger->error("missing signal map index {} in {}", i, filepath);
+            std::exit(EXIT_FAILURE);
+        }
+        if (!weight_maps[i].has_value()) {
+            logger->error("missing weight map index {} in {}", i, filepath);
+            std::exit(EXIT_FAILURE);
+        }
+        tod_mb.signal.push_back(std::move(*signal_maps[i]));
+        tod_mb.weight.push_back(std::move(*weight_maps[i]));
+    }
+
+    if (any_kernel) {
+        bool missing_kernel = false;
+        for (Eigen::Index i=0; i<expected_n_maps; ++i) {
+            if (kernel_maps[i].has_value()) {
+                tod_mb.kernel.push_back(std::move(*kernel_maps[i]));
+            }
+            else {
+                missing_kernel = true;
+                break;
+            }
+        }
+        if (missing_kernel) {
+            logger->warn("kernel maps incomplete; disabling kernel subtraction for fruit loops");
+            std::vector<Eigen::MatrixXd>().swap(tod_mb.kernel);
+        }
+    }
+
+    if (found_any_rms) {
+        tod_mb.median_rms = Eigen::Map<Eigen::VectorXd>(median_rms_vec.data(), median_rms_vec.size());
     }
 
     // set dimensions
@@ -543,11 +826,40 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     tod_mb.n_rows = tod_mb.wcs.naxis[1];
 
     // get pixel size in radians
-    if (tod_mb.wcs.cunit[0] == "deg") {
-        tod_mb.pixel_size_rad = abs(tod_mb.wcs.cdelt[0])*DEG_TO_RAD;
+    if (to_lower(tod_mb.wcs.cunit[0]) == "deg") {
+        tod_mb.pixel_size_rad = std::abs(tod_mb.wcs.cdelt[0])*DEG_TO_RAD;
     }
-    else if (tod_mb.wcs.cunit[0] == "arcsec") {
-        tod_mb.pixel_size_rad = abs(tod_mb.wcs.cdelt[0])*ASEC_TO_RAD;
+    else if (to_lower(tod_mb.wcs.cunit[0]) == "arcsec") {
+        tod_mb.pixel_size_rad = std::abs(tod_mb.wcs.cdelt[0])*ASEC_TO_RAD;
+    }
+    else {
+        logger->error("unsupported CUNIT '{}' in fruit loops maps", tod_mb.wcs.cunit[0]);
+        std::exit(EXIT_FAILURE);
+    }
+
+    if (expected_pixel_size_rad > 0.0) {
+        double diff = std::abs(tod_mb.pixel_size_rad - expected_pixel_size_rad);
+        double tol = std::max(1e-12, expected_pixel_size_rad * 1e-6);
+        if (diff > tol) {
+            logger->error("fruit loops map pixel size {} rad does not match expected {} rad",
+                          tod_mb.pixel_size_rad, expected_pixel_size_rad);
+            std::exit(EXIT_FAILURE);
+        }
+    }
+
+    double expected_row = tod_mb.n_rows / 2.0;
+    double expected_col = tod_mb.n_cols / 2.0;
+    if (std::isfinite(tod_mb.wcs.crpix[0]) && tod_mb.wcs.crpix[0] > 0.0 &&
+        std::abs(tod_mb.wcs.crpix[0] - expected_col) > 1.0) {
+        logger->error("fruit loops map CRPIX1 ({}) does not match expected map center ({})",
+                      tod_mb.wcs.crpix[0], expected_col);
+        std::exit(EXIT_FAILURE);
+    }
+    if (std::isfinite(tod_mb.wcs.crpix[1]) && tod_mb.wcs.crpix[1] > 0.0 &&
+        std::abs(tod_mb.wcs.crpix[1] - expected_row) > 1.0) {
+        logger->error("fruit loops map CRPIX2 ({}) does not match expected map center ({})",
+                      tod_mb.wcs.crpix[1], expected_row);
+        std::exit(EXIT_FAILURE);
     }
 
     Eigen::MatrixXd ones, zeros;
@@ -645,14 +957,41 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
 
     // run kernel through fruit loops
     bool run_kernel = in.kernel.data.size() !=0;
+    if (run_kernel && mb.kernel.size() != mb.signal.size()) {
+        logger->warn("kernel map count ({}) does not match signal map count ({}); disabling kernel subtraction",
+                     mb.kernel.size(), mb.signal.size());
+        run_kernel = false;
+    }
     // if mean rms is filled use S/N limit
     bool run_noise = mb.median_rms.size() != 0;
+
+    std::unordered_map<Eigen::Index, Eigen::Index> array_to_index;
+    for (Eigen::Index i=0; i<calib.arrays.size(); ++i) {
+        array_to_index[calib.arrays(i)] = i;
+    }
+
+    bool warned_rms = false;
+    bool warned_flux = false;
+
+    double row_offset = (mb.n_rows)/2.;
+    double col_offset = (mb.n_cols)/2.;
 
     // loop through detectors
     for (Eigen::Index i=0; i<n_dets; ++i) {
         // current detector index in apt
         auto map_index = map_indices(i);
-        int array_index = calib.apt["array"](i);
+        auto array_id = static_cast<Eigen::Index>(calib.apt["array"](i));
+        auto array_it = array_to_index.find(array_id);
+        if (array_it == array_to_index.end()) {
+            logger->error("array {} not found in calib arrays for fruit loops", array_id);
+            std::exit(EXIT_FAILURE);
+        }
+        auto array_pos = array_it->second;
+
+        if (map_index < 0 || map_index >= static_cast<Eigen::Index>(mb.signal.size())) {
+            logger->error("map index {} out of range for fruit loops (signal maps: {})", map_index, mb.signal.size());
+            std::exit(EXIT_FAILURE);
+        }
 
         // check if detector is not flagged
         if (calib.apt["flag"](i) == 0 && (in.flags.data.col(i).array() == 0).any()) {
@@ -664,33 +1003,78 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                                                               in.pointing_offsets_arcsec.data, map_grouping);
 
             // get map buffer row and col indices for lat and lon vectors
-            Eigen::VectorXd irows = lat.array()/mb.pixel_size_rad + (mb.n_rows)/2.;
-            Eigen::VectorXd icols = lon.array()/mb.pixel_size_rad + (mb.n_cols)/2.;
+            Eigen::VectorXd irows = lat.array()/mb.pixel_size_rad + row_offset;
+            Eigen::VectorXd icols = lon.array()/mb.pixel_size_rad + col_offset;
 
             // loop through data points
             for (Eigen::Index j=0; j<n_pts; ++j) {
                 // row and col pixel from signal image
-                Eigen::Index ir = irows(j);
-                Eigen::Index ic = icols(j);
+                Eigen::Index ir = static_cast<Eigen::Index>(std::llround(irows(j)));
+                Eigen::Index ic = static_cast<Eigen::Index>(std::llround(icols(j)));
 
                 // check if current sample is on the image and add to the timestream
-                if ((ir >= 0) && (ir < mb.n_rows) && (ic >= 0) && (ic < mb.n_cols)) {
+                if (!in.flags.data(j,i) && (ir >= 0) && (ir < mb.n_rows) && (ic >= 0) && (ic < mb.n_cols)) {
                     double signal = mb.signal[map_index](ir,ic);
                     // check whether we should include pixel
-		    bool run_pix_s2n = false;
-		    bool run_pix_flux = false;
-		    if (fruit_mode == "upper") {
-                    	run_pix_s2n = run_noise && (signal / mb.median_rms(map_index) >= fruit_loops_sig2noise);
-                    	run_pix_flux = signal >= fruit_loops_flux(array_index);
-		    }
-		    else if (fruit_mode == "lower") {
-			run_pix_s2n = run_noise && (signal / mb.median_rms(map_index) <= fruit_loops_sig2noise);
-                        run_pix_flux = signal <= fruit_loops_flux(array_index);
-		    }
-		    else if (fruit_mode == "both") {
-			run_pix_s2n = run_noise && (abs(signal / mb.median_rms(map_index)) >= abs(fruit_loops_sig2noise));
-                        run_pix_flux = abs(signal) >= abs(fruit_loops_flux(array_index));
-		    }
+                    bool run_pix_s2n = false;
+                    bool run_pix_flux = false;
+
+                    double rms = std::numeric_limits<double>::quiet_NaN();
+                    bool have_rms = false;
+                    if (run_noise) {
+                        if (mb.median_rms.size() == calib.arrays.size()) {
+                            rms = mb.median_rms(array_pos);
+                            have_rms = std::isfinite(rms) && rms > 0;
+                        }
+                        else if (mb.median_rms.size() > map_index) {
+                            if (!warned_rms) {
+                                logger->warn("median_rms size ({}) does not match arrays ({}) - using map index fallback",
+                                             mb.median_rms.size(), calib.arrays.size());
+                                warned_rms = true;
+                            }
+                            rms = mb.median_rms(map_index);
+                            have_rms = std::isfinite(rms) && rms > 0;
+                        }
+                        else if (!warned_rms) {
+                            logger->warn("median_rms size ({}) insufficient for map index {}; disabling S/N gate",
+                                         mb.median_rms.size(), map_index);
+                            warned_rms = true;
+                        }
+                    }
+
+                    double flux_limit = 0.0;
+                    bool have_flux = false;
+                    if (fruit_loops_flux.size() == calib.arrays.size()) {
+                        flux_limit = fruit_loops_flux(array_pos);
+                        have_flux = true;
+                    }
+                    else if (array_id < fruit_loops_flux.size()) {
+                        if (!warned_flux) {
+                            logger->warn("fruit_loops_flux size ({}) does not match arrays ({}); using array id indexing",
+                                         fruit_loops_flux.size(), calib.arrays.size());
+                            warned_flux = true;
+                        }
+                        flux_limit = fruit_loops_flux(array_id);
+                        have_flux = true;
+                    }
+                    else if (!warned_flux) {
+                        logger->warn("fruit_loops_flux size ({}) insufficient for array {}; disabling flux gate",
+                                     fruit_loops_flux.size(), array_id);
+                        warned_flux = true;
+                    }
+
+                    if (fruit_mode == "upper") {
+                        run_pix_s2n = have_rms && (signal / rms >= fruit_loops_sig2noise);
+                        run_pix_flux = have_flux && (signal >= flux_limit);
+                    }
+                    else if (fruit_mode == "lower") {
+                        run_pix_s2n = have_rms && (signal / rms <= fruit_loops_sig2noise);
+                        run_pix_flux = have_flux && (signal <= flux_limit);
+                    }
+                    else if (fruit_mode == "both") {
+                        run_pix_s2n = have_rms && (std::abs(signal / rms) >= std::abs(fruit_loops_sig2noise));
+                        run_pix_flux = have_flux && (std::abs(signal) >= std::abs(flux_limit));
+                    }
 
                     // if signal flux is higher than S/N limit or flux limit
                     if (run_pix_s2n || run_pix_flux) {

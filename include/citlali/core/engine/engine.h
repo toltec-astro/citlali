@@ -1288,12 +1288,16 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var<std::string>(fo, "CONFIG.FRUITLOOPS.PATH", ptcproc.fruit_loops_path);
         add_netcdf_var(fo, "CONFIG.FRUITLOOPS.S2N", ptcproc.fruit_loops_sig2noise);
         for (Eigen::Index i=0; i<calib.arrays.size(); ++i) {
+            double flux_limit = 0.0;
             if (ptcproc.run_fruit_loops) {
-            add_netcdf_var(fo, "CONFIG.FRUITLOOPS.FLUX_"+toltec_io.array_name_map[calib.arrays(i)], ptcproc.fruit_loops_flux(calib.arrays(i)));
+                if (ptcproc.fruit_loops_flux.size() == calib.arrays.size()) {
+                    flux_limit = ptcproc.fruit_loops_flux(i);
+                }
+                else if (calib.arrays(i) < ptcproc.fruit_loops_flux.size()) {
+                    flux_limit = ptcproc.fruit_loops_flux(calib.arrays(i));
+                }
             }
-            else {
-                add_netcdf_var(fo, "CONFIG.FRUITLOOPS.FLUX_"+toltec_io.array_name_map[calib.arrays(i)], 0);
-            }
+            add_netcdf_var(fo, "CONFIG.FRUITLOOPS.FLUX_"+toltec_io.array_name_map[calib.arrays(i)], flux_limit);
         }
 
         add_netcdf_var(fo, "CONFIG.FRUITLOOPS.MAXITER", ptcproc.fruit_loops_iters);
@@ -2038,11 +2042,18 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.PATH", ptcproc.fruit_loops_path, "Fruit loops path");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.TYPE", ptcproc.fruit_loops_type, "Fruit loops type");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.S2N", ptcproc.fruit_loops_sig2noise, "Fruit loops S/N");
-    if (ptcproc.run_fruit_loops) {
-        fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.FLUX", ptcproc.fruit_loops_flux(calib.arrays(i)), "Fruit loops flux (" + mb->sig_unit + ")");
-    }
-    else {
-        fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.FLUX", 0, "Fruit loops flux (" + mb->sig_unit + ")");
+    {
+        double flux_limit = 0.0;
+        if (ptcproc.run_fruit_loops) {
+            if (ptcproc.fruit_loops_flux.size() == calib.arrays.size()) {
+                flux_limit = ptcproc.fruit_loops_flux(i);
+            }
+            else if (calib.arrays(i) < ptcproc.fruit_loops_flux.size()) {
+                flux_limit = ptcproc.fruit_loops_flux(calib.arrays(i));
+            }
+        }
+        fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.FLUX", flux_limit,
+                                            "Fruit loops flux (" + mb->sig_unit + ")");
     }
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.MAXITER", ptcproc.fruit_loops_iters, "Fruit loops iterations");
 
