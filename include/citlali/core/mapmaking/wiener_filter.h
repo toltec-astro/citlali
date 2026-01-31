@@ -988,10 +988,19 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
                 Eigen::MatrixXd var_map(n_rows, n_cols);
                 Eigen::MatrixXd mask_map(n_rows, n_cols);
 
+                // use coverage-based threshold to avoid huge variances from tiny weights
+                double weight_threshold = 0.0;
+                if (mb.cov_cut > 0.0) {
+                    weight_threshold = engine_utils::find_weight_threshold(mb.weight[map_index], mb.cov_cut);
+                }
+                if (!std::isfinite(weight_threshold) || weight_threshold < 0.0) {
+                    weight_threshold = 0.0;
+                }
+
                 for (Eigen::Index i=0; i<n_rows; ++i) {
                     for (Eigen::Index j=0; j<n_cols; ++j) {
                         double w = mb.weight[map_index](i,j);
-                        if (w > 0.0 && std::isfinite(w)) {
+                        if (w > 0.0 && std::isfinite(w) && w >= weight_threshold) {
                             var_map(i,j) = 1.0 / w;
                             mask_map(i,j) = 1.0;
                         }
@@ -1013,10 +1022,11 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
                 run_convolve();
                 Eigen::MatrixXd mask_smooth = nume;
 
+                constexpr double mask_floor = 1e-6;
                 for (Eigen::Index i=0; i<n_rows; ++i) {
                     for (Eigen::Index j=0; j<n_cols; ++j) {
                         double m = mask_smooth(i,j);
-                        if (m > 0.0 && std::isfinite(m)) {
+                        if (m > mask_floor && std::isfinite(m)) {
                             double v = var_smooth(i,j) / m;
                             if (v > 0.0 && std::isfinite(v)) {
                                 mb.weight[map_index](i,j) = 1.0 / v;
