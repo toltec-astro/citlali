@@ -142,6 +142,11 @@ void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
     using namespace netCDF;
     using namespace netCDF::exceptions;
 
+    // total number of detectors
+    Eigen::Index n_dets = 0;
+    // detector, nw and array names for each network
+    std::vector<Eigen::Index> dets, nws, arrays;
+
     // loop through input files
     for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
         try {
@@ -151,13 +156,15 @@ void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
 
             // get the interface
             auto interface_id = std::stoi(data_item.interface().substr(6));
+            // add the current file's number of dets to the total
+            n_dets += vars.find("Data.Toltec.Is")->second.getDim(1).getSize();
 
             // get the number of dets in file
             dets.push_back(vars.find("Data.Toltec.Is")->second.getDim(1).getSize());
             // get the nw from interface
-            nws.push_back(interfaces.back());
+            nws.push_back(interface_id);
             // get the array from the interface
-            arrays.push_back(engine().toltec_io.nw_to_array_map[interfaces.back()]);
+            arrays.push_back(engine().toltec_io.nw_to_array_map[interface_id]);
 
             fo.close();
 
@@ -211,13 +218,6 @@ void TimeOrderedDataProc<EngineType>::get_tone_freqs_from_files(const RawObs &ra
     // tone frquencies for each network
     std::map<Eigen::Index,Eigen::MatrixXd> tone_freqs;
 
-    // nw names
-    std::vector<Eigen::Index> interfaces;
-
-    // total number of detectors
-    Eigen::Index n_dets = 0;
-    // detector, nw and array names for each network
-    std::vector<Eigen::Index> dets, nws, arrays;
     // loop through input files
     for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
         try {
@@ -226,10 +226,7 @@ void TimeOrderedDataProc<EngineType>::get_tone_freqs_from_files(const RawObs &ra
             auto vars = fo.getVars();
 
             // get the interface
-            interfaces.push_back(std::stoi(data_item.interface().substr(6)));
-
-            // add the current file's number of dets to the total
-            n_dets += vars.find("Data.Toltec.Is")->second.getDim(1).getSize();
+            auto interface_id = std::stoi(data_item.interface().substr(6));
 
             // dimension of tone freqs is (n_sweeps, n_tones)
             Eigen::Index n_sweeps = vars.find("Header.Toltec.ToneFreq")->second.getDim(0).getSize();
