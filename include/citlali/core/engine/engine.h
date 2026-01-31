@@ -620,6 +620,11 @@ void Engine::get_mapmaking_config(CT &config) {
             auto jinc_shape_vec = config.template get_typed<std::vector<double>>(std::tuple{"mapmaking","jinc_filter","shape_params",arr_name});
             jinc_mm.shape_params[arr_index] = Eigen::Map<Eigen::VectorXd>(jinc_shape_vec.data(),jinc_shape_vec.size());
         }
+        // optional: sub-pixel sampling for jinc kernel
+        if (config.template has_typed<int>(std::tuple{"mapmaking","jinc_filter","subpixel_n"})) {
+            get_config_value(config, jinc_mm.subpixel_n, missing_keys, invalid_keys,
+                             std::tuple{"mapmaking","jinc_filter","subpixel_n"},{},{1});
+        }
 
         if (jinc_mm.mode=="matrix") {
             // allocate jinc matrix
