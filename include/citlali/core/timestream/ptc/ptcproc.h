@@ -36,7 +36,8 @@ public:
                     std::vector<std::vector<std::string>> &);
 
     // subtract detector means
-    void subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &);
+    void subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
+                       const Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> *flags_override = nullptr);
 
     // run main processing stage
     template <class calib_type>
@@ -143,9 +144,11 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
     }
 }
 
-void PTCProc::subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in) {
+void PTCProc::subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
+                            const Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> *flags_override) {
+    const auto &flags_ref = flags_override ? *flags_override : in.flags.data;
     // cast flags to double and flip 1's and 0's so we can multiply by the data
-    auto f = (in.flags.data.derived().array().cast <double> ().array() - 1).abs();
+    auto f = (flags_ref.derived().array().cast <double> ().array() - 1).abs();
     // mean of each detector
     Eigen::RowVectorXd col_mean = (in.scans.data.derived().array()*f).colwise().sum()/
                                    f.colwise().sum();
@@ -173,8 +176,17 @@ template <class calib_type>
 void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKind::PTC, Eigen::MatrixXd> &out,
                   calib_type &calib, std::string pixel_axes, std::string map_grouping) {
 
-    // subtract mean from data and kernel
-    subtract_mean(in);
+    Eigen::Index n_pts = in.scans.data.rows();
+    Eigen::Index n_dets = in.scans.data.cols();
+
+    // subtract mean from data and kernel, optionally masking the source region
+    if (run_clean && mask_radius_arcsec > 0) {
+        auto mean_flags = mask_region(in, calib, pixel_axes, map_grouping, n_pts, n_dets, 0);
+        subtract_mean(in, &mean_flags);
+    }
+    else {
+        subtract_mean(in);
+    }
 
     if (run_clean) {
         logger->info("cleaning");

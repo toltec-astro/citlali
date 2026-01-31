@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#include <algorithm>
+#include <utility>
 #include <Eigen/Core>
 #include <Eigen/Eigenvalues>
 #include <Spectra/SymEigsSolver.h>
@@ -150,8 +152,9 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     // multiply scans by flags to remove flagged signal
     auto det = (scans.derived().array()*f.array()).matrix();
 
-    // calculate the covariance matrix
-    pca_cov.noalias() = ((det.adjoint() * det).array() / denom.array()).matrix();
+    // calculate the covariance matrix with safe denominator handling
+    Eigen::MatrixXd numer = det.adjoint() * det;
+    pca_cov = (denom.array() > 0).select(numer.array() / denom.array(), 0.0);
 
     /*Eigen::VectorXd avg_corrs(n_dets);
     avg_corrs.setZero();
@@ -197,6 +200,10 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
         else {
             n_cv = n_calc * 2.5 < n_dets?int(n_calc * 2.5):n_dets;
             n_ev = n_calc;
+        }
+
+        if (stddev_limit > 0 && group_n_eig == 0 && n_calc > 0) {
+            logger->warn("stddev_limit active but n_calc={} limits eigen spectrum; consider setting n_calc=0", n_calc);
         }
 
         // set up spectra
@@ -254,22 +261,23 @@ auto Cleaner::remove_eig_values(const Eigen::DenseBase<DerivedA> &scans, const E
 
     // if using std dev limit, calculate index
     if (stddev_limit > 0) {
-        int n_ev;
-        // if using std dev limit and n_eig_to_cut is zero, use all detectors
-        if (group_n_eig == 0) {
-            if constexpr (backend == SpectraBackend) {
-                n_ev = n_dets - 1;
+        int n_ev_available = n_dets;
+        if constexpr (backend == SpectraBackend) {
+            if (n_calc > 0) {
+                n_ev_available = std::min<int>(n_calc, n_dets - 1);
             }
-            else if constexpr (backend == EigenBackend) {
-                n_ev = n_dets;
+            else if (group_n_eig == 0) {
+                n_ev_available = n_dets - 1;
+            }
+            else {
+                n_ev_available = std::min<int>(group_n_eig, n_dets - 1);
             }
         }
-        // if n_eig_to_cut is not zero, calc std dev for those eigs only
-        else {
-            n_ev = group_n_eig;
+        else if constexpr (backend == EigenBackend) {
+            n_ev_available = (group_n_eig == 0) ? n_dets : std::min<int>(group_n_eig, n_dets);
         }
         // calculate index above which to remove eigenvalues
-        limit_index = get_stddev_index(evals.head(n_ev));
+        limit_index = get_stddev_index(evals.head(n_ev_available));
     }
     // otherwise use number of eigenvalues from config
     else {
@@ -280,7 +288,13 @@ auto Cleaner::remove_eig_values(const Eigen::DenseBase<DerivedA> &scans, const E
 
     // subtract out the desired eigenvectors
     Eigen::MatrixXd proj = scans.derived() * evecs.derived().leftCols(limit_index);
-    cleaned_scans.derived().noalias() = scans.derived() - proj * evecs.derived().adjoint().topRows(limit_index);
+    Eigen::MatrixXd cleaned = scans.derived() - proj * evecs.derived().adjoint().topRows(limit_index);
+    if (cleaned_scans.derived().data() == scans.derived().data()) {
+        cleaned_scans.derived() = std::move(cleaned);
+    }
+    else {
+        cleaned_scans.derived().noalias() = cleaned;
+    }
 }
 
 } // namespace timestream

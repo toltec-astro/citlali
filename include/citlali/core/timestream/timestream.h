@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <unordered_set>
 #include <filesystem>
 
 #include <unsupported/Eigen/CXX11/Tensor>
@@ -574,6 +575,8 @@ auto TCProc::get_grouping(std::string grp, calib_t &calib, int n_dets) {
 
     // initial group value is value for the first det index
     Eigen::Index grp_i = calib.apt[grp](0);
+    std::unordered_set<Eigen::Index> seen;
+    seen.insert(grp_i);
     // set up first group
     grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
     Eigen::Index j = 0;
@@ -587,6 +590,11 @@ auto TCProc::get_grouping(std::string grp, calib_t &calib, int n_dets) {
         // otherwise increment and start the next group
         else {
             grp_i = calib.apt[grp](det_index);
+            if (seen.find(grp_i) != seen.end()) {
+                logger->error("non-contiguous grouping detected for '{}' value {}", grp, grp_i);
+                std::exit(EXIT_FAILURE);
+            }
+            seen.insert(grp_i);
             j += 1;
             grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i,0};
         }
