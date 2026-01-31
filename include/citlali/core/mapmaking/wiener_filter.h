@@ -969,9 +969,53 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
         mb.weight[map_index] = denom;
     }
     else if (filter_type=="convolve") {
-        filtered_map = mb.weight[map_index];
-        run_convolve();
-        mb.weight[map_index] = nume;
+        // propagate inverse-variance through smoothing: Var_smooth = (k^2) ⊗ Var
+        Eigen::MatrixXd kernel = filter_template;
+        double kernel_sum = kernel.sum();
+        if (kernel_sum == 0.0 || !std::isfinite(kernel_sum)) {
+            logger->warn("convolve kernel sum is zero/invalid; skipping weight propagation");
+        }
+        else {
+            kernel /= kernel_sum;
+            Eigen::MatrixXd kernel_sq = kernel.array().square().matrix();
+            double kernel_sq_sum = kernel_sq.sum();
+            if (kernel_sq_sum == 0.0 || !std::isfinite(kernel_sq_sum)) {
+                logger->warn("convolve kernel^2 sum is zero/invalid; skipping weight propagation");
+            }
+            else {
+                Eigen::MatrixXd inv_var(n_rows, n_cols);
+                const double inv_var_fill = 1e30;
+                for (Eigen::Index i=0; i<n_rows; ++i) {
+                    for (Eigen::Index j=0; j<n_cols; ++j) {
+                        double w = mb.weight[map_index](i,j);
+                        if (w > 0.0 && std::isfinite(w)) {
+                            inv_var(i,j) = 1.0 / w;
+                        }
+                        else {
+                            inv_var(i,j) = inv_var_fill;
+                        }
+                    }
+                }
+
+                Eigen::MatrixXd template_backup = filter_template;
+                filter_template = kernel_sq;
+                filtered_map = inv_var;
+                run_convolve();
+                Eigen::MatrixXd var_smooth = nume * kernel_sq_sum;
+                for (Eigen::Index i=0; i<n_rows; ++i) {
+                    for (Eigen::Index j=0; j<n_cols; ++j) {
+                        double v = var_smooth(i,j);
+                        if (v > 0.0 && std::isfinite(v)) {
+                            mb.weight[map_index](i,j) = 1.0 / v;
+                        }
+                        else {
+                            mb.weight[map_index](i,j) = 0.0;
+                        }
+                    }
+                }
+                filter_template = template_backup;
+            }
+        }
     }
 
     logger->info("signal/weight map filtering done");
