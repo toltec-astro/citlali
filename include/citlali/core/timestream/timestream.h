@@ -399,6 +399,66 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
         return tokens;
     };
 
+    auto read_key_long = [&](CCfits::ExtHDU &ext, const std::string &key, long &out) {
+        try {
+            ext.readKey(key, out);
+        } catch (const CCfits::Keyword::WrongKeywordValueType &) {
+            std::string tmp;
+            try {
+                ext.readKey(key, tmp);
+                out = std::stol(tmp);
+            } catch (const CCfits::FitsException &e) {
+                logger->error("failed to read {} from fruit loops map header: {}", key, e.message());
+                std::exit(EXIT_FAILURE);
+            } catch (...) {
+                logger->error("invalid value for {} in fruit loops map header", key);
+                std::exit(EXIT_FAILURE);
+            }
+        } catch (const CCfits::FitsException &e) {
+            logger->error("failed to read {} from fruit loops map header: {}", key, e.message());
+            std::exit(EXIT_FAILURE);
+        }
+    };
+
+    auto read_key_double = [&](CCfits::ExtHDU &ext, const std::string &key, double &out) {
+        try {
+            ext.readKey(key, out);
+        } catch (const CCfits::Keyword::WrongKeywordValueType &) {
+            std::string tmp;
+            try {
+                ext.readKey(key, tmp);
+                out = std::stod(tmp);
+            } catch (const CCfits::FitsException &e) {
+                logger->error("failed to read {} from fruit loops map header: {}", key, e.message());
+                std::exit(EXIT_FAILURE);
+            } catch (...) {
+                logger->error("invalid value for {} in fruit loops map header", key);
+                std::exit(EXIT_FAILURE);
+            }
+        } catch (const CCfits::FitsException &e) {
+            logger->error("failed to read {} from fruit loops map header: {}", key, e.message());
+            std::exit(EXIT_FAILURE);
+        }
+    };
+
+    auto read_key_string = [&](CCfits::ExtHDU &ext, const std::string &key, std::string &out) {
+        try {
+            ext.readKey(key, out);
+        } catch (const CCfits::Keyword::WrongKeywordValueType &) {
+            double tmp = 0.0;
+            try {
+                ext.readKey(key, tmp);
+                out = std::to_string(tmp);
+            } catch (const CCfits::FitsException &e) {
+                logger->error("failed to read {} from fruit loops map header: {}", key, e.message());
+                std::exit(EXIT_FAILURE);
+            }
+        } catch (const CCfits::FitsException &e) {
+            logger->error("failed to read {} from fruit loops map header: {}", key, e.message());
+            std::exit(EXIT_FAILURE);
+        }
+    };
+
     const auto grouping = to_lower(expected_map_grouping);
     Eigen::Index expected_n_maps = 0;
     if (grouping == "array") {
@@ -631,16 +691,16 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
             double cdelt2 = 0.0;
             std::string cunit1;
             std::string cunit2;
-            extension.readKey("NAXIS1", naxis1);
-            extension.readKey("NAXIS2", naxis2);
-            extension.readKey("CRPIX1", crpix1);
-            extension.readKey("CRPIX2", crpix2);
-            extension.readKey("CRVAL1", crval1);
-            extension.readKey("CRVAL2", crval2);
-            extension.readKey("CDELT1", cdelt1);
-            extension.readKey("CDELT2", cdelt2);
-            extension.readKey("CUNIT1", cunit1);
-            extension.readKey("CUNIT2", cunit2);
+            read_key_long(extension, "NAXIS1", naxis1);
+            read_key_long(extension, "NAXIS2", naxis2);
+            read_key_double(extension, "CRPIX1", crpix1);
+            read_key_double(extension, "CRPIX2", crpix2);
+            read_key_double(extension, "CRVAL1", crval1);
+            read_key_double(extension, "CRVAL2", crval2);
+            read_key_double(extension, "CDELT1", cdelt1);
+            read_key_double(extension, "CDELT2", cdelt2);
+            read_key_string(extension, "CUNIT1", cunit1);
+            read_key_string(extension, "CUNIT2", cunit2);
 
             // convert CRPIX to 0-based
             crpix1 -= 1.0;
