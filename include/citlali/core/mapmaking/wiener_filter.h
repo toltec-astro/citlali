@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#include <cmath>
+#include <algorithm>
 
 #include <boost/math/special_functions/bessel.hpp>
 
@@ -271,13 +273,19 @@ void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_d
     auto min_dist = dist.minCoeff(&row_index,&col_index);
 
     // create new bins based on diff_rows
-    int n_bins = mb.rows_tan_vec(n_rows-1)/diff_rows;
+    int n_bins = static_cast<int>(std::floor(std::abs(mb.rows_tan_vec(n_rows-1) / diff_rows))) + 1;
+    n_bins = std::max(n_bins, 2);
     Eigen::VectorXd bin_low = Eigen::VectorXd::LinSpaced(n_bins,0,n_bins-1)*diff_rows;
 
     Eigen::VectorXd kernel_interp(n_bins-1);
     kernel_interp.setZero();
     Eigen::VectorXd dist_interp(n_bins-1);
     dist_interp.setZero();
+
+    std::vector<double> kernel_valid;
+    std::vector<double> dist_valid;
+    kernel_valid.reserve(n_bins - 1);
+    dist_valid.reserve(n_bins - 1);
 
     // radial averages
     for (Eigen::Index i=0; i<n_bins-1; ++i) {
@@ -291,15 +299,28 @@ void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_d
                 }
             }
         }
-        kernel_interp(i) /= c;
-        dist_interp(i) /= c;
+        if (c > 0) {
+            kernel_interp(i) /= c;
+            dist_interp(i) /= c;
+            kernel_valid.push_back(kernel_interp(i));
+            dist_valid.push_back(dist_interp(i));
+        }
     }
+
+    if (dist_valid.size() < 2) {
+        logger->warn("kernel template radial averages are undersampled; using shifted kernel map directly");
+        filter_template = temp_kernel;
+        return;
+    }
+
+    Eigen::VectorXd kernel_interp_valid = Eigen::Map<Eigen::VectorXd>(kernel_valid.data(), kernel_valid.size());
+    Eigen::VectorXd dist_interp_valid = Eigen::Map<Eigen::VectorXd>(dist_valid.data(), dist_valid.size());
 
     // now spline interpolate to generate new template array
     filter_template.resize(n_rows,n_cols);
 
     // create spline function
-    engine_utils::SplineFunction s(dist_interp, kernel_interp);
+    engine_utils::SplineFunction s(dist_interp_valid, kernel_interp_valid);
 
     // carry out the interpolation
     for (Eigen::Index i=0; i<n_cols; ++i) {
@@ -315,11 +336,11 @@ void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_d
             }
             // if above x limit
             else if (dist(j,i) > s.x_max) {
-                filter_template(shiftj,shifti) = kernel_interp(kernel_interp.size()-1);
+                filter_template(shiftj,shifti) = kernel_interp_valid(kernel_interp_valid.size()-1);
             }
             // if below x limit
             else if (dist(j,i) < s.x_min) {
-                filter_template(shiftj,shifti) = kernel_interp(0);
+                filter_template(shiftj,shifti) = kernel_interp_valid(0);
             }
         }
     }
@@ -345,6 +366,12 @@ void WienerFilter::calc_vvq(MB &mb, const int map_index) {
     if (run_lowpass) {
         psd_q.setOnes();
     }
+    else if (mb.noise_psds.empty() || mb.noise_psd_freqs.empty() ||
+             map_index >= static_cast<int>(mb.noise_psds.size()) ||
+             map_index >= static_cast<int>(mb.noise_psd_freqs.size())) {
+        logger->warn("noise PSDs missing for map {}; falling back to lowpass-only response", map_index);
+        psd_q.setOnes();
+    }
     else {
         // psd and psd freq vectors
         Eigen::VectorXd psd = mb.noise_psds[map_index];
@@ -358,6 +385,12 @@ void WienerFilter::calc_vvq(MB &mb, const int map_index) {
         double max_psd = psd.maxCoeff(&max_psd_index);
         double psd_freq_break = 0.;
         double psd_break = 0.;
+
+        if (!std::isfinite(max_psd) || max_psd <= 0.0) {
+            logger->warn("noise PSD invalid for map {}; falling back to lowpass-only response", map_index);
+            psd_q.setOnes();
+        }
+        else {
 
         for (Eigen::Index i=0; i<n_psd; ++i) {
             if (psd(i)/max_psd < psd_lim) {
@@ -402,10 +435,10 @@ void WienerFilter::calc_vvq(MB &mb, const int map_index) {
 
         // shift q_row
         std::vector<Eigen::Index> shift_1 = {-n_rows/2};
-        engine_utils::shift_1D(q_row, shift_1);
+        q_row = engine_utils::shift_1D(q_row, shift_1);
         // shift q_col
         std::vector<Eigen::Index> shift_2 = {n_cols/2};
-        engine_utils::shift_1D(q_col, shift_2);
+        q_col = engine_utils::shift_1D(q_col, shift_2);
 
         for (Eigen::Index i=0; i<n_rows; ++i) {
             for (Eigen::Index j=0; j<n_cols; ++j) {
@@ -437,8 +470,11 @@ void WienerFilter::calc_vvq(MB &mb, const int map_index) {
             }
         }
 
-        // find the minimum value of psd
+        // find the minimum value of psd and clamp
         auto psd_min = psd.minCoeff();
+        if (!std::isfinite(psd_min) || psd_min <= 0.0) {
+            psd_min = std::max(psd_lim * max_psd, 1e-12);
+        }
 
         for (Eigen::Index i=0; i<n_rows; ++i) {
             for (Eigen::Index j=0; j<n_cols; ++j) {
@@ -448,10 +484,18 @@ void WienerFilter::calc_vvq(MB &mb, const int map_index) {
             }
         }
         //psd_q = psd_q.array().max(psd_min).matrix();
+        }
     }
 
     // normalize the power spectrum psd_q and place into vvq
-    vvq = psd_q/psd_q.sum();
+    double psd_sum = psd_q.sum();
+    if (!std::isfinite(psd_sum) || psd_sum <= 0.0) {
+        vvq.setOnes(n_rows, n_cols);
+        vvq /= static_cast<double>(n_rows * n_cols);
+    }
+    else {
+        vvq = psd_q/psd_sum;
+    }
 }
 
 void WienerFilter::calc_numerator() {
@@ -641,7 +685,7 @@ void WienerFilter::calc_denominator() {
 
                     // update status
                     if ((kk % 100) == 1) {
-                        double max_ratio = -1;
+                        double max_ratio = 0.0;
                         // maximum of denominator
                         double max_denom = 0.01 * denom.maxCoeff();
 
@@ -651,10 +695,8 @@ void WienerFilter::calc_denominator() {
                                 // exclude small denom values
                                 if (denom(i,j) > max_denom) {
                                     // abs(delta_denom / denom)
-                                    auto ratio = max_ratio = abs(delta_denom(i,j) / denom(i,j));
-                                    // if absolute change in denom is > current ratio
+                                    auto ratio = std::abs(delta_denom(i,j) / denom(i,j));
                                     if (ratio > max_ratio) {
-                                        // update max ratio
                                         max_ratio = ratio;
                                     }
                                 }
