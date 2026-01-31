@@ -3,6 +3,7 @@
 #include <time.h>
 #include <vector>
 #include <numeric>
+#include <algorithm>
 #include <complex>
 //#include <png.h>
 
@@ -1226,24 +1227,60 @@ static Eigen::MatrixXd interp_data(
 
     Eigen::MatrixXd result = Eigen::MatrixXd::Zero(n_pts, n_dets);
 
-    std::vector<int> valid_indices;
+    if (n_pts == 0 || n_dets == 0 || t_valid.size() == 0) {
+        return result;
+    }
 
-    int valid_idx = 0;
-    for (int i = 0; i < n_pts; ++i) {
-        if (mask(i)) {
-            result.row(i) = data_valid.row(valid_idx);
-            valid_indices.push_back(i);
-            ++valid_idx;
+    std::vector<int> valid_indices;
+    valid_indices.reserve(t_valid.size());
+    std::vector<char> filled(n_pts, false);
+
+    // map each valid sample to the nearest t_common index
+    const auto *t_begin = t_common.data();
+    const auto *t_end = t_common.data() + n_pts;
+    for (int k = 0; k < t_valid.size(); ++k) {
+        double t = t_valid(k);
+        auto it = std::lower_bound(t_begin, t_end, t);
+        int idx = -1;
+        if (it == t_begin) {
+            idx = 0;
+        } else if (it == t_end) {
+            idx = n_pts - 1;
+        } else {
+            int right = static_cast<int>(it - t_begin);
+            int left = right - 1;
+            idx = (std::abs(t_common(right) - t) < std::abs(t - t_common(left))) ? right : left;
+        }
+
+        if (idx < 0 || idx >= n_pts) {
+            continue;
+        }
+        // respect the mask when provided
+        if (mask.size() == n_pts && !mask(idx)) {
+            continue;
+        }
+
+        result.row(idx) = data_valid.row(k);
+        if (!filled[idx]) {
+            valid_indices.push_back(idx);
+            filled[idx] = true;
         }
     }
 
-    if (valid_indices.size() == n_pts) {
+    if (valid_indices.empty()) {
+        return result;
+    }
+
+    std::sort(valid_indices.begin(), valid_indices.end());
+    valid_indices.erase(std::unique(valid_indices.begin(), valid_indices.end()), valid_indices.end());
+
+    if (static_cast<int>(valid_indices.size()) == n_pts) {
         return result;
     }
 
     for (int j = 0; j < n_dets; ++j) {
         for (int i = 0; i < n_pts; ++i) {
-            if (mask(i)) continue;
+            if (filled[i]) continue;
 
             // find left and right valid sample
             auto it_right = std::lower_bound(valid_indices.begin(), valid_indices.end(), i);
