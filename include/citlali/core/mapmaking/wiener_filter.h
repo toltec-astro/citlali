@@ -916,31 +916,33 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
         mb.signal[map_index] = filtered_map;
     }*/
 
-    // filter kernel
-    logger->info("filtering kernel");
-    filtered_map = mb.kernel[map_index];
-    // run all filter steps
-    if (filter_type=="wiener_filter") {
-        uniform_weight = true;
-        run_filter(mb, map_index);
-    }
-    else if (filter_type=="convolve") {
-        run_convolve();
-    }
+    // filter kernel (only if present)
+    if (!mb.kernel.empty()) {
+        logger->info("filtering kernel");
+        filtered_map = mb.kernel[map_index];
+        // run all filter steps
+        if (filter_type=="wiener_filter") {
+            uniform_weight = true;
+            run_filter(mb, map_index);
+        }
+        else if (filter_type=="convolve") {
+            run_convolve();
+        }
 
-    // divide by filtered weight
-    for (Eigen::Index i=0; i<n_rows; ++i) {
-        for (Eigen::Index j=0; j<n_cols; ++j) {
-            if (denom(i,j) != 0.0) {
-                mb.kernel[map_index](i,j) = nume(i,j)/denom(i,j);
-            }
-            else {
-                mb.kernel[map_index](i,j) = 0.0;
+        // divide by filtered weight
+        for (Eigen::Index i=0; i<n_rows; ++i) {
+            for (Eigen::Index j=0; j<n_cols; ++j) {
+                if (denom(i,j) != 0.0) {
+                    mb.kernel[map_index](i,j) = nume(i,j)/denom(i,j);
+                }
+                else {
+                    mb.kernel[map_index](i,j) = 0.0;
+                }
             }
         }
-    }
 
-    logger->info("kernel filtering done");
+        logger->info("kernel filtering done");
+    }
 
     logger->info("filtering signal");
     // filter signal
