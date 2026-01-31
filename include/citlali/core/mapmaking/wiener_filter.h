@@ -985,30 +985,45 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
                 logger->warn("convolve kernel^2 sum is zero/invalid; skipping weight propagation");
             }
             else {
-                Eigen::MatrixXd inv_var(n_rows, n_cols);
-                const double inv_var_fill = 1e30;
+                Eigen::MatrixXd var_map(n_rows, n_cols);
+                Eigen::MatrixXd mask_map(n_rows, n_cols);
+
                 for (Eigen::Index i=0; i<n_rows; ++i) {
                     for (Eigen::Index j=0; j<n_cols; ++j) {
                         double w = mb.weight[map_index](i,j);
                         if (w > 0.0 && std::isfinite(w)) {
-                            inv_var(i,j) = 1.0 / w;
+                            var_map(i,j) = 1.0 / w;
+                            mask_map(i,j) = 1.0;
                         }
                         else {
-                            inv_var(i,j) = inv_var_fill;
+                            var_map(i,j) = 0.0;
+                            mask_map(i,j) = 0.0;
                         }
                     }
                 }
 
                 Eigen::MatrixXd template_backup = filter_template;
                 filter_template = kernel_sq;
-                filtered_map = inv_var;
+
+                filtered_map = var_map;
                 run_convolve();
-                Eigen::MatrixXd var_smooth = nume * kernel_sq_sum;
+                Eigen::MatrixXd var_smooth = nume;
+
+                filtered_map = mask_map;
+                run_convolve();
+                Eigen::MatrixXd mask_smooth = nume;
+
                 for (Eigen::Index i=0; i<n_rows; ++i) {
                     for (Eigen::Index j=0; j<n_cols; ++j) {
-                        double v = var_smooth(i,j);
-                        if (v > 0.0 && std::isfinite(v)) {
-                            mb.weight[map_index](i,j) = 1.0 / v;
+                        double m = mask_smooth(i,j);
+                        if (m > 0.0 && std::isfinite(m)) {
+                            double v = var_smooth(i,j) / m;
+                            if (v > 0.0 && std::isfinite(v)) {
+                                mb.weight[map_index](i,j) = 1.0 / v;
+                            }
+                            else {
+                                mb.weight[map_index](i,j) = 0.0;
+                            }
                         }
                         else {
                             mb.weight[map_index](i,j) = 0.0;
