@@ -142,13 +142,6 @@ void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
     using namespace netCDF;
     using namespace netCDF::exceptions;
 
-    // nw names
-    std::vector<Eigen::Index> interfaces;
-
-    // total number of detectors
-    Eigen::Index n_dets = 0;
-    // detector, nw and array names for each network
-    std::vector<Eigen::Index> dets, nws, arrays;
     // loop through input files
     for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
         try {
@@ -157,10 +150,7 @@ void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
             auto vars = fo.getVars();
 
             // get the interface
-            interfaces.push_back(std::stoi(data_item.interface().substr(6)));
-
-            // add the current file's number of dets to the total
-            n_dets += vars.find("Data.Toltec.Is")->second.getDim(1).getSize();
+            auto interface_id = std::stoi(data_item.interface().substr(6));
 
             // get the number of dets in file
             dets.push_back(vars.find("Data.Toltec.Is")->second.getDim(1).getSize());
@@ -249,11 +239,11 @@ void TimeOrderedDataProc<EngineType>::get_tone_freqs_from_files(const RawObs &ra
             vars.find("Header.Toltec.LoCenterFreq")->second.getVar(&lo_freq);
 
             // get tone_freqs for interface
-            tone_freqs[interfaces.back()].resize(vars.find("Header.Toltec.ToneFreq")->second.getDim(1).getSize(),n_sweeps);
-            vars.find("Header.Toltec.ToneFreq")->second.getVar(tone_freqs[interfaces.back()].data());
+            tone_freqs[interface_id].resize(vars.find("Header.Toltec.ToneFreq")->second.getDim(1).getSize(), n_sweeps);
+            vars.find("Header.Toltec.ToneFreq")->second.getVar(tone_freqs[interface_id].data());
 
             // add local oscillator freq
-            tone_freqs[interfaces.back()] = tone_freqs[interfaces.back()].array() + lo_freq;
+            tone_freqs[interface_id] = tone_freqs[interface_id].array() + lo_freq;
 
             fo.close();
 
@@ -266,12 +256,36 @@ void TimeOrderedDataProc<EngineType>::get_tone_freqs_from_files(const RawObs &ra
 
     engine().calib.apt["tone_freq"].resize(engine().calib.n_dets);
 
-    // add the nws and arrays to the apt table
-    Eigen::Index j = 0;
-    for (Eigen::Index i=0; i<engine().calib.nws.size(); ++i) {
-        engine().calib.apt["tone_freq"].segment(j,tone_freqs[interfaces[i]].size()) = tone_freqs[interfaces[i]];
+    // assign tone freqs by nw id to avoid ordering mismatches
+    for (const auto& [nw, limits] : engine().calib.nw_limits) {
+        auto it = tone_freqs.find(nw);
+        if (it == tone_freqs.end()) {
+            logger->error("missing tone freqs for nw {}", nw);
+            std::exit(EXIT_FAILURE);
+        }
 
-        j = j + tone_freqs[interfaces[i]].size();
+        const auto& tf = it->second;
+        Eigen::Index n_tones = tf.rows();
+        Eigen::Index n_sweeps = tf.cols();
+
+        const auto start = std::get<0>(limits);
+        const auto end = std::get<1>(limits);
+        const auto expected = end - start;
+
+        if (n_sweeps < 1) {
+            logger->error("no tone freq sweeps for nw {}", nw);
+            std::exit(EXIT_FAILURE);
+        }
+        if (n_tones != expected) {
+            logger->error("tone freq size mismatch for nw {} (tones={}, expected dets={})",
+                          nw, n_tones, expected);
+            std::exit(EXIT_FAILURE);
+        }
+        if (n_sweeps > 1) {
+            logger->warn("tone freqs have {} sweeps for nw {}, using first sweep", n_sweeps, nw);
+        }
+
+        engine().calib.apt["tone_freq"].segment(start, expected) = tf.col(0);
     }
 
     if (!engine().telescope.sim_obs) {
@@ -501,7 +515,10 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
             ts.transposeInPlace();
 
             // find gaps
-            int gaps = ((ts.block(1,3,n_pts,1).array() - ts.block(0,3,n_pts-1,1).array()).array() > 1).count();
+            int gaps = 0;
+            if (n_pts > 1) {
+                gaps = ((ts.block(1,3,n_pts-1,1).array() - ts.block(0,3,n_pts-1,1).array()).array() > 1).count();
+            }
 
             // add gaps to engine map
             if (gaps>0) {
@@ -750,7 +767,10 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
             Eigen::MatrixXi ts_t = ts.transpose();
 
             // find gaps
-            int gaps = ((ts.block(1,3,n_pts,1).array() - ts.block(0,3,n_pts-1,1).array()).array() > 1).count();
+            int gaps = 0;
+            if (n_pts > 1) {
+                gaps = ((ts.block(1,3,n_pts-1,1).array() - ts.block(0,3,n_pts-1,1).array()).array() > 1).count();
+            }
 
             // add gaps to engine map
             if (gaps>0) {

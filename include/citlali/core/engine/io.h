@@ -397,15 +397,26 @@ void RawObs::collect_data_items() {
     m_data_items = std::move(data_items);
 
     sort(m_data_items.begin(), m_data_items.end(), [] (const RawObs::DataItem& a, const RawObs::DataItem& b) {
-
-        if ((a.interface().find("toltec"))!=std::string::npos && (b.interface().find("toltec"))!=std::string::npos) {
-            std::string cmp_a { a.interface().begin() + 6, a.interface().end() };
-            std::string cmp_b { b.interface().begin() + 6, b.interface().end() };
-            return std::stoi(cmp_a) < std::stoi(cmp_b);
-        }
-        else {
-            return false;
-        }
+        auto key = [](const RawObs::DataItem& item) {
+            const auto& iface = item.interface();
+            if (iface.rfind("toltec", 0) == 0) {
+                int idx = 0;
+                try {
+                    idx = std::stoi(iface.substr(6));
+                } catch (...) {
+                    idx = 0;
+                }
+                return std::tuple<int, int, std::string>{0, idx, iface};
+            }
+            if (iface == "lmt") {
+                return std::tuple<int, int, std::string>{1, 0, iface};
+            }
+            if (iface == "hwpr") {
+                return std::tuple<int, int, std::string>{2, 0, iface};
+            }
+            return std::tuple<int, int, std::string>{3, 0, iface};
+        };
+        return key(a) < key(b);
     });
 
     SPDLOG_DEBUG("collected n_data_items={}\n{}", this->n_data_items(),
