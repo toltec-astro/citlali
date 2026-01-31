@@ -377,13 +377,13 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                             // populate signal map
                             sig_block += (mat_block * in.weights.data(i) * in.scans.data(j,i)).eval();
 
-                            // populate weight map
-                            wt_block += (mat_block * in.weights.data(i)).eval();
+                            // populate weight map with positive kernel power to avoid cancellations
+                            wt_block.array() += (mat_block.array().square() * in.weights.data(i));
 
                             // populate coverage map
                             if (run_coverage) {
                                 auto cov_block = omb_copy.coverage[map_index].block(lower_row,lower_col,size_rows,size_cols);
-                                cov_block += mat_block/d_fsmp;
+                                cov_block.array() += (mat_block.array().square() / d_fsmp);
                             }
 
                             // populate kernel map
@@ -441,7 +441,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                                 Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(nmb_copy->noise[map_index].data() + nn * nmb->n_rows * nmb->n_cols,
                                                                                                                nmb->n_rows, nmb->n_cols);
                                 auto noise_block = noise_matrix.block(lower_row,lower_col,size_rows,size_cols);
-                                noise_block += mat_block*noise_v;
+                                noise_block.array() += (mat_block.array().square() * noise_v);
                             }
                         }
                     }
@@ -617,13 +617,13 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                             // populate signal map
                             sig_block += (mat_block * in.weights.data(i) * in.scans.data(j,i)).eval();
 
-                            // populate weight map
-                            wt_block += (mat_block * in.weights.data(i)).eval();
+                            // populate weight map with positive kernel power to avoid cancellations
+                            wt_block.array() += (mat_block.array().square() * in.weights.data(i));
 
                             // populate coverage map
                             if (run_coverage) {
                                 auto cov_block = omb.coverage[map_index].block(lower_row,lower_col,size_rows,size_cols);
-                                cov_block += mat_block/d_fsmp;
+                                cov_block.array() += (mat_block.array().square() / d_fsmp);
                             }
 
                             // populate kernel map
@@ -681,7 +681,7 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                                 Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(nmb->noise[map_index].data() + nn * nmb->n_rows * nmb->n_cols,
                                                                                                                nmb->n_rows, nmb->n_cols);
                                 auto noise_block = noise_matrix.block(lower_row,lower_col,size_rows,size_cols);
-                                noise_block += mat_block*noise_v;
+                                noise_block.array() += (mat_block.array().square() * noise_v);
                             }
                         }
                     }
