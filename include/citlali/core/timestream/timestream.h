@@ -724,10 +724,20 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                     logger->error("inconsistent map dimensions across fruit loops maps");
                     std::exit(EXIT_FAILURE);
                 }
-                double cdelt0_diff = std::abs(std::abs(tod_mb.wcs.cdelt[0]) - std::abs(cdelt1));
-                double cdelt1_diff = std::abs(std::abs(tod_mb.wcs.cdelt[1]) - std::abs(cdelt2));
-                if (cdelt0_diff > 1e-12 || cdelt1_diff > 1e-12) {
-                    logger->error("inconsistent CDELT across fruit loops maps");
+                double cdelt0_ref = std::abs(tod_mb.wcs.cdelt[0]);
+                double cdelt1_ref = std::abs(tod_mb.wcs.cdelt[1]);
+                double cdelt0_new = std::abs(cdelt1);
+                double cdelt1_new = std::abs(cdelt2);
+                double cdelt0_diff = std::abs(cdelt0_ref - cdelt0_new);
+                double cdelt1_diff = std::abs(cdelt1_ref - cdelt1_new);
+                double cdelt0_rel = cdelt0_diff / std::max({cdelt0_ref, cdelt0_new, 1e-12});
+                double cdelt1_rel = cdelt1_diff / std::max({cdelt1_ref, cdelt1_new, 1e-12});
+                constexpr double cdelt_rel_tol = 1e-6;
+                if (cdelt0_rel > cdelt_rel_tol || cdelt1_rel > cdelt_rel_tol) {
+                    logger->error("inconsistent CDELT across fruit loops maps: "
+                                  "ref=({}, {}) new=({}, {}) rel_diff=({}, {})",
+                                  tod_mb.wcs.cdelt[0], tod_mb.wcs.cdelt[1], cdelt1, cdelt2,
+                                  cdelt0_rel, cdelt1_rel);
                     std::exit(EXIT_FAILURE);
                 }
                 if (to_lower(tod_mb.wcs.cunit[0]) != to_lower(cunit1) ||
