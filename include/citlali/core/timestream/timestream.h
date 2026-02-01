@@ -706,6 +706,10 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
             crpix1 -= 1.0;
             crpix2 -= 1.0;
 
+            logger->debug("fruit loops WCS {}: naxis=({}, {}) crpix=({}, {}) crval=({}, {}) cdelt=({}, {}) cunit=({}, {})",
+                          map_path.string(), naxis1, naxis2, crpix1, crpix2,
+                          crval1, crval2, cdelt1, cdelt2, cunit1, cunit2);
+
             if (!wcs_set) {
                 tod_mb.wcs.naxis[0] = static_cast<int>(naxis1);
                 tod_mb.wcs.naxis[1] = static_cast<int>(naxis2);
@@ -718,10 +722,13 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                 tod_mb.wcs.cunit[0] = cunit1;
                 tod_mb.wcs.cunit[1] = cunit2;
                 wcs_set = true;
+                logger->debug("fruit loops WCS reference set from {}",
+                              map_path.string());
             }
             else {
                 if (tod_mb.wcs.naxis[0] != naxis1 || tod_mb.wcs.naxis[1] != naxis2) {
-                    logger->error("inconsistent map dimensions across fruit loops maps");
+                    logger->error("inconsistent map dimensions across fruit loops maps in {}",
+                                  map_path.string());
                     std::exit(EXIT_FAILURE);
                 }
                 double cdelt0_ref = std::abs(tod_mb.wcs.cdelt[0]);
@@ -734,15 +741,17 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                 double cdelt1_rel = cdelt1_diff / std::max({cdelt1_ref, cdelt1_new, 1e-12});
                 constexpr double cdelt_rel_tol = 1e-6;
                 if (cdelt0_rel > cdelt_rel_tol || cdelt1_rel > cdelt_rel_tol) {
-                    logger->error("inconsistent CDELT across fruit loops maps: "
+                    logger->error("inconsistent CDELT across fruit loops maps in {}: "
                                   "ref=({}, {}) new=({}, {}) rel_diff=({}, {})",
+                                  map_path.string(),
                                   tod_mb.wcs.cdelt[0], tod_mb.wcs.cdelt[1], cdelt1, cdelt2,
                                   cdelt0_rel, cdelt1_rel);
                     std::exit(EXIT_FAILURE);
                 }
                 if (to_lower(tod_mb.wcs.cunit[0]) != to_lower(cunit1) ||
                     to_lower(tod_mb.wcs.cunit[1]) != to_lower(cunit2)) {
-                    logger->error("inconsistent CUNIT across fruit loops maps");
+                    logger->error("inconsistent CUNIT across fruit loops maps in {}",
+                                  map_path.string());
                     std::exit(EXIT_FAILURE);
                 }
             }
