@@ -628,7 +628,7 @@ void WienerFilter::calc_denominator() {
         }
         // convergence tolerances (hard-coded, map-size agnostic)
         constexpr double denom_rel_tol = 1e-4;
-        constexpr double tail_frac_tol = 1e-3;
+        constexpr double tail_frac_tol = 1e-2;
 
         const double Z_abs_total = Z_abs.sum();
         double Z_abs_done = 0.0;
