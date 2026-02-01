@@ -916,6 +916,11 @@ void WienerFilter::destripe(double threshold_factor) {
 
 template<class MB>
 void WienerFilter::filter_maps(MB &mb, const int map_index) {
+    Eigen::MatrixXd weight_input;
+    const bool use_lowpass_weights = (filter_type=="wiener_filter" && run_lowpass);
+    if (use_lowpass_weights) {
+        weight_input = mb.weight[map_index];
+    }
     /*if (filter_type=="destripe") {
         filtered_map = mb.signal[map_index];
         destripe(0.5);
@@ -973,8 +978,83 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
         }
     }
     if (filter_type=="wiener_filter") {
-        // weight map is the denominator
-        mb.weight[map_index] = denom;
+        if (!use_lowpass_weights) {
+            // weight map is the denominator
+            mb.weight[map_index] = denom;
+        }
+        else {
+            // for lowpass-only, propagate variance through the smoothing kernel
+            Eigen::MatrixXd kernel = filter_template;
+            double kernel_sum = kernel.sum();
+            if (kernel_sum == 0.0 || !std::isfinite(kernel_sum)) {
+                logger->warn("lowpass kernel sum is zero/invalid; skipping weight propagation");
+            }
+            else {
+                kernel /= kernel_sum;
+                Eigen::MatrixXd kernel_sq = kernel.array().square().matrix();
+                double kernel_sq_sum = kernel_sq.sum();
+                if (kernel_sq_sum == 0.0 || !std::isfinite(kernel_sq_sum)) {
+                    logger->warn("lowpass kernel^2 sum is zero/invalid; skipping weight propagation");
+                }
+                else {
+                    Eigen::MatrixXd var_map(n_rows, n_cols);
+                    Eigen::MatrixXd mask_map(n_rows, n_cols);
+
+                    double weight_threshold = 0.0;
+                    if (mb.cov_cut > 0.0) {
+                        weight_threshold = engine_utils::find_weight_threshold(weight_input, mb.cov_cut);
+                    }
+                    if (!std::isfinite(weight_threshold) || weight_threshold < 0.0) {
+                        weight_threshold = 0.0;
+                    }
+
+                    for (Eigen::Index i=0; i<n_rows; ++i) {
+                        for (Eigen::Index j=0; j<n_cols; ++j) {
+                            double w = weight_input(i,j);
+                            if (w > 0.0 && std::isfinite(w) && w >= weight_threshold) {
+                                var_map(i,j) = 1.0 / w;
+                                mask_map(i,j) = 1.0;
+                            }
+                            else {
+                                var_map(i,j) = 0.0;
+                                mask_map(i,j) = 0.0;
+                            }
+                        }
+                    }
+
+                    Eigen::MatrixXd template_backup = filter_template;
+                    filter_template = kernel_sq;
+
+                    filtered_map = var_map;
+                    run_convolve(false);
+                    Eigen::MatrixXd var_smooth = nume;
+
+                    filtered_map = mask_map;
+                    run_convolve(false);
+                    Eigen::MatrixXd mask_smooth = nume;
+
+                    constexpr double mask_floor = 1e-6;
+                    for (Eigen::Index i=0; i<n_rows; ++i) {
+                        for (Eigen::Index j=0; j<n_cols; ++j) {
+                            double m = mask_smooth(i,j);
+                            if (m > mask_floor && std::isfinite(m)) {
+                                double v = var_smooth(i,j) / m;
+                                if (v > 0.0 && std::isfinite(v)) {
+                                    mb.weight[map_index](i,j) = 1.0 / v;
+                                }
+                                else {
+                                    mb.weight[map_index](i,j) = 0.0;
+                                }
+                            }
+                            else {
+                                mb.weight[map_index](i,j) = 0.0;
+                            }
+                        }
+                    }
+                    filter_template = template_backup;
+                }
+            }
+        }
     }
     else if (filter_type=="convolve") {
         // propagate inverse-variance through smoothing: Var_smooth = (k^2) ⊗ Var
