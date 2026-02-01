@@ -2460,17 +2460,77 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
 
             if (wiener_filter.normalize_error) {
                 logger->info("renormalizing errors");
-                // get median error from weight maps
-                mb.calc_median_err();
-                // get median map rms from noise maps
-                mb.calc_median_rms();
+                bool scaled = false;
+                if (!mb.noise.empty() && mb.n_noise > 0) {
+                    Eigen::MatrixXd var_map = Eigen::MatrixXd::Zero(mb.n_rows, mb.n_cols);
+                    for (Eigen::Index j=0; j<mb.n_noise; ++j) {
+                        Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(
+                            mb.noise[i].data() + j * mb.n_rows * mb.n_cols,
+                            mb.n_rows, mb.n_cols);
+                        var_map.array() += noise_matrix.array().square();
+                    }
+                    var_map.array() /= static_cast<double>(mb.n_noise);
 
-                // get rescaled normalization factor
-                auto noise_factor = (1./pow(mb.median_rms.array(),2.))*mb.median_err.array();
-                // re-normalize weight map
-                mb.weight[i].noalias() = mb.weight[i]*noise_factor(i);
+                    double weight_threshold = 0.0;
+                    if (mb.cov_cut > 0.0) {
+                        weight_threshold = engine_utils::find_weight_threshold(mb.weight[i], mb.cov_cut);
+                    }
+                    if (!std::isfinite(weight_threshold) || weight_threshold < 0.0) {
+                        weight_threshold = 0.0;
+                    }
 
-                logger->info("median rms {} ({})", static_cast<float>(mb.median_rms(i)), mb.sig_unit);
+                    Eigen::Index n_valid = 0;
+                    for (Eigen::Index r=0; r<mb.n_rows; ++r) {
+                        for (Eigen::Index c=0; c<mb.n_cols; ++c) {
+                            const double w = mb.weight[i](r,c);
+                            const double v = var_map(r,c);
+                            if (w > 0.0 && std::isfinite(w) && w >= weight_threshold &&
+                                v > 0.0 && std::isfinite(v)) {
+                                n_valid++;
+                            }
+                        }
+                    }
+
+                    if (n_valid > 0) {
+                        Eigen::VectorXd ratios(n_valid);
+                        Eigen::Index idx = 0;
+                        for (Eigen::Index r=0; r<mb.n_rows; ++r) {
+                            for (Eigen::Index c=0; c<mb.n_cols; ++c) {
+                                const double w = mb.weight[i](r,c);
+                                const double v = var_map(r,c);
+                                if (w > 0.0 && std::isfinite(w) && w >= weight_threshold &&
+                                    v > 0.0 && std::isfinite(v)) {
+                                    ratios(idx) = w * v;
+                                    idx++;
+                                }
+                            }
+                        }
+
+                        double med_ratio = tula::alg::median(ratios);
+                        if (std::isfinite(med_ratio) && med_ratio > 0.0) {
+                            const double scale = 1.0 / med_ratio;
+                            mb.weight[i].noalias() = mb.weight[i] * scale;
+                            logger->info("weight renorm (noise-based): median(w*var)={} scale={}",
+                                         static_cast<float>(med_ratio), static_cast<float>(scale));
+                            scaled = true;
+                        }
+                    }
+                }
+
+                if (!scaled) {
+                    // fallback to legacy normalization
+                    // get median error from weight maps
+                    mb.calc_median_err();
+                    // get median map rms from noise maps
+                    mb.calc_median_rms();
+
+                    // get rescaled normalization factor
+                    auto noise_factor = (1./pow(mb.median_rms.array(),2.))*mb.median_err.array();
+                    // re-normalize weight map
+                    mb.weight[i].noalias() = mb.weight[i]*noise_factor(i);
+
+                    logger->info("median rms {} ({})", static_cast<float>(mb.median_rms(i)), mb.sig_unit);
+                }
             }
         }
 

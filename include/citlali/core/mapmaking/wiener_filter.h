@@ -621,8 +621,17 @@ void WienerFilter::calc_denominator() {
         Eigen::VectorXd Z_abs = Z.array().abs();
         auto Z_indices_sorted = engine_utils::sorter(Z_abs);
 
-        // number of iterations for convergence
+        // number of iterations between convergence checks
         n_loops = n_rows * n_cols / 100;
+        if (n_loops < 100) {
+            n_loops = 100;
+        }
+        // convergence tolerances (hard-coded, map-size agnostic)
+        constexpr double denom_rel_tol = 1e-4;
+        constexpr double tail_frac_tol = 1e-3;
+
+        const double Z_abs_total = Z_abs.sum();
+        double Z_abs_done = 0.0;
 
         // flag for convergence
         bool done = false;
@@ -682,30 +691,19 @@ void WienerFilter::calc_denominator() {
 
                     // D = D + Z(x_d) x G/n_pixels
                     denom = denom.array() + delta_denom.array();
+                    Z_abs_done += Z_abs(shift_index);
 
                     // update status
-                    if ((kk % 100) == 1) {
-                        double max_ratio = 0.0;
-                        // maximum of denominator
-                        double max_denom = 0.01 * denom.maxCoeff();
+                    if ((kk % n_loops) == 1) {
+                        const double denom_norm = denom.norm();
+                        const double delta_norm = delta_denom.norm();
+                        const double rel_update = delta_norm / std::max(denom_norm, 1e-12);
+                        const double tail_frac = (Z_abs_total > 0.0) ? ((Z_abs_total - Z_abs_done) / Z_abs_total) : 0.0;
 
-                        // find largest value of abs(delta_denom / denom)
-                        for (Eigen::Index i=0; i<n_rows; ++i) {
-                            for (Eigen::Index j=0; j<n_cols; ++j) {
-                                // exclude small denom values
-                                if (denom(i,j) > max_denom) {
-                                    // abs(delta_denom / denom)
-                                    auto ratio = std::abs(delta_denom(i,j) / denom(i,j));
-                                    if (ratio > max_ratio) {
-                                        max_ratio = ratio;
-                                    }
-                                }
-                            }
-                        }
-                        logger->info("{} iteration(s) complete. denom ratio = {}", kk, static_cast<float>(max_ratio));
+                        logger->info("{} iteration(s) complete. rel_update={} tail_frac={}",
+                                     kk, static_cast<float>(rel_update), static_cast<float>(tail_frac));
 
-                        // check if we've reached max loop or if change in denom is too small
-                        if (((kk >= max_loops) && (max_ratio < 0.0002)) || max_ratio < 1e-10) {
+                        if (rel_update < denom_rel_tol && tail_frac < tail_frac_tol) {
                             done = true;
                         }
                     }
