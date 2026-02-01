@@ -109,7 +109,7 @@ public:
     void run_filter(MB &, const int);
 
     // simple convolution with template
-    void run_convolve();
+    void run_convolve(bool normalize=true);
 
     // test destriper
     void destripe(double);
@@ -791,7 +791,7 @@ void WienerFilter::run_filter(MB &mb, const int map_index) {
     logger->debug("numerator {}", nume);
 }
 
-void WienerFilter::run_convolve() {
+void WienerFilter::run_convolve(bool normalize) {
     // set up fftw
     fftw_complex *a;
     fftw_complex *b;
@@ -808,9 +808,15 @@ void WienerFilter::run_convolve() {
     // inputs and outputs to ffts
     Eigen::MatrixXcd in(n_rows,n_cols), out(n_rows,n_cols);
 
-    filter_template /= filter_template.sum();
+    Eigen::MatrixXd kernel = filter_template;
+    if (normalize) {
+        double kernel_sum = kernel.sum();
+        if (kernel_sum != 0.0 && std::isfinite(kernel_sum)) {
+            kernel /= kernel_sum;
+        }
+    }
 
-    in.real() = filter_template;
+    in.real() = kernel;
     in.imag().setZero();
 
     // fft(f(x))
@@ -1015,11 +1021,11 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
                 filter_template = kernel_sq;
 
                 filtered_map = var_map;
-                run_convolve();
+                run_convolve(false);
                 Eigen::MatrixXd var_smooth = nume;
 
                 filtered_map = mask_map;
-                run_convolve();
+                run_convolve(false);
                 Eigen::MatrixXd mask_smooth = nume;
 
                 constexpr double mask_floor = 1e-6;
