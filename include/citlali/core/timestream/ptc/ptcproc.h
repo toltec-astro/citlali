@@ -134,6 +134,11 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         // stddev limit
         get_config_value(config, cleaner.stddev_limit, missing_keys, invalid_keys,
                          std::tuple{"timestream","processed_time_chunk","clean","stddev_limit"});
+        // optional: number of eigenvalues to calculate (0 => full spectrum)
+        if (config.template has_typed<int>(std::tuple{"timestream","processed_time_chunk","clean","n_calc"})) {
+            get_config_value(config, cleaner.n_calc, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","clean","n_calc"},{},{0});
+        }
         // mask radius in arcseconds
         get_config_value(config, mask_radius_arcsec, missing_keys, invalid_keys,
                          std::tuple{"timestream","processed_time_chunk","clean","mask_radius_arcsec"});

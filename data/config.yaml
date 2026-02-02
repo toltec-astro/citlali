@@ -135,10 +135,11 @@ timestream: # timestream reduction parameters
     clean: # remove (hopefully) the atmospheric signal
       enabled: false # enable or disable cleaning
       stddev_limit: 0.0 # standard deviation cut for cleaning (only used if >0)
+      n_calc: 64 # number of eigenvalues to calculate for stddev_limit (0 => full spectrum)
       mask_radius_arcsec: 0.0 # radius of region around the map center to mask during cleaning (only used if >0)
       grouping: [array] # clean grouping (array, nw, all)
       tau: 0.0 # tolerance for detector correlations (fraction of mean correlation for current group)
-      n_eig_to_cut: # number of eigenvalues to remove (if stddev_limit >0, calc this many eigs, if this is 0, calc all eigs)
+      n_eig_to_cut: # number of eigenvalues to remove (ignored if stddev_limit >0)
         a1100: [3]
         a1400: [3]
         a2000: [3]
