@@ -503,6 +503,11 @@ void Engine::get_timestream_config(CT &config) {
     // run tod processing
     get_config_value(config, run_tod, missing_keys, invalid_keys,
                      std::tuple{"timestream","enabled"});
+    if (!run_tod) {
+        logger->error("timestream.enabled is false. This reduction requires TOD processing; set "
+                      "low_level.timestream.enabled: true in your reduce config.");
+        std::exit(EXIT_FAILURE);
+    }
     // tod type (xs, rs, is, qs)
     get_config_value(config, tod_type, missing_keys, invalid_keys,
                      std::tuple{"timestream","type"});
@@ -1989,15 +1994,27 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     // add apt table to header
     if (mb->obsnums.size()==1) {
-        std::vector<string> apt_filename;
-        std::stringstream ss(calib.apt_filepath);
-        std::string item;
-        char delim = '/';
+        std::string apt_name = "N/A";
+        if (!calib.apt_filepath.empty()) {
+            std::vector<string> apt_filename;
+            std::stringstream ss(calib.apt_filepath);
+            std::string item;
+            char delim = '/';
 
-        while (getline (ss, item, delim)) {
-            apt_filename.push_back(item);
+            while (getline (ss, item, delim)) {
+                apt_filename.push_back(item);
+            }
+            if (!apt_filename.empty()) {
+                apt_name = apt_filename.back();
+            }
+            else {
+                logger->warn("APT filepath '{}' parsed empty; using N/A", calib.apt_filepath);
+            }
         }
-        fits_io->at(i).pfits->pHDU().addKey("APT", apt_filename.back(), "APT table used");
+        else {
+            logger->warn("APT filepath empty; using N/A");
+        }
+        fits_io->at(i).pfits->pHDU().addKey("APT", apt_name, "APT table used");
     }
 
     double rms;
