@@ -67,7 +67,7 @@ public:
             int count = 0;
             for (Eigen::Index i=0; i<n_dets; i++) {
                 if (good(i)) {
-                    if (abs(ev(i) - m_ev) > abs(stddev_limit*stddev)) {
+                    if (ev(i) > m_ev + stddev_limit*stddev) {
                         good(i) = false;
                     }
                     else {
