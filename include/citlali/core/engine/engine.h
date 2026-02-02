@@ -1962,16 +1962,27 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     // add mean tau
     logger->debug("adding extinction");
+    double mean_tau = 0.0;
     if (rtcproc.run_extinction) {
-        Eigen::VectorXd tau_el(1);
-        tau_el << telescope.tel_data["TelElAct"].mean();
-        auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
-
-        fits_io->at(i).pfits->pHDU().addKey("MEAN_TAU", tau_freq[i](0), "mean tau (" + name + ")");
+        const auto tel_it = telescope.tel_data.find("TelElAct");
+        if (tel_it != telescope.tel_data.end() && tel_it->second.size() > 0) {
+            Eigen::VectorXd tau_el(1);
+            tau_el << tel_it->second.mean();
+            auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
+            const auto array_id = calib.arrays(i);
+            const auto tau_it = tau_freq.find(array_id);
+            if (tau_it != tau_freq.end() && tau_it->second.size() > 0 && std::isfinite(tau_it->second(0))) {
+                mean_tau = tau_it->second(0);
+            }
+            else {
+                logger->warn("MEAN_TAU unavailable for array {} (tau_freq missing/empty); defaulting to 0", array_id);
+            }
+        }
+        else {
+            logger->warn("MEAN_TAU unavailable (TelElAct missing/empty); defaulting to 0");
+        }
     }
-    else {
-        fits_io->at(i).pfits->pHDU().addKey("MEAN_TAU", 0., "mean tau (" + name + ")");
-    }
+    fits_io->at(i).pfits->pHDU().addKey("MEAN_TAU", mean_tau, "mean tau (" + name + ")");
 
     // add sample rate
     fits_io->at(i).pfits->pHDU().addKey("SAMPRATE", telescope.fsmp, "sample rate (Hz)");
