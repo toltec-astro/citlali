@@ -3,6 +3,8 @@
 #include <string>
 #include <algorithm>
 #include <utility>
+#include <numeric>
+#include <cmath>
 #include <Eigen/Core>
 #include <Eigen/Eigenvalues>
 #include <Spectra/SymEigsSolver.h>
@@ -39,6 +41,10 @@ public:
 
     template <typename Derived>
     auto get_stddev_index(const Eigen::DenseBase<Derived> &evals) {
+        if (evals.size() < 2) {
+            logger->warn("stddev cut: not enough eigenvalues ({}); skipping cut", evals.size());
+            return Eigen::Index{0};
+        }
         // copy eigenvalues
         Eigen::VectorXd ev = evals.derived().array().abs().log10();
 
@@ -70,6 +76,11 @@ public:
                 }
             }
 
+            if (count <= 1) {
+                logger->warn("stddev cut: only {} eigenvalue(s) remain after clipping; skipping cut", count);
+                return Eigen::Index{0};
+            }
+
             if (count >= n_keep_last) {
                 keep_going = false;
             }
@@ -94,6 +105,11 @@ public:
                 n_keep_last = count;
             }
             iterator++;
+        }
+
+        if (!std::isfinite(m_ev) || !std::isfinite(stddev)) {
+            logger->warn("stddev cut: non-finite stats (mean={}, stddev={}); skipping cut", m_ev, stddev);
+            return Eigen::Index{0};
         }
 
         // stddev limit
@@ -220,8 +236,20 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
 
         // copy the eigenvalues and eigenvectors
         if (eigs.info() == Spectra::CompInfo::Successful) {
-            evals.head(n_ev) = eigs.eigenvalues();
-            evecs.leftCols(n_ev) = eigs.eigenvectors();
+            Eigen::VectorXd evals_sub = eigs.eigenvalues();
+            Eigen::MatrixXd evecs_sub = eigs.eigenvectors();
+
+            // enforce descending order for consistency with stddev cut
+            std::vector<Eigen::Index> order(static_cast<std::size_t>(n_ev));
+            std::iota(order.begin(), order.end(), 0);
+            std::sort(order.begin(), order.end(), [&](Eigen::Index a, Eigen::Index b) {
+                return evals_sub(a) > evals_sub(b);
+            });
+
+            for (Eigen::Index k=0; k<n_ev; ++k) {
+                evals(k) = evals_sub(order[static_cast<std::size_t>(k)]);
+                evecs.col(k) = evecs_sub.col(order[static_cast<std::size_t>(k)]);
+            }
         }
         else {
             throw std::runtime_error("spectra failed to compute eigen values");

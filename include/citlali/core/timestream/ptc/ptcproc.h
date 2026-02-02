@@ -194,16 +194,23 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         Eigen::Index n_pts = in.scans.data.rows();
         // index for number of cleaning groups in vectors
         Eigen::Index indx = 0;
+        const bool want_eigs = (run_tod_output || write_evals);
+        const bool store_eigs = want_eigs && (cleaner.n_calc > 0);
+        bool warned_eigs = false;
 
         // loop through config groupings
         for (const auto & group: cleaner.grouping) {
 
             logger->debug("cleaning with {} grouping", group);
 
-            if (run_tod_output || write_evals) {
+            if (store_eigs) {
                 // add current group to eval/evec vectors
                 out.evals.data.emplace_back();
                 out.evecs.data.emplace_back();
+            }
+            else if (want_eigs && !warned_eigs) {
+                logger->warn("n_calc=0; skipping eval/evec output");
+                warned_eigs = true;
             }
 
             // map of tuples to hold detector limits
@@ -262,17 +269,20 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                     auto [evals, evecs] = cleaner.calc_eig_values<timestream::Cleaner::SpectraBackend>(in_scans_block, masked_flags, apt_flags,
                                                                                                        cleaner.n_eig_to_cut[arr_index](indx));
 
-                    if (run_tod_output || write_evals) {
-                        // get first 64 eigenvalues and eigenvectors
-                        Eigen::VectorXd ev = evals.head(cleaner.n_calc);
-                        Eigen::MatrixXd evc = evecs.leftCols(cleaner.n_calc);
+                    if (store_eigs) {
+                        // get first n_calc eigenvalues and eigenvectors
+                        Eigen::Index n_keep = std::min<Eigen::Index>(cleaner.n_calc, evals.size());
+                        if (n_keep > 0) {
+                            Eigen::VectorXd ev = evals.head(n_keep);
+                            Eigen::MatrixXd evc = evecs.leftCols(n_keep);
 
-                        logger->debug("evals {}", ev);
-                        logger->debug("evecs {}", evc);
+                            logger->debug("evals {}", ev);
+                            logger->debug("evecs {}", evc);
 
-                        // copy evals and evecs to ptcdata
-                        out.evals.data[indx].push_back(std::move(ev));
-                        out.evecs.data[indx].push_back(std::move(evc));
+                            // copy evals and evecs to ptcdata
+                            out.evals.data[indx].push_back(std::move(ev));
+                            out.evecs.data[indx].push_back(std::move(evc));
+                        }
                     }
 
                     // remove eigenvalues from the data and reconstruct the tod
@@ -544,6 +554,15 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         weights_v.putVar(start_index_weights, size_weights, in.weights.data.data());
 
         if (write_evals) {
+            if (cleaner.n_calc <= 0 || in.evals.data.empty()) {
+                logger->warn("n_calc=0 or evals empty; skipping eval/evec output");
+                // sync file to make sure it gets updated
+                fo.sync();
+                // close file
+                fo.close();
+                logger->info("tod chunk written to {}", filepath);
+                return;
+            }
             // get number of eigenvalues to save
             NcDim n_eigs_dim = fo.getDim("n_eigs");
             netCDF::NcDim n_eig_grp_dim = fo.getDim("n_eig_grp");
