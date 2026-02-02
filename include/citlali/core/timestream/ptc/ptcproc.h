@@ -281,8 +281,10 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                             Eigen::VectorXd ev = evals.head(n_keep);
                             Eigen::MatrixXd evc = evecs.leftCols(n_keep);
 
-                            logger->debug("evals {}", ev);
-                            logger->debug("evecs {}", evc);
+                            // avoid dumping full matrices in debug; can be huge and unstable
+                            const Eigen::Index n_show = std::min<Eigen::Index>(n_keep, 8);
+                            logger->debug("evals n={} head({})={}", n_keep, n_show, ev.head(n_show).transpose());
+                            logger->debug("evecs shape={}x{} (values omitted)", evc.rows(), evc.cols());
 
                             // copy evals and evecs to ptcdata
                             out.evals.data[indx].push_back(std::move(ev));
