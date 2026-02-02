@@ -2382,28 +2382,40 @@ void Engine::write_stats() {
     }
 
     // add eigenvalues
-    if (!diagnostics.evals.empty()) {
-        netCDF::NcDim n_eigs_dim = fo.addDim("n_eigs",ptcproc.cleaner.n_calc);
-        netCDF::NcDim n_eig_grp_dim = fo.addDim("n_eig_grp",diagnostics.evals[0][0].size());
+    if (!diagnostics.evals.empty() && ptcproc.cleaner.n_calc > 0) {
+        const auto first_it = diagnostics.evals.begin();
+        if (!first_it->second.empty() && !first_it->second[0].empty()) {
+            netCDF::NcDim n_eigs_dim = fo.addDim("n_eigs", ptcproc.cleaner.n_calc);
+            netCDF::NcDim n_eig_grp_dim = fo.addDim("n_eig_grp", first_it->second[0].size());
 
-        std::vector<netCDF::NcDim> eval_dims = {n_eig_grp_dim, n_eigs_dim};
+            std::vector<netCDF::NcDim> eval_dims = {n_eig_grp_dim, n_eigs_dim};
 
-        // loop through chunks
-        for (const auto &[key, val]: diagnostics.evals) {
-            // loop through cleaner gropuing
-            for (Eigen::Index i=0; i<val.size(); ++i) {
+            // loop through chunks
+            for (const auto &[key, val]: diagnostics.evals) {
+                // loop through cleaner grouping
+                for (Eigen::Index i=0; i<val.size(); ++i) {
 
-                netCDF::NcVar eval_v = fo.addVar("evals_" + ptcproc.cleaner.grouping[i] + "_" + std::to_string(i) +
-                                                     "_chunk_" + std::to_string(key), netCDF::ncDouble,eval_dims);
-                std::vector<std::size_t> start_eig_index = {0, 0};
-                std::vector<std::size_t> size = {1, TULA_SIZET(ptcproc.cleaner.n_calc)};
+                    netCDF::NcVar eval_v = fo.addVar("evals_" + ptcproc.cleaner.grouping[i] + "_" + std::to_string(i) +
+                                                         "_chunk_" + std::to_string(key), netCDF::ncDouble, eval_dims);
+                    std::vector<std::size_t> start_eig_index = {0, 0};
+                    std::vector<std::size_t> size = {1, TULA_SIZET(ptcproc.cleaner.n_calc)};
 
-                // loop through eigenvalues in current group
-                for (const auto &evals: val[i]) {
-                    eval_v.putVar(start_eig_index,size,evals.data());
-                    start_eig_index[0] += 1;
+                    // loop through eigenvalues in current group
+                    for (const auto &evals: val[i]) {
+                        Eigen::VectorXd tmp = Eigen::VectorXd::Constant(ptcproc.cleaner.n_calc,
+                                                                        std::numeric_limits<double>::quiet_NaN());
+                        const Eigen::Index n_copy = std::min<Eigen::Index>(evals.size(), ptcproc.cleaner.n_calc);
+                        if (n_copy > 0) {
+                            tmp.head(n_copy) = evals.head(n_copy);
+                        }
+                        eval_v.putVar(start_eig_index, size, tmp.data());
+                        start_eig_index[0] += 1;
+                    }
                 }
             }
+        }
+        else {
+            logger->warn("evals requested but empty; skipping eval/evec output");
         }
     }
     fo.close();
