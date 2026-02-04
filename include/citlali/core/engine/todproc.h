@@ -986,6 +986,16 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
         }
     }
 
+    if (engine().map_grouping == "detector" && engine().redu_type != "beammap") {
+        logger->warn("mapmaking.grouping=detector is only supported for beammap; defaulting to array for {}",
+                     engine().redu_type);
+        engine().map_grouping = "array";
+    }
+
+    engine().omb.map_grouping = engine().map_grouping;
+    engine().cmb.map_grouping = engine().map_grouping;
+    engine().rtcproc.kernel.map_grouping = engine().map_grouping;
+
     // overwrite map number for detectors
     if (engine().map_grouping == "detector") {
         engine().n_maps = engine().calib.n_dets;

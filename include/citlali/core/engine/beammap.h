@@ -5,6 +5,7 @@
 #include <string>
 #include <limits>
 #include <cmath>
+#include <mutex>
 
 #include <citlali/core/engine/engine.h>
 
@@ -367,6 +368,8 @@ void Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
 template <class KidsProc>
 auto Beammap::run_timestream(KidsProc &kidsproc) {
+    std::mutex scans_done_mutex;
+
     auto farm = grppi::farm(n_threads,[&](auto &input_tuple) -> TCData<TCDataKind::PTC,Eigen::MatrixXd> {
         // RTCData input
         auto& rtcdata = std::get<0>(input_tuple);
@@ -413,7 +416,7 @@ auto Beammap::run_timestream(KidsProc &kidsproc) {
                     int start_index = j;
                     int size = 1;
                     if (rtcproc.run_tod_filter) {
-                        start_index = std::max(j, static_cast<int>(j - rtcproc.filter.n_terms));
+                        start_index = std::max(0, static_cast<int>(j - rtcproc.filter.n_terms));
                         int end_index = std::min(j + rtcproc.filter.n_terms, rtcdata.flags.data.rows() - 1);
                         size = end_index - start_index + 1;
                     }
@@ -429,8 +432,11 @@ auto Beammap::run_timestream(KidsProc &kidsproc) {
         // create PTCData
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;
 
-        logger->info("starting scan {}. {}/{} scans completed", rtcdata.index.data + 1, n_scans_done,
-                     telescope.scan_indices.cols());
+        {
+            std::lock_guard<std::mutex> lk(scans_done_mutex);
+            logger->info("starting scan {}. {}/{} scans completed", rtcdata.index.data + 1, n_scans_done,
+                         telescope.scan_indices.cols());
+        }
 
         // run rtcproc
         logger->info("raw time chunk processing for scan {}", rtcdata.index.data + 1);
@@ -466,8 +472,12 @@ auto Beammap::run_timestream(KidsProc &kidsproc) {
         calib_scans0.at(ptcdata.index.data) = std::move(calib_scan);
 
         // increment number of completed scans
-        n_scans_done++;
-        logger->info("done with scan {}. {}/{} scans completed", ptcdata.index.data + 1, n_scans_done, telescope.scan_indices.cols());
+        {
+            std::lock_guard<std::mutex> lk(scans_done_mutex);
+            n_scans_done++;
+            logger->info("done with scan {}. {}/{} scans completed", ptcdata.index.data + 1, n_scans_done,
+                         telescope.scan_indices.cols());
+        }
 
         return ptcdata;
     });

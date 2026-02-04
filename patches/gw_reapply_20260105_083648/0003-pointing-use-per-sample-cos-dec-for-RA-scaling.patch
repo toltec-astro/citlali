@@ -1,0 +1,34 @@
+From 59c08e532a73c53a19566a55c2a9f0313aefb4cd Mon Sep 17 00:00:00 2001
+From: GrantWWilson <44026302+GrantWWilson@users.noreply.github.com>
+Date: Mon, 5 Jan 2026 08:37:15 -0500
+Subject: [PATCH 3/3] pointing: use per-sample cos(dec) for RA scaling
+
+---
+ include/citlali/core/utils/pointing.h | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/include/citlali/core/utils/pointing.h b/include/citlali/core/utils/pointing.h
+index 35a76a7e..bb2669ae 100644
+--- a/include/citlali/core/utils/pointing.h
++++ b/include/citlali/core/utils/pointing.h
+@@ -35,14 +35,13 @@ auto calc_det_pointing(tel_data_t &tel_data, double az_off, double el_off,
+         // get parallactic angle
+         auto& par_ang = tel_data["ActParAng"];
+ 
+-        // cos(dec) at tangent point to keep RA offsets on the projected x-axis scale
+-        const double cos_dec0 = std::cos(tel_data["dec_phys"].mean());
+-
+         // dec
+         lat = (rot_az_off.array()*sin(par_ang.array()) + rot_alt_off.array()*cos(par_ang.array()))*ASEC_TO_RAD
+               + tel_data["dec_phys"].array();
+         // ra
+-        lon = ((-rot_az_off.array()*cos(par_ang.array()) + rot_alt_off.array()*sin(par_ang.array()))*cos_dec0)*ASEC_TO_RAD
++        // use per-sample cos(dec) to keep RA offsets on the projected x-axis scale
++        auto cos_dec = tel_data["dec_phys"].array().cos();
++        lon = ((-rot_az_off.array()*cos(par_ang.array()) + rot_alt_off.array()*sin(par_ang.array()))*cos_dec)*ASEC_TO_RAD
+               + tel_data["ra_phys"].array();
+     }
+ 
+-- 
+2.50.1 (Apple Git-155)
+

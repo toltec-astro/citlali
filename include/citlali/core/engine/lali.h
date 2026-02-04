@@ -148,6 +148,8 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 auto Lali::run() {
     using input_t = TCData<TCDataKind::RTC, Eigen::MatrixXd>;
 
+    std::mutex scans_done_mutex;
+
     auto farm = grppi::farm(n_threads,[&](input_t &rtcdata) {
         // starting index for scan
         Eigen::Index si = rtcdata.scan_indices.data(2);
@@ -187,7 +189,7 @@ auto Lali::run() {
                     int start_index = j;
                     int size = 1;
                     if (rtcproc.run_tod_filter) {
-                        start_index = std::max(j, static_cast<int>(j - rtcproc.filter.n_terms));
+                        start_index = std::max(0, static_cast<int>(j - rtcproc.filter.n_terms));
                         int end_index = std::min(j + rtcproc.filter.n_terms, rtcdata.flags.data.rows() - 1);
                         size = end_index - start_index + 1;
                     }
@@ -203,8 +205,11 @@ auto Lali::run() {
         // create PTCData
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;
 
-        logger->info("starting scan {}. {}/{} scans completed", rtcdata.index.data + 1, n_scans_done,
-                     telescope.scan_indices.cols());
+        {
+            std::lock_guard<std::mutex> lk(scans_done_mutex);
+            logger->info("starting scan {}. {}/{} scans completed", rtcdata.index.data + 1, n_scans_done,
+                         telescope.scan_indices.cols());
+        }
 
         // run rtcproc
         logger->info("raw time chunk processing for scan {}", rtcdata.index.data + 1);
@@ -329,8 +334,12 @@ auto Lali::run() {
         }
 
         // increment number of completed scans
-        n_scans_done++;
-        logger->info("done with scan {}. {}/{} scans completed", ptcdata.index.data + 1, n_scans_done, telescope.scan_indices.cols());
+        {
+            std::lock_guard<std::mutex> lk(scans_done_mutex);
+            n_scans_done++;
+            logger->info("done with scan {}. {}/{} scans completed", ptcdata.index.data + 1, n_scans_done,
+                         telescope.scan_indices.cols());
+        }
     });
 
     return farm;

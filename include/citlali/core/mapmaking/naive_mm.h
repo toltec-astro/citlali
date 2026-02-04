@@ -450,7 +450,6 @@ void NaiveMapmaker::populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::
     // pointer to map buffer with noise maps
     map_buffer_t *nmb;
 
-
     if (run_noise) {
         nmb = use_cmb ? &cmb : (use_omb ? &omb : nullptr);
     }
@@ -461,6 +460,26 @@ void NaiveMapmaker::populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::
     // dimensions of data
     Eigen::Index n_pts = in.scans.data.rows();
     Eigen::Index n_dets = in.scans.data.cols();
+
+    bool unique_map_indices =
+        (map_indices.size() == n_dets && omb.signal.size() == static_cast<std::size_t>(n_dets));
+    if (unique_map_indices) {
+        std::vector<unsigned char> seen(omb.signal.size(), 0);
+        for (Eigen::Index i = 0; i < n_dets; ++i) {
+            const auto idx = map_indices(i);
+            if (idx < 0 || idx >= static_cast<Eigen::Index>(seen.size()) || seen[static_cast<std::size_t>(idx)] != 0) {
+                unique_map_indices = false;
+                break;
+            }
+            seen[static_cast<std::size_t>(idx)] = 1;
+        }
+    }
+
+    if (!unique_map_indices) {
+        logger->warn("populate_maps_naive_parallel requires unique map indices; falling back to populate_maps_naive");
+        populate_maps_naive(in, omb, cmb, map_indices, pixel_axes, apt, d_fsmp, run_omb, run_noise);
+        return;
+    }
 
     // signal, kernel and noise map values
     double signal, kernel, noise_v;
