@@ -148,9 +148,9 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 auto Lali::run() {
     using input_t = TCData<TCDataKind::RTC, Eigen::MatrixXd>;
 
-    std::mutex scans_done_mutex;
+    auto scans_done_mutex = std::make_shared<std::mutex>();
 
-    auto farm = grppi::farm(n_threads,[&](input_t &rtcdata) {
+    auto farm = grppi::farm(n_threads,[&, scans_done_mutex](input_t &rtcdata) {
         // starting index for scan
         Eigen::Index si = rtcdata.scan_indices.data(2);
         // current length of outer scans
@@ -206,7 +206,7 @@ auto Lali::run() {
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;
 
         {
-            std::lock_guard<std::mutex> lk(scans_done_mutex);
+            std::lock_guard<std::mutex> lk(*scans_done_mutex);
             logger->info("starting scan {}. {}/{} scans completed", rtcdata.index.data + 1, n_scans_done,
                          telescope.scan_indices.cols());
         }
@@ -335,7 +335,7 @@ auto Lali::run() {
 
         // increment number of completed scans
         {
-            std::lock_guard<std::mutex> lk(scans_done_mutex);
+            std::lock_guard<std::mutex> lk(*scans_done_mutex);
             n_scans_done++;
             logger->info("done with scan {}. {}/{} scans completed", ptcdata.index.data + 1, n_scans_done,
                          telescope.scan_indices.cols());

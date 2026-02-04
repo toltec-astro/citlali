@@ -244,9 +244,9 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
 template <class KidsProc>
 auto Pointing::run(KidsProc &kidsproc) {
-    std::mutex scans_done_mutex;
+    auto scans_done_mutex = std::make_shared<std::mutex>();
 
-    auto farm = grppi::farm(n_threads,[&](auto &input_tuple) {
+    auto farm = grppi::farm(n_threads,[&, scans_done_mutex](auto &input_tuple) {
         // RTCData input
         auto& rtcdata = std::get<0>(input_tuple);
         // start index input
@@ -308,7 +308,7 @@ auto Pointing::run(KidsProc &kidsproc) {
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;
 
         {
-            std::lock_guard<std::mutex> lk(scans_done_mutex);
+            std::lock_guard<std::mutex> lk(*scans_done_mutex);
             logger->info("starting scan {}. {}/{} scans completed", rtcdata.index.data + 1, n_scans_done,
                          telescope.scan_indices.cols());
         }
@@ -433,7 +433,7 @@ auto Pointing::run(KidsProc &kidsproc) {
         }
         // increment number of completed scans
         {
-            std::lock_guard<std::mutex> lk(scans_done_mutex);
+            std::lock_guard<std::mutex> lk(*scans_done_mutex);
             n_scans_done++;
             logger->info("done with scan {}. {}/{} scans completed", ptcdata.index.data + 1, n_scans_done,
                          telescope.scan_indices.cols());
