@@ -1,6 +1,7 @@
 #pragma once
 
 #include <mutex>
+#include <condition_variable>
 
 #include <citlali/core/engine/engine.h>
 
@@ -246,7 +247,30 @@ template <class KidsProc>
 auto Pointing::run(KidsProc &kidsproc) {
     auto scans_done_mutex = std::make_shared<std::mutex>();
 
-    auto farm = grppi::farm(n_threads,[&, scans_done_mutex](auto &input_tuple) {
+    struct OrderedWriter {
+        std::mutex mutex;
+        std::condition_variable cv;
+        Eigen::Index next = 0;
+        void wait_turn(Eigen::Index idx) {
+            std::unique_lock<std::mutex> lk(mutex);
+            cv.wait(lk, [&] { return idx == next; });
+        }
+        void advance() {
+            std::lock_guard<std::mutex> lk(mutex);
+            ++next;
+            cv.notify_all();
+        }
+    };
+
+    const bool write_rtc = run_tod_output && !tod_filename.empty() &&
+        (tod_output_type == "rtc" || tod_output_type == "both");
+    const bool write_ptc = run_tod_output && !tod_filename.empty() &&
+        (tod_output_type == "ptc" || tod_output_type == "both");
+
+    auto rtc_writer = write_rtc ? std::make_shared<OrderedWriter>() : nullptr;
+    auto ptc_writer = write_ptc ? std::make_shared<OrderedWriter>() : nullptr;
+
+    auto farm = grppi::farm(n_threads,[&, scans_done_mutex, rtc_writer, ptc_writer, write_rtc, write_ptc](auto &input_tuple) {
         // RTCData input
         auto& rtcdata = std::get<0>(input_tuple);
         // start index input
@@ -329,12 +353,12 @@ auto Pointing::run(KidsProc &kidsproc) {
         }
 
         // write rtc timestreams
-        if (run_tod_output && !tod_filename.empty()) {
-            if (tod_output_type == "rtc" || tod_output_type == "both") {
-                logger->info("writing raw time chunk");
-                rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
-                                         ptcdata.pointing_offsets_arcsec.data, calib);
-            }
+        if (write_rtc) {
+            rtc_writer->wait_turn(rtcdata.index.data);
+            logger->info("writing raw time chunk");
+            rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
+                                     ptcdata.pointing_offsets_arcsec.data, calib);
+            rtc_writer->advance();
         }
 
         // if running fruit loops and a map has been read in
@@ -390,12 +414,12 @@ auto Pointing::run(KidsProc &kidsproc) {
         calib_scan = ptcproc.reset_weights(ptcdata, calib, map_grouping);
 
         // write ptc timestreams
-        if (run_tod_output && !tod_filename.empty()) {
-            if (tod_output_type == "ptc" || tod_output_type == "both") {
-                logger->info("writing processed time chunk");
-                ptcproc.append_to_netcdf(ptcdata, tod_filename["ptc"], map_grouping, telescope.pixel_axes,
-                                         ptcdata.pointing_offsets_arcsec.data, calib);
-            }
+        if (write_ptc) {
+            ptc_writer->wait_turn(ptcdata.index.data);
+            logger->info("writing processed time chunk");
+            ptcproc.append_to_netcdf(ptcdata, tod_filename["ptc"], map_grouping, telescope.pixel_axes,
+                                     ptcdata.pointing_offsets_arcsec.data, calib);
+            ptc_writer->advance();
         }
 
         // write out chunk summary

@@ -6,6 +6,7 @@
 #include <limits>
 #include <cmath>
 #include <mutex>
+#include <condition_variable>
 
 #include <citlali/core/engine/engine.h>
 
@@ -370,7 +371,26 @@ template <class KidsProc>
 auto Beammap::run_timestream(KidsProc &kidsproc) {
     auto scans_done_mutex = std::make_shared<std::mutex>();
 
-    auto farm = grppi::farm(n_threads,[&, scans_done_mutex](auto &input_tuple) -> TCData<TCDataKind::PTC,Eigen::MatrixXd> {
+    struct OrderedWriter {
+        std::mutex mutex;
+        std::condition_variable cv;
+        Eigen::Index next = 0;
+        void wait_turn(Eigen::Index idx) {
+            std::unique_lock<std::mutex> lk(mutex);
+            cv.wait(lk, [&] { return idx == next; });
+        }
+        void advance() {
+            std::lock_guard<std::mutex> lk(mutex);
+            ++next;
+            cv.notify_all();
+        }
+    };
+
+    const bool write_rtc = run_tod_output && !tod_filename.empty() &&
+        (tod_output_type == "rtc" || tod_output_type == "both");
+    auto rtc_writer = write_rtc ? std::make_shared<OrderedWriter>() : nullptr;
+
+    auto farm = grppi::farm(n_threads,[&, scans_done_mutex, rtc_writer, write_rtc](auto &input_tuple) -> TCData<TCDataKind::PTC,Eigen::MatrixXd> {
         // RTCData input
         auto& rtcdata = std::get<0>(input_tuple);
         // start index input
@@ -456,12 +476,12 @@ auto Beammap::run_timestream(KidsProc &kidsproc) {
         }
 
         // write rtc timestreams
-        if (run_tod_output && !tod_filename.empty()) {
-            if (tod_output_type == "rtc" || tod_output_type == "both") {
-                logger->info("writing raw time chunk");
-                rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
-                                         ptcdata.pointing_offsets_arcsec.data, calib_scan);
-            }
+        if (write_rtc) {
+            rtc_writer->wait_turn(rtcdata.index.data);
+            logger->info("writing raw time chunk");
+            rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
+                                     ptcdata.pointing_offsets_arcsec.data, calib_scan);
+            rtc_writer->advance();
         }
 
         // store indices for each ptcdata

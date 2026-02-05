@@ -1575,6 +1575,7 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
 
     // vector to hold current scan indices
     Eigen::VectorXd scan_indices(2);
+    Eigen::VectorXi raw_scan_indices(4);
 
     // if not on first scan, grab last scan and add size of current scan
     if (in.index.data > 0) {
@@ -1592,6 +1593,15 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
         scan_indices(0) = 0;
         scan_indices(1) = in.scans.data.rows() - 1;
     }
+
+    raw_scan_indices << static_cast<int>(scan_indices(0)), static_cast<int>(scan_indices(1)),
+                        static_cast<int>(scan_indices(0)), static_cast<int>(scan_indices(1));
+
+    // add current raw scan indices row (output timebase)
+    std::vector<std::size_t> raw_scan_indices_start_index = {TULA_SIZET(in.index.data), 0};
+    std::vector<std::size_t> raw_scan_indices_size = {1, 4};
+    NcVar raw_scan_indices_v = fo.getVar("raw_scan_indices");
+    raw_scan_indices_v.putVar(raw_scan_indices_start_index, raw_scan_indices_size, raw_scan_indices.data());
 
     // add current scan indices row
     std::vector<std::size_t> scan_indices_start_index = {TULA_SIZET(in.index.data), 0};

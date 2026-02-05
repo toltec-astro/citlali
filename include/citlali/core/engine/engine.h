@@ -1400,7 +1400,10 @@ void Engine::create_tod_files() {
     // raw file scan indices
     netCDF::NcVar raw_scan_indices_v = fo.addVar("raw_scan_indices",netCDF::ncInt, raw_scans_dims);
     raw_scan_indices_v.putAtt("units","N/A");
-    raw_scan_indices_v.putVar(telescope.scan_indices.data());
+    raw_scan_indices_v.putAtt("comment","indices in output timebase; outer=inner (output stores inner scans only)");
+    std::vector<int> raw_scan_init(static_cast<std::size_t>(telescope.scan_indices.cols()) *
+                                   static_cast<std::size_t>(telescope.scan_indices.rows()), -2147483647);
+    raw_scan_indices_v.putVar(raw_scan_init.data());
 
     // scan indices for data
     netCDF::NcVar scan_indices_v = fo.addVar("scan_indices",netCDF::ncInt, scans_dims);
