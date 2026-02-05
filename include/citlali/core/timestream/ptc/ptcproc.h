@@ -431,16 +431,20 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
             // weights for current group
             auto grp_weights = in.weights.data(Eigen::seq(std::get<0>(grp_limits[key]),
                                                          std::get<1>(grp_limits[key])-1));
-            // number of good detectors
+            // number of unflagged detectors, and unflagged with positive weights
+            Eigen::Index n_unflagged = 0;
             Eigen::Index n_good_dets = 0;
             // start index of current group
             Eigen::Index j = std::get<0>(grp_limits[key]);
 
             // loop through detectors in current group
             for (Eigen::Index m=0; m<grp_weights.size(); ++m) {
-                // if detector is good and weight is not zero
-                if (calib.apt["flag"](j)==0 && grp_weights(m)>0) {
-                    n_good_dets++;
+                // count unflagged detectors
+                if (calib.apt["flag"](j)==0) {
+                    n_unflagged++;
+                    if (grp_weights(m) > 0) {
+                        n_good_dets++;
+                    }
                 }
                 j++;
             }
@@ -518,7 +522,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
             }
             logger->info("array {} had {} outlier weights", key, outliers);
             logger->info("array {}: {}/{} dets below weight limit. {}/{} dets above weight limit.", key,
-            n_dets_low, n_good_dets, n_dets_high, n_good_dets);
+            n_dets_low, n_unflagged, n_dets_high, n_unflagged);
         }
 
         // set up scan calib

@@ -378,10 +378,10 @@ auto calc_std_dev(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &
         n_samples = n_good - 1;
     }
 
-    auto mean = (data.derived().array()*f.array()).mean();
+    auto mean = (data.derived().array() * f.array()).sum() / static_cast<double>(n_good);
 
     // calc standard deviation
-    double std_dev = std::sqrt((((data.derived().array()*f.array()) - mean).square().sum()) / n_samples);
+    double std_dev = std::sqrt((((data.derived().array() - mean) * f.array()).square().sum()) / n_samples);
 
     return std_dev;
 }
