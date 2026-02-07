@@ -191,12 +191,15 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
         // signal-to-noise map
         auto sig2noise = signal.derived().array()*sqrt(weight.derived().array());
 
-        Eigen::Index ir, ic;
+        Eigen::Index ir = static_cast<Eigen::Index>(center_row);
+        Eigen::Index ic = static_cast<Eigen::Index>(center_col);
+        bool found_peak = false;
 
         // find peak in the entire map
         if (fitting_region_pix <= 0) {
             sig2noise.maxCoeff(&ir, &ic);
             init_flux = signal(ir,ic);
+            found_peak = true;
         }
         // find peak within inner radius
         else {
@@ -208,11 +211,20 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
                             init_flux = sig2noise(i,j);
                             ir = i;
                             ic = j;
+                            found_peak = true;
                         }
                     }
                 }
             }
             // initial guess for flux
+            if (found_peak) {
+                init_flux = signal(ir, ic);
+            }
+        }
+
+        // fall back to global max if the inner-radius search found nothing
+        if (!found_peak) {
+            sig2noise.maxCoeff(&ir, &ic);
             init_flux = signal(ir, ic);
         }
 

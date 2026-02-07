@@ -90,3 +90,16 @@ If we decide this behavior is wrong, the minimal rollback is:
 - Confirm BEAMMAP.REF_* header keys use the resolved detector index rather than `-99`.
 - Confirm TOD output exists for `iter_max=1` and `iter_tolerance=0` (previously missing).
 
+
+## 2026-02-07 (late) - crash during map fitting
+
+Observed crash at "fitting maps". Likely cause: `fit_to_gaussian` inner-radius search could leave
+`ir/ic` uninitialized if no pixel exceeded `init_flux`, leading to invalid indexing.
+
+### Fix
+- Initialize `ir/ic` to map center and track `found_peak`.
+- If inner-radius search finds nothing, fall back to global max.
+
+**File:** `include/citlali/core/utils/fitting.h`
+
+**Rollback:** Remove `found_peak` logic and restore previous `ir/ic` handling.
