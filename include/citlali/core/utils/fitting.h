@@ -233,8 +233,7 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     // ignore bounding box if less than/equal to zero
     if (bounding_box_pix <= 0) {
         lower_row = 0;
-        upper_row = 0;
-
+        lower_col = 0;
         upper_row = signal.rows() - 1;
         upper_col = signal.cols() - 1;
     }

@@ -480,7 +480,7 @@ auto Beammap::run_timestream(KidsProc &kidsproc) {
             rtc_writer->wait_turn(rtcdata.index.data);
             logger->info("writing raw time chunk");
             rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
-                                     ptcdata.pointing_offsets_arcsec.data, calib_scan);
+                                     ptcdata.pointing_offsets_arcsec.data, calib_scan, true);
             rtc_writer->advance();
         }
 
@@ -582,7 +582,7 @@ void Beammap::loop_pipeline() {
                     auto [det_lat, det_lon] = engine_utils::calc_det_pointing(ptcs[i].tel_data.data, az_off,
                                                                               el_off, telescope.pixel_axes,
                                                                               ptcs[i].pointing_offsets_arcsec.data,
-                                                                              map_grouping);
+                                                                              map_grouping, true);
                     ptc_lat.col(j) = std::move(det_lat);
                     ptc_lon.col(j) = std::move(det_lon);
 
@@ -788,7 +788,7 @@ void Beammap::run_loop() {
                 if (current_iter == beammap_tod_output_iter) {
                     for (Eigen::Index i=0; i<telescope.scan_indices.cols(); ++i) {
                         ptcproc.append_to_netcdf(ptcs[i], tod_filename["ptc"], map_grouping, telescope.pixel_axes,
-                                                 ptcs[i].pointing_offsets_arcsec.data, calib_scans[i]);
+                                                 ptcs[i].pointing_offsets_arcsec.data, calib_scans[i], true);
                     }
                 }
             }
@@ -928,7 +928,9 @@ void Beammap::run_loop() {
                                 diff = abs((params.row(i).array() - p0.row(i).array())/p0.row(i).array());
                             }
                             else {
-                                diff = abs(omb_copy.signal[i].array() - omb.signal[i].array()/omb_copy.signal[i].array());
+                                auto denom = omb_copy.signal[i].array().abs();
+                                diff = (omb_copy.signal[i].array() - omb.signal[i].array()).abs();
+                                diff = (denom > 0).select(diff / denom, diff);
                             }
                             // if a variable is constant, make sure no nans are present
                             auto d = (diff.array()).isNaN().select(0,diff);
@@ -1049,7 +1051,7 @@ void Beammap::set_apt_flags() {
             // remove flagged dets
             Eigen::Index j = std::get<0>(calib.nw_limits[nw]);
             Eigen::Index k = 0;
-            for (Eigen::Index m=0; m<sens.size(); m++) {
+            for (Eigen::Index m=0; m<nw_sens.size(); m++) {
                 if (calib.apt["flag"](j)==0) {
                     sens(k) = nw_sens(m);
                     k++;
@@ -1264,6 +1266,8 @@ void Beammap::process_apt() {
         }
         logger->info("using detector {} at ({},{}) arcsec",beammap_reference_det_found,
                     static_cast<float>(ref_det_x_t),static_cast<float>(ref_det_y_t));
+        // ensure downstream headers use the resolved reference detector
+        beammap_reference_det = beammap_reference_det_found;
     }
     else {
         logger->info("no reference detector selected");

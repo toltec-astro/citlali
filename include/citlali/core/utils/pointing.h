@@ -10,10 +10,10 @@ namespace engine_utils {
 template <typename tel_data_t, typename pointing_offset_t>
 auto calc_det_pointing(tel_data_t &tel_data, double az_off, double el_off,
                        const std::string pixel_axes, pointing_offset_t &pointing_offsets,
-                       const std::string map_grouping) {
+                       const std::string map_grouping, bool apply_det_offsets = false) {
 
     // if making per detector maps, set offsets to zero
-    if (map_grouping=="detector") {
+    if (map_grouping=="detector" && !apply_det_offsets) {
         az_off = 0;
         el_off = 0;
     }

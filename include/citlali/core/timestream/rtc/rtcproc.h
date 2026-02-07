@@ -64,7 +64,7 @@ public:
     // append time chunk to tod netcdf file
     template <typename calib_t, typename pointing_offset_t>
     void append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, std::string, std::string, std::string &,
-                          pointing_offset_t &, calib_t &);
+                          pointing_offset_t &, calib_t &, bool apply_det_offsets = false);
 };
 
 // get config file
@@ -592,7 +592,8 @@ auto RTCProc::remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
 
 template <typename calib_t, typename pointing_offset_t>
 void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std::string filepath, std::string map_grouping,
-                               std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec, calib_t &calib) {
+                               std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec, calib_t &calib,
+                               bool apply_det_offsets) {
     using netCDF::NcDim;
     using netCDF::NcFile;
     using netCDF::NcType;
@@ -604,7 +605,7 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         NcFile fo(filepath, netCDF::NcFile::write);
 
         // append common time chunk variables
-        append_base_to_netcdf(fo, in, map_grouping, pixel_axes, pointing_offsets_arcsec, calib);
+        append_base_to_netcdf(fo, in, map_grouping, pixel_axes, pointing_offsets_arcsec, calib, apply_det_offsets);
 
         // sync file to make sure it gets updated
         fo.sync();

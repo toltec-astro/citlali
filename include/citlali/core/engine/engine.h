@@ -738,7 +738,7 @@ void Engine::get_beammap_config(CT &config) {
     // if no tolerance is specified, write out max iteration tod
     if (run_tod_output) {
         if (beammap_iter_tolerance <=0) {
-            beammap_tod_output_iter = beammap_iter_max;
+            beammap_tod_output_iter = (beammap_iter_max > 0) ? (beammap_iter_max - 1) : 0;
         }
         // otherwise write out first iteration tod
         else {

@@ -349,7 +349,7 @@ public:
     // append time chunk params common to rtcs and ptcs
     template <TCDataKind tcdata_t, class calib_t, typename pointing_offset_t>
     void append_base_to_netcdf(netCDF::NcFile &, TCData<tcdata_t, Eigen::MatrixXd> &, std::string,
-                               std::string &, pointing_offset_t &, calib_t &);
+                               std::string &, pointing_offset_t &, calib_t &, bool apply_det_offsets = false);
 };
 
 template <class calib_t>
@@ -1433,7 +1433,8 @@ auto TCProc::mask_region(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, 
 
 template <TCDataKind tcdata_t, class calib_t, typename pointing_offset_t>
 void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::MatrixXd> &in, std::string map_grouping,
-                                   std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec, calib_t &calib) {
+                                   std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec, calib_t &calib,
+                                   bool apply_det_offsets) {
     using netCDF::NcDim;
     using netCDF::NcFile;
     using netCDF::NcType;
@@ -1455,7 +1456,7 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
 
         // get tangent pointing
         auto [det_lat, det_lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off, pixel_axes,
-                                                                  pointing_offsets_arcsec, map_grouping);
+                                                                  pointing_offsets_arcsec, map_grouping, apply_det_offsets);
         lat.col(i) = std::move(det_lat);
         lon.col(i) = std::move(det_lon);
     }
