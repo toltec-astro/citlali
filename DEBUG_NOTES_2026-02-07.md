@@ -142,3 +142,18 @@ nearest detector index to that median in `reference_det`.
 ### Header consistency
 BEAMMAP.REF_X_T/Y_T in FITS/netCDF now use `reference_x_t/y_t` from APT meta when present, so
 headers reflect the reference **location** (median) rather than the nearest detector’s offset.
+
+## 2026-02-07 (latest) - avoid sticky reference_det across obs
+
+Issue: when auto-selecting reference detector (reference_det < 0), the code was
+assigning the resolved detector index back to `beammap_reference_det`. That made
+subsequent obs reuse the same detector index and skip the intended median-based
+selection, causing large APT offsets.
+
+Fix:
+- Do **not** overwrite `beammap_reference_det` when auto-selection is used.
+- Use `calib.apt_meta["reference_det"]` for headers instead.
+
+Files:
+- `include/citlali/core/engine/beammap.h`
+- `include/citlali/core/engine/engine.h`

@@ -1146,7 +1146,11 @@ void Engine::add_tod_header(map_buffer_t &mb) {
 
             // add reference detector information
             if (beammap_subtract_reference) {
-                add_netcdf_var(fo, "BEAMMAP.REF_DET_INDEX", beammap_reference_det);
+                int ref_det_index = beammap_reference_det;
+                if (calib.apt_meta["reference_det"]) {
+                    ref_det_index = calib.apt_meta["reference_det"].as<int>();
+                }
+                add_netcdf_var(fo, "BEAMMAP.REF_DET_INDEX", ref_det_index);
                 double ref_x_t = calib.apt["x_t"](beammap_reference_det);
                 double ref_y_t = calib.apt["y_t"](beammap_reference_det);
                 if (calib.apt_meta["reference_x_t"]) {
@@ -1871,7 +1875,11 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.IS_DEROTATED", beammap_derotate, "Beammap derotated");
         // add reference detector information
         if (beammap_subtract_reference) {
-            fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_DET_INDEX", beammap_reference_det, "Beammap Reference det (rotation center)");
+            int ref_det_index = beammap_reference_det;
+            if (calib.apt_meta["reference_det"]) {
+                ref_det_index = calib.apt_meta["reference_det"].as<int>();
+            }
+            fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_DET_INDEX", ref_det_index, "Beammap Reference det (rotation center)");
             double ref_x_t = calib.apt["x_t"](beammap_reference_det);
             double ref_y_t = calib.apt["y_t"](beammap_reference_det);
             if (calib.apt_meta["reference_x_t"]) {

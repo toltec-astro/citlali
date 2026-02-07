@@ -1319,8 +1319,7 @@ void Beammap::process_apt() {
                      static_cast<float>(ref_det_x_t), static_cast<float>(ref_det_y_t),
                      beammap_reference_det_found,
                      static_cast<float>(ref_det_actual_x_t), static_cast<float>(ref_det_actual_y_t));
-        // ensure downstream headers use the resolved reference detector
-        beammap_reference_det = beammap_reference_det_found;
+        // record resolved reference detector for metadata; keep config value unchanged
         calib.apt_meta["reference_det"] = beammap_reference_det_found;
     }
     else {
