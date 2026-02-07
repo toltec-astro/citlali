@@ -5,6 +5,7 @@
 #include <string>
 #include <limits>
 #include <cmath>
+#include <algorithm>
 #include <mutex>
 #include <condition_variable>
 
@@ -1209,65 +1210,118 @@ void Beammap::process_apt() {
             ref_det_x_t = calib.apt["x_t"](beammap_reference_det_found);
             ref_det_y_t = calib.apt["y_t"](beammap_reference_det_found);
         }
-        // else use closest to (0,0) in map 0 apt
+        // else use detector closest to the median of selected networks
         else {
             logger->info("finding a reference detector");
-            // calc x_t and y_t values from unflagged detectors for each arrays
-            Eigen::Index array = calib.arrays(0);
+            auto nw_in_set = [](Eigen::Index nw, const std::vector<Eigen::Index> &set) {
+                return std::find(set.begin(), set.end(), nw) != set.end();
+            };
 
-             // x_t
-            auto array_x_t = calib.apt["x_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
-                                                         std::get<1>(calib.array_limits[array])-1));
-            // y_t
-            auto array_y_t = calib.apt["y_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
-                                                         std::get<1>(calib.array_limits[array])-1));
-            // number of good detectors
-            Eigen::Index n_good_det = (calib.apt["flag"](Eigen::seq(std::get<0>(calib.array_limits[array]),
-                                                                    std::get<1>(calib.array_limits[array])-1)).array()==0).count();
-
-            Eigen::VectorXd x_t, y_t, det_indices, dist;
-
-            if (n_good_det>0) {
-                x_t.resize(n_good_det);
-                y_t.resize(n_good_det);
-                det_indices.resize(n_good_det);
-
-                // get good detector positions
-                Eigen::Index j = std::get<0>(calib.array_limits[array]);
-                Eigen::Index k = 0;
-                for (Eigen::Index i=0; i<array_x_t.size(); ++i) {
-                    if (calib.apt["flag"](j)==0) {
-                        x_t(k) = array_x_t(i);
-                        y_t(k) = array_y_t(i);
-                        det_indices(k) = j;
-                        k++;
+            auto gather_from_nws = [&](const std::vector<Eigen::Index> &ref_nws,
+                                       Eigen::VectorXd &x_t, Eigen::VectorXd &y_t,
+                                       Eigen::VectorXd &det_indices) -> bool {
+                Eigen::Index n_match = 0;
+                for (Eigen::Index i = 0; i < calib.n_dets; ++i) {
+                    if (calib.apt["flag"](i) == 0) {
+                        auto nw = static_cast<Eigen::Index>(calib.apt["nw"](i));
+                        if (nw_in_set(nw, ref_nws)) {
+                            n_match++;
+                        }
                     }
-                    j++;
+                }
+                if (n_match <= 0) {
+                    return false;
                 }
 
-                // distance from (0,0)
-                dist = pow(x_t.array(),2) + pow(y_t.array(),2);
+                x_t.resize(n_match);
+                y_t.resize(n_match);
+                det_indices.resize(n_match);
+                Eigen::Index k = 0;
+                for (Eigen::Index i = 0; i < calib.n_dets; ++i) {
+                    if (calib.apt["flag"](i) == 0) {
+                        auto nw = static_cast<Eigen::Index>(calib.apt["nw"](i));
+                        if (nw_in_set(nw, ref_nws)) {
+                            x_t(k) = calib.apt["x_t"](i);
+                            y_t(k) = calib.apt["y_t"](i);
+                            det_indices(k) = i;
+                            k++;
+                        }
+                    }
+                }
+                return true;
+            };
+
+            Eigen::VectorXd x_t, y_t, det_indices, dist;
+            double med_x_t = 0.0;
+            double med_y_t = 0.0;
+
+            const std::vector<Eigen::Index> primary_nws = {3};
+            const std::vector<Eigen::Index> fallback_nws = {2, 3, 4};
+
+            bool have_ref = false;
+            if (gather_from_nws(primary_nws, x_t, y_t, det_indices)) {
+                logger->info("using median of nw=3 for reference");
+                have_ref = true;
             }
-            else {
-                dist = pow(array_x_t.array(),2) + pow(array_y_t.array(),2);
-                det_indices = Eigen::VectorXd::LinSpaced(array_x_t.size(), std::get<0>(calib.array_limits[array]),
-                                                         std::get<1>(calib.array_limits[array]));
+            else if (gather_from_nws(fallback_nws, x_t, y_t, det_indices)) {
+                logger->info("using median of nw=2,3,4 for reference");
+                have_ref = true;
             }
 
-            // index of detector closest to zero
+            if (!have_ref) {
+                logger->warn("no unflagged detectors in reference networks; falling back to array 0 median");
+                Eigen::Index array = calib.arrays(0);
+                auto array_x_t = calib.apt["x_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
+                                                             std::get<1>(calib.array_limits[array])-1));
+                auto array_y_t = calib.apt["y_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
+                                                             std::get<1>(calib.array_limits[array])-1));
+                Eigen::Index n_good_det = (calib.apt["flag"](Eigen::seq(std::get<0>(calib.array_limits[array]),
+                                                                        std::get<1>(calib.array_limits[array])-1)).array()==0).count();
+                if (n_good_det > 0) {
+                    x_t.resize(n_good_det);
+                    y_t.resize(n_good_det);
+                    det_indices.resize(n_good_det);
+
+                    Eigen::Index j = std::get<0>(calib.array_limits[array]);
+                    Eigen::Index k = 0;
+                    for (Eigen::Index i = 0; i < array_x_t.size(); ++i) {
+                        if (calib.apt["flag"](j) == 0) {
+                            x_t(k) = array_x_t(i);
+                            y_t(k) = array_y_t(i);
+                            det_indices(k) = j;
+                            k++;
+                        }
+                        j++;
+                    }
+                }
+                else {
+                    x_t = array_x_t;
+                    y_t = array_y_t;
+                    det_indices = Eigen::VectorXd::LinSpaced(array_x_t.size(), std::get<0>(calib.array_limits[array]),
+                                                             std::get<1>(calib.array_limits[array]));
+                }
+            }
+
+            med_x_t = tula::alg::median(x_t);
+            med_y_t = tula::alg::median(y_t);
+
+            dist = pow(x_t.array() - med_x_t,2) + pow(y_t.array() - med_y_t,2);
             auto min_dist = dist.minCoeff(&beammap_reference_det_found);
+            beammap_reference_det_found = static_cast<Eigen::Index>(det_indices(beammap_reference_det_found));
 
-            // get row in apt table
-            beammap_reference_det_found = det_indices(beammap_reference_det_found);
-
-            // set reference x_t and y_t
-            ref_det_x_t = calib.apt["x_t"](beammap_reference_det_found);
-            ref_det_y_t = calib.apt["y_t"](beammap_reference_det_found);
+            // set reference x_t and y_t to the median location
+            ref_det_x_t = med_x_t;
+            ref_det_y_t = med_y_t;
         }
-        logger->info("using detector {} at ({},{}) arcsec",beammap_reference_det_found,
-                    static_cast<float>(ref_det_x_t),static_cast<float>(ref_det_y_t));
+        double ref_det_actual_x_t = calib.apt["x_t"](beammap_reference_det_found);
+        double ref_det_actual_y_t = calib.apt["y_t"](beammap_reference_det_found);
+        logger->info("using reference median ({},{}) arcsec; nearest detector {} at ({},{}) arcsec",
+                     static_cast<float>(ref_det_x_t), static_cast<float>(ref_det_y_t),
+                     beammap_reference_det_found,
+                     static_cast<float>(ref_det_actual_x_t), static_cast<float>(ref_det_actual_y_t));
         // ensure downstream headers use the resolved reference detector
         beammap_reference_det = beammap_reference_det_found;
+        calib.apt_meta["reference_det"] = beammap_reference_det_found;
     }
     else {
         logger->info("no reference detector selected");

@@ -103,3 +103,42 @@ Observed crash at "fitting maps". Likely cause: `fit_to_gaussian` inner-radius s
 **File:** `include/citlali/core/utils/fitting.h`
 
 **Rollback:** Remove `found_peak` logic and restore previous `ir/ic` handling.
+
+## 2026-02-07 (later) - reference detector selection
+
+Observed APTs with array centers offset from (0,0) even though `x_t/y_t` were plotted. The code
+was selecting the reference detector as the one closest to (0,0), while the config comment
+says it should be closest to the median of the first array. This mismatch can shift the
+array centroid if the detector closest to (0,0) is not near the array center.
+
+### Fix
+- When `reference_det < 0`, choose the detector closest to the median (x_t, y_t) of the
+  first array (unflagged if available, else all detectors).
+
+**File:** `include/citlali/core/engine/beammap.h`
+
+**Rollback:** Restore distance-from-(0,0) selection logic.
+
+## 2026-02-07 (latest) - reference median from selected networks
+
+User expectation is array center at (0,0). Using the detector closest to (0,0) or
+closest to the array median still allows large offsets if that detector is far
+from the array centroid (e.g., missing network 6). We now define the reference
+location as the **median x_t/y_t** of selected networks:
+
+- Primary: `nw=3`
+- Fallback: `nw=2,3,4`
+- If none unflagged, fall back to array 0 median (previous behavior)
+
+We subtract this **median location** directly. For metadata, we also record the
+nearest detector index to that median in `reference_det`.
+
+**Files:**
+- `include/citlali/core/engine/beammap.h`
+- `data/config.yaml` (comment updated)
+
+**Rollback:** Restore prior reference selection logic (array median or (0,0) based).
+
+### Header consistency
+BEAMMAP.REF_X_T/Y_T in FITS/netCDF now use `reference_x_t/y_t` from APT meta when present, so
+headers reflect the reference **location** (median) rather than the nearest detector’s offset.

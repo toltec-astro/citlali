@@ -2,7 +2,7 @@ beammap: # beammap controls (node required, but options ignored if not beammappi
   iter_max: 1 # maximum number of iterations for beammapping (>0)
   derotate: false # derotate beammap to zero elevation
   subtract_reference_det: true # enable subtraction of reference detector position
-  reference_det: -99 # reference detector index for APT positions (if <0 and enabled, use detector closest to median of first array)
+  reference_det: -99 # reference detector index for APT positions (if <0 and enabled, use median of nw=3; fallback nw=2,3,4)
   iter_tolerance: 0.0 # tolerance for iterations (if 0 all iterations are performed, tod output will be for last iteration)
   sens_psd_limits_Hz: [0,0] # lower and upper limits for psd in sensitivity calculation
   flagging: # these parameters control how the beammapping algorithm flags bad detectors (array order for flagging is [1.1, 1.4, 2.0])

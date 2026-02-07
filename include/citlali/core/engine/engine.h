@@ -1147,8 +1147,16 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             // add reference detector information
             if (beammap_subtract_reference) {
                 add_netcdf_var(fo, "BEAMMAP.REF_DET_INDEX", beammap_reference_det);
-                add_netcdf_var(fo, "BEAMMAP.REF_X_T", calib.apt["x_t"](beammap_reference_det));
-                add_netcdf_var(fo, "BEAMMAP.REF_Y_T", calib.apt["y_t"](beammap_reference_det));
+                double ref_x_t = calib.apt["x_t"](beammap_reference_det);
+                double ref_y_t = calib.apt["y_t"](beammap_reference_det);
+                if (calib.apt_meta["reference_x_t"]) {
+                    ref_x_t = calib.apt_meta["reference_x_t"].as<double>();
+                }
+                if (calib.apt_meta["reference_y_t"]) {
+                    ref_y_t = calib.apt_meta["reference_y_t"].as<double>();
+                }
+                add_netcdf_var(fo, "BEAMMAP.REF_X_T", ref_x_t);
+                add_netcdf_var(fo, "BEAMMAP.REF_Y_T", ref_y_t);
             }
             else {
                 add_netcdf_var(fo, "BEAMMAP.REF_DET_INDEX", -99);
@@ -1864,8 +1872,16 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         // add reference detector information
         if (beammap_subtract_reference) {
             fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_DET_INDEX", beammap_reference_det, "Beammap Reference det (rotation center)");
-            fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_X_T", calib.apt["x_t"](beammap_reference_det), "Az rotation center (arcsec)");
-            fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_Y_T", calib.apt["y_t"](beammap_reference_det), "Alt rotation center (arcsec)");
+            double ref_x_t = calib.apt["x_t"](beammap_reference_det);
+            double ref_y_t = calib.apt["y_t"](beammap_reference_det);
+            if (calib.apt_meta["reference_x_t"]) {
+                ref_x_t = calib.apt_meta["reference_x_t"].as<double>();
+            }
+            if (calib.apt_meta["reference_y_t"]) {
+                ref_y_t = calib.apt_meta["reference_y_t"].as<double>();
+            }
+            fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_X_T", ref_x_t, "Az rotation center (arcsec)");
+            fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_Y_T", ref_y_t, "Alt rotation center (arcsec)");
         }
         else {
             fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_DET_INDEX", -99, "Beammap Reference det (rotation center)");
