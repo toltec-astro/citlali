@@ -62,7 +62,11 @@
 #include <citlali/core/mapmaking/naive_mm.h>
 #include <citlali/core/mapmaking/jinc_mm.h>
 #include <citlali/core/mapmaking/ml_mm.h>
+#if defined(CITLALI_USE_WIENER_FILTER_OMP)
+#include <citlali/core/mapmaking/wiener_filter_omp.h>
+#else
 #include <citlali/core/mapmaking/wiener_filter.h>
+#endif
 
 #include <citlali/core/engine/io.h>
 #include <citlali/core/engine/kidsproc.h>

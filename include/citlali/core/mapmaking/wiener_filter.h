@@ -3,6 +3,7 @@
 #include <string>
 #include <cmath>
 #include <algorithm>
+#include <chrono>
 
 #include <boost/math/special_functions/bessel.hpp>
 
@@ -640,6 +641,9 @@ void WienerFilter::calc_denominator() {
             [&](const auto &msg) { logger->info("{}", msg); }, 90,
             "calculating denom");
 
+        const auto denom_start = std::chrono::steady_clock::now();
+        double last_log_s = 0.0;
+
         // loop through cols and rows
         for (Eigen::Index k=0; k<n_cols; ++k) {
             for (Eigen::Index l=0; l<n_rows; ++l) {
@@ -700,8 +704,14 @@ void WienerFilter::calc_denominator() {
                         const double rel_update = delta_norm / std::max(denom_norm, 1e-12);
                         const double tail_frac = (Z_abs_total > 0.0) ? ((Z_abs_total - Z_abs_done) / Z_abs_total) : 0.0;
 
-                        logger->info("{} iteration(s) complete. rel_update={} tail_frac={}",
-                                     kk, static_cast<float>(rel_update), static_cast<float>(tail_frac));
+                        const double elapsed_s = std::chrono::duration<double>(
+                            std::chrono::steady_clock::now() - denom_start).count();
+                        const double step_s = elapsed_s - last_log_s;
+                        last_log_s = elapsed_s;
+
+                        logger->info("{} iteration(s) complete. rel_update={} tail_frac={} elapsed_s={} step_s={}",
+                                     kk, static_cast<float>(rel_update), static_cast<float>(tail_frac),
+                                     static_cast<float>(elapsed_s), static_cast<float>(step_s));
 
                         if (rel_update < denom_rel_tol && tail_frac < tail_frac_tol) {
                             done = true;

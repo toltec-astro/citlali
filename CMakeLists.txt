@@ -65,6 +65,17 @@ target_sources(citlali
     )
 target_include_directories(citlali PUBLIC "include")
 target_link_libraries(citlali PUBLIC ${dep_libs})
+
+option(CITLALI_USE_WIENER_FILTER_OMP "Use OpenMP Wiener filter implementation" OFF)
+if (CITLALI_USE_WIENER_FILTER_OMP)
+    target_compile_definitions(citlali PUBLIC CITLALI_USE_WIENER_FILTER_OMP=1)
+    find_package(OpenMP)
+    if (OpenMP_CXX_FOUND)
+        target_link_libraries(citlali PUBLIC OpenMP::OpenMP_CXX)
+    else()
+        message(WARNING "OpenMP not found; Wiener filter OMP path will compile without OpenMP parallelization.")
+    endif()
+endif()
 add_library(citlali::citlali ALIAS citlali)
 
 ## optional targets
