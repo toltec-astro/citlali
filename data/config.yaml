@@ -188,6 +188,8 @@ wiener_filter: # controls for wiener filter
     a1400: 6.3
     a2000: 9.5
   lowpass_only: false # apply lowpassing only
+  denom_rel_tol: 1.0e-4 # relative update threshold for denominator convergence
+  tail_frac_tol: 5.0e-2 # remaining |Z| fraction threshold for denominator convergence
 inputs: # list of inputs and related data
   - cal_items:
       - beammap_source: # extra information used by beammapping (not needed if redu_type!=beammap)

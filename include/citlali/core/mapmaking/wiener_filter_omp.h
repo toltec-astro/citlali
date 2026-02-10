@@ -47,6 +47,9 @@ public:
     double denom_limit = 1.e-4;
     // psd limit
     double psd_lim = 1.e-4;
+    // denominator convergence tolerances
+    double denom_rel_tol = 1e-4;
+    double tail_frac_tol = 5e-2;
 
     // guess fwhm for kernel map filtering
     double init_fwhm;
@@ -347,6 +350,11 @@ void WienerFilter::get_config(config_t &config, std::vector<std::vector<std::str
     // re-normalize weight maps?
     get_config_value(config, normalize_error, missing_keys, invalid_keys,
                      std::tuple{"post_processing","map_filtering","normalize_errors"});
+    // denominator convergence thresholds
+    get_config_value(config, denom_rel_tol, missing_keys, invalid_keys,
+                     std::tuple{"wiener_filter","denom_rel_tol"}, {}, {0.0}, {1.0});
+    get_config_value(config, tail_frac_tol, missing_keys, invalid_keys,
+                     std::tuple{"wiener_filter","tail_frac_tol"}, {}, {0.0}, {1.0});
 
     // gaussian or airy template fwhms
     if (template_type=="gaussian" || template_type=="airy") {
@@ -940,9 +948,6 @@ void WienerFilter::calc_denominator() {
         if (n_loops < 100) {
             n_loops = 100;
         }
-        constexpr double denom_rel_tol = 1e-4;
-        constexpr double tail_frac_tol = 5e-2;
-
         const double Z_abs_total = Z_abs.sum();
         double Z_abs_done = 0.0;
 
