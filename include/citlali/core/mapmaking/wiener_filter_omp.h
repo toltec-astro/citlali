@@ -961,11 +961,13 @@ void WienerFilter::calc_denominator() {
         const Eigen::Index pb_stride = std::max<Eigen::Index>(total_iters / 100, 1);
         const auto denom_start = std::chrono::steady_clock::now();
         double last_log_s = 0.0;
+        const double denom_rel_tol_local = denom_rel_tol;
+        const double tail_frac_tol_local = tail_frac_tol;
 
         Eigen::Index ii;
         // loop through cols and rows
         for (Eigen::Index k=0; k<n_cols; k++) {
-        #pragma omp parallel for schedule (dynamic) ordered shared (sorted, n_loops, zz2d, Z_abs, Z_abs_done, Z_abs_total, total_iters, pb_stride, denom_rel_tol, tail_frac_tol, denom_start, last_log_s, k, done, pb, n_rows, n_cols, denom, filter_template, rr) private (ii) default (none)
+        #pragma omp parallel for schedule (dynamic) ordered shared (sorted, n_loops, zz2d, Z_abs, Z_abs_done, Z_abs_total, total_iters, pb_stride, denom_rel_tol_local, tail_frac_tol_local, denom_start, last_log_s, k, done, pb, n_rows, n_cols, denom, filter_template, rr) private (ii) default (none)
             for (Eigen::Index l=0; l<n_rows; l++) {
                 #pragma omp flush (done)
                 if (!done) {
@@ -1051,7 +1053,7 @@ void WienerFilter::calc_denominator() {
                                         kk, static_cast<float>(rel_update), static_cast<float>(tail_frac),
                                         static_cast<float>(elapsed_s), static_cast<float>(step_s));
 
-                            if (rel_update < denom_rel_tol && tail_frac < tail_frac_tol) {
+                            if (rel_update < denom_rel_tol_local && tail_frac < tail_frac_tol_local) {
                                 done = true;
                             #pragma omp flush(done)
                             }
