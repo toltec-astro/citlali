@@ -964,30 +964,29 @@ void WienerFilter::calc_denominator() {
         const double denom_rel_tol_local = denom_rel_tol;
         const double tail_frac_tol_local = tail_frac_tol;
 
-        Eigen::Index ii;
-        // loop through cols and rows
-        for (Eigen::Index k=0; k<n_cols; k++) {
-        #pragma omp parallel for schedule (dynamic) ordered shared (sorted, n_loops, zz2d, Z_abs, Z_abs_done, Z_abs_total, total_iters, pb_stride, denom_rel_tol_local, tail_frac_tol_local, denom_start, last_log_s, k, done, pb, n_rows, n_cols, denom, filter_template, rr) private (ii) default (none)
-            for (Eigen::Index l=0; l<n_rows; l++) {
+        #pragma omp parallel shared(sorted, n_loops, zz2d, Z_abs, Z_abs_done, Z_abs_total, total_iters, pb_stride, denom_rel_tol_local, tail_frac_tol_local, denom_start, last_log_s, done, pb, n_rows, n_cols, denom, filter_template, rr) default (none)
+        {
+            fftw_complex *a_local = nullptr, *b_local = nullptr;
+            fftw_plan pf_local = nullptr, pr_local = nullptr;
+
+            // Keep FFTW plan creation serialized; FFTW planning is not thread-safe by default.
+            #pragma omp critical (wfFFTW)
+            {
+                a_local = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
+                b_local = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
+                pf_local = fftw_plan_dft_2d(n_rows, n_cols, a_local, b_local, FFTW_FORWARD, FFTW_ESTIMATE);
+                pr_local = fftw_plan_dft_2d(n_rows, n_cols, a_local, b_local, FFTW_BACKWARD, FFTW_ESTIMATE);
+            }
+
+            #pragma omp for schedule (dynamic) ordered
+            for (Eigen::Index kk=0; kk<total_iters; ++kk) {
                 #pragma omp flush (done)
                 if (!done) {
-                    fftw_complex *a,*b;
-                    fftw_plan pf, pr;
-                    int kk = n_rows*k + l;
-                    #pragma omp critical (wfFFTW)
-                    {
-                        a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
-                        b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
-                        pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
-                        pr = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
-                    }
                     Eigen::MatrixXcd in(n_rows,n_cols);
                     Eigen::MatrixXcd out(n_rows,n_cols);
 
-                    // current element in flattened 1d vector
-                    //int kk = n_rows * k + l;
                     // get index in reverse order
-                    auto shift_index = std::get<1>(sorted[n_rows * n_cols - kk - 1]);
+                    auto shift_index = std::get<1>(sorted[total_iters - kk - 1]);
 
                     Eigen::Index shift_row = -static_cast<Eigen::Index>(shift_index % n_rows);
                     Eigen::Index shift_col = -static_cast<Eigen::Index>(shift_index / n_rows);
@@ -999,8 +998,7 @@ void WienerFilter::calc_denominator() {
                     in.real() = in_prod;
                     in.imag().setZero();
 
-                    //out = engine_utils::fft<engine_utils::forward>(in, parallel_policy);
-                    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
+                    out = engine_utils::fft2<engine_utils::forward>(in, pf_local, a_local, b_local);
 
                     Eigen::MatrixXcd ffdq = out;
 
@@ -1009,14 +1007,12 @@ void WienerFilter::calc_denominator() {
                     in.real() = in_prod;
                     in.imag().setZero();
 
-                    //out = engine_utils::fft<engine_utils::forward>(in, parallel_policy);
-                    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
+                    out = engine_utils::fft2<engine_utils::forward>(in, pf_local, a_local, b_local);
 
                     in.real() = ffdq.real().array() * out.real().array() + ffdq.imag().array() * out.imag().array();
                     in.imag() = -ffdq.imag().array() * out.real().array() + ffdq.real().array() * out.imag().array();
 
-                    //out = engine_utils::fft<engine_utils::inverse>(in, parallel_policy);
-                    out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
+                    out = engine_utils::fft2<engine_utils::inverse>(in, pr_local, a_local, b_local);
 
                     #pragma omp ordered
                     {
@@ -1025,14 +1021,6 @@ void WienerFilter::calc_denominator() {
                         // update denominator
                         denom = denom + updater;
                         Z_abs_done += Z_abs(shift_index);
-
-                        #pragma omp critical (wfFFTW)
-                        {
-                            fftw_free(a);
-                            fftw_free(b);
-                            fftw_destroy_plan(pf);
-                            fftw_destroy_plan(pr);
-                        }
 
                         // update progress bar
                         pb.count(total_iters, pb_stride);
@@ -1059,6 +1047,22 @@ void WienerFilter::calc_denominator() {
                             }
                         }
                     }
+                }
+            }
+
+            #pragma omp critical (wfFFTW)
+            {
+                if (pf_local != nullptr) {
+                    fftw_destroy_plan(pf_local);
+                }
+                if (pr_local != nullptr) {
+                    fftw_destroy_plan(pr_local);
+                }
+                if (a_local != nullptr) {
+                    fftw_free(a_local);
+                }
+                if (b_local != nullptr) {
+                    fftw_free(b_local);
                 }
             }
         }
