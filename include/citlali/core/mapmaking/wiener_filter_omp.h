@@ -448,8 +448,12 @@ void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_d
     Eigen::MatrixXd temp_kernel = mb.kernel[map_index];
 
     // carry out fit to kernel
+    double init_row = -99;
+    double init_col = -99;
+
     auto [map_params, map_perror, good_fit] =
-        map_fitter.fit_to_gaussian<engine_utils::mapFitter::pointing>(mb.kernel[map_index], mb.weight[map_index], init_fwhm);
+        map_fitter.fit_to_gaussian<engine_utils::mapFitter::pointing>(mb.kernel[map_index], mb.weight[map_index],
+                                                                      init_fwhm, init_row, init_col);
 
     if (!good_fit) {
         SPDLOG_ERROR("fit to kernel map failed. try setting a small fitting_region_arcsec value.");
