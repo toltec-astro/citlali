@@ -146,8 +146,7 @@ void Pointing::setup() {
 
 template <class KidsProc, class RawObs>
 void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
-    using tuple_t = std::tuple<TCData<TCDataKind::RTC, Eigen::MatrixXd>,
-                               std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>>;
+    using input_t = TCData<TCDataKind::RTC, Eigen::MatrixXd>;
     // initialize number of completed scans
     n_scans_done = 0;
 
@@ -163,7 +162,7 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
     // grppi generator function. gets time chunk data from files sequentially and passes them to grppi::farm
     grppi::pipeline(tula::grppi_utils::dyn_ex(parallel_policy),
-        [&]() -> std::optional<tuple_t> {
+        [&]() -> std::optional<input_t> {
             // variable to hold current scan
             static int scan = 0;
             // loop through scans
@@ -189,33 +188,27 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                     }
                 }
 
-                // vector to store kids data
-                std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> scan_rawobs;
-
-                // get kids data
-                if (!interp_over_gaps) {
-                    scan_rawobs = kidsproc.load_rawobs(rawobs, scan, telescope.scan_indices, start_indices, end_indices);
-                }
-                else {
-                    scan_rawobs = kidsproc.load_rawobs_gaps(rawobs, scan, telescope.scan_indices, start_indices,
-                        t_common, nw_times, 1 / (2 * telescope.fsmp));
-                }
                 // current length of outer scans
                 Eigen::Index sl = rtcdata.scan_indices.data(3) - rtcdata.scan_indices.data(2) + 1;
 
                 // get raw tod from files
                 if (!interp_over_gaps) {
-                    rtcdata.scans.data = kidsproc.populate_rtc(scan_rawobs, sl, calib.n_dets, tod_type);
+                    rtcdata.scans.data = kidsproc.populate_rtc_from_rawobs(rawobs, scan, telescope.scan_indices,
+                                                                           start_indices, end_indices,
+                                                                           sl, calib.n_dets, tod_type);
                 }
                 else {
+                    auto scan_rawobs = kidsproc.load_rawobs_gaps(rawobs, scan, telescope.scan_indices, start_indices,
+                                                                 t_common, nw_times, 1 / (2 * telescope.fsmp));
                     rtcdata.scans.data = kidsproc.populate_rtc_gaps(scan_rawobs, t_common, nw_times, masks, scan, 1 / (2 * telescope.fsmp),
                                                                 telescope.scan_indices, sl, calib.n_dets, tod_type);
+                    std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>().swap(scan_rawobs);
                 }
 
                 // increment scan
                 scan++;
-                // return rtcdata, kidsproc, and raw data
-                return tuple_t(rtcdata,scan_rawobs);
+                // return rtcdata
+                return rtcdata;
             }
             // reset scan to zero for each obs
             scan = 0;
@@ -270,11 +263,7 @@ auto Pointing::run(KidsProc &kidsproc) {
     auto rtc_writer = write_rtc ? std::make_shared<OrderedWriter>() : nullptr;
     auto ptc_writer = write_ptc ? std::make_shared<OrderedWriter>() : nullptr;
 
-    auto farm = grppi::farm(n_threads,[&, scans_done_mutex, rtc_writer, ptc_writer, write_rtc, write_ptc](auto &input_tuple) {
-        // RTCData input
-        auto& rtcdata = std::get<0>(input_tuple);
-        // start index input
-        auto& scan_rawobs = std::get<1>(input_tuple);
+    auto farm = grppi::farm(n_threads,[&, scans_done_mutex, rtc_writer, ptc_writer, write_rtc, write_ptc](auto &rtcdata) {
 
         // starting index for scan
         Eigen::Index si = rtcdata.scan_indices.data(2);

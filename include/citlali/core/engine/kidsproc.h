@@ -7,6 +7,7 @@
 #include <kidscpp_config/gitversion.h>
 
 #include <tula/datatable.h>
+#include <unordered_map>
 
 #include <citlali/core/engine/io.h>
 
@@ -90,6 +91,14 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
     auto populate_rtc(loaded_t &, const int, const int,
                       const std::string);
 
+    // read+solve rawobs directly into rtc matrix (avoids intermediate loaded vector)
+    template <typename Derived>
+    auto populate_rtc_from_rawobs(const RawObs &, const Eigen::Index,
+                                  Eigen::DenseBase<Derived> &,
+                                  std::vector<Eigen::Index> &,
+                                  std::vector<Eigen::Index> &,
+                                  const int, const int, const std::string);
+
     // load rawobs with gaps
     template <typename DerivedA, typename DerivedB, typename DerivedC>
     auto load_rawobs_gaps(const RawObs &, const Eigen::Index,
@@ -126,6 +135,8 @@ private:
     // fitter and solver
     Fitter m_fitter;
     Solver m_solver;
+    // cache data kind lookup by filepath to avoid repeated metadata reads
+    std::unordered_map<std::string, kids::KidsDataKind> m_data_item_kind_cache;
 };
 
 auto KidsDataProc::get_data_item_meta(const RawObs::DataItem &data_item) {
@@ -184,7 +195,15 @@ auto KidsDataProc::load_data_item(const RawObs::DataItem &data_item,
     // read data
     namespace kidsdata = predefs::kidsdata;
     auto source = data_item.filepath();
-    auto [kind, meta] = kidsdata::get_meta<>(source);
+    kids::KidsDataKind kind;
+    if (auto it = m_data_item_kind_cache.find(source); it != m_data_item_kind_cache.end()) {
+        kind = it->second;
+    }
+    else {
+        auto [kind_, meta] = kidsdata::get_meta<>(source);
+        kind = kind_;
+        m_data_item_kind_cache[source] = kind;
+    }
     if (!(kind & kids::KidsDataKind::TimeStream)) {
         throw std::runtime_error(
             fmt::format("wrong type of kids data {}", kind));
@@ -323,6 +342,60 @@ auto KidsDataProc::populate_rtc(loaded_t &loaded,
         else if (data_type == "qs") {
             data.block(0, i, n_rows, n_cols) = result.data.qs.data;
         }
+        // increment columns
+        i += n_cols;
+    }
+
+    // check for nans
+    if ((data.array().isNaN()).any()) {
+        logger->error("nan found in data! Check that your KIDs data dir is correct.");
+        std::exit(EXIT_FAILURE);
+    }
+    // check for infs
+    if ((data.array().isInf()).any()) {
+        logger->error("inf found in data! Check that your KIDs data dir is correct.");
+        std::exit(EXIT_FAILURE);
+    }
+
+    return data;
+}
+
+template <typename Derived>
+auto KidsDataProc::populate_rtc_from_rawobs(const RawObs &rawobs, const Eigen::Index scan,
+                                            Eigen::DenseBase<Derived> &scan_indices,
+                                            std::vector<Eigen::Index> &start_indices,
+                                            std::vector<Eigen::Index> &end_indices,
+                                            const int n_pts, const int n_det, const std::string data_type) {
+    // resize data
+    Eigen::MatrixXd data(n_pts, n_det);
+
+    Eigen::Index i = 0;
+    for (const auto &data_item : rawobs.kidsdata()) {
+        auto slice = tula::container_utils::Slice<int>{scan_indices(2,scan) + start_indices[i],
+                                                       scan_indices(3,scan) + 1 + start_indices[i],
+                                                       std::nullopt};
+        auto rts = load_data_item(data_item, slice);
+        auto result = this->solver()(rts, Solver::Config{});
+
+        // get number of rows
+        Eigen::Index n_rows = result.data_out.xs.data.rows();
+        // get number of cols
+        Eigen::Index n_cols = result.data_out.xs.data.cols();
+
+        // copy requested channel
+        if (data_type == "xs") {
+            data.block(0, i, n_rows, n_cols) = result.data_out.xs.data;
+        }
+        else if (data_type == "rs") {
+            data.block(0, i, n_rows, n_cols) = result.data_out.rs.data;
+        }
+        else if (data_type == "is") {
+            data.block(0, i, n_rows, n_cols) = result.data.is.data;
+        }
+        else if (data_type == "qs") {
+            data.block(0, i, n_rows, n_cols) = result.data.qs.data;
+        }
+
         // increment columns
         i += n_cols;
     }

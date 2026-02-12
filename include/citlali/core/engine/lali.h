@@ -80,29 +80,24 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                                     .unaryExpr([&](int dummy){ return 2 * rands(eng) - 1; });
                     }
                 }
-                // vector to store kids data
-                std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> scan_rawobs;
-                // get kids data
-                if (!interp_over_gaps) {
-                    scan_rawobs = kidsproc.load_rawobs(rawobs, scan, telescope.scan_indices, start_indices, end_indices);
-                }
-                else {
-                    scan_rawobs = kidsproc.load_rawobs_gaps(rawobs, scan, telescope.scan_indices, start_indices,
-                        t_common, nw_times, 1 / (2 * telescope.fsmp));
-                }
                 // current length of outer scans
                 Eigen::Index sl = rtcdata.scan_indices.data(3) - rtcdata.scan_indices.data(2) + 1;
 
                 // get raw tod from files
                 if (!interp_over_gaps) {
-                    rtcdata.scans.data = kidsproc.populate_rtc(scan_rawobs, sl, calib.n_dets, tod_type);
+                    rtcdata.scans.data = kidsproc.populate_rtc_from_rawobs(rawobs, scan, telescope.scan_indices,
+                                                                           start_indices, end_indices,
+                                                                           sl, calib.n_dets, tod_type);
                 }
                 else {
+                    // vector to store kids data
+                    auto scan_rawobs = kidsproc.load_rawobs_gaps(rawobs, scan, telescope.scan_indices, start_indices,
+                                                                 t_common, nw_times, 1 / (2 * telescope.fsmp));
                     rtcdata.scans.data = kidsproc.populate_rtc_gaps(scan_rawobs, t_common, nw_times, masks, scan, 1 / (2 * telescope.fsmp),
                                                                 telescope.scan_indices, sl, calib.n_dets, tod_type);
+                    // try and clear input vector
+                    std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>().swap(scan_rawobs);
                 }
-                // try and clear input vector
-                std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>().swap(scan_rawobs);
 
                 // increment scan
                 scan++;
