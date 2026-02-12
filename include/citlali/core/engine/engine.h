@@ -467,13 +467,6 @@ void Engine::obsnum_setup() {
         ptcproc.cleaner.n_calc = 0;
     }
 
-    // tod output mode require sequential policy so set explicitly
-    if (run_tod_output) {
-        logger->warn("tod output mode require sequential policy. "
-                     "parallelization will be disabled for some stages.");
-        parallel_policy = "seq";
-    }
-
     // output basic info for obs reduction to command line
     cli_summary();
 

@@ -594,9 +594,6 @@ void Beammap::loop_pipeline() {
                 lon.push_back(std::move(ptc_lon));
             }
 
-            // set parallel policy to sequential for tod output
-            parallel_policy = "seq";
-
             logger->info("adding final apt and detector pointing to tod files");
             // loop through tod files
             for (const auto & [key, val]: tod_filename) {
