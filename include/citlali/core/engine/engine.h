@@ -405,6 +405,14 @@ void Engine::obsnum_setup() {
             rtcproc.filter.make_notch_filter(telescope.fsmp);
         }
     }
+    if (rtcproc.run_tod_iir_highpass) {
+        const double nyquist_Hz = telescope.fsmp / 2.0;
+        if (rtcproc.filter.iir_highpass_freq_Hz >= nyquist_Hz) {
+            logger->error("timestream.raw_time_chunk.IIR_filter.freq_Hz ({}) must be less than Nyquist ({})",
+                          rtcproc.filter.iir_highpass_freq_Hz, nyquist_Hz);
+            std::exit(EXIT_FAILURE);
+        }
+    }
 
     // set map wcs crvals to source ra/dec
     if (telescope.pixel_axes == "radec") {
@@ -1256,9 +1264,15 @@ void Engine::add_tod_header(map_buffer_t &mb) {
 
         // add control/runtime parameters
         add_netcdf_var(fo, "CONFIG.VERBOSE", verbose_mode);
+        const bool run_any_tod_filter = rtcproc.run_tod_filter || rtcproc.run_tod_iir_highpass;
         add_netcdf_var(fo, "CONFIG.POLARIZED", rtcproc.run_polarization);
         add_netcdf_var(fo, "CONFIG.DESPIKED", rtcproc.run_despike);
-        add_netcdf_var(fo, "CONFIG.TODFILTERED", rtcproc.run_tod_filter);
+        add_netcdf_var(fo, "CONFIG.TODFILTERED", run_any_tod_filter);
+        add_netcdf_var(fo, "CONFIG.TODNOTCH", rtcproc.run_tod_notch);
+        add_netcdf_var(fo, "CONFIG.TODIIRHP", rtcproc.run_tod_iir_highpass);
+        add_netcdf_var(fo, "CONFIG.TODIIRHP.FREQ_HZ", rtcproc.filter.iir_highpass_freq_Hz);
+        add_netcdf_var(fo, "CONFIG.TODIIRHP.ORDER", rtcproc.filter.iir_highpass_order);
+        add_netcdf_var(fo, "CONFIG.TODIIRHP.ZEROPHASE", rtcproc.filter.iir_highpass_zero_phase);
         add_netcdf_var(fo, "CONFIG.DOWNSAMPLED", rtcproc.run_downsample);
         add_netcdf_var(fo, "CONFIG.CALIBRATED", rtcproc.run_calibrate);
         add_netcdf_var(fo, "CONFIG.EXTINCTION", rtcproc.run_extinction);
@@ -1616,6 +1630,11 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
     f << "-Kernel Generated: " << in.status.kernel_generated << "\n";
     f << "-Despiked: " << in.status.despiked << "\n";
     f << "-TOD filtered: " << in.status.tod_filtered << "\n";
+    f << "-TOD notch enabled: " << rtcproc.run_tod_notch << "\n";
+    f << "-TOD IIR highpass enabled: " << rtcproc.run_tod_iir_highpass << "\n";
+    f << "-TOD IIR highpass freq (Hz): " << rtcproc.filter.iir_highpass_freq_Hz << "\n";
+    f << "-TOD IIR highpass order: " << rtcproc.filter.iir_highpass_order << "\n";
+    f << "-TOD IIR highpass zero-phase: " << rtcproc.filter.iir_highpass_zero_phase << "\n";
     f << "-Downsampled: " << in.status.downsampled << "\n";
     f << "-Cleaned: " << in.status.cleaned << "\n";
 
@@ -2077,10 +2096,16 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     // add control/runtime parameters
     logger->debug("adding config params");
+    const bool run_any_tod_filter = rtcproc.run_tod_filter || rtcproc.run_tod_iir_highpass;
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.VERBOSE", verbose_mode, "Reduced in verbose mode");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.POLARIZED", rtcproc.run_polarization, "Polarized Obs");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKED", rtcproc.run_despike, "Despiked");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODFILTERED", rtcproc.run_tod_filter, "TOD Filtered");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODFILTERED", run_any_tod_filter, "TOD Filtered");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODNOTCH", rtcproc.run_tod_notch, "TOD notch enabled");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODIIRHP", rtcproc.run_tod_iir_highpass, "TOD IIR highpass enabled");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODIIRHP.FREQ_HZ", rtcproc.filter.iir_highpass_freq_Hz, "TOD IIR highpass cutoff frequency");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODIIRHP.ORDER", rtcproc.filter.iir_highpass_order, "TOD IIR highpass cascaded order");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODIIRHP.ZEROPHASE", rtcproc.filter.iir_highpass_zero_phase, "TOD IIR highpass forward-backward");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.DOWNSAMPLED", rtcproc.run_downsample, "Downsampled");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CALIBRATED", rtcproc.run_calibrate, "Calibrated");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.EXTINCTION", rtcproc.run_extinction, "Extinction corrected");

@@ -25,6 +25,7 @@ public:
     bool run_despike;
     bool run_tod_filter;
     bool run_tod_notch;
+    bool run_tod_iir_highpass;
     bool run_downsample;
     bool run_calibrate;
     bool run_extinction;
@@ -159,6 +160,16 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         // upper frequency limit
         get_config_value(config, filter.freq_high_Hz, missing_keys, invalid_keys,
                          std::tuple{"timestream","raw_time_chunk","filter","freq_high_Hz"});
+        const bool has_freq_low = config.template has_typed<double>(
+            std::tuple{"timestream","raw_time_chunk","filter","freq_low_Hz"});
+        const bool has_freq_high = config.template has_typed<double>(
+            std::tuple{"timestream","raw_time_chunk","filter","freq_high_Hz"});
+        if (has_freq_low && has_freq_high &&
+            filter.freq_high_Hz < filter.freq_low_Hz) {
+            logger->error("timestream.raw_time_chunk.filter.freq_high_Hz ({}) must be >= freq_low_Hz ({})",
+                          filter.freq_high_Hz, filter.freq_low_Hz);
+            std::exit(EXIT_FAILURE);
+        }
         // filter size
         get_config_value(config, filter.n_terms, missing_keys, invalid_keys,
                          std::tuple{"timestream","raw_time_chunk","filter","n_terms"});
@@ -204,6 +215,31 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         // explicitly set filter size to zero for inner time chunks
         filter.n_terms = 0;
         run_tod_notch = false;
+    }
+
+    // run optional iir highpass filter?
+    run_tod_iir_highpass = false;
+    filter.iir_highpass_freq_Hz = 0.0;
+    filter.iir_highpass_order = 1;
+    filter.iir_highpass_zero_phase = false;
+    if (config.has(std::tuple{"timestream","raw_time_chunk","IIR_filter"})) {
+        get_config_value(config, run_tod_iir_highpass, missing_keys, invalid_keys,
+                         std::tuple{"timestream","raw_time_chunk","IIR_filter","enabled"});
+        if (run_tod_iir_highpass) {
+            get_config_value(config, filter.iir_highpass_freq_Hz, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","IIR_filter","freq_Hz"});
+            get_config_value(config, filter.iir_highpass_order, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","IIR_filter","order"}, {}, {1});
+            get_config_value(config, filter.iir_highpass_zero_phase, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","IIR_filter","zero_phase"});
+            const bool has_iir_freq = config.template has_typed<double>(
+                std::tuple{"timestream","raw_time_chunk","IIR_filter","freq_Hz"});
+            if (has_iir_freq && filter.iir_highpass_freq_Hz <= 0.0) {
+                logger->error("timestream.raw_time_chunk.IIR_filter.freq_Hz ({}) must be > 0",
+                              filter.iir_highpass_freq_Hz);
+                std::exit(EXIT_FAILURE);
+            }
+        }
     }
 
     // keep despike filter-aware
@@ -397,6 +433,8 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         in.status.despiked = true;
     }
 
+    bool ran_tod_filter_stage = false;
+
     // timestream filtering
     if (run_tod_filter) {
         logger->debug("convolving signal with tod filter");
@@ -410,8 +448,26 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         if (run_kernel) {
             logger->debug("convolving kernel with tod filter");
             filter.convolve(in.kernel.data);
+            if (run_tod_notch) {
+                logger->debug("applying notch filter to kernel");
+                filter.iir(in.kernel.data);
+            }
         }
+        ran_tod_filter_stage = true;
+    }
 
+    if (run_tod_iir_highpass) {
+        logger->debug("applying iir highpass filter to signal");
+        filter.iir_highpass(in.scans.data, telescope.fsmp);
+
+        if (run_kernel) {
+            logger->debug("applying iir highpass filter to kernel");
+            filter.iir_highpass(in.kernel.data, telescope.fsmp);
+        }
+        ran_tod_filter_stage = true;
+    }
+
+    if (ran_tod_filter_stage) {
         in.status.tod_filtered = true;
     }
 

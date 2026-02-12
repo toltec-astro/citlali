@@ -550,6 +550,11 @@ int run(const rc_t &rc) {
                         if (todproc.engine().rtcproc.run_downsample) {
                             // downsample factor must be larger than zero
                             if (todproc.engine().rtcproc.downsampler.factor <= 0) {
+                                if (todproc.engine().rtcproc.downsampler.downsampled_freq_Hz <= 0) {
+                                    logger->error("downsampled freq ({} Hz) must be > 0 when downsample factor <= 0",
+                                                  todproc.engine().rtcproc.downsampler.downsampled_freq_Hz);
+                                    return EXIT_FAILURE;
+                                }
                                 // need downsample frequency to be smaller than sample rate
                                 if (todproc.engine().rtcproc.downsampler.downsampled_freq_Hz > todproc.engine().telescope.fsmp) {
                                     logger->error("downsampled freq ({} Hz) must be less than sample rate ({} Hz)",
@@ -560,6 +565,21 @@ int run(const rc_t &rc) {
                                 // downsample factor = (sample rate)/(downsampled freq)
                                 todproc.engine().rtcproc.downsampler.factor = std::floor(todproc.engine().telescope.fsmp /
                                                                                          todproc.engine().rtcproc.downsampler.downsampled_freq_Hz);
+                            }
+                            if (todproc.engine().rtcproc.downsampler.factor <= 0) {
+                                logger->error("downsample factor ({}) must be > 0",
+                                              todproc.engine().rtcproc.downsampler.factor);
+                                return EXIT_FAILURE;
+                            }
+
+                            const double downsample_nyquist_Hz =
+                                todproc.engine().telescope.fsmp /
+                                (2.0 * todproc.engine().rtcproc.downsampler.factor);
+                            if (todproc.engine().rtcproc.filter.freq_high_Hz > downsample_nyquist_Hz) {
+                                logger->error("invalid anti-alias setup: filter freq_high_Hz ({} Hz) exceeds downsample Nyquist ({} Hz)",
+                                              todproc.engine().rtcproc.filter.freq_high_Hz,
+                                              downsample_nyquist_Hz);
+                                return EXIT_FAILURE;
                             }
                         }
 

@@ -14,6 +14,9 @@ namespace timestream {
 class Filter {
 public:
     double a_gibbs, freq_low_Hz, freq_high_Hz;
+    double iir_highpass_freq_Hz = 0.0;
+    int iir_highpass_order = 1;
+    bool iir_highpass_zero_phase = false;
 
     Eigen::VectorXd filter;
     Eigen::Index n_terms;
@@ -29,6 +32,9 @@ public:
 
     template <typename Derived>
     void iir(Eigen::DenseBase<Derived> &);
+
+    template <typename Derived>
+    void iir_highpass(Eigen::DenseBase<Derived> &, double);
 };
 
 void Filter::make_filter(double fsmp) {
@@ -190,6 +196,52 @@ void Filter::iir(Eigen::DenseBase<Derived> &in) {
             }
         }
         in = out;
+    }
+}
+
+template <typename Derived>
+void Filter::iir_highpass(Eigen::DenseBase<Derived> &in, double fsmp) {
+
+    if (in.rows() == 0 || in.cols() == 0) {
+        return;
+    }
+    if (fsmp <= 0.0 || iir_highpass_freq_Hz <= 0.0 || iir_highpass_order <= 0) {
+        return;
+    }
+
+    const double dt = 1.0 / fsmp;
+    const double rc = 1.0 / (2.0 * pi * iir_highpass_freq_Hz);
+    const double alpha = rc / (rc + dt);
+
+    auto apply_once = [&](auto &arr) {
+        for (Eigen::Index i = 0; i < arr.cols(); ++i) {
+            double x_1 = arr(0, i);
+            double y_1 = 0.0;
+            arr(0, i) = 0.0;
+            for (Eigen::Index j = 1; j < arr.rows(); ++j) {
+                const double x_0 = arr(j, i);
+                const double y_0 = alpha * (y_1 + x_0 - x_1);
+                arr(j, i) = y_0;
+                x_1 = x_0;
+                y_1 = y_0;
+            }
+        }
+    };
+
+    for (int k = 0; k < iir_highpass_order; ++k) {
+        apply_once(in.derived());
+    }
+
+    if (iir_highpass_zero_phase) {
+        for (Eigen::Index i = 0; i < in.cols(); ++i) {
+            in.derived().col(i).reverseInPlace();
+        }
+        for (int k = 0; k < iir_highpass_order; ++k) {
+            apply_once(in.derived());
+        }
+        for (Eigen::Index i = 0; i < in.cols(); ++i) {
+            in.derived().col(i).reverseInPlace();
+        }
     }
 }
 
