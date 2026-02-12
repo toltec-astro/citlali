@@ -121,9 +121,9 @@ auto JincMapmaker::jinc_func(double r, double a, double b, double c, double r_ma
 }
 
 void JincMapmaker::allocate_jinc_matrix(double pixel_size_rad) {
-    l_d[0] = (1.1/1000)/50;
-    l_d[1] = (1.4/1000)/50;
-    l_d[2] = (2.0/1000)/50;
+    l_d[0] = (1.1/1000)/45;
+    l_d[1] = (1.4/1000)/45;
+    l_d[2] = (2.0/1000)/45;
 
     subpixel_n = std::max(1, subpixel_n);
 
@@ -185,9 +185,9 @@ void JincMapmaker::allocate_jinc_matrix(double pixel_size_rad) {
 }
 
 void JincMapmaker::calculate_jinc_splines() {
-    l_d[0] = (1.1/1000)/50;
-    l_d[1] = (1.4/1000)/50;
-    l_d[2] = (2.0/1000)/50;
+    l_d[0] = (1.1/1000)/45;
+    l_d[1] = (1.4/1000)/45;
+    l_d[2] = (2.0/1000)/45;
 
     // loop through lambda/diameters
     for (const auto &ld: l_d) {
