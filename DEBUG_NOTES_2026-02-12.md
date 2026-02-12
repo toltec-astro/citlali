@@ -354,3 +354,7 @@ If needed, revert:
 - `include/citlali/core/timestream/ptc/sensitivity.h`
 
 (Warning may return when LTO is enabled.)
+
+Update:
+- Also updated `src/citlali/core/timestream/ptc/sensitivity.cpp` namespace to
+  `citlali_ptc_internal` so `stat(...)` and `freq(...)` definitions match declarations.

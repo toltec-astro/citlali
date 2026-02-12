@@ -3,7 +3,7 @@
 
 #include <citlali/core/timestream/ptc/sensitivity.h>
 
-namespace internal {
+namespace citlali_ptc_internal {
 
 std::tuple<Eigen::Index, Eigen::Index, double> stat(Eigen::Index scanlength, double fsmp) {
     // make an even number of data points by rounding-down
@@ -21,4 +21,4 @@ Eigen::VectorXd freq(Eigen::Index npts, Eigen::Index nfreqs, double dfreq) {
     return dfreq * Eigen::VectorXd::LinSpaced(nfreqs, 0, npts / 2);
 }
 
-} // namespace internal
+} // namespace citlali_ptc_internal
