@@ -72,8 +72,12 @@ public:
 
     // matrices to hold precomputed jinc function
     std::map<Eigen::Index,Eigen::MatrixXd> jinc_weights_mat;
+    // squared jinc weights for weight/coverage/noise updates
+    std::map<Eigen::Index,Eigen::MatrixXd> jinc_weights_sq_mat;
     // sub-pixel shifted jinc matrices (size = subpixel_n^2 per array)
     std::map<Eigen::Index,std::vector<Eigen::MatrixXd>> jinc_weights_mat_subpix;
+    // squared sub-pixel shifted jinc matrices
+    std::map<Eigen::Index,std::vector<Eigen::MatrixXd>> jinc_weights_sq_mat_subpix;
 
     // splines for jinc function
     std::map<Eigen::Index, engine_utils::SplineFunction> jinc_splines;
@@ -127,6 +131,11 @@ void JincMapmaker::allocate_jinc_matrix(double pixel_size_rad) {
 
     subpixel_n = std::max(1, subpixel_n);
 
+    jinc_weights_mat.clear();
+    jinc_weights_sq_mat.clear();
+    jinc_weights_mat_subpix.clear();
+    jinc_weights_sq_mat_subpix.clear();
+
     std::vector<double> subpixel_offsets;
     if (subpixel_n > 1) {
         subpixel_offsets.resize(subpixel_n);
@@ -150,6 +159,7 @@ void JincMapmaker::allocate_jinc_matrix(double pixel_size_rad) {
 
         // allocate jinc weights
         jinc_weights_mat[ld.first].setZero(2*r_max_pix + 1,2*r_max_pix + 1);
+        jinc_weights_sq_mat[ld.first].setZero(2*r_max_pix + 1,2*r_max_pix + 1);
 
         // loop through matrix rows
         for (Eigen::Index i=0; i<pixels.size(); ++i) {
@@ -158,24 +168,33 @@ void JincMapmaker::allocate_jinc_matrix(double pixel_size_rad) {
                 // radius of current pixel in radians
                 double r = pixel_size_rad*sqrt(pow(pixels(i),2) + pow(pixels(j),2));
                 // calculate jinc weight at pixel
-                jinc_weights_mat[ld.first](i,j) = jinc_func(r,a,b,c,r_max,ld.second);
+                auto w = jinc_func(r,a,b,c,r_max,ld.second);
+                jinc_weights_mat[ld.first](i,j) = w;
+                jinc_weights_sq_mat[ld.first](i,j) = w*w;
             }
         }
 
         if (subpixel_n > 1) {
             auto &subpix_vec = jinc_weights_mat_subpix[ld.first];
+            auto &subpix_sq_vec = jinc_weights_sq_mat_subpix[ld.first];
             subpix_vec.resize(subpixel_n * subpixel_n);
+            subpix_sq_vec.resize(subpixel_n * subpixel_n);
             for (int sr = 0; sr < subpixel_n; ++sr) {
                 for (int sc = 0; sc < subpixel_n; ++sc) {
                     double drow = subpixel_offsets[sr];
                     double dcol = subpixel_offsets[sc];
-                    auto &mat = subpix_vec[static_cast<size_t>(sr * subpixel_n + sc)];
+                    auto mat_index = static_cast<size_t>(sr * subpixel_n + sc);
+                    auto &mat = subpix_vec[mat_index];
+                    auto &mat_sq = subpix_sq_vec[mat_index];
                     mat.setZero(2 * r_max_pix + 1, 2 * r_max_pix + 1);
+                    mat_sq.setZero(2 * r_max_pix + 1, 2 * r_max_pix + 1);
 
                     for (Eigen::Index i=0; i<pixels.size(); ++i) {
                         for (Eigen::Index j=0; j<pixels.size(); ++j) {
                             double r = pixel_size_rad*sqrt(pow(pixels(i) - drow,2) + pow(pixels(j) - dcol,2));
-                            mat(i,j) = jinc_func(r,a,b,c,r_max,ld.second);
+                            auto w = jinc_func(r,a,b,c,r_max,ld.second);
+                            mat(i,j) = w;
+                            mat_sq(i,j) = w*w;
                         }
                     }
                 }
@@ -257,68 +276,122 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
 
-    // step to skip to reach next stokes param
-    int step = omb.pointing.size();
+    struct TouchBounds {
+        int row_min;
+        int row_max;
+        int col_min;
+        int col_max;
+        bool touched;
 
-    map_buffer_t omb_copy;
+        TouchBounds(Eigen::Index n_rows, Eigen::Index n_cols)
+            : row_min(static_cast<int>(n_rows)),
+              row_max(-1),
+              col_min(static_cast<int>(n_cols)),
+              col_max(-1),
+              touched(false) {}
+
+        void update(int lower_row, int upper_row, int lower_col, int upper_col) {
+            touched = true;
+            row_min = std::min(row_min, lower_row);
+            row_max = std::max(row_max, upper_row);
+            col_min = std::min(col_min, lower_col);
+            col_max = std::max(col_max, upper_col);
+        }
+    };
+
+    struct ScratchBuffers {
+        map_buffer_t omb_copy;
+        map_buffer_t cmb_copy;
+    };
+    thread_local ScratchBuffers scratch;
+
+    auto ensure_zero_matrix_vec = [](std::vector<Eigen::MatrixXd> &vec, Eigen::Index size, Eigen::Index n_rows,
+                                     Eigen::Index n_cols) {
+        if (static_cast<Eigen::Index>(vec.size()) != size) {
+            vec.resize(static_cast<size_t>(size));
+        }
+        for (Eigen::Index ii = 0; ii < size; ++ii) {
+            auto &m = vec[static_cast<size_t>(ii)];
+            if (m.rows() != n_rows || m.cols() != n_cols) {
+                m.resize(n_rows, n_cols);
+            }
+            m.setZero();
+        }
+    };
+
+    auto ensure_zero_noise_vec = [](std::vector<Eigen::Tensor<double, 3>> &dst,
+                                    const std::vector<Eigen::Tensor<double, 3>> &src) {
+        if (dst.size() != src.size()) {
+            dst.resize(src.size());
+        }
+        for (size_t ii = 0; ii < src.size(); ++ii) {
+            const auto &ref = src[ii];
+            auto &out = dst[ii];
+            if (out.dimension(0) != ref.dimension(0) ||
+                out.dimension(1) != ref.dimension(1) ||
+                out.dimension(2) != ref.dimension(2)) {
+                out.resize(ref.dimension(0), ref.dimension(1), ref.dimension(2));
+            }
+            out.setZero();
+        }
+    };
+
+    auto &omb_copy = scratch.omb_copy;
     omb_copy.n_rows = omb.n_rows;
     omb_copy.n_cols = omb.n_cols;
 
-    for (Eigen::Index i=0; i<omb.signal.size(); ++i) {
-        if (run_omb) {
-            omb_copy.signal.emplace_back(Eigen::MatrixXd::Zero(omb.n_rows, omb.n_cols));
-            omb_copy.weight.emplace_back(Eigen::MatrixXd::Zero(omb.n_rows, omb.n_cols));
-
-            // clear coverage
-            if (run_coverage) {
-                omb_copy.coverage.emplace_back(Eigen::MatrixXd::Zero(omb.n_rows, omb.n_cols));
-            }
-            // clear kernel
-            if (run_kernel) {
-                omb_copy.kernel.emplace_back(Eigen::MatrixXd::Zero(omb.n_rows, omb.n_cols));
-            }
+    if (run_omb) {
+        ensure_zero_matrix_vec(omb_copy.signal, static_cast<Eigen::Index>(omb.signal.size()), omb.n_rows, omb.n_cols);
+        ensure_zero_matrix_vec(omb_copy.weight, static_cast<Eigen::Index>(omb.weight.size()), omb.n_rows, omb.n_cols);
+        if (run_coverage) {
+            ensure_zero_matrix_vec(omb_copy.coverage, static_cast<Eigen::Index>(omb.coverage.size()), omb.n_rows, omb.n_cols);
+        }
+        if (run_kernel) {
+            ensure_zero_matrix_vec(omb_copy.kernel, static_cast<Eigen::Index>(omb.kernel.size()), omb.n_rows, omb.n_cols);
         }
     }
-    // clear noise
     if (use_omb) {
-        omb_copy.noise = omb.noise;
-        for (Eigen::Index i=0; i<omb.signal.size(); ++i) {
-            omb_copy.noise[i].setZero();
-        }
+        ensure_zero_noise_vec(omb_copy.noise, omb.noise);
     }
 
-    map_buffer_t cmb_copy;
-
+    auto &cmb_copy = scratch.cmb_copy;
     if (use_cmb) {
         cmb_copy.n_rows = cmb.n_rows;
         cmb_copy.n_cols = cmb.n_cols;
-
-        cmb_copy.noise = cmb.noise;
-
-        for (Eigen::Index i=0; i<cmb.noise.size(); ++i) {
-            cmb_copy.noise[i].setZero();
-        }
+        ensure_zero_noise_vec(cmb_copy.noise, cmb.noise);
     }
 
     // pointer to map buffer with noise maps
-    map_buffer_t *nmb, *nmb_copy;
+    map_buffer_t *nmb = nullptr;
+    map_buffer_t *nmb_copy = nullptr;
 
     if (run_noise) {
         nmb = use_cmb ? &cmb : (use_omb ? &omb : nullptr);
         nmb_copy = use_cmb ? &cmb_copy : (use_omb ? &omb_copy : nullptr);
     }
 
-    // add detector to map?
-    bool run_det;
+    std::vector<TouchBounds> omb_bounds;
+    if (run_omb) {
+        omb_bounds.reserve(omb.signal.size());
+        for (Eigen::Index ii = 0; ii < static_cast<Eigen::Index>(omb.signal.size()); ++ii) {
+            omb_bounds.emplace_back(omb.n_rows, omb.n_cols);
+        }
+    }
+
+    std::vector<TouchBounds> nmb_bounds;
+    if (run_noise && nmb != nullptr && nmb_copy != nullptr) {
+        nmb_bounds.reserve(nmb->noise.size());
+        for (Eigen::Index ii = 0; ii < static_cast<Eigen::Index>(nmb->noise.size()); ++ii) {
+            nmb_bounds.emplace_back(nmb->n_rows, nmb->n_cols);
+        }
+    }
 
     // parallelize over detectors
     for (Eigen::Index i=0; i<n_dets; ++i) {
         // skip fg = -1 if in polarization mode
-        if (run_polarization && apt["fg"](i)==-1) {
-            run_det = false;
-        }
-        else {
-            run_det = true;
+        const bool run_det = !(run_polarization && apt["fg"](i)==-1);
+        if (!run_det) {
+            continue;
         }
 
         // skip completely flagged detectors
@@ -328,12 +401,10 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
 
             // which map to assign detector to
             Eigen::Index map_index = map_indices(i);
-            // indices for Q and U maps
-            int q_index = map_index + step;
-            int u_index = map_index + 2 * step;
             Eigen::Index array_index = apt["array"](det_index);
             const bool use_subpix = (subpixel_n > 1) && (jinc_weights_mat_subpix.count(array_index) > 0);
             const auto *subpix_vec = use_subpix ? &jinc_weights_mat_subpix.at(array_index) : nullptr;
+            const auto *subpix_sq_vec = use_subpix ? &jinc_weights_sq_mat_subpix.at(array_index) : nullptr;
             Eigen::Index mat_rows = jinc_weights_mat[array_index].rows();
             Eigen::Index mat_cols = jinc_weights_mat[array_index].cols();
             Eigen::Index mat_rows_center = (mat_rows - 1.)/2.;
@@ -425,7 +496,9 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                             int size_cols = upper_col - lower_col + 1;
 
                             const auto &jinc_mat = use_subpix ? subpix_vec->at(subpix_idx) : jinc_weights_mat[array_index];
+                            const auto &jinc_sq_mat = use_subpix ? subpix_sq_vec->at(subpix_idx) : jinc_weights_sq_mat[array_index];
                             const auto mat_block = jinc_mat.block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
+                            const auto mat_sq_block = jinc_sq_mat.block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
 
                             auto sig_block = omb_copy.signal[map_index].block(lower_row,lower_col,size_rows,size_cols);
                             auto wt_block = omb_copy.weight[map_index].block(lower_row,lower_col,size_rows,size_cols);
@@ -434,12 +507,12 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                             sig_block += (mat_block * in.weights.data(i) * in.scans.data(j,i)).eval();
 
                             // populate weight map with positive kernel power to avoid cancellations
-                            wt_block.array() += (mat_block.array().square() * in.weights.data(i));
+                            wt_block.array() += (mat_sq_block.array() * in.weights.data(i));
 
                             // populate coverage map
                             if (run_coverage) {
                                 auto cov_block = omb_copy.coverage[map_index].block(lower_row,lower_col,size_rows,size_cols);
-                                cov_block.array() += (mat_block.array().square() / d_fsmp);
+                                cov_block.array() += (mat_sq_block.array() / d_fsmp);
                             }
 
                             // populate kernel map
@@ -447,6 +520,8 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                                 auto ker_block = omb_copy.kernel[map_index].block(lower_row,lower_col,size_rows,size_cols);
                                 ker_block += mat_block*in.weights.data(i)*in.kernel.data(j,i);
                             }
+
+                            omb_bounds[static_cast<size_t>(map_index)].update(lower_row, upper_row, lower_col, upper_col);
                         }
                     }
 
@@ -503,8 +578,8 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                             int size_rows = upper_row - lower_row + 1;
                             int size_cols = upper_col - lower_col + 1;
 
-                            const auto &jinc_mat = use_subpix ? subpix_vec->at(nmb_subpix_idx) : jinc_weights_mat[array_index];
-                            const auto mat_block = jinc_mat.block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
+                            const auto &jinc_sq_mat = use_subpix ? subpix_sq_vec->at(nmb_subpix_idx) : jinc_weights_sq_mat[array_index];
+                            const auto mat_sq_block = jinc_sq_mat.block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
                             signal = in.scans.data(j,i)*in.weights.data(i);
 
                             for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
@@ -518,8 +593,9 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                                 Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(nmb_copy->noise[map_index].data() + nn * nmb->n_rows * nmb->n_cols,
                                                                                                                nmb->n_rows, nmb->n_cols);
                                 auto noise_block = noise_matrix.block(lower_row,lower_col,size_rows,size_cols);
-                                noise_block.array() += (mat_block.array().square() * noise_v);
+                                noise_block.array() += (mat_sq_block.array() * noise_v);
                             }
+                            nmb_bounds[static_cast<size_t>(map_index)].update(lower_row, upper_row, lower_col, upper_col);
                         }
                     }
                 }
@@ -530,23 +606,46 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     {
         std::scoped_lock<std::mutex> lk(*jinc_mutex);
         if (run_omb) {
-            for (int i=0; i<omb.signal.size(); ++i) {
-                omb.signal[i] += omb_copy.signal[i];
-                omb.weight[i] += omb_copy.weight[i];
+            for (size_t i = 0; i < omb.signal.size(); ++i) {
+                const auto &bounds = omb_bounds[i];
+                if (!bounds.touched) {
+                    continue;
+                }
+                int size_rows = bounds.row_max - bounds.row_min + 1;
+                int size_cols = bounds.col_max - bounds.col_min + 1;
+
+                omb.signal[i].block(bounds.row_min, bounds.col_min, size_rows, size_cols) +=
+                    omb_copy.signal[i].block(bounds.row_min, bounds.col_min, size_rows, size_cols);
+                omb.weight[i].block(bounds.row_min, bounds.col_min, size_rows, size_cols) +=
+                    omb_copy.weight[i].block(bounds.row_min, bounds.col_min, size_rows, size_cols);
 
                 if (run_coverage) {
-                    omb.coverage[i] += omb_copy.coverage[i];
+                    omb.coverage[i].block(bounds.row_min, bounds.col_min, size_rows, size_cols) +=
+                        omb_copy.coverage[i].block(bounds.row_min, bounds.col_min, size_rows, size_cols);
                 }
-
                 if (run_kernel) {
-                    omb.kernel[i] += omb_copy.kernel[i];
+                    omb.kernel[i].block(bounds.row_min, bounds.col_min, size_rows, size_cols) +=
+                        omb_copy.kernel[i].block(bounds.row_min, bounds.col_min, size_rows, size_cols);
                 }
             }
         }
 
         if (run_noise) {
-            for (int i=0; i<nmb->noise.size(); ++i) {
-                nmb->noise[i] += nmb_copy->noise[i];
+            for (size_t i = 0; i < nmb->noise.size(); ++i) {
+                const auto &bounds = nmb_bounds[i];
+                if (!bounds.touched) {
+                    continue;
+                }
+                int size_rows = bounds.row_max - bounds.row_min + 1;
+                int size_cols = bounds.col_max - bounds.col_min + 1;
+                for (Eigen::Index nn = 0; nn < nmb->n_noise; ++nn) {
+                    Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_dst(
+                        nmb->noise[i].data() + nn * nmb->n_rows * nmb->n_cols, nmb->n_rows, nmb->n_cols);
+                    Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_src(
+                        nmb_copy->noise[i].data() + nn * nmb->n_rows * nmb->n_cols, nmb->n_rows, nmb->n_cols);
+                    noise_dst.block(bounds.row_min, bounds.col_min, size_rows, size_cols) +=
+                        noise_src.block(bounds.row_min, bounds.col_min, size_rows, size_cols);
+                }
             }
         }
     }
@@ -573,22 +672,16 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
 
-    // step to skip to reach next stokes param
-    int step = omb.pointing.size();
-
     // pointer to map buffer with noise maps
-    map_buffer_t *nmb;
+    map_buffer_t *nmb = nullptr;
 
     if (run_noise) {
         nmb = use_cmb ? &cmb : (use_omb ? &omb : nullptr);
     }
 
-    // add detector to map?
-    bool run_det;
-
     // placeholder vectors of size ndet for grppi maps
     std::vector<int> map_in_vec, map_out_vec;
-    map_in_vec.resize(omb.signal.size());
+    map_in_vec.resize(static_cast<size_t>(n_dets));
     std::iota(map_in_vec.begin(), map_in_vec.end(), 0);
     map_out_vec.resize(map_in_vec.size());
 
@@ -596,11 +689,9 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
     //for (Eigen::Index i=0; i<n_dets; ++i) {
     grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
         // skip fg = -1 if in polarization mode
-        if (run_polarization && apt["fg"](i)==-1) {
-            run_det = false;
-        }
-        else {
-            run_det = true;
+        const bool run_det = !(run_polarization && apt["fg"](i)==-1);
+        if (!run_det) {
+            return 0;
         }
 
         // skip completely flagged detectors
@@ -610,12 +701,10 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
 
             // which map to assign detector to
             Eigen::Index map_index = map_indices(i);
-            // indices for Q and U maps
-            int q_index = map_index + step;
-            int u_index = map_index + 2 * step;
             Eigen::Index array_index = apt["array"](det_index);
             const bool use_subpix = (subpixel_n > 1) && (jinc_weights_mat_subpix.count(array_index) > 0);
             const auto *subpix_vec = use_subpix ? &jinc_weights_mat_subpix.at(array_index) : nullptr;
+            const auto *subpix_sq_vec = use_subpix ? &jinc_weights_sq_mat_subpix.at(array_index) : nullptr;
             Eigen::Index mat_rows = jinc_weights_mat[array_index].rows();
             Eigen::Index mat_cols = jinc_weights_mat[array_index].cols();
             Eigen::Index mat_rows_center = (mat_rows - 1.)/2.;
@@ -707,7 +796,9 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                             int size_cols = upper_col - lower_col + 1;
 
                             const auto &jinc_mat = use_subpix ? subpix_vec->at(subpix_idx) : jinc_weights_mat[array_index];
+                            const auto &jinc_sq_mat = use_subpix ? subpix_sq_vec->at(subpix_idx) : jinc_weights_sq_mat[array_index];
                             const auto mat_block = jinc_mat.block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
+                            const auto mat_sq_block = jinc_sq_mat.block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
 
                             auto sig_block = omb.signal[map_index].block(lower_row,lower_col,size_rows,size_cols);
                             auto wt_block = omb.weight[map_index].block(lower_row,lower_col,size_rows,size_cols);
@@ -716,12 +807,12 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                             sig_block += (mat_block * in.weights.data(i) * in.scans.data(j,i)).eval();
 
                             // populate weight map with positive kernel power to avoid cancellations
-                            wt_block.array() += (mat_block.array().square() * in.weights.data(i));
+                            wt_block.array() += (mat_sq_block.array() * in.weights.data(i));
 
                             // populate coverage map
                             if (run_coverage) {
                                 auto cov_block = omb.coverage[map_index].block(lower_row,lower_col,size_rows,size_cols);
-                                cov_block.array() += (mat_block.array().square() / d_fsmp);
+                                cov_block.array() += (mat_sq_block.array() / d_fsmp);
                             }
 
                             // populate kernel map
@@ -785,8 +876,8 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                             int size_rows = upper_row - lower_row + 1;
                             int size_cols = upper_col - lower_col + 1;
 
-                            const auto &jinc_mat = use_subpix ? subpix_vec->at(nmb_subpix_idx) : jinc_weights_mat[array_index];
-                            const auto mat_block = jinc_mat.block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
+                            const auto &jinc_sq_mat = use_subpix ? subpix_sq_vec->at(nmb_subpix_idx) : jinc_weights_sq_mat[array_index];
+                            const auto mat_sq_block = jinc_sq_mat.block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
                             signal = in.scans.data(j,i)*in.weights.data(i);
 
                             for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
@@ -800,7 +891,7 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                                 Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(nmb->noise[map_index].data() + nn * nmb->n_rows * nmb->n_cols,
                                                                                                                nmb->n_rows, nmb->n_cols);
                                 auto noise_block = noise_matrix.block(lower_row,lower_col,size_rows,size_cols);
-                                noise_block.array() += (mat_block.array().square() * noise_v);
+                                noise_block.array() += (mat_sq_block.array() * noise_v);
                             }
                         }
                     }
@@ -811,7 +902,6 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
     });
 
     if (run_noise) {
-        nmb = nullptr;
         nmb = nullptr;
     }
 }

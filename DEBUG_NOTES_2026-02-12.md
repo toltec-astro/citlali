@@ -105,3 +105,92 @@ In `include/citlali/core/engine/kidsproc.h`, restore `load_data_item(...)` to:
 4. Gap-mode safety:
 - Run one obs with `interp_over_gaps=true` to verify unchanged behavior on gap path.
 
+---
+
+# Debug Notes (2026-02-12) - Jinc Mapmaking High-ROI Fixes
+
+## Goal
+Reduce jinc mapmaking hot-loop cost and remove detector-loop issues with minimal behavior risk.
+
+## Summary of changes
+
+### A) Precomputed squared jinc kernels
+
+Added cached squared kernel matrices so weight/coverage/noise paths avoid repeated
+`mat_block.array().square()` in inner loops.
+
+File:
+- `include/citlali/core/mapmaking/jinc_mm.h`
+
+New members:
+- `jinc_weights_sq_mat`
+- `jinc_weights_sq_mat_subpix`
+
+Also clear/rebuild caches in `allocate_jinc_matrix(...)`.
+
+### B) Detector gating fix (`run_det`) in both jinc paths
+
+`run_det` was computed but not applied. It now short-circuits detector processing when:
+- `run_polarization=true` and detector has `fg==-1`.
+
+File:
+- `include/citlali/core/mapmaking/jinc_mm.h`
+
+### C) Beammap detector-parallel index sizing fix
+
+In `populate_maps_jinc_parallel(...)`, detector work vector now sizes to `n_dets`
+instead of `omb.signal.size()`.
+
+File:
+- `include/citlali/core/mapmaking/jinc_mm.h`
+
+### D) Reused scratch buffers in sequential jinc path
+
+Replaced per-call scratch allocation (`omb_copy`, `cmb_copy`) with `thread_local`
+scratch buffers and explicit zero/reset helpers.
+
+File:
+- `include/citlali/core/mapmaking/jinc_mm.h`
+
+### E) Merge only touched regions
+
+Sequential jinc merge now tracks per-map touched bounding boxes and merges only
+those blocks for:
+- signal
+- weight
+- coverage
+- kernel
+- noise tensors
+
+File:
+- `include/citlali/core/mapmaking/jinc_mm.h`
+
+## Fast rollback plan
+
+1. Rollback all jinc high-ROI fixes:
+- Revert `include/citlali/core/mapmaking/jinc_mm.h` to previous commit.
+
+2. Partial rollback options:
+- Keep detector fixes but remove performance changes:
+  - Remove squared kernel caches.
+  - Restore old full-map merge behavior.
+  - Restore per-call local scratch allocation.
+
+3. Minimal safety rollback:
+- Keep only:
+  - `run_det` gating fix.
+  - `n_dets` sizing fix in parallel detector map.
+
+## Validation checklist
+
+1. Functional parity:
+- Compare jinc map outputs pre/post on one obs (signal + weight + kernel + coverage).
+
+2. Noise map parity:
+- Run with `noise_maps.enabled=true` and compare summary stats / RMS.
+
+3. Performance:
+- Measure walltime around mapmaking stage on same obs/chunking settings.
+
+4. Beammap detector mode:
+- Verify detector-group beammap run does not regress after index sizing change.
