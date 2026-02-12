@@ -358,3 +358,33 @@ If needed, revert:
 Update:
 - Also updated `src/citlali/core/timestream/ptc/sensitivity.cpp` namespace to
   `citlali_ptc_internal` so `stat(...)` and `freq(...)` definitions match declarations.
+
+---
+
+# Debug Notes (2026-02-12) - Wiener OMP Stability Hotfix (double free)
+
+## Symptom
+Runtime abort during filtered coadd Wiener step:
+- `double free or corruption (out)`
+- seen just after `starting filtered coadded maps map ...`.
+
+## Hotfix applied
+File changed:
+- `include/citlali/core/mapmaking/wiener_filter_omp.h`
+
+Changes:
+1. `calc_numerator_from_input(...)` now uses local FFTW alloc/plan/free per call.
+2. `run_convolve_on_input(...)` now uses local FFTW alloc/plan/free per call.
+3. `calc_denominator()` switched to the known-stable local FFTW lifecycle and sequential update logic matching the non-OMP implementation.
+
+## Rationale
+The crash signature is consistent with heap corruption/double free in the cached FFTW context path.
+This hotfix removes that path from active execution to prioritize runtime stability.
+
+## Performance note
+This may reduce the speedup from cached-plan optimization, but keeps the thread-parallel
+noise filtering path in `engine.h` intact.
+
+## Rollback/next-step options
+1. If stability is confirmed and speed is acceptable, keep this state.
+2. If speed regression is too large, reintroduce cache optimization incrementally with ASAN/UBSAN testing.

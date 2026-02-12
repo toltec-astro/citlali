@@ -397,69 +397,61 @@ inline WienerFilter::FFTWContext &WienerFilter::get_thread_fft_context(int rows,
 }
 
 inline Eigen::MatrixXd WienerFilter::calc_numerator_from_input(const Eigen::MatrixXd &input_map) {
-    auto &ctx = get_thread_fft_context(n_rows, n_cols);
+    fftw_complex *a;
+    fftw_complex *b;
+    fftw_plan pf, pr;
 
-    struct ComplexScratch {
-        Eigen::MatrixXcd in;
-        Eigen::MatrixXcd out;
-        Eigen::MatrixXcd qqq;
-    };
-    static thread_local ComplexScratch scratch;
-    if (scratch.in.rows() != n_rows || scratch.in.cols() != n_cols) {
-        scratch.in.resize(n_rows, n_cols);
-        scratch.out.resize(n_rows, n_cols);
-        scratch.qqq.resize(n_rows, n_cols);
-    }
-    auto &in = scratch.in;
-    auto &out = scratch.out;
-    auto &qqq = scratch.qqq;
+    a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * n_rows * n_cols);
+    b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * n_rows * n_cols);
+
+    pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
+    pr = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
+
+    Eigen::MatrixXcd in(n_rows, n_cols), out(n_rows, n_cols), qqq(n_rows, n_cols);
 
     in.real() = rr.array() * input_map.array();
     in.imag().setZero();
-    out = engine_utils::fft2<engine_utils::forward>(in, ctx.pf, ctx.a, ctx.b);
+    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
 
     in.real() = out.real().array() / vvq.array();
     in.imag() = out.imag().array() / vvq.array();
-    out = engine_utils::fft2<engine_utils::inverse>(in, ctx.pr, ctx.a, ctx.b);
+    out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
 
     in.real() = out.real().array() * rr.array();
     in.imag().setZero();
-    out = engine_utils::fft2<engine_utils::forward>(in, ctx.pf, ctx.a, ctx.b);
+    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
     qqq = out;
 
     in.real() = filter_template;
     in.imag().setZero();
-    out = engine_utils::fft2<engine_utils::forward>(in, ctx.pf, ctx.a, ctx.b);
+    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
 
     in.real() = out.real().array() * qqq.real().array() + out.imag().array() * qqq.imag().array();
     in.imag() = -out.imag().array() * qqq.real().array() + out.real().array() * qqq.imag().array();
-    out = engine_utils::fft2<engine_utils::inverse>(in, ctx.pr, ctx.a, ctx.b);
+    out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
+
+    fftw_free(a);
+    fftw_free(b);
+    fftw_destroy_plan(pf);
+    fftw_destroy_plan(pr);
 
     return out.real();
 }
 
 inline Eigen::MatrixXd WienerFilter::run_convolve_on_input(const Eigen::MatrixXd &input_map, bool normalize) {
-    auto &ctx = get_thread_fft_context(n_rows, n_cols);
+    fftw_complex *a;
+    fftw_complex *b;
+    fftw_plan pf, pr;
 
-    struct ConvolveScratch {
-        Eigen::MatrixXcd in;
-        Eigen::MatrixXcd out;
-        Eigen::MatrixXcd fft_filter;
-        Eigen::MatrixXd kernel;
-    };
-    static thread_local ConvolveScratch scratch;
-    if (scratch.in.rows() != n_rows || scratch.in.cols() != n_cols) {
-        scratch.in.resize(n_rows, n_cols);
-        scratch.out.resize(n_rows, n_cols);
-        scratch.fft_filter.resize(n_rows, n_cols);
-        scratch.kernel.resize(n_rows, n_cols);
-    }
-    auto &in = scratch.in;
-    auto &out = scratch.out;
-    auto &fft_filter = scratch.fft_filter;
-    auto &kernel = scratch.kernel;
+    a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * n_rows * n_cols);
+    b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * n_rows * n_cols);
 
-    kernel = filter_template;
+    pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
+    pr = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
+
+    Eigen::MatrixXcd in(n_rows, n_cols), out(n_rows, n_cols), fft_filter(n_rows, n_cols);
+    Eigen::MatrixXd kernel = filter_template;
+
     if (normalize) {
         double kernel_sum = kernel.sum();
         if (kernel_sum != 0.0 && std::isfinite(kernel_sum)) {
@@ -469,19 +461,24 @@ inline Eigen::MatrixXd WienerFilter::run_convolve_on_input(const Eigen::MatrixXd
 
     in.real() = kernel;
     in.imag().setZero();
-    out = engine_utils::fft2<engine_utils::forward>(in, ctx.pf, ctx.a, ctx.b);
+    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
     out = out * n_rows * n_cols;
     fft_filter = out;
 
     in.real() = input_map;
     in.imag().setZero();
-    out = engine_utils::fft2<engine_utils::forward>(in, ctx.pf, ctx.a, ctx.b);
+    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
     out = out * n_rows * n_cols;
 
     in.real() = out.real().array() * fft_filter.real().array() - out.imag().array() * fft_filter.imag().array();
     in.imag() = out.imag().array() * fft_filter.real().array() + out.real().array() * fft_filter.imag().array();
-    out = engine_utils::fft2<engine_utils::inverse>(in, ctx.pr, ctx.a, ctx.b);
+    out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
     out = out / n_rows / n_cols;
+
+    fftw_free(a);
+    fftw_free(b);
+    fftw_destroy_plan(pf);
+    fftw_destroy_plan(pr);
 
     return out.real();
 }
@@ -932,50 +929,63 @@ void WienerFilter::destripe(double threshold_factor) {
 }
 
 void WienerFilter::calc_denominator() {
-    auto &ctx_main = get_thread_fft_context(n_rows, n_cols);
+    // set up fftw
+    fftw_complex *a;
+    fftw_complex *b;
+    fftw_plan pf, pr;
+
+    // allocate space for 2d ffts
+    a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
+    b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
+
+    // fftw plans
+    pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
+    pr = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
 
     // resize denominator
     denom.setZero(n_rows,n_cols);
 
     // inputs and outputs to ffts
-    Eigen::MatrixXcd in(n_rows,n_cols);
-    Eigen::MatrixXcd out(n_rows,n_cols);
+    Eigen::MatrixXcd in(n_rows,n_cols), out(n_rows,n_cols);
 
     // using uniform weights only
     if (uniform_weight) {
         in.real() = filter_template;
         in.imag().setZero();
 
-        out = engine_utils::fft2<engine_utils::forward>(in, ctx_main.pf, ctx_main.a, ctx_main.b);
+        // fft(f(x))
+        out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
 
-        // set denominator
+        // set denominator = abs(fft(f(x))/VV
         denom.setConstant(((out.real().array() * out.real().array() + out.imag().array() * out.imag().array()) / vvq.array()).sum());
     }
-
     else {
         // initialize denominator
         denom.setZero();
 
-        in.real() = pow(vvq.array(), -1);
+        // 1/VV
+        in.real() = pow(vvq.array(),-1);
         in.imag().setZero();
 
-        out = engine_utils::fft2<engine_utils::inverse>(in, ctx_main.pr, ctx_main.a, ctx_main.b);
+        // Z = ifft(1/VV)
+        out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
 
-        Eigen::VectorXd zz2d(n_rows * n_cols);
+        // flattened real(Z) array
+        Eigen::VectorXd Z(n_rows * n_cols);
 
-        // vector of real components of IFFT(1/VVQ)
-        for (Eigen::Index i=0; i<n_cols; i++) {
-            for (Eigen::Index j=0; j<n_rows;j++) {
+        // real(Z).  do loop to make sure colmajor is preserved
+        for (Eigen::Index i=0; i<n_cols; ++i) {
+            for (Eigen::Index j=0; j<n_rows;++j) {
                 int ii = n_rows*i+j;
-                zz2d(ii) = (out.real()(j,i));
+                Z(ii) = (out.real()(j,i));
             }
         }
 
-        // sort absolute values in ascending order
-        Eigen::VectorXd Z_abs = zz2d.array().abs();
-        auto sorted = engine_utils::sorter(Z_abs);
+        // sort absolute values of Z in ascending order
+        Eigen::VectorXd Z_abs = Z.array().abs();
+        auto Z_indices_sorted = engine_utils::sorter(Z_abs);
 
-        // number of iterations for convergence
+        // number of iterations between convergence checks
         n_loops = n_rows * n_cols / 100;
         if (n_loops < 100) {
             n_loops = 100;
@@ -987,103 +997,106 @@ void WienerFilter::calc_denominator() {
         bool done = false;
 
         tula::logging::progressbar pb(
-            [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 90,
+            [&](const auto &msg) { logger->info("{}", msg); }, 90,
             "calculating denom");
-        const Eigen::Index total_iters = n_rows * n_cols;
-        const Eigen::Index pb_stride = std::max<Eigen::Index>(total_iters / 100, 1);
+
         const auto denom_start = std::chrono::steady_clock::now();
         double last_log_s = 0.0;
-        const double denom_rel_tol_local = denom_rel_tol;
-        const double tail_frac_tol_local = tail_frac_tol;
-        const double inv_npix = 1.0 / static_cast<double>(n_rows * n_cols);
 
-        #pragma omp parallel shared(sorted, n_loops, zz2d, Z_abs, Z_abs_done, Z_abs_total, total_iters, pb_stride, denom_rel_tol_local, tail_frac_tol_local, denom_start, last_log_s, done, pb, n_rows, n_cols, denom, filter_template, rr, inv_npix) default (none)
-        {
-            auto &ctx = get_thread_fft_context(n_rows, n_cols);
-            Eigen::MatrixXcd in_local(n_rows, n_cols);
-            Eigen::MatrixXcd out_local(n_rows, n_cols);
-            Eigen::MatrixXcd ffdq(n_rows, n_cols);
-            Eigen::MatrixXd in_prod(n_rows, n_cols);
-            std::vector<Eigen::Index> shift_indices(2);
-
-            #pragma omp for schedule (dynamic) ordered
-            for (Eigen::Index kk=0; kk<total_iters; ++kk) {
-                #pragma omp flush (done)
+        // loop through cols and rows
+        for (Eigen::Index k=0; k<n_cols; ++k) {
+            for (Eigen::Index l=0; l<n_rows; ++l) {
                 if (!done) {
-                    // get index in reverse order
-                    auto shift_index = std::get<1>(sorted[total_iters - kk - 1]);
+                    // inputs and outputs
+                    Eigen::MatrixXcd in(n_rows,n_cols), out(n_rows,n_cols);
 
-                    Eigen::Index shift_row = -static_cast<Eigen::Index>(shift_index % n_rows);
-                    Eigen::Index shift_col = -static_cast<Eigen::Index>(shift_index / n_rows);
+                    // current element in flattened 1d vector
+                    int kk = n_rows * k + l;
+                    // get index in reverse order to get largest abs(ifft(1/VV))
+                    auto shift_index = std::get<1>(Z_indices_sorted[n_rows * n_cols - kk - 1]);
 
-                    shift_indices[0] = shift_row;
-                    shift_indices[1] = shift_col;
+                    // indices to shift by
+                    std::vector<Eigen::Index> shift_indices = {static_cast<Eigen::Index>(-shift_index % n_rows),
+                                                               static_cast<Eigen::Index>(-shift_index / n_rows)};
 
-                    in_prod = filter_template.array() * engine_utils::shift_2D(filter_template, shift_indices).array();
+                    // f(x) x f(x-x_d)
+                    Eigen::MatrixXd in_prod = filter_template.array() * engine_utils::shift_2D(filter_template, shift_indices).array();
 
-                    in_local.real() = in_prod;
-                    in_local.imag().setZero();
+                    // populate matrices for fft
+                    in.real() = in_prod;
+                    in.imag().setZero();
 
-                    out_local = engine_utils::fft2<engine_utils::forward>(in_local, ctx.pf, ctx.a, ctx.b);
+                    // fft(f(x) x f(x-x_d))
+                    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
 
-                    ffdq = out_local;
+                    // copy of fft(f(x) x f(x-x_d))
+                    Eigen::MatrixXcd ffdq = out;
 
+                    // R(x) x R(x-x_d)
                     in_prod = rr.array() * engine_utils::shift_2D(rr, shift_indices).array();
 
-                    in_local.real() = in_prod;
-                    in_local.imag().setZero();
+                    // populate matrices for fft
+                    in.real() = in_prod;
+                    in.imag().setZero();
 
-                    out_local = engine_utils::fft2<engine_utils::forward>(in_local, ctx.pf, ctx.a, ctx.b);
+                    // fft(R(x) x R(x-x_d))
+                    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
 
-                    in_local.real() = ffdq.real().array() * out_local.real().array() + ffdq.imag().array() * out_local.imag().array();
-                    in_local.imag() = -ffdq.imag().array() * out_local.real().array() + ffdq.real().array() * out_local.imag().array();
+                    // fft(f(x) x f(x-x_d)) x fft(R(x) x R(x-x_d))
+                    in.real() = ffdq.real().array() * out.real().array() + ffdq.imag().array() * out.imag().array();
+                    in.imag() = -ffdq.imag().array() * out.real().array() + ffdq.real().array() * out.imag().array();
 
-                    out_local = engine_utils::fft2<engine_utils::inverse>(in_local, ctx.pr, ctx.a, ctx.b);
+                    // G = ifft(fft(f(x) x f(x-x_d)) x fft(R(x) x R(x-x_d)))
+                    out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
 
-                    #pragma omp ordered
-                    {
-                        const double scale = zz2d(shift_index) * inv_npix;
+                    // Z(x_d) x G/n_pixels
+                    Eigen::MatrixXd delta_denom = Z(shift_index) * out.real()/n_rows/n_cols;
 
-                        // update denominator
-                        denom.array() += scale * out_local.real().array();
-                        Z_abs_done += Z_abs(shift_index);
+                    // D = D + Z(x_d) x G/n_pixels
+                    denom = denom.array() + delta_denom.array();
+                    Z_abs_done += Z_abs(shift_index);
 
-                        // update progress bar
-                        pb.count(total_iters, pb_stride);
+                    // update status
+                    if ((kk % n_loops) == 1) {
+                        const double denom_norm = denom.norm();
+                        const double delta_norm = delta_denom.norm();
+                        const double rel_update = delta_norm / std::max(denom_norm, 1e-12);
+                        const double tail_frac = (Z_abs_total > 0.0) ? ((Z_abs_total - Z_abs_done) / Z_abs_total) : 0.0;
 
-                        // update status
-                        if ((kk % n_loops) == 1) {
-                            const double denom_norm = denom.norm();
-                            const double delta_norm = std::abs(scale) * out_local.real().norm();
-                            const double rel_update = delta_norm / std::max(denom_norm, 1e-12);
-                            const double tail_frac = (Z_abs_total > 0.0) ? ((Z_abs_total - Z_abs_done) / Z_abs_total) : 0.0;
+                        const double elapsed_s = std::chrono::duration<double>(
+                            std::chrono::steady_clock::now() - denom_start).count();
+                        const double step_s = elapsed_s - last_log_s;
+                        last_log_s = elapsed_s;
 
-                            const double elapsed_s = std::chrono::duration<double>(
-                                std::chrono::steady_clock::now() - denom_start).count();
-                            const double step_s = elapsed_s - last_log_s;
-                            last_log_s = elapsed_s;
+                        logger->info("{} iteration(s) complete. rel_update={} tail_frac={} elapsed_s={} step_s={}",
+                                     kk, static_cast<float>(rel_update), static_cast<float>(tail_frac),
+                                     static_cast<float>(elapsed_s), static_cast<float>(step_s));
 
-                            SPDLOG_INFO("{} iteration(s) complete. rel_update={} tail_frac={} elapsed_s={} step_s={}",
-                                        kk, static_cast<float>(rel_update), static_cast<float>(tail_frac),
-                                        static_cast<float>(elapsed_s), static_cast<float>(step_s));
-
-                            if (rel_update < denom_rel_tol_local && tail_frac < tail_frac_tol_local) {
-                                done = true;
-                            #pragma omp flush(done)
-                            }
+                        if (rel_update < denom_rel_tol && tail_frac < tail_frac_tol) {
+                            done = true;
                         }
                     }
                 }
             }
         }
-        for (Eigen::Index i=0; i<n_rows; i++) {
-            for (Eigen::Index j=0; j<n_cols; j++) {
+
+        // zero out extremely small denom values
+        for (Eigen::Index i=0; i<n_rows; ++i) {
+            for (Eigen::Index j=0; j<n_cols; ++j) {
                 if (denom(i,j) < denom_limit) {
                     denom(i,j) = 0;
                 }
             }
         }
     }
+
+    // free fftw vectors
+    fftw_free(a);
+    fftw_free(b);
+
+    // destroy fftw plans
+    fftw_destroy_plan(pf);
+    fftw_destroy_plan(pr);
 }
 
 } // namespace mapmaking
