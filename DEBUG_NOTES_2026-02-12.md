@@ -194,3 +194,97 @@ File:
 
 4. Beammap detector mode:
 - Verify detector-group beammap run does not regress after index sizing change.
+
+---
+
+# Debug Notes (2026-02-12) - Wiener Filter Speedups (OMP Path)
+
+## Goal
+Reduce Wiener filter walltime in Unity-style builds (`CITLALI_USE_WIENER_FILTER_OMP=ON`) by:
+1. Parallelizing noise-map filtering.
+2. Reusing FFTW plans/buffers instead of recreating per call.
+3. Removing per-iteration matrix allocations in denominator loop.
+
+## Build context checked
+
+From `~/foo/CMakeCache.txt`:
+- `CITLALI_USE_WIENER_FILTER_OMP:BOOL=ON`
+- `CMAKE_BUILD_TYPE:STRING=Release`
+- OpenMP flags enabled (`-fopenmp`)
+
+## Summary of code changes
+
+### A) Parallel noise filtering in engine
+
+File:
+- `include/citlali/core/engine/engine.h`
+
+Change:
+- In `Engine::run_wiener_filter(...)`, when `CITLALI_USE_WIENER_FILTER_OMP` is set,
+  noise map filtering now runs with `#pragma omp parallel for schedule(dynamic)`.
+- Uses new Wiener method `filter_noise_threadsafe(...)`.
+- Non-OMP path keeps previous sequential progress-bar loop.
+
+### B) FFTW context reuse in OMP Wiener filter
+
+File:
+- `include/citlali/core/mapmaking/wiener_filter_omp.h`
+
+Change:
+- Added `WienerFilter::FFTWContext` with cached `a/b` buffers and forward/inverse plans.
+- Added `get_thread_fft_context(rows, cols)` returning thread-local FFTW context.
+- Planning is guarded with `#pragma omp critical (wfFFTWPlan)` to avoid FFTW planner races.
+
+### C) Reused numerator/convolution compute kernels
+
+File:
+- `include/citlali/core/mapmaking/wiener_filter_omp.h`
+
+Added helpers:
+- `calc_numerator_from_input(...)`
+- `run_convolve_on_input(...)`
+- `divide_by_denom(...)`
+
+Change:
+- `calc_numerator()` now calls `calc_numerator_from_input(filtered_map)`.
+- `run_convolve()` now calls `run_convolve_on_input(filtered_map, normalize)`.
+
+### D) Denominator loop allocation reduction
+
+File:
+- `include/citlali/core/mapmaking/wiener_filter_omp.h`
+
+Change in `calc_denominator()`:
+- Removed repeated creation/destruction of per-thread FFTW plans on each call.
+- Replaced with per-thread cached contexts via `get_thread_fft_context(...)`.
+- Moved temporary matrices (`in_local`, `out_local`, `ffdq`, `in_prod`, `shift_indices`) outside
+  the inner iteration loop so they are reused across iterations.
+- Removed per-iteration `Eigen::MatrixXd updater` allocation; uses scalar-array update directly.
+
+## Rollback plan
+
+1. Full rollback:
+- Revert:
+  - `include/citlali/core/mapmaking/wiener_filter_omp.h`
+  - `include/citlali/core/engine/engine.h`
+
+2. Partial rollback (keep safer changes):
+- Keep FFTW context reuse and denominator reuse.
+- Restore sequential noise loop in `engine.h` if thread-safety concerns appear.
+
+3. Minimal rollback:
+- Keep only thread-safe parallel noise loop removed; return fully to prior behavior.
+
+## Validation checklist
+
+1. Performance:
+- Compare filter walltime before/after with same obs + config.
+- Track map loop total and per-map filtering times.
+
+2. Numerical parity:
+- Compare filtered signal/weight maps.
+- Compare filtered noise maps for same random seed/config.
+
+3. Stability:
+- Run with `noise_maps.enabled=true` and `n_noise_maps > 1`.
+- Run with and without `wiener_filter.lowpass_only`.
