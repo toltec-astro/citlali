@@ -1598,7 +1598,13 @@ void Engine::create_tod_files() {
     }
 
     // signal
-    netCDF::NcVar signal_v = fo.addVar("signal", rtc_mini_output ? netCDF::ncFloat : netCDF::ncDouble, dims);
+    netCDF::NcVar signal_v;
+    if (rtc_mini_output) {
+        signal_v = fo.addVar("signal", netCDF::ncFloat, dims);
+    }
+    else {
+        signal_v = fo.addVar("signal", netCDF::ncDouble, dims);
+    }
     signal_v.putAtt("units",omb.sig_unit);
 
     // chunk sizes
@@ -1614,7 +1620,13 @@ void Engine::create_tod_files() {
     signal_v.setChunking(chunkMode, chunkSizes);
 
     // flags
-    netCDF::NcVar flags_v = fo.addVar("flags", rtc_mini_output ? netCDF::ncByte : netCDF::ncDouble, dims);
+    netCDF::NcVar flags_v;
+    if (rtc_mini_output) {
+        flags_v = fo.addVar("flags", netCDF::ncByte, dims);
+    }
+    else {
+        flags_v = fo.addVar("flags", netCDF::ncDouble, dims);
+    }
     flags_v.putAtt("units","N/A");
     if (rtc_mini_output) {
         flags_v.putAtt("comment", "0=good,1=flagged");
