@@ -282,6 +282,8 @@ public:
 
     // tod output
     bool run_tod_output, write_evals;
+    // compact rtc TOD output mode (float signal, byte flags, no per-detector pointing/kernel vars)
+    bool tod_output_mini = false;
 
     // run fruit loops
     bool run_fruit_loops;
@@ -1445,23 +1447,6 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
     Eigen::Index n_pts = in.scans.data.rows();
     Eigen::Index n_dets = in.scans.data.cols();
 
-    // tangent plane pointing for each detector
-    Eigen::MatrixXd lat(n_pts,n_dets), lon(n_pts,n_dets);
-
-    // loop through detectors and get tangent plane pointing
-    for (Eigen::Index i=0; i<n_dets; ++i) {
-        // detector index in apt
-        auto det_index = i;
-        double az_off = calib.apt["x_t"](det_index);
-        double el_off = calib.apt["y_t"](det_index);
-
-        // get tangent pointing
-        auto [det_lat, det_lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off, pixel_axes,
-                                                                  pointing_offsets_arcsec, map_grouping, apply_det_offsets);
-        lat.col(i) = std::move(det_lat);
-        lon.col(i) = std::move(det_lon);
-    }
-
     // get variables
     auto vars = fo.getVars();
 
@@ -1507,17 +1492,53 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
     NcVar det_ra_v = fo.getVar("det_ra");
     NcVar det_dec_v = fo.getVar("det_dec");
 
+    const bool write_det_pointing = (!det_lat_v.isNull() && !det_lon_v.isNull()) ||
+                                    (!det_ra_v.isNull() && !det_dec_v.isNull());
+    Eigen::MatrixXd lat, lon;
+    if (write_det_pointing) {
+        // tangent plane pointing for each detector
+        lat.resize(n_pts, n_dets);
+        lon.resize(n_pts, n_dets);
+
+        // loop through detectors and get tangent plane pointing
+        for (Eigen::Index i=0; i<n_dets; ++i) {
+            // detector index in apt
+            auto det_index = i;
+            double az_off = calib.apt["x_t"](det_index);
+            double el_off = calib.apt["y_t"](det_index);
+
+            // get tangent pointing
+            auto [det_lat, det_lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off, pixel_axes,
+                                                                      pointing_offsets_arcsec, map_grouping, apply_det_offsets);
+            lat.col(i) = std::move(det_lat);
+            lon.col(i) = std::move(det_lon);
+        }
+    }
+
     // append data (doing this per row is way faster than transposing
     // and populating them at once)
     for (std::size_t i=0; i<TULA_SIZET(n_pts); ++i) {
         start_index[0] = n_pts_exists + i;
         // append scans
-        Eigen::VectorXd scans = in.scans.data.row(i);
-        signal_v.putVar(start_index, size, scans.data());
+        if (tod_output_mini) {
+            Eigen::VectorXf scans = in.scans.data.row(i).template cast<float>();
+            signal_v.putVar(start_index, size, scans.data());
+        }
+        else {
+            Eigen::VectorXd scans = in.scans.data.row(i);
+            signal_v.putVar(start_index, size, scans.data());
+        }
 
         // append flags
-        Eigen::VectorXi flags_int = in.flags.data.row(i).template cast<int> ();
-        flags_v.putVar(start_index, size, flags_int.data());
+        if (tod_output_mini) {
+            Eigen::Matrix<signed char, 1, Eigen::Dynamic> flags_byte =
+                in.flags.data.row(i).template cast<signed char>();
+            flags_v.putVar(start_index, size, flags_byte.data());
+        }
+        else {
+            Eigen::VectorXi flags_int = in.flags.data.row(i).template cast<int> ();
+            flags_v.putVar(start_index, size, flags_int.data());
+        }
 
         // append kernel
         if (!kernel_v.isNull()) {
@@ -1525,23 +1546,29 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
             kernel_v.putVar(start_index, size, kernel.data());
         }
 
-        // append detector latitudes
-        Eigen::VectorXd lat_row = lat.row(i);
-        det_lat_v.putVar(start_index, size, lat_row.data());
+        if (write_det_pointing) {
+            // append detector latitudes
+            Eigen::VectorXd lat_row = lat.row(i);
+            if (!det_lat_v.isNull()) {
+                det_lat_v.putVar(start_index, size, lat_row.data());
+            }
 
-        // append detector longitudes
-        Eigen::VectorXd lon_row = lon.row(i);
-        det_lon_v.putVar(start_index, size, lon_row.data());
+            // append detector longitudes
+            Eigen::VectorXd lon_row = lon.row(i);
+            if (!det_lon_v.isNull()) {
+                det_lon_v.putVar(start_index, size, lon_row.data());
+            }
 
-        if (pixel_axes == "radec") {
-            // get absolute pointing
-            auto [dec, ra] = engine_utils::tangent_to_abs(lat_row, lon_row, cra, cdec);
+            if (pixel_axes == "radec" && !det_ra_v.isNull() && !det_dec_v.isNull()) {
+                // get absolute pointing
+                auto [dec, ra] = engine_utils::tangent_to_abs(lat_row, lon_row, cra, cdec);
 
-            // append detector ra
-            det_ra_v.putVar(start_index, size, ra.data());
+                // append detector ra
+                det_ra_v.putVar(start_index, size, ra.data());
 
-            // append detector dec
-            det_dec_v.putVar(start_index, size, dec.data());
+                // append detector dec
+                det_dec_v.putVar(start_index, size, dec.data());
+            }
         }
     }
 

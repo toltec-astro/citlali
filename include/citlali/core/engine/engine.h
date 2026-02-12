@@ -591,6 +591,13 @@ void Engine::get_timestream_config(CT &config) {
     // output rtc
     get_config_value(config, run_tod_output_rtc, missing_keys, invalid_keys,
                      std::tuple{"timestream","raw_time_chunk","output","enabled"});
+    rtcproc.tod_output_mini = false;
+    if (run_tod_output_rtc && config.has(std::tuple{"timestream","raw_time_chunk","output","mode"})) {
+        std::string rtc_output_mode = "full";
+        get_config_value(config, rtc_output_mode, missing_keys, invalid_keys,
+                         std::tuple{"timestream","raw_time_chunk","output","mode"}, {"full","mini"});
+        rtcproc.tod_output_mini = (rtc_output_mode == "mini");
+    }
     // output ptc
     get_config_value(config, run_tod_output_ptc, missing_keys, invalid_keys,
                      std::tuple{"timestream","processed_time_chunk","output","enabled"});
@@ -1585,8 +1592,13 @@ void Engine::create_tod_files() {
     std::vector<int> output_scan_init(static_cast<std::size_t>(n_tod_output_scans), -2147483647);
     output_scan_index_v.putVar(output_scan_init.data());
 
+    bool rtc_mini_output = false;
+    if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {
+        rtc_mini_output = rtcproc.tod_output_mini;
+    }
+
     // signal
-    netCDF::NcVar signal_v = fo.addVar("signal",netCDF::ncDouble, dims);
+    netCDF::NcVar signal_v = fo.addVar("signal", rtc_mini_output ? netCDF::ncFloat : netCDF::ncDouble, dims);
     signal_v.putAtt("units",omb.sig_unit);
 
     // chunk sizes
@@ -1602,38 +1614,43 @@ void Engine::create_tod_files() {
     signal_v.setChunking(chunkMode, chunkSizes);
 
     // flags
-    netCDF::NcVar flags_v = fo.addVar("flags",netCDF::ncDouble, dims);
+    netCDF::NcVar flags_v = fo.addVar("flags", rtc_mini_output ? netCDF::ncByte : netCDF::ncDouble, dims);
     flags_v.putAtt("units","N/A");
+    if (rtc_mini_output) {
+        flags_v.putAtt("comment", "0=good,1=flagged");
+    }
     flags_v.setChunking(chunkMode, chunkSizes);
 
     // kernel
-    if (rtcproc.run_kernel) {
+    if (rtcproc.run_kernel && !rtc_mini_output) {
         netCDF::NcVar kernel_v = fo.addVar("kernel",netCDF::ncDouble, dims);
         kernel_v.putAtt("units","N/A");
         kernel_v.setChunking(chunkMode, chunkSizes);
     }
 
-    // detector lat
-    netCDF::NcVar det_lat_v = fo.addVar("det_lat",netCDF::ncDouble, dims);
-    det_lat_v.putAtt("units","rad");
-    det_lat_v.setChunking(chunkMode, chunkSizes);
+    if (!rtc_mini_output) {
+        // detector lat
+        netCDF::NcVar det_lat_v = fo.addVar("det_lat",netCDF::ncDouble, dims);
+        det_lat_v.putAtt("units","rad");
+        det_lat_v.setChunking(chunkMode, chunkSizes);
 
-    // detector lon
-    netCDF::NcVar det_lon_v = fo.addVar("det_lon",netCDF::ncDouble, dims);
-    det_lon_v.putAtt("units","rad");
-    det_lon_v.setChunking(chunkMode, chunkSizes);
+        // detector lon
+        netCDF::NcVar det_lon_v = fo.addVar("det_lon",netCDF::ncDouble, dims);
+        det_lon_v.putAtt("units","rad");
+        det_lon_v.setChunking(chunkMode, chunkSizes);
 
-    // calc absolute pointing if in radec frame
-    if (telescope.pixel_axes == "radec") {
-        // detector absolute ra
-        netCDF::NcVar det_ra_v = fo.addVar("det_ra",netCDF::ncDouble, dims);
-        det_ra_v.putAtt("units","rad");
-        det_ra_v.setChunking(chunkMode, chunkSizes);
+        // calc absolute pointing if in radec frame
+        if (telescope.pixel_axes == "radec") {
+            // detector absolute ra
+            netCDF::NcVar det_ra_v = fo.addVar("det_ra",netCDF::ncDouble, dims);
+            det_ra_v.putAtt("units","rad");
+            det_ra_v.setChunking(chunkMode, chunkSizes);
 
-        // detector absolute dec
-        netCDF::NcVar det_dec_v = fo.addVar("det_dec",netCDF::ncDouble, dims);
-        det_dec_v.putAtt("units","rad");
-        det_dec_v.setChunking(chunkMode, chunkSizes);
+            // detector absolute dec
+            netCDF::NcVar det_dec_v = fo.addVar("det_dec",netCDF::ncDouble, dims);
+            det_dec_v.putAtt("units","rad");
+            det_dec_v.setChunking(chunkMode, chunkSizes);
+        }
     }
 
     // add apt table
@@ -1740,6 +1757,9 @@ void Engine::cli_summary() {
     logger->info("number of scans: {}",telescope.scan_indices.cols());
     if (run_tod_output) {
         logger->info("TOD output scans: {}", n_tod_output_scans);
+        if (tod_output_type == "rtc" || tod_output_type == "both") {
+            logger->info("RTC TOD output mode: {}", rtcproc.tod_output_mini ? "mini" : "full");
+        }
     }
 
     // test getting memory usage for fun
