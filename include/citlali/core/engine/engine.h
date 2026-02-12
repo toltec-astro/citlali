@@ -2678,12 +2678,15 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* n_io = nullptr;
     // directory name
     std::string dir_name;
+    // logging label
+    const char* map_label = "filtered maps";
 
     // filtered obs maps
     if constexpr (map_t == mapmaking::FilteredObs) {
         f_io = &filtered_fits_io_vec;
         n_io = &filtered_noise_fits_io_vec;
         dir_name = obsnum_dir_name + "filtered/";
+        map_label = "filtered obs maps";
     }
 
     // filtered coadded maps
@@ -2691,8 +2694,10 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         f_io = &filtered_coadd_fits_io_vec;
         n_io = &filtered_coadd_noise_fits_io_vec;
         dir_name = coadd_dir_name + "filtered/";
+        map_label = "filtered coadded maps";
     }
 
+    logger->info("preparing {} FITS headers ({} files)", map_label, f_io->size());
     for (Eigen::Index i=0; i<f_io->size(); ++i) {
         // get the array for the given map
         // add primary hdu
@@ -2710,21 +2715,27 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         auto array = maps_to_arrays(i);
         // get file index
         auto map_index = arrays_to_maps(i);
+        logger->info("starting {} map {}/{} (array={})",
+                     map_label, i + 1, n_maps, toltec_io.array_name_map[array]);
         // init fwhm in pixels
         wiener_filter.init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/mb.pixel_size_rad;
         // make wiener filter template
         wiener_filter.make_template(mb, calib.apt, wiener_filter.template_fwhm_rad[toltec_io.array_name_map[array]],i);
         // run the filter for the current map
         wiener_filter.filter_maps(mb,i);
+        logger->info("map filtering complete for {} map {}/{}", map_label, i + 1, n_maps);
 
         // filter noise maps
         if (run_noise) {
 #if defined(CITLALI_USE_WIENER_FILTER_OMP)
-            logger->info("filtering noise");
+            logger->info("filtering noise realizations for {} map {}/{} (n_noise={})",
+                         map_label, i + 1, n_maps, mb.n_noise);
             #pragma omp parallel for schedule(dynamic)
             for (Eigen::Index j=0; j<mb.n_noise; ++j) {
                 wiener_filter.filter_noise_threadsafe(mb, i, j);
             }
+            logger->info("noise filtering complete for {} map {}/{}",
+                         map_label, i + 1, n_maps);
 #else
             tula::logging::progressbar pb(
                 [&](const auto &msg) { logger->info("{}", msg); }, 100,
@@ -2734,10 +2745,13 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
                 wiener_filter.filter_noise(mb, i, j);
                 pb.count(mb.n_noise, mb.n_noise / 100);
             }
+            logger->info("noise filtering complete for {} map {}/{}",
+                         map_label, i + 1, n_maps);
 #endif
 
             if (wiener_filter.normalize_error) {
-                logger->info("renormalizing errors");
+                logger->info("renormalizing errors for {} map {}/{}",
+                             map_label, i + 1, n_maps);
                 bool scaled = false;
                 if (!mb.noise.empty() && mb.n_noise > 0) {
                     Eigen::MatrixXd var_map = Eigen::MatrixXd::Zero(mb.n_rows, mb.n_cols);
@@ -2815,6 +2829,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         if (write_filtered_maps_partial) {
             // only write if saving all iterations or on last iteration
             // write maps immediately after filtering due to computation time
+            logger->info("writing {} map {}/{} to disk", map_label, i + 1, n_maps);
             write_maps(f_io,n_io,pmb,i);
 
             logger->info("file has been written to:");
@@ -2830,16 +2845,22 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
             // check if we're moving onto a new file
             if (i<n_maps-1) {
                 if (arrays_to_maps(i+1) > arrays_to_maps(i) && close_file) {
+                    logger->info("closing FITS handle for {}", f_io->at(map_index).filepath);
                     f_io->at(map_index).pfits->destroy();
+                    logger->info("closed FITS handle for {}", f_io->at(map_index).filepath);
                 }
             }
         }
+
+        logger->info("completed {} map {}/{}", map_label, i + 1, n_maps);
     }
 
     if (write_filtered_maps_partial) {
         // clear fits file vectors to ensure its closed.
+        logger->info("finalizing {} FITS handles", map_label);
         f_io->clear();
         n_io->clear();
+        logger->info("finished finalizing {} FITS handles", map_label);
     }
 }
 

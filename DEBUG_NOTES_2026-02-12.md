@@ -288,3 +288,38 @@ Change in `calc_denominator()`:
 3. Stability:
 - Run with `noise_maps.enabled=true` and `n_noise_maps > 1`.
 - Run with and without `wiener_filter.lowpass_only`.
+
+---
+
+# Debug Notes (2026-02-12) - Wiener Filter Runtime Checkpoints
+
+## Goal
+Improve runtime visibility during Wiener filtering and filtered-map file output by adding
+`info` logs at key checkpoints where long pauses were previously silent.
+
+## Summary of changes
+
+File:
+- `include/citlali/core/engine/engine.h`
+
+Function:
+- `Engine::run_wiener_filter(...)`
+
+Added `info` checkpoints for:
+1. FITS header preparation start.
+2. Per-map start (`map i/n`, array name).
+3. Map filtering complete.
+4. Noise filtering start/complete (including `n_noise` on OMP path).
+5. Error renormalization start (with map context).
+6. Per-map write start.
+7. FITS handle close start/complete when `pfits->destroy()` is called.
+8. Per-map complete.
+9. Final vector clear/finalize start/complete.
+
+## Rollback plan
+
+If logs are too chatty:
+1. Revert only this file:
+- `include/citlali/core/engine/engine.h`
+2. Specifically remove the `logger->info(...)` additions in
+`Engine::run_wiener_filter(...)` and keep all data-path logic unchanged.
