@@ -10,7 +10,7 @@
 
 #include <citlali/core/utils/constants.h>
 
-namespace internal {
+namespace citlali_ptc_internal {
 
 template <typename Derived>
 void smooth_edge_truncate(Eigen::DenseBase<Derived> &in, Eigen::DenseBase<Derived> &out, int w) {
@@ -66,7 +66,7 @@ template <typename UnaryOp> struct MoveEnabledUnaryOp {
     template <typename T, typename... Args>
     decltype(auto) operator()(T &&in, Args &&... args) {
         if constexpr (std::is_lvalue_reference<T>::value ||
-                      !internal::has_storage<T>::value) {
+                      !citlali_ptc_internal::has_storage<T>::value) {
             // lvalue ref, either expression or non-expression
             // return expression that builds on top of input
             return m_func(std::forward<T>(in),
@@ -153,9 +153,9 @@ FreqStat psd(const Eigen::DenseBase<DerivedA> &_scan,
              Eigen::DenseBase<DerivedB> &psd, Eigen::DenseBase<DerivedC> *freqs,
              double fsmp) {
     // decltype(auto) scan = _scan.derived();
-    typename internal::const_ref<DerivedA> scan(_scan.derived());
+    typename citlali_ptc_internal::const_ref<DerivedA> scan(_scan.derived());
 
-    auto stat = internal::stat(scan.size(), fsmp);
+    auto stat = citlali_ptc_internal::stat(scan.size(), fsmp);
     auto [npts, nfreqs, dfreq] = stat;
 
     // prepare fft
@@ -169,7 +169,7 @@ FreqStat psd(const Eigen::DenseBase<DerivedA> &_scan,
         //SPDLOG_INFO("apply hann window");
         Eigen::VectorXd scns = scan.block(0,0,npts,1);
         fft.fwd(freqdata, scns.cwiseProduct(
-                   internal::hann(npts)).eval());
+                   citlali_ptc_internal::hann(npts)).eval());
     }
 
     else if (win == NoWindow) {
@@ -183,12 +183,12 @@ FreqStat psd(const Eigen::DenseBase<DerivedA> &_scan,
     psd.segment(1, nfreqs - 2) *= 2.;
 
     Eigen::VectorXd smoothed_psd(psd.size());
-    internal::smooth_edge_truncate(psd, smoothed_psd, 10);
+    citlali_ptc_internal::smooth_edge_truncate(psd, smoothed_psd, 10);
     psd = std::move(smoothed_psd);
 
     // make the freqency array when requested
     if (freqs) {
-        freqs->operator=(internal::freq(npts, nfreqs, dfreq));
+        freqs->operator=(citlali_ptc_internal::freq(npts, nfreqs, dfreq));
     }
     return stat;
 }
@@ -200,7 +200,7 @@ FreqStat psds(const std::vector<DerivedA> &ptcs,
               Eigen::DenseBase<DerivedB> &_psds,
               Eigen::DenseBase<DerivedC> *freqs, double fsmp, Eigen::Index det) {
 
-    typename internal::ref<DerivedB> psds(_psds.derived());
+    typename citlali_ptc_internal::ref<DerivedB> psds(_psds.derived());
 
     // prepare common freq grid
     Eigen::Index nscans = ptcs.size();
@@ -215,9 +215,9 @@ FreqStat psds(const std::vector<DerivedA> &ptcs,
     Eigen::Index len = tula::alg::median(scanlengths);
 
     // get the common freq stat and freq array
-    auto stat = internal::stat(len, fsmp);
+    auto stat = citlali_ptc_internal::stat(len, fsmp);
     auto [npts, nfreqs, dfreq] = stat;
-    Eigen::VectorXd _freqs = internal::freq(npts, nfreqs, dfreq);
+    Eigen::VectorXd _freqs = citlali_ptc_internal::freq(npts, nfreqs, dfreq);
 
     // compute psd for each scan and interpolate onto the common freq grid
     psds.resize(nfreqs, nscans);
@@ -229,7 +229,7 @@ FreqStat psds(const std::vector<DerivedA> &ptcs,
 
     // get the psds
     for (Eigen::Index i=0; i<nscans; ++i) {
-        internal::psd<win>(ptcs[i].scans.data.block(0,det,scanlengths(i),1), tpsd,
+        citlali_ptc_internal::psd<win>(ptcs[i].scans.data.block(0,det,scanlengths(i),1), tpsd,
                       &tfreqs, fsmp);
         // interpolate (tfreqs, tpsd) on to _freqs
         td << tfreqs.size();
@@ -248,31 +248,31 @@ FreqStat psds(const std::vector<DerivedA> &ptcs,
 }
 
 // calc sens from psd
-inline auto psd2sen = internal::MoveEnabledUnaryOp([](auto&& psd) {
+inline auto psd2sen = citlali_ptc_internal::MoveEnabledUnaryOp([](auto&& psd) {
     return (psd / 2.).cwiseSqrt();  // V * s^(1/2)
 });
 
 
-} // namespace internal
+} // namespace citlali_ptc_internal
 
 template <typename tc_t, typename DerivedA, typename DerivedB>
 void calc_sensitivity(
     std::vector<tc_t> &ptcs,
     Eigen::DenseBase<DerivedA> &sensitivities, // V * s^(1/2)
     Eigen::DenseBase<DerivedB> &noisefluxes,   // V, = sqrt(\int PSD df)
-    double fsmp, Eigen::Index det, internal::Interval<double> freqrange = {3., 5.}) {
+    double fsmp, Eigen::Index det, citlali_ptc_internal::Interval<double> freqrange = {3., 5.}) {
 
     // get psds
     Eigen::MatrixXd tpsds;
-    auto [npts, nfreqs, dfreq] = internal::psds<internal::Hanning>(
-        ptcs, tpsds, internal::ei_nullptr(), fsmp, det);
+    auto [npts, nfreqs, dfreq] = citlali_ptc_internal::psds<citlali_ptc_internal::Hanning>(
+        ptcs, tpsds, citlali_ptc_internal::ei_nullptr(), fsmp, det);
 
     // compute noises by integrate over all frequencies
     noisefluxes = (tpsds * dfreq).colwise().sum().cwiseSqrt();
     auto meannoise = noisefluxes.mean();
 
     // get sensitivity in V * s^(1/2)
-    Eigen::MatrixXd sens = internal::psd2sen(std::move(tpsds));
+    Eigen::MatrixXd sens = citlali_ptc_internal::psd2sen(std::move(tpsds));
 
     // compute sensitivity with given freqrange
     // make use the fact that freqs = i * df to find Eigen::Index i

@@ -323,3 +323,34 @@ If logs are too chatty:
 - `include/citlali/core/engine/engine.h`
 2. Specifically remove the `logger->info(...)` additions in
 `Engine::run_wiener_filter(...)` and keep all data-path logic unchanged.
+
+---
+
+# Debug Notes (2026-02-12) - LTO ODR Warning Fix (PTC Sensitivity)
+
+## Symptom
+With `-march=native` + LTO enabled, link-time ODR warnings appeared for:
+- `internal::Window`
+- `internal::hann(...)`
+
+between:
+- `include/citlali/core/timestream/ptc/sensitivity.h`
+- `build/_deps/kidscpp-src/include/kids/timestream/solver_psd.h`
+
+## Root cause
+Both headers defined entities in a global `namespace internal` with overlapping names,
+which is an ODR hazard and can trigger misoptimization under LTO.
+
+## Fix
+File changed:
+- `include/citlali/core/timestream/ptc/sensitivity.h`
+
+Change:
+- Renamed local namespace from `internal` to `citlali_ptc_internal`.
+- Updated all internal references in that header accordingly.
+
+## Rollback
+If needed, revert:
+- `include/citlali/core/timestream/ptc/sensitivity.h`
+
+(Warning may return when LTO is enabled.)
