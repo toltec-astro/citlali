@@ -353,11 +353,12 @@ auto Pointing::run(KidsProc &kidsproc) {
         }
 
         // write rtc timestreams
-        if (write_rtc) {
-            rtc_writer->wait_turn(rtcdata.index.data);
+        const auto rtc_scan_row = tod_output_scan_row(rtcdata.index.data);
+        if (write_rtc && rtc_scan_row >= 0) {
+            rtc_writer->wait_turn(rtc_scan_row);
             logger->info("writing raw time chunk");
             rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
-                                     ptcdata.pointing_offsets_arcsec.data, calib);
+                                     ptcdata.pointing_offsets_arcsec.data, calib, false, rtc_scan_row);
             rtc_writer->advance();
         }
 
@@ -414,11 +415,12 @@ auto Pointing::run(KidsProc &kidsproc) {
         calib_scan = ptcproc.reset_weights(ptcdata, calib, map_grouping);
 
         // write ptc timestreams
-        if (write_ptc) {
-            ptc_writer->wait_turn(ptcdata.index.data);
+        const auto ptc_scan_row = tod_output_scan_row(ptcdata.index.data);
+        if (write_ptc && ptc_scan_row >= 0) {
+            ptc_writer->wait_turn(ptc_scan_row);
             logger->info("writing processed time chunk");
             ptcproc.append_to_netcdf(ptcdata, tod_filename["ptc"], map_grouping, telescope.pixel_axes,
-                                     ptcdata.pointing_offsets_arcsec.data, calib);
+                                     ptcdata.pointing_offsets_arcsec.data, calib, false, ptc_scan_row);
             ptc_writer->advance();
         }
 

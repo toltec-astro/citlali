@@ -136,6 +136,7 @@ timestream: # timestream reduction parameters
       upper_tod_inv_var_factor: 0.0 # flag detectors above this inv variance limit (ignored if 0)
     output:
       enabled: false # enable or disable rtc TOD output
+      indices: all # chunk indices to write: "all" or [1,3,7] (1-based)
   processed_time_chunk:
     clean: # remove (hopefully) the atmospheric signal
       enabled: false # enable or disable cleaning
@@ -158,6 +159,7 @@ timestream: # timestream reduction parameters
       upper_tod_inv_var_factor: 0.0 # flag detectors above this inv variance limit (ignored if 0)
     output:
       enabled: false # enable or disable ptc TOD output
+      indices: all # chunk indices to write: "all" or [1,3,7] (1-based)
   fruit_loops: # algorithm to use input maps to subtract out source before cleaning and re-add afterwards
     enabled: false # enable or disable fruit loops algorithm (this overrides beammap source fitting if in beammap mode)
     path: null # path for maps.  If null use maps that were generated in previous iter.  If path, use maps in that redu dir.

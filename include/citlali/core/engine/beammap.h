@@ -477,11 +477,12 @@ auto Beammap::run_timestream(KidsProc &kidsproc) {
         }
 
         // write rtc timestreams
-        if (write_rtc) {
-            rtc_writer->wait_turn(rtcdata.index.data);
+        const auto rtc_scan_row = tod_output_scan_row(rtcdata.index.data);
+        if (write_rtc && rtc_scan_row >= 0) {
+            rtc_writer->wait_turn(rtc_scan_row);
             logger->info("writing raw time chunk");
             rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
-                                     ptcdata.pointing_offsets_arcsec.data, calib_scan, true);
+                                     ptcdata.pointing_offsets_arcsec.data, calib_scan, true, rtc_scan_row);
             rtc_writer->advance();
         }
 
@@ -788,8 +789,12 @@ void Beammap::run_loop() {
                 logger->info("writing processed time chunk");
                 if (current_iter == beammap_tod_output_iter) {
                     for (Eigen::Index i=0; i<telescope.scan_indices.cols(); ++i) {
+                        const auto ptc_scan_row = tod_output_scan_row(i);
+                        if (ptc_scan_row < 0) {
+                            continue;
+                        }
                         ptcproc.append_to_netcdf(ptcs[i], tod_filename["ptc"], map_grouping, telescope.pixel_axes,
-                                                 ptcs[i].pointing_offsets_arcsec.data, calib_scans[i], true);
+                                                 ptcs[i].pointing_offsets_arcsec.data, calib_scans[i], true, ptc_scan_row);
                     }
                 }
             }

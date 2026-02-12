@@ -349,7 +349,8 @@ public:
     // append time chunk params common to rtcs and ptcs
     template <TCDataKind tcdata_t, class calib_t, typename pointing_offset_t>
     void append_base_to_netcdf(netCDF::NcFile &, TCData<tcdata_t, Eigen::MatrixXd> &, std::string,
-                               std::string &, pointing_offset_t &, calib_t &, bool apply_det_offsets = false);
+                               std::string &, pointing_offset_t &, calib_t &, bool apply_det_offsets = false,
+                               Eigen::Index scan_row_index = -1);
 };
 
 template <class calib_t>
@@ -1434,7 +1435,7 @@ auto TCProc::mask_region(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, 
 template <TCDataKind tcdata_t, class calib_t, typename pointing_offset_t>
 void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::MatrixXd> &in, std::string map_grouping,
                                    std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec, calib_t &calib,
-                                   bool apply_det_offsets) {
+                                   bool apply_det_offsets, Eigen::Index scan_row_index) {
     using netCDF::NcDim;
     using netCDF::NcFile;
     using netCDF::NcType;
@@ -1577,11 +1578,12 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
     // vector to hold current scan indices
     Eigen::VectorXd scan_indices(2);
     Eigen::VectorXi raw_scan_indices(4);
+    const Eigen::Index scan_row = (scan_row_index >= 0) ? scan_row_index : in.index.data;
 
     // if not on first scan, grab last scan and add size of current scan
-    if (in.index.data > 0) {
+    if (scan_row > 0) {
         // start indices for data
-        std::vector<std::size_t> scan_indices_start_index = {TULA_SIZET(in.index.data-1), 0};
+        std::vector<std::size_t> scan_indices_start_index = {TULA_SIZET(scan_row-1), 0};
         // size for data
         std::vector<std::size_t> scan_indices_size = {1, 2};
         vars.find("scan_indices")->second.getVar(scan_indices_start_index,scan_indices_size,scan_indices.data());
@@ -1599,15 +1601,22 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
                         static_cast<int>(scan_indices(0)), static_cast<int>(scan_indices(1));
 
     // add current raw scan indices row (output timebase)
-    std::vector<std::size_t> raw_scan_indices_start_index = {TULA_SIZET(in.index.data), 0};
+    std::vector<std::size_t> raw_scan_indices_start_index = {TULA_SIZET(scan_row), 0};
     std::vector<std::size_t> raw_scan_indices_size = {1, 4};
     NcVar raw_scan_indices_v = fo.getVar("raw_scan_indices");
     raw_scan_indices_v.putVar(raw_scan_indices_start_index, raw_scan_indices_size, raw_scan_indices.data());
 
     // add current scan indices row
-    std::vector<std::size_t> scan_indices_start_index = {TULA_SIZET(in.index.data), 0};
+    std::vector<std::size_t> scan_indices_start_index = {TULA_SIZET(scan_row), 0};
     std::vector<std::size_t> scan_indices_size = {1, 2};
     NcVar scan_indices_v = fo.getVar("scan_indices");
     scan_indices_v.putVar(scan_indices_start_index, scan_indices_size,scan_indices.data());
+
+    // add mapping to original scan number (1-based)
+    std::vector<std::size_t> output_scan_index_start_index = {TULA_SIZET(scan_row)};
+    std::vector<std::size_t> output_scan_index_size = {1};
+    NcVar output_scan_index_v = fo.getVar("output_scan_index");
+    int output_scan_index = static_cast<int>(in.index.data + 1);
+    output_scan_index_v.putVar(output_scan_index_start_index, output_scan_index_size, &output_scan_index);
 }
 } // namespace timestream

@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <set>
 #include <omp.h>
 #include <fstream>
 #include <limits>
@@ -225,6 +226,10 @@ public:
 
     // rtc or ptc types
     std::string tod_output_type, tod_output_subdir_name;
+    bool tod_output_chunk_select_enabled = false;
+    std::vector<Eigen::Index> tod_output_chunks;
+    Eigen::VectorXI tod_scan_to_output_scan;
+    Eigen::Index n_tod_output_scans = 0;
 
     // map grouping and algorithm
     std::string map_grouping, map_method;
@@ -303,6 +308,11 @@ public:
     // create tod files (does not populate them)
     template <engine_utils::toltecIO::ProdType prod_t>
     void create_tod_files();
+
+    // setup and query selected TOD output chunks
+    void setup_tod_output_chunk_selection();
+    bool should_write_tod_chunk(Eigen::Index) const;
+    Eigen::Index tod_output_scan_row(Eigen::Index) const;
 
     // output obs summary at command line
     void cli_summary();
@@ -438,6 +448,7 @@ void Engine::obsnum_setup() {
 
     // create timestream files
     if (run_tod_output) {
+        setup_tod_output_chunk_selection();
         // create tod output subdirectory if requested
         if (tod_output_subdir_name!="null") {
             fs::create_directories(obsnum_dir_name + "raw/" + tod_output_subdir_name);
@@ -476,6 +487,57 @@ void Engine::obsnum_setup() {
     }
     // clear stored eigenvalues
     std::map<Eigen::Index, std::vector<std::vector<Eigen::VectorXd>>>().swap(diagnostics.evals);
+}
+
+void Engine::setup_tod_output_chunk_selection() {
+    const Eigen::Index n_scans = telescope.scan_indices.cols();
+    tod_scan_to_output_scan.resize(n_scans);
+    tod_scan_to_output_scan.setConstant(-1);
+    n_tod_output_scans = 0;
+
+    if (!run_tod_output) {
+        return;
+    }
+
+    if (!tod_output_chunk_select_enabled || tod_output_chunks.empty()) {
+        for (Eigen::Index i = 0; i < n_scans; ++i) {
+            tod_scan_to_output_scan(i) = i;
+        }
+        n_tod_output_scans = n_scans;
+        logger->info("TOD output chunk selection disabled: writing all {} chunks", n_tod_output_scans);
+        return;
+    }
+
+    std::set<Eigen::Index> selected_chunks;
+    for (const auto chunk_1based : tod_output_chunks) {
+        if (chunk_1based < 1 || chunk_1based > n_scans) {
+            logger->error("TOD output indices contain {} but valid scan range is [1, {}]",
+                          chunk_1based, n_scans);
+            std::exit(EXIT_FAILURE);
+        }
+        selected_chunks.insert(chunk_1based - 1);
+    }
+
+    Eigen::Index out_index = 0;
+    for (Eigen::Index i = 0; i < n_scans; ++i) {
+        if (selected_chunks.count(i) > 0) {
+            tod_scan_to_output_scan(i) = out_index;
+            ++out_index;
+        }
+    }
+    n_tod_output_scans = out_index;
+    logger->info("TOD output chunk selection enabled: writing {} of {} chunks", n_tod_output_scans, n_scans);
+}
+
+bool Engine::should_write_tod_chunk(Eigen::Index scan_index) const {
+    return tod_output_scan_row(scan_index) >= 0;
+}
+
+Eigen::Index Engine::tod_output_scan_row(Eigen::Index scan_index) const {
+    if (scan_index < 0 || scan_index >= tod_scan_to_output_scan.size()) {
+        return -1;
+    }
+    return tod_scan_to_output_scan(scan_index);
 }
 
 template<typename CT>
@@ -559,6 +621,81 @@ void Engine::get_timestream_config(CT &config) {
     // write eigenvalues to stats file
     get_config_value(config, diagnostics.write_evals, missing_keys, invalid_keys,
                      std::tuple{"timestream","output", "stats","eigenvalues"});
+
+    // optional selection of TOD chunks to write (1-based indices) under each output block.
+    // default is "all" for both rtc and ptc outputs.
+    auto parse_tod_output_indices = [&](const auto &indices_key, bool output_enabled, const std::string &config_path,
+                                        bool &select_enabled, std::vector<Eigen::Index> &chunks_out) {
+        select_enabled = false;
+        chunks_out.clear();
+
+        if (!output_enabled || !config.has(indices_key)) {
+            return;
+        }
+
+        if (config.template has_typed<std::string>(indices_key)) {
+            const auto indices_value = config.template get_typed<std::string>(indices_key);
+            if (indices_value == "all") {
+                return;
+            }
+            logger->error("{} must be \"all\" or a non-empty list of 1-based positive integers. Found \"{}\"",
+                          config_path, indices_value);
+            std::exit(EXIT_FAILURE);
+        }
+
+        if (config.template has_typed<std::vector<int>>(indices_key)) {
+            const auto chunks = config.template get_typed<std::vector<int>>(indices_key);
+            if (chunks.empty()) {
+                logger->error("{} must be \"all\" or a non-empty list of 1-based positive integers", config_path);
+                std::exit(EXIT_FAILURE);
+            }
+            select_enabled = true;
+            for (const auto chunk_index : chunks) {
+                if (chunk_index <= 0) {
+                    logger->error("{} must be 1-based positive integers. Found {}", config_path, chunk_index);
+                    std::exit(EXIT_FAILURE);
+                }
+                chunks_out.push_back(static_cast<Eigen::Index>(chunk_index));
+            }
+            return;
+        }
+
+        logger->error("{} must be \"all\" or a list of 1-based positive integers", config_path);
+        std::exit(EXIT_FAILURE);
+    };
+
+    bool rtc_chunk_select_enabled = false;
+    bool ptc_chunk_select_enabled = false;
+    std::vector<Eigen::Index> rtc_output_chunks, ptc_output_chunks;
+
+    parse_tod_output_indices(std::tuple{"timestream","raw_time_chunk","output","indices"}, run_tod_output_rtc,
+                             "timestream.raw_time_chunk.output.indices", rtc_chunk_select_enabled, rtc_output_chunks);
+    parse_tod_output_indices(std::tuple{"timestream","processed_time_chunk","output","indices"}, run_tod_output_ptc,
+                             "timestream.processed_time_chunk.output.indices", ptc_chunk_select_enabled, ptc_output_chunks);
+
+    tod_output_chunk_select_enabled = false;
+    tod_output_chunks.clear();
+
+    if (rtc_chunk_select_enabled && ptc_chunk_select_enabled) {
+        const std::set<Eigen::Index> rtc_chunk_set(rtc_output_chunks.begin(), rtc_output_chunks.end());
+        const std::set<Eigen::Index> ptc_chunk_set(ptc_output_chunks.begin(), ptc_output_chunks.end());
+        if (rtc_chunk_set != ptc_chunk_set) {
+            logger->error("timestream.raw_time_chunk.output.indices and timestream.processed_time_chunk.output.indices "
+                          "must match when both rtc and ptc TOD outputs are enabled");
+            std::exit(EXIT_FAILURE);
+        }
+        tod_output_chunk_select_enabled = true;
+        tod_output_chunks.assign(rtc_chunk_set.begin(), rtc_chunk_set.end());
+    }
+    else if (rtc_chunk_select_enabled) {
+        tod_output_chunk_select_enabled = true;
+        tod_output_chunks = std::move(rtc_output_chunks);
+    }
+    else if (ptc_chunk_select_enabled) {
+        tod_output_chunk_select_enabled = true;
+        tod_output_chunks = std::move(ptc_output_chunks);
+    }
+
     // get time chunk size
     get_config_value(config, telescope.chunk_mode, missing_keys, invalid_keys,
                      std::tuple{"timestream","chunking", "chunk_mode"});
@@ -1419,7 +1556,7 @@ void Engine::create_tod_files() {
     netCDF::NcDim n_pts_dim = fo.addDim("n_pts");
     netCDF::NcDim n_raw_scan_indices_dim = fo.addDim("n_raw_scan_indices", telescope.scan_indices.rows());
     netCDF::NcDim n_scan_indices_dim = fo.addDim("n_scan_indices", 2);
-    netCDF::NcDim n_scans_dim = fo.addDim("n_scans", telescope.scan_indices.cols());
+    netCDF::NcDim n_scans_dim = fo.addDim("n_scans", n_tod_output_scans);
 
     netCDF::NcDim n_dets_dim = fo.addDim("n_dets", calib.n_dets);
 
@@ -1431,13 +1568,22 @@ void Engine::create_tod_files() {
     netCDF::NcVar raw_scan_indices_v = fo.addVar("raw_scan_indices",netCDF::ncInt, raw_scans_dims);
     raw_scan_indices_v.putAtt("units","N/A");
     raw_scan_indices_v.putAtt("comment","indices in output timebase; outer=inner (output stores inner scans only)");
-    std::vector<int> raw_scan_init(static_cast<std::size_t>(telescope.scan_indices.cols()) *
+    std::vector<int> raw_scan_init(static_cast<std::size_t>(n_tod_output_scans) *
                                    static_cast<std::size_t>(telescope.scan_indices.rows()), -2147483647);
     raw_scan_indices_v.putVar(raw_scan_init.data());
 
     // scan indices for data
     netCDF::NcVar scan_indices_v = fo.addVar("scan_indices",netCDF::ncInt, scans_dims);
     scan_indices_v.putAtt("units","N/A");
+    std::vector<int> scan_init(static_cast<std::size_t>(n_tod_output_scans) * 2, -2147483647);
+    scan_indices_v.putVar(scan_init.data());
+
+    // mapping from output scan row to original scan number (1-based)
+    netCDF::NcVar output_scan_index_v = fo.addVar("output_scan_index", netCDF::ncInt, n_scans_dim);
+    output_scan_index_v.putAtt("units","N/A");
+    output_scan_index_v.putAtt("comment","1-based original scan index from the full observation");
+    std::vector<int> output_scan_init(static_cast<std::size_t>(n_tod_output_scans), -2147483647);
+    output_scan_index_v.putVar(output_scan_init.data());
 
     // signal
     netCDF::NcVar signal_v = fo.addVar("signal",netCDF::ncDouble, dims);
@@ -1592,6 +1738,9 @@ void Engine::cli_summary() {
 
     logger->info("estimated size of all maps {} GB", mb_size_total);
     logger->info("number of scans: {}",telescope.scan_indices.cols());
+    if (run_tod_output) {
+        logger->info("TOD output scans: {}", n_tod_output_scans);
+    }
 
     // test getting memory usage for fun
     /*struct sysinfo memInfo;
