@@ -22,7 +22,9 @@
           "linux-gcc-release"
       ],
       "cacheVariables": {
-          "FETCHCONTENT_SOURCE_DIR_TULA": "${sourceParentDir}/tula"
+          "FETCHCONTENT_SOURCE_DIR_TULA": "${sourceParentDir}/tula",
+          "CMAKE_BUILD_TYPE": "Release",
+          "CITLALI_USE_WIENER_FILTER_OMP": "ON"
       }
     },
     {

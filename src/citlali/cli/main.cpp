@@ -278,8 +278,19 @@ int run(const rc_t &rc) {
                 Eigen::setNbThreads(1);
 
                 // set fftw threads
-                int fftw_threads = fftw_init_threads();
-                fftw_plan_with_nthreads(todproc.engine().n_threads);
+                const int fftw_init_ok = fftw_init_threads();
+                if (!fftw_init_ok) {
+                    logger->warn("unable to initialize FFTW threading; using default FFTW behavior");
+                }
+                int fftw_n_threads = todproc.engine().n_threads;
+#if defined(CITLALI_USE_WIENER_FILTER_OMP)
+                // Avoid nested parallelism: Wiener OMP path already parallelizes over work units.
+                fftw_n_threads = 1;
+#endif
+                if (fftw_init_ok) {
+                    fftw_plan_with_nthreads(fftw_n_threads);
+                    logger->info("configured FFTW plan threads={}", fftw_n_threads);
+                }
 
                 // set up the coadded map buffer by reading in each observation
                 int i = 0;
