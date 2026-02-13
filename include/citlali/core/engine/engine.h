@@ -2005,6 +2005,34 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // get Jy/pixel
     auto mJy_beam_to_Jy_px = 1e-3/beam_area_rad*pow(mb->pixel_size_rad,2);
 
+    auto get_tel_header_scalar = [&](const std::string &key, double fallback) {
+        auto it = telescope.tel_header.find(key);
+        if (it == telescope.tel_header.end() || it->second.size() < 1) {
+            logger->warn("tel_header '{}' missing/empty; using fallback {}", key, fallback);
+            return fallback;
+        }
+        const double value = it->second(0);
+        if (!std::isfinite(value)) {
+            logger->warn("tel_header '{}' non-finite ({}); using fallback {}", key, value, fallback);
+            return fallback;
+        }
+        return value;
+    };
+
+    auto get_tel_data_mean = [&](const std::string &key, double fallback) {
+        auto it = telescope.tel_data.find(key);
+        if (it == telescope.tel_data.end() || it->second.size() < 1) {
+            logger->warn("tel_data '{}' missing/empty; using fallback {}", key, fallback);
+            return fallback;
+        }
+        const double value = it->second.mean();
+        if (!std::isfinite(value)) {
+            logger->warn("tel_data '{}' mean non-finite ({}); using fallback {}", key, value, fallback);
+            return fallback;
+        }
+        return value;
+    };
+
     // add unit conversions
     if (rtcproc.run_calibrate) {
         if (mb->sig_unit == "mJy/beam") {
@@ -2148,20 +2176,22 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("EXPTIME", mb->exposure_time, "Exposure time (sec)");
     // add pixel axes
     fits_io->at(i).pfits->pHDU().addKey("RADESYS", telescope.pixel_axes, "Coord Reference Frame");
+    const double source_ra = get_tel_header_scalar("Header.Source.Ra", 0.0);
+    const double source_dec = get_tel_header_scalar("Header.Source.Dec", 0.0);
     // add source ra
-    fits_io->at(i).pfits->pHDU().addKey("SRC_RA", telescope.tel_header["Header.Source.Ra"][0], "Source RA (radians)");
+    fits_io->at(i).pfits->pHDU().addKey("SRC_RA", source_ra, "Source RA (radians)");
     // add source dec
-    fits_io->at(i).pfits->pHDU().addKey("SRC_DEC", telescope.tel_header["Header.Source.Dec"][0], "Source Dec (radians)");
+    fits_io->at(i).pfits->pHDU().addKey("SRC_DEC", source_dec, "Source Dec (radians)");
     // add map tangent point ra
-    fits_io->at(i).pfits->pHDU().addKey("TAN_RA", telescope.tel_header["Header.Source.Ra"][0], "Map Tangent Point RA (radians)");
+    fits_io->at(i).pfits->pHDU().addKey("TAN_RA", source_ra, "Map Tangent Point RA (radians)");
     //add map tangent point dec
-    fits_io->at(i).pfits->pHDU().addKey("TAN_DEC", telescope.tel_header["Header.Source.Dec"][0], "Map Tangent Point Dec (radians)");
+    fits_io->at(i).pfits->pHDU().addKey("TAN_DEC", source_dec, "Map Tangent Point Dec (radians)");
     // add mean alt
-    fits_io->at(i).pfits->pHDU().addKey("MEAN_EL", RAD_TO_DEG*telescope.tel_data["TelElAct"].mean(), "Mean Elevation (deg)");
+    fits_io->at(i).pfits->pHDU().addKey("MEAN_EL", RAD_TO_DEG*get_tel_data_mean("TelElAct", 0.0), "Mean Elevation (deg)");
     // add mean az
-    fits_io->at(i).pfits->pHDU().addKey("MEAN_AZ", RAD_TO_DEG*telescope.tel_data["TelAzAct"].mean(), "Mean Azimuth (deg)");
+    fits_io->at(i).pfits->pHDU().addKey("MEAN_AZ", RAD_TO_DEG*get_tel_data_mean("TelAzAct", 0.0), "Mean Azimuth (deg)");
     // add mean parallactic angle
-    fits_io->at(i).pfits->pHDU().addKey("MEAN_PA", RAD_TO_DEG*telescope.tel_data["ActParAng"].mean(), "Mean Parallactic angle (deg)");
+    fits_io->at(i).pfits->pHDU().addKey("MEAN_PA", RAD_TO_DEG*get_tel_data_mean("ActParAng", 0.0), "Mean Parallactic angle (deg)");
 
     logger->debug("adding beamsizes");
 
@@ -2258,9 +2288,9 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 	    fits_io->at(i).pfits->pHDU().addKey("OOF_W", toltec_io.array_wavelength_map[calib.arrays(i)]/1000., "wavelength (m)");
 	    fits_io->at(i).pfits->pHDU().addKey("OOF_ID", static_cast<int>(toltec_io.array_wavelength_map[calib.arrays(i)]*1000), "instrument id");
 	    fits_io->at(i).pfits->pHDU().addKey("OOF_T", 3.0, "taper (dB)");
-	    fits_io->at(i).pfits->pHDU().addKey("OOF_M2X", telescope.tel_header["Header.M2.XReq"](0)/1000.*1e6, "oof m2x (microns)");
-	    fits_io->at(i).pfits->pHDU().addKey("OOF_M2Y", telescope.tel_header["Header.M2.YReq"](0)/1000.*1e6, "oof m2y (microns)");
-	    fits_io->at(i).pfits->pHDU().addKey("OOF_M2Z", telescope.tel_header["Header.M2.ZReq"](0)/1000.*1e6, "oof m2z (microns)");
+	    fits_io->at(i).pfits->pHDU().addKey("OOF_M2X", get_tel_header_scalar("Header.M2.XReq", 0.0)/1000.*1e6, "oof m2x (microns)");
+	    fits_io->at(i).pfits->pHDU().addKey("OOF_M2Y", get_tel_header_scalar("Header.M2.YReq", 0.0)/1000.*1e6, "oof m2y (microns)");
+	    fits_io->at(i).pfits->pHDU().addKey("OOF_M2Z", get_tel_header_scalar("Header.M2.ZReq", 0.0)/1000.*1e6, "oof m2z (microns)");
 
 	    fits_io->at(i).pfits->pHDU().addKey("OOF_RO", 25., "outer diameter of the antenna (m)");
 	    fits_io->at(i).pfits->pHDU().addKey("OOF_RI", 1.65, "inner diameter of the antenna (m)");
@@ -2324,6 +2354,10 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     if (mb->obsnums.size()==1) {
         logger->debug("adding tel params");
         for (auto const& [key, val] : telescope.tel_header) {
+            if (val.size() < 1 || !std::isfinite(val(0))) {
+                logger->warn("skipping tel_header '{}' due to empty/non-finite value", key);
+                continue;
+            }
             logger->debug("adding {}: {}", key, val);
             fits_io->at(i).pfits->pHDU().addKey(key, val(0), key);
         }

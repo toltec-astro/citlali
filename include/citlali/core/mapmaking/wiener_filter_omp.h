@@ -95,31 +95,54 @@ public:
         n_rows = mb.n_rows;
         n_cols = mb.n_cols;
 
+        if (n_rows < 2 || n_cols < 2 ||
+            mb.rows_tan_vec.size() < 2 || mb.cols_tan_vec.size() < 2) {
+            logger->error("invalid map geometry for Wiener template: map_index={} n_rows={} n_cols={} rows_size={} cols_size={}",
+                          map_index, n_rows, n_cols,
+                          static_cast<long long>(mb.rows_tan_vec.size()),
+                          static_cast<long long>(mb.cols_tan_vec.size()));
+            std::exit(EXIT_FAILURE);
+        }
+
         // x and y spacing should be equal
-        diff_rows = abs(mb.rows_tan_vec(1) - mb.rows_tan_vec(0));
-        diff_cols = abs(mb.cols_tan_vec(1) - mb.cols_tan_vec(0));
+        diff_rows = std::abs(mb.rows_tan_vec(1) - mb.rows_tan_vec(0));
+        diff_cols = std::abs(mb.cols_tan_vec(1) - mb.cols_tan_vec(0));
+        if (!std::isfinite(diff_rows) || !std::isfinite(diff_cols) || diff_rows <= 0.0 || diff_cols <= 0.0) {
+            logger->error("invalid tangent-plane spacing for Wiener template: map_index={} diff_rows={} diff_cols={}",
+                          map_index, diff_rows, diff_cols);
+            std::exit(EXIT_FAILURE);
+        }
 
         // highpass template
         if (template_type=="highpass") {
-            SPDLOG_INFO("creating template with highpass only");
+            logger->info("creating highpass template");
             filter_template.setZero(n_rows,n_cols);
             filter_template(0,0) = 1;
         }
 
         // gaussian template
         else if (template_type=="gaussian") {
-            SPDLOG_INFO("creating gaussian template");
+            logger->info("creating gaussian template");
             make_gaussian_template(mb, template_fwhm_rad);
         }
 
         // airy template
         else if (template_type=="airy") {
-            SPDLOG_INFO("creating airy template");
+            logger->info("creating airy template");
             make_airy_template(mb, template_fwhm_rad);
         }
 
         // kernel template
         else {
+            logger->info("creating template from kernel map");
+            if (map_index < 0 || map_index >= static_cast<int>(mb.kernel.size()) ||
+                map_index >= static_cast<int>(mb.weight.size())) {
+                logger->error("kernel template requested but kernel/weight map index is invalid: map_index={} kernel_size={} weight_size={}",
+                              map_index,
+                              static_cast<long long>(mb.kernel.size()),
+                              static_cast<long long>(mb.weight.size()));
+                std::exit(EXIT_FAILURE);
+            }
             make_kernel_template(mb, map_index, calib_data);
         }
     }
@@ -444,6 +467,25 @@ void WienerFilter::make_airy_template(MB &mb, const double gaussian_template_fwh
 
 template<class MB, class CD>
 void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_data) {
+    logger->info("building kernel template internals for map_index={}", map_index);
+    if (map_index < 0 || map_index >= static_cast<int>(mb.kernel.size()) ||
+        map_index >= static_cast<int>(mb.weight.size())) {
+        logger->error("invalid map index for kernel template: map_index={} kernel_size={} weight_size={}",
+                      map_index,
+                      static_cast<long long>(mb.kernel.size()),
+                      static_cast<long long>(mb.weight.size()));
+        std::exit(EXIT_FAILURE);
+    }
+    if (mb.kernel[map_index].rows() != n_rows || mb.kernel[map_index].cols() != n_cols ||
+        mb.weight[map_index].rows() != n_rows || mb.weight[map_index].cols() != n_cols) {
+        logger->error("kernel/weight dimensions do not match map geometry for map_index={}: kernel=({}, {}) weight=({}, {}) expected=({}, {})",
+                      map_index,
+                      static_cast<long long>(mb.kernel[map_index].rows()), static_cast<long long>(mb.kernel[map_index].cols()),
+                      static_cast<long long>(mb.weight[map_index].rows()), static_cast<long long>(mb.weight[map_index].cols()),
+                      n_rows, n_cols);
+        std::exit(EXIT_FAILURE);
+    }
+
     // collect what we need
     Eigen::MatrixXd temp_kernel = mb.kernel[map_index];
 
@@ -456,7 +498,7 @@ void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_d
                                                                       init_fwhm, init_row, init_col);
 
     if (!good_fit) {
-        SPDLOG_ERROR("fit to kernel map failed. try setting a small fitting_region_arcsec value.");
+        logger->error("fit to kernel map failed. try setting a small fitting_region_arcsec value.");
         std::exit(EXIT_FAILURE);
     }
 
