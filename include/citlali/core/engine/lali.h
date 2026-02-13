@@ -272,7 +272,8 @@ auto Lali::run() {
         if (ptcproc.run_fruit_loops && !ptcproc.tod_mb.signal.empty()) {
             if (run_mapmaking && run_noise) {
                 // calculate weights
-                logger->info("calculating weights");
+                logger->info("calculating weights for scan {} (fruit loops noise-only pass)",
+                             ptcdata.index.data + 1);
                 ptcproc.calc_weights(ptcdata, calib.apt, telescope);
 
                 // reset weights to median
@@ -301,7 +302,7 @@ auto Lali::run() {
         calib_scan = ptcproc.remove_bad_dets(ptcdata, calib, map_grouping);
 
         // calculate weights
-        logger->info("calculating weights");
+        logger->info("calculating weights for scan {}", ptcdata.index.data + 1);
         ptcproc.calc_weights(ptcdata, calib.apt, telescope);
 
         // reset weights to median

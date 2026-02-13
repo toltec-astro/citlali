@@ -750,7 +750,7 @@ void Beammap::run_loop() {
             }
             else {
                 // calculate weights
-                logger->info("calculating weights");
+                logger->info("calculating weights for scan {}", ptcs[i].index.data + 1);
                 ptcproc.calc_weights(ptcs[i], calib.apt, telescope);
 
                 // reset weights to median

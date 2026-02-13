@@ -367,7 +367,8 @@ auto Pointing::run(KidsProc &kidsproc) {
         // if running fruit loops and a map has been read in
         if (ptcproc.run_fruit_loops && !ptcproc.tod_mb.signal.empty()) {
             // calculate weights
-            logger->info("calculating weights");
+            logger->info("calculating weights for scan {} (fruit loops noise-only pass)",
+                         ptcdata.index.data + 1);
             ptcproc.calc_weights(ptcdata, calib.apt, telescope);
 
             // reset weights to median
@@ -397,7 +398,7 @@ auto Pointing::run(KidsProc &kidsproc) {
         calib_scan = ptcproc.remove_bad_dets(ptcdata, calib_scan, map_grouping);
 
         // calculate weights
-        logger->info("calculating weights");
+        logger->info("calculating weights for scan {}", ptcdata.index.data + 1);
         ptcproc.calc_weights(ptcdata, calib.apt, telescope);
 
         // reset weights to median

@@ -20,6 +20,7 @@
 #include <tula/switch_invoke.h>
 
 #include <cstdlib>
+#include <cmath>
 #include <omp.h>
 #include <regex>
 #include <tuple>
@@ -292,6 +293,33 @@ int run(const rc_t &rc) {
                     logger->info("configured FFTW plan threads={}", fftw_n_threads);
                 }
 
+                auto apply_flxscale_correction = [&](const RawObs &rawobs) {
+                    const auto *flxscale_corr = rawobs.flxscale_correction();
+                    if (flxscale_corr == nullptr) {
+                        return true;
+                    }
+                    const double factor = flxscale_corr->value();
+                    if (!std::isfinite(factor) || factor <= 0.0) {
+                        logger->error(
+                            "invalid flxscale_correction={} for observation {}; "
+                            "factor must be finite and > 0",
+                            factor, rawobs.name());
+                        return false;
+                    }
+                    if (todproc.engine().calib.apt.count("flxscale") == 0) {
+                        logger->error(
+                            "flxscale column missing from APT while applying "
+                            "flxscale_correction for observation {}",
+                            rawobs.name());
+                        return false;
+                    }
+                    todproc.engine().calib.apt["flxscale"].array() *= factor;
+                    logger->info(
+                        "applied flxscale correction factor={} for observation {}",
+                        factor, rawobs.name());
+                    return true;
+                };
+
                 // set up the coadded map buffer by reading in each observation
                 int i = 0;
                 logger->info("starting initial loop through input obs");
@@ -345,6 +373,10 @@ int run(const rc_t &rc) {
                         }
                         // get and setup apt table
                         todproc.engine().calib.get_apt(apt_path, raw_filenames, interfaces);
+                    }
+
+                    if (!apply_flxscale_correction(rawobs)) {
+                        return EXIT_FAILURE;
                     }
 
                     // check input files
@@ -550,6 +582,10 @@ int run(const rc_t &rc) {
 
                                 // get and setup apt table
                                 todproc.engine().calib.get_apt(apt_path, raw_filenames, interfaces);
+                            }
+
+                            if (!apply_flxscale_correction(rawobs)) {
+                                return EXIT_FAILURE;
                             }
 
                             // get sample rate

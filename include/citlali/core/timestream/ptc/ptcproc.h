@@ -1,5 +1,9 @@
 #pragma once
 
+#include <algorithm>
+#include <atomic>
+#include <cmath>
+
 #include <tula/logging.h>
 #include <tula/nc.h>
 #include <tula/algorithm/ei_stats.h>
@@ -330,6 +334,7 @@ template <typename apt_type, class tel_type>
 void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_type &apt, tel_type &telescope) {
     // number of detectors
     Eigen::Index n_dets = in.scans.data.cols();
+    const auto scan_index_1based = static_cast<long long>(in.index.data) + 1;
 
     // resize weights to number of detectors
     in.weights.data = Eigen::VectorXd::Zero(n_dets);
@@ -411,6 +416,32 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
             }
         }
     }
+
+    Eigen::Index n_apt_unflagged = 0;
+    Eigen::Index n_nonfinite = 0;
+    Eigen::Index n_positive = 0;
+    Eigen::Index n_zero = 0;
+    Eigen::Index n_negative = 0;
+    for (Eigen::Index i = 0; i < n_dets; ++i) {
+        if (apt["flag"](i) == 0) {
+            n_apt_unflagged++;
+        }
+        const auto w = in.weights.data(i);
+        if (!std::isfinite(w)) {
+            n_nonfinite++;
+        } else if (w > 0) {
+            n_positive++;
+        } else if (w == 0) {
+            n_zero++;
+        } else {
+            n_negative++;
+        }
+    }
+    logger->info(
+        "weight calc summary scan={} type={} n_dets={} apt_unflagged={} "
+        "positive={} zero={} negative={} nonfinite={}",
+        scan_index_1based, weighting_type, n_dets, n_apt_unflagged, n_positive,
+        n_zero, n_negative, n_nonfinite);
 }
 
 template <typename calib_t>
@@ -418,6 +449,10 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
 
     // make a copy of the calib class for flagging
     calib_t calib_scan = calib;
+
+    const auto scan_index_1based = static_cast<long long>(in.index.data) + 1;
+    static std::atomic<long long> reset_weights_call_counter{0};
+    const auto reset_call_id = ++reset_weights_call_counter;
 
     // only need to run if median weight factor >=1
     if (med_weight_factor >= 1 || lower_weight_factor > 0 || upper_weight_factor > 0) {
@@ -427,24 +462,40 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
         // get group limits
         auto grp_limits = get_grouping("array", calib, n_dets);
 
+        logger->info(
+            "resetting weights call={} scan={} map_grouping={} n_dets={} "
+            "med_weight_factor={} lower_weight_factor={} upper_weight_factor={}",
+            reset_call_id, scan_index_1based, map_grouping, n_dets,
+            med_weight_factor, lower_weight_factor, upper_weight_factor);
+
         // collect detectors that are un-flagged and have non-zero weights
         for (auto const& [key, val] : grp_limits) {
             // weights for current group
             auto grp_weights = in.weights.data(Eigen::seq(std::get<0>(grp_limits[key]),
                                                          std::get<1>(grp_limits[key])-1));
+            const auto group_start = std::get<0>(grp_limits[key]);
+            const auto group_end = std::get<1>(grp_limits[key]);
+            const auto n_group_dets = group_end - group_start;
             // number of unflagged detectors, and unflagged with positive weights
             Eigen::Index n_unflagged = 0;
             Eigen::Index n_good_dets = 0;
+            Eigen::Index n_nonfinite_weights = 0;
+            Eigen::Index n_nonpositive_unflagged = 0;
             // start index of current group
-            Eigen::Index j = std::get<0>(grp_limits[key]);
+            Eigen::Index j = group_start;
 
             // loop through detectors in current group
             for (Eigen::Index m=0; m<grp_weights.size(); ++m) {
+                if (!std::isfinite(grp_weights(m))) {
+                    n_nonfinite_weights++;
+                }
                 // count unflagged detectors
                 if (calib.apt["flag"](j)==0) {
                     n_unflagged++;
                     if (grp_weights(m) > 0) {
                         n_good_dets++;
+                    } else {
+                        n_nonpositive_unflagged++;
                     }
                 }
                 j++;
@@ -475,6 +526,10 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
 
             // get median weight
             auto med_wt = tula::alg::median(good_wt);
+            const auto lower_limit =
+                lower_weight_factor != 0 ? lower_weight_factor * med_wt : 0.0;
+            const auto upper_limit =
+                upper_weight_factor != 0 ? upper_weight_factor * med_wt : 0.0;
             // store median weights
             in.median_weights.data.push_back(med_wt);
 
@@ -483,7 +538,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
             int n_dets_high = 0;
 
             // start index of current group
-            j = std::get<0>(grp_limits[key]);
+            j = group_start;
             // loop through detectors in current group
             for (Eigen::Index m=0; m<grp_weights.size(); ++m) {
                 // if detector weight is med_weight_factor times larger than med_wt
@@ -521,9 +576,42 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
                 }
                 j++;
             }
-            logger->info("array {} had {} outlier weights", key, outliers);
-            logger->info("array {}: {}/{} dets below weight limit. {}/{} dets above weight limit.", key,
-            n_dets_low, n_unflagged, n_dets_high, n_unflagged);
+            logger->info(
+                "weight audit call={} scan={} array={} idx_range=[{}, {}) "
+                "group_dets={} apt_unflagged={} apt_flagged={} "
+                "positive_unflagged={} nonpositive_unflagged={} nonfinite_weights={} "
+                "median_weight={} lower_limit={} upper_limit={}",
+                reset_call_id, scan_index_1based, key, group_start, group_end,
+                n_group_dets, n_unflagged, n_group_dets - n_unflagged, n_good_dets,
+                n_nonpositive_unflagged, n_nonfinite_weights, med_wt, lower_limit,
+                upper_limit);
+            logger->info(
+                "weight flags call={} scan={} array={} outlier_resets={} "
+                "below_limit={}/{} above_limit={}/{}",
+                reset_call_id, scan_index_1based, key, outliers, n_dets_low,
+                n_unflagged, n_dets_high, n_unflagged);
+
+            // sanity checks for impossible counter combinations
+            if (n_unflagged < 0 || n_unflagged > n_group_dets ||
+                n_good_dets < 0 || n_good_dets > n_unflagged ||
+                n_dets_low < 0 || n_dets_low > n_unflagged ||
+                n_dets_high < 0 || n_dets_high > n_unflagged) {
+                logger->error(
+                    "weight counter invariant failure call={} scan={} array={} "
+                    "group_dets={} apt_unflagged={} positive_unflagged={} "
+                    "below_count={} above_count={} outlier_count={}",
+                    reset_call_id, scan_index_1based, key, n_group_dets,
+                    n_unflagged, n_good_dets, n_dets_low, n_dets_high, outliers);
+                const auto n_dump = std::min<Eigen::Index>(grp_weights.size(), 10);
+                for (Eigen::Index m = 0; m < n_dump; ++m) {
+                    const auto det_index = group_start + m;
+                    logger->error(
+                        "weight counter dump call={} scan={} array={} m={} det_index={} apt_flag={} weight={}",
+                        reset_call_id, scan_index_1based, key, m, det_index,
+                        calib.apt["flag"](det_index), in.weights.data(det_index));
+                }
+                std::exit(EXIT_FAILURE);
+            }
         }
 
         // set up scan calib

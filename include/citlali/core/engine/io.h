@@ -90,16 +90,19 @@ struct RawObs : ConfigMapper<RawObs> {
            array_prop_table,
            photometry,
            astrometry,
+           flxscale_correction,
            unresolved
           );
     // clang-format on
     using CalItemTypes = tula::meta::cases<CalItemType::array_prop_table,
                                            CalItemType::photometry,
                                            CalItemType::astrometry,
+                                           CalItemType::flxscale_correction,
                                            CalItemType::unresolved>;
     struct ArrayPropTable;
     struct PhotometryCalibInfo;
     struct AstrometryCalibInfo;
+    struct FlxscaleCorrection;
 
     struct CalItem;
     template <auto type>
@@ -108,13 +111,15 @@ struct RawObs : ConfigMapper<RawObs> {
         tula::meta::case_t<CalItemType::array_prop_table, ArrayPropTable>,
         tula::meta::case_t<CalItemType::photometry, PhotometryCalibInfo>,
         tula::meta::case_t<CalItemType::astrometry, AstrometryCalibInfo>,
+        tula::meta::case_t<CalItemType::flxscale_correction, FlxscaleCorrection>,
         tula::meta::case_t<CalItemType::unresolved, CalItem>>;
     using cal_item_var_t =
         std::variant<
         std::monostate,
         cal_item_t<CalItemType::array_prop_table>,
         cal_item_t<CalItemType::photometry>,
-        cal_item_t<CalItemType::astrometry>
+        cal_item_t<CalItemType::astrometry>,
+        cal_item_t<CalItemType::flxscale_correction>
         >;
 
     struct ArrayPropTable : ConfigMapper<ArrayPropTable> {
@@ -181,6 +186,43 @@ struct RawObs : ConfigMapper<RawObs> {
             -> decltype(auto) {
             return os << fmt::format("AstrometryCalibInfo()");
         }
+    };
+
+    struct FlxscaleCorrection : ConfigMapper<FlxscaleCorrection> {
+        using Base = ConfigMapper<FlxscaleCorrection>;
+        FlxscaleCorrection(config_t config)
+            : Base{std::move(config)} {
+            // accept either key name for convenience
+            if (this->config().has("value")) {
+                m_value = this->config().get_typed<double>("value");
+            } else {
+                m_value = this->config().get_typed<double>("flxscale_correction");
+            }
+        }
+        static auto check_config(config_t &config)
+            -> std::optional<std::string> {
+            std::vector<std::string> missing_keys;
+            SPDLOG_INFO("check flxscale correction info\n{}", config);
+            if (!config.has("value") && !config.has("flxscale_correction")) {
+                missing_keys.push_back("value");
+            }
+            if (missing_keys.empty()) {
+                return std::nullopt;
+            }
+            return fmt::format(
+                "invalid or missing keys={} (expected one of: value, "
+                "flxscale_correction)",
+                missing_keys);
+        }
+        double value() const { return m_value; }
+        template <typename OStream>
+        friend auto operator<<(OStream &os, const FlxscaleCorrection &d)
+            -> decltype(auto) {
+            return os << fmt::format("FlxscaleCorrection(value={})", d.value());
+        }
+
+    private:
+        double m_value{1.0};
     };
 
     /// @breif a generic cal item holder
@@ -302,6 +344,13 @@ struct RawObs : ConfigMapper<RawObs> {
         return m_cal_items[m_astro_cal_index.value()]
             .get<CalItemType::astrometry>();
     }
+    const FlxscaleCorrection *flxscale_correction() const {
+        if (!m_flxscale_corr_index) {
+            return nullptr;
+        }
+        return &m_cal_items[m_flxscale_corr_index.value()]
+                    .get<CalItemType::flxscale_correction>();
+    }
 
 private:
     inline const static std::regex re_interface_kidsdata{"toltec\\d{1,2}"};
@@ -319,6 +368,7 @@ private:
     std::optional<std::size_t> m_apt_index{std::nullopt};
     std::optional<std::size_t> m_phot_cal_index{std::nullopt};
     std::optional<std::size_t> m_astro_cal_index{std::nullopt};
+    std::optional<std::size_t> m_flxscale_corr_index{std::nullopt};
 
     void collect_cal_items();
 };
@@ -378,6 +428,17 @@ struct formatter<RawObs::ArrayPropTable>
         -> decltype(ctx.out()) {
         return format_to(ctx.out(), "ArrayPropTable(filepath={})",
                          apt.filepath());
+    }
+};
+
+template <>
+struct formatter<RawObs::FlxscaleCorrection>
+    : tula::fmt_utils::nullspec_formatter_base {
+    template <typename FormatContext>
+    auto format(const RawObs::FlxscaleCorrection &corr,
+                FormatContext &ctx) const noexcept -> decltype(ctx.out()) {
+        return format_to(ctx.out(), "FlxscaleCorrection(value={})",
+                         corr.value());
     }
 };
 
@@ -478,6 +539,7 @@ void RawObs::collect_cal_items() {
     m_apt_index.reset();
     m_phot_cal_index.reset();
     m_astro_cal_index.reset();
+    m_flxscale_corr_index.reset();
     for (std::size_t i = 0; i < m_cal_items.size(); ++i) {
         if (m_cal_items[i].is_type<CalItemType::array_prop_table>()) {
             if (m_apt_index.has_value()) {
@@ -497,12 +559,22 @@ void RawObs::collect_cal_items() {
             }
             m_astro_cal_index = i;
         }
+        if (m_cal_items[i].is_type<CalItemType::flxscale_correction>()) {
+            if (m_flxscale_corr_index.has_value()) {
+                throw std::runtime_error(
+                    "found too many flxscale correction items.");
+            }
+            m_flxscale_corr_index = i;
+        }
     }
     if (!m_apt_index) {
         throw std::runtime_error("no array prop table found");
     }
     SPDLOG_INFO("apt_index={}", m_apt_index);
     SPDLOG_INFO("apt={}", array_prop_table());
+    if (m_flxscale_corr_index) {
+        SPDLOG_INFO("flxscale_correction={}", *flxscale_correction());
+    }
 }
 /**
  * @brief The Coordinator struct
