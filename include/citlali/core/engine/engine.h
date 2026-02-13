@@ -2777,6 +2777,16 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
 
         // filter noise maps
         if (run_noise) {
+#if defined(CITLALI_USE_WIENER_FILTER_OMP)
+            logger->info("filtering noise for {} map {}/{} (n_noise={})",
+                         map_label, i + 1, n_maps, mb.n_noise);
+            #pragma omp parallel for schedule(dynamic)
+            for (Eigen::Index j=0; j<mb.n_noise; ++j) {
+                wiener_filter.filter_noise_threadsafe(mb, i, j);
+            }
+            logger->info("noise filtering complete for {} map {}/{}",
+                         map_label, i + 1, n_maps);
+#else
             tula::logging::progressbar pb(
                 [&](const auto &msg) { logger->info("{}", msg); }, 100,
                 "filtering noise");
@@ -2787,6 +2797,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
             }
             logger->info("noise filtering complete for {} map {}/{}",
                          map_label, i + 1, n_maps);
+#endif
 
             if (wiener_filter.normalize_error) {
                 logger->info("renormalizing errors for {} map {}/{}",
