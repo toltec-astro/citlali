@@ -748,9 +748,28 @@ void WienerFilter::make_template(MB &mb, CD &calib_data, const double template_f
     n_rows = mb.n_rows;
     n_cols = mb.n_cols;
 
+    logger->info(
+        "make_template precheck: map_index={} template_type={} n_rows={} n_cols={} rows_size={} cols_size={} kernel_size={}",
+        map_index, template_type, static_cast<long long>(n_rows), static_cast<long long>(n_cols),
+        static_cast<long long>(mb.rows_tan_vec.size()), static_cast<long long>(mb.cols_tan_vec.size()),
+        static_cast<long long>(mb.kernel.size()));
+
+    if (n_rows < 2 || n_cols < 2 ||
+        mb.rows_tan_vec.size() < 2 || mb.cols_tan_vec.size() < 2) {
+        logger->error(
+            "invalid map geometry for Wiener template: n_rows={} n_cols={} rows_size={} cols_size={}",
+            static_cast<long long>(n_rows), static_cast<long long>(n_cols),
+            static_cast<long long>(mb.rows_tan_vec.size()), static_cast<long long>(mb.cols_tan_vec.size()));
+        std::exit(EXIT_FAILURE);
+    }
+
     // x and y spacing should be equal
-    diff_rows = abs(mb.rows_tan_vec(1) - mb.rows_tan_vec(0));
-    diff_cols = abs(mb.cols_tan_vec(1) - mb.cols_tan_vec(0));
+    diff_rows = std::abs(mb.rows_tan_vec(1) - mb.rows_tan_vec(0));
+    diff_cols = std::abs(mb.cols_tan_vec(1) - mb.cols_tan_vec(0));
+    if (!std::isfinite(diff_rows) || !std::isfinite(diff_cols) || diff_rows <= 0.0 || diff_cols <= 0.0) {
+        logger->error("invalid tangent-plane pixel spacing: diff_rows={} diff_cols={}", diff_rows, diff_cols);
+        std::exit(EXIT_FAILURE);
+    }
 
     // highpass template
     if (template_type=="highpass") {
@@ -774,6 +793,12 @@ void WienerFilter::make_template(MB &mb, CD &calib_data, const double template_f
     // symmetric version of kernel template
     else {
         logger->info("creating template from kernel map");
+        if (mb.kernel.empty() || map_index < 0 || map_index >= static_cast<int>(mb.kernel.size())) {
+            logger->error(
+                "kernel template requested but kernel map is unavailable: map_index={} kernel_size={}",
+                map_index, static_cast<long long>(mb.kernel.size()));
+            std::exit(EXIT_FAILURE);
+        }
         make_kernel_template(mb, map_index, calib_data);
     }
 }

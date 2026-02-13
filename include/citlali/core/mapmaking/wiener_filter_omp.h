@@ -27,38 +27,6 @@ namespace mapmaking {
 
 class WienerFilter {
 public:
-    struct FFTWContext {
-        int n_rows = 0;
-        int n_cols = 0;
-        fftw_complex *a = nullptr;
-        fftw_complex *b = nullptr;
-        fftw_plan pf = nullptr;
-        fftw_plan pr = nullptr;
-
-        void reset() {
-            if (pf != nullptr) {
-                fftw_destroy_plan(pf);
-                pf = nullptr;
-            }
-            if (pr != nullptr) {
-                fftw_destroy_plan(pr);
-                pr = nullptr;
-            }
-            if (a != nullptr) {
-                fftw_free(a);
-                a = nullptr;
-            }
-            if (b != nullptr) {
-                fftw_free(b);
-                b = nullptr;
-            }
-            n_rows = 0;
-            n_cols = 0;
-        }
-
-        ~FFTWContext() { reset(); }
-    };
-
     // get logger
     std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
 
@@ -171,10 +139,6 @@ public:
     void calc_numerator();
     void calc_denominator();
     void run_convolve(bool normalize=true);
-    static FFTWContext &get_thread_fft_context(int, int);
-    Eigen::MatrixXd calc_numerator_from_input(const Eigen::MatrixXd &);
-    Eigen::MatrixXd run_convolve_on_input(const Eigen::MatrixXd &, bool);
-    Eigen::MatrixXd divide_by_denom(const Eigen::MatrixXd &, const Eigen::MatrixXd &) const;
     void destripe(double);
 
     template<class MB>
@@ -345,222 +309,26 @@ public:
         else if (filter_type=="wiener_filter") {
             calc_numerator();
         }
-        else {
-            nume.setZero(n_rows, n_cols);
+
+        Eigen::MatrixXd ratio(n_rows,n_cols);
+
+        // divide by filtered weight
+        for (Eigen::Index i=0; i<n_rows; ++i) {
+            for (Eigen::Index j=0; j<n_cols; ++j) {
+                if (denom(i,j) != 0.0) {
+                    ratio(i,j) = nume(i,j)/denom(i,j);
+                }
+                else {
+                    ratio(i,j)= 0.0;
+                }
+            }
         }
-        Eigen::MatrixXd ratio = use_convolve ? nume : divide_by_denom(nume, denom);
 
         // map to tensor
         Eigen::TensorMap<Eigen::Tensor<double, 2>> in_tensor(ratio.data(), ratio.rows(), ratio.cols());
         mb.noise[map_index].chip(noise_num,2) = in_tensor;
     }
-
-    template<class MB>
-    void filter_noise_threadsafe(MB &mb, const int map_index, const int noise_num) {
-        const bool use_convolve = (filter_type=="convolve") || (filter_type=="wiener_filter" && run_lowpass);
-        Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(
-            mb.noise[map_index].data() + noise_num * mb.n_rows * mb.n_cols, mb.n_rows, mb.n_cols);
-
-        Eigen::MatrixXd local_input = noise_matrix;
-        Eigen::MatrixXd local_nume = Eigen::MatrixXd::Zero(n_rows, n_cols);
-        if (use_convolve) {
-            local_nume = run_convolve_on_input(local_input, true);
-        }
-        else if (filter_type=="wiener_filter") {
-            local_nume = calc_numerator_from_input(local_input);
-        }
-        Eigen::MatrixXd ratio = use_convolve ? local_nume : divide_by_denom(local_nume, denom);
-        Eigen::TensorMap<Eigen::Tensor<double, 2>> in_tensor(ratio.data(), ratio.rows(), ratio.cols());
-        mb.noise[map_index].chip(noise_num,2) = in_tensor;
-    }
 };
-
-inline WienerFilter::FFTWContext &WienerFilter::get_thread_fft_context(int rows, int cols) {
-    static thread_local FFTWContext ctx;
-    if (ctx.n_rows != rows || ctx.n_cols != cols || ctx.a == nullptr || ctx.b == nullptr ||
-        ctx.pf == nullptr || ctx.pr == nullptr) {
-        #pragma omp critical (wfFFTWPlan)
-        {
-            if (ctx.n_rows != rows || ctx.n_cols != cols || ctx.a == nullptr || ctx.b == nullptr ||
-                ctx.pf == nullptr || ctx.pr == nullptr) {
-                ctx.reset();
-                ctx.a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * rows * cols);
-                ctx.b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * rows * cols);
-                ctx.pf = fftw_plan_dft_2d(rows, cols, ctx.a, ctx.b, FFTW_FORWARD, FFTW_ESTIMATE);
-                ctx.pr = fftw_plan_dft_2d(rows, cols, ctx.a, ctx.b, FFTW_BACKWARD, FFTW_ESTIMATE);
-                ctx.n_rows = rows;
-                ctx.n_cols = cols;
-            }
-        }
-    }
-    return ctx;
-}
-
-inline Eigen::MatrixXd WienerFilter::calc_numerator_from_input(const Eigen::MatrixXd &input_map) {
-    fftw_complex *a = nullptr;
-    fftw_complex *b = nullptr;
-    fftw_plan pf = nullptr, pr = nullptr;
-
-    a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * n_rows * n_cols);
-    b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * n_rows * n_cols);
-
-    // FFTW planner is not thread-safe; guard plan create/destroy when called from OMP loop.
-    #pragma omp critical (wfFFTWPlan)
-    {
-        pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
-        pr = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
-    }
-    if (a == nullptr || b == nullptr || pf == nullptr || pr == nullptr) {
-        logger->error("FFTW allocation/plan failed in calc_numerator_from_input");
-        if (pf != nullptr || pr != nullptr) {
-            #pragma omp critical (wfFFTWPlan)
-            {
-                if (pf != nullptr) {
-                    fftw_destroy_plan(pf);
-                }
-                if (pr != nullptr) {
-                    fftw_destroy_plan(pr);
-                }
-            }
-        }
-        if (a != nullptr) {
-            fftw_free(a);
-        }
-        if (b != nullptr) {
-            fftw_free(b);
-        }
-        std::exit(EXIT_FAILURE);
-    }
-
-    Eigen::MatrixXcd in(n_rows, n_cols), out(n_rows, n_cols), qqq(n_rows, n_cols);
-
-    in.real() = rr.array() * input_map.array();
-    in.imag().setZero();
-    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
-
-    in.real() = out.real().array() / vvq.array();
-    in.imag() = out.imag().array() / vvq.array();
-    out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
-
-    in.real() = out.real().array() * rr.array();
-    in.imag().setZero();
-    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
-    qqq = out;
-
-    in.real() = filter_template;
-    in.imag().setZero();
-    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
-
-    in.real() = out.real().array() * qqq.real().array() + out.imag().array() * qqq.imag().array();
-    in.imag() = -out.imag().array() * qqq.real().array() + out.real().array() * qqq.imag().array();
-    out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
-
-    #pragma omp critical (wfFFTWPlan)
-    {
-        if (pf != nullptr) {
-            fftw_destroy_plan(pf);
-        }
-        if (pr != nullptr) {
-            fftw_destroy_plan(pr);
-        }
-    }
-    if (a != nullptr) {
-        fftw_free(a);
-    }
-    if (b != nullptr) {
-        fftw_free(b);
-    }
-
-    return out.real();
-}
-
-inline Eigen::MatrixXd WienerFilter::run_convolve_on_input(const Eigen::MatrixXd &input_map, bool normalize) {
-    fftw_complex *a = nullptr;
-    fftw_complex *b = nullptr;
-    fftw_plan pf = nullptr, pr = nullptr;
-
-    a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * n_rows * n_cols);
-    b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * n_rows * n_cols);
-
-    // FFTW planner is not thread-safe; guard plan create/destroy when called from OMP loop.
-    #pragma omp critical (wfFFTWPlan)
-    {
-        pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
-        pr = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
-    }
-    if (a == nullptr || b == nullptr || pf == nullptr || pr == nullptr) {
-        logger->error("FFTW allocation/plan failed in run_convolve_on_input");
-        if (pf != nullptr || pr != nullptr) {
-            #pragma omp critical (wfFFTWPlan)
-            {
-                if (pf != nullptr) {
-                    fftw_destroy_plan(pf);
-                }
-                if (pr != nullptr) {
-                    fftw_destroy_plan(pr);
-                }
-            }
-        }
-        if (a != nullptr) {
-            fftw_free(a);
-        }
-        if (b != nullptr) {
-            fftw_free(b);
-        }
-        std::exit(EXIT_FAILURE);
-    }
-
-    Eigen::MatrixXcd in(n_rows, n_cols), out(n_rows, n_cols), fft_filter(n_rows, n_cols);
-    Eigen::MatrixXd kernel = filter_template;
-
-    if (normalize) {
-        double kernel_sum = kernel.sum();
-        if (kernel_sum != 0.0 && std::isfinite(kernel_sum)) {
-            kernel /= kernel_sum;
-        }
-    }
-
-    in.real() = kernel;
-    in.imag().setZero();
-    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
-    out = out * n_rows * n_cols;
-    fft_filter = out;
-
-    in.real() = input_map;
-    in.imag().setZero();
-    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
-    out = out * n_rows * n_cols;
-
-    in.real() = out.real().array() * fft_filter.real().array() - out.imag().array() * fft_filter.imag().array();
-    in.imag() = out.imag().array() * fft_filter.real().array() + out.real().array() * fft_filter.imag().array();
-    out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
-    out = out / n_rows / n_cols;
-
-    #pragma omp critical (wfFFTWPlan)
-    {
-        if (pf != nullptr) {
-            fftw_destroy_plan(pf);
-        }
-        if (pr != nullptr) {
-            fftw_destroy_plan(pr);
-        }
-    }
-    if (a != nullptr) {
-        fftw_free(a);
-    }
-    if (b != nullptr) {
-        fftw_free(b);
-    }
-
-    return out.real();
-}
-
-inline Eigen::MatrixXd WienerFilter::divide_by_denom(const Eigen::MatrixXd &numerator,
-                                                     const Eigen::MatrixXd &denominator) const {
-    Eigen::MatrixXd ratio = Eigen::MatrixXd::Zero(numerator.rows(), numerator.cols());
-    ratio.array() = (denominator.array() != 0.0).select(numerator.array() / denominator.array(), 0.0);
-    return ratio;
-}
 
 // get config file
 template <typename config_t>
@@ -676,20 +444,16 @@ void WienerFilter::make_airy_template(MB &mb, const double gaussian_template_fwh
 
 template<class MB, class CD>
 void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_data) {
-    SPDLOG_INFO("kernel template: begin (map_index={})", map_index);
     // collect what we need
     Eigen::MatrixXd temp_kernel = mb.kernel[map_index];
 
     // carry out fit to kernel
     double init_row = -99;
     double init_col = -99;
-    SPDLOG_INFO("kernel template: fitting Gaussian centroid (map_index={})", map_index);
 
     auto [map_params, map_perror, good_fit] =
         map_fitter.fit_to_gaussian<engine_utils::mapFitter::pointing>(mb.kernel[map_index], mb.weight[map_index],
                                                                       init_fwhm, init_row, init_col);
-    SPDLOG_INFO("kernel template: Gaussian fit complete (map_index={}, good_fit={})",
-                map_index, good_fit);
 
     if (!good_fit) {
         SPDLOG_ERROR("fit to kernel map failed. try setting a small fitting_region_arcsec value.");
@@ -705,7 +469,6 @@ void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_d
 
     std::vector<Eigen::Index> shift_indices = {shift_row,shift_col};
     temp_kernel = engine_utils::shift_2D(temp_kernel, shift_indices);
-    SPDLOG_INFO("kernel template: shifted kernel built (map_index={})", map_index);
 
     // calculate distance
     Eigen::MatrixXd dist(n_rows,n_cols);
@@ -758,7 +521,6 @@ void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_d
     if (dist_valid.size() < 2) {
         SPDLOG_WARN("kernel template radial averages are undersampled; using shifted kernel map directly");
         filter_template = temp_kernel;
-        SPDLOG_INFO("kernel template: complete via shifted kernel fallback (map_index={})", map_index);
         return;
     }
 
@@ -793,7 +555,6 @@ void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_d
             }
         }
     }
-    SPDLOG_INFO("kernel template: complete (map_index={})", map_index);
 }
 
 template <class MB>
@@ -935,12 +696,122 @@ void WienerFilter::calc_vvq(MB &mb, const int map_index) {
 }
 
 void WienerFilter::calc_numerator() {
-    nume = calc_numerator_from_input(filtered_map);
+    // set up fftw
+    fftw_complex *a;
+    fftw_complex *b;
+    fftw_plan pf, pr;
+
+    a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
+    b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
+
+    pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
+    pr = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
+
+    // set up inputs and outputs
+    Eigen::MatrixXcd in(n_rows,n_cols);
+    Eigen::MatrixXcd out(n_rows,n_cols);
+
+    in.real() = rr.array() * filtered_map.array();
+    in.imag().setZero();
+
+    //out = engine_utils::fft<engine_utils::forward>(in, parallel_policy);
+    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
+
+    in.real() = out.real().array() / vvq.array();
+    in.imag() = out.imag().array() / vvq.array();
+
+    //out = engine_utils::fft<engine_utils::inverse>(in, parallel_policy);
+    out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
+
+    in.real() = out.real().array() * rr.array();
+    in.imag().setZero();
+
+    //out = engine_utils::fft<engine_utils::forward>(in, parallel_policy);
+    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
+
+    // copy of out
+    Eigen::MatrixXcd qqq = out;
+
+    in.real() = filter_template;
+    in.imag().setZero();
+
+    //out = engine_utils::fft<engine_utils::forward>(in, parallel_policy);
+    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
+
+    in.real() = out.real().array() * qqq.real().array() + out.imag().array() * qqq.imag().array();
+    in.imag() = -out.imag().array() * qqq.real().array() + out.real().array() * qqq.imag().array();
+
+    //out = engine_utils::fft<engine_utils::inverse>(in, parallel_policy);
+    out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
+
+    // populate numerator
+    nume = out.real();
+
+    // destroy fftw plans
+    fftw_destroy_plan(pf);
+    fftw_destroy_plan(pr);
+
+    fftw_free(a);
+    fftw_free(b);
 }
 
 void WienerFilter::run_convolve(bool normalize) {
-    nume = run_convolve_on_input(filtered_map, normalize);
+    // set up fftw
+    fftw_complex *a;
+    fftw_complex *b;
+    fftw_plan pf, pr;
+
+    // allocate space for 2d ffts
+    a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
+    b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
+
+    // fftw plans
+    pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
+    pr = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
+
+    // inputs and outputs to ffts
+    Eigen::MatrixXcd in(n_rows,n_cols), out(n_rows,n_cols);
+
+    Eigen::MatrixXd kernel = filter_template;
+    if (normalize) {
+        double kernel_sum = kernel.sum();
+        if (kernel_sum != 0.0 && std::isfinite(kernel_sum)) {
+            kernel /= kernel_sum;
+        }
+    }
+
+    in.real() = kernel;
+    in.imag().setZero();
+
+    // fft(f(x))
+    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
+    out = out*n_rows*n_cols;
+
+    Eigen::MatrixXcd fft_filter = out;
+
+    in.real() = filtered_map;
+    in.imag().setZero();
+
+    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
+    out = out*n_rows*n_cols;
+
+    // convolution
+    in.real() = out.real().array() * fft_filter.real().array() - out.imag().array() * fft_filter.imag().array();
+    in.imag() = out.imag().array() * fft_filter.real().array() + out.real().array() * fft_filter.imag().array();
+
+    out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
+    out = out/n_rows/n_cols;
+
+    nume = out.real();
     denom.setOnes(n_rows,n_cols);
+
+    // free fftw vectors
+    fftw_free(a);
+    fftw_free(b);
+
+    // destroy fftw plans
+    fftw_destroy_plan(pf);
+    fftw_destroy_plan(pr);
 }
 
 void WienerFilter::destripe(double threshold_factor) {
@@ -1013,11 +884,9 @@ void WienerFilter::calc_denominator() {
     fftw_complex *b;
     fftw_plan pf, pr;
 
-    // allocate space for 2d ffts
     a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
     b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
 
-    // fftw plans
     pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
     pr = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
 
@@ -1025,46 +894,60 @@ void WienerFilter::calc_denominator() {
     denom.setZero(n_rows,n_cols);
 
     // inputs and outputs to ffts
-    Eigen::MatrixXcd in(n_rows,n_cols), out(n_rows,n_cols);
+    Eigen::MatrixXcd in(n_rows,n_cols);
+    Eigen::MatrixXcd out(n_rows,n_cols);
 
     // using uniform weights only
     if (uniform_weight) {
         in.real() = filter_template;
         in.imag().setZero();
 
-        // fft(f(x))
+        //out = engine_utils::fft<engine_utils::forward>(in, parallel_policy);
         out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
 
-        // set denominator = abs(fft(f(x))/VV
+        // set denominator
         denom.setConstant(((out.real().array() * out.real().array() + out.imag().array() * out.imag().array()) / vvq.array()).sum());
+
+        // destroy fftw plans
+        fftw_destroy_plan(pf);
+        fftw_destroy_plan(pr);
+
+        fftw_free(a);
+        fftw_free(b);
     }
+
     else {
         // initialize denominator
         denom.setZero();
 
-        // 1/VV
-        in.real() = pow(vvq.array(),-1);
+        in.real() = pow(vvq.array(), -1);
         in.imag().setZero();
 
-        // Z = ifft(1/VV)
+        //out = engine_utils::fft<engine_utils::inverse>(in, parallel_policy);
         out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
 
-        // flattened real(Z) array
-        Eigen::VectorXd Z(n_rows * n_cols);
+        // destroy fftw plans
+        fftw_free(a);
+        fftw_free(b);
 
-        // real(Z).  do loop to make sure colmajor is preserved
-        for (Eigen::Index i=0; i<n_cols; ++i) {
-            for (Eigen::Index j=0; j<n_rows;++j) {
+        fftw_destroy_plan(pf);
+        fftw_destroy_plan(pr);
+
+        Eigen::VectorXd zz2d(n_rows * n_cols);
+
+        // vector of real components of IFFT(1/VVQ)
+        for (Eigen::Index i=0; i<n_cols; i++) {
+            for (Eigen::Index j=0; j<n_rows;j++) {
                 int ii = n_rows*i+j;
-                Z(ii) = (out.real()(j,i));
+                zz2d(ii) = (out.real()(j,i));
             }
         }
 
-        // sort absolute values of Z in ascending order
-        Eigen::VectorXd Z_abs = Z.array().abs();
-        auto Z_indices_sorted = engine_utils::sorter(Z_abs);
+        // sort absolute values in ascending order
+        Eigen::VectorXd Z_abs = zz2d.array().abs();
+        auto sorted = engine_utils::sorter(Z_abs);
 
-        // number of iterations between convergence checks
+        // number of iterations for convergence
         n_loops = n_rows * n_cols / 100;
         if (n_loops < 100) {
             n_loops = 100;
@@ -1076,105 +959,125 @@ void WienerFilter::calc_denominator() {
         bool done = false;
 
         tula::logging::progressbar pb(
-            [&](const auto &msg) { logger->info("{}", msg); }, 90,
+            [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 90,
             "calculating denom");
-
+        const Eigen::Index total_iters = n_rows * n_cols;
+        const Eigen::Index pb_stride = std::max<Eigen::Index>(total_iters / 100, 1);
         const auto denom_start = std::chrono::steady_clock::now();
         double last_log_s = 0.0;
+        const double denom_rel_tol_local = denom_rel_tol;
+        const double tail_frac_tol_local = tail_frac_tol;
 
-        // loop through cols and rows
-        for (Eigen::Index k=0; k<n_cols; ++k) {
-            for (Eigen::Index l=0; l<n_rows; ++l) {
+        #pragma omp parallel shared(sorted, n_loops, zz2d, Z_abs, Z_abs_done, Z_abs_total, total_iters, pb_stride, denom_rel_tol_local, tail_frac_tol_local, denom_start, last_log_s, done, pb, n_rows, n_cols, denom, filter_template, rr) default (none)
+        {
+            fftw_complex *a_local = nullptr, *b_local = nullptr;
+            fftw_plan pf_local = nullptr, pr_local = nullptr;
+
+            // Keep FFTW plan creation serialized; FFTW planning is not thread-safe by default.
+            #pragma omp critical (wfFFTW)
+            {
+                a_local = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
+                b_local = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
+                pf_local = fftw_plan_dft_2d(n_rows, n_cols, a_local, b_local, FFTW_FORWARD, FFTW_ESTIMATE);
+                pr_local = fftw_plan_dft_2d(n_rows, n_cols, a_local, b_local, FFTW_BACKWARD, FFTW_ESTIMATE);
+            }
+
+            #pragma omp for schedule (dynamic) ordered
+            for (Eigen::Index kk=0; kk<total_iters; ++kk) {
+                #pragma omp flush (done)
                 if (!done) {
-                    // inputs and outputs
-                    Eigen::MatrixXcd in(n_rows,n_cols), out(n_rows,n_cols);
+                    Eigen::MatrixXcd in(n_rows,n_cols);
+                    Eigen::MatrixXcd out(n_rows,n_cols);
 
-                    // current element in flattened 1d vector
-                    int kk = n_rows * k + l;
-                    // get index in reverse order to get largest abs(ifft(1/VV))
-                    auto shift_index = std::get<1>(Z_indices_sorted[n_rows * n_cols - kk - 1]);
+                    // get index in reverse order
+                    auto shift_index = std::get<1>(sorted[total_iters - kk - 1]);
 
-                    // indices to shift by
-                    std::vector<Eigen::Index> shift_indices = {static_cast<Eigen::Index>(-shift_index % n_rows),
-                                                               static_cast<Eigen::Index>(-shift_index / n_rows)};
+                    Eigen::Index shift_row = -static_cast<Eigen::Index>(shift_index % n_rows);
+                    Eigen::Index shift_col = -static_cast<Eigen::Index>(shift_index / n_rows);
 
-                    // f(x) x f(x-x_d)
+                    std::vector<Eigen::Index> shift_indices = {shift_row, shift_col};
+
                     Eigen::MatrixXd in_prod = filter_template.array() * engine_utils::shift_2D(filter_template, shift_indices).array();
 
-                    // populate matrices for fft
                     in.real() = in_prod;
                     in.imag().setZero();
 
-                    // fft(f(x) x f(x-x_d))
-                    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
+                    out = engine_utils::fft2<engine_utils::forward>(in, pf_local, a_local, b_local);
 
-                    // copy of fft(f(x) x f(x-x_d))
                     Eigen::MatrixXcd ffdq = out;
 
-                    // R(x) x R(x-x_d)
                     in_prod = rr.array() * engine_utils::shift_2D(rr, shift_indices).array();
 
-                    // populate matrices for fft
                     in.real() = in_prod;
                     in.imag().setZero();
 
-                    // fft(R(x) x R(x-x_d))
-                    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
+                    out = engine_utils::fft2<engine_utils::forward>(in, pf_local, a_local, b_local);
 
-                    // fft(f(x) x f(x-x_d)) x fft(R(x) x R(x-x_d))
                     in.real() = ffdq.real().array() * out.real().array() + ffdq.imag().array() * out.imag().array();
                     in.imag() = -ffdq.imag().array() * out.real().array() + ffdq.real().array() * out.imag().array();
 
-                    // G = ifft(fft(f(x) x f(x-x_d)) x fft(R(x) x R(x-x_d)))
-                    out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
+                    out = engine_utils::fft2<engine_utils::inverse>(in, pr_local, a_local, b_local);
 
-                    // Z(x_d) x G/n_pixels
-                    Eigen::MatrixXd delta_denom = Z(shift_index) * out.real()/n_rows/n_cols;
+                    #pragma omp ordered
+                    {
+                        Eigen::MatrixXd updater = zz2d(shift_index) * out.real()/n_rows/n_cols;
 
-                    // D = D + Z(x_d) x G/n_pixels
-                    denom = denom.array() + delta_denom.array();
-                    Z_abs_done += Z_abs(shift_index);
+                        // update denominator
+                        denom = denom + updater;
+                        Z_abs_done += Z_abs(shift_index);
 
-                    // update status
-                    if ((kk % n_loops) == 1) {
-                        const double denom_norm = denom.norm();
-                        const double delta_norm = delta_denom.norm();
-                        const double rel_update = delta_norm / std::max(denom_norm, 1e-12);
-                        const double tail_frac = (Z_abs_total > 0.0) ? ((Z_abs_total - Z_abs_done) / Z_abs_total) : 0.0;
+                        // update progress bar
+                        pb.count(total_iters, pb_stride);
 
-                        const double elapsed_s = std::chrono::duration<double>(
-                            std::chrono::steady_clock::now() - denom_start).count();
-                        const double step_s = elapsed_s - last_log_s;
-                        last_log_s = elapsed_s;
+                        // update status
+                        if ((kk % n_loops) == 1) {
+                            const double denom_norm = denom.norm();
+                            const double delta_norm = updater.norm();
+                            const double rel_update = delta_norm / std::max(denom_norm, 1e-12);
+                            const double tail_frac = (Z_abs_total > 0.0) ? ((Z_abs_total - Z_abs_done) / Z_abs_total) : 0.0;
 
-                        logger->info("{} iteration(s) complete. rel_update={} tail_frac={} elapsed_s={} step_s={}",
-                                     kk, static_cast<float>(rel_update), static_cast<float>(tail_frac),
-                                     static_cast<float>(elapsed_s), static_cast<float>(step_s));
+                            const double elapsed_s = std::chrono::duration<double>(
+                                std::chrono::steady_clock::now() - denom_start).count();
+                            const double step_s = elapsed_s - last_log_s;
+                            last_log_s = elapsed_s;
 
-                        if (rel_update < denom_rel_tol && tail_frac < tail_frac_tol) {
-                            done = true;
+                            SPDLOG_INFO("{} iteration(s) complete. rel_update={} tail_frac={} elapsed_s={} step_s={}",
+                                        kk, static_cast<float>(rel_update), static_cast<float>(tail_frac),
+                                        static_cast<float>(elapsed_s), static_cast<float>(step_s));
+
+                            if (rel_update < denom_rel_tol_local && tail_frac < tail_frac_tol_local) {
+                                done = true;
+                            #pragma omp flush(done)
+                            }
                         }
                     }
                 }
             }
-        }
 
-        // zero out extremely small denom values
-        for (Eigen::Index i=0; i<n_rows; ++i) {
-            for (Eigen::Index j=0; j<n_cols; ++j) {
+            #pragma omp critical (wfFFTW)
+            {
+                if (pf_local != nullptr) {
+                    fftw_destroy_plan(pf_local);
+                }
+                if (pr_local != nullptr) {
+                    fftw_destroy_plan(pr_local);
+                }
+                if (a_local != nullptr) {
+                    fftw_free(a_local);
+                }
+                if (b_local != nullptr) {
+                    fftw_free(b_local);
+                }
+            }
+        }
+        for (Eigen::Index i=0; i<n_rows; i++) {
+            for (Eigen::Index j=0; j<n_cols; j++) {
                 if (denom(i,j) < denom_limit) {
                     denom(i,j) = 0;
                 }
             }
         }
     }
-
-    // destroy fftw plans
-    fftw_destroy_plan(pf);
-    fftw_destroy_plan(pr);
-    // free fftw vectors
-    fftw_free(a);
-    fftw_free(b);
 }
 
 } // namespace mapmaking
