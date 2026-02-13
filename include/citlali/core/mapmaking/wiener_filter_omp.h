@@ -489,25 +489,21 @@ void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_d
     // collect what we need
     Eigen::MatrixXd temp_kernel = mb.kernel[map_index];
 
-    // carry out fit to kernel
-    double init_row = -99;
-    double init_col = -99;
-
-    auto [map_params, map_perror, good_fit] =
-        map_fitter.fit_to_gaussian<engine_utils::mapFitter::pointing>(mb.kernel[map_index], mb.weight[map_index],
-                                                                      init_fwhm, init_row, init_col);
-
-    if (!good_fit) {
-        logger->error("fit to kernel map failed. try setting a small fitting_region_arcsec value.");
+    // Center kernel deterministically using the peak absolute response.
+    // This avoids unstable Gaussian fitting failures in some coadd/kernel combinations.
+    Eigen::Index peak_row = 0;
+    Eigen::Index peak_col = 0;
+    const double peak_abs = temp_kernel.cwiseAbs().maxCoeff(&peak_row, &peak_col);
+    if (!std::isfinite(peak_abs)) {
+        logger->error("kernel template peak is non-finite for map_index={}", map_index);
         std::exit(EXIT_FAILURE);
     }
-
-    // rescale parameters to on-sky units
-    map_params(1) = mb.pixel_size_rad*(map_params(1) - (n_cols)/2);
-    map_params(2) = mb.pixel_size_rad*(map_params(2) - (n_rows)/2);
-
-    Eigen::Index shift_row = -std::round(map_params(2)/diff_rows);
-    Eigen::Index shift_col = -std::round(map_params(1)/diff_cols);
+    const Eigen::Index center_row = n_rows / 2;
+    const Eigen::Index center_col = n_cols / 2;
+    Eigen::Index shift_row = center_row - peak_row;
+    Eigen::Index shift_col = center_col - peak_col;
+    logger->info("kernel template centering via peak: map_index={} peak_row={} peak_col={} shift_row={} shift_col={}",
+                 map_index, peak_row, peak_col, shift_row, shift_col);
 
     std::vector<Eigen::Index> shift_indices = {shift_row,shift_col};
     temp_kernel = engine_utils::shift_2D(temp_kernel, shift_indices);
