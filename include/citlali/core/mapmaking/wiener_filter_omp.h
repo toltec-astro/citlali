@@ -397,15 +397,40 @@ inline WienerFilter::FFTWContext &WienerFilter::get_thread_fft_context(int rows,
 }
 
 inline Eigen::MatrixXd WienerFilter::calc_numerator_from_input(const Eigen::MatrixXd &input_map) {
-    fftw_complex *a;
-    fftw_complex *b;
-    fftw_plan pf, pr;
+    fftw_complex *a = nullptr;
+    fftw_complex *b = nullptr;
+    fftw_plan pf = nullptr, pr = nullptr;
 
     a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * n_rows * n_cols);
     b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * n_rows * n_cols);
 
-    pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
-    pr = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
+    // FFTW planner is not thread-safe; guard plan create/destroy when called from OMP loop.
+    #pragma omp critical (wfFFTWPlan)
+    {
+        pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
+        pr = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
+    }
+    if (a == nullptr || b == nullptr || pf == nullptr || pr == nullptr) {
+        logger->error("FFTW allocation/plan failed in calc_numerator_from_input");
+        if (pf != nullptr || pr != nullptr) {
+            #pragma omp critical (wfFFTWPlan)
+            {
+                if (pf != nullptr) {
+                    fftw_destroy_plan(pf);
+                }
+                if (pr != nullptr) {
+                    fftw_destroy_plan(pr);
+                }
+            }
+        }
+        if (a != nullptr) {
+            fftw_free(a);
+        }
+        if (b != nullptr) {
+            fftw_free(b);
+        }
+        std::exit(EXIT_FAILURE);
+    }
 
     Eigen::MatrixXcd in(n_rows, n_cols), out(n_rows, n_cols), qqq(n_rows, n_cols);
 
@@ -430,24 +455,60 @@ inline Eigen::MatrixXd WienerFilter::calc_numerator_from_input(const Eigen::Matr
     in.imag() = -out.imag().array() * qqq.real().array() + out.real().array() * qqq.imag().array();
     out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
 
-    fftw_free(a);
-    fftw_free(b);
-    fftw_destroy_plan(pf);
-    fftw_destroy_plan(pr);
+    #pragma omp critical (wfFFTWPlan)
+    {
+        if (pf != nullptr) {
+            fftw_destroy_plan(pf);
+        }
+        if (pr != nullptr) {
+            fftw_destroy_plan(pr);
+        }
+    }
+    if (a != nullptr) {
+        fftw_free(a);
+    }
+    if (b != nullptr) {
+        fftw_free(b);
+    }
 
     return out.real();
 }
 
 inline Eigen::MatrixXd WienerFilter::run_convolve_on_input(const Eigen::MatrixXd &input_map, bool normalize) {
-    fftw_complex *a;
-    fftw_complex *b;
-    fftw_plan pf, pr;
+    fftw_complex *a = nullptr;
+    fftw_complex *b = nullptr;
+    fftw_plan pf = nullptr, pr = nullptr;
 
     a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * n_rows * n_cols);
     b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * n_rows * n_cols);
 
-    pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
-    pr = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
+    // FFTW planner is not thread-safe; guard plan create/destroy when called from OMP loop.
+    #pragma omp critical (wfFFTWPlan)
+    {
+        pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
+        pr = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
+    }
+    if (a == nullptr || b == nullptr || pf == nullptr || pr == nullptr) {
+        logger->error("FFTW allocation/plan failed in run_convolve_on_input");
+        if (pf != nullptr || pr != nullptr) {
+            #pragma omp critical (wfFFTWPlan)
+            {
+                if (pf != nullptr) {
+                    fftw_destroy_plan(pf);
+                }
+                if (pr != nullptr) {
+                    fftw_destroy_plan(pr);
+                }
+            }
+        }
+        if (a != nullptr) {
+            fftw_free(a);
+        }
+        if (b != nullptr) {
+            fftw_free(b);
+        }
+        std::exit(EXIT_FAILURE);
+    }
 
     Eigen::MatrixXcd in(n_rows, n_cols), out(n_rows, n_cols), fft_filter(n_rows, n_cols);
     Eigen::MatrixXd kernel = filter_template;
@@ -475,10 +536,21 @@ inline Eigen::MatrixXd WienerFilter::run_convolve_on_input(const Eigen::MatrixXd
     out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
     out = out / n_rows / n_cols;
 
-    fftw_free(a);
-    fftw_free(b);
-    fftw_destroy_plan(pf);
-    fftw_destroy_plan(pr);
+    #pragma omp critical (wfFFTWPlan)
+    {
+        if (pf != nullptr) {
+            fftw_destroy_plan(pf);
+        }
+        if (pr != nullptr) {
+            fftw_destroy_plan(pr);
+        }
+    }
+    if (a != nullptr) {
+        fftw_free(a);
+    }
+    if (b != nullptr) {
+        fftw_free(b);
+    }
 
     return out.real();
 }
@@ -1090,13 +1162,12 @@ void WienerFilter::calc_denominator() {
         }
     }
 
-    // free fftw vectors
-    fftw_free(a);
-    fftw_free(b);
-
     // destroy fftw plans
     fftw_destroy_plan(pf);
     fftw_destroy_plan(pr);
+    // free fftw vectors
+    fftw_free(a);
+    fftw_free(b);
 }
 
 } // namespace mapmaking

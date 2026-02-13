@@ -564,13 +564,12 @@ void WienerFilter::calc_numerator() {
     // populate numerator with real(ifft(fft(f(x)) x fft(Q)))
     nume = out.real();
 
-    // free fftw vectors
-    fftw_free(a);
-    fftw_free(b);
-
     // destroy fftw plans
     fftw_destroy_plan(pf);
     fftw_destroy_plan(pr);
+    // free fftw vectors
+    fftw_free(a);
+    fftw_free(b);
 }
 
 void WienerFilter::calc_denominator() {
@@ -735,13 +734,12 @@ void WienerFilter::calc_denominator() {
         }
     }
 
-    // free fftw vectors
-    fftw_free(a);
-    fftw_free(b);
-
     // destroy fftw plans
     fftw_destroy_plan(pf);
     fftw_destroy_plan(pr);
+    // free fftw vectors
+    fftw_free(a);
+    fftw_free(b);
 }
 
 template<class MB, class CD>
@@ -853,13 +851,12 @@ void WienerFilter::run_convolve(bool normalize) {
     nume = out.real();
     denom.setOnes(n_rows,n_cols);
 
-    // free fftw vectors
-    fftw_free(a);
-    fftw_free(b);
-
     // destroy fftw plans
     fftw_destroy_plan(pf);
     fftw_destroy_plan(pr);
+    // free fftw vectors
+    fftw_free(a);
+    fftw_free(b);
 }
 
 void WienerFilter::destripe(double threshold_factor) {
