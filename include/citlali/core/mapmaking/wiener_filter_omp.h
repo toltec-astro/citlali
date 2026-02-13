@@ -676,16 +676,20 @@ void WienerFilter::make_airy_template(MB &mb, const double gaussian_template_fwh
 
 template<class MB, class CD>
 void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_data) {
+    SPDLOG_INFO("kernel template: begin (map_index={})", map_index);
     // collect what we need
     Eigen::MatrixXd temp_kernel = mb.kernel[map_index];
 
     // carry out fit to kernel
     double init_row = -99;
     double init_col = -99;
+    SPDLOG_INFO("kernel template: fitting Gaussian centroid (map_index={})", map_index);
 
     auto [map_params, map_perror, good_fit] =
         map_fitter.fit_to_gaussian<engine_utils::mapFitter::pointing>(mb.kernel[map_index], mb.weight[map_index],
                                                                       init_fwhm, init_row, init_col);
+    SPDLOG_INFO("kernel template: Gaussian fit complete (map_index={}, good_fit={})",
+                map_index, good_fit);
 
     if (!good_fit) {
         SPDLOG_ERROR("fit to kernel map failed. try setting a small fitting_region_arcsec value.");
@@ -701,6 +705,7 @@ void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_d
 
     std::vector<Eigen::Index> shift_indices = {shift_row,shift_col};
     temp_kernel = engine_utils::shift_2D(temp_kernel, shift_indices);
+    SPDLOG_INFO("kernel template: shifted kernel built (map_index={})", map_index);
 
     // calculate distance
     Eigen::MatrixXd dist(n_rows,n_cols);
@@ -753,6 +758,7 @@ void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_d
     if (dist_valid.size() < 2) {
         SPDLOG_WARN("kernel template radial averages are undersampled; using shifted kernel map directly");
         filter_template = temp_kernel;
+        SPDLOG_INFO("kernel template: complete via shifted kernel fallback (map_index={})", map_index);
         return;
     }
 
@@ -787,6 +793,7 @@ void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_d
             }
         }
     }
+    SPDLOG_INFO("kernel template: complete (map_index={})", map_index);
 }
 
 template <class MB>

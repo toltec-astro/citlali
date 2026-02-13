@@ -2720,8 +2720,14 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         // init fwhm in pixels
         wiener_filter.init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/mb.pixel_size_rad;
         // make wiener filter template
+        logger->info("building Wiener template for {} map {}/{} (array={})",
+                     map_label, i + 1, n_maps, toltec_io.array_name_map[array]);
         wiener_filter.make_template(mb, calib.apt, wiener_filter.template_fwhm_rad[toltec_io.array_name_map[array]],i);
+        logger->info("Wiener template ready for {} map {}/{} (array={})",
+                     map_label, i + 1, n_maps, toltec_io.array_name_map[array]);
         // run the filter for the current map
+        logger->info("running Wiener filter core for {} map {}/{} (array={})",
+                     map_label, i + 1, n_maps, toltec_io.array_name_map[array]);
         wiener_filter.filter_maps(mb,i);
         logger->info("map filtering complete for {} map {}/{}", map_label, i + 1, n_maps);
 
