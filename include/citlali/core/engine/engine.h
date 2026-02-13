@@ -1991,9 +1991,9 @@ auto Engine::get_map_name(int i) {
 
 template <typename fits_io_type, class map_buffer_t>
 void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
-    if (i < 0 || i >= static_cast<Eigen::Index>(fits_io.size())) {
+    if (i < 0 || i >= static_cast<Eigen::Index>(fits_io->size())) {
         logger->error("add_phdu index out of range: i={} fits_io_size={}",
-                      static_cast<long long>(i), static_cast<long long>(fits_io.size()));
+                      static_cast<long long>(i), static_cast<long long>(fits_io->size()));
         std::exit(EXIT_FAILURE);
     }
     if (i >= calib.arrays.size()) {
@@ -2393,10 +2393,10 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
     Eigen::Index map_index = arrays_to_maps(i);
     // get the stokes parameter for the given map
     Eigen::Index stokes_index = maps_to_stokes(i);
-    if (map_index < 0 || map_index >= static_cast<Eigen::Index>(fits_io.size())) {
+    if (map_index < 0 || map_index >= static_cast<Eigen::Index>(fits_io->size())) {
         logger->error("write_maps file index out of range: map_index={} fits_io_size={} map_i={}",
                       static_cast<long long>(map_index),
-                      static_cast<long long>(fits_io.size()),
+                      static_cast<long long>(fits_io->size()),
                       static_cast<long long>(i));
         std::exit(EXIT_FAILURE);
     }
@@ -2499,10 +2499,10 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
 
     // write noise maps
     if (!mb->noise.empty()) {
-        if (map_index < 0 || map_index >= static_cast<Eigen::Index>(noise_fits_io.size())) {
+        if (map_index < 0 || map_index >= static_cast<Eigen::Index>(noise_fits_io->size())) {
             logger->error("write_maps noise file index out of range: map_index={} noise_fits_io_size={} map_i={}",
                           static_cast<long long>(map_index),
-                          static_cast<long long>(noise_fits_io.size()),
+                          static_cast<long long>(noise_fits_io->size()),
                           static_cast<long long>(i));
             std::exit(EXIT_FAILURE);
         }
