@@ -1991,6 +1991,17 @@ auto Engine::get_map_name(int i) {
 
 template <typename fits_io_type, class map_buffer_t>
 void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
+    if (i < 0 || i >= static_cast<Eigen::Index>(fits_io.size())) {
+        logger->error("add_phdu index out of range: i={} fits_io_size={}",
+                      static_cast<long long>(i), static_cast<long long>(fits_io.size()));
+        std::exit(EXIT_FAILURE);
+    }
+    if (i >= calib.arrays.size()) {
+        logger->error("add_phdu array index out of range: i={} calib.arrays.size={}",
+                      static_cast<long long>(i), static_cast<long long>(calib.arrays.size()));
+        std::exit(EXIT_FAILURE);
+    }
+
     // array name
     std::string name = toltec_io.array_name_map[calib.arrays(i)];
 
@@ -2366,6 +2377,15 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
 template <typename fits_io_type, class map_buffer_t>
 void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_buffer_t &mb, Eigen::Index i) {
+    if (i < 0 || i >= static_cast<Eigen::Index>(mb->signal.size()) ||
+        i >= static_cast<Eigen::Index>(mb->weight.size())) {
+        logger->error("write_maps map index out of range: i={} signal_size={} weight_size={}",
+                      static_cast<long long>(i),
+                      static_cast<long long>(mb->signal.size()),
+                      static_cast<long long>(mb->weight.size()));
+        std::exit(EXIT_FAILURE);
+    }
+
     // get name for extension layer
     std::string map_name = get_map_name(i);
 
@@ -2373,6 +2393,37 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
     Eigen::Index map_index = arrays_to_maps(i);
     // get the stokes parameter for the given map
     Eigen::Index stokes_index = maps_to_stokes(i);
+    if (map_index < 0 || map_index >= static_cast<Eigen::Index>(fits_io.size())) {
+        logger->error("write_maps file index out of range: map_index={} fits_io_size={} map_i={}",
+                      static_cast<long long>(map_index),
+                      static_cast<long long>(fits_io.size()),
+                      static_cast<long long>(i));
+        std::exit(EXIT_FAILURE);
+    }
+    if (stokes_index < 0 || stokes_index >= static_cast<Eigen::Index>(rtcproc.polarization.stokes_params.size())) {
+        logger->error("write_maps stokes index out of range: stokes_index={} stokes_size={} map_i={}",
+                      static_cast<long long>(stokes_index),
+                      static_cast<long long>(rtcproc.polarization.stokes_params.size()),
+                      static_cast<long long>(i));
+        std::exit(EXIT_FAILURE);
+    }
+    if (maps_to_arrays(i) < 0 || maps_to_arrays(i) >= calib.arrays.size()) {
+        logger->error("write_maps maps_to_arrays index out of range: maps_to_arrays(i)={} calib.arrays.size={} map_i={}",
+                      static_cast<long long>(maps_to_arrays(i)),
+                      static_cast<long long>(calib.arrays.size()),
+                      static_cast<long long>(i));
+        std::exit(EXIT_FAILURE);
+    }
+
+    double source_epoch = 2000.0;
+    auto epoch_it = telescope.tel_header.find("Header.Source.Epoch");
+    if (epoch_it != telescope.tel_header.end() && epoch_it->second.size() > 0 &&
+        std::isfinite(epoch_it->second(0))) {
+        source_epoch = epoch_it->second(0);
+    }
+    else {
+        logger->warn("Header.Source.Epoch missing/invalid; using epoch={} for WCS", source_epoch);
+    }
 
     // update wcs ctypes for frequency and stokes params
     mb->wcs.crval[2] = toltec_io.array_freq_map[calib.arrays[maps_to_arrays(i)]];
@@ -2380,12 +2431,12 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
 
     // signal map
     fits_io->at(map_index).add_hdu("signal_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->signal[i]);
-    fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
+    fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
     fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
 
     // weight map
     fits_io->at(map_index).add_hdu("weight_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->weight[i]);
-    fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
+    fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
     fits_io->at(map_index).hdus.back()->addKey("UNIT", "1/("+mb->sig_unit+")^2", "Unit of map");
     if (redu_type != "beammap" && std::fabs(mb->median_err(i)) > std::numeric_limits<double>::epsilon()) {
         fits_io->at(map_index).hdus.back()->addKey("MEDERR", pow(mb->median_err(i),0.5), "Median Error ("+mb->sig_unit+")");
@@ -2410,14 +2461,14 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             }
         }
         fits_io->at(map_index).hdus.back()->addKey("FWHM",fwhm,"Kernel fwhm (arcsec)");
-        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
+        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
         fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
     }
 
     // coverage map
     if (!mb->coverage.empty()) {
         fits_io->at(map_index).add_hdu("coverage_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->coverage[i]);
-        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
+        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
         fits_io->at(map_index).hdus.back()->addKey("UNIT", "sec", "Unit of map");
     }
 
@@ -2435,26 +2486,38 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
 
         // coverage bool map
         fits_io->at(map_index).add_hdu("coverage_bool_" + map_name + rtcproc.polarization.stokes_params[stokes_index], coverage_bool);
-        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
+        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
         fits_io->at(map_index).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
         fits_io->at(map_index).hdus.back()->addKey("WTTHRESH", weight_threshold, "Weight threshold");
 
         // signal-to-noise map
         Eigen::MatrixXd sig2noise = mb->signal[i].array()*sqrt(mb->weight[i].array());
         fits_io->at(map_index).add_hdu("sig2noise_" + map_name + rtcproc.polarization.stokes_params[stokes_index], sig2noise);
-        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
+        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
         fits_io->at(map_index).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
     }
 
     // write noise maps
     if (!mb->noise.empty()) {
+        if (map_index < 0 || map_index >= static_cast<Eigen::Index>(noise_fits_io.size())) {
+            logger->error("write_maps noise file index out of range: map_index={} noise_fits_io_size={} map_i={}",
+                          static_cast<long long>(map_index),
+                          static_cast<long long>(noise_fits_io.size()),
+                          static_cast<long long>(i));
+            std::exit(EXIT_FAILURE);
+        }
+        if (i >= static_cast<Eigen::Index>(mb->noise.size())) {
+            logger->error("write_maps noise map index out of range: i={} noise_size={}",
+                          static_cast<long long>(i), static_cast<long long>(mb->noise.size()));
+            std::exit(EXIT_FAILURE);
+        }
         for (Eigen::Index n=0; n<mb->n_noise; ++n) {
             Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(mb->noise[i].data() + n * mb->n_rows * mb->n_cols,
                                                                                            mb->n_rows, mb->n_cols);
 
             noise_fits_io->at(map_index).add_hdu("signal_" + map_name + std::to_string(n) + "_" + rtcproc.polarization.stokes_params[stokes_index],
                                                  noise_matrix);
-            noise_fits_io->at(map_index).add_wcs(noise_fits_io->at(map_index).hdus.back(), mb->wcs, telescope.tel_header["Header.Source.Epoch"](0));
+            noise_fits_io->at(map_index).add_wcs(noise_fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
             noise_fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
             noise_fits_io->at(map_index).hdus.back()->addKey("MEDRMS", mb->median_rms[i], "Median RMS of noise maps");
         }
