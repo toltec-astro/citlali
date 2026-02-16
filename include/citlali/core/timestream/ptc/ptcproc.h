@@ -167,15 +167,20 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                 get_config_value(config, cleaner.null_model.max_modes, missing_keys, invalid_keys,
                                  std::tuple{"timestream","processed_time_chunk","clean","null_model","max_modes"},{},{0});
             }
+            if (config.template has_typed<int>(std::tuple{"timestream","processed_time_chunk","clean","null_model","max_samples"})) {
+                get_config_value(config, cleaner.null_model.max_samples, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","null_model","max_samples"},{},{0});
+            }
             int null_seed = static_cast<int>(cleaner.null_model.seed);
             if (config.template has_typed<int>(std::tuple{"timestream","processed_time_chunk","clean","null_model","seed"})) {
                 get_config_value(config, null_seed, missing_keys, invalid_keys,
                                  std::tuple{"timestream","processed_time_chunk","clean","null_model","seed"},{},{0});
             }
             cleaner.null_model.seed = static_cast<std::uint32_t>(null_seed);
-            logger->info("clean.null_model enabled: n_surrogates={} quantile={} min_good_frac={} max_modes={} seed={}",
+            logger->info("clean.null_model enabled: n_surrogates={} quantile={} min_good_frac={} max_modes={} max_samples={} seed={}",
                          cleaner.null_model.n_surrogates, cleaner.null_model.quantile,
-                         cleaner.null_model.min_good_frac, cleaner.null_model.max_modes, cleaner.null_model.seed);
+                         cleaner.null_model.min_good_frac, cleaner.null_model.max_modes,
+                         cleaner.null_model.max_samples, cleaner.null_model.seed);
         }
         // mask radius in arcseconds
         get_config_value(config, mask_radius_arcsec, missing_keys, invalid_keys,
