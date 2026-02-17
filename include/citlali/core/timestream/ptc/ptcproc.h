@@ -277,20 +277,23 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
 
     if (run_clean) {
         logger->info("cleaning");
+        // Use a local copy so per-pass state does not leak across concurrent run() calls.
+        auto cleaner_local = cleaner;
         // number of samples
         Eigen::Index n_pts = in.scans.data.rows();
         // index for number of cleaning groups in vectors
         Eigen::Index indx = 0;
         const bool want_eigs = (run_tod_output || write_evals);
-        const bool store_eigs = want_eigs && (cleaner.n_calc > 0);
+        const bool store_eigs = want_eigs && (cleaner_local.n_calc > 0);
         bool warned_eigs = false;
 
         // loop through config groupings
-        const bool null_model_enabled_global = cleaner.null_model.enabled;
-        for (const auto & group: cleaner.grouping) {
+        const bool null_model_enabled_global = cleaner_local.null_model.enabled;
+        for (const auto & group: cleaner_local.grouping) {
             // optional per-group null-model gating
-            cleaner.null_model.enabled = cleaner.null_model_enabled_for_group(group);
-            if (null_model_enabled_global && !cleaner.null_model.enabled) {
+            const bool null_model_for_group =
+                null_model_enabled_global && cleaner_local.null_model_enabled_for_group(group);
+            if (null_model_enabled_global && !null_model_for_group) {
                 logger->debug("null_model disabled for {} grouping", group);
             }
 
@@ -359,16 +362,16 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                 if ((apt_flags.array()==0).any()) {
                     logger->info("cleaning {} {}", group, key);
                     // calculate eigenvalues and eigenvalues
-                    auto [evals, evecs] = cleaner.calc_eig_values<timestream::Cleaner::SpectraBackend>(in_scans_block, masked_flags, apt_flags,
-                                                                                                       cleaner.n_eig_to_cut[arr_index](indx));
+                    auto [evals, evecs] = cleaner_local.calc_eig_values<timestream::Cleaner::SpectraBackend>(
+                        in_scans_block, masked_flags, apt_flags, cleaner_local.n_eig_to_cut[arr_index](indx));
                     Eigen::Index forced_limit_index = -1;
-                    if (cleaner.null_model.enabled) {
-                        forced_limit_index = cleaner.get_null_model_index(in_scans_block, masked_flags, apt_flags);
+                    if (null_model_for_group) {
+                        forced_limit_index = cleaner_local.get_null_model_index(in_scans_block, masked_flags, apt_flags);
                     }
 
                     if (store_eigs) {
                         // get first n_calc eigenvalues and eigenvectors
-                        Eigen::Index n_keep = std::min<Eigen::Index>(cleaner.n_calc, evals.size());
+                        Eigen::Index n_keep = std::min<Eigen::Index>(cleaner_local.n_calc, evals.size());
                         if (n_keep > 0) {
                             Eigen::VectorXd ev = evals.head(n_keep);
                             Eigen::MatrixXd evc = evecs.leftCols(n_keep);
@@ -385,9 +388,9 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                     }
 
                     // remove eigenvalues from the data and reconstruct the tod
-                    cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_scans_block, masked_flags, evals, evecs, out_scans_block,
-                                                                                   cleaner.n_eig_to_cut[arr_index](indx),
-                                                                                   forced_limit_index);
+                    cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
+                        in_scans_block, masked_flags, evals, evecs, out_scans_block,
+                        cleaner_local.n_eig_to_cut[arr_index](indx), forced_limit_index);
 
                     if (in.kernel.data.size()!=0) {
                         // check if any good flags
@@ -396,9 +399,9 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                             auto out_kernel_block = in.kernel.data.block(0, start_index, n_pts, n_dets);
 
                             // remove eigenvalues from the kernel and reconstruct the tod
-                            cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_kernel_block, masked_flags, evals, evecs, out_kernel_block,
-                                                                                           cleaner.n_eig_to_cut[arr_index](indx),
-                                                                                           forced_limit_index);
+                            cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
+                                in_kernel_block, masked_flags, evals, evecs, out_kernel_block,
+                                cleaner_local.n_eig_to_cut[arr_index](indx), forced_limit_index);
                     }
                 }
                 // otherwise just copy the data
@@ -416,7 +419,6 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
             // set as cleaned
             out.status.cleaned = true;
         }
-        cleaner.null_model.enabled = null_model_enabled_global;
     }
 }
 

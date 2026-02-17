@@ -70,9 +70,6 @@ public:
     }
 
     auto null_model_enabled_for_group(const std::string &group) const {
-        if (!null_model.enabled) {
-            return false;
-        }
         if (null_model.grouping.empty()) {
             return true;
         }
