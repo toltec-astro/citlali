@@ -145,11 +145,14 @@ public:
     }
 
     template <typename DerivedA, typename DerivedB>
-    auto calc_cov_with_mask(const Eigen::DenseBase<DerivedA> &sig, const Eigen::DenseBase<DerivedB> &good) {
+    Eigen::MatrixXd calc_cov_with_mask(const Eigen::DenseBase<DerivedA> &sig, const Eigen::DenseBase<DerivedB> &good) {
         Eigen::MatrixXd det = (sig.derived().array() * good.derived().array()).matrix();
         Eigen::MatrixXd numer = det.adjoint() * det;
         Eigen::MatrixXd denom = (good.derived().adjoint() * good.derived()).array() - 1.0;
-        return (denom.array() > 0.0).select(numer.array() / denom.array(), 0.0);
+        // Return a concrete matrix. Returning the select expression here would
+        // keep references to local temporaries (numer/denom) and can segfault.
+        Eigen::MatrixXd cov = (denom.array() > 0.0).select(numer.array() / denom.array(), 0.0).matrix();
+        return cov;
     }
 
     template <typename Derived>
