@@ -197,9 +197,13 @@ auto Lali::run() {
         rtcdata.flags.data.setConstant(0);
 
         if (interp_over_gaps) {
-            int i = 0;
             for (auto const& [key, val] : calib.nw_limits) {
-                auto& mask = masks[i];
+                auto mask_it = nw_masks.find(key);
+                if (mask_it == nw_masks.end()) {
+                    logger->error("missing gap mask for nw {}; cannot apply gap flagging", key);
+                    std::exit(EXIT_FAILURE);
+                }
+                auto& mask = mask_it->second;
 
                 Eigen::Index start = std::get<0>(calib.nw_limits[key]);
                 Eigen::Index end = std::get<1>(calib.nw_limits[key]) - 1;
@@ -217,7 +221,6 @@ auto Lali::run() {
                     }
                 }
                 logger->debug("{}/{} gaps flagged", rtcdata.flags.data.col(start).template cast<int>().sum(), rtcdata.flags.data.rows());
-                i++;
             }
         }
 

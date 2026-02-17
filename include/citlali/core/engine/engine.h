@@ -168,6 +168,7 @@ public:
     // for timing
     Eigen::VectorXd t_common;
     std::vector<Eigen::VectorXi> masks;
+    std::map<Eigen::Index, Eigen::VectorXi> nw_masks;
     std::vector<Eigen::VectorXd> nw_times;
 
     // date/time of each obs
@@ -933,30 +934,54 @@ void Engine::get_map_filter_config(CT &config) {
 
 template<typename CT>
 void Engine::get_citlali_config(CT &config) {
+    // interface key names
+    const std::vector<std::string> interface_keys = {
+        "toltec0",
+        "toltec1",
+        "toltec2",
+        "toltec3",
+        "toltec4",
+        "toltec5",
+        "toltec6",
+        "toltec7",
+        "toltec8",
+        "toltec9",
+        "toltec10",
+        "toltec11",
+        "toltec12",
+        "hwpr"
+    };
+    // initialize all offsets explicitly to zero
+    for (const auto &key : interface_keys) {
+        interface_sync_offset[key] = 0.0;
+    }
+
     //  get interface offsets
     if (config.has(std::tuple{"interface_sync_offset"})) {
         auto interface_node = config.get_node(std::tuple{"interface_sync_offset"});
-        // interface key names
-        std::vector<std::string> interface_keys = {
-            "toltec0",
-            "toltec1",
-            "toltec2",
-            "toltec3",
-            "toltec4",
-            "toltec5",
-            "toltec6",
-            "toltec7",
-            "toltec8",
-            "toltec9",
-            "toltec10",
-            "toltec11",
-            "toltec12",
-            "hwpr"
-        };
-        // loop through interfaces
+        std::set<std::string> configured_keys;
+        // parse each list entry by key name so YAML order does not matter
         for (Eigen::Index i=0; i<interface_node.size(); ++i) {
-            auto offset = config.template get_typed<double>(std::tuple{"interface_sync_offset",i, interface_keys[i]});
-            interface_sync_offset[interface_keys[i]] = offset;
+            bool found_key = false;
+            for (const auto &key : interface_keys) {
+                if (config.has(std::tuple{"interface_sync_offset", i, key})) {
+                    auto offset = config.template get_typed<double>(std::tuple{"interface_sync_offset", i, key});
+                    if (configured_keys.find(key) != configured_keys.end()) {
+                        logger->warn("interface_sync_offset for {} specified multiple times; using last value", key);
+                    }
+                    interface_sync_offset[key] = offset;
+                    configured_keys.insert(key);
+                    found_key = true;
+                }
+            }
+            if (!found_key) {
+                logger->warn("interface_sync_offset entry {} does not contain a recognized interface key; ignoring entry", i);
+            }
+        }
+        for (const auto &key : interface_keys) {
+            if (configured_keys.find(key) == configured_keys.end()) {
+                logger->warn("interface_sync_offset missing {}; using 0.0 s", key);
+            }
         }
     }
 

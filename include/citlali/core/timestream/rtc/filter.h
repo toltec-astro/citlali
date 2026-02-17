@@ -17,6 +17,7 @@ public:
     double iir_highpass_freq_Hz = 0.0;
     int iir_highpass_order = 1;
     bool iir_highpass_zero_phase = false;
+    bool notch_zero_phase = true;
 
     Eigen::VectorXd filter;
     Eigen::Index n_terms;
@@ -174,28 +175,41 @@ void Filter::iir(Eigen::DenseBase<Derived> &in) {
         return;
     }
 
-    Derived out(in.rows(), in.cols());
-
-    for (std::size_t k = 0; k < notch_a.size(); ++k) {
-        out.setZero();
-        const auto &a = notch_a[k];
-        const auto &b = notch_b[k];
-        for (Eigen::Index i=0; i < in.cols(); ++i) {
+    auto apply_once = [&](const Eigen::VectorXd &a, const Eigen::VectorXd &b, auto &in_arr, auto &out_arr) {
+        out_arr.setZero();
+        for (Eigen::Index i=0; i < in_arr.cols(); ++i) {
             double x_2 = 0.;
             double x_1 = 0.;
             double y_2 = 0.;
             double y_1 = 0.;
-            for (Eigen::Index j=0; j<in.rows(); ++j) {
+            for (Eigen::Index j=0; j<in_arr.rows(); ++j) {
                 // Direct-form I with a0 assumed 1.0
-                out(j,i) = b(0) * in(j,i) + b(1) * x_1 + b(2) * x_2
+                out_arr(j,i) = b(0) * in_arr(j,i) + b(1) * x_1 + b(2) * x_2
                             - a(1) * y_1 - a(2) * y_2;
                 x_2 = x_1;
-                x_1 = in(j,i);
+                x_1 = in_arr(j,i);
                 y_2 = y_1;
-                y_1 = out(j,i);
+                y_1 = out_arr(j,i);
             }
         }
-        in = out;
+        in_arr = out_arr;
+    };
+
+    Derived out(in.rows(), in.cols());
+
+    for (std::size_t k = 0; k < notch_a.size(); ++k) {
+        const auto &a = notch_a[k];
+        const auto &b = notch_b[k];
+        apply_once(a, b, in.derived(), out);
+        if (notch_zero_phase) {
+            for (Eigen::Index i = 0; i < in.cols(); ++i) {
+                in.derived().col(i).reverseInPlace();
+            }
+            apply_once(a, b, in.derived(), out);
+            for (Eigen::Index i = 0; i < in.cols(); ++i) {
+                in.derived().col(i).reverseInPlace();
+            }
+        }
     }
 }
 

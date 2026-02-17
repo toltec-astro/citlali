@@ -195,6 +195,15 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             get_config_value(config, run_tod_notch, missing_keys, invalid_keys,
                              std::tuple{"timestream","raw_time_chunk","filter","notch","enabled"});
             if (run_tod_notch) {
+                filter.notch_zero_phase = true;
+                if (config.has(std::tuple{"timestream","raw_time_chunk","filter","notch","zero_phase"})) {
+                    get_config_value(config, filter.notch_zero_phase, missing_keys, invalid_keys,
+                                     std::tuple{"timestream","raw_time_chunk","filter","notch","zero_phase"});
+                }
+                if (!filter.notch_zero_phase) {
+                    logger->error("timestream.raw_time_chunk.filter.notch.zero_phase must be true to avoid phase shifts");
+                    std::exit(EXIT_FAILURE);
+                }
                 auto freqs = config.template get_typed<std::vector<double>>(
                     std::tuple{"timestream","raw_time_chunk","filter","notch","freqs_Hz"});
                 auto deltas = config.template get_typed<std::vector<double>>(
@@ -249,6 +258,10 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             if (has_iir_freq && filter.iir_highpass_freq_Hz <= 0.0) {
                 logger->error("timestream.raw_time_chunk.IIR_filter.freq_Hz ({}) must be > 0",
                               filter.iir_highpass_freq_Hz);
+                std::exit(EXIT_FAILURE);
+            }
+            if (!filter.iir_highpass_zero_phase) {
+                logger->error("timestream.raw_time_chunk.IIR_filter.zero_phase must be true to avoid phase shifts");
                 std::exit(EXIT_FAILURE);
             }
         }

@@ -722,8 +722,10 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
     // clear start and end indices for each observation
     engine().start_indices.clear();
     engine().end_indices.clear();
+    engine().nw_masks.clear();
 
     std::vector<Eigen::VectorXd> nw_times(rawobs.kidsdata().size());
+    std::vector<Eigen::Index> nw_ids(rawobs.kidsdata().size(), -1);
 
     // clear gaps
     engine().gaps.clear();
@@ -744,6 +746,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
             // get roach index for offsets
             int roach_index;
             vars.find("Header.Toltec.RoachIndex")->second.getVar(&roach_index);
+            nw_ids[i] = roach_index;
 
             // get dimensions for time matrix
             Eigen::Index n_pts = vars.find("Data.Toltec.Ts")->second.getDim(0).getSize();
@@ -862,6 +865,14 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
         logger->warn("{}/{} samples were not aligned to the common time grid", mask.size() - mask.sum(), mask.size());
 
         masks.push_back(std::move(mask));
+    }
+
+    // build a network-keyed mask table for downstream flagging
+    for (Eigen::Index j = 0; j < static_cast<Eigen::Index>(nw_ids.size()); ++j) {
+        if (nw_ids[j] < 0) {
+            continue;
+        }
+        engine().nw_masks[nw_ids[j]] = masks[j];
     }
 
     // size of telescope data
