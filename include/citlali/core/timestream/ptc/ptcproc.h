@@ -4,6 +4,7 @@
 #include <atomic>
 #include <cmath>
 #include <cstdint>
+#include <unordered_set>
 
 #include <tula/logging.h>
 #include <tula/nc.h>
@@ -133,6 +134,16 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
             auto n_eig_to_cut = config.template get_typed<std::vector<Eigen::Index>>(std::tuple{"timestream","processed_time_chunk","clean",
                                                                                                 "n_eig_to_cut",arr_name});
+            if (n_eig_to_cut.empty()) {
+                logger->warn("clean.n_eig_to_cut.{} is empty; defaulting to 0 for all {} grouping pass(es)",
+                             arr_name, cleaner.grouping.size());
+                n_eig_to_cut.assign(cleaner.grouping.size(), 0);
+            }
+            else if (n_eig_to_cut.size() < cleaner.grouping.size()) {
+                logger->warn("clean.n_eig_to_cut.{} has {} value(s) but clean.grouping has {} pass(es); padding with last value {}",
+                             arr_name, n_eig_to_cut.size(), cleaner.grouping.size(), n_eig_to_cut.back());
+                n_eig_to_cut.resize(cleaner.grouping.size(), n_eig_to_cut.back());
+            }
             // add eigenvalues to cleaner class
             cleaner.n_eig_to_cut[arr_index] = (Eigen::Map<Eigen::VectorXI>(n_eig_to_cut.data(),n_eig_to_cut.size()));
         }
@@ -177,10 +188,38 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                                  std::tuple{"timestream","processed_time_chunk","clean","null_model","seed"},{},{0});
             }
             cleaner.null_model.seed = static_cast<std::uint32_t>(null_seed);
+            // optional: restrict null-model mode selection to a subset of clean.grouping passes
+            cleaner.null_model.grouping.clear();
+            if (config.template has_typed<std::vector<std::string>>(
+                    std::tuple{"timestream","processed_time_chunk","clean","null_model","grouping"})) {
+                auto null_grouping = config.template get_typed<std::vector<std::string>>(
+                    std::tuple{"timestream","processed_time_chunk","clean","null_model","grouping"});
+                std::unordered_set<std::string> seen;
+                for (const auto &g_raw : null_grouping) {
+                    auto g = cleaner.normalize_group_name(g_raw);
+                    if (g != "all" && g != "array" && g != "nw" && g != "detector" && g != "fg") {
+                        logger->warn("clean.null_model.grouping contains unsupported entry '{}'; ignoring", g_raw);
+                        continue;
+                    }
+                    if (seen.insert(g).second) {
+                        cleaner.null_model.grouping.push_back(g);
+                    }
+                }
+            }
             logger->info("clean.null_model enabled: n_surrogates={} quantile={} min_good_frac={} max_modes={} max_samples={} seed={}",
                          cleaner.null_model.n_surrogates, cleaner.null_model.quantile,
                          cleaner.null_model.min_good_frac, cleaner.null_model.max_modes,
                          cleaner.null_model.max_samples, cleaner.null_model.seed);
+            if (!cleaner.null_model.grouping.empty()) {
+                std::string groups_joined;
+                for (std::size_t i = 0; i < cleaner.null_model.grouping.size(); ++i) {
+                    if (i > 0) {
+                        groups_joined += ",";
+                    }
+                    groups_joined += cleaner.null_model.grouping[i];
+                }
+                logger->info("clean.null_model active for grouping(s): {}", groups_joined);
+            }
         }
         // mask radius in arcseconds
         get_config_value(config, mask_radius_arcsec, missing_keys, invalid_keys,
@@ -247,7 +286,13 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         bool warned_eigs = false;
 
         // loop through config groupings
+        const bool null_model_enabled_global = cleaner.null_model.enabled;
         for (const auto & group: cleaner.grouping) {
+            // optional per-group null-model gating
+            cleaner.null_model.enabled = cleaner.null_model_enabled_for_group(group);
+            if (null_model_enabled_global && !cleaner.null_model.enabled) {
+                logger->debug("null_model disabled for {} grouping", group);
+            }
 
             logger->debug("cleaning with {} grouping", group);
 
@@ -371,6 +416,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
             // set as cleaned
             out.status.cleaned = true;
         }
+        cleaner.null_model.enabled = null_model_enabled_global;
     }
 }
 

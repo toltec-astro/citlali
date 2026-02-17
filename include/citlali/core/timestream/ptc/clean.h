@@ -6,8 +6,10 @@
 #include <numeric>
 #include <cmath>
 #include <cstdint>
+#include <cctype>
 #include <random>
 #include <new>
+#include <vector>
 #include <Eigen/Core>
 #include <Eigen/Eigenvalues>
 #include <Spectra/SymEigsSolver.h>
@@ -50,10 +52,38 @@ public:
         int max_modes = 64; // 0 => use all available modes
         int max_samples = 20000; // 0 => use all time samples
         std::uint32_t seed = 12345;
+        // Optional list of cleaning groupings where null-model is active.
+        // Empty => enabled for all configured clean.grouping passes.
+        std::vector<std::string> grouping;
     };
 
     // brute-force null-model mode selection
     NullModelOptions null_model;
+
+    static auto normalize_group_name(std::string group) {
+        std::transform(group.begin(), group.end(), group.begin(),
+                       [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+        if (group == "network") {
+            group = "nw";
+        }
+        return group;
+    }
+
+    auto null_model_enabled_for_group(const std::string &group) const {
+        if (!null_model.enabled) {
+            return false;
+        }
+        if (null_model.grouping.empty()) {
+            return true;
+        }
+        const auto g = normalize_group_name(group);
+        for (const auto &allowed : null_model.grouping) {
+            if (normalize_group_name(allowed) == g) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     template <typename Derived>
     auto get_stddev_index(const Eigen::DenseBase<Derived> &evals) {
