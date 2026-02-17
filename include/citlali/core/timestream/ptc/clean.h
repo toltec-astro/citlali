@@ -48,7 +48,6 @@ public:
         double quantile = 0.99;
         double min_good_frac = 0.8;
         int max_modes = 64; // 0 => use all available modes
-        int max_samples = 20000; // 0 => use all time samples
         std::uint32_t seed = 12345;
     };
 
@@ -190,41 +189,24 @@ auto Cleaner::get_null_model_index(const Eigen::DenseBase<DerivedA> &scans, cons
         return Eigen::Index{0};
     }
 
-    const Eigen::Index n_pts_full = scans.rows();
+    const Eigen::Index n_pts = scans.rows();
     const Eigen::Index n_dets = scans.cols();
-    if (n_pts_full < 4 || n_dets < 2) {
-        logger->warn("null_model: insufficient data (n_pts={}, n_dets={}); skipping cut", n_pts_full, n_dets);
+    if (n_pts < 4 || n_dets < 2) {
+        logger->warn("null_model: insufficient data (n_pts={}, n_dets={}); skipping cut", n_pts, n_dets);
         return Eigen::Index{0};
     }
 
-    // Subsample in time to cap memory and runtime.
-    Eigen::Index sample_step = 1;
-    if (null_model.max_samples > 0 && n_pts_full > null_model.max_samples) {
-        sample_step = static_cast<Eigen::Index>(
-            std::ceil(static_cast<double>(n_pts_full) / static_cast<double>(null_model.max_samples)));
+    Eigen::MatrixXd good = abs(flags.derived().template cast<double>().array() - 1);
+    for (Eigen::Index i = 0; i < n_dets; ++i) {
+        if (apt_flags.derived()(i) != 0) {
+            good.col(i).setZero();
+        }
     }
-    const Eigen::Index n_pts = (n_pts_full + sample_step - 1) / sample_step;
-    if (n_pts < 4) {
-        return Eigen::Index{0};
-    }
-
-    auto is_good = [&](Eigen::Index i_sub, Eigen::Index j_det) {
-        const Eigen::Index i = i_sub * sample_step;
-        return !flags.derived()(i, j_det);
-    };
 
     std::vector<Eigen::Index> keep_frac;
     keep_frac.reserve(static_cast<std::size_t>(n_dets));
     for (Eigen::Index j = 0; j < n_dets; ++j) {
-        if (apt_flags.derived()(j) != 0) {
-            continue;
-        }
-        double good_count = 0.0;
-        for (Eigen::Index i = 0; i < n_pts; ++i) {
-            if (is_good(i, j)) {
-                good_count += 1.0;
-            }
-        }
+        const double good_count = good.col(j).sum();
         const double frac = good_count / static_cast<double>(n_pts);
         if (good_count > 1.0 && frac >= null_model.min_good_frac) {
             keep_frac.push_back(j);
@@ -238,32 +220,25 @@ auto Cleaner::get_null_model_index(const Eigen::DenseBase<DerivedA> &scans, cons
     }
 
     const Eigen::Index n_keep_frac = static_cast<Eigen::Index>(keep_frac.size());
+    Eigen::MatrixXd sig_frac(n_pts, n_keep_frac);
+    Eigen::MatrixXd good_frac(n_pts, n_keep_frac);
+    for (Eigen::Index k = 0; k < n_keep_frac; ++k) {
+        sig_frac.col(k) = scans.col(keep_frac[static_cast<std::size_t>(k)]);
+        good_frac.col(k) = good.col(keep_frac[static_cast<std::size_t>(k)]);
+    }
+
     Eigen::VectorXd means = Eigen::VectorXd::Zero(n_keep_frac);
     Eigen::VectorXd stds = Eigen::VectorXd::Zero(n_keep_frac);
     std::vector<Eigen::Index> keep_std;
     keep_std.reserve(static_cast<std::size_t>(n_keep_frac));
     for (Eigen::Index j = 0; j < n_keep_frac; ++j) {
-        const Eigen::Index det_j = keep_frac[static_cast<std::size_t>(j)];
-        double denom = 0.0;
-        double sum = 0.0;
-        for (Eigen::Index i = 0; i < n_pts; ++i) {
-            if (is_good(i, det_j)) {
-                const double v = scans.derived()(i * sample_step, det_j);
-                sum += v;
-                denom += 1.0;
-            }
-        }
+        const double denom = good_frac.col(j).sum();
         if (denom <= 1.0) {
             continue;
         }
-        const double mean = sum / denom;
-        double var_num = 0.0;
-        for (Eigen::Index i = 0; i < n_pts; ++i) {
-            if (is_good(i, det_j)) {
-                const double d = scans.derived()(i * sample_step, det_j) - mean;
-                var_num += d * d;
-            }
-        }
+        const double mean = (sig_frac.col(j).array() * good_frac.col(j).array()).sum() / denom;
+        const Eigen::ArrayXd centered = sig_frac.col(j).array() - mean;
+        const double var_num = (centered.square() * good_frac.col(j).array()).sum();
         const double var_den = denom - 1.0;
         if (var_den <= 0.0) {
             continue;
@@ -286,13 +261,8 @@ auto Cleaner::get_null_model_index(const Eigen::DenseBase<DerivedA> &scans, cons
     Eigen::MatrixXd good_used(n_pts, n_used);
     for (Eigen::Index k = 0; k < n_used; ++k) {
         const Eigen::Index j = keep_std[static_cast<std::size_t>(k)];
-        const Eigen::Index det_j = keep_frac[static_cast<std::size_t>(j)];
-        for (Eigen::Index i = 0; i < n_pts; ++i) {
-            const double g = is_good(i, det_j) ? 1.0 : 0.0;
-            good_used(i, k) = g;
-            const double v = scans.derived()(i * sample_step, det_j);
-            sigz(i, k) = (v - means(j)) / stds(j);
-        }
+        sigz.col(k) = (sig_frac.col(j).array() - means(j)) / stds(j);
+        good_used.col(k) = good_frac.col(j);
     }
 
     Eigen::MatrixXd cov_obs = calc_cov_with_mask(sigz, good_used);
@@ -359,8 +329,8 @@ auto Cleaner::get_null_model_index(const Eigen::DenseBase<DerivedA> &scans, cons
     }
     k_null = std::min<Eigen::Index>(k_null, n_dets - 1);
 
-    logger->debug("null_model: n_det_input={} n_det_used={} n_modes={} n_pts={} step={} k={}",
-                  n_dets, n_used, n_modes, n_pts, sample_step, k_null);
+    logger->debug("null_model: n_det_input={} n_det_used={} n_modes={} k={}",
+                  n_dets, n_used, n_modes, k_null);
     return k_null;
 }
 

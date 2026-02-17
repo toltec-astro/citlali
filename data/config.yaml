@@ -149,7 +149,6 @@ timestream: # timestream reduction parameters
         quantile: 0.99 # null envelope quantile in [0.5, 1)
         min_good_frac: 0.8 # minimum unflagged sample fraction per detector
         max_modes: 64 # max modes to evaluate (0 => all available)
-        max_samples: 20000 # max time samples for null-model computation (0 => all)
         seed: 12345 # random seed for reproducibility
       mask_radius_arcsec: 0.0 # radius of region around the map center to mask during cleaning (only used if >0)
       grouping: [array] # clean grouping (array, nw, all)
