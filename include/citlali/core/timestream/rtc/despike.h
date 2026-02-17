@@ -3,6 +3,7 @@
 #include <boost/random.hpp>
 
 #include <algorithm>
+#include <new>
 #include <random>
 #include <vector>
 #include <Eigen/Core>
@@ -424,8 +425,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
     auto spike_free = flags.colwise().maxCoeff();
     n_flagged = n_dets - spike_free.template cast<int>().sum();
 
-    logger->info("has spikes {}", spike_free);
-    logger->info("n_flagged {}", n_flagged);
+    logger->debug("despike replace_spikes n_dets={} n_pts={} n_flagged={}", n_dets, n_pts, n_flagged);
 
     for (Eigen::Index det = 0; det < n_dets; det++) {
         if (apt["flag"](det + start_det)==0) {
@@ -458,7 +458,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                     continue;
                 }
 
-                logger->info("n_flagged_regions {}", n_flagged_regions);
+                logger->debug("det={} n_flagged_regions={}", det, n_flagged_regions);
 
                 Eigen::Matrix<int, Eigen::Dynamic, 1> si_flags(n_flagged_regions);
                 Eigen::Matrix<int, Eigen::Dynamic, 1> ei_flags(n_flagged_regions);
@@ -507,158 +507,170 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
 
                         mlinterp::interp(tn_pts.data(), n_flags, yy.data(), lin_offset.data(), xx.data(),
                                          xlin_offset.data());
-                        logger->debug("xlin_offset {}", xlin_offset);
+                        logger->trace("xlin_offset n={} first={} last={}",
+                                      xlin_offset.size(), xlin_offset(0), xlin_offset(xlin_offset.size() - 1));
                     }
 
-                    logger->debug("xx {}", xx);
-                    logger->debug("yy {}", yy);
-                    logger->debug("lin_offset {}", lin_offset);
+                    logger->trace("xx {}", xx);
+                    logger->trace("yy {}", yy);
+                    logger->trace("lin_offset n={} first={} last={}",
+                                  lin_offset.size(), lin_offset(0), lin_offset(lin_offset.size() - 1));
 
-                    // all non-flagged detectors repeat for all detectors without spikes
-                    // count up spike-free detectors and store their values
-                    int det_count = 0;
-                    if (use_all_det) {
-                        det_count = (apt["flag"].segment(start_det,n_dets).array()==0).count();
-                    }
-                    else {
-                        for (Eigen::Index ii=0;ii<n_dets;ii++) {
-                            if (!spike_free(ii) && apt["flag"](ii + start_det)==0) {
-                                det_count++;
+                    try {
+                        // all non-flagged detectors repeat for all detectors without spikes
+                        // count up spike-free detectors and store their values
+                        int det_count = 0;
+                        if (use_all_det) {
+                            det_count = (apt["flag"].segment(start_det,n_dets).array()==0).count();
+                        }
+                        else {
+                            for (Eigen::Index ii=0;ii<n_dets;ii++) {
+                                if (!spike_free(ii) && apt["flag"](ii + start_det)==0) {
+                                    det_count++;
+                                }
                             }
                         }
-                    }
 
-                    logger->debug("det_count {}", det_count);
-                    if (det_count == 0) {
-                        continue;
+                        logger->trace("det_count {}", det_count);
+                        if (det_count == 0) {
+                            continue;
+                        }
+                        constexpr long long max_detm_elems = 50000000LL; // ~400 MB for double
+                        const long long detm_elems = static_cast<long long>(n_flags) * static_cast<long long>(det_count);
+                        if (detm_elems <= 0 || detm_elems > max_detm_elems) {
+                            logger->warn("despike region too large (n_flags={}, det_count={}, elems={}); using linear offset fallback",
+                                         n_flags, det_count, detm_elems);
+                            scans.col(det).segment(si_flags(j), n_flags) = lin_offset;
+                            flags.col(det).segment(si_flags(j), n_flags).setOnes();
+                            continue;
+                        }
+
+                        Eigen::MatrixXd detm(n_flags, det_count);
+                        detm.setConstant(-99);
+                        Eigen::VectorXd res(det_count);
+
+                        logger->trace("si n={}", si_flags.size());
+                        int c = 0;
+                        for (Eigen::Index ii = 0; ii < n_dets; ii++) {
+                            if ((use_all_det || !spike_free(ii)) && apt["flag"](ii + start_det)==0) {
+                                detm.col(c) =
+                                    scans_ref.block(si_flags(j), ii, n_flags, 1);
+                                res(c) = apt["responsivity"](ii + start_det);
+                                c++;
+                            }
+                        }
+
+                        detm.transposeInPlace();
+
+                        logger->trace("detm shape={}x{}", detm.rows(), detm.cols());
+
+                        // for each of these go through and redo the offset
+                        Eigen::MatrixXd lin_offset_others(det_count, n_flags);
+
+                        // first sample in scan is flagged so offset is flat
+                        // with the value of the last sample in the flagged region
+                        if (si_flags(j) == 0) {
+                            lin_offset_others = detm.col(0).replicate(1, n_flags);
+                        }
+
+                        // last sample in scan is flagged so offset is flat
+                        // with the value of the first sample in the flagged region
+                        else if (ei_flags(j) == n_pts - 1) {
+                            lin_offset_others = detm.col(n_flags - 1).replicate(1, n_flags);
+                        }
+
+                        else {
+                            Eigen::VectorXd tmp_vec(n_flags);
+                            Eigen::VectorXd xlin_offset =
+                                Eigen::VectorXd::LinSpaced(n_flags, si_flags(j), si_flags(j) + n_flags - 1);
+
+                            xx(0) = si_flags(j) - 1;
+                            xx(1) = ei_flags(j) + 1;
+                            // do we need this loop?
+                            for (Eigen::Index ii = 0; ii < det_count; ii++) {
+                                yy(0) = detm(ii, 0);
+                                yy(1) = detm(ii, n_flags - 1);
+
+                                mlinterp::interp(tn_pts.data(), n_flags, yy.data(), tmp_vec.data(), xx.data(),
+                                                 xlin_offset.data());
+                                lin_offset_others.row(ii) = tmp_vec;
+                            }
+
+                            logger->trace("xlin_offset n={} first={} last={}",
+                                          xlin_offset.size(), xlin_offset(0), xlin_offset(xlin_offset.size() - 1));
+                        }
+
+                        logger->trace("xx {}", xx);
+                        logger->trace("yy {}", yy);
+                        logger->trace("lin_offset_others shape={}x{}", lin_offset_others.rows(), lin_offset_others.cols());
+
+                        detm.noalias() = detm - lin_offset_others;
+
+                        logger->trace("detm (offset removed) shape={}x{}", detm.rows(), detm.cols());
+
+                        // scale det by responsivities and average to make sky model
+                        Eigen::VectorXd sky_model = Eigen::VectorXd::Zero(n_flags);
+
+                        //sky_model = sky_model.array() + (detm.array().colwise() / res.array()).rowwise().sum();
+                        //sky_model /= det_count;
+
+                        for (Eigen::Index ii=0; ii<det_count; ii++) {
+                            for (Eigen::Index l=0; l<n_flags; l++) {
+                                sky_model(l) += detm(ii,l)/res(ii);
+                            }
+                        }
+
+                        sky_model = sky_model/det_count;
+
+                        logger->trace("sky_model n={} mean={}", sky_model.size(), sky_model.mean());
+
+                        Eigen::VectorXd std_dev_ff = Eigen::VectorXd::Zero(det_count);
+
+                        for (Eigen::Index ii = 0; ii < det_count; ii++) {
+                            Eigen::VectorXd tmp_vec = detm.row(ii).array() / res(ii) - sky_model.transpose().array();
+
+                            double tmp_mean = tmp_vec.mean();
+
+                            std_dev_ff(ii) = (tmp_vec.array() - tmp_mean).pow(2).sum();
+                            std_dev_ff(ii) = (n_flags == 1.) ? std_dev_ff(ii) / n_flags
+                                                            : std_dev_ff(ii) / (n_flags - 1.);
+
+                        }
+
+                        logger->trace("std_dev_ff n={} mean={}", std_dev_ff.size(), std_dev_ff.mean());
+
+                        double mean_std_dev = (std_dev_ff.array().sqrt()).sum() / det_count;
+
+                        // add noise to the fake signal
+                        //mean_std_dev *= apt["responsivity"](det + start_det); // not used
+
+                        // boost random number generator
+                        boost::random::normal_distribution<> rands{0, mean_std_dev};
+
+                        Eigen::VectorXd error =
+                            Eigen::VectorXd::Zero(n_flags).unaryExpr([&](double dummy){return rands(eng);});
+
+                        logger->trace("error n={} rms={}", error.size(),
+                                      std::sqrt(error.array().square().mean()));
+
+                        // the noiseless fake data is then the sky model plus the
+                        // flagged detectors linear offset
+                        Eigen::VectorXd fake =
+                            (sky_model.array() + error.array()) * apt["responsivity"](det + start_det) +
+                            lin_offset.array();
+
+                        logger->trace("fake n={} mean={}", fake.size(), fake.mean());
+                        logger->trace("mean std dev {}", mean_std_dev);
+
+                        scans.col(det).segment(si_flags(j), n_flags) = fake;
+                        flags.col(det).segment(si_flags(j), n_flags).setOnes();
                     }
-                    constexpr long long max_detm_elems = 50000000LL; // ~400 MB for double
-                    const long long detm_elems = static_cast<long long>(n_flags) * static_cast<long long>(det_count);
-                    if (detm_elems <= 0 || detm_elems > max_detm_elems) {
-                        logger->warn("despike region too large (n_flags={}, det_count={}, elems={}); using linear offset fallback",
-                                     n_flags, det_count, detm_elems);
+                    catch (const std::bad_alloc &) {
+                        logger->warn("despike memory allocation failed (det={}, region={}, n_flags={}); using linear offset fallback",
+                                     det, j, n_flags);
                         scans.col(det).segment(si_flags(j), n_flags) = lin_offset;
                         flags.col(det).segment(si_flags(j), n_flags).setOnes();
-                        continue;
                     }
-
-                    Eigen::MatrixXd detm(n_flags, det_count);
-                    detm.setConstant(-99);
-                    Eigen::VectorXd res(det_count);
-
-                    logger->debug("si {}", si_flags);
-                    int c = 0;
-                    for (Eigen::Index ii = 0; ii < n_dets; ii++) {
-                        if ((use_all_det || !spike_free(ii)) && apt["flag"](ii + start_det)==0) {
-                            detm.col(c) =
-                                scans_ref.block(si_flags(j), ii, n_flags, 1);
-                            res(c) = apt["responsivity"](ii + start_det);
-                            c++;
-                        }
-                    }
-
-                    detm.transposeInPlace();
-
-                    logger->debug("detm {}", detm);
-
-                    // for each of these go through and redo the offset
-                    Eigen::MatrixXd lin_offset_others(det_count, n_flags);
-
-                    // first sample in scan is flagged so offset is flat
-                    // with the value of the last sample in the flagged region
-                    if (si_flags(j) == 0) {
-                        lin_offset_others = detm.col(0).replicate(1, n_flags);
-                    }
-
-                    // last sample in scan is flagged so offset is flat
-                    // with the value of the first sample in the flagged region
-                    else if (ei_flags(j) == n_pts - 1) {
-                        lin_offset_others = detm.col(n_flags - 1).replicate(1, n_flags);
-                    }
-
-                    else {
-                        Eigen::VectorXd tmp_vec(n_flags);
-                        Eigen::VectorXd xlin_offset =
-                            Eigen::VectorXd::LinSpaced(n_flags, si_flags(j), si_flags(j) + n_flags - 1);
-
-                        xx(0) = si_flags(j) - 1;
-                        xx(1) = ei_flags(j) + 1;
-                        // do we need this loop?
-                        for (Eigen::Index ii = 0; ii < det_count; ii++) {
-                            yy(0) = detm(ii, 0);
-                            yy(1) = detm(ii, n_flags - 1);
-
-                            mlinterp::interp(tn_pts.data(), n_flags, yy.data(), tmp_vec.data(), xx.data(),
-                                             xlin_offset.data());
-                            lin_offset_others.row(ii) = tmp_vec;
-                        }
-
-                        logger->debug("xlin_offset {}", xlin_offset);
-                    }
-
-                    logger->debug("xx {}", xx);
-                    logger->debug("yy {}", yy);
-                    logger->debug("lin_offset_others {}", lin_offset_others);
-
-                    detm.noalias() = detm - lin_offset_others;
-
-                    logger->debug("detm {}", detm);
-
-                    // scale det by responsivities and average to make sky model
-                    Eigen::VectorXd sky_model = Eigen::VectorXd::Zero(n_flags);
-
-                    //sky_model = sky_model.array() + (detm.array().colwise() / res.array()).rowwise().sum();
-                    //sky_model /= det_count;
-
-                    for (Eigen::Index ii=0; ii<det_count; ii++) {
-                        for (Eigen::Index l=0; l<n_flags; l++) {
-                            sky_model(l) += detm(ii,l)/res(ii);
-                        }
-                    }
-
-                    sky_model = sky_model/det_count;
-
-                    logger->debug("sky_model {}",sky_model);
-
-                    Eigen::VectorXd std_dev_ff = Eigen::VectorXd::Zero(det_count);
-
-                    for (Eigen::Index ii = 0; ii < det_count; ii++) {
-                        Eigen::VectorXd tmp_vec = detm.row(ii).array() / res(ii) - sky_model.transpose().array();
-
-                        double tmp_mean = tmp_vec.mean();
-
-                        std_dev_ff(ii) = (tmp_vec.array() - tmp_mean).pow(2).sum();
-                        std_dev_ff(ii) = (n_flags == 1.) ? std_dev_ff(ii) / n_flags
-                                                        : std_dev_ff(ii) / (n_flags - 1.);
-
-                    }
-
-                    logger->debug("std_dev_ff {}",std_dev_ff);
-
-                    double mean_std_dev = (std_dev_ff.array().sqrt()).sum() / det_count;
-
-                    // add noise to the fake signal
-                    //mean_std_dev *= apt["responsivity"](det + start_det); // not used
-
-                    // boost random number generator
-                    boost::random::normal_distribution<> rands{0, mean_std_dev};
-
-                    Eigen::VectorXd error =
-                        Eigen::VectorXd::Zero(n_flags).unaryExpr([&](double dummy){return rands(eng);});
-
-                    logger->debug("error {}", error);
-
-                    // the noiseless fake data is then the sky model plus the
-                    // flagged detectors linear offset
-                    Eigen::VectorXd fake =
-                        (sky_model.array() + error.array()) * apt["responsivity"](det + start_det) +
-                        lin_offset.array();
-
-                    logger->debug("fake {}", fake);
-                    logger->debug("mean std dev {}", mean_std_dev);
-
-                    scans.col(det).segment(si_flags(j), n_flags) = fake;
-                    flags.col(det).segment(si_flags(j), n_flags).setOnes();
                 } // flagged regions
             } // if it has spikes
         } // apt flag

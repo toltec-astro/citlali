@@ -143,28 +143,25 @@ void Filter::make_notch_filter(double fsmp) {
 
 template <typename Derived>
 void Filter::convolve(Eigen::DenseBase<Derived> &in) {
-    // array to tell which dimension to do the convolution over
-    Eigen::array<ptrdiff_t, 1> dims{0};
+    const Eigen::Index n_rows = in.rows();
+    const Eigen::Index n_cols = in.cols();
+    const Eigen::Index n_filt = filter.size();
+    if (n_rows <= 0 || n_cols <= 0 || n_filt <= 0 || n_rows < n_filt) {
+        return;
+    }
 
-    // map the Eigen Matrices to Tensors to work with the Eigen::Tensor
-    // convolution method
-    Eigen::TensorMap<Eigen::Tensor<double, 2>> in_tensor(in.derived().data(),
-                                                         in.rows(), in.cols());
-    Eigen::TensorMap<Eigen::Tensor<double, 1>> filter_tensor(filter.data(),
-                                                             filter.size());
-    // convolve
-    Eigen::Tensor<double, 2> out_tensor(
-        in_tensor.dimension(0) - filter_tensor.dimension(0) + 1, in.cols());
-
-    // run the tensor convolution
-    out_tensor = in_tensor.convolve(filter_tensor, dims);
-
-    // replace the scan data with the filtered data through an Eigen::Map
-    // the first and last nterms samples are not overwritten
-    in.block(n_terms, 0, out_tensor.dimension(0),
-             in.cols()) =
-        Eigen::Map<Eigen::MatrixXd>(out_tensor.data(), out_tensor.dimension(0),
-                                    out_tensor.dimension(1));
+    // low-memory column-wise FIR convolution; avoids large temporary tensors
+    const Eigen::Index out_rows = n_rows - n_filt + 1;
+    Eigen::VectorXd x(n_rows);
+    Eigen::VectorXd y(out_rows);
+    for (Eigen::Index c = 0; c < n_cols; ++c) {
+        x = in.col(c);
+        for (Eigen::Index r = 0; r < out_rows; ++r) {
+            y(r) = x.segment(r, n_filt).dot(filter);
+        }
+        // keep boundary samples untouched, same as previous behavior
+        in.block(n_terms, c, out_rows, 1) = y;
+    }
 }
 
 template <typename Derived>
