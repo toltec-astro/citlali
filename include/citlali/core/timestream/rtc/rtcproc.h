@@ -1,7 +1,5 @@
 #pragma once
 
-#include <new>
-
 #include <tula/algorithm/ei_stats.h>
 
 #include <citlali/core/timestream/timestream.h>
@@ -450,12 +448,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         // filter kernel
         if (run_kernel) {
             logger->debug("convolving kernel with tod filter");
-            try {
-                filter.convolve(in.kernel.data);
-            }
-            catch (const std::bad_alloc &) {
-                logger->warn("kernel TOD filter convolution ran out of memory; leaving kernel unfiltered for this chunk");
-            }
+            filter.convolve(in.kernel.data);
             if (run_tod_notch) {
                 logger->debug("applying notch filter to kernel");
                 filter.iir(in.kernel.data);
