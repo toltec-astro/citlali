@@ -477,6 +477,11 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                     // determine the linear baseline for flagged region
                     //but use flat level if flagged at endpoints
                     Eigen::Index n_flags = ei_flags(j) - si_flags(j) + 1;
+                    if (n_flags <= 0 || n_flags > n_pts) {
+                        logger->warn("invalid flagged region bounds in despike: si={} ei={} n_pts={}; skipping region",
+                                     si_flags(j), ei_flags(j), n_pts);
+                        continue;
+                    }
                     Eigen::VectorXd lin_offset(n_flags);
 
                     if (si_flags(j) == 0 && ei_flags(j) == n_pts - 1) {
@@ -502,12 +507,12 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
 
                         mlinterp::interp(tn_pts.data(), n_flags, yy.data(), lin_offset.data(), xx.data(),
                                          xlin_offset.data());
-                        logger->info("xlin_offset {}", xlin_offset);
+                        logger->debug("xlin_offset {}", xlin_offset);
                     }
 
-                    logger->info("xx {}", xx);
-                    logger->info("yy {}", yy);
-                    logger->info("lin_offset {}", lin_offset);
+                    logger->debug("xx {}", xx);
+                    logger->debug("yy {}", yy);
+                    logger->debug("lin_offset {}", lin_offset);
 
                     // all non-flagged detectors repeat for all detectors without spikes
                     // count up spike-free detectors and store their values
@@ -523,8 +528,17 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                         }
                     }
 
-                    logger->info("det_count {}", det_count);
+                    logger->debug("det_count {}", det_count);
                     if (det_count == 0) {
+                        continue;
+                    }
+                    constexpr long long max_detm_elems = 50000000LL; // ~400 MB for double
+                    const long long detm_elems = static_cast<long long>(n_flags) * static_cast<long long>(det_count);
+                    if (detm_elems <= 0 || detm_elems > max_detm_elems) {
+                        logger->warn("despike region too large (n_flags={}, det_count={}, elems={}); using linear offset fallback",
+                                     n_flags, det_count, detm_elems);
+                        scans.col(det).segment(si_flags(j), n_flags) = lin_offset;
+                        flags.col(det).segment(si_flags(j), n_flags).setOnes();
                         continue;
                     }
 
@@ -532,7 +546,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                     detm.setConstant(-99);
                     Eigen::VectorXd res(det_count);
 
-                    logger->info("si {}", si_flags);
+                    logger->debug("si {}", si_flags);
                     int c = 0;
                     for (Eigen::Index ii = 0; ii < n_dets; ii++) {
                         if ((use_all_det || !spike_free(ii)) && apt["flag"](ii + start_det)==0) {
@@ -545,7 +559,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
 
                     detm.transposeInPlace();
 
-                    logger->info("detm {}", detm);
+                    logger->debug("detm {}", detm);
 
                     // for each of these go through and redo the offset
                     Eigen::MatrixXd lin_offset_others(det_count, n_flags);
@@ -579,16 +593,16 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                             lin_offset_others.row(ii) = tmp_vec;
                         }
 
-                        logger->info("xlin_offset {}", xlin_offset);
+                        logger->debug("xlin_offset {}", xlin_offset);
                     }
 
-                    logger->info("xx {}", xx);
-                    logger->info("yy {}", yy);
-                    logger->info("lin_offset_others {}", lin_offset_others);
+                    logger->debug("xx {}", xx);
+                    logger->debug("yy {}", yy);
+                    logger->debug("lin_offset_others {}", lin_offset_others);
 
                     detm.noalias() = detm - lin_offset_others;
 
-                    logger->info("detm {}", detm);
+                    logger->debug("detm {}", detm);
 
                     // scale det by responsivities and average to make sky model
                     Eigen::VectorXd sky_model = Eigen::VectorXd::Zero(n_flags);
@@ -604,7 +618,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
 
                     sky_model = sky_model/det_count;
 
-                    logger->info("sky_model {}",sky_model);
+                    logger->debug("sky_model {}",sky_model);
 
                     Eigen::VectorXd std_dev_ff = Eigen::VectorXd::Zero(det_count);
 
@@ -619,7 +633,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
 
                     }
 
-                    logger->info("std_dev_ff {}",std_dev_ff);
+                    logger->debug("std_dev_ff {}",std_dev_ff);
 
                     double mean_std_dev = (std_dev_ff.array().sqrt()).sum() / det_count;
 
@@ -632,7 +646,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                     Eigen::VectorXd error =
                         Eigen::VectorXd::Zero(n_flags).unaryExpr([&](double dummy){return rands(eng);});
 
-                    logger->info("error {}", error);
+                    logger->debug("error {}", error);
 
                     // the noiseless fake data is then the sky model plus the
                     // flagged detectors linear offset
@@ -640,9 +654,8 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                         (sky_model.array() + error.array()) * apt["responsivity"](det + start_det) +
                         lin_offset.array();
 
-                    logger->info("fake {}", fake);
-
-                    logger->info("mean std dev {}", mean_std_dev);
+                    logger->debug("fake {}", fake);
+                    logger->debug("mean std dev {}", mean_std_dev);
 
                     scans.col(det).segment(si_flags(j), n_flags) = fake;
                     flags.col(det).segment(si_flags(j), n_flags).setOnes();
