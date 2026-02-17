@@ -1,6 +1,8 @@
 #pragma once
 
 #include <tula/algorithm/ei_stats.h>
+#include <Eigen/QR>
+#include <cmath>
 
 #include <citlali/core/timestream/timestream.h>
 
@@ -40,6 +42,15 @@ public:
 
     // minimum allowed frequency distance between tones
     double delta_f_min_Hz;
+
+    struct AltAzDestripeOptions {
+        bool enabled = false;
+        std::string grouping = "nw";
+        bool fit_time_trend = true;
+        bool fit_derivs = true;
+        Eigen::Index min_samples = 64;
+    };
+    AltAzDestripeOptions altaz_destripe;
 
     // get config file
     template <typename config_t>
@@ -271,6 +282,35 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
     // run extinction correction?
     get_config_value(config, run_extinction, missing_keys, invalid_keys,
                      std::tuple{"timestream","raw_time_chunk","extinction_correction","enabled"});
+
+    // optional alt-az template destriping on rtc output (before ptc cleaning)
+    altaz_destripe = {};
+    if (config.has(std::tuple{"timestream","raw_time_chunk","altaz_destripe"})) {
+        get_config_value(config, altaz_destripe.enabled, missing_keys, invalid_keys,
+                         std::tuple{"timestream","raw_time_chunk","altaz_destripe","enabled"});
+        if (config.has(std::tuple{"timestream","raw_time_chunk","altaz_destripe","grouping"})) {
+            get_config_value(config, altaz_destripe.grouping, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","altaz_destripe","grouping"},
+                             {"nw", "network", "array", "all"});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","altaz_destripe","fit_time_trend"})) {
+            get_config_value(config, altaz_destripe.fit_time_trend, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","altaz_destripe","fit_time_trend"});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","altaz_destripe","fit_derivs"})) {
+            get_config_value(config, altaz_destripe.fit_derivs, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","altaz_destripe","fit_derivs"});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","altaz_destripe","min_samples"})) {
+            get_config_value(config, altaz_destripe.min_samples, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","altaz_destripe","min_samples"}, {}, {4});
+        }
+        if (altaz_destripe.enabled) {
+            logger->info("raw_time_chunk.altaz_destripe enabled: grouping={} fit_time_trend={} fit_derivs={} min_samples={}",
+                         altaz_destripe.grouping, altaz_destripe.fit_time_trend,
+                         altaz_destripe.fit_derivs, altaz_destripe.min_samples);
+        }
+    }
 }
 
 template <class calib_t>
@@ -555,6 +595,195 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
             }
             // copy detector angle
             out.angle.data = in.angle.data.segment(si,sl);
+        }
+    }
+
+    if (altaz_destripe.enabled) {
+        const auto az_it = out.tel_data.data.find("TelAzAct");
+        const auto el_it = out.tel_data.data.find("TelElAct");
+        if (az_it == out.tel_data.data.end() || el_it == out.tel_data.data.end()) {
+            logger->warn("altaz_destripe enabled but TelAzAct/TelElAct not found; skipping");
+        }
+        else {
+            const auto n_pts_out = out.scans.data.rows();
+            const auto n_dets_out = out.scans.data.cols();
+            if (n_pts_out > 0 && n_dets_out > 0) {
+                Eigen::VectorXd az = az_it->second;
+                Eigen::VectorXd el = el_it->second;
+                if (az.size() != n_pts_out || el.size() != n_pts_out) {
+                    logger->warn("altaz_destripe skipped: tel vector size mismatch (n_pts={} az={} el={})",
+                                 n_pts_out, az.size(), el.size());
+                }
+                else {
+                    // unwrap azimuth to avoid 2pi jumps in derivative templates
+                    Eigen::VectorXd az_unwrap(n_pts_out);
+                    az_unwrap(0) = az(0);
+                    double az_offset = 0.0;
+                    for (Eigen::Index i = 1; i < n_pts_out; ++i) {
+                        const double prev = az_unwrap(i - 1);
+                        const double curr_raw = az(i) + az_offset;
+                        const double d = curr_raw - prev;
+                        if (d > pi) {
+                            az_offset -= 2.0 * pi;
+                        }
+                        else if (d < -pi) {
+                            az_offset += 2.0 * pi;
+                        }
+                        az_unwrap(i) = az(i) + az_offset;
+                    }
+
+                    Eigen::VectorXd daz = Eigen::VectorXd::Zero(n_pts_out);
+                    Eigen::VectorXd del = Eigen::VectorXd::Zero(n_pts_out);
+                    if (n_pts_out > 1) {
+                        daz(0) = az_unwrap(1) - az_unwrap(0);
+                        del(0) = el(1) - el(0);
+                        for (Eigen::Index i = 1; i < n_pts_out - 1; ++i) {
+                            daz(i) = 0.5 * (az_unwrap(i + 1) - az_unwrap(i - 1));
+                            del(i) = 0.5 * (el(i + 1) - el(i - 1));
+                        }
+                        daz(n_pts_out - 1) = az_unwrap(n_pts_out - 1) - az_unwrap(n_pts_out - 2);
+                        del(n_pts_out - 1) = el(n_pts_out - 1) - el(n_pts_out - 2);
+                    }
+
+                    Eigen::Array<bool, Eigen::Dynamic, 1> tel_good(n_pts_out);
+                    for (Eigen::Index i = 0; i < n_pts_out; ++i) {
+                        tel_good(i) = std::isfinite(az_unwrap(i)) && std::isfinite(el(i)) &&
+                                      std::isfinite(daz(i)) && std::isfinite(del(i));
+                    }
+
+                    auto zscore = [&](Eigen::VectorXd &v) {
+                        double sum = 0.0;
+                        Eigen::Index n = 0;
+                        for (Eigen::Index i = 0; i < n_pts_out; ++i) {
+                            if (tel_good(i)) {
+                                sum += v(i);
+                                ++n;
+                            }
+                        }
+                        if (n <= 1) {
+                            return false;
+                        }
+                        const double mean = sum / static_cast<double>(n);
+                        double ss = 0.0;
+                        for (Eigen::Index i = 0; i < n_pts_out; ++i) {
+                            if (tel_good(i)) {
+                                const double dv = v(i) - mean;
+                                ss += dv * dv;
+                            }
+                        }
+                        const double stddev = std::sqrt(ss / static_cast<double>(n - 1));
+                        if (!std::isfinite(stddev) || stddev <= 0.0) {
+                            return false;
+                        }
+                        for (Eigen::Index i = 0; i < n_pts_out; ++i) {
+                            v(i) = (v(i) - mean) / stddev;
+                        }
+                        return true;
+                    };
+
+                    std::vector<Eigen::VectorXd> cols;
+                    cols.reserve(6);
+                    cols.push_back(Eigen::VectorXd::Ones(n_pts_out));
+
+                    if (altaz_destripe.fit_time_trend) {
+                        Eigen::VectorXd t(n_pts_out);
+                        if (n_pts_out > 1) {
+                            t = Eigen::VectorXd::LinSpaced(n_pts_out, -1.0, 1.0);
+                        }
+                        else {
+                            t.setZero();
+                        }
+                        if (zscore(t)) {
+                            cols.push_back(std::move(t));
+                        }
+                    }
+
+                    if (zscore(az_unwrap)) {
+                        cols.push_back(std::move(az_unwrap));
+                    }
+                    if (zscore(el)) {
+                        cols.push_back(std::move(el));
+                    }
+                    if (altaz_destripe.fit_derivs) {
+                        if (zscore(daz)) {
+                            cols.push_back(std::move(daz));
+                        }
+                        if (zscore(del)) {
+                            cols.push_back(std::move(del));
+                        }
+                    }
+
+                    const Eigen::Index n_cols = static_cast<Eigen::Index>(cols.size());
+                    if (n_cols < 2) {
+                        logger->warn("altaz_destripe skipped: insufficient template columns");
+                    }
+                    else {
+                        Eigen::MatrixXd X(n_pts_out, n_cols);
+                        for (Eigen::Index c = 0; c < n_cols; ++c) {
+                            X.col(c) = cols[static_cast<std::size_t>(c)];
+                        }
+
+                        std::string grp = altaz_destripe.grouping;
+                        if (grp == "network") {
+                            grp = "nw";
+                        }
+                        if (grp != "nw" && grp != "array" && grp != "all") {
+                            logger->warn("altaz_destripe grouping '{}' unsupported; using 'nw'", grp);
+                            grp = "nw";
+                        }
+
+                        std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
+                        if (grp == "all") {
+                            grp_limits[0] = std::make_tuple(0, n_dets_out);
+                        }
+                        else {
+                            grp_limits = get_grouping(grp, calib, n_dets_out);
+                        }
+
+                        Eigen::Index n_fit_total = 0;
+                        Eigen::Index n_skip_total = 0;
+                        for (const auto &[key, val] : grp_limits) {
+                            const auto start = std::get<0>(val);
+                            const auto end = std::get<1>(val);
+                            for (Eigen::Index j = start; j < end; ++j) {
+                                std::vector<Eigen::Index> rows;
+                                rows.reserve(static_cast<std::size_t>(n_pts_out));
+                                for (Eigen::Index i = 0; i < n_pts_out; ++i) {
+                                    if (!out.flags.data(i, j) && tel_good(i)) {
+                                        rows.push_back(i);
+                                    }
+                                }
+
+                                const Eigen::Index n_use = static_cast<Eigen::Index>(rows.size());
+                                const Eigen::Index n_min = std::max<Eigen::Index>(altaz_destripe.min_samples, n_cols + 2);
+                                if (n_use < n_min) {
+                                    ++n_skip_total;
+                                    continue;
+                                }
+
+                                Eigen::MatrixXd X_use(n_use, n_cols);
+                                Eigen::VectorXd y_use(n_use);
+                                for (Eigen::Index r = 0; r < n_use; ++r) {
+                                    const auto ii = rows[static_cast<std::size_t>(r)];
+                                    X_use.row(r) = X.row(ii);
+                                    y_use(r) = out.scans.data(ii, j);
+                                }
+                                const Eigen::ColPivHouseholderQR<Eigen::MatrixXd> qr(X_use);
+                                if (qr.rank() < std::min<Eigen::Index>(n_cols, n_use)) {
+                                    ++n_skip_total;
+                                    continue;
+                                }
+                                const Eigen::VectorXd beta = qr.solve(y_use);
+                                out.scans.data.col(j).noalias() -= X * beta;
+                                ++n_fit_total;
+                            }
+                            logger->debug("altaz_destripe grouping={} key={} det_range=[{}, {})", grp, key, start, end);
+                        }
+                        logger->info("altaz_destripe applied: grouping={} templates={} fitted_detectors={} skipped_detectors={}",
+                                     grp, n_cols, n_fit_total, n_skip_total);
+                    }
+                }
+            }
         }
     }
 

@@ -212,7 +212,8 @@ public:
     template <EigenSolverBackend backend, typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD>
     auto remove_eig_values(const Eigen::DenseBase<DerivedA> &, const Eigen::DenseBase<DerivedB> &,
                            const Eigen::DenseBase<DerivedC> &, const Eigen::DenseBase<DerivedD> &,
-                           Eigen::DenseBase<DerivedA> &, const Eigen::Index, const Eigen::Index);
+                           Eigen::DenseBase<DerivedA> &, const Eigen::Index, const Eigen::Index,
+                           const std::string &, const Eigen::Index, const Eigen::Index);
 };
 
 template <typename DerivedA, typename DerivedB, typename DerivedC>
@@ -573,7 +574,8 @@ template <Cleaner::EigenSolverBackend backend,typename DerivedA, typename Derive
 auto Cleaner::remove_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eigen::DenseBase<DerivedB> &flags,
                                 const Eigen::DenseBase<DerivedC> &evals, const Eigen::DenseBase<DerivedD> &evecs,
                                 Eigen::DenseBase<DerivedA> &cleaned_scans, const Eigen::Index group_n_eig,
-                                const Eigen::Index forced_limit_index) {
+                                const Eigen::Index forced_limit_index, const std::string &group_name,
+                                const Eigen::Index nw_index, const Eigen::Index arr_index) {
 
     // number of detectors
     Eigen::Index n_dets = scans.cols();
@@ -622,7 +624,8 @@ auto Cleaner::remove_eig_values(const Eigen::DenseBase<DerivedA> &scans, const E
         limit_index = std::min<Eigen::Index>(limit_index, n_dets - 1);
     }
 
-    logger->debug("removing {} largest eigenvalue(s)", limit_index);
+    logger->debug("removing {} largest eigenvalue(s) grouping={} network={} array={}",
+                  limit_index, group_name, nw_index, arr_index);
 
     // subtract out the desired eigenvectors
     Eigen::MatrixXd proj = scans.derived() * evecs.derived().leftCols(limit_index);

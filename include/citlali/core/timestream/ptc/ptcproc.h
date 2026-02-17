@@ -323,12 +323,14 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
             // loop through cleaning groups
             for (auto const& [key, val] : grp_limits) {
                 Eigen::Index arr_index;
+                Eigen::Index nw_index = -1;
                 // use all detectors
                 if (group=="all") {
                     arr_index = calib.arrays(0);
                 }
                 // use network grouping
                 else if (group=="nw" || group=="network") {
+                    nw_index = key;
                     arr_index = toltec_io.nw_to_array_map[key];
                 }
                 // use array grouping
@@ -390,7 +392,8 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                     // remove eigenvalues from the data and reconstruct the tod
                     cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
                         in_scans_block, masked_flags, evals, evecs, out_scans_block,
-                        cleaner_local.n_eig_to_cut[arr_index](indx), forced_limit_index);
+                        cleaner_local.n_eig_to_cut[arr_index](indx), forced_limit_index,
+                        group, nw_index, arr_index);
 
                     if (in.kernel.data.size()!=0) {
                         // check if any good flags
@@ -401,7 +404,8 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                             // remove eigenvalues from the kernel and reconstruct the tod
                             cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
                                 in_kernel_block, masked_flags, evals, evecs, out_kernel_block,
-                                cleaner_local.n_eig_to_cut[arr_index](indx), forced_limit_index);
+                                cleaner_local.n_eig_to_cut[arr_index](indx), forced_limit_index,
+                                group, nw_index, arr_index);
                     }
                 }
                 // otherwise just copy the data
