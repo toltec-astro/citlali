@@ -143,13 +143,6 @@ timestream: # timestream reduction parameters
       enabled: false # enable or disable cleaning
       stddev_limit: 0.0 # standard deviation cut for cleaning (only used if >0)
       n_calc: 64 # number of eigenvalues to calculate for stddev_limit (0 => full spectrum)
-      null_model: # brute-force mode cut using null surrogates (overrides stddev_limit / n_eig_to_cut when enabled)
-        enabled: false
-        n_surrogates: 16 # number of random circular-shift surrogate realizations
-        quantile: 0.99 # null envelope quantile in [0.5, 1)
-        min_good_frac: 0.8 # minimum unflagged sample fraction per detector
-        max_modes: 64 # max modes to evaluate (0 => all available)
-        seed: 12345 # random seed for reproducibility
       mask_radius_arcsec: 0.0 # radius of region around the map center to mask during cleaning (only used if >0)
       grouping: [array] # clean grouping (array, nw, all)
       tau: 0.0 # tolerance for detector correlations (fraction of mean correlation for current group)

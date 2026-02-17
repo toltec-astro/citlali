@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <atomic>
 #include <cmath>
-#include <cstdint>
 
 #include <tula/logging.h>
 #include <tula/nc.h>
@@ -145,38 +144,6 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             get_config_value(config, cleaner.n_calc, missing_keys, invalid_keys,
                              std::tuple{"timestream","processed_time_chunk","clean","n_calc"},{},{0});
         }
-        // optional brute-force null-model mode selection
-        if (config.template has_typed<bool>(std::tuple{"timestream","processed_time_chunk","clean","null_model","enabled"})) {
-            get_config_value(config, cleaner.null_model.enabled, missing_keys, invalid_keys,
-                             std::tuple{"timestream","processed_time_chunk","clean","null_model","enabled"});
-        }
-        if (cleaner.null_model.enabled) {
-            if (config.template has_typed<int>(std::tuple{"timestream","processed_time_chunk","clean","null_model","n_surrogates"})) {
-                get_config_value(config, cleaner.null_model.n_surrogates, missing_keys, invalid_keys,
-                                 std::tuple{"timestream","processed_time_chunk","clean","null_model","n_surrogates"},{},{4});
-            }
-            if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","clean","null_model","quantile"})) {
-                get_config_value(config, cleaner.null_model.quantile, missing_keys, invalid_keys,
-                                 std::tuple{"timestream","processed_time_chunk","clean","null_model","quantile"},{},{0.5},{0.999999});
-            }
-            if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","clean","null_model","min_good_frac"})) {
-                get_config_value(config, cleaner.null_model.min_good_frac, missing_keys, invalid_keys,
-                                 std::tuple{"timestream","processed_time_chunk","clean","null_model","min_good_frac"},{},{0.0},{1.0});
-            }
-            if (config.template has_typed<int>(std::tuple{"timestream","processed_time_chunk","clean","null_model","max_modes"})) {
-                get_config_value(config, cleaner.null_model.max_modes, missing_keys, invalid_keys,
-                                 std::tuple{"timestream","processed_time_chunk","clean","null_model","max_modes"},{},{0});
-            }
-            int null_seed = static_cast<int>(cleaner.null_model.seed);
-            if (config.template has_typed<int>(std::tuple{"timestream","processed_time_chunk","clean","null_model","seed"})) {
-                get_config_value(config, null_seed, missing_keys, invalid_keys,
-                                 std::tuple{"timestream","processed_time_chunk","clean","null_model","seed"},{},{0});
-            }
-            cleaner.null_model.seed = static_cast<std::uint32_t>(null_seed);
-            logger->info("clean.null_model enabled: n_surrogates={} quantile={} min_good_frac={} max_modes={} seed={}",
-                         cleaner.null_model.n_surrogates, cleaner.null_model.quantile,
-                         cleaner.null_model.min_good_frac, cleaner.null_model.max_modes, cleaner.null_model.seed);
-        }
         // mask radius in arcseconds
         get_config_value(config, mask_radius_arcsec, missing_keys, invalid_keys,
                          std::tuple{"timestream","processed_time_chunk","clean","mask_radius_arcsec"});
@@ -311,10 +278,6 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                     // calculate eigenvalues and eigenvalues
                     auto [evals, evecs] = cleaner.calc_eig_values<timestream::Cleaner::SpectraBackend>(in_scans_block, masked_flags, apt_flags,
                                                                                                        cleaner.n_eig_to_cut[arr_index](indx));
-                    Eigen::Index forced_limit_index = -1;
-                    if (cleaner.null_model.enabled) {
-                        forced_limit_index = cleaner.get_null_model_index(in_scans_block, masked_flags, apt_flags);
-                    }
 
                     if (store_eigs) {
                         // get first n_calc eigenvalues and eigenvectors
@@ -336,8 +299,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
 
                     // remove eigenvalues from the data and reconstruct the tod
                     cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_scans_block, masked_flags, evals, evecs, out_scans_block,
-                                                                                   cleaner.n_eig_to_cut[arr_index](indx),
-                                                                                   forced_limit_index);
+                                                                                   cleaner.n_eig_to_cut[arr_index](indx));
 
                     if (in.kernel.data.size()!=0) {
                         // check if any good flags
@@ -347,8 +309,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
 
                             // remove eigenvalues from the kernel and reconstruct the tod
                             cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(in_kernel_block, masked_flags, evals, evecs, out_kernel_block,
-                                                                                           cleaner.n_eig_to_cut[arr_index](indx),
-                                                                                           forced_limit_index);
+                                                                                           cleaner.n_eig_to_cut[arr_index](indx));
                     }
                 }
                 // otherwise just copy the data

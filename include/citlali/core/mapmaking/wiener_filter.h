@@ -787,21 +787,14 @@ void WienerFilter::make_template(MB &mb, CD &calib_data, const double template_f
 
     // symmetric version of kernel template
     else {
+        logger->info("creating template from kernel map");
         if (mb.kernel.empty() || map_index < 0 || map_index >= static_cast<int>(mb.kernel.size())) {
-            double fallback_fwhm = template_fwhm_rad;
-            if (!std::isfinite(fallback_fwhm) || fallback_fwhm <= 0.0) {
-                fallback_fwhm = std::max(init_fwhm * mb.pixel_size_rad, mb.pixel_size_rad);
-            }
-            logger->warn(
-                "template_type=kernel requested but kernel map {} is unavailable (kernel size={}); "
-                "falling back to gaussian template with fwhm_rad={}",
-                map_index, mb.kernel.size(), static_cast<float>(fallback_fwhm));
-            make_gaussian_template(mb, fallback_fwhm);
+            logger->error(
+                "kernel template requested but kernel map is unavailable: map_index={} kernel_size={}",
+                map_index, static_cast<long long>(mb.kernel.size()));
+            std::exit(EXIT_FAILURE);
         }
-        else {
-            logger->info("creating template from kernel map");
-            make_kernel_template(mb, map_index, calib_data);
-        }
+        make_kernel_template(mb, map_index, calib_data);
     }
 }
 

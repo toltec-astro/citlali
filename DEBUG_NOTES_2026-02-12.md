@@ -388,9 +388,3 @@ noise filtering path in `engine.h` intact.
 ## Rollback/next-step options
 1. If stability is confirmed and speed is acceptable, keep this state.
 2. If speed regression is too large, reintroduce cache optimization incrementally with ASAN/UBSAN testing.
-
-Update:
-- Added safety fallback in Wiener template creation (both `wiener_filter.h` and
-  `wiener_filter_omp.h`): if `template_type=kernel` but `mb.kernel` is missing or
-  out-of-range for current map, fallback to gaussian template instead of dereferencing
-  invalid kernel map storage.
