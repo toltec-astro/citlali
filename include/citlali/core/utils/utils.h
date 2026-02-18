@@ -115,13 +115,14 @@ void utc_to_unix(Eigen::DenseBase<DerivedA> &tel_utc, Eigen::DenseBase<DerivedB>
     // size of time vector
     Eigen::Index n_pts = tel_utc.size();
 
-    time_t utc_time;
+    auto is_leap_year = [](int y) {
+        return (y % 4 == 0 && y % 100 != 0) || (y % 400 == 0);
+    };
 
-    // who would have guessed?
-    auto days_in_year = 365.0;
-
-    int year = std::floor(ut_date(0));
-    int days = int(((ut_date(0)-year)*days_in_year)+1);
+    int year = static_cast<int>(std::floor(ut_date(0)));
+    const int days_in_year = is_leap_year(year) ? 366 : 365;
+    int day_of_year = static_cast<int>(std::floor((ut_date(0) - year) * days_in_year)) + 1;
+    day_of_year = std::clamp(day_of_year, 1, days_in_year);
 
     auto ut_time = 180/15/pi * tel_utc.derived().array();
 
@@ -129,27 +130,41 @@ void utc_to_unix(Eigen::DenseBase<DerivedA> &tel_utc, Eigen::DenseBase<DerivedB>
 
     // loop through points
     for (Eigen::Index i=0; i<n_pts; ++i) {
-        auto h =(int)ut_time(i);
-        auto m = (int)((ut_time(i) - h)*60);
-        auto s = (((ut_time(i) - h)*60 - m)*60);
+        double hours = std::fmod(ut_time(i), 24.0);
+        if (hours < 0.0) {
+            hours += 24.0;
+        }
+        int h = static_cast<int>(std::floor(hours));
+        int m = static_cast<int>(std::floor((hours - h) * 60.0));
+        int s = static_cast<int>(std::llround((((hours - h) * 60.0) - m) * 60.0));
 
-        struct tm tm_time;
-        tm_time.tm_isdst = -1;
-        tm_time.tm_mon = 0;
-        tm_time.tm_mday = days;
-        tm_time.tm_year = year - 1900;
+        if (s >= 60) {
+            s -= 60;
+            m += 1;
+        }
+        if (m >= 60) {
+            m -= 60;
+            h += 1;
+        }
+        int day_increment = 0;
+        if (h >= 24) {
+            h -= 24;
+            day_increment = 1;
+        }
 
-        tm_time.tm_sec = s;
-        tm_time.tm_min = m;
-        tm_time.tm_hour = h;
+        std::tm tm_day_start{};
+        tm_day_start.tm_isdst = 0;
+        tm_day_start.tm_year = year - 1900;
+        tm_day_start.tm_mon = 0;
+        tm_day_start.tm_mday = day_of_year + day_increment;
+        const time_t day_start_unix = timegm(&tm_day_start);
 
-        // get UTC time
-        utc_time = timegm(&tm_time);
-
-        // convert UTC time to Unix timestamp
-        time_t unix_time = (time_t) utc_time;
-        // add Unix time to vector
-        tel_unix(i) = unix_time;
+        // convert to Unix timestamp
+        const long long seconds_of_day =
+            static_cast<long long>(h) * 3600LL +
+            static_cast<long long>(m) * 60LL +
+            static_cast<long long>(s);
+        tel_unix(i) = static_cast<double>(day_start_unix + static_cast<time_t>(seconds_of_day));
     }
     // overrwite UTC time with Unix time
     tel_utc = tel_unix;

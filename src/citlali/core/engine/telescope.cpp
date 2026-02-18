@@ -221,7 +221,7 @@ void Telescope::calc_tan_radec() {
     auto& dec = tel_data["TelDec"];
 
     // rescale ra
-    (ra.array() > pi).select(tel_data["TelRa"].array() - 2.0*pi, tel_data["TelRa"].array());
+    ra = (ra.array() > pi).select(ra.array() - 2.0*pi, ra.array());
 
     // center positions
     double ra0 = tel_header["Header.Source.Ra"](0);
@@ -265,7 +265,7 @@ void Telescope::calc_tan_galactic() {
     auto b = tel_data["TelB"];
 
     // rescale l
-    (l.array() > pi).select(tel_data["TelL"].array() - 2.0*pi, tel_data["TelL"].array());
+    l = (l.array() > pi).select(l.array() - 2.0*pi, l.array());
 
     // center positions
     double l0 = tel_header["Header.Source.L"](0);
@@ -338,7 +338,7 @@ void Telescope::calc_scan_indices() {
         // populate first scan
         int counter = -1;
         if (!hold_bool(0)) {
-            scan_indices(0,0) = 1;
+            scan_indices(0,0) = 0;
             counter++;
         }
 
