@@ -1273,17 +1273,17 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
                         Eigen::FFT<double> fft;
                         fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
                         fft.SetFlag(Eigen::FFT<double>::Unscaled);
-                        std::vector<std::complex<double>> freq;
+                        Eigen::VectorXcd freq;
                         fft.fwd(freq, x);
 
                         const double fs_eff = telescope.d_fsmp / static_cast<double>(sample_step);
-                        if (fs_eff > 0.0 && !freq.empty()) {
+                        if (fs_eff > 0.0 && freq.size() > 0) {
                             double p_low = 0.0;
                             double p_mid = 0.0;
                             const auto &band = weight_corr_penalty.cm_low_mid_ratio;
-                            for (std::size_t k = 1; k < freq.size(); ++k) {
+                            for (Eigen::Index k = 1; k < freq.size(); ++k) {
                                 const double f = static_cast<double>(k) * fs_eff / static_cast<double>(n_pts);
-                                const double p = std::norm(freq[k]);
+                                const double p = std::norm(freq(k));
                                 if (f >= band.low_min_Hz && f < band.low_max_Hz) {
                                     p_low += p;
                                 }
