@@ -1805,6 +1805,54 @@ void Engine::create_tod_files() {
         std::vector<netCDF::NcDim> weight_dims = {n_scans_dim, n_dets_dim};
         netCDF::NcVar weights_v = fo.addVar("weights",netCDF::ncDouble, weight_dims);
         weights_v.putAtt("units","("+omb.sig_unit+")^-2");
+
+        // optional diagnostics for correlation-defined network cleaning groups
+        bool corr_nw_requested = false;
+        for (const auto &g : ptcproc.cleaner.grouping) {
+            if (g == "corr_nw") {
+                corr_nw_requested = true;
+                break;
+            }
+        }
+        if (ptcproc.cleaner.corr_grouping.enabled && corr_nw_requested) {
+            const int fill_value = -2147483647;
+            std::vector<netCDF::NcDim> corr_det_dims = {n_scans_dim, n_dets_dim};
+            netCDF::NcVar corr_group_id_v = fo.addVar("corr_nw_group_id", netCDF::ncInt, corr_det_dims);
+            corr_group_id_v.putAtt("units", "N/A");
+            corr_group_id_v.putAtt("comment",
+                                   "corr_nw group index for each detector in each output scan; -2147483647 means not assigned");
+            std::vector<int> corr_group_init(static_cast<std::size_t>(n_tod_output_scans) *
+                                             static_cast<std::size_t>(calib.n_dets), fill_value);
+            corr_group_id_v.putVar(corr_group_init.data());
+
+            netCDF::NcDim n_nws_corr_dim = fo.addDim("n_nws_corr", calib.n_nws);
+            netCDF::NcVar corr_nw_ids_v = fo.addVar("corr_nw_network_ids", netCDF::ncInt, n_nws_corr_dim);
+            corr_nw_ids_v.putAtt("units", "N/A");
+            corr_nw_ids_v.putAtt("comment", "network IDs corresponding to n_nws_corr axis");
+            std::vector<int> nw_ids(static_cast<std::size_t>(calib.n_nws), fill_value);
+            for (Eigen::Index i = 0; i < calib.n_nws; ++i) {
+                nw_ids[static_cast<std::size_t>(i)] = static_cast<int>(calib.nws(i));
+            }
+            corr_nw_ids_v.putVar(nw_ids.data());
+
+            std::vector<netCDF::NcDim> corr_nw_dims = {n_scans_dim, n_nws_corr_dim};
+            auto add_corr_nw_var = [&](const std::string &name, const std::string &comment) {
+                netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, corr_nw_dims);
+                v.putAtt("units", "N/A");
+                v.putAtt("comment", comment);
+                std::vector<int> init(static_cast<std::size_t>(n_tod_output_scans) *
+                                      static_cast<std::size_t>(calib.n_nws), fill_value);
+                v.putVar(init.data());
+            };
+            add_corr_nw_var("corr_nw_n_groups", "number of final corr_nw cleaning groups per network");
+            add_corr_nw_var("corr_nw_n_groups_raw", "number of raw connected components before min_group_size filtering");
+            add_corr_nw_var("corr_nw_n_det_input", "input detector count in each network block");
+            add_corr_nw_var("corr_nw_n_det_candidates", "detectors passing apt flag and min_good_frac");
+            add_corr_nw_var("corr_nw_n_det_used", "candidate detectors with finite non-zero std for correlation");
+            add_corr_nw_var("corr_nw_n_det_grouped", "detectors included in final cleaned corr_nw groups");
+            add_corr_nw_var("corr_nw_n_det_ungrouped", "detectors excluded from final cleaned corr_nw groups");
+            add_corr_nw_var("corr_nw_sample_step", "time decimation factor used for corr_nw grouping");
+        }
     }
 
     // add hwpr

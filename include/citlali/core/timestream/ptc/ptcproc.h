@@ -4,6 +4,7 @@
 #include <atomic>
 #include <cmath>
 #include <cstdint>
+#include <unordered_map>
 #include <unordered_set>
 
 #include <tula/logging.h>
@@ -35,6 +36,20 @@ public:
 
     // ptc tod proc
     timestream::Cleaner cleaner;
+
+    struct CorrNWDiagSummary {
+        Eigen::Index nw = -1;
+        Eigen::Index n_det_input = 0;
+        Eigen::Index n_det_candidates = 0;
+        Eigen::Index n_det_used = 0;
+        Eigen::Index n_det_grouped = 0;
+        Eigen::Index n_det_ungrouped = 0;
+        Eigen::Index n_groups_raw = 0;
+        Eigen::Index n_groups_final = 0;
+        Eigen::Index sample_step = 1;
+    };
+    std::map<Eigen::Index, Eigen::VectorXi> corr_nw_group_ids_by_scan;
+    std::map<Eigen::Index, std::vector<CorrNWDiagSummary>> corr_nw_summary_by_scan;
 
     // get config file
     template <typename config_t>
@@ -161,6 +176,51 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             get_config_value(config, cleaner.null_model.enabled, missing_keys, invalid_keys,
                              std::tuple{"timestream","processed_time_chunk","clean","null_model","enabled"});
         }
+        // optional correlation-defined grouping inside each network
+        if (config.template has_typed<bool>(std::tuple{"timestream","processed_time_chunk","clean","corr_grouping","enabled"})) {
+            get_config_value(config, cleaner.corr_grouping.enabled, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","clean","corr_grouping","enabled"});
+        }
+        if (cleaner.corr_grouping.enabled) {
+            if (config.template has_typed<std::string>(std::tuple{"timestream","processed_time_chunk","clean","corr_grouping","metric"})) {
+                get_config_value(config, cleaner.corr_grouping.metric, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","corr_grouping","metric"},
+                                 {"abs", "signed"});
+            }
+            if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","clean","corr_grouping","corr_min"})) {
+                get_config_value(config, cleaner.corr_grouping.corr_min, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","corr_grouping","corr_min"},
+                                 {}, {0.0}, {1.0});
+            }
+            if (config.template has_typed<int>(std::tuple{"timestream","processed_time_chunk","clean","corr_grouping","min_overlap"})) {
+                get_config_value(config, cleaner.corr_grouping.min_overlap, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","corr_grouping","min_overlap"},
+                                 {}, {1});
+            }
+            if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","clean","corr_grouping","min_good_frac"})) {
+                get_config_value(config, cleaner.corr_grouping.min_good_frac, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","corr_grouping","min_good_frac"},
+                                 {}, {0.0}, {1.0});
+            }
+            if (config.template has_typed<int>(std::tuple{"timestream","processed_time_chunk","clean","corr_grouping","min_group_size"})) {
+                get_config_value(config, cleaner.corr_grouping.min_group_size, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","corr_grouping","min_group_size"},
+                                 {}, {2});
+            }
+            if (config.template has_typed<int>(std::tuple{"timestream","processed_time_chunk","clean","corr_grouping","max_samples"})) {
+                get_config_value(config, cleaner.corr_grouping.max_samples, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","corr_grouping","max_samples"},
+                                 {}, {0});
+            }
+            if (config.template has_typed<bool>(std::tuple{"timestream","processed_time_chunk","clean","corr_grouping","clean_residual"})) {
+                get_config_value(config, cleaner.corr_grouping.clean_residual, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","corr_grouping","clean_residual"});
+            }
+            logger->info("clean.corr_grouping enabled: metric={} corr_min={} min_overlap={} min_good_frac={} min_group_size={} max_samples={} clean_residual={}",
+                         cleaner.corr_grouping.metric, cleaner.corr_grouping.corr_min, cleaner.corr_grouping.min_overlap,
+                         cleaner.corr_grouping.min_good_frac, cleaner.corr_grouping.min_group_size,
+                         cleaner.corr_grouping.max_samples, cleaner.corr_grouping.clean_residual);
+        }
         if (cleaner.null_model.enabled) {
             if (config.template has_typed<int>(std::tuple{"timestream","processed_time_chunk","clean","null_model","n_surrogates"})) {
                 get_config_value(config, cleaner.null_model.n_surrogates, missing_keys, invalid_keys,
@@ -197,7 +257,7 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                 std::unordered_set<std::string> seen;
                 for (const auto &g_raw : null_grouping) {
                     auto g = cleaner.normalize_group_name(g_raw);
-                    if (g != "all" && g != "array" && g != "nw" && g != "detector" && g != "fg") {
+                    if (g != "all" && g != "array" && g != "nw" && g != "detector" && g != "fg" && g != "corr_nw") {
                         logger->warn("clean.null_model.grouping contains unsupported entry '{}'; ignoring", g_raw);
                         continue;
                     }
@@ -290,14 +350,19 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         // loop through config groupings
         const bool null_model_enabled_global = cleaner_local.null_model.enabled;
         for (const auto & group: cleaner_local.grouping) {
+            std::string effective_group = group;
+            if (group == "corr_nw" && !cleaner_local.corr_grouping.enabled) {
+                logger->warn("cleaning group 'corr_nw' requested but clean.corr_grouping.enabled=false; falling back to nw");
+                effective_group = "nw";
+            }
             // optional per-group null-model gating
             const bool null_model_for_group =
-                null_model_enabled_global && cleaner_local.null_model_enabled_for_group(group);
+                null_model_enabled_global && cleaner_local.null_model_enabled_for_group(effective_group);
             if (null_model_enabled_global && !null_model_for_group) {
-                logger->debug("null_model disabled for {} grouping", group);
+                logger->debug("null_model disabled for {} grouping", effective_group);
             }
 
-            logger->debug("cleaning with {} grouping", group);
+            logger->debug("cleaning with {} grouping", effective_group);
 
             if (store_eigs) {
                 // add current group to eval/evec vectors
@@ -312,29 +377,165 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
             // map of tuples to hold detector limits
             std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
 
+            if (group == "corr_nw" && cleaner_local.corr_grouping.enabled) {
+                    Eigen::VectorXi corr_group_ids_scan = Eigen::VectorXi::Constant(in.scans.data.cols(), -1);
+                    std::vector<CorrNWDiagSummary> corr_summary_scan;
+                    corr_summary_scan.reserve(static_cast<std::size_t>(calib.n_nws));
+                    grp_limits = get_grouping("nw", calib, in.scans.data.cols());
+                    for (auto const& [key, val] : grp_limits) {
+                        const Eigen::Index nw_index = key;
+                        const Eigen::Index arr_index = toltec_io.nw_to_array_map[key];
+                        auto [start_index, n_dets] = std::make_tuple(std::get<0>(val), std::get<1>(val) - std::get<0>(val));
+
+                        Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> masked_flags;
+                        if (mask_radius_arcsec > 0) {
+                            masked_flags = mask_region(in, calib, pixel_axes, map_grouping, n_pts, n_dets, start_index);
+                        }
+                        else {
+                            masked_flags = in.flags.data.block(0, start_index, n_pts, n_dets);
+                        }
+
+                        auto in_scans_block = in.scans.data.block(0, start_index, n_pts, n_dets);
+                        auto out_scans_block = out.scans.data.block(0, start_index, n_pts, n_dets);
+                        out_scans_block = in_scans_block;
+
+                        auto apt_flags = calib.apt["flag"].segment(start_index, n_dets);
+
+                        if (in.kernel.data.size()!=0) {
+                            auto in_kernel_block = in.kernel.data.block(0, start_index, n_pts, n_dets);
+                            auto out_kernel_block = out.kernel.data.block(0, start_index, n_pts, n_dets);
+                            out_kernel_block = in_kernel_block;
+                        }
+
+                        auto corr_groups = cleaner_local.get_corr_groups(in_scans_block, masked_flags, apt_flags);
+                        logger->info("cleaning corr_nw {} groups={} grouped={} ungrouped={} candidates={} used={} step={}",
+                                     key, corr_groups.n_groups_final, corr_groups.n_det_grouped, corr_groups.n_det_ungrouped,
+                                     corr_groups.n_det_candidates, corr_groups.n_det_used, corr_groups.sample_step);
+                        corr_summary_scan.push_back(CorrNWDiagSummary{
+                            .nw = nw_index,
+                            .n_det_input = corr_groups.n_det_input,
+                            .n_det_candidates = corr_groups.n_det_candidates,
+                            .n_det_used = corr_groups.n_det_used,
+                            .n_det_grouped = corr_groups.n_det_grouped,
+                            .n_det_ungrouped = corr_groups.n_det_ungrouped,
+                            .n_groups_raw = corr_groups.n_groups_raw,
+                            .n_groups_final = corr_groups.n_groups_final,
+                            .sample_step = corr_groups.sample_step,
+                        });
+
+                        auto extract_scans_cols = [&](const auto &m, const std::vector<Eigen::Index> &cols) {
+                            Eigen::MatrixXd out_m(m.rows(), static_cast<Eigen::Index>(cols.size()));
+                            for (Eigen::Index c = 0; c < static_cast<Eigen::Index>(cols.size()); ++c) {
+                                out_m.col(c) = m.col(cols[static_cast<std::size_t>(c)]);
+                            }
+                            return out_m;
+                        };
+                        auto extract_flag_cols = [&](const Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> &m,
+                                                     const std::vector<Eigen::Index> &cols) {
+                            Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> out_m(
+                                m.rows(), static_cast<Eigen::Index>(cols.size()));
+                            for (Eigen::Index c = 0; c < static_cast<Eigen::Index>(cols.size()); ++c) {
+                                out_m.col(c) = m.col(cols[static_cast<std::size_t>(c)]);
+                            }
+                            return out_m;
+                        };
+                        auto extract_apt_cols = [&](const auto &v, const std::vector<Eigen::Index> &cols) {
+                            Eigen::VectorXd out_v(static_cast<Eigen::Index>(cols.size()));
+                            for (Eigen::Index c = 0; c < static_cast<Eigen::Index>(cols.size()); ++c) {
+                                out_v(c) = v(cols[static_cast<std::size_t>(c)]);
+                            }
+                            return out_v;
+                        };
+                        auto scatter_cols = [&](auto &dst, const Eigen::MatrixXd &src, const std::vector<Eigen::Index> &cols) {
+                            for (Eigen::Index c = 0; c < static_cast<Eigen::Index>(cols.size()); ++c) {
+                                dst.col(cols[static_cast<std::size_t>(c)]) = src.col(c);
+                            }
+                        };
+
+                        for (Eigen::Index gidx = 0; gidx < static_cast<Eigen::Index>(corr_groups.groups.size()); ++gidx) {
+                            const auto &cols = corr_groups.groups[static_cast<std::size_t>(gidx)];
+                            if (cols.size() < 2) {
+                                continue;
+                            }
+                            for (const auto &local_col : cols) {
+                                corr_group_ids_scan(start_index + local_col) = gidx;
+                            }
+
+                            auto in_scans_sub = extract_scans_cols(in_scans_block, cols);
+                            auto out_scans_sub = in_scans_sub;
+                            auto flags_sub = extract_flag_cols(masked_flags, cols);
+                            auto apt_flags_sub = extract_apt_cols(apt_flags, cols);
+
+                            if (!(apt_flags_sub.array() == 0).any()) {
+                                continue;
+                            }
+
+                            auto [evals, evecs] = cleaner_local.calc_eig_values<timestream::Cleaner::SpectraBackend>(
+                                in_scans_sub, flags_sub, apt_flags_sub, cleaner_local.n_eig_to_cut[arr_index](indx));
+                            Eigen::Index forced_limit_index = -1;
+                            if (null_model_for_group) {
+                                forced_limit_index = cleaner_local.get_null_model_index(in_scans_sub, flags_sub, apt_flags_sub);
+                            }
+
+                            if (store_eigs) {
+                                Eigen::Index n_keep = std::min<Eigen::Index>(cleaner_local.n_calc, evals.size());
+                                if (n_keep > 0) {
+                                    Eigen::VectorXd ev = evals.head(n_keep);
+                                    Eigen::MatrixXd evc = evecs.leftCols(n_keep);
+                                    out.evals.data[indx].push_back(std::move(ev));
+                                    out.evecs.data[indx].push_back(std::move(evc));
+                                }
+                            }
+
+                            cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
+                                in_scans_sub, flags_sub, evals, evecs, out_scans_sub,
+                                cleaner_local.n_eig_to_cut[arr_index](indx), forced_limit_index,
+                                group, nw_index, arr_index);
+                            scatter_cols(out_scans_block, out_scans_sub, cols);
+
+                            if (in.kernel.data.size()!=0) {
+                                auto in_kernel_block = in.kernel.data.block(0, start_index, n_pts, n_dets);
+                                auto out_kernel_block = out.kernel.data.block(0, start_index, n_pts, n_dets);
+                                auto in_kernel_sub = extract_scans_cols(in_kernel_block, cols);
+                                auto out_kernel_sub = in_kernel_sub;
+                                cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
+                                    in_kernel_sub, flags_sub, evals, evecs, out_kernel_sub,
+                                    cleaner_local.n_eig_to_cut[arr_index](indx), forced_limit_index,
+                                    group, nw_index, arr_index);
+                                scatter_cols(out_kernel_block, out_kernel_sub, cols);
+                            }
+                        }
+                    }
+                    corr_nw_group_ids_by_scan[in.index.data] = std::move(corr_group_ids_scan);
+                    corr_nw_summary_by_scan[in.index.data] = std::move(corr_summary_scan);
+                    indx++;
+                    out.status.cleaned = true;
+                    continue;
+            }
+
             // use all detectors for cleaning
-            if (group == "all") {
+            if (effective_group == "all") {
                 grp_limits[0] = std::make_tuple(0,in.scans.data.cols());
             }
             else {
                 // get group limits
-                grp_limits = get_grouping(group, calib, in.scans.data.cols());
+                grp_limits = get_grouping(effective_group, calib, in.scans.data.cols());
             }
             // loop through cleaning groups
             for (auto const& [key, val] : grp_limits) {
                 Eigen::Index arr_index;
                 Eigen::Index nw_index = -1;
                 // use all detectors
-                if (group=="all") {
+                if (effective_group=="all") {
                     arr_index = calib.arrays(0);
                 }
                 // use network grouping
-                else if (group=="nw" || group=="network") {
+                else if (effective_group=="nw" || effective_group=="network") {
                     nw_index = key;
                     arr_index = toltec_io.nw_to_array_map[key];
                 }
                 // use array grouping
-                else if (group=="array") {
+                else if (effective_group=="array") {
                     arr_index = key;
                 }
 
@@ -362,7 +563,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
 
                 // check if any good flags
                 if ((apt_flags.array()==0).any()) {
-                    logger->info("cleaning {} {}", group, key);
+                    logger->info("cleaning {} {}", effective_group, key);
                     // calculate eigenvalues and eigenvalues
                     auto [evals, evecs] = cleaner_local.calc_eig_values<timestream::Cleaner::SpectraBackend>(
                         in_scans_block, masked_flags, apt_flags, cleaner_local.n_eig_to_cut[arr_index](indx));
@@ -393,7 +594,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                     cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
                         in_scans_block, masked_flags, evals, evecs, out_scans_block,
                         cleaner_local.n_eig_to_cut[arr_index](indx), forced_limit_index,
-                        group, nw_index, arr_index);
+                        effective_group, nw_index, arr_index);
 
                     if (in.kernel.data.size()!=0) {
                         // check if any good flags
@@ -405,7 +606,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                             cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
                                 in_kernel_block, masked_flags, evals, evecs, out_kernel_block,
                                 cleaner_local.n_eig_to_cut[arr_index](indx), forced_limit_index,
-                                group, nw_index, arr_index);
+                                effective_group, nw_index, arr_index);
                     }
                 }
                 // otherwise just copy the data
@@ -751,6 +952,85 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
 
         // add weights to tod output
         weights_v.putVar(start_index_weights, size_weights, in.weights.data.data());
+
+        const auto corr_groups_it = corr_nw_group_ids_by_scan.find(in.index.data);
+        const auto corr_summary_it = corr_nw_summary_by_scan.find(in.index.data);
+        const int corr_fill_value = -2147483647;
+
+        // optional corr_nw diagnostics: detector group IDs per scan x detector
+        NcVar corr_group_id_v = fo.getVar("corr_nw_group_id");
+        if (!corr_group_id_v.isNull()) {
+            std::vector<int> group_ids(static_cast<std::size_t>(n_dets_exists), corr_fill_value);
+            if (corr_groups_it != corr_nw_group_ids_by_scan.end()) {
+                const auto &gid = corr_groups_it->second;
+                const auto n_copy = std::min<unsigned long>(n_dets_exists, static_cast<unsigned long>(gid.size()));
+                for (unsigned long i = 0; i < n_copy; ++i) {
+                    group_ids[static_cast<std::size_t>(i)] = static_cast<int>(gid(static_cast<Eigen::Index>(i)));
+                }
+            }
+            corr_group_id_v.putVar(start_index_weights, size_weights, group_ids.data());
+        }
+
+        // optional corr_nw diagnostics: per-network summaries per scan
+        NcVar corr_n_groups_v = fo.getVar("corr_nw_n_groups");
+        if (!corr_n_groups_v.isNull()) {
+            NcDim n_nws_dim = fo.getDim("n_nws_corr");
+            if (!n_nws_dim.isNull()) {
+                const auto n_nws = n_nws_dim.getSize();
+                std::vector<int> v_n_groups(n_nws, corr_fill_value);
+                std::vector<int> v_n_groups_raw(n_nws, corr_fill_value);
+                std::vector<int> v_n_det_input(n_nws, corr_fill_value);
+                std::vector<int> v_n_det_candidates(n_nws, corr_fill_value);
+                std::vector<int> v_n_det_used(n_nws, corr_fill_value);
+                std::vector<int> v_n_det_grouped(n_nws, corr_fill_value);
+                std::vector<int> v_n_det_ungrouped(n_nws, corr_fill_value);
+                std::vector<int> v_sample_step(n_nws, corr_fill_value);
+
+                std::unordered_map<Eigen::Index, std::size_t> nw_to_index;
+                nw_to_index.reserve(static_cast<std::size_t>(calib.nws.size()));
+                for (Eigen::Index i = 0; i < calib.nws.size(); ++i) {
+                    nw_to_index[calib.nws(i)] = static_cast<std::size_t>(i);
+                }
+
+                if (corr_summary_it != corr_nw_summary_by_scan.end()) {
+                    for (const auto &row : corr_summary_it->second) {
+                        const auto it = nw_to_index.find(row.nw);
+                        if (it == nw_to_index.end() || it->second >= n_nws) {
+                            continue;
+                        }
+                        const auto j = it->second;
+                        v_n_groups[j] = static_cast<int>(row.n_groups_final);
+                        v_n_groups_raw[j] = static_cast<int>(row.n_groups_raw);
+                        v_n_det_input[j] = static_cast<int>(row.n_det_input);
+                        v_n_det_candidates[j] = static_cast<int>(row.n_det_candidates);
+                        v_n_det_used[j] = static_cast<int>(row.n_det_used);
+                        v_n_det_grouped[j] = static_cast<int>(row.n_det_grouped);
+                        v_n_det_ungrouped[j] = static_cast<int>(row.n_det_ungrouped);
+                        v_sample_step[j] = static_cast<int>(row.sample_step);
+                    }
+                }
+
+                std::vector<std::size_t> start_scan_nw = {scan_row, 0};
+                std::vector<std::size_t> size_scan_nw = {1, n_nws};
+
+                corr_n_groups_v.putVar(start_scan_nw, size_scan_nw, v_n_groups.data());
+                fo.getVar("corr_nw_n_groups_raw").putVar(start_scan_nw, size_scan_nw, v_n_groups_raw.data());
+                fo.getVar("corr_nw_n_det_input").putVar(start_scan_nw, size_scan_nw, v_n_det_input.data());
+                fo.getVar("corr_nw_n_det_candidates").putVar(start_scan_nw, size_scan_nw, v_n_det_candidates.data());
+                fo.getVar("corr_nw_n_det_used").putVar(start_scan_nw, size_scan_nw, v_n_det_used.data());
+                fo.getVar("corr_nw_n_det_grouped").putVar(start_scan_nw, size_scan_nw, v_n_det_grouped.data());
+                fo.getVar("corr_nw_n_det_ungrouped").putVar(start_scan_nw, size_scan_nw, v_n_det_ungrouped.data());
+                fo.getVar("corr_nw_sample_step").putVar(start_scan_nw, size_scan_nw, v_sample_step.data());
+            }
+        }
+
+        // drop per-scan diagnostics once persisted to netCDF
+        if (corr_groups_it != corr_nw_group_ids_by_scan.end()) {
+            corr_nw_group_ids_by_scan.erase(corr_groups_it);
+        }
+        if (corr_summary_it != corr_nw_summary_by_scan.end()) {
+            corr_nw_summary_by_scan.erase(corr_summary_it);
+        }
 
         if (write_evals) {
             if (cleaner.n_calc <= 0 || in.evals.data.empty()) {

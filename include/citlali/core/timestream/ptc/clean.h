@@ -10,6 +10,7 @@
 #include <random>
 #include <new>
 #include <vector>
+#include <unordered_map>
 #include <Eigen/Core>
 #include <Eigen/Eigenvalues>
 #include <Spectra/SymEigsSolver.h>
@@ -59,6 +60,31 @@ public:
 
     // brute-force null-model mode selection
     NullModelOptions null_model;
+
+    struct CorrGroupingOptions {
+        bool enabled = false;
+        std::string metric = "abs"; // "abs" or "signed"
+        double corr_min = 0.6; // threshold on corr metric for graph connectivity
+        int min_overlap = 300;
+        double min_good_frac = 0.8;
+        int min_group_size = 10;
+        int max_samples = 20000; // 0 => use all time samples
+        bool clean_residual = true; // clean all small/leftover eligible dets as one residual group
+    };
+
+    struct CorrGroupingResult {
+        std::vector<std::vector<Eigen::Index>> groups;
+        Eigen::Index n_det_input = 0;
+        Eigen::Index n_det_candidates = 0;
+        Eigen::Index n_det_used = 0;
+        Eigen::Index n_det_grouped = 0;
+        Eigen::Index n_det_ungrouped = 0;
+        Eigen::Index n_groups_raw = 0;
+        Eigen::Index n_groups_final = 0;
+        Eigen::Index sample_step = 1;
+    };
+
+    CorrGroupingOptions corr_grouping;
 
     static auto normalize_group_name(std::string group) {
         std::transform(group.begin(), group.end(), group.begin(),
@@ -203,6 +229,10 @@ public:
     auto get_null_model_index(const Eigen::DenseBase<DerivedA> &, const Eigen::DenseBase<DerivedB> &,
                               const Eigen::DenseBase<DerivedC> &);
 
+    template <typename DerivedA, typename DerivedB, typename DerivedC>
+    auto get_corr_groups(const Eigen::DenseBase<DerivedA> &, const Eigen::DenseBase<DerivedB> &,
+                         const Eigen::DenseBase<DerivedC> &);
+
     // calculate the eigenvalues from a matrix while removing flags
     template <EigenSolverBackend backend, typename DerivedA, typename DerivedB, typename DerivedC>
     auto calc_eig_values(const Eigen::DenseBase<DerivedA> &, const Eigen::DenseBase<DerivedB> &, Eigen::DenseBase<DerivedC> &,
@@ -215,6 +245,256 @@ public:
                            Eigen::DenseBase<DerivedA> &, const Eigen::Index, const Eigen::Index,
                            const std::string &, const Eigen::Index, const Eigen::Index);
 };
+
+namespace detail {
+
+class DisjointSet {
+public:
+    explicit DisjointSet(Eigen::Index n) {
+        parent.resize(static_cast<std::size_t>(n));
+        rank.resize(static_cast<std::size_t>(n), 0);
+        for (Eigen::Index i = 0; i < n; ++i) {
+            parent[static_cast<std::size_t>(i)] = i;
+        }
+    }
+
+    Eigen::Index find(Eigen::Index x) {
+        auto &p = parent[static_cast<std::size_t>(x)];
+        if (p != x) {
+            p = find(p);
+        }
+        return p;
+    }
+
+    void unite(Eigen::Index a, Eigen::Index b) {
+        auto ra = find(a);
+        auto rb = find(b);
+        if (ra == rb) {
+            return;
+        }
+        auto &rra = rank[static_cast<std::size_t>(ra)];
+        auto &rrb = rank[static_cast<std::size_t>(rb)];
+        if (rra < rrb) {
+            parent[static_cast<std::size_t>(ra)] = rb;
+        }
+        else if (rra > rrb) {
+            parent[static_cast<std::size_t>(rb)] = ra;
+        }
+        else {
+            parent[static_cast<std::size_t>(rb)] = ra;
+            rra += 1;
+        }
+    }
+
+private:
+    std::vector<Eigen::Index> parent;
+    std::vector<int> rank;
+};
+
+} // namespace detail
+
+template <typename DerivedA, typename DerivedB, typename DerivedC>
+auto Cleaner::get_corr_groups(const Eigen::DenseBase<DerivedA> &scans, const Eigen::DenseBase<DerivedB> &flags,
+                              const Eigen::DenseBase<DerivedC> &apt_flags) {
+    CorrGroupingResult result;
+    result.n_det_input = scans.cols();
+
+    const Eigen::Index n_pts_full = scans.rows();
+    const Eigen::Index n_dets = scans.cols();
+    if (!corr_grouping.enabled || n_pts_full < 4 || n_dets < 2) {
+        return result;
+    }
+
+    try {
+        Eigen::Index sample_step = 1;
+        if (corr_grouping.max_samples > 0 && n_pts_full > corr_grouping.max_samples) {
+            sample_step = static_cast<Eigen::Index>(
+                std::ceil(static_cast<double>(n_pts_full) / static_cast<double>(corr_grouping.max_samples)));
+        }
+        result.sample_step = sample_step;
+        const Eigen::Index n_pts = (n_pts_full + sample_step - 1) / sample_step;
+        if (n_pts < 4) {
+            return result;
+        }
+
+        auto is_good = [&](Eigen::Index i_sub, Eigen::Index j_det) {
+            const Eigen::Index i = i_sub * sample_step;
+            return !flags.derived()(i, j_det);
+        };
+
+        std::vector<Eigen::Index> keep_frac;
+        keep_frac.reserve(static_cast<std::size_t>(n_dets));
+        for (Eigen::Index j = 0; j < n_dets; ++j) {
+            if (apt_flags.derived()(j) != 0) {
+                continue;
+            }
+            double good_count = 0.0;
+            for (Eigen::Index i = 0; i < n_pts; ++i) {
+                if (is_good(i, j)) {
+                    good_count += 1.0;
+                }
+            }
+            const double frac = good_count / static_cast<double>(n_pts);
+            if (good_count > 1.0 && frac >= corr_grouping.min_good_frac) {
+                keep_frac.push_back(j);
+            }
+        }
+        result.n_det_candidates = static_cast<Eigen::Index>(keep_frac.size());
+        if (keep_frac.size() < 2) {
+            return result;
+        }
+
+        const Eigen::Index n_keep_frac = static_cast<Eigen::Index>(keep_frac.size());
+        Eigen::VectorXd means = Eigen::VectorXd::Zero(n_keep_frac);
+        Eigen::VectorXd stds = Eigen::VectorXd::Zero(n_keep_frac);
+        std::vector<Eigen::Index> keep_std;
+        keep_std.reserve(static_cast<std::size_t>(n_keep_frac));
+        for (Eigen::Index j = 0; j < n_keep_frac; ++j) {
+            const Eigen::Index det_j = keep_frac[static_cast<std::size_t>(j)];
+            double denom = 0.0;
+            double sum = 0.0;
+            for (Eigen::Index i = 0; i < n_pts; ++i) {
+                if (is_good(i, det_j)) {
+                    const double v = scans.derived()(i * sample_step, det_j);
+                    sum += v;
+                    denom += 1.0;
+                }
+            }
+            if (denom <= 1.0) {
+                continue;
+            }
+            const double mean = sum / denom;
+            double var_num = 0.0;
+            for (Eigen::Index i = 0; i < n_pts; ++i) {
+                if (is_good(i, det_j)) {
+                    const double d = scans.derived()(i * sample_step, det_j) - mean;
+                    var_num += d * d;
+                }
+            }
+            const double var_den = denom - 1.0;
+            if (var_den <= 0.0) {
+                continue;
+            }
+            const double std = std::sqrt(std::max(var_num / var_den, 0.0));
+            if (std > 0.0 && std::isfinite(std)) {
+                means(j) = mean;
+                stds(j) = std;
+                keep_std.push_back(j);
+            }
+        }
+
+        if (keep_std.size() < 2) {
+            return result;
+        }
+        const Eigen::Index n_used = static_cast<Eigen::Index>(keep_std.size());
+        result.n_det_used = n_used;
+
+        Eigen::MatrixXd sigz(n_pts, n_used);
+        Eigen::MatrixXd good_used(n_pts, n_used);
+        for (Eigen::Index k = 0; k < n_used; ++k) {
+            const Eigen::Index j = keep_std[static_cast<std::size_t>(k)];
+            const Eigen::Index det_j = keep_frac[static_cast<std::size_t>(j)];
+            for (Eigen::Index i = 0; i < n_pts; ++i) {
+                const double g = is_good(i, det_j) ? 1.0 : 0.0;
+                good_used(i, k) = g;
+                const double v = scans.derived()(i * sample_step, det_j);
+                sigz(i, k) = (v - means(j)) / stds(j);
+            }
+        }
+
+        Eigen::MatrixXd cov = calc_cov_with_mask(sigz, good_used);
+        Eigen::MatrixXd overlap = good_used.adjoint() * good_used;
+        Eigen::VectorXd var = cov.diagonal().cwiseMax(0.0);
+        Eigen::VectorXd std = var.array().sqrt();
+        Eigen::MatrixXd corr = Eigen::MatrixXd::Zero(n_used, n_used);
+        corr.diagonal().setOnes();
+        for (Eigen::Index i = 0; i < n_used; ++i) {
+            for (Eigen::Index j = i + 1; j < n_used; ++j) {
+                if (overlap(i, j) < static_cast<double>(corr_grouping.min_overlap)) {
+                    continue;
+                }
+                const double denom = std(i) * std(j);
+                if (denom <= 0.0 || !std::isfinite(denom)) {
+                    continue;
+                }
+                double v = cov(i, j) / denom;
+                if (!std::isfinite(v)) {
+                    v = 0.0;
+                }
+                v = std::clamp(v, -1.0, 1.0);
+                corr(i, j) = v;
+                corr(j, i) = v;
+            }
+        }
+
+        detail::DisjointSet dsu(n_used);
+        const bool use_abs = (corr_grouping.metric != "signed");
+        const double thr = std::clamp(corr_grouping.corr_min, 0.0, 1.0);
+        for (Eigen::Index i = 0; i < n_used; ++i) {
+            for (Eigen::Index j = i + 1; j < n_used; ++j) {
+                const double v = use_abs ? std::abs(corr(i, j)) : corr(i, j);
+                if (v >= thr) {
+                    dsu.unite(i, j);
+                }
+            }
+        }
+
+        std::unordered_map<Eigen::Index, std::vector<Eigen::Index>> root_to_group;
+        root_to_group.reserve(static_cast<std::size_t>(n_used));
+        for (Eigen::Index i = 0; i < n_used; ++i) {
+            const auto root = dsu.find(i);
+            auto det_j = keep_frac[static_cast<std::size_t>(keep_std[static_cast<std::size_t>(i)])];
+            root_to_group[root].push_back(det_j);
+        }
+
+        std::vector<std::vector<Eigen::Index>> groups_raw;
+        groups_raw.reserve(root_to_group.size());
+        for (auto &kv : root_to_group) {
+            auto &g = kv.second;
+            std::sort(g.begin(), g.end());
+            groups_raw.push_back(std::move(g));
+        }
+        result.n_groups_raw = static_cast<Eigen::Index>(groups_raw.size());
+
+        std::vector<std::vector<Eigen::Index>> groups_final;
+        std::vector<Eigen::Index> residual;
+        for (auto &g : groups_raw) {
+            if (static_cast<int>(g.size()) >= std::max(2, corr_grouping.min_group_size)) {
+                groups_final.push_back(std::move(g));
+            }
+            else {
+                residual.insert(residual.end(), g.begin(), g.end());
+            }
+        }
+        if (corr_grouping.clean_residual && residual.size() >= 2) {
+            std::sort(residual.begin(), residual.end());
+            groups_final.push_back(std::move(residual));
+        }
+
+        std::sort(groups_final.begin(), groups_final.end(), [](const auto &a, const auto &b) {
+            return a.size() > b.size();
+        });
+
+        Eigen::Index n_grouped = 0;
+        for (const auto &g : groups_final) {
+            n_grouped += static_cast<Eigen::Index>(g.size());
+        }
+        result.groups = std::move(groups_final);
+        result.n_groups_final = static_cast<Eigen::Index>(result.groups.size());
+        result.n_det_grouped = n_grouped;
+        result.n_det_ungrouped = result.n_det_input - n_grouped;
+
+        return result;
+    }
+    catch (const std::bad_alloc &) {
+        logger->warn("corr_grouping: memory allocation failed; falling back to base grouping");
+        return CorrGroupingResult{};
+    }
+    catch (const std::exception &e) {
+        logger->warn("corr_grouping: exception {}; falling back to base grouping", e.what());
+        return CorrGroupingResult{};
+    }
+}
 
 template <typename DerivedA, typename DerivedB, typename DerivedC>
 auto Cleaner::get_null_model_index(const Eigen::DenseBase<DerivedA> &scans, const Eigen::DenseBase<DerivedB> &flags,
