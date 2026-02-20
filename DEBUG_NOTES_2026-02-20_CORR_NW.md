@@ -96,3 +96,28 @@ timestream:
 ## Build/Test note in this local environment
 - Full local compile was not completed here due environment dependency/toolchain mismatches (Conan CLI compatibility and missing `fmt` package in the non-Conan path).
 - Changes are prepared for Unity build/run validation.
+
+## redu27 Follow-Up (2026-02-20)
+
+### What happened
+- `processed_time_chunk.output.enabled: true` with no `processed_time_chunk.output.indices` wrote all 70 chunks, producing a very large PTC TOD file.
+- Log size blew up from two high-volume sources:
+  - despike path emitted large vector/matrix dumps at `info` level (`logger->info("error {}", error)` and related lines).
+  - netCDF append path used `fo.getVars()` in `append_base_to_netcdf`, which triggered repeated HDF5 quantize-attribute probe diagnostics in this environment.
+
+### Changes made
+- `include/citlali/core/timestream/rtc/despike.h`
+  - demoted despike instrumentation logs from `info` to `trace` to avoid routine production log flooding.
+- `include/citlali/core/timestream/timestream.h`
+  - removed `fo.getVars()` usage in `append_base_to_netcdf`.
+  - switched to direct `fo.getVar("...")` for `SourceRa`, `SourceDec`, and `scan_indices`.
+
+### Operational note for next run
+- Keep chunk selection explicit when requesting PTC TOD output, e.g.:
+```yaml
+timestream:
+  processed_time_chunk:
+    output:
+      enabled: true
+      indices: [2]
+```

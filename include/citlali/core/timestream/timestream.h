@@ -1447,13 +1447,10 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
     Eigen::Index n_pts = in.scans.data.rows();
     Eigen::Index n_dets = in.scans.data.cols();
 
-    // get variables
-    auto vars = fo.getVars();
-
     // get absolute coords
     double cra, cdec;
-    vars.find("SourceRa")->second.getVar(&cra);
-    vars.find("SourceDec")->second.getVar(&cdec);
+    fo.getVar("SourceRa").getVar(&cra);
+    fo.getVar("SourceDec").getVar(&cdec);
 
     // get dimensions
     NcDim n_pts_dim = fo.getDim("n_pts");
@@ -1613,7 +1610,7 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
         std::vector<std::size_t> scan_indices_start_index = {TULA_SIZET(scan_row-1), 0};
         // size for data
         std::vector<std::size_t> scan_indices_size = {1, 2};
-        vars.find("scan_indices")->second.getVar(scan_indices_start_index,scan_indices_size,scan_indices.data());
+        fo.getVar("scan_indices").getVar(scan_indices_start_index, scan_indices_size, scan_indices.data());
 
         scan_indices = scan_indices.array() + in.scans.data.rows();
     }
