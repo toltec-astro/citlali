@@ -3,9 +3,16 @@
 #include <algorithm>
 #include <atomic>
 #include <cmath>
+#include <complex>
 #include <cstdint>
+#include <limits>
+#include <numeric>
+#include <random>
 #include <unordered_map>
 #include <unordered_set>
+#include <vector>
+
+#include <unsupported/Eigen/FFT>
 
 #include <tula/logging.h>
 #include <tula/nc.h>
@@ -48,8 +55,57 @@ public:
         Eigen::Index n_groups_final = 0;
         Eigen::Index sample_step = 1;
     };
+
+    struct WeightCorrPenaltyTermOptions {
+        bool enabled = true;
+        double ref = 0.05;
+        double span = 0.15;
+        double weight = 1.0;
+    };
+
+    struct WeightCorrPenaltyBandOptions {
+        bool enabled = false;
+        double ref = 0.6;
+        double span = 2.0;
+        double weight = 0.5;
+        double low_min_Hz = 0.05;
+        double low_max_Hz = 0.5;
+        double mid_min_Hz = 0.5;
+        double mid_max_Hz = 2.0;
+    };
+
+    struct WeightCorrPenaltyOptions {
+        bool enabled = false;
+        double min_good_frac = 0.7;
+        int min_overlap = 200;
+        int max_samples = 20000;
+        int max_pairs = 4000;
+        std::uint32_t seed = 12345;
+        double floor = 0.05;
+        double exponent = 2.0;
+        WeightCorrPenaltyTermOptions pair_corr;
+        WeightCorrPenaltyTermOptions cm_el_corr{false, 0.05, 0.25, 0.5};
+        WeightCorrPenaltyBandOptions cm_low_mid_ratio;
+    };
+
+    struct WeightCorrPenaltyDiagSummary {
+        Eigen::Index nw = -1;
+        Eigen::Index n_det_input = 0;
+        Eigen::Index n_det_candidates = 0;
+        Eigen::Index n_det_used = 0;
+        Eigen::Index n_det_weighted = 0;
+        Eigen::Index sample_step = 1;
+        double pair_med_abs_corr = std::numeric_limits<double>::quiet_NaN();
+        double cm_el_abs_corr = std::numeric_limits<double>::quiet_NaN();
+        double cm_low_mid_ratio = std::numeric_limits<double>::quiet_NaN();
+        double severity = 0.0;
+        double penalty_factor = 1.0;
+    };
+
+    WeightCorrPenaltyOptions weight_corr_penalty;
     std::map<Eigen::Index, Eigen::VectorXi> corr_nw_group_ids_by_scan;
     std::map<Eigen::Index, std::vector<CorrNWDiagSummary>> corr_nw_summary_by_scan;
+    std::map<Eigen::Index, std::vector<WeightCorrPenaltyDiagSummary>> weight_corr_penalty_summary_by_scan;
 
     // get config file
     template <typename config_t>
@@ -104,6 +160,144 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
     // upper weight factor
     get_config_value(config, upper_weight_factor, missing_keys, invalid_keys,
                      std::tuple{"timestream","processed_time_chunk","weighting","upper_map_weight_factor"});
+
+    // optional per-network, per-scan correlation-based weight penalty
+    weight_corr_penalty = WeightCorrPenaltyOptions{};
+    if (config.template has_typed<bool>(std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","enabled"})) {
+        get_config_value(config, weight_corr_penalty.enabled, missing_keys, invalid_keys,
+                         std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","enabled"});
+    }
+    if (weight_corr_penalty.enabled) {
+        if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","min_good_frac"})) {
+            get_config_value(config, weight_corr_penalty.min_good_frac, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","min_good_frac"},
+                             {}, {0.0}, {1.0});
+        }
+        if (config.template has_typed<int>(std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","min_overlap"})) {
+            get_config_value(config, weight_corr_penalty.min_overlap, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","min_overlap"},
+                             {}, {2});
+        }
+        if (config.template has_typed<int>(std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","max_samples"})) {
+            get_config_value(config, weight_corr_penalty.max_samples, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","max_samples"},
+                             {}, {0});
+        }
+        if (config.template has_typed<int>(std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","max_pairs"})) {
+            get_config_value(config, weight_corr_penalty.max_pairs, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","max_pairs"},
+                             {}, {0});
+        }
+        int corr_seed = static_cast<int>(weight_corr_penalty.seed);
+        if (config.template has_typed<int>(std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","seed"})) {
+            get_config_value(config, corr_seed, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","seed"},
+                             {}, {0});
+        }
+        weight_corr_penalty.seed = static_cast<std::uint32_t>(corr_seed);
+        if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","floor"})) {
+            get_config_value(config, weight_corr_penalty.floor, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","floor"},
+                             {}, {0.0}, {1.0});
+        }
+        if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","exponent"})) {
+            get_config_value(config, weight_corr_penalty.exponent, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","exponent"},
+                             {}, {0.0});
+        }
+
+        if (config.template has_typed<bool>(std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","pair_corr","enabled"})) {
+            get_config_value(config, weight_corr_penalty.pair_corr.enabled, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","pair_corr","enabled"});
+        }
+        if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","pair_corr","ref"})) {
+            get_config_value(config, weight_corr_penalty.pair_corr.ref, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","pair_corr","ref"});
+        }
+        if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","pair_corr","span"})) {
+            get_config_value(config, weight_corr_penalty.pair_corr.span, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","pair_corr","span"},
+                             {}, {1e-12});
+        }
+        if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","pair_corr","weight"})) {
+            get_config_value(config, weight_corr_penalty.pair_corr.weight, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","pair_corr","weight"},
+                             {}, {0.0});
+        }
+
+        if (config.template has_typed<bool>(std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","cm_el_corr","enabled"})) {
+            get_config_value(config, weight_corr_penalty.cm_el_corr.enabled, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","cm_el_corr","enabled"});
+        }
+        if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","cm_el_corr","ref"})) {
+            get_config_value(config, weight_corr_penalty.cm_el_corr.ref, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","cm_el_corr","ref"});
+        }
+        if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","cm_el_corr","span"})) {
+            get_config_value(config, weight_corr_penalty.cm_el_corr.span, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","cm_el_corr","span"},
+                             {}, {1e-12});
+        }
+        if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","cm_el_corr","weight"})) {
+            get_config_value(config, weight_corr_penalty.cm_el_corr.weight, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","cm_el_corr","weight"},
+                             {}, {0.0});
+        }
+
+        if (config.template has_typed<bool>(std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","cm_low_mid_ratio","enabled"})) {
+            get_config_value(config, weight_corr_penalty.cm_low_mid_ratio.enabled, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","cm_low_mid_ratio","enabled"});
+        }
+        if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","cm_low_mid_ratio","ref"})) {
+            get_config_value(config, weight_corr_penalty.cm_low_mid_ratio.ref, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","cm_low_mid_ratio","ref"});
+        }
+        if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","cm_low_mid_ratio","span"})) {
+            get_config_value(config, weight_corr_penalty.cm_low_mid_ratio.span, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","cm_low_mid_ratio","span"},
+                             {}, {1e-12});
+        }
+        if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","cm_low_mid_ratio","weight"})) {
+            get_config_value(config, weight_corr_penalty.cm_low_mid_ratio.weight, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","cm_low_mid_ratio","weight"},
+                             {}, {0.0});
+        }
+        if (config.template has_typed<std::vector<double>>(std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","cm_low_mid_ratio","low_band_Hz"})) {
+            auto low_band = config.template get_typed<std::vector<double>>(
+                std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","cm_low_mid_ratio","low_band_Hz"});
+            if (low_band.size() == 2 && low_band[0] >= 0.0 && low_band[1] > low_band[0]) {
+                weight_corr_penalty.cm_low_mid_ratio.low_min_Hz = low_band[0];
+                weight_corr_penalty.cm_low_mid_ratio.low_max_Hz = low_band[1];
+            } else {
+                logger->warn("weighting.corr_penalty.cm_low_mid_ratio.low_band_Hz must be [fmin, fmax] with 0<=fmin<fmax");
+            }
+        }
+        if (config.template has_typed<std::vector<double>>(std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","cm_low_mid_ratio","mid_band_Hz"})) {
+            auto mid_band = config.template get_typed<std::vector<double>>(
+                std::tuple{"timestream","processed_time_chunk","weighting","corr_penalty","cm_low_mid_ratio","mid_band_Hz"});
+            if (mid_band.size() == 2 && mid_band[0] >= 0.0 && mid_band[1] > mid_band[0]) {
+                weight_corr_penalty.cm_low_mid_ratio.mid_min_Hz = mid_band[0];
+                weight_corr_penalty.cm_low_mid_ratio.mid_max_Hz = mid_band[1];
+            } else {
+                logger->warn("weighting.corr_penalty.cm_low_mid_ratio.mid_band_Hz must be [fmin, fmax] with 0<=fmin<fmax");
+            }
+        }
+        logger->info(
+            "weighting.corr_penalty enabled: min_good_frac={} min_overlap={} max_samples={} max_pairs={} floor={} exponent={} "
+            "pair(enabled={}, ref={}, span={}, weight={}) cm_el(enabled={}, ref={}, span={}, weight={}) "
+            "cm_low_mid(enabled={}, ref={}, span={}, weight={}, low=[{}, {}], mid=[{}, {}])",
+            weight_corr_penalty.min_good_frac, weight_corr_penalty.min_overlap,
+            weight_corr_penalty.max_samples, weight_corr_penalty.max_pairs,
+            weight_corr_penalty.floor, weight_corr_penalty.exponent,
+            weight_corr_penalty.pair_corr.enabled, weight_corr_penalty.pair_corr.ref,
+            weight_corr_penalty.pair_corr.span, weight_corr_penalty.pair_corr.weight,
+            weight_corr_penalty.cm_el_corr.enabled, weight_corr_penalty.cm_el_corr.ref,
+            weight_corr_penalty.cm_el_corr.span, weight_corr_penalty.cm_el_corr.weight,
+            weight_corr_penalty.cm_low_mid_ratio.enabled, weight_corr_penalty.cm_low_mid_ratio.ref,
+            weight_corr_penalty.cm_low_mid_ratio.span, weight_corr_penalty.cm_low_mid_ratio.weight,
+            weight_corr_penalty.cm_low_mid_ratio.low_min_Hz, weight_corr_penalty.cm_low_mid_ratio.low_max_Hz,
+            weight_corr_penalty.cm_low_mid_ratio.mid_min_Hz, weight_corr_penalty.cm_low_mid_ratio.mid_max_Hz);
+    }
 
     // run fruit loops?
     get_config_value(config, run_fruit_loops, missing_keys, invalid_keys,
@@ -714,6 +908,468 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
         }
     }
 
+    if (weight_corr_penalty.enabled) {
+        auto finite_or_nan = [](double v) {
+            if (std::isfinite(v)) {
+                return v;
+            }
+            return std::numeric_limits<double>::quiet_NaN();
+        };
+        auto clamp01 = [](double v) {
+            return std::clamp(v, 0.0, 1.0);
+        };
+        auto median_from_values = [](std::vector<double> values) {
+            if (values.empty()) {
+                return std::numeric_limits<double>::quiet_NaN();
+            }
+            const auto mid = values.size() / 2;
+            std::nth_element(values.begin(), values.begin() + static_cast<std::ptrdiff_t>(mid), values.end());
+            double med = values[mid];
+            if ((values.size() % 2) == 0) {
+                auto max_it = std::max_element(values.begin(), values.begin() + static_cast<std::ptrdiff_t>(mid));
+                med = 0.5 * (med + *max_it);
+            }
+            return med;
+        };
+        auto pearson_corr = [](const std::vector<double> &x, const std::vector<double> &y) {
+            if (x.size() != y.size() || x.size() < 2) {
+                return std::numeric_limits<double>::quiet_NaN();
+            }
+            double sx = 0.0;
+            double sy = 0.0;
+            double sxx = 0.0;
+            double syy = 0.0;
+            double sxy = 0.0;
+            for (std::size_t i = 0; i < x.size(); ++i) {
+                const double xv = x[i];
+                const double yv = y[i];
+                sx += xv;
+                sy += yv;
+                sxx += xv * xv;
+                syy += yv * yv;
+                sxy += xv * yv;
+            }
+            const double n = static_cast<double>(x.size());
+            const double vx = sxx - (sx * sx) / n;
+            const double vy = syy - (sy * sy) / n;
+            if (vx <= 0.0 || vy <= 0.0 || !std::isfinite(vx) || !std::isfinite(vy)) {
+                return std::numeric_limits<double>::quiet_NaN();
+            }
+            const double cov = sxy - (sx * sy) / n;
+            const double corr = cov / std::sqrt(vx * vy);
+            if (!std::isfinite(corr)) {
+                return std::numeric_limits<double>::quiet_NaN();
+            }
+            return std::clamp(corr, -1.0, 1.0);
+        };
+        auto score_metric = [&](double metric, const auto &term) {
+            if (!term.enabled || term.weight <= 0.0 || !std::isfinite(metric)) {
+                return std::pair<double, double>{0.0, 0.0};
+            }
+            const double span = std::max(term.span, 1e-12);
+            const double score = clamp01((metric - term.ref) / span);
+            return std::pair<double, double>{term.weight * score, term.weight};
+        };
+
+        std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> nw_limits;
+        if (n_dets > 0) {
+            Eigen::Index nw_i = static_cast<Eigen::Index>(apt["nw"](0));
+            nw_limits[nw_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 1};
+            std::unordered_set<Eigen::Index> seen;
+            seen.insert(nw_i);
+            for (Eigen::Index i = 1; i < n_dets; ++i) {
+                auto nw_v = static_cast<Eigen::Index>(apt["nw"](i));
+                if (nw_v == nw_i) {
+                    std::get<1>(nw_limits[nw_i]) = i + 1;
+                }
+                else {
+                    if (seen.find(nw_v) != seen.end()) {
+                        logger->error("non-contiguous grouping detected for 'nw' value {}", nw_v);
+                        std::exit(EXIT_FAILURE);
+                    }
+                    seen.insert(nw_v);
+                    nw_i = nw_v;
+                    nw_limits[nw_i] = std::tuple<Eigen::Index, Eigen::Index>{i, i + 1};
+                }
+            }
+        }
+
+        const Eigen::Index n_pts_full = in.scans.data.rows();
+        std::vector<WeightCorrPenaltyDiagSummary> penalty_summary;
+        penalty_summary.reserve(static_cast<std::size_t>(nw_limits.size()));
+
+        for (const auto &[nw, limits] : nw_limits) {
+            const auto [start_index, end_index] = limits;
+            const Eigen::Index n_det_group = end_index - start_index;
+
+            Eigen::Index sample_step = 1;
+            if (weight_corr_penalty.max_samples > 0 &&
+                n_pts_full > static_cast<Eigen::Index>(weight_corr_penalty.max_samples)) {
+                sample_step = static_cast<Eigen::Index>(std::ceil(
+                    static_cast<double>(n_pts_full) / static_cast<double>(weight_corr_penalty.max_samples)));
+            }
+            sample_step = std::max<Eigen::Index>(sample_step, 1);
+            const Eigen::Index n_pts = (n_pts_full + sample_step - 1) / sample_step;
+
+            std::vector<Eigen::Index> det_keep;
+            std::vector<double> det_mean;
+            std::vector<double> det_std;
+            det_keep.reserve(static_cast<std::size_t>(n_det_group));
+            det_mean.reserve(static_cast<std::size_t>(n_det_group));
+            det_std.reserve(static_cast<std::size_t>(n_det_group));
+
+            Eigen::Index n_candidates = 0;
+            for (Eigen::Index j = start_index; j < end_index; ++j) {
+                if (apt["flag"](j) != 0) {
+                    continue;
+                }
+                double sum = 0.0;
+                double sum2 = 0.0;
+                double count = 0.0;
+                for (Eigen::Index is = 0; is < n_pts; ++is) {
+                    const Eigen::Index i = is * sample_step;
+                    if (i >= n_pts_full) {
+                        break;
+                    }
+                    if (in.flags.data(i, j)) {
+                        continue;
+                    }
+                    const double v = in.scans.data(i, j);
+                    if (!std::isfinite(v)) {
+                        continue;
+                    }
+                    sum += v;
+                    sum2 += v * v;
+                    count += 1.0;
+                }
+                if (count <= 1.0) {
+                    continue;
+                }
+                const double frac = count / static_cast<double>(n_pts);
+                if (frac < weight_corr_penalty.min_good_frac) {
+                    continue;
+                }
+                n_candidates++;
+                const double mean = sum / count;
+                const double var_num = sum2 - (sum * sum) / count;
+                const double var_den = count - 1.0;
+                if (var_den <= 0.0) {
+                    continue;
+                }
+                const double var = var_num / var_den;
+                if (!(var > 0.0) || !std::isfinite(var)) {
+                    continue;
+                }
+                const double std = std::sqrt(var);
+                if (!(std > 0.0) || !std::isfinite(std)) {
+                    continue;
+                }
+                det_keep.push_back(j);
+                det_mean.push_back(mean);
+                det_std.push_back(std);
+            }
+            const Eigen::Index n_used = static_cast<Eigen::Index>(det_keep.size());
+
+            auto pair_corr_for = [&](Eigen::Index det_a, Eigen::Index det_b) {
+                double sx = 0.0;
+                double sy = 0.0;
+                double sxx = 0.0;
+                double syy = 0.0;
+                double sxy = 0.0;
+                Eigen::Index n_ov = 0;
+                for (Eigen::Index is = 0; is < n_pts; ++is) {
+                    const Eigen::Index i = is * sample_step;
+                    if (i >= n_pts_full) {
+                        break;
+                    }
+                    if (in.flags.data(i, det_a) || in.flags.data(i, det_b)) {
+                        continue;
+                    }
+                    const double x = in.scans.data(i, det_a);
+                    const double y = in.scans.data(i, det_b);
+                    if (!std::isfinite(x) || !std::isfinite(y)) {
+                        continue;
+                    }
+                    sx += x;
+                    sy += y;
+                    sxx += x * x;
+                    syy += y * y;
+                    sxy += x * y;
+                    n_ov++;
+                }
+                const Eigen::Index min_overlap = std::max<Eigen::Index>(2, weight_corr_penalty.min_overlap);
+                if (n_ov < min_overlap) {
+                    return std::numeric_limits<double>::quiet_NaN();
+                }
+                const double n = static_cast<double>(n_ov);
+                const double vx = sxx - (sx * sx) / n;
+                const double vy = syy - (sy * sy) / n;
+                if (!(vx > 0.0) || !(vy > 0.0) || !std::isfinite(vx) || !std::isfinite(vy)) {
+                    return std::numeric_limits<double>::quiet_NaN();
+                }
+                const double cov = sxy - (sx * sy) / n;
+                const double corr = cov / std::sqrt(vx * vy);
+                if (!std::isfinite(corr)) {
+                    return std::numeric_limits<double>::quiet_NaN();
+                }
+                return std::clamp(corr, -1.0, 1.0);
+            };
+
+            double pair_med_abs_corr = std::numeric_limits<double>::quiet_NaN();
+            if (weight_corr_penalty.pair_corr.enabled && n_used >= 2) {
+                const std::uint64_t n_pairs_total = static_cast<std::uint64_t>(n_used) *
+                                                    static_cast<std::uint64_t>(n_used - 1) / 2ULL;
+                std::uint64_t target_pairs = n_pairs_total;
+                if (weight_corr_penalty.max_pairs > 0) {
+                    target_pairs = std::min<std::uint64_t>(
+                        n_pairs_total, static_cast<std::uint64_t>(weight_corr_penalty.max_pairs));
+                }
+                std::vector<double> abs_corrs;
+                abs_corrs.reserve(static_cast<std::size_t>(target_pairs));
+
+                if (target_pairs == n_pairs_total) {
+                    for (Eigen::Index i = 0; i < n_used; ++i) {
+                        for (Eigen::Index j = i + 1; j < n_used; ++j) {
+                            const double c = pair_corr_for(
+                                det_keep[static_cast<std::size_t>(i)],
+                                det_keep[static_cast<std::size_t>(j)]);
+                            if (std::isfinite(c)) {
+                                abs_corrs.push_back(std::abs(c));
+                            }
+                        }
+                    }
+                }
+                else if (target_pairs > 0) {
+                    const std::uint64_t seed_mix =
+                        static_cast<std::uint64_t>(weight_corr_penalty.seed) ^
+                        (static_cast<std::uint64_t>(scan_index_1based + 1) * 1315423911ULL) ^
+                        (static_cast<std::uint64_t>(nw + 1) * 2654435761ULL);
+                    std::mt19937 rng_nw(static_cast<std::uint32_t>(seed_mix & 0xffffffffULL));
+                    std::uniform_int_distribution<Eigen::Index> det_dist(0, n_used - 1);
+                    std::unordered_set<std::uint64_t> seen_pairs;
+                    seen_pairs.reserve(static_cast<std::size_t>(target_pairs * 2 + 1));
+                    std::uint64_t tries = 0;
+                    const std::uint64_t max_tries = std::max<std::uint64_t>(target_pairs * 32ULL, 1024ULL);
+                    while (seen_pairs.size() < target_pairs && tries < max_tries) {
+                        tries++;
+                        Eigen::Index a = det_dist(rng_nw);
+                        Eigen::Index b = det_dist(rng_nw);
+                        if (a == b) {
+                            continue;
+                        }
+                        if (a > b) {
+                            std::swap(a, b);
+                        }
+                        const auto key = (static_cast<std::uint64_t>(a) << 32ULL) |
+                                         static_cast<std::uint64_t>(b);
+                        if (!seen_pairs.insert(key).second) {
+                            continue;
+                        }
+                        const double c = pair_corr_for(
+                            det_keep[static_cast<std::size_t>(a)],
+                            det_keep[static_cast<std::size_t>(b)]);
+                        if (std::isfinite(c)) {
+                            abs_corrs.push_back(std::abs(c));
+                        }
+                    }
+                }
+                pair_med_abs_corr = median_from_values(std::move(abs_corrs));
+            }
+
+            Eigen::VectorXd cm = Eigen::VectorXd::Constant(n_pts, std::numeric_limits<double>::quiet_NaN());
+            std::vector<double> cm_valid;
+            std::vector<double> el_valid;
+            double cm_el_abs_corr = std::numeric_limits<double>::quiet_NaN();
+            double cm_low_mid_ratio = std::numeric_limits<double>::quiet_NaN();
+
+            const bool need_cm = (weight_corr_penalty.cm_el_corr.enabled ||
+                                  weight_corr_penalty.cm_low_mid_ratio.enabled) && (n_used > 0);
+            if (need_cm) {
+                for (Eigen::Index is = 0; is < n_pts; ++is) {
+                    const Eigen::Index i = is * sample_step;
+                    if (i >= n_pts_full) {
+                        break;
+                    }
+                    double sum = 0.0;
+                    Eigen::Index count = 0;
+                    for (Eigen::Index k = 0; k < n_used; ++k) {
+                        const Eigen::Index det = det_keep[static_cast<std::size_t>(k)];
+                        if (in.flags.data(i, det)) {
+                            continue;
+                        }
+                        const double v = in.scans.data(i, det);
+                        if (!std::isfinite(v)) {
+                            continue;
+                        }
+                        const double z = (v - det_mean[static_cast<std::size_t>(k)]) /
+                                         det_std[static_cast<std::size_t>(k)];
+                        if (!std::isfinite(z)) {
+                            continue;
+                        }
+                        sum += z;
+                        count++;
+                    }
+                    if (count >= 2) {
+                        cm(is) = sum / static_cast<double>(count);
+                    }
+                }
+
+                if (weight_corr_penalty.cm_el_corr.enabled) {
+                    const auto el_it = in.tel_data.data.find("TelElAct");
+                    if (el_it != in.tel_data.data.end()) {
+                        const auto &tel_el = el_it->second;
+                        cm_valid.reserve(static_cast<std::size_t>(n_pts));
+                        el_valid.reserve(static_cast<std::size_t>(n_pts));
+                        for (Eigen::Index is = 0; is < n_pts; ++is) {
+                            const Eigen::Index i = is * sample_step;
+                            if (i >= n_pts_full || i >= tel_el.size()) {
+                                break;
+                            }
+                            const double c = cm(is);
+                            const double e = tel_el(i);
+                            if (!std::isfinite(c) || !std::isfinite(e)) {
+                                continue;
+                            }
+                            cm_valid.push_back(c);
+                            el_valid.push_back(e);
+                        }
+                        const double c = pearson_corr(cm_valid, el_valid);
+                        if (std::isfinite(c)) {
+                            cm_el_abs_corr = std::abs(c);
+                        }
+                    }
+                }
+
+                if (weight_corr_penalty.cm_low_mid_ratio.enabled) {
+                    std::vector<double> cm_pts;
+                    cm_pts.reserve(static_cast<std::size_t>(n_pts));
+                    for (Eigen::Index is = 0; is < n_pts; ++is) {
+                        const double c = cm(is);
+                        if (std::isfinite(c)) {
+                            cm_pts.push_back(c);
+                        }
+                    }
+                    if (cm_pts.size() >= 8) {
+                        const double cm_mean = std::accumulate(cm_pts.begin(), cm_pts.end(), 0.0) /
+                                               static_cast<double>(cm_pts.size());
+                        Eigen::VectorXd x = Eigen::VectorXd::Zero(n_pts);
+                        for (Eigen::Index is = 0; is < n_pts; ++is) {
+                            const double c = cm(is);
+                            if (std::isfinite(c)) {
+                                x(is) = c - cm_mean;
+                            }
+                        }
+                        // mild taper to reduce leakage from scan edges
+                        if (n_pts > 1) {
+                            constexpr double two_pi = 6.283185307179586476925286766559;
+                            for (Eigen::Index is = 0; is < n_pts; ++is) {
+                                const double w = 0.5 * (1.0 - std::cos(
+                                    two_pi * static_cast<double>(is) /
+                                    static_cast<double>(n_pts - 1)));
+                                x(is) *= w;
+                            }
+                        }
+
+                        Eigen::FFT<double> fft;
+                        fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
+                        fft.SetFlag(Eigen::FFT<double>::Unscaled);
+                        std::vector<std::complex<double>> freq;
+                        fft.fwd(freq, x);
+
+                        const double fs_eff = telescope.d_fsmp / static_cast<double>(sample_step);
+                        if (fs_eff > 0.0 && !freq.empty()) {
+                            double p_low = 0.0;
+                            double p_mid = 0.0;
+                            const auto &band = weight_corr_penalty.cm_low_mid_ratio;
+                            for (std::size_t k = 1; k < freq.size(); ++k) {
+                                const double f = static_cast<double>(k) * fs_eff / static_cast<double>(n_pts);
+                                const double p = std::norm(freq[k]);
+                                if (f >= band.low_min_Hz && f < band.low_max_Hz) {
+                                    p_low += p;
+                                }
+                                if (f >= band.mid_min_Hz && f < band.mid_max_Hz) {
+                                    p_mid += p;
+                                }
+                            }
+                            if (p_mid > 0.0 && std::isfinite(p_low) && std::isfinite(p_mid)) {
+                                cm_low_mid_ratio = p_low / p_mid;
+                            }
+                        }
+                    }
+                }
+            }
+
+            double score_num = 0.0;
+            double score_den = 0.0;
+
+            {
+                const auto [n, d] = score_metric(pair_med_abs_corr, weight_corr_penalty.pair_corr);
+                score_num += n;
+                score_den += d;
+            }
+            {
+                const auto [n, d] = score_metric(cm_el_abs_corr, weight_corr_penalty.cm_el_corr);
+                score_num += n;
+                score_den += d;
+            }
+            {
+                const auto [n, d] = score_metric(cm_low_mid_ratio, weight_corr_penalty.cm_low_mid_ratio);
+                score_num += n;
+                score_den += d;
+            }
+
+            double severity = 0.0;
+            if (score_den > 0.0 && std::isfinite(score_num)) {
+                severity = clamp01(score_num / score_den);
+            }
+
+            const double floor = clamp01(weight_corr_penalty.floor);
+            const double exponent = std::max(0.0, weight_corr_penalty.exponent);
+            double penalty_factor = 1.0;
+            if (score_den > 0.0) {
+                penalty_factor = floor + (1.0 - floor) * std::pow(clamp01(1.0 - severity), exponent);
+            }
+            if (!std::isfinite(penalty_factor)) {
+                penalty_factor = 1.0;
+            }
+            penalty_factor = std::clamp(penalty_factor, floor, 1.0);
+
+            Eigen::Index n_weighted = 0;
+            for (Eigen::Index j = start_index; j < end_index; ++j) {
+                if (apt["flag"](j) != 0) {
+                    continue;
+                }
+                if (!std::isfinite(in.weights.data(j)) || in.weights.data(j) <= 0.0) {
+                    continue;
+                }
+                in.weights.data(j) *= penalty_factor;
+                n_weighted++;
+            }
+
+            penalty_summary.push_back(WeightCorrPenaltyDiagSummary{
+                .nw = nw,
+                .n_det_input = n_det_group,
+                .n_det_candidates = n_candidates,
+                .n_det_used = n_used,
+                .n_det_weighted = n_weighted,
+                .sample_step = sample_step,
+                .pair_med_abs_corr = finite_or_nan(pair_med_abs_corr),
+                .cm_el_abs_corr = finite_or_nan(cm_el_abs_corr),
+                .cm_low_mid_ratio = finite_or_nan(cm_low_mid_ratio),
+                .severity = severity,
+                .penalty_factor = penalty_factor,
+            });
+
+            logger->info(
+                "weight corr_penalty scan={} nw={} dets_in={} candidates={} used={} weighted={} "
+                "pair_med_abs_corr={} cm_el_abs_corr={} cm_low_mid_ratio={} severity={} factor={}",
+                scan_index_1based, nw, n_det_group, n_candidates, n_used, n_weighted,
+                finite_or_nan(pair_med_abs_corr), finite_or_nan(cm_el_abs_corr),
+                finite_or_nan(cm_low_mid_ratio), severity, penalty_factor);
+        }
+        weight_corr_penalty_summary_by_scan[in.index.data] = std::move(penalty_summary);
+    }
+
     Eigen::Index n_apt_unflagged = 0;
     Eigen::Index n_nonfinite = 0;
     Eigen::Index n_positive = 0;
@@ -955,6 +1611,7 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
 
         const auto corr_groups_it = corr_nw_group_ids_by_scan.find(in.index.data);
         const auto corr_summary_it = corr_nw_summary_by_scan.find(in.index.data);
+        const auto weight_corr_penalty_it = weight_corr_penalty_summary_by_scan.find(in.index.data);
         const int corr_fill_value = -2147483647;
 
         // optional corr_nw diagnostics: detector group IDs per scan x detector
@@ -1024,12 +1681,75 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
             }
         }
 
+        // optional diagnostics: per-network weight penalty summaries per scan
+        NcVar wcorr_factor_v = fo.getVar("weight_corr_penalty_factor");
+        if (!wcorr_factor_v.isNull()) {
+            NcDim n_nws_dim = fo.getDim("n_nws_wcorr");
+            if (!n_nws_dim.isNull()) {
+                const auto n_nws = n_nws_dim.getSize();
+                const double fill_double = std::numeric_limits<double>::quiet_NaN();
+                std::vector<double> v_factor(n_nws, fill_double);
+                std::vector<double> v_severity(n_nws, fill_double);
+                std::vector<double> v_pair_corr(n_nws, fill_double);
+                std::vector<double> v_cm_el_corr(n_nws, fill_double);
+                std::vector<double> v_cm_low_mid(n_nws, fill_double);
+                std::vector<int> v_n_det_input(n_nws, corr_fill_value);
+                std::vector<int> v_n_det_candidates(n_nws, corr_fill_value);
+                std::vector<int> v_n_det_used(n_nws, corr_fill_value);
+                std::vector<int> v_n_det_weighted(n_nws, corr_fill_value);
+                std::vector<int> v_sample_step(n_nws, corr_fill_value);
+
+                std::unordered_map<Eigen::Index, std::size_t> nw_to_index;
+                nw_to_index.reserve(static_cast<std::size_t>(calib.nws.size()));
+                for (Eigen::Index i = 0; i < calib.nws.size(); ++i) {
+                    nw_to_index[calib.nws(i)] = static_cast<std::size_t>(i);
+                }
+
+                if (weight_corr_penalty_it != weight_corr_penalty_summary_by_scan.end()) {
+                    for (const auto &row : weight_corr_penalty_it->second) {
+                        const auto it = nw_to_index.find(row.nw);
+                        if (it == nw_to_index.end() || it->second >= n_nws) {
+                            continue;
+                        }
+                        const auto j = it->second;
+                        v_factor[j] = row.penalty_factor;
+                        v_severity[j] = row.severity;
+                        v_pair_corr[j] = row.pair_med_abs_corr;
+                        v_cm_el_corr[j] = row.cm_el_abs_corr;
+                        v_cm_low_mid[j] = row.cm_low_mid_ratio;
+                        v_n_det_input[j] = static_cast<int>(row.n_det_input);
+                        v_n_det_candidates[j] = static_cast<int>(row.n_det_candidates);
+                        v_n_det_used[j] = static_cast<int>(row.n_det_used);
+                        v_n_det_weighted[j] = static_cast<int>(row.n_det_weighted);
+                        v_sample_step[j] = static_cast<int>(row.sample_step);
+                    }
+                }
+
+                std::vector<std::size_t> start_scan_nw = {scan_row, 0};
+                std::vector<std::size_t> size_scan_nw = {1, n_nws};
+
+                wcorr_factor_v.putVar(start_scan_nw, size_scan_nw, v_factor.data());
+                fo.getVar("weight_corr_penalty_severity").putVar(start_scan_nw, size_scan_nw, v_severity.data());
+                fo.getVar("weight_corr_penalty_pair_med_abs_corr").putVar(start_scan_nw, size_scan_nw, v_pair_corr.data());
+                fo.getVar("weight_corr_penalty_cm_el_abs_corr").putVar(start_scan_nw, size_scan_nw, v_cm_el_corr.data());
+                fo.getVar("weight_corr_penalty_cm_low_mid_ratio").putVar(start_scan_nw, size_scan_nw, v_cm_low_mid.data());
+                fo.getVar("weight_corr_penalty_n_det_input").putVar(start_scan_nw, size_scan_nw, v_n_det_input.data());
+                fo.getVar("weight_corr_penalty_n_det_candidates").putVar(start_scan_nw, size_scan_nw, v_n_det_candidates.data());
+                fo.getVar("weight_corr_penalty_n_det_used").putVar(start_scan_nw, size_scan_nw, v_n_det_used.data());
+                fo.getVar("weight_corr_penalty_n_det_weighted").putVar(start_scan_nw, size_scan_nw, v_n_det_weighted.data());
+                fo.getVar("weight_corr_penalty_sample_step").putVar(start_scan_nw, size_scan_nw, v_sample_step.data());
+            }
+        }
+
         // drop per-scan diagnostics once persisted to netCDF
         if (corr_groups_it != corr_nw_group_ids_by_scan.end()) {
             corr_nw_group_ids_by_scan.erase(corr_groups_it);
         }
         if (corr_summary_it != corr_nw_summary_by_scan.end()) {
             corr_nw_summary_by_scan.erase(corr_summary_it);
+        }
+        if (weight_corr_penalty_it != weight_corr_penalty_summary_by_scan.end()) {
+            weight_corr_penalty_summary_by_scan.erase(weight_corr_penalty_it);
         }
 
         if (write_evals) {

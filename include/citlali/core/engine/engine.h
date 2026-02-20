@@ -1543,6 +1543,29 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTLOW", ptcproc.lower_weight_factor);
         add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTHIGH", ptcproc.upper_weight_factor);
         add_netcdf_var(fo, "CONFIG.WEIGHT.MEDWTFACTOR", ptcproc.med_weight_factor);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.ENABLED", ptcproc.weight_corr_penalty.enabled);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.MIN_GOOD_FRAC", ptcproc.weight_corr_penalty.min_good_frac);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.MIN_OVERLAP", ptcproc.weight_corr_penalty.min_overlap);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.MAX_SAMPLES", ptcproc.weight_corr_penalty.max_samples);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.MAX_PAIRS", ptcproc.weight_corr_penalty.max_pairs);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.FLOOR", ptcproc.weight_corr_penalty.floor);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.EXPONENT", ptcproc.weight_corr_penalty.exponent);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.PAIR.ENABLED", ptcproc.weight_corr_penalty.pair_corr.enabled);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.PAIR.REF", ptcproc.weight_corr_penalty.pair_corr.ref);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.PAIR.SPAN", ptcproc.weight_corr_penalty.pair_corr.span);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.PAIR.WEIGHT", ptcproc.weight_corr_penalty.pair_corr.weight);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.CM_EL.ENABLED", ptcproc.weight_corr_penalty.cm_el_corr.enabled);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.CM_EL.REF", ptcproc.weight_corr_penalty.cm_el_corr.ref);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.CM_EL.SPAN", ptcproc.weight_corr_penalty.cm_el_corr.span);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.CM_EL.WEIGHT", ptcproc.weight_corr_penalty.cm_el_corr.weight);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.ENABLED", ptcproc.weight_corr_penalty.cm_low_mid_ratio.enabled);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.REF", ptcproc.weight_corr_penalty.cm_low_mid_ratio.ref);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.SPAN", ptcproc.weight_corr_penalty.cm_low_mid_ratio.span);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.WEIGHT", ptcproc.weight_corr_penalty.cm_low_mid_ratio.weight);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.LOWMIN_HZ", ptcproc.weight_corr_penalty.cm_low_mid_ratio.low_min_Hz);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.LOWMAX_HZ", ptcproc.weight_corr_penalty.cm_low_mid_ratio.low_max_Hz);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.MIDMIN_HZ", ptcproc.weight_corr_penalty.cm_low_mid_ratio.mid_min_Hz);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.MIDMAX_HZ", ptcproc.weight_corr_penalty.cm_low_mid_ratio.mid_max_Hz);
         add_netcdf_var(fo, "CONFIG.CLEANED", ptcproc.run_clean);
 
         // loop through arrays and add number of eigenvalues removed
@@ -1852,6 +1875,59 @@ void Engine::create_tod_files() {
             add_corr_nw_var("corr_nw_n_det_grouped", "detectors included in final cleaned corr_nw groups");
             add_corr_nw_var("corr_nw_n_det_ungrouped", "detectors excluded from final cleaned corr_nw groups");
             add_corr_nw_var("corr_nw_sample_step", "time decimation factor used for corr_nw grouping");
+        }
+
+        if (ptcproc.weight_corr_penalty.enabled) {
+            const int fill_int = -2147483647;
+            const double fill_double = std::numeric_limits<double>::quiet_NaN();
+            netCDF::NcDim n_nws_wcorr_dim = fo.addDim("n_nws_wcorr", calib.n_nws);
+            netCDF::NcVar nw_ids_v = fo.addVar("weight_corr_penalty_network_ids", netCDF::ncInt, n_nws_wcorr_dim);
+            nw_ids_v.putAtt("units", "N/A");
+            nw_ids_v.putAtt("comment", "network IDs corresponding to n_nws_wcorr axis");
+            std::vector<int> nw_ids(static_cast<std::size_t>(calib.n_nws), fill_int);
+            for (Eigen::Index i = 0; i < calib.n_nws; ++i) {
+                nw_ids[static_cast<std::size_t>(i)] = static_cast<int>(calib.nws(i));
+            }
+            nw_ids_v.putVar(nw_ids.data());
+
+            std::vector<netCDF::NcDim> wcorr_dims = {n_scans_dim, n_nws_wcorr_dim};
+            auto add_wcorr_double = [&](const std::string &name, const std::string &comment) {
+                netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, wcorr_dims);
+                v.putAtt("units", "N/A");
+                v.putAtt("comment", comment);
+                std::vector<double> init(static_cast<std::size_t>(n_tod_output_scans) *
+                                         static_cast<std::size_t>(calib.n_nws), fill_double);
+                v.putVar(init.data());
+            };
+            auto add_wcorr_int = [&](const std::string &name, const std::string &comment) {
+                netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, wcorr_dims);
+                v.putAtt("units", "N/A");
+                v.putAtt("comment", comment);
+                std::vector<int> init(static_cast<std::size_t>(n_tod_output_scans) *
+                                      static_cast<std::size_t>(calib.n_nws), fill_int);
+                v.putVar(init.data());
+            };
+
+            add_wcorr_double("weight_corr_penalty_factor",
+                             "multiplicative weight penalty factor applied per network in each output scan");
+            add_wcorr_double("weight_corr_penalty_severity",
+                             "normalized [0,1] severity used to derive weight_corr_penalty_factor");
+            add_wcorr_double("weight_corr_penalty_pair_med_abs_corr",
+                             "median absolute sampled detector-detector correlation per network");
+            add_wcorr_double("weight_corr_penalty_cm_el_abs_corr",
+                             "absolute correlation between network common mode and TelElAct");
+            add_wcorr_double("weight_corr_penalty_cm_low_mid_ratio",
+                             "common-mode low/mid bandpower ratio");
+            add_wcorr_int("weight_corr_penalty_n_det_input",
+                          "detector count in each network block");
+            add_wcorr_int("weight_corr_penalty_n_det_candidates",
+                          "detectors passing apt flag and min_good_frac");
+            add_wcorr_int("weight_corr_penalty_n_det_used",
+                          "candidate detectors with finite non-zero std");
+            add_wcorr_int("weight_corr_penalty_n_det_weighted",
+                          "detectors with positive map weight multiplied by penalty factor");
+            add_wcorr_int("weight_corr_penalty_sample_step",
+                          "time decimation factor used for penalty metrics");
         }
     }
 
@@ -2502,6 +2578,75 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.PTC.WTLOW", ptcproc.lower_weight_factor, "PTC lower weight cutoff");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.PTC.WTHIGH", ptcproc.upper_weight_factor, "PTC upper weight cutoff");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.MEDWTFACTOR", ptcproc.med_weight_factor, "Median weight factor");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.ENABLED",
+                                        ptcproc.weight_corr_penalty.enabled,
+                                        "Enable per-network corr-based weight penalties");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.MIN_GOOD_FRAC",
+                                        ptcproc.weight_corr_penalty.min_good_frac,
+                                        "Minimum unflagged sample fraction per detector");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.MIN_OVERLAP",
+                                        ptcproc.weight_corr_penalty.min_overlap,
+                                        "Minimum overlap for pairwise corr metric");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.MAX_SAMPLES",
+                                        ptcproc.weight_corr_penalty.max_samples,
+                                        "Max sampled timestream points for penalty metrics");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.MAX_PAIRS",
+                                        ptcproc.weight_corr_penalty.max_pairs,
+                                        "Max sampled detector pairs for corr metric");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.FLOOR",
+                                        ptcproc.weight_corr_penalty.floor,
+                                        "Minimum per-network multiplicative weight factor");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.EXPONENT",
+                                        ptcproc.weight_corr_penalty.exponent,
+                                        "Exponent shaping corr penalty response");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.PAIR.ENABLED",
+                                        ptcproc.weight_corr_penalty.pair_corr.enabled,
+                                        "Enable pairwise corr penalty term");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.PAIR.REF",
+                                        ptcproc.weight_corr_penalty.pair_corr.ref,
+                                        "Pairwise corr reference value");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.PAIR.SPAN",
+                                        ptcproc.weight_corr_penalty.pair_corr.span,
+                                        "Pairwise corr scale span");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.PAIR.WEIGHT",
+                                        ptcproc.weight_corr_penalty.pair_corr.weight,
+                                        "Pairwise corr term weight");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.CM_EL.ENABLED",
+                                        ptcproc.weight_corr_penalty.cm_el_corr.enabled,
+                                        "Enable common-mode elevation corr penalty term");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.CM_EL.REF",
+                                        ptcproc.weight_corr_penalty.cm_el_corr.ref,
+                                        "Common-mode elevation corr reference");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.CM_EL.SPAN",
+                                        ptcproc.weight_corr_penalty.cm_el_corr.span,
+                                        "Common-mode elevation corr scale span");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.CM_EL.WEIGHT",
+                                        ptcproc.weight_corr_penalty.cm_el_corr.weight,
+                                        "Common-mode elevation corr term weight");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.ENABLED",
+                                        ptcproc.weight_corr_penalty.cm_low_mid_ratio.enabled,
+                                        "Enable common-mode low/mid ratio penalty term");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.REF",
+                                        ptcproc.weight_corr_penalty.cm_low_mid_ratio.ref,
+                                        "Common-mode low/mid ratio reference");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.SPAN",
+                                        ptcproc.weight_corr_penalty.cm_low_mid_ratio.span,
+                                        "Common-mode low/mid ratio scale span");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.WEIGHT",
+                                        ptcproc.weight_corr_penalty.cm_low_mid_ratio.weight,
+                                        "Common-mode low/mid ratio term weight");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.LOWMIN_HZ",
+                                        ptcproc.weight_corr_penalty.cm_low_mid_ratio.low_min_Hz,
+                                        "Low-band minimum frequency for low/mid ratio");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.LOWMAX_HZ",
+                                        ptcproc.weight_corr_penalty.cm_low_mid_ratio.low_max_Hz,
+                                        "Low-band maximum frequency for low/mid ratio");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.MIDMIN_HZ",
+                                        ptcproc.weight_corr_penalty.cm_low_mid_ratio.mid_min_Hz,
+                                        "Mid-band minimum frequency for low/mid ratio");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.MIDMAX_HZ",
+                                        ptcproc.weight_corr_penalty.cm_low_mid_ratio.mid_max_Hz,
+                                        "Mid-band maximum frequency for low/mid ratio");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED", ptcproc.run_clean, "Cleaned");
     if (ptcproc.run_clean) {
         fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.NEIG", ptcproc.cleaner.n_eig_to_cut[calib.arrays(i)].sum(),

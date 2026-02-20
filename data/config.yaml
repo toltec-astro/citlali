@@ -163,6 +163,32 @@ timestream: # timestream reduction parameters
       median_map_weight_factor: 0 # set all weights above this factor x median of unflagged detectors to median (>=1 allowed)
       lower_map_weight_factor: 0.0 # flag detectors below this weight limit (ignored if 0)
       upper_map_weight_factor: 0.0 # flag detectors above this weight limit (ignored if 0)
+      corr_penalty: # optional per-network, per-scan multiplicative penalty based on residual correlation/systematics metrics
+        enabled: false
+        min_good_frac: 0.7 # minimum unflagged sample fraction for detector participation in metrics
+        min_overlap: 200 # minimum overlapping good samples for pairwise detector-detector corr estimates
+        max_samples: 20000 # cap sampled time points per scan for metrics (0 => use all)
+        max_pairs: 4000 # cap sampled detector pairs for pairwise corr metric (0 => all pairs)
+        seed: 12345 # seed for reproducible pair subsampling
+        floor: 0.05 # minimum multiplicative penalty factor applied to a network
+        exponent: 2.0 # shape parameter for converting severity->[floor,1] penalty factor
+        pair_corr: # sampled detector-detector median |corr| term
+          enabled: true
+          ref: 0.05 # no penalty contribution below this metric value
+          span: 0.15 # metric rise from ref to ref+span maps contribution from 0 to 1
+          weight: 1.0 # relative term weight in total severity
+        cm_el_corr: # |corr(common_mode, TelElAct)| term
+          enabled: false
+          ref: 0.05
+          span: 0.25
+          weight: 0.5
+        cm_low_mid_ratio: # common-mode low/mid bandpower ratio term
+          enabled: false
+          ref: 0.6
+          span: 2.0
+          weight: 0.5
+          low_band_Hz: [0.05, 0.5]
+          mid_band_Hz: [0.5, 2.0]
     flagging: # controls flagging after cleaning
       lower_tod_inv_var_factor: 0.0 # flag detectors below this inv variance limit (ignored if 0)
       upper_tod_inv_var_factor: 0.0 # flag detectors above this inv variance limit (ignored if 0)
