@@ -732,7 +732,8 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
 
     // loop through networks and build time vectors
     int i = 0;
-    double f_smp_roach;
+    double f_smp_roach = -1.0;
+    double fsmp_ref = -1.0;
     for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
         try {
             const RawObs::DataItem &data_item = rawobs.kidsdata()[i];
@@ -740,8 +741,16 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
             NcFile fo(data_item.filepath(), NcFile::read);
             auto vars = fo.getVars();
 
-            // get roach sample rate
+            // get roach sample rate and ensure it is consistent across networks
             vars.find("Header.Toltec.SampleFreq")->second.getVar(&f_smp_roach);
+            if (fsmp_ref != -1.0 && f_smp_roach != fsmp_ref) {
+                int roach_index_mismatch = -1;
+                vars.find("Header.Toltec.RoachIndex")->second.getVar(&roach_index_mismatch);
+                logger->error("mismatched sample rate in toltec{} ({} vs reference {})",
+                              roach_index_mismatch, f_smp_roach, fsmp_ref);
+                std::exit(EXIT_FAILURE);
+            }
+            fsmp_ref = f_smp_roach;
 
             // get roach index for offsets
             int roach_index;
@@ -843,7 +852,11 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
         }
     }
 
-    double dt = 1.0 / f_smp_roach;
+    if (fsmp_ref <= 0.0) {
+        logger->error("invalid or missing sample rate in align_timestreams_gaps");
+        std::exit(EXIT_FAILURE);
+    }
+    double dt = 1.0 / fsmp_ref;
     Eigen::Index n_samples = static_cast<int>((min_final_time - max_init_time) / dt) + 1;
     Eigen::VectorXd t_common = Eigen::VectorXd::LinSpaced(n_samples, max_init_time, max_init_time + dt * (n_samples - 1));
     double tol = dt / 2.0;

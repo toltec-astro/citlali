@@ -396,8 +396,10 @@ int run(const rc_t &rc) {
                     if (todproc.engine().omb.crval_config[0]!=0 && todproc.engine().omb.crval_config[1]!=0) {
                         logger->info("overwriting map center to ({}, {})",todproc.engine().omb.crval_config[0],
                                      todproc.engine().omb.crval_config[1]);
-                        todproc.engine().telescope.tel_header["Header.Source.Ra"].setConstant(todproc.engine().omb.crval_config[0]);
-                        todproc.engine().telescope.tel_header["Header.Source.Dec"].setConstant(todproc.engine().omb.crval_config[1]);
+                        const double map_center_ra_rad = todproc.engine().omb.crval_config[0] * DEG_TO_RAD;
+                        const double map_center_dec_rad = todproc.engine().omb.crval_config[1] * DEG_TO_RAD;
+                        todproc.engine().telescope.tel_header["Header.Source.Ra"].setConstant(map_center_ra_rad);
+                        todproc.engine().telescope.tel_header["Header.Source.Dec"].setConstant(map_center_dec_rad);
                     }
 
                     // align tod
@@ -732,8 +734,10 @@ int run(const rc_t &rc) {
                             if (todproc.engine().omb.crval_config[0]!=0 && todproc.engine().omb.crval_config[1]!=0) {
                                 logger->info("overwriting map center to ({}, {})",todproc.engine().omb.crval_config[0],
                                              todproc.engine().omb.crval_config[1]);
-                                todproc.engine().telescope.tel_header["Header.Source.Ra"].setConstant(todproc.engine().omb.crval_config[0]);
-                                todproc.engine().telescope.tel_header["Header.Source.Dec"].setConstant(todproc.engine().omb.crval_config[1]);
+                                const double map_center_ra_rad = todproc.engine().omb.crval_config[0] * DEG_TO_RAD;
+                                const double map_center_dec_rad = todproc.engine().omb.crval_config[1] * DEG_TO_RAD;
+                                todproc.engine().telescope.tel_header["Header.Source.Ra"].setConstant(map_center_ra_rad);
+                                todproc.engine().telescope.tel_header["Header.Source.Dec"].setConstant(map_center_dec_rad);
                             }
 
                             // align tod
