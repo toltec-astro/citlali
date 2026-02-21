@@ -345,7 +345,7 @@ auto Pointing::run(KidsProc &kidsproc) {
         }
 
         // write rtc timestreams
-        const auto rtc_scan_row = tod_output_scan_row(rtcdata.index.data);
+        const auto rtc_scan_row = tod_output_scan_row(rtcdata.index.data, "rtc");
         if (write_rtc && rtc_scan_row >= 0) {
             rtc_writer->wait_turn(rtc_scan_row);
             logger->info("writing raw time chunk");
@@ -408,7 +408,7 @@ auto Pointing::run(KidsProc &kidsproc) {
         calib_scan = ptcproc.reset_weights(ptcdata, calib, map_grouping);
 
         // write ptc timestreams
-        const auto ptc_scan_row = tod_output_scan_row(ptcdata.index.data);
+        const auto ptc_scan_row = tod_output_scan_row(ptcdata.index.data, "ptc");
         if (write_ptc && ptc_scan_row >= 0) {
             ptc_writer->wait_turn(ptc_scan_row);
             logger->info("writing processed time chunk");

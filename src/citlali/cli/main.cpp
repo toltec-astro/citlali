@@ -25,6 +25,20 @@
 #include <regex>
 #include <tuple>
 
+#if defined(__has_include)
+#if __has_include(<hdf5.h>)
+#include <hdf5.h>
+#define CITLALI_HAS_HDF5 1
+#elif __has_include(<hdf5/serial/hdf5.h>)
+#include <hdf5/serial/hdf5.h>
+#define CITLALI_HAS_HDF5 1
+#else
+#define CITLALI_HAS_HDF5 0
+#endif
+#else
+#define CITLALI_HAS_HDF5 0
+#endif
+
 #include <citlali/core/utils/constants.h>
 #include <citlali/core/utils/utils.h>
 
@@ -106,6 +120,12 @@ int run(const rc_t &rc) {
     using kids::KidsData;
     using kids::KidsDataKind;
     using tula::logging::timeit;
+
+#if CITLALI_HAS_HDF5
+    // netCDF may probe optional HDF5 quantization attributes; suppress noisy
+    // HDF5 diagnostics when those attributes are absent.
+    H5Eset_auto2(H5E_DEFAULT, nullptr, nullptr);
+#endif
 
     // get current level
     auto log_level = spdlog::get_level();

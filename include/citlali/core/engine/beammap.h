@@ -470,7 +470,7 @@ auto Beammap::run_timestream(KidsProc &kidsproc) {
         }
 
         // write rtc timestreams
-        const auto rtc_scan_row = tod_output_scan_row(rtcdata.index.data);
+        const auto rtc_scan_row = tod_output_scan_row(rtcdata.index.data, "rtc");
         if (write_rtc && rtc_scan_row >= 0) {
             rtc_writer->wait_turn(rtc_scan_row);
             logger->info("writing raw time chunk");
@@ -779,7 +779,7 @@ void Beammap::run_loop() {
                 logger->info("writing processed time chunk");
                 if (current_iter == beammap_tod_output_iter) {
                     for (Eigen::Index i=0; i<telescope.scan_indices.cols(); ++i) {
-                        const auto ptc_scan_row = tod_output_scan_row(i);
+                        const auto ptc_scan_row = tod_output_scan_row(i, "ptc");
                         if (ptc_scan_row < 0) {
                             continue;
                         }

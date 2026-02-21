@@ -229,10 +229,24 @@ public:
 
     // rtc or ptc types
     std::string tod_output_type, tod_output_subdir_name;
+    bool run_tod_output_rtc = false;
+    bool run_tod_output_ptc = false;
+
+    // legacy shared TOD output selection (kept for backward compatibility helpers)
     bool tod_output_chunk_select_enabled = false;
     std::vector<Eigen::Index> tod_output_chunks;
     Eigen::VectorXI tod_scan_to_output_scan;
     Eigen::Index n_tod_output_scans = 0;
+
+    // per-stream TOD output selection
+    bool tod_output_chunk_select_enabled_rtc = false;
+    bool tod_output_chunk_select_enabled_ptc = false;
+    std::vector<Eigen::Index> tod_output_chunks_rtc;
+    std::vector<Eigen::Index> tod_output_chunks_ptc;
+    Eigen::VectorXI tod_scan_to_output_scan_rtc;
+    Eigen::VectorXI tod_scan_to_output_scan_ptc;
+    Eigen::Index n_tod_output_scans_rtc = 0;
+    Eigen::Index n_tod_output_scans_ptc = 0;
 
     // map grouping and algorithm
     std::string map_grouping, map_method;
@@ -316,6 +330,7 @@ public:
     void setup_tod_output_chunk_selection();
     bool should_write_tod_chunk(Eigen::Index) const;
     Eigen::Index tod_output_scan_row(Eigen::Index) const;
+    Eigen::Index tod_output_scan_row(Eigen::Index, const std::string &) const;
 
     // output obs summary at command line
     void cli_summary();
@@ -487,42 +502,80 @@ void Engine::obsnum_setup() {
 
 void Engine::setup_tod_output_chunk_selection() {
     const Eigen::Index n_scans = telescope.scan_indices.cols();
-    tod_scan_to_output_scan.resize(n_scans);
-    tod_scan_to_output_scan.setConstant(-1);
-    n_tod_output_scans = 0;
+    auto setup_one = [&](const std::string &stream_name,
+                         bool output_enabled,
+                         bool select_enabled,
+                         const std::vector<Eigen::Index> &chunks_1based,
+                         Eigen::VectorXI &scan_to_output,
+                         Eigen::Index &n_output_scans) {
+        scan_to_output.resize(n_scans);
+        scan_to_output.setConstant(-1);
+        n_output_scans = 0;
+
+        if (!output_enabled) {
+            logger->info("{} TOD output disabled", stream_name);
+            return;
+        }
+
+        if (!select_enabled || chunks_1based.empty()) {
+            for (Eigen::Index i = 0; i < n_scans; ++i) {
+                scan_to_output(i) = i;
+            }
+            n_output_scans = n_scans;
+            logger->info("{} TOD output chunk selection disabled: writing all {} chunks",
+                         stream_name, n_output_scans);
+            return;
+        }
+
+        std::set<Eigen::Index> selected_chunks;
+        for (const auto chunk_1based : chunks_1based) {
+            if (chunk_1based < 1 || chunk_1based > n_scans) {
+                logger->error("{} TOD output indices contain {} but valid scan range is [1, {}]",
+                              stream_name, chunk_1based, n_scans);
+                std::exit(EXIT_FAILURE);
+            }
+            selected_chunks.insert(chunk_1based - 1);
+        }
+
+        Eigen::Index out_index = 0;
+        for (Eigen::Index i = 0; i < n_scans; ++i) {
+            if (selected_chunks.count(i) > 0) {
+                scan_to_output(i) = out_index;
+                ++out_index;
+            }
+        }
+        n_output_scans = out_index;
+        logger->info("{} TOD output chunk selection enabled: writing {} of {} chunks",
+                     stream_name, n_output_scans, n_scans);
+    };
 
     if (!run_tod_output) {
-        return;
+        tod_scan_to_output_scan_rtc.resize(0);
+        tod_scan_to_output_scan_ptc.resize(0);
+        n_tod_output_scans_rtc = 0;
+        n_tod_output_scans_ptc = 0;
+    }
+    else {
+        setup_one("RTC", run_tod_output_rtc, tod_output_chunk_select_enabled_rtc, tod_output_chunks_rtc,
+                  tod_scan_to_output_scan_rtc, n_tod_output_scans_rtc);
+        setup_one("PTC", run_tod_output_ptc, tod_output_chunk_select_enabled_ptc, tod_output_chunks_ptc,
+                  tod_scan_to_output_scan_ptc, n_tod_output_scans_ptc);
     }
 
-    if (!tod_output_chunk_select_enabled || tod_output_chunks.empty()) {
-        for (Eigen::Index i = 0; i < n_scans; ++i) {
-            tod_scan_to_output_scan(i) = i;
-        }
-        n_tod_output_scans = n_scans;
-        logger->info("TOD output chunk selection disabled: writing all {} chunks", n_tod_output_scans);
-        return;
+    // keep legacy shared fields for backwards compatibility with call sites that
+    // do not specify stream type explicitly.
+    if (run_tod_output_rtc) {
+        tod_scan_to_output_scan = tod_scan_to_output_scan_rtc;
+        n_tod_output_scans = n_tod_output_scans_rtc;
     }
-
-    std::set<Eigen::Index> selected_chunks;
-    for (const auto chunk_1based : tod_output_chunks) {
-        if (chunk_1based < 1 || chunk_1based > n_scans) {
-            logger->error("TOD output indices contain {} but valid scan range is [1, {}]",
-                          chunk_1based, n_scans);
-            std::exit(EXIT_FAILURE);
-        }
-        selected_chunks.insert(chunk_1based - 1);
+    else if (run_tod_output_ptc) {
+        tod_scan_to_output_scan = tod_scan_to_output_scan_ptc;
+        n_tod_output_scans = n_tod_output_scans_ptc;
     }
-
-    Eigen::Index out_index = 0;
-    for (Eigen::Index i = 0; i < n_scans; ++i) {
-        if (selected_chunks.count(i) > 0) {
-            tod_scan_to_output_scan(i) = out_index;
-            ++out_index;
-        }
+    else {
+        tod_scan_to_output_scan.resize(0);
+        n_tod_output_scans = 0;
     }
-    n_tod_output_scans = out_index;
-    logger->info("TOD output chunk selection enabled: writing {} of {} chunks", n_tod_output_scans, n_scans);
 }
 
 bool Engine::should_write_tod_chunk(Eigen::Index scan_index) const {
@@ -530,10 +583,32 @@ bool Engine::should_write_tod_chunk(Eigen::Index scan_index) const {
 }
 
 Eigen::Index Engine::tod_output_scan_row(Eigen::Index scan_index) const {
-    if (scan_index < 0 || scan_index >= tod_scan_to_output_scan.size()) {
+    if (run_tod_output_rtc) {
+        return tod_output_scan_row(scan_index, "rtc");
+    }
+    if (run_tod_output_ptc) {
+        return tod_output_scan_row(scan_index, "ptc");
+    }
+    return -1;
+}
+
+Eigen::Index Engine::tod_output_scan_row(Eigen::Index scan_index, const std::string &stream_name) const {
+    const Eigen::VectorXI *scan_to_output = nullptr;
+    if (stream_name == "rtc") {
+        scan_to_output = &tod_scan_to_output_scan_rtc;
+    }
+    else if (stream_name == "ptc") {
+        scan_to_output = &tod_scan_to_output_scan_ptc;
+    }
+    else {
+        logger->error("invalid TOD stream name '{}' for output row lookup", stream_name);
         return -1;
     }
-    return tod_scan_to_output_scan(scan_index);
+
+    if (scan_index < 0 || scan_index >= scan_to_output->size()) {
+        return -1;
+    }
+    return (*scan_to_output)(scan_index);
 }
 
 template<typename CT>
@@ -583,7 +658,6 @@ void Engine::get_timestream_config(CT &config) {
                      std::tuple{"timestream","type"});
 
     // run rtc or ptc tod output?
-    bool run_tod_output_rtc, run_tod_output_ptc;
     // output rtc
     get_config_value(config, run_tod_output_rtc, missing_keys, invalid_keys,
                      std::tuple{"timestream","raw_time_chunk","output","enabled"});
@@ -597,6 +671,13 @@ void Engine::get_timestream_config(CT &config) {
     // output ptc
     get_config_value(config, run_tod_output_ptc, missing_keys, invalid_keys,
                      std::tuple{"timestream","processed_time_chunk","output","enabled"});
+    ptcproc.tod_output_mini = false;
+    if (run_tod_output_ptc && config.has(std::tuple{"timestream","processed_time_chunk","output","mode"})) {
+        std::string ptc_output_mode = "full";
+        get_config_value(config, ptc_output_mode, missing_keys, invalid_keys,
+                         std::tuple{"timestream","processed_time_chunk","output","mode"}, {"full","mini"});
+        ptcproc.tod_output_mini = (ptc_output_mode == "mini");
+    }
     // set tod output to false by default
     run_tod_output = false;
 
@@ -676,27 +757,23 @@ void Engine::get_timestream_config(CT &config) {
     parse_tod_output_indices(std::tuple{"timestream","processed_time_chunk","output","indices"}, run_tod_output_ptc,
                              "timestream.processed_time_chunk.output.indices", ptc_chunk_select_enabled, ptc_output_chunks);
 
-    tod_output_chunk_select_enabled = false;
-    tod_output_chunks.clear();
+    tod_output_chunk_select_enabled_rtc = rtc_chunk_select_enabled;
+    tod_output_chunk_select_enabled_ptc = ptc_chunk_select_enabled;
+    tod_output_chunks_rtc = std::move(rtc_output_chunks);
+    tod_output_chunks_ptc = std::move(ptc_output_chunks);
 
-    if (rtc_chunk_select_enabled && ptc_chunk_select_enabled) {
-        const std::set<Eigen::Index> rtc_chunk_set(rtc_output_chunks.begin(), rtc_output_chunks.end());
-        const std::set<Eigen::Index> ptc_chunk_set(ptc_output_chunks.begin(), ptc_output_chunks.end());
-        if (rtc_chunk_set != ptc_chunk_set) {
-            logger->error("timestream.raw_time_chunk.output.indices and timestream.processed_time_chunk.output.indices "
-                          "must match when both rtc and ptc TOD outputs are enabled");
-            std::exit(EXIT_FAILURE);
-        }
-        tod_output_chunk_select_enabled = true;
-        tod_output_chunks.assign(rtc_chunk_set.begin(), rtc_chunk_set.end());
+    // keep legacy shared fields aligned with rtc (or ptc if rtc is disabled)
+    if (run_tod_output_rtc) {
+        tod_output_chunk_select_enabled = tod_output_chunk_select_enabled_rtc;
+        tod_output_chunks = tod_output_chunks_rtc;
     }
-    else if (rtc_chunk_select_enabled) {
-        tod_output_chunk_select_enabled = true;
-        tod_output_chunks = std::move(rtc_output_chunks);
+    else if (run_tod_output_ptc) {
+        tod_output_chunk_select_enabled = tod_output_chunk_select_enabled_ptc;
+        tod_output_chunks = tod_output_chunks_ptc;
     }
-    else if (ptc_chunk_select_enabled) {
-        tod_output_chunk_select_enabled = true;
-        tod_output_chunks = std::move(ptc_output_chunks);
+    else {
+        tod_output_chunk_select_enabled = false;
+        tod_output_chunks.clear();
     }
 
     // get time chunk size
@@ -1697,10 +1774,15 @@ void Engine::create_tod_files() {
     source_dec_v.putAtt("units","rad");
     source_dec_v.putVar(&telescope.tel_header["Header.Source.Dec"](0));
 
+    const Eigen::Index n_tod_output_scans_for_stream =
+        (prod_t == engine_utils::toltecIO::rtc_timestream) ? n_tod_output_scans_rtc : n_tod_output_scans_ptc;
+    const bool tod_output_mini =
+        (prod_t == engine_utils::toltecIO::rtc_timestream) ? rtcproc.tod_output_mini : ptcproc.tod_output_mini;
+
     netCDF::NcDim n_pts_dim = fo.addDim("n_pts");
     netCDF::NcDim n_raw_scan_indices_dim = fo.addDim("n_raw_scan_indices", telescope.scan_indices.rows());
     netCDF::NcDim n_scan_indices_dim = fo.addDim("n_scan_indices", 2);
-    netCDF::NcDim n_scans_dim = fo.addDim("n_scans", n_tod_output_scans);
+    netCDF::NcDim n_scans_dim = fo.addDim("n_scans", n_tod_output_scans_for_stream);
 
     netCDF::NcDim n_dets_dim = fo.addDim("n_dets", calib.n_dets);
 
@@ -1712,31 +1794,26 @@ void Engine::create_tod_files() {
     netCDF::NcVar raw_scan_indices_v = fo.addVar("raw_scan_indices",netCDF::ncInt, raw_scans_dims);
     raw_scan_indices_v.putAtt("units","N/A");
     raw_scan_indices_v.putAtt("comment","indices in output timebase; outer=inner (output stores inner scans only)");
-    std::vector<int> raw_scan_init(static_cast<std::size_t>(n_tod_output_scans) *
+    std::vector<int> raw_scan_init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
                                    static_cast<std::size_t>(telescope.scan_indices.rows()), -2147483647);
     raw_scan_indices_v.putVar(raw_scan_init.data());
 
     // scan indices for data
     netCDF::NcVar scan_indices_v = fo.addVar("scan_indices",netCDF::ncInt, scans_dims);
     scan_indices_v.putAtt("units","N/A");
-    std::vector<int> scan_init(static_cast<std::size_t>(n_tod_output_scans) * 2, -2147483647);
+    std::vector<int> scan_init(static_cast<std::size_t>(n_tod_output_scans_for_stream) * 2, -2147483647);
     scan_indices_v.putVar(scan_init.data());
 
     // mapping from output scan row to original scan number (1-based)
     netCDF::NcVar output_scan_index_v = fo.addVar("output_scan_index", netCDF::ncInt, n_scans_dim);
     output_scan_index_v.putAtt("units","N/A");
     output_scan_index_v.putAtt("comment","1-based original scan index from the full observation");
-    std::vector<int> output_scan_init(static_cast<std::size_t>(n_tod_output_scans), -2147483647);
+    std::vector<int> output_scan_init(static_cast<std::size_t>(n_tod_output_scans_for_stream), -2147483647);
     output_scan_index_v.putVar(output_scan_init.data());
-
-    bool rtc_mini_output = false;
-    if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {
-        rtc_mini_output = rtcproc.tod_output_mini;
-    }
 
     // signal
     netCDF::NcVar signal_v;
-    if (rtc_mini_output) {
+    if (tod_output_mini) {
         signal_v = fo.addVar("signal", netCDF::ncFloat, dims);
     }
     else {
@@ -1758,26 +1835,26 @@ void Engine::create_tod_files() {
 
     // flags
     netCDF::NcVar flags_v;
-    if (rtc_mini_output) {
+    if (tod_output_mini) {
         flags_v = fo.addVar("flags", netCDF::ncByte, dims);
     }
     else {
         flags_v = fo.addVar("flags", netCDF::ncDouble, dims);
     }
     flags_v.putAtt("units","N/A");
-    if (rtc_mini_output) {
+    if (tod_output_mini) {
         flags_v.putAtt("comment", "0=good,1=flagged");
     }
     flags_v.setChunking(chunkMode, chunkSizes);
 
     // kernel
-    if (rtcproc.run_kernel && !rtc_mini_output) {
+    if (rtcproc.run_kernel && !tod_output_mini) {
         netCDF::NcVar kernel_v = fo.addVar("kernel",netCDF::ncDouble, dims);
         kernel_v.putAtt("units","N/A");
         kernel_v.setChunking(chunkMode, chunkSizes);
     }
 
-    if (!rtc_mini_output) {
+    if (!tod_output_mini) {
         // detector lat
         netCDF::NcVar det_lat_v = fo.addVar("det_lat",netCDF::ncDouble, dims);
         det_lat_v.putAtt("units","rad");
@@ -1844,7 +1921,7 @@ void Engine::create_tod_files() {
             corr_group_id_v.putAtt("units", "N/A");
             corr_group_id_v.putAtt("comment",
                                    "corr_nw group index for each detector in each output scan; -2147483647 means not assigned");
-            std::vector<int> corr_group_init(static_cast<std::size_t>(n_tod_output_scans) *
+            std::vector<int> corr_group_init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
                                              static_cast<std::size_t>(calib.n_dets), fill_value);
             corr_group_id_v.putVar(corr_group_init.data());
 
@@ -1863,7 +1940,7 @@ void Engine::create_tod_files() {
                 netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, corr_nw_dims);
                 v.putAtt("units", "N/A");
                 v.putAtt("comment", comment);
-                std::vector<int> init(static_cast<std::size_t>(n_tod_output_scans) *
+                std::vector<int> init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
                                       static_cast<std::size_t>(calib.n_nws), fill_value);
                 v.putVar(init.data());
             };
@@ -1895,7 +1972,7 @@ void Engine::create_tod_files() {
                 netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, wcorr_dims);
                 v.putAtt("units", "N/A");
                 v.putAtt("comment", comment);
-                std::vector<double> init(static_cast<std::size_t>(n_tod_output_scans) *
+                std::vector<double> init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
                                          static_cast<std::size_t>(calib.n_nws), fill_double);
                 v.putVar(init.data());
             };
@@ -1903,7 +1980,7 @@ void Engine::create_tod_files() {
                 netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, wcorr_dims);
                 v.putAtt("units", "N/A");
                 v.putAtt("comment", comment);
-                std::vector<int> init(static_cast<std::size_t>(n_tod_output_scans) *
+                std::vector<int> init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
                                       static_cast<std::size_t>(calib.n_nws), fill_int);
                 v.putVar(init.data());
             };
@@ -2006,9 +2083,13 @@ void Engine::cli_summary() {
     logger->info("estimated size of all maps {} GB", mb_size_total);
     logger->info("number of scans: {}",telescope.scan_indices.cols());
     if (run_tod_output) {
-        logger->info("TOD output scans: {}", n_tod_output_scans);
         if (tod_output_type == "rtc" || tod_output_type == "both") {
+            logger->info("RTC TOD output scans: {}", n_tod_output_scans_rtc);
             logger->info("RTC TOD output mode: {}", rtcproc.tod_output_mini ? "mini" : "full");
+        }
+        if (tod_output_type == "ptc" || tod_output_type == "both") {
+            logger->info("PTC TOD output scans: {}", n_tod_output_scans_ptc);
+            logger->info("PTC TOD output mode: {}", ptcproc.tod_output_mini ? "mini" : "full");
         }
     }
 

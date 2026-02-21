@@ -57,10 +57,9 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
     // get roach indices from raw data files
     for (Eigen::Index i=0; i<raw_filenames.size(); ++i) {
         netCDF::NcFile fo(raw_filenames[i], netCDF::NcFile::read);
-        auto vars = fo.getVars();
         // get roach index
         int roach_index;
-        vars.find("Header.Toltec.RoachIndex")->second.getVar(&roach_index);
+        fo.getVar("Header.Toltec.RoachIndex").getVar(&roach_index);
         roach_indices.push_back(roach_index);
         fo.close();
     }
@@ -114,7 +113,6 @@ void Calib::get_hwpr(const std::string &filepath, bool sim_obs) {
     try {
         // get hwp file
         NcFile fo(filepath, NcFile::read, NcFile::classic);
-        auto vars = fo.getVars();
 
         // variable for whether or not hwpr is installed
         std::string hwpr_install_v;
@@ -128,15 +126,15 @@ void Calib::get_hwpr(const std::string &filepath, bool sim_obs) {
         }
 
         // check if hwpr is enabled
-        vars.find(hwpr_install_v)->second.getVar(&run_hwpr);
+        fo.getVar(hwpr_install_v).getVar(&run_hwpr);
 
         // if not enabled or running
         if (run_hwpr) {
             // get hwpr signal
-            Eigen::Index n_pts = vars.find("Data.Hwp.")->second.getDim(0).getSize();
+            Eigen::Index n_pts = fo.getVar("Data.Hwp.").getDim(0).getSize();
             hwpr_angle.resize(n_pts);
             // hwpr signal
-            vars.find("Data.Hwp.")->second.getVar(hwpr_angle.data());
+            fo.getVar("Data.Hwp.").getVar(hwpr_angle.data());
 
             // if real data
             if (!sim_obs) {
@@ -144,16 +142,16 @@ void Calib::get_hwpr(const std::string &filepath, bool sim_obs) {
                 hwpr_ts.resize(n_pts,6);
 
                 // timing for hwpr (temporary)
-                vars.find("Data.Hwp.Ts")->second.getVar(hwpr_ts.data());
+                fo.getVar("Data.Hwp.Ts").getVar(hwpr_ts.data());
                 hwpr_ts.transposeInPlace();
 
                 // UT time for hwpr
-                Eigen::Index recvt_n_pts = vars.find("Data.Hwp.Uts")->second.getDim(0).getSize();
+                Eigen::Index recvt_n_pts = fo.getVar("Data.Hwp.Uts").getDim(0).getSize();
                 hwpr_recvt.resize(recvt_n_pts);
-                vars.find("Data.Hwp.Uts")->second.getVar(hwpr_recvt.data());
+                fo.getVar("Data.Hwp.Uts").getVar(hwpr_recvt.data());
 
                 // fpga frequency
-                vars.find("Header.Toltec.FpgaFreq")->second.getVar(&hwpr_fpga_freq);
+                fo.getVar("Header.Toltec.FpgaFreq").getVar(&hwpr_fpga_freq);
             }
         }
 

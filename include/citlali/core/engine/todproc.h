@@ -152,15 +152,14 @@ void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
         try {
             // load data file
             NcFile fo(data_item.filepath(), NcFile::read);
-            auto vars = fo.getVars();
 
             // get the interface
             auto interface_id = std::stoi(data_item.interface().substr(6));
             // add the current file's number of dets to the total
-            n_dets += vars.find("Data.Toltec.Is")->second.getDim(1).getSize();
+            n_dets += fo.getVar("Data.Toltec.Is").getDim(1).getSize();
 
             // get the number of dets in file
-            dets.push_back(vars.find("Data.Toltec.Is")->second.getDim(1).getSize());
+            dets.push_back(fo.getVar("Data.Toltec.Is").getDim(1).getSize());
             // get the nw from interface
             nws.push_back(interface_id);
             // get the array from the interface
@@ -223,21 +222,20 @@ void TimeOrderedDataProc<EngineType>::get_tone_freqs_from_files(const RawObs &ra
         try {
             // load data file
             NcFile fo(data_item.filepath(), NcFile::read);
-            auto vars = fo.getVars();
 
             // get the interface
             auto interface_id = std::stoi(data_item.interface().substr(6));
 
             // dimension of tone freqs is (n_sweeps, n_tones)
-            Eigen::Index n_sweeps = vars.find("Header.Toltec.ToneFreq")->second.getDim(0).getSize();
+            Eigen::Index n_sweeps = fo.getVar("Header.Toltec.ToneFreq").getDim(0).getSize();
 
             // get local oscillator frequency
             double lo_freq;
-            vars.find("Header.Toltec.LoCenterFreq")->second.getVar(&lo_freq);
+            fo.getVar("Header.Toltec.LoCenterFreq").getVar(&lo_freq);
 
             // get tone_freqs for interface
-            tone_freqs[interface_id].resize(vars.find("Header.Toltec.ToneFreq")->second.getDim(1).getSize(), n_sweeps);
-            vars.find("Header.Toltec.ToneFreq")->second.getVar(tone_freqs[interface_id].data());
+            tone_freqs[interface_id].resize(fo.getVar("Header.Toltec.ToneFreq").getDim(1).getSize(), n_sweeps);
+            fo.getVar("Header.Toltec.ToneFreq").getVar(tone_freqs[interface_id].data());
 
             // add local oscillator freq
             tone_freqs[interface_id] = tone_freqs[interface_id].array() + lo_freq;
@@ -331,17 +329,16 @@ void TimeOrderedDataProc<EngineType>::get_adc_snap_from_files(const RawObs &rawo
         try {
             // load data file
             NcFile fo(data_item.filepath(), NcFile::read);
-            auto vars = fo.getVars();
 
             // dimension 0 of adc data
-            Eigen::Index adcSnapDim = vars.find("Header.Toltec.AdcSnapData")->second.getDim(0).getSize();
+            Eigen::Index adcSnapDim = fo.getVar("Header.Toltec.AdcSnapData").getDim(0).getSize();
             // dimension 1 of adc data
-            Eigen::Index adcSnapDataDim = vars.find("Header.Toltec.AdcSnapData")->second.getDim(1).getSize();
+            Eigen::Index adcSnapDataDim = fo.getVar("Header.Toltec.AdcSnapData").getDim(1).getSize();
 
             // matrix to hold adc data for current file
             Eigen::Matrix<short,Eigen::Dynamic, Eigen::Dynamic> adcsnap(adcSnapDataDim,adcSnapDim);
             // load adc data
-            vars.find("Header.Toltec.AdcSnapData")->second.getVar(adcsnap.data());
+            fo.getVar("Header.Toltec.AdcSnapData").getVar(adcsnap.data());
             // append to vector of adc data
             engine().diagnostics.adc_snap_data.push_back(adcsnap);
 
@@ -425,9 +422,8 @@ void TimeOrderedDataProc<EngineType>::check_inputs(const RawObs &rawobs) {
         try {
             // load data file
             NcFile fo(data_item.filepath(), NcFile::read);
-            auto vars = fo.getVars();
             // get number of dets from data and add to global value
-            n_dets += vars.find("Data.Toltec.Is")->second.getDim(1).getSize();
+            n_dets += fo.getVar("Data.Toltec.Is").getDim(1).getSize();
 
             fo.close();
 
@@ -481,15 +477,14 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
         try {
             // load data file
             NcFile fo(data_item.filepath(), NcFile::read);
-            auto vars = fo.getVars();
 
             // get roach index for offsets
             int roach_index;
-            vars.find("Header.Toltec.RoachIndex")->second.getVar(&roach_index);
+            fo.getVar("Header.Toltec.RoachIndex").getVar(&roach_index);
 
             // get sample rate
             double fsmp_roach;
-            vars.find("Header.Toltec.SampleFreq")->second.getVar(&fsmp_roach);
+            fo.getVar("Header.Toltec.SampleFreq").getVar(&fsmp_roach);
 
             // check if sample rate is the same and exit if not
             if (fsmp!=-1 && fsmp_roach!=fsmp) {
@@ -501,12 +496,12 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
             }
 
             // get dimensions for time matrix
-            Eigen::Index n_pts = vars.find("Data.Toltec.Ts")->second.getDim(0).getSize();
-            Eigen::Index n_time = vars.find("Data.Toltec.Ts")->second.getDim(1).getSize();
+            Eigen::Index n_pts = fo.getVar("Data.Toltec.Ts").getDim(0).getSize();
+            Eigen::Index n_time = fo.getVar("Data.Toltec.Ts").getDim(1).getSize();
 
             // get time matrix
             Eigen::MatrixXi ts(n_time,n_pts);
-            vars.find("Data.Toltec.Ts")->second.getVar(ts.data());
+            fo.getVar("Data.Toltec.Ts").getVar(ts.data());
 
             // transpose due to row-major order
             ts.transposeInPlace();
@@ -524,7 +519,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
 
             // get fpga frequency
             double fpga_freq;
-            vars.find("Header.Toltec.FpgaFreq")->second.getVar(&fpga_freq);
+            fo.getVar("Header.Toltec.FpgaFreq").getVar(&fpga_freq);
 
             // ClockTime (sec)
             auto sec0 = ts.cast <double> ().col(0);
@@ -739,13 +734,12 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
             const RawObs::DataItem &data_item = rawobs.kidsdata()[i];
             // load data file
             NcFile fo(data_item.filepath(), NcFile::read);
-            auto vars = fo.getVars();
 
             // get roach sample rate and ensure it is consistent across networks
-            vars.find("Header.Toltec.SampleFreq")->second.getVar(&f_smp_roach);
+            fo.getVar("Header.Toltec.SampleFreq").getVar(&f_smp_roach);
             if (fsmp_ref != -1.0 && f_smp_roach != fsmp_ref) {
                 int roach_index_mismatch = -1;
-                vars.find("Header.Toltec.RoachIndex")->second.getVar(&roach_index_mismatch);
+                fo.getVar("Header.Toltec.RoachIndex").getVar(&roach_index_mismatch);
                 logger->error("mismatched sample rate in toltec{} ({} vs reference {})",
                               roach_index_mismatch, f_smp_roach, fsmp_ref);
                 std::exit(EXIT_FAILURE);
@@ -754,21 +748,21 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
 
             // get roach index for offsets
             int roach_index;
-            vars.find("Header.Toltec.RoachIndex")->second.getVar(&roach_index);
+            fo.getVar("Header.Toltec.RoachIndex").getVar(&roach_index);
             nw_ids[i] = roach_index;
 
             // get dimensions for time matrix
-            Eigen::Index n_pts = vars.find("Data.Toltec.Ts")->second.getDim(0).getSize();
-            Eigen::Index n_times = vars.find("Data.Toltec.Ts")->second.getDim(1).getSize();
+            Eigen::Index n_pts = fo.getVar("Data.Toltec.Ts").getDim(0).getSize();
+            Eigen::Index n_times = fo.getVar("Data.Toltec.Ts").getDim(1).getSize();
 
             // get time matrix
             //Eigen::MatrixXi ts(n_times, n_pts);
             Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> ts(n_pts, n_times);
-            vars.find("Data.Toltec.Ts")->second.getVar(ts.data());
+            fo.getVar("Data.Toltec.Ts").getVar(ts.data());
 
             // get fpga frequency
             double fpga_freq;
-            vars.find("Header.Toltec.FpgaFreq")->second.getVar(&fpga_freq);
+            fo.getVar("Header.Toltec.FpgaFreq").getVar(&fpga_freq);
 
             // cast to double
             Eigen::MatrixXd ts_double = ts.cast<double>();

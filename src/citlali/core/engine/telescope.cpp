@@ -16,11 +16,10 @@ void Telescope::get_tel_data(std::string &filepath) {
     try {
         // get telescope file
         NcFile fo(filepath, NcFile::read, NcFile::classic);
-        auto vars = fo.getVars();
 
         // check if simulation job key is found.
         try {
-            vars.find("Header.Sim.Jobkey")->second.getVar(&sim_job_key);
+            fo.getVar("Header.Sim.Jobkey").getVar(&sim_job_key);
             logger->warn("found Header.Sim.Jobkey");
             sim_obs = true;
         } catch (NcException &e) {
@@ -31,7 +30,7 @@ void Telescope::get_tel_data(std::string &filepath) {
         // get obs goal
         if (!sim_obs) {
             char obs_goal_char [129];
-            vars.find("Header.Dcs.ObsGoal")->second.getVar(&obs_goal_char);
+            fo.getVar("Header.Dcs.ObsGoal").getVar(&obs_goal_char);
             obs_goal_char[128] = '\0';
             obs_goal = std::string(obs_goal_char);
             std::string::iterator end_pos = std::remove(obs_goal.begin(), obs_goal.end(), ' ');
@@ -41,7 +40,7 @@ void Telescope::get_tel_data(std::string &filepath) {
         // get map pattern
         char obs_pgm_char [129];
         // get mapping pattern
-        vars.find("Header.Dcs.ObsPgm")->second.getVar(&obs_pgm_char);
+        fo.getVar("Header.Dcs.ObsPgm").getVar(&obs_pgm_char);
         obs_pgm_char[128] = '\0';
         obs_pgm = std::string(obs_pgm_char);
         // try and remove end characters
@@ -49,11 +48,11 @@ void Telescope::get_tel_data(std::string &filepath) {
         obs_pgm.erase(end_pos, obs_pgm.end());
 
         if (obs_pgm=="Map") {
-            vars.find("Header.Map.ExecMode")->second.getVar(&exec_mode);
+            fo.getVar("Header.Map.ExecMode").getVar(&exec_mode);
 
             char map_coord_char [129];
             // get mapping pattern
-            vars.find("Header.Map.MapCoord")->second.getVar(&map_coord_char);
+            fo.getVar("Header.Map.MapCoord").getVar(&map_coord_char);
             map_coord_char[128] = '\0';
             map_coord = std::string(map_coord_char);
             // try and remove end characters
@@ -72,7 +71,7 @@ void Telescope::get_tel_data(std::string &filepath) {
 
         // get source name
         char source_name_char [129];
-        vars.find("Header.Source.SourceName")->second.getVar(&source_name_char);
+        fo.getVar("Header.Source.SourceName").getVar(&source_name_char);
         source_name_char[128] = '\0';
         source_name = std::string(source_name_char);
         // try and remove end characters
@@ -82,7 +81,7 @@ void Telescope::get_tel_data(std::string &filepath) {
         // get project id
         if (!sim_obs) {
             char project_id_name_char [129];
-            vars.find("Header.Dcs.ProjectId")->second.getVar(&project_id_name_char);
+            fo.getVar("Header.Dcs.ProjectId").getVar(&project_id_name_char);
             project_id_name_char[128] = '\0';
             project_id = std::string(project_id_name_char);
             // try and remove end characters
@@ -97,10 +96,10 @@ void Telescope::get_tel_data(std::string &filepath) {
         for (const auto& pair : tel_data_keys) {
             try {
                 logger->info("tel_data key {}",pair.first);
-                Eigen::Index n_pts = vars.find(pair.first)->second.getDim(0).getSize();
+                Eigen::Index n_pts = fo.getVar(pair.first).getDim(0).getSize();
                 tel_data[pair.second].resize(n_pts);
                 Eigen::VectorXd data_temp(n_pts);
-                vars.find(pair.first)->second.getVar(data_temp.data());
+                fo.getVar(pair.first).getVar(data_temp.data());
                 tel_data[pair.second] = data_temp;
 
             } catch (NcException &e) {
@@ -115,11 +114,11 @@ void Telescope::get_tel_data(std::string &filepath) {
             try {
                 // try to get dimensions, otherwise keep n_pts at 1
                 try {
-                    n_pts = vars.find(pair.first)->second.getDim(0).getSize();
+                    n_pts = fo.getVar(pair.first).getDim(0).getSize();
                 } catch(...) {}
 
                 Eigen::VectorXd header_temp(n_pts);
-                vars.find(pair.first)->second.getVar(header_temp.data());
+                fo.getVar(pair.first).getVar(header_temp.data());
                 tel_header[pair.second] = header_temp;
 
             } catch (NcException &e) {
