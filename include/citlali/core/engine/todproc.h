@@ -1268,10 +1268,12 @@ void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &m
         omb.n_cols = (omb.wcs.naxis[0] % 2 == 0) ? omb.wcs.naxis[0] + 1 : omb.wcs.naxis[0];
     }
 
+    const double omb_row_center = (omb.n_rows - 1) / 2.0;
+    const double omb_col_center = (omb.n_cols - 1) / 2.0;
     Eigen::VectorXd rows_tan_vec = Eigen::VectorXd::LinSpaced(omb.n_rows, 0, omb.n_rows - 1).array() * omb.pixel_size_rad -
-                                   (omb.n_rows / 2.0) * omb.pixel_size_rad;
+                                   omb_row_center * omb.pixel_size_rad;
     Eigen::VectorXd cols_tan_vec = Eigen::VectorXd::LinSpaced(omb.n_cols, 0, omb.n_cols - 1).array() * omb.pixel_size_rad -
-                                   (omb.n_cols / 2.0) * omb.pixel_size_rad;
+                                   omb_col_center * omb.pixel_size_rad;
 
 
     // push back map sizes and coordinates
@@ -1304,8 +1306,9 @@ void TimeOrderedDataProc<EngineType>::calc_cmb_size(std::vector<map_coord_t> &ma
         int max_pix = static_cast<int>(ceil(abs(max_dim / engine().cmb.pixel_size_rad)));
 
         int n_dim = 2 * std::max(min_pix, max_pix) + 1;
+        const double dim_center = (n_dim - 1) / 2.0;
         Eigen::VectorXd dim_vec = Eigen::VectorXd::LinSpaced(n_dim, 0, n_dim - 1)
-                                          .array() * engine().cmb.pixel_size_rad - (n_dim / 2.0) * engine().cmb.pixel_size_rad;
+                                          .array() * engine().cmb.pixel_size_rad - dim_center * engine().cmb.pixel_size_rad;
 
         return std::make_tuple(n_dim, std::move(dim_vec));
     };

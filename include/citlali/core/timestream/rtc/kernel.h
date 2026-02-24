@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cmath>
 #include <string>
 
 #include <boost/math/special_functions/bessel.hpp>
@@ -168,6 +169,7 @@ void Kernel::create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, st
     Eigen::Index n_pts = in.scans.data.rows();
 
     in.kernel.data.resize(n_pts,n_dets);
+    in.kernel.data.setZero();
 
     double fwhm = fwhm_rad;
 
@@ -207,6 +209,7 @@ void Kernel::create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &i
     Eigen::Index n_pts = in.scans.data.rows();
 
     in.kernel.data.resize(n_pts,n_dets);
+    in.kernel.data.setZero();
 
     Eigen::Index map_index = 0;
 
@@ -221,13 +224,15 @@ void Kernel::create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &i
         }
 
         // get map buffer row and col indices for lat and lon vectors
-        Eigen::VectorXd irows = lat.array()/pixel_size_rad + (images[map_index].rows())/2.;
-        Eigen::VectorXd icols = lon.array()/pixel_size_rad + (images[map_index].cols())/2.;
+        const double row_center = (images[map_index].rows() - 1) / 2.0;
+        const double col_center = (images[map_index].cols() - 1) / 2.0;
+        Eigen::VectorXd irows = lat.array()/pixel_size_rad + row_center;
+        Eigen::VectorXd icols = lon.array()/pixel_size_rad + col_center;
 
         for (Eigen::Index j = 0; j<n_pts; ++j) {
             // row and col pixel for kernel image
-            Eigen::Index ir = irows(j);
-            Eigen::Index ic = icols(j);
+            Eigen::Index ir = static_cast<Eigen::Index>(std::llround(irows(j)));
+            Eigen::Index ic = static_cast<Eigen::Index>(std::llround(icols(j)));
 
             // check if current sample is on the image and add to the timestream
             if ((ir >= 0) && (ir < images[map_index].rows()) && (ic >= 0) && (ic < images[map_index].cols())) {

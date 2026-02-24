@@ -161,8 +161,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[])
                     // Get telescope pointings for scan (move to Eigen::Maps to save
                     // memory and time)
                     if (std::strcmp("RaDec", maptype.c_str()) == 0) {
-                        rtc.telLat.data = LC.Data.telMetaData["TelRaPhys"].segment(si, scanlength);
-                        rtc.telLon.data = LC.Data.telMetaData["TelDecPhys"].segment(si, scanlength);
+                        rtc.telLat.data = LC.Data.telMetaData["TelDecPhys"].segment(si, scanlength);
+                        rtc.telLon.data = LC.Data.telMetaData["TelRaPhys"].segment(si, scanlength);
                     }
 
                     else if (std::strcmp("AzEl", maptype.c_str()) == 0) {

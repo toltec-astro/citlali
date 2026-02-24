@@ -39,17 +39,8 @@ auto calc_det_pointing(tel_data_t &tel_data, double az_off, double el_off,
         lat = (rot_az_off.array()*sin(par_ang.array()) + rot_alt_off.array()*cos(par_ang.array()))*ASEC_TO_RAD
               + tel_data["dec_phys"].array();
         // ra
-        // scale RA offsets with absolute declination (TelDec), not tangent-plane dec_phys.
-        Eigen::ArrayXd cos_dec;
-        auto teldec_it = tel_data.find("TelDec");
-        if (teldec_it != tel_data.end() &&
-            teldec_it->second.size() == tel_data["ra_phys"].size()) {
-            cos_dec = teldec_it->second.array().cos();
-        }
-        else {
-            cos_dec = tel_data["dec_phys"].array().cos();
-        }
-        lon = ((-rot_az_off.array()*cos(par_ang.array()) + rot_alt_off.array()*sin(par_ang.array()))*cos_dec)*ASEC_TO_RAD
+        // ra_phys is already the tangent-plane x coordinate.
+        lon = (-rot_az_off.array()*cos(par_ang.array()) + rot_alt_off.array()*sin(par_ang.array()))*ASEC_TO_RAD
               + tel_data["ra_phys"].array();
     }
 
@@ -103,22 +94,22 @@ auto tangent_to_abs(Eigen::DenseBase<Derived>& lat, Eigen::DenseBase<Derived>& l
     // lat/lon = dec/ra = y/x (map axes)
     Eigen::VectorXd abs_lat(n_pts), abs_lon(n_pts);
     for (Eigen::Index i=0; i<n_pts; ++i) {
-        double rho = sqrt(pow(lat(i),2) + pow(lon(i),2));
-        double c = atan(rho);
-        if (c == 0.) {
-            abs_lat(i) = lat(i);
-            abs_lon(i) = lon(i);
+        double rho = std::hypot(lat(i), lon(i));
+        if (rho == 0.) {
+            abs_lat(i) = cdec;
+            abs_lon(i) = cra;
         }
         else {
+            double c = atan(rho);
             double ccwhn0 = cos(c);
             double scwhn0 = sin(c);
             double ccdec = cos(cdec);
             double scdec = sin(cdec);
-            double a1, a2;
+            double a1;
             a1 = ccwhn0*scdec + lat(i)*scwhn0*ccdec/rho;
             abs_lat(i) = asin(a1);
-            a2 = lon(i)*scwhn0/(rho*ccdec*ccwhn0 - lat(i)*scdec*scwhn0);
-            abs_lon(i) = cra + atan(a2);
+            abs_lon(i) = cra + atan2(lon(i)*scwhn0,
+                                     (rho*ccdec*ccwhn0 - lat(i)*scdec*scwhn0));
         }
     }
     return std::tuple<Eigen::VectorXd, Eigen::VectorXd>{abs_lat,abs_lon};

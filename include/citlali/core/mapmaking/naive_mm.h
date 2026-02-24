@@ -227,14 +227,14 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
             }
 
             // get map buffer row and col indices for lat and lon vectors
-            Eigen::VectorXd omb_irow = lat.array()/omb.pixel_size_rad + (omb.n_rows)/2.;
-            Eigen::VectorXd omb_icol = lon.array()/omb.pixel_size_rad + (omb.n_cols)/2.;
+            Eigen::VectorXd omb_irow = lat.array()/omb.pixel_size_rad + (omb.n_rows - 1)/2.;
+            Eigen::VectorXd omb_icol = lon.array()/omb.pixel_size_rad + (omb.n_cols - 1)/2.;
 
             Eigen::VectorXd cmb_irow, cmb_icol;
             if (use_cmb || (run_polarization && !cmb.signal.empty())) {
                 // get coadded map buffer row and col indices for lat and lon vectors
-                cmb_irow = lat.array()/cmb.pixel_size_rad + (cmb.n_rows)/2.;
-                cmb_icol = lon.array()/cmb.pixel_size_rad + (cmb.n_cols)/2.;
+                cmb_irow = lat.array()/cmb.pixel_size_rad + (cmb.n_rows - 1)/2.;
+                cmb_icol = lon.array()/cmb.pixel_size_rad + (cmb.n_cols - 1)/2.;
             }
 
             // loop through the samples
@@ -537,14 +537,14 @@ void NaiveMapmaker::populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::
             }
 
             // get map buffer row and col indices for lat and lon vectors
-            Eigen::VectorXd omb_irow = lat.array()/omb.pixel_size_rad + (omb.n_rows)/2.;
-            Eigen::VectorXd omb_icol = lon.array()/omb.pixel_size_rad + (omb.n_cols)/2.;
+            Eigen::VectorXd omb_irow = lat.array()/omb.pixel_size_rad + (omb.n_rows - 1)/2.;
+            Eigen::VectorXd omb_icol = lon.array()/omb.pixel_size_rad + (omb.n_cols - 1)/2.;
 
             Eigen::VectorXd cmb_irow, cmb_icol;
             if (use_cmb || (run_polarization && !cmb.signal.empty())) {
                 // get coadded map buffer row and col indices for lat and lon vectors
-                cmb_irow = lat.array()/cmb.pixel_size_rad + (cmb.n_rows)/2.;
-                cmb_icol = lon.array()/cmb.pixel_size_rad + (cmb.n_cols)/2.;
+                cmb_irow = lat.array()/cmb.pixel_size_rad + (cmb.n_rows - 1)/2.;
+                cmb_icol = lon.array()/cmb.pixel_size_rad + (cmb.n_cols - 1)/2.;
             }
 
             // loop through the samples

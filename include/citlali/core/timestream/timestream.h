@@ -941,8 +941,8 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
         }
     }
 
-    double expected_row = tod_mb.n_rows / 2.0;
-    double expected_col = tod_mb.n_cols / 2.0;
+    double expected_row = (tod_mb.n_rows - 1) / 2.0;
+    double expected_col = (tod_mb.n_cols - 1) / 2.0;
     if (std::isfinite(tod_mb.wcs.crpix[0]) && tod_mb.wcs.crpix[0] > 0.0 &&
         std::abs(tod_mb.wcs.crpix[0] - expected_col) > 1.0) {
         logger->error("fruit loops map CRPIX1 ({}) does not match expected map center ({})",
@@ -1067,8 +1067,8 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
     bool warned_rms = false;
     bool warned_flux = false;
 
-    double row_offset = (mb.n_rows)/2.;
-    double col_offset = (mb.n_cols)/2.;
+    double row_offset = (mb.n_rows - 1)/2.0;
+    double col_offset = (mb.n_cols - 1)/2.0;
 
     // loop through detectors
     for (Eigen::Index i=0; i<n_dets; ++i) {
@@ -1359,8 +1359,8 @@ void TCProc::add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &in, Eigen::DenseBas
         }
 
         // rescale offsets and stddev to on-sky units
-        off_lat = pixel_size_rad*(off_lat - (n_rows)/2);
-        off_lon = pixel_size_rad*(off_lon - (n_cols)/2);
+        off_lat = pixel_size_rad*(off_lat - (n_rows - 1)/2.0);
+        off_lon = pixel_size_rad*(off_lon - (n_cols - 1)/2.0);
 
         // convert to on-sky units
         sigma_lon = pixel_size_rad*sigma;

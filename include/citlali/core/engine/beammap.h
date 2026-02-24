@@ -533,8 +533,8 @@ void Beammap::loop_pipeline() {
     if (map_grouping=="detector") {
         // rescale fit params from pixel to on-sky units
         calib.apt["amp"] = params.col(0);
-        calib.apt["x_t"] = RAD_TO_ASEC*omb.pixel_size_rad*(params.col(1).array() - (omb.n_cols)/2);
-        calib.apt["y_t"] = RAD_TO_ASEC*omb.pixel_size_rad*(params.col(2).array() - (omb.n_rows)/2);
+        calib.apt["x_t"] = RAD_TO_ASEC*omb.pixel_size_rad*(params.col(1).array() - (omb.n_cols - 1)/2.0);
+        calib.apt["y_t"] = RAD_TO_ASEC*omb.pixel_size_rad*(params.col(2).array() - (omb.n_rows - 1)/2.0);
         calib.apt["a_fwhm"] = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(params.col(3));
         calib.apt["b_fwhm"] = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(params.col(4));
         calib.apt["angle"] = params.col(5);
@@ -1342,13 +1342,13 @@ void Beammap::process_apt() {
             const auto &az = ptc.tel_data.data.at("az_phys");
             const auto &el = ptc.tel_data.data.at("TelElAct");
             for (Eigen::Index k = 0; k < alt.size(); ++k) {
-                double row = alt(k) / omb.pixel_size_rad + (omb.n_rows) / 2.0;
-                double col = az(k) / omb.pixel_size_rad + (omb.n_cols) / 2.0;
-                Eigen::Index ir = static_cast<Eigen::Index>(row);
-                Eigen::Index ic = static_cast<Eigen::Index>(col);
+                double row = alt(k) / omb.pixel_size_rad + (omb.n_rows - 1) / 2.0;
+                double col = az(k) / omb.pixel_size_rad + (omb.n_cols - 1) / 2.0;
+                Eigen::Index ir = static_cast<Eigen::Index>(std::llround(row));
+                Eigen::Index ic = static_cast<Eigen::Index>(std::llround(col));
                 if ((ir >= 0) && (ir < omb.n_rows) && (ic >= 0) && (ic < omb.n_cols)) {
-                    double lat_center = (static_cast<double>(ir) - (omb.n_rows) / 2.0) * omb.pixel_size_rad;
-                    double lon_center = (static_cast<double>(ic) - (omb.n_cols) / 2.0) * omb.pixel_size_rad;
+                    double lat_center = (static_cast<double>(ir) - (omb.n_rows - 1) / 2.0) * omb.pixel_size_rad;
+                    double lon_center = (static_cast<double>(ic) - (omb.n_cols - 1) / 2.0) * omb.pixel_size_rad;
                     double dlat = alt(k) - lat_center;
                     double dlon = az(k) - lon_center;
                     double dist2 = dlat * dlat + dlon * dlon;
@@ -1361,10 +1361,10 @@ void Beammap::process_apt() {
         }
 
         for (Eigen::Index i = 0; i < calib.n_dets; ++i) {
-            double row = (calib.apt["y_t_raw"](i) * ASEC_TO_RAD) / omb.pixel_size_rad + (omb.n_rows) / 2.0;
-            double col = (calib.apt["x_t_raw"](i) * ASEC_TO_RAD) / omb.pixel_size_rad + (omb.n_cols) / 2.0;
-            Eigen::Index ir = static_cast<Eigen::Index>(row);
-            Eigen::Index ic = static_cast<Eigen::Index>(col);
+            double row = (calib.apt["y_t_raw"](i) * ASEC_TO_RAD) / omb.pixel_size_rad + (omb.n_rows - 1) / 2.0;
+            double col = (calib.apt["x_t_raw"](i) * ASEC_TO_RAD) / omb.pixel_size_rad + (omb.n_cols - 1) / 2.0;
+            Eigen::Index ir = static_cast<Eigen::Index>(std::llround(row));
+            Eigen::Index ic = static_cast<Eigen::Index>(std::llround(col));
             if ((ir >= 0) && (ir < omb.n_rows) && (ic >= 0) && (ic < omb.n_cols)) {
                 double elev = elev_best(ir, ic);
                 if (std::isfinite(elev)) {

@@ -448,7 +448,7 @@ void MapBuffer::calc_median_rms_annulus(double inner_radius_rad, double outer_ra
     // calculate distance to each pixel from center (same for all maps)
     for (Eigen::Index i=0; i<n_rows; ++i) {
         for (Eigen::Index j=0; j<n_cols; ++j) {
-            dist(i,j) = sqrt(pow(rows_tan_vec(i) + 0.5*pixel_size_rad,2) + pow(cols_tan_vec(j) + 0.5*pixel_size_rad,2));
+            dist(i,j) = sqrt(pow(rows_tan_vec(i),2) + pow(cols_tan_vec(j),2));
         }
     }
 

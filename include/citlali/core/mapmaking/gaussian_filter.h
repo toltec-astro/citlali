@@ -70,7 +70,7 @@ void GaussianFilter::make_gaussian_template(MB &mb, const double template_fwhm_r
     // calculate distance
     for (Eigen::Index i=0; i<n_rows; ++i) {
         for (Eigen::Index j=0; j<n_cols; ++j) {
-            dist(i,j) = sqrt(pow(mb.rows_tan_vec(i)+0.5*mb.pixel_size_rad,2) + pow(mb.cols_tan_vec(j)+0.5*mb.pixel_size_rad,2));
+            dist(i,j) = sqrt(pow(mb.rows_tan_vec(i),2) + pow(mb.cols_tan_vec(j),2));
         }
     }
 

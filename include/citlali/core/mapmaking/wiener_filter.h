@@ -175,7 +175,7 @@ void WienerFilter::make_gaussian_template(MB &mb, const double template_fwhm_rad
     // calculate distance
     for (Eigen::Index i=0; i<n_rows; ++i) {
         for (Eigen::Index j=0; j<n_cols; ++j) {
-            dist(i,j) = sqrt(pow(mb.rows_tan_vec(i)+0.5*mb.pixel_size_rad,2) + pow(mb.cols_tan_vec(j)+0.5*mb.pixel_size_rad,2));
+            dist(i,j) = sqrt(pow(mb.rows_tan_vec(i),2) + pow(mb.cols_tan_vec(j),2));
         }
     }
 
@@ -204,7 +204,7 @@ void WienerFilter::make_airy_template(MB &mb, const double template_fwhm_rad) {
     // calculate distance
     for (Eigen::Index i=0; i<n_rows; ++i) {
         for (Eigen::Index j=0; j<n_cols; ++j) {
-            dist(i,j) = sqrt(pow(mb.rows_tan_vec(i)+0.5*mb.pixel_size_rad,2) + pow(mb.cols_tan_vec(j)+0.5*mb.pixel_size_rad,2));
+            dist(i,j) = sqrt(pow(mb.rows_tan_vec(i),2) + pow(mb.cols_tan_vec(j),2));
         }
     }
 
@@ -268,7 +268,7 @@ void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_d
     // calculate distance
     for (Eigen::Index i=0; i<n_rows; ++i) {
         for (Eigen::Index j=0; j<n_cols; ++j) {
-            dist(i,j) = sqrt(pow(mb.rows_tan_vec(i)+0.5*mb.pixel_size_rad,2) + pow(mb.cols_tan_vec(j)+0.5*mb.pixel_size_rad,2));
+            dist(i,j) = sqrt(pow(mb.rows_tan_vec(i),2) + pow(mb.cols_tan_vec(j),2));
         }
     }
 
