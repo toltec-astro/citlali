@@ -811,7 +811,12 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                 if (path_str.find(".fits") == std::string::npos) {
                     continue;
                 }
-                if (path_str.find("_noise_citlali.fits") == std::string::npos) {
+                // Accept both raw and filtered noise map filenames.
+                if (path_str.find("_noise") == std::string::npos) {
+                    continue;
+                }
+                if (path_str.size() < 13 ||
+                    path_str.compare(path_str.size() - 13, 13, "_citlali.fits") != 0) {
                     continue;
                 }
                 if (path_str.find(toltec_io.array_name_map[arr]) == std::string::npos) {
@@ -855,6 +860,10 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                 if (arr_it != array_to_index.end()) {
                     median_rms_vec[arr_it->second] = median_rms;
                 }
+            }
+            else {
+                logger->warn("no noise FITS found for array {} in {}; fruit loops S/N gating may be disabled",
+                             toltec_io.array_name_map[arr], noise_filepath);
             }
 
         } catch (const fs::filesystem_error& err) {
@@ -901,6 +910,9 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
 
     if (found_any_rms) {
         tod_mb.median_rms = Eigen::Map<Eigen::VectorXd>(median_rms_vec.data(), median_rms_vec.size());
+    }
+    else {
+        logger->warn("fruit loops did not load MEDRMS from noise maps in {}; S/N gating will be disabled", noise_filepath);
     }
 
     // set dimensions
