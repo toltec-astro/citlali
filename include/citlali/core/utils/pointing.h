@@ -39,8 +39,16 @@ auto calc_det_pointing(tel_data_t &tel_data, double az_off, double el_off,
         lat = (rot_az_off.array()*sin(par_ang.array()) + rot_alt_off.array()*cos(par_ang.array()))*ASEC_TO_RAD
               + tel_data["dec_phys"].array();
         // ra
-        // use per-sample cos(dec) to keep RA offsets on the projected x-axis scale
-        auto cos_dec = tel_data["dec_phys"].array().cos();
+        // scale RA offsets with absolute declination (TelDec), not tangent-plane dec_phys.
+        Eigen::ArrayXd cos_dec;
+        auto teldec_it = tel_data.find("TelDec");
+        if (teldec_it != tel_data.end() &&
+            teldec_it->second.size() == tel_data["ra_phys"].size()) {
+            cos_dec = teldec_it->second.array().cos();
+        }
+        else {
+            cos_dec = tel_data["dec_phys"].array().cos();
+        }
         lon = ((-rot_az_off.array()*cos(par_ang.array()) + rot_alt_off.array()*sin(par_ang.array()))*cos_dec)*ASEC_TO_RAD
               + tel_data["ra_phys"].array();
     }

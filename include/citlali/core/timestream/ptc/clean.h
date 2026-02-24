@@ -907,9 +907,14 @@ auto Cleaner::remove_eig_values(const Eigen::DenseBase<DerivedA> &scans, const E
     logger->debug("removing {} largest eigenvalue(s) grouping={} network={} array={}",
                   limit_index, group_name, nw_index, arr_index);
 
-    // subtract out the desired eigenvectors
-    Eigen::MatrixXd proj = scans.derived() * evecs.derived().leftCols(limit_index);
-    Eigen::MatrixXd cleaned = scans.derived() - proj * evecs.derived().adjoint().topRows(limit_index);
+    // keep flagged samples out of the mode projection and subtraction.
+    Eigen::MatrixXd good = (flags.derived().template cast<double>().array() == 0.0)
+                               .template cast<double>()
+                               .matrix();
+    const auto evecs_cut = evecs.derived().leftCols(limit_index);
+    Eigen::MatrixXd proj = (scans.derived().array() * good.array()).matrix() * evecs_cut;
+    Eigen::MatrixXd model = proj * evecs_cut.adjoint();
+    Eigen::MatrixXd cleaned = scans.derived() - (model.array() * good.array()).matrix();
     if (cleaned_scans.derived().data() == scans.derived().data()) {
         cleaned_scans.derived() = std::move(cleaned);
     }

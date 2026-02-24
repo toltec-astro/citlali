@@ -1,4 +1,7 @@
-// pragma once
+#pragma once
+
+#include <memory>
+#include <mutex>
 
 #include <Eigen/Sparse>
 #include <fftw3.h>
@@ -23,6 +26,7 @@ class MLMapmaker {
 public:
     // get logger
     std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
+    std::unique_ptr<std::mutex> ml_mutex = std::make_unique<std::mutex>();
 
     double tolerance;
     int max_iterations;
@@ -127,31 +131,39 @@ void MLMapmaker::populate_maps_ml(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
         cg.compute(A);
 
         // solve for signal map
-        auto x = cg.solve(b).eval();
-        // populate signal map
-        omb.signal[map_index] += Eigen::Map<Eigen::MatrixXd>(x.data(),omb.n_rows, omb.n_cols);
+        auto signal_x = cg.solve(b).eval();
         logger->info("signal iterations {}",cg.iterations());
         logger->info("signal error {}",cg.error());
-        logger->info("signal[{}] {}",map_index,omb.signal[map_index]);
 
+        Eigen::VectorXd kernel_x;
         if (run_kernel) {
             // solve for kernel map
-            x = cg.solve(b2).eval();
-            // populate kernel map
-            omb.kernel[map_index] += Eigen::Map<Eigen::MatrixXd>(x.data(),omb.n_rows, omb.n_cols);
+            kernel_x = cg.solve(b2).eval();
             logger->info("kernel iterations {}",cg.iterations());
             logger->info("kernel error {}",cg.error());
-            logger->info("kernel[{}] {}",map_index,omb.signal[map_index]);
         }
 
         b2.setOnes();
         // solve for weight map
-        x = cg.solve(b2).eval();
-        // populate weight map
-        omb.weight[map_index] += Eigen::Map<Eigen::MatrixXd>(x.data(),omb.n_rows, omb.n_cols);
+        auto weight_x = cg.solve(b2).eval();
         logger->info("weight iterations {}",cg.iterations());
         logger->info("weight error {}",cg.error());
-        logger->info("weight[{}] {}",map_index,omb.signal[map_index]);
+
+        // protect shared map accumulation when scans are processed concurrently.
+        {
+            std::scoped_lock<std::mutex> lk(*ml_mutex);
+            omb.signal[map_index] += Eigen::Map<const Eigen::MatrixXd>(signal_x.data(),omb.n_rows, omb.n_cols);
+            if (run_kernel) {
+                omb.kernel[map_index] += Eigen::Map<const Eigen::MatrixXd>(kernel_x.data(),omb.n_rows, omb.n_cols);
+            }
+            omb.weight[map_index] += Eigen::Map<const Eigen::MatrixXd>(weight_x.data(),omb.n_rows, omb.n_cols);
+        }
+
+        logger->info("signal[{}] {}",map_index,omb.signal[map_index]);
+        if (run_kernel) {
+            logger->info("kernel[{}] {}",map_index,omb.kernel[map_index]);
+        }
+        logger->info("weight[{}] {}",map_index,omb.weight[map_index]);
     }
 
     // free fftw vectors
