@@ -1498,13 +1498,19 @@ void Engine::add_tod_header(map_buffer_t &mb) {
                     ref_det_index = calib.apt_meta["reference_det"].as<int>();
                 }
                 add_netcdf_var(fo, "BEAMMAP.REF_DET_INDEX", ref_det_index);
-                double ref_x_t = calib.apt["x_t"](beammap_reference_det);
-                double ref_y_t = calib.apt["y_t"](beammap_reference_det);
+                double ref_x_t = -99.0;
+                double ref_y_t = -99.0;
                 if (calib.apt_meta["reference_x_t"]) {
                     ref_x_t = calib.apt_meta["reference_x_t"].as<double>();
                 }
+                else if (ref_det_index >= 0 && ref_det_index < calib.apt["x_t"].size()) {
+                    ref_x_t = calib.apt["x_t"](ref_det_index);
+                }
                 if (calib.apt_meta["reference_y_t"]) {
                     ref_y_t = calib.apt_meta["reference_y_t"].as<double>();
+                }
+                else if (ref_det_index >= 0 && ref_det_index < calib.apt["y_t"].size()) {
+                    ref_y_t = calib.apt["y_t"](ref_det_index);
                 }
                 add_netcdf_var(fo, "BEAMMAP.REF_X_T", ref_x_t);
                 add_netcdf_var(fo, "BEAMMAP.REF_Y_T", ref_y_t);
@@ -2201,7 +2207,7 @@ void Engine::write_map_summary(map_buffer_t &mb) {
     std::map<std::string,int> n_infs;
     n_infs["signal"] = 0;
     n_infs["weight"] = 0;
-    n_nans["kernel"] = 0;
+    n_infs["kernel"] = 0;
     n_infs["coverage"] = 0;
     n_infs["noise"] = 0;
 
@@ -2233,7 +2239,8 @@ void Engine::write_map_summary(map_buffer_t &mb) {
 
         // loop through noise maps and check for nans and infs
         if (!mb.noise.empty()) {
-            for (Eigen::Index j=0; j<mb.noise.size(); ++j) {
+            const Eigen::Index n_noise_maps = mb.noise[i].dimension(2);
+            for (Eigen::Index j=0; j<n_noise_maps; ++j) {
                 Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(mb.noise[i].data() + j * mb.n_rows * mb.n_cols,
                                                                                                mb.n_rows, mb.n_cols);
 
@@ -2442,13 +2449,19 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
                 ref_det_index = calib.apt_meta["reference_det"].as<int>();
             }
             fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_DET_INDEX", ref_det_index, "Beammap Reference det (rotation center)");
-            double ref_x_t = calib.apt["x_t"](beammap_reference_det);
-            double ref_y_t = calib.apt["y_t"](beammap_reference_det);
+            double ref_x_t = -99.0;
+            double ref_y_t = -99.0;
             if (calib.apt_meta["reference_x_t"]) {
                 ref_x_t = calib.apt_meta["reference_x_t"].as<double>();
             }
+            else if (ref_det_index >= 0 && ref_det_index < calib.apt["x_t"].size()) {
+                ref_x_t = calib.apt["x_t"](ref_det_index);
+            }
             if (calib.apt_meta["reference_y_t"]) {
                 ref_y_t = calib.apt_meta["reference_y_t"].as<double>();
+            }
+            else if (ref_det_index >= 0 && ref_det_index < calib.apt["y_t"].size()) {
+                ref_y_t = calib.apt["y_t"](ref_det_index);
             }
             fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_X_T", ref_x_t, "Az rotation center (arcsec)");
             fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_Y_T", ref_y_t, "Alt rotation center (arcsec)");

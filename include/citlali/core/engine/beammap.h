@@ -7,6 +7,7 @@
 #include <limits>
 #include <cmath>
 #include <algorithm>
+#include <atomic>
 #include <mutex>
 #include <condition_variable>
 
@@ -1012,7 +1013,7 @@ void Beammap::set_apt_flags() {
     flag2.setConstant(AptFlags::Good);
 
     // track number of flagged detectors
-    int n_flagged_dets = 0;
+    std::atomic<int> n_flagged_dets{0};
 
     logger->info("flagging detectors");
     // first flag based on fit values and signal-to-noise
@@ -1214,7 +1215,7 @@ void Beammap::set_apt_flags() {
     });
 
     // print number of flagged detectors
-    logger->info("{} detectors were flagged", n_flagged_dets);
+    logger->info("{} detectors were flagged", n_flagged_dets.load());
 
     // calculate fcf
     logger->debug("calculating flux conversion factors");
@@ -1268,7 +1269,7 @@ void Beammap::process_apt() {
 
     // if particular reference detector is requested
     if (beammap_subtract_reference) {
-        if (beammap_reference_det >= 0) {
+        if (beammap_reference_det >= 0 && beammap_reference_det < calib.n_dets) {
             beammap_reference_det_found = beammap_reference_det;
             // set reference x_t and y_t
             ref_det_x_t = calib.apt["x_t"](beammap_reference_det_found);
@@ -1276,6 +1277,10 @@ void Beammap::process_apt() {
         }
         // else use detector closest to the median of selected networks
         else {
+            if (beammap_reference_det >= 0) {
+                logger->warn("configured beammap_reference_det={} is out of range [0, {}); using automatic reference selection",
+                             beammap_reference_det, calib.n_dets);
+            }
             logger->info("finding a reference detector");
             constexpr Eigen::Index min_reference_candidates = 25;
             auto nw_in_set = [](Eigen::Index nw, const std::vector<Eigen::Index> &set) {
@@ -1525,6 +1530,209 @@ void Beammap::output() {
             to_ecsv_from_matrix(apt_filename, apt_table, calib.apt_header_keys, calib.apt_meta);
 
             logger->info("done writing apt table {}.ecsv",apt_filename);
+
+            logger->info("writing beammap fit qc table");
+            std::string fit_qc_filename = apt_filename + "_fit_qc";
+
+            std::vector<std::string> fit_qc_header = {
+                "uid",
+                "array",
+                "nw",
+                "kids_tone",
+                "good_fit",
+                "converged",
+                "converge_iter",
+                "flag",
+                "flag2",
+                "amp",
+                "amp_err",
+                "fit_sig2noise",
+                "map_rms",
+                "map_sig2noise",
+                "n_weight_pos",
+                "x_t_raw",
+                "y_t_raw",
+                "x_t",
+                "y_t",
+                "x_t_derot",
+                "y_t_derot",
+                "a_fwhm",
+                "a_fwhm_err",
+                "b_fwhm",
+                "b_fwhm_err",
+                "angle",
+                "angle_err",
+                "flxscale",
+                "sens"
+            };
+
+            auto apt_or_zero = [&](const std::string &key) -> Eigen::VectorXd {
+                auto it = calib.apt.find(key);
+                if (it != calib.apt.end() && it->second.size() == calib.n_dets) {
+                    return it->second;
+                }
+                return Eigen::VectorXd::Zero(calib.n_dets);
+            };
+            auto get_unit = [&](const std::string &key, const std::string &fallback) {
+                auto it = calib.apt_header_units.find(key);
+                if (it != calib.apt_header_units.end()) {
+                    return it->second;
+                }
+                return fallback;
+            };
+            auto get_description = [&](const std::string &key, const std::string &fallback) {
+                auto it = calib.apt_header_description.find(key);
+                if (it != calib.apt_header_description.end()) {
+                    return it->second;
+                }
+                return fallback;
+            };
+
+            Eigen::VectorXd map_rms(calib.n_dets);
+            Eigen::VectorXd fit_sig2noise(calib.n_dets);
+            Eigen::VectorXd map_sig2noise(calib.n_dets);
+            Eigen::VectorXd n_weight_pos(calib.n_dets);
+            map_rms.setZero();
+            fit_sig2noise.setZero();
+            map_sig2noise.setZero();
+            n_weight_pos.setZero();
+            for (Eigen::Index i = 0; i < calib.n_dets; ++i) {
+                const double amp = params(i, 0);
+                const double amp_err = perrors(i, 0);
+                const double rms = engine_utils::calc_std_dev(omb.signal[i]);
+                const double npos = static_cast<double>((omb.weight[i].array() > 0.0).count());
+                n_weight_pos(i) = npos;
+                if (std::isfinite(rms) && rms > 0.0) {
+                    map_rms(i) = rms;
+                    if (std::isfinite(amp)) {
+                        map_sig2noise(i) = amp / rms;
+                    }
+                }
+                if (std::isfinite(amp) && std::isfinite(amp_err) && amp_err > 0.0) {
+                    fit_sig2noise(i) = amp / amp_err;
+                }
+            }
+
+            Eigen::MatrixXd fit_qc_table(calib.n_dets, fit_qc_header.size());
+            Eigen::Index col = 0;
+            fit_qc_table.col(col++) = apt_or_zero("uid");
+            fit_qc_table.col(col++) = apt_or_zero("array");
+            fit_qc_table.col(col++) = apt_or_zero("nw");
+            fit_qc_table.col(col++) = apt_or_zero("kids_tone");
+            fit_qc_table.col(col++) = good_fits.cast<double>();
+            fit_qc_table.col(col++) = converged.cast<double>();
+            fit_qc_table.col(col++) = converge_iter.cast<double>();
+            fit_qc_table.col(col++) = apt_or_zero("flag");
+            fit_qc_table.col(col++) = flag2.cast<double>();
+            fit_qc_table.col(col++) = apt_or_zero("amp");
+            fit_qc_table.col(col++) = apt_or_zero("amp_err");
+            fit_qc_table.col(col++) = fit_sig2noise;
+            fit_qc_table.col(col++) = map_rms;
+            fit_qc_table.col(col++) = map_sig2noise;
+            fit_qc_table.col(col++) = n_weight_pos;
+            fit_qc_table.col(col++) = apt_or_zero("x_t_raw");
+            fit_qc_table.col(col++) = apt_or_zero("y_t_raw");
+            fit_qc_table.col(col++) = apt_or_zero("x_t");
+            fit_qc_table.col(col++) = apt_or_zero("y_t");
+            fit_qc_table.col(col++) = apt_or_zero("x_t_derot");
+            fit_qc_table.col(col++) = apt_or_zero("y_t_derot");
+            fit_qc_table.col(col++) = apt_or_zero("a_fwhm");
+            fit_qc_table.col(col++) = apt_or_zero("a_fwhm_err");
+            fit_qc_table.col(col++) = apt_or_zero("b_fwhm");
+            fit_qc_table.col(col++) = apt_or_zero("b_fwhm_err");
+            fit_qc_table.col(col++) = apt_or_zero("angle");
+            fit_qc_table.col(col++) = apt_or_zero("angle_err");
+            fit_qc_table.col(col++) = apt_or_zero("flxscale");
+            fit_qc_table.col(col++) = apt_or_zero("sens");
+
+            YAML::Node fit_qc_meta;
+            fit_qc_meta["obsnum"] = obsnum;
+            fit_qc_meta["source"] = telescope.source_name;
+            fit_qc_meta["creation_date"] = engine_utils::current_date_time();
+            fit_qc_meta["date"] = date_obs.back();
+            fit_qc_meta["map_grouping"] = map_grouping;
+            fit_qc_meta["beammap_iter_max"] = beammap_iter_max;
+            fit_qc_meta["beammap_iter_tolerance"] = beammap_iter_tolerance;
+            fit_qc_meta["reference_detector_subtracted"] = beammap_subtract_reference;
+            fit_qc_meta["reference_det"] = beammap_reference_det_found;
+
+            std::map<std::string, std::string> fit_qc_units = {
+                {"uid", "N/A"},
+                {"array", "N/A"},
+                {"nw", "N/A"},
+                {"kids_tone", "N/A"},
+                {"good_fit", "N/A"},
+                {"converged", "N/A"},
+                {"converge_iter", "N/A"},
+                {"flag", "N/A"},
+                {"flag2", "N/A"},
+                {"amp", get_unit("amp", omb.sig_unit)},
+                {"amp_err", get_unit("amp_err", omb.sig_unit)},
+                {"fit_sig2noise", "N/A"},
+                {"map_rms", omb.sig_unit},
+                {"map_sig2noise", "N/A"},
+                {"n_weight_pos", "pix"},
+                {"x_t_raw", get_unit("x_t", "arcsec")},
+                {"y_t_raw", get_unit("y_t", "arcsec")},
+                {"x_t", get_unit("x_t", "arcsec")},
+                {"y_t", get_unit("y_t", "arcsec")},
+                {"x_t_derot", get_unit("x_t", "arcsec")},
+                {"y_t_derot", get_unit("y_t", "arcsec")},
+                {"a_fwhm", get_unit("a_fwhm", "arcsec")},
+                {"a_fwhm_err", get_unit("a_fwhm_err", "arcsec")},
+                {"b_fwhm", get_unit("b_fwhm", "arcsec")},
+                {"b_fwhm_err", get_unit("b_fwhm_err", "arcsec")},
+                {"angle", get_unit("angle", "rad")},
+                {"angle_err", get_unit("angle_err", "rad")},
+                {"flxscale", get_unit("flxscale", "N/A")},
+                {"sens", get_unit("sens", "N/A")}
+            };
+            std::map<std::string, std::string> fit_qc_desc = {
+                {"uid", get_description("uid", "detector uid")},
+                {"array", get_description("array", "array index")},
+                {"nw", get_description("nw", "network index")},
+                {"kids_tone", get_description("kids_tone", "index of tone in network")},
+                {"good_fit", "fit returned a usable solution"},
+                {"converged", "beammap iterative convergence flag"},
+                {"converge_iter", get_description("converge_iter", "beammap convergence iteration")},
+                {"flag", get_description("flag", "detector quality flag")},
+                {"flag2", "bitwise detector quality flag"},
+                {"amp", get_description("amp", "fitted beam amplitude")},
+                {"amp_err", get_description("amp_err", "fitted beam amplitude uncertainty")},
+                {"fit_sig2noise", "fitted amplitude divided by fitted amplitude uncertainty"},
+                {"map_rms", "standard deviation of detector map signal"},
+                {"map_sig2noise", "fitted amplitude divided by detector map rms"},
+                {"n_weight_pos", "number of detector-map pixels with positive weight"},
+                {"x_t_raw", "raw x position before reference subtraction/derotation"},
+                {"y_t_raw", "raw y position before reference subtraction/derotation"},
+                {"x_t", get_description("x_t", "detector x position")},
+                {"y_t", get_description("y_t", "detector y position")},
+                {"x_t_derot", "detector x position after derotation transform"},
+                {"y_t_derot", "detector y position after derotation transform"},
+                {"a_fwhm", get_description("a_fwhm", "fitted major-axis FWHM")},
+                {"a_fwhm_err", get_description("a_fwhm_err", "fitted major-axis FWHM uncertainty")},
+                {"b_fwhm", get_description("b_fwhm", "fitted minor-axis FWHM")},
+                {"b_fwhm_err", get_description("b_fwhm_err", "fitted minor-axis FWHM uncertainty")},
+                {"angle", get_description("angle", "fitted beam angle")},
+                {"angle_err", get_description("angle_err", "fitted beam angle uncertainty")},
+                {"flxscale", get_description("flxscale", "flux conversion factor")},
+                {"sens", get_description("sens", "detector sensitivity")}
+            };
+
+            for (const auto &key: fit_qc_header) {
+                fit_qc_meta[key].push_back("units: " + fit_qc_units[key]);
+                fit_qc_meta[key].push_back(fit_qc_desc[key]);
+            }
+            fit_qc_meta["flag2"].push_back("Good=0");
+            fit_qc_meta["flag2"].push_back("BadFit=1");
+            fit_qc_meta["flag2"].push_back("AzFWHM=2");
+            fit_qc_meta["flag2"].push_back("ElFWHM=3");
+            fit_qc_meta["flag2"].push_back("Sig2Noise=4");
+            fit_qc_meta["flag2"].push_back("Sens=5");
+            fit_qc_meta["flag2"].push_back("Position=6");
+
+            to_ecsv_from_matrix(fit_qc_filename, fit_qc_table, fit_qc_header, fit_qc_meta);
+            logger->info("done writing beammap fit qc table {}.ecsv", fit_qc_filename);
         }
     }
 
