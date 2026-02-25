@@ -61,7 +61,7 @@ void abort_backtrace_handler(int sig) {
     void *frames[128];
     int n = ::backtrace(frames, static_cast<int>(sizeof(frames) / sizeof(frames[0])));
     const char msg[] = "\n[citlali] fatal signal received; stack trace follows:\n";
-    ::write(STDERR_FILENO, msg, sizeof(msg) - 1);
+    static_cast<void>(::write(STDERR_FILENO, msg, sizeof(msg) - 1));
     ::backtrace_symbols_fd(frames, n, STDERR_FILENO);
     ::signal(sig, SIG_DFL);
     ::raise(sig);
@@ -1149,8 +1149,8 @@ int main(int argc, char *argv[]) {
             std::cout << "Invalid argument. Type --help for usage.\n";
             return EXIT_FAILURE;
         }
-    } catch (const CCfits::FitsError &e) {
-        SPDLOG_CRITICAL("Unhandled CCfits::FitsError: {}", e.what());
+    } catch (const CCfits::FitsError &) {
+        SPDLOG_CRITICAL("Unhandled CCfits::FitsError");
         return EXIT_FAILURE;
     } catch (const std::exception &e) {
         SPDLOG_CRITICAL("Unhandled exception: {}", e.what());
