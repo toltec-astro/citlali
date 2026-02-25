@@ -104,16 +104,13 @@ auto mapFitter::ceres_fit(const Model &model,
         problem->SetParameterUpperBound(params.data(), i, limits(i,1));
     }
 
-    // vector to store indices of parameters to keep constant
+    // Keep angle fixed via bounds to avoid local-parameterization ownership issues.
     if (!fit_angle) {
-        std::vector<int> sspv;
-        sspv.push_back(limits.rows()-1);
-        // mark parameter as constant
-        if (sspv.size() > 0 ){
-            ceres::SubsetParameterization *pcssp
-                    = new ceres::SubsetParameterization(limits.rows(), sspv);
-            problem->SetParameterization(params.data(), pcssp);
-        }
+        const int angle_index = static_cast<int>(limits.rows()) - 1;
+        const double angle0 = init_params(angle_index);
+        problem->SetParameterLowerBound(params.data(), angle_index, angle0);
+        problem->SetParameterUpperBound(params.data(), angle_index, angle0);
+        logger->info("ceres_fit angle fixed at {}", angle0);
     }
 
     // apply solver options
@@ -139,9 +136,8 @@ auto mapFitter::ceres_fit(const Model &model,
     if (summary.IsSolutionUsable()) {
         // set covariance options
         Covariance::Options covariance_options;
-        // EIGEN_SPARSE and DENSE_SVD are the slower, but more accurate options
-        covariance_options.sparse_linear_algebra_library_type = ceres::SparseLinearAlgebraLibraryType::EIGEN_SPARSE;
-        covariance_options.algorithm_type = ceres::CovarianceAlgorithmType::DENSE_SVD;
+        // Keep covariance single-threaded for deterministic diagnostics.
+        covariance_options.num_threads = 1;
         // gets rid of error messages related to bad fits
         covariance_options.null_space_rank = -1;
         // create covariance object with current covariance options
