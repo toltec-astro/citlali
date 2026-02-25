@@ -69,6 +69,18 @@ public:
     // good fits
     Eigen::Matrix<bool, Eigen::Dynamic, 1> good_fits;
 
+    struct RFIMaskScanSummary {
+        Eigen::Index n_det_candidates = 0;
+        Eigen::Index n_det_flagged = 0;
+        Eigen::Index n_samples_flagged = 0;
+        Eigen::Index n_det_rejected = 0;
+    };
+
+    // diagnostics for sample-level beammap RFI masking
+    Eigen::VectorXi rfi_mask_samples_flagged;
+    Eigen::VectorXi rfi_mask_scans_flagged;
+    std::mutex rfi_mask_diag_mutex;
+
     // placeholder vectors for grppi maps
     std::vector<int> scan_in_vec, scan_out_vec;
     std::vector<int> det_in_vec, det_out_vec;
@@ -89,6 +101,9 @@ public:
 
     // run the iterative stage
     void run_loop();
+
+    // robust sample-level masking for short RFI bursts in detector beammaps
+    RFIMaskScanSummary apply_rfi_sample_mask(TCData<TCDataKind::PTC,Eigen::MatrixXd> &);
 
     // flag detectors
     void set_apt_flags();
@@ -149,6 +164,8 @@ void Beammap::setup() {
 
     // resize good fits
     good_fits.setZero(n_maps);
+    rfi_mask_samples_flagged = Eigen::VectorXi::Zero(calib.n_dets);
+    rfi_mask_scans_flagged = Eigen::VectorXi::Zero(calib.n_dets);
 
     // initially all detectors are unconverged
     converged.setZero(n_maps);
@@ -221,6 +238,19 @@ void Beammap::setup() {
     calib.apt_meta["kids_tone"].push_back("units: N/A");
     calib.apt_meta["kids_tone"].push_back("index of tone in network");
 
+    // diagnostics for robust sample masking of beammap RFI
+    calib.apt["rfi_masked_samples"] = Eigen::VectorXd::Zero(calib.n_dets);
+    calib.apt_header_units["rfi_masked_samples"] = "samples";
+    calib.apt_header_keys.push_back("rfi_masked_samples");
+    calib.apt_meta["rfi_masked_samples"].push_back("units: samples");
+    calib.apt_meta["rfi_masked_samples"].push_back("number of timestream samples masked by beammap rfi_mask");
+
+    calib.apt["rfi_masked_scans"] = Eigen::VectorXd::Zero(calib.n_dets);
+    calib.apt_header_units["rfi_masked_scans"] = "scans";
+    calib.apt_header_keys.push_back("rfi_masked_scans");
+    calib.apt_meta["rfi_masked_scans"].push_back("units: scans");
+    calib.apt_meta["rfi_masked_scans"].push_back("number of scans with at least one sample masked by beammap rfi_mask");
+
     // bitwise flag
     calib.apt_meta["flag2"].push_back("units: N/A");
     calib.apt_meta["flag2"].push_back("bitwise flag");
@@ -246,6 +276,13 @@ void Beammap::setup() {
     calib.apt_meta["reference_detector_subtracted"] = beammap_subtract_reference;
     // reference detector
     calib.apt_meta["reference_det"] = beammap_reference_det_found;
+    calib.apt_meta["rfi_mask_enabled"] = beammap_rfi_mask_enabled;
+    calib.apt_meta["rfi_mask_block_size_samples"] = beammap_rfi_mask_block_size_samples;
+    calib.apt_meta["rfi_mask_min_good_samples"] = beammap_rfi_mask_min_good_samples;
+    calib.apt_meta["rfi_mask_dilate_blocks"] = beammap_rfi_mask_dilate_blocks;
+    calib.apt_meta["rfi_mask_sigma_threshold"] = beammap_rfi_mask_sigma_threshold;
+    calib.apt_meta["rfi_mask_sigma_floor"] = beammap_rfi_mask_sigma_floor;
+    calib.apt_meta["rfi_mask_max_flagged_fraction"] = beammap_rfi_mask_max_flagged_fraction;
 }
 
 template <class KidsProc, class RawObs>
@@ -552,6 +589,20 @@ void Beammap::loop_pipeline() {
         // add convergence iteration to apt table
         calib.apt["converge_iter"] = converge_iter.cast<double> ();
 
+        if (rfi_mask_samples_flagged.size() == calib.n_dets) {
+            calib.apt["rfi_masked_samples"] = rfi_mask_samples_flagged.cast<double>();
+        }
+        if (rfi_mask_scans_flagged.size() == calib.n_dets) {
+            calib.apt["rfi_masked_scans"] = rfi_mask_scans_flagged.cast<double>();
+        }
+        if (beammap_rfi_mask_enabled &&
+            rfi_mask_samples_flagged.size() == calib.n_dets &&
+            rfi_mask_scans_flagged.size() == calib.n_dets) {
+            const Eigen::Index n_det_masked = (rfi_mask_scans_flagged.array() > 0).count();
+            logger->info("beammap rfi mask summary: {} detectors affected, {} total samples masked",
+                         n_det_masked, static_cast<long long>(rfi_mask_samples_flagged.cast<double>().sum()));
+        }
+
         // flag detectors in apt based on config limits
         set_apt_flags();
 
@@ -667,6 +718,176 @@ void Beammap::loop_pipeline() {
 }
 
 
+Beammap::RFIMaskScanSummary Beammap::apply_rfi_sample_mask(TCData<TCDataKind::PTC,Eigen::MatrixXd> &ptc) {
+    RFIMaskScanSummary summary;
+    if (!beammap_rfi_mask_enabled) {
+        return summary;
+    }
+
+    const Eigen::Index n_samples = ptc.scans.data.rows();
+    const Eigen::Index n_dets = ptc.scans.data.cols();
+    if (n_samples < 4 || n_dets <= 0 || ptc.flags.data.rows() != n_samples || ptc.flags.data.cols() != n_dets) {
+        return summary;
+    }
+
+    const Eigen::Index block_size = std::max<Eigen::Index>(8, beammap_rfi_mask_block_size_samples);
+    const Eigen::Index min_good = std::max<Eigen::Index>(4, std::min<Eigen::Index>(beammap_rfi_mask_min_good_samples, block_size));
+    const int dilate_blocks = std::max(0, beammap_rfi_mask_dilate_blocks);
+    const double sigma_threshold = std::max(1.0, beammap_rfi_mask_sigma_threshold);
+    const double sigma_floor = std::max(0.0, beammap_rfi_mask_sigma_floor);
+    const double max_flagged_fraction = std::clamp(beammap_rfi_mask_max_flagged_fraction, 0.0, 1.0);
+    const double eps = std::numeric_limits<double>::epsilon();
+
+    const Eigen::Index n_blocks = (n_samples + block_size - 1) / block_size;
+    std::vector<unsigned char> bad_blocks(static_cast<std::size_t>(n_blocks), 0);
+    std::vector<unsigned char> dilated_blocks(static_cast<std::size_t>(n_blocks), 0);
+    std::vector<double> diffs;
+    std::vector<Eigen::Index> to_flag;
+
+    Eigen::VectorXi local_samples = Eigen::VectorXi::Zero(n_dets);
+    Eigen::VectorXi local_scans = Eigen::VectorXi::Zero(n_dets);
+
+    for (Eigen::Index det = 0; det < n_dets; ++det) {
+        Eigen::Index n_good_samples = 0;
+        for (Eigen::Index t = 0; t < n_samples; ++t) {
+            const double s = ptc.scans.data(t, det);
+            if (!ptc.flags.data(t, det) && std::isfinite(s)) {
+                n_good_samples++;
+            }
+        }
+        if (n_good_samples < min_good + 1) {
+            continue;
+        }
+        summary.n_det_candidates++;
+
+        diffs.clear();
+        diffs.reserve(static_cast<std::size_t>(n_good_samples));
+        for (Eigen::Index t = 1; t < n_samples; ++t) {
+            if (ptc.flags.data(t, det) || ptc.flags.data(t - 1, det)) {
+                continue;
+            }
+            const double s0 = ptc.scans.data(t - 1, det);
+            const double s1 = ptc.scans.data(t, det);
+            if (!std::isfinite(s0) || !std::isfinite(s1)) {
+                continue;
+            }
+            diffs.push_back(s1 - s0);
+        }
+        if (static_cast<Eigen::Index>(diffs.size()) < min_good - 1) {
+            continue;
+        }
+
+        Eigen::Map<Eigen::VectorXd> diff_global(diffs.data(), static_cast<Eigen::Index>(diffs.size()));
+        const double diff_med = tula::alg::median(diff_global);
+        Eigen::VectorXd diff_abs_dev = (diff_global.array() - diff_med).abs().matrix();
+        const double diff_mad = tula::alg::median(diff_abs_dev);
+        const double global_sigma = 1.4826 * diff_mad;
+        if (!std::isfinite(global_sigma) || global_sigma <= eps) {
+            continue;
+        }
+
+        std::fill(bad_blocks.begin(), bad_blocks.end(), 0);
+        bool any_bad = false;
+        for (Eigen::Index b = 0; b < n_blocks; ++b) {
+            const Eigen::Index b_start = b * block_size;
+            const Eigen::Index b_end = std::min(b_start + block_size, n_samples);
+            diffs.clear();
+            diffs.reserve(static_cast<std::size_t>(b_end - b_start));
+            for (Eigen::Index t = std::max<Eigen::Index>(b_start + 1, 1); t < b_end; ++t) {
+                if (ptc.flags.data(t, det) || ptc.flags.data(t - 1, det)) {
+                    continue;
+                }
+                const double s0 = ptc.scans.data(t - 1, det);
+                const double s1 = ptc.scans.data(t, det);
+                if (!std::isfinite(s0) || !std::isfinite(s1)) {
+                    continue;
+                }
+                diffs.push_back(s1 - s0);
+            }
+            if (static_cast<Eigen::Index>(diffs.size()) < min_good - 1) {
+                continue;
+            }
+
+            Eigen::Map<Eigen::VectorXd> diff_block(diffs.data(), static_cast<Eigen::Index>(diffs.size()));
+            const double block_med = tula::alg::median(diff_block);
+            Eigen::VectorXd block_abs_dev = (diff_block.array() - block_med).abs().matrix();
+            const double block_mad = tula::alg::median(block_abs_dev);
+            const double block_sigma = 1.4826 * block_mad;
+            if (!std::isfinite(block_sigma) || block_sigma <= eps) {
+                continue;
+            }
+            if (block_sigma >= sigma_floor && block_sigma > sigma_threshold * global_sigma) {
+                bad_blocks[static_cast<std::size_t>(b)] = 1;
+                any_bad = true;
+            }
+        }
+
+        if (!any_bad) {
+            continue;
+        }
+
+        if (dilate_blocks > 0) {
+            std::fill(dilated_blocks.begin(), dilated_blocks.end(), 0);
+            for (Eigen::Index b = 0; b < n_blocks; ++b) {
+                if (!bad_blocks[static_cast<std::size_t>(b)]) {
+                    continue;
+                }
+                const Eigen::Index b0 = std::max<Eigen::Index>(0, b - dilate_blocks);
+                const Eigen::Index b1 = std::min<Eigen::Index>(n_blocks - 1, b + dilate_blocks);
+                for (Eigen::Index bb = b0; bb <= b1; ++bb) {
+                    dilated_blocks[static_cast<std::size_t>(bb)] = 1;
+                }
+            }
+            bad_blocks.swap(dilated_blocks);
+        }
+
+        to_flag.clear();
+        for (Eigen::Index b = 0; b < n_blocks; ++b) {
+            if (!bad_blocks[static_cast<std::size_t>(b)]) {
+                continue;
+            }
+            const Eigen::Index b_start = b * block_size;
+            const Eigen::Index b_end = std::min(b_start + block_size, n_samples);
+            for (Eigen::Index t = b_start; t < b_end; ++t) {
+                const double s = ptc.scans.data(t, det);
+                if (!ptc.flags.data(t, det) && std::isfinite(s)) {
+                    to_flag.push_back(t);
+                }
+            }
+        }
+
+        if (to_flag.empty()) {
+            continue;
+        }
+        const double flagged_fraction =
+            static_cast<double>(to_flag.size()) / static_cast<double>(std::max<Eigen::Index>(1, n_good_samples));
+        if (max_flagged_fraction > 0.0 && flagged_fraction > max_flagged_fraction) {
+            summary.n_det_rejected++;
+            continue;
+        }
+
+        for (const auto t: to_flag) {
+            ptc.flags.data(t, det) = true;
+        }
+
+        summary.n_det_flagged++;
+        summary.n_samples_flagged += static_cast<Eigen::Index>(to_flag.size());
+        local_samples(det) += static_cast<int>(to_flag.size());
+        local_scans(det) = 1;
+    }
+
+    if (summary.n_samples_flagged > 0 &&
+        rfi_mask_samples_flagged.size() == n_dets &&
+        rfi_mask_scans_flagged.size() == n_dets) {
+        std::lock_guard<std::mutex> lock(rfi_mask_diag_mutex);
+        rfi_mask_samples_flagged += local_samples;
+        rfi_mask_scans_flagged += local_scans;
+    }
+
+    return summary;
+}
+
+
 void Beammap::run_loop() {
     // variable to control iteration
     bool keep_going = true;
@@ -677,6 +898,16 @@ void Beammap::run_loop() {
     // boost random number generator (0,1)
     boost::random::uniform_int_distribution<> rands{0,1};
 
+    if (beammap_rfi_mask_enabled && map_grouping == "detector") {
+        logger->info("beammap rfi mask enabled: block_size={} min_good={} sigma_threshold={} sigma_floor={} dilate_blocks={} max_flagged_fraction={}",
+                     beammap_rfi_mask_block_size_samples,
+                     beammap_rfi_mask_min_good_samples,
+                     beammap_rfi_mask_sigma_threshold,
+                     beammap_rfi_mask_sigma_floor,
+                     beammap_rfi_mask_dilate_blocks,
+                     beammap_rfi_mask_max_flagged_fraction);
+    }
+
     // iterative loop
     while (keep_going) {
         logger->info("starting iter {}", current_iter);
@@ -685,6 +916,12 @@ void Beammap::run_loop() {
         ptcs = ptcs0;
         // copy calibs
         calib_scans = calib_scans0;
+        if (beammap_rfi_mask_enabled && map_grouping == "detector" &&
+            rfi_mask_samples_flagged.size() == calib.n_dets &&
+            rfi_mask_scans_flagged.size() == calib.n_dets) {
+            rfi_mask_samples_flagged.setZero();
+            rfi_mask_scans_flagged.setZero();
+        }
 
         // copy signal for convergence test
         if (ptcproc.run_fruit_loops) {
@@ -749,6 +986,21 @@ void Beammap::run_loop() {
             calib_scans[i] = ptcproc.remove_bad_dets(ptcs[i], calib_scans[i], map_grouping);
 
             if (map_grouping == "detector") {
+                auto rfi_summary = apply_rfi_sample_mask(ptcs[i]);
+                if (beammap_rfi_mask_enabled) {
+                    if (rfi_summary.n_samples_flagged > 0 || rfi_summary.n_det_rejected > 0) {
+                        logger->info("beammap rfi mask scan {}: masked {} samples across {}/{} detectors ({} rejected by max_flagged_fraction={})",
+                                     ptcs[i].index.data + 1,
+                                     rfi_summary.n_samples_flagged,
+                                     rfi_summary.n_det_flagged,
+                                     rfi_summary.n_det_candidates,
+                                     rfi_summary.n_det_rejected,
+                                     beammap_rfi_mask_max_flagged_fraction);
+                    }
+                    else {
+                        logger->debug("beammap rfi mask scan {}: no samples masked", ptcs[i].index.data + 1);
+                    }
+                }
                 // set weights to a constant value
                 ptcs[i].weights.data.resize(ptcs[i].scans.data.cols());
                 ptcs[i].weights.data.setOnes();
@@ -1550,6 +1802,8 @@ void Beammap::output() {
                 "map_rms",
                 "map_sig2noise",
                 "n_weight_pos",
+                "rfi_masked_samples",
+                "rfi_masked_scans",
                 "x_t_raw",
                 "y_t_raw",
                 "x_t",
@@ -1630,6 +1884,8 @@ void Beammap::output() {
             fit_qc_table.col(col++) = map_rms;
             fit_qc_table.col(col++) = map_sig2noise;
             fit_qc_table.col(col++) = n_weight_pos;
+            fit_qc_table.col(col++) = apt_or_zero("rfi_masked_samples");
+            fit_qc_table.col(col++) = apt_or_zero("rfi_masked_scans");
             fit_qc_table.col(col++) = apt_or_zero("x_t_raw");
             fit_qc_table.col(col++) = apt_or_zero("y_t_raw");
             fit_qc_table.col(col++) = apt_or_zero("x_t");
@@ -1655,6 +1911,15 @@ void Beammap::output() {
             fit_qc_meta["beammap_iter_tolerance"] = beammap_iter_tolerance;
             fit_qc_meta["reference_detector_subtracted"] = beammap_subtract_reference;
             fit_qc_meta["reference_det"] = beammap_reference_det_found;
+            fit_qc_meta["rfi_mask_enabled"] = beammap_rfi_mask_enabled;
+            fit_qc_meta["rfi_mask_block_size_samples"] = beammap_rfi_mask_block_size_samples;
+            fit_qc_meta["rfi_mask_min_good_samples"] = beammap_rfi_mask_min_good_samples;
+            fit_qc_meta["rfi_mask_dilate_blocks"] = beammap_rfi_mask_dilate_blocks;
+            fit_qc_meta["rfi_mask_sigma_threshold"] = beammap_rfi_mask_sigma_threshold;
+            fit_qc_meta["rfi_mask_sigma_floor"] = beammap_rfi_mask_sigma_floor;
+            fit_qc_meta["rfi_mask_max_flagged_fraction"] = beammap_rfi_mask_max_flagged_fraction;
+            fit_qc_meta["rfi_mask_detectors_affected"] =
+                static_cast<int>((apt_or_zero("rfi_masked_scans").array() > 0.0).count());
 
             std::map<std::string, std::string> fit_qc_units = {
                 {"uid", "N/A"},
@@ -1672,6 +1937,8 @@ void Beammap::output() {
                 {"map_rms", omb.sig_unit},
                 {"map_sig2noise", "N/A"},
                 {"n_weight_pos", "pix"},
+                {"rfi_masked_samples", "samples"},
+                {"rfi_masked_scans", "scans"},
                 {"x_t_raw", get_unit("x_t", "arcsec")},
                 {"y_t_raw", get_unit("y_t", "arcsec")},
                 {"x_t", get_unit("x_t", "arcsec")},
@@ -1703,6 +1970,8 @@ void Beammap::output() {
                 {"map_rms", "standard deviation of detector map signal"},
                 {"map_sig2noise", "fitted amplitude divided by detector map rms"},
                 {"n_weight_pos", "number of detector-map pixels with positive weight"},
+                {"rfi_masked_samples", "number of timestream samples masked by beammap rfi_mask"},
+                {"rfi_masked_scans", "number of scans with at least one sample masked by beammap rfi_mask"},
                 {"x_t_raw", "raw x position before reference subtraction/derotation"},
                 {"y_t_raw", "raw y position before reference subtraction/derotation"},
                 {"x_t", get_description("x_t", "detector x position")},
