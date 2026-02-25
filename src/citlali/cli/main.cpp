@@ -61,7 +61,10 @@ void abort_backtrace_handler(int sig) {
     void *frames[128];
     int n = ::backtrace(frames, static_cast<int>(sizeof(frames) / sizeof(frames[0])));
     const char msg[] = "\n[citlali] fatal signal received; stack trace follows:\n";
-    static_cast<void>(::write(STDERR_FILENO, msg, sizeof(msg) - 1));
+    const ssize_t nw = ::write(STDERR_FILENO, msg, sizeof(msg) - 1);
+    if (nw < 0) {
+        // best-effort only in signal context
+    }
     ::backtrace_symbols_fd(frames, n, STDERR_FILENO);
     ::signal(sig, SIG_DFL);
     ::raise(sig);
