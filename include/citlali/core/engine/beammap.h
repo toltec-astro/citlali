@@ -874,7 +874,9 @@ void Beammap::run_loop() {
             double init_col = -99;
 
             logger->info("fitting maps");
-            grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+            // Run beammap fits sequentially. This avoids allocator/covariance instability
+            // observed with parallel Ceres fits on some systems.
+            for (Eigen::Index i = 0; i < n_maps; ++i) {
                 // only fit if not converged
                 if (!converged(i)) {
                     // get array number
@@ -886,6 +888,12 @@ void Beammap::run_loop() {
                         map_fitter.fit_to_gaussian<engine_utils::mapFitter::beammap>(omb.signal[i], omb.weight[i],
                                                                                      init_fwhm, init_row, init_col);
 
+                    if (!(det_params.array().isFinite().all() && det_perror.array().isFinite().all())) {
+                        det_params.setZero();
+                        det_perror.setZero();
+                        good_fit = false;
+                    }
+
                     params.row(i) = det_params;
                     perrors.row(i) = det_perror;
                     good_fits(i) = good_fit;
@@ -895,9 +903,7 @@ void Beammap::run_loop() {
                     params.row(i) = p0.row(i);
                     perrors.row(i) = perror0.row(i);
                 }
-
-                return 0;
-            });
+            }
 
             logger->info("number of good fits {}/{}", good_fits.cast<double>().sum(), n_maps);
         }

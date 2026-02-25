@@ -1,5 +1,8 @@
 #pragma once
 
+#include <algorithm>
+#include <cmath>
+
 #include <Eigen/Core>
 
 #include <tula/algorithm/ei_stats.h>
@@ -172,6 +175,15 @@ template <mapFitter::FitMode fit_mode, typename Derived>
 auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseBase<Derived> &weight,
                                 double init_fwhm, double init_row, double init_col) {
 
+    if (signal.rows() <= 0 || signal.cols() <= 0 ||
+        weight.rows() != signal.rows() || weight.cols() != signal.cols()) {
+        Eigen::VectorXd p = Eigen::VectorXd::Zero(n_params);
+        Eigen::VectorXd e = Eigen::VectorXd::Zero(n_params);
+        logger->warn("fit_to_gaussian skipped due to invalid map geometry (signal={}x{}, weight={}x{})",
+                     signal.rows(), signal.cols(), weight.rows(), weight.cols());
+        return std::tuple<Eigen::VectorXd, Eigen::VectorXd, bool>(p, e, false);
+    }
+
     // initial parameters and limits
     Eigen::VectorXd init_params(n_params);
     Eigen::MatrixXd limits(n_params,2);
@@ -183,7 +195,7 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     double init_sigma = init_fwhm*FWHM_TO_STD;
 
     // if no initial position is input find peak
-    if (init_row<0 && init_col<0) {
+    if (init_row < 0 || init_col < 0) {
         // center positions
         double center_row = (signal.rows() - 1)/2;
         double center_col = (signal.cols() - 1)/2;
@@ -233,14 +245,16 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     }    
     // otherwise use the input initial position
     else {
-        init_flux = signal(static_cast<int>(init_row), static_cast<int>(init_col));
+        init_row = std::clamp(init_row, 0.0, static_cast<double>(signal.rows() - 1));
+        init_col = std::clamp(init_col, 0.0, static_cast<double>(signal.cols() - 1));
+        init_flux = signal(static_cast<Eigen::Index>(init_row), static_cast<Eigen::Index>(init_col));
     }
 
     // initial parameter guesses (order of positions is x,y = col,row)
     init_params << init_flux, init_col, init_row, init_sigma, init_sigma, 0;
 
     // limits of bounding box
-    double lower_row, lower_col, upper_row, upper_col;
+    Eigen::Index lower_row, lower_col, upper_row, upper_col;
 
     // ignore bounding box if less than/equal to zero
     if (bounding_box_pix <= 0) {
@@ -251,32 +265,56 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     }
     // determine bounding box size
     else {
+        const double lower_row_d = std::max(init_row - bounding_box_pix, 0.0);
+        const double lower_col_d = std::max(init_col - bounding_box_pix, 0.0);
+        const double upper_row_d = std::min(init_row + bounding_box_pix, static_cast<double>(signal.rows()) - 1);
+        const double upper_col_d = std::min(init_col + bounding_box_pix, static_cast<double>(signal.cols()) - 1);
+
         // ensure lower limits of bounding box are not less than zero
-        lower_row = std::max(init_row - bounding_box_pix, 0.0);
-        lower_col = std::max(init_col - bounding_box_pix, 0.0);
+        lower_row = static_cast<Eigen::Index>(std::floor(lower_row_d));
+        lower_col = static_cast<Eigen::Index>(std::floor(lower_col_d));
 
         // ensure upper limits of bounding box are not bigger than the map
-        upper_row = std::min(init_row + bounding_box_pix, static_cast<double>(signal.rows()) - 1);
-        upper_col = std::min(init_col + bounding_box_pix, static_cast<double>(signal.cols()) - 1);
+        upper_row = static_cast<Eigen::Index>(std::ceil(upper_row_d));
+        upper_col = static_cast<Eigen::Index>(std::ceil(upper_col_d));
+
+        lower_row = std::clamp<Eigen::Index>(lower_row, 0, signal.rows() - 1);
+        lower_col = std::clamp<Eigen::Index>(lower_col, 0, signal.cols() - 1);
+        upper_row = std::clamp<Eigen::Index>(upper_row, 0, signal.rows() - 1);
+        upper_col = std::clamp<Eigen::Index>(upper_col, 0, signal.cols() - 1);
     }
 
     // size of bounding box region
-    double n_rows = upper_row - lower_row + 1;
-    double n_cols = upper_col - lower_col + 1;
+    Eigen::Index n_rows = upper_row - lower_row + 1;
+    Eigen::Index n_cols = upper_col - lower_col + 1;
+    if (n_rows <= 0 || n_cols <= 0) {
+        Eigen::VectorXd p = Eigen::VectorXd::Zero(n_params);
+        Eigen::VectorXd e = Eigen::VectorXd::Zero(n_params);
+        logger->warn("fit_to_gaussian skipped due to empty bounding box");
+        return std::tuple<Eigen::VectorXd, Eigen::VectorXd, bool>(p, e, false);
+    }
+
+    // preserve valid ordering even when init_flux is negative.
+    double amp_lower = std::min(flux_low * init_flux, flux_high * init_flux);
+    double amp_upper = std::max(flux_low * init_flux, flux_high * init_flux);
+    if (!std::isfinite(amp_lower) || !std::isfinite(amp_upper)) {
+        amp_lower = -std::abs(init_flux);
+        amp_upper = std::abs(init_flux);
+    }
 
     // set lower limits of fitting parameters
-    limits.col(0) << flux_low*init_flux, lower_col, lower_row, fwhm_low*init_sigma,
+    limits.col(0) << amp_lower, static_cast<double>(lower_col), static_cast<double>(lower_row), fwhm_low*init_sigma,
         fwhm_low*init_sigma, angle_low;
 
     // set upper limits of fitting parameters
-    limits.col(1) << flux_high*init_flux, upper_col, upper_row, fwhm_high*init_sigma,
+    limits.col(1) << amp_upper, static_cast<double>(upper_col), static_cast<double>(upper_row), fwhm_high*init_sigma,
         fwhm_high*init_sigma, angle_high;
 
     Eigen::VectorXd x, y;
 
     // axes coordinate vectors for meshgrid
-    x = Eigen::VectorXd::LinSpaced(n_cols, lower_col, upper_col);
-    y = Eigen::VectorXd::LinSpaced(n_rows, lower_row, upper_row);
+    x = Eigen::VectorXd::LinSpaced(n_cols, static_cast<double>(lower_col), static_cast<double>(upper_col));
+    y = Eigen::VectorXd::LinSpaced(n_rows, static_cast<double>(lower_row), static_cast<double>(upper_row));
 
     // create gaussian 2d model
     auto g = create_model<Gaussian2D>(init_params);
@@ -285,6 +323,9 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
 
     // get map stddev
     double map_sigma = engine_utils::calc_std_dev(signal);
+    if (!std::isfinite(map_sigma) || map_sigma <= 0.0) {
+        map_sigma = 1.0;
+    }
 
     // standard deviation of signal map
     Eigen::MatrixXd sigma(weight.rows(), weight.cols());
@@ -311,6 +352,13 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     // copy data and sigma within bounding box region
     Eigen::MatrixXd _signal = signal.block(lower_row, lower_col, n_rows, n_cols);
     Eigen::MatrixXd _sigma = sigma.block(lower_row, lower_col, n_rows, n_cols);
+
+    // avoid running Ceres on an unconstrained region.
+    if ((_sigma.array() > 0.0).count() < n_params) {
+        Eigen::VectorXd p = Eigen::VectorXd::Zero(n_params);
+        Eigen::VectorXd e = Eigen::VectorXd::Zero(n_params);
+        return std::tuple<Eigen::VectorXd, Eigen::VectorXd, bool>(p, e, false);
+    }
 
     // do the fit and return
     return ceres_fit(g, init_params, xy, _signal, _sigma, limits);
