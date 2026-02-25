@@ -184,40 +184,87 @@ auto mapFitter::ceres_fit(const Model &model,
             eval_options.num_threads = 1;
             eval_options.parameter_blocks.push_back(params.data());
 
-            const Eigen::Index n_residuals = z_data.size();
             const Eigen::Index n_params = params.size();
-            std::vector<double> jac_buf(static_cast<std::size_t>(n_residuals * n_params), 0.0);
-            std::vector<double*> jacobians;
-            jacobians.push_back(jac_buf.data());
-
             double cost = 0.0;
-            const bool eval_ok = problem->Evaluate(eval_options, &cost, nullptr, nullptr, &jacobians);
+            ceres::CRSMatrix jacobian;
+            const bool eval_ok = problem->Evaluate(eval_options, &cost, nullptr, nullptr, &jacobian);
             if (!eval_ok) {
                 logger->warn("ceres_fit linearized uncertainty failed: problem->Evaluate returned false");
                 uncertainty.setConstant(0);
             } else {
-                using RowMajorMatrixXd = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
-                const Eigen::Map<const RowMajorMatrixXd> J(jac_buf.data(), n_residuals, n_params);
-                Eigen::MatrixXd jtj = J.transpose() * J;
+                const bool valid_structure =
+                    jacobian.num_rows > 0 &&
+                    jacobian.num_cols > 0 &&
+                    jacobian.rows.size() == static_cast<std::size_t>(jacobian.num_rows + 1) &&
+                    jacobian.cols.size() == jacobian.values.size();
 
-                if (!jtj.array().isFinite().all()) {
-                    logger->warn("ceres_fit linearized uncertainty failed: J^T J contains non-finite values");
+                if (!valid_structure) {
+                    logger->warn("ceres_fit linearized uncertainty failed: invalid CRS Jacobian structure (rows={} cols={} nnz={})",
+                                 jacobian.num_rows, jacobian.num_cols, jacobian.values.size());
                     uncertainty.setConstant(0);
                 } else {
-                    const double max_diag = jtj.diagonal().cwiseAbs().maxCoeff();
-                    const double reg = std::max(1e-14, 1e-10 * (std::isfinite(max_diag) ? max_diag : 1.0));
-                    jtj.diagonal().array() += reg;
+                    const Eigen::Index n_var = jacobian.num_cols;
+                    Eigen::MatrixXd jtj = Eigen::MatrixXd::Zero(n_var, n_var);
 
-                    Eigen::CompleteOrthogonalDecomposition<Eigen::MatrixXd> cod(jtj);
-                    const Eigen::MatrixXd jtj_inv = cod.pseudoInverse();
-                    uncertainty = jtj_inv.diagonal().cwiseAbs().cwiseSqrt();
+                    bool invalid_index = false;
+                    for (int r = 0; r < jacobian.num_rows; ++r) {
+                        const int begin = jacobian.rows[r];
+                        const int end = jacobian.rows[r + 1];
+                        if (begin < 0 || end < begin || end > static_cast<int>(jacobian.values.size())) {
+                            invalid_index = true;
+                            break;
+                        }
+                        for (int a = begin; a < end; ++a) {
+                            const int c1 = jacobian.cols[a];
+                            const double v1 = jacobian.values[a];
+                            if (c1 < 0 || c1 >= jacobian.num_cols || !std::isfinite(v1)) {
+                                invalid_index = true;
+                                break;
+                            }
+                            for (int b = a; b < end; ++b) {
+                                const int c2 = jacobian.cols[b];
+                                const double v2 = jacobian.values[b];
+                                if (c2 < 0 || c2 >= jacobian.num_cols || !std::isfinite(v2)) {
+                                    invalid_index = true;
+                                    break;
+                                }
+                                const double contrib = v1 * v2;
+                                jtj(c1, c2) += contrib;
+                                if (c1 != c2) {
+                                    jtj(c2, c1) += contrib;
+                                }
+                            }
+                            if (invalid_index) {
+                                break;
+                            }
+                        }
+                        if (invalid_index) {
+                            break;
+                        }
+                    }
 
-                    const Eigen::Index n_nonzero_sigma = (_s.array() > 0.0).count();
-                    const Eigen::Index n_fixed_params = fit_angle ? 0 : 1;
-                    const Eigen::Index dof = std::max<Eigen::Index>(1, n_nonzero_sigma - (n_params - n_fixed_params));
-                    const double reduced_chi2 = std::max(0.0, (2.0 * cost) / static_cast<double>(dof));
-                    const double scale = std::sqrt(std::max(1e-14, reduced_chi2));
-                    uncertainty.array() *= scale;
+                    if (invalid_index || !jtj.array().isFinite().all()) {
+                        logger->warn("ceres_fit linearized uncertainty failed: invalid Jacobian values");
+                        uncertainty.setConstant(0);
+                    } else {
+                        const double max_diag = jtj.diagonal().cwiseAbs().maxCoeff();
+                        const double reg = std::max(1e-14, 1e-10 * (std::isfinite(max_diag) ? max_diag : 1.0));
+                        jtj.diagonal().array() += reg;
+
+                        Eigen::CompleteOrthogonalDecomposition<Eigen::MatrixXd> cod(jtj);
+                        const Eigen::MatrixXd jtj_inv = cod.pseudoInverse();
+                        const Eigen::VectorXd sigma_var = jtj_inv.diagonal().cwiseAbs().cwiseSqrt();
+
+                        uncertainty.setZero();
+                        const Eigen::Index n_fill = std::min<Eigen::Index>(n_params, sigma_var.size());
+                        uncertainty.head(n_fill) = sigma_var.head(n_fill);
+
+                        const Eigen::Index n_nonzero_sigma = (_s.array() > 0.0).count();
+                        const Eigen::Index dof = std::max<Eigen::Index>(1, n_nonzero_sigma - n_var);
+                        const double reduced_chi2 = std::max(0.0, (2.0 * cost) / static_cast<double>(dof));
+                        const double scale = std::sqrt(std::max(1e-14, reduced_chi2));
+                        uncertainty.head(n_fill).array() *= scale;
+                    }
                 }
             }
         }
