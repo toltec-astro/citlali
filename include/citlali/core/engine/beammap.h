@@ -1025,7 +1025,11 @@ void Beammap::set_apt_flags() {
         double map_std_dev = engine_utils::calc_std_dev(omb.signal[i]);
 
         // set apt signal to noise
-        calib.apt["sig2noise"](i) = params(i,0)/perrors(i,0);
+        if (std::isfinite(perrors(i,0)) && perrors(i,0) > 0) {
+            calib.apt["sig2noise"](i) = params(i,0)/perrors(i,0);
+        } else {
+            calib.apt["sig2noise"](i) = 0;
+        }
 
         // flag bad fits
         if (!good_fits(i)) {

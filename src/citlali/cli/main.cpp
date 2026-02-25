@@ -1138,13 +1138,25 @@ int main(int argc, char *argv[]) {
         return EXIT_SUCCESS;
     }
     // now with normal CLI interface
-    tula::logging::init();
-    auto rc = parse_args(argc, argv);
-    SPDLOG_INFO("rc {}", rc.pformat());
-    if (rc.get_node("config_file").size() > 0) {
-        tula::logging::scoped_timeit TULA_X{"Citlali Process"};
-        return run(rc);
-    } else {
-        std::cout << "Invalid argument. Type --help for usage.\n";
+    try {
+        tula::logging::init();
+        auto rc = parse_args(argc, argv);
+        SPDLOG_INFO("rc {}", rc.pformat());
+        if (rc.get_node("config_file").size() > 0) {
+            tula::logging::scoped_timeit TULA_X{"Citlali Process"};
+            return run(rc);
+        } else {
+            std::cout << "Invalid argument. Type --help for usage.\n";
+            return EXIT_FAILURE;
+        }
+    } catch (const CCfits::FitsError &e) {
+        SPDLOG_CRITICAL("Unhandled CCfits::FitsError: {}", e.what());
+        return EXIT_FAILURE;
+    } catch (const std::exception &e) {
+        SPDLOG_CRITICAL("Unhandled exception: {}", e.what());
+        return EXIT_FAILURE;
+    } catch (...) {
+        SPDLOG_CRITICAL("Unhandled non-standard exception");
+        return EXIT_FAILURE;
     }
 }

@@ -4,6 +4,7 @@
 #include <cmath>
 
 #include <Eigen/Core>
+#include <Eigen/QR>
 
 #include <tula/algorithm/ei_stats.h>
 
@@ -56,7 +57,8 @@ public:
                    const typename Model::InputDataType &,
                    const typename Model::DataType &,
                    const typename Model::DataType &,
-                   const Eigen::DenseBase<Derived> &);
+                   const Eigen::DenseBase<Derived> &,
+                   bool use_ceres_covariance = true);
 
     template <mapFitter::FitMode fit_mode, typename Derived>
     auto fit_to_gaussian(Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &,
@@ -69,7 +71,8 @@ auto mapFitter::ceres_fit(const Model &model,
                           const typename Model::InputDataType &xy_data,
                           const typename Model::DataType &z_data,
                           const typename Model::DataType &sigma,
-                          const Eigen::DenseBase<Derived> &limits) {
+                          const Eigen::DenseBase<Derived> &limits,
+                          bool use_ceres_covariance) {
     // fitter
     using Fitter = CeresAutoDiffFitter<Model>;
     Fitter* fitter = new Fitter(&model, z_data.size());
@@ -104,13 +107,17 @@ auto mapFitter::ceres_fit(const Model &model,
         problem->SetParameterUpperBound(params.data(), i, limits(i,1));
     }
 
-    // Keep angle fixed via bounds to avoid local-parameterization ownership issues.
+    // vector to store indices of parameters to keep constant
     if (!fit_angle) {
-        const int angle_index = static_cast<int>(limits.rows()) - 1;
-        const double angle0 = init_params(angle_index);
-        problem->SetParameterLowerBound(params.data(), angle_index, angle0);
-        problem->SetParameterUpperBound(params.data(), angle_index, angle0);
-        logger->info("ceres_fit angle fixed at {}", angle0);
+        std::vector<int> sspv;
+        sspv.push_back(limits.rows()-1);
+        // mark parameter as constant
+        if (sspv.size() > 0 ){
+            ceres::SubsetParameterization *pcssp
+                    = new ceres::SubsetParameterization(limits.rows(), sspv);
+            problem->SetParameterization(params.data(), pcssp);
+            logger->info("ceres_fit angle fixed via subset parameterization");
+        }
     }
 
     // apply solver options
@@ -128,42 +135,91 @@ auto mapFitter::ceres_fit(const Model &model,
     Solve(options, problem.get(), &summary);
     logger->info("ceres_fit solve done: usable={} brief={}",
                  summary.IsSolutionUsable(), summary.BriefReport());
+    if (!summary.IsSolutionUsable()) {
+        logger->warn("ceres_fit full report:\n{}", summary.FullReport());
+    }
 
     // vector for storing uncertainties
     Eigen::VectorXd uncertainty(params.size());
 
     // get uncertainty if solution is usable
     if (summary.IsSolutionUsable()) {
-        // set covariance options
-        Covariance::Options covariance_options;
-        // Keep covariance single-threaded for deterministic diagnostics.
-        covariance_options.num_threads = 1;
-        // gets rid of error messages related to bad fits
-        covariance_options.null_space_rank = -1;
-        // create covariance object with current covariance options
-        Covariance covariance(covariance_options);
+        if (use_ceres_covariance) {
+            // set covariance options
+            Covariance::Options covariance_options;
+            // Keep covariance single-threaded for deterministic diagnostics.
+            covariance_options.num_threads = 1;
+            // gets rid of error messages related to bad fits
+            covariance_options.null_space_rank = -1;
+            // create covariance object with current covariance options
+            Covariance covariance(covariance_options);
 
-        // set up covariance block
-        std::vector<std::pair<const double*, const double*>> covariance_blocks;
-        // populate covariance block
-        covariance_blocks.push_back(std::make_pair(params.data(), params.data()));
-        // compute covariance
-        logger->info("ceres_fit covariance start");
-        auto covariance_result = covariance.Compute(covariance_blocks, problem.get());
-        logger->info("ceres_fit covariance done: success={}", covariance_result);
+            // set up covariance block
+            std::vector<std::pair<const double*, const double*>> covariance_blocks;
+            // populate covariance block
+            covariance_blocks.push_back(std::make_pair(params.data(), params.data()));
+            // compute covariance
+            logger->info("ceres_fit covariance start");
+            auto covariance_result = covariance.Compute(covariance_blocks, problem.get());
+            logger->info("ceres_fit covariance done: success={}", covariance_result);
 
-        // if covariance calculation suceeded
-        if (covariance_result) {
-            // for storing covariance matrix
-            Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> covariance_matrix;
-            covariance_matrix.resize(params.size(),params.size());
-            covariance.GetCovarianceBlock(params.data(),params.data(),covariance_matrix.data());
-            // calculate uncertainty
-            uncertainty = covariance_matrix.diagonal().cwiseSqrt();
-        }
-        // if covariance calculation fails, set uncertainty to zero
-        else {
-            uncertainty.setConstant(0);
+            // if covariance calculation suceeded
+            if (covariance_result) {
+                // for storing covariance matrix
+                Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> covariance_matrix;
+                covariance_matrix.resize(params.size(),params.size());
+                covariance.GetCovarianceBlock(params.data(),params.data(),covariance_matrix.data());
+                // calculate uncertainty
+                uncertainty = covariance_matrix.diagonal().cwiseSqrt();
+            }
+            // if covariance calculation fails, set uncertainty to zero
+            else {
+                uncertainty.setConstant(0);
+            }
+        } else {
+            // Beammap fallback: linearized covariance from J^T J at the solution.
+            logger->info("ceres_fit covariance disabled; using linearized uncertainty estimate");
+            ceres::Problem::EvaluateOptions eval_options;
+            eval_options.apply_loss_function = false;
+            eval_options.num_threads = 1;
+            eval_options.parameter_blocks.push_back(params.data());
+
+            const Eigen::Index n_residuals = z_data.size();
+            const Eigen::Index n_params = params.size();
+            std::vector<double> jac_buf(static_cast<std::size_t>(n_residuals * n_params), 0.0);
+            std::vector<double*> jacobians;
+            jacobians.push_back(jac_buf.data());
+
+            double cost = 0.0;
+            const bool eval_ok = problem->Evaluate(eval_options, &cost, nullptr, nullptr, &jacobians);
+            if (!eval_ok) {
+                logger->warn("ceres_fit linearized uncertainty failed: problem->Evaluate returned false");
+                uncertainty.setConstant(0);
+            } else {
+                using RowMajorMatrixXd = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
+                const Eigen::Map<const RowMajorMatrixXd> J(jac_buf.data(), n_residuals, n_params);
+                Eigen::MatrixXd jtj = J.transpose() * J;
+
+                if (!jtj.array().isFinite().all()) {
+                    logger->warn("ceres_fit linearized uncertainty failed: J^T J contains non-finite values");
+                    uncertainty.setConstant(0);
+                } else {
+                    const double max_diag = jtj.diagonal().cwiseAbs().maxCoeff();
+                    const double reg = std::max(1e-14, 1e-10 * (std::isfinite(max_diag) ? max_diag : 1.0));
+                    jtj.diagonal().array() += reg;
+
+                    Eigen::CompleteOrthogonalDecomposition<Eigen::MatrixXd> cod(jtj);
+                    const Eigen::MatrixXd jtj_inv = cod.pseudoInverse();
+                    uncertainty = jtj_inv.diagonal().cwiseAbs().cwiseSqrt();
+
+                    const Eigen::Index n_nonzero_sigma = (_s.array() > 0.0).count();
+                    const Eigen::Index n_fixed_params = fit_angle ? 0 : 1;
+                    const Eigen::Index dof = std::max<Eigen::Index>(1, n_nonzero_sigma - (n_params - n_fixed_params));
+                    const double reduced_chi2 = std::max(0.0, (2.0 * cost) / static_cast<double>(dof));
+                    const double scale = std::sqrt(std::max(1e-14, reduced_chi2));
+                    uncertainty.array() *= scale;
+                }
+            }
         }
     }
     // if fit is bad, set both fit and uncertainty to zero
@@ -171,6 +227,11 @@ auto mapFitter::ceres_fit(const Model &model,
         params.setConstant(0);
         uncertainty.setConstant(0);
     }
+
+    // sanitize uncertainty for downstream uses that divide by perrors.
+    uncertainty = uncertainty.unaryExpr([](double v) {
+        return (std::isfinite(v) && v > 0.0) ? v : 0.0;
+    });
 
     return std::tuple<Eigen::VectorXd, Eigen::VectorXd,bool>(params,uncertainty,summary.IsSolutionUsable());
 }
@@ -365,6 +426,7 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     }
 
     // do the fit and return
-    return ceres_fit(g, init_params, xy, _signal, _sigma, limits);
+    constexpr bool use_ceres_covariance = (fit_mode == FitMode::pointing);
+    return ceres_fit(g, init_params, xy, _signal, _sigma, limits, use_ceres_covariance);
 }
 } //namespace engine_utils
