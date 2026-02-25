@@ -70,7 +70,6 @@ auto mapFitter::ceres_fit(const Model &model,
                           const typename Model::DataType &z_data,
                           const typename Model::DataType &sigma,
                           const Eigen::DenseBase<Derived> &limits) {
-
     // fitter
     using Fitter = CeresAutoDiffFitter<Model>;
     Fitter* fitter = new Fitter(&model, z_data.size());
@@ -82,6 +81,10 @@ auto mapFitter::ceres_fit(const Model &model,
     fitter->xdata = &_x;
     fitter->ydata = &_y;
     fitter->sigma = &_s;
+
+    logger->info("ceres_fit begin: values={} params={} fit_angle={} sigma_nonzero={}/{}",
+                 z_data.size(), init_params.size(), fit_angle,
+                 (_s.array() > 0).count(), _s.size());
 
     // define cost function
     CostFunction* cost_function =
@@ -124,7 +127,10 @@ auto mapFitter::ceres_fit(const Model &model,
     // output info
     Solver::Summary summary;
     // run the fit
+    logger->info("ceres_fit solve start");
     Solve(options, problem.get(), &summary);
+    logger->info("ceres_fit solve done: usable={} brief={}",
+                 summary.IsSolutionUsable(), summary.BriefReport());
 
     // vector for storing uncertainties
     Eigen::VectorXd uncertainty(params.size());
@@ -146,7 +152,9 @@ auto mapFitter::ceres_fit(const Model &model,
         // populate covariance block
         covariance_blocks.push_back(std::make_pair(params.data(), params.data()));
         // compute covariance
+        logger->info("ceres_fit covariance start");
         auto covariance_result = covariance.Compute(covariance_blocks, problem.get());
+        logger->info("ceres_fit covariance done: success={}", covariance_result);
 
         // if covariance calculation suceeded
         if (covariance_result) {

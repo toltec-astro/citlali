@@ -3,6 +3,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <cstdlib>
 #include <limits>
 #include <cmath>
 #include <algorithm>
@@ -874,19 +875,52 @@ void Beammap::run_loop() {
             double init_col = -99;
 
             logger->info("fitting maps");
+            logger->info("beammap fit diagnostics enabled");
             // Run beammap fits sequentially. This avoids allocator/covariance instability
             // observed with parallel Ceres fits on some systems.
             for (Eigen::Index i = 0; i < n_maps; ++i) {
+                logger->info("beammap fit checkpoint: map={} begin converged={}", i, converged(i));
+
+                if (omb.signal[i].rows() != omb.n_rows || omb.signal[i].cols() != omb.n_cols ||
+                    omb.weight[i].rows() != omb.n_rows || omb.weight[i].cols() != omb.n_cols) {
+                    logger->error("beammap fit map={} geometry mismatch: signal={}x{} weight={}x{} expected={}x{}",
+                                  i, omb.signal[i].rows(), omb.signal[i].cols(),
+                                  omb.weight[i].rows(), omb.weight[i].cols(),
+                                  omb.n_rows, omb.n_cols);
+                    std::exit(EXIT_FAILURE);
+                }
+
+                const auto &sig = omb.signal[i];
+                const auto &wt = omb.weight[i];
+                const Eigen::Index n_pix = sig.size();
+                const Eigen::Index sig_finite = sig.array().isFinite().count();
+                const Eigen::Index wt_finite = wt.array().isFinite().count();
+                const Eigen::Index wt_pos = (wt.array() > 0.0).count();
+                logger->info("beammap fit map={} stats: sig_finite={}/{} wt_finite={}/{} wt_pos={}/{} sig[min,max]=({}, {}) wt[min,max]=({}, {})",
+                             i, sig_finite, n_pix, wt_finite, n_pix, wt_pos, n_pix,
+                             sig.minCoeff(), sig.maxCoeff(), wt.minCoeff(), wt.maxCoeff());
+
                 // only fit if not converged
                 if (!converged(i)) {
+                    const Eigen::Index n_weight_pos = (omb.weight[i].array() > 0.0).count();
+                    if (n_weight_pos < map_fitter.n_params) {
+                        logger->warn("beammap fit map={} skipped: insufficient weighted pixels ({})", i, n_weight_pos);
+                        params.row(i).setZero();
+                        perrors.row(i).setZero();
+                        good_fits(i) = false;
+                        continue;
+                    }
+
                     // get array number
                     auto array = maps_to_arrays(i);
                     // get initial guess fwhm from theoretical fwhms for the arrays
                     double init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
                     // fit the maps
+                    logger->info("beammap fit checkpoint: map={} call fit_to_gaussian", i);
                     auto [det_params, det_perror, good_fit] =
                         map_fitter.fit_to_gaussian<engine_utils::mapFitter::beammap>(omb.signal[i], omb.weight[i],
                                                                                      init_fwhm, init_row, init_col);
+                    logger->info("beammap fit checkpoint: map={} fit_to_gaussian returned good_fit={}", i, good_fit);
 
                     if (!(det_params.array().isFinite().all() && det_perror.array().isFinite().all())) {
                         det_params.setZero();
@@ -903,6 +937,8 @@ void Beammap::run_loop() {
                     params.row(i) = p0.row(i);
                     perrors.row(i) = perror0.row(i);
                 }
+
+                logger->info("beammap fit checkpoint: map={} end good_fit={}", i, good_fits(i));
             }
 
             logger->info("number of good fits {}/{}", good_fits.cast<double>().sum(), n_maps);
