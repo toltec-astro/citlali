@@ -1023,6 +1023,18 @@ void Beammap::set_apt_flags() {
 
         // calculate map standard deviation
         double map_std_dev = engine_utils::calc_std_dev(omb.signal[i]);
+        const bool valid_map_std = std::isfinite(map_std_dev) && map_std_dev > 0.0;
+
+        // reject non-physical fit results before threshold checks
+        const bool finite_params = params.row(i).array().isFinite().all();
+        const bool finite_perrors = perrors.row(i).array().isFinite().all();
+        const bool positive_amp = std::isfinite(params(i,0)) && params(i,0) > 0.0;
+        const bool positive_fwhm =
+            std::isfinite(calib.apt["a_fwhm"](i)) && std::isfinite(calib.apt["b_fwhm"](i)) &&
+            calib.apt["a_fwhm"](i) > 0.0 && calib.apt["b_fwhm"](i) > 0.0;
+        if (!(finite_params && finite_perrors && positive_amp && positive_fwhm && valid_map_std)) {
+            good_fits(i) = false;
+        }
 
         // set apt signal to noise
         if (std::isfinite(perrors(i,0)) && perrors(i,0) > 0) {
@@ -1058,8 +1070,10 @@ void Beammap::set_apt_flags() {
             flag2(i) |= AptFlags::ElFWHM;
         }
         // flag detectors with outlier S/N values
-        if ((params(i,0)/map_std_dev < lower_sig2noise[array_name]) ||
-            ((params(i,0)/map_std_dev > upper_sig2noise[array_name]) && (upper_sig2noise[array_name] > 0))) {
+        const double map_sig2noise = valid_map_std ? params(i,0)/map_std_dev : 0.0;
+        if (!std::isfinite(map_sig2noise) ||
+            (map_sig2noise < lower_sig2noise[array_name]) ||
+            ((map_sig2noise > upper_sig2noise[array_name]) && (upper_sig2noise[array_name] > 0))) {
             if (calib.apt["flag"](i)==0) {
                 n_flagged_dets++;
                 calib.apt["flag"](i) = 1;
@@ -1209,10 +1223,19 @@ void Beammap::set_apt_flags() {
         auto array_index = calib.apt["array"](i);
         std::string array_name = toltec_io.array_name_map[array_index];
 
+        const double amp = params(i,0);
         // calc flux scale (always in mJy/beam)
-        if (params(i,0)!=0) {
-            calib.apt["flxscale"](i) = beammap_fluxes_mJy_beam[array_name]/params(i,0);
-            calib.apt["sens"](i) = calib.apt["sens"](i)*calib.apt["flxscale"](i);
+        if (calib.apt["flag"](i) == 0 && std::isfinite(amp) && amp > 0.0) {
+            const double flxscale = beammap_fluxes_mJy_beam[array_name] / amp;
+            if (std::isfinite(flxscale) && flxscale > 0.0) {
+                calib.apt["flxscale"](i) = flxscale;
+                calib.apt["sens"](i) = calib.apt["sens"](i) * flxscale;
+            } else {
+                calib.apt["flxscale"](i) = 0;
+                calib.apt["sens"](i) = 0;
+                calib.apt["flag"](i) = 1;
+                flag2(i) |= AptFlags::Sens;
+            }
         }
         // set fluxscale (fcf) to zero if flagged
         else {
@@ -1254,6 +1277,7 @@ void Beammap::process_apt() {
         // else use detector closest to the median of selected networks
         else {
             logger->info("finding a reference detector");
+            constexpr Eigen::Index min_reference_candidates = 25;
             auto nw_in_set = [](Eigen::Index nw, const std::vector<Eigen::Index> &set) {
                 return std::find(set.begin(), set.end(), nw) != set.end();
             };
@@ -1270,7 +1294,7 @@ void Beammap::process_apt() {
                         }
                     }
                 }
-                if (n_match <= 0) {
+                if (n_match < min_reference_candidates) {
                     return false;
                 }
 
@@ -1310,58 +1334,53 @@ void Beammap::process_apt() {
             }
 
             if (!have_ref) {
-                logger->warn("no unflagged detectors in reference networks; falling back to array 0 median");
-                Eigen::Index array = calib.arrays(0);
-                auto array_x_t = calib.apt["x_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
-                                                             std::get<1>(calib.array_limits[array])-1));
-                auto array_y_t = calib.apt["y_t"](Eigen::seq(std::get<0>(calib.array_limits[array]),
-                                                             std::get<1>(calib.array_limits[array])-1));
-                Eigen::Index n_good_det = (calib.apt["flag"](Eigen::seq(std::get<0>(calib.array_limits[array]),
-                                                                        std::get<1>(calib.array_limits[array])-1)).array()==0).count();
-                if (n_good_det > 0) {
-                    x_t.resize(n_good_det);
-                    y_t.resize(n_good_det);
-                    det_indices.resize(n_good_det);
-
-                    Eigen::Index j = std::get<0>(calib.array_limits[array]);
+                logger->warn("no robust reference from nw=3 or nw=2,3,4; using all unflagged detectors");
+                Eigen::Index n_unflagged = (calib.apt["flag"].array() == 0).count();
+                if (n_unflagged > 0) {
+                    x_t.resize(n_unflagged);
+                    y_t.resize(n_unflagged);
+                    det_indices.resize(n_unflagged);
                     Eigen::Index k = 0;
-                    for (Eigen::Index i = 0; i < array_x_t.size(); ++i) {
-                        if (calib.apt["flag"](j) == 0) {
-                            x_t(k) = array_x_t(i);
-                            y_t(k) = array_y_t(i);
-                            det_indices(k) = j;
+                    for (Eigen::Index i = 0; i < calib.n_dets; ++i) {
+                        if (calib.apt["flag"](i) == 0) {
+                            x_t(k) = calib.apt["x_t"](i);
+                            y_t(k) = calib.apt["y_t"](i);
+                            det_indices(k) = i;
                             k++;
                         }
-                        j++;
                     }
-                }
-                else {
-                    x_t = array_x_t;
-                    y_t = array_y_t;
-                    det_indices = Eigen::VectorXd::LinSpaced(array_x_t.size(), std::get<0>(calib.array_limits[array]),
-                                                             std::get<1>(calib.array_limits[array]));
+                    have_ref = true;
                 }
             }
 
-            med_x_t = tula::alg::median(x_t);
-            med_y_t = tula::alg::median(y_t);
+            if (!have_ref) {
+                logger->warn("all detectors are flagged; disabling reference subtraction");
+            } else {
+                med_x_t = tula::alg::median(x_t);
+                med_y_t = tula::alg::median(y_t);
 
-            dist = pow(x_t.array() - med_x_t,2) + pow(y_t.array() - med_y_t,2);
-            auto min_dist = dist.minCoeff(&beammap_reference_det_found);
-            beammap_reference_det_found = static_cast<Eigen::Index>(det_indices(beammap_reference_det_found));
+                dist = pow(x_t.array() - med_x_t,2) + pow(y_t.array() - med_y_t,2);
+                dist.minCoeff(&beammap_reference_det_found);
+                beammap_reference_det_found = static_cast<Eigen::Index>(det_indices(beammap_reference_det_found));
 
-            // set reference x_t and y_t to the median location
-            ref_det_x_t = med_x_t;
-            ref_det_y_t = med_y_t;
+                // set reference x_t and y_t to the median location
+                ref_det_x_t = med_x_t;
+                ref_det_y_t = med_y_t;
+            }
         }
-        double ref_det_actual_x_t = calib.apt["x_t"](beammap_reference_det_found);
-        double ref_det_actual_y_t = calib.apt["y_t"](beammap_reference_det_found);
-        logger->info("using reference median ({},{}) arcsec; nearest detector {} at ({},{}) arcsec",
-                     static_cast<float>(ref_det_x_t), static_cast<float>(ref_det_y_t),
-                     beammap_reference_det_found,
-                     static_cast<float>(ref_det_actual_x_t), static_cast<float>(ref_det_actual_y_t));
-        // record resolved reference detector for metadata; keep config value unchanged
-        calib.apt_meta["reference_det"] = beammap_reference_det_found;
+        if (beammap_reference_det_found >= 0 && beammap_reference_det_found < calib.n_dets) {
+            double ref_det_actual_x_t = calib.apt["x_t"](beammap_reference_det_found);
+            double ref_det_actual_y_t = calib.apt["y_t"](beammap_reference_det_found);
+            logger->info("using reference median ({},{}) arcsec; nearest detector {} at ({},{}) arcsec",
+                         static_cast<float>(ref_det_x_t), static_cast<float>(ref_det_y_t),
+                         beammap_reference_det_found,
+                         static_cast<float>(ref_det_actual_x_t), static_cast<float>(ref_det_actual_y_t));
+            // record resolved reference detector for metadata; keep config value unchanged
+            calib.apt_meta["reference_det"] = beammap_reference_det_found;
+        } else {
+            logger->warn("reference detector is invalid; leaving reference offsets at ({},{}) arcsec",
+                         static_cast<float>(ref_det_x_t), static_cast<float>(ref_det_y_t));
+        }
     }
     else {
         logger->info("no reference detector selected");
@@ -1428,11 +1447,19 @@ void Beammap::process_apt() {
     calib.apt["x_t_derot"] = calib.apt["x_t"];
     calib.apt["y_t_derot"] = calib.apt["y_t"];
 
+    // tolerate telescope streams that provide elevation in degrees.
+    Eigen::VectorXd derot_elev_rad = calib.apt["derot_elev"];
+    const double max_abs_elev = derot_elev_rad.array().abs().maxCoeff();
+    if (std::isfinite(max_abs_elev) && max_abs_elev > 2.0 * pi + 0.1) {
+        logger->warn("derot_elev appears to be in degrees (max |elev|={}); converting to radians", max_abs_elev);
+        derot_elev_rad *= DEG_TO_RAD;
+    }
+
     // calculate derotated positions
-    Eigen::VectorXd rot_az_off = cos(-calib.apt["derot_elev"].array())*calib.apt["x_t_derot"].array() -
-                                 sin(-calib.apt["derot_elev"].array())*calib.apt["y_t_derot"].array();
-    Eigen::VectorXd rot_alt_off = sin(-calib.apt["derot_elev"].array())*calib.apt["x_t_derot"].array() +
-                                  cos(-calib.apt["derot_elev"].array())*calib.apt["y_t_derot"].array();
+    Eigen::VectorXd rot_az_off = cos(-derot_elev_rad.array())*calib.apt["x_t_derot"].array() -
+                                 sin(-derot_elev_rad.array())*calib.apt["y_t_derot"].array();
+    Eigen::VectorXd rot_alt_off = sin(-derot_elev_rad.array())*calib.apt["x_t_derot"].array() +
+                                  cos(-derot_elev_rad.array())*calib.apt["y_t_derot"].array();
 
     // overwrite x_t and y_t
     calib.apt["x_t_derot"] = -rot_az_off;
