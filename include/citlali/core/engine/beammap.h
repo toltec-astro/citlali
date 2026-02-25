@@ -8,6 +8,7 @@
 #include <cmath>
 #include <algorithm>
 #include <atomic>
+#include <memory>
 #include <mutex>
 #include <condition_variable>
 
@@ -79,7 +80,7 @@ public:
     // diagnostics for sample-level beammap RFI masking
     Eigen::VectorXi rfi_mask_samples_flagged;
     Eigen::VectorXi rfi_mask_scans_flagged;
-    std::mutex rfi_mask_diag_mutex;
+    std::shared_ptr<std::mutex> rfi_mask_diag_mutex = std::make_shared<std::mutex>();
 
     // placeholder vectors for grppi maps
     std::vector<int> scan_in_vec, scan_out_vec;
@@ -879,7 +880,10 @@ Beammap::RFIMaskScanSummary Beammap::apply_rfi_sample_mask(TCData<TCDataKind::PT
     if (summary.n_samples_flagged > 0 &&
         rfi_mask_samples_flagged.size() == n_dets &&
         rfi_mask_scans_flagged.size() == n_dets) {
-        std::lock_guard<std::mutex> lock(rfi_mask_diag_mutex);
+        if (!rfi_mask_diag_mutex) {
+            rfi_mask_diag_mutex = std::make_shared<std::mutex>();
+        }
+        std::lock_guard<std::mutex> lock(*rfi_mask_diag_mutex);
         rfi_mask_samples_flagged += local_samples;
         rfi_mask_scans_flagged += local_scans;
     }
