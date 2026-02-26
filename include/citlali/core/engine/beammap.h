@@ -70,6 +70,15 @@ public:
     // good fits
     Eigen::Matrix<bool, Eigen::Dynamic, 1> good_fits;
 
+    // per-map fit-bound diagnostics (for final QC outputs)
+    Eigen::MatrixXd fit_diag_init_params;
+    Eigen::MatrixXd fit_diag_lower_limits;
+    Eigen::MatrixXd fit_diag_upper_limits;
+    Eigen::MatrixXi fit_diag_hit_lower;
+    Eigen::MatrixXi fit_diag_hit_upper;
+    Eigen::VectorXi fit_diag_bound_code;
+    Eigen::VectorXi fit_diag_bound_nhit;
+
     struct RFIMaskScanSummary {
         Eigen::Index n_det_candidates = 0;
         Eigen::Index n_det_flagged = 0;
@@ -162,6 +171,13 @@ void Beammap::setup() {
     // resize the current fit matrix
     params.setZero(n_maps, map_fitter.n_params);
     perrors.setZero(n_maps, map_fitter.n_params);
+    fit_diag_init_params.setZero(n_maps, map_fitter.n_params);
+    fit_diag_lower_limits.setZero(n_maps, map_fitter.n_params);
+    fit_diag_upper_limits.setZero(n_maps, map_fitter.n_params);
+    fit_diag_hit_lower.setZero(n_maps, map_fitter.n_params);
+    fit_diag_hit_upper.setZero(n_maps, map_fitter.n_params);
+    fit_diag_bound_code.setZero(n_maps);
+    fit_diag_bound_nhit.setZero(n_maps);
 
     // resize good fits
     good_fits.setZero(n_maps);
@@ -602,6 +618,23 @@ void Beammap::loop_pipeline() {
             const Eigen::Index n_det_masked = (rfi_mask_scans_flagged.array() > 0).count();
             logger->info("beammap rfi mask summary: {} detectors affected, {} total samples masked",
                          n_det_masked, static_cast<long long>(rfi_mask_samples_flagged.cast<double>().sum()));
+        }
+
+        if (fit_diag_bound_nhit.size() == n_maps &&
+            fit_diag_hit_lower.rows() == n_maps && fit_diag_hit_upper.rows() == n_maps &&
+            fit_diag_hit_lower.cols() >= 6 && fit_diag_hit_upper.cols() >= 6) {
+            const Eigen::Index n_bound_any = (fit_diag_bound_nhit.array() > 0).count();
+            Eigen::VectorXi low_hits = fit_diag_hit_lower.colwise().sum().transpose();
+            Eigen::VectorXi high_hits = fit_diag_hit_upper.colwise().sum().transpose();
+            logger->info(
+                "beammap final bound-hit summary: any_hit={}/{} amp(lo/hi)={}/{} x(lo/hi)={}/{} y(lo/hi)={}/{} a(lo/hi)={}/{} b(lo/hi)={}/{} angle(lo/hi)={}/{}",
+                n_bound_any, n_maps,
+                low_hits(0), high_hits(0),
+                low_hits(1), high_hits(1),
+                low_hits(2), high_hits(2),
+                low_hits(3), high_hits(3),
+                low_hits(4), high_hits(4),
+                low_hits(5), high_hits(5));
         }
 
         // flag detectors in apt based on config limits
@@ -1130,6 +1163,9 @@ void Beammap::run_loop() {
             // initial position for fitting
             double init_row = -99;
             double init_col = -99;
+            Eigen::VectorXi iter_bound_low = Eigen::VectorXi::Zero(map_fitter.n_params);
+            Eigen::VectorXi iter_bound_high = Eigen::VectorXi::Zero(map_fitter.n_params);
+            Eigen::Index iter_bound_any = 0;
 
             logger->info("fitting maps");
             logger->info("beammap fit diagnostics enabled");
@@ -1164,6 +1200,13 @@ void Beammap::run_loop() {
                         logger->warn("beammap fit map={} skipped: insufficient weighted pixels ({})", i, n_weight_pos);
                         params.row(i).setZero();
                         perrors.row(i).setZero();
+                        fit_diag_init_params.row(i).setZero();
+                        fit_diag_lower_limits.row(i).setZero();
+                        fit_diag_upper_limits.row(i).setZero();
+                        fit_diag_hit_lower.row(i).setZero();
+                        fit_diag_hit_upper.row(i).setZero();
+                        fit_diag_bound_code(i) = 0;
+                        fit_diag_bound_nhit(i) = 0;
                         good_fits(i) = false;
                         continue;
                     }
@@ -1174,9 +1217,10 @@ void Beammap::run_loop() {
                     double init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
                     // fit the maps
                     logger->info("beammap fit checkpoint: map={} call fit_to_gaussian", i);
+                    engine_utils::mapFitter::FitDiagnostics fit_diag;
                     auto [det_params, det_perror, good_fit] =
                         map_fitter.fit_to_gaussian<engine_utils::mapFitter::beammap>(omb.signal[i], omb.weight[i],
-                                                                                     init_fwhm, init_row, init_col);
+                                                                                     init_fwhm, init_row, init_col, &fit_diag);
                     logger->info("beammap fit checkpoint: map={} fit_to_gaussian returned good_fit={}", i, good_fit);
 
                     if (!(det_params.array().isFinite().all() && det_perror.array().isFinite().all())) {
@@ -1188,6 +1232,50 @@ void Beammap::run_loop() {
                     params.row(i) = det_params;
                     perrors.row(i) = det_perror;
                     good_fits(i) = good_fit;
+
+                    if (fit_diag.valid &&
+                        fit_diag.init_params.size() == map_fitter.n_params &&
+                        fit_diag.lower_limits.size() == map_fitter.n_params &&
+                        fit_diag.upper_limits.size() == map_fitter.n_params &&
+                        fit_diag.hit_lower.size() == map_fitter.n_params &&
+                        fit_diag.hit_upper.size() == map_fitter.n_params) {
+                        fit_diag_init_params.row(i) = fit_diag.init_params.transpose();
+                        fit_diag_lower_limits.row(i) = fit_diag.lower_limits.transpose();
+                        fit_diag_upper_limits.row(i) = fit_diag.upper_limits.transpose();
+                        fit_diag_hit_lower.row(i) = fit_diag.hit_lower.transpose();
+                        fit_diag_hit_upper.row(i) = fit_diag.hit_upper.transpose();
+
+                        int bound_code = 0;
+                        int bound_nhit = 0;
+                        for (int p = 0; p < map_fitter.n_params; ++p) {
+                            const bool hit_low = fit_diag.hit_lower(p) != 0;
+                            const bool hit_high = fit_diag.hit_upper(p) != 0;
+                            if (hit_low) {
+                                bound_code |= (1 << (2 * p));
+                                iter_bound_low(p)++;
+                                bound_nhit++;
+                            }
+                            if (hit_high) {
+                                bound_code |= (1 << (2 * p + 1));
+                                iter_bound_high(p)++;
+                                bound_nhit++;
+                            }
+                        }
+                        fit_diag_bound_code(i) = bound_code;
+                        fit_diag_bound_nhit(i) = bound_nhit;
+                        if (bound_nhit > 0) {
+                            iter_bound_any++;
+                        }
+                    }
+                    else {
+                        fit_diag_init_params.row(i).setZero();
+                        fit_diag_lower_limits.row(i).setZero();
+                        fit_diag_upper_limits.row(i).setZero();
+                        fit_diag_hit_lower.row(i).setZero();
+                        fit_diag_hit_upper.row(i).setZero();
+                        fit_diag_bound_code(i) = 0;
+                        fit_diag_bound_nhit(i) = 0;
+                    }
                 }
                 // otherwise keep value from previous iteration
                 else {
@@ -1198,6 +1286,21 @@ void Beammap::run_loop() {
                 logger->info("beammap fit checkpoint: map={} end good_fit={}", i, good_fits(i));
             }
 
+            if (map_fitter.n_params >= 6) {
+                logger->info(
+                    "beammap fit bound summary (iter {}): any_hit={}/{} amp(lo/hi)={}/{} x(lo/hi)={}/{} y(lo/hi)={}/{} a(lo/hi)={}/{} b(lo/hi)={}/{} angle(lo/hi)={}/{}",
+                    current_iter, iter_bound_any, n_maps,
+                    iter_bound_low(0), iter_bound_high(0),
+                    iter_bound_low(1), iter_bound_high(1),
+                    iter_bound_low(2), iter_bound_high(2),
+                    iter_bound_low(3), iter_bound_high(3),
+                    iter_bound_low(4), iter_bound_high(4),
+                    iter_bound_low(5), iter_bound_high(5));
+            }
+            else {
+                logger->info("beammap fit bound summary (iter {}): any_hit={}/{}",
+                             current_iter, iter_bound_any, n_maps);
+            }
             logger->info("number of good fits {}/{}", good_fits.cast<double>().sum(), n_maps);
         }
 
@@ -1808,6 +1911,23 @@ void Beammap::output() {
                 "n_weight_pos",
                 "rfi_masked_samples",
                 "rfi_masked_scans",
+                "fit_bound_nhit",
+                "fit_bound_code",
+                "fit_bound_amp",
+                "fit_bound_x",
+                "fit_bound_y",
+                "fit_bound_a",
+                "fit_bound_b",
+                "fit_bound_angle",
+                "fit_init_amp",
+                "fit_init_x_t",
+                "fit_init_y_t",
+                "fit_init_a_fwhm",
+                "fit_init_b_fwhm",
+                "fit_low_a_fwhm",
+                "fit_high_a_fwhm",
+                "fit_low_b_fwhm",
+                "fit_high_b_fwhm",
                 "x_t_raw",
                 "y_t_raw",
                 "x_t",
@@ -1871,6 +1991,33 @@ void Beammap::output() {
                 }
             }
 
+            const double pix_to_arcsec = RAD_TO_ASEC * omb.pixel_size_rad;
+            const double sigma_to_fwhm_arcsec = pix_to_arcsec * STD_TO_FWHM;
+
+            Eigen::VectorXd fit_bound_nhit = fit_diag_bound_nhit.cast<double>();
+            Eigen::VectorXd fit_bound_code = fit_diag_bound_code.cast<double>();
+            auto bound_state = [&](Eigen::Index p) -> Eigen::VectorXd {
+                return fit_diag_hit_upper.col(p).cast<double>() - fit_diag_hit_lower.col(p).cast<double>();
+            };
+            Eigen::VectorXd fit_bound_amp = bound_state(0);
+            Eigen::VectorXd fit_bound_x = bound_state(1);
+            Eigen::VectorXd fit_bound_y = bound_state(2);
+            Eigen::VectorXd fit_bound_a = bound_state(3);
+            Eigen::VectorXd fit_bound_b = bound_state(4);
+            Eigen::VectorXd fit_bound_angle = bound_state(5);
+
+            Eigen::VectorXd fit_init_amp = fit_diag_init_params.col(0);
+            Eigen::VectorXd fit_init_x_t =
+                (pix_to_arcsec * (fit_diag_init_params.col(1).array() - (omb.n_cols - 1) / 2.0)).matrix();
+            Eigen::VectorXd fit_init_y_t =
+                (pix_to_arcsec * (fit_diag_init_params.col(2).array() - (omb.n_rows - 1) / 2.0)).matrix();
+            Eigen::VectorXd fit_init_a_fwhm = (sigma_to_fwhm_arcsec * fit_diag_init_params.col(3).array()).matrix();
+            Eigen::VectorXd fit_init_b_fwhm = (sigma_to_fwhm_arcsec * fit_diag_init_params.col(4).array()).matrix();
+            Eigen::VectorXd fit_low_a_fwhm = (sigma_to_fwhm_arcsec * fit_diag_lower_limits.col(3).array()).matrix();
+            Eigen::VectorXd fit_high_a_fwhm = (sigma_to_fwhm_arcsec * fit_diag_upper_limits.col(3).array()).matrix();
+            Eigen::VectorXd fit_low_b_fwhm = (sigma_to_fwhm_arcsec * fit_diag_lower_limits.col(4).array()).matrix();
+            Eigen::VectorXd fit_high_b_fwhm = (sigma_to_fwhm_arcsec * fit_diag_upper_limits.col(4).array()).matrix();
+
             Eigen::MatrixXd fit_qc_table(calib.n_dets, fit_qc_header.size());
             Eigen::Index col = 0;
             fit_qc_table.col(col++) = apt_or_zero("uid");
@@ -1890,6 +2037,23 @@ void Beammap::output() {
             fit_qc_table.col(col++) = n_weight_pos;
             fit_qc_table.col(col++) = apt_or_zero("rfi_masked_samples");
             fit_qc_table.col(col++) = apt_or_zero("rfi_masked_scans");
+            fit_qc_table.col(col++) = fit_bound_nhit;
+            fit_qc_table.col(col++) = fit_bound_code;
+            fit_qc_table.col(col++) = fit_bound_amp;
+            fit_qc_table.col(col++) = fit_bound_x;
+            fit_qc_table.col(col++) = fit_bound_y;
+            fit_qc_table.col(col++) = fit_bound_a;
+            fit_qc_table.col(col++) = fit_bound_b;
+            fit_qc_table.col(col++) = fit_bound_angle;
+            fit_qc_table.col(col++) = fit_init_amp;
+            fit_qc_table.col(col++) = fit_init_x_t;
+            fit_qc_table.col(col++) = fit_init_y_t;
+            fit_qc_table.col(col++) = fit_init_a_fwhm;
+            fit_qc_table.col(col++) = fit_init_b_fwhm;
+            fit_qc_table.col(col++) = fit_low_a_fwhm;
+            fit_qc_table.col(col++) = fit_high_a_fwhm;
+            fit_qc_table.col(col++) = fit_low_b_fwhm;
+            fit_qc_table.col(col++) = fit_high_b_fwhm;
             fit_qc_table.col(col++) = apt_or_zero("x_t_raw");
             fit_qc_table.col(col++) = apt_or_zero("y_t_raw");
             fit_qc_table.col(col++) = apt_or_zero("x_t");
@@ -1924,6 +2088,7 @@ void Beammap::output() {
             fit_qc_meta["rfi_mask_max_flagged_fraction"] = beammap_rfi_mask_max_flagged_fraction;
             fit_qc_meta["rfi_mask_detectors_affected"] =
                 static_cast<int>((apt_or_zero("rfi_masked_scans").array() > 0.0).count());
+            fit_qc_meta["fit_bound_any"] = static_cast<int>((fit_diag_bound_nhit.array() > 0).count());
 
             std::map<std::string, std::string> fit_qc_units = {
                 {"uid", "N/A"},
@@ -1943,6 +2108,23 @@ void Beammap::output() {
                 {"n_weight_pos", "pix"},
                 {"rfi_masked_samples", "samples"},
                 {"rfi_masked_scans", "scans"},
+                {"fit_bound_nhit", "N/A"},
+                {"fit_bound_code", "N/A"},
+                {"fit_bound_amp", "N/A"},
+                {"fit_bound_x", "N/A"},
+                {"fit_bound_y", "N/A"},
+                {"fit_bound_a", "N/A"},
+                {"fit_bound_b", "N/A"},
+                {"fit_bound_angle", "N/A"},
+                {"fit_init_amp", get_unit("amp", omb.sig_unit)},
+                {"fit_init_x_t", "arcsec"},
+                {"fit_init_y_t", "arcsec"},
+                {"fit_init_a_fwhm", "arcsec"},
+                {"fit_init_b_fwhm", "arcsec"},
+                {"fit_low_a_fwhm", "arcsec"},
+                {"fit_high_a_fwhm", "arcsec"},
+                {"fit_low_b_fwhm", "arcsec"},
+                {"fit_high_b_fwhm", "arcsec"},
                 {"x_t_raw", get_unit("x_t", "arcsec")},
                 {"y_t_raw", get_unit("y_t", "arcsec")},
                 {"x_t", get_unit("x_t", "arcsec")},
@@ -1976,6 +2158,23 @@ void Beammap::output() {
                 {"n_weight_pos", "number of detector-map pixels with positive weight"},
                 {"rfi_masked_samples", "number of timestream samples masked by beammap rfi_mask"},
                 {"rfi_masked_scans", "number of scans with at least one sample masked by beammap rfi_mask"},
+                {"fit_bound_nhit", "number of fitted parameters at lower/upper bounds"},
+                {"fit_bound_code", "bitmask of bound-hit parameters (see metadata legend)"},
+                {"fit_bound_amp", "bound state for amplitude (-1 lower, 0 none, +1 upper)"},
+                {"fit_bound_x", "bound state for fitted x center (-1 lower, 0 none, +1 upper)"},
+                {"fit_bound_y", "bound state for fitted y center (-1 lower, 0 none, +1 upper)"},
+                {"fit_bound_a", "bound state for fitted a sigma/FWHM (-1 lower, 0 none, +1 upper)"},
+                {"fit_bound_b", "bound state for fitted b sigma/FWHM (-1 lower, 0 none, +1 upper)"},
+                {"fit_bound_angle", "bound state for fitted angle (-1 lower, 0 none, +1 upper)"},
+                {"fit_init_amp", "initial amplitude used by Gaussian fitter"},
+                {"fit_init_x_t", "initial x position converted to arcsec offset"},
+                {"fit_init_y_t", "initial y position converted to arcsec offset"},
+                {"fit_init_a_fwhm", "initial a FWHM implied by fitter initialization"},
+                {"fit_init_b_fwhm", "initial b FWHM implied by fitter initialization"},
+                {"fit_low_a_fwhm", "active lower bound for a FWHM"},
+                {"fit_high_a_fwhm", "active upper bound for a FWHM"},
+                {"fit_low_b_fwhm", "active lower bound for b FWHM"},
+                {"fit_high_b_fwhm", "active upper bound for b FWHM"},
                 {"x_t_raw", "raw x position before reference subtraction/derotation"},
                 {"y_t_raw", "raw y position before reference subtraction/derotation"},
                 {"x_t", get_description("x_t", "detector x position")},
@@ -2003,6 +2202,18 @@ void Beammap::output() {
             fit_qc_meta["flag2"].push_back("Sig2Noise=4");
             fit_qc_meta["flag2"].push_back("Sens=5");
             fit_qc_meta["flag2"].push_back("Position=6");
+            fit_qc_meta["fit_bound_code"].push_back("bit 0: amp lower");
+            fit_qc_meta["fit_bound_code"].push_back("bit 1: amp upper");
+            fit_qc_meta["fit_bound_code"].push_back("bit 2: x lower");
+            fit_qc_meta["fit_bound_code"].push_back("bit 3: x upper");
+            fit_qc_meta["fit_bound_code"].push_back("bit 4: y lower");
+            fit_qc_meta["fit_bound_code"].push_back("bit 5: y upper");
+            fit_qc_meta["fit_bound_code"].push_back("bit 6: a lower");
+            fit_qc_meta["fit_bound_code"].push_back("bit 7: a upper");
+            fit_qc_meta["fit_bound_code"].push_back("bit 8: b lower");
+            fit_qc_meta["fit_bound_code"].push_back("bit 9: b upper");
+            fit_qc_meta["fit_bound_code"].push_back("bit 10: angle lower");
+            fit_qc_meta["fit_bound_code"].push_back("bit 11: angle upper");
 
             to_ecsv_from_matrix(fit_qc_filename, fit_qc_table, fit_qc_header, fit_qc_meta);
             logger->info("done writing beammap fit qc table {}.ecsv", fit_qc_filename);

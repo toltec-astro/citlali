@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
 
 #include <Eigen/Core>
 #include <Eigen/QR>
@@ -51,6 +52,22 @@ public:
     // upper limit on rotation angle
     double angle_high = pi/2;
 
+    struct FitDiagnostics {
+        bool valid = false;
+        Eigen::VectorXd init_params;
+        Eigen::VectorXd lower_limits;
+        Eigen::VectorXd upper_limits;
+        Eigen::VectorXi hit_lower;
+        Eigen::VectorXi hit_upper;
+        Eigen::VectorXd frac_in_range;
+        Eigen::Index lower_row = -1;
+        Eigen::Index lower_col = -1;
+        Eigen::Index upper_row = -1;
+        Eigen::Index upper_col = -1;
+        double map_sigma = std::numeric_limits<double>::quiet_NaN();
+        Eigen::Index sigma_nonzero = 0;
+    };
+
     template <typename Model, typename Derived>
     auto ceres_fit(const Model &,
                    const typename Model::InputType &,
@@ -62,7 +79,7 @@ public:
 
     template <mapFitter::FitMode fit_mode, typename Derived>
     auto fit_to_gaussian(Eigen::DenseBase<Derived> &, Eigen::DenseBase<Derived> &,
-                         double, double, double);
+                         double, double, double, FitDiagnostics *diag = nullptr);
 };
 
 template <typename Model, typename Derived>
@@ -285,7 +302,7 @@ auto mapFitter::ceres_fit(const Model &model,
 
 template <mapFitter::FitMode fit_mode, typename Derived>
 auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseBase<Derived> &weight,
-                                double init_fwhm, double init_row, double init_col) {
+                                double init_fwhm, double init_row, double init_col, FitDiagnostics *diag) {
 
     if (signal.rows() <= 0 || signal.cols() <= 0 ||
         weight.rows() != signal.rows() || weight.cols() != signal.cols()) {
@@ -472,8 +489,44 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
         return std::tuple<Eigen::VectorXd, Eigen::VectorXd, bool>(p, e, false);
     }
 
-    // do the fit and return
+    if (diag != nullptr) {
+        diag->valid = true;
+        diag->init_params = init_params;
+        diag->lower_limits = limits.col(0);
+        diag->upper_limits = limits.col(1);
+        diag->hit_lower = Eigen::VectorXi::Zero(n_params);
+        diag->hit_upper = Eigen::VectorXi::Zero(n_params);
+        diag->frac_in_range = Eigen::VectorXd::Constant(n_params, std::numeric_limits<double>::quiet_NaN());
+        diag->lower_row = lower_row;
+        diag->lower_col = lower_col;
+        diag->upper_row = upper_row;
+        diag->upper_col = upper_col;
+        diag->map_sigma = map_sigma;
+        diag->sigma_nonzero = (_sigma.array() > 0.0).count();
+    }
+
+    // do the fit
     constexpr bool use_ceres_covariance = (fit_mode == FitMode::pointing);
-    return ceres_fit(g, init_params, xy, _signal, _sigma, limits, use_ceres_covariance);
+    auto [fit_params, fit_uncertainty, fit_is_good] =
+        ceres_fit(g, init_params, xy, _signal, _sigma, limits, use_ceres_covariance);
+
+    if (diag != nullptr && diag->valid) {
+        for (Eigen::Index i = 0; i < n_params; ++i) {
+            const double p = fit_params(i);
+            const double low = diag->lower_limits(i);
+            const double high = diag->upper_limits(i);
+            const double span = high - low;
+            const double tol = std::max(1e-9, 1e-6 * std::max(1.0, std::abs(span)));
+            if (std::isfinite(p) && std::isfinite(low) && std::isfinite(high)) {
+                diag->hit_lower(i) = (p <= low + tol) ? 1 : 0;
+                diag->hit_upper(i) = (p >= high - tol) ? 1 : 0;
+                if (std::isfinite(span) && std::abs(span) > 0.0) {
+                    diag->frac_in_range(i) = (p - low) / span;
+                }
+            }
+        }
+    }
+
+    return std::tuple<Eigen::VectorXd, Eigen::VectorXd, bool>(fit_params, fit_uncertainty, fit_is_good);
 }
 } //namespace engine_utils
