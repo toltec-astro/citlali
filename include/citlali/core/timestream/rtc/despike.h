@@ -3,6 +3,7 @@
 #include <boost/random.hpp>
 
 #include <algorithm>
+#include <cmath>
 #include <random>
 #include <vector>
 #include <Eigen/Core>
@@ -77,7 +78,40 @@ private:
     auto make_window(Eigen::DenseBase<Derived> &spike_loc, int n_spikes,
                      Eigen::Index n_pts) {
         // window first index, last index, and size
-        int win_index_0, win_index_1, win_size;
+        int win_index_0 = 0;
+        int win_index_1 = static_cast<int>(n_pts);
+        int win_size = 0;
+        const int n_pts_i = static_cast<int>(n_pts);
+        const int fsmp_i = std::max(0, static_cast<int>(std::lround(fsmp)));
+
+        // find largest unpadded interval between spikes/edges for fallback
+        auto set_fallback_window = [&]() {
+            int best_0 = 0;
+            int best_1 = n_pts_i;
+            int best_len = -1;
+            int prev_spike = -1;
+            for (int i = 0; i < n_spikes; ++i) {
+                int s = std::clamp(spike_loc(i), 0, n_pts_i - 1);
+                int cand_0 = prev_spike + 1;
+                int cand_1 = s;
+                int cand_len = cand_1 - cand_0;
+                if (cand_len > best_len) {
+                    best_len = cand_len;
+                    best_0 = cand_0;
+                    best_1 = cand_1;
+                }
+                prev_spike = s;
+            }
+            int cand_0 = prev_spike + 1;
+            int cand_1 = n_pts_i;
+            int cand_len = cand_1 - cand_0;
+            if (cand_len > best_len) {
+                best_0 = cand_0;
+                best_1 = cand_1;
+            }
+            win_index_0 = std::clamp(best_0, 0, n_pts_i);
+            win_index_1 = std::clamp(best_1, 0, n_pts_i);
+        };
 
         // find biggest spike-free window
         // first deal with the harder case of multiple spikes
@@ -130,13 +164,21 @@ private:
         }
         else {
             if (n_pts - spike_loc(0) > spike_loc(0)) {
-                win_index_0 = spike_loc(0) + 2 * fsmp;
+                win_index_0 = spike_loc(0) + 2 * fsmp_i;
                 win_index_1 = n_pts - 1;
             }
             else {
                 win_index_0 = 0;
-                win_index_1 = spike_loc(0) - fsmp;
+                win_index_1 = spike_loc(0) - fsmp_i;
             }
+        }
+
+        // guard indices before use
+        win_index_0 = std::clamp(win_index_0, 0, n_pts_i);
+        win_index_1 = std::clamp(win_index_1, 0, n_pts_i);
+        if (win_index_1 - win_index_0 <= 1) {
+            logger->warn("despike make_window produced degenerate window; using fallback");
+            set_fallback_window();
         }
 
         logger->trace("win_index_0 {}", win_index_0);
@@ -152,15 +194,12 @@ private:
 
         win_size = win_index_1 - win_index_0 - 1;
 
-        if (win_index_0 > win_index_1) {
-            logger->error("despike failed: win_index_0 > win_index_1");
-            logger->error("scan size {}", n_pts);
-            logger->error("spike_loc {}", spike_loc.derived());
-            logger->error("win_index_0 {}", win_index_0);
-            logger->error("win_index_1 {}", win_index_1);
-            logger->error("win_size {}", win_size);
-
-            std::exit(EXIT_FAILURE);
+        if (win_size <= 0) {
+            logger->warn("despike make_window still invalid (scan size {}, spike_loc {}); using full-scan fallback",
+                         n_pts, spike_loc.derived());
+            win_index_0 = 0;
+            win_index_1 = n_pts_i;
+            win_size = std::max(1, n_pts_i - 1);
         }
 
         return std::tuple<int, int, int>(win_index_0, win_index_1, win_size);
@@ -173,6 +212,11 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                        apt_t &apt) {
     Eigen::Index n_pts = scans.rows();
     Eigen::Index n_dets = scans.cols();
+
+    if (n_pts < 3) {
+        logger->warn("despike skipped: too few samples in scan (n_pts={})", n_pts);
+        return;
+    }
 
     // loop through detectors
     for (Eigen::Index det=0; det<n_dets; det++) {
@@ -314,10 +358,6 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                     continue;
                 }
 
-                // get the largest window that is without spikes
-                auto [win_index_0, win_index_1, win_size] =
-                    make_window(spike_loc, n_spikes, n_pts);
-
                 if (run_filter) {
                     int decay_window = static_cast<int>(window_size);
                     for (Eigen::Index i=0; i<n_spikes; ++i) {
@@ -330,6 +370,16 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                     }
                 }
                 else {
+                    // get the largest window that is without spikes
+                    auto [win_index_0, win_index_1, win_size] =
+                        make_window(spike_loc, n_spikes, n_pts);
+
+                    if (win_size <= 1) {
+                        logger->warn("despike detector {} has insufficient window for sigma estimate (win_size={}); skipping decay-based expansion",
+                                     det, win_size);
+                        continue;
+                    }
+
                     // create a sub-array with values from the largest spike-free window
                     Eigen::VectorXd sub_vals =
                         scans.col(det).segment(win_index_0, win_size);
@@ -346,21 +396,35 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                     if (sigest < sigest_lim) {
                         sigest = sigest_lim;
                     }
+                    if (!std::isfinite(sigest) || sigest <= 0.) {
+                        logger->warn("despike detector {} has non-finite/zero sigma estimate ({}); skipping decay-based expansion",
+                                     det, sigest);
+                        continue;
+                    }
 
                     // calculate the decay length of all the spikes
-                    Eigen::VectorXd decay_length = -fsmp * time_constant_sec *
-                                                   ((sigest / spike_vals.array()).abs()).log();
+                    Eigen::ArrayXd ratio =
+                        (sigest / spike_vals.array()).abs().cwiseMax(1.e-12);
+                    Eigen::VectorXd decay_length =
+                        (-fsmp * time_constant_sec * ratio.log()).matrix();
 
                     // if a decay length is less than 6, set it to 6
                     decay_length = (decay_length.array() < 6.).select(6., decay_length);
 
-                    // exit if the decay length is too large
+                    // replace non-finite values with minimum allowed decay length
+                    for (Eigen::Index i = 0; i < decay_length.size(); ++i) {
+                        if (!std::isfinite(decay_length(i))) {
+                            decay_length(i) = 6.;
+                        }
+                    }
+
+                    // clip overly long decay lengths instead of aborting the reduction
                     if (max_window_sec > 0) {
                         double max_len = max_window_sec * fsmp;
                         if ((decay_length.array() > max_len).any()) {
-                            logger->error("decay length is longer than {} * fsmp.  mission "
-                                        "failed, we'll get em next time.",max_window_sec);
-                            std::exit(EXIT_FAILURE);
+                            logger->warn("despike detector {} has decay length longer than {} * fsmp; clipping to max",
+                                         det, max_window_sec);
+                            decay_length = decay_length.array().min(max_len).matrix();
                         }
                     }
 

@@ -353,6 +353,11 @@ auto calc_std_dev(Eigen::DenseBase<DerivedA> &data) {
 
     auto n_good = data.derived().size();
 
+    // no samples
+    if (n_good == 0) {
+        return 0.0;
+    }
+
     // number of samples for divisor
     double n_samples;
     if (n_good == 1) {
