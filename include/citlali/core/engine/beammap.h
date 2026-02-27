@@ -1134,7 +1134,7 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
     Eigen::VectorXd sig_abs_dev = (sig_vec.array() - sig_med).abs().matrix();
     double sig_sigma = 1.4826 * tula::alg::median(sig_abs_dev);
     if (!std::isfinite(sig_sigma) || sig_sigma <= std::numeric_limits<double>::epsilon()) {
-        sig_sigma = engine_utils::calc_std_dev(sig);
+        sig_sigma = engine_utils::calc_std_dev(sig_vec);
     }
     if (!std::isfinite(sig_sigma) || sig_sigma <= std::numeric_limits<double>::epsilon()) {
         return false;
