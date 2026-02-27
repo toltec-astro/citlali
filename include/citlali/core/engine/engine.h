@@ -158,6 +158,15 @@ struct beammapControls {
     bool beammap_split_fits_by_flag = false;
     std::vector<int> beammap_split_flag_values = {0, 1};
 
+    // optional soft priors for beammap peak initialization
+    bool beammap_priors_enabled = false;
+    std::string beammap_priors_filepath = "null";
+    int beammap_priors_candidate_top_n = 64;
+    double beammap_priors_min_snr = 0.0;
+    double beammap_priors_max_d2 = 25.0;
+    double beammap_priors_score_lambda = 2.0;
+    bool beammap_priors_fallback_blind = true;
+
     // iteration to write out ptcdata
     int beammap_tod_output_iter = 0;
 
@@ -1000,6 +1009,51 @@ void Engine::get_beammap_config(CT &config) {
             values.erase(std::unique(values.begin(), values.end()), values.end());
             beammap_split_flag_values = std::move(values);
         }
+    }
+
+    // optional soft priors for beammap peak initialization
+    beammap_priors_enabled = false;
+    beammap_priors_filepath = "null";
+    beammap_priors_candidate_top_n = 64;
+    beammap_priors_min_snr = 0.0;
+    beammap_priors_max_d2 = 25.0;
+    beammap_priors_score_lambda = 2.0;
+    beammap_priors_fallback_blind = true;
+
+    if (config.template has_typed<bool>(std::tuple{"beammap","priors","enabled"})) {
+        get_config_value(config, beammap_priors_enabled, missing_keys, invalid_keys,
+                         std::tuple{"beammap","priors","enabled"});
+    }
+    if (config.template has_typed<std::string>(std::tuple{"beammap","priors","filepath"})) {
+        get_config_value(config, beammap_priors_filepath, missing_keys, invalid_keys,
+                         std::tuple{"beammap","priors","filepath"});
+    }
+    if (config.template has_typed<int>(std::tuple{"beammap","priors","candidate_top_n"})) {
+        get_config_value(config, beammap_priors_candidate_top_n, missing_keys, invalid_keys,
+                         std::tuple{"beammap","priors","candidate_top_n"},
+                         {}, {1});
+    }
+    if (config.template has_typed<double>(std::tuple{"beammap","priors","min_snr"})) {
+        get_config_value(config, beammap_priors_min_snr, missing_keys, invalid_keys,
+                         std::tuple{"beammap","priors","min_snr"});
+    }
+    if (config.template has_typed<double>(std::tuple{"beammap","priors","max_d2"})) {
+        get_config_value(config, beammap_priors_max_d2, missing_keys, invalid_keys,
+                         std::tuple{"beammap","priors","max_d2"},
+                         {}, {0.0});
+    }
+    if (config.template has_typed<double>(std::tuple{"beammap","priors","score_lambda"})) {
+        get_config_value(config, beammap_priors_score_lambda, missing_keys, invalid_keys,
+                         std::tuple{"beammap","priors","score_lambda"},
+                         {}, {0.0});
+    }
+    if (config.template has_typed<bool>(std::tuple{"beammap","priors","fallback_blind"})) {
+        get_config_value(config, beammap_priors_fallback_blind, missing_keys, invalid_keys,
+                         std::tuple{"beammap","priors","fallback_blind"});
+    }
+    if (beammap_priors_enabled && beammap_priors_filepath == "null") {
+        logger->warn("beammap.priors.enabled=true but beammap.priors.filepath is null; disabling priors");
+        beammap_priors_enabled = false;
     }
 
     // lower fwhm limit

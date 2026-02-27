@@ -16,6 +16,14 @@ beammap: # beammap controls (node required, but options ignored if not beammappi
   split_fits_by_flag: # optional split output of detector-grouped beammap FITS by detector quality flag
     enabled: false # if true, write separate FITS files for requested detector flag values
     flag_values: [0, 1] # detector flag values to include (e.g. 0=good, 1=bad)
+  priors: # optional soft priors for beammap fit initialization in detector grouping
+    enabled: false # enable prior-guided seed selection for map peak finding
+    filepath: data/beammap_priors/beammap_slot_priors_soft_v1.ecsv # ECSV slot prior table path
+    candidate_top_n: 64 # evaluate this many highest-S/N pixels per map
+    min_snr: 0.0 # ignore candidate pixels below this S/N
+    max_d2: 25.0 # prior gating: require nearest-slot Mahalanobis d^2 <= max_d2 (0 disables gate)
+    score_lambda: 2.0 # score = snr - score_lambda * d^2
+    fallback_blind: true # if no prior candidate survives, run blind fit initialization
   flagging: # these parameters control how the beammapping algorithm flags bad detectors (array order for flagging is [1.1, 1.4, 2.0])
     array_lower_fwhm_arcsec: [0,0,0] # lower limits for fitted array fwhm values (used for flagging only)
     array_upper_fwhm_arcsec: [99,99,99] # upper limits for fitted array fwhm values (ignored if <0, flagging only)
