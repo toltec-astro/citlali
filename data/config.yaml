@@ -20,7 +20,7 @@ beammap: # beammap controls (node required, but options ignored if not beammappi
     enabled: false # enable prior-guided seed selection for map peak finding
     filepath: data/beammap_priors/beammap_slot_priors_soft_v1.ecsv # ECSV slot prior table path
     candidate_top_n: 64 # evaluate this many highest-S/N pixels per map
-    min_snr: 0.0 # ignore candidate pixels below this S/N
+    min_snr: 0.0 # ignore candidate pixels below this robust map significance (median/MAD, weighted)
     max_d2: 25.0 # prior gating: require nearest-slot Mahalanobis d^2 <= max_d2 (0 disables gate)
     score_lambda: 2.0 # score = snr - score_lambda * d^2
     fallback_blind: true # if no prior candidate survives, run blind fit initialization

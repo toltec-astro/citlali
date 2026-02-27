@@ -1110,6 +1110,42 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
         Eigen::Index col = 0;
     };
 
+    std::vector<double> valid_signal;
+    std::vector<double> valid_weight;
+    valid_signal.reserve(static_cast<std::size_t>(sig.size()));
+    valid_weight.reserve(static_cast<std::size_t>(sig.size()));
+    for (Eigen::Index row = 0; row < sig.rows(); ++row) {
+        for (Eigen::Index col = 0; col < sig.cols(); ++col) {
+            const double s = sig(row, col);
+            const double w = wt(row, col);
+            if (!std::isfinite(s) || !std::isfinite(w) || w <= 0.0) {
+                continue;
+            }
+            valid_signal.push_back(s);
+            valid_weight.push_back(w);
+        }
+    }
+    if (valid_signal.empty()) {
+        return false;
+    }
+
+    Eigen::Map<Eigen::VectorXd> sig_vec(valid_signal.data(), static_cast<Eigen::Index>(valid_signal.size()));
+    const double sig_med = tula::alg::median(sig_vec);
+    Eigen::VectorXd sig_abs_dev = (sig_vec.array() - sig_med).abs().matrix();
+    double sig_sigma = 1.4826 * tula::alg::median(sig_abs_dev);
+    if (!std::isfinite(sig_sigma) || sig_sigma <= std::numeric_limits<double>::epsilon()) {
+        sig_sigma = engine_utils::calc_std_dev(sig);
+    }
+    if (!std::isfinite(sig_sigma) || sig_sigma <= std::numeric_limits<double>::epsilon()) {
+        return false;
+    }
+
+    Eigen::Map<Eigen::VectorXd> wt_vec(valid_weight.data(), static_cast<Eigen::Index>(valid_weight.size()));
+    double wt_med = tula::alg::median(wt_vec);
+    if (!std::isfinite(wt_med) || wt_med <= std::numeric_limits<double>::epsilon()) {
+        wt_med = 1.0;
+    }
+
     std::vector<Candidate> candidates;
     candidates.reserve(static_cast<std::size_t>(sig.size()));
     for (Eigen::Index row = 0; row < sig.rows(); ++row) {
@@ -1119,7 +1155,7 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
             if (!std::isfinite(s) || !std::isfinite(w) || w <= 0.0) {
                 continue;
             }
-            const double snr = s * std::sqrt(w);
+            const double snr = ((s - sig_med) / sig_sigma) * std::sqrt(w / wt_med);
             if (!std::isfinite(snr) || snr < beammap_priors_min_snr) {
                 continue;
             }
@@ -1127,6 +1163,8 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
         }
     }
     if (candidates.empty()) {
+        logger->debug("beammap priors init map={} no candidates above min_snr={} (med={} sigma={} wt_med={})",
+                      map_index, beammap_priors_min_snr, sig_med, sig_sigma, wt_med);
         return false;
     }
 
