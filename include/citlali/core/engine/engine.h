@@ -154,6 +154,10 @@ struct beammapControls {
     double beammap_rfi_mask_sigma_floor = 0.0;
     double beammap_rfi_mask_max_flagged_fraction = 0.35;
 
+    // optional beammap detector-map FITS splitting by detector quality flag
+    bool beammap_split_fits_by_flag = false;
+    std::vector<int> beammap_split_flag_values = {0, 1};
+
     // iteration to write out ptcdata
     int beammap_tod_output_iter = 0;
 
@@ -976,6 +980,26 @@ void Engine::get_beammap_config(CT &config) {
         get_config_value(config, beammap_rfi_mask_max_flagged_fraction, missing_keys, invalid_keys,
                          std::tuple{"beammap","rfi_mask","max_flagged_fraction"},
                          {}, {0.0}, {1.0});
+    }
+
+    // optional split output detector-map FITS files by detector quality flag
+    beammap_split_fits_by_flag = false;
+    beammap_split_flag_values = {0, 1};
+    if (config.template has_typed<bool>(std::tuple{"beammap","split_fits_by_flag","enabled"})) {
+        get_config_value(config, beammap_split_fits_by_flag, missing_keys, invalid_keys,
+                         std::tuple{"beammap","split_fits_by_flag","enabled"});
+    }
+    if (config.template has_typed<std::vector<int>>(std::tuple{"beammap","split_fits_by_flag","flag_values"})) {
+        auto values = config.template get_typed<std::vector<int>>(
+            std::tuple{"beammap","split_fits_by_flag","flag_values"});
+        if (values.empty()) {
+            logger->warn("beammap.split_fits_by_flag.flag_values is empty; using defaults [0, 1]");
+        }
+        else {
+            std::sort(values.begin(), values.end());
+            values.erase(std::unique(values.begin(), values.end()), values.end());
+            beammap_split_flag_values = std::move(values);
+        }
     }
 
     // lower fwhm limit

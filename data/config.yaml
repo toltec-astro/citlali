@@ -13,6 +13,9 @@ beammap: # beammap controls (node required, but options ignored if not beammappi
     sigma_threshold: 6.0 # block MAD(diff) threshold in units of detector global MAD(diff)
     sigma_floor: 0.0 # absolute MAD(diff) floor in timestream units (ignored if 0)
     max_flagged_fraction: 0.35 # skip masking for a detector if proposed mask exceeds this fraction of its good samples
+  split_fits_by_flag: # optional split output of detector-grouped beammap FITS by detector quality flag
+    enabled: false # if true, write separate FITS files for requested detector flag values
+    flag_values: [0, 1] # detector flag values to include (e.g. 0=good, 1=bad)
   flagging: # these parameters control how the beammapping algorithm flags bad detectors (array order for flagging is [1.1, 1.4, 2.0])
     array_lower_fwhm_arcsec: [0,0,0] # lower limits for fitted array fwhm values (used for flagging only)
     array_upper_fwhm_arcsec: [99,99,99] # upper limits for fitted array fwhm values (ignored if <0, flagging only)
