@@ -1474,6 +1474,18 @@ void Beammap::run_loop() {
             Eigen::Index iter_init_prior = 0;
             Eigen::Index iter_init_blind = 0;
             Eigen::Index iter_init_skip = 0;
+            Eigen::Index iter_attempt_prev = 0;
+            Eigen::Index iter_attempt_prior = 0;
+            Eigen::Index iter_attempt_blind = 0;
+            Eigen::Index iter_fail_prev = 0;
+            Eigen::Index iter_fail_prior = 0;
+            Eigen::Index iter_fail_blind = 0;
+            Eigen::Index iter_init_amp_zero_prev = 0;
+            Eigen::Index iter_init_amp_zero_prior = 0;
+            Eigen::Index iter_init_amp_zero_blind = 0;
+            Eigen::Index iter_amp_bounds_zero_prev = 0;
+            Eigen::Index iter_amp_bounds_zero_prior = 0;
+            Eigen::Index iter_amp_bounds_zero_blind = 0;
 
             logger->info("fitting maps");
             logger->info("beammap fit diagnostics enabled");
@@ -1528,6 +1540,8 @@ void Beammap::run_loop() {
                     double init_col = -99.0;
                     bool init_from_prev = false;
                     bool init_from_prior = false;
+                    enum class FitInitMode { Blind, Previous, Prior };
+                    auto init_mode = FitInitMode::Blind;
                     if (current_iter > 0 &&
                         good_fits(i) &&
                         p0.cols() > 2 &&
@@ -1536,11 +1550,13 @@ void Beammap::run_loop() {
                         init_col = p0(i,1);
                         init_row = p0(i,2);
                         init_from_prev = true;
+                        init_mode = FitInitMode::Previous;
                         iter_init_prev++;
                     }
                     else if (beammap_priors_enabled && beammap_soft_priors_loaded && map_grouping == "detector") {
                         if (choose_prior_guided_init(i, init_row, init_col)) {
                             init_from_prior = true;
+                            init_mode = FitInitMode::Prior;
                             iter_init_prior++;
                         }
                         else if (!beammap_priors_fallback_blind) {
@@ -1582,6 +1598,59 @@ void Beammap::run_loop() {
                     params.row(i) = det_params;
                     perrors.row(i) = det_perror;
                     good_fits(i) = good_fit;
+
+                    bool init_amp_zero = false;
+                    bool amp_bounds_zero = false;
+                    if (fit_diag.valid &&
+                        fit_diag.init_params.size() > 0 &&
+                        fit_diag.lower_limits.size() > 0 &&
+                        fit_diag.upper_limits.size() > 0) {
+                        const double init_amp = fit_diag.init_params(0);
+                        const double amp_low = fit_diag.lower_limits(0);
+                        const double amp_high = fit_diag.upper_limits(0);
+                        init_amp_zero = std::isfinite(init_amp) && std::abs(init_amp) <= 1e-12;
+                        amp_bounds_zero =
+                            std::isfinite(amp_low) && std::isfinite(amp_high) &&
+                            std::abs(amp_high - amp_low) <= 1e-12;
+                    }
+                    switch (init_mode) {
+                        case FitInitMode::Previous:
+                            iter_attempt_prev++;
+                            if (!good_fit) {
+                                iter_fail_prev++;
+                            }
+                            if (init_amp_zero) {
+                                iter_init_amp_zero_prev++;
+                            }
+                            if (amp_bounds_zero) {
+                                iter_amp_bounds_zero_prev++;
+                            }
+                            break;
+                        case FitInitMode::Prior:
+                            iter_attempt_prior++;
+                            if (!good_fit) {
+                                iter_fail_prior++;
+                            }
+                            if (init_amp_zero) {
+                                iter_init_amp_zero_prior++;
+                            }
+                            if (amp_bounds_zero) {
+                                iter_amp_bounds_zero_prior++;
+                            }
+                            break;
+                        case FitInitMode::Blind:
+                            iter_attempt_blind++;
+                            if (!good_fit) {
+                                iter_fail_blind++;
+                            }
+                            if (init_amp_zero) {
+                                iter_init_amp_zero_blind++;
+                            }
+                            if (amp_bounds_zero) {
+                                iter_amp_bounds_zero_blind++;
+                            }
+                            break;
+                    }
 
                     if (fit_diag.valid &&
                         fit_diag.init_params.size() == map_fitter.n_params &&
@@ -1638,6 +1707,17 @@ void Beammap::run_loop() {
 
             logger->info("beammap init summary (iter {}): previous={} prior={} blind={} skipped={}",
                          current_iter, iter_init_prev, iter_init_prior, iter_init_blind, iter_init_skip);
+            logger->info(
+                "beammap fit diagnostics (iter {}): prev fail={}/{} init_amp_zero={}/{} amp_bounds_zero={}/{} | "
+                "prior fail={}/{} init_amp_zero={}/{} amp_bounds_zero={}/{} | "
+                "blind fail={}/{} init_amp_zero={}/{} amp_bounds_zero={}/{}",
+                current_iter,
+                iter_fail_prev, iter_attempt_prev, iter_init_amp_zero_prev, iter_attempt_prev,
+                iter_amp_bounds_zero_prev, iter_attempt_prev,
+                iter_fail_prior, iter_attempt_prior, iter_init_amp_zero_prior, iter_attempt_prior,
+                iter_amp_bounds_zero_prior, iter_attempt_prior,
+                iter_fail_blind, iter_attempt_blind, iter_init_amp_zero_blind, iter_attempt_blind,
+                iter_amp_bounds_zero_blind, iter_attempt_blind);
 
             if (map_fitter.n_params >= 6) {
                 logger->info(
