@@ -1547,11 +1547,29 @@ void Beammap::run_loop() {
                         p0.cols() > 2 &&
                         std::isfinite(p0(i,0)) && p0(i,0) > 0.0 &&
                         std::isfinite(p0(i,1)) && std::isfinite(p0(i,2))) {
-                        init_col = p0(i,1);
-                        init_row = p0(i,2);
-                        init_from_prev = true;
-                        init_mode = FitInitMode::Previous;
-                        iter_init_prev++;
+                        const double prev_col = p0(i,1);
+                        const double prev_row = p0(i,2);
+                        Eigen::Index prev_row_i = static_cast<Eigen::Index>(std::llround(prev_row));
+                        Eigen::Index prev_col_i = static_cast<Eigen::Index>(std::llround(prev_col));
+                        bool prev_seed_valid = false;
+                        if (prev_row_i >= 0 && prev_row_i < omb.signal[i].rows() &&
+                            prev_col_i >= 0 && prev_col_i < omb.signal[i].cols()) {
+                            const double seed_w = omb.weight[i](prev_row_i, prev_col_i);
+                            const double seed_s = omb.signal[i](prev_row_i, prev_col_i);
+                            prev_seed_valid = std::isfinite(seed_w) && seed_w > 0.0 && std::isfinite(seed_s);
+                        }
+                        if (prev_seed_valid) {
+                            init_col = prev_col;
+                            init_row = prev_row;
+                            init_from_prev = true;
+                            init_mode = FitInitMode::Previous;
+                            iter_init_prev++;
+                        }
+                        else {
+                            logger->debug(
+                                "beammap fit map={} rejected previous init at row={} col={} due to invalid/no-weight seed pixel",
+                                i, prev_row, prev_col);
+                        }
                     }
                     else if (beammap_priors_enabled && beammap_soft_priors_loaded && map_grouping == "detector") {
                         if (choose_prior_guided_init(i, init_row, init_col)) {

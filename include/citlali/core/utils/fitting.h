@@ -323,60 +323,146 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     // initial gaussian standard deviation
     double init_sigma = init_fwhm*FWHM_TO_STD;
 
+    auto find_weighted_peak = [&](Eigen::Index row_lo, Eigen::Index row_hi,
+                                  Eigen::Index col_lo, Eigen::Index col_hi,
+                                  bool apply_radius, double center_row, double center_col, double radius_pix,
+                                  Eigen::Index &best_row, Eigen::Index &best_col, double &best_snr) -> bool {
+        best_row = -1;
+        best_col = -1;
+        best_snr = -std::numeric_limits<double>::infinity();
+
+        row_lo = std::clamp<Eigen::Index>(row_lo, 0, signal.rows() - 1);
+        row_hi = std::clamp<Eigen::Index>(row_hi, 0, signal.rows() - 1);
+        col_lo = std::clamp<Eigen::Index>(col_lo, 0, signal.cols() - 1);
+        col_hi = std::clamp<Eigen::Index>(col_hi, 0, signal.cols() - 1);
+        if (row_hi < row_lo || col_hi < col_lo) {
+            return false;
+        }
+
+        bool found = false;
+        const double radius2 = radius_pix * radius_pix;
+        for (Eigen::Index row = row_lo; row <= row_hi; ++row) {
+            for (Eigen::Index col = col_lo; col <= col_hi; ++col) {
+                const double s = signal(row, col);
+                const double w = weight(row, col);
+                if (!std::isfinite(s) || !std::isfinite(w) || w <= 0.0) {
+                    continue;
+                }
+                if (apply_radius) {
+                    const double dr = static_cast<double>(row) - center_row;
+                    const double dc = static_cast<double>(col) - center_col;
+                    if (dr * dr + dc * dc >= radius2) {
+                        continue;
+                    }
+                }
+                const double snr = s * std::sqrt(w);
+                if (!std::isfinite(snr)) {
+                    continue;
+                }
+                if (!found || snr > best_snr) {
+                    best_snr = snr;
+                    best_row = row;
+                    best_col = col;
+                    found = true;
+                }
+            }
+        }
+        return found;
+    };
+
     // if no initial position is input find peak
     if (init_row < 0 || init_col < 0) {
         // center positions
         double center_row = (signal.rows() - 1)/2;
         double center_col = (signal.cols() - 1)/2;
-
-        // signal-to-noise map
-        auto sig2noise = signal.derived().array()*sqrt(weight.derived().array());
-
-        Eigen::Index ir = static_cast<Eigen::Index>(center_row);
-        Eigen::Index ic = static_cast<Eigen::Index>(center_col);
+        Eigen::Index ir = -1;
+        Eigen::Index ic = -1;
+        double best_snr = -std::numeric_limits<double>::infinity();
         bool found_peak = false;
 
         // find peak in the entire map
         if (fitting_region_pix <= 0) {
-            sig2noise.maxCoeff(&ir, &ic);
-            init_flux = signal(ir,ic);
-            found_peak = true;
+            found_peak = find_weighted_peak(0, signal.rows() - 1, 0, signal.cols() - 1,
+                                            false, center_row, center_col, 0.0,
+                                            ir, ic, best_snr);
         }
         // find peak within inner radius
         else {
-            for (Eigen::Index i=0; i<sig2noise.rows(); ++i) {
-                for (Eigen::Index j=0; j<sig2noise.cols(); ++j) {
-                    auto dist = sqrt(pow(i - center_row,2) + pow(j - center_col,2));
-                    if (dist < fitting_region_pix) {
-                        if (sig2noise(i,j) > init_flux) {
-                            init_flux = sig2noise(i,j);
-                            ir = i;
-                            ic = j;
-                            found_peak = true;
-                        }
-                    }
-                }
-            }
-            // initial guess for flux
-            if (found_peak) {
-                init_flux = signal(ir, ic);
-            }
+            found_peak = find_weighted_peak(0, signal.rows() - 1, 0, signal.cols() - 1,
+                                            true, center_row, center_col, fitting_region_pix,
+                                            ir, ic, best_snr);
         }
 
         // fall back to global max if the inner-radius search found nothing
         if (!found_peak) {
-            sig2noise.maxCoeff(&ir, &ic);
-            init_flux = signal(ir, ic);
+            found_peak = find_weighted_peak(0, signal.rows() - 1, 0, signal.cols() - 1,
+                                            false, center_row, center_col, 0.0,
+                                            ir, ic, best_snr);
         }
 
-        init_row = ir;
-        init_col = ic;
+        if (!found_peak) {
+            Eigen::VectorXd p = Eigen::VectorXd::Zero(n_params);
+            Eigen::VectorXd e = Eigen::VectorXd::Zero(n_params);
+            logger->warn("fit_to_gaussian skipped: unable to find valid weighted seed pixel");
+            return std::tuple<Eigen::VectorXd, Eigen::VectorXd, bool>(p, e, false);
+        }
+
+        init_row = static_cast<double>(ir);
+        init_col = static_cast<double>(ic);
+        init_flux = signal(ir, ic);
     }    
     // otherwise use the input initial position
     else {
         init_row = std::clamp(init_row, 0.0, static_cast<double>(signal.rows() - 1));
         init_col = std::clamp(init_col, 0.0, static_cast<double>(signal.cols() - 1));
-        init_flux = signal(static_cast<Eigen::Index>(init_row), static_cast<Eigen::Index>(init_col));
+        Eigen::Index ir = static_cast<Eigen::Index>(std::llround(init_row));
+        Eigen::Index ic = static_cast<Eigen::Index>(std::llround(init_col));
+        ir = std::clamp<Eigen::Index>(ir, 0, signal.rows() - 1);
+        ic = std::clamp<Eigen::Index>(ic, 0, signal.cols() - 1);
+
+        const double seed_w = weight(ir, ic);
+        const double seed_s = signal(ir, ic);
+        bool seed_valid = std::isfinite(seed_w) && seed_w > 0.0 && std::isfinite(seed_s);
+        if (!seed_valid) {
+            Eigen::Index search_row_lo = 0;
+            Eigen::Index search_row_hi = signal.rows() - 1;
+            Eigen::Index search_col_lo = 0;
+            Eigen::Index search_col_hi = signal.cols() - 1;
+            if (bounding_box_pix > 0) {
+                search_row_lo = std::clamp<Eigen::Index>(
+                    static_cast<Eigen::Index>(std::floor(init_row - bounding_box_pix)), 0, signal.rows() - 1);
+                search_row_hi = std::clamp<Eigen::Index>(
+                    static_cast<Eigen::Index>(std::ceil(init_row + bounding_box_pix)), 0, signal.rows() - 1);
+                search_col_lo = std::clamp<Eigen::Index>(
+                    static_cast<Eigen::Index>(std::floor(init_col - bounding_box_pix)), 0, signal.cols() - 1);
+                search_col_hi = std::clamp<Eigen::Index>(
+                    static_cast<Eigen::Index>(std::ceil(init_col + bounding_box_pix)), 0, signal.cols() - 1);
+            }
+
+            Eigen::Index best_row = -1;
+            Eigen::Index best_col = -1;
+            double best_snr = -std::numeric_limits<double>::infinity();
+            bool found = find_weighted_peak(search_row_lo, search_row_hi, search_col_lo, search_col_hi,
+                                            false, init_row, init_col, 0.0,
+                                            best_row, best_col, best_snr);
+            if (!found) {
+                found = find_weighted_peak(0, signal.rows() - 1, 0, signal.cols() - 1,
+                                           false, init_row, init_col, 0.0,
+                                           best_row, best_col, best_snr);
+            }
+            if (!found) {
+                Eigen::VectorXd p = Eigen::VectorXd::Zero(n_params);
+                Eigen::VectorXd e = Eigen::VectorXd::Zero(n_params);
+                logger->warn("fit_to_gaussian skipped: provided seed pixel is invalid and no weighted fallback was found");
+                return std::tuple<Eigen::VectorXd, Eigen::VectorXd, bool>(p, e, false);
+            }
+            ir = best_row;
+            ic = best_col;
+            init_row = static_cast<double>(ir);
+            init_col = static_cast<double>(ic);
+        }
+
+        init_flux = signal(ir, ic);
     }
 
     // initial parameter guesses (order of positions is x,y = col,row)
@@ -429,6 +515,12 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     if (!std::isfinite(amp_lower) || !std::isfinite(amp_upper)) {
         amp_lower = -std::abs(init_flux);
         amp_upper = std::abs(init_flux);
+    }
+    if (!std::isfinite(amp_lower) || !std::isfinite(amp_upper) ||
+        std::abs(amp_upper - amp_lower) <= 1e-12) {
+        const double amp_span = std::max(std::abs(init_flux), 1e-6);
+        amp_lower = -amp_span;
+        amp_upper = amp_span;
     }
 
     // set lower limits of fitting parameters
