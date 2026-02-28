@@ -1895,6 +1895,8 @@ void Beammap::run_loop() {
                     bool init_from_prior = false;
                     enum class FitInitMode { Blind, Previous, Prior };
                     auto init_mode = FitInitMode::Blind;
+                    const bool can_try_prior =
+                        beammap_priors_enabled && beammap_soft_priors_loaded && map_grouping == "detector";
                     if (current_iter > 0 &&
                         good_fits(i) &&
                         p0.cols() > 2 &&
@@ -1924,7 +1926,7 @@ void Beammap::run_loop() {
                                 i, prev_row, prev_col);
                         }
                     }
-                    else if (beammap_priors_enabled && beammap_soft_priors_loaded && map_grouping == "detector") {
+                    if (!init_from_prev && can_try_prior) {
                         if (choose_prior_guided_init(i, init_row, init_col)) {
                             init_from_prior = true;
                             init_mode = FitInitMode::Prior;
