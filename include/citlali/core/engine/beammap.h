@@ -741,6 +741,13 @@ void Beammap::loop_pipeline() {
         // subtract reference detector position and derotate
         process_apt();
         apply_final_network_position_flags();
+        calib.setup();
+        for (Eigen::Index i = 0; i < calib.n_arrays; ++i) {
+            Eigen::Index array = calib.arrays(i);
+            std::string array_name = toltec_io.array_name_map[array];
+            beammap_fluxes_MJy_Sr[array_name] =
+                mJY_ASEC_to_MJY_SR * (beammap_fluxes_mJy_beam[array_name]) / calib.array_beam_areas[array];
+        }
 
         // add final apt table to timestream files
         if (run_tod_output && !tod_filename.empty()) {
@@ -3189,8 +3196,27 @@ void Beammap::apply_final_network_position_flags() {
     });
 
     if (n_flagged.load() > 0) {
-        logger->info("beammap final network-position flagging: {} detectors exceeded per-array robust-z limits",
-                     n_flagged.load());
+        std::string by_array;
+        for (Eigen::Index i = 0; i < calib.n_arrays; ++i) {
+            Eigen::Index array = calib.arrays(i);
+            std::string array_name = toltec_io.array_name_map[array];
+            Eigen::Index n_array_flagged = 0;
+            if (calib.array_limits.count(array) > 0) {
+                for (Eigen::Index k = std::get<0>(calib.array_limits[array]);
+                     k < std::get<1>(calib.array_limits[array]); ++k) {
+                    if ((flag2(k) & AptFlags::NetworkPos) != 0) {
+                        n_array_flagged++;
+                    }
+                }
+            }
+            if (!by_array.empty()) {
+                by_array += ", ";
+            }
+            by_array += array_name + "=" + std::to_string(n_array_flagged);
+        }
+        logger->info(
+            "beammap final network-position flagging: {} detectors exceeded per-array robust-z limits ({})",
+            n_flagged.load(), by_array);
     }
 }
 

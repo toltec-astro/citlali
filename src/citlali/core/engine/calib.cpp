@@ -290,7 +290,7 @@ void Calib::setup() {
                                                          std::get<1>(nw_limits[key])-1)).array()==0).count();
 
         // remove flagged dets
-        Eigen::Index k = std::get<0>(array_limits[key]);
+        Eigen::Index k = std::get<0>(nw_limits[key]);
         for (Eigen::Index i=0; i<nw_a_fwhm.size(); ++i) {
             if (apt["flag"](k)!=1) {
                 std::get<0>(nw_fwhms[key]) = std::get<0>(nw_fwhms[key]) + nw_a_fwhm(i);
