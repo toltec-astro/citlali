@@ -2110,7 +2110,8 @@ void Beammap::run_loop() {
                         scan_band_summary.n_samples_flagged,
                         scan_band_summary.n_rows_flagged,
                         scan_band_summary.n_det_flagged,
-                        scan_band_summary.n_det_rejected);
+                        scan_band_summary.n_det_rejected,
+                        beammap_scan_band_mask_max_flagged_fraction);
                     run_mapmaking_pass(false);
                 }
                 else {
