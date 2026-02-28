@@ -184,7 +184,7 @@ struct beammapControls {
 
     // limits on fwhm, sig2noise, and distance from center for flagging
     std::map<std::string, double> lower_fwhm_arcsec, upper_fwhm_arcsec, lower_sig2noise,
-        upper_sig2noise, max_dist_arcsec;
+        upper_sig2noise, max_dist_arcsec, network_robust_z;
     double beammap_flag_max_prior_d2 = 0.0;
 
     // limits on sensitivity for flagging
@@ -1120,6 +1120,8 @@ void Engine::get_beammap_config(CT &config) {
     auto upper_sig2noise_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","flagging","array_upper_sig2noise"});
     // maximum allowed distance limit
     auto max_dist_arcsec_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","flagging","array_max_dist_arcsec"});
+    // per-array post-derotation network geometry cut
+    auto network_robust_z_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","flagging","array_network_robust_z"});
     beammap_flag_max_prior_d2 = 0.0;
     if (config.template has_typed<double>(std::tuple{"beammap","flagging","max_prior_d2"})) {
         get_config_value(config, beammap_flag_max_prior_d2, missing_keys, invalid_keys,
@@ -1140,6 +1142,8 @@ void Engine::get_beammap_config(CT &config) {
         upper_sig2noise[arr_name] = upper_sig2noise_vec[i];
         // maximum allowed distance limit
         max_dist_arcsec[arr_name] = max_dist_arcsec_vec[i];
+        // post-process per-network robust-z limit
+        network_robust_z[arr_name] = network_robust_z_vec[i];
         i++;
     }
 
