@@ -38,6 +38,7 @@ beammap: # beammap controls (node required, but options ignored if not beammappi
     array_lower_sig2noise: [0,0,0] # lower limits for fitted array S/N values (used for flagging only)
     array_upper_sig2noise: [0,0,0] # upper limits for fitted array S/N values (ignored if <0, flagging only)
     array_max_dist_arcsec: [0,0,0] # max allowed distance from mean of all positions for each array (ignored if <0, flagging only)
+    max_prior_d2: 0.0 # max allowed nearest-slot prior-space Mahalanobis d^2 for final position (ignored if <=0 or priors unavailable)
     sens_factors: [0,0] # per network lower and upper multiplicative factors on median sensitivty (ignored if 0, flagging only)
 coadd: # coaddition controls
   enabled: false # enable or disable coaddition

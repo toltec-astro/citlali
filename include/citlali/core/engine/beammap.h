@@ -82,6 +82,7 @@ public:
         Sig2Noise    = 1 << 3,
         Sens         = 1 << 4,
         Position     = 1 << 5,
+        PriorDist    = 1 << 6,
         };
 
     // holds bitwise flags
@@ -347,6 +348,7 @@ void Beammap::setup() {
     calib.apt_meta["flag2"].push_back("Sig2Noise=4");
     calib.apt_meta["flag2"].push_back("Sens=5");
     calib.apt_meta["flag2"].push_back("Position=6");
+    calib.apt_meta["flag2"].push_back("PriorDist=7");
 
     // add array mapping
     for (const auto &[arr_index,arr_name]: toltec_io.array_name_map) {
@@ -2710,6 +2712,86 @@ void Beammap::set_apt_flags() {
         return 0;
     });
 
+    const bool prior_dist_flag_enabled =
+        beammap_flag_max_prior_d2 > 0.0 && beammap_soft_priors_loaded && !beammap_soft_prior_slots.empty();
+    if (beammap_flag_max_prior_d2 > 0.0 && !prior_dist_flag_enabled) {
+        logger->warn(
+            "beammap.flagging.max_prior_d2={} requested but soft priors are unavailable; skipping prior-distance flagging",
+            beammap_flag_max_prior_d2);
+    }
+    if (prior_dist_flag_enabled) {
+        double prior_derot_elev_rad = telescope.tel_data["TelElAct"].mean();
+        if (!std::isfinite(prior_derot_elev_rad)) {
+            prior_derot_elev_rad = 0.0;
+        }
+        if (std::abs(prior_derot_elev_rad) > pi) {
+            prior_derot_elev_rad *= DEG_TO_RAD;
+        }
+        const bool apply_derot = beammap_soft_priors_are_derotated && telescope.pixel_axes == "altaz";
+        const double cos_rot = std::cos(-prior_derot_elev_rad);
+        const double sin_rot = std::sin(-prior_derot_elev_rad);
+        std::atomic<int> n_prior_dist_hits{0};
+
+        logger->debug("flagging detector prior distances");
+        grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+            const int array_index = static_cast<int>(std::lround(calib.apt["array"](i)));
+            const int nw_index = static_cast<int>(std::lround(calib.apt["nw"](i)));
+            std::string array_name = toltec_io.array_name_map[array_index];
+
+            auto slots_it = beammap_soft_prior_slots.find({array_index, nw_index});
+            if (slots_it == beammap_soft_prior_slots.end() || slots_it->second.empty()) {
+                return 0;
+            }
+
+            double x_arcsec = calib.apt["x_t"](i);
+            double y_arcsec = calib.apt["y_t"](i);
+            if (!std::isfinite(x_arcsec) || !std::isfinite(y_arcsec)) {
+                return 0;
+            }
+
+            if (beammap_soft_priors_are_centered) {
+                x_arcsec -= array_median_x_t[array_name];
+                y_arcsec -= array_median_y_t[array_name];
+            }
+
+            if (apply_derot) {
+                const double rot_az_off = cos_rot * x_arcsec - sin_rot * y_arcsec;
+                const double rot_alt_off = sin_rot * x_arcsec + cos_rot * y_arcsec;
+                x_arcsec = -rot_az_off;
+                y_arcsec = -rot_alt_off;
+            }
+
+            double min_d2 = std::numeric_limits<double>::infinity();
+            for (const auto &slot : slots_it->second) {
+                if (!std::isfinite(slot.x_arcsec) || !std::isfinite(slot.y_arcsec) ||
+                    !std::isfinite(slot.sx_arcsec) || !std::isfinite(slot.sy_arcsec) ||
+                    slot.sx_arcsec <= 0.0 || slot.sy_arcsec <= 0.0) {
+                    continue;
+                }
+                const double dx = (x_arcsec - slot.x_arcsec) / slot.sx_arcsec;
+                const double dy = (y_arcsec - slot.y_arcsec) / slot.sy_arcsec;
+                const double d2 = dx * dx + dy * dy;
+                if (std::isfinite(d2) && d2 < min_d2) {
+                    min_d2 = d2;
+                }
+            }
+            if (!std::isfinite(min_d2) || min_d2 <= beammap_flag_max_prior_d2) {
+                return 0;
+            }
+
+            n_prior_dist_hits++;
+            if (calib.apt["flag"](i)==0) {
+                n_flagged_dets++;
+                calib.apt["flag"](i) = 1;
+            }
+            flag2(i) |= AptFlags::PriorDist;
+            return 0;
+        });
+
+        logger->info("beammap prior-distance flagging: {} detectors exceeded max_prior_d2={}",
+                     n_prior_dist_hits.load(), beammap_flag_max_prior_d2);
+    }
+
     // print number of flagged detectors
     logger->info("{} detectors were flagged", n_flagged_dets.load());
 
@@ -3441,6 +3523,7 @@ void Beammap::output() {
             fit_qc_meta["flag2"].push_back("Sig2Noise=4");
             fit_qc_meta["flag2"].push_back("Sens=5");
             fit_qc_meta["flag2"].push_back("Position=6");
+            fit_qc_meta["flag2"].push_back("PriorDist=7");
             fit_qc_meta["fit_bound_code"].push_back("bit 0: amp lower");
             fit_qc_meta["fit_bound_code"].push_back("bit 1: amp upper");
             fit_qc_meta["fit_bound_code"].push_back("bit 2: x lower");
