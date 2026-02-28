@@ -154,6 +154,15 @@ struct beammapControls {
     double beammap_rfi_mask_sigma_floor = 0.0;
     double beammap_rfi_mask_max_flagged_fraction = 0.35;
 
+    // optional detector-map edge-band masking for coherent bad scan legs
+    bool beammap_scan_band_mask_enabled = false;
+    int beammap_scan_band_mask_edge_rows = 24;
+    int beammap_scan_band_mask_min_row_pixels = 8;
+    int beammap_scan_band_mask_min_contiguous_rows = 2;
+    double beammap_scan_band_mask_row_median_sigma_threshold = 4.0;
+    double beammap_scan_band_mask_row_sigma_ratio_threshold = 2.5;
+    double beammap_scan_band_mask_max_flagged_fraction = 0.30;
+
     // optional beammap detector-map FITS splitting by detector quality flag
     bool beammap_split_fits_by_flag = false;
     std::vector<int> beammap_split_flag_values = {0, 1};
@@ -988,6 +997,50 @@ void Engine::get_beammap_config(CT &config) {
     if (config.template has_typed<double>(std::tuple{"beammap","rfi_mask","max_flagged_fraction"})) {
         get_config_value(config, beammap_rfi_mask_max_flagged_fraction, missing_keys, invalid_keys,
                          std::tuple{"beammap","rfi_mask","max_flagged_fraction"},
+                         {}, {0.0}, {1.0});
+    }
+
+    // optional detector-map edge-band masking for coherent bad scan legs
+    beammap_scan_band_mask_enabled = false;
+    beammap_scan_band_mask_edge_rows = 24;
+    beammap_scan_band_mask_min_row_pixels = 8;
+    beammap_scan_band_mask_min_contiguous_rows = 2;
+    beammap_scan_band_mask_row_median_sigma_threshold = 4.0;
+    beammap_scan_band_mask_row_sigma_ratio_threshold = 2.5;
+    beammap_scan_band_mask_max_flagged_fraction = 0.30;
+
+    if (config.template has_typed<bool>(std::tuple{"beammap","scan_band_mask","enabled"})) {
+        get_config_value(config, beammap_scan_band_mask_enabled, missing_keys, invalid_keys,
+                         std::tuple{"beammap","scan_band_mask","enabled"});
+    }
+    if (config.template has_typed<int>(std::tuple{"beammap","scan_band_mask","edge_rows"})) {
+        get_config_value(config, beammap_scan_band_mask_edge_rows, missing_keys, invalid_keys,
+                         std::tuple{"beammap","scan_band_mask","edge_rows"},
+                         {}, {2});
+    }
+    if (config.template has_typed<int>(std::tuple{"beammap","scan_band_mask","min_row_pixels"})) {
+        get_config_value(config, beammap_scan_band_mask_min_row_pixels, missing_keys, invalid_keys,
+                         std::tuple{"beammap","scan_band_mask","min_row_pixels"},
+                         {}, {1});
+    }
+    if (config.template has_typed<int>(std::tuple{"beammap","scan_band_mask","min_contiguous_rows"})) {
+        get_config_value(config, beammap_scan_band_mask_min_contiguous_rows, missing_keys, invalid_keys,
+                         std::tuple{"beammap","scan_band_mask","min_contiguous_rows"},
+                         {}, {1});
+    }
+    if (config.template has_typed<double>(std::tuple{"beammap","scan_band_mask","row_median_sigma_threshold"})) {
+        get_config_value(config, beammap_scan_band_mask_row_median_sigma_threshold, missing_keys, invalid_keys,
+                         std::tuple{"beammap","scan_band_mask","row_median_sigma_threshold"},
+                         {}, {0.0});
+    }
+    if (config.template has_typed<double>(std::tuple{"beammap","scan_band_mask","row_sigma_ratio_threshold"})) {
+        get_config_value(config, beammap_scan_band_mask_row_sigma_ratio_threshold, missing_keys, invalid_keys,
+                         std::tuple{"beammap","scan_band_mask","row_sigma_ratio_threshold"},
+                         {}, {0.0});
+    }
+    if (config.template has_typed<double>(std::tuple{"beammap","scan_band_mask","max_flagged_fraction"})) {
+        get_config_value(config, beammap_scan_band_mask_max_flagged_fraction, missing_keys, invalid_keys,
+                         std::tuple{"beammap","scan_band_mask","max_flagged_fraction"},
                          {}, {0.0}, {1.0});
     }
 

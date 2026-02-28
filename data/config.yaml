@@ -13,6 +13,14 @@ beammap: # beammap controls (node required, but options ignored if not beammappi
     sigma_threshold: 6.0 # block MAD(diff) threshold in units of detector global MAD(diff)
     sigma_floor: 0.0 # absolute MAD(diff) floor in timestream units (ignored if 0)
     max_flagged_fraction: 0.35 # skip masking for a detector if proposed mask exceeds this fraction of its good samples
+  scan_band_mask: # optional edge-band masking for coherent bad scan legs in detector-grouped beammaps
+    enabled: false # identify bad top/bottom map bands and flag the corresponding TOD samples before fitting
+    edge_rows: 24 # inspect up to this many rows from each map edge
+    min_row_pixels: 8 # minimum positive-weight pixels required for a row to be considered
+    min_contiguous_rows: 2 # require at least this many adjacent bad rows at an edge
+    row_median_sigma_threshold: 4.0 # flag rows if |row median - interior median| exceeds this many interior MAD sigmas
+    row_sigma_ratio_threshold: 2.5 # flag rows if row MAD exceeds this multiple of the interior-row MAD median
+    max_flagged_fraction: 0.30 # skip masking for a detector if proposed sample mask exceeds this fraction of its good samples
   split_fits_by_flag: # optional split output of detector-grouped beammap FITS by detector quality flag
     enabled: false # if true, write separate FITS files for requested detector flag values
     flag_values: [0, 1] # detector flag values to include (e.g. 0=good, 1=bad)

@@ -135,6 +135,13 @@ public:
         Eigen::Index n_det_rejected = 0;
     };
 
+    struct ScanBandMaskSummary {
+        Eigen::Index n_det_flagged = 0;
+        Eigen::Index n_rows_flagged = 0;
+        Eigen::Index n_samples_flagged = 0;
+        Eigen::Index n_det_rejected = 0;
+    };
+
     // diagnostics for sample-level beammap RFI masking
     Eigen::VectorXi rfi_mask_samples_flagged;
     Eigen::VectorXi rfi_mask_scans_flagged;
@@ -163,6 +170,9 @@ public:
 
     // robust sample-level masking for short RFI bursts in detector beammaps
     RFIMaskScanSummary apply_rfi_sample_mask(TCData<TCDataKind::PTC,Eigen::MatrixXd> &);
+
+    // detector-map edge-band masking for coherent bad scan legs
+    ScanBandMaskSummary apply_scan_band_mask(mapmaking::MapBuffer &);
 
     // optional prior-assisted peak initialization
     std::filesystem::path resolve_soft_priors_filepath() const;
@@ -1007,6 +1017,279 @@ Beammap::RFIMaskScanSummary Beammap::apply_rfi_sample_mask(TCData<TCDataKind::PT
     return summary;
 }
 
+Beammap::ScanBandMaskSummary Beammap::apply_scan_band_mask(mapmaking::MapBuffer &map_buffer) {
+    ScanBandMaskSummary summary;
+
+    if (!beammap_scan_band_mask_enabled || map_grouping != "detector") {
+        return summary;
+    }
+
+    const Eigen::Index n_det_maps = std::min<Eigen::Index>(
+        static_cast<Eigen::Index>(map_buffer.signal.size()), calib.n_dets);
+    if (n_det_maps <= 0 || map_buffer.n_rows <= 0 || map_buffer.n_cols <= 0) {
+        return summary;
+    }
+
+    const Eigen::Index search_rows = std::min<Eigen::Index>(
+        std::max<Eigen::Index>(1, beammap_scan_band_mask_edge_rows), map_buffer.n_rows / 2);
+    if (search_rows <= 0) {
+        return summary;
+    }
+
+    const Eigen::Index min_row_pixels = std::max<Eigen::Index>(1, beammap_scan_band_mask_min_row_pixels);
+    const Eigen::Index min_contiguous_rows = std::max<Eigen::Index>(1, beammap_scan_band_mask_min_contiguous_rows);
+    const double median_sigma_threshold = std::max(0.0, beammap_scan_band_mask_row_median_sigma_threshold);
+    const double sigma_ratio_threshold = std::max(0.0, beammap_scan_band_mask_row_sigma_ratio_threshold);
+    const double max_flagged_fraction = std::clamp(beammap_scan_band_mask_max_flagged_fraction, 0.0, 1.0);
+    const double eps = std::numeric_limits<double>::epsilon();
+    const double row0 = static_cast<double>(map_buffer.n_rows - 1) / 2.0;
+
+    auto robust_stats = [&](const std::vector<double> &values, double &median, double &sigma) -> bool {
+        if (values.empty()) {
+            median = std::numeric_limits<double>::quiet_NaN();
+            sigma = std::numeric_limits<double>::quiet_NaN();
+            return false;
+        }
+        Eigen::Map<const Eigen::VectorXd> vec(values.data(), static_cast<Eigen::Index>(values.size()));
+        median = tula::alg::median(vec);
+        Eigen::VectorXd abs_dev = (vec.array() - median).abs().matrix();
+        sigma = 1.4826 * tula::alg::median(abs_dev);
+        if (!std::isfinite(sigma)) {
+            sigma = std::numeric_limits<double>::quiet_NaN();
+        }
+        return std::isfinite(median);
+    };
+
+    auto row_is_bad = [&](double row_median, double row_sigma, double interior_median,
+                          double interior_median_sigma, double interior_row_sigma_median) {
+        bool bad = false;
+        if (median_sigma_threshold > 0.0 &&
+            std::isfinite(row_median) &&
+            std::isfinite(interior_median) &&
+            std::isfinite(interior_median_sigma) &&
+            interior_median_sigma > eps) {
+            bad = std::abs(row_median - interior_median) > median_sigma_threshold * interior_median_sigma;
+        }
+        if (!bad &&
+            sigma_ratio_threshold > 0.0 &&
+            std::isfinite(row_sigma) &&
+            std::isfinite(interior_row_sigma_median) &&
+            interior_row_sigma_median > eps) {
+            bad = row_sigma > sigma_ratio_threshold * interior_row_sigma_median;
+        }
+        return bad;
+    };
+
+    for (Eigen::Index det = 0; det < n_det_maps; ++det) {
+        const auto &sig = map_buffer.signal[det];
+        const auto &wt = map_buffer.weight[det];
+        if (sig.rows() != map_buffer.n_rows || sig.cols() != map_buffer.n_cols ||
+            wt.rows() != sig.rows() || wt.cols() != sig.cols()) {
+            continue;
+        }
+
+        std::vector<double> row_medians(static_cast<std::size_t>(map_buffer.n_rows),
+                                        std::numeric_limits<double>::quiet_NaN());
+        std::vector<double> row_sigmas(static_cast<std::size_t>(map_buffer.n_rows),
+                                       std::numeric_limits<double>::quiet_NaN());
+        std::vector<Eigen::Index> row_counts(static_cast<std::size_t>(map_buffer.n_rows), 0);
+        std::vector<double> row_values;
+        std::vector<double> interior_row_medians;
+        std::vector<double> interior_row_sigmas;
+
+        for (Eigen::Index row = 0; row < map_buffer.n_rows; ++row) {
+            row_values.clear();
+            row_values.reserve(static_cast<std::size_t>(map_buffer.n_cols));
+            for (Eigen::Index col = 0; col < map_buffer.n_cols; ++col) {
+                const double w = wt(row, col);
+                const double s = sig(row, col);
+                if (!std::isfinite(w) || w <= 0.0 || !std::isfinite(s)) {
+                    continue;
+                }
+                row_values.push_back(s);
+            }
+            row_counts[static_cast<std::size_t>(row)] = static_cast<Eigen::Index>(row_values.size());
+            if (row_counts[static_cast<std::size_t>(row)] < min_row_pixels) {
+                continue;
+            }
+            double row_median = std::numeric_limits<double>::quiet_NaN();
+            double row_sigma = std::numeric_limits<double>::quiet_NaN();
+            if (!robust_stats(row_values, row_median, row_sigma)) {
+                continue;
+            }
+            row_medians[static_cast<std::size_t>(row)] = row_median;
+            row_sigmas[static_cast<std::size_t>(row)] = row_sigma;
+            if (row >= search_rows && row < map_buffer.n_rows - search_rows) {
+                interior_row_medians.push_back(row_median);
+                if (std::isfinite(row_sigma)) {
+                    interior_row_sigmas.push_back(row_sigma);
+                }
+            }
+        }
+
+        if (interior_row_medians.size() < static_cast<std::size_t>(min_contiguous_rows)) {
+            continue;
+        }
+
+        double interior_median = std::numeric_limits<double>::quiet_NaN();
+        double interior_median_sigma = std::numeric_limits<double>::quiet_NaN();
+        if (!robust_stats(interior_row_medians, interior_median, interior_median_sigma)) {
+            continue;
+        }
+
+        double interior_row_sigma_median = std::numeric_limits<double>::quiet_NaN();
+        double dummy_sigma = std::numeric_limits<double>::quiet_NaN();
+        if (!interior_row_sigmas.empty()) {
+            robust_stats(interior_row_sigmas, interior_row_sigma_median, dummy_sigma);
+        }
+
+        auto collect_edge_rows = [&](bool from_top) {
+            std::vector<Eigen::Index> flagged_rows;
+            bool saw_eligible_row = false;
+            for (Eigen::Index edge_idx = 0; edge_idx < search_rows; ++edge_idx) {
+                const Eigen::Index row = from_top ? edge_idx : (map_buffer.n_rows - 1 - edge_idx);
+                if (row < 0 || row >= map_buffer.n_rows) {
+                    continue;
+                }
+                if (row_counts[static_cast<std::size_t>(row)] < min_row_pixels ||
+                    !std::isfinite(row_medians[static_cast<std::size_t>(row)])) {
+                    if (saw_eligible_row) {
+                        break;
+                    }
+                    continue;
+                }
+                saw_eligible_row = true;
+                const bool bad = row_is_bad(
+                    row_medians[static_cast<std::size_t>(row)],
+                    row_sigmas[static_cast<std::size_t>(row)],
+                    interior_median,
+                    interior_median_sigma,
+                    interior_row_sigma_median);
+                if (!bad) {
+                    break;
+                }
+                flagged_rows.push_back(row);
+            }
+            if (flagged_rows.size() < static_cast<std::size_t>(min_contiguous_rows)) {
+                flagged_rows.clear();
+            }
+            return flagged_rows;
+        };
+
+        auto top_rows = collect_edge_rows(true);
+        auto bottom_rows = collect_edge_rows(false);
+        if (top_rows.empty() && bottom_rows.empty()) {
+            continue;
+        }
+
+        std::vector<unsigned char> bad_row_mask(static_cast<std::size_t>(map_buffer.n_rows), 0);
+        Eigen::Index n_bad_rows = 0;
+        for (const auto row : top_rows) {
+            if (!bad_row_mask[static_cast<std::size_t>(row)]) {
+                bad_row_mask[static_cast<std::size_t>(row)] = 1;
+                n_bad_rows++;
+            }
+        }
+        for (const auto row : bottom_rows) {
+            if (!bad_row_mask[static_cast<std::size_t>(row)]) {
+                bad_row_mask[static_cast<std::size_t>(row)] = 1;
+                n_bad_rows++;
+            }
+        }
+        if (n_bad_rows <= 0) {
+            continue;
+        }
+
+        std::vector<std::pair<Eigen::Index, Eigen::Index>> proposed_flags;
+        Eigen::Index n_good_samples = 0;
+        for (Eigen::Index chunk_idx = 0; chunk_idx < static_cast<Eigen::Index>(ptcs.size()); ++chunk_idx) {
+            auto &ptc = ptcs[chunk_idx];
+            if (det >= ptc.scans.data.cols() || det >= ptc.flags.data.cols()) {
+                continue;
+            }
+            Eigen::VectorXd lat;
+            auto lat_it = ptc.pointing.data.find("lat");
+            if (lat_it != ptc.pointing.data.end() &&
+                lat_it->second.rows() == ptc.scans.data.rows() &&
+                det < lat_it->second.cols()) {
+                lat = lat_it->second.col(det);
+            }
+            else {
+                auto latlon = engine_utils::calc_det_pointing(
+                    ptc.tel_data.data,
+                    calib.apt["x_t"](det),
+                    calib.apt["y_t"](det),
+                    telescope.pixel_axes,
+                    ptc.pointing_offsets_arcsec.data,
+                    map_grouping);
+                lat = std::get<0>(latlon);
+            }
+            if (lat.size() != ptc.scans.data.rows()) {
+                continue;
+            }
+            for (Eigen::Index t = 0; t < ptc.scans.data.rows(); ++t) {
+                const double s = ptc.scans.data(t, det);
+                if (ptc.flags.data(t, det) || !std::isfinite(s)) {
+                    continue;
+                }
+                n_good_samples++;
+                const double lat_v = lat(t);
+                if (!std::isfinite(lat_v)) {
+                    continue;
+                }
+                const Eigen::Index row = static_cast<Eigen::Index>(std::llround(lat_v / map_buffer.pixel_size_rad + row0));
+                if (row < 0 || row >= map_buffer.n_rows) {
+                    continue;
+                }
+                if (bad_row_mask[static_cast<std::size_t>(row)]) {
+                    proposed_flags.emplace_back(chunk_idx, t);
+                }
+            }
+        }
+
+        if (proposed_flags.empty()) {
+            continue;
+        }
+
+        const double flagged_fraction =
+            static_cast<double>(proposed_flags.size()) /
+            static_cast<double>(std::max<Eigen::Index>(1, n_good_samples));
+        if (max_flagged_fraction > 0.0 && flagged_fraction > max_flagged_fraction) {
+            summary.n_det_rejected++;
+            logger->debug(
+                "beammap scan-band mask det={} rejected: proposed rows={} samples={} flagged_fraction={} exceeds limit={}",
+                det, n_bad_rows, proposed_flags.size(), flagged_fraction, max_flagged_fraction);
+            continue;
+        }
+
+        for (const auto &[chunk_idx, sample_idx] : proposed_flags) {
+            ptcs[chunk_idx].flags.data(sample_idx, det) = true;
+            if (chunk_idx < static_cast<Eigen::Index>(ptcs0.size()) &&
+                sample_idx < ptcs0[chunk_idx].flags.data.rows() &&
+                det < ptcs0[chunk_idx].flags.data.cols()) {
+                ptcs0[chunk_idx].flags.data(sample_idx, det) = true;
+            }
+        }
+
+        summary.n_det_flagged++;
+        summary.n_rows_flagged += n_bad_rows;
+        summary.n_samples_flagged += static_cast<Eigen::Index>(proposed_flags.size());
+
+        logger->info(
+            "beammap scan-band mask det={} array={} nw={} rows={} samples={} flagged_fraction={} top_rows={} bottom_rows={}",
+            det,
+            static_cast<int>(calib.apt["array"](det)),
+            static_cast<int>(calib.apt["nw"](det)),
+            n_bad_rows,
+            proposed_flags.size(),
+            flagged_fraction,
+            static_cast<int>(top_rows.size()),
+            static_cast<int>(bottom_rows.size()));
+    }
+
+    return summary;
+}
+
 std::filesystem::path Beammap::resolve_soft_priors_filepath() const {
     namespace fs = std::filesystem;
 
@@ -1592,6 +1875,16 @@ void Beammap::run_loop() {
                      beammap_rfi_mask_dilate_blocks,
                      beammap_rfi_mask_max_flagged_fraction);
     }
+    if (beammap_scan_band_mask_enabled && map_grouping == "detector") {
+        logger->info(
+            "beammap scan-band mask enabled: edge_rows={} min_row_pixels={} min_contiguous_rows={} row_median_sigma_threshold={} row_sigma_ratio_threshold={} max_flagged_fraction={}",
+            beammap_scan_band_mask_edge_rows,
+            beammap_scan_band_mask_min_row_pixels,
+            beammap_scan_band_mask_min_contiguous_rows,
+            beammap_scan_band_mask_row_median_sigma_threshold,
+            beammap_scan_band_mask_row_sigma_ratio_threshold,
+            beammap_scan_band_mask_max_flagged_fraction);
+    }
 
     // iterative loop
     while (keep_going) {
@@ -1732,81 +2025,101 @@ void Beammap::run_loop() {
         logger->info("starting mapmaking");
 
         if (run_mapmaking) {
-            // set maps to zero for each iteration
-            for (Eigen::Index i=0; i<n_maps; ++i) {
-                omb.signal[i].setZero();
-                omb.weight[i].setZero();
+            auto run_mapmaking_pass = [&](bool update_progress) {
+                // set maps to zero for each pass
+                for (Eigen::Index i = 0; i < n_maps; ++i) {
+                    omb.signal[i].setZero();
+                    omb.weight[i].setZero();
 
-                // clear coverage
-                if (!omb.coverage.empty()) {
-                    omb.coverage[i].setZero();
-                }
-                // clear kernel
-                if (rtcproc.run_kernel) {
-                    omb.kernel[i].setZero();
-                }
-                // clear noise
-                if (!omb.noise.empty()) {
-                    omb.noise[i].setZero();
-                }
+                    if (!omb.coverage.empty()) {
+                        omb.coverage[i].setZero();
+                    }
+                    if (rtcproc.run_kernel) {
+                        omb.kernel[i].setZero();
+                    }
+                    if (!omb.noise.empty()) {
+                        omb.noise[i].setZero();
+                    }
 
-                if (run_noise) {
-                    for (auto& ptcdata: ptcs) {
-                        if (omb.randomize_dets) {
-                            ptcdata.noise.data = Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic>::Zero(omb.n_noise, calib.n_dets)
-                                                     .unaryExpr([&](int dummy){ return 2 * rands(eng) - 1; });
-                        } else {
-                            ptcdata.noise.data = Eigen::Matrix<int, Eigen::Dynamic, 1>::Zero(omb.n_noise)
-                                                     .unaryExpr([&](int dummy){ return 2 * rands(eng) - 1; });
+                    if (run_noise) {
+                        for (auto &ptcdata : ptcs) {
+                            if (omb.randomize_dets) {
+                                ptcdata.noise.data = Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic>::Zero(
+                                                         omb.n_noise, calib.n_dets)
+                                                         .unaryExpr([&](int dummy) { return 2 * rands(eng) - 1; });
+                            }
+                            else {
+                                ptcdata.noise.data = Eigen::Matrix<int, Eigen::Dynamic, 1>::Zero(omb.n_noise)
+                                                         .unaryExpr([&](int dummy) { return 2 * rands(eng) - 1; });
+                            }
                         }
                     }
                 }
-            }
 
-            logger->info("running mapmaking");
+                logger->info("running mapmaking");
 
-            if (map_grouping == "detector") {
-                bool run_omb = true;
-                for (auto& ptc : ptcs) {
-                    if (map_method == "naive") {
-                        // naive mapmaker
-                        naive_mm.populate_maps_naive_parallel(ptc, omb, cmb, ptc.map_indices.data, telescope.pixel_axes,
-                                                              calib.apt, telescope.d_fsmp, run_omb, run_noise);
+                if (map_grouping == "detector") {
+                    bool run_omb = true;
+                    for (auto &ptc : ptcs) {
+                        if (map_method == "naive") {
+                            naive_mm.populate_maps_naive_parallel(ptc, omb, cmb, ptc.map_indices.data,
+                                                                  telescope.pixel_axes, calib.apt,
+                                                                  telescope.d_fsmp, run_omb, run_noise);
+                        }
+                        else if (map_method == "jinc") {
+                            jinc_mm.populate_maps_jinc_parallel(ptc, omb, cmb, ptc.map_indices.data,
+                                                                telescope.pixel_axes, calib.apt,
+                                                                telescope.d_fsmp, run_omb, run_noise);
+                        }
+                        if (update_progress) {
+                            pb.count(telescope.scan_indices.cols(), 1);
+                        }
                     }
-                    else if (map_method == "jinc") {
-                        // jinc mapmaker
-                        jinc_mm.populate_maps_jinc_parallel(ptc, omb, cmb, ptc.map_indices.data, telescope.pixel_axes,
-                                                            calib.apt, telescope.d_fsmp, run_omb, run_noise);
-                    }
-                    // update progress bar
-                    pb.count(telescope.scan_indices.cols(), 1);
+                }
+                else {
+                    grppi::map(tula::grppi_utils::dyn_ex(map_parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
+                        bool run_omb = true;
+                        if (map_method == "naive") {
+                            naive_mm.populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
+                                                        telescope.pixel_axes, calib.apt, telescope.d_fsmp,
+                                                        run_omb, run_noise);
+                        }
+                        else if (map_method == "jinc") {
+                            jinc_mm.populate_maps_jinc(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
+                                                       telescope.pixel_axes, calib.apt, telescope.d_fsmp,
+                                                       run_omb, run_noise);
+                        }
+                        if (update_progress) {
+                            pb.count(telescope.scan_indices.cols(), 1);
+                        }
+                        return 0;
+                    });
+                }
+
+                logger->info("normalizing maps");
+                omb.normalize_maps();
+            };
+
+            run_mapmaking_pass(true);
+
+            if (beammap_scan_band_mask_enabled && map_grouping == "detector" && current_iter == 0) {
+                auto scan_band_summary = apply_scan_band_mask(omb);
+                if (scan_band_summary.n_samples_flagged > 0) {
+                    logger->info(
+                        "beammap scan-band mask summary: flagged {} samples in {} rows across {} detectors ({} rejected by max_flagged_fraction={}); rebuilding maps",
+                        scan_band_summary.n_samples_flagged,
+                        scan_band_summary.n_rows_flagged,
+                        scan_band_summary.n_det_flagged,
+                        scan_band_summary.n_det_rejected);
+                    run_mapmaking_pass(false);
+                }
+                else {
+                    logger->info(
+                        "beammap scan-band mask summary: no edge bands flagged ({} detectors rejected by max_flagged_fraction={})",
+                        scan_band_summary.n_det_rejected,
+                        beammap_scan_band_mask_max_flagged_fraction);
                 }
             }
-
-            else {
-                // mapmaking
-                grppi::map(tula::grppi_utils::dyn_ex(map_parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
-                    bool run_omb = true;
-                    // naive mapmaker
-                    if (map_method == "naive") {
-                        naive_mm.populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data, telescope.pixel_axes,
-                                                    calib.apt, telescope.d_fsmp, run_omb, run_noise);
-                    }
-                    else if (map_method == "jinc") {
-                        jinc_mm.populate_maps_jinc(ptcs[i], omb, cmb, ptcs[i].map_indices.data, telescope.pixel_axes,
-                                                   calib.apt, telescope.d_fsmp, run_omb, run_noise);
-                    }
-
-                    // update progress bar
-                    pb.count(telescope.scan_indices.cols(), 1);
-
-                    return 0;
-                });
-            }
-
-            // normalize maps
-            logger->info("normalizing maps");
-            omb.normalize_maps();
 
             Eigen::VectorXi iter_bound_low = Eigen::VectorXi::Zero(map_fitter.n_params);
             Eigen::VectorXi iter_bound_high = Eigen::VectorXi::Zero(map_fitter.n_params);
