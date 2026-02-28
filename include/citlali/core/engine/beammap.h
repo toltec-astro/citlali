@@ -8,11 +8,13 @@
 #include <cmath>
 #include <algorithm>
 #include <atomic>
+#include <cctype>
 #include <memory>
 #include <filesystem>
 #include <mutex>
 #include <condition_variable>
 #include <queue>
+#include <set>
 
 #include <citlali/core/engine/engine.h>
 #include <citlali/core/utils/ecsv_io.h>
@@ -35,7 +37,11 @@ public:
     };
 
     bool beammap_soft_priors_loaded = false;
+    bool beammap_soft_priors_are_centered = false;
+    bool beammap_soft_priors_are_derotated = false;
     std::map<std::pair<int, int>, std::vector<SoftPriorSlot>> beammap_soft_prior_slots;
+    std::map<int, double> beammap_prior_array_center_x_arcsec;
+    std::map<int, double> beammap_prior_array_center_y_arcsec;
 
     // parallel policies for each section
     std::string  map_parallel_policy;
@@ -93,6 +99,35 @@ public:
     Eigen::VectorXi fit_diag_bound_code;
     Eigen::VectorXi fit_diag_bound_nhit;
 
+    enum PriorDiagColumn {
+        prior_init_mode_col = 0,
+        prior_used_col,
+        prior_fallback_blind_col,
+        prior_no_candidate_reason_col,
+        prior_slot_index_col,
+        prior_match_d2_col,
+        prior_match_score_col,
+        prior_candidate_snr_col,
+        prior_n_candidates_col,
+        prior_n_candidates_keep_col,
+        prior_n_candidates_gate_col,
+        prior_candidate_x_raw_col,
+        prior_candidate_y_raw_col,
+        prior_candidate_x_prior_col,
+        prior_candidate_y_prior_col,
+        prior_center_x_col,
+        prior_center_y_col,
+        prior_derot_elev_col,
+        prior_slot_x_col,
+        prior_slot_y_col,
+        prior_slot_sx_col,
+        prior_slot_sy_col,
+        n_prior_diag_cols
+    };
+
+    // per-map prior-init diagnostics (for final QC outputs)
+    Eigen::MatrixXd prior_diag_values;
+
     struct RFIMaskScanSummary {
         Eigen::Index n_det_candidates = 0;
         Eigen::Index n_det_flagged = 0;
@@ -130,7 +165,11 @@ public:
     RFIMaskScanSummary apply_rfi_sample_mask(TCData<TCDataKind::PTC,Eigen::MatrixXd> &);
 
     // optional prior-assisted peak initialization
+    std::filesystem::path resolve_soft_priors_filepath() const;
     bool load_soft_priors();
+    bool find_map_weighted_peak(Eigen::Index map_index, Eigen::Index &best_row,
+                                Eigen::Index &best_col, double &best_snr) const;
+    void update_prior_frame_estimates();
     bool choose_prior_guided_init(Eigen::Index map_index, double &init_row, double &init_col);
 
     // flag detectors
@@ -196,6 +235,8 @@ void Beammap::setup() {
     fit_diag_hit_upper.setZero(n_maps, map_fitter.n_params);
     fit_diag_bound_code.setZero(n_maps);
     fit_diag_bound_nhit.setZero(n_maps);
+    prior_diag_values.resize(n_maps, n_prior_diag_cols);
+    prior_diag_values.setConstant(std::numeric_limits<double>::quiet_NaN());
 
     // resize good fits
     good_fits.setZero(n_maps);
@@ -320,6 +361,10 @@ void Beammap::setup() {
     calib.apt_meta["rfi_mask_max_flagged_fraction"] = beammap_rfi_mask_max_flagged_fraction;
     beammap_soft_prior_slots.clear();
     beammap_soft_priors_loaded = false;
+    beammap_soft_priors_are_centered = false;
+    beammap_soft_priors_are_derotated = false;
+    beammap_prior_array_center_x_arcsec.clear();
+    beammap_prior_array_center_y_arcsec.clear();
     if (beammap_priors_enabled) {
         if (map_grouping != "detector") {
             logger->warn("beammap priors requested but map_grouping={} (requires detector); disabling priors",
@@ -962,11 +1007,54 @@ Beammap::RFIMaskScanSummary Beammap::apply_rfi_sample_mask(TCData<TCDataKind::PT
     return summary;
 }
 
-bool Beammap::load_soft_priors() {
+std::filesystem::path Beammap::resolve_soft_priors_filepath() const {
     namespace fs = std::filesystem;
 
+    if (beammap_priors_filepath.empty() || beammap_priors_filepath == "null") {
+        return {};
+    }
+
+    fs::path requested(beammap_priors_filepath);
+    std::vector<fs::path> candidates;
+
+    if (requested.is_absolute()) {
+        candidates.push_back(requested);
+    }
+    else {
+        candidates.push_back(requested);
+
+        fs::path source_path(__FILE__);
+        if (source_path.is_relative()) {
+            source_path = fs::current_path() / source_path;
+        }
+        source_path = source_path.lexically_normal();
+        fs::path repo_root = source_path;
+        for (int i = 0; i < 5 && !repo_root.empty(); ++i) {
+            repo_root = repo_root.parent_path();
+        }
+        if (!repo_root.empty()) {
+            candidates.push_back(repo_root / requested);
+        }
+    }
+
+    for (const auto &candidate : candidates) {
+        try {
+            if (fs::exists(candidate)) {
+                return fs::absolute(candidate).lexically_normal();
+            }
+        }
+        catch (const std::exception &) {
+        }
+    }
+
+    return {};
+}
+
+bool Beammap::load_soft_priors() {
     beammap_soft_prior_slots.clear();
     beammap_soft_priors_loaded = false;
+    beammap_soft_priors_are_centered = false;
+    beammap_soft_priors_are_derotated = false;
 
     if (!beammap_priors_enabled) {
         return false;
@@ -976,13 +1064,28 @@ bool Beammap::load_soft_priors() {
         logger->warn("beammap priors filepath is empty/null");
         return false;
     }
-    if (!fs::exists(beammap_priors_filepath)) {
+    const auto resolved_priors_filepath = resolve_soft_priors_filepath();
+    if (resolved_priors_filepath.empty()) {
         logger->warn("beammap priors file does not exist: {}", beammap_priors_filepath);
         return false;
     }
+    if (resolved_priors_filepath.string() != beammap_priors_filepath) {
+        logger->info("beammap priors resolved {} -> {}", beammap_priors_filepath, resolved_priors_filepath.string());
+        beammap_priors_filepath = resolved_priors_filepath.string();
+    }
 
-    [[maybe_unused]] auto [priors_table, priors_header, priors_meta] =
+    auto [priors_table, priors_header, priors_meta] =
         to_map_from_ecsv_mixted_type(beammap_priors_filepath);
+    static_cast<void>(priors_header);
+
+    auto prior_frame_it = priors_meta.find("prior_frame");
+    if (prior_frame_it != priors_meta.end()) {
+        std::string prior_frame = prior_frame_it->second;
+        std::transform(prior_frame.begin(), prior_frame.end(), prior_frame.begin(),
+                       [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+        beammap_soft_priors_are_centered = (prior_frame.find("center") != std::string::npos);
+        beammap_soft_priors_are_derotated = (prior_frame.find("derot") != std::string::npos);
+    }
 
     const std::vector<std::string> required_columns = {
         "array",
@@ -1076,9 +1179,154 @@ bool Beammap::load_soft_priors() {
     return true;
 }
 
+bool Beammap::find_map_weighted_peak(Eigen::Index map_index, Eigen::Index &best_row,
+                                     Eigen::Index &best_col, double &best_snr) const {
+    best_row = -1;
+    best_col = -1;
+    best_snr = -std::numeric_limits<double>::infinity();
+
+    if (map_index < 0 || map_index >= n_maps) {
+        return false;
+    }
+
+    const auto &sig = omb.signal[map_index];
+    const auto &wt = omb.weight[map_index];
+    if (sig.rows() <= 0 || sig.cols() <= 0 || wt.rows() != sig.rows() || wt.cols() != sig.cols()) {
+        return false;
+    }
+
+    const double center_row = static_cast<double>(sig.rows() - 1) / 2.0;
+    const double center_col = static_cast<double>(sig.cols() - 1) / 2.0;
+    const double radius_pix = map_fitter.fitting_region_pix;
+    const double radius2 = radius_pix * radius_pix;
+
+    auto scan = [&](bool apply_radius) {
+        bool found = false;
+        for (Eigen::Index row = 0; row < sig.rows(); ++row) {
+            for (Eigen::Index col = 0; col < sig.cols(); ++col) {
+                const double s = sig(row, col);
+                const double w = wt(row, col);
+                if (!std::isfinite(s) || !std::isfinite(w) || w <= 0.0) {
+                    continue;
+                }
+                if (apply_radius) {
+                    const double dr = static_cast<double>(row) - center_row;
+                    const double dc = static_cast<double>(col) - center_col;
+                    if (dr * dr + dc * dc >= radius2) {
+                        continue;
+                    }
+                }
+                const double snr = s * std::sqrt(w);
+                if (!std::isfinite(snr)) {
+                    continue;
+                }
+                if (!found || snr > best_snr) {
+                    best_row = row;
+                    best_col = col;
+                    best_snr = snr;
+                    found = true;
+                }
+            }
+        }
+        return found;
+    };
+
+    if (radius_pix > 0.0 && scan(true)) {
+        return true;
+    }
+    return scan(false);
+}
+
+void Beammap::update_prior_frame_estimates() {
+    beammap_prior_array_center_x_arcsec.clear();
+    beammap_prior_array_center_y_arcsec.clear();
+
+    std::map<int, std::vector<double>> x_by_array;
+    std::map<int, std::vector<double>> y_by_array;
+    std::set<int> arrays_missing;
+    for (Eigen::Index i = 0; i < n_maps; ++i) {
+        arrays_missing.insert(static_cast<int>(maps_to_arrays(i)));
+    }
+
+    Eigen::Index n_prev = 0;
+    if (current_iter > 0 && p0.rows() == n_maps && p0.cols() > 2) {
+        for (Eigen::Index i = 0; i < n_maps; ++i) {
+            if (!(std::isfinite(p0(i, 0)) && p0(i, 0) > 0.0 &&
+                  std::isfinite(p0(i, 1)) && std::isfinite(p0(i, 2)))) {
+                continue;
+            }
+            const int array = static_cast<int>(maps_to_arrays(i));
+            const double x_arcsec =
+                RAD_TO_ASEC * omb.pixel_size_rad * (p0(i, 1) - (omb.n_cols - 1) / 2.0);
+            const double y_arcsec =
+                RAD_TO_ASEC * omb.pixel_size_rad * (p0(i, 2) - (omb.n_rows - 1) / 2.0);
+            x_by_array[array].push_back(x_arcsec);
+            y_by_array[array].push_back(y_arcsec);
+            arrays_missing.erase(array);
+            n_prev++;
+        }
+    }
+
+    Eigen::Index n_blind = 0;
+    if (!arrays_missing.empty()) {
+        for (Eigen::Index i = 0; i < n_maps; ++i) {
+            const int array = static_cast<int>(maps_to_arrays(i));
+            if (!arrays_missing.count(array)) {
+                continue;
+            }
+
+            Eigen::Index peak_row = -1;
+            Eigen::Index peak_col = -1;
+            double peak_snr = -std::numeric_limits<double>::infinity();
+            if (!find_map_weighted_peak(i, peak_row, peak_col, peak_snr)) {
+                continue;
+            }
+
+            const double x_arcsec =
+                RAD_TO_ASEC * omb.pixel_size_rad * (static_cast<double>(peak_col) - (omb.n_cols - 1) / 2.0);
+            const double y_arcsec =
+                RAD_TO_ASEC * omb.pixel_size_rad * (static_cast<double>(peak_row) - (omb.n_rows - 1) / 2.0);
+            x_by_array[array].push_back(x_arcsec);
+            y_by_array[array].push_back(y_arcsec);
+            n_blind++;
+        }
+    }
+
+    for (const auto &[array, xs] : x_by_array) {
+        if (xs.empty()) {
+            continue;
+        }
+        Eigen::Map<const Eigen::VectorXd> x_vec(xs.data(), static_cast<Eigen::Index>(xs.size()));
+        auto y_it = y_by_array.find(array);
+        if (y_it == y_by_array.end() || y_it->second.size() != xs.size()) {
+            continue;
+        }
+        Eigen::Map<const Eigen::VectorXd> y_vec(y_it->second.data(), static_cast<Eigen::Index>(y_it->second.size()));
+        beammap_prior_array_center_x_arcsec[array] = tula::alg::median(x_vec);
+        beammap_prior_array_center_y_arcsec[array] = tula::alg::median(y_vec);
+    }
+
+    logger->info("beammap priors frame estimate (iter {}): previous={} blind={} arrays={}",
+                 current_iter, n_prev, n_blind, beammap_prior_array_center_x_arcsec.size());
+}
+
 bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row, double &init_col) {
     init_row = -99.0;
     init_col = -99.0;
+
+    auto set_prior_diag = [&](PriorDiagColumn col, double value) {
+        if (map_index >= 0 && map_index < prior_diag_values.rows() &&
+            col >= 0 && col < prior_diag_values.cols()) {
+            prior_diag_values(map_index, col) = value;
+        }
+    };
+
+    constexpr int prior_reason_none = 0;
+    constexpr int prior_reason_no_slot_group = 1;
+    constexpr int prior_reason_no_valid_weighted_pixels = 2;
+    constexpr int prior_reason_invalid_sigma = 3;
+    constexpr int prior_reason_below_min_snr = 4;
+    constexpr int prior_reason_gate_rejected = 5;
 
     if (!beammap_soft_priors_loaded || map_grouping != "detector") {
         return false;
@@ -1094,6 +1342,7 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
     const int nw = static_cast<int>(std::lround(calib.apt["nw"](map_index)));
     auto slots_it = beammap_soft_prior_slots.find({array, nw});
     if (slots_it == beammap_soft_prior_slots.end() || slots_it->second.empty()) {
+        set_prior_diag(prior_no_candidate_reason_col, prior_reason_no_slot_group);
         return false;
     }
     const auto &slots = slots_it->second;
@@ -1101,6 +1350,7 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
     const auto &sig = omb.signal[map_index];
     const auto &wt = omb.weight[map_index];
     if (sig.rows() <= 0 || sig.cols() <= 0 || wt.rows() != sig.rows() || wt.cols() != sig.cols()) {
+        set_prior_diag(prior_no_candidate_reason_col, prior_reason_no_valid_weighted_pixels);
         return false;
     }
 
@@ -1126,6 +1376,7 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
         }
     }
     if (valid_signal.empty()) {
+        set_prior_diag(prior_no_candidate_reason_col, prior_reason_no_valid_weighted_pixels);
         return false;
     }
 
@@ -1137,6 +1388,7 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
         sig_sigma = engine_utils::calc_std_dev(sig_vec);
     }
     if (!std::isfinite(sig_sigma) || sig_sigma <= std::numeric_limits<double>::epsilon()) {
+        set_prior_diag(prior_no_candidate_reason_col, prior_reason_invalid_sigma);
         return false;
     }
 
@@ -1165,17 +1417,32 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
     if (candidates.empty()) {
         logger->debug("beammap priors init map={} no candidates above min_snr={} (med={} sigma={} wt_med={})",
                       map_index, beammap_priors_min_snr, sig_med, sig_sigma, wt_med);
+        set_prior_diag(prior_n_candidates_col, 0.0);
+        set_prior_diag(prior_n_candidates_keep_col, 0.0);
+        set_prior_diag(prior_n_candidates_gate_col, 0.0);
+        set_prior_diag(prior_no_candidate_reason_col, prior_reason_below_min_snr);
         return false;
     }
 
+    set_prior_diag(prior_n_candidates_col, static_cast<double>(candidates.size()));
+
     const std::size_t n_keep = std::min<std::size_t>(
         candidates.size(), static_cast<std::size_t>(std::max(1, beammap_priors_candidate_top_n)));
+    set_prior_diag(prior_n_candidates_keep_col, static_cast<double>(n_keep));
     std::partial_sort(candidates.begin(), candidates.begin() + n_keep, candidates.end(),
                       [](const Candidate &a, const Candidate &b) { return a.snr > b.snr; });
 
     const double col0 = static_cast<double>(omb.n_cols - 1) / 2.0;
     const double row0 = static_cast<double>(omb.n_rows - 1) / 2.0;
     const double pix_to_arcsec = RAD_TO_ASEC * omb.pixel_size_rad;
+    double derot_elev_rad = telescope.tel_data["TelElAct"].mean();
+    if (!std::isfinite(derot_elev_rad)) {
+        derot_elev_rad = 0.0;
+    }
+    if (std::abs(derot_elev_rad) > pi) {
+        derot_elev_rad *= DEG_TO_RAD;
+    }
+    set_prior_diag(prior_derot_elev_col, derot_elev_rad);
 
     bool found = false;
     double best_score = -std::numeric_limits<double>::infinity();
@@ -1184,11 +1451,46 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
     Eigen::Index best_row = -1;
     Eigen::Index best_col = -1;
     int best_slot = -1;
+    double best_x_raw = std::numeric_limits<double>::quiet_NaN();
+    double best_y_raw = std::numeric_limits<double>::quiet_NaN();
+    double best_x_prior = std::numeric_limits<double>::quiet_NaN();
+    double best_y_prior = std::numeric_limits<double>::quiet_NaN();
+    double best_slot_x = std::numeric_limits<double>::quiet_NaN();
+    double best_slot_y = std::numeric_limits<double>::quiet_NaN();
+    double best_slot_sx = std::numeric_limits<double>::quiet_NaN();
+    double best_slot_sy = std::numeric_limits<double>::quiet_NaN();
+    Eigen::Index n_gate = 0;
 
     for (std::size_t i = 0; i < n_keep; ++i) {
         const auto &cand = candidates[i];
-        const double x_arcsec = pix_to_arcsec * (static_cast<double>(cand.col) - col0);
-        const double y_arcsec = pix_to_arcsec * (static_cast<double>(cand.row) - row0);
+        double x_arcsec_raw = pix_to_arcsec * (static_cast<double>(cand.col) - col0);
+        double y_arcsec_raw = pix_to_arcsec * (static_cast<double>(cand.row) - row0);
+        double x_arcsec = x_arcsec_raw;
+        double y_arcsec = y_arcsec_raw;
+
+        double center_x = std::numeric_limits<double>::quiet_NaN();
+        double center_y = std::numeric_limits<double>::quiet_NaN();
+
+        if (beammap_soft_priors_are_centered) {
+            auto x_it = beammap_prior_array_center_x_arcsec.find(array);
+            auto y_it = beammap_prior_array_center_y_arcsec.find(array);
+            if (x_it != beammap_prior_array_center_x_arcsec.end() &&
+                y_it != beammap_prior_array_center_y_arcsec.end()) {
+                center_x = x_it->second;
+                center_y = y_it->second;
+                x_arcsec -= center_x;
+                y_arcsec -= center_y;
+            }
+        }
+
+        if (beammap_soft_priors_are_derotated && telescope.pixel_axes == "altaz") {
+            const double rot_az_off = std::cos(-derot_elev_rad) * x_arcsec -
+                                      std::sin(-derot_elev_rad) * y_arcsec;
+            const double rot_alt_off = std::sin(-derot_elev_rad) * x_arcsec +
+                                       std::cos(-derot_elev_rad) * y_arcsec;
+            x_arcsec = -rot_az_off;
+            y_arcsec = -rot_alt_off;
+        }
 
         double min_d2 = std::numeric_limits<double>::infinity();
         int min_slot = -1;
@@ -1207,6 +1509,7 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
         if (beammap_priors_max_d2 > 0.0 && min_d2 > beammap_priors_max_d2) {
             continue;
         }
+        n_gate++;
 
         const double score = cand.snr - beammap_priors_score_lambda * min_d2;
         if (!found || score > best_score || (score == best_score && cand.snr > best_snr)) {
@@ -1217,15 +1520,53 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
             best_row = cand.row;
             best_col = cand.col;
             best_slot = min_slot;
+            best_x_raw = x_arcsec_raw;
+            best_y_raw = y_arcsec_raw;
+            best_x_prior = x_arcsec;
+            best_y_prior = y_arcsec;
+            best_slot_x = std::numeric_limits<double>::quiet_NaN();
+            best_slot_y = std::numeric_limits<double>::quiet_NaN();
+            best_slot_sx = std::numeric_limits<double>::quiet_NaN();
+            best_slot_sy = std::numeric_limits<double>::quiet_NaN();
+            if (std::isfinite(center_x) && std::isfinite(center_y)) {
+                set_prior_diag(prior_center_x_col, center_x);
+                set_prior_diag(prior_center_y_col, center_y);
+            }
+            for (const auto &slot : slots) {
+                if (slot.slot_index == min_slot) {
+                    best_slot_x = slot.x_arcsec;
+                    best_slot_y = slot.y_arcsec;
+                    best_slot_sx = slot.sx_arcsec;
+                    best_slot_sy = slot.sy_arcsec;
+                    break;
+                }
+            }
         }
     }
 
+    set_prior_diag(prior_n_candidates_gate_col, static_cast<double>(n_gate));
+
     if (!found) {
+        set_prior_diag(prior_no_candidate_reason_col, prior_reason_gate_rejected);
         return false;
     }
 
     init_row = static_cast<double>(best_row);
     init_col = static_cast<double>(best_col);
+    set_prior_diag(prior_used_col, 1.0);
+    set_prior_diag(prior_no_candidate_reason_col, prior_reason_none);
+    set_prior_diag(prior_slot_index_col, static_cast<double>(best_slot));
+    set_prior_diag(prior_match_d2_col, best_d2);
+    set_prior_diag(prior_match_score_col, best_score);
+    set_prior_diag(prior_candidate_snr_col, best_snr);
+    set_prior_diag(prior_candidate_x_raw_col, best_x_raw);
+    set_prior_diag(prior_candidate_y_raw_col, best_y_raw);
+    set_prior_diag(prior_candidate_x_prior_col, best_x_prior);
+    set_prior_diag(prior_candidate_y_prior_col, best_y_prior);
+    set_prior_diag(prior_slot_x_col, best_slot_x);
+    set_prior_diag(prior_slot_y_col, best_slot_y);
+    set_prior_diag(prior_slot_sx_col, best_slot_sx);
+    set_prior_diag(prior_slot_sy_col, best_slot_sy);
     logger->debug("beammap priors init map={} det={} array={} nw={} row={} col={} snr={} d2={} slot={}",
                   map_index, map_index, array, nw, init_row, init_col, best_snr, best_d2, best_slot);
     return true;
@@ -1489,6 +1830,9 @@ void Beammap::run_loop() {
 
             logger->info("fitting maps");
             logger->info("beammap fit diagnostics enabled");
+            if (beammap_priors_enabled && beammap_soft_priors_loaded && map_grouping == "detector") {
+                update_prior_frame_estimates();
+            }
             // Run beammap fits sequentially. This avoids allocator/covariance instability
             // observed with parallel Ceres fits on some systems.
             for (Eigen::Index i = 0; i < n_maps; ++i) {
@@ -1515,6 +1859,15 @@ void Beammap::run_loop() {
 
                 // only fit if not converged
                 if (!converged(i)) {
+                    if (prior_diag_values.rows() == n_maps && prior_diag_values.cols() == n_prior_diag_cols) {
+                        prior_diag_values.row(i).setConstant(std::numeric_limits<double>::quiet_NaN());
+                        prior_diag_values(i, prior_init_mode_col) = -1.0;
+                        prior_diag_values(i, prior_used_col) = 0.0;
+                        prior_diag_values(i, prior_fallback_blind_col) = 0.0;
+                        prior_diag_values(i, prior_no_candidate_reason_col) = 0.0;
+                        prior_diag_values(i, prior_slot_index_col) = -1.0;
+                    }
+
                     const Eigen::Index n_weight_pos = (omb.weight[i].array() > 0.0).count();
                     if (n_weight_pos < map_fitter.n_params) {
                         logger->warn("beammap fit map={} skipped: insufficient weighted pixels ({})", i, n_weight_pos);
@@ -1578,6 +1931,9 @@ void Beammap::run_loop() {
                             iter_init_prior++;
                         }
                         else if (!beammap_priors_fallback_blind) {
+                            if (prior_diag_values.rows() == n_maps && prior_diag_values.cols() == n_prior_diag_cols) {
+                                prior_diag_values(i, prior_init_mode_col) = -1.0;
+                            }
                             logger->warn("beammap fit map={} skipped: no prior-guided init candidate and fallback_blind=false", i);
                             params.row(i).setZero();
                             perrors.row(i).setZero();
@@ -1592,9 +1948,23 @@ void Beammap::run_loop() {
                             iter_init_skip++;
                             continue;
                         }
+                        else if (prior_diag_values.rows() == n_maps && prior_diag_values.cols() == n_prior_diag_cols) {
+                            prior_diag_values(i, prior_fallback_blind_col) = 1.0;
+                        }
                     }
                     if (!init_from_prev && !init_from_prior) {
                         iter_init_blind++;
+                    }
+                    if (prior_diag_values.rows() == n_maps && prior_diag_values.cols() == n_prior_diag_cols) {
+                        if (init_from_prev) {
+                            prior_diag_values(i, prior_init_mode_col) = 1.0;
+                        }
+                        else if (init_from_prior) {
+                            prior_diag_values(i, prior_init_mode_col) = 2.0;
+                        }
+                        else {
+                            prior_diag_values(i, prior_init_mode_col) = 0.0;
+                        }
                     }
                     logger->debug("beammap fit map={} init mode={} row={} col={}",
                                   i, init_from_prev ? "previous" : (init_from_prior ? "prior" : "blind"),
@@ -2379,6 +2749,28 @@ void Beammap::output() {
                 "fit_high_a_fwhm",
                 "fit_low_b_fwhm",
                 "fit_high_b_fwhm",
+                "prior_init_mode",
+                "prior_used",
+                "prior_fallback_blind",
+                "prior_no_candidate_reason",
+                "prior_slot_index",
+                "prior_match_d2",
+                "prior_match_score",
+                "prior_candidate_snr",
+                "prior_n_candidates",
+                "prior_n_candidates_keep",
+                "prior_n_candidates_gate",
+                "prior_candidate_x_t_raw",
+                "prior_candidate_y_t_raw",
+                "prior_candidate_x_t_prior",
+                "prior_candidate_y_t_prior",
+                "prior_center_x_t",
+                "prior_center_y_t",
+                "prior_derot_elev",
+                "prior_slot_x_t",
+                "prior_slot_y_t",
+                "prior_slot_sx",
+                "prior_slot_sy",
                 "x_t_raw",
                 "y_t_raw",
                 "x_t",
@@ -2415,6 +2807,16 @@ void Beammap::output() {
                     return it->second;
                 }
                 return fallback;
+            };
+            auto prior_diag_or = [&](PriorDiagColumn diag_col, double fallback_value) -> Eigen::VectorXd {
+                Eigen::VectorXd out(calib.n_dets);
+                if (prior_diag_values.rows() == calib.n_dets && prior_diag_values.cols() == n_prior_diag_cols) {
+                    out = prior_diag_values.col(diag_col);
+                }
+                else {
+                    out.setConstant(fallback_value);
+                }
+                return out;
             };
 
             Eigen::VectorXd map_rms(calib.n_dets);
@@ -2505,6 +2907,28 @@ void Beammap::output() {
             fit_qc_table.col(col++) = fit_high_a_fwhm;
             fit_qc_table.col(col++) = fit_low_b_fwhm;
             fit_qc_table.col(col++) = fit_high_b_fwhm;
+            fit_qc_table.col(col++) = prior_diag_or(prior_init_mode_col, -1.0);
+            fit_qc_table.col(col++) = prior_diag_or(prior_used_col, 0.0);
+            fit_qc_table.col(col++) = prior_diag_or(prior_fallback_blind_col, 0.0);
+            fit_qc_table.col(col++) = prior_diag_or(prior_no_candidate_reason_col, 0.0);
+            fit_qc_table.col(col++) = prior_diag_or(prior_slot_index_col, -1.0);
+            fit_qc_table.col(col++) = prior_diag_or(prior_match_d2_col, std::numeric_limits<double>::quiet_NaN());
+            fit_qc_table.col(col++) = prior_diag_or(prior_match_score_col, std::numeric_limits<double>::quiet_NaN());
+            fit_qc_table.col(col++) = prior_diag_or(prior_candidate_snr_col, std::numeric_limits<double>::quiet_NaN());
+            fit_qc_table.col(col++) = prior_diag_or(prior_n_candidates_col, 0.0);
+            fit_qc_table.col(col++) = prior_diag_or(prior_n_candidates_keep_col, 0.0);
+            fit_qc_table.col(col++) = prior_diag_or(prior_n_candidates_gate_col, 0.0);
+            fit_qc_table.col(col++) = prior_diag_or(prior_candidate_x_raw_col, std::numeric_limits<double>::quiet_NaN());
+            fit_qc_table.col(col++) = prior_diag_or(prior_candidate_y_raw_col, std::numeric_limits<double>::quiet_NaN());
+            fit_qc_table.col(col++) = prior_diag_or(prior_candidate_x_prior_col, std::numeric_limits<double>::quiet_NaN());
+            fit_qc_table.col(col++) = prior_diag_or(prior_candidate_y_prior_col, std::numeric_limits<double>::quiet_NaN());
+            fit_qc_table.col(col++) = prior_diag_or(prior_center_x_col, std::numeric_limits<double>::quiet_NaN());
+            fit_qc_table.col(col++) = prior_diag_or(prior_center_y_col, std::numeric_limits<double>::quiet_NaN());
+            fit_qc_table.col(col++) = prior_diag_or(prior_derot_elev_col, std::numeric_limits<double>::quiet_NaN());
+            fit_qc_table.col(col++) = prior_diag_or(prior_slot_x_col, std::numeric_limits<double>::quiet_NaN());
+            fit_qc_table.col(col++) = prior_diag_or(prior_slot_y_col, std::numeric_limits<double>::quiet_NaN());
+            fit_qc_table.col(col++) = prior_diag_or(prior_slot_sx_col, std::numeric_limits<double>::quiet_NaN());
+            fit_qc_table.col(col++) = prior_diag_or(prior_slot_sy_col, std::numeric_limits<double>::quiet_NaN());
             fit_qc_table.col(col++) = apt_or_zero("x_t_raw");
             fit_qc_table.col(col++) = apt_or_zero("y_t_raw");
             fit_qc_table.col(col++) = apt_or_zero("x_t");
@@ -2540,6 +2964,10 @@ void Beammap::output() {
             fit_qc_meta["rfi_mask_detectors_affected"] =
                 static_cast<int>((apt_or_zero("rfi_masked_scans").array() > 0.0).count());
             fit_qc_meta["fit_bound_any"] = static_cast<int>((fit_diag_bound_nhit.array() > 0).count());
+            fit_qc_meta["beammap_priors_enabled"] = beammap_priors_enabled;
+            fit_qc_meta["beammap_priors_filepath"] = beammap_priors_filepath;
+            fit_qc_meta["beammap_priors_centered"] = beammap_soft_priors_are_centered;
+            fit_qc_meta["beammap_priors_derotated"] = beammap_soft_priors_are_derotated;
 
             std::map<std::string, std::string> fit_qc_units = {
                 {"uid", "N/A"},
@@ -2576,6 +3004,28 @@ void Beammap::output() {
                 {"fit_high_a_fwhm", "arcsec"},
                 {"fit_low_b_fwhm", "arcsec"},
                 {"fit_high_b_fwhm", "arcsec"},
+                {"prior_init_mode", "N/A"},
+                {"prior_used", "N/A"},
+                {"prior_fallback_blind", "N/A"},
+                {"prior_no_candidate_reason", "N/A"},
+                {"prior_slot_index", "N/A"},
+                {"prior_match_d2", "N/A"},
+                {"prior_match_score", "N/A"},
+                {"prior_candidate_snr", "N/A"},
+                {"prior_n_candidates", "pix"},
+                {"prior_n_candidates_keep", "pix"},
+                {"prior_n_candidates_gate", "pix"},
+                {"prior_candidate_x_t_raw", "arcsec"},
+                {"prior_candidate_y_t_raw", "arcsec"},
+                {"prior_candidate_x_t_prior", "arcsec"},
+                {"prior_candidate_y_t_prior", "arcsec"},
+                {"prior_center_x_t", "arcsec"},
+                {"prior_center_y_t", "arcsec"},
+                {"prior_derot_elev", "rad"},
+                {"prior_slot_x_t", "arcsec"},
+                {"prior_slot_y_t", "arcsec"},
+                {"prior_slot_sx", "arcsec"},
+                {"prior_slot_sy", "arcsec"},
                 {"x_t_raw", get_unit("x_t", "arcsec")},
                 {"y_t_raw", get_unit("y_t", "arcsec")},
                 {"x_t", get_unit("x_t", "arcsec")},
@@ -2626,6 +3076,28 @@ void Beammap::output() {
                 {"fit_high_a_fwhm", "active upper bound for a FWHM"},
                 {"fit_low_b_fwhm", "active lower bound for b FWHM"},
                 {"fit_high_b_fwhm", "active upper bound for b FWHM"},
+                {"prior_init_mode", "prior-init mode code (0 blind, 1 previous, 2 prior, -1 skipped/not fit)"},
+                {"prior_used", "1 if the final initialization seed came from priors, else 0"},
+                {"prior_fallback_blind", "1 if priors were attempted but blind fallback was used, else 0"},
+                {"prior_no_candidate_reason", "reason code when priors produced no accepted candidate (see metadata legend)"},
+                {"prior_slot_index", "matched prior slot index for the chosen prior-guided seed"},
+                {"prior_match_d2", "Mahalanobis d^2 of chosen prior-guided seed in prior frame"},
+                {"prior_match_score", "prior ranking score of chosen prior-guided seed"},
+                {"prior_candidate_snr", "S/N metric of chosen prior-guided seed candidate"},
+                {"prior_n_candidates", "number of weighted pixels above prior min_snr before top-N truncation"},
+                {"prior_n_candidates_keep", "number of top-ranked candidates retained for prior scoring"},
+                {"prior_n_candidates_gate", "number of retained candidates that passed the prior d^2 gate"},
+                {"prior_candidate_x_t_raw", "chosen prior-guided candidate x offset before prior-frame transforms"},
+                {"prior_candidate_y_t_raw", "chosen prior-guided candidate y offset before prior-frame transforms"},
+                {"prior_candidate_x_t_prior", "chosen prior-guided candidate x offset in the prior frame"},
+                {"prior_candidate_y_t_prior", "chosen prior-guided candidate y offset in the prior frame"},
+                {"prior_center_x_t", "array-center x offset subtracted before prior matching"},
+                {"prior_center_y_t", "array-center y offset subtracted before prior matching"},
+                {"prior_derot_elev", "derotation elevation used for prior-frame matching"},
+                {"prior_slot_x_t", "matched prior slot x center in the prior frame"},
+                {"prior_slot_y_t", "matched prior slot y center in the prior frame"},
+                {"prior_slot_sx", "matched prior slot soft x sigma"},
+                {"prior_slot_sy", "matched prior slot soft y sigma"},
                 {"x_t_raw", "raw x position before reference subtraction/derotation"},
                 {"y_t_raw", "raw y position before reference subtraction/derotation"},
                 {"x_t", get_description("x_t", "detector x position")},
@@ -2665,6 +3137,16 @@ void Beammap::output() {
             fit_qc_meta["fit_bound_code"].push_back("bit 9: b upper");
             fit_qc_meta["fit_bound_code"].push_back("bit 10: angle lower");
             fit_qc_meta["fit_bound_code"].push_back("bit 11: angle upper");
+            fit_qc_meta["prior_init_mode"].push_back("-1: skipped before fitting on last attempted iteration");
+            fit_qc_meta["prior_init_mode"].push_back("0: blind seed");
+            fit_qc_meta["prior_init_mode"].push_back("1: previous-iteration seed");
+            fit_qc_meta["prior_init_mode"].push_back("2: prior-guided seed");
+            fit_qc_meta["prior_no_candidate_reason"].push_back("0: none");
+            fit_qc_meta["prior_no_candidate_reason"].push_back("1: no slot group for (array,nw)");
+            fit_qc_meta["prior_no_candidate_reason"].push_back("2: no valid weighted pixels");
+            fit_qc_meta["prior_no_candidate_reason"].push_back("3: invalid robust sigma estimate");
+            fit_qc_meta["prior_no_candidate_reason"].push_back("4: no candidates above min_snr");
+            fit_qc_meta["prior_no_candidate_reason"].push_back("5: all retained candidates failed max_d2 gate");
 
             to_ecsv_from_matrix(fit_qc_filename, fit_qc_table, fit_qc_header, fit_qc_meta);
             logger->info("done writing beammap fit qc table {}.ecsv", fit_qc_filename);
