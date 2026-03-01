@@ -147,6 +147,12 @@ public:
     // diagnostics for sample-level beammap RFI masking
     Eigen::VectorXi rfi_mask_samples_flagged;
     Eigen::VectorXi rfi_mask_scans_flagged;
+    Eigen::VectorXi scan_band_mask_samples_flagged;
+    Eigen::VectorXi scan_band_mask_rows_flagged;
+    Eigen::VectorXi scan_band_mask_edge_code;
+    Eigen::VectorXi scan_band_mask_rejected;
+    Eigen::VectorXd final_prior_d2_diag;
+    Eigen::VectorXi final_prior_slot_index_diag;
     std::shared_ptr<std::mutex> rfi_mask_diag_mutex = std::make_shared<std::mutex>();
 
     // placeholder vectors for grppi maps
@@ -190,6 +196,8 @@ public:
     // derotate apt and subtract reference detector
     void process_apt();
     void apply_final_network_position_flags();
+    void update_final_prior_match_diagnostics();
+    void log_final_network_qc_summary();
 
     // main pipeline process
     template <class KidsProc, class RawObs>
@@ -255,6 +263,12 @@ void Beammap::setup() {
     good_fits.setZero(n_maps);
     rfi_mask_samples_flagged = Eigen::VectorXi::Zero(calib.n_dets);
     rfi_mask_scans_flagged = Eigen::VectorXi::Zero(calib.n_dets);
+    scan_band_mask_samples_flagged = Eigen::VectorXi::Zero(calib.n_dets);
+    scan_band_mask_rows_flagged = Eigen::VectorXi::Zero(calib.n_dets);
+    scan_band_mask_edge_code = Eigen::VectorXi::Zero(calib.n_dets);
+    scan_band_mask_rejected = Eigen::VectorXi::Zero(calib.n_dets);
+    final_prior_d2_diag = Eigen::VectorXd::Constant(calib.n_dets, std::numeric_limits<double>::quiet_NaN());
+    final_prior_slot_index_diag = Eigen::VectorXi::Constant(calib.n_dets, -1);
 
     // initially all detectors are unconverged
     converged.setZero(n_maps);
@@ -339,6 +353,54 @@ void Beammap::setup() {
     calib.apt_header_keys.push_back("rfi_masked_scans");
     calib.apt_meta["rfi_masked_scans"].push_back("units: scans");
     calib.apt_meta["rfi_masked_scans"].push_back("number of scans with at least one sample masked by beammap rfi_mask");
+
+    calib.apt["scan_band_masked_samples"] = Eigen::VectorXd::Zero(calib.n_dets);
+    calib.apt_header_units["scan_band_masked_samples"] = "samples";
+    calib.apt_header_keys.push_back("scan_band_masked_samples");
+    calib.apt_meta["scan_band_masked_samples"].push_back("units: samples");
+    calib.apt_meta["scan_band_masked_samples"].push_back(
+        "number of timestream samples masked by beammap scan_band_mask");
+
+    calib.apt["scan_band_masked_rows"] = Eigen::VectorXd::Zero(calib.n_dets);
+    calib.apt_header_units["scan_band_masked_rows"] = "rows";
+    calib.apt_header_keys.push_back("scan_band_masked_rows");
+    calib.apt_meta["scan_band_masked_rows"].push_back("units: rows");
+    calib.apt_meta["scan_band_masked_rows"].push_back(
+        "number of detector-map edge rows flagged by beammap scan_band_mask");
+
+    calib.apt["scan_band_masked_edge"] = Eigen::VectorXd::Zero(calib.n_dets);
+    calib.apt_header_units["scan_band_masked_edge"] = "N/A";
+    calib.apt_header_keys.push_back("scan_band_masked_edge");
+    calib.apt_meta["scan_band_masked_edge"].push_back("units: N/A");
+    calib.apt_meta["scan_band_masked_edge"].push_back(
+        "scan-band edge code (0 none, 1 top, 2 bottom, 3 both)");
+    calib.apt_meta["scan_band_masked_edge"].push_back("0=none");
+    calib.apt_meta["scan_band_masked_edge"].push_back("1=top");
+    calib.apt_meta["scan_band_masked_edge"].push_back("2=bottom");
+    calib.apt_meta["scan_band_masked_edge"].push_back("3=both");
+
+    calib.apt["scan_band_mask_rejected"] = Eigen::VectorXd::Zero(calib.n_dets);
+    calib.apt_header_units["scan_band_mask_rejected"] = "N/A";
+    calib.apt_header_keys.push_back("scan_band_mask_rejected");
+    calib.apt_meta["scan_band_mask_rejected"].push_back("units: N/A");
+    calib.apt_meta["scan_band_mask_rejected"].push_back(
+        "1 if scan_band_mask proposed a mask but rejected it due to max_flagged_fraction");
+
+    calib.apt["final_prior_slot_index"] =
+        Eigen::VectorXd::Constant(calib.n_dets, -1.0);
+    calib.apt_header_units["final_prior_slot_index"] = "N/A";
+    calib.apt_header_keys.push_back("final_prior_slot_index");
+    calib.apt_meta["final_prior_slot_index"].push_back("units: N/A");
+    calib.apt_meta["final_prior_slot_index"].push_back(
+        "nearest prior slot index for final detector position in prior frame (-1 if unavailable)");
+
+    calib.apt["final_prior_d2"] =
+        Eigen::VectorXd::Constant(calib.n_dets, std::numeric_limits<double>::quiet_NaN());
+    calib.apt_header_units["final_prior_d2"] = "N/A";
+    calib.apt_header_keys.push_back("final_prior_d2");
+    calib.apt_meta["final_prior_d2"].push_back("units: N/A");
+    calib.apt_meta["final_prior_d2"].push_back(
+        "nearest-slot Mahalanobis d^2 for final detector position in the soft-prior frame");
 
     // bitwise flag
     calib.apt_meta["flag2"].push_back("units: N/A");
@@ -710,6 +772,18 @@ void Beammap::loop_pipeline() {
         if (rfi_mask_scans_flagged.size() == calib.n_dets) {
             calib.apt["rfi_masked_scans"] = rfi_mask_scans_flagged.cast<double>();
         }
+        if (scan_band_mask_samples_flagged.size() == calib.n_dets) {
+            calib.apt["scan_band_masked_samples"] = scan_band_mask_samples_flagged.cast<double>();
+        }
+        if (scan_band_mask_rows_flagged.size() == calib.n_dets) {
+            calib.apt["scan_band_masked_rows"] = scan_band_mask_rows_flagged.cast<double>();
+        }
+        if (scan_band_mask_edge_code.size() == calib.n_dets) {
+            calib.apt["scan_band_masked_edge"] = scan_band_mask_edge_code.cast<double>();
+        }
+        if (scan_band_mask_rejected.size() == calib.n_dets) {
+            calib.apt["scan_band_mask_rejected"] = scan_band_mask_rejected.cast<double>();
+        }
         if (beammap_rfi_mask_enabled &&
             rfi_mask_samples_flagged.size() == calib.n_dets &&
             rfi_mask_scans_flagged.size() == calib.n_dets) {
@@ -741,6 +815,13 @@ void Beammap::loop_pipeline() {
         // subtract reference detector position and derotate
         process_apt();
         apply_final_network_position_flags();
+        update_final_prior_match_diagnostics();
+        if (final_prior_slot_index_diag.size() == calib.n_dets) {
+            calib.apt["final_prior_slot_index"] = final_prior_slot_index_diag.cast<double>();
+        }
+        if (final_prior_d2_diag.size() == calib.n_dets) {
+            calib.apt["final_prior_d2"] = final_prior_d2_diag;
+        }
         calib.setup();
         for (Eigen::Index i = 0; i < calib.n_arrays; ++i) {
             Eigen::Index array = calib.arrays(i);
@@ -748,6 +829,7 @@ void Beammap::loop_pipeline() {
             beammap_fluxes_MJy_Sr[array_name] =
                 mJY_ASEC_to_MJY_SR * (beammap_fluxes_mJy_beam[array_name]) / calib.array_beam_areas[array];
         }
+        log_final_network_qc_summary();
 
         // add final apt table to timestream files
         if (run_tod_output && !tod_filename.empty()) {
@@ -1268,6 +1350,9 @@ Beammap::ScanBandMaskSummary Beammap::apply_scan_band_mask(mapmaking::MapBuffer 
             static_cast<double>(proposed_flags.size()) /
             static_cast<double>(std::max<Eigen::Index>(1, n_good_samples));
         if (max_flagged_fraction > 0.0 && flagged_fraction > max_flagged_fraction) {
+            if (scan_band_mask_rejected.size() == calib.n_dets) {
+                scan_band_mask_rejected(det) = 1;
+            }
             summary.n_det_rejected++;
             logger->debug(
                 "beammap scan-band mask det={} rejected: proposed rows={} samples={} flagged_fraction={} exceeds limit={}",
@@ -1287,6 +1372,16 @@ Beammap::ScanBandMaskSummary Beammap::apply_scan_band_mask(mapmaking::MapBuffer 
         summary.n_det_flagged++;
         summary.n_rows_flagged += n_bad_rows;
         summary.n_samples_flagged += static_cast<Eigen::Index>(proposed_flags.size());
+        if (scan_band_mask_samples_flagged.size() == calib.n_dets) {
+            scan_band_mask_samples_flagged(det) += static_cast<int>(proposed_flags.size());
+        }
+        if (scan_band_mask_rows_flagged.size() == calib.n_dets) {
+            scan_band_mask_rows_flagged(det) += static_cast<int>(n_bad_rows);
+        }
+        if (scan_band_mask_edge_code.size() == calib.n_dets) {
+            const int edge_code = (!top_rows.empty() ? 1 : 0) + (!bottom_rows.empty() ? 2 : 0);
+            scan_band_mask_edge_code(det) = edge_code;
+        }
 
         logger->info(
             "beammap scan-band mask det={} array={} nw={} rows={} samples={} flagged_fraction={} top_rows={} bottom_rows={}",
@@ -3220,6 +3315,209 @@ void Beammap::apply_final_network_position_flags() {
     }
 }
 
+void Beammap::update_final_prior_match_diagnostics() {
+    final_prior_d2_diag = Eigen::VectorXd::Constant(
+        calib.n_dets, std::numeric_limits<double>::quiet_NaN());
+    final_prior_slot_index_diag = Eigen::VectorXi::Constant(calib.n_dets, -1);
+
+    if (map_grouping != "detector" || !beammap_soft_priors_loaded || beammap_soft_prior_slots.empty()) {
+        return;
+    }
+
+    struct ArrayCenter {
+        bool valid = false;
+        double x = 0.0;
+        double y = 0.0;
+    };
+
+    std::map<int, ArrayCenter> centers;
+    auto median_from = [](std::vector<double> &values, double &median) -> bool {
+        if (values.empty()) {
+            median = std::numeric_limits<double>::quiet_NaN();
+            return false;
+        }
+        Eigen::Map<Eigen::VectorXd> vec(values.data(), static_cast<Eigen::Index>(values.size()));
+        median = tula::alg::median(vec);
+        return std::isfinite(median);
+    };
+
+    for (Eigen::Index i = 0; i < calib.n_arrays; ++i) {
+        const Eigen::Index array = calib.arrays(i);
+        std::vector<double> x_vals;
+        std::vector<double> y_vals;
+
+        auto gather = [&](bool unflagged_only) {
+            x_vals.clear();
+            y_vals.clear();
+            for (Eigen::Index k = 0; k < calib.n_dets; ++k) {
+                if (static_cast<Eigen::Index>(std::lround(calib.apt["array"](k))) != array) {
+                    continue;
+                }
+                if (unflagged_only && calib.apt["flag"](k) != 0) {
+                    continue;
+                }
+                const double x = calib.apt["x_t_raw"](k);
+                const double y = calib.apt["y_t_raw"](k);
+                if (!std::isfinite(x) || !std::isfinite(y)) {
+                    continue;
+                }
+                x_vals.push_back(x);
+                y_vals.push_back(y);
+            }
+        };
+
+        gather(true);
+        if (x_vals.size() < 8) {
+            gather(false);
+        }
+        if (x_vals.empty()) {
+            continue;
+        }
+
+        double median_x = std::numeric_limits<double>::quiet_NaN();
+        double median_y = std::numeric_limits<double>::quiet_NaN();
+        if (!median_from(x_vals, median_x) || !median_from(y_vals, median_y)) {
+            continue;
+        }
+        centers[static_cast<int>(array)] = {true, median_x, median_y};
+    }
+
+    for (Eigen::Index i = 0; i < calib.n_dets; ++i) {
+        const int array = static_cast<int>(std::lround(calib.apt["array"](i)));
+        const int nw = static_cast<int>(std::lround(calib.apt["nw"](i)));
+        auto slots_it = beammap_soft_prior_slots.find({array, nw});
+        if (slots_it == beammap_soft_prior_slots.end() || slots_it->second.empty()) {
+            continue;
+        }
+
+        double x_arcsec = calib.apt["x_t_raw"](i);
+        double y_arcsec = calib.apt["y_t_raw"](i);
+        if (!std::isfinite(x_arcsec) || !std::isfinite(y_arcsec)) {
+            continue;
+        }
+
+        if (beammap_soft_priors_are_centered) {
+            auto center_it = centers.find(array);
+            if (center_it != centers.end() && center_it->second.valid) {
+                x_arcsec -= center_it->second.x;
+                y_arcsec -= center_it->second.y;
+            }
+        }
+
+        if (beammap_soft_priors_are_derotated && telescope.pixel_axes == "altaz") {
+            double derot_elev_rad = calib.apt["derot_elev"](i);
+            if (!std::isfinite(derot_elev_rad)) {
+                derot_elev_rad = telescope.tel_data["TelElAct"].mean();
+            }
+            if (!std::isfinite(derot_elev_rad)) {
+                derot_elev_rad = 0.0;
+            }
+            if (std::abs(derot_elev_rad) > pi) {
+                derot_elev_rad *= DEG_TO_RAD;
+            }
+            const double rot_az_off = std::cos(-derot_elev_rad) * x_arcsec -
+                                      std::sin(-derot_elev_rad) * y_arcsec;
+            const double rot_alt_off = std::sin(-derot_elev_rad) * x_arcsec +
+                                       std::cos(-derot_elev_rad) * y_arcsec;
+            x_arcsec = -rot_az_off;
+            y_arcsec = -rot_alt_off;
+        }
+
+        double best_d2 = std::numeric_limits<double>::infinity();
+        int best_slot = -1;
+        for (const auto &slot : slots_it->second) {
+            const double sx = std::max(slot.sx_arcsec, std::numeric_limits<double>::epsilon());
+            const double sy = std::max(slot.sy_arcsec, std::numeric_limits<double>::epsilon());
+            const double dx = (x_arcsec - slot.x_arcsec) / sx;
+            const double dy = (y_arcsec - slot.y_arcsec) / sy;
+            const double d2 = dx * dx + dy * dy;
+            if (std::isfinite(d2) && d2 < best_d2) {
+                best_d2 = d2;
+                best_slot = slot.slot_index;
+            }
+        }
+        if (std::isfinite(best_d2)) {
+            final_prior_d2_diag(i) = best_d2;
+            final_prior_slot_index_diag(i) = best_slot;
+        }
+    }
+}
+
+void Beammap::log_final_network_qc_summary() {
+    if (map_grouping != "detector") {
+        return;
+    }
+
+    auto median_or_nan = [](std::vector<double> &values) {
+        if (values.empty()) {
+            return std::numeric_limits<double>::quiet_NaN();
+        }
+        Eigen::Map<Eigen::VectorXd> vec(values.data(), static_cast<Eigen::Index>(values.size()));
+        return tula::alg::median(vec);
+    };
+
+    logger->info("beammap final per-network qc summary follows");
+    for (Eigen::Index i = 0; i < calib.n_arrays; ++i) {
+        const Eigen::Index array = calib.arrays(i);
+        const std::string array_name = toltec_io.array_name_map[array];
+
+        for (Eigen::Index j = 0; j < calib.n_nws; ++j) {
+            const Eigen::Index nw = calib.nws(j);
+            if (calib.nw_limits.count(nw) == 0) {
+                continue;
+            }
+            const auto [k0, k1] = calib.nw_limits[nw];
+            if (k0 < 0 || k1 <= k0) {
+                continue;
+            }
+            if (static_cast<Eigen::Index>(std::lround(calib.apt["array"](k0))) != array) {
+                continue;
+            }
+
+            std::vector<double> a_vals;
+            std::vector<double> b_vals;
+            std::vector<double> snr_vals;
+            std::vector<double> prior_d2_vals;
+            Eigen::Index n_total = 0;
+            Eigen::Index n_good = 0;
+            for (Eigen::Index k = k0; k < k1; ++k) {
+                n_total++;
+                if (calib.apt["flag"](k) != 0) {
+                    continue;
+                }
+                n_good++;
+                if (std::isfinite(calib.apt["a_fwhm"](k))) {
+                    a_vals.push_back(calib.apt["a_fwhm"](k));
+                }
+                if (std::isfinite(calib.apt["b_fwhm"](k))) {
+                    b_vals.push_back(calib.apt["b_fwhm"](k));
+                }
+                if (std::isfinite(calib.apt["sig2noise"](k))) {
+                    snr_vals.push_back(calib.apt["sig2noise"](k));
+                }
+                if (final_prior_d2_diag.size() == calib.n_dets &&
+                    std::isfinite(final_prior_d2_diag(k))) {
+                    prior_d2_vals.push_back(final_prior_d2_diag(k));
+                }
+            }
+
+            const double good_frac =
+                static_cast<double>(n_good) / static_cast<double>(std::max<Eigen::Index>(1, n_total));
+            logger->info(
+                "beammap network qc: array={} nw={} good={}/{} ({:.3f}) med_a_fwhm={} med_b_fwhm={} med_sig2noise={} med_final_prior_d2={}",
+                array_name,
+                static_cast<int>(nw),
+                n_good,
+                n_total,
+                good_frac,
+                median_or_nan(a_vals),
+                median_or_nan(b_vals),
+                median_or_nan(snr_vals),
+                median_or_nan(prior_d2_vals));
+        }
+    }
+}
+
 template <mapmaking::MapType map_type>
 void Beammap::output() {
     // pointer to map buffer
@@ -3294,6 +3592,10 @@ void Beammap::output() {
                 "n_weight_pos",
                 "rfi_masked_samples",
                 "rfi_masked_scans",
+                "scan_band_masked_samples",
+                "scan_band_masked_rows",
+                "scan_band_masked_edge",
+                "scan_band_mask_rejected",
                 "fit_bound_nhit",
                 "fit_bound_code",
                 "fit_bound_amp",
@@ -3333,6 +3635,8 @@ void Beammap::output() {
                 "prior_slot_y_t",
                 "prior_slot_sx",
                 "prior_slot_sy",
+                "final_prior_slot_index",
+                "final_prior_d2",
                 "x_t_raw",
                 "y_t_raw",
                 "x_t",
@@ -3452,6 +3756,10 @@ void Beammap::output() {
             fit_qc_table.col(col++) = n_weight_pos;
             fit_qc_table.col(col++) = apt_or_zero("rfi_masked_samples");
             fit_qc_table.col(col++) = apt_or_zero("rfi_masked_scans");
+            fit_qc_table.col(col++) = apt_or_zero("scan_band_masked_samples");
+            fit_qc_table.col(col++) = apt_or_zero("scan_band_masked_rows");
+            fit_qc_table.col(col++) = apt_or_zero("scan_band_masked_edge");
+            fit_qc_table.col(col++) = apt_or_zero("scan_band_mask_rejected");
             fit_qc_table.col(col++) = fit_bound_nhit;
             fit_qc_table.col(col++) = fit_bound_code;
             fit_qc_table.col(col++) = fit_bound_amp;
@@ -3491,6 +3799,8 @@ void Beammap::output() {
             fit_qc_table.col(col++) = prior_diag_or(prior_slot_y_col, std::numeric_limits<double>::quiet_NaN());
             fit_qc_table.col(col++) = prior_diag_or(prior_slot_sx_col, std::numeric_limits<double>::quiet_NaN());
             fit_qc_table.col(col++) = prior_diag_or(prior_slot_sy_col, std::numeric_limits<double>::quiet_NaN());
+            fit_qc_table.col(col++) = apt_or_zero("final_prior_slot_index");
+            fit_qc_table.col(col++) = apt_or_zero("final_prior_d2");
             fit_qc_table.col(col++) = apt_or_zero("x_t_raw");
             fit_qc_table.col(col++) = apt_or_zero("y_t_raw");
             fit_qc_table.col(col++) = apt_or_zero("x_t");
@@ -3525,6 +3835,20 @@ void Beammap::output() {
             fit_qc_meta["rfi_mask_max_flagged_fraction"] = beammap_rfi_mask_max_flagged_fraction;
             fit_qc_meta["rfi_mask_detectors_affected"] =
                 static_cast<int>((apt_or_zero("rfi_masked_scans").array() > 0.0).count());
+            fit_qc_meta["scan_band_mask_enabled"] = beammap_scan_band_mask_enabled;
+            fit_qc_meta["scan_band_mask_edge_rows"] = beammap_scan_band_mask_edge_rows;
+            fit_qc_meta["scan_band_mask_min_row_pixels"] = beammap_scan_band_mask_min_row_pixels;
+            fit_qc_meta["scan_band_mask_min_contiguous_rows"] = beammap_scan_band_mask_min_contiguous_rows;
+            fit_qc_meta["scan_band_mask_row_median_sigma_threshold"] =
+                beammap_scan_band_mask_row_median_sigma_threshold;
+            fit_qc_meta["scan_band_mask_row_sigma_ratio_threshold"] =
+                beammap_scan_band_mask_row_sigma_ratio_threshold;
+            fit_qc_meta["scan_band_mask_max_flagged_fraction"] =
+                beammap_scan_band_mask_max_flagged_fraction;
+            fit_qc_meta["scan_band_mask_detectors_affected"] =
+                static_cast<int>((apt_or_zero("scan_band_masked_rows").array() > 0.0).count());
+            fit_qc_meta["scan_band_mask_detectors_rejected"] =
+                static_cast<int>((apt_or_zero("scan_band_mask_rejected").array() > 0.0).count());
             fit_qc_meta["fit_bound_any"] = static_cast<int>((fit_diag_bound_nhit.array() > 0).count());
             fit_qc_meta["beammap_priors_enabled"] = beammap_priors_enabled;
             fit_qc_meta["beammap_priors_filepath"] = beammap_priors_filepath;
@@ -3549,6 +3873,10 @@ void Beammap::output() {
                 {"n_weight_pos", "pix"},
                 {"rfi_masked_samples", "samples"},
                 {"rfi_masked_scans", "scans"},
+                {"scan_band_masked_samples", "samples"},
+                {"scan_band_masked_rows", "rows"},
+                {"scan_band_masked_edge", "N/A"},
+                {"scan_band_mask_rejected", "N/A"},
                 {"fit_bound_nhit", "N/A"},
                 {"fit_bound_code", "N/A"},
                 {"fit_bound_amp", "N/A"},
@@ -3588,6 +3916,8 @@ void Beammap::output() {
                 {"prior_slot_y_t", "arcsec"},
                 {"prior_slot_sx", "arcsec"},
                 {"prior_slot_sy", "arcsec"},
+                {"final_prior_slot_index", "N/A"},
+                {"final_prior_d2", "N/A"},
                 {"x_t_raw", get_unit("x_t", "arcsec")},
                 {"y_t_raw", get_unit("y_t", "arcsec")},
                 {"x_t", get_unit("x_t", "arcsec")},
@@ -3621,6 +3951,10 @@ void Beammap::output() {
                 {"n_weight_pos", "number of detector-map pixels with positive weight"},
                 {"rfi_masked_samples", "number of timestream samples masked by beammap rfi_mask"},
                 {"rfi_masked_scans", "number of scans with at least one sample masked by beammap rfi_mask"},
+                {"scan_band_masked_samples", "number of timestream samples masked by beammap scan_band_mask"},
+                {"scan_band_masked_rows", "number of detector-map edge rows flagged by beammap scan_band_mask"},
+                {"scan_band_masked_edge", "scan-band edge code (0 none, 1 top, 2 bottom, 3 both)"},
+                {"scan_band_mask_rejected", "1 if scan_band_mask proposed a mask but rejected it due to max_flagged_fraction"},
                 {"fit_bound_nhit", "number of fitted parameters at lower/upper bounds"},
                 {"fit_bound_code", "bitmask of bound-hit parameters (see metadata legend)"},
                 {"fit_bound_amp", "bound state for amplitude (-1 lower, 0 none, +1 upper)"},
@@ -3660,6 +3994,8 @@ void Beammap::output() {
                 {"prior_slot_y_t", "matched prior slot y center in the prior frame"},
                 {"prior_slot_sx", "matched prior slot soft x sigma"},
                 {"prior_slot_sy", "matched prior slot soft y sigma"},
+                {"final_prior_slot_index", "nearest prior slot index for final detector position in the prior frame"},
+                {"final_prior_d2", "nearest-slot Mahalanobis d^2 for final detector position in the soft-prior frame"},
                 {"x_t_raw", "raw x position before reference subtraction/derotation"},
                 {"y_t_raw", "raw y position before reference subtraction/derotation"},
                 {"x_t", get_description("x_t", "detector x position")},
@@ -3711,6 +4047,10 @@ void Beammap::output() {
             fit_qc_meta["prior_no_candidate_reason"].push_back("3: invalid robust sigma estimate");
             fit_qc_meta["prior_no_candidate_reason"].push_back("4: no candidates above min_snr");
             fit_qc_meta["prior_no_candidate_reason"].push_back("5: all retained candidates failed max_d2 gate");
+            fit_qc_meta["scan_band_masked_edge"].push_back("0: none");
+            fit_qc_meta["scan_band_masked_edge"].push_back("1: top");
+            fit_qc_meta["scan_band_masked_edge"].push_back("2: bottom");
+            fit_qc_meta["scan_band_masked_edge"].push_back("3: both");
 
             to_ecsv_from_matrix(fit_qc_filename, fit_qc_table, fit_qc_header, fit_qc_meta);
             logger->info("done writing beammap fit qc table {}.ecsv", fit_qc_filename);
