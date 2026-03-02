@@ -466,18 +466,12 @@ auto Pointing::run(KidsProc &kidsproc) {
 void Pointing::fit_maps() {
     // fit maps
     logger->info("fitting maps");
-    // placeholder vectors for grppi map
-    std::vector<int> map_in_vec, map_out_vec;
-
-    map_in_vec.resize(n_maps);
-    std::iota(map_in_vec.begin(), map_in_vec.end(), 0);
-    map_out_vec.resize(n_maps);
-
     double init_row = -99;
     double init_col = -99;
 
-    // loop through maps
-    grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
+    // Run pointing fits sequentially. Parallel Ceres covariance work has shown
+    // allocator instability on some systems.
+    for (Eigen::Index i = 0; i < n_maps; ++i) {
         auto array = maps_to_arrays(i);
         // init fwhm in pixels
         double init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
@@ -514,8 +508,7 @@ void Pointing::fit_maps() {
                 perrors(i,2) = perrors(i,2)*ASEC_TO_DEG;
             }
         }
-        return 0;
-    });
+    }
 }
 
 template <mapmaking::MapType map_type>
