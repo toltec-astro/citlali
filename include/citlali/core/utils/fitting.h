@@ -194,7 +194,7 @@ auto mapFitter::ceres_fit(const Model &model,
                 uncertainty.setConstant(0);
             }
         } else {
-            // Beammap fallback: linearized covariance from J^T J at the solution.
+            // Fallback: linearized covariance from J^T J at the solution.
             logger->info("ceres_fit covariance disabled; using linearized uncertainty estimate");
             ceres::Problem::EvaluateOptions eval_options;
             eval_options.apply_loss_function = false;
@@ -598,7 +598,9 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     }
 
     // do the fit
-    constexpr bool use_ceres_covariance = (fit_mode == FitMode::pointing);
+    // Ceres covariance has shown heap corruption on some deployed systems, even
+    // for a single pointing fit. Use the linearized uncertainty path instead.
+    constexpr bool use_ceres_covariance = false;
     auto [fit_params, fit_uncertainty, fit_is_good] =
         ceres_fit(g, init_params, xy, _signal, _sigma, limits, use_ceres_covariance);
 
