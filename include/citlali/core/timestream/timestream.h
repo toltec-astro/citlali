@@ -992,9 +992,10 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
         // get weight threshold for current map
         auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = tod_mb.calc_cov_region(i);
         // if weight is less than threshold, set to zero, otherwise set to one
-        auto cov_bool = (tod_mb.weight[i].array() < weight_threshold).select(zeros,ones);
+        Eigen::MatrixXd cov_bool =
+            (tod_mb.weight[i].array() < weight_threshold).select(zeros,ones);
         if (use_center_keep_mask) {
-            cov_bool = (cov_bool.array() + center_keep_mask.array()).min(1.0);
+            cov_bool = (cov_bool.array() + center_keep_mask.array()).min(1.0).matrix();
         }
         tod_mb.signal[i] = tod_mb.signal[i].array() * cov_bool.array();
         if (!tod_mb.kernel.empty()) {
