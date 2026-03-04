@@ -843,6 +843,7 @@ void Engine::get_mapmaking_config(CT &config) {
 
     // set rtcproc map_grouping
     rtcproc.kernel.map_grouping = map_grouping;
+    ptcproc.active_map_grouping = map_grouping;
 
     // map_method
     get_config_value(config, map_method, missing_keys, invalid_keys,

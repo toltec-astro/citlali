@@ -306,12 +306,18 @@ public:
     double fruit_loops_center_keep_radius_arcsec = 0.0;
     // interpolation used when projecting fruit loops maps back to the TOD
     std::string fruit_loops_interp_mode = "bilinear";
+    // current map grouping, used by helpers that need detector pointing
+    std::string active_map_grouping = "array";
     // jinc interpolation settings copied from the active mapmaker config
     double fruit_loops_jinc_r_max = 0.0;
     int fruit_loops_jinc_subpixel_n = 1;
     std::map<Eigen::Index, Eigen::VectorXd> fruit_loops_jinc_shape_params;
     std::map<Eigen::Index, Eigen::MatrixXd> fruit_loops_jinc_weights_mat;
     std::map<Eigen::Index, std::vector<Eigen::MatrixXd>> fruit_loops_jinc_weights_mat_subpix;
+    // source positions inferred from loaded fruit loops maps, in map-frame radians
+    Eigen::VectorXd fruit_loops_source_lat;
+    Eigen::VectorXd fruit_loops_source_lon;
+    Eigen::VectorXi fruit_loops_source_valid;
     // save all iterations
     bool save_all_iters;
 
@@ -325,7 +331,7 @@ public:
     double lower_inv_var_factor, upper_inv_var_factor;
 
     // mask radius in arcseconds
-    double mask_radius_arcsec;
+    double mask_radius_arcsec = 0.0;
 
     // create a map buffer from a citlali reduction directory
     template <class calib_t>
@@ -378,6 +384,10 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                      double expected_pixel_size_rad) {
 
     namespace fs = std::filesystem;
+
+    fruit_loops_source_lat.resize(0);
+    fruit_loops_source_lon.resize(0);
+    fruit_loops_source_valid.resize(0);
 
     if (expected_map_grouping.empty()) {
         logger->error("expected map grouping not provided for fruit loops map loading");
@@ -1022,6 +1032,35 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
         tod_mb.signal[i] = tod_mb.signal[i].array() * cov_bool.array();
         if (!tod_mb.kernel.empty()) {
             tod_mb.kernel[i] = tod_mb.kernel[i].array() * cov_bool.array();
+        }
+    }
+    fruit_loops_source_lat = Eigen::VectorXd::Zero(tod_mb.signal.size());
+    fruit_loops_source_lon = Eigen::VectorXd::Zero(tod_mb.signal.size());
+    fruit_loops_source_valid = Eigen::VectorXi::Zero(tod_mb.signal.size());
+    const double row_offset = (tod_mb.n_rows - 1) / 2.0;
+    const double col_offset = (tod_mb.n_cols - 1) / 2.0;
+    for (Eigen::Index i = 0; i < static_cast<Eigen::Index>(tod_mb.signal.size()); ++i) {
+        double peak_val = -std::numeric_limits<double>::infinity();
+        Eigen::Index peak_row = 0;
+        Eigen::Index peak_col = 0;
+        bool found_peak = false;
+        for (Eigen::Index row = 0; row < tod_mb.signal[i].rows(); ++row) {
+            for (Eigen::Index col = 0; col < tod_mb.signal[i].cols(); ++col) {
+                const double value = tod_mb.signal[i](row, col);
+                if (std::isfinite(value) && value > peak_val) {
+                    peak_val = value;
+                    peak_row = row;
+                    peak_col = col;
+                    found_peak = true;
+                }
+            }
+        }
+        if (found_peak && peak_val > 0.0) {
+            fruit_loops_source_lat(i) =
+                (static_cast<double>(peak_row) - row_offset) * tod_mb.pixel_size_rad;
+            fruit_loops_source_lon(i) =
+                (static_cast<double>(peak_col) - col_offset) * tod_mb.pixel_size_rad;
+            fruit_loops_source_valid(i) = 1;
         }
     }
     // clear weight maps to save memory

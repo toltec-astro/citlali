@@ -872,6 +872,16 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
     // use full weighting
     else if (weighting_type == "full"){
         logger->debug("calculating weights using timestream variance");
+        const bool use_source_weight_mask =
+            mask_radius_arcsec > 0.0 &&
+            !tod_mb.signal.empty() &&
+            fruit_loops_source_valid.size() == static_cast<Eigen::Index>(tod_mb.signal.size());
+        const double source_mask_radius_rad = mask_radius_arcsec * ASEC_TO_RAD;
+
+        if (use_source_weight_mask) {
+            logger->info("calculating full weights with source mask (radius {} arcsec) for scan {}",
+                         mask_radius_arcsec, scan_index_1based);
+        }
 
         // loop through detectors
         for (Eigen::Index i=0; i<n_dets; ++i) {
@@ -880,11 +890,40 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
                 // make Eigen::Maps for each detector's scan
                 Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
                     in.scans.data.col(i).data(), in.scans.data.rows());
-                Eigen::Map<Eigen::Matrix<bool, Eigen::Dynamic, 1>> flags(
+                Eigen::Map<Eigen::Matrix<bool, Eigen::Dynamic, 1>> base_flags(
                     in.flags.data.col(i).data(), in.flags.data.rows());
 
                 // unflagged detector stddev
-                double det_std_dev = engine_utils::calc_std_dev(scans, flags);
+                double det_std_dev = 0.0;
+                if (use_source_weight_mask &&
+                    i < in.map_indices.data.size()) {
+                    const auto map_index = in.map_indices.data(i);
+                    if (map_index >= 0 &&
+                        map_index < fruit_loops_source_valid.size() &&
+                        fruit_loops_source_valid(map_index)) {
+                        Eigen::Matrix<bool, Eigen::Dynamic, 1> weight_flags = base_flags;
+                        auto [lat, lon] = engine_utils::calc_det_pointing(
+                            in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
+                            telescope.pixel_axes, in.pointing_offsets_arcsec.data,
+                            active_map_grouping);
+                        const double source_lat = fruit_loops_source_lat(map_index);
+                        const double source_lon = fruit_loops_source_lon(map_index);
+                        for (Eigen::Index j = 0; j < weight_flags.size(); ++j) {
+                            const double dlat = lat(j) - source_lat;
+                            const double dlon = lon(j) - source_lon;
+                            if (std::sqrt(dlat * dlat + dlon * dlon) < source_mask_radius_rad) {
+                                weight_flags(j) = 1;
+                            }
+                        }
+                        det_std_dev = engine_utils::calc_std_dev(scans, weight_flags);
+                    }
+                    else {
+                        det_std_dev = engine_utils::calc_std_dev(scans, base_flags);
+                    }
+                }
+                else {
+                    det_std_dev = engine_utils::calc_std_dev(scans, base_flags);
+                }
                 // if stddev is not zero
                 if (det_std_dev !=0) {
                     // weight = 1/(stddev)^2
