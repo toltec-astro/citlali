@@ -258,8 +258,11 @@ auto Lali::run() {
             rtc_writer->advance();
         }
 
+        const bool use_fruit_noise_weights =
+            ptcproc.run_fruit_loops && !ptcproc.tod_mb.signal.empty();
+
         // if running fruit loops and a map has been read in
-        if (ptcproc.run_fruit_loops && !ptcproc.tod_mb.signal.empty()) {
+        if (use_fruit_noise_weights) {
             logger->info("subtracting map from tod");
             // subtract map
             ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(ptcproc.tod_mb, ptcdata, calib,
@@ -272,16 +275,16 @@ auto Lali::run() {
         ptcproc.run(ptcdata, ptcdata, calib, telescope.pixel_axes, map_grouping);
 
         // if running fruit loops and a map has been read in
-        if (ptcproc.run_fruit_loops && !ptcproc.tod_mb.signal.empty()) {
+        if (use_fruit_noise_weights) {
+            // calculate weights
+            logger->info("calculating weights for scan {} (fruit loops noise-only pass)",
+                         ptcdata.index.data + 1);
+            ptcproc.calc_weights(ptcdata, calib.apt, telescope);
+
+            // reset weights to median
+            ptcproc.reset_weights(ptcdata, calib, map_grouping);
+
             if (run_mapmaking && run_noise) {
-                // calculate weights
-                logger->info("calculating weights for scan {} (fruit loops noise-only pass)",
-                             ptcdata.index.data + 1);
-                ptcproc.calc_weights(ptcdata, calib.apt, telescope);
-
-                // reset weights to median
-                auto calib_scans = ptcproc.reset_weights(ptcdata, calib, map_grouping);
-
                 // populate noise maps only
                 bool run_omb = false;
                 logger->info("populating noise maps");
@@ -304,12 +307,17 @@ auto Lali::run() {
         // remove outliers after cleaning
         calib_scan = ptcproc.remove_bad_dets(ptcdata, calib, map_grouping);
 
-        // calculate weights
-        logger->info("calculating weights for scan {}", ptcdata.index.data + 1);
-        ptcproc.calc_weights(ptcdata, calib.apt, telescope);
+        if (use_fruit_noise_weights) {
+            logger->info("keeping source-subtracted weights for scan {}", ptcdata.index.data + 1);
+        }
+        else {
+            // calculate weights
+            logger->info("calculating weights for scan {}", ptcdata.index.data + 1);
+            ptcproc.calc_weights(ptcdata, calib.apt, telescope);
 
-        // reset weights to median
-        calib_scan = ptcproc.reset_weights(ptcdata, calib, map_grouping);
+            // reset weights to median
+            calib_scan = ptcproc.reset_weights(ptcdata, calib, map_grouping);
+        }
 
         // write ptc timestreams
         const auto ptc_scan_row = tod_output_scan_row(ptcdata.index.data, "ptc");
