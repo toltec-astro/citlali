@@ -847,6 +847,10 @@ void Engine::get_mapmaking_config(CT &config) {
     // map_method
     get_config_value(config, map_method, missing_keys, invalid_keys,
                      std::tuple{"mapmaking","method"},{"naive","jinc","maximum_likelihood"});
+    ptcproc.fruit_loops_interp_mode = (map_method == "jinc") ? "jinc" : "bilinear";
+    ptcproc.fruit_loops_jinc_r_max = 0.0;
+    ptcproc.fruit_loops_jinc_subpixel_n = 1;
+    ptcproc.fruit_loops_jinc_shape_params.clear();
 
     // map reference frame (radec, altaz, galactic)
     get_config_value(config, telescope.pixel_axes, missing_keys, invalid_keys,
@@ -891,6 +895,9 @@ void Engine::get_mapmaking_config(CT &config) {
             get_config_value(config, jinc_mm.subpixel_n, missing_keys, invalid_keys,
                              std::tuple{"mapmaking","jinc_filter","subpixel_n"},{},{1});
         }
+        ptcproc.fruit_loops_jinc_r_max = jinc_mm.r_max;
+        ptcproc.fruit_loops_jinc_subpixel_n = jinc_mm.subpixel_n;
+        ptcproc.fruit_loops_jinc_shape_params = jinc_mm.shape_params;
 
         if (jinc_mm.mode=="matrix") {
             // allocate jinc matrix

@@ -11,6 +11,8 @@
 #include <cctype>
 #include <cmath>
 
+#include <boost/math/special_functions/bessel.hpp>
+
 #include <unsupported/Eigen/CXX11/Tensor>
 
 #include <CCfits/CCfits>
@@ -302,6 +304,14 @@ public:
     // preserve a central map region from coverage-cut masking when loading
     // fruit loops templates
     double fruit_loops_center_keep_radius_arcsec = 0.0;
+    // interpolation used when projecting fruit loops maps back to the TOD
+    std::string fruit_loops_interp_mode = "bilinear";
+    // jinc interpolation settings copied from the active mapmaker config
+    double fruit_loops_jinc_r_max = 0.0;
+    int fruit_loops_jinc_subpixel_n = 1;
+    std::map<Eigen::Index, Eigen::VectorXd> fruit_loops_jinc_shape_params;
+    std::map<Eigen::Index, Eigen::MatrixXd> fruit_loops_jinc_weights_mat;
+    std::map<Eigen::Index, std::vector<Eigen::MatrixXd>> fruit_loops_jinc_weights_mat_subpix;
     // save all iterations
     bool save_all_iters;
 
@@ -321,6 +331,10 @@ public:
     template <class calib_t>
     void load_mb(std::string, std::string, calib_t &, const std::string &,
                  const std::string & = "", double = 0.0);
+    double fruit_loops_jinc_func(double, double, double, double, double, double);
+    void allocate_fruit_loops_jinc_matrix(double);
+    double sample_map_bilinear(const Eigen::MatrixXd &, double, double) const;
+    double sample_map_jinc(const Eigen::MatrixXd &, Eigen::Index, double, double) const;
 
     // get limits for a particular grouping
     template <class calib_t>
@@ -944,6 +958,14 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
         }
     }
 
+    if (fruit_loops_interp_mode == "jinc") {
+        allocate_fruit_loops_jinc_matrix(tod_mb.pixel_size_rad);
+    }
+    else {
+        fruit_loops_jinc_weights_mat.clear();
+        fruit_loops_jinc_weights_mat_subpix.clear();
+    }
+
     double expected_row = (tod_mb.n_rows - 1) / 2.0;
     double expected_col = (tod_mb.n_cols - 1) / 2.0;
     if (std::isfinite(tod_mb.wcs.crpix[0]) && tod_mb.wcs.crpix[0] > 0.0 &&
@@ -1004,6 +1026,224 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     }
     // clear weight maps to save memory
     std::vector<Eigen::MatrixXd>().swap(tod_mb.weight);
+}
+
+inline double TCProc::fruit_loops_jinc_func(double r, double a, double b, double c,
+                                            double r_max, double l_d) {
+    if (r != 0.0) {
+        r = r / l_d;
+        auto jinc_1 = 2.0 * boost::math::cyl_bessel_j(1, 2.0 * pi * r / a) /
+                      (2.0 * pi * r / a);
+        auto exp_func = std::exp(-std::pow(2.0 * r / b, c));
+        auto jinc_2 = 2.0 * boost::math::cyl_bessel_j(1, 3.831706 * r / r_max) /
+                      (3.831706 * r / r_max);
+        return jinc_1 * exp_func * jinc_2;
+    }
+    return 1.0;
+}
+
+inline void TCProc::allocate_fruit_loops_jinc_matrix(double pixel_size_rad) {
+    fruit_loops_jinc_weights_mat.clear();
+    fruit_loops_jinc_weights_mat_subpix.clear();
+
+    if (pixel_size_rad <= 0.0 || fruit_loops_jinc_r_max <= 0.0 ||
+        fruit_loops_jinc_shape_params.empty()) {
+        return;
+    }
+
+    static const std::map<Eigen::Index, double> l_d = {
+        {0, (1.1 / 1000) / 45},
+        {1, (1.4 / 1000) / 45},
+        {2, (2.0 / 1000) / 45},
+    };
+
+    const int subpixel_n = std::max(1, fruit_loops_jinc_subpixel_n);
+    std::vector<double> subpixel_offsets;
+    if (subpixel_n > 1) {
+        subpixel_offsets.resize(subpixel_n);
+        for (int i = 0; i < subpixel_n; ++i) {
+            subpixel_offsets[i] =
+                -0.5 + (static_cast<double>(i) + 0.5) / static_cast<double>(subpixel_n);
+        }
+    }
+
+    for (const auto &[array_index, shape_params] : fruit_loops_jinc_shape_params) {
+        auto ld_it = l_d.find(array_index);
+        if (ld_it == l_d.end() || shape_params.size() < 3) {
+            continue;
+        }
+
+        const auto a = shape_params(0);
+        const auto b = shape_params(1);
+        const auto c = shape_params(2);
+        const auto ld = ld_it->second;
+        const int r_max_pix = std::max(
+            0, static_cast<int>(std::floor(fruit_loops_jinc_r_max * ld / pixel_size_rad)));
+        const Eigen::VectorXd pixels =
+            Eigen::VectorXd::LinSpaced(2 * r_max_pix + 1, -r_max_pix, r_max_pix);
+
+        auto &kernel = fruit_loops_jinc_weights_mat[array_index];
+        kernel.setZero(pixels.size(), pixels.size());
+
+        for (Eigen::Index i = 0; i < pixels.size(); ++i) {
+            for (Eigen::Index j = 0; j < pixels.size(); ++j) {
+                const double radius =
+                    pixel_size_rad * std::sqrt(std::pow(pixels(i), 2) + std::pow(pixels(j), 2));
+                kernel(i, j) =
+                    fruit_loops_jinc_func(radius, a, b, c, fruit_loops_jinc_r_max, ld);
+            }
+        }
+
+        if (subpixel_n > 1) {
+            auto &subpix_vec = fruit_loops_jinc_weights_mat_subpix[array_index];
+            subpix_vec.resize(subpixel_n * subpixel_n);
+            for (int sr = 0; sr < subpixel_n; ++sr) {
+                for (int sc = 0; sc < subpixel_n; ++sc) {
+                    auto &subpix_kernel = subpix_vec[static_cast<size_t>(sr * subpixel_n + sc)];
+                    subpix_kernel.setZero(pixels.size(), pixels.size());
+                    for (Eigen::Index i = 0; i < pixels.size(); ++i) {
+                        for (Eigen::Index j = 0; j < pixels.size(); ++j) {
+                            const double radius =
+                                pixel_size_rad *
+                                std::sqrt(std::pow(pixels(i) - subpixel_offsets[sr], 2) +
+                                          std::pow(pixels(j) - subpixel_offsets[sc], 2));
+                            subpix_kernel(i, j) = fruit_loops_jinc_func(
+                                radius, a, b, c, fruit_loops_jinc_r_max, ld);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+inline double TCProc::sample_map_bilinear(const Eigen::MatrixXd &map, double row,
+                                          double col) const {
+    if (!std::isfinite(row) || !std::isfinite(col) || map.size() == 0) {
+        return 0.0;
+    }
+    if (row < 0.0 || col < 0.0 ||
+        row > static_cast<double>(map.rows() - 1) ||
+        col > static_cast<double>(map.cols() - 1)) {
+        return 0.0;
+    }
+
+    const auto row0 = static_cast<Eigen::Index>(std::floor(row));
+    const auto col0 = static_cast<Eigen::Index>(std::floor(col));
+    const auto row1 = row0 + 1;
+    const auto col1 = col0 + 1;
+    const double frac_row = row - static_cast<double>(row0);
+    const double frac_col = col - static_cast<double>(col0);
+
+    double weighted_sum = 0.0;
+    double norm = 0.0;
+
+    for (int dr = 0; dr <= 1; ++dr) {
+        const auto rr = (dr == 0) ? row0 : row1;
+        const double row_weight = (dr == 0) ? (1.0 - frac_row) : frac_row;
+        if (rr < 0 || rr >= map.rows()) {
+            continue;
+        }
+        for (int dc = 0; dc <= 1; ++dc) {
+            const auto cc = (dc == 0) ? col0 : col1;
+            const double col_weight = (dc == 0) ? (1.0 - frac_col) : frac_col;
+            if (cc < 0 || cc >= map.cols()) {
+                continue;
+            }
+            const double weight = row_weight * col_weight;
+            weighted_sum += weight * map(rr, cc);
+            norm += weight;
+        }
+    }
+
+    if (norm > 0.0) {
+        return weighted_sum / norm;
+    }
+
+    const auto ir = std::clamp(static_cast<Eigen::Index>(std::llround(row)), Eigen::Index{0},
+                               map.rows() - 1);
+    const auto ic = std::clamp(static_cast<Eigen::Index>(std::llround(col)), Eigen::Index{0},
+                               map.cols() - 1);
+    return map(ir, ic);
+}
+
+inline double TCProc::sample_map_jinc(const Eigen::MatrixXd &map, Eigen::Index array_index,
+                                      double row, double col) const {
+    if (map.size() == 0) {
+        return 0.0;
+    }
+
+    auto kernel_it = fruit_loops_jinc_weights_mat.find(array_index);
+    if (kernel_it == fruit_loops_jinc_weights_mat.end()) {
+        return sample_map_bilinear(map, row, col);
+    }
+
+    const auto ir = static_cast<Eigen::Index>(std::llround(row));
+    const auto ic = static_cast<Eigen::Index>(std::llround(col));
+
+    const Eigen::MatrixXd *kernel = &kernel_it->second;
+    auto subpix_it = fruit_loops_jinc_weights_mat_subpix.find(array_index);
+    const bool use_subpix =
+        fruit_loops_jinc_subpixel_n > 1 && subpix_it != fruit_loops_jinc_weights_mat_subpix.end() &&
+        !subpix_it->second.empty();
+    if (use_subpix) {
+        auto subpix_index = [&](double d) {
+            int idx = static_cast<int>(std::floor((d + 0.5) * fruit_loops_jinc_subpixel_n));
+            if (idx < 0) {
+                idx = 0;
+            }
+            else if (idx >= fruit_loops_jinc_subpixel_n) {
+                idx = fruit_loops_jinc_subpixel_n - 1;
+            }
+            return idx;
+        };
+        const int sr = subpix_index(row - static_cast<double>(ir));
+        const int sc = subpix_index(col - static_cast<double>(ic));
+        const auto idx = static_cast<size_t>(sr * fruit_loops_jinc_subpixel_n + sc);
+        if (idx < subpix_it->second.size()) {
+            kernel = &subpix_it->second[idx];
+        }
+    }
+
+    const auto mat_rows = kernel->rows();
+    const auto mat_cols = kernel->cols();
+    const auto mat_rows_center = mat_rows / 2;
+    const auto mat_cols_center = mat_cols / 2;
+
+    auto lower_row = ir - mat_rows_center;
+    auto upper_row = ir + mat_rows - 1 - mat_rows_center;
+    auto lower_col = ic - mat_cols_center;
+    auto upper_col = ic + mat_cols - 1 - mat_cols_center;
+
+    const auto jinc_lower_row = std::abs(std::min<Eigen::Index>(0, lower_row));
+    const auto jinc_lower_col = std::abs(std::min<Eigen::Index>(0, lower_col));
+
+    lower_row = std::max<Eigen::Index>(0, lower_row);
+    upper_row = std::min<Eigen::Index>(map.rows() - 1, upper_row);
+    lower_col = std::max<Eigen::Index>(0, lower_col);
+    upper_col = std::min<Eigen::Index>(map.cols() - 1, upper_col);
+
+    if (lower_row > upper_row || lower_col > upper_col) {
+        return 0.0;
+    }
+
+    const auto size_rows = upper_row - lower_row + 1;
+    const auto size_cols = upper_col - lower_col + 1;
+
+    double weighted_sum = 0.0;
+    double norm = 0.0;
+    for (Eigen::Index r = 0; r < size_rows; ++r) {
+        for (Eigen::Index c = 0; c < size_cols; ++c) {
+            const double weight = (*kernel)(jinc_lower_row + r, jinc_lower_col + c);
+            weighted_sum += weight * map(lower_row + r, lower_col + c);
+            norm += weight;
+        }
+    }
+
+    if (std::abs(norm) > 1e-8) {
+        return weighted_sum / norm;
+    }
+    return sample_map_bilinear(map, row, col);
 }
 
 template <class calib_t>
@@ -1133,13 +1373,20 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
 
             // loop through data points
             for (Eigen::Index j=0; j<n_pts; ++j) {
-                // row and col pixel from signal image
-                Eigen::Index ir = static_cast<Eigen::Index>(std::llround(irows(j)));
-                Eigen::Index ic = static_cast<Eigen::Index>(std::llround(icols(j)));
+                const double map_row = irows(j);
+                const double map_col = icols(j);
 
                 // check if current sample is on the image and add to the timestream
-                if (!in.flags.data(j,i) && (ir >= 0) && (ir < mb.n_rows) && (ic >= 0) && (ic < mb.n_cols)) {
-                    double signal = mb.signal[map_index](ir,ic);
+                if (!in.flags.data(j,i) && map_row >= 0.0 && map_col >= 0.0 &&
+                    map_row <= static_cast<double>(mb.n_rows - 1) &&
+                    map_col <= static_cast<double>(mb.n_cols - 1)) {
+                    double signal;
+                    if (fruit_loops_interp_mode == "jinc") {
+                        signal = sample_map_jinc(mb.signal[map_index], array_id, map_row, map_col);
+                    }
+                    else {
+                        signal = sample_map_bilinear(mb.signal[map_index], map_row, map_col);
+                    }
                     // check whether we should include pixel
                     bool run_pix_s2n = false;
                     bool run_pix_flux = false;
@@ -1207,7 +1454,16 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                         in.scans.data(j,i) += factor * signal;
                         // add/subtract kernel pixel from kernel timestream
                         if (run_kernel) {
-                            in.kernel.data(j,i) += factor * mb.kernel[map_index](ir,ic);
+                            double kernel_value;
+                            if (fruit_loops_interp_mode == "jinc") {
+                                kernel_value = sample_map_jinc(mb.kernel[map_index], array_id,
+                                                               map_row, map_col);
+                            }
+                            else {
+                                kernel_value = sample_map_bilinear(mb.kernel[map_index], map_row,
+                                                                   map_col);
+                            }
+                            in.kernel.data(j,i) += factor * kernel_value;
                         }
                     }
                 }
