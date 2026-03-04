@@ -231,6 +231,7 @@ timestream: # timestream reduction parameters
     sig2noise_limit: 0 # limit on signal-to-noise of pixels to include (ignored if noise maps are disabled or none are found in path)
     array_flux_limit: [0,0,0] # limit on signal flux density of pixels to include for each array (in map units)
     mode: upper # how to decide on pixel to include with upper: pix >= limit, lower: pix <= limit, and both: abs(pix) >= abs(limit)
+    center_keep_radius_arcsec: 0.0 # exempt the central map region from coverage_cut masking when loading fruit-loops templates
     max_iters: 1 # total number of iterations to run for if no convergence is reached
     save_all_iters: false # save all iterations or only the last one to save disk space (overwrites output files for each iter if true)
 post_processing:

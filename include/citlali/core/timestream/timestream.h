@@ -299,6 +299,9 @@ public:
     double fruit_loops_sig2noise = 0;
     // flux density cut for fruit loops algorithm
     Eigen::VectorXd fruit_loops_flux;
+    // preserve a central map region from coverage-cut masking when loading
+    // fruit loops templates
+    double fruit_loops_center_keep_radius_arcsec = 0.0;
     // save all iterations
     bool save_all_iters;
 
@@ -960,12 +963,39 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     ones.setOnes(tod_mb.weight[0].rows(), tod_mb.weight[0].cols());
     zeros.setZero(tod_mb.weight[0].rows(), tod_mb.weight[0].cols());
 
+    Eigen::MatrixXd center_keep_mask;
+    const bool use_center_keep_mask =
+        fruit_loops_center_keep_radius_arcsec > 0.0 && tod_mb.pixel_size_rad > 0.0;
+    if (use_center_keep_mask) {
+        center_keep_mask.setZero(tod_mb.weight[0].rows(), tod_mb.weight[0].cols());
+        const double keep_radius_pix =
+            fruit_loops_center_keep_radius_arcsec * ASEC_TO_RAD / tod_mb.pixel_size_rad;
+        const double keep_radius_sq = keep_radius_pix * keep_radius_pix;
+        const double center_row = (tod_mb.n_rows - 1) / 2.0;
+        const double center_col = (tod_mb.n_cols - 1) / 2.0;
+
+        for (Eigen::Index row = 0; row < tod_mb.n_rows; ++row) {
+            const double drow = static_cast<double>(row) - center_row;
+            for (Eigen::Index col = 0; col < tod_mb.n_cols; ++col) {
+                const double dcol = static_cast<double>(col) - center_col;
+                if (drow * drow + dcol * dcol <= keep_radius_sq) {
+                    center_keep_mask(row, col) = 1.0;
+                }
+            }
+        }
+        logger->info("fruit loops preserving central {:.3f} arcsec from coverage cut (radius {:.3f} pix)",
+                     fruit_loops_center_keep_radius_arcsec, keep_radius_pix);
+    }
+
     // calculate coverage bool map
     for (int i=0; i<tod_mb.weight.size(); ++i) {
         // get weight threshold for current map
         auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = tod_mb.calc_cov_region(i);
         // if weight is less than threshold, set to zero, otherwise set to one
         auto cov_bool = (tod_mb.weight[i].array() < weight_threshold).select(zeros,ones);
+        if (use_center_keep_mask) {
+            cov_bool = (cov_bool.array() + center_keep_mask.array()).min(1.0);
+        }
         tod_mb.signal[i] = tod_mb.signal[i].array() * cov_bool.array();
         if (!tod_mb.kernel.empty()) {
             tod_mb.kernel[i] = tod_mb.kernel[i].array() * cov_bool.array();

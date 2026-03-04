@@ -326,6 +326,13 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         // fruit loops flux density limit
         auto fruit_loops_flux_vec = config.template get_typed<std::vector<double>>(std::tuple{"timestream","fruit_loops","array_flux_limit"});
         fruit_loops_flux = Eigen::Map<Eigen::VectorXd>(fruit_loops_flux_vec.data(), fruit_loops_flux_vec.size());
+        if (config.template has_typed<double>(std::tuple{"timestream","fruit_loops","center_keep_radius_arcsec"})) {
+            get_config_value(config, fruit_loops_center_keep_radius_arcsec, missing_keys, invalid_keys,
+                             std::tuple{"timestream","fruit_loops","center_keep_radius_arcsec"}, {}, {0.0});
+        }
+        else {
+            fruit_loops_center_keep_radius_arcsec = 0.0;
+        }
 
         // maximum fruit loops iterations
         get_config_value(config, fruit_loops_iters, missing_keys, invalid_keys,
