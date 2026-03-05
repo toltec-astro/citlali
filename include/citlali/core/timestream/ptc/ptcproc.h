@@ -334,6 +334,23 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             fruit_loops_center_keep_radius_arcsec = 0.0;
         }
 
+        if (config.template has_typed<std::string>(std::tuple{"timestream","fruit_loops","interp_mode_override"})) {
+            get_config_value(config, fruit_loops_interp_mode_override, missing_keys, invalid_keys,
+                             std::tuple{"timestream","fruit_loops","interp_mode_override"},
+                             {"auto", "nearest", "bilinear", "jinc"});
+        }
+        else {
+            fruit_loops_interp_mode_override = "auto";
+        }
+
+        if (config.template has_typed<bool>(std::tuple{"timestream","fruit_loops","legacy_center"})) {
+            get_config_value(config, fruit_loops_legacy_center, missing_keys, invalid_keys,
+                             std::tuple{"timestream","fruit_loops","legacy_center"});
+        }
+        else {
+            fruit_loops_legacy_center = false;
+        }
+
         // maximum fruit loops iterations
         get_config_value(config, fruit_loops_iters, missing_keys, invalid_keys,
                          std::tuple{"timestream","fruit_loops","max_iters"});

@@ -306,6 +306,10 @@ public:
     double fruit_loops_center_keep_radius_arcsec = 0.0;
     // interpolation used when projecting fruit loops maps back to the TOD
     std::string fruit_loops_interp_mode = "bilinear";
+    // optional override for fruit loops interpolation mode (auto|nearest|bilinear|jinc)
+    std::string fruit_loops_interp_mode_override = "auto";
+    // use pre-Mar-2026 center convention (n/2) for map->tod projection
+    bool fruit_loops_legacy_center = false;
     // current map grouping, used by helpers that need detector pointing
     std::string active_map_grouping = "array";
     // jinc interpolation settings copied from the active mapmaker config
@@ -1377,8 +1381,8 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
     bool warned_rms = false;
     bool warned_flux = false;
 
-    double row_offset = (mb.n_rows - 1)/2.0;
-    double col_offset = (mb.n_cols - 1)/2.0;
+    double row_offset = fruit_loops_legacy_center ? (mb.n_rows / 2.0) : ((mb.n_rows - 1) / 2.0);
+    double col_offset = fruit_loops_legacy_center ? (mb.n_cols / 2.0) : ((mb.n_cols - 1) / 2.0);
 
     // loop through detectors
     for (Eigen::Index i=0; i<n_dets; ++i) {
@@ -1419,9 +1423,16 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                 if (!in.flags.data(j,i) && map_row >= 0.0 && map_col >= 0.0 &&
                     map_row <= static_cast<double>(mb.n_rows - 1) &&
                     map_col <= static_cast<double>(mb.n_cols - 1)) {
-                    double signal;
+                    double signal = 0.0;
                     if (fruit_loops_interp_mode == "jinc") {
                         signal = sample_map_jinc(mb.signal[map_index], array_id, map_row, map_col);
+                    }
+                    else if (fruit_loops_interp_mode == "nearest") {
+                        const auto ir = std::clamp(static_cast<Eigen::Index>(std::llround(map_row)),
+                                                   Eigen::Index{0}, mb.n_rows - 1);
+                        const auto ic = std::clamp(static_cast<Eigen::Index>(std::llround(map_col)),
+                                                   Eigen::Index{0}, mb.n_cols - 1);
+                        signal = mb.signal[map_index](ir, ic);
                     }
                     else {
                         signal = sample_map_bilinear(mb.signal[map_index], map_row, map_col);
@@ -1497,6 +1508,13 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                             if (fruit_loops_interp_mode == "jinc") {
                                 kernel_value = sample_map_jinc(mb.kernel[map_index], array_id,
                                                                map_row, map_col);
+                            }
+                            else if (fruit_loops_interp_mode == "nearest") {
+                                const auto ir = std::clamp(static_cast<Eigen::Index>(std::llround(map_row)),
+                                                           Eigen::Index{0}, mb.n_rows - 1);
+                                const auto ic = std::clamp(static_cast<Eigen::Index>(std::llround(map_col)),
+                                                           Eigen::Index{0}, mb.n_cols - 1);
+                                kernel_value = mb.kernel[map_index](ir, ic);
                             }
                             else {
                                 kernel_value = sample_map_bilinear(mb.kernel[map_index], map_row,

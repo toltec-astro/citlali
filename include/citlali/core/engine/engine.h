@@ -848,7 +848,19 @@ void Engine::get_mapmaking_config(CT &config) {
     // map_method
     get_config_value(config, map_method, missing_keys, invalid_keys,
                      std::tuple{"mapmaking","method"},{"naive","jinc","maximum_likelihood"});
-    ptcproc.fruit_loops_interp_mode = (map_method == "jinc") ? "jinc" : "bilinear";
+    std::string fruit_interp_default = (map_method == "jinc") ? "jinc" : "bilinear";
+    ptcproc.fruit_loops_interp_mode = fruit_interp_default;
+    if (ptcproc.run_fruit_loops && ptcproc.fruit_loops_interp_mode_override != "auto") {
+        ptcproc.fruit_loops_interp_mode = ptcproc.fruit_loops_interp_mode_override;
+    }
+    if (ptcproc.fruit_loops_interp_mode == "jinc" && map_method != "jinc") {
+        logger->warn("fruit_loops.interp_mode_override='jinc' requires mapmaking.method='jinc'; using bilinear");
+        ptcproc.fruit_loops_interp_mode = "bilinear";
+    }
+    logger->info("fruit loops interpolation mode: {} (default from mapmaking.method='{}' is {})",
+                 ptcproc.fruit_loops_interp_mode, map_method, fruit_interp_default);
+    logger->info("fruit loops center convention: {}",
+                 ptcproc.fruit_loops_legacy_center ? "legacy n/2" : "current (n-1)/2");
     ptcproc.fruit_loops_jinc_r_max = 0.0;
     ptcproc.fruit_loops_jinc_subpixel_n = 1;
     ptcproc.fruit_loops_jinc_shape_params.clear();
