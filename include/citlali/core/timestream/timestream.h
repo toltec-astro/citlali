@@ -306,7 +306,8 @@ public:
     double fruit_loops_center_keep_radius_arcsec = 0.0;
     // interpolation used when projecting fruit loops maps back to the TOD
     std::string fruit_loops_interp_mode = "bilinear";
-    // optional override for fruit loops interpolation mode (auto|nearest|bilinear|jinc)
+    // optional override for fruit loops interpolation mode
+    // (auto|nearest|bilinear|jinc|trunc)
     std::string fruit_loops_interp_mode_override = "auto";
     // use pre-Mar-2026 center convention (n/2) for map->tod projection
     bool fruit_loops_legacy_center = false;
@@ -1421,24 +1422,45 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                 const double map_row = irows(j);
                 const double map_col = icols(j);
 
-                // check if current sample is on the image and add to the timestream
-                if (!in.flags.data(j,i) && map_row >= 0.0 && map_col >= 0.0 &&
-                    map_row <= static_cast<double>(mb.n_rows - 1) &&
-                    map_col <= static_cast<double>(mb.n_cols - 1)) {
-                    double signal = 0.0;
-                    if (fruit_loops_interp_mode == "jinc") {
-                        signal = sample_map_jinc(mb.signal[map_index], array_id, map_row, map_col);
+                bool on_image = false;
+                double signal = 0.0;
+                Eigen::Index trunc_ir = 0;
+                Eigen::Index trunc_ic = 0;
+
+                if (fruit_loops_interp_mode == "trunc") {
+                    // Legacy v4.x behavior: cast to integer pixel indices (truncate toward zero).
+                    trunc_ir = static_cast<Eigen::Index>(map_row);
+                    trunc_ic = static_cast<Eigen::Index>(map_col);
+                    on_image = !in.flags.data(j, i) &&
+                               trunc_ir >= 0 && trunc_ir < mb.n_rows &&
+                               trunc_ic >= 0 && trunc_ic < mb.n_cols;
+                    if (on_image) {
+                        signal = mb.signal[map_index](trunc_ir, trunc_ic);
                     }
-                    else if (fruit_loops_interp_mode == "nearest") {
-                        const auto ir = std::clamp(static_cast<Eigen::Index>(std::llround(map_row)),
-                                                   Eigen::Index{0}, mb.n_rows - 1);
-                        const auto ic = std::clamp(static_cast<Eigen::Index>(std::llround(map_col)),
-                                                   Eigen::Index{0}, mb.n_cols - 1);
-                        signal = mb.signal[map_index](ir, ic);
+                }
+                else {
+                    // check if current sample is on the image and add to the timestream
+                    on_image = !in.flags.data(j,i) && map_row >= 0.0 && map_col >= 0.0 &&
+                               map_row <= static_cast<double>(mb.n_rows - 1) &&
+                               map_col <= static_cast<double>(mb.n_cols - 1);
+                    if (on_image) {
+                        if (fruit_loops_interp_mode == "jinc") {
+                            signal = sample_map_jinc(mb.signal[map_index], array_id, map_row, map_col);
+                        }
+                        else if (fruit_loops_interp_mode == "nearest") {
+                            const auto ir = std::clamp(static_cast<Eigen::Index>(std::llround(map_row)),
+                                                       Eigen::Index{0}, mb.n_rows - 1);
+                            const auto ic = std::clamp(static_cast<Eigen::Index>(std::llround(map_col)),
+                                                       Eigen::Index{0}, mb.n_cols - 1);
+                            signal = mb.signal[map_index](ir, ic);
+                        }
+                        else {
+                            signal = sample_map_bilinear(mb.signal[map_index], map_row, map_col);
+                        }
                     }
-                    else {
-                        signal = sample_map_bilinear(mb.signal[map_index], map_row, map_col);
-                    }
+                }
+
+                if (on_image) {
                     // check whether we should include pixel
                     bool run_pix_s2n = false;
                     bool run_pix_flux = false;
@@ -1510,6 +1532,9 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                             if (fruit_loops_interp_mode == "jinc") {
                                 kernel_value = sample_map_jinc(mb.kernel[map_index], array_id,
                                                                map_row, map_col);
+                            }
+                            else if (fruit_loops_interp_mode == "trunc") {
+                                kernel_value = mb.kernel[map_index](trunc_ir, trunc_ic);
                             }
                             else if (fruit_loops_interp_mode == "nearest") {
                                 const auto ir = std::clamp(static_cast<Eigen::Index>(std::llround(map_row)),

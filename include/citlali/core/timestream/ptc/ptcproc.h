@@ -338,10 +338,13 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         if (config.template has_typed<std::string>(std::tuple{"timestream","fruit_loops","interp_mode_override"})) {
             get_config_value(config, fruit_loops_interp_mode_override, missing_keys, invalid_keys,
                              std::tuple{"timestream","fruit_loops","interp_mode_override"},
-                             {"auto", "nearest", "bilinear", "jinc"});
+                             {"auto", "nearest", "bilinear", "jinc", "trunc", "legacy_nearest"});
         }
         else {
             fruit_loops_interp_mode_override = "auto";
+        }
+        if (fruit_loops_interp_mode_override == "legacy_nearest") {
+            fruit_loops_interp_mode_override = "trunc";
         }
 
         if (config.template has_typed<bool>(std::tuple{"timestream","fruit_loops","legacy_center"})) {

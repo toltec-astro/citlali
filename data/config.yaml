@@ -232,6 +232,9 @@ timestream: # timestream reduction parameters
     array_flux_limit: [0,0,0] # limit on signal flux density of pixels to include for each array (in map units)
     mode: upper # how to decide on pixel to include with upper: pix >= limit, lower: pix <= limit, and both: abs(pix) >= abs(limit)
     center_keep_radius_arcsec: 0.0 # exempt the central map region from coverage_cut masking when loading fruit-loops templates
+    interp_mode_override: auto # auto|nearest|bilinear|jinc|trunc ; trunc reproduces legacy integer-cast map sampling
+    legacy_center: false # false uses (n-1)/2 center, true uses legacy n/2 center in map->TOD projection
+    recompute_weights_after_addback: false # false keeps source-subtracted weights, true recomputes weights after add-back
     max_iters: 1 # total number of iterations to run for if no convergence is reached
     save_all_iters: false # save all iterations or only the last one to save disk space (overwrites output files for each iter if true)
 post_processing:
