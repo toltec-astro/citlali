@@ -861,6 +861,10 @@ void Engine::get_mapmaking_config(CT &config) {
                  ptcproc.fruit_loops_interp_mode, map_method, fruit_interp_default);
     logger->info("fruit loops center convention: {}",
                  ptcproc.fruit_loops_legacy_center ? "legacy n/2" : "current (n-1)/2");
+    logger->info("fruit loops post-addback weight mode: {}",
+                 ptcproc.fruit_loops_recompute_weights_after_addback
+                     ? "recompute from add-back TOD"
+                     : "keep source-subtracted");
     ptcproc.fruit_loops_jinc_r_max = 0.0;
     ptcproc.fruit_loops_jinc_subpixel_n = 1;
     ptcproc.fruit_loops_jinc_shape_params.clear();

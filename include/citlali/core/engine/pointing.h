@@ -356,6 +356,8 @@ auto Pointing::run(KidsProc &kidsproc) {
 
         const bool use_fruit_noise_weights =
             ptcproc.run_fruit_loops && !ptcproc.tod_mb.signal.empty();
+        const bool keep_source_subtracted_weights =
+            use_fruit_noise_weights && !ptcproc.fruit_loops_recompute_weights_after_addback;
 
         // if running fruit loops and a map has been read in
         if (use_fruit_noise_weights) {
@@ -403,12 +405,18 @@ auto Pointing::run(KidsProc &kidsproc) {
         // remove outliers after cleaning
         calib_scan = ptcproc.remove_bad_dets(ptcdata, calib_scan, map_grouping);
 
-        if (use_fruit_noise_weights) {
+        if (keep_source_subtracted_weights) {
             logger->info("keeping source-subtracted weights for scan {}", ptcdata.index.data + 1);
         }
         else {
             // calculate weights
-            logger->info("calculating weights for scan {}", ptcdata.index.data + 1);
+            if (use_fruit_noise_weights) {
+                logger->info("recomputing weights after fruit loops add-back for scan {}",
+                             ptcdata.index.data + 1);
+            }
+            else {
+                logger->info("calculating weights for scan {}", ptcdata.index.data + 1);
+            }
             ptcproc.calc_weights(ptcdata, calib.apt, telescope);
 
             // reset weights to median

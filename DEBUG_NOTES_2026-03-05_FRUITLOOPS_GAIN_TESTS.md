@@ -6,6 +6,7 @@ Temporary debug controls were added under `timestream.fruit_loops`:
 
 - `interp_mode_override`: `auto | nearest | bilinear | jinc`
 - `legacy_center`: `true | false`
+- `recompute_weights_after_addback`: `true | false`
 
 Behavior:
 
@@ -14,6 +15,8 @@ Behavior:
   - `bilinear` otherwise
 - `legacy_center: true` uses the old map-center convention (`n/2`) for map->TOD projection.
 - `legacy_center: false` uses the current convention (`(n-1)/2`).
+- `recompute_weights_after_addback: true` restores pre-`b7c1a5ef` weight handling by recalculating
+  weights after map add-back (instead of keeping source-subtracted weights).
 
 ## Recommended Obsnum For Isolation
 
@@ -56,6 +59,7 @@ timestream:
   fruit_loops:
     interp_mode_override: auto   # auto|nearest|bilinear|jinc
     legacy_center: false         # true => n/2 center, false => (n-1)/2
+    recompute_weights_after_addback: true  # true => pre-b7c1a5ef behavior
 ```
 
 ## Direct `tolteca reduce` Commands (70 / 72)

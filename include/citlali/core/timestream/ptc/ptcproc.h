@@ -302,6 +302,7 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
     // run fruit loops?
     get_config_value(config, run_fruit_loops, missing_keys, invalid_keys,
                      std::tuple{"timestream","fruit_loops","enabled"});
+    fruit_loops_recompute_weights_after_addback = false;
 
     if (run_fruit_loops) {
         // save all fruit loops iterations?
@@ -349,6 +350,14 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         }
         else {
             fruit_loops_legacy_center = false;
+        }
+
+        if (config.template has_typed<bool>(std::tuple{"timestream","fruit_loops","recompute_weights_after_addback"})) {
+            get_config_value(config, fruit_loops_recompute_weights_after_addback, missing_keys, invalid_keys,
+                             std::tuple{"timestream","fruit_loops","recompute_weights_after_addback"});
+        }
+        else {
+            fruit_loops_recompute_weights_after_addback = false;
         }
 
         // maximum fruit loops iterations

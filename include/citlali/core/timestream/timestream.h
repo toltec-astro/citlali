@@ -310,6 +310,8 @@ public:
     std::string fruit_loops_interp_mode_override = "auto";
     // use pre-Mar-2026 center convention (n/2) for map->tod projection
     bool fruit_loops_legacy_center = false;
+    // if true, recompute weights after map add-back (pre-Mar-2026 behavior)
+    bool fruit_loops_recompute_weights_after_addback = false;
     // current map grouping, used by helpers that need detector pointing
     std::string active_map_grouping = "array";
     // jinc interpolation settings copied from the active mapmaker config
