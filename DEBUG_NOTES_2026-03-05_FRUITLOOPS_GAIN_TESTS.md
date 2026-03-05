@@ -57,3 +57,96 @@ timestream:
     interp_mode_override: auto   # auto|nearest|bilinear|jinc
     legacy_center: false         # true => n/2 center, false => (n-1)/2
 ```
+
+## Direct `tolteca reduce` Commands (70 / 72)
+
+`tolteca` CLI behavior used here:
+
+- Extra CLI args after `reduce` are parsed as dotted config keys.
+- Those keys are applied as overrides under `reduce.*`.
+- Source: `tolteca/cli/reduce.py`, `tolteca/cli/utils.py`, `tolteca/utils/__init__.py::dict_from_cli_args`.
+
+Assume runtime context dir is:
+
+```bash
+cd ~/work_toltec/local_data/2025-C1-COM-04/pointings
+```
+
+The commands below force:
+
+- focus obsnum: `152523`
+- `max_iters: 3`
+- `save_all_iters: true`
+- one of the four `(interp_mode_override, legacy_center)` combinations
+
+### 70_reduce.yaml matrix
+
+```bash
+tolteca -d . -c 70_reduce.yaml reduce \
+  --jobkey reduced_flgain_70_auto_newcenter \
+  --inputs.0.select 'scannum==2 & (obsnum==152523)' \
+  --steps.0.config.low_level.timestream.fruit_loops.max_iters 3 \
+  --steps.0.config.low_level.timestream.fruit_loops.save_all_iters true \
+  --steps.0.config.low_level.timestream.fruit_loops.interp_mode_override auto \
+  --steps.0.config.low_level.timestream.fruit_loops.legacy_center false
+
+tolteca -d . -c 70_reduce.yaml reduce \
+  --jobkey reduced_flgain_70_nearest_newcenter \
+  --inputs.0.select 'scannum==2 & (obsnum==152523)' \
+  --steps.0.config.low_level.timestream.fruit_loops.max_iters 3 \
+  --steps.0.config.low_level.timestream.fruit_loops.save_all_iters true \
+  --steps.0.config.low_level.timestream.fruit_loops.interp_mode_override nearest \
+  --steps.0.config.low_level.timestream.fruit_loops.legacy_center false
+
+tolteca -d . -c 70_reduce.yaml reduce \
+  --jobkey reduced_flgain_70_auto_legacycenter \
+  --inputs.0.select 'scannum==2 & (obsnum==152523)' \
+  --steps.0.config.low_level.timestream.fruit_loops.max_iters 3 \
+  --steps.0.config.low_level.timestream.fruit_loops.save_all_iters true \
+  --steps.0.config.low_level.timestream.fruit_loops.interp_mode_override auto \
+  --steps.0.config.low_level.timestream.fruit_loops.legacy_center true
+
+tolteca -d . -c 70_reduce.yaml reduce \
+  --jobkey reduced_flgain_70_nearest_legacycenter \
+  --inputs.0.select 'scannum==2 & (obsnum==152523)' \
+  --steps.0.config.low_level.timestream.fruit_loops.max_iters 3 \
+  --steps.0.config.low_level.timestream.fruit_loops.save_all_iters true \
+  --steps.0.config.low_level.timestream.fruit_loops.interp_mode_override nearest \
+  --steps.0.config.low_level.timestream.fruit_loops.legacy_center true
+```
+
+### 72_reduce.yaml matrix
+
+```bash
+tolteca -d . -c 72_reduce.yaml reduce \
+  --jobkey reduced_flgain_72_auto_newcenter \
+  --inputs.0.select 'scannum==2 & (obsnum==152523)' \
+  --steps.0.config.low_level.timestream.fruit_loops.max_iters 3 \
+  --steps.0.config.low_level.timestream.fruit_loops.save_all_iters true \
+  --steps.0.config.low_level.timestream.fruit_loops.interp_mode_override auto \
+  --steps.0.config.low_level.timestream.fruit_loops.legacy_center false
+
+tolteca -d . -c 72_reduce.yaml reduce \
+  --jobkey reduced_flgain_72_nearest_newcenter \
+  --inputs.0.select 'scannum==2 & (obsnum==152523)' \
+  --steps.0.config.low_level.timestream.fruit_loops.max_iters 3 \
+  --steps.0.config.low_level.timestream.fruit_loops.save_all_iters true \
+  --steps.0.config.low_level.timestream.fruit_loops.interp_mode_override nearest \
+  --steps.0.config.low_level.timestream.fruit_loops.legacy_center false
+
+tolteca -d . -c 72_reduce.yaml reduce \
+  --jobkey reduced_flgain_72_auto_legacycenter \
+  --inputs.0.select 'scannum==2 & (obsnum==152523)' \
+  --steps.0.config.low_level.timestream.fruit_loops.max_iters 3 \
+  --steps.0.config.low_level.timestream.fruit_loops.save_all_iters true \
+  --steps.0.config.low_level.timestream.fruit_loops.interp_mode_override auto \
+  --steps.0.config.low_level.timestream.fruit_loops.legacy_center true
+
+tolteca -d . -c 72_reduce.yaml reduce \
+  --jobkey reduced_flgain_72_nearest_legacycenter \
+  --inputs.0.select 'scannum==2 & (obsnum==152523)' \
+  --steps.0.config.low_level.timestream.fruit_loops.max_iters 3 \
+  --steps.0.config.low_level.timestream.fruit_loops.save_all_iters true \
+  --steps.0.config.low_level.timestream.fruit_loops.interp_mode_override nearest \
+  --steps.0.config.low_level.timestream.fruit_loops.legacy_center true
+```
