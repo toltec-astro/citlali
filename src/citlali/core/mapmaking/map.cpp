@@ -129,45 +129,63 @@ void MapBuffer::normalize_maps() {
     std::iota(map_in_vec.begin(), map_in_vec.end(), 0);
     map_out_vec.resize(signal.size());
 
+    const bool use_grid_weight = grid_weight.size() == signal.size();
+
     // normalize science and kernel mpas
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
-        // Compute masks for elements where weight > 0
-        Eigen::MatrixXd mask = (weight[i].array() > 0.0).template cast <double> ();;
+        Eigen::ArrayXXd mask(n_rows, n_cols);
 
-        // vectorized operation to divide elements where weight > 0
-        signal[i] = (signal[i].array() * mask.array()) / weight[i].array().max(1e-8);
+        if (use_grid_weight) {
+            const auto &denom = grid_weight[i];
+            Eigen::ArrayXXd safe_denom = denom.array();
+            mask = ((denom.array().abs() > 1e-8) && (weight[i].array() > 0.0)).template cast<double>();
+            safe_denom = (denom.array().abs() > 1e-8).select(denom.array(), 1.0);
 
-        // apply the same for kernel if it's not empty
-        if (!kernel.empty()) {
-            kernel[i] = (kernel[i].array() * mask.array()) / weight[i].array().max(1e-8);
-        }
+            signal[i] = ((signal[i].array() / safe_denom) * mask).matrix();
 
-        // apply the same for noise if it's not empty
-        if (!noise.empty()) {
-            for (Eigen::Index n = 0; n < n_noise; ++n) {
-                Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(noise[i].data() + n * n_rows * n_cols,
-                                                                                               n_rows, n_cols);
-                noise_matrix = (noise_matrix.array() * mask.array()) / weight[i].array().max(1e-8);
+            if (!kernel.empty()) {
+                kernel[i] = ((kernel[i].array() / safe_denom) * mask).matrix();
             }
-        }
 
-        // set elements to zero where weight is zero or less
-        signal[i] = (signal[i].array() * mask.array()).matrix();
-        weight[i] = (weight[i].array() * mask.array()).matrix();
-
-        if (!kernel.empty()) {
-            kernel[i] = (kernel[i].array() * mask.array()).matrix();
-        }
-
-        if (!noise.empty()) {
-            for (Eigen::Index n = 0; n < n_noise; ++n) {
-                Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(noise[i].data() + n * n_rows * n_cols,
-                                                                                               n_rows, n_cols);
-                noise_matrix = (noise_matrix.array() * mask.array()).matrix();
+            if (!noise.empty()) {
+                for (Eigen::Index n = 0; n < n_noise; ++n) {
+                    Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(
+                        noise[i].data() + n * n_rows * n_cols, n_rows, n_cols);
+                    noise_matrix = ((noise_matrix.array() / safe_denom) * mask).matrix();
+                }
             }
+
+            weight[i] = ((denom.array().square() / weight[i].array().max(1e-30)) * mask).matrix();
+        }
+        else {
+            mask = (weight[i].array() > 0.0).template cast<double>();
+
+            signal[i] = ((signal[i].array() / weight[i].array().max(1e-8)) * mask).matrix();
+
+            if (!kernel.empty()) {
+                kernel[i] = ((kernel[i].array() / weight[i].array().max(1e-8)) * mask).matrix();
+            }
+
+            if (!noise.empty()) {
+                for (Eigen::Index n = 0; n < n_noise; ++n) {
+                    Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(
+                        noise[i].data() + n * n_rows * n_cols, n_rows, n_cols);
+                    noise_matrix = ((noise_matrix.array() / weight[i].array().max(1e-8)) * mask).matrix();
+                }
+            }
+
+            weight[i] = (weight[i].array() * mask).matrix();
+        }
+
+        if (!coverage.empty()) {
+            coverage[i] = (coverage[i].array() * mask).matrix();
         }
         return 0;
     });
+
+    if (use_grid_weight) {
+        std::vector<Eigen::MatrixXd>().swap(grid_weight);
+    }
 }
 
 void MapBuffer::calculate_stokes(std::vector<Eigen::MatrixXd>& map_vec, const Eigen::MatrixXd& m, Eigen::Index i, Eigen::Index j,
@@ -247,6 +265,10 @@ void MapBuffer::normalize_polarized_maps() {
 
         coverage[index + step] = coverage[index];
         coverage[index + 2 * step] = coverage[index];
+    }
+
+    if (!grid_weight.empty()) {
+        std::vector<Eigen::MatrixXd>().swap(grid_weight);
     }
 }
 

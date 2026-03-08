@@ -1286,6 +1286,7 @@ inline double TCProc::sample_map_jinc(const Eigen::MatrixXd &map, Eigen::Index a
         }
     }
 
+    // Memo-style jinc interpolation is a kernel-weighted average, not a matched-amplitude estimate.
     if (std::abs(norm) > 1e-8) {
         return weighted_sum / norm;
     }

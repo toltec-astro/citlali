@@ -77,6 +77,9 @@ public:
     // maps (n_rows, n_cols) of length n_maps
     std::vector<Eigen::MatrixXd> signal, weight, kernel, coverage;
 
+    // optional memo-style gridding denominator used before finalizing inverse-variance weights
+    std::vector<Eigen::MatrixXd> grid_weight;
+
     // noise maps (n_rows, n_cols, n_noise) of length n_maps
     std::vector<Eigen::Tensor<double,3>> noise;
 
@@ -141,7 +144,7 @@ public:
     void get_config(tula::config::YamlConfig &, std::vector<std::vector<std::string>> &,
                     std::vector<std::vector<std::string>> &, std::string, std::string);
 
-    // normalize signal and noise maps by the weight maps
+    // normalize accumulated maps and finalize inverse-variance weights
     void normalize_maps();
     void calculate_stokes(std::vector<Eigen::MatrixXd>&, const Eigen::MatrixXd&,
                           Eigen::Index, Eigen::Index, int, int);

@@ -2138,6 +2138,9 @@ void Beammap::run_loop() {
                 for (Eigen::Index i = 0; i < n_maps; ++i) {
                     omb.signal[i].setZero();
                     omb.weight[i].setZero();
+                    if (!omb.grid_weight.empty()) {
+                        omb.grid_weight[i].setZero();
+                    }
 
                     if (!omb.coverage.empty()) {
                         omb.coverage[i].setZero();

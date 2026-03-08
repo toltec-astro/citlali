@@ -72,11 +72,11 @@ public:
 
     // matrices to hold precomputed jinc function
     std::map<Eigen::Index,Eigen::MatrixXd> jinc_weights_mat;
-    // squared jinc weights for weight/coverage/noise updates
+    // squared jinc weights for variance and coverage updates
     std::map<Eigen::Index,Eigen::MatrixXd> jinc_weights_sq_mat;
     // sub-pixel shifted jinc matrices (size = subpixel_n^2 per array)
     std::map<Eigen::Index,std::vector<Eigen::MatrixXd>> jinc_weights_mat_subpix;
-    // squared sub-pixel shifted jinc matrices
+    // squared sub-pixel shifted jinc matrices for variance and coverage updates
     std::map<Eigen::Index,std::vector<Eigen::MatrixXd>> jinc_weights_sq_mat_subpix;
 
     // splines for jinc function
@@ -343,6 +343,10 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     if (run_omb) {
         ensure_zero_matrix_vec(omb_copy.signal, static_cast<Eigen::Index>(omb.signal.size()), omb.n_rows, omb.n_cols);
         ensure_zero_matrix_vec(omb_copy.weight, static_cast<Eigen::Index>(omb.weight.size()), omb.n_rows, omb.n_cols);
+        if (!omb.grid_weight.empty()) {
+            ensure_zero_matrix_vec(omb_copy.grid_weight, static_cast<Eigen::Index>(omb.grid_weight.size()),
+                                   omb.n_rows, omb.n_cols);
+        }
         if (run_coverage) {
             ensure_zero_matrix_vec(omb_copy.coverage, static_cast<Eigen::Index>(omb.coverage.size()), omb.n_rows, omb.n_cols);
         }
@@ -501,12 +505,16 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                             const auto mat_sq_block = jinc_sq_mat.block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
 
                             auto sig_block = omb_copy.signal[map_index].block(lower_row,lower_col,size_rows,size_cols);
+                            auto grid_wt_block = omb_copy.grid_weight[map_index].block(lower_row,lower_col,size_rows,size_cols);
                             auto wt_block = omb_copy.weight[map_index].block(lower_row,lower_col,size_rows,size_cols);
 
                             // populate signal map
                             sig_block += (mat_block * in.weights.data(i) * in.scans.data(j,i)).eval();
 
-                            // populate weight map with positive kernel power to avoid cancellations
+                            // memo-style gridding denominator
+                            grid_wt_block.array() += (mat_block.array() * in.weights.data(i));
+
+                            // variance accumulator for final inverse-variance weights
                             wt_block.array() += (mat_sq_block.array() * in.weights.data(i));
 
                             // populate coverage map
@@ -578,8 +586,8 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                             int size_rows = upper_row - lower_row + 1;
                             int size_cols = upper_col - lower_col + 1;
 
-                            const auto &jinc_sq_mat = use_subpix ? subpix_sq_vec->at(nmb_subpix_idx) : jinc_weights_sq_mat[array_index];
-                            const auto mat_sq_block = jinc_sq_mat.block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
+                            const auto &jinc_mat = use_subpix ? subpix_vec->at(nmb_subpix_idx) : jinc_weights_mat[array_index];
+                            const auto mat_block = jinc_mat.block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
                             signal = in.scans.data(j,i)*in.weights.data(i);
 
                             for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
@@ -593,7 +601,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                                 Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(nmb_copy->noise[map_index].data() + nn * nmb->n_rows * nmb->n_cols,
                                                                                                                nmb->n_rows, nmb->n_cols);
                                 auto noise_block = noise_matrix.block(lower_row,lower_col,size_rows,size_cols);
-                                noise_block.array() += (mat_sq_block.array() * noise_v);
+                                noise_block.array() += (mat_block.array() * noise_v);
                             }
                             nmb_bounds[static_cast<size_t>(map_index)].update(lower_row, upper_row, lower_col, upper_col);
                         }
@@ -618,6 +626,8 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                     omb_copy.signal[i].block(bounds.row_min, bounds.col_min, size_rows, size_cols);
                 omb.weight[i].block(bounds.row_min, bounds.col_min, size_rows, size_cols) +=
                     omb_copy.weight[i].block(bounds.row_min, bounds.col_min, size_rows, size_cols);
+                omb.grid_weight[i].block(bounds.row_min, bounds.col_min, size_rows, size_cols) +=
+                    omb_copy.grid_weight[i].block(bounds.row_min, bounds.col_min, size_rows, size_cols);
 
                 if (run_coverage) {
                     omb.coverage[i].block(bounds.row_min, bounds.col_min, size_rows, size_cols) +=
@@ -801,12 +811,16 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                             const auto mat_sq_block = jinc_sq_mat.block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
 
                             auto sig_block = omb.signal[map_index].block(lower_row,lower_col,size_rows,size_cols);
+                            auto grid_wt_block = omb.grid_weight[map_index].block(lower_row,lower_col,size_rows,size_cols);
                             auto wt_block = omb.weight[map_index].block(lower_row,lower_col,size_rows,size_cols);
 
                             // populate signal map
                             sig_block += (mat_block * in.weights.data(i) * in.scans.data(j,i)).eval();
 
-                            // populate weight map with positive kernel power to avoid cancellations
+                            // memo-style gridding denominator
+                            grid_wt_block.array() += (mat_block.array() * in.weights.data(i));
+
+                            // variance accumulator for final inverse-variance weights
                             wt_block.array() += (mat_sq_block.array() * in.weights.data(i));
 
                             // populate coverage map
@@ -876,8 +890,8 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                             int size_rows = upper_row - lower_row + 1;
                             int size_cols = upper_col - lower_col + 1;
 
-                            const auto &jinc_sq_mat = use_subpix ? subpix_sq_vec->at(nmb_subpix_idx) : jinc_weights_sq_mat[array_index];
-                            const auto mat_sq_block = jinc_sq_mat.block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
+                            const auto &jinc_mat = use_subpix ? subpix_vec->at(nmb_subpix_idx) : jinc_weights_mat[array_index];
+                            const auto mat_block = jinc_mat.block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
                             signal = in.scans.data(j,i)*in.weights.data(i);
 
                             for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
@@ -891,7 +905,7 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                                 Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(nmb->noise[map_index].data() + nn * nmb->n_rows * nmb->n_cols,
                                                                                                                nmb->n_rows, nmb->n_cols);
                                 auto noise_block = noise_matrix.block(lower_row,lower_col,size_rows,size_cols);
-                                noise_block.array() += (mat_sq_block.array() * noise_v);
+                                noise_block.array() += (mat_block.array() * noise_v);
                             }
                         }
                     }

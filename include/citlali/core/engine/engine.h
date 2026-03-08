@@ -2266,7 +2266,8 @@ void Engine::cli_summary() {
 
     // make a rough estimate of memory usage for obs map buffer
     double omb_size = 8*omb.n_rows*omb.n_cols*(omb.signal.size() + omb.weight.size() +
-                                               omb.kernel.size() + omb.coverage.size())/1e9;
+                                               omb.kernel.size() + omb.coverage.size() +
+                                               omb.grid_weight.size())/1e9;
 
     logger->info("estimated size of map buffer {} GB", omb_size);
 
@@ -2279,7 +2280,8 @@ void Engine::cli_summary() {
 
         // make a rough estimate of memory usage for coadd map buffer
         double cmb_size = 8*cmb.n_rows*cmb.n_cols*(cmb.signal.size() + cmb.weight.size() +
-                                                   cmb.kernel.size() + cmb.coverage.size())/1e9;
+                                                   cmb.kernel.size() + cmb.coverage.size() +
+                                                   cmb.grid_weight.size())/1e9;
 
         logger->info("estimated size of coadd buffer {} GB", cmb_size);
 
