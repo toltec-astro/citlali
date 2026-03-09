@@ -1459,6 +1459,7 @@ void Engine::get_astrometry_config(CT &config) {
         bool has_az = false;
         bool has_alt = false;
         bool has_mjd = false;
+        std::vector<double> mjd_values;
 
         for (Eigen::Index i = 0; i < pointing_node.size(); ++i) {
             if (config.has(std::tuple{"pointing_offsets", i, "axes_name"})) {
@@ -1489,22 +1490,9 @@ void Engine::get_astrometry_config(CT &config) {
                 }
             }
             else if (config.has(std::tuple{"pointing_offsets", i, "modified_julian_date"})) {
-                auto mjd = config.template get_typed<std::vector<double>>(
+                mjd_values = config.template get_typed<std::vector<double>>(
                     std::tuple{"pointing_offsets", i, "modified_julian_date"});
-                if (mjd.size() == 2) {
-                    pointing_offsets_modified_julian_date =
-                        Eigen::Map<Eigen::VectorXd>(mjd.data(), mjd.size());
-                    has_mjd = true;
-                }
-                else if (!mjd.empty() && std::all_of(mjd.begin(), mjd.end(), [](double v){ return v <= 0.0; })) {
-                    // non-positive sentinel means "not specified"
-                    pointing_offsets_modified_julian_date.setZero(2);
-                    has_mjd = false;
-                }
-                else {
-                    logger->error("pointing_offsets.modified_julian_date must contain 2 values or non-positive sentinels");
-                    std::exit(EXIT_FAILURE);
-                }
+                has_mjd = true;
             }
             else {
                 logger->warn("unrecognized pointing_offsets entry {}. expected axes_name/value_arcsec or modified_julian_date", i);
@@ -1533,17 +1521,8 @@ void Engine::get_astrometry_config(CT &config) {
             has_alt = true;
         }
         if (!has_mjd && config.has(std::tuple{"pointing_offsets", 2, "modified_julian_date"})) {
-            auto mjd = config.template get_typed<std::vector<double>>(std::tuple{"pointing_offsets", 2, "modified_julian_date"});
-            if (mjd.size() == 2) {
-                pointing_offsets_modified_julian_date = Eigen::Map<Eigen::VectorXd>(mjd.data(), mjd.size());
-            }
-            else if (!mjd.empty() && std::all_of(mjd.begin(), mjd.end(), [](double v){ return v <= 0.0; })) {
-                pointing_offsets_modified_julian_date.setZero(2);
-            }
-            else {
-                logger->error("pointing_offsets.modified_julian_date must contain 2 values or non-positive sentinels");
-                std::exit(EXIT_FAILURE);
-            }
+            mjd_values = config.template get_typed<std::vector<double>>(std::tuple{"pointing_offsets", 2, "modified_julian_date"});
+            has_mjd = true;
         }
 
         if (!has_az || !has_alt) {
@@ -1560,6 +1539,28 @@ void Engine::get_astrometry_config(CT &config) {
         if (n_az != 1 && n_az != 2) {
             logger->error("pointing_offsets supports only one or two values per axis (got {})", n_az);
             std::exit(EXIT_FAILURE);
+        }
+
+        if (has_mjd) {
+            if (mjd_values.size() == 2) {
+                pointing_offsets_modified_julian_date =
+                    Eigen::Map<Eigen::VectorXd>(mjd_values.data(), mjd_values.size());
+            }
+            else if (!mjd_values.empty() &&
+                     std::all_of(mjd_values.begin(), mjd_values.end(), [](double v){ return v <= 0.0; })) {
+                // non-positive sentinel means "not specified"
+                pointing_offsets_modified_julian_date.setZero(2);
+            }
+            else if (mjd_values.size() == 1 && n_az == 1) {
+                logger->warn(
+                    "ignoring single pointing_offsets.modified_julian_date for single pointing offset; using a constant offset across the observation");
+                pointing_offsets_modified_julian_date.setZero(2);
+            }
+            else {
+                logger->error(
+                    "pointing_offsets.modified_julian_date must contain 2 values when interpolating two offsets, or non-positive sentinels");
+                std::exit(EXIT_FAILURE);
+            }
         }
     }
     else {
