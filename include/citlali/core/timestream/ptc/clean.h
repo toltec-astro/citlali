@@ -2,11 +2,13 @@
 
 #include <string>
 #include <algorithm>
+#include <array>
 #include <utility>
 #include <numeric>
 #include <cmath>
 #include <cstdint>
 #include <cctype>
+#include <limits>
 #include <random>
 #include <new>
 #include <vector>
@@ -61,6 +63,27 @@ public:
     // brute-force null-model mode selection
     NullModelOptions null_model;
 
+    struct MarchenkoPasturOptions {
+        bool enabled = false;
+        double min_good_frac = 0.8;
+        int max_modes = 64; // 0 => use all available modes
+        int max_samples = 20000; // 0 => use all time samples
+        double band_low_Hz = 0.0; // 0 => no lower band edge
+        double band_high_Hz = 0.0; // 0 => no upper band edge
+        double clip_z = 12.0; // robust clip after whitening; <=0 disables
+        double bulk_keep_frac = 0.8; // fraction of smallest eigenvalues used for MP bulk fit
+        int q_grid_size = 64; // candidate q values for MP bulk fit
+        // Optional list of cleaning groupings where MP mode selection is active.
+        // Empty => enabled for all configured clean.grouping passes.
+        std::vector<std::string> grouping;
+    };
+
+    // Marchenko-Pastur mode selection for adaptive PCA depth
+    MarchenkoPasturOptions marchenko_pastur;
+
+    // processed timestream sample rate for optional band-limited MP covariance
+    double sample_rate_Hz = 0.0;
+
     struct CorrGroupingOptions {
         bool enabled = false;
         std::string metric = "abs"; // "abs" or "signed"
@@ -106,6 +129,43 @@ public:
             }
         }
         return false;
+    }
+
+    auto marchenko_pastur_enabled_for_group(const std::string &group) const {
+        if (marchenko_pastur.grouping.empty()) {
+            return true;
+        }
+        const auto g = normalize_group_name(group);
+        for (const auto &allowed : marchenko_pastur.grouping) {
+            if (normalize_group_name(allowed) == g) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    auto adaptive_mode_selection_enabled() const {
+        return null_model.enabled || marchenko_pastur.enabled;
+    }
+
+    auto adaptive_mode_selection_label() const {
+        if (null_model.enabled) {
+            return std::string{"null_model"};
+        }
+        if (marchenko_pastur.enabled) {
+            return std::string{"marchenko_pastur"};
+        }
+        return std::string{"standard"};
+    }
+
+    auto adaptive_mode_selection_max_modes() const {
+        if (null_model.enabled) {
+            return null_model.max_modes;
+        }
+        if (marchenko_pastur.enabled) {
+            return marchenko_pastur.max_modes;
+        }
+        return 0;
     }
 
     template <typename Derived>
@@ -230,6 +290,10 @@ public:
                               const Eigen::DenseBase<DerivedC> &);
 
     template <typename DerivedA, typename DerivedB, typename DerivedC>
+    auto get_marchenko_pastur_index(const Eigen::DenseBase<DerivedA> &, const Eigen::DenseBase<DerivedB> &,
+                                    const Eigen::DenseBase<DerivedC> &);
+
+    template <typename DerivedA, typename DerivedB, typename DerivedC>
     auto get_corr_groups(const Eigen::DenseBase<DerivedA> &, const Eigen::DenseBase<DerivedB> &,
                          const Eigen::DenseBase<DerivedC> &);
 
@@ -290,6 +354,199 @@ private:
     std::vector<Eigen::Index> parent;
     std::vector<int> rank;
 };
+
+template <typename Derived>
+double robust_center(const Eigen::DenseBase<Derived> &data) {
+    if (data.size() == 0) {
+        return std::numeric_limits<double>::quiet_NaN();
+    }
+    Eigen::VectorXd tmp = data.derived();
+    return tula::alg::median(tmp);
+}
+
+template <typename Derived>
+double robust_scale(const Eigen::DenseBase<Derived> &data, const double center) {
+    if (data.size() < 2 || !std::isfinite(center)) {
+        return std::numeric_limits<double>::quiet_NaN();
+    }
+    Eigen::VectorXd tmp = data.derived();
+    Eigen::VectorXd abs_dev = (tmp.array() - center).abs().matrix();
+    double sigma = 1.4826 * tula::alg::median(abs_dev);
+    if (!std::isfinite(sigma) || sigma <= 0.0) {
+        sigma = engine_utils::calc_std_dev(tmp);
+    }
+    if (!std::isfinite(sigma) || sigma <= 0.0) {
+        return std::numeric_limits<double>::quiet_NaN();
+    }
+    return sigma;
+}
+
+inline double quantile_sorted(const Eigen::VectorXd &sorted, const double p) {
+    if (sorted.size() == 0) {
+        return std::numeric_limits<double>::quiet_NaN();
+    }
+    const double pc = std::clamp(p, 0.0, 1.0);
+    const double pos = pc * static_cast<double>(sorted.size() - 1);
+    const auto i0 = static_cast<Eigen::Index>(std::floor(pos));
+    const auto i1 = static_cast<Eigen::Index>(std::ceil(pos));
+    if (i0 == i1) {
+        return sorted(i0);
+    }
+    const double frac = pos - static_cast<double>(i0);
+    return (1.0 - frac) * sorted(i0) + frac * sorted(i1);
+}
+
+inline std::array<double, 3> mp_quantiles(double q, int grid_n = 1024) {
+    q = std::max(q, 1.0e-4);
+    const double pi = std::acos(-1.0);
+    const double lambda_minus = std::pow(1.0 - std::sqrt(q), 2);
+    const double lambda_plus = std::pow(1.0 + std::sqrt(q), 2);
+    const int n = std::max(grid_n, 64);
+    Eigen::VectorXd x = Eigen::VectorXd::LinSpaced(n, lambda_minus, lambda_plus);
+    Eigen::VectorXd y = ((lambda_plus - x.array()) * (x.array() - lambda_minus)).max(0.0).sqrt().matrix();
+    Eigen::VectorXd denom = (2.0 * pi * q * x.array()).max(1.0e-12).matrix();
+    Eigen::VectorXd pdf = y.array() / denom.array();
+    Eigen::VectorXd cdf = Eigen::VectorXd::Zero(n);
+    for (int i = 1; i < n; ++i) {
+        const double dx = x(i) - x(i - 1);
+        cdf(i) = cdf(i - 1) + 0.5 * (pdf(i) + pdf(i - 1)) * dx;
+    }
+    if (cdf(n - 1) <= 0.0 || !std::isfinite(cdf(n - 1))) {
+        return {lambda_minus, 0.5 * (lambda_minus + lambda_plus), lambda_plus};
+    }
+    cdf /= cdf(n - 1);
+    auto interp = [&](double p) {
+        const double pc = std::clamp(p, 0.0, 1.0);
+        for (int i = 0; i < n; ++i) {
+            if (cdf(i) >= pc) {
+                if (i == 0) {
+                    return x(0);
+                }
+                const double denom_local = cdf(i) - cdf(i - 1);
+                const double frac = (denom_local > 0.0) ? (pc - cdf(i - 1)) / denom_local : 0.0;
+                return x(i - 1) + frac * (x(i) - x(i - 1));
+            }
+        }
+        return x(n - 1);
+    };
+    return {interp(0.1), interp(0.5), interp(0.9)};
+}
+
+struct MPBulkFitResult {
+    Eigen::Index k_mp = 0;
+    Eigen::Index n_bulk = 0;
+    double q_fit = std::numeric_limits<double>::quiet_NaN();
+    double n_eff_fit = std::numeric_limits<double>::quiet_NaN();
+    double sigma2_fit = std::numeric_limits<double>::quiet_NaN();
+    double lambda_minus = std::numeric_limits<double>::quiet_NaN();
+    double lambda_plus = std::numeric_limits<double>::quiet_NaN();
+    double top_over_edge = std::numeric_limits<double>::quiet_NaN();
+    double fit_err = std::numeric_limits<double>::quiet_NaN();
+};
+
+inline auto fit_mp_bulk(const Eigen::VectorXd &evals_desc, const Eigen::Index n_time,
+                        const double bulk_keep_frac, const int q_grid_size) {
+    MPBulkFitResult out;
+    if (evals_desc.size() < 8 || n_time < 2) {
+        return out;
+    }
+
+    std::vector<double> positive_bulk;
+    positive_bulk.reserve(static_cast<std::size_t>(evals_desc.size()));
+    const double rel_floor = std::max(evals_desc(0) * 1.0e-10, std::numeric_limits<double>::min());
+    for (Eigen::Index i = 0; i < evals_desc.size(); ++i) {
+        const double v = evals_desc(i);
+        if (std::isfinite(v) && v > rel_floor) {
+            positive_bulk.push_back(v);
+        }
+    }
+    if (positive_bulk.size() < 8) {
+        positive_bulk.reserve(static_cast<std::size_t>(evals_desc.size()));
+        positive_bulk.clear();
+        for (Eigen::Index i = 0; i < evals_desc.size(); ++i) {
+            const double v = evals_desc(i);
+            if (std::isfinite(v) && v > 0.0) {
+                positive_bulk.push_back(v);
+            }
+        }
+    }
+    if (positive_bulk.size() < 8) {
+        return out;
+    }
+
+    std::sort(positive_bulk.begin(), positive_bulk.end());
+    out.n_bulk = std::max<Eigen::Index>(
+        6, static_cast<Eigen::Index>(std::floor(static_cast<double>(positive_bulk.size()) *
+                                                std::clamp(bulk_keep_frac, 0.1, 1.0))));
+    out.n_bulk = std::min<Eigen::Index>(out.n_bulk, static_cast<Eigen::Index>(positive_bulk.size()));
+    Eigen::VectorXd bulk(out.n_bulk);
+    for (Eigen::Index i = 0; i < out.n_bulk; ++i) {
+        bulk(i) = positive_bulk[static_cast<std::size_t>(i)];
+    }
+
+    const double emp_q10 = quantile_sorted(bulk, 0.1);
+    const double emp_q50 = quantile_sorted(bulk, 0.5);
+    const double emp_q90 = quantile_sorted(bulk, 0.9);
+    if (!(std::isfinite(emp_q10) && std::isfinite(emp_q50) && std::isfinite(emp_q90) &&
+          emp_q10 > 0.0 && emp_q50 > 0.0 && emp_q90 > 0.0)) {
+        return out;
+    }
+
+    const Eigen::Index n_det = evals_desc.size();
+    const double q_min = std::max(static_cast<double>(n_det) / std::max<double>(static_cast<double>(n_time), 1.0), 1.0e-3);
+    const double q_max = std::max(4.0 * q_min, 8.0);
+    const int n_q = std::max(q_grid_size, 8);
+    std::vector<double> q_candidates(static_cast<std::size_t>(n_q));
+    const bool use_geom = (q_max / std::max(q_min, 1.0e-6)) > 2.0;
+    for (int i = 0; i < n_q; ++i) {
+        const double t = (n_q == 1) ? 0.0 : static_cast<double>(i) / static_cast<double>(n_q - 1);
+        if (use_geom) {
+            q_candidates[static_cast<std::size_t>(i)] = q_min * std::pow(q_max / q_min, t);
+        }
+        else {
+            q_candidates[static_cast<std::size_t>(i)] = q_min + t * (q_max - q_min);
+        }
+    }
+
+    bool have_best = false;
+    for (const auto q : q_candidates) {
+        const auto qtls = mp_quantiles(q);
+        if (!(qtls[0] > 0.0 && qtls[1] > 0.0 && qtls[2] > 0.0)) {
+            continue;
+        }
+        const double sigma2 = emp_q50 / qtls[1];
+        const double pred_q10 = sigma2 * qtls[0];
+        const double pred_q90 = sigma2 * qtls[2];
+        if (!(pred_q10 > 0.0 && pred_q90 > 0.0)) {
+            continue;
+        }
+        const double err = std::pow(std::log(pred_q10 / emp_q10), 2) + std::pow(std::log(pred_q90 / emp_q90), 2);
+        if (!std::isfinite(err)) {
+            continue;
+        }
+        if (!have_best || err < out.fit_err) {
+            have_best = true;
+            out.q_fit = q;
+            out.n_eff_fit = static_cast<double>(n_det) / q;
+            out.sigma2_fit = sigma2;
+            out.lambda_minus = sigma2 * std::pow(1.0 - std::sqrt(q), 2);
+            out.lambda_plus = sigma2 * std::pow(1.0 + std::sqrt(q), 2);
+            out.fit_err = err;
+        }
+    }
+    if (!have_best || !(out.lambda_plus > 0.0)) {
+        return out;
+    }
+
+    out.k_mp = 0;
+    for (Eigen::Index i = 0; i < evals_desc.size(); ++i) {
+        if (evals_desc(i) > out.lambda_plus) {
+            ++out.k_mp;
+        }
+    }
+    out.top_over_edge = evals_desc(0) / out.lambda_plus;
+    return out;
+}
 
 } // namespace detail
 
@@ -692,6 +949,222 @@ auto Cleaner::get_null_model_index(const Eigen::DenseBase<DerivedA> &scans, cons
     }
 }
 
+template <typename DerivedA, typename DerivedB, typename DerivedC>
+auto Cleaner::get_marchenko_pastur_index(const Eigen::DenseBase<DerivedA> &scans,
+                                         const Eigen::DenseBase<DerivedB> &flags,
+                                         const Eigen::DenseBase<DerivedC> &apt_flags) {
+    if (!marchenko_pastur.enabled) {
+        return Eigen::Index{0};
+    }
+
+    try {
+        const Eigen::Index n_pts_full = scans.rows();
+        const Eigen::Index n_dets = scans.cols();
+        if (n_pts_full < 8 || n_dets < 6) {
+            logger->warn("marchenko_pastur: insufficient data (n_pts={}, n_dets={}); skipping cut", n_pts_full, n_dets);
+            return Eigen::Index{0};
+        }
+        if (sample_rate_Hz <= 0.0 &&
+            (marchenko_pastur.band_low_Hz > 0.0 || marchenko_pastur.band_high_Hz > 0.0)) {
+            logger->warn("marchenko_pastur: sample_rate_Hz={} invalid for band-limited covariance; skipping cut",
+                         sample_rate_Hz);
+            return Eigen::Index{0};
+        }
+        if (marchenko_pastur.band_high_Hz > 0.0 && marchenko_pastur.band_low_Hz > marchenko_pastur.band_high_Hz) {
+            logger->warn("marchenko_pastur: band_low_Hz={} exceeds band_high_Hz={}; skipping cut",
+                         marchenko_pastur.band_low_Hz, marchenko_pastur.band_high_Hz);
+            return Eigen::Index{0};
+        }
+
+        Eigen::Index sample_step = 1;
+        if (marchenko_pastur.max_samples > 0 && n_pts_full > marchenko_pastur.max_samples) {
+            sample_step = static_cast<Eigen::Index>(
+                std::ceil(static_cast<double>(n_pts_full) / static_cast<double>(marchenko_pastur.max_samples)));
+        }
+        const Eigen::Index n_pts = (n_pts_full + sample_step - 1) / sample_step;
+        if (n_pts < 8) {
+            return Eigen::Index{0};
+        }
+        const double dt_sec = (sample_rate_Hz > 0.0)
+                                  ? static_cast<double>(sample_step) / sample_rate_Hz
+                                  : 0.0;
+
+        auto is_good = [&](Eigen::Index i_sub, Eigen::Index j_det) {
+            const Eigen::Index i = i_sub * sample_step;
+            return !flags.derived()(i, j_det);
+        };
+
+        std::vector<Eigen::Index> keep_frac;
+        keep_frac.reserve(static_cast<std::size_t>(n_dets));
+        for (Eigen::Index j = 0; j < n_dets; ++j) {
+            if (apt_flags.derived()(j) != 0) {
+                continue;
+            }
+            double good_count = 0.0;
+            for (Eigen::Index i = 0; i < n_pts; ++i) {
+                if (is_good(i, j)) {
+                    good_count += 1.0;
+                }
+            }
+            const double frac = good_count / static_cast<double>(n_pts);
+            if (good_count > 1.0 && frac >= marchenko_pastur.min_good_frac) {
+                keep_frac.push_back(j);
+            }
+        }
+        if (keep_frac.size() < 6) {
+            logger->warn("marchenko_pastur: only {} detector(s) pass min_good_frac={}; skipping cut",
+                         keep_frac.size(), marchenko_pastur.min_good_frac);
+            return Eigen::Index{0};
+        }
+
+        const Eigen::Index n_keep_frac = static_cast<Eigen::Index>(keep_frac.size());
+        Eigen::VectorXd centers = Eigen::VectorXd::Zero(n_keep_frac);
+        std::vector<Eigen::Index> keep_std;
+        keep_std.reserve(static_cast<std::size_t>(n_keep_frac));
+        for (Eigen::Index j = 0; j < n_keep_frac; ++j) {
+            const Eigen::Index det_j = keep_frac[static_cast<std::size_t>(j)];
+            std::vector<double> vals;
+            vals.reserve(static_cast<std::size_t>(n_pts));
+            for (Eigen::Index i = 0; i < n_pts; ++i) {
+                if (is_good(i, det_j)) {
+                    vals.push_back(scans.derived()(i * sample_step, det_j));
+                }
+            }
+            if (vals.size() < 8) {
+                continue;
+            }
+            Eigen::VectorXd vv = Eigen::Map<Eigen::VectorXd>(vals.data(), static_cast<Eigen::Index>(vals.size()));
+            const double center = detail::robust_center(vv);
+            const double sigma = detail::robust_scale(vv, center);
+            if (std::isfinite(center) && sigma > 0.0) {
+                centers(j) = center;
+                keep_std.push_back(j);
+            }
+        }
+        if (keep_std.size() < 6) {
+            logger->warn("marchenko_pastur: only {} detector(s) have robust finite scale; skipping cut", keep_std.size());
+            return Eigen::Index{0};
+        }
+
+        const Eigen::Index n_used = static_cast<Eigen::Index>(keep_std.size());
+        Eigen::MatrixXd centered = Eigen::MatrixXd::Zero(n_pts, n_used);
+        Eigen::MatrixXd good_used = Eigen::MatrixXd::Zero(n_pts, n_used);
+        for (Eigen::Index k = 0; k < n_used; ++k) {
+            const Eigen::Index j = keep_std[static_cast<std::size_t>(k)];
+            const Eigen::Index det_j = keep_frac[static_cast<std::size_t>(j)];
+            for (Eigen::Index i = 0; i < n_pts; ++i) {
+                const bool good = is_good(i, det_j);
+                good_used(i, k) = good ? 1.0 : 0.0;
+                if (good) {
+                    centered(i, k) = scans.derived()(i * sample_step, det_j) - centers(j);
+                }
+            }
+        }
+
+        if ((marchenko_pastur.band_low_Hz > 0.0 || marchenko_pastur.band_high_Hz > 0.0) && dt_sec > 0.0) {
+            const Eigen::Index n_freq = n_pts / 2 + 1;
+            Eigen::VectorXd freqs = Eigen::VectorXd::LinSpaced(
+                n_freq, 0.0, static_cast<double>(n_freq - 1) / (dt_sec * static_cast<double>(n_pts)));
+            Eigen::Array<bool, Eigen::Dynamic, 1> keep = Eigen::Array<bool, Eigen::Dynamic, 1>::Constant(n_freq, true);
+            if (marchenko_pastur.band_low_Hz > 0.0) {
+                keep = keep && (freqs.array() >= marchenko_pastur.band_low_Hz);
+            }
+            if (marchenko_pastur.band_high_Hz > 0.0) {
+                keep = keep && (freqs.array() <= marchenko_pastur.band_high_Hz);
+            }
+            if (keep.any()) {
+                Eigen::FFT<double> fft;
+                fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
+                fft.SetFlag(Eigen::FFT<double>::Unscaled);
+                for (Eigen::Index j = 0; j < n_used; ++j) {
+                    Eigen::VectorXcd spec;
+                    fft.fwd(spec, centered.col(j));
+                    for (Eigen::Index i = 0; i < spec.size(); ++i) {
+                        if (!keep(i)) {
+                            spec(i) = std::complex<double>(0.0, 0.0);
+                        }
+                    }
+                    Eigen::VectorXd filtered;
+                    fft.inv(filtered, spec, n_pts);
+                    centered.col(j) = filtered;
+                }
+            }
+        }
+
+        std::vector<Eigen::Index> keep_rescaled;
+        keep_rescaled.reserve(static_cast<std::size_t>(n_used));
+        Eigen::VectorXd scales = Eigen::VectorXd::Zero(n_used);
+        for (Eigen::Index j = 0; j < n_used; ++j) {
+            std::vector<double> vals;
+            vals.reserve(static_cast<std::size_t>(n_pts));
+            for (Eigen::Index i = 0; i < n_pts; ++i) {
+                if (good_used(i, j) > 0.5) {
+                    vals.push_back(centered(i, j));
+                }
+            }
+            if (vals.size() < 8) {
+                continue;
+            }
+            Eigen::VectorXd vv = Eigen::Map<Eigen::VectorXd>(vals.data(), static_cast<Eigen::Index>(vals.size()));
+            const double scale = detail::robust_scale(vv, 0.0);
+            if (std::isfinite(scale) && scale > 0.0) {
+                scales(j) = scale;
+                keep_rescaled.push_back(j);
+            }
+        }
+        if (keep_rescaled.size() < 6) {
+            logger->warn("marchenko_pastur: only {} detector(s) remain after re-scaling; skipping cut",
+                         keep_rescaled.size());
+            return Eigen::Index{0};
+        }
+
+        const Eigen::Index n_final = static_cast<Eigen::Index>(keep_rescaled.size());
+        Eigen::MatrixXd z = Eigen::MatrixXd::Zero(n_pts, n_final);
+        for (Eigen::Index k = 0; k < n_final; ++k) {
+            const Eigen::Index j = keep_rescaled[static_cast<std::size_t>(k)];
+            z.col(k) = centered.col(j) / scales(j);
+        }
+        if (std::isfinite(marchenko_pastur.clip_z) && marchenko_pastur.clip_z > 0.0) {
+            z = z.array().min(marchenko_pastur.clip_z).max(-marchenko_pastur.clip_z).matrix();
+        }
+
+        Eigen::MatrixXd cov = (z.adjoint() * z) / std::max<Eigen::Index>(n_pts - 1, 1);
+        Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> solver(cov);
+        if (solver.info() != Eigen::Success) {
+            logger->warn("marchenko_pastur: failed to compute eigenspectrum; skipping cut");
+            return Eigen::Index{0};
+        }
+        Eigen::VectorXd evals = solver.eigenvalues().reverse();
+        Eigen::Index n_modes = evals.size();
+        if (marchenko_pastur.max_modes > 0) {
+            n_modes = std::min<Eigen::Index>(n_modes, static_cast<Eigen::Index>(marchenko_pastur.max_modes));
+        }
+        if (n_modes < 8) {
+            return Eigen::Index{0};
+        }
+        evals = evals.head(n_modes);
+
+        auto fit = detail::fit_mp_bulk(evals, n_pts, marchenko_pastur.bulk_keep_frac, marchenko_pastur.q_grid_size);
+        Eigen::Index k_mp = std::min<Eigen::Index>(fit.k_mp, n_dets - 1);
+        if (k_mp < 0) {
+            k_mp = 0;
+        }
+
+        logger->debug(
+            "marchenko_pastur: n_det_input={} n_det_used={} n_modes={} n_pts={} step={} k={} q_fit={} lambda_plus={} top_over_edge={}",
+            n_dets, n_final, n_modes, n_pts, sample_step, k_mp, fit.q_fit, fit.lambda_plus, fit.top_over_edge);
+        return k_mp;
+    }
+    catch (const std::bad_alloc &) {
+        logger->warn("marchenko_pastur: memory allocation failed; skipping cut");
+        return Eigen::Index{0};
+    }
+    catch (const std::exception &e) {
+        logger->warn("marchenko_pastur: exception {}; skipping cut", e.what());
+        return Eigen::Index{0};
+    }
+}
+
 template <Cleaner::EigenSolverBackend backend, typename DerivedA, typename DerivedB, typename DerivedC>
 auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eigen::DenseBase<DerivedB> &flags,
                               Eigen::DenseBase<DerivedC> &apt_flags, const Eigen::Index group_n_eig) {
@@ -758,9 +1231,9 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     if constexpr (backend == SpectraBackend) {
         // determine how many modes must be solved for cleaning
         int n_ev = static_cast<int>(group_n_eig);
-        if (null_model.enabled) {
-            if (null_model.max_modes > 0) {
-                n_ev = std::min<int>(null_model.max_modes, n_dets - 1);
+        if (adaptive_mode_selection_enabled()) {
+            if (adaptive_mode_selection_max_modes() > 0) {
+                n_ev = std::min<int>(adaptive_mode_selection_max_modes(), n_dets - 1);
             }
             else {
                 n_ev = n_dets - 1;
@@ -780,11 +1253,12 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
             return std::tuple<Eigen::VectorXd, Eigen::MatrixXd> {evals, evecs};
         }
 
-        if (stddev_limit > 0 && group_n_eig == 0 && n_calc > 0 && !null_model.enabled) {
+        if (stddev_limit > 0 && group_n_eig == 0 && n_calc > 0 && !adaptive_mode_selection_enabled()) {
             logger->warn("stddev_limit active but n_calc={} limits eigen spectrum; consider setting n_calc=0", n_calc);
         }
-        if (null_model.enabled && n_calc > 0 && n_calc < n_ev) {
-            logger->warn("null_model enabled: ignoring n_calc={} for cleaning solve depth n_ev={}", n_calc, n_ev);
+        if (adaptive_mode_selection_enabled() && n_calc > 0 && n_calc < n_ev) {
+            logger->warn("{} enabled: ignoring n_calc={} for cleaning solve depth n_ev={}",
+                         adaptive_mode_selection_label(), n_calc, n_ev);
         }
 
         // number of values to calculate
@@ -870,9 +1344,9 @@ auto Cleaner::remove_eig_values(const Eigen::DenseBase<DerivedA> &scans, const E
     else if (stddev_limit > 0) {
         int n_ev_available = n_dets;
         if constexpr (backend == SpectraBackend) {
-            if (null_model.enabled) {
-                if (null_model.max_modes > 0) {
-                    n_ev_available = std::min<int>(null_model.max_modes, n_dets - 1);
+            if (adaptive_mode_selection_enabled()) {
+                if (adaptive_mode_selection_max_modes() > 0) {
+                    n_ev_available = std::min<int>(adaptive_mode_selection_max_modes(), n_dets - 1);
                 }
                 else {
                     n_ev_available = n_dets - 1;

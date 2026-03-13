@@ -1,0 +1,96 @@
+# Blank-Sky Residual Tools
+
+This directory is for reusable analysis utilities that treat cleaned Citlali
+timestreams as a blank-sky null experiment.
+
+For these audits, the working assumption is:
+
+- astrophysical signal in the field is negligible at the per-sample level
+- cleaned residuals should look like independent Gaussian noise
+- statistically significant non-Gaussianity, inter-detector coherence, scan
+  coupling, or spectral lines are contamination until proven otherwise
+
+## Current Tool
+
+`blank_sky_null_audit.py`
+
+Audit a cleaned timestream netCDF file, usually a `*_ptc_timestream.nc`, and
+write:
+
+- a detailed per-scan, per-network CSV
+- a network summary CSV
+- a short markdown report ranking the most suspicious networks/scans
+
+Metrics include:
+
+- Gaussian tail excess at `|z| > 3, 4, 5`
+- skewness and excess kurtosis of standardized residuals
+- pairwise detector-correlation and top-mode metrics
+- circular-shift surrogate null tests for coherence
+- low/mid/high band common-mode power ratios
+- strongest common-mode spectral line and frequency
+- coupling of the common mode to `TelElAct`, `TelAzAct`, derivatives, and time
+- simple scan-stationarity checks across quartiles
+
+## Example
+
+```bash
+$HOME/tolteca/bin/python tools/blank_sky/blank_sky_null_audit.py \
+  --nc-file /path/to/toltec_commissioning_science_151930_ptc_timestream.nc \
+  --array a1100 \
+  --networks 0,1,2,3,4,5 \
+  --scans all \
+  --utils-root ~/GitHub/toltec-data-product-utilities \
+  --outdir /path/to/output_dir
+```
+
+For a fast triage pass, keep the defaults. For more stable surrogate-null
+numbers, increase `--n-surrogates`.
+
+`localize_detector_clusters.py`
+
+Read one detector-cluster CSV from `analyze_timestream_correlations.py` plus the
+matching PTC timestream file, then summarize and plot where the multi-detector
+clusters live:
+
+- focal-plane position from `apt_x_t/apt_y_t`
+- sky-track centroid from `det_ra/det_dec`
+
+Example:
+
+```bash
+$HOME/tolteca/bin/python tools/blank_sky/localize_detector_clusters.py \
+  --ptc /path/to/toltec_commissioning_science_151930_ptc_timestream.nc \
+  --detector-csv /path/to/obs151930_scan000_nw02_detectors.csv \
+  --outdir /path/to/localize_scan000_nw02
+```
+
+`mp_mode_estimator.py`
+
+Estimate an adaptive PCA cut depth from a fitted Marchenko-Pastur bulk model.
+This is aimed at coherent/common-mode cleaning rather than impulsive glitches:
+
+- robustly whiten detectors within each scan/network
+- optionally band-limit the timestream before covariance estimation
+- fit the bulk eigenspectrum with a scaled MP model
+- count modes above the fitted upper edge `lambda_plus`
+
+Example:
+
+```bash
+$HOME/tolteca/bin/python tools/blank_sky/mp_mode_estimator.py \
+  --nc-file /path/to/toltec_commissioning_science_151930_rtc_timestream.nc \
+  --array a1100 \
+  --networks 0,1,2,3,4,5 \
+  --scans all \
+  --band-low-hz 0.05 \
+  --band-high-hz 0.5 \
+  --configured-k 18 \
+  --outdir /path/to/mp_mode_estimate
+```
+
+Outputs:
+
+- `mp_mode_estimate_detailed.csv`
+- `mp_mode_estimate_summary_by_network.csv`
+- `MP_MODE_ESTIMATE.md`

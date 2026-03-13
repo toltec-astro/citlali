@@ -457,6 +457,8 @@ void Engine::obsnum_setup() {
 
     // set despiker sample rate
     rtcproc.despiker.fsmp = telescope.fsmp;
+    // set processed timestream sample rate for optional adaptive PTC mode selection
+    ptcproc.cleaner.sample_rate_Hz = telescope.d_fsmp;
 
     // if filter is requested, make it here
     if (rtcproc.run_tod_filter) {
@@ -1870,6 +1872,11 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.MIDMIN_HZ", ptcproc.weight_corr_penalty.cm_low_mid_ratio.mid_min_Hz);
         add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.MIDMAX_HZ", ptcproc.weight_corr_penalty.cm_low_mid_ratio.mid_max_Hz);
         add_netcdf_var(fo, "CONFIG.CLEANED", ptcproc.run_clean);
+        add_netcdf_var<std::string>(fo, "CONFIG.CLEANED.MODESEL", ptcproc.cleaner.adaptive_mode_selection_label());
+        add_netcdf_var(fo, "CONFIG.CLEANED.MP.ENABLED", ptcproc.cleaner.marchenko_pastur.enabled);
+        add_netcdf_var(fo, "CONFIG.CLEANED.MP.BANDLOW_HZ", ptcproc.cleaner.marchenko_pastur.band_low_Hz);
+        add_netcdf_var(fo, "CONFIG.CLEANED.MP.BANDHIGH_HZ", ptcproc.cleaner.marchenko_pastur.band_high_Hz);
+        add_netcdf_var(fo, "CONFIG.CLEANED.MP.MAXMODES", ptcproc.cleaner.marchenko_pastur.max_modes);
 
         // loop through arrays and add number of eigenvalues removed
         for (Eigen::Index i=0; i<calib.arrays.size(); ++i) {
@@ -2964,6 +2971,21 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
                                         ptcproc.weight_corr_penalty.cm_low_mid_ratio.mid_max_Hz,
                                         "Mid-band maximum frequency for low/mid ratio");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED", ptcproc.run_clean, "Cleaned");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.MODESEL",
+                                        ptcproc.cleaner.adaptive_mode_selection_label(),
+                                        "PTC adaptive mode selection method");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.MP.ENABLED",
+                                        ptcproc.cleaner.marchenko_pastur.enabled,
+                                        "Marchenko-Pastur mode selection enabled");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.MP.BANDLOW_HZ",
+                                        ptcproc.cleaner.marchenko_pastur.band_low_Hz,
+                                        "MP covariance low-band edge (Hz)");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.MP.BANDHIGH_HZ",
+                                        ptcproc.cleaner.marchenko_pastur.band_high_Hz,
+                                        "MP covariance high-band edge (Hz)");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.MP.MAXMODES",
+                                        ptcproc.cleaner.marchenko_pastur.max_modes,
+                                        "MP max modes considered");
     if (ptcproc.run_clean) {
         fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.NEIG", ptcproc.cleaner.n_eig_to_cut[calib.arrays(i)].sum(),
                                             "Number of eigenvalues removed");

@@ -406,6 +406,14 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             get_config_value(config, cleaner.null_model.enabled, missing_keys, invalid_keys,
                              std::tuple{"timestream","processed_time_chunk","clean","null_model","enabled"});
         }
+        if (config.template has_typed<bool>(std::tuple{"timestream","processed_time_chunk","clean","marchenko_pastur","enabled"})) {
+            get_config_value(config, cleaner.marchenko_pastur.enabled, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","clean","marchenko_pastur","enabled"});
+        }
+        if (cleaner.null_model.enabled && cleaner.marchenko_pastur.enabled) {
+            logger->error("clean.null_model.enabled and clean.marchenko_pastur.enabled are mutually exclusive");
+            std::exit(EXIT_FAILURE);
+        }
         // optional correlation-defined grouping inside each network
         if (config.template has_typed<bool>(std::tuple{"timestream","processed_time_chunk","clean","corr_grouping","enabled"})) {
             get_config_value(config, cleaner.corr_grouping.enabled, missing_keys, invalid_keys,
@@ -511,6 +519,80 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                 logger->info("clean.null_model active for grouping(s): {}", groups_joined);
             }
         }
+        if (cleaner.marchenko_pastur.enabled) {
+            if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","clean","marchenko_pastur","min_good_frac"})) {
+                get_config_value(config, cleaner.marchenko_pastur.min_good_frac, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","marchenko_pastur","min_good_frac"},
+                                 {}, {0.0}, {1.0});
+            }
+            if (config.template has_typed<int>(std::tuple{"timestream","processed_time_chunk","clean","marchenko_pastur","max_modes"})) {
+                get_config_value(config, cleaner.marchenko_pastur.max_modes, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","marchenko_pastur","max_modes"},
+                                 {}, {0});
+            }
+            if (config.template has_typed<int>(std::tuple{"timestream","processed_time_chunk","clean","marchenko_pastur","max_samples"})) {
+                get_config_value(config, cleaner.marchenko_pastur.max_samples, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","marchenko_pastur","max_samples"},
+                                 {}, {0});
+            }
+            if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","clean","marchenko_pastur","band_low_Hz"})) {
+                get_config_value(config, cleaner.marchenko_pastur.band_low_Hz, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","marchenko_pastur","band_low_Hz"},
+                                 {}, {0.0});
+            }
+            if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","clean","marchenko_pastur","band_high_Hz"})) {
+                get_config_value(config, cleaner.marchenko_pastur.band_high_Hz, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","marchenko_pastur","band_high_Hz"},
+                                 {}, {0.0});
+            }
+            if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","clean","marchenko_pastur","clip_z"})) {
+                get_config_value(config, cleaner.marchenko_pastur.clip_z, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","marchenko_pastur","clip_z"});
+            }
+            if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","clean","marchenko_pastur","bulk_keep_frac"})) {
+                get_config_value(config, cleaner.marchenko_pastur.bulk_keep_frac, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","marchenko_pastur","bulk_keep_frac"},
+                                 {}, {0.1}, {1.0});
+            }
+            if (config.template has_typed<int>(std::tuple{"timestream","processed_time_chunk","clean","marchenko_pastur","q_grid_size"})) {
+                get_config_value(config, cleaner.marchenko_pastur.q_grid_size, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","marchenko_pastur","q_grid_size"},
+                                 {}, {8});
+            }
+            cleaner.marchenko_pastur.grouping.clear();
+            if (config.template has_typed<std::vector<std::string>>(
+                    std::tuple{"timestream","processed_time_chunk","clean","marchenko_pastur","grouping"})) {
+                auto mp_grouping = config.template get_typed<std::vector<std::string>>(
+                    std::tuple{"timestream","processed_time_chunk","clean","marchenko_pastur","grouping"});
+                std::unordered_set<std::string> seen;
+                for (const auto &g_raw : mp_grouping) {
+                    auto g = cleaner.normalize_group_name(g_raw);
+                    if (g != "all" && g != "array" && g != "nw" && g != "detector" && g != "fg" && g != "corr_nw") {
+                        logger->warn("clean.marchenko_pastur.grouping contains unsupported entry '{}'; ignoring", g_raw);
+                        continue;
+                    }
+                    if (seen.insert(g).second) {
+                        cleaner.marchenko_pastur.grouping.push_back(g);
+                    }
+                }
+            }
+            logger->info(
+                "clean.marchenko_pastur enabled: min_good_frac={} max_modes={} max_samples={} band_low_Hz={} band_high_Hz={} clip_z={} bulk_keep_frac={} q_grid_size={}",
+                cleaner.marchenko_pastur.min_good_frac, cleaner.marchenko_pastur.max_modes,
+                cleaner.marchenko_pastur.max_samples, cleaner.marchenko_pastur.band_low_Hz,
+                cleaner.marchenko_pastur.band_high_Hz, cleaner.marchenko_pastur.clip_z,
+                cleaner.marchenko_pastur.bulk_keep_frac, cleaner.marchenko_pastur.q_grid_size);
+            if (!cleaner.marchenko_pastur.grouping.empty()) {
+                std::string groups_joined;
+                for (std::size_t i = 0; i < cleaner.marchenko_pastur.grouping.size(); ++i) {
+                    if (i > 0) {
+                        groups_joined += ",";
+                    }
+                    groups_joined += cleaner.marchenko_pastur.grouping[i];
+                }
+                logger->info("clean.marchenko_pastur active for grouping(s): {}", groups_joined);
+            }
+        }
         // mask radius in arcseconds
         get_config_value(config, mask_radius_arcsec, missing_keys, invalid_keys,
                          std::tuple{"timestream","processed_time_chunk","clean","mask_radius_arcsec"});
@@ -579,6 +661,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
 
         // loop through config groupings
         const bool null_model_enabled_global = cleaner_local.null_model.enabled;
+        const bool marchenko_pastur_enabled_global = cleaner_local.marchenko_pastur.enabled;
         for (const auto & group: cleaner_local.grouping) {
             std::string effective_group = group;
             if (group == "corr_nw" && !cleaner_local.corr_grouping.enabled) {
@@ -590,6 +673,11 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                 null_model_enabled_global && cleaner_local.null_model_enabled_for_group(effective_group);
             if (null_model_enabled_global && !null_model_for_group) {
                 logger->debug("null_model disabled for {} grouping", effective_group);
+            }
+            const bool marchenko_pastur_for_group =
+                marchenko_pastur_enabled_global && cleaner_local.marchenko_pastur_enabled_for_group(effective_group);
+            if (marchenko_pastur_enabled_global && !marchenko_pastur_for_group) {
+                logger->debug("marchenko_pastur disabled for {} grouping", effective_group);
             }
 
             logger->debug("cleaning with {} grouping", effective_group);
@@ -706,6 +794,9 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                             if (null_model_for_group) {
                                 forced_limit_index = cleaner_local.get_null_model_index(in_scans_sub, flags_sub, apt_flags_sub);
                             }
+                            else if (marchenko_pastur_for_group) {
+                                forced_limit_index = cleaner_local.get_marchenko_pastur_index(in_scans_sub, flags_sub, apt_flags_sub);
+                            }
 
                             if (store_eigs) {
                                 Eigen::Index n_keep = std::min<Eigen::Index>(cleaner_local.n_calc, evals.size());
@@ -800,6 +891,9 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                     Eigen::Index forced_limit_index = -1;
                     if (null_model_for_group) {
                         forced_limit_index = cleaner_local.get_null_model_index(in_scans_block, masked_flags, apt_flags);
+                    }
+                    else if (marchenko_pastur_for_group) {
+                        forced_limit_index = cleaner_local.get_marchenko_pastur_index(in_scans_block, masked_flags, apt_flags);
                     }
 
                     if (store_eigs) {
