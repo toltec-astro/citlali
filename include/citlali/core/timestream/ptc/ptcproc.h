@@ -375,10 +375,27 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
     if (run_clean) {
         // get cleaning grouping vector
         cleaner.grouping = config.template get_typed<std::vector<std::string>>(std::tuple{"timestream","processed_time_chunk","clean","grouping"});
+        const bool have_standard_pca_block =
+            config.template has_typed<bool>(std::tuple{"timestream","processed_time_chunk","clean","standard_pca","enabled"});
+        if (have_standard_pca_block) {
+            get_config_value(config, cleaner.standard_pca.enabled, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","clean","standard_pca","enabled"});
+        }
         // get cleaning number of eigenvalues vector
         for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
-            auto n_eig_to_cut = config.template get_typed<std::vector<Eigen::Index>>(std::tuple{"timestream","processed_time_chunk","clean",
-                                                                                                "n_eig_to_cut",arr_name});
+            std::vector<Eigen::Index> n_eig_to_cut;
+            if (config.template has_typed<std::vector<Eigen::Index>>(
+                    std::tuple{"timestream","processed_time_chunk","clean","standard_pca","n_eig_to_cut",arr_name})) {
+                n_eig_to_cut = config.template get_typed<std::vector<Eigen::Index>>(
+                    std::tuple{"timestream","processed_time_chunk","clean","standard_pca","n_eig_to_cut",arr_name});
+            }
+            else {
+                if (config.template has_typed<std::vector<Eigen::Index>>(
+                        std::tuple{"timestream","processed_time_chunk","clean","n_eig_to_cut",arr_name})) {
+                    n_eig_to_cut = config.template get_typed<std::vector<Eigen::Index>>(
+                        std::tuple{"timestream","processed_time_chunk","clean","n_eig_to_cut",arr_name});
+                }
+            }
             if (n_eig_to_cut.empty()) {
                 logger->warn("clean.n_eig_to_cut.{} is empty; defaulting to 0 for all {} grouping pass(es)",
                              arr_name, cleaner.grouping.size());
@@ -394,10 +411,20 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         }
 
         // stddev limit
-        get_config_value(config, cleaner.stddev_limit, missing_keys, invalid_keys,
-                         std::tuple{"timestream","processed_time_chunk","clean","stddev_limit"});
+        if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","clean","standard_pca","stddev_limit"})) {
+            get_config_value(config, cleaner.stddev_limit, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","clean","standard_pca","stddev_limit"});
+        }
+        else if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","clean","stddev_limit"})) {
+            get_config_value(config, cleaner.stddev_limit, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","clean","stddev_limit"});
+        }
         // optional: number of eigenvalues to calculate (0 => full spectrum)
-        if (config.template has_typed<int>(std::tuple{"timestream","processed_time_chunk","clean","n_calc"})) {
+        if (config.template has_typed<int>(std::tuple{"timestream","processed_time_chunk","clean","standard_pca","n_calc"})) {
+            get_config_value(config, cleaner.n_calc, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","clean","standard_pca","n_calc"},{},{0});
+        }
+        else if (config.template has_typed<int>(std::tuple{"timestream","processed_time_chunk","clean","n_calc"})) {
             get_config_value(config, cleaner.n_calc, missing_keys, invalid_keys,
                              std::tuple{"timestream","processed_time_chunk","clean","n_calc"},{},{0});
         }
@@ -414,6 +441,20 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             logger->error("clean.null_model.enabled and clean.marchenko_pastur.enabled are mutually exclusive");
             std::exit(EXIT_FAILURE);
         }
+        if (!have_standard_pca_block) {
+            cleaner.standard_pca.enabled = !(cleaner.null_model.enabled || cleaner.marchenko_pastur.enabled);
+        }
+        const int n_enabled_cleaners =
+            static_cast<int>(cleaner.standard_pca.enabled) +
+            static_cast<int>(cleaner.null_model.enabled) +
+            static_cast<int>(cleaner.marchenko_pastur.enabled);
+        if (n_enabled_cleaners != 1) {
+            logger->error(
+                "exactly one cleaner must be enabled when clean.enabled=true; got standard_pca={} null_model={} marchenko_pastur={}",
+                cleaner.standard_pca.enabled, cleaner.null_model.enabled, cleaner.marchenko_pastur.enabled);
+            std::exit(EXIT_FAILURE);
+        }
+        logger->info("clean.active={}", cleaner.active_cleaner_label());
         // optional correlation-defined grouping inside each network
         if (config.template has_typed<bool>(std::tuple{"timestream","processed_time_chunk","clean","corr_grouping","enabled"})) {
             get_config_value(config, cleaner.corr_grouping.enabled, missing_keys, invalid_keys,

@@ -11,6 +11,7 @@
 #include <limits>
 #include <random>
 #include <new>
+#include <stdexcept>
 #include <vector>
 #include <unordered_map>
 #include <Eigen/Core>
@@ -46,6 +47,12 @@ public:
 
     // grouping
     std::vector<std::string> grouping;
+
+    struct StandardPCAOptions {
+        bool enabled = true;
+    };
+
+    StandardPCAOptions standard_pca;
 
     struct NullModelOptions {
         bool enabled = false;
@@ -148,14 +155,17 @@ public:
         return null_model.enabled || marchenko_pastur.enabled;
     }
 
-    auto adaptive_mode_selection_label() const {
+    auto active_cleaner_label() const {
+        if (standard_pca.enabled) {
+            return std::string{"standard_pca"};
+        }
         if (null_model.enabled) {
             return std::string{"null_model"};
         }
         if (marchenko_pastur.enabled) {
             return std::string{"marchenko_pastur"};
         }
-        return std::string{"standard"};
+        return std::string{"none"};
     }
 
     auto adaptive_mode_selection_max_modes() const {
@@ -166,6 +176,11 @@ public:
             return marchenko_pastur.max_modes;
         }
         return 0;
+    }
+
+    [[noreturn]] void fail_cleaner(const std::string &cleaner_name, const std::string &message) const {
+        logger->error("{}: {}", cleaner_name, message);
+        throw std::runtime_error(cleaner_name + ": " + message);
     }
 
     template <typename Derived>
@@ -760,16 +775,15 @@ auto Cleaner::get_null_model_index(const Eigen::DenseBase<DerivedA> &scans, cons
         return Eigen::Index{0};
     }
     if (null_model.n_surrogates < 4) {
-        logger->warn("null_model: n_surrogates={} is too small; skipping cut", null_model.n_surrogates);
-        return Eigen::Index{0};
+        fail_cleaner("null_model", "n_surrogates=" + std::to_string(null_model.n_surrogates) + " is too small");
     }
 
     try {
         const Eigen::Index n_pts_full = scans.rows();
         const Eigen::Index n_dets = scans.cols();
         if (n_pts_full < 4 || n_dets < 2) {
-            logger->warn("null_model: insufficient data (n_pts={}, n_dets={}); skipping cut", n_pts_full, n_dets);
-            return Eigen::Index{0};
+            fail_cleaner("null_model", "insufficient data (n_pts=" + std::to_string(n_pts_full)
+                                           + ", n_dets=" + std::to_string(n_dets) + ")");
         }
 
         // Subsample in time to cap memory and runtime.
@@ -780,7 +794,7 @@ auto Cleaner::get_null_model_index(const Eigen::DenseBase<DerivedA> &scans, cons
         }
         const Eigen::Index n_pts = (n_pts_full + sample_step - 1) / sample_step;
         if (n_pts < 4) {
-            return Eigen::Index{0};
+            fail_cleaner("null_model", "max_samples yields too few samples after subsampling");
         }
 
         auto is_good = [&](Eigen::Index i_sub, Eigen::Index j_det) {
@@ -807,9 +821,8 @@ auto Cleaner::get_null_model_index(const Eigen::DenseBase<DerivedA> &scans, cons
         }
 
         if (keep_frac.size() < 2) {
-            logger->warn("null_model: only {} detector(s) pass min_good_frac={}; skipping cut",
-                         keep_frac.size(), null_model.min_good_frac);
-            return Eigen::Index{0};
+            fail_cleaner("null_model", "only " + std::to_string(keep_frac.size())
+                                           + " detector(s) pass min_good_frac=" + std::to_string(null_model.min_good_frac));
         }
 
         const Eigen::Index n_keep_frac = static_cast<Eigen::Index>(keep_frac.size());
@@ -852,8 +865,8 @@ auto Cleaner::get_null_model_index(const Eigen::DenseBase<DerivedA> &scans, cons
         }
 
         if (keep_std.size() < 2) {
-            logger->warn("null_model: only {} detector(s) have finite non-zero stddev; skipping cut", keep_std.size());
-            return Eigen::Index{0};
+            fail_cleaner("null_model", "only " + std::to_string(keep_std.size())
+                                           + " detector(s) have finite non-zero stddev");
         }
 
         const Eigen::Index n_used = static_cast<Eigen::Index>(keep_std.size());
@@ -873,8 +886,7 @@ auto Cleaner::get_null_model_index(const Eigen::DenseBase<DerivedA> &scans, cons
         Eigen::MatrixXd cov_obs = calc_cov_with_mask(sigz, good_used);
         Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> obs_solver(cov_obs);
         if (obs_solver.info() != Eigen::Success) {
-            logger->warn("null_model: failed to compute observed eigenspectrum; skipping cut");
-            return Eigen::Index{0};
+            fail_cleaner("null_model", "failed to compute observed eigenspectrum");
         }
         Eigen::VectorXd obs_evals = obs_solver.eigenvalues().reverse();
 
@@ -883,7 +895,7 @@ auto Cleaner::get_null_model_index(const Eigen::DenseBase<DerivedA> &scans, cons
             n_modes = std::min<Eigen::Index>(n_modes, static_cast<Eigen::Index>(null_model.max_modes));
         }
         if (n_modes < 2) {
-            return Eigen::Index{0};
+            fail_cleaner("null_model", "not enough modes available after max_modes truncation");
         }
         obs_evals = obs_evals.head(n_modes);
 
@@ -907,8 +919,7 @@ auto Cleaner::get_null_model_index(const Eigen::DenseBase<DerivedA> &scans, cons
             Eigen::MatrixXd cov_s = calc_cov_with_mask(sur, good_used);
             Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> sur_solver(cov_s);
             if (sur_solver.info() != Eigen::Success) {
-                logger->warn("null_model: surrogate eigensolver failed at trial {}; skipping cut", s);
-                return Eigen::Index{0};
+                fail_cleaner("null_model", "surrogate eigensolver failed at trial " + std::to_string(s));
             }
             null_eigs.row(s) = sur_solver.eigenvalues().reverse().head(n_modes);
         }
@@ -940,12 +951,10 @@ auto Cleaner::get_null_model_index(const Eigen::DenseBase<DerivedA> &scans, cons
         return k_null;
     }
     catch (const std::bad_alloc &) {
-        logger->warn("null_model: memory allocation failed; skipping cut");
-        return Eigen::Index{0};
+        fail_cleaner("null_model", "memory allocation failed");
     }
     catch (const std::exception &e) {
-        logger->warn("null_model: exception {}; skipping cut", e.what());
-        return Eigen::Index{0};
+        fail_cleaner("null_model", e.what());
     }
 }
 
@@ -961,19 +970,16 @@ auto Cleaner::get_marchenko_pastur_index(const Eigen::DenseBase<DerivedA> &scans
         const Eigen::Index n_pts_full = scans.rows();
         const Eigen::Index n_dets = scans.cols();
         if (n_pts_full < 8 || n_dets < 6) {
-            logger->warn("marchenko_pastur: insufficient data (n_pts={}, n_dets={}); skipping cut", n_pts_full, n_dets);
-            return Eigen::Index{0};
+            fail_cleaner("marchenko_pastur", "insufficient data (n_pts=" + std::to_string(n_pts_full)
+                                                   + ", n_dets=" + std::to_string(n_dets) + ")");
         }
         if (sample_rate_Hz <= 0.0 &&
             (marchenko_pastur.band_low_Hz > 0.0 || marchenko_pastur.band_high_Hz > 0.0)) {
-            logger->warn("marchenko_pastur: sample_rate_Hz={} invalid for band-limited covariance; skipping cut",
-                         sample_rate_Hz);
-            return Eigen::Index{0};
+            fail_cleaner("marchenko_pastur", "sample_rate_Hz=" + std::to_string(sample_rate_Hz)
+                                                   + " invalid for band-limited covariance");
         }
         if (marchenko_pastur.band_high_Hz > 0.0 && marchenko_pastur.band_low_Hz > marchenko_pastur.band_high_Hz) {
-            logger->warn("marchenko_pastur: band_low_Hz={} exceeds band_high_Hz={}; skipping cut",
-                         marchenko_pastur.band_low_Hz, marchenko_pastur.band_high_Hz);
-            return Eigen::Index{0};
+            fail_cleaner("marchenko_pastur", "band_low_Hz exceeds band_high_Hz");
         }
 
         Eigen::Index sample_step = 1;
@@ -983,7 +989,7 @@ auto Cleaner::get_marchenko_pastur_index(const Eigen::DenseBase<DerivedA> &scans
         }
         const Eigen::Index n_pts = (n_pts_full + sample_step - 1) / sample_step;
         if (n_pts < 8) {
-            return Eigen::Index{0};
+            fail_cleaner("marchenko_pastur", "max_samples yields too few samples after subsampling");
         }
         const double dt_sec = (sample_rate_Hz > 0.0)
                                   ? static_cast<double>(sample_step) / sample_rate_Hz
@@ -1012,9 +1018,8 @@ auto Cleaner::get_marchenko_pastur_index(const Eigen::DenseBase<DerivedA> &scans
             }
         }
         if (keep_frac.size() < 6) {
-            logger->warn("marchenko_pastur: only {} detector(s) pass min_good_frac={}; skipping cut",
-                         keep_frac.size(), marchenko_pastur.min_good_frac);
-            return Eigen::Index{0};
+            fail_cleaner("marchenko_pastur", "only " + std::to_string(keep_frac.size())
+                                                   + " detector(s) pass min_good_frac=" + std::to_string(marchenko_pastur.min_good_frac));
         }
 
         const Eigen::Index n_keep_frac = static_cast<Eigen::Index>(keep_frac.size());
@@ -1042,8 +1047,8 @@ auto Cleaner::get_marchenko_pastur_index(const Eigen::DenseBase<DerivedA> &scans
             }
         }
         if (keep_std.size() < 6) {
-            logger->warn("marchenko_pastur: only {} detector(s) have robust finite scale; skipping cut", keep_std.size());
-            return Eigen::Index{0};
+            fail_cleaner("marchenko_pastur", "only " + std::to_string(keep_std.size())
+                                                   + " detector(s) have robust finite scale");
         }
 
         const Eigen::Index n_used = static_cast<Eigen::Index>(keep_std.size());
@@ -1113,9 +1118,8 @@ auto Cleaner::get_marchenko_pastur_index(const Eigen::DenseBase<DerivedA> &scans
             }
         }
         if (keep_rescaled.size() < 6) {
-            logger->warn("marchenko_pastur: only {} detector(s) remain after re-scaling; skipping cut",
-                         keep_rescaled.size());
-            return Eigen::Index{0};
+            fail_cleaner("marchenko_pastur", "only " + std::to_string(keep_rescaled.size())
+                                                   + " detector(s) remain after re-scaling");
         }
 
         const Eigen::Index n_final = static_cast<Eigen::Index>(keep_rescaled.size());
@@ -1131,8 +1135,7 @@ auto Cleaner::get_marchenko_pastur_index(const Eigen::DenseBase<DerivedA> &scans
         Eigen::MatrixXd cov = (z.adjoint() * z) / std::max<Eigen::Index>(n_pts - 1, 1);
         Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> solver(cov);
         if (solver.info() != Eigen::Success) {
-            logger->warn("marchenko_pastur: failed to compute eigenspectrum; skipping cut");
-            return Eigen::Index{0};
+            fail_cleaner("marchenko_pastur", "failed to compute eigenspectrum");
         }
         Eigen::VectorXd evals = solver.eigenvalues().reverse();
         Eigen::Index n_modes = evals.size();
@@ -1140,7 +1143,7 @@ auto Cleaner::get_marchenko_pastur_index(const Eigen::DenseBase<DerivedA> &scans
             n_modes = std::min<Eigen::Index>(n_modes, static_cast<Eigen::Index>(marchenko_pastur.max_modes));
         }
         if (n_modes < 8) {
-            return Eigen::Index{0};
+            fail_cleaner("marchenko_pastur", "not enough modes available after max_modes truncation");
         }
         evals = evals.head(n_modes);
 
@@ -1156,12 +1159,10 @@ auto Cleaner::get_marchenko_pastur_index(const Eigen::DenseBase<DerivedA> &scans
         return k_mp;
     }
     catch (const std::bad_alloc &) {
-        logger->warn("marchenko_pastur: memory allocation failed; skipping cut");
-        return Eigen::Index{0};
+        fail_cleaner("marchenko_pastur", "memory allocation failed");
     }
     catch (const std::exception &e) {
-        logger->warn("marchenko_pastur: exception {}; skipping cut", e.what());
-        return Eigen::Index{0};
+        fail_cleaner("marchenko_pastur", e.what());
     }
 }
 
@@ -1258,7 +1259,7 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
         }
         if (adaptive_mode_selection_enabled() && n_calc > 0 && n_calc < n_ev) {
             logger->warn("{} enabled: ignoring n_calc={} for cleaning solve depth n_ev={}",
-                         adaptive_mode_selection_label(), n_calc, n_ev);
+                         active_cleaner_label(), n_calc, n_ev);
         }
 
         // number of values to calculate

@@ -170,9 +170,15 @@ timestream: # timestream reduction parameters
   processed_time_chunk:
     clean: # remove (hopefully) the atmospheric signal
       enabled: false # enable or disable cleaning
-      stddev_limit: 0.0 # standard deviation cut for cleaning (only used if >0 and no adaptive selector is enabled)
-      n_calc: 64 # number of eigenvalues to calculate for stddev_limit (0 => full spectrum)
-      null_model: # brute-force mode cut using null surrogates (mutually exclusive with marchenko_pastur)
+      standard_pca: # exactly one cleaner block should be enabled when clean.enabled=true
+        enabled: true
+        stddev_limit: 0.0 # standard deviation cut for cleaning (only used if >0)
+        n_calc: 64 # number of eigenvalues to calculate for stddev_limit (0 => full spectrum)
+        n_eig_to_cut: # number of eigenvalues to remove (ignored if stddev_limit >0)
+          a1100: [3]
+          a1400: [3]
+          a2000: [3]
+      null_model: # brute-force mode cut using null surrogates (mutually exclusive with other cleaner blocks)
         enabled: false
         n_surrogates: 16 # number of random circular-shift surrogate realizations
         quantile: 0.99 # null envelope quantile in [0.5, 1)
@@ -180,7 +186,7 @@ timestream: # timestream reduction parameters
         max_modes: 64 # max modes to evaluate (0 => all available)
         max_samples: 20000 # max time samples for null-model computation (0 => all)
         seed: 12345 # random seed for reproducibility
-      marchenko_pastur: # adaptive mode cut from a fitted Marchenko-Pastur bulk (mutually exclusive with null_model)
+      marchenko_pastur: # adaptive mode cut from a fitted Marchenko-Pastur bulk (mutually exclusive with other cleaner blocks)
         enabled: false
         min_good_frac: 0.8 # minimum unflagged sample fraction per detector
         max_modes: 64 # max eigenmodes to evaluate (0 => all available)
@@ -194,10 +200,6 @@ timestream: # timestream reduction parameters
       mask_radius_arcsec: 0.0 # radius of region around the map center to mask during cleaning (only used if >0)
       grouping: [array] # clean grouping (array, nw, all)
       tau: 0.0 # tolerance for detector correlations (fraction of mean correlation for current group)
-      n_eig_to_cut: # number of eigenvalues to remove (ignored if stddev_limit >0 or an adaptive selector is enabled)
-        a1100: [3]
-        a1400: [3]
-        a2000: [3]
     weighting: # how to weight data and maps
       type: full # type of TOD weighting (full=use scan variance/approximate=use det sensitivity/const=1)
       median_map_weight_factor: 0 # set all weights above this factor x median of unflagged detectors to median (>=1 allowed)
