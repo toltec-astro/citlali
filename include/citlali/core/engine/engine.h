@@ -1830,6 +1830,10 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         const bool run_any_tod_filter = rtcproc.run_tod_filter || rtcproc.run_tod_iir_highpass;
         add_netcdf_var(fo, "CONFIG.POLARIZED", rtcproc.run_polarization);
         add_netcdf_var(fo, "CONFIG.DESPIKED", rtcproc.run_despike);
+        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.ENABLED", rtcproc.despiker.local_residual.enabled);
+        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.WINDOW_SEC", rtcproc.despiker.local_residual.window_sec);
+        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.SIGMA_SCALE", rtcproc.despiker.local_residual.sigma_scale);
+        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.DELTA_SIGMA_SCALE", rtcproc.despiker.local_residual.delta_sigma_scale);
         add_netcdf_var(fo, "CONFIG.TODFILTERED", run_any_tod_filter);
         add_netcdf_var(fo, "CONFIG.TODNOTCH", rtcproc.run_tod_notch);
         add_netcdf_var(fo, "CONFIG.TODIIRHP", rtcproc.run_tod_iir_highpass);
@@ -2173,8 +2177,12 @@ void Engine::create_tod_files() {
 
         add_rtc_det_int("rtc_despike_raw_exceed_count",
                         "per-detector count of raw-sample MAD-threshold exceedances before despike expansion");
+        add_rtc_det_int("rtc_despike_local_exceed_count",
+                        "per-detector count of locally detrended raw-sample exceedances before despike expansion");
         add_rtc_det_int("rtc_despike_delta_spike_count",
                         "per-detector count of delta-domain spikes identified by the RTC despiker");
+        add_rtc_det_int("rtc_despike_local_delta_exceed_count",
+                        "per-detector count of locally detrended delta exceedances before despike expansion");
         add_rtc_det_double("rtc_despike_added_flagged_frac",
                            "fraction of samples newly flagged by RTC despiking, excluding pre-existing flags");
         add_rtc_det_int("rtc_despike_added_region_count",
@@ -2185,8 +2193,12 @@ void Engine::create_tod_files() {
                         "maximum length of newly flagged contiguous sample regions added by RTC despiking");
         add_rtc_det_double("rtc_despike_max_raw_abs_z",
                            "maximum absolute raw-sample deviation in robust-sigma units before despiking");
+        add_rtc_det_double("rtc_despike_max_local_abs_z",
+                           "maximum absolute locally detrended raw-sample deviation in robust-sigma units before despiking");
         add_rtc_det_double("rtc_despike_max_delta_abs_z",
                            "maximum absolute adjacent-sample delta deviation in sigma units before despiking");
+        add_rtc_det_double("rtc_despike_max_local_delta_abs_z",
+                           "maximum absolute locally detrended adjacent-sample delta deviation in sigma units before despiking");
         add_rtc_det_double("rtc_final_flagged_frac",
                            "final per-detector flagged-sample fraction in the RTC product actually written");
         add_rtc_det_int("rtc_final_region_count",
@@ -2350,8 +2362,12 @@ void Engine::create_tod_files() {
                                     "fraction of samples newly flagged by RTC despiking for a captured detector slot");
             add_rtc_imp_slot_int("rtc_impulsive_slot_raw_exceed_count",
                                  "count of raw-sample MAD exceedances for a captured detector slot");
+            add_rtc_imp_slot_int("rtc_impulsive_slot_local_exceed_count",
+                                 "count of locally detrended raw-sample exceedances for a captured detector slot");
             add_rtc_imp_slot_int("rtc_impulsive_slot_delta_spike_count",
                                  "count of delta-domain spikes for a captured detector slot");
+            add_rtc_imp_slot_int("rtc_impulsive_slot_local_delta_exceed_count",
+                                 "count of locally detrended delta exceedances for a captured detector slot");
             add_rtc_imp_snip_double("rtc_impulsive_slot_snippet_z",
                                     "standardized RTC snippet around each captured impulsive event");
             add_rtc_imp_snip_int("rtc_impulsive_slot_snippet_flag",
@@ -3109,6 +3125,18 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.VERBOSE", verbose_mode, "Reduced in verbose mode");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.POLARIZED", rtcproc.run_polarization, "Polarized Obs");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKED", rtcproc.run_despike, "Despiked");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.ENABLED",
+                                        rtcproc.despiker.local_residual.enabled,
+                                        "Enable local-residual RTC despike pass");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.WINDOW_SEC",
+                                        rtcproc.despiker.local_residual.window_sec,
+                                        "Local-residual despike smoothing window");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.SIGMA_SCALE",
+                                        rtcproc.despiker.local_residual.sigma_scale,
+                                        "Local-residual despike raw threshold scale");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.DELTA_SIGMA_SCALE",
+                                        rtcproc.despiker.local_residual.delta_sigma_scale,
+                                        "Local-residual despike delta threshold scale");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODFILTERED", run_any_tod_filter, "TOD Filtered");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODNOTCH", rtcproc.run_tod_notch, "TOD notch enabled");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODIIRHP", rtcproc.run_tod_iir_highpass, "TOD IIR highpass enabled");

@@ -122,3 +122,28 @@ $HOME/tolteca/bin/python tools/blank_sky/non_gaussian_classifier.py \
   --utils-root ~/GitHub/toltec-data-product-utilities \
   --outdir /path/to/non_gaussian_classifier
 ```
+
+`rtc_impulsive_slot_report.py`
+
+Summarize the compact RTC impulsive-event capture products written by the new
+RTC instrumentation. This is meant to answer the next concrete question after
+the summary metrics: what do the top captured events actually look like?
+
+The tool reads the `rtc_impulsive_slot_*` variables from an RTC timestream file
+and writes:
+
+- `rtc_impulsive_slot_report_detailed.csv`
+- `rtc_impulsive_slot_report_summary_by_network.csv`
+- `RTC_IMPULSIVE_SLOT_REPORT.md`
+- `rtc_impulsive_slot_gallery.png`
+
+Example:
+
+```bash
+$HOME/tolteca/bin/python tools/blank_sky/rtc_impulsive_slot_report.py \
+  --nc-file /path/to/toltec_commissioning_science_152524_rtc_timestream.nc \
+  --array a1100 \
+  --networks 0,1,2,3,4,5 \
+  --scans all \
+  --outdir /path/to/rtc_impulsive_slot_report
+```

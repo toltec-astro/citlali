@@ -131,7 +131,9 @@ public:
         double peak_delta_abs_z = std::numeric_limits<double>::quiet_NaN();
         double added_flagged_frac = std::numeric_limits<double>::quiet_NaN();
         int raw_exceed_count = -2147483647;
+        int local_exceed_count = -2147483647;
         int delta_spike_count = -2147483647;
+        int local_delta_exceed_count = -2147483647;
         std::vector<double> snippet_z;
         std::vector<int> snippet_flag;
     };
@@ -352,6 +354,34 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         // window size for spikes
         get_config_value(config, despiker.window_size, missing_keys, invalid_keys,
                          std::tuple{"timestream","raw_time_chunk","despike","window_size"});
+
+        despiker.local_residual = {};
+        if (config.has(std::tuple{"timestream","raw_time_chunk","despike","local_residual"})) {
+            get_config_value(config, despiker.local_residual.enabled, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","despike","local_residual","enabled"});
+            if (config.has(std::tuple{"timestream","raw_time_chunk","despike","local_residual","window_sec"})) {
+                get_config_value(config, despiker.local_residual.window_sec, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","raw_time_chunk","despike","local_residual","window_sec"},
+                                 {}, {0.0});
+            }
+            if (config.has(std::tuple{"timestream","raw_time_chunk","despike","local_residual","sigma_scale"})) {
+                get_config_value(config, despiker.local_residual.sigma_scale, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","raw_time_chunk","despike","local_residual","sigma_scale"},
+                                 {}, {0.0});
+            }
+            if (config.has(std::tuple{"timestream","raw_time_chunk","despike","local_residual","delta_sigma_scale"})) {
+                get_config_value(config, despiker.local_residual.delta_sigma_scale, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","raw_time_chunk","despike","local_residual","delta_sigma_scale"},
+                                 {}, {0.0});
+            }
+        }
+        if (despiker.local_residual.enabled) {
+            logger->info(
+                "raw_time_chunk.despike.local_residual enabled: window_sec={} sigma_scale={} delta_sigma_scale={}",
+                despiker.local_residual.window_sec,
+                despiker.local_residual.sigma_scale,
+                despiker.local_residual.delta_sigma_scale);
+        }
 
         // how to group spike finding and replacement
         despiker.grouping = "nw";
@@ -1454,7 +1484,9 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                 slot.peak_delta_abs_z = row.impulsive_peak_delta_abs_z;
                 slot.added_flagged_frac = row.added_flagged_frac;
                 slot.raw_exceed_count = row.raw_exceed_count;
+                slot.local_exceed_count = row.local_exceed_count;
                 slot.delta_spike_count = row.delta_spike_count;
+                slot.local_delta_exceed_count = row.local_delta_exceed_count;
                 slot.snippet_z.assign(static_cast<std::size_t>(std::max<Eigen::Index>(snippet_len, 0)), nan);
                 slot.snippet_flag.assign(static_cast<std::size_t>(std::max<Eigen::Index>(snippet_len, 0)), fill_int);
 
@@ -1895,8 +1927,12 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
 
             write_det_int("rtc_despike_raw_exceed_count",
                           [](const auto &row) { return row.raw_exceed_count; });
+            write_det_int("rtc_despike_local_exceed_count",
+                          [](const auto &row) { return row.local_exceed_count; });
             write_det_int("rtc_despike_delta_spike_count",
                           [](const auto &row) { return row.delta_spike_count; });
+            write_det_int("rtc_despike_local_delta_exceed_count",
+                          [](const auto &row) { return row.local_delta_exceed_count; });
             write_det_double("rtc_despike_added_flagged_frac",
                              [](const auto &row) { return row.added_flagged_frac; });
             write_det_int("rtc_despike_added_region_count",
@@ -1907,8 +1943,12 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
                           [](const auto &row) { return row.added_region_len_max; });
             write_det_double("rtc_despike_max_raw_abs_z",
                              [](const auto &row) { return row.max_raw_abs_z; });
+            write_det_double("rtc_despike_max_local_abs_z",
+                             [](const auto &row) { return row.max_local_abs_z; });
             write_det_double("rtc_despike_max_delta_abs_z",
                              [](const auto &row) { return row.max_delta_abs_z; });
+            write_det_double("rtc_despike_max_local_delta_abs_z",
+                             [](const auto &row) { return row.max_local_delta_abs_z; });
             write_det_double("rtc_final_flagged_frac",
                              [](const auto &row) { return row.final_flagged_frac; });
             write_det_int("rtc_final_region_count",
@@ -2162,8 +2202,12 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
                                           [](const auto &slot) { return slot.added_flagged_frac; });
                     write_imp_slot_int("rtc_impulsive_slot_raw_exceed_count",
                                        [](const auto &slot) { return slot.raw_exceed_count; });
+                    write_imp_slot_int("rtc_impulsive_slot_local_exceed_count",
+                                       [](const auto &slot) { return slot.local_exceed_count; });
                     write_imp_slot_int("rtc_impulsive_slot_delta_spike_count",
                                        [](const auto &slot) { return slot.delta_spike_count; });
+                    write_imp_slot_int("rtc_impulsive_slot_local_delta_exceed_count",
+                                       [](const auto &slot) { return slot.local_delta_exceed_count; });
                     write_imp_snip_double("rtc_impulsive_slot_snippet_z",
                                           [](const auto &slot) -> const auto & { return slot.snippet_z; });
                     write_imp_snip_int("rtc_impulsive_slot_snippet_flag",
