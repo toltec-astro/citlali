@@ -1843,6 +1843,16 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var<std::string>(fo, "CONFIG.WEIGHT.TYPE", ptcproc.weighting_type);
         add_netcdf_var(fo, "CONFIG.INV_VAR.RTC.WTLOW", rtcproc.lower_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.INV_VAR.RTC.WTHIGH", rtcproc.upper_inv_var_factor);
+        add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.ENABLED", rtcproc.network_step_mask.enabled);
+        add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.STEP_WINDOW_SEC", rtcproc.network_step_mask.step_window_sec);
+        add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.STEP_SCORE_THRESH", rtcproc.network_step_mask.step_score_thresh);
+        add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.MIN_GOOD_FRAC", rtcproc.network_step_mask.min_good_frac);
+        add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.MIN_DET_USED", rtcproc.network_step_mask.min_det_used);
+        add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.MIN_STEP_DET_FRAC", rtcproc.network_step_mask.min_step_det_frac);
+        add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.MIN_ALIGNMENT_FRAC", rtcproc.network_step_mask.min_alignment_frac);
+        add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.CLUSTER_TOL_SEC", rtcproc.network_step_mask.cluster_tol_sec);
+        add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.HALF_WIDTH_SEC", rtcproc.network_step_mask.mask_half_width_sec);
+        add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.MAX_FLAGGED_FRAC", rtcproc.network_step_mask.max_flagged_fraction);
         add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTLOW", ptcproc.lower_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTHIGH", ptcproc.upper_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTLOW", ptcproc.lower_weight_factor);
@@ -2232,6 +2242,20 @@ void Engine::create_tod_files() {
                           "frequency of the strongest common-mode spectral peak for each RTC network block");
         add_rtc_nw_double("rtc_network_cm_peak_prominence",
                           "prominence of the strongest common-mode spectral peak for each RTC network block");
+        add_rtc_nw_int("rtc_network_step_mask_applied",
+                       "1 if network_step_mask flagged a time window for this RTC network block, else 0");
+        add_rtc_nw_int("rtc_network_step_mask_start_sample",
+                       "inclusive starting sample of the applied network_step_mask window; -2147483647 means none");
+        add_rtc_nw_int("rtc_network_step_mask_end_sample",
+                       "inclusive ending sample of the applied network_step_mask window; -2147483647 means none");
+        add_rtc_nw_int("rtc_network_step_mask_window_samples",
+                       "number of RTC time samples in the applied network_step_mask window");
+        add_rtc_nw_int("rtc_network_step_mask_n_det_masked",
+                       "number of detectors included in the applied network_step_mask window");
+        add_rtc_nw_int("rtc_network_step_mask_n_det_samples_flagged",
+                       "number of previously good detector-samples newly flagged by network_step_mask");
+        add_rtc_nw_double("rtc_network_step_mask_flagged_fraction",
+                          "fraction of previously good detector-samples in the network block newly flagged by network_step_mask");
     }
 
     // add weights
@@ -2997,6 +3021,36 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.TYPE", ptcproc.weighting_type, "Weighting scheme");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.INV_VAR.RTC.WTLOW", rtcproc.lower_inv_var_factor, "RTC lower inv var cutoff");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.INV_VAR.RTC.WTHIGH", rtcproc.upper_inv_var_factor, "RTC upper inv var cutoff");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.STEP_MASK.ENABLED",
+                                        rtcproc.network_step_mask.enabled,
+                                        "Enable RTC network-window step masking");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.STEP_MASK.STEP_WINDOW_SEC",
+                                        rtcproc.network_step_mask.step_window_sec,
+                                        "Window used for RTC step-score estimation");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.STEP_MASK.STEP_SCORE_THRESH",
+                                        rtcproc.network_step_mask.step_score_thresh,
+                                        "Detector step-score threshold for RTC step masking");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.STEP_MASK.MIN_GOOD_FRAC",
+                                        rtcproc.network_step_mask.min_good_frac,
+                                        "Minimum good-sample fraction for RTC step-mask metrics");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.STEP_MASK.MIN_DET_USED",
+                                        static_cast<int>(rtcproc.network_step_mask.min_det_used),
+                                        "Minimum detectors required in a network for RTC step masking");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.STEP_MASK.MIN_STEP_DET_FRAC",
+                                        rtcproc.network_step_mask.min_step_det_frac,
+                                        "Minimum step-like detector fraction for RTC step masking");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.STEP_MASK.MIN_ALIGNMENT_FRAC",
+                                        rtcproc.network_step_mask.min_alignment_frac,
+                                        "Minimum aligned-step detector fraction for RTC step masking");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.STEP_MASK.CLUSTER_TOL_SEC",
+                                        rtcproc.network_step_mask.cluster_tol_sec,
+                                        "Allowed timing tolerance for aligned RTC step clusters");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.STEP_MASK.HALF_WIDTH_SEC",
+                                        rtcproc.network_step_mask.mask_half_width_sec,
+                                        "Half-width of the applied RTC step-mask window");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.STEP_MASK.MAX_FLAGGED_FRAC",
+                                        rtcproc.network_step_mask.max_flagged_fraction,
+                                        "Maximum allowed newly flagged detector-sample fraction per RTC network mask");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.INV_VAR.PTC.WTLOW", ptcproc.lower_inv_var_factor, "PTC lower inv var cutoff");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.INV_VAR.PTC.WTHIGH", ptcproc.upper_inv_var_factor, "PTC upper inv var cutoff");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.PTC.WTLOW", ptcproc.lower_weight_factor, "PTC lower weight cutoff");
