@@ -1853,6 +1853,12 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.CLUSTER_TOL_SEC", rtcproc.network_step_mask.cluster_tol_sec);
         add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.HALF_WIDTH_SEC", rtcproc.network_step_mask.mask_half_width_sec);
         add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.MAX_FLAGGED_FRAC", rtcproc.network_step_mask.max_flagged_fraction);
+        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.ENABLED", rtcproc.impulsive_capture.enabled);
+        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.MIN_GOOD_FRAC", rtcproc.impulsive_capture.min_good_frac);
+        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.MIN_EVENT_Z", rtcproc.impulsive_capture.min_event_z);
+        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.NEAR_EVENT_Z", rtcproc.impulsive_capture.near_event_z);
+        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.MAX_EVENTS", rtcproc.impulsive_capture.max_events_per_network);
+        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.HALF_WIDTH_SEC", rtcproc.impulsive_capture.snippet_half_width_sec);
         add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTLOW", ptcproc.lower_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTHIGH", ptcproc.upper_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTLOW", ptcproc.lower_weight_factor);
@@ -2193,6 +2199,24 @@ void Engine::create_tod_files() {
                            "per-detector step-like pre/post window jump score on the RTC output");
         add_rtc_det_int("rtc_step_sample",
                         "sample index of the strongest per-detector RTC step-like jump; -2147483647 means unavailable");
+        add_rtc_det_double("rtc_impulsive_peak_abs_z",
+                           "maximum absolute per-sample deviation in robust-sigma units on the RTC output");
+        add_rtc_det_int("rtc_impulsive_peak_abs_sample",
+                        "sample index of the maximum absolute per-sample deviation; -2147483647 means unavailable");
+        add_rtc_det_double("rtc_impulsive_peak_delta_abs_z",
+                           "maximum absolute adjacent-sample delta deviation in robust-sigma units on the RTC output");
+        add_rtc_det_int("rtc_impulsive_peak_delta_abs_sample",
+                        "sample index of the strongest adjacent-sample delta excursion; -2147483647 means unavailable");
+        add_rtc_det_int("rtc_impulsive_near_abs_count",
+                        "count of RTC samples exceeding near_event_z in absolute robust-z units");
+        add_rtc_det_int("rtc_impulsive_near_delta_count",
+                        "count of RTC adjacent-sample delta excursions exceeding near_event_z");
+        add_rtc_det_double("rtc_impulsive_event_score",
+                           "per-detector impulsive event score, max of raw and delta robust-z peaks");
+        add_rtc_det_int("rtc_impulsive_event_sample",
+                        "sample index of the strongest per-detector impulsive event; -2147483647 means unavailable");
+        add_rtc_det_int("rtc_impulsive_event_kind",
+                        "0=raw-sample peak, 1=delta peak, -2147483647 means unavailable");
 
         netCDF::NcDim n_nws_rtcdiag_dim = fo.addDim("n_nws_rtcdiag", calib.n_nws);
         netCDF::NcVar nw_ids_v = fo.addVar("rtc_diag_network_ids", netCDF::ncInt, n_nws_rtcdiag_dim);
@@ -2256,6 +2280,83 @@ void Engine::create_tod_files() {
                        "number of previously good detector-samples newly flagged by network_step_mask");
         add_rtc_nw_double("rtc_network_step_mask_flagged_fraction",
                           "fraction of previously good detector-samples in the network block newly flagged by network_step_mask");
+
+        if (rtcproc.impulsive_capture.enabled) {
+            const auto n_slots = static_cast<std::size_t>(std::max<Eigen::Index>(rtcproc.impulsive_capture.max_events_per_network, 1));
+            const double rtc_fsmp = rtcproc.run_downsample ? telescope.d_fsmp : telescope.fsmp;
+            const auto snippet_half_width = static_cast<std::size_t>(std::max(0.0, std::round(rtcproc.impulsive_capture.snippet_half_width_sec * rtc_fsmp)));
+            const auto n_snippet = 2 * snippet_half_width + 1;
+            netCDF::NcDim n_rtc_impulsive_slots_dim = fo.addDim("n_rtc_impulsive_slots", n_slots);
+            netCDF::NcDim n_rtc_impulsive_samples_dim = fo.addDim("n_rtc_impulsive_samples", n_snippet);
+
+            netCDF::NcVar offset_v = fo.addVar("rtc_impulsive_snippet_offset_samples", netCDF::ncInt, n_rtc_impulsive_samples_dim);
+            offset_v.putAtt("units", "samples");
+            offset_v.putAtt("comment", "sample offsets relative to rtc_impulsive_slot_event_sample");
+            std::vector<int> offsets(n_snippet, fill_int);
+            for (std::size_t i = 0; i < n_snippet; ++i) {
+                offsets[i] = static_cast<int>(i) - static_cast<int>(snippet_half_width);
+            }
+            offset_v.putVar(offsets.data());
+
+            std::vector<netCDF::NcDim> rtc_impulsive_slot_dims = {n_scans_dim, n_nws_rtcdiag_dim, n_rtc_impulsive_slots_dim};
+            std::vector<netCDF::NcDim> rtc_impulsive_snippet_dims = {n_scans_dim, n_nws_rtcdiag_dim, n_rtc_impulsive_slots_dim, n_rtc_impulsive_samples_dim};
+
+            auto add_rtc_imp_slot_double = [&](const std::string &name, const std::string &comment) {
+                netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, rtc_impulsive_slot_dims);
+                v.putAtt("units", "N/A");
+                v.putAtt("comment", comment);
+                std::vector<double> init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
+                                         static_cast<std::size_t>(calib.n_nws) * n_slots, fill_double);
+                v.putVar(init.data());
+            };
+            auto add_rtc_imp_slot_int = [&](const std::string &name, const std::string &comment) {
+                netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, rtc_impulsive_slot_dims);
+                v.putAtt("units", "N/A");
+                v.putAtt("comment", comment);
+                std::vector<int> init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
+                                      static_cast<std::size_t>(calib.n_nws) * n_slots, fill_int);
+                v.putVar(init.data());
+            };
+            auto add_rtc_imp_snip_double = [&](const std::string &name, const std::string &comment) {
+                netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, rtc_impulsive_snippet_dims);
+                v.putAtt("units", "N/A");
+                v.putAtt("comment", comment);
+                std::vector<double> init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
+                                         static_cast<std::size_t>(calib.n_nws) * n_slots * n_snippet, fill_double);
+                v.putVar(init.data());
+            };
+            auto add_rtc_imp_snip_int = [&](const std::string &name, const std::string &comment) {
+                netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, rtc_impulsive_snippet_dims);
+                v.putAtt("units", "N/A");
+                v.putAtt("comment", comment);
+                std::vector<int> init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
+                                      static_cast<std::size_t>(calib.n_nws) * n_slots * n_snippet, fill_int);
+                v.putVar(init.data());
+            };
+
+            add_rtc_imp_slot_int("rtc_impulsive_slot_det_index",
+                                 "detector index of a captured impulsive RTC event for each scan/network/slot");
+            add_rtc_imp_slot_int("rtc_impulsive_slot_event_sample",
+                                 "sample index of a captured impulsive RTC event; -2147483647 means unavailable");
+            add_rtc_imp_slot_int("rtc_impulsive_slot_event_kind",
+                                 "0=raw-sample peak, 1=delta peak, -2147483647 means unavailable");
+            add_rtc_imp_slot_double("rtc_impulsive_slot_event_score",
+                                    "impulsive event score for a captured scan/network detector slot");
+            add_rtc_imp_slot_double("rtc_impulsive_slot_peak_abs_z",
+                                    "maximum per-sample absolute robust-z for a captured scan/network detector slot");
+            add_rtc_imp_slot_double("rtc_impulsive_slot_peak_delta_abs_z",
+                                    "maximum adjacent-sample delta robust-z for a captured scan/network detector slot");
+            add_rtc_imp_slot_double("rtc_impulsive_slot_added_flagged_frac",
+                                    "fraction of samples newly flagged by RTC despiking for a captured detector slot");
+            add_rtc_imp_slot_int("rtc_impulsive_slot_raw_exceed_count",
+                                 "count of raw-sample MAD exceedances for a captured detector slot");
+            add_rtc_imp_slot_int("rtc_impulsive_slot_delta_spike_count",
+                                 "count of delta-domain spikes for a captured detector slot");
+            add_rtc_imp_snip_double("rtc_impulsive_slot_snippet_z",
+                                    "standardized RTC snippet around each captured impulsive event");
+            add_rtc_imp_snip_int("rtc_impulsive_slot_snippet_flag",
+                                 "final RTC flag state for each sample in a captured impulsive snippet");
+        }
     }
 
     // add weights
@@ -3051,6 +3152,24 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.STEP_MASK.MAX_FLAGGED_FRAC",
                                         rtcproc.network_step_mask.max_flagged_fraction,
                                         "Maximum allowed newly flagged detector-sample fraction per RTC network mask");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE.ENABLED",
+                                        rtcproc.impulsive_capture.enabled,
+                                        "Enable RTC impulsive-event snippet capture");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE.MIN_GOOD_FRAC",
+                                        rtcproc.impulsive_capture.min_good_frac,
+                                        "Minimum good-sample fraction for RTC impulsive capture");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE.MIN_EVENT_Z",
+                                        rtcproc.impulsive_capture.min_event_z,
+                                        "Minimum event score for RTC impulsive capture");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE.NEAR_EVENT_Z",
+                                        rtcproc.impulsive_capture.near_event_z,
+                                        "Near-threshold z for RTC impulsive counts");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE.MAX_EVENTS",
+                                        static_cast<int>(rtcproc.impulsive_capture.max_events_per_network),
+                                        "Maximum captured impulsive detectors per network");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE.HALF_WIDTH_SEC",
+                                        rtcproc.impulsive_capture.snippet_half_width_sec,
+                                        "Half-width of captured RTC impulsive snippets");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.INV_VAR.PTC.WTLOW", ptcproc.lower_inv_var_factor, "PTC lower inv var cutoff");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.INV_VAR.PTC.WTHIGH", ptcproc.upper_inv_var_factor, "PTC upper inv var cutoff");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.PTC.WTLOW", ptcproc.lower_weight_factor, "PTC lower weight cutoff");

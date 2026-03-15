@@ -72,6 +72,16 @@ public:
     };
     NetworkStepMaskOptions network_step_mask;
 
+    struct ImpulsiveCaptureOptions {
+        bool enabled = false;
+        double min_good_frac = 0.8;
+        double min_event_z = 6.0;
+        double near_event_z = 4.0;
+        Eigen::Index max_events_per_network = 3;
+        double snippet_half_width_sec = 0.25;
+    };
+    ImpulsiveCaptureOptions impulsive_capture;
+
     struct RTCDetectorDiagSummary : DespikeDetectorDiagSummary {
         Eigen::Index det = -1;
         double final_flagged_frac = std::numeric_limits<double>::quiet_NaN();
@@ -80,6 +90,15 @@ public:
         int final_region_len_max = 0;
         double step_score = std::numeric_limits<double>::quiet_NaN();
         int step_sample = -2147483647;
+        double impulsive_peak_abs_z = std::numeric_limits<double>::quiet_NaN();
+        int impulsive_peak_abs_sample = -2147483647;
+        double impulsive_peak_delta_abs_z = std::numeric_limits<double>::quiet_NaN();
+        int impulsive_peak_delta_abs_sample = -2147483647;
+        int impulsive_near_abs_count = 0;
+        int impulsive_near_delta_count = 0;
+        double impulsive_event_score = std::numeric_limits<double>::quiet_NaN();
+        int impulsive_event_sample = -2147483647;
+        int impulsive_event_kind = -2147483647;
     };
 
     struct RTCNetworkDiagSummary {
@@ -103,8 +122,23 @@ public:
         double step_mask_flagged_fraction = std::numeric_limits<double>::quiet_NaN();
     };
 
+    struct RTCImpulsiveSnippetSummary {
+        int det = -2147483647;
+        int event_sample = -2147483647;
+        int event_kind = -2147483647;
+        double event_score = std::numeric_limits<double>::quiet_NaN();
+        double peak_abs_z = std::numeric_limits<double>::quiet_NaN();
+        double peak_delta_abs_z = std::numeric_limits<double>::quiet_NaN();
+        double added_flagged_frac = std::numeric_limits<double>::quiet_NaN();
+        int raw_exceed_count = -2147483647;
+        int delta_spike_count = -2147483647;
+        std::vector<double> snippet_z;
+        std::vector<int> snippet_flag;
+    };
+
     std::map<Eigen::Index, std::vector<RTCDetectorDiagSummary>> rtc_detector_summary_by_scan;
     std::map<Eigen::Index, std::vector<RTCNetworkDiagSummary>> rtc_network_summary_by_scan;
+    std::map<Eigen::Index, std::map<Eigen::Index, std::vector<RTCImpulsiveSnippetSummary>>> rtc_impulsive_summary_by_scan;
 
     // get config file
     template <typename config_t>
@@ -216,6 +250,45 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                 network_step_mask.cluster_tol_sec,
                 network_step_mask.mask_half_width_sec,
                 network_step_mask.max_flagged_fraction);
+        }
+    }
+    impulsive_capture = {};
+    if (config.has(std::tuple{"timestream","raw_time_chunk","flagging","impulsive_capture"})) {
+        get_config_value(config, impulsive_capture.enabled, missing_keys, invalid_keys,
+                         std::tuple{"timestream","raw_time_chunk","flagging","impulsive_capture","enabled"});
+        if (config.has(std::tuple{"timestream","raw_time_chunk","flagging","impulsive_capture","min_good_frac"})) {
+            get_config_value(config, impulsive_capture.min_good_frac, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","flagging","impulsive_capture","min_good_frac"},
+                             {}, {0.0}, {1.0});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","flagging","impulsive_capture","min_event_z"})) {
+            get_config_value(config, impulsive_capture.min_event_z, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","flagging","impulsive_capture","min_event_z"},
+                             {}, {0.0});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","flagging","impulsive_capture","near_event_z"})) {
+            get_config_value(config, impulsive_capture.near_event_z, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","flagging","impulsive_capture","near_event_z"},
+                             {}, {0.0});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","flagging","impulsive_capture","max_events_per_network"})) {
+            get_config_value(config, impulsive_capture.max_events_per_network, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","flagging","impulsive_capture","max_events_per_network"},
+                             {}, {1});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","flagging","impulsive_capture","snippet_half_width_sec"})) {
+            get_config_value(config, impulsive_capture.snippet_half_width_sec, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","flagging","impulsive_capture","snippet_half_width_sec"},
+                             {}, {0.0});
+        }
+        if (impulsive_capture.enabled) {
+            logger->info(
+                "raw_time_chunk.flagging.impulsive_capture enabled: min_good_frac={} min_event_z={} near_event_z={} max_events_per_network={} snippet_half_width_sec={}",
+                impulsive_capture.min_good_frac,
+                impulsive_capture.min_event_z,
+                impulsive_capture.near_event_z,
+                impulsive_capture.max_events_per_network,
+                impulsive_capture.snippet_half_width_sec);
         }
     }
 
@@ -948,6 +1021,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     }
     rtc_detector_summary_by_scan[out.index.data] = std::move(rtc_diag_seed);
     rtc_network_summary_by_scan.erase(out.index.data);
+    rtc_impulsive_summary_by_scan.erase(out.index.data);
 
     if (network_step_mask.enabled) {
         capture_rtc_diagnostics(out, calib, true);
@@ -1164,6 +1238,100 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         return std::make_pair(best, best_idx);
     };
 
+    struct ImpulsiveMetrics {
+        double peak_abs_z = std::numeric_limits<double>::quiet_NaN();
+        int peak_abs_sample = -2147483647;
+        double peak_delta_abs_z = std::numeric_limits<double>::quiet_NaN();
+        int peak_delta_abs_sample = -2147483647;
+        int near_abs_count = 0;
+        int near_delta_count = 0;
+        double event_score = std::numeric_limits<double>::quiet_NaN();
+        int event_sample = -2147483647;
+        int event_kind = -2147483647;
+    };
+
+    auto impulsive_metric = [&](const Eigen::VectorXd &x,
+                                const Eigen::Array<bool, Eigen::Dynamic, 1> &valid) {
+        ImpulsiveMetrics out;
+        const Eigen::Index n = x.size();
+        if (n < 4) {
+            return out;
+        }
+
+        auto [center, scale] = robust_center_scale(x, valid);
+        if (std::isfinite(center) && std::isfinite(scale) && scale > 0.0) {
+            for (Eigen::Index i = 0; i < n; ++i) {
+                if (!valid(i) || !std::isfinite(x(i))) {
+                    continue;
+                }
+                const double abs_z = std::abs((x(i) - center) / scale);
+                if (std::isfinite(abs_z) && abs_z >= impulsive_capture.near_event_z) {
+                    ++out.near_abs_count;
+                }
+                if (!std::isfinite(out.peak_abs_z) || abs_z > out.peak_abs_z) {
+                    out.peak_abs_z = abs_z;
+                    out.peak_abs_sample = static_cast<int>(i);
+                }
+            }
+        }
+
+        std::vector<double> deltas;
+        deltas.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(n - 1, 0)));
+        for (Eigen::Index i = 0; i < n - 1; ++i) {
+            if (valid(i) && valid(i + 1) && std::isfinite(x(i)) && std::isfinite(x(i + 1))) {
+                deltas.push_back(x(i + 1) - x(i));
+            }
+        }
+        if (deltas.size() >= 4) {
+            const double delta_med = median_of(deltas);
+            std::vector<double> delta_abs_dev;
+            delta_abs_dev.reserve(deltas.size());
+            for (const double v : deltas) {
+                delta_abs_dev.push_back(std::abs(v - delta_med));
+            }
+            double delta_sigma = median_of(delta_abs_dev);
+            if (std::isfinite(delta_sigma) && delta_sigma > 0.0) {
+                delta_sigma *= 1.4826;
+            }
+            else if (deltas.size() >= 2) {
+                const double mean =
+                    std::accumulate(deltas.begin(), deltas.end(), 0.0) / static_cast<double>(deltas.size());
+                double ss = 0.0;
+                for (const double v : deltas) {
+                    const double dv = v - mean;
+                    ss += dv * dv;
+                }
+                delta_sigma = std::sqrt(ss / static_cast<double>(deltas.size() - 1));
+            }
+            if (std::isfinite(delta_sigma) && delta_sigma > 0.0) {
+                for (Eigen::Index i = 0; i < n - 1; ++i) {
+                    if (!(valid(i) && valid(i + 1)) || !std::isfinite(x(i)) || !std::isfinite(x(i + 1))) {
+                        continue;
+                    }
+                    const double delta = x(i + 1) - x(i);
+                    const double abs_z = std::abs((delta - delta_med) / delta_sigma);
+                    if (std::isfinite(abs_z) && abs_z >= impulsive_capture.near_event_z) {
+                        ++out.near_delta_count;
+                    }
+                    if (!std::isfinite(out.peak_delta_abs_z) || abs_z > out.peak_delta_abs_z) {
+                        out.peak_delta_abs_z = abs_z;
+                        out.peak_delta_abs_sample = static_cast<int>(i + 1);
+                    }
+                }
+            }
+        }
+
+        if (std::isfinite(out.peak_abs_z) || std::isfinite(out.peak_delta_abs_z)) {
+            const bool use_delta =
+                std::isfinite(out.peak_delta_abs_z) &&
+                (!std::isfinite(out.peak_abs_z) || out.peak_delta_abs_z > out.peak_abs_z);
+            out.event_score = use_delta ? out.peak_delta_abs_z : out.peak_abs_z;
+            out.event_sample = use_delta ? out.peak_delta_abs_sample : out.peak_abs_sample;
+            out.event_kind = use_delta ? 1 : 0;
+        }
+        return out;
+    };
+
     auto dominant_cluster = [&](std::vector<double> values, double tol) {
         values.erase(
             std::remove_if(values.begin(), values.end(), [](double v) { return !std::isfinite(v); }),
@@ -1236,12 +1404,104 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             static_cast<double>(std::max<Eigen::Index>(n_pts, 1));
         std::tie(row.final_region_count, row.final_region_len_median, row.final_region_len_max) =
             region_stats(in.flags.data.col(det).array());
+        const auto impulsive = impulsive_metric(in.scans.data.col(det), valid);
+        row.impulsive_peak_abs_z = impulsive.peak_abs_z;
+        row.impulsive_peak_abs_sample = impulsive.peak_abs_sample;
+        row.impulsive_peak_delta_abs_z = impulsive.peak_delta_abs_z;
+        row.impulsive_peak_delta_abs_sample = impulsive.peak_delta_abs_sample;
+        row.impulsive_near_abs_count = impulsive.near_abs_count;
+        row.impulsive_near_delta_count = impulsive.near_delta_count;
+        row.impulsive_event_score = impulsive.event_score;
+        row.impulsive_event_sample = impulsive.event_sample;
+        row.impulsive_event_kind = impulsive.event_kind;
         if (need_step_metrics) {
             std::tie(row.step_score, row.step_sample) =
                 step_metric(in.scans.data.col(det), valid, step_window);
         }
     }
     rtc_detector_summary_by_scan[scan_id] = det_summary;
+
+    if (impulsive_capture.enabled) {
+        const Eigen::Index snippet_half_width = std::max<Eigen::Index>(
+            0, static_cast<Eigen::Index>(std::llround(impulsive_capture.snippet_half_width_sec /
+                                                      std::max(dt_for_step, 1.0e-6))));
+        const Eigen::Index snippet_len = 2 * snippet_half_width + 1;
+        std::map<Eigen::Index, std::vector<RTCImpulsiveSnippetSummary>> impulsive_by_network;
+        auto grp_limits = get_grouping("nw", calib, n_dets);
+        for (const auto &[nw, bounds] : grp_limits) {
+            const auto start = std::get<0>(bounds);
+            const auto end = std::get<1>(bounds);
+            std::vector<RTCImpulsiveSnippetSummary> candidates;
+            candidates.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(end - start, 0)));
+            for (Eigen::Index det = start; det < end; ++det) {
+                const auto &row = det_summary[static_cast<std::size_t>(det)];
+                const double good_frac = 1.0 - row.final_flagged_frac;
+                if (!std::isfinite(good_frac) || good_frac < impulsive_capture.min_good_frac) {
+                    continue;
+                }
+                if (!std::isfinite(row.impulsive_event_score) ||
+                    row.impulsive_event_score < impulsive_capture.min_event_z ||
+                    row.impulsive_event_sample == fill_int) {
+                    continue;
+                }
+
+                RTCImpulsiveSnippetSummary slot;
+                slot.det = static_cast<int>(det);
+                slot.event_sample = row.impulsive_event_sample;
+                slot.event_kind = row.impulsive_event_kind;
+                slot.event_score = row.impulsive_event_score;
+                slot.peak_abs_z = row.impulsive_peak_abs_z;
+                slot.peak_delta_abs_z = row.impulsive_peak_delta_abs_z;
+                slot.added_flagged_frac = row.added_flagged_frac;
+                slot.raw_exceed_count = row.raw_exceed_count;
+                slot.delta_spike_count = row.delta_spike_count;
+                slot.snippet_z.assign(static_cast<std::size_t>(std::max<Eigen::Index>(snippet_len, 0)), nan);
+                slot.snippet_flag.assign(static_cast<std::size_t>(std::max<Eigen::Index>(snippet_len, 0)), fill_int);
+
+                Eigen::Array<bool, Eigen::Dynamic, 1> valid(n_pts);
+                for (Eigen::Index i = 0; i < n_pts; ++i) {
+                    valid(i) = std::isfinite(in.scans.data(i, det)) && !in.flags.data(i, det);
+                }
+                auto [center, scale] = robust_center_scale(in.scans.data.col(det), valid);
+                if (!(std::isfinite(center) && std::isfinite(scale) && scale > 0.0)) {
+                    center = 0.0;
+                    scale = nan;
+                }
+                for (Eigen::Index k = 0; k < snippet_len; ++k) {
+                    const Eigen::Index sample = static_cast<Eigen::Index>(slot.event_sample) + k - snippet_half_width;
+                    if (sample < 0 || sample >= n_pts) {
+                        continue;
+                    }
+                    slot.snippet_flag[static_cast<std::size_t>(k)] = in.flags.data(sample, det) ? 1 : 0;
+                    const double v = in.scans.data(sample, det);
+                    if (std::isfinite(v) && std::isfinite(scale) && scale > 0.0) {
+                        slot.snippet_z[static_cast<std::size_t>(k)] = (v - center) / scale;
+                    }
+                }
+
+                candidates.push_back(std::move(slot));
+            }
+
+            std::sort(candidates.begin(), candidates.end(), [](const auto &a, const auto &b) {
+                if (std::isfinite(a.event_score) && std::isfinite(b.event_score) && a.event_score != b.event_score) {
+                    return a.event_score > b.event_score;
+                }
+                if (std::isfinite(a.peak_delta_abs_z) && std::isfinite(b.peak_delta_abs_z) &&
+                    a.peak_delta_abs_z != b.peak_delta_abs_z) {
+                    return a.peak_delta_abs_z > b.peak_delta_abs_z;
+                }
+                return a.det < b.det;
+            });
+            if (static_cast<Eigen::Index>(candidates.size()) > impulsive_capture.max_events_per_network) {
+                candidates.resize(static_cast<std::size_t>(impulsive_capture.max_events_per_network));
+            }
+            impulsive_by_network[nw] = std::move(candidates);
+        }
+        rtc_impulsive_summary_by_scan[scan_id] = std::move(impulsive_by_network);
+    }
+    else {
+        rtc_impulsive_summary_by_scan.erase(scan_id);
+    }
 
     if (need_step_metrics) {
         std::vector<RTCNetworkDiagSummary> nw_summary;
@@ -1589,6 +1849,7 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
 
         const auto det_diag_it = rtc_detector_summary_by_scan.find(in.index.data);
         const auto nw_diag_it = rtc_network_summary_by_scan.find(in.index.data);
+        const auto impulsive_it = rtc_impulsive_summary_by_scan.find(in.index.data);
 
         NcDim n_dets_dim = fo.getDim("n_dets");
         if (!n_dets_dim.isNull()) {
@@ -1660,6 +1921,24 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
                              [](const auto &row) { return row.step_score; });
             write_det_int("rtc_step_sample",
                           [](const auto &row) { return row.step_sample; });
+            write_det_double("rtc_impulsive_peak_abs_z",
+                             [](const auto &row) { return row.impulsive_peak_abs_z; });
+            write_det_int("rtc_impulsive_peak_abs_sample",
+                          [](const auto &row) { return row.impulsive_peak_abs_sample; });
+            write_det_double("rtc_impulsive_peak_delta_abs_z",
+                             [](const auto &row) { return row.impulsive_peak_delta_abs_z; });
+            write_det_int("rtc_impulsive_peak_delta_abs_sample",
+                          [](const auto &row) { return row.impulsive_peak_delta_abs_sample; });
+            write_det_int("rtc_impulsive_near_abs_count",
+                          [](const auto &row) { return row.impulsive_near_abs_count; });
+            write_det_int("rtc_impulsive_near_delta_count",
+                          [](const auto &row) { return row.impulsive_near_delta_count; });
+            write_det_double("rtc_impulsive_event_score",
+                             [](const auto &row) { return row.impulsive_event_score; });
+            write_det_int("rtc_impulsive_event_sample",
+                          [](const auto &row) { return row.impulsive_event_sample; });
+            write_det_int("rtc_impulsive_event_kind",
+                          [](const auto &row) { return row.impulsive_event_kind; });
         }
 
         NcVar nw_ids_v = fo.getVar("rtc_diag_network_ids");
@@ -1749,6 +2028,147 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
                              [](const auto &row) { return row.step_mask_n_det_samples_flagged; });
                 write_nw_double("rtc_network_step_mask_flagged_fraction",
                                 [](const auto &row) { return row.step_mask_flagged_fraction; });
+
+                NcDim n_slots_dim = fo.getDim("n_rtc_impulsive_slots");
+                NcDim n_snip_dim = fo.getDim("n_rtc_impulsive_samples");
+                if (!n_slots_dim.isNull() && !n_snip_dim.isNull()) {
+                    const auto n_slots = n_slots_dim.getSize();
+                    const auto n_snip = n_snip_dim.getSize();
+                    std::vector<std::size_t> start_scan_nw_slot = {scan_row, 0, 0};
+                    std::vector<std::size_t> size_scan_nw_slot = {1, n_nws, n_slots};
+                    std::vector<std::size_t> start_scan_nw_slot_snip = {scan_row, 0, 0, 0};
+                    std::vector<std::size_t> size_scan_nw_slot_snip = {1, n_nws, n_slots, n_snip};
+                    const auto total_slots = n_nws * n_slots;
+                    const auto total_snip = total_slots * n_snip;
+
+                    auto imp_slot_int_values = [&](auto getter) {
+                        std::vector<int> values(total_slots, fill_int);
+                        if (impulsive_it != rtc_impulsive_summary_by_scan.end()) {
+                            for (const auto &[nw, slots] : impulsive_it->second) {
+                                const auto it = nw_to_index.find(nw);
+                                if (it == nw_to_index.end() || it->second >= n_nws) {
+                                    continue;
+                                }
+                                const auto nw_index = it->second;
+                                const auto n_copy = std::min<std::size_t>(n_slots, slots.size());
+                                for (std::size_t slot = 0; slot < n_copy; ++slot) {
+                                    values[nw_index * n_slots + slot] = getter(slots[slot]);
+                                }
+                            }
+                        }
+                        return values;
+                    };
+                    auto imp_slot_double_values = [&](auto getter) {
+                        std::vector<double> values(total_slots, fill_double);
+                        if (impulsive_it != rtc_impulsive_summary_by_scan.end()) {
+                            for (const auto &[nw, slots] : impulsive_it->second) {
+                                const auto it = nw_to_index.find(nw);
+                                if (it == nw_to_index.end() || it->second >= n_nws) {
+                                    continue;
+                                }
+                                const auto nw_index = it->second;
+                                const auto n_copy = std::min<std::size_t>(n_slots, slots.size());
+                                for (std::size_t slot = 0; slot < n_copy; ++slot) {
+                                    values[nw_index * n_slots + slot] = getter(slots[slot]);
+                                }
+                            }
+                        }
+                        return values;
+                    };
+                    auto imp_snip_double_values = [&](auto getter) {
+                        std::vector<double> values(total_snip, fill_double);
+                        if (impulsive_it != rtc_impulsive_summary_by_scan.end()) {
+                            for (const auto &[nw, slots] : impulsive_it->second) {
+                                const auto it = nw_to_index.find(nw);
+                                if (it == nw_to_index.end() || it->second >= n_nws) {
+                                    continue;
+                                }
+                                const auto nw_index = it->second;
+                                const auto n_copy = std::min<std::size_t>(n_slots, slots.size());
+                                for (std::size_t slot = 0; slot < n_copy; ++slot) {
+                                    const auto &snippet = getter(slots[slot]);
+                                    const auto n_copy_snip = std::min<std::size_t>(n_snip, snippet.size());
+                                    for (std::size_t k = 0; k < n_copy_snip; ++k) {
+                                        values[(nw_index * n_slots + slot) * n_snip + k] = snippet[k];
+                                    }
+                                }
+                            }
+                        }
+                        return values;
+                    };
+                    auto imp_snip_int_values = [&](auto getter) {
+                        std::vector<int> values(total_snip, fill_int);
+                        if (impulsive_it != rtc_impulsive_summary_by_scan.end()) {
+                            for (const auto &[nw, slots] : impulsive_it->second) {
+                                const auto it = nw_to_index.find(nw);
+                                if (it == nw_to_index.end() || it->second >= n_nws) {
+                                    continue;
+                                }
+                                const auto nw_index = it->second;
+                                const auto n_copy = std::min<std::size_t>(n_slots, slots.size());
+                                for (std::size_t slot = 0; slot < n_copy; ++slot) {
+                                    const auto &snippet = getter(slots[slot]);
+                                    const auto n_copy_snip = std::min<std::size_t>(n_snip, snippet.size());
+                                    for (std::size_t k = 0; k < n_copy_snip; ++k) {
+                                        values[(nw_index * n_slots + slot) * n_snip + k] = snippet[k];
+                                    }
+                                }
+                            }
+                        }
+                        return values;
+                    };
+                    auto write_imp_slot_int = [&](const std::string &name, auto getter) {
+                        NcVar v = fo.getVar(name);
+                        if (!v.isNull()) {
+                            auto values = imp_slot_int_values(getter);
+                            v.putVar(start_scan_nw_slot, size_scan_nw_slot, values.data());
+                        }
+                    };
+                    auto write_imp_slot_double = [&](const std::string &name, auto getter) {
+                        NcVar v = fo.getVar(name);
+                        if (!v.isNull()) {
+                            auto values = imp_slot_double_values(getter);
+                            v.putVar(start_scan_nw_slot, size_scan_nw_slot, values.data());
+                        }
+                    };
+                    auto write_imp_snip_double = [&](const std::string &name, auto getter) {
+                        NcVar v = fo.getVar(name);
+                        if (!v.isNull()) {
+                            auto values = imp_snip_double_values(getter);
+                            v.putVar(start_scan_nw_slot_snip, size_scan_nw_slot_snip, values.data());
+                        }
+                    };
+                    auto write_imp_snip_int = [&](const std::string &name, auto getter) {
+                        NcVar v = fo.getVar(name);
+                        if (!v.isNull()) {
+                            auto values = imp_snip_int_values(getter);
+                            v.putVar(start_scan_nw_slot_snip, size_scan_nw_slot_snip, values.data());
+                        }
+                    };
+
+                    write_imp_slot_int("rtc_impulsive_slot_det_index",
+                                       [](const auto &slot) { return slot.det; });
+                    write_imp_slot_int("rtc_impulsive_slot_event_sample",
+                                       [](const auto &slot) { return slot.event_sample; });
+                    write_imp_slot_int("rtc_impulsive_slot_event_kind",
+                                       [](const auto &slot) { return slot.event_kind; });
+                    write_imp_slot_double("rtc_impulsive_slot_event_score",
+                                          [](const auto &slot) { return slot.event_score; });
+                    write_imp_slot_double("rtc_impulsive_slot_peak_abs_z",
+                                          [](const auto &slot) { return slot.peak_abs_z; });
+                    write_imp_slot_double("rtc_impulsive_slot_peak_delta_abs_z",
+                                          [](const auto &slot) { return slot.peak_delta_abs_z; });
+                    write_imp_slot_double("rtc_impulsive_slot_added_flagged_frac",
+                                          [](const auto &slot) { return slot.added_flagged_frac; });
+                    write_imp_slot_int("rtc_impulsive_slot_raw_exceed_count",
+                                       [](const auto &slot) { return slot.raw_exceed_count; });
+                    write_imp_slot_int("rtc_impulsive_slot_delta_spike_count",
+                                       [](const auto &slot) { return slot.delta_spike_count; });
+                    write_imp_snip_double("rtc_impulsive_slot_snippet_z",
+                                          [](const auto &slot) -> const auto & { return slot.snippet_z; });
+                    write_imp_snip_int("rtc_impulsive_slot_snippet_flag",
+                                       [](const auto &slot) -> const auto & { return slot.snippet_flag; });
+                }
             }
         }
 
@@ -1757,6 +2177,9 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         }
         if (nw_diag_it != rtc_network_summary_by_scan.end()) {
             rtc_network_summary_by_scan.erase(nw_diag_it);
+        }
+        if (impulsive_it != rtc_impulsive_summary_by_scan.end()) {
+            rtc_impulsive_summary_by_scan.erase(impulsive_it);
         }
 
         // sync file to make sure it gets updated
