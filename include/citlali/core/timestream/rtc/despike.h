@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
 #include <random>
 #include <vector>
 #include <Eigen/Core>
@@ -14,6 +15,17 @@
 #include <citlali/core/utils/utils.h>
 
 namespace timestream {
+
+struct DespikeDetectorDiagSummary {
+    int raw_exceed_count = 0;
+    int delta_spike_count = 0;
+    double added_flagged_frac = std::numeric_limits<double>::quiet_NaN();
+    int added_region_count = 0;
+    double added_region_len_median = std::numeric_limits<double>::quiet_NaN();
+    int added_region_len_max = 0;
+    double max_raw_abs_z = std::numeric_limits<double>::quiet_NaN();
+    double max_delta_abs_z = std::numeric_limits<double>::quiet_NaN();
+};
 
 class Despiker {
 public:
@@ -40,6 +52,9 @@ public:
 
     // use all detectors in replacing flagged scans
     bool use_all_det = false;
+
+    // scan-level detector summaries from the most recent despike call
+    std::vector<DespikeDetectorDiagSummary> last_detector_diag;
 
     // the main despiking routine
     template <typename DerivedA, typename DerivedB, typename apt_t>
@@ -213,6 +228,8 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
     Eigen::Index n_pts = scans.rows();
     Eigen::Index n_dets = scans.cols();
 
+    last_detector_diag.assign(static_cast<std::size_t>(n_dets), DespikeDetectorDiagSummary{});
+
     if (n_pts < 3) {
         logger->warn("despike skipped: too few samples in scan (n_pts={})", n_pts);
         return;
@@ -220,6 +237,7 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
 
     // loop through detectors
     for (Eigen::Index det=0; det<n_dets; det++) {
+        auto &diag = last_detector_diag[static_cast<std::size_t>(det)];
         // only run if detector is good
         if (apt["flag"](det)==0) {
             // get detector's flags
@@ -243,6 +261,10 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                 }
                 double raw_cutoff = min_spike_sigma * sigma;
                 raw_flags = (abs_dev.array() > raw_cutoff).select(1, raw_flags);
+                diag.raw_exceed_count = static_cast<int>((raw_flags.array() == 1).count());
+                if (std::isfinite(sigma) && sigma > 0.) {
+                    diag.max_raw_abs_z = abs_dev.maxCoeff() / sigma;
+                }
             }
 
             // array of delta's between adjacent points
@@ -256,10 +278,14 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
             }
 
             // minimum amplitude of spike
-            double cutoff = min_spike_sigma * engine_utils::calc_std_dev(delta);
+            const double delta_sigma = engine_utils::calc_std_dev(delta);
+            double cutoff = min_spike_sigma * delta_sigma;
 
             // mean subtracted delta array
             Eigen::VectorXd diff = abs(delta.array() - delta.mean());
+            if (std::isfinite(delta_sigma) && delta_sigma > 0.) {
+                diag.max_delta_abs_z = diff.maxCoeff() / delta_sigma;
+            }
 
             // run the spike finder,
             spike_finder(det_flags, delta, diff, n_spikes, cutoff);
@@ -321,6 +347,7 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                     i = i + size_loop - 1;
                 }
             }
+            diag.delta_spike_count = n_spikes;
 
             // now loop through if spikes were found
             if (n_spikes > 0) {
@@ -453,6 +480,48 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                             }
                         }
                     }
+                }
+            }
+
+            Eigen::ArrayXi added_flags =
+                (det_flags.array().template cast<int>() * (base_flags.array() == 0).template cast<int>());
+            diag.added_flagged_frac =
+                static_cast<double>(added_flags.sum()) / static_cast<double>(n_pts);
+            {
+                std::vector<double> run_lengths;
+                run_lengths.reserve(static_cast<std::size_t>(n_pts));
+                int max_run = 0;
+                Eigen::Index i = 0;
+                while (i < n_pts) {
+                    if (added_flags(i) != 0) {
+                        Eigen::Index j = i;
+                        while (j < n_pts && added_flags(j) != 0) {
+                            ++j;
+                        }
+                        const int run_len = static_cast<int>(j - i);
+                        run_lengths.push_back(static_cast<double>(run_len));
+                        max_run = std::max(max_run, run_len);
+                        i = j;
+                    }
+                    else {
+                        ++i;
+                    }
+                }
+                diag.added_region_count = static_cast<int>(run_lengths.size());
+                diag.added_region_len_max = max_run;
+                if (!run_lengths.empty()) {
+                    const auto mid = run_lengths.size() / 2;
+                    std::nth_element(run_lengths.begin(),
+                                     run_lengths.begin() + static_cast<std::ptrdiff_t>(mid),
+                                     run_lengths.end());
+                    double med = run_lengths[mid];
+                    if ((run_lengths.size() % 2) == 0) {
+                        auto max_it = std::max_element(
+                            run_lengths.begin(),
+                            run_lengths.begin() + static_cast<std::ptrdiff_t>(mid));
+                        med = 0.5 * (med + *max_it);
+                    }
+                    diag.added_region_len_median = med;
                 }
             }
 

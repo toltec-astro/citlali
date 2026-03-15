@@ -2133,6 +2133,107 @@ void Engine::create_tod_files() {
         offsets_v.setChunking(chunkMode, chunkSizes);
     }
 
+    if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {
+        const int fill_int = -2147483647;
+        const double fill_double = std::numeric_limits<double>::quiet_NaN();
+        std::vector<netCDF::NcDim> rtc_det_dims = {n_scans_dim, n_dets_dim};
+
+        auto add_rtc_det_double = [&](const std::string &name, const std::string &comment) {
+            netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, rtc_det_dims);
+            v.putAtt("units", "N/A");
+            v.putAtt("comment", comment);
+            std::vector<double> init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
+                                     static_cast<std::size_t>(calib.n_dets), fill_double);
+            v.putVar(init.data());
+        };
+        auto add_rtc_det_int = [&](const std::string &name, const std::string &comment) {
+            netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, rtc_det_dims);
+            v.putAtt("units", "N/A");
+            v.putAtt("comment", comment);
+            std::vector<int> init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
+                                  static_cast<std::size_t>(calib.n_dets), fill_int);
+            v.putVar(init.data());
+        };
+
+        add_rtc_det_int("rtc_despike_raw_exceed_count",
+                        "per-detector count of raw-sample MAD-threshold exceedances before despike expansion");
+        add_rtc_det_int("rtc_despike_delta_spike_count",
+                        "per-detector count of delta-domain spikes identified by the RTC despiker");
+        add_rtc_det_double("rtc_despike_added_flagged_frac",
+                           "fraction of samples newly flagged by RTC despiking, excluding pre-existing flags");
+        add_rtc_det_int("rtc_despike_added_region_count",
+                        "count of newly flagged contiguous sample regions added by RTC despiking");
+        add_rtc_det_double("rtc_despike_added_region_len_median",
+                           "median length of newly flagged contiguous sample regions added by RTC despiking");
+        add_rtc_det_int("rtc_despike_added_region_len_max",
+                        "maximum length of newly flagged contiguous sample regions added by RTC despiking");
+        add_rtc_det_double("rtc_despike_max_raw_abs_z",
+                           "maximum absolute raw-sample deviation in robust-sigma units before despiking");
+        add_rtc_det_double("rtc_despike_max_delta_abs_z",
+                           "maximum absolute adjacent-sample delta deviation in sigma units before despiking");
+        add_rtc_det_double("rtc_final_flagged_frac",
+                           "final per-detector flagged-sample fraction in the RTC product actually written");
+        add_rtc_det_int("rtc_final_region_count",
+                        "final count of flagged contiguous sample regions in the RTC product actually written");
+        add_rtc_det_double("rtc_final_region_len_median",
+                           "final median flagged-region length in the RTC product actually written");
+        add_rtc_det_int("rtc_final_region_len_max",
+                        "final maximum flagged-region length in the RTC product actually written");
+        add_rtc_det_double("rtc_step_score",
+                           "per-detector step-like pre/post window jump score on the RTC output");
+        add_rtc_det_int("rtc_step_sample",
+                        "sample index of the strongest per-detector RTC step-like jump; -2147483647 means unavailable");
+
+        netCDF::NcDim n_nws_rtcdiag_dim = fo.addDim("n_nws_rtcdiag", calib.n_nws);
+        netCDF::NcVar nw_ids_v = fo.addVar("rtc_diag_network_ids", netCDF::ncInt, n_nws_rtcdiag_dim);
+        nw_ids_v.putAtt("units", "N/A");
+        nw_ids_v.putAtt("comment", "network IDs corresponding to n_nws_rtcdiag axis");
+        std::vector<int> nw_ids(static_cast<std::size_t>(calib.n_nws), fill_int);
+        for (Eigen::Index i = 0; i < calib.n_nws; ++i) {
+            nw_ids[static_cast<std::size_t>(i)] = static_cast<int>(calib.nws(i));
+        }
+        nw_ids_v.putVar(nw_ids.data());
+
+        std::vector<netCDF::NcDim> rtc_nw_dims = {n_scans_dim, n_nws_rtcdiag_dim};
+        auto add_rtc_nw_double = [&](const std::string &name, const std::string &comment) {
+            netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, rtc_nw_dims);
+            v.putAtt("units", "N/A");
+            v.putAtt("comment", comment);
+            std::vector<double> init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
+                                     static_cast<std::size_t>(calib.n_nws), fill_double);
+            v.putVar(init.data());
+        };
+        auto add_rtc_nw_int = [&](const std::string &name, const std::string &comment) {
+            netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, rtc_nw_dims);
+            v.putAtt("units", "N/A");
+            v.putAtt("comment", comment);
+            std::vector<int> init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
+                                  static_cast<std::size_t>(calib.n_nws), fill_int);
+            v.putVar(init.data());
+        };
+
+        add_rtc_nw_int("rtc_network_n_det_input",
+                       "input detector count in each RTC network block");
+        add_rtc_nw_int("rtc_network_n_det_used",
+                       "detectors with >= 80% valid samples and finite robust scale used for RTC diagnostics");
+        add_rtc_nw_double("rtc_network_step_score_median",
+                          "median detector step score within each RTC network block");
+        add_rtc_nw_double("rtc_network_step_score_max",
+                          "maximum detector step score within each RTC network block");
+        add_rtc_nw_double("rtc_network_step_det_frac",
+                          "fraction of diagnostic-used detectors with strong step-like score in each RTC network block");
+        add_rtc_nw_double("rtc_network_step_alignment_frac",
+                          "fraction of strong-step detectors aligned in the dominant step-time cluster");
+        add_rtc_nw_int("rtc_network_step_dominant_sample",
+                       "dominant aligned step sample within each RTC network block; -2147483647 means unavailable");
+        add_rtc_nw_double("rtc_network_cm_low_mid_ratio",
+                          "low-band to mid-band common-mode power ratio for each RTC network block");
+        add_rtc_nw_double("rtc_network_cm_peak_freq_hz",
+                          "frequency of the strongest common-mode spectral peak for each RTC network block");
+        add_rtc_nw_double("rtc_network_cm_peak_prominence",
+                          "prominence of the strongest common-mode spectral peak for each RTC network block");
+    }
+
     // add weights
     if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
         std::vector<netCDF::NcDim> weight_dims = {n_scans_dim, n_dets_dim};

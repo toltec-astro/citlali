@@ -2,7 +2,13 @@
 
 #include <tula/algorithm/ei_stats.h>
 #include <Eigen/QR>
+#include <unsupported/Eigen/FFT>
 #include <cmath>
+#include <complex>
+#include <limits>
+#include <map>
+#include <numeric>
+#include <vector>
 
 #include <citlali/core/timestream/timestream.h>
 
@@ -52,6 +58,33 @@ public:
     };
     AltAzDestripeOptions altaz_destripe;
 
+    struct RTCDetectorDiagSummary : DespikeDetectorDiagSummary {
+        Eigen::Index det = -1;
+        double final_flagged_frac = std::numeric_limits<double>::quiet_NaN();
+        int final_region_count = 0;
+        double final_region_len_median = std::numeric_limits<double>::quiet_NaN();
+        int final_region_len_max = 0;
+        double step_score = std::numeric_limits<double>::quiet_NaN();
+        int step_sample = -2147483647;
+    };
+
+    struct RTCNetworkDiagSummary {
+        Eigen::Index nw = -1;
+        Eigen::Index n_det_input = 0;
+        Eigen::Index n_det_used = 0;
+        double median_step_score = std::numeric_limits<double>::quiet_NaN();
+        double max_step_score = std::numeric_limits<double>::quiet_NaN();
+        double step_det_frac = std::numeric_limits<double>::quiet_NaN();
+        double step_alignment_frac = std::numeric_limits<double>::quiet_NaN();
+        int dominant_step_sample = -2147483647;
+        double cm_low_mid_ratio = std::numeric_limits<double>::quiet_NaN();
+        double cm_peak_freq_Hz = std::numeric_limits<double>::quiet_NaN();
+        double cm_peak_prominence = std::numeric_limits<double>::quiet_NaN();
+    };
+
+    std::map<Eigen::Index, std::vector<RTCDetectorDiagSummary>> rtc_detector_summary_by_scan;
+    std::map<Eigen::Index, std::vector<RTCNetworkDiagSummary>> rtc_network_summary_by_scan;
+
     // get config file
     template <typename config_t>
     void get_config(config_t &, std::vector<std::vector<std::string>> &, std::vector<std::vector<std::string>> &);
@@ -72,6 +105,10 @@ public:
     // remove flagged detectors
     template <typename apt_t>
     void remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, apt_t &);
+
+    // summarize RTC diagnostics for the written output chunk
+    template <typename calib_t>
+    void capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &);
 
     // append time chunk to tod netcdf file
     template <typename calib_t, typename pointing_offset_t>
@@ -811,6 +848,19 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     // copy noise
     out.noise.data = in.noise.data;
 
+    // preserve per-detector despike summaries for the final RTC output write.
+    std::vector<RTCDetectorDiagSummary> rtc_diag_seed(static_cast<std::size_t>(out.scans.data.cols()));
+    for (Eigen::Index det = 0; det < out.scans.data.cols(); ++det) {
+        auto &row = rtc_diag_seed[static_cast<std::size_t>(det)];
+        row.det = det;
+        if (det < static_cast<Eigen::Index>(despiker.last_detector_diag.size())) {
+            static_cast<DespikeDetectorDiagSummary &>(row) =
+                despiker.last_detector_diag[static_cast<std::size_t>(det)];
+        }
+    }
+    rtc_detector_summary_by_scan[out.index.data] = std::move(rtc_diag_seed);
+    rtc_network_summary_by_scan.erase(out.index.data);
+
     // empty rtcdata
     in.scans.data.resize(0,0);
     in.flags.data.resize(0,0);
@@ -850,6 +900,383 @@ void RTCProc::remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
 
     logger->info("removed {} detectors flagged in APT table ({}%)",n_flagged,
                 (static_cast<float>(n_flagged)/static_cast<float>(n_dets))*100);
+}
+
+template <typename calib_t>
+void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib) {
+    const Eigen::Index scan_id = in.index.data;
+    const Eigen::Index n_pts = in.scans.data.rows();
+    const Eigen::Index n_dets = in.scans.data.cols();
+    const double nan = std::numeric_limits<double>::quiet_NaN();
+    const int fill_int = -2147483647;
+
+    auto median_of = [&](std::vector<double> values) -> double {
+        values.erase(
+            std::remove_if(values.begin(), values.end(), [](double v) { return !std::isfinite(v); }),
+            values.end());
+        if (values.empty()) {
+            return nan;
+        }
+        const auto mid = values.size() / 2;
+        std::nth_element(values.begin(),
+                         values.begin() + static_cast<std::ptrdiff_t>(mid),
+                         values.end());
+        double med = values[mid];
+        if ((values.size() % 2) == 0) {
+            auto lo = std::max_element(values.begin(),
+                                       values.begin() + static_cast<std::ptrdiff_t>(mid));
+            med = 0.5 * (med + *lo);
+        }
+        return med;
+    };
+
+    auto infer_dt_sec = [&]() -> double {
+        for (const auto *name : {"TelTime", "TelUTC", "PpsTime"}) {
+            const auto it = in.tel_data.data.find(name);
+            if (it == in.tel_data.data.end()) {
+                continue;
+            }
+            const auto &t = it->second;
+            std::vector<double> dt;
+            dt.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(t.size() - 1, 0)));
+            for (Eigen::Index i = 1; i < t.size(); ++i) {
+                const double diff = t(i) - t(i - 1);
+                if (std::isfinite(diff) && diff > 0.0) {
+                    dt.push_back(diff);
+                }
+            }
+            const double med = median_of(std::move(dt));
+            if (std::isfinite(med) && med > 0.0) {
+                return med;
+            }
+        }
+        return 1.0;
+    };
+
+    auto robust_center_scale = [&](const Eigen::VectorXd &x,
+                                   const Eigen::Array<bool, Eigen::Dynamic, 1> &valid) {
+        std::vector<double> good;
+        good.reserve(static_cast<std::size_t>(x.size()));
+        for (Eigen::Index i = 0; i < x.size(); ++i) {
+            if (valid(i) && std::isfinite(x(i))) {
+                good.push_back(x(i));
+            }
+        }
+        if (good.size() < 8) {
+            return std::make_pair(nan, nan);
+        }
+        const double med = median_of(good);
+        std::vector<double> abs_dev;
+        abs_dev.reserve(good.size());
+        for (const double v : good) {
+            abs_dev.push_back(std::abs(v - med));
+        }
+        double sigma = median_of(abs_dev);
+        if (std::isfinite(sigma) && sigma > 0.0) {
+            sigma *= 1.4826;
+        }
+        else if (good.size() >= 2) {
+            double mean = std::accumulate(good.begin(), good.end(), 0.0) /
+                          static_cast<double>(good.size());
+            double ss = 0.0;
+            for (const double v : good) {
+                const double dv = v - mean;
+                ss += dv * dv;
+            }
+            sigma = std::sqrt(ss / static_cast<double>(good.size() - 1));
+        }
+        if (!std::isfinite(sigma) || sigma <= 0.0) {
+            sigma = nan;
+        }
+        return std::make_pair(med, sigma);
+    };
+
+    auto region_stats = [&](const auto &mask_expr) {
+        Eigen::Array<bool, Eigen::Dynamic, 1> mask = mask_expr;
+        std::vector<double> runs;
+        runs.reserve(static_cast<std::size_t>(mask.size()));
+        int max_run = 0;
+        Eigen::Index i = 0;
+        while (i < mask.size()) {
+            if (mask(i)) {
+                Eigen::Index j = i;
+                while (j < mask.size() && mask(j)) {
+                    ++j;
+                }
+                const int run_len = static_cast<int>(j - i);
+                runs.push_back(static_cast<double>(run_len));
+                max_run = std::max(max_run, run_len);
+                i = j;
+            }
+            else {
+                ++i;
+            }
+        }
+        return std::make_tuple(static_cast<int>(runs.size()), median_of(std::move(runs)), max_run);
+    };
+
+    auto step_metric = [&](const Eigen::VectorXd &x,
+                           const Eigen::Array<bool, Eigen::Dynamic, 1> &valid,
+                           Eigen::Index window) {
+        const Eigen::Index n = x.size();
+        if (n < 16) {
+            return std::make_pair(nan, fill_int);
+        }
+        auto [center, scale] = robust_center_scale(x, valid);
+        if (!std::isfinite(center) || !std::isfinite(scale) || scale <= 0.0) {
+            return std::make_pair(nan, fill_int);
+        }
+        Eigen::VectorXd z = Eigen::VectorXd::Zero(n);
+        Eigen::VectorXd good = Eigen::VectorXd::Zero(n);
+        for (Eigen::Index i = 0; i < n; ++i) {
+            if (valid(i) && std::isfinite(x(i))) {
+                z(i) = (x(i) - center) / scale;
+                good(i) = 1.0;
+            }
+        }
+
+        const Eigen::Index max_w = std::max<Eigen::Index>(4, n / 4);
+        const Eigen::Index w = std::min(std::max<Eigen::Index>(window, 4), max_w);
+        if (n < (2 * w + 2)) {
+            return std::make_pair(nan, fill_int);
+        }
+
+        Eigen::VectorXd csum(n + 1), gsum(n + 1);
+        csum(0) = 0.0;
+        gsum(0) = 0.0;
+        for (Eigen::Index i = 0; i < n; ++i) {
+            csum(i + 1) = csum(i) + z(i);
+            gsum(i + 1) = gsum(i) + good(i);
+        }
+
+        const double min_count = std::max(4.0, 0.5 * static_cast<double>(w));
+        double best = nan;
+        int best_idx = fill_int;
+        for (Eigen::Index center_idx = w; center_idx < n - w; ++center_idx) {
+            const double left_n = gsum(center_idx) - gsum(center_idx - w);
+            const double right_n = gsum(center_idx + w) - gsum(center_idx);
+            if (left_n < min_count || right_n < min_count) {
+                continue;
+            }
+            const double left_mean = (csum(center_idx) - csum(center_idx - w)) / left_n;
+            const double right_mean = (csum(center_idx + w) - csum(center_idx)) / right_n;
+            const double delta = std::abs(right_mean - left_mean);
+            if (!std::isfinite(best) || delta > best) {
+                best = delta;
+                best_idx = static_cast<int>(center_idx);
+            }
+        }
+        return std::make_pair(best, best_idx);
+    };
+
+    auto dominant_cluster = [&](std::vector<double> values, double tol) {
+        values.erase(
+            std::remove_if(values.begin(), values.end(), [](double v) { return !std::isfinite(v); }),
+            values.end());
+        if (values.empty()) {
+            return std::make_pair(nan, 0.0);
+        }
+        std::sort(values.begin(), values.end());
+        if (values.size() == 1 || tol <= 0.0) {
+            return std::make_pair(values.front(), 1.0);
+        }
+        std::size_t best_i = 0;
+        std::size_t best_j = 0;
+        std::size_t j = 0;
+        for (std::size_t i = 0; i < values.size(); ++i) {
+            if (j < i) {
+                j = i;
+            }
+            while (j + 1 < values.size() && (values[j + 1] - values[i]) <= tol) {
+                ++j;
+            }
+            if ((j - i) > (best_j - best_i)) {
+                best_i = i;
+                best_j = j;
+            }
+        }
+        std::vector<double> cluster(values.begin() + static_cast<std::ptrdiff_t>(best_i),
+                                    values.begin() + static_cast<std::ptrdiff_t>(best_j + 1));
+        const double center = median_of(std::move(cluster));
+        const double frac = static_cast<double>(best_j - best_i + 1) / static_cast<double>(values.size());
+        return std::make_pair(center, frac);
+    };
+
+    const double dt_sec = infer_dt_sec();
+    const double fs_hz = (std::isfinite(dt_sec) && dt_sec > 0.0) ? (1.0 / dt_sec) : nan;
+    const double dt_for_step = (std::isfinite(dt_sec) && dt_sec > 0.0) ? dt_sec : 1.0e-6;
+    const Eigen::Index step_window = std::max<Eigen::Index>(
+        4, static_cast<Eigen::Index>(std::llround(0.5 / dt_for_step)));
+
+    auto det_it = rtc_detector_summary_by_scan.find(scan_id);
+    std::vector<RTCDetectorDiagSummary> det_summary;
+    if (det_it != rtc_detector_summary_by_scan.end() && det_it->second.size() == static_cast<std::size_t>(n_dets)) {
+        det_summary = det_it->second;
+    }
+    else {
+        det_summary.assign(static_cast<std::size_t>(n_dets), RTCDetectorDiagSummary{});
+    }
+
+    for (Eigen::Index det = 0; det < n_dets; ++det) {
+        auto &row = det_summary[static_cast<std::size_t>(det)];
+        row.det = det;
+        Eigen::Array<bool, Eigen::Dynamic, 1> valid(n_pts);
+        Eigen::Index n_flagged = 0;
+        for (Eigen::Index i = 0; i < n_pts; ++i) {
+            valid(i) = std::isfinite(in.scans.data(i, det)) && !in.flags.data(i, det);
+            if (in.flags.data(i, det)) {
+                ++n_flagged;
+            }
+        }
+        row.final_flagged_frac =
+            static_cast<double>(n_flagged) /
+            static_cast<double>(std::max<Eigen::Index>(n_pts, 1));
+        std::tie(row.final_region_count, row.final_region_len_median, row.final_region_len_max) =
+            region_stats(in.flags.data.col(det).array());
+        std::tie(row.step_score, row.step_sample) =
+            step_metric(in.scans.data.col(det), valid, step_window);
+    }
+    rtc_detector_summary_by_scan[scan_id] = det_summary;
+
+    constexpr double min_good_frac = 0.8;
+    constexpr double step_score_thresh = 2.5;
+    std::vector<RTCNetworkDiagSummary> nw_summary;
+    auto grp_limits = get_grouping("nw", calib, n_dets);
+    nw_summary.reserve(grp_limits.size());
+    for (const auto &[nw, bounds] : grp_limits) {
+        const auto start = std::get<0>(bounds);
+        const auto end = std::get<1>(bounds);
+        RTCNetworkDiagSummary row;
+        row.nw = nw;
+        row.n_det_input = end - start;
+
+        Eigen::MatrixXd centered = Eigen::MatrixXd::Zero(n_pts, std::max<Eigen::Index>(end - start, 0));
+        Eigen::Index n_used = 0;
+        std::vector<double> step_scores;
+        std::vector<double> step_samples_active;
+        step_scores.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(end - start, 0)));
+        step_samples_active.reserve(step_scores.capacity());
+
+        for (Eigen::Index det = start; det < end; ++det) {
+            Eigen::Array<bool, Eigen::Dynamic, 1> valid(n_pts);
+            Eigen::Index n_valid = 0;
+            for (Eigen::Index i = 0; i < n_pts; ++i) {
+                valid(i) = std::isfinite(in.scans.data(i, det)) && !in.flags.data(i, det);
+                if (valid(i)) {
+                    ++n_valid;
+                }
+            }
+            const double good_frac = static_cast<double>(n_valid) /
+                                     static_cast<double>(std::max<Eigen::Index>(n_pts, 1));
+            if (good_frac < min_good_frac) {
+                continue;
+            }
+            auto [center, scale] = robust_center_scale(in.scans.data.col(det), valid);
+            if (!std::isfinite(center) || !std::isfinite(scale) || scale <= 0.0) {
+                continue;
+            }
+            for (Eigen::Index i = 0; i < n_pts; ++i) {
+                if (valid(i) && std::isfinite(in.scans.data(i, det))) {
+                    centered(i, n_used) = in.scans.data(i, det) - center;
+                }
+            }
+            const auto &det_row = det_summary[static_cast<std::size_t>(det)];
+            if (std::isfinite(det_row.step_score)) {
+                step_scores.push_back(det_row.step_score);
+                if (det_row.step_score >= step_score_thresh && det_row.step_sample != fill_int) {
+                    step_samples_active.push_back(static_cast<double>(det_row.step_sample));
+                }
+            }
+            ++n_used;
+        }
+
+        row.n_det_used = n_used;
+        if (!step_scores.empty()) {
+            row.median_step_score = median_of(step_scores);
+            row.max_step_score = *std::max_element(step_scores.begin(), step_scores.end());
+            const auto n_active = static_cast<double>(step_samples_active.size());
+            row.step_det_frac = n_active / static_cast<double>(step_scores.size());
+            auto [step_center, step_align] =
+                dominant_cluster(step_samples_active, std::max(2.0, 0.5 * static_cast<double>(step_window)));
+            row.step_alignment_frac = step_align;
+            if (std::isfinite(step_center)) {
+                row.dominant_step_sample = static_cast<int>(std::llround(step_center));
+            }
+        }
+
+        if (n_used >= 1 && n_pts >= 16 && std::isfinite(fs_hz) && fs_hz > 0.0) {
+            centered.conservativeResize(Eigen::NoChange, n_used);
+            Eigen::VectorXd cm(n_pts);
+            std::vector<double> scratch;
+            scratch.reserve(static_cast<std::size_t>(n_used));
+            for (Eigen::Index i = 0; i < n_pts; ++i) {
+                scratch.clear();
+                for (Eigen::Index j = 0; j < n_used; ++j) {
+                    scratch.push_back(centered(i, j));
+                }
+                cm(i) = median_of(scratch);
+            }
+            const double cm_mean = cm.mean();
+            cm.array() -= cm_mean;
+            if (n_pts > 1) {
+                constexpr double two_pi = 6.283185307179586476925286766559;
+                for (Eigen::Index i = 0; i < n_pts; ++i) {
+                    const double w = 0.5 * (1.0 - std::cos(
+                        two_pi * static_cast<double>(i) / static_cast<double>(n_pts - 1)));
+                    cm(i) *= w;
+                }
+            }
+
+            Eigen::FFT<double> fft;
+            fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
+            fft.SetFlag(Eigen::FFT<double>::Unscaled);
+            Eigen::VectorXcd spec;
+            fft.fwd(spec, cm);
+            if (spec.size() > 1) {
+                std::vector<double> power_low;
+                std::vector<double> power_mid;
+                std::vector<double> power_local;
+                power_low.reserve(static_cast<std::size_t>(spec.size()));
+                power_mid.reserve(static_cast<std::size_t>(spec.size()));
+                power_local.reserve(static_cast<std::size_t>(spec.size()));
+                double peak_power = -1.0;
+                double peak_freq = nan;
+                for (Eigen::Index k = 1; k < spec.size(); ++k) {
+                    const double freq = static_cast<double>(k) * fs_hz / static_cast<double>(n_pts);
+                    const double power = std::norm(spec(k));
+                    if (!std::isfinite(power) || !std::isfinite(freq)) {
+                        continue;
+                    }
+                    if (freq >= 0.05 && freq < 0.5) {
+                        power_low.push_back(power);
+                    }
+                    if (freq >= 0.5 && freq < 2.0) {
+                        power_mid.push_back(power);
+                    }
+                    if (freq >= 0.05 && freq <= std::min(16.0, 0.5 * fs_hz)) {
+                        power_local.push_back(power);
+                        if (power > peak_power) {
+                            peak_power = power;
+                            peak_freq = freq;
+                        }
+                    }
+                }
+                const double bp_low = median_of(power_low);
+                const double bp_mid = median_of(power_mid);
+                if (std::isfinite(bp_low) && std::isfinite(bp_mid) && bp_mid > 0.0) {
+                    row.cm_low_mid_ratio = bp_low / bp_mid;
+                }
+                row.cm_peak_freq_Hz = peak_freq;
+                const double local_med = median_of(power_local);
+                if (std::isfinite(local_med) && local_med > 0.0 && peak_power > 0.0) {
+                    row.cm_peak_prominence = peak_power / local_med;
+                }
+            }
+        }
+
+        nw_summary.push_back(row);
+    }
+    rtc_network_summary_by_scan[scan_id] = std::move(nw_summary);
 }
 
 template <typename calib_t>
@@ -900,12 +1327,176 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
     using namespace netCDF::exceptions;
 
     try {
+        capture_rtc_diagnostics(in, calib);
+
         // open netcdf file
         NcFile fo(filepath, netCDF::NcFile::write);
 
         // append common time chunk variables
         append_base_to_netcdf(fo, in, map_grouping, pixel_axes, pointing_offsets_arcsec, calib, apply_det_offsets,
                               scan_row_index);
+
+        const int fill_int = -2147483647;
+        const double fill_double = std::numeric_limits<double>::quiet_NaN();
+        const auto scan_row = static_cast<unsigned long>((scan_row_index >= 0) ? scan_row_index : in.index.data);
+
+        const auto det_diag_it = rtc_detector_summary_by_scan.find(in.index.data);
+        const auto nw_diag_it = rtc_network_summary_by_scan.find(in.index.data);
+
+        NcDim n_dets_dim = fo.getDim("n_dets");
+        if (!n_dets_dim.isNull()) {
+            const auto n_dets = n_dets_dim.getSize();
+            std::vector<std::size_t> start_scan_det = {scan_row, 0};
+            std::vector<std::size_t> size_scan_det = {1, n_dets};
+
+            auto det_double_values = [&](auto getter) {
+                std::vector<double> values(n_dets, fill_double);
+                if (det_diag_it != rtc_detector_summary_by_scan.end()) {
+                    const auto n_copy = std::min<std::size_t>(n_dets, det_diag_it->second.size());
+                    for (std::size_t i = 0; i < n_copy; ++i) {
+                        values[i] = getter(det_diag_it->second[i]);
+                    }
+                }
+                return values;
+            };
+            auto det_int_values = [&](auto getter) {
+                std::vector<int> values(n_dets, fill_int);
+                if (det_diag_it != rtc_detector_summary_by_scan.end()) {
+                    const auto n_copy = std::min<std::size_t>(n_dets, det_diag_it->second.size());
+                    for (std::size_t i = 0; i < n_copy; ++i) {
+                        values[i] = getter(det_diag_it->second[i]);
+                    }
+                }
+                return values;
+            };
+
+            auto write_det_double = [&](const std::string &name, auto getter) {
+                NcVar v = fo.getVar(name);
+                if (!v.isNull()) {
+                    auto values = det_double_values(getter);
+                    v.putVar(start_scan_det, size_scan_det, values.data());
+                }
+            };
+            auto write_det_int = [&](const std::string &name, auto getter) {
+                NcVar v = fo.getVar(name);
+                if (!v.isNull()) {
+                    auto values = det_int_values(getter);
+                    v.putVar(start_scan_det, size_scan_det, values.data());
+                }
+            };
+
+            write_det_int("rtc_despike_raw_exceed_count",
+                          [](const auto &row) { return row.raw_exceed_count; });
+            write_det_int("rtc_despike_delta_spike_count",
+                          [](const auto &row) { return row.delta_spike_count; });
+            write_det_double("rtc_despike_added_flagged_frac",
+                             [](const auto &row) { return row.added_flagged_frac; });
+            write_det_int("rtc_despike_added_region_count",
+                          [](const auto &row) { return row.added_region_count; });
+            write_det_double("rtc_despike_added_region_len_median",
+                             [](const auto &row) { return row.added_region_len_median; });
+            write_det_int("rtc_despike_added_region_len_max",
+                          [](const auto &row) { return row.added_region_len_max; });
+            write_det_double("rtc_despike_max_raw_abs_z",
+                             [](const auto &row) { return row.max_raw_abs_z; });
+            write_det_double("rtc_despike_max_delta_abs_z",
+                             [](const auto &row) { return row.max_delta_abs_z; });
+            write_det_double("rtc_final_flagged_frac",
+                             [](const auto &row) { return row.final_flagged_frac; });
+            write_det_int("rtc_final_region_count",
+                          [](const auto &row) { return row.final_region_count; });
+            write_det_double("rtc_final_region_len_median",
+                             [](const auto &row) { return row.final_region_len_median; });
+            write_det_int("rtc_final_region_len_max",
+                          [](const auto &row) { return row.final_region_len_max; });
+            write_det_double("rtc_step_score",
+                             [](const auto &row) { return row.step_score; });
+            write_det_int("rtc_step_sample",
+                          [](const auto &row) { return row.step_sample; });
+        }
+
+        NcVar nw_ids_v = fo.getVar("rtc_diag_network_ids");
+        if (!nw_ids_v.isNull()) {
+            NcDim n_nws_dim = fo.getDim("n_nws_rtcdiag");
+            if (!n_nws_dim.isNull()) {
+                const auto n_nws = n_nws_dim.getSize();
+                std::unordered_map<Eigen::Index, std::size_t> nw_to_index;
+                nw_to_index.reserve(static_cast<std::size_t>(calib.nws.size()));
+                for (Eigen::Index i = 0; i < calib.nws.size(); ++i) {
+                    nw_to_index[calib.nws(i)] = static_cast<std::size_t>(i);
+                }
+                std::vector<std::size_t> start_scan_nw = {scan_row, 0};
+                std::vector<std::size_t> size_scan_nw = {1, n_nws};
+                auto nw_double_values = [&](auto getter) {
+                    std::vector<double> values(n_nws, fill_double);
+                    if (nw_diag_it != rtc_network_summary_by_scan.end()) {
+                        for (const auto &row : nw_diag_it->second) {
+                            const auto it = nw_to_index.find(row.nw);
+                            if (it == nw_to_index.end() || it->second >= n_nws) {
+                                continue;
+                            }
+                            values[it->second] = getter(row);
+                        }
+                    }
+                    return values;
+                };
+                auto nw_int_values = [&](auto getter) {
+                    std::vector<int> values(n_nws, fill_int);
+                    if (nw_diag_it != rtc_network_summary_by_scan.end()) {
+                        for (const auto &row : nw_diag_it->second) {
+                            const auto it = nw_to_index.find(row.nw);
+                            if (it == nw_to_index.end() || it->second >= n_nws) {
+                                continue;
+                            }
+                            values[it->second] = getter(row);
+                        }
+                    }
+                    return values;
+                };
+                auto write_nw_double = [&](const std::string &name, auto getter) {
+                    NcVar v = fo.getVar(name);
+                    if (!v.isNull()) {
+                        auto values = nw_double_values(getter);
+                        v.putVar(start_scan_nw, size_scan_nw, values.data());
+                    }
+                };
+                auto write_nw_int = [&](const std::string &name, auto getter) {
+                    NcVar v = fo.getVar(name);
+                    if (!v.isNull()) {
+                        auto values = nw_int_values(getter);
+                        v.putVar(start_scan_nw, size_scan_nw, values.data());
+                    }
+                };
+
+                write_nw_int("rtc_network_n_det_input",
+                             [](const auto &row) { return static_cast<int>(row.n_det_input); });
+                write_nw_int("rtc_network_n_det_used",
+                             [](const auto &row) { return static_cast<int>(row.n_det_used); });
+                write_nw_double("rtc_network_step_score_median",
+                                [](const auto &row) { return row.median_step_score; });
+                write_nw_double("rtc_network_step_score_max",
+                                [](const auto &row) { return row.max_step_score; });
+                write_nw_double("rtc_network_step_det_frac",
+                                [](const auto &row) { return row.step_det_frac; });
+                write_nw_double("rtc_network_step_alignment_frac",
+                                [](const auto &row) { return row.step_alignment_frac; });
+                write_nw_int("rtc_network_step_dominant_sample",
+                             [](const auto &row) { return row.dominant_step_sample; });
+                write_nw_double("rtc_network_cm_low_mid_ratio",
+                                [](const auto &row) { return row.cm_low_mid_ratio; });
+                write_nw_double("rtc_network_cm_peak_freq_hz",
+                                [](const auto &row) { return row.cm_peak_freq_Hz; });
+                write_nw_double("rtc_network_cm_peak_prominence",
+                                [](const auto &row) { return row.cm_peak_prominence; });
+            }
+        }
+
+        if (det_diag_it != rtc_detector_summary_by_scan.end()) {
+            rtc_detector_summary_by_scan.erase(det_diag_it);
+        }
+        if (nw_diag_it != rtc_network_summary_by_scan.end()) {
+            rtc_network_summary_by_scan.erase(nw_diag_it);
+        }
 
         // sync file to make sure it gets updated
         fo.sync();

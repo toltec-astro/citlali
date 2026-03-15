@@ -94,3 +94,31 @@ Outputs:
 - `mp_mode_estimate_detailed.csv`
 - `mp_mode_estimate_summary_by_network.csv`
 - `MP_MODE_ESTIMATE.md`
+
+`non_gaussian_classifier.py`
+
+Classify suspicious scan/network rows by likely failure family. This is aimed at
+the practical question of what kind of contamination is left:
+
+- impulsive / missed-spike-like
+- step-like / level-shift-like
+- narrowband / line-like
+- coherent / common-mode-like
+
+The tool works on RTC or PTC timestreams and writes:
+
+- `non_gaussian_classifier_detailed.csv`
+- `non_gaussian_classifier_summary_by_network.csv`
+- `NON_GAUSSIAN_CLASSIFIER.md`
+
+Example:
+
+```bash
+$HOME/tolteca/bin/python tools/blank_sky/non_gaussian_classifier.py \
+  --nc-file /path/to/toltec_commissioning_science_151930_rtc_timestream.nc \
+  --array a1100 \
+  --networks 0,1,2,3,4,5 \
+  --scans all \
+  --utils-root ~/GitHub/toltec-data-product-utilities \
+  --outdir /path/to/non_gaussian_classifier
+```
