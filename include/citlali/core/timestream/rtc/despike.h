@@ -47,6 +47,7 @@ public:
     struct LocalResidualOptions {
         struct CompactRawGateOptions {
             bool enabled = true;
+            double candidate_sigma_scale = 0.5;
             double window_sec = 0.18;
             double half_peak_frac = 0.5;
             double max_width_sec = 0.18;
@@ -467,6 +468,8 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                 Eigen::Matrix<bool, Eigen::Dynamic, 1>::Zero(n_pts);
             Eigen::Matrix<bool, Eigen::Dynamic, 1> local_flags =
                 Eigen::Matrix<bool, Eigen::Dynamic, 1>::Zero(n_pts);
+            Eigen::VectorXd raw_abs_z =
+                Eigen::VectorXd::Constant(n_pts, std::numeric_limits<double>::quiet_NaN());
 
             // total number of spikes
             int n_spikes = 0;
@@ -479,6 +482,7 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                     Eigen::VectorXd abs_dev = (raw.array() - med).abs();
                     double raw_cutoff = min_spike_sigma * sigma;
                     for (Eigen::Index i = 0; i < n_pts; ++i) {
+                        raw_abs_z(i) = abs_dev(i) / sigma;
                         if (!base_flags(i) && std::isfinite(abs_dev(i)) && abs_dev(i) > raw_cutoff) {
                             raw_flags(i) = 1;
                         }
@@ -521,12 +525,15 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                                 candidate_samples.reserve(static_cast<std::size_t>(n_pts));
                                 Eigen::VectorXd local_abs_z =
                                     Eigen::VectorXd::Constant(n_pts, std::numeric_limits<double>::quiet_NaN());
+                                const double candidate_z =
+                                    local_residual.compact_raw_gate.candidate_sigma_scale * min_spike_sigma;
                                 for (Eigen::Index i = 0; i < n_pts; ++i) {
                                     if (base_flags(i) || raw_flags(i) || !std::isfinite(abs_dev(i))) {
                                         continue;
                                     }
                                     local_abs_z(i) = abs_dev(i) / resid_sigma;
-                                    if (abs_dev(i) > local_cutoff) {
+                                    if ((std::isfinite(local_abs_z(i)) && local_abs_z(i) > candidate_z) ||
+                                        (std::isfinite(raw_abs_z(i)) && raw_abs_z(i) > candidate_z)) {
                                         candidate_samples.push_back(i);
                                     }
                                 }

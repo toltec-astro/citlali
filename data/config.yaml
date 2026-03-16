@@ -137,6 +137,7 @@ timestream: # timestream reduction parameters
         delta_sigma_scale: 0.75 # scale factor on min_spike_sigma for locally detrended delta excursions
         compact_raw_gate: # optional morphology gate for local raw candidates
           enabled: true # require locally detrended raw events to look like compact bursts rather than steps/drifts
+          candidate_sigma_scale: 0.5 # nominate raw candidates above this fraction of min_spike_sigma before morphology gating
           window_sec: 0.18 # pre/post window used to measure compactness and baseline shift for raw candidates
           half_peak_frac: 0.5 # width threshold as a fraction of the candidate's peak local-raw z
           max_width_sec: 0.18 # reject raw candidates broader than this in local-residual space

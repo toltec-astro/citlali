@@ -381,6 +381,11 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             if (config.has(std::tuple{"timestream","raw_time_chunk","despike","local_residual","compact_raw_gate"})) {
                 get_config_value(config, despiker.local_residual.compact_raw_gate.enabled, missing_keys, invalid_keys,
                                  std::tuple{"timestream","raw_time_chunk","despike","local_residual","compact_raw_gate","enabled"});
+                if (config.has(std::tuple{"timestream","raw_time_chunk","despike","local_residual","compact_raw_gate","candidate_sigma_scale"})) {
+                    get_config_value(config, despiker.local_residual.compact_raw_gate.candidate_sigma_scale, missing_keys, invalid_keys,
+                                     std::tuple{"timestream","raw_time_chunk","despike","local_residual","compact_raw_gate","candidate_sigma_scale"},
+                                     {}, {0.0});
+                }
                 if (config.has(std::tuple{"timestream","raw_time_chunk","despike","local_residual","compact_raw_gate","window_sec"})) {
                     get_config_value(config, despiker.local_residual.compact_raw_gate.window_sec, missing_keys, invalid_keys,
                                      std::tuple{"timestream","raw_time_chunk","despike","local_residual","compact_raw_gate","window_sec"},
@@ -429,11 +434,12 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         }
         if (despiker.local_residual.enabled) {
             logger->info(
-                "raw_time_chunk.despike.local_residual enabled: window_sec={} sigma_scale={} delta_sigma_scale={} compact_raw_gate(enabled={} window_sec={} half_peak_frac={} max_width_sec={} max_step_shift_z={}) compact_delta_gate(enabled={} window_sec={} half_peak_frac={} max_width_sec={} max_step_shift_z={})",
+                "raw_time_chunk.despike.local_residual enabled: window_sec={} sigma_scale={} delta_sigma_scale={} compact_raw_gate(enabled={} candidate_sigma_scale={} window_sec={} half_peak_frac={} max_width_sec={} max_step_shift_z={}) compact_delta_gate(enabled={} window_sec={} half_peak_frac={} max_width_sec={} max_step_shift_z={})",
                 despiker.local_residual.window_sec,
                 despiker.local_residual.sigma_scale,
                 despiker.local_residual.delta_sigma_scale,
                 despiker.local_residual.compact_raw_gate.enabled,
+                despiker.local_residual.compact_raw_gate.candidate_sigma_scale,
                 despiker.local_residual.compact_raw_gate.window_sec,
                 despiker.local_residual.compact_raw_gate.half_peak_frac,
                 despiker.local_residual.compact_raw_gate.max_width_sec,
