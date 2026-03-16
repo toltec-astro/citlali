@@ -55,6 +55,14 @@ Why it matters:
 
 ### 2. `network_step_mask` runs after `altaz_destripe`
 
+Status:
+
+- fixed in the local code state after this audit
+- step-trigger diagnostics now run on the pre-`altaz_destripe` RTC chunk
+- `network_step_mask` is applied before `altaz_destripe`
+- final RTC diagnostics are then recomputed after `altaz_destripe`, while
+  preserving the pre-mask step trigger fields
+
 Code order in [rtcproc.h](../include/citlali/core/timestream/rtc/rtcproc.h):
 
 1. despike + replace
@@ -127,16 +135,20 @@ The current RTC path is:
    `replace_spikes(...)`.
 6. FIR / notch / IIR filtering runs if configured.
 7. Downsampling runs if configured; otherwise the filtered RTC chunk is copied.
-8. Optional `altaz_destripe` regression runs on the RTC output chunk.
-9. RTC diagnostic summaries are computed on the output chunk:
-   - final flagged fractions / run lengths
+8. If enabled, pre-`altaz_destripe` RTC diagnostic summaries are computed on the
+   output chunk for step-mask triggering:
    - detector step metrics
-   - impulsive metrics
-   - network-level step alignment and common-mode metrics
-10. If enabled, `network_step_mask` uses those diagnostic summaries to flag a
+   - network-level step alignment metrics
+9. If enabled, `network_step_mask` uses those diagnostic summaries to flag a
     network-wide time window around aligned step-like events.
-11. RTC diagnostics are recomputed after masking for final writeout, but the
-    trigger step metrics are intentionally preserved from the pre-mask pass.
+10. Optional `altaz_destripe` regression then runs on the masked RTC output
+    chunk.
+11. RTC diagnostic summaries are recomputed for final writeout:
+   - final flagged fractions / run lengths
+   - detector impulsive metrics
+   - impulsive metrics
+   - network-level common-mode metrics
+   - pre-mask detector/network step trigger fields are intentionally preserved
 12. RTC netCDF writeout persists:
    - the timestream itself
    - detector/network diagnostics

@@ -171,6 +171,10 @@ public:
     template <typename calib_t>
     void capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, bool recompute_step_metrics = true);
 
+    // optional az/el template subtraction on the RTC output chunk
+    template <typename calib_t>
+    void apply_altaz_destripe(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &);
+
     // optionally flag a network-wide window around aligned step-like events
     template <typename calib_t>
     void apply_network_step_mask(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &);
@@ -932,195 +936,6 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         }
     }
 
-    if (altaz_destripe.enabled) {
-        const auto az_it = out.tel_data.data.find("TelAzAct");
-        const auto el_it = out.tel_data.data.find("TelElAct");
-        if (az_it == out.tel_data.data.end() || el_it == out.tel_data.data.end()) {
-            logger->warn("altaz_destripe enabled but TelAzAct/TelElAct not found; skipping");
-        }
-        else {
-            const auto n_pts_out = out.scans.data.rows();
-            const auto n_dets_out = out.scans.data.cols();
-            if (n_pts_out > 0 && n_dets_out > 0) {
-                Eigen::VectorXd az = az_it->second;
-                Eigen::VectorXd el = el_it->second;
-                if (az.size() != n_pts_out || el.size() != n_pts_out) {
-                    logger->warn("altaz_destripe skipped: tel vector size mismatch (n_pts={} az={} el={})",
-                                 n_pts_out, az.size(), el.size());
-                }
-                else {
-                    // unwrap azimuth to avoid 2pi jumps in derivative templates
-                    Eigen::VectorXd az_unwrap(n_pts_out);
-                    az_unwrap(0) = az(0);
-                    double az_offset = 0.0;
-                    for (Eigen::Index i = 1; i < n_pts_out; ++i) {
-                        const double prev = az_unwrap(i - 1);
-                        const double curr_raw = az(i) + az_offset;
-                        const double d = curr_raw - prev;
-                        if (d > pi) {
-                            az_offset -= 2.0 * pi;
-                        }
-                        else if (d < -pi) {
-                            az_offset += 2.0 * pi;
-                        }
-                        az_unwrap(i) = az(i) + az_offset;
-                    }
-
-                    Eigen::VectorXd daz = Eigen::VectorXd::Zero(n_pts_out);
-                    Eigen::VectorXd del = Eigen::VectorXd::Zero(n_pts_out);
-                    if (n_pts_out > 1) {
-                        daz(0) = az_unwrap(1) - az_unwrap(0);
-                        del(0) = el(1) - el(0);
-                        for (Eigen::Index i = 1; i < n_pts_out - 1; ++i) {
-                            daz(i) = 0.5 * (az_unwrap(i + 1) - az_unwrap(i - 1));
-                            del(i) = 0.5 * (el(i + 1) - el(i - 1));
-                        }
-                        daz(n_pts_out - 1) = az_unwrap(n_pts_out - 1) - az_unwrap(n_pts_out - 2);
-                        del(n_pts_out - 1) = el(n_pts_out - 1) - el(n_pts_out - 2);
-                    }
-
-                    Eigen::Array<bool, Eigen::Dynamic, 1> tel_good(n_pts_out);
-                    for (Eigen::Index i = 0; i < n_pts_out; ++i) {
-                        tel_good(i) = std::isfinite(az_unwrap(i)) && std::isfinite(el(i)) &&
-                                      std::isfinite(daz(i)) && std::isfinite(del(i));
-                    }
-
-                    auto zscore = [&](Eigen::VectorXd &v) {
-                        double sum = 0.0;
-                        Eigen::Index n = 0;
-                        for (Eigen::Index i = 0; i < n_pts_out; ++i) {
-                            if (tel_good(i)) {
-                                sum += v(i);
-                                ++n;
-                            }
-                        }
-                        if (n <= 1) {
-                            return false;
-                        }
-                        const double mean = sum / static_cast<double>(n);
-                        double ss = 0.0;
-                        for (Eigen::Index i = 0; i < n_pts_out; ++i) {
-                            if (tel_good(i)) {
-                                const double dv = v(i) - mean;
-                                ss += dv * dv;
-                            }
-                        }
-                        const double stddev = std::sqrt(ss / static_cast<double>(n - 1));
-                        if (!std::isfinite(stddev) || stddev <= 0.0) {
-                            return false;
-                        }
-                        for (Eigen::Index i = 0; i < n_pts_out; ++i) {
-                            v(i) = (v(i) - mean) / stddev;
-                        }
-                        return true;
-                    };
-
-                    std::vector<Eigen::VectorXd> cols;
-                    cols.reserve(6);
-                    cols.push_back(Eigen::VectorXd::Ones(n_pts_out));
-
-                    if (altaz_destripe.fit_time_trend) {
-                        Eigen::VectorXd t(n_pts_out);
-                        if (n_pts_out > 1) {
-                            t = Eigen::VectorXd::LinSpaced(n_pts_out, -1.0, 1.0);
-                        }
-                        else {
-                            t.setZero();
-                        }
-                        if (zscore(t)) {
-                            cols.push_back(std::move(t));
-                        }
-                    }
-
-                    if (zscore(az_unwrap)) {
-                        cols.push_back(std::move(az_unwrap));
-                    }
-                    if (zscore(el)) {
-                        cols.push_back(std::move(el));
-                    }
-                    if (altaz_destripe.fit_derivs) {
-                        if (zscore(daz)) {
-                            cols.push_back(std::move(daz));
-                        }
-                        if (zscore(del)) {
-                            cols.push_back(std::move(del));
-                        }
-                    }
-
-                    const Eigen::Index n_cols = static_cast<Eigen::Index>(cols.size());
-                    if (n_cols < 2) {
-                        logger->warn("altaz_destripe skipped: insufficient template columns");
-                    }
-                    else {
-                        Eigen::MatrixXd X(n_pts_out, n_cols);
-                        for (Eigen::Index c = 0; c < n_cols; ++c) {
-                            X.col(c) = cols[static_cast<std::size_t>(c)];
-                        }
-
-                        std::string grp = altaz_destripe.grouping;
-                        if (grp == "network") {
-                            grp = "nw";
-                        }
-                        if (grp != "nw" && grp != "array" && grp != "all") {
-                            logger->warn("altaz_destripe grouping '{}' unsupported; using 'nw'", grp);
-                            grp = "nw";
-                        }
-
-                        std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
-                        if (grp == "all") {
-                            grp_limits[0] = std::make_tuple(0, n_dets_out);
-                        }
-                        else {
-                            grp_limits = get_grouping(grp, calib, n_dets_out);
-                        }
-
-                        Eigen::Index n_fit_total = 0;
-                        Eigen::Index n_skip_total = 0;
-                        for (const auto &[key, val] : grp_limits) {
-                            const auto start = std::get<0>(val);
-                            const auto end = std::get<1>(val);
-                            for (Eigen::Index j = start; j < end; ++j) {
-                                std::vector<Eigen::Index> rows;
-                                rows.reserve(static_cast<std::size_t>(n_pts_out));
-                                for (Eigen::Index i = 0; i < n_pts_out; ++i) {
-                                    if (!out.flags.data(i, j) && tel_good(i)) {
-                                        rows.push_back(i);
-                                    }
-                                }
-
-                                const Eigen::Index n_use = static_cast<Eigen::Index>(rows.size());
-                                const Eigen::Index n_min = std::max<Eigen::Index>(altaz_destripe.min_samples, n_cols + 2);
-                                if (n_use < n_min) {
-                                    ++n_skip_total;
-                                    continue;
-                                }
-
-                                Eigen::MatrixXd X_use(n_use, n_cols);
-                                Eigen::VectorXd y_use(n_use);
-                                for (Eigen::Index r = 0; r < n_use; ++r) {
-                                    const auto ii = rows[static_cast<std::size_t>(r)];
-                                    X_use.row(r) = X.row(ii);
-                                    y_use(r) = out.scans.data(ii, j);
-                                }
-                                const Eigen::ColPivHouseholderQR<Eigen::MatrixXd> qr(X_use);
-                                if (qr.rank() < std::min<Eigen::Index>(n_cols, n_use)) {
-                                    ++n_skip_total;
-                                    continue;
-                                }
-                                const Eigen::VectorXd beta = qr.solve(y_use);
-                                out.scans.data.col(j).noalias() -= X * beta;
-                                ++n_fit_total;
-                            }
-                            logger->debug("altaz_destripe grouping={} key={} det_range=[{}, {})", grp, key, start, end);
-                        }
-                        logger->info("altaz_destripe applied: grouping={} templates={} fitted_detectors={} skipped_detectors={}",
-                                     grp, n_cols, n_fit_total, n_skip_total);
-                    }
-                }
-            }
-        }
-    }
-
     // copy scan indices
     out.scan_indices.data = in.scan_indices.data;
     // copy scan index
@@ -1149,6 +964,11 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     if (network_step_mask.enabled) {
         capture_rtc_diagnostics(out, calib, true);
         apply_network_step_mask(out, calib);
+    }
+
+    apply_altaz_destripe(out, calib);
+
+    if (network_step_mask.enabled) {
         capture_rtc_diagnostics(out, calib, false);
     }
 
@@ -1191,6 +1011,202 @@ void RTCProc::remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
 
     logger->info("removed {} detectors flagged in APT table ({}%)",n_flagged,
                 (static_cast<float>(n_flagged)/static_cast<float>(n_dets))*100);
+}
+
+template <typename calib_t>
+void RTCProc::apply_altaz_destripe(TCData<TCDataKind::PTC, Eigen::MatrixXd> &out, calib_t &calib) {
+    if (!altaz_destripe.enabled) {
+        return;
+    }
+
+    const auto az_it = out.tel_data.data.find("TelAzAct");
+    const auto el_it = out.tel_data.data.find("TelElAct");
+    if (az_it == out.tel_data.data.end() || el_it == out.tel_data.data.end()) {
+        logger->warn("altaz_destripe enabled but TelAzAct/TelElAct not found; skipping");
+        return;
+    }
+
+    const auto n_pts_out = out.scans.data.rows();
+    const auto n_dets_out = out.scans.data.cols();
+    if (n_pts_out <= 0 || n_dets_out <= 0) {
+        return;
+    }
+
+    Eigen::VectorXd az = az_it->second;
+    Eigen::VectorXd el = el_it->second;
+    if (az.size() != n_pts_out || el.size() != n_pts_out) {
+        logger->warn("altaz_destripe skipped: tel vector size mismatch (n_pts={} az={} el={})",
+                     n_pts_out, az.size(), el.size());
+        return;
+    }
+
+    // unwrap azimuth to avoid 2pi jumps in derivative templates
+    Eigen::VectorXd az_unwrap(n_pts_out);
+    az_unwrap(0) = az(0);
+    double az_offset = 0.0;
+    for (Eigen::Index i = 1; i < n_pts_out; ++i) {
+        const double prev = az_unwrap(i - 1);
+        const double curr_raw = az(i) + az_offset;
+        const double d = curr_raw - prev;
+        if (d > pi) {
+            az_offset -= 2.0 * pi;
+        }
+        else if (d < -pi) {
+            az_offset += 2.0 * pi;
+        }
+        az_unwrap(i) = az(i) + az_offset;
+    }
+
+    Eigen::VectorXd daz = Eigen::VectorXd::Zero(n_pts_out);
+    Eigen::VectorXd del = Eigen::VectorXd::Zero(n_pts_out);
+    if (n_pts_out > 1) {
+        daz(0) = az_unwrap(1) - az_unwrap(0);
+        del(0) = el(1) - el(0);
+        for (Eigen::Index i = 1; i < n_pts_out - 1; ++i) {
+            daz(i) = 0.5 * (az_unwrap(i + 1) - az_unwrap(i - 1));
+            del(i) = 0.5 * (el(i + 1) - el(i - 1));
+        }
+        daz(n_pts_out - 1) = az_unwrap(n_pts_out - 1) - az_unwrap(n_pts_out - 2);
+        del(n_pts_out - 1) = el(n_pts_out - 1) - el(n_pts_out - 2);
+    }
+
+    Eigen::Array<bool, Eigen::Dynamic, 1> tel_good(n_pts_out);
+    for (Eigen::Index i = 0; i < n_pts_out; ++i) {
+        tel_good(i) = std::isfinite(az_unwrap(i)) && std::isfinite(el(i)) &&
+                      std::isfinite(daz(i)) && std::isfinite(del(i));
+    }
+
+    auto zscore = [&](Eigen::VectorXd &v) {
+        double sum = 0.0;
+        Eigen::Index n = 0;
+        for (Eigen::Index i = 0; i < n_pts_out; ++i) {
+            if (tel_good(i)) {
+                sum += v(i);
+                ++n;
+            }
+        }
+        if (n <= 1) {
+            return false;
+        }
+        const double mean = sum / static_cast<double>(n);
+        double ss = 0.0;
+        for (Eigen::Index i = 0; i < n_pts_out; ++i) {
+            if (tel_good(i)) {
+                const double dv = v(i) - mean;
+                ss += dv * dv;
+            }
+        }
+        const double stddev = std::sqrt(ss / static_cast<double>(n - 1));
+        if (!std::isfinite(stddev) || stddev <= 0.0) {
+            return false;
+        }
+        for (Eigen::Index i = 0; i < n_pts_out; ++i) {
+            v(i) = (v(i) - mean) / stddev;
+        }
+        return true;
+    };
+
+    std::vector<Eigen::VectorXd> cols;
+    cols.reserve(6);
+    cols.push_back(Eigen::VectorXd::Ones(n_pts_out));
+
+    if (altaz_destripe.fit_time_trend) {
+        Eigen::VectorXd t(n_pts_out);
+        if (n_pts_out > 1) {
+            t = Eigen::VectorXd::LinSpaced(n_pts_out, -1.0, 1.0);
+        }
+        else {
+            t.setZero();
+        }
+        if (zscore(t)) {
+            cols.push_back(std::move(t));
+        }
+    }
+
+    if (zscore(az_unwrap)) {
+        cols.push_back(std::move(az_unwrap));
+    }
+    if (zscore(el)) {
+        cols.push_back(std::move(el));
+    }
+    if (altaz_destripe.fit_derivs) {
+        if (zscore(daz)) {
+            cols.push_back(std::move(daz));
+        }
+        if (zscore(del)) {
+            cols.push_back(std::move(del));
+        }
+    }
+
+    const Eigen::Index n_cols = static_cast<Eigen::Index>(cols.size());
+    if (n_cols < 2) {
+        logger->warn("altaz_destripe skipped: insufficient template columns");
+        return;
+    }
+
+    Eigen::MatrixXd X(n_pts_out, n_cols);
+    for (Eigen::Index c = 0; c < n_cols; ++c) {
+        X.col(c) = cols[static_cast<std::size_t>(c)];
+    }
+
+    std::string grp = altaz_destripe.grouping;
+    if (grp == "network") {
+        grp = "nw";
+    }
+    if (grp != "nw" && grp != "array" && grp != "all") {
+        logger->warn("altaz_destripe grouping '{}' unsupported; using 'nw'", grp);
+        grp = "nw";
+    }
+
+    std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
+    if (grp == "all") {
+        grp_limits[0] = std::make_tuple(0, n_dets_out);
+    }
+    else {
+        grp_limits = get_grouping(grp, calib, n_dets_out);
+    }
+
+    Eigen::Index n_fit_total = 0;
+    Eigen::Index n_skip_total = 0;
+    for (const auto &[key, val] : grp_limits) {
+        const auto start = std::get<0>(val);
+        const auto end = std::get<1>(val);
+        for (Eigen::Index j = start; j < end; ++j) {
+            std::vector<Eigen::Index> rows;
+            rows.reserve(static_cast<std::size_t>(n_pts_out));
+            for (Eigen::Index i = 0; i < n_pts_out; ++i) {
+                if (!out.flags.data(i, j) && tel_good(i)) {
+                    rows.push_back(i);
+                }
+            }
+
+            const Eigen::Index n_use = static_cast<Eigen::Index>(rows.size());
+            const Eigen::Index n_min = std::max<Eigen::Index>(altaz_destripe.min_samples, n_cols + 2);
+            if (n_use < n_min) {
+                ++n_skip_total;
+                continue;
+            }
+
+            Eigen::MatrixXd X_use(n_use, n_cols);
+            Eigen::VectorXd y_use(n_use);
+            for (Eigen::Index r = 0; r < n_use; ++r) {
+                const auto ii = rows[static_cast<std::size_t>(r)];
+                X_use.row(r) = X.row(ii);
+                y_use(r) = out.scans.data(ii, j);
+            }
+            const Eigen::ColPivHouseholderQR<Eigen::MatrixXd> qr(X_use);
+            if (qr.rank() < std::min<Eigen::Index>(n_cols, n_use)) {
+                ++n_skip_total;
+                continue;
+            }
+            const Eigen::VectorXd beta = qr.solve(y_use);
+            out.scans.data.col(j).noalias() -= X * beta;
+            ++n_fit_total;
+        }
+        logger->debug("altaz_destripe grouping={} key={} det_range=[{}, {})", grp, key, start, end);
+    }
+    logger->info("altaz_destripe applied: grouping={} templates={} fitted_detectors={} skipped_detectors={}",
+                 grp, n_cols, n_fit_total, n_skip_total);
 }
 
 template <typename calib_t>
@@ -1501,7 +1517,7 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         det_it->second.size() == static_cast<std::size_t>(n_dets);
     const bool have_network_summary =
         nw_it != rtc_network_summary_by_scan.end();
-    const bool need_step_metrics = recompute_step_metrics || !have_detector_summary || !have_network_summary;
+    const bool recompute_detector_step_metrics = recompute_step_metrics || !have_detector_summary;
 
     std::vector<RTCDetectorDiagSummary> det_summary;
     if (have_detector_summary) {
@@ -1537,7 +1553,7 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         row.impulsive_event_score = impulsive.event_score;
         row.impulsive_event_sample = impulsive.event_sample;
         row.impulsive_event_kind = impulsive.event_kind;
-        if (need_step_metrics) {
+        if (recompute_detector_step_metrics) {
             std::tie(row.step_score, row.step_sample) =
                 step_metric(in.scans.data.col(det), valid, step_window);
         }
@@ -1632,65 +1648,85 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         rtc_impulsive_summary_by_scan.erase(scan_id);
     }
 
-    if (need_step_metrics) {
-        std::vector<RTCNetworkDiagSummary> nw_summary;
-        const double min_good_frac = network_step_mask.min_good_frac;
-        const double step_score_thresh = network_step_mask.step_score_thresh;
-        const double cluster_tol_samples = std::max(
-            2.0,
-            ((network_step_mask.cluster_tol_sec > 0.0)
-                 ? (network_step_mask.cluster_tol_sec / dt_for_step)
-                 : (0.5 * static_cast<double>(step_window))));
-        auto grp_limits = get_grouping("nw", calib, n_dets);
-        nw_summary.reserve(grp_limits.size());
-        for (const auto &[nw, bounds] : grp_limits) {
-            const auto start = std::get<0>(bounds);
-            const auto end = std::get<1>(bounds);
-            RTCNetworkDiagSummary row;
-            row.nw = nw;
-            row.n_det_input = end - start;
+    std::map<Eigen::Index, RTCNetworkDiagSummary> prev_nw_summary;
+    if (have_network_summary) {
+        for (const auto &row : nw_it->second) {
+            prev_nw_summary[row.nw] = row;
+        }
+    }
 
-            Eigen::MatrixXd centered = Eigen::MatrixXd::Zero(n_pts, std::max<Eigen::Index>(end - start, 0));
-            Eigen::Index n_used = 0;
-            std::vector<double> step_scores;
-            std::vector<double> step_samples_active;
-            step_scores.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(end - start, 0)));
-            step_samples_active.reserve(step_scores.capacity());
+    std::vector<RTCNetworkDiagSummary> nw_summary;
+    const double min_good_frac = network_step_mask.min_good_frac;
+    const double step_score_thresh = network_step_mask.step_score_thresh;
+    const double cluster_tol_samples = std::max(
+        2.0,
+        ((network_step_mask.cluster_tol_sec > 0.0)
+             ? (network_step_mask.cluster_tol_sec / dt_for_step)
+             : (0.5 * static_cast<double>(step_window))));
+    auto grp_limits = get_grouping("nw", calib, n_dets);
+    nw_summary.reserve(grp_limits.size());
+    for (const auto &[nw, bounds] : grp_limits) {
+        const auto start = std::get<0>(bounds);
+        const auto end = std::get<1>(bounds);
+        RTCNetworkDiagSummary row;
+        const auto prev_it = prev_nw_summary.find(nw);
+        if (prev_it != prev_nw_summary.end()) {
+            row = prev_it->second;
+        }
+        row.nw = nw;
+        row.n_det_input = end - start;
+        row.n_det_used = 0;
+        row.cm_low_mid_ratio = nan;
+        row.cm_peak_freq_Hz = nan;
+        row.cm_peak_prominence = nan;
 
-            for (Eigen::Index det = start; det < end; ++det) {
-                Eigen::Array<bool, Eigen::Dynamic, 1> valid(n_pts);
-                Eigen::Index n_valid = 0;
-                for (Eigen::Index i = 0; i < n_pts; ++i) {
-                    valid(i) = std::isfinite(in.scans.data(i, det)) && !in.flags.data(i, det);
-                    if (valid(i)) {
-                        ++n_valid;
-                    }
+        Eigen::MatrixXd centered = Eigen::MatrixXd::Zero(n_pts, std::max<Eigen::Index>(end - start, 0));
+        Eigen::Index n_used = 0;
+        std::vector<double> step_scores;
+        std::vector<double> step_samples_active;
+        step_scores.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(end - start, 0)));
+        step_samples_active.reserve(step_scores.capacity());
+
+        for (Eigen::Index det = start; det < end; ++det) {
+            Eigen::Array<bool, Eigen::Dynamic, 1> valid(n_pts);
+            Eigen::Index n_valid = 0;
+            for (Eigen::Index i = 0; i < n_pts; ++i) {
+                valid(i) = std::isfinite(in.scans.data(i, det)) && !in.flags.data(i, det);
+                if (valid(i)) {
+                    ++n_valid;
                 }
-                const double good_frac = static_cast<double>(n_valid) /
-                                         static_cast<double>(std::max<Eigen::Index>(n_pts, 1));
-                if (good_frac < min_good_frac) {
-                    continue;
-                }
-                auto [center, scale] = robust_center_scale(in.scans.data.col(det), valid);
-                if (!std::isfinite(center) || !std::isfinite(scale) || scale <= 0.0) {
-                    continue;
-                }
-                for (Eigen::Index i = 0; i < n_pts; ++i) {
-                    if (valid(i) && std::isfinite(in.scans.data(i, det))) {
-                        centered(i, n_used) = in.scans.data(i, det) - center;
-                    }
-                }
-                const auto &det_row = det_summary[static_cast<std::size_t>(det)];
-                if (std::isfinite(det_row.step_score)) {
-                    step_scores.push_back(det_row.step_score);
-                    if (det_row.step_score >= step_score_thresh && det_row.step_sample != fill_int) {
-                        step_samples_active.push_back(static_cast<double>(det_row.step_sample));
-                    }
-                }
-                ++n_used;
             }
+            const double good_frac = static_cast<double>(n_valid) /
+                                     static_cast<double>(std::max<Eigen::Index>(n_pts, 1));
+            if (good_frac < min_good_frac) {
+                continue;
+            }
+            auto [center, scale] = robust_center_scale(in.scans.data.col(det), valid);
+            if (!std::isfinite(center) || !std::isfinite(scale) || scale <= 0.0) {
+                continue;
+            }
+            for (Eigen::Index i = 0; i < n_pts; ++i) {
+                if (valid(i) && std::isfinite(in.scans.data(i, det))) {
+                    centered(i, n_used) = in.scans.data(i, det) - center;
+                }
+            }
+            const auto &det_row = det_summary[static_cast<std::size_t>(det)];
+            if (std::isfinite(det_row.step_score)) {
+                step_scores.push_back(det_row.step_score);
+                if (det_row.step_score >= step_score_thresh && det_row.step_sample != fill_int) {
+                    step_samples_active.push_back(static_cast<double>(det_row.step_sample));
+                }
+            }
+            ++n_used;
+        }
 
-            row.n_det_used = n_used;
+        row.n_det_used = n_used;
+        if (recompute_step_metrics || prev_it == prev_nw_summary.end()) {
+            row.median_step_score = nan;
+            row.max_step_score = nan;
+            row.step_det_frac = nan;
+            row.step_alignment_frac = nan;
+            row.dominant_step_sample = fill_int;
             if (!step_scores.empty()) {
                 row.median_step_score = median_of(step_scores);
                 row.max_step_score = *std::max_element(step_scores.begin(), step_scores.end());
@@ -1702,81 +1738,81 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                     row.dominant_step_sample = static_cast<int>(std::llround(step_center));
                 }
             }
+        }
 
-            if (n_used >= 1 && n_pts >= 16 && std::isfinite(fs_hz) && fs_hz > 0.0) {
-                centered.conservativeResize(Eigen::NoChange, n_used);
-                Eigen::VectorXd cm(n_pts);
-                std::vector<double> scratch;
-                scratch.reserve(static_cast<std::size_t>(n_used));
+        if (n_used >= 1 && n_pts >= 16 && std::isfinite(fs_hz) && fs_hz > 0.0) {
+            centered.conservativeResize(Eigen::NoChange, n_used);
+            Eigen::VectorXd cm(n_pts);
+            std::vector<double> scratch;
+            scratch.reserve(static_cast<std::size_t>(n_used));
+            for (Eigen::Index i = 0; i < n_pts; ++i) {
+                scratch.clear();
+                for (Eigen::Index j = 0; j < n_used; ++j) {
+                    scratch.push_back(centered(i, j));
+                }
+                cm(i) = median_of(scratch);
+            }
+            const double cm_mean = cm.mean();
+            cm.array() -= cm_mean;
+            if (n_pts > 1) {
+                constexpr double two_pi = 6.283185307179586476925286766559;
                 for (Eigen::Index i = 0; i < n_pts; ++i) {
-                    scratch.clear();
-                    for (Eigen::Index j = 0; j < n_used; ++j) {
-                        scratch.push_back(centered(i, j));
-                    }
-                    cm(i) = median_of(scratch);
-                }
-                const double cm_mean = cm.mean();
-                cm.array() -= cm_mean;
-                if (n_pts > 1) {
-                    constexpr double two_pi = 6.283185307179586476925286766559;
-                    for (Eigen::Index i = 0; i < n_pts; ++i) {
-                        const double w = 0.5 * (1.0 - std::cos(
-                            two_pi * static_cast<double>(i) / static_cast<double>(n_pts - 1)));
-                        cm(i) *= w;
-                    }
-                }
-
-                Eigen::FFT<double> fft;
-                fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
-                fft.SetFlag(Eigen::FFT<double>::Unscaled);
-                Eigen::VectorXcd spec;
-                fft.fwd(spec, cm);
-                if (spec.size() > 1) {
-                    std::vector<double> power_low;
-                    std::vector<double> power_mid;
-                    std::vector<double> power_local;
-                    power_low.reserve(static_cast<std::size_t>(spec.size()));
-                    power_mid.reserve(static_cast<std::size_t>(spec.size()));
-                    power_local.reserve(static_cast<std::size_t>(spec.size()));
-                    double peak_power = -1.0;
-                    double peak_freq = nan;
-                    for (Eigen::Index k = 1; k < spec.size(); ++k) {
-                        const double freq = static_cast<double>(k) * fs_hz / static_cast<double>(n_pts);
-                        const double power = std::norm(spec(k));
-                        if (!std::isfinite(power) || !std::isfinite(freq)) {
-                            continue;
-                        }
-                        if (freq >= 0.05 && freq < 0.5) {
-                            power_low.push_back(power);
-                        }
-                        if (freq >= 0.5 && freq < 2.0) {
-                            power_mid.push_back(power);
-                        }
-                        if (freq >= 0.05 && freq <= std::min(16.0, 0.5 * fs_hz)) {
-                            power_local.push_back(power);
-                            if (power > peak_power) {
-                                peak_power = power;
-                                peak_freq = freq;
-                            }
-                        }
-                    }
-                    const double bp_low = median_of(power_low);
-                    const double bp_mid = median_of(power_mid);
-                    if (std::isfinite(bp_low) && std::isfinite(bp_mid) && bp_mid > 0.0) {
-                        row.cm_low_mid_ratio = bp_low / bp_mid;
-                    }
-                    row.cm_peak_freq_Hz = peak_freq;
-                    const double local_med = median_of(power_local);
-                    if (std::isfinite(local_med) && local_med > 0.0 && peak_power > 0.0) {
-                        row.cm_peak_prominence = peak_power / local_med;
-                    }
+                    const double w = 0.5 * (1.0 - std::cos(
+                        two_pi * static_cast<double>(i) / static_cast<double>(n_pts - 1)));
+                    cm(i) *= w;
                 }
             }
 
-            nw_summary.push_back(row);
+            Eigen::FFT<double> fft;
+            fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
+            fft.SetFlag(Eigen::FFT<double>::Unscaled);
+            Eigen::VectorXcd spec;
+            fft.fwd(spec, cm);
+            if (spec.size() > 1) {
+                std::vector<double> power_low;
+                std::vector<double> power_mid;
+                std::vector<double> power_local;
+                power_low.reserve(static_cast<std::size_t>(spec.size()));
+                power_mid.reserve(static_cast<std::size_t>(spec.size()));
+                power_local.reserve(static_cast<std::size_t>(spec.size()));
+                double peak_power = -1.0;
+                double peak_freq = nan;
+                for (Eigen::Index k = 1; k < spec.size(); ++k) {
+                    const double freq = static_cast<double>(k) * fs_hz / static_cast<double>(n_pts);
+                    const double power = std::norm(spec(k));
+                    if (!std::isfinite(power) || !std::isfinite(freq)) {
+                        continue;
+                    }
+                    if (freq >= 0.05 && freq < 0.5) {
+                        power_low.push_back(power);
+                    }
+                    if (freq >= 0.5 && freq < 2.0) {
+                        power_mid.push_back(power);
+                    }
+                    if (freq >= 0.05 && freq <= std::min(16.0, 0.5 * fs_hz)) {
+                        power_local.push_back(power);
+                        if (power > peak_power) {
+                            peak_power = power;
+                            peak_freq = freq;
+                        }
+                    }
+                }
+                const double bp_low = median_of(power_low);
+                const double bp_mid = median_of(power_mid);
+                if (std::isfinite(bp_low) && std::isfinite(bp_mid) && bp_mid > 0.0) {
+                    row.cm_low_mid_ratio = bp_low / bp_mid;
+                }
+                row.cm_peak_freq_Hz = peak_freq;
+                const double local_med = median_of(power_local);
+                if (std::isfinite(local_med) && local_med > 0.0 && peak_power > 0.0) {
+                    row.cm_peak_prominence = peak_power / local_med;
+                }
+            }
         }
-        rtc_network_summary_by_scan[scan_id] = std::move(nw_summary);
+
+        nw_summary.push_back(row);
     }
+    rtc_network_summary_by_scan[scan_id] = std::move(nw_summary);
 }
 
 template <typename calib_t>
