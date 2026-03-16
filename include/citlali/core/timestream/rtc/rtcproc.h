@@ -131,7 +131,9 @@ public:
         double peak_delta_abs_z = std::numeric_limits<double>::quiet_NaN();
         double added_flagged_frac = std::numeric_limits<double>::quiet_NaN();
         int raw_exceed_count = -2147483647;
+        int local_raw_candidate_count = -2147483647;
         int local_exceed_count = -2147483647;
+        int local_raw_reject_count = -2147483647;
         int delta_spike_count = -2147483647;
         int local_delta_candidate_count = -2147483647;
         int local_delta_exceed_count = -2147483647;
@@ -376,6 +378,30 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                                  std::tuple{"timestream","raw_time_chunk","despike","local_residual","delta_sigma_scale"},
                                  {}, {0.0});
             }
+            if (config.has(std::tuple{"timestream","raw_time_chunk","despike","local_residual","compact_raw_gate"})) {
+                get_config_value(config, despiker.local_residual.compact_raw_gate.enabled, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","raw_time_chunk","despike","local_residual","compact_raw_gate","enabled"});
+                if (config.has(std::tuple{"timestream","raw_time_chunk","despike","local_residual","compact_raw_gate","window_sec"})) {
+                    get_config_value(config, despiker.local_residual.compact_raw_gate.window_sec, missing_keys, invalid_keys,
+                                     std::tuple{"timestream","raw_time_chunk","despike","local_residual","compact_raw_gate","window_sec"},
+                                     {}, {0.0});
+                }
+                if (config.has(std::tuple{"timestream","raw_time_chunk","despike","local_residual","compact_raw_gate","half_peak_frac"})) {
+                    get_config_value(config, despiker.local_residual.compact_raw_gate.half_peak_frac, missing_keys, invalid_keys,
+                                     std::tuple{"timestream","raw_time_chunk","despike","local_residual","compact_raw_gate","half_peak_frac"},
+                                     {}, {0.0}, {1.0});
+                }
+                if (config.has(std::tuple{"timestream","raw_time_chunk","despike","local_residual","compact_raw_gate","max_width_sec"})) {
+                    get_config_value(config, despiker.local_residual.compact_raw_gate.max_width_sec, missing_keys, invalid_keys,
+                                     std::tuple{"timestream","raw_time_chunk","despike","local_residual","compact_raw_gate","max_width_sec"},
+                                     {}, {0.0});
+                }
+                if (config.has(std::tuple{"timestream","raw_time_chunk","despike","local_residual","compact_raw_gate","max_step_shift_z"})) {
+                    get_config_value(config, despiker.local_residual.compact_raw_gate.max_step_shift_z, missing_keys, invalid_keys,
+                                     std::tuple{"timestream","raw_time_chunk","despike","local_residual","compact_raw_gate","max_step_shift_z"},
+                                     {}, {0.0});
+                }
+            }
             if (config.has(std::tuple{"timestream","raw_time_chunk","despike","local_residual","compact_delta_gate"})) {
                 get_config_value(config, despiker.local_residual.compact_delta_gate.enabled, missing_keys, invalid_keys,
                                  std::tuple{"timestream","raw_time_chunk","despike","local_residual","compact_delta_gate","enabled"});
@@ -403,10 +429,15 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         }
         if (despiker.local_residual.enabled) {
             logger->info(
-                "raw_time_chunk.despike.local_residual enabled: window_sec={} sigma_scale={} delta_sigma_scale={} compact_delta_gate(enabled={} window_sec={} half_peak_frac={} max_width_sec={} max_step_shift_z={})",
+                "raw_time_chunk.despike.local_residual enabled: window_sec={} sigma_scale={} delta_sigma_scale={} compact_raw_gate(enabled={} window_sec={} half_peak_frac={} max_width_sec={} max_step_shift_z={}) compact_delta_gate(enabled={} window_sec={} half_peak_frac={} max_width_sec={} max_step_shift_z={})",
                 despiker.local_residual.window_sec,
                 despiker.local_residual.sigma_scale,
                 despiker.local_residual.delta_sigma_scale,
+                despiker.local_residual.compact_raw_gate.enabled,
+                despiker.local_residual.compact_raw_gate.window_sec,
+                despiker.local_residual.compact_raw_gate.half_peak_frac,
+                despiker.local_residual.compact_raw_gate.max_width_sec,
+                despiker.local_residual.compact_raw_gate.max_step_shift_z,
                 despiker.local_residual.compact_delta_gate.enabled,
                 despiker.local_residual.compact_delta_gate.window_sec,
                 despiker.local_residual.compact_delta_gate.half_peak_frac,
@@ -1515,7 +1546,9 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                 slot.peak_delta_abs_z = row.impulsive_peak_delta_abs_z;
                 slot.added_flagged_frac = row.added_flagged_frac;
                 slot.raw_exceed_count = row.raw_exceed_count;
+                slot.local_raw_candidate_count = row.local_raw_candidate_count;
                 slot.local_exceed_count = row.local_exceed_count;
+                slot.local_raw_reject_count = row.local_raw_reject_count;
                 slot.delta_spike_count = row.delta_spike_count;
                 slot.local_delta_candidate_count = row.local_delta_candidate_count;
                 slot.local_delta_exceed_count = row.local_delta_exceed_count;
@@ -1960,8 +1993,12 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
 
             write_det_int("rtc_despike_raw_exceed_count",
                           [](const auto &row) { return row.raw_exceed_count; });
+            write_det_int("rtc_despike_local_raw_candidate_count",
+                          [](const auto &row) { return row.local_raw_candidate_count; });
             write_det_int("rtc_despike_local_exceed_count",
                           [](const auto &row) { return row.local_exceed_count; });
+            write_det_int("rtc_despike_local_raw_reject_count",
+                          [](const auto &row) { return row.local_raw_reject_count; });
             write_det_int("rtc_despike_delta_spike_count",
                           [](const auto &row) { return row.delta_spike_count; });
             write_det_int("rtc_despike_local_delta_candidate_count",
@@ -2239,8 +2276,12 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
                                           [](const auto &slot) { return slot.added_flagged_frac; });
                     write_imp_slot_int("rtc_impulsive_slot_raw_exceed_count",
                                        [](const auto &slot) { return slot.raw_exceed_count; });
+                    write_imp_slot_int("rtc_impulsive_slot_local_raw_candidate_count",
+                                       [](const auto &slot) { return slot.local_raw_candidate_count; });
                     write_imp_slot_int("rtc_impulsive_slot_local_exceed_count",
                                        [](const auto &slot) { return slot.local_exceed_count; });
+                    write_imp_slot_int("rtc_impulsive_slot_local_raw_reject_count",
+                                       [](const auto &slot) { return slot.local_raw_reject_count; });
                     write_imp_slot_int("rtc_impulsive_slot_delta_spike_count",
                                        [](const auto &slot) { return slot.delta_spike_count; });
                     write_imp_slot_int("rtc_impulsive_slot_local_delta_candidate_count",

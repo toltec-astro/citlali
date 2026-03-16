@@ -18,7 +18,9 @@ namespace timestream {
 
 struct DespikeDetectorDiagSummary {
     int raw_exceed_count = 0;
+    int local_raw_candidate_count = 0;
     int local_exceed_count = 0;
+    int local_raw_reject_count = 0;
     int delta_spike_count = 0;
     int local_delta_candidate_count = 0;
     int local_delta_exceed_count = 0;
@@ -43,6 +45,13 @@ public:
     double fsmp;
 
     struct LocalResidualOptions {
+        struct CompactRawGateOptions {
+            bool enabled = true;
+            double window_sec = 0.18;
+            double half_peak_frac = 0.5;
+            double max_width_sec = 0.18;
+            double max_step_shift_z = 3.0;
+        };
         struct CompactDeltaGateOptions {
             bool enabled = true;
             double window_sec = 0.12;
@@ -54,6 +63,7 @@ public:
         double window_sec = 0.25;
         double sigma_scale = 0.75;
         double delta_sigma_scale = 0.75;
+        CompactRawGateOptions compact_raw_gate;
         CompactDeltaGateOptions compact_delta_gate;
     };
     LocalResidualOptions local_residual;
@@ -285,6 +295,81 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
         return std::make_pair(med, sigma);
     };
 
+    auto shape_gate_local_raw = [&](const Eigen::VectorXd &resid,
+                                    const Eigen::VectorXd &abs_z,
+                                    const Eigen::Matrix<bool, Eigen::Dynamic, 1> &base_flags,
+                                    Eigen::Index peak_sample,
+                                    double resid_sigma) {
+        const auto &gate = local_residual.compact_raw_gate;
+        if (!gate.enabled) {
+            return true;
+        }
+        if (!(std::isfinite(resid_sigma) && resid_sigma > 0.0) ||
+            peak_sample < 0 || peak_sample >= abs_z.size()) {
+            return false;
+        }
+
+        const Eigen::Index n = resid.size();
+        const double peak_z = abs_z(peak_sample);
+        if (!std::isfinite(peak_z) || peak_z <= 0.0) {
+            return false;
+        }
+
+        const Eigen::Index gate_half_window = std::max<Eigen::Index>(
+            4, static_cast<Eigen::Index>(std::llround(gate.window_sec * fsmp)));
+        const Eigen::Index max_width_samples = std::max<Eigen::Index>(
+            1, static_cast<Eigen::Index>(std::llround(gate.max_width_sec * fsmp)));
+        const double width_thresh =
+            std::max(gate.half_peak_frac * peak_z, std::min(peak_z, 1.5));
+        const Eigen::Index left_bound = std::max<Eigen::Index>(0, peak_sample - gate_half_window);
+        const Eigen::Index right_bound = std::min<Eigen::Index>(n - 1, peak_sample + gate_half_window);
+
+        Eigen::Index left = peak_sample;
+        while (left - 1 >= left_bound &&
+               std::isfinite(abs_z(left - 1)) &&
+               abs_z(left - 1) >= width_thresh) {
+            --left;
+        }
+        Eigen::Index right = peak_sample;
+        while (right + 1 <= right_bound &&
+               std::isfinite(abs_z(right + 1)) &&
+               abs_z(right + 1) >= width_thresh) {
+            ++right;
+        }
+        const Eigen::Index width_samples = right - left + 1;
+        if (width_samples > max_width_samples) {
+            return false;
+        }
+
+        const Eigen::Index pre_lo = std::max<Eigen::Index>(0, peak_sample - gate_half_window);
+        const Eigen::Index pre_hi = std::max<Eigen::Index>(pre_lo, peak_sample - 1);
+        const Eigen::Index post_lo = std::min<Eigen::Index>(n, peak_sample + 2);
+        const Eigen::Index post_hi = std::min<Eigen::Index>(n, peak_sample + gate_half_window + 1);
+        std::vector<double> pre_vals;
+        std::vector<double> post_vals;
+        pre_vals.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(pre_hi - pre_lo, 0)));
+        post_vals.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(post_hi - post_lo, 0)));
+        for (Eigen::Index i = pre_lo; i < pre_hi; ++i) {
+            if (!base_flags(i) && std::isfinite(resid(i))) {
+                pre_vals.push_back(resid(i));
+            }
+        }
+        for (Eigen::Index i = post_lo; i < post_hi; ++i) {
+            if (!base_flags(i) && std::isfinite(resid(i))) {
+                post_vals.push_back(resid(i));
+            }
+        }
+        if (pre_vals.size() < 4 || post_vals.size() < 4) {
+            return false;
+        }
+        Eigen::Map<const Eigen::VectorXd> pre_map(pre_vals.data(), static_cast<Eigen::Index>(pre_vals.size()));
+        Eigen::Map<const Eigen::VectorXd> post_map(post_vals.data(), static_cast<Eigen::Index>(post_vals.size()));
+        const double pre_med = tula::alg::median(pre_map);
+        const double post_med = tula::alg::median(post_map);
+        const double step_shift_z = std::abs(post_med - pre_med) / resid_sigma;
+        return std::isfinite(step_shift_z) && step_shift_z <= gate.max_step_shift_z;
+    };
+
     auto shape_gate_local_delta = [&](const Eigen::VectorXd &resid,
                                       const Eigen::VectorXd &delta_abs_z,
                                       const Eigen::Matrix<bool, Eigen::Dynamic, 1> &base_flags,
@@ -430,16 +515,70 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                             const double local_cutoff =
                                 local_residual.sigma_scale * min_spike_sigma * resid_sigma;
                             Eigen::VectorXd abs_dev = (resid.array() - resid_med).abs();
-                            for (Eigen::Index i = 0; i < n_pts; ++i) {
-                                if (!(base_flags(i) || raw_flags(i)) &&
-                                    std::isfinite(abs_dev(i)) &&
-                                    abs_dev(i) > local_cutoff) {
-                                    local_flags(i) = 1;
+                            diag.max_local_abs_z = abs_dev.maxCoeff() / resid_sigma;
+                            if (local_residual.compact_raw_gate.enabled) {
+                                std::vector<Eigen::Index> candidate_samples;
+                                candidate_samples.reserve(static_cast<std::size_t>(n_pts));
+                                Eigen::VectorXd local_abs_z =
+                                    Eigen::VectorXd::Constant(n_pts, std::numeric_limits<double>::quiet_NaN());
+                                for (Eigen::Index i = 0; i < n_pts; ++i) {
+                                    if (base_flags(i) || raw_flags(i) || !std::isfinite(abs_dev(i))) {
+                                        continue;
+                                    }
+                                    local_abs_z(i) = abs_dev(i) / resid_sigma;
+                                    if (abs_dev(i) > local_cutoff) {
+                                        candidate_samples.push_back(i);
+                                    }
+                                }
+                                if (!candidate_samples.empty()) {
+                                    Eigen::Index cluster_start = candidate_samples.front();
+                                    Eigen::Index cluster_end = candidate_samples.front();
+                                    auto flush_cluster = [&](Eigen::Index lo, Eigen::Index hi) {
+                                        Eigen::Index best_sample = lo;
+                                        double best_z = -1.0;
+                                        for (Eigen::Index sample = lo; sample <= hi; ++sample) {
+                                            if (sample >= 0 && sample < local_abs_z.size() &&
+                                                std::isfinite(local_abs_z(sample)) &&
+                                                local_abs_z(sample) > best_z) {
+                                                best_z = local_abs_z(sample);
+                                                best_sample = sample;
+                                            }
+                                        }
+                                        ++diag.local_raw_candidate_count;
+                                        if (shape_gate_local_raw(
+                                                resid, local_abs_z, base_flags,
+                                                best_sample, resid_sigma)) {
+                                            local_flags.segment(lo, hi - lo + 1).setOnes();
+                                        }
+                                        else {
+                                            ++diag.local_raw_reject_count;
+                                        }
+                                    };
+                                    for (std::size_t ii = 1; ii < candidate_samples.size(); ++ii) {
+                                        const auto sample = candidate_samples[ii];
+                                        if (sample <= cluster_end + 1) {
+                                            cluster_end = sample;
+                                        }
+                                        else {
+                                            flush_cluster(cluster_start, cluster_end);
+                                            cluster_start = sample;
+                                            cluster_end = sample;
+                                        }
+                                    }
+                                    flush_cluster(cluster_start, cluster_end);
+                                }
+                            }
+                            else {
+                                for (Eigen::Index i = 0; i < n_pts; ++i) {
+                                    if (!(base_flags(i) || raw_flags(i)) &&
+                                        std::isfinite(abs_dev(i)) &&
+                                        abs_dev(i) > local_cutoff) {
+                                        local_flags(i) = 1;
+                                    }
                                 }
                             }
                             diag.local_exceed_count =
                                 static_cast<int>((local_flags.array() == 1).count());
-                            diag.max_local_abs_z = abs_dev.maxCoeff() / resid_sigma;
 
                             std::vector<double> local_delta_vals;
                             local_delta_vals.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(n_pts - 1, 0)));

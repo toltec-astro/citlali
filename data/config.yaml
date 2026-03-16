@@ -135,6 +135,12 @@ timestream: # timestream reduction parameters
         window_sec: 0.25 # smoothing window used to define the local baseline before thresholding
         sigma_scale: 0.75 # scale factor on min_spike_sigma for locally detrended raw excursions
         delta_sigma_scale: 0.75 # scale factor on min_spike_sigma for locally detrended delta excursions
+        compact_raw_gate: # optional morphology gate for local raw candidates
+          enabled: true # require locally detrended raw events to look like compact bursts rather than steps/drifts
+          window_sec: 0.18 # pre/post window used to measure compactness and baseline shift for raw candidates
+          half_peak_frac: 0.5 # width threshold as a fraction of the candidate's peak local-raw z
+          max_width_sec: 0.18 # reject raw candidates broader than this in local-residual space
+          max_step_shift_z: 3.0 # reject raw candidates whose pre/post local baseline shift exceeds this z
         compact_delta_gate: # optional morphology gate for local delta candidates
           enabled: true # require locally detrended delta events to look compact rather than step-like
           window_sec: 0.12 # pre/post window used to measure local compactness and baseline shift

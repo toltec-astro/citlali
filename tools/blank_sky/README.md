@@ -130,8 +130,10 @@ RTC instrumentation. This is meant to answer the next concrete question after
 the summary metrics: what do the top captured events actually look like?
 
 For local-residual despike development, the report also tracks whether the
-compact-delta gate saw each captured event as:
+compact morphology gates saw each captured event as:
 
+- a local raw candidate
+- a local raw rejection because the event looked too broad or too step-like
 - a local delta candidate
 - an accepted local delta trigger
 - a rejected candidate that looked too broad or too step-like

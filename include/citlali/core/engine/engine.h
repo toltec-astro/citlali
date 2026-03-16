@@ -1834,6 +1834,11 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.WINDOW_SEC", rtcproc.despiker.local_residual.window_sec);
         add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.SIGMA_SCALE", rtcproc.despiker.local_residual.sigma_scale);
         add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.DELTA_SIGMA_SCALE", rtcproc.despiker.local_residual.delta_sigma_scale);
+        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.ENABLED", rtcproc.despiker.local_residual.compact_raw_gate.enabled);
+        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.WINDOW_SEC", rtcproc.despiker.local_residual.compact_raw_gate.window_sec);
+        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.HALF_PEAK_FRAC", rtcproc.despiker.local_residual.compact_raw_gate.half_peak_frac);
+        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.MAX_WIDTH_SEC", rtcproc.despiker.local_residual.compact_raw_gate.max_width_sec);
+        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.MAX_STEP_SHIFT_Z", rtcproc.despiker.local_residual.compact_raw_gate.max_step_shift_z);
         add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.DELTA_GATE.ENABLED", rtcproc.despiker.local_residual.compact_delta_gate.enabled);
         add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.DELTA_GATE.WINDOW_SEC", rtcproc.despiker.local_residual.compact_delta_gate.window_sec);
         add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.DELTA_GATE.HALF_PEAK_FRAC", rtcproc.despiker.local_residual.compact_delta_gate.half_peak_frac);
@@ -2182,8 +2187,12 @@ void Engine::create_tod_files() {
 
         add_rtc_det_int("rtc_despike_raw_exceed_count",
                         "per-detector count of raw-sample MAD-threshold exceedances before despike expansion");
+        add_rtc_det_int("rtc_despike_local_raw_candidate_count",
+                        "per-detector count of locally detrended raw candidate events considered by the compact-raw gate");
         add_rtc_det_int("rtc_despike_local_exceed_count",
-                        "per-detector count of locally detrended raw-sample exceedances before despike expansion");
+                        "per-detector count of locally detrended raw-sample exceedance samples accepted after compact-raw gating");
+        add_rtc_det_int("rtc_despike_local_raw_reject_count",
+                        "per-detector count of locally detrended raw candidate events rejected by the compact-raw gate");
         add_rtc_det_int("rtc_despike_delta_spike_count",
                         "per-detector count of delta-domain spikes identified by the RTC despiker");
         add_rtc_det_int("rtc_despike_local_delta_candidate_count",
@@ -2371,8 +2380,12 @@ void Engine::create_tod_files() {
                                     "fraction of samples newly flagged by RTC despiking for a captured detector slot");
             add_rtc_imp_slot_int("rtc_impulsive_slot_raw_exceed_count",
                                  "count of raw-sample MAD exceedances for a captured detector slot");
+            add_rtc_imp_slot_int("rtc_impulsive_slot_local_raw_candidate_count",
+                                 "count of locally detrended raw candidate events considered by the compact-raw gate for a captured detector slot");
             add_rtc_imp_slot_int("rtc_impulsive_slot_local_exceed_count",
-                                 "count of locally detrended raw-sample exceedances for a captured detector slot");
+                                 "count of locally detrended raw-sample exceedance samples accepted after compact-raw gating for a captured detector slot");
+            add_rtc_imp_slot_int("rtc_impulsive_slot_local_raw_reject_count",
+                                 "count of locally detrended raw candidate events rejected by the compact-raw gate for a captured detector slot");
             add_rtc_imp_slot_int("rtc_impulsive_slot_delta_spike_count",
                                  "count of delta-domain spikes for a captured detector slot");
             add_rtc_imp_slot_int("rtc_impulsive_slot_local_delta_candidate_count",
@@ -3150,6 +3163,21 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.DELTA_SIGMA_SCALE",
                                         rtcproc.despiker.local_residual.delta_sigma_scale,
                                         "Local-residual despike delta threshold scale");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.RAW_GATE.ENABLED",
+                                        rtcproc.despiker.local_residual.compact_raw_gate.enabled,
+                                        "Enable compact morphology gate for local-residual raw candidates");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.RAW_GATE.WINDOW_SEC",
+                                        rtcproc.despiker.local_residual.compact_raw_gate.window_sec,
+                                        "Window used to score compactness of local-residual raw candidates");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.RAW_GATE.HALF_PEAK_FRAC",
+                                        rtcproc.despiker.local_residual.compact_raw_gate.half_peak_frac,
+                                        "Half-peak fraction used to measure local-residual raw candidate width");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.RAW_GATE.MAX_WIDTH_SEC",
+                                        rtcproc.despiker.local_residual.compact_raw_gate.max_width_sec,
+                                        "Maximum width allowed for compact local-residual raw candidates");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.RAW_GATE.MAX_STEP_SHIFT_Z",
+                                        rtcproc.despiker.local_residual.compact_raw_gate.max_step_shift_z,
+                                        "Maximum allowed pre/post baseline shift for compact local-residual raw candidates");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.DELTA_GATE.ENABLED",
                                         rtcproc.despiker.local_residual.compact_delta_gate.enabled,
                                         "Enable compact morphology gate for local-residual delta candidates");
