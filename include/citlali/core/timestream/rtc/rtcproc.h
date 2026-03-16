@@ -132,11 +132,12 @@ public:
         double added_flagged_frac = std::numeric_limits<double>::quiet_NaN();
         int raw_exceed_count = -2147483647;
         int local_raw_candidate_count = -2147483647;
-        int local_exceed_count = -2147483647;
+        int local_raw_accepted_event_count = -2147483647;
+        int local_flagged_sample_count = -2147483647;
         int local_raw_reject_count = -2147483647;
         int delta_spike_count = -2147483647;
         int local_delta_candidate_count = -2147483647;
-        int local_delta_exceed_count = -2147483647;
+        int local_delta_accepted_event_count = -2147483647;
         int local_delta_reject_count = -2147483647;
         std::vector<double> snippet_z;
         std::vector<int> snippet_flag;
@@ -1594,11 +1595,12 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                 slot.added_flagged_frac = row.added_flagged_frac;
                 slot.raw_exceed_count = row.raw_exceed_count;
                 slot.local_raw_candidate_count = row.local_raw_candidate_count;
-                slot.local_exceed_count = row.local_exceed_count;
+                slot.local_raw_accepted_event_count = row.local_raw_accepted_event_count;
+                slot.local_flagged_sample_count = row.local_flagged_sample_count;
                 slot.local_raw_reject_count = row.local_raw_reject_count;
                 slot.delta_spike_count = row.delta_spike_count;
                 slot.local_delta_candidate_count = row.local_delta_candidate_count;
-                slot.local_delta_exceed_count = row.local_delta_exceed_count;
+                slot.local_delta_accepted_event_count = row.local_delta_accepted_event_count;
                 slot.local_delta_reject_count = row.local_delta_reject_count;
                 slot.snippet_z.assign(static_cast<std::size_t>(std::max<Eigen::Index>(snippet_len, 0)), nan);
                 slot.snippet_flag.assign(static_cast<std::size_t>(std::max<Eigen::Index>(snippet_len, 0)), fill_int);
@@ -2062,16 +2064,22 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
                           [](const auto &row) { return row.raw_exceed_count; });
             write_det_int("rtc_despike_local_raw_candidate_count",
                           [](const auto &row) { return row.local_raw_candidate_count; });
+            write_det_int("rtc_despike_local_raw_accepted_event_count",
+                          [](const auto &row) { return row.local_raw_accepted_event_count; });
+            write_det_int("rtc_despike_local_flagged_sample_count",
+                          [](const auto &row) { return row.local_flagged_sample_count; });
             write_det_int("rtc_despike_local_exceed_count",
-                          [](const auto &row) { return row.local_exceed_count; });
+                          [](const auto &row) { return row.local_flagged_sample_count; });
             write_det_int("rtc_despike_local_raw_reject_count",
                           [](const auto &row) { return row.local_raw_reject_count; });
             write_det_int("rtc_despike_delta_spike_count",
                           [](const auto &row) { return row.delta_spike_count; });
             write_det_int("rtc_despike_local_delta_candidate_count",
                           [](const auto &row) { return row.local_delta_candidate_count; });
+            write_det_int("rtc_despike_local_delta_accepted_event_count",
+                          [](const auto &row) { return row.local_delta_accepted_event_count; });
             write_det_int("rtc_despike_local_delta_exceed_count",
-                          [](const auto &row) { return row.local_delta_exceed_count; });
+                          [](const auto &row) { return row.local_delta_accepted_event_count; });
             write_det_int("rtc_despike_local_delta_reject_count",
                           [](const auto &row) { return row.local_delta_reject_count; });
             write_det_double("rtc_despike_added_flagged_frac",
@@ -2345,16 +2353,22 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
                                        [](const auto &slot) { return slot.raw_exceed_count; });
                     write_imp_slot_int("rtc_impulsive_slot_local_raw_candidate_count",
                                        [](const auto &slot) { return slot.local_raw_candidate_count; });
+                    write_imp_slot_int("rtc_impulsive_slot_local_raw_accepted_event_count",
+                                       [](const auto &slot) { return slot.local_raw_accepted_event_count; });
+                    write_imp_slot_int("rtc_impulsive_slot_local_flagged_sample_count",
+                                       [](const auto &slot) { return slot.local_flagged_sample_count; });
                     write_imp_slot_int("rtc_impulsive_slot_local_exceed_count",
-                                       [](const auto &slot) { return slot.local_exceed_count; });
+                                       [](const auto &slot) { return slot.local_flagged_sample_count; });
                     write_imp_slot_int("rtc_impulsive_slot_local_raw_reject_count",
                                        [](const auto &slot) { return slot.local_raw_reject_count; });
                     write_imp_slot_int("rtc_impulsive_slot_delta_spike_count",
                                        [](const auto &slot) { return slot.delta_spike_count; });
                     write_imp_slot_int("rtc_impulsive_slot_local_delta_candidate_count",
                                        [](const auto &slot) { return slot.local_delta_candidate_count; });
+                    write_imp_slot_int("rtc_impulsive_slot_local_delta_accepted_event_count",
+                                       [](const auto &slot) { return slot.local_delta_accepted_event_count; });
                     write_imp_slot_int("rtc_impulsive_slot_local_delta_exceed_count",
-                                       [](const auto &slot) { return slot.local_delta_exceed_count; });
+                                       [](const auto &slot) { return slot.local_delta_accepted_event_count; });
                     write_imp_slot_int("rtc_impulsive_slot_local_delta_reject_count",
                                        [](const auto &slot) { return slot.local_delta_reject_count; });
                     write_imp_snip_double("rtc_impulsive_slot_snippet_z",

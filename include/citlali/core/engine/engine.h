@@ -2194,16 +2194,22 @@ void Engine::create_tod_files() {
                         "per-detector count of raw-sample MAD-threshold exceedances before despike expansion");
         add_rtc_det_int("rtc_despike_local_raw_candidate_count",
                         "per-detector count of locally detrended raw candidate events considered by the compact-raw gate");
+        add_rtc_det_int("rtc_despike_local_raw_accepted_event_count",
+                        "per-detector count of locally detrended raw candidate events accepted by the compact-raw gate");
+        add_rtc_det_int("rtc_despike_local_flagged_sample_count",
+                        "per-detector count of samples flagged by accepted compact-raw local-residual events");
         add_rtc_det_int("rtc_despike_local_exceed_count",
-                        "per-detector count of locally detrended raw-sample exceedance samples accepted after compact-raw gating");
+                        "legacy alias for rtc_despike_local_flagged_sample_count");
         add_rtc_det_int("rtc_despike_local_raw_reject_count",
                         "per-detector count of locally detrended raw candidate events rejected by the compact-raw gate");
         add_rtc_det_int("rtc_despike_delta_spike_count",
                         "per-detector count of delta-domain spikes identified by the RTC despiker");
         add_rtc_det_int("rtc_despike_local_delta_candidate_count",
                         "per-detector count of locally detrended delta candidate events considered by the compact-delta gate");
-        add_rtc_det_int("rtc_despike_local_delta_exceed_count",
+        add_rtc_det_int("rtc_despike_local_delta_accepted_event_count",
                         "per-detector count of locally detrended delta candidate events accepted by the compact-delta gate");
+        add_rtc_det_int("rtc_despike_local_delta_exceed_count",
+                        "legacy alias for rtc_despike_local_delta_accepted_event_count");
         add_rtc_det_int("rtc_despike_local_delta_reject_count",
                         "per-detector count of locally detrended delta candidate events rejected by the compact-delta gate");
         add_rtc_det_double("rtc_despike_added_flagged_frac",
@@ -2387,16 +2393,22 @@ void Engine::create_tod_files() {
                                  "count of raw-sample MAD exceedances for a captured detector slot");
             add_rtc_imp_slot_int("rtc_impulsive_slot_local_raw_candidate_count",
                                  "count of locally detrended raw candidate events considered by the compact-raw gate for a captured detector slot");
+            add_rtc_imp_slot_int("rtc_impulsive_slot_local_raw_accepted_event_count",
+                                 "count of locally detrended raw candidate events accepted by the compact-raw gate for a captured detector slot");
+            add_rtc_imp_slot_int("rtc_impulsive_slot_local_flagged_sample_count",
+                                 "count of samples flagged by accepted compact-raw local-residual events for a captured detector slot");
             add_rtc_imp_slot_int("rtc_impulsive_slot_local_exceed_count",
-                                 "count of locally detrended raw-sample exceedance samples accepted after compact-raw gating for a captured detector slot");
+                                 "legacy alias for rtc_impulsive_slot_local_flagged_sample_count");
             add_rtc_imp_slot_int("rtc_impulsive_slot_local_raw_reject_count",
                                  "count of locally detrended raw candidate events rejected by the compact-raw gate for a captured detector slot");
             add_rtc_imp_slot_int("rtc_impulsive_slot_delta_spike_count",
                                  "count of delta-domain spikes for a captured detector slot");
             add_rtc_imp_slot_int("rtc_impulsive_slot_local_delta_candidate_count",
                                  "count of locally detrended delta candidate events considered by the compact-delta gate for a captured detector slot");
-            add_rtc_imp_slot_int("rtc_impulsive_slot_local_delta_exceed_count",
+            add_rtc_imp_slot_int("rtc_impulsive_slot_local_delta_accepted_event_count",
                                  "count of locally detrended delta candidate events accepted by the compact-delta gate for a captured detector slot");
+            add_rtc_imp_slot_int("rtc_impulsive_slot_local_delta_exceed_count",
+                                 "legacy alias for rtc_impulsive_slot_local_delta_accepted_event_count");
             add_rtc_imp_slot_int("rtc_impulsive_slot_local_delta_reject_count",
                                  "count of locally detrended delta candidate events rejected by the compact-delta gate for a captured detector slot");
             add_rtc_imp_snip_double("rtc_impulsive_slot_snippet_z",

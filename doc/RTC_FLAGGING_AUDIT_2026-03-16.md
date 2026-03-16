@@ -98,6 +98,16 @@ Why it matters:
 
 ### 3. Raw-gate and delta-gate diagnostics are not directly comparable
 
+Status:
+
+- fixed in the local code state after this audit
+- new RTC products now persist explicit unit-safe counters:
+  - `rtc_despike_local_raw_accepted_event_count`
+  - `rtc_despike_local_flagged_sample_count`
+  - `rtc_despike_local_delta_accepted_event_count`
+- the older `...local_exceed_count` fields remain as legacy aliases for one
+  compatibility cycle
+
 Code:
 
 - `local_raw_candidate_count` / `local_raw_reject_count` are event counts

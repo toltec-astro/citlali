@@ -19,11 +19,12 @@ namespace timestream {
 struct DespikeDetectorDiagSummary {
     int raw_exceed_count = 0;
     int local_raw_candidate_count = 0;
-    int local_exceed_count = 0;
+    int local_raw_accepted_event_count = 0;
+    int local_flagged_sample_count = 0;
     int local_raw_reject_count = 0;
     int delta_spike_count = 0;
     int local_delta_candidate_count = 0;
-    int local_delta_exceed_count = 0;
+    int local_delta_accepted_event_count = 0;
     int local_delta_reject_count = 0;
     double added_flagged_frac = std::numeric_limits<double>::quiet_NaN();
     int added_region_count = 0;
@@ -556,6 +557,7 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                                         if (shape_gate_local_raw(
                                                 resid, local_abs_z, base_flags,
                                                 best_sample, resid_sigma)) {
+                                            ++diag.local_raw_accepted_event_count;
                                             local_flags.segment(lo, hi - lo + 1).setOnes();
                                         }
                                         else {
@@ -585,7 +587,7 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                                     }
                                 }
                             }
-                            diag.local_exceed_count =
+                            diag.local_flagged_sample_count =
                                 static_cast<int>((local_flags.array() == 1).count());
 
                             std::vector<double> local_delta_vals;
@@ -649,7 +651,7 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                                             if (shape_gate_local_delta(
                                                     resid, local_delta_abs_z, base_flags,
                                                     best_edge, resid_med, resid_sigma)) {
-                                                ++diag.local_delta_exceed_count;
+                                                ++diag.local_delta_accepted_event_count;
                                                 local_flags(best_edge) = 1;
                                                 if (best_edge + 1 < n_pts) {
                                                     local_flags(best_edge + 1) = 1;

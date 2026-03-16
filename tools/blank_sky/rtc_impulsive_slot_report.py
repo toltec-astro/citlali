@@ -99,8 +99,9 @@ def _make_summary_rows(rows: list[dict[str, object]]) -> list[dict[str, object]]
             [
                 int(row["raw_exceed_count"]) <= 0
                 and int(row["delta_spike_count"]) <= 0
-                and int(row["local_exceed_count"]) <= 0
-                and int(row["local_delta_exceed_count"]) <= 0
+                and int(row["local_raw_accepted_event_count"]) <= 0
+                and int(row["local_flagged_sample_count"]) <= 0
+                and int(row["local_delta_accepted_event_count"]) <= 0
                 and float(row["added_flagged_frac"]) <= 0
                 for row in rr
             ],
@@ -108,7 +109,9 @@ def _make_summary_rows(rows: list[dict[str, object]]) -> list[dict[str, object]]
         )
         touched_by_local = np.asarray(
             [
-                int(row["local_exceed_count"]) > 0 or int(row["local_delta_exceed_count"]) > 0
+                int(row["local_raw_accepted_event_count"]) > 0
+                or int(row["local_flagged_sample_count"]) > 0
+                or int(row["local_delta_accepted_event_count"]) > 0
                 for row in rr
             ],
             dtype=float,
@@ -141,11 +144,12 @@ def _make_summary_rows(rows: list[dict[str, object]]) -> list[dict[str, object]]
                 "median_added_flagged_frac": float(np.median([float(row["added_flagged_frac"]) for row in rr])),
                 "median_raw_exceed_count": float(np.median([float(row["raw_exceed_count"]) for row in rr])),
                 "median_local_raw_candidate_count": float(np.median([float(row["local_raw_candidate_count"]) for row in rr])),
-                "median_local_exceed_count": float(np.median([float(row["local_exceed_count"]) for row in rr])),
+                "median_local_raw_accepted_event_count": float(np.median([float(row["local_raw_accepted_event_count"]) for row in rr])),
+                "median_local_flagged_sample_count": float(np.median([float(row["local_flagged_sample_count"]) for row in rr])),
                 "median_local_raw_reject_count": float(np.median([float(row["local_raw_reject_count"]) for row in rr])),
                 "median_delta_spike_count": float(np.median([float(row["delta_spike_count"]) for row in rr])),
                 "median_local_delta_candidate_count": float(np.median([float(row["local_delta_candidate_count"]) for row in rr])),
-                "median_local_delta_exceed_count": float(np.median([float(row["local_delta_exceed_count"]) for row in rr])),
+                "median_local_delta_accepted_event_count": float(np.median([float(row["local_delta_accepted_event_count"]) for row in rr])),
                 "median_local_delta_reject_count": float(np.median([float(row["local_delta_reject_count"]) for row in rr])),
                 "frac_raw_like": float(np.mean(raw_like)),
                 "frac_delta_like": float(np.mean(delta_like)),
@@ -175,14 +179,17 @@ def _write_report(
         for row in rows
         if int(row["raw_exceed_count"]) <= 0
         and int(row["delta_spike_count"]) <= 0
-        and int(row["local_exceed_count"]) <= 0
-        and int(row["local_delta_exceed_count"]) <= 0
+        and int(row["local_raw_accepted_event_count"]) <= 0
+        and int(row["local_flagged_sample_count"]) <= 0
+        and int(row["local_delta_accepted_event_count"]) <= 0
         and float(row["added_flagged_frac"]) <= 0
     ]
     touched_by_local = [
         row
         for row in rows
-        if int(row["local_exceed_count"]) > 0 or int(row["local_delta_exceed_count"]) > 0
+        if int(row["local_raw_accepted_event_count"]) > 0
+        or int(row["local_flagged_sample_count"]) > 0
+        or int(row["local_delta_accepted_event_count"]) > 0
     ]
     with_local_delta_candidates = [
         row for row in rows if int(row["local_delta_candidate_count"]) > 0
@@ -239,9 +246,9 @@ def _write_report(
                 "- scan={scan} output_scan={output_scan_index} nw={network} slot={slot} det_uid={apt_uid} "
                 "kind={event_kind_label} score={event_score:.2f} sample={event_sample} "
                 "peak_z={peak_abs_z:.2f} delta_z={peak_delta_abs_z:.2f} raw_count={raw_exceed_count} "
-                "local_raw_cand={local_raw_candidate_count} local_raw_count={local_exceed_count} "
+                "local_raw_cand={local_raw_candidate_count} local_raw_accept={local_raw_accepted_event_count} local_flag_samples={local_flagged_sample_count} "
                 "local_raw_reject={local_raw_reject_count} delta_count={delta_spike_count} "
-                "local_delta_cand={local_delta_candidate_count} local_delta_count={local_delta_exceed_count} "
+                "local_delta_cand={local_delta_candidate_count} local_delta_accept={local_delta_accepted_event_count} "
                 "local_delta_reject={local_delta_reject_count} add_flag_frac={added_flagged_frac:.4f}".format(**row)
             )
     lines.extend(
@@ -372,19 +379,29 @@ def main() -> None:
             slot_local_raw_candidate = _filled(ds.variables["rtc_impulsive_slot_local_raw_candidate_count"], fill=np.iinfo(np.int32).min).astype(int)
         else:
             slot_local_raw_candidate = np.zeros_like(slot_raw)
-        if "rtc_impulsive_slot_local_exceed_count" in ds.variables:
-            slot_local_raw = _filled(ds.variables["rtc_impulsive_slot_local_exceed_count"], fill=np.iinfo(np.int32).min).astype(int)
+        if "rtc_impulsive_slot_local_raw_accepted_event_count" in ds.variables:
+            slot_local_raw_accept = _filled(ds.variables["rtc_impulsive_slot_local_raw_accepted_event_count"], fill=np.iinfo(np.int32).min).astype(int)
+        elif "rtc_impulsive_slot_local_exceed_count" in ds.variables:
+            slot_local_raw_accept = _filled(ds.variables["rtc_impulsive_slot_local_exceed_count"], fill=np.iinfo(np.int32).min).astype(int)
         else:
-            slot_local_raw = np.zeros_like(slot_raw)
+            slot_local_raw_accept = np.zeros_like(slot_raw)
+        if "rtc_impulsive_slot_local_flagged_sample_count" in ds.variables:
+            slot_local_flagged = _filled(ds.variables["rtc_impulsive_slot_local_flagged_sample_count"], fill=np.iinfo(np.int32).min).astype(int)
+        elif "rtc_impulsive_slot_local_exceed_count" in ds.variables:
+            slot_local_flagged = _filled(ds.variables["rtc_impulsive_slot_local_exceed_count"], fill=np.iinfo(np.int32).min).astype(int)
+        else:
+            slot_local_flagged = np.zeros_like(slot_raw)
         if "rtc_impulsive_slot_local_raw_reject_count" in ds.variables:
             slot_local_raw_reject = _filled(ds.variables["rtc_impulsive_slot_local_raw_reject_count"], fill=np.iinfo(np.int32).min).astype(int)
         else:
             slot_local_raw_reject = np.zeros_like(slot_raw)
         slot_delta = _filled(ds.variables["rtc_impulsive_slot_delta_spike_count"], fill=np.iinfo(np.int32).min).astype(int)
-        if "rtc_impulsive_slot_local_delta_exceed_count" in ds.variables:
-            slot_local_delta = _filled(ds.variables["rtc_impulsive_slot_local_delta_exceed_count"], fill=np.iinfo(np.int32).min).astype(int)
+        if "rtc_impulsive_slot_local_delta_accepted_event_count" in ds.variables:
+            slot_local_delta_accept = _filled(ds.variables["rtc_impulsive_slot_local_delta_accepted_event_count"], fill=np.iinfo(np.int32).min).astype(int)
+        elif "rtc_impulsive_slot_local_delta_exceed_count" in ds.variables:
+            slot_local_delta_accept = _filled(ds.variables["rtc_impulsive_slot_local_delta_exceed_count"], fill=np.iinfo(np.int32).min).astype(int)
         else:
-            slot_local_delta = np.zeros_like(slot_delta)
+            slot_local_delta_accept = np.zeros_like(slot_delta)
         if "rtc_impulsive_slot_local_delta_candidate_count" in ds.variables:
             slot_local_delta_candidate = _filled(ds.variables["rtc_impulsive_slot_local_delta_candidate_count"], fill=np.iinfo(np.int32).min).astype(int)
         else:
@@ -433,11 +450,12 @@ def main() -> None:
                         "peak_delta_abs_z": float(slot_dpeak[scan, diag_idx, slot]),
                         "raw_exceed_count": int(slot_raw[scan, diag_idx, slot]),
                         "local_raw_candidate_count": int(slot_local_raw_candidate[scan, diag_idx, slot]),
-                        "local_exceed_count": int(slot_local_raw[scan, diag_idx, slot]),
+                        "local_raw_accepted_event_count": int(slot_local_raw_accept[scan, diag_idx, slot]),
+                        "local_flagged_sample_count": int(slot_local_flagged[scan, diag_idx, slot]),
                         "local_raw_reject_count": int(slot_local_raw_reject[scan, diag_idx, slot]),
                         "delta_spike_count": int(slot_delta[scan, diag_idx, slot]),
                         "local_delta_candidate_count": int(slot_local_delta_candidate[scan, diag_idx, slot]),
-                        "local_delta_exceed_count": int(slot_local_delta[scan, diag_idx, slot]),
+                        "local_delta_accepted_event_count": int(slot_local_delta_accept[scan, diag_idx, slot]),
                         "local_delta_reject_count": int(slot_local_delta_reject[scan, diag_idx, slot]),
                         "added_flagged_frac": float(slot_add_flag[scan, diag_idx, slot]),
                         "snippet_peak_abs_z": float(np.nanmax(np.abs(snippet_z[scan, diag_idx, slot, :]))),
