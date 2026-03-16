@@ -47,7 +47,7 @@ public:
     struct LocalResidualOptions {
         struct CompactRawGateOptions {
             bool enabled = true;
-            double candidate_sigma_scale = 0.5;
+            double candidate_rel_sigma_scale = 1.0;
             double window_sec = 0.18;
             double half_peak_frac = 0.5;
             double max_width_sec = 0.18;
@@ -526,7 +526,8 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                                 Eigen::VectorXd local_abs_z =
                                     Eigen::VectorXd::Constant(n_pts, std::numeric_limits<double>::quiet_NaN());
                                 const double candidate_z =
-                                    local_residual.compact_raw_gate.candidate_sigma_scale * min_spike_sigma;
+                                    local_residual.compact_raw_gate.candidate_rel_sigma_scale *
+                                    local_residual.sigma_scale * min_spike_sigma;
                                 for (Eigen::Index i = 0; i < n_pts; ++i) {
                                     if (base_flags(i) || raw_flags(i) || !std::isfinite(abs_dev(i))) {
                                         continue;

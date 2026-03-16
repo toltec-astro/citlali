@@ -1835,7 +1835,11 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.SIGMA_SCALE", rtcproc.despiker.local_residual.sigma_scale);
         add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.DELTA_SIGMA_SCALE", rtcproc.despiker.local_residual.delta_sigma_scale);
         add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.ENABLED", rtcproc.despiker.local_residual.compact_raw_gate.enabled);
-        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.CAND_SIGMA_SCALE", rtcproc.despiker.local_residual.compact_raw_gate.candidate_sigma_scale);
+        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.CAND_REL_SIGMA_SCALE",
+                       rtcproc.despiker.local_residual.compact_raw_gate.candidate_rel_sigma_scale);
+        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.CAND_SIGMA_SCALE",
+                       rtcproc.despiker.local_residual.compact_raw_gate.candidate_rel_sigma_scale *
+                           rtcproc.despiker.local_residual.sigma_scale);
         add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.WINDOW_SEC", rtcproc.despiker.local_residual.compact_raw_gate.window_sec);
         add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.HALF_PEAK_FRAC", rtcproc.despiker.local_residual.compact_raw_gate.half_peak_frac);
         add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.MAX_WIDTH_SEC", rtcproc.despiker.local_residual.compact_raw_gate.max_width_sec);
@@ -3167,9 +3171,13 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.RAW_GATE.ENABLED",
                                         rtcproc.despiker.local_residual.compact_raw_gate.enabled,
                                         "Enable compact morphology gate for local-residual raw candidates");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.RAW_GATE.CAND_REL_SIGMA_SCALE",
+                                        rtcproc.despiker.local_residual.compact_raw_gate.candidate_rel_sigma_scale,
+                                        "Candidate threshold scale relative to the accepted local-residual raw threshold");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.RAW_GATE.CAND_SIGMA_SCALE",
-                                        rtcproc.despiker.local_residual.compact_raw_gate.candidate_sigma_scale,
-                                        "Candidate threshold scale for compact local-residual raw gate");
+                                        rtcproc.despiker.local_residual.compact_raw_gate.candidate_rel_sigma_scale *
+                                            rtcproc.despiker.local_residual.sigma_scale,
+                                        "Effective candidate threshold scale in units of min_spike_sigma for compact local-residual raw gate");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.RAW_GATE.WINDOW_SEC",
                                         rtcproc.despiker.local_residual.compact_raw_gate.window_sec,
                                         "Window used to score compactness of local-residual raw candidates");
