@@ -20,7 +20,9 @@ struct DespikeDetectorDiagSummary {
     int raw_exceed_count = 0;
     int local_exceed_count = 0;
     int delta_spike_count = 0;
+    int local_delta_candidate_count = 0;
     int local_delta_exceed_count = 0;
+    int local_delta_reject_count = 0;
     double added_flagged_frac = std::numeric_limits<double>::quiet_NaN();
     int added_region_count = 0;
     double added_region_len_median = std::numeric_limits<double>::quiet_NaN();
@@ -41,10 +43,18 @@ public:
     double fsmp;
 
     struct LocalResidualOptions {
+        struct CompactDeltaGateOptions {
+            bool enabled = true;
+            double window_sec = 0.12;
+            double half_peak_frac = 0.5;
+            double max_width_sec = 0.10;
+            double max_step_shift_z = 3.0;
+        };
         bool enabled = false;
         double window_sec = 0.25;
         double sigma_scale = 0.75;
         double delta_sigma_scale = 0.75;
+        CompactDeltaGateOptions compact_delta_gate;
     };
     LocalResidualOptions local_residual;
 
@@ -275,6 +285,84 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
         return std::make_pair(med, sigma);
     };
 
+    auto shape_gate_local_delta = [&](const Eigen::VectorXd &resid,
+                                      const Eigen::VectorXd &delta_abs_z,
+                                      const Eigen::Matrix<bool, Eigen::Dynamic, 1> &base_flags,
+                                      Eigen::Index peak_edge,
+                                      double resid_med,
+                                      double resid_sigma) {
+        const auto &gate = local_residual.compact_delta_gate;
+        if (!gate.enabled) {
+            return true;
+        }
+        if (!(std::isfinite(resid_med) && std::isfinite(resid_sigma) && resid_sigma > 0.0) ||
+            peak_edge < 0 || peak_edge >= delta_abs_z.size()) {
+            return false;
+        }
+
+        const Eigen::Index n = resid.size();
+        const Eigen::Index peak_sample = peak_edge + 1;
+        const double peak_delta_z = delta_abs_z(peak_edge);
+        if (!std::isfinite(peak_delta_z) || peak_delta_z <= 0.0) {
+            return false;
+        }
+
+        const Eigen::Index gate_half_window = std::max<Eigen::Index>(
+            4, static_cast<Eigen::Index>(std::llround(gate.window_sec * fsmp)));
+        const Eigen::Index max_width_edges = std::max<Eigen::Index>(
+            1, static_cast<Eigen::Index>(std::llround(gate.max_width_sec * fsmp)));
+        const double width_thresh =
+            std::max(gate.half_peak_frac * peak_delta_z, std::min(peak_delta_z, 1.5));
+        const Eigen::Index left_bound = std::max<Eigen::Index>(0, peak_edge - gate_half_window);
+        const Eigen::Index right_bound =
+            std::min<Eigen::Index>(delta_abs_z.size() - 1, peak_edge + gate_half_window);
+
+        Eigen::Index left = peak_edge;
+        while (left - 1 >= left_bound &&
+               std::isfinite(delta_abs_z(left - 1)) &&
+               delta_abs_z(left - 1) >= width_thresh) {
+            --left;
+        }
+        Eigen::Index right = peak_edge;
+        while (right + 1 <= right_bound &&
+               std::isfinite(delta_abs_z(right + 1)) &&
+               delta_abs_z(right + 1) >= width_thresh) {
+            ++right;
+        }
+        const Eigen::Index width_edges = right - left + 1;
+        if (width_edges > max_width_edges) {
+            return false;
+        }
+
+        const Eigen::Index pre_lo = std::max<Eigen::Index>(0, peak_sample - gate_half_window);
+        const Eigen::Index pre_hi = std::max<Eigen::Index>(pre_lo, peak_sample - 2);
+        const Eigen::Index post_lo = std::min<Eigen::Index>(n, peak_sample + 2);
+        const Eigen::Index post_hi = std::min<Eigen::Index>(n, peak_sample + gate_half_window + 1);
+        std::vector<double> pre_vals;
+        std::vector<double> post_vals;
+        pre_vals.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(pre_hi - pre_lo, 0)));
+        post_vals.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(post_hi - post_lo, 0)));
+        for (Eigen::Index i = pre_lo; i < pre_hi; ++i) {
+            if (!base_flags(i) && std::isfinite(resid(i))) {
+                pre_vals.push_back(resid(i));
+            }
+        }
+        for (Eigen::Index i = post_lo; i < post_hi; ++i) {
+            if (!base_flags(i) && std::isfinite(resid(i))) {
+                post_vals.push_back(resid(i));
+            }
+        }
+        if (pre_vals.size() < 4 || post_vals.size() < 4) {
+            return false;
+        }
+        Eigen::Map<const Eigen::VectorXd> pre_map(pre_vals.data(), static_cast<Eigen::Index>(pre_vals.size()));
+        Eigen::Map<const Eigen::VectorXd> post_map(post_vals.data(), static_cast<Eigen::Index>(post_vals.size()));
+        const double pre_med = tula::alg::median(pre_map);
+        const double post_med = tula::alg::median(post_map);
+        const double step_shift_z = std::abs(post_med - pre_med) / resid_sigma;
+        return std::isfinite(step_shift_z) && step_shift_z <= gate.max_step_shift_z;
+    };
+
     last_detector_diag.assign(static_cast<std::size_t>(n_dets), DespikeDetectorDiagSummary{});
 
     if (n_pts < 3) {
@@ -376,6 +464,11 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                                     const double local_delta_cutoff =
                                         local_residual.delta_sigma_scale * min_spike_sigma * delta_sigma;
                                     double max_local_delta_abs = 0.0;
+                                    std::vector<Eigen::Index> candidate_edges;
+                                    candidate_edges.reserve(static_cast<std::size_t>(n_pts));
+                                    Eigen::VectorXd local_delta_abs_z =
+                                        Eigen::VectorXd::Constant(std::max<Eigen::Index>(n_pts - 1, 0),
+                                                                  std::numeric_limits<double>::quiet_NaN());
                                     for (Eigen::Index i = 0; i < n_pts - 1; ++i) {
                                         if (base_flags(i) || base_flags(i + 1) || raw_flags(i) ||
                                             raw_flags(i + 1) || !std::isfinite(resid(i)) ||
@@ -385,13 +478,53 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                                         const double abs_delta =
                                             std::abs((resid(i + 1) - resid(i)) - delta_med);
                                         max_local_delta_abs = std::max(max_local_delta_abs, abs_delta);
+                                        local_delta_abs_z(i) = abs_delta / delta_sigma;
                                         if (abs_delta > local_delta_cutoff) {
-                                            ++diag.local_delta_exceed_count;
-                                            local_flags(i) = 1;
-                                            local_flags(i + 1) = 1;
+                                            candidate_edges.push_back(i);
                                         }
                                     }
                                     diag.max_local_delta_abs_z = max_local_delta_abs / delta_sigma;
+                                    if (!candidate_edges.empty()) {
+                                        Eigen::Index cluster_start = candidate_edges.front();
+                                        Eigen::Index cluster_end = candidate_edges.front();
+                                        auto flush_cluster = [&](Eigen::Index lo, Eigen::Index hi) {
+                                            Eigen::Index best_edge = lo;
+                                            double best_z = -1.0;
+                                            for (Eigen::Index edge = lo; edge <= hi; ++edge) {
+                                                if (edge >= 0 && edge < local_delta_abs_z.size() &&
+                                                    std::isfinite(local_delta_abs_z(edge)) &&
+                                                    local_delta_abs_z(edge) > best_z) {
+                                                    best_z = local_delta_abs_z(edge);
+                                                    best_edge = edge;
+                                                }
+                                            }
+                                            ++diag.local_delta_candidate_count;
+                                            if (shape_gate_local_delta(
+                                                    resid, local_delta_abs_z, base_flags,
+                                                    best_edge, resid_med, resid_sigma)) {
+                                                ++diag.local_delta_exceed_count;
+                                                local_flags(best_edge) = 1;
+                                                if (best_edge + 1 < n_pts) {
+                                                    local_flags(best_edge + 1) = 1;
+                                                }
+                                            }
+                                            else {
+                                                ++diag.local_delta_reject_count;
+                                            }
+                                        };
+                                        for (std::size_t ii = 1; ii < candidate_edges.size(); ++ii) {
+                                            const auto edge = candidate_edges[ii];
+                                            if (edge <= cluster_end + 1) {
+                                                cluster_end = edge;
+                                            }
+                                            else {
+                                                flush_cluster(cluster_start, cluster_end);
+                                                cluster_start = edge;
+                                                cluster_end = edge;
+                                            }
+                                        }
+                                        flush_cluster(cluster_start, cluster_end);
+                                    }
                                 }
                             }
                         }
