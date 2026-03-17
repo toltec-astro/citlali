@@ -122,6 +122,8 @@ timestream: # timestream reduction parameters
     grouping: fg # use all matched detectors (fg) or only matched detectors with a pair (loc)
   output: # controls options for writing out TOD as netCDF file
     subdir_name: null # optional subdirectory name for tod output files (ignored if null)
+    rtcdiag:
+      enabled: true # write a compact RTC diagnostics sidecar even when full RTC TOD output is disabled
     stats: # controls for what variables to include in stats file
       eigenvalues: false # include first 64 eigenvalues in stats file
   raw_time_chunk:

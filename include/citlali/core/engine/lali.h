@@ -165,11 +165,14 @@ auto Lali::run() {
         (tod_output_type == "rtc" || tod_output_type == "both");
     const bool write_ptc = run_tod_output && !tod_filename.empty() &&
         (tod_output_type == "ptc" || tod_output_type == "both");
+    const bool write_rtcdiag = run_rtcdiag_output && !rtcdiag_filename.empty();
 
     auto rtc_writer = write_rtc ? std::make_shared<OrderedWriter>() : nullptr;
     auto ptc_writer = write_ptc ? std::make_shared<OrderedWriter>() : nullptr;
+    auto rtcdiag_writer = write_rtcdiag ? std::make_shared<OrderedWriter>() : nullptr;
 
-    auto farm = grppi::farm(n_threads,[&, scans_done_mutex, rtc_writer, ptc_writer, write_rtc, write_ptc](input_t &rtcdata) {
+    auto farm = grppi::farm(n_threads,[&, scans_done_mutex, rtc_writer, ptc_writer, rtcdiag_writer,
+                                       write_rtc, write_ptc, write_rtcdiag](input_t &rtcdata) {
         // starting index for scan
         Eigen::Index si = rtcdata.scan_indices.data(2);
         // current length of outer scans
@@ -248,6 +251,13 @@ auto Lali::run() {
             calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib, map_grouping);
         }
 
+        if (write_rtcdiag) {
+            rtcdiag_writer->wait_turn(ptcdata.index.data);
+            logger->info("writing rtc diagnostics sidecar chunk");
+            rtcproc.append_diag_to_netcdf(ptcdata, rtcdiag_filename, calib, ptcdata.index.data);
+            rtcdiag_writer->advance();
+        }
+
         // write rtc timestreams
         const auto rtc_scan_row = tod_output_scan_row(rtcdata.index.data, "rtc");
         if (write_rtc && rtc_scan_row >= 0) {
@@ -256,6 +266,9 @@ auto Lali::run() {
             rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
                                      ptcdata.pointing_offsets_arcsec.data, calib, false, rtc_scan_row);
             rtc_writer->advance();
+        }
+        if (write_rtc || write_rtcdiag) {
+            rtcproc.clear_cached_diagnostics(ptcdata.index.data);
         }
 
         const bool use_fruit_noise_weights =

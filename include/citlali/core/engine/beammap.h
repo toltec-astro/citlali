@@ -599,9 +599,12 @@ auto Beammap::run_timestream(KidsProc &kidsproc) {
 
     const bool write_rtc = run_tod_output && !tod_filename.empty() &&
         (tod_output_type == "rtc" || tod_output_type == "both");
+    const bool write_rtcdiag = run_rtcdiag_output && !rtcdiag_filename.empty();
     auto rtc_writer = write_rtc ? std::make_shared<OrderedWriter>() : nullptr;
+    auto rtcdiag_writer = write_rtcdiag ? std::make_shared<OrderedWriter>() : nullptr;
 
-    auto farm = grppi::farm(n_threads,[&, scans_done_mutex, rtc_writer, write_rtc](auto &rtcdata) -> TCData<TCDataKind::PTC,Eigen::MatrixXd> {
+    auto farm = grppi::farm(n_threads,[&, scans_done_mutex, rtc_writer, rtcdiag_writer,
+                                       write_rtc, write_rtcdiag](auto &rtcdata) -> TCData<TCDataKind::PTC,Eigen::MatrixXd> {
 
         // allocate up bitwise timestream flags
         rtcdata.flags2.data.setConstant(timestream::TimestreamFlags::Good);
@@ -685,6 +688,13 @@ auto Beammap::run_timestream(KidsProc &kidsproc) {
             calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib_scan, map_grouping);
         }
 
+        if (write_rtcdiag) {
+            rtcdiag_writer->wait_turn(ptcdata.index.data);
+            logger->info("writing rtc diagnostics sidecar chunk");
+            rtcproc.append_diag_to_netcdf(ptcdata, rtcdiag_filename, calib_scan, ptcdata.index.data);
+            rtcdiag_writer->advance();
+        }
+
         // write rtc timestreams
         const auto rtc_scan_row = tod_output_scan_row(rtcdata.index.data, "rtc");
         if (write_rtc && rtc_scan_row >= 0) {
@@ -693,6 +703,9 @@ auto Beammap::run_timestream(KidsProc &kidsproc) {
             rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
                                      ptcdata.pointing_offsets_arcsec.data, calib_scan, true, rtc_scan_row);
             rtc_writer->advance();
+        }
+        if (write_rtc || write_rtcdiag) {
+            rtcproc.clear_cached_diagnostics(ptcdata.index.data);
         }
 
         // store indices for each ptcdata

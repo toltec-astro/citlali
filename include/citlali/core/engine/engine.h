@@ -263,6 +263,8 @@ public:
     std::string tod_output_type, tod_output_subdir_name;
     bool run_tod_output_rtc = false;
     bool run_tod_output_ptc = false;
+    bool run_rtcdiag_output = true;
+    std::string rtcdiag_filename;
 
     // legacy shared TOD output selection (kept for backward compatibility helpers)
     bool tod_output_chunk_select_enabled = false;
@@ -357,6 +359,7 @@ public:
     // create tod files (does not populate them)
     template <engine_utils::toltecIO::ProdType prod_t>
     void create_tod_files();
+    void create_rtcdiag_file();
 
     // setup and query selected TOD output chunks
     void setup_tod_output_chunk_selection();
@@ -498,13 +501,13 @@ void Engine::obsnum_setup() {
         }
     }
 
+    setup_tod_output_chunk_selection();
+    // create output subdirectory if requested
+    if ((run_tod_output || run_rtcdiag_output) && tod_output_subdir_name!="null") {
+        fs::create_directories(obsnum_dir_name + "raw/" + tod_output_subdir_name);
+    }
     // create timestream files
     if (run_tod_output) {
-        setup_tod_output_chunk_selection();
-        // create tod output subdirectory if requested
-        if (tod_output_subdir_name!="null") {
-            fs::create_directories(obsnum_dir_name + "raw/" + tod_output_subdir_name);
-        }
         // make rtc tod output file
         if (tod_output_type == "rtc" || tod_output_type == "both") {
             create_tod_files<engine_utils::toltecIO::rtc_timestream>();
@@ -517,6 +520,9 @@ void Engine::obsnum_setup() {
     // don't calculate any eigenvalues
     else if (!diagnostics.write_evals) {
         ptcproc.cleaner.n_calc = 0;
+    }
+    if (run_rtcdiag_output) {
+        create_rtcdiag_file();
     }
 
     // output basic info for obs reduction to command line
@@ -736,6 +742,10 @@ void Engine::get_timestream_config(CT &config) {
     // tod subdirectory name
     get_config_value(config, tod_output_subdir_name, missing_keys, invalid_keys,
                      std::tuple{"timestream","output", "subdir_name"});
+    if (config.has(std::tuple{"timestream","output","rtcdiag","enabled"})) {
+        get_config_value(config, run_rtcdiag_output, missing_keys, invalid_keys,
+                         std::tuple{"timestream","output","rtcdiag","enabled"});
+    }
     // write eigenvalues to stats file
     get_config_value(config, diagnostics.write_evals, missing_keys, invalid_keys,
                      std::tuple{"timestream","output", "stats","eigenvalues"});
@@ -2612,6 +2622,7 @@ void Engine::cli_summary() {
             logger->info("PTC TOD output mode: {}", ptcproc.tod_output_mini ? "mini" : "full");
         }
     }
+    logger->info("RTC diagnostics sidecar output: {}", run_rtcdiag_output ? "enabled" : "disabled");
 
     // test getting memory usage for fun
     /*struct sysinfo memInfo;
@@ -3680,6 +3691,364 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
         }
     }
     // close file
+    fo.close();
+}
+
+void Engine::create_rtcdiag_file() {
+    std::string dir_name = obsnum_dir_name + "raw/";
+    if (tod_output_subdir_name != "null") {
+        dir_name = dir_name + tod_output_subdir_name + "/";
+    }
+
+    auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
+                                              engine_utils::toltecIO::rtcdiag,
+                                              engine_utils::toltecIO::raw>(dir_name, redu_type, "",
+                                                                           obsnum, telescope.sim_obs);
+    rtcdiag_filename = filename + ".nc";
+
+    netCDF::NcFile fo(rtcdiag_filename, netCDF::NcFile::replace);
+
+    netCDF::NcDim n_tod_output_type_dim = fo.addDim("n_tod_output_type", 1);
+    netCDF::NcVar tod_output_type_var = fo.addVar("tod_output_type", netCDF::ncString, n_tod_output_type_dim);
+    const std::vector<size_t> tod_output_type_index = {0};
+    std::string tod_output_type_name = "rtcdiag";
+    tod_output_type_var.putVar(tod_output_type_index, tod_output_type_name);
+
+    const int fill_int = -2147483647;
+    const double fill_double = std::numeric_limits<double>::quiet_NaN();
+    const Eigen::Index n_scans = telescope.scan_indices.cols();
+    const double rtc_fsmp = rtcproc.run_downsample ? telescope.d_fsmp : telescope.fsmp;
+
+    netCDF::NcVar obsnum_v = fo.addVar("obsnum", netCDF::ncInt);
+    obsnum_v.putAtt("units", "N/A");
+    int obsnum_int = std::stoi(obsnum);
+    obsnum_v.putVar(&obsnum_int);
+
+    netCDF::NcVar source_ra_v = fo.addVar("SourceRa", netCDF::ncDouble);
+    source_ra_v.putAtt("units", "rad");
+    source_ra_v.putVar(&telescope.tel_header["Header.Source.Ra"](0));
+
+    netCDF::NcVar source_dec_v = fo.addVar("SourceDec", netCDF::ncDouble);
+    source_dec_v.putAtt("units", "rad");
+    source_dec_v.putVar(&telescope.tel_header["Header.Source.Dec"](0));
+
+    netCDF::NcDim n_scans_dim = fo.addDim("n_scans", n_scans);
+    netCDF::NcDim n_dets_dim = fo.addDim("n_dets", calib.n_dets);
+    netCDF::NcDim n_nws_rtcdiag_dim = fo.addDim("n_nws_rtcdiag", calib.n_nws);
+
+    netCDF::NcVar output_scan_index_v = fo.addVar("output_scan_index", netCDF::ncInt, n_scans_dim);
+    output_scan_index_v.putAtt("units", "N/A");
+    output_scan_index_v.putAtt("comment", "1-based original scan index from the full observation");
+    std::vector<int> output_scan_index(static_cast<std::size_t>(n_scans), fill_int);
+    for (Eigen::Index i = 0; i < n_scans; ++i) {
+        output_scan_index[static_cast<std::size_t>(i)] = static_cast<int>(i + 1);
+    }
+    output_scan_index_v.putVar(output_scan_index.data());
+
+    netCDF::NcVar nw_ids_v = fo.addVar("rtc_diag_network_ids", netCDF::ncInt, n_nws_rtcdiag_dim);
+    nw_ids_v.putAtt("units", "N/A");
+    nw_ids_v.putAtt("comment", "network IDs corresponding to n_nws_rtcdiag axis");
+    std::vector<int> nw_ids(static_cast<std::size_t>(calib.n_nws), fill_int);
+    for (Eigen::Index i = 0; i < calib.n_nws; ++i) {
+        nw_ids[static_cast<std::size_t>(i)] = static_cast<int>(calib.nws(i));
+    }
+    nw_ids_v.putVar(nw_ids.data());
+
+    add_netcdf_var<std::string>(fo, "INSTRUME", "TolTEC");
+    add_netcdf_var<std::string>(fo, "TELESCOP", "LMT");
+    add_netcdf_var<std::string>(fo, "PIPELINE", "CITLALI");
+    add_netcdf_var<std::string>(fo, "VERSION", CITLALI_GIT_VERSION);
+    add_netcdf_var<std::string>(fo, "KIDS", KIDSCPP_GIT_VERSION);
+    add_netcdf_var<std::string>(fo, "TULA", TULA_GIT_VERSION);
+    add_netcdf_var<std::string>(fo, "PROJID", telescope.project_id);
+    add_netcdf_var<std::string>(fo, "GOAL", redu_type);
+    add_netcdf_var<std::string>(fo, "OBSGOAL", telescope.obs_goal);
+    add_netcdf_var<std::string>(fo, "TYPE", tod_type);
+    add_netcdf_var(fo, "SAMPRATE", telescope.fsmp);
+    add_netcdf_var(fo, "RTC_SAMPRATE", rtc_fsmp);
+
+    // Keep a compact provenance subset so rtcdiag is interpretable without the RTC TOD.
+    add_netcdf_var(fo, "CONFIG.VERBOSE", verbose_mode);
+    add_netcdf_var(fo, "CONFIG.DESPIKED", rtcproc.run_despike);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.ENABLED", rtcproc.despiker.local_residual.enabled);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.WINDOW_SEC", rtcproc.despiker.local_residual.window_sec);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.SIGMA_SCALE", rtcproc.despiker.local_residual.sigma_scale);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.DELTA_SIGMA_SCALE", rtcproc.despiker.local_residual.delta_sigma_scale);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.ENABLED", rtcproc.despiker.local_residual.compact_raw_gate.enabled);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.CAND_REL_SIGMA_SCALE",
+                   rtcproc.despiker.local_residual.compact_raw_gate.candidate_rel_sigma_scale);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.CAND_SIGMA_SCALE",
+                   rtcproc.despiker.local_residual.compact_raw_gate.candidate_rel_sigma_scale *
+                       rtcproc.despiker.local_residual.sigma_scale);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.WINDOW_SEC", rtcproc.despiker.local_residual.compact_raw_gate.window_sec);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.HALF_PEAK_FRAC", rtcproc.despiker.local_residual.compact_raw_gate.half_peak_frac);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.MAX_WIDTH_SEC", rtcproc.despiker.local_residual.compact_raw_gate.max_width_sec);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.MAX_STEP_SHIFT_Z", rtcproc.despiker.local_residual.compact_raw_gate.max_step_shift_z);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.DELTA_GATE.ENABLED", rtcproc.despiker.local_residual.compact_delta_gate.enabled);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.DELTA_GATE.WINDOW_SEC", rtcproc.despiker.local_residual.compact_delta_gate.window_sec);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.DELTA_GATE.HALF_PEAK_FRAC", rtcproc.despiker.local_residual.compact_delta_gate.half_peak_frac);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.DELTA_GATE.MAX_WIDTH_SEC", rtcproc.despiker.local_residual.compact_delta_gate.max_width_sec);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.DELTA_GATE.MAX_STEP_SHIFT_Z", rtcproc.despiker.local_residual.compact_delta_gate.max_step_shift_z);
+    add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.ENABLED", rtcproc.network_step_mask.enabled);
+    add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.STEP_WINDOW_SEC", rtcproc.network_step_mask.step_window_sec);
+    add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.STEP_SCORE_THRESH", rtcproc.network_step_mask.step_score_thresh);
+    add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.MIN_GOOD_FRAC", rtcproc.network_step_mask.min_good_frac);
+    add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.MIN_DET_USED", rtcproc.network_step_mask.min_det_used);
+    add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.MIN_STEP_DET_FRAC", rtcproc.network_step_mask.min_step_det_frac);
+    add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.MIN_ALIGNMENT_FRAC", rtcproc.network_step_mask.min_alignment_frac);
+    add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.CLUSTER_TOL_SEC", rtcproc.network_step_mask.cluster_tol_sec);
+    add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.HALF_WIDTH_SEC", rtcproc.network_step_mask.mask_half_width_sec);
+    add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.MAX_FLAGGED_FRAC", rtcproc.network_step_mask.max_flagged_fraction);
+    add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.ENABLED", rtcproc.impulsive_capture.enabled);
+    add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.MIN_GOOD_FRAC", rtcproc.impulsive_capture.min_good_frac);
+    add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.MIN_EVENT_Z", rtcproc.impulsive_capture.min_event_z);
+    add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.NEAR_EVENT_Z", rtcproc.impulsive_capture.near_event_z);
+    add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.MAX_EVENTS", rtcproc.impulsive_capture.max_events_per_network);
+    add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.HALF_WIDTH_SEC", rtcproc.impulsive_capture.snippet_half_width_sec);
+
+    for (auto const &x : calib.apt) {
+        netCDF::NcVar apt_v = fo.addVar("apt_" + x.first, netCDF::ncDouble, n_dets_dim);
+        apt_v.putAtt("units", calib.apt_header_units[x.first]);
+        apt_v.putVar(x.second.data());
+    }
+
+    std::vector<netCDF::NcDim> rtc_det_dims = {n_scans_dim, n_dets_dim};
+    auto add_rtc_det_double = [&](const std::string &name, const std::string &comment) {
+        netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, rtc_det_dims);
+        v.putAtt("units", "N/A");
+        v.putAtt("comment", comment);
+        std::vector<double> init(static_cast<std::size_t>(n_scans) *
+                                 static_cast<std::size_t>(calib.n_dets), fill_double);
+        v.putVar(init.data());
+    };
+    auto add_rtc_det_int = [&](const std::string &name, const std::string &comment) {
+        netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, rtc_det_dims);
+        v.putAtt("units", "N/A");
+        v.putAtt("comment", comment);
+        std::vector<int> init(static_cast<std::size_t>(n_scans) *
+                              static_cast<std::size_t>(calib.n_dets), fill_int);
+        v.putVar(init.data());
+    };
+
+    add_rtc_det_int("rtc_despike_raw_exceed_count",
+                    "per-detector count of raw-sample MAD-threshold exceedances before despike expansion");
+    add_rtc_det_int("rtc_despike_local_raw_candidate_count",
+                    "per-detector count of locally detrended raw candidate events considered by the compact-raw gate");
+    add_rtc_det_int("rtc_despike_local_raw_accepted_event_count",
+                    "per-detector count of locally detrended raw candidate events accepted by the compact-raw gate");
+    add_rtc_det_int("rtc_despike_local_flagged_sample_count",
+                    "per-detector count of samples flagged by accepted compact-raw local-residual events");
+    add_rtc_det_int("rtc_despike_local_exceed_count",
+                    "legacy alias for rtc_despike_local_flagged_sample_count");
+    add_rtc_det_int("rtc_despike_local_raw_reject_count",
+                    "per-detector count of locally detrended raw candidate events rejected by the compact-raw gate");
+    add_rtc_det_int("rtc_despike_delta_spike_count",
+                    "per-detector count of delta-domain spikes identified by the RTC despiker");
+    add_rtc_det_int("rtc_despike_local_delta_candidate_count",
+                    "per-detector count of locally detrended delta candidate events considered by the compact-delta gate");
+    add_rtc_det_int("rtc_despike_local_delta_accepted_event_count",
+                    "per-detector count of locally detrended delta candidate events accepted by the compact-delta gate");
+    add_rtc_det_int("rtc_despike_local_delta_exceed_count",
+                    "legacy alias for rtc_despike_local_delta_accepted_event_count");
+    add_rtc_det_int("rtc_despike_local_delta_reject_count",
+                    "per-detector count of locally detrended delta candidate events rejected by the compact-delta gate");
+    add_rtc_det_double("rtc_despike_added_flagged_frac",
+                       "fraction of samples newly flagged by RTC despiking, excluding pre-existing flags");
+    add_rtc_det_int("rtc_despike_added_region_count",
+                    "count of newly flagged contiguous sample regions added by RTC despiking");
+    add_rtc_det_double("rtc_despike_added_region_len_median",
+                       "median length of newly flagged contiguous sample regions added by RTC despiking");
+    add_rtc_det_int("rtc_despike_added_region_len_max",
+                    "maximum length of newly flagged contiguous sample regions added by RTC despiking");
+    add_rtc_det_double("rtc_despike_max_raw_abs_z",
+                       "maximum absolute raw-sample deviation in robust-sigma units before despiking");
+    add_rtc_det_double("rtc_despike_max_local_abs_z",
+                       "maximum absolute locally detrended raw-sample deviation in robust-sigma units before despiking");
+    add_rtc_det_double("rtc_despike_max_delta_abs_z",
+                       "maximum absolute adjacent-sample delta deviation in sigma units before despiking");
+    add_rtc_det_double("rtc_despike_max_local_delta_abs_z",
+                       "maximum absolute locally detrended adjacent-sample delta deviation in sigma units before despiking");
+    add_rtc_det_double("rtc_final_flagged_frac",
+                       "final per-detector flagged-sample fraction in the RTC product actually written");
+    add_rtc_det_int("rtc_final_region_count",
+                    "final count of flagged contiguous sample regions in the RTC product actually written");
+    add_rtc_det_double("rtc_final_region_len_median",
+                       "final median flagged-region length in the RTC product actually written");
+    add_rtc_det_int("rtc_final_region_len_max",
+                    "final maximum flagged-region length in the RTC product actually written");
+    add_rtc_det_double("rtc_step_score",
+                       "per-detector step-like pre/post window jump score on the RTC output");
+    add_rtc_det_int("rtc_step_sample",
+                    "sample index of the strongest per-detector RTC step-like jump; -2147483647 means unavailable");
+    add_rtc_det_double("rtc_impulsive_peak_abs_z",
+                       "maximum absolute per-sample deviation in robust-sigma units on the RTC output");
+    add_rtc_det_int("rtc_impulsive_peak_abs_sample",
+                    "sample index of the maximum absolute per-sample deviation; -2147483647 means unavailable");
+    add_rtc_det_double("rtc_impulsive_peak_delta_abs_z",
+                       "maximum absolute adjacent-sample delta deviation in robust-sigma units on the RTC output");
+    add_rtc_det_int("rtc_impulsive_peak_delta_abs_sample",
+                    "sample index of the strongest adjacent-sample delta excursion; -2147483647 means unavailable");
+    add_rtc_det_int("rtc_impulsive_near_abs_count",
+                    "count of RTC samples exceeding near_event_z in absolute robust-z units");
+    add_rtc_det_int("rtc_impulsive_near_delta_count",
+                    "count of RTC adjacent-sample delta excursions exceeding near_event_z");
+    add_rtc_det_double("rtc_impulsive_event_score",
+                       "per-detector impulsive event score, max of raw and delta robust-z peaks");
+    add_rtc_det_int("rtc_impulsive_event_sample",
+                    "sample index of the strongest per-detector impulsive event; -2147483647 means unavailable");
+    add_rtc_det_int("rtc_impulsive_event_kind",
+                    "0=raw-sample peak, 1=delta peak, -2147483647 means unavailable");
+
+    std::vector<netCDF::NcDim> rtc_nw_dims = {n_scans_dim, n_nws_rtcdiag_dim};
+    auto add_rtc_nw_double = [&](const std::string &name, const std::string &comment) {
+        netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, rtc_nw_dims);
+        v.putAtt("units", "N/A");
+        v.putAtt("comment", comment);
+        std::vector<double> init(static_cast<std::size_t>(n_scans) *
+                                 static_cast<std::size_t>(calib.n_nws), fill_double);
+        v.putVar(init.data());
+    };
+    auto add_rtc_nw_int = [&](const std::string &name, const std::string &comment) {
+        netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, rtc_nw_dims);
+        v.putAtt("units", "N/A");
+        v.putAtt("comment", comment);
+        std::vector<int> init(static_cast<std::size_t>(n_scans) *
+                              static_cast<std::size_t>(calib.n_nws), fill_int);
+        v.putVar(init.data());
+    };
+
+    add_rtc_nw_int("rtc_network_n_det_input",
+                   "input detector count in each RTC network block");
+    add_rtc_nw_int("rtc_network_n_det_used",
+                   "detectors with sufficient valid samples and finite robust scale used for RTC diagnostics");
+    add_rtc_nw_double("rtc_network_step_score_median",
+                      "median detector step score within each RTC network block");
+    add_rtc_nw_double("rtc_network_step_score_max",
+                      "maximum detector step score within each RTC network block");
+    add_rtc_nw_double("rtc_network_step_det_frac",
+                      "fraction of diagnostic-used detectors with strong step-like score in each RTC network block");
+    add_rtc_nw_double("rtc_network_step_alignment_frac",
+                      "fraction of strong-step detectors aligned in the dominant step-time cluster");
+    add_rtc_nw_int("rtc_network_step_dominant_sample",
+                   "dominant aligned step sample within each RTC network block; -2147483647 means unavailable");
+    add_rtc_nw_double("rtc_network_cm_low_mid_ratio",
+                      "low-band to mid-band common-mode power ratio for each RTC network block");
+    add_rtc_nw_double("rtc_network_cm_peak_freq_hz",
+                      "frequency of the strongest common-mode spectral peak for each RTC network block");
+    add_rtc_nw_double("rtc_network_cm_peak_prominence",
+                      "prominence of the strongest common-mode spectral peak for each RTC network block");
+    add_rtc_nw_int("rtc_network_step_mask_applied",
+                   "1 if network_step_mask flagged a time window for this RTC network block, else 0");
+    add_rtc_nw_int("rtc_network_step_mask_start_sample",
+                   "inclusive starting sample of the applied network_step_mask window; -2147483647 means none");
+    add_rtc_nw_int("rtc_network_step_mask_end_sample",
+                   "inclusive ending sample of the applied network_step_mask window; -2147483647 means none");
+    add_rtc_nw_int("rtc_network_step_mask_window_samples",
+                   "number of RTC time samples in the applied network_step_mask window");
+    add_rtc_nw_int("rtc_network_step_mask_n_det_masked",
+                   "number of detectors included in the applied network_step_mask window");
+    add_rtc_nw_int("rtc_network_step_mask_n_det_samples_flagged",
+                   "number of previously good detector-samples newly flagged by network_step_mask");
+    add_rtc_nw_double("rtc_network_step_mask_flagged_fraction",
+                      "fraction of previously good detector-samples in the network block newly flagged by network_step_mask");
+
+    if (rtcproc.impulsive_capture.enabled) {
+        const auto n_slots =
+            static_cast<std::size_t>(std::max<Eigen::Index>(rtcproc.impulsive_capture.max_events_per_network, 1));
+        const auto snippet_half_width =
+            static_cast<std::size_t>(std::max(0.0, std::round(rtcproc.impulsive_capture.snippet_half_width_sec * rtc_fsmp)));
+        const auto n_snippet = 2 * snippet_half_width + 1;
+        netCDF::NcDim n_rtc_impulsive_slots_dim = fo.addDim("n_rtc_impulsive_slots", n_slots);
+        netCDF::NcDim n_rtc_impulsive_samples_dim = fo.addDim("n_rtc_impulsive_samples", n_snippet);
+
+        netCDF::NcVar offset_v = fo.addVar("rtc_impulsive_snippet_offset_samples", netCDF::ncInt, n_rtc_impulsive_samples_dim);
+        offset_v.putAtt("units", "samples");
+        offset_v.putAtt("comment", "sample offsets relative to rtc_impulsive_slot_event_sample");
+        std::vector<int> offsets(n_snippet, fill_int);
+        for (std::size_t i = 0; i < n_snippet; ++i) {
+            offsets[i] = static_cast<int>(i) - static_cast<int>(snippet_half_width);
+        }
+        offset_v.putVar(offsets.data());
+
+        std::vector<netCDF::NcDim> rtc_impulsive_slot_dims = {n_scans_dim, n_nws_rtcdiag_dim, n_rtc_impulsive_slots_dim};
+        std::vector<netCDF::NcDim> rtc_impulsive_snippet_dims = {n_scans_dim, n_nws_rtcdiag_dim, n_rtc_impulsive_slots_dim, n_rtc_impulsive_samples_dim};
+
+        auto add_rtc_imp_slot_double = [&](const std::string &name, const std::string &comment) {
+            netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, rtc_impulsive_slot_dims);
+            v.putAtt("units", "N/A");
+            v.putAtt("comment", comment);
+            std::vector<double> init(static_cast<std::size_t>(n_scans) *
+                                     static_cast<std::size_t>(calib.n_nws) * n_slots, fill_double);
+            v.putVar(init.data());
+        };
+        auto add_rtc_imp_slot_int = [&](const std::string &name, const std::string &comment) {
+            netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, rtc_impulsive_slot_dims);
+            v.putAtt("units", "N/A");
+            v.putAtt("comment", comment);
+            std::vector<int> init(static_cast<std::size_t>(n_scans) *
+                                  static_cast<std::size_t>(calib.n_nws) * n_slots, fill_int);
+            v.putVar(init.data());
+        };
+        auto add_rtc_imp_snip_double = [&](const std::string &name, const std::string &comment) {
+            netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, rtc_impulsive_snippet_dims);
+            v.putAtt("units", "N/A");
+            v.putAtt("comment", comment);
+            std::vector<double> init(static_cast<std::size_t>(n_scans) *
+                                     static_cast<std::size_t>(calib.n_nws) * n_slots * n_snippet, fill_double);
+            v.putVar(init.data());
+        };
+        auto add_rtc_imp_snip_int = [&](const std::string &name, const std::string &comment) {
+            netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, rtc_impulsive_snippet_dims);
+            v.putAtt("units", "N/A");
+            v.putAtt("comment", comment);
+            std::vector<int> init(static_cast<std::size_t>(n_scans) *
+                                  static_cast<std::size_t>(calib.n_nws) * n_slots * n_snippet, fill_int);
+            v.putVar(init.data());
+        };
+
+        add_rtc_imp_slot_int("rtc_impulsive_slot_det_index",
+                             "detector index of a captured impulsive RTC event for each scan/network/slot");
+        add_rtc_imp_slot_int("rtc_impulsive_slot_event_sample",
+                             "sample index of a captured impulsive RTC event; -2147483647 means unavailable");
+        add_rtc_imp_slot_int("rtc_impulsive_slot_event_kind",
+                             "0=raw-sample peak, 1=delta peak, -2147483647 means unavailable");
+        add_rtc_imp_slot_double("rtc_impulsive_slot_event_score",
+                                "impulsive event score for a captured scan/network detector slot");
+        add_rtc_imp_slot_double("rtc_impulsive_slot_peak_abs_z",
+                                "absolute robust-z peak of a captured impulsive RTC event");
+        add_rtc_imp_slot_double("rtc_impulsive_slot_peak_delta_abs_z",
+                                "absolute delta robust-z peak of a captured impulsive RTC event");
+        add_rtc_imp_slot_double("rtc_impulsive_slot_added_flagged_frac",
+                                "newly added flagged-sample fraction for the captured detector");
+        add_rtc_imp_slot_int("rtc_impulsive_slot_raw_exceed_count",
+                             "native raw-threshold exceedance count for the captured detector");
+        add_rtc_imp_slot_int("rtc_impulsive_slot_local_raw_candidate_count",
+                             "compact-raw local candidate count for the captured detector");
+        add_rtc_imp_slot_int("rtc_impulsive_slot_local_raw_accepted_event_count",
+                             "accepted compact-raw local-event count for the captured detector");
+        add_rtc_imp_slot_int("rtc_impulsive_slot_local_flagged_sample_count",
+                             "samples flagged by accepted compact-raw local events for the captured detector");
+        add_rtc_imp_slot_int("rtc_impulsive_slot_local_exceed_count",
+                             "legacy alias for rtc_impulsive_slot_local_flagged_sample_count");
+        add_rtc_imp_slot_int("rtc_impulsive_slot_local_raw_reject_count",
+                             "rejected compact-raw local-event count for the captured detector");
+        add_rtc_imp_slot_int("rtc_impulsive_slot_delta_spike_count",
+                             "native delta-spike count for the captured detector");
+        add_rtc_imp_slot_int("rtc_impulsive_slot_local_delta_candidate_count",
+                             "compact-delta local candidate count for the captured detector");
+        add_rtc_imp_slot_int("rtc_impulsive_slot_local_delta_accepted_event_count",
+                             "accepted compact-delta local-event count for the captured detector");
+        add_rtc_imp_slot_int("rtc_impulsive_slot_local_delta_exceed_count",
+                             "legacy alias for rtc_impulsive_slot_local_delta_accepted_event_count");
+        add_rtc_imp_slot_int("rtc_impulsive_slot_local_delta_reject_count",
+                             "rejected compact-delta local-event count for the captured detector");
+        add_rtc_imp_snip_double("rtc_impulsive_slot_snippet_z",
+                                "standardized RTC snippet around each captured impulsive event");
+        add_rtc_imp_snip_int("rtc_impulsive_slot_snippet_flag",
+                             "RTC flag state for each sample in the captured impulsive-event snippet");
+    }
+
+    fo.sync();
     fo.close();
 }
 

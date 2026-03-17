@@ -2,7 +2,7 @@
 """Summarize and plot captured RTC impulsive-event slots.
 
 This reads the compact `rtc_impulsive_slot_*` products written into RTC
-timestream netCDF files and turns them into:
+timestream or `rtcdiag` netCDF files and turns them into:
 
 - a detailed per-event CSV
 - a per-network summary CSV
@@ -64,6 +64,14 @@ def _scan_dt_sec(ds: netCDF4.Dataset, scan_idx: int) -> float:
         idx = idx[idx >= 0]
         if idx.size >= 2:
             return float(_infer_dt_sec(ds, int(idx[0]), int(idx[-1])))
+    if "RTC_SAMPRATE" in ds.variables:
+        rtc_fsmp = float(np.asarray(ds.variables["RTC_SAMPRATE"][:]).reshape(-1)[0])
+        if np.isfinite(rtc_fsmp) and rtc_fsmp > 0:
+            return 1.0 / rtc_fsmp
+    if "SAMPRATE" in ds.variables:
+        fsmp = float(np.asarray(ds.variables["SAMPRATE"][:]).reshape(-1)[0])
+        if np.isfinite(fsmp) and fsmp > 0:
+            return 1.0 / fsmp
     return 1.0
 
 
@@ -306,7 +314,7 @@ def _plot_gallery(
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--nc-file", required=True, help="Path to RTC timestream netCDF with impulsive slot products")
+    ap.add_argument("--nc-file", required=True, help="Path to RTC timestream or rtcdiag netCDF with impulsive slot products")
     ap.add_argument("--obsnum", default=None, help="Obsnum label override")
     ap.add_argument("--array", default="all", choices=["all", "a1100", "a1400", "a2000"])
     ap.add_argument("--networks", default="all", help="Comma list or 'all'")
@@ -336,9 +344,6 @@ def main() -> None:
         "rtc_impulsive_slot_added_flagged_frac",
         "rtc_impulsive_slot_raw_exceed_count",
         "rtc_impulsive_slot_delta_spike_count",
-        "rtc_impulsive_slot_snippet_z",
-        "rtc_impulsive_slot_snippet_flag",
-        "rtc_impulsive_snippet_offset_samples",
     ]
 
     with netCDF4.Dataset(nc_file) as ds:
@@ -411,14 +416,27 @@ def main() -> None:
         else:
             slot_local_delta_reject = np.zeros_like(slot_delta)
         slot_add_flag = _filled(ds.variables["rtc_impulsive_slot_added_flagged_frac"], fill=np.nan)
-        snippet_z = _filled(ds.variables["rtc_impulsive_slot_snippet_z"], fill=np.nan)
-        snippet_flag = _filled(ds.variables["rtc_impulsive_slot_snippet_flag"], fill=0).astype(int) != 0
-        snippet_offset_samples = _filled(ds.variables["rtc_impulsive_snippet_offset_samples"], fill=0).astype(int)
+        have_snippets = (
+            "rtc_impulsive_slot_snippet_z" in ds.variables
+            and "rtc_impulsive_slot_snippet_flag" in ds.variables
+            and "rtc_impulsive_snippet_offset_samples" in ds.variables
+        )
+        if have_snippets:
+            snippet_z = _filled(ds.variables["rtc_impulsive_slot_snippet_z"], fill=np.nan)
+            snippet_flag = _filled(ds.variables["rtc_impulsive_slot_snippet_flag"], fill=0).astype(int) != 0
+            snippet_offset_samples = _filled(ds.variables["rtc_impulsive_snippet_offset_samples"], fill=0).astype(int)
+        else:
+            snippet_z = None
+            snippet_flag = None
+            snippet_offset_samples = None
 
         rows: list[dict[str, object]] = []
         for scan in scan_indices:
             dt_sec = _scan_dt_sec(ds, scan)
-            snippet_offset_sec = snippet_offset_samples.astype(float) * dt_sec
+            if have_snippets:
+                snippet_offset_sec = snippet_offset_samples.astype(float) * dt_sec
+            else:
+                snippet_offset_sec = np.asarray([], dtype=float)
             output_scan = int(output_scans[scan])
             for diag_idx in diag_keep:
                 nw = int(diag_networks[diag_idx])
@@ -458,10 +476,10 @@ def main() -> None:
                         "local_delta_accepted_event_count": int(slot_local_delta_accept[scan, diag_idx, slot]),
                         "local_delta_reject_count": int(slot_local_delta_reject[scan, diag_idx, slot]),
                         "added_flagged_frac": float(slot_add_flag[scan, diag_idx, slot]),
-                        "snippet_peak_abs_z": float(np.nanmax(np.abs(snippet_z[scan, diag_idx, slot, :]))),
-                        "snippet_flagged_frac": float(np.mean(snippet_flag[scan, diag_idx, slot, :])),
-                        "snippet_z": np.asarray(snippet_z[scan, diag_idx, slot, :], dtype=float),
-                        "snippet_flag": np.asarray(snippet_flag[scan, diag_idx, slot, :], dtype=bool),
+                        "snippet_peak_abs_z": float(np.nanmax(np.abs(snippet_z[scan, diag_idx, slot, :]))) if have_snippets else float("nan"),
+                        "snippet_flagged_frac": float(np.mean(snippet_flag[scan, diag_idx, slot, :])) if have_snippets else float("nan"),
+                        "snippet_z": np.asarray(snippet_z[scan, diag_idx, slot, :], dtype=float) if have_snippets else np.asarray([], dtype=float),
+                        "snippet_flag": np.asarray(snippet_flag[scan, diag_idx, slot, :], dtype=bool) if have_snippets else np.asarray([], dtype=bool),
                         "snippet_offset_sec": snippet_offset_sec.copy(),
                     }
                     rows.append(row)
@@ -485,7 +503,9 @@ def main() -> None:
         _write_csv(summary_csv, [{"note": "no impulsive slots found for selection"}])
 
     offsets = rows[0]["snippet_offset_sec"] if rows else np.asarray([], dtype=float)
-    gallery_path = _plot_gallery(gallery_png, rows, np.asarray(offsets, dtype=float), args.max_plots)
+    gallery_path = None
+    if rows and have_snippets and np.asarray(offsets, dtype=float).size > 0:
+        gallery_path = _plot_gallery(gallery_png, rows, np.asarray(offsets, dtype=float), args.max_plots)
     _write_report(report_md, nc_file, args.array, networks, rows, summary_rows, gallery_path)
 
     print(f"Wrote {detailed_csv}")

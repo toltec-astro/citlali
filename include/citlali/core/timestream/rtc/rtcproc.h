@@ -184,6 +184,19 @@ public:
     template <typename calib_t>
     void apply_network_step_mask(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &);
 
+    // append cached RTC diagnostics to a compact sidecar netcdf file
+    template <typename calib_t>
+    void append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, std::string, calib_t &,
+                               Eigen::Index scan_row_index = -1);
+
+    // write cached RTC diagnostic summaries into an existing netcdf file
+    template <typename calib_t>
+    void write_cached_diagnostics_to_netcdf(netCDF::NcFile &, TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
+                                            calib_t &, Eigen::Index scan_row_index = -1);
+
+    // clear cached RTC summaries for one scan after all output products are written
+    void clear_cached_diagnostics(Eigen::Index scan_id);
+
     // append time chunk to tod netcdf file
     template <typename calib_t, typename pointing_offset_t>
     void append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, std::string, std::string, std::string &,
@@ -2026,14 +2039,420 @@ auto RTCProc::remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
     return std::move(calib_scan);
 }
 
+template <typename calib_t>
+void RTCProc::write_cached_diagnostics_to_netcdf(netCDF::NcFile &fo,
+                                                 TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
+                                                 calib_t &calib,
+                                                 Eigen::Index scan_row_index) {
+    using netCDF::NcDim;
+    using netCDF::NcVar;
+
+    const int fill_int = -2147483647;
+    const double fill_double = std::numeric_limits<double>::quiet_NaN();
+    const auto scan_row = static_cast<unsigned long>((scan_row_index >= 0) ? scan_row_index : in.index.data);
+
+    const auto det_diag_it = rtc_detector_summary_by_scan.find(in.index.data);
+    const auto nw_diag_it = rtc_network_summary_by_scan.find(in.index.data);
+    const auto impulsive_it = rtc_impulsive_summary_by_scan.find(in.index.data);
+
+    NcDim n_dets_dim = fo.getDim("n_dets");
+    if (!n_dets_dim.isNull()) {
+        const auto n_dets = n_dets_dim.getSize();
+        std::vector<std::size_t> start_scan_det = {scan_row, 0};
+        std::vector<std::size_t> size_scan_det = {1, n_dets};
+
+        auto det_double_values = [&](auto getter) {
+            std::vector<double> values(n_dets, fill_double);
+            if (det_diag_it != rtc_detector_summary_by_scan.end()) {
+                const auto n_copy = std::min<std::size_t>(n_dets, det_diag_it->second.size());
+                for (std::size_t i = 0; i < n_copy; ++i) {
+                    values[i] = getter(det_diag_it->second[i]);
+                }
+            }
+            return values;
+        };
+        auto det_int_values = [&](auto getter) {
+            std::vector<int> values(n_dets, fill_int);
+            if (det_diag_it != rtc_detector_summary_by_scan.end()) {
+                const auto n_copy = std::min<std::size_t>(n_dets, det_diag_it->second.size());
+                for (std::size_t i = 0; i < n_copy; ++i) {
+                    values[i] = getter(det_diag_it->second[i]);
+                }
+            }
+            return values;
+        };
+
+        auto write_det_double = [&](const std::string &name, auto getter) {
+            NcVar v = fo.getVar(name);
+            if (!v.isNull()) {
+                auto values = det_double_values(getter);
+                v.putVar(start_scan_det, size_scan_det, values.data());
+            }
+        };
+        auto write_det_int = [&](const std::string &name, auto getter) {
+            NcVar v = fo.getVar(name);
+            if (!v.isNull()) {
+                auto values = det_int_values(getter);
+                v.putVar(start_scan_det, size_scan_det, values.data());
+            }
+        };
+
+        write_det_int("rtc_despike_raw_exceed_count",
+                      [](const auto &row) { return row.raw_exceed_count; });
+        write_det_int("rtc_despike_local_raw_candidate_count",
+                      [](const auto &row) { return row.local_raw_candidate_count; });
+        write_det_int("rtc_despike_local_raw_accepted_event_count",
+                      [](const auto &row) { return row.local_raw_accepted_event_count; });
+        write_det_int("rtc_despike_local_flagged_sample_count",
+                      [](const auto &row) { return row.local_flagged_sample_count; });
+        write_det_int("rtc_despike_local_exceed_count",
+                      [](const auto &row) { return row.local_flagged_sample_count; });
+        write_det_int("rtc_despike_local_raw_reject_count",
+                      [](const auto &row) { return row.local_raw_reject_count; });
+        write_det_int("rtc_despike_delta_spike_count",
+                      [](const auto &row) { return row.delta_spike_count; });
+        write_det_int("rtc_despike_local_delta_candidate_count",
+                      [](const auto &row) { return row.local_delta_candidate_count; });
+        write_det_int("rtc_despike_local_delta_accepted_event_count",
+                      [](const auto &row) { return row.local_delta_accepted_event_count; });
+        write_det_int("rtc_despike_local_delta_exceed_count",
+                      [](const auto &row) { return row.local_delta_accepted_event_count; });
+        write_det_int("rtc_despike_local_delta_reject_count",
+                      [](const auto &row) { return row.local_delta_reject_count; });
+        write_det_double("rtc_despike_added_flagged_frac",
+                         [](const auto &row) { return row.added_flagged_frac; });
+        write_det_int("rtc_despike_added_region_count",
+                      [](const auto &row) { return row.added_region_count; });
+        write_det_double("rtc_despike_added_region_len_median",
+                         [](const auto &row) { return row.added_region_len_median; });
+        write_det_int("rtc_despike_added_region_len_max",
+                      [](const auto &row) { return row.added_region_len_max; });
+        write_det_double("rtc_despike_max_raw_abs_z",
+                         [](const auto &row) { return row.max_raw_abs_z; });
+        write_det_double("rtc_despike_max_local_abs_z",
+                         [](const auto &row) { return row.max_local_abs_z; });
+        write_det_double("rtc_despike_max_delta_abs_z",
+                         [](const auto &row) { return row.max_delta_abs_z; });
+        write_det_double("rtc_despike_max_local_delta_abs_z",
+                         [](const auto &row) { return row.max_local_delta_abs_z; });
+        write_det_double("rtc_final_flagged_frac",
+                         [](const auto &row) { return row.final_flagged_frac; });
+        write_det_int("rtc_final_region_count",
+                      [](const auto &row) { return row.final_region_count; });
+        write_det_double("rtc_final_region_len_median",
+                         [](const auto &row) { return row.final_region_len_median; });
+        write_det_int("rtc_final_region_len_max",
+                      [](const auto &row) { return row.final_region_len_max; });
+        write_det_double("rtc_step_score",
+                         [](const auto &row) { return row.step_score; });
+        write_det_int("rtc_step_sample",
+                      [](const auto &row) { return row.step_sample; });
+        write_det_double("rtc_impulsive_peak_abs_z",
+                         [](const auto &row) { return row.impulsive_peak_abs_z; });
+        write_det_int("rtc_impulsive_peak_abs_sample",
+                      [](const auto &row) { return row.impulsive_peak_abs_sample; });
+        write_det_double("rtc_impulsive_peak_delta_abs_z",
+                         [](const auto &row) { return row.impulsive_peak_delta_abs_z; });
+        write_det_int("rtc_impulsive_peak_delta_abs_sample",
+                      [](const auto &row) { return row.impulsive_peak_delta_abs_sample; });
+        write_det_int("rtc_impulsive_near_abs_count",
+                      [](const auto &row) { return row.impulsive_near_abs_count; });
+        write_det_int("rtc_impulsive_near_delta_count",
+                      [](const auto &row) { return row.impulsive_near_delta_count; });
+        write_det_double("rtc_impulsive_event_score",
+                         [](const auto &row) { return row.impulsive_event_score; });
+        write_det_int("rtc_impulsive_event_sample",
+                      [](const auto &row) { return row.impulsive_event_sample; });
+        write_det_int("rtc_impulsive_event_kind",
+                      [](const auto &row) { return row.impulsive_event_kind; });
+    }
+
+    NcVar nw_ids_v = fo.getVar("rtc_diag_network_ids");
+    if (!nw_ids_v.isNull()) {
+        NcDim n_nws_dim = fo.getDim("n_nws_rtcdiag");
+        if (!n_nws_dim.isNull()) {
+            const auto n_nws = n_nws_dim.getSize();
+            std::unordered_map<Eigen::Index, std::size_t> nw_to_index;
+            nw_to_index.reserve(static_cast<std::size_t>(calib.nws.size()));
+            for (Eigen::Index i = 0; i < calib.nws.size(); ++i) {
+                nw_to_index[calib.nws(i)] = static_cast<std::size_t>(i);
+            }
+            std::vector<std::size_t> start_scan_nw = {scan_row, 0};
+            std::vector<std::size_t> size_scan_nw = {1, n_nws};
+            auto nw_double_values = [&](auto getter) {
+                std::vector<double> values(n_nws, fill_double);
+                if (nw_diag_it != rtc_network_summary_by_scan.end()) {
+                    for (const auto &row : nw_diag_it->second) {
+                        const auto it = nw_to_index.find(row.nw);
+                        if (it == nw_to_index.end() || it->second >= n_nws) {
+                            continue;
+                        }
+                        values[it->second] = getter(row);
+                    }
+                }
+                return values;
+            };
+            auto nw_int_values = [&](auto getter) {
+                std::vector<int> values(n_nws, fill_int);
+                if (nw_diag_it != rtc_network_summary_by_scan.end()) {
+                    for (const auto &row : nw_diag_it->second) {
+                        const auto it = nw_to_index.find(row.nw);
+                        if (it == nw_to_index.end() || it->second >= n_nws) {
+                            continue;
+                        }
+                        values[it->second] = getter(row);
+                    }
+                }
+                return values;
+            };
+            auto write_nw_double = [&](const std::string &name, auto getter) {
+                NcVar v = fo.getVar(name);
+                if (!v.isNull()) {
+                    auto values = nw_double_values(getter);
+                    v.putVar(start_scan_nw, size_scan_nw, values.data());
+                }
+            };
+            auto write_nw_int = [&](const std::string &name, auto getter) {
+                NcVar v = fo.getVar(name);
+                if (!v.isNull()) {
+                    auto values = nw_int_values(getter);
+                    v.putVar(start_scan_nw, size_scan_nw, values.data());
+                }
+            };
+
+            write_nw_int("rtc_network_n_det_input",
+                         [](const auto &row) { return static_cast<int>(row.n_det_input); });
+            write_nw_int("rtc_network_n_det_used",
+                         [](const auto &row) { return static_cast<int>(row.n_det_used); });
+            write_nw_double("rtc_network_step_score_median",
+                            [](const auto &row) { return row.median_step_score; });
+            write_nw_double("rtc_network_step_score_max",
+                            [](const auto &row) { return row.max_step_score; });
+            write_nw_double("rtc_network_step_det_frac",
+                            [](const auto &row) { return row.step_det_frac; });
+            write_nw_double("rtc_network_step_alignment_frac",
+                            [](const auto &row) { return row.step_alignment_frac; });
+            write_nw_int("rtc_network_step_dominant_sample",
+                         [](const auto &row) { return row.dominant_step_sample; });
+            write_nw_double("rtc_network_cm_low_mid_ratio",
+                            [](const auto &row) { return row.cm_low_mid_ratio; });
+            write_nw_double("rtc_network_cm_peak_freq_hz",
+                            [](const auto &row) { return row.cm_peak_freq_Hz; });
+            write_nw_double("rtc_network_cm_peak_prominence",
+                            [](const auto &row) { return row.cm_peak_prominence; });
+            write_nw_int("rtc_network_step_mask_applied",
+                         [](const auto &row) { return row.step_mask_applied ? 1 : 0; });
+            write_nw_int("rtc_network_step_mask_start_sample",
+                         [](const auto &row) { return row.step_mask_start_sample; });
+            write_nw_int("rtc_network_step_mask_end_sample",
+                         [](const auto &row) { return row.step_mask_end_sample; });
+            write_nw_int("rtc_network_step_mask_window_samples",
+                         [](const auto &row) { return row.step_mask_window_samples; });
+            write_nw_int("rtc_network_step_mask_n_det_masked",
+                         [](const auto &row) { return row.step_mask_n_det_masked; });
+            write_nw_int("rtc_network_step_mask_n_det_samples_flagged",
+                         [](const auto &row) { return row.step_mask_n_det_samples_flagged; });
+            write_nw_double("rtc_network_step_mask_flagged_fraction",
+                            [](const auto &row) { return row.step_mask_flagged_fraction; });
+
+            NcDim n_slots_dim = fo.getDim("n_rtc_impulsive_slots");
+            NcDim n_snip_dim = fo.getDim("n_rtc_impulsive_samples");
+            if (!n_slots_dim.isNull() && !n_snip_dim.isNull()) {
+                const auto n_slots = n_slots_dim.getSize();
+                const auto n_snip = n_snip_dim.getSize();
+                std::vector<std::size_t> start_scan_nw_slot = {scan_row, 0, 0};
+                std::vector<std::size_t> size_scan_nw_slot = {1, n_nws, n_slots};
+                std::vector<std::size_t> start_scan_nw_slot_snip = {scan_row, 0, 0, 0};
+                std::vector<std::size_t> size_scan_nw_slot_snip = {1, n_nws, n_slots, n_snip};
+                const auto total_slots = n_nws * n_slots;
+                const auto total_snip = total_slots * n_snip;
+
+                auto imp_slot_int_values = [&](auto getter) {
+                    std::vector<int> values(total_slots, fill_int);
+                    if (impulsive_it != rtc_impulsive_summary_by_scan.end()) {
+                        for (const auto &[nw, slots] : impulsive_it->second) {
+                            const auto it = nw_to_index.find(nw);
+                            if (it == nw_to_index.end() || it->second >= n_nws) {
+                                continue;
+                            }
+                            const auto nw_index = it->second;
+                            const auto n_copy = std::min<std::size_t>(n_slots, slots.size());
+                            for (std::size_t slot = 0; slot < n_copy; ++slot) {
+                                values[nw_index * n_slots + slot] = getter(slots[slot]);
+                            }
+                        }
+                    }
+                    return values;
+                };
+                auto imp_slot_double_values = [&](auto getter) {
+                    std::vector<double> values(total_slots, fill_double);
+                    if (impulsive_it != rtc_impulsive_summary_by_scan.end()) {
+                        for (const auto &[nw, slots] : impulsive_it->second) {
+                            const auto it = nw_to_index.find(nw);
+                            if (it == nw_to_index.end() || it->second >= n_nws) {
+                                continue;
+                            }
+                            const auto nw_index = it->second;
+                            const auto n_copy = std::min<std::size_t>(n_slots, slots.size());
+                            for (std::size_t slot = 0; slot < n_copy; ++slot) {
+                                values[nw_index * n_slots + slot] = getter(slots[slot]);
+                            }
+                        }
+                    }
+                    return values;
+                };
+                auto imp_snip_double_values = [&](auto getter) {
+                    std::vector<double> values(total_snip, fill_double);
+                    if (impulsive_it != rtc_impulsive_summary_by_scan.end()) {
+                        for (const auto &[nw, slots] : impulsive_it->second) {
+                            const auto it = nw_to_index.find(nw);
+                            if (it == nw_to_index.end() || it->second >= n_nws) {
+                                continue;
+                            }
+                            const auto nw_index = it->second;
+                            const auto n_copy = std::min<std::size_t>(n_slots, slots.size());
+                            for (std::size_t slot = 0; slot < n_copy; ++slot) {
+                                const auto &snippet = getter(slots[slot]);
+                                const auto n_copy_snip = std::min<std::size_t>(n_snip, snippet.size());
+                                for (std::size_t k = 0; k < n_copy_snip; ++k) {
+                                    values[(nw_index * n_slots + slot) * n_snip + k] = snippet[k];
+                                }
+                            }
+                        }
+                    }
+                    return values;
+                };
+                auto imp_snip_int_values = [&](auto getter) {
+                    std::vector<int> values(total_snip, fill_int);
+                    if (impulsive_it != rtc_impulsive_summary_by_scan.end()) {
+                        for (const auto &[nw, slots] : impulsive_it->second) {
+                            const auto it = nw_to_index.find(nw);
+                            if (it == nw_to_index.end() || it->second >= n_nws) {
+                                continue;
+                            }
+                            const auto nw_index = it->second;
+                            const auto n_copy = std::min<std::size_t>(n_slots, slots.size());
+                            for (std::size_t slot = 0; slot < n_copy; ++slot) {
+                                const auto &snippet = getter(slots[slot]);
+                                const auto n_copy_snip = std::min<std::size_t>(n_snip, snippet.size());
+                                for (std::size_t k = 0; k < n_copy_snip; ++k) {
+                                    values[(nw_index * n_slots + slot) * n_snip + k] = snippet[k];
+                                }
+                            }
+                        }
+                    }
+                    return values;
+                };
+                auto write_imp_slot_int = [&](const std::string &name, auto getter) {
+                    NcVar v = fo.getVar(name);
+                    if (!v.isNull()) {
+                        auto values = imp_slot_int_values(getter);
+                        v.putVar(start_scan_nw_slot, size_scan_nw_slot, values.data());
+                    }
+                };
+                auto write_imp_slot_double = [&](const std::string &name, auto getter) {
+                    NcVar v = fo.getVar(name);
+                    if (!v.isNull()) {
+                        auto values = imp_slot_double_values(getter);
+                        v.putVar(start_scan_nw_slot, size_scan_nw_slot, values.data());
+                    }
+                };
+                auto write_imp_snip_double = [&](const std::string &name, auto getter) {
+                    NcVar v = fo.getVar(name);
+                    if (!v.isNull()) {
+                        auto values = imp_snip_double_values(getter);
+                        v.putVar(start_scan_nw_slot_snip, size_scan_nw_slot_snip, values.data());
+                    }
+                };
+                auto write_imp_snip_int = [&](const std::string &name, auto getter) {
+                    NcVar v = fo.getVar(name);
+                    if (!v.isNull()) {
+                        auto values = imp_snip_int_values(getter);
+                        v.putVar(start_scan_nw_slot_snip, size_scan_nw_slot_snip, values.data());
+                    }
+                };
+
+                write_imp_slot_int("rtc_impulsive_slot_det_index",
+                                   [](const auto &slot) { return slot.det; });
+                write_imp_slot_int("rtc_impulsive_slot_event_sample",
+                                   [](const auto &slot) { return slot.event_sample; });
+                write_imp_slot_int("rtc_impulsive_slot_event_kind",
+                                   [](const auto &slot) { return slot.event_kind; });
+                write_imp_slot_double("rtc_impulsive_slot_event_score",
+                                      [](const auto &slot) { return slot.event_score; });
+                write_imp_slot_double("rtc_impulsive_slot_peak_abs_z",
+                                      [](const auto &slot) { return slot.peak_abs_z; });
+                write_imp_slot_double("rtc_impulsive_slot_peak_delta_abs_z",
+                                      [](const auto &slot) { return slot.peak_delta_abs_z; });
+                write_imp_slot_double("rtc_impulsive_slot_added_flagged_frac",
+                                      [](const auto &slot) { return slot.added_flagged_frac; });
+                write_imp_slot_int("rtc_impulsive_slot_raw_exceed_count",
+                                   [](const auto &slot) { return slot.raw_exceed_count; });
+                write_imp_slot_int("rtc_impulsive_slot_local_raw_candidate_count",
+                                   [](const auto &slot) { return slot.local_raw_candidate_count; });
+                write_imp_slot_int("rtc_impulsive_slot_local_raw_accepted_event_count",
+                                   [](const auto &slot) { return slot.local_raw_accepted_event_count; });
+                write_imp_slot_int("rtc_impulsive_slot_local_flagged_sample_count",
+                                   [](const auto &slot) { return slot.local_flagged_sample_count; });
+                write_imp_slot_int("rtc_impulsive_slot_local_exceed_count",
+                                   [](const auto &slot) { return slot.local_flagged_sample_count; });
+                write_imp_slot_int("rtc_impulsive_slot_local_raw_reject_count",
+                                   [](const auto &slot) { return slot.local_raw_reject_count; });
+                write_imp_slot_int("rtc_impulsive_slot_delta_spike_count",
+                                   [](const auto &slot) { return slot.delta_spike_count; });
+                write_imp_slot_int("rtc_impulsive_slot_local_delta_candidate_count",
+                                   [](const auto &slot) { return slot.local_delta_candidate_count; });
+                write_imp_slot_int("rtc_impulsive_slot_local_delta_accepted_event_count",
+                                   [](const auto &slot) { return slot.local_delta_accepted_event_count; });
+                write_imp_slot_int("rtc_impulsive_slot_local_delta_exceed_count",
+                                   [](const auto &slot) { return slot.local_delta_accepted_event_count; });
+                write_imp_slot_int("rtc_impulsive_slot_local_delta_reject_count",
+                                   [](const auto &slot) { return slot.local_delta_reject_count; });
+                write_imp_snip_double("rtc_impulsive_slot_snippet_z",
+                                      [](const auto &slot) -> const auto & { return slot.snippet_z; });
+                write_imp_snip_int("rtc_impulsive_slot_snippet_flag",
+                                   [](const auto &slot) -> const auto & { return slot.snippet_flag; });
+            }
+        }
+    }
+}
+
+inline void RTCProc::clear_cached_diagnostics(Eigen::Index scan_id) {
+    rtc_detector_summary_by_scan.erase(scan_id);
+    rtc_network_summary_by_scan.erase(scan_id);
+    rtc_impulsive_summary_by_scan.erase(scan_id);
+}
+
+template <typename calib_t>
+void RTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
+                                    std::string filepath,
+                                    calib_t &calib,
+                                    Eigen::Index scan_row_index) {
+    using netCDF::NcFile;
+    using namespace netCDF::exceptions;
+
+    try {
+        const bool have_step_diag =
+            rtc_detector_summary_by_scan.find(in.index.data) != rtc_detector_summary_by_scan.end() &&
+            rtc_network_summary_by_scan.find(in.index.data) != rtc_network_summary_by_scan.end();
+        capture_rtc_diagnostics(in, calib, !have_step_diag);
+
+        NcFile fo(filepath, netCDF::NcFile::write);
+        write_cached_diagnostics_to_netcdf(fo, in, calib, scan_row_index);
+        fo.sync();
+        fo.close();
+
+        logger->info("rtc diagnostics sidecar chunk written to {}", filepath);
+    } catch (NcException &e) {
+        logger->error("{}", e.what());
+    }
+}
+
 template <typename calib_t, typename pointing_offset_t>
 void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std::string filepath, std::string map_grouping,
                                std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec, calib_t &calib,
                                bool apply_det_offsets, Eigen::Index scan_row_index) {
-    using netCDF::NcDim;
     using netCDF::NcFile;
-    using netCDF::NcType;
-    using netCDF::NcVar;
     using namespace netCDF::exceptions;
 
     try {
@@ -2048,385 +2467,7 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         // append common time chunk variables
         append_base_to_netcdf(fo, in, map_grouping, pixel_axes, pointing_offsets_arcsec, calib, apply_det_offsets,
                               scan_row_index);
-
-        const int fill_int = -2147483647;
-        const double fill_double = std::numeric_limits<double>::quiet_NaN();
-        const auto scan_row = static_cast<unsigned long>((scan_row_index >= 0) ? scan_row_index : in.index.data);
-
-        const auto det_diag_it = rtc_detector_summary_by_scan.find(in.index.data);
-        const auto nw_diag_it = rtc_network_summary_by_scan.find(in.index.data);
-        const auto impulsive_it = rtc_impulsive_summary_by_scan.find(in.index.data);
-
-        NcDim n_dets_dim = fo.getDim("n_dets");
-        if (!n_dets_dim.isNull()) {
-            const auto n_dets = n_dets_dim.getSize();
-            std::vector<std::size_t> start_scan_det = {scan_row, 0};
-            std::vector<std::size_t> size_scan_det = {1, n_dets};
-
-            auto det_double_values = [&](auto getter) {
-                std::vector<double> values(n_dets, fill_double);
-                if (det_diag_it != rtc_detector_summary_by_scan.end()) {
-                    const auto n_copy = std::min<std::size_t>(n_dets, det_diag_it->second.size());
-                    for (std::size_t i = 0; i < n_copy; ++i) {
-                        values[i] = getter(det_diag_it->second[i]);
-                    }
-                }
-                return values;
-            };
-            auto det_int_values = [&](auto getter) {
-                std::vector<int> values(n_dets, fill_int);
-                if (det_diag_it != rtc_detector_summary_by_scan.end()) {
-                    const auto n_copy = std::min<std::size_t>(n_dets, det_diag_it->second.size());
-                    for (std::size_t i = 0; i < n_copy; ++i) {
-                        values[i] = getter(det_diag_it->second[i]);
-                    }
-                }
-                return values;
-            };
-
-            auto write_det_double = [&](const std::string &name, auto getter) {
-                NcVar v = fo.getVar(name);
-                if (!v.isNull()) {
-                    auto values = det_double_values(getter);
-                    v.putVar(start_scan_det, size_scan_det, values.data());
-                }
-            };
-            auto write_det_int = [&](const std::string &name, auto getter) {
-                NcVar v = fo.getVar(name);
-                if (!v.isNull()) {
-                    auto values = det_int_values(getter);
-                    v.putVar(start_scan_det, size_scan_det, values.data());
-                }
-            };
-
-            write_det_int("rtc_despike_raw_exceed_count",
-                          [](const auto &row) { return row.raw_exceed_count; });
-            write_det_int("rtc_despike_local_raw_candidate_count",
-                          [](const auto &row) { return row.local_raw_candidate_count; });
-            write_det_int("rtc_despike_local_raw_accepted_event_count",
-                          [](const auto &row) { return row.local_raw_accepted_event_count; });
-            write_det_int("rtc_despike_local_flagged_sample_count",
-                          [](const auto &row) { return row.local_flagged_sample_count; });
-            write_det_int("rtc_despike_local_exceed_count",
-                          [](const auto &row) { return row.local_flagged_sample_count; });
-            write_det_int("rtc_despike_local_raw_reject_count",
-                          [](const auto &row) { return row.local_raw_reject_count; });
-            write_det_int("rtc_despike_delta_spike_count",
-                          [](const auto &row) { return row.delta_spike_count; });
-            write_det_int("rtc_despike_local_delta_candidate_count",
-                          [](const auto &row) { return row.local_delta_candidate_count; });
-            write_det_int("rtc_despike_local_delta_accepted_event_count",
-                          [](const auto &row) { return row.local_delta_accepted_event_count; });
-            write_det_int("rtc_despike_local_delta_exceed_count",
-                          [](const auto &row) { return row.local_delta_accepted_event_count; });
-            write_det_int("rtc_despike_local_delta_reject_count",
-                          [](const auto &row) { return row.local_delta_reject_count; });
-            write_det_double("rtc_despike_added_flagged_frac",
-                             [](const auto &row) { return row.added_flagged_frac; });
-            write_det_int("rtc_despike_added_region_count",
-                          [](const auto &row) { return row.added_region_count; });
-            write_det_double("rtc_despike_added_region_len_median",
-                             [](const auto &row) { return row.added_region_len_median; });
-            write_det_int("rtc_despike_added_region_len_max",
-                          [](const auto &row) { return row.added_region_len_max; });
-            write_det_double("rtc_despike_max_raw_abs_z",
-                             [](const auto &row) { return row.max_raw_abs_z; });
-            write_det_double("rtc_despike_max_local_abs_z",
-                             [](const auto &row) { return row.max_local_abs_z; });
-            write_det_double("rtc_despike_max_delta_abs_z",
-                             [](const auto &row) { return row.max_delta_abs_z; });
-            write_det_double("rtc_despike_max_local_delta_abs_z",
-                             [](const auto &row) { return row.max_local_delta_abs_z; });
-            write_det_double("rtc_final_flagged_frac",
-                             [](const auto &row) { return row.final_flagged_frac; });
-            write_det_int("rtc_final_region_count",
-                          [](const auto &row) { return row.final_region_count; });
-            write_det_double("rtc_final_region_len_median",
-                             [](const auto &row) { return row.final_region_len_median; });
-            write_det_int("rtc_final_region_len_max",
-                          [](const auto &row) { return row.final_region_len_max; });
-            write_det_double("rtc_step_score",
-                             [](const auto &row) { return row.step_score; });
-            write_det_int("rtc_step_sample",
-                          [](const auto &row) { return row.step_sample; });
-            write_det_double("rtc_impulsive_peak_abs_z",
-                             [](const auto &row) { return row.impulsive_peak_abs_z; });
-            write_det_int("rtc_impulsive_peak_abs_sample",
-                          [](const auto &row) { return row.impulsive_peak_abs_sample; });
-            write_det_double("rtc_impulsive_peak_delta_abs_z",
-                             [](const auto &row) { return row.impulsive_peak_delta_abs_z; });
-            write_det_int("rtc_impulsive_peak_delta_abs_sample",
-                          [](const auto &row) { return row.impulsive_peak_delta_abs_sample; });
-            write_det_int("rtc_impulsive_near_abs_count",
-                          [](const auto &row) { return row.impulsive_near_abs_count; });
-            write_det_int("rtc_impulsive_near_delta_count",
-                          [](const auto &row) { return row.impulsive_near_delta_count; });
-            write_det_double("rtc_impulsive_event_score",
-                             [](const auto &row) { return row.impulsive_event_score; });
-            write_det_int("rtc_impulsive_event_sample",
-                          [](const auto &row) { return row.impulsive_event_sample; });
-            write_det_int("rtc_impulsive_event_kind",
-                          [](const auto &row) { return row.impulsive_event_kind; });
-        }
-
-        NcVar nw_ids_v = fo.getVar("rtc_diag_network_ids");
-        if (!nw_ids_v.isNull()) {
-            NcDim n_nws_dim = fo.getDim("n_nws_rtcdiag");
-            if (!n_nws_dim.isNull()) {
-                const auto n_nws = n_nws_dim.getSize();
-                std::unordered_map<Eigen::Index, std::size_t> nw_to_index;
-                nw_to_index.reserve(static_cast<std::size_t>(calib.nws.size()));
-                for (Eigen::Index i = 0; i < calib.nws.size(); ++i) {
-                    nw_to_index[calib.nws(i)] = static_cast<std::size_t>(i);
-                }
-                std::vector<std::size_t> start_scan_nw = {scan_row, 0};
-                std::vector<std::size_t> size_scan_nw = {1, n_nws};
-                auto nw_double_values = [&](auto getter) {
-                    std::vector<double> values(n_nws, fill_double);
-                    if (nw_diag_it != rtc_network_summary_by_scan.end()) {
-                        for (const auto &row : nw_diag_it->second) {
-                            const auto it = nw_to_index.find(row.nw);
-                            if (it == nw_to_index.end() || it->second >= n_nws) {
-                                continue;
-                            }
-                            values[it->second] = getter(row);
-                        }
-                    }
-                    return values;
-                };
-                auto nw_int_values = [&](auto getter) {
-                    std::vector<int> values(n_nws, fill_int);
-                    if (nw_diag_it != rtc_network_summary_by_scan.end()) {
-                        for (const auto &row : nw_diag_it->second) {
-                            const auto it = nw_to_index.find(row.nw);
-                            if (it == nw_to_index.end() || it->second >= n_nws) {
-                                continue;
-                            }
-                            values[it->second] = getter(row);
-                        }
-                    }
-                    return values;
-                };
-                auto write_nw_double = [&](const std::string &name, auto getter) {
-                    NcVar v = fo.getVar(name);
-                    if (!v.isNull()) {
-                        auto values = nw_double_values(getter);
-                        v.putVar(start_scan_nw, size_scan_nw, values.data());
-                    }
-                };
-                auto write_nw_int = [&](const std::string &name, auto getter) {
-                    NcVar v = fo.getVar(name);
-                    if (!v.isNull()) {
-                        auto values = nw_int_values(getter);
-                        v.putVar(start_scan_nw, size_scan_nw, values.data());
-                    }
-                };
-
-                write_nw_int("rtc_network_n_det_input",
-                             [](const auto &row) { return static_cast<int>(row.n_det_input); });
-                write_nw_int("rtc_network_n_det_used",
-                             [](const auto &row) { return static_cast<int>(row.n_det_used); });
-                write_nw_double("rtc_network_step_score_median",
-                                [](const auto &row) { return row.median_step_score; });
-                write_nw_double("rtc_network_step_score_max",
-                                [](const auto &row) { return row.max_step_score; });
-                write_nw_double("rtc_network_step_det_frac",
-                                [](const auto &row) { return row.step_det_frac; });
-                write_nw_double("rtc_network_step_alignment_frac",
-                                [](const auto &row) { return row.step_alignment_frac; });
-                write_nw_int("rtc_network_step_dominant_sample",
-                             [](const auto &row) { return row.dominant_step_sample; });
-                write_nw_double("rtc_network_cm_low_mid_ratio",
-                                [](const auto &row) { return row.cm_low_mid_ratio; });
-                write_nw_double("rtc_network_cm_peak_freq_hz",
-                                [](const auto &row) { return row.cm_peak_freq_Hz; });
-                write_nw_double("rtc_network_cm_peak_prominence",
-                                [](const auto &row) { return row.cm_peak_prominence; });
-                write_nw_int("rtc_network_step_mask_applied",
-                             [](const auto &row) { return row.step_mask_applied ? 1 : 0; });
-                write_nw_int("rtc_network_step_mask_start_sample",
-                             [](const auto &row) { return row.step_mask_start_sample; });
-                write_nw_int("rtc_network_step_mask_end_sample",
-                             [](const auto &row) { return row.step_mask_end_sample; });
-                write_nw_int("rtc_network_step_mask_window_samples",
-                             [](const auto &row) { return row.step_mask_window_samples; });
-                write_nw_int("rtc_network_step_mask_n_det_masked",
-                             [](const auto &row) { return row.step_mask_n_det_masked; });
-                write_nw_int("rtc_network_step_mask_n_det_samples_flagged",
-                             [](const auto &row) { return row.step_mask_n_det_samples_flagged; });
-                write_nw_double("rtc_network_step_mask_flagged_fraction",
-                                [](const auto &row) { return row.step_mask_flagged_fraction; });
-
-                NcDim n_slots_dim = fo.getDim("n_rtc_impulsive_slots");
-                NcDim n_snip_dim = fo.getDim("n_rtc_impulsive_samples");
-                if (!n_slots_dim.isNull() && !n_snip_dim.isNull()) {
-                    const auto n_slots = n_slots_dim.getSize();
-                    const auto n_snip = n_snip_dim.getSize();
-                    std::vector<std::size_t> start_scan_nw_slot = {scan_row, 0, 0};
-                    std::vector<std::size_t> size_scan_nw_slot = {1, n_nws, n_slots};
-                    std::vector<std::size_t> start_scan_nw_slot_snip = {scan_row, 0, 0, 0};
-                    std::vector<std::size_t> size_scan_nw_slot_snip = {1, n_nws, n_slots, n_snip};
-                    const auto total_slots = n_nws * n_slots;
-                    const auto total_snip = total_slots * n_snip;
-
-                    auto imp_slot_int_values = [&](auto getter) {
-                        std::vector<int> values(total_slots, fill_int);
-                        if (impulsive_it != rtc_impulsive_summary_by_scan.end()) {
-                            for (const auto &[nw, slots] : impulsive_it->second) {
-                                const auto it = nw_to_index.find(nw);
-                                if (it == nw_to_index.end() || it->second >= n_nws) {
-                                    continue;
-                                }
-                                const auto nw_index = it->second;
-                                const auto n_copy = std::min<std::size_t>(n_slots, slots.size());
-                                for (std::size_t slot = 0; slot < n_copy; ++slot) {
-                                    values[nw_index * n_slots + slot] = getter(slots[slot]);
-                                }
-                            }
-                        }
-                        return values;
-                    };
-                    auto imp_slot_double_values = [&](auto getter) {
-                        std::vector<double> values(total_slots, fill_double);
-                        if (impulsive_it != rtc_impulsive_summary_by_scan.end()) {
-                            for (const auto &[nw, slots] : impulsive_it->second) {
-                                const auto it = nw_to_index.find(nw);
-                                if (it == nw_to_index.end() || it->second >= n_nws) {
-                                    continue;
-                                }
-                                const auto nw_index = it->second;
-                                const auto n_copy = std::min<std::size_t>(n_slots, slots.size());
-                                for (std::size_t slot = 0; slot < n_copy; ++slot) {
-                                    values[nw_index * n_slots + slot] = getter(slots[slot]);
-                                }
-                            }
-                        }
-                        return values;
-                    };
-                    auto imp_snip_double_values = [&](auto getter) {
-                        std::vector<double> values(total_snip, fill_double);
-                        if (impulsive_it != rtc_impulsive_summary_by_scan.end()) {
-                            for (const auto &[nw, slots] : impulsive_it->second) {
-                                const auto it = nw_to_index.find(nw);
-                                if (it == nw_to_index.end() || it->second >= n_nws) {
-                                    continue;
-                                }
-                                const auto nw_index = it->second;
-                                const auto n_copy = std::min<std::size_t>(n_slots, slots.size());
-                                for (std::size_t slot = 0; slot < n_copy; ++slot) {
-                                    const auto &snippet = getter(slots[slot]);
-                                    const auto n_copy_snip = std::min<std::size_t>(n_snip, snippet.size());
-                                    for (std::size_t k = 0; k < n_copy_snip; ++k) {
-                                        values[(nw_index * n_slots + slot) * n_snip + k] = snippet[k];
-                                    }
-                                }
-                            }
-                        }
-                        return values;
-                    };
-                    auto imp_snip_int_values = [&](auto getter) {
-                        std::vector<int> values(total_snip, fill_int);
-                        if (impulsive_it != rtc_impulsive_summary_by_scan.end()) {
-                            for (const auto &[nw, slots] : impulsive_it->second) {
-                                const auto it = nw_to_index.find(nw);
-                                if (it == nw_to_index.end() || it->second >= n_nws) {
-                                    continue;
-                                }
-                                const auto nw_index = it->second;
-                                const auto n_copy = std::min<std::size_t>(n_slots, slots.size());
-                                for (std::size_t slot = 0; slot < n_copy; ++slot) {
-                                    const auto &snippet = getter(slots[slot]);
-                                    const auto n_copy_snip = std::min<std::size_t>(n_snip, snippet.size());
-                                    for (std::size_t k = 0; k < n_copy_snip; ++k) {
-                                        values[(nw_index * n_slots + slot) * n_snip + k] = snippet[k];
-                                    }
-                                }
-                            }
-                        }
-                        return values;
-                    };
-                    auto write_imp_slot_int = [&](const std::string &name, auto getter) {
-                        NcVar v = fo.getVar(name);
-                        if (!v.isNull()) {
-                            auto values = imp_slot_int_values(getter);
-                            v.putVar(start_scan_nw_slot, size_scan_nw_slot, values.data());
-                        }
-                    };
-                    auto write_imp_slot_double = [&](const std::string &name, auto getter) {
-                        NcVar v = fo.getVar(name);
-                        if (!v.isNull()) {
-                            auto values = imp_slot_double_values(getter);
-                            v.putVar(start_scan_nw_slot, size_scan_nw_slot, values.data());
-                        }
-                    };
-                    auto write_imp_snip_double = [&](const std::string &name, auto getter) {
-                        NcVar v = fo.getVar(name);
-                        if (!v.isNull()) {
-                            auto values = imp_snip_double_values(getter);
-                            v.putVar(start_scan_nw_slot_snip, size_scan_nw_slot_snip, values.data());
-                        }
-                    };
-                    auto write_imp_snip_int = [&](const std::string &name, auto getter) {
-                        NcVar v = fo.getVar(name);
-                        if (!v.isNull()) {
-                            auto values = imp_snip_int_values(getter);
-                            v.putVar(start_scan_nw_slot_snip, size_scan_nw_slot_snip, values.data());
-                        }
-                    };
-
-                    write_imp_slot_int("rtc_impulsive_slot_det_index",
-                                       [](const auto &slot) { return slot.det; });
-                    write_imp_slot_int("rtc_impulsive_slot_event_sample",
-                                       [](const auto &slot) { return slot.event_sample; });
-                    write_imp_slot_int("rtc_impulsive_slot_event_kind",
-                                       [](const auto &slot) { return slot.event_kind; });
-                    write_imp_slot_double("rtc_impulsive_slot_event_score",
-                                          [](const auto &slot) { return slot.event_score; });
-                    write_imp_slot_double("rtc_impulsive_slot_peak_abs_z",
-                                          [](const auto &slot) { return slot.peak_abs_z; });
-                    write_imp_slot_double("rtc_impulsive_slot_peak_delta_abs_z",
-                                          [](const auto &slot) { return slot.peak_delta_abs_z; });
-                    write_imp_slot_double("rtc_impulsive_slot_added_flagged_frac",
-                                          [](const auto &slot) { return slot.added_flagged_frac; });
-                    write_imp_slot_int("rtc_impulsive_slot_raw_exceed_count",
-                                       [](const auto &slot) { return slot.raw_exceed_count; });
-                    write_imp_slot_int("rtc_impulsive_slot_local_raw_candidate_count",
-                                       [](const auto &slot) { return slot.local_raw_candidate_count; });
-                    write_imp_slot_int("rtc_impulsive_slot_local_raw_accepted_event_count",
-                                       [](const auto &slot) { return slot.local_raw_accepted_event_count; });
-                    write_imp_slot_int("rtc_impulsive_slot_local_flagged_sample_count",
-                                       [](const auto &slot) { return slot.local_flagged_sample_count; });
-                    write_imp_slot_int("rtc_impulsive_slot_local_exceed_count",
-                                       [](const auto &slot) { return slot.local_flagged_sample_count; });
-                    write_imp_slot_int("rtc_impulsive_slot_local_raw_reject_count",
-                                       [](const auto &slot) { return slot.local_raw_reject_count; });
-                    write_imp_slot_int("rtc_impulsive_slot_delta_spike_count",
-                                       [](const auto &slot) { return slot.delta_spike_count; });
-                    write_imp_slot_int("rtc_impulsive_slot_local_delta_candidate_count",
-                                       [](const auto &slot) { return slot.local_delta_candidate_count; });
-                    write_imp_slot_int("rtc_impulsive_slot_local_delta_accepted_event_count",
-                                       [](const auto &slot) { return slot.local_delta_accepted_event_count; });
-                    write_imp_slot_int("rtc_impulsive_slot_local_delta_exceed_count",
-                                       [](const auto &slot) { return slot.local_delta_accepted_event_count; });
-                    write_imp_slot_int("rtc_impulsive_slot_local_delta_reject_count",
-                                       [](const auto &slot) { return slot.local_delta_reject_count; });
-                    write_imp_snip_double("rtc_impulsive_slot_snippet_z",
-                                          [](const auto &slot) -> const auto & { return slot.snippet_z; });
-                    write_imp_snip_int("rtc_impulsive_slot_snippet_flag",
-                                       [](const auto &slot) -> const auto & { return slot.snippet_flag; });
-                }
-            }
-        }
-
-        if (det_diag_it != rtc_detector_summary_by_scan.end()) {
-            rtc_detector_summary_by_scan.erase(det_diag_it);
-        }
-        if (nw_diag_it != rtc_network_summary_by_scan.end()) {
-            rtc_network_summary_by_scan.erase(nw_diag_it);
-        }
-        if (impulsive_it != rtc_impulsive_summary_by_scan.end()) {
-            rtc_impulsive_summary_by_scan.erase(impulsive_it);
-        }
+        write_cached_diagnostics_to_netcdf(fo, in, calib, scan_row_index);
 
         // sync file to make sure it gets updated
         fo.sync();
