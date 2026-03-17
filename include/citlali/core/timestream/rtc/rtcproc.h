@@ -88,34 +88,37 @@ public:
         int final_region_count = 0;
         double final_region_len_median = std::numeric_limits<double>::quiet_NaN();
         int final_region_len_max = 0;
+        TransientEvent step_event;
         double step_score = std::numeric_limits<double>::quiet_NaN();
-        int step_sample = -2147483647;
+        int step_sample = kTransientFillInt;
+        TransientEvent impulsive_event;
         double impulsive_peak_abs_z = std::numeric_limits<double>::quiet_NaN();
-        int impulsive_peak_abs_sample = -2147483647;
+        int impulsive_peak_abs_sample = kTransientFillInt;
         double impulsive_peak_delta_abs_z = std::numeric_limits<double>::quiet_NaN();
-        int impulsive_peak_delta_abs_sample = -2147483647;
+        int impulsive_peak_delta_abs_sample = kTransientFillInt;
         int impulsive_near_abs_count = 0;
         int impulsive_near_delta_count = 0;
         double impulsive_event_score = std::numeric_limits<double>::quiet_NaN();
-        int impulsive_event_sample = -2147483647;
-        int impulsive_event_kind = -2147483647;
+        int impulsive_event_sample = kTransientFillInt;
+        int impulsive_event_kind = kTransientFillInt;
     };
 
     struct RTCNetworkDiagSummary {
         Eigen::Index nw = -1;
         Eigen::Index n_det_input = 0;
         Eigen::Index n_det_used = 0;
+        TransientEvent step_event;
         double median_step_score = std::numeric_limits<double>::quiet_NaN();
         double max_step_score = std::numeric_limits<double>::quiet_NaN();
         double step_det_frac = std::numeric_limits<double>::quiet_NaN();
         double step_alignment_frac = std::numeric_limits<double>::quiet_NaN();
-        int dominant_step_sample = -2147483647;
+        int dominant_step_sample = kTransientFillInt;
         double cm_low_mid_ratio = std::numeric_limits<double>::quiet_NaN();
         double cm_peak_freq_Hz = std::numeric_limits<double>::quiet_NaN();
         double cm_peak_prominence = std::numeric_limits<double>::quiet_NaN();
         bool step_mask_applied = false;
-        int step_mask_start_sample = -2147483647;
-        int step_mask_end_sample = -2147483647;
+        int step_mask_start_sample = kTransientFillInt;
+        int step_mask_end_sample = kTransientFillInt;
         int step_mask_window_samples = 0;
         int step_mask_n_det_masked = 0;
         int step_mask_n_det_samples_flagged = 0;
@@ -123,9 +126,10 @@ public:
     };
 
     struct RTCImpulsiveSnippetSummary {
+        TransientEvent event;
         int det = -2147483647;
-        int event_sample = -2147483647;
-        int event_kind = -2147483647;
+        int event_sample = kTransientFillInt;
+        int event_kind = kTransientFillInt;
         double event_score = std::numeric_limits<double>::quiet_NaN();
         double peak_abs_z = std::numeric_limits<double>::quiet_NaN();
         double peak_delta_abs_z = std::numeric_limits<double>::quiet_NaN();
@@ -1217,7 +1221,7 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     const Eigen::Index n_pts = in.scans.data.rows();
     const Eigen::Index n_dets = in.scans.data.cols();
     const double nan = std::numeric_limits<double>::quiet_NaN();
-    const int fill_int = -2147483647;
+    const int fill_int = kTransientFillInt;
 
     auto median_of = [&](std::vector<double> values) -> double {
         values.erase(
@@ -1327,13 +1331,15 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     auto step_metric = [&](const Eigen::VectorXd &x,
                            const Eigen::Array<bool, Eigen::Dynamic, 1> &valid,
                            Eigen::Index window) {
+        TransientEvent event;
+        event.kind = TransientEventKind::step_like;
         const Eigen::Index n = x.size();
         if (n < 16) {
-            return std::make_pair(nan, fill_int);
+            return event;
         }
         auto [center, scale] = robust_center_scale(x, valid);
         if (!std::isfinite(center) || !std::isfinite(scale) || scale <= 0.0) {
-            return std::make_pair(nan, fill_int);
+            return event;
         }
         Eigen::VectorXd z = Eigen::VectorXd::Zero(n);
         Eigen::VectorXd good = Eigen::VectorXd::Zero(n);
@@ -1347,7 +1353,7 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         const Eigen::Index max_w = std::max<Eigen::Index>(4, n / 4);
         const Eigen::Index w = std::min(std::max<Eigen::Index>(window, 4), max_w);
         if (n < (2 * w + 2)) {
-            return std::make_pair(nan, fill_int);
+            return event;
         }
 
         Eigen::VectorXd csum(n + 1), gsum(n + 1);
@@ -1375,19 +1381,26 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                 best_idx = static_cast<int>(center_idx);
             }
         }
-        return std::make_pair(best, best_idx);
+        if (best_idx != fill_int && std::isfinite(best)) {
+            event.sample = best_idx;
+            event.start_sample = static_cast<int>(std::max<Eigen::Index>(0, best_idx - w));
+            event.end_sample = static_cast<int>(std::min<Eigen::Index>(n - 1, best_idx + w - 1));
+            event.width_samples = static_cast<double>(event.end_sample - event.start_sample + 1);
+            event.score = best;
+            event.baseline_shift_z = best;
+            event.accepted = true;
+        }
+        return event;
     };
 
     struct ImpulsiveMetrics {
+        TransientEvent event;
         double peak_abs_z = std::numeric_limits<double>::quiet_NaN();
-        int peak_abs_sample = -2147483647;
+        int peak_abs_sample = kTransientFillInt;
         double peak_delta_abs_z = std::numeric_limits<double>::quiet_NaN();
-        int peak_delta_abs_sample = -2147483647;
+        int peak_delta_abs_sample = kTransientFillInt;
         int near_abs_count = 0;
         int near_delta_count = 0;
-        double event_score = std::numeric_limits<double>::quiet_NaN();
-        int event_sample = -2147483647;
-        int event_kind = -2147483647;
     };
 
     auto impulsive_metric = [&](const Eigen::VectorXd &x,
@@ -1465,9 +1478,16 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             const bool use_delta =
                 std::isfinite(out.peak_delta_abs_z) &&
                 (!std::isfinite(out.peak_abs_z) || out.peak_delta_abs_z > out.peak_abs_z);
-            out.event_score = use_delta ? out.peak_delta_abs_z : out.peak_abs_z;
-            out.event_sample = use_delta ? out.peak_delta_abs_sample : out.peak_abs_sample;
-            out.event_kind = use_delta ? 1 : 0;
+            out.event.kind = use_delta ? TransientEventKind::delta_like : TransientEventKind::raw_like;
+            out.event.sample = use_delta ? out.peak_delta_abs_sample : out.peak_abs_sample;
+            out.event.start_sample = out.event.sample;
+            out.event.end_sample = out.event.sample;
+            out.event.width_samples = 1.0;
+            out.event.score = use_delta ? out.peak_delta_abs_z : out.peak_abs_z;
+            out.event.baseline_shift_z = 0.0;
+            out.event.peak_abs_z = out.peak_abs_z;
+            out.event.peak_delta_abs_z = out.peak_delta_abs_z;
+            out.event.accepted = true;
         }
         return out;
     };
@@ -1545,18 +1565,20 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         std::tie(row.final_region_count, row.final_region_len_median, row.final_region_len_max) =
             region_stats(in.flags.data.col(det).array());
         const auto impulsive = impulsive_metric(in.scans.data.col(det), valid);
+        row.impulsive_event = impulsive.event;
         row.impulsive_peak_abs_z = impulsive.peak_abs_z;
         row.impulsive_peak_abs_sample = impulsive.peak_abs_sample;
         row.impulsive_peak_delta_abs_z = impulsive.peak_delta_abs_z;
         row.impulsive_peak_delta_abs_sample = impulsive.peak_delta_abs_sample;
         row.impulsive_near_abs_count = impulsive.near_abs_count;
         row.impulsive_near_delta_count = impulsive.near_delta_count;
-        row.impulsive_event_score = impulsive.event_score;
-        row.impulsive_event_sample = impulsive.event_sample;
-        row.impulsive_event_kind = impulsive.event_kind;
+        row.impulsive_event_score = row.impulsive_event.score;
+        row.impulsive_event_sample = row.impulsive_event.sample;
+        row.impulsive_event_kind = row.impulsive_event.kind_code();
         if (recompute_detector_step_metrics) {
-            std::tie(row.step_score, row.step_sample) =
-                step_metric(in.scans.data.col(det), valid, step_window);
+            row.step_event = step_metric(in.scans.data.col(det), valid, step_window);
+            row.step_score = row.step_event.score;
+            row.step_sample = row.step_event.sample;
         }
     }
     rtc_detector_summary_by_scan[scan_id] = det_summary;
@@ -1579,19 +1601,19 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                 if (!std::isfinite(good_frac) || good_frac < impulsive_capture.min_good_frac) {
                     continue;
                 }
-                if (!std::isfinite(row.impulsive_event_score) ||
-                    row.impulsive_event_score < impulsive_capture.min_event_z ||
-                    row.impulsive_event_sample == fill_int) {
+                if (!row.impulsive_event.valid() ||
+                    row.impulsive_event.score < impulsive_capture.min_event_z) {
                     continue;
                 }
 
                 RTCImpulsiveSnippetSummary slot;
+                slot.event = row.impulsive_event;
                 slot.det = static_cast<int>(det);
-                slot.event_sample = row.impulsive_event_sample;
-                slot.event_kind = row.impulsive_event_kind;
-                slot.event_score = row.impulsive_event_score;
-                slot.peak_abs_z = row.impulsive_peak_abs_z;
-                slot.peak_delta_abs_z = row.impulsive_peak_delta_abs_z;
+                slot.event_sample = row.impulsive_event.sample;
+                slot.event_kind = row.impulsive_event.kind_code();
+                slot.event_score = row.impulsive_event.score;
+                slot.peak_abs_z = row.impulsive_event.peak_abs_z;
+                slot.peak_delta_abs_z = row.impulsive_event.peak_delta_abs_z;
                 slot.added_flagged_frac = row.added_flagged_frac;
                 slot.raw_exceed_count = row.raw_exceed_count;
                 slot.local_raw_candidate_count = row.local_raw_candidate_count;
@@ -1713,10 +1735,11 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                 }
             }
             const auto &det_row = det_summary[static_cast<std::size_t>(det)];
-            if (std::isfinite(det_row.step_score)) {
-                step_scores.push_back(det_row.step_score);
-                if (det_row.step_score >= step_score_thresh && det_row.step_sample != fill_int) {
-                    step_samples_active.push_back(static_cast<double>(det_row.step_sample));
+            if (det_row.step_event.valid()) {
+                step_scores.push_back(det_row.step_event.score);
+                if (det_row.step_event.score >= step_score_thresh &&
+                    det_row.step_event.sample != fill_int) {
+                    step_samples_active.push_back(static_cast<double>(det_row.step_event.sample));
                 }
             }
             ++n_used;
@@ -1729,6 +1752,8 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             row.step_det_frac = nan;
             row.step_alignment_frac = nan;
             row.dominant_step_sample = fill_int;
+            row.step_event = {};
+            row.step_event.kind = TransientEventKind::step_like;
             if (!step_scores.empty()) {
                 row.median_step_score = median_of(step_scores);
                 row.max_step_score = *std::max_element(step_scores.begin(), step_scores.end());
@@ -1738,6 +1763,20 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                 row.step_alignment_frac = step_align;
                 if (std::isfinite(step_center)) {
                     row.dominant_step_sample = static_cast<int>(std::llround(step_center));
+                    row.step_event.sample = row.dominant_step_sample;
+                    row.step_event.start_sample = static_cast<int>(
+                        std::max<Eigen::Index>(0,
+                                               static_cast<Eigen::Index>(row.dominant_step_sample) -
+                                                   static_cast<Eigen::Index>(std::llround(cluster_tol_samples))));
+                    row.step_event.end_sample = static_cast<int>(
+                        std::min<Eigen::Index>(n_pts - 1,
+                                               static_cast<Eigen::Index>(row.dominant_step_sample) +
+                                                   static_cast<Eigen::Index>(std::llround(cluster_tol_samples))));
+                    row.step_event.width_samples =
+                        static_cast<double>(row.step_event.end_sample - row.step_event.start_sample + 1);
+                    row.step_event.score = row.max_step_score;
+                    row.step_event.baseline_shift_z = row.max_step_score;
+                    row.step_event.accepted = true;
                 }
             }
         }
@@ -1875,7 +1914,7 @@ void RTCProc::apply_network_step_mask(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             continue;
         }
         if (!std::isfinite(row.step_det_frac) || !std::isfinite(row.step_alignment_frac) ||
-            row.dominant_step_sample <= -2147483647) {
+            !row.step_event.valid()) {
             continue;
         }
         if (row.n_det_used < network_step_mask.min_det_used ||
@@ -1889,7 +1928,7 @@ void RTCProc::apply_network_step_mask(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         const Eigen::Index half_width = std::max<Eigen::Index>(
             0, static_cast<Eigen::Index>(std::llround(network_step_mask.mask_half_width_sec /
                                                       std::max(dt_sec, 1.0e-6))));
-        const Eigen::Index center = static_cast<Eigen::Index>(row.dominant_step_sample);
+        const Eigen::Index center = static_cast<Eigen::Index>(row.step_event.sample);
         const Eigen::Index start_sample = std::max<Eigen::Index>(0, center - half_width);
         const Eigen::Index end_sample = std::min<Eigen::Index>(n_pts - 1, center + half_width);
         const Eigen::Index window_samples = std::max<Eigen::Index>(0, end_sample - start_sample + 1);

@@ -16,6 +16,63 @@
 
 namespace timestream {
 
+inline constexpr int kTransientFillInt = -2147483647;
+
+enum class TransientEventKind : int {
+    raw_like = 0,
+    delta_like = 1,
+    step_like = 2,
+    unknown = -1
+};
+
+struct TransientEvent {
+    TransientEventKind kind = TransientEventKind::unknown;
+    int sample = kTransientFillInt;
+    int start_sample = kTransientFillInt;
+    int end_sample = kTransientFillInt;
+    double score = std::numeric_limits<double>::quiet_NaN();
+    double width_samples = std::numeric_limits<double>::quiet_NaN();
+    double baseline_shift_z = std::numeric_limits<double>::quiet_NaN();
+    double peak_abs_z = std::numeric_limits<double>::quiet_NaN();
+    double peak_delta_abs_z = std::numeric_limits<double>::quiet_NaN();
+    bool accepted = false;
+
+    bool valid() const {
+        return sample != kTransientFillInt && std::isfinite(score);
+    }
+
+    int kind_code() const {
+        return valid() ? static_cast<int>(kind) : kTransientFillInt;
+    }
+};
+
+inline bool transient_event_better(const TransientEvent &candidate,
+                                   const TransientEvent &current) {
+    if (!candidate.valid()) {
+        return false;
+    }
+    if (!current.valid()) {
+        return true;
+    }
+    if (candidate.accepted != current.accepted) {
+        return candidate.accepted;
+    }
+    if (candidate.score != current.score) {
+        return candidate.score > current.score;
+    }
+    if (candidate.width_samples != current.width_samples) {
+        return candidate.width_samples < current.width_samples;
+    }
+    return candidate.sample < current.sample;
+}
+
+inline void promote_transient_event(TransientEvent &current,
+                                    const TransientEvent &candidate) {
+    if (transient_event_better(candidate, current)) {
+        current = candidate;
+    }
+}
+
 struct DespikeDetectorDiagSummary {
     int raw_exceed_count = 0;
     int local_raw_candidate_count = 0;
@@ -34,6 +91,8 @@ struct DespikeDetectorDiagSummary {
     double max_local_abs_z = std::numeric_limits<double>::quiet_NaN();
     double max_delta_abs_z = std::numeric_limits<double>::quiet_NaN();
     double max_local_delta_abs_z = std::numeric_limits<double>::quiet_NaN();
+    TransientEvent local_raw_event;
+    TransientEvent local_delta_event;
 };
 
 class Despiker {
@@ -297,158 +356,159 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
         return std::make_pair(med, sigma);
     };
 
-    auto shape_gate_local_raw = [&](const Eigen::VectorXd &resid,
-                                    const Eigen::VectorXd &abs_z,
-                                    const Eigen::Matrix<bool, Eigen::Dynamic, 1> &base_flags,
-                                    Eigen::Index peak_sample,
-                                    double resid_sigma) {
-        const auto &gate = local_residual.compact_raw_gate;
-        if (!gate.enabled) {
-            return true;
-        }
-        if (!(std::isfinite(resid_sigma) && resid_sigma > 0.0) ||
-            peak_sample < 0 || peak_sample >= abs_z.size()) {
-            return false;
-        }
+    auto characterize_transient_event =
+        [&](const Eigen::VectorXd &resid,
+            const Eigen::VectorXd &metric_abs_z,
+            const Eigen::Matrix<bool, Eigen::Dynamic, 1> &base_flags,
+            Eigen::Index metric_peak_index,
+            Eigen::Index peak_sample,
+            Eigen::Index gate_half_window,
+            Eigen::Index max_width_samples,
+            double half_peak_frac,
+            double resid_sigma,
+            double max_step_shift_z,
+            TransientEventKind kind,
+            bool metric_is_delta) {
+            TransientEvent event;
+            event.kind = kind;
+            event.sample = static_cast<int>(peak_sample);
 
-        const Eigen::Index n = resid.size();
-        const double peak_z = abs_z(peak_sample);
-        if (!std::isfinite(peak_z) || peak_z <= 0.0) {
-            return false;
-        }
-
-        const Eigen::Index gate_half_window = std::max<Eigen::Index>(
-            4, static_cast<Eigen::Index>(std::llround(gate.window_sec * fsmp)));
-        const Eigen::Index max_width_samples = std::max<Eigen::Index>(
-            1, static_cast<Eigen::Index>(std::llround(gate.max_width_sec * fsmp)));
-        const double width_thresh =
-            std::max(gate.half_peak_frac * peak_z, std::min(peak_z, 1.5));
-        const Eigen::Index left_bound = std::max<Eigen::Index>(0, peak_sample - gate_half_window);
-        const Eigen::Index right_bound = std::min<Eigen::Index>(n - 1, peak_sample + gate_half_window);
-
-        Eigen::Index left = peak_sample;
-        while (left - 1 >= left_bound &&
-               std::isfinite(abs_z(left - 1)) &&
-               abs_z(left - 1) >= width_thresh) {
-            --left;
-        }
-        Eigen::Index right = peak_sample;
-        while (right + 1 <= right_bound &&
-               std::isfinite(abs_z(right + 1)) &&
-               abs_z(right + 1) >= width_thresh) {
-            ++right;
-        }
-        const Eigen::Index width_samples = right - left + 1;
-        if (width_samples > max_width_samples) {
-            return false;
-        }
-
-        const Eigen::Index pre_lo = std::max<Eigen::Index>(0, peak_sample - gate_half_window);
-        const Eigen::Index pre_hi = std::max<Eigen::Index>(pre_lo, peak_sample - 1);
-        const Eigen::Index post_lo = std::min<Eigen::Index>(n, peak_sample + 2);
-        const Eigen::Index post_hi = std::min<Eigen::Index>(n, peak_sample + gate_half_window + 1);
-        std::vector<double> pre_vals;
-        std::vector<double> post_vals;
-        pre_vals.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(pre_hi - pre_lo, 0)));
-        post_vals.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(post_hi - post_lo, 0)));
-        for (Eigen::Index i = pre_lo; i < pre_hi; ++i) {
-            if (!base_flags(i) && std::isfinite(resid(i))) {
-                pre_vals.push_back(resid(i));
+            if (!(std::isfinite(resid_sigma) && resid_sigma > 0.0) ||
+                metric_peak_index < 0 || metric_peak_index >= metric_abs_z.size() ||
+                peak_sample < 0 || peak_sample >= resid.size()) {
+                return event;
             }
-        }
-        for (Eigen::Index i = post_lo; i < post_hi; ++i) {
-            if (!base_flags(i) && std::isfinite(resid(i))) {
-                post_vals.push_back(resid(i));
+
+            const double peak_z = metric_abs_z(metric_peak_index);
+            if (!std::isfinite(peak_z) || peak_z <= 0.0) {
+                return event;
             }
-        }
-        if (pre_vals.size() < 4 || post_vals.size() < 4) {
-            return false;
-        }
-        Eigen::Map<const Eigen::VectorXd> pre_map(pre_vals.data(), static_cast<Eigen::Index>(pre_vals.size()));
-        Eigen::Map<const Eigen::VectorXd> post_map(post_vals.data(), static_cast<Eigen::Index>(post_vals.size()));
-        const double pre_med = tula::alg::median(pre_map);
-        const double post_med = tula::alg::median(post_map);
-        const double step_shift_z = std::abs(post_med - pre_med) / resid_sigma;
-        return std::isfinite(step_shift_z) && step_shift_z <= gate.max_step_shift_z;
-    };
 
-    auto shape_gate_local_delta = [&](const Eigen::VectorXd &resid,
-                                      const Eigen::VectorXd &delta_abs_z,
-                                      const Eigen::Matrix<bool, Eigen::Dynamic, 1> &base_flags,
-                                      Eigen::Index peak_edge,
-                                      double resid_med,
-                                      double resid_sigma) {
-        const auto &gate = local_residual.compact_delta_gate;
-        if (!gate.enabled) {
-            return true;
-        }
-        if (!(std::isfinite(resid_med) && std::isfinite(resid_sigma) && resid_sigma > 0.0) ||
-            peak_edge < 0 || peak_edge >= delta_abs_z.size()) {
-            return false;
-        }
-
-        const Eigen::Index n = resid.size();
-        const Eigen::Index peak_sample = peak_edge + 1;
-        const double peak_delta_z = delta_abs_z(peak_edge);
-        if (!std::isfinite(peak_delta_z) || peak_delta_z <= 0.0) {
-            return false;
-        }
-
-        const Eigen::Index gate_half_window = std::max<Eigen::Index>(
-            4, static_cast<Eigen::Index>(std::llround(gate.window_sec * fsmp)));
-        const Eigen::Index max_width_edges = std::max<Eigen::Index>(
-            1, static_cast<Eigen::Index>(std::llround(gate.max_width_sec * fsmp)));
-        const double width_thresh =
-            std::max(gate.half_peak_frac * peak_delta_z, std::min(peak_delta_z, 1.5));
-        const Eigen::Index left_bound = std::max<Eigen::Index>(0, peak_edge - gate_half_window);
-        const Eigen::Index right_bound =
-            std::min<Eigen::Index>(delta_abs_z.size() - 1, peak_edge + gate_half_window);
-
-        Eigen::Index left = peak_edge;
-        while (left - 1 >= left_bound &&
-               std::isfinite(delta_abs_z(left - 1)) &&
-               delta_abs_z(left - 1) >= width_thresh) {
-            --left;
-        }
-        Eigen::Index right = peak_edge;
-        while (right + 1 <= right_bound &&
-               std::isfinite(delta_abs_z(right + 1)) &&
-               delta_abs_z(right + 1) >= width_thresh) {
-            ++right;
-        }
-        const Eigen::Index width_edges = right - left + 1;
-        if (width_edges > max_width_edges) {
-            return false;
-        }
-
-        const Eigen::Index pre_lo = std::max<Eigen::Index>(0, peak_sample - gate_half_window);
-        const Eigen::Index pre_hi = std::max<Eigen::Index>(pre_lo, peak_sample - 2);
-        const Eigen::Index post_lo = std::min<Eigen::Index>(n, peak_sample + 2);
-        const Eigen::Index post_hi = std::min<Eigen::Index>(n, peak_sample + gate_half_window + 1);
-        std::vector<double> pre_vals;
-        std::vector<double> post_vals;
-        pre_vals.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(pre_hi - pre_lo, 0)));
-        post_vals.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(post_hi - post_lo, 0)));
-        for (Eigen::Index i = pre_lo; i < pre_hi; ++i) {
-            if (!base_flags(i) && std::isfinite(resid(i))) {
-                pre_vals.push_back(resid(i));
+            event.score = peak_z;
+            if (kind == TransientEventKind::raw_like) {
+                event.peak_abs_z = peak_z;
             }
-        }
-        for (Eigen::Index i = post_lo; i < post_hi; ++i) {
-            if (!base_flags(i) && std::isfinite(resid(i))) {
-                post_vals.push_back(resid(i));
+            if (kind == TransientEventKind::delta_like) {
+                event.peak_delta_abs_z = peak_z;
             }
-        }
-        if (pre_vals.size() < 4 || post_vals.size() < 4) {
-            return false;
-        }
-        Eigen::Map<const Eigen::VectorXd> pre_map(pre_vals.data(), static_cast<Eigen::Index>(pre_vals.size()));
-        Eigen::Map<const Eigen::VectorXd> post_map(post_vals.data(), static_cast<Eigen::Index>(post_vals.size()));
-        const double pre_med = tula::alg::median(pre_map);
-        const double post_med = tula::alg::median(post_map);
-        const double step_shift_z = std::abs(post_med - pre_med) / resid_sigma;
-        return std::isfinite(step_shift_z) && step_shift_z <= gate.max_step_shift_z;
-    };
+
+            const Eigen::Index metric_n = metric_abs_z.size();
+            const Eigen::Index left_bound =
+                std::max<Eigen::Index>(0, metric_peak_index - gate_half_window);
+            const Eigen::Index right_bound =
+                std::min<Eigen::Index>(metric_n - 1, metric_peak_index + gate_half_window);
+            const double width_thresh =
+                std::max(half_peak_frac * peak_z, std::min(peak_z, 1.5));
+
+            Eigen::Index left = metric_peak_index;
+            while (left - 1 >= left_bound &&
+                   std::isfinite(metric_abs_z(left - 1)) &&
+                   metric_abs_z(left - 1) >= width_thresh) {
+                --left;
+            }
+            Eigen::Index right = metric_peak_index;
+            while (right + 1 <= right_bound &&
+                   std::isfinite(metric_abs_z(right + 1)) &&
+                   metric_abs_z(right + 1) >= width_thresh) {
+                ++right;
+            }
+
+            const Eigen::Index event_start = std::max<Eigen::Index>(0, left);
+            const Eigen::Index event_end =
+                metric_is_delta ? std::min<Eigen::Index>(resid.size() - 1, right + 1)
+                                : std::min<Eigen::Index>(resid.size() - 1, right);
+            const Eigen::Index width_samples = std::max<Eigen::Index>(0, event_end - event_start + 1);
+            event.start_sample = static_cast<int>(event_start);
+            event.end_sample = static_cast<int>(event_end);
+            event.width_samples = static_cast<double>(width_samples);
+
+            const Eigen::Index pre_lo = std::max<Eigen::Index>(0, peak_sample - gate_half_window);
+            const Eigen::Index pre_hi = std::max<Eigen::Index>(pre_lo, peak_sample - (metric_is_delta ? 2 : 1));
+            const Eigen::Index post_lo = std::min<Eigen::Index>(resid.size(), peak_sample + 2);
+            const Eigen::Index post_hi =
+                std::min<Eigen::Index>(resid.size(), peak_sample + gate_half_window + 1);
+            std::vector<double> pre_vals;
+            std::vector<double> post_vals;
+            pre_vals.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(pre_hi - pre_lo, 0)));
+            post_vals.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(post_hi - post_lo, 0)));
+            for (Eigen::Index i = pre_lo; i < pre_hi; ++i) {
+                if (!base_flags(i) && std::isfinite(resid(i))) {
+                    pre_vals.push_back(resid(i));
+                }
+            }
+            for (Eigen::Index i = post_lo; i < post_hi; ++i) {
+                if (!base_flags(i) && std::isfinite(resid(i))) {
+                    post_vals.push_back(resid(i));
+                }
+            }
+            if (pre_vals.size() >= 4 && post_vals.size() >= 4) {
+                Eigen::Map<const Eigen::VectorXd> pre_map(
+                    pre_vals.data(), static_cast<Eigen::Index>(pre_vals.size()));
+                Eigen::Map<const Eigen::VectorXd> post_map(
+                    post_vals.data(), static_cast<Eigen::Index>(post_vals.size()));
+                const double pre_med = tula::alg::median(pre_map);
+                const double post_med = tula::alg::median(post_map);
+                event.baseline_shift_z = std::abs(post_med - pre_med) / resid_sigma;
+            }
+
+            event.accepted =
+                width_samples <= max_width_samples &&
+                std::isfinite(event.baseline_shift_z) &&
+                event.baseline_shift_z <= max_step_shift_z;
+            return event;
+        };
+
+    auto characterize_local_raw_event =
+        [&](const Eigen::VectorXd &resid,
+            const Eigen::VectorXd &abs_z,
+            const Eigen::Matrix<bool, Eigen::Dynamic, 1> &base_flags,
+            Eigen::Index peak_sample,
+            double resid_sigma) {
+            const auto &gate = local_residual.compact_raw_gate;
+            const Eigen::Index gate_half_window = std::max<Eigen::Index>(
+                4, static_cast<Eigen::Index>(std::llround(gate.window_sec * fsmp)));
+            const Eigen::Index max_width_samples = std::max<Eigen::Index>(
+                1, static_cast<Eigen::Index>(std::llround(gate.max_width_sec * fsmp)));
+            return characterize_transient_event(
+                resid,
+                abs_z,
+                base_flags,
+                peak_sample,
+                peak_sample,
+                gate_half_window,
+                max_width_samples,
+                gate.half_peak_frac,
+                resid_sigma,
+                gate.max_step_shift_z,
+                TransientEventKind::raw_like,
+                false);
+        };
+
+    auto characterize_local_delta_event =
+        [&](const Eigen::VectorXd &resid,
+            const Eigen::VectorXd &delta_abs_z,
+            const Eigen::Matrix<bool, Eigen::Dynamic, 1> &base_flags,
+            Eigen::Index peak_edge,
+            double resid_sigma) {
+            const auto &gate = local_residual.compact_delta_gate;
+            const Eigen::Index gate_half_window = std::max<Eigen::Index>(
+                4, static_cast<Eigen::Index>(std::llround(gate.window_sec * fsmp)));
+            const Eigen::Index max_width_edges = std::max<Eigen::Index>(
+                1, static_cast<Eigen::Index>(std::llround(gate.max_width_sec * fsmp)));
+            return characterize_transient_event(
+                resid,
+                delta_abs_z,
+                base_flags,
+                peak_edge,
+                peak_edge + 1,
+                gate_half_window,
+                max_width_edges,
+                gate.half_peak_frac,
+                resid_sigma,
+                gate.max_step_shift_z,
+                TransientEventKind::delta_like,
+                true);
+        };
 
     last_detector_diag.assign(static_cast<std::size_t>(n_dets), DespikeDetectorDiagSummary{});
 
@@ -554,15 +614,16 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                                             }
                                         }
                                         ++diag.local_raw_candidate_count;
-                                        if (shape_gate_local_raw(
-                                                resid, local_abs_z, base_flags,
-                                                best_sample, resid_sigma)) {
-                                            ++diag.local_raw_accepted_event_count;
-                                            local_flags.segment(lo, hi - lo + 1).setOnes();
-                                        }
-                                        else {
-                                            ++diag.local_raw_reject_count;
-                                        }
+                                            const auto event = characterize_local_raw_event(
+                                                resid, local_abs_z, base_flags, best_sample, resid_sigma);
+                                            if (event.accepted) {
+                                                ++diag.local_raw_accepted_event_count;
+                                                promote_transient_event(diag.local_raw_event, event);
+                                                local_flags.segment(lo, hi - lo + 1).setOnes();
+                                            }
+                                            else {
+                                                ++diag.local_raw_reject_count;
+                                            }
                                     };
                                     for (std::size_t ii = 1; ii < candidate_samples.size(); ++ii) {
                                         const auto sample = candidate_samples[ii];
@@ -648,10 +709,11 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                                                 }
                                             }
                                             ++diag.local_delta_candidate_count;
-                                            if (shape_gate_local_delta(
-                                                    resid, local_delta_abs_z, base_flags,
-                                                    best_edge, resid_med, resid_sigma)) {
+                                            const auto event = characterize_local_delta_event(
+                                                resid, local_delta_abs_z, base_flags, best_edge, resid_sigma);
+                                            if (event.accepted) {
                                                 ++diag.local_delta_accepted_event_count;
+                                                promote_transient_event(diag.local_delta_event, event);
                                                 local_flags(best_edge) = 1;
                                                 if (best_edge + 1 < n_pts) {
                                                     local_flags(best_edge + 1) = 1;
