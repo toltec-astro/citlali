@@ -12,6 +12,8 @@
 #include <tula/logging.h>
 #include <tula/switch_invoke.h>
 
+#include <mutex>
+
 #include <citlali/core/timestream/timestream.h>
 
 namespace predefs {
@@ -35,6 +37,11 @@ using timestream::TCData;
 
 // Selects the type of TCData
 using timestream::TCDataKind;
+
+inline std::mutex &netcdf_io_mutex() {
+    static std::mutex mutex;
+    return mutex;
+}
 
 } // namespace predefs
 

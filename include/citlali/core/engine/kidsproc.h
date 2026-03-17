@@ -142,6 +142,7 @@ private:
 auto KidsDataProc::get_data_item_meta(const RawObs::DataItem &data_item) {
     namespace kidsdata = predefs::kidsdata;
     auto source = data_item.filepath();
+    std::lock_guard<std::mutex> lock(predefs::netcdf_io_mutex());
     auto [kind, meta] = kidsdata::get_meta<>(source);
     return meta;
 }
@@ -168,13 +169,28 @@ auto KidsDataProc::reduce_data_item(const RawObs::DataItem &data_item,
     // read data
     namespace kidsdata = predefs::kidsdata;
     auto source = data_item.filepath();
-    auto [kind, meta] = kidsdata::get_meta<>(source);
+    kids::KidsDataKind kind;
+    kids::KidsData<>::meta_t meta;
+    {
+        std::lock_guard<std::mutex> lock(predefs::netcdf_io_mutex());
+        auto km = kidsdata::get_meta<>(source);
+        kind = km.first;
+        meta = std::move(km.second);
+    }
     if (!(kind & kids::KidsDataKind::TimeStream)) {
         throw std::runtime_error(
             fmt::format("wrong type of kids data {}", kind));
     }
-    auto rts = kidsdata::read_data_slice<kids::KidsDataKind::RawTimeStream>(
-        source, slice);
+    kids::KidsData<kids::KidsDataKind::RawTimeStream> rts;
+    try {
+        std::lock_guard<std::mutex> lock(predefs::netcdf_io_mutex());
+        rts = kidsdata::read_data_slice<kids::KidsDataKind::RawTimeStream>(
+            source, slice);
+    } catch (const std::exception &e) {
+        throw std::runtime_error(fmt::format(
+            "failed to read raw timestream slice from {} slice {}: {}",
+            source, slice, e.what()));
+    }
     auto result = this->solver()(rts, Solver::Config{});
     return result;
 }
@@ -200,6 +216,7 @@ auto KidsDataProc::load_data_item(const RawObs::DataItem &data_item,
         kind = it->second;
     }
     else {
+        std::lock_guard<std::mutex> lock(predefs::netcdf_io_mutex());
         auto [kind_, meta] = kidsdata::get_meta<>(source);
         kind = kind_;
         m_data_item_kind_cache[source] = kind;
@@ -208,8 +225,16 @@ auto KidsDataProc::load_data_item(const RawObs::DataItem &data_item,
         throw std::runtime_error(
             fmt::format("wrong type of kids data {}", kind));
     }
-    auto rts = kidsdata::read_data_slice<kids::KidsDataKind::RawTimeStream>(
-        source, slice);
+    kids::KidsData<kids::KidsDataKind::RawTimeStream> rts;
+    try {
+        std::lock_guard<std::mutex> lock(predefs::netcdf_io_mutex());
+        rts = kidsdata::read_data_slice<kids::KidsDataKind::RawTimeStream>(
+            source, slice);
+    } catch (const std::exception &e) {
+        throw std::runtime_error(fmt::format(
+            "failed to read raw timestream slice from {} slice {}: {}",
+            source, slice, e.what()));
+    }
     return rts;
 }
 

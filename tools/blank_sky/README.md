@@ -138,8 +138,8 @@ compact morphology gates saw each captured event as:
 - an accepted local delta trigger
 - a rejected candidate that looked too broad or too step-like
 
-The tool reads the `rtc_impulsive_slot_*` variables from an RTC timestream file
-and writes:
+The tool reads the `rtc_impulsive_slot_*` variables from an `*_rtcdiag.nc`
+sidecar when available, or from an RTC timestream file as fallback, and writes:
 
 - `rtc_impulsive_slot_report_detailed.csv`
 - `rtc_impulsive_slot_report_summary_by_network.csv`
@@ -150,9 +150,34 @@ Example:
 
 ```bash
 $HOME/tolteca/bin/python tools/blank_sky/rtc_impulsive_slot_report.py \
-  --nc-file /path/to/toltec_commissioning_science_152524_rtc_timestream.nc \
+  --nc-file /path/to/toltec_commissioning_science_152524_rtcdiag.nc \
   --array a1100 \
   --networks 0,1,2,3,4,5 \
   --scans all \
   --outdir /path/to/rtc_impulsive_slot_report
+```
+
+`rtcdiag_survey_report.py`
+
+Summarize RTC diagnostics across a whole `reduXX` tree. This is the lightweight
+survey entry point and prefers `*_rtcdiag.nc` products automatically, falling
+back to `*_rtc_timestream.nc` when needed.
+
+It writes:
+
+- `rtcdiag_survey_by_obsnum.csv`
+- `rtcdiag_survey_by_obsnum_network.csv`
+- `rtcdiag_survey_by_network.csv`
+- `rtcdiag_survey_top_scan_network_rows.csv`
+- `rtcdiag_survey_top_impulsive_slots.csv`
+- `RTCDIAG_SURVEY_REPORT.md`
+
+Example:
+
+```bash
+$HOME/tolteca/bin/python tools/blank_sky/rtcdiag_survey_report.py \
+  --redu-dir /path/to/reduced/redu37 \
+  --array a1100 \
+  --networks 0,1,2,3,4,5 \
+  --outdir /path/to/rtcdiag_survey_report
 ```

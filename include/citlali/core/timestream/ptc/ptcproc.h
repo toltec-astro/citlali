@@ -18,6 +18,7 @@
 #include <tula/nc.h>
 #include <tula/algorithm/ei_stats.h>
 
+#include <citlali/core/engine/io.h>
 #include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/pointing.h>
 
@@ -1796,6 +1797,7 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
 
     try {
         // open netcdf file
+        std::lock_guard<std::mutex> lock(predefs::netcdf_io_mutex());
         NcFile fo(filepath, netCDF::NcFile::write);
 
         // append common time chunk variables

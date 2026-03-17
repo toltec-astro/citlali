@@ -11,6 +11,7 @@
 #include <vector>
 
 #include <citlali/core/timestream/timestream.h>
+#include <citlali/core/engine/io.h>
 
 #include <citlali/core/timestream/rtc/polarization.h>
 #include <citlali/core/timestream/rtc/kernel.h>
@@ -2437,6 +2438,7 @@ void RTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
             rtc_network_summary_by_scan.find(in.index.data) != rtc_network_summary_by_scan.end();
         capture_rtc_diagnostics(in, calib, !have_step_diag);
 
+        std::lock_guard<std::mutex> lock(predefs::netcdf_io_mutex());
         NcFile fo(filepath, netCDF::NcFile::write);
         write_cached_diagnostics_to_netcdf(fo, in, calib, scan_row_index);
         fo.sync();
@@ -2462,6 +2464,7 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         capture_rtc_diagnostics(in, calib, !have_step_diag);
 
         // open netcdf file
+        std::lock_guard<std::mutex> lock(predefs::netcdf_io_mutex());
         NcFile fo(filepath, netCDF::NcFile::write);
 
         // append common time chunk variables
