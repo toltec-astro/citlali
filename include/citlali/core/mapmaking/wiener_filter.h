@@ -70,6 +70,13 @@ public:
     Eigen::MatrixXd filtered_map;
     // filter template
     Eigen::MatrixXd filter_template;
+    // cached FFTs of the current filter template
+    Eigen::MatrixXcd filter_template_fft;
+    Eigen::MatrixXcd filter_template_fft_scaled;
+    Eigen::MatrixXcd filter_template_fft_normalized_scaled;
+    bool filter_template_fft_valid = false;
+    bool filter_template_fft_scaled_valid = false;
+    bool filter_template_fft_normalized_scaled_valid = false;
 
     // declare fitter class
     engine_utils::mapFitter map_fitter;
@@ -114,6 +121,13 @@ public:
 
     // simple convolution with template
     void run_convolve(bool normalize=true);
+    void invalidate_template_fft_cache() {
+        filter_template_fft_valid = false;
+        filter_template_fft_scaled_valid = false;
+        filter_template_fft_normalized_scaled_valid = false;
+    }
+    const Eigen::MatrixXcd &get_filter_template_fft();
+    const Eigen::MatrixXcd &get_filter_template_fft_scaled(bool);
 
     // test destriper
     void destripe(double);
@@ -542,16 +556,12 @@ void WienerFilter::calc_numerator() {
     // copy of fft(Q)
     Eigen::MatrixXcd Q = out;
 
-    // f(x)
-    in.real() = filter_template;
-    in.imag().setZero();
-
-    // fft(f(x)) (re-use out)
-    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
+    // cached fft(f(x))
+    const auto &template_fft = get_filter_template_fft();
 
     // fft(f(x)) x fft(Q) (convolution)
-    in.real() = out.real().array() * Q.real().array() + out.imag().array() * Q.imag().array();
-    in.imag() = -out.imag().array() * Q.real().array() + out.real().array() * Q.imag().array();
+    in.real() = template_fft.real().array() * Q.real().array() + template_fft.imag().array() * Q.imag().array();
+    in.imag() = -template_fft.imag().array() * Q.real().array() + template_fft.real().array() * Q.imag().array();
 
     // ifft(fft(f(x)) x fft(Q))
     out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
@@ -565,6 +575,61 @@ void WienerFilter::calc_numerator() {
     // free fftw vectors
     fftw_free(a);
     fftw_free(b);
+}
+
+inline const Eigen::MatrixXcd &WienerFilter::get_filter_template_fft() {
+    if (!filter_template_fft_valid) {
+        fftw_complex *a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
+        fftw_complex *b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
+        fftw_plan pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
+
+        Eigen::MatrixXcd in(n_rows, n_cols), out(n_rows, n_cols);
+        in.real() = filter_template;
+        in.imag().setZero();
+        out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
+        filter_template_fft = std::move(out);
+        filter_template_fft_valid = true;
+
+        fftw_destroy_plan(pf);
+        fftw_free(a);
+        fftw_free(b);
+    }
+    return filter_template_fft;
+}
+
+inline const Eigen::MatrixXcd &WienerFilter::get_filter_template_fft_scaled(bool normalize) {
+    const double scale = static_cast<double>(n_rows) * static_cast<double>(n_cols);
+    if (normalize) {
+        if (!filter_template_fft_normalized_scaled_valid) {
+            fftw_complex *a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
+            fftw_complex *b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
+            fftw_plan pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
+
+            Eigen::MatrixXcd in(n_rows, n_cols), out(n_rows, n_cols);
+            Eigen::MatrixXd kernel = filter_template;
+            const double kernel_sum = kernel.sum();
+            if (kernel_sum != 0.0 && std::isfinite(kernel_sum)) {
+                kernel /= kernel_sum;
+            }
+            in.real() = kernel;
+            in.imag().setZero();
+            out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
+            out *= scale;
+            filter_template_fft_normalized_scaled = std::move(out);
+            filter_template_fft_normalized_scaled_valid = true;
+
+            fftw_destroy_plan(pf);
+            fftw_free(a);
+            fftw_free(b);
+        }
+        return filter_template_fft_normalized_scaled;
+    }
+    if (!filter_template_fft_scaled_valid) {
+        filter_template_fft_scaled = get_filter_template_fft();
+        filter_template_fft_scaled *= scale;
+        filter_template_fft_scaled_valid = true;
+    }
+    return filter_template_fft_scaled;
 }
 
 void WienerFilter::calc_denominator() {
@@ -589,11 +654,8 @@ void WienerFilter::calc_denominator() {
 
     // using uniform weights only
     if (uniform_weight) {
-        in.real() = filter_template;
-        in.imag().setZero();
-
-        // fft(f(x))
-        out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
+        const auto &template_fft = get_filter_template_fft();
+        out = template_fft;
 
         // set denominator = abs(fft(f(x))/VV
         denom.setConstant(((out.real().array() * out.real().array() + out.imag().array() * out.imag().array()) / vvq.array()).sum());
@@ -796,29 +858,43 @@ void WienerFilter::make_template(MB &mb, CD &calib_data, const double template_f
         }
         make_kernel_template(mb, map_index, calib_data);
     }
+    invalidate_template_fft_cache();
 }
 
 template<class MB>
 void WienerFilter::run_filter(MB &mb, const int map_index) {
+    const auto t0 = std::chrono::steady_clock::now();
     // calculate pixel standard deviations
     logger->debug("calculating rr");
     calc_rr(mb, map_index);
     logger->debug("rr {}", rr);
 
+    const auto t1 = std::chrono::steady_clock::now();
     // calculate normalized psd
     logger->debug("calculating vvq");
     calc_vvq(mb, map_index);
     logger->debug("vvq {}", vvq);
 
+    const auto t2 = std::chrono::steady_clock::now();
     // calculate denominator
     logger->debug("calculating denominator");
     calc_denominator();
     logger->debug("denominator {}", denom);
 
+    const auto t3 = std::chrono::steady_clock::now();
     // calculate numerator
     logger->debug("calculating numerator");
     calc_numerator();
     logger->debug("numerator {}", nume);
+    const auto t4 = std::chrono::steady_clock::now();
+    logger->info(
+        "Wiener core timings map_index={} rr_s={} vvq_s={} denom_s={} numer_s={} uniform_weight={}",
+        map_index,
+        std::chrono::duration<double>(t1 - t0).count(),
+        std::chrono::duration<double>(t2 - t1).count(),
+        std::chrono::duration<double>(t3 - t2).count(),
+        std::chrono::duration<double>(t4 - t3).count(),
+        uniform_weight);
 }
 
 void WienerFilter::run_convolve(bool normalize) {
@@ -838,22 +914,7 @@ void WienerFilter::run_convolve(bool normalize) {
     // inputs and outputs to ffts
     Eigen::MatrixXcd in(n_rows,n_cols), out(n_rows,n_cols);
 
-    Eigen::MatrixXd kernel = filter_template;
-    if (normalize) {
-        double kernel_sum = kernel.sum();
-        if (kernel_sum != 0.0 && std::isfinite(kernel_sum)) {
-            kernel /= kernel_sum;
-        }
-    }
-
-    in.real() = kernel;
-    in.imag().setZero();
-
-    // fft(f(x))
-    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
-    out = out*n_rows*n_cols;
-
-    Eigen::MatrixXcd fft_filter = out;
+    const auto &fft_filter = get_filter_template_fft_scaled(normalize);
 
     in.real() = filtered_map;
     in.imag().setZero();
@@ -1053,6 +1114,7 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
 
                 Eigen::MatrixXd template_backup = filter_template;
                 filter_template = kernel_sq;
+                invalidate_template_fft_cache();
 
                 filtered_map = var_map;
                 run_convolve(false);
@@ -1081,6 +1143,7 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
                     }
                 }
                 filter_template = template_backup;
+                invalidate_template_fft_cache();
             }
         }
     }

@@ -441,17 +441,20 @@ void MapBuffer::calc_median_rms() {
 
     // loop through arrays/polarizations
     for (Eigen::Index i=0; i<noise.size(); ++i) {
+        const double weight_threshold = std::get<0>(calc_cov_region(i));
+        const auto valid_mask = (weight[i].array()>=weight_threshold);
+        const int counter = valid_mask.count();
+        if (counter <= 0) {
+            median_rms(i) = 0.0;
+            continue;
+        }
+
         // vector of rms of noise maps
         Eigen::VectorXd noise_rms(n_noise);
         for (Eigen::Index j=0; j<n_noise; ++j) {
-            // calculate weight threshold
-            auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = calc_cov_region(i);
-
             Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(noise[i].data() + j * n_rows * n_cols,
                                                                                            n_rows, n_cols);
-
-            int counter = (weight[i].array()>=weight_threshold).count();
-            double rms = ((weight[i].array()>=weight_threshold).select(pow(noise_matrix.array(),2),0)).sum();
+            double rms = (valid_mask.select(noise_matrix.array().square(), 0.0)).sum();
 
             noise_rms(j) = sqrt(rms/counter);
         }
