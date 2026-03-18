@@ -83,6 +83,19 @@ public:
     };
     ImpulsiveCaptureOptions impulsive_capture;
 
+    struct ImpulsiveCoincidenceOptions {
+        bool enabled = false;
+        double min_good_frac = 0.8;
+        double event_score_thresh = 6.0;
+        Eigen::Index min_det_used = 32;
+        double min_impulsive_det_frac = 0.05;
+        double min_alignment_frac = 0.5;
+        double cluster_tol_sec = 0.03;
+        double mask_half_width_sec = 0.03;
+        double max_flagged_fraction = 0.10;
+    };
+    ImpulsiveCoincidenceOptions impulsive_coincidence;
+
     struct RTCDetectorDiagSummary : DespikeDetectorDiagSummary {
         Eigen::Index det = -1;
         double final_flagged_frac = std::numeric_limits<double>::quiet_NaN();
@@ -114,6 +127,11 @@ public:
         double step_det_frac = std::numeric_limits<double>::quiet_NaN();
         double step_alignment_frac = std::numeric_limits<double>::quiet_NaN();
         int dominant_step_sample = kTransientFillInt;
+        double median_impulsive_score = std::numeric_limits<double>::quiet_NaN();
+        double max_impulsive_score = std::numeric_limits<double>::quiet_NaN();
+        double impulsive_det_frac = std::numeric_limits<double>::quiet_NaN();
+        double impulsive_alignment_frac = std::numeric_limits<double>::quiet_NaN();
+        int dominant_impulsive_sample = kTransientFillInt;
         double cm_low_mid_ratio = std::numeric_limits<double>::quiet_NaN();
         double cm_peak_freq_Hz = std::numeric_limits<double>::quiet_NaN();
         double cm_peak_prominence = std::numeric_limits<double>::quiet_NaN();
@@ -124,6 +142,13 @@ public:
         int step_mask_n_det_masked = 0;
         int step_mask_n_det_samples_flagged = 0;
         double step_mask_flagged_fraction = std::numeric_limits<double>::quiet_NaN();
+        bool impulsive_mask_applied = false;
+        int impulsive_mask_start_sample = kTransientFillInt;
+        int impulsive_mask_end_sample = kTransientFillInt;
+        int impulsive_mask_window_samples = 0;
+        int impulsive_mask_n_det_masked = 0;
+        int impulsive_mask_n_det_samples_flagged = 0;
+        double impulsive_mask_flagged_fraction = std::numeric_limits<double>::quiet_NaN();
     };
 
     struct RTCImpulsiveSnippetSummary {
@@ -175,7 +200,9 @@ public:
 
     // summarize RTC diagnostics for the written output chunk
     template <typename calib_t>
-    void capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &, bool recompute_step_metrics = true);
+    void capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &,
+                                 bool recompute_step_metrics = true,
+                                 bool recompute_impulsive_metrics = true);
 
     // optional az/el template subtraction on the RTC output chunk
     template <typename calib_t>
@@ -184,6 +211,10 @@ public:
     // optionally flag a network-wide window around aligned step-like events
     template <typename calib_t>
     void apply_network_step_mask(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &);
+
+    // optionally flag a network-wide window around aligned impulsive coincidences
+    template <typename calib_t>
+    void apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &);
 
     // append cached RTC diagnostics to a compact sidecar netcdf file
     template <typename calib_t>
@@ -319,6 +350,64 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                 impulsive_capture.max_events_per_network,
                 impulsive_capture.snippet_half_width_sec);
         }
+    }
+    impulsive_coincidence = {};
+    if (config.has(std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence"})) {
+        if (config.has(std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","enabled"})) {
+            get_config_value(config, impulsive_coincidence.enabled, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","enabled"});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","min_good_frac"})) {
+            get_config_value(config, impulsive_coincidence.min_good_frac, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","min_good_frac"},
+                             {}, {0.0}, {1.0});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","event_score_thresh"})) {
+            get_config_value(config, impulsive_coincidence.event_score_thresh, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","event_score_thresh"},
+                             {}, {0.0});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","min_det_used"})) {
+            get_config_value(config, impulsive_coincidence.min_det_used, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","min_det_used"},
+                             {}, {1});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","min_impulsive_det_frac"})) {
+            get_config_value(config, impulsive_coincidence.min_impulsive_det_frac, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","min_impulsive_det_frac"},
+                             {}, {0.0}, {1.0});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","min_alignment_frac"})) {
+            get_config_value(config, impulsive_coincidence.min_alignment_frac, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","min_alignment_frac"},
+                             {}, {0.0}, {1.0});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","cluster_tol_sec"})) {
+            get_config_value(config, impulsive_coincidence.cluster_tol_sec, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","cluster_tol_sec"},
+                             {}, {0.0});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","mask_half_width_sec"})) {
+            get_config_value(config, impulsive_coincidence.mask_half_width_sec, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","mask_half_width_sec"},
+                             {}, {0.0});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","max_flagged_fraction"})) {
+            get_config_value(config, impulsive_coincidence.max_flagged_fraction, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","max_flagged_fraction"},
+                             {}, {0.0}, {1.0});
+        }
+        logger->info(
+            "raw_time_chunk.flagging.impulsive_coincidence configured: enabled={} min_good_frac={} event_score_thresh={} min_det_used={} min_impulsive_det_frac={} min_alignment_frac={} cluster_tol_sec={} mask_half_width_sec={} max_flagged_fraction={}",
+            impulsive_coincidence.enabled,
+            impulsive_coincidence.min_good_frac,
+            impulsive_coincidence.event_score_thresh,
+            impulsive_coincidence.min_det_used,
+            impulsive_coincidence.min_impulsive_det_frac,
+            impulsive_coincidence.min_alignment_frac,
+            impulsive_coincidence.cluster_tol_sec,
+            impulsive_coincidence.mask_half_width_sec,
+            impulsive_coincidence.max_flagged_fraction);
     }
 
     // run polarization?
@@ -980,15 +1069,21 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     rtc_network_summary_by_scan.erase(out.index.data);
     rtc_impulsive_summary_by_scan.erase(out.index.data);
 
+    if (network_step_mask.enabled || impulsive_coincidence.enabled) {
+        capture_rtc_diagnostics(out, calib, true, true);
+    }
+
     if (network_step_mask.enabled) {
-        capture_rtc_diagnostics(out, calib, true);
         apply_network_step_mask(out, calib);
+    }
+    if (impulsive_coincidence.enabled) {
+        apply_impulsive_coincidence_mask(out, calib);
     }
 
     apply_altaz_destripe(out, calib);
 
-    if (network_step_mask.enabled) {
-        capture_rtc_diagnostics(out, calib, false);
+    if (network_step_mask.enabled || impulsive_coincidence.enabled) {
+        capture_rtc_diagnostics(out, calib, false, false);
     }
 
     // empty rtcdata
@@ -1230,7 +1325,8 @@ void RTCProc::apply_altaz_destripe(TCData<TCDataKind::PTC, Eigen::MatrixXd> &out
 
 template <typename calib_t>
 void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib,
-                                      bool recompute_step_metrics) {
+                                      bool recompute_step_metrics,
+                                      bool recompute_impulsive_metrics) {
     const Eigen::Index scan_id = in.index.data;
     const Eigen::Index n_pts = in.scans.data.rows();
     const Eigen::Index n_dets = in.scans.data.cols();
@@ -1544,15 +1640,25 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     const double dt_for_step = (std::isfinite(dt_sec) && dt_sec > 0.0) ? dt_sec : 1.0e-6;
     const Eigen::Index step_window = std::max<Eigen::Index>(
         4, static_cast<Eigen::Index>(std::llround(network_step_mask.step_window_sec / dt_for_step)));
+    const double impulsive_cluster_tol_samples = std::max(
+        1.0,
+        ((impulsive_coincidence.cluster_tol_sec > 0.0)
+             ? (impulsive_coincidence.cluster_tol_sec / dt_for_step)
+             : 1.0));
 
     auto det_it = rtc_detector_summary_by_scan.find(scan_id);
     auto nw_it = rtc_network_summary_by_scan.find(scan_id);
+    auto imp_it = rtc_impulsive_summary_by_scan.find(scan_id);
     const bool have_detector_summary =
         det_it != rtc_detector_summary_by_scan.end() &&
         det_it->second.size() == static_cast<std::size_t>(n_dets);
     const bool have_network_summary =
         nw_it != rtc_network_summary_by_scan.end();
+    const bool have_impulsive_summary =
+        imp_it != rtc_impulsive_summary_by_scan.end();
     const bool recompute_detector_step_metrics = recompute_step_metrics || !have_detector_summary;
+    const bool recompute_detector_impulsive_metrics =
+        recompute_impulsive_metrics || !have_detector_summary;
 
     std::vector<RTCDetectorDiagSummary> det_summary;
     if (have_detector_summary) {
@@ -1578,17 +1684,19 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             static_cast<double>(std::max<Eigen::Index>(n_pts, 1));
         std::tie(row.final_region_count, row.final_region_len_median, row.final_region_len_max) =
             region_stats(in.flags.data.col(det).array());
-        const auto impulsive = impulsive_metric(in.scans.data.col(det), valid);
-        row.impulsive_event = impulsive.event;
-        row.impulsive_peak_abs_z = impulsive.peak_abs_z;
-        row.impulsive_peak_abs_sample = impulsive.peak_abs_sample;
-        row.impulsive_peak_delta_abs_z = impulsive.peak_delta_abs_z;
-        row.impulsive_peak_delta_abs_sample = impulsive.peak_delta_abs_sample;
-        row.impulsive_near_abs_count = impulsive.near_abs_count;
-        row.impulsive_near_delta_count = impulsive.near_delta_count;
-        row.impulsive_event_score = row.impulsive_event.score;
-        row.impulsive_event_sample = row.impulsive_event.sample;
-        row.impulsive_event_kind = row.impulsive_event.kind_code();
+        if (recompute_detector_impulsive_metrics) {
+            const auto impulsive = impulsive_metric(in.scans.data.col(det), valid);
+            row.impulsive_event = impulsive.event;
+            row.impulsive_peak_abs_z = impulsive.peak_abs_z;
+            row.impulsive_peak_abs_sample = impulsive.peak_abs_sample;
+            row.impulsive_peak_delta_abs_z = impulsive.peak_delta_abs_z;
+            row.impulsive_peak_delta_abs_sample = impulsive.peak_delta_abs_sample;
+            row.impulsive_near_abs_count = impulsive.near_abs_count;
+            row.impulsive_near_delta_count = impulsive.near_delta_count;
+            row.impulsive_event_score = row.impulsive_event.score;
+            row.impulsive_event_sample = row.impulsive_event.sample;
+            row.impulsive_event_kind = row.impulsive_event.kind_code();
+        }
         if (recompute_detector_step_metrics) {
             row.step_event = step_metric(in.scans.data.col(det), valid, step_window);
             row.step_score = row.step_event.score;
@@ -1597,7 +1705,7 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     }
     rtc_detector_summary_by_scan[scan_id] = det_summary;
 
-    if (impulsive_capture.enabled) {
+    if (impulsive_capture.enabled && !(have_impulsive_summary && !recompute_impulsive_metrics)) {
         const Eigen::Index snippet_half_width = std::max<Eigen::Index>(
             0, static_cast<Eigen::Index>(std::llround(impulsive_capture.snippet_half_width_sec /
                                                       std::max(dt_for_step, 1.0e-6))));
@@ -1682,7 +1790,7 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         }
         rtc_impulsive_summary_by_scan[scan_id] = std::move(impulsive_by_network);
     }
-    else {
+    else if (!impulsive_capture.enabled) {
         rtc_impulsive_summary_by_scan.erase(scan_id);
     }
 
@@ -1722,8 +1830,12 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         Eigen::Index n_used = 0;
         std::vector<double> step_scores;
         std::vector<double> step_samples_active;
+        std::vector<double> impulsive_scores;
+        std::vector<double> impulsive_samples_active;
         step_scores.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(end - start, 0)));
         step_samples_active.reserve(step_scores.capacity());
+        impulsive_scores.reserve(step_scores.capacity());
+        impulsive_samples_active.reserve(step_scores.capacity());
 
         for (Eigen::Index det = start; det < end; ++det) {
             Eigen::Array<bool, Eigen::Dynamic, 1> valid(n_pts);
@@ -1754,6 +1866,14 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                 if (det_row.step_event.score >= step_score_thresh &&
                     det_row.step_event.sample != fill_int) {
                     step_samples_active.push_back(static_cast<double>(det_row.step_event.sample));
+                }
+            }
+            if (det_row.impulsive_event.valid()) {
+                impulsive_scores.push_back(det_row.impulsive_event.score);
+                if (det_row.impulsive_event.score >= impulsive_coincidence.event_score_thresh &&
+                    det_row.impulsive_event.sample != fill_int) {
+                    impulsive_samples_active.push_back(
+                        static_cast<double>(det_row.impulsive_event.sample));
                 }
             }
             ++n_used;
@@ -1791,6 +1911,24 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                     row.step_event.score = row.max_step_score;
                     row.step_event.baseline_shift_z = row.max_step_score;
                     row.step_event.accepted = true;
+                }
+            }
+        }
+        if (recompute_impulsive_metrics || prev_it == prev_nw_summary.end()) {
+            row.median_impulsive_score = nan;
+            row.max_impulsive_score = nan;
+            row.impulsive_det_frac = nan;
+            row.impulsive_alignment_frac = nan;
+            row.dominant_impulsive_sample = fill_int;
+            if (n_used >= impulsive_coincidence.min_det_used && !impulsive_scores.empty()) {
+                row.median_impulsive_score = median_of(impulsive_scores);
+                row.max_impulsive_score = *std::max_element(impulsive_scores.begin(), impulsive_scores.end());
+                const auto n_active = static_cast<double>(impulsive_samples_active.size());
+                row.impulsive_det_frac = n_active / static_cast<double>(impulsive_scores.size());
+                auto [imp_center, imp_align] = dominant_cluster(impulsive_samples_active, impulsive_cluster_tol_samples);
+                row.impulsive_alignment_frac = imp_align;
+                if (std::isfinite(imp_center)) {
+                    row.dominant_impulsive_sample = static_cast<int>(std::llround(imp_center));
                 }
             }
         }
@@ -1995,6 +2133,141 @@ void RTCProc::apply_network_step_mask(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             scan_id + 1,
             row.nw,
             row.dominant_step_sample,
+            start_sample,
+            end_sample,
+            end_det - start_det,
+            newly_flagged,
+            flagged_fraction);
+    }
+}
+
+template <typename calib_t>
+void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
+                                               calib_t &calib) {
+    if (!impulsive_coincidence.enabled) {
+        return;
+    }
+    const auto scan_id = in.index.data;
+    const auto nw_it = rtc_network_summary_by_scan.find(scan_id);
+    if (nw_it == rtc_network_summary_by_scan.end()) {
+        return;
+    }
+
+    auto infer_dt_sec = [&]() -> double {
+        for (const auto *name : {"TelTime", "TelUTC", "PpsTime"}) {
+            const auto it = in.tel_data.data.find(name);
+            if (it == in.tel_data.data.end()) {
+                continue;
+            }
+            const auto &t = it->second;
+            std::vector<double> dt;
+            dt.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(t.size() - 1, 0)));
+            for (Eigen::Index i = 1; i < t.size(); ++i) {
+                const double diff = t(i) - t(i - 1);
+                if (std::isfinite(diff) && diff > 0.0) {
+                    dt.push_back(diff);
+                }
+            }
+            if (!dt.empty()) {
+                const auto mid = dt.size() / 2;
+                std::nth_element(dt.begin(),
+                                 dt.begin() + static_cast<std::ptrdiff_t>(mid),
+                                 dt.end());
+                return dt[mid];
+            }
+        }
+        return 1.0;
+    };
+
+    const double dt_sec =
+        (impulsive_coincidence.mask_half_width_sec > 0.0 || impulsive_coincidence.cluster_tol_sec > 0.0)
+            ? infer_dt_sec()
+            : 1.0;
+    const Eigen::Index n_pts = in.scans.data.rows();
+    const auto grp_limits = get_grouping("nw", calib, in.scans.data.cols());
+
+    for (auto &row : nw_it->second) {
+        row.impulsive_mask_applied = false;
+        row.impulsive_mask_start_sample = kTransientFillInt;
+        row.impulsive_mask_end_sample = kTransientFillInt;
+        row.impulsive_mask_window_samples = 0;
+        row.impulsive_mask_n_det_masked = 0;
+        row.impulsive_mask_n_det_samples_flagged = 0;
+        row.impulsive_mask_flagged_fraction = std::numeric_limits<double>::quiet_NaN();
+
+        const auto grp_it = grp_limits.find(row.nw);
+        if (grp_it == grp_limits.end()) {
+            continue;
+        }
+        if (!std::isfinite(row.impulsive_det_frac) ||
+            !std::isfinite(row.impulsive_alignment_frac) ||
+            row.dominant_impulsive_sample == kTransientFillInt) {
+            continue;
+        }
+        if (row.n_det_used < impulsive_coincidence.min_det_used ||
+            row.impulsive_det_frac < impulsive_coincidence.min_impulsive_det_frac ||
+            row.impulsive_alignment_frac < impulsive_coincidence.min_alignment_frac) {
+            continue;
+        }
+
+        const auto start_det = std::get<0>(grp_it->second);
+        const auto end_det = std::get<1>(grp_it->second);
+        const Eigen::Index half_width = std::max<Eigen::Index>(
+            0, static_cast<Eigen::Index>(std::llround(impulsive_coincidence.mask_half_width_sec /
+                                                      std::max(dt_sec, 1.0e-6))));
+        const Eigen::Index center = static_cast<Eigen::Index>(row.dominant_impulsive_sample);
+        const Eigen::Index start_sample = std::max<Eigen::Index>(0, center - half_width);
+        const Eigen::Index end_sample = std::min<Eigen::Index>(n_pts - 1, center + half_width);
+        const Eigen::Index window_samples = std::max<Eigen::Index>(0, end_sample - start_sample + 1);
+        if (window_samples <= 0 || end_det <= start_det) {
+            continue;
+        }
+
+        Eigen::Index good_detector_samples = 0;
+        Eigen::Index newly_flagged = 0;
+        for (Eigen::Index det = start_det; det < end_det; ++det) {
+            for (Eigen::Index i = 0; i < n_pts; ++i) {
+                if (!in.flags.data(i, det) && std::isfinite(in.scans.data(i, det))) {
+                    ++good_detector_samples;
+                }
+            }
+            for (Eigen::Index i = start_sample; i <= end_sample; ++i) {
+                if (!in.flags.data(i, det) && std::isfinite(in.scans.data(i, det))) {
+                    ++newly_flagged;
+                }
+            }
+        }
+
+        const double flagged_fraction =
+            static_cast<double>(newly_flagged) /
+            static_cast<double>(std::max<Eigen::Index>(1, good_detector_samples));
+        if (impulsive_coincidence.max_flagged_fraction > 0.0 &&
+            flagged_fraction > impulsive_coincidence.max_flagged_fraction) {
+            logger->info(
+                "impulsive_coincidence_mask rejected for scan {} nw {}: dominant_sample={} window_samples={} proposed_fraction={} exceeds max_flagged_fraction={}",
+                scan_id + 1,
+                row.nw,
+                row.dominant_impulsive_sample,
+                window_samples,
+                flagged_fraction,
+                impulsive_coincidence.max_flagged_fraction);
+            continue;
+        }
+
+        in.flags.data.block(start_sample, start_det, window_samples, end_det - start_det).setOnes();
+        row.impulsive_mask_applied = true;
+        row.impulsive_mask_start_sample = static_cast<int>(start_sample);
+        row.impulsive_mask_end_sample = static_cast<int>(end_sample);
+        row.impulsive_mask_window_samples = static_cast<int>(window_samples);
+        row.impulsive_mask_n_det_masked = static_cast<int>(end_det - start_det);
+        row.impulsive_mask_n_det_samples_flagged = static_cast<int>(newly_flagged);
+        row.impulsive_mask_flagged_fraction = flagged_fraction;
+
+        logger->info(
+            "impulsive_coincidence_mask applied for scan {} nw {}: dominant_sample={} window=[{}, {}] n_det_masked={} newly_flagged={} flagged_fraction={}",
+            scan_id + 1,
+            row.nw,
+            row.dominant_impulsive_sample,
             start_sample,
             end_sample,
             end_det - start_det,
@@ -2235,6 +2508,16 @@ void RTCProc::write_cached_diagnostics_to_netcdf(netCDF::NcFile &fo,
                             [](const auto &row) { return row.step_alignment_frac; });
             write_nw_int("rtc_network_step_dominant_sample",
                          [](const auto &row) { return row.dominant_step_sample; });
+            write_nw_double("rtc_network_impulsive_score_median",
+                            [](const auto &row) { return row.median_impulsive_score; });
+            write_nw_double("rtc_network_impulsive_score_max",
+                            [](const auto &row) { return row.max_impulsive_score; });
+            write_nw_double("rtc_network_impulsive_det_frac",
+                            [](const auto &row) { return row.impulsive_det_frac; });
+            write_nw_double("rtc_network_impulsive_alignment_frac",
+                            [](const auto &row) { return row.impulsive_alignment_frac; });
+            write_nw_int("rtc_network_impulsive_dominant_sample",
+                         [](const auto &row) { return row.dominant_impulsive_sample; });
             write_nw_double("rtc_network_cm_low_mid_ratio",
                             [](const auto &row) { return row.cm_low_mid_ratio; });
             write_nw_double("rtc_network_cm_peak_freq_hz",
@@ -2255,6 +2538,20 @@ void RTCProc::write_cached_diagnostics_to_netcdf(netCDF::NcFile &fo,
                          [](const auto &row) { return row.step_mask_n_det_samples_flagged; });
             write_nw_double("rtc_network_step_mask_flagged_fraction",
                             [](const auto &row) { return row.step_mask_flagged_fraction; });
+            write_nw_int("rtc_network_impulsive_mask_applied",
+                         [](const auto &row) { return row.impulsive_mask_applied ? 1 : 0; });
+            write_nw_int("rtc_network_impulsive_mask_start_sample",
+                         [](const auto &row) { return row.impulsive_mask_start_sample; });
+            write_nw_int("rtc_network_impulsive_mask_end_sample",
+                         [](const auto &row) { return row.impulsive_mask_end_sample; });
+            write_nw_int("rtc_network_impulsive_mask_window_samples",
+                         [](const auto &row) { return row.impulsive_mask_window_samples; });
+            write_nw_int("rtc_network_impulsive_mask_n_det_masked",
+                         [](const auto &row) { return row.impulsive_mask_n_det_masked; });
+            write_nw_int("rtc_network_impulsive_mask_n_det_samples_flagged",
+                         [](const auto &row) { return row.impulsive_mask_n_det_samples_flagged; });
+            write_nw_double("rtc_network_impulsive_mask_flagged_fraction",
+                            [](const auto &row) { return row.impulsive_mask_flagged_fraction; });
 
             NcDim n_slots_dim = fo.getDim("n_rtc_impulsive_slots");
             NcDim n_snip_dim = fo.getDim("n_rtc_impulsive_samples");
@@ -2436,7 +2733,7 @@ void RTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
         const bool have_step_diag =
             rtc_detector_summary_by_scan.find(in.index.data) != rtc_detector_summary_by_scan.end() &&
             rtc_network_summary_by_scan.find(in.index.data) != rtc_network_summary_by_scan.end();
-        capture_rtc_diagnostics(in, calib, !have_step_diag);
+        capture_rtc_diagnostics(in, calib, !have_step_diag, !have_step_diag);
 
         predefs::suppress_hdf5_diagnostics_for_this_thread();
         std::lock_guard<std::mutex> lock(predefs::netcdf_io_mutex());
@@ -2462,7 +2759,7 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         const bool have_step_diag =
             rtc_detector_summary_by_scan.find(in.index.data) != rtc_detector_summary_by_scan.end() &&
             rtc_network_summary_by_scan.find(in.index.data) != rtc_network_summary_by_scan.end();
-        capture_rtc_diagnostics(in, calib, !have_step_diag);
+        capture_rtc_diagnostics(in, calib, !have_step_diag, !have_step_diag);
 
         // open netcdf file
         predefs::suppress_hdf5_diagnostics_for_this_thread();

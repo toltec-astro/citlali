@@ -1888,6 +1888,15 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.NEAR_EVENT_Z", rtcproc.impulsive_capture.near_event_z);
         add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.MAX_EVENTS", rtcproc.impulsive_capture.max_events_per_network);
         add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.HALF_WIDTH_SEC", rtcproc.impulsive_capture.snippet_half_width_sec);
+        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.ENABLED", rtcproc.impulsive_coincidence.enabled);
+        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_GOOD_FRAC", rtcproc.impulsive_coincidence.min_good_frac);
+        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.EVENT_SCORE_THRESH", rtcproc.impulsive_coincidence.event_score_thresh);
+        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_DET_USED", rtcproc.impulsive_coincidence.min_det_used);
+        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_DET_FRAC", rtcproc.impulsive_coincidence.min_impulsive_det_frac);
+        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_ALIGNMENT_FRAC", rtcproc.impulsive_coincidence.min_alignment_frac);
+        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.CLUSTER_TOL_SEC", rtcproc.impulsive_coincidence.cluster_tol_sec);
+        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.HALF_WIDTH_SEC", rtcproc.impulsive_coincidence.mask_half_width_sec);
+        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MAX_FLAGGED_FRAC", rtcproc.impulsive_coincidence.max_flagged_fraction);
         add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTLOW", ptcproc.lower_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTHIGH", ptcproc.upper_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTLOW", ptcproc.lower_weight_factor);
@@ -2310,6 +2319,16 @@ void Engine::create_tod_files() {
                           "fraction of strong-step detectors aligned in the dominant step-time cluster");
         add_rtc_nw_int("rtc_network_step_dominant_sample",
                        "dominant aligned step sample within each RTC network block; -2147483647 means unavailable");
+        add_rtc_nw_double("rtc_network_impulsive_score_median",
+                          "median detector impulsive-event score within each RTC network block");
+        add_rtc_nw_double("rtc_network_impulsive_score_max",
+                          "maximum detector impulsive-event score within each RTC network block");
+        add_rtc_nw_double("rtc_network_impulsive_det_frac",
+                          "fraction of diagnostic-used detectors with impulsive-event score above the impulsive coincidence threshold");
+        add_rtc_nw_double("rtc_network_impulsive_alignment_frac",
+                          "fraction of impulsive-active detectors aligned in the dominant impulsive time cluster");
+        add_rtc_nw_int("rtc_network_impulsive_dominant_sample",
+                       "dominant aligned impulsive sample within each RTC network block; -2147483647 means unavailable");
         add_rtc_nw_double("rtc_network_cm_low_mid_ratio",
                           "low-band to mid-band common-mode power ratio for each RTC network block");
         add_rtc_nw_double("rtc_network_cm_peak_freq_hz",
@@ -2330,6 +2349,20 @@ void Engine::create_tod_files() {
                        "number of previously good detector-samples newly flagged by network_step_mask");
         add_rtc_nw_double("rtc_network_step_mask_flagged_fraction",
                           "fraction of previously good detector-samples in the network block newly flagged by network_step_mask");
+        add_rtc_nw_int("rtc_network_impulsive_mask_applied",
+                       "1 if impulsive_coincidence_mask flagged a time window for this RTC network block, else 0");
+        add_rtc_nw_int("rtc_network_impulsive_mask_start_sample",
+                       "inclusive starting sample of the applied impulsive_coincidence_mask window; -2147483647 means none");
+        add_rtc_nw_int("rtc_network_impulsive_mask_end_sample",
+                       "inclusive ending sample of the applied impulsive_coincidence_mask window; -2147483647 means none");
+        add_rtc_nw_int("rtc_network_impulsive_mask_window_samples",
+                       "number of RTC time samples in the applied impulsive_coincidence_mask window");
+        add_rtc_nw_int("rtc_network_impulsive_mask_n_det_masked",
+                       "number of detectors included in the applied impulsive_coincidence_mask window");
+        add_rtc_nw_int("rtc_network_impulsive_mask_n_det_samples_flagged",
+                       "number of previously good detector-samples newly flagged by impulsive_coincidence_mask");
+        add_rtc_nw_double("rtc_network_impulsive_mask_flagged_fraction",
+                          "fraction of previously good detector-samples in the network block newly flagged by impulsive_coincidence_mask");
 
         if (rtcproc.impulsive_capture.enabled) {
             const auto n_slots = static_cast<std::size_t>(std::max<Eigen::Index>(rtcproc.impulsive_capture.max_events_per_network, 1));
@@ -3288,6 +3321,33 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE.HALF_WIDTH_SEC",
                                         rtcproc.impulsive_capture.snippet_half_width_sec,
                                         "Half-width of captured RTC impulsive snippets");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE_COINCIDENCE.ENABLED",
+                                        rtcproc.impulsive_coincidence.enabled,
+                                        "Enable RTC impulsive coincidence masking");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_GOOD_FRAC",
+                                        rtcproc.impulsive_coincidence.min_good_frac,
+                                        "Minimum good-sample fraction for RTC impulsive coincidence metrics");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE_COINCIDENCE.EVENT_SCORE_THRESH",
+                                        rtcproc.impulsive_coincidence.event_score_thresh,
+                                        "Detector impulsive-event score threshold for RTC impulsive coincidence masking");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_DET_USED",
+                                        static_cast<int>(rtcproc.impulsive_coincidence.min_det_used),
+                                        "Minimum detectors required in a network for RTC impulsive coincidence masking");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_DET_FRAC",
+                                        rtcproc.impulsive_coincidence.min_impulsive_det_frac,
+                                        "Minimum impulsive-active detector fraction for RTC impulsive coincidence masking");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_ALIGNMENT_FRAC",
+                                        rtcproc.impulsive_coincidence.min_alignment_frac,
+                                        "Minimum aligned-impulsive detector fraction for RTC impulsive coincidence masking");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE_COINCIDENCE.CLUSTER_TOL_SEC",
+                                        rtcproc.impulsive_coincidence.cluster_tol_sec,
+                                        "Allowed timing tolerance for aligned RTC impulsive coincidence clusters");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE_COINCIDENCE.HALF_WIDTH_SEC",
+                                        rtcproc.impulsive_coincidence.mask_half_width_sec,
+                                        "Half-width of the applied RTC impulsive coincidence mask window");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE_COINCIDENCE.MAX_FLAGGED_FRAC",
+                                        rtcproc.impulsive_coincidence.max_flagged_fraction,
+                                        "Maximum allowed newly flagged detector-sample fraction per RTC impulsive coincidence mask");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.INV_VAR.PTC.WTLOW", ptcproc.lower_inv_var_factor, "PTC lower inv var cutoff");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.INV_VAR.PTC.WTHIGH", ptcproc.upper_inv_var_factor, "PTC upper inv var cutoff");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.PTC.WTLOW", ptcproc.lower_weight_factor, "PTC lower weight cutoff");
@@ -3803,6 +3863,15 @@ void Engine::create_rtcdiag_file() {
     add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.NEAR_EVENT_Z", rtcproc.impulsive_capture.near_event_z);
     add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.MAX_EVENTS", rtcproc.impulsive_capture.max_events_per_network);
     add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.HALF_WIDTH_SEC", rtcproc.impulsive_capture.snippet_half_width_sec);
+    add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.ENABLED", rtcproc.impulsive_coincidence.enabled);
+    add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_GOOD_FRAC", rtcproc.impulsive_coincidence.min_good_frac);
+    add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.EVENT_SCORE_THRESH", rtcproc.impulsive_coincidence.event_score_thresh);
+    add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_DET_USED", rtcproc.impulsive_coincidence.min_det_used);
+    add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_DET_FRAC", rtcproc.impulsive_coincidence.min_impulsive_det_frac);
+    add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_ALIGNMENT_FRAC", rtcproc.impulsive_coincidence.min_alignment_frac);
+    add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.CLUSTER_TOL_SEC", rtcproc.impulsive_coincidence.cluster_tol_sec);
+    add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.HALF_WIDTH_SEC", rtcproc.impulsive_coincidence.mask_half_width_sec);
+    add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MAX_FLAGGED_FRAC", rtcproc.impulsive_coincidence.max_flagged_fraction);
 
     for (auto const &x : calib.apt) {
         netCDF::NcVar apt_v = fo.addVar("apt_" + x.first, netCDF::ncDouble, n_dets_dim);
@@ -3933,6 +4002,16 @@ void Engine::create_rtcdiag_file() {
                       "fraction of strong-step detectors aligned in the dominant step-time cluster");
     add_rtc_nw_int("rtc_network_step_dominant_sample",
                    "dominant aligned step sample within each RTC network block; -2147483647 means unavailable");
+    add_rtc_nw_double("rtc_network_impulsive_score_median",
+                      "median detector impulsive-event score within each RTC network block");
+    add_rtc_nw_double("rtc_network_impulsive_score_max",
+                      "maximum detector impulsive-event score within each RTC network block");
+    add_rtc_nw_double("rtc_network_impulsive_det_frac",
+                      "fraction of diagnostic-used detectors with impulsive-event score above the impulsive coincidence threshold");
+    add_rtc_nw_double("rtc_network_impulsive_alignment_frac",
+                      "fraction of impulsive-active detectors aligned in the dominant impulsive time cluster");
+    add_rtc_nw_int("rtc_network_impulsive_dominant_sample",
+                   "dominant aligned impulsive sample within each RTC network block; -2147483647 means unavailable");
     add_rtc_nw_double("rtc_network_cm_low_mid_ratio",
                       "low-band to mid-band common-mode power ratio for each RTC network block");
     add_rtc_nw_double("rtc_network_cm_peak_freq_hz",
@@ -3953,6 +4032,20 @@ void Engine::create_rtcdiag_file() {
                    "number of previously good detector-samples newly flagged by network_step_mask");
     add_rtc_nw_double("rtc_network_step_mask_flagged_fraction",
                       "fraction of previously good detector-samples in the network block newly flagged by network_step_mask");
+    add_rtc_nw_int("rtc_network_impulsive_mask_applied",
+                   "1 if impulsive_coincidence_mask flagged a time window for this RTC network block, else 0");
+    add_rtc_nw_int("rtc_network_impulsive_mask_start_sample",
+                   "inclusive starting sample of the applied impulsive_coincidence_mask window; -2147483647 means none");
+    add_rtc_nw_int("rtc_network_impulsive_mask_end_sample",
+                   "inclusive ending sample of the applied impulsive_coincidence_mask window; -2147483647 means none");
+    add_rtc_nw_int("rtc_network_impulsive_mask_window_samples",
+                   "number of RTC time samples in the applied impulsive_coincidence_mask window");
+    add_rtc_nw_int("rtc_network_impulsive_mask_n_det_masked",
+                   "number of detectors included in the applied impulsive_coincidence_mask window");
+    add_rtc_nw_int("rtc_network_impulsive_mask_n_det_samples_flagged",
+                   "number of previously good detector-samples newly flagged by impulsive_coincidence_mask");
+    add_rtc_nw_double("rtc_network_impulsive_mask_flagged_fraction",
+                      "fraction of previously good detector-samples in the network block newly flagged by impulsive_coincidence_mask");
 
     if (rtcproc.impulsive_capture.enabled) {
         const auto n_slots =

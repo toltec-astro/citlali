@@ -201,6 +201,16 @@ timestream: # timestream reduction parameters
         near_event_z: 4.0 # threshold for counting near-threshold raw/delta events in per-detector summaries
         max_events_per_network: 3 # cap on captured detectors per scan/network
         snippet_half_width_sec: 0.25 # half-width of the saved snippet around each captured event
+      impulsive_coincidence: # network-level summaries for short same-sample impulsive bursts
+        enabled: false # detect aligned impulsive coincidences within a network and flag a short shared time window
+        min_good_frac: 0.8 # minimum unflagged sample fraction for a detector to contribute to impulsive coincidence metrics
+        event_score_thresh: 6.0 # detector impulsive-event score threshold used to count a detector as impulsive-active
+        min_det_used: 32 # minimum detectors contributing to a network before impulsive coincidence fractions are considered valid
+        min_impulsive_det_frac: 0.05 # minimum fraction of participating detectors that must be impulsive-active to trigger masking
+        min_alignment_frac: 0.5 # minimum fraction of impulsive-active detectors aligned in time to trigger masking
+        cluster_tol_sec: 0.03 # allowed timing spread around the dominant impulsive coincidence cluster
+        mask_half_width_sec: 0.03 # half-width of the flagged time window around the dominant impulsive coincidence time
+        max_flagged_fraction: 0.10 # reject the proposed mask if it would newly flag more than this fraction of good detector-samples in the network
     output:
       enabled: false # enable or disable rtc TOD output
       indices: all # chunk indices to write: "all" or [1,3,7] (1-based)

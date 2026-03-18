@@ -132,6 +132,8 @@ def _build_obs_summary(
 ) -> dict[str, object]:
     mask_flags = np.asarray([float(row["step_mask_applied"]) for row in scan_network_rows], dtype=float)
     mask_fracs = np.asarray([float(row["step_mask_flagged_fraction"]) for row in scan_network_rows], dtype=float)
+    impulsive_mask_flags = np.asarray([float(row.get("impulsive_mask_applied", 0.0)) for row in scan_network_rows], dtype=float)
+    impulsive_mask_fracs = np.asarray([float(row.get("impulsive_mask_flagged_fraction", float("nan"))) for row in scan_network_rows], dtype=float)
     step_det = np.asarray([float(row["step_det_frac"]) for row in scan_network_rows], dtype=float)
     step_align = np.asarray([float(row["step_alignment_frac"]) for row in scan_network_rows], dtype=float)
     cm_lowmid = np.asarray([float(row["cm_lowmid"]) for row in scan_network_rows], dtype=float)
@@ -161,6 +163,9 @@ def _build_obs_summary(
         "masked_network_scans": int(np.count_nonzero(mask_flags != 0)),
         "masked_fraction_sum": float(np.nansum(mask_fracs)),
         "masked_fraction_mean": _nanmean(mask_fracs[mask_flags != 0]) if np.count_nonzero(mask_flags != 0) else float("nan"),
+        "impulsive_masked_network_scans": int(np.count_nonzero(impulsive_mask_flags != 0)),
+        "impulsive_masked_fraction_sum": float(np.nansum(impulsive_mask_fracs)),
+        "impulsive_masked_fraction_mean": _nanmean(impulsive_mask_fracs[impulsive_mask_flags != 0]) if np.count_nonzero(impulsive_mask_flags != 0) else float("nan"),
         "n_scans_step_active": len(set(scan_ids)),
         "top_slot_event_score": float(top_slot["event_score"]) if top_slot else float("nan"),
         "top_slot_network": int(top_slot["network"]) if top_slot else -2147483647,
@@ -186,6 +191,8 @@ def _make_network_summary(obs_network_rows: list[dict[str, object]]) -> list[dic
                 "max_impulsive_frac_ge_threshold": _nanmax([float(row["impulsive_frac_ge_threshold"]) for row in rr]),
                 "total_masked_network_scans": int(sum(int(row["masked_scans"]) for row in rr)),
                 "obsnums_with_masked_scans": int(sum(int(row["masked_scans"]) > 0 for row in rr)),
+                "total_impulsive_masked_network_scans": int(sum(int(row.get("impulsive_masked_scans", 0)) for row in rr)),
+                "obsnums_with_impulsive_masked_scans": int(sum(int(row.get("impulsive_masked_scans", 0)) > 0 for row in rr)),
                 "max_slot_event_score": _nanmax([float(row["top_slot_event_score"]) for row in rr]),
                 "max_row_severity": _nanmax([float(row["max_row_severity"]) for row in rr]),
                 "worst_obsnum": top["obsnum"],
@@ -217,14 +224,14 @@ def _write_report(
         "",
         "## Worst Obsnums",
         "",
-        "| obsnum | product | max severity | max step frac | max align | max low/mid | impulsive frac>=thr | masked nw-scans | top slot |",
-        "|---:|:---|---:|---:|---:|---:|---:|---:|---:|",
+        "| obsnum | product | max severity | max step frac | max align | max low/mid | impulsive frac>=thr | step-mask nw-scans | imp-mask nw-scans | top slot |",
+        "|---:|:---|---:|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for row in worst_obs:
         lines.append(
             "| {obsnum} | {product_kind} | {max_row_severity:.2f} | {max_step_det_frac:.3f} | "
             "{max_step_alignment_frac:.3f} | {max_cm_lowmid:.2f} | {impulsive_frac_ge_threshold:.3f} | "
-            "{masked_network_scans} | {top_slot_event_score:.2f} |".format(**row)
+            "{masked_network_scans} | {impulsive_masked_network_scans} | {top_slot_event_score:.2f} |".format(**row)
         )
 
     lines.extend(["", "## Top Scan-Network Rows", ""])
@@ -235,8 +242,10 @@ def _write_report(
             lines.append(
                 "- obsnum={obsnum} scan={output_scan_index} nw={network} severity={row_severity:.2f} "
                 "step_frac={step_det_frac:.3f} align={step_alignment_frac:.3f} "
+                "imp_frac={network_impulsive_det_frac:.3f} imp_align={network_impulsive_alignment_frac:.3f} "
                 "cm_lowmid={cm_lowmid:.2f} max_imp={max_impulsive_event_score:.2f} "
-                "top_slot={max_slot_event_score:.2f} mask={step_mask_applied}".format(**row)
+                "top_slot={max_slot_event_score:.2f} step_mask={step_mask_applied} "
+                "imp_mask={impulsive_mask_applied}".format(**row)
             )
 
     lines.extend(["", "## Top Impulsive Slots", ""])
@@ -316,9 +325,39 @@ def main() -> None:
             output_scans = _filled(ds.variables["output_scan_index"], fill=np.iinfo(np.int32).min).astype(int)
             step_det = _filled(ds.variables["rtc_network_step_det_frac"], fill=np.nan)
             step_align = _filled(ds.variables["rtc_network_step_alignment_frac"], fill=np.nan)
+            imp_score_max_nw = (
+                _filled(ds.variables["rtc_network_impulsive_score_max"], fill=np.nan)
+                if "rtc_network_impulsive_score_max" in ds.variables
+                else np.full_like(step_det, np.nan, dtype=float)
+            )
+            imp_det_nw = (
+                _filled(ds.variables["rtc_network_impulsive_det_frac"], fill=np.nan)
+                if "rtc_network_impulsive_det_frac" in ds.variables
+                else np.full_like(step_det, np.nan, dtype=float)
+            )
+            imp_align_nw = (
+                _filled(ds.variables["rtc_network_impulsive_alignment_frac"], fill=np.nan)
+                if "rtc_network_impulsive_alignment_frac" in ds.variables
+                else np.full_like(step_det, np.nan, dtype=float)
+            )
+            imp_sample_nw = (
+                _filled(ds.variables["rtc_network_impulsive_dominant_sample"], fill=np.iinfo(np.int32).min).astype(int)
+                if "rtc_network_impulsive_dominant_sample" in ds.variables
+                else np.full(step_det.shape, np.iinfo(np.int32).min, dtype=int)
+            )
             cm_lowmid = _filled(ds.variables["rtc_network_cm_low_mid_ratio"], fill=np.nan)
             step_mask_applied = _filled(ds.variables["rtc_network_step_mask_applied"], fill=0).astype(int)
             step_mask_flagfrac = _filled(ds.variables["rtc_network_step_mask_flagged_fraction"], fill=np.nan)
+            impulsive_mask_applied = (
+                _filled(ds.variables["rtc_network_impulsive_mask_applied"], fill=0).astype(int)
+                if "rtc_network_impulsive_mask_applied" in ds.variables
+                else np.zeros_like(step_mask_applied, dtype=int)
+            )
+            impulsive_mask_flagfrac = (
+                _filled(ds.variables["rtc_network_impulsive_mask_flagged_fraction"], fill=np.nan)
+                if "rtc_network_impulsive_mask_flagged_fraction" in ds.variables
+                else np.full_like(step_mask_flagfrac, np.nan, dtype=float)
+            )
             impulsive = _filled(ds.variables["rtc_impulsive_event_score"], fill=np.nan)
 
             slot_score = _filled(ds.variables["rtc_impulsive_slot_event_score"], fill=np.nan) if "rtc_impulsive_slot_event_score" in ds.variables else None
@@ -353,9 +392,15 @@ def main() -> None:
                         "network": nw,
                         "step_det_frac": float(step_det[scan, diag_idx]),
                         "step_alignment_frac": float(step_align[scan, diag_idx]),
+                        "network_impulsive_score_max": float(imp_score_max_nw[scan, diag_idx]),
+                        "network_impulsive_det_frac": float(imp_det_nw[scan, diag_idx]),
+                        "network_impulsive_alignment_frac": float(imp_align_nw[scan, diag_idx]),
+                        "network_impulsive_dominant_sample": int(imp_sample_nw[scan, diag_idx]),
                         "cm_lowmid": float(cm_lowmid[scan, diag_idx]),
                         "step_mask_applied": int(step_mask_applied[scan, diag_idx]),
                         "step_mask_flagged_fraction": float(step_mask_flagfrac[scan, diag_idx]),
+                        "impulsive_mask_applied": int(impulsive_mask_applied[scan, diag_idx]),
+                        "impulsive_mask_flagged_fraction": float(impulsive_mask_flagfrac[scan, diag_idx]),
                         "max_impulsive_event_score": float(scan_max_imp[scan]),
                         "impulsive_frac_ge_threshold": float(scan_imp_frac_ge[scan]),
                         "max_slot_event_score": float(max_slot_score_by_scan[scan]),
@@ -387,6 +432,9 @@ def main() -> None:
                         "max_step_det_frac": _nanmax([float(row["step_det_frac"]) for row in nw_rows]),
                         "mean_step_det_frac": _nanmean([float(row["step_det_frac"]) for row in nw_rows]),
                         "max_step_alignment_frac": _nanmax([float(row["step_alignment_frac"]) for row in nw_rows]),
+                        "max_network_impulsive_score": _nanmax([float(row["network_impulsive_score_max"]) for row in nw_rows]),
+                        "max_network_impulsive_det_frac": _nanmax([float(row["network_impulsive_det_frac"]) for row in nw_rows]),
+                        "max_network_impulsive_alignment_frac": _nanmax([float(row["network_impulsive_alignment_frac"]) for row in nw_rows]),
                         "max_cm_lowmid": _nanmax([float(row["cm_lowmid"]) for row in nw_rows]),
                         "mean_cm_lowmid": _nanmean([float(row["cm_lowmid"]) for row in nw_rows]),
                         "max_impulsive_event_score": _nanmax(scan_max_imp),
@@ -394,6 +442,8 @@ def main() -> None:
                             if nw_imp.size and np.isfinite(nw_imp).any() else float("nan"),
                         "masked_scans": int(np.count_nonzero(step_mask_applied[:, diag_idx] != 0)),
                         "masked_fraction_sum": float(np.nansum(step_mask_flagfrac[:, diag_idx])),
+                        "impulsive_masked_scans": int(np.count_nonzero(impulsive_mask_applied[:, diag_idx] != 0)),
+                        "impulsive_masked_fraction_sum": float(np.nansum(impulsive_mask_flagfrac[:, diag_idx])),
                         "max_row_severity": _nanmax([float(row["row_severity"]) for row in nw_rows]),
                         "top_slot_event_score": float(top_slot_nw["max_slot_event_score"]) if top_slot_nw else float("nan"),
                     }
