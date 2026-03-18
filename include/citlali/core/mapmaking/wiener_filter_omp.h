@@ -1126,7 +1126,7 @@ void WienerFilter::calc_denominator() {
                 partial_z_abs_done[thread] = 0.0;
             }
 
-            #pragma omp parallel shared(sorted, zz2d, Z_abs, partial_deltas, partial_z_abs_done, chunk_start, chunk_end, n_rows, n_cols, filter_template, rr, inv_npix) default (none)
+            #pragma omp parallel shared(sorted, zz2d, Z_abs, partial_deltas, partial_z_abs_done, chunk_start, chunk_end, total_iters, n_rows, n_cols, filter_template, rr, inv_npix) default (none)
             {
                 const int thread_index = omp_get_thread_num();
                 auto &ctx = get_thread_fft_context(n_rows, n_cols);
