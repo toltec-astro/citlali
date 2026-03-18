@@ -45,7 +45,8 @@ inline void set_netcdf_chunking_and_compression(
     if (var.isNull() || chunk_sizes.empty()) {
         return;
     }
-    var.setChunking(netCDF::NcVar::nc_CHUNKED, chunk_sizes);
+    auto chunks = chunk_sizes;
+    var.setChunking(netCDF::NcVar::nc_CHUNKED, chunks);
     var.setCompression(true, true, deflate_level);
 }
 
