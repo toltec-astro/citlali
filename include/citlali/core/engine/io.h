@@ -14,6 +14,20 @@
 
 #include <mutex>
 
+#if defined(__has_include)
+#if __has_include(<hdf5.h>)
+#include <hdf5.h>
+#define CITLALI_ENGINE_IO_HAS_HDF5 1
+#elif __has_include(<hdf5/serial/hdf5.h>)
+#include <hdf5/serial/hdf5.h>
+#define CITLALI_ENGINE_IO_HAS_HDF5 1
+#else
+#define CITLALI_ENGINE_IO_HAS_HDF5 0
+#endif
+#else
+#define CITLALI_ENGINE_IO_HAS_HDF5 0
+#endif
+
 #include <citlali/core/timestream/timestream.h>
 
 namespace predefs {
@@ -41,6 +55,16 @@ using timestream::TCDataKind;
 inline std::mutex &netcdf_io_mutex() {
     static std::mutex mutex;
     return mutex;
+}
+
+inline void suppress_hdf5_diagnostics_for_this_thread() {
+#if CITLALI_ENGINE_IO_HAS_HDF5
+    static thread_local bool suppressed = false;
+    if (!suppressed) {
+        H5Eset_auto2(H5E_DEFAULT, nullptr, nullptr);
+        suppressed = true;
+    }
+#endif
 }
 
 } // namespace predefs

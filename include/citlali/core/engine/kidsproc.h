@@ -142,6 +142,7 @@ private:
 auto KidsDataProc::get_data_item_meta(const RawObs::DataItem &data_item) {
     namespace kidsdata = predefs::kidsdata;
     auto source = data_item.filepath();
+    predefs::suppress_hdf5_diagnostics_for_this_thread();
     std::lock_guard<std::mutex> lock(predefs::netcdf_io_mutex());
     auto [kind, meta] = kidsdata::get_meta<>(source);
     return meta;
@@ -172,6 +173,7 @@ auto KidsDataProc::reduce_data_item(const RawObs::DataItem &data_item,
     kids::KidsDataKind kind;
     kids::KidsData<>::meta_t meta;
     {
+        predefs::suppress_hdf5_diagnostics_for_this_thread();
         std::lock_guard<std::mutex> lock(predefs::netcdf_io_mutex());
         auto km = kidsdata::get_meta<>(source);
         kind = km.first;
@@ -183,6 +185,7 @@ auto KidsDataProc::reduce_data_item(const RawObs::DataItem &data_item,
     }
     kids::KidsData<kids::KidsDataKind::RawTimeStream> rts;
     try {
+        predefs::suppress_hdf5_diagnostics_for_this_thread();
         std::lock_guard<std::mutex> lock(predefs::netcdf_io_mutex());
         rts = kidsdata::read_data_slice<kids::KidsDataKind::RawTimeStream>(
             source, slice);
@@ -216,6 +219,7 @@ auto KidsDataProc::load_data_item(const RawObs::DataItem &data_item,
         kind = it->second;
     }
     else {
+        predefs::suppress_hdf5_diagnostics_for_this_thread();
         std::lock_guard<std::mutex> lock(predefs::netcdf_io_mutex());
         auto [kind_, meta] = kidsdata::get_meta<>(source);
         kind = kind_;
@@ -227,6 +231,7 @@ auto KidsDataProc::load_data_item(const RawObs::DataItem &data_item,
     }
     kids::KidsData<kids::KidsDataKind::RawTimeStream> rts;
     try {
+        predefs::suppress_hdf5_diagnostics_for_this_thread();
         std::lock_guard<std::mutex> lock(predefs::netcdf_io_mutex());
         rts = kidsdata::read_data_slice<kids::KidsDataKind::RawTimeStream>(
             source, slice);

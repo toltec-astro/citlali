@@ -2438,6 +2438,7 @@ void RTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
             rtc_network_summary_by_scan.find(in.index.data) != rtc_network_summary_by_scan.end();
         capture_rtc_diagnostics(in, calib, !have_step_diag);
 
+        predefs::suppress_hdf5_diagnostics_for_this_thread();
         std::lock_guard<std::mutex> lock(predefs::netcdf_io_mutex());
         NcFile fo(filepath, netCDF::NcFile::write);
         write_cached_diagnostics_to_netcdf(fo, in, calib, scan_row_index);
@@ -2464,6 +2465,7 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         capture_rtc_diagnostics(in, calib, !have_step_diag);
 
         // open netcdf file
+        predefs::suppress_hdf5_diagnostics_for_this_thread();
         std::lock_guard<std::mutex> lock(predefs::netcdf_io_mutex());
         NcFile fo(filepath, netCDF::NcFile::write);
 

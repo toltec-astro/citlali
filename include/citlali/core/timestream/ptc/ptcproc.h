@@ -1797,6 +1797,7 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
 
     try {
         // open netcdf file
+        predefs::suppress_hdf5_diagnostics_for_this_thread();
         std::lock_guard<std::mutex> lock(predefs::netcdf_io_mutex());
         NcFile fo(filepath, netCDF::NcFile::write);
 
