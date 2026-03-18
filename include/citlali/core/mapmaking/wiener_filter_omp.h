@@ -237,7 +237,7 @@ public:
         calc_numerator();
         SPDLOG_DEBUG("numerator {}", nume);
         const auto t4 = std::chrono::steady_clock::now();
-        SPDLOG_INFO(
+        logger->info(
             "Wiener core timings map_index={} rr_s={} vvq_s={} denom_s={} numer_s={} uniform_weight={}",
             map_index,
             std::chrono::duration<double>(t1 - t0).count(),
