@@ -1036,9 +1036,15 @@ int run(const rc_t &rc) {
                                 todproc.engine().fit_maps();
                             }
 
-                            // output filtered maps
-                            logger->info("outputting filtered obs files");
-                            todproc.engine().template output<mapmaking::FilteredObs>();
+                            // output filtered maps only if they were not already
+                            // written incrementally during Wiener filtering.
+                            if (todproc.engine().write_filtered_maps_partial) {
+                                logger->info("filtered obs files already written during Wiener filtering; skipping post-filter output stage");
+                            }
+                            else {
+                                logger->info("outputting filtered obs files");
+                                todproc.engine().template output<mapmaking::FilteredObs>();
+                            }
                         }
                     }
 
@@ -1095,9 +1101,16 @@ int run(const rc_t &rc) {
                                 todproc.engine().template find_sources<mapmaking::FilteredCoadd>(todproc.engine().cmb);
                             }
 
-                            // output filtered coadded maps
-                            logger->info("outputting filtered coadded files");
-                            todproc.engine().template output<mapmaking::FilteredCoadd>();
+                            // output filtered coadded maps only if they were not
+                            // already written incrementally during Wiener
+                            // filtering.
+                            if (todproc.engine().write_filtered_maps_partial) {
+                                logger->info("filtered coadded files already written during Wiener filtering; skipping post-filter output stage");
+                            }
+                            else {
+                                logger->info("outputting filtered coadded files");
+                                todproc.engine().template output<mapmaking::FilteredCoadd>();
+                            }
                         }
                     }
 
