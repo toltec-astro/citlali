@@ -75,6 +75,9 @@ public:
     int n_loops;
     // maximum number of loops for denom calc
     int max_loops = 500;
+    // optional actual denominator iteration cadence/cap
+    int denom_check_iters = 0;
+    int max_denom_iters = 0;
     // lower limit to zero out denom values
     double denom_limit = 1.e-4;
     // psd limit
@@ -595,6 +598,10 @@ void WienerFilter::get_config(config_t &config, std::vector<std::vector<std::str
                      std::tuple{"wiener_filter","tail_frac_tol"}, {}, {0.0}, {1.0});
     get_config_value(config, max_loops, missing_keys, invalid_keys,
                      std::tuple{"wiener_filter","max_loops"}, {}, {1});
+    get_config_value(config, denom_check_iters, missing_keys, invalid_keys,
+                     std::tuple{"wiener_filter","denom_check_iters"}, {}, {0});
+    get_config_value(config, max_denom_iters, missing_keys, invalid_keys,
+                     std::tuple{"wiener_filter","max_denom_iters"}, {}, {0});
 
     // gaussian or airy template fwhms
     if (template_type=="gaussian" || template_type=="airy") {
@@ -1110,9 +1117,11 @@ void WienerFilter::calc_denominator() {
         const double denom_rel_tol_local = denom_rel_tol;
         const double tail_frac_tol_local = tail_frac_tol;
         const double inv_npix = 1.0 / static_cast<double>(n_rows * n_cols);
+        const Eigen::Index check_iters = denom_check_iters > 0 ? denom_check_iters : n_loops;
         const int max_checks = std::max(max_loops, 1);
         int checks_done = 0;
-        #pragma omp parallel shared(sorted, n_loops, zz2d, Z_abs, Z_abs_done, Z_abs_total, total_iters, pb_stride, denom_rel_tol_local, tail_frac_tol_local, denom_start, last_log_s, done, pb, n_rows, n_cols, denom, filter_template, rr, inv_npix, checks_done, max_checks) default (none)
+        const Eigen::Index max_iters = max_denom_iters > 0 ? std::min<Eigen::Index>(max_denom_iters, total_iters) : total_iters;
+        #pragma omp parallel shared(sorted, zz2d, Z_abs, Z_abs_done, Z_abs_total, total_iters, pb_stride, denom_rel_tol_local, tail_frac_tol_local, denom_start, last_log_s, done, pb, n_rows, n_cols, denom, filter_template, rr, inv_npix, checks_done, max_checks, check_iters, max_iters) default (none)
         {
             auto &ctx = get_thread_fft_context(n_rows, n_cols);
             Eigen::MatrixXcd in_local(n_rows, n_cols);
@@ -1137,7 +1146,7 @@ void WienerFilter::calc_denominator() {
             };
 
             #pragma omp for schedule(dynamic) ordered
-            for (Eigen::Index kk = 0; kk < total_iters; ++kk) {
+            for (Eigen::Index kk = 0; kk < max_iters; ++kk) {
                 #pragma omp flush(done)
                 if (!done) {
                     auto shift_index = std::get<1>(sorted[total_iters - kk - 1]);
@@ -1168,7 +1177,7 @@ void WienerFilter::calc_denominator() {
                         Z_abs_done += Z_abs(shift_index);
                         pb.count(total_iters, pb_stride);
 
-                        if ((kk % n_loops) == 1) {
+                        if ((kk % check_iters) == 1) {
                             const Eigen::MatrixXd delta_denom = scale * out_local.real().matrix();
                             const double denom_norm = denom.norm();
                             const double delta_norm = delta_denom.norm();
@@ -1192,6 +1201,12 @@ void WienerFilter::calc_denominator() {
                                              max_checks, kk);
                                 done = true;
                             }
+                            #pragma omp flush(done)
+                        }
+                        else if (kk + 1 >= max_iters) {
+                            logger->info("reached Wiener denominator max_denom_iters={} and stopping",
+                                         static_cast<long long>(max_iters));
+                            done = true;
                             #pragma omp flush(done)
                         }
                     }

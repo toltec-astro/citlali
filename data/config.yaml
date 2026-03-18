@@ -317,6 +317,8 @@ wiener_filter: # controls for wiener filter
   denom_rel_tol: 1.0e-4 # relative update threshold for denominator convergence
   tail_frac_tol: 5.0e-2 # remaining |Z| fraction threshold for denominator convergence
   max_loops: 500 # maximum denominator convergence checks before stopping early
+  denom_check_iters: 0 # check convergence every N denominator iterations (0=auto)
+  max_denom_iters: 0 # hard cap on denominator iterations (0=all)
 inputs: # list of inputs and related data
   - cal_items:
       - beammap_source: # extra information used by beammapping (not needed if redu_type!=beammap)

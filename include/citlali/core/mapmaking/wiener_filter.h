@@ -41,6 +41,9 @@ public:
     int n_loops;
     // maximum number of loops for denom calc
     int max_loops = 500;
+    // optional actual denominator iteration cadence/cap
+    int denom_check_iters = 0;
+    int max_denom_iters = 0;
     // lower limit to zero out denom values
     double denom_limit = 1.e-4;
     // psd limit
@@ -168,6 +171,10 @@ void WienerFilter::get_config(config_t &config, std::vector<std::vector<std::str
                      std::tuple{"wiener_filter","tail_frac_tol"}, {}, {0.0}, {1.0});
     get_config_value(config, max_loops, missing_keys, invalid_keys,
                      std::tuple{"wiener_filter","max_loops"}, {}, {1});
+    get_config_value(config, denom_check_iters, missing_keys, invalid_keys,
+                     std::tuple{"wiener_filter","denom_check_iters"}, {}, {0});
+    get_config_value(config, max_denom_iters, missing_keys, invalid_keys,
+                     std::tuple{"wiener_filter","max_denom_iters"}, {}, {0});
 
     // gaussian or airy template fwhms
     if (template_type=="gaussian" || template_type=="airy") {
@@ -705,20 +712,26 @@ void WienerFilter::calc_denominator() {
 
         const auto denom_start = std::chrono::steady_clock::now();
         double last_log_s = 0.0;
+        const Eigen::Index total_iters = n_rows * n_cols;
+        const Eigen::Index check_iters = denom_check_iters > 0 ? denom_check_iters : n_loops;
         const int max_checks = std::max(max_loops, 1);
         int checks_done = 0;
+        const Eigen::Index max_iters = max_denom_iters > 0 ? std::min<Eigen::Index>(max_denom_iters, total_iters) : total_iters;
 
         // loop through cols and rows
         for (Eigen::Index k=0; k<n_cols; ++k) {
             for (Eigen::Index l=0; l<n_rows; ++l) {
+                const Eigen::Index kk = n_rows * k + l;
+                if (kk >= max_iters) {
+                    done = true;
+                    break;
+                }
                 if (!done) {
                     // inputs and outputs
                     Eigen::MatrixXcd in(n_rows,n_cols), out(n_rows,n_cols);
 
-                    // current element in flattened 1d vector
-                    int kk = n_rows * k + l;
                     // get index in reverse order to get largest abs(ifft(1/VV))
-                    auto shift_index = std::get<1>(Z_indices_sorted[n_rows * n_cols - kk - 1]);
+                    auto shift_index = std::get<1>(Z_indices_sorted[total_iters - kk - 1]);
 
                     // indices to shift by
                     std::vector<Eigen::Index> shift_indices = {static_cast<Eigen::Index>(-shift_index % n_rows),
@@ -762,7 +775,7 @@ void WienerFilter::calc_denominator() {
                     Z_abs_done += Z_abs(shift_index);
 
                     // update status
-                    if ((kk % n_loops) == 1) {
+                    if ((kk % check_iters) == 1) {
                         const double denom_norm = denom.norm();
                         const double delta_norm = delta_denom.norm();
                         const double rel_update = delta_norm / std::max(denom_norm, 1e-12);
@@ -787,7 +800,15 @@ void WienerFilter::calc_denominator() {
                             done = true;
                         }
                     }
+                    else if (kk + 1 >= max_iters) {
+                        logger->info("reached Wiener denominator max_denom_iters={} and stopping",
+                                     static_cast<long long>(max_iters));
+                        done = true;
+                    }
                 }
+            }
+            if (done) {
+                break;
             }
         }
 
