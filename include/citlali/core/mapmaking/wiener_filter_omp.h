@@ -1095,33 +1095,56 @@ void WienerFilter::calc_denominator() {
         // sort absolute values in ascending order
         Eigen::VectorXd Z_abs = zz2d.array().abs();
         auto sorted = engine_utils::sorter(Z_abs);
+        const Eigen::Index total_iters = n_rows * n_cols;
+        std::vector<Eigen::Index> shift_indices_desc(total_iters);
+        std::vector<Eigen::Index> shift_rows_desc(total_iters);
+        std::vector<Eigen::Index> shift_cols_desc(total_iters);
+        std::vector<double> scales_desc(total_iters);
+        std::vector<double> tail_fracs_desc(total_iters);
 
         // number of iterations for convergence
-        n_loops = n_rows * n_cols / 100;
+        n_loops = total_iters / 100;
         if (n_loops < 100) {
             n_loops = 100;
         }
+        const double denom_rel_tol_local = denom_rel_tol;
+        const double tail_frac_tol_local = tail_frac_tol;
         const double Z_abs_total = Z_abs.sum();
         double Z_abs_done = 0.0;
+        Eigen::Index tail_cap_iters = total_iters;
+        for (Eigen::Index kk=0; kk<total_iters; ++kk) {
+            auto shift_index = std::get<1>(sorted[total_iters - kk - 1]);
+            shift_indices_desc[kk] = shift_index;
+            shift_rows_desc[kk] = -static_cast<Eigen::Index>(shift_index % n_rows);
+            shift_cols_desc[kk] = -static_cast<Eigen::Index>(shift_index / n_rows);
+            scales_desc[kk] = zz2d(shift_index) / static_cast<double>(n_rows * n_cols);
+            Z_abs_done += Z_abs(shift_index);
+            const double tail_frac = (Z_abs_total > 0.0) ? ((Z_abs_total - Z_abs_done) / Z_abs_total) : 0.0;
+            tail_fracs_desc[kk] = tail_frac;
+            if (tail_cap_iters == total_iters && tail_frac <= tail_frac_tol_local) {
+                tail_cap_iters = kk + 1;
+            }
+        }
+        Z_abs_done = 0.0;
 
         // flag for convergence
         bool done = false;
 
-        tula::logging::progressbar pb(
-            [&](const auto &msg) { logger->info("{}", msg); }, 90,
-            "calculating denom");
-        const Eigen::Index total_iters = n_rows * n_cols;
-        const Eigen::Index pb_stride = std::max<Eigen::Index>(total_iters / 100, 1);
         const auto denom_start = std::chrono::steady_clock::now();
         double last_log_s = 0.0;
-        const double denom_rel_tol_local = denom_rel_tol;
-        const double tail_frac_tol_local = tail_frac_tol;
-        const double inv_npix = 1.0 / static_cast<double>(n_rows * n_cols);
         const Eigen::Index check_iters = denom_check_iters > 0 ? denom_check_iters : n_loops;
         const int max_checks = std::max(max_loops, 1);
         int checks_done = 0;
-        const Eigen::Index max_iters = max_denom_iters > 0 ? std::min<Eigen::Index>(max_denom_iters, total_iters) : total_iters;
-        #pragma omp parallel shared(sorted, zz2d, Z_abs, Z_abs_done, Z_abs_total, total_iters, pb_stride, denom_rel_tol_local, tail_frac_tol_local, denom_start, last_log_s, done, pb, n_rows, n_cols, denom, filter_template, rr, inv_npix, checks_done, max_checks, check_iters, max_iters) default (none)
+        const Eigen::Index requested_max_iters = max_denom_iters > 0 ? std::min<Eigen::Index>(max_denom_iters, total_iters) : total_iters;
+        const Eigen::Index max_iters = std::min(requested_max_iters, tail_cap_iters);
+        tula::logging::progressbar pb(
+            [&](const auto &msg) { logger->info("{}", msg); }, 90,
+            "calculating denom");
+        const Eigen::Index pb_stride = std::max<Eigen::Index>(max_iters / 100, 1);
+        logger->info("Wiener denominator pre-cap total_iters={} tail_cap_iters={} max_iters={} check_iters={}",
+                     static_cast<long long>(total_iters), static_cast<long long>(tail_cap_iters),
+                     static_cast<long long>(max_iters), static_cast<long long>(check_iters));
+        #pragma omp parallel shared(shift_indices_desc, shift_rows_desc, shift_cols_desc, scales_desc, tail_fracs_desc, Z_abs, Z_abs_done, max_iters, pb_stride, denom_rel_tol_local, tail_frac_tol_local, denom_start, last_log_s, done, pb, n_rows, n_cols, denom, filter_template, rr, checks_done, max_checks, check_iters) default (none)
         {
             auto &ctx = get_thread_fft_context(n_rows, n_cols);
             Eigen::MatrixXcd in_local(n_rows, n_cols);
@@ -1131,36 +1154,22 @@ void WienerFilter::calc_denominator() {
             Eigen::MatrixXd shifted_template(n_rows, n_cols);
             Eigen::MatrixXd shifted_rr(n_rows, n_cols);
 
-            auto shift_into = [&](const Eigen::MatrixXd &src, Eigen::Index shift_row, Eigen::Index shift_col, Eigen::MatrixXd &dst) {
-                for (Eigen::Index col = 0; col < n_cols; ++col) {
-                    const Eigen::Index shifted_col = (col + shift_col) >= 0 ?
-                        (col + shift_col) % n_cols :
-                        (n_cols + ((col + shift_col) % n_cols)) % n_cols;
-                    for (Eigen::Index row = 0; row < n_rows; ++row) {
-                        const Eigen::Index shifted_row = (row + shift_row) >= 0 ?
-                            (row + shift_row) % n_rows :
-                            (n_rows + ((row + shift_row) % n_rows)) % n_rows;
-                        dst(shifted_row, shifted_col) = src(row, col);
-                    }
-                }
-            };
-
             #pragma omp for schedule(dynamic) ordered
             for (Eigen::Index kk = 0; kk < max_iters; ++kk) {
                 #pragma omp flush(done)
                 if (!done) {
-                    auto shift_index = std::get<1>(sorted[total_iters - kk - 1]);
-                    const Eigen::Index shift_row = -static_cast<Eigen::Index>(shift_index % n_rows);
-                    const Eigen::Index shift_col = -static_cast<Eigen::Index>(shift_index / n_rows);
+                    const auto shift_index = shift_indices_desc[kk];
+                    const auto shift_row = shift_rows_desc[kk];
+                    const auto shift_col = shift_cols_desc[kk];
 
-                    shift_into(filter_template, shift_row, shift_col, shifted_template);
+                    engine_utils::shift_2D_into(filter_template, shift_row, shift_col, shifted_template);
                     in_prod = filter_template.array() * shifted_template.array();
                     in_local.real() = in_prod;
                     in_local.imag().setZero();
                     out_local = engine_utils::fft2<engine_utils::forward>(in_local, ctx.pf, ctx.a, ctx.b);
                     ffdq = out_local;
 
-                    shift_into(rr, shift_row, shift_col, shifted_rr);
+                    engine_utils::shift_2D_into(rr, shift_row, shift_col, shifted_rr);
                     in_prod = rr.array() * shifted_rr.array();
                     in_local.real() = in_prod;
                     in_local.imag().setZero();
@@ -1172,17 +1181,17 @@ void WienerFilter::calc_denominator() {
 
                     #pragma omp ordered
                     {
-                        const double scale = zz2d(shift_index) * inv_npix;
+                        const double scale = scales_desc[kk];
                         denom.array() += scale * out_local.real().array();
                         Z_abs_done += Z_abs(shift_index);
-                        pb.count(total_iters, pb_stride);
+                        pb.count(max_iters, pb_stride);
 
                         if ((kk % check_iters) == 1) {
                             const Eigen::MatrixXd delta_denom = scale * out_local.real().matrix();
                             const double denom_norm = denom.norm();
                             const double delta_norm = delta_denom.norm();
                             const double rel_update = delta_norm / std::max(denom_norm, 1e-12);
-                            const double tail_frac = (Z_abs_total > 0.0) ? ((Z_abs_total - Z_abs_done) / Z_abs_total) : 0.0;
+                            const double tail_frac = tail_fracs_desc[kk];
                             const double elapsed_s = std::chrono::duration<double>(
                                 std::chrono::steady_clock::now() - denom_start).count();
                             const double step_s = elapsed_s - last_log_s;

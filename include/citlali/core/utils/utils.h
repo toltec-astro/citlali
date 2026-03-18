@@ -899,22 +899,45 @@ auto shift_1D(Eigen::DenseBase<Derived> &in, std::vector<Eigen::Index> shift_ind
 }
 
 // shift a 2D matrix
+template <typename DerivedIn, typename DerivedOut>
+void shift_2D_into(const Eigen::DenseBase<DerivedIn> &in, Eigen::Index shift_row,
+                   Eigen::Index shift_col, Eigen::DenseBase<DerivedOut> &out) {
+    const Eigen::Index n_rows = in.rows();
+    const Eigen::Index n_cols = in.cols();
+
+    auto wrap_shift = [](Eigen::Index shift, Eigen::Index size) {
+        Eigen::Index wrapped = shift % size;
+        if (wrapped < 0) {
+            wrapped += size;
+        }
+        return wrapped;
+    };
+
+    const Eigen::Index row_offset = wrap_shift(shift_row, n_rows);
+    const Eigen::Index col_offset = wrap_shift(shift_col, n_cols);
+    const Eigen::Index upper_rows = n_rows - row_offset;
+    const Eigen::Index left_cols = n_cols - col_offset;
+
+    auto &dst = out.derived();
+    const auto &src = in.derived();
+
+    dst.block(row_offset, col_offset, upper_rows, left_cols) =
+        src.block(0, 0, upper_rows, left_cols);
+    dst.block(row_offset, 0, upper_rows, col_offset) =
+        src.block(0, left_cols, upper_rows, col_offset);
+    dst.block(0, col_offset, row_offset, left_cols) =
+        src.block(upper_rows, 0, row_offset, left_cols);
+    dst.block(0, 0, row_offset, col_offset) =
+        src.block(upper_rows, left_cols, row_offset, col_offset);
+}
+
 template <typename Derived>
 auto shift_2D(Eigen::DenseBase<Derived> &in, std::vector<Eigen::Index> shift_indices) {
     Eigen::Index n_rows = in.rows();
     Eigen::Index n_cols = in.cols();
 
     Derived out(n_rows,n_cols);
-
-    for (Eigen::Index i=0; i<n_cols; ++i) {
-        Eigen::Index ti = (i+shift_indices[1]) % n_cols;
-        Eigen::Index shift_col = (ti < 0) ? n_cols+ti : ti;
-        for (Eigen::Index j=0; j<n_rows; ++j) {
-            Eigen::Index tj = (j+shift_indices[0]) % n_rows;
-            Eigen::Index shift_row = (tj < 0) ? n_rows+tj : tj;
-            out(shift_row,shift_col) = in(j,i);
-        }
-    }
+    shift_2D_into(in, shift_indices[0], shift_indices[1], out);
     return out;
 }
 

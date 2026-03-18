@@ -694,29 +694,59 @@ void WienerFilter::calc_denominator() {
         // sort absolute values of Z in ascending order
         Eigen::VectorXd Z_abs = Z.array().abs();
         auto Z_indices_sorted = engine_utils::sorter(Z_abs);
+        const Eigen::Index total_iters = n_rows * n_cols;
+        std::vector<Eigen::Index> shift_indices_desc(total_iters);
+        std::vector<Eigen::Index> shift_rows_desc(total_iters);
+        std::vector<Eigen::Index> shift_cols_desc(total_iters);
+        std::vector<double> scales_desc(total_iters);
+        std::vector<double> tail_fracs_desc(total_iters);
 
         // number of iterations between convergence checks
-        n_loops = n_rows * n_cols / 100;
+        n_loops = total_iters / 100;
         if (n_loops < 100) {
             n_loops = 100;
         }
         const double Z_abs_total = Z_abs.sum();
         double Z_abs_done = 0.0;
+        Eigen::Index tail_cap_iters = total_iters;
+        for (Eigen::Index kk=0; kk<total_iters; ++kk) {
+            auto shift_index = std::get<1>(Z_indices_sorted[total_iters - kk - 1]);
+            shift_indices_desc[kk] = shift_index;
+            shift_rows_desc[kk] = -static_cast<Eigen::Index>(shift_index % n_rows);
+            shift_cols_desc[kk] = -static_cast<Eigen::Index>(shift_index / n_rows);
+            scales_desc[kk] = Z(shift_index) / static_cast<double>(n_rows * n_cols);
+            Z_abs_done += Z_abs(shift_index);
+            const double tail_frac = (Z_abs_total > 0.0) ? ((Z_abs_total - Z_abs_done) / Z_abs_total) : 0.0;
+            tail_fracs_desc[kk] = tail_frac;
+            if (tail_cap_iters == total_iters && tail_frac <= tail_frac_tol) {
+                tail_cap_iters = kk + 1;
+            }
+        }
+        Z_abs_done = 0.0;
 
         // flag for convergence
         bool done = false;
 
-        tula::logging::progressbar pb(
-            [&](const auto &msg) { logger->info("{}", msg); }, 90,
-            "calculating denom");
-
         const auto denom_start = std::chrono::steady_clock::now();
         double last_log_s = 0.0;
-        const Eigen::Index total_iters = n_rows * n_cols;
         const Eigen::Index check_iters = denom_check_iters > 0 ? denom_check_iters : n_loops;
         const int max_checks = std::max(max_loops, 1);
         int checks_done = 0;
-        const Eigen::Index max_iters = max_denom_iters > 0 ? std::min<Eigen::Index>(max_denom_iters, total_iters) : total_iters;
+        const Eigen::Index requested_max_iters = max_denom_iters > 0 ? std::min<Eigen::Index>(max_denom_iters, total_iters) : total_iters;
+        const Eigen::Index max_iters = std::min(requested_max_iters, tail_cap_iters);
+        tula::logging::progressbar pb(
+            [&](const auto &msg) { logger->info("{}", msg); }, 90,
+            "calculating denom");
+        const Eigen::Index pb_stride = std::max<Eigen::Index>(max_iters / 100, 1);
+        logger->info("Wiener denominator pre-cap total_iters={} tail_cap_iters={} max_iters={} check_iters={}",
+                     static_cast<long long>(total_iters), static_cast<long long>(tail_cap_iters),
+                     static_cast<long long>(max_iters), static_cast<long long>(check_iters));
+
+        Eigen::MatrixXcd in(n_rows,n_cols), out(n_rows,n_cols);
+        Eigen::MatrixXcd ffdq(n_rows,n_cols);
+        Eigen::MatrixXd in_prod(n_rows,n_cols);
+        Eigen::MatrixXd shifted_template(n_rows,n_cols);
+        Eigen::MatrixXd shifted_rr(n_rows,n_cols);
 
         // loop through cols and rows
         for (Eigen::Index k=0; k<n_cols; ++k) {
@@ -727,18 +757,13 @@ void WienerFilter::calc_denominator() {
                     break;
                 }
                 if (!done) {
-                    // inputs and outputs
-                    Eigen::MatrixXcd in(n_rows,n_cols), out(n_rows,n_cols);
-
-                    // get index in reverse order to get largest abs(ifft(1/VV))
-                    auto shift_index = std::get<1>(Z_indices_sorted[total_iters - kk - 1]);
-
-                    // indices to shift by
-                    std::vector<Eigen::Index> shift_indices = {static_cast<Eigen::Index>(-shift_index % n_rows),
-                                                               static_cast<Eigen::Index>(-shift_index / n_rows)};
+                    const auto shift_index = shift_indices_desc[kk];
+                    const auto shift_row = shift_rows_desc[kk];
+                    const auto shift_col = shift_cols_desc[kk];
 
                     // f(x) x f(x-x_d)
-                    Eigen::MatrixXd in_prod = filter_template.array() * engine_utils::shift_2D(filter_template, shift_indices).array();
+                    engine_utils::shift_2D_into(filter_template, shift_row, shift_col, shifted_template);
+                    in_prod = filter_template.array() * shifted_template.array();
 
                     // populate matrices for fft
                     in.real() = in_prod;
@@ -748,10 +773,11 @@ void WienerFilter::calc_denominator() {
                     out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
 
                     // copy of fft(f(x) x f(x-x_d))
-                    Eigen::MatrixXcd ffdq = out;
+                    ffdq = out;
 
                     // R(x) x R(x-x_d)
-                    in_prod = rr.array() * engine_utils::shift_2D(rr, shift_indices).array();
+                    engine_utils::shift_2D_into(rr, shift_row, shift_col, shifted_rr);
+                    in_prod = rr.array() * shifted_rr.array();
 
                     // populate matrices for fft
                     in.real() = in_prod;
@@ -768,18 +794,19 @@ void WienerFilter::calc_denominator() {
                     out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
 
                     // Z(x_d) x G/n_pixels
-                    Eigen::MatrixXd delta_denom = Z(shift_index) * out.real()/n_rows/n_cols;
+                    Eigen::MatrixXd delta_denom = scales_desc[kk] * out.real();
 
                     // D = D + Z(x_d) x G/n_pixels
                     denom = denom.array() + delta_denom.array();
                     Z_abs_done += Z_abs(shift_index);
+                    pb.count(max_iters, pb_stride);
 
                     // update status
                     if ((kk % check_iters) == 1) {
                         const double denom_norm = denom.norm();
                         const double delta_norm = delta_denom.norm();
                         const double rel_update = delta_norm / std::max(denom_norm, 1e-12);
-                        const double tail_frac = (Z_abs_total > 0.0) ? ((Z_abs_total - Z_abs_done) / Z_abs_total) : 0.0;
+                        const double tail_frac = tail_fracs_desc[kk];
 
                         const double elapsed_s = std::chrono::duration<double>(
                             std::chrono::steady_clock::now() - denom_start).count();
