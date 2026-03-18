@@ -594,6 +594,8 @@ void WienerFilter::get_config(config_t &config, std::vector<std::vector<std::str
                      std::tuple{"wiener_filter","denom_rel_tol"}, {}, {0.0}, {1.0});
     get_config_value(config, tail_frac_tol, missing_keys, invalid_keys,
                      std::tuple{"wiener_filter","tail_frac_tol"}, {}, {0.0}, {1.0});
+    get_config_value(config, max_loops, missing_keys, invalid_keys,
+                     std::tuple{"wiener_filter","max_loops"}, {}, {1});
 
     // gaussian or airy template fwhms
     if (template_type=="gaussian" || template_type=="airy") {
@@ -1110,6 +1112,8 @@ void WienerFilter::calc_denominator() {
         const double tail_frac_tol_local = tail_frac_tol;
         const double inv_npix = 1.0 / static_cast<double>(n_rows * n_cols);
         const Eigen::Index chunk_size = std::max<Eigen::Index>(n_loops, 100);
+        const int max_checks = std::max(max_loops, 1);
+        int checks_done = 0;
         const int max_threads = omp_get_max_threads();
         std::vector<Eigen::MatrixXd> partial_deltas;
         partial_deltas.reserve(max_threads);
@@ -1205,7 +1209,13 @@ void WienerFilter::calc_denominator() {
                          chunk_end, static_cast<float>(rel_update), static_cast<float>(tail_frac),
                          static_cast<float>(elapsed_s), static_cast<float>(step_s));
 
+            ++checks_done;
             if (rel_update < denom_rel_tol_local && tail_frac < tail_frac_tol_local) {
+                done = true;
+            }
+            else if (checks_done >= max_checks) {
+                logger->info("reached Wiener denominator max_loops={} after {} iteration(s); stopping early",
+                             max_checks, chunk_end);
                 done = true;
             }
         }

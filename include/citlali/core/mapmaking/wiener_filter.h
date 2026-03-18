@@ -166,6 +166,8 @@ void WienerFilter::get_config(config_t &config, std::vector<std::vector<std::str
                      std::tuple{"wiener_filter","denom_rel_tol"}, {}, {0.0}, {1.0});
     get_config_value(config, tail_frac_tol, missing_keys, invalid_keys,
                      std::tuple{"wiener_filter","tail_frac_tol"}, {}, {0.0}, {1.0});
+    get_config_value(config, max_loops, missing_keys, invalid_keys,
+                     std::tuple{"wiener_filter","max_loops"}, {}, {1});
 
     // gaussian or airy template fwhms
     if (template_type=="gaussian" || template_type=="airy") {
@@ -703,6 +705,8 @@ void WienerFilter::calc_denominator() {
 
         const auto denom_start = std::chrono::steady_clock::now();
         double last_log_s = 0.0;
+        const int max_checks = std::max(max_loops, 1);
+        int checks_done = 0;
 
         // loop through cols and rows
         for (Eigen::Index k=0; k<n_cols; ++k) {
@@ -773,7 +777,13 @@ void WienerFilter::calc_denominator() {
                                      kk, static_cast<float>(rel_update), static_cast<float>(tail_frac),
                                      static_cast<float>(elapsed_s), static_cast<float>(step_s));
 
+                        ++checks_done;
                         if (rel_update < denom_rel_tol && tail_frac < tail_frac_tol) {
+                            done = true;
+                        }
+                        else if (checks_done >= max_checks) {
+                            logger->info("reached Wiener denominator max_loops={} after {} iteration(s); stopping early",
+                                         max_checks, kk);
                             done = true;
                         }
                     }
