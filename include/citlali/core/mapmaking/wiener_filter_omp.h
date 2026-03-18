@@ -6,7 +6,6 @@
 #include <map>
 #include <vector>
 #include <cmath>
-#include <omp.h>
 
 #include <Eigen/Core>
 #include <unsupported/Eigen/CXX11/Tensor>
@@ -1111,54 +1110,36 @@ void WienerFilter::calc_denominator() {
         const double denom_rel_tol_local = denom_rel_tol;
         const double tail_frac_tol_local = tail_frac_tol;
         const double inv_npix = 1.0 / static_cast<double>(n_rows * n_cols);
-        const Eigen::Index chunk_size = std::max<Eigen::Index>(n_loops, 100);
         const int max_checks = std::max(max_loops, 1);
         int checks_done = 0;
-        const int max_threads = omp_get_max_threads();
-        std::vector<Eigen::MatrixXd> partial_deltas;
-        partial_deltas.reserve(max_threads);
-        for (int thread = 0; thread < max_threads; ++thread) {
-            partial_deltas.emplace_back(Eigen::MatrixXd::Zero(n_rows, n_cols));
-        }
-        std::vector<double> partial_z_abs_done(max_threads, 0.0);
-        for (Eigen::Index chunk_start = 0; chunk_start < total_iters && !done; chunk_start += chunk_size) {
-            const Eigen::Index chunk_end = std::min(chunk_start + chunk_size, total_iters);
-            Eigen::MatrixXd chunk_delta = Eigen::MatrixXd::Zero(n_rows, n_cols);
-            double chunk_z_abs_done = 0.0;
-            for (int thread = 0; thread < max_threads; ++thread) {
-                partial_deltas[thread].setZero();
-                partial_z_abs_done[thread] = 0.0;
-            }
+        #pragma omp parallel shared(sorted, n_loops, zz2d, Z_abs, Z_abs_done, Z_abs_total, total_iters, pb_stride, denom_rel_tol_local, tail_frac_tol_local, denom_start, last_log_s, done, pb, n_rows, n_cols, denom, filter_template, rr, inv_npix, checks_done, max_checks) default (none)
+        {
+            auto &ctx = get_thread_fft_context(n_rows, n_cols);
+            Eigen::MatrixXcd in_local(n_rows, n_cols);
+            Eigen::MatrixXcd out_local(n_rows, n_cols);
+            Eigen::MatrixXcd ffdq(n_rows, n_cols);
+            Eigen::MatrixXd in_prod(n_rows, n_cols);
+            Eigen::MatrixXd shifted_template(n_rows, n_cols);
+            Eigen::MatrixXd shifted_rr(n_rows, n_cols);
 
-            #pragma omp parallel shared(sorted, zz2d, Z_abs, partial_deltas, partial_z_abs_done, chunk_start, chunk_end, total_iters, n_rows, n_cols, filter_template, rr, inv_npix) default (none)
-            {
-                const int thread_index = omp_get_thread_num();
-                auto &ctx = get_thread_fft_context(n_rows, n_cols);
-                Eigen::MatrixXcd in_local(n_rows, n_cols);
-                Eigen::MatrixXcd out_local(n_rows, n_cols);
-                Eigen::MatrixXcd ffdq(n_rows, n_cols);
-                Eigen::MatrixXd in_prod(n_rows, n_cols);
-                Eigen::MatrixXd shifted_template(n_rows, n_cols);
-                Eigen::MatrixXd shifted_rr(n_rows, n_cols);
-                auto &local_delta = partial_deltas[thread_index];
-                double &local_z_abs_done = partial_z_abs_done[thread_index];
-
-                auto shift_into = [&](const Eigen::MatrixXd &src, Eigen::Index shift_row, Eigen::Index shift_col, Eigen::MatrixXd &dst) {
-                    for (Eigen::Index col = 0; col < n_cols; ++col) {
-                        const Eigen::Index shifted_col = (col + shift_col) >= 0 ?
-                            (col + shift_col) % n_cols :
-                            (n_cols + ((col + shift_col) % n_cols)) % n_cols;
-                        for (Eigen::Index row = 0; row < n_rows; ++row) {
-                            const Eigen::Index shifted_row = (row + shift_row) >= 0 ?
-                                (row + shift_row) % n_rows :
-                                (n_rows + ((row + shift_row) % n_rows)) % n_rows;
-                            dst(shifted_row, shifted_col) = src(row, col);
-                        }
+            auto shift_into = [&](const Eigen::MatrixXd &src, Eigen::Index shift_row, Eigen::Index shift_col, Eigen::MatrixXd &dst) {
+                for (Eigen::Index col = 0; col < n_cols; ++col) {
+                    const Eigen::Index shifted_col = (col + shift_col) >= 0 ?
+                        (col + shift_col) % n_cols :
+                        (n_cols + ((col + shift_col) % n_cols)) % n_cols;
+                    for (Eigen::Index row = 0; row < n_rows; ++row) {
+                        const Eigen::Index shifted_row = (row + shift_row) >= 0 ?
+                            (row + shift_row) % n_rows :
+                            (n_rows + ((row + shift_row) % n_rows)) % n_rows;
+                        dst(shifted_row, shifted_col) = src(row, col);
                     }
-                };
+                }
+            };
 
-                #pragma omp for schedule(dynamic)
-                for (Eigen::Index kk = chunk_start; kk < chunk_end; ++kk) {
+            #pragma omp for schedule(dynamic) ordered
+            for (Eigen::Index kk = 0; kk < total_iters; ++kk) {
+                #pragma omp flush(done)
+                if (!done) {
                     auto shift_index = std::get<1>(sorted[total_iters - kk - 1]);
                     const Eigen::Index shift_row = -static_cast<Eigen::Index>(shift_index % n_rows);
                     const Eigen::Index shift_col = -static_cast<Eigen::Index>(shift_index / n_rows);
@@ -1180,43 +1161,41 @@ void WienerFilter::calc_denominator() {
                     in_local.imag() = -ffdq.imag().array() * out_local.real().array() + ffdq.real().array() * out_local.imag().array();
                     out_local = engine_utils::fft2<engine_utils::inverse>(in_local, ctx.pr, ctx.a, ctx.b);
 
-                    const double scale = zz2d(shift_index) * inv_npix;
-                    local_delta.array() += scale * out_local.real().array();
-                    local_z_abs_done += Z_abs(shift_index);
+                    #pragma omp ordered
+                    {
+                        const double scale = zz2d(shift_index) * inv_npix;
+                        denom.array() += scale * out_local.real().array();
+                        Z_abs_done += Z_abs(shift_index);
+                        pb.count(total_iters, pb_stride);
+
+                        if ((kk % n_loops) == 1) {
+                            const Eigen::MatrixXd delta_denom = scale * out_local.real().matrix();
+                            const double denom_norm = denom.norm();
+                            const double delta_norm = delta_denom.norm();
+                            const double rel_update = delta_norm / std::max(denom_norm, 1e-12);
+                            const double tail_frac = (Z_abs_total > 0.0) ? ((Z_abs_total - Z_abs_done) / Z_abs_total) : 0.0;
+                            const double elapsed_s = std::chrono::duration<double>(
+                                std::chrono::steady_clock::now() - denom_start).count();
+                            const double step_s = elapsed_s - last_log_s;
+                            last_log_s = elapsed_s;
+
+                            logger->info("{} iteration(s) complete. rel_update={} tail_frac={} elapsed_s={} step_s={}",
+                                         kk, static_cast<float>(rel_update), static_cast<float>(tail_frac),
+                                         static_cast<float>(elapsed_s), static_cast<float>(step_s));
+
+                            ++checks_done;
+                            if (rel_update < denom_rel_tol_local && tail_frac < tail_frac_tol_local) {
+                                done = true;
+                            }
+                            else if (checks_done >= max_checks) {
+                                logger->info("reached Wiener denominator max_loops={} after {} iteration(s); stopping early",
+                                             max_checks, kk);
+                                done = true;
+                            }
+                            #pragma omp flush(done)
+                        }
+                    }
                 }
-            }
-            for (int thread = 0; thread < max_threads; ++thread) {
-                chunk_delta += partial_deltas[thread];
-                chunk_z_abs_done += partial_z_abs_done[thread];
-            }
-
-            denom += chunk_delta;
-            Z_abs_done += chunk_z_abs_done;
-            for (Eigen::Index kk = chunk_start; kk < chunk_end; ++kk) {
-                pb.count(total_iters, pb_stride);
-            }
-
-            const double denom_norm = denom.norm();
-            const double delta_norm = chunk_delta.norm();
-            const double rel_update = delta_norm / std::max(denom_norm, 1e-12);
-            const double tail_frac = (Z_abs_total > 0.0) ? ((Z_abs_total - Z_abs_done) / Z_abs_total) : 0.0;
-            const double elapsed_s = std::chrono::duration<double>(
-                std::chrono::steady_clock::now() - denom_start).count();
-            const double step_s = elapsed_s - last_log_s;
-            last_log_s = elapsed_s;
-
-            logger->info("{} iteration(s) complete. rel_update={} tail_frac={} elapsed_s={} step_s={}",
-                         chunk_end, static_cast<float>(rel_update), static_cast<float>(tail_frac),
-                         static_cast<float>(elapsed_s), static_cast<float>(step_s));
-
-            ++checks_done;
-            if (rel_update < denom_rel_tol_local && tail_frac < tail_frac_tol_local) {
-                done = true;
-            }
-            else if (checks_done >= max_checks) {
-                logger->info("reached Wiener denominator max_loops={} after {} iteration(s); stopping early",
-                             max_checks, chunk_end);
-                done = true;
             }
         }
         for (Eigen::Index i=0; i<n_rows; i++) {
