@@ -6,6 +6,7 @@
 #include <map>
 #include <vector>
 #include <cmath>
+#include <omp.h>
 
 #include <Eigen/Core>
 #include <unsupported/Eigen/CXX11/Tensor>
@@ -1099,7 +1100,7 @@ void WienerFilter::calc_denominator() {
         bool done = false;
 
         tula::logging::progressbar pb(
-            [](const auto &msg) { SPDLOG_INFO("{}", msg); }, 90,
+            [&](const auto &msg) { logger->info("{}", msg); }, 90,
             "calculating denom");
         const Eigen::Index total_iters = n_rows * n_cols;
         const Eigen::Index pb_stride = std::max<Eigen::Index>(total_iters / 100, 1);
@@ -1108,110 +1109,104 @@ void WienerFilter::calc_denominator() {
         const double denom_rel_tol_local = denom_rel_tol;
         const double tail_frac_tol_local = tail_frac_tol;
         const double inv_npix = 1.0 / static_cast<double>(n_rows * n_cols);
-
-        #pragma omp parallel shared(sorted, n_loops, zz2d, Z_abs, Z_abs_done, Z_abs_total, total_iters, pb_stride, denom_rel_tol_local, tail_frac_tol_local, denom_start, last_log_s, done, pb, n_rows, n_cols, denom, filter_template, rr, inv_npix) default (none)
-        {
-            fftw_complex *a_local = nullptr, *b_local = nullptr;
-            fftw_plan pf_local = nullptr, pr_local = nullptr;
-            Eigen::MatrixXcd in_local(n_rows, n_cols);
-            Eigen::MatrixXcd out_local(n_rows, n_cols);
-            Eigen::MatrixXcd ffdq(n_rows, n_cols);
-            Eigen::MatrixXd in_prod(n_rows, n_cols);
-            std::vector<Eigen::Index> shift_indices(2);
-
-            // Keep FFTW plan creation serialized; FFTW planning is not thread-safe by default.
-            #pragma omp critical (wfFFTW)
-            {
-                a_local = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
-                b_local = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
-                pf_local = fftw_plan_dft_2d(n_rows, n_cols, a_local, b_local, FFTW_FORWARD, FFTW_ESTIMATE);
-                pr_local = fftw_plan_dft_2d(n_rows, n_cols, a_local, b_local, FFTW_BACKWARD, FFTW_ESTIMATE);
+        const Eigen::Index chunk_size = std::max<Eigen::Index>(n_loops, 100);
+        const int max_threads = omp_get_max_threads();
+        std::vector<Eigen::MatrixXd> partial_deltas;
+        partial_deltas.reserve(max_threads);
+        for (int thread = 0; thread < max_threads; ++thread) {
+            partial_deltas.emplace_back(Eigen::MatrixXd::Zero(n_rows, n_cols));
+        }
+        std::vector<double> partial_z_abs_done(max_threads, 0.0);
+        for (Eigen::Index chunk_start = 0; chunk_start < total_iters && !done; chunk_start += chunk_size) {
+            const Eigen::Index chunk_end = std::min(chunk_start + chunk_size, total_iters);
+            Eigen::MatrixXd chunk_delta = Eigen::MatrixXd::Zero(n_rows, n_cols);
+            double chunk_z_abs_done = 0.0;
+            for (int thread = 0; thread < max_threads; ++thread) {
+                partial_deltas[thread].setZero();
+                partial_z_abs_done[thread] = 0.0;
             }
 
-            #pragma omp for schedule (dynamic) ordered
-            for (Eigen::Index kk=0; kk<total_iters; ++kk) {
-                #pragma omp flush (done)
-                if (!done) {
-                    // get index in reverse order
+            #pragma omp parallel shared(sorted, zz2d, Z_abs, partial_deltas, partial_z_abs_done, chunk_start, chunk_end, n_rows, n_cols, filter_template, rr, inv_npix) default (none)
+            {
+                const int thread_index = omp_get_thread_num();
+                auto &ctx = get_thread_fft_context(n_rows, n_cols);
+                Eigen::MatrixXcd in_local(n_rows, n_cols);
+                Eigen::MatrixXcd out_local(n_rows, n_cols);
+                Eigen::MatrixXcd ffdq(n_rows, n_cols);
+                Eigen::MatrixXd in_prod(n_rows, n_cols);
+                Eigen::MatrixXd shifted_template(n_rows, n_cols);
+                Eigen::MatrixXd shifted_rr(n_rows, n_cols);
+                auto &local_delta = partial_deltas[thread_index];
+                double &local_z_abs_done = partial_z_abs_done[thread_index];
+
+                auto shift_into = [&](const Eigen::MatrixXd &src, Eigen::Index shift_row, Eigen::Index shift_col, Eigen::MatrixXd &dst) {
+                    for (Eigen::Index col = 0; col < n_cols; ++col) {
+                        const Eigen::Index shifted_col = (col + shift_col) >= 0 ?
+                            (col + shift_col) % n_cols :
+                            (n_cols + ((col + shift_col) % n_cols)) % n_cols;
+                        for (Eigen::Index row = 0; row < n_rows; ++row) {
+                            const Eigen::Index shifted_row = (row + shift_row) >= 0 ?
+                                (row + shift_row) % n_rows :
+                                (n_rows + ((row + shift_row) % n_rows)) % n_rows;
+                            dst(shifted_row, shifted_col) = src(row, col);
+                        }
+                    }
+                };
+
+                #pragma omp for schedule(dynamic)
+                for (Eigen::Index kk = chunk_start; kk < chunk_end; ++kk) {
                     auto shift_index = std::get<1>(sorted[total_iters - kk - 1]);
+                    const Eigen::Index shift_row = -static_cast<Eigen::Index>(shift_index % n_rows);
+                    const Eigen::Index shift_col = -static_cast<Eigen::Index>(shift_index / n_rows);
 
-                    Eigen::Index shift_row = -static_cast<Eigen::Index>(shift_index % n_rows);
-                    Eigen::Index shift_col = -static_cast<Eigen::Index>(shift_index / n_rows);
-
-                    shift_indices[0] = shift_row;
-                    shift_indices[1] = shift_col;
-
-                    in_prod = filter_template.array() * engine_utils::shift_2D(filter_template, shift_indices).array();
-
+                    shift_into(filter_template, shift_row, shift_col, shifted_template);
+                    in_prod = filter_template.array() * shifted_template.array();
                     in_local.real() = in_prod;
                     in_local.imag().setZero();
-
-                    out_local = engine_utils::fft2<engine_utils::forward>(in_local, pf_local, a_local, b_local);
-
+                    out_local = engine_utils::fft2<engine_utils::forward>(in_local, ctx.pf, ctx.a, ctx.b);
                     ffdq = out_local;
 
-                    in_prod = rr.array() * engine_utils::shift_2D(rr, shift_indices).array();
-
+                    shift_into(rr, shift_row, shift_col, shifted_rr);
+                    in_prod = rr.array() * shifted_rr.array();
                     in_local.real() = in_prod;
                     in_local.imag().setZero();
-
-                    out_local = engine_utils::fft2<engine_utils::forward>(in_local, pf_local, a_local, b_local);
+                    out_local = engine_utils::fft2<engine_utils::forward>(in_local, ctx.pf, ctx.a, ctx.b);
 
                     in_local.real() = ffdq.real().array() * out_local.real().array() + ffdq.imag().array() * out_local.imag().array();
                     in_local.imag() = -ffdq.imag().array() * out_local.real().array() + ffdq.real().array() * out_local.imag().array();
+                    out_local = engine_utils::fft2<engine_utils::inverse>(in_local, ctx.pr, ctx.a, ctx.b);
 
-                    out_local = engine_utils::fft2<engine_utils::inverse>(in_local, pr_local, a_local, b_local);
-
-                    #pragma omp ordered
-                    {
-                        const double scale = zz2d(shift_index) * inv_npix;
-
-                        // update denominator
-                        denom.array() += scale * out_local.real().array();
-                        Z_abs_done += Z_abs(shift_index);
-
-                        // update progress bar
-                        pb.count(total_iters, pb_stride);
-
-                        // update status
-                        if ((kk % n_loops) == 1) {
-                            const double denom_norm = denom.norm();
-                            const double delta_norm = std::abs(scale) * out_local.real().norm();
-                            const double rel_update = delta_norm / std::max(denom_norm, 1e-12);
-                            const double tail_frac = (Z_abs_total > 0.0) ? ((Z_abs_total - Z_abs_done) / Z_abs_total) : 0.0;
-
-                            const double elapsed_s = std::chrono::duration<double>(
-                                std::chrono::steady_clock::now() - denom_start).count();
-                            const double step_s = elapsed_s - last_log_s;
-                            last_log_s = elapsed_s;
-
-                            SPDLOG_INFO("{} iteration(s) complete. rel_update={} tail_frac={} elapsed_s={} step_s={}",
-                                        kk, static_cast<float>(rel_update), static_cast<float>(tail_frac),
-                                        static_cast<float>(elapsed_s), static_cast<float>(step_s));
-
-                            if (rel_update < denom_rel_tol_local && tail_frac < tail_frac_tol_local) {
-                                done = true;
-                            #pragma omp flush(done)
-                            }
-                        }
-                    }
+                    const double scale = zz2d(shift_index) * inv_npix;
+                    local_delta.array() += scale * out_local.real().array();
+                    local_z_abs_done += Z_abs(shift_index);
                 }
             }
+            for (int thread = 0; thread < max_threads; ++thread) {
+                chunk_delta += partial_deltas[thread];
+                chunk_z_abs_done += partial_z_abs_done[thread];
+            }
 
-            #pragma omp critical (wfFFTW)
-            {
-                if (pf_local != nullptr) {
-                    fftw_destroy_plan(pf_local);
-                }
-                if (pr_local != nullptr) {
-                    fftw_destroy_plan(pr_local);
-                }
-                if (a_local != nullptr) {
-                    fftw_free(a_local);
-                }
-                if (b_local != nullptr) {
-                    fftw_free(b_local);
-                }
+            denom += chunk_delta;
+            Z_abs_done += chunk_z_abs_done;
+            for (Eigen::Index kk = chunk_start; kk < chunk_end; ++kk) {
+                pb.count(total_iters, pb_stride);
+            }
+
+            const double denom_norm = denom.norm();
+            const double delta_norm = chunk_delta.norm();
+            const double rel_update = delta_norm / std::max(denom_norm, 1e-12);
+            const double tail_frac = (Z_abs_total > 0.0) ? ((Z_abs_total - Z_abs_done) / Z_abs_total) : 0.0;
+            const double elapsed_s = std::chrono::duration<double>(
+                std::chrono::steady_clock::now() - denom_start).count();
+            const double step_s = elapsed_s - last_log_s;
+            last_log_s = elapsed_s;
+
+            logger->info("{} iteration(s) complete. rel_update={} tail_frac={} elapsed_s={} step_s={}",
+                         chunk_end, static_cast<float>(rel_update), static_cast<float>(tail_frac),
+                         static_cast<float>(elapsed_s), static_cast<float>(step_s));
+
+            if (rel_update < denom_rel_tol_local && tail_frac < tail_frac_tol_local) {
+                done = true;
             }
         }
         for (Eigen::Index i=0; i<n_rows; i++) {
