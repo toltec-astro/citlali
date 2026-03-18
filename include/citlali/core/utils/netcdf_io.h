@@ -1,10 +1,53 @@
 #pragma once
 
+#include <filesystem>
 #include <netcdf>
+#include <system_error>
 
 struct DataIOError : public std::runtime_error {
     using std::runtime_error::runtime_error;
 };
+
+template <typename Writer>
+void write_netcdf_atomic(const std::string &final_path, Writer &&writer) {
+    namespace fs = std::filesystem;
+    const fs::path final_file(final_path);
+    const fs::path temp_file(final_path + ".tmp");
+    std::error_code ec;
+    fs::remove(temp_file, ec);
+
+    try {
+        netCDF::NcFile fo(temp_file.string(), netCDF::NcFile::replace);
+        writer(fo);
+        fo.sync();
+        fo.close();
+
+        ec.clear();
+        fs::remove(final_file, ec);
+        ec.clear();
+        fs::rename(temp_file, final_file, ec);
+        if (ec) {
+            throw DataIOError(
+                "failed to atomically rename netCDF temp file " +
+                temp_file.string() + " -> " + final_file.string() + ": " +
+                ec.message());
+        }
+    } catch (...) {
+        ec.clear();
+        fs::remove(temp_file, ec);
+        throw;
+    }
+}
+
+inline void set_netcdf_chunking_and_compression(
+    netCDF::NcVar &var, const std::vector<std::size_t> &chunk_sizes,
+    int deflate_level = 1) {
+    if (var.isNull() || chunk_sizes.empty()) {
+        return;
+    }
+    var.setChunking(netCDF::NcVar::nc_CHUNKED, chunk_sizes);
+    var.setCompression(true, true, deflate_level);
+}
 
 // write scalars to netcdf file
 template<typename T>

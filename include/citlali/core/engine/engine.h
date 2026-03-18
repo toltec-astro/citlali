@@ -2016,8 +2016,7 @@ void Engine::create_tod_files() {
         name = "ptc";
     }
 
-    // create netcdf file
-    netCDF::NcFile fo(tod_filename[name], netCDF::NcFile::replace);
+    write_netcdf_atomic(tod_filename[name], [&](netCDF::NcFile &fo) {
 
     // add tod output type to file
     netCDF::NcDim n_tod_output_type_dim = fo.addDim("n_tod_output_type",1);
@@ -2551,7 +2550,7 @@ void Engine::create_tod_files() {
         tel_header_v.putVar(&val(0));
     }
 
-    fo.close();
+    });
 }
 
 //template <TCDataKind tc_t>
@@ -3574,8 +3573,7 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
     // get filename
     std::string filename = setup_filenames<map_t,engine_utils::toltecIO::toltec,engine_utils::toltecIO::psd>(dir_name);
 
-    // create file
-    netCDF::NcFile fo(filename + ".nc", netCDF::NcFile::replace);
+    write_netcdf_atomic(filename + ".nc", [&](netCDF::NcFile &fo) {
 
     // loop through psd vector
     for (Eigen::Index i=0; i<mb->psds.size(); ++i) {
@@ -3650,15 +3648,14 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
             noise_psd_2d_freq_v.putVar(noise_psd_2d_freq_transposed.data());
         }
     }
-    // close file
-    fo.close();
+    });
 }
 
 template <mapmaking::MapType map_t, class map_buffer_t>
 void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
     std::string filename = setup_filenames<map_t,engine_utils::toltecIO::toltec,engine_utils::toltecIO::hist>(dir_name);
 
-    netCDF::NcFile fo(filename + ".nc", netCDF::NcFile::replace);
+    write_netcdf_atomic(filename + ".nc", [&](netCDF::NcFile &fo) {
     netCDF::NcDim hist_bins_dim = fo.addDim("n_bins", mb->hist_n_bins);
 
     // loop through stored histograms
@@ -3690,8 +3687,7 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
             hist_v.putVar(mb->noise_hists[i].data());
         }
     }
-    // close file
-    fo.close();
+    });
 }
 
 void Engine::create_rtcdiag_file() {
@@ -3706,7 +3702,7 @@ void Engine::create_rtcdiag_file() {
                                                                            obsnum, telescope.sim_obs);
     rtcdiag_filename = filename + ".nc";
 
-    netCDF::NcFile fo(rtcdiag_filename, netCDF::NcFile::replace);
+    write_netcdf_atomic(rtcdiag_filename, [&](netCDF::NcFile &fo) {
 
     netCDF::NcDim n_tod_output_type_dim = fo.addDim("n_tod_output_type", 1);
     netCDF::NcVar tod_output_type_var = fo.addVar("tod_output_type", netCDF::ncString, n_tod_output_type_dim);
@@ -3735,6 +3731,8 @@ void Engine::create_rtcdiag_file() {
     netCDF::NcDim n_scans_dim = fo.addDim("n_scans", n_scans);
     netCDF::NcDim n_dets_dim = fo.addDim("n_dets", calib.n_dets);
     netCDF::NcDim n_nws_rtcdiag_dim = fo.addDim("n_nws_rtcdiag", calib.n_nws);
+    const std::vector<std::size_t> rtc_det_chunks = {1, TULA_SIZET(calib.n_dets)};
+    const std::vector<std::size_t> rtc_nw_chunks = {1, TULA_SIZET(calib.n_nws)};
 
     netCDF::NcVar output_scan_index_v = fo.addVar("output_scan_index", netCDF::ncInt, n_scans_dim);
     output_scan_index_v.putAtt("units", "N/A");
@@ -3817,6 +3815,7 @@ void Engine::create_rtcdiag_file() {
         netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, rtc_det_dims);
         v.putAtt("units", "N/A");
         v.putAtt("comment", comment);
+        set_netcdf_chunking_and_compression(v, rtc_det_chunks, 1);
         std::vector<double> init(static_cast<std::size_t>(n_scans) *
                                  static_cast<std::size_t>(calib.n_dets), fill_double);
         v.putVar(init.data());
@@ -3825,6 +3824,7 @@ void Engine::create_rtcdiag_file() {
         netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, rtc_det_dims);
         v.putAtt("units", "N/A");
         v.putAtt("comment", comment);
+        set_netcdf_chunking_and_compression(v, rtc_det_chunks, 1);
         std::vector<int> init(static_cast<std::size_t>(n_scans) *
                               static_cast<std::size_t>(calib.n_dets), fill_int);
         v.putVar(init.data());
@@ -3904,6 +3904,7 @@ void Engine::create_rtcdiag_file() {
         netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, rtc_nw_dims);
         v.putAtt("units", "N/A");
         v.putAtt("comment", comment);
+        set_netcdf_chunking_and_compression(v, rtc_nw_chunks, 1);
         std::vector<double> init(static_cast<std::size_t>(n_scans) *
                                  static_cast<std::size_t>(calib.n_nws), fill_double);
         v.putVar(init.data());
@@ -3912,6 +3913,7 @@ void Engine::create_rtcdiag_file() {
         netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, rtc_nw_dims);
         v.putAtt("units", "N/A");
         v.putAtt("comment", comment);
+        set_netcdf_chunking_and_compression(v, rtc_nw_chunks, 1);
         std::vector<int> init(static_cast<std::size_t>(n_scans) *
                               static_cast<std::size_t>(calib.n_nws), fill_int);
         v.putVar(init.data());
@@ -3972,11 +3974,14 @@ void Engine::create_rtcdiag_file() {
 
         std::vector<netCDF::NcDim> rtc_impulsive_slot_dims = {n_scans_dim, n_nws_rtcdiag_dim, n_rtc_impulsive_slots_dim};
         std::vector<netCDF::NcDim> rtc_impulsive_snippet_dims = {n_scans_dim, n_nws_rtcdiag_dim, n_rtc_impulsive_slots_dim, n_rtc_impulsive_samples_dim};
+        const std::vector<std::size_t> rtc_impulsive_slot_chunks = {1, TULA_SIZET(calib.n_nws), n_slots};
+        const std::vector<std::size_t> rtc_impulsive_snippet_chunks = {1, TULA_SIZET(calib.n_nws), n_slots, n_snippet};
 
         auto add_rtc_imp_slot_double = [&](const std::string &name, const std::string &comment) {
             netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, rtc_impulsive_slot_dims);
             v.putAtt("units", "N/A");
             v.putAtt("comment", comment);
+            set_netcdf_chunking_and_compression(v, rtc_impulsive_slot_chunks, 1);
             std::vector<double> init(static_cast<std::size_t>(n_scans) *
                                      static_cast<std::size_t>(calib.n_nws) * n_slots, fill_double);
             v.putVar(init.data());
@@ -3985,6 +3990,7 @@ void Engine::create_rtcdiag_file() {
             netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, rtc_impulsive_slot_dims);
             v.putAtt("units", "N/A");
             v.putAtt("comment", comment);
+            set_netcdf_chunking_and_compression(v, rtc_impulsive_slot_chunks, 1);
             std::vector<int> init(static_cast<std::size_t>(n_scans) *
                                   static_cast<std::size_t>(calib.n_nws) * n_slots, fill_int);
             v.putVar(init.data());
@@ -3993,6 +3999,7 @@ void Engine::create_rtcdiag_file() {
             netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, rtc_impulsive_snippet_dims);
             v.putAtt("units", "N/A");
             v.putAtt("comment", comment);
+            set_netcdf_chunking_and_compression(v, rtc_impulsive_snippet_chunks, 1);
             std::vector<double> init(static_cast<std::size_t>(n_scans) *
                                      static_cast<std::size_t>(calib.n_nws) * n_slots * n_snippet, fill_double);
             v.putVar(init.data());
@@ -4001,6 +4008,7 @@ void Engine::create_rtcdiag_file() {
             netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, rtc_impulsive_snippet_dims);
             v.putAtt("units", "N/A");
             v.putAtt("comment", comment);
+            set_netcdf_chunking_and_compression(v, rtc_impulsive_snippet_chunks, 1);
             std::vector<int> init(static_cast<std::size_t>(n_scans) *
                                   static_cast<std::size_t>(calib.n_nws) * n_slots * n_snippet, fill_int);
             v.putVar(init.data());
@@ -4048,8 +4056,7 @@ void Engine::create_rtcdiag_file() {
                              "RTC flag state for each sample in the captured impulsive-event snippet");
     }
 
-    fo.sync();
-    fo.close();
+    });
 }
 
 void Engine::write_stats() {
@@ -4079,7 +4086,7 @@ void Engine::write_stats() {
         {"median_weights", "1/(" + omb.sig_unit + ")^2"},
         };
 
-    netCDF::NcFile fo(stats_filename + ".nc", netCDF::NcFile::replace);
+    write_netcdf_atomic(stats_filename + ".nc", [&](netCDF::NcFile &fo) {
 
     // add obsnum
     netCDF::NcVar obsnum_v = fo.addVar("obsnum",netCDF::ncInt);
@@ -4165,7 +4172,7 @@ void Engine::write_stats() {
             logger->warn("evals requested but empty; skipping eval/evec output");
         }
     }
-    fo.close();
+    });
 }
 
 template <mapmaking::MapType map_t, class map_buffer_t>
