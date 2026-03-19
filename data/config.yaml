@@ -209,6 +209,8 @@ timestream: # timestream reduction parameters
         min_impulsive_det_frac: 0.05 # minimum fraction of participating detectors that must be impulsive-active for a network-local trigger
         min_alignment_frac: 0.5 # minimum fraction of impulsive-active detectors aligned in time for a network-local trigger
         min_networks_aligned: 3 # minimum number of networks with aligned dominant impulsive times for a cross-network trigger
+        high_score_override_thresh: 0.0 # high-score threshold enabling a looser cross-network trigger; <=0 disables the override
+        high_score_min_networks_aligned: 0 # minimum aligned networks for the high-score override trigger; <=0 disables the override
         cluster_tol_sec: 0.03 # allowed timing spread around the dominant impulsive coincidence cluster
         mask_half_width_sec: 0.03 # half-width of the flagged time window around the dominant impulsive coincidence time
         max_flagged_fraction: 0.10 # reject the proposed mask if it would newly flag more than this fraction of good detector-samples in the network
