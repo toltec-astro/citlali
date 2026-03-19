@@ -19,8 +19,12 @@ from pathlib import Path
 
 import numpy as np
 
-from blank_sky_null_audit import _write_csv
-from rtcdiag_data import load_reduction_tables
+try:
+    from .blank_sky_null_audit import _write_csv
+    from .rtcdiag_data import load_reduction_tables
+except ImportError:
+    from blank_sky_null_audit import _write_csv
+    from rtcdiag_data import load_reduction_tables
 
 
 def _write_report(

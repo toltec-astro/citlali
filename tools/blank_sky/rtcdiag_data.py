@@ -8,7 +8,10 @@ from pathlib import Path
 import netCDF4
 import numpy as np
 
-from blank_sky_null_audit import _parse_int_list, _parse_networks
+try:
+    from .blank_sky_null_audit import _parse_int_list, _parse_networks
+except ImportError:
+    from blank_sky_null_audit import _parse_int_list, _parse_networks
 
 
 ARRAY_NAME_TO_ID = {"a1100": 0, "a1400": 1, "a2000": 2}

@@ -181,3 +181,34 @@ $HOME/tolteca/bin/python tools/blank_sky/rtcdiag_survey_report.py \
   --networks 0,1,2,3,4,5 \
   --outdir /path/to/rtcdiag_survey_report
 ```
+
+`rtcdiag_dash_app.py`
+
+Interactive engineering dashboard for `rtcdiag` survey products. This is meant
+for quick drilldown by obsnum, network, and scan while keeping `rtcdiag` as the
+authoritative low-weight source.
+
+Before first use, install Dash into the shared local venv:
+
+```bash
+~/toltec/bin/pip install --upgrade dash
+```
+
+Example:
+
+```bash
+~/toltec/bin/python tools/blank_sky/rtcdiag_dash_app.py \
+  --redu-dir /path/to/reduced/redu40 \
+  --array a1100 \
+  --networks 0,1,2,3,4,5 \
+  --host 127.0.0.1 \
+  --port 8050
+```
+
+The app provides:
+
+- obsnum severity table
+- network summary table
+- scan-by-network severity heatmap for the selected obsnum
+- per-network scan trends for step and impulsive metrics
+- top scan/network and top slot tables

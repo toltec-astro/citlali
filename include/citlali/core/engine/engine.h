@@ -2940,51 +2940,67 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         return value;
     };
 
+    auto add_double_key = [&](const std::string &key, double value, const std::string &comment,
+                              double fallback = 0.0) {
+        if (!std::isfinite(value)) {
+            logger->warn("PHDU key '{}' non-finite ({}) for array {} in {}; using fallback {}",
+                         key, value, name, fits_io->at(i).filepath, fallback);
+            value = fallback;
+        }
+        fits_io->at(i).pfits->pHDU().addKey(key, value, comment);
+    };
+
     // add unit conversions
     if (rtcproc.run_calibrate) {
         if (mb->sig_unit == "mJy/beam") {
             // conversion to mJy/beam
             fits_io->at(i).pfits->pHDU().addKey("to_mJy/beam", 1, "Conversion to mJy/beam");
             // conversion to MJy/sr
-            fits_io->at(i).pfits->pHDU().addKey("to_MJy/sr", 1/(calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC),
-                                                "Conversion to MJy/sr");
+            add_double_key("to_MJy/sr",
+                           1/(calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC),
+                           "Conversion to MJy/sr");
             // conversion to uK
-            fits_io->at(i).pfits->pHDU().addKey("to_uK", mJy_beam_to_uK, "Conversion to uK");
+            add_double_key("to_uK", mJy_beam_to_uK, "Conversion to uK");
             // conversion to Jy/pixel
-            fits_io->at(i).pfits->pHDU().addKey("to_Jy/pixel", mJy_beam_to_Jy_px, "Conversion to Jy/pixel");
+            add_double_key("to_Jy/pixel", mJy_beam_to_Jy_px, "Conversion to Jy/pixel");
         }
         else if (mb->sig_unit == "MJy/sr") {
             // conversion to mJy/beam
-            fits_io->at(i).pfits->pHDU().addKey("to_mJy/beam", calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC,
-                                                "Conversion to mJy/beam");
+            add_double_key("to_mJy/beam",
+                           calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC,
+                           "Conversion to mJy/beam");
             // conversion to MJy/Sr
             fits_io->at(i).pfits->pHDU().addKey("to_MJy/sr", 1, "Conversion to MJy/sr");
             // conversion to uK
-            fits_io->at(i).pfits->pHDU().addKey("to_uK", calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC*mJy_beam_to_uK,
-                                                "Conversion to uK");
+            add_double_key("to_uK",
+                           calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC*mJy_beam_to_uK,
+                           "Conversion to uK");
             // conversion to Jy/pixel
-            fits_io->at(i).pfits->pHDU().addKey("to_Jy/pixel", calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC*mJy_beam_to_Jy_px,
-                                                "Conversion to Jy/pixel");
+            add_double_key("to_Jy/pixel",
+                           calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC*mJy_beam_to_Jy_px,
+                           "Conversion to Jy/pixel");
         }
         else if (mb->sig_unit == "uK") {
             // conversion to mJy/beam
-            fits_io->at(i).pfits->pHDU().addKey("to_mJy/beam", 1/mJy_beam_to_uK, "Conversion to mJy/beam");
+            add_double_key("to_mJy/beam", 1/mJy_beam_to_uK, "Conversion to mJy/beam");
             // conversion to MJy/sr
-            fits_io->at(i).pfits->pHDU().addKey("to_MJy/sr", 1/mJy_beam_to_uK/(calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC),
-                                                "Conversion to MJy/sr");
+            add_double_key("to_MJy/sr",
+                           1/mJy_beam_to_uK/(calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC),
+                           "Conversion to MJy/sr");
             // conversion to uK
             fits_io->at(i).pfits->pHDU().addKey("to_uK", 1, "Conversion to uK");
             // conversion to Jy/pixel
-            fits_io->at(i).pfits->pHDU().addKey("to_Jy/pixel", (1/mJy_beam_to_uK)*mJy_beam_to_Jy_px, "Conversion to Jy/pixel");
+            add_double_key("to_Jy/pixel", (1/mJy_beam_to_uK)*mJy_beam_to_Jy_px, "Conversion to Jy/pixel");
         }
         else if (mb->sig_unit == "Jy/pixel") {
             // conversion to mJy/beam
-            fits_io->at(i).pfits->pHDU().addKey("to_mJy/beam", 1/mJy_beam_to_Jy_px, "Conversion to mJy/beam");
+            add_double_key("to_mJy/beam", 1/mJy_beam_to_Jy_px, "Conversion to mJy/beam");
             // conversion to MJy/sr
-            fits_io->at(i).pfits->pHDU().addKey("to_MJy/sr", (1/mJy_beam_to_Jy_px)/(calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC),
-                                                "Conversion to MJy/sr");
+            add_double_key("to_MJy/sr",
+                           (1/mJy_beam_to_Jy_px)/(calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC),
+                           "Conversion to MJy/sr");
             // conversion to uK
-            fits_io->at(i).pfits->pHDU().addKey("to_uK", mJy_beam_to_uK/mJy_beam_to_Jy_px, "Conversion to uK");
+            add_double_key("to_uK", mJy_beam_to_uK/mJy_beam_to_Jy_px, "Conversion to uK");
             // conversion to Jy/pixel
             fits_io->at(i).pfits->pHDU().addKey("to_Jy/pixel", 1, "Conversion to Jy/pixel");
         }
@@ -3086,38 +3102,38 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // add map grouping
     fits_io->at(i).pfits->pHDU().addKey("METHOD", map_method, "Map method");
     // add exposure time
-    fits_io->at(i).pfits->pHDU().addKey("EXPTIME", mb->exposure_time, "Exposure time (sec)");
+    add_double_key("EXPTIME", mb->exposure_time, "Exposure time (sec)");
     // add pixel axes
     fits_io->at(i).pfits->pHDU().addKey("RADESYS", telescope.pixel_axes, "Coord Reference Frame");
     const double source_ra = get_tel_header_scalar("Header.Source.Ra", 0.0);
     const double source_dec = get_tel_header_scalar("Header.Source.Dec", 0.0);
     // add source ra
-    fits_io->at(i).pfits->pHDU().addKey("SRC_RA", source_ra, "Source RA (radians)");
+    add_double_key("SRC_RA", source_ra, "Source RA (radians)");
     // add source dec
-    fits_io->at(i).pfits->pHDU().addKey("SRC_DEC", source_dec, "Source Dec (radians)");
+    add_double_key("SRC_DEC", source_dec, "Source Dec (radians)");
     // add map tangent point ra
-    fits_io->at(i).pfits->pHDU().addKey("TAN_RA", source_ra, "Map Tangent Point RA (radians)");
+    add_double_key("TAN_RA", source_ra, "Map Tangent Point RA (radians)");
     //add map tangent point dec
-    fits_io->at(i).pfits->pHDU().addKey("TAN_DEC", source_dec, "Map Tangent Point Dec (radians)");
+    add_double_key("TAN_DEC", source_dec, "Map Tangent Point Dec (radians)");
     // add mean alt
-    fits_io->at(i).pfits->pHDU().addKey("MEAN_EL", RAD_TO_DEG*get_tel_data_mean("TelElAct", 0.0), "Mean Elevation (deg)");
+    add_double_key("MEAN_EL", RAD_TO_DEG*get_tel_data_mean("TelElAct", 0.0), "Mean Elevation (deg)");
     // add mean az
-    fits_io->at(i).pfits->pHDU().addKey("MEAN_AZ", RAD_TO_DEG*get_tel_data_mean("TelAzAct", 0.0), "Mean Azimuth (deg)");
+    add_double_key("MEAN_AZ", RAD_TO_DEG*get_tel_data_mean("TelAzAct", 0.0), "Mean Azimuth (deg)");
     // add mean parallactic angle
-    fits_io->at(i).pfits->pHDU().addKey("MEAN_PA", RAD_TO_DEG*get_tel_data_mean("ActParAng", 0.0), "Mean Parallactic angle (deg)");
+    add_double_key("MEAN_PA", RAD_TO_DEG*get_tel_data_mean("ActParAng", 0.0), "Mean Parallactic angle (deg)");
 
     logger->debug("adding beamsizes");
 
     // add beamsizes
     if (std::get<0>(calib.array_fwhms[calib.arrays(i)]) >= std::get<1>(calib.array_fwhms[calib.arrays(i)])) {
-        fits_io->at(i).pfits->pHDU().addKey("BMAJ", std::get<0>(calib.array_fwhms[calib.arrays(i)]), "beammaj (arcsec)");
-        fits_io->at(i).pfits->pHDU().addKey("BMIN", std::get<1>(calib.array_fwhms[calib.arrays(i)]), "beammin (arcsec)");
-        fits_io->at(i).pfits->pHDU().addKey("BPA", calib.array_pas[calib.arrays(i)]*RAD_TO_DEG, "beampa (deg)");
+        add_double_key("BMAJ", std::get<0>(calib.array_fwhms[calib.arrays(i)]), "beammaj (arcsec)");
+        add_double_key("BMIN", std::get<1>(calib.array_fwhms[calib.arrays(i)]), "beammin (arcsec)");
+        add_double_key("BPA", calib.array_pas[calib.arrays(i)]*RAD_TO_DEG, "beampa (deg)");
     }
     else {
-        fits_io->at(i).pfits->pHDU().addKey("BMAJ", std::get<1>(calib.array_fwhms[calib.arrays(i)]), "beammaj (arcsec)");
-        fits_io->at(i).pfits->pHDU().addKey("BMIN", std::get<0>(calib.array_fwhms[calib.arrays(i)]), "beammin (arcsec)");
-        fits_io->at(i).pfits->pHDU().addKey("BPA", (calib.array_pas[calib.arrays(i)] + pi/2)*RAD_TO_DEG, "beampa (deg)");
+        add_double_key("BMAJ", std::get<1>(calib.array_fwhms[calib.arrays(i)]), "beammaj (arcsec)");
+        add_double_key("BMIN", std::get<0>(calib.array_fwhms[calib.arrays(i)]), "beammin (arcsec)");
+        add_double_key("BPA", (calib.array_pas[calib.arrays(i)] + pi/2)*RAD_TO_DEG, "beampa (deg)");
     }
 
     fits_io->at(i).pfits->pHDU().addKey("BUNIT", mb->sig_unit, "bunit");
@@ -3126,10 +3142,10 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     if (map_method=="jinc") {
         logger->debug("adding jinc params");
 
-        fits_io->at(i).pfits->pHDU().addKey("JINC_R", jinc_mm.r_max, "Jinc filter R_max");
-        fits_io->at(i).pfits->pHDU().addKey("JINC_A", jinc_mm.shape_params[calib.arrays(i)][0], "Jinc filter param a");
-        fits_io->at(i).pfits->pHDU().addKey("JINC_B", jinc_mm.shape_params[calib.arrays(i)][1], "Jinc filter param b");
-        fits_io->at(i).pfits->pHDU().addKey("JINC_C", jinc_mm.shape_params[calib.arrays(i)][2], "Jinc filter param c");
+        add_double_key("JINC_R", jinc_mm.r_max, "Jinc filter R_max");
+        add_double_key("JINC_A", jinc_mm.shape_params[calib.arrays(i)][0], "Jinc filter param a");
+        add_double_key("JINC_B", jinc_mm.shape_params[calib.arrays(i)][1], "Jinc filter param b");
+        add_double_key("JINC_C", jinc_mm.shape_params[calib.arrays(i)][2], "Jinc filter param c");
     }
 
     // add mean tau
@@ -3154,10 +3170,10 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
             logger->warn("MEAN_TAU unavailable (TelElAct missing/empty); defaulting to 0");
         }
     }
-    fits_io->at(i).pfits->pHDU().addKey("MEAN_TAU", mean_tau, "mean tau (" + name + ")");
+    add_double_key("MEAN_TAU", mean_tau, "mean tau (" + name + ")");
 
     // add sample rate
-    fits_io->at(i).pfits->pHDU().addKey("SAMPRATE", telescope.fsmp, "sample rate (Hz)");
+    add_double_key("SAMPRATE", telescope.fsmp, "sample rate (Hz)");
 
     // add apt table to header
     if (mb->obsnums.size()==1) {
@@ -3199,16 +3215,16 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // out-of-focus holography parameters
     if (! telescope.sim_obs) {
 	    logger->debug("adding oof params");
-	    fits_io->at(i).pfits->pHDU().addKey("OOF_RMS", rms, "rms of map background (" + mb->sig_unit +")");
-	    fits_io->at(i).pfits->pHDU().addKey("OOF_W", toltec_io.array_wavelength_map[calib.arrays(i)]/1000., "wavelength (m)");
+	    add_double_key("OOF_RMS", rms, "rms of map background (" + mb->sig_unit +")");
+	    add_double_key("OOF_W", toltec_io.array_wavelength_map[calib.arrays(i)]/1000., "wavelength (m)");
 	    fits_io->at(i).pfits->pHDU().addKey("OOF_ID", static_cast<int>(toltec_io.array_wavelength_map[calib.arrays(i)]*1000), "instrument id");
-	    fits_io->at(i).pfits->pHDU().addKey("OOF_T", 3.0, "taper (dB)");
-	    fits_io->at(i).pfits->pHDU().addKey("OOF_M2X", get_tel_header_scalar("Header.M2.XReq", 0.0)/1000.*1e6, "oof m2x (microns)");
-	    fits_io->at(i).pfits->pHDU().addKey("OOF_M2Y", get_tel_header_scalar("Header.M2.YReq", 0.0)/1000.*1e6, "oof m2y (microns)");
-	    fits_io->at(i).pfits->pHDU().addKey("OOF_M2Z", get_tel_header_scalar("Header.M2.ZReq", 0.0)/1000.*1e6, "oof m2z (microns)");
+	    add_double_key("OOF_T", 3.0, "taper (dB)");
+	    add_double_key("OOF_M2X", get_tel_header_scalar("Header.M2.XReq", 0.0)/1000.*1e6, "oof m2x (microns)");
+	    add_double_key("OOF_M2Y", get_tel_header_scalar("Header.M2.YReq", 0.0)/1000.*1e6, "oof m2y (microns)");
+	    add_double_key("OOF_M2Z", get_tel_header_scalar("Header.M2.ZReq", 0.0)/1000.*1e6, "oof m2z (microns)");
 
-	    fits_io->at(i).pfits->pHDU().addKey("OOF_RO", 25., "outer diameter of the antenna (m)");
-	    fits_io->at(i).pfits->pHDU().addKey("OOF_RI", 1.65, "inner diameter of the antenna (m)");
+	    add_double_key("OOF_RO", 25., "outer diameter of the antenna (m)");
+	    add_double_key("OOF_RI", 1.65, "inner diameter of the antenna (m)");
     }
 
     fits_io->at(i).pfits->pHDU().addKey("FRUITLOOPS_ITER", fruit_iter, "Current fruit loops iteration");
@@ -3477,8 +3493,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
                 flux_limit = ptcproc.fruit_loops_flux(calib.arrays(i));
             }
         }
-        fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.FLUX", flux_limit,
-                                            "Fruit loops flux (" + mb->sig_unit + ")");
+        add_double_key("CONFIG.FRUITLOOPS.FLUX", flux_limit,
+                       "Fruit loops flux (" + mb->sig_unit + ")");
     }
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.MAXITER", ptcproc.fruit_loops_iters, "Fruit loops iterations");
 
