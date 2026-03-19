@@ -3634,10 +3634,10 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 std::exit(EXIT_FAILURE);
             }
             double median_rms = 0.0;
-            if (i < mb.median_rms.size() && std::isfinite(mb.median_rms(i))) {
-                median_rms = mb.median_rms(i);
+            if (i < mb->median_rms.size() && std::isfinite(mb->median_rms(i))) {
+                median_rms = mb->median_rms(i);
             }
-            else if (i < mb.median_rms.size()) {
+            else if (i < mb->median_rms.size()) {
                 logger->warn("non-finite median_rms for map {} in {}; using 0", map_name,
                              noise_fits_io->at(map_index).filepath);
             }
