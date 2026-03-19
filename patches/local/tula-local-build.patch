@@ -1,0 +1,157 @@
+diff --git a/include/tula/config/yamlconfig.h b/include/tula/config/yamlconfig.h
+index e6ff8f8..a2c3b12 100644
+--- a/include/tula/config/yamlconfig.h
++++ b/include/tula/config/yamlconfig.h
+@@ -248,7 +248,7 @@ struct formatter<tula::config::YamlConfig>
+             }
+             return opt_filepath.value().string();
+         };
+-        return format_to(it, "{}\n<config filepath: {}>", config.pformat(),
++        return fmt::format_to(it, "{}\n<config filepath: {}>", config.pformat(),
+                          pformat_opt_filepath(config.filepath()));
+     }
+ };
+diff --git a/include/tula/container.h b/include/tula/container.h
+index 2bf1931..346d2d4 100644
+--- a/include/tula/container.h
++++ b/include/tula/container.h
+@@ -313,7 +313,7 @@ struct formatter<tula::container_utils::Slice<T>, Char>
+                 FormatContext &ctx) const {
+         auto it = ctx.out();
+         const auto &[start, stop, step] = slice;
+-        return format_to(it, "[{}:{}:{}]", start, stop, step);
++        return fmt::format_to(it, "[{}:{}:{}]", start, stop, step);
+     }
+ };
+ 
+@@ -326,7 +326,7 @@ struct formatter<tula::container_utils::BoundedSlice<T>, Char>
+                 FormatContext &ctx) const {
+         auto it = ctx.out();
+         const auto &[start, stop, step, size] = slice;
+-        return format_to(it, "[{}:{}:{}]({})", start, stop, step, size);
++        return fmt::format_to(it, "[{}:{}:{}]({})", start, stop, step, size);
+     }
+ };
+ 
+diff --git a/include/tula/ecsv/hdr.h b/include/tula/ecsv/hdr.h
+index 0633e8a..fcb0dfb 100644
+--- a/include/tula/ecsv/hdr.h
++++ b/include/tula/ecsv/hdr.h
+@@ -181,10 +181,10 @@ struct formatter<tula::ecsv::ECSVColumn>
+         auto spec = spec_handler();
+         switch (spec) {
+         case 's': {
+-            return format_to(it, "{}({})", col.name, col.datatype);
++            return fmt::format_to(it, "{}({})", col.name, col.datatype);
+         }
+         case 'l': {
+-            return format_to(
++            return fmt::format_to(
+                 it, "ECSVColumn(name={}, dtype={}, unit={}, description={})",
+                 col.name, col.datatype, col.unit, col.description);
+         }
+@@ -198,7 +198,7 @@ struct formatter<tula::ecsv::ECSVHeader>
+     template <typename FormatContext>
+     auto format(const tula::ecsv::ECSVHeader &hdr, FormatContext &ctx) {
+         auto it = ctx.out();
+-        return format_to(it, "ECSVHeader(ncols={})", hdr.cols().size());
++        return fmt::format_to(it, "ECSVHeader(ncols={})", hdr.cols().size());
+     }
+ };
+ } // namespace fmt
+diff --git a/include/tula/ecsv/table.h b/include/tula/ecsv/table.h
+index 251fd88..393a768 100644
+--- a/include/tula/ecsv/table.h
++++ b/include/tula/ecsv/table.h
+@@ -567,7 +567,7 @@ struct formatter<tula::ecsv::ECSVHeaderView>
+     template <typename FormatContext>
+     auto format(const tula::ecsv::ECSVHeaderView &hdr, FormatContext &ctx) const {
+         auto it = ctx.out();
+-        return format_to(it, "ECSVHeaderView(ncols={})", hdr.size());
++        return fmt::format_to(it, "ECSVHeaderView(ncols={})", hdr.size());
+     }
+ };
+ 
+@@ -578,7 +578,7 @@ struct formatter<tula::ecsv::ArrayData<T, vs...>>
+     auto format(const tula::ecsv::ArrayData<T, vs...> &array_data,
+                 FormatContext &ctx) const {
+         auto it = ctx.out();
+-        return format_to(it, "ECSVArrayData(ncols={})", array_data.size());
++        return fmt::format_to(it, "ECSVArrayData(ncols={})", array_data.size());
+     }
+ };
+ 
+@@ -589,7 +589,7 @@ struct formatter<tula::ecsv::ColDataRef<Ts...>>
+     auto format(const tula::ecsv::ColDataRef<Ts...> &colref,
+                 FormatContext &ctx) const {
+         auto it = ctx.out();
+-        return format_to(it, "ECSVColRef(name={})", colref.col.name);
++        return fmt::format_to(it, "ECSVColRef(name={})", colref.col.name);
+     }
+ };
+ 
+@@ -600,7 +600,7 @@ struct formatter<tula::ecsv::ECSVDataLoader<Ts...>>
+     auto format(const tula::ecsv::ECSVDataLoader<Ts...> &loader,
+                 FormatContext &ctx) {
+         auto it = ctx.out();
+-        return format_to(it, "ECSVDataLoader(n_cols={})",
++        return fmt::format_to(it, "ECSVDataLoader(n_cols={})",
+                          loader.get_ref_index().size());
+     }
+ };
+@@ -611,7 +611,7 @@ struct formatter<tula::ecsv::ECSVTable>
+     template <typename FormatContext>
+     auto format(const tula::ecsv::ECSVTable &tbl, FormatContext &ctx) const {
+         auto it = ctx.out();
+-        return format_to(it, "ECSVTable(n_cols={})", tbl.header().size());
++        return fmt::format_to(it, "ECSVTable(n_cols={})", tbl.header().size());
+     }
+ };
+ } // namespace fmt
+diff --git a/include/tula/formatter/enum.h b/include/tula/formatter/enum.h
+index 9bd19a4..8579f9e 100644
+--- a/include/tula/formatter/enum.h
++++ b/include/tula/formatter/enum.h
+@@ -167,9 +167,9 @@ struct formatter<bitmask::bitmask<T>>
+             return tula::fmt_utils::format_bitmask_with_meta(it, spec, bm);
+         } else {
+             // fallback to format value
+-            it = format_to(it, "bits(");
++            it = fmt::format_to(it, "bits(");
+             it = tula::fmt_utils::format_bits(it, bm.bits());
+-            return format_to(it, ")");
++            return fmt::format_to(it, ")");
+         }
+     }
+ };
+@@ -188,14 +188,14 @@ struct formatter<meta_enum::MetaEnum<EnumType, UnderlyingType, size>>
+         auto spec = spec_handler();
+         auto str = tula::fmt_utils::remove_space(std::string(meta.string));
+         if (str.empty()) {
+-            return format_to(it, "{}", meta.name);
++            return fmt::format_to(it, "{}", meta.name);
+         }
+         switch (spec) {
+         case 'l': {
+-            return format_to(it, "{}{{{}}}", meta.name, str);
++            return fmt::format_to(it, "{}{{{}}}", meta.name, str);
+         }
+         case 's': {
+-            return format_to(it, "{{{}}}", str);
++            return fmt::format_to(it, "{{{}}}", str);
+         }
+         default: {
+             return it;
+diff --git a/include/tula/nc.h b/include/tula/nc.h
+index 57aca3a..928a9d1 100644
+--- a/include/tula/nc.h
++++ b/include/tula/nc.h
+@@ -443,7 +443,7 @@ struct formatter<tula::nc_utils::pprint<var_t>>
+     template <typename FormatContext>
+     auto format(const tula::nc_utils::pprint<var_t> &pp, FormatContext &ctx) const {
+         auto it = ctx.out();
+-        return format_to(it, "{}", pp.str());
++        return fmt::format_to(it, "{}", pp.str());
+     }
+ };
+

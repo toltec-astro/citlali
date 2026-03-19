@@ -1,0 +1,129 @@
+diff --git a/include/kids/core/kidsdata.h b/include/kids/core/kidsdata.h
+index 3b4d466..4ad0959 100644
+--- a/include/kids/core/kidsdata.h
++++ b/include/kids/core/kidsdata.h
+@@ -272,7 +272,7 @@ struct formatter<kids::ToneAxis>
+     template <typename FormatContext>
+     auto format(const kids::ToneAxis &data, FormatContext &ctx) const {
+         auto it = Base::format(data, ctx);
+-        return it = format_to(it, " labels={}", data.row_labels());
++        return it = fmt::format_to(it, " labels={}", data.row_labels());
+     }
+ };
+ template <>
+@@ -308,14 +308,14 @@ struct formatter<kids::KidsData<kind_>>
+         constexpr auto kind = Data::kind();
+         if constexpr (tula::enum_utils::is_compound_v<kind>) {
+             // format compound kind as variant
+-            return format_to(it, "({}) {:0}", kind, data.variant());
++            return fmt::format_to(it, "({}) {:0}", kind, data.variant());
+         } else {
+             /// format simple kind type
+             auto spec = spec_handler();
+             // meta
+             switch (spec) {
+             case 's': {
+-                it = format_to(it, "({})", kind);
++                it = fmt::format_to(it, "({})", kind);
+                 if constexpr (data_traits::has_iqs) {
+                     return format_member(it, "iqs", data.iqs());
+                 } else if constexpr (data_traits::has_xs) {
+@@ -324,7 +324,7 @@ struct formatter<kids::KidsData<kind_>>
+             }
+             case 'l': {
+                 it =
+-                    format_to(it, "kind={} meta={}", kind, data.meta.pformat());
++                    fmt::format_to(it, "kind={} meta={}", kind, data.meta.pformat());
+                 bool sep = false;
+                 if constexpr (data_traits::has_tones) {
+                     it = format_member(it, "tones", data.tones(), &sep);
+@@ -366,12 +366,12 @@ struct formatter<kids::KidsData<kind_>>
+         switch (spec) {
+         case 's': {
+             if ((m.rows() == 1) || (m.cols() == 1)) {
+-                return format_to(it, "[{}]", m.size());
++                return fmt::format_to(it, "[{}]", m.size());
+             }
+-            return format_to(it, "[{}, {}]", m.rows(), m.cols());
++            return fmt::format_to(it, "[{}, {}]", m.rows(), m.cols());
+         }
+         case 'l': {
+-            it = format_to(it, fmt::runtime("{}{}={:r0}"), sep ? " " : "", name,
++            it = fmt::format_to(it, fmt::runtime("{}{}={:r0}"), sep ? " " : "", name,
+                            m);
+             // as soon as this it called, sep is set
+             *sep = true;
+diff --git a/include/kids/core/wcs.h b/include/kids/core/wcs.h
+index bb30334..32a2a6f 100644
+--- a/include/kids/core/wcs.h
++++ b/include/kids/core/wcs.h
+@@ -183,11 +183,11 @@ struct formatter<kids::wcs::FrameBase<Derived>, Char>
+         // meta
+         switch (spec) {
+         case 's': {
+-            it = format_to(it, "{}({}d{})[{}]", name, data.array_n_dim(),
++            it = fmt::format_to(it, "{}({}d{})[{}]", name, data.array_n_dim(),
+                            data.world_n_dim(), data.array_shape());
+         }
+         case 'l': {
+-            it = format_to(it, "wcs{}d name={} shape=[{}] coords_dim={}",
++            it = fmt::format_to(it, "wcs{}d name={} shape=[{}] coords_dim={}",
+                            data.array_n_dim(), name, data.array_shape(),
+                            data.world_n_dim());
+         }
+diff --git a/include/tula/ceres/core.h b/include/tula/ceres/core.h
+index c18d2b0..7951c19 100644
+--- a/include/tula/ceres/core.h
++++ b/include/tula/ceres/core.h
+@@ -22,7 +22,11 @@ using ceres::CauchyLoss;
+ using ceres::CostFunction;
+ using ceres::Problem;
+ using ceres::Solver;
++#if CERES_VERSION_MAJOR > 2 || (CERES_VERSION_MAJOR == 2 && CERES_VERSION_MINOR >= 1)
+ using ceres::SubsetManifold;
++#else
++using ceres::SubsetParameterization;
++#endif
+ 
+ /// @brief The mode of the evaluation
+ /// @var Residual
+@@ -157,15 +161,14 @@ struct Parameters {
+             }
+         }
+         if (fixed_params.size() > 0) {
+-            SubsetManifold *sm =
+-                new SubsetManifold(n_params, fixed_params);
++#if CERES_VERSION_MAJOR > 2 || (CERES_VERSION_MAJOR == 2 && CERES_VERSION_MINOR >= 1)
++            auto *sm = new SubsetManifold(n_params, fixed_params);
+             problem->SetManifold(param_value, sm);
++#else
++            auto *sp = new SubsetParameterization(n_params, fixed_params);
++            problem->SetParameterization(param_value, sp);
++#endif
+         }
+-        // if (fixed_params.size() > 0) {
+-        //     SubsetParameterization *sp =
+-        //         new SubsetParameterization(n_params, fixed_params);
+-        //     problem->SetParameterization(param_value, sp);
+-        // }
+ 
+         SPDLOG_TRACE("params init values: {}", param_data);
+         SPDLOG_TRACE("fixed params: {}", fixed_params);
+@@ -278,7 +281,7 @@ struct formatter<tula::ceres_utils::Parameter<T>>
+     auto format(const tula::ceres_utils::Parameter<T> &param,
+                 FormatContext &ctx) const {
+         auto it = ctx.out();
+-        return format_to(it, "P({},value={},lower={},upper={},vary={})",
++        return fmt::format_to(it, "P({},value={},lower={},upper={},vary={})",
+                          param.name, param.value, param.lower_bound,
+                          param.upper_bound, param.vary);
+     }
+@@ -291,7 +294,7 @@ struct formatter<tula::ceres_utils::Parameters<T>>
+     auto format(const tula::ceres_utils::Parameters<T> &params,
+                 FormatContext &ctx) const {
+         auto it = ctx.out();
+-        return format_to(it, "Ps({})", params.params());
++        return fmt::format_to(it, "Ps({})", params.params());
+     }
+ };
+

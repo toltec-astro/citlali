@@ -1,7 +1,9 @@
 #pragma once
 
 #include "sys/types.h"
+#if defined(__linux__)
 #include "sys/sysinfo.h"
+#endif
 
 #include <memory>
 #include <string>

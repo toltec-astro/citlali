@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <mutex>
 #include <condition_variable>
 
@@ -14,6 +15,10 @@ using timestream::TCDataKind;
 
 class Lali: public Engine {
 public:
+    using input_t = TCData<TCDataKind::RTC, Eigen::MatrixXd>;
+    using run_stage_t = decltype(grppi::farm(
+        std::declval<int>(), std::declval<std::function<void(input_t &)>>() ));
+
     // initial setup for each obs
     void setup();
 
@@ -22,7 +27,7 @@ public:
     void pipeline(KidsProc &, RawObs &);
 
     // run the reduction for the obs
-    auto run();
+    auto run() -> run_stage_t;
 
     // output files
     template <mapmaking::MapType map_type>
@@ -141,9 +146,7 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     }
 }
 
-auto Lali::run() {
-    using input_t = TCData<TCDataKind::RTC, Eigen::MatrixXd>;
-
+auto Lali::run() -> run_stage_t {
     auto scans_done_mutex = std::make_shared<std::mutex>();
 
     struct OrderedWriter {
@@ -171,8 +174,8 @@ auto Lali::run() {
     auto ptc_writer = write_ptc ? std::make_shared<OrderedWriter>() : nullptr;
     auto rtcdiag_writer = write_rtcdiag ? std::make_shared<OrderedWriter>() : nullptr;
 
-    auto farm = grppi::farm(n_threads,[&, scans_done_mutex, rtc_writer, ptc_writer, rtcdiag_writer,
-                                       write_rtc, write_ptc, write_rtcdiag](input_t &rtcdata) {
+    auto farm_fn = std::function<void(input_t &)>{[&, scans_done_mutex, rtc_writer, ptc_writer, rtcdiag_writer,
+                                                   write_rtc, write_ptc, write_rtcdiag](input_t &rtcdata) {
         // starting index for scan
         Eigen::Index si = rtcdata.scan_indices.data(2);
         // current length of outer scans
@@ -394,7 +397,8 @@ auto Lali::run() {
             logger->info("done with scan {}. {}/{} scans completed", ptcdata.index.data + 1, n_scans_done,
                          telescope.scan_indices.cols());
         }
-    });
+    }};
+    auto farm = grppi::farm(n_threads, std::move(farm_fn));
 
     return farm;
 }

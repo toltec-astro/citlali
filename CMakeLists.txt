@@ -47,6 +47,9 @@ set(dep_libs ${dep_libs} tula::CCfits)
 include(FFTW)
 set(dep_libs ${dep_libs} tula::FFTW)
 
+find_package(HDF5 REQUIRED COMPONENTS C HL)
+set(dep_libs ${dep_libs} hdf5-shared hdf5_hl-shared)
+
 add_library(citlali STATIC)
 target_sources(citlali
     PRIVATE
