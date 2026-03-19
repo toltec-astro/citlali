@@ -1,6 +1,7 @@
 #pragma once
 
 #include <CCfits/CCfits>
+#include <stdexcept>
 
 enum file_type_enum {
     read_fits = 0,
@@ -54,29 +55,34 @@ public:
 
     template <typename Derived>
     void add_hdu(std::string hdu_name, Eigen::DenseBase<Derived> &data) {
-        // axes in reverse order (cols, rows, pol, freq)
-        std::vector<long> naxes{data.cols(), data.rows(), 1, 1};
+        try {
+            // axes in reverse order (cols, rows, pol, freq)
+            std::vector<long> naxes{data.cols(), data.rows(), 1, 1};
 
-        // add an extension hdu to vector
-        hdus.push_back((pfits->addImage(hdu_name,DOUBLE_IMG,naxes)));
+            // add an extension hdu to vector
+            hdus.push_back((pfits->addImage(hdu_name,DOUBLE_IMG,naxes)));
 
-        // valarray to copy data into (seems to be necessary)
-        std::valarray<double> temp_data(data.size());
+            // valarray to copy data into (seems to be necessary)
+            std::valarray<double> temp_data(data.size());
 
-        // copy the data (flip in x direction)
-        int k = 0;
-        for (int i=0; i<data.rows(); ++i){
-            for (int j=0; j<data.cols(); ++j) {
-                temp_data[k] = data(i, data.cols() - j - 1);
-                k++;
+            // copy the data (flip in x direction)
+            int k = 0;
+            for (int i=0; i<data.rows(); ++i){
+                for (int j=0; j<data.cols(); ++j) {
+                    temp_data[k] = data(i, data.cols() - j - 1);
+                    k++;
+                }
             }
+
+            // first pixel (starts at 1 I think)
+            long first_pixel = 1;
+
+            // write to the hdu
+            hdus.back()->write(first_pixel, temp_data.size(), temp_data);
+        } catch (const CCfits::FitsError &e) {
+            throw std::runtime_error(
+                "failed to add/write FITS HDU '" + hdu_name + "' in " + filepath + ": " + e.message());
         }
-
-        // first pixel (starts at 1 I think)
-        long first_pixel = 1;
-
-        // write to the hdu
-        hdus.back()->write(first_pixel, temp_data.size(), temp_data);
     }
 
     auto get_hdu(std::string hdu_name) {
@@ -120,16 +126,21 @@ public:
 
     template <typename hdu_t, class wcs_t, typename epoch_t>
     void add_wcs(hdu_t *hdu, wcs_t &wcs, const epoch_t epoch) {
-        // add equinox
-        hdu->addKey("EQUINOX", epoch, "WCS: Equinox");
+        try {
+            // add equinox
+            hdu->addKey("EQUINOX", epoch, "WCS: Equinox");
 
-        for (Eigen::Index i=0; i<wcs.ctype.size(); ++i) {
-            hdu->addKey("CTYPE"+std::to_string(i+1), wcs.ctype[i], "WCS: Projection Type " +std::to_string(i+1));
-            hdu->addKey("CUNIT"+std::to_string(i+1), wcs.cunit[i], "WCS: Axis Unit " +std::to_string(i+1));
-            hdu->addKey("CRVAL"+std::to_string(i+1), wcs.crval[i], "WCS: Ref Pixel Value " +std::to_string(i+1));
-            hdu->addKey("CDELT"+std::to_string(i+1), wcs.cdelt[i], "WCS: Pixel Scale " +std::to_string(i+1));
-            // add one to crpix due to FITS convention
-            hdu->addKey("CRPIX"+std::to_string(i+1), wcs.crpix[i] + 1, "WCS: Ref Pixel " +std::to_string(i+1));
+            for (Eigen::Index i=0; i<wcs.ctype.size(); ++i) {
+                hdu->addKey("CTYPE"+std::to_string(i+1), wcs.ctype[i], "WCS: Projection Type " +std::to_string(i+1));
+                hdu->addKey("CUNIT"+std::to_string(i+1), wcs.cunit[i], "WCS: Axis Unit " +std::to_string(i+1));
+                hdu->addKey("CRVAL"+std::to_string(i+1), wcs.crval[i], "WCS: Ref Pixel Value " +std::to_string(i+1));
+                hdu->addKey("CDELT"+std::to_string(i+1), wcs.cdelt[i], "WCS: Pixel Scale " +std::to_string(i+1));
+                // add one to crpix due to FITS convention
+                hdu->addKey("CRPIX"+std::to_string(i+1), wcs.crpix[i] + 1, "WCS: Ref Pixel " +std::to_string(i+1));
+            }
+        } catch (const CCfits::FitsError &e) {
+            throw std::runtime_error(
+                "failed to add WCS keywords in " + filepath + ": " + e.message());
         }
     }
 };

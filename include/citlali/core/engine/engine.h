@@ -3545,98 +3545,123 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
     mb->wcs.crval[2] = toltec_io.array_freq_map[calib.arrays[maps_to_arrays(i)]];
     mb->wcs.crval[3] = stokes_index;
 
-    // signal map
-    fits_io->at(map_index).add_hdu("signal_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->signal[i]);
-    fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
-    fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
-
-    // weight map
-    fits_io->at(map_index).add_hdu("weight_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->weight[i]);
-    fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
-    fits_io->at(map_index).hdus.back()->addKey("UNIT", "1/("+mb->sig_unit+")^2", "Unit of map");
-    if (redu_type != "beammap" && std::fabs(mb->median_err(i)) > std::numeric_limits<double>::epsilon()) {
-        fits_io->at(map_index).hdus.back()->addKey("MEDERR", pow(mb->median_err(i),0.5), "Median Error ("+mb->sig_unit+")");
-    }
-    else {
-        fits_io->at(map_index).hdus.back()->addKey("MEDERR", 0.0, "Median Error ("+mb->sig_unit+")");
-    }
-
-    // kernel map
-    if (rtcproc.run_kernel) {
-        fits_io->at(map_index).add_hdu("kernel_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->kernel[i]);
-        fits_io->at(map_index).hdus.back()->addKey("TYPE",rtcproc.kernel.type, "Kernel type");
-
-        // add fwhm
-        double fwhm = -99;
-        if (rtcproc.kernel.type!="fits") {
-            if (rtcproc.kernel.fwhm_rad<=0) {
-                fwhm = (std::get<0>(calib.array_fwhms[calib.arrays(i)]) + std::get<1>(calib.array_fwhms[calib.arrays(i)]))/2;
-            }
-            else {
-                fwhm = rtcproc.kernel.fwhm_rad*RAD_TO_ASEC;
-            }
-        }
-        fits_io->at(map_index).hdus.back()->addKey("FWHM",fwhm,"Kernel fwhm (arcsec)");
+    try {
+        // signal map
+        fits_io->at(map_index).add_hdu("signal_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->signal[i]);
         fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
         fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
-    }
 
-    // coverage map
-    if (!mb->coverage.empty()) {
-        fits_io->at(map_index).add_hdu("coverage_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->coverage[i]);
+        // weight map
+        fits_io->at(map_index).add_hdu("weight_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->weight[i]);
         fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
-        fits_io->at(map_index).hdus.back()->addKey("UNIT", "sec", "Unit of map");
-    }
-
-    /* coverage bool and signal-to-noise maps */
-    if (!mb->coverage.empty()) {
-        // need these to use eigen select
-        Eigen::MatrixXd ones, zeros;
-        ones.setOnes(mb->weight[i].rows(), mb->weight[i].cols());
-        zeros.setZero(mb->weight[i].rows(), mb->weight[i].cols());
-
-        // get weight threshold for current map
-        auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = mb->calc_cov_region(i);
-        // if weight is less than threshold, set to zero, otherwise set to one
-        Eigen::MatrixXd coverage_bool = (mb->weight[i].array() < weight_threshold).select(zeros,ones);
-
-        // coverage bool map
-        fits_io->at(map_index).add_hdu("coverage_bool_" + map_name + rtcproc.polarization.stokes_params[stokes_index], coverage_bool);
-        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
-        fits_io->at(map_index).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
-        fits_io->at(map_index).hdus.back()->addKey("WTTHRESH", weight_threshold, "Weight threshold");
-
-        // signal-to-noise map
-        Eigen::MatrixXd sig2noise = mb->signal[i].array()*sqrt(mb->weight[i].array());
-        fits_io->at(map_index).add_hdu("sig2noise_" + map_name + rtcproc.polarization.stokes_params[stokes_index], sig2noise);
-        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
-        fits_io->at(map_index).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
-    }
-
-    // write noise maps
-    if (!mb->noise.empty()) {
-        if (map_index < 0 || map_index >= static_cast<Eigen::Index>(noise_fits_io->size())) {
-            logger->error("write_maps noise file index out of range: map_index={} noise_fits_io_size={} map_i={}",
-                          static_cast<long long>(map_index),
-                          static_cast<long long>(noise_fits_io->size()),
-                          static_cast<long long>(i));
-            std::exit(EXIT_FAILURE);
+        fits_io->at(map_index).hdus.back()->addKey("UNIT", "1/("+mb->sig_unit+")^2", "Unit of map");
+        double median_err = 0.0;
+        if (redu_type != "beammap" && std::isfinite(mb->median_err(i)) &&
+            std::fabs(mb->median_err(i)) > std::numeric_limits<double>::epsilon()) {
+            median_err = pow(mb->median_err(i), 0.5);
         }
-        if (i >= static_cast<Eigen::Index>(mb->noise.size())) {
-            logger->error("write_maps noise map index out of range: i={} noise_size={}",
-                          static_cast<long long>(i), static_cast<long long>(mb->noise.size()));
-            std::exit(EXIT_FAILURE);
-        }
-        for (Eigen::Index n=0; n<mb->n_noise; ++n) {
-            Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(mb->noise[i].data() + n * mb->n_rows * mb->n_cols,
-                                                                                           mb->n_rows, mb->n_cols);
+        fits_io->at(map_index).hdus.back()->addKey("MEDERR", median_err, "Median Error ("+mb->sig_unit+")");
 
-            noise_fits_io->at(map_index).add_hdu("signal_" + map_name + std::to_string(n) + "_" + rtcproc.polarization.stokes_params[stokes_index],
-                                                 noise_matrix);
-            noise_fits_io->at(map_index).add_wcs(noise_fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
-            noise_fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
-            noise_fits_io->at(map_index).hdus.back()->addKey("MEDRMS", mb->median_rms[i], "Median RMS of noise maps");
+        // kernel map
+        if (rtcproc.run_kernel) {
+            fits_io->at(map_index).add_hdu("kernel_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->kernel[i]);
+            fits_io->at(map_index).hdus.back()->addKey("TYPE",rtcproc.kernel.type, "Kernel type");
+
+            // add fwhm
+            double fwhm = -99;
+            if (rtcproc.kernel.type!="fits") {
+                if (rtcproc.kernel.fwhm_rad<=0) {
+                    fwhm = (std::get<0>(calib.array_fwhms[calib.arrays(i)]) + std::get<1>(calib.array_fwhms[calib.arrays(i)]))/2;
+                }
+                else {
+                    fwhm = rtcproc.kernel.fwhm_rad*RAD_TO_ASEC;
+                }
+            }
+            fits_io->at(map_index).hdus.back()->addKey("FWHM",fwhm,"Kernel fwhm (arcsec)");
+            fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
+            fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
         }
+
+        // coverage map
+        if (!mb->coverage.empty()) {
+            fits_io->at(map_index).add_hdu("coverage_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->coverage[i]);
+            fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
+            fits_io->at(map_index).hdus.back()->addKey("UNIT", "sec", "Unit of map");
+        }
+
+        /* coverage bool and signal-to-noise maps */
+        if (!mb->coverage.empty()) {
+            // need these to use eigen select
+            Eigen::MatrixXd ones, zeros;
+            ones.setOnes(mb->weight[i].rows(), mb->weight[i].cols());
+            zeros.setZero(mb->weight[i].rows(), mb->weight[i].cols());
+
+            // get weight threshold for current map
+            auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = mb->calc_cov_region(i);
+            if (!std::isfinite(weight_threshold)) {
+                logger->warn("non-finite weight threshold for map {} in {}; using 0", map_name,
+                             fits_io->at(map_index).filepath);
+                weight_threshold = 0.0;
+            }
+            // if weight is less than threshold, set to zero, otherwise set to one
+            Eigen::MatrixXd coverage_bool = (mb->weight[i].array() < weight_threshold).select(zeros,ones);
+
+            // coverage bool map
+            fits_io->at(map_index).add_hdu("coverage_bool_" + map_name + rtcproc.polarization.stokes_params[stokes_index], coverage_bool);
+            fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
+            fits_io->at(map_index).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
+            fits_io->at(map_index).hdus.back()->addKey("WTTHRESH", weight_threshold, "Weight threshold");
+
+            // signal-to-noise map
+            Eigen::MatrixXd sig2noise = mb->signal[i].array()*sqrt(mb->weight[i].array());
+            fits_io->at(map_index).add_hdu("sig2noise_" + map_name + rtcproc.polarization.stokes_params[stokes_index], sig2noise);
+            fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
+            fits_io->at(map_index).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
+        }
+
+        // write noise maps
+        if (!mb->noise.empty()) {
+            if (map_index < 0 || map_index >= static_cast<Eigen::Index>(noise_fits_io->size())) {
+                logger->error("write_maps noise file index out of range: map_index={} noise_fits_io_size={} map_i={}",
+                              static_cast<long long>(map_index),
+                              static_cast<long long>(noise_fits_io->size()),
+                              static_cast<long long>(i));
+                std::exit(EXIT_FAILURE);
+            }
+            if (i >= static_cast<Eigen::Index>(mb->noise.size())) {
+                logger->error("write_maps noise map index out of range: i={} noise_size={}",
+                              static_cast<long long>(i), static_cast<long long>(mb->noise.size()));
+                std::exit(EXIT_FAILURE);
+            }
+            double median_rms = 0.0;
+            if (i < mb.median_rms.size() && std::isfinite(mb.median_rms(i))) {
+                median_rms = mb.median_rms(i);
+            }
+            else if (i < mb.median_rms.size()) {
+                logger->warn("non-finite median_rms for map {} in {}; using 0", map_name,
+                             noise_fits_io->at(map_index).filepath);
+            }
+            for (Eigen::Index n=0; n<mb->n_noise; ++n) {
+                Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(mb->noise[i].data() + n * mb->n_rows * mb->n_cols,
+                                                                                               mb->n_rows, mb->n_cols);
+
+                noise_fits_io->at(map_index).add_hdu("signal_" + map_name + std::to_string(n) + "_" + rtcproc.polarization.stokes_params[stokes_index],
+                                                     noise_matrix);
+                noise_fits_io->at(map_index).add_wcs(noise_fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
+                noise_fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
+                noise_fits_io->at(map_index).hdus.back()->addKey("MEDRMS", median_rms, "Median RMS of noise maps");
+            }
+        }
+    } catch (const std::exception &e) {
+        throw std::runtime_error(
+            fmt::format("failed to write map '{}' (map_i={} file={} noise_file={}): {}",
+                        map_name,
+                        static_cast<long long>(i),
+                        fits_io->at(map_index).filepath,
+                        (!mb->noise.empty() && map_index < static_cast<Eigen::Index>(noise_fits_io->size()))
+                            ? noise_fits_io->at(map_index).filepath
+                            : std::string("N/A"),
+                        e.what()));
     }
 }
 

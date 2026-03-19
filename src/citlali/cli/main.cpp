@@ -1165,8 +1165,8 @@ int main(int argc, char *argv[]) {
             std::cout << "Invalid argument. Type --help for usage.\n";
             return EXIT_FAILURE;
         }
-    } catch (const CCfits::FitsError &) {
-        SPDLOG_CRITICAL("Unhandled CCfits::FitsError");
+    } catch (const CCfits::FitsError &e) {
+        SPDLOG_CRITICAL("Unhandled CCfits::FitsError: {}", e.message());
         return EXIT_FAILURE;
     } catch (const std::exception &e) {
         SPDLOG_CRITICAL("Unhandled exception: {}", e.what());
