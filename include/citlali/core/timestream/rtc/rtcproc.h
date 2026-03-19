@@ -2271,7 +2271,10 @@ void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::Ma
             for (std::size_t k = i; k <= j; ++k) {
                 cluster_samples.push_back(static_cast<double>(candidates[order[k]].center_sample));
             }
-            const double cluster_center = median_of(cluster_samples);
+            const auto mid = cluster_samples.begin() +
+                             static_cast<std::ptrdiff_t>(cluster_samples.size() / 2);
+            std::nth_element(cluster_samples.begin(), mid, cluster_samples.end());
+            const double cluster_center = *mid;
             const Eigen::Index cluster_center_sample = static_cast<Eigen::Index>(std::llround(cluster_center));
             for (std::size_t k = i; k <= j; ++k) {
                 auto &cand = candidates[order[k]];
