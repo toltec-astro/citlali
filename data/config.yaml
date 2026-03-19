@@ -202,12 +202,13 @@ timestream: # timestream reduction parameters
         max_events_per_network: 3 # cap on captured detectors per scan/network
         snippet_half_width_sec: 0.25 # half-width of the saved snippet around each captured event
       impulsive_coincidence: # network-level summaries for short same-sample impulsive bursts
-        enabled: false # detect aligned impulsive coincidences within a network and flag a short shared time window
+        enabled: false # detect aligned impulsive coincidences within or across networks and flag a short shared time window
         min_good_frac: 0.8 # minimum unflagged sample fraction for a detector to contribute to impulsive coincidence metrics
         event_score_thresh: 6.0 # detector impulsive-event score threshold used to count a detector as impulsive-active
         min_det_used: 32 # minimum detectors contributing to a network before impulsive coincidence fractions are considered valid
-        min_impulsive_det_frac: 0.05 # minimum fraction of participating detectors that must be impulsive-active to trigger masking
-        min_alignment_frac: 0.5 # minimum fraction of impulsive-active detectors aligned in time to trigger masking
+        min_impulsive_det_frac: 0.05 # minimum fraction of participating detectors that must be impulsive-active for a network-local trigger
+        min_alignment_frac: 0.5 # minimum fraction of impulsive-active detectors aligned in time for a network-local trigger
+        min_networks_aligned: 3 # minimum number of networks with aligned dominant impulsive times for a cross-network trigger
         cluster_tol_sec: 0.03 # allowed timing spread around the dominant impulsive coincidence cluster
         mask_half_width_sec: 0.03 # half-width of the flagged time window around the dominant impulsive coincidence time
         max_flagged_fraction: 0.10 # reject the proposed mask if it would newly flag more than this fraction of good detector-samples in the network

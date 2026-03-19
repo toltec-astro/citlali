@@ -90,6 +90,7 @@ public:
         Eigen::Index min_det_used = 32;
         double min_impulsive_det_frac = 0.05;
         double min_alignment_frac = 0.5;
+        Eigen::Index min_networks_aligned = 3;
         double cluster_tol_sec = 0.03;
         double mask_half_width_sec = 0.03;
         double max_flagged_fraction = 0.10;
@@ -382,6 +383,11 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                              std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","min_alignment_frac"},
                              {}, {0.0}, {1.0});
         }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","min_networks_aligned"})) {
+            get_config_value(config, impulsive_coincidence.min_networks_aligned, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","min_networks_aligned"},
+                             {}, {1});
+        }
         if (config.has(std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","cluster_tol_sec"})) {
             get_config_value(config, impulsive_coincidence.cluster_tol_sec, missing_keys, invalid_keys,
                              std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","cluster_tol_sec"},
@@ -398,13 +404,14 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                              {}, {0.0}, {1.0});
         }
         logger->info(
-            "raw_time_chunk.flagging.impulsive_coincidence configured: enabled={} min_good_frac={} event_score_thresh={} min_det_used={} min_impulsive_det_frac={} min_alignment_frac={} cluster_tol_sec={} mask_half_width_sec={} max_flagged_fraction={}",
+            "raw_time_chunk.flagging.impulsive_coincidence configured: enabled={} min_good_frac={} event_score_thresh={} min_det_used={} min_impulsive_det_frac={} min_alignment_frac={} min_networks_aligned={} cluster_tol_sec={} mask_half_width_sec={} max_flagged_fraction={}",
             impulsive_coincidence.enabled,
             impulsive_coincidence.min_good_frac,
             impulsive_coincidence.event_score_thresh,
             impulsive_coincidence.min_det_used,
             impulsive_coincidence.min_impulsive_det_frac,
             impulsive_coincidence.min_alignment_frac,
+            impulsive_coincidence.min_networks_aligned,
             impulsive_coincidence.cluster_tol_sec,
             impulsive_coincidence.mask_half_width_sec,
             impulsive_coincidence.max_flagged_fraction);
@@ -2183,8 +2190,28 @@ void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::Ma
         (impulsive_coincidence.mask_half_width_sec > 0.0 || impulsive_coincidence.cluster_tol_sec > 0.0)
             ? infer_dt_sec()
             : 1.0;
+    const double cluster_tol_samples = std::max(
+        1.0,
+        ((impulsive_coincidence.cluster_tol_sec > 0.0)
+             ? (impulsive_coincidence.cluster_tol_sec / std::max(dt_sec, 1.0e-6))
+             : 1.0));
     const Eigen::Index n_pts = in.scans.data.rows();
     const auto grp_limits = get_grouping("nw", calib, in.scans.data.cols());
+
+    struct CoincidenceCandidate {
+        RTCNetworkDiagSummary *row = nullptr;
+        Eigen::Index start_det = 0;
+        Eigen::Index end_det = 0;
+        Eigen::Index center_sample = 0;
+        double max_score = std::numeric_limits<double>::quiet_NaN();
+        bool local_trigger = false;
+        bool cross_network_trigger = false;
+        Eigen::Index cluster_center_sample = 0;
+        Eigen::Index cluster_network_count = 0;
+    };
+
+    std::vector<CoincidenceCandidate> candidates;
+    candidates.reserve(nw_it->second.size());
 
     for (auto &row : nw_it->second) {
         row.impulsive_mask_applied = false;
@@ -2199,33 +2226,84 @@ void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::Ma
         if (grp_it == grp_limits.end()) {
             continue;
         }
-        if (!std::isfinite(row.impulsive_det_frac) ||
-            !std::isfinite(row.impulsive_alignment_frac) ||
-            row.dominant_impulsive_sample == kTransientFillInt) {
-            continue;
-        }
+
         if (row.n_det_used < impulsive_coincidence.min_det_used ||
-            row.impulsive_det_frac < impulsive_coincidence.min_impulsive_det_frac ||
-            row.impulsive_alignment_frac < impulsive_coincidence.min_alignment_frac) {
+            row.dominant_impulsive_sample == kTransientFillInt ||
+            !std::isfinite(row.max_impulsive_score) ||
+            row.max_impulsive_score < impulsive_coincidence.event_score_thresh) {
             continue;
         }
 
-        const auto start_det = std::get<0>(grp_it->second);
-        const auto end_det = std::get<1>(grp_it->second);
+        CoincidenceCandidate cand;
+        cand.row = &row;
+        cand.start_det = std::get<0>(grp_it->second);
+        cand.end_det = std::get<1>(grp_it->second);
+        cand.center_sample = static_cast<Eigen::Index>(row.dominant_impulsive_sample);
+        cand.max_score = row.max_impulsive_score;
+        cand.local_trigger =
+            std::isfinite(row.impulsive_det_frac) &&
+            std::isfinite(row.impulsive_alignment_frac) &&
+            row.impulsive_det_frac >= impulsive_coincidence.min_impulsive_det_frac &&
+            row.impulsive_alignment_frac >= impulsive_coincidence.min_alignment_frac;
+        candidates.push_back(cand);
+    }
+
+    std::vector<std::size_t> order(candidates.size());
+    std::iota(order.begin(), order.end(), std::size_t{0});
+    std::sort(order.begin(), order.end(), [&](std::size_t a, std::size_t b) {
+        if (candidates[a].center_sample != candidates[b].center_sample) {
+            return candidates[a].center_sample < candidates[b].center_sample;
+        }
+        return candidates[a].row->nw < candidates[b].row->nw;
+    });
+
+    for (std::size_t i = 0; i < order.size();) {
+        std::size_t j = i;
+        while (j + 1 < order.size() &&
+               static_cast<double>(candidates[order[j + 1]].center_sample -
+                                   candidates[order[j]].center_sample) <= cluster_tol_samples) {
+            ++j;
+        }
+        const Eigen::Index cluster_count = static_cast<Eigen::Index>(j - i + 1);
+        if (cluster_count >= impulsive_coincidence.min_networks_aligned) {
+            std::vector<double> cluster_samples;
+            cluster_samples.reserve(static_cast<std::size_t>(cluster_count));
+            for (std::size_t k = i; k <= j; ++k) {
+                cluster_samples.push_back(static_cast<double>(candidates[order[k]].center_sample));
+            }
+            const double cluster_center = median_of(cluster_samples);
+            const Eigen::Index cluster_center_sample = static_cast<Eigen::Index>(std::llround(cluster_center));
+            for (std::size_t k = i; k <= j; ++k) {
+                auto &cand = candidates[order[k]];
+                cand.cross_network_trigger = true;
+                cand.cluster_center_sample = cluster_center_sample;
+                cand.cluster_network_count = cluster_count;
+            }
+        }
+        i = j + 1;
+    }
+
+    for (auto &cand : candidates) {
+        auto &row = *cand.row;
+        if (!(cand.local_trigger || cand.cross_network_trigger)) {
+            continue;
+        }
+
         const Eigen::Index half_width = std::max<Eigen::Index>(
             0, static_cast<Eigen::Index>(std::llround(impulsive_coincidence.mask_half_width_sec /
                                                       std::max(dt_sec, 1.0e-6))));
-        const Eigen::Index center = static_cast<Eigen::Index>(row.dominant_impulsive_sample);
+        const Eigen::Index center =
+            cand.cross_network_trigger ? cand.cluster_center_sample : cand.center_sample;
         const Eigen::Index start_sample = std::max<Eigen::Index>(0, center - half_width);
         const Eigen::Index end_sample = std::min<Eigen::Index>(n_pts - 1, center + half_width);
         const Eigen::Index window_samples = std::max<Eigen::Index>(0, end_sample - start_sample + 1);
-        if (window_samples <= 0 || end_det <= start_det) {
+        if (window_samples <= 0 || cand.end_det <= cand.start_det) {
             continue;
         }
 
         Eigen::Index good_detector_samples = 0;
         Eigen::Index newly_flagged = 0;
-        for (Eigen::Index det = start_det; det < end_det; ++det) {
+        for (Eigen::Index det = cand.start_det; det < cand.end_det; ++det) {
             for (Eigen::Index i = 0; i < n_pts; ++i) {
                 if (!in.flags.data(i, det) && std::isfinite(in.scans.data(i, det))) {
                     ++good_detector_samples;
@@ -2254,23 +2332,28 @@ void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::Ma
             continue;
         }
 
-        in.flags.data.block(start_sample, start_det, window_samples, end_det - start_det).setOnes();
+        in.flags.data.block(start_sample, cand.start_det, window_samples,
+                            cand.end_det - cand.start_det).setOnes();
         row.impulsive_mask_applied = true;
         row.impulsive_mask_start_sample = static_cast<int>(start_sample);
         row.impulsive_mask_end_sample = static_cast<int>(end_sample);
         row.impulsive_mask_window_samples = static_cast<int>(window_samples);
-        row.impulsive_mask_n_det_masked = static_cast<int>(end_det - start_det);
+        row.impulsive_mask_n_det_masked = static_cast<int>(cand.end_det - cand.start_det);
         row.impulsive_mask_n_det_samples_flagged = static_cast<int>(newly_flagged);
         row.impulsive_mask_flagged_fraction = flagged_fraction;
 
         logger->info(
-            "impulsive_coincidence_mask applied for scan {} nw {}: dominant_sample={} window=[{}, {}] n_det_masked={} newly_flagged={} flagged_fraction={}",
+            "impulsive_coincidence_mask applied for scan {} nw {}: dominant_sample={} center_sample={} local_trigger={} cross_network_trigger={} cluster_networks={} window=[{}, {}] n_det_masked={} newly_flagged={} flagged_fraction={}",
             scan_id + 1,
             row.nw,
             row.dominant_impulsive_sample,
+            center,
+            cand.local_trigger,
+            cand.cross_network_trigger,
+            cand.cluster_network_count,
             start_sample,
             end_sample,
-            end_det - start_det,
+            cand.end_det - cand.start_det,
             newly_flagged,
             flagged_fraction);
     }

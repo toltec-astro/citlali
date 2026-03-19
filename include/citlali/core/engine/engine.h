@@ -1894,6 +1894,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_DET_USED", rtcproc.impulsive_coincidence.min_det_used);
         add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_DET_FRAC", rtcproc.impulsive_coincidence.min_impulsive_det_frac);
         add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_ALIGNMENT_FRAC", rtcproc.impulsive_coincidence.min_alignment_frac);
+        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_NETWORKS_ALIGNED", rtcproc.impulsive_coincidence.min_networks_aligned);
         add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.CLUSTER_TOL_SEC", rtcproc.impulsive_coincidence.cluster_tol_sec);
         add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.HALF_WIDTH_SEC", rtcproc.impulsive_coincidence.mask_half_width_sec);
         add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MAX_FLAGGED_FRAC", rtcproc.impulsive_coincidence.max_flagged_fraction);
@@ -3339,6 +3340,9 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_ALIGNMENT_FRAC",
                                         rtcproc.impulsive_coincidence.min_alignment_frac,
                                         "Minimum aligned-impulsive detector fraction for RTC impulsive coincidence masking");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_NETWORKS_ALIGNED",
+                                        static_cast<int>(rtcproc.impulsive_coincidence.min_networks_aligned),
+                                        "Minimum aligned networks required for cross-network RTC impulsive coincidence masking");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE_COINCIDENCE.CLUSTER_TOL_SEC",
                                         rtcproc.impulsive_coincidence.cluster_tol_sec,
                                         "Allowed timing tolerance for aligned RTC impulsive coincidence clusters");
@@ -3869,6 +3873,7 @@ void Engine::create_rtcdiag_file() {
     add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_DET_USED", rtcproc.impulsive_coincidence.min_det_used);
     add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_DET_FRAC", rtcproc.impulsive_coincidence.min_impulsive_det_frac);
     add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_ALIGNMENT_FRAC", rtcproc.impulsive_coincidence.min_alignment_frac);
+    add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_NETWORKS_ALIGNED", rtcproc.impulsive_coincidence.min_networks_aligned);
     add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.CLUSTER_TOL_SEC", rtcproc.impulsive_coincidence.cluster_tol_sec);
     add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.HALF_WIDTH_SEC", rtcproc.impulsive_coincidence.mask_half_width_sec);
     add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MAX_FLAGGED_FRAC", rtcproc.impulsive_coincidence.max_flagged_fraction);
