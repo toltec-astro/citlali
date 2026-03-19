@@ -2900,6 +2900,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // array name
     std::string name = toltec_io.array_name_map[calib.arrays(i)];
 
+    try {
     logger->debug("adding unit conversions");
 
     // conversion to uK
@@ -3183,14 +3184,16 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         fits_io->at(i).pfits->pHDU().addKey("APT", apt_name, "APT table used");
     }
 
-    double rms;
+    double rms = 0.0;
 
-    if (redu_type != "beammap") {
-        // estimate rms from weight maps
-        rms = pow(mb->median_err(i),0.5);
+    if (redu_type != "beammap" && std::isfinite(mb->median_err(i)) &&
+        mb->median_err(i) > std::numeric_limits<double>::epsilon()) {
+        rms = pow(mb->median_err(i), 0.5);
     }
-    else {
-        rms = 0.0;
+    else if (redu_type != "beammap" && std::isfinite(mb->median_err(i)) &&
+             mb->median_err(i) < 0.0) {
+        logger->warn("negative median_err for PHDU {} in {}; using OOF_RMS=0", name,
+                     fits_io->at(i).filepath);
     }
 
     // out-of-focus holography parameters
@@ -3490,6 +3493,15 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
             logger->debug("adding {}: {}", key, val);
             fits_io->at(i).pfits->pHDU().addKey(key, val(0), key);
         }
+    }
+    } catch (const CCfits::FitsError &e) {
+        throw std::runtime_error(
+            fmt::format("failed to add PHDU/header for array '{}' (file={}): {}",
+                        name, fits_io->at(i).filepath, e.message()));
+    } catch (const std::exception &e) {
+        throw std::runtime_error(
+            fmt::format("failed to add PHDU/header for array '{}' (file={}): {}",
+                        name, fits_io->at(i).filepath, e.what()));
     }
 }
 

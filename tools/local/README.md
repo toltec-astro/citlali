@@ -26,6 +26,9 @@ Bootstrap the standard `build/` directory once:
 make local-bootstrap
 ```
 
+If an old `build/` tree was configured against a different source path or was left incomplete,
+the bootstrap script will now discard it and regenerate a clean `build/` tree automatically.
+
 After that, the usual loop is:
 
 ```bash
@@ -65,4 +68,5 @@ cmake --build "$PWD/build_local_release" --target citlali_cli -j4
 - `tools/local/configure-local-build.sh` detects the active Homebrew prefix and active SDK path.
 - `tools/local/configure-build-dir.sh` is the wrapper for the persistent `build/` + `make` workflow.
 - The script configures once to populate fetched dependencies, applies the local `tula` and `kidscpp` patches under `patches/local/`, then reconfigures the same build tree.
+- It also resets a stale or incomplete build tree before configuring, so `cd build && make -j6` stays reliable after repo moves or interrupted configures.
 - Repo-local macOS fixes live in the main source tree and are no longer part of the fetched-dependency patches.

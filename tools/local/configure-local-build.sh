@@ -12,6 +12,32 @@ sdk_root="${CMAKE_OSX_SYSROOT:-$(xcrun --show-sdk-path)}"
 c_compiler="${CMAKE_C_COMPILER:-$(xcrun --find clang)}"
 cxx_compiler="${CMAKE_CXX_COMPILER:-$(xcrun --find clang++)}"
 
+reset_build_dir_if_needed() {
+  local build_cache="$build_dir/CMakeCache.txt"
+  local build_makefile="$build_dir/Makefile"
+  local build_cmakefiles="$build_dir/CMakeFiles"
+
+  if [[ ! -d "$build_dir" ]]; then
+    return 0
+  fi
+
+  if [[ ! -f "$build_cache" ]]; then
+    if [[ -f "$build_makefile" || -d "$build_cmakefiles" ]]; then
+      printf 'Removing incomplete CMake build tree: %s\n' "$build_dir"
+      rm -rf "$build_dir"
+    fi
+    return 0
+  fi
+
+  local configured_source_dir
+  configured_source_dir="$(sed -n 's/^CMAKE_HOME_DIRECTORY:INTERNAL=//p' "$build_cache" | head -n 1)"
+  if [[ -n "$configured_source_dir" && "$configured_source_dir" != "$repo_root" ]]; then
+    printf 'Removing stale CMake build tree configured for %s: %s\n' \
+      "$configured_source_dir" "$build_dir"
+    rm -rf "$build_dir"
+  fi
+}
+
 required_formulae=(
   boost
   ccfits
@@ -59,26 +85,14 @@ cmake_args=(
   -DCMAKE_C_COMPILER="$c_compiler"
   -DCMAKE_CXX_COMPILER="$cxx_compiler"
   -DCMAKE_OSX_SYSROOT="$sdk_root"
-  -DCMAKE_POLICY_VERSION_MINIMUM=3.5
   -DCMAKE_PREFIX_PATH="$cmake_prefix_path"
-  -DUSE_INSTALLED_BOOST=ON
   -DUSE_INSTALLED_NETCDF=ON
-  -DUSE_INSTALLED_CCFITS=ON
-  -DUSE_INSTALLED_FFTW=ON
   -DUSE_INSTALLED_EIGEN3=ON
   -DFETCH_EIGEN3=OFF
   -DCONAN_INSTALL_LOGGING_LIBS=OFF
   -DFETCH_LOGGING_LIBS=ON
   -DCONAN_INSTALL_YAML=OFF
   -DFETCH_YAML=ON
-  -DCONAN_INSTALL_CERES=OFF
-  -DFETCH_CERES=ON
-  -DCONAN_INSTALL_RE2=OFF
-  -DFETCH_RE2=ON
-  -DCONAN_INSTALL_SPECTRA=OFF
-  -DFETCH_SPECTRA=ON
-  -DKIDS_BUILD_CLI=OFF
-  -DCITLALI_BUILD_TESTS=OFF
 )
 
 apply_git_patch() {
@@ -99,6 +113,7 @@ apply_git_patch() {
 }
 
 printf 'Configuring %s (%s)\n' "$build_dir" "$build_type"
+reset_build_dir_if_needed
 cmake "${cmake_args[@]}"
 
 apply_git_patch "$build_dir/_deps/tula-src" "$repo_root/patches/local/tula-local-build.patch"
