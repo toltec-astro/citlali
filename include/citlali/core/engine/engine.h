@@ -2947,7 +2947,13 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
                          key, value, name, fits_io->at(i).filepath, fallback);
             value = fallback;
         }
-        fits_io->at(i).pfits->pHDU().addKey(key, value, comment);
+        try {
+            fits_io->at(i).pfits->pHDU().addKey(key, value, comment);
+        } catch (const CCfits::FitsError &e) {
+            throw std::runtime_error(
+                fmt::format("failed PHDU float key '{}' for array '{}' (file={} value={}): {}",
+                            key, name, fits_io->at(i).filepath, value, e.message()));
+        }
     };
 
     // add unit conversions
@@ -3015,10 +3021,10 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     // add source flux for beammaps
     if (redu_type == "beammap") {
-        fits_io->at(i).pfits->pHDU().addKey("HEADER.SOURCE.FLUX_MJYPERBEAM", beammap_fluxes_mJy_beam[name], "Source flux (mJy/beam)");
-        fits_io->at(i).pfits->pHDU().addKey("HEADER.SOURCE.FLUX_MJYPERSR", beammap_fluxes_MJy_Sr[name], "Source flux (MJy/sr)");
+        add_double_key("HEADER.SOURCE.FLUX_MJYPERBEAM", beammap_fluxes_mJy_beam[name], "Source flux (mJy/beam)");
+        add_double_key("HEADER.SOURCE.FLUX_MJYPERSR", beammap_fluxes_MJy_Sr[name], "Source flux (MJy/sr)");
 
-        fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.ITER_TOLERANCE", beammap_iter_tolerance, "Beammap iteration tolerance");
+        add_double_key("BEAMMAP.ITER_TOLERANCE", beammap_iter_tolerance, "Beammap iteration tolerance");
         fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.ITER_MAX", beammap_iter_max, "Beammap max iterations");
         fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.IS_DEROTATED", beammap_derotate, "Beammap derotated");
         // add reference detector information
@@ -3042,8 +3048,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
             else if (ref_det_index >= 0 && ref_det_index < calib.apt["y_t"].size()) {
                 ref_y_t = calib.apt["y_t"](ref_det_index);
             }
-            fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_X_T", ref_x_t, "Az rotation center (arcsec)");
-            fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_Y_T", ref_y_t, "Alt rotation center (arcsec)");
+            add_double_key("BEAMMAP.REF_X_T", ref_x_t, "Az rotation center (arcsec)");
+            add_double_key("BEAMMAP.REF_Y_T", ref_y_t, "Alt rotation center (arcsec)");
         }
         else {
             fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_DET_INDEX", -99, "Beammap Reference det (rotation center)");
@@ -3238,56 +3244,56 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.ENABLED",
                                         rtcproc.despiker.local_residual.enabled,
                                         "Enable local-residual RTC despike pass");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.WINDOW_SEC",
-                                        rtcproc.despiker.local_residual.window_sec,
-                                        "Local-residual despike smoothing window");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.SIGMA_SCALE",
-                                        rtcproc.despiker.local_residual.sigma_scale,
-                                        "Local-residual despike raw threshold scale");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.DELTA_SIGMA_SCALE",
-                                        rtcproc.despiker.local_residual.delta_sigma_scale,
-                                        "Local-residual despike delta threshold scale");
+    add_double_key("CONFIG.DESPIKE.LOCAL.WINDOW_SEC",
+                   rtcproc.despiker.local_residual.window_sec,
+                   "Local-residual despike smoothing window");
+    add_double_key("CONFIG.DESPIKE.LOCAL.SIGMA_SCALE",
+                   rtcproc.despiker.local_residual.sigma_scale,
+                   "Local-residual despike raw threshold scale");
+    add_double_key("CONFIG.DESPIKE.LOCAL.DELTA_SIGMA_SCALE",
+                   rtcproc.despiker.local_residual.delta_sigma_scale,
+                   "Local-residual despike delta threshold scale");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.RAW_GATE.ENABLED",
                                         rtcproc.despiker.local_residual.compact_raw_gate.enabled,
                                         "Enable compact morphology gate for local-residual raw candidates");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.RAW_GATE.CAND_REL_SIGMA_SCALE",
-                                        rtcproc.despiker.local_residual.compact_raw_gate.candidate_rel_sigma_scale,
-                                        "Candidate threshold scale relative to the accepted local-residual raw threshold");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.RAW_GATE.CAND_SIGMA_SCALE",
-                                        rtcproc.despiker.local_residual.compact_raw_gate.candidate_rel_sigma_scale *
-                                            rtcproc.despiker.local_residual.sigma_scale,
-                                        "Effective candidate threshold scale in units of min_spike_sigma for compact local-residual raw gate");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.RAW_GATE.WINDOW_SEC",
-                                        rtcproc.despiker.local_residual.compact_raw_gate.window_sec,
-                                        "Window used to score compactness of local-residual raw candidates");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.RAW_GATE.HALF_PEAK_FRAC",
-                                        rtcproc.despiker.local_residual.compact_raw_gate.half_peak_frac,
-                                        "Half-peak fraction used to measure local-residual raw candidate width");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.RAW_GATE.MAX_WIDTH_SEC",
-                                        rtcproc.despiker.local_residual.compact_raw_gate.max_width_sec,
-                                        "Maximum width allowed for compact local-residual raw candidates");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.RAW_GATE.MAX_STEP_SHIFT_Z",
-                                        rtcproc.despiker.local_residual.compact_raw_gate.max_step_shift_z,
-                                        "Maximum allowed pre/post baseline shift for compact local-residual raw candidates");
+    add_double_key("CONFIG.DESPIKE.LOCAL.RAW_GATE.CAND_REL_SIGMA_SCALE",
+                   rtcproc.despiker.local_residual.compact_raw_gate.candidate_rel_sigma_scale,
+                   "Candidate threshold scale relative to the accepted local-residual raw threshold");
+    add_double_key("CONFIG.DESPIKE.LOCAL.RAW_GATE.CAND_SIGMA_SCALE",
+                   rtcproc.despiker.local_residual.compact_raw_gate.candidate_rel_sigma_scale *
+                       rtcproc.despiker.local_residual.sigma_scale,
+                   "Effective candidate threshold scale in units of min_spike_sigma for compact local-residual raw gate");
+    add_double_key("CONFIG.DESPIKE.LOCAL.RAW_GATE.WINDOW_SEC",
+                   rtcproc.despiker.local_residual.compact_raw_gate.window_sec,
+                   "Window used to score compactness of local-residual raw candidates");
+    add_double_key("CONFIG.DESPIKE.LOCAL.RAW_GATE.HALF_PEAK_FRAC",
+                   rtcproc.despiker.local_residual.compact_raw_gate.half_peak_frac,
+                   "Half-peak fraction used to measure local-residual raw candidate width");
+    add_double_key("CONFIG.DESPIKE.LOCAL.RAW_GATE.MAX_WIDTH_SEC",
+                   rtcproc.despiker.local_residual.compact_raw_gate.max_width_sec,
+                   "Maximum width allowed for compact local-residual raw candidates");
+    add_double_key("CONFIG.DESPIKE.LOCAL.RAW_GATE.MAX_STEP_SHIFT_Z",
+                   rtcproc.despiker.local_residual.compact_raw_gate.max_step_shift_z,
+                   "Maximum allowed pre/post baseline shift for compact local-residual raw candidates");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.DELTA_GATE.ENABLED",
                                         rtcproc.despiker.local_residual.compact_delta_gate.enabled,
                                         "Enable compact morphology gate for local-residual delta candidates");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.DELTA_GATE.WINDOW_SEC",
-                                        rtcproc.despiker.local_residual.compact_delta_gate.window_sec,
-                                        "Window used to score compactness of local-residual delta candidates");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.DELTA_GATE.HALF_PEAK_FRAC",
-                                        rtcproc.despiker.local_residual.compact_delta_gate.half_peak_frac,
-                                        "Half-peak fraction used to measure local-residual delta candidate width");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.DELTA_GATE.MAX_WIDTH_SEC",
-                                        rtcproc.despiker.local_residual.compact_delta_gate.max_width_sec,
-                                        "Maximum width allowed for compact local-residual delta candidates");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.DELTA_GATE.MAX_STEP_SHIFT_Z",
-                                        rtcproc.despiker.local_residual.compact_delta_gate.max_step_shift_z,
-                                        "Maximum allowed pre/post baseline shift for compact local-residual delta candidates");
+    add_double_key("CONFIG.DESPIKE.LOCAL.DELTA_GATE.WINDOW_SEC",
+                   rtcproc.despiker.local_residual.compact_delta_gate.window_sec,
+                   "Window used to score compactness of local-residual delta candidates");
+    add_double_key("CONFIG.DESPIKE.LOCAL.DELTA_GATE.HALF_PEAK_FRAC",
+                   rtcproc.despiker.local_residual.compact_delta_gate.half_peak_frac,
+                   "Half-peak fraction used to measure local-residual delta candidate width");
+    add_double_key("CONFIG.DESPIKE.LOCAL.DELTA_GATE.MAX_WIDTH_SEC",
+                   rtcproc.despiker.local_residual.compact_delta_gate.max_width_sec,
+                   "Maximum width allowed for compact local-residual delta candidates");
+    add_double_key("CONFIG.DESPIKE.LOCAL.DELTA_GATE.MAX_STEP_SHIFT_Z",
+                   rtcproc.despiker.local_residual.compact_delta_gate.max_step_shift_z,
+                   "Maximum allowed pre/post baseline shift for compact local-residual delta candidates");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODFILTERED", run_any_tod_filter, "TOD Filtered");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODNOTCH", rtcproc.run_tod_notch, "TOD notch enabled");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODIIRHP", rtcproc.run_tod_iir_highpass, "TOD IIR highpass enabled");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODIIRHP.FREQ_HZ", rtcproc.filter.iir_highpass_freq_Hz, "TOD IIR highpass cutoff frequency");
+    add_double_key("CONFIG.TODIIRHP.FREQ_HZ", rtcproc.filter.iir_highpass_freq_Hz, "TOD IIR highpass cutoff frequency");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODIIRHP.ORDER", rtcproc.filter.iir_highpass_order, "TOD IIR highpass cascaded order");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODIIRHP.ZEROPHASE", rtcproc.filter.iir_highpass_zero_phase, "TOD IIR highpass forward-backward");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.DOWNSAMPLED", rtcproc.run_downsample, "Downsampled");
@@ -3295,166 +3301,166 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.EXTINCTION", rtcproc.run_extinction, "Extinction corrected");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.EXTINCTION.EXTMODEL", rtcproc.calibration.extinction_model, "Extinction model");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.TYPE", ptcproc.weighting_type, "Weighting scheme");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.INV_VAR.RTC.WTLOW", rtcproc.lower_inv_var_factor, "RTC lower inv var cutoff");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.INV_VAR.RTC.WTHIGH", rtcproc.upper_inv_var_factor, "RTC upper inv var cutoff");
+    add_double_key("CONFIG.INV_VAR.RTC.WTLOW", rtcproc.lower_inv_var_factor, "RTC lower inv var cutoff");
+    add_double_key("CONFIG.INV_VAR.RTC.WTHIGH", rtcproc.upper_inv_var_factor, "RTC upper inv var cutoff");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.STEP_MASK.ENABLED",
                                         rtcproc.network_step_mask.enabled,
                                         "Enable RTC network-window step masking");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.STEP_MASK.STEP_WINDOW_SEC",
-                                        rtcproc.network_step_mask.step_window_sec,
-                                        "Window used for RTC step-score estimation");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.STEP_MASK.STEP_SCORE_THRESH",
-                                        rtcproc.network_step_mask.step_score_thresh,
-                                        "Detector step-score threshold for RTC step masking");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.STEP_MASK.MIN_GOOD_FRAC",
-                                        rtcproc.network_step_mask.min_good_frac,
-                                        "Minimum good-sample fraction for RTC step-mask metrics");
+    add_double_key("CONFIG.RTC.STEP_MASK.STEP_WINDOW_SEC",
+                   rtcproc.network_step_mask.step_window_sec,
+                   "Window used for RTC step-score estimation");
+    add_double_key("CONFIG.RTC.STEP_MASK.STEP_SCORE_THRESH",
+                   rtcproc.network_step_mask.step_score_thresh,
+                   "Detector step-score threshold for RTC step masking");
+    add_double_key("CONFIG.RTC.STEP_MASK.MIN_GOOD_FRAC",
+                   rtcproc.network_step_mask.min_good_frac,
+                   "Minimum good-sample fraction for RTC step-mask metrics");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.STEP_MASK.MIN_DET_USED",
                                         static_cast<int>(rtcproc.network_step_mask.min_det_used),
                                         "Minimum detectors required in a network for RTC step masking");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.STEP_MASK.MIN_STEP_DET_FRAC",
-                                        rtcproc.network_step_mask.min_step_det_frac,
-                                        "Minimum step-like detector fraction for RTC step masking");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.STEP_MASK.MIN_ALIGNMENT_FRAC",
-                                        rtcproc.network_step_mask.min_alignment_frac,
-                                        "Minimum aligned-step detector fraction for RTC step masking");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.STEP_MASK.CLUSTER_TOL_SEC",
-                                        rtcproc.network_step_mask.cluster_tol_sec,
-                                        "Allowed timing tolerance for aligned RTC step clusters");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.STEP_MASK.HALF_WIDTH_SEC",
-                                        rtcproc.network_step_mask.mask_half_width_sec,
-                                        "Half-width of the applied RTC step-mask window");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.STEP_MASK.MAX_FLAGGED_FRAC",
-                                        rtcproc.network_step_mask.max_flagged_fraction,
-                                        "Maximum allowed newly flagged detector-sample fraction per RTC network mask");
+    add_double_key("CONFIG.RTC.STEP_MASK.MIN_STEP_DET_FRAC",
+                   rtcproc.network_step_mask.min_step_det_frac,
+                   "Minimum step-like detector fraction for RTC step masking");
+    add_double_key("CONFIG.RTC.STEP_MASK.MIN_ALIGNMENT_FRAC",
+                   rtcproc.network_step_mask.min_alignment_frac,
+                   "Minimum aligned-step detector fraction for RTC step masking");
+    add_double_key("CONFIG.RTC.STEP_MASK.CLUSTER_TOL_SEC",
+                   rtcproc.network_step_mask.cluster_tol_sec,
+                   "Allowed timing tolerance for aligned RTC step clusters");
+    add_double_key("CONFIG.RTC.STEP_MASK.HALF_WIDTH_SEC",
+                   rtcproc.network_step_mask.mask_half_width_sec,
+                   "Half-width of the applied RTC step-mask window");
+    add_double_key("CONFIG.RTC.STEP_MASK.MAX_FLAGGED_FRAC",
+                   rtcproc.network_step_mask.max_flagged_fraction,
+                   "Maximum allowed newly flagged detector-sample fraction per RTC network mask");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE.ENABLED",
                                         rtcproc.impulsive_capture.enabled,
                                         "Enable RTC impulsive-event snippet capture");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE.MIN_GOOD_FRAC",
-                                        rtcproc.impulsive_capture.min_good_frac,
-                                        "Minimum good-sample fraction for RTC impulsive capture");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE.MIN_EVENT_Z",
-                                        rtcproc.impulsive_capture.min_event_z,
-                                        "Minimum event score for RTC impulsive capture");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE.NEAR_EVENT_Z",
-                                        rtcproc.impulsive_capture.near_event_z,
-                                        "Near-threshold z for RTC impulsive counts");
+    add_double_key("CONFIG.RTC.IMPULSIVE.MIN_GOOD_FRAC",
+                   rtcproc.impulsive_capture.min_good_frac,
+                   "Minimum good-sample fraction for RTC impulsive capture");
+    add_double_key("CONFIG.RTC.IMPULSIVE.MIN_EVENT_Z",
+                   rtcproc.impulsive_capture.min_event_z,
+                   "Minimum event score for RTC impulsive capture");
+    add_double_key("CONFIG.RTC.IMPULSIVE.NEAR_EVENT_Z",
+                   rtcproc.impulsive_capture.near_event_z,
+                   "Near-threshold z for RTC impulsive counts");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE.MAX_EVENTS",
                                         static_cast<int>(rtcproc.impulsive_capture.max_events_per_network),
                                         "Maximum captured impulsive detectors per network");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE.HALF_WIDTH_SEC",
-                                        rtcproc.impulsive_capture.snippet_half_width_sec,
-                                        "Half-width of captured RTC impulsive snippets");
+    add_double_key("CONFIG.RTC.IMPULSIVE.HALF_WIDTH_SEC",
+                   rtcproc.impulsive_capture.snippet_half_width_sec,
+                   "Half-width of captured RTC impulsive snippets");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE_COINCIDENCE.ENABLED",
                                         rtcproc.impulsive_coincidence.enabled,
                                         "Enable RTC impulsive coincidence masking");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_GOOD_FRAC",
-                                        rtcproc.impulsive_coincidence.min_good_frac,
-                                        "Minimum good-sample fraction for RTC impulsive coincidence metrics");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE_COINCIDENCE.EVENT_SCORE_THRESH",
-                                        rtcproc.impulsive_coincidence.event_score_thresh,
-                                        "Detector impulsive-event score threshold for RTC impulsive coincidence masking");
+    add_double_key("CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_GOOD_FRAC",
+                   rtcproc.impulsive_coincidence.min_good_frac,
+                   "Minimum good-sample fraction for RTC impulsive coincidence metrics");
+    add_double_key("CONFIG.RTC.IMPULSIVE_COINCIDENCE.EVENT_SCORE_THRESH",
+                   rtcproc.impulsive_coincidence.event_score_thresh,
+                   "Detector impulsive-event score threshold for RTC impulsive coincidence masking");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_DET_USED",
                                         static_cast<int>(rtcproc.impulsive_coincidence.min_det_used),
                                         "Minimum detectors required in a network for RTC impulsive coincidence masking");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_DET_FRAC",
-                                        rtcproc.impulsive_coincidence.min_impulsive_det_frac,
-                                        "Minimum impulsive-active detector fraction for RTC impulsive coincidence masking");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_ALIGNMENT_FRAC",
-                                        rtcproc.impulsive_coincidence.min_alignment_frac,
-                                        "Minimum aligned-impulsive detector fraction for RTC impulsive coincidence masking");
+    add_double_key("CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_DET_FRAC",
+                   rtcproc.impulsive_coincidence.min_impulsive_det_frac,
+                   "Minimum impulsive-active detector fraction for RTC impulsive coincidence masking");
+    add_double_key("CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_ALIGNMENT_FRAC",
+                   rtcproc.impulsive_coincidence.min_alignment_frac,
+                   "Minimum aligned-impulsive detector fraction for RTC impulsive coincidence masking");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_NETWORKS_ALIGNED",
                                         static_cast<int>(rtcproc.impulsive_coincidence.min_networks_aligned),
                                         "Minimum aligned networks required for cross-network RTC impulsive coincidence masking");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE_COINCIDENCE.HIGH_SCORE_OVERRIDE_THRESH",
-                                        rtcproc.impulsive_coincidence.high_score_override_thresh,
-                                        "High-score threshold enabling a looser cross-network RTC impulsive coincidence trigger");
+    add_double_key("CONFIG.RTC.IMPULSIVE_COINCIDENCE.HIGH_SCORE_OVERRIDE_THRESH",
+                   rtcproc.impulsive_coincidence.high_score_override_thresh,
+                   "High-score threshold enabling a looser cross-network RTC impulsive coincidence trigger");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE_COINCIDENCE.HIGH_SCORE_MIN_NETWORKS",
                                         static_cast<int>(rtcproc.impulsive_coincidence.high_score_min_networks_aligned),
                                         "Minimum aligned networks for the high-score override RTC impulsive coincidence trigger");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE_COINCIDENCE.CLUSTER_TOL_SEC",
-                                        rtcproc.impulsive_coincidence.cluster_tol_sec,
-                                        "Allowed timing tolerance for aligned RTC impulsive coincidence clusters");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE_COINCIDENCE.HALF_WIDTH_SEC",
-                                        rtcproc.impulsive_coincidence.mask_half_width_sec,
-                                        "Half-width of the applied RTC impulsive coincidence mask window");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE_COINCIDENCE.MAX_FLAGGED_FRAC",
-                                        rtcproc.impulsive_coincidence.max_flagged_fraction,
-                                        "Maximum allowed newly flagged detector-sample fraction per RTC impulsive coincidence mask");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.INV_VAR.PTC.WTLOW", ptcproc.lower_inv_var_factor, "PTC lower inv var cutoff");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.INV_VAR.PTC.WTHIGH", ptcproc.upper_inv_var_factor, "PTC upper inv var cutoff");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.PTC.WTLOW", ptcproc.lower_weight_factor, "PTC lower weight cutoff");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.PTC.WTHIGH", ptcproc.upper_weight_factor, "PTC upper weight cutoff");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.MEDWTFACTOR", ptcproc.med_weight_factor, "Median weight factor");
+    add_double_key("CONFIG.RTC.IMPULSIVE_COINCIDENCE.CLUSTER_TOL_SEC",
+                   rtcproc.impulsive_coincidence.cluster_tol_sec,
+                   "Allowed timing tolerance for aligned RTC impulsive coincidence clusters");
+    add_double_key("CONFIG.RTC.IMPULSIVE_COINCIDENCE.HALF_WIDTH_SEC",
+                   rtcproc.impulsive_coincidence.mask_half_width_sec,
+                   "Half-width of the applied RTC impulsive coincidence mask window");
+    add_double_key("CONFIG.RTC.IMPULSIVE_COINCIDENCE.MAX_FLAGGED_FRAC",
+                   rtcproc.impulsive_coincidence.max_flagged_fraction,
+                   "Maximum allowed newly flagged detector-sample fraction per RTC impulsive coincidence mask");
+    add_double_key("CONFIG.INV_VAR.PTC.WTLOW", ptcproc.lower_inv_var_factor, "PTC lower inv var cutoff");
+    add_double_key("CONFIG.INV_VAR.PTC.WTHIGH", ptcproc.upper_inv_var_factor, "PTC upper inv var cutoff");
+    add_double_key("CONFIG.WEIGHT.PTC.WTLOW", ptcproc.lower_weight_factor, "PTC lower weight cutoff");
+    add_double_key("CONFIG.WEIGHT.PTC.WTHIGH", ptcproc.upper_weight_factor, "PTC upper weight cutoff");
+    add_double_key("CONFIG.WEIGHT.MEDWTFACTOR", ptcproc.med_weight_factor, "Median weight factor");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.ENABLED",
                                         ptcproc.weight_corr_penalty.enabled,
                                         "Enable per-network corr-based weight penalties");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.MIN_GOOD_FRAC",
-                                        ptcproc.weight_corr_penalty.min_good_frac,
-                                        "Minimum unflagged sample fraction per detector");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.MIN_OVERLAP",
-                                        ptcproc.weight_corr_penalty.min_overlap,
-                                        "Minimum overlap for pairwise corr metric");
+    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.MIN_GOOD_FRAC",
+                   ptcproc.weight_corr_penalty.min_good_frac,
+                   "Minimum unflagged sample fraction per detector");
+    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.MIN_OVERLAP",
+                   ptcproc.weight_corr_penalty.min_overlap,
+                   "Minimum overlap for pairwise corr metric");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.MAX_SAMPLES",
                                         ptcproc.weight_corr_penalty.max_samples,
                                         "Max sampled timestream points for penalty metrics");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.MAX_PAIRS",
                                         ptcproc.weight_corr_penalty.max_pairs,
                                         "Max sampled detector pairs for corr metric");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.FLOOR",
-                                        ptcproc.weight_corr_penalty.floor,
-                                        "Minimum per-network multiplicative weight factor");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.EXPONENT",
-                                        ptcproc.weight_corr_penalty.exponent,
-                                        "Exponent shaping corr penalty response");
+    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.FLOOR",
+                   ptcproc.weight_corr_penalty.floor,
+                   "Minimum per-network multiplicative weight factor");
+    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.EXPONENT",
+                   ptcproc.weight_corr_penalty.exponent,
+                   "Exponent shaping corr penalty response");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.PAIR.ENABLED",
                                         ptcproc.weight_corr_penalty.pair_corr.enabled,
                                         "Enable pairwise corr penalty term");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.PAIR.REF",
-                                        ptcproc.weight_corr_penalty.pair_corr.ref,
-                                        "Pairwise corr reference value");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.PAIR.SPAN",
-                                        ptcproc.weight_corr_penalty.pair_corr.span,
-                                        "Pairwise corr scale span");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.PAIR.WEIGHT",
-                                        ptcproc.weight_corr_penalty.pair_corr.weight,
-                                        "Pairwise corr term weight");
+    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.PAIR.REF",
+                   ptcproc.weight_corr_penalty.pair_corr.ref,
+                   "Pairwise corr reference value");
+    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.PAIR.SPAN",
+                   ptcproc.weight_corr_penalty.pair_corr.span,
+                   "Pairwise corr scale span");
+    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.PAIR.WEIGHT",
+                   ptcproc.weight_corr_penalty.pair_corr.weight,
+                   "Pairwise corr term weight");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.CM_EL.ENABLED",
                                         ptcproc.weight_corr_penalty.cm_el_corr.enabled,
                                         "Enable common-mode elevation corr penalty term");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.CM_EL.REF",
-                                        ptcproc.weight_corr_penalty.cm_el_corr.ref,
-                                        "Common-mode elevation corr reference");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.CM_EL.SPAN",
-                                        ptcproc.weight_corr_penalty.cm_el_corr.span,
-                                        "Common-mode elevation corr scale span");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.CM_EL.WEIGHT",
-                                        ptcproc.weight_corr_penalty.cm_el_corr.weight,
-                                        "Common-mode elevation corr term weight");
+    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.CM_EL.REF",
+                   ptcproc.weight_corr_penalty.cm_el_corr.ref,
+                   "Common-mode elevation corr reference");
+    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.CM_EL.SPAN",
+                   ptcproc.weight_corr_penalty.cm_el_corr.span,
+                   "Common-mode elevation corr scale span");
+    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.CM_EL.WEIGHT",
+                   ptcproc.weight_corr_penalty.cm_el_corr.weight,
+                   "Common-mode elevation corr term weight");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.ENABLED",
                                         ptcproc.weight_corr_penalty.cm_low_mid_ratio.enabled,
                                         "Enable common-mode low/mid ratio penalty term");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.REF",
-                                        ptcproc.weight_corr_penalty.cm_low_mid_ratio.ref,
-                                        "Common-mode low/mid ratio reference");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.SPAN",
-                                        ptcproc.weight_corr_penalty.cm_low_mid_ratio.span,
-                                        "Common-mode low/mid ratio scale span");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.WEIGHT",
-                                        ptcproc.weight_corr_penalty.cm_low_mid_ratio.weight,
-                                        "Common-mode low/mid ratio term weight");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.LOWMIN_HZ",
-                                        ptcproc.weight_corr_penalty.cm_low_mid_ratio.low_min_Hz,
-                                        "Low-band minimum frequency for low/mid ratio");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.LOWMAX_HZ",
-                                        ptcproc.weight_corr_penalty.cm_low_mid_ratio.low_max_Hz,
-                                        "Low-band maximum frequency for low/mid ratio");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.MIDMIN_HZ",
-                                        ptcproc.weight_corr_penalty.cm_low_mid_ratio.mid_min_Hz,
-                                        "Mid-band minimum frequency for low/mid ratio");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.MIDMAX_HZ",
-                                        ptcproc.weight_corr_penalty.cm_low_mid_ratio.mid_max_Hz,
-                                        "Mid-band maximum frequency for low/mid ratio");
+    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.REF",
+                   ptcproc.weight_corr_penalty.cm_low_mid_ratio.ref,
+                   "Common-mode low/mid ratio reference");
+    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.SPAN",
+                   ptcproc.weight_corr_penalty.cm_low_mid_ratio.span,
+                   "Common-mode low/mid ratio scale span");
+    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.WEIGHT",
+                   ptcproc.weight_corr_penalty.cm_low_mid_ratio.weight,
+                   "Common-mode low/mid ratio term weight");
+    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.LOWMIN_HZ",
+                   ptcproc.weight_corr_penalty.cm_low_mid_ratio.low_min_Hz,
+                   "Low-band minimum frequency for low/mid ratio");
+    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.LOWMAX_HZ",
+                   ptcproc.weight_corr_penalty.cm_low_mid_ratio.low_max_Hz,
+                   "Low-band maximum frequency for low/mid ratio");
+    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.MIDMIN_HZ",
+                   ptcproc.weight_corr_penalty.cm_low_mid_ratio.mid_min_Hz,
+                   "Mid-band minimum frequency for low/mid ratio");
+    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.MIDMAX_HZ",
+                   ptcproc.weight_corr_penalty.cm_low_mid_ratio.mid_max_Hz,
+                   "Mid-band maximum frequency for low/mid ratio");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED", ptcproc.run_clean, "Cleaned");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.MODESEL",
                                         ptcproc.cleaner.active_cleaner_label(),
@@ -3462,12 +3468,12 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.MP.ENABLED",
                                         ptcproc.cleaner.marchenko_pastur.enabled,
                                         "Marchenko-Pastur mode selection enabled");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.MP.BANDLOW_HZ",
-                                        ptcproc.cleaner.marchenko_pastur.band_low_Hz,
-                                        "MP covariance low-band edge (Hz)");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.MP.BANDHIGH_HZ",
-                                        ptcproc.cleaner.marchenko_pastur.band_high_Hz,
-                                        "MP covariance high-band edge (Hz)");
+    add_double_key("CONFIG.CLEANED.MP.BANDLOW_HZ",
+                   ptcproc.cleaner.marchenko_pastur.band_low_Hz,
+                   "MP covariance low-band edge (Hz)");
+    add_double_key("CONFIG.CLEANED.MP.BANDHIGH_HZ",
+                   ptcproc.cleaner.marchenko_pastur.band_high_Hz,
+                   "MP covariance high-band edge (Hz)");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.MP.MAXMODES",
                                         ptcproc.cleaner.marchenko_pastur.max_modes,
                                         "MP max modes considered");
@@ -3482,7 +3488,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS", ptcproc.run_fruit_loops, "Fruit loops");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.PATH", ptcproc.fruit_loops_path, "Fruit loops path");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.TYPE", ptcproc.fruit_loops_type, "Fruit loops type");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.S2N", ptcproc.fruit_loops_sig2noise, "Fruit loops S/N");
+    add_double_key("CONFIG.FRUITLOOPS.S2N", ptcproc.fruit_loops_sig2noise, "Fruit loops S/N");
     {
         double flux_limit = 0.0;
         if (ptcproc.run_fruit_loops) {
@@ -3507,7 +3513,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
                 continue;
             }
             logger->debug("adding {}: {}", key, val);
-            fits_io->at(i).pfits->pHDU().addKey(key, val(0), key);
+            add_double_key(key, val(0), key);
         }
     }
     } catch (const CCfits::FitsError &e) {
