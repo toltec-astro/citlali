@@ -3557,8 +3557,13 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         fits_io->at(map_index).hdus.back()->addKey("UNIT", "1/("+mb->sig_unit+")^2", "Unit of map");
         double median_err = 0.0;
         if (redu_type != "beammap" && std::isfinite(mb->median_err(i)) &&
-            std::fabs(mb->median_err(i)) > std::numeric_limits<double>::epsilon()) {
+            mb->median_err(i) > std::numeric_limits<double>::epsilon()) {
             median_err = pow(mb->median_err(i), 0.5);
+        }
+        else if (redu_type != "beammap" && std::isfinite(mb->median_err(i)) &&
+                 mb->median_err(i) < 0.0) {
+            logger->warn("negative median_err for map {} in {}; using 0", map_name,
+                         fits_io->at(map_index).filepath);
         }
         fits_io->at(map_index).hdus.back()->addKey("MEDERR", median_err, "Median Error ("+mb->sig_unit+")");
 
@@ -3576,6 +3581,11 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 else {
                     fwhm = rtcproc.kernel.fwhm_rad*RAD_TO_ASEC;
                 }
+            }
+            if (!std::isfinite(fwhm)) {
+                logger->warn("non-finite kernel FWHM for map {} in {}; using -99", map_name,
+                             fits_io->at(map_index).filepath);
+                fwhm = -99.0;
             }
             fits_io->at(map_index).hdus.back()->addKey("FWHM",fwhm,"Kernel fwhm (arcsec)");
             fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
@@ -3652,6 +3662,16 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 noise_fits_io->at(map_index).hdus.back()->addKey("MEDRMS", median_rms, "Median RMS of noise maps");
             }
         }
+    } catch (const CCfits::FitsError &e) {
+        throw std::runtime_error(
+            fmt::format("failed to write map '{}' (map_i={} file={} noise_file={}): {}",
+                        map_name,
+                        static_cast<long long>(i),
+                        fits_io->at(map_index).filepath,
+                        (!mb->noise.empty() && map_index < static_cast<Eigen::Index>(noise_fits_io->size()))
+                            ? noise_fits_io->at(map_index).filepath
+                            : std::string("N/A"),
+                        e.message()));
     } catch (const std::exception &e) {
         throw std::runtime_error(
             fmt::format("failed to write map '{}' (map_i={} file={} noise_file={}): {}",
