@@ -48,7 +48,13 @@ include(FFTW)
 set(dep_libs ${dep_libs} tula::FFTW)
 
 find_package(HDF5 REQUIRED COMPONENTS C HL)
-set(dep_libs ${dep_libs} hdf5-shared hdf5_hl-shared)
+if(TARGET hdf5::hdf5-shared AND TARGET hdf5::hdf5_hl-shared)
+    set(dep_libs ${dep_libs} hdf5::hdf5-shared hdf5::hdf5_hl-shared)
+elseif(TARGET hdf5-shared AND TARGET hdf5_hl-shared)
+    set(dep_libs ${dep_libs} hdf5-shared hdf5_hl-shared)
+else()
+    set(dep_libs ${dep_libs} ${HDF5_LIBRARIES})
+endif()
 
 add_library(citlali STATIC)
 target_sources(citlali
