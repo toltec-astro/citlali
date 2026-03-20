@@ -50,14 +50,15 @@ def _write_report(
         "",
         "## Worst Obsnums",
         "",
-        "| obsnum | product | max severity | max step frac | max align | max low/mid | impulsive frac>=thr | step-mask nw-scans | imp-mask nw-scans | top slot |",
-        "|---:|:---|---:|---:|---:|---:|---:|---:|---:|---:|",
+        "| obsnum | product | max severity | max step frac | max align | max low/mid | impulsive frac>=thr | step-mask nw-scans | imp-candidate nw-scans | imp-cross nw-scans | imp-mask nw-scans | top slot |",
+        "|---:|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for row in worst_obs:
         lines.append(
             "| {obsnum} | {product_kind} | {max_row_severity:.2f} | {max_step_det_frac:.3f} | "
             "{max_step_alignment_frac:.3f} | {max_cm_lowmid:.2f} | {impulsive_frac_ge_threshold:.3f} | "
-            "{masked_network_scans} | {impulsive_masked_network_scans} | {top_slot_event_score:.2f} |".format(**row)
+            "{masked_network_scans} | {impulsive_candidate_network_scans} | {impulsive_cross_trigger_network_scans} | "
+            "{impulsive_masked_network_scans} | {top_slot_event_score:.2f} |".format(**row)
         )
 
     lines.extend(["", "## Top Scan-Network Rows", ""])
@@ -71,7 +72,12 @@ def _write_report(
                 "imp_frac={network_impulsive_det_frac:.3f} imp_align={network_impulsive_alignment_frac:.3f} "
                 "cm_lowmid={cm_lowmid:.2f} max_imp={max_impulsive_event_score:.2f} "
                 "top_slot={max_slot_event_score:.2f} step_mask={step_mask_applied} "
-                "imp_mask={impulsive_mask_applied}".format(**row)
+                "imp_mask={impulsive_mask_applied} cand={impulsive_mask_candidate_available} "
+                "local={impulsive_mask_local_trigger} cross={impulsive_mask_cross_network_trigger} "
+                "override={impulsive_mask_high_score_override_trigger} reject_frac={impulsive_mask_rejected_max_fraction} "
+                "cluster_nw={impulsive_mask_cluster_network_count} cluster_peak={impulsive_mask_cluster_peak_score:.2f} "
+                "cluster_active={impulsive_mask_cluster_active_count} total_active={impulsive_mask_total_active_count} "
+                "proposed_frac={impulsive_mask_proposed_flagged_fraction:.4f}".format(**row)
             )
 
     lines.extend(["", "## Top Impulsive Slots", ""])

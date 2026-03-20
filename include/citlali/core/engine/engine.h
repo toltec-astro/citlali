@@ -2368,6 +2368,30 @@ void Engine::create_tod_files() {
                        "number of previously good detector-samples newly flagged by impulsive_coincidence_mask");
         add_rtc_nw_double("rtc_network_impulsive_mask_flagged_fraction",
                           "fraction of previously good detector-samples in the network block newly flagged by impulsive_coincidence_mask");
+        add_rtc_nw_int("rtc_network_impulsive_mask_candidate_available",
+                       "1 if impulsive_coincidence_mask found a candidate for this RTC network block, else 0");
+        add_rtc_nw_int("rtc_network_impulsive_mask_local_trigger",
+                       "1 if the selected impulsive candidate satisfied the within-network trigger thresholds, else 0");
+        add_rtc_nw_int("rtc_network_impulsive_mask_cross_network_trigger",
+                       "1 if the selected impulsive candidate satisfied a cross-network alignment trigger, else 0");
+        add_rtc_nw_int("rtc_network_impulsive_mask_high_score_override_trigger",
+                       "1 if the selected impulsive candidate satisfied the looser high-score cross-network override, else 0");
+        add_rtc_nw_int("rtc_network_impulsive_mask_rejected_max_fraction",
+                       "1 if the selected impulsive candidate was rejected only because its proposed flagged fraction exceeded the configured limit");
+        add_rtc_nw_int("rtc_network_impulsive_mask_candidate_center_sample",
+                       "center sample of the selected impulsive candidate before any cross-network recentering; -2147483647 means unavailable");
+        add_rtc_nw_int("rtc_network_impulsive_mask_cluster_center_sample",
+                       "median aligned sample of the selected cross-network impulsive cluster; -2147483647 means unavailable");
+        add_rtc_nw_int("rtc_network_impulsive_mask_cluster_network_count",
+                       "number of distinct networks participating in the selected impulsive candidate cluster");
+        add_rtc_nw_int("rtc_network_impulsive_mask_cluster_active_count",
+                       "number of detector-level impulsive events in the selected within-network cluster");
+        add_rtc_nw_int("rtc_network_impulsive_mask_total_active_count",
+                       "total number of detector-level impulsive events above threshold in the selected network block");
+        add_rtc_nw_double("rtc_network_impulsive_mask_cluster_peak_score",
+                          "maximum impulsive-event score found within the selected cross-network impulsive cluster");
+        add_rtc_nw_double("rtc_network_impulsive_mask_proposed_flagged_fraction",
+                          "fraction of previously good detector-samples that the selected impulsive mask window would newly flag before any rejection");
 
         if (rtcproc.impulsive_capture.enabled) {
             const auto n_slots = static_cast<std::size_t>(std::max<Eigen::Index>(rtcproc.impulsive_capture.max_events_per_network, 1));
@@ -4142,6 +4166,30 @@ void Engine::create_rtcdiag_file() {
                    "number of previously good detector-samples newly flagged by impulsive_coincidence_mask");
     add_rtc_nw_double("rtc_network_impulsive_mask_flagged_fraction",
                       "fraction of previously good detector-samples in the network block newly flagged by impulsive_coincidence_mask");
+    add_rtc_nw_int("rtc_network_impulsive_mask_candidate_available",
+                   "1 if impulsive_coincidence_mask found a candidate for this RTC network block, else 0");
+    add_rtc_nw_int("rtc_network_impulsive_mask_local_trigger",
+                   "1 if the selected impulsive candidate satisfied the within-network trigger thresholds, else 0");
+    add_rtc_nw_int("rtc_network_impulsive_mask_cross_network_trigger",
+                   "1 if the selected impulsive candidate satisfied a cross-network alignment trigger, else 0");
+    add_rtc_nw_int("rtc_network_impulsive_mask_high_score_override_trigger",
+                   "1 if the selected impulsive candidate satisfied the looser high-score cross-network override, else 0");
+    add_rtc_nw_int("rtc_network_impulsive_mask_rejected_max_fraction",
+                   "1 if the selected impulsive candidate was rejected only because its proposed flagged fraction exceeded the configured limit");
+    add_rtc_nw_int("rtc_network_impulsive_mask_candidate_center_sample",
+                   "center sample of the selected impulsive candidate before any cross-network recentering; -2147483647 means unavailable");
+    add_rtc_nw_int("rtc_network_impulsive_mask_cluster_center_sample",
+                   "median aligned sample of the selected cross-network impulsive cluster; -2147483647 means unavailable");
+    add_rtc_nw_int("rtc_network_impulsive_mask_cluster_network_count",
+                   "number of distinct networks participating in the selected impulsive candidate cluster");
+    add_rtc_nw_int("rtc_network_impulsive_mask_cluster_active_count",
+                   "number of detector-level impulsive events in the selected within-network cluster");
+    add_rtc_nw_int("rtc_network_impulsive_mask_total_active_count",
+                   "total number of detector-level impulsive events above threshold in the selected network block");
+    add_rtc_nw_double("rtc_network_impulsive_mask_cluster_peak_score",
+                      "maximum impulsive-event score found within the selected cross-network impulsive cluster");
+    add_rtc_nw_double("rtc_network_impulsive_mask_proposed_flagged_fraction",
+                      "fraction of previously good detector-samples that the selected impulsive mask window would newly flag before any rejection");
 
     if (rtcproc.impulsive_capture.enabled) {
         const auto n_slots =

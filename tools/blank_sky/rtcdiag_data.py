@@ -119,6 +119,10 @@ def build_obs_summary(
     mask_fracs = np.asarray([float(row["step_mask_flagged_fraction"]) for row in scan_network_rows], dtype=float)
     impulsive_mask_flags = np.asarray([float(row.get("impulsive_mask_applied", 0.0)) for row in scan_network_rows], dtype=float)
     impulsive_mask_fracs = np.asarray([float(row.get("impulsive_mask_flagged_fraction", float("nan"))) for row in scan_network_rows], dtype=float)
+    impulsive_candidate_flags = np.asarray([float(row.get("impulsive_mask_candidate_available", 0.0)) for row in scan_network_rows], dtype=float)
+    impulsive_cross_flags = np.asarray([float(row.get("impulsive_mask_cross_network_trigger", 0.0)) for row in scan_network_rows], dtype=float)
+    impulsive_override_flags = np.asarray([float(row.get("impulsive_mask_high_score_override_trigger", 0.0)) for row in scan_network_rows], dtype=float)
+    impulsive_reject_flags = np.asarray([float(row.get("impulsive_mask_rejected_max_fraction", 0.0)) for row in scan_network_rows], dtype=float)
     step_det = np.asarray([float(row["step_det_frac"]) for row in scan_network_rows], dtype=float)
     step_align = np.asarray([float(row["step_alignment_frac"]) for row in scan_network_rows], dtype=float)
     cm_lowmid = np.asarray([float(row["cm_lowmid"]) for row in scan_network_rows], dtype=float)
@@ -151,6 +155,10 @@ def build_obs_summary(
         "impulsive_masked_network_scans": int(np.count_nonzero(impulsive_mask_flags != 0)),
         "impulsive_masked_fraction_sum": float(np.nansum(impulsive_mask_fracs)),
         "impulsive_masked_fraction_mean": nanmean(impulsive_mask_fracs[impulsive_mask_flags != 0]) if np.count_nonzero(impulsive_mask_flags != 0) else float("nan"),
+        "impulsive_candidate_network_scans": int(np.count_nonzero(impulsive_candidate_flags != 0)),
+        "impulsive_cross_trigger_network_scans": int(np.count_nonzero(impulsive_cross_flags != 0)),
+        "impulsive_override_trigger_network_scans": int(np.count_nonzero(impulsive_override_flags != 0)),
+        "impulsive_rejected_fraction_network_scans": int(np.count_nonzero(impulsive_reject_flags != 0)),
         "n_scans_step_active": len(set(scan_ids)),
         "top_slot_event_score": float(top_slot["event_score"]) if top_slot else float("nan"),
         "top_slot_network": int(top_slot["network"]) if top_slot else -2147483647,
@@ -178,6 +186,10 @@ def make_network_summary(obs_network_rows: list[dict[str, object]]) -> list[dict
                 "obsnums_with_masked_scans": int(sum(int(row["masked_scans"]) > 0 for row in rr)),
                 "total_impulsive_masked_network_scans": int(sum(int(row.get("impulsive_masked_scans", 0)) for row in rr)),
                 "obsnums_with_impulsive_masked_scans": int(sum(int(row.get("impulsive_masked_scans", 0)) > 0 for row in rr)),
+                "total_impulsive_candidate_scans": int(sum(int(row.get("impulsive_candidate_scans", 0)) for row in rr)),
+                "total_impulsive_cross_trigger_scans": int(sum(int(row.get("impulsive_cross_trigger_scans", 0)) for row in rr)),
+                "total_impulsive_override_trigger_scans": int(sum(int(row.get("impulsive_override_trigger_scans", 0)) for row in rr)),
+                "total_impulsive_rejected_fraction_scans": int(sum(int(row.get("impulsive_rejected_fraction_scans", 0)) for row in rr)),
                 "max_slot_event_score": nanmax([float(row["top_slot_event_score"]) for row in rr]),
                 "max_row_severity": nanmax([float(row["max_row_severity"]) for row in rr]),
                 "worst_obsnum": top["obsnum"],
@@ -276,6 +288,66 @@ def load_reduction_tables(
                 if "rtc_network_impulsive_mask_flagged_fraction" in ds.variables
                 else np.full_like(step_mask_flagfrac, np.nan, dtype=float)
             )
+            impulsive_mask_candidate_available = (
+                filled(ds.variables["rtc_network_impulsive_mask_candidate_available"], fill=0).astype(int)
+                if "rtc_network_impulsive_mask_candidate_available" in ds.variables
+                else np.zeros_like(impulsive_mask_applied, dtype=int)
+            )
+            impulsive_mask_local_trigger = (
+                filled(ds.variables["rtc_network_impulsive_mask_local_trigger"], fill=0).astype(int)
+                if "rtc_network_impulsive_mask_local_trigger" in ds.variables
+                else np.zeros_like(impulsive_mask_applied, dtype=int)
+            )
+            impulsive_mask_cross_network_trigger = (
+                filled(ds.variables["rtc_network_impulsive_mask_cross_network_trigger"], fill=0).astype(int)
+                if "rtc_network_impulsive_mask_cross_network_trigger" in ds.variables
+                else np.zeros_like(impulsive_mask_applied, dtype=int)
+            )
+            impulsive_mask_high_score_override_trigger = (
+                filled(ds.variables["rtc_network_impulsive_mask_high_score_override_trigger"], fill=0).astype(int)
+                if "rtc_network_impulsive_mask_high_score_override_trigger" in ds.variables
+                else np.zeros_like(impulsive_mask_applied, dtype=int)
+            )
+            impulsive_mask_rejected_max_fraction = (
+                filled(ds.variables["rtc_network_impulsive_mask_rejected_max_fraction"], fill=0).astype(int)
+                if "rtc_network_impulsive_mask_rejected_max_fraction" in ds.variables
+                else np.zeros_like(impulsive_mask_applied, dtype=int)
+            )
+            impulsive_mask_candidate_center_sample = (
+                filled(ds.variables["rtc_network_impulsive_mask_candidate_center_sample"], fill=np.iinfo(np.int32).min).astype(int)
+                if "rtc_network_impulsive_mask_candidate_center_sample" in ds.variables
+                else np.full_like(imp_sample_nw, np.iinfo(np.int32).min, dtype=int)
+            )
+            impulsive_mask_cluster_center_sample = (
+                filled(ds.variables["rtc_network_impulsive_mask_cluster_center_sample"], fill=np.iinfo(np.int32).min).astype(int)
+                if "rtc_network_impulsive_mask_cluster_center_sample" in ds.variables
+                else np.full_like(imp_sample_nw, np.iinfo(np.int32).min, dtype=int)
+            )
+            impulsive_mask_cluster_network_count = (
+                filled(ds.variables["rtc_network_impulsive_mask_cluster_network_count"], fill=0).astype(int)
+                if "rtc_network_impulsive_mask_cluster_network_count" in ds.variables
+                else np.zeros_like(imp_sample_nw, dtype=int)
+            )
+            impulsive_mask_cluster_active_count = (
+                filled(ds.variables["rtc_network_impulsive_mask_cluster_active_count"], fill=0).astype(int)
+                if "rtc_network_impulsive_mask_cluster_active_count" in ds.variables
+                else np.zeros_like(imp_sample_nw, dtype=int)
+            )
+            impulsive_mask_total_active_count = (
+                filled(ds.variables["rtc_network_impulsive_mask_total_active_count"], fill=0).astype(int)
+                if "rtc_network_impulsive_mask_total_active_count" in ds.variables
+                else np.zeros_like(imp_sample_nw, dtype=int)
+            )
+            impulsive_mask_cluster_peak_score = (
+                filled(ds.variables["rtc_network_impulsive_mask_cluster_peak_score"], fill=np.nan)
+                if "rtc_network_impulsive_mask_cluster_peak_score" in ds.variables
+                else np.full_like(step_det, np.nan, dtype=float)
+            )
+            impulsive_mask_proposed_flagged_fraction = (
+                filled(ds.variables["rtc_network_impulsive_mask_proposed_flagged_fraction"], fill=np.nan)
+                if "rtc_network_impulsive_mask_proposed_flagged_fraction" in ds.variables
+                else np.full_like(step_det, np.nan, dtype=float)
+            )
             impulsive = filled(ds.variables["rtc_impulsive_event_score"], fill=np.nan)
 
             slot_score = filled(ds.variables["rtc_impulsive_slot_event_score"], fill=np.nan) if "rtc_impulsive_slot_event_score" in ds.variables else None
@@ -319,6 +391,18 @@ def load_reduction_tables(
                         "step_mask_flagged_fraction": float(step_mask_flagfrac[scan, diag_idx]),
                         "impulsive_mask_applied": int(impulsive_mask_applied[scan, diag_idx]),
                         "impulsive_mask_flagged_fraction": float(impulsive_mask_flagfrac[scan, diag_idx]),
+                        "impulsive_mask_candidate_available": int(impulsive_mask_candidate_available[scan, diag_idx]),
+                        "impulsive_mask_local_trigger": int(impulsive_mask_local_trigger[scan, diag_idx]),
+                        "impulsive_mask_cross_network_trigger": int(impulsive_mask_cross_network_trigger[scan, diag_idx]),
+                        "impulsive_mask_high_score_override_trigger": int(impulsive_mask_high_score_override_trigger[scan, diag_idx]),
+                        "impulsive_mask_rejected_max_fraction": int(impulsive_mask_rejected_max_fraction[scan, diag_idx]),
+                        "impulsive_mask_candidate_center_sample": int(impulsive_mask_candidate_center_sample[scan, diag_idx]),
+                        "impulsive_mask_cluster_center_sample": int(impulsive_mask_cluster_center_sample[scan, diag_idx]),
+                        "impulsive_mask_cluster_network_count": int(impulsive_mask_cluster_network_count[scan, diag_idx]),
+                        "impulsive_mask_cluster_active_count": int(impulsive_mask_cluster_active_count[scan, diag_idx]),
+                        "impulsive_mask_total_active_count": int(impulsive_mask_total_active_count[scan, diag_idx]),
+                        "impulsive_mask_cluster_peak_score": float(impulsive_mask_cluster_peak_score[scan, diag_idx]),
+                        "impulsive_mask_proposed_flagged_fraction": float(impulsive_mask_proposed_flagged_fraction[scan, diag_idx]),
                         "max_impulsive_event_score": float(scan_max_imp[scan]),
                         "impulsive_frac_ge_threshold": float(scan_imp_frac_ge[scan]),
                         "max_slot_event_score": float(max_slot_score_by_scan[scan]),
@@ -362,6 +446,10 @@ def load_reduction_tables(
                         "masked_fraction_sum": float(np.nansum(step_mask_flagfrac[:, diag_idx])),
                         "impulsive_masked_scans": int(np.count_nonzero(impulsive_mask_applied[:, diag_idx] != 0)),
                         "impulsive_masked_fraction_sum": float(np.nansum(impulsive_mask_flagfrac[:, diag_idx])),
+                        "impulsive_candidate_scans": int(np.count_nonzero(impulsive_mask_candidate_available[:, diag_idx] != 0)),
+                        "impulsive_cross_trigger_scans": int(np.count_nonzero(impulsive_mask_cross_network_trigger[:, diag_idx] != 0)),
+                        "impulsive_override_trigger_scans": int(np.count_nonzero(impulsive_mask_high_score_override_trigger[:, diag_idx] != 0)),
+                        "impulsive_rejected_fraction_scans": int(np.count_nonzero(impulsive_mask_rejected_max_fraction[:, diag_idx] != 0)),
                         "max_row_severity": nanmax([float(row["row_severity"]) for row in nw_rows]),
                         "top_slot_event_score": float(top_slot_nw["max_slot_event_score"]) if top_slot_nw else float("nan"),
                     }

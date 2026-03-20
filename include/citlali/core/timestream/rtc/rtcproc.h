@@ -152,6 +152,18 @@ public:
         int impulsive_mask_n_det_masked = 0;
         int impulsive_mask_n_det_samples_flagged = 0;
         double impulsive_mask_flagged_fraction = std::numeric_limits<double>::quiet_NaN();
+        bool impulsive_mask_candidate_available = false;
+        bool impulsive_mask_local_trigger = false;
+        bool impulsive_mask_cross_network_trigger = false;
+        bool impulsive_mask_high_score_override_trigger = false;
+        bool impulsive_mask_rejected_max_fraction = false;
+        int impulsive_mask_candidate_center_sample = kTransientFillInt;
+        int impulsive_mask_cluster_center_sample = kTransientFillInt;
+        int impulsive_mask_cluster_network_count = 0;
+        int impulsive_mask_cluster_active_count = 0;
+        int impulsive_mask_total_active_count = 0;
+        double impulsive_mask_cluster_peak_score = std::numeric_limits<double>::quiet_NaN();
+        double impulsive_mask_proposed_flagged_fraction = std::numeric_limits<double>::quiet_NaN();
     };
 
     struct RTCImpulsiveSnippetSummary {
@@ -2243,6 +2255,18 @@ void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::Ma
         row.impulsive_mask_n_det_masked = 0;
         row.impulsive_mask_n_det_samples_flagged = 0;
         row.impulsive_mask_flagged_fraction = std::numeric_limits<double>::quiet_NaN();
+        row.impulsive_mask_candidate_available = false;
+        row.impulsive_mask_local_trigger = false;
+        row.impulsive_mask_cross_network_trigger = false;
+        row.impulsive_mask_high_score_override_trigger = false;
+        row.impulsive_mask_rejected_max_fraction = false;
+        row.impulsive_mask_candidate_center_sample = kTransientFillInt;
+        row.impulsive_mask_cluster_center_sample = kTransientFillInt;
+        row.impulsive_mask_cluster_network_count = 0;
+        row.impulsive_mask_cluster_active_count = 0;
+        row.impulsive_mask_total_active_count = 0;
+        row.impulsive_mask_cluster_peak_score = std::numeric_limits<double>::quiet_NaN();
+        row.impulsive_mask_proposed_flagged_fraction = std::numeric_limits<double>::quiet_NaN();
 
         const auto grp_it = grp_limits.find(row.nw);
         if (grp_it == grp_limits.end()) {
@@ -2382,47 +2406,37 @@ void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::Ma
                                cluster_networks.end());
         const Eigen::Index cluster_network_count =
             static_cast<Eigen::Index>(cluster_networks.size());
+        const auto mid = cluster_samples.begin() +
+                         static_cast<std::ptrdiff_t>(cluster_samples.size() / 2);
+        std::nth_element(cluster_samples.begin(), mid, cluster_samples.end());
+        const Eigen::Index cluster_center_sample = *mid;
+        double cluster_peak_score = std::numeric_limits<double>::quiet_NaN();
+        for (std::size_t k = i; k <= j; ++k) {
+            cluster_peak_score = std::isfinite(cluster_peak_score)
+                ? std::max(cluster_peak_score, candidates[order[k]].max_score)
+                : candidates[order[k]].max_score;
+        }
+        for (std::size_t k = i; k <= j; ++k) {
+            auto &cand = candidates[order[k]];
+            cand.cluster_center_sample = cluster_center_sample;
+            cand.cluster_network_count = cluster_network_count;
+            cand.cluster_peak_score = cluster_peak_score;
+        }
         if (cluster_network_count >= impulsive_coincidence.min_networks_aligned) {
-            const auto mid = cluster_samples.begin() +
-                             static_cast<std::ptrdiff_t>(cluster_samples.size() / 2);
-            std::nth_element(cluster_samples.begin(), mid, cluster_samples.end());
-            const Eigen::Index cluster_center_sample = *mid;
-            double cluster_peak_score = std::numeric_limits<double>::quiet_NaN();
-            for (std::size_t k = i; k <= j; ++k) {
-                cluster_peak_score = std::isfinite(cluster_peak_score)
-                    ? std::max(cluster_peak_score, candidates[order[k]].max_score)
-                    : candidates[order[k]].max_score;
-            }
             for (std::size_t k = i; k <= j; ++k) {
                 auto &cand = candidates[order[k]];
                 cand.cross_network_trigger = true;
-                cand.cluster_center_sample = cluster_center_sample;
-                cand.cluster_network_count = cluster_network_count;
-                cand.cluster_peak_score = cluster_peak_score;
             }
         }
         else if (impulsive_coincidence.high_score_min_networks_aligned > 0 &&
                  impulsive_coincidence.high_score_override_thresh > 0.0 &&
                  cluster_network_count >= impulsive_coincidence.high_score_min_networks_aligned) {
-            double cluster_peak_score = std::numeric_limits<double>::quiet_NaN();
-            for (std::size_t k = i; k <= j; ++k) {
-                cluster_peak_score = std::isfinite(cluster_peak_score)
-                    ? std::max(cluster_peak_score, candidates[order[k]].max_score)
-                    : candidates[order[k]].max_score;
-            }
             if (std::isfinite(cluster_peak_score) &&
                 cluster_peak_score >= impulsive_coincidence.high_score_override_thresh) {
-                const auto mid = cluster_samples.begin() +
-                                 static_cast<std::ptrdiff_t>(cluster_samples.size() / 2);
-                std::nth_element(cluster_samples.begin(), mid, cluster_samples.end());
-                const Eigen::Index cluster_center_sample = *mid;
                 for (std::size_t k = i; k <= j; ++k) {
                     auto &cand = candidates[order[k]];
                     cand.cross_network_trigger = true;
                     cand.high_score_override_trigger = true;
-                    cand.cluster_center_sample = cluster_center_sample;
-                    cand.cluster_network_count = cluster_network_count;
-                    cand.cluster_peak_score = cluster_peak_score;
                 }
             }
         }
@@ -2460,9 +2474,6 @@ void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::Ma
     std::map<Eigen::Index, std::size_t> best_candidate_by_network;
     for (std::size_t idx = 0; idx < candidates.size(); ++idx) {
         const auto &cand = candidates[idx];
-        if (!(cand.local_trigger || cand.cross_network_trigger)) {
-            continue;
-        }
         const auto nw = cand.row->nw;
         const auto it = best_candidate_by_network.find(nw);
         if (it == best_candidate_by_network.end() ||
@@ -2475,6 +2486,21 @@ void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::Ma
         auto &cand = candidates[idx];
         auto &row = *cand.row;
 
+        row.impulsive_mask_candidate_available = true;
+        row.impulsive_mask_local_trigger = cand.local_trigger;
+        row.impulsive_mask_cross_network_trigger = cand.cross_network_trigger;
+        row.impulsive_mask_high_score_override_trigger = cand.high_score_override_trigger;
+        row.impulsive_mask_rejected_max_fraction = false;
+        row.impulsive_mask_candidate_center_sample = static_cast<int>(cand.center_sample);
+        row.impulsive_mask_cluster_center_sample =
+            (cand.cluster_network_count > 0)
+                ? static_cast<int>(cand.cluster_center_sample)
+                : kTransientFillInt;
+        row.impulsive_mask_cluster_network_count = static_cast<int>(cand.cluster_network_count);
+        row.impulsive_mask_cluster_active_count = static_cast<int>(cand.cluster_active_count);
+        row.impulsive_mask_total_active_count = static_cast<int>(cand.total_active_count);
+        row.impulsive_mask_cluster_peak_score = cand.cluster_peak_score;
+
         const Eigen::Index half_width = std::max<Eigen::Index>(
             0, static_cast<Eigen::Index>(std::llround(impulsive_coincidence.mask_half_width_sec /
                                                       std::max(dt_sec, 1.0e-6))));
@@ -2484,6 +2510,10 @@ void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::Ma
         const Eigen::Index end_sample = std::min<Eigen::Index>(n_pts - 1, center + half_width);
         const Eigen::Index window_samples = std::max<Eigen::Index>(0, end_sample - start_sample + 1);
         if (window_samples <= 0 || cand.end_det <= cand.start_det) {
+            continue;
+        }
+
+        if (!(cand.local_trigger || cand.cross_network_trigger)) {
             continue;
         }
 
@@ -2505,8 +2535,10 @@ void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::Ma
         const double flagged_fraction =
             static_cast<double>(newly_flagged) /
             static_cast<double>(std::max<Eigen::Index>(1, good_detector_samples));
+        row.impulsive_mask_proposed_flagged_fraction = flagged_fraction;
         if (impulsive_coincidence.max_flagged_fraction > 0.0 &&
             flagged_fraction > impulsive_coincidence.max_flagged_fraction) {
+            row.impulsive_mask_rejected_max_fraction = true;
             logger->info(
                 "impulsive_coincidence_mask rejected for scan {} nw {}: dominant_sample={} center_sample={} local_trigger={} cross_network_trigger={} high_score_override_trigger={} cluster_networks={} cluster_peak_score={} cluster_active={} total_active={} window_samples={} proposed_fraction={} exceeds max_flagged_fraction={}",
                 scan_id + 1,
@@ -2833,6 +2865,30 @@ void RTCProc::write_cached_diagnostics_to_netcdf(netCDF::NcFile &fo,
                          [](const auto &row) { return row.impulsive_mask_n_det_samples_flagged; });
             write_nw_double("rtc_network_impulsive_mask_flagged_fraction",
                             [](const auto &row) { return row.impulsive_mask_flagged_fraction; });
+            write_nw_int("rtc_network_impulsive_mask_candidate_available",
+                         [](const auto &row) { return row.impulsive_mask_candidate_available ? 1 : 0; });
+            write_nw_int("rtc_network_impulsive_mask_local_trigger",
+                         [](const auto &row) { return row.impulsive_mask_local_trigger ? 1 : 0; });
+            write_nw_int("rtc_network_impulsive_mask_cross_network_trigger",
+                         [](const auto &row) { return row.impulsive_mask_cross_network_trigger ? 1 : 0; });
+            write_nw_int("rtc_network_impulsive_mask_high_score_override_trigger",
+                         [](const auto &row) { return row.impulsive_mask_high_score_override_trigger ? 1 : 0; });
+            write_nw_int("rtc_network_impulsive_mask_rejected_max_fraction",
+                         [](const auto &row) { return row.impulsive_mask_rejected_max_fraction ? 1 : 0; });
+            write_nw_int("rtc_network_impulsive_mask_candidate_center_sample",
+                         [](const auto &row) { return row.impulsive_mask_candidate_center_sample; });
+            write_nw_int("rtc_network_impulsive_mask_cluster_center_sample",
+                         [](const auto &row) { return row.impulsive_mask_cluster_center_sample; });
+            write_nw_int("rtc_network_impulsive_mask_cluster_network_count",
+                         [](const auto &row) { return row.impulsive_mask_cluster_network_count; });
+            write_nw_int("rtc_network_impulsive_mask_cluster_active_count",
+                         [](const auto &row) { return row.impulsive_mask_cluster_active_count; });
+            write_nw_int("rtc_network_impulsive_mask_total_active_count",
+                         [](const auto &row) { return row.impulsive_mask_total_active_count; });
+            write_nw_double("rtc_network_impulsive_mask_cluster_peak_score",
+                            [](const auto &row) { return row.impulsive_mask_cluster_peak_score; });
+            write_nw_double("rtc_network_impulsive_mask_proposed_flagged_fraction",
+                            [](const auto &row) { return row.impulsive_mask_proposed_flagged_fraction; });
 
             NcDim n_slots_dim = fo.getDim("n_rtc_impulsive_slots");
             NcDim n_snip_dim = fo.getDim("n_rtc_impulsive_samples");

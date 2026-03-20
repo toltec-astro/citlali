@@ -45,6 +45,8 @@ NUMERIC_ROUND = {
     "event_score": 3,
     "peak_abs_z": 3,
     "peak_delta_abs_z": 3,
+    "impulsive_mask_cluster_peak_score": 3,
+    "impulsive_mask_proposed_flagged_fraction": 4,
 }
 
 HELP_BOX_STYLE = {
@@ -127,6 +129,12 @@ def build_heatmap(scan_df: pd.DataFrame, obsnum: str) -> go.Figure:
             f"<br>slot={row['max_slot_event_score']:.3f}"
             f"<br>step_mask={int(row['step_mask_applied'])}"
             f"<br>imp_mask={int(row['impulsive_mask_applied'])}"
+            f"<br>cand={int(row.get('impulsive_mask_candidate_available', 0))}"
+            f"<br>local={int(row.get('impulsive_mask_local_trigger', 0))}"
+            f"<br>cross={int(row.get('impulsive_mask_cross_network_trigger', 0))}"
+            f"<br>override={int(row.get('impulsive_mask_high_score_override_trigger', 0))}"
+            f"<br>cluster_nw={int(row.get('impulsive_mask_cluster_network_count', 0))}"
+            f"<br>cluster_peak={row.get('impulsive_mask_cluster_peak_score', float('nan')):.3f}"
         ),
         axis=1,
     )
@@ -437,7 +445,7 @@ This is the bridge between the all-obs summary tables and the scan-level detail 
                 """
 These are the highest-severity scan/network rows within the selected obsnum.
 
-This is usually the first table to inspect after the heatmap. It surfaces the exact scan chunks and networks that drive the obsnum ranking. `step_mask_applied` and `impulsive_mask_applied` let you compare diagnostic severity against the actual runtime actions taken by RTC.
+This is usually the first table to inspect after the heatmap. It surfaces the exact scan chunks and networks that drive the obsnum ranking. `step_mask_applied` and `impulsive_mask_applied` let you compare diagnostic severity against the actual runtime actions taken by RTC, while the `impulsive_mask_*trigger` and cluster columns show why the impulsive path decided to act or not act.
                 """,
             ),
             html.Div(id="scan-row-table"),
@@ -519,6 +527,13 @@ Each row is one stored slot from the compact RTC impulsive capture product. `eve
                     "max_slot_event_score",
                     "step_mask_applied",
                     "impulsive_mask_applied",
+                    "impulsive_mask_candidate_available",
+                    "impulsive_mask_local_trigger",
+                    "impulsive_mask_cross_network_trigger",
+                    "impulsive_mask_high_score_override_trigger",
+                    "impulsive_mask_rejected_max_fraction",
+                    "impulsive_mask_cluster_network_count",
+                    "impulsive_mask_cluster_peak_score",
                 ],
                 rounded_records(
                     scan_top_view,
@@ -532,6 +547,13 @@ Each row is one stored slot from the compact RTC impulsive capture product. `eve
                         "max_slot_event_score",
                         "step_mask_applied",
                         "impulsive_mask_applied",
+                        "impulsive_mask_candidate_available",
+                        "impulsive_mask_local_trigger",
+                        "impulsive_mask_cross_network_trigger",
+                        "impulsive_mask_high_score_override_trigger",
+                        "impulsive_mask_rejected_max_fraction",
+                        "impulsive_mask_cluster_network_count",
+                        "impulsive_mask_cluster_peak_score",
                     ],
                 ),
                 page_size=12,
