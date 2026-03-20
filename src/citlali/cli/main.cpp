@@ -175,6 +175,7 @@ int run(const rc_t &rc) {
     spdlog::register_logger(default_logger);
     // overwrite default logger
     spdlog::set_default_logger(default_logger);
+    default_logger->flush_on(spdlog::level::info);
 
     // vector to hold sink pointers
     std::vector<spdlog::sink_ptr> sinks;
@@ -184,6 +185,7 @@ int run(const rc_t &rc) {
     // create citlali logger
     auto logger = std::make_shared<spdlog::logger>("citlali_logger", begin(sinks), end(sinks));
     spdlog::register_logger(logger);
+    logger->flush_on(spdlog::level::info);
 
     // set global level
     spdlog::set_level(log_level);
