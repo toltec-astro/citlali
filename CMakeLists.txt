@@ -47,6 +47,13 @@ set(dep_libs ${dep_libs} tula::CCfits)
 include(FFTW)
 set(dep_libs ${dep_libs} tula::FFTW)
 
+find_package(ZLIB REQUIRED)
+if(TARGET ZLIB::ZLIB)
+    set(dep_libs ${dep_libs} ZLIB::ZLIB)
+else()
+    set(dep_libs ${dep_libs} ${ZLIB_LIBRARIES})
+endif()
+
 find_package(HDF5 REQUIRED COMPONENTS C HL)
 if(TARGET hdf5::hdf5-shared AND TARGET hdf5::hdf5_hl-shared)
     set(dep_libs ${dep_libs} hdf5::hdf5-shared hdf5::hdf5_hl-shared)

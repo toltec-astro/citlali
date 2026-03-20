@@ -8,6 +8,7 @@
 #include <tula/algorithm/mlinterp/mlinterp.hpp>
 
 #include <citlali/core/utils/fits_io.h>
+#include <citlali/core/utils/compressed_log_sink.h>
 #include <citlali/core/utils/netcdf_io.h>
 #include <citlali/core/utils/toltec_io.h>
 
@@ -382,9 +383,23 @@ void TimeOrderedDataProc<EngineType>::create_output_dir() {
 
         // create redu dir directory
         fs::create_directories(engine().redu_dir_name);
+        try {
+            auto log_path = citlali::logging::enable_reduction_gzip_logs(engine().redu_dir_name);
+            logger->info("reduction-local compressed log: {}", log_path);
+        } catch (const std::exception &e) {
+            logger->warn("failed to enable reduction-local compressed log in {}: {}",
+                         engine().redu_dir_name, e.what());
+        }
     }
     else {
         engine().redu_dir_name = engine().output_dir + "/";
+        try {
+            auto log_path = citlali::logging::enable_reduction_gzip_logs(engine().redu_dir_name);
+            logger->info("reduction-local compressed log: {}", log_path);
+        } catch (const std::exception &e) {
+            logger->warn("failed to enable reduction-local compressed log in {}: {}",
+                         engine().redu_dir_name, e.what());
+        }
     }
 
     // coadded subdir
