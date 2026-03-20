@@ -1889,7 +1889,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.MIN_EVENT_Z", rtcproc.impulsive_capture.min_event_z);
         add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.NEAR_EVENT_Z", rtcproc.impulsive_capture.near_event_z);
         add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.MAX_EVENTS", rtcproc.impulsive_capture.max_events_per_network);
-        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.HALF_WIDTH_SEC", rtcproc.impulsive_capture.snippet_half_width_sec);
+        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.PRE_WINDOW_SEC", rtcproc.impulsive_capture.snippet_pre_window_sec);
+        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.POST_WINDOW_SEC", rtcproc.impulsive_capture.snippet_post_window_sec);
         add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.ENABLED", rtcproc.impulsive_coincidence.enabled);
         add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_GOOD_FRAC", rtcproc.impulsive_coincidence.min_good_frac);
         add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.EVENT_SCORE_THRESH", rtcproc.impulsive_coincidence.event_score_thresh);
@@ -1900,7 +1901,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.HIGH_SCORE_OVERRIDE_THRESH", rtcproc.impulsive_coincidence.high_score_override_thresh);
         add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.HIGH_SCORE_MIN_NETWORKS", rtcproc.impulsive_coincidence.high_score_min_networks_aligned);
         add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.CLUSTER_TOL_SEC", rtcproc.impulsive_coincidence.cluster_tol_sec);
-        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.HALF_WIDTH_SEC", rtcproc.impulsive_coincidence.mask_half_width_sec);
+        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.PRE_WINDOW_SEC", rtcproc.impulsive_coincidence.mask_pre_window_sec);
+        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.POST_WINDOW_SEC", rtcproc.impulsive_coincidence.mask_post_window_sec);
         add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MAX_FLAGGED_FRAC", rtcproc.impulsive_coincidence.max_flagged_fraction);
         add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTLOW", ptcproc.lower_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTHIGH", ptcproc.upper_inv_var_factor);
@@ -2400,8 +2402,9 @@ void Engine::create_tod_files() {
         if (rtcproc.impulsive_capture.enabled) {
             const auto n_slots = static_cast<std::size_t>(std::max<Eigen::Index>(rtcproc.impulsive_capture.max_events_per_network, 1));
             const double rtc_fsmp = rtcproc.run_downsample ? telescope.d_fsmp : telescope.fsmp;
-            const auto snippet_half_width = static_cast<std::size_t>(std::max(0.0, std::round(rtcproc.impulsive_capture.snippet_half_width_sec * rtc_fsmp)));
-            const auto n_snippet = 2 * snippet_half_width + 1;
+            const auto snippet_pre = static_cast<std::size_t>(std::max(0.0, std::round(rtcproc.impulsive_capture.snippet_pre_window_sec * rtc_fsmp)));
+            const auto snippet_post = static_cast<std::size_t>(std::max(0.0, std::round(rtcproc.impulsive_capture.snippet_post_window_sec * rtc_fsmp)));
+            const auto n_snippet = snippet_pre + snippet_post + 1;
             netCDF::NcDim n_rtc_impulsive_slots_dim = fo.addDim("n_rtc_impulsive_slots", n_slots);
             netCDF::NcDim n_rtc_impulsive_samples_dim = fo.addDim("n_rtc_impulsive_samples", n_snippet);
 
@@ -2410,7 +2413,7 @@ void Engine::create_tod_files() {
             offset_v.putAtt("comment", "sample offsets relative to rtc_impulsive_slot_event_sample");
             std::vector<int> offsets(n_snippet, fill_int);
             for (std::size_t i = 0; i < n_snippet; ++i) {
-                offsets[i] = static_cast<int>(i) - static_cast<int>(snippet_half_width);
+                offsets[i] = static_cast<int>(i) - static_cast<int>(snippet_pre);
             }
             offset_v.putVar(offsets.data());
 
@@ -3376,9 +3379,12 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE.MAX_EVENTS",
                                         static_cast<int>(rtcproc.impulsive_capture.max_events_per_network),
                                         "Maximum captured impulsive detectors per network");
-    add_double_key("CONFIG.RTC.IMPULSIVE.HALF_WIDTH_SEC",
-                   rtcproc.impulsive_capture.snippet_half_width_sec,
-                   "Half-width of captured RTC impulsive snippets");
+    add_double_key("CONFIG.RTC.IMPULSIVE.PRE_WINDOW_SEC",
+                   rtcproc.impulsive_capture.snippet_pre_window_sec,
+                   "Pre-event window of captured RTC impulsive snippets");
+    add_double_key("CONFIG.RTC.IMPULSIVE.POST_WINDOW_SEC",
+                   rtcproc.impulsive_capture.snippet_post_window_sec,
+                   "Post-event window of captured RTC impulsive snippets");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.RTC.IMPULSIVE_COINCIDENCE.ENABLED",
                                         rtcproc.impulsive_coincidence.enabled,
                                         "Enable RTC impulsive coincidence masking");
@@ -3409,9 +3415,12 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     add_double_key("CONFIG.RTC.IMPULSIVE_COINCIDENCE.CLUSTER_TOL_SEC",
                    rtcproc.impulsive_coincidence.cluster_tol_sec,
                    "Allowed timing tolerance for aligned RTC impulsive coincidence clusters");
-    add_double_key("CONFIG.RTC.IMPULSIVE_COINCIDENCE.HALF_WIDTH_SEC",
-                   rtcproc.impulsive_coincidence.mask_half_width_sec,
-                   "Half-width of the applied RTC impulsive coincidence mask window");
+    add_double_key("CONFIG.RTC.IMPULSIVE_COINCIDENCE.PRE_WINDOW_SEC",
+                   rtcproc.impulsive_coincidence.mask_pre_window_sec,
+                   "Pre-event window of the applied RTC impulsive coincidence mask");
+    add_double_key("CONFIG.RTC.IMPULSIVE_COINCIDENCE.POST_WINDOW_SEC",
+                   rtcproc.impulsive_coincidence.mask_post_window_sec,
+                   "Post-event window of the applied RTC impulsive coincidence mask");
     add_double_key("CONFIG.RTC.IMPULSIVE_COINCIDENCE.MAX_FLAGGED_FRAC",
                    rtcproc.impulsive_coincidence.max_flagged_fraction,
                    "Maximum allowed newly flagged detector-sample fraction per RTC impulsive coincidence mask");
@@ -3983,7 +3992,8 @@ void Engine::create_rtcdiag_file() {
     add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.MIN_EVENT_Z", rtcproc.impulsive_capture.min_event_z);
     add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.NEAR_EVENT_Z", rtcproc.impulsive_capture.near_event_z);
     add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.MAX_EVENTS", rtcproc.impulsive_capture.max_events_per_network);
-    add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.HALF_WIDTH_SEC", rtcproc.impulsive_capture.snippet_half_width_sec);
+    add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.PRE_WINDOW_SEC", rtcproc.impulsive_capture.snippet_pre_window_sec);
+    add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.POST_WINDOW_SEC", rtcproc.impulsive_capture.snippet_post_window_sec);
     add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.ENABLED", rtcproc.impulsive_coincidence.enabled);
     add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_GOOD_FRAC", rtcproc.impulsive_coincidence.min_good_frac);
     add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.EVENT_SCORE_THRESH", rtcproc.impulsive_coincidence.event_score_thresh);
@@ -3994,7 +4004,8 @@ void Engine::create_rtcdiag_file() {
     add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.HIGH_SCORE_OVERRIDE_THRESH", rtcproc.impulsive_coincidence.high_score_override_thresh);
     add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.HIGH_SCORE_MIN_NETWORKS", rtcproc.impulsive_coincidence.high_score_min_networks_aligned);
     add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.CLUSTER_TOL_SEC", rtcproc.impulsive_coincidence.cluster_tol_sec);
-    add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.HALF_WIDTH_SEC", rtcproc.impulsive_coincidence.mask_half_width_sec);
+    add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.PRE_WINDOW_SEC", rtcproc.impulsive_coincidence.mask_pre_window_sec);
+    add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.POST_WINDOW_SEC", rtcproc.impulsive_coincidence.mask_post_window_sec);
     add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MAX_FLAGGED_FRAC", rtcproc.impulsive_coincidence.max_flagged_fraction);
 
     for (auto const &x : calib.apt) {
@@ -4202,9 +4213,11 @@ void Engine::create_rtcdiag_file() {
     if (rtcproc.impulsive_capture.enabled) {
         const auto n_slots =
             static_cast<std::size_t>(std::max<Eigen::Index>(rtcproc.impulsive_capture.max_events_per_network, 1));
-        const auto snippet_half_width =
-            static_cast<std::size_t>(std::max(0.0, std::round(rtcproc.impulsive_capture.snippet_half_width_sec * rtc_fsmp)));
-        const auto n_snippet = 2 * snippet_half_width + 1;
+        const auto snippet_pre =
+            static_cast<std::size_t>(std::max(0.0, std::round(rtcproc.impulsive_capture.snippet_pre_window_sec * rtc_fsmp)));
+        const auto snippet_post =
+            static_cast<std::size_t>(std::max(0.0, std::round(rtcproc.impulsive_capture.snippet_post_window_sec * rtc_fsmp)));
+        const auto n_snippet = snippet_pre + snippet_post + 1;
         netCDF::NcDim n_rtc_impulsive_slots_dim = fo.addDim("n_rtc_impulsive_slots", n_slots);
         netCDF::NcDim n_rtc_impulsive_samples_dim = fo.addDim("n_rtc_impulsive_samples", n_snippet);
 
@@ -4213,7 +4226,7 @@ void Engine::create_rtcdiag_file() {
         offset_v.putAtt("comment", "sample offsets relative to rtc_impulsive_slot_event_sample");
         std::vector<int> offsets(n_snippet, fill_int);
         for (std::size_t i = 0; i < n_snippet; ++i) {
-            offsets[i] = static_cast<int>(i) - static_cast<int>(snippet_half_width);
+            offsets[i] = static_cast<int>(i) - static_cast<int>(snippet_pre);
         }
         offset_v.putVar(offsets.data());
 

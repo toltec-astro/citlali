@@ -79,7 +79,8 @@ public:
         double min_event_z = 6.0;
         double near_event_z = 4.0;
         Eigen::Index max_events_per_network = 3;
-        double snippet_half_width_sec = 0.25;
+        double snippet_pre_window_sec = 0.25;
+        double snippet_post_window_sec = 0.25;
     };
     ImpulsiveCaptureOptions impulsive_capture;
 
@@ -94,7 +95,8 @@ public:
         double high_score_override_thresh = std::numeric_limits<double>::quiet_NaN();
         Eigen::Index high_score_min_networks_aligned = 0;
         double cluster_tol_sec = 0.03;
-        double mask_half_width_sec = 0.03;
+        double mask_pre_window_sec = 0.03;
+        double mask_post_window_sec = 0.03;
         double max_flagged_fraction = 0.10;
     };
     ImpulsiveCoincidenceOptions impulsive_coincidence;
@@ -353,19 +355,25 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                              std::tuple{"timestream","raw_time_chunk","flagging","impulsive_capture","max_events_per_network"},
                              {}, {1});
         }
-        if (config.has(std::tuple{"timestream","raw_time_chunk","flagging","impulsive_capture","snippet_half_width_sec"})) {
-            get_config_value(config, impulsive_capture.snippet_half_width_sec, missing_keys, invalid_keys,
-                             std::tuple{"timestream","raw_time_chunk","flagging","impulsive_capture","snippet_half_width_sec"},
+        if (config.has(std::tuple{"timestream","raw_time_chunk","flagging","impulsive_capture","snippet_pre_window_sec"})) {
+            get_config_value(config, impulsive_capture.snippet_pre_window_sec, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","flagging","impulsive_capture","snippet_pre_window_sec"},
+                             {}, {0.0});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","flagging","impulsive_capture","snippet_post_window_sec"})) {
+            get_config_value(config, impulsive_capture.snippet_post_window_sec, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","flagging","impulsive_capture","snippet_post_window_sec"},
                              {}, {0.0});
         }
         if (impulsive_capture.enabled) {
             logger->info(
-                "raw_time_chunk.flagging.impulsive_capture enabled: min_good_frac={} min_event_z={} near_event_z={} max_events_per_network={} snippet_half_width_sec={}",
+                "raw_time_chunk.flagging.impulsive_capture enabled: min_good_frac={} min_event_z={} near_event_z={} max_events_per_network={} snippet_pre_window_sec={} snippet_post_window_sec={}",
                 impulsive_capture.min_good_frac,
                 impulsive_capture.min_event_z,
                 impulsive_capture.near_event_z,
                 impulsive_capture.max_events_per_network,
-                impulsive_capture.snippet_half_width_sec);
+                impulsive_capture.snippet_pre_window_sec,
+                impulsive_capture.snippet_post_window_sec);
         }
     }
     impulsive_coincidence = {};
@@ -419,9 +427,14 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                              std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","cluster_tol_sec"},
                              {}, {0.0});
         }
-        if (config.has(std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","mask_half_width_sec"})) {
-            get_config_value(config, impulsive_coincidence.mask_half_width_sec, missing_keys, invalid_keys,
-                             std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","mask_half_width_sec"},
+        if (config.has(std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","mask_pre_window_sec"})) {
+            get_config_value(config, impulsive_coincidence.mask_pre_window_sec, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","mask_pre_window_sec"},
+                             {}, {0.0});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","mask_post_window_sec"})) {
+            get_config_value(config, impulsive_coincidence.mask_post_window_sec, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","mask_post_window_sec"},
                              {}, {0.0});
         }
         if (config.has(std::tuple{"timestream","raw_time_chunk","flagging","impulsive_coincidence","max_flagged_fraction"})) {
@@ -430,7 +443,7 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                              {}, {0.0}, {1.0});
         }
         logger->info(
-            "raw_time_chunk.flagging.impulsive_coincidence configured: enabled={} min_good_frac={} event_score_thresh={} min_det_used={} min_impulsive_det_frac={} min_alignment_frac={} min_networks_aligned={} high_score_override_thresh={} high_score_min_networks_aligned={} cluster_tol_sec={} mask_half_width_sec={} max_flagged_fraction={}",
+            "raw_time_chunk.flagging.impulsive_coincidence configured: enabled={} min_good_frac={} event_score_thresh={} min_det_used={} min_impulsive_det_frac={} min_alignment_frac={} min_networks_aligned={} high_score_override_thresh={} high_score_min_networks_aligned={} cluster_tol_sec={} mask_pre_window_sec={} mask_post_window_sec={} max_flagged_fraction={}",
             impulsive_coincidence.enabled,
             impulsive_coincidence.min_good_frac,
             impulsive_coincidence.event_score_thresh,
@@ -441,7 +454,8 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             impulsive_coincidence.high_score_override_thresh,
             impulsive_coincidence.high_score_min_networks_aligned,
             impulsive_coincidence.cluster_tol_sec,
-            impulsive_coincidence.mask_half_width_sec,
+            impulsive_coincidence.mask_pre_window_sec,
+            impulsive_coincidence.mask_post_window_sec,
             impulsive_coincidence.max_flagged_fraction);
     }
 
@@ -1741,10 +1755,13 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     rtc_detector_summary_by_scan[scan_id] = det_summary;
 
     if (impulsive_capture.enabled && !(have_impulsive_summary && !recompute_impulsive_metrics)) {
-        const Eigen::Index snippet_half_width = std::max<Eigen::Index>(
-            0, static_cast<Eigen::Index>(std::llround(impulsive_capture.snippet_half_width_sec /
+        const Eigen::Index snippet_pre = std::max<Eigen::Index>(
+            0, static_cast<Eigen::Index>(std::llround(impulsive_capture.snippet_pre_window_sec /
                                                       std::max(dt_for_step, 1.0e-6))));
-        const Eigen::Index snippet_len = 2 * snippet_half_width + 1;
+        const Eigen::Index snippet_post = std::max<Eigen::Index>(
+            0, static_cast<Eigen::Index>(std::llround(impulsive_capture.snippet_post_window_sec /
+                                                      std::max(dt_for_step, 1.0e-6))));
+        const Eigen::Index snippet_len = snippet_pre + snippet_post + 1;
         std::map<Eigen::Index, std::vector<RTCImpulsiveSnippetSummary>> impulsive_by_network;
         auto grp_limits = get_grouping("nw", calib, n_dets);
         for (const auto &[nw, bounds] : grp_limits) {
@@ -1794,7 +1811,7 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                     scale = nan;
                 }
                 for (Eigen::Index k = 0; k < snippet_len; ++k) {
-                    const Eigen::Index sample = static_cast<Eigen::Index>(slot.event_sample) + k - snippet_half_width;
+                    const Eigen::Index sample = static_cast<Eigen::Index>(slot.event_sample) - snippet_pre + k;
                     if (sample < 0 || sample >= n_pts) {
                         continue;
                     }
@@ -2215,7 +2232,9 @@ void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::Ma
     };
 
     const double dt_sec =
-        (impulsive_coincidence.mask_half_width_sec > 0.0 || impulsive_coincidence.cluster_tol_sec > 0.0)
+        (impulsive_coincidence.mask_pre_window_sec > 0.0 ||
+         impulsive_coincidence.mask_post_window_sec > 0.0 ||
+         impulsive_coincidence.cluster_tol_sec > 0.0)
             ? infer_dt_sec()
             : 1.0;
     const double cluster_tol_samples = std::max(
@@ -2531,13 +2550,16 @@ void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::Ma
         row.impulsive_mask_override_score = cand.override_score;
         row.impulsive_mask_override_uses_network_peak = cand.override_uses_network_peak;
 
-        const Eigen::Index half_width = std::max<Eigen::Index>(
-            0, static_cast<Eigen::Index>(std::llround(impulsive_coincidence.mask_half_width_sec /
+        const Eigen::Index pre_width = std::max<Eigen::Index>(
+            0, static_cast<Eigen::Index>(std::llround(impulsive_coincidence.mask_pre_window_sec /
+                                                      std::max(dt_sec, 1.0e-6))));
+        const Eigen::Index post_width = std::max<Eigen::Index>(
+            0, static_cast<Eigen::Index>(std::llround(impulsive_coincidence.mask_post_window_sec /
                                                       std::max(dt_sec, 1.0e-6))));
         const Eigen::Index center =
             cand.cross_network_trigger ? cand.cluster_center_sample : cand.center_sample;
-        const Eigen::Index start_sample = std::max<Eigen::Index>(0, center - half_width);
-        const Eigen::Index end_sample = std::min<Eigen::Index>(n_pts - 1, center + half_width);
+        const Eigen::Index start_sample = std::max<Eigen::Index>(0, center - pre_width);
+        const Eigen::Index end_sample = std::min<Eigen::Index>(n_pts - 1, center + post_width);
         const Eigen::Index window_samples = std::max<Eigen::Index>(0, end_sample - start_sample + 1);
         if (window_samples <= 0 || cand.end_det <= cand.start_det) {
             continue;
