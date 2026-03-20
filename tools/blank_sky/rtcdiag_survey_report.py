@@ -76,6 +76,7 @@ def _write_report(
                 "local={impulsive_mask_local_trigger} cross={impulsive_mask_cross_network_trigger} "
                 "override={impulsive_mask_high_score_override_trigger} reject_frac={impulsive_mask_rejected_max_fraction} "
                 "cluster_nw={impulsive_mask_cluster_network_count} cluster_peak={impulsive_mask_cluster_peak_score:.2f} "
+                "override_score={impulsive_mask_override_score:.2f} override_network_peak={impulsive_mask_override_uses_network_peak} "
                 "cluster_active={impulsive_mask_cluster_active_count} total_active={impulsive_mask_total_active_count} "
                 "proposed_frac={impulsive_mask_proposed_flagged_fraction:.4f}".format(**row)
             )

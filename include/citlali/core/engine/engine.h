@@ -2390,6 +2390,10 @@ void Engine::create_tod_files() {
                        "total number of detector-level impulsive events above threshold in the selected network block");
         add_rtc_nw_double("rtc_network_impulsive_mask_cluster_peak_score",
                           "maximum impulsive-event score found within the selected cross-network impulsive cluster");
+        add_rtc_nw_double("rtc_network_impulsive_mask_override_score",
+                          "score used by the high-score override path after combining the selected cluster peak with the strongest candidate score seen in participating networks");
+        add_rtc_nw_int("rtc_network_impulsive_mask_override_uses_network_peak",
+                       "1 if rtc_network_impulsive_mask_override_score came from a participating network's strongest candidate rather than the selected cluster peak");
         add_rtc_nw_double("rtc_network_impulsive_mask_proposed_flagged_fraction",
                           "fraction of previously good detector-samples that the selected impulsive mask window would newly flag before any rejection");
 
@@ -4188,6 +4192,10 @@ void Engine::create_rtcdiag_file() {
                    "total number of detector-level impulsive events above threshold in the selected network block");
     add_rtc_nw_double("rtc_network_impulsive_mask_cluster_peak_score",
                       "maximum impulsive-event score found within the selected cross-network impulsive cluster");
+    add_rtc_nw_double("rtc_network_impulsive_mask_override_score",
+                      "score used by the high-score override path after combining the selected cluster peak with the strongest candidate score seen in participating networks");
+    add_rtc_nw_int("rtc_network_impulsive_mask_override_uses_network_peak",
+                   "1 if rtc_network_impulsive_mask_override_score came from a participating network's strongest candidate rather than the selected cluster peak");
     add_rtc_nw_double("rtc_network_impulsive_mask_proposed_flagged_fraction",
                       "fraction of previously good detector-samples that the selected impulsive mask window would newly flag before any rejection");
 

@@ -343,6 +343,16 @@ def load_reduction_tables(
                 if "rtc_network_impulsive_mask_cluster_peak_score" in ds.variables
                 else np.full_like(step_det, np.nan, dtype=float)
             )
+            impulsive_mask_override_score = (
+                filled(ds.variables["rtc_network_impulsive_mask_override_score"], fill=np.nan)
+                if "rtc_network_impulsive_mask_override_score" in ds.variables
+                else np.full_like(step_det, np.nan, dtype=float)
+            )
+            impulsive_mask_override_uses_network_peak = (
+                filled(ds.variables["rtc_network_impulsive_mask_override_uses_network_peak"], fill=0).astype(int)
+                if "rtc_network_impulsive_mask_override_uses_network_peak" in ds.variables
+                else np.zeros_like(impulsive_mask_applied, dtype=int)
+            )
             impulsive_mask_proposed_flagged_fraction = (
                 filled(ds.variables["rtc_network_impulsive_mask_proposed_flagged_fraction"], fill=np.nan)
                 if "rtc_network_impulsive_mask_proposed_flagged_fraction" in ds.variables
@@ -402,6 +412,8 @@ def load_reduction_tables(
                         "impulsive_mask_cluster_active_count": int(impulsive_mask_cluster_active_count[scan, diag_idx]),
                         "impulsive_mask_total_active_count": int(impulsive_mask_total_active_count[scan, diag_idx]),
                         "impulsive_mask_cluster_peak_score": float(impulsive_mask_cluster_peak_score[scan, diag_idx]),
+                        "impulsive_mask_override_score": float(impulsive_mask_override_score[scan, diag_idx]),
+                        "impulsive_mask_override_uses_network_peak": int(impulsive_mask_override_uses_network_peak[scan, diag_idx]),
                         "impulsive_mask_proposed_flagged_fraction": float(impulsive_mask_proposed_flagged_fraction[scan, diag_idx]),
                         "max_impulsive_event_score": float(scan_max_imp[scan]),
                         "impulsive_frac_ge_threshold": float(scan_imp_frac_ge[scan]),

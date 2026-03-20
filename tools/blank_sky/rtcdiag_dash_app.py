@@ -46,6 +46,7 @@ NUMERIC_ROUND = {
     "peak_abs_z": 3,
     "peak_delta_abs_z": 3,
     "impulsive_mask_cluster_peak_score": 3,
+    "impulsive_mask_override_score": 3,
     "impulsive_mask_proposed_flagged_fraction": 4,
 }
 
@@ -135,6 +136,8 @@ def build_heatmap(scan_df: pd.DataFrame, obsnum: str) -> go.Figure:
             f"<br>override={int(row.get('impulsive_mask_high_score_override_trigger', 0))}"
             f"<br>cluster_nw={int(row.get('impulsive_mask_cluster_network_count', 0))}"
             f"<br>cluster_peak={row.get('impulsive_mask_cluster_peak_score', float('nan')):.3f}"
+            f"<br>override_score={row.get('impulsive_mask_override_score', float('nan')):.3f}"
+            f"<br>override_network_peak={int(row.get('impulsive_mask_override_uses_network_peak', 0))}"
         ),
         axis=1,
     )
@@ -534,6 +537,8 @@ Each row is one stored slot from the compact RTC impulsive capture product. `eve
                     "impulsive_mask_rejected_max_fraction",
                     "impulsive_mask_cluster_network_count",
                     "impulsive_mask_cluster_peak_score",
+                    "impulsive_mask_override_score",
+                    "impulsive_mask_override_uses_network_peak",
                 ],
                 rounded_records(
                     scan_top_view,
@@ -554,6 +559,8 @@ Each row is one stored slot from the compact RTC impulsive capture product. `eve
                         "impulsive_mask_rejected_max_fraction",
                         "impulsive_mask_cluster_network_count",
                         "impulsive_mask_cluster_peak_score",
+                        "impulsive_mask_override_score",
+                        "impulsive_mask_override_uses_network_peak",
                     ],
                 ),
                 page_size=12,
