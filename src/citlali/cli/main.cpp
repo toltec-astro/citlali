@@ -999,8 +999,13 @@ int run(const rc_t &rc) {
                         }
 
                         // output files
-                        logger->info("outputting raw obs files");
-                        todproc.engine().template output<mapmaking::RawObs>();
+                        if (todproc.engine().run_mapmaking) {
+                            logger->info("outputting raw obs files");
+                            todproc.engine().template output<mapmaking::RawObs>();
+                        }
+                        else {
+                            logger->info("mapmaking disabled; skipping raw obs map output");
+                        }
 
                         // coadd
                         if (todproc.engine().run_coadd) {
