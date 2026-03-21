@@ -1,4 +1,5 @@
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/algorithm/string/case_conv.hpp>
 
 #include <tula/logging.h>
 #include <tula/algorithm/ei_stats.h>
@@ -325,15 +326,16 @@ void Telescope::calc_scan_indices() {
         }*/
 
         std::string coord1_key, coord2_key;
-        if (map_coord == "Ra") {
+        const auto map_coord_lower = boost::algorithm::to_lower_copy(map_coord);
+        if (map_coord_lower == "ra" || map_coord_lower == "dec") {
             coord1_key = "ra_phys";
             coord2_key = "dec_phys";
         }
-        else if (map_coord == "Az") {
+        else if (map_coord_lower == "az" || map_coord_lower == "el" || map_coord_lower == "alt") {
             coord1_key = "az_phys";
             coord2_key = "alt_phys";
         }
-        else if (map_coord == "Gal") {
+        else if (map_coord_lower == "gal" || map_coord_lower == "l" || map_coord_lower == "b") {
             coord1_key = "l_phys";
             coord2_key = "b_phys";
         }

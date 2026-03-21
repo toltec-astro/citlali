@@ -279,3 +279,26 @@ Example:
   --max-det 128 \
   --outdir /path/to/rtc_line_audit
 ```
+
+`rtc_line_family_report.py`
+
+Build a reduction-level summary from an existing `rtc_line_audit` directory and
+plot representative PSDs for:
+
+- broad shared line families that may justify notch filtering
+- recurrent detector-local line candidates that may justify bad-detector flagging
+
+It writes:
+
+- `rtc_line_family_summary.csv`
+- `rtc_line_bad_detector_representatives.csv`
+- `rtc_shared_line_psd_gallery.png`
+- `rtc_bad_detector_psd_gallery.png`
+- `RTC_LINE_FAMILY_REPORT.md`
+
+Example:
+
+```bash
+~/toltec/bin/python tools/blank_sky/rtc_line_family_report.py \
+  --redu-dir /path/to/reduced/redu01
+```
