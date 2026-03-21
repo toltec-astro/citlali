@@ -2690,7 +2690,7 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
             const auto &added = second_pass_added_it->second;
             const auto n_rows = std::min<unsigned long>(
                 static_cast<unsigned long>(added.rows()),
-                static_cast<unsigned long>(in.tel_data.data.rows()));
+                static_cast<unsigned long>(in.scans.data.rows()));
             for (unsigned long i = 0; i < n_rows; ++i) {
                 start_index[0] = n_pts_before_append + i;
                 Eigen::Matrix<signed char, 1, Eigen::Dynamic> row = added.row(static_cast<Eigen::Index>(i));
