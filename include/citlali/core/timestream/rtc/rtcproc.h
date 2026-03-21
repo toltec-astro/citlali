@@ -1705,12 +1705,12 @@ void RTCProc::capture_rtc_line_audit(tc_t &in,
     };
 
     struct LinePeak {
-        int uid = fill_int;
-        double freq_hz = nan;
-        double prominence = nan;
-        double width_hz = nan;
-        double line_power_frac = nan;
-        double cluster_detector_frac = nan;
+        int uid = kTransientFillInt;
+        double freq_hz = std::numeric_limits<double>::quiet_NaN();
+        double prominence = std::numeric_limits<double>::quiet_NaN();
+        double width_hz = std::numeric_limits<double>::quiet_NaN();
+        double line_power_frac = std::numeric_limits<double>::quiet_NaN();
+        double cluster_detector_frac = std::numeric_limits<double>::quiet_NaN();
         bool cluster_recommend_notch = false;
     };
 
@@ -1797,8 +1797,9 @@ void RTCProc::capture_rtc_line_audit(tc_t &in,
                     }
                 }
 
+                Eigen::VectorXd chunk_windowed = chunk.cwiseProduct(window);
                 Eigen::VectorXcd spec;
-                fft.fwd(spec, chunk.cwiseProduct(window));
+                fft.fwd(spec, chunk_windowed);
                 Eigen::VectorXd psd = spec.array().abs2() / win_norm;
                 if (psd.size() > 2) {
                     psd.segment(1, psd.size() - 2) *= 2.0;
@@ -1922,21 +1923,21 @@ void RTCProc::capture_rtc_line_audit(tc_t &in,
 
     struct SelectedDet {
         Eigen::Index det = -1;
-        int uid = fill_int;
+        int uid = kTransientFillInt;
         Eigen::VectorXd centered;
         Eigen::Array<bool, Eigen::Dynamic, 1> valid;
     };
     struct SharedCluster {
-        double center_hz = nan;
+        double center_hz = std::numeric_limits<double>::quiet_NaN();
         int detector_count = 0;
-        double detector_frac = nan;
-        double median_prominence = nan;
-        double max_prominence = nan;
-        double median_width_hz = nan;
-        double median_line_power_frac = nan;
-        double common_mode_freq_hz = nan;
-        double common_mode_prominence = nan;
-        double notch_score = nan;
+        double detector_frac = std::numeric_limits<double>::quiet_NaN();
+        double median_prominence = std::numeric_limits<double>::quiet_NaN();
+        double max_prominence = std::numeric_limits<double>::quiet_NaN();
+        double median_width_hz = std::numeric_limits<double>::quiet_NaN();
+        double median_line_power_frac = std::numeric_limits<double>::quiet_NaN();
+        double common_mode_freq_hz = std::numeric_limits<double>::quiet_NaN();
+        double common_mode_prominence = std::numeric_limits<double>::quiet_NaN();
+        double notch_score = std::numeric_limits<double>::quiet_NaN();
         bool recommend_notch = false;
     };
 
