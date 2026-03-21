@@ -1938,6 +1938,25 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "CONFIG.CLEANED.MP.BANDLOW_HZ", ptcproc.cleaner.marchenko_pastur.band_low_Hz);
         add_netcdf_var(fo, "CONFIG.CLEANED.MP.BANDHIGH_HZ", ptcproc.cleaner.marchenko_pastur.band_high_Hz);
         add_netcdf_var(fo, "CONFIG.CLEANED.MP.MAXMODES", ptcproc.cleaner.marchenko_pastur.max_modes);
+        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.ENABLED", ptcproc.second_pass_local.enabled);
+        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MIN_SPIKE_SIGMA", ptcproc.second_pass_local.min_spike_sigma);
+        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MIN_GOOD_FRAC", ptcproc.second_pass_local.min_good_frac);
+        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.BASELINE_WINDOW_SEC", ptcproc.second_pass_local.baseline_window_sec);
+        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.SIGMA_SCALE", ptcproc.second_pass_local.sigma_scale);
+        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.DELTA_SIGMA_SCALE", ptcproc.second_pass_local.delta_sigma_scale);
+        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.RAW_CAND_REL_SIGMA_SCALE", ptcproc.second_pass_local.raw_candidate_rel_sigma_scale);
+        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.RAW_WINDOW_SEC", ptcproc.second_pass_local.raw_window_sec);
+        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.RAW_HALF_PEAK_FRAC", ptcproc.second_pass_local.raw_half_peak_frac);
+        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.RAW_MAX_WIDTH_SEC", ptcproc.second_pass_local.raw_max_width_sec);
+        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.DELTA_WINDOW_SEC", ptcproc.second_pass_local.delta_window_sec);
+        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.DELTA_HALF_PEAK_FRAC", ptcproc.second_pass_local.delta_half_peak_frac);
+        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.DELTA_MAX_WIDTH_SEC", ptcproc.second_pass_local.delta_max_width_sec);
+        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MAX_STEP_SHIFT_Z", ptcproc.second_pass_local.max_step_shift_z);
+        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MERGE_WITHIN_DET_SEC", ptcproc.second_pass_local.merge_within_detector_sec);
+        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.CLUSTER_EVENTS_SEC", ptcproc.second_pass_local.cluster_events_sec);
+        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MIN_CLUSTER_DETECTORS", ptcproc.second_pass_local.min_cluster_detectors);
+        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.HIGH_SCORE_CLUSTER_OVERRIDE", ptcproc.second_pass_local.high_score_cluster_override);
+        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MAX_AUTO_FLAG_CLUSTERS", ptcproc.second_pass_local.max_auto_flag_clusters_per_network);
 
         // loop through arrays and add number of eigenvalues removed
         for (Eigen::Index i=0; i<calib.arrays.size(); ++i) {
@@ -2501,6 +2520,83 @@ void Engine::create_tod_files() {
         std::vector<netCDF::NcDim> weight_dims = {n_scans_dim, n_dets_dim};
         netCDF::NcVar weights_v = fo.addVar("weights",netCDF::ncDouble, weight_dims);
         weights_v.putAtt("units","("+omb.sig_unit+")^-2");
+
+        if (ptcproc.second_pass_local.enabled) {
+            netCDF::NcVar added_flag_v = fo.addVar("ptc_second_pass_added_flag", netCDF::ncByte, dims);
+            added_flag_v.putAtt("units", "N/A");
+            added_flag_v.putAtt("comment",
+                                "0=not added by PTC second-pass residual deglitching, 1=newly flagged by that pass");
+            added_flag_v.setChunking(chunkMode, chunkSizes);
+
+            const int fill_value = -2147483647;
+            const double fill_double = std::numeric_limits<double>::quiet_NaN();
+            netCDF::NcDim n_nws_ptc_second_pass_dim = fo.addDim("n_nws_ptc_second_pass", calib.n_nws);
+            netCDF::NcVar nw_ids_v = fo.addVar("ptc_second_pass_network_ids", netCDF::ncInt, n_nws_ptc_second_pass_dim);
+            nw_ids_v.putAtt("units", "N/A");
+            nw_ids_v.putAtt("comment", "network IDs corresponding to n_nws_ptc_second_pass axis");
+            std::vector<int> nw_ids(static_cast<std::size_t>(calib.n_nws), fill_value);
+            for (Eigen::Index i = 0; i < calib.n_nws; ++i) {
+                nw_ids[static_cast<std::size_t>(i)] = static_cast<int>(calib.nws(i));
+            }
+            nw_ids_v.putVar(nw_ids.data());
+
+            std::vector<netCDF::NcDim> ptc_second_pass_dims = {n_scans_dim, n_nws_ptc_second_pass_dim};
+            auto add_ptc_second_pass_int = [&](const std::string &name, const std::string &comment) {
+                netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, ptc_second_pass_dims);
+                v.putAtt("units", "N/A");
+                v.putAtt("comment", comment);
+                std::vector<int> init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
+                                      static_cast<std::size_t>(calib.n_nws), fill_value);
+                v.putVar(init.data());
+            };
+            auto add_ptc_second_pass_double = [&](const std::string &name, const std::string &comment) {
+                netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, ptc_second_pass_dims);
+                v.putAtt("units", "N/A");
+                v.putAtt("comment", comment);
+                std::vector<double> init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
+                                         static_cast<std::size_t>(calib.n_nws), fill_double);
+                v.putVar(init.data());
+            };
+
+            add_ptc_second_pass_int("ptc_second_pass_busy_network_vetoed",
+                                    "1 if this network had more candidate second-pass clusters than the auto-flag limit and was diagnostic-only");
+            add_ptc_second_pass_int("ptc_second_pass_n_candidate_clusters",
+                                    "number of candidate second-pass residual clusters in this scan/network");
+            add_ptc_second_pass_int("ptc_second_pass_n_candidate_events",
+                                    "number of candidate detector-local residual events contributing to candidate clusters");
+            add_ptc_second_pass_int("ptc_second_pass_n_accepted_clusters",
+                                    "number of candidate clusters accepted for auto-flagging after the busy-network veto");
+            add_ptc_second_pass_int("ptc_second_pass_n_accepted_events",
+                                    "number of accepted detector-local residual events contributing to auto-flagging");
+            add_ptc_second_pass_int("ptc_second_pass_n_det_with_added_flags",
+                                    "number of detectors in this scan/network with at least one sample newly flagged by the PTC second pass");
+            add_ptc_second_pass_int("ptc_second_pass_max_unflagged_residual_uid",
+                                    "UID of the detector with the largest absolute unflagged post-PCA residual in this scan/network");
+            add_ptc_second_pass_int("ptc_second_pass_top_candidate_cluster_sample",
+                                    "median sample of the strongest candidate second-pass cluster; -2147483647 means none");
+            add_ptc_second_pass_int("ptc_second_pass_top_candidate_cluster_n_detectors",
+                                    "number of distinct detectors contributing to the strongest candidate second-pass cluster");
+            add_ptc_second_pass_int("ptc_second_pass_top_candidate_cluster_n_events",
+                                    "number of merged detector events contributing to the strongest candidate second-pass cluster");
+            add_ptc_second_pass_int("ptc_second_pass_top_event_kind",
+                                    "kind code of the strongest accepted second-pass event (0=raw_like,1=delta_like,-2147483647 means none)");
+            add_ptc_second_pass_int("ptc_second_pass_top_event_uid",
+                                    "UID of the strongest accepted second-pass event; -2147483647 means none");
+            add_ptc_second_pass_int("ptc_second_pass_top_event_sample",
+                                    "sample of the strongest accepted second-pass event; -2147483647 means none");
+            add_ptc_second_pass_double("ptc_second_pass_existing_flagged_fraction",
+                                       "fraction of detector-samples already flagged before the PTC second pass in this scan/network");
+            add_ptc_second_pass_double("ptc_second_pass_proposed_flagged_fraction",
+                                       "fraction of detector-samples that the accepted PTC second-pass flags would cover in this scan/network");
+            add_ptc_second_pass_double("ptc_second_pass_newly_flagged_fraction",
+                                       "fraction of previously good detector-samples newly flagged by the PTC second pass in this scan/network");
+            add_ptc_second_pass_double("ptc_second_pass_max_unflagged_residual_z",
+                                       "largest absolute standardized residual remaining on previously unflagged PTC samples in this scan/network");
+            add_ptc_second_pass_double("ptc_second_pass_top_candidate_cluster_peak_score",
+                                       "peak event score of the strongest candidate second-pass cluster in this scan/network");
+            add_ptc_second_pass_double("ptc_second_pass_top_event_score",
+                                       "score of the strongest accepted second-pass event; NaN means none");
+        }
 
         // optional diagnostics for correlation-defined network cleaning groups
         bool corr_nw_requested = false;

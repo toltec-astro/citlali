@@ -6,6 +6,7 @@
 #include <complex>
 #include <cstdint>
 #include <limits>
+#include <map>
 #include <numeric>
 #include <random>
 #include <unordered_map>
@@ -24,6 +25,7 @@
 
 #include <citlali/core/timestream/timestream.h>
 #include <citlali/core/timestream/ptc/clean.h>
+#include <citlali/core/timestream/rtc/despike.h>
 
 #include <citlali/core/utils/toltec_io.h>
 
@@ -108,6 +110,57 @@ public:
     std::map<Eigen::Index, std::vector<CorrNWDiagSummary>> corr_nw_summary_by_scan;
     std::map<Eigen::Index, std::vector<WeightCorrPenaltyDiagSummary>> weight_corr_penalty_summary_by_scan;
 
+    struct SecondPassLocalOptions {
+        bool enabled = false;
+        double min_spike_sigma = 8.0;
+        double min_good_frac = 0.5;
+        double baseline_window_sec = 0.25;
+        double sigma_scale = 0.75;
+        double delta_sigma_scale = 0.75;
+        double raw_candidate_rel_sigma_scale = 1.0;
+        double raw_window_sec = 0.18;
+        double raw_half_peak_frac = 0.5;
+        double raw_max_width_sec = 0.18;
+        double delta_window_sec = 0.12;
+        double delta_half_peak_frac = 0.5;
+        double delta_max_width_sec = 0.10;
+        double max_step_shift_z = 3.0;
+        double merge_within_detector_sec = 0.08;
+        double cluster_events_sec = 0.08;
+        int min_cluster_detectors = 3;
+        double high_score_cluster_override = 9.0;
+        int max_auto_flag_clusters_per_network = 3;
+    };
+
+    struct SecondPassDiagSummary {
+        Eigen::Index nw = -1;
+        Eigen::Index n_det = 0;
+        Eigen::Index n_pts = 0;
+        Eigen::Index n_merged_events_total = 0;
+        Eigen::Index n_clusters_total = 0;
+        Eigen::Index n_candidate_events = 0;
+        Eigen::Index n_candidate_clusters = 0;
+        Eigen::Index n_accepted_events = 0;
+        Eigen::Index n_accepted_clusters = 0;
+        Eigen::Index n_det_with_added_flags = 0;
+        bool busy_network_vetoed = false;
+        double existing_flagged_fraction = std::numeric_limits<double>::quiet_NaN();
+        double proposed_flagged_fraction = std::numeric_limits<double>::quiet_NaN();
+        double newly_flagged_fraction = std::numeric_limits<double>::quiet_NaN();
+        double max_unflagged_residual_z = std::numeric_limits<double>::quiet_NaN();
+        int max_unflagged_residual_uid = kTransientFillInt;
+        double top_candidate_cluster_peak_score = std::numeric_limits<double>::quiet_NaN();
+        Eigen::Index top_candidate_cluster_n_detectors = 0;
+        Eigen::Index top_candidate_cluster_n_events = 0;
+        int top_candidate_cluster_sample = kTransientFillInt;
+        int top_event_uid = kTransientFillInt;
+        TransientEvent top_event;
+    };
+
+    SecondPassLocalOptions second_pass_local;
+    std::map<Eigen::Index, std::vector<SecondPassDiagSummary>> second_pass_summary_by_scan;
+    std::map<Eigen::Index, Eigen::Matrix<signed char, Eigen::Dynamic, Eigen::Dynamic>> second_pass_added_flags_by_scan;
+
     // get config file
     template <typename config_t>
     void get_config(config_t &, std::vector<std::vector<std::string>> &,
@@ -121,6 +174,9 @@ public:
     template <class calib_type>
     void run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
              calib_type &, std::string, std::string);
+
+    template <class calib_type>
+    void apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_type &);
 
     // calculate detector weights
     template <typename apt_type, class tel_type>
@@ -161,6 +217,123 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
     // upper weight factor
     get_config_value(config, upper_weight_factor, missing_keys, invalid_keys,
                      std::tuple{"timestream","processed_time_chunk","weighting","upper_map_weight_factor"});
+
+    second_pass_local = SecondPassLocalOptions{};
+    if (config.template has_typed<bool>(
+            std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","enabled"})) {
+        get_config_value(config, second_pass_local.enabled, missing_keys, invalid_keys,
+                         std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","enabled"});
+    }
+    if (second_pass_local.enabled) {
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","min_spike_sigma"})) {
+            get_config_value(config, second_pass_local.min_spike_sigma, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","min_spike_sigma"},
+                             {}, {0.0});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","min_good_frac"})) {
+            get_config_value(config, second_pass_local.min_good_frac, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","min_good_frac"},
+                             {}, {0.0}, {1.0});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","baseline_window_sec"})) {
+            get_config_value(config, second_pass_local.baseline_window_sec, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","baseline_window_sec"},
+                             {}, {0.0});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","sigma_scale"})) {
+            get_config_value(config, second_pass_local.sigma_scale, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","sigma_scale"},
+                             {}, {0.0});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","delta_sigma_scale"})) {
+            get_config_value(config, second_pass_local.delta_sigma_scale, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","delta_sigma_scale"},
+                             {}, {0.0});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","raw_candidate_rel_sigma_scale"})) {
+            get_config_value(config, second_pass_local.raw_candidate_rel_sigma_scale, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","raw_candidate_rel_sigma_scale"},
+                             {}, {0.0});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","raw_window_sec"})) {
+            get_config_value(config, second_pass_local.raw_window_sec, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","raw_window_sec"},
+                             {}, {0.0});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","raw_half_peak_frac"})) {
+            get_config_value(config, second_pass_local.raw_half_peak_frac, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","raw_half_peak_frac"},
+                             {}, {0.0});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","raw_max_width_sec"})) {
+            get_config_value(config, second_pass_local.raw_max_width_sec, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","raw_max_width_sec"},
+                             {}, {0.0});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","delta_window_sec"})) {
+            get_config_value(config, second_pass_local.delta_window_sec, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","delta_window_sec"},
+                             {}, {0.0});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","delta_half_peak_frac"})) {
+            get_config_value(config, second_pass_local.delta_half_peak_frac, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","delta_half_peak_frac"},
+                             {}, {0.0});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","delta_max_width_sec"})) {
+            get_config_value(config, second_pass_local.delta_max_width_sec, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","delta_max_width_sec"},
+                             {}, {0.0});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","max_step_shift_z"})) {
+            get_config_value(config, second_pass_local.max_step_shift_z, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","max_step_shift_z"},
+                             {}, {0.0});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","merge_within_detector_sec"})) {
+            get_config_value(config, second_pass_local.merge_within_detector_sec, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","merge_within_detector_sec"},
+                             {}, {0.0});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","cluster_events_sec"})) {
+            get_config_value(config, second_pass_local.cluster_events_sec, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","cluster_events_sec"},
+                             {}, {0.0});
+        }
+        if (config.template has_typed<int>(
+                std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","min_cluster_detectors"})) {
+            get_config_value(config, second_pass_local.min_cluster_detectors, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","min_cluster_detectors"},
+                             {}, {1});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","high_score_cluster_override"})) {
+            get_config_value(config, second_pass_local.high_score_cluster_override, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","high_score_cluster_override"},
+                             {}, {0.0});
+        }
+        if (config.template has_typed<int>(
+                std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","max_auto_flag_clusters_per_network"})) {
+            get_config_value(config, second_pass_local.max_auto_flag_clusters_per_network, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","max_auto_flag_clusters_per_network"},
+                             {}, {1});
+        }
+    }
 
     // optional per-network, per-scan correlation-based weight penalty
     weight_corr_penalty = WeightCorrPenaltyOptions{};
@@ -643,6 +816,17 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         get_config_value(config, cleaner.tau, missing_keys, invalid_keys,
                          std::tuple{"timestream","processed_time_chunk","clean","tau"});
     }
+
+    if (second_pass_local.enabled) {
+        logger->info(
+            "processed_time_chunk.flagging.second_pass_local enabled: min_spike_sigma={} min_good_frac={} baseline_window_sec={} raw_window_sec={} delta_window_sec={} merge_within_detector_sec={} cluster_events_sec={} min_cluster_detectors={} high_score_cluster_override={} max_auto_flag_clusters_per_network={}",
+            second_pass_local.min_spike_sigma, second_pass_local.min_good_frac,
+            second_pass_local.baseline_window_sec, second_pass_local.raw_window_sec,
+            second_pass_local.delta_window_sec, second_pass_local.merge_within_detector_sec,
+            second_pass_local.cluster_events_sec, second_pass_local.min_cluster_detectors,
+            second_pass_local.high_score_cluster_override,
+            second_pass_local.max_auto_flag_clusters_per_network);
+    }
 }
 
 void PTCProc::subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
@@ -990,6 +1174,679 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
             // set as cleaned
             out.status.cleaned = true;
         }
+    }
+
+    if (second_pass_local.enabled) {
+        if (!run_clean) {
+            logger->warn("processed_time_chunk.flagging.second_pass_local enabled but clean.enabled=false; skipping PTC second-pass residual flagging");
+        }
+        else {
+            apply_second_pass_local(out, calib);
+        }
+    }
+}
+
+template <class calib_type>
+void PTCProc::apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_type &calib) {
+
+    struct DetectorEventRow {
+        Eigen::Index nw = -1;
+        Eigen::Index uid = -1;
+        Eigen::Index det_index = -1;
+        TransientEventKind kind = TransientEventKind::unknown;
+        Eigen::Index sample = -1;
+        double score = std::numeric_limits<double>::quiet_NaN();
+        Eigen::Index start_sample = -1;
+        Eigen::Index end_sample = -1;
+        Eigen::Index width_samples = 0;
+        double baseline_shift_z = std::numeric_limits<double>::quiet_NaN();
+        double dt_sec = 1.0;
+    };
+
+    struct EventCluster {
+        Eigen::Index sample = -1;
+        Eigen::Index start_sample = -1;
+        Eigen::Index end_sample = -1;
+        double peak_score = std::numeric_limits<double>::quiet_NaN();
+        Eigen::Index top_uid = -1;
+        TransientEventKind top_kind = TransientEventKind::unknown;
+        Eigen::Index n_detector_events = 0;
+        Eigen::Index n_detectors = 0;
+        std::vector<DetectorEventRow> rows;
+    };
+
+    const Eigen::Index n_pts = in.scans.data.rows();
+    const Eigen::Index n_dets_total = in.scans.data.cols();
+    if (n_pts < 3 || n_dets_total <= 0) {
+        return;
+    }
+
+    const double fsmp = (cleaner.sample_rate_Hz > 0.0) ? cleaner.sample_rate_Hz : 1.0;
+    const double dt_sec = 1.0 / fsmp;
+    int smooth_window = static_cast<int>(std::lround(second_pass_local.baseline_window_sec * fsmp));
+    smooth_window = std::max(3, smooth_window);
+    if ((smooth_window % 2) == 0) {
+        ++smooth_window;
+    }
+    const Eigen::Index raw_gate_half_window = std::max<Eigen::Index>(
+        4, static_cast<Eigen::Index>(std::llround(second_pass_local.raw_window_sec * fsmp)));
+    const Eigen::Index raw_max_width_samples = std::max<Eigen::Index>(
+        1, static_cast<Eigen::Index>(std::llround(second_pass_local.raw_max_width_sec * fsmp)));
+    const Eigen::Index delta_gate_half_window = std::max<Eigen::Index>(
+        4, static_cast<Eigen::Index>(std::llround(second_pass_local.delta_window_sec * fsmp)));
+    const Eigen::Index delta_max_width_samples = std::max<Eigen::Index>(
+        1, static_cast<Eigen::Index>(std::llround(second_pass_local.delta_max_width_sec * fsmp)));
+    const Eigen::Index merge_samples = std::max<Eigen::Index>(
+        1, static_cast<Eigen::Index>(std::llround(second_pass_local.merge_within_detector_sec * fsmp)));
+    const Eigen::Index cluster_samples = std::max<Eigen::Index>(
+        1, static_cast<Eigen::Index>(std::llround(second_pass_local.cluster_events_sec * fsmp)));
+
+    auto robust_center_scale = [&](const Eigen::VectorXd &x,
+                                   const Eigen::Matrix<bool, Eigen::Dynamic, 1> &flag_mask) {
+        std::vector<double> vals;
+        vals.reserve(static_cast<std::size_t>(x.size()));
+        for (Eigen::Index i = 0; i < x.size(); ++i) {
+            if (!flag_mask(i) && std::isfinite(x(i))) {
+                vals.push_back(x(i));
+            }
+        }
+        if (vals.size() < 8) {
+            vals.clear();
+            vals.reserve(static_cast<std::size_t>(x.size()));
+            for (Eigen::Index i = 0; i < x.size(); ++i) {
+                if (std::isfinite(x(i))) {
+                    vals.push_back(x(i));
+                }
+            }
+        }
+        if (vals.size() < 8) {
+            return std::make_pair(std::numeric_limits<double>::quiet_NaN(),
+                                  std::numeric_limits<double>::quiet_NaN());
+        }
+        Eigen::Map<const Eigen::VectorXd> vals_map(vals.data(), static_cast<Eigen::Index>(vals.size()));
+        const double med = tula::alg::median(vals_map);
+        Eigen::VectorXd abs_dev = (vals_map.array() - med).abs();
+        double sigma = 1.4826 * tula::alg::median(abs_dev);
+        if (!std::isfinite(sigma) || sigma <= 0.0) {
+            sigma = engine_utils::calc_std_dev(abs_dev);
+        }
+        if (!std::isfinite(sigma) || sigma <= 0.0) {
+            return std::make_pair(med, std::numeric_limits<double>::quiet_NaN());
+        }
+        return std::make_pair(med, sigma);
+    };
+
+    auto characterize_event =
+        [&](const Eigen::VectorXd &resid,
+            const Eigen::VectorXd &metric_abs_z,
+            const Eigen::Matrix<bool, Eigen::Dynamic, 1> &base_flags,
+            Eigen::Index metric_peak_index,
+            Eigen::Index peak_sample,
+            Eigen::Index gate_half_window,
+            Eigen::Index max_width_samples,
+            double half_peak_frac,
+            double resid_sigma,
+            double max_step_shift_z,
+            TransientEventKind kind,
+            bool metric_is_delta) {
+            TransientEvent event;
+            event.kind = kind;
+            event.sample = static_cast<int>(peak_sample);
+            if (!(std::isfinite(resid_sigma) && resid_sigma > 0.0) ||
+                metric_peak_index < 0 || metric_peak_index >= metric_abs_z.size() ||
+                peak_sample < 0 || peak_sample >= resid.size()) {
+                return event;
+            }
+
+            const double peak_z = metric_abs_z(metric_peak_index);
+            if (!std::isfinite(peak_z) || peak_z <= 0.0) {
+                return event;
+            }
+
+            event.score = peak_z;
+            if (kind == TransientEventKind::raw_like) {
+                event.peak_abs_z = peak_z;
+            }
+            else if (kind == TransientEventKind::delta_like) {
+                event.peak_delta_abs_z = peak_z;
+            }
+
+            const Eigen::Index left_bound = std::max<Eigen::Index>(0, metric_peak_index - gate_half_window);
+            const Eigen::Index right_bound =
+                std::min<Eigen::Index>(metric_abs_z.size() - 1, metric_peak_index + gate_half_window);
+            const double width_thresh =
+                std::max(half_peak_frac * peak_z, std::min(peak_z, 1.5));
+
+            Eigen::Index left = metric_peak_index;
+            while (left - 1 >= left_bound &&
+                   std::isfinite(metric_abs_z(left - 1)) &&
+                   metric_abs_z(left - 1) >= width_thresh) {
+                --left;
+            }
+            Eigen::Index right = metric_peak_index;
+            while (right + 1 <= right_bound &&
+                   std::isfinite(metric_abs_z(right + 1)) &&
+                   metric_abs_z(right + 1) >= width_thresh) {
+                ++right;
+            }
+
+            const Eigen::Index event_start = std::max<Eigen::Index>(0, left);
+            const Eigen::Index event_end = metric_is_delta
+                ? std::min<Eigen::Index>(resid.size() - 1, right + 1)
+                : std::min<Eigen::Index>(resid.size() - 1, right);
+            const Eigen::Index width_samples = std::max<Eigen::Index>(0, event_end - event_start + 1);
+            event.start_sample = static_cast<int>(event_start);
+            event.end_sample = static_cast<int>(event_end);
+            event.width_samples = static_cast<double>(width_samples);
+
+            const Eigen::Index pre_lo = std::max<Eigen::Index>(0, peak_sample - gate_half_window);
+            const Eigen::Index pre_hi = std::max<Eigen::Index>(pre_lo, peak_sample - (metric_is_delta ? 2 : 1));
+            const Eigen::Index post_lo = std::min<Eigen::Index>(resid.size(), peak_sample + 2);
+            const Eigen::Index post_hi = std::min<Eigen::Index>(resid.size(), peak_sample + gate_half_window + 1);
+            std::vector<double> pre_vals;
+            std::vector<double> post_vals;
+            for (Eigen::Index i = pre_lo; i < pre_hi; ++i) {
+                if (!base_flags(i) && std::isfinite(resid(i))) {
+                    pre_vals.push_back(resid(i));
+                }
+            }
+            for (Eigen::Index i = post_lo; i < post_hi; ++i) {
+                if (!base_flags(i) && std::isfinite(resid(i))) {
+                    post_vals.push_back(resid(i));
+                }
+            }
+            if (pre_vals.size() >= 4 && post_vals.size() >= 4) {
+                Eigen::Map<const Eigen::VectorXd> pre_map(pre_vals.data(), static_cast<Eigen::Index>(pre_vals.size()));
+                Eigen::Map<const Eigen::VectorXd> post_map(post_vals.data(), static_cast<Eigen::Index>(post_vals.size()));
+                const double pre_med = tula::alg::median(pre_map);
+                const double post_med = tula::alg::median(post_map);
+                event.baseline_shift_z = std::abs(post_med - pre_med) / resid_sigma;
+            }
+
+            event.accepted =
+                width_samples <= max_width_samples &&
+                std::isfinite(event.baseline_shift_z) &&
+                event.baseline_shift_z <= max_step_shift_z;
+            return event;
+        };
+
+    auto cluster_runs = [](const std::vector<Eigen::Index> &indices) {
+        std::vector<std::pair<Eigen::Index, Eigen::Index>> runs;
+        if (indices.empty()) {
+            return runs;
+        }
+        Eigen::Index lo = indices.front();
+        Eigen::Index hi = indices.front();
+        for (std::size_t i = 1; i < indices.size(); ++i) {
+            const auto idx = indices[i];
+            if (idx <= hi + 1) {
+                hi = idx;
+            }
+            else {
+                runs.emplace_back(lo, hi);
+                lo = idx;
+                hi = idx;
+            }
+        }
+        runs.emplace_back(lo, hi);
+        return runs;
+    };
+
+    auto median_sample = [](std::vector<Eigen::Index> samples) {
+        if (samples.empty()) {
+            return Eigen::Index{-1};
+        }
+        const auto mid = samples.begin() + static_cast<std::ptrdiff_t>(samples.size() / 2);
+        std::nth_element(samples.begin(), mid, samples.end());
+        return *mid;
+    };
+
+    auto merge_detector_rows = [&](std::vector<DetectorEventRow> rows) {
+        std::vector<DetectorEventRow> merged;
+        if (rows.empty()) {
+            return merged;
+        }
+        std::sort(rows.begin(), rows.end(), [](const auto &a, const auto &b) {
+            if (a.uid != b.uid) {
+                return a.uid < b.uid;
+            }
+            return a.sample < b.sample;
+        });
+        std::vector<DetectorEventRow> group{rows.front()};
+        auto flush = [&](const std::vector<DetectorEventRow> &current) {
+            auto best_it = std::max_element(current.begin(), current.end(), [](const auto &a, const auto &b) {
+                return a.score < b.score;
+            });
+            DetectorEventRow out = *best_it;
+            std::vector<Eigen::Index> samples;
+            samples.reserve(current.size());
+            Eigen::Index start_sample = current.front().start_sample;
+            Eigen::Index end_sample = current.front().end_sample;
+            for (const auto &row : current) {
+                samples.push_back(row.sample);
+                start_sample = std::min(start_sample, row.start_sample);
+                end_sample = std::max(end_sample, row.end_sample);
+            }
+            out.start_sample = start_sample;
+            out.end_sample = end_sample;
+            out.sample = median_sample(samples);
+            out.width_samples = out.end_sample - out.start_sample + 1;
+            merged.push_back(out);
+        };
+        for (std::size_t i = 1; i < rows.size(); ++i) {
+            if (rows[i].uid == group.back().uid && rows[i].sample <= group.back().sample + merge_samples) {
+                group.push_back(rows[i]);
+            }
+            else {
+                flush(group);
+                group.assign(1, rows[i]);
+            }
+        }
+        flush(group);
+        return merged;
+    };
+
+    auto cluster_event_rows = [&](std::vector<DetectorEventRow> rows) {
+        std::vector<EventCluster> clusters;
+        if (rows.empty()) {
+            return clusters;
+        }
+        std::sort(rows.begin(), rows.end(), [](const auto &a, const auto &b) {
+            return a.sample < b.sample;
+        });
+        std::vector<DetectorEventRow> group{rows.front()};
+        auto flush = [&](const std::vector<DetectorEventRow> &current) {
+            auto best_it = std::max_element(current.begin(), current.end(), [](const auto &a, const auto &b) {
+                return a.score < b.score;
+            });
+            EventCluster cluster;
+            cluster.peak_score = best_it->score;
+            cluster.top_uid = best_it->uid;
+            cluster.top_kind = best_it->kind;
+            cluster.rows = current;
+            cluster.n_detector_events = static_cast<Eigen::Index>(current.size());
+            std::vector<Eigen::Index> samples;
+            std::unordered_set<Eigen::Index> uids;
+            cluster.start_sample = current.front().start_sample;
+            cluster.end_sample = current.front().end_sample;
+            samples.reserve(current.size());
+            for (const auto &row : current) {
+                samples.push_back(row.sample);
+                uids.insert(row.uid);
+                cluster.start_sample = std::min(cluster.start_sample, row.start_sample);
+                cluster.end_sample = std::max(cluster.end_sample, row.end_sample);
+            }
+            cluster.sample = median_sample(samples);
+            cluster.n_detectors = static_cast<Eigen::Index>(uids.size());
+            clusters.push_back(cluster);
+        };
+        for (std::size_t i = 1; i < rows.size(); ++i) {
+            Eigen::Index group_max_sample = group.front().sample;
+            for (const auto &row : group) {
+                group_max_sample = std::max(group_max_sample, row.sample);
+            }
+            if (rows[i].sample <= group_max_sample + cluster_samples) {
+                group.push_back(rows[i]);
+            }
+            else {
+                flush(group);
+                group.assign(1, rows[i]);
+            }
+        }
+        flush(group);
+        std::sort(clusters.begin(), clusters.end(), [](const auto &a, const auto &b) {
+            if (a.peak_score != b.peak_score) {
+                return a.peak_score > b.peak_score;
+            }
+            if (a.sample != b.sample) {
+                return a.sample < b.sample;
+            }
+            return a.top_uid < b.top_uid;
+        });
+        return clusters;
+    };
+
+    auto analyze_detector =
+        [&](const Eigen::VectorXd &signal,
+            const Eigen::Matrix<bool, Eigen::Dynamic, 1> &base_flags) {
+            std::vector<TransientEvent> events;
+            Eigen::Matrix<bool, Eigen::Dynamic, 1> final_flags =
+                Eigen::Matrix<bool, Eigen::Dynamic, 1>::Zero(n_pts);
+            Eigen::VectorXd resid_z = Eigen::VectorXd::Constant(
+                n_pts, std::numeric_limits<double>::quiet_NaN());
+
+            Eigen::Index n_good = 0;
+            for (Eigen::Index i = 0; i < n_pts; ++i) {
+                if (!base_flags(i) && std::isfinite(signal(i))) {
+                    ++n_good;
+                }
+            }
+            const double good_frac = static_cast<double>(n_good) / static_cast<double>(n_pts);
+            if (good_frac < second_pass_local.min_good_frac) {
+                return std::make_tuple(events, final_flags, resid_z);
+            }
+
+            auto [med, sigma] = robust_center_scale(signal, base_flags);
+            if (!std::isfinite(sigma) || sigma <= 0.0) {
+                return std::make_tuple(events, final_flags, resid_z);
+            }
+
+            Eigen::VectorXd baseline_input = signal;
+            for (Eigen::Index i = 0; i < n_pts; ++i) {
+                if (base_flags(i) || !std::isfinite(baseline_input(i))) {
+                    baseline_input(i) = med;
+                }
+            }
+            Eigen::VectorXd smooth = Eigen::VectorXd::Zero(n_pts);
+            engine_utils::smooth<engine_utils::SmoothType::edge_truncate>(
+                baseline_input, smooth, smooth_window);
+            Eigen::VectorXd resid = signal - smooth;
+
+            auto [resid_med, resid_sigma] = robust_center_scale(resid, base_flags);
+            if (!std::isfinite(resid_sigma) || resid_sigma <= 0.0) {
+                return std::make_tuple(events, final_flags, resid_z);
+            }
+
+            Eigen::VectorXd abs_dev = (resid.array() - resid_med).abs();
+            Eigen::VectorXd local_abs_z = abs_dev / resid_sigma;
+            resid_z = resid / resid_sigma;
+            const double raw_candidate_z =
+                second_pass_local.raw_candidate_rel_sigma_scale *
+                second_pass_local.sigma_scale *
+                second_pass_local.min_spike_sigma;
+
+            Eigen::Matrix<bool, Eigen::Dynamic, 1> raw_flags =
+                Eigen::Matrix<bool, Eigen::Dynamic, 1>::Zero(n_pts);
+            std::vector<Eigen::Index> candidate_samples;
+            candidate_samples.reserve(static_cast<std::size_t>(n_pts));
+            for (Eigen::Index i = 0; i < n_pts; ++i) {
+                if (!base_flags(i) && std::isfinite(local_abs_z(i)) && local_abs_z(i) > raw_candidate_z) {
+                    candidate_samples.push_back(i);
+                }
+            }
+            for (const auto &[lo, hi] : cluster_runs(candidate_samples)) {
+                Eigen::Index best_sample = lo;
+                double best_z = -1.0;
+                for (Eigen::Index sample = lo; sample <= hi; ++sample) {
+                    if (std::isfinite(local_abs_z(sample)) && local_abs_z(sample) > best_z) {
+                        best_z = local_abs_z(sample);
+                        best_sample = sample;
+                    }
+                }
+                auto event = characterize_event(
+                    resid, local_abs_z, base_flags, best_sample, best_sample,
+                    raw_gate_half_window, raw_max_width_samples,
+                    second_pass_local.raw_half_peak_frac, resid_sigma,
+                    second_pass_local.max_step_shift_z,
+                    TransientEventKind::raw_like, false);
+                if (event.accepted) {
+                    raw_flags.segment(event.start_sample, event.end_sample - event.start_sample + 1).setOnes();
+                    events.push_back(event);
+                }
+            }
+
+            final_flags = raw_flags;
+            std::vector<double> local_delta_vals;
+            std::vector<Eigen::Index> local_delta_edges;
+            local_delta_vals.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(n_pts - 1, 0)));
+            local_delta_edges.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(n_pts - 1, 0)));
+            for (Eigen::Index i = 0; i < n_pts - 1; ++i) {
+                if (base_flags(i) || base_flags(i + 1) || raw_flags(i) || raw_flags(i + 1)) {
+                    continue;
+                }
+                if (!std::isfinite(resid(i)) || !std::isfinite(resid(i + 1))) {
+                    continue;
+                }
+                local_delta_vals.push_back(resid(i + 1) - resid(i));
+                local_delta_edges.push_back(i);
+            }
+
+            if (local_delta_vals.size() >= 8) {
+                Eigen::Map<const Eigen::VectorXd> delta_map(
+                    local_delta_vals.data(), static_cast<Eigen::Index>(local_delta_vals.size()));
+                const double delta_med = tula::alg::median(delta_map);
+                Eigen::VectorXd delta_abs_dev = (delta_map.array() - delta_med).abs();
+                double delta_sigma = 1.4826 * tula::alg::median(delta_abs_dev);
+                if (!std::isfinite(delta_sigma) || delta_sigma <= 0.0) {
+                    delta_sigma = engine_utils::calc_std_dev(delta_abs_dev);
+                }
+                if (std::isfinite(delta_sigma) && delta_sigma > 0.0) {
+                    Eigen::VectorXd local_delta_abs_z =
+                        Eigen::VectorXd::Constant(std::max<Eigen::Index>(n_pts - 1, 0),
+                                                  std::numeric_limits<double>::quiet_NaN());
+                    std::vector<Eigen::Index> candidate_edges;
+                    const double local_delta_cutoff =
+                        second_pass_local.delta_sigma_scale *
+                        second_pass_local.min_spike_sigma * delta_sigma;
+                    for (std::size_t i = 0; i < local_delta_edges.size(); ++i) {
+                        const auto edge = local_delta_edges[i];
+                        const double abs_delta = std::abs(local_delta_vals[i] - delta_med);
+                        local_delta_abs_z(edge) = abs_delta / delta_sigma;
+                        if (abs_delta > local_delta_cutoff) {
+                            candidate_edges.push_back(edge);
+                        }
+                    }
+                    for (const auto &[lo, hi] : cluster_runs(candidate_edges)) {
+                        Eigen::Index best_edge = lo;
+                        double best_z = -1.0;
+                        for (Eigen::Index edge = lo; edge <= hi; ++edge) {
+                            if (edge >= 0 && edge < local_delta_abs_z.size() &&
+                                std::isfinite(local_delta_abs_z(edge)) &&
+                                local_delta_abs_z(edge) > best_z) {
+                                best_z = local_delta_abs_z(edge);
+                                best_edge = edge;
+                            }
+                        }
+                        auto event = characterize_event(
+                            resid, local_delta_abs_z, base_flags, best_edge, best_edge + 1,
+                            delta_gate_half_window, delta_max_width_samples,
+                            second_pass_local.delta_half_peak_frac, resid_sigma,
+                            second_pass_local.max_step_shift_z,
+                            TransientEventKind::delta_like, true);
+                        if (event.accepted) {
+                            final_flags(best_edge) = true;
+                            if (best_edge + 1 < n_pts) {
+                                final_flags(best_edge + 1) = true;
+                            }
+                            events.push_back(event);
+                        }
+                    }
+                }
+            }
+
+            return std::make_tuple(events, final_flags, resid_z);
+        };
+
+    auto group_limits = get_grouping("nw", calib, in.scans.data.cols());
+    std::vector<SecondPassDiagSummary> summaries;
+    summaries.reserve(group_limits.size());
+    Eigen::Matrix<signed char, Eigen::Dynamic, Eigen::Dynamic> added_flags_out;
+    if (run_tod_output) {
+        added_flags_out = Eigen::Matrix<signed char, Eigen::Dynamic, Eigen::Dynamic>::Zero(n_pts, n_dets_total);
+    }
+
+    for (const auto &[key, val] : group_limits) {
+        const Eigen::Index nw_index = key;
+        const auto start_index = std::get<0>(val);
+        const auto n_dets = std::get<1>(val) - std::get<0>(val);
+        if (n_dets <= 0) {
+            continue;
+        }
+
+        const auto apt_flags = calib.apt["flag"].segment(start_index, n_dets);
+        auto flags_block = in.flags.data.block(0, start_index, n_pts, n_dets);
+        Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> existing_flags_block = flags_block;
+        std::unordered_map<Eigen::Index, Eigen::Index> local_det_lookup;
+        local_det_lookup.reserve(static_cast<std::size_t>(n_dets));
+
+        std::vector<DetectorEventRow> detector_rows;
+        double residual_peak = std::numeric_limits<double>::quiet_NaN();
+        int residual_peak_uid = kTransientFillInt;
+
+        for (Eigen::Index local_j = 0; local_j < n_dets; ++local_j) {
+            const Eigen::Index det_col = start_index + local_j;
+            local_det_lookup[det_col] = local_j;
+            if (apt_flags(local_j) != 0) {
+                continue;
+            }
+            auto signal = in.scans.data.col(det_col);
+            auto det_flags = in.flags.data.col(det_col);
+            auto [events, det_prop_flags, det_resid_z] = analyze_detector(signal, det_flags);
+
+            bool det_has_resid = false;
+            double det_peak = std::numeric_limits<double>::quiet_NaN();
+            for (Eigen::Index i = 0; i < n_pts; ++i) {
+                if (!det_flags(i) && std::isfinite(det_resid_z(i))) {
+                    const double v = std::abs(det_resid_z(i));
+                    if (!det_has_resid || v > det_peak) {
+                        det_peak = v;
+                        det_has_resid = true;
+                    }
+                }
+            }
+            if (det_has_resid && (!std::isfinite(residual_peak) || det_peak > residual_peak)) {
+                residual_peak = det_peak;
+                residual_peak_uid = static_cast<int>(calib.apt["uid"](det_col));
+            }
+
+            for (const auto &event : events) {
+                detector_rows.push_back(DetectorEventRow{
+                    .nw = nw_index,
+                    .uid = static_cast<Eigen::Index>(calib.apt["uid"](det_col)),
+                    .det_index = det_col,
+                    .kind = event.kind,
+                    .sample = event.sample,
+                    .score = event.score,
+                    .start_sample = event.start_sample,
+                    .end_sample = event.end_sample,
+                    .width_samples = std::max(0, event.end_sample - event.start_sample + 1),
+                    .baseline_shift_z = event.baseline_shift_z,
+                    .dt_sec = dt_sec,
+                });
+            }
+        }
+
+        auto merged_events = merge_detector_rows(detector_rows);
+        auto clusters = cluster_event_rows(merged_events);
+        std::vector<EventCluster> candidate_clusters;
+        for (const auto &cluster : clusters) {
+            if (cluster.n_detectors >= second_pass_local.min_cluster_detectors ||
+                cluster.peak_score >= second_pass_local.high_score_cluster_override) {
+                candidate_clusters.push_back(cluster);
+            }
+        }
+        std::sort(candidate_clusters.begin(), candidate_clusters.end(), [](const auto &a, const auto &b) {
+            if (a.peak_score != b.peak_score) {
+                return a.peak_score > b.peak_score;
+            }
+            if (a.sample != b.sample) {
+                return a.sample < b.sample;
+            }
+            return a.top_uid < b.top_uid;
+        });
+
+        const bool busy_network_vetoed =
+            static_cast<int>(candidate_clusters.size()) > second_pass_local.max_auto_flag_clusters_per_network;
+        std::vector<EventCluster> accepted_clusters = busy_network_vetoed
+            ? std::vector<EventCluster>{}
+            : candidate_clusters;
+
+        Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> accepted_flags_block =
+            Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>::Zero(n_pts, n_dets);
+        std::vector<DetectorEventRow> accepted_rows;
+        accepted_rows.reserve(detector_rows.size());
+        for (const auto &cluster : accepted_clusters) {
+            for (const auto &row : cluster.rows) {
+                accepted_rows.push_back(row);
+                const auto it = local_det_lookup.find(row.det_index);
+                if (it == local_det_lookup.end()) {
+                    continue;
+                }
+                accepted_flags_block.block(
+                    row.start_sample, it->second, row.end_sample - row.start_sample + 1, 1).setOnes();
+            }
+        }
+        std::sort(accepted_rows.begin(), accepted_rows.end(), [](const auto &a, const auto &b) {
+            return a.score > b.score;
+        });
+
+        flags_block = existing_flags_block.array() || accepted_flags_block.array();
+        if (run_tod_output) {
+            added_flags_out.block(0, start_index, n_pts, n_dets) =
+                accepted_flags_block.cast<signed char>();
+        }
+
+        Eigen::Index n_det_with_added_flags = 0;
+        for (Eigen::Index j = 0; j < n_dets; ++j) {
+            bool any = false;
+            for (Eigen::Index i = 0; i < n_pts; ++i) {
+                if (accepted_flags_block(i, j)) {
+                    any = true;
+                    break;
+                }
+            }
+            if (any) {
+                ++n_det_with_added_flags;
+            }
+        }
+
+        SecondPassDiagSummary summary;
+        summary.nw = nw_index;
+        summary.n_det = n_dets;
+        summary.n_pts = n_pts;
+        summary.n_merged_events_total = static_cast<Eigen::Index>(merged_events.size());
+        summary.n_clusters_total = static_cast<Eigen::Index>(clusters.size());
+        summary.n_candidate_clusters = static_cast<Eigen::Index>(candidate_clusters.size());
+        summary.n_candidate_events = 0;
+        for (const auto &cluster : candidate_clusters) {
+            summary.n_candidate_events += cluster.n_detector_events;
+        }
+        summary.n_accepted_clusters = static_cast<Eigen::Index>(accepted_clusters.size());
+        summary.n_accepted_events = static_cast<Eigen::Index>(accepted_rows.size());
+        summary.n_det_with_added_flags = n_det_with_added_flags;
+        summary.busy_network_vetoed = busy_network_vetoed;
+        summary.existing_flagged_fraction = existing_flags_block.cast<double>().mean();
+        summary.proposed_flagged_fraction = accepted_flags_block.cast<double>().mean();
+        summary.newly_flagged_fraction =
+            (accepted_flags_block.array() && !existing_flags_block.array())
+                .template cast<double>().mean();
+        summary.max_unflagged_residual_z = residual_peak;
+        summary.max_unflagged_residual_uid = residual_peak_uid;
+        if (!candidate_clusters.empty()) {
+            summary.top_candidate_cluster_peak_score = candidate_clusters.front().peak_score;
+            summary.top_candidate_cluster_n_detectors = candidate_clusters.front().n_detectors;
+            summary.top_candidate_cluster_n_events = candidate_clusters.front().n_detector_events;
+            summary.top_candidate_cluster_sample = static_cast<int>(candidate_clusters.front().sample);
+        }
+        if (!accepted_rows.empty()) {
+            summary.top_event_uid = static_cast<int>(accepted_rows.front().uid);
+            summary.top_event.kind = accepted_rows.front().kind;
+            summary.top_event.sample = static_cast<int>(accepted_rows.front().sample);
+            summary.top_event.start_sample = static_cast<int>(accepted_rows.front().start_sample);
+            summary.top_event.end_sample = static_cast<int>(accepted_rows.front().end_sample);
+            summary.top_event.score = accepted_rows.front().score;
+            summary.top_event.width_samples = static_cast<double>(accepted_rows.front().width_samples);
+            summary.top_event.baseline_shift_z = accepted_rows.front().baseline_shift_z;
+            summary.top_event.accepted = true;
+        }
+        summaries.push_back(summary);
+
+        if (!candidate_clusters.empty()) {
+            logger->info(
+                "PTC second pass scan {} nw {} candidate_clusters={} accepted_clusters={} busy_veto={} newly_flagged_fraction={} top_candidate_peak_score={} top_candidate_n_detectors={}",
+                static_cast<long long>(in.index.data) + 1, static_cast<long long>(nw_index),
+                static_cast<long long>(summary.n_candidate_clusters),
+                static_cast<long long>(summary.n_accepted_clusters),
+                summary.busy_network_vetoed ? 1 : 0,
+                summary.newly_flagged_fraction,
+                summary.top_candidate_cluster_peak_score,
+                static_cast<long long>(summary.top_candidate_cluster_n_detectors));
+        }
+    }
+
+    second_pass_summary_by_scan[in.index.data] = summaries;
+    if (run_tod_output) {
+        second_pass_added_flags_by_scan[in.index.data] = std::move(added_flags_out);
     }
 }
 
@@ -1800,6 +2657,8 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         predefs::suppress_hdf5_diagnostics_for_this_thread();
         std::lock_guard<std::mutex> lock(predefs::netcdf_io_mutex());
         NcFile fo(filepath, netCDF::NcFile::write);
+        const auto n_pts_before_append = fo.getDim("n_pts").getSize();
+        const auto n_dets_before_append = fo.getDim("n_dets").getSize();
 
         // append common time chunk variables
         append_base_to_netcdf(fo, in, map_grouping, pixel_axes, pointing_offsets_arcsec, calib, apply_det_offsets,
@@ -1821,6 +2680,23 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
 
         // add weights to tod output
         weights_v.putVar(start_index_weights, size_weights, in.weights.data.data());
+
+        const auto second_pass_summary_it = second_pass_summary_by_scan.find(in.index.data);
+        const auto second_pass_added_it = second_pass_added_flags_by_scan.find(in.index.data);
+        NcVar second_pass_added_v = fo.getVar("ptc_second_pass_added_flag");
+        if (!second_pass_added_v.isNull() && second_pass_added_it != second_pass_added_flags_by_scan.end()) {
+            std::vector<std::size_t> start_index = {n_pts_before_append, 0};
+            std::vector<std::size_t> size = {1, n_dets_before_append};
+            const auto &added = second_pass_added_it->second;
+            const auto n_rows = std::min<unsigned long>(
+                static_cast<unsigned long>(added.rows()),
+                static_cast<unsigned long>(in.tel_data.data.rows()));
+            for (unsigned long i = 0; i < n_rows; ++i) {
+                start_index[0] = n_pts_before_append + i;
+                Eigen::Matrix<signed char, 1, Eigen::Dynamic> row = added.row(static_cast<Eigen::Index>(i));
+                second_pass_added_v.putVar(start_index, size, row.data());
+            }
+        }
 
         const auto corr_groups_it = corr_nw_group_ids_by_scan.find(in.index.data);
         const auto corr_summary_it = corr_nw_summary_by_scan.find(in.index.data);
@@ -1954,6 +2830,90 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
             }
         }
 
+        NcVar second_pass_busy_v = fo.getVar("ptc_second_pass_busy_network_vetoed");
+        if (!second_pass_busy_v.isNull()) {
+            NcDim n_nws_dim = fo.getDim("n_nws_ptc_second_pass");
+            if (!n_nws_dim.isNull()) {
+                const auto n_nws = n_nws_dim.getSize();
+                const double fill_double = std::numeric_limits<double>::quiet_NaN();
+                std::vector<int> v_busy(n_nws, corr_fill_value);
+                std::vector<int> v_n_candidate_clusters(n_nws, corr_fill_value);
+                std::vector<int> v_n_candidate_events(n_nws, corr_fill_value);
+                std::vector<int> v_n_accepted_clusters(n_nws, corr_fill_value);
+                std::vector<int> v_n_accepted_events(n_nws, corr_fill_value);
+                std::vector<int> v_n_det_with_added_flags(n_nws, corr_fill_value);
+                std::vector<int> v_max_resid_uid(n_nws, corr_fill_value);
+                std::vector<int> v_top_cluster_sample(n_nws, corr_fill_value);
+                std::vector<int> v_top_cluster_n_detectors(n_nws, corr_fill_value);
+                std::vector<int> v_top_cluster_n_events(n_nws, corr_fill_value);
+                std::vector<int> v_top_event_kind(n_nws, corr_fill_value);
+                std::vector<int> v_top_event_uid(n_nws, corr_fill_value);
+                std::vector<int> v_top_event_sample(n_nws, corr_fill_value);
+                std::vector<double> v_existing_frac(n_nws, fill_double);
+                std::vector<double> v_proposed_frac(n_nws, fill_double);
+                std::vector<double> v_new_frac(n_nws, fill_double);
+                std::vector<double> v_max_resid_z(n_nws, fill_double);
+                std::vector<double> v_top_cluster_peak(n_nws, fill_double);
+                std::vector<double> v_top_event_score(n_nws, fill_double);
+
+                std::unordered_map<Eigen::Index, std::size_t> nw_to_index;
+                nw_to_index.reserve(static_cast<std::size_t>(calib.nws.size()));
+                for (Eigen::Index i = 0; i < calib.nws.size(); ++i) {
+                    nw_to_index[calib.nws(i)] = static_cast<std::size_t>(i);
+                }
+                if (second_pass_summary_it != second_pass_summary_by_scan.end()) {
+                    for (const auto &row : second_pass_summary_it->second) {
+                        const auto it = nw_to_index.find(row.nw);
+                        if (it == nw_to_index.end() || it->second >= n_nws) {
+                            continue;
+                        }
+                        const auto j = it->second;
+                        v_busy[j] = row.busy_network_vetoed ? 1 : 0;
+                        v_n_candidate_clusters[j] = static_cast<int>(row.n_candidate_clusters);
+                        v_n_candidate_events[j] = static_cast<int>(row.n_candidate_events);
+                        v_n_accepted_clusters[j] = static_cast<int>(row.n_accepted_clusters);
+                        v_n_accepted_events[j] = static_cast<int>(row.n_accepted_events);
+                        v_n_det_with_added_flags[j] = static_cast<int>(row.n_det_with_added_flags);
+                        v_max_resid_uid[j] = row.max_unflagged_residual_uid;
+                        v_top_cluster_sample[j] = row.top_candidate_cluster_sample;
+                        v_top_cluster_n_detectors[j] = static_cast<int>(row.top_candidate_cluster_n_detectors);
+                        v_top_cluster_n_events[j] = static_cast<int>(row.top_candidate_cluster_n_events);
+                        v_top_event_kind[j] = row.top_event.kind_code();
+                        v_top_event_uid[j] = row.top_event_uid;
+                        v_top_event_sample[j] = row.top_event.sample;
+                        v_existing_frac[j] = row.existing_flagged_fraction;
+                        v_proposed_frac[j] = row.proposed_flagged_fraction;
+                        v_new_frac[j] = row.newly_flagged_fraction;
+                        v_max_resid_z[j] = row.max_unflagged_residual_z;
+                        v_top_cluster_peak[j] = row.top_candidate_cluster_peak_score;
+                        v_top_event_score[j] = row.top_event.score;
+                    }
+                }
+
+                std::vector<std::size_t> start_scan_nw = {scan_row, 0};
+                std::vector<std::size_t> size_scan_nw = {1, n_nws};
+                second_pass_busy_v.putVar(start_scan_nw, size_scan_nw, v_busy.data());
+                fo.getVar("ptc_second_pass_n_candidate_clusters").putVar(start_scan_nw, size_scan_nw, v_n_candidate_clusters.data());
+                fo.getVar("ptc_second_pass_n_candidate_events").putVar(start_scan_nw, size_scan_nw, v_n_candidate_events.data());
+                fo.getVar("ptc_second_pass_n_accepted_clusters").putVar(start_scan_nw, size_scan_nw, v_n_accepted_clusters.data());
+                fo.getVar("ptc_second_pass_n_accepted_events").putVar(start_scan_nw, size_scan_nw, v_n_accepted_events.data());
+                fo.getVar("ptc_second_pass_n_det_with_added_flags").putVar(start_scan_nw, size_scan_nw, v_n_det_with_added_flags.data());
+                fo.getVar("ptc_second_pass_max_unflagged_residual_uid").putVar(start_scan_nw, size_scan_nw, v_max_resid_uid.data());
+                fo.getVar("ptc_second_pass_top_candidate_cluster_sample").putVar(start_scan_nw, size_scan_nw, v_top_cluster_sample.data());
+                fo.getVar("ptc_second_pass_top_candidate_cluster_n_detectors").putVar(start_scan_nw, size_scan_nw, v_top_cluster_n_detectors.data());
+                fo.getVar("ptc_second_pass_top_candidate_cluster_n_events").putVar(start_scan_nw, size_scan_nw, v_top_cluster_n_events.data());
+                fo.getVar("ptc_second_pass_top_event_kind").putVar(start_scan_nw, size_scan_nw, v_top_event_kind.data());
+                fo.getVar("ptc_second_pass_top_event_uid").putVar(start_scan_nw, size_scan_nw, v_top_event_uid.data());
+                fo.getVar("ptc_second_pass_top_event_sample").putVar(start_scan_nw, size_scan_nw, v_top_event_sample.data());
+                fo.getVar("ptc_second_pass_existing_flagged_fraction").putVar(start_scan_nw, size_scan_nw, v_existing_frac.data());
+                fo.getVar("ptc_second_pass_proposed_flagged_fraction").putVar(start_scan_nw, size_scan_nw, v_proposed_frac.data());
+                fo.getVar("ptc_second_pass_newly_flagged_fraction").putVar(start_scan_nw, size_scan_nw, v_new_frac.data());
+                fo.getVar("ptc_second_pass_max_unflagged_residual_z").putVar(start_scan_nw, size_scan_nw, v_max_resid_z.data());
+                fo.getVar("ptc_second_pass_top_candidate_cluster_peak_score").putVar(start_scan_nw, size_scan_nw, v_top_cluster_peak.data());
+                fo.getVar("ptc_second_pass_top_event_score").putVar(start_scan_nw, size_scan_nw, v_top_event_score.data());
+            }
+        }
+
         // drop per-scan diagnostics once persisted to netCDF
         if (corr_groups_it != corr_nw_group_ids_by_scan.end()) {
             corr_nw_group_ids_by_scan.erase(corr_groups_it);
@@ -1963,6 +2923,12 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         }
         if (weight_corr_penalty_it != weight_corr_penalty_summary_by_scan.end()) {
             weight_corr_penalty_summary_by_scan.erase(weight_corr_penalty_it);
+        }
+        if (second_pass_summary_it != second_pass_summary_by_scan.end()) {
+            second_pass_summary_by_scan.erase(second_pass_summary_it);
+        }
+        if (second_pass_added_it != second_pass_added_flags_by_scan.end()) {
+            second_pass_added_flags_by_scan.erase(second_pass_added_it);
         }
 
         if (write_evals) {
