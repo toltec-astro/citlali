@@ -212,3 +212,30 @@ The app provides:
 - scan-by-network severity heatmap for the selected obsnum
 - per-network scan trends for step and impulsive metrics
 - top scan/network and top slot tables
+
+`despike_diagnostic_report.py`
+
+Build a readable reduction-local report that explains what the current RTC and
+PTC despiking paths did on one `reduXX`. This is meant to bridge the gap
+between survey tables and raw timestream debugging.
+
+It writes:
+
+- `ptc_second_pass_by_scan_network.csv`
+- `ptc_second_pass_by_obsnum.csv`
+- `DESPIKE_DIAGNOSTIC_REPORT.md`
+- a small set of representative case PNGs
+
+The report combines:
+
+- RTC survey severity and mask activity
+- PTC second-pass cluster counts and added-flag fractions
+- representative accepted and busy-vetoed PTC cases with RTC/PTC plots
+
+Example:
+
+```bash
+~/toltec/bin/python tools/blank_sky/despike_diagnostic_report.py \
+  --redu-dir /path/to/reduced/redu65 \
+  --array a1100
+```

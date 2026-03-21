@@ -59,6 +59,57 @@ HELP_BOX_STYLE = {
     "lineHeight": "1.5",
 }
 
+PAGE_STYLE = {
+    "padding": "20px",
+    "maxWidth": "1640px",
+    "background": "linear-gradient(180deg, #fbfaf6 0%, #f1eee6 100%)",
+    "color": "#1e1c17",
+    "fontFamily": "Georgia, 'Iowan Old Style', 'Palatino Linotype', serif",
+}
+
+PANEL_STYLE = {
+    "backgroundColor": "#fffdf8",
+    "border": "1px solid #ddd7c9",
+    "borderRadius": "14px",
+    "padding": "14px 16px",
+    "boxShadow": "0 10px 28px rgba(70, 56, 24, 0.07)",
+    "marginBottom": "16px",
+}
+
+CARD_GRID_STYLE = {
+    "display": "grid",
+    "gridTemplateColumns": "repeat(auto-fit, minmax(180px, 1fr))",
+    "gap": "12px",
+    "marginBottom": "16px",
+}
+
+CARD_STYLE = {
+    "background": "linear-gradient(135deg, #fffef9 0%, #f3efe2 100%)",
+    "border": "1px solid #d9d1bc",
+    "borderRadius": "14px",
+    "padding": "14px",
+    "minHeight": "96px",
+    "display": "flex",
+    "flexDirection": "column",
+    "justifyContent": "space-between",
+}
+
+GRAPH_CONFIG = {"displaylogo": False, "responsive": True}
+
+MASK_COLORS = {
+    "both masks": "#8f2d56",
+    "impulsive": "#d76a03",
+    "step": "#355070",
+    "candidate only": "#7d6b2f",
+    "diagnostic only": "#7a7a7a",
+}
+
+EVENT_KIND_COLORS = {
+    "raw_like": "#1b6ca8",
+    "delta_like": "#cf3f3f",
+    "unknown": "#6b6b6b",
+}
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -80,7 +131,12 @@ def rounded_records(df: pd.DataFrame, columns: list[str]) -> list[dict[str, obje
     return view.to_dict("records")
 
 
-def table(columns: list[str], data: list[dict[str, object]], page_size: int = 12, table_id: str | None = None):
+def table(
+    columns: list[str],
+    data: list[dict[str, object]],
+    page_size: int = 12,
+    table_id: str | None = None,
+):
     kwargs = {
         "columns": [{"name": col, "id": col} for col in columns],
         "data": data,
@@ -113,12 +169,80 @@ def section_help(title: str, body: str):
     )
 
 
+def safe_float(value: object) -> float | None:
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return None
+    if pd.isna(number):
+        return None
+    return number
+
+
+def format_metric(value: object, ndigits: int = 2, suffix: str = "") -> str:
+    number = safe_float(value)
+    if number is None:
+        return "n/a"
+    return f"{number:.{ndigits}f}{suffix}"
+
+
+def format_count(value: object) -> str:
+    number = safe_float(value)
+    if number is None:
+        return "n/a"
+    return f"{int(round(number))}"
+
+
+def metric_card(title: str, value: str, note: str, accent: str = "#5b4b2a"):
+    return html.Div(
+        [
+            html.Div(title, style={"fontSize": "12px", "letterSpacing": "0.06em", "textTransform": "uppercase", "color": "#695f49"}),
+            html.Div(value, style={"fontSize": "34px", "lineHeight": "1.0", "fontWeight": "bold", "margin": "10px 0 6px 0"}),
+            html.Div(note, style={"fontSize": "13px", "color": "#5f5644", "lineHeight": "1.35"}),
+        ],
+        style={**CARD_STYLE, "borderTop": f"4px solid {accent}"},
+    )
+
+
+def mask_state_label(row: pd.Series) -> str:
+    step = int(row.get("step_mask_applied", 0)) != 0
+    imp = int(row.get("impulsive_mask_applied", 0)) != 0
+    cand = int(row.get("impulsive_mask_candidate_available", 0)) != 0
+    if step and imp:
+        return "both masks"
+    if imp:
+        return "impulsive"
+    if step:
+        return "step"
+    if cand:
+        return "candidate only"
+    return "diagnostic only"
+
+
+def empty_figure(title: str) -> go.Figure:
+    fig = go.Figure()
+    fig.update_layout(
+        title=title,
+        margin={"l": 60, "r": 30, "t": 50, "b": 50},
+        plot_bgcolor="#fffdf8",
+        paper_bgcolor="#fffdf8",
+    )
+    return fig
+
+
+def style_figure(fig: go.Figure) -> go.Figure:
+    fig.update_layout(
+        plot_bgcolor="#fffdf8",
+        paper_bgcolor="#fffdf8",
+        font={"family": "Georgia, serif", "color": "#1e1c17"},
+    )
+    return fig
+
+
 def build_heatmap(scan_df: pd.DataFrame, obsnum: str) -> go.Figure:
     obs_df = scan_df.loc[scan_df["obsnum"] == obsnum].copy()
     if obs_df.empty:
-        fig = go.Figure()
-        fig.update_layout(title=f"No scan/network rows for obsnum {obsnum}")
-        return fig
+        return empty_figure(f"No scan/network rows for obsnum {obsnum}")
 
     obs_df["label"] = obs_df.apply(
         lambda row: (
@@ -160,7 +284,7 @@ def build_heatmap(scan_df: pd.DataFrame, obsnum: str) -> go.Figure:
         yaxis_title="network",
         margin={"l": 60, "r": 30, "t": 50, "b": 50},
     )
-    return fig
+    return style_figure(fig)
 
 
 def build_network_trend(scan_df: pd.DataFrame, obsnum: str, network: int) -> go.Figure:
@@ -168,27 +292,27 @@ def build_network_trend(scan_df: pd.DataFrame, obsnum: str, network: int) -> go.
     fig = make_subplots(specs=[[{"secondary_y": True}]])
     if df.empty:
         fig.update_layout(title=f"No scan rows for obsnum {obsnum} network {network}")
-        return fig
+        return style_figure(fig)
 
     x = df["output_scan_index"]
     fig.add_trace(
-        go.Scatter(x=x, y=df["row_severity"], name="row_severity", mode="lines+markers"),
+        go.Scatter(x=x, y=df["row_severity"], name="row_severity", mode="lines+markers", line={"color": "#8b1e3f"}),
         secondary_y=False,
     )
     fig.add_trace(
-        go.Scatter(x=x, y=df["network_impulsive_score_max"], name="imp_score_max", mode="lines"),
+        go.Scatter(x=x, y=df["network_impulsive_score_max"], name="imp_score_max", mode="lines", line={"color": "#d76a03"}),
         secondary_y=False,
     )
     fig.add_trace(
-        go.Scatter(x=x, y=df["max_slot_event_score"], name="slot_score_max", mode="lines"),
+        go.Scatter(x=x, y=df["max_slot_event_score"], name="slot_score_max", mode="lines", line={"color": "#355070"}),
         secondary_y=False,
     )
     fig.add_trace(
-        go.Scatter(x=x, y=df["step_det_frac"], name="step_det_frac", mode="lines"),
+        go.Scatter(x=x, y=df["step_det_frac"], name="step_det_frac", mode="lines", line={"color": "#4c956c"}),
         secondary_y=True,
     )
     fig.add_trace(
-        go.Scatter(x=x, y=df["step_alignment_frac"], name="step_alignment_frac", mode="lines"),
+        go.Scatter(x=x, y=df["step_alignment_frac"], name="step_alignment_frac", mode="lines", line={"color": "#2c7da0"}),
         secondary_y=True,
     )
     fig.add_trace(
@@ -197,7 +321,7 @@ def build_network_trend(scan_df: pd.DataFrame, obsnum: str, network: int) -> go.
             y=df["impulsive_mask_applied"],
             name="imp_mask",
             mode="markers",
-            marker={"symbol": "x", "size": 8},
+            marker={"symbol": "x", "size": 8, "color": "#d76a03"},
         ),
         secondary_y=True,
     )
@@ -207,7 +331,7 @@ def build_network_trend(scan_df: pd.DataFrame, obsnum: str, network: int) -> go.
             y=df["step_mask_applied"],
             name="step_mask",
             mode="markers",
-            marker={"symbol": "cross", "size": 8},
+            marker={"symbol": "cross", "size": 8, "color": "#355070"},
         ),
         secondary_y=True,
     )
@@ -219,7 +343,442 @@ def build_network_trend(scan_df: pd.DataFrame, obsnum: str, network: int) -> go.
     fig.update_xaxes(title_text="output scan")
     fig.update_yaxes(title_text="severity / score", secondary_y=False)
     fig.update_yaxes(title_text="fraction / mask flag", secondary_y=True)
-    return fig
+    return style_figure(fig)
+
+
+def build_obs_rank_figure(obs_df: pd.DataFrame) -> go.Figure:
+    if obs_df.empty:
+        return empty_figure("No obsnum rows")
+    view = obs_df.sort_values("max_row_severity", ascending=True).tail(18).copy()
+    fig = go.Figure(
+        go.Bar(
+            x=view["max_row_severity"],
+            y=view["obsnum"],
+            orientation="h",
+            marker={
+                "color": view["impulsive_masked_network_scans"],
+                "colorscale": "YlOrBr",
+                "line": {"color": "#7b6740", "width": 1},
+                "colorbar": {"title": "imp masked"},
+            },
+            customdata=view[
+                [
+                    "max_step_det_frac",
+                    "max_cm_lowmid",
+                    "top_slot_event_score",
+                    "masked_network_scans",
+                    "impulsive_masked_network_scans",
+                ]
+            ].values,
+            hovertemplate=(
+                "obs=%{y}<br>severity=%{x:.3f}"
+                "<br>max_step_det=%{customdata[0]:.4f}"
+                "<br>max_cm_lowmid=%{customdata[1]:.3f}"
+                "<br>top_slot=%{customdata[2]:.3f}"
+                "<br>step_masked_rows=%{customdata[3]:.0f}"
+                "<br>imp_masked_rows=%{customdata[4]:.0f}<extra></extra>"
+            ),
+        )
+    )
+    fig.update_layout(
+        title="Obsnum ranking by worst scan/network severity",
+        xaxis_title="max row severity",
+        yaxis_title="obsnum",
+        margin={"l": 70, "r": 30, "t": 50, "b": 50},
+    )
+    return style_figure(fig)
+
+
+def build_network_rank_figure(by_network_df: pd.DataFrame) -> go.Figure:
+    if by_network_df.empty:
+        return empty_figure("No network summary rows")
+    view = by_network_df.sort_values("max_row_severity", ascending=True).copy()
+    fig = go.Figure(
+        go.Bar(
+            x=view["max_row_severity"],
+            y=[f"nw{int(nw)}" for nw in view["network"]],
+            orientation="h",
+            marker={
+                "color": view["total_impulsive_masked_network_scans"],
+                "colorscale": "Sunsetdark",
+                "line": {"color": "#5b4324", "width": 1},
+                "colorbar": {"title": "imp masked"},
+            },
+            customdata=view[
+                [
+                    "max_max_step_det_frac",
+                    "max_max_cm_lowmid",
+                    "max_slot_event_score",
+                    "worst_obsnum",
+                ]
+            ].values,
+            hovertemplate=(
+                "network=%{y}<br>severity=%{x:.3f}"
+                "<br>max_step_det=%{customdata[0]:.4f}"
+                "<br>max_cm_lowmid=%{customdata[1]:.3f}"
+                "<br>top_slot=%{customdata[2]:.3f}"
+                "<br>worst_obs=%{customdata[3]}<extra></extra>"
+            ),
+        )
+    )
+    fig.update_layout(
+        title="Network ranking across the selected reduction",
+        xaxis_title="max row severity",
+        yaxis_title="network",
+        margin={"l": 70, "r": 30, "t": 50, "b": 50},
+    )
+    return style_figure(fig)
+
+
+def build_obs_network_rank_figure(obs_network_view: pd.DataFrame, obsnum: str) -> go.Figure:
+    if obs_network_view.empty:
+        return empty_figure(f"No network rows for obsnum {obsnum}")
+    view = obs_network_view.sort_values("max_row_severity", ascending=True).copy()
+    fig = go.Figure(
+        go.Bar(
+            x=view["max_row_severity"],
+            y=[f"nw{int(nw)}" for nw in view["network"]],
+            orientation="h",
+            marker={
+                "color": view["impulsive_masked_scans"],
+                "colorscale": "Tealgrn",
+                "line": {"color": "#416165", "width": 1},
+                "colorbar": {"title": "imp masked scans"},
+            },
+            customdata=view[
+                [
+                    "masked_scans",
+                    "impulsive_masked_scans",
+                    "max_network_impulsive_score",
+                    "top_slot_event_score",
+                ]
+            ].values,
+            hovertemplate=(
+                "network=%{y}<br>severity=%{x:.3f}"
+                "<br>step_masked_scans=%{customdata[0]:.0f}"
+                "<br>imp_masked_scans=%{customdata[1]:.0f}"
+                "<br>max_network_imp_score=%{customdata[2]:.3f}"
+                "<br>top_slot=%{customdata[3]:.3f}<extra></extra>"
+            ),
+        )
+    )
+    fig.update_layout(
+        title=f"Obsnum {obsnum}: network ranking",
+        xaxis_title="max row severity",
+        yaxis_title="network",
+        margin={"l": 70, "r": 30, "t": 50, "b": 50},
+    )
+    return style_figure(fig)
+
+
+def build_top_scan_figure(scan_view: pd.DataFrame, obsnum: str) -> go.Figure:
+    if scan_view.empty:
+        return empty_figure(f"No scan rows for obsnum {obsnum}")
+    view = scan_view.sort_values("row_severity", ascending=False).head(18).copy()
+    view["row_label"] = view.apply(
+        lambda row: f"scan {int(row['output_scan_index'])} nw{int(row['network'])}", axis=1
+    )
+    view["mask_state"] = view.apply(mask_state_label, axis=1)
+    view = view.sort_values("row_severity", ascending=True)
+
+    fig = go.Figure()
+    for state, color in MASK_COLORS.items():
+        part = view.loc[view["mask_state"] == state]
+        if part.empty:
+            continue
+        fig.add_trace(
+            go.Bar(
+                x=part["row_severity"],
+                y=part["row_label"],
+                orientation="h",
+                name=state,
+                marker={"color": color},
+                customdata=part[
+                    [
+                        "step_det_frac",
+                        "step_alignment_frac",
+                        "network_impulsive_score_max",
+                        "max_slot_event_score",
+                        "impulsive_mask_cluster_network_count",
+                    ]
+                ].values,
+                hovertemplate=(
+                    "%{y}<br>severity=%{x:.3f}"
+                    "<br>step_det=%{customdata[0]:.4f}"
+                    "<br>step_align=%{customdata[1]:.4f}"
+                    "<br>imp_score=%{customdata[2]:.3f}"
+                    "<br>slot_score=%{customdata[3]:.3f}"
+                    "<br>cluster_nw=%{customdata[4]:.0f}<extra></extra>"
+                ),
+            )
+        )
+    fig.update_layout(
+        title=f"Obsnum {obsnum}: highest-severity scan/network rows",
+        xaxis_title="row severity",
+        yaxis_title="scan / network row",
+        barmode="overlay",
+        legend={"orientation": "h", "yanchor": "bottom", "y": 1.02, "x": 0},
+        margin={"l": 110, "r": 30, "t": 50, "b": 50},
+    )
+    return style_figure(fig)
+
+
+def build_top_slot_figure(slot_view: pd.DataFrame, obsnum: str, network: int) -> go.Figure:
+    if slot_view.empty:
+        return empty_figure(f"Obsnum {obsnum} network {network}: no stored impulsive slots")
+    view = slot_view.sort_values("event_score", ascending=False).head(20).copy()
+    view["slot_label"] = view.apply(
+        lambda row: f"scan {int(row['output_scan_index'])} slot {int(row['slot'])} uid {int(row['apt_uid'])}",
+        axis=1,
+    )
+    view = view.sort_values("event_score", ascending=True)
+
+    fig = go.Figure()
+    for kind, color in EVENT_KIND_COLORS.items():
+        part = view.loc[view["event_kind_label"] == kind]
+        if part.empty:
+            continue
+        fig.add_trace(
+            go.Bar(
+                x=part["event_score"],
+                y=part["slot_label"],
+                orientation="h",
+                name=kind,
+                marker={"color": color},
+                customdata=part[["peak_abs_z", "peak_delta_abs_z"]].values,
+                hovertemplate=(
+                    "%{y}<br>event_score=%{x:.3f}"
+                    "<br>peak_abs_z=%{customdata[0]:.3f}"
+                    "<br>peak_delta_abs_z=%{customdata[1]:.3f}<extra></extra>"
+                ),
+            )
+        )
+    fig.update_layout(
+        title=f"Obsnum {obsnum} network {network}: top captured impulsive slots",
+        xaxis_title="event score",
+        yaxis_title="captured slot",
+        legend={"orientation": "h", "yanchor": "bottom", "y": 1.02, "x": 0},
+        margin={"l": 150, "r": 30, "t": 50, "b": 50},
+    )
+    return style_figure(fig)
+
+
+def build_overview_cards(
+    obs_df: pd.DataFrame,
+    by_network_df: pd.DataFrame,
+    scan_df: pd.DataFrame,
+    slot_df: pd.DataFrame,
+):
+    worst_obs = obs_df.sort_values("max_row_severity", ascending=False).iloc[0]
+    worst_network = by_network_df.sort_values("max_row_severity", ascending=False).iloc[0]
+    top_slot = slot_df.sort_values("event_score", ascending=False).iloc[0] if not slot_df.empty else None
+    return html.Div(
+        [
+            metric_card("Obsnums", format_count(len(obs_df)), "distinct observations in this reduction", "#7c644a"),
+            metric_card("Rows", format_count(len(scan_df)), "scan x network summary rows", "#8f5536"),
+            metric_card(
+                "Step-Masked Rows",
+                format_count(scan_df["step_mask_applied"].sum()),
+                "rows where the RTC step path acted",
+                "#355070",
+            ),
+            metric_card(
+                "Impulsive-Masked Rows",
+                format_count(scan_df["impulsive_mask_applied"].sum()),
+                "rows where the RTC impulsive path acted",
+                "#d76a03",
+            ),
+            metric_card(
+                "Worst Obsnum",
+                str(worst_obs["obsnum"]),
+                f"max severity {format_metric(worst_obs['max_row_severity'], 3)}",
+                "#8b1e3f",
+            ),
+            metric_card(
+                "Worst Network",
+                f"nw{int(worst_network['network'])}",
+                f"max severity {format_metric(worst_network['max_row_severity'], 3)}",
+                "#4c956c",
+            ),
+            metric_card(
+                "Strongest Slot",
+                format_metric(top_slot["event_score"], 1) if top_slot is not None else "n/a",
+                (
+                    f"obs {top_slot['obsnum']} nw{int(top_slot['network'])} "
+                    f"{top_slot['event_kind_label']}"
+                ) if top_slot is not None else "no captured slots",
+                "#cf3f3f",
+            ),
+        ],
+        style=CARD_GRID_STYLE,
+    )
+
+
+def build_selected_obs_cards(obsnum: str, obs_network_view: pd.DataFrame, scan_view: pd.DataFrame, slot_view: pd.DataFrame):
+    if scan_view.empty:
+        return html.Div("No scan rows for this obsnum.", style=PANEL_STYLE)
+    worst_row = scan_view.sort_values("row_severity", ascending=False).iloc[0]
+    worst_network = obs_network_view.sort_values("max_row_severity", ascending=False).iloc[0]
+    top_slot = slot_view.sort_values("event_score", ascending=False).iloc[0] if not slot_view.empty else None
+    return html.Div(
+        [
+            metric_card(
+                f"Obs {obsnum} Worst Row",
+                format_metric(worst_row["row_severity"], 3),
+                f"scan {int(worst_row['output_scan_index'])} nw{int(worst_row['network'])}",
+                "#8b1e3f",
+            ),
+            metric_card(
+                "Worst Network",
+                f"nw{int(worst_network['network'])}",
+                f"severity {format_metric(worst_network['max_row_severity'], 3)}",
+                "#4c956c",
+            ),
+            metric_card(
+                "Step-Masked Rows",
+                format_count(scan_view["step_mask_applied"].sum()),
+                "within the selected obsnum",
+                "#355070",
+            ),
+            metric_card(
+                "Impulsive-Masked Rows",
+                format_count(scan_view["impulsive_mask_applied"].sum()),
+                "within the selected obsnum",
+                "#d76a03",
+            ),
+            metric_card(
+                "Strongest Slot",
+                format_metric(top_slot["event_score"], 1) if top_slot is not None else "n/a",
+                (
+                    f"nw{int(top_slot['network'])} scan {int(top_slot['output_scan_index'])} "
+                    f"{top_slot['event_kind_label']}"
+                ) if top_slot is not None else "no stored slot in selected network",
+                "#cf3f3f",
+            ),
+        ],
+        style=CARD_GRID_STYLE,
+    )
+
+
+def build_detail_panel(
+    obs_network_view: pd.DataFrame,
+    scan_view: pd.DataFrame,
+    slot_view: pd.DataFrame,
+) -> html.Details:
+    scan_top_view = scan_view.sort_values("row_severity", ascending=False).head(12)
+    return html.Details(
+        [
+            html.Summary("Exact Rows"),
+            html.Div(
+                [
+                    html.Div(
+                        [
+                            html.Div("Obsnum-network rows", style={"fontWeight": "bold", "marginBottom": "8px"}),
+                            table(
+                                [
+                                    "network",
+                                    "max_row_severity",
+                                    "max_step_det_frac",
+                                    "max_network_impulsive_score",
+                                    "max_cm_lowmid",
+                                    "masked_scans",
+                                    "impulsive_masked_scans",
+                                    "top_slot_event_score",
+                                ],
+                                rounded_records(
+                                    obs_network_view,
+                                    [
+                                        "network",
+                                        "max_row_severity",
+                                        "max_step_det_frac",
+                                        "max_network_impulsive_score",
+                                        "max_cm_lowmid",
+                                        "masked_scans",
+                                        "impulsive_masked_scans",
+                                        "top_slot_event_score",
+                                    ],
+                                ),
+                                page_size=8,
+                            ),
+                        ],
+                        style=PANEL_STYLE,
+                    ),
+                    html.Div(
+                        [
+                            html.Div("Top scan/network rows", style={"fontWeight": "bold", "marginBottom": "8px"}),
+                            table(
+                                [
+                                    "output_scan_index",
+                                    "network",
+                                    "row_severity",
+                                    "step_det_frac",
+                                    "step_alignment_frac",
+                                    "network_impulsive_score_max",
+                                    "max_slot_event_score",
+                                    "step_mask_applied",
+                                    "impulsive_mask_applied",
+                                    "impulsive_mask_candidate_available",
+                                    "impulsive_mask_cross_network_trigger",
+                                    "impulsive_mask_high_score_override_trigger",
+                                ],
+                                rounded_records(
+                                    scan_top_view,
+                                    [
+                                        "output_scan_index",
+                                        "network",
+                                        "row_severity",
+                                        "step_det_frac",
+                                        "step_alignment_frac",
+                                        "network_impulsive_score_max",
+                                        "max_slot_event_score",
+                                        "step_mask_applied",
+                                        "impulsive_mask_applied",
+                                        "impulsive_mask_candidate_available",
+                                        "impulsive_mask_cross_network_trigger",
+                                        "impulsive_mask_high_score_override_trigger",
+                                    ],
+                                ),
+                                page_size=8,
+                            ),
+                        ],
+                        style=PANEL_STYLE,
+                    ),
+                    html.Div(
+                        [
+                            html.Div("Top stored slots for the selected network", style={"fontWeight": "bold", "marginBottom": "8px"}),
+                            table(
+                                [
+                                    "output_scan_index",
+                                    "slot",
+                                    "apt_uid",
+                                    "event_kind_label",
+                                    "event_score",
+                                    "peak_abs_z",
+                                    "peak_delta_abs_z",
+                                ],
+                                rounded_records(
+                                    slot_view.head(16),
+                                    [
+                                        "output_scan_index",
+                                        "slot",
+                                        "apt_uid",
+                                        "event_kind_label",
+                                        "event_score",
+                                        "peak_abs_z",
+                                        "peak_delta_abs_z",
+                                    ],
+                                ),
+                                page_size=8,
+                            ),
+                        ],
+                        style=PANEL_STYLE,
+                    ),
+                ]
+            ),
+        ],
+        open=False,
+        style={**HELP_BOX_STYLE, "marginTop": "6px"},
+    )
 
 
 def build_app(args: argparse.Namespace) -> Dash:
@@ -257,7 +816,7 @@ def build_app(args: argparse.Namespace) -> Dash:
     app.title = "rtcdiag engineering dashboard"
     app.layout = html.Div(
         [
-            html.H2("RTC Engineering Dashboard"),
+            html.H2("RTC Engineering Dashboard", style={"marginBottom": "8px"}),
             html.Div(
                 [
                     html.Div(f"Reduction: {Path(args.redu_dir).expanduser().resolve()}"),
@@ -269,35 +828,55 @@ def build_app(args: argparse.Namespace) -> Dash:
                         f"Impulsive threshold: {data['impulsive_threshold']}"
                     ),
                 ],
-                style={"marginBottom": "16px", "fontFamily": "Menlo, Monaco, Consolas, monospace"},
+                style={"marginBottom": "16px", "fontFamily": "Menlo, Monaco, Consolas, monospace", "fontSize": "13px"},
             ),
             html.Details(
                 [
                     html.Summary("How To Read This Dashboard"),
                     dcc.Markdown(
                         """
-This dashboard is built from `rtcdiag` survey rows.
+This view is meant for fast engineering triage, not for exhaustive tabular inspection.
 
-- One **obsnum** is one observation.
-- Within an obsnum, each **output scan** is one output time chunk.
-- Within an output scan, each **network row** summarizes all detector samples for one network.
-- So a heatmap cell or scan/network table row means: **one obsnum, one output scan, one network**.
+- Start with the **overview cards** and **ranking panels** to find the worst obsnums and networks.
+- Use the **heatmap** to see whether a problem is isolated to a few output scans or spread across an obsnum.
+- Use the **trend plot** to see which metric is actually driving a suspicious network.
+- Use the **scan ranking** and **slot ranking** panels to jump from broad survey context to concrete events.
+- Open **Exact Rows** only when you need precise values for a small number of rows.
 
-`row_severity` is a compact ranking score, not a physical unit. It is the largest of several normalized contamination indicators:
-
-- step-like detector fraction times step alignment
-- low/mid common-mode ratio
-- impulsive event score
-- impulsive slot capture score
-
-Use it for triage and ranking, not as a calibrated threshold by itself.
-
-`step_mask_applied` and `impulsive_mask_applied` are binary indicators showing whether those RTC masking paths fired on that scan/network row.
+`row_severity` is a ranking score, not a physical unit. It is the largest of several normalized contamination indicators, so it should be used to rank and compare rows, not as a calibrated threshold by itself.
                         """
                     ),
                 ],
                 style={**HELP_BOX_STYLE, "marginBottom": "18px"},
                 open=True,
+            ),
+            html.Div(build_overview_cards(obs_df, by_network_df, scan_df, slot_df), style=PANEL_STYLE),
+            html.Div(
+                [
+                    html.Div(
+                        [
+                            html.H3("Obsnum Triage", style={"marginTop": "0"}),
+                            html.Div(
+                                "Worst obsnums by maximum scan/network severity. Bar color tracks how often the impulsive mask actually acted.",
+                                style={"marginBottom": "8px", "fontSize": "14px", "color": "#4e483c"},
+                            ),
+                            dcc.Graph(figure=build_obs_rank_figure(obs_df), config=GRAPH_CONFIG),
+                        ],
+                        style=PANEL_STYLE,
+                    ),
+                    html.Div(
+                        [
+                            html.H3("Network Triage", style={"marginTop": "0"}),
+                            html.Div(
+                                "Worst networks across the selected reduction. Bar color tracks total impulsive-masked rows.",
+                                style={"marginBottom": "8px", "fontSize": "14px", "color": "#4e483c"},
+                            ),
+                            dcc.Graph(figure=build_network_rank_figure(by_network_df), config=GRAPH_CONFIG),
+                        ],
+                        style=PANEL_STYLE,
+                    ),
+                ],
+                style={"display": "grid", "gridTemplateColumns": "repeat(auto-fit, minmax(520px, 1fr))", "gap": "16px"},
             ),
             html.Div(
                 [
@@ -323,147 +902,40 @@ Use it for triage and ranking, not as a calibrated threshold by itself.
                 ],
                 style={"display": "flex", "gap": "16px", "marginBottom": "16px"},
             ),
-            html.H3("Obs Summary"),
+            html.Div(id="selected-obs-cards", style=PANEL_STYLE),
             section_help(
-                "What this table shows",
+                "Selected Obsnum Views",
                 """
-Each row is one obsnum summarized across all selected networks and all output scans.
+The next panels are for one selected obsnum and one selected network.
 
-Use this table to answer: which obsnums are the hardest overall? The most useful columns are:
-
-- `max_row_severity`: worst single scan/network row in the obsnum
-- `max_step_det_frac`: densest step-like row seen anywhere in the obsnum
-- `max_cm_lowmid`: strongest low-frequency common-mode excess
-- `max_impulsive_event_score` / `top_slot_event_score`: strongest impulsive behavior seen in detector-level or captured-slot diagnostics
-- `masked_network_scans` / `impulsive_masked_network_scans`: how many scan/network rows were acted on by the step or impulsive mask paths
-                """,
-            ),
-            table(
-                [
-                    "obsnum",
-                    "product_kind",
-                    "max_row_severity",
-                    "max_step_det_frac",
-                    "max_cm_lowmid",
-                    "max_impulsive_event_score",
-                    "top_slot_event_score",
-                    "masked_network_scans",
-                    "impulsive_masked_network_scans",
-                ],
-                rounded_records(
-                    obs_df,
-                    [
-                        "obsnum",
-                        "product_kind",
-                        "max_row_severity",
-                        "max_step_det_frac",
-                        "max_cm_lowmid",
-                        "max_impulsive_event_score",
-                        "top_slot_event_score",
-                        "masked_network_scans",
-                        "impulsive_masked_network_scans",
-                    ],
-                ),
-                page_size=15,
-            ),
-            html.H3("Network Summary"),
-            section_help(
-                "What this table shows",
-                """
-Each row is one network aggregated across all selected obsnums.
-
-This is for finding chronic network-level behavior. `worst_obsnum` tells you which obsnum produced the worst severity for that network, while `total_masked_network_scans` and `total_impulsive_masked_network_scans` tell you how often the network was acted on across the whole reduction set.
-                """,
-            ),
-            table(
-                [
-                    "network",
-                    "n_obsnums",
-                    "max_row_severity",
-                    "max_max_step_det_frac",
-                    "max_max_cm_lowmid",
-                    "max_impulsive_frac_ge_threshold",
-                    "total_masked_network_scans",
-                    "total_impulsive_masked_network_scans",
-                    "worst_obsnum",
-                ],
-                rounded_records(
-                    by_network_df,
-                    [
-                        "network",
-                        "n_obsnums",
-                        "max_row_severity",
-                        "max_max_step_det_frac",
-                        "max_max_cm_lowmid",
-                        "max_impulsive_frac_ge_threshold",
-                        "total_masked_network_scans",
-                        "total_impulsive_masked_network_scans",
-                        "worst_obsnum",
-                    ],
-                ),
-                page_size=10,
-            ),
-            section_help(
-                "Heatmap: how to read it",
-                """
-Each heatmap cell is one **scan/network row** for the selected obsnum.
-
-- x-axis: output scan index
-- y-axis: network id
-- color: `row_severity`
-
-Use this to see whether a problem is isolated to a few scan chunks, concentrated in a few networks, or broadly spread across the obsnum. Hover text shows the key local metrics that produced the severity ranking, along with whether the step or impulsive masks fired.
-                """,
-            ),
-            section_help(
-                "Trend plot: how to read it",
-                """
-The trend plot is for one selected obsnum and one selected network.
-
-- left axis: severity-like quantities and impulsive scores
-- right axis: fractions and binary mask flags
-
-`row_severity`, `imp_score_max`, and `slot_score_max` help you see whether the row is driven by impulsive structure. `step_det_frac` and `step_alignment_frac` show whether the same network/scan row also looks step-like. Marker-only traces show where the step and impulsive masking paths actually fired.
+- **Heatmap** answers: where are the bad scan/network rows?
+- **Trend plot** answers: is this network step-like, impulsive, or both?
+- **Network ranking** answers: which networks dominate this obsnum?
+- **Scan ranking** answers: which exact rows deserve inspection first?
+- **Slot ranking** answers: what are the strongest captured compact events in the selected network?
                 """,
             ),
             html.Div(
                 [
-                    dcc.Graph(id="heatmap"),
-                    dcc.Graph(id="network-trend"),
-                ]
+                    html.Div(dcc.Graph(id="heatmap", config=GRAPH_CONFIG), style=PANEL_STYLE),
+                    html.Div(dcc.Graph(id="network-trend", config=GRAPH_CONFIG), style=PANEL_STYLE),
+                ],
+                style={"display": "grid", "gridTemplateColumns": "repeat(auto-fit, minmax(520px, 1fr))", "gap": "16px"},
             ),
-            html.H3("Obs-Network Summary"),
-            section_help(
-                "What this table shows",
-                """
-Each row is one network within the selected obsnum, aggregated over all output scans in that obsnum.
-
-This is the bridge between the all-obs summary tables and the scan-level detail views. It tells you which networks are dominating the selected obsnum and whether that dominance comes from step-like, impulsive, or common-mode metrics.
-                """,
+            html.Div(
+                [
+                    html.Div(dcc.Graph(id="obs-network-rank", config=GRAPH_CONFIG), style=PANEL_STYLE),
+                    html.Div(dcc.Graph(id="top-scan-rank", config=GRAPH_CONFIG), style=PANEL_STYLE),
+                ],
+                style={"display": "grid", "gridTemplateColumns": "repeat(auto-fit, minmax(520px, 1fr))", "gap": "16px"},
             ),
-            html.Div(id="obs-network-table"),
-            html.H3("Top Scan/Network Rows"),
-            section_help(
-                "What this table shows",
-                """
-These are the highest-severity scan/network rows within the selected obsnum.
-
-This is usually the first table to inspect after the heatmap. It surfaces the exact scan chunks and networks that drive the obsnum ranking. `step_mask_applied` and `impulsive_mask_applied` let you compare diagnostic severity against the actual runtime actions taken by RTC, while the `impulsive_mask_*trigger` and cluster columns show why the impulsive path decided to act or not act.
-                """,
+            html.Div(
+                [html.Div(dcc.Graph(id="top-slot-rank", config=GRAPH_CONFIG), style=PANEL_STYLE)],
+                style={"display": "grid", "gridTemplateColumns": "1fr", "gap": "16px"},
             ),
-            html.Div(id="scan-row-table"),
-            html.H3("Top Impulsive Slots"),
-            section_help(
-                "What this table shows",
-                """
-This table shows the top captured impulsive events for the selected obsnum and selected network.
-
-Each row is one stored slot from the compact RTC impulsive capture product. `event_kind_label` distinguishes raw-like and delta-like captures. `event_score`, `peak_abs_z`, and `peak_delta_abs_z` help separate broad raw excursions from sharper delta-like hits.
-                """,
-            ),
-            html.Div(id="slot-row-table"),
+            html.Div(id="detail-panel"),
         ],
-        style={"padding": "20px", "maxWidth": "1600px"},
+        style=PAGE_STYLE,
     )
 
     @app.callback(Output("network-dropdown", "options"), Output("network-dropdown", "value"), Input("obs-dropdown", "value"))
@@ -476,11 +948,13 @@ Each row is one stored slot from the compact RTC impulsive capture product. `eve
         return options, value
 
     @app.callback(
+        Output("selected-obs-cards", "children"),
         Output("heatmap", "figure"),
         Output("network-trend", "figure"),
-        Output("obs-network-table", "children"),
-        Output("scan-row-table", "children"),
-        Output("slot-row-table", "children"),
+        Output("obs-network-rank", "figure"),
+        Output("top-scan-rank", "figure"),
+        Output("top-slot-rank", "figure"),
+        Output("detail-panel", "children"),
         Input("obs-dropdown", "value"),
         Input("network-dropdown", "value"),
     )
@@ -488,107 +962,15 @@ Each row is one stored slot from the compact RTC impulsive capture product. `eve
         obs_network_view = obs_network_df.loc[obs_network_df["obsnum"] == obsnum].copy()
         scan_view = scan_df.loc[scan_df["obsnum"] == obsnum].copy()
         slot_view = slot_df.loc[(slot_df["obsnum"] == obsnum) & (slot_df["network"] == network)].copy()
-        scan_top_view = scan_view.sort_values("row_severity", ascending=False).head(30)
 
         return (
+            build_selected_obs_cards(obsnum, obs_network_view, scan_view, slot_view),
             build_heatmap(scan_df, obsnum),
             build_network_trend(scan_df, obsnum, int(network)),
-            table(
-                [
-                    "network",
-                    "max_row_severity",
-                    "max_step_det_frac",
-                    "max_network_impulsive_score",
-                    "max_cm_lowmid",
-                    "masked_scans",
-                    "impulsive_masked_scans",
-                    "top_slot_event_score",
-                ],
-                rounded_records(
-                    obs_network_view,
-                    [
-                        "network",
-                        "max_row_severity",
-                        "max_step_det_frac",
-                        "max_network_impulsive_score",
-                        "max_cm_lowmid",
-                        "masked_scans",
-                        "impulsive_masked_scans",
-                        "top_slot_event_score",
-                    ],
-                ),
-                page_size=10,
-            ),
-            table(
-                [
-                    "output_scan_index",
-                    "network",
-                    "row_severity",
-                    "step_det_frac",
-                    "step_alignment_frac",
-                    "network_impulsive_score_max",
-                    "max_slot_event_score",
-                    "step_mask_applied",
-                    "impulsive_mask_applied",
-                    "impulsive_mask_candidate_available",
-                    "impulsive_mask_local_trigger",
-                    "impulsive_mask_cross_network_trigger",
-                    "impulsive_mask_high_score_override_trigger",
-                    "impulsive_mask_rejected_max_fraction",
-                    "impulsive_mask_cluster_network_count",
-                    "impulsive_mask_cluster_peak_score",
-                    "impulsive_mask_override_score",
-                    "impulsive_mask_override_uses_network_peak",
-                ],
-                rounded_records(
-                    scan_top_view,
-                    [
-                        "output_scan_index",
-                        "network",
-                        "row_severity",
-                        "step_det_frac",
-                        "step_alignment_frac",
-                        "network_impulsive_score_max",
-                        "max_slot_event_score",
-                        "step_mask_applied",
-                        "impulsive_mask_applied",
-                        "impulsive_mask_candidate_available",
-                        "impulsive_mask_local_trigger",
-                        "impulsive_mask_cross_network_trigger",
-                        "impulsive_mask_high_score_override_trigger",
-                        "impulsive_mask_rejected_max_fraction",
-                        "impulsive_mask_cluster_network_count",
-                        "impulsive_mask_cluster_peak_score",
-                        "impulsive_mask_override_score",
-                        "impulsive_mask_override_uses_network_peak",
-                    ],
-                ),
-                page_size=12,
-            ),
-            table(
-                [
-                    "output_scan_index",
-                    "slot",
-                    "apt_uid",
-                    "event_kind_label",
-                    "event_score",
-                    "peak_abs_z",
-                    "peak_delta_abs_z",
-                ],
-                rounded_records(
-                    slot_view.head(40),
-                    [
-                        "output_scan_index",
-                        "slot",
-                        "apt_uid",
-                        "event_kind_label",
-                        "event_score",
-                        "peak_abs_z",
-                        "peak_delta_abs_z",
-                    ],
-                ),
-                page_size=12,
-            ),
+            build_obs_network_rank_figure(obs_network_view, obsnum),
+            build_top_scan_figure(scan_view, obsnum),
+            build_top_slot_figure(slot_view, obsnum, int(network)),
+            build_detail_panel(obs_network_view, scan_view, slot_view),
         )
 
     return app

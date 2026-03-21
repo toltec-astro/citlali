@@ -7,6 +7,7 @@
 #include <mutex>
 #include <stdexcept>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include <spdlog/common.h>
@@ -31,7 +32,6 @@ public:
 
     ~gzip_file_sink() override {
         if (file_ != nullptr) {
-            gzflush(file_, Z_FINISH);
             gzclose(file_);
             file_ = nullptr;
         }
@@ -83,24 +83,36 @@ inline void attach_reduction_gzip_sink(
     if (!logger) {
         return;
     }
+    static std::mutex registry_mutex;
+    static std::unordered_map<std::string, std::weak_ptr<gzip_file_sink_mt>> registry;
+
+    std::shared_ptr<gzip_file_sink_mt> gzip_sink_shared;
+    {
+        std::lock_guard<std::mutex> lock(registry_mutex);
+        auto &entry = registry[filepath];
+        gzip_sink_shared = entry.lock();
+        if (gzip_sink_shared == nullptr) {
+            gzip_sink_shared = std::make_shared<gzip_file_sink_mt>(filepath);
+            gzip_sink_shared->set_level(spdlog::level::trace);
+            entry = gzip_sink_shared;
+        }
+    }
+
     auto &sinks = logger->sinks();
-    for (const auto &sink : sinks) {
-        auto gzip_sink = std::dynamic_pointer_cast<gzip_file_sink_mt>(sink);
-        if (gzip_sink != nullptr && gzip_sink->filepath() == filepath) {
+    for (const auto &existing_sink : sinks) {
+        if (existing_sink == gzip_sink_shared) {
             return;
         }
     }
     sinks.erase(
         std::remove_if(
             sinks.begin(), sinks.end(),
-            [](const spdlog::sink_ptr &sink) {
-                return std::dynamic_pointer_cast<gzip_file_sink_mt>(sink) != nullptr;
+            [&gzip_sink_shared](const spdlog::sink_ptr &other) {
+                auto gzip_sink = std::dynamic_pointer_cast<gzip_file_sink_mt>(other);
+                return gzip_sink != nullptr && other != gzip_sink_shared;
             }),
         sinks.end());
-
-    auto sink = std::make_shared<gzip_file_sink_mt>(filepath);
-    sink->set_level(spdlog::level::trace);
-    sinks.push_back(sink);
+    sinks.push_back(gzip_sink_shared);
 }
 
 inline std::string enable_reduction_gzip_logs(const std::string &redu_dir) {
