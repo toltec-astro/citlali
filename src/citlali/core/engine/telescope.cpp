@@ -281,12 +281,34 @@ void Telescope::calc_scan_indices() {
     // number of scans
     Eigen::Index n_scans = 0;
 
+    auto require_tel_series = [&](const std::string &key) -> Eigen::VectorXd & {
+        auto it = tel_data.find(key);
+        if (it == tel_data.end() || it->second.size() == 0) {
+            throw std::runtime_error(fmt::format(
+                "cannot calculate scan indices: telescope series '{}' is missing or empty", key));
+        }
+        return it->second;
+    };
+
+    auto require_header_scalar = [&](const std::string &key) -> double {
+        auto it = tel_header.find(key);
+        if (it == tel_header.end() || it->second.size() == 0) {
+            throw std::runtime_error(fmt::format(
+                "cannot calculate scan indices: telescope header '{}' is missing or empty", key));
+        }
+        return it->second(0);
+    };
+
     // get scans for raster pattern
     if ((obs_pgm=="Map" && exec_mode==0) && !force_chunk) {
         logger->info("calculating scans for raster mode");
 
         // convert the hold signal to a bool
-        Eigen::Matrix<bool,Eigen::Dynamic,1> hold_bool = tel_data["Hold"].template cast<bool>();
+        auto &hold = require_tel_series("Hold");
+        Eigen::Matrix<bool,Eigen::Dynamic,1> hold_bool = hold.template cast<bool>();
+        if (hold_bool.size() == 0) {
+            throw std::runtime_error("cannot calculate scans for raster mode: Hold series is empty");
+        }
 
         // get velocities
         /*auto x_vel = engine_utils::compute_numerical_derivative(tel_data["TelTime"],tel_data["az_phys"]);
@@ -311,11 +333,31 @@ void Telescope::calc_scan_indices() {
             coord1_key = "az_phys";
             coord2_key = "alt_phys";
         }
+        else if (map_coord == "Gal") {
+            coord1_key = "l_phys";
+            coord2_key = "b_phys";
+        }
+        else {
+            throw std::runtime_error(fmt::format(
+                "cannot calculate scans for raster mode: unsupported Header.Map.MapCoord='{}'", map_coord));
+        }
+
+        auto &coord1 = require_tel_series(coord1_key);
+        auto &coord2 = require_tel_series(coord2_key);
+        if (coord1.size() != hold_bool.size() || coord2.size() != hold_bool.size()) {
+            throw std::runtime_error(fmt::format(
+                "cannot calculate scans for raster mode: coordinate sizes do not match Hold size "
+                "(Hold={}, {}={}, {}={})",
+                hold_bool.size(), coord1_key, coord1.size(), coord2_key, coord2.size()));
+        }
+
+        const double x_length = require_header_scalar("Header.Map.XLength");
+        const double y_length = require_header_scalar("Header.Map.YLength");
+        const double scan_angle = require_header_scalar("Header.Map.ScanAngle");
 
         for (Eigen::Index i = 0; i < hold_bool.size(); ++i) {
-            if (!engine_utils::is_point_in_box(tel_data[coord1_key](i), tel_data[coord2_key](i),
-                                              tel_header["Header.Map.XLength"](0), tel_header["Header.Map.YLength"](0),
-                                              tel_header["Header.Map.ScanAngle"](0))) {
+            if (!engine_utils::is_point_in_box(coord1(i), coord2(i),
+                                              x_length, y_length, scan_angle)) {
                 hold_bool(i) = 1;
             }
         }
@@ -330,6 +372,11 @@ void Telescope::calc_scan_indices() {
         // increment scan number if last element is zero
         if (hold_bool(hold_bool.size() - 1) == 0) {
             n_scans++;
+        }
+        if (n_scans <= 0) {
+            throw std::runtime_error(fmt::format(
+                "cannot calculate scans for raster mode: found no in-bounds non-hold samples "
+                "(map_coord='{}')", map_coord));
         }
         // resize matrix to hold scans
         scan_indices.resize(4,n_scans);
@@ -366,7 +413,7 @@ void Telescope::calc_scan_indices() {
         // index of first scan
         Eigen::Index first_scan_i = 0;
         // index of last scan
-        Eigen::Index last_scan_i = tel_data["Hold"].size() - 1;
+        Eigen::Index last_scan_i = require_tel_series("Hold").size() - 1;
 
         double period;
         Eigen::Index period_i;
@@ -383,14 +430,37 @@ void Telescope::calc_scan_indices() {
                 period_i = last_scan_i - first_scan_i + 1;
             }
 
+            if (period_i <= 0) {
+                throw std::runtime_error(fmt::format(
+                    "cannot calculate scans for lissajous/rastajous mode: invalid chunk duration "
+                    "(chunking_value={}, fsmp={})", chunking_value, fsmp));
+            }
+
             // calculate number of scans
             n_scans = std::floor((last_scan_i - first_scan_i + 1)*1./period);
         }
         else if (chunk_mode == "number") {
             n_scans = chunking_value;
 
+            if (n_scans <= 0) {
+                throw std::runtime_error(fmt::format(
+                    "cannot calculate scans for lissajous/rastajous mode: invalid chunk count {}",
+                    chunking_value));
+            }
+
             period = (last_scan_i - first_scan_i + 1) / n_scans;
             period_i = (last_scan_i - first_scan_i + 1) / n_scans;
+        }
+        else {
+            throw std::runtime_error(fmt::format(
+                "cannot calculate scans for lissajous/rastajous mode: unsupported chunk_mode='{}'",
+                chunk_mode));
+        }
+
+        if (period_i <= 0 || n_scans <= 0) {
+            throw std::runtime_error(fmt::format(
+                "cannot calculate scans for lissajous/rastajous mode: invalid period_i={} n_scans={}",
+                period_i, n_scans));
         }
 
         // assign scans to scan_indices matrix
@@ -438,6 +508,10 @@ void Telescope::calc_scan_indices() {
 
     // calculate the number of good scans
     n_scans = n_scans - n_bad_scans;
+
+    if (n_scans <= 0) {
+        throw std::runtime_error("cannot calculate scan indices: all scans were rejected as too short");
+    }
 
     // set up the 3rd and 4th scan indices rows so that we don't lose data
     // during lowpassing inner_scans_chunk is zero if lowpassing is not enabled

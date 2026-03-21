@@ -239,3 +239,43 @@ Example:
   --redu-dir /path/to/reduced/redu65 \
   --array a1100
 ```
+
+`rtc_line_audit.py`
+
+Audit RTC timestreams for persistent narrowband contamination using masked
+Welch PSDs computed only from contiguous good samples (`flags == 0`). This is
+meant for RTC outputs taken after despike/flagging but before later
+filter/downsample stages.
+
+It produces two separate outcomes:
+
+- scan/network line clusters that may justify a global or network-level notch
+- recurrent detector-local lines that may justify bad-detector flagging instead
+
+It writes:
+
+- `rtc_line_audit_scan_network.csv`
+- `rtc_line_audit_detector_peaks.csv`
+- `rtc_line_audit_bad_detectors.csv`
+- `RTC_LINE_AUDIT.md`
+
+Useful notes:
+
+- use `--output-scans` when you want the real `output_scan_index` values from
+  Citlali rather than the internal zero-based scan index
+- the default `--max-det 128` is intentional for interactive work; use
+  `--max-det 0` only when you want all detectors and can afford the runtime
+- broad shared lines should stay in the notch table, while detector-local
+  recurrent lines should rise to the bad-detector table
+
+Example:
+
+```bash
+~/toltec/bin/python tools/blank_sky/rtc_line_audit.py \
+  --redu-dir /path/to/reduced/redu01 \
+  --array a1100 \
+  --networks all \
+  --output-scans 73,77,82 \
+  --max-det 128 \
+  --outdir /path/to/rtc_line_audit
+```
