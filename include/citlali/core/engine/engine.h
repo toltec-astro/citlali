@@ -1904,6 +1904,27 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.PRE_WINDOW_SEC", rtcproc.impulsive_coincidence.mask_pre_window_sec);
         add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.POST_WINDOW_SEC", rtcproc.impulsive_coincidence.mask_post_window_sec);
         add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MAX_FLAGGED_FRAC", rtcproc.impulsive_coincidence.max_flagged_fraction);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.ENABLED", rtcproc.line_audit.enabled);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.LINE_MIN_HZ", rtcproc.line_audit.line_min_hz);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.LINE_MAX_HZ", rtcproc.line_audit.line_max_hz);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.SEGMENT_SEC", rtcproc.line_audit.segment_sec);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.MIN_SEGMENT_SEC", rtcproc.line_audit.min_segment_sec);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.OVERLAP_FRAC", rtcproc.line_audit.overlap_frac);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.CONTINUUM_RADIUS_BINS", rtcproc.line_audit.continuum_radius_bins);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.PROMINENCE_THRESH", rtcproc.line_audit.prominence_thresh);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.CM_PROMINENCE_THRESH", rtcproc.line_audit.cm_prominence_thresh);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.MIN_GOOD_FRAC", rtcproc.line_audit.min_good_frac);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.MIN_WINDOWS", rtcproc.line_audit.min_windows);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.MAX_PEAKS_PER_DETECTOR", rtcproc.line_audit.max_peaks_per_detector);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.MAX_DET", rtcproc.line_audit.max_det);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.MIN_DET_FOR_NETWORK", rtcproc.line_audit.min_det_for_network);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.CLUSTER_TOL_HZ", rtcproc.line_audit.cluster_tol_hz);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.NOTCH_MIN_DETECTOR_FRAC", rtcproc.line_audit.notch_min_detector_frac);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.NOTCH_MIN_DETECTORS", rtcproc.line_audit.notch_min_detectors);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.NOTCH_MIN_CM_PROMINENCE", rtcproc.line_audit.notch_min_cm_prominence);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_MIN_PROMINENCE", rtcproc.line_audit.detector_min_prominence);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_MIN_LINE_POWER_FRAC", rtcproc.line_audit.detector_min_line_power_frac);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.BAD_DETECTOR_MAX_CLUSTER_FRAC", rtcproc.line_audit.bad_detector_max_cluster_frac);
         add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTLOW", ptcproc.lower_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTHIGH", ptcproc.upper_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTLOW", ptcproc.lower_weight_factor);
@@ -2335,6 +2356,42 @@ void Engine::create_tod_files() {
                        "input detector count in each RTC network block");
         add_rtc_nw_int("rtc_network_n_det_used",
                        "detectors with >= 80% valid samples and finite robust scale used for RTC diagnostics");
+        add_rtc_nw_int("rtc_network_line_audit_n_det_used",
+                       "detectors analyzed by the pre-filter RTC line audit in each network block");
+        add_rtc_nw_double("rtc_network_line_audit_shared_freq_hz",
+                          "frequency of the strongest shared narrowband RTC line family in each network block");
+        add_rtc_nw_int("rtc_network_line_audit_shared_detector_count",
+                       "number of detectors participating in the strongest shared narrowband RTC line family");
+        add_rtc_nw_double("rtc_network_line_audit_shared_detector_frac",
+                          "fraction of audited detectors participating in the strongest shared narrowband RTC line family");
+        add_rtc_nw_double("rtc_network_line_audit_shared_median_prominence",
+                          "median detector-level PSD prominence of the strongest shared narrowband RTC line family");
+        add_rtc_nw_double("rtc_network_line_audit_shared_max_prominence",
+                          "maximum detector-level PSD prominence of the strongest shared narrowband RTC line family");
+        add_rtc_nw_double("rtc_network_line_audit_shared_width_hz",
+                          "median linewidth of the strongest shared narrowband RTC line family");
+        add_rtc_nw_double("rtc_network_line_audit_shared_line_power_frac",
+                          "median detector-level line-power fraction of the strongest shared narrowband RTC line family");
+        add_rtc_nw_double("rtc_network_line_audit_shared_common_mode_freq_hz",
+                          "matched common-mode line frequency for the strongest shared narrowband RTC line family");
+        add_rtc_nw_double("rtc_network_line_audit_shared_common_mode_prominence",
+                          "matched common-mode PSD prominence for the strongest shared narrowband RTC line family");
+        add_rtc_nw_double("rtc_network_line_audit_shared_notch_score",
+                          "shared-line notch score, detector fraction times median prominence");
+        add_rtc_nw_int("rtc_network_line_audit_shared_recommend_notch",
+                       "1 if the strongest shared narrowband RTC line family met the current notch-candidate criteria");
+        add_rtc_nw_int("rtc_network_line_audit_detector_candidate_uid",
+                       "UID of the strongest detector-local RTC line candidate in each network block; -2147483647 means none");
+        add_rtc_nw_double("rtc_network_line_audit_detector_candidate_freq_hz",
+                          "frequency of the strongest detector-local RTC line candidate");
+        add_rtc_nw_double("rtc_network_line_audit_detector_candidate_prominence",
+                          "PSD prominence of the strongest detector-local RTC line candidate");
+        add_rtc_nw_double("rtc_network_line_audit_detector_candidate_line_power_frac",
+                          "line-power fraction of the strongest detector-local RTC line candidate");
+        add_rtc_nw_double("rtc_network_line_audit_detector_candidate_cluster_detector_frac",
+                          "shared-cluster detector fraction associated with the strongest detector-local RTC line candidate");
+        add_rtc_nw_int("rtc_network_line_audit_detector_candidate_recommend_flag",
+                       "1 if the strongest detector-local RTC line candidate met the current bad-detector criteria");
         add_rtc_nw_double("rtc_network_step_score_median",
                           "median detector step score within each RTC network block");
         add_rtc_nw_double("rtc_network_step_score_max",
@@ -4103,6 +4160,27 @@ void Engine::create_rtcdiag_file() {
     add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.PRE_WINDOW_SEC", rtcproc.impulsive_coincidence.mask_pre_window_sec);
     add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.POST_WINDOW_SEC", rtcproc.impulsive_coincidence.mask_post_window_sec);
     add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MAX_FLAGGED_FRAC", rtcproc.impulsive_coincidence.max_flagged_fraction);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.ENABLED", rtcproc.line_audit.enabled);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.LINE_MIN_HZ", rtcproc.line_audit.line_min_hz);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.LINE_MAX_HZ", rtcproc.line_audit.line_max_hz);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.SEGMENT_SEC", rtcproc.line_audit.segment_sec);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.MIN_SEGMENT_SEC", rtcproc.line_audit.min_segment_sec);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.OVERLAP_FRAC", rtcproc.line_audit.overlap_frac);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.CONTINUUM_RADIUS_BINS", rtcproc.line_audit.continuum_radius_bins);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.PROMINENCE_THRESH", rtcproc.line_audit.prominence_thresh);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.CM_PROMINENCE_THRESH", rtcproc.line_audit.cm_prominence_thresh);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.MIN_GOOD_FRAC", rtcproc.line_audit.min_good_frac);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.MIN_WINDOWS", rtcproc.line_audit.min_windows);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.MAX_PEAKS_PER_DETECTOR", rtcproc.line_audit.max_peaks_per_detector);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.MAX_DET", rtcproc.line_audit.max_det);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.MIN_DET_FOR_NETWORK", rtcproc.line_audit.min_det_for_network);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.CLUSTER_TOL_HZ", rtcproc.line_audit.cluster_tol_hz);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.NOTCH_MIN_DETECTOR_FRAC", rtcproc.line_audit.notch_min_detector_frac);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.NOTCH_MIN_DETECTORS", rtcproc.line_audit.notch_min_detectors);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.NOTCH_MIN_CM_PROMINENCE", rtcproc.line_audit.notch_min_cm_prominence);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_MIN_PROMINENCE", rtcproc.line_audit.detector_min_prominence);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_MIN_LINE_POWER_FRAC", rtcproc.line_audit.detector_min_line_power_frac);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.BAD_DETECTOR_MAX_CLUSTER_FRAC", rtcproc.line_audit.bad_detector_max_cluster_frac);
 
     for (auto const &x : calib.apt) {
         netCDF::NcVar apt_v = fo.addVar("apt_" + x.first, netCDF::ncDouble, n_dets_dim);
@@ -4223,6 +4301,42 @@ void Engine::create_rtcdiag_file() {
                    "input detector count in each RTC network block");
     add_rtc_nw_int("rtc_network_n_det_used",
                    "detectors with sufficient valid samples and finite robust scale used for RTC diagnostics");
+    add_rtc_nw_int("rtc_network_line_audit_n_det_used",
+                   "detectors analyzed by the pre-filter RTC line audit in each network block");
+    add_rtc_nw_double("rtc_network_line_audit_shared_freq_hz",
+                      "frequency of the strongest shared narrowband RTC line family in each network block");
+    add_rtc_nw_int("rtc_network_line_audit_shared_detector_count",
+                   "number of detectors participating in the strongest shared narrowband RTC line family");
+    add_rtc_nw_double("rtc_network_line_audit_shared_detector_frac",
+                      "fraction of audited detectors participating in the strongest shared narrowband RTC line family");
+    add_rtc_nw_double("rtc_network_line_audit_shared_median_prominence",
+                      "median detector-level PSD prominence of the strongest shared narrowband RTC line family");
+    add_rtc_nw_double("rtc_network_line_audit_shared_max_prominence",
+                      "maximum detector-level PSD prominence of the strongest shared narrowband RTC line family");
+    add_rtc_nw_double("rtc_network_line_audit_shared_width_hz",
+                      "median linewidth of the strongest shared narrowband RTC line family");
+    add_rtc_nw_double("rtc_network_line_audit_shared_line_power_frac",
+                      "median detector-level line-power fraction of the strongest shared narrowband RTC line family");
+    add_rtc_nw_double("rtc_network_line_audit_shared_common_mode_freq_hz",
+                      "matched common-mode line frequency for the strongest shared narrowband RTC line family");
+    add_rtc_nw_double("rtc_network_line_audit_shared_common_mode_prominence",
+                      "matched common-mode PSD prominence for the strongest shared narrowband RTC line family");
+    add_rtc_nw_double("rtc_network_line_audit_shared_notch_score",
+                      "shared-line notch score, detector fraction times median prominence");
+    add_rtc_nw_int("rtc_network_line_audit_shared_recommend_notch",
+                   "1 if the strongest shared narrowband RTC line family met the current notch-candidate criteria");
+    add_rtc_nw_int("rtc_network_line_audit_detector_candidate_uid",
+                   "UID of the strongest detector-local RTC line candidate in each network block; -2147483647 means none");
+    add_rtc_nw_double("rtc_network_line_audit_detector_candidate_freq_hz",
+                      "frequency of the strongest detector-local RTC line candidate");
+    add_rtc_nw_double("rtc_network_line_audit_detector_candidate_prominence",
+                      "PSD prominence of the strongest detector-local RTC line candidate");
+    add_rtc_nw_double("rtc_network_line_audit_detector_candidate_line_power_frac",
+                      "line-power fraction of the strongest detector-local RTC line candidate");
+    add_rtc_nw_double("rtc_network_line_audit_detector_candidate_cluster_detector_frac",
+                      "shared-cluster detector fraction associated with the strongest detector-local RTC line candidate");
+    add_rtc_nw_int("rtc_network_line_audit_detector_candidate_recommend_flag",
+                   "1 if the strongest detector-local RTC line candidate met the current bad-detector criteria");
     add_rtc_nw_double("rtc_network_step_score_median",
                       "median detector step score within each RTC network block");
     add_rtc_nw_double("rtc_network_step_score_max",
