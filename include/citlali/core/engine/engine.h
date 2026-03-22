@@ -2107,6 +2107,32 @@ void Engine::create_tod_files() {
     source_dec_v.putAtt("units","rad");
     source_dec_v.putVar(&telescope.tel_header["Header.Source.Dec"](0));
 
+    if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {
+        // Keep the RTC line-audit tuning alongside the RTC TOD so offline audits
+        // can recover the exact per-run thresholds without the sidecar YAML.
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.ENABLED", rtcproc.line_audit.enabled);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.LINE_MIN_HZ", rtcproc.line_audit.line_min_hz);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.LINE_MAX_HZ", rtcproc.line_audit.line_max_hz);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.SEGMENT_SEC", rtcproc.line_audit.segment_sec);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.MIN_SEGMENT_SEC", rtcproc.line_audit.min_segment_sec);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.OVERLAP_FRAC", rtcproc.line_audit.overlap_frac);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.CONTINUUM_RADIUS_BINS", rtcproc.line_audit.continuum_radius_bins);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.PROMINENCE_THRESH", rtcproc.line_audit.prominence_thresh);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.CM_PROMINENCE_THRESH", rtcproc.line_audit.cm_prominence_thresh);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.MIN_GOOD_FRAC", rtcproc.line_audit.min_good_frac);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.MIN_WINDOWS", rtcproc.line_audit.min_windows);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.MAX_PEAKS_PER_DETECTOR", rtcproc.line_audit.max_peaks_per_detector);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.MAX_DET", rtcproc.line_audit.max_det);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.MIN_DET_FOR_NETWORK", rtcproc.line_audit.min_det_for_network);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.CLUSTER_TOL_HZ", rtcproc.line_audit.cluster_tol_hz);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.NOTCH_MIN_DETECTOR_FRAC", rtcproc.line_audit.notch_min_detector_frac);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.NOTCH_MIN_DETECTORS", rtcproc.line_audit.notch_min_detectors);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.NOTCH_MIN_CM_PROMINENCE", rtcproc.line_audit.notch_min_cm_prominence);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_MIN_PROMINENCE", rtcproc.line_audit.detector_min_prominence);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_MIN_LINE_POWER_FRAC", rtcproc.line_audit.detector_min_line_power_frac);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.BAD_DETECTOR_MAX_CLUSTER_FRAC", rtcproc.line_audit.bad_detector_max_cluster_frac);
+    }
+
     const Eigen::Index n_tod_output_scans_for_stream =
         (prod_t == engine_utils::toltecIO::rtc_timestream) ? n_tod_output_scans_rtc : n_tod_output_scans_ptc;
     const bool tod_output_mini =
