@@ -216,7 +216,7 @@ timestream: # timestream reduction parameters
         mask_pre_window_sec: 0.03 # pre-event duration of the applied impulsive coincidence mask window
         mask_post_window_sec: 0.03 # post-event duration of the applied impulsive coincidence mask window
         max_flagged_fraction: 0.10 # reject the proposed mask if it would newly flag more than this fraction of good detector-samples in the network
-    line_audit: # optional pre-filter RTC narrowband line audit, diagnostic-only
+    line_audit: # optional pre-filter RTC narrowband line audit and shared-line actuation
       enabled: false # analyze flagged RTC chunks for shared narrow lines and detector-local periodic offenders before RTC filtering
       line_min_hz: 1.0 # lower frequency bound of the RTC line search
       line_max_hz: 60.0 # upper frequency bound of the RTC line search
@@ -238,6 +238,15 @@ timestream: # timestream reduction parameters
       detector_min_prominence: 12.0 # minimum detector-level prominence for a detector-local RTC line candidate
       detector_min_line_power_frac: 0.10 # minimum detector-level line-power fraction for a detector-local RTC line candidate
       bad_detector_max_cluster_frac: 0.10 # maximum shared-cluster detector fraction allowed for a detector-local RTC line candidate
+      apply_shared_notches: false # if true, cluster shared-notch recommendations across networks and apply temporary RTC notches before the normal RTC filter chain
+      apply_min_support_networks: 2 # minimum number of networks supporting one shared-line family before applying a chunk-level RTC notch
+      apply_min_detector_frac: 0.90 # minimum detector fraction required when promoting a single-network, strong-common-mode family to an applied RTC notch
+      apply_min_common_mode_prominence: 150.0 # minimum common-mode prominence required for a single-network shared family to become an applied RTC notch
+      apply_width_scale: 1.5 # multiplier applied to the measured shared-line family width before building the RTC notch
+      apply_min_width_hz: 0.25 # lower clamp on the applied RTC notch bandwidth
+      apply_max_width_hz: 1.50 # upper clamp on the applied RTC notch bandwidth
+      apply_max_notches: 3 # maximum chunk-level RTC notches to apply per scan (0 => no cap)
+      apply_cluster_tol_hz: 0.25 # frequency tolerance used when merging shared-line recommendations across networks into one applied RTC notch
     output:
       enabled: false # enable or disable rtc TOD output
       indices: all # chunk indices to write: "all" or [1,3,7] (1-based)

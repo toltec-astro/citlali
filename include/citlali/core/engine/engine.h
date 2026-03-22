@@ -1925,6 +1925,15 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_MIN_PROMINENCE", rtcproc.line_audit.detector_min_prominence);
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_MIN_LINE_POWER_FRAC", rtcproc.line_audit.detector_min_line_power_frac);
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.BAD_DETECTOR_MAX_CLUSTER_FRAC", rtcproc.line_audit.bad_detector_max_cluster_frac);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_SHARED_NOTCHES", rtcproc.line_audit.apply_shared_notches);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MIN_SUPPORT_NETWORKS", rtcproc.line_audit.apply_min_support_networks);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MIN_DETECTOR_FRAC", rtcproc.line_audit.apply_min_detector_frac);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MIN_CM_PROMINENCE", rtcproc.line_audit.apply_min_common_mode_prominence);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_WIDTH_SCALE", rtcproc.line_audit.apply_width_scale);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MIN_WIDTH_HZ", rtcproc.line_audit.apply_min_width_hz);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MAX_WIDTH_HZ", rtcproc.line_audit.apply_max_width_hz);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MAX_NOTCHES", rtcproc.line_audit.apply_max_notches);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_CLUSTER_TOL_HZ", rtcproc.line_audit.apply_cluster_tol_hz);
         add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTLOW", ptcproc.lower_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTHIGH", ptcproc.upper_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTLOW", ptcproc.lower_weight_factor);
@@ -2131,6 +2140,15 @@ void Engine::create_tod_files() {
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_MIN_PROMINENCE", rtcproc.line_audit.detector_min_prominence);
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_MIN_LINE_POWER_FRAC", rtcproc.line_audit.detector_min_line_power_frac);
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.BAD_DETECTOR_MAX_CLUSTER_FRAC", rtcproc.line_audit.bad_detector_max_cluster_frac);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_SHARED_NOTCHES", rtcproc.line_audit.apply_shared_notches);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MIN_SUPPORT_NETWORKS", rtcproc.line_audit.apply_min_support_networks);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MIN_DETECTOR_FRAC", rtcproc.line_audit.apply_min_detector_frac);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MIN_CM_PROMINENCE", rtcproc.line_audit.apply_min_common_mode_prominence);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_WIDTH_SCALE", rtcproc.line_audit.apply_width_scale);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MIN_WIDTH_HZ", rtcproc.line_audit.apply_min_width_hz);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MAX_WIDTH_HZ", rtcproc.line_audit.apply_max_width_hz);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MAX_NOTCHES", rtcproc.line_audit.apply_max_notches);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_CLUSTER_TOL_HZ", rtcproc.line_audit.apply_cluster_tol_hz);
     }
 
     const Eigen::Index n_tod_output_scans_for_stream =
@@ -2406,6 +2424,16 @@ void Engine::create_tod_files() {
                           "shared-line notch score, detector fraction times median prominence");
         add_rtc_nw_int("rtc_network_line_audit_shared_recommend_notch",
                        "1 if the strongest shared narrowband RTC line family met the current notch-candidate criteria");
+        add_rtc_nw_int("rtc_network_line_audit_n_applied_notches",
+                       "number of chunk-level shared-line RTC notches actually applied to this scan");
+        add_rtc_nw_int("rtc_network_line_audit_shared_applied_notch",
+                       "1 if the strongest shared narrowband RTC line family in this network matched an applied chunk-level RTC notch");
+        add_rtc_nw_double("rtc_network_line_audit_shared_applied_freq_hz",
+                          "center frequency of the applied chunk-level RTC notch matched to the strongest shared narrowband RTC line family");
+        add_rtc_nw_double("rtc_network_line_audit_shared_applied_width_hz",
+                          "full-width bandwidth of the applied chunk-level RTC notch matched to the strongest shared narrowband RTC line family");
+        add_rtc_nw_int("rtc_network_line_audit_shared_applied_support_network_count",
+                       "number of networks supporting the applied chunk-level RTC notch matched to the strongest shared narrowband RTC line family");
         add_rtc_nw_int("rtc_network_line_audit_detector_candidate_uid",
                        "UID of the strongest detector-local RTC line candidate in each network block; -2147483647 means none");
         add_rtc_nw_double("rtc_network_line_audit_detector_candidate_freq_hz",
@@ -4207,6 +4235,15 @@ void Engine::create_rtcdiag_file() {
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_MIN_PROMINENCE", rtcproc.line_audit.detector_min_prominence);
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_MIN_LINE_POWER_FRAC", rtcproc.line_audit.detector_min_line_power_frac);
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.BAD_DETECTOR_MAX_CLUSTER_FRAC", rtcproc.line_audit.bad_detector_max_cluster_frac);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_SHARED_NOTCHES", rtcproc.line_audit.apply_shared_notches);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MIN_SUPPORT_NETWORKS", rtcproc.line_audit.apply_min_support_networks);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MIN_DETECTOR_FRAC", rtcproc.line_audit.apply_min_detector_frac);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MIN_CM_PROMINENCE", rtcproc.line_audit.apply_min_common_mode_prominence);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_WIDTH_SCALE", rtcproc.line_audit.apply_width_scale);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MIN_WIDTH_HZ", rtcproc.line_audit.apply_min_width_hz);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MAX_WIDTH_HZ", rtcproc.line_audit.apply_max_width_hz);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MAX_NOTCHES", rtcproc.line_audit.apply_max_notches);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_CLUSTER_TOL_HZ", rtcproc.line_audit.apply_cluster_tol_hz);
 
     for (auto const &x : calib.apt) {
         netCDF::NcVar apt_v = fo.addVar("apt_" + x.first, netCDF::ncDouble, n_dets_dim);
@@ -4351,6 +4388,16 @@ void Engine::create_rtcdiag_file() {
                       "shared-line notch score, detector fraction times median prominence");
     add_rtc_nw_int("rtc_network_line_audit_shared_recommend_notch",
                    "1 if the strongest shared narrowband RTC line family met the current notch-candidate criteria");
+    add_rtc_nw_int("rtc_network_line_audit_n_applied_notches",
+                   "number of chunk-level shared-line RTC notches actually applied to this scan");
+    add_rtc_nw_int("rtc_network_line_audit_shared_applied_notch",
+                   "1 if the strongest shared narrowband RTC line family in this network matched an applied chunk-level RTC notch");
+    add_rtc_nw_double("rtc_network_line_audit_shared_applied_freq_hz",
+                      "center frequency of the applied chunk-level RTC notch matched to the strongest shared narrowband RTC line family");
+    add_rtc_nw_double("rtc_network_line_audit_shared_applied_width_hz",
+                      "full-width bandwidth of the applied chunk-level RTC notch matched to the strongest shared narrowband RTC line family");
+    add_rtc_nw_int("rtc_network_line_audit_shared_applied_support_network_count",
+                   "number of networks supporting the applied chunk-level RTC notch matched to the strongest shared narrowband RTC line family");
     add_rtc_nw_int("rtc_network_line_audit_detector_candidate_uid",
                    "UID of the strongest detector-local RTC line candidate in each network block; -2147483647 means none");
     add_rtc_nw_double("rtc_network_line_audit_detector_candidate_freq_hz",

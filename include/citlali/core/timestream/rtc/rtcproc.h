@@ -124,6 +124,15 @@ public:
         double detector_min_prominence = 12.0;
         double detector_min_line_power_frac = 0.10;
         double bad_detector_max_cluster_frac = 0.10;
+        bool apply_shared_notches = false;
+        Eigen::Index apply_min_support_networks = 2;
+        double apply_min_detector_frac = 0.90;
+        double apply_min_common_mode_prominence = 150.0;
+        double apply_width_scale = 1.5;
+        double apply_min_width_hz = 0.25;
+        double apply_max_width_hz = 1.50;
+        Eigen::Index apply_max_notches = 3;
+        double apply_cluster_tol_hz = 0.25;
     };
     RTCLineAuditOptions line_audit;
 
@@ -164,6 +173,11 @@ public:
         double line_audit_shared_common_mode_prominence = std::numeric_limits<double>::quiet_NaN();
         double line_audit_shared_notch_score = std::numeric_limits<double>::quiet_NaN();
         bool line_audit_shared_recommend_notch = false;
+        int line_audit_n_applied_notches = 0;
+        bool line_audit_shared_applied_notch = false;
+        double line_audit_shared_applied_freq_hz = std::numeric_limits<double>::quiet_NaN();
+        double line_audit_shared_applied_width_hz = std::numeric_limits<double>::quiet_NaN();
+        int line_audit_shared_applied_support_network_count = 0;
         int line_audit_detector_candidate_uid = kTransientFillInt;
         double line_audit_detector_candidate_freq_hz = std::numeric_limits<double>::quiet_NaN();
         double line_audit_detector_candidate_prominence = std::numeric_limits<double>::quiet_NaN();
@@ -270,6 +284,10 @@ public:
     // analyze narrowband periodic line structure on the pre-filter RTC chunk
     template <typename tc_t, typename calib_t>
     void capture_rtc_line_audit(tc_t &, calib_t &, Eigen::Index start_sample, Eigen::Index n_samples);
+
+    // optionally apply chunk-level shared-line notches from the RTC line audit
+    template <typename tc_t>
+    Eigen::Index apply_rtc_line_audit_shared_notches(tc_t &, double fs_hz);
 
     // optional az/el template subtraction on the RTC output chunk
     template <typename calib_t>
@@ -611,8 +629,59 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                              std::tuple{"timestream","raw_time_chunk","line_audit","bad_detector_max_cluster_frac"},
                              {}, {0.0}, {1.0});
         }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","apply_shared_notches"})) {
+            get_config_value(config, line_audit.apply_shared_notches, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","apply_shared_notches"});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","apply_min_support_networks"})) {
+            get_config_value(config, line_audit.apply_min_support_networks, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","apply_min_support_networks"},
+                             {}, {1});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","apply_min_detector_frac"})) {
+            get_config_value(config, line_audit.apply_min_detector_frac, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","apply_min_detector_frac"},
+                             {}, {0.0}, {1.0});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","apply_min_common_mode_prominence"})) {
+            get_config_value(config, line_audit.apply_min_common_mode_prominence, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","apply_min_common_mode_prominence"},
+                             {}, {1.0});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","apply_width_scale"})) {
+            get_config_value(config, line_audit.apply_width_scale, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","apply_width_scale"},
+                             {}, {0.01});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","apply_min_width_hz"})) {
+            get_config_value(config, line_audit.apply_min_width_hz, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","apply_min_width_hz"},
+                             {}, {0.0});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","apply_max_width_hz"})) {
+            get_config_value(config, line_audit.apply_max_width_hz, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","apply_max_width_hz"},
+                             {}, {0.0});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","apply_max_notches"})) {
+            get_config_value(config, line_audit.apply_max_notches, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","apply_max_notches"},
+                             {}, {0});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","apply_cluster_tol_hz"})) {
+            get_config_value(config, line_audit.apply_cluster_tol_hz, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","apply_cluster_tol_hz"},
+                             {}, {0.0});
+        }
+        if (line_audit.apply_max_width_hz < line_audit.apply_min_width_hz) {
+            logger->error(
+                "timestream.raw_time_chunk.line_audit.apply_max_width_hz ({}) must be >= apply_min_width_hz ({})",
+                line_audit.apply_max_width_hz,
+                line_audit.apply_min_width_hz);
+            std::exit(EXIT_FAILURE);
+        }
         logger->info(
-            "raw_time_chunk.line_audit configured: enabled={} line_min_hz={} line_max_hz={} segment_sec={} min_segment_sec={} overlap_frac={} continuum_radius_bins={} prominence_thresh={} cm_prominence_thresh={} min_good_frac={} min_windows={} max_peaks_per_detector={} max_det={} min_det_for_network={} cluster_tol_hz={} notch_min_detector_frac={} notch_min_detectors={} notch_min_cm_prominence={} detector_min_prominence={} detector_min_line_power_frac={} bad_detector_max_cluster_frac={}",
+            "raw_time_chunk.line_audit configured: enabled={} line_min_hz={} line_max_hz={} segment_sec={} min_segment_sec={} overlap_frac={} continuum_radius_bins={} prominence_thresh={} cm_prominence_thresh={} min_good_frac={} min_windows={} max_peaks_per_detector={} max_det={} min_det_for_network={} cluster_tol_hz={} notch_min_detector_frac={} notch_min_detectors={} notch_min_cm_prominence={} detector_min_prominence={} detector_min_line_power_frac={} bad_detector_max_cluster_frac={} apply_shared_notches={} apply_min_support_networks={} apply_min_detector_frac={} apply_min_common_mode_prominence={} apply_width_scale={} apply_min_width_hz={} apply_max_width_hz={} apply_max_notches={} apply_cluster_tol_hz={}",
             line_audit.enabled,
             line_audit.line_min_hz,
             line_audit.line_max_hz,
@@ -633,7 +702,16 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             line_audit.notch_min_cm_prominence,
             line_audit.detector_min_prominence,
             line_audit.detector_min_line_power_frac,
-            line_audit.bad_detector_max_cluster_frac);
+            line_audit.bad_detector_max_cluster_frac,
+            line_audit.apply_shared_notches,
+            line_audit.apply_min_support_networks,
+            line_audit.apply_min_detector_frac,
+            line_audit.apply_min_common_mode_prominence,
+            line_audit.apply_width_scale,
+            line_audit.apply_min_width_hz,
+            line_audit.apply_max_width_hz,
+            line_audit.apply_max_notches,
+            line_audit.apply_cluster_tol_hz);
     }
 
     // run polarization?
@@ -1146,11 +1224,20 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         in.status.despiked = true;
     }
 
+    Eigen::Index n_applied_line_audit_notches = 0;
     if (line_audit.enabled) {
         capture_rtc_line_audit(in, calib, si, sl);
+        if (line_audit.apply_shared_notches) {
+            n_applied_line_audit_notches =
+                apply_rtc_line_audit_shared_notches(in, telescope.fsmp);
+        }
     }
 
     bool ran_tod_filter_stage = false;
+
+    if (n_applied_line_audit_notches > 0) {
+        ran_tod_filter_stage = true;
+    }
 
     // timestream filtering
     if (run_tod_filter) {
@@ -1977,6 +2064,11 @@ void RTCProc::capture_rtc_line_audit(tc_t &in,
         row.line_audit_shared_common_mode_prominence = nan;
         row.line_audit_shared_notch_score = nan;
         row.line_audit_shared_recommend_notch = false;
+        row.line_audit_n_applied_notches = 0;
+        row.line_audit_shared_applied_notch = false;
+        row.line_audit_shared_applied_freq_hz = nan;
+        row.line_audit_shared_applied_width_hz = nan;
+        row.line_audit_shared_applied_support_network_count = 0;
         row.line_audit_detector_candidate_uid = fill_int;
         row.line_audit_detector_candidate_freq_hz = nan;
         row.line_audit_detector_candidate_prominence = nan;
@@ -2269,6 +2361,249 @@ void RTCProc::capture_rtc_line_audit(tc_t &in,
     }
 
     rtc_network_summary_by_scan[scan_id] = std::move(nw_summary);
+}
+
+template <typename tc_t>
+Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in, double fs_hz) {
+    if (!line_audit.enabled || !line_audit.apply_shared_notches ||
+        !std::isfinite(fs_hz) || fs_hz <= 0.0) {
+        return 0;
+    }
+
+    const auto scan_id = in.index.data;
+    const auto nw_it = rtc_network_summary_by_scan.find(scan_id);
+    if (nw_it == rtc_network_summary_by_scan.end()) {
+        return 0;
+    }
+
+    const double nan = std::numeric_limits<double>::quiet_NaN();
+
+    auto median_of = [&](std::vector<double> values) -> double {
+        values.erase(
+            std::remove_if(values.begin(), values.end(), [](double v) { return !std::isfinite(v); }),
+            values.end());
+        if (values.empty()) {
+            return nan;
+        }
+        const auto mid = values.size() / 2;
+        std::nth_element(values.begin(),
+                         values.begin() + static_cast<std::ptrdiff_t>(mid),
+                         values.end());
+        double med = values[mid];
+        if ((values.size() % 2) == 0) {
+            auto lo = std::max_element(values.begin(),
+                                       values.begin() + static_cast<std::ptrdiff_t>(mid));
+            med = 0.5 * (med + *lo);
+        }
+        return med;
+    };
+
+    struct NetworkCandidate {
+        Eigen::Index nw = -1;
+        double freq_hz = std::numeric_limits<double>::quiet_NaN();
+        double width_hz = std::numeric_limits<double>::quiet_NaN();
+        double detector_frac = std::numeric_limits<double>::quiet_NaN();
+        double common_mode_prominence = std::numeric_limits<double>::quiet_NaN();
+        double notch_score = std::numeric_limits<double>::quiet_NaN();
+    };
+    struct AppliedCluster {
+        double center_hz = std::numeric_limits<double>::quiet_NaN();
+        double width_hz = std::numeric_limits<double>::quiet_NaN();
+        Eigen::Index support_network_count = 0;
+        double max_detector_frac = std::numeric_limits<double>::quiet_NaN();
+        double max_common_mode_prominence = std::numeric_limits<double>::quiet_NaN();
+        double max_notch_score = std::numeric_limits<double>::quiet_NaN();
+    };
+
+    std::vector<NetworkCandidate> candidates;
+    candidates.reserve(nw_it->second.size());
+    for (const auto &row : nw_it->second) {
+        if (!row.line_audit_shared_recommend_notch ||
+            !std::isfinite(row.line_audit_shared_freq_hz) ||
+            row.line_audit_shared_freq_hz <= 0.0) {
+            continue;
+        }
+        NetworkCandidate candidate;
+        candidate.nw = row.nw;
+        candidate.freq_hz = row.line_audit_shared_freq_hz;
+        candidate.width_hz = row.line_audit_shared_width_hz;
+        candidate.detector_frac = row.line_audit_shared_detector_frac;
+        candidate.common_mode_prominence = row.line_audit_shared_common_mode_prominence;
+        candidate.notch_score = row.line_audit_shared_notch_score;
+        candidates.push_back(candidate);
+    }
+
+    for (auto &row : nw_it->second) {
+        row.line_audit_n_applied_notches = 0;
+        row.line_audit_shared_applied_notch = false;
+        row.line_audit_shared_applied_freq_hz = nan;
+        row.line_audit_shared_applied_width_hz = nan;
+        row.line_audit_shared_applied_support_network_count = 0;
+    }
+
+    if (candidates.empty()) {
+        return 0;
+    }
+
+    const double cluster_tol_hz = std::max(line_audit.cluster_tol_hz, line_audit.apply_cluster_tol_hz);
+    if (!(cluster_tol_hz > 0.0)) {
+        return 0;
+    }
+
+    std::sort(candidates.begin(), candidates.end(), [](const auto &a, const auto &b) {
+        if (a.freq_hz != b.freq_hz) {
+            return a.freq_hz < b.freq_hz;
+        }
+        return a.notch_score > b.notch_score;
+    });
+
+    std::vector<AppliedCluster> clusters;
+    std::size_t i = 0;
+    while (i < candidates.size()) {
+        std::size_t j = i + 1;
+        while (j < candidates.size() &&
+               std::abs(candidates[j].freq_hz - candidates[j - 1].freq_hz) <= cluster_tol_hz) {
+            ++j;
+        }
+
+        std::vector<double> freqs;
+        std::vector<double> widths;
+        std::vector<double> scores;
+        std::vector<Eigen::Index> nws;
+        double max_detector_frac = nan;
+        double max_cm_prom = nan;
+        for (std::size_t k = i; k < j; ++k) {
+            freqs.push_back(candidates[k].freq_hz);
+            widths.push_back(candidates[k].width_hz);
+            scores.push_back(candidates[k].notch_score);
+            nws.push_back(candidates[k].nw);
+            if (!std::isfinite(max_detector_frac) || candidates[k].detector_frac > max_detector_frac) {
+                max_detector_frac = candidates[k].detector_frac;
+            }
+            if (!std::isfinite(max_cm_prom) || candidates[k].common_mode_prominence > max_cm_prom) {
+                max_cm_prom = candidates[k].common_mode_prominence;
+            }
+        }
+        std::sort(nws.begin(), nws.end());
+        nws.erase(std::unique(nws.begin(), nws.end()), nws.end());
+
+        const bool enough_networks =
+            static_cast<Eigen::Index>(nws.size()) >= line_audit.apply_min_support_networks;
+        const bool strong_cm =
+            std::isfinite(max_cm_prom) &&
+            max_cm_prom >= line_audit.apply_min_common_mode_prominence &&
+            std::isfinite(max_detector_frac) &&
+            max_detector_frac >= line_audit.apply_min_detector_frac;
+        if (enough_networks || strong_cm) {
+            AppliedCluster cluster;
+            cluster.center_hz = median_of(std::move(freqs));
+            cluster.width_hz = median_of(std::move(widths));
+            cluster.support_network_count = static_cast<Eigen::Index>(nws.size());
+            cluster.max_detector_frac = max_detector_frac;
+            cluster.max_common_mode_prominence = max_cm_prom;
+            cluster.max_notch_score = median_of(std::move(scores));
+            clusters.push_back(cluster);
+        }
+        i = j;
+    }
+
+    if (clusters.empty()) {
+        return 0;
+    }
+
+    auto better_cluster = [](const AppliedCluster &a, const AppliedCluster &b) {
+        if (a.support_network_count != b.support_network_count) {
+            return a.support_network_count > b.support_network_count;
+        }
+        if (a.max_detector_frac != b.max_detector_frac) {
+            return a.max_detector_frac > b.max_detector_frac;
+        }
+        if (a.max_common_mode_prominence != b.max_common_mode_prominence) {
+            return a.max_common_mode_prominence > b.max_common_mode_prominence;
+        }
+        if (a.max_notch_score != b.max_notch_score) {
+            return a.max_notch_score > b.max_notch_score;
+        }
+        return a.center_hz < b.center_hz;
+    };
+    std::sort(clusters.begin(), clusters.end(), better_cluster);
+    if (line_audit.apply_max_notches > 0 &&
+        static_cast<Eigen::Index>(clusters.size()) > line_audit.apply_max_notches) {
+        clusters.resize(static_cast<std::size_t>(line_audit.apply_max_notches));
+    }
+
+    Filter dynamic_notch_filter;
+    dynamic_notch_filter.notch_zero_phase = true;
+    std::vector<AppliedCluster> applied_clusters;
+    applied_clusters.reserve(clusters.size());
+    const double nyquist_hz = 0.5 * fs_hz;
+    for (auto cluster : clusters) {
+        if (!std::isfinite(cluster.center_hz) || cluster.center_hz <= 0.0 || cluster.center_hz >= nyquist_hz) {
+            continue;
+        }
+        double width_hz = cluster.width_hz;
+        if (!std::isfinite(width_hz) || width_hz <= 0.0) {
+            width_hz = line_audit.apply_min_width_hz;
+        }
+        width_hz *= line_audit.apply_width_scale;
+        width_hz = std::max(width_hz, line_audit.apply_min_width_hz);
+        width_hz = std::min(width_hz, line_audit.apply_max_width_hz);
+        width_hz = std::min(width_hz, std::max(0.05, 0.5 * cluster.center_hz));
+        if (!std::isfinite(width_hz) || width_hz <= 0.0) {
+            continue;
+        }
+        cluster.width_hz = width_hz;
+        dynamic_notch_filter.w0s.push_back(cluster.center_hz);
+        dynamic_notch_filter.qs.push_back(cluster.center_hz / width_hz);
+        applied_clusters.push_back(cluster);
+    }
+
+    if (applied_clusters.empty()) {
+        return 0;
+    }
+
+    dynamic_notch_filter.make_notch_filter(fs_hz);
+    logger->debug("applying {} dynamic shared-line RTC notch(es) before FIR", applied_clusters.size());
+    dynamic_notch_filter.iir(in.scans.data);
+    if (run_kernel) {
+        dynamic_notch_filter.iir(in.kernel.data);
+    }
+
+    for (auto &row : nw_it->second) {
+        row.line_audit_n_applied_notches = static_cast<int>(applied_clusters.size());
+        if (!std::isfinite(row.line_audit_shared_freq_hz) || row.line_audit_shared_freq_hz <= 0.0) {
+            continue;
+        }
+        const AppliedCluster *best_match = nullptr;
+        double best_delta = std::numeric_limits<double>::infinity();
+        for (const auto &cluster : applied_clusters) {
+            const double delta = std::abs(cluster.center_hz - row.line_audit_shared_freq_hz);
+            if (delta <= cluster_tol_hz && delta < best_delta) {
+                best_delta = delta;
+                best_match = &cluster;
+            }
+        }
+        if (best_match != nullptr) {
+            row.line_audit_shared_applied_notch = true;
+            row.line_audit_shared_applied_freq_hz = best_match->center_hz;
+            row.line_audit_shared_applied_width_hz = best_match->width_hz;
+            row.line_audit_shared_applied_support_network_count =
+                static_cast<int>(best_match->support_network_count);
+        }
+    }
+
+    for (const auto &cluster : applied_clusters) {
+        logger->info(
+            "rtc_line_audit apply_shared_notch scan {}: center_hz={} width_hz={} support_networks={} max_detector_frac={} max_cm_prominence={}",
+            scan_id + 1,
+            cluster.center_hz,
+            cluster.width_hz,
+            cluster.support_network_count,
+            cluster.max_detector_frac,
+            cluster.max_common_mode_prominence);
+    }
+
+    return static_cast<Eigen::Index>(applied_clusters.size());
 }
 
 template <typename calib_t>
@@ -3790,6 +4125,16 @@ void RTCProc::write_cached_diagnostics_to_netcdf(netCDF::NcFile &fo,
                             [](const auto &row) { return row.line_audit_shared_notch_score; });
             write_nw_int("rtc_network_line_audit_shared_recommend_notch",
                          [](const auto &row) { return row.line_audit_shared_recommend_notch ? 1 : 0; });
+            write_nw_int("rtc_network_line_audit_n_applied_notches",
+                         [](const auto &row) { return row.line_audit_n_applied_notches; });
+            write_nw_int("rtc_network_line_audit_shared_applied_notch",
+                         [](const auto &row) { return row.line_audit_shared_applied_notch ? 1 : 0; });
+            write_nw_double("rtc_network_line_audit_shared_applied_freq_hz",
+                            [](const auto &row) { return row.line_audit_shared_applied_freq_hz; });
+            write_nw_double("rtc_network_line_audit_shared_applied_width_hz",
+                            [](const auto &row) { return row.line_audit_shared_applied_width_hz; });
+            write_nw_int("rtc_network_line_audit_shared_applied_support_network_count",
+                         [](const auto &row) { return row.line_audit_shared_applied_support_network_count; });
             write_nw_int("rtc_network_line_audit_detector_candidate_uid",
                          [](const auto &row) { return row.line_audit_detector_candidate_uid; });
             write_nw_double("rtc_network_line_audit_detector_candidate_freq_hz",
