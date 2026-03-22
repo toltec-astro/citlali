@@ -2,6 +2,7 @@
 
 #include <filesystem>
 #include <netcdf>
+#include <type_traits>
 #include <system_error>
 
 struct DataIOError : public std::runtime_error {
@@ -77,6 +78,15 @@ void add_netcdf_var(netCDF::NcFile &fo, std::string name, T data) {
         dim = fo.addDim(dim_name.c_str(),1);
         var = fo.addVar(name, netCDF::ncInt, dim);
         var.putVar(&data);
+    }
+    // if other integral scalar types (for example Eigen::Index)
+    if constexpr (std::is_integral_v<T> &&
+                  !std::is_same_v<T, int> &&
+                  !std::is_same_v<T, bool>) {
+        const long long value = static_cast<long long>(data);
+        dim = fo.addDim(dim_name.c_str(),1);
+        var = fo.addVar(name, netCDF::ncInt64, dim);
+        var.putVar(&value);
     }
     // if double
     if constexpr (std::is_same_v<T, double>) {
