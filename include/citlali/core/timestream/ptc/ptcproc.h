@@ -5,6 +5,7 @@
 #include <cmath>
 #include <complex>
 #include <cstdint>
+#include <exception>
 #include <limits>
 #include <map>
 #include <numeric>
@@ -906,6 +907,30 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                 logger->debug("marchenko_pastur disabled for {} grouping", effective_group);
             }
 
+            auto get_forced_limit_index_safe = [&](const auto &scans_view,
+                                                   const auto &flags_view,
+                                                   const auto &apt_flags_view,
+                                                   const std::string &group_name_log,
+                                                   const Eigen::Index group_key_log,
+                                                   const Eigen::Index arr_index_log) {
+                try {
+                    if (null_model_for_group) {
+                        return cleaner_local.get_null_model_index(scans_view, flags_view, apt_flags_view);
+                    }
+                    if (marchenko_pastur_for_group) {
+                        return cleaner_local.get_marchenko_pastur_index(scans_view, flags_view, apt_flags_view);
+                    }
+                }
+                catch (const std::exception &e) {
+                    logger->warn(
+                        "adaptive cleaner {} failed for grouping={} key={} array={} n_pts={} n_dets={}; "
+                        "falling back to configured PCA cut: {}",
+                        cleaner_local.active_cleaner_label(), group_name_log, group_key_log, arr_index_log,
+                        scans_view.rows(), scans_view.cols(), e.what());
+                }
+                return Eigen::Index{-1};
+            };
+
             logger->debug("cleaning with {} grouping", effective_group);
 
             if (store_eigs) {
@@ -1016,13 +1041,8 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
 
                             auto [evals, evecs] = cleaner_local.calc_eig_values<timestream::Cleaner::SpectraBackend>(
                                 in_scans_sub, flags_sub, apt_flags_sub, cleaner_local.n_eig_to_cut[arr_index](indx));
-                            Eigen::Index forced_limit_index = -1;
-                            if (null_model_for_group) {
-                                forced_limit_index = cleaner_local.get_null_model_index(in_scans_sub, flags_sub, apt_flags_sub);
-                            }
-                            else if (marchenko_pastur_for_group) {
-                                forced_limit_index = cleaner_local.get_marchenko_pastur_index(in_scans_sub, flags_sub, apt_flags_sub);
-                            }
+                            Eigen::Index forced_limit_index = get_forced_limit_index_safe(
+                                in_scans_sub, flags_sub, apt_flags_sub, group, nw_index, arr_index);
 
                             if (store_eigs) {
                                 Eigen::Index n_keep = std::min<Eigen::Index>(cleaner_local.n_calc, evals.size());
@@ -1114,13 +1134,8 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                     // calculate eigenvalues and eigenvalues
                     auto [evals, evecs] = cleaner_local.calc_eig_values<timestream::Cleaner::SpectraBackend>(
                         in_scans_block, masked_flags, apt_flags, cleaner_local.n_eig_to_cut[arr_index](indx));
-                    Eigen::Index forced_limit_index = -1;
-                    if (null_model_for_group) {
-                        forced_limit_index = cleaner_local.get_null_model_index(in_scans_block, masked_flags, apt_flags);
-                    }
-                    else if (marchenko_pastur_for_group) {
-                        forced_limit_index = cleaner_local.get_marchenko_pastur_index(in_scans_block, masked_flags, apt_flags);
-                    }
+                    Eigen::Index forced_limit_index = get_forced_limit_index_safe(
+                        in_scans_block, masked_flags, apt_flags, effective_group, key, arr_index);
 
                     if (store_eigs) {
                         // get first n_calc eigenvalues and eigenvectors
