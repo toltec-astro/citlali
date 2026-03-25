@@ -3,6 +3,13 @@
 This directory is for reusable analysis utilities that treat cleaned Citlali
 timestreams as a blank-sky null experiment.
 
+Current local Python environment note:
+
+- use `~/toltec/bin/python` for these scripts
+- use `~/toltec/bin/pip` for any missing analysis packages
+- older example paths that mention `$HOME/tolteca/bin/python` are legacy and
+  should be read as `~/toltec/bin/python`
+
 For these audits, the working assumption is:
 
 - astrophysical signal in the field is negligible at the per-sample level
