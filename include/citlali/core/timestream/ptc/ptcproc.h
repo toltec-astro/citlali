@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <atomic>
 #include <cmath>
+#include <chrono>
 #include <complex>
 #include <cstdint>
 #include <exception>
@@ -110,6 +111,32 @@ public:
     std::map<Eigen::Index, Eigen::VectorXi> corr_nw_group_ids_by_scan;
     std::map<Eigen::Index, std::vector<CorrNWDiagSummary>> corr_nw_summary_by_scan;
     std::map<Eigen::Index, std::vector<WeightCorrPenaltyDiagSummary>> weight_corr_penalty_summary_by_scan;
+
+    struct AdaptiveSelectorDiagSummary {
+        Eigen::Index nw = -1;
+        Eigen::Index n_det_input = 0;
+        Eigen::Index n_det_used = 0;
+        Eigen::Index n_time_used = 0;
+        Eigen::Index sample_step = 1;
+        Eigen::Index baseline_k = 0;
+        Eigen::Index chosen_k = 0;
+        Eigen::Index runnerup_k = -1;
+        Eigen::Index n_candidates = 0;
+        int selector_used = 0;
+        int selector_fallback = 0;
+        double chosen_score = std::numeric_limits<double>::quiet_NaN();
+        double runnerup_score = std::numeric_limits<double>::quiet_NaN();
+        double score_margin = std::numeric_limits<double>::quiet_NaN();
+        double chosen_med_abs_corr = std::numeric_limits<double>::quiet_NaN();
+        double chosen_cm_low_mid_ratio = std::numeric_limits<double>::quiet_NaN();
+        double chosen_tail4_binom_z = std::numeric_limits<double>::quiet_NaN();
+        double chosen_top_mode_frac = std::numeric_limits<double>::quiet_NaN();
+        double eig_solve_msec = std::numeric_limits<double>::quiet_NaN();
+        double candidate_eval_msec = std::numeric_limits<double>::quiet_NaN();
+        double total_msec = std::numeric_limits<double>::quiet_NaN();
+    };
+
+    std::map<Eigen::Index, std::vector<AdaptiveSelectorDiagSummary>> adaptive_selector_summary_by_scan;
 
     struct SecondPassLocalOptions {
         bool enabled = false;
@@ -612,21 +639,24 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             get_config_value(config, cleaner.marchenko_pastur.enabled, missing_keys, invalid_keys,
                              std::tuple{"timestream","processed_time_chunk","clean","marchenko_pastur","enabled"});
         }
-        if (cleaner.null_model.enabled && cleaner.marchenko_pastur.enabled) {
-            logger->error("clean.null_model.enabled and clean.marchenko_pastur.enabled are mutually exclusive");
-            std::exit(EXIT_FAILURE);
+        if (config.template has_typed<bool>(std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","enabled"})) {
+            get_config_value(config, cleaner.adaptive_selector.enabled, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","enabled"});
         }
         if (!have_standard_pca_block) {
-            cleaner.standard_pca.enabled = !(cleaner.null_model.enabled || cleaner.marchenko_pastur.enabled);
+            cleaner.standard_pca.enabled =
+                !(cleaner.null_model.enabled || cleaner.marchenko_pastur.enabled || cleaner.adaptive_selector.enabled);
         }
         const int n_enabled_cleaners =
             static_cast<int>(cleaner.standard_pca.enabled) +
             static_cast<int>(cleaner.null_model.enabled) +
-            static_cast<int>(cleaner.marchenko_pastur.enabled);
+            static_cast<int>(cleaner.marchenko_pastur.enabled) +
+            static_cast<int>(cleaner.adaptive_selector.enabled);
         if (n_enabled_cleaners != 1) {
             logger->error(
-                "exactly one cleaner must be enabled when clean.enabled=true; got standard_pca={} null_model={} marchenko_pastur={}",
-                cleaner.standard_pca.enabled, cleaner.null_model.enabled, cleaner.marchenko_pastur.enabled);
+                "exactly one cleaner must be enabled when clean.enabled=true; got standard_pca={} null_model={} marchenko_pastur={} adaptive_selector={}",
+                cleaner.standard_pca.enabled, cleaner.null_model.enabled,
+                cleaner.marchenko_pastur.enabled, cleaner.adaptive_selector.enabled);
             std::exit(EXIT_FAILURE);
         }
         logger->info("clean.active={}", cleaner.active_cleaner_label());
@@ -809,6 +839,135 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                 logger->info("clean.marchenko_pastur active for grouping(s): {}", groups_joined);
             }
         }
+        if (cleaner.adaptive_selector.enabled) {
+            if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","min_good_frac"})) {
+                get_config_value(config, cleaner.adaptive_selector.min_good_frac, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","min_good_frac"},
+                                 {}, {0.0}, {1.0});
+            }
+            if (config.template has_typed<int>(std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","max_det"})) {
+                get_config_value(config, cleaner.adaptive_selector.max_det, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","max_det"},
+                                 {}, {0});
+            }
+            if (config.template has_typed<int>(std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","max_samples"})) {
+                get_config_value(config, cleaner.adaptive_selector.max_samples, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","max_samples"},
+                                 {}, {0});
+            }
+            if (config.template has_typed<int>(std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","max_pairs"})) {
+                get_config_value(config, cleaner.adaptive_selector.max_pairs, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","max_pairs"},
+                                 {}, {0});
+            }
+            int adaptive_seed = static_cast<int>(cleaner.adaptive_selector.seed);
+            if (config.template has_typed<int>(std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","seed"})) {
+                get_config_value(config, adaptive_seed, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","seed"},
+                                 {}, {0});
+            }
+            cleaner.adaptive_selector.seed = static_cast<std::uint32_t>(adaptive_seed);
+            if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","clip_z"})) {
+                get_config_value(config, cleaner.adaptive_selector.clip_z, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","clip_z"});
+            }
+            if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","low_weight"})) {
+                get_config_value(config, cleaner.adaptive_selector.low_weight, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","low_weight"},
+                                 {}, {0.0});
+            }
+            if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","tail_weight"})) {
+                get_config_value(config, cleaner.adaptive_selector.tail_weight, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","tail_weight"},
+                                 {}, {0.0});
+            }
+            if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","topmode_weight"})) {
+                get_config_value(config, cleaner.adaptive_selector.topmode_weight, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","topmode_weight"},
+                                 {}, {0.0});
+            }
+            if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","reg_weight"})) {
+                get_config_value(config, cleaner.adaptive_selector.reg_weight, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","reg_weight"},
+                                 {}, {0.0});
+            }
+            if (config.template has_typed<bool>(std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","log_candidates"})) {
+                get_config_value(config, cleaner.adaptive_selector.log_candidates, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","log_candidates"});
+            }
+            if (config.template has_typed<std::vector<int>>(std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","candidate_offsets"})) {
+                auto offsets = config.template get_typed<std::vector<int>>(
+                    std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","candidate_offsets"});
+                if (!offsets.empty()) {
+                    cleaner.adaptive_selector.candidate_offsets = offsets;
+                }
+            }
+            auto parse_band = [&](const std::vector<double> &band, std::array<double, 2> &dst,
+                                  const std::string &name) {
+                if (band.size() == 2 && band[0] >= 0.0 && band[1] > band[0]) {
+                    dst[0] = band[0];
+                    dst[1] = band[1];
+                } else {
+                    logger->warn("clean.adaptive_selector.{} must be [fmin, fmax] with 0<=fmin<fmax", name);
+                }
+            };
+            if (config.template has_typed<std::vector<double>>(std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","low_band_Hz"})) {
+                parse_band(
+                    config.template get_typed<std::vector<double>>(
+                        std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","low_band_Hz"}),
+                    cleaner.adaptive_selector.low_band_Hz, "low_band_Hz");
+            }
+            if (config.template has_typed<std::vector<double>>(std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","mid_band_Hz"})) {
+                parse_band(
+                    config.template get_typed<std::vector<double>>(
+                        std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","mid_band_Hz"}),
+                    cleaner.adaptive_selector.mid_band_Hz, "mid_band_Hz");
+            }
+            cleaner.adaptive_selector.grouping.clear();
+            if (config.template has_typed<std::vector<std::string>>(
+                    std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","grouping"})) {
+                auto selector_grouping = config.template get_typed<std::vector<std::string>>(
+                    std::tuple{"timestream","processed_time_chunk","clean","adaptive_selector","grouping"});
+                std::unordered_set<std::string> seen;
+                for (const auto &g_raw : selector_grouping) {
+                    auto g = cleaner.normalize_group_name(g_raw);
+                    if (g != "all" && g != "array" && g != "nw" && g != "detector" && g != "fg" && g != "corr_nw") {
+                        logger->warn("clean.adaptive_selector.grouping contains unsupported entry '{}'; ignoring", g_raw);
+                        continue;
+                    }
+                    if (seen.insert(g).second) {
+                        cleaner.adaptive_selector.grouping.push_back(g);
+                    }
+                }
+            }
+            std::string adaptive_offsets_joined;
+            for (std::size_t i = 0; i < cleaner.adaptive_selector.candidate_offsets.size(); ++i) {
+                if (i > 0) {
+                    adaptive_offsets_joined += ",";
+                }
+                adaptive_offsets_joined += std::to_string(cleaner.adaptive_selector.candidate_offsets[i]);
+            }
+            logger->info(
+                "clean.adaptive_selector enabled: min_good_frac={} max_det={} max_samples={} max_pairs={} clip_z={} low_weight={} tail_weight={} topmode_weight={} reg_weight={} low_band=[{}, {}] mid_band=[{}, {}] offsets={}",
+                cleaner.adaptive_selector.min_good_frac, cleaner.adaptive_selector.max_det,
+                cleaner.adaptive_selector.max_samples, cleaner.adaptive_selector.max_pairs,
+                cleaner.adaptive_selector.clip_z, cleaner.adaptive_selector.low_weight,
+                cleaner.adaptive_selector.tail_weight, cleaner.adaptive_selector.topmode_weight,
+                cleaner.adaptive_selector.reg_weight, cleaner.adaptive_selector.low_band_Hz[0],
+                cleaner.adaptive_selector.low_band_Hz[1], cleaner.adaptive_selector.mid_band_Hz[0],
+                cleaner.adaptive_selector.mid_band_Hz[1],
+                adaptive_offsets_joined);
+            if (!cleaner.adaptive_selector.grouping.empty()) {
+                std::string groups_joined;
+                for (std::size_t i = 0; i < cleaner.adaptive_selector.grouping.size(); ++i) {
+                    if (i > 0) {
+                        groups_joined += ",";
+                    }
+                    groups_joined += cleaner.adaptive_selector.grouping[i];
+                }
+                logger->info("clean.adaptive_selector active for grouping(s): {}", groups_joined);
+            }
+        }
         // mask radius in arcseconds
         get_config_value(config, mask_radius_arcsec, missing_keys, invalid_keys,
                          std::tuple{"timestream","processed_time_chunk","clean","mask_radius_arcsec"});
@@ -882,6 +1041,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         Eigen::Index n_pts = in.scans.data.rows();
         // index for number of cleaning groups in vectors
         Eigen::Index indx = 0;
+        std::vector<AdaptiveSelectorDiagSummary> adaptive_summary_scan;
         const bool want_eigs = (run_tod_output || write_evals);
         const bool store_eigs = want_eigs && (cleaner_local.n_calc > 0);
         bool warned_eigs = false;
@@ -889,6 +1049,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         // loop through config groupings
         const bool null_model_enabled_global = cleaner_local.null_model.enabled;
         const bool marchenko_pastur_enabled_global = cleaner_local.marchenko_pastur.enabled;
+        const bool adaptive_selector_enabled_global = cleaner_local.adaptive_selector.enabled;
         for (const auto & group: cleaner_local.grouping) {
             std::string effective_group = group;
             if (group == "corr_nw" && !cleaner_local.corr_grouping.enabled) {
@@ -905,6 +1066,18 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                 marchenko_pastur_enabled_global && cleaner_local.marchenko_pastur_enabled_for_group(effective_group);
             if (marchenko_pastur_enabled_global && !marchenko_pastur_for_group) {
                 logger->debug("marchenko_pastur disabled for {} grouping", effective_group);
+            }
+            const bool adaptive_selector_for_group =
+                adaptive_selector_enabled_global &&
+                cleaner_local.adaptive_selector_enabled_for_group(effective_group) &&
+                effective_group != "corr_nw";
+            if (adaptive_selector_enabled_global && effective_group == "corr_nw" &&
+                cleaner_local.adaptive_selector_enabled_for_group(effective_group)) {
+                logger->warn("clean.adaptive_selector currently skips corr_nw sub-groups; using configured fixed cut instead");
+            }
+            if (adaptive_selector_enabled_global &&
+                !cleaner_local.adaptive_selector_enabled_for_group(effective_group)) {
+                logger->debug("adaptive_selector disabled for {} grouping", effective_group);
             }
 
             auto get_forced_limit_index_safe = [&](const auto &scans_view,
@@ -1131,11 +1304,30 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                 // check if any good flags
                 if ((apt_flags.array()==0).any()) {
                     logger->info("cleaning {} {}", effective_group, key);
+                    const Eigen::Index baseline_k = cleaner_local.n_eig_to_cut[arr_index](indx);
+                    Eigen::Index solve_n_eig = baseline_k;
+                    if (adaptive_selector_for_group) {
+                        auto candidate_ks = cleaner_local.adaptive_selector_candidate_cuts(
+                            baseline_k, n_dets - 1);
+                        if (!candidate_ks.empty()) {
+                            solve_n_eig = candidate_ks.back();
+                        }
+                    }
                     // calculate eigenvalues and eigenvalues
+                    const auto eig_t0 = std::chrono::steady_clock::now();
                     auto [evals, evecs] = cleaner_local.calc_eig_values<timestream::Cleaner::SpectraBackend>(
-                        in_scans_block, masked_flags, apt_flags, cleaner_local.n_eig_to_cut[arr_index](indx));
+                        in_scans_block, masked_flags, apt_flags, solve_n_eig);
+                    const auto eig_t1 = std::chrono::steady_clock::now();
+                    const double eig_solve_msec =
+                        std::chrono::duration<double, std::milli>(eig_t1 - eig_t0).count();
                     Eigen::Index forced_limit_index = get_forced_limit_index_safe(
                         in_scans_block, masked_flags, apt_flags, effective_group, key, arr_index);
+                    timestream::Cleaner::AdaptiveSelectorResult adaptive_result;
+                    if (adaptive_selector_for_group) {
+                        adaptive_result = cleaner_local.select_adaptive_cut(
+                            in_scans_block, masked_flags, apt_flags, evecs,
+                            baseline_k, effective_group, key, arr_index);
+                    }
 
                     if (store_eigs) {
                         // get first n_calc eigenvalues and eigenvectors
@@ -1155,11 +1347,61 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                         }
                     }
 
-                    // remove eigenvalues from the data and reconstruct the tod
-                    cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
-                        in_scans_block, masked_flags, evals, evecs, out_scans_block,
-                        cleaner_local.n_eig_to_cut[arr_index](indx), forced_limit_index,
-                        effective_group, nw_index, arr_index);
+                    Eigen::Index k_to_apply = baseline_k;
+                    if (adaptive_selector_for_group && adaptive_result.used &&
+                        adaptive_result.chosen_cleaned_scans.rows() == out_scans_block.rows() &&
+                        adaptive_result.chosen_cleaned_scans.cols() == out_scans_block.cols()) {
+                        k_to_apply = adaptive_result.chosen_k;
+                        out_scans_block = adaptive_result.chosen_cleaned_scans;
+                    }
+                    else if (adaptive_selector_for_group && adaptive_result.used) {
+                        k_to_apply = adaptive_result.chosen_k;
+                        cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
+                            in_scans_block, masked_flags, evals, evecs, out_scans_block,
+                            k_to_apply, forced_limit_index,
+                            effective_group, nw_index, arr_index);
+                    }
+                    else {
+                        cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
+                            in_scans_block, masked_flags, evals, evecs, out_scans_block,
+                            baseline_k, forced_limit_index,
+                            effective_group, nw_index, arr_index);
+                    }
+
+                    if (adaptive_selector_for_group) {
+                        const double total_selector_msec = eig_solve_msec +
+                            (std::isfinite(adaptive_result.candidate_eval_msec)
+                                 ? adaptive_result.candidate_eval_msec
+                                 : 0.0);
+                        logger->info(
+                            "adaptive_selector timing grouping={} key={} nw={} baseline_k={} chosen_k={} eig_ms={} candidate_ms={} total_ms={} margin={}",
+                            effective_group, key, nw_index, baseline_k, k_to_apply,
+                            eig_solve_msec, adaptive_result.candidate_eval_msec,
+                            total_selector_msec, adaptive_result.score_margin);
+                        adaptive_summary_scan.push_back(AdaptiveSelectorDiagSummary{
+                            .nw = nw_index,
+                            .n_det_input = in_scans_block.cols(),
+                            .n_det_used = adaptive_result.chosen_diag.n_det_used,
+                            .n_time_used = adaptive_result.chosen_diag.n_time_used,
+                            .sample_step = adaptive_result.chosen_diag.sample_step,
+                            .baseline_k = baseline_k,
+                            .chosen_k = k_to_apply,
+                            .runnerup_k = adaptive_result.runnerup_k,
+                            .n_candidates = adaptive_result.n_candidates,
+                            .selector_used = adaptive_result.used ? 1 : 0,
+                            .selector_fallback = adaptive_result.fallback ? 1 : 0,
+                            .chosen_score = adaptive_result.chosen_score,
+                            .runnerup_score = adaptive_result.runnerup_score,
+                            .score_margin = adaptive_result.score_margin,
+                            .chosen_med_abs_corr = adaptive_result.chosen_diag.med_abs_corr,
+                            .chosen_cm_low_mid_ratio = adaptive_result.chosen_diag.cm_low_mid_ratio,
+                            .chosen_tail4_binom_z = adaptive_result.chosen_diag.tail4_binom_z,
+                            .chosen_top_mode_frac = adaptive_result.chosen_diag.top_mode_frac,
+                            .eig_solve_msec = eig_solve_msec,
+                            .candidate_eval_msec = adaptive_result.candidate_eval_msec,
+                            .total_msec = total_selector_msec,
+                        });
+                    }
 
                     if (in.kernel.data.size()!=0) {
                         // check if any good flags
@@ -1170,7 +1412,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                             // remove eigenvalues from the kernel and reconstruct the tod
                             cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
                                 in_kernel_block, masked_flags, evals, evecs, out_kernel_block,
-                                cleaner_local.n_eig_to_cut[arr_index](indx), forced_limit_index,
+                                k_to_apply, forced_limit_index,
                                 effective_group, nw_index, arr_index);
                     }
                 }
@@ -1188,6 +1430,9 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
             indx++;
             // set as cleaned
             out.status.cleaned = true;
+        }
+        if (!adaptive_summary_scan.empty()) {
+            adaptive_selector_summary_by_scan[in.index.data] = std::move(adaptive_summary_scan);
         }
     }
 
@@ -2716,6 +2961,7 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         const auto corr_groups_it = corr_nw_group_ids_by_scan.find(in.index.data);
         const auto corr_summary_it = corr_nw_summary_by_scan.find(in.index.data);
         const auto weight_corr_penalty_it = weight_corr_penalty_summary_by_scan.find(in.index.data);
+        const auto adaptive_selector_it = adaptive_selector_summary_by_scan.find(in.index.data);
         const int corr_fill_value = -2147483647;
 
         // optional corr_nw diagnostics: detector group IDs per scan x detector
@@ -2845,6 +3091,94 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
             }
         }
 
+        NcVar adaptive_chosen_k_v = fo.getVar("adaptive_pca_chosen_k");
+        if (!adaptive_chosen_k_v.isNull()) {
+            NcDim n_nws_dim = fo.getDim("n_nws_adaptive_pca");
+            if (!n_nws_dim.isNull()) {
+                const auto n_nws = n_nws_dim.getSize();
+                const double fill_double = std::numeric_limits<double>::quiet_NaN();
+                std::vector<int> v_selector_used(n_nws, corr_fill_value);
+                std::vector<int> v_selector_fallback(n_nws, corr_fill_value);
+                std::vector<int> v_baseline_k(n_nws, corr_fill_value);
+                std::vector<int> v_chosen_k(n_nws, corr_fill_value);
+                std::vector<int> v_runnerup_k(n_nws, corr_fill_value);
+                std::vector<int> v_n_candidates(n_nws, corr_fill_value);
+                std::vector<int> v_n_det_input(n_nws, corr_fill_value);
+                std::vector<int> v_n_det_used(n_nws, corr_fill_value);
+                std::vector<int> v_n_time_used(n_nws, corr_fill_value);
+                std::vector<int> v_sample_step(n_nws, corr_fill_value);
+                std::vector<double> v_chosen_score(n_nws, fill_double);
+                std::vector<double> v_runnerup_score(n_nws, fill_double);
+                std::vector<double> v_score_margin(n_nws, fill_double);
+                std::vector<double> v_chosen_med_abs_corr(n_nws, fill_double);
+                std::vector<double> v_chosen_cm_low_mid_ratio(n_nws, fill_double);
+                std::vector<double> v_chosen_tail4_binom_z(n_nws, fill_double);
+                std::vector<double> v_chosen_top_mode_frac(n_nws, fill_double);
+                std::vector<double> v_eig_solve_msec(n_nws, fill_double);
+                std::vector<double> v_candidate_eval_msec(n_nws, fill_double);
+                std::vector<double> v_total_msec(n_nws, fill_double);
+
+                std::unordered_map<Eigen::Index, std::size_t> nw_to_index;
+                nw_to_index.reserve(static_cast<std::size_t>(calib.nws.size()));
+                for (Eigen::Index i = 0; i < calib.nws.size(); ++i) {
+                    nw_to_index[calib.nws(i)] = static_cast<std::size_t>(i);
+                }
+
+                if (adaptive_selector_it != adaptive_selector_summary_by_scan.end()) {
+                    for (const auto &row : adaptive_selector_it->second) {
+                        const auto it = nw_to_index.find(row.nw);
+                        if (it == nw_to_index.end() || it->second >= n_nws) {
+                            continue;
+                        }
+                        const auto j = it->second;
+                        v_selector_used[j] = row.selector_used;
+                        v_selector_fallback[j] = row.selector_fallback;
+                        v_baseline_k[j] = static_cast<int>(row.baseline_k);
+                        v_chosen_k[j] = static_cast<int>(row.chosen_k);
+                        v_runnerup_k[j] = static_cast<int>(row.runnerup_k);
+                        v_n_candidates[j] = static_cast<int>(row.n_candidates);
+                        v_n_det_input[j] = static_cast<int>(row.n_det_input);
+                        v_n_det_used[j] = static_cast<int>(row.n_det_used);
+                        v_n_time_used[j] = static_cast<int>(row.n_time_used);
+                        v_sample_step[j] = static_cast<int>(row.sample_step);
+                        v_chosen_score[j] = row.chosen_score;
+                        v_runnerup_score[j] = row.runnerup_score;
+                        v_score_margin[j] = row.score_margin;
+                        v_chosen_med_abs_corr[j] = row.chosen_med_abs_corr;
+                        v_chosen_cm_low_mid_ratio[j] = row.chosen_cm_low_mid_ratio;
+                        v_chosen_tail4_binom_z[j] = row.chosen_tail4_binom_z;
+                        v_chosen_top_mode_frac[j] = row.chosen_top_mode_frac;
+                        v_eig_solve_msec[j] = row.eig_solve_msec;
+                        v_candidate_eval_msec[j] = row.candidate_eval_msec;
+                        v_total_msec[j] = row.total_msec;
+                    }
+                }
+
+                std::vector<std::size_t> start_scan_nw = {scan_row, 0};
+                std::vector<std::size_t> size_scan_nw = {1, n_nws};
+                fo.getVar("adaptive_pca_selector_used").putVar(start_scan_nw, size_scan_nw, v_selector_used.data());
+                fo.getVar("adaptive_pca_selector_fallback").putVar(start_scan_nw, size_scan_nw, v_selector_fallback.data());
+                fo.getVar("adaptive_pca_baseline_k").putVar(start_scan_nw, size_scan_nw, v_baseline_k.data());
+                adaptive_chosen_k_v.putVar(start_scan_nw, size_scan_nw, v_chosen_k.data());
+                fo.getVar("adaptive_pca_runnerup_k").putVar(start_scan_nw, size_scan_nw, v_runnerup_k.data());
+                fo.getVar("adaptive_pca_n_candidates").putVar(start_scan_nw, size_scan_nw, v_n_candidates.data());
+                fo.getVar("adaptive_pca_n_det_input").putVar(start_scan_nw, size_scan_nw, v_n_det_input.data());
+                fo.getVar("adaptive_pca_n_det_used").putVar(start_scan_nw, size_scan_nw, v_n_det_used.data());
+                fo.getVar("adaptive_pca_n_time_used").putVar(start_scan_nw, size_scan_nw, v_n_time_used.data());
+                fo.getVar("adaptive_pca_sample_step").putVar(start_scan_nw, size_scan_nw, v_sample_step.data());
+                fo.getVar("adaptive_pca_chosen_score").putVar(start_scan_nw, size_scan_nw, v_chosen_score.data());
+                fo.getVar("adaptive_pca_runnerup_score").putVar(start_scan_nw, size_scan_nw, v_runnerup_score.data());
+                fo.getVar("adaptive_pca_score_margin").putVar(start_scan_nw, size_scan_nw, v_score_margin.data());
+                fo.getVar("adaptive_pca_chosen_med_abs_corr").putVar(start_scan_nw, size_scan_nw, v_chosen_med_abs_corr.data());
+                fo.getVar("adaptive_pca_chosen_cm_low_mid_ratio").putVar(start_scan_nw, size_scan_nw, v_chosen_cm_low_mid_ratio.data());
+                fo.getVar("adaptive_pca_chosen_tail4_binom_z").putVar(start_scan_nw, size_scan_nw, v_chosen_tail4_binom_z.data());
+                fo.getVar("adaptive_pca_chosen_top_mode_frac").putVar(start_scan_nw, size_scan_nw, v_chosen_top_mode_frac.data());
+                fo.getVar("adaptive_pca_eig_solve_msec").putVar(start_scan_nw, size_scan_nw, v_eig_solve_msec.data());
+                fo.getVar("adaptive_pca_candidate_eval_msec").putVar(start_scan_nw, size_scan_nw, v_candidate_eval_msec.data());
+                fo.getVar("adaptive_pca_total_msec").putVar(start_scan_nw, size_scan_nw, v_total_msec.data());
+            }
+        }
+
         NcVar second_pass_busy_v = fo.getVar("ptc_second_pass_busy_network_vetoed");
         if (!second_pass_busy_v.isNull()) {
             NcDim n_nws_dim = fo.getDim("n_nws_ptc_second_pass");
@@ -2938,6 +3272,9 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         }
         if (weight_corr_penalty_it != weight_corr_penalty_summary_by_scan.end()) {
             weight_corr_penalty_summary_by_scan.erase(weight_corr_penalty_it);
+        }
+        if (adaptive_selector_it != adaptive_selector_summary_by_scan.end()) {
+            adaptive_selector_summary_by_scan.erase(adaptive_selector_it);
         }
         if (second_pass_summary_it != second_pass_summary_by_scan.end()) {
             second_pass_summary_by_scan.erase(second_pass_summary_it);

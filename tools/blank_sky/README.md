@@ -95,6 +95,71 @@ Outputs:
 - `mp_mode_estimate_summary_by_network.csv`
 - `MP_MODE_ESTIMATE.md`
 
+`pca_cut_oracle.py`
+
+Sweep a bounded set of PCA cuts around the current band baseline and score the
+cleaned residuals with the same blank-sky metrics used elsewhere in this
+directory. This is meant as an offline oracle for designing a bounded adaptive
+PCA selector:
+
+- use RTC mini timestreams as the pre-clean input
+- apply Citlali-like masked PCA subtraction for each candidate `k`
+- score each cleaned scan/network row by residual coherence, low-frequency
+  common-mode leakage, tails, and distance from the baseline cut
+- identify the per-row "best `k`" and summarize how often the oracle moves away
+  from the fixed baseline
+
+Example:
+
+```bash
+~/toltec/bin/python tools/blank_sky/pca_cut_oracle.py \
+  --redu-dir /path/to/reduced/redu11 \
+  --array a1100 \
+  --cuts 16,18,20,22,24 \
+  --baseline-k 20 \
+  --outdir /path/to/a1100_pca_cut_oracle
+```
+
+Outputs:
+
+- `pca_cut_oracle_detailed.csv`
+- `pca_cut_oracle_best_by_row.csv`
+- `pca_cut_oracle_summary_by_k.csv`
+- `PCA_CUT_ORACLE.md`
+
+`pca_cut_selector_fit.py`
+
+Fit a cheap inline bounded-selector score against one or more
+`pca_cut_oracle_detailed.csv` files. This is the bridge between the offline
+oracle study and an eventual runtime adaptive selector:
+
+- take the oracle-selected `k` as the reference answer
+- search a small weight grid over cheap post-clean metrics
+- report which weighted score best matches the oracle choices
+
+The current cheap score uses:
+
+- `med_abs_corr`
+- `log2(cm_low_mid_ratio)` clipped at zero
+- `tail4_binom_z` clipped at zero
+- `top_mode_frac`
+- a regularization penalty away from the baseline cut
+
+Example:
+
+```bash
+~/toltec/bin/python tools/blank_sky/pca_cut_selector_fit.py \
+  --oracle-csv /path/to/pca_cut_oracle_detailed.csv \
+  --baseline-k 20 \
+  --outdir /path/to/a1100_pca_cut_selector_fit
+```
+
+Outputs:
+
+- `pca_selector_fit_rules.csv`
+- `pca_selector_fit_best_rule_rows.csv`
+- `PCA_SELECTOR_FIT.md`
+
 `non_gaussian_classifier.py`
 
 Classify suspicious scan/network rows by likely failure family. This is aimed at

@@ -3,6 +3,7 @@
 #include <string>
 #include <algorithm>
 #include <array>
+#include <chrono>
 #include <utility>
 #include <numeric>
 #include <cmath>
@@ -14,6 +15,7 @@
 #include <stdexcept>
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 #include <Eigen/Core>
 #include <Eigen/Eigenvalues>
 #include <Spectra/SymEigsSolver.h>
@@ -88,6 +90,59 @@ public:
     // Marchenko-Pastur mode selection for adaptive PCA depth
     MarchenkoPasturOptions marchenko_pastur;
 
+    struct AdaptiveSelectorOptions {
+        bool enabled = false;
+        double min_good_frac = 0.7;
+        int max_det = 120; // 0 => use all eligible detectors
+        int max_samples = 1024; // 0 => use all time samples
+        int max_pairs = 2000; // 0 => use all possible detector pairs
+        std::uint32_t seed = 12345;
+        double clip_z = 50.0; // clip robust-whitened detector samples before scoring; <=0 disables
+        double low_weight = 1.0;
+        double tail_weight = 0.0;
+        double topmode_weight = 0.1;
+        double reg_weight = 0.3;
+        std::array<double, 2> low_band_Hz{0.05, 0.5};
+        std::array<double, 2> mid_band_Hz{0.5, 2.0};
+        std::vector<int> candidate_offsets{-2, 0, 2, 4};
+        std::vector<std::string> grouping;
+        bool log_candidates = false;
+    };
+
+    struct AdaptiveSelectorCandidateDiag {
+        Eigen::Index k = 0;
+        Eigen::Index n_det_used = 0;
+        Eigen::Index n_time_used = 0;
+        Eigen::Index sample_step = 1;
+        double valid_frac = std::numeric_limits<double>::quiet_NaN();
+        double med_abs_corr = std::numeric_limits<double>::quiet_NaN();
+        double cm_low_mid_ratio = std::numeric_limits<double>::quiet_NaN();
+        double tail4_binom_z = std::numeric_limits<double>::quiet_NaN();
+        double top_mode_frac = std::numeric_limits<double>::quiet_NaN();
+        double score = std::numeric_limits<double>::quiet_NaN();
+        double elapsed_msec = std::numeric_limits<double>::quiet_NaN();
+    };
+
+    struct AdaptiveSelectorResult {
+        bool used = false;
+        bool fallback = false;
+        Eigen::Index baseline_k = 0;
+        Eigen::Index chosen_k = 0;
+        Eigen::Index runnerup_k = -1;
+        Eigen::Index n_det_input = 0;
+        Eigen::Index n_candidates = 0;
+        double chosen_score = std::numeric_limits<double>::quiet_NaN();
+        double runnerup_score = std::numeric_limits<double>::quiet_NaN();
+        double score_margin = std::numeric_limits<double>::quiet_NaN();
+        double candidate_eval_msec = std::numeric_limits<double>::quiet_NaN();
+        AdaptiveSelectorCandidateDiag chosen_diag;
+        std::vector<AdaptiveSelectorCandidateDiag> candidates;
+        Eigen::MatrixXd chosen_cleaned_scans;
+    };
+
+    // bounded adaptive PCA selector calibrated from blank-sky oracle studies
+    AdaptiveSelectorOptions adaptive_selector;
+
     // processed timestream sample rate for optional band-limited MP covariance
     double sample_rate_Hz = 0.0;
 
@@ -151,11 +206,41 @@ public:
         return false;
     }
 
+    auto adaptive_selector_enabled_for_group(const std::string &group) const {
+        if (adaptive_selector.grouping.empty()) {
+            return true;
+        }
+        const auto g = normalize_group_name(group);
+        for (const auto &allowed : adaptive_selector.grouping) {
+            if (normalize_group_name(allowed) == g) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    auto adaptive_selector_candidate_cuts(const Eigen::Index baseline_k, const Eigen::Index max_k) const {
+        std::vector<Eigen::Index> ks;
+        ks.reserve(adaptive_selector.candidate_offsets.size() + 1);
+        const auto max_keep = std::max<Eigen::Index>(0, max_k);
+        for (const auto offset : adaptive_selector.candidate_offsets) {
+            const auto k = std::clamp<Eigen::Index>(baseline_k + static_cast<Eigen::Index>(offset), 0, max_keep);
+            ks.push_back(k);
+        }
+        ks.push_back(std::clamp<Eigen::Index>(baseline_k, 0, max_keep));
+        std::sort(ks.begin(), ks.end());
+        ks.erase(std::unique(ks.begin(), ks.end()), ks.end());
+        return ks;
+    }
+
     auto adaptive_mode_selection_enabled() const {
         return null_model.enabled || marchenko_pastur.enabled;
     }
 
     auto active_cleaner_label() const {
+        if (adaptive_selector.enabled) {
+            return std::string{"adaptive_selector"};
+        }
         if (standard_pca.enabled) {
             return std::string{"standard_pca"};
         }
@@ -308,6 +393,12 @@ public:
     auto get_marchenko_pastur_index(const Eigen::DenseBase<DerivedA> &, const Eigen::DenseBase<DerivedB> &,
                                     const Eigen::DenseBase<DerivedC> &);
 
+    template <typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD>
+    auto select_adaptive_cut(const Eigen::DenseBase<DerivedA> &, const Eigen::DenseBase<DerivedB> &,
+                             const Eigen::DenseBase<DerivedC> &, const Eigen::DenseBase<DerivedD> &,
+                             const Eigen::Index, const std::string &, const Eigen::Index,
+                             const Eigen::Index) const;
+
     template <typename DerivedA, typename DerivedB, typename DerivedC>
     auto get_corr_groups(const Eigen::DenseBase<DerivedA> &, const Eigen::DenseBase<DerivedB> &,
                          const Eigen::DenseBase<DerivedC> &);
@@ -394,6 +485,44 @@ double robust_scale(const Eigen::DenseBase<Derived> &data, const double center) 
         return std::numeric_limits<double>::quiet_NaN();
     }
     return sigma;
+}
+
+inline double median_from_values(std::vector<double> values) {
+    if (values.empty()) {
+        return std::numeric_limits<double>::quiet_NaN();
+    }
+    const auto mid = values.begin() + static_cast<std::ptrdiff_t>(values.size() / 2);
+    std::nth_element(values.begin(), mid, values.end());
+    if ((values.size() % 2) == 1) {
+        return *mid;
+    }
+    const auto mid_lo = std::max(values.begin(), mid - 1);
+    std::nth_element(values.begin(), mid_lo, values.end());
+    return 0.5 * ((*mid_lo) + (*mid));
+}
+
+inline auto downsample_even_indices(Eigen::Index n, int max_keep) {
+    std::vector<Eigen::Index> out;
+    if (n <= 0) {
+        return out;
+    }
+    if (max_keep <= 0 || n <= static_cast<Eigen::Index>(max_keep)) {
+        out.reserve(static_cast<std::size_t>(n));
+        for (Eigen::Index i = 0; i < n; ++i) {
+            out.push_back(i);
+        }
+        return out;
+    }
+    const Eigen::Index step = std::max<Eigen::Index>(
+        1, static_cast<Eigen::Index>(std::ceil(static_cast<double>(n) / static_cast<double>(max_keep))));
+    out.reserve(static_cast<std::size_t>(max_keep));
+    for (Eigen::Index i = 0; i < n && static_cast<int>(out.size()) < max_keep; i += step) {
+        out.push_back(i);
+    }
+    if (!out.empty() && out.back() != n - 1 && static_cast<int>(out.size()) < max_keep) {
+        out.push_back(n - 1);
+    }
+    return out;
 }
 
 inline double quantile_sorted(const Eigen::VectorXd &sorted, const double p) {
@@ -1255,6 +1384,520 @@ auto Cleaner::get_marchenko_pastur_index(const Eigen::DenseBase<DerivedA> &scans
     }
     catch (const std::exception &e) {
         fail_cleaner("marchenko_pastur", e.what());
+    }
+}
+
+template <typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD>
+auto Cleaner::select_adaptive_cut(const Eigen::DenseBase<DerivedA> &scans,
+                                  const Eigen::DenseBase<DerivedB> &flags,
+                                  const Eigen::DenseBase<DerivedC> &apt_flags,
+                                  const Eigen::DenseBase<DerivedD> &evecs,
+                                  const Eigen::Index baseline_k,
+                                  const std::string &group_name,
+                                  const Eigen::Index group_key,
+                                  const Eigen::Index arr_index) const {
+
+    using clock_t = std::chrono::steady_clock;
+    const auto t0 = clock_t::now();
+
+    AdaptiveSelectorResult result;
+    result.baseline_k = baseline_k;
+    result.chosen_k = baseline_k;
+    result.n_det_input = scans.cols();
+
+    try {
+        Eigen::Index n_evec_solved = 0;
+        for (Eigen::Index c = 0; c < evecs.cols(); ++c) {
+            if (evecs.col(c).squaredNorm() > 0.0) {
+                ++n_evec_solved;
+            }
+        }
+        const Eigen::Index max_k = std::max<Eigen::Index>(
+            0, std::min<Eigen::Index>(scans.cols() - 1, n_evec_solved));
+        auto candidate_ks = adaptive_selector_candidate_cuts(baseline_k, max_k);
+        result.n_candidates = static_cast<Eigen::Index>(candidate_ks.size());
+        if (candidate_ks.empty()) {
+            result.fallback = true;
+            return result;
+        }
+
+        const Eigen::Index n_pts_full = scans.rows();
+        const Eigen::Index n_dets = scans.cols();
+        Eigen::Index sample_step = 1;
+        if (adaptive_selector.max_samples > 0 &&
+            n_pts_full > static_cast<Eigen::Index>(adaptive_selector.max_samples)) {
+            sample_step = static_cast<Eigen::Index>(std::ceil(
+                static_cast<double>(n_pts_full) / static_cast<double>(adaptive_selector.max_samples)));
+        }
+        sample_step = std::max<Eigen::Index>(sample_step, 1);
+        const Eigen::Index n_pts = (n_pts_full + sample_step - 1) / sample_step;
+        if (n_pts < 8 || n_dets < 2) {
+            result.fallback = true;
+            return result;
+        }
+
+        auto finite_or_nan = [](double v) {
+            return std::isfinite(v) ? v : std::numeric_limits<double>::quiet_NaN();
+        };
+        auto safe_ratio = [&](double num, double den) {
+            if (!std::isfinite(num) || !std::isfinite(den) || den == 0.0) {
+                return std::numeric_limits<double>::quiet_NaN();
+            }
+            return num / den;
+        };
+
+        auto gaussian_tail_prob = [](double threshold) {
+            return std::erfc(threshold / std::sqrt(2.0));
+        };
+
+        auto apply_cut = [&](Eigen::Index limit_index) {
+            if (limit_index <= 0) {
+                return scans.derived().template cast<double>().eval();
+            }
+            const Eigen::Index k_use = std::min<Eigen::Index>(limit_index, evecs.cols());
+            Eigen::MatrixXd good = (flags.derived().template cast<double>().array() == 0.0)
+                                       .template cast<double>()
+                                       .matrix();
+            auto evecs_cut = evecs.derived().leftCols(k_use);
+            Eigen::MatrixXd proj = (scans.derived().array() * good.array()).matrix() * evecs_cut;
+            Eigen::MatrixXd model = proj * evecs_cut.adjoint();
+            return (scans.derived().template cast<double>() -
+                    (model.array() * good.array()).matrix())
+                .eval();
+        };
+
+        auto normalize_terms = [](const std::vector<double> &vals) {
+            std::vector<double> norm(vals.size(), std::numeric_limits<double>::quiet_NaN());
+            double vmin = std::numeric_limits<double>::infinity();
+            double vmax = -std::numeric_limits<double>::infinity();
+            for (const auto v : vals) {
+                if (std::isfinite(v)) {
+                    vmin = std::min(vmin, v);
+                    vmax = std::max(vmax, v);
+                }
+            }
+            if (!std::isfinite(vmin) || !std::isfinite(vmax)) {
+                return norm;
+            }
+            if (!(vmax > vmin)) {
+                for (std::size_t i = 0; i < vals.size(); ++i) {
+                    if (std::isfinite(vals[i])) {
+                        norm[i] = 0.0;
+                    }
+                }
+                return norm;
+            }
+            for (std::size_t i = 0; i < vals.size(); ++i) {
+                if (std::isfinite(vals[i])) {
+                    norm[i] = (vals[i] - vmin) / (vmax - vmin);
+                }
+            }
+            return norm;
+        };
+
+        std::vector<double> corr_terms;
+        std::vector<double> low_terms;
+        std::vector<double> tail_terms;
+        std::vector<double> top_terms;
+        corr_terms.reserve(candidate_ks.size());
+        low_terms.reserve(candidate_ks.size());
+        tail_terms.reserve(candidate_ks.size());
+        top_terms.reserve(candidate_ks.size());
+
+        double candidate_eval_ms = 0.0;
+
+        for (const auto k_candidate : candidate_ks) {
+            const auto cand_t0 = clock_t::now();
+            AdaptiveSelectorCandidateDiag diag;
+            diag.k = k_candidate;
+            diag.sample_step = sample_step;
+
+            Eigen::MatrixXd cleaned = apply_cut(k_candidate);
+
+            std::vector<Eigen::Index> det_keep_frac;
+            det_keep_frac.reserve(static_cast<std::size_t>(n_dets));
+            for (Eigen::Index j = 0; j < n_dets; ++j) {
+                if (apt_flags.derived()(j) != 0) {
+                    continue;
+                }
+                double good_count = 0.0;
+                for (Eigen::Index is = 0; is < n_pts; ++is) {
+                    const Eigen::Index i = is * sample_step;
+                    if (i >= n_pts_full) {
+                        break;
+                    }
+                    if (!flags.derived()(i, j) && std::isfinite(cleaned(i, j))) {
+                        good_count += 1.0;
+                    }
+                }
+                const double frac = good_count / static_cast<double>(n_pts);
+                if (good_count > 1.0 && frac >= adaptive_selector.min_good_frac) {
+                    det_keep_frac.push_back(j);
+                }
+            }
+
+            auto det_sample_idx = detail::downsample_even_indices(
+                static_cast<Eigen::Index>(det_keep_frac.size()), adaptive_selector.max_det);
+            std::vector<Eigen::Index> det_keep;
+            det_keep.reserve(det_sample_idx.size());
+            for (const auto idx : det_sample_idx) {
+                det_keep.push_back(det_keep_frac[static_cast<std::size_t>(idx)]);
+            }
+
+            if (det_keep.size() >= 6) {
+                std::vector<Eigen::Index> det_final;
+                std::vector<double> centers;
+                std::vector<double> scales;
+                det_final.reserve(det_keep.size());
+                centers.reserve(det_keep.size());
+                scales.reserve(det_keep.size());
+
+                for (const auto det : det_keep) {
+                    std::vector<double> vals;
+                    vals.reserve(static_cast<std::size_t>(n_pts));
+                    for (Eigen::Index is = 0; is < n_pts; ++is) {
+                        const Eigen::Index i = is * sample_step;
+                        if (i >= n_pts_full) {
+                            break;
+                        }
+                        if (flags.derived()(i, det)) {
+                            continue;
+                        }
+                        const double v = cleaned(i, det);
+                        if (std::isfinite(v)) {
+                            vals.push_back(v);
+                        }
+                    }
+                    if (vals.size() < 8) {
+                        continue;
+                    }
+                    Eigen::Map<const Eigen::VectorXd> vv(vals.data(), static_cast<Eigen::Index>(vals.size()));
+                    const double center = detail::robust_center(vv);
+                    const double scale = detail::robust_scale(vv, center);
+                    if (std::isfinite(center) && std::isfinite(scale) && scale > 0.0) {
+                        det_final.push_back(det);
+                        centers.push_back(center);
+                        scales.push_back(scale);
+                    }
+                }
+
+                if (det_final.size() >= 6) {
+                    const Eigen::Index n_det_used = static_cast<Eigen::Index>(det_final.size());
+                    Eigen::MatrixXd centered = Eigen::MatrixXd::Zero(n_pts, n_det_used);
+                    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> valid =
+                        Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>::Constant(n_pts, n_det_used, false);
+                    for (Eigen::Index k = 0; k < n_det_used; ++k) {
+                        const auto det = det_final[static_cast<std::size_t>(k)];
+                        const auto center = centers[static_cast<std::size_t>(k)];
+                        for (Eigen::Index is = 0; is < n_pts; ++is) {
+                            const Eigen::Index i = is * sample_step;
+                            if (i >= n_pts_full) {
+                                break;
+                            }
+                            if (flags.derived()(i, det)) {
+                                continue;
+                            }
+                            const double v = cleaned(i, det);
+                            if (!std::isfinite(v)) {
+                                continue;
+                            }
+                            centered(is, k) = v - center;
+                            valid(is, k) = true;
+                        }
+                    }
+
+                    Eigen::MatrixXd z = Eigen::MatrixXd::Zero(n_pts, n_det_used);
+                    for (Eigen::Index k = 0; k < n_det_used; ++k) {
+                        const auto scale = scales[static_cast<std::size_t>(k)];
+                        z.col(k) = centered.col(k) / scale;
+                    }
+                    if (std::isfinite(adaptive_selector.clip_z) && adaptive_selector.clip_z > 0.0) {
+                        z = z.array()
+                                .min(adaptive_selector.clip_z)
+                                .max(-adaptive_selector.clip_z)
+                                .matrix();
+                    }
+
+                    diag.n_det_used = n_det_used;
+                    diag.n_time_used = n_pts;
+                    diag.valid_frac = valid.cast<double>().mean();
+
+                    std::vector<double> z_valid;
+                    z_valid.reserve(static_cast<std::size_t>(n_pts * n_det_used));
+                    for (Eigen::Index is = 0; is < n_pts; ++is) {
+                        for (Eigen::Index jd = 0; jd < n_det_used; ++jd) {
+                            if (valid(is, jd) && std::isfinite(z(is, jd))) {
+                                z_valid.push_back(z(is, jd));
+                            }
+                        }
+                    }
+
+                    std::vector<double> abs_corrs;
+                    const std::uint64_t n_pairs_total = static_cast<std::uint64_t>(n_det_used) *
+                                                        static_cast<std::uint64_t>(n_det_used - 1) / 2ULL;
+                    std::uint64_t target_pairs = n_pairs_total;
+                    if (adaptive_selector.max_pairs > 0) {
+                        target_pairs = std::min<std::uint64_t>(
+                            n_pairs_total, static_cast<std::uint64_t>(adaptive_selector.max_pairs));
+                    }
+
+                    auto pair_corr_for = [&](Eigen::Index a, Eigen::Index b) {
+                        double dot = 0.0;
+                        for (Eigen::Index is = 0; is < n_pts; ++is) {
+                            dot += z(is, a) * z(is, b);
+                        }
+                        return dot / std::max<double>(1.0, static_cast<double>(n_pts - 1));
+                    };
+
+                    if (target_pairs == n_pairs_total) {
+                        abs_corrs.reserve(static_cast<std::size_t>(target_pairs));
+                        for (Eigen::Index a = 0; a < n_det_used; ++a) {
+                            for (Eigen::Index b = a + 1; b < n_det_used; ++b) {
+                                const auto corr = pair_corr_for(a, b);
+                                if (std::isfinite(corr)) {
+                                    abs_corrs.push_back(std::abs(corr));
+                                }
+                            }
+                        }
+                    }
+                    else if (target_pairs > 0) {
+                        abs_corrs.reserve(static_cast<std::size_t>(target_pairs));
+                        const std::uint64_t seed_mix =
+                            static_cast<std::uint64_t>(adaptive_selector.seed) ^
+                            (static_cast<std::uint64_t>(group_key + 1) * 2654435761ULL) ^
+                            (static_cast<std::uint64_t>(arr_index + 1) * 2246822519ULL) ^
+                            (static_cast<std::uint64_t>(k_candidate + 1) * 1315423911ULL);
+                        std::mt19937 rng(static_cast<std::uint32_t>(seed_mix & 0xffffffffULL));
+                        std::uniform_int_distribution<Eigen::Index> det_dist(0, n_det_used - 1);
+                        std::unordered_set<std::uint64_t> seen_pairs;
+                        seen_pairs.reserve(static_cast<std::size_t>(target_pairs * 2 + 1));
+                        std::uint64_t tries = 0;
+                        const std::uint64_t max_tries = std::max<std::uint64_t>(target_pairs * 32ULL, 1024ULL);
+                        while (seen_pairs.size() < target_pairs && tries < max_tries) {
+                            tries++;
+                            Eigen::Index a = det_dist(rng);
+                            Eigen::Index b = det_dist(rng);
+                            if (a == b) {
+                                continue;
+                            }
+                            if (a > b) {
+                                std::swap(a, b);
+                            }
+                            const auto key = (static_cast<std::uint64_t>(a) << 32ULL) |
+                                             static_cast<std::uint64_t>(b);
+                            if (!seen_pairs.insert(key).second) {
+                                continue;
+                            }
+                            const auto corr = pair_corr_for(a, b);
+                            if (std::isfinite(corr)) {
+                                abs_corrs.push_back(std::abs(corr));
+                            }
+                        }
+                    }
+                    diag.med_abs_corr = detail::median_from_values(std::move(abs_corrs));
+
+                    if (n_pts >= 8) {
+                        Eigen::MatrixXd cov = (z.adjoint() * z) / std::max<double>(1.0, static_cast<double>(n_pts - 1));
+                        Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> solver(cov);
+                        if (solver.info() == Eigen::Success) {
+                            Eigen::VectorXd evals_cov = solver.eigenvalues().reverse();
+                            double eval_sum = 0.0;
+                            for (Eigen::Index i = 0; i < evals_cov.size(); ++i) {
+                                if (std::isfinite(evals_cov(i)) && evals_cov(i) > 0.0) {
+                                    eval_sum += evals_cov(i);
+                                }
+                            }
+                            if (eval_sum > 0.0 && std::isfinite(evals_cov(0))) {
+                                diag.top_mode_frac = evals_cov(0) / eval_sum;
+                            }
+                        }
+                    }
+
+                    if (!z_valid.empty()) {
+                        const double p = gaussian_tail_prob(4.0);
+                        const double n = static_cast<double>(z_valid.size());
+                        double count = 0.0;
+                        for (const auto v : z_valid) {
+                            if (std::abs(v) > 4.0) {
+                                count += 1.0;
+                            }
+                        }
+                        const double var = n * p * std::max(1.0 - p, 0.0);
+                        if (var > 0.0) {
+                            diag.tail4_binom_z = (count - n * p) / std::sqrt(var);
+                        }
+                    }
+
+                    if (sample_rate_Hz > 0.0 && n_pts >= 16) {
+                        Eigen::VectorXd common_mode = Eigen::VectorXd::Zero(n_pts);
+                        for (Eigen::Index is = 0; is < n_pts; ++is) {
+                            std::vector<double> row_vals;
+                            row_vals.reserve(static_cast<std::size_t>(n_det_used));
+                            for (Eigen::Index jd = 0; jd < n_det_used; ++jd) {
+                                row_vals.push_back(centered(is, jd));
+                            }
+                            common_mode(is) = detail::median_from_values(std::move(row_vals));
+                        }
+                        const double cm_mean = common_mode.mean();
+                        Eigen::VectorXd x = common_mode.array() - cm_mean;
+                        if (n_pts > 1) {
+                            constexpr double two_pi = 6.283185307179586476925286766559;
+                            for (Eigen::Index is = 0; is < n_pts; ++is) {
+                                const double w = 0.5 * (1.0 - std::cos(
+                                    two_pi * static_cast<double>(is) /
+                                    static_cast<double>(n_pts - 1)));
+                                x(is) *= w;
+                            }
+                        }
+
+                        Eigen::FFT<double> fft;
+                        fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
+                        fft.SetFlag(Eigen::FFT<double>::Unscaled);
+                        Eigen::VectorXcd freq;
+                        fft.fwd(freq, x);
+
+                        const double fs_eff = sample_rate_Hz / static_cast<double>(sample_step);
+                        std::vector<double> p_low_vals;
+                        std::vector<double> p_mid_vals;
+                        for (Eigen::Index fi = 1; fi < freq.size(); ++fi) {
+                            const double hz = static_cast<double>(fi) * fs_eff / static_cast<double>(n_pts);
+                            const double power = std::norm(freq(fi));
+                            if (hz >= adaptive_selector.low_band_Hz[0] && hz < adaptive_selector.low_band_Hz[1]) {
+                                p_low_vals.push_back(power);
+                            }
+                            if (hz >= adaptive_selector.mid_band_Hz[0] && hz < adaptive_selector.mid_band_Hz[1]) {
+                                p_mid_vals.push_back(power);
+                            }
+                        }
+                        const double p_low = detail::median_from_values(std::move(p_low_vals));
+                        const double p_mid = detail::median_from_values(std::move(p_mid_vals));
+                        diag.cm_low_mid_ratio = safe_ratio(p_low, p_mid);
+                    }
+                }
+            }
+
+            const double corr_term = std::isfinite(diag.med_abs_corr)
+                ? std::max(diag.med_abs_corr, 0.0)
+                : std::numeric_limits<double>::quiet_NaN();
+            const double low_term = (std::isfinite(diag.cm_low_mid_ratio) && diag.cm_low_mid_ratio > 0.0)
+                ? std::max(std::log2(diag.cm_low_mid_ratio), 0.0)
+                : std::numeric_limits<double>::quiet_NaN();
+            const double tail_term = std::isfinite(diag.tail4_binom_z)
+                ? std::max(diag.tail4_binom_z, 0.0)
+                : std::numeric_limits<double>::quiet_NaN();
+            const double top_term = diag.top_mode_frac;
+            corr_terms.push_back(corr_term);
+            low_terms.push_back(low_term);
+            tail_terms.push_back(tail_term);
+            top_terms.push_back(top_term);
+
+            const auto cand_t1 = clock_t::now();
+            diag.elapsed_msec = std::chrono::duration<double, std::milli>(cand_t1 - cand_t0).count();
+            candidate_eval_ms += diag.elapsed_msec;
+            result.candidates.push_back(diag);
+
+            if (adaptive_selector.log_candidates) {
+                logger->debug(
+                    "adaptive_selector candidate grouping={} key={} array={} k={} det_used={} time_used={} step={} valid_frac={} med_abs_corr={} cm_low_mid_ratio={} tail4_binom_z={} top_mode_frac={} eval_ms={}",
+                    group_name, group_key, arr_index, diag.k, diag.n_det_used, diag.n_time_used,
+                    diag.sample_step, finite_or_nan(diag.valid_frac), finite_or_nan(diag.med_abs_corr),
+                    finite_or_nan(diag.cm_low_mid_ratio), finite_or_nan(diag.tail4_binom_z),
+                    finite_or_nan(diag.top_mode_frac), finite_or_nan(diag.elapsed_msec));
+            }
+        }
+
+        auto corr_norm = normalize_terms(corr_terms);
+        auto low_norm = normalize_terms(low_terms);
+        auto tail_norm = normalize_terms(tail_terms);
+        auto top_norm = normalize_terms(top_terms);
+        const auto k_step = (candidate_ks.size() >= 2)
+            ? std::max<Eigen::Index>(1, candidate_ks[1] - candidate_ks[0])
+            : Eigen::Index{1};
+
+        std::vector<double> scores(result.candidates.size(), std::numeric_limits<double>::quiet_NaN());
+        for (std::size_t i = 0; i < result.candidates.size(); ++i) {
+            const double corr_score = std::isfinite(corr_norm[i]) ? corr_norm[i] : 1.0;
+            const double low_score = std::isfinite(low_norm[i]) ? low_norm[i] : 1.0;
+            const double tail_score = std::isfinite(tail_norm[i]) ? tail_norm[i] : 1.0;
+            const double top_score = std::isfinite(top_norm[i]) ? top_norm[i] : 1.0;
+            const double reg_score =
+                static_cast<double>(std::abs(result.candidates[i].k - baseline_k)) /
+                static_cast<double>(k_step);
+            const double score =
+                corr_score +
+                adaptive_selector.low_weight * low_score +
+                adaptive_selector.tail_weight * tail_score +
+                adaptive_selector.topmode_weight * top_score +
+                adaptive_selector.reg_weight * reg_score;
+            result.candidates[i].score = score;
+            scores[i] = score;
+        }
+
+        if (scores.empty()) {
+            result.fallback = true;
+            return result;
+        }
+
+        const auto best_it = std::min_element(scores.begin(), scores.end(), [](double a, double b) {
+            if (!std::isfinite(a)) {
+                return false;
+            }
+            if (!std::isfinite(b)) {
+                return true;
+            }
+            return a < b;
+        });
+        if (best_it == scores.end() || !std::isfinite(*best_it)) {
+            result.fallback = true;
+            return result;
+        }
+        const auto best_idx = static_cast<std::size_t>(std::distance(scores.begin(), best_it));
+        result.used = true;
+        result.chosen_k = result.candidates[best_idx].k;
+        result.chosen_score = result.candidates[best_idx].score;
+        result.chosen_diag = result.candidates[best_idx];
+        result.candidate_eval_msec = candidate_eval_ms;
+        result.chosen_cleaned_scans = apply_cut(result.chosen_k);
+
+        std::vector<std::pair<double, Eigen::Index>> ranked;
+        ranked.reserve(result.candidates.size());
+        for (const auto &diag : result.candidates) {
+            ranked.emplace_back(diag.score, diag.k);
+        }
+        std::sort(ranked.begin(), ranked.end(), [](const auto &a, const auto &b) {
+            if (!std::isfinite(a.first)) {
+                return false;
+            }
+            if (!std::isfinite(b.first)) {
+                return true;
+            }
+            if (a.first != b.first) {
+                return a.first < b.first;
+            }
+            return a.second < b.second;
+        });
+        if (ranked.size() >= 2 && std::isfinite(ranked[1].first)) {
+            result.runnerup_score = ranked[1].first;
+            result.runnerup_k = ranked[1].second;
+            result.score_margin = ranked[1].first - ranked[0].first;
+        }
+
+        const auto t1 = clock_t::now();
+        const double total_ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
+        logger->info(
+            "adaptive_selector grouping={} key={} array={} baseline_k={} chosen_k={} runnerup_k={} margin={} det_in={} det_used={} time_used={} n_candidates={} candidate_ms={} total_ms={}",
+            group_name, group_key, arr_index, baseline_k, result.chosen_k, result.runnerup_k,
+            finite_or_nan(result.score_margin), result.n_det_input, result.chosen_diag.n_det_used,
+            result.chosen_diag.n_time_used, result.n_candidates, candidate_eval_ms, total_ms);
+        return result;
+    }
+    catch (const std::exception &e) {
+        logger->warn(
+            "adaptive_selector failed for grouping={} key={} array={} baseline_k={}; "
+            "falling back to configured PCA cut: {}",
+            group_name, group_key, arr_index, baseline_k, e.what());
+        result.fallback = true;
+        return result;
     }
 }
 

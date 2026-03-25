@@ -1973,6 +1973,37 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "CONFIG.CLEANED.MP.BANDLOW_HZ", ptcproc.cleaner.marchenko_pastur.band_low_Hz);
         add_netcdf_var(fo, "CONFIG.CLEANED.MP.BANDHIGH_HZ", ptcproc.cleaner.marchenko_pastur.band_high_Hz);
         add_netcdf_var(fo, "CONFIG.CLEANED.MP.MAXMODES", ptcproc.cleaner.marchenko_pastur.max_modes);
+        std::string adaptive_offsets_joined;
+        for (std::size_t i = 0; i < ptcproc.cleaner.adaptive_selector.candidate_offsets.size(); ++i) {
+            if (i > 0) {
+                adaptive_offsets_joined += ",";
+            }
+            adaptive_offsets_joined += std::to_string(ptcproc.cleaner.adaptive_selector.candidate_offsets[i]);
+        }
+        std::string adaptive_grouping_joined;
+        for (std::size_t i = 0; i < ptcproc.cleaner.adaptive_selector.grouping.size(); ++i) {
+            if (i > 0) {
+                adaptive_grouping_joined += ",";
+            }
+            adaptive_grouping_joined += ptcproc.cleaner.adaptive_selector.grouping[i];
+        }
+        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.ENABLED", ptcproc.cleaner.adaptive_selector.enabled);
+        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.MIN_GOOD_FRAC", ptcproc.cleaner.adaptive_selector.min_good_frac);
+        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.MAX_DET", ptcproc.cleaner.adaptive_selector.max_det);
+        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.MAX_SAMPLES", ptcproc.cleaner.adaptive_selector.max_samples);
+        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.MAX_PAIRS", ptcproc.cleaner.adaptive_selector.max_pairs);
+        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.CLIP_Z", ptcproc.cleaner.adaptive_selector.clip_z);
+        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.LOW_WEIGHT", ptcproc.cleaner.adaptive_selector.low_weight);
+        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.TAIL_WEIGHT", ptcproc.cleaner.adaptive_selector.tail_weight);
+        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.TOPMODE_WEIGHT", ptcproc.cleaner.adaptive_selector.topmode_weight);
+        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.REG_WEIGHT", ptcproc.cleaner.adaptive_selector.reg_weight);
+        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.LOWMIN_HZ", ptcproc.cleaner.adaptive_selector.low_band_Hz[0]);
+        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.LOWMAX_HZ", ptcproc.cleaner.adaptive_selector.low_band_Hz[1]);
+        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.MIDMIN_HZ", ptcproc.cleaner.adaptive_selector.mid_band_Hz[0]);
+        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.MIDMAX_HZ", ptcproc.cleaner.adaptive_selector.mid_band_Hz[1]);
+        add_netcdf_var<std::string>(fo, "CONFIG.CLEANED.ADAPT.CANDIDATE_OFFSETS", adaptive_offsets_joined);
+        add_netcdf_var<std::string>(fo, "CONFIG.CLEANED.ADAPT.GROUPING", adaptive_grouping_joined);
+        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.LOG_CANDIDATES", ptcproc.cleaner.adaptive_selector.log_candidates);
         add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.ENABLED", ptcproc.second_pass_local.enabled);
         add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MIN_SPIKE_SIGMA", ptcproc.second_pass_local.min_spike_sigma);
         add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MIN_GOOD_FRAC", ptcproc.second_pass_local.min_good_frac);
@@ -2813,6 +2844,79 @@ void Engine::create_tod_files() {
                           "detectors with positive map weight multiplied by penalty factor");
             add_wcorr_int("weight_corr_penalty_sample_step",
                           "time decimation factor used for penalty metrics");
+        }
+
+        if (ptcproc.cleaner.adaptive_selector.enabled) {
+            const int fill_int = -2147483647;
+            const double fill_double = std::numeric_limits<double>::quiet_NaN();
+            netCDF::NcDim n_nws_adapt_dim = fo.addDim("n_nws_adaptive_pca", calib.n_nws);
+            netCDF::NcVar nw_ids_v = fo.addVar("adaptive_pca_network_ids", netCDF::ncInt, n_nws_adapt_dim);
+            nw_ids_v.putAtt("units", "N/A");
+            nw_ids_v.putAtt("comment", "network IDs corresponding to n_nws_adaptive_pca axis");
+            std::vector<int> nw_ids(static_cast<std::size_t>(calib.n_nws), fill_int);
+            for (Eigen::Index i = 0; i < calib.n_nws; ++i) {
+                nw_ids[static_cast<std::size_t>(i)] = static_cast<int>(calib.nws(i));
+            }
+            nw_ids_v.putVar(nw_ids.data());
+
+            std::vector<netCDF::NcDim> adapt_dims = {n_scans_dim, n_nws_adapt_dim};
+            auto add_adapt_int = [&](const std::string &name, const std::string &comment) {
+                netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, adapt_dims);
+                v.putAtt("units", "N/A");
+                v.putAtt("comment", comment);
+                std::vector<int> init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
+                                      static_cast<std::size_t>(calib.n_nws), fill_int);
+                v.putVar(init.data());
+            };
+            auto add_adapt_double = [&](const std::string &name, const std::string &comment) {
+                netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, adapt_dims);
+                v.putAtt("units", "N/A");
+                v.putAtt("comment", comment);
+                std::vector<double> init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
+                                         static_cast<std::size_t>(calib.n_nws), fill_double);
+                v.putVar(init.data());
+            };
+
+            add_adapt_int("adaptive_pca_selector_used",
+                          "1 if the bounded adaptive PCA selector evaluated this scan/network block, else 0");
+            add_adapt_int("adaptive_pca_selector_fallback",
+                          "1 if adaptive PCA selector fell back to the configured baseline cut, else 0");
+            add_adapt_int("adaptive_pca_baseline_k",
+                          "configured baseline PCA cut for this scan/network block");
+            add_adapt_int("adaptive_pca_chosen_k",
+                          "adaptive PCA cut selected for this scan/network block");
+            add_adapt_int("adaptive_pca_runnerup_k",
+                          "second-best adaptive PCA cut for this scan/network block");
+            add_adapt_int("adaptive_pca_n_candidates",
+                          "number of candidate PCA cuts evaluated for this scan/network block");
+            add_adapt_int("adaptive_pca_n_det_input",
+                          "input detector count in this scan/network block before selector filtering");
+            add_adapt_int("adaptive_pca_n_det_used",
+                          "detector count retained for adaptive selector scoring");
+            add_adapt_int("adaptive_pca_n_time_used",
+                          "sample count retained for adaptive selector scoring");
+            add_adapt_int("adaptive_pca_sample_step",
+                          "time decimation factor used by the adaptive selector");
+            add_adapt_double("adaptive_pca_chosen_score",
+                             "final normalized adaptive selector score for the chosen PCA cut");
+            add_adapt_double("adaptive_pca_runnerup_score",
+                             "final normalized adaptive selector score for the runner-up PCA cut");
+            add_adapt_double("adaptive_pca_score_margin",
+                             "chosen minus runner-up score margin; more negative is a clearer adaptive choice");
+            add_adapt_double("adaptive_pca_chosen_med_abs_corr",
+                             "median absolute detector-detector correlation for the chosen adaptive PCA cut");
+            add_adapt_double("adaptive_pca_chosen_cm_low_mid_ratio",
+                             "common-mode low/mid bandpower ratio for the chosen adaptive PCA cut");
+            add_adapt_double("adaptive_pca_chosen_tail4_binom_z",
+                             "tail-excess metric for the chosen adaptive PCA cut");
+            add_adapt_double("adaptive_pca_chosen_top_mode_frac",
+                             "top residual covariance mode fraction for the chosen adaptive PCA cut");
+            add_adapt_double("adaptive_pca_eig_solve_msec",
+                             "milliseconds spent solving eigenmodes before adaptive scoring");
+            add_adapt_double("adaptive_pca_candidate_eval_msec",
+                             "milliseconds spent scoring candidate PCA cuts after eigen solve");
+            add_adapt_double("adaptive_pca_total_msec",
+                             "total adaptive PCA milliseconds for this scan/network block");
         }
     }
 
@@ -3726,6 +3830,71 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.MP.MAXMODES",
                                         ptcproc.cleaner.marchenko_pastur.max_modes,
                                         "MP max modes considered");
+    std::string adaptive_offsets_joined;
+    for (std::size_t j = 0; j < ptcproc.cleaner.adaptive_selector.candidate_offsets.size(); ++j) {
+        if (j > 0) {
+            adaptive_offsets_joined += ",";
+        }
+        adaptive_offsets_joined += std::to_string(ptcproc.cleaner.adaptive_selector.candidate_offsets[j]);
+    }
+    std::string adaptive_grouping_joined;
+    for (std::size_t j = 0; j < ptcproc.cleaner.adaptive_selector.grouping.size(); ++j) {
+        if (j > 0) {
+            adaptive_grouping_joined += ",";
+        }
+        adaptive_grouping_joined += ptcproc.cleaner.adaptive_selector.grouping[j];
+    }
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.ADAPT.ENABLED",
+                                        ptcproc.cleaner.adaptive_selector.enabled,
+                                        "Bounded adaptive PCA selector enabled");
+    add_double_key("CONFIG.CLEANED.ADAPT.MIN_GOOD_FRAC",
+                   ptcproc.cleaner.adaptive_selector.min_good_frac,
+                   "Adaptive PCA minimum unflagged detector fraction");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.ADAPT.MAX_DET",
+                                        ptcproc.cleaner.adaptive_selector.max_det,
+                                        "Adaptive PCA max detectors used for scoring");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.ADAPT.MAX_SAMPLES",
+                                        ptcproc.cleaner.adaptive_selector.max_samples,
+                                        "Adaptive PCA max time samples used for scoring");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.ADAPT.MAX_PAIRS",
+                                        ptcproc.cleaner.adaptive_selector.max_pairs,
+                                        "Adaptive PCA max detector pairs used for scoring");
+    add_double_key("CONFIG.CLEANED.ADAPT.CLIP_Z",
+                   ptcproc.cleaner.adaptive_selector.clip_z,
+                   "Adaptive PCA residual clip threshold");
+    add_double_key("CONFIG.CLEANED.ADAPT.LOW_WEIGHT",
+                   ptcproc.cleaner.adaptive_selector.low_weight,
+                   "Adaptive PCA low-band selector weight");
+    add_double_key("CONFIG.CLEANED.ADAPT.TAIL_WEIGHT",
+                   ptcproc.cleaner.adaptive_selector.tail_weight,
+                   "Adaptive PCA tail selector weight");
+    add_double_key("CONFIG.CLEANED.ADAPT.TOPMODE_WEIGHT",
+                   ptcproc.cleaner.adaptive_selector.topmode_weight,
+                   "Adaptive PCA top-mode selector weight");
+    add_double_key("CONFIG.CLEANED.ADAPT.REG_WEIGHT",
+                   ptcproc.cleaner.adaptive_selector.reg_weight,
+                   "Adaptive PCA regularization-to-baseline weight");
+    add_double_key("CONFIG.CLEANED.ADAPT.LOWMIN_HZ",
+                   ptcproc.cleaner.adaptive_selector.low_band_Hz[0],
+                   "Adaptive PCA low-band minimum frequency");
+    add_double_key("CONFIG.CLEANED.ADAPT.LOWMAX_HZ",
+                   ptcproc.cleaner.adaptive_selector.low_band_Hz[1],
+                   "Adaptive PCA low-band maximum frequency");
+    add_double_key("CONFIG.CLEANED.ADAPT.MIDMIN_HZ",
+                   ptcproc.cleaner.adaptive_selector.mid_band_Hz[0],
+                   "Adaptive PCA mid-band minimum frequency");
+    add_double_key("CONFIG.CLEANED.ADAPT.MIDMAX_HZ",
+                   ptcproc.cleaner.adaptive_selector.mid_band_Hz[1],
+                   "Adaptive PCA mid-band maximum frequency");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.ADAPT.OFFSETS",
+                                        adaptive_offsets_joined,
+                                        "Adaptive PCA candidate cut offsets");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.ADAPT.GROUPING",
+                                        adaptive_grouping_joined,
+                                        "Grouping subset where adaptive PCA is active");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.ADAPT.LOGCAND",
+                                        ptcproc.cleaner.adaptive_selector.log_candidates,
+                                        "Adaptive PCA per-candidate logging enabled");
     if (ptcproc.run_clean) {
         fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.NEIG", ptcproc.cleaner.n_eig_to_cut[calib.arrays(i)].sum(),
                                             "Number of eigenvalues removed");

@@ -281,6 +281,23 @@ timestream: # timestream reduction parameters
         bulk_keep_frac: 0.8 # fraction of smallest eigenvalues treated as MP bulk
         q_grid_size: 64 # number of candidate q values used in the MP bulk fit
         grouping: [] # optional subset of clean.grouping entries where MP selection is active; empty => all
+      adaptive_selector: # bounded adaptive PCA cut chosen from residual metrics around the configured baseline cut
+        enabled: false
+        min_good_frac: 0.7 # minimum unflagged sample fraction per detector required for selector metrics
+        max_det: 120 # cap detectors used for selector scoring (0 => use all eligible detectors)
+        max_samples: 1024 # cap sampled time points used for selector scoring (0 => use all)
+        max_pairs: 2000 # cap sampled detector pairs used for residual-correlation scoring (0 => use all)
+        seed: 12345 # seed for reproducible detector-pair subsampling
+        clip_z: 50.0 # clip robust-whitened detector residuals before selector scoring (<=0 disables)
+        low_weight: 1.0 # weight of low/mid common-mode bandpower ratio in selector score
+        tail_weight: 0.0 # weight of tail-excess term in selector score
+        topmode_weight: 0.1 # weight of top residual mode fraction in selector score
+        reg_weight: 0.3 # regularization weight that pulls chosen cut back toward configured baseline
+        low_band_Hz: [0.05, 0.5] # low band used in the common-mode low/mid selector term
+        mid_band_Hz: [0.5, 2.0] # mid band used in the common-mode low/mid selector term
+        candidate_offsets: [-2, 0, 2, 4] # candidate k offsets tested around each configured baseline cut
+        grouping: [] # optional subset of clean.grouping entries where adaptive selector is active; empty => all supported groups
+        log_candidates: false # log per-candidate selector metrics and timings for every cleaning block
       mask_radius_arcsec: 0.0 # radius of region around the map center to mask during cleaning (only used if >0)
       grouping: [array] # clean grouping (array, nw, all)
       tau: 0.0 # tolerance for detector correlations (fraction of mean correlation for current group)
