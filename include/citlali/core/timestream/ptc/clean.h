@@ -459,10 +459,10 @@ struct MPBulkFitResult {
     double fit_err = std::numeric_limits<double>::quiet_NaN();
 };
 
-inline auto fit_mp_bulk(const Eigen::VectorXd &evals_desc, const Eigen::Index n_time,
+inline auto fit_mp_bulk(const Eigen::VectorXd &evals_desc, const double n_eff_time,
                         const double bulk_keep_frac, const int q_grid_size) {
     MPBulkFitResult out;
-    if (evals_desc.size() < 8 || n_time < 2) {
+    if (evals_desc.size() < 8 || !(std::isfinite(n_eff_time) && n_eff_time >= 2.0)) {
         return out;
     }
 
@@ -508,7 +508,7 @@ inline auto fit_mp_bulk(const Eigen::VectorXd &evals_desc, const Eigen::Index n_
     }
 
     const Eigen::Index n_det = evals_desc.size();
-    const double q_min = std::max(static_cast<double>(n_det) / std::max<double>(static_cast<double>(n_time), 1.0), 1.0e-3);
+    const double q_min = std::max(static_cast<double>(n_det) / std::max<double>(n_eff_time, 1.0), 1.0e-3);
     const double q_max = std::max(4.0 * q_min, 8.0);
     const int n_q = std::max(q_grid_size, 8);
     std::vector<double> q_candidates(static_cast<std::size_t>(n_q));
@@ -561,6 +561,68 @@ inline auto fit_mp_bulk(const Eigen::VectorXd &evals_desc, const Eigen::Index n_
     }
     out.top_over_edge = evals_desc(0) / out.lambda_plus;
     return out;
+}
+
+inline double median_positive_overlap_count(const Eigen::MatrixXd &overlap, const bool use_pairs = true) {
+    std::vector<double> vals;
+    const Eigen::Index n = overlap.rows();
+    if (n == 0 || overlap.cols() != n) {
+        return std::numeric_limits<double>::quiet_NaN();
+    }
+    vals.reserve(static_cast<std::size_t>(use_pairs ? (n * (n - 1)) / 2 : n));
+    if (use_pairs) {
+        for (Eigen::Index i = 0; i < n; ++i) {
+            for (Eigen::Index j = i + 1; j < n; ++j) {
+                const double v = overlap(i, j) - 1.0;
+                if (std::isfinite(v) && v > 0.0) {
+                    vals.push_back(v);
+                }
+            }
+        }
+    }
+    if (vals.size() < 4) {
+        vals.clear();
+        vals.reserve(static_cast<std::size_t>(n));
+        for (Eigen::Index i = 0; i < n; ++i) {
+            const double v = overlap(i, i) - 1.0;
+            if (std::isfinite(v) && v > 0.0) {
+                vals.push_back(v);
+            }
+        }
+    }
+    if (vals.empty()) {
+        return std::numeric_limits<double>::quiet_NaN();
+    }
+    std::sort(vals.begin(), vals.end());
+    const auto m = vals.size() / 2;
+    if ((vals.size() % 2) == 0) {
+        return 0.5 * (vals[m - 1] + vals[m]);
+    }
+    return vals[m];
+}
+
+inline std::pair<double, double> good_fraction_stats(const Eigen::MatrixXd &good) {
+    if (good.rows() <= 0 || good.cols() <= 0) {
+        return {std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN()};
+    }
+    Eigen::VectorXd frac = good.colwise().mean().transpose();
+    std::vector<double> vals;
+    vals.reserve(static_cast<std::size_t>(frac.size()));
+    for (Eigen::Index i = 0; i < frac.size(); ++i) {
+        const double v = frac(i);
+        if (std::isfinite(v)) {
+            vals.push_back(v);
+        }
+    }
+    if (vals.empty()) {
+        return {std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN()};
+    }
+    std::sort(vals.begin(), vals.end());
+    const double min_frac = vals.front();
+    const double med_frac = (vals.size() % 2 == 0)
+                                ? 0.5 * (vals[vals.size() / 2 - 1] + vals[vals.size() / 2])
+                                : vals[vals.size() / 2];
+    return {min_frac, med_frac};
 }
 
 } // namespace detail
@@ -1066,7 +1128,24 @@ auto Cleaner::get_marchenko_pastur_index(const Eigen::DenseBase<DerivedA> &scans
             }
         }
 
-        if ((marchenko_pastur.band_low_Hz > 0.0 || marchenko_pastur.band_high_Hz > 0.0) && dt_sec > 0.0) {
+        const auto [min_good_frac_final, med_good_frac_final] = detail::good_fraction_stats(good_used);
+        const bool allow_banded_cov =
+            (marchenko_pastur.band_low_Hz > 0.0 || marchenko_pastur.band_high_Hz > 0.0) &&
+            dt_sec > 0.0 &&
+            std::isfinite(min_good_frac_final) &&
+            std::isfinite(med_good_frac_final) &&
+            min_good_frac_final >= 0.90 &&
+            med_good_frac_final >= 0.95;
+
+        if ((marchenko_pastur.band_low_Hz > 0.0 || marchenko_pastur.band_high_Hz > 0.0) &&
+            dt_sec > 0.0 && !allow_banded_cov) {
+            logger->debug(
+                "marchenko_pastur: skipping band-limited covariance due to gappy flags "
+                "(min_good_frac={} med_good_frac={})",
+                min_good_frac_final, med_good_frac_final);
+        }
+
+        if (allow_banded_cov) {
             const Eigen::Index n_freq = n_pts / 2 + 1;
             Eigen::VectorXd freqs = Eigen::VectorXd::LinSpaced(
                 n_freq, 0.0, static_cast<double>(n_freq - 1) / (dt_sec * static_cast<double>(n_pts)));
@@ -1124,15 +1203,22 @@ auto Cleaner::get_marchenko_pastur_index(const Eigen::DenseBase<DerivedA> &scans
 
         const Eigen::Index n_final = static_cast<Eigen::Index>(keep_rescaled.size());
         Eigen::MatrixXd z = Eigen::MatrixXd::Zero(n_pts, n_final);
+        Eigen::MatrixXd good_final = Eigen::MatrixXd::Zero(n_pts, n_final);
         for (Eigen::Index k = 0; k < n_final; ++k) {
             const Eigen::Index j = keep_rescaled[static_cast<std::size_t>(k)];
             z.col(k) = centered.col(j) / scales(j);
+            good_final.col(k) = good_used.col(j);
         }
         if (std::isfinite(marchenko_pastur.clip_z) && marchenko_pastur.clip_z > 0.0) {
             z = z.array().min(marchenko_pastur.clip_z).max(-marchenko_pastur.clip_z).matrix();
         }
 
-        Eigen::MatrixXd cov = (z.adjoint() * z) / std::max<Eigen::Index>(n_pts - 1, 1);
+        Eigen::MatrixXd cov = calc_cov_with_mask(z, good_final);
+        Eigen::MatrixXd overlap = good_final.adjoint() * good_final;
+        const double n_eff_mp = detail::median_positive_overlap_count(overlap);
+        if (!(std::isfinite(n_eff_mp) && n_eff_mp >= 8.0)) {
+            fail_cleaner("marchenko_pastur", "failed to estimate effective sample count from flag overlap");
+        }
         Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> solver(cov);
         if (solver.info() != Eigen::Success) {
             fail_cleaner("marchenko_pastur", "failed to compute eigenspectrum");
@@ -1147,15 +1233,21 @@ auto Cleaner::get_marchenko_pastur_index(const Eigen::DenseBase<DerivedA> &scans
         }
         evals = evals.head(n_modes);
 
-        auto fit = detail::fit_mp_bulk(evals, n_pts, marchenko_pastur.bulk_keep_frac, marchenko_pastur.q_grid_size);
+        auto fit = detail::fit_mp_bulk(evals, n_eff_mp, marchenko_pastur.bulk_keep_frac, marchenko_pastur.q_grid_size);
+        if (!(std::isfinite(fit.lambda_plus) && fit.lambda_plus > 0.0 &&
+              std::isfinite(fit.q_fit) && std::isfinite(fit.n_eff_fit))) {
+            fail_cleaner("marchenko_pastur", "failed to fit MP bulk");
+        }
         Eigen::Index k_mp = std::min<Eigen::Index>(fit.k_mp, n_dets - 1);
         if (k_mp < 0) {
             k_mp = 0;
         }
 
         logger->debug(
-            "marchenko_pastur: n_det_input={} n_det_used={} n_modes={} n_pts={} step={} k={} q_fit={} lambda_plus={} top_over_edge={}",
-            n_dets, n_final, n_modes, n_pts, sample_step, k_mp, fit.q_fit, fit.lambda_plus, fit.top_over_edge);
+            "marchenko_pastur: n_det_input={} n_det_used={} n_modes={} n_pts={} step={} "
+            "n_eff_mp={} min_good_frac={} med_good_frac={} k={} q_fit={} lambda_plus={} top_over_edge={}",
+            n_dets, n_final, n_modes, n_pts, sample_step, n_eff_mp, min_good_frac_final, med_good_frac_final,
+            k_mp, fit.q_fit, fit.lambda_plus, fit.top_over_edge);
         return k_mp;
     }
     catch (const std::bad_alloc &) {
