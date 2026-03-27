@@ -12,6 +12,9 @@ namespace timestream {
 
 class Kernel {
 public:
+    // get logger
+    std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
+
     std::string filepath, type;
     std::vector<std::string> img_ext_names;
 
@@ -50,7 +53,7 @@ public:
 void Kernel::setup(Eigen::Index n_maps, std::string pixel_axes) {
     if (type == "fits") {
         if (img_ext_names.size()!=n_maps && img_ext_names.size()!=1) {
-            SPDLOG_INFO("mismatch for number of kernel images");
+            logger->error("mismatch for number of kernel images");
             std::exit(EXIT_FAILURE);
         }
 
