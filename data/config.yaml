@@ -332,6 +332,12 @@ timestream: # timestream reduction parameters
           weight: 0.5
           low_band_Hz: [0.05, 0.5]
           mid_band_Hz: [0.5, 2.0]
+      busy_row_suppression: # optional hard suppression of pathological scan/network rows using second-pass residual diagnostics
+        enabled: false
+        require_busy_veto: true # only suppress if the second-pass diagnostic marked this network busy/diagnostic-only
+        min_candidate_clusters: 5 # minimum number of candidate second-pass residual clusters required
+        min_max_unflagged_residual_z: 25.0 # minimum largest surviving unflagged residual z required
+        factor: 0.0 # multiplicative factor applied to positive detector weights in affected scan/network blocks
     flagging: # controls flagging after cleaning
       lower_tod_inv_var_factor: 0.0 # flag detectors below this inv variance limit (ignored if 0)
       upper_tod_inv_var_factor: 0.0 # flag detectors above this inv variance limit (ignored if 0)

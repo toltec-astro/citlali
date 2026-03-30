@@ -107,10 +107,30 @@ public:
         double penalty_factor = 1.0;
     };
 
+    struct BusyRowSuppressionOptions {
+        bool enabled = false;
+        bool require_busy_veto = true;
+        int min_candidate_clusters = 5;
+        double min_max_unflagged_residual_z = 25.0;
+        double factor = 0.0;
+    };
+
+    struct BusyRowSuppressionDiagSummary {
+        Eigen::Index nw = -1;
+        Eigen::Index n_det_weighted = 0;
+        Eigen::Index n_candidate_clusters = 0;
+        bool busy_network_vetoed = false;
+        bool applied = false;
+        double max_unflagged_residual_z = std::numeric_limits<double>::quiet_NaN();
+        double factor = 1.0;
+    };
+
     WeightCorrPenaltyOptions weight_corr_penalty;
+    BusyRowSuppressionOptions busy_row_suppression;
     std::map<Eigen::Index, Eigen::VectorXi> corr_nw_group_ids_by_scan;
     std::map<Eigen::Index, std::vector<CorrNWDiagSummary>> corr_nw_summary_by_scan;
     std::map<Eigen::Index, std::vector<WeightCorrPenaltyDiagSummary>> weight_corr_penalty_summary_by_scan;
+    std::map<Eigen::Index, std::vector<BusyRowSuppressionDiagSummary>> busy_row_suppression_summary_by_scan;
 
     struct AdaptiveSelectorDiagSummary {
         Eigen::Index nw = -1;
@@ -360,6 +380,46 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             get_config_value(config, second_pass_local.max_auto_flag_clusters_per_network, missing_keys, invalid_keys,
                              std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","max_auto_flag_clusters_per_network"},
                              {}, {1});
+        }
+    }
+
+    // optional hard suppression of pathological busy scan/network rows using second-pass diagnostics
+    busy_row_suppression = BusyRowSuppressionOptions{};
+    if (config.template has_typed<bool>(std::tuple{"timestream","processed_time_chunk","weighting","busy_row_suppression","enabled"})) {
+        get_config_value(config, busy_row_suppression.enabled, missing_keys, invalid_keys,
+                         std::tuple{"timestream","processed_time_chunk","weighting","busy_row_suppression","enabled"});
+    }
+    if (busy_row_suppression.enabled) {
+        if (config.template has_typed<bool>(std::tuple{"timestream","processed_time_chunk","weighting","busy_row_suppression","require_busy_veto"})) {
+            get_config_value(config, busy_row_suppression.require_busy_veto, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","busy_row_suppression","require_busy_veto"});
+        }
+        if (config.template has_typed<int>(std::tuple{"timestream","processed_time_chunk","weighting","busy_row_suppression","min_candidate_clusters"})) {
+            get_config_value(config, busy_row_suppression.min_candidate_clusters, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","busy_row_suppression","min_candidate_clusters"},
+                             {}, {0});
+        }
+        if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","weighting","busy_row_suppression","min_max_unflagged_residual_z"})) {
+            get_config_value(config, busy_row_suppression.min_max_unflagged_residual_z, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","busy_row_suppression","min_max_unflagged_residual_z"},
+                             {}, {0.0});
+        }
+        if (config.template has_typed<double>(std::tuple{"timestream","processed_time_chunk","weighting","busy_row_suppression","factor"})) {
+            get_config_value(config, busy_row_suppression.factor, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","busy_row_suppression","factor"},
+                             {}, {0.0}, {1.0});
+        }
+        if (!second_pass_local.enabled) {
+            logger->warn("weighting.busy_row_suppression requires flagging.second_pass_local.enabled; disabling busy-row suppression");
+            busy_row_suppression.enabled = false;
+        } else {
+            logger->info(
+                "weighting.busy_row_suppression enabled: require_busy_veto={} min_candidate_clusters={} "
+                "min_max_unflagged_residual_z={} factor={}",
+                busy_row_suppression.require_busy_veto,
+                busy_row_suppression.min_candidate_clusters,
+                busy_row_suppression.min_max_unflagged_residual_z,
+                busy_row_suppression.factor);
         }
     }
 
@@ -2236,13 +2296,39 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
         }
     }
 
-    if (weight_corr_penalty.enabled) {
-        auto finite_or_nan = [](double v) {
-            if (std::isfinite(v)) {
-                return v;
+    auto finite_or_nan = [](double v) {
+        if (std::isfinite(v)) {
+            return v;
+        }
+        return std::numeric_limits<double>::quiet_NaN();
+    };
+
+    std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> nw_limits;
+    if (weight_corr_penalty.enabled || busy_row_suppression.enabled) {
+        if (n_dets > 0) {
+            Eigen::Index nw_i = static_cast<Eigen::Index>(apt["nw"](0));
+            nw_limits[nw_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 1};
+            std::unordered_set<Eigen::Index> seen;
+            seen.insert(nw_i);
+            for (Eigen::Index i = 1; i < n_dets; ++i) {
+                auto nw_v = static_cast<Eigen::Index>(apt["nw"](i));
+                if (nw_v == nw_i) {
+                    std::get<1>(nw_limits[nw_i]) = i + 1;
+                }
+                else {
+                    if (seen.find(nw_v) != seen.end()) {
+                        logger->error("non-contiguous grouping detected for 'nw' value {}", nw_v);
+                        std::exit(EXIT_FAILURE);
+                    }
+                    seen.insert(nw_v);
+                    nw_i = nw_v;
+                    nw_limits[nw_i] = std::tuple<Eigen::Index, Eigen::Index>{i, i + 1};
+                }
             }
-            return std::numeric_limits<double>::quiet_NaN();
-        };
+        }
+    }
+
+    if (weight_corr_penalty.enabled) {
         auto clamp01 = [](double v) {
             return std::clamp(v, 0.0, 1.0);
         };
@@ -2298,29 +2384,6 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
             const double score = clamp01((metric - term.ref) / span);
             return std::pair<double, double>{term.weight * score, term.weight};
         };
-
-        std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> nw_limits;
-        if (n_dets > 0) {
-            Eigen::Index nw_i = static_cast<Eigen::Index>(apt["nw"](0));
-            nw_limits[nw_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 1};
-            std::unordered_set<Eigen::Index> seen;
-            seen.insert(nw_i);
-            for (Eigen::Index i = 1; i < n_dets; ++i) {
-                auto nw_v = static_cast<Eigen::Index>(apt["nw"](i));
-                if (nw_v == nw_i) {
-                    std::get<1>(nw_limits[nw_i]) = i + 1;
-                }
-                else {
-                    if (seen.find(nw_v) != seen.end()) {
-                        logger->error("non-contiguous grouping detected for 'nw' value {}", nw_v);
-                        std::exit(EXIT_FAILURE);
-                    }
-                    seen.insert(nw_v);
-                    nw_i = nw_v;
-                    nw_limits[nw_i] = std::tuple<Eigen::Index, Eigen::Index>{i, i + 1};
-                }
-            }
-        }
 
         const Eigen::Index n_pts_full = in.scans.data.rows();
         std::vector<WeightCorrPenaltyDiagSummary> penalty_summary;
@@ -2698,6 +2761,72 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
         weight_corr_penalty_summary_by_scan[in.index.data] = std::move(penalty_summary);
     }
 
+    if (busy_row_suppression.enabled) {
+        std::unordered_map<Eigen::Index, const SecondPassDiagSummary *> second_pass_by_nw;
+        const auto second_pass_it = second_pass_summary_by_scan.find(in.index.data);
+        if (second_pass_it != second_pass_summary_by_scan.end()) {
+            second_pass_by_nw.reserve(second_pass_it->second.size());
+            for (const auto &row : second_pass_it->second) {
+                second_pass_by_nw[row.nw] = &row;
+            }
+        } else {
+            logger->warn(
+                "weighting.busy_row_suppression enabled but no second-pass diagnostics were available for scan={}",
+                scan_index_1based);
+        }
+
+        const double suppression_factor = std::clamp(busy_row_suppression.factor, 0.0, 1.0);
+        std::vector<BusyRowSuppressionDiagSummary> suppression_summary;
+        suppression_summary.reserve(static_cast<std::size_t>(nw_limits.size()));
+
+        for (const auto &[nw, limits] : nw_limits) {
+            const auto [start_index, end_index] = limits;
+            BusyRowSuppressionDiagSummary summary;
+            summary.nw = nw;
+
+            const auto second_pass_nw_it = second_pass_by_nw.find(nw);
+            if (second_pass_nw_it != second_pass_by_nw.end() && second_pass_nw_it->second != nullptr) {
+                const auto &diag = *second_pass_nw_it->second;
+                summary.busy_network_vetoed = diag.busy_network_vetoed;
+                summary.n_candidate_clusters = diag.n_candidate_clusters;
+                summary.max_unflagged_residual_z = finite_or_nan(diag.max_unflagged_residual_z);
+            }
+
+            const bool busy_ok = !busy_row_suppression.require_busy_veto || summary.busy_network_vetoed;
+            const bool candidate_ok = summary.n_candidate_clusters >= busy_row_suppression.min_candidate_clusters;
+            const bool residual_ok = std::isfinite(summary.max_unflagged_residual_z) &&
+                                     summary.max_unflagged_residual_z >= busy_row_suppression.min_max_unflagged_residual_z;
+            const bool should_suppress = busy_ok && candidate_ok && residual_ok && suppression_factor < 1.0;
+
+            if (should_suppress) {
+                for (Eigen::Index j = start_index; j < end_index; ++j) {
+                    if (apt["flag"](j) != 0) {
+                        continue;
+                    }
+                    if (!std::isfinite(in.weights.data(j)) || in.weights.data(j) <= 0.0) {
+                        continue;
+                    }
+                    in.weights.data(j) *= suppression_factor;
+                    summary.n_det_weighted++;
+                }
+            }
+            summary.applied = should_suppress && summary.n_det_weighted > 0;
+            summary.factor = summary.applied ? suppression_factor : 1.0;
+
+            if (summary.applied) {
+                logger->info(
+                    "weight busy_row_suppression scan={} nw={} busy={} n_candidate_clusters={} "
+                    "max_unflagged_residual_z={} factor={} weighted={}",
+                    scan_index_1based, nw, summary.busy_network_vetoed, summary.n_candidate_clusters,
+                    summary.max_unflagged_residual_z, summary.factor, summary.n_det_weighted);
+            }
+
+            suppression_summary.push_back(summary);
+        }
+
+        busy_row_suppression_summary_by_scan[in.index.data] = std::move(suppression_summary);
+    }
+
     Eigen::Index n_apt_unflagged = 0;
     Eigen::Index n_nonfinite = 0;
     Eigen::Index n_positive = 0;
@@ -2961,6 +3090,7 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         const auto corr_groups_it = corr_nw_group_ids_by_scan.find(in.index.data);
         const auto corr_summary_it = corr_nw_summary_by_scan.find(in.index.data);
         const auto weight_corr_penalty_it = weight_corr_penalty_summary_by_scan.find(in.index.data);
+        const auto busy_row_suppression_it = busy_row_suppression_summary_by_scan.find(in.index.data);
         const auto adaptive_selector_it = adaptive_selector_summary_by_scan.find(in.index.data);
         const int corr_fill_value = -2147483647;
 
@@ -3088,6 +3218,52 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
                 fo.getVar("weight_corr_penalty_n_det_used").putVar(start_scan_nw, size_scan_nw, v_n_det_used.data());
                 fo.getVar("weight_corr_penalty_n_det_weighted").putVar(start_scan_nw, size_scan_nw, v_n_det_weighted.data());
                 fo.getVar("weight_corr_penalty_sample_step").putVar(start_scan_nw, size_scan_nw, v_sample_step.data());
+            }
+        }
+
+        NcVar wbusy_applied_v = fo.getVar("weight_busy_row_suppression_applied");
+        if (!wbusy_applied_v.isNull()) {
+            NcDim n_nws_dim = fo.getDim("n_nws_busy_row_suppression");
+            if (!n_nws_dim.isNull()) {
+                const auto n_nws = n_nws_dim.getSize();
+                const double fill_double = std::numeric_limits<double>::quiet_NaN();
+                std::vector<int> v_applied(n_nws, corr_fill_value);
+                std::vector<int> v_busy(n_nws, corr_fill_value);
+                std::vector<int> v_n_candidate_clusters(n_nws, corr_fill_value);
+                std::vector<int> v_n_det_weighted(n_nws, corr_fill_value);
+                std::vector<double> v_factor(n_nws, fill_double);
+                std::vector<double> v_max_resid_z(n_nws, fill_double);
+
+                std::unordered_map<Eigen::Index, std::size_t> nw_to_index;
+                nw_to_index.reserve(static_cast<std::size_t>(calib.nws.size()));
+                for (Eigen::Index i = 0; i < calib.nws.size(); ++i) {
+                    nw_to_index[calib.nws(i)] = static_cast<std::size_t>(i);
+                }
+
+                if (busy_row_suppression_it != busy_row_suppression_summary_by_scan.end()) {
+                    for (const auto &row : busy_row_suppression_it->second) {
+                        const auto it = nw_to_index.find(row.nw);
+                        if (it == nw_to_index.end() || it->second >= n_nws) {
+                            continue;
+                        }
+                        const auto j = it->second;
+                        v_applied[j] = row.applied ? 1 : 0;
+                        v_busy[j] = row.busy_network_vetoed ? 1 : 0;
+                        v_n_candidate_clusters[j] = static_cast<int>(row.n_candidate_clusters);
+                        v_n_det_weighted[j] = static_cast<int>(row.n_det_weighted);
+                        v_factor[j] = row.factor;
+                        v_max_resid_z[j] = row.max_unflagged_residual_z;
+                    }
+                }
+
+                std::vector<std::size_t> start_scan_nw = {scan_row, 0};
+                std::vector<std::size_t> size_scan_nw = {1, n_nws};
+                wbusy_applied_v.putVar(start_scan_nw, size_scan_nw, v_applied.data());
+                fo.getVar("weight_busy_row_suppression_busy_network_vetoed").putVar(start_scan_nw, size_scan_nw, v_busy.data());
+                fo.getVar("weight_busy_row_suppression_n_candidate_clusters").putVar(start_scan_nw, size_scan_nw, v_n_candidate_clusters.data());
+                fo.getVar("weight_busy_row_suppression_n_det_weighted").putVar(start_scan_nw, size_scan_nw, v_n_det_weighted.data());
+                fo.getVar("weight_busy_row_suppression_factor").putVar(start_scan_nw, size_scan_nw, v_factor.data());
+                fo.getVar("weight_busy_row_suppression_max_unflagged_residual_z").putVar(start_scan_nw, size_scan_nw, v_max_resid_z.data());
             }
         }
 
@@ -3272,6 +3448,9 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         }
         if (weight_corr_penalty_it != weight_corr_penalty_summary_by_scan.end()) {
             weight_corr_penalty_summary_by_scan.erase(weight_corr_penalty_it);
+        }
+        if (busy_row_suppression_it != busy_row_suppression_summary_by_scan.end()) {
+            busy_row_suppression_summary_by_scan.erase(busy_row_suppression_it);
         }
         if (adaptive_selector_it != adaptive_selector_summary_by_scan.end()) {
             adaptive_selector_summary_by_scan.erase(adaptive_selector_it);
