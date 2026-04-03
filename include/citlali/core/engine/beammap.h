@@ -599,7 +599,7 @@ auto Beammap::run_timestream(KidsProc &kidsproc) {
 
     const bool write_rtc = run_tod_output && !tod_filename.empty() &&
         (tod_output_type == "rtc" || tod_output_type == "both");
-    const bool write_rtcdiag = run_rtcdiag_output && !rtcdiag_filename.empty();
+    const bool write_rtcdiag = !rtcdiag_filename.empty();
     auto rtc_writer = write_rtc ? std::make_shared<OrderedWriter>() : nullptr;
     auto rtcdiag_writer = write_rtcdiag ? std::make_shared<OrderedWriter>() : nullptr;
 
@@ -2128,7 +2128,7 @@ void Beammap::run_loop() {
 
         // write ptc timestreams
         if (current_iter == beammap_tod_output_iter) {
-            if (run_ptcdiag_output && !ptcdiag_filename.empty()) {
+            if (!ptcdiag_filename.empty()) {
                 logger->info("writing ptc diagnostics sidecar chunks");
                 for (Eigen::Index i=0; i<telescope.scan_indices.cols(); ++i) {
                     ptcproc.append_diag_to_netcdf(ptcs[i], ptcdiag_filename, calib_scans[i], ptcs[i].index.data);
@@ -4386,10 +4386,8 @@ void Beammap::output() {
             write_psd<map_type>(mb, dir_name);
             logger->debug("writing histograms");
             write_hist<map_type>(mb, dir_name);
-            if (run_mapdiag_output) {
-                logger->debug("writing map diagnostics");
-                write_mapdiag<map_type>(mb, dir_name);
-            }
+            logger->debug("writing map diagnostics");
+            write_mapdiag<map_type>(mb, dir_name);
         }
     }
 }

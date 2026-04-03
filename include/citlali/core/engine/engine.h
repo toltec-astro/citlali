@@ -266,9 +266,6 @@ public:
     std::string tod_output_type, tod_output_subdir_name;
     bool run_tod_output_rtc = false;
     bool run_tod_output_ptc = false;
-    bool run_rtcdiag_output = true;
-    bool run_ptcdiag_output = true;
-    bool run_mapdiag_output = true;
     std::string rtcdiag_filename;
     std::string ptcdiag_filename;
 
@@ -514,7 +511,7 @@ void Engine::obsnum_setup() {
 
     setup_tod_output_chunk_selection();
     // create output subdirectory if requested
-    if ((run_tod_output || run_rtcdiag_output || run_ptcdiag_output) && tod_output_subdir_name!="null") {
+    if (tod_output_subdir_name!="null") {
         fs::create_directories(obsnum_dir_name + "raw/" + tod_output_subdir_name);
     }
     // create timestream files
@@ -532,12 +529,8 @@ void Engine::obsnum_setup() {
     else if (!diagnostics.write_evals) {
         ptcproc.cleaner.n_calc = 0;
     }
-    if (run_rtcdiag_output) {
-        create_rtcdiag_file();
-    }
-    if (run_ptcdiag_output) {
-        create_ptcdiag_file();
-    }
+    create_rtcdiag_file();
+    create_ptcdiag_file();
 
     // output basic info for obs reduction to command line
     cli_summary();
@@ -756,14 +749,6 @@ void Engine::get_timestream_config(CT &config) {
     // tod subdirectory name
     get_config_value(config, tod_output_subdir_name, missing_keys, invalid_keys,
                      std::tuple{"timestream","output", "subdir_name"});
-    if (config.has(std::tuple{"timestream","output","rtcdiag","enabled"})) {
-        get_config_value(config, run_rtcdiag_output, missing_keys, invalid_keys,
-                         std::tuple{"timestream","output","rtcdiag","enabled"});
-    }
-    if (config.has(std::tuple{"timestream","output","ptcdiag","enabled"})) {
-        get_config_value(config, run_ptcdiag_output, missing_keys, invalid_keys,
-                         std::tuple{"timestream","output","ptcdiag","enabled"});
-    }
     // write eigenvalues to stats file
     get_config_value(config, diagnostics.write_evals, missing_keys, invalid_keys,
                      std::tuple{"timestream","output", "stats","eigenvalues"});
@@ -910,11 +895,6 @@ void Engine::get_mapmaking_config(CT &config) {
     // run coaddition?
     get_config_value(config, run_coadd, missing_keys, invalid_keys,
                      std::tuple{"coadd","enabled"});
-    if (config.has(std::tuple{"mapmaking","output","mapdiag","enabled"})) {
-        get_config_value(config, run_mapdiag_output, missing_keys, invalid_keys,
-                         std::tuple{"mapmaking","output","mapdiag","enabled"});
-    }
-
     // re-run to get config for cmb
     if (run_coadd) {
         logger->info("getting cmb config options");
@@ -3076,9 +3056,9 @@ void Engine::cli_summary() {
             logger->info("PTC TOD output mode: {}", ptcproc.tod_output_mini ? "mini" : "full");
         }
     }
-    logger->info("RTC diagnostics sidecar output: {}", run_rtcdiag_output ? "enabled" : "disabled");
-    logger->info("PTC diagnostics sidecar output: {}", run_ptcdiag_output ? "enabled" : "disabled");
-    logger->info("Map diagnostics sidecar output: {}", run_mapdiag_output ? "enabled" : "disabled");
+    logger->info("RTC diagnostics sidecar output: standard");
+    logger->info("PTC diagnostics sidecar output: standard");
+    logger->info("Map diagnostics sidecar output: standard");
 
     // test getting memory usage for fun
     /*struct sysinfo memInfo;

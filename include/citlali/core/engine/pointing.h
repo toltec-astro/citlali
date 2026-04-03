@@ -277,8 +277,8 @@ auto Pointing::run(KidsProc &kidsproc) {
         (tod_output_type == "rtc" || tod_output_type == "both");
     const bool write_ptc = run_tod_output && !tod_filename.empty() &&
         (tod_output_type == "ptc" || tod_output_type == "both");
-    const bool write_rtcdiag = run_rtcdiag_output && !rtcdiag_filename.empty();
-    const bool write_ptcdiag = run_ptcdiag_output && !ptcdiag_filename.empty();
+    const bool write_rtcdiag = !rtcdiag_filename.empty();
+    const bool write_ptcdiag = !ptcdiag_filename.empty();
 
     auto rtc_writer = write_rtc ? std::make_shared<OrderedWriter>() : nullptr;
     auto ptc_writer = write_ptc ? std::make_shared<OrderedWriter>() : nullptr;
@@ -704,10 +704,8 @@ void Pointing::output() {
         write_psd<map_type>(mb, dir_name);
         logger->debug("writing histograms");
         write_hist<map_type>(mb, dir_name);
-        if (run_mapdiag_output) {
-            logger->debug("writing map diagnostics");
-            write_mapdiag<map_type>(mb, dir_name);
-        }
+        logger->debug("writing map diagnostics");
+        write_mapdiag<map_type>(mb, dir_name);
 
         // write source table
         if (run_source_finder) {
