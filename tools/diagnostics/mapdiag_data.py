@@ -147,6 +147,7 @@ def load_reduction_tables(
                 cache_key = (stokes_names[map_idx], f"{threshold_value:.17g}")
                 core_peak = fits_cache.get(cache_key)
                 if core_peak is None:
+                    core_peak = float("nan")
                     if core_peak_s2n is not None:
                         core_peak = float(core_peak_s2n[map_idx])
                     if not np.isfinite(core_peak):

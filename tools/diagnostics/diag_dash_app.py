@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+from html import escape
 from pathlib import Path
 
 try:
@@ -16,6 +17,7 @@ except ModuleNotFoundError as exc:
 
 import pandas as pd
 import plotly.graph_objects as go
+import plotly.io as pio
 from plotly.subplots import make_subplots
 
 THIS_DIR = Path(__file__).resolve().parent
@@ -47,6 +49,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--array", default="a1100", choices=["a1100", "a1400", "a2000"])
     parser.add_argument("--networks", default="all")
     parser.add_argument("--obsnums", default="all")
+    parser.add_argument("--write-html", action="store_true", help="Write a static HTML snapshot to the reduction directory")
+    parser.add_argument("--html-out", default=None, help="Path for static HTML export; default is <redu-dir>/citlali_diagnostics_<array>.html")
+    parser.add_argument("--html-only", action="store_true", help="Write the static HTML snapshot and exit without starting Dash")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8050)
     parser.add_argument("--debug", action="store_true")
@@ -202,6 +207,220 @@ def _small_percent_axis_limit(values: list[float]) -> float:
     if max_value <= 1.00:
         return 1.00
     return max_value * 1.20
+
+
+def _summary_card_html(title: str, value: str, note: str) -> str:
+    return (
+        '<div class="metric-card">'
+        f'<div class="metric-title">{escape(title)}</div>'
+        f'<div class="metric-value">{escape(value)}</div>'
+        f'<div class="metric-note">{escape(note)}</div>'
+        "</div>"
+    )
+
+
+def _figure_html(fig: go.Figure, include_plotlyjs: str | bool) -> str:
+    return pio.to_html(
+        fig,
+        include_plotlyjs=include_plotlyjs,
+        full_html=False,
+        config=GRAPH_CONFIG,
+        default_width="100%",
+    )
+
+
+def _section_html(title: str, note: str, cards_html: str, figures: list[go.Figure], include_plotlyjs: str | bool) -> str:
+    figure_html = "".join(
+        f'<div class="figure-panel">{_figure_html(fig, include_plotlyjs if i == 0 else False)}</div>'
+        for i, fig in enumerate(figures)
+    )
+    return (
+        "<section>"
+        f"<h2>{escape(title)}</h2>"
+        f'<p class="section-note">{escape(note)}</p>'
+        f'<div class="metric-grid">{cards_html}</div>'
+        f'<div class="figure-grid">{figure_html}</div>'
+        "</section>"
+    )
+
+
+def write_static_html_report(bundle: dict[str, object], args: argparse.Namespace, outpath: Path) -> Path:
+    outpath = Path(outpath).expanduser().resolve()
+    outpath.parent.mkdir(parents=True, exist_ok=True)
+
+    sections_by_name: dict[str, tuple[str, str, list[go.Figure]] | str] = {}
+
+    rtc_section = bundle["rtc"]
+    if rtc_section["error"] is None:
+        obs_df = rtc_section["obs_df"]
+        obs_network_df = rtc_section["obs_network_df"]
+        scan_df = rtc_section["scan_df"]
+        slot_df = rtc_section["slot_df"]
+        by_network_df = rtc_section["by_network_df"]
+        data = rtc_section["data"]
+        default_obs = obs_df["obsnum"].astype(str).iloc[0]
+        default_networks = obs_network_df.loc[obs_network_df["obsnum"] == default_obs, "network"].astype(int).tolist()
+        default_network = default_networks[0] if default_networks else int(data["selected_networks"][0])
+        worst_obs = obs_df.sort_values("max_row_severity", ascending=False).iloc[0]
+        worst_network = by_network_df.sort_values("max_row_severity", ascending=False).iloc[0]
+        rtc_cards = "".join(
+            [
+                _summary_card_html("Observations", rtc_dash.format_count(len(obs_df)), "RTC sidecars summarized"),
+                _summary_card_html("Worst Observation", str(worst_obs["obsnum"]), f"max severity {_format_number(worst_obs['max_row_severity'], 2)}"),
+                _summary_card_html("Worst Network", f"nw{int(worst_network['network'])}", f"max severity {_format_number(worst_network['max_row_severity'], 2)}"),
+            ]
+        )
+        rtc_figures = [
+            rtc_dash.build_obs_rank_figure(obs_df),
+            rtc_dash.build_network_rank_figure(by_network_df),
+            rtc_dash.build_heatmap(scan_df, default_obs),
+            rtc_dash.build_network_trend(scan_df, default_obs, int(default_network)),
+            rtc_dash.build_obs_network_rank_figure(obs_network_df, default_obs),
+            rtc_dash.build_top_scan_figure(scan_df, default_obs),
+            rtc_dash.build_top_slot_figure(slot_df, default_obs, int(default_network)),
+        ]
+        sections_by_name["RTC"] = ("Static snapshot of the default RTC dashboard view.", rtc_cards, rtc_figures)
+    else:
+        sections_by_name["RTC"] = f"<section><h2>RTC</h2><p>{escape(str(rtc_section['error']))}</p></section>"
+
+    ptc_section = bundle["ptc"]
+    if ptc_section["error"] is None:
+        obs_df = ptc_section["obs_df"]
+        scan_df = ptc_section["scan_df"]
+        by_network_df = ptc_section["by_network_df"]
+        product_paths = ptc_section["data"]["product_paths"]
+        default_obs = obs_df["obsnum"].astype(str).iloc[0]
+        default_network = int(scan_df.loc[scan_df["obsnum"] == default_obs, "network"].astype(int).drop_duplicates().iloc[0])
+        default_scan = int(scan_df.loc[scan_df["obsnum"] == default_obs, "output_scan_index"].astype(int).drop_duplicates().iloc[0])
+        det_rows = ptcdiag_data.load_detector_rows(product_paths[default_obs], array=args.array, output_scan_index=default_scan)
+        det_df = pd.DataFrame(det_rows).sort_values(["network", "uid"], ascending=[True, True]) if det_rows else pd.DataFrame(columns=["uid", "network", "weight", "flagged_fraction", "rms"])
+        strongest_obs = obs_df.sort_values("max_newly_flagged_fraction", ascending=False).iloc[0]
+        strongest_network = by_network_df.sort_values("max_newly_flagged_fraction", ascending=False).iloc[0]
+        ptc_cards = "".join(
+            [
+                _summary_card_html("Observations", rtc_dash.format_count(len(obs_df)), "PTC sidecars summarized"),
+                _summary_card_html("Largest Added-Flag Fraction", _format_percent(strongest_obs["max_newly_flagged_fraction"], 2), f"observation {strongest_obs['obsnum']}"),
+                _summary_card_html("Worst Network", f"nw{int(strongest_network['network'])}", f"largest added fraction {_format_percent(strongest_network['max_newly_flagged_fraction'], 2)}"),
+            ]
+        )
+        ptc_figures = [
+            build_ptc_obs_rank_figure(obs_df),
+            build_ptc_network_rank_figure(by_network_df),
+            build_ptc_heatmap(scan_df, default_obs),
+            build_ptc_network_trend(scan_df, default_obs, default_network),
+            build_ptc_scan_rank_figure(scan_df, default_obs),
+            build_ptc_detector_figure(det_df, default_network, default_scan),
+        ]
+        sections_by_name["PTC"] = ("Static snapshot of the default PTC dashboard view.", ptc_cards, ptc_figures)
+    else:
+        sections_by_name["PTC"] = f"<section><h2>PTC</h2><p>{escape(str(ptc_section['error']))}</p></section>"
+
+    map_section = bundle["map"]
+    if map_section["error"] is None:
+        map_df = map_section["map_df"]
+        contrib_df = map_section["contrib_df"]
+        map_selectors = sorted(map_df["map_selector"].drop_duplicates().tolist())
+        default_selector = map_selectors[0]
+        coadd_stage_options = sorted(
+            contrib_df.loc[contrib_df["map_selector"] == default_selector, "stage"].drop_duplicates().tolist()
+        )
+        default_stage = coadd_stage_options[0] if coadd_stage_options else "raw_coadd"
+        obs_df = map_df.loc[map_df["is_coadd"] == 0].copy().assign(display_peak=_map_peak_series(map_df.loc[map_df["is_coadd"] == 0].copy()))
+        coadd_df = map_df.loc[map_df["is_coadd"] == 1].copy().assign(display_peak=_map_peak_series(map_df.loc[map_df["is_coadd"] == 1].copy()))
+        strongest_obs = obs_df.sort_values("display_peak", ascending=False).iloc[0] if not obs_df.empty else None
+        top_contrib = contrib_df.sort_values("core_weight_frac", ascending=False).iloc[0] if not contrib_df.empty else None
+        strongest_coadd = coadd_df.sort_values("display_peak", ascending=False).iloc[0] if not coadd_df.empty else None
+        map_cards = "".join(
+            [
+                _summary_card_html("Observation Maps", rtc_dash.format_count(len(obs_df)), "observation-level map rows"),
+                _summary_card_html("Highest Core Peak", str(strongest_obs["obs_context"]) if strongest_obs is not None else "n/a", f"peak |S/N| {_format_number(strongest_obs['display_peak'], 2)}" if strongest_obs is not None else "no observation rows"),
+                _summary_card_html("Top Coadd Contributor", str(top_contrib["contrib_obsnum"]) if top_contrib is not None else "n/a", f"core contribution {_format_percent(top_contrib['core_weight_frac'], 1)}" if top_contrib is not None else "no coadd table"),
+                _summary_card_html("Coadd Core Peak |S/N|", _format_number(strongest_coadd["display_peak"], 2) if strongest_coadd is not None else "n/a", strongest_coadd["stage"] if strongest_coadd is not None else "no coadd row"),
+            ]
+        )
+        map_figures = [
+            build_map_contrib_figure(contrib_df, default_selector, default_stage),
+            build_map_obs_rank_figure(map_df, contrib_df, default_selector, default_stage),
+            build_map_contrib_scatter_figure(map_df, contrib_df, default_selector, default_stage),
+        ]
+        sections_by_name["Maps"] = ("Static snapshot of the default Maps dashboard view.", map_cards, map_figures)
+    else:
+        sections_by_name["Maps"] = f"<section><h2>Maps</h2><p>{escape(str(map_section['error']))}</p></section>"
+
+    ordered_names = ["Maps", "RTC", "PTC"]
+    ordered_sections: list[str] = []
+    include_plotlyjs: str | bool = "inline"
+    for name in ordered_names:
+        section_value = sections_by_name.get(name, "")
+        if isinstance(section_value, tuple):
+            note, cards_html, figures = section_value
+            ordered_sections.append(_section_html(name, note, cards_html, figures, include_plotlyjs))
+            include_plotlyjs = False
+        else:
+            ordered_sections.append(section_value)
+
+    html_text = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Citlali Diagnostics Snapshot</title>
+  <style>
+    body {{
+      margin: 0;
+      padding: 24px;
+      background: linear-gradient(180deg, #fbfaf6 0%, #f1eee6 100%);
+      color: #1e1c17;
+      font-family: Georgia, 'Iowan Old Style', 'Palatino Linotype', serif;
+    }}
+    h1, h2 {{ margin: 0 0 12px 0; }}
+    .page-note {{ margin: 0 0 24px 0; font-size: 15px; line-height: 1.5; }}
+    section {{ margin-bottom: 28px; }}
+    .section-note {{ margin: 0 0 16px 0; font-size: 15px; line-height: 1.5; }}
+    .metric-grid {{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }}
+    .metric-card {{
+      background: linear-gradient(135deg, #fffef9 0%, #f3efe2 100%);
+      border: 1px solid #d9d1bc;
+      border-radius: 14px;
+      padding: 14px;
+      min-height: 96px;
+    }}
+    .metric-title {{ font-size: 14px; letter-spacing: 0.04em; text-transform: uppercase; color: #6f6248; margin-bottom: 12px; }}
+    .metric-value {{ font-size: 32px; font-weight: 700; color: #1e1c17; margin-bottom: 8px; }}
+    .metric-note {{ font-size: 14px; line-height: 1.4; color: #5c5446; }}
+    .figure-grid {{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
+      gap: 16px;
+    }}
+    .figure-panel {{
+      background: #fffdf8;
+      border: 1px solid #ddd7c9;
+      border-radius: 14px;
+      padding: 14px 16px;
+      box-shadow: 0 10px 28px rgba(70, 56, 24, 0.07);
+      overflow: hidden;
+    }}
+  </style>
+</head>
+<body>
+  <h1>Citlali Diagnostics Snapshot</h1>
+  <p class="page-note">
+    Reduction: <code>{escape(str(Path(args.redu_dir).expanduser().resolve()))}</code><br>
+    Array: <code>{escape(args.array)}</code><br>
+    This is a static export of the default dashboard views. It is shareable, but not interactive like the live Dash app.
+  </p>
+  {''.join(ordered_sections)}
+</body>
+</html>
+"""
+    outpath.write_text(html_text)
+    return outpath
 
 
 def build_ptc_obs_rank_figure(obs_df: pd.DataFrame) -> go.Figure:
@@ -649,6 +868,7 @@ def build_map_contrib_figure(contrib_df: pd.DataFrame, map_selector: str, stage:
         title=f"{map_selector} [{stage}]: coadd observation contribution",
         xaxis_title="coadd contribution (%)",
         yaxis_title="observation",
+        height=460,
         margin={"l": 100, "r": 30, "t": 70, "b": 60},
         legend={"orientation": "h", "yanchor": "bottom", "y": 1.02, "x": 0},
     )
@@ -696,8 +916,10 @@ def build_map_obs_rank_figure(map_df: pd.DataFrame, contrib_df: pd.DataFrame, ma
     coadd_rows = map_df.loc[
         (map_df["map_selector"] == map_selector) & (map_df["is_coadd"] == 1) & (map_df["stage"] == stage)
     ]
+    x_limit_ref = 10.0
     if not coadd_rows.empty:
         coadd_peak = float(_map_peak_series(coadd_rows).iloc[0])
+        x_limit_ref = coadd_peak
         fig.add_vline(
             x=coadd_peak,
             line={"color": "#bc4749", "width": 2, "dash": "dash"},
@@ -708,8 +930,10 @@ def build_map_obs_rank_figure(map_df: pd.DataFrame, contrib_df: pd.DataFrame, ma
         title=f"{map_selector}: observation map ranking by core peak |S/N|",
         xaxis_title="core peak |signal-to-noise|",
         yaxis_title="observation",
+        height=460,
         margin={"l": 90, "r": 40, "t": 70, "b": 60},
     )
+    fig.update_xaxes(range=[0.0, max(1.1 * x_limit_ref, 10.0)])
     return style_figure(fig)
 
 
@@ -753,19 +977,25 @@ def build_map_contrib_scatter_figure(map_df: pd.DataFrame, contrib_df: pd.DataFr
         (map_df["map_selector"] == map_selector) & (map_df["is_coadd"] == 1) & (map_df["stage"] == stage)
     ]
     if not coadd_rows.empty:
+        coadd_core_peak = float(_map_peak_series(coadd_rows).iloc[0])
         fig.add_hline(
-            y=float(_map_peak_series(coadd_rows).iloc[0]),
+            y=coadd_core_peak,
             line={"color": "#bc4749", "width": 2, "dash": "dash"},
-            annotation_text=f"coadd core peak {_format_number(_map_peak_series(coadd_rows).iloc[0], 2)}",
+            annotation_text=f"coadd core peak {_format_number(coadd_core_peak, 2)}",
             annotation_position="top right",
         )
+        y_max = max(1.1 * coadd_core_peak, 10.0)
+    else:
+        y_max = 10.0
     fig.update_layout(
         title=f"{map_selector} [{stage}]: contribution versus observation core peak",
         xaxis_title="core coadd contribution (%)",
         yaxis_title="observation core peak |signal-to-noise|",
+        height=560,
         margin={"l": 70, "r": 70, "t": 70, "b": 60},
     )
     fig.update_xaxes(ticksuffix="%")
+    fig.update_yaxes(range=[0.0, y_max])
     return style_figure(fig)
 
 
@@ -1006,6 +1236,10 @@ def build_map_tab(section: dict[str, object]) -> html.Div:
         contrib_df.loc[contrib_df["map_selector"] == default_selector, "stage"].drop_duplicates().tolist()
     )
     default_stage = coadd_stage_options[0] if coadd_stage_options else "raw_coadd"
+    initial_contrib_figure = build_map_contrib_figure(contrib_df, default_selector, default_stage)
+    initial_obs_rank_figure = build_map_obs_rank_figure(map_df, contrib_df, default_selector, default_stage)
+    initial_scatter_figure = build_map_contrib_scatter_figure(map_df, contrib_df, default_selector, default_stage)
+    initial_detail_panel = build_map_detail_panel(map_df, contrib_df, default_selector, default_stage)
     return html.Div(
         [
             rtc_dash.section_help(
@@ -1016,22 +1250,22 @@ def build_map_tab(section: dict[str, object]) -> html.Div:
             html.Div(
                 [
                     html.Div([html.Label("Map"), dcc.Dropdown(id="map-selector-dropdown", options=[{"label": value, "value": value} for value in map_selectors], value=default_selector, clearable=False)], style={"minWidth": "260px", "flex": "1 1 260px"}),
-                    html.Div([html.Label("Coadd Stage"), dcc.Dropdown(id="map-stage-dropdown", value=default_stage, clearable=False)], style={"width": "220px"}),
+                    html.Div([html.Label("Coadd Stage"), dcc.Dropdown(id="map-stage-dropdown", options=[{"label": stage, "value": stage} for stage in coadd_stage_options] if coadd_stage_options else [{"label": default_stage, "value": default_stage}], value=default_stage, clearable=False)], style={"width": "220px"}),
                 ],
                 style={**rtc_dash.PANEL_STYLE, "display": "flex", "gap": "16px", "marginBottom": "16px", "flexWrap": "wrap"},
             ),
             html.Div(
                 [
-                    html.Div(dcc.Graph(id="map-contrib-figure", config=GRAPH_CONFIG), style=rtc_dash.PANEL_STYLE),
-                    html.Div(dcc.Graph(id="map-obs-rank-figure", config=GRAPH_CONFIG), style=rtc_dash.PANEL_STYLE),
+                    html.Div(dcc.Graph(id="map-contrib-figure", figure=initial_contrib_figure, config=GRAPH_CONFIG), style=rtc_dash.PANEL_STYLE),
+                    html.Div(dcc.Graph(id="map-obs-rank-figure", figure=initial_obs_rank_figure, config=GRAPH_CONFIG), style=rtc_dash.PANEL_STYLE),
                 ],
                 style={"display": "grid", "gridTemplateColumns": "repeat(auto-fit, minmax(520px, 1fr))", "gap": "16px"},
             ),
             html.Div(
-                [html.Div(dcc.Graph(id="map-scatter-figure", config=GRAPH_CONFIG), style=rtc_dash.PANEL_STYLE)],
+                [html.Div(dcc.Graph(id="map-scatter-figure", figure=initial_scatter_figure, config=GRAPH_CONFIG), style=rtc_dash.PANEL_STYLE)],
                 style={"display": "grid", "gridTemplateColumns": "minmax(520px, 1fr)", "gap": "16px"},
             ),
-            html.Div(id="map-detail-panel"),
+            html.Div(id="map-detail-panel", children=initial_detail_panel),
         ]
     )
 
@@ -1081,10 +1315,11 @@ Definitions:
             ),
             dcc.Tabs(
                 [
-                    dcc.Tab(label="RTC", children=[build_rtc_tab(bundle["rtc"])], style={"padding": "12px"}, selected_style={"padding": "12px", "fontWeight": "bold"}),
-                    dcc.Tab(label="PTC", children=[build_ptc_tab(bundle["ptc"])], style={"padding": "12px"}, selected_style={"padding": "12px", "fontWeight": "bold"}),
-                    dcc.Tab(label="Maps", children=[build_map_tab(bundle["map"])], style={"padding": "12px"}, selected_style={"padding": "12px", "fontWeight": "bold"}),
-                ]
+                    dcc.Tab(label="RTC", value="rtc", children=[build_rtc_tab(bundle["rtc"])], style={"padding": "12px"}, selected_style={"padding": "12px", "fontWeight": "bold"}),
+                    dcc.Tab(label="PTC", value="ptc", children=[build_ptc_tab(bundle["ptc"])], style={"padding": "12px"}, selected_style={"padding": "12px", "fontWeight": "bold"}),
+                    dcc.Tab(label="Maps", value="map", children=[build_map_tab(bundle["map"])], style={"padding": "12px"}, selected_style={"padding": "12px", "fontWeight": "bold"}),
+                ],
+                value="map",
             ),
         ],
         style=rtc_dash.PAGE_STYLE,
@@ -1205,6 +1440,17 @@ Definitions:
 
 def main() -> None:
     args = parse_args()
+    bundle = load_bundle(args)
+    if args.write_html or args.html_only:
+        outpath = (
+            Path(args.html_out).expanduser().resolve()
+            if args.html_out
+            else Path(args.redu_dir).expanduser().resolve() / f"citlali_diagnostics_{args.array}.html"
+        )
+        written = write_static_html_report(bundle, args, outpath)
+        print(f"Wrote {written}")
+        if args.html_only:
+            return
     app = build_app(args)
     app.run(host=args.host, port=args.port, debug=args.debug)
 
