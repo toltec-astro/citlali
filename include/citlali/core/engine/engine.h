@@ -4350,6 +4350,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     std::vector<double> coverage_median_core(n_maps_local, fill_double);
     std::vector<double> peak_signal(n_maps_local, fill_double);
     std::vector<double> peak_abs_sig2noise(n_maps_local, fill_double);
+    std::vector<double> core_peak_abs_sig2noise(n_maps_local, fill_double);
     std::vector<int> n_valid_pixels(n_maps_local, 0);
     std::vector<int> n_core_pixels(n_maps_local, 0);
     std::vector<int> peak_row(n_maps_local, fill_int);
@@ -4460,6 +4461,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             peak_abs_sig2noise[idx] = sig2noise.cwiseAbs().maxCoeff(&r_peak, &c_peak);
             peak_row[idx] = static_cast<int>(r_peak);
             peak_col[idx] = static_cast<int>(c_peak);
+            if (n_core_pixels[idx] > 0) {
+                const Eigen::MatrixXd core_sig2noise = (sig2noise.cwiseAbs().array() * core_mask).matrix();
+                core_peak_abs_sig2noise[idx] = core_sig2noise.maxCoeff();
+            }
         }
 
         if (!is_coadd) {
@@ -4585,6 +4590,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     add_map_double("map_core_coverage_median", "median coverage over the core support; NaN if no coverage map exists", coverage_median_core);
     add_map_double("map_peak_signal", "maximum signal value in the map", peak_signal);
     add_map_double("map_peak_abs_sig2noise", "maximum absolute signal-to-noise value in the map", peak_abs_sig2noise);
+    add_map_double("map_core_peak_abs_sig2noise", "maximum absolute signal-to-noise value over pixels with weight >= map_weight_threshold", core_peak_abs_sig2noise);
     add_map_int("map_n_valid_pixels", "count of pixels with strictly positive weight", n_valid_pixels);
     add_map_int("map_n_core_pixels", "count of pixels with weight >= map_weight_threshold", n_core_pixels);
     add_map_int("map_peak_row", "row index of the maximum absolute signal-to-noise pixel", peak_row);

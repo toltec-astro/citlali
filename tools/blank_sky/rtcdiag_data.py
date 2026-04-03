@@ -151,9 +151,11 @@ def build_obs_summary(
         "max_impulsive_event_score": nanmax(impulsive_scores),
         "masked_network_scans": int(np.count_nonzero(mask_flags != 0)),
         "masked_fraction_sum": float(np.nansum(mask_fracs)),
+        "masked_fraction_overall": float(np.nan_to_num(mask_fracs, nan=0.0).mean()) if mask_fracs.size else float("nan"),
         "masked_fraction_mean": nanmean(mask_fracs[mask_flags != 0]) if np.count_nonzero(mask_flags != 0) else float("nan"),
         "impulsive_masked_network_scans": int(np.count_nonzero(impulsive_mask_flags != 0)),
         "impulsive_masked_fraction_sum": float(np.nansum(impulsive_mask_fracs)),
+        "impulsive_masked_fraction_overall": float(np.nan_to_num(impulsive_mask_fracs, nan=0.0).mean()) if impulsive_mask_fracs.size else float("nan"),
         "impulsive_masked_fraction_mean": nanmean(impulsive_mask_fracs[impulsive_mask_flags != 0]) if np.count_nonzero(impulsive_mask_flags != 0) else float("nan"),
         "impulsive_candidate_network_scans": int(np.count_nonzero(impulsive_candidate_flags != 0)),
         "impulsive_cross_trigger_network_scans": int(np.count_nonzero(impulsive_cross_flags != 0)),
@@ -176,6 +178,7 @@ def make_network_summary(obs_network_rows: list[dict[str, object]]) -> list[dict
             {
                 "network": nw,
                 "n_obsnums": len(rr),
+                "total_n_scans": int(sum(int(row["n_scans"]) for row in rr)),
                 "median_max_step_det_frac": nanmedian([float(row["max_step_det_frac"]) for row in rr]),
                 "max_max_step_det_frac": nanmax([float(row["max_step_det_frac"]) for row in rr]),
                 "median_mean_cm_lowmid": nanmedian([float(row["mean_cm_lowmid"]) for row in rr]),
@@ -183,8 +186,18 @@ def make_network_summary(obs_network_rows: list[dict[str, object]]) -> list[dict
                 "median_impulsive_frac_ge_threshold": nanmedian([float(row["impulsive_frac_ge_threshold"]) for row in rr]),
                 "max_impulsive_frac_ge_threshold": nanmax([float(row["impulsive_frac_ge_threshold"]) for row in rr]),
                 "total_masked_network_scans": int(sum(int(row["masked_scans"]) for row in rr)),
+                "total_masked_fraction_sum": float(sum(float(row["masked_fraction_sum"]) for row in rr)),
+                "masked_fraction_overall": float(
+                    sum(float(row["masked_fraction_sum"]) for row in rr) /
+                    max(sum(int(row["n_scans"]) for row in rr), 1)
+                ),
                 "obsnums_with_masked_scans": int(sum(int(row["masked_scans"]) > 0 for row in rr)),
                 "total_impulsive_masked_network_scans": int(sum(int(row.get("impulsive_masked_scans", 0)) for row in rr)),
+                "total_impulsive_masked_fraction_sum": float(sum(float(row.get("impulsive_masked_fraction_sum", 0.0)) for row in rr)),
+                "impulsive_masked_fraction_overall": float(
+                    sum(float(row.get("impulsive_masked_fraction_sum", 0.0)) for row in rr) /
+                    max(sum(int(row["n_scans"]) for row in rr), 1)
+                ),
                 "obsnums_with_impulsive_masked_scans": int(sum(int(row.get("impulsive_masked_scans", 0)) > 0 for row in rr)),
                 "total_impulsive_candidate_scans": int(sum(int(row.get("impulsive_candidate_scans", 0)) for row in rr)),
                 "total_impulsive_cross_trigger_scans": int(sum(int(row.get("impulsive_cross_trigger_scans", 0)) for row in rr)),
@@ -456,8 +469,10 @@ def load_reduction_tables(
                             if nw_imp.size and np.isfinite(nw_imp).any() else float("nan"),
                         "masked_scans": int(np.count_nonzero(step_mask_applied[:, diag_idx] != 0)),
                         "masked_fraction_sum": float(np.nansum(step_mask_flagfrac[:, diag_idx])),
+                        "masked_fraction_overall": float(np.nan_to_num(step_mask_flagfrac[:, diag_idx], nan=0.0).mean()) if n_scans else float("nan"),
                         "impulsive_masked_scans": int(np.count_nonzero(impulsive_mask_applied[:, diag_idx] != 0)),
                         "impulsive_masked_fraction_sum": float(np.nansum(impulsive_mask_flagfrac[:, diag_idx])),
+                        "impulsive_masked_fraction_overall": float(np.nan_to_num(impulsive_mask_flagfrac[:, diag_idx], nan=0.0).mean()) if n_scans else float("nan"),
                         "impulsive_candidate_scans": int(np.count_nonzero(impulsive_mask_candidate_available[:, diag_idx] != 0)),
                         "impulsive_cross_trigger_scans": int(np.count_nonzero(impulsive_mask_cross_network_trigger[:, diag_idx] != 0)),
                         "impulsive_override_trigger_scans": int(np.count_nonzero(impulsive_mask_high_score_override_trigger[:, diag_idx] != 0)),

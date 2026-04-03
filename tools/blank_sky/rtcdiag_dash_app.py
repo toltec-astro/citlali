@@ -14,6 +14,7 @@ except ModuleNotFoundError as exc:
     ) from exc
 
 import pandas as pd
+import numpy as np
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
@@ -193,12 +194,44 @@ def format_count(value: object) -> str:
     return f"{int(round(number))}"
 
 
+def format_fraction_pct(value: object, ndigits: int = 1) -> str:
+    number = safe_float(value)
+    if number is None:
+        return "n/a"
+    return f"{number * 100.0:.{ndigits}f}%"
+
+
+def flagged_axis_limit(values: list[float]) -> float:
+    finite = [float(v) for v in values if pd.notna(v)]
+    if not finite:
+        return 1.0
+    max_value = max(finite)
+    if max_value <= 1.0:
+        return 1.0
+    if max_value <= 2.0:
+        return 2.5
+    if max_value <= 3.0:
+        return 4.0
+    if max_value <= 5.0:
+        return 6.0
+    return min(12.0, max_value * 1.25)
+
+
 def metric_card(title: str, value: str, note: str, accent: str = "#5b4b2a"):
     return html.Div(
         [
             html.Div(title, style={"fontSize": "12px", "letterSpacing": "0.06em", "textTransform": "uppercase", "color": "#695f49"}),
             html.Div(value, style={"fontSize": "34px", "lineHeight": "1.0", "fontWeight": "bold", "margin": "10px 0 6px 0"}),
-            html.Div(note, style={"fontSize": "13px", "color": "#5f5644", "lineHeight": "1.35"}),
+            html.Div(
+                note,
+                style={
+                    "fontSize": "13px",
+                    "color": "#5f5644",
+                    "lineHeight": "1.35",
+                    "overflowWrap": "anywhere",
+                    "wordBreak": "break-word",
+                },
+            ),
         ],
         style={**CARD_STYLE, "borderTop": f"4px solid {accent}"},
     )
@@ -242,16 +275,20 @@ def style_figure(fig: go.Figure) -> go.Figure:
 def build_heatmap(scan_df: pd.DataFrame, obsnum: str) -> go.Figure:
     obs_df = scan_df.loc[scan_df["obsnum"] == obsnum].copy()
     if obs_df.empty:
-        return empty_figure(f"No scan/network rows for obsnum {obsnum}")
+        return empty_figure(f"No timechunk/network summaries for observation {obsnum}")
 
-    obs_df["label"] = obs_df.apply(
+    obs_df["step_flagged_pct"] = pd.to_numeric(obs_df["step_mask_flagged_fraction"], errors="coerce").fillna(0.0) * 100.0
+    obs_df["imp_flagged_pct"] = pd.to_numeric(obs_df["impulsive_mask_flagged_fraction"], errors="coerce").fillna(0.0) * 100.0
+    obs_df["hover_label"] = obs_df.apply(
         lambda row: (
-            f"scan={int(row['output_scan_index'])}"
+            f"timechunk={int(row['output_scan_index'])}"
             f"<br>nw={int(row['network'])}"
+            f"<br>step flagged={row['step_flagged_pct']:.2f}%"
+            f"<br>impulsive flagged={row['imp_flagged_pct']:.2f}%"
             f"<br>severity={row['row_severity']:.3f}"
             f"<br>step_det={row['step_det_frac']:.4f}"
             f"<br>imp_score={row['network_impulsive_score_max']:.3f}"
-            f"<br>slot={row['max_slot_event_score']:.3f}"
+            f"<br>event={row['max_slot_event_score']:.3f}"
             f"<br>step_mask={int(row['step_mask_applied'])}"
             f"<br>imp_mask={int(row['impulsive_mask_applied'])}"
             f"<br>cand={int(row.get('impulsive_mask_candidate_available', 0))}"
@@ -265,270 +302,554 @@ def build_heatmap(scan_df: pd.DataFrame, obsnum: str) -> go.Figure:
         ),
         axis=1,
     )
-    pivot = obs_df.pivot(index="network", columns="output_scan_index", values="row_severity").sort_index()
-    hover = obs_df.pivot(index="network", columns="output_scan_index", values="label").sort_index()
-    fig = go.Figure(
-        data=go.Heatmap(
-            x=pivot.columns.tolist(),
-            y=pivot.index.tolist(),
-            z=pivot.values,
+    step_pivot = obs_df.pivot(index="network", columns="output_scan_index", values="step_flagged_pct").sort_index()
+    imp_pivot = obs_df.pivot(index="network", columns="output_scan_index", values="imp_flagged_pct").sort_index()
+    hover = obs_df.pivot(index="network", columns="output_scan_index", values="hover_label").sort_index()
+    step_zmax = max(float(np.nanmax(step_pivot.values)) if np.isfinite(step_pivot.values).any() else 0.0, 10.0)
+    imp_zmax = max(float(np.nanmax(imp_pivot.values)) if np.isfinite(imp_pivot.values).any() else 0.0, 5.0)
+    fig = make_subplots(
+        rows=2,
+        cols=1,
+        shared_xaxes=True,
+        vertical_spacing=0.10,
+        subplot_titles=("Step flagged fraction (%)", "Impulsive flagged fraction (%)"),
+    )
+    fig.add_trace(
+        go.Heatmap(
+            x=step_pivot.columns.tolist(),
+            y=step_pivot.index.tolist(),
+            z=step_pivot.values,
             text=hover.values,
             hovertemplate="%{text}<extra></extra>",
-            colorscale="YlOrRd",
-            colorbar={"title": "severity"},
-        )
+            colorscale="Blues",
+            zmin=0.0,
+            zmax=step_zmax,
+            colorbar={"title": "step %", "len": 0.38, "y": 0.79},
+        ),
+        row=1,
+        col=1,
+    )
+    fig.add_trace(
+        go.Heatmap(
+            x=imp_pivot.columns.tolist(),
+            y=imp_pivot.index.tolist(),
+            z=imp_pivot.values,
+            text=hover.values,
+            hovertemplate="%{text}<extra></extra>",
+            colorscale="Oranges",
+            zmin=0.0,
+            zmax=imp_zmax,
+            colorbar={"title": "imp %", "len": 0.38, "y": 0.21},
+        ),
+        row=2,
+        col=1,
     )
     fig.update_layout(
-        title=f"Obsnum {obsnum}: scan/network severity",
-        xaxis_title="output scan",
-        yaxis_title="network",
-        margin={"l": 60, "r": 30, "t": 50, "b": 50},
+        title=f"Observation {obsnum}: RTC flagged fraction by timechunk/network",
+        margin={"l": 60, "r": 70, "t": 72, "b": 50},
+        height=700,
     )
+    fig.update_xaxes(title_text="timechunk", row=2, col=1)
+    fig.update_yaxes(title_text="network", row=1, col=1)
+    fig.update_yaxes(title_text="network", row=2, col=1)
     return style_figure(fig)
 
 
 def build_network_trend(scan_df: pd.DataFrame, obsnum: str, network: int) -> go.Figure:
     df = scan_df.loc[(scan_df["obsnum"] == obsnum) & (scan_df["network"] == network)].copy()
-    fig = make_subplots(specs=[[{"secondary_y": True}]])
+    fig = make_subplots(
+        rows=3,
+        cols=1,
+        shared_xaxes=True,
+        vertical_spacing=0.08,
+        specs=[[{"secondary_y": False}], [{"secondary_y": False}], [{"secondary_y": True}]],
+        subplot_titles=("Step flagged fraction (%)", "Impulsive flagged fraction (%)", "Supporting diagnostics"),
+    )
     if df.empty:
-        fig.update_layout(title=f"No scan rows for obsnum {obsnum} network {network}")
+        fig.update_layout(title=f"No timechunk summaries for observation {obsnum} network {network}")
         return style_figure(fig)
 
     x = df["output_scan_index"]
+    step_flagged_pct = pd.to_numeric(df["step_mask_flagged_fraction"], errors="coerce").fillna(0.0) * 100.0
+    imp_flagged_pct = pd.to_numeric(df["impulsive_mask_flagged_fraction"], errors="coerce").fillna(0.0) * 100.0
+    step_pct_max = max(float(step_flagged_pct.max()) if len(step_flagged_pct) else 0.0, 1.0) * 1.10
+    imp_pct_max = max(float(imp_flagged_pct.max()) if len(imp_flagged_pct) else 0.0, 0.25) * 1.15
+    score_max = max(
+        float(pd.to_numeric(df["network_impulsive_score_max"], errors="coerce").max() or 0.0),
+        float(pd.to_numeric(df["max_slot_event_score"], errors="coerce").max() or 0.0),
+        float(pd.to_numeric(df["row_severity"], errors="coerce").max() or 0.0),
+        1.0,
+    )
+
     fig.add_trace(
-        go.Scatter(x=x, y=df["row_severity"], name="row_severity", mode="lines+markers", line={"color": "#8b1e3f"}),
+        go.Bar(
+            x=x,
+            y=step_flagged_pct,
+            name="step flagged %",
+            marker={"color": "#355070"},
+            opacity=0.80,
+            showlegend=False,
+            customdata=df[["row_severity"]].values,
+            hovertemplate=(
+                "timechunk=%{x}<br>step flagged=%{y:.2f}%"
+                "<br>severity=%{customdata[0]:.3f}<extra></extra>"
+            ),
+        ),
+        row=1,
+        col=1,
+    )
+    fig.add_trace(
+        go.Bar(
+            x=x,
+            y=imp_flagged_pct,
+            name="impulsive flagged %",
+            marker={"color": "#d76a03"},
+            opacity=0.80,
+            showlegend=False,
+            customdata=df[["row_severity"]].values,
+            hovertemplate=(
+                "timechunk=%{x}<br>impulsive flagged=%{y:.2f}%"
+                "<br>severity=%{customdata[0]:.3f}<extra></extra>"
+            ),
+        ),
+        row=2,
+        col=1,
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=x,
+            y=df["step_det_frac"],
+            name="step detector fraction",
+            mode="lines",
+            line={"color": "#4c956c", "width": 3},
+            hovertemplate="timechunk=%{x}<br>step detector fraction=%{y:.3f}<extra></extra>",
+        ),
+        row=3,
+        col=1,
         secondary_y=False,
     )
     fig.add_trace(
-        go.Scatter(x=x, y=df["network_impulsive_score_max"], name="imp_score_max", mode="lines", line={"color": "#d76a03"}),
+        go.Scatter(
+            x=x,
+            y=df["step_alignment_frac"],
+            name="step alignment fraction",
+            mode="lines",
+            line={"color": "#2c7da0", "width": 3},
+            hovertemplate="timechunk=%{x}<br>step alignment fraction=%{y:.3f}<extra></extra>",
+        ),
+        row=3,
+        col=1,
         secondary_y=False,
     )
     fig.add_trace(
-        go.Scatter(x=x, y=df["max_slot_event_score"], name="slot_score_max", mode="lines", line={"color": "#355070"}),
-        secondary_y=False,
-    )
-    fig.add_trace(
-        go.Scatter(x=x, y=df["step_det_frac"], name="step_det_frac", mode="lines", line={"color": "#4c956c"}),
-        secondary_y=True,
-    )
-    fig.add_trace(
-        go.Scatter(x=x, y=df["step_alignment_frac"], name="step_alignment_frac", mode="lines", line={"color": "#2c7da0"}),
+        go.Scatter(
+            x=x,
+            y=df["network_impulsive_score_max"],
+            name="network impulsive score",
+            mode="lines+markers",
+            line={"color": "#d76a03", "width": 2},
+            hovertemplate="timechunk=%{x}<br>network impulsive score=%{y:.2f}<extra></extra>",
+        ),
+        row=3,
+        col=1,
         secondary_y=True,
     )
     fig.add_trace(
         go.Scatter(
             x=x,
-            y=df["impulsive_mask_applied"],
-            name="imp_mask",
-            mode="markers",
-            marker={"symbol": "x", "size": 8, "color": "#d76a03"},
+            y=df["max_slot_event_score"],
+            name="captured event score",
+            mode="lines",
+            line={"color": "#355070", "width": 2},
+            hovertemplate="timechunk=%{x}<br>captured event score=%{y:.2f}<extra></extra>",
         ),
-        secondary_y=True,
-    )
-    fig.add_trace(
-        go.Scatter(
-            x=x,
-            y=df["step_mask_applied"],
-            name="step_mask",
-            mode="markers",
-            marker={"symbol": "cross", "size": 8, "color": "#355070"},
-        ),
+        row=3,
+        col=1,
         secondary_y=True,
     )
     fig.update_layout(
-        title=f"Obsnum {obsnum} network {network}: scan trends",
-        margin={"l": 60, "r": 60, "t": 50, "b": 50},
-        legend={"orientation": "h", "yanchor": "bottom", "y": 1.02, "x": 0},
+        title=f"Observation {obsnum} network {network}: timechunk diagnostics",
+        margin={"l": 60, "r": 70, "t": 84, "b": 110},
+        legend={
+            "orientation": "h",
+            "yanchor": "top",
+            "y": -0.18,
+            "x": 0,
+            "xanchor": "left",
+        },
+        height=980,
     )
-    fig.update_xaxes(title_text="output scan")
-    fig.update_yaxes(title_text="severity / score", secondary_y=False)
-    fig.update_yaxes(title_text="fraction / mask flag", secondary_y=True)
+    fig.update_xaxes(title_text="timechunk", row=3, col=1, showgrid=True, gridcolor="#e6e0d2")
+    fig.update_xaxes(showgrid=True, gridcolor="#efeadd", row=1, col=1)
+    fig.update_xaxes(showgrid=True, gridcolor="#efeadd", row=2, col=1)
+    fig.update_yaxes(title_text="step %", row=1, col=1, range=[0.0, step_pct_max], showgrid=True, gridcolor="#e6e0d2")
+    fig.update_yaxes(title_text="imp %", row=2, col=1, range=[0.0, imp_pct_max], showgrid=True, gridcolor="#e6e0d2")
+    fig.update_yaxes(
+        title_text="detector fraction (%)",
+        row=3,
+        col=1,
+        secondary_y=False,
+        range=[0.0, 1.0],
+        tickformat=".0%",
+        showgrid=True,
+        gridcolor="#e6e0d2",
+    )
+    fig.update_yaxes(title_text="score", row=3, col=1, secondary_y=True, range=[0.0, score_max * 1.10], showgrid=False)
     return style_figure(fig)
 
 
 def build_obs_rank_figure(obs_df: pd.DataFrame) -> go.Figure:
     if obs_df.empty:
-        return empty_figure("No obsnum rows")
-    view = obs_df.sort_values("max_row_severity", ascending=True).tail(18).copy()
-    fig = go.Figure(
-        go.Bar(
-            x=view["max_row_severity"],
+        return empty_figure("No observation summaries")
+    view = obs_df.copy()
+    view["sort_flagged_fraction"] = view[["masked_fraction_overall", "impulsive_masked_fraction_overall"]].fillna(0.0).max(axis=1)
+    view = view.sort_values("sort_flagged_fraction", ascending=True).tail(18)
+    x_max = flagged_axis_limit(
+        list(view["masked_fraction_overall"] * 100.0) +
+        list(view["impulsive_masked_fraction_overall"] * 100.0)
+    )
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(
+            x=view["masked_fraction_overall"] * 100.0,
             y=view["obsnum"],
-            orientation="h",
-            marker={
-                "color": view["impulsive_masked_network_scans"],
-                "colorscale": "YlOrBr",
-                "line": {"color": "#7b6740", "width": 1},
-                "colorbar": {"title": "imp masked"},
-            },
+            name="step",
+            mode="markers",
+            marker={"color": "#355070", "size": 13, "symbol": "circle", "line": {"color": "#27425a", "width": 1}},
             customdata=view[
                 [
-                    "max_step_det_frac",
-                    "max_cm_lowmid",
-                    "top_slot_event_score",
+                    "max_row_severity",
                     "masked_network_scans",
-                    "impulsive_masked_network_scans",
+                    "masked_fraction_mean",
+                    "top_slot_event_score",
                 ]
             ].values,
             hovertemplate=(
-                "obs=%{y}<br>severity=%{x:.3f}"
-                "<br>max_step_det=%{customdata[0]:.4f}"
-                "<br>max_cm_lowmid=%{customdata[1]:.3f}"
-                "<br>top_slot=%{customdata[2]:.3f}"
-                "<br>step_masked_rows=%{customdata[3]:.0f}"
-                "<br>imp_masked_rows=%{customdata[4]:.0f}<extra></extra>"
+                "obs=%{y}<br>overall step flagged=%{x:.2f}%"
+                "<br>fired summaries=%{customdata[1]:.0f}"
+                "<br>fired-summary mean=%{customdata[2]:.2%}"
+                "<br>worst severity=%{customdata[0]:.3f}"
+                "<br>top event score=%{customdata[3]:.1f}<extra></extra>"
+            ),
+        )
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=view["impulsive_masked_fraction_overall"] * 100.0,
+            y=view["obsnum"],
+            name="impulsive",
+            mode="markers",
+            marker={"color": "#d76a03", "size": 13, "symbol": "diamond", "line": {"color": "#ab5300", "width": 1}},
+            customdata=view[
+                [
+                    "max_row_severity",
+                    "impulsive_masked_network_scans",
+                    "impulsive_masked_fraction_mean",
+                    "top_slot_event_score",
+                ]
+            ].values,
+            hovertemplate=(
+                "obs=%{y}<br>overall impulsive flagged=%{x:.2f}%"
+                "<br>fired summaries=%{customdata[1]:.0f}"
+                "<br>fired-summary mean=%{customdata[2]:.2%}"
+                "<br>worst severity=%{customdata[0]:.3f}"
+                "<br>top event score=%{customdata[3]:.1f}<extra></extra>"
             ),
         )
     )
     fig.update_layout(
-        title="Obsnum ranking by worst scan/network severity",
-        xaxis_title="max row severity",
-        yaxis_title="obsnum",
-        margin={"l": 70, "r": 30, "t": 50, "b": 50},
+        title={
+            "text": "Observation ranking by overall RTC flagged fraction",
+            "x": 0.0,
+            "xanchor": "left",
+            "y": 0.98,
+            "yanchor": "top",
+            "pad": {"b": 18},
+        },
+        xaxis_title="overall flagged fraction (%)",
+        yaxis_title="observation",
+        legend={"orientation": "h", "yanchor": "bottom", "y": 1.03, "x": 0},
+        margin={"l": 70, "r": 30, "t": 96, "b": 50},
+        xaxis={"range": [0.0, x_max]},
     )
+    for xref in (0.5, 1.0, 2.0, 5.0, 10.0):
+        if xref > x_max:
+            continue
+        fig.add_vline(x=xref, line_width=1, line_dash="dot", line_color="#b8b1a0")
     return style_figure(fig)
 
 
 def build_network_rank_figure(by_network_df: pd.DataFrame) -> go.Figure:
     if by_network_df.empty:
         return empty_figure("No network summary rows")
-    view = by_network_df.sort_values("max_row_severity", ascending=True).copy()
-    fig = go.Figure(
-        go.Bar(
-            x=view["max_row_severity"],
-            y=[f"nw{int(nw)}" for nw in view["network"]],
-            orientation="h",
-            marker={
-                "color": view["total_impulsive_masked_network_scans"],
-                "colorscale": "Sunsetdark",
-                "line": {"color": "#5b4324", "width": 1},
-                "colorbar": {"title": "imp masked"},
-            },
+    view = by_network_df.copy()
+    view["sort_flagged_fraction"] = view[["masked_fraction_overall", "impulsive_masked_fraction_overall"]].fillna(0.0).max(axis=1)
+    view = view.sort_values("sort_flagged_fraction", ascending=True)
+    labels = [f"nw{int(nw)}" for nw in view["network"]]
+    x_max = flagged_axis_limit(
+        list(view["masked_fraction_overall"] * 100.0) +
+        list(view["impulsive_masked_fraction_overall"] * 100.0)
+    )
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(
+            x=view["masked_fraction_overall"] * 100.0,
+            y=labels,
+            name="step",
+            mode="markers",
+            marker={"color": "#355070", "size": 13, "symbol": "circle", "line": {"color": "#27425a", "width": 1}},
             customdata=view[
                 [
-                    "max_max_step_det_frac",
-                    "max_max_cm_lowmid",
-                    "max_slot_event_score",
+                    "max_row_severity",
+                    "total_masked_network_scans",
                     "worst_obsnum",
+                    "max_slot_event_score",
                 ]
             ].values,
             hovertemplate=(
-                "network=%{y}<br>severity=%{x:.3f}"
-                "<br>max_step_det=%{customdata[0]:.4f}"
-                "<br>max_cm_lowmid=%{customdata[1]:.3f}"
-                "<br>top_slot=%{customdata[2]:.3f}"
-                "<br>worst_obs=%{customdata[3]}<extra></extra>"
+                "network=%{y}<br>overall step flagged=%{x:.2f}%"
+                "<br>fired summaries=%{customdata[1]:.0f}"
+                "<br>worst observation=%{customdata[2]}"
+                "<br>worst severity=%{customdata[0]:.3f}"
+                "<br>top event score=%{customdata[3]:.1f}<extra></extra>"
+            ),
+        )
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=view["impulsive_masked_fraction_overall"] * 100.0,
+            y=labels,
+            name="impulsive",
+            mode="markers",
+            marker={"color": "#d76a03", "size": 13, "symbol": "diamond", "line": {"color": "#ab5300", "width": 1}},
+            customdata=view[
+                [
+                    "max_row_severity",
+                    "total_impulsive_masked_network_scans",
+                    "worst_obsnum",
+                    "max_slot_event_score",
+                ]
+            ].values,
+            hovertemplate=(
+                "network=%{y}<br>overall impulsive flagged=%{x:.2f}%"
+                "<br>fired summaries=%{customdata[1]:.0f}"
+                "<br>worst observation=%{customdata[2]}"
+                "<br>worst severity=%{customdata[0]:.3f}"
+                "<br>top event score=%{customdata[3]:.1f}<extra></extra>"
             ),
         )
     )
     fig.update_layout(
-        title="Network ranking across the selected reduction",
-        xaxis_title="max row severity",
+        title={
+            "text": "Network ranking by overall RTC flagged fraction",
+            "x": 0.0,
+            "xanchor": "left",
+            "y": 0.98,
+            "yanchor": "top",
+            "pad": {"b": 18},
+        },
+        xaxis_title="overall flagged fraction (%)",
         yaxis_title="network",
-        margin={"l": 70, "r": 30, "t": 50, "b": 50},
+        legend={"orientation": "h", "yanchor": "bottom", "y": 1.03, "x": 0},
+        margin={"l": 70, "r": 30, "t": 96, "b": 50},
+        xaxis={"range": [0.0, x_max]},
     )
+    for xref in (0.5, 1.0, 2.0, 5.0, 10.0):
+        if xref > x_max:
+            continue
+        fig.add_vline(x=xref, line_width=1, line_dash="dot", line_color="#b8b1a0")
     return style_figure(fig)
 
 
 def build_obs_network_rank_figure(obs_network_view: pd.DataFrame, obsnum: str) -> go.Figure:
     if obs_network_view.empty:
-        return empty_figure(f"No network rows for obsnum {obsnum}")
-    view = obs_network_view.sort_values("max_row_severity", ascending=True).copy()
-    fig = go.Figure(
-        go.Bar(
-            x=view["max_row_severity"],
-            y=[f"nw{int(nw)}" for nw in view["network"]],
-            orientation="h",
-            marker={
-                "color": view["impulsive_masked_scans"],
-                "colorscale": "Tealgrn",
-                "line": {"color": "#416165", "width": 1},
-                "colorbar": {"title": "imp masked scans"},
-            },
+        return empty_figure(f"No network summaries for observation {obsnum}")
+    view = obs_network_view.copy()
+    view["masked_fraction_fired_mean"] = view.apply(
+        lambda row: (
+            float(row["masked_fraction_sum"]) / max(int(row["masked_scans"]), 1)
+            if int(row["masked_scans"]) > 0 else float("nan")
+        ),
+        axis=1,
+    )
+    view["impulsive_masked_fraction_fired_mean"] = view.apply(
+        lambda row: (
+            float(row["impulsive_masked_fraction_sum"]) / max(int(row["impulsive_masked_scans"]), 1)
+            if int(row["impulsive_masked_scans"]) > 0 else float("nan")
+        ),
+        axis=1,
+    )
+    view["sort_flagged_fraction"] = view[["masked_fraction_overall", "impulsive_masked_fraction_overall"]].fillna(0.0).max(axis=1)
+    view = view.sort_values("sort_flagged_fraction", ascending=True)
+    labels = [f"nw{int(nw)}" for nw in view["network"]]
+    x_max = flagged_axis_limit(
+        list(view["masked_fraction_overall"] * 100.0) +
+        list(view["impulsive_masked_fraction_overall"] * 100.0)
+    )
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(
+            x=view["masked_fraction_overall"] * 100.0,
+            y=labels,
+            name="step",
+            mode="markers",
+            marker={"color": "#355070", "size": 13, "symbol": "circle", "line": {"color": "#27425a", "width": 1}},
             customdata=view[
                 [
+                    "max_row_severity",
                     "masked_scans",
-                    "impulsive_masked_scans",
-                    "max_network_impulsive_score",
+                    "masked_fraction_fired_mean",
                     "top_slot_event_score",
                 ]
             ].values,
             hovertemplate=(
-                "network=%{y}<br>severity=%{x:.3f}"
-                "<br>step_masked_scans=%{customdata[0]:.0f}"
-                "<br>imp_masked_scans=%{customdata[1]:.0f}"
-                "<br>max_network_imp_score=%{customdata[2]:.3f}"
-                "<br>top_slot=%{customdata[3]:.3f}<extra></extra>"
+                "network=%{y}<br>observation-level step flagged=%{x:.2f}%"
+                "<br>fired timechunks=%{customdata[1]:.0f}"
+                "<br>fired-timechunk mean=%{customdata[2]:.2%}"
+                "<br>worst severity=%{customdata[0]:.3f}"
+                "<br>top event score=%{customdata[3]:.1f}<extra></extra>"
+            ),
+        )
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=view["impulsive_masked_fraction_overall"] * 100.0,
+            y=labels,
+            name="impulsive",
+            mode="markers",
+            marker={"color": "#d76a03", "size": 13, "symbol": "diamond", "line": {"color": "#ab5300", "width": 1}},
+            customdata=view[
+                [
+                    "max_row_severity",
+                    "impulsive_masked_scans",
+                    "impulsive_masked_fraction_fired_mean",
+                    "top_slot_event_score",
+                ]
+            ].values,
+            hovertemplate=(
+                "network=%{y}<br>observation-level impulsive flagged=%{x:.2f}%"
+                "<br>fired timechunks=%{customdata[1]:.0f}"
+                "<br>fired-timechunk mean=%{customdata[2]:.2%}"
+                "<br>worst severity=%{customdata[0]:.3f}"
+                "<br>top event score=%{customdata[3]:.1f}<extra></extra>"
             ),
         )
     )
     fig.update_layout(
-        title=f"Obsnum {obsnum}: network ranking",
-        xaxis_title="max row severity",
+        title={
+            "text": f"Observation {obsnum}: network ranking by flagged fraction",
+            "x": 0.0,
+            "xanchor": "left",
+            "y": 0.98,
+            "yanchor": "top",
+            "pad": {"b": 18},
+        },
+        xaxis_title="observation-level flagged fraction (%)",
         yaxis_title="network",
-        margin={"l": 70, "r": 30, "t": 50, "b": 50},
+        legend={"orientation": "h", "yanchor": "bottom", "y": 1.01, "x": 0},
+        margin={"l": 70, "r": 30, "t": 94, "b": 50},
+        xaxis={"range": [0.0, x_max]},
     )
+    for xref in (0.5, 1.0, 2.0, 5.0, 10.0):
+        if xref > x_max:
+            continue
+        fig.add_vline(x=xref, line_width=1, line_dash="dot", line_color="#b8b1a0")
     return style_figure(fig)
 
 
 def build_top_scan_figure(scan_view: pd.DataFrame, obsnum: str) -> go.Figure:
     if scan_view.empty:
-        return empty_figure(f"No scan rows for obsnum {obsnum}")
-    view = scan_view.sort_values("row_severity", ascending=False).head(18).copy()
+        return empty_figure(f"No timechunk summaries for observation {obsnum}")
+    view = scan_view.copy()
+    view["step_flagged_pct"] = pd.to_numeric(view["step_mask_flagged_fraction"], errors="coerce").fillna(0.0) * 100.0
+    view["imp_flagged_pct"] = pd.to_numeric(view["impulsive_mask_flagged_fraction"], errors="coerce").fillna(0.0) * 100.0
+    view["sort_flagged_pct"] = view[["step_flagged_pct", "imp_flagged_pct"]].max(axis=1)
+    view = view.sort_values("sort_flagged_pct", ascending=False).head(18).copy()
     view["row_label"] = view.apply(
-        lambda row: f"scan {int(row['output_scan_index'])} nw{int(row['network'])}", axis=1
+        lambda row: f"timechunk {int(row['output_scan_index'])} nw{int(row['network'])}", axis=1
     )
-    view["mask_state"] = view.apply(mask_state_label, axis=1)
-    view = view.sort_values("row_severity", ascending=True)
-
+    view = view.sort_values("sort_flagged_pct", ascending=True)
+    x_max = flagged_axis_limit(
+        list(view["step_flagged_pct"]) +
+        list(view["imp_flagged_pct"])
+    )
     fig = go.Figure()
-    for state, color in MASK_COLORS.items():
-        part = view.loc[view["mask_state"] == state]
-        if part.empty:
-            continue
-        fig.add_trace(
-            go.Bar(
-                x=part["row_severity"],
-                y=part["row_label"],
-                orientation="h",
-                name=state,
-                marker={"color": color},
-                customdata=part[
-                    [
-                        "step_det_frac",
-                        "step_alignment_frac",
-                        "network_impulsive_score_max",
-                        "max_slot_event_score",
-                        "impulsive_mask_cluster_network_count",
-                    ]
-                ].values,
-                hovertemplate=(
-                    "%{y}<br>severity=%{x:.3f}"
-                    "<br>step_det=%{customdata[0]:.4f}"
-                    "<br>step_align=%{customdata[1]:.4f}"
-                    "<br>imp_score=%{customdata[2]:.3f}"
-                    "<br>slot_score=%{customdata[3]:.3f}"
-                    "<br>cluster_nw=%{customdata[4]:.0f}<extra></extra>"
-                ),
-            )
+    fig.add_trace(
+        go.Scatter(
+            x=view["step_flagged_pct"],
+            y=view["row_label"],
+            name="step",
+            mode="markers",
+            marker={"color": "#355070", "size": 12, "symbol": "circle", "line": {"color": "#27425a", "width": 1}},
+            customdata=view[
+                [
+                    "row_severity",
+                    "step_det_frac",
+                    "step_alignment_frac",
+                    "max_slot_event_score",
+                ]
+            ].values,
+            hovertemplate=(
+                "%{y}<br>step flagged=%{x:.2f}%"
+                "<br>severity=%{customdata[0]:.3f}"
+                "<br>step detector fraction=%{customdata[1]:.2%}"
+                "<br>step alignment fraction=%{customdata[2]:.2%}"
+                "<br>captured event score=%{customdata[3]:.1f}<extra></extra>"
+            ),
         )
-    fig.update_layout(
-        title=f"Obsnum {obsnum}: highest-severity scan/network rows",
-        xaxis_title="row severity",
-        yaxis_title="scan / network row",
-        barmode="overlay",
-        legend={"orientation": "h", "yanchor": "bottom", "y": 1.02, "x": 0},
-        margin={"l": 110, "r": 30, "t": 50, "b": 50},
     )
+    fig.add_trace(
+        go.Scatter(
+            x=view["imp_flagged_pct"],
+            y=view["row_label"],
+            name="impulsive",
+            mode="markers",
+            marker={"color": "#d76a03", "size": 12, "symbol": "diamond", "line": {"color": "#ab5300", "width": 1}},
+            customdata=view[
+                [
+                    "row_severity",
+                    "network_impulsive_score_max",
+                    "max_slot_event_score",
+                    "impulsive_mask_cluster_network_count",
+                ]
+            ].values,
+            hovertemplate=(
+                "%{y}<br>impulsive flagged=%{x:.2f}%"
+                "<br>severity=%{customdata[0]:.3f}"
+                "<br>network impulsive score=%{customdata[1]:.2f}"
+                "<br>captured event score=%{customdata[2]:.1f}"
+                "<br>cluster networks=%{customdata[3]:.0f}<extra></extra>"
+            ),
+        )
+    )
+    fig.update_layout(
+        title={
+            "text": f"Observation {obsnum}: most-flagged timechunk/network summaries",
+            "x": 0.0,
+            "xanchor": "left",
+            "y": 0.98,
+            "yanchor": "top",
+            "pad": {"b": 18},
+        },
+        xaxis_title="flagged fraction (%)",
+        yaxis_title="timechunk / network summary",
+        legend={"orientation": "h", "yanchor": "bottom", "y": 1.01, "x": 0},
+        margin={"l": 110, "r": 30, "t": 94, "b": 50},
+        xaxis={"range": [0.0, x_max]},
+    )
+    for xref in (0.5, 1.0, 2.0, 5.0, 10.0):
+        if xref > x_max:
+            continue
+        fig.add_vline(x=xref, line_width=1, line_dash="dot", line_color="#b8b1a0")
     return style_figure(fig)
 
 
 def build_top_slot_figure(slot_view: pd.DataFrame, obsnum: str, network: int) -> go.Figure:
     if slot_view.empty:
-        return empty_figure(f"Obsnum {obsnum} network {network}: no stored impulsive slots")
+        return empty_figure(f"Observation {obsnum} network {network}: no captured impulsive events")
     view = slot_view.sort_values("event_score", ascending=False).head(20).copy()
     view["slot_label"] = view.apply(
-        lambda row: f"scan {int(row['output_scan_index'])} slot {int(row['slot'])} uid {int(row['apt_uid'])}",
+        lambda row: f"timechunk {int(row['output_scan_index'])} event {int(row['slot'])} uid {int(row['apt_uid'])}",
         axis=1,
     )
     view = view.sort_values("event_score", ascending=True)
@@ -547,16 +868,16 @@ def build_top_slot_figure(slot_view: pd.DataFrame, obsnum: str, network: int) ->
                 marker={"color": color},
                 customdata=part[["peak_abs_z", "peak_delta_abs_z"]].values,
                 hovertemplate=(
-                    "%{y}<br>event_score=%{x:.3f}"
-                    "<br>peak_abs_z=%{customdata[0]:.3f}"
-                    "<br>peak_delta_abs_z=%{customdata[1]:.3f}<extra></extra>"
+                    "%{y}<br>event score=%{x:.3f}"
+                    "<br>max raw abs-z=%{customdata[0]:.3f}"
+                    "<br>max delta abs-z=%{customdata[1]:.3f}<extra></extra>"
                 ),
             )
         )
     fig.update_layout(
-        title=f"Obsnum {obsnum} network {network}: top captured impulsive slots",
-        xaxis_title="event score",
-        yaxis_title="captured slot",
+        title=f"Observation {obsnum} network {network}: top captured impulsive events",
+        xaxis_title="event score = max(raw abs-z, delta abs-z)",
+        yaxis_title="captured event",
         legend={"orientation": "h", "yanchor": "bottom", "y": 1.02, "x": 0},
         margin={"l": 150, "r": 30, "t": 50, "b": 50},
     )
@@ -572,24 +893,42 @@ def build_overview_cards(
     worst_obs = obs_df.sort_values("max_row_severity", ascending=False).iloc[0]
     worst_network = by_network_df.sort_values("max_row_severity", ascending=False).iloc[0]
     top_slot = slot_df.sort_values("event_score", ascending=False).iloc[0] if not slot_df.empty else None
+    step_loss = pd.to_numeric(
+        scan_df.loc[scan_df["step_mask_applied"] != 0, "step_mask_flagged_fraction"],
+        errors="coerce",
+    )
+    imp_loss = pd.to_numeric(
+        scan_df.loc[scan_df["impulsive_mask_applied"] != 0, "impulsive_mask_flagged_fraction"],
+        errors="coerce",
+    )
+    step_loss_all = pd.to_numeric(scan_df["step_mask_flagged_fraction"], errors="coerce").fillna(0.0)
+    imp_loss_all = pd.to_numeric(scan_df["impulsive_mask_flagged_fraction"], errors="coerce").fillna(0.0)
+    step_loss_overall = float(step_loss_all.mean()) if len(step_loss_all) else float("nan")
+    imp_loss_overall = float(imp_loss_all.mean()) if len(imp_loss_all) else float("nan")
+    step_fire_frac = float((scan_df["step_mask_applied"] != 0).mean()) if len(scan_df) else float("nan")
+    imp_fire_frac = float((scan_df["impulsive_mask_applied"] != 0).mean()) if len(scan_df) else float("nan")
+    step_loss_mean = float(step_loss.mean()) if step_loss.notna().any() else float("nan")
+    step_loss_max = float(step_loss.max()) if step_loss.notna().any() else float("nan")
+    imp_loss_mean = float(imp_loss.mean()) if imp_loss.notna().any() else float("nan")
+    imp_loss_max = float(imp_loss.max()) if imp_loss.notna().any() else float("nan")
     return html.Div(
         [
-            metric_card("Obsnums", format_count(len(obs_df)), "distinct observations in this reduction", "#7c644a"),
-            metric_card("Rows", format_count(len(scan_df)), "scan x network summary rows", "#8f5536"),
+            metric_card("Observations", format_count(len(obs_df)), "distinct observations in this reduction", "#7c644a"),
+            metric_card("Timechunk-Network Summaries", format_count(len(scan_df)), "timechunk x network diagnostic summaries", "#8f5536"),
             metric_card(
-                "Step-Masked Rows",
-                format_count(scan_df["step_mask_applied"].sum()),
-                "rows where the RTC step path acted",
+                "Overall Step Flagged",
+                format_metric(step_loss_overall * 100.0, 1, "%"),
+                f"mask fired in {format_fraction_pct(step_fire_frac, 0)} of summaries; when fired, mean {format_metric(step_loss_mean * 100.0, 1, '%')}",
                 "#355070",
             ),
             metric_card(
-                "Impulsive-Masked Rows",
-                format_count(scan_df["impulsive_mask_applied"].sum()),
-                "rows where the RTC impulsive path acted",
+                "Overall Impulsive Flagged",
+                format_metric(imp_loss_overall * 100.0, 1, "%"),
+                f"mask fired in {format_fraction_pct(imp_fire_frac, 0)} of summaries; when fired, mean {format_metric(imp_loss_mean * 100.0, 1, '%')}",
                 "#d76a03",
             ),
             metric_card(
-                "Worst Obsnum",
+                "Worst Observation",
                 str(worst_obs["obsnum"]),
                 f"max severity {format_metric(worst_obs['max_row_severity'], 3)}",
                 "#8b1e3f",
@@ -601,12 +940,12 @@ def build_overview_cards(
                 "#4c956c",
             ),
             metric_card(
-                "Strongest Slot",
+                "Strongest Captured Event Score",
                 format_metric(top_slot["event_score"], 1) if top_slot is not None else "n/a",
                 (
-                    f"obs {top_slot['obsnum']} nw{int(top_slot['network'])} "
-                    f"{top_slot['event_kind_label']}"
-                ) if top_slot is not None else "no captured slots",
+                    f"robust-sigma; obs {top_slot['obsnum']} nw{int(top_slot['network'])} "
+                    f"timechunk {int(top_slot['output_scan_index'])} {top_slot['event_kind_label']}"
+                ) if top_slot is not None else "no captured events",
                 "#cf3f3f",
             ),
         ],
@@ -616,16 +955,34 @@ def build_overview_cards(
 
 def build_selected_obs_cards(obsnum: str, obs_network_view: pd.DataFrame, scan_view: pd.DataFrame, slot_view: pd.DataFrame):
     if scan_view.empty:
-        return html.Div("No scan rows for this obsnum.", style=PANEL_STYLE)
+        return html.Div("No timechunk summaries for this observation.", style=PANEL_STYLE)
     worst_row = scan_view.sort_values("row_severity", ascending=False).iloc[0]
     worst_network = obs_network_view.sort_values("max_row_severity", ascending=False).iloc[0]
     top_slot = slot_view.sort_values("event_score", ascending=False).iloc[0] if not slot_view.empty else None
+    step_loss = pd.to_numeric(
+        scan_view.loc[scan_view["step_mask_applied"] != 0, "step_mask_flagged_fraction"],
+        errors="coerce",
+    )
+    imp_loss = pd.to_numeric(
+        scan_view.loc[scan_view["impulsive_mask_applied"] != 0, "impulsive_mask_flagged_fraction"],
+        errors="coerce",
+    )
+    step_loss_all = pd.to_numeric(scan_view["step_mask_flagged_fraction"], errors="coerce").fillna(0.0)
+    imp_loss_all = pd.to_numeric(scan_view["impulsive_mask_flagged_fraction"], errors="coerce").fillna(0.0)
+    step_loss_overall = float(step_loss_all.mean()) if len(step_loss_all) else float("nan")
+    imp_loss_overall = float(imp_loss_all.mean()) if len(imp_loss_all) else float("nan")
+    step_fire_frac = float((scan_view["step_mask_applied"] != 0).mean()) if len(scan_view) else float("nan")
+    imp_fire_frac = float((scan_view["impulsive_mask_applied"] != 0).mean()) if len(scan_view) else float("nan")
+    step_loss_mean = float(step_loss.mean()) if step_loss.notna().any() else float("nan")
+    step_loss_max = float(step_loss.max()) if step_loss.notna().any() else float("nan")
+    imp_loss_mean = float(imp_loss.mean()) if imp_loss.notna().any() else float("nan")
+    imp_loss_max = float(imp_loss.max()) if imp_loss.notna().any() else float("nan")
     return html.Div(
         [
             metric_card(
-                f"Obs {obsnum} Worst Row",
+                f"Observation {obsnum} Worst Summary",
                 format_metric(worst_row["row_severity"], 3),
-                f"scan {int(worst_row['output_scan_index'])} nw{int(worst_row['network'])}",
+                f"timechunk {int(worst_row['output_scan_index'])} nw{int(worst_row['network'])}",
                 "#8b1e3f",
             ),
             metric_card(
@@ -635,24 +992,25 @@ def build_selected_obs_cards(obsnum: str, obs_network_view: pd.DataFrame, scan_v
                 "#4c956c",
             ),
             metric_card(
-                "Step-Masked Rows",
-                format_count(scan_view["step_mask_applied"].sum()),
-                "within the selected obsnum",
+                "Overall Step Flagged",
+                format_metric(step_loss_overall * 100.0, 1, "%"),
+                f"mask fired in {format_fraction_pct(step_fire_frac, 0)} of summaries; when fired, mean {format_metric(step_loss_mean * 100.0, 1, '%')}",
                 "#355070",
             ),
             metric_card(
-                "Impulsive-Masked Rows",
-                format_count(scan_view["impulsive_mask_applied"].sum()),
-                "within the selected obsnum",
+                "Overall Impulsive Flagged",
+                format_metric(imp_loss_overall * 100.0, 1, "%"),
+                f"mask fired in {format_fraction_pct(imp_fire_frac, 0)} of summaries; when fired, mean {format_metric(imp_loss_mean * 100.0, 1, '%')}",
                 "#d76a03",
             ),
             metric_card(
-                "Strongest Slot",
+                "Strongest Captured Event Score",
                 format_metric(top_slot["event_score"], 1) if top_slot is not None else "n/a",
                 (
-                    f"nw{int(top_slot['network'])} scan {int(top_slot['output_scan_index'])} "
+                    f"robust-sigma; "
+                    f"nw{int(top_slot['network'])} timechunk {int(top_slot['output_scan_index'])} "
                     f"{top_slot['event_kind_label']}"
-                ) if top_slot is not None else "no stored slot in selected network",
+                ) if top_slot is not None else "no captured event in selected network",
                 "#cf3f3f",
             ),
         ],
@@ -668,12 +1026,12 @@ def build_detail_panel(
     scan_top_view = scan_view.sort_values("row_severity", ascending=False).head(12)
     return html.Details(
         [
-            html.Summary("Exact Rows"),
+            html.Summary("Exact Values"),
             html.Div(
                 [
                     html.Div(
                         [
-                            html.Div("Obsnum-network rows", style={"fontWeight": "bold", "marginBottom": "8px"}),
+                            html.Div("Observation-network summaries", style={"fontWeight": "bold", "marginBottom": "8px"}),
                             table(
                                 [
                                     "network",
@@ -705,7 +1063,7 @@ def build_detail_panel(
                     ),
                     html.Div(
                         [
-                            html.Div("Top scan/network rows", style={"fontWeight": "bold", "marginBottom": "8px"}),
+                            html.Div("Top timechunk/network summaries", style={"fontWeight": "bold", "marginBottom": "8px"}),
                             table(
                                 [
                                     "output_scan_index",
@@ -745,7 +1103,7 @@ def build_detail_panel(
                     ),
                     html.Div(
                         [
-                            html.Div("Top stored slots for the selected network", style={"fontWeight": "bold", "marginBottom": "8px"}),
+                            html.Div("Top captured events for the selected network", style={"fontWeight": "bold", "marginBottom": "8px"}),
                             table(
                                 [
                                     "output_scan_index",
@@ -837,27 +1195,39 @@ def build_app(args: argparse.Namespace) -> Dash:
                         """
 This view is meant for fast engineering triage, not for exhaustive tabular inspection.
 
-- Start with the **overview cards** and **ranking panels** to find the worst obsnums and networks.
-- Use the **heatmap** to see whether a problem is isolated to a few output scans or spread across an obsnum.
+- Start with the **overview cards** and **ranking panels** to find the worst observations and networks.
+- Use the **heatmap** to see whether a problem is isolated to a few timechunks or spread across an observation.
 - Use the **trend plot** to see which metric is actually driving a suspicious network.
-- Use the **scan ranking** and **slot ranking** panels to jump from broad survey context to concrete events.
-- Open **Exact Rows** only when you need precise values for a small number of rows.
+- Use the **timechunk ranking** and **captured event ranking** panels to jump from broad survey context to concrete events.
+- Open **Exact Values** only when you need precise numbers for a small set of summaries.
 
-`row_severity` is a ranking score, not a physical unit. It is the largest of several normalized contamination indicators, so it should be used to rank and compare rows, not as a calibrated threshold by itself.
+Definitions:
+
+- **event**: a localized contamination episode found in one detector timestream; captured events are stored examples of the strongest ones.
+
+    - **impulsive**: a brief spike-like event concentrated in time. In practice this includes both narrow cosmic-ray-like hits and some bursty RFI-like events when they are compact enough to trigger the impulsive finders.
+    - **step**: a level-shift event with a persistent baseline change after the transition, unlike a brief impulse.
+
+- **severity**: a dimensionless ranking score used to decide where to look first. Around `1` means at least one reference contamination threshold was reached, values below `1` are usually quieter, and values above `1` are progressively more suspicious. It is not the keep-or-reject metric by itself.
+- **robust sigma units**: the excursion size after dividing by a robust scatter estimate rather than an ordinary RMS standard deviation.
+- **overall step flagged** / **overall impulsive flagged**: the mean flagged fraction across all timechunk-network summaries, with non-fired summaries contributing zero. The subtitle also shows the conditional mean and maximum over just the summaries where that mask fired.
+- **strongest captured event score**: the largest stored RTC event score, in robust-sigma units. For a raw-like event it is `|x-center|/sigma_robust`; for a delta-like event it is `|delta_x-median(delta_x)|/sigma_delta,robust`. Use it to compare how extreme captured transients are, not as a calibrated physical unit.
+
+`row_severity` is a ranking score, not a physical unit. It is the largest of several normalized contamination indicators, so it should be used to rank and compare timechunk-network summaries, not as a calibrated threshold by itself.
                         """
                     ),
                 ],
                 style={**HELP_BOX_STYLE, "marginBottom": "18px"},
-                open=True,
+                open=False,
             ),
             html.Div(build_overview_cards(obs_df, by_network_df, scan_df, slot_df), style=PANEL_STYLE),
             html.Div(
                 [
                     html.Div(
                         [
-                            html.H3("Obsnum Triage", style={"marginTop": "0"}),
+                            html.H3("Observation Triage", style={"marginTop": "0"}),
                             html.Div(
-                                "Worst obsnums by maximum scan/network severity. Bar color tracks how often the impulsive mask actually acted.",
+                                "Grouped bars show overall flagged fraction for step and impulsive masking. Use these first; severity is still available in hover, but the flagged fractions are the more practical keep-or-reject signal.",
                                 style={"marginBottom": "8px", "fontSize": "14px", "color": "#4e483c"},
                             ),
                             dcc.Graph(figure=build_obs_rank_figure(obs_df), config=GRAPH_CONFIG),
@@ -868,7 +1238,7 @@ This view is meant for fast engineering triage, not for exhaustive tabular inspe
                         [
                             html.H3("Network Triage", style={"marginTop": "0"}),
                             html.Div(
-                                "Worst networks across the selected reduction. Bar color tracks total impulsive-masked rows.",
+                                "Grouped bars show how much each network is being flagged overall across the selected reduction. Dashed lines at 1%, 5%, and 10% give quick reference points.",
                                 style={"marginBottom": "8px", "fontSize": "14px", "color": "#4e483c"},
                             ),
                             dcc.Graph(figure=build_network_rank_figure(by_network_df), config=GRAPH_CONFIG),
@@ -882,7 +1252,7 @@ This view is meant for fast engineering triage, not for exhaustive tabular inspe
                 [
                     html.Div(
                         [
-                            html.Label("Obsnum"),
+                            html.Label("Observation"),
                             dcc.Dropdown(
                                 id="obs-dropdown",
                                 options=obs_options,
@@ -904,15 +1274,15 @@ This view is meant for fast engineering triage, not for exhaustive tabular inspe
             ),
             html.Div(id="selected-obs-cards", style=PANEL_STYLE),
             section_help(
-                "Selected Obsnum Views",
+                "Selected Observation Views",
                 """
-The next panels are for one selected obsnum and one selected network.
+The next panels are for one selected observation and one selected network.
 
-- **Heatmap** answers: where are the bad scan/network rows?
+- **Heatmaps** answer: where are step and impulsive masks actually removing data, and by how much?
 - **Trend plot** answers: is this network step-like, impulsive, or both?
-- **Network ranking** answers: which networks dominate this obsnum?
-- **Scan ranking** answers: which exact rows deserve inspection first?
-- **Slot ranking** answers: what are the strongest captured compact events in the selected network?
+- **Network ranking** answers: which networks dominate this observation?
+- **Timechunk ranking** answers: which exact timechunk/network summaries deserve inspection first?
+- **Captured event ranking** answers: what are the strongest captured compact events in the selected network?
                 """,
             ),
             html.Div(
