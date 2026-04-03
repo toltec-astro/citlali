@@ -226,6 +226,12 @@ public:
     template <class calib_type>
     void apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_type &);
 
+    template <typename calib_t>
+    void append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, std::string, calib_t &,
+                               Eigen::Index scan_row_index = -1);
+
+    void clear_cached_diagnostics(Eigen::Index scan_id);
+
     // calculate detector weights
     template <typename apt_type, class tel_type>
     void calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, apt_type &, tel_type &);
@@ -3532,6 +3538,395 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
     } catch (NcException &e) {
         logger->error("{}", e.what());
     }
+}
+
+template <typename calib_t>
+void PTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std::string filepath,
+                                    calib_t &calib, Eigen::Index scan_row_index) {
+    using netCDF::NcDim;
+    using netCDF::NcFile;
+    using netCDF::NcVar;
+    using namespace netCDF::exceptions;
+
+    try {
+        predefs::suppress_hdf5_diagnostics_for_this_thread();
+        std::lock_guard<std::mutex> lock(predefs::netcdf_io_mutex());
+        NcFile fo(filepath, netCDF::NcFile::write);
+        const auto scan_row = static_cast<unsigned long>((scan_row_index >= 0) ? scan_row_index : in.index.data);
+        const auto n_dets = fo.getDim("n_dets").getSize();
+        std::vector<std::size_t> start_index_det = {scan_row, 0};
+        std::vector<std::size_t> size_det = {1, n_dets};
+
+        std::vector<double> weights(static_cast<std::size_t>(n_dets), std::numeric_limits<double>::quiet_NaN());
+        std::vector<double> rms(static_cast<std::size_t>(n_dets), std::numeric_limits<double>::quiet_NaN());
+        std::vector<double> stddev(static_cast<std::size_t>(n_dets), std::numeric_limits<double>::quiet_NaN());
+        std::vector<double> median(static_cast<std::size_t>(n_dets), std::numeric_limits<double>::quiet_NaN());
+        std::vector<double> flagged_frac(static_cast<std::size_t>(n_dets), std::numeric_limits<double>::quiet_NaN());
+        const double n_pts = static_cast<double>(in.scans.data.rows());
+        const auto n_copy = std::min<unsigned long>(n_dets, static_cast<unsigned long>(in.scans.data.cols()));
+        for (unsigned long i = 0; i < n_copy; ++i) {
+            const auto det = static_cast<Eigen::Index>(i);
+            Eigen::VectorXd scans = in.scans.data.col(det);
+            Eigen::Matrix<bool, Eigen::Dynamic, 1> flags = in.flags.data.col(det);
+            weights[static_cast<std::size_t>(i)] = (det < in.weights.data.size()) ? in.weights.data(det) : std::numeric_limits<double>::quiet_NaN();
+            rms[static_cast<std::size_t>(i)] = engine_utils::calc_rms(scans);
+            stddev[static_cast<std::size_t>(i)] = engine_utils::calc_std_dev(scans);
+            median[static_cast<std::size_t>(i)] = tula::alg::median(scans);
+            flagged_frac[static_cast<std::size_t>(i)] =
+                (n_pts > 0.0) ? flags.cast<double>().sum() / n_pts : std::numeric_limits<double>::quiet_NaN();
+        }
+
+        fo.getVar("ptc_detector_weight").putVar(start_index_det, size_det, weights.data());
+        fo.getVar("ptc_detector_rms").putVar(start_index_det, size_det, rms.data());
+        fo.getVar("ptc_detector_stddev").putVar(start_index_det, size_det, stddev.data());
+        fo.getVar("ptc_detector_median").putVar(start_index_det, size_det, median.data());
+        fo.getVar("ptc_detector_flagged_fraction").putVar(start_index_det, size_det, flagged_frac.data());
+
+        const auto second_pass_summary_it = second_pass_summary_by_scan.find(in.index.data);
+        const auto corr_summary_it = corr_nw_summary_by_scan.find(in.index.data);
+        const auto weight_corr_penalty_it = weight_corr_penalty_summary_by_scan.find(in.index.data);
+        const auto busy_row_suppression_it = busy_row_suppression_summary_by_scan.find(in.index.data);
+        const auto adaptive_selector_it = adaptive_selector_summary_by_scan.find(in.index.data);
+        const int fill_int = -2147483647;
+        const double fill_double = std::numeric_limits<double>::quiet_NaN();
+
+        auto build_nw_index = [&]() {
+            std::unordered_map<Eigen::Index, std::size_t> nw_to_index;
+            nw_to_index.reserve(static_cast<std::size_t>(calib.nws.size()));
+            for (Eigen::Index i = 0; i < calib.nws.size(); ++i) {
+                nw_to_index[calib.nws(i)] = static_cast<std::size_t>(i);
+            }
+            return nw_to_index;
+        };
+
+        const auto nw_to_index = build_nw_index();
+
+        auto put_corr_nw = [&]() {
+            NcVar corr_n_groups_v = fo.getVar("corr_nw_n_groups");
+            if (corr_n_groups_v.isNull()) {
+                return;
+            }
+            NcDim n_nws_dim = fo.getDim("n_nws_corr");
+            if (n_nws_dim.isNull()) {
+                return;
+            }
+            const auto n_nws = n_nws_dim.getSize();
+            std::vector<int> v_n_groups(n_nws, fill_int);
+            std::vector<int> v_n_groups_raw(n_nws, fill_int);
+            std::vector<int> v_n_det_input(n_nws, fill_int);
+            std::vector<int> v_n_det_candidates(n_nws, fill_int);
+            std::vector<int> v_n_det_used(n_nws, fill_int);
+            std::vector<int> v_n_det_grouped(n_nws, fill_int);
+            std::vector<int> v_n_det_ungrouped(n_nws, fill_int);
+            std::vector<int> v_sample_step(n_nws, fill_int);
+            if (corr_summary_it != corr_nw_summary_by_scan.end()) {
+                for (const auto &row : corr_summary_it->second) {
+                    const auto it = nw_to_index.find(row.nw);
+                    if (it == nw_to_index.end() || it->second >= n_nws) {
+                        continue;
+                    }
+                    const auto j = it->second;
+                    v_n_groups[j] = static_cast<int>(row.n_groups_final);
+                    v_n_groups_raw[j] = static_cast<int>(row.n_groups_raw);
+                    v_n_det_input[j] = static_cast<int>(row.n_det_input);
+                    v_n_det_candidates[j] = static_cast<int>(row.n_det_candidates);
+                    v_n_det_used[j] = static_cast<int>(row.n_det_used);
+                    v_n_det_grouped[j] = static_cast<int>(row.n_det_grouped);
+                    v_n_det_ungrouped[j] = static_cast<int>(row.n_det_ungrouped);
+                    v_sample_step[j] = static_cast<int>(row.sample_step);
+                }
+            }
+            std::vector<std::size_t> start_scan_nw = {scan_row, 0};
+            std::vector<std::size_t> size_scan_nw = {1, n_nws};
+            corr_n_groups_v.putVar(start_scan_nw, size_scan_nw, v_n_groups.data());
+            fo.getVar("corr_nw_n_groups_raw").putVar(start_scan_nw, size_scan_nw, v_n_groups_raw.data());
+            fo.getVar("corr_nw_n_det_input").putVar(start_scan_nw, size_scan_nw, v_n_det_input.data());
+            fo.getVar("corr_nw_n_det_candidates").putVar(start_scan_nw, size_scan_nw, v_n_det_candidates.data());
+            fo.getVar("corr_nw_n_det_used").putVar(start_scan_nw, size_scan_nw, v_n_det_used.data());
+            fo.getVar("corr_nw_n_det_grouped").putVar(start_scan_nw, size_scan_nw, v_n_det_grouped.data());
+            fo.getVar("corr_nw_n_det_ungrouped").putVar(start_scan_nw, size_scan_nw, v_n_det_ungrouped.data());
+            fo.getVar("corr_nw_sample_step").putVar(start_scan_nw, size_scan_nw, v_sample_step.data());
+        };
+
+        auto put_weight_corr = [&]() {
+            NcVar wcorr_factor_v = fo.getVar("weight_corr_penalty_factor");
+            if (wcorr_factor_v.isNull()) {
+                return;
+            }
+            NcDim n_nws_dim = fo.getDim("n_nws_wcorr");
+            if (n_nws_dim.isNull()) {
+                return;
+            }
+            const auto n_nws = n_nws_dim.getSize();
+            std::vector<double> v_factor(n_nws, fill_double);
+            std::vector<double> v_severity(n_nws, fill_double);
+            std::vector<double> v_pair_corr(n_nws, fill_double);
+            std::vector<double> v_cm_el_corr(n_nws, fill_double);
+            std::vector<double> v_cm_low_mid(n_nws, fill_double);
+            std::vector<int> v_n_det_input(n_nws, fill_int);
+            std::vector<int> v_n_det_candidates(n_nws, fill_int);
+            std::vector<int> v_n_det_used(n_nws, fill_int);
+            std::vector<int> v_n_det_weighted(n_nws, fill_int);
+            std::vector<int> v_sample_step(n_nws, fill_int);
+            if (weight_corr_penalty_it != weight_corr_penalty_summary_by_scan.end()) {
+                for (const auto &row : weight_corr_penalty_it->second) {
+                    const auto it = nw_to_index.find(row.nw);
+                    if (it == nw_to_index.end() || it->second >= n_nws) {
+                        continue;
+                    }
+                    const auto j = it->second;
+                    v_factor[j] = row.penalty_factor;
+                    v_severity[j] = row.severity;
+                    v_pair_corr[j] = row.pair_med_abs_corr;
+                    v_cm_el_corr[j] = row.cm_el_abs_corr;
+                    v_cm_low_mid[j] = row.cm_low_mid_ratio;
+                    v_n_det_input[j] = static_cast<int>(row.n_det_input);
+                    v_n_det_candidates[j] = static_cast<int>(row.n_det_candidates);
+                    v_n_det_used[j] = static_cast<int>(row.n_det_used);
+                    v_n_det_weighted[j] = static_cast<int>(row.n_det_weighted);
+                    v_sample_step[j] = static_cast<int>(row.sample_step);
+                }
+            }
+            std::vector<std::size_t> start_scan_nw = {scan_row, 0};
+            std::vector<std::size_t> size_scan_nw = {1, n_nws};
+            wcorr_factor_v.putVar(start_scan_nw, size_scan_nw, v_factor.data());
+            fo.getVar("weight_corr_penalty_severity").putVar(start_scan_nw, size_scan_nw, v_severity.data());
+            fo.getVar("weight_corr_penalty_pair_med_abs_corr").putVar(start_scan_nw, size_scan_nw, v_pair_corr.data());
+            fo.getVar("weight_corr_penalty_cm_el_abs_corr").putVar(start_scan_nw, size_scan_nw, v_cm_el_corr.data());
+            fo.getVar("weight_corr_penalty_cm_low_mid_ratio").putVar(start_scan_nw, size_scan_nw, v_cm_low_mid.data());
+            fo.getVar("weight_corr_penalty_n_det_input").putVar(start_scan_nw, size_scan_nw, v_n_det_input.data());
+            fo.getVar("weight_corr_penalty_n_det_candidates").putVar(start_scan_nw, size_scan_nw, v_n_det_candidates.data());
+            fo.getVar("weight_corr_penalty_n_det_used").putVar(start_scan_nw, size_scan_nw, v_n_det_used.data());
+            fo.getVar("weight_corr_penalty_n_det_weighted").putVar(start_scan_nw, size_scan_nw, v_n_det_weighted.data());
+            fo.getVar("weight_corr_penalty_sample_step").putVar(start_scan_nw, size_scan_nw, v_sample_step.data());
+        };
+
+        auto put_busy_row = [&]() {
+            NcVar wbusy_applied_v = fo.getVar("weight_busy_row_suppression_applied");
+            if (wbusy_applied_v.isNull()) {
+                return;
+            }
+            NcDim n_nws_dim = fo.getDim("n_nws_busy_row_suppression");
+            if (n_nws_dim.isNull()) {
+                return;
+            }
+            const auto n_nws = n_nws_dim.getSize();
+            std::vector<int> v_applied(n_nws, fill_int);
+            std::vector<int> v_busy(n_nws, fill_int);
+            std::vector<int> v_n_candidate_clusters(n_nws, fill_int);
+            std::vector<int> v_n_det_weighted(n_nws, fill_int);
+            std::vector<double> v_factor(n_nws, fill_double);
+            std::vector<double> v_max_resid_z(n_nws, fill_double);
+            if (busy_row_suppression_it != busy_row_suppression_summary_by_scan.end()) {
+                for (const auto &row : busy_row_suppression_it->second) {
+                    const auto it = nw_to_index.find(row.nw);
+                    if (it == nw_to_index.end() || it->second >= n_nws) {
+                        continue;
+                    }
+                    const auto j = it->second;
+                    v_applied[j] = row.applied ? 1 : 0;
+                    v_busy[j] = row.busy_network_vetoed ? 1 : 0;
+                    v_n_candidate_clusters[j] = static_cast<int>(row.n_candidate_clusters);
+                    v_n_det_weighted[j] = static_cast<int>(row.n_det_weighted);
+                    v_factor[j] = row.factor;
+                    v_max_resid_z[j] = row.max_unflagged_residual_z;
+                }
+            }
+            std::vector<std::size_t> start_scan_nw = {scan_row, 0};
+            std::vector<std::size_t> size_scan_nw = {1, n_nws};
+            wbusy_applied_v.putVar(start_scan_nw, size_scan_nw, v_applied.data());
+            fo.getVar("weight_busy_row_suppression_busy_network_vetoed").putVar(start_scan_nw, size_scan_nw, v_busy.data());
+            fo.getVar("weight_busy_row_suppression_n_candidate_clusters").putVar(start_scan_nw, size_scan_nw, v_n_candidate_clusters.data());
+            fo.getVar("weight_busy_row_suppression_n_det_weighted").putVar(start_scan_nw, size_scan_nw, v_n_det_weighted.data());
+            fo.getVar("weight_busy_row_suppression_factor").putVar(start_scan_nw, size_scan_nw, v_factor.data());
+            fo.getVar("weight_busy_row_suppression_max_unflagged_residual_z").putVar(start_scan_nw, size_scan_nw, v_max_resid_z.data());
+        };
+
+        auto put_adaptive = [&]() {
+            NcVar adaptive_chosen_k_v = fo.getVar("adaptive_pca_chosen_k");
+            if (adaptive_chosen_k_v.isNull()) {
+                return;
+            }
+            NcDim n_nws_dim = fo.getDim("n_nws_adaptive_pca");
+            if (n_nws_dim.isNull()) {
+                return;
+            }
+            const auto n_nws = n_nws_dim.getSize();
+            std::vector<int> v_selector_used(n_nws, fill_int);
+            std::vector<int> v_selector_fallback(n_nws, fill_int);
+            std::vector<int> v_baseline_k(n_nws, fill_int);
+            std::vector<int> v_chosen_k(n_nws, fill_int);
+            std::vector<int> v_runnerup_k(n_nws, fill_int);
+            std::vector<int> v_n_candidates(n_nws, fill_int);
+            std::vector<int> v_n_det_input(n_nws, fill_int);
+            std::vector<int> v_n_det_used(n_nws, fill_int);
+            std::vector<int> v_n_time_used(n_nws, fill_int);
+            std::vector<int> v_sample_step(n_nws, fill_int);
+            std::vector<double> v_chosen_score(n_nws, fill_double);
+            std::vector<double> v_runnerup_score(n_nws, fill_double);
+            std::vector<double> v_score_margin(n_nws, fill_double);
+            std::vector<double> v_chosen_med_abs_corr(n_nws, fill_double);
+            std::vector<double> v_chosen_cm_low_mid_ratio(n_nws, fill_double);
+            std::vector<double> v_chosen_tail4_binom_z(n_nws, fill_double);
+            std::vector<double> v_chosen_top_mode_frac(n_nws, fill_double);
+            std::vector<double> v_eig_solve_msec(n_nws, fill_double);
+            std::vector<double> v_candidate_eval_msec(n_nws, fill_double);
+            std::vector<double> v_total_msec(n_nws, fill_double);
+            if (adaptive_selector_it != adaptive_selector_summary_by_scan.end()) {
+                for (const auto &row : adaptive_selector_it->second) {
+                    const auto it = nw_to_index.find(row.nw);
+                    if (it == nw_to_index.end() || it->second >= n_nws) {
+                        continue;
+                    }
+                    const auto j = it->second;
+                    v_selector_used[j] = row.selector_used;
+                    v_selector_fallback[j] = row.selector_fallback;
+                    v_baseline_k[j] = static_cast<int>(row.baseline_k);
+                    v_chosen_k[j] = static_cast<int>(row.chosen_k);
+                    v_runnerup_k[j] = static_cast<int>(row.runnerup_k);
+                    v_n_candidates[j] = static_cast<int>(row.n_candidates);
+                    v_n_det_input[j] = static_cast<int>(row.n_det_input);
+                    v_n_det_used[j] = static_cast<int>(row.n_det_used);
+                    v_n_time_used[j] = static_cast<int>(row.n_time_used);
+                    v_sample_step[j] = static_cast<int>(row.sample_step);
+                    v_chosen_score[j] = row.chosen_score;
+                    v_runnerup_score[j] = row.runnerup_score;
+                    v_score_margin[j] = row.score_margin;
+                    v_chosen_med_abs_corr[j] = row.chosen_med_abs_corr;
+                    v_chosen_cm_low_mid_ratio[j] = row.chosen_cm_low_mid_ratio;
+                    v_chosen_tail4_binom_z[j] = row.chosen_tail4_binom_z;
+                    v_chosen_top_mode_frac[j] = row.chosen_top_mode_frac;
+                    v_eig_solve_msec[j] = row.eig_solve_msec;
+                    v_candidate_eval_msec[j] = row.candidate_eval_msec;
+                    v_total_msec[j] = row.total_msec;
+                }
+            }
+            std::vector<std::size_t> start_scan_nw = {scan_row, 0};
+            std::vector<std::size_t> size_scan_nw = {1, n_nws};
+            fo.getVar("adaptive_pca_selector_used").putVar(start_scan_nw, size_scan_nw, v_selector_used.data());
+            fo.getVar("adaptive_pca_selector_fallback").putVar(start_scan_nw, size_scan_nw, v_selector_fallback.data());
+            fo.getVar("adaptive_pca_baseline_k").putVar(start_scan_nw, size_scan_nw, v_baseline_k.data());
+            adaptive_chosen_k_v.putVar(start_scan_nw, size_scan_nw, v_chosen_k.data());
+            fo.getVar("adaptive_pca_runnerup_k").putVar(start_scan_nw, size_scan_nw, v_runnerup_k.data());
+            fo.getVar("adaptive_pca_n_candidates").putVar(start_scan_nw, size_scan_nw, v_n_candidates.data());
+            fo.getVar("adaptive_pca_n_det_input").putVar(start_scan_nw, size_scan_nw, v_n_det_input.data());
+            fo.getVar("adaptive_pca_n_det_used").putVar(start_scan_nw, size_scan_nw, v_n_det_used.data());
+            fo.getVar("adaptive_pca_n_time_used").putVar(start_scan_nw, size_scan_nw, v_n_time_used.data());
+            fo.getVar("adaptive_pca_sample_step").putVar(start_scan_nw, size_scan_nw, v_sample_step.data());
+            fo.getVar("adaptive_pca_chosen_score").putVar(start_scan_nw, size_scan_nw, v_chosen_score.data());
+            fo.getVar("adaptive_pca_runnerup_score").putVar(start_scan_nw, size_scan_nw, v_runnerup_score.data());
+            fo.getVar("adaptive_pca_score_margin").putVar(start_scan_nw, size_scan_nw, v_score_margin.data());
+            fo.getVar("adaptive_pca_chosen_med_abs_corr").putVar(start_scan_nw, size_scan_nw, v_chosen_med_abs_corr.data());
+            fo.getVar("adaptive_pca_chosen_cm_low_mid_ratio").putVar(start_scan_nw, size_scan_nw, v_chosen_cm_low_mid_ratio.data());
+            fo.getVar("adaptive_pca_chosen_tail4_binom_z").putVar(start_scan_nw, size_scan_nw, v_chosen_tail4_binom_z.data());
+            fo.getVar("adaptive_pca_chosen_top_mode_frac").putVar(start_scan_nw, size_scan_nw, v_chosen_top_mode_frac.data());
+            fo.getVar("adaptive_pca_eig_solve_msec").putVar(start_scan_nw, size_scan_nw, v_eig_solve_msec.data());
+            fo.getVar("adaptive_pca_candidate_eval_msec").putVar(start_scan_nw, size_scan_nw, v_candidate_eval_msec.data());
+            fo.getVar("adaptive_pca_total_msec").putVar(start_scan_nw, size_scan_nw, v_total_msec.data());
+        };
+
+        auto put_second_pass = [&]() {
+            NcVar second_pass_busy_v = fo.getVar("ptc_second_pass_busy_network_vetoed");
+            if (second_pass_busy_v.isNull()) {
+                return;
+            }
+            NcDim n_nws_dim = fo.getDim("n_nws_ptc_second_pass");
+            if (n_nws_dim.isNull()) {
+                return;
+            }
+            const auto n_nws = n_nws_dim.getSize();
+            std::vector<int> v_busy(n_nws, fill_int);
+            std::vector<int> v_n_candidate_clusters(n_nws, fill_int);
+            std::vector<int> v_n_candidate_events(n_nws, fill_int);
+            std::vector<int> v_n_accepted_clusters(n_nws, fill_int);
+            std::vector<int> v_n_accepted_events(n_nws, fill_int);
+            std::vector<int> v_n_det_with_added_flags(n_nws, fill_int);
+            std::vector<int> v_max_resid_uid(n_nws, fill_int);
+            std::vector<int> v_top_cluster_sample(n_nws, fill_int);
+            std::vector<int> v_top_cluster_n_detectors(n_nws, fill_int);
+            std::vector<int> v_top_cluster_n_events(n_nws, fill_int);
+            std::vector<int> v_top_event_kind(n_nws, fill_int);
+            std::vector<int> v_top_event_uid(n_nws, fill_int);
+            std::vector<int> v_top_event_sample(n_nws, fill_int);
+            std::vector<double> v_existing_frac(n_nws, fill_double);
+            std::vector<double> v_proposed_frac(n_nws, fill_double);
+            std::vector<double> v_new_frac(n_nws, fill_double);
+            std::vector<double> v_max_resid_z(n_nws, fill_double);
+            std::vector<double> v_top_cluster_peak(n_nws, fill_double);
+            std::vector<double> v_top_event_score(n_nws, fill_double);
+            if (second_pass_summary_it != second_pass_summary_by_scan.end()) {
+                for (const auto &row : second_pass_summary_it->second) {
+                    const auto it = nw_to_index.find(row.nw);
+                    if (it == nw_to_index.end() || it->second >= n_nws) {
+                        continue;
+                    }
+                    const auto j = it->second;
+                    v_busy[j] = row.busy_network_vetoed ? 1 : 0;
+                    v_n_candidate_clusters[j] = static_cast<int>(row.n_candidate_clusters);
+                    v_n_candidate_events[j] = static_cast<int>(row.n_candidate_events);
+                    v_n_accepted_clusters[j] = static_cast<int>(row.n_accepted_clusters);
+                    v_n_accepted_events[j] = static_cast<int>(row.n_accepted_events);
+                    v_n_det_with_added_flags[j] = static_cast<int>(row.n_det_with_added_flags);
+                    v_max_resid_uid[j] = row.max_unflagged_residual_uid;
+                    v_top_cluster_sample[j] = row.top_candidate_cluster_sample;
+                    v_top_cluster_n_detectors[j] = static_cast<int>(row.top_candidate_cluster_n_detectors);
+                    v_top_cluster_n_events[j] = static_cast<int>(row.top_candidate_cluster_n_events);
+                    v_top_event_kind[j] = row.top_event.kind_code();
+                    v_top_event_uid[j] = row.top_event_uid;
+                    v_top_event_sample[j] = row.top_event.sample;
+                    v_existing_frac[j] = row.existing_flagged_fraction;
+                    v_proposed_frac[j] = row.proposed_flagged_fraction;
+                    v_new_frac[j] = row.newly_flagged_fraction;
+                    v_max_resid_z[j] = row.max_unflagged_residual_z;
+                    v_top_cluster_peak[j] = row.top_candidate_cluster_peak_score;
+                    v_top_event_score[j] = row.top_event.score;
+                }
+            }
+            std::vector<std::size_t> start_scan_nw = {scan_row, 0};
+            std::vector<std::size_t> size_scan_nw = {1, n_nws};
+            second_pass_busy_v.putVar(start_scan_nw, size_scan_nw, v_busy.data());
+            fo.getVar("ptc_second_pass_n_candidate_clusters").putVar(start_scan_nw, size_scan_nw, v_n_candidate_clusters.data());
+            fo.getVar("ptc_second_pass_n_candidate_events").putVar(start_scan_nw, size_scan_nw, v_n_candidate_events.data());
+            fo.getVar("ptc_second_pass_n_accepted_clusters").putVar(start_scan_nw, size_scan_nw, v_n_accepted_clusters.data());
+            fo.getVar("ptc_second_pass_n_accepted_events").putVar(start_scan_nw, size_scan_nw, v_n_accepted_events.data());
+            fo.getVar("ptc_second_pass_n_det_with_added_flags").putVar(start_scan_nw, size_scan_nw, v_n_det_with_added_flags.data());
+            fo.getVar("ptc_second_pass_max_unflagged_residual_uid").putVar(start_scan_nw, size_scan_nw, v_max_resid_uid.data());
+            fo.getVar("ptc_second_pass_top_candidate_cluster_sample").putVar(start_scan_nw, size_scan_nw, v_top_cluster_sample.data());
+            fo.getVar("ptc_second_pass_top_candidate_cluster_n_detectors").putVar(start_scan_nw, size_scan_nw, v_top_cluster_n_detectors.data());
+            fo.getVar("ptc_second_pass_top_candidate_cluster_n_events").putVar(start_scan_nw, size_scan_nw, v_top_cluster_n_events.data());
+            fo.getVar("ptc_second_pass_top_event_kind").putVar(start_scan_nw, size_scan_nw, v_top_event_kind.data());
+            fo.getVar("ptc_second_pass_top_event_uid").putVar(start_scan_nw, size_scan_nw, v_top_event_uid.data());
+            fo.getVar("ptc_second_pass_top_event_sample").putVar(start_scan_nw, size_scan_nw, v_top_event_sample.data());
+            fo.getVar("ptc_second_pass_existing_flagged_fraction").putVar(start_scan_nw, size_scan_nw, v_existing_frac.data());
+            fo.getVar("ptc_second_pass_proposed_flagged_fraction").putVar(start_scan_nw, size_scan_nw, v_proposed_frac.data());
+            fo.getVar("ptc_second_pass_newly_flagged_fraction").putVar(start_scan_nw, size_scan_nw, v_new_frac.data());
+            fo.getVar("ptc_second_pass_max_unflagged_residual_z").putVar(start_scan_nw, size_scan_nw, v_max_resid_z.data());
+            fo.getVar("ptc_second_pass_top_candidate_cluster_peak_score").putVar(start_scan_nw, size_scan_nw, v_top_cluster_peak.data());
+            fo.getVar("ptc_second_pass_top_event_score").putVar(start_scan_nw, size_scan_nw, v_top_event_score.data());
+        };
+
+        put_corr_nw();
+        put_weight_corr();
+        put_busy_row();
+        put_adaptive();
+        put_second_pass();
+
+        fo.sync();
+        fo.close();
+        logger->info("ptc diagnostics sidecar chunk written to {}", filepath);
+    } catch (NcException &e) {
+        logger->error("{}", e.what());
+    }
+}
+
+inline void PTCProc::clear_cached_diagnostics(Eigen::Index scan_id) {
+    corr_nw_group_ids_by_scan.erase(scan_id);
+    corr_nw_summary_by_scan.erase(scan_id);
+    weight_corr_penalty_summary_by_scan.erase(scan_id);
+    busy_row_suppression_summary_by_scan.erase(scan_id);
+    adaptive_selector_summary_by_scan.erase(scan_id);
+    second_pass_summary_by_scan.erase(scan_id);
+    second_pass_added_flags_by_scan.erase(scan_id);
 }
 
 } // namespace timestream

@@ -92,6 +92,20 @@ void Pointing::setup() {
     /* populate ppt meta information */
     ppt_meta.reset();
 
+    auto get_tel_data_mean = [&](const std::string &key, double fallback) {
+        auto it = telescope.tel_data.find(key);
+        if (it == telescope.tel_data.end() || it->second.size() < 1) {
+            logger->warn("tel_data '{}' missing/empty; using fallback {}", key, fallback);
+            return fallback;
+        }
+        const double value = it->second.mean();
+        if (!std::isfinite(value)) {
+            logger->warn("tel_data '{}' mean non-finite ({}); using fallback {}", key, value, fallback);
+            return fallback;
+        }
+        return value;
+    };
+
     // add obsnum to meta data
     ppt_meta["obsnum"] = obsnum;
 
@@ -109,6 +123,10 @@ void Pointing::setup() {
 
     // mean Modified Julian Date
     ppt_meta["mjd"] = engine_utils::unix_to_modified_julian_date(telescope.tel_data["TelTime"].mean());
+
+    // mean observing geometry
+    ppt_meta["MEAN_EL"] = RAD_TO_DEG * get_tel_data_mean("TelElAct", 0.0);
+    ppt_meta["MEAN_AZ"] = RAD_TO_DEG * get_tel_data_mean("TelAzAct", 0.0);
 
     // reference frame
     ppt_meta["Radesys"] = telescope.pixel_axes;
@@ -260,13 +278,15 @@ auto Pointing::run(KidsProc &kidsproc) {
     const bool write_ptc = run_tod_output && !tod_filename.empty() &&
         (tod_output_type == "ptc" || tod_output_type == "both");
     const bool write_rtcdiag = run_rtcdiag_output && !rtcdiag_filename.empty();
+    const bool write_ptcdiag = run_ptcdiag_output && !ptcdiag_filename.empty();
 
     auto rtc_writer = write_rtc ? std::make_shared<OrderedWriter>() : nullptr;
     auto ptc_writer = write_ptc ? std::make_shared<OrderedWriter>() : nullptr;
     auto rtcdiag_writer = write_rtcdiag ? std::make_shared<OrderedWriter>() : nullptr;
+    auto ptcdiag_writer = write_ptcdiag ? std::make_shared<OrderedWriter>() : nullptr;
 
-    auto farm = grppi::farm(n_threads,[&, scans_done_mutex, rtc_writer, ptc_writer, rtcdiag_writer,
-                                       write_rtc, write_ptc, write_rtcdiag](auto &rtcdata) {
+    auto farm = grppi::farm(n_threads,[&, scans_done_mutex, rtc_writer, ptc_writer, rtcdiag_writer, ptcdiag_writer,
+                                       write_rtc, write_ptc, write_rtcdiag, write_ptcdiag](auto &rtcdata) {
 
         // starting index for scan
         Eigen::Index si = rtcdata.scan_indices.data(2);
@@ -437,6 +457,13 @@ auto Pointing::run(KidsProc &kidsproc) {
         }
 
         // write ptc timestreams
+        if (write_ptcdiag) {
+            ptcdiag_writer->wait_turn(ptcdata.index.data);
+            logger->info("writing ptc diagnostics sidecar chunk");
+            ptcproc.append_diag_to_netcdf(ptcdata, ptcdiag_filename, calib, ptcdata.index.data);
+            ptcdiag_writer->advance();
+        }
+
         const auto ptc_scan_row = tod_output_scan_row(ptcdata.index.data, "ptc");
         if (write_ptc && ptc_scan_row >= 0) {
             ptc_writer->wait_turn(ptc_scan_row);
@@ -444,6 +471,9 @@ auto Pointing::run(KidsProc &kidsproc) {
             ptcproc.append_to_netcdf(ptcdata, tod_filename["ptc"], map_grouping, telescope.pixel_axes,
                                      ptcdata.pointing_offsets_arcsec.data, calib, false, ptc_scan_row);
             ptc_writer->advance();
+        }
+        if (write_ptc || write_ptcdiag) {
+            ptcproc.clear_cached_diagnostics(ptcdata.index.data);
         }
 
         // write out chunk summary
@@ -674,6 +704,10 @@ void Pointing::output() {
         write_psd<map_type>(mb, dir_name);
         logger->debug("writing histograms");
         write_hist<map_type>(mb, dir_name);
+        if (run_mapdiag_output) {
+            logger->debug("writing map diagnostics");
+            write_mapdiag<map_type>(mb, dir_name);
+        }
 
         // write source table
         if (run_source_finder) {

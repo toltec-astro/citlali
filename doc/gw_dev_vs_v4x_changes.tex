@@ -1,0 +1,1073 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{listings}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!50!black,
+  urlcolor=blue!50!black
+}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  frame=single,
+  showstringspaces=false
+}
+
+\title{Citlali \texttt{gw\_dev} vs.\ Active \texttt{4.x}:\\
+Change Report and Configuration Guide}
+\author{}
+\date{2026-04-02}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{Scope and Comparison Basis}
+
+This document compares the current development snapshot on \texttt{gw\_dev}
+(\texttt{39dfe9a5}) against the active \texttt{4.x} release snapshot taken from
+\texttt{origin/v4.x} (\texttt{61dfdc04}). In this clone the two refs do not
+share a merge base, so this is a direct tree-to-tree comparison rather than a
+linear release-note diff.
+
+The code delta is large: about 120 changed files with roughly
+\(3.75\times 10^4\) inserted lines. For collaborators, the practically
+important result is that \texttt{gw\_dev} is not a cosmetic branch. It changes
+beammap fitting, RTC contamination handling, PTC mode selection and weighting,
+fruit-loops behavior, mapmaking details, and the structure of timestream
+diagnostics and outputs.
+
+This report emphasizes the science-facing and configuration-facing changes. It
+does \emph{not} treat local artifacts such as \texttt{.pyc} files, editor
+workspace files, or internal debug notes as user-facing pipeline features.
+
+\section{Executive Summary}
+
+\subsection{What Changed at a High Level}
+
+\begin{longtable}{p{0.18\linewidth} p{0.76\linewidth}}
+\toprule
+Area & Main change relative to \texttt{4.x} \\
+\midrule
+\endhead
+Beammap & Beammap moved from mostly blind detector-map fitting to a prior-aware, QC-rich workflow. New steps include sample-level RFI masking, scan-edge band masking, soft prior guided initialization, prior-distance QC, network-robust position QC, richer fit diagnostics, and optional FITS splitting by detector quality. \\
+RTC & RTC processing gained a second family of impulsive detectors and line diagnostics. In addition to the legacy despike and FIR path, \texttt{gw\_dev} adds local-residual despiking, optional notch filtering, optional IIR high-pass filtering, RTC line auditing, dynamic shared-line notch actuation, network step masking, impulsive coincidence masking, compact impulsive snippet capture, and a compact \texttt{rtcdiag} sidecar product. \\
+PTC & PTC cleaning is now a configurable framework rather than a fixed PCA cut. The branch supports standard PCA, a circular-shift null model, a Marchenko--Pastur bulk fit, and a bounded adaptive selector. It also adds a second-pass residual flagger plus two weighting controls that downweight rows with strong residual coherence or busy-network signatures. \\
+Fruit loops / map-to-TOD & Fruit-loops behavior changed in ways that can alter loop gain. New controls expose interpolation mode, map-center convention, source masking during template load, and whether weights are recomputed after source add-back. \\
+Mapmaking / filtering & Jinc mapmaking gains sub-pixel kernel support; Wiener filtering gains explicit convergence controls and an optional OpenMP backend; map normalization is more careful when grid-based weights are present. \\
+Pointing / I/O / operations & Pointing transforms and tangent-plane bookkeeping were hardened, scan-index construction is more defensive, netCDF writes are more robust, logs can be compressed, TOD output can be chunk-selected and written in a compact ``mini'' mode, and per-observation flux-scale corrections are now supported. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Migration Risk}
+
+For data scientists the main risks are:
+
+\begin{itemize}[leftmargin=1.5em]
+\item Beammap results can change even when mapmaking is nominally the same, because the initialization, masking, and post-fit QC stack is fundamentally richer.
+\item Blank-sky and faint-source reductions can change because PTC mode depth is no longer restricted to one fixed PCA rule, and RTC can now suppress narrow shared lines or aligned impulsive events before PTC.
+\item Fruit-loops feedback can differ from \texttt{4.x} because projection and weight-handling semantics are no longer implicitly fixed.
+\item Output files can differ in both size and content because \texttt{rtcdiag}, chunk selection, and \texttt{mini} TOD modes change what gets written.
+\end{itemize}
+
+\section{Beammap Changes}
+
+\subsection{Conceptual Shift}
+
+Relative to \texttt{4.x}, beammap in \texttt{gw\_dev} is no longer just
+``fit a beam to each detector map and apply threshold cuts.'' It now has three
+additional layers:
+
+\begin{enumerate}[leftmargin=1.5em]
+\item pre-fit masking in timestream space,
+\item prior-guided peak initialization in detector-grouped maps,
+\item post-fit geometry-aware quality control.
+\end{enumerate}
+
+This is the single biggest science-facing change in the branch.
+
+\subsection{New Beammap Algorithms}
+
+\subsubsection{Sample-Level Beammap RFI Mask}
+
+The new \texttt{beammap.rfi\_mask} block performs robust sample masking before
+detector-grouped beammap fitting. For each detector:
+
+\begin{enumerate}[leftmargin=1.5em]
+\item Compute the first-difference series on currently good samples.
+\item Estimate a global robust scale
+\[
+\sigma_{\mathrm{global}} = 1.4826 \, \mathrm{MAD}(\Delta x).
+\]
+\item Partition the timestream into fixed-size blocks.
+\item For each block, estimate
+\[
+\sigma_b = 1.4826 \, \mathrm{MAD}(\Delta x_b).
+\]
+\item Mark a block bad if
+\[
+\sigma_b \ge \sigma_{\mathrm{floor}}
+\quad \text{and} \quad
+\sigma_b > \tau \, \sigma_{\mathrm{global}},
+\]
+where \(\tau = \texttt{sigma\_threshold}\).
+\item Optionally dilate the bad-block mask by neighboring blocks.
+\item Reject the proposal if the newly flagged fraction exceeds
+\texttt{max\_flagged\_fraction}; otherwise flag all finite samples inside the
+selected blocks.
+\end{enumerate}
+
+Interpretation: this is tuned for short high-variance bursts that are weakly
+captured by map-domain cuts but visibly corrupt the detector map if left in the
+PTC stream.
+
+\subsubsection{Detector-Map Scan-Band Mask}
+
+The \texttt{beammap.scan\_band\_mask} block addresses a different failure mode:
+coherent bad scan legs that accumulate into pathological top or bottom map bands
+for individual detector maps.
+
+For each detector map:
+
+\begin{enumerate}[leftmargin=1.5em]
+\item Compute robust row medians and row MAD scales using only positive-weight
+pixels.
+\item Define an interior reference set from rows away from the edges.
+\item Estimate:
+\begin{itemize}[leftmargin=1.5em]
+\item the interior median of row medians,
+\item the robust scatter of row medians,
+\item the median interior row-scale.
+\end{itemize}
+\item Starting from the top and bottom edges separately, walk inward until the
+first non-bad row.
+\item Mark a row bad if either
+\[
+|m_{\mathrm{row}} - m_{\mathrm{int}}| >
+\alpha \, \sigma_{\mathrm{int}}
+\]
+or
+\[
+\sigma_{\mathrm{row}} > \beta \, \mathrm{median}(\sigma_{\mathrm{row,int}}),
+\]
+with \(\alpha=\texttt{row\_median\_sigma\_threshold}\) and
+\(\beta=\texttt{row\_sigma\_ratio\_threshold}\).
+\item Require at least \texttt{min\_contiguous\_rows} adjacent bad rows at an
+edge.
+\item Map those bad image rows back to TOD samples through the detector
+pointing and flag the corresponding samples.
+\item Reject the mask if it would remove more than
+\texttt{max\_flagged\_fraction} of the detector's good samples.
+\end{enumerate}
+
+This is a map-domain detector of coherent edge contamination, but the actuation
+is still in TOD space so the fit sees a masked timestream rather than an
+already-damaged map.
+
+\subsubsection{Soft-Prior Guided Peak Initialization}
+
+The most visible beammap algorithmic change is
+\texttt{beammap.priors}. Historical APT files are summarized into soft
+within-network slot priors in
+\texttt{data/beammap\_priors/beammap\_slot\_priors\_soft\_v1.ecsv}.
+
+For each detector map:
+
+\begin{enumerate}[leftmargin=1.5em]
+\item Form a robust significance score for each valid map pixel,
+\[
+\mathrm{SNR}_{ij} =
+\frac{s_{ij} - \mathrm{median}(s)}{\sigma_s}
+\sqrt{\frac{w_{ij}}{\mathrm{median}(w)}},
+\]
+where \(\sigma_s\) is a robust MAD-based scale.
+\item Keep the top \texttt{candidate\_top\_n} pixels above
+\texttt{min\_snr}.
+\item Transform each candidate into the prior frame:
+\begin{itemize}[leftmargin=1.5em]
+\item optionally recenter by the current per-array beammap center estimate,
+\item optionally derotate for alt-az beammaps.
+\end{itemize}
+\item Compute the nearest-slot Mahalanobis distance
+\[
+d^2 =
+\left(\frac{x-\mu_x}{\sigma_x}\right)^2 +
+\left(\frac{y-\mu_y}{\sigma_y}\right)^2.
+\]
+\item Optionally reject candidates with \(d^2 > \texttt{max\_d2}\).
+\item Rank surviving candidates by
+\[
+\mathrm{score} = \mathrm{SNR} - \lambda d^2,
+\]
+where \(\lambda = \texttt{score\_lambda}\).
+\item Use the best surviving candidate as the fit seed.
+\item If no candidate survives, either fall back to the blind initializer or
+skip the detector, depending on \texttt{fallback\_blind}.
+\end{enumerate}
+
+Operationally, this turns beammap initialization into a regularized search:
+strong peaks are preferred, but only if they land close to historically
+plausible slot locations.
+
+\subsubsection{Post-Fit Prior-Distance and Network-Robust Position QC}
+
+Two new final QC passes run after fitting:
+
+\begin{enumerate}[leftmargin=1.5em]
+\item \texttt{beammap.flagging.max\_prior\_d2} flags detectors whose final
+position is too far from the nearest slot in prior space.
+\item \texttt{beammap.flagging.array\_network\_robust\_z} computes a robust
+within-network radial \(z\)-score in final \((x_t,y_t)\) coordinates and flags
+detectors that are geometric outliers relative to their own network.
+\end{enumerate}
+
+The second test uses per-network medians and MAD-based scales in \(x\) and \(y\),
+then forms
+\[
+z = \sqrt{\left(\frac{x-\tilde{x}}{\sigma_x}\right)^2 +
+\left(\frac{y-\tilde{y}}{\sigma_y}\right)^2 }.
+\]
+This is a network-consistency test rather than a beam-shape test.
+
+\subsection{Additional Beammap Behavior Changes}
+
+\begin{itemize}[leftmargin=1.5em]
+\item \texttt{mapmaking.grouping: auto} effectively becomes detector grouping in
+beammap, so detector-only features such as priors and beammap masking are live
+without needing an explicit grouping override.
+\item Detector-grouped beammap FITS products can now be split by final detector
+flag, which is useful for comparing accepted and rejected detectors directly.
+\item Fit-bound diagnostics and prior diagnostics are written into the beammap
+QC products, making it much easier to distinguish initialization failures,
+bound-hitting fits, and post-fit QC rejections.
+\item Derotation is more careful for alt-az beammap geometry, including
+per-detector derotation elevation support.
+\item Reference-detector handling was updated so the automatic reference choice
+prefers the median of network 3, with fallback logic across neighboring
+networks.
+\end{itemize}
+
+\section{RTC Changes}
+
+\subsection{Overview}
+
+In \texttt{4.x}, RTC processing was mostly ``despike, FIR filter, maybe
+downsample, maybe destripe.'' In \texttt{gw\_dev}, RTC becomes a staged
+contamination-analysis layer with optional actuation. The new work falls into
+four categories:
+
+\begin{enumerate}[leftmargin=1.5em]
+\item improved impulsive detection,
+\item explicit narrow-line detection and optional notch actuation,
+\item network-level event masks,
+\item lightweight but information-rich diagnostics output.
+\end{enumerate}
+
+\subsection{Local-Residual Despiking}
+
+The new \texttt{raw\_time\_chunk.despike.local\_residual} block supplements the
+legacy global MAD despike with a local-baseline analysis:
+
+\begin{enumerate}[leftmargin=1.5em]
+\item Smooth each detector timestream over \texttt{window\_sec} to define a
+local baseline.
+\item Subtract the baseline to obtain a local residual.
+\item Run two searches:
+\begin{itemize}[leftmargin=1.5em]
+\item a raw-like burst search on the residual amplitude,
+\item a delta-like search on adjacent residual differences.
+\end{itemize}
+\item For each candidate cluster, apply morphology gates:
+\begin{itemize}[leftmargin=1.5em]
+\item maximum event width,
+\item half-peak compactness,
+\item maximum allowed pre/post baseline shift.
+\end{itemize}
+\item Only compact events survive to masking.
+\end{enumerate}
+
+This is designed to catch events that are too weak for a full-scan sigma cut
+but still obviously non-astronomical when viewed against a local baseline.
+
+\subsection{Static Notch and IIR High-Pass Filtering}
+
+Two new optional RTC filtering stages were added:
+
+\begin{itemize}[leftmargin=1.5em]
+\item \texttt{raw\_time\_chunk.filter.notch}: one or more biquad notches
+parameterized by center frequency and bandwidth, with optional zero-phase
+forward-backward application.
+\item \texttt{raw\_time\_chunk.IIR\_filter}: a first-order high-pass section
+that can be cascaded \texttt{order} times, again optionally in zero-phase
+mode.
+\end{itemize}
+
+These are independent of the dynamic line-audit path discussed below.
+
+\subsection{RTC Line Audit and Dynamic Shared Notches}
+
+The new \texttt{raw\_time\_chunk.line\_audit} block is one of the most
+important additions for blank-sky work.
+
+\subsubsection{Detection logic}
+
+For each scan and network:
+
+\begin{enumerate}[leftmargin=1.5em]
+\item Keep detectors with sufficient good-sample fraction.
+\item Build a masked Welch PSD for each selected detector.
+\item Detect narrow peaks by prominence above a rolling-median continuum.
+\item Build a common-mode timestream from the network and compute a common-mode
+PSD as well.
+\item Cluster detector peaks in frequency within a tolerance
+\texttt{cluster\_tol\_hz}.
+\item For each cluster, summarize:
+\begin{itemize}[leftmargin=1.5em]
+\item center frequency,
+\item detector count and detector fraction,
+\item median and maximum prominence,
+\item median width and line-power fraction,
+\item closest common-mode peak and its prominence.
+\end{itemize}
+\item Mark a cluster as ``notch-worthy'' when it is shared strongly enough
+across detectors, or when it has an unusually strong common-mode signature.
+\item Separately identify detector-local periodic offenders that are strong but
+not part of a shared family.
+\end{enumerate}
+
+\subsubsection{Dynamic actuation}
+
+If \texttt{apply\_shared\_notches: true}, the recommended per-network shared
+families are clustered again across networks. A cluster is applied when it is
+supported by enough networks or passes a strong common-mode override rule.
+
+The applied notch parameters are:
+
+\begin{itemize}[leftmargin=1.5em]
+\item center frequency = median family frequency,
+\item width = clipped and rescaled family width,
+\item count limited by \texttt{apply\_max\_notches}.
+\end{itemize}
+
+This makes the shared-line removal policy explicit and auditable. Importantly,
+detector-local line candidates are diagnostic by default; they are not
+automatically flagged or notched in the accepted blank-sky baseline.
+
+\subsection{Network Step Mask}
+
+\texttt{raw\_time\_chunk.flagging.network\_step\_mask} detects aligned level
+shifts within a network and masks a shared time window around the dominant step.
+
+The trigger is network-level, not detector-level. A mask is applied only when:
+
+\begin{itemize}[leftmargin=1.5em]
+\item enough detectors participate,
+\item a sufficient fraction of detectors are step-active,
+\item a sufficient fraction of those active detectors align in time,
+\item the proposed newly flagged fraction stays below
+\texttt{max\_flagged\_fraction}.
+\end{itemize}
+
+This is meant to protect downstream PTC cleaning from step-driven contamination
+that should be treated as a network event rather than many isolated detector
+glitches.
+
+\subsection{Impulsive Capture and Impulsive Coincidence Mask}
+
+Two related additions handle short impulsive failures:
+
+\begin{itemize}[leftmargin=1.5em]
+\item \texttt{impulsive\_capture} saves the top few per-network impulsive
+detectors and short standardized snippets around each event.
+\item \texttt{impulsive\_coincidence} detects same-sample or near-same-sample
+impulsive activity within one network or across several networks, then masks a
+short shared time window if the event is sufficiently aligned and sufficiently
+common.
+\end{itemize}
+
+The coincidence logic supports both:
+
+\begin{enumerate}[leftmargin=1.5em]
+\item a local-network trigger based on detector fraction and alignment fraction,
+\item a cross-network trigger based on the number of aligned networks, with an
+optional high-score override.
+\end{enumerate}
+
+The saved snippets are especially valuable for later human inspection, because
+they show whether the dominant RTC events are actually compact bursts, steps,
+or something else.
+
+\subsection{RTC Diagnostics Output}
+
+The new \texttt{timestream.output.rtcdiag.enabled} switch writes a compact
+\texttt{*\_rtcdiag.nc} sidecar even when full RTC TOD output is disabled. This
+sidecar contains network-level metrics, line-audit provenance, impulsive slot
+captures, mask decisions, and enough config provenance to interpret them later.
+
+This is a substantial workflow improvement for large survey audits because it
+decouples ``save all RTC samples'' from ``save enough information to debug RTC.''
+
+\section{PTC Changes}
+
+\subsection{Cleaner Refactor}
+
+The PTC cleaner is the other major redesign. In \texttt{4.x} the effective
+mode-removal rule was mostly ``standard PCA with a configured cut depth.''
+In \texttt{gw\_dev}, the cleaner block is explicit and modular:
+
+\begin{itemize}[leftmargin=1.5em]
+\item \texttt{standard\_pca},
+\item \texttt{null\_model},
+\item \texttt{marchenko\_pastur},
+\item \texttt{adaptive\_selector}.
+\end{itemize}
+
+The key conceptual change is that the branch now separates:
+
+\begin{enumerate}[leftmargin=1.5em]
+\item how a baseline PCA basis is built,
+\item how many modes should be removed,
+\item whether the chosen depth should vary by scan/network row.
+\end{enumerate}
+
+\subsection{Null-Model Cleaner}
+
+The \texttt{null\_model} option estimates the number of removable modes by
+comparing the observed eigenspectrum to a circular-shift surrogate ensemble.
+
+Algorithm:
+
+\begin{enumerate}[leftmargin=1.5em]
+\item Keep detectors that satisfy \texttt{min\_good\_frac} and have finite
+non-zero variance.
+\item Standardize each detector.
+\item Compute the observed masked covariance eigenspectrum.
+\item Generate \texttt{n\_surrogates} surrogates by circularly shifting each
+detector independently in time.
+\item For each eigenvalue rank \(k\), compute the surrogate quantile envelope
+at \texttt{quantile}.
+\item Set the cleaning depth \(k_{\mathrm{null}}\) equal to the number of
+observed eigenvalues that exceed the corresponding null envelope.
+\end{enumerate}
+
+This is a direct empirical null test for coherent structure. In practice it is
+useful when the failure mode resembles excess cross-detector coherence that
+cannot be characterized well by a fixed cut.
+
+\subsection{Marchenko--Pastur Cleaner}
+
+The \texttt{marchenko\_pastur} option estimates mode depth by fitting the bulk
+eigenspectrum of a robustly whitened covariance matrix.
+
+Algorithm:
+
+\begin{enumerate}[leftmargin=1.5em]
+\item Keep detectors with enough good samples.
+\item Robustly center each detector.
+\item Optionally band-limit the timestream before covariance estimation.
+\item Robustly rescale the centered detectors to produce approximately
+unit-scale residuals.
+\item Optionally clip extreme \(z\)-scores.
+\item Form a masked covariance matrix and estimate an effective sample count
+from the overlap matrix.
+\item Fit the lower bulk of the eigenspectrum with a scaled
+Marchenko--Pastur model.
+\item Compute the fitted upper bulk edge \(\lambda_+\).
+\item Set \(k_{\mathrm{MP}}\) to the number of observed eigenvalues above
+\(\lambda_+\).
+\end{enumerate}
+
+This is attractive for blank-sky residual work because it provides an adaptive
+criterion tied to random-matrix expectations rather than a manually tuned fixed
+mode count.
+
+\subsection{Adaptive Selector}
+
+The \texttt{adaptive\_selector} does \emph{not} invent a completely free cleaning
+depth. Instead, it tests a bounded set of candidate cuts around a configured
+baseline and chooses the one with the best cheap residual score.
+
+For each candidate \(k\):
+
+\begin{enumerate}[leftmargin=1.5em]
+\item Apply the PCA subtraction up to depth \(k\).
+\item Subsample detectors, times, and detector pairs for speed.
+\item Compute residual metrics such as:
+\begin{itemize}[leftmargin=1.5em]
+\item median absolute detector-pair correlation,
+\item low/mid common-mode bandpower ratio,
+\item Gaussian tail excess beyond \(|z|>4\),
+\item top residual mode fraction.
+\end{itemize}
+\item Normalize the candidate metrics across the tested set.
+\item Score the candidate using
+\[
+\mathrm{score}(k) =
+\mathrm{corr}(k)
+ + w_{\mathrm{low}} \, \mathrm{low}(k)
+ + w_{\mathrm{tail}} \, \mathrm{tail}(k)
+ + w_{\mathrm{top}} \, \mathrm{top}(k)
+ + w_{\mathrm{reg}} \, \mathrm{reg}(k),
+\]
+where the regularization term penalizes moves away from the baseline cut.
+\item Choose the lowest-score candidate; fall back to the configured baseline
+if the selector fails.
+\end{enumerate}
+
+This is the runtime counterpart of the offline blank-sky oracle studies in
+\texttt{tools/blank\_sky}.
+
+\subsection{Second-Pass Local Residual Flagging}
+
+The new \texttt{processed\_time\_chunk.flagging.second\_pass\_local} block runs
+after PCA/common-mode cleaning. It asks a different question from RTC despiking:
+``what compact detector-local residual events survived PTC cleaning?''
+
+For each detector:
+
+\begin{enumerate}[leftmargin=1.5em]
+\item Build a local baseline from the cleaned detector residual.
+\item Detect raw-like and delta-like compact events using thresholds scaled
+from \texttt{min\_spike\_sigma}.
+\item Merge nearby hits within a detector.
+\item Cluster merged detector events within a network.
+\item Promote a cluster to automatic masking if it has at least
+\texttt{min\_cluster\_detectors} detectors, or if its peak score exceeds
+\texttt{high\_score\_cluster\_override}.
+\item If too many candidate clusters are present, mark the network as busy and
+keep the stage diagnostic-only rather than auto-flagging aggressively.
+\end{enumerate}
+
+This is intentionally conservative: it is meant to catch leftover compact
+residual contamination without turning every difficult network into a heavily
+masked network.
+
+\subsection{Weight Correlation Penalty}
+
+The new \texttt{processed\_time\_chunk.weighting.corr\_penalty} option
+downweights a scan/network row based on residual-systematics metrics.
+
+The severity combines up to three terms:
+
+\begin{enumerate}[leftmargin=1.5em]
+\item sampled detector-pair median \(|\rho|\),
+\item \(|\rho(\mathrm{common\ mode}, \mathrm{TelElAct})|\),
+\item common-mode low/mid bandpower ratio.
+\end{enumerate}
+
+Each metric is mapped to a score between 0 and 1 via a configurable
+\texttt{ref} and \texttt{span}. The weighted average severity then becomes a
+multiplicative penalty factor:
+\[
+f = f_{\min} + (1-f_{\min}) (1-s)^\gamma,
+\]
+where \(s\) is the combined severity, \(f_{\min}=\texttt{floor}\), and
+\(\gamma=\texttt{exponent}\).
+
+Interpretation: rows with unusually correlated or scan-coupled residuals keep
+contributing, but with reduced statistical leverage.
+
+\subsection{Busy-Row Suppression}
+
+\texttt{processed\_time\_chunk.weighting.busy\_row\_suppression} is a harder
+weighting control built on the second-pass diagnostics. It can multiply
+detector weights in a whole scan/network row by a factor, commonly \(0\), when
+the row shows:
+
+\begin{itemize}[leftmargin=1.5em]
+\item enough candidate residual clusters,
+\item a sufficiently large surviving residual peak,
+\item optionally a busy-network veto from the second-pass stage.
+\end{itemize}
+
+This is aimed at pathological rows that are better treated as survey-level
+downweighting problems than as detector-by-detector masking problems.
+
+\subsection{Fruit-Loops and Weight Handling}
+
+Fruit-loops gained several controls because the branch changes the details of
+map-to-TOD projection and weight reuse:
+
+\begin{itemize}[leftmargin=1.5em]
+\item \texttt{interp\_mode\_override}: choose \texttt{auto},
+\texttt{nearest}, \texttt{bilinear}, \texttt{jinc}, or \texttt{trunc}.
+\item \texttt{legacy\_center}: switch between the newer \((n-1)/2\) center
+convention and the legacy \(n/2\) convention.
+\item \texttt{center\_keep\_radius\_arcsec}: preserve the central region from
+coverage-cut masking when loading fruit-loops templates.
+\item \texttt{recompute\_weights\_after\_addback}: choose between keeping the
+source-subtracted weights or restoring the older ``recompute after add-back''
+behavior.
+\end{itemize}
+
+These controls matter because fruit-loops gain can be sensitive to projection
+operator details, especially when feedback is iterated several times.
+
+\section{Mapmaking and Filtering Changes}
+
+\subsection{Jinc Sub-Pixel Kernel Sampling}
+
+The new \texttt{mapmaking.jinc\_filter.subpixel\_n} setting augments the jinc
+kernel library with sub-pixel shifted versions. If \texttt{subpixel\_n} \(> 1\),
+the code precomputes \(\texttt{subpixel\_n}^2\) shifted jinc matrices and picks
+the appropriate kernel according to the detector's fractional pixel position.
+
+This reduces discretization error when using jinc-based projection or gridding,
+and it also feeds through into fruit-loops when jinc interpolation is requested.
+
+\subsection{Wiener Filter Convergence Controls}
+
+The Wiener denominator solver now has explicit stopping controls:
+
+\begin{itemize}[leftmargin=1.5em]
+\item \texttt{denom\_rel\_tol},
+\item \texttt{tail\_frac\_tol},
+\item \texttt{max\_loops},
+\item \texttt{denom\_check\_iters},
+\item \texttt{max\_denom\_iters}.
+\end{itemize}
+
+Previously the denominator loop effectively ran according to built-in logic.
+Now the solver can stop when both the relative update and the remaining
+\(|Z|\)-tail fraction are small, or when a configured iteration cap is reached.
+
+This is primarily a stability and run-time management improvement rather than a
+new science algorithm.
+
+\subsection{Optional OpenMP Wiener Backend}
+
+The branch introduces the build option
+\texttt{CITLALI\_USE\_WIENER\_FILTER\_OMP}. When enabled, the mapmaker uses an
+OpenMP-parallel Wiener implementation and adjusts FFTW threading to avoid nested
+parallelism. This matters mostly for large coadds or noise realizations.
+
+\subsection{Map Normalization and WCS Fixes}
+
+Additional mapmaking changes include:
+
+\begin{itemize}[leftmargin=1.5em]
+\item use of \texttt{grid\_weight} during normalization when present,
+\item consistent FITS orientation handling,
+\item more consistent map-center conventions based on \((n-1)/2\),
+\item corrected radial-distance logic in annulus RMS calculations,
+\item more uniform sign conventions for WCS \texttt{CDELT1}.
+\end{itemize}
+
+\section{Pointing, Telescope, and I/O Changes}
+
+\subsection{Pointing and Coordinate Fixes}
+
+Several subtle but important geometric fixes were introduced:
+
+\begin{itemize}[leftmargin=1.5em]
+\item tangent-plane inverse transforms now use \texttt{atan2}, improving
+quadrant handling,
+\item the tangent-plane origin case now returns the actual tangent point rather
+than a degenerate zero result,
+\item detector offsets are suppressed in detector-grouped maps unless explicitly
+requested,
+\item source-center RA/Dec headers written from configured map centers are now
+stored in radians rather than degrees,
+\item the scan and map center convention is consistently \((n-1)/2\) rather
+than \(n/2\).
+\end{itemize}
+
+The net effect is a more internally consistent tangent-plane geometry and fewer
+silent coordinate bookkeeping errors.
+
+\subsection{Telescope Scan-Index Robustness}
+
+\texttt{gw\_dev} is more defensive when constructing scan chunks:
+
+\begin{itemize}[leftmargin=1.5em]
+\item it validates the presence and size of telescope series before using them,
+\item it handles \texttt{map\_coord} values more flexibly
+(\texttt{ra/dec}, \texttt{az/el/alt}, \texttt{gal/l/b}),
+\item it throws explicit errors on invalid chunking requests or empty in-bounds
+segments,
+\item it checks that all TolTEC networks agree on the sample rate before gap
+alignment.
+\end{itemize}
+
+\subsection{Per-Observation Flux-Scale Correction}
+
+A new input calibration item,
+\texttt{flxscale\_correction}, allows a multiplicative correction to the APT
+\texttt{flxscale} for a given observation. This is an operational convenience
+feature, but it can materially affect calibrated fluxes and should therefore be
+treated as part of the reduction provenance.
+
+\subsection{TOD Output, Compression, and Atomic Writes}
+
+Relative to \texttt{4.x}:
+
+\begin{itemize}[leftmargin=1.5em]
+\item RTC and PTC TOD output can each be restricted to selected chunk indices.
+\item TOD output supports a compact \texttt{mini} mode to reduce storage cost.
+\item RTC diagnostics can be written independently of full RTC TOD.
+\item netCDF writes use an atomic temp-file pattern, reducing the chance of
+partially written products.
+\item reduction logs can be mirrored to a gzip-compressed sink.
+\end{itemize}
+
+These are primarily engineering improvements, but they matter for survey-scale
+processing where I/O volume and failure recovery become first-order concerns.
+
+\section{New Analysis and Support Tooling}
+
+The branch adds two notable tool families.
+
+\subsection{Beammap Prior Builders}
+
+\texttt{data/beammap\_priors} now contains tracked prior artifacts and builder
+scripts for network-level and slot-level priors. This formalizes what was
+previously an implicit calibration memory into an auditable, version-controlled
+data product.
+
+\subsection{Blank-Sky and RTC Diagnostic Tools}
+
+\texttt{tools/blank\_sky} introduces a substantial residual-analysis toolkit,
+including:
+
+\begin{itemize}[leftmargin=1.5em]
+\item blank-sky null audits,
+\item MP mode estimators,
+\item bounded PCA-cut oracles and selector-fit tools,
+\item non-Gaussian failure-family classifiers,
+\item RTC impulsive slot reports,
+\item RTC diagnostic survey and dashboard utilities.
+\end{itemize}
+
+These are not part of the runtime pipeline itself, but they explain why several
+runtime algorithms in \texttt{gw\_dev} are more diagnostic- and null-test-driven
+than in \texttt{4.x}.
+
+\section{Configuration Migration Guide}
+
+\subsection{Interpretation Notes}
+
+Most of the new controls are \emph{opt-in}. The major exceptions are:
+
+\begin{itemize}[leftmargin=1.5em]
+\item \texttt{timestream.output.rtcdiag.enabled}, which defaults to
+\texttt{true},
+\item the cleaner block refactor, where the old PCA controls now live under
+\texttt{standard\_pca},
+\item fruit-loops defaults that follow the newer map-center and interpolation
+logic unless explicitly overridden.
+\end{itemize}
+
+\subsection{Beammap Additions}
+
+\begin{lstlisting}[language={}]
+beammap:
+  rfi_mask:  # sample-domain beammap RFI detector; typical use: leave off unless scans show bursty artifacts
+    enabled: false  # turn sample-level beammap RFI masking on/off; typical use: false for baseline, true for bursty scans
+    block_size_samples: 64  # detector block length for robust variance tests; typical use: 32-128
+    min_good_samples: 32  # minimum usable samples per block for statistics; typical use: 16-64 and <= block_size_samples
+    dilate_blocks: 1  # expand each detected bad block by neighboring blocks; typical use: 0-2
+    sigma_threshold: 6.0  # block MAD(diff) trigger in units of detector-global MAD(diff); typical use: 4-8
+    sigma_floor: 0.0  # absolute floor on block sigma before masking can trigger; typical use: 0 to disable, else small positive data-unit floor
+    max_flagged_fraction: 0.35  # reject proposed detector mask if it removes too much data; typical use: 0.2-0.4
+  scan_band_mask:  # detector-map edge-band mask builder; typical use: enable for coherent bad scan legs
+    enabled: false  # turn detector-map edge-band masking on/off; typical use: false for clean scans, true for coherent bad legs
+    edge_rows: 24  # number of top/bottom rows inspected for edge contamination; typical use: 8-32
+    min_row_pixels: 8  # minimum positive-weight pixels needed to evaluate a row; typical use: 4-16
+    min_contiguous_rows: 2  # require at least this many adjacent bad rows before masking; typical use: 2-4
+    row_median_sigma_threshold: 4.0  # threshold on row-median offset from interior rows; typical use: 3-6
+    row_sigma_ratio_threshold: 2.5  # threshold on row MAD relative to interior-row MAD; typical use: 2-4
+    max_flagged_fraction: 0.30  # reject proposed sample mask if too much detector TOD would be lost; typical use: 0.2-0.4
+  split_fits_by_flag:  # optional beammap QC outputs split by detector-flag class; typical use: off in production, on for diagnostics
+    enabled: false  # write separate detector-grouped FITS files by final detector flag; typical use: false or true for QC runs
+    flag_values: [0, 1]  # detector flag values to emit in separate FITS files; typical use: [0,1]
+  priors:  # prior-guided beammap slot-assignment controls; typical use: off for legacy reductions, on for prior-assisted commissioning
+    enabled: false  # enable prior-guided beammap seed selection; typical use: false for legacy behavior, true for detector-grouped beammap
+    filepath: data/beammap_priors/beammap_slot_priors_soft_v1.ecsv  # soft-prior table to load; typical use: tracked ECSV prior file
+    candidate_top_n: 64  # number of highest-significance pixels to evaluate against priors; typical use: 16-128
+    min_snr: 0.0  # ignore map pixels below this robust weighted significance; typical use: 0-5
+    max_d2: 25.0  # Mahalanobis prior gate, with 0 disabling the gate; typical use: 9-36 or 0
+    score_lambda: 2.0  # weight of prior-distance penalty in score = snr - lambda*d^2; typical use: 1-4
+    fallback_blind: true  # fall back to blind initialization if no prior candidate survives; usually true unless testing strict priors
+  flagging:  # final beammap detector-position quality cuts; typical use: keep permissive until thresholds are tuned
+    array_network_robust_z: [0, 0, 0]  # per-array network-robust radial-z cut on final positions, 0 disables; typical use: [0,0,0] or [3-6,...]
+    max_prior_d2: 0.0  # final nearest-slot Mahalanobis distance cut, 0 disables; typical use: 0 or 9-36
+\end{lstlisting}
+
+\subsection{Mapmaking and Wiener Additions}
+
+\begin{lstlisting}[language={}]
+mapmaking:
+  jinc_filter:  # jinc-kernel sampling controls for map projection; typical use: defaults are adequate unless testing interpolation fidelity
+    subpixel_n: 1  # sub-pixel jinc kernel sampling factor, with 1 meaning off; typical use: 1-4
+
+wiener_filter:
+  denom_rel_tol: 1.0e-4  # stop when denominator relative updates are this small; typical use: 1e-5 to 1e-3
+  tail_frac_tol: 5.0e-2  # stop when remaining |Z| tail fraction is this small; typical use: 0.01-0.10
+  max_loops: 500  # maximum number of convergence checks before early stop; typical use: 100-1000
+  denom_check_iters: 0  # iterations between denominator checks, 0 lets code choose automatically; typical use: 0 or 100-1000
+  max_denom_iters: 0  # hard cap on denominator iterations, 0 means no extra cap beyond solver logic; typical use: 0 or 1e4-1e6
+\end{lstlisting}
+
+\subsection{RTC Additions}
+
+\begin{lstlisting}[language={}]
+timestream:
+  output:
+    rtcdiag:  # lightweight RTC diagnostic sidecar output; typical use: keep enabled
+      enabled: true  # write compact RTC diagnostics sidecar even without full RTC TOD; usually true
+  raw_time_chunk:
+    despike:
+      local_residual:  # local-baseline RTC impulsive-event detector; typical use: enable only for glitchy scans
+        enabled: false  # enable local-baseline RTC despike pass for compact residual events; typical use: false or true in glitchy data
+        window_sec: 0.25  # smoothing window used to define local baseline; typical use: 0.1-0.5 s
+        sigma_scale: 0.75  # scale factor on raw local-residual threshold relative to min_spike_sigma; typical use: 0.5-1.0
+        delta_sigma_scale: 0.75  # scale factor on delta local-residual threshold; typical use: 0.5-1.0
+        compact_raw_gate:  # shape gate for raw-like events; typical use: keep enabled when local_residual is enabled
+          enabled: true  # require raw-like local events to be compact rather than step-like; usually true if local_residual is enabled
+          candidate_rel_sigma_scale: 1.0  # candidate-admission threshold relative to accepted raw threshold; typical use: 0.8-1.5
+          window_sec: 0.18  # event-characterization window for raw-like candidates; typical use: 0.1-0.3 s
+          half_peak_frac: 0.5  # width measured at this fraction of event peak; typical use: 0.3-0.7
+          max_width_sec: 0.18  # reject raw-like events broader than this; typical use: 0.05-0.3 s
+          max_step_shift_z: 3.0  # reject candidates with too large pre/post baseline jump; typical use: 2-5
+        compact_delta_gate:  # shape gate for delta-like events; typical use: keep enabled when local_residual is enabled
+          enabled: true  # require delta-like events to be compact rather than mini-steps; usually true if local_residual is enabled
+          window_sec: 0.12  # event-characterization window for delta-like candidates; typical use: 0.05-0.2 s
+          half_peak_frac: 0.5  # width measured at this fraction of delta-event peak; typical use: 0.3-0.7
+          max_width_sec: 0.10  # reject delta-like events broader than this; typical use: 0.03-0.15 s
+          max_step_shift_z: 3.0  # reject delta candidates with step-like baseline shift; typical use: 2-5
+    filter:
+      notch:  # static user-specified RTC notch family; typical use: off unless known persistent lines exist
+        enabled: false  # enable static RTC notch filtering after FIR setup; typical use: false unless known persistent lines exist
+        freqs_Hz: [10.5]  # notch center frequencies in Hz; typical use: one or a few known line frequencies
+        delta_f_Hz: [1.0]  # notch widths in Hz, matched one-for-one with freqs_Hz; typical use: 0.2-2.0
+    IIR_filter:  # optional RTC high-pass IIR stage; typical use: off by default, on for extra low-frequency cleanup tests
+      enabled: false  # enable RTC high-pass IIR stage after FIR/notch; typical use: false or true for extra low-frequency cleanup
+      freq_Hz: 0.1  # high-pass cutoff frequency; typical use: 0.05-0.3 Hz
+      order: 1  # number of cascaded first-order sections; typical use: 1-3
+      zero_phase: false  # apply forward-backward filtering to remove phase delay; typical use: false or true for offline reductions
+    flagging:
+      network_step_mask:  # coincidence-based network step detector and masker; typical use: off unless synchronous steps are visible
+        enabled: false  # mask aligned network-wide step events before PTC; typical use: false or true for step-contaminated scans
+        step_window_sec: 0.5  # pre/post window used to score detector step behavior; typical use: 0.2-1.0 s
+        step_score_thresh: 2.5  # detector-level step-score threshold for participation; typical use: 2-4
+        min_good_frac: 0.8  # minimum detector good-sample fraction to participate; typical use: 0.7-0.9
+        min_det_used: 32  # minimum detectors in a network before trigger logic is trusted; typical use: 16-64
+        min_step_det_frac: 0.05  # minimum fraction of detectors that must look step-active; typical use: 0.03-0.10
+        min_alignment_frac: 0.5  # minimum fraction of active detectors aligned in time; typical use: 0.3-0.7
+        cluster_tol_sec: 0.25  # allowed timing spread around dominant step cluster; typical use: 0.1-0.5 s
+        mask_half_width_sec: 0.5  # half-width of the applied network mask around dominant step; typical use: 0.1-1.0 s
+        max_flagged_fraction: 0.30  # reject the network mask if too much data would be lost; typical use: 0.1-0.4
+      impulsive_capture:  # top-event snippet capture for RTC debugging; typical use: off in production, on during engineering
+        enabled: false  # save top impulsive RTC events and short snippets for diagnostics; typical use: false or true during engineering runs
+        min_good_frac: 0.8  # minimum detector good fraction for capture eligibility; typical use: 0.7-0.9
+        min_event_z: 6.0  # minimum event score for snippet capture; typical use: 5-8
+        near_event_z: 4.0  # softer threshold used in event summary counts; typical use: 3-6
+        max_events_per_network: 3  # cap saved events per network per scan; typical use: 1-5
+        snippet_pre_window_sec: 0.25  # amount of pre-event context to save; typical use: 0.05-0.5 s
+        snippet_post_window_sec: 0.25  # amount of post-event context to save; typical use: 0.05-0.5 s
+      impulsive_coincidence:  # cross-detector/network impulsive coincidence masker; typical use: off unless short bursts are common
+        enabled: false  # mask short aligned impulsive events within/across networks; typical use: false or true for burst-contaminated data
+        min_good_frac: 0.8  # minimum detector good fraction for coincidence metrics; typical use: 0.7-0.9
+        event_score_thresh: 6.0  # detector event score threshold for active participation; typical use: 5-8
+        min_det_used: 32  # minimum detectors per network before coincidence logic is trusted; typical use: 16-64
+        min_impulsive_det_frac: 0.05  # minimum active-detector fraction for a local network trigger; typical use: 0.03-0.10
+        min_alignment_frac: 0.5  # minimum fraction of active detectors aligned in time; typical use: 0.3-0.7
+        min_networks_aligned: 3  # minimum aligned networks for cross-network trigger; typical use: 2-4
+        high_score_override_thresh: 0.0  # score override for looser cross-network trigger, 0 disables; typical use: 0 or 8-15
+        high_score_min_networks_aligned: 0  # networks needed for override path, 0 disables; typical use: 0 or 1-2
+        cluster_tol_sec: 0.03  # coincidence timing tolerance; typical use: 0.01-0.10 s
+        mask_pre_window_sec: 0.03  # pre-event mask width for accepted coincidence; typical use: 0.01-0.10 s
+        mask_post_window_sec: 0.03  # post-event mask width for accepted coincidence; typical use: 0.01-0.10 s
+        max_flagged_fraction: 0.10  # reject proposed coincidence mask if too much data would be lost; typical use: 0.05-0.2
+    line_audit:  # PSD-based narrow-line audit and shared-notch recommender; typical use: off for legacy behavior, on for blank-sky diagnosis
+      enabled: false  # enable RTC narrow-line audit and optional shared-notch actuation; typical use: false for legacy, true for blank-sky studies
+      line_min_hz: 1.0  # lower line-search bound; typical use: 0.5-2 Hz
+      line_max_hz: 60.0  # upper line-search bound; typical use: 20-100 Hz depending on sample rate and filtering
+      segment_sec: 4.0  # Welch segment length for PSD estimation; typical use: 2-8 s
+      min_segment_sec: 2.0  # minimum contiguous good segment contributing to PSD; typical use: 1-4 s
+      overlap_frac: 0.5  # overlap fraction between Welch segments; typical use: 0.25-0.75
+      continuum_radius_bins: 8  # rolling-median half-width for local continuum estimate; typical use: 4-16 bins
+      prominence_thresh: 8.0  # detector-line prominence threshold; typical use: 6-20
+      cm_prominence_thresh: 6.0  # common-mode line prominence threshold; typical use: 5-15
+      min_good_frac: 0.8  # minimum detector good fraction to join line audit; typical use: 0.7-0.9
+      min_windows: 2  # minimum masked-Welch windows needed for a valid PSD; typical use: 2-4
+      max_peaks_per_detector: 3  # retain at most this many peaks per detector; typical use: 1-5
+      max_det: 128  # cap detectors analyzed per network, <=0 uses all; typical use: 64-256 or -1
+      min_det_for_network: 16  # minimum detectors required for a network summary; typical use: 8-32
+      cluster_tol_hz: 0.15  # within-network frequency clustering tolerance; typical use: 0.05-0.3 Hz
+      notch_min_detector_frac: 0.10  # shared detector fraction needed for notch recommendation; typical use: 0.1-0.9
+      notch_min_detectors: 8  # minimum detectors supporting strong common-mode line recommendation; typical use: 8-64
+      notch_min_cm_prominence: 10.0  # common-mode prominence needed for shared-notch recommendation; typical use: 10-100
+      detector_min_prominence: 12.0  # detector-local offender prominence threshold; typical use: 10-300
+      detector_min_line_power_frac: 0.10  # minimum line-power fraction for detector-local offender; typical use: 0.05-0.3
+      bad_detector_max_cluster_frac: 0.10  # detector-local candidate must not belong to a large shared family; typical use: 0.03-0.2
+      apply_shared_notches: false  # actually apply clustered shared-line notches before FIR; typical use: false for audit, true for vetted blank-sky configs
+      apply_min_support_networks: 2  # minimum networks supporting one shared family for application; typical use: 2-3
+      apply_min_detector_frac: 0.90  # detector fraction for strong single-network override path; typical use: 0.8-0.95
+      apply_min_common_mode_prominence: 150.0  # common-mode prominence for single-network override path; typical use: 50-1e9
+      apply_width_scale: 1.5  # multiplier from measured family width to applied notch width; typical use: 1.0-2.0
+      apply_min_width_hz: 0.25  # lower clamp on applied notch bandwidth; typical use: 0.1-0.5 Hz
+      apply_max_width_hz: 1.50  # upper clamp on applied notch bandwidth; typical use: 0.5-3 Hz
+      apply_max_notches: 3  # maximum shared notches applied per scan, 0 means no cap; typical use: 1-5
+      apply_cluster_tol_hz: 0.25  # cross-network clustering tolerance for applied notch families; typical use: 0.1-0.5 Hz
+    output:
+      indices: all  # choose all chunks or a 1-based list like [1,3,7]; typical use: all for production, short lists for debug
+      mode: full  # RTC TOD output mode, with mini saving storage; typical use: full or mini
+\end{lstlisting}
+
+\subsection{PTC and Fruit-Loops Additions}
+
+\begin{lstlisting}[language={}]
+timestream:
+  processed_time_chunk:
+    clean:
+      standard_pca:  # fixed-depth legacy PCA cleaner block; typical use: primary cleaner in most current reductions
+        enabled: true  # legacy-style PCA cleaner block; usually true unless switching to another cleaner
+        stddev_limit: 0.0  # cut modes above stddev threshold, with 0 meaning use fixed n_eig_to_cut; typical use: 0 or positive expert value
+        n_calc: 64  # number of eigenvalues/eigenvectors solved when stddev_limit is active, 0 means full; typical use: 32-128
+        n_eig_to_cut:  # per-array fixed PCA mode counts; typical use: short integer lists matched to cleaner grouping
+          a1100: [3]  # fixed PCA cut depths for a1100 groupings; typical use: [3] to [10+] depending on grouping and science case
+          a1400: [3]  # fixed PCA cut depths for a1400 groupings; typical use: [2] to [10+]
+          a2000: [3]  # fixed PCA cut depths for a2000 groupings; typical use: [2] to [10+]
+      null_model:  # surrogate-based adaptive PCA depth selector; typical use: off unless explicitly studying null-threshold cuts
+        enabled: false  # select PCA depth from circular-shift null ensemble; typical use: false unless explicitly evaluating null-model cuts
+        n_surrogates: 16  # number of null surrogate realizations; typical use: 8-64
+        quantile: 0.99  # surrogate envelope quantile used as null threshold; typical use: 0.9-0.995
+        min_good_frac: 0.8  # minimum detector good fraction for inclusion; typical use: 0.7-0.9
+        max_modes: 64  # maximum leading modes evaluated, 0 means all; typical use: 16-128 or 0
+        max_samples: 20000  # cap time samples used by null-model covariance, 0 uses all; typical use: 5e3-5e4 or 0
+        seed: 12345  # RNG seed for reproducible surrogates; use any fixed integer
+      marchenko_pastur:  # MP-bulk edge adaptive PCA depth selector; typical use: off for legacy parity, on for adaptive tests
+        enabled: false  # select PCA depth from fitted MP bulk edge; typical use: false for legacy, true in adaptive blank-sky studies
+        min_good_frac: 0.8  # minimum detector good fraction for inclusion; typical use: 0.7-0.95
+        max_modes: 64  # maximum leading modes evaluated, 0 means all; typical use: 16-128 or 0
+        max_samples: 20000  # cap samples used in covariance estimate, 0 uses all; typical use: 5e3-5e4 or 0
+        band_low_Hz: 0.0  # optional lower band edge for covariance estimation, 0 disables band-limit; typical use: 0 or 0.03-0.1 Hz
+        band_high_Hz: 0.0  # optional upper band edge for covariance estimation, 0 disables band-limit; typical use: 0 or 0.3-2 Hz
+        clip_z: 12.0  # clip robust-whitened residual z before covariance, <=0 disables; typical use: 8-20 or 0
+        bulk_keep_frac: 0.8  # fraction of smallest eigenvalues treated as MP bulk; typical use: 0.6-0.9
+        q_grid_size: 64  # size of grid used in MP q fit; typical use: 32-128
+        grouping: []  # optionally restrict MP selection to named cleaner groupings; typical use: [] or ['nw']
+      adaptive_selector:  # metric-based bounded PCA cut chooser around a baseline cut; typical use: off in production until tuned
+        enabled: false  # choose among bounded PCA cuts using cheap residual metrics; typical use: false for fixed cuts, true in tuning studies
+        min_good_frac: 0.7  # minimum detector good fraction for selector metrics; typical use: 0.6-0.9
+        max_det: 120  # cap detectors sampled for scoring, 0 uses all; typical use: 64-256 or 0
+        max_samples: 1024  # cap time samples used for scoring, 0 uses all; typical use: 512-4096 or 0
+        max_pairs: 2000  # cap detector pairs used in residual-correlation score, 0 uses all; typical use: 500-5000 or 0
+        seed: 12345  # RNG seed for reproducible subsampling; use any fixed integer
+        clip_z: 50.0  # clip robust-whitened residual z before scoring, <=0 disables; typical use: 10-100 or 0
+        low_weight: 1.0  # weight of low/mid common-mode term in selector score; typical use: 0-2
+        tail_weight: 0.0  # weight of tail-excess term in selector score; typical use: 0-1
+        topmode_weight: 0.1  # weight of residual top-mode fraction term; typical use: 0-1
+        reg_weight: 0.3  # regularization pulling chosen cut back toward baseline; typical use: 0-1
+        low_band_Hz: [0.05, 0.5]  # low band used by common-mode power ratio metric; typical use: [0.03-0.1, 0.3-0.7]
+        mid_band_Hz: [0.5, 2.0]  # mid band used by common-mode power ratio metric; typical use: [0.3-0.7, 1-3]
+        candidate_offsets: [-2, 0, 2, 4]  # candidate cut offsets tested around baseline; typical use: small symmetric/asymmetric integer list
+        grouping: []  # optionally restrict selector to named cleaner groupings; typical use: [] or ['nw']
+        log_candidates: false  # emit per-candidate score diagnostics; typical use: false for production, true for tuning
+    flagging:
+      second_pass_local:  # post-clean detector-local deglitch and cluster detector; typical use: off unless residual glitches remain
+        enabled: false  # run detector-local post-clean residual deglitching; typical use: false or true for difficult blank-sky rows
+        min_spike_sigma: 8.0  # base threshold for residual event detection; typical use: 6-10
+        min_good_frac: 0.5  # minimum detector good fraction for participation; typical use: 0.4-0.8
+        baseline_window_sec: 0.25  # smoothing window used to define local residual baseline; typical use: 0.1-0.5 s
+        sigma_scale: 0.75  # scale factor on raw-like residual threshold; typical use: 0.5-1.0
+        delta_sigma_scale: 0.75  # scale factor on delta-like residual threshold; typical use: 0.5-1.0
+        raw_candidate_rel_sigma_scale: 1.0  # candidate-admission threshold relative to accepted raw threshold; typical use: 0.8-1.5
+        raw_window_sec: 0.18  # characterization window for raw-like residual events; typical use: 0.05-0.3 s
+        raw_half_peak_frac: 0.5  # width measured at this fraction of raw-event peak; typical use: 0.3-0.7
+        raw_max_width_sec: 0.18  # reject raw-like residual events broader than this; typical use: 0.05-0.3 s
+        delta_window_sec: 0.12  # characterization window for delta-like residual events; typical use: 0.03-0.2 s
+        delta_half_peak_frac: 0.5  # width measured at this fraction of delta-event peak; typical use: 0.3-0.7
+        delta_max_width_sec: 0.10  # reject delta-like residual events broader than this; typical use: 0.03-0.15 s
+        max_step_shift_z: 3.0  # reject events with too large pre/post baseline change; typical use: 2-5
+        merge_within_detector_sec: 0.08  # merge repeated same-detector hits within this interval; typical use: 0.03-0.15 s
+        cluster_events_sec: 0.08  # cluster detector events across one network within this interval; typical use: 0.03-0.15 s
+        min_cluster_detectors: 3  # auto-flag cluster only if at least this many detectors contribute; typical use: 2-5
+        high_score_cluster_override: 9.0  # allow very strong cluster to trigger below detector-count threshold; typical use: 8-15
+        max_auto_flag_clusters_per_network: 3  # if exceeded, keep network diagnostic-only and do not auto-flag; typical use: 2-5
+    weighting:
+      corr_penalty:  # soft row-weight penalty from residual coherence diagnostics; typical use: off until survey weighting is validated
+        enabled: false  # downweight scan/network rows with strong residual coherence metrics; typical use: false or true in survey-weight tuning
+      busy_row_suppression:  # hard suppression of rows deemed pathologically busy; typical use: off by default, on for cleanup studies
+        enabled: false  # hard-suppress pathological rows based on second-pass diagnostics; typical use: false or true for survey cleanup
+    output:
+      indices: all  # choose all chunks or a 1-based list like [1,3,7]; typical use: all for production, short lists for debug
+
+  fruit_loops:  # map-to-TOD source-model handling overrides; typical use: leave defaults unless reproducing older behavior
+    center_keep_radius_arcsec: 0.0  # exempt central source region from coverage-cut masking when loading templates; typical use: 0 or source-scale radius
+    interp_mode_override: auto  # override map->TOD interpolation mode: auto|nearest|bilinear|jinc|trunc; typical use: auto
+    legacy_center: false  # use legacy n/2 center convention instead of newer (n-1)/2; typical use: false, or true for legacy comparisons
+    recompute_weights_after_addback: false  # recompute weights after source add-back instead of keeping source-subtracted weights; typical use: false or true for v4-style tests
+\end{lstlisting}
+
+\subsection{Input Additions}
+
+\begin{lstlisting}[language={}]
+inputs:
+  - cal_items:  # per-observation calibration override entries; typical use: add only when APT flxscale needs manual correction
+      - value: 1.0  # multiplicative correction applied to APT flxscale for this observation; typical use: 0.8-1.2, must be > 0
+        type: flxscale_correction  # calibration item type name; use exactly this literal when applying per-observation flux-scale correction
+\end{lstlisting}
+
+The \texttt{modified\_julian\_date} comment for pointing offsets also changed:
+the branch now explicitly expects two values when the user wants interpolation
+between two offset endpoints.
+
+\section{Practical Recommendations}
+
+For collaborators rolling onto this branch:
+
+\begin{enumerate}[leftmargin=1.5em]
+\item Treat beammap priors and beammap masking as opt-in science controls, not
+as harmless bookkeeping. They can materially change detector acceptance.
+\item For blank-sky work, save \texttt{rtcdiag} even if you do not save the full
+RTC TOD; the sidecar is cheap and extremely informative.
+\item Do not enable \texttt{null\_model}, \texttt{marchenko\_pastur}, or
+\texttt{adaptive\_selector} simultaneously. The new cleaner design assumes one
+active mode-selection strategy.
+\item If fruit-loops behavior changes unexpectedly, inspect
+\texttt{interp\_mode\_override}, \texttt{legacy\_center}, and
+\texttt{recompute\_weights\_after\_addback} before concluding that the sky model
+itself is unstable.
+\item When comparing to older reductions, compare not only the final maps but
+also the beammap QC tables and the RTC/PTC diagnostic summaries; many
+differences in \texttt{gw\_dev} are now explicitly observable rather than hidden.
+\end{enumerate}
+
+\section{Bottom Line}
+
+\texttt{gw\_dev} should be understood as a science-method branch, not merely a
+bug-fix branch. It adds:
+
+\begin{itemize}[leftmargin=1.5em]
+\item prior-aware beammap fitting,
+\item a more diagnostic RTC layer with optional shared-line and impulsive
+actuation,
+\item adaptive and null-driven PTC cleaning options,
+\item explicit controls over fruit-loops projection semantics,
+\item improved output provenance and survey-scale debugging tools.
+\end{itemize}
+
+For collaborators, the key mental model is that this branch exposes and manages
+failure modes that \texttt{4.x} mostly left implicit. That is valuable, but it
+also means reductions on \texttt{gw\_dev} are more configurable and therefore
+need more disciplined provenance tracking than a standard \texttt{4.x} run.
+
+\end{document}

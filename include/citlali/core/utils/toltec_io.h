@@ -26,7 +26,9 @@ public:
         rtc_timestream = 4,
         ptc_timestream = 5,
         stats = 6,
-        rtcdiag = 7
+        rtcdiag = 7,
+        ptcdiag = 8,
+        mapdiag = 9
     };
 
     // raw or filtered
@@ -110,6 +112,8 @@ std::string toltecIO::create_filename(const std::string filepath, const std::str
     else if constexpr (prod_t == ptc_timestream) filename += "_ptc_timestream";
     else if constexpr (prod_t == stats) filename += "_stats";
     else if constexpr (prod_t == rtcdiag) filename += "_rtcdiag";
+    else if constexpr (prod_t == ptcdiag) filename += "_ptcdiag";
+    else if constexpr (prod_t == mapdiag) filename += "_mapdiag";
 
     if constexpr (filter_t == filtered) {
         filename += "_filtered";

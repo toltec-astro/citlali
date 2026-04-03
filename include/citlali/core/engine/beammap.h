@@ -2127,10 +2127,20 @@ void Beammap::run_loop() {
         });
 
         // write ptc timestreams
-        if (run_tod_output && !tod_filename.empty()) {
-            if (tod_output_type == "ptc" || tod_output_type == "both") {
-                logger->info("writing processed time chunk");
-                if (current_iter == beammap_tod_output_iter) {
+        if (current_iter == beammap_tod_output_iter) {
+            if (run_ptcdiag_output && !ptcdiag_filename.empty()) {
+                logger->info("writing ptc diagnostics sidecar chunks");
+                for (Eigen::Index i=0; i<telescope.scan_indices.cols(); ++i) {
+                    ptcproc.append_diag_to_netcdf(ptcs[i], ptcdiag_filename, calib_scans[i], ptcs[i].index.data);
+                    if (!(run_tod_output && !tod_filename.empty() &&
+                          (tod_output_type == "ptc" || tod_output_type == "both"))) {
+                        ptcproc.clear_cached_diagnostics(ptcs[i].index.data);
+                    }
+                }
+            }
+            if (run_tod_output && !tod_filename.empty()) {
+                if (tod_output_type == "ptc" || tod_output_type == "both") {
+                    logger->info("writing processed time chunk");
                     for (Eigen::Index i=0; i<telescope.scan_indices.cols(); ++i) {
                         const auto ptc_scan_row = tod_output_scan_row(i, "ptc");
                         if (ptc_scan_row < 0) {
@@ -2138,6 +2148,7 @@ void Beammap::run_loop() {
                         }
                         ptcproc.append_to_netcdf(ptcs[i], tod_filename["ptc"], map_grouping, telescope.pixel_axes,
                                                  ptcs[i].pointing_offsets_arcsec.data, calib_scans[i], true, ptc_scan_row);
+                        ptcproc.clear_cached_diagnostics(ptcs[i].index.data);
                     }
                 }
             }
@@ -4375,6 +4386,10 @@ void Beammap::output() {
             write_psd<map_type>(mb, dir_name);
             logger->debug("writing histograms");
             write_hist<map_type>(mb, dir_name);
+            if (run_mapdiag_output) {
+                logger->debug("writing map diagnostics");
+                write_mapdiag<map_type>(mb, dir_name);
+            }
         }
     }
 }

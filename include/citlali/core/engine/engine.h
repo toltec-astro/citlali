@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <unordered_map>
 #include <algorithm>
 #include <cctype>
 #include <omp.h>
@@ -266,7 +267,10 @@ public:
     bool run_tod_output_rtc = false;
     bool run_tod_output_ptc = false;
     bool run_rtcdiag_output = true;
+    bool run_ptcdiag_output = true;
+    bool run_mapdiag_output = true;
     std::string rtcdiag_filename;
+    std::string ptcdiag_filename;
 
     // legacy shared TOD output selection (kept for backward compatibility helpers)
     bool tod_output_chunk_select_enabled = false;
@@ -362,6 +366,7 @@ public:
     template <engine_utils::toltecIO::ProdType prod_t>
     void create_tod_files();
     void create_rtcdiag_file();
+    void create_ptcdiag_file();
 
     // setup and query selected TOD output chunks
     void setup_tod_output_chunk_selection();
@@ -403,6 +408,10 @@ public:
     // write map histograms
     template <mapmaking::MapType map_t, class map_buffer_t>
     void write_hist(map_buffer_t &, std::string);
+
+    // write compact map diagnostics sidecar
+    template <mapmaking::MapType map_t, class map_buffer_t>
+    void write_mapdiag(map_buffer_t &, std::string);
 
     // write stats netCDF4 file
     void write_stats();
@@ -505,7 +514,7 @@ void Engine::obsnum_setup() {
 
     setup_tod_output_chunk_selection();
     // create output subdirectory if requested
-    if ((run_tod_output || run_rtcdiag_output) && tod_output_subdir_name!="null") {
+    if ((run_tod_output || run_rtcdiag_output || run_ptcdiag_output) && tod_output_subdir_name!="null") {
         fs::create_directories(obsnum_dir_name + "raw/" + tod_output_subdir_name);
     }
     // create timestream files
@@ -525,6 +534,9 @@ void Engine::obsnum_setup() {
     }
     if (run_rtcdiag_output) {
         create_rtcdiag_file();
+    }
+    if (run_ptcdiag_output) {
+        create_ptcdiag_file();
     }
 
     // output basic info for obs reduction to command line
@@ -748,6 +760,10 @@ void Engine::get_timestream_config(CT &config) {
         get_config_value(config, run_rtcdiag_output, missing_keys, invalid_keys,
                          std::tuple{"timestream","output","rtcdiag","enabled"});
     }
+    if (config.has(std::tuple{"timestream","output","ptcdiag","enabled"})) {
+        get_config_value(config, run_ptcdiag_output, missing_keys, invalid_keys,
+                         std::tuple{"timestream","output","ptcdiag","enabled"});
+    }
     // write eigenvalues to stats file
     get_config_value(config, diagnostics.write_evals, missing_keys, invalid_keys,
                      std::tuple{"timestream","output", "stats","eigenvalues"});
@@ -894,6 +910,10 @@ void Engine::get_mapmaking_config(CT &config) {
     // run coaddition?
     get_config_value(config, run_coadd, missing_keys, invalid_keys,
                      std::tuple{"coadd","enabled"});
+    if (config.has(std::tuple{"mapmaking","output","mapdiag","enabled"})) {
+        get_config_value(config, run_mapdiag_output, missing_keys, invalid_keys,
+                         std::tuple{"mapmaking","output","mapdiag","enabled"});
+    }
 
     // re-run to get config for cmb
     if (run_coadd) {
@@ -3057,6 +3077,8 @@ void Engine::cli_summary() {
         }
     }
     logger->info("RTC diagnostics sidecar output: {}", run_rtcdiag_output ? "enabled" : "disabled");
+    logger->info("PTC diagnostics sidecar output: {}", run_ptcdiag_output ? "enabled" : "disabled");
+    logger->info("Map diagnostics sidecar output: {}", run_mapdiag_output ? "enabled" : "disabled");
 
     // test getting memory usage for fun
     /*struct sysinfo memInfo;
@@ -4323,6 +4345,533 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
             hist_v.putVar(mb->noise_hists[i].data());
         }
     }
+    });
+}
+
+template <mapmaking::MapType map_t, class map_buffer_t>
+void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
+    std::string filename = setup_filenames<map_t, engine_utils::toltecIO::toltec, engine_utils::toltecIO::mapdiag>(dir_name);
+    const std::size_t n_maps_local = static_cast<std::size_t>(n_maps);
+    const std::size_t n_obsnums = std::max<std::size_t>(1, mb->obsnums.size());
+    const bool is_coadd = (map_t == mapmaking::RawCoadd || map_t == mapmaking::FilteredCoadd);
+    const double fill_double = std::numeric_limits<double>::quiet_NaN();
+    const int fill_int = -2147483647;
+
+    std::vector<std::string> array_names(n_maps_local);
+    std::vector<std::string> stokes_names(n_maps_local);
+    std::vector<std::string> map_names(n_maps_local);
+    std::vector<double> median_err(n_maps_local, fill_double);
+    std::vector<double> median_rms(n_maps_local, fill_double);
+    std::vector<double> weight_thresholds(n_maps_local, fill_double);
+    std::vector<double> weight_sum(n_maps_local, fill_double);
+    std::vector<double> core_weight_sum(n_maps_local, fill_double);
+    std::vector<double> coverage_sum(n_maps_local, fill_double);
+    std::vector<double> coverage_max(n_maps_local, fill_double);
+    std::vector<double> coverage_median_core(n_maps_local, fill_double);
+    std::vector<double> peak_signal(n_maps_local, fill_double);
+    std::vector<double> peak_abs_sig2noise(n_maps_local, fill_double);
+    std::vector<int> n_valid_pixels(n_maps_local, 0);
+    std::vector<int> n_core_pixels(n_maps_local, 0);
+    std::vector<int> peak_row(n_maps_local, fill_int);
+    std::vector<int> peak_col(n_maps_local, fill_int);
+
+    std::vector<double> obs_weight_sum(n_maps_local * n_obsnums, fill_double);
+    std::vector<double> obs_weight_frac(n_maps_local * n_obsnums, fill_double);
+    std::vector<double> obs_core_weight_sum(n_maps_local * n_obsnums, fill_double);
+    std::vector<double> obs_core_weight_frac(n_maps_local * n_obsnums, fill_double);
+    std::vector<int> obs_valid_pixels(n_maps_local * n_obsnums, fill_int);
+    std::vector<int> obs_core_pixels(n_maps_local * n_obsnums, fill_int);
+
+    auto put_string_1d = [](netCDF::NcFile &fo, const std::string &name, netCDF::NcDim dim,
+                            const std::vector<std::string> &values, const std::string &comment = "") {
+        netCDF::NcVar v = fo.addVar(name, netCDF::ncString, dim);
+        if (!comment.empty()) {
+            v.putAtt("comment", comment);
+        }
+        for (std::size_t i = 0; i < values.size(); ++i) {
+            const std::vector<std::size_t> idx = {i};
+            std::string value = values[i];
+            v.putVar(idx, value);
+        }
+    };
+
+    auto accumulate_obs_weight = [&](Eigen::Index map_i,
+                                     const Eigen::ArrayXXd &core_mask,
+                                     const Eigen::MatrixXd &obs_weight,
+                                     std::size_t obs_index) {
+        const Eigen::Index block_row = (mb->n_rows - obs_weight.rows()) / 2;
+        const Eigen::Index block_col = (mb->n_cols - obs_weight.cols()) / 2;
+        Eigen::Index row0 = std::max<Eigen::Index>(0, block_row);
+        Eigen::Index col0 = std::max<Eigen::Index>(0, block_col);
+        Eigen::Index src_row0 = std::max<Eigen::Index>(0, -block_row);
+        Eigen::Index src_col0 = std::max<Eigen::Index>(0, -block_col);
+        Eigen::Index rows = std::min<Eigen::Index>(mb->n_rows - row0, obs_weight.rows() - src_row0);
+        Eigen::Index cols = std::min<Eigen::Index>(mb->n_cols - col0, obs_weight.cols() - src_col0);
+        const std::size_t flat = static_cast<std::size_t>(map_i) * n_obsnums + obs_index;
+        if (rows <= 0 || cols <= 0) {
+            obs_weight_sum[flat] = 0.0;
+            obs_core_weight_sum[flat] = 0.0;
+            obs_valid_pixels[flat] = 0;
+            obs_core_pixels[flat] = 0;
+            return;
+        }
+
+        const auto block = obs_weight.block(src_row0, src_col0, rows, cols);
+        const auto valid = (block.array() > 0.0).template cast<double>();
+        const auto core_block = core_mask.block(row0, col0, rows, cols);
+        obs_weight_sum[flat] = (block.array() * valid).sum();
+        obs_core_weight_sum[flat] = (block.array() * valid * core_block).sum();
+        obs_valid_pixels[flat] = static_cast<int>(valid.sum());
+        obs_core_pixels[flat] = static_cast<int>((valid * core_block).sum());
+    };
+
+    for (Eigen::Index i = 0; i < n_maps; ++i) {
+        const std::size_t idx = static_cast<std::size_t>(i);
+        const auto map_index = arrays_to_maps(i);
+        const auto stokes_index = maps_to_stokes(i);
+        array_names[idx] = toltec_io.array_name_map[calib.arrays[map_index]];
+        stokes_names[idx] = rtcproc.polarization.stokes_params[stokes_index];
+        map_names[idx] = get_map_name(i);
+
+        auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = mb->calc_cov_region(i);
+        if (!std::isfinite(weight_threshold) || weight_threshold < 0.0) {
+            weight_threshold = 0.0;
+        }
+        weight_thresholds[idx] = weight_threshold;
+
+        const auto weight_arr = mb->weight[i].array();
+        const auto valid_mask = (weight_arr > 0.0).template cast<double>();
+        const auto core_mask = ((weight_arr >= weight_threshold) && (weight_arr > 0.0)).template cast<double>();
+        n_valid_pixels[idx] = static_cast<int>(valid_mask.sum());
+        n_core_pixels[idx] = static_cast<int>(core_mask.sum());
+        weight_sum[idx] = (weight_arr * valid_mask).sum();
+        core_weight_sum[idx] = (weight_arr * core_mask).sum();
+
+        if (i < mb->median_err.size() && std::isfinite(mb->median_err(i)) &&
+            mb->median_err(i) > std::numeric_limits<double>::epsilon()) {
+            median_err[idx] = std::sqrt(mb->median_err(i));
+        }
+        if (i < mb->median_rms.size() && std::isfinite(mb->median_rms(i))) {
+            median_rms[idx] = mb->median_rms(i);
+        }
+
+        if (!mb->coverage.empty() && i < static_cast<Eigen::Index>(mb->coverage.size())) {
+            coverage_sum[idx] = mb->coverage[i].sum();
+            coverage_max[idx] = mb->coverage[i].maxCoeff();
+            std::vector<double> core_cov;
+            core_cov.reserve(static_cast<std::size_t>(n_core_pixels[idx]));
+            for (Eigen::Index r = 0; r < mb->coverage[i].rows(); ++r) {
+                for (Eigen::Index c = 0; c < mb->coverage[i].cols(); ++c) {
+                    if (core_mask(r, c) > 0.0 && std::isfinite(mb->coverage[i](r, c))) {
+                        core_cov.push_back(mb->coverage[i](r, c));
+                    }
+                }
+            }
+            if (!core_cov.empty()) {
+                coverage_median_core[idx] = tula::alg::median(Eigen::Map<Eigen::VectorXd>(core_cov.data(), core_cov.size()));
+            }
+        }
+
+        peak_signal[idx] = mb->signal[i].size() > 0 ? mb->signal[i].maxCoeff() : fill_double;
+        if (mb->signal[i].size() > 0 && mb->weight[i].size() > 0) {
+            Eigen::MatrixXd sig2noise = mb->signal[i].array() * mb->weight[i].array().max(0.0).sqrt();
+            Eigen::Index r_peak = 0;
+            Eigen::Index c_peak = 0;
+            peak_abs_sig2noise[idx] = sig2noise.cwiseAbs().maxCoeff(&r_peak, &c_peak);
+            peak_row[idx] = static_cast<int>(r_peak);
+            peak_col[idx] = static_cast<int>(c_peak);
+        }
+
+        if (!is_coadd) {
+            obs_weight_sum[idx * n_obsnums] = weight_sum[idx];
+            obs_core_weight_sum[idx * n_obsnums] = core_weight_sum[idx];
+            obs_valid_pixels[idx * n_obsnums] = n_valid_pixels[idx];
+            obs_core_pixels[idx * n_obsnums] = n_core_pixels[idx];
+        }
+        else {
+            for (std::size_t obs_idx = 0; obs_idx < mb->obsnums.size(); ++obs_idx) {
+                const auto &obsnum_i = mb->obsnums[obs_idx];
+                const auto obs_dir = redu_dir_name + "/" + obsnum_i + "/raw/";
+                const auto obs_weight_path = toltec_io.create_filename<engine_utils::toltecIO::toltec,
+                                                                       engine_utils::toltecIO::map,
+                                                                       engine_utils::toltecIO::raw>(
+                    obs_dir, redu_type, array_names[idx], obsnum_i, telescope.sim_obs) + ".fits";
+                try {
+                    fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*> obs_fits(obs_weight_path);
+                    const auto weight_hdu_name = "weight_" + map_names[idx] + stokes_names[idx];
+                    auto obs_weight = obs_fits.get_hdu(weight_hdu_name);
+                    accumulate_obs_weight(i, core_mask, obs_weight, obs_idx);
+                } catch (const std::exception &e) {
+                    logger->warn("failed to derive mapdiag contribution from {} [{}]: {}", obs_weight_path,
+                                 "weight_" + map_names[idx] + stokes_names[idx], e.what());
+                    const std::size_t flat = idx * n_obsnums + obs_idx;
+                    obs_weight_sum[flat] = 0.0;
+                    obs_core_weight_sum[flat] = 0.0;
+                    obs_valid_pixels[flat] = 0;
+                    obs_core_pixels[flat] = 0;
+                }
+            }
+        }
+
+        double total_weight = 0.0;
+        double total_core_weight = 0.0;
+        for (std::size_t obs_idx = 0; obs_idx < n_obsnums; ++obs_idx) {
+            total_weight += obs_weight_sum[idx * n_obsnums + obs_idx];
+            total_core_weight += obs_core_weight_sum[idx * n_obsnums + obs_idx];
+        }
+        for (std::size_t obs_idx = 0; obs_idx < n_obsnums; ++obs_idx) {
+            const std::size_t flat = idx * n_obsnums + obs_idx;
+            obs_weight_frac[flat] = (total_weight > 0.0) ? obs_weight_sum[flat] / total_weight : fill_double;
+            obs_core_weight_frac[flat] = (total_core_weight > 0.0) ? obs_core_weight_sum[flat] / total_core_weight : fill_double;
+        }
+    }
+
+    write_netcdf_atomic(filename + ".nc", [&](netCDF::NcFile &fo) {
+    netCDF::NcVar obsnum_v = fo.addVar("obsnum", netCDF::ncInt);
+    obsnum_v.putAtt("units", "N/A");
+    int obsnum_int = is_coadd ? -1 : std::stoi(obsnum);
+    obsnum_v.putVar(&obsnum_int);
+
+    netCDF::NcDim n_maps_dim = fo.addDim("n_maps", n_maps_local);
+    netCDF::NcDim n_obsnums_dim = fo.addDim("n_obsnums", n_obsnums);
+    std::vector<netCDF::NcDim> map_obs_dims = {n_maps_dim, n_obsnums_dim};
+
+    std::string stage_name = "raw_obs";
+    if constexpr (map_t == mapmaking::FilteredObs) {
+        stage_name = "filtered_obs";
+    }
+    else if constexpr (map_t == mapmaking::RawCoadd) {
+        stage_name = "raw_coadd";
+    }
+    else if constexpr (map_t == mapmaking::FilteredCoadd) {
+        stage_name = "filtered_coadd";
+    }
+    add_netcdf_var<std::string>(fo, "MAP_STAGE", stage_name);
+    add_netcdf_var<std::string>(fo, "MAP_BUFFER", mb->name);
+    add_netcdf_var(fo, "MAP_PIXEL_SIZE_RAD", mb->pixel_size_rad);
+    add_netcdf_var(fo, "MAP_COVERAGE_CUT", mb->cov_cut);
+    add_netcdf_var<std::string>(fo, "MAP_SIG_UNIT", mb->sig_unit);
+
+    put_string_1d(fo, "map_array_name", n_maps_dim, array_names, "array label for each map row");
+    put_string_1d(fo, "map_stokes", n_maps_dim, stokes_names, "stokes parameter label for each map row");
+    put_string_1d(fo, "map_name", n_maps_dim, map_names, "grouping-derived map label prefix for each map row");
+
+    std::vector<std::string> obsnum_strings = mb->obsnums;
+    if (obsnum_strings.empty()) {
+        obsnum_strings.push_back(obsnum);
+    }
+    put_string_1d(fo, "coadd_obsnum", n_obsnums_dim, obsnum_strings, "obsnum ordering for map x obsnum contribution tables");
+
+    std::vector<std::string> dateobs_strings = date_obs;
+    if (dateobs_strings.empty()) {
+        dateobs_strings.push_back("");
+    }
+    if (dateobs_strings.size() > n_obsnums) {
+        dateobs_strings.resize(n_obsnums);
+    }
+    if (dateobs_strings.size() < n_obsnums) {
+        dateobs_strings.resize(n_obsnums, "");
+    }
+    put_string_1d(fo, "coadd_dateobs", n_obsnums_dim, dateobs_strings, "DATEOBS ordering matching coadd_obsnum");
+
+    auto add_map_double = [&](const std::string &name, const std::string &comment, const std::vector<double> &values) {
+        netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, n_maps_dim);
+        v.putAtt("comment", comment);
+        v.putVar(values.data());
+    };
+    auto add_map_int = [&](const std::string &name, const std::string &comment, const std::vector<int> &values) {
+        netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, n_maps_dim);
+        v.putAtt("comment", comment);
+        v.putVar(values.data());
+    };
+    auto add_map_obs_double = [&](const std::string &name, const std::string &comment, const std::vector<double> &values) {
+        netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, map_obs_dims);
+        v.putAtt("comment", comment);
+        v.putVar(values.data());
+    };
+    auto add_map_obs_int = [&](const std::string &name, const std::string &comment, const std::vector<int> &values) {
+        netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, map_obs_dims);
+        v.putAtt("comment", comment);
+        v.putVar(values.data());
+    };
+
+    add_map_double("map_median_err", "median error derived from the map weight product", median_err);
+    add_map_double("map_median_rms", "median RMS of the map noise realization or background estimator", median_rms);
+    add_map_double("map_weight_threshold", "coverage-derived weight threshold used to define the core map support", weight_thresholds);
+    add_map_double("map_weight_sum", "sum of positive map weights over all valid pixels", weight_sum);
+    add_map_double("map_core_weight_sum", "sum of positive map weights over pixels above map_weight_threshold", core_weight_sum);
+    add_map_double("map_coverage_sum", "sum of coverage values over the map; NaN if no coverage map exists", coverage_sum);
+    add_map_double("map_coverage_max", "maximum coverage value in the map; NaN if no coverage map exists", coverage_max);
+    add_map_double("map_core_coverage_median", "median coverage over the core support; NaN if no coverage map exists", coverage_median_core);
+    add_map_double("map_peak_signal", "maximum signal value in the map", peak_signal);
+    add_map_double("map_peak_abs_sig2noise", "maximum absolute signal-to-noise value in the map", peak_abs_sig2noise);
+    add_map_int("map_n_valid_pixels", "count of pixels with strictly positive weight", n_valid_pixels);
+    add_map_int("map_n_core_pixels", "count of pixels with weight >= map_weight_threshold", n_core_pixels);
+    add_map_int("map_peak_row", "row index of the maximum absolute signal-to-noise pixel", peak_row);
+    add_map_int("map_peak_col", "column index of the maximum absolute signal-to-noise pixel", peak_col);
+
+    add_map_obs_double("coadd_obs_weight_sum", "sum of positive observation-level raw weight values aligned onto this map grid", obs_weight_sum);
+    add_map_obs_double("coadd_obs_weight_frac", "fractional contribution of each obsnum to coadd_obs_weight_sum for a given map", obs_weight_frac);
+    add_map_obs_double("coadd_obs_core_weight_sum", "sum of positive observation-level raw weight values within the final map core support", obs_core_weight_sum);
+    add_map_obs_double("coadd_obs_core_weight_frac", "fractional contribution of each obsnum within the final map core support", obs_core_weight_frac);
+    add_map_obs_int("coadd_obs_n_valid_pixels", "count of aligned observation pixels with positive raw weight", obs_valid_pixels);
+    add_map_obs_int("coadd_obs_n_core_pixels", "count of aligned observation pixels with positive raw weight inside the final map core support", obs_core_pixels);
+    });
+}
+
+void Engine::create_ptcdiag_file() {
+    std::string dir_name = obsnum_dir_name + "raw/";
+    if (tod_output_subdir_name != "null") {
+        dir_name = dir_name + tod_output_subdir_name + "/";
+    }
+
+    auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
+                                              engine_utils::toltecIO::ptcdiag,
+                                              engine_utils::toltecIO::raw>(dir_name, redu_type, "",
+                                                                           obsnum, telescope.sim_obs);
+    ptcdiag_filename = filename + ".nc";
+
+    write_netcdf_atomic(ptcdiag_filename, [&](netCDF::NcFile &fo) {
+    const int fill_int = -2147483647;
+    const double fill_double = std::numeric_limits<double>::quiet_NaN();
+    const Eigen::Index n_scans = telescope.scan_indices.cols();
+    std::vector<std::size_t> det_chunks = {1, TULA_SIZET(calib.n_dets)};
+
+    netCDF::NcDim n_tod_output_type_dim = fo.addDim("n_tod_output_type", 1);
+    netCDF::NcVar tod_output_type_var = fo.addVar("tod_output_type", netCDF::ncString, n_tod_output_type_dim);
+    const std::vector<size_t> tod_output_type_index = {0};
+    std::string tod_output_type_name = "ptcdiag";
+    tod_output_type_var.putVar(tod_output_type_index, tod_output_type_name);
+
+    netCDF::NcVar obsnum_v = fo.addVar("obsnum", netCDF::ncInt);
+    obsnum_v.putAtt("units", "N/A");
+    int obsnum_int = std::stoi(obsnum);
+    obsnum_v.putVar(&obsnum_int);
+
+    netCDF::NcVar source_ra_v = fo.addVar("SourceRa", netCDF::ncDouble);
+    source_ra_v.putAtt("units", "rad");
+    source_ra_v.putVar(&telescope.tel_header["Header.Source.Ra"](0));
+
+    netCDF::NcVar source_dec_v = fo.addVar("SourceDec", netCDF::ncDouble);
+    source_dec_v.putAtt("units", "rad");
+    source_dec_v.putVar(&telescope.tel_header["Header.Source.Dec"](0));
+
+    netCDF::NcDim n_scans_dim = fo.addDim("n_scans", n_scans);
+    netCDF::NcDim n_dets_dim = fo.addDim("n_dets", calib.n_dets);
+    std::vector<netCDF::NcDim> det_dims = {n_scans_dim, n_dets_dim};
+
+    netCDF::NcVar output_scan_index_v = fo.addVar("output_scan_index", netCDF::ncInt, n_scans_dim);
+    output_scan_index_v.putAtt("units", "N/A");
+    output_scan_index_v.putAtt("comment", "1-based original scan index from the full observation");
+    std::vector<int> output_scan_index(static_cast<std::size_t>(n_scans), fill_int);
+    for (Eigen::Index i = 0; i < n_scans; ++i) {
+        output_scan_index[static_cast<std::size_t>(i)] = static_cast<int>(i + 1);
+    }
+    output_scan_index_v.putVar(output_scan_index.data());
+
+    auto add_det_meta_int = [&](const std::string &name, const std::string &comment, const std::vector<int> &values) {
+        netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, n_dets_dim);
+        v.putAtt("units", "N/A");
+        v.putAtt("comment", comment);
+        v.putVar(values.data());
+    };
+    auto apt_int_values = [&](const std::string &key) {
+        std::vector<int> values(static_cast<std::size_t>(calib.n_dets), fill_int);
+        auto it = calib.apt.find(key);
+        if (it != calib.apt.end() && it->second.size() == calib.n_dets) {
+            for (Eigen::Index i = 0; i < calib.n_dets; ++i) {
+                values[static_cast<std::size_t>(i)] = static_cast<int>(std::lround(it->second(i)));
+            }
+        }
+        return values;
+    };
+    add_det_meta_int("ptc_diag_uid", "detector UID along n_dets", apt_int_values("uid"));
+    add_det_meta_int("ptc_diag_array", "array index along n_dets", apt_int_values("array"));
+    add_det_meta_int("ptc_diag_network", "network index along n_dets", apt_int_values("nw"));
+    add_det_meta_int("ptc_diag_apt_flag", "APT detector flag along n_dets", apt_int_values("flag"));
+
+    add_netcdf_var<std::string>(fo, "INSTRUME", "TolTEC");
+    add_netcdf_var<std::string>(fo, "TELESCOP", "LMT");
+    add_netcdf_var<std::string>(fo, "PIPELINE", "CITLALI");
+    add_netcdf_var<std::string>(fo, "VERSION", CITLALI_GIT_VERSION);
+    add_netcdf_var<std::string>(fo, "KIDS", KIDSCPP_GIT_VERSION);
+    add_netcdf_var<std::string>(fo, "TULA", TULA_GIT_VERSION);
+    add_netcdf_var<std::string>(fo, "PROJID", telescope.project_id);
+    add_netcdf_var<std::string>(fo, "GOAL", redu_type);
+    add_netcdf_var<std::string>(fo, "OBSGOAL", telescope.obs_goal);
+    add_netcdf_var<std::string>(fo, "TYPE", tod_type);
+    add_netcdf_var(fo, "SAMPRATE", telescope.fsmp);
+
+    add_netcdf_var(fo, "CONFIG.WEIGHT.TYPE", ptcproc.weighting_type);
+    add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTLOW", ptcproc.lower_inv_var_factor);
+    add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTHIGH", ptcproc.upper_inv_var_factor);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTLOW", ptcproc.lower_weight_factor);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTHIGH", ptcproc.upper_weight_factor);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.MEDWTFACTOR", ptcproc.med_weight_factor);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.ENABLED", ptcproc.weight_corr_penalty.enabled);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.ENABLED", ptcproc.busy_row_suppression.enabled);
+    add_netcdf_var(fo, "CONFIG.CLEANED", ptcproc.run_clean);
+    add_netcdf_var<std::string>(fo, "CONFIG.CLEANED.MODESEL", ptcproc.cleaner.active_cleaner_label());
+    add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.ENABLED", ptcproc.cleaner.adaptive_selector.enabled);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.ENABLED", ptcproc.second_pass_local.enabled);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MIN_SPIKE_SIGMA", ptcproc.second_pass_local.min_spike_sigma);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MIN_CLUSTER_DETECTORS", ptcproc.second_pass_local.min_cluster_detectors);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MAX_AUTO_FLAG_CLUSTERS", ptcproc.second_pass_local.max_auto_flag_clusters_per_network);
+    add_netcdf_var(fo, "CONFIG.FRUITLOOPS", ptcproc.run_fruit_loops);
+    add_netcdf_var<std::string>(fo, "CONFIG.FRUITLOOPS.PATH", ptcproc.fruit_loops_path);
+    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.S2N", ptcproc.fruit_loops_sig2noise);
+
+    auto add_det_double = [&](const std::string &name, const std::string &comment) {
+        netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, det_dims);
+        v.putAtt("units", "N/A");
+        v.putAtt("comment", comment);
+        v.setChunking(netCDF::NcVar::nc_CHUNKED, det_chunks);
+        std::vector<double> init(static_cast<std::size_t>(n_scans) * static_cast<std::size_t>(calib.n_dets), fill_double);
+        v.putVar(init.data());
+    };
+    add_det_double("ptc_detector_weight", "final detector map weight used by PTC for this scan");
+    add_det_double("ptc_detector_rms", "per-detector RMS of the PTC timestream written for this scan");
+    add_det_double("ptc_detector_stddev", "per-detector standard deviation of the PTC timestream written for this scan");
+    add_det_double("ptc_detector_median", "per-detector median of the PTC timestream written for this scan");
+    add_det_double("ptc_detector_flagged_fraction", "fraction of detector samples flagged in the PTC timestream for this scan");
+
+    auto add_network_block = [&](const std::string &dim_name,
+                                 const std::string &id_name,
+                                 const std::string &id_comment,
+                                 const std::vector<std::pair<std::string, std::string>> &int_vars,
+                                 const std::vector<std::pair<std::string, std::string>> &double_vars) {
+        netCDF::NcDim n_nws_dim = fo.addDim(dim_name, calib.n_nws);
+        netCDF::NcVar nw_ids_v = fo.addVar(id_name, netCDF::ncInt, n_nws_dim);
+        nw_ids_v.putAtt("units", "N/A");
+        nw_ids_v.putAtt("comment", id_comment);
+        std::vector<int> nw_ids(static_cast<std::size_t>(calib.n_nws), fill_int);
+        for (Eigen::Index i = 0; i < calib.n_nws; ++i) {
+            nw_ids[static_cast<std::size_t>(i)] = static_cast<int>(calib.nws(i));
+        }
+        nw_ids_v.putVar(nw_ids.data());
+        std::vector<netCDF::NcDim> dims = {n_scans_dim, n_nws_dim};
+        for (const auto &[name, comment] : int_vars) {
+            netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, dims);
+            v.putAtt("units", "N/A");
+            v.putAtt("comment", comment);
+            std::vector<int> init(static_cast<std::size_t>(n_scans) * static_cast<std::size_t>(calib.n_nws), fill_int);
+            v.putVar(init.data());
+        }
+        for (const auto &[name, comment] : double_vars) {
+            netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, dims);
+            v.putAtt("units", "N/A");
+            v.putAtt("comment", comment);
+            std::vector<double> init(static_cast<std::size_t>(n_scans) * static_cast<std::size_t>(calib.n_nws), fill_double);
+            v.putVar(init.data());
+        }
+    };
+
+    add_network_block(
+        "n_nws_corr",
+        "corr_nw_network_ids",
+        "network IDs corresponding to n_nws_corr axis",
+        {
+            {"corr_nw_n_groups", "number of final corr_nw cleaning groups per network"},
+            {"corr_nw_n_groups_raw", "number of raw connected components before min_group_size filtering"},
+            {"corr_nw_n_det_input", "input detector count in each network block"},
+            {"corr_nw_n_det_candidates", "detectors passing apt flag and min_good_frac"},
+            {"corr_nw_n_det_used", "candidate detectors with finite non-zero std for correlation"},
+            {"corr_nw_n_det_grouped", "detectors included in final cleaned corr_nw groups"},
+            {"corr_nw_n_det_ungrouped", "detectors excluded from final cleaned corr_nw groups"},
+            {"corr_nw_sample_step", "time decimation factor used for corr_nw grouping"},
+        },
+        {});
+
+    add_network_block(
+        "n_nws_wcorr",
+        "weight_corr_penalty_network_ids",
+        "network IDs corresponding to n_nws_wcorr axis",
+        {
+            {"weight_corr_penalty_n_det_input", "detector count in each network block"},
+            {"weight_corr_penalty_n_det_candidates", "detectors passing apt flag and min_good_frac"},
+            {"weight_corr_penalty_n_det_used", "candidate detectors with finite non-zero std"},
+            {"weight_corr_penalty_n_det_weighted", "detectors with positive map weight multiplied by penalty factor"},
+            {"weight_corr_penalty_sample_step", "time decimation factor used for penalty metrics"},
+        },
+        {
+            {"weight_corr_penalty_factor", "multiplicative weight penalty factor applied per network in each scan"},
+            {"weight_corr_penalty_severity", "normalized [0,1] severity used to derive weight_corr_penalty_factor"},
+            {"weight_corr_penalty_pair_med_abs_corr", "median absolute sampled detector-detector correlation per network"},
+            {"weight_corr_penalty_cm_el_abs_corr", "absolute correlation between network common mode and TelElAct"},
+            {"weight_corr_penalty_cm_low_mid_ratio", "common-mode low/mid bandpower ratio"},
+        });
+
+    add_network_block(
+        "n_nws_busy_row_suppression",
+        "weight_busy_row_suppression_network_ids",
+        "network IDs corresponding to n_nws_busy_row_suppression axis",
+        {
+            {"weight_busy_row_suppression_applied", "1 if busy-row weight suppression was applied to this scan/network block, else 0"},
+            {"weight_busy_row_suppression_busy_network_vetoed", "1 if this scan/network exceeded the second-pass busy-network veto threshold, else 0"},
+            {"weight_busy_row_suppression_n_candidate_clusters", "candidate second-pass residual cluster count used by the busy-row suppression rule"},
+            {"weight_busy_row_suppression_n_det_weighted", "detectors with positive map weight multiplied by the busy-row suppression factor"},
+        },
+        {
+            {"weight_busy_row_suppression_factor", "multiplicative factor applied by busy-row suppression to positive detector map weights"},
+            {"weight_busy_row_suppression_max_unflagged_residual_z", "largest absolute unflagged post-PCA residual z used by the busy-row suppression rule"},
+        });
+
+    add_network_block(
+        "n_nws_adaptive_pca",
+        "adaptive_pca_network_ids",
+        "network IDs corresponding to n_nws_adaptive_pca axis",
+        {
+            {"adaptive_pca_selector_used", "1 if the bounded adaptive PCA selector evaluated this scan/network block, else 0"},
+            {"adaptive_pca_selector_fallback", "1 if adaptive PCA selector fell back to the configured baseline cut, else 0"},
+            {"adaptive_pca_baseline_k", "configured baseline PCA cut for this scan/network block"},
+            {"adaptive_pca_chosen_k", "adaptive PCA cut selected for this scan/network block"},
+            {"adaptive_pca_runnerup_k", "second-best adaptive PCA cut for this scan/network block"},
+            {"adaptive_pca_n_candidates", "number of candidate PCA cuts evaluated for this scan/network block"},
+            {"adaptive_pca_n_det_input", "input detector count in this scan/network block before selector filtering"},
+            {"adaptive_pca_n_det_used", "detector count retained for adaptive selector scoring"},
+            {"adaptive_pca_n_time_used", "sample count retained for adaptive selector scoring"},
+            {"adaptive_pca_sample_step", "time decimation factor used by the adaptive selector"},
+        },
+        {
+            {"adaptive_pca_chosen_score", "final normalized adaptive selector score for the chosen PCA cut"},
+            {"adaptive_pca_runnerup_score", "final normalized adaptive selector score for the runner-up PCA cut"},
+            {"adaptive_pca_score_margin", "chosen minus runner-up score margin; more negative is a clearer adaptive choice"},
+            {"adaptive_pca_chosen_med_abs_corr", "median absolute detector-detector correlation for the chosen adaptive PCA cut"},
+            {"adaptive_pca_chosen_cm_low_mid_ratio", "common-mode low/mid bandpower ratio for the chosen adaptive PCA cut"},
+            {"adaptive_pca_chosen_tail4_binom_z", "tail-excess metric for the chosen adaptive PCA cut"},
+            {"adaptive_pca_chosen_top_mode_frac", "top residual covariance mode fraction for the chosen adaptive PCA cut"},
+            {"adaptive_pca_eig_solve_msec", "milliseconds spent solving eigenmodes before adaptive scoring"},
+            {"adaptive_pca_candidate_eval_msec", "milliseconds spent scoring candidate PCA cuts after eigen solve"},
+            {"adaptive_pca_total_msec", "total adaptive PCA milliseconds for this scan/network block"},
+        });
+
+    add_network_block(
+        "n_nws_ptc_second_pass",
+        "ptc_second_pass_network_ids",
+        "network IDs corresponding to n_nws_ptc_second_pass axis",
+        {
+            {"ptc_second_pass_busy_network_vetoed", "1 if this network had more candidate second-pass clusters than the auto-flag limit and was diagnostic-only"},
+            {"ptc_second_pass_n_candidate_clusters", "number of candidate second-pass residual clusters in this scan/network"},
+            {"ptc_second_pass_n_candidate_events", "number of candidate detector-local residual events contributing to candidate clusters"},
+            {"ptc_second_pass_n_accepted_clusters", "number of candidate clusters accepted for auto-flagging after the busy-network veto"},
+            {"ptc_second_pass_n_accepted_events", "number of accepted detector-local residual events contributing to auto-flagging"},
+            {"ptc_second_pass_n_det_with_added_flags", "number of detectors in this scan/network with at least one sample newly flagged by the PTC second pass"},
+            {"ptc_second_pass_max_unflagged_residual_uid", "UID of the detector with the largest absolute unflagged post-PCA residual in this scan/network"},
+            {"ptc_second_pass_top_candidate_cluster_sample", "median sample of the strongest candidate second-pass cluster; -2147483647 means none"},
+            {"ptc_second_pass_top_candidate_cluster_n_detectors", "number of distinct detectors contributing to the strongest candidate second-pass cluster"},
+            {"ptc_second_pass_top_candidate_cluster_n_events", "number of merged detector events contributing to the strongest candidate second-pass cluster"},
+            {"ptc_second_pass_top_event_kind", "kind code of the strongest accepted second-pass event (0=raw_like,1=delta_like,-2147483647 means none)"},
+            {"ptc_second_pass_top_event_uid", "UID of the strongest accepted second-pass event; -2147483647 means none"},
+            {"ptc_second_pass_top_event_sample", "sample of the strongest accepted second-pass event; -2147483647 means none"},
+        },
+        {
+            {"ptc_second_pass_existing_flagged_fraction", "fraction of detector-samples already flagged before the PTC second pass in this scan/network"},
+            {"ptc_second_pass_proposed_flagged_fraction", "fraction of detector-samples that the accepted PTC second-pass flags would cover in this scan/network"},
+            {"ptc_second_pass_newly_flagged_fraction", "fraction of previously good detector-samples newly flagged by the PTC second pass in this scan/network"},
+            {"ptc_second_pass_max_unflagged_residual_z", "largest absolute standardized residual remaining on previously unflagged PTC samples in this scan/network"},
+            {"ptc_second_pass_top_candidate_cluster_peak_score", "peak event score of the strongest candidate second-pass cluster in this scan/network"},
+            {"ptc_second_pass_top_event_score", "score of the strongest accepted second-pass event; NaN means none"},
+        });
     });
 }
 

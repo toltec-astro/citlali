@@ -88,6 +88,9 @@ mapmaking: # mapmaking parameters
   x_size_pix: 0 # manually specify number of map columns (forced to be odd)
   y_size_pix: 0 # manually specify number of map rows (forced to be odd)
   coverage_cut: 0.0 # coverage cut value for psd, hist, and coverage_bool maps
+  output:
+    mapdiag:
+      enabled: true # write compact map diagnostics sidecars for finalized map products
   jinc_filter: # parameters to control jinc filter shape (map_method = jinc required)
     r_max: 3.0 # max radius to apply filter to (max radius = r_max x lambda/diameter)
     subpixel_n: 1 # sub-pixel kernel sampling (1 = off, 2-8 typical)
@@ -124,6 +127,8 @@ timestream: # timestream reduction parameters
     subdir_name: null # optional subdirectory name for tod output files (ignored if null)
     rtcdiag:
       enabled: true # write a compact RTC diagnostics sidecar even when full RTC TOD output is disabled
+    ptcdiag:
+      enabled: true # write a compact PTC diagnostics sidecar even when full PTC TOD output is disabled
     stats: # controls for what variables to include in stats file
       eigenvalues: false # include first 64 eigenvalues in stats file
   raw_time_chunk:
