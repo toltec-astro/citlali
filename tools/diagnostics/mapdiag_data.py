@@ -112,6 +112,10 @@ def load_reduction_tables(
         fits_cache: dict[tuple[str, str], float] = {}
         with netCDF4.Dataset(nc_file) as ds:
             stage = _scalar_string(ds, "MAP_STAGE", default="unknown")
+            map_regime = _scalar_string(ds, "MAP_REGIME", default="unknown")
+            source_name = _scalar_string(ds, "SOURCE", default="")
+            project_id = _scalar_string(ds, "PROJID", default="")
+            obs_goal = _scalar_string(ds, "OBSGOAL", default="")
             array_names = _string_list(ds.variables["map_array_name"])
             stokes_names = _string_list(ds.variables["map_stokes"])
             map_names = _string_list(ds.variables["map_name"])
@@ -124,11 +128,22 @@ def load_reduction_tables(
             peak_signal = filled(ds.variables["map_peak_signal"], fill=float("nan"))
             median_err = filled(ds.variables["map_median_err"], fill=float("nan"))
             median_rms = filled(ds.variables["map_median_rms"], fill=float("nan"))
+            empirical_to_formal = filled(ds.variables["map_empirical_to_formal_noise_ratio"], fill=float("nan")) if "map_empirical_to_formal_noise_ratio" in ds.variables else None
             weight_threshold = filled(ds.variables["map_weight_threshold"], fill=float("nan"))
             core_weight_sum = filled(ds.variables["map_core_weight_sum"], fill=float("nan"))
             n_core_pixels = filled(ds.variables["map_n_core_pixels"], fill=-2147483647)
             n_valid_pixels = filled(ds.variables["map_n_valid_pixels"], fill=-2147483647)
             coverage_median = filled(ds.variables["map_core_coverage_median"], fill=float("nan"))
+            noise_rms_p16 = filled(ds.variables["map_noise_rms_p16"], fill=float("nan")) if "map_noise_rms_p16" in ds.variables else None
+            noise_rms_p84 = filled(ds.variables["map_noise_rms_p84"], fill=float("nan")) if "map_noise_rms_p84" in ds.variables else None
+            core_tail_excess_abs = filled(ds.variables["map_core_tail_excess_abs_gt3"], fill=float("nan")) if "map_core_tail_excess_abs_gt3" in ds.variables else None
+            core_tail_excess_pos = filled(ds.variables["map_core_tail_excess_pos_gt3"], fill=float("nan")) if "map_core_tail_excess_pos_gt3" in ds.variables else None
+            core_tail_excess_neg = filled(ds.variables["map_core_tail_excess_neg_lt3"], fill=float("nan")) if "map_core_tail_excess_neg_lt3" in ds.variables else None
+            core_sig2noise_skew = filled(ds.variables["map_core_sig2noise_skew"], fill=float("nan")) if "map_core_sig2noise_skew" in ds.variables else None
+            noise_tail_excess_abs = filled(ds.variables["map_noise_tail_excess_abs_gt3"], fill=float("nan")) if "map_noise_tail_excess_abs_gt3" in ds.variables else None
+            noise_tail_excess_pos = filled(ds.variables["map_noise_tail_excess_pos_gt3"], fill=float("nan")) if "map_noise_tail_excess_pos_gt3" in ds.variables else None
+            noise_tail_excess_neg = filled(ds.variables["map_noise_tail_excess_neg_lt3"], fill=float("nan")) if "map_noise_tail_excess_neg_lt3" in ds.variables else None
+            noise_sig2noise_skew = filled(ds.variables["map_noise_sig2noise_skew"], fill=float("nan")) if "map_noise_sig2noise_skew" in ds.variables else None
             contrib_core_frac = filled(ds.variables["coadd_obs_core_weight_frac"], fill=float("nan"))
             contrib_weight_frac = filled(ds.variables["coadd_obs_weight_frac"], fill=float("nan"))
             contrib_core_sum = filled(ds.variables["coadd_obs_core_weight_sum"], fill=float("nan"))
@@ -158,6 +173,10 @@ def load_reduction_tables(
                     "obs_context": obs_context,
                     "is_coadd": int(file_obsnum < 0),
                     "stage": stage,
+                    "map_regime": map_regime,
+                    "source_name": source_name,
+                    "project_id": project_id,
+                    "obs_goal": obs_goal,
                     "array": array,
                     "map_name": map_names[map_idx],
                     "stokes": stokes_names[map_idx],
@@ -167,11 +186,22 @@ def load_reduction_tables(
                     "peak_signal": float(peak_signal[map_idx]),
                     "median_err": float(median_err[map_idx]),
                     "median_rms": float(median_rms[map_idx]),
+                    "empirical_to_formal_noise_ratio": float(empirical_to_formal[map_idx]) if empirical_to_formal is not None else float("nan"),
                     "weight_threshold": float(weight_threshold[map_idx]),
                     "core_weight_sum": float(core_weight_sum[map_idx]),
                     "n_core_pixels": int(n_core_pixels[map_idx]),
                     "n_valid_pixels": int(n_valid_pixels[map_idx]),
                     "core_coverage_median": float(coverage_median[map_idx]),
+                    "noise_rms_p16": float(noise_rms_p16[map_idx]) if noise_rms_p16 is not None else float("nan"),
+                    "noise_rms_p84": float(noise_rms_p84[map_idx]) if noise_rms_p84 is not None else float("nan"),
+                    "core_tail_excess_abs_gt3": float(core_tail_excess_abs[map_idx]) if core_tail_excess_abs is not None else float("nan"),
+                    "core_tail_excess_pos_gt3": float(core_tail_excess_pos[map_idx]) if core_tail_excess_pos is not None else float("nan"),
+                    "core_tail_excess_neg_lt3": float(core_tail_excess_neg[map_idx]) if core_tail_excess_neg is not None else float("nan"),
+                    "core_sig2noise_skew": float(core_sig2noise_skew[map_idx]) if core_sig2noise_skew is not None else float("nan"),
+                    "noise_tail_excess_abs_gt3": float(noise_tail_excess_abs[map_idx]) if noise_tail_excess_abs is not None else float("nan"),
+                    "noise_tail_excess_pos_gt3": float(noise_tail_excess_pos[map_idx]) if noise_tail_excess_pos is not None else float("nan"),
+                    "noise_tail_excess_neg_lt3": float(noise_tail_excess_neg[map_idx]) if noise_tail_excess_neg is not None else float("nan"),
+                    "noise_sig2noise_skew": float(noise_sig2noise_skew[map_idx]) if noise_sig2noise_skew is not None else float("nan"),
                 }
                 map_rows.append(row)
                 if file_obsnum < 0:

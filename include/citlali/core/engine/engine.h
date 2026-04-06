@@ -12,6 +12,7 @@
 #include <unordered_map>
 #include <algorithm>
 #include <cctype>
+#include <cmath>
 #include <omp.h>
 #include <fstream>
 #include <limits>
@@ -219,6 +220,9 @@ public:
 
     // output directory and optional sub directory name
     std::string output_dir, redu_dir_name;
+
+    // expected sky regime for map interpretation
+    std::string map_regime = "unknown";
 
     // reduction directory number
     int redu_dir_num;
@@ -849,6 +853,15 @@ void Engine::get_mapmaking_config(CT &config) {
     // map grouping
     get_config_value(config, map_grouping, missing_keys, invalid_keys,
                      std::tuple{"mapmaking","grouping"},{"auto","array","nw","detector","fg"});
+
+    // optional expected sky regime for interpreting map diagnostics
+    map_regime = "unknown";
+    if (config.template has_typed<std::string>(std::tuple{"source", "map_regime"})) {
+        map_regime = config.template get_typed<std::string>(std::tuple{"source", "map_regime"});
+        check_allowed(map_regime, missing_keys, invalid_keys,
+                      std::vector<std::string>{"source_dominant", "source_faint", "blank_field", "unknown"},
+                      std::tuple{"source", "map_regime"});
+    }
 
     // polarization is disabled for detector grouping
     if (rtcproc.run_polarization && ((redu_type=="beammap" && map_grouping=="auto") || map_grouping=="detector")) {
@@ -4348,9 +4361,26 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     std::vector<double> coverage_sum(n_maps_local, fill_double);
     std::vector<double> coverage_max(n_maps_local, fill_double);
     std::vector<double> coverage_median_core(n_maps_local, fill_double);
+    std::vector<double> empirical_to_formal_noise_ratio(n_maps_local, fill_double);
     std::vector<double> peak_signal(n_maps_local, fill_double);
     std::vector<double> peak_abs_sig2noise(n_maps_local, fill_double);
     std::vector<double> core_peak_abs_sig2noise(n_maps_local, fill_double);
+    std::vector<double> noise_rms_p16(n_maps_local, fill_double);
+    std::vector<double> noise_rms_p84(n_maps_local, fill_double);
+    std::vector<double> core_tail_frac_abs3(n_maps_local, fill_double);
+    std::vector<double> core_tail_frac_pos3(n_maps_local, fill_double);
+    std::vector<double> core_tail_frac_neg3(n_maps_local, fill_double);
+    std::vector<double> core_tail_excess_abs3(n_maps_local, fill_double);
+    std::vector<double> core_tail_excess_pos3(n_maps_local, fill_double);
+    std::vector<double> core_tail_excess_neg3(n_maps_local, fill_double);
+    std::vector<double> core_sig2noise_skew(n_maps_local, fill_double);
+    std::vector<double> noise_tail_frac_abs3(n_maps_local, fill_double);
+    std::vector<double> noise_tail_frac_pos3(n_maps_local, fill_double);
+    std::vector<double> noise_tail_frac_neg3(n_maps_local, fill_double);
+    std::vector<double> noise_tail_excess_abs3(n_maps_local, fill_double);
+    std::vector<double> noise_tail_excess_pos3(n_maps_local, fill_double);
+    std::vector<double> noise_tail_excess_neg3(n_maps_local, fill_double);
+    std::vector<double> noise_sig2noise_skew(n_maps_local, fill_double);
     std::vector<int> n_valid_pixels(n_maps_local, 0);
     std::vector<int> n_core_pixels(n_maps_local, 0);
     std::vector<int> peak_row(n_maps_local, fill_int);
@@ -4406,6 +4436,105 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         obs_core_pixels[flat] = static_cast<int>((valid * core_block).sum());
     };
 
+    struct tail_stats_t {
+        double frac_abs3 = std::numeric_limits<double>::quiet_NaN();
+        double frac_pos3 = std::numeric_limits<double>::quiet_NaN();
+        double frac_neg3 = std::numeric_limits<double>::quiet_NaN();
+        double excess_abs3 = std::numeric_limits<double>::quiet_NaN();
+        double excess_pos3 = std::numeric_limits<double>::quiet_NaN();
+        double excess_neg3 = std::numeric_limits<double>::quiet_NaN();
+        double skew = std::numeric_limits<double>::quiet_NaN();
+    };
+
+    auto vector_median = [&](const std::vector<double> &values) -> double {
+        if (values.empty()) {
+            return fill_double;
+        }
+        Eigen::Map<const Eigen::VectorXd> mapped(values.data(), static_cast<Eigen::Index>(values.size()));
+        return tula::alg::median(mapped);
+    };
+
+    auto vector_quantile = [&](std::vector<double> values, double q) -> double {
+        if (values.empty()) {
+            return fill_double;
+        }
+        q = std::clamp(q, 0.0, 1.0);
+        std::sort(values.begin(), values.end());
+        const double pos = q * static_cast<double>(values.size() - 1);
+        const std::size_t i0 = static_cast<std::size_t>(std::floor(pos));
+        const std::size_t i1 = static_cast<std::size_t>(std::ceil(pos));
+        const double frac = pos - static_cast<double>(i0);
+        return values[i0] * (1.0 - frac) + values[i1] * frac;
+    };
+
+    auto collect_masked_values = [&](const Eigen::MatrixXd &matrix, const Eigen::ArrayXXd &mask) {
+        std::vector<double> values;
+        values.reserve(static_cast<std::size_t>(mask.sum()));
+        for (Eigen::Index r = 0; r < matrix.rows(); ++r) {
+            for (Eigen::Index c = 0; c < matrix.cols(); ++c) {
+                const double value = matrix(r, c);
+                if (mask(r, c) > 0.0 && std::isfinite(value)) {
+                    values.push_back(value);
+                }
+            }
+        }
+        return values;
+    };
+
+    auto calc_tail_stats = [&](const std::vector<double> &values) {
+        tail_stats_t stats;
+        if (values.size() < 8) {
+            return stats;
+        }
+        const double center = vector_median(values);
+        if (!std::isfinite(center)) {
+            return stats;
+        }
+        std::vector<double> abs_dev;
+        abs_dev.reserve(values.size());
+        for (const auto &value : values) {
+            abs_dev.push_back(std::abs(value - center));
+        }
+        const double mad = vector_median(abs_dev);
+        const double robust_sigma = 1.4826 * mad;
+        if (!std::isfinite(robust_sigma) || robust_sigma <= std::numeric_limits<double>::epsilon()) {
+            return stats;
+        }
+
+        std::size_t n_abs = 0;
+        std::size_t n_pos = 0;
+        std::size_t n_neg = 0;
+        double skew_sum = 0.0;
+        for (const auto &value : values) {
+            const double z = (value - center) / robust_sigma;
+            if (!std::isfinite(z)) {
+                continue;
+            }
+            if (std::abs(z) >= 3.0) {
+                ++n_abs;
+            }
+            if (z >= 3.0) {
+                ++n_pos;
+            }
+            if (z <= -3.0) {
+                ++n_neg;
+            }
+            skew_sum += z * z * z;
+        }
+
+        const double n = static_cast<double>(values.size());
+        stats.frac_abs3 = static_cast<double>(n_abs) / n;
+        stats.frac_pos3 = static_cast<double>(n_pos) / n;
+        stats.frac_neg3 = static_cast<double>(n_neg) / n;
+        constexpr double gauss_pos3 = 1.3498980316300959e-3;
+        constexpr double gauss_abs3 = 2.6997960632601918e-3;
+        stats.excess_abs3 = stats.frac_abs3 / gauss_abs3;
+        stats.excess_pos3 = stats.frac_pos3 / gauss_pos3;
+        stats.excess_neg3 = stats.frac_neg3 / gauss_pos3;
+        stats.skew = skew_sum / n;
+        return stats;
+    };
+
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
         const auto map_index = arrays_to_maps(i);
@@ -4434,6 +4563,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         }
         if (i < mb->median_rms.size() && std::isfinite(mb->median_rms(i))) {
             median_rms[idx] = mb->median_rms(i);
+        }
+        if (std::isfinite(median_err[idx]) && std::isfinite(median_rms[idx]) &&
+            median_err[idx] > std::numeric_limits<double>::epsilon()) {
+            empirical_to_formal_noise_ratio[idx] = median_rms[idx] / median_err[idx];
         }
 
         if (!mb->coverage.empty() && i < static_cast<Eigen::Index>(mb->coverage.size())) {
@@ -4464,6 +4597,77 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             if (n_core_pixels[idx] > 0) {
                 const Eigen::MatrixXd core_sig2noise = (sig2noise.cwiseAbs().array() * core_mask).matrix();
                 core_peak_abs_sig2noise[idx] = core_sig2noise.maxCoeff();
+            }
+            const auto core_values = collect_masked_values(sig2noise, core_mask);
+            const auto signal_tail = calc_tail_stats(core_values);
+            core_tail_frac_abs3[idx] = signal_tail.frac_abs3;
+            core_tail_frac_pos3[idx] = signal_tail.frac_pos3;
+            core_tail_frac_neg3[idx] = signal_tail.frac_neg3;
+            core_tail_excess_abs3[idx] = signal_tail.excess_abs3;
+            core_tail_excess_pos3[idx] = signal_tail.excess_pos3;
+            core_tail_excess_neg3[idx] = signal_tail.excess_neg3;
+            core_sig2noise_skew[idx] = signal_tail.skew;
+
+            if (!mb->noise.empty() && i < static_cast<Eigen::Index>(mb->noise.size()) && mb->n_noise > 0) {
+                std::vector<double> noise_rms_values;
+                noise_rms_values.reserve(static_cast<std::size_t>(mb->n_noise));
+                std::vector<double> tail_abs_values;
+                std::vector<double> tail_pos_values;
+                std::vector<double> tail_neg_values;
+                std::vector<double> excess_abs_values;
+                std::vector<double> excess_pos_values;
+                std::vector<double> excess_neg_values;
+                std::vector<double> skew_values;
+                tail_abs_values.reserve(static_cast<std::size_t>(mb->n_noise));
+                tail_pos_values.reserve(static_cast<std::size_t>(mb->n_noise));
+                tail_neg_values.reserve(static_cast<std::size_t>(mb->n_noise));
+                excess_abs_values.reserve(static_cast<std::size_t>(mb->n_noise));
+                excess_pos_values.reserve(static_cast<std::size_t>(mb->n_noise));
+                excess_neg_values.reserve(static_cast<std::size_t>(mb->n_noise));
+                skew_values.reserve(static_cast<std::size_t>(mb->n_noise));
+
+                const auto valid_core = (core_mask > 0.0);
+                const double valid_core_count = valid_core.count();
+                for (Eigen::Index n = 0; n < mb->n_noise; ++n) {
+                    Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(
+                        mb->noise[i].data() + n * mb->n_rows * mb->n_cols, mb->n_rows, mb->n_cols);
+                    if (valid_core_count > 0.0) {
+                        const double rms_sq = (valid_core.select(noise_matrix.array().square(), 0.0)).sum();
+                        noise_rms_values.push_back(std::sqrt(rms_sq / valid_core_count));
+                    }
+                    const auto noise_values = collect_masked_values(noise_matrix, core_mask);
+                    const auto noise_tail = calc_tail_stats(noise_values);
+                    if (std::isfinite(noise_tail.frac_abs3)) {
+                        tail_abs_values.push_back(noise_tail.frac_abs3);
+                    }
+                    if (std::isfinite(noise_tail.frac_pos3)) {
+                        tail_pos_values.push_back(noise_tail.frac_pos3);
+                    }
+                    if (std::isfinite(noise_tail.frac_neg3)) {
+                        tail_neg_values.push_back(noise_tail.frac_neg3);
+                    }
+                    if (std::isfinite(noise_tail.excess_abs3)) {
+                        excess_abs_values.push_back(noise_tail.excess_abs3);
+                    }
+                    if (std::isfinite(noise_tail.excess_pos3)) {
+                        excess_pos_values.push_back(noise_tail.excess_pos3);
+                    }
+                    if (std::isfinite(noise_tail.excess_neg3)) {
+                        excess_neg_values.push_back(noise_tail.excess_neg3);
+                    }
+                    if (std::isfinite(noise_tail.skew)) {
+                        skew_values.push_back(noise_tail.skew);
+                    }
+                }
+                noise_rms_p16[idx] = vector_quantile(noise_rms_values, 0.16);
+                noise_rms_p84[idx] = vector_quantile(noise_rms_values, 0.84);
+                noise_tail_frac_abs3[idx] = vector_median(tail_abs_values);
+                noise_tail_frac_pos3[idx] = vector_median(tail_pos_values);
+                noise_tail_frac_neg3[idx] = vector_median(tail_neg_values);
+                noise_tail_excess_abs3[idx] = vector_median(excess_abs_values);
+                noise_tail_excess_pos3[idx] = vector_median(excess_pos_values);
+                noise_tail_excess_neg3[idx] = vector_median(excess_neg_values);
+                noise_sig2noise_skew[idx] = vector_median(skew_values);
             }
         }
 
@@ -4533,6 +4737,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     }
     add_netcdf_var<std::string>(fo, "MAP_STAGE", stage_name);
     add_netcdf_var<std::string>(fo, "MAP_BUFFER", mb->name);
+    add_netcdf_var<std::string>(fo, "MAP_REGIME", map_regime);
+    add_netcdf_var<std::string>(fo, "SOURCE", telescope.source_name);
+    add_netcdf_var<std::string>(fo, "PROJID", telescope.project_id);
+    add_netcdf_var<std::string>(fo, "OBSGOAL", telescope.obs_goal);
     add_netcdf_var(fo, "MAP_PIXEL_SIZE_RAD", mb->pixel_size_rad);
     add_netcdf_var(fo, "MAP_COVERAGE_CUT", mb->cov_cut);
     add_netcdf_var<std::string>(fo, "MAP_SIG_UNIT", mb->sig_unit);
@@ -4588,9 +4796,26 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     add_map_double("map_coverage_sum", "sum of coverage values over the map; NaN if no coverage map exists", coverage_sum);
     add_map_double("map_coverage_max", "maximum coverage value in the map; NaN if no coverage map exists", coverage_max);
     add_map_double("map_core_coverage_median", "median coverage over the core support; NaN if no coverage map exists", coverage_median_core);
+    add_map_double("map_empirical_to_formal_noise_ratio", "ratio of map_median_rms to map_median_err over the core support", empirical_to_formal_noise_ratio);
     add_map_double("map_peak_signal", "maximum signal value in the map", peak_signal);
     add_map_double("map_peak_abs_sig2noise", "maximum absolute signal-to-noise value in the map", peak_abs_sig2noise);
     add_map_double("map_core_peak_abs_sig2noise", "maximum absolute signal-to-noise value over pixels with weight >= map_weight_threshold", core_peak_abs_sig2noise);
+    add_map_double("map_noise_rms_p16", "16th percentile of core RMS values across noise realizations", noise_rms_p16);
+    add_map_double("map_noise_rms_p84", "84th percentile of core RMS values across noise realizations", noise_rms_p84);
+    add_map_double("map_core_tail_fraction_abs_gt3", "fraction of core sig2noise pixels with |robust-z| >= 3", core_tail_frac_abs3);
+    add_map_double("map_core_tail_fraction_pos_gt3", "fraction of core sig2noise pixels with robust-z >= 3", core_tail_frac_pos3);
+    add_map_double("map_core_tail_fraction_neg_lt3", "fraction of core sig2noise pixels with robust-z <= -3", core_tail_frac_neg3);
+    add_map_double("map_core_tail_excess_abs_gt3", "ratio of map_core_tail_fraction_abs_gt3 to Gaussian expectation", core_tail_excess_abs3);
+    add_map_double("map_core_tail_excess_pos_gt3", "ratio of map_core_tail_fraction_pos_gt3 to Gaussian expectation", core_tail_excess_pos3);
+    add_map_double("map_core_tail_excess_neg_lt3", "ratio of map_core_tail_fraction_neg_lt3 to Gaussian expectation", core_tail_excess_neg3);
+    add_map_double("map_core_sig2noise_skew", "mean robust-z^3 of core sig2noise pixels", core_sig2noise_skew);
+    add_map_double("map_noise_tail_fraction_abs_gt3", "median fraction across noise realizations with |robust-z| >= 3 in the core support", noise_tail_frac_abs3);
+    add_map_double("map_noise_tail_fraction_pos_gt3", "median fraction across noise realizations with robust-z >= 3 in the core support", noise_tail_frac_pos3);
+    add_map_double("map_noise_tail_fraction_neg_lt3", "median fraction across noise realizations with robust-z <= -3 in the core support", noise_tail_frac_neg3);
+    add_map_double("map_noise_tail_excess_abs_gt3", "median ratio across noise realizations of abs tail fraction to Gaussian expectation", noise_tail_excess_abs3);
+    add_map_double("map_noise_tail_excess_pos_gt3", "median ratio across noise realizations of positive tail fraction to Gaussian expectation", noise_tail_excess_pos3);
+    add_map_double("map_noise_tail_excess_neg_lt3", "median ratio across noise realizations of negative tail fraction to Gaussian expectation", noise_tail_excess_neg3);
+    add_map_double("map_noise_sig2noise_skew", "median mean robust-z^3 across noise realizations in the core support", noise_sig2noise_skew);
     add_map_int("map_n_valid_pixels", "count of pixels with strictly positive weight", n_valid_pixels);
     add_map_int("map_n_core_pixels", "count of pixels with weight >= map_weight_threshold", n_core_pixels);
     add_map_int("map_peak_row", "row index of the maximum absolute signal-to-noise pixel", peak_row);
