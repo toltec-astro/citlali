@@ -390,6 +390,14 @@ post_processing:
     enabled: false # enable or disable map filtering
     type: wiener_filter # type of map filter (wiener filter or convolve)
     normalize_errors: false # correct weight map errors based on noise map rms
+    edge_guard: # runtime edge conditioning before FFT-based map filtering
+      enabled: true # derive a science/support mask from weight and coverage and suppress the exterior before filtering
+      weight_threshold_mode: coverage_cut # use the existing coverage-cut logic to derive the science-region weight threshold
+      hits_threshold_mode: core_median_fraction # derive the coverage threshold from the median coverage within the provisional weight-defined core
+      hits_core_fraction: 0.15 # require coverage >= this fraction of the provisional-core median coverage
+      guard_radius_fwhm: 1.0 # support-mask dilation radius in units of the nominal beam FWHM
+      fill_mode: core_median # fill exterior pixels with the science-region median signal before filtering
+      taper_mode: none # reserve guard band for future tapering without altering the science region
   map_histogram_n_bins: 20 # number of histogram bins (>0)
   source_finding: # parameters to control source finding
     enabled: false # enable or disable source finding

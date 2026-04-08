@@ -6,6 +6,7 @@
 #include <map>
 #include <vector>
 #include <cmath>
+#include <limits>
 
 #include <Eigen/Core>
 #include <unsupported/Eigen/CXX11/Tensor>
@@ -70,6 +71,14 @@ public:
     bool uniform_weight;
     // lowpass only
     bool run_lowpass;
+    // optional pre-filter edge guard derived from weight/coverage maps
+    bool edge_guard_enabled = true;
+    std::string edge_weight_threshold_mode = "coverage_cut";
+    std::string edge_hits_threshold_mode = "core_median_fraction";
+    std::string edge_fill_mode = "core_median";
+    std::string edge_taper_mode = "none";
+    double edge_hits_core_fraction = 0.15;
+    double edge_guard_radius_fwhm = 1.0;
 
     // number of loops in denom calc
     int n_loops;
@@ -253,6 +262,161 @@ public:
     template<class MB>
     void filter_maps(MB &mb, const int map_index) {
         const bool use_convolve = (filter_type=="convolve") || (filter_type=="wiener_filter" && run_lowpass);
+        if (mb.edge_guard_applied.size() != static_cast<std::size_t>(mb.signal.size())) {
+            const auto n_maps_local = static_cast<std::size_t>(mb.signal.size());
+            mb.edge_guard_applied.assign(n_maps_local, 0);
+            mb.edge_guard_support_radius_pix.assign(n_maps_local, 0);
+            mb.edge_guard_science_npix.assign(n_maps_local, 0);
+            mb.edge_guard_support_npix.assign(n_maps_local, 0);
+            mb.edge_guard_guardband_npix.assign(n_maps_local, 0);
+            mb.edge_guard_weight_threshold.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
+            mb.edge_guard_hits_threshold.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
+            mb.edge_guard_background_level.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
+            mb.edge_guard_science_frac.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
+            mb.edge_guard_support_frac.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
+        }
+
+        const auto m_idx = static_cast<std::size_t>(map_index);
+        mb.edge_guard_applied[m_idx] = 0;
+        mb.edge_guard_support_radius_pix[m_idx] = 0;
+        mb.edge_guard_science_npix[m_idx] = 0;
+        mb.edge_guard_support_npix[m_idx] = 0;
+        mb.edge_guard_guardband_npix[m_idx] = 0;
+        mb.edge_guard_weight_threshold[m_idx] = std::numeric_limits<double>::quiet_NaN();
+        mb.edge_guard_hits_threshold[m_idx] = std::numeric_limits<double>::quiet_NaN();
+        mb.edge_guard_background_level[m_idx] = std::numeric_limits<double>::quiet_NaN();
+        mb.edge_guard_science_frac[m_idx] = std::numeric_limits<double>::quiet_NaN();
+        mb.edge_guard_support_frac[m_idx] = std::numeric_limits<double>::quiet_NaN();
+
+        Eigen::MatrixXd guarded_weight = mb.weight[map_index];
+        if (edge_guard_enabled) {
+            double weight_threshold = 0.0;
+            if (edge_weight_threshold_mode == "coverage_cut" && mb.cov_cut > 0.0) {
+                weight_threshold = engine_utils::find_weight_threshold(mb.weight[map_index], mb.cov_cut);
+            }
+            if (!std::isfinite(weight_threshold) || weight_threshold < 0.0) {
+                weight_threshold = 0.0;
+            }
+            mb.edge_guard_weight_threshold[m_idx] = weight_threshold;
+
+            Eigen::Array<bool, Eigen::Dynamic, Eigen::Dynamic> science_mask =
+                ((mb.weight[map_index].array() >= weight_threshold) &&
+                 (mb.weight[map_index].array() > 0.0));
+            const auto provisional_count = static_cast<int>(science_mask.count());
+
+            double hits_threshold = std::numeric_limits<double>::quiet_NaN();
+            if (!mb.coverage.empty() &&
+                map_index < static_cast<int>(mb.coverage.size()) &&
+                edge_hits_threshold_mode == "core_median_fraction" &&
+                provisional_count > 0) {
+                std::vector<double> coverage_values;
+                coverage_values.reserve(static_cast<std::size_t>(provisional_count));
+                for (Eigen::Index r = 0; r < mb.coverage[map_index].rows(); ++r) {
+                    for (Eigen::Index c = 0; c < mb.coverage[map_index].cols(); ++c) {
+                        const double value = mb.coverage[map_index](r, c);
+                        if (science_mask(r, c) && std::isfinite(value) && value > 0.0) {
+                            coverage_values.push_back(value);
+                        }
+                    }
+                }
+                if (!coverage_values.empty()) {
+                    Eigen::Map<Eigen::VectorXd> cov_vec(coverage_values.data(),
+                                                        static_cast<Eigen::Index>(coverage_values.size()));
+                    const double core_median = tula::alg::median(cov_vec);
+                    if (std::isfinite(core_median) && core_median > 0.0) {
+                        hits_threshold = edge_hits_core_fraction * core_median;
+                        science_mask = science_mask &&
+                            ((mb.coverage[map_index].array() >= hits_threshold) &&
+                             (mb.coverage[map_index].array() > 0.0));
+                    }
+                }
+            }
+            mb.edge_guard_hits_threshold[m_idx] = hits_threshold;
+
+            if (science_mask.count() == 0) {
+                science_mask = ((mb.weight[map_index].array() >= weight_threshold) &&
+                                (mb.weight[map_index].array() > 0.0));
+            }
+
+            const int science_npix = static_cast<int>(science_mask.count());
+            mb.edge_guard_science_npix[m_idx] = science_npix;
+            const double n_pix = static_cast<double>(mb.n_rows) * static_cast<double>(mb.n_cols);
+            mb.edge_guard_science_frac[m_idx] = (n_pix > 0.0) ? static_cast<double>(science_npix) / n_pix : 0.0;
+
+            Eigen::Array<bool, Eigen::Dynamic, Eigen::Dynamic> support_mask = science_mask;
+            const int support_radius_pix = std::max(
+                1, static_cast<int>(std::ceil(edge_guard_radius_fwhm * std::max(init_fwhm, 1.0))));
+            mb.edge_guard_support_radius_pix[m_idx] = support_radius_pix;
+
+            if (science_npix > 0 && support_radius_pix > 0) {
+                for (Eigen::Index r = 0; r < mb.n_rows; ++r) {
+                    for (Eigen::Index c = 0; c < mb.n_cols; ++c) {
+                        if (support_mask(r, c)) {
+                            continue;
+                        }
+                        const Eigen::Index r0 = std::max<Eigen::Index>(0, r - support_radius_pix);
+                        const Eigen::Index r1 = std::min<Eigen::Index>(mb.n_rows - 1, r + support_radius_pix);
+                        const Eigen::Index c0 = std::max<Eigen::Index>(0, c - support_radius_pix);
+                        const Eigen::Index c1 = std::min<Eigen::Index>(mb.n_cols - 1, c + support_radius_pix);
+                        bool found = false;
+                        for (Eigen::Index rr = r0; rr <= r1 && !found; ++rr) {
+                            for (Eigen::Index cc = c0; cc <= c1; ++cc) {
+                                if (!science_mask(rr, cc)) {
+                                    continue;
+                                }
+                                const Eigen::Index dr = rr - r;
+                                const Eigen::Index dc = cc - c;
+                                if (dr * dr + dc * dc <= support_radius_pix * support_radius_pix) {
+                                    support_mask(r, c) = true;
+                                    found = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            const Eigen::Array<bool, Eigen::Dynamic, Eigen::Dynamic> guardband_mask =
+                support_mask && (!science_mask);
+            mb.edge_guard_support_npix[m_idx] = static_cast<int>(support_mask.count());
+            mb.edge_guard_guardband_npix[m_idx] = static_cast<int>(guardband_mask.count());
+            mb.edge_guard_support_frac[m_idx] =
+                (n_pix > 0.0) ? static_cast<double>(mb.edge_guard_support_npix[m_idx]) / n_pix : 0.0;
+
+            std::vector<double> science_values;
+            science_values.reserve(static_cast<std::size_t>(std::max(science_npix, 0)));
+            for (Eigen::Index r = 0; r < mb.signal[map_index].rows(); ++r) {
+                for (Eigen::Index c = 0; c < mb.signal[map_index].cols(); ++c) {
+                    const double value = mb.signal[map_index](r, c);
+                    if (science_mask(r, c) && std::isfinite(value)) {
+                        science_values.push_back(value);
+                    }
+                }
+            }
+            double background_level = 0.0;
+            if (!science_values.empty() && edge_fill_mode == "core_median") {
+                Eigen::Map<Eigen::VectorXd> signal_vec(science_values.data(),
+                                                       static_cast<Eigen::Index>(science_values.size()));
+                background_level = tula::alg::median(signal_vec);
+            }
+            mb.edge_guard_background_level[m_idx] = background_level;
+
+            for (Eigen::Index r = 0; r < mb.n_rows; ++r) {
+                for (Eigen::Index c = 0; c < mb.n_cols; ++c) {
+                    if (!support_mask(r, c)) {
+                        mb.signal[map_index](r, c) = background_level;
+                        guarded_weight(r, c) = 0.0;
+                        if (!mb.kernel.empty()) {
+                            mb.kernel[map_index](r, c) = 0.0;
+                        }
+                    }
+                }
+            }
+            mb.weight[map_index] = guarded_weight;
+            mb.edge_guard_applied[m_idx] = 1;
+        }
+
         Eigen::MatrixXd weight_input;
         if (use_convolve) {
             weight_input = mb.weight[map_index];
@@ -591,6 +755,26 @@ void WienerFilter::get_config(config_t &config, std::vector<std::vector<std::str
     // re-normalize weight maps?
     get_config_value(config, normalize_error, missing_keys, invalid_keys,
                      std::tuple{"post_processing","map_filtering","normalize_errors"});
+    get_config_value(config, edge_guard_enabled, missing_keys, invalid_keys,
+                     std::tuple{"post_processing","map_filtering","edge_guard","enabled"});
+    get_config_value(config, edge_weight_threshold_mode, missing_keys, invalid_keys,
+                     std::tuple{"post_processing","map_filtering","edge_guard","weight_threshold_mode"},
+                     {"coverage_cut"});
+    get_config_value(config, edge_hits_threshold_mode, missing_keys, invalid_keys,
+                     std::tuple{"post_processing","map_filtering","edge_guard","hits_threshold_mode"},
+                     {"core_median_fraction"});
+    get_config_value(config, edge_hits_core_fraction, missing_keys, invalid_keys,
+                     std::tuple{"post_processing","map_filtering","edge_guard","hits_core_fraction"},
+                     {}, {0.0});
+    get_config_value(config, edge_guard_radius_fwhm, missing_keys, invalid_keys,
+                     std::tuple{"post_processing","map_filtering","edge_guard","guard_radius_fwhm"},
+                     {}, {0.0});
+    get_config_value(config, edge_fill_mode, missing_keys, invalid_keys,
+                     std::tuple{"post_processing","map_filtering","edge_guard","fill_mode"},
+                     {"core_median"});
+    get_config_value(config, edge_taper_mode, missing_keys, invalid_keys,
+                     std::tuple{"post_processing","map_filtering","edge_guard","taper_mode"},
+                     {"none"});
     // denominator convergence thresholds
     get_config_value(config, denom_rel_tol, missing_keys, invalid_keys,
                      std::tuple{"wiener_filter","denom_rel_tol"}, {}, {0.0}, {1.0});

@@ -4381,10 +4381,20 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     std::vector<double> noise_tail_excess_pos3(n_maps_local, fill_double);
     std::vector<double> noise_tail_excess_neg3(n_maps_local, fill_double);
     std::vector<double> noise_sig2noise_skew(n_maps_local, fill_double);
+    std::vector<double> edge_guard_weight_thresholds(n_maps_local, fill_double);
+    std::vector<double> edge_guard_hits_thresholds(n_maps_local, fill_double);
+    std::vector<double> edge_guard_background_levels(n_maps_local, fill_double);
+    std::vector<double> edge_guard_science_frac(n_maps_local, fill_double);
+    std::vector<double> edge_guard_support_frac(n_maps_local, fill_double);
     std::vector<int> n_valid_pixels(n_maps_local, 0);
     std::vector<int> n_core_pixels(n_maps_local, 0);
     std::vector<int> peak_row(n_maps_local, fill_int);
     std::vector<int> peak_col(n_maps_local, fill_int);
+    std::vector<int> edge_guard_applied(n_maps_local, 0);
+    std::vector<int> edge_guard_support_radius_pix(n_maps_local, 0);
+    std::vector<int> edge_guard_science_npix(n_maps_local, 0);
+    std::vector<int> edge_guard_support_npix(n_maps_local, 0);
+    std::vector<int> edge_guard_guardband_npix(n_maps_local, 0);
 
     std::vector<double> obs_weight_sum(n_maps_local * n_obsnums, fill_double);
     std::vector<double> obs_weight_frac(n_maps_local * n_obsnums, fill_double);
@@ -4548,6 +4558,18 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             weight_threshold = 0.0;
         }
         weight_thresholds[idx] = weight_threshold;
+        if (idx < mb->edge_guard_applied.size()) {
+            edge_guard_applied[idx] = mb->edge_guard_applied[idx];
+            edge_guard_support_radius_pix[idx] = mb->edge_guard_support_radius_pix[idx];
+            edge_guard_science_npix[idx] = mb->edge_guard_science_npix[idx];
+            edge_guard_support_npix[idx] = mb->edge_guard_support_npix[idx];
+            edge_guard_guardband_npix[idx] = mb->edge_guard_guardband_npix[idx];
+            edge_guard_weight_thresholds[idx] = mb->edge_guard_weight_threshold[idx];
+            edge_guard_hits_thresholds[idx] = mb->edge_guard_hits_threshold[idx];
+            edge_guard_background_levels[idx] = mb->edge_guard_background_level[idx];
+            edge_guard_science_frac[idx] = mb->edge_guard_science_frac[idx];
+            edge_guard_support_frac[idx] = mb->edge_guard_support_frac[idx];
+        }
 
         const auto weight_arr = mb->weight[i].array();
         const auto valid_mask = (weight_arr > 0.0).template cast<double>();
@@ -4744,6 +4766,13 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     add_netcdf_var(fo, "MAP_PIXEL_SIZE_RAD", mb->pixel_size_rad);
     add_netcdf_var(fo, "MAP_COVERAGE_CUT", mb->cov_cut);
     add_netcdf_var<std::string>(fo, "MAP_SIG_UNIT", mb->sig_unit);
+    add_netcdf_var(fo, "MAP_EDGE_GUARD_ENABLED", wiener_filter.edge_guard_enabled);
+    add_netcdf_var<std::string>(fo, "MAP_EDGE_GUARD_WEIGHT_THRESHOLD_MODE", wiener_filter.edge_weight_threshold_mode);
+    add_netcdf_var<std::string>(fo, "MAP_EDGE_GUARD_HITS_THRESHOLD_MODE", wiener_filter.edge_hits_threshold_mode);
+    add_netcdf_var<std::string>(fo, "MAP_EDGE_GUARD_FILL_MODE", wiener_filter.edge_fill_mode);
+    add_netcdf_var<std::string>(fo, "MAP_EDGE_GUARD_TAPER_MODE", wiener_filter.edge_taper_mode);
+    add_netcdf_var(fo, "MAP_EDGE_GUARD_HITS_CORE_FRACTION", wiener_filter.edge_hits_core_fraction);
+    add_netcdf_var(fo, "MAP_EDGE_GUARD_RADIUS_FWHM", wiener_filter.edge_guard_radius_fwhm);
 
     put_string_1d(fo, "map_array_name", n_maps_dim, array_names, "array label for each map row");
     put_string_1d(fo, "map_stokes", n_maps_dim, stokes_names, "stokes parameter label for each map row");
@@ -4816,10 +4845,20 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     add_map_double("map_noise_tail_excess_pos_gt3", "median ratio across noise realizations of positive tail fraction to Gaussian expectation", noise_tail_excess_pos3);
     add_map_double("map_noise_tail_excess_neg_lt3", "median ratio across noise realizations of negative tail fraction to Gaussian expectation", noise_tail_excess_neg3);
     add_map_double("map_noise_sig2noise_skew", "median mean robust-z^3 across noise realizations in the core support", noise_sig2noise_skew);
+    add_map_double("map_edge_guard_weight_threshold", "runtime weight threshold used by the filter edge guard; NaN when not applied", edge_guard_weight_thresholds);
+    add_map_double("map_edge_guard_hits_threshold", "runtime coverage threshold used by the filter edge guard; NaN when not applied or no coverage map exists", edge_guard_hits_thresholds);
+    add_map_double("map_edge_guard_background_level", "background fill level applied outside the edge-guard support mask before filtering", edge_guard_background_levels);
+    add_map_double("map_edge_guard_science_fraction", "fraction of map pixels in the edge-guard science mask", edge_guard_science_frac);
+    add_map_double("map_edge_guard_support_fraction", "fraction of map pixels in the edge-guard support mask", edge_guard_support_frac);
     add_map_int("map_n_valid_pixels", "count of pixels with strictly positive weight", n_valid_pixels);
     add_map_int("map_n_core_pixels", "count of pixels with weight >= map_weight_threshold", n_core_pixels);
     add_map_int("map_peak_row", "row index of the maximum absolute signal-to-noise pixel", peak_row);
     add_map_int("map_peak_col", "column index of the maximum absolute signal-to-noise pixel", peak_col);
+    add_map_int("map_edge_guard_applied", "1 when the filter edge guard was applied to this map, 0 otherwise", edge_guard_applied);
+    add_map_int("map_edge_guard_support_radius_pix", "support-mask dilation radius in pixels used by the filter edge guard", edge_guard_support_radius_pix);
+    add_map_int("map_edge_guard_science_npix", "number of pixels in the filter edge-guard science mask", edge_guard_science_npix);
+    add_map_int("map_edge_guard_support_npix", "number of pixels in the filter edge-guard support mask", edge_guard_support_npix);
+    add_map_int("map_edge_guard_guardband_npix", "number of pixels in the filter edge-guard guard band (support minus science)", edge_guard_guardband_npix);
 
     add_map_obs_double("coadd_obs_weight_sum", "sum of positive observation-level raw weight values aligned onto this map grid", obs_weight_sum);
     add_map_obs_double("coadd_obs_weight_frac", "fractional contribution of each obsnum to coadd_obs_weight_sum for a given map", obs_weight_frac);
@@ -5717,6 +5756,18 @@ void Engine::write_stats() {
 
 template <mapmaking::MapType map_t, class map_buffer_t>
 void Engine::run_wiener_filter(map_buffer_t &mb) {
+    const auto n_maps_local = static_cast<std::size_t>(mb.signal.size());
+    mb.edge_guard_applied.assign(n_maps_local, 0);
+    mb.edge_guard_support_radius_pix.assign(n_maps_local, 0);
+    mb.edge_guard_science_npix.assign(n_maps_local, 0);
+    mb.edge_guard_support_npix.assign(n_maps_local, 0);
+    mb.edge_guard_guardband_npix.assign(n_maps_local, 0);
+    mb.edge_guard_weight_threshold.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
+    mb.edge_guard_hits_threshold.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
+    mb.edge_guard_background_level.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
+    mb.edge_guard_science_frac.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
+    mb.edge_guard_support_frac.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
+
     // pointer to map buffer
     mapmaking::MapBuffer* pmb = &mb;
     // pointer to data file fits vector

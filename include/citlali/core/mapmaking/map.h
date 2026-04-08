@@ -119,6 +119,18 @@ public:
     // vector to hold mean rms values
     Eigen::VectorXd median_rms, median_err;
 
+    // realized edge-guard diagnostics for filtered map products
+    std::vector<int> edge_guard_applied;
+    std::vector<int> edge_guard_support_radius_pix;
+    std::vector<int> edge_guard_science_npix;
+    std::vector<int> edge_guard_support_npix;
+    std::vector<int> edge_guard_guardband_npix;
+    std::vector<double> edge_guard_weight_threshold;
+    std::vector<double> edge_guard_hits_threshold;
+    std::vector<double> edge_guard_background_level;
+    std::vector<double> edge_guard_science_frac;
+    std::vector<double> edge_guard_support_frac;
+
     // number of sources found by source finder
     std::vector<int> n_sources;
 
