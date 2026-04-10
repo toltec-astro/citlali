@@ -130,6 +130,13 @@ public:
     std::vector<double> edge_guard_background_level;
     std::vector<double> edge_guard_science_frac;
     std::vector<double> edge_guard_support_frac;
+    std::vector<double> edge_guard_guardband_rms_pre;
+    std::vector<double> edge_guard_guardband_rms_post;
+    std::vector<double> edge_guard_exterior_rms_pre;
+    std::vector<double> edge_guard_exterior_rms_post;
+    std::vector<double> edge_guard_exterior_max_abs_pre;
+    std::vector<double> edge_guard_exterior_max_abs_post;
+    std::vector<Eigen::MatrixXd> edge_guard_window;
 
     // number of sources found by source finder
     std::vector<int> n_sources;

@@ -4773,6 +4773,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     add_netcdf_var<std::string>(fo, "MAP_EDGE_GUARD_TAPER_MODE", wiener_filter.edge_taper_mode);
     add_netcdf_var(fo, "MAP_EDGE_GUARD_HITS_CORE_FRACTION", wiener_filter.edge_hits_core_fraction);
     add_netcdf_var(fo, "MAP_EDGE_GUARD_RADIUS_FWHM", wiener_filter.edge_guard_radius_fwhm);
+    add_netcdf_var(fo, "MAP_EDGE_GUARD_TAPER_MIN_FRACTION", wiener_filter.edge_taper_min_fraction);
 
     put_string_1d(fo, "map_array_name", n_maps_dim, array_names, "array label for each map row");
     put_string_1d(fo, "map_stokes", n_maps_dim, stokes_names, "stokes parameter label for each map row");

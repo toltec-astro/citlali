@@ -45,6 +45,7 @@ public:
     std::string edge_taper_mode = "none";
     double edge_hits_core_fraction = 0.15;
     double edge_guard_radius_fwhm = 1.0;
+    double edge_taper_min_fraction = 0.25;
 
     // number of loops in denom calc
     int n_loops;
@@ -192,7 +193,10 @@ void WienerFilter::get_config(config_t &config, std::vector<std::vector<std::str
                      {"core_median"});
     get_config_value(config, edge_taper_mode, missing_keys, invalid_keys,
                      std::tuple{"post_processing","map_filtering","edge_guard","taper_mode"},
-                     {"none"});
+                     {"none","cosine"});
+    get_config_value(config, edge_taper_min_fraction, missing_keys, invalid_keys,
+                     std::tuple{"post_processing","map_filtering","edge_guard","taper_min_fraction"},
+                     {}, {0.0}, {1.0});
     // denominator convergence thresholds
     get_config_value(config, denom_rel_tol, missing_keys, invalid_keys,
                      std::tuple{"wiener_filter","denom_rel_tol"}, {}, {0.0}, {1.0});
@@ -1106,6 +1110,13 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
         mb.edge_guard_background_level.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
         mb.edge_guard_science_frac.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
         mb.edge_guard_support_frac.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
+        mb.edge_guard_guardband_rms_pre.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
+        mb.edge_guard_guardband_rms_post.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
+        mb.edge_guard_exterior_rms_pre.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
+        mb.edge_guard_exterior_rms_post.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
+        mb.edge_guard_exterior_max_abs_pre.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
+        mb.edge_guard_exterior_max_abs_post.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
+        mb.edge_guard_window.resize(n_maps_local);
     }
 
     const auto m_idx = static_cast<std::size_t>(map_index);
@@ -1119,9 +1130,19 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
     mb.edge_guard_background_level[m_idx] = std::numeric_limits<double>::quiet_NaN();
     mb.edge_guard_science_frac[m_idx] = std::numeric_limits<double>::quiet_NaN();
     mb.edge_guard_support_frac[m_idx] = std::numeric_limits<double>::quiet_NaN();
+    mb.edge_guard_guardband_rms_pre[m_idx] = std::numeric_limits<double>::quiet_NaN();
+    mb.edge_guard_guardband_rms_post[m_idx] = std::numeric_limits<double>::quiet_NaN();
+    mb.edge_guard_exterior_rms_pre[m_idx] = std::numeric_limits<double>::quiet_NaN();
+    mb.edge_guard_exterior_rms_post[m_idx] = std::numeric_limits<double>::quiet_NaN();
+    mb.edge_guard_exterior_max_abs_pre[m_idx] = std::numeric_limits<double>::quiet_NaN();
+    mb.edge_guard_exterior_max_abs_post[m_idx] = std::numeric_limits<double>::quiet_NaN();
+    if (m_idx < mb.edge_guard_window.size()) {
+        mb.edge_guard_window[m_idx].resize(0, 0);
+    }
 
     Eigen::MatrixXd guarded_weight = mb.weight[map_index];
     if (edge_guard_enabled) {
+        const Eigen::MatrixXd original_signal = mb.signal[map_index];
         double weight_threshold = 0.0;
         if (edge_weight_threshold_mode == "coverage_cut" && mb.cov_cut > 0.0) {
             weight_threshold = engine_utils::find_weight_threshold(mb.weight[map_index], mb.cov_cut);
@@ -1211,10 +1232,6 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
 
         const Eigen::Array<bool, Eigen::Dynamic, Eigen::Dynamic> guardband_mask =
             support_mask && (!science_mask);
-        mb.edge_guard_support_npix[m_idx] = static_cast<int>(support_mask.count());
-        mb.edge_guard_guardband_npix[m_idx] = static_cast<int>(guardband_mask.count());
-        mb.edge_guard_support_frac[m_idx] =
-            (n_pix > 0.0) ? static_cast<double>(mb.edge_guard_support_npix[m_idx]) / n_pix : 0.0;
 
         std::vector<double> science_values;
         science_values.reserve(static_cast<std::size_t>(std::max(science_npix, 0)));
@@ -1234,18 +1251,144 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
         }
         mb.edge_guard_background_level[m_idx] = background_level;
 
+        Eigen::MatrixXd edge_window = Eigen::MatrixXd::Zero(mb.n_rows, mb.n_cols);
         for (Eigen::Index r = 0; r < mb.n_rows; ++r) {
             for (Eigen::Index c = 0; c < mb.n_cols; ++c) {
-                if (!support_mask(r, c)) {
-                    mb.signal[map_index](r, c) = background_level;
-                    guarded_weight(r, c) = 0.0;
-                    if (!mb.kernel.empty()) {
-                        mb.kernel[map_index](r, c) = 0.0;
+                if (science_mask(r, c)) {
+                    edge_window(r, c) = 1.0;
+                }
+            }
+        }
+
+        if (edge_taper_mode == "cosine" && science_npix > 0 && support_radius_pix > 0) {
+            Eigen::Array<bool, Eigen::Dynamic, Eigen::Dynamic> taper_guard_mask = guardband_mask;
+            const double taper_weight_floor = edge_taper_min_fraction * weight_threshold;
+            taper_guard_mask = taper_guard_mask &&
+                ((mb.weight[map_index].array() > 0.0) &&
+                 (mb.weight[map_index].array() >= taper_weight_floor));
+            if (std::isfinite(hits_threshold) &&
+                !mb.coverage.empty() &&
+                map_index < static_cast<int>(mb.coverage.size())) {
+                const double taper_hits_floor = edge_taper_min_fraction * hits_threshold;
+                taper_guard_mask = taper_guard_mask &&
+                    ((mb.coverage[map_index].array() > 0.0) &&
+                     (mb.coverage[map_index].array() >= taper_hits_floor));
+            }
+
+            for (Eigen::Index r = 0; r < mb.n_rows; ++r) {
+                for (Eigen::Index c = 0; c < mb.n_cols; ++c) {
+                    if (!taper_guard_mask(r, c)) {
+                        continue;
+                    }
+                    double min_dist2 = std::numeric_limits<double>::infinity();
+                    const Eigen::Index r0 = std::max<Eigen::Index>(0, r - support_radius_pix);
+                    const Eigen::Index r1 = std::min<Eigen::Index>(mb.n_rows - 1, r + support_radius_pix);
+                    const Eigen::Index c0 = std::max<Eigen::Index>(0, c - support_radius_pix);
+                    const Eigen::Index c1 = std::min<Eigen::Index>(mb.n_cols - 1, c + support_radius_pix);
+                    for (Eigen::Index rr = r0; rr <= r1; ++rr) {
+                        for (Eigen::Index cc = c0; cc <= c1; ++cc) {
+                            if (!science_mask(rr, cc)) {
+                                continue;
+                            }
+                            const double dr = static_cast<double>(rr - r);
+                            const double dc = static_cast<double>(cc - c);
+                            const double dist2 = dr * dr + dc * dc;
+                            if (dist2 < min_dist2) {
+                                min_dist2 = dist2;
+                            }
+                        }
+                    }
+                    if (!std::isfinite(min_dist2)) {
+                        continue;
+                    }
+                    const double frac = std::min(std::sqrt(min_dist2) / static_cast<double>(support_radius_pix), 1.0);
+                    edge_window(r, c) = 0.5 * (1.0 + std::cos(M_PI * frac));
+                }
+            }
+        }
+        else {
+            for (Eigen::Index r = 0; r < mb.n_rows; ++r) {
+                for (Eigen::Index c = 0; c < mb.n_cols; ++c) {
+                    if (guardband_mask(r, c)) {
+                        edge_window(r, c) = 1.0;
                     }
                 }
             }
         }
+
+        mb.edge_guard_support_npix[m_idx] =
+            static_cast<int>((edge_window.array() > 0.0).count());
+        mb.edge_guard_guardband_npix[m_idx] =
+            std::max(0, mb.edge_guard_support_npix[m_idx] - science_npix);
+        mb.edge_guard_support_frac[m_idx] =
+            (n_pix > 0.0) ? static_cast<double>(mb.edge_guard_support_npix[m_idx]) / n_pix : 0.0;
+
+        const Eigen::Array<bool, Eigen::Dynamic, Eigen::Dynamic> effective_guardband_mask =
+            (edge_window.array() > 0.0) && (!science_mask);
+        const Eigen::Array<bool, Eigen::Dynamic, Eigen::Dynamic> effective_exterior_mask =
+            (edge_window.array() <= 0.0);
+
+        auto calc_region_rms = [&](const Eigen::MatrixXd &matrix,
+                                   const Eigen::Array<bool, Eigen::Dynamic, Eigen::Dynamic> &mask) {
+            double sumsq = 0.0;
+            std::size_t count = 0;
+            for (Eigen::Index r = 0; r < matrix.rows(); ++r) {
+                for (Eigen::Index c = 0; c < matrix.cols(); ++c) {
+                    const double value = matrix(r, c);
+                    if (mask(r, c) && std::isfinite(value)) {
+                        sumsq += value * value;
+                        ++count;
+                    }
+                }
+            }
+            if (count == 0) {
+                return std::numeric_limits<double>::quiet_NaN();
+            }
+            return std::sqrt(sumsq / static_cast<double>(count));
+        };
+
+        auto calc_region_max_abs = [&](const Eigen::MatrixXd &matrix,
+                                       const Eigen::Array<bool, Eigen::Dynamic, Eigen::Dynamic> &mask) {
+            double max_abs = std::numeric_limits<double>::quiet_NaN();
+            for (Eigen::Index r = 0; r < matrix.rows(); ++r) {
+                for (Eigen::Index c = 0; c < matrix.cols(); ++c) {
+                    const double value = matrix(r, c);
+                    if (mask(r, c) && std::isfinite(value)) {
+                        const double abs_value = std::abs(value);
+                        if (!std::isfinite(max_abs) || abs_value > max_abs) {
+                            max_abs = abs_value;
+                        }
+                    }
+                }
+            }
+            return max_abs;
+        };
+
+        mb.edge_guard_guardband_rms_pre[m_idx] = calc_region_rms(original_signal, effective_guardband_mask);
+        mb.edge_guard_exterior_rms_pre[m_idx] = calc_region_rms(original_signal, effective_exterior_mask);
+        mb.edge_guard_exterior_max_abs_pre[m_idx] = calc_region_max_abs(original_signal, effective_exterior_mask);
+
+        for (Eigen::Index r = 0; r < mb.n_rows; ++r) {
+            for (Eigen::Index c = 0; c < mb.n_cols; ++c) {
+                const double taper = edge_window(r, c);
+                if (taper >= 1.0) {
+                    continue;
+                }
+                mb.signal[map_index](r, c) =
+                    background_level + (mb.signal[map_index](r, c) - background_level) * taper;
+                guarded_weight(r, c) *= taper * taper;
+                if (!mb.kernel.empty()) {
+                    mb.kernel[map_index](r, c) *= taper;
+                }
+            }
+        }
         mb.weight[map_index] = guarded_weight;
+        mb.edge_guard_guardband_rms_post[m_idx] = calc_region_rms(mb.signal[map_index], effective_guardband_mask);
+        mb.edge_guard_exterior_rms_post[m_idx] = calc_region_rms(mb.signal[map_index], effective_exterior_mask);
+        mb.edge_guard_exterior_max_abs_post[m_idx] = calc_region_max_abs(mb.signal[map_index], effective_exterior_mask);
+        if (m_idx < mb.edge_guard_window.size()) {
+            mb.edge_guard_window[m_idx] = edge_window;
+        }
         mb.edge_guard_applied[m_idx] = 1;
     }
 
@@ -1398,6 +1541,11 @@ void WienerFilter::filter_noise(MB &mb, const int map_index, const int noise_num
     // get noise map
     filtered_map = Eigen::Map<Eigen::MatrixXd>(mb.noise[map_index].data() + noise_num * mb.n_rows * mb.n_cols,
                                                mb.n_rows, mb.n_cols);
+    if (map_index < static_cast<int>(mb.edge_guard_window.size()) &&
+        mb.edge_guard_window[map_index].rows() == mb.n_rows &&
+        mb.edge_guard_window[map_index].cols() == mb.n_cols) {
+        filtered_map.array() *= mb.edge_guard_window[map_index].array();
+    }
 
     const bool use_convolve = (filter_type=="convolve") || (filter_type=="wiener_filter" && run_lowpass);
     // don't need to run through the whole filter, just the numerator
