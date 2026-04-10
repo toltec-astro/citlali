@@ -4386,6 +4386,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     std::vector<double> edge_guard_background_levels(n_maps_local, fill_double);
     std::vector<double> edge_guard_science_frac(n_maps_local, fill_double);
     std::vector<double> edge_guard_support_frac(n_maps_local, fill_double);
+    std::vector<double> edge_guard_guardband_rms_pre(n_maps_local, fill_double);
+    std::vector<double> edge_guard_guardband_rms_post(n_maps_local, fill_double);
+    std::vector<double> edge_guard_exterior_rms_pre(n_maps_local, fill_double);
+    std::vector<double> edge_guard_exterior_rms_post(n_maps_local, fill_double);
+    std::vector<double> edge_guard_exterior_max_abs_pre(n_maps_local, fill_double);
+    std::vector<double> edge_guard_exterior_max_abs_post(n_maps_local, fill_double);
     std::vector<int> n_valid_pixels(n_maps_local, 0);
     std::vector<int> n_core_pixels(n_maps_local, 0);
     std::vector<int> peak_row(n_maps_local, fill_int);
@@ -4569,6 +4575,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             edge_guard_background_levels[idx] = mb->edge_guard_background_level[idx];
             edge_guard_science_frac[idx] = mb->edge_guard_science_frac[idx];
             edge_guard_support_frac[idx] = mb->edge_guard_support_frac[idx];
+            edge_guard_guardband_rms_pre[idx] = mb->edge_guard_guardband_rms_pre[idx];
+            edge_guard_guardband_rms_post[idx] = mb->edge_guard_guardband_rms_post[idx];
+            edge_guard_exterior_rms_pre[idx] = mb->edge_guard_exterior_rms_pre[idx];
+            edge_guard_exterior_rms_post[idx] = mb->edge_guard_exterior_rms_post[idx];
+            edge_guard_exterior_max_abs_pre[idx] = mb->edge_guard_exterior_max_abs_pre[idx];
+            edge_guard_exterior_max_abs_post[idx] = mb->edge_guard_exterior_max_abs_post[idx];
         }
 
         const auto weight_arr = mb->weight[i].array();
@@ -4851,6 +4863,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     add_map_double("map_edge_guard_background_level", "background fill level applied outside the edge-guard support mask before filtering", edge_guard_background_levels);
     add_map_double("map_edge_guard_science_fraction", "fraction of map pixels in the edge-guard science mask", edge_guard_science_frac);
     add_map_double("map_edge_guard_support_fraction", "fraction of map pixels in the edge-guard support mask", edge_guard_support_frac);
+    add_map_double("map_edge_guard_guardband_rms_pre", "RMS of signal values in the effective edge-guard guard band before applying fill/taper", edge_guard_guardband_rms_pre);
+    add_map_double("map_edge_guard_guardband_rms_post", "RMS of signal values in the effective edge-guard guard band after applying fill/taper and before filtering", edge_guard_guardband_rms_post);
+    add_map_double("map_edge_guard_exterior_rms_pre", "RMS of signal values outside the effective edge-guard support before applying fill/taper", edge_guard_exterior_rms_pre);
+    add_map_double("map_edge_guard_exterior_rms_post", "RMS of signal values outside the effective edge-guard support after applying fill/taper and before filtering", edge_guard_exterior_rms_post);
+    add_map_double("map_edge_guard_exterior_max_abs_pre", "maximum absolute signal value outside the effective edge-guard support before applying fill/taper", edge_guard_exterior_max_abs_pre);
+    add_map_double("map_edge_guard_exterior_max_abs_post", "maximum absolute signal value outside the effective edge-guard support after applying fill/taper and before filtering", edge_guard_exterior_max_abs_post);
     add_map_int("map_n_valid_pixels", "count of pixels with strictly positive weight", n_valid_pixels);
     add_map_int("map_n_core_pixels", "count of pixels with weight >= map_weight_threshold", n_core_pixels);
     add_map_int("map_peak_row", "row index of the maximum absolute signal-to-noise pixel", peak_row);
@@ -5768,6 +5786,13 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     mb.edge_guard_background_level.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
     mb.edge_guard_science_frac.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
     mb.edge_guard_support_frac.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
+    mb.edge_guard_guardband_rms_pre.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
+    mb.edge_guard_guardband_rms_post.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
+    mb.edge_guard_exterior_rms_pre.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
+    mb.edge_guard_exterior_rms_post.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
+    mb.edge_guard_exterior_max_abs_pre.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
+    mb.edge_guard_exterior_max_abs_post.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
+    mb.edge_guard_window.resize(n_maps_local);
 
     // pointer to map buffer
     mapmaking::MapBuffer* pmb = &mb;
