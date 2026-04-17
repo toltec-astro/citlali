@@ -677,6 +677,10 @@ void Engine::get_rtc_config(CT &config) {
         telescope.inner_scans_chunk = 0;
     }
 
+    if (rtcproc.run_tod_iir_highpass) {
+        telescope.inner_scans_chunk += rtcproc.filter.iir_highpass_settle_samples(telescope.fsmp);
+    }
+
     // ignore hwpr?
     get_config_value(config, calib.ignore_hwpr, missing_keys, invalid_keys,
                      std::tuple{"timestream","polarimetry", "ignore_hwpr"});

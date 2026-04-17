@@ -36,6 +36,8 @@ public:
 
     template <typename Derived>
     void iir_highpass(Eigen::DenseBase<Derived> &, double);
+
+    Eigen::Index iir_highpass_settle_samples(double) const;
 };
 
 void Filter::make_filter(double fsmp) {
@@ -257,6 +259,18 @@ void Filter::iir_highpass(Eigen::DenseBase<Derived> &in, double fsmp) {
             in.derived().col(i).reverseInPlace();
         }
     }
+}
+
+inline Eigen::Index Filter::iir_highpass_settle_samples(double fsmp) const {
+    if (fsmp <= 0.0 || iir_highpass_freq_Hz <= 0.0 || iir_highpass_order <= 0) {
+        return 0;
+    }
+
+    // Drop five RC time constants per stage to suppress IIR startup transients at scan edges.
+    const double tau_sec = 1.0 / (2.0 * pi * iir_highpass_freq_Hz);
+    const double settle_samples =
+        5.0 * tau_sec * fsmp * static_cast<double>(std::max(1, iir_highpass_order));
+    return static_cast<Eigen::Index>(std::ceil(std::max(0.0, settle_samples)));
 }
 
 } // namespace timestream
