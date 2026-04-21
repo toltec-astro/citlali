@@ -134,12 +134,33 @@ void MapBuffer::normalize_maps() {
     // normalize science and kernel mpas
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
         Eigen::ArrayXXd mask(n_rows, n_cols);
+        Eigen::MatrixXd finalized_weight = Eigen::MatrixXd::Zero(n_rows, n_cols);
+
+        auto apply_weight_threshold = [&](Eigen::MatrixXd &weight_map) {
+            mask = (weight_map.array() > 0.0).template cast<double>();
+            if (cov_cut > 0.0) {
+                // Use a softer support floor than the science coverage cut so
+                // low-level kernel wings survive while unsupported edge pixels
+                // are still removed before normalization.
+                double support_cov_cut = cov_cut / 10.0;
+                double weight_threshold = engine_utils::find_weight_threshold(weight_map, support_cov_cut);
+                if (weight_threshold > 0.0) {
+                    mask *= (weight_map.array() >= weight_threshold).template cast<double>();
+                }
+            }
+        };
 
         if (use_grid_weight) {
             const auto &denom = grid_weight[i];
-            Eigen::ArrayXXd safe_denom = denom.array();
-            mask = ((denom.array().abs() > 1e-8) && (weight[i].array() > 0.0)).template cast<double>();
-            safe_denom = (denom.array().abs() > 1e-8).select(denom.array(), 1.0);
+            const auto denom_valid = denom.array().isFinite() && (denom.array().abs() > 1e-8);
+            const auto accum_weight_valid = weight[i].array().isFinite() && (weight[i].array() > 0.0);
+            const auto valid_support = denom_valid && accum_weight_valid;
+            const Eigen::ArrayXXd safe_denom = denom_valid.select(denom.array(), 1.0);
+
+            finalized_weight =
+                ((denom.array().square() / weight[i].array().max(1e-30)) *
+                 valid_support.template cast<double>()).matrix();
+            apply_weight_threshold(finalized_weight);
 
             signal[i] = ((signal[i].array() / safe_denom) * mask).matrix();
 
@@ -155,26 +176,31 @@ void MapBuffer::normalize_maps() {
                 }
             }
 
-            weight[i] = ((denom.array().square() / weight[i].array().max(1e-30)) * mask).matrix();
+            weight[i] = (finalized_weight.array() * mask).matrix();
         }
         else {
-            mask = (weight[i].array() > 0.0).template cast<double>();
+            finalized_weight =
+                (weight[i].array().isFinite() && (weight[i].array() > 0.0))
+                    .select(weight[i].array(), 0.0).matrix();
+            apply_weight_threshold(finalized_weight);
+            const Eigen::ArrayXXd safe_weight = (finalized_weight.array() > 0.0)
+                                                    .select(finalized_weight.array(), 1.0);
 
-            signal[i] = ((signal[i].array() / weight[i].array().max(1e-8)) * mask).matrix();
+            signal[i] = ((signal[i].array() / safe_weight) * mask).matrix();
 
             if (!kernel.empty()) {
-                kernel[i] = ((kernel[i].array() / weight[i].array().max(1e-8)) * mask).matrix();
+                kernel[i] = ((kernel[i].array() / safe_weight) * mask).matrix();
             }
 
             if (!noise.empty()) {
                 for (Eigen::Index n = 0; n < n_noise; ++n) {
                     Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(
                         noise[i].data() + n * n_rows * n_cols, n_rows, n_cols);
-                    noise_matrix = ((noise_matrix.array() / weight[i].array().max(1e-8)) * mask).matrix();
+                    noise_matrix = ((noise_matrix.array() / safe_weight) * mask).matrix();
                 }
             }
 
-            weight[i] = (weight[i].array() * mask).matrix();
+            weight[i] = (finalized_weight.array() * mask).matrix();
         }
 
         if (!coverage.empty()) {
