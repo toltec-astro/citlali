@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cstdio>
+#include <sstream>
+#include <stdexcept>
 #include <thread>
 
 #include <boost/math/special_functions/bessel.hpp>
@@ -22,6 +25,79 @@ using timestream::TCData;
 using timestream::TCDataKind;
 
 namespace mapmaking {
+
+struct JincDebugBreadcrumb {
+    bool valid = false;
+    const char *stage = "unset";
+    long long det_col = -1;
+    int det_uid = -1;
+    long long sample = -1;
+    long long map_index = -1;
+    long long array_index = -1;
+    int pixel_row = -1;
+    int pixel_col = -1;
+    int subpix_idx = -1;
+    int lower_row = -1;
+    int upper_row = -1;
+    int lower_col = -1;
+    int upper_col = -1;
+    int jinc_lower_row = -1;
+    int jinc_lower_col = -1;
+    int size_rows = -1;
+    int size_cols = -1;
+};
+
+inline thread_local JincDebugBreadcrumb jinc_debug_breadcrumb{};
+
+inline void reset_jinc_debug_breadcrumb() {
+    jinc_debug_breadcrumb = {};
+}
+
+inline void update_jinc_debug_breadcrumb(const char *stage,
+                                         long long det_col,
+                                         int det_uid,
+                                         long long sample,
+                                         long long map_index,
+                                         long long array_index,
+                                         int pixel_row,
+                                         int pixel_col,
+                                         int subpix_idx) {
+    jinc_debug_breadcrumb.valid = true;
+    jinc_debug_breadcrumb.stage = stage;
+    jinc_debug_breadcrumb.det_col = det_col;
+    jinc_debug_breadcrumb.det_uid = det_uid;
+    jinc_debug_breadcrumb.sample = sample;
+    jinc_debug_breadcrumb.map_index = map_index;
+    jinc_debug_breadcrumb.array_index = array_index;
+    jinc_debug_breadcrumb.pixel_row = pixel_row;
+    jinc_debug_breadcrumb.pixel_col = pixel_col;
+    jinc_debug_breadcrumb.subpix_idx = subpix_idx;
+}
+
+inline void update_jinc_debug_breadcrumb_block(const char *stage,
+                                               int lower_row,
+                                               int upper_row,
+                                               int lower_col,
+                                               int upper_col,
+                                               int jinc_lower_row,
+                                               int jinc_lower_col,
+                                               int size_rows,
+                                               int size_cols) {
+    jinc_debug_breadcrumb.valid = true;
+    jinc_debug_breadcrumb.stage = stage;
+    jinc_debug_breadcrumb.lower_row = lower_row;
+    jinc_debug_breadcrumb.upper_row = upper_row;
+    jinc_debug_breadcrumb.lower_col = lower_col;
+    jinc_debug_breadcrumb.upper_col = upper_col;
+    jinc_debug_breadcrumb.jinc_lower_row = jinc_lower_row;
+    jinc_debug_breadcrumb.jinc_lower_col = jinc_lower_col;
+    jinc_debug_breadcrumb.size_rows = size_rows;
+    jinc_debug_breadcrumb.size_cols = size_cols;
+}
+
+inline const JincDebugBreadcrumb &get_jinc_debug_breadcrumb() {
+    return jinc_debug_breadcrumb;
+}
 
 class JincMapmaker {
 public:
@@ -689,6 +765,159 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
         nmb = use_cmb ? &cmb : (use_omb ? &omb : nullptr);
     }
 
+    auto fail_validation = [&](const std::string &stage, const std::string &message) -> void {
+        std::ostringstream oss;
+        oss << "populate_maps_jinc_parallel " << stage << ": " << message;
+        throw std::runtime_error(oss.str());
+    };
+
+    auto matrix_dims = [](const auto &mat) {
+        std::ostringstream oss;
+        oss << mat.rows() << "x" << mat.cols();
+        return oss.str();
+    };
+
+    auto validate_global_preflight = [&]() {
+        if (run_omb) {
+            if (omb.signal.empty()) {
+                fail_validation("preflight", "run_omb=true but omb.signal is empty");
+            }
+            if (omb.weight.size() != omb.signal.size()) {
+                std::ostringstream oss;
+                oss << "omb.weight.size()=" << omb.weight.size()
+                    << " does not match omb.signal.size()=" << omb.signal.size();
+                fail_validation("preflight", oss.str());
+            }
+            if (omb.grid_weight.size() != omb.signal.size()) {
+                std::ostringstream oss;
+                oss << "omb.grid_weight.size()=" << omb.grid_weight.size()
+                    << " does not match omb.signal.size()=" << omb.signal.size();
+                fail_validation("preflight", oss.str());
+            }
+            if (run_coverage && omb.coverage.size() != omb.signal.size()) {
+                std::ostringstream oss;
+                oss << "omb.coverage.size()=" << omb.coverage.size()
+                    << " does not match omb.signal.size()=" << omb.signal.size();
+                fail_validation("preflight", oss.str());
+            }
+            if (run_kernel && omb.kernel.size() != omb.signal.size()) {
+                std::ostringstream oss;
+                oss << "omb.kernel.size()=" << omb.kernel.size()
+                    << " does not match omb.signal.size()=" << omb.signal.size();
+                fail_validation("preflight", oss.str());
+            }
+        }
+        if (run_noise && nmb == nullptr) {
+            fail_validation("preflight", "run_noise=true but no noise map buffer is available");
+        }
+    };
+
+    auto validate_map_index = [&](const char *stage, Eigen::Index map_index, Eigen::Index det_index, int det_uid) {
+        if (map_index < 0 || map_index >= static_cast<Eigen::Index>(omb.signal.size())) {
+            std::ostringstream oss;
+            oss << "det_col=" << det_index
+                << " det_uid=" << det_uid
+                << " map_index=" << map_index
+                << " is outside [0, " << static_cast<Eigen::Index>(omb.signal.size()) - 1 << "]";
+            fail_validation(stage, oss.str());
+        }
+        if (run_noise && nmb != nullptr &&
+            (map_index < 0 || map_index >= static_cast<Eigen::Index>(nmb->noise.size()))) {
+            std::ostringstream oss;
+            oss << "det_col=" << det_index
+                << " det_uid=" << det_uid
+                << " noise map_index=" << map_index
+                << " is outside [0, " << static_cast<Eigen::Index>(nmb->noise.size()) - 1 << "]";
+            fail_validation(stage, oss.str());
+        }
+    };
+
+    auto validate_kernel_cache = [&](const char *stage, Eigen::Index array_index, Eigen::Index det_index, int det_uid) {
+        auto mat_it = jinc_weights_mat.find(array_index);
+        auto mat_sq_it = jinc_weights_sq_mat.find(array_index);
+        if (mat_it == jinc_weights_mat.end() || mat_sq_it == jinc_weights_sq_mat.end()) {
+            std::ostringstream oss;
+            oss << "det_col=" << det_index
+                << " det_uid=" << det_uid
+                << " array=" << array_index
+                << " missing jinc kernel cache";
+            fail_validation(stage, oss.str());
+        }
+        if (mat_it->second.rows() <= 0 || mat_it->second.cols() <= 0 ||
+            mat_sq_it->second.rows() <= 0 || mat_sq_it->second.cols() <= 0) {
+            std::ostringstream oss;
+            oss << "det_col=" << det_index
+                << " det_uid=" << det_uid
+                << " array=" << array_index
+                << " invalid kernel dims signal=" << matrix_dims(mat_it->second)
+                << " weight=" << matrix_dims(mat_sq_it->second);
+            fail_validation(stage, oss.str());
+        }
+        if (mat_it->second.rows() != mat_sq_it->second.rows() ||
+            mat_it->second.cols() != mat_sq_it->second.cols()) {
+            std::ostringstream oss;
+            oss << "det_col=" << det_index
+                << " det_uid=" << det_uid
+                << " array=" << array_index
+                << " mismatched kernel dims signal=" << matrix_dims(mat_it->second)
+                << " weight=" << matrix_dims(mat_sq_it->second);
+            fail_validation(stage, oss.str());
+        }
+        if (subpixel_n > 1) {
+            auto subpix_it = jinc_weights_mat_subpix.find(array_index);
+            auto subpix_sq_it = jinc_weights_sq_mat_subpix.find(array_index);
+            const auto expected = static_cast<size_t>(subpixel_n * subpixel_n);
+            if (subpix_it == jinc_weights_mat_subpix.end() || subpix_sq_it == jinc_weights_sq_mat_subpix.end()) {
+                std::ostringstream oss;
+                oss << "det_col=" << det_index
+                    << " det_uid=" << det_uid
+                    << " array=" << array_index
+                    << " missing subpixel cache for subpixel_n=" << subpixel_n;
+                fail_validation(stage, oss.str());
+            }
+            if (subpix_it->second.size() != expected || subpix_sq_it->second.size() != expected) {
+                std::ostringstream oss;
+                oss << "det_col=" << det_index
+                    << " det_uid=" << det_uid
+                    << " array=" << array_index
+                    << " subpixel cache size mismatch signal=" << subpix_it->second.size()
+                    << " weight=" << subpix_sq_it->second.size()
+                    << " expected=" << expected;
+                fail_validation(stage, oss.str());
+            }
+        }
+    };
+
+    auto validate_block_bounds = [&](const char *stage,
+                                     const auto &target,
+                                     int lower_row,
+                                     int lower_col,
+                                     int size_rows,
+                                     int size_cols,
+                                     Eigen::Index det_index,
+                                     int det_uid,
+                                     Eigen::Index sample_index,
+                                     Eigen::Index map_index,
+                                     Eigen::Index array_index) {
+        if (lower_row < 0 || lower_col < 0 || size_rows <= 0 || size_cols <= 0 ||
+            lower_row + size_rows > target.rows() ||
+            lower_col + size_cols > target.cols()) {
+            std::ostringstream oss;
+            oss << "det_col=" << det_index
+                << " det_uid=" << det_uid
+                << " sample=" << sample_index
+                << " map_index=" << map_index
+                << " array=" << array_index
+                << " block row=" << lower_row
+                << " col=" << lower_col
+                << " size=" << size_rows << "x" << size_cols
+                << " target=" << matrix_dims(target);
+            fail_validation(stage, oss.str());
+        }
+    };
+
+    validate_global_preflight();
+
     // placeholder vectors of size ndet for grppi maps
     std::vector<int> map_in_vec, map_out_vec;
     map_in_vec.resize(static_cast<size_t>(n_dets));
@@ -698,6 +927,7 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
     // parallelize over detectors
     //for (Eigen::Index i=0; i<n_dets; ++i) {
     grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
+        reset_jinc_debug_breadcrumb();
         // skip fg = -1 if in polarization mode
         const bool run_det = !(run_polarization && apt["fg"](i)==-1);
         if (!run_det) {
@@ -708,10 +938,17 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
         if (apt["flag"](i)==0 && (in.flags.data.col(i).array()==false).any()) {
             // get detector positions from apt table if not in detector mapmaking mode
             auto det_index = i;
+            const int det_uid = (apt["uid"].size() > det_index)
+                ? static_cast<int>(std::llround(apt["uid"](det_index)))
+                : static_cast<int>(det_index);
 
             // which map to assign detector to
             Eigen::Index map_index = map_indices(i);
             Eigen::Index array_index = apt["array"](det_index);
+            update_jinc_debug_breadcrumb("detector-preflight", det_index, det_uid, -1, map_index,
+                                         array_index, -1, -1, -1);
+            validate_map_index("detector-preflight", map_index, det_index, det_uid);
+            validate_kernel_cache("detector-preflight", array_index, det_index, det_uid);
             const bool use_subpix = (subpixel_n > 1) && (jinc_weights_mat_subpix.count(array_index) > 0);
             const auto *subpix_vec = use_subpix ? &jinc_weights_mat_subpix.at(array_index) : nullptr;
             const auto *subpix_sq_vec = use_subpix ? &jinc_weights_sq_mat_subpix.at(array_index) : nullptr;
@@ -771,6 +1008,8 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                         int sc = subpix_index(dcol);
                         subpix_idx = sr * subpixel_n + sc;
                     }
+                    update_jinc_debug_breadcrumb("sample", det_index, det_uid, j, map_index,
+                                                 array_index, static_cast<int>(omb_ir), static_cast<int>(omb_ic), subpix_idx);
 
                     if (run_polarization) {
                         auto fg_index = apt["fg"](det_index);
@@ -807,6 +1046,18 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
 
                             const auto &jinc_mat = use_subpix ? subpix_vec->at(subpix_idx) : jinc_weights_mat[array_index];
                             const auto &jinc_sq_mat = use_subpix ? subpix_sq_vec->at(subpix_idx) : jinc_weights_sq_mat[array_index];
+                            update_jinc_debug_breadcrumb_block("omb-block-bounds", lower_row, upper_row, lower_col, upper_col,
+                                                               jinc_lower_row, jinc_lower_col, size_rows, size_cols);
+                            validate_block_bounds("omb-jinc-kernel-block", jinc_mat, jinc_lower_row, jinc_lower_col,
+                                                  size_rows, size_cols, det_index, det_uid, j, map_index, array_index);
+                            validate_block_bounds("omb-jinc-weight-block", jinc_sq_mat, jinc_lower_row, jinc_lower_col,
+                                                  size_rows, size_cols, det_index, det_uid, j, map_index, array_index);
+                            validate_block_bounds("omb-signal-block", omb.signal[map_index], lower_row, lower_col,
+                                                  size_rows, size_cols, det_index, det_uid, j, map_index, array_index);
+                            validate_block_bounds("omb-grid-weight-block", omb.grid_weight[map_index], lower_row, lower_col,
+                                                  size_rows, size_cols, det_index, det_uid, j, map_index, array_index);
+                            validate_block_bounds("omb-weight-block", omb.weight[map_index], lower_row, lower_col,
+                                                  size_rows, size_cols, det_index, det_uid, j, map_index, array_index);
                             const auto mat_block = jinc_mat.block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
                             const auto mat_sq_block = jinc_sq_mat.block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
 
@@ -825,12 +1076,16 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
 
                             // populate coverage map
                             if (run_coverage) {
+                                validate_block_bounds("omb-coverage-block", omb.coverage[map_index], lower_row, lower_col,
+                                                      size_rows, size_cols, det_index, det_uid, j, map_index, array_index);
                                 auto cov_block = omb.coverage[map_index].block(lower_row,lower_col,size_rows,size_cols);
                                 cov_block.array() += (mat_sq_block.array() / d_fsmp);
                             }
 
                             // populate kernel map
                             if (run_kernel) {
+                                validate_block_bounds("omb-kernel-block", omb.kernel[map_index], lower_row, lower_col,
+                                                      size_rows, size_cols, det_index, det_uid, j, map_index, array_index);
                                 auto ker_block = omb.kernel[map_index].block(lower_row,lower_col,size_rows,size_cols);
                                 ker_block += mat_block*in.weights.data(i)*in.kernel.data(j,i);
                             }
@@ -891,6 +1146,13 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                             int size_cols = upper_col - lower_col + 1;
 
                             const auto &jinc_mat = use_subpix ? subpix_vec->at(nmb_subpix_idx) : jinc_weights_mat[array_index];
+                            update_jinc_debug_breadcrumb("noise-sample", det_index, det_uid, j, map_index,
+                                                         array_index, static_cast<int>(nmb_ir), static_cast<int>(nmb_ic),
+                                                         nmb_subpix_idx);
+                            update_jinc_debug_breadcrumb_block("noise-block-bounds", lower_row, upper_row, lower_col, upper_col,
+                                                               jinc_lower_row, jinc_lower_col, size_rows, size_cols);
+                            validate_block_bounds("noise-jinc-kernel-block", jinc_mat, jinc_lower_row, jinc_lower_col,
+                                                  size_rows, size_cols, det_index, det_uid, j, map_index, array_index);
                             const auto mat_block = jinc_mat.block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
                             signal = in.scans.data(j,i)*in.weights.data(i);
 
@@ -904,6 +1166,8 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                                 }
                                 Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(nmb->noise[map_index].data() + nn * nmb->n_rows * nmb->n_cols,
                                                                                                                nmb->n_rows, nmb->n_cols);
+                                validate_block_bounds("noise-map-block", noise_matrix, lower_row, lower_col,
+                                                      size_rows, size_cols, det_index, det_uid, j, map_index, array_index);
                                 auto noise_block = noise_matrix.block(lower_row,lower_col,size_rows,size_cols);
                                 noise_block.array() += (mat_block.array() * noise_v);
                             }
