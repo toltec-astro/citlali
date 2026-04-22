@@ -107,22 +107,39 @@ auto mapFitter::ceres_fit(const Model &model,
                  (_s.array() > 0).count(), _s.size());
 
     // define cost function
+    logger->info("ceres_fit checkpoint: constructing AutoDiffCostFunction values={}", fitter->values());
     CostFunction* cost_function =
         new AutoDiffCostFunction<Fitter, Fitter::ValuesAtCompileTime, Fitter::InputsAtCompileTime>(fitter, fitter->values());
+    logger->info("ceres_fit checkpoint: AutoDiffCostFunction constructed ptr={}", static_cast<const void*>(cost_function));
 
     // parameter vector
     Eigen::VectorXd params(init_params);
+    logger->info("ceres_fit checkpoint: params copied size={} init=[{:.6g}, {:.6g}, {:.6g}, {:.6g}, {:.6g}, {:.6g}]",
+                 params.size(),
+                 params.size() > 0 ? params(0) : 0.0,
+                 params.size() > 1 ? params(1) : 0.0,
+                 params.size() > 2 ? params(2) : 0.0,
+                 params.size() > 3 ? params(3) : 0.0,
+                 params.size() > 4 ? params(4) : 0.0,
+                 params.size() > 5 ? params(5) : 0.0);
+    logger->info("ceres_fit checkpoint: createProblem start");
     auto problem = fitter->createProblem(params.data());
+    logger->info("ceres_fit checkpoint: createProblem done ptr={}", static_cast<const void*>(problem.get()));
 
     // including CauchyLoss(0.5) leads to large covariances.
+    logger->info("ceres_fit checkpoint: AddResidualBlock start");
     problem->AddResidualBlock(cost_function, nullptr, params.data());
+    logger->info("ceres_fit checkpoint: AddResidualBlock done");
     //problem->AddResidualBlock(cost_function, new ceres::CauchyLoss(0.5), params.data());
 
     // set limits
+    logger->info("ceres_fit checkpoint: SetParameterBounds start rows={}", limits.rows());
     for (int i=0; i<limits.rows(); ++i) {
+        logger->debug("ceres_fit bounds[{}]=[{}, {}]", i, limits(i,0), limits(i,1));
         problem->SetParameterLowerBound(params.data(), i, limits(i,0));
         problem->SetParameterUpperBound(params.data(), i, limits(i,1));
     }
+    logger->info("ceres_fit checkpoint: SetParameterBounds done");
 
     // vector to store indices of parameters to keep constant
     if (!fit_angle) {
@@ -130,8 +147,10 @@ auto mapFitter::ceres_fit(const Model &model,
         sspv.push_back(limits.rows()-1);
         // mark parameter as constant
         if (sspv.size() > 0 ){
+            logger->info("ceres_fit checkpoint: SubsetParameterization start constant_index={}", sspv.front());
             ceres::SubsetParameterization *pcssp
                     = new ceres::SubsetParameterization(limits.rows(), sspv);
+            logger->info("ceres_fit checkpoint: SubsetParameterization constructed ptr={}", static_cast<const void*>(pcssp));
             problem->SetParameterization(params.data(), pcssp);
             logger->info("ceres_fit angle fixed via subset parameterization");
         }

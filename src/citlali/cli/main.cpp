@@ -95,6 +95,7 @@ void abort_backtrace_handler(int sig) {
 
 void install_abort_backtrace_handler() {
     ::signal(SIGABRT, abort_backtrace_handler);
+    ::signal(SIGBUS, abort_backtrace_handler);
     ::signal(SIGSEGV, abort_backtrace_handler);
 }
 #else
