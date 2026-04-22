@@ -281,8 +281,21 @@ struct CeresAutoDiffFitter: Fitter<Model> {
     }
 
     std::shared_ptr<Problem> createProblem(double* params) {
+        auto logger = spdlog::get("citlali_logger");
+        if (logger) {
+            logger->info("ceres_fit checkpoint: createProblem internals start param_ptr={} model_param_size={}",
+                         static_cast<const void*>(params), this->model()->params.size());
+        }
         std::shared_ptr<Problem> problem = std::make_shared<Problem>();
+        if (logger) {
+            logger->info("ceres_fit checkpoint: createProblem Problem() constructed ptr={}",
+                         static_cast<const void*>(problem.get()));
+        }
         problem->AddParameterBlock(params, this->model()->params.size());
+        if (logger) {
+            logger->info("ceres_fit checkpoint: createProblem AddParameterBlock done size={}",
+                         this->model()->params.size());
+        }
         return problem;
     }
 };
