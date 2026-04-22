@@ -709,6 +709,16 @@ auto calc_2D_psd(Eigen::DenseBase<DerivedA> &data, Eigen::DenseBase<DerivedB> &y
     Eigen::Index n_rows = data.rows();
     Eigen::Index n_cols = data.cols();
 
+    if (n_rows < 2 || n_cols < 2 || y.size() < 2 || x.size() < 2) {
+        auto logger = spdlog::get("citlali_logger");
+        if (logger) {
+            logger->error(
+                "calc_2D_psd received invalid dimensions: data={}x{} y_size={} x_size={} smooth_window={} parallel_policy={}",
+                n_rows, n_cols, y.size(), x.size(), smooth_window, parallel_policy);
+        }
+        throw std::runtime_error("calc_2D_psd requires data and coordinate vectors with at least 2 samples per axis");
+    }
+
     Eigen::VectorXd psd, psd_freq;
 
     double diff_rows = y(1) - y(0);

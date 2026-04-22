@@ -1,9 +1,69 @@
+#include <sstream>
+#include <stdexcept>
+
 #include <Eigen/Sparse>
+#include <spdlog/spdlog.h>
 
 #include <citlali/core/mapmaking/map.h>
 #include <citlali/core/utils/toltec_io.h>
 
 namespace mapmaking {
+
+namespace {
+
+[[noreturn]] void throw_psd_support_error(const mapmaking::MapBuffer &mb, Eigen::Index map_index,
+                                          double weight_threshold, const Eigen::MatrixXd &cov_ranges,
+                                          Eigen::Index cov_n_rows, Eigen::Index cov_n_cols,
+                                          const char *reason) {
+    auto logger = spdlog::get("citlali_logger");
+
+    const auto &weight = mb.weight[map_index];
+    const Eigen::Index n_positive_weight = (weight.array() > 0.0).count();
+    const Eigen::Index n_finite_weight = weight.array().isFinite().count();
+    const Eigen::Index n_above_threshold =
+        (weight.array().isFinite() && (weight.array() >= weight_threshold)).count();
+    const double weight_min = weight.size() > 0 ? weight.minCoeff() : 0.0;
+    const double weight_max = weight.size() > 0 ? weight.maxCoeff() : 0.0;
+
+    std::ostringstream os;
+    os << "cannot calculate map PSD: " << reason
+       << " support for map_index=" << map_index
+       << " map_buffer=" << mb.name
+       << " map_grouping=" << mb.map_grouping
+       << " obsnums=";
+    if (mb.obsnums.empty()) {
+        os << "<none>";
+    }
+    else {
+        for (size_t i = 0; i < mb.obsnums.size(); ++i) {
+            if (i != 0) {
+                os << ",";
+            }
+            os << mb.obsnums[i];
+        }
+    }
+    os << " weight_threshold=" << weight_threshold
+       << " cov_ranges=[(" << cov_ranges(0,0) << "," << cov_ranges(0,1) << "),("
+       << cov_ranges(1,0) << "," << cov_ranges(1,1) << ")]"
+       << " support_rows=" << cov_n_rows
+       << " support_cols=" << cov_n_cols
+       << " map_rows=" << mb.n_rows
+       << " map_cols=" << mb.n_cols
+       << " positive_weight_pixels=" << n_positive_weight
+       << " finite_weight_pixels=" << n_finite_weight
+       << " above_threshold_pixels=" << n_above_threshold
+       << " weight_min=" << weight_min
+       << " weight_max=" << weight_max
+       << " coverage_cut=" << mb.cov_cut;
+
+    if (logger) {
+        logger->error("{}", os.str());
+    }
+
+    throw std::runtime_error(os.str());
+}
+
+} // namespace
 
 // constructor
 MapBuffer::MapBuffer() {}
@@ -332,6 +392,23 @@ void MapBuffer::calc_map_psd() {
         // calculate weight threshold
         auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = calc_cov_region(i);
 
+        if (!std::isfinite(weight_threshold) || weight_threshold < 0.0) {
+            throw_psd_support_error(*this, i, weight_threshold, cov_ranges, cov_n_rows, cov_n_cols,
+                                    "invalid weight threshold");
+        }
+
+        if (!cov_ranges.array().isFinite().all()) {
+            throw_psd_support_error(*this, i, weight_threshold, cov_ranges, cov_n_rows, cov_n_cols,
+                                    "non-finite coverage bounds");
+        }
+
+        if (cov_ranges(0,0) < 0 || cov_ranges(0,1) < 0 ||
+            cov_ranges(1,0) >= n_rows || cov_ranges(1,1) >= n_cols ||
+            cov_ranges(0,0) > cov_ranges(1,0) || cov_ranges(0,1) > cov_ranges(1,1)) {
+            throw_psd_support_error(*this, i, weight_threshold, cov_ranges, cov_n_rows, cov_n_cols,
+                                    "invalid coverage bounds");
+        }
+
         // ensure even rows
         if (cov_n_rows % 2 == 1) {
             cov_ranges(1,0)--;
@@ -342,6 +419,11 @@ void MapBuffer::calc_map_psd() {
         if (cov_n_cols % 2 == 1) {
             cov_ranges(1,1)--;
             cov_n_cols--;
+        }
+
+        if (cov_n_rows < 2 || cov_n_cols < 2) {
+            throw_psd_support_error(*this, i, weight_threshold, cov_ranges, cov_n_rows, cov_n_cols,
+                                    "coverage support smaller than 2x2 after PSD trimming");
         }
 
         // explicit copy signal map within coverage region
