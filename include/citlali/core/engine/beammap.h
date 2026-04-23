@@ -2159,6 +2159,15 @@ void Beammap::run_loop() {
 
         if (run_mapmaking) {
             auto run_mapmaking_pass = [&](bool update_progress) {
+                if (map_method == "jinc" &&
+                    static_cast<Eigen::Index>(omb.grid_weight.size()) != n_maps) {
+                    logger->info("allocating jinc grid_weight maps: current={} expected={}",
+                                 omb.grid_weight.size(), n_maps);
+                    omb.grid_weight.assign(
+                        static_cast<size_t>(n_maps),
+                        Eigen::MatrixXd::Zero(omb.n_rows, omb.n_cols));
+                }
+
                 // set maps to zero for each pass
                 for (Eigen::Index i = 0; i < n_maps; ++i) {
                     omb.signal[i].setZero();
