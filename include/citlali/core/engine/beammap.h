@@ -190,6 +190,7 @@ public:
                                 Eigen::Index &best_col, double &best_snr) const;
     void update_prior_frame_estimates();
     bool choose_prior_guided_init(Eigen::Index map_index, double &init_row, double &init_col);
+    void configure_ptc_source_mask_from_previous_fit();
 
     // flag detectors
     void set_apt_flags();
@@ -1642,6 +1643,71 @@ bool Beammap::find_map_weighted_peak(Eigen::Index map_index, Eigen::Index &best_
     return scan(false);
 }
 
+void Beammap::configure_ptc_source_mask_from_previous_fit() {
+    if (map_grouping != "detector" || ptcproc.mask_radius_arcsec <= 0.0) {
+        ptcproc.fruit_loops_source_lat.resize(0);
+        ptcproc.fruit_loops_source_lon.resize(0);
+        ptcproc.fruit_loops_source_valid.resize(0);
+        return;
+    }
+
+    if (ptcproc.run_fruit_loops &&
+        ptcproc.fruit_loops_source_valid.size() == n_maps &&
+        (ptcproc.fruit_loops_source_valid.array() != 0).any()) {
+        logger->info(
+            "beammap source-aware PTC masking using existing fruit-loops source centers "
+            "for {}/{} detector maps on iter {} (mask_radius={} arcsec)",
+            (ptcproc.fruit_loops_source_valid.array() != 0).count(),
+            n_maps,
+            current_iter,
+            ptcproc.mask_radius_arcsec);
+        return;
+    }
+
+    ptcproc.fruit_loops_source_lat.resize(0);
+    ptcproc.fruit_loops_source_lon.resize(0);
+    ptcproc.fruit_loops_source_valid.resize(0);
+
+    if (current_iter <= 0) {
+        logger->info(
+            "beammap source-aware PTC masking inactive on iter {}: no previous fits yet (mask_radius={} arcsec)",
+            current_iter, ptcproc.mask_radius_arcsec);
+        return;
+    }
+
+    if (p0.rows() != n_maps || p0.cols() < 3 || good_fits.size() != n_maps) {
+        logger->warn(
+            "beammap source-aware PTC masking skipped on iter {}: previous-fit state is incomplete "
+            "(p0={}x{}, good_fits={})",
+            current_iter, p0.rows(), p0.cols(), good_fits.size());
+        return;
+    }
+
+    ptcproc.fruit_loops_source_lat = Eigen::VectorXd::Zero(n_maps);
+    ptcproc.fruit_loops_source_lon = Eigen::VectorXd::Zero(n_maps);
+    ptcproc.fruit_loops_source_valid = Eigen::VectorXi::Zero(n_maps);
+
+    Eigen::Index n_valid = 0;
+    for (Eigen::Index i = 0; i < n_maps; ++i) {
+        if (!good_fits(i) ||
+            !std::isfinite(p0(i, 0)) || p0(i, 0) <= 0.0 ||
+            !std::isfinite(p0(i, 1)) || !std::isfinite(p0(i, 2))) {
+            continue;
+        }
+        ptcproc.fruit_loops_source_lat(i) =
+            (p0(i, 2) - (omb.n_rows - 1) / 2.0) * omb.pixel_size_rad;
+        ptcproc.fruit_loops_source_lon(i) =
+            (p0(i, 1) - (omb.n_cols - 1) / 2.0) * omb.pixel_size_rad;
+        ptcproc.fruit_loops_source_valid(i) = 1;
+        n_valid++;
+    }
+
+    logger->info(
+        "beammap source-aware PTC masking using previous-fit centers for {}/{} detector maps "
+        "on iter {} (mask_radius={} arcsec)",
+        n_valid, n_maps, current_iter, ptcproc.mask_radius_arcsec);
+}
+
 void Beammap::update_prior_frame_estimates() {
     beammap_prior_array_center_x_arcsec.clear();
     beammap_prior_array_center_y_arcsec.clear();
@@ -2022,6 +2088,7 @@ void Beammap::run_loop() {
             rfi_mask_samples_flagged.setZero();
             rfi_mask_scans_flagged.setZero();
         }
+        configure_ptc_source_mask_from_previous_fit();
 
         // copy signal for convergence test
         if (ptcproc.run_fruit_loops) {

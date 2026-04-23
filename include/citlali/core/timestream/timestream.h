@@ -10,6 +10,7 @@
 #include <limits>
 #include <cctype>
 #include <cmath>
+#include <string_view>
 
 #include <boost/math/special_functions/bessel.hpp>
 
@@ -374,7 +375,13 @@ public:
     void add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &, Eigen::DenseBase<Derived> &, std::string &,
                       std::string &, apt_t &, double, Eigen::Index, Eigen::Index);
 
-    // flag a region around the center of the map
+    // resolve the center of the source-masked region in map-frame radians
+    template <TCDataKind tcdata_t, class calib_t>
+    bool resolve_mask_center_rad(const TCData<tcdata_t, Eigen::MatrixXd> &,
+                                 const calib_t &, std::string_view,
+                                 Eigen::Index, double &, double &) const;
+
+    // flag a region around the center of the map or a detector-specific source prior
     template <TCDataKind tcdata_t, class calib_t>
     auto mask_region(TCData<tcdata_t, Eigen::MatrixXd> &, calib_t &, std::string, std::string, int, int, int);
 
@@ -1606,8 +1613,35 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
                         Eigen::Map<Eigen::Matrix<bool, Eigen::Dynamic, 1>> flags(
                             in.flags.data.col(j).data(), in.flags.data.rows());
 
-                        // calc standard deviation
-                        det_std_dev(k) = engine_utils::calc_std_dev(scans, flags);
+                        if (map_grouping == "detector" && mask_radius_arcsec > 0.0) {
+                            Eigen::Matrix<bool, Eigen::Dynamic, 1> masked_flags = flags;
+                            double az_off = calib.apt["x_t"](det_index);
+                            double el_off = calib.apt["y_t"](det_index);
+                            auto [lat, lon] = engine_utils::calc_det_pointing(
+                                in.tel_data.data,
+                                az_off,
+                                el_off,
+                                std::string{"altaz"},
+                                in.pointing_offsets_arcsec.data,
+                                map_grouping);
+                            double source_lat = 0.0;
+                            double source_lon = 0.0;
+                            resolve_mask_center_rad(in, calib, map_grouping, det_index,
+                                                    source_lat, source_lon);
+                            const double radius_rad = mask_radius_arcsec * ASEC_TO_RAD;
+                            for (Eigen::Index sample = 0; sample < masked_flags.size(); ++sample) {
+                                const double dlat = lat(sample) - source_lat;
+                                const double dlon = lon(sample) - source_lon;
+                                if (std::sqrt(dlat * dlat + dlon * dlon) < radius_rad) {
+                                    masked_flags(sample) = true;
+                                }
+                            }
+                            det_std_dev(k) = engine_utils::calc_std_dev(scans, masked_flags);
+                        }
+                        else {
+                            // calc standard deviation
+                            det_std_dev(k) = engine_utils::calc_std_dev(scans, flags);
+                        }
 
                         // convert to 1/variance so it is a weight
                         if (det_std_dev(k) !=0) {
@@ -1769,6 +1803,56 @@ void TCProc::add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &in, Eigen::DenseBas
 }
 
 template <TCDataKind tcdata_t, class calib_t>
+bool TCProc::resolve_mask_center_rad(const TCData<tcdata_t, Eigen::MatrixXd> &in,
+                                     const calib_t &calib, std::string_view map_grouping,
+                                     Eigen::Index det_index, double &source_lat,
+                                     double &source_lon) const {
+
+    source_lat = 0.0;
+    source_lon = 0.0;
+
+    if (det_index >= 0 && det_index < in.map_indices.data.size()) {
+        const Eigen::Index map_index = in.map_indices.data(det_index);
+        if (map_index >= 0 &&
+            map_index < fruit_loops_source_valid.size() &&
+            fruit_loops_source_valid(map_index) != 0 &&
+            map_index < fruit_loops_source_lat.size() &&
+            map_index < fruit_loops_source_lon.size()) {
+            const double lat = fruit_loops_source_lat(map_index);
+            const double lon = fruit_loops_source_lon(map_index);
+            if (std::isfinite(lat) && std::isfinite(lon)) {
+                source_lat = lat;
+                source_lon = lon;
+                return true;
+            }
+        }
+    }
+
+    if (map_grouping == "detector") {
+        auto x_it = calib.apt.find("x_t_raw");
+        auto y_it = calib.apt.find("y_t_raw");
+        if (x_it == calib.apt.end() || y_it == calib.apt.end()) {
+            x_it = calib.apt.find("x_t");
+            y_it = calib.apt.find("y_t");
+        }
+        if (x_it != calib.apt.end() && y_it != calib.apt.end() &&
+            det_index >= 0 &&
+            det_index < x_it->second.size() &&
+            det_index < y_it->second.size()) {
+            const double x_arcsec = x_it->second(det_index);
+            const double y_arcsec = y_it->second(det_index);
+            if (std::isfinite(x_arcsec) && std::isfinite(y_arcsec)) {
+                source_lat = y_arcsec * ASEC_TO_RAD;
+                source_lon = x_arcsec * ASEC_TO_RAD;
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+template <TCDataKind tcdata_t, class calib_t>
 auto TCProc::mask_region(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, std::string pixel_axes, std::string map_grouping,
                          int n_pts, int n_dets, int start_index) {
 
@@ -1803,8 +1887,13 @@ auto TCProc::mask_region(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, 
         auto [lat, lon] = engine_utils::calc_det_pointing(tel_data_copy, az_off, el_off, pixel_axes,
                                                           pointing_offset_copy, map_grouping);
 
-        // distance to center of map
-        auto dist = (lat.array().pow(2) + lon.array().pow(2)).sqrt();
+        double source_lat = 0.0;
+        double source_lon = 0.0;
+        resolve_mask_center_rad(in, calib, map_grouping, det_index, source_lat, source_lon);
+
+        // distance to the masked source region
+        auto dist = ((lat.array() - source_lat).pow(2) +
+                     (lon.array() - source_lon).pow(2)).sqrt();
 
         // loop through samples
         for (Eigen::Index j=0; j<n_pts; ++j) {
