@@ -367,6 +367,11 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
                 if (!std::isfinite(s) || !std::isfinite(w) || w <= 0.0) {
                     continue;
                 }
+                if constexpr (fit_mode == FitMode::beammap) {
+                    if (s <= 0.0) {
+                        continue;
+                    }
+                }
                 if (apply_radius) {
                     const double dr = static_cast<double>(row) - center_row;
                     const double dc = static_cast<double>(col) - center_col;
@@ -442,6 +447,9 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
         const double seed_w = weight(ir, ic);
         const double seed_s = signal(ir, ic);
         bool seed_valid = std::isfinite(seed_w) && seed_w > 0.0 && std::isfinite(seed_s);
+        if constexpr (fit_mode == FitMode::beammap) {
+            seed_valid = seed_valid && seed_s > 0.0;
+        }
         if (!seed_valid) {
             Eigen::Index search_row_lo = 0;
             Eigen::Index search_row_hi = signal.rows() - 1;
@@ -482,6 +490,15 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
         }
 
         init_flux = signal(ir, ic);
+    }
+
+    if constexpr (fit_mode == FitMode::beammap) {
+        if (!std::isfinite(init_flux) || init_flux <= 0.0) {
+            Eigen::VectorXd p = Eigen::VectorXd::Zero(n_params);
+            Eigen::VectorXd e = Eigen::VectorXd::Zero(n_params);
+            logger->warn("fit_to_gaussian skipped: beammap initial amplitude is non-positive ({})", init_flux);
+            return std::tuple<Eigen::VectorXd, Eigen::VectorXd, bool>(p, e, false);
+        }
     }
 
     // initial parameter guesses (order of positions is x,y = col,row)

@@ -2408,7 +2408,8 @@ void Beammap::run_loop() {
                             prev_col_i >= 0 && prev_col_i < omb.signal[i].cols()) {
                             const double seed_w = omb.weight[i](prev_row_i, prev_col_i);
                             const double seed_s = omb.signal[i](prev_row_i, prev_col_i);
-                            prev_seed_valid = std::isfinite(seed_w) && seed_w > 0.0 && std::isfinite(seed_s);
+                            prev_seed_valid = std::isfinite(seed_w) && seed_w > 0.0 &&
+                                              std::isfinite(seed_s) && seed_s > 0.0;
                         }
                         if (prev_seed_valid) {
                             init_col = prev_col;
@@ -2419,7 +2420,7 @@ void Beammap::run_loop() {
                         }
                         else {
                             logger->debug(
-                                "beammap fit map={} rejected previous init at row={} col={} due to invalid/no-weight seed pixel",
+                                "beammap fit map={} rejected previous init at row={} col={} due to invalid/no-weight/non-positive seed pixel",
                                 i, prev_row, prev_col);
                         }
                     }
