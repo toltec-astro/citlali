@@ -341,6 +341,23 @@ public:
     // mask radius in arcseconds
     double mask_radius_arcsec = 0.0;
 
+    struct RemoveBadDetsWindowDiagSummary {
+        int n_total_windows = 0;
+        int n_valid_windows = 0;
+        double valid_window_fraction = std::numeric_limits<double>::quiet_NaN();
+        double inv_var_median = std::numeric_limits<double>::quiet_NaN();
+        double inv_var_q10 = std::numeric_limits<double>::quiet_NaN();
+        double inv_var_q90 = std::numeric_limits<double>::quiet_NaN();
+        double flagged_frac_median = std::numeric_limits<double>::quiet_NaN();
+        double flagged_frac_max = std::numeric_limits<double>::quiet_NaN();
+        double heavily_flagged_window_fraction = std::numeric_limits<double>::quiet_NaN();
+    };
+
+    // diagnostic window size for scan-local inverse-variance summaries
+    double remove_bad_dets_window_sec = 0.5;
+    std::map<Eigen::Index, std::vector<RemoveBadDetsWindowDiagSummary>>
+        remove_bad_dets_window_summary_by_scan;
+
     // create a map buffer from a citlali reduction directory
     template <class calib_t>
     void load_mb(std::string, std::string, calib_t &, const std::string &,
@@ -1573,6 +1590,115 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
     // only run if limits are not zero
     if (lower_inv_var_factor !=0 || upper_inv_var_factor !=0) {
         logger->info("removing outlier dets");
+        auto &window_diag = remove_bad_dets_window_summary_by_scan[in.index.data];
+        if (window_diag.size() != static_cast<std::size_t>(in.scans.data.cols())) {
+            window_diag.assign(static_cast<std::size_t>(in.scans.data.cols()),
+                               RemoveBadDetsWindowDiagSummary{});
+        }
+
+        auto infer_dt_sec = [&]() {
+            auto it = in.tel_data.data.find("TelTime");
+            if (it == in.tel_data.data.end() || it->second.size() < 2) {
+                return std::numeric_limits<double>::quiet_NaN();
+            }
+            std::vector<double> dt;
+            dt.reserve(static_cast<std::size_t>(it->second.size() - 1));
+            for (Eigen::Index i = 1; i < it->second.size(); ++i) {
+                const double delta = it->second(i) - it->second(i - 1);
+                if (std::isfinite(delta) && delta > 0.0) {
+                    dt.push_back(delta);
+                }
+            }
+            if (dt.empty()) {
+                return std::numeric_limits<double>::quiet_NaN();
+            }
+            return tula::alg::median(Eigen::Map<Eigen::VectorXd>(dt.data(), dt.size()));
+        };
+
+        auto vector_quantile = [](std::vector<double> values, double q) {
+            if (values.empty()) {
+                return std::numeric_limits<double>::quiet_NaN();
+            }
+            std::sort(values.begin(), values.end());
+            q = std::clamp(q, 0.0, 1.0);
+            const double pos = q * static_cast<double>(values.size() - 1);
+            const auto lo = static_cast<std::size_t>(std::floor(pos));
+            const auto hi = static_cast<std::size_t>(std::ceil(pos));
+            if (lo == hi) {
+                return values[lo];
+            }
+            const double frac = pos - static_cast<double>(lo);
+            return values[lo] * (1.0 - frac) + values[hi] * frac;
+        };
+
+        const double dt_sec = infer_dt_sec();
+        Eigen::Index window_samples = in.scans.data.rows();
+        if (std::isfinite(dt_sec) && dt_sec > 0.0 && remove_bad_dets_window_sec > 0.0) {
+            window_samples = std::max<Eigen::Index>(
+                8, static_cast<Eigen::Index>(std::llround(remove_bad_dets_window_sec / dt_sec)));
+        }
+        window_samples = std::min<Eigen::Index>(window_samples, in.scans.data.rows());
+        window_samples = std::max<Eigen::Index>(1, window_samples);
+
+        auto summarize_windows = [&](const auto &scans, const auto &flags) {
+            RemoveBadDetsWindowDiagSummary summary;
+            if (scans.size() <= 0 || flags.size() != scans.size()) {
+                return summary;
+            }
+
+            summary.n_total_windows = static_cast<int>((scans.size() + window_samples - 1) / window_samples);
+            std::vector<double> inv_vars;
+            std::vector<double> flagged_fracs;
+            inv_vars.reserve(static_cast<std::size_t>(summary.n_total_windows));
+            flagged_fracs.reserve(static_cast<std::size_t>(summary.n_total_windows));
+
+            for (Eigen::Index start = 0; start < scans.size(); start += window_samples) {
+                const Eigen::Index stop = std::min<Eigen::Index>(scans.size(), start + window_samples);
+                const Eigen::Index len = stop - start;
+                if (len <= 0) {
+                    continue;
+                }
+                int n_flagged = 0;
+                for (Eigen::Index i = start; i < stop; ++i) {
+                    if (flags(i)) {
+                        ++n_flagged;
+                    }
+                }
+                const double flagged_frac = static_cast<double>(n_flagged) / static_cast<double>(len);
+                flagged_fracs.push_back(flagged_frac);
+
+                Eigen::VectorXd scan_window = scans.segment(start, len);
+                Eigen::Matrix<bool, Eigen::Dynamic, 1> flag_window = flags.segment(start, len);
+                const double stddev = engine_utils::calc_std_dev(scan_window, flag_window);
+                if (std::isfinite(stddev) && stddev > 0.0) {
+                    inv_vars.push_back(std::pow(stddev, -2));
+                }
+            }
+
+            summary.n_valid_windows = static_cast<int>(inv_vars.size());
+            if (summary.n_total_windows > 0) {
+                summary.valid_window_fraction =
+                    static_cast<double>(summary.n_valid_windows) /
+                    static_cast<double>(summary.n_total_windows);
+            }
+            if (!inv_vars.empty()) {
+                summary.inv_var_median = vector_quantile(inv_vars, 0.5);
+                summary.inv_var_q10 = vector_quantile(inv_vars, 0.1);
+                summary.inv_var_q90 = vector_quantile(inv_vars, 0.9);
+            }
+            if (!flagged_fracs.empty()) {
+                summary.flagged_frac_median = vector_quantile(flagged_fracs, 0.5);
+                summary.flagged_frac_max = *std::max_element(flagged_fracs.begin(), flagged_fracs.end());
+                const auto n_heavy = std::count_if(
+                    flagged_fracs.begin(), flagged_fracs.end(),
+                    [](double v) { return std::isfinite(v) && v >= 0.5; });
+                summary.heavily_flagged_window_fraction =
+                    static_cast<double>(n_heavy) /
+                    static_cast<double>(flagged_fracs.size());
+            }
+            return summary;
+        };
+
         // number of detectors
         Eigen::Index n_dets = in.scans.data.cols();
 
@@ -1637,10 +1763,18 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
                                 }
                             }
                             det_std_dev(k) = engine_utils::calc_std_dev(scans, masked_flags);
+                            if (n_iter == 0) {
+                                window_diag[static_cast<std::size_t>(det_index)] =
+                                    summarize_windows(scans, masked_flags);
+                            }
                         }
                         else {
                             // calc standard deviation
                             det_std_dev(k) = engine_utils::calc_std_dev(scans, flags);
+                            if (n_iter == 0) {
+                                window_diag[static_cast<std::size_t>(det_index)] =
+                                    summarize_windows(scans, flags);
+                            }
                         }
 
                         // convert to 1/variance so it is a weight

@@ -3931,6 +3931,7 @@ void RTCProc::write_cached_diagnostics_to_netcdf(netCDF::NcFile &fo,
     const auto det_diag_it = rtc_detector_summary_by_scan.find(in.index.data);
     const auto nw_diag_it = rtc_network_summary_by_scan.find(in.index.data);
     const auto impulsive_it = rtc_impulsive_summary_by_scan.find(in.index.data);
+    const auto window_diag_it = remove_bad_dets_window_summary_by_scan.find(in.index.data);
 
     NcDim n_dets_dim = fo.getDim("n_dets");
     if (!n_dets_dim.isNull()) {
@@ -3970,6 +3971,40 @@ void RTCProc::write_cached_diagnostics_to_netcdf(netCDF::NcFile &fo,
             NcVar v = fo.getVar(name);
             if (!v.isNull()) {
                 auto values = det_int_values(getter);
+                v.putVar(start_scan_det, size_scan_det, values.data());
+            }
+        };
+        auto window_double_values = [&](auto getter) {
+            std::vector<double> values(n_dets, fill_double);
+            if (window_diag_it != remove_bad_dets_window_summary_by_scan.end()) {
+                const auto n_copy = std::min<std::size_t>(n_dets, window_diag_it->second.size());
+                for (std::size_t i = 0; i < n_copy; ++i) {
+                    values[i] = getter(window_diag_it->second[i]);
+                }
+            }
+            return values;
+        };
+        auto window_int_values = [&](auto getter) {
+            std::vector<int> values(n_dets, fill_int);
+            if (window_diag_it != remove_bad_dets_window_summary_by_scan.end()) {
+                const auto n_copy = std::min<std::size_t>(n_dets, window_diag_it->second.size());
+                for (std::size_t i = 0; i < n_copy; ++i) {
+                    values[i] = getter(window_diag_it->second[i]);
+                }
+            }
+            return values;
+        };
+        auto write_window_double = [&](const std::string &name, auto getter) {
+            NcVar v = fo.getVar(name);
+            if (!v.isNull()) {
+                auto values = window_double_values(getter);
+                v.putVar(start_scan_det, size_scan_det, values.data());
+            }
+        };
+        auto write_window_int = [&](const std::string &name, auto getter) {
+            NcVar v = fo.getVar(name);
+            if (!v.isNull()) {
+                auto values = window_int_values(getter);
                 v.putVar(start_scan_det, size_scan_det, values.data());
             }
         };
@@ -4042,6 +4077,24 @@ void RTCProc::write_cached_diagnostics_to_netcdf(netCDF::NcFile &fo,
                       [](const auto &row) { return row.impulsive_event_sample; });
         write_det_int("rtc_impulsive_event_kind",
                       [](const auto &row) { return row.impulsive_event_kind; });
+        write_window_int("rtc_invvar_window_n_total",
+                         [](const auto &row) { return row.n_total_windows; });
+        write_window_int("rtc_invvar_window_n_valid",
+                         [](const auto &row) { return row.n_valid_windows; });
+        write_window_double("rtc_invvar_window_valid_fraction",
+                            [](const auto &row) { return row.valid_window_fraction; });
+        write_window_double("rtc_invvar_window_median",
+                            [](const auto &row) { return row.inv_var_median; });
+        write_window_double("rtc_invvar_window_q10",
+                            [](const auto &row) { return row.inv_var_q10; });
+        write_window_double("rtc_invvar_window_q90",
+                            [](const auto &row) { return row.inv_var_q90; });
+        write_window_double("rtc_invvar_window_flagged_frac_median",
+                            [](const auto &row) { return row.flagged_frac_median; });
+        write_window_double("rtc_invvar_window_flagged_frac_max",
+                            [](const auto &row) { return row.flagged_frac_max; });
+        write_window_double("rtc_invvar_window_heavy_flagged_fraction",
+                            [](const auto &row) { return row.heavily_flagged_window_fraction; });
     }
 
     NcVar nw_ids_v = fo.getVar("rtc_diag_network_ids");
@@ -4393,6 +4446,7 @@ void RTCProc::write_cached_diagnostics_to_netcdf(netCDF::NcFile &fo,
 }
 
 inline void RTCProc::clear_cached_diagnostics(Eigen::Index scan_id) {
+    remove_bad_dets_window_summary_by_scan.erase(scan_id);
     rtc_detector_summary_by_scan.erase(scan_id);
     rtc_network_summary_by_scan.erase(scan_id);
     rtc_impulsive_summary_by_scan.erase(scan_id);

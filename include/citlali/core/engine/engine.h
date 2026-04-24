@@ -4981,6 +4981,7 @@ void Engine::create_ptcdiag_file() {
     add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTLOW", ptcproc.lower_weight_factor);
     add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTHIGH", ptcproc.upper_weight_factor);
     add_netcdf_var(fo, "CONFIG.WEIGHT.MEDWTFACTOR", ptcproc.med_weight_factor);
+    add_netcdf_var(fo, "CONFIG.INV_VAR.WINDOW_SEC", ptcproc.remove_bad_dets_window_sec);
     add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.ENABLED", ptcproc.weight_corr_penalty.enabled);
     add_netcdf_var(fo, "CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.ENABLED", ptcproc.busy_row_suppression.enabled);
     add_netcdf_var(fo, "CONFIG.CLEANED", ptcproc.run_clean);
@@ -5007,6 +5008,36 @@ void Engine::create_ptcdiag_file() {
     add_det_double("ptc_detector_stddev", "per-detector standard deviation of the PTC timestream written for this scan");
     add_det_double("ptc_detector_median", "per-detector median of the PTC timestream written for this scan");
     add_det_double("ptc_detector_flagged_fraction", "fraction of detector samples flagged in the PTC timestream for this scan");
+    add_det_double("ptc_invvar_window_valid_fraction",
+                   "fraction of remove_bad_dets diagnostic windows with enough unflagged samples to estimate inverse variance in the PTC timestream");
+    add_det_double("ptc_invvar_window_median",
+                   "median per-window inverse variance used for PTC remove_bad_dets diagnostics");
+    add_det_double("ptc_invvar_window_q10",
+                   "10th percentile of per-window inverse variance used for PTC remove_bad_dets diagnostics");
+    add_det_double("ptc_invvar_window_q90",
+                   "90th percentile of per-window inverse variance used for PTC remove_bad_dets diagnostics");
+    add_det_double("ptc_invvar_window_flagged_frac_median",
+                   "median flagged fraction across remove_bad_dets diagnostic windows in the PTC timestream");
+    add_det_double("ptc_invvar_window_flagged_frac_max",
+                   "maximum flagged fraction across remove_bad_dets diagnostic windows in the PTC timestream");
+    add_det_double("ptc_invvar_window_heavy_flagged_fraction",
+                   "fraction of remove_bad_dets diagnostic windows in the PTC timestream with at least 50 percent flagged samples");
+    {
+        netCDF::NcVar v = fo.addVar("ptc_invvar_window_n_total", netCDF::ncInt, det_dims);
+        v.putAtt("units", "N/A");
+        v.putAtt("comment", "total number of fixed windows evaluated for PTC remove_bad_dets diagnostics");
+        v.setChunking(netCDF::NcVar::nc_CHUNKED, det_chunks);
+        std::vector<int> init(static_cast<std::size_t>(n_scans) * static_cast<std::size_t>(calib.n_dets), fill_int);
+        v.putVar(init.data());
+    }
+    {
+        netCDF::NcVar v = fo.addVar("ptc_invvar_window_n_valid", netCDF::ncInt, det_dims);
+        v.putAtt("units", "N/A");
+        v.putAtt("comment", "number of fixed windows with a finite inverse-variance estimate for PTC remove_bad_dets diagnostics");
+        v.setChunking(netCDF::NcVar::nc_CHUNKED, det_chunks);
+        std::vector<int> init(static_cast<std::size_t>(n_scans) * static_cast<std::size_t>(calib.n_dets), fill_int);
+        v.putVar(init.data());
+    }
 
     auto add_network_block = [&](const std::string &dim_name,
                                  const std::string &id_name,
@@ -5305,6 +5336,7 @@ void Engine::create_rtcdiag_file() {
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MAX_WIDTH_HZ", rtcproc.line_audit.apply_max_width_hz);
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MAX_NOTCHES", rtcproc.line_audit.apply_max_notches);
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_CLUSTER_TOL_HZ", rtcproc.line_audit.apply_cluster_tol_hz);
+    add_netcdf_var(fo, "CONFIG.INV_VAR.WINDOW_SEC", rtcproc.remove_bad_dets_window_sec);
 
     for (auto const &x : calib.apt) {
         netCDF::NcVar apt_v = fo.addVar("apt_" + x.first, netCDF::ncDouble, n_dets_dim);
@@ -5400,6 +5432,24 @@ void Engine::create_rtcdiag_file() {
                     "sample index of the strongest per-detector impulsive event; -2147483647 means unavailable");
     add_rtc_det_int("rtc_impulsive_event_kind",
                     "0=raw-sample peak, 1=delta peak, -2147483647 means unavailable");
+    add_rtc_det_double("rtc_invvar_window_valid_fraction",
+                       "fraction of remove_bad_dets diagnostic windows with enough unflagged samples to estimate inverse variance in the RTC timestream");
+    add_rtc_det_double("rtc_invvar_window_median",
+                       "median per-window inverse variance used for RTC remove_bad_dets diagnostics");
+    add_rtc_det_double("rtc_invvar_window_q10",
+                       "10th percentile of per-window inverse variance used for RTC remove_bad_dets diagnostics");
+    add_rtc_det_double("rtc_invvar_window_q90",
+                       "90th percentile of per-window inverse variance used for RTC remove_bad_dets diagnostics");
+    add_rtc_det_double("rtc_invvar_window_flagged_frac_median",
+                       "median flagged fraction across remove_bad_dets diagnostic windows in the RTC timestream");
+    add_rtc_det_double("rtc_invvar_window_flagged_frac_max",
+                       "maximum flagged fraction across remove_bad_dets diagnostic windows in the RTC timestream");
+    add_rtc_det_double("rtc_invvar_window_heavy_flagged_fraction",
+                       "fraction of remove_bad_dets diagnostic windows in the RTC timestream with at least 50 percent flagged samples");
+    add_rtc_det_int("rtc_invvar_window_n_total",
+                    "total number of fixed windows evaluated for RTC remove_bad_dets diagnostics");
+    add_rtc_det_int("rtc_invvar_window_n_valid",
+                    "number of fixed windows with a finite inverse-variance estimate for RTC remove_bad_dets diagnostics");
 
     std::vector<netCDF::NcDim> rtc_nw_dims = {n_scans_dim, n_nws_rtcdiag_dim};
     auto add_rtc_nw_double = [&](const std::string &name, const std::string &comment) {

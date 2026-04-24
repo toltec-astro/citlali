@@ -3562,6 +3562,7 @@ void PTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
         std::vector<double> stddev(static_cast<std::size_t>(n_dets), std::numeric_limits<double>::quiet_NaN());
         std::vector<double> median(static_cast<std::size_t>(n_dets), std::numeric_limits<double>::quiet_NaN());
         std::vector<double> flagged_frac(static_cast<std::size_t>(n_dets), std::numeric_limits<double>::quiet_NaN());
+        const auto window_diag_it = remove_bad_dets_window_summary_by_scan.find(in.index.data);
         const double n_pts = static_cast<double>(in.scans.data.rows());
         const auto n_copy = std::min<unsigned long>(n_dets, static_cast<unsigned long>(in.scans.data.cols()));
         for (unsigned long i = 0; i < n_copy; ++i) {
@@ -3581,6 +3582,62 @@ void PTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
         fo.getVar("ptc_detector_stddev").putVar(start_index_det, size_det, stddev.data());
         fo.getVar("ptc_detector_median").putVar(start_index_det, size_det, median.data());
         fo.getVar("ptc_detector_flagged_fraction").putVar(start_index_det, size_det, flagged_frac.data());
+
+        auto window_double_values = [&](auto getter) {
+            std::vector<double> values(static_cast<std::size_t>(n_dets), std::numeric_limits<double>::quiet_NaN());
+            if (window_diag_it != remove_bad_dets_window_summary_by_scan.end()) {
+                const auto n_copy_diag = std::min<std::size_t>(
+                    static_cast<std::size_t>(n_dets), window_diag_it->second.size());
+                for (std::size_t i = 0; i < n_copy_diag; ++i) {
+                    values[i] = getter(window_diag_it->second[i]);
+                }
+            }
+            return values;
+        };
+        auto window_int_values = [&](auto getter) {
+            std::vector<int> values(static_cast<std::size_t>(n_dets), -2147483647);
+            if (window_diag_it != remove_bad_dets_window_summary_by_scan.end()) {
+                const auto n_copy_diag = std::min<std::size_t>(
+                    static_cast<std::size_t>(n_dets), window_diag_it->second.size());
+                for (std::size_t i = 0; i < n_copy_diag; ++i) {
+                    values[i] = getter(window_diag_it->second[i]);
+                }
+            }
+            return values;
+        };
+        auto write_window_double = [&](const std::string &name, auto getter) {
+            NcVar v = fo.getVar(name);
+            if (!v.isNull()) {
+                auto values = window_double_values(getter);
+                v.putVar(start_index_det, size_det, values.data());
+            }
+        };
+        auto write_window_int = [&](const std::string &name, auto getter) {
+            NcVar v = fo.getVar(name);
+            if (!v.isNull()) {
+                auto values = window_int_values(getter);
+                v.putVar(start_index_det, size_det, values.data());
+            }
+        };
+
+        write_window_int("ptc_invvar_window_n_total",
+                         [](const auto &row) { return row.n_total_windows; });
+        write_window_int("ptc_invvar_window_n_valid",
+                         [](const auto &row) { return row.n_valid_windows; });
+        write_window_double("ptc_invvar_window_valid_fraction",
+                            [](const auto &row) { return row.valid_window_fraction; });
+        write_window_double("ptc_invvar_window_median",
+                            [](const auto &row) { return row.inv_var_median; });
+        write_window_double("ptc_invvar_window_q10",
+                            [](const auto &row) { return row.inv_var_q10; });
+        write_window_double("ptc_invvar_window_q90",
+                            [](const auto &row) { return row.inv_var_q90; });
+        write_window_double("ptc_invvar_window_flagged_frac_median",
+                            [](const auto &row) { return row.flagged_frac_median; });
+        write_window_double("ptc_invvar_window_flagged_frac_max",
+                            [](const auto &row) { return row.flagged_frac_max; });
+        write_window_double("ptc_invvar_window_heavy_flagged_fraction",
+                            [](const auto &row) { return row.heavily_flagged_window_fraction; });
 
         const auto second_pass_summary_it = second_pass_summary_by_scan.find(in.index.data);
         const auto corr_summary_it = corr_nw_summary_by_scan.find(in.index.data);
@@ -3920,6 +3977,7 @@ void PTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
 }
 
 inline void PTCProc::clear_cached_diagnostics(Eigen::Index scan_id) {
+    remove_bad_dets_window_summary_by_scan.erase(scan_id);
     corr_nw_group_ids_by_scan.erase(scan_id);
     corr_nw_summary_by_scan.erase(scan_id);
     weight_corr_penalty_summary_by_scan.erase(scan_id);
