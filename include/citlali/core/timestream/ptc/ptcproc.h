@@ -3562,7 +3562,7 @@ void PTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
         std::vector<double> stddev(static_cast<std::size_t>(n_dets), std::numeric_limits<double>::quiet_NaN());
         std::vector<double> median(static_cast<std::size_t>(n_dets), std::numeric_limits<double>::quiet_NaN());
         std::vector<double> flagged_frac(static_cast<std::size_t>(n_dets), std::numeric_limits<double>::quiet_NaN());
-        const auto window_diag_it = remove_bad_dets_window_summary_by_scan.find(in.index.data);
+        auto window_diag_it = remove_bad_dets_window_summary_by_scan.find(in.index.data);
         const double n_pts = static_cast<double>(in.scans.data.rows());
         const auto n_copy = std::min<unsigned long>(n_dets, static_cast<unsigned long>(in.scans.data.cols()));
         for (unsigned long i = 0; i < n_copy; ++i) {
@@ -3575,6 +3575,145 @@ void PTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
             median[static_cast<std::size_t>(i)] = tula::alg::median(scans);
             flagged_frac[static_cast<std::size_t>(i)] =
                 (n_pts > 0.0) ? flags.cast<double>().sum() / n_pts : std::numeric_limits<double>::quiet_NaN();
+        }
+
+        if (window_diag_it == remove_bad_dets_window_summary_by_scan.end()) {
+            auto infer_dt_sec = [&]() {
+                auto it = in.tel_data.data.find("TelTime");
+                if (it == in.tel_data.data.end() || it->second.size() < 2) {
+                    return std::numeric_limits<double>::quiet_NaN();
+                }
+                std::vector<double> dt;
+                dt.reserve(static_cast<std::size_t>(it->second.size() - 1));
+                for (Eigen::Index i = 1; i < it->second.size(); ++i) {
+                    const double delta = it->second(i) - it->second(i - 1);
+                    if (std::isfinite(delta) && delta > 0.0) {
+                        dt.push_back(delta);
+                    }
+                }
+                if (dt.empty()) {
+                    return std::numeric_limits<double>::quiet_NaN();
+                }
+                return tula::alg::median(Eigen::Map<Eigen::VectorXd>(dt.data(), dt.size()));
+            };
+            auto vector_quantile = [](std::vector<double> values, double q) {
+                if (values.empty()) {
+                    return std::numeric_limits<double>::quiet_NaN();
+                }
+                std::sort(values.begin(), values.end());
+                q = std::clamp(q, 0.0, 1.0);
+                const double pos = q * static_cast<double>(values.size() - 1);
+                const auto lo = static_cast<std::size_t>(std::floor(pos));
+                const auto hi = static_cast<std::size_t>(std::ceil(pos));
+                if (lo == hi) {
+                    return values[lo];
+                }
+                const double frac = pos - static_cast<double>(lo);
+                return values[lo] * (1.0 - frac) + values[hi] * frac;
+            };
+            const double dt_sec = infer_dt_sec();
+            Eigen::Index window_samples = in.scans.data.rows();
+            if (std::isfinite(dt_sec) && dt_sec > 0.0 && remove_bad_dets_window_sec > 0.0) {
+                window_samples = std::max<Eigen::Index>(
+                    8, static_cast<Eigen::Index>(std::llround(remove_bad_dets_window_sec / dt_sec)));
+            }
+            window_samples = std::min<Eigen::Index>(window_samples, in.scans.data.rows());
+            window_samples = std::max<Eigen::Index>(1, window_samples);
+
+            auto summarize_windows = [&](Eigen::Index det_index) {
+                RemoveBadDetsWindowDiagSummary summary;
+                if (det_index < 0 || det_index >= in.scans.data.cols()) {
+                    return summary;
+                }
+                Eigen::VectorXd scans = in.scans.data.col(det_index);
+                Eigen::Matrix<bool, Eigen::Dynamic, 1> flags = in.flags.data.col(det_index);
+                if (active_map_grouping == "detector" && mask_radius_arcsec > 0.0) {
+                    Eigen::Matrix<bool, Eigen::Dynamic, 1> masked_flags = flags;
+                    double az_off = calib.apt["x_t"](det_index);
+                    double el_off = calib.apt["y_t"](det_index);
+                    auto [lat, lon] = engine_utils::calc_det_pointing(
+                        in.tel_data.data,
+                        az_off,
+                        el_off,
+                        std::string{"altaz"},
+                        in.pointing_offsets_arcsec.data,
+                        active_map_grouping);
+                    double source_lat = 0.0;
+                    double source_lon = 0.0;
+                    resolve_mask_center_rad(in, calib, active_map_grouping, det_index,
+                                            source_lat, source_lon);
+                    const double radius_rad = mask_radius_arcsec * ASEC_TO_RAD;
+                    for (Eigen::Index sample = 0; sample < masked_flags.size(); ++sample) {
+                        const double dlat = lat(sample) - source_lat;
+                        const double dlon = lon(sample) - source_lon;
+                        if (std::sqrt(dlat * dlat + dlon * dlon) < radius_rad) {
+                            masked_flags(sample) = true;
+                        }
+                    }
+                    flags = masked_flags;
+                }
+
+                summary.n_total_windows = static_cast<int>((scans.size() + window_samples - 1) / window_samples);
+                std::vector<double> inv_vars;
+                std::vector<double> flagged_fracs;
+                inv_vars.reserve(static_cast<std::size_t>(summary.n_total_windows));
+                flagged_fracs.reserve(static_cast<std::size_t>(summary.n_total_windows));
+
+                for (Eigen::Index start = 0; start < scans.size(); start += window_samples) {
+                    const Eigen::Index stop = std::min<Eigen::Index>(scans.size(), start + window_samples);
+                    const Eigen::Index len = stop - start;
+                    if (len <= 0) {
+                        continue;
+                    }
+                    int n_flagged = 0;
+                    for (Eigen::Index i = start; i < stop; ++i) {
+                        if (flags(i)) {
+                            ++n_flagged;
+                        }
+                    }
+                    const double flagged_window_frac =
+                        static_cast<double>(n_flagged) / static_cast<double>(len);
+                    flagged_fracs.push_back(flagged_window_frac);
+
+                    Eigen::VectorXd scan_window = scans.segment(start, len);
+                    Eigen::Matrix<bool, Eigen::Dynamic, 1> flag_window = flags.segment(start, len);
+                    const double sigma = engine_utils::calc_std_dev(scan_window, flag_window);
+                    if (std::isfinite(sigma) && sigma > 0.0) {
+                        inv_vars.push_back(std::pow(sigma, -2));
+                    }
+                }
+
+                summary.n_valid_windows = static_cast<int>(inv_vars.size());
+                if (summary.n_total_windows > 0) {
+                    summary.valid_window_fraction =
+                        static_cast<double>(summary.n_valid_windows) /
+                        static_cast<double>(summary.n_total_windows);
+                }
+                if (!inv_vars.empty()) {
+                    summary.inv_var_median = vector_quantile(inv_vars, 0.5);
+                    summary.inv_var_q10 = vector_quantile(inv_vars, 0.1);
+                    summary.inv_var_q90 = vector_quantile(inv_vars, 0.9);
+                }
+                if (!flagged_fracs.empty()) {
+                    summary.flagged_frac_median = vector_quantile(flagged_fracs, 0.5);
+                    summary.flagged_frac_max = *std::max_element(flagged_fracs.begin(), flagged_fracs.end());
+                    const auto n_heavy = std::count_if(
+                        flagged_fracs.begin(), flagged_fracs.end(),
+                        [](double v) { return std::isfinite(v) && v >= 0.5; });
+                    summary.heavily_flagged_window_fraction =
+                        static_cast<double>(n_heavy) /
+                        static_cast<double>(flagged_fracs.size());
+                }
+                return summary;
+            };
+
+            auto &window_diag = remove_bad_dets_window_summary_by_scan[in.index.data];
+            window_diag.assign(static_cast<std::size_t>(in.scans.data.cols()),
+                               RemoveBadDetsWindowDiagSummary{});
+            for (Eigen::Index det = 0; det < in.scans.data.cols(); ++det) {
+                window_diag[static_cast<std::size_t>(det)] = summarize_windows(det);
+            }
+            window_diag_it = remove_bad_dets_window_summary_by_scan.find(in.index.data);
         }
 
         fo.getVar("ptc_detector_weight").putVar(start_index_det, size_det, weights.data());
