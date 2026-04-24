@@ -2149,8 +2149,16 @@ void Beammap::run_loop() {
                 }
             }
 
-            // remove outliers after clean
-            calib_scans[i] = ptcproc.remove_bad_dets(ptcs[i], calib_scans[i], map_grouping);
+            // For detector-grouped beammaps, keep the first pass permissive so
+            // bright-source scans are less likely to be rejected before we have
+            // any source-location estimate to feed back into later iterations.
+            if (map_grouping == "detector" && current_iter == 0) {
+                logger->info("skipping remove_bad_dets on iter 0 for beammap detector scan {}", ptcs[i].index.data + 1);
+            }
+            else {
+                // remove outliers after clean
+                calib_scans[i] = ptcproc.remove_bad_dets(ptcs[i], calib_scans[i], map_grouping);
+            }
 
             if (map_grouping == "detector") {
                 auto rfi_summary = apply_rfi_sample_mask(ptcs[i]);
