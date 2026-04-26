@@ -1817,7 +1817,11 @@ void Beammap::configure_ptc_source_mask_from_previous_fit() {
 }
 
 double Beammap::get_prior_derot_elev_rad() const {
-    double derot_elev_rad = telescope.tel_data["TelElAct"].mean();
+    double derot_elev_rad = 0.0;
+    auto tel_el_it = telescope.tel_data.find("TelElAct");
+    if (tel_el_it != telescope.tel_data.end() && tel_el_it->second.size() > 0) {
+        derot_elev_rad = tel_el_it->second.mean();
+    }
     if (!std::isfinite(derot_elev_rad)) {
         derot_elev_rad = 0.0;
     }
