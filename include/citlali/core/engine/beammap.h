@@ -37,12 +37,24 @@ public:
         int slot_index = -1;
     };
 
+    struct PriorArrayAlignment {
+        bool valid = false;
+        double cos_theta = 1.0;
+        double sin_theta = 0.0;
+        double theta_rad = 0.0;
+        double dx_arcsec = 0.0;
+        double dy_arcsec = 0.0;
+        Eigen::Index n_matches = 0;
+        double rms_arcsec = std::numeric_limits<double>::quiet_NaN();
+    };
+
     bool beammap_soft_priors_loaded = false;
     bool beammap_soft_priors_are_centered = false;
     bool beammap_soft_priors_are_derotated = false;
     std::map<std::pair<int, int>, std::vector<SoftPriorSlot>> beammap_soft_prior_slots;
     std::map<int, double> beammap_prior_array_center_x_arcsec;
     std::map<int, double> beammap_prior_array_center_y_arcsec;
+    std::map<int, PriorArrayAlignment> beammap_prior_array_alignment;
 
     // parallel policies for each section
     std::string  map_parallel_policy;
@@ -188,9 +200,22 @@ public:
     bool load_soft_priors();
     bool find_map_weighted_peak(Eigen::Index map_index, Eigen::Index &best_row,
                                 Eigen::Index &best_col, double &best_snr) const;
+    double get_prior_derot_elev_rad() const;
+    double effective_prior_max_d2() const;
+    double effective_prior_score_lambda() const;
+    bool observed_to_prior_frame(int array, double x_raw_arcsec, double y_raw_arcsec,
+                                 double derot_elev_rad, double &x_prior_arcsec,
+                                 double &y_prior_arcsec, double *center_x_arcsec = nullptr,
+                                 double *center_y_arcsec = nullptr,
+                                 bool apply_empirical_alignment = true) const;
+    bool match_prior_slot(int array, int nw, double x_prior_arcsec, double y_prior_arcsec,
+                          double &best_d2, int &best_slot, double *slot_x_arcsec = nullptr,
+                          double *slot_y_arcsec = nullptr, double *slot_sx_arcsec = nullptr,
+                          double *slot_sy_arcsec = nullptr) const;
     void update_prior_frame_estimates();
     bool choose_prior_guided_init(Eigen::Index map_index, double &init_row, double &init_col);
     void configure_ptc_source_mask_from_previous_fit();
+    double calc_map_support_stddev(Eigen::Index map_index, bool exclude_fit_core = false) const;
 
     // flag detectors
     void set_apt_flags();
@@ -410,12 +435,12 @@ void Beammap::setup() {
     calib.apt_meta["flag2"].push_back("Good=0");
     calib.apt_meta["flag2"].push_back("BadFit=1");
     calib.apt_meta["flag2"].push_back("AzFWHM=2");
-    calib.apt_meta["flag2"].push_back("ElFWHM=3");
-    calib.apt_meta["flag2"].push_back("Sig2Noise=4");
-    calib.apt_meta["flag2"].push_back("Sens=5");
-    calib.apt_meta["flag2"].push_back("Position=6");
-    calib.apt_meta["flag2"].push_back("PriorDist=7");
-    calib.apt_meta["flag2"].push_back("NetworkPos=8");
+    calib.apt_meta["flag2"].push_back("ElFWHM=4");
+    calib.apt_meta["flag2"].push_back("Sig2Noise=8");
+    calib.apt_meta["flag2"].push_back("Sens=16");
+    calib.apt_meta["flag2"].push_back("Position=32");
+    calib.apt_meta["flag2"].push_back("PriorDist=64");
+    calib.apt_meta["flag2"].push_back("NetworkPos=128");
 
     // add array mapping
     for (const auto &[arr_index,arr_name]: toltec_io.array_name_map) {
@@ -438,12 +463,14 @@ void Beammap::setup() {
     calib.apt_meta["rfi_mask_sigma_threshold"] = beammap_rfi_mask_sigma_threshold;
     calib.apt_meta["rfi_mask_sigma_floor"] = beammap_rfi_mask_sigma_floor;
     calib.apt_meta["rfi_mask_max_flagged_fraction"] = beammap_rfi_mask_max_flagged_fraction;
+    calib.apt_meta["detector_weighting_mode"] = beammap_detector_weighting_mode;
     beammap_soft_prior_slots.clear();
     beammap_soft_priors_loaded = false;
     beammap_soft_priors_are_centered = false;
     beammap_soft_priors_are_derotated = false;
     beammap_prior_array_center_x_arcsec.clear();
     beammap_prior_array_center_y_arcsec.clear();
+    beammap_prior_array_alignment.clear();
     if (beammap_priors_enabled) {
         if (map_grouping != "detector") {
             logger->warn("beammap priors requested but map_grouping={} (requires detector); disabling priors",
@@ -460,8 +487,17 @@ void Beammap::setup() {
     calib.apt_meta["beammap_priors_candidate_top_n"] = beammap_priors_candidate_top_n;
     calib.apt_meta["beammap_priors_min_snr"] = beammap_priors_min_snr;
     calib.apt_meta["beammap_priors_max_d2"] = beammap_priors_max_d2;
+    calib.apt_meta["beammap_priors_max_d2_iter0"] = beammap_priors_max_d2_iter0;
+    calib.apt_meta["beammap_priors_max_d2_after_iter0"] = beammap_priors_max_d2_after_iter0;
     calib.apt_meta["beammap_priors_score_lambda"] = beammap_priors_score_lambda;
+    calib.apt_meta["beammap_priors_score_lambda_iter0"] = beammap_priors_score_lambda_iter0;
+    calib.apt_meta["beammap_priors_score_lambda_after_iter0"] = beammap_priors_score_lambda_after_iter0;
     calib.apt_meta["beammap_priors_fallback_blind"] = beammap_priors_fallback_blind;
+    calib.apt_meta["beammap_priors_align_after_iter0"] = beammap_priors_align_after_iter0;
+    calib.apt_meta["beammap_priors_alignment_min_matches"] = beammap_priors_alignment_min_matches;
+    calib.apt_meta["beammap_priors_alignment_max_d2"] = beammap_priors_alignment_max_d2;
+    calib.apt_meta["beammap_priors_alignment_fit_rotation"] = beammap_priors_alignment_fit_rotation;
+    calib.apt_meta["beammap_priors_alignment_max_rotation_deg"] = beammap_priors_alignment_max_rotation_deg;
 }
 
 template <class KidsProc, class RawObs>
@@ -954,6 +990,78 @@ void Beammap::loop_pipeline() {
     }
 }
 
+double Beammap::calc_map_support_stddev(Eigen::Index map_index, bool exclude_fit_core) const {
+    if (map_index < 0 ||
+        map_index >= static_cast<Eigen::Index>(omb.signal.size()) ||
+        map_index >= static_cast<Eigen::Index>(omb.weight.size())) {
+        return std::numeric_limits<double>::quiet_NaN();
+    }
+
+    const auto &sig = omb.signal[map_index];
+    const auto &wt = omb.weight[map_index];
+    if (sig.rows() <= 0 || sig.cols() <= 0 ||
+        wt.rows() != sig.rows() || wt.cols() != sig.cols()) {
+        return std::numeric_limits<double>::quiet_NaN();
+    }
+
+    double core_row = std::numeric_limits<double>::quiet_NaN();
+    double core_col = std::numeric_limits<double>::quiet_NaN();
+    double core_radius_pix = 0.0;
+    if (exclude_fit_core &&
+        map_index < params.rows() &&
+        params.cols() >= 5 &&
+        std::isfinite(params(map_index, 1)) &&
+        std::isfinite(params(map_index, 2)) &&
+        std::isfinite(params(map_index, 3)) &&
+        std::isfinite(params(map_index, 4)) &&
+        params(map_index, 3) > 0.0 &&
+        params(map_index, 4) > 0.0) {
+        core_col = params(map_index, 1);
+        core_row = params(map_index, 2);
+        core_radius_pix = 2.0 * STD_TO_FWHM *
+                          std::max(params(map_index, 3), params(map_index, 4));
+    }
+
+    auto collect = [&](bool exclude_core) {
+        std::vector<double> values;
+        values.reserve(static_cast<std::size_t>(sig.size()));
+        const bool do_exclude =
+            exclude_core &&
+            std::isfinite(core_row) &&
+            std::isfinite(core_col) &&
+            core_radius_pix > 0.0;
+        const double core_radius2 = core_radius_pix * core_radius_pix;
+        for (Eigen::Index row = 0; row < sig.rows(); ++row) {
+            for (Eigen::Index col = 0; col < sig.cols(); ++col) {
+                const double s = sig(row, col);
+                const double w = wt(row, col);
+                if (!std::isfinite(s) || !std::isfinite(w) || w <= 0.0) {
+                    continue;
+                }
+                if (do_exclude) {
+                    const double dr = static_cast<double>(row) - core_row;
+                    const double dc = static_cast<double>(col) - core_col;
+                    if (dr * dr + dc * dc <= core_radius2) {
+                        continue;
+                    }
+                }
+                values.push_back(s);
+            }
+        }
+        return values;
+    };
+
+    auto values = collect(exclude_fit_core);
+    if (values.size() < static_cast<std::size_t>(std::max(16, map_fitter.n_params + 1))) {
+        values = collect(false);
+    }
+    if (values.size() < 2) {
+        return std::numeric_limits<double>::quiet_NaN();
+    }
+
+    Eigen::Map<Eigen::VectorXd> vec(values.data(), static_cast<Eigen::Index>(values.size()));
+    return engine_utils::calc_std_dev(vec);
+}
 
 Beammap::RFIMaskScanSummary Beammap::apply_rfi_sample_mask(TCData<TCDataKind::PTC,Eigen::MatrixXd> &ptc) {
     RFIMaskScanSummary summary;
@@ -1708,9 +1816,136 @@ void Beammap::configure_ptc_source_mask_from_previous_fit() {
         n_valid, n_maps, current_iter, ptcproc.mask_radius_arcsec);
 }
 
+double Beammap::get_prior_derot_elev_rad() const {
+    double derot_elev_rad = telescope.tel_data["TelElAct"].mean();
+    if (!std::isfinite(derot_elev_rad)) {
+        derot_elev_rad = 0.0;
+    }
+    if (std::abs(derot_elev_rad) > pi) {
+        derot_elev_rad *= DEG_TO_RAD;
+    }
+    return derot_elev_rad;
+}
+
+double Beammap::effective_prior_max_d2() const {
+    return (current_iter <= 0) ? beammap_priors_max_d2_iter0 : beammap_priors_max_d2_after_iter0;
+}
+
+double Beammap::effective_prior_score_lambda() const {
+    return (current_iter <= 0) ? beammap_priors_score_lambda_iter0 : beammap_priors_score_lambda_after_iter0;
+}
+
+bool Beammap::observed_to_prior_frame(int array, double x_raw_arcsec, double y_raw_arcsec,
+                                      double derot_elev_rad, double &x_prior_arcsec,
+                                      double &y_prior_arcsec, double *center_x_arcsec,
+                                      double *center_y_arcsec,
+                                      bool apply_empirical_alignment) const {
+    if (!std::isfinite(x_raw_arcsec) || !std::isfinite(y_raw_arcsec)) {
+        return false;
+    }
+
+    double x = x_raw_arcsec;
+    double y = y_raw_arcsec;
+    double center_x = std::numeric_limits<double>::quiet_NaN();
+    double center_y = std::numeric_limits<double>::quiet_NaN();
+
+    if (beammap_soft_priors_are_centered) {
+        auto x_it = beammap_prior_array_center_x_arcsec.find(array);
+        auto y_it = beammap_prior_array_center_y_arcsec.find(array);
+        if (x_it == beammap_prior_array_center_x_arcsec.end() ||
+            y_it == beammap_prior_array_center_y_arcsec.end() ||
+            !std::isfinite(x_it->second) || !std::isfinite(y_it->second)) {
+            return false;
+        }
+        center_x = x_it->second;
+        center_y = y_it->second;
+        x -= center_x;
+        y -= center_y;
+    }
+
+    if (center_x_arcsec != nullptr) {
+        *center_x_arcsec = center_x;
+    }
+    if (center_y_arcsec != nullptr) {
+        *center_y_arcsec = center_y;
+    }
+
+    if (beammap_soft_priors_are_derotated && telescope.pixel_axes == "altaz") {
+        if (!std::isfinite(derot_elev_rad)) {
+            derot_elev_rad = 0.0;
+        }
+        if (std::abs(derot_elev_rad) > pi) {
+            derot_elev_rad *= DEG_TO_RAD;
+        }
+        const double cos_rot = std::cos(-derot_elev_rad);
+        const double sin_rot = std::sin(-derot_elev_rad);
+        const double rot_az_off = cos_rot * x - sin_rot * y;
+        const double rot_alt_off = sin_rot * x + cos_rot * y;
+        x = -rot_az_off;
+        y = -rot_alt_off;
+    }
+
+    if (apply_empirical_alignment) {
+        auto align_it = beammap_prior_array_alignment.find(array);
+        if (align_it != beammap_prior_array_alignment.end() && align_it->second.valid) {
+            const auto &align = align_it->second;
+            const double x_rot = align.cos_theta * x - align.sin_theta * y;
+            const double y_rot = align.sin_theta * x + align.cos_theta * y;
+            x = x_rot + align.dx_arcsec;
+            y = y_rot + align.dy_arcsec;
+        }
+    }
+
+    x_prior_arcsec = x;
+    y_prior_arcsec = y;
+    return std::isfinite(x_prior_arcsec) && std::isfinite(y_prior_arcsec);
+}
+
+bool Beammap::match_prior_slot(int array, int nw, double x_prior_arcsec, double y_prior_arcsec,
+                               double &best_d2, int &best_slot, double *slot_x_arcsec,
+                               double *slot_y_arcsec, double *slot_sx_arcsec,
+                               double *slot_sy_arcsec) const {
+    best_d2 = std::numeric_limits<double>::infinity();
+    best_slot = -1;
+    auto slots_it = beammap_soft_prior_slots.find({array, nw});
+    if (slots_it == beammap_soft_prior_slots.end() || slots_it->second.empty() ||
+        !std::isfinite(x_prior_arcsec) || !std::isfinite(y_prior_arcsec)) {
+        return false;
+    }
+
+    for (const auto &slot : slots_it->second) {
+        if (!std::isfinite(slot.x_arcsec) || !std::isfinite(slot.y_arcsec) ||
+            !std::isfinite(slot.sx_arcsec) || !std::isfinite(slot.sy_arcsec) ||
+            slot.sx_arcsec <= 0.0 || slot.sy_arcsec <= 0.0) {
+            continue;
+        }
+        const double dx = (x_prior_arcsec - slot.x_arcsec) / slot.sx_arcsec;
+        const double dy = (y_prior_arcsec - slot.y_arcsec) / slot.sy_arcsec;
+        const double d2 = dx * dx + dy * dy;
+        if (std::isfinite(d2) && d2 < best_d2) {
+            best_d2 = d2;
+            best_slot = slot.slot_index;
+            if (slot_x_arcsec != nullptr) {
+                *slot_x_arcsec = slot.x_arcsec;
+            }
+            if (slot_y_arcsec != nullptr) {
+                *slot_y_arcsec = slot.y_arcsec;
+            }
+            if (slot_sx_arcsec != nullptr) {
+                *slot_sx_arcsec = slot.sx_arcsec;
+            }
+            if (slot_sy_arcsec != nullptr) {
+                *slot_sy_arcsec = slot.sy_arcsec;
+            }
+        }
+    }
+    return std::isfinite(best_d2);
+}
+
 void Beammap::update_prior_frame_estimates() {
     beammap_prior_array_center_x_arcsec.clear();
     beammap_prior_array_center_y_arcsec.clear();
+    beammap_prior_array_alignment.clear();
 
     std::map<int, std::vector<double>> x_by_array;
     std::map<int, std::vector<double>> y_by_array;
@@ -1722,6 +1957,12 @@ void Beammap::update_prior_frame_estimates() {
     Eigen::Index n_prev = 0;
     if (current_iter > 0 && p0.rows() == n_maps && p0.cols() > 2) {
         for (Eigen::Index i = 0; i < n_maps; ++i) {
+            if (i < good_fits.size() && !good_fits(i)) {
+                continue;
+            }
+            if (fit_diag_bound_nhit.size() == n_maps && fit_diag_bound_nhit(i) > 0) {
+                continue;
+            }
             if (!(std::isfinite(p0(i, 0)) && p0(i, 0) > 0.0 &&
                   std::isfinite(p0(i, 1)) && std::isfinite(p0(i, 2)))) {
                 continue;
@@ -1777,8 +2018,166 @@ void Beammap::update_prior_frame_estimates() {
         beammap_prior_array_center_y_arcsec[array] = tula::alg::median(y_vec);
     }
 
-    logger->info("beammap priors frame estimate (iter {}): previous={} blind={} arrays={}",
-                 current_iter, n_prev, n_blind, beammap_prior_array_center_x_arcsec.size());
+    Eigen::Index n_alignment_matches = 0;
+    if (beammap_priors_align_after_iter0 && current_iter > 0 && p0.rows() == n_maps && p0.cols() > 2) {
+        struct PriorPair {
+            double obs_x = 0.0;
+            double obs_y = 0.0;
+            double slot_x = 0.0;
+            double slot_y = 0.0;
+        };
+        std::map<int, std::vector<PriorPair>> pairs_by_array;
+        const double derot_elev_rad = get_prior_derot_elev_rad();
+
+        for (Eigen::Index i = 0; i < n_maps; ++i) {
+            if (i >= good_fits.size() || !good_fits(i)) {
+                continue;
+            }
+            if (fit_diag_bound_nhit.size() == n_maps && fit_diag_bound_nhit(i) > 0) {
+                continue;
+            }
+            if (!(std::isfinite(p0(i, 0)) && p0(i, 0) > 0.0 &&
+                  std::isfinite(p0(i, 1)) && std::isfinite(p0(i, 2)))) {
+                continue;
+            }
+            const int array = static_cast<int>(maps_to_arrays(i));
+            const int nw = static_cast<int>(std::lround(calib.apt["nw"](i)));
+            const double x_raw =
+                RAD_TO_ASEC * omb.pixel_size_rad * (p0(i, 1) - (omb.n_cols - 1) / 2.0);
+            const double y_raw =
+                RAD_TO_ASEC * omb.pixel_size_rad * (p0(i, 2) - (omb.n_rows - 1) / 2.0);
+            double x_prior = std::numeric_limits<double>::quiet_NaN();
+            double y_prior = std::numeric_limits<double>::quiet_NaN();
+            if (!observed_to_prior_frame(array, x_raw, y_raw, derot_elev_rad,
+                                         x_prior, y_prior, nullptr, nullptr, false)) {
+                continue;
+            }
+            double d2 = std::numeric_limits<double>::infinity();
+            int slot_index = -1;
+            double slot_x = std::numeric_limits<double>::quiet_NaN();
+            double slot_y = std::numeric_limits<double>::quiet_NaN();
+            if (!match_prior_slot(array, nw, x_prior, y_prior, d2, slot_index, &slot_x, &slot_y)) {
+                continue;
+            }
+            static_cast<void>(slot_index);
+            if (beammap_priors_alignment_max_d2 > 0.0 && d2 > beammap_priors_alignment_max_d2) {
+                continue;
+            }
+            pairs_by_array[array].push_back({x_prior, y_prior, slot_x, slot_y});
+            n_alignment_matches++;
+        }
+
+        for (auto &[array, pairs] : pairs_by_array) {
+            if (pairs.size() < static_cast<std::size_t>(beammap_priors_alignment_min_matches)) {
+                logger->debug("beammap prior alignment skipped array={} matches={} min_matches={}",
+                              array, pairs.size(), beammap_priors_alignment_min_matches);
+                continue;
+            }
+
+            std::vector<double> dx_vals;
+            std::vector<double> dy_vals;
+            dx_vals.reserve(pairs.size());
+            dy_vals.reserve(pairs.size());
+            for (const auto &pair : pairs) {
+                dx_vals.push_back(pair.slot_x - pair.obs_x);
+                dy_vals.push_back(pair.slot_y - pair.obs_y);
+            }
+            Eigen::Map<Eigen::VectorXd> dx_vec(dx_vals.data(), static_cast<Eigen::Index>(dx_vals.size()));
+            Eigen::Map<Eigen::VectorXd> dy_vec(dy_vals.data(), static_cast<Eigen::Index>(dy_vals.size()));
+            double tx = tula::alg::median(dx_vec);
+            double ty = tula::alg::median(dy_vec);
+
+            double theta = 0.0;
+            if (beammap_priors_alignment_fit_rotation) {
+                double obs_mean_x = 0.0;
+                double obs_mean_y = 0.0;
+                double slot_mean_x = 0.0;
+                double slot_mean_y = 0.0;
+                for (const auto &pair : pairs) {
+                    obs_mean_x += pair.obs_x + tx;
+                    obs_mean_y += pair.obs_y + ty;
+                    slot_mean_x += pair.slot_x;
+                    slot_mean_y += pair.slot_y;
+                }
+                const double inv_n = 1.0 / static_cast<double>(pairs.size());
+                obs_mean_x *= inv_n;
+                obs_mean_y *= inv_n;
+                slot_mean_x *= inv_n;
+                slot_mean_y *= inv_n;
+
+                double a = 0.0;
+                double b = 0.0;
+                for (const auto &pair : pairs) {
+                    const double ox = pair.obs_x + tx - obs_mean_x;
+                    const double oy = pair.obs_y + ty - obs_mean_y;
+                    const double sx = pair.slot_x - slot_mean_x;
+                    const double sy = pair.slot_y - slot_mean_y;
+                    a += ox * sx + oy * sy;
+                    b += ox * sy - oy * sx;
+                }
+                if (std::isfinite(a) && std::isfinite(b) &&
+                    (std::abs(a) > 0.0 || std::abs(b) > 0.0)) {
+                    theta = std::atan2(b, a);
+                }
+                const double max_theta = beammap_priors_alignment_max_rotation_deg * DEG_TO_RAD;
+                if (!std::isfinite(theta) || std::abs(theta) > max_theta) {
+                    logger->debug(
+                        "beammap prior alignment array={} rejected residual rotation {} deg (limit={} deg)",
+                        array, theta * RAD_TO_DEG, beammap_priors_alignment_max_rotation_deg);
+                    theta = 0.0;
+                }
+            }
+
+            const double cos_theta = std::cos(theta);
+            const double sin_theta = std::sin(theta);
+            dx_vals.clear();
+            dy_vals.clear();
+            for (const auto &pair : pairs) {
+                const double x_rot = cos_theta * pair.obs_x - sin_theta * pair.obs_y;
+                const double y_rot = sin_theta * pair.obs_x + cos_theta * pair.obs_y;
+                dx_vals.push_back(pair.slot_x - x_rot);
+                dy_vals.push_back(pair.slot_y - y_rot);
+            }
+            Eigen::Map<Eigen::VectorXd> dx_vec_final(dx_vals.data(), static_cast<Eigen::Index>(dx_vals.size()));
+            Eigen::Map<Eigen::VectorXd> dy_vec_final(dy_vals.data(), static_cast<Eigen::Index>(dy_vals.size()));
+            tx = tula::alg::median(dx_vec_final);
+            ty = tula::alg::median(dy_vec_final);
+
+            double rss = 0.0;
+            for (const auto &pair : pairs) {
+                const double x_fit = cos_theta * pair.obs_x - sin_theta * pair.obs_y + tx;
+                const double y_fit = sin_theta * pair.obs_x + cos_theta * pair.obs_y + ty;
+                const double rx = x_fit - pair.slot_x;
+                const double ry = y_fit - pair.slot_y;
+                rss += rx * rx + ry * ry;
+            }
+            const double rms = std::sqrt(rss / static_cast<double>(pairs.size()));
+            if (!(std::isfinite(tx) && std::isfinite(ty) && std::isfinite(rms))) {
+                continue;
+            }
+
+            PriorArrayAlignment alignment;
+            alignment.valid = true;
+            alignment.cos_theta = cos_theta;
+            alignment.sin_theta = sin_theta;
+            alignment.theta_rad = theta;
+            alignment.dx_arcsec = tx;
+            alignment.dy_arcsec = ty;
+            alignment.n_matches = static_cast<Eigen::Index>(pairs.size());
+            alignment.rms_arcsec = rms;
+            beammap_prior_array_alignment[array] = alignment;
+
+            logger->info(
+                "beammap prior empirical alignment (iter {} array={}): matches={} dx={} dy={} rot_deg={} rms={}",
+                current_iter, array, alignment.n_matches, alignment.dx_arcsec,
+                alignment.dy_arcsec, alignment.theta_rad * RAD_TO_DEG, alignment.rms_arcsec);
+        }
+    }
+
+    logger->info(
+        "beammap priors frame estimate (iter {}): previous={} blind={} arrays={} alignment_matches={} aligned_arrays={}",
+        current_iter, n_prev, n_blind, beammap_prior_array_center_x_arcsec.size(),
+        n_alignment_matches, beammap_prior_array_alignment.size());
 }
 
 bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row, double &init_col) {
@@ -1816,7 +2215,6 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
         set_prior_diag(prior_no_candidate_reason_col, prior_reason_no_slot_group);
         return false;
     }
-    const auto &slots = slots_it->second;
 
     const auto &sig = omb.signal[map_index];
     const auto &wt = omb.weight[map_index];
@@ -1906,14 +2304,10 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
     const double col0 = static_cast<double>(omb.n_cols - 1) / 2.0;
     const double row0 = static_cast<double>(omb.n_rows - 1) / 2.0;
     const double pix_to_arcsec = RAD_TO_ASEC * omb.pixel_size_rad;
-    double derot_elev_rad = telescope.tel_data["TelElAct"].mean();
-    if (!std::isfinite(derot_elev_rad)) {
-        derot_elev_rad = 0.0;
-    }
-    if (std::abs(derot_elev_rad) > pi) {
-        derot_elev_rad *= DEG_TO_RAD;
-    }
+    double derot_elev_rad = get_prior_derot_elev_rad();
     set_prior_diag(prior_derot_elev_col, derot_elev_rad);
+    const double prior_max_d2 = effective_prior_max_d2();
+    const double prior_score_lambda = effective_prior_score_lambda();
 
     bool found = false;
     double best_score = -std::numeric_limits<double>::infinity();
@@ -1936,53 +2330,31 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
         const auto &cand = candidates[i];
         double x_arcsec_raw = pix_to_arcsec * (static_cast<double>(cand.col) - col0);
         double y_arcsec_raw = pix_to_arcsec * (static_cast<double>(cand.row) - row0);
-        double x_arcsec = x_arcsec_raw;
-        double y_arcsec = y_arcsec_raw;
-
         double center_x = std::numeric_limits<double>::quiet_NaN();
         double center_y = std::numeric_limits<double>::quiet_NaN();
-
-        if (beammap_soft_priors_are_centered) {
-            auto x_it = beammap_prior_array_center_x_arcsec.find(array);
-            auto y_it = beammap_prior_array_center_y_arcsec.find(array);
-            if (x_it != beammap_prior_array_center_x_arcsec.end() &&
-                y_it != beammap_prior_array_center_y_arcsec.end()) {
-                center_x = x_it->second;
-                center_y = y_it->second;
-                x_arcsec -= center_x;
-                y_arcsec -= center_y;
-            }
-        }
-
-        if (beammap_soft_priors_are_derotated && telescope.pixel_axes == "altaz") {
-            const double rot_az_off = std::cos(-derot_elev_rad) * x_arcsec -
-                                      std::sin(-derot_elev_rad) * y_arcsec;
-            const double rot_alt_off = std::sin(-derot_elev_rad) * x_arcsec +
-                                       std::cos(-derot_elev_rad) * y_arcsec;
-            x_arcsec = -rot_az_off;
-            y_arcsec = -rot_alt_off;
+        double x_arcsec = std::numeric_limits<double>::quiet_NaN();
+        double y_arcsec = std::numeric_limits<double>::quiet_NaN();
+        if (!observed_to_prior_frame(array, x_arcsec_raw, y_arcsec_raw, derot_elev_rad,
+                                     x_arcsec, y_arcsec, &center_x, &center_y, true)) {
+            continue;
         }
 
         double min_d2 = std::numeric_limits<double>::infinity();
         int min_slot = -1;
-        for (const auto &slot : slots) {
-            const double dx = (x_arcsec - slot.x_arcsec) / slot.sx_arcsec;
-            const double dy = (y_arcsec - slot.y_arcsec) / slot.sy_arcsec;
-            const double d2 = dx * dx + dy * dy;
-            if (std::isfinite(d2) && d2 < min_d2) {
-                min_d2 = d2;
-                min_slot = slot.slot_index;
-            }
-        }
-        if (!std::isfinite(min_d2)) {
+        double slot_x = std::numeric_limits<double>::quiet_NaN();
+        double slot_y = std::numeric_limits<double>::quiet_NaN();
+        double slot_sx = std::numeric_limits<double>::quiet_NaN();
+        double slot_sy = std::numeric_limits<double>::quiet_NaN();
+        if (!match_prior_slot(array, nw, x_arcsec, y_arcsec, min_d2, min_slot,
+                              &slot_x, &slot_y, &slot_sx, &slot_sy)) {
             continue;
         }
-        if (beammap_priors_max_d2 > 0.0 && min_d2 > beammap_priors_max_d2) {
+        if (prior_max_d2 > 0.0 && min_d2 > prior_max_d2) {
             continue;
         }
         n_gate++;
 
-        const double score = cand.snr - beammap_priors_score_lambda * min_d2;
+        const double score = cand.snr - prior_score_lambda * min_d2;
         if (!found || score > best_score || (score == best_score && cand.snr > best_snr)) {
             found = true;
             best_score = score;
@@ -1995,22 +2367,13 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
             best_y_raw = y_arcsec_raw;
             best_x_prior = x_arcsec;
             best_y_prior = y_arcsec;
-            best_slot_x = std::numeric_limits<double>::quiet_NaN();
-            best_slot_y = std::numeric_limits<double>::quiet_NaN();
-            best_slot_sx = std::numeric_limits<double>::quiet_NaN();
-            best_slot_sy = std::numeric_limits<double>::quiet_NaN();
+            best_slot_x = slot_x;
+            best_slot_y = slot_y;
+            best_slot_sx = slot_sx;
+            best_slot_sy = slot_sy;
             if (std::isfinite(center_x) && std::isfinite(center_y)) {
                 set_prior_diag(prior_center_x_col, center_x);
                 set_prior_diag(prior_center_y_col, center_y);
-            }
-            for (const auto &slot : slots) {
-                if (slot.slot_index == min_slot) {
-                    best_slot_x = slot.x_arcsec;
-                    best_slot_y = slot.y_arcsec;
-                    best_slot_sx = slot.sx_arcsec;
-                    best_slot_sy = slot.sy_arcsec;
-                    break;
-                }
             }
         }
     }
@@ -2038,8 +2401,10 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
     set_prior_diag(prior_slot_y_col, best_slot_y);
     set_prior_diag(prior_slot_sx_col, best_slot_sx);
     set_prior_diag(prior_slot_sy_col, best_slot_sy);
-    logger->debug("beammap priors init map={} det={} array={} nw={} row={} col={} snr={} d2={} slot={}",
-                  map_index, map_index, array, nw, init_row, init_col, best_snr, best_d2, best_slot);
+    logger->debug(
+        "beammap priors init map={} det={} array={} nw={} row={} col={} snr={} d2={} slot={} lambda={} max_d2={}",
+        map_index, map_index, array, nw, init_row, init_col, best_snr, best_d2,
+        best_slot, prior_score_lambda, prior_max_d2);
     return true;
 }
 
@@ -2176,9 +2541,20 @@ void Beammap::run_loop() {
                         logger->debug("beammap rfi mask scan {}: no samples masked", ptcs[i].index.data + 1);
                     }
                 }
-                // set weights to a constant value
-                ptcs[i].weights.data.resize(ptcs[i].scans.data.cols());
-                ptcs[i].weights.data.setOnes();
+                const bool use_ptc_weights =
+                    beammap_detector_weighting_mode == "ptc" ||
+                    (beammap_detector_weighting_mode == "ptc_after_iter0" && current_iter > 0);
+                if (use_ptc_weights) {
+                    logger->info("calculating detector-mode PTC weights for scan {} (mode={})",
+                                 ptcs[i].index.data + 1, beammap_detector_weighting_mode);
+                    ptcproc.calc_weights(ptcs[i], calib.apt, telescope);
+                    calib_scans[i] = ptcproc.reset_weights(ptcs[i], calib_scans[i], map_grouping);
+                }
+                else {
+                    // Constant weights remain the safest default for bright beammaps.
+                    ptcs[i].weights.data.resize(ptcs[i].scans.data.cols());
+                    ptcs[i].weights.data.setOnes();
+                }
             }
             else {
                 // calculate weights
@@ -2393,6 +2769,7 @@ void Beammap::run_loop() {
             Eigen::Index iter_fail_prev = 0;
             Eigen::Index iter_fail_prior = 0;
             Eigen::Index iter_fail_blind = 0;
+            Eigen::Index iter_prev_rejected_by_peak = 0;
             Eigen::Index iter_init_amp_zero_prev = 0;
             Eigen::Index iter_init_amp_zero_prior = 0;
             Eigen::Index iter_init_amp_zero_blind = 0;
@@ -2485,6 +2862,72 @@ void Beammap::run_loop() {
                             const double seed_s = omb.signal[i](prev_row_i, prev_col_i);
                             prev_seed_valid = std::isfinite(seed_w) && seed_w > 0.0 &&
                                               std::isfinite(seed_s) && seed_s > 0.0;
+                            if (prev_seed_valid) {
+                                Eigen::Index peak_row = -1;
+                                Eigen::Index peak_col = -1;
+                                double peak_snr = -std::numeric_limits<double>::infinity();
+                                if (find_map_weighted_peak(i, peak_row, peak_col, peak_snr) &&
+                                    peak_row >= 0 && peak_col >= 0 && std::isfinite(peak_snr)) {
+                                    const double prev_snr = seed_s * std::sqrt(seed_w);
+                                    const double dr = static_cast<double>(peak_row) - prev_row;
+                                    const double dc = static_cast<double>(peak_col) - prev_col;
+                                    const double dist_pix = std::sqrt(dr * dr + dc * dc);
+                                    const double min_switch_dist_pix = std::max(1.0, init_fwhm);
+                                    constexpr double min_switch_snr_ratio = 1.25;
+                                    bool prior_allows_switch = true;
+                                    if (can_try_prior) {
+                                        const int array_int = static_cast<int>(maps_to_arrays(i));
+                                        const int nw_int = static_cast<int>(std::lround(calib.apt["nw"](i)));
+                                        const double pix_to_arcsec = RAD_TO_ASEC * omb.pixel_size_rad;
+                                        const double col0 = static_cast<double>(omb.n_cols - 1) / 2.0;
+                                        const double row0 = static_cast<double>(omb.n_rows - 1) / 2.0;
+                                        const double derot_elev_rad = get_prior_derot_elev_rad();
+                                        const double prior_max_d2 = effective_prior_max_d2();
+
+                                        auto prior_compatible = [&](double row, double col, double &d2_out) {
+                                            const double x_raw = pix_to_arcsec * (col - col0);
+                                            const double y_raw = pix_to_arcsec * (row - row0);
+                                            double x_prior = std::numeric_limits<double>::quiet_NaN();
+                                            double y_prior = std::numeric_limits<double>::quiet_NaN();
+                                            d2_out = std::numeric_limits<double>::infinity();
+                                            int slot_index = -1;
+                                            if (!observed_to_prior_frame(array_int, x_raw, y_raw, derot_elev_rad,
+                                                                         x_prior, y_prior, nullptr, nullptr, true)) {
+                                                return false;
+                                            }
+                                            if (!match_prior_slot(array_int, nw_int, x_prior, y_prior,
+                                                                  d2_out, slot_index)) {
+                                                return false;
+                                            }
+                                            static_cast<void>(slot_index);
+                                            return prior_max_d2 <= 0.0 || d2_out <= prior_max_d2;
+                                        };
+
+                                        double prev_prior_d2 = std::numeric_limits<double>::infinity();
+                                        double peak_prior_d2 = std::numeric_limits<double>::infinity();
+                                        const bool prev_prior_ok = prior_compatible(prev_row, prev_col, prev_prior_d2);
+                                        const bool peak_prior_ok = prior_compatible(
+                                            static_cast<double>(peak_row), static_cast<double>(peak_col), peak_prior_d2);
+                                        prior_allows_switch = peak_prior_ok || !prev_prior_ok;
+                                        if (!prior_allows_switch) {
+                                            logger->debug(
+                                                "beammap fit map={} kept previous init over stronger weighted peak because prior d2 prev={} peak={} max_d2={}",
+                                                i, prev_prior_d2, peak_prior_d2, prior_max_d2);
+                                        }
+                                    }
+                                    if (std::isfinite(prev_snr) &&
+                                        peak_snr > min_switch_snr_ratio * prev_snr &&
+                                        dist_pix > min_switch_dist_pix &&
+                                        prior_allows_switch) {
+                                        prev_seed_valid = false;
+                                        iter_prev_rejected_by_peak++;
+                                        logger->debug(
+                                            "beammap fit map={} rejected previous init: current weighted peak row={} col={} snr={} is {} pix from previous row={} col={} snr={}",
+                                            i, peak_row, peak_col, peak_snr, dist_pix,
+                                            prev_row, prev_col, prev_snr);
+                                    }
+                                }
+                            }
                         }
                         if (prev_seed_valid) {
                             init_col = prev_col;
@@ -2668,8 +3111,9 @@ void Beammap::run_loop() {
                 logger->info("beammap fit checkpoint: map={} end good_fit={}", i, good_fits(i));
             }
 
-            logger->info("beammap init summary (iter {}): previous={} prior={} blind={} skipped={}",
-                         current_iter, iter_init_prev, iter_init_prior, iter_init_blind, iter_init_skip);
+            logger->info("beammap init summary (iter {}): previous={} prior={} blind={} skipped={} prev_rejected_by_peak={}",
+                         current_iter, iter_init_prev, iter_init_prior, iter_init_blind, iter_init_skip,
+                         iter_prev_rejected_by_peak);
             logger->info(
                 "beammap fit diagnostics (iter {}): prev fail={}/{} init_amp_zero={}/{} amp_bounds_zero={}/{} | "
                 "prior fail={}/{} init_amp_zero={}/{} amp_bounds_zero={}/{} | "
@@ -2778,7 +3222,7 @@ void Beammap::set_apt_flags() {
         std::string array_name = toltec_io.array_name_map[array_index];
 
         // calculate map standard deviation
-        double map_std_dev = engine_utils::calc_std_dev(omb.signal[i]);
+        double map_std_dev = calc_map_support_stddev(i, true);
         const bool valid_map_std = std::isfinite(map_std_dev) && map_std_dev > 0.0;
 
         // reject non-physical fit results before threshold checks
@@ -3847,7 +4291,7 @@ void Beammap::output() {
             for (Eigen::Index i = 0; i < calib.n_dets; ++i) {
                 const double amp = params(i, 0);
                 const double amp_err = perrors(i, 0);
-                const double rms = engine_utils::calc_std_dev(omb.signal[i]);
+                const double rms = calc_map_support_stddev(i, true);
                 const double npos = static_cast<double>((omb.weight[i].array() > 0.0).count());
                 n_weight_pos(i) = npos;
                 if (std::isfinite(rms) && rms > 0.0) {
@@ -3984,6 +4428,7 @@ void Beammap::output() {
             fit_qc_meta["rfi_mask_sigma_threshold"] = beammap_rfi_mask_sigma_threshold;
             fit_qc_meta["rfi_mask_sigma_floor"] = beammap_rfi_mask_sigma_floor;
             fit_qc_meta["rfi_mask_max_flagged_fraction"] = beammap_rfi_mask_max_flagged_fraction;
+            fit_qc_meta["detector_weighting_mode"] = beammap_detector_weighting_mode;
             fit_qc_meta["rfi_mask_detectors_affected"] =
                 static_cast<int>((apt_or_zero("rfi_masked_scans").array() > 0.0).count());
             fit_qc_meta["scan_band_mask_enabled"] = beammap_scan_band_mask_enabled;
@@ -4005,6 +4450,16 @@ void Beammap::output() {
             fit_qc_meta["beammap_priors_filepath"] = beammap_priors_filepath;
             fit_qc_meta["beammap_priors_centered"] = beammap_soft_priors_are_centered;
             fit_qc_meta["beammap_priors_derotated"] = beammap_soft_priors_are_derotated;
+            fit_qc_meta["beammap_priors_max_d2_iter0"] = beammap_priors_max_d2_iter0;
+            fit_qc_meta["beammap_priors_max_d2_after_iter0"] = beammap_priors_max_d2_after_iter0;
+            fit_qc_meta["beammap_priors_score_lambda_iter0"] = beammap_priors_score_lambda_iter0;
+            fit_qc_meta["beammap_priors_score_lambda_after_iter0"] = beammap_priors_score_lambda_after_iter0;
+            fit_qc_meta["beammap_priors_align_after_iter0"] = beammap_priors_align_after_iter0;
+            fit_qc_meta["beammap_priors_alignment_min_matches"] = beammap_priors_alignment_min_matches;
+            fit_qc_meta["beammap_priors_alignment_max_d2"] = beammap_priors_alignment_max_d2;
+            fit_qc_meta["beammap_priors_alignment_fit_rotation"] = beammap_priors_alignment_fit_rotation;
+            fit_qc_meta["beammap_priors_alignment_max_rotation_deg"] = beammap_priors_alignment_max_rotation_deg;
+            fit_qc_meta["beammap_priors_aligned_arrays"] = static_cast<int>(beammap_prior_array_alignment.size());
 
             std::map<std::string, std::string> fit_qc_units = {
                 {"uid", "N/A"},
@@ -4097,8 +4552,8 @@ void Beammap::output() {
                 {"amp", get_description("amp", "fitted beam amplitude")},
                 {"amp_err", get_description("amp_err", "fitted beam amplitude uncertainty")},
                 {"fit_sig2noise", "fitted amplitude divided by fitted amplitude uncertainty"},
-                {"map_rms", "standard deviation of detector map signal"},
-                {"map_sig2noise", "fitted amplitude divided by detector map rms"},
+                {"map_rms", "standard deviation of positive-weight detector map pixels, excluding fitted source core when possible"},
+                {"map_sig2noise", "fitted amplitude divided by support-only detector map rms"},
                 {"n_weight_pos", "number of detector-map pixels with positive weight"},
                 {"rfi_masked_samples", "number of timestream samples masked by beammap rfi_mask"},
                 {"rfi_masked_scans", "number of scans with at least one sample masked by beammap rfi_mask"},
@@ -4170,12 +4625,12 @@ void Beammap::output() {
             fit_qc_meta["flag2"].push_back("Good=0");
             fit_qc_meta["flag2"].push_back("BadFit=1");
             fit_qc_meta["flag2"].push_back("AzFWHM=2");
-            fit_qc_meta["flag2"].push_back("ElFWHM=3");
-            fit_qc_meta["flag2"].push_back("Sig2Noise=4");
-            fit_qc_meta["flag2"].push_back("Sens=5");
-            fit_qc_meta["flag2"].push_back("Position=6");
-            fit_qc_meta["flag2"].push_back("PriorDist=7");
-            fit_qc_meta["flag2"].push_back("NetworkPos=8");
+            fit_qc_meta["flag2"].push_back("ElFWHM=4");
+            fit_qc_meta["flag2"].push_back("Sig2Noise=8");
+            fit_qc_meta["flag2"].push_back("Sens=16");
+            fit_qc_meta["flag2"].push_back("Position=32");
+            fit_qc_meta["flag2"].push_back("PriorDist=64");
+            fit_qc_meta["flag2"].push_back("NetworkPos=128");
             fit_qc_meta["fit_bound_code"].push_back("bit 0: amp lower");
             fit_qc_meta["fit_bound_code"].push_back("bit 1: amp upper");
             fit_qc_meta["fit_bound_code"].push_back("bit 2: x lower");

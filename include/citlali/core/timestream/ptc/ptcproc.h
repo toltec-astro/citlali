@@ -2222,8 +2222,9 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
         logger->debug("calculating weights using timestream variance");
         const bool use_source_weight_mask =
             mask_radius_arcsec > 0.0 &&
-            !tod_mb.signal.empty() &&
-            fruit_loops_source_valid.size() == static_cast<Eigen::Index>(tod_mb.signal.size());
+            fruit_loops_source_valid.size() > 0 &&
+            fruit_loops_source_lat.size() == fruit_loops_source_valid.size() &&
+            fruit_loops_source_lon.size() == fruit_loops_source_valid.size();
         const double source_mask_radius_rad = mask_radius_arcsec * ASEC_TO_RAD;
 
         if (use_source_weight_mask) {

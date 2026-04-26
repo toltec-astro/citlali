@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <vector>
 
 #include <Eigen/Core>
 #include <Eigen/QR>
@@ -578,8 +579,47 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     // get meshgrid
     auto xy = g.meshgrid(x, y);
 
+    std::vector<double> support_signal_values;
+    std::vector<double> support_weight_values;
+    if constexpr (fit_mode == FitMode::beammap) {
+        support_signal_values.reserve(static_cast<std::size_t>(signal.size()));
+        support_weight_values.reserve(static_cast<std::size_t>(weight.size()));
+        for (Eigen::Index i = 0; i < signal.rows(); ++i) {
+            for (Eigen::Index j = 0; j < signal.cols(); ++j) {
+                const double s = signal(i, j);
+                const double w = weight(i, j);
+                if (std::isfinite(s) && std::isfinite(w) && w > 0.0) {
+                    support_signal_values.push_back(s);
+                    support_weight_values.push_back(w);
+                }
+            }
+        }
+    }
+
     // get map stddev
-    double map_sigma = engine_utils::calc_std_dev(signal);
+    double map_sigma = std::numeric_limits<double>::quiet_NaN();
+    double support_weight_median = 1.0;
+    if constexpr (fit_mode == FitMode::beammap) {
+        if (support_signal_values.size() >= 2) {
+            Eigen::Map<Eigen::VectorXd> support_signal_vec(
+                support_signal_values.data(),
+                static_cast<Eigen::Index>(support_signal_values.size()));
+            map_sigma = engine_utils::calc_std_dev(support_signal_vec);
+        }
+        if (!support_weight_values.empty()) {
+            Eigen::Map<Eigen::VectorXd> support_weight_vec(
+                support_weight_values.data(),
+                static_cast<Eigen::Index>(support_weight_values.size()));
+            support_weight_median = tula::alg::median(support_weight_vec);
+            if (!std::isfinite(support_weight_median) ||
+                support_weight_median <= std::numeric_limits<double>::epsilon()) {
+                support_weight_median = 1.0;
+            }
+        }
+    }
+    else {
+        map_sigma = engine_utils::calc_std_dev(signal);
+    }
     if (!std::isfinite(map_sigma) || map_sigma <= 0.0) {
         map_sigma = 1.0;
     }
@@ -590,14 +630,15 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     // loop through pixels
     for (Eigen::Index i=0; i<weight.rows(); ++i) {
         for (Eigen::Index j=0; j<weight.cols(); ++j) {
-            if (weight(i,j)!=0) {
-                // use map sigma for beammaps
+            const double w = weight(i,j);
+            if (std::isfinite(w) && w > 0.0) {
+                // use support-scaled map sigma for beammaps
                 if constexpr (fit_mode == FitMode::beammap) {
-                    sigma(i,j) = map_sigma;
+                    sigma(i,j) = map_sigma / std::sqrt(w / support_weight_median);
                 }
                 // use weights for pointing
                 else if constexpr (fit_mode == FitMode::pointing) {
-                    sigma(i,j) = 1./sqrt(weight(i,j));
+                    sigma(i,j) = 1./sqrt(w);
                 }
             }
             else {

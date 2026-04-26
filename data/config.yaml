@@ -13,6 +13,8 @@ beammap: # beammap controls (node required, but options ignored if not beammappi
     sigma_threshold: 6.0 # block MAD(diff) threshold in units of detector global MAD(diff)
     sigma_floor: 0.0 # absolute MAD(diff) floor in timestream units (ignored if 0)
     max_flagged_fraction: 0.35 # skip masking for a detector if proposed mask exceeds this fraction of its good samples
+  detector_weighting:
+    mode: const # detector map weights: const, ptc, or ptc_after_iter0
   scan_band_mask: # optional edge-band masking for coherent bad scan legs in detector-grouped beammaps
     enabled: false # identify bad top/bottom map bands and flag the corresponding TOD samples before fitting
     edge_rows: 24 # inspect up to this many rows from each map edge
@@ -31,6 +33,15 @@ beammap: # beammap controls (node required, but options ignored if not beammappi
     min_snr: 0.0 # ignore candidate pixels below this robust map significance (median/MAD, weighted)
     max_d2: 25.0 # prior gating: require nearest-slot Mahalanobis d^2 <= max_d2 (0 disables gate)
     score_lambda: 2.0 # score = snr - score_lambda * d^2
+    max_d2_iter0: 25.0 # iter-0 prior gate; lower and/or raise score_lambda_iter0 for weak sources
+    max_d2_after_iter0: 16.0 # post-iter-0 prior gate after empirical alignment is available
+    score_lambda_iter0: 2.0 # iter-0 prior penalty; weak sources can use a larger value
+    score_lambda_after_iter0: 3.0 # post-iter-0 prior penalty after current-observation alignment
+    align_after_iter0: true # align static slot priors to previous-iteration fits per array
+    alignment_min_matches: 30 # minimum prior-compatible previous fits needed to solve alignment
+    alignment_max_d2: 25.0 # max nearest-slot d^2 for previous fits used in alignment
+    alignment_fit_rotation: true # fit small residual array rotation in the prior frame
+    alignment_max_rotation_deg: 8.0 # reject fitted residual rotations larger than this
     fallback_blind: true # if no prior candidate survives, run blind fit initialization
   flagging: # these parameters control how the beammapping algorithm flags bad detectors (array order for flagging is [1.1, 1.4, 2.0])
     array_lower_fwhm_arcsec: [0,0,0] # lower limits for fitted array fwhm values (used for flagging only)

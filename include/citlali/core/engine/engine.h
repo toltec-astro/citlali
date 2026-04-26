@@ -158,6 +158,9 @@ struct beammapControls {
     double beammap_rfi_mask_sigma_floor = 0.0;
     double beammap_rfi_mask_max_flagged_fraction = 0.35;
 
+    // detector-map sample weighting policy
+    std::string beammap_detector_weighting_mode = "const";
+
     // optional detector-map edge-band masking for coherent bad scan legs
     bool beammap_scan_band_mask_enabled = false;
     int beammap_scan_band_mask_edge_rows = 24;
@@ -177,8 +180,17 @@ struct beammapControls {
     int beammap_priors_candidate_top_n = 64;
     double beammap_priors_min_snr = 0.0;
     double beammap_priors_max_d2 = 25.0;
+    double beammap_priors_max_d2_iter0 = 25.0;
+    double beammap_priors_max_d2_after_iter0 = 25.0;
     double beammap_priors_score_lambda = 2.0;
+    double beammap_priors_score_lambda_iter0 = 2.0;
+    double beammap_priors_score_lambda_after_iter0 = 2.0;
     bool beammap_priors_fallback_blind = true;
+    bool beammap_priors_align_after_iter0 = true;
+    int beammap_priors_alignment_min_matches = 30;
+    double beammap_priors_alignment_max_d2 = 25.0;
+    bool beammap_priors_alignment_fit_rotation = true;
+    double beammap_priors_alignment_max_rotation_deg = 8.0;
 
     // iteration to write out ptcdata
     int beammap_tod_output_iter = 0;
@@ -904,6 +916,12 @@ void Engine::get_mapmaking_config(CT &config) {
     // map reference frame (radec, altaz, galactic)
     get_config_value(config, telescope.pixel_axes, missing_keys, invalid_keys,
                      std::tuple{"mapmaking","pixel_axes"},{"radec","altaz", "galactic"});
+    if (redu_type == "beammap" && telescope.pixel_axes != "altaz") {
+        logger->error(
+            "beammap reductions require mapmaking.pixel_axes='altaz'; got '{}'",
+            telescope.pixel_axes);
+        std::exit(EXIT_FAILURE);
+    }
 
     // get config for omb
     logger->info("getting omb config options");
@@ -1056,6 +1074,13 @@ void Engine::get_beammap_config(CT &config) {
                          {}, {0.0}, {1.0});
     }
 
+    beammap_detector_weighting_mode = "const";
+    if (config.template has_typed<std::string>(std::tuple{"beammap","detector_weighting","mode"})) {
+        get_config_value(config, beammap_detector_weighting_mode, missing_keys, invalid_keys,
+                         std::tuple{"beammap","detector_weighting","mode"},
+                         {"const", "ptc", "ptc_after_iter0"});
+    }
+
     // optional detector-map edge-band masking for coherent bad scan legs
     beammap_scan_band_mask_enabled = false;
     beammap_scan_band_mask_edge_rows = 24;
@@ -1126,8 +1151,17 @@ void Engine::get_beammap_config(CT &config) {
     beammap_priors_candidate_top_n = 64;
     beammap_priors_min_snr = 0.0;
     beammap_priors_max_d2 = 25.0;
+    beammap_priors_max_d2_iter0 = 25.0;
+    beammap_priors_max_d2_after_iter0 = 25.0;
     beammap_priors_score_lambda = 2.0;
+    beammap_priors_score_lambda_iter0 = 2.0;
+    beammap_priors_score_lambda_after_iter0 = 2.0;
     beammap_priors_fallback_blind = true;
+    beammap_priors_align_after_iter0 = true;
+    beammap_priors_alignment_min_matches = 30;
+    beammap_priors_alignment_max_d2 = 25.0;
+    beammap_priors_alignment_fit_rotation = true;
+    beammap_priors_alignment_max_rotation_deg = 8.0;
 
     if (config.template has_typed<bool>(std::tuple{"beammap","priors","enabled"})) {
         get_config_value(config, beammap_priors_enabled, missing_keys, invalid_keys,
@@ -1151,14 +1185,61 @@ void Engine::get_beammap_config(CT &config) {
                          std::tuple{"beammap","priors","max_d2"},
                          {}, {0.0});
     }
+    beammap_priors_max_d2_iter0 = beammap_priors_max_d2;
+    beammap_priors_max_d2_after_iter0 = beammap_priors_max_d2;
     if (config.template has_typed<double>(std::tuple{"beammap","priors","score_lambda"})) {
         get_config_value(config, beammap_priors_score_lambda, missing_keys, invalid_keys,
                          std::tuple{"beammap","priors","score_lambda"},
                          {}, {0.0});
     }
+    beammap_priors_score_lambda_iter0 = beammap_priors_score_lambda;
+    beammap_priors_score_lambda_after_iter0 = beammap_priors_score_lambda;
+    if (config.template has_typed<double>(std::tuple{"beammap","priors","max_d2_iter0"})) {
+        get_config_value(config, beammap_priors_max_d2_iter0, missing_keys, invalid_keys,
+                         std::tuple{"beammap","priors","max_d2_iter0"},
+                         {}, {0.0});
+    }
+    if (config.template has_typed<double>(std::tuple{"beammap","priors","max_d2_after_iter0"})) {
+        get_config_value(config, beammap_priors_max_d2_after_iter0, missing_keys, invalid_keys,
+                         std::tuple{"beammap","priors","max_d2_after_iter0"},
+                         {}, {0.0});
+    }
+    if (config.template has_typed<double>(std::tuple{"beammap","priors","score_lambda_iter0"})) {
+        get_config_value(config, beammap_priors_score_lambda_iter0, missing_keys, invalid_keys,
+                         std::tuple{"beammap","priors","score_lambda_iter0"},
+                         {}, {0.0});
+    }
+    if (config.template has_typed<double>(std::tuple{"beammap","priors","score_lambda_after_iter0"})) {
+        get_config_value(config, beammap_priors_score_lambda_after_iter0, missing_keys, invalid_keys,
+                         std::tuple{"beammap","priors","score_lambda_after_iter0"},
+                         {}, {0.0});
+    }
     if (config.template has_typed<bool>(std::tuple{"beammap","priors","fallback_blind"})) {
         get_config_value(config, beammap_priors_fallback_blind, missing_keys, invalid_keys,
                          std::tuple{"beammap","priors","fallback_blind"});
+    }
+    if (config.template has_typed<bool>(std::tuple{"beammap","priors","align_after_iter0"})) {
+        get_config_value(config, beammap_priors_align_after_iter0, missing_keys, invalid_keys,
+                         std::tuple{"beammap","priors","align_after_iter0"});
+    }
+    if (config.template has_typed<int>(std::tuple{"beammap","priors","alignment_min_matches"})) {
+        get_config_value(config, beammap_priors_alignment_min_matches, missing_keys, invalid_keys,
+                         std::tuple{"beammap","priors","alignment_min_matches"},
+                         {}, {3});
+    }
+    if (config.template has_typed<double>(std::tuple{"beammap","priors","alignment_max_d2"})) {
+        get_config_value(config, beammap_priors_alignment_max_d2, missing_keys, invalid_keys,
+                         std::tuple{"beammap","priors","alignment_max_d2"},
+                         {}, {0.0});
+    }
+    if (config.template has_typed<bool>(std::tuple{"beammap","priors","alignment_fit_rotation"})) {
+        get_config_value(config, beammap_priors_alignment_fit_rotation, missing_keys, invalid_keys,
+                         std::tuple{"beammap","priors","alignment_fit_rotation"});
+    }
+    if (config.template has_typed<double>(std::tuple{"beammap","priors","alignment_max_rotation_deg"})) {
+        get_config_value(config, beammap_priors_alignment_max_rotation_deg, missing_keys, invalid_keys,
+                         std::tuple{"beammap","priors","alignment_max_rotation_deg"},
+                         {}, {0.0});
     }
     if (beammap_priors_enabled && beammap_priors_filepath == "null") {
         logger->warn("beammap.priors.enabled=true but beammap.priors.filepath is null; disabling priors");
@@ -1475,6 +1556,31 @@ void Engine::get_photometry_config(CT &config) {
         // copy flux and uncertainty
         beammap_fluxes_mJy_beam[array] = flux;
         beammap_err_mJy_beam[array] = uncertainty_mJy;
+    }
+
+    if (redu_type == "beammap") {
+        bool valid_flux_config = true;
+        for (auto const& entry : toltec_io.array_name_map) {
+            const auto &arr_name = entry.second;
+            auto flux_it = beammap_fluxes_mJy_beam.find(arr_name);
+            if (flux_it == beammap_fluxes_mJy_beam.end()) {
+                logger->error(
+                    "beammap reductions require a positive source flux for {}; no beammap_source.fluxes entry was found",
+                    arr_name);
+                valid_flux_config = false;
+                continue;
+            }
+            const double flux = flux_it->second;
+            if (!std::isfinite(flux) || flux <= 0.0) {
+                logger->error(
+                    "beammap reductions require positive finite source fluxes; {} value_mJy={}",
+                    arr_name, flux);
+                valid_flux_config = false;
+            }
+        }
+        if (!valid_flux_config) {
+            std::exit(EXIT_FAILURE);
+        }
     }
 }
 
