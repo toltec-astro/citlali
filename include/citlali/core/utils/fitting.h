@@ -31,6 +31,7 @@ public:
     // box around source fit
     double bounding_box_pix;
     double fitting_region_pix;
+    double beammap_fit_radius_fwhm = 0.0;
 
     // fitting limits from config file
     Eigen::VectorXd flux_limits, fwhm_limits;
@@ -65,8 +66,8 @@ public:
         Eigen::Index lower_col = -1;
         Eigen::Index upper_row = -1;
         Eigen::Index upper_col = -1;
-        double map_sigma = std::numeric_limits<double>::quiet_NaN();
-        Eigen::Index sigma_nonzero = 0;
+    double map_sigma = std::numeric_limits<double>::quiet_NaN();
+    Eigen::Index sigma_nonzero = 0;
     };
 
     template <typename Model, typename Derived>
@@ -650,6 +651,25 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     // copy data and sigma within bounding box region
     Eigen::MatrixXd _signal = signal.block(lower_row, lower_col, n_rows, n_cols);
     Eigen::MatrixXd _sigma = sigma.block(lower_row, lower_col, n_rows, n_cols);
+
+    if constexpr (fit_mode == FitMode::beammap) {
+        if (beammap_fit_radius_fwhm > 0.0 && std::isfinite(beammap_fit_radius_fwhm) &&
+            std::isfinite(init_fwhm) && init_fwhm > 0.0) {
+            const double fit_radius_pix = beammap_fit_radius_fwhm * init_fwhm;
+            const double fit_radius2 = fit_radius_pix * fit_radius_pix;
+            for (Eigen::Index row = 0; row < n_rows; ++row) {
+                const double map_row = static_cast<double>(lower_row + row);
+                const double dr = map_row - init_row;
+                for (Eigen::Index col = 0; col < n_cols; ++col) {
+                    const double map_col = static_cast<double>(lower_col + col);
+                    const double dc = map_col - init_col;
+                    if (dr * dr + dc * dc > fit_radius2) {
+                        _sigma(row, col) = 0.0;
+                    }
+                }
+            }
+        }
+    }
 
     // avoid running Ceres on an unconstrained region.
     if ((_sigma.array() > 0.0).count() < n_params) {

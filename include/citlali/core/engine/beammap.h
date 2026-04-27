@@ -464,6 +464,7 @@ void Beammap::setup() {
     calib.apt_meta["rfi_mask_sigma_floor"] = beammap_rfi_mask_sigma_floor;
     calib.apt_meta["rfi_mask_max_flagged_fraction"] = beammap_rfi_mask_max_flagged_fraction;
     calib.apt_meta["detector_weighting_mode"] = beammap_detector_weighting_mode;
+    calib.apt_meta["beammap_fit_radius_fwhm"] = beammap_fit_radius_fwhm;
     beammap_soft_prior_slots.clear();
     beammap_soft_priors_loaded = false;
     beammap_soft_priors_are_centered = false;
@@ -4546,6 +4547,7 @@ void Beammap::output() {
             fit_qc_meta["rfi_mask_sigma_floor"] = beammap_rfi_mask_sigma_floor;
             fit_qc_meta["rfi_mask_max_flagged_fraction"] = beammap_rfi_mask_max_flagged_fraction;
             fit_qc_meta["detector_weighting_mode"] = beammap_detector_weighting_mode;
+            fit_qc_meta["beammap_fit_radius_fwhm"] = beammap_fit_radius_fwhm;
             fit_qc_meta["rfi_mask_detectors_affected"] =
                 static_cast<int>((apt_or_zero("rfi_masked_scans").array() > 0.0).count());
             fit_qc_meta["scan_band_mask_enabled"] = beammap_scan_band_mask_enabled;

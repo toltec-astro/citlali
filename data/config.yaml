@@ -15,6 +15,8 @@ beammap: # beammap controls (node required, but options ignored if not beammappi
     max_flagged_fraction: 0.35 # skip masking for a detector if proposed mask exceeds this fraction of its good samples
   detector_weighting:
     mode: const # detector map weights: const, ptc, or ptc_after_iter0
+  fitting:
+    fit_radius_fwhm: 0.0 # circular residual support radius for beammap Gaussian fits, in nominal FWHM units (ignored if <=0)
   scan_band_mask: # optional edge-band masking for coherent bad scan legs in detector-grouped beammaps
     enabled: false # identify bad top/bottom map bands and flag the corresponding TOD samples before fitting
     edge_rows: 24 # inspect up to this many rows from each map edge

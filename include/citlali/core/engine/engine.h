@@ -161,6 +161,9 @@ struct beammapControls {
     // detector-map sample weighting policy
     std::string beammap_detector_weighting_mode = "const";
 
+    // optional circular residual support for beammap Gaussian fits, in nominal FWHM units
+    double beammap_fit_radius_fwhm = 0.0;
+
     // optional detector-map edge-band masking for coherent bad scan legs
     bool beammap_scan_band_mask_enabled = false;
     int beammap_scan_band_mask_edge_rows = 24;
@@ -1083,6 +1086,14 @@ void Engine::get_beammap_config(CT &config) {
                          std::tuple{"beammap","detector_weighting","mode"},
                          {"const", "ptc", "ptc_after_iter0"});
     }
+
+    beammap_fit_radius_fwhm = 0.0;
+    if (config.template has_typed<double>(std::tuple{"beammap","fitting","fit_radius_fwhm"})) {
+        get_config_value(config, beammap_fit_radius_fwhm, missing_keys, invalid_keys,
+                         std::tuple{"beammap","fitting","fit_radius_fwhm"},
+                         {}, {0.0});
+    }
+    map_fitter.beammap_fit_radius_fwhm = beammap_fit_radius_fwhm;
 
     // optional detector-map edge-band masking for coherent bad scan legs
     beammap_scan_band_mask_enabled = false;
