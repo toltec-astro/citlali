@@ -188,6 +188,8 @@ struct beammapControls {
     bool beammap_priors_fallback_blind = true;
     bool beammap_priors_align_after_iter0 = true;
     std::string beammap_priors_alignment_scope = "array";
+    std::string beammap_priors_alignment_common_support = "all";
+    double beammap_priors_alignment_common_support_quantile = 0.02;
     int beammap_priors_alignment_min_matches = 30;
     double beammap_priors_alignment_max_d2 = 25.0;
     bool beammap_priors_alignment_fit_rotation = true;
@@ -1160,6 +1162,8 @@ void Engine::get_beammap_config(CT &config) {
     beammap_priors_fallback_blind = true;
     beammap_priors_align_after_iter0 = true;
     beammap_priors_alignment_scope = "array";
+    beammap_priors_alignment_common_support = "all";
+    beammap_priors_alignment_common_support_quantile = 0.02;
     beammap_priors_alignment_min_matches = 30;
     beammap_priors_alignment_max_d2 = 25.0;
     beammap_priors_alignment_fit_rotation = true;
@@ -1228,6 +1232,16 @@ void Engine::get_beammap_config(CT &config) {
         get_config_value(config, beammap_priors_alignment_scope, missing_keys, invalid_keys,
                          std::tuple{"beammap","priors","alignment_scope"},
                          {"array", "common"});
+    }
+    if (config.template has_typed<std::string>(std::tuple{"beammap","priors","alignment_common_support"})) {
+        get_config_value(config, beammap_priors_alignment_common_support, missing_keys, invalid_keys,
+                         std::tuple{"beammap","priors","alignment_common_support"},
+                         {"all", "overlap_box"});
+    }
+    if (config.template has_typed<double>(std::tuple{"beammap","priors","alignment_common_support_quantile"})) {
+        get_config_value(config, beammap_priors_alignment_common_support_quantile, missing_keys, invalid_keys,
+                         std::tuple{"beammap","priors","alignment_common_support_quantile"},
+                         {}, {0.0, 0.45});
     }
     if (config.template has_typed<int>(std::tuple{"beammap","priors","alignment_min_matches"})) {
         get_config_value(config, beammap_priors_alignment_min_matches, missing_keys, invalid_keys,

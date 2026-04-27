@@ -495,6 +495,9 @@ void Beammap::setup() {
     calib.apt_meta["beammap_priors_fallback_blind"] = beammap_priors_fallback_blind;
     calib.apt_meta["beammap_priors_align_after_iter0"] = beammap_priors_align_after_iter0;
     calib.apt_meta["beammap_priors_alignment_scope"] = beammap_priors_alignment_scope;
+    calib.apt_meta["beammap_priors_alignment_common_support"] = beammap_priors_alignment_common_support;
+    calib.apt_meta["beammap_priors_alignment_common_support_quantile"] =
+        beammap_priors_alignment_common_support_quantile;
     calib.apt_meta["beammap_priors_alignment_min_matches"] = beammap_priors_alignment_min_matches;
     calib.apt_meta["beammap_priors_alignment_max_d2"] = beammap_priors_alignment_max_d2;
     calib.apt_meta["beammap_priors_alignment_fit_rotation"] = beammap_priors_alignment_fit_rotation;
@@ -2180,8 +2183,88 @@ void Beammap::update_prior_frame_estimates() {
         };
 
         if (beammap_priors_alignment_scope == "common") {
+            auto common_pairs = all_pairs;
+            if (beammap_priors_alignment_common_support == "overlap_box" &&
+                pairs_by_array.size() >= 2) {
+                auto quantile = [](std::vector<double> values, double q) {
+                    if (values.empty()) {
+                        return std::numeric_limits<double>::quiet_NaN();
+                    }
+                    q = std::clamp(q, 0.0, 1.0);
+                    std::sort(values.begin(), values.end());
+                    const double pos = q * static_cast<double>(values.size() - 1);
+                    const auto lo = static_cast<std::size_t>(std::floor(pos));
+                    const auto hi = static_cast<std::size_t>(std::ceil(pos));
+                    if (lo == hi) {
+                        return values[lo];
+                    }
+                    const double frac = pos - static_cast<double>(lo);
+                    return values[lo] * (1.0 - frac) + values[hi] * frac;
+                };
+
+                const double q_low = beammap_priors_alignment_common_support_quantile;
+                const double q_high = 1.0 - beammap_priors_alignment_common_support_quantile;
+                double overlap_x_low = -std::numeric_limits<double>::infinity();
+                double overlap_x_high = std::numeric_limits<double>::infinity();
+                double overlap_y_low = -std::numeric_limits<double>::infinity();
+                double overlap_y_high = std::numeric_limits<double>::infinity();
+                bool overlap_valid = true;
+
+                for (const auto &[array, pairs] : pairs_by_array) {
+                    static_cast<void>(array);
+                    std::vector<double> xs;
+                    std::vector<double> ys;
+                    xs.reserve(pairs.size());
+                    ys.reserve(pairs.size());
+                    for (const auto &pair : pairs) {
+                        if (std::isfinite(pair.slot_x) && std::isfinite(pair.slot_y)) {
+                            xs.push_back(pair.slot_x);
+                            ys.push_back(pair.slot_y);
+                        }
+                    }
+                    const double x_low = quantile(xs, q_low);
+                    const double x_high = quantile(xs, q_high);
+                    const double y_low = quantile(ys, q_low);
+                    const double y_high = quantile(ys, q_high);
+                    if (!(std::isfinite(x_low) && std::isfinite(x_high) &&
+                          std::isfinite(y_low) && std::isfinite(y_high))) {
+                        overlap_valid = false;
+                        break;
+                    }
+                    overlap_x_low = std::max(overlap_x_low, x_low);
+                    overlap_x_high = std::min(overlap_x_high, x_high);
+                    overlap_y_low = std::max(overlap_y_low, y_low);
+                    overlap_y_high = std::min(overlap_y_high, y_high);
+                }
+
+                if (overlap_valid && overlap_x_low < overlap_x_high &&
+                    overlap_y_low < overlap_y_high) {
+                    std::vector<PriorPair> filtered_pairs;
+                    filtered_pairs.reserve(all_pairs.size());
+                    for (const auto &pair : all_pairs) {
+                        if (pair.slot_x >= overlap_x_low && pair.slot_x <= overlap_x_high &&
+                            pair.slot_y >= overlap_y_low && pair.slot_y <= overlap_y_high) {
+                            filtered_pairs.push_back(pair);
+                        }
+                    }
+                    if (filtered_pairs.size() >= static_cast<std::size_t>(beammap_priors_alignment_min_matches)) {
+                        common_pairs.swap(filtered_pairs);
+                    }
+                    logger->info(
+                        "beammap prior common alignment overlap_box (iter {}): q={} x=[{}, {}] y=[{}, {}] kept={}/{}",
+                        current_iter, beammap_priors_alignment_common_support_quantile,
+                        overlap_x_low, overlap_x_high, overlap_y_low, overlap_y_high,
+                        common_pairs.size(), all_pairs.size());
+                }
+                else {
+                    logger->debug(
+                        "beammap prior common alignment overlap_box skipped: invalid overlap x=[{}, {}] y=[{}, {}]",
+                        overlap_x_low, overlap_x_high, overlap_y_low, overlap_y_high);
+                }
+            }
+
             PriorArrayAlignment alignment;
-            if (fit_prior_alignment(all_pairs, "scope=common", alignment)) {
+            if (fit_prior_alignment(common_pairs, "scope=common", alignment)) {
                 for (int array : arrays_with_alignment_pairs) {
                     beammap_prior_array_alignment[array] = alignment;
                 }
@@ -4490,6 +4573,10 @@ void Beammap::output() {
             fit_qc_meta["beammap_priors_score_lambda_after_iter0"] = beammap_priors_score_lambda_after_iter0;
             fit_qc_meta["beammap_priors_align_after_iter0"] = beammap_priors_align_after_iter0;
             fit_qc_meta["beammap_priors_alignment_scope"] = beammap_priors_alignment_scope;
+            fit_qc_meta["beammap_priors_alignment_common_support"] =
+                beammap_priors_alignment_common_support;
+            fit_qc_meta["beammap_priors_alignment_common_support_quantile"] =
+                beammap_priors_alignment_common_support_quantile;
             fit_qc_meta["beammap_priors_alignment_min_matches"] = beammap_priors_alignment_min_matches;
             fit_qc_meta["beammap_priors_alignment_max_d2"] = beammap_priors_alignment_max_d2;
             fit_qc_meta["beammap_priors_alignment_fit_rotation"] = beammap_priors_alignment_fit_rotation;

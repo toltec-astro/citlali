@@ -39,6 +39,8 @@ beammap: # beammap controls (node required, but options ignored if not beammappi
     score_lambda_after_iter0: 3.0 # post-iter-0 prior penalty after current-observation alignment
     align_after_iter0: true # align static slot priors to previous-iteration fits
     alignment_scope: array # alignment transform scope: array or common
+    alignment_common_support: all # common-scope fit support: all or overlap_box
+    alignment_common_support_quantile: 0.02 # per-array edge quantile trimmed before overlap_box intersection
     alignment_min_matches: 30 # minimum prior-compatible previous fits needed to solve alignment
     alignment_max_d2: 25.0 # max nearest-slot d^2 for previous fits used in alignment
     alignment_fit_rotation: true # fit small residual array rotation in the prior frame
