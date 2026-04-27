@@ -187,6 +187,7 @@ struct beammapControls {
     double beammap_priors_score_lambda_after_iter0 = 2.0;
     bool beammap_priors_fallback_blind = true;
     bool beammap_priors_align_after_iter0 = true;
+    std::string beammap_priors_alignment_scope = "array";
     int beammap_priors_alignment_min_matches = 30;
     double beammap_priors_alignment_max_d2 = 25.0;
     bool beammap_priors_alignment_fit_rotation = true;
@@ -1158,6 +1159,7 @@ void Engine::get_beammap_config(CT &config) {
     beammap_priors_score_lambda_after_iter0 = 2.0;
     beammap_priors_fallback_blind = true;
     beammap_priors_align_after_iter0 = true;
+    beammap_priors_alignment_scope = "array";
     beammap_priors_alignment_min_matches = 30;
     beammap_priors_alignment_max_d2 = 25.0;
     beammap_priors_alignment_fit_rotation = true;
@@ -1221,6 +1223,11 @@ void Engine::get_beammap_config(CT &config) {
     if (config.template has_typed<bool>(std::tuple{"beammap","priors","align_after_iter0"})) {
         get_config_value(config, beammap_priors_align_after_iter0, missing_keys, invalid_keys,
                          std::tuple{"beammap","priors","align_after_iter0"});
+    }
+    if (config.template has_typed<std::string>(std::tuple{"beammap","priors","alignment_scope"})) {
+        get_config_value(config, beammap_priors_alignment_scope, missing_keys, invalid_keys,
+                         std::tuple{"beammap","priors","alignment_scope"},
+                         {"array", "common"});
     }
     if (config.template has_typed<int>(std::tuple{"beammap","priors","alignment_min_matches"})) {
         get_config_value(config, beammap_priors_alignment_min_matches, missing_keys, invalid_keys,

@@ -494,6 +494,7 @@ void Beammap::setup() {
     calib.apt_meta["beammap_priors_score_lambda_after_iter0"] = beammap_priors_score_lambda_after_iter0;
     calib.apt_meta["beammap_priors_fallback_blind"] = beammap_priors_fallback_blind;
     calib.apt_meta["beammap_priors_align_after_iter0"] = beammap_priors_align_after_iter0;
+    calib.apt_meta["beammap_priors_alignment_scope"] = beammap_priors_alignment_scope;
     calib.apt_meta["beammap_priors_alignment_min_matches"] = beammap_priors_alignment_min_matches;
     calib.apt_meta["beammap_priors_alignment_max_d2"] = beammap_priors_alignment_max_d2;
     calib.apt_meta["beammap_priors_alignment_fit_rotation"] = beammap_priors_alignment_fit_rotation;
@@ -2031,6 +2032,8 @@ void Beammap::update_prior_frame_estimates() {
             double slot_y = 0.0;
         };
         std::map<int, std::vector<PriorPair>> pairs_by_array;
+        std::vector<PriorPair> all_pairs;
+        std::set<int> arrays_with_alignment_pairs;
         const double derot_elev_rad = get_prior_derot_elev_rad();
 
         for (Eigen::Index i = 0; i < n_maps; ++i) {
@@ -2067,15 +2070,20 @@ void Beammap::update_prior_frame_estimates() {
             if (beammap_priors_alignment_max_d2 > 0.0 && d2 > beammap_priors_alignment_max_d2) {
                 continue;
             }
-            pairs_by_array[array].push_back({x_prior, y_prior, slot_x, slot_y});
+            PriorPair pair{x_prior, y_prior, slot_x, slot_y};
+            pairs_by_array[array].push_back(pair);
+            all_pairs.push_back(pair);
+            arrays_with_alignment_pairs.insert(array);
             n_alignment_matches++;
         }
 
-        for (auto &[array, pairs] : pairs_by_array) {
+        auto fit_prior_alignment = [&](const std::vector<PriorPair> &pairs,
+                                       const std::string &label,
+                                       PriorArrayAlignment &alignment) {
             if (pairs.size() < static_cast<std::size_t>(beammap_priors_alignment_min_matches)) {
-                logger->debug("beammap prior alignment skipped array={} matches={} min_matches={}",
-                              array, pairs.size(), beammap_priors_alignment_min_matches);
-                continue;
+                logger->debug("beammap prior alignment skipped {} matches={} min_matches={}",
+                              label, pairs.size(), beammap_priors_alignment_min_matches);
+                return false;
             }
 
             std::vector<double> dx_vals;
@@ -2126,8 +2134,8 @@ void Beammap::update_prior_frame_estimates() {
                 const double max_theta = beammap_priors_alignment_max_rotation_deg * DEG_TO_RAD;
                 if (!std::isfinite(theta) || std::abs(theta) > max_theta) {
                     logger->debug(
-                        "beammap prior alignment array={} rejected residual rotation {} deg (limit={} deg)",
-                        array, theta * RAD_TO_DEG, beammap_priors_alignment_max_rotation_deg);
+                        "beammap prior alignment {} rejected residual rotation {} deg (limit={} deg)",
+                        label, theta * RAD_TO_DEG, beammap_priors_alignment_max_rotation_deg);
                     theta = 0.0;
                 }
             }
@@ -2157,10 +2165,9 @@ void Beammap::update_prior_frame_estimates() {
             }
             const double rms = std::sqrt(rss / static_cast<double>(pairs.size()));
             if (!(std::isfinite(tx) && std::isfinite(ty) && std::isfinite(rms))) {
-                continue;
+                return false;
             }
 
-            PriorArrayAlignment alignment;
             alignment.valid = true;
             alignment.cos_theta = cos_theta;
             alignment.sin_theta = sin_theta;
@@ -2169,12 +2176,35 @@ void Beammap::update_prior_frame_estimates() {
             alignment.dy_arcsec = ty;
             alignment.n_matches = static_cast<Eigen::Index>(pairs.size());
             alignment.rms_arcsec = rms;
-            beammap_prior_array_alignment[array] = alignment;
+            return true;
+        };
 
-            logger->info(
-                "beammap prior empirical alignment (iter {} array={}): matches={} dx={} dy={} rot_deg={} rms={}",
-                current_iter, array, alignment.n_matches, alignment.dx_arcsec,
-                alignment.dy_arcsec, alignment.theta_rad * RAD_TO_DEG, alignment.rms_arcsec);
+        if (beammap_priors_alignment_scope == "common") {
+            PriorArrayAlignment alignment;
+            if (fit_prior_alignment(all_pairs, "scope=common", alignment)) {
+                for (int array : arrays_with_alignment_pairs) {
+                    beammap_prior_array_alignment[array] = alignment;
+                }
+                logger->info(
+                    "beammap prior empirical alignment (iter {} scope=common): arrays={} matches={} dx={} dy={} rot_deg={} rms={}",
+                    current_iter, arrays_with_alignment_pairs.size(), alignment.n_matches,
+                    alignment.dx_arcsec, alignment.dy_arcsec,
+                    alignment.theta_rad * RAD_TO_DEG, alignment.rms_arcsec);
+            }
+        }
+        else {
+            for (auto &[array, pairs] : pairs_by_array) {
+                PriorArrayAlignment alignment;
+                if (!fit_prior_alignment(pairs, fmt::format("array={}", array), alignment)) {
+                    continue;
+                }
+                beammap_prior_array_alignment[array] = alignment;
+
+                logger->info(
+                    "beammap prior empirical alignment (iter {} array={}): matches={} dx={} dy={} rot_deg={} rms={}",
+                    current_iter, array, alignment.n_matches, alignment.dx_arcsec,
+                    alignment.dy_arcsec, alignment.theta_rad * RAD_TO_DEG, alignment.rms_arcsec);
+            }
         }
     }
 
@@ -4459,6 +4489,7 @@ void Beammap::output() {
             fit_qc_meta["beammap_priors_score_lambda_iter0"] = beammap_priors_score_lambda_iter0;
             fit_qc_meta["beammap_priors_score_lambda_after_iter0"] = beammap_priors_score_lambda_after_iter0;
             fit_qc_meta["beammap_priors_align_after_iter0"] = beammap_priors_align_after_iter0;
+            fit_qc_meta["beammap_priors_alignment_scope"] = beammap_priors_alignment_scope;
             fit_qc_meta["beammap_priors_alignment_min_matches"] = beammap_priors_alignment_min_matches;
             fit_qc_meta["beammap_priors_alignment_max_d2"] = beammap_priors_alignment_max_d2;
             fit_qc_meta["beammap_priors_alignment_fit_rotation"] = beammap_priors_alignment_fit_rotation;
