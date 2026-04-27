@@ -4306,7 +4306,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         }
 
         // write noise maps
-        if (!mb->noise.empty()) {
+        if (!mb->noise.empty() && !noise_fits_io->empty()) {
             if (map_index < 0 || map_index >= static_cast<Eigen::Index>(noise_fits_io->size())) {
                 logger->error("write_maps noise file index out of range: map_index={} noise_fits_io_size={} map_i={}",
                               static_cast<long long>(map_index),
@@ -6020,7 +6020,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         add_phdu(f_io, pmb, i);
 
         // add primary hdu to noise maps
-        if (!pmb->noise.empty()) {
+        if (!pmb->noise.empty() && !n_io->empty()) {
             add_phdu(n_io, pmb, i);
         }
     }

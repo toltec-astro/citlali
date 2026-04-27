@@ -465,7 +465,7 @@ void Lali::output() {
                     add_phdu(f_io, mb, i);
 
                     // add primary hdu to noise maps
-                    if (!mb->noise.empty()) {
+                    if (!mb->noise.empty() && !n_io->empty()) {
                         logger->debug("adding primary header to noise file {}",i);
                         add_phdu(n_io, mb, i);
                     }

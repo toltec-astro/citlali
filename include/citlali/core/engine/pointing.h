@@ -641,7 +641,7 @@ void Pointing::output() {
                     // add primary hdu
                     add_phdu(f_io, mb, i);
 
-                    if (!mb->noise.empty()) {
+                    if (!mb->noise.empty() && !n_io->empty()) {
                         add_phdu(n_io, mb, i);
                     }
                 }

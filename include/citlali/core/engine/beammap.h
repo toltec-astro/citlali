@@ -4834,7 +4834,7 @@ void Beammap::output() {
                     logger->debug("adding primary header to file {}",i);
                     add_phdu(f_io, mb, i);
 
-                    if (!mb->noise.empty()) {
+                    if (!mb->noise.empty() && !n_io->empty()) {
                         logger->debug("adding primary header to noise file {}",i);
                         add_phdu(n_io, mb, i);
                     }
