@@ -1477,6 +1477,19 @@ void TimeOrderedDataProc<EngineType>::coadd() {
             auto cmb_coverage_block = engine().cmb.coverage.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols);
             cmb_coverage_block += engine().omb.coverage.at(i);
         }
+
+        if (!engine().cmb.noise.empty() && !engine().omb.noise.empty()) {
+            for (Eigen::Index n = 0; n < engine().cmb.n_noise; ++n) {
+                Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> cmb_noise_matrix(
+                    engine().cmb.noise.at(i).data() + n * engine().cmb.n_rows * engine().cmb.n_cols,
+                    engine().cmb.n_rows, engine().cmb.n_cols);
+                Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> omb_noise_matrix(
+                    engine().omb.noise.at(i).data() + n * engine().omb.n_rows * engine().omb.n_cols,
+                    engine().omb.n_rows, engine().omb.n_cols);
+                auto cmb_noise_block = cmb_noise_matrix.block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols);
+                cmb_noise_block += (omb_noise_matrix.array() * engine().omb.weight.at(i).array()).matrix();
+            }
+        }
     }
 }
 

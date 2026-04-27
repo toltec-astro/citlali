@@ -342,8 +342,8 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                         map_buffer_t &omb, map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
                         std::string &pixel_axes, apt_t &apt, double d_fsmp, bool run_omb, bool run_noise) {
 
-    const bool use_cmb = !cmb.noise.empty();
     const bool use_omb = !omb.noise.empty();
+    const bool use_cmb = !cmb.noise.empty() && !use_omb;
     const bool run_kernel = !omb.kernel.empty();
     const bool run_coverage = !omb.coverage.empty();
     const bool run_hwpr = in.hwpr_angle.data.size()!=0;
@@ -748,8 +748,8 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                         map_buffer_t &omb, map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
                         std::string &pixel_axes, apt_t &apt, double d_fsmp, bool run_omb, bool run_noise) {
 
-    const bool use_cmb = !cmb.noise.empty();
     const bool use_omb = !omb.noise.empty();
+    const bool use_cmb = !cmb.noise.empty() && !use_omb;
     const bool run_kernel = !omb.kernel.empty();
     const bool run_coverage = !omb.coverage.empty();
     const bool run_hwpr = in.hwpr_angle.data.size()!=0;

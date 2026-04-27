@@ -895,11 +895,10 @@ int run(const rc_t &rc) {
                             todproc.allocate_omb(map_extents[i], map_coords[i]);
 
                             // make noise maps for observation map buffer
-                            if (!todproc.engine().run_coadd) {
-                                if (todproc.engine().run_noise) {
-                                    logger->info("allocating obs noise maps");
-                                    todproc.allocate_nmb(todproc.engine().omb);
-                                }
+                            if (todproc.engine().run_noise &&
+                                (!todproc.engine().run_coadd || todproc.engine().map_method == "jinc")) {
+                                logger->info("allocating obs noise maps");
+                                todproc.allocate_nmb(todproc.engine().omb);
                             }
                         }
 
