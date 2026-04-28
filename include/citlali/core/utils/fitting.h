@@ -92,6 +92,102 @@ auto mapFitter::ceres_fit(const Model &model,
                           const typename Model::DataType &sigma,
                           const Eigen::DenseBase<Derived> &limits,
                           bool use_ceres_covariance) {
+    auto flush_logger = [&]() {
+        if (logger) {
+            logger->flush();
+        }
+    };
+    auto log_and_flush_info = [&](const std::string &msg) {
+        logger->info(msg);
+        flush_logger();
+    };
+    auto log_and_flush_warn = [&](const std::string &msg) {
+        logger->warn(msg);
+        flush_logger();
+    };
+    auto matrix_stats = [](const auto &m) {
+        struct Stats {
+            Eigen::Index finite = 0;
+            Eigen::Index positive = 0;
+            double min = std::numeric_limits<double>::quiet_NaN();
+            double max = std::numeric_limits<double>::quiet_NaN();
+        };
+        Stats stats;
+        for (Eigen::Index i = 0; i < m.size(); ++i) {
+            const double v = *(m.derived().data() + i);
+            if (std::isfinite(v)) {
+                if (stats.finite == 0) {
+                    stats.min = v;
+                    stats.max = v;
+                }
+                else {
+                    stats.min = std::min(stats.min, v);
+                    stats.max = std::max(stats.max, v);
+                }
+                if (v > 0.0) {
+                    ++stats.positive;
+                }
+                ++stats.finite;
+            }
+        }
+        return stats;
+    };
+
+    const Eigen::Index expected_values = xy_data.rows();
+    const Eigen::Index z_values = z_data.size();
+    const Eigen::Index sigma_values = sigma.size();
+    const bool preflight_ok =
+        expected_values > 0 &&
+        xy_data.cols() == Model::DimensionsAtCompileTime &&
+        z_values == expected_values &&
+        sigma_values == expected_values &&
+        init_params.size() == model.params.size() &&
+        limits.rows() == init_params.size() &&
+        limits.cols() == 2;
+    const auto xy_stats = matrix_stats(xy_data);
+    const auto z_stats = matrix_stats(z_data);
+    const auto sigma_stats = matrix_stats(sigma);
+
+    logger->info(
+        "ceres_fit preflight: xy={}x{} z={}x{} sigma={}x{} values={} expected={} params={} model_params={} limits={}x{} "
+        "ptrs xy={} z={} sigma={} init={} limits={} finite xy={}/{} z={}/{} sigma={}/{} sigma_pos={} "
+        "ranges xy=[{}, {}] z=[{}, {}] sigma=[{}, {}]",
+        xy_data.rows(), xy_data.cols(),
+        z_data.rows(), z_data.cols(),
+        sigma.rows(), sigma.cols(),
+        z_values, expected_values,
+        init_params.size(), model.params.size(),
+        limits.rows(), limits.cols(),
+        static_cast<const void*>(xy_data.data()),
+        static_cast<const void*>(z_data.data()),
+        static_cast<const void*>(sigma.data()),
+        static_cast<const void*>(init_params.data()),
+        static_cast<const void*>(limits.derived().data()),
+        xy_stats.finite, xy_data.size(),
+        z_stats.finite, z_data.size(),
+        sigma_stats.finite, sigma.size(),
+        sigma_stats.positive,
+        xy_stats.min, xy_stats.max,
+        z_stats.min, z_stats.max,
+        sigma_stats.min, sigma_stats.max);
+    flush_logger();
+
+    if (!preflight_ok || xy_stats.finite != xy_data.size() ||
+        z_stats.finite != z_data.size() || sigma_stats.finite != sigma.size() ||
+        sigma_stats.positive < init_params.size()) {
+        log_and_flush_warn(
+            fmt::format("ceres_fit preflight failed: ok={} xy_finite={}/{} z_finite={}/{} sigma_finite={}/{} sigma_pos={} params={}",
+                        preflight_ok,
+                        xy_stats.finite, xy_data.size(),
+                        z_stats.finite, z_data.size(),
+                        sigma_stats.finite, sigma.size(),
+                        sigma_stats.positive,
+                        init_params.size()));
+        Eigen::VectorXd p = Eigen::VectorXd::Zero(init_params.size());
+        Eigen::VectorXd e = Eigen::VectorXd::Zero(init_params.size());
+        return std::tuple<Eigen::VectorXd, Eigen::VectorXd, bool>(p, e, false);
+    }
+
     // fitter
     using Fitter = CeresAutoDiffFitter<Model>;
     Fitter* fitter = new Fitter(&model, z_data.size());
@@ -107,12 +203,15 @@ auto mapFitter::ceres_fit(const Model &model,
     logger->info("ceres_fit begin: values={} params={} fit_angle={} sigma_nonzero={}/{}",
                  z_data.size(), init_params.size(), fit_angle,
                  (_s.array() > 0).count(), _s.size());
+    flush_logger();
 
     // define cost function
     logger->info("ceres_fit checkpoint: constructing AutoDiffCostFunction values={}", fitter->values());
+    flush_logger();
     CostFunction* cost_function =
         new AutoDiffCostFunction<Fitter, Fitter::ValuesAtCompileTime, Fitter::InputsAtCompileTime>(fitter, fitter->values());
     logger->info("ceres_fit checkpoint: AutoDiffCostFunction constructed ptr={}", static_cast<const void*>(cost_function));
+    flush_logger();
 
     // parameter vector
     Eigen::VectorXd params(init_params);
@@ -124,24 +223,36 @@ auto mapFitter::ceres_fit(const Model &model,
                  params.size() > 3 ? params(3) : 0.0,
                  params.size() > 4 ? params(4) : 0.0,
                  params.size() > 5 ? params(5) : 0.0);
-    logger->info("ceres_fit checkpoint: createProblem start");
-    auto problem = fitter->createProblem(params.data());
-    logger->info("ceres_fit checkpoint: createProblem done ptr={}", static_cast<const void*>(problem.get()));
+    flush_logger();
+    for (int i = 0; i < limits.rows(); ++i) {
+        logger->info("ceres_fit bounds preflight[{}]=[{}, {}] init={}",
+                     i, limits(i, 0), limits(i, 1), params(i));
+    }
+    flush_logger();
+    logger->info("ceres_fit checkpoint: Problem construct start");
+    flush_logger();
+    ceres::Problem problem;
+    logger->info("ceres_fit checkpoint: Problem construct done ptr={}", static_cast<const void*>(&problem));
+    flush_logger();
 
     // including CauchyLoss(0.5) leads to large covariances.
     logger->info("ceres_fit checkpoint: AddResidualBlock start");
-    problem->AddResidualBlock(cost_function, nullptr, params.data());
+    flush_logger();
+    problem.AddResidualBlock(cost_function, nullptr, params.data());
     logger->info("ceres_fit checkpoint: AddResidualBlock done");
+    flush_logger();
     //problem->AddResidualBlock(cost_function, new ceres::CauchyLoss(0.5), params.data());
 
     // set limits
     logger->info("ceres_fit checkpoint: SetParameterBounds start rows={}", limits.rows());
+    flush_logger();
     for (int i=0; i<limits.rows(); ++i) {
         logger->debug("ceres_fit bounds[{}]=[{}, {}]", i, limits(i,0), limits(i,1));
-        problem->SetParameterLowerBound(params.data(), i, limits(i,0));
-        problem->SetParameterUpperBound(params.data(), i, limits(i,1));
+        problem.SetParameterLowerBound(params.data(), i, limits(i,0));
+        problem.SetParameterUpperBound(params.data(), i, limits(i,1));
     }
     logger->info("ceres_fit checkpoint: SetParameterBounds done");
+    flush_logger();
 
     // vector to store indices of parameters to keep constant
     if (!fit_angle) {
@@ -150,12 +261,43 @@ auto mapFitter::ceres_fit(const Model &model,
         // mark parameter as constant
         if (sspv.size() > 0 ){
             logger->info("ceres_fit checkpoint: SubsetParameterization start constant_index={}", sspv.front());
+            flush_logger();
             ceres::SubsetParameterization *pcssp
                     = new ceres::SubsetParameterization(limits.rows(), sspv);
             logger->info("ceres_fit checkpoint: SubsetParameterization constructed ptr={}", static_cast<const void*>(pcssp));
-            problem->SetParameterization(params.data(), pcssp);
+            flush_logger();
+            problem.SetParameterization(params.data(), pcssp);
             logger->info("ceres_fit angle fixed via subset parameterization");
+            flush_logger();
         }
+    }
+
+    logger->info("ceres_fit checkpoint: residual pre-eval start values={}", fitter->values());
+    flush_logger();
+    std::vector<double> residuals(static_cast<std::size_t>(fitter->values()), 0.0);
+    const bool residual_ok = (*fitter)(params.data(), residuals.data());
+    Eigen::Index residual_finite = 0;
+    double residual_abs_max = 0.0;
+    double residual_sumsq = 0.0;
+    for (const double r : residuals) {
+        if (std::isfinite(r)) {
+            ++residual_finite;
+            residual_abs_max = std::max(residual_abs_max, std::abs(r));
+            residual_sumsq += r * r;
+        }
+    }
+    logger->info("ceres_fit checkpoint: residual pre-eval done ok={} finite={}/{} abs_max={} rms={}",
+                 residual_ok, residual_finite, residuals.size(), residual_abs_max,
+                 residual_finite > 0 ? std::sqrt(residual_sumsq / static_cast<double>(residual_finite)) :
+                     std::numeric_limits<double>::quiet_NaN());
+    flush_logger();
+    if (!residual_ok || residual_finite != static_cast<Eigen::Index>(residuals.size())) {
+        log_and_flush_warn(
+            fmt::format("ceres_fit skipped: invalid initial residuals ok={} finite={}/{}",
+                        residual_ok, residual_finite, residuals.size()));
+        Eigen::VectorXd p = Eigen::VectorXd::Zero(init_params.size());
+        Eigen::VectorXd e = Eigen::VectorXd::Zero(init_params.size());
+        return std::tuple<Eigen::VectorXd, Eigen::VectorXd, bool>(p, e, false);
     }
 
     // apply solver options
@@ -170,9 +312,11 @@ auto mapFitter::ceres_fit(const Model &model,
     Solver::Summary summary;
     // run the fit
     logger->info("ceres_fit solve start");
-    Solve(options, problem.get(), &summary);
+    flush_logger();
+    Solve(options, &problem, &summary);
     logger->info("ceres_fit solve done: usable={} brief={}",
                  summary.IsSolutionUsable(), summary.BriefReport());
+    flush_logger();
     if (!summary.IsSolutionUsable()) {
         logger->warn("ceres_fit full report:\n{}", summary.FullReport());
     }
@@ -198,7 +342,7 @@ auto mapFitter::ceres_fit(const Model &model,
             covariance_blocks.push_back(std::make_pair(params.data(), params.data()));
             // compute covariance
             logger->info("ceres_fit covariance start");
-            auto covariance_result = covariance.Compute(covariance_blocks, problem.get());
+            auto covariance_result = covariance.Compute(covariance_blocks, &problem);
             logger->info("ceres_fit covariance done: success={}", covariance_result);
 
             // if covariance calculation suceeded
@@ -225,7 +369,7 @@ auto mapFitter::ceres_fit(const Model &model,
             const Eigen::Index n_params = params.size();
             double cost = 0.0;
             ceres::CRSMatrix jacobian;
-            const bool eval_ok = problem->Evaluate(eval_options, &cost, nullptr, nullptr, &jacobian);
+            const bool eval_ok = problem.Evaluate(eval_options, &cost, nullptr, nullptr, &jacobian);
             if (!eval_ok) {
                 logger->warn("ceres_fit linearized uncertainty failed: problem->Evaluate returned false");
                 uncertainty.setConstant(0);
