@@ -1468,7 +1468,14 @@ void WienerFilter::calc_denominator() {
         const int max_checks = std::max(max_loops, 1);
         int checks_done = 0;
         const Eigen::Index requested_max_iters = max_denom_iters > 0 ? std::min<Eigen::Index>(max_denom_iters, total_iters) : total_iters;
-        const Eigen::Index max_iters = std::min(requested_max_iters, tail_cap_iters);
+        const Eigen::Index max_iters = tail_cap_iters;
+        if (max_denom_iters > 0 && requested_max_iters < tail_cap_iters) {
+            logger->warn(
+                "configured max_denom_iters={} is below Wiener denominator tail_cap_iters={}; "
+                "continuing to the tail cap to avoid an under-converged denominator",
+                static_cast<long long>(requested_max_iters),
+                static_cast<long long>(tail_cap_iters));
+        }
         tula::logging::progressbar pb(
             [&](const auto &msg) { logger->info("{}", msg); }, 90,
             "calculating denom");
@@ -1545,7 +1552,7 @@ void WienerFilter::calc_denominator() {
                             #pragma omp flush(done)
                         }
                         else if (kk + 1 >= max_iters) {
-                            logger->info("reached Wiener denominator max_denom_iters={} and stopping",
+                            logger->info("reached Wiener denominator tail_cap_iters={} and stopping",
                                          static_cast<long long>(max_iters));
                             done = true;
                             #pragma omp flush(done)
