@@ -63,6 +63,10 @@ noise_maps: # noise map controls (coadded noise maps if coadd enabled, obs noise
   enabled: false # enable or disable noise maps
   n_noise_maps: 1 # number of noise maps (>0).
   randomize_dets: true # randomize jackknifed noise maps on time chunks and detectors if true. only on time chunks if false.
+  write_realizations: false # write full jackknifed noise realization FITS HDUs (noise products are still computed when disabled)
+  products:
+    enabled: true # compute empirical noise variance, weight calibration, and S/N products from jackknife maps
+    apply_empirical_weights: true # scale output weight maps by median(weight_formal * jackknife_variance)^-1
 source: # optional source-context metadata used to interpret map diagnostics
   map_regime: unknown # one of: source_dominant, source_faint, blank_field, unknown
 interface_sync_offset: # manual timing offsets for each nw/hwpr (in seconds)

@@ -690,6 +690,17 @@ public:
             }
         }
 
+        if (map_index < static_cast<int>(mb.edge_guard_window.size()) &&
+            mb.edge_guard_window[map_index].rows() == mb.n_rows &&
+            mb.edge_guard_window[map_index].cols() == mb.n_cols) {
+            const auto &edge_window = mb.edge_guard_window[map_index];
+            mb.signal[map_index].array() *= edge_window.array();
+            mb.weight[map_index].array() *= edge_window.array().square();
+            if (!mb.kernel.empty()) {
+                mb.kernel[map_index].array() *= edge_window.array();
+            }
+        }
+
         SPDLOG_INFO("signal/weight map filtering done");
     }
 
@@ -715,6 +726,11 @@ public:
             nume.setZero(n_rows, n_cols);
         }
         Eigen::MatrixXd ratio = use_convolve ? nume : divide_by_denom(nume, denom);
+        if (map_index < static_cast<int>(mb.edge_guard_window.size()) &&
+            mb.edge_guard_window[map_index].rows() == mb.n_rows &&
+            mb.edge_guard_window[map_index].cols() == mb.n_cols) {
+            ratio.array() *= mb.edge_guard_window[map_index].array();
+        }
         noise_matrix.noalias() = ratio;
     }
 
@@ -725,6 +741,11 @@ public:
             mb.noise[map_index].data() + noise_num * mb.n_rows * mb.n_cols, mb.n_rows, mb.n_cols);
 
         Eigen::MatrixXd local_input = noise_matrix;
+        if (map_index < static_cast<int>(mb.edge_guard_window.size()) &&
+            mb.edge_guard_window[map_index].rows() == mb.n_rows &&
+            mb.edge_guard_window[map_index].cols() == mb.n_cols) {
+            local_input.array() *= mb.edge_guard_window[map_index].array();
+        }
         Eigen::MatrixXd local_nume = Eigen::MatrixXd::Zero(n_rows, n_cols);
         if (use_convolve) {
             local_nume = run_convolve_on_input(local_input, true);
@@ -733,6 +754,11 @@ public:
             local_nume = calc_numerator_from_input(local_input);
         }
         Eigen::MatrixXd ratio = use_convolve ? local_nume : divide_by_denom(local_nume, denom);
+        if (map_index < static_cast<int>(mb.edge_guard_window.size()) &&
+            mb.edge_guard_window[map_index].rows() == mb.n_rows &&
+            mb.edge_guard_window[map_index].cols() == mb.n_cols) {
+            ratio.array() *= mb.edge_guard_window[map_index].array();
+        }
         noise_matrix.noalias() = ratio;
     }
 };

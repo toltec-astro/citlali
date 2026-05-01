@@ -95,6 +95,9 @@ struct reduControls {
     bool run_mapmaking;
     bool run_coadd;
     bool run_noise;
+    bool write_noise_realizations;
+    bool run_noise_products;
+    bool apply_empirical_noise_weights;
     bool run_map_filter;
 
     // run source finding
@@ -1012,6 +1015,22 @@ void Engine::get_mapmaking_config(CT &config) {
         cmb.n_noise = 0;
     }
 
+    write_noise_realizations = false;
+    if (config.template has_typed<bool>(std::tuple{"noise_maps","write_realizations"})) {
+        get_config_value(config, write_noise_realizations, missing_keys, invalid_keys,
+                         std::tuple{"noise_maps","write_realizations"});
+    }
+    run_noise_products = run_noise;
+    if (config.template has_typed<bool>(std::tuple{"noise_maps","products","enabled"})) {
+        get_config_value(config, run_noise_products, missing_keys, invalid_keys,
+                         std::tuple{"noise_maps","products","enabled"});
+    }
+    apply_empirical_noise_weights = run_noise;
+    if (config.template has_typed<bool>(std::tuple{"noise_maps","products","apply_empirical_weights"})) {
+        get_config_value(config, apply_empirical_noise_weights, missing_keys, invalid_keys,
+                         std::tuple{"noise_maps","products","apply_empirical_weights"});
+    }
+
     // set mapmaker polarization
     naive_mm.run_polarization = rtcproc.run_polarization;
     jinc_mm.run_polarization = rtcproc.run_polarization;
@@ -1762,7 +1781,7 @@ void Engine::create_obs_map_files() {
 
         // if noise maps are requested but coadding is not, populate noise fits vector
         if (!run_coadd) {
-            if (run_noise) {
+            if (run_noise && write_noise_realizations) {
                 // noise map filename
                 auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::noise,
                                                           engine_utils::toltecIO::raw>(obsnum_dir_name + "raw/", redu_type, array_name,
@@ -1786,7 +1805,7 @@ void Engine::create_obs_map_files() {
                 filtered_fits_io_vec.push_back(std::move(fits_io));
 
                 // filtered noise maps
-                if (run_noise) {
+                if (run_noise && write_noise_realizations) {
                     // filtered noise map filename
                     auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::noise,
                                                               engine_utils::toltecIO::filtered>(obsnum_dir_name + "filtered/", redu_type,
@@ -4231,6 +4250,17 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         fits_io->at(map_index).add_hdu("weight_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->weight[i]);
         fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
         fits_io->at(map_index).hdus.back()->addKey("UNIT", "1/("+mb->sig_unit+")^2", "Unit of map");
+        fits_io->at(map_index).hdus.back()->addKey("TYPE",
+            (run_noise_products && run_noise && apply_empirical_noise_weights) ? "empirical" : "formal",
+            "Weight calibration type");
+        if (i < mb->noise_weight_scale.size()) {
+            fits_io->at(map_index).hdus.back()->addKey("EMP_SCALE", mb->noise_weight_scale(i),
+                                                       "Empirical weight scale");
+        }
+        if (i < mb->noise_weight_median_ratio.size()) {
+            fits_io->at(map_index).hdus.back()->addKey("WVARMED", mb->noise_weight_median_ratio(i),
+                                                       "Median formal weight times jackknife variance");
+        }
         double median_err = 0.0;
         if (redu_type != "beammap" && std::isfinite(mb->median_err(i)) &&
             mb->median_err(i) > std::numeric_limits<double>::epsilon()) {
@@ -4242,6 +4272,25 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                          fits_io->at(map_index).filepath);
         }
         fits_io->at(map_index).hdus.back()->addKey("MEDERR", median_err, "Median Error ("+mb->sig_unit+")");
+
+        if (i < static_cast<Eigen::Index>(mb->weight_formal.size()) &&
+            mb->weight_formal[i].rows() == mb->n_rows &&
+            mb->weight_formal[i].cols() == mb->n_cols) {
+            fits_io->at(map_index).add_hdu("weight_formal_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
+                                           mb->weight_formal[i]);
+            fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
+            fits_io->at(map_index).hdus.back()->addKey("UNIT", "1/("+mb->sig_unit+")^2", "Unit of map");
+            fits_io->at(map_index).hdus.back()->addKey("TYPE", "formal", "Weight calibration type");
+        }
+
+        if (i < static_cast<Eigen::Index>(mb->noise_variance.size()) &&
+            mb->noise_variance[i].rows() == mb->n_rows &&
+            mb->noise_variance[i].cols() == mb->n_cols) {
+            fits_io->at(map_index).add_hdu("noise_variance_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
+                                           mb->noise_variance[i]);
+            fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
+            fits_io->at(map_index).hdus.back()->addKey("UNIT", "("+mb->sig_unit+")^2", "Unit of map");
+        }
 
         // kernel map
         if (rtcproc.run_kernel) {
@@ -4298,11 +4347,51 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             fits_io->at(map_index).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
             fits_io->at(map_index).hdus.back()->addKey("WTTHRESH", weight_threshold, "Weight threshold");
 
-            // signal-to-noise map
-            Eigen::MatrixXd sig2noise = mb->signal[i].array()*sqrt(mb->weight[i].array());
+            // legacy signal-to-noise map name retained for compatibility; this is pixel S/N.
+            Eigen::MatrixXd sig2noise;
+            if (i < static_cast<Eigen::Index>(mb->sig2noise_pixel.size()) &&
+                mb->sig2noise_pixel[i].rows() == mb->n_rows &&
+                mb->sig2noise_pixel[i].cols() == mb->n_cols) {
+                sig2noise = mb->sig2noise_pixel[i];
+            }
+            else {
+                sig2noise = mb->signal[i].array()*sqrt(mb->weight[i].array());
+            }
             fits_io->at(map_index).add_hdu("sig2noise_" + map_name + rtcproc.polarization.stokes_params[stokes_index], sig2noise);
             fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
             fits_io->at(map_index).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
+            fits_io->at(map_index).hdus.back()->addKey("TYPE", "pixel", "S/N estimator type");
+
+            fits_io->at(map_index).add_hdu("sig2noise_pixel_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
+                                           sig2noise);
+            fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
+            fits_io->at(map_index).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
+            fits_io->at(map_index).hdus.back()->addKey("TYPE", "pixel", "S/N estimator type");
+
+            const bool is_filtered_output =
+                (fits_io == &filtered_fits_io_vec) ||
+                (fits_io == &filtered_coadd_fits_io_vec);
+            if (is_filtered_output &&
+                i < static_cast<Eigen::Index>(mb->point_source_uncertainty.size()) &&
+                mb->point_source_uncertainty[i].rows() == mb->n_rows &&
+                mb->point_source_uncertainty[i].cols() == mb->n_cols) {
+                fits_io->at(map_index).add_hdu("point_source_flux_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
+                                               mb->signal[i]);
+                fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
+                fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
+                fits_io->at(map_index).hdus.back()->addKey("RESPNORM", 1.0, "Point-source response normalization applied");
+
+                fits_io->at(map_index).add_hdu("point_source_uncertainty_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
+                                               mb->point_source_uncertainty[i]);
+                fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
+                fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
+
+                fits_io->at(map_index).add_hdu("sig2noise_point_source_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
+                                               mb->sig2noise_point_source[i]);
+                fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
+                fits_io->at(map_index).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
+                fits_io->at(map_index).hdus.back()->addKey("TYPE", "point_source", "S/N estimator type");
+            }
         }
 
         // write noise maps
@@ -4504,6 +4593,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     std::vector<double> coverage_max(n_maps_local, fill_double);
     std::vector<double> coverage_median_core(n_maps_local, fill_double);
     std::vector<double> empirical_to_formal_noise_ratio(n_maps_local, fill_double);
+    std::vector<double> noise_weight_median_ratio(n_maps_local, fill_double);
+    std::vector<double> noise_weight_scale(n_maps_local, fill_double);
+    std::vector<double> noise_products_s2n_sigma(n_maps_local, fill_double);
+    std::vector<double> noise_products_valid_pixels(n_maps_local, fill_double);
     std::vector<double> peak_signal(n_maps_local, fill_double);
     std::vector<double> peak_abs_sig2noise(n_maps_local, fill_double);
     std::vector<double> core_peak_abs_sig2noise(n_maps_local, fill_double);
@@ -4744,6 +4837,18 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             median_err[idx] > std::numeric_limits<double>::epsilon()) {
             empirical_to_formal_noise_ratio[idx] = median_rms[idx] / median_err[idx];
         }
+        if (i < mb->noise_weight_median_ratio.size()) {
+            noise_weight_median_ratio[idx] = mb->noise_weight_median_ratio(i);
+        }
+        if (i < mb->noise_weight_scale.size()) {
+            noise_weight_scale[idx] = mb->noise_weight_scale(i);
+        }
+        if (i < mb->noise_s2n_sigma.size()) {
+            noise_products_s2n_sigma[idx] = mb->noise_s2n_sigma(i);
+        }
+        if (i < mb->noise_valid_pixels.size()) {
+            noise_products_valid_pixels[idx] = mb->noise_valid_pixels(i);
+        }
 
         if (!mb->coverage.empty() && i < static_cast<Eigen::Index>(mb->coverage.size())) {
             coverage_sum[idx] = mb->coverage[i].sum();
@@ -4981,6 +5086,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     add_map_double("map_coverage_max", "maximum coverage value in the map; NaN if no coverage map exists", coverage_max);
     add_map_double("map_core_coverage_median", "median coverage over the core support; NaN if no coverage map exists", coverage_median_core);
     add_map_double("map_empirical_to_formal_noise_ratio", "ratio of map_median_rms to map_median_err over the core support", empirical_to_formal_noise_ratio);
+    add_map_double("map_noise_weight_median_ratio", "median of formal weight times jackknife variance over the valid support", noise_weight_median_ratio);
+    add_map_double("map_noise_weight_scale", "empirical scalar applied to formal weights", noise_weight_scale);
+    add_map_double("map_noise_products_s2n_sigma", "standard deviation of jackknife noise multiplied by sqrt(formal weight)", noise_products_s2n_sigma);
+    add_map_double("map_noise_products_valid_pixels", "number of pixels used for empirical noise-product calibration", noise_products_valid_pixels);
     add_map_double("map_peak_signal", "maximum signal value in the map", peak_signal);
     add_map_double("map_peak_abs_sig2noise", "maximum absolute signal-to-noise value in the map", peak_abs_sig2noise);
     add_map_double("map_core_peak_abs_sig2noise", "maximum absolute signal-to-noise value over pixels with weight >= map_weight_threshold", core_peak_abs_sig2noise);
@@ -6081,80 +6190,19 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
                          map_label, i + 1, n_maps);
 #endif
 
-            if (wiener_filter.normalize_error) {
-                logger->info("renormalizing errors for {} map {}/{}",
+            if (write_filtered_maps_partial && (run_noise_products || wiener_filter.normalize_error)) {
+                const bool apply_scale = apply_empirical_noise_weights || wiener_filter.normalize_error;
+                logger->info("calculating empirical noise products for {} map {}/{}",
                              map_label, i + 1, n_maps);
-                bool scaled = false;
-                if (!mb.noise.empty() && mb.n_noise > 0) {
-                    Eigen::MatrixXd var_map = Eigen::MatrixXd::Zero(mb.n_rows, mb.n_cols);
-                    for (Eigen::Index j=0; j<mb.n_noise; ++j) {
-                        Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(
-                            mb.noise[i].data() + j * mb.n_rows * mb.n_cols,
-                            mb.n_rows, mb.n_cols);
-                        var_map.array() += noise_matrix.array().square();
-                    }
-                    var_map.array() /= static_cast<double>(mb.n_noise);
-
-                    double weight_threshold = 0.0;
-                    if (mb.cov_cut > 0.0) {
-                        weight_threshold = engine_utils::find_weight_threshold(mb.weight[i], mb.cov_cut);
-                    }
-                    if (!std::isfinite(weight_threshold) || weight_threshold < 0.0) {
-                        weight_threshold = 0.0;
-                    }
-
-                    Eigen::Index n_valid = 0;
-                    for (Eigen::Index r=0; r<mb.n_rows; ++r) {
-                        for (Eigen::Index c=0; c<mb.n_cols; ++c) {
-                            const double w = mb.weight[i](r,c);
-                            const double v = var_map(r,c);
-                            if (w > 0.0 && std::isfinite(w) && w >= weight_threshold &&
-                                v > 0.0 && std::isfinite(v)) {
-                                n_valid++;
-                            }
-                        }
-                    }
-
-                    if (n_valid > 0) {
-                        Eigen::VectorXd ratios(n_valid);
-                        Eigen::Index idx = 0;
-                        for (Eigen::Index r=0; r<mb.n_rows; ++r) {
-                            for (Eigen::Index c=0; c<mb.n_cols; ++c) {
-                                const double w = mb.weight[i](r,c);
-                                const double v = var_map(r,c);
-                                if (w > 0.0 && std::isfinite(w) && w >= weight_threshold &&
-                                    v > 0.0 && std::isfinite(v)) {
-                                    ratios(idx) = w * v;
-                                    idx++;
-                                }
-                            }
-                        }
-
-                        double med_ratio = tula::alg::median(ratios);
-                        if (std::isfinite(med_ratio) && med_ratio > 0.0) {
-                            const double scale = 1.0 / med_ratio;
-                            mb.weight[i].noalias() = mb.weight[i] * scale;
-                            logger->info("weight renorm (noise-based): median(w*var)={} scale={}",
-                                         static_cast<float>(med_ratio), static_cast<float>(scale));
-                            scaled = true;
-                        }
-                    }
+                mb.calc_noise_products(i, apply_scale);
+                if (i < mb.noise_weight_median_ratio.size()) {
+                    logger->info("noise products: median(w_formal*var)={} scale={} noise_s2n_sigma={}",
+                                 static_cast<float>(mb.noise_weight_median_ratio(i)),
+                                 static_cast<float>(mb.noise_weight_scale(i)),
+                                 static_cast<float>(mb.noise_s2n_sigma(i)));
                 }
-
-                if (!scaled) {
-                    // fallback to legacy normalization
-                    // get median error from weight maps
-                    mb.calc_median_err();
-                    // get median map rms from noise maps
-                    mb.calc_median_rms();
-
-                    // get rescaled normalization factor
-                    auto noise_factor = (1./pow(mb.median_rms.array(),2.))*mb.median_err.array();
-                    // re-normalize weight map
-                    mb.weight[i].noalias() = mb.weight[i]*noise_factor(i);
-
-                    logger->info("median rms {} ({})", static_cast<float>(mb.median_rms(i)), mb.sig_unit);
-                }
+                mb.calc_median_err();
+                mb.calc_median_rms();
             }
         }
 

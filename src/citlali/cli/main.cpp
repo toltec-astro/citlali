@@ -1018,6 +1018,14 @@ int run(const rc_t &rc) {
                             todproc.engine().pipeline(kidsproc, rawobs);
                         }
 
+                        if (todproc.engine().run_mapmaking &&
+                            todproc.engine().run_noise_products &&
+                            todproc.engine().run_noise) {
+                            logger->info("calculating raw obs empirical noise products");
+                            todproc.engine().omb.calc_noise_products(
+                                todproc.engine().apply_empirical_noise_weights);
+                        }
+
                         // create output map files
                         if (todproc.engine().run_mapmaking) {
                             todproc.engine().create_obs_map_files();
@@ -1044,6 +1052,15 @@ int run(const rc_t &rc) {
                         else if (todproc.engine().run_map_filter) {
                             logger->info("filtering obs maps");
                             todproc.engine().template run_wiener_filter<mapmaking::FilteredObs>(todproc.engine().omb);
+
+                            if (todproc.engine().run_noise_products &&
+                                todproc.engine().run_noise &&
+                                !todproc.engine().write_filtered_maps_partial) {
+                                logger->info("calculating filtered obs empirical noise products");
+                                todproc.engine().omb.calc_noise_products(
+                                    todproc.engine().apply_empirical_noise_weights ||
+                                    todproc.engine().wiener_filter.normalize_error);
+                            }
 
                             // calculate filtered obs map psds
                             logger->info("calculating filtered obs map psds");
@@ -1094,6 +1111,13 @@ int run(const rc_t &rc) {
                             todproc.engine().cmb.normalize_maps();
                         }
 
+                        if (todproc.engine().run_noise_products &&
+                            todproc.engine().run_noise) {
+                            logger->info("calculating raw coadd empirical noise products");
+                            todproc.engine().cmb.calc_noise_products(
+                                todproc.engine().apply_empirical_noise_weights);
+                        }
+
                         // calculate coadded map psds
                         logger->info("calculating coadded map psd");
                         todproc.engine().cmb.calc_map_psd();
@@ -1114,6 +1138,15 @@ int run(const rc_t &rc) {
                             logger->info("filtering coadded maps");
                             // filter coadded maps
                             todproc.engine().template run_wiener_filter<mapmaking::FilteredCoadd>(todproc.engine().cmb);
+
+                            if (todproc.engine().run_noise_products &&
+                                todproc.engine().run_noise &&
+                                !todproc.engine().write_filtered_maps_partial) {
+                                logger->info("calculating filtered coadd empirical noise products");
+                                todproc.engine().cmb.calc_noise_products(
+                                    todproc.engine().apply_empirical_noise_weights ||
+                                    todproc.engine().wiener_filter.normalize_error);
+                            }
 
                             // calculate filtered coadded map psds
                             logger->info("calculating filtered coadded map psds");

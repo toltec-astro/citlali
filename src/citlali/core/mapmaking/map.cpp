@@ -571,6 +571,179 @@ void MapBuffer::calc_median_rms() {
     }
 }
 
+void MapBuffer::clear_noise_products() {
+    std::vector<Eigen::MatrixXd>().swap(weight_formal);
+    std::vector<Eigen::MatrixXd>().swap(noise_mean);
+    std::vector<Eigen::MatrixXd>().swap(noise_variance);
+    std::vector<Eigen::MatrixXd>().swap(weight_empirical);
+    std::vector<Eigen::MatrixXd>().swap(sig2noise_pixel);
+    std::vector<Eigen::MatrixXd>().swap(point_source_uncertainty);
+    std::vector<Eigen::MatrixXd>().swap(sig2noise_point_source);
+    noise_weight_median_ratio.resize(0);
+    noise_weight_scale.resize(0);
+    noise_s2n_sigma.resize(0);
+    noise_valid_pixels.resize(0);
+}
+
+void MapBuffer::calc_noise_products(bool apply_empirical_weight_scale, bool mean_subtract) {
+    clear_noise_products();
+
+    const Eigen::Index n_maps = static_cast<Eigen::Index>(weight.size());
+    if (n_maps <= 0 || noise.empty() || n_noise <= 0) {
+        return;
+    }
+
+    weight_formal.resize(static_cast<size_t>(n_maps));
+    noise_mean.resize(static_cast<size_t>(n_maps));
+    noise_variance.resize(static_cast<size_t>(n_maps));
+    weight_empirical.resize(static_cast<size_t>(n_maps));
+    sig2noise_pixel.resize(static_cast<size_t>(n_maps));
+    point_source_uncertainty.resize(static_cast<size_t>(n_maps));
+    sig2noise_point_source.resize(static_cast<size_t>(n_maps));
+    noise_weight_median_ratio.setZero(n_maps);
+    noise_weight_scale.setOnes(n_maps);
+    noise_s2n_sigma.setZero(n_maps);
+    noise_valid_pixels.setZero(n_maps);
+
+    for (Eigen::Index i=0; i<n_maps; ++i) {
+        calc_noise_products(i, apply_empirical_weight_scale, mean_subtract);
+    }
+
+    calc_median_err();
+    calc_median_rms();
+}
+
+void MapBuffer::calc_noise_products(Eigen::Index i, bool apply_empirical_weight_scale, bool mean_subtract) {
+    const Eigen::Index n_maps = static_cast<Eigen::Index>(weight.size());
+    if (i < 0 || i >= n_maps || i >= static_cast<Eigen::Index>(noise.size()) || n_noise <= 0) {
+        return;
+    }
+
+    auto ensure_matrix_vec = [&](std::vector<Eigen::MatrixXd> &vec) {
+        if (static_cast<Eigen::Index>(vec.size()) != n_maps) {
+            vec.resize(static_cast<size_t>(n_maps));
+        }
+    };
+    ensure_matrix_vec(weight_formal);
+    ensure_matrix_vec(noise_mean);
+    ensure_matrix_vec(noise_variance);
+    ensure_matrix_vec(weight_empirical);
+    ensure_matrix_vec(sig2noise_pixel);
+    ensure_matrix_vec(point_source_uncertainty);
+    ensure_matrix_vec(sig2noise_point_source);
+
+    if (noise_weight_median_ratio.size() != n_maps) {
+        noise_weight_median_ratio.setZero(n_maps);
+    }
+    if (noise_weight_scale.size() != n_maps) {
+        noise_weight_scale.setOnes(n_maps);
+    }
+    if (noise_s2n_sigma.size() != n_maps) {
+        noise_s2n_sigma.setZero(n_maps);
+    }
+    if (noise_valid_pixels.size() != n_maps) {
+        noise_valid_pixels.setZero(n_maps);
+    }
+
+    weight_formal[static_cast<size_t>(i)] = weight[i];
+    noise_mean[static_cast<size_t>(i)] = Eigen::MatrixXd::Zero(n_rows, n_cols);
+    noise_variance[static_cast<size_t>(i)] = Eigen::MatrixXd::Zero(n_rows, n_cols);
+
+    for (Eigen::Index j=0; j<n_noise; ++j) {
+        Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(
+            noise[i].data() + j * n_rows * n_cols, n_rows, n_cols);
+        noise_mean[static_cast<size_t>(i)].array() += noise_matrix.array();
+        noise_variance[static_cast<size_t>(i)].array() += noise_matrix.array().square();
+    }
+    noise_mean[static_cast<size_t>(i)].array() /= static_cast<double>(n_noise);
+    noise_variance[static_cast<size_t>(i)].array() /= static_cast<double>(n_noise);
+    if (mean_subtract) {
+        noise_variance[static_cast<size_t>(i)].array() -=
+            noise_mean[static_cast<size_t>(i)].array().square();
+        noise_variance[static_cast<size_t>(i)] =
+            noise_variance[static_cast<size_t>(i)].array().max(0.0).matrix();
+    }
+
+    double weight_threshold = 0.0;
+    if (cov_cut > 0.0) {
+        weight_threshold = engine_utils::find_weight_threshold(weight_formal[static_cast<size_t>(i)], cov_cut);
+    }
+    if (!std::isfinite(weight_threshold) || weight_threshold < 0.0) {
+        weight_threshold = 0.0;
+    }
+
+    Eigen::Index n_valid = 0;
+    for (Eigen::Index r=0; r<n_rows; ++r) {
+        for (Eigen::Index c=0; c<n_cols; ++c) {
+            const double w = weight_formal[static_cast<size_t>(i)](r,c);
+            const double v = noise_variance[static_cast<size_t>(i)](r,c);
+            if (std::isfinite(w) && w > 0.0 && w >= weight_threshold &&
+                std::isfinite(v) && v > 0.0) {
+                n_valid++;
+            }
+        }
+    }
+    noise_valid_pixels(i) = static_cast<double>(n_valid);
+
+    double scale = 1.0;
+    if (n_valid > 0) {
+        Eigen::VectorXd ratios(n_valid);
+        Eigen::Index idx = 0;
+        double ns_sum = 0.0;
+        double ns_sum_sq = 0.0;
+        Eigen::Index ns_count = 0;
+        for (Eigen::Index j=0; j<n_noise; ++j) {
+            Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(
+                noise[i].data() + j * n_rows * n_cols, n_rows, n_cols);
+            for (Eigen::Index r=0; r<n_rows; ++r) {
+                for (Eigen::Index c=0; c<n_cols; ++c) {
+                    const double w = weight_formal[static_cast<size_t>(i)](r,c);
+                    const double v = noise_variance[static_cast<size_t>(i)](r,c);
+                    if (std::isfinite(w) && w > 0.0 && w >= weight_threshold &&
+                        std::isfinite(v) && v > 0.0) {
+                        if (j == 0) {
+                            ratios(idx++) = w * v;
+                        }
+                        const double ns = noise_matrix(r,c) * std::sqrt(w);
+                        ns_sum += ns;
+                        ns_sum_sq += ns * ns;
+                        ns_count++;
+                    }
+                }
+            }
+        }
+
+        const double med_ratio = tula::alg::median(ratios);
+        if (std::isfinite(med_ratio) && med_ratio > 0.0) {
+            noise_weight_median_ratio(i) = med_ratio;
+            scale = 1.0 / med_ratio;
+        }
+        if (ns_count > 1) {
+            const double mean = ns_sum / static_cast<double>(ns_count);
+            const double var = (ns_sum_sq - static_cast<double>(ns_count) * mean * mean) /
+                               static_cast<double>(ns_count - 1);
+            noise_s2n_sigma(i) = std::sqrt(std::max(0.0, var));
+        }
+    }
+
+    noise_weight_scale(i) = scale;
+    weight_empirical[static_cast<size_t>(i)] =
+        weight_formal[static_cast<size_t>(i)] * scale;
+
+    if (apply_empirical_weight_scale) {
+        weight[i] = weight_empirical[static_cast<size_t>(i)];
+    }
+
+    sig2noise_pixel[static_cast<size_t>(i)] =
+        (signal[i].array() * weight_empirical[static_cast<size_t>(i)].array().max(0.0).sqrt()).matrix();
+    point_source_uncertainty[static_cast<size_t>(i)] =
+        noise_variance[static_cast<size_t>(i)].array().max(0.0).sqrt().matrix();
+    sig2noise_point_source[static_cast<size_t>(i)] =
+        (point_source_uncertainty[static_cast<size_t>(i)].array() > 0.0)
+            .select(signal[i].array() / point_source_uncertainty[static_cast<size_t>(i)].array(), 0.0)
+            .matrix();
+}
+
 void MapBuffer::calc_median_rms_annulus(double inner_radius_rad, double outer_radius_rad) {
     // average filtered rms vector
     median_rms.setZero(weight.size());

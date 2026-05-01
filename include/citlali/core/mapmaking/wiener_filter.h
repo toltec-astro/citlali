@@ -1540,6 +1540,17 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
         }
     }
 
+    if (map_index < static_cast<int>(mb.edge_guard_window.size()) &&
+        mb.edge_guard_window[map_index].rows() == mb.n_rows &&
+        mb.edge_guard_window[map_index].cols() == mb.n_cols) {
+        const auto &edge_window = mb.edge_guard_window[map_index];
+        mb.signal[map_index].array() *= edge_window.array();
+        mb.weight[map_index].array() *= edge_window.array().square();
+        if (!mb.kernel.empty()) {
+            mb.kernel[map_index].array() *= edge_window.array();
+        }
+    }
+
     logger->info("signal/weight map filtering done");
 }
 
@@ -1575,6 +1586,11 @@ void WienerFilter::filter_noise(MB &mb, const int map_index, const int noise_num
                 ratio(i,j) = 0.0;
             }
         }
+    }
+    if (map_index < static_cast<int>(mb.edge_guard_window.size()) &&
+        mb.edge_guard_window[map_index].rows() == mb.n_rows &&
+        mb.edge_guard_window[map_index].cols() == mb.n_cols) {
+        ratio.array() *= mb.edge_guard_window[map_index].array();
     }
 
     // map to tensor

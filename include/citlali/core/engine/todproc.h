@@ -1440,6 +1440,16 @@ void TimeOrderedDataProc<EngineType>::allocate_nmb(map_buffer_t &nmb) {
     // clear noise map buffer
     std::vector<Eigen::Tensor<double,3>>().swap(nmb.noise);
 
+    const double nmb_size_gb =
+        8.0 * static_cast<double>(nmb.n_rows) * static_cast<double>(nmb.n_cols) *
+        static_cast<double>(engine().n_maps) * static_cast<double>(nmb.n_noise) / 1e9;
+    engine().logger->info("allocating {} noise realization cube: rows={} cols={} maps={} n_noise={} estimated_size={} GB",
+                          nmb.name, static_cast<long long>(nmb.n_rows),
+                          static_cast<long long>(nmb.n_cols),
+                          static_cast<long long>(engine().n_maps),
+                          static_cast<long long>(nmb.n_noise),
+                          static_cast<float>(nmb_size_gb));
+
     // resize noise maps (n_maps, [n_rows, n_cols, n_noise])
     for (Eigen::Index i=0; i<engine().n_maps; ++i) {
         nmb.noise.emplace_back(nmb.n_rows, nmb.n_cols, nmb.n_noise);
@@ -1518,7 +1528,7 @@ void TimeOrderedDataProc<EngineType>::create_coadded_map_files() {
         engine().coadd_fits_io_vec.push_back(std::move(fits_io));
 
         // if noise maps requested
-        if (engine().run_noise) {
+        if (engine().run_noise && engine().write_noise_realizations) {
             // noise map filename
             auto filename = engine().toltec_io.template create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::noise,
                                                                         engine_utils::toltecIO::raw>(engine().coadd_dir_name + "raw/",
@@ -1550,7 +1560,7 @@ void TimeOrderedDataProc<EngineType>::create_coadded_map_files() {
             engine().filtered_coadd_fits_io_vec.push_back(std::move(fits_io));
 
             // if noise maps requested
-            if (engine().run_noise) {
+            if (engine().run_noise && engine().write_noise_realizations) {
                 // filtered noise map filename
                 auto filename = engine().toltec_io.template create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::noise,
                                                                             engine_utils::toltecIO::filtered>(engine().coadd_dir_name +

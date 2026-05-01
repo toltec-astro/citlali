@@ -1,0 +1,988 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{listings}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!50!black,
+  urlcolor=blue!50!black
+}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  frame=single,
+  showstringspaces=false
+}
+
+\title{Noise Estimation and Signal-to-Noise Products in Citlali:\\
+Definitions, Correlated Noise, and Proposed Data Products}
+\author{}
+\date{2026-05-01}
+
+\newcommand{\map}{\boldsymbol{m}}
+\newcommand{\noise}{\boldsymbol{n}}
+\newcommand{\data}{\boldsymbol{d}}
+\newcommand{\sky}{\boldsymbol{s}}
+\newcommand{\weight}{\boldsymbol{W}}
+\newcommand{\cov}{\boldsymbol{C}}
+\newcommand{\mat}[1]{\boldsymbol{#1}}
+\newcommand{\trans}{\mathsf{T}}
+\newcommand{\inv}{^{-1}}
+\newcommand{\expect}[1]{\left\langle #1 \right\rangle}
+\newcommand{\var}{\operatorname{Var}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\median}{\operatorname{median}}
+\newcommand{\std}{\operatorname{std}}
+\newcommand{\snr}{\mathrm{S/N}}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{Purpose}
+
+Citlali currently produces several objects that are all related to noise:
+formal weight maps, jackknife noise realization maps, signal-to-noise maps,
+coverage maps, and filtered-map weight normalizations. These objects are
+useful, but they do not all answer the same scientific question. In particular,
+TolTEC commonly produces oversampled maps with pixel sizes of order
+\(1\)--\(2\) arcsec and point-spread functions of order \(5\)--\(10\) arcsec.
+In that regime neighboring map pixels are strongly correlated. A per-pixel
+variance is not, by itself, the uncertainty of an astrophysical flux estimate
+unless the estimator is simply ``read off the map at this position.''
+
+The purpose of this note is to propose a rigorous vocabulary and data model for
+noise-related products in Citlali. The goal is to support raw maps, filtered
+maps, naive mapmaking, jinc mapmaking, individual observations, and coadded
+observations without overloading a single quantity called ``the noise.''
+
+The central principle is:
+
+\begin{quote}
+An uncertainty is only well-defined after the measurement estimator has been
+specified. A weight map describes a map-value variance; a source-flux
+uncertainty must be propagated through the same estimator used to measure the
+source flux.
+\end{quote}
+
+\section{Science Goal}
+
+For most TolTEC science uses, the final desired quantity is not the value of a
+single map pixel. It is the flux, surface brightness, or integrated signal of
+an astrophysical source under a specified measurement procedure. The
+measurement procedure may be:
+
+\begin{itemize}[leftmargin=1.5em]
+\item point-source matched filtering or Wiener filtering,
+\item beam-profile fitting,
+\item aperture photometry,
+\item template fitting,
+\item smoothed extended-emission analysis,
+\item direct map-value inspection for diagnostic or specialized use.
+\end{itemize}
+
+These estimators have different noise properties. A point-source matched filter
+uses a known kernel. An extended-source aperture sum uses a user-defined region.
+A diffuse-emission map smoothed to a target angular scale uses a smoothing
+operator. Since the estimators differ, the corresponding uncertainties differ.
+
+\section{Map Products and Units}
+
+\subsection{Signal Map}
+
+Let \(\map\) denote a Citlali map product. For the present discussion, assume
+that the signal map has units
+\[
+  [\map] = \mathrm{mJy\,beam^{-1}}.
+\]
+This is the natural unit for point-source amplitudes in a beam-normalized map.
+For extended-source analysis, conversion factors such as pixel area divided by
+beam area must be included in the estimator.
+
+Raw maps and filtered maps should be treated as different data products:
+\[
+  \map_{\rm raw}, \qquad \map_{\rm filt}.
+\]
+Filtering changes both the noise covariance and the response to astrophysical
+signals. Therefore a filtered signal-to-noise product must be associated with a
+filter response or transfer function.
+
+\subsection{Formal Weight Map}
+
+A formal weight map is an inverse variance predicted by the timestream weights
+and mapmaking algebra. Its units should be
+\[
+  [\weight_{\rm formal}] = (\mathrm{mJy\,beam^{-1}})^{-2}.
+\]
+The corresponding formal per-pixel variance is
+\[
+  \sigma^2_{\rm formal}(p) = \frac{1}{W_{\rm formal}(p)}.
+\]
+
+This is a map-value variance, not a complete description of correlated map
+noise. It is also a model prediction: it is only as accurate as the detector
+weights, independence assumptions, filtering model, and mapmaking normalization
+used to construct it.
+
+\subsection{Jackknife Noise Realization Maps}
+
+Let \(\noise_j\) be jackknife noise realization map \(j\), for
+\(j=1,\ldots,N_{\rm jk}\). The intended units are the same as the signal map:
+\[
+  [\noise_j] = \mathrm{mJy\,beam^{-1}}.
+\]
+The jackknife maps are an empirical ensemble of noise-like maps produced by
+running sign-flipped or split data through the same mapmaking and filtering
+pipeline as the signal map. Ideally the astrophysical signal cancels in the
+jackknife construction while instrumental, atmospheric, and processing-induced
+noise remains statistically representative of the signal map's noise.
+
+\subsection{Empirical Pixel Variance Map}
+
+The empirical per-pixel variance map is the diagonal of the map covariance
+estimated from the jackknife ensemble:
+\[
+  \widehat{\sigma}^2_{\rm pix}(p)
+    =
+    \frac{1}{N_{\rm jk} - 1}
+    \sum_{j=1}^{N_{\rm jk}}
+    \left[
+      n_j(p) - \overline{n}(p)
+    \right]^2,
+\]
+where
+\[
+  \overline{n}(p) =
+    \frac{1}{N_{\rm jk}}
+    \sum_{j=1}^{N_{\rm jk}} n_j(p).
+\]
+If the jackknife maps are constructed to have zero mean, the simpler second
+moment
+\[
+  \widehat{\sigma}^2_{\rm pix}(p)
+    \simeq
+    \frac{1}{N_{\rm jk}}
+    \sum_{j=1}^{N_{\rm jk}} n_j^2(p)
+\]
+may be adequate, but this should be a deliberate convention. The variance units
+are
+\[
+  [\widehat{\sigma}^2_{\rm pix}] = (\mathrm{mJy\,beam^{-1}})^2.
+\]
+
+\subsection{Empirical Weight Map}
+
+The fully local empirical inverse-variance weight is
+\[
+  W_{\rm emp,local}(p) =
+    \frac{1}{\widehat{\sigma}^2_{\rm pix}(p)}.
+\]
+This is direct but can be noisy when \(N_{\rm jk}\) is modest. A more stable
+alternative is to preserve the formal weight map's spatial pattern while
+calibrating its normalization from the jackknife ensemble:
+\[
+  r(p) =
+    W_{\rm formal}(p)\,\widehat{\sigma}^2_{\rm pix}(p),
+\]
+\[
+  \alpha =
+    \left[
+      \median_{p\in \Omega} r(p)
+    \right]^{-1},
+\]
+\[
+  W_{\rm emp,scalar}(p) =
+    \alpha\,W_{\rm formal}(p),
+\]
+where \(\Omega\) is a valid map support region. This scalar calibration is
+dimensionally valid because \(r(p)\) is dimensionless.
+
+Intermediate choices are also possible:
+
+\begin{itemize}[leftmargin=1.5em]
+\item smooth \(r(p)\) before applying a local correction,
+\item estimate one scale factor per observation, array, or map region,
+\item regularize \(W_{\rm emp,local}\) toward \(W_{\rm formal}\),
+\item use quantile-clipped or source-masked support regions.
+\end{itemize}
+
+\section{Formal Mapmaking Weights}
+
+\subsection{Naive Weighted Map}
+
+For a single output pixel \(p\), suppose samples \(i\) contribute data values
+\(d_i\) with inverse variances \(w_i\). In a simple nearest-pixel or
+non-kernelized weighted map, the accumulated signal and weight are
+\[
+  S(p) = \sum_{i\in p} w_i d_i,
+\]
+\[
+  Q(p) = \sum_{i\in p} w_i.
+\]
+The normalized map value is
+\[
+  m(p) = \frac{S(p)}{Q(p)}.
+\]
+If the input samples are independent with
+\[
+  \var(d_i) = \frac{1}{w_i},
+\]
+then
+\[
+  \var[m(p)] =
+    \frac{\sum_i w_i^2 \var(d_i)}{Q^2(p)}
+    =
+    \frac{\sum_i w_i}{Q^2(p)}
+    =
+    \frac{1}{Q(p)}.
+\]
+Thus the formal weight is
+\[
+  W_{\rm formal}(p) = Q(p).
+\]
+
+\subsection{Jinc Kernel Mapmaking}
+
+For jinc or other kernelized mapmaking, let \(K_{pi}\) be the mapmaking kernel
+value that describes how sample \(i\) contributes to output pixel \(p\). The
+accumulators are
+\[
+  S(p) = \sum_i K_{pi} w_i d_i,
+\]
+\[
+  D(p) = \sum_i K_{pi} w_i,
+\]
+\[
+  Q(p) = \sum_i K_{pi}^2 w_i.
+\]
+The normalized map value is
+\[
+  m(p) = \frac{S(p)}{D(p)}.
+\]
+Assuming independent input samples with \(\var(d_i)=1/w_i\), the variance is
+\[
+\begin{aligned}
+  \var[m(p)]
+    &=
+    \frac{1}{D^2(p)}
+    \sum_i K_{pi}^2 w_i^2 \var(d_i) \\
+    &=
+    \frac{1}{D^2(p)}
+    \sum_i K_{pi}^2 w_i \\
+    &=
+    \frac{Q(p)}{D^2(p)}.
+\end{aligned}
+\]
+Therefore the formal inverse variance is
+\[
+  W_{\rm formal}(p) =
+    \frac{D^2(p)}{Q(p)}.
+\]
+This expression is important: the jinc kernel does not need to have unit sum.
+The normalization is carried by \(D(p)\), while the noise variance depends on
+the squared kernel through \(Q(p)\).
+
+\subsection{Limits of Formal Weights}
+
+The formal weights above are exact only under assumptions that are not exactly
+true in real TolTEC reductions:
+
+\begin{itemize}[leftmargin=1.5em]
+\item detector samples are not independent after timestream filtering,
+\item atmospheric subtraction and common-mode removal induce correlations,
+\item flagging and source masking make the effective sample ensemble
+non-uniform,
+\item mapmaking kernels correlate neighboring pixels,
+\item filtering changes the noise covariance and signal response,
+\item coaddition combines observations with different empirical noise
+properties.
+\end{itemize}
+
+Consequently, formal weights are valuable diagnostics and useful starting
+points, but they should not be the only uncertainty product used for science
+significance.
+
+\section{Map Covariance and Correlated Noise}
+
+\subsection{Full Map Covariance}
+
+Let the map be represented as a vector \(\map\) of length \(N_{\rm pix}\). The
+full map noise covariance is
+\[
+  \cov =
+    \expect{
+      (\map - \expect{\map})
+      (\map - \expect{\map})^\trans
+    }.
+\]
+The diagonal entries,
+\[
+  C_{pp} = \sigma^2_{\rm pix}(p),
+\]
+are the per-pixel variances. The off-diagonal entries,
+\[
+  C_{pq}, \qquad p\ne q,
+\]
+describe pixel-pixel covariance.
+
+In oversampled maps, the off-diagonal covariance is not a small technicality.
+It is expected from:
+
+\begin{itemize}[leftmargin=1.5em]
+\item the telescope beam,
+\item jinc or other mapmaking kernels,
+\item timestream filtering,
+\item atmospheric/common-mode subtraction,
+\item low-pass, matched, or Wiener filtering,
+\item coadding with spatially varying coverage.
+\end{itemize}
+
+The empirical covariance estimated from jackknife maps is
+\[
+  \widehat{C}_{pq} =
+    \frac{1}{N_{\rm jk}-1}
+    \sum_{j=1}^{N_{\rm jk}}
+    \left[n_j(p)-\overline{n}(p)\right]
+    \left[n_j(q)-\overline{n}(q)\right].
+\]
+Storing this full matrix is usually impossible for real maps because it scales
+as \(N_{\rm pix}^2\). Citlali therefore needs estimator-based covariance
+propagation rather than full covariance storage.
+
+\subsection{Linear Estimators}
+
+Many source measurements can be written as linear estimators:
+\[
+  \widehat{F} =
+    \sum_p a_p m(p)
+    =
+    \mat{a}^\trans \map,
+\]
+where \(\mat{a}\) is the estimator weight vector. Examples include aperture
+photometry, matched filtering evaluated at a position, and smoothed map values.
+
+The variance of this estimator is
+\[
+  \sigma_F^2 =
+    \mat{a}^\trans \cov \mat{a}.
+\]
+Expanded in pixel notation,
+\[
+  \sigma_F^2 =
+    \sum_p a_p^2 C_{pp}
+    +
+    2\sum_{p<q} a_p a_q C_{pq}.
+\]
+The second term is the correlated-noise contribution. If one uses only the
+variance map, one implicitly approximates
+\[
+  \sigma_F^2 \approx \sum_p a_p^2 C_{pp},
+\]
+which is generally wrong for oversampled maps.
+
+\subsection{Jackknife Propagation Through Estimators}
+
+The practical way to include correlated noise without storing \(\cov\) is to
+apply the same estimator to every jackknife realization:
+\[
+  F_j =
+    \mat{a}^\trans \noise_j.
+\]
+Then
+\[
+  \widehat{\sigma}_F^2 =
+    \frac{1}{N_{\rm jk}-1}
+    \sum_{j=1}^{N_{\rm jk}}
+    \left(F_j - \overline{F}\right)^2.
+\]
+This is equivalent to estimating \(\mat{a}^\trans \cov \mat{a}\) from the
+jackknife ensemble. It automatically includes pixel-pixel covariance, the jinc
+kernel, filtering, coadd weighting, edge effects, and coverage variation to the
+extent that these effects are present in the jackknife maps.
+
+This leads to the main operational rule:
+
+\begin{quote}
+For a science uncertainty, run the science estimator on the jackknife ensemble
+and use the scatter of the resulting measurements.
+\end{quote}
+
+\section{Signal-to-Noise Maps}
+
+\subsection{Pixel Signal-to-Noise}
+
+A pixel signal-to-noise map is
+\[
+  \snr_{\rm pix}(p) =
+    \frac{m(p)}{\widehat{\sigma}_{\rm pix}(p)}
+    =
+    m(p)\sqrt{W_{\rm emp}(p)}.
+\]
+This is dimensionless. It answers: ``How significant is the map value at this
+pixel relative to the empirical per-pixel RMS?''
+
+It does not, in general, answer: ``How significant is a source flux
+measurement?'' That depends on the source estimator.
+
+\subsection{Point-Source Signal-to-Noise}
+
+For point sources, the source shape is approximately known: the effective beam
+or filtered point-source response. Let \(\mat{t}_{x_0}\) be a point-source
+template centered at position \(x_0\). If the map covariance were known, the
+minimum-variance linear amplitude estimator would be
+\[
+  \widehat{F}(x_0) =
+    \frac{
+      \mat{t}_{x_0}^\trans \cov\inv \map
+    }{
+      \mat{t}_{x_0}^\trans \cov\inv \mat{t}_{x_0}
+    },
+\]
+with variance
+\[
+  \sigma_F^2(x_0) =
+    \left(
+      \mat{t}_{x_0}^\trans \cov\inv \mat{t}_{x_0}
+    \right)^{-1}.
+\]
+In practice Citlali may not have or store \(\cov\inv\). A matched filter or
+Wiener filter approximates this operation under a chosen noise model. The
+empirical uncertainty can still be obtained by applying the same point-source
+filter and response normalization to every jackknife map:
+\[
+  F_j(x_0) =
+    {\cal E}_{\rm ps}[\noise_j](x_0),
+\]
+\[
+  \widehat{\sigma}_{F,\rm ps}^2(x_0) =
+    \var_j \left[ F_j(x_0) \right].
+\]
+This point-source matched/Wiener-filter case is the special case where Citlali
+is closest to treating the source noise estimate correctly as part of the map
+product itself. The source template is specified by the beam or effective
+kernel, the filter is designed for that template, and the filtered jackknife
+maps can be propagated through the same operation as the signal map. Under
+those conditions, the relevant noise is no longer just the diagonal per-pixel
+map variance; it is the variance of the filtered point-source amplitude
+estimator. This statement depends on the filter response normalization and the
+jackknife noise normalization being applied consistently.
+
+The point-source signal-to-noise is then
+\[
+  \snr_{\rm ps}(x_0) =
+    \frac{
+      {\cal E}_{\rm ps}[\map](x_0)
+    }{
+      \widehat{\sigma}_{F,\rm ps}(x_0)
+    }.
+\]
+
+\subsection{Extended-Source Signal-to-Noise}
+
+There is no universal extended-source flux uncertainty because there is no
+universal extended-source shape. An extended-source measurement must specify an
+estimator. For an aperture or mask \(R\), a common integrated-flux estimator is
+\[
+  \widehat{F}_R =
+    \sum_{p\in R}
+    m(p)\,
+    \frac{\Omega_{\rm pix}}{\Omega_{\rm beam}},
+\]
+where \(\Omega_{\rm pix}\) is the pixel solid angle and \(\Omega_{\rm beam}\)
+is the beam solid angle. The jackknife propagated uncertainty is
+\[
+  \widehat{\sigma}_{F,R}^2 =
+    \var_j
+    \left[
+      \sum_{p\in R}
+      n_j(p)\,
+      \frac{\Omega_{\rm pix}}{\Omega_{\rm beam}}
+    \right].
+\]
+This includes pixel-pixel covariance inside the aperture. A diagonal-only
+approximation would be
+\[
+  \sigma^2_{F,R,{\rm diag}} =
+    \sum_{p\in R}
+    \widehat{\sigma}^2_{\rm pix}(p)
+    \left(
+      \frac{\Omega_{\rm pix}}{\Omega_{\rm beam}}
+    \right)^2,
+\]
+but this is not expected to be accurate when the map is oversampled.
+
+For smoothed diffuse-emission products, define a smoothing operator
+\({\cal S}_L\), such as convolution to a target scale \(L\):
+\[
+  \map_L = {\cal S}_L[\map].
+\]
+The corresponding noise map ensemble is
+\[
+  \noise_{j,L} = {\cal S}_L[\noise_j],
+\]
+and the smoothed-map variance is
+\[
+  \widehat{\sigma}^2_L(p) =
+    \var_j \left[ n_{j,L}(p) \right].
+\]
+The scale \(L\) is part of the definition of the product.
+
+\section{Raw and Filtered Maps}
+
+\subsection{Raw Maps}
+
+Raw maps should expose both formal and empirical noise products:
+\[
+  \map_{\rm raw},
+  \quad
+  W_{{\rm raw},{\rm formal}},
+  \quad
+  \{\noise_{{\rm raw},j}\},
+  \quad
+  \widehat{\sigma}^2_{{\rm raw},{\rm pix}},
+  \quad
+  W_{{\rm raw},{\rm emp}},
+  \quad
+  \snr_{{\rm raw},{\rm pix}}.
+\]
+The formal raw weights are useful for coadd weighting and diagnostics, but the
+empirical calibration determines whether the raw pixel signal-to-noise has unit
+noise width.
+
+If the formal raw weights overestimate the empirical inverse variance by an
+approximately global factor, one can define
+\[
+  \alpha_{\rm raw}
+    =
+    \left[
+      \median_{p\in\Omega}
+      W_{{\rm raw},{\rm formal}}(p)
+      \widehat{\sigma}^2_{{\rm raw},{\rm pix}}(p)
+    \right]^{-1},
+\]
+and
+\[
+  W_{{\rm raw},{\rm emp}}(p)
+    =
+    \alpha_{\rm raw}
+    W_{{\rm raw},{\rm formal}}(p).
+\]
+
+\subsection{Filtered Maps}
+
+A filtered map has a different covariance and a different astrophysical
+response:
+\[
+  \map_{\rm filt} = {\cal F}[\map_{\rm raw}],
+\]
+\[
+  \noise_{{\rm filt},j} = {\cal F}[\noise_{{\rm raw},j}].
+\]
+The filtered-map empirical variance is
+\[
+  \widehat{\sigma}^2_{{\rm filt},{\rm pix}}(p)
+    =
+    \var_j[n_{{\rm filt},j}(p)].
+\]
+
+If the filter is intended for point-source work, the filtered signal map should
+also carry a point-source response normalization. Let \(R_{\rm ps}(p)\) be the
+response of the filtered product to a unit-flux point source at position \(p\).
+Then a point-source flux map is schematically
+\[
+  F_{\rm ps}(p) =
+    \frac{\map_{\rm filt}(p)}{R_{\rm ps}(p)}.
+\]
+The noise realizations should be normalized in the same way:
+\[
+  F_{{\rm ps},j}(p) =
+    \frac{n_{{\rm filt},j}(p)}{R_{\rm ps}(p)}.
+\]
+The point-source uncertainty is
+\[
+  \widehat{\sigma}^2_{{\rm ps}}(p)
+    =
+    \var_j[F_{{\rm ps},j}(p)].
+\]
+
+\section{Individual Observations and Coadds}
+
+\subsection{Individual Observation Products}
+
+For each observation \(o\), Citlali can define:
+\[
+  \map_o,
+  \quad
+  W_{o,{\rm formal}},
+  \quad
+  \{\noise_{o,j}\},
+  \quad
+  W_{o,{\rm emp}},
+  \quad
+  \widehat{\sigma}^2_{o,{\rm pix}}.
+\]
+These products should be computed in the same mapmaking mode as the signal map:
+naive, jinc, or another future mapmaker.
+
+\subsection{Coadded Signal Maps}
+
+Suppose observation maps are coadded with weights \(A_o(p)\). A common
+inverse-variance coadd is
+\[
+  \map_{\rm coadd}(p)
+    =
+    \frac{
+      \sum_o A_o(p)\,\map_o(p)
+    }{
+      \sum_o A_o(p)
+    }.
+\]
+If the observation maps are empirically calibrated, a natural choice is
+\[
+  A_o(p) = W_{o,{\rm emp}}(p).
+\]
+If only formal weights are available, then the coadd may inherit the formal
+weight calibration errors of the inputs.
+
+\subsection{Coadded Noise Realizations}
+
+The coadded jackknife ensemble should be constructed by coadding the observation
+noise maps with the same coadd rule:
+\[
+  \noise_{{\rm coadd},j}(p)
+    =
+    \frac{
+      \sum_o A_o(p)\,\noise_{o,j}(p)
+    }{
+      \sum_o A_o(p)
+    }.
+\]
+Then
+\[
+  \widehat{\sigma}^2_{{\rm coadd},{\rm pix}}(p)
+    =
+    \var_j[n_{{\rm coadd},j}(p)].
+\]
+This final empirical coadd variance is the most robust calibration of the
+coadded map-value noise because it includes the actual coadd operation.
+
+\subsection{Indexing Jackknife Realizations Across Observations}
+
+There are several possible ways to combine observation-level jackknife
+realizations:
+
+\begin{enumerate}[leftmargin=1.5em]
+\item Use common realization index \(j\) across observations and form
+\(\noise_{{\rm coadd},j}\) from all \(\noise_{o,j}\).
+\item Randomly assign or resample observation-level jackknife signs to construct
+a larger coadd noise ensemble.
+\item Generate coadd-level jackknife splits directly from the combined data.
+\end{enumerate}
+
+The first option is simple and deterministic, but it assumes that realization
+index \(j\) has compatible meaning across observations. The second can improve
+sampling but requires clear provenance. The third is conceptually clean but may
+be harder to implement in Citlali's current reduction structure.
+
+The important requirement is that the coadd noise ensemble must represent the
+same coadd operation used for the signal map.
+
+\section{Memory and Disk Management}
+
+\subsection{Problem}
+
+Writing every possible noise-related product can be expensive. If a reduction
+has \(N_{\rm jk}\) noise maps, \(N_{\rm band}\) arrays, several filtered
+products, and both observation-level and coadd-level outputs, the disk volume
+can grow by a large multiplicative factor. In-memory storage can be similarly
+problematic.
+
+Citlali should therefore distinguish:
+
+\begin{itemize}[leftmargin=1.5em]
+\item full noise realizations,
+\item streaming accumulators,
+\item compact derived summaries,
+\item estimator-specific uncertainty products.
+\end{itemize}
+
+\subsection{Streaming Accumulators}
+
+For pixel variance, Citlali does not need to retain all jackknife maps in memory
+if it only needs the first two moments. For each pixel:
+\[
+  A_1(p) = \sum_{j=1}^{N_{\rm jk}} n_j(p),
+\]
+\[
+  A_2(p) = \sum_{j=1}^{N_{\rm jk}} n_j^2(p).
+\]
+Then
+\[
+  \widehat{\sigma}^2_{\rm pix}(p)
+    =
+    \frac{
+      A_2(p) - A_1^2(p)/N_{\rm jk}
+    }{
+      N_{\rm jk}-1
+    }.
+\]
+This requires only two map-sized accumulators per product.
+
+For a scalar-calibrated weight normalization, Citlali additionally needs a
+robust statistic of
+\[
+  r(p)=W_{\rm formal}(p)\widehat{\sigma}^2_{\rm pix}(p)
+\]
+over the valid support. This can be computed after the variance map is formed.
+
+\subsection{Estimator Accumulators}
+
+For any estimator \({\cal E}\), Citlali can stream jackknife realizations
+through the estimator:
+\[
+  F_j = {\cal E}[\noise_j].
+\]
+If \(F_j\) is a scalar, such as an aperture flux for one region, retain only
+\[
+  B_1 = \sum_j F_j,
+  \qquad
+  B_2 = \sum_j F_j^2.
+\]
+If \(F_j(p)\) is a map, such as a point-source flux map, retain map-sized
+accumulators
+\[
+  B_1(p) = \sum_j F_j(p),
+  \qquad
+  B_2(p) = \sum_j F_j^2(p).
+\]
+The estimator variance follows from the same two-moment formula.
+
+\subsection{Recommended Write Policy}
+
+The default on-disk products should be compact. A possible default set is:
+
+\begin{itemize}[leftmargin=1.5em]
+\item signal map,
+\item formal weight map,
+\item empirical weight map or empirical scalar normalization,
+\item coverage map,
+\item pixel signal-to-noise map,
+\item point-source signal-to-noise map when a point-source filter is requested,
+\item compact noise summary metadata or table.
+\end{itemize}
+
+Full jackknife noise realization maps should be optional:
+\[
+  \texttt{write\_noise\_realizations = true/false}.
+\]
+They are extremely useful for diagnostics and downstream custom analyses, but
+they should not be required for every routine reduction if Citlali can stream
+the necessary uncertainty summaries.
+
+\section{Proposed Product Taxonomy}
+
+\begin{longtable}{p{0.22\linewidth} p{0.19\linewidth} p{0.50\linewidth}}
+\toprule
+Product & Units & Meaning \\
+\midrule
+\endhead
+\(\map\) & \(\mathrm{mJy\,beam^{-1}}\) & Signal map in the native response of the map product. \\
+\(W_{\rm formal}\) & \((\mathrm{mJy\,beam^{-1}})^{-2}\) & Inverse variance predicted by timestream weights and mapmaking algebra. \\
+\(\noise_j\) & \(\mathrm{mJy\,beam^{-1}}\) & Jackknife noise realization map produced through the same pipeline path as the signal product. \\
+\(\widehat{\sigma}^2_{\rm pix}\) & \((\mathrm{mJy\,beam^{-1}})^2\) & Empirical per-pixel map-value variance from the jackknife ensemble. \\
+\(W_{\rm emp}\) & \((\mathrm{mJy\,beam^{-1}})^{-2}\) & Empirically calibrated inverse variance, either local or scalar-renormalized. \\
+\(\snr_{\rm pix}\) & dimensionless & Pixel signal-to-noise, \(m(p)\sqrt{W_{\rm emp}(p)}\). \\
+\(R_{\rm ps}\) & map units per flux unit & Point-source response of a filtered product. \\
+\(F_{\rm ps}\) & mJy & Point-source flux estimate after response normalization. \\
+\(\sigma_{F,\rm ps}\) & mJy & Point-source flux uncertainty from jackknife propagation. \\
+\(\snr_{\rm ps}\) & dimensionless & Point-source flux signal-to-noise. \\
+\(\sigma_{F,R}\) & mJy & Aperture or region-integrated flux uncertainty for specified region \(R\). \\
+\bottomrule
+\end{longtable}
+
+\section{Suggested Citlali Configuration Model}
+
+The following block is illustrative rather than a final schema:
+
+\begin{lstlisting}
+noise:
+  enabled: true
+
+  realizations:
+    n_noise: 25
+    write: false
+    write_coadd: false
+
+  pixel_variance:
+    enabled: true
+    estimator: jackknife
+    mean_subtract: true
+    support: coverage_bool
+    calibration:
+      mode: scalar_renorm        # scalar_renorm, local, smoothed_local
+      statistic: median
+      source_mask: true
+
+  products:
+    write_formal_weight: true
+    write_empirical_weight: true
+    write_pixel_snr: true
+    write_noise_summary: true
+
+  estimators:
+    point_source:
+      enabled: true
+      method: wiener             # wiener, matched_filter, beam_fit
+      write_flux_map: true
+      write_uncertainty_map: true
+      write_snr_map: true
+
+    aperture:
+      enabled: false
+      masks: []
+      write_catalog: true
+
+    smoothed_surface_brightness:
+      enabled: false
+      fwhm_arcsec: []
+      write_variance_maps: true
+\end{lstlisting}
+
+\section{Diagnostics}
+
+Citlali should report noise diagnostics that make weight failures visible
+without requiring users to inspect every map manually. Useful diagnostics
+include:
+
+\begin{itemize}[leftmargin=1.5em]
+\item \(\median_p\left[
+  W_{\rm formal}(p)\widehat{\sigma}^2_{\rm pix}(p)
+\right]\),
+\item robust scatter of \(W_{\rm formal}\widehat{\sigma}^2_{\rm pix}\),
+\item histogram width of \(n_j(p)\sqrt{W_{\rm formal}(p)}\),
+\item histogram width of \(n_j(p)\sqrt{W_{\rm emp}(p)}\),
+\item histogram width of \(m(p)\sqrt{W_{\rm emp}(p)}\),
+\item number of valid pixels in the support region,
+\item fraction of pixels with non-finite or zero variance,
+\item point-source noise width from filtered jackknife maps,
+\item comparison of formal and empirical coadd weights.
+\end{itemize}
+
+The distinction between signal-map histograms and jackknife-noise histograms is
+important. A broad signal-map \(\snr\) distribution may indicate real sky
+structure, residual background, source contamination, or edge artifacts. A
+broad jackknife-noise \(\snr\) distribution more directly indicates a noise
+normalization problem.
+
+\section{Recommended Development Phases}
+
+\subsection{Phase 1: Definitions and Metadata}
+
+Adopt explicit names for formal weights, empirical weights, pixel variance,
+pixel S/N, point-source S/N, and noise realizations. Add metadata describing:
+
+\begin{itemize}[leftmargin=1.5em]
+\item whether a weight map is formal or empirical,
+\item how empirical calibration was computed,
+\item which support region was used,
+\item whether the jackknife variance used mean subtraction,
+\item which estimator defines an S/N product,
+\item which filter response normalization was applied.
+\end{itemize}
+
+\subsection{Phase 2: Raw and Filtered Pixel Variance}
+
+Implement streaming two-moment accumulators for raw and filtered jackknife maps.
+Use them to produce:
+\[
+  \widehat{\sigma}^2_{\rm pix},
+  \quad
+  W_{\rm emp},
+  \quad
+  \snr_{\rm pix}.
+\]
+Keep full noise-realization writing optional.
+
+\subsection{Phase 3: Point-Source Estimator Products}
+
+Define the point-source estimator used by filtered maps. Apply the same
+estimator and response normalization to signal and jackknife maps. Produce:
+\[
+  F_{\rm ps},
+  \quad
+  \sigma_{F,\rm ps},
+  \quad
+  \snr_{\rm ps}.
+\]
+This is likely the most important science-facing uncertainty product for point
+source catalogs.
+
+\subsection{Phase 4: Coadd Noise Propagation}
+
+Construct coadd-level jackknife products by applying the same coadd weights and
+support masks used for the signal coadd. Calibrate final coadd empirical
+weights from the coadd noise ensemble.
+
+\subsection{Phase 5: Extended-Source Estimator Interface}
+
+Add an estimator interface for aperture, template, or smoothed-map uncertainty
+products. Extended-source products should require explicit estimator
+definitions rather than relying on a generic source-flux uncertainty.
+
+\section{Open Questions}
+
+\begin{enumerate}[leftmargin=1.5em]
+\item Should empirical pixel variance use the jackknife second moment or
+sample variance with mean subtraction by default?
+\item Should raw empirical weights default to scalar renormalization or local
+variance maps?
+\item What support region should be used for scalar calibration: coverage cut,
+edge-guarded region, source-masked region, or high-coverage core?
+\item Should individual-observation empirical weights be used in coadding, or
+should the coadd be calibrated only after formal coaddition?
+\item How should jackknife realization indices be matched or resampled across
+observations in coadds?
+\item What is the canonical point-source response normalization for each
+filtered product?
+\item Which products should be default on disk, and which should be optional
+debug/provenance products?
+\item How should Citlali expose extended-source estimators without forcing a
+single definition of extended-source flux?
+\end{enumerate}
+
+\section{Summary}
+
+Citlali should treat noise estimation as an estimator-dependent problem. The
+formal weight map is a useful mapmaker prediction, but jackknife realizations
+are the empirical noise ensemble. The diagonal variance of that ensemble gives
+the uncertainty of map values, while source-flux uncertainties require applying
+the source estimator to the same ensemble.
+
+For oversampled TolTEC maps, correlated noise is unavoidable. The mathematically
+correct variance of a linear estimator is
+\[
+  \sigma_F^2 = \mat{a}^\trans \cov \mat{a},
+\]
+not merely a sum over per-pixel variances. Since storing \(\cov\) is generally
+impractical, the practical solution is to propagate jackknife noise
+realizations through the same estimators used on the signal map. This approach
+handles naive and jinc mapmaking, raw and filtered maps, individual
+observations, and coadds, while allowing Citlali to control memory and disk use
+through streaming accumulators and optional realization writing.
+
+\end{document}

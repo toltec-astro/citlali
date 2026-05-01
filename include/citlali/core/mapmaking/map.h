@@ -77,6 +77,13 @@ public:
     // maps (n_rows, n_cols) of length n_maps
     std::vector<Eigen::MatrixXd> signal, weight, kernel, coverage;
 
+    // empirical noise products derived from jackknife noise maps
+    std::vector<Eigen::MatrixXd> weight_formal, noise_mean, noise_variance,
+                                weight_empirical, sig2noise_pixel,
+                                point_source_uncertainty, sig2noise_point_source;
+    Eigen::VectorXd noise_weight_median_ratio, noise_weight_scale,
+                    noise_s2n_sigma, noise_valid_pixels;
+
     // optional memo-style gridding denominator used before finalizing inverse-variance weights
     std::vector<Eigen::MatrixXd> grid_weight;
 
@@ -186,6 +193,10 @@ public:
     void calc_median_err();
     // calculate average rms of noise maps
     void calc_median_rms();
+    // calculate empirical noise products from jackknife noise maps
+    void calc_noise_products(bool, bool = true);
+    void calc_noise_products(Eigen::Index, bool, bool = true);
+    void clear_noise_products();
     // calculate mean rms of signal maps within an annulus
     void calc_median_rms_annulus(double, double);
     // find sources in maps
