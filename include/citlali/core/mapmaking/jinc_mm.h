@@ -352,6 +352,25 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
 
+    // pointer to map buffer with noise maps
+    map_buffer_t *nmb = nullptr;
+    if (run_noise) {
+        nmb = use_cmb ? &cmb : (use_omb ? &omb : nullptr);
+    }
+
+    double noise_cube_gb = 0.0;
+    if (run_noise && nmb != nullptr) {
+        noise_cube_gb = 8.0 * static_cast<double>(nmb->n_rows) * static_cast<double>(nmb->n_cols) *
+                        static_cast<double>(nmb->noise.size()) * static_cast<double>(nmb->n_noise) / 1e9;
+    }
+    constexpr double direct_noise_accum_threshold_gb = 16.0;
+    const bool direct_noise_accum =
+        run_noise && nmb != nullptr && noise_cube_gb >= direct_noise_accum_threshold_gb;
+    if (direct_noise_accum && logger) {
+        logger->info("jinc noise cube is {} GB; using locked direct accumulation instead of full scratch copy",
+                     static_cast<float>(noise_cube_gb));
+    }
+
     struct TouchBounds {
         int row_min;
         int row_max;
@@ -430,7 +449,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             ensure_zero_matrix_vec(omb_copy.kernel, static_cast<Eigen::Index>(omb.kernel.size()), omb.n_rows, omb.n_cols);
         }
     }
-    if (use_omb) {
+    if (use_omb && !direct_noise_accum) {
         ensure_zero_noise_vec(omb_copy.noise, omb.noise);
     }
 
@@ -438,15 +457,18 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     if (use_cmb) {
         cmb_copy.n_rows = cmb.n_rows;
         cmb_copy.n_cols = cmb.n_cols;
-        ensure_zero_noise_vec(cmb_copy.noise, cmb.noise);
+        if (!direct_noise_accum) {
+            ensure_zero_noise_vec(cmb_copy.noise, cmb.noise);
+        }
+    }
+    if (direct_noise_accum) {
+        std::vector<Eigen::Tensor<double, 3>>().swap(omb_copy.noise);
+        std::vector<Eigen::Tensor<double, 3>>().swap(cmb_copy.noise);
     }
 
-    // pointer to map buffer with noise maps
-    map_buffer_t *nmb = nullptr;
     map_buffer_t *nmb_copy = nullptr;
 
-    if (run_noise) {
-        nmb = use_cmb ? &cmb : (use_omb ? &omb : nullptr);
+    if (run_noise && !direct_noise_accum) {
         nmb_copy = use_cmb ? &cmb_copy : (use_omb ? &omb_copy : nullptr);
     }
 
@@ -459,7 +481,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     }
 
     std::vector<TouchBounds> nmb_bounds;
-    if (run_noise && nmb != nullptr && nmb_copy != nullptr) {
+    if (run_noise && !direct_noise_accum && nmb != nullptr && nmb_copy != nullptr) {
         nmb_bounds.reserve(nmb->noise.size());
         for (Eigen::Index ii = 0; ii < static_cast<Eigen::Index>(nmb->noise.size()); ++ii) {
             nmb_bounds.emplace_back(nmb->n_rows, nmb->n_cols);
@@ -666,20 +688,38 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                             const auto mat_block = jinc_mat.block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
                             signal = in.scans.data(j,i)*in.weights.data(i);
 
-                            for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
-                                // randomizing on dets
-                                if (nmb->randomize_dets) {
-                                    noise_v = in.noise.data(nn,i)*signal;
+                            if (direct_noise_accum) {
+                                std::scoped_lock<std::mutex> lk(*jinc_mutex);
+                                for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
+                                    // randomizing on dets
+                                    if (nmb->randomize_dets) {
+                                        noise_v = in.noise.data(nn,i)*signal;
+                                    }
+                                    else {
+                                        noise_v = in.noise.data(nn)*signal;
+                                    }
+                                    Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(nmb->noise[map_index].data() + nn * nmb->n_rows * nmb->n_cols,
+                                                                                                                   nmb->n_rows, nmb->n_cols);
+                                    auto noise_block = noise_matrix.block(lower_row,lower_col,size_rows,size_cols);
+                                    noise_block.array() += (mat_block.array() * noise_v);
                                 }
-                                else {
-                                    noise_v = in.noise.data(nn)*signal;
-                                }
-                                Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(nmb_copy->noise[map_index].data() + nn * nmb->n_rows * nmb->n_cols,
-                                                                                                               nmb->n_rows, nmb->n_cols);
-                                auto noise_block = noise_matrix.block(lower_row,lower_col,size_rows,size_cols);
-                                noise_block.array() += (mat_block.array() * noise_v);
                             }
-                            nmb_bounds[static_cast<size_t>(map_index)].update(lower_row, upper_row, lower_col, upper_col);
+                            else {
+                                for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
+                                    // randomizing on dets
+                                    if (nmb->randomize_dets) {
+                                        noise_v = in.noise.data(nn,i)*signal;
+                                    }
+                                    else {
+                                        noise_v = in.noise.data(nn)*signal;
+                                    }
+                                    Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(nmb_copy->noise[map_index].data() + nn * nmb->n_rows * nmb->n_cols,
+                                                                                                                   nmb->n_rows, nmb->n_cols);
+                                    auto noise_block = noise_matrix.block(lower_row,lower_col,size_rows,size_cols);
+                                    noise_block.array() += (mat_block.array() * noise_v);
+                                }
+                                nmb_bounds[static_cast<size_t>(map_index)].update(lower_row, upper_row, lower_col, upper_col);
+                            }
                         }
                     }
                 }
@@ -716,7 +756,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             }
         }
 
-        if (run_noise) {
+        if (run_noise && !direct_noise_accum) {
             for (size_t i = 0; i < nmb->noise.size(); ++i) {
                 const auto &bounds = nmb_bounds[i];
                 if (!bounds.touched) {
