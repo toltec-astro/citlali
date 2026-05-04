@@ -774,6 +774,11 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         // window size for spikes
         get_config_value(config, despiker.window_size, missing_keys, invalid_keys,
                          std::tuple{"timestream","raw_time_chunk","despike","window_size"});
+        despiker.run_legacy = true;
+        if (config.has(std::tuple{"timestream","raw_time_chunk","despike","legacy"})) {
+            get_config_value(config, despiker.run_legacy, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","despike","legacy","enabled"});
+        }
 
         despiker.local_residual = {};
         if (config.has(std::tuple{"timestream","raw_time_chunk","despike","local_residual"})) {
@@ -873,7 +878,8 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         }
         if (despiker.local_residual.enabled) {
             logger->info(
-                "raw_time_chunk.despike.local_residual enabled: window_sec={} sigma_scale={} delta_sigma_scale={} compact_raw_gate(enabled={} candidate_rel_sigma_scale={} candidate_sigma_scale_eff={} window_sec={} half_peak_frac={} max_width_sec={} max_step_shift_z={}) compact_delta_gate(enabled={} window_sec={} half_peak_frac={} max_width_sec={} max_step_shift_z={})",
+                "raw_time_chunk.despike.local_residual enabled: legacy_enabled={} window_sec={} sigma_scale={} delta_sigma_scale={} compact_raw_gate(enabled={} candidate_rel_sigma_scale={} candidate_sigma_scale_eff={} window_sec={} half_peak_frac={} max_width_sec={} max_step_shift_z={}) compact_delta_gate(enabled={} window_sec={} half_peak_frac={} max_width_sec={} max_step_shift_z={})",
+                despiker.run_legacy,
                 despiker.local_residual.window_sec,
                 despiker.local_residual.sigma_scale,
                 despiker.local_residual.delta_sigma_scale,

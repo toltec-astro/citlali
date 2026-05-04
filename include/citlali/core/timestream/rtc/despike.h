@@ -132,6 +132,9 @@ public:
     // for window size
     bool run_filter = false;
 
+    // run the legacy full-scan raw/delta despike in addition to local residual gates
+    bool run_legacy = true;
+
     // size of region to merge flags (samples)
     int size = 10;
     // maximum window length (seconds) for sigma estimation
@@ -536,7 +539,7 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
             int n_spikes = 0;
 
             // also flag single-sample outliers in the raw signal (robust MAD)
-            {
+            if (run_legacy) {
                 Eigen::VectorXd raw = scans.col(det);
                 auto [med, sigma] = robust_center_scale(raw, base_flags);
                 if (std::isfinite(med) && std::isfinite(sigma) && sigma > 0.0) {
@@ -743,91 +746,92 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                 }
             }
 
-            // array of delta's between adjacent points
-            Eigen::VectorXd delta = scans.col(det).tail(n_pts - 1) - scans.col(det).head(n_pts - 1);
-            // mask deltas adjacent to pre-existing or raw-flagged samples
-            for (Eigen::Index i = 0; i < n_pts - 1; ++i) {
-                if (base_flags(i) == 1 || base_flags(i + 1) == 1 ||
-                    raw_flags(i) == 1 || raw_flags(i + 1) == 1 ||
-                    local_flags(i) == 1 || local_flags(i + 1) == 1) {
-                    delta(i) = 0;
+            if (run_legacy) {
+                // array of delta's between adjacent points
+                Eigen::VectorXd delta = scans.col(det).tail(n_pts - 1) - scans.col(det).head(n_pts - 1);
+                // mask deltas adjacent to pre-existing or raw-flagged samples
+                for (Eigen::Index i = 0; i < n_pts - 1; ++i) {
+                    if (base_flags(i) == 1 || base_flags(i + 1) == 1 ||
+                        raw_flags(i) == 1 || raw_flags(i + 1) == 1 ||
+                        local_flags(i) == 1 || local_flags(i + 1) == 1) {
+                        delta(i) = 0;
+                    }
                 }
-            }
 
-            // minimum amplitude of spike
-            const double delta_sigma = engine_utils::calc_std_dev(delta);
-            double cutoff = min_spike_sigma * delta_sigma;
+                // minimum amplitude of spike
+                const double delta_sigma = engine_utils::calc_std_dev(delta);
+                double cutoff = min_spike_sigma * delta_sigma;
 
-            // mean subtracted delta array
-            Eigen::VectorXd diff = abs(delta.array() - delta.mean());
-            if (std::isfinite(delta_sigma) && delta_sigma > 0.) {
-                diag.max_delta_abs_z = diff.maxCoeff() / delta_sigma;
-            }
-
-            // run the spike finder,
-            spike_finder(det_flags, delta, diff, n_spikes, cutoff);
-
-            // variable to control spike_finder while loop
-            bool new_spikes_found = ((diff.segment(1,n_pts - 2).array() > cutoff).count() > 0) ? 1 : 0;
-
-            // keep despiking recursively to remove effects on the mean from large spikes
-            while (new_spikes_found) {
-                // if no new spikes found, set new_found to zero to end while loop
-                new_spikes_found = ((diff.segment(1,n_pts - 2).array() > cutoff).count() > 0) ? 1 : 0;
-
-                // only run if there are spikes
-                if (new_spikes_found) {
-                    spike_finder(det_flags, delta, diff, n_spikes, cutoff);
+                // mean subtracted delta array
+                Eigen::VectorXd diff = abs(delta.array() - delta.mean());
+                if (std::isfinite(delta_sigma) && delta_sigma > 0.) {
+                    diag.max_delta_abs_z = diff.maxCoeff() / delta_sigma;
                 }
-            }
 
-            // count up the number of spikes
-            n_spikes = (det_flags.head(n_pts - 1).array() == 1).count();
+                // run the spike finder,
+                spike_finder(det_flags, delta, diff, n_spikes, cutoff);
 
-            // if there are other spikes within set number of samples after a spike, set only the
-            // center value to be a spike
-            for (Eigen::Index i = 0; i < n_pts - 1; ++i) {
-                if (det_flags(i) == 1) {
-                    if (i >= n_pts - 1) {
-                        break;
+                // variable to control spike_finder while loop
+                bool new_spikes_found = ((diff.segment(1,n_pts - 2).array() > cutoff).count() > 0) ? 1 : 0;
+
+                // keep despiking recursively to remove effects on the mean from large spikes
+                while (new_spikes_found) {
+                    // if no new spikes found, set new_found to zero to end while loop
+                    new_spikes_found = ((diff.segment(1,n_pts - 2).array() > cutoff).count() > 0) ? 1 : 0;
+
+                    // only run if there are spikes
+                    if (new_spikes_found) {
+                        spike_finder(det_flags, delta, diff, n_spikes, cutoff);
                     }
-                    int size_loop = std::min(size, static_cast<int>(n_pts - i - 1));
-                    // check the size of the region to set un_flagged if a flag is found.
-                    if ((n_pts - i - 1) < size_loop) {
-                        logger->trace("rng {} {} {}", (n_pts - i - 1), size,i );
-                        size_loop = n_pts - i - 1;
-                    }
-                    if (size_loop <= 0) {
-                        break;
-                    }
+                }
 
-                    // count up the flags in the region
-                    int c = (det_flags.segment(i + 1, size_loop).array() == 1).count();
+                // count up the number of spikes
+                n_spikes = (det_flags.head(n_pts - 1).array() == 1).count();
 
-                    // if flags are found
-                    if (c > 0) {
-                        // remove those flags from the total count
-                        n_spikes -= c;
-                        // set region to un_flagged (including current sample)
-                        det_flags.segment(i, size_loop + 1).setZero();
-
-                        // is this a bug?  if n_pts - i <= size/2, i + size/2 >= n_pts
-                        // for now, let's limit it to i + size/2 < n_pts since the
-                        // start and end of the scan are not used due to
-                        // filtering
-                        if ((i + size_loop/2) < n_pts) {
-                            det_flags(i + size_loop/2) = 1;
+                // if there are other spikes within set number of samples after a spike, set only the
+                // center value to be a spike
+                for (Eigen::Index i = 0; i < n_pts - 1; ++i) {
+                    if (det_flags(i) == 1) {
+                        if (i >= n_pts - 1) {
+                            break;
                         }
+                        int size_loop = std::min(size, static_cast<int>(n_pts - i - 1));
+                        // check the size of the region to set un_flagged if a flag is found.
+                        if ((n_pts - i - 1) < size_loop) {
+                            logger->trace("rng {} {} {}", (n_pts - i - 1), size,i );
+                            size_loop = n_pts - i - 1;
+                        }
+                        if (size_loop <= 0) {
+                            break;
+                        }
+
+                        // count up the flags in the region
+                        int c = (det_flags.segment(i + 1, size_loop).array() == 1).count();
+
+                        // if flags are found
+                        if (c > 0) {
+                            // remove those flags from the total count
+                            n_spikes -= c;
+                            // set region to un_flagged (including current sample)
+                            det_flags.segment(i, size_loop + 1).setZero();
+
+                            // is this a bug?  if n_pts - i <= size/2, i + size/2 >= n_pts
+                            // for now, let's limit it to i + size/2 < n_pts since the
+                            // start and end of the scan are not used due to
+                            // filtering
+                            if ((i + size_loop/2) < n_pts) {
+                                det_flags(i + size_loop/2) = 1;
+                            }
+                        }
+
+                        // increment so we go to the next sample region
+                        i = i + size_loop - 1;
                     }
-
-                    // increment so we go to the next sample region
-                    i = i + size_loop - 1;
                 }
-            }
-            diag.delta_spike_count = n_spikes;
+                diag.delta_spike_count = n_spikes;
 
-            // now loop through if spikes were found
-            if (n_spikes > 0) {
+                // now loop through if spikes were found
+                if (n_spikes > 0) {
                 // recount spikes
                 n_spikes = (det_flags.head(n_pts - 1).array() == 1).count();
 
@@ -943,7 +947,8 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                     }
                 }
 
-            } // end of "if (n_spikes > 0)" loop
+                } // end of "if (n_spikes > 0)" loop
+            }
 
             // apply raw-sample flags after delta-based spike handling
             if ((raw_flags.array() == 1).any()) {

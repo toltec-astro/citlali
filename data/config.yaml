@@ -152,6 +152,8 @@ timestream: # timestream reduction parameters
       min_spike_sigma: 8.0 # minimum spike sigma value (n x sigma of TOD)
       time_constant_sec: 0.015 # spike decay time
       window_size: 32 # number of samples to flag on either side of spike (ignored if TOD filtering)
+      legacy:
+        enabled: true # run the legacy full-scan raw/delta despiker in addition to local residual gates
       local_residual: # optional second despike pass on locally detrended detector residuals
         enabled: false # enable or disable the local-residual compact-event pass
         window_sec: 0.25 # smoothing window used to define the local baseline before thresholding
