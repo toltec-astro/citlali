@@ -4245,14 +4245,24 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         fits_io->at(map_index).add_hdu("signal_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->signal[i]);
         fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
         fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
+        fits_io->at(map_index).hdus.back()->addKey("BUNIT", mb->sig_unit, "Physical unit of image values");
+        fits_io->at(map_index).hdus.back()->addKey("DESCRIP", "Signal map in map units", "Image product description");
 
         // weight map
         fits_io->at(map_index).add_hdu("weight_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->weight[i]);
         fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
-        fits_io->at(map_index).hdus.back()->addKey("UNIT", "1/("+mb->sig_unit+")^2", "Unit of map");
+        const std::string weight_unit = "1/("+mb->sig_unit+")^2";
+        fits_io->at(map_index).hdus.back()->addKey("UNIT", weight_unit, "Unit of map");
+        fits_io->at(map_index).hdus.back()->addKey("BUNIT", weight_unit, "Physical unit of image values");
         fits_io->at(map_index).hdus.back()->addKey("TYPE",
             (run_noise_products && run_noise && apply_empirical_noise_weights) ? "empirical" : "formal",
             "Weight calibration type");
+        fits_io->at(map_index).hdus.back()->addKey(
+            "DESCRIP",
+            (run_noise_products && run_noise && apply_empirical_noise_weights)
+                ? "Jackknife-calibrated inverse variance weight map"
+                : "Formal mapmaker inverse variance weight map",
+            "Image product description");
         if (i < mb->noise_weight_scale.size()) {
             fits_io->at(map_index).hdus.back()->addKey("EMP_SCALE", mb->noise_weight_scale(i),
                                                        "Empirical weight scale");
@@ -4279,8 +4289,13 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             fits_io->at(map_index).add_hdu("weight_formal_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
                                            mb->weight_formal[i]);
             fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
-            fits_io->at(map_index).hdus.back()->addKey("UNIT", "1/("+mb->sig_unit+")^2", "Unit of map");
+            fits_io->at(map_index).hdus.back()->addKey("UNIT", weight_unit, "Unit of map");
+            fits_io->at(map_index).hdus.back()->addKey("BUNIT", weight_unit, "Physical unit of image values");
             fits_io->at(map_index).hdus.back()->addKey("TYPE", "formal", "Weight calibration type");
+            fits_io->at(map_index).hdus.back()->addKey(
+                "DESCRIP",
+                "Formal mapmaker inverse variance before empirical calibration",
+                "Image product description");
         }
 
         if (i < static_cast<Eigen::Index>(mb->noise_variance.size()) &&
@@ -4289,7 +4304,13 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             fits_io->at(map_index).add_hdu("noise_variance_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
                                            mb->noise_variance[i]);
             fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
-            fits_io->at(map_index).hdus.back()->addKey("UNIT", "("+mb->sig_unit+")^2", "Unit of map");
+            const std::string variance_unit = "("+mb->sig_unit+")^2";
+            fits_io->at(map_index).hdus.back()->addKey("UNIT", variance_unit, "Unit of map");
+            fits_io->at(map_index).hdus.back()->addKey("BUNIT", variance_unit, "Physical unit of image values");
+            fits_io->at(map_index).hdus.back()->addKey(
+                "DESCRIP",
+                "Per-pixel variance estimated from jackknife noise maps",
+                "Image product description");
         }
 
         // kernel map
@@ -4315,6 +4336,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             fits_io->at(map_index).hdus.back()->addKey("FWHM",fwhm,"Kernel fwhm (arcsec)");
             fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
             fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
+            fits_io->at(map_index).hdus.back()->addKey("BUNIT", mb->sig_unit, "Physical unit of image values");
+            fits_io->at(map_index).hdus.back()->addKey("DESCRIP", "Mapmaking or filtering kernel image", "Image product description");
         }
 
         // coverage map
@@ -4322,6 +4345,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             fits_io->at(map_index).add_hdu("coverage_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->coverage[i]);
             fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
             fits_io->at(map_index).hdus.back()->addKey("UNIT", "sec", "Unit of map");
+            fits_io->at(map_index).hdus.back()->addKey("BUNIT", "sec", "Physical unit of image values");
+            fits_io->at(map_index).hdus.back()->addKey("DESCRIP", "Effective integration time coverage map", "Image product description");
         }
 
         /* coverage bool and signal-to-noise maps */
@@ -4345,6 +4370,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             fits_io->at(map_index).add_hdu("coverage_bool_" + map_name + rtcproc.polarization.stokes_params[stokes_index], coverage_bool);
             fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
             fits_io->at(map_index).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
+            fits_io->at(map_index).hdus.back()->addKey("BUNIT", "N/A", "Physical unit of image values");
+            fits_io->at(map_index).hdus.back()->addKey("DESCRIP", "Boolean valid-coverage support mask", "Image product description");
             fits_io->at(map_index).hdus.back()->addKey("WTTHRESH", weight_threshold, "Weight threshold");
 
             // legacy signal-to-noise map name retained for compatibility; this is pixel S/N.
@@ -4360,13 +4387,23 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             fits_io->at(map_index).add_hdu("sig2noise_" + map_name + rtcproc.polarization.stokes_params[stokes_index], sig2noise);
             fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
             fits_io->at(map_index).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
+            fits_io->at(map_index).hdus.back()->addKey("BUNIT", "N/A", "Physical unit of image values");
             fits_io->at(map_index).hdus.back()->addKey("TYPE", "pixel", "S/N estimator type");
+            fits_io->at(map_index).hdus.back()->addKey(
+                "DESCRIP",
+                "Legacy pixel S/N: signal times sqrt(weight)",
+                "Image product description");
 
             fits_io->at(map_index).add_hdu("sig2noise_pixel_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
                                            sig2noise);
             fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
             fits_io->at(map_index).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
+            fits_io->at(map_index).hdus.back()->addKey("BUNIT", "N/A", "Physical unit of image values");
             fits_io->at(map_index).hdus.back()->addKey("TYPE", "pixel", "S/N estimator type");
+            fits_io->at(map_index).hdus.back()->addKey(
+                "DESCRIP",
+                "Pixel S/N map: signal times sqrt(empirical weight)",
+                "Image product description");
 
             const bool is_filtered_output =
                 (fits_io == &filtered_fits_io_vec) ||
@@ -4379,18 +4416,33 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                                                mb->signal[i]);
                 fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
                 fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
+                fits_io->at(map_index).hdus.back()->addKey("BUNIT", mb->sig_unit, "Physical unit of image values");
+                fits_io->at(map_index).hdus.back()->addKey(
+                    "DESCRIP",
+                    "Point-source flux estimate after filter response normalization",
+                    "Image product description");
                 fits_io->at(map_index).hdus.back()->addKey("RESPNORM", 1.0, "Point-source response normalization applied");
 
                 fits_io->at(map_index).add_hdu("point_source_uncertainty_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
                                                mb->point_source_uncertainty[i]);
                 fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
                 fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
+                fits_io->at(map_index).hdus.back()->addKey("BUNIT", mb->sig_unit, "Physical unit of image values");
+                fits_io->at(map_index).hdus.back()->addKey(
+                    "DESCRIP",
+                    "Point-source 1-sigma uncertainty from jackknife maps",
+                    "Image product description");
 
                 fits_io->at(map_index).add_hdu("sig2noise_point_source_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
                                                mb->sig2noise_point_source[i]);
                 fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
                 fits_io->at(map_index).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
+                fits_io->at(map_index).hdus.back()->addKey("BUNIT", "N/A", "Physical unit of image values");
                 fits_io->at(map_index).hdus.back()->addKey("TYPE", "point_source", "S/N estimator type");
+                fits_io->at(map_index).hdus.back()->addKey(
+                    "DESCRIP",
+                    "Point-source S/N from flux divided by jackknife uncertainty",
+                    "Image product description");
             }
         }
 

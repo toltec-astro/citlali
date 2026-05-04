@@ -946,6 +946,13 @@ void Beammap::loop_pipeline() {
                 // detector absolute pointing
                 netCDF::NcVar det_ra_v = fo.getVar("det_ra");
                 netCDF::NcVar det_dec_v = fo.getVar("det_dec");
+                const bool write_tangent_pointing = !det_lat_v.isNull() && !det_lon_v.isNull();
+                const bool write_abs_pointing = telescope.pixel_axes == "radec" &&
+                                                !det_ra_v.isNull() && !det_dec_v.isNull();
+                if (!write_tangent_pointing && !write_abs_pointing) {
+                    logger->debug("tod file {} has no detector pointing variables; skipping final detector pointing update", val);
+                    continue;
+                }
 
                 // start indices for data
                 std::vector<std::size_t> start_index = {0, 0};
@@ -960,13 +967,15 @@ void Beammap::loop_pipeline() {
                         k++;
                         // append detector latitudes
                         Eigen::VectorXd lat_row = lat[i].row(j);
-                        det_lat_v.putVar(start_index, size, lat_row.data());
 
                         // append detector longitudes
                         Eigen::VectorXd lon_row = lon[i].row(j);
-                        det_lon_v.putVar(start_index, size, lon_row.data());
+                        if (write_tangent_pointing) {
+                            det_lat_v.putVar(start_index, size, lat_row.data());
+                            det_lon_v.putVar(start_index, size, lon_row.data());
+                        }
 
-                        if (telescope.pixel_axes == "radec") {
+                        if (write_abs_pointing) {
                             // get absolute pointing
                             auto [dec, ra] = engine_utils::tangent_to_abs(lat_row, lon_row, telescope.tel_header["Header.Source.Ra"](0),
                                                                           telescope.tel_header["Header.Source.Dec"](0));
