@@ -1,24 +1,50 @@
 \documentclass[11pt]{article}
 
-\usepackage[margin=1in]{geometry}
+% -------------------------------------------------
+% Packages
+% -------------------------------------------------
+\usepackage[margin=0.75in]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{lmodern}
+\usepackage{setspace}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{array}
+\usepackage{tabularx}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\graphicspath{{assets/}{figures/}{./}}
 \usepackage{enumitem}
 \usepackage{xcolor}
 \usepackage{hyperref}
 \usepackage{listings}
 
+% -------------------------------------------------
+% Formatting
+% -------------------------------------------------
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.75em}
+\onehalfspacing
+
 \hypersetup{
   colorlinks=true,
-  linkcolor=blue!50!black,
-  urlcolor=blue!50!black
+  linkcolor=blue,
+  urlcolor=blue,
+  citecolor=blue
 }
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{TolTEC Technical Memo}
+\fancyhead[R]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
 
 \lstset{
   basicstyle=\ttfamily\small,
@@ -29,10 +55,36 @@
   showstringspaces=false
 }
 
-\title{Noise Estimation and Signal-to-Noise Products in Citlali:\\
+% -------------------------------------------------
+% Memo metadata
+% -------------------------------------------------
+\newcommand{\memotitle}{Noise Estimation and Signal-to-Noise Products in Citlali:\\
 Definitions, Correlated Noise, and Proposed Data Products}
-\author{}
-\date{2026-05-01}
+\newcommand{\memonumber}{TolTEC-TM-2026-XXX}
+\newcommand{\memoauthor}{G. Wilson \& Codex}
+\newcommand{\memoaffiliation}{Department of Astronomy, University of Massachusetts Amherst}
+\newcommand{\memodate}{2026-05-01}
+\newcommand{\memostatus}{Internal Draft}
+\newcommand{\memoversion}{v0.1}
+\newcommand{\memoproject}{TolTEC / Citlali}
+\newcommand{\memoreviewers}{TolTEC Data Reduction Working Group}
+\newcommand{\memodistribution}{Internal TolTEC Collaboration}
+\newcommand{\memokeywords}{Citlali, noise, jackknife, weights, signal-to-noise, correlated noise}
+\newcommand{\memoabstract}{This memo defines the intended meaning of Citlali noise-related
+products and proposes a unified treatment for formal weights, empirical
+jackknife noise realizations, raw and filtered signal-to-noise maps, and
+estimator-specific source-flux uncertainties. The central recommendation is to
+keep full jackknife realizations as the empirical noise ensemble, compute
+calibrated summary products from that ensemble, and make all science
+signal-to-noise products explicit about the estimator they represent.}
+
+\newcommand{\projectlogo}{%
+  \IfFileExists{assets/toltec_logo.png}{
+    \includegraphics[width=0.2\textwidth]{assets/toltec_logo.png}
+  }{
+    {\small\textbf{TolTEC}}
+  }
+}
 
 \newcommand{\map}{\boldsymbol{m}}
 \newcommand{\noise}{\boldsymbol{n}}
@@ -51,8 +103,56 @@ Definitions, Correlated Noise, and Proposed Data Products}
 \newcommand{\snr}{\mathrm{S/N}}
 
 \begin{document}
-\maketitle
+
+\begin{titlepage}
+  \thispagestyle{empty}
+
+  \begin{center}
+    {\projectlogo\par}
+    \vspace{1.2cm}
+
+    {\Large\bfseries TolTEC Technical Memo\par}
+    \vspace{0.6cm}
+
+    {\LARGE\bfseries \memotitle\par}
+    \vspace{1.0cm}
+
+    {\large \memoauthor\par}
+    {\normalsize \memoaffiliation\par}
+
+    \vspace{0.8cm}
+
+    {\normalsize \memodate\par}
+  \end{center}
+
+  \begin{center}
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{0.92\textwidth}{>{\bfseries}p{0.28\textwidth} X}
+      \toprule
+      Memo Number      & \memonumber \\
+      Version          & \memoversion \\
+      Status           & \memostatus \\
+      Project          & \memoproject \\
+      Author           & \memoauthor \\
+      Reviewers        & \memoreviewers \\
+      Distribution     & \memodistribution \\
+      Keywords         & \memokeywords \\
+      \bottomrule
+    \end{tabularx}
+  \end{center}
+
+  \vspace{0.5cm}
+
+  \begin{center}
+    \begin{minipage}{0.92\textwidth}
+      \small
+      \textbf{Abstract:} \memoabstract
+    \end{minipage}
+  \end{center}
+\end{titlepage}
+
 \tableofcontents
+\newpage
 
 \section{Purpose}
 
