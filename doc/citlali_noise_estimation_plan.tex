@@ -888,7 +888,7 @@ The default on-disk products should be compact. A possible default set is:
 
 Full jackknife noise realization maps should be optional:
 \[
-  \texttt{write\_noise\_realizations = true/false}.
+  \texttt{noise\_maps.write\_realizations = true/false}.
 \]
 They are extremely useful for diagnostics and downstream custom analyses, but
 they should not be required for every routine reduction if Citlali can stream
@@ -915,42 +915,45 @@ Product & Units & Meaning \\
 \bottomrule
 \end{longtable}
 
-\section{Suggested Citlali Configuration Model}
+\section{Citlali Configuration}
 
-The following block is illustrative rather than a final schema:
+The current implemented Citlali noise-map configuration is:
 
 \begin{lstlisting}
-noise:
+noise_maps:
   enabled: true
-
-  realizations:
-    n_noise: 25
-    write: false
-    write_coadd: false
-
-  pixel_variance:
-    enabled: true
-    estimator: jackknife
-    mean_subtract: true
-    support: coverage_bool
-    calibration:
-      mode: scalar_renorm        # scalar_renorm, local, smoothed_local
-      statistic: median
-      source_mask: true
-
+  n_noise_maps: 25
+  randomize_dets: true
+  write_realizations: false
   products:
-    write_formal_weight: true
-    write_empirical_weight: true
-    write_pixel_snr: true
-    write_noise_summary: true
+    enabled: true
+    apply_empirical_weights: true
+\end{lstlisting}
 
+Here \texttt{write\_realizations} controls whether the full jackknife noise
+realization maps are written as separate FITS files. This key replaces older
+or proposed names such as \texttt{write}, \texttt{write\_coadd}, or
+\texttt{write\_noise\_realizations}; those names are not part of the current
+implemented Citlali configuration. If \texttt{coadd.enabled=true}, written
+realization FITS files are coadd noise maps. If coadding is disabled, written
+realization FITS files are per-observation noise maps.
+
+The \texttt{products} block controls the summary noise products computed from
+the jackknife ensemble. With \texttt{products.enabled=true}, Citlali computes
+the jackknife variance, formal-to-empirical weight calibration, empirical
+weights, and explicit pixel signal-to-noise products. With
+\texttt{products.apply\_empirical\_weights=true}, the primary output
+\texttt{weight} HDUs are the empirical weights, while the original mapmaker
+weights are preserved in \texttt{weight\_formal} HDUs.
+
+Future estimator-specific configuration may add blocks like the following, but
+this is not yet the implemented schema:
+
+\begin{lstlisting}
+noise_products:
   estimators:
     point_source:
-      enabled: true
       method: wiener             # wiener, matched_filter, beam_fit
-      write_flux_map: true
-      write_uncertainty_map: true
-      write_snr_map: true
 
     aperture:
       enabled: false

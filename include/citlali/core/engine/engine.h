@@ -5518,7 +5518,11 @@ void Engine::create_rtcdiag_file() {
 
     netCDF::NcDim n_scans_dim = fo.addDim("n_scans", n_scans);
     netCDF::NcDim n_dets_dim = fo.addDim("n_dets", calib.n_dets);
+    netCDF::NcDim n_arrays_dim = fo.addDim("n_arrays", calib.n_arrays);
     netCDF::NcDim n_nws_rtcdiag_dim = fo.addDim("n_nws_rtcdiag", calib.n_nws);
+    const std::vector<std::size_t> scan_chunks = {TULA_SIZET(std::max<Eigen::Index>(n_scans, 1))};
+    const std::vector<std::size_t> scan_array_chunks = {
+        1, TULA_SIZET(std::max<Eigen::Index>(calib.n_arrays, 1))};
     const std::vector<std::size_t> rtc_det_chunks = {1, TULA_SIZET(calib.n_dets)};
     const std::vector<std::size_t> rtc_nw_chunks = {1, TULA_SIZET(calib.n_nws)};
 
@@ -5530,6 +5534,152 @@ void Engine::create_rtcdiag_file() {
         output_scan_index[static_cast<std::size_t>(i)] = static_cast<int>(i + 1);
     }
     output_scan_index_v.putVar(output_scan_index.data());
+
+    netCDF::NcVar array_ids_v = fo.addVar("rtc_diag_array_ids", netCDF::ncInt, n_arrays_dim);
+    array_ids_v.putAtt("units", "N/A");
+    array_ids_v.putAtt("comment", "array IDs corresponding to n_arrays axis");
+    std::vector<int> array_ids(static_cast<std::size_t>(calib.n_arrays), fill_int);
+    for (Eigen::Index i = 0; i < calib.n_arrays; ++i) {
+        array_ids[static_cast<std::size_t>(i)] = static_cast<int>(calib.arrays(i));
+    }
+    array_ids_v.putVar(array_ids.data());
+
+    auto percentile_sorted = [](const std::vector<double> &sorted_values, double pct) {
+        if (sorted_values.empty()) {
+            return std::numeric_limits<double>::quiet_NaN();
+        }
+        if (sorted_values.size() == 1) {
+            return sorted_values.front();
+        }
+        pct = std::min(100.0, std::max(0.0, pct));
+        const double pos = (pct / 100.0) * static_cast<double>(sorted_values.size() - 1);
+        const auto lo = static_cast<std::size_t>(std::floor(pos));
+        const auto hi = static_cast<std::size_t>(std::ceil(pos));
+        const double frac = pos - static_cast<double>(lo);
+        return sorted_values[lo] * (1.0 - frac) + sorted_values[hi] * frac;
+    };
+
+    auto add_scan_double = [&](const std::string &name, const std::string &units,
+                               const std::string &comment, const std::vector<double> &values) {
+        netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, n_scans_dim);
+        v.putAtt("units", units);
+        v.putAtt("comment", comment);
+        set_netcdf_chunking_and_compression(v, scan_chunks, 1);
+        v.putVar(values.data());
+    };
+
+    std::vector<double> scan_duration_s(static_cast<std::size_t>(n_scans), fill_double);
+    std::vector<double> scan_speed_p50_arcsec_s(static_cast<std::size_t>(n_scans), fill_double);
+    std::vector<double> scan_speed_p95_arcsec_s(static_cast<std::size_t>(n_scans), fill_double);
+    std::vector<double> scan_speed_p995_arcsec_s(static_cast<std::size_t>(n_scans), fill_double);
+
+    const auto tel_time_it = telescope.tel_data.find("TelTime");
+    const auto az_it = telescope.tel_data.find("az_phys");
+    const auto alt_it = telescope.tel_data.find("alt_phys");
+    if (tel_time_it != telescope.tel_data.end() &&
+        az_it != telescope.tel_data.end() &&
+        alt_it != telescope.tel_data.end()) {
+        const auto &tel_time = tel_time_it->second;
+        const auto &az_phys = az_it->second;
+        const auto &alt_phys = alt_it->second;
+        const Eigen::Index n_tel = std::min({tel_time.size(), az_phys.size(), alt_phys.size()});
+        for (Eigen::Index scan = 0; scan < n_scans; ++scan) {
+            const Eigen::Index start = std::max<Eigen::Index>(0, telescope.scan_indices(0, scan));
+            const Eigen::Index stop = std::min<Eigen::Index>(n_tel - 1, telescope.scan_indices(1, scan));
+            if (stop <= start || start < 0 || stop >= n_tel) {
+                continue;
+            }
+            const double duration = tel_time(stop) - tel_time(start);
+            if (std::isfinite(duration) && duration > 0.0) {
+                scan_duration_s[static_cast<std::size_t>(scan)] = duration;
+            }
+            std::vector<double> speed_arcsec_s;
+            speed_arcsec_s.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(stop - start, 0)));
+            for (Eigen::Index i = start; i < stop; ++i) {
+                const double dt = tel_time(i + 1) - tel_time(i);
+                const double daz = az_phys(i + 1) - az_phys(i);
+                const double dalt = alt_phys(i + 1) - alt_phys(i);
+                if (!std::isfinite(dt) || !std::isfinite(daz) || !std::isfinite(dalt) ||
+                    dt <= 0.0 || dt > 0.1 || std::abs(daz) > 0.01 || std::abs(dalt) > 0.01) {
+                    continue;
+                }
+                speed_arcsec_s.push_back(std::hypot(daz, dalt) / dt * RAD_TO_ASEC);
+            }
+            if (!speed_arcsec_s.empty()) {
+                std::sort(speed_arcsec_s.begin(), speed_arcsec_s.end());
+                scan_speed_p50_arcsec_s[static_cast<std::size_t>(scan)] =
+                    percentile_sorted(speed_arcsec_s, 50.0);
+                scan_speed_p95_arcsec_s[static_cast<std::size_t>(scan)] =
+                    percentile_sorted(speed_arcsec_s, 95.0);
+                scan_speed_p995_arcsec_s[static_cast<std::size_t>(scan)] =
+                    percentile_sorted(speed_arcsec_s, 99.5);
+            }
+        }
+    }
+    else {
+        logger->warn("rtcdiag scan-speed diagnostics skipped: missing TelTime, az_phys, or alt_phys telescope data");
+    }
+
+    add_scan_double("scan_duration_s", "s",
+                    "inner scan duration used for scan-speed diagnostics", scan_duration_s);
+    add_scan_double("scan_speed_altaz_p50_arcsec_s", "arcsec/s",
+                    "per-scan median boresight speed in the delta-source altaz frame",
+                    scan_speed_p50_arcsec_s);
+    add_scan_double("scan_speed_altaz_p95_arcsec_s", "arcsec/s",
+                    "per-scan 95th percentile boresight speed in the delta-source altaz frame",
+                    scan_speed_p95_arcsec_s);
+    add_scan_double("scan_speed_altaz_p995_arcsec_s", "arcsec/s",
+                    "per-scan robust peak (99.5th percentile) boresight speed in the delta-source altaz frame",
+                    scan_speed_p995_arcsec_s);
+
+    std::vector<netCDF::NcDim> scan_array_dims = {n_scans_dim, n_arrays_dim};
+    std::vector<double> source_power_half_bandwidth_hz(
+        static_cast<std::size_t>(n_scans) * static_cast<std::size_t>(calib.n_arrays), fill_double);
+    std::vector<double> tod_lowpass_to_source_power_half_ratio(
+        static_cast<std::size_t>(n_scans) * static_cast<std::size_t>(calib.n_arrays), fill_double);
+    for (Eigen::Index scan = 0; scan < n_scans; ++scan) {
+        const double speed = scan_speed_p995_arcsec_s[static_cast<std::size_t>(scan)];
+        if (!std::isfinite(speed) || speed <= 0.0) {
+            continue;
+        }
+        for (Eigen::Index arr_i = 0; arr_i < calib.n_arrays; ++arr_i) {
+            const Eigen::Index array = calib.arrays(arr_i);
+            const auto fwhm_it = calib.array_fwhms.find(array);
+            if (fwhm_it == calib.array_fwhms.end()) {
+                continue;
+            }
+            const double fwhm_arcsec =
+                0.5 * (std::get<0>(fwhm_it->second) + std::get<1>(fwhm_it->second));
+            if (!std::isfinite(fwhm_arcsec) || fwhm_arcsec <= 0.0) {
+                continue;
+            }
+            const double f_half_hz =
+                (std::sqrt(std::log(2.0)) / (2.0 * pi * fwhm_arcsec * FWHM_TO_STD)) * speed;
+            const auto flat_i = static_cast<std::size_t>(scan) * static_cast<std::size_t>(calib.n_arrays) +
+                                static_cast<std::size_t>(arr_i);
+            source_power_half_bandwidth_hz[flat_i] = f_half_hz;
+            if (rtcproc.run_tod_filter && rtcproc.filter.freq_high_Hz > 0.0 && f_half_hz > 0.0) {
+                tod_lowpass_to_source_power_half_ratio[flat_i] =
+                    rtcproc.filter.freq_high_Hz / f_half_hz;
+            }
+        }
+    }
+    auto add_scan_array_double = [&](const std::string &name, const std::string &units,
+                                     const std::string &comment, const std::vector<double> &values) {
+        netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, scan_array_dims);
+        v.putAtt("units", units);
+        v.putAtt("comment", comment);
+        set_netcdf_chunking_and_compression(v, scan_array_chunks, 1);
+        v.putVar(values.data());
+    };
+    add_scan_array_double(
+        "scan_source_power_half_bandwidth_hz", "Hz",
+        "Gaussian compact-source temporal power half-bandwidth from scan_speed_altaz_p995_arcsec_s and array mean FWHM",
+        source_power_half_bandwidth_hz);
+    add_scan_array_double(
+        "scan_tod_lowpass_to_source_power_half_ratio", "N/A",
+        "configured RTC FIR low-pass cutoff divided by scan_source_power_half_bandwidth_hz; values much larger than 1 indicate extra high-frequency noise admitted relative to compact-source half-power bandwidth",
+        tod_lowpass_to_source_power_half_ratio);
 
     netCDF::NcVar nw_ids_v = fo.addVar("rtc_diag_network_ids", netCDF::ncInt, n_nws_rtcdiag_dim);
     nw_ids_v.putAtt("units", "N/A");
@@ -5552,6 +5702,10 @@ void Engine::create_rtcdiag_file() {
     add_netcdf_var<std::string>(fo, "TYPE", tod_type);
     add_netcdf_var(fo, "SAMPRATE", telescope.fsmp);
     add_netcdf_var(fo, "RTC_SAMPRATE", rtc_fsmp);
+    add_netcdf_var(fo, "CONFIG.TODFILTERED", rtcproc.run_tod_filter);
+    add_netcdf_var(fo, "CONFIG.TODFILTER.FREQ_HIGH_HZ", rtcproc.filter.freq_high_Hz);
+    add_netcdf_var(fo, "CONFIG.TODFILTER.FREQ_LOW_HZ", rtcproc.filter.freq_low_Hz);
+    add_netcdf_var(fo, "CONFIG.TODFILTER.N_TERMS", rtcproc.filter.n_terms);
 
     // Keep a compact provenance subset so rtcdiag is interpretable without the RTC TOD.
     add_netcdf_var(fo, "CONFIG.VERBOSE", verbose_mode);
