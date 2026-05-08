@@ -9,6 +9,10 @@ For Codex work in this repository:
 - Do **not** run local compile/test commands as part of normal verification.
 - Perform authoritative build and runtime validation on **Unity** only.
 - If a build/test check is needed, request or use Unity.
+- When editing TolTECA numbered reduction configs, including `7*_reduce.yaml`
+  or `7*_config.yaml`, preserve Unity filesystem paths and the configured
+  Citlali executable path. Reductions are run on Unity, not on the local
+  workstation.
 
 ## Practical Guidance
 

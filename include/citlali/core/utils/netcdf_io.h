@@ -75,9 +75,10 @@ void add_netcdf_var(netCDF::NcFile &fo, std::string name, T data) {
     }
     // if bool (netcdf has no bool type)
     if constexpr (std::is_same_v<T, bool>) {
+        int value = data ? 1 : 0;
         dim = fo.addDim(dim_name.c_str(),1);
         var = fo.addVar(name, netCDF::ncInt, dim);
-        var.putVar(&data);
+        var.putVar(&value);
     }
     // if other integral scalar types (for example Eigen::Index)
     if constexpr (std::is_integral_v<T> &&
