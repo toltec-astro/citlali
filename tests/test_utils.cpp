@@ -4,6 +4,7 @@
 #include "utils/logging.h"
 #include "utils/algorithm/ei_polyfit.h"
 #include "utils/formatter/matrix.h"
+#include "citlali/core/timestream/rtc/filter.h"
 
 namespace {
 using namespace ::testing;
@@ -26,6 +27,20 @@ TEST(algorithm, polyfit_2) {
     xdata.array() *= 1e7;
     auto [p, r] = alg::polyfit(xdata, ydata, 2);
     SPDLOG_TRACE("x{} y{} p{} r{}", xdata, ydata, p, r);
+}
+
+TEST(timestream_filter, notch_settle_samples_are_positive_for_narrow_notches) {
+    auto samples = timestream::Filter::notch_settle_samples_for_width(
+        122.0703125, 0.25, 0.01);
+    EXPECT_GT(samples, 0);
+}
+
+TEST(timestream_filter, notch_settle_samples_increase_for_narrower_widths) {
+    auto narrow = timestream::Filter::notch_settle_samples_for_width(
+        122.0703125, 0.25, 0.01);
+    auto broad = timestream::Filter::notch_settle_samples_for_width(
+        122.0703125, 1.0, 0.01);
+    EXPECT_GT(narrow, broad);
 }
 
 /*

@@ -130,6 +130,11 @@ struct Status {
     bool kernel_generated = false;
     bool despiked = false;
     bool tod_filtered = false;
+    bool filter_edge_guarded = false;
+    int filter_edge_guard_pre_samples = 0;
+    int filter_edge_guard_post_samples = 0;
+    int filter_edge_guard_flagged_samples = 0;
+    double filter_edge_guard_flagged_frac = std::numeric_limits<double>::quiet_NaN();
     bool downsampled = false;
     bool calibrated = false;
     bool extinction_corrected = false;
@@ -2249,5 +2254,22 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
     NcVar output_scan_index_v = fo.getVar("output_scan_index");
     int output_scan_index = static_cast<int>(in.index.data + 1);
     output_scan_index_v.putVar(output_scan_index_start_index, output_scan_index_size, &output_scan_index);
+
+    auto write_scan_int = [&](const std::string &name, int value) {
+        NcVar v = fo.getVar(name);
+        if (!v.isNull()) {
+            v.putVar(output_scan_index_start_index, output_scan_index_size, &value);
+        }
+    };
+    auto write_scan_double = [&](const std::string &name, double value) {
+        NcVar v = fo.getVar(name);
+        if (!v.isNull()) {
+            v.putVar(output_scan_index_start_index, output_scan_index_size, &value);
+        }
+    };
+    write_scan_int("tod_filter_edge_guard_pre_samples", in.status.filter_edge_guard_pre_samples);
+    write_scan_int("tod_filter_edge_guard_post_samples", in.status.filter_edge_guard_post_samples);
+    write_scan_int("tod_filter_edge_guard_flagged_samples", in.status.filter_edge_guard_flagged_samples);
+    write_scan_double("tod_filter_edge_guard_flagged_frac", in.status.filter_edge_guard_flagged_frac);
 }
 } // namespace timestream

@@ -4,7 +4,10 @@
 #include <unsupported/Eigen/CXX11/Tensor>
 #include <unsupported/Eigen/SpecialFunctions>
 
+#include <algorithm>
 #include <cmath>
+#include <limits>
+#include <vector>
 #include <boost/math/special_functions/bessel.hpp>
 
 #include <citlali/core/utils/constants.h>
@@ -27,6 +30,8 @@ public:
 
     void make_filter(double);
     void make_notch_filter(double);
+    static Eigen::Index notch_settle_samples_for_width(double, double, double);
+    Eigen::Index notch_settle_samples(double, double) const;
 
     template <typename Derived>
     void convolve(Eigen::DenseBase<Derived> &);
@@ -142,6 +147,48 @@ void Filter::make_notch_filter(double fsmp) {
         notch_a.push_back(a);
         notch_b.push_back(b);
     }
+}
+
+inline Eigen::Index Filter::notch_settle_samples_for_width(
+    double fsmp, double width_Hz, double attenuation) {
+    if (fsmp <= 0.0 || width_Hz <= 0.0) {
+        return 0;
+    }
+    if (!(attenuation > 0.0 && attenuation < 1.0)) {
+        attenuation = 0.01;
+    }
+
+    const double bw = 2.0 * pi * width_Hz / fsmp;
+    const double beta = std::tan(bw / 2.0);
+    if (!std::isfinite(beta) || beta <= 0.0) {
+        return 0;
+    }
+    const double gain = 1.0 / (1.0 + beta);
+    const double radius2 = 2.0 * gain - 1.0;
+    if (!(radius2 > 0.0)) {
+        return 1;
+    }
+    const double radius = std::sqrt(radius2);
+    if (!(radius > 0.0 && radius < 1.0)) {
+        return 0;
+    }
+    const double n_samples = std::log(attenuation) / std::log(radius);
+    if (!std::isfinite(n_samples) || n_samples <= 0.0) {
+        return 0;
+    }
+    return static_cast<Eigen::Index>(std::ceil(n_samples));
+}
+
+inline Eigen::Index Filter::notch_settle_samples(double fsmp, double attenuation) const {
+    Eigen::Index total = 0;
+    const auto n = std::min(w0s.size(), qs.size());
+    for (std::size_t i = 0; i < n; ++i) {
+        if (w0s[i] <= 0.0 || qs[i] <= 0.0) {
+            continue;
+        }
+        total += notch_settle_samples_for_width(fsmp, w0s[i] / qs[i], attenuation);
+    }
+    return total;
 }
 
 template <typename Derived>

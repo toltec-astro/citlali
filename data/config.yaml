@@ -186,6 +186,19 @@ timestream: # timestream reduction parameters
         enabled: false # enable or disable notch filtering
         freqs_Hz: [10.5] # notch center frequencies in Hz
         delta_f_Hz: [1.0] # notch widths in Hz (per freq)
+      edge_guard: # flag scan-edge samples affected by TOD filter transients
+        enabled: false # enable or disable the common TOD filter edge guard
+        mode: flag # flag or none; flag preserves sample alignment
+        combine: sum # sum or max filter-stage guard estimates
+        min_samples: 0 # minimum samples to guard at each scan edge
+        extra_samples: 0 # additional samples to guard after stage estimates
+        max_samples: 128 # cap guarded samples per edge; 0 disables the cap
+        iir_settle_attenuation: 0.01 # target residual amplitude for IIR/notch guard estimates
+        apply_fir: true # include FIR support in the guard estimate
+        apply_notch: true # include configured static notch settling in the guard estimate
+        apply_dynamic_notch: true # include runtime shared-line notch settling in the guard estimate
+        apply_iir_highpass: true # include IIR highpass settling in the guard estimate
+        apply_downsample: true # include downsample phase/bin support in the guard estimate
     IIR_filter: # optional highpass IIR filtering (applied after FIR/notch)
       enabled: false # enable or disable IIR highpass filtering
       freq_Hz: 0.1 # highpass cutoff frequency in Hz

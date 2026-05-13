@@ -136,6 +136,24 @@ public:
     };
     RTCLineAuditOptions line_audit;
 
+    struct FilterEdgeGuardOptions {
+        bool enabled = false;
+        std::string mode = "flag";
+        std::string combine = "sum";
+        Eigen::Index min_samples = 0;
+        Eigen::Index extra_samples = 0;
+        Eigen::Index max_samples = 128;
+        double iir_settle_attenuation = 0.01;
+        bool apply_fir = true;
+        bool apply_notch = true;
+        bool apply_dynamic_notch = true;
+        bool apply_iir_highpass = true;
+        bool apply_downsample = true;
+        Eigen::Index context_samples = 0;
+        Eigen::Index guard_samples = 0;
+    };
+    FilterEdgeGuardOptions filter_edge_guard;
+
     struct RTCDetectorDiagSummary : DespikeDetectorDiagSummary {
         Eigen::Index det = -1;
         double final_flagged_frac = std::numeric_limits<double>::quiet_NaN();
@@ -288,6 +306,12 @@ public:
     // optionally apply chunk-level shared-line notches from the RTC line audit
     template <typename tc_t>
     Eigen::Index apply_rtc_line_audit_shared_notches(tc_t &, double fs_hz);
+
+    // configure and apply a standard flag guard around filtered scan edges
+    void configure_filter_edge_guard(double fs_hz);
+
+    template <typename tc_t>
+    void apply_filter_edge_guard(tc_t &, Eigen::Index start_sample, Eigen::Index n_samples);
 
     // optional az/el template subtraction on the RTC output chunk
     template <typename calib_t>
@@ -1032,6 +1056,62 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                          std::tuple{"timestream","raw_time_chunk","downsample","downsampled_freq_Hz"});
     }
 
+    filter_edge_guard = {};
+    if (config.has(std::tuple{"timestream","raw_time_chunk","filter","edge_guard"})) {
+        get_config_value(config, filter_edge_guard.enabled, missing_keys, invalid_keys,
+                         std::tuple{"timestream","raw_time_chunk","filter","edge_guard","enabled"});
+        if (config.has(std::tuple{"timestream","raw_time_chunk","filter","edge_guard","mode"})) {
+            get_config_value(config, filter_edge_guard.mode, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","filter","edge_guard","mode"},
+                             {"flag","none"});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","filter","edge_guard","combine"})) {
+            get_config_value(config, filter_edge_guard.combine, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","filter","edge_guard","combine"},
+                             {"sum","max"});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","filter","edge_guard","min_samples"})) {
+            get_config_value(config, filter_edge_guard.min_samples, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","filter","edge_guard","min_samples"},
+                             {}, {0});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","filter","edge_guard","extra_samples"})) {
+            get_config_value(config, filter_edge_guard.extra_samples, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","filter","edge_guard","extra_samples"},
+                             {}, {0});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","filter","edge_guard","max_samples"})) {
+            get_config_value(config, filter_edge_guard.max_samples, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","filter","edge_guard","max_samples"},
+                             {}, {0});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","filter","edge_guard","iir_settle_attenuation"})) {
+            get_config_value(config, filter_edge_guard.iir_settle_attenuation, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","filter","edge_guard","iir_settle_attenuation"},
+                             {}, {0.0}, {1.0});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","filter","edge_guard","apply_fir"})) {
+            get_config_value(config, filter_edge_guard.apply_fir, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","filter","edge_guard","apply_fir"});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","filter","edge_guard","apply_notch"})) {
+            get_config_value(config, filter_edge_guard.apply_notch, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","filter","edge_guard","apply_notch"});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","filter","edge_guard","apply_dynamic_notch"})) {
+            get_config_value(config, filter_edge_guard.apply_dynamic_notch, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","filter","edge_guard","apply_dynamic_notch"});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","filter","edge_guard","apply_iir_highpass"})) {
+            get_config_value(config, filter_edge_guard.apply_iir_highpass, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","filter","edge_guard","apply_iir_highpass"});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","filter","edge_guard","apply_downsample"})) {
+            get_config_value(config, filter_edge_guard.apply_downsample, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","filter","edge_guard","apply_downsample"});
+        }
+    }
+
     // run flux calibration?
     get_config_value(config, run_calibrate, missing_keys, invalid_keys,
                      std::tuple{"timestream","raw_time_chunk","flux_calibration","enabled"});
@@ -1067,6 +1147,106 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                          altaz_destripe.fit_derivs, altaz_destripe.min_samples);
         }
     }
+}
+
+inline void RTCProc::configure_filter_edge_guard(double fs_hz) {
+    auto combine_samples = [&](Eigen::Index current, Eigen::Index next) {
+        if (next <= 0) {
+            return current;
+        }
+        if (filter_edge_guard.combine == "max") {
+            return std::max(current, next);
+        }
+        return current + next;
+    };
+
+    Eigen::Index base_context = 0;
+    if (run_tod_filter) {
+        base_context += std::max<Eigen::Index>(0, filter.n_terms);
+    }
+    if (run_tod_iir_highpass) {
+        base_context += filter.iir_highpass_settle_samples(fs_hz);
+    }
+
+    filter_edge_guard.context_samples = base_context;
+    filter_edge_guard.guard_samples = 0;
+    if (!filter_edge_guard.enabled || filter_edge_guard.mode == "none") {
+        return;
+    }
+
+    Eigen::Index guard = 0;
+    if (run_tod_filter && filter_edge_guard.apply_fir) {
+        guard = combine_samples(guard, std::max<Eigen::Index>(0, filter.n_terms));
+    }
+    if (run_tod_filter && run_tod_notch && filter_edge_guard.apply_notch) {
+        guard = combine_samples(guard, filter.notch_settle_samples(fs_hz, filter_edge_guard.iir_settle_attenuation));
+    }
+    if (line_audit.enabled && line_audit.apply_shared_notches && filter_edge_guard.apply_dynamic_notch) {
+        const Eigen::Index n_dynamic_sections =
+            line_audit.apply_max_notches > 0 ? line_audit.apply_max_notches : 1;
+        guard = combine_samples(
+            guard,
+            n_dynamic_sections *
+                timestream::Filter::notch_settle_samples_for_width(
+                    fs_hz, line_audit.apply_min_width_hz, filter_edge_guard.iir_settle_attenuation));
+    }
+    if (run_tod_iir_highpass && filter_edge_guard.apply_iir_highpass) {
+        guard = combine_samples(guard, filter.iir_highpass_settle_samples(fs_hz));
+    }
+    if (run_downsample && filter_edge_guard.apply_downsample && downsampler.factor > 1) {
+        guard = combine_samples(guard, static_cast<Eigen::Index>(downsampler.factor - 1));
+    }
+
+    guard = std::max(guard, filter_edge_guard.min_samples);
+    guard += filter_edge_guard.extra_samples;
+    if (filter_edge_guard.max_samples > 0) {
+        guard = std::min(guard, filter_edge_guard.max_samples);
+    }
+    guard = std::max<Eigen::Index>(0, guard);
+
+    filter_edge_guard.guard_samples = guard;
+    filter_edge_guard.context_samples = std::max(base_context, guard);
+}
+
+template <typename tc_t>
+void RTCProc::apply_filter_edge_guard(tc_t &in, Eigen::Index start_sample, Eigen::Index n_samples) {
+    in.status.filter_edge_guarded = false;
+    in.status.filter_edge_guard_pre_samples = 0;
+    in.status.filter_edge_guard_post_samples = 0;
+    in.status.filter_edge_guard_flagged_samples = 0;
+    in.status.filter_edge_guard_flagged_frac = std::numeric_limits<double>::quiet_NaN();
+
+    if (!filter_edge_guard.enabled || filter_edge_guard.mode != "flag" ||
+        filter_edge_guard.guard_samples <= 0 || n_samples <= 0 ||
+        in.flags.data.rows() <= 0 || in.flags.data.cols() <= 0) {
+        return;
+    }
+
+    start_sample = std::max<Eigen::Index>(0, start_sample);
+    if (start_sample >= in.flags.data.rows()) {
+        return;
+    }
+    n_samples = std::min<Eigen::Index>(n_samples, in.flags.data.rows() - start_sample);
+    if (n_samples <= 0) {
+        return;
+    }
+
+    const Eigen::Index pre = std::min(filter_edge_guard.guard_samples, n_samples);
+    const Eigen::Index post = std::min(filter_edge_guard.guard_samples, n_samples - pre);
+    if (pre > 0) {
+        in.flags.data.block(start_sample, 0, pre, in.flags.data.cols()).setConstant(true);
+    }
+    if (post > 0) {
+        in.flags.data.block(start_sample + n_samples - post, 0, post, in.flags.data.cols()).setConstant(true);
+    }
+
+    const Eigen::Index guarded_rows = pre + post;
+    in.status.filter_edge_guarded = guarded_rows > 0;
+    in.status.filter_edge_guard_pre_samples = static_cast<int>(pre);
+    in.status.filter_edge_guard_post_samples = static_cast<int>(post);
+    in.status.filter_edge_guard_flagged_samples = static_cast<int>(guarded_rows * in.flags.data.cols());
+    in.status.filter_edge_guard_flagged_frac =
+        static_cast<double>(guarded_rows) / static_cast<double>(n_samples);
 }
 
 template <class calib_t>
@@ -1135,10 +1315,12 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     // number of points in scan
     Eigen::Index n_pts = in.scans.data.rows();
 
-    // start index of inner scans
-    auto si = filter.n_terms;
+    // start index of the science scan inside the loaded outer filter context
+    auto si = in.scan_indices.data(0) - in.scan_indices.data(2);
+    si = std::max<Eigen::Index>(0, si);
     // end index of inner scans
     auto sl = in.scan_indices.data(1) - in.scan_indices.data(0) + 1;
+    sl = std::max<Eigen::Index>(0, std::min<Eigen::Index>(sl, in.scans.data.rows() - si));
 
     // calculate the polarization angle
     if (run_polarization) {
@@ -1280,6 +1462,8 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     if (ran_tod_filter_stage) {
         in.status.tod_filtered = true;
     }
+
+    apply_filter_edge_guard(in, si, sl);
 
     if (run_downsample) {
         logger->debug("downsampling data");

@@ -689,18 +689,8 @@ void Engine::get_rtc_config(CT &config) {
     // get rtcproc config
     rtcproc.get_config(config, missing_keys, invalid_keys);
 
-    // offset inner chunks
-    if (rtcproc.run_tod_filter) {
-        telescope.inner_scans_chunk = rtcproc.filter.n_terms;
-    }
-    // otherwise start at zero
-    else {
-        telescope.inner_scans_chunk = 0;
-    }
-
-    if (rtcproc.run_tod_iir_highpass) {
-        telescope.inner_scans_chunk += rtcproc.filter.iir_highpass_settle_samples(telescope.fsmp);
-    }
+    rtcproc.configure_filter_edge_guard(telescope.fsmp);
+    telescope.inner_scans_chunk = rtcproc.filter_edge_guard.context_samples;
 
     // ignore hwpr?
     get_config_value(config, calib.ignore_hwpr, missing_keys, invalid_keys,
@@ -2041,6 +2031,15 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "CONFIG.TODIIRHP.FREQ_HZ", rtcproc.filter.iir_highpass_freq_Hz);
         add_netcdf_var(fo, "CONFIG.TODIIRHP.ORDER", rtcproc.filter.iir_highpass_order);
         add_netcdf_var(fo, "CONFIG.TODIIRHP.ZEROPHASE", rtcproc.filter.iir_highpass_zero_phase);
+        add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.ENABLED", rtcproc.filter_edge_guard.enabled);
+        add_netcdf_var<std::string>(fo, "CONFIG.TODFILTER.EDGE_GUARD.MODE", rtcproc.filter_edge_guard.mode);
+        add_netcdf_var<std::string>(fo, "CONFIG.TODFILTER.EDGE_GUARD.COMBINE", rtcproc.filter_edge_guard.combine);
+        add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.CONTEXT_SAMPLES", rtcproc.filter_edge_guard.context_samples);
+        add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.GUARD_SAMPLES", rtcproc.filter_edge_guard.guard_samples);
+        add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.MIN_SAMPLES", rtcproc.filter_edge_guard.min_samples);
+        add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.EXTRA_SAMPLES", rtcproc.filter_edge_guard.extra_samples);
+        add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.MAX_SAMPLES", rtcproc.filter_edge_guard.max_samples);
+        add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.IIR_SETTLE_ATTENUATION", rtcproc.filter_edge_guard.iir_settle_attenuation);
         add_netcdf_var(fo, "CONFIG.DOWNSAMPLED", rtcproc.run_downsample);
         add_netcdf_var(fo, "CONFIG.CALIBRATED", rtcproc.run_calibrate);
         add_netcdf_var(fo, "CONFIG.EXTINCTION", rtcproc.run_extinction);
@@ -2402,6 +2401,27 @@ void Engine::create_tod_files() {
     output_scan_index_v.putAtt("comment","1-based original scan index from the full observation");
     std::vector<int> output_scan_init(static_cast<std::size_t>(n_tod_output_scans_for_stream), -2147483647);
     output_scan_index_v.putVar(output_scan_init.data());
+
+    auto add_scan_int_var = [&](const std::string &name, const std::string &comment) {
+        netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, n_scans_dim);
+        v.putAtt("units", "samples");
+        v.putAtt("comment", comment);
+        std::vector<int> init(static_cast<std::size_t>(n_tod_output_scans_for_stream), -2147483647);
+        v.putVar(init.data());
+    };
+    auto add_scan_double_var = [&](const std::string &name, const std::string &units,
+                                   const std::string &comment) {
+        netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, n_scans_dim);
+        v.putAtt("units", units);
+        v.putAtt("comment", comment);
+        std::vector<double> init(static_cast<std::size_t>(n_tod_output_scans_for_stream),
+                                 std::numeric_limits<double>::quiet_NaN());
+        v.putVar(init.data());
+    };
+    add_scan_int_var("tod_filter_edge_guard_pre_samples", "samples flagged at the start of this output scan by the TOD filter edge guard");
+    add_scan_int_var("tod_filter_edge_guard_post_samples", "samples flagged at the end of this output scan by the TOD filter edge guard");
+    add_scan_int_var("tod_filter_edge_guard_flagged_samples", "detector-samples flagged by the TOD filter edge guard");
+    add_scan_double_var("tod_filter_edge_guard_flagged_frac", "N/A", "fraction of time samples guarded at this output scan edge");
 
     // signal
     netCDF::NcVar signal_v;
@@ -3276,6 +3296,9 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
     f << "-TOD IIR highpass freq (Hz): " << rtcproc.filter.iir_highpass_freq_Hz << "\n";
     f << "-TOD IIR highpass order: " << rtcproc.filter.iir_highpass_order << "\n";
     f << "-TOD IIR highpass zero-phase: " << rtcproc.filter.iir_highpass_zero_phase << "\n";
+    f << "-TOD filter edge guard enabled: " << rtcproc.filter_edge_guard.enabled << "\n";
+    f << "-TOD filter edge guard context samples: " << rtcproc.filter_edge_guard.context_samples << "\n";
+    f << "-TOD filter edge guard samples per edge: " << rtcproc.filter_edge_guard.guard_samples << "\n";
     f << "-Downsampled: " << in.status.downsampled << "\n";
     f << "-Cleaned: " << in.status.cleaned << "\n";
 
@@ -3869,6 +3892,11 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     add_double_key("CONFIG.TODIIRHP.FREQ_HZ", rtcproc.filter.iir_highpass_freq_Hz, "TOD IIR highpass cutoff frequency");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODIIRHP.ORDER", rtcproc.filter.iir_highpass_order, "TOD IIR highpass cascaded order");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODIIRHP.ZEROPHASE", rtcproc.filter.iir_highpass_zero_phase, "TOD IIR highpass forward-backward");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODFILTER.EDGE_GUARD.ENABLED", rtcproc.filter_edge_guard.enabled, "TOD filter edge guard enabled");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODFILTER.EDGE_GUARD.MODE", rtcproc.filter_edge_guard.mode, "TOD filter edge guard mode");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODFILTER.EDGE_GUARD.COMBINE", rtcproc.filter_edge_guard.combine, "TOD filter edge guard combine rule");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODFILTER.EDGE_GUARD.CONTEXT_SAMPLES", static_cast<int>(rtcproc.filter_edge_guard.context_samples), "TOD filter context samples");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODFILTER.EDGE_GUARD.GUARD_SAMPLES", static_cast<int>(rtcproc.filter_edge_guard.guard_samples), "TOD filter guarded samples per edge");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.DOWNSAMPLED", rtcproc.run_downsample, "Downsampled");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CALIBRATED", rtcproc.run_calibrate, "Calibrated");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.EXTINCTION", rtcproc.run_extinction, "Extinction corrected");
@@ -5706,6 +5734,15 @@ void Engine::create_rtcdiag_file() {
     add_netcdf_var(fo, "CONFIG.TODFILTER.FREQ_HIGH_HZ", rtcproc.filter.freq_high_Hz);
     add_netcdf_var(fo, "CONFIG.TODFILTER.FREQ_LOW_HZ", rtcproc.filter.freq_low_Hz);
     add_netcdf_var(fo, "CONFIG.TODFILTER.N_TERMS", rtcproc.filter.n_terms);
+    add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.ENABLED", rtcproc.filter_edge_guard.enabled);
+    add_netcdf_var<std::string>(fo, "CONFIG.TODFILTER.EDGE_GUARD.MODE", rtcproc.filter_edge_guard.mode);
+    add_netcdf_var<std::string>(fo, "CONFIG.TODFILTER.EDGE_GUARD.COMBINE", rtcproc.filter_edge_guard.combine);
+    add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.CONTEXT_SAMPLES", rtcproc.filter_edge_guard.context_samples);
+    add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.GUARD_SAMPLES", rtcproc.filter_edge_guard.guard_samples);
+    add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.MIN_SAMPLES", rtcproc.filter_edge_guard.min_samples);
+    add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.EXTRA_SAMPLES", rtcproc.filter_edge_guard.extra_samples);
+    add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.MAX_SAMPLES", rtcproc.filter_edge_guard.max_samples);
+    add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.IIR_SETTLE_ATTENUATION", rtcproc.filter_edge_guard.iir_settle_attenuation);
 
     // Keep a compact provenance subset so rtcdiag is interpretable without the RTC TOD.
     add_netcdf_var(fo, "CONFIG.VERBOSE", verbose_mode);

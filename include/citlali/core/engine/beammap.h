@@ -692,9 +692,10 @@ auto Beammap::run_timestream(KidsProc &kidsproc) {
                 for (int j = 0; j < rtcdata.flags.data.rows(); ++j) {
                     int start_index = j;
                     int size = 1;
-                    if (rtcproc.run_tod_filter) {
-                        start_index = std::max(0, static_cast<int>(j - rtcproc.filter.n_terms));
-                        int end_index = std::min(j + rtcproc.filter.n_terms, rtcdata.flags.data.rows() - 1);
+                    if (rtcproc.filter_edge_guard.context_samples > 0) {
+                        const int context = static_cast<int>(rtcproc.filter_edge_guard.context_samples);
+                        start_index = std::max(0, j - context);
+                        int end_index = std::min(j + context, static_cast<int>(rtcdata.flags.data.rows() - 1));
                         size = end_index - start_index + 1;
                     }
                     if (mask(j + si) == 0) {
